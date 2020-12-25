@@ -10,12 +10,6 @@ filterTableUI <- function(id){
                                                         ) %>% withSpinner(type = 5, color = "#b2b2b2")
       )
       )
-    ),
-    fluidRow(
-      actionButton(
-        inputId = ns("runTable"),
-        label = "Run module"
-      )
     )
   )
 }
@@ -26,332 +20,573 @@ filterTableUI <- function(id){
 
 
 #server
-filterTableServer <- function(input, output, session, vals, selectPhenotype){
+filterTableServer <- function(input, output, session, session.parent, vals, selectPhenotype){
   
   ns <- session$ns
+  r <- reactiveValues(data = NULL, 
+                      heatmapFull = NULL, 
+                      heatmapPlot = NULL,
+                      ridgePlot = NULL,
+                      violinPlot = NULL,
+                      featurePlot = NULL,
+                      dotPlot = NULL
+                      )
   
-  observeEvent(input$runTable,{
-     output$seuratFindMarkerTable <- DT::renderDataTable({
-       df <- metadata(vals$counts)$seuratMarkers
-       df$p_val <- format(df$p_val, nsmall = 7)
-       df$p_val_adj <- format(df$p_val_adj, nsmall = 7)
-       df$pct.1 <- format(df$pct.1, nsmall = 7)
-       df$pct.2 <- format(df$pct.2, nsmall = 7)
-       df$avg_logFC <- format(df$avg_logFC, nsmall = 7)
-       df
-     }, options = list(pageLength = 6, dom = "<'top'fl>t<'bottom'ip>", stateSave = TRUE
-                       ))
-
-     output$seuratFindMarkerFilter <- renderUI({
-       fluidPage(
-         fluidRow(
-           h6("You can view the marker genes in the table below and apply custom filters to filter the table accordingly. A joint heatmap for all the marker genes available in the table is plotted underneath the table. Additional visualizations are plotted for select genes which can be selected by clicking on the rows of the table.")
-         ),
-         br(),
-         fluidRow(
-           column(4,offset = 0.1, style='padding:3px;', align = "center",
-                  ),
-           column(4,offset = 0.1, style='padding:3px;', align = "center",
-                  radioGroupButtons(
-                    inputId = ns("seuratFindMarkerFilterShowHide"), label = NULL,
-                    choices = c("Show Filters" = "Show", "Hide Filters" = "Hide"),
-                    justified = TRUE, status = "primary",
-                    selected = "Hide",
-                    size = "sm"
-                  )
-           ),
-           column(4,offset = 0.1, style='padding:3px;', align = "center",
-                  )
-         ),
-         div(class = "seuratFindMarkerShowHideDiv",
-             panel(
-               fluidRow(
-                 column(4,
-                        panel(heading = "Options",
-                              selectInput(
-                                inputId = ns("seuratFindMarkerSelectFilter"),
-                                label = "Select column to filter:",
-                                choices = c("gene.id",
-                                            "p_val",
-                                            "avg_logFC",
-                                            "pct.1",
-                                            "pct.2",
-                                            "p_val_adj",
-                                            "cluster")
-                              ),
-                              hidden(div(class = "seuratFindMarkerGeneIDDiv", wellPanel(style='border:0;',
-                                                                                        checkboxGroupButtons(
-                                                                                          inputId = ns("seuratFindMarkerGeneIDOption"), label = "gene.id",
-                                                                                          choices = c("=", "!="),
-                                                                                          justified = TRUE,
-                                                                                          individual = TRUE,
-                                                                                          size = "s",
-                                                                                          status = "primary"
-                                                                                        ),
-                                                                                        selectizeInput(
-                                                                                          inputId = ns("seuratFindMarkerGeneIDInput"),
-                                                                                          choices = NULL,
-                                                                                          label = NULL,
-                                                                                          multiple = TRUE
-                                                                                        )
-                              ))),
-                              hidden(div(class = "seuratFindMarkerPValDiv", wellPanel(style='border:0;',
-                                                                                      checkboxGroupButtons(
-                                                                                        inputId = ns("seuratFindMarkerPValOption"), label = "p_val",
-                                                                                        choices = c("<", ">", "=", "<=", ">="),
-                                                                                        justified = TRUE,
-                                                                                        individual = TRUE,
-                                                                                        size = "s",
-                                                                                        status = "primary"
-                                                                                      ),
-                                                                                      numericInput(
-                                                                                        inputId = ns("seuratFindMarkerPValInput"),
-                                                                                        label = NULL,
-                                                                                        step = 0.001,
-                                                                                        value = 0
-                                                                                      )
-                              ))),
-                              hidden(div(class = "seuratFindMarkerLFCDiv", wellPanel(style='border:0;',
+  
+  # observeEvent(input$runTable,{
+  #    # output$seuratFindMarkerTable <- DT::renderDataTable({
+  #    #   df <- metadata(vals$counts)$seuratMarkers
+  #    #   df$p_val <- format(df$p_val, nsmall = 7)
+  #    #   df$p_val_adj <- format(df$p_val_adj, nsmall = 7)
+  #    #   df$pct.1 <- format(df$pct.1, nsmall = 7)
+  #    #   df$pct.2 <- format(df$pct.2, nsmall = 7)
+  #    #   df$avg_logFC <- format(df$avg_logFC, nsmall = 7)
+  #    #   df
+  #    # }, options = list(pageLength = 6, dom = "<'top'fl>t<'bottom'ip>", stateSave = TRUE
+  #    #                   ))
+  # 
+  #    # output$seuratFindMarkerFilter <- renderUI({
+  #    #   fluidPage(
+  #    #     fluidRow(
+  #    #       h6("You can view the marker genes in the table below and apply custom filters to filter the table accordingly. A joint heatmap for all the marker genes available in the table is plotted underneath the table. Additional visualizations are plotted for select genes which can be selected by clicking on the rows of the table.")
+  #    #     ),
+  #    #     br(),
+  #    #     fluidRow(
+  #    #       column(4,offset = 0.1, style='padding:3px;', align = "center",
+  #    #              ),
+  #    #       column(4,offset = 0.1, style='padding:3px;', align = "center",
+  #    #              radioGroupButtons(
+  #    #                inputId = ns("seuratFindMarkerFilterShowHide"), label = NULL,
+  #    #                choices = c("Show Filters" = "Show", "Hide Filters" = "Hide"),
+  #    #                justified = TRUE, status = "primary",
+  #    #                selected = "Hide",
+  #    #                size = "sm"
+  #    #              )
+  #    #       ),
+  #    #       column(4,offset = 0.1, style='padding:3px;', align = "center",
+  #    #              )
+  #    #     ),
+  #    #     div(class = "seuratFindMarkerShowHideDiv",
+  #    #         panel(
+  #    #           fluidRow(
+  #    #             column(4,
+  #    #                    panel(heading = "Options",
+  #    #                          selectInput(
+  #    #                            inputId = ns("seuratFindMarkerSelectFilter"),
+  #    #                            label = "Select column to filter:",
+  #    #                            choices = c("gene.id",
+  #    #                                        "p_val",
+  #    #                                        "avg_logFC",
+  #    #                                        "pct.1",
+  #    #                                        "pct.2",
+  #    #                                        "p_val_adj",
+  #    #                                        "cluster")
+  #    #                          ),
+  #    #                          hidden(div(class = "seuratFindMarkerGeneIDDiv", wellPanel(style='border:0;',
+  #    #                                                                                    checkboxGroupButtons(
+  #    #                                                                                      inputId = ns("seuratFindMarkerGeneIDOption"), label = "gene.id",
+  #    #                                                                                      choices = c("=", "!="),
+  #    #                                                                                      justified = TRUE,
+  #    #                                                                                      individual = TRUE,
+  #    #                                                                                      size = "s",
+  #    #                                                                                      status = "primary"
+  #    #                                                                                    ),
+  #    #                                                                                    selectizeInput(
+  #    #                                                                                      inputId = ns("seuratFindMarkerGeneIDInput"),
+  #    #                                                                                      choices = NULL,
+  #    #                                                                                      label = NULL,
+  #    #                                                                                      multiple = TRUE
+  #    #                                                                                    )
+  #    #                          ))),
+  #    #                          hidden(div(class = "seuratFindMarkerPValDiv", wellPanel(style='border:0;',
+  #    #                                                                                  checkboxGroupButtons(
+  #    #                                                                                    inputId = ns("seuratFindMarkerPValOption"), label = "p_val",
+  #    #                                                                                    choices = c("<", ">", "=", "<=", ">="),
+  #    #                                                                                    justified = TRUE,
+  #    #                                                                                    individual = TRUE,
+  #    #                                                                                    size = "s",
+  #    #                                                                                    status = "primary"
+  #    #                                                                                  ),
+  #    #                                                                                  numericInput(
+  #    #                                                                                    inputId = ns("seuratFindMarkerPValInput"),
+  #    #                                                                                    label = NULL,
+  #    #                                                                                    step = 0.001,
+  #    #                                                                                    value = 0
+  #    #                                                                                  )
+  #    #                          ))),
+  #    #                          hidden(div(class = "seuratFindMarkerLFCDiv", wellPanel(style='border:0;',
+  #    #                                                                                 checkboxGroupButtons(
+  #    #                                                                                   inputId = ns("seuratFindMarkerLFCOption"), label = "avg_logFC",
+  #    #                                                                                   choices = c("<", ">", "=", "<=", ">="),
+  #    #                                                                                   justified = TRUE,
+  #    #                                                                                   individual = TRUE,
+  #    #                                                                                   size = "s",
+  #    #                                                                                   status = "primary"
+  #    #                                                                                 ),
+  #    #                                                                                 numericInput(
+  #    #                                                                                   inputId = ns("seuratFindMarkerLFCInput"),
+  #    #                                                                                   label = NULL,
+  #    #                                                                                   step = 0.001,
+  #    #                                                                                   value = 0
+  #    #                                                                                 )
+  #    #                          ))),
+  #    #                          hidden(div(class = "seuratFindMarkerPct1Div", wellPanel(style='border:0;',
+  #    #                                                                                  checkboxGroupButtons(
+  #    #                                                                                    inputId = ns("seuratFindMarkerPct1Option"), label = "pct.1",
+  #    #                                                                                    choices = c("<", ">", "=", "<=", ">="),
+  #    #                                                                                    justified = TRUE,
+  #    #                                                                                    individual = TRUE,
+  #    #                                                                                    size = "s",
+  #    #                                                                                    status = "primary",
+  #    #                                                                                    selected = NULL
+  #    #                                                                                  ),
+  #    #                                                                                  numericInput(
+  #    #                                                                                    inputId = ns("seuratFindMarkerPct1Input"),
+  #    #                                                                                    label = NULL,
+  #    #                                                                                    step = 0.001,
+  #    #                                                                                    value = 0
+  #    #                                                                                  )
+  #    #                          ))),
+  #    #                          hidden(div(class = "seuratFindMarkerPct2Div", wellPanel(style='border:0;',
+  #    #                                                                                  checkboxGroupButtons(
+  #    #                                                                                    inputId = ns("seuratFindMarkerPct2Option"), label = "pct.2",
+  #    #                                                                                    choices = c("<", ">", "=", "<=", ">="),
+  #    #                                                                                    justified = TRUE,
+  #    #                                                                                    individual = TRUE,
+  #    #                                                                                    size = "s",
+  #    #                                                                                    status = "primary"
+  #    #                                                                                  ),
+  #    #                                                                                  numericInput(
+  #    #                                                                                    inputId = ns("seuratFindMarkerPct2Input"),
+  #    #                                                                                    label = NULL,
+  #    #                                                                                    step = 0.001,
+  #    #                                                                                    value = 0
+  #    #                                                                                  )
+  #    #                          ))),
+  #    #                          hidden(div(class = "seuratFindMarkerPValAdjDiv", wellPanel(style='border:0;',
+  #    #                                                                                     checkboxGroupButtons(
+  #    #                                                                                       inputId = ns("seuratFindMarkerPValAdjOption"), label = "p_val_adj",
+  #    #                                                                                       choices = c("<", ">", "=", "<=", ">="),
+  #    #                                                                                       justified = TRUE,
+  #    #                                                                                       individual = TRUE,
+  #    #                                                                                       size = "s",
+  #    #                                                                                       status = "primary",
+  #    #                                                                                       selected = "<"
+  #    #                                                                                     ),
+  #    #                                                                                     numericInput(
+  #    #                                                                                       inputId = ns("seuratFindMarkerPValAdjInput"),
+  #    #                                                                                       label = NULL,
+  #    #                                                                                       step = 0.001,
+  #    #                                                                                       value = 0.05
+  #    #                                                                                     )
+  #    #                          ))),
+  #    #                          hidden(div(class = "seuratFindMarkerClusterDiv", wellPanel(style='border:0;',
+  #    #                                                                                     checkboxGroupButtons(
+  #    #                                                                                       inputId = ns("seuratFindMarkerClusterOption"), label = "cluster",
+  #    #                                                                                       choices = c("=", "!="),
+  #    #                                                                                       justified = TRUE,
+  #    #                                                                                       individual = TRUE,
+  #    #                                                                                       size = "s",
+  #    #                                                                                       status = "primary"
+  #    #                                                                                     ),
+  #    #                                                                                     selectizeInput(
+  #    #                                                                                       inputId = ns("seuratFindMarkerClusterInput"),
+  #    #                                                                                       choices = NULL,
+  #    #                                                                                       label = NULL,
+  #    #                                                                                       multiple = TRUE
+  #    #                                                                                     )
+  #    #                          ))),
+  #    #                          actionButton(
+  #    #                            inputId = ns("seuratFindMarkerFilterRun"),
+  #    #                            label = "Apply Filter"
+  #    #                          )
+  #    #                    )
+  #    #             ),
+  #    #             column(8,
+  #    #                    panel(heading = "Active Filters",
+  #    #                          uiOutput(ns("seuratFindMarkerActiveFilters")),
+  #    #                          br(),
+  #    #                          actionButton(
+  #    #                            inputId = ns("seuratFindMarkerRemoveAllFilters"),
+  #    #                            label = "Remove Filter"
+  #    #                          )
+  #    #                    )
+  #    #             )
+  #    #           )
+  #    #         ),
+  #    #         br()
+  #    #     )
+  #    #   )
+  #    # })
+  # 
+  #    # shinyjs::show(selector = ".seurat_findmarker_table")
+  #    # shinyjs::show(selector = ".seurat_findmarker_jointHeatmap")
+  #   
+  #    # removeTab(inputId = ns("seuratFindMarkerPlotTabset"), target = "Ridge Plot")
+  #    # removeTab(inputId = ns("seuratFindMarkerPlotTabset"), target = "Violin Plot")
+  #    # removeTab(inputId = ns("seuratFindMarkerPlotTabset"), target = "Feature Plot")
+  #    # removeTab(inputId = ns("seuratFindMarkerPlotTabset"), target = "Dot Plot")
+  #    # removeTab(inputId = ns("seuratFindMarkerPlotTabset"), target = "Heatmap Plot")
+  #    # 
+  #    # appendTab(session = session.parent, inputId = ns("seuratFindMarkerPlotTabset"), tabPanel(title = "Ridge Plot",
+  #    #                                                            panel(heading = "Ridge Plot",
+  #    #                                                                  fluidRow(
+  #    #                                                                    column(12, align = "center",
+  #    #                                                                           panel(
+  #    #                                                                             HTML(paste("<span style='color:red'>Select genes from the above table to plot!</span>"))
+  #    #                                                                           )
+  #    #                                                                           )
+  #    #                                                                  )
+  #    #                                                            )
+  #    # )
+  #    # )
+  #    # appendTab(session = session.parent, inputId = ns("seuratFindMarkerPlotTabset"), tabPanel(title = "Violin Plot",
+  #    #                                                            panel(heading = "Violin Plot",
+  #    #                                                                  fluidRow(
+  #    #                                                                    column(12, align = "center",
+  #    #                                                                           panel(
+  #    #                                                                             HTML(paste("<span style='color:red'>Select genes from the above table to plot!</span>"))
+  #    #                                                                           )
+  #    #                                                                    )
+  #    #                                                                  )
+  #    #                                                            )
+  #    # )
+  #    # )
+  #    # appendTab(session = session.parent, inputId = ns("seuratFindMarkerPlotTabset"), tabPanel(title = "Feature Plot",
+  #    #                                                            panel(heading = "Feature Plot",
+  #    #                                                                  fluidRow(
+  #    #                                                                    column(12, align = "center",
+  #    #                                                                           panel(
+  #    #                                                                             HTML(paste("<span style='color:red'>Select genes from the above table to plot!</span>"))
+  #    #                                                                           )
+  #    #                                                                    )
+  #    #                                                                  )
+  #    #                                                            )
+  #    # )
+  #    # )
+  #    # appendTab(session = session.parent, inputId = ns("seuratFindMarkerPlotTabset"), tabPanel(title = "Dot Plot",
+  #    #                                                            panel(heading = "Dot Plot",
+  #    #                                                                  fluidRow(
+  #    #                                                                    column(12, align = "center",
+  #    #                                                                           panel(
+  #    #                                                                             HTML(paste("<span style='color:red'>Select genes from the above table to plot!</span>"))
+  #    #                                                                           )
+  #    #                                                                    )
+  #    #                                                                  )
+  #    #                                                            )
+  #    # )
+  #    # )
+  #    # appendTab(session = session.parent, inputId = ns("seuratFindMarkerPlotTabset"), tabPanel(title = "Heatmap Plot",
+  #    #                                                            panel(heading = "Heatmap Plot",
+  #    #                                                                  fluidRow(
+  #    #                                                                    column(12, align = "center",
+  #    #                                                                           panel(
+  #    #                                                                             HTML(paste("<span style='color:red'>Select genes from the above table to plot!</span>"))
+  #    #                                                                           )
+  #    #                                                                    )
+  #    #                                                                  )
+  #    #                                                            )
+  #    # )
+  #    # )
+  # 
+  #    # df <- metadata(vals$counts)$seuratMarkers[which(metadata(vals$counts)$seuratMarkers$p_val_adj < 0.05, arr.ind = TRUE),]
+  #    # seuratObject <- convertSCEToSeurat(vals$counts, scaledAssay = "seuratScaledData")
+  #    # indices <- list()
+  #    # cells <- list()
+  #    # print("works till here")
+  #    # groups <- unique(colData(vals$counts)[[selectPhenotype]])
+  #    # for(i in seq(length(groups))){
+  #    #   indices[[i]] <- which(colData(vals$counts)[[selectPhenotype]] == groups[i], arr.ind = TRUE)
+  #    #   cells[[i]] <- colnames(vals$counts)[indices[[i]]]
+  #    #   cells[[i]] <- lapply(
+  #    #     X = cells[[i]],
+  #    #     FUN = function(t) gsub(
+  #    #       pattern = "_",
+  #    #       replacement = "-",
+  #    #       x = t,
+  #    #       fixed = TRUE)
+  #    #   )
+  #    #   Idents(seuratObject, cells = cells[[i]]) <- groups[i]
+  #    # }
+  # 
+  #   #showTab(inputId = ns("seuratFindMarkerPlotTabset"), target = "Joint Heatmap Plot")
+  #   # updateTabsetPanel(session = session, inputId = ns("seuratFindMarkerPlotTabset"), selected = "Ridge Plot")
+  #   # shinyjs::show(selector = ns(".seurat_findmarker_plots"))
+  # 
+  #   #table
+  #    r$heatmapFull <- DoHeatmap(seuratObject, features = df$gene.id)
+  #    # output$findMarkerHeatmapPlotFull <- renderPlot({
+  #    #   DoHeatmap(seuratObject, features = df$gene.id)
+  #    # })
+  # 
+  #    # output$findMarkerHeatmapPlotFullTopText <- renderUI({
+  #    #   h6(paste("Heatmap plotted across all groups against genes with adjusted p-values <", input$seuratFindMarkerPValAdjInput))
+  #    # })
+  # 
+  #   #this is running
+  #    # output$seuratFindMarkerTable <- DT::renderDataTable({
+  #    #   metadata(vals$counts)$seuratMarkersSubset <- df
+  #    #   selectedGeneId <- input$seuratFindMarkerGeneIDInput
+  #    #   selectedCluster <- input$seuratFindMarkerClusterInput
+  #    #   updateSelectizeInput(session = session,
+  #    #                        inputId = ns("seuratFindMarkerGeneIDInput"),
+  #    #                        selected = selectedGeneId,
+  #    #                        choices = df$gene.id)
+  #    #   updateSelectizeInput(session = session,
+  #    #                        inputId = ns("seuratFindMarkerClusterInput"),
+  #    #                        selected = selectedCluster,
+  #    #                        choices = df$cluster)
+  #    #   df$p_val <- format(df$p_val, nsmall = 7)
+  #    #   df$p_val_adj <- format(df$p_val_adj, nsmall = 7)
+  #    #   df$pct.1 <- format(df$pct.1, nsmall = 7)
+  #    #   df$pct.2 <- format(df$pct.2, nsmall = 7)
+  #    #   df$avg_logFC <- format(df$avg_logFC, nsmall = 7)
+  #    #   #print(head(df))
+  #    #   df
+  #    # }, options = list(pageLength = 6, dom = "<'top'fl>t<'bottom'ip>", stateSave = TRUE
+  #    # ))
+  #   
+  #   # output$seuratFindMarkerActiveFilters <- renderUI({
+  #   #   panel(
+  #   #     checkboxGroupInput(
+  #   #       inputId = ns("checkboxFiltersToRemove"),
+  #   #       label = NULL,
+  #   #       choiceNames = "p_val_adj < 0.05",
+  #   #       choiceValues = "p_val_adj"
+  #   #     )
+  #   #   )
+  #   # })
+  # })
+  
+  output$seuratFindMarkerFilter <- renderUI({
+    fluidPage(
+      fluidRow(
+        h6("You can view the marker genes in the table below and apply custom filters to filter the table accordingly. A joint heatmap for all the marker genes available in the table is plotted underneath the table. Additional visualizations are plotted for select genes which can be selected by clicking on the rows of the table.")
+      ),
+      br(),
+      fluidRow(
+        column(4,offset = 0.1, style='padding:3px;', align = "center",
+        ),
+        column(4,offset = 0.1, style='padding:3px;', align = "center",
+               radioGroupButtons(
+                 inputId = ns("seuratFindMarkerFilterShowHide"), label = NULL,
+                 choices = c("Show Filters" = "Show", "Hide Filters" = "Hide"),
+                 justified = TRUE, status = "primary",
+                 selected = "Hide",
+                 size = "sm"
+               )
+        ),
+        column(4,offset = 0.1, style='padding:3px;', align = "center",
+        )
+      ),
+      div(class = "seuratFindMarkerShowHideDiv",
+          panel(
+            fluidRow(
+              column(4,
+                     panel(heading = "Options",
+                           selectInput(
+                             inputId = ns("seuratFindMarkerSelectFilter"),
+                             label = "Select column to filter:",
+                             choices = c("gene.id",
+                                         "p_val",
+                                         "avg_logFC",
+                                         "pct.1",
+                                         "pct.2",
+                                         "p_val_adj",
+                                         "cluster")
+                           ),
+                           hidden(div(class = "seuratFindMarkerGeneIDDiv", wellPanel(style='border:0;',
                                                                                      checkboxGroupButtons(
-                                                                                       inputId = ns("seuratFindMarkerLFCOption"), label = "avg_logFC",
-                                                                                       choices = c("<", ">", "=", "<=", ">="),
+                                                                                       inputId = ns("seuratFindMarkerGeneIDOption"), label = "gene.id",
+                                                                                       choices = c("=", "!="),
                                                                                        justified = TRUE,
                                                                                        individual = TRUE,
                                                                                        size = "s",
                                                                                        status = "primary"
                                                                                      ),
-                                                                                     numericInput(
-                                                                                       inputId = ns("seuratFindMarkerLFCInput"),
+                                                                                     selectizeInput(
+                                                                                       inputId = ns("seuratFindMarkerGeneIDInput"),
+                                                                                       choices = NULL,
                                                                                        label = NULL,
-                                                                                       step = 0.001,
-                                                                                       value = 0
+                                                                                       multiple = TRUE
                                                                                      )
-                              ))),
-                              hidden(div(class = "seuratFindMarkerPct1Div", wellPanel(style='border:0;',
+                           ))),
+                           hidden(div(class = "seuratFindMarkerPValDiv", wellPanel(style='border:0;',
+                                                                                   checkboxGroupButtons(
+                                                                                     inputId = ns("seuratFindMarkerPValOption"), label = "p_val",
+                                                                                     choices = c("<", ">", "=", "<=", ">="),
+                                                                                     justified = TRUE,
+                                                                                     individual = TRUE,
+                                                                                     size = "s",
+                                                                                     status = "primary"
+                                                                                   ),
+                                                                                   numericInput(
+                                                                                     inputId = ns("seuratFindMarkerPValInput"),
+                                                                                     label = NULL,
+                                                                                     step = 0.001,
+                                                                                     value = 0
+                                                                                   )
+                           ))),
+                           hidden(div(class = "seuratFindMarkerLFCDiv", wellPanel(style='border:0;',
+                                                                                  checkboxGroupButtons(
+                                                                                    inputId = ns("seuratFindMarkerLFCOption"), label = "avg_logFC",
+                                                                                    choices = c("<", ">", "=", "<=", ">="),
+                                                                                    justified = TRUE,
+                                                                                    individual = TRUE,
+                                                                                    size = "s",
+                                                                                    status = "primary"
+                                                                                  ),
+                                                                                  numericInput(
+                                                                                    inputId = ns("seuratFindMarkerLFCInput"),
+                                                                                    label = NULL,
+                                                                                    step = 0.001,
+                                                                                    value = 0
+                                                                                  )
+                           ))),
+                           hidden(div(class = "seuratFindMarkerPct1Div", wellPanel(style='border:0;',
+                                                                                   checkboxGroupButtons(
+                                                                                     inputId = ns("seuratFindMarkerPct1Option"), label = "pct.1",
+                                                                                     choices = c("<", ">", "=", "<=", ">="),
+                                                                                     justified = TRUE,
+                                                                                     individual = TRUE,
+                                                                                     size = "s",
+                                                                                     status = "primary",
+                                                                                     selected = NULL
+                                                                                   ),
+                                                                                   numericInput(
+                                                                                     inputId = ns("seuratFindMarkerPct1Input"),
+                                                                                     label = NULL,
+                                                                                     step = 0.001,
+                                                                                     value = 0
+                                                                                   )
+                           ))),
+                           hidden(div(class = "seuratFindMarkerPct2Div", wellPanel(style='border:0;',
+                                                                                   checkboxGroupButtons(
+                                                                                     inputId = ns("seuratFindMarkerPct2Option"), label = "pct.2",
+                                                                                     choices = c("<", ">", "=", "<=", ">="),
+                                                                                     justified = TRUE,
+                                                                                     individual = TRUE,
+                                                                                     size = "s",
+                                                                                     status = "primary"
+                                                                                   ),
+                                                                                   numericInput(
+                                                                                     inputId = ns("seuratFindMarkerPct2Input"),
+                                                                                     label = NULL,
+                                                                                     step = 0.001,
+                                                                                     value = 0
+                                                                                   )
+                           ))),
+                           hidden(div(class = "seuratFindMarkerPValAdjDiv", wellPanel(style='border:0;',
                                                                                       checkboxGroupButtons(
-                                                                                        inputId = ns("seuratFindMarkerPct1Option"), label = "pct.1",
+                                                                                        inputId = ns("seuratFindMarkerPValAdjOption"), label = "p_val_adj",
                                                                                         choices = c("<", ">", "=", "<=", ">="),
                                                                                         justified = TRUE,
                                                                                         individual = TRUE,
                                                                                         size = "s",
                                                                                         status = "primary",
-                                                                                        selected = NULL
+                                                                                        selected = "<"
                                                                                       ),
                                                                                       numericInput(
-                                                                                        inputId = ns("seuratFindMarkerPct1Input"),
+                                                                                        inputId = ns("seuratFindMarkerPValAdjInput"),
                                                                                         label = NULL,
                                                                                         step = 0.001,
-                                                                                        value = 0
+                                                                                        value = 0.05
                                                                                       )
-                              ))),
-                              hidden(div(class = "seuratFindMarkerPct2Div", wellPanel(style='border:0;',
+                           ))),
+                           hidden(div(class = "seuratFindMarkerClusterDiv", wellPanel(style='border:0;',
                                                                                       checkboxGroupButtons(
-                                                                                        inputId = ns("seuratFindMarkerPct2Option"), label = "pct.2",
-                                                                                        choices = c("<", ">", "=", "<=", ">="),
+                                                                                        inputId = ns("seuratFindMarkerClusterOption"), label = "cluster",
+                                                                                        choices = c("=", "!="),
                                                                                         justified = TRUE,
                                                                                         individual = TRUE,
                                                                                         size = "s",
                                                                                         status = "primary"
                                                                                       ),
-                                                                                      numericInput(
-                                                                                        inputId = ns("seuratFindMarkerPct2Input"),
+                                                                                      selectizeInput(
+                                                                                        inputId = ns("seuratFindMarkerClusterInput"),
+                                                                                        choices = NULL,
                                                                                         label = NULL,
-                                                                                        step = 0.001,
-                                                                                        value = 0
+                                                                                        multiple = TRUE
                                                                                       )
-                              ))),
-                              hidden(div(class = "seuratFindMarkerPValAdjDiv", wellPanel(style='border:0;',
-                                                                                         checkboxGroupButtons(
-                                                                                           inputId = ns("seuratFindMarkerPValAdjOption"), label = "p_val_adj",
-                                                                                           choices = c("<", ">", "=", "<=", ">="),
-                                                                                           justified = TRUE,
-                                                                                           individual = TRUE,
-                                                                                           size = "s",
-                                                                                           status = "primary",
-                                                                                           selected = "<"
-                                                                                         ),
-                                                                                         numericInput(
-                                                                                           inputId = ns("seuratFindMarkerPValAdjInput"),
-                                                                                           label = NULL,
-                                                                                           step = 0.001,
-                                                                                           value = 0.05
-                                                                                         )
-                              ))),
-                              hidden(div(class = "seuratFindMarkerClusterDiv", wellPanel(style='border:0;',
-                                                                                         checkboxGroupButtons(
-                                                                                           inputId = ns("seuratFindMarkerClusterOption"), label = "cluster",
-                                                                                           choices = c("=", "!="),
-                                                                                           justified = TRUE,
-                                                                                           individual = TRUE,
-                                                                                           size = "s",
-                                                                                           status = "primary"
-                                                                                         ),
-                                                                                         selectizeInput(
-                                                                                           inputId = ns("seuratFindMarkerClusterInput"),
-                                                                                           choices = NULL,
-                                                                                           label = NULL,
-                                                                                           multiple = TRUE
-                                                                                         )
-                              ))),
-                              actionButton(
-                                inputId = ns("seuratFindMarkerFilterRun"),
-                                label = "Apply Filter"
-                              )
-                        )
-                 ),
-                 column(8,
-                        panel(heading = "Active Filters",
-                              uiOutput(ns("seuratFindMarkerActiveFilters")),
-                              br(),
-                              actionButton(
-                                inputId = ns("seuratFindMarkerRemoveAllFilters"),
-                                label = "Remove Filter"
-                              )
-                        )
-                 )
-               )
-             ),
-             br()
-         )
-       )
-     })
-
-     shinyjs::show(selector = ".seurat_findmarker_table")
-     shinyjs::show(selector = ".seurat_findmarker_jointHeatmap")
-    
-     removeTab(inputId = ns("seuratFindMarkerPlotTabset"), target = "Ridge Plot")
-     removeTab(inputId = ns("seuratFindMarkerPlotTabset"), target = "Violin Plot")
-     removeTab(inputId = ns("seuratFindMarkerPlotTabset"), target = "Feature Plot")
-     removeTab(inputId = ns("seuratFindMarkerPlotTabset"), target = "Dot Plot")
-     removeTab(inputId = ns("seuratFindMarkerPlotTabset"), target = "Heatmap Plot")
-    
-     appendTab(inputId = ns("seuratFindMarkerPlotTabset"), tabPanel(title = "Ridge Plot",
-                                                                panel(heading = "Ridge Plot",
-                                                                      fluidRow(
-                                                                        column(12, align = "center",
-                                                                               panel(
-                                                                                 HTML(paste("<span style='color:red'>Select genes from the above table to plot!</span>"))
-                                                                               )
-                                                                               )
-                                                                      )
-                                                                )
-     )
-     )
-     appendTab(inputId = ns("seuratFindMarkerPlotTabset"), tabPanel(title = "Violin Plot",
-                                                                panel(heading = "Violin Plot",
-                                                                      fluidRow(
-                                                                        column(12, align = "center",
-                                                                               panel(
-                                                                                 HTML(paste("<span style='color:red'>Select genes from the above table to plot!</span>"))
-                                                                               )
-                                                                        )
-                                                                      )
-                                                                )
-     )
-     )
-     appendTab(inputId = ns("seuratFindMarkerPlotTabset"), tabPanel(title = "Feature Plot",
-                                                                panel(heading = "Feature Plot",
-                                                                      fluidRow(
-                                                                        column(12, align = "center",
-                                                                               panel(
-                                                                                 HTML(paste("<span style='color:red'>Select genes from the above table to plot!</span>"))
-                                                                               )
-                                                                        )
-                                                                      )
-                                                                )
-     )
-     )
-     appendTab(inputId = ns("seuratFindMarkerPlotTabset"), tabPanel(title = "Dot Plot",
-                                                                panel(heading = "Dot Plot",
-                                                                      fluidRow(
-                                                                        column(12, align = "center",
-                                                                               panel(
-                                                                                 HTML(paste("<span style='color:red'>Select genes from the above table to plot!</span>"))
-                                                                               )
-                                                                        )
-                                                                      )
-                                                                )
-     )
-     )
-     appendTab(inputId = ns("seuratFindMarkerPlotTabset"), tabPanel(title = "Heatmap Plot",
-                                                                panel(heading = "Heatmap Plot",
-                                                                      fluidRow(
-                                                                        column(12, align = "center",
-                                                                               panel(
-                                                                                 HTML(paste("<span style='color:red'>Select genes from the above table to plot!</span>"))
-                                                                               )
-                                                                        )
-                                                                      )
-                                                                )
-     )
-     )
-
-     df <- metadata(vals$counts)$seuratMarkers[which(metadata(vals$counts)$seuratMarkers$p_val_adj < 0.05, arr.ind = TRUE),]
-     seuratObject <- convertSCEToSeurat(vals$counts, scaledAssay = "seuratScaledData")
-     indices <- list()
-     cells <- list()
-     print("works till here")
-     groups <- unique(colData(vals$counts)[[selectPhenotype]])
-     for(i in seq(length(groups))){
-       indices[[i]] <- which(colData(vals$counts)[[selectPhenotype]] == groups[i], arr.ind = TRUE)
-       cells[[i]] <- colnames(vals$counts)[indices[[i]]]
-       cells[[i]] <- lapply(
-         X = cells[[i]],
-         FUN = function(t) gsub(
-           pattern = "_",
-           replacement = "-",
-           x = t,
-           fixed = TRUE)
-       )
-       Idents(seuratObject, cells = cells[[i]]) <- groups[i]
-     }
-
-    showTab(inputId = ns("seuratFindMarkerPlotTabset"), target = "Joint Heatmap Plot")
-     updateTabsetPanel(session = session, inputId = ns("seuratFindMarkerPlotTabset"), selected = "Ridge Plot")
-     shinyjs::show(selector = ".seurat_findmarker_plots")
-
-    #table
-     output$findMarkerHeatmapPlotFull <- renderPlot({
-       DoHeatmap(seuratObject, features = df$gene.id)
-     })
-
-     output$findMarkerHeatmapPlotFullTopText <- renderUI({
-       h6(paste("Heatmap plotted across all groups against genes with adjusted p-values <", input$seuratFindMarkerPValAdjInput))
-     })
-
-    #this is running
-     output$seuratFindMarkerTable <- DT::renderDataTable({
-       metadata(vals$counts)$seuratMarkersSubset <- df
-       selectedGeneId <- input$seuratFindMarkerGeneIDInput
-       selectedCluster <- input$seuratFindMarkerClusterInput
-       updateSelectizeInput(session = session,
-                            inputId = ns("seuratFindMarkerGeneIDInput"),
-                            selected = selectedGeneId,
-                            choices = df$gene.id)
-       updateSelectizeInput(session = session,
-                            inputId = ns("seuratFindMarkerClusterInput"),
-                            selected = selectedCluster,
-                            choices = df$cluster)
-       df$p_val <- format(df$p_val, nsmall = 7)
-       df$p_val_adj <- format(df$p_val_adj, nsmall = 7)
-       df$pct.1 <- format(df$pct.1, nsmall = 7)
-       df$pct.2 <- format(df$pct.2, nsmall = 7)
-       df$avg_logFC <- format(df$avg_logFC, nsmall = 7)
-       print(head(df))
-       df
-     }, options = list(pageLength = 6, dom = "<'top'fl>t<'bottom'ip>", stateSave = TRUE
-     ))
-    
-    output$seuratFindMarkerActiveFilters <- renderUI({
-      panel(
-        checkboxGroupInput(
-          inputId = ns("checkboxFiltersToRemove"),
-          label = NULL,
-          choiceNames = "p_val_adj < 0.05",
-          choiceValues = "p_val_adj"
-        )
+                           ))),
+                           actionButton(
+                             inputId = ns("seuratFindMarkerFilterRun"),
+                             label = "Apply Filter"
+                           )
+                     )
+              ),
+              column(8,
+                     panel(heading = "Active Filters",
+                           uiOutput(ns("seuratFindMarkerActiveFilters")),
+                           br(),
+                           actionButton(
+                             inputId = ns("seuratFindMarkerRemoveAllFilters"),
+                             label = "Remove Filter"
+                           )
+                     )
+              )
+            )
+          ),
+          br()
       )
-    })
+    )
+  })
+  
+  output$findMarkerHeatmapPlotFullTopText <- renderUI({
+    h6(paste("Heatmap plotted across all groups against genes with adjusted p-values <", input$seuratFindMarkerPValAdjInput))
+  })
+  
+  output$seuratFindMarkerTable <- DT::renderDataTable({
+    df <- metadata(vals$counts)$seuratMarkers[which(metadata(vals$counts)$seuratMarkers$p_val_adj < 0.05, arr.ind = TRUE),]
+    seuratObject <- convertSCEToSeurat(vals$counts, scaledAssay = "seuratScaledData")
+    indices <- list()
+    cells <- list()
+    print("works till here")
+    groups <- unique(colData(vals$counts)[[selectPhenotype]])
+    for(i in seq(length(groups))){
+      indices[[i]] <- which(colData(vals$counts)[[selectPhenotype]] == groups[i], arr.ind = TRUE)
+      cells[[i]] <- colnames(vals$counts)[indices[[i]]]
+      cells[[i]] <- lapply(
+        X = cells[[i]],
+        FUN = function(t) gsub(
+          pattern = "_",
+          replacement = "-",
+          x = t,
+          fixed = TRUE)
+      )
+      Idents(seuratObject, cells = cells[[i]]) <- groups[i]
+    }
+    
+    metadata(vals$counts)$seuratMarkersSubset <- df
+    selectedGeneId <- input$seuratFindMarkerGeneIDInput
+    selectedCluster <- input$seuratFindMarkerClusterInput
+    updateSelectizeInput(session = session,
+                         inputId = ns("seuratFindMarkerGeneIDInput"),
+                         selected = selectedGeneId,
+                         choices = df$gene.id)
+    updateSelectizeInput(session = session,
+                         inputId = ns("seuratFindMarkerClusterInput"),
+                         selected = selectedCluster,
+                         choices = df$cluster)
+    df$p_val <- format(df$p_val, nsmall = 7)
+    df$p_val_adj <- format(df$p_val_adj, nsmall = 7)
+    df$pct.1 <- format(df$pct.1, nsmall = 7)
+    df$pct.2 <- format(df$pct.2, nsmall = 7)
+    df$avg_logFC <- format(df$avg_logFC, nsmall = 7)
+    #print(head(df))
+    df
+  }, options = list(pageLength = 6, dom = "<'top'fl>t<'bottom'ip>", stateSave = TRUE
+  ))
+  
+  output$seuratFindMarkerActiveFilters <- renderUI({
+    panel(
+      checkboxGroupInput(
+        inputId = ns("checkboxFiltersToRemove"),
+        label = NULL,
+        choiceNames = "p_val_adj < 0.05",
+        choiceValues = "p_val_adj"
+      )
+    )
   })
   
   observeEvent(input$seuratFindMarkerFilterRun,{
@@ -490,9 +725,10 @@ filterTableServer <- function(input, output, session, vals, selectPhenotype){
       Idents(seuratObject, cells = cells[[i]]) <- groups[i]
     }
     
-    output$findMarkerHeatmapPlotFull <- renderPlot({
-      DoHeatmap(seuratObject, features = df$gene.id)
-    })
+    r$heatmapFull <- DoHeatmap(seuratObject, features = df$gene.id)
+    # output$findMarkerHeatmapPlotFull <- renderPlot({
+    #   DoHeatmap(seuratObject, features = df$gene.id)
+    # })
     
     output$findMarkerHeatmapPlotFullTopText <- renderUI({
       h6(paste("Heatmap plotted across all groups against genes with adjusted p-values <", input$seuratFindMarkerPValAdjInput))
@@ -549,6 +785,7 @@ filterTableServer <- function(input, output, session, vals, selectPhenotype){
       })
     }
     
+    r$data <- df
   }
   
   seuratfindMarkerTableObserve <- observe(suspended = F, {
@@ -558,57 +795,57 @@ filterTableServer <- function(input, output, session, vals, selectPhenotype){
                                                 df <- metadata(vals$counts)$seuratMarkersSubset[input$seuratFindMarkerTable_rows_selected,]
                                                 seuratObject <- convertSCEToSeurat(vals$counts, scaledAssay = "seuratScaledData")
                                                 
-                                                removeTab(inputId = ns("seuratFindMarkerPlotTabset"), target = "Ridge Plot")
-                                                removeTab(inputId = ns("seuratFindMarkerPlotTabset"), target = "Violin Plot")
-                                                removeTab(inputId = ns("seuratFindMarkerPlotTabset"), target = "Feature Plot")
-                                                removeTab(inputId = ns("seuratFindMarkerPlotTabset"), target = "Dot Plot")
-                                                removeTab(inputId = ns("seuratFindMarkerPlotTabset"), target = "Heatmap Plot")
-                                                
-                                                appendTab(inputId = ns("seuratFindMarkerPlotTabset"), tabPanel(title = "Ridge Plot",
-                                                                                                           panel(heading = "Ridge Plot",
-                                                                                                                 jqui_resizable(
-                                                                                                                   plotOutput(outputId = ns("findMarkerRidgePlot"))
-                                                                                                                 )
-                                                                                                           )
-                                                )
-                                                )
-                                                appendTab(inputId = ns("seuratFindMarkerPlotTabset"), tabPanel(title = "Violin Plot",
-                                                                                                           panel(heading = "Violin Plot",
-                                                                                                                 jqui_resizable(
-                                                                                                                   plotOutput(outputId = ns("findMarkerViolinPlot"))
-                                                                                                                 )
-                                                                                                           )
-                                                )
-                                                )
-                                                appendTab(inputId = ns("seuratFindMarkerPlotTabset"), tabPanel(title = "Feature Plot",
-                                                                                                           panel(heading = "Feature Plot",
-                                                                                                                 jqui_resizable(
-                                                                                                                   plotOutput(outputId = ns("findMarkerFeaturePlot"))
-                                                                                                                 )
-                                                                                                           )
-                                                )
-                                                )
-                                                appendTab(inputId = ns("seuratFindMarkerPlotTabset"), tabPanel(title = "Dot Plot",
-                                                                                                           panel(heading = "Dot Plot",
-                                                                                                                 jqui_resizable(
-                                                                                                                   plotOutput(outputId = ns("findMarkerDotPlot"))
-                                                                                                                 )
-                                                                                                           )
-                                                )
-                                                )
-                                                appendTab(inputId = ns("seuratFindMarkerPlotTabset"), tabPanel(title = "Heatmap Plot",
-                                                                                                           panel(heading = "Heatmap Plot",
-                                                                                                                 fluidRow(
-                                                                                                                   column(12, align = "center",
-                                                                                                                          panel(
-                                                                                                                            plotOutput(outputId = ns("findMarkerHeatmapPlot"))
-                                                                                                                          )
-                                                                                                                   )
-                                                                                                                 )
-                                                                                                           )
-                                                )
-                                                
-                                                )
+                                                # removeTab(inputId = ns("seuratFindMarkerPlotTabset"), target = "Ridge Plot")
+                                                # removeTab(inputId = ns("seuratFindMarkerPlotTabset"), target = "Violin Plot")
+                                                # removeTab(inputId = ns("seuratFindMarkerPlotTabset"), target = "Feature Plot")
+                                                # removeTab(inputId = ns("seuratFindMarkerPlotTabset"), target = "Dot Plot")
+                                                # removeTab(inputId = ns("seuratFindMarkerPlotTabset"), target = "Heatmap Plot")
+                                                # 
+                                                # appendTab(session = session.parent, inputId = ns("seuratFindMarkerPlotTabset"), tabPanel(title = "Ridge Plot",
+                                                #                                                            panel(heading = "Ridge Plot",
+                                                #                                                                  jqui_resizable(
+                                                #                                                                    plotOutput(outputId = ns("findMarkerRidgePlot"))
+                                                #                                                                  )
+                                                #                                                            )
+                                                # )
+                                                # )
+                                                # appendTab(session = session.parent, inputId = ns("seuratFindMarkerPlotTabset"), tabPanel(title = "Violin Plot",
+                                                #                                                            panel(heading = "Violin Plot",
+                                                #                                                                  jqui_resizable(
+                                                #                                                                    plotOutput(outputId = ns("findMarkerViolinPlot"))
+                                                #                                                                  )
+                                                #                                                            )
+                                                # )
+                                                # )
+                                                # appendTab(session = session.parent, inputId = ns("seuratFindMarkerPlotTabset"), tabPanel(title = "Feature Plot",
+                                                #                                                            panel(heading = "Feature Plot",
+                                                #                                                                  jqui_resizable(
+                                                #                                                                    plotOutput(outputId = ns("findMarkerFeaturePlot"))
+                                                #                                                                  )
+                                                #                                                            )
+                                                # )
+                                                # )
+                                                # appendTab(session = session.parent, inputId = ns("seuratFindMarkerPlotTabset"), tabPanel(title = "Dot Plot",
+                                                #                                                            panel(heading = "Dot Plot",
+                                                #                                                                  jqui_resizable(
+                                                #                                                                    plotOutput(outputId = ns("findMarkerDotPlot"))
+                                                #                                                                  )
+                                                #                                                            )
+                                                # )
+                                                # )
+                                                # appendTab(session = session.parent, inputId = ns("seuratFindMarkerPlotTabset"), tabPanel(title = "Heatmap Plot",
+                                                #                                                            panel(heading = "Heatmap Plot",
+                                                #                                                                  fluidRow(
+                                                #                                                                    column(12, align = "center",
+                                                #                                                                           panel(
+                                                #                                                                             plotOutput(outputId = ns("findMarkerHeatmapPlot"))
+                                                #                                                                           )
+                                                #                                                                    )
+                                                #                                                                  )
+                                                #                                                            )
+                                                # )
+                                                # 
+                                                # )
                                                 
                                                 indices <- list()
                                                 cells <- list()
@@ -627,98 +864,103 @@ filterTableServer <- function(input, output, session, vals, selectPhenotype){
                                                   Idents(seuratObject, cells = cells[[i]]) <- groups[i]
                                                 }
                                                 
-                                                output$findMarkerRidgePlot <- renderPlot({
-                                                  RidgePlot(seuratObject, features = df$gene.id, ncol = 2)
-                                                })
-                                                output$findMarkerViolinPlot <- renderPlot({
-                                                  VlnPlot(seuratObject, features = df$gene.id, ncol = 2)
-                                                })
-                                                output$findMarkerFeaturePlot <- renderPlot({
-                                                  FeaturePlot(seuratObject, features = df$gene.id, ncol = 2)
-                                                })
-                                                output$findMarkerDotPlot <- renderPlot({
-                                                  DotPlot(seuratObject, features = df$gene.id)
-                                                })
-                                                output$findMarkerHeatmapPlot <- renderPlot({
-                                                  DoHeatmap(seuratObject, features = df$gene.id)
-                                                })
+                                                r$ridgePlot <- RidgePlot(seuratObject, features = df$gene.id, ncol = 2)
+                                                # output$findMarkerRidgePlot <- renderPlot({
+                                                #   RidgePlot(seuratObject, features = df$gene.id, ncol = 2)
+                                                # })
+                                                r$violinPlot <- VlnPlot(seuratObject, features = df$gene.id, ncol = 2)
+                                                # output$findMarkerViolinPlot <- renderPlot({
+                                                #   VlnPlot(seuratObject, features = df$gene.id, ncol = 2)
+                                                # })
+                                                r$featurePlot <- FeaturePlot(seuratObject, features = df$gene.id, ncol = 2)
+                                                # output$findMarkerFeaturePlot <- renderPlot({
+                                                #   FeaturePlot(seuratObject, features = df$gene.id, ncol = 2)
+                                                # })
+                                                r$dotPlot <- DotPlot(seuratObject, features = df$gene.id)
+                                                # output$findMarkerDotPlot <- renderPlot({
+                                                #   DotPlot(seuratObject, features = df$gene.id)
+                                                # })
+                                                r$heatmapPlot <- DoHeatmap(seuratObject, features = df$gene.id)
+                                                # output$findMarkerHeatmapPlot <- renderPlot({
+                                                #   DoHeatmap(seuratObject, features = df$gene.id)
+                                                # })
                                                 
                                                 updateTabsetPanel(session = session, inputId = ns("seuratFindMarkerPlotTabset"), selected = input$seuratFindMarkerPlotTabset)
                                                 shinyjs::show(selector = ".seurat_findmarker_plots")
                                               }
                                               else {
-                                                removeTab(inputId = ns("seuratFindMarkerPlotTabset"), target = "Ridge Plot")
-                                                removeTab(inputId = ns("seuratFindMarkerPlotTabset"), target = "Violin Plot")
-                                                removeTab(inputId = ns("seuratFindMarkerPlotTabset"), target = "Feature Plot")
-                                                removeTab(inputId = ns("seuratFindMarkerPlotTabset"), target = "Dot Plot")
-                                                removeTab(inputId = ns("seuratFindMarkerPlotTabset"), target = "Heatmap Plot")
-
-                                                output$findMarkerRidgePlot <- NULL
-                                                output$findMarkerViolinPlot <- NULL
-                                                output$findMarkerFeaturePlot <- NULL
-                                                output$findMarkerDotPlot <- NULL
-                                                output$findMarkerHeatmapPlot <- NULL
-                                                
-                                                appendTab(inputId = ns("seuratFindMarkerPlotTabset"), tabPanel(title = "Ridge Plot",
-                                                                                                           panel(heading = "Ridge Plot",
-                                                                                                                 fluidRow(
-                                                                                                                   column(12, align = "center",
-                                                                                                                          panel(
-                                                                                                                            HTML(paste("<span style='color:red'>Select genes from the above table to plot!</span>"))
-                                                                                                                          )
-                                                                                                                   )
-                                                                                                                 )
-                                                                                                           )
-                                                )
-                                                )
-                                                appendTab(inputId = ns("seuratFindMarkerPlotTabset"), tabPanel(title = "Violin Plot",
-                                                                                                           panel(heading = "Violin Plot",
-                                                                                                                 fluidRow(
-                                                                                                                   column(12, align = "center",
-                                                                                                                          panel(
-                                                                                                                            HTML(paste("<span style='color:red'>Select genes from the above table to plot!</span>"))
-                                                                                                                          )
-                                                                                                                   )
-                                                                                                                 )
-                                                                                                           )
-                                                )
-                                                )
-                                                appendTab(inputId = ns("seuratFindMarkerPlotTabset"), tabPanel(title = "Feature Plot",
-                                                                                                           panel(heading = "Feature Plot",
-                                                                                                                 fluidRow(
-                                                                                                                   column(12, align = "center",
-                                                                                                                          panel(
-                                                                                                                            HTML(paste("<span style='color:red'>Select genes from the above table to plot!</span>"))
-                                                                                                                          )
-                                                                                                                   )
-                                                                                                                 )
-                                                                                                           )
-                                                )
-                                                )
-                                                appendTab(inputId = ns("seuratFindMarkerPlotTabset"), tabPanel(title = "Dot Plot",
-                                                                                                           panel(heading = "Dot Plot",
-                                                                                                                 fluidRow(
-                                                                                                                   column(12, align = "center",
-                                                                                                                          panel(
-                                                                                                                            HTML(paste("<span style='color:red'>Select genes from the above table to plot!</span>"))
-                                                                                                                          )
-                                                                                                                   )
-                                                                                                                 )
-                                                                                                           )
-                                                )
-                                                )
-                                                appendTab(inputId = ns("seuratFindMarkerPlotTabset"), tabPanel(title = "Heatmap Plot",
-                                                                                                           panel(heading = "Heatmap Plot",
-                                                                                                                 fluidRow(
-                                                                                                                   column(12, align = "center",
-                                                                                                                          panel(
-                                                                                                                            HTML(paste("<span style='color:red'>Select genes from the above table to plot!</span>"))
-                                                                                                                          )
-                                                                                                                   )
-                                                                                                                 )
-                                                                                                           )
-                                                )
-                                                )
+                                                # removeTab(inputId = ns("seuratFindMarkerPlotTabset"), target = "Ridge Plot")
+                                                # removeTab(inputId = ns("seuratFindMarkerPlotTabset"), target = "Violin Plot")
+                                                # removeTab(inputId = ns("seuratFindMarkerPlotTabset"), target = "Feature Plot")
+                                                # removeTab(inputId = ns("seuratFindMarkerPlotTabset"), target = "Dot Plot")
+                                                # removeTab(inputId = ns("seuratFindMarkerPlotTabset"), target = "Heatmap Plot")
+                                                # 
+                                                # output$findMarkerRidgePlot <- NULL
+                                                # output$findMarkerViolinPlot <- NULL
+                                                # output$findMarkerFeaturePlot <- NULL
+                                                # output$findMarkerDotPlot <- NULL
+                                                # output$findMarkerHeatmapPlot <- NULL
+                                                # 
+                                                # appendTab(session = session.parent, inputId = ns("seuratFindMarkerPlotTabset"), tabPanel(title = "Ridge Plot",
+                                                #                                                            panel(heading = "Ridge Plot",
+                                                #                                                                  fluidRow(
+                                                #                                                                    column(12, align = "center",
+                                                #                                                                           panel(
+                                                #                                                                             HTML(paste("<span style='color:red'>Select genes from the above table to plot!</span>"))
+                                                #                                                                           )
+                                                #                                                                    )
+                                                #                                                                  )
+                                                #                                                            )
+                                                # )
+                                                # )
+                                                # appendTab(session = session.parent, inputId = ns("seuratFindMarkerPlotTabset"), tabPanel(title = "Violin Plot",
+                                                #                                                            panel(heading = "Violin Plot",
+                                                #                                                                  fluidRow(
+                                                #                                                                    column(12, align = "center",
+                                                #                                                                           panel(
+                                                #                                                                             HTML(paste("<span style='color:red'>Select genes from the above table to plot!</span>"))
+                                                #                                                                           )
+                                                #                                                                    )
+                                                #                                                                  )
+                                                #                                                            )
+                                                # )
+                                                # )
+                                                # appendTab(session = session.parent, inputId = ns("seuratFindMarkerPlotTabset"), tabPanel(title = "Feature Plot",
+                                                #                                                            panel(heading = "Feature Plot",
+                                                #                                                                  fluidRow(
+                                                #                                                                    column(12, align = "center",
+                                                #                                                                           panel(
+                                                #                                                                             HTML(paste("<span style='color:red'>Select genes from the above table to plot!</span>"))
+                                                #                                                                           )
+                                                #                                                                    )
+                                                #                                                                  )
+                                                #                                                            )
+                                                # )
+                                                # )
+                                                # appendTab(session = session.parent, inputId = ns("seuratFindMarkerPlotTabset"), tabPanel(title = "Dot Plot",
+                                                #                                                            panel(heading = "Dot Plot",
+                                                #                                                                  fluidRow(
+                                                #                                                                    column(12, align = "center",
+                                                #                                                                           panel(
+                                                #                                                                             HTML(paste("<span style='color:red'>Select genes from the above table to plot!</span>"))
+                                                #                                                                           )
+                                                #                                                                    )
+                                                #                                                                  )
+                                                #                                                            )
+                                                # )
+                                                # )
+                                                # appendTab(session = session.parent, inputId = ns("seuratFindMarkerPlotTabset"), tabPanel(title = "Heatmap Plot",
+                                                #                                                            panel(heading = "Heatmap Plot",
+                                                #                                                                  fluidRow(
+                                                #                                                                    column(12, align = "center",
+                                                #                                                                           panel(
+                                                #                                                                             HTML(paste("<span style='color:red'>Select genes from the above table to plot!</span>"))
+                                                #                                                                           )
+                                                #                                                                    )
+                                                #                                                                  )
+                                                #                                                            )
+                                                # )
+                                                # )
                                                 updateTabsetPanel(session = session, inputId = ns("seuratFindMarkerPlotTabset"), selected = input$seuratFindMarkerPlotTabset)
                                               }
                                             })
@@ -963,5 +1205,5 @@ filterTableServer <- function(input, output, session, vals, selectPhenotype){
   })
   
   
-  
+  return(r)
 }
