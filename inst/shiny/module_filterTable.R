@@ -31,14 +31,39 @@ filterTableServer <- function(input, output, session, vals, dataframe, selectPhe
                       featurePlot = NULL,
                       dotPlot = NULL
                       )
+  class <- c("seuratFindMarkerGeneIDDiv",
+             "seuratFindMarkerPValDiv",
+             "seuratFindMarkerLFCDiv",
+             "seuratFindMarkerPct1Div",
+             "seuratFindMarkerPct2Div",
+             "seuratFindMarkerPValAdjDiv",
+             "seuratFindMarkerClusterDiv"
+             )
+  
+  input1 <- c("seuratFindMarkerGeneIDOption",
+                   "seuratFindMarkerPValOption",
+                   "seuratFindMarkerLFCOption",
+                   "seuratFindMarkerPct1Option",
+                   "seuratFindMarkerPct2Option",
+                   "seuratFindMarkerPValAdjOption",
+                   "seuratFindMarkerClusterOption"
+                )
+  input2 <- c("seuratFindMarkerGeneIDInput",
+                  "seuratFindMarkerPValInput",
+                  "seuratFindMarkerLFCInput",
+                  "seuratFindMarkerPct1Input",
+                  "seuratFindMarkerPct2Input",
+                  "seuratFindMarkerPValAdjInput",
+                  "seuratFindMarkerClusterInput"
+                  )
   
   lapply(1:7, function(i) {
     print(i)
     if(i==1){
-      output[["b1"]] <- renderUI({
-        hidden(div(class = "seuratFindMarkerGeneIDDiv", wellPanel(style='border:0;',
+      output[[paste0("b",i)]] <- renderUI({
+        hidden(div(class = class[i], wellPanel(style='border:0;',
                                                                   checkboxGroupButtons(
-                                                                    inputId = ns("seuratFindMarkerGeneIDOption"), label = "gene.id",
+                                                                    inputId = ns(input1[i]), label = colnames(dataframe)[i],
                                                                     choices = c("=", "!="),
                                                                     justified = TRUE,
                                                                     individual = TRUE,
@@ -46,7 +71,7 @@ filterTableServer <- function(input, output, session, vals, dataframe, selectPhe
                                                                     status = "primary"
                                                                   ),
                                                                   selectizeInput(
-                                                                    inputId = ns("seuratFindMarkerGeneIDInput"),
+                                                                    inputId = ns(input2[i]),
                                                                     choices = NULL,
                                                                     label = NULL,
                                                                     multiple = TRUE
@@ -55,10 +80,10 @@ filterTableServer <- function(input, output, session, vals, dataframe, selectPhe
       })
     }
     if(i==2){
-      output[["b2"]] <- renderUI({
-        hidden(div(class = "seuratFindMarkerPValDiv", wellPanel(style='border:0;',
+      output[[paste0("b",i)]] <- renderUI({
+        hidden(div(class = class[i], wellPanel(style='border:0;',
                                                                 checkboxGroupButtons(
-                                                                  inputId = ns("seuratFindMarkerPValOption"), label = "p_val",
+                                                                  inputId = ns(input1[i]), label = colnames(dataframe)[i],
                                                                   choices = c("<", ">", "=", "<=", ">="),
                                                                   justified = TRUE,
                                                                   individual = TRUE,
@@ -66,7 +91,7 @@ filterTableServer <- function(input, output, session, vals, dataframe, selectPhe
                                                                   status = "primary"
                                                                 ),
                                                                 numericInput(
-                                                                  inputId = ns("seuratFindMarkerPValInput"),
+                                                                  inputId = ns(input2[i]),
                                                                   label = NULL,
                                                                   step = 0.001,
                                                                   value = 0
@@ -75,10 +100,10 @@ filterTableServer <- function(input, output, session, vals, dataframe, selectPhe
       })
     }
     if(i==3){
-      output[["b3"]] <- renderUI({
-        hidden(div(class = "seuratFindMarkerLFCDiv", wellPanel(style='border:0;',
+      output[[paste0("b",i)]] <- renderUI({
+        hidden(div(class = class[i], wellPanel(style='border:0;',
                                                                checkboxGroupButtons(
-                                                                 inputId = ns("seuratFindMarkerLFCOption"), label = "avg_logFC",
+                                                                 inputId = ns(input1[i]), label = colnames(dataframe)[i],
                                                                  choices = c("<", ">", "=", "<=", ">="),
                                                                  justified = TRUE,
                                                                  individual = TRUE,
@@ -86,7 +111,7 @@ filterTableServer <- function(input, output, session, vals, dataframe, selectPhe
                                                                  status = "primary"
                                                                ),
                                                                numericInput(
-                                                                 inputId = ns("seuratFindMarkerLFCInput"),
+                                                                 inputId = ns(input2[i]),
                                                                  label = NULL,
                                                                  step = 0.001,
                                                                  value = 0
@@ -95,10 +120,10 @@ filterTableServer <- function(input, output, session, vals, dataframe, selectPhe
       })
     }
     if(i==4){
-      output[["b4"]] <- renderUI({
-        hidden(div(class = "seuratFindMarkerPct1Div", wellPanel(style='border:0;',
+      output[[paste0("b",i)]] <- renderUI({
+        hidden(div(class = class[i], wellPanel(style='border:0;',
                                                                 checkboxGroupButtons(
-                                                                  inputId = ns("seuratFindMarkerPct1Option"), label = "pct.1",
+                                                                  inputId = ns(input1[i]), label = colnames(dataframe)[i],
                                                                   choices = c("<", ">", "=", "<=", ">="),
                                                                   justified = TRUE,
                                                                   individual = TRUE,
@@ -107,7 +132,7 @@ filterTableServer <- function(input, output, session, vals, dataframe, selectPhe
                                                                   selected = NULL
                                                                 ),
                                                                 numericInput(
-                                                                  inputId = ns("seuratFindMarkerPct1Input"),
+                                                                  inputId = ns(input2[i]),
                                                                   label = NULL,
                                                                   step = 0.001,
                                                                   value = 0
@@ -116,10 +141,10 @@ filterTableServer <- function(input, output, session, vals, dataframe, selectPhe
       })
     }
     if(i==5){
-      output[["b5"]] <- renderUI({
-        hidden(div(class = "seuratFindMarkerPct2Div", wellPanel(style='border:0;',
+      output[[paste0("b",i)]] <- renderUI({
+        hidden(div(class = class[i], wellPanel(style='border:0;',
                                                                 checkboxGroupButtons(
-                                                                  inputId = ns("seuratFindMarkerPct2Option"), label = "pct.2",
+                                                                  inputId = ns(input1[i]), label = colnames(dataframe)[i],
                                                                   choices = c("<", ">", "=", "<=", ">="),
                                                                   justified = TRUE,
                                                                   individual = TRUE,
@@ -127,7 +152,7 @@ filterTableServer <- function(input, output, session, vals, dataframe, selectPhe
                                                                   status = "primary"
                                                                 ),
                                                                 numericInput(
-                                                                  inputId = ns("seuratFindMarkerPct2Input"),
+                                                                  inputId = ns(input2[i]),
                                                                   label = NULL,
                                                                   step = 0.001,
                                                                   value = 0
@@ -136,10 +161,10 @@ filterTableServer <- function(input, output, session, vals, dataframe, selectPhe
       })
     }
     if(i==6){
-      output[["b6"]] <- renderUI({
-        hidden(div(class = "seuratFindMarkerPValAdjDiv", wellPanel(style='border:0;',
+      output[[paste0("b",i)]] <- renderUI({
+        hidden(div(class = class[i], wellPanel(style='border:0;',
                                                                    checkboxGroupButtons(
-                                                                     inputId = ns("seuratFindMarkerPValAdjOption"), label = "p_val_adj",
+                                                                     inputId = ns(input1[i]), label = colnames(dataframe)[i],
                                                                      choices = c("<", ">", "=", "<=", ">="),
                                                                      justified = TRUE,
                                                                      individual = TRUE,
@@ -148,7 +173,7 @@ filterTableServer <- function(input, output, session, vals, dataframe, selectPhe
                                                                      selected = "<"
                                                                    ),
                                                                    numericInput(
-                                                                     inputId = ns("seuratFindMarkerPValAdjInput"),
+                                                                     inputId = ns(input2[i]),
                                                                      label = NULL,
                                                                      step = 0.001,
                                                                      value = 0.05
@@ -157,10 +182,10 @@ filterTableServer <- function(input, output, session, vals, dataframe, selectPhe
       })
     }
     if(i==7){
-      output[["b7"]] <- renderUI({
-        hidden(div(class = "seuratFindMarkerClusterDiv", wellPanel(style='border:0;',
+      output[[paste0("b",i)]] <- renderUI({
+        hidden(div(class = class[i], wellPanel(style='border:0;',
                                                                    checkboxGroupButtons(
-                                                                     inputId = ns("seuratFindMarkerClusterOption"), label = "cluster",
+                                                                     inputId = ns(input1[i]), label = colnames(dataframe)[i],
                                                                      choices = c("=", "!="),
                                                                      justified = TRUE,
                                                                      individual = TRUE,
@@ -168,7 +193,7 @@ filterTableServer <- function(input, output, session, vals, dataframe, selectPhe
                                                                      status = "primary"
                                                                    ),
                                                                    selectizeInput(
-                                                                     inputId = ns("seuratFindMarkerClusterInput"),
+                                                                     inputId = ns(input2[i]),
                                                                      choices = NULL,
                                                                      label = NULL,
                                                                      multiple = TRUE
@@ -416,13 +441,38 @@ filterTableServer <- function(input, output, session, vals, dataframe, selectPhe
   })
   
   observeEvent(input$seuratFindMarkerFilterRun,{
-    vals$seuratFindMarkerPValOption <- input$seuratFindMarkerPValOption
-    vals$seuratFindMarkerPValAdjOption <- input$seuratFindMarkerPValAdjOption
-    vals$seuratFindMarkerPct1Option <- input$seuratFindMarkerPct1Option
-    vals$seuratFindMarkerPct2Option <- input$seuratFindMarkerPct2Option
-    vals$seuratFindMarkerLFCOption <- input$seuratFindMarkerLFCOption
-    vals$seuratFindMarkerGeneIDOption <- input$seuratFindMarkerGeneIDOption
-    vals$seuratFindMarkerClusterOption <- input$seuratFindMarkerClusterOption
+    vals$options <- list()
+    for(i in seq(1:7)){
+      if(i==1){
+        vals$options[i] <- input$seuratFindMarkerGeneIDOption
+      }
+      if(i==2){
+        vals$options[i] <- input$seuratFindMarkerPValOption
+      }
+      if(i==3){
+        vals$options[i] <- input$seuratFindMarkerPValAdjOption
+      }
+      if(i==4){
+        vals$options[i] <- input$seuratFindMarkerPct1Option
+      }
+      if(1==5){
+        vals$options[i] <- input$seuratFindMarkerPct2Option
+      }
+      if(1==6){
+        vals$options[i] <- input$seuratFindMarkerLFCOption
+      }
+      if(1==7){
+        vals$options[i] <- input$seuratFindMarkerClusterOption
+      }
+    }
+    
+    # vals$seuratFindMarkerPValOption <- input$seuratFindMarkerPValOption
+    # vals$seuratFindMarkerPValAdjOption <- input$seuratFindMarkerPValAdjOption
+    # vals$seuratFindMarkerPct1Option <- input$seuratFindMarkerPct1Option
+    # vals$seuratFindMarkerPct2Option <- input$seuratFindMarkerPct2Option
+    # vals$seuratFindMarkerLFCOption <- input$seuratFindMarkerLFCOption
+    # vals$seuratFindMarkerGeneIDOption <- input$seuratFindMarkerGeneIDOption
+    # vals$seuratFindMarkerClusterOption <- input$seuratFindMarkerClusterOption
     updateSeuratFindMarkerTable()
   })
   
@@ -430,24 +480,24 @@ filterTableServer <- function(input, output, session, vals, dataframe, selectPhe
     df <- NULL 
     parameters <- NULL
     p_val_operators <- ""
-    if(!is.null(vals$seuratFindMarkerPValOption)){
-      p_val_operators <- paste0(vals$seuratFindMarkerPValOption, collapse = "")
+    if(!is.null(vals$options[2])){
+      p_val_operators <- paste0(vals$options[2], collapse = "")
     }
     lfc_operators <- ""
-    if(!is.null(vals$seuratFindMarkerLFCOption)){
-      lfc_operators <- paste0(vals$seuratFindMarkerLFCOption, collapse = "")
+    if(!is.null(vals$options[6])){
+      lfc_operators <- paste0(vals$options[6], collapse = "")
     }
     pct1_operators <- ""
-    if(!is.null(vals$seuratFindMarkerPct1Option)){
-      pct1_operators <- paste0(vals$seuratFindMarkerPct1Option, collapse = "")
+    if(!is.null(vals$options[4])){
+      pct1_operators <- paste0(vals$options[4], collapse = "")
     }
     pct2_operators <- ""
-    if(!is.null(vals$seuratFindMarkerPct2Option)){
-      pct2_operators <- paste0(vals$seuratFindMarkerPct2Option, collapse = "")
+    if(!is.null(vals$options[5])){
+      pct2_operators <- paste0(vals$options[5], collapse = "")
     }
     p_val_adj_operators <- ""
-    if(!is.null(vals$seuratFindMarkerPValAdjOption)){
-      p_val_adj_operators <- paste0(vals$seuratFindMarkerPValAdjOption, collapse = "")
+    if(!is.null(vals$options[3])){
+      p_val_adj_operators <- paste0(vals$options[3], collapse = "")
     }
     
     if(p_val_operators == ""
@@ -456,21 +506,21 @@ filterTableServer <- function(input, output, session, vals, dataframe, selectPhe
        && pct2_operators == ""
        && p_val_adj_operators == ""){
       df <- dataframe
-      if(!is.null(vals$seuratFindMarkerGeneIDOption)
-         || !is.null(vals$seuratFindMarkerClusterOption)){
-        if(!is.null(vals$seuratFindMarkerGeneIDOption)){
-          if(vals$seuratFindMarkerGeneIDOption == "="){
+      if(!is.null(vals$options[1])
+         || !is.null(vals$options[7])){
+        if(!is.null(vals$options[1])){
+          if(vals$options[1] == "="){
             df <- df[input$seuratFindMarkerGeneIDInput,]
           }
-          else if(vals$seuratFindMarkerGeneIDOption == "!="){
+          else if(vals$options[1] == "!="){
             df <- df[-match(input$seuratFindMarkerGeneIDInput, df$gene.id),]
           }
         }
-        if(!is.null(vals$seuratFindMarkerClusterOption)){
-          if(vals$seuratFindMarkerClusterOption == "="){
+        if(!is.null(vals$options[7])){
+          if(vals$options[7] == "="){
             df <- df[which(input$seuratFindMarkerClusterInput == df$cluster),]
           }
-          else if(vals$seuratFindMarkerClusterOption == "!="){
+          else if(vals$options[7] == "!="){
             df <- df[-which(input$seuratFindMarkerClusterInput == df$cluster),]
           }
         }
@@ -508,25 +558,26 @@ filterTableServer <- function(input, output, session, vals, dataframe, selectPhe
       parameters$cols <- na.omit(parameters$cols)
       
       df <- dataframe
-      if(!is.null(vals$seuratFindMarkerGeneIDOption)
-         || !is.null(vals$seuratFindMarkerClusterOption)){
-        if(!is.null(vals$seuratFindMarkerGeneIDOption)){
-          if(vals$seuratFindMarkerGeneIDOption == "="){
+      if(!is.null(vals$options[1])
+         || !is.null(vals$options[7])){
+        if(!is.null(vals$options[1])){
+          if(vals$options[1] == "="){
             df <- df[input$seuratFindMarkerGeneIDInput,]
           }
-          else if(vals$seuratFindMarkerGeneIDOption == "!="){
+          else if(vals$options[1] == "!="){
             df <- df[-match(input$seuratFindMarkerGeneIDInput, df$gene.id),]
           }
         }
-        if(!is.null(vals$seuratFindMarkerClusterOption)){
-          if(vals$seuratFindMarkerClusterOption == "="){
+        if(!is.null(vals$options[7])){
+          if(vals$options[7] == "="){
             df <- df[which(input$seuratFindMarkerClusterInput == df$cluster),]
           }
-          else if(vals$seuratFindMarkerClusterOption == "!="){
+          else if(vals$options[7] == "!="){
             df <- df[-which(input$seuratFindMarkerClusterInput == df$cluster),]
           }
         }
       }
+      
       df <- singleCellTK:::.filterDF(df = df,
                                      operators = parameters$operators,
                                      cols = parameters$cols,
@@ -579,13 +630,13 @@ filterTableServer <- function(input, output, session, vals, dataframe, selectPhe
         choiceValuesFilter[i] <- paste(parameters$cols[i])
       }
       
-      if(!is.null(vals$seuratFindMarkerGeneIDOption)){
-        activeFilterString <- append(activeFilterString, paste("gene.id", vals$seuratFindMarkerGeneIDOption, paste(input$seuratFindMarkerGeneIDInput, collapse = ", ")))
+      if(!is.null(vals$options[1])){
+        activeFilterString <- append(activeFilterString, paste("gene.id", vals$options[1], paste(input$seuratFindMarkerGeneIDInput, collapse = ", ")))
         choiceValuesFilter <- append(choiceValuesFilter, "gene.id")
       }
       
-      if(!is.null(vals$seuratFindMarkerClusterOption)){
-        activeFilterString <- append(activeFilterString, paste("cluster", vals$seuratFindMarkerClusterOption, paste(input$seuratFindMarkerClusterInput, collapse = ", ")))
+      if(!is.null(vals$options[7])){
+        activeFilterString <- append(activeFilterString, paste("cluster", vals$options[7], paste(input$seuratFindMarkerClusterInput, collapse = ", ")))
         choiceValuesFilter <- append(choiceValuesFilter, "cluster")
       }
       
@@ -754,11 +805,11 @@ filterTableServer <- function(input, output, session, vals, dataframe, selectPhe
       updateCheckboxGroupButtons(
         session = session,
         inputId = ns("seuratFindMarkerLFCOption"),
-        selected = input$seuratFindMarkerLFCOption[-which(vals$seuratFindMarkerLFCOption == input$seuratFindMarkerLFCOption, arr.ind = TRUE)]
+        selected = input$seuratFindMarkerLFCOption[-which(vals$options[6] == input$seuratFindMarkerLFCOption, arr.ind = TRUE)]
       )
     }
     else{
-      vals$seuratFindMarkerLFCOption <- input$seuratFindMarkerLFCOption
+      vals$options[6] <- input$seuratFindMarkerLFCOption
     }
   })
   
@@ -767,11 +818,11 @@ filterTableServer <- function(input, output, session, vals, dataframe, selectPhe
       updateCheckboxGroupButtons(
         session = session,
         inputId = ns("seuratFindMarkerPValOption"),
-        selected = input$seuratFindMarkerPValOption[-which(vals$seuratFindMarkerPValOption == input$seuratFindMarkerPValOption, arr.ind = TRUE)]
+        selected = input$seuratFindMarkerPValOption[-which(vals$options[2] == input$seuratFindMarkerPValOption, arr.ind = TRUE)]
       )
     }
     else{
-      vals$seuratFindMarkerPValOption <- input$seuratFindMarkerPValOption
+      vals$options[2] <- input$seuratFindMarkerPValOption
     }
   })
   
@@ -780,11 +831,11 @@ filterTableServer <- function(input, output, session, vals, dataframe, selectPhe
       updateCheckboxGroupButtons(
         session = session,
         inputId = ns("seuratFindMarkerPValAdjOption"),
-        selected = input$seuratFindMarkerPValAdjOption[-which(vals$seuratFindMarkerPValAdjOption == input$seuratFindMarkerPValAdjOption, arr.ind = TRUE)]
+        selected = input$seuratFindMarkerPValAdjOption[-which(vals$options[3] == input$seuratFindMarkerPValAdjOption, arr.ind = TRUE)]
       )
     }
     else{
-      vals$seuratFindMarkerPValAdjOption <- input$seuratFindMarkerPValAdjOption
+      vals$options[3] <- input$seuratFindMarkerPValAdjOption
     }
   })
   
@@ -793,11 +844,11 @@ filterTableServer <- function(input, output, session, vals, dataframe, selectPhe
       updateCheckboxGroupButtons(
         session = session,
         inputId = ns("seuratFindMarkerPct1Option"),
-        selected = input$seuratFindMarkerPct1Option[-which(vals$seuratFindMarkerPct1Option == input$seuratFindMarkerPct1Option, arr.ind = TRUE)]
+        selected = input$seuratFindMarkerPct1Option[-which(vals$options[4] == input$seuratFindMarkerPct1Option, arr.ind = TRUE)]
       )
     }
     else{
-      vals$seuratFindMarkerPct1Option <- input$seuratFindMarkerPct1Option
+      vals$options[4] <- input$seuratFindMarkerPct1Option
     }
   })
   
@@ -806,11 +857,11 @@ filterTableServer <- function(input, output, session, vals, dataframe, selectPhe
       updateCheckboxGroupButtons(
         session = session,
         inputId = ns("seuratFindMarkerPct2Option"),
-        selected = input$seuratFindMarkerPct2Option[-which(vals$seuratFindMarkerPct2Option == input$seuratFindMarkerPct2Option, arr.ind = TRUE)]
+        selected = input$seuratFindMarkerPct2Option[-which(vals$options[5] == input$seuratFindMarkerPct2Option, arr.ind = TRUE)]
       )
     }
     else{
-      vals$seuratFindMarkerPct2Option <- input$seuratFindMarkerPct2Option
+      vals$options[5] <- input$seuratFindMarkerPct2Option
     }
   })
   
@@ -822,7 +873,7 @@ filterTableServer <- function(input, output, session, vals, dataframe, selectPhe
         selected = character(0),
         
       )
-      vals$seuratFindMarkerPValOption <- NULL
+      vals$options[2] <- NULL
       index <- which(input$checkboxFiltersToRemove == vals$choiceValuesFilter)
       updateCheckboxGroupInput(
         session = session,
@@ -838,7 +889,7 @@ filterTableServer <- function(input, output, session, vals, dataframe, selectPhe
         inputId = ns("seuratFindMarkerPValAdjOption"),
         selected = character(0)
       )
-      vals$seuratFindMarkerPValAdjOption <- NULL
+      vals$options[3] <- NULL
       index <- which(input$checkboxFiltersToRemove == vals$choiceValuesFilter)
       updateCheckboxGroupInput(
         session = session,
@@ -854,7 +905,7 @@ filterTableServer <- function(input, output, session, vals, dataframe, selectPhe
         inputId = ns("seuratFindMarkerPct1Option"),
         selected = character(0)
       )
-      vals$seuratFindMarkerPct1Option <- NULL
+      vals$options[4] <- NULL
       index <- which(input$checkboxFiltersToRemove == vals$choiceValuesFilter)
       updateCheckboxGroupInput(
         session = session,
@@ -870,7 +921,7 @@ filterTableServer <- function(input, output, session, vals, dataframe, selectPhe
         inputId = ns("seuratFindMarkerPct2Option"),
         selected = character(0)
       )
-      vals$seuratFindMarkerPct2Option <- NULL
+      vals$options[5] <- NULL
       index <- which(input$checkboxFiltersToRemove == vals$choiceValuesFilter)
       updateCheckboxGroupInput(
         session = session,
@@ -886,7 +937,7 @@ filterTableServer <- function(input, output, session, vals, dataframe, selectPhe
         inputId = ns("seuratFindMarkerLFCOption"),
         selected = character(0)
       )
-      vals$seuratFindMarkerLFCOption <- NULL
+      vals$options[6] <- NULL
       index <- which(input$checkboxFiltersToRemove == vals$choiceValuesFilter)
       updateCheckboxGroupInput(
         session = session,
@@ -902,7 +953,7 @@ filterTableServer <- function(input, output, session, vals, dataframe, selectPhe
         inputId = ns("seuratFindMarkerGeneIDOption"),
         selected = character(0)
       )
-      vals$seuratFindMarkerGeneIDOption <- NULL
+      vals$options[1] <- NULL
       index <- which(input$checkboxFiltersToRemove == vals$choiceValuesFilter)
       updateCheckboxGroupInput(
         session = session,
@@ -918,7 +969,7 @@ filterTableServer <- function(input, output, session, vals, dataframe, selectPhe
         inputId = ns("seuratFindMarkerClusterOption"),
         selected = character(0)
       )
-      vals$seuratFindMarkerClusterOption <- NULL
+      vals$options[7] <- NULL
       index <- which(input$checkboxFiltersToRemove == vals$choiceValuesFilter)
       updateCheckboxGroupInput(
         session = session,
