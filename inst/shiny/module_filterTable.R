@@ -31,176 +31,253 @@ filterTableServer <- function(input, output, session, vals, dataframe, selectPhe
                       featurePlot = NULL,
                       dotPlot = NULL
                       )
-  class <- c("seuratFindMarkerGeneIDDiv",
-             "seuratFindMarkerPValDiv",
-             "seuratFindMarkerLFCDiv",
-             "seuratFindMarkerPct1Div",
-             "seuratFindMarkerPct2Div",
-             "seuratFindMarkerPValAdjDiv",
-             "seuratFindMarkerClusterDiv"
-             )
+  class <- NULL
+  option <- NULL
+  input2 <- NULL
+  for(i in seq(length(colnames(dataframe)))){
+    class[i] <- paste0("class_", colnames(dataframe)[i])
+    option[i] <- paste0("option_", colnames(dataframe)[i])
+    input2[i] <- paste0("input_", colnames(dataframe)[i])
+  }
+  print(class)
+  # class <- c("class1",
+  #            "class2",
+  #            "class3",
+  #            "class4",
+  #            "class5",
+  #            "class6",
+  #            "class7")
   
-  input1 <- c("seuratFindMarkerGeneIDOption",
-                   "seuratFindMarkerPValOption",
-                   "seuratFindMarkerLFCOption",
-                   "seuratFindMarkerPct1Option",
-                   "seuratFindMarkerPct2Option",
-                   "seuratFindMarkerPValAdjOption",
-                   "seuratFindMarkerClusterOption"
-                )
-  input2 <- c("seuratFindMarkerGeneIDInput",
-                  "seuratFindMarkerPValInput",
-                  "seuratFindMarkerLFCInput",
-                  "seuratFindMarkerPct1Input",
-                  "seuratFindMarkerPct2Input",
-                  "seuratFindMarkerPValAdjInput",
-                  "seuratFindMarkerClusterInput"
-                  )
+  # input1 <- c("input11",
+  #             "input12",
+  #             "input13",
+  #             "input14",
+  #             "input15",
+  #             "input16",
+  #             "input17")
+  # 
+  # input2 <- c("input21",
+  #             "input22",
+  #             "input23",
+  #             "input24",
+  #             "input25",
+  #             "input26",
+  #             "input27")
+    
+    
+  # class <- c("seuratFindMarkerGeneIDDiv",
+  #            "seuratFindMarkerPValDiv",
+  #            "seuratFindMarkerLFCDiv",
+  #            "seuratFindMarkerPct1Div",
+  #            "seuratFindMarkerPct2Div",
+  #            "seuratFindMarkerPValAdjDiv",
+  #            "seuratFindMarkerClusterDiv"
+  #            )
+  # 
+  # input1 <- c("seuratFindMarkerGeneIDOption",
+  #                  "seuratFindMarkerPValOption",
+  #                  "seuratFindMarkerLFCOption",
+  #                  "seuratFindMarkerPct1Option",
+  #                  "seuratFindMarkerPct2Option",
+  #                  "seuratFindMarkerPValAdjOption",
+  #                  "seuratFindMarkerClusterOption"
+  #               )
+  # input2 <- c("seuratFindMarkerGeneIDInput",
+  #                 "seuratFindMarkerPValInput",
+  #                 "seuratFindMarkerLFCInput",
+  #                 "seuratFindMarkerPct1Input",
+  #                 "seuratFindMarkerPct2Input",
+  #                 "seuratFindMarkerPValAdjInput",
+  #                 "seuratFindMarkerClusterInput"
+  #                 )
   
-  lapply(1:7, function(i) {
+  lapply(1:length(colnames(dataframe)), function(i) {
+    if(is.numeric(dataframe[,i])){
+      output[[paste0("b",i)]] <- renderUI({
+        hidden(div(class = class[i], wellPanel(style='border:0;',
+                                               checkboxGroupButtons(
+                                                 inputId = ns(option[i]), label = colnames(dataframe)[i],
+                                                 choices = c("<", ">", "=", "<=", ">="),
+                                                 justified = TRUE,
+                                                 individual = TRUE,
+                                                 size = "s",
+                                                 status = "primary"
+                                               ),
+                                               numericInput(
+                                                 inputId = ns(input2[i]),
+                                                 label = NULL,
+                                                 step = 0.001,
+                                                 value = 0
+                                               )
+        )))
+      })
+    }
+    else if(is.character(dataframe[,i])
+            || is.factor(dataframe[,i])){
+      output[[paste0("b",i)]] <- renderUI({
+        hidden(
+          div(class = class[i], wellPanel(style='border:0;',
+                                               checkboxGroupButtons(
+                                                 inputId = ns(option[i]), label = colnames(dataframe)[i],
+                                                 choices = c("=", "!="),
+                                                 justified = TRUE,
+                                                 individual = TRUE,
+                                                 size = "s",
+                                                 status = "primary"
+                                               ),
+                                               selectizeInput(
+                                                 inputId = ns(input2[i]),
+                                                 choices = NULL,
+                                                 label = NULL,
+                                                 multiple = TRUE
+                                               )
+        ))
+        )
+      })
+    }
     print(i)
-    if(i==1){
-      output[[paste0("b",i)]] <- renderUI({
-        hidden(div(class = class[i], wellPanel(style='border:0;',
-                                                                  checkboxGroupButtons(
-                                                                    inputId = ns(input1[i]), label = colnames(dataframe)[i],
-                                                                    choices = c("=", "!="),
-                                                                    justified = TRUE,
-                                                                    individual = TRUE,
-                                                                    size = "s",
-                                                                    status = "primary"
-                                                                  ),
-                                                                  selectizeInput(
-                                                                    inputId = ns(input2[i]),
-                                                                    choices = NULL,
-                                                                    label = NULL,
-                                                                    multiple = TRUE
-                                                                  )
-        )))
-      })
-    }
-    if(i==2){
-      output[[paste0("b",i)]] <- renderUI({
-        hidden(div(class = class[i], wellPanel(style='border:0;',
-                                                                checkboxGroupButtons(
-                                                                  inputId = ns(input1[i]), label = colnames(dataframe)[i],
-                                                                  choices = c("<", ">", "=", "<=", ">="),
-                                                                  justified = TRUE,
-                                                                  individual = TRUE,
-                                                                  size = "s",
-                                                                  status = "primary"
-                                                                ),
-                                                                numericInput(
-                                                                  inputId = ns(input2[i]),
-                                                                  label = NULL,
-                                                                  step = 0.001,
-                                                                  value = 0
-                                                                )
-        )))
-      })
-    }
-    if(i==3){
-      output[[paste0("b",i)]] <- renderUI({
-        hidden(div(class = class[i], wellPanel(style='border:0;',
-                                                               checkboxGroupButtons(
-                                                                 inputId = ns(input1[i]), label = colnames(dataframe)[i],
-                                                                 choices = c("<", ">", "=", "<=", ">="),
-                                                                 justified = TRUE,
-                                                                 individual = TRUE,
-                                                                 size = "s",
-                                                                 status = "primary"
-                                                               ),
-                                                               numericInput(
-                                                                 inputId = ns(input2[i]),
-                                                                 label = NULL,
-                                                                 step = 0.001,
-                                                                 value = 0
-                                                               )
-        )))
-      })
-    }
-    if(i==4){
-      output[[paste0("b",i)]] <- renderUI({
-        hidden(div(class = class[i], wellPanel(style='border:0;',
-                                                                checkboxGroupButtons(
-                                                                  inputId = ns(input1[i]), label = colnames(dataframe)[i],
-                                                                  choices = c("<", ">", "=", "<=", ">="),
-                                                                  justified = TRUE,
-                                                                  individual = TRUE,
-                                                                  size = "s",
-                                                                  status = "primary",
-                                                                  selected = NULL
-                                                                ),
-                                                                numericInput(
-                                                                  inputId = ns(input2[i]),
-                                                                  label = NULL,
-                                                                  step = 0.001,
-                                                                  value = 0
-                                                                )
-        )))
-      })
-    }
-    if(i==5){
-      output[[paste0("b",i)]] <- renderUI({
-        hidden(div(class = class[i], wellPanel(style='border:0;',
-                                                                checkboxGroupButtons(
-                                                                  inputId = ns(input1[i]), label = colnames(dataframe)[i],
-                                                                  choices = c("<", ">", "=", "<=", ">="),
-                                                                  justified = TRUE,
-                                                                  individual = TRUE,
-                                                                  size = "s",
-                                                                  status = "primary"
-                                                                ),
-                                                                numericInput(
-                                                                  inputId = ns(input2[i]),
-                                                                  label = NULL,
-                                                                  step = 0.001,
-                                                                  value = 0
-                                                                )
-        )))
-      })
-    }
-    if(i==6){
-      output[[paste0("b",i)]] <- renderUI({
-        hidden(div(class = class[i], wellPanel(style='border:0;',
-                                                                   checkboxGroupButtons(
-                                                                     inputId = ns(input1[i]), label = colnames(dataframe)[i],
-                                                                     choices = c("<", ">", "=", "<=", ">="),
-                                                                     justified = TRUE,
-                                                                     individual = TRUE,
-                                                                     size = "s",
-                                                                     status = "primary",
-                                                                     selected = "<"
-                                                                   ),
-                                                                   numericInput(
-                                                                     inputId = ns(input2[i]),
-                                                                     label = NULL,
-                                                                     step = 0.001,
-                                                                     value = 0.05
-                                                                   )
-        )))
-      })
-    }
-    if(i==7){
-      output[[paste0("b",i)]] <- renderUI({
-        hidden(div(class = class[i], wellPanel(style='border:0;',
-                                                                   checkboxGroupButtons(
-                                                                     inputId = ns(input1[i]), label = colnames(dataframe)[i],
-                                                                     choices = c("=", "!="),
-                                                                     justified = TRUE,
-                                                                     individual = TRUE,
-                                                                     size = "s",
-                                                                     status = "primary"
-                                                                   ),
-                                                                   selectizeInput(
-                                                                     inputId = ns(input2[i]),
-                                                                     choices = NULL,
-                                                                     label = NULL,
-                                                                     multiple = TRUE
-                                                                   )
-        )))
-      })
-    }
+    # if(i==1){
+    #   output[[paste0("b",i)]] <- renderUI({
+    #     hidden(div(class = class[i], wellPanel(style='border:0;',
+    #                                                               checkboxGroupButtons(
+    #                                                                 inputId = ns(input1[i]), label = colnames(dataframe)[i],
+    #                                                                 choices = c("=", "!="),
+    #                                                                 justified = TRUE,
+    #                                                                 individual = TRUE,
+    #                                                                 size = "s",
+    #                                                                 status = "primary"
+    #                                                               ),
+    #                                                               selectizeInput(
+    #                                                                 inputId = ns(input2[i]),
+    #                                                                 choices = NULL,
+    #                                                                 label = NULL,
+    #                                                                 multiple = TRUE
+    #                                                               )
+    #     )))
+    #   })
+    # }
+    # if(i==2){
+    #   output[[paste0("b",i)]] <- renderUI({
+    #     hidden(div(class = class[i], wellPanel(style='border:0;',
+    #                                                             checkboxGroupButtons(
+    #                                                               inputId = ns(input1[i]), label = colnames(dataframe)[i],
+    #                                                               choices = c("<", ">", "=", "<=", ">="),
+    #                                                               justified = TRUE,
+    #                                                               individual = TRUE,
+    #                                                               size = "s",
+    #                                                               status = "primary"
+    #                                                             ),
+    #                                                             numericInput(
+    #                                                               inputId = ns(input2[i]),
+    #                                                               label = NULL,
+    #                                                               step = 0.001,
+    #                                                               value = 0
+    #                                                             )
+    #     )))
+    #   })
+    # }
+    # if(i==3){
+    #   output[[paste0("b",i)]] <- renderUI({
+    #     hidden(div(class = class[i], wellPanel(style='border:0;',
+    #                                                            checkboxGroupButtons(
+    #                                                              inputId = ns(input1[i]), label = colnames(dataframe)[i],
+    #                                                              choices = c("<", ">", "=", "<=", ">="),
+    #                                                              justified = TRUE,
+    #                                                              individual = TRUE,
+    #                                                              size = "s",
+    #                                                              status = "primary"
+    #                                                            ),
+    #                                                            numericInput(
+    #                                                              inputId = ns(input2[i]),
+    #                                                              label = NULL,
+    #                                                              step = 0.001,
+    #                                                              value = 0
+    #                                                            )
+    #     )))
+    #   })
+    # }
+    # if(i==4){
+    #   output[[paste0("b",i)]] <- renderUI({
+    #     hidden(div(class = class[i], wellPanel(style='border:0;',
+    #                                                             checkboxGroupButtons(
+    #                                                               inputId = ns(input1[i]), label = colnames(dataframe)[i],
+    #                                                               choices = c("<", ">", "=", "<=", ">="),
+    #                                                               justified = TRUE,
+    #                                                               individual = TRUE,
+    #                                                               size = "s",
+    #                                                               status = "primary",
+    #                                                               selected = NULL
+    #                                                             ),
+    #                                                             numericInput(
+    #                                                               inputId = ns(input2[i]),
+    #                                                               label = NULL,
+    #                                                               step = 0.001,
+    #                                                               value = 0
+    #                                                             )
+    #     )))
+    #   })
+    # }
+    # if(i==5){
+    #   output[[paste0("b",i)]] <- renderUI({
+    #     hidden(div(class = class[i], wellPanel(style='border:0;',
+    #                                                             checkboxGroupButtons(
+    #                                                               inputId = ns(input1[i]), label = colnames(dataframe)[i],
+    #                                                               choices = c("<", ">", "=", "<=", ">="),
+    #                                                               justified = TRUE,
+    #                                                               individual = TRUE,
+    #                                                               size = "s",
+    #                                                               status = "primary"
+    #                                                             ),
+    #                                                             numericInput(
+    #                                                               inputId = ns(input2[i]),
+    #                                                               label = NULL,
+    #                                                               step = 0.001,
+    #                                                               value = 0
+    #                                                             )
+    #     )))
+    #   })
+    # }
+    # if(i==6){
+    #   output[[paste0("b",i)]] <- renderUI({
+    #     hidden(div(class = class[i], wellPanel(style='border:0;',
+    #                                                                checkboxGroupButtons(
+    #                                                                  inputId = ns(input1[i]), label = colnames(dataframe)[i],
+    #                                                                  choices = c("<", ">", "=", "<=", ">="),
+    #                                                                  justified = TRUE,
+    #                                                                  individual = TRUE,
+    #                                                                  size = "s",
+    #                                                                  status = "primary",
+    #                                                                  selected = "<"
+    #                                                                ),
+    #                                                                numericInput(
+    #                                                                  inputId = ns(input2[i]),
+    #                                                                  label = NULL,
+    #                                                                  step = 0.001,
+    #                                                                  value = 0.05
+    #                                                                )
+    #     )))
+    #   })
+    # }
+    # if(i==7){
+    #   output[[paste0("b",i)]] <- renderUI({
+    #     hidden(div(class = class[i], wellPanel(style='border:0;',
+    #                                                                checkboxGroupButtons(
+    #                                                                  inputId = ns(input1[i]), label = colnames(dataframe)[i],
+    #                                                                  choices = c("=", "!="),
+    #                                                                  justified = TRUE,
+    #                                                                  individual = TRUE,
+    #                                                                  size = "s",
+    #                                                                  status = "primary"
+    #                                                                ),
+    #                                                                selectizeInput(
+    #                                                                  inputId = ns(input2[i]),
+    #                                                                  choices = NULL,
+    #                                                                  label = NULL,
+    #                                                                  multiple = TRUE
+    #                                                                )
+    #     )))
+    #   })
+    # }
   })
   
   output$seuratFindMarkerFilter <- renderUI({
@@ -500,6 +577,8 @@ filterTableServer <- function(input, output, session, vals, dataframe, selectPhe
       p_val_adj_operators <- paste0(vals$options[3], collapse = "")
     }
     
+
+    
     if(p_val_operators == ""
        && lfc_operators == ""
        && pct1_operators == ""
@@ -577,7 +656,8 @@ filterTableServer <- function(input, output, session, vals, dataframe, selectPhe
           }
         }
       }
-      
+      print("parameters")
+      print(parameters)
       df <- singleCellTK:::.filterDF(df = df,
                                      operators = parameters$operators,
                                      cols = parameters$cols,
@@ -985,6 +1065,9 @@ filterTableServer <- function(input, output, session, vals, dataframe, selectPhe
   })
   
   observeEvent(input$seuratFindMarkerSelectFilter,{
+    print(paste0(".class_",input$seuratFindMarkerSelectFilter))
+    shinyjs::show(selector = paste0(".class_",input$seuratFindMarkerSelectFilter))
+    
     if(input$seuratFindMarkerSelectFilter == "gene.id"){
       shinyjs::show(selector = ".seuratFindMarkerGeneIDDiv")
     }
