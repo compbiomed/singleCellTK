@@ -19,8 +19,10 @@ filterTableServer <- function(input, output, session, dataframe){
   
   ns <- session$ns
   rv <- reactiveValues(data = NULL,
-                      selectedRows = NULL
+                      selectedRows = NULL,
+                      parameters = NULL
                       )
+  message("Removing '.' from column names of the input dataframe as it is not supported by the filters!")
   colnames(dataframe) <- gsub("\\.", "_", colnames(dataframe))
   colnamesDF <- colnames(dataframe)
   class <- NULL
@@ -172,6 +174,8 @@ filterTableServer <- function(input, output, session, dataframe){
       }
     }
     
+    rv$parameters <- parameters
+    
     df <- .filterDF(df = dataframe,
                                    operators = parameters$operators,
                                    cols = colnamesDF,
@@ -240,6 +244,47 @@ filterTableServer <- function(input, output, session, dataframe){
         shinyjs::hide(selector = paste0(".", class[i]))
       }
     }
+  })
+  
+  observeEvent(input$seuratFindMarkerRemoveAllFilters, {
+    index <- match(input$checkboxFiltersToRemove, colnamesDF)
+    rv$parameters$operators[index] <- "NULL"
+
+    df <- .filterDF(df = dataframe,
+                    operators = rv$parameters$operators,
+                    cols = colnamesDF,
+                    values = rv$parameters$values)
+    
+    rv$data <- df
+    
+    output$seuratFindMarkerTable <- DT::renderDataTable({
+      df
+    }, options = list(pageLength = 6, dom = "<'top'fl>t<'bottom'ip>", stateSave = TRUE
+    ))
+    
+    activeFilters <- list()
+    activeFiltersValues <- list()
+    if(!is.null(rv$parameters)){
+      for(i in seq(length(colnamesDF))){
+        if(rv$parameters$operators[i] != 'NULL'){
+          rv$parameters$operators[i]
+          activeFilters <- append(activeFilters, paste(colnamesDF[i], rv$parameters$operators[i], rv$parameters$values[i]))
+          activeFiltersValues <- append(activeFiltersValues, colnamesDF[i])
+        }
+      }
+    }
+    
+    output$seuratFindMarkerActiveFilters <- renderUI({
+      panel(
+        checkboxGroupInput(
+          inputId = ns("checkboxFiltersToRemove"),
+          label = NULL,
+          choiceNames = as.character(activeFilters),
+          choiceValues = as.character(activeFiltersValues)
+        )
+      )
+    })
+    
   })
   
   
