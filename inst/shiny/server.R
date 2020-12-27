@@ -6697,37 +6697,75 @@ shinyServer(function(input, output, session) {
     
     )
     
-    vals$fts<- callModule(module = filterTableServer, id = "filter1", vals = vals, dataframe = metadata(vals$counts)$seuratMarkers, selectPhenotype = input$seuratFindMarkerSelectPhenotype)
+    vals$fts <- callModule(
+      module = filterTableServer, 
+      id = "filter1", 
+      dataframe = metadata(vals$counts)$seuratMarkers)
     
   })
   
   observe({
-    req(vals$fts$ridgePlot)
-    req(vals$fts$violinPlot)
-    req(vals$fts$featurePlot)
-    req(vals$fts$dotPlot)
-    req(vals$fts$heatmapPlot)
+    req(vals$fts$data)
+    req(vals$fts$selectedRows)
+    df <- vals$fts$data[vals$fts$selectedRows, ]
+    seuratObject <- convertSCEToSeurat(vals$counts, scaledAssay = "seuratScaledData")
+    indices <- list()
+    cells <- list()
+    groups <- unique(colData(vals$counts)[[input$seuratFindMarkerSelectPhenotype]])
+    for(i in seq(length(groups))){
+      indices[[i]] <- which(colData(vals$counts)[[input$seuratFindMarkerSelectPhenotype]] == groups[i], arr.ind = TRUE)
+      cells[[i]] <- colnames(vals$counts)[indices[[i]]]
+      cells[[i]] <- lapply(
+        X = cells[[i]], 
+        FUN = function(t) gsub(
+          pattern = "_", 
+          replacement = "-", 
+          x = t, 
+          fixed = TRUE)
+      )
+      Idents(seuratObject, cells = cells[[i]]) <- groups[i]
+    }
+    
     output$findMarkerRidgePlot <- renderPlot({
-      vals$fts$ridgePlot
+      RidgePlot(seuratObject, features = df$gene_id, ncol = 2)
     })
     output$findMarkerViolinPlot <- renderPlot({
-      vals$fts$violinPlot
+      VlnPlot(seuratObject, features = df$gene_id, ncol = 2)
     })
     output$findMarkerFeaturePlot <- renderPlot({
-      vals$fts$featurePlot
+      FeaturePlot(seuratObject, features = df$gene_id, ncol = 2)
     })
     output$findMarkerDotPlot <- renderPlot({
-      vals$fts$dotPlot
+      DotPlot(seuratObject, features = df$gene_id)
     })
     output$findMarkerHeatmapPlot <- renderPlot({
-      vals$fts$heatmapPlot
+      DoHeatmap(seuratObject, features = df$gene_id)
     })
+    
   })
   
   observe({
-    req(vals$fts$heatmapFull)
+    req(vals$fts$data)
+    df <- vals$fts$data
+    seuratObject <- convertSCEToSeurat(vals$counts, scaledAssay = "seuratScaledData")
+    indices <- list()
+    cells <- list()
+    groups <- unique(colData(vals$counts)[[input$seuratFindMarkerSelectPhenotype]])
+    for(i in seq(length(groups))){
+      indices[[i]] <- which(colData(vals$counts)[[input$seuratFindMarkerSelectPhenotype]] == groups[i], arr.ind = TRUE)
+      cells[[i]] <- colnames(vals$counts)[indices[[i]]]
+      cells[[i]] <- lapply(
+        X = cells[[i]],
+        FUN = function(t) gsub(
+          pattern = "_",
+          replacement = "-",
+          x = t,
+          fixed = TRUE)
+      )
+      Idents(seuratObject, cells = cells[[i]]) <- groups[i]
+    }
     output$findMarkerHeatmapPlotFull <- renderPlot({
-      vals$fts$heatmapFull
+      DoHeatmap(seuratObject, features = df$gene_id)
     })
   })
   
