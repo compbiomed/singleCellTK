@@ -129,7 +129,7 @@ filterTableServer <- function(input, output, session, vals, dataframe, selectPhe
                                                ),
                                                selectizeInput(
                                                  inputId = ns(input2[i]),
-                                                 choices = NULL,
+                                                 choices = unique(dataframe[, colnamesDF[i]]),
                                                  label = NULL,
                                                  multiple = TRUE
                                                )
@@ -137,7 +137,6 @@ filterTableServer <- function(input, output, session, vals, dataframe, selectPhe
         )
       })
     }
-    print(i)
     # if(i==1){
     #   output[[paste0("b",i)]] <- renderUI({
     #     hidden(div(class = class[i], wellPanel(style='border:0;',
@@ -497,7 +496,6 @@ filterTableServer <- function(input, output, session, vals, dataframe, selectPhe
     df$pct.1 <- format(df$pct.1, nsmall = 7)
     df$pct.2 <- format(df$pct.2, nsmall = 7)
     df$avg_logFC <- format(df$avg_logFC, nsmall = 7)
-    #print(head(df))
     df
   }, options = list(pageLength = 6, dom = "<'top'fl>t<'bottom'ip>", stateSave = TRUE
   ))
@@ -515,30 +513,32 @@ filterTableServer <- function(input, output, session, vals, dataframe, selectPhe
   
   observeEvent(input$seuratFindMarkerFilterRun,{
     vals$options <- list()
-    for(i in seq(1:7)){
-      if(i==1){
-        vals$options[i] <- input$seuratFindMarkerGeneIDOption
-      }
-      if(i==2){
-        vals$options[i] <- input$seuratFindMarkerPValOption
-      }
-      if(i==3){
-        vals$options[i] <- input$seuratFindMarkerPValAdjOption
-      }
-      if(i==4){
-        vals$options[i] <- input$seuratFindMarkerPct1Option
-      }
-      if(1==5){
-        vals$options[i] <- input$seuratFindMarkerPct2Option
-      }
-      if(1==6){
-        vals$options[i] <- input$seuratFindMarkerLFCOption
-      }
-      if(1==7){
-        vals$options[i] <- input$seuratFindMarkerClusterOption
-      }
+    for(i in seq(length(colnamesDF))){
+      vals$options[i] <- input[[option[i]]]
     }
-    
+    # for(i in seq(1:7)){
+    #   if(i==1){
+    #     vals$options[i] <- input$seuratFindMarkerGeneIDOption
+    #   }
+    #   if(i==2){
+    #     vals$options[i] <- input$seuratFindMarkerPValOption
+    #   }
+    #   if(i==3){
+    #     vals$options[i] <- input$seuratFindMarkerPValAdjOption
+    #   }
+    #   if(i==4){
+    #     vals$options[i] <- input$seuratFindMarkerPct1Option
+    #   }
+    #   if(1==5){
+    #     vals$options[i] <- input$seuratFindMarkerPct2Option
+    #   }
+    #   if(1==6){
+    #     vals$options[i] <- input$seuratFindMarkerLFCOption
+    #   }
+    #   if(1==7){
+    #     vals$options[i] <- input$seuratFindMarkerClusterOption
+    #   }
+    # }
     # vals$seuratFindMarkerPValOption <- input$seuratFindMarkerPValOption
     # vals$seuratFindMarkerPValAdjOption <- input$seuratFindMarkerPValAdjOption
     # vals$seuratFindMarkerPct1Option <- input$seuratFindMarkerPct1Option
@@ -550,115 +550,30 @@ filterTableServer <- function(input, output, session, vals, dataframe, selectPhe
   })
   
   updateSeuratFindMarkerTable <- function(){
-    df <- NULL 
-    parameters <- NULL
-    p_val_operators <- ""
-    if(!is.null(vals$options[2])){
-      p_val_operators <- paste0(vals$options[2], collapse = "")
-    }
-    lfc_operators <- ""
-    if(!is.null(vals$options[6])){
-      lfc_operators <- paste0(vals$options[6], collapse = "")
-    }
-    pct1_operators <- ""
-    if(!is.null(vals$options[4])){
-      pct1_operators <- paste0(vals$options[4], collapse = "")
-    }
-    pct2_operators <- ""
-    if(!is.null(vals$options[5])){
-      pct2_operators <- paste0(vals$options[5], collapse = "")
-    }
-    p_val_adj_operators <- ""
-    if(!is.null(vals$options[3])){
-      p_val_adj_operators <- paste0(vals$options[3], collapse = "")
+    df <- NULL
+    parameters <- list()
+    parameters$operators <- list()
+    parameters$values <- list()
+    for(i in seq(length(colnamesDF))){
+      if(is.null(input[[option[i]]])){
+        parameters$operators[i] <- "NULL"
+      }
+      else{
+        parameters$operators[i] <- input[[option[i]]]
+      }
+      if(is.null(input[[input2[i]]])){
+        parameters$values[i] <- "NULL"
+      }
+      else{
+        parameters$values[i] <- input[[input2[i]]]
+      }
     }
     
-
-    
-    if(p_val_operators == ""
-       && lfc_operators == ""
-       && pct1_operators == ""
-       && pct2_operators == ""
-       && p_val_adj_operators == ""){
-      df <- dataframe
-      if(!is.null(vals$options[1])
-         || !is.null(vals$options[7])){
-        if(!is.null(vals$options[1])){
-          if(vals$options[1] == "="){
-            df <- df[input$seuratFindMarkerGeneIDInput,]
-          }
-          else if(vals$options[1] == "!="){
-            df <- df[-match(input$seuratFindMarkerGeneIDInput, df$gene.id),]
-          }
-        }
-        if(!is.null(vals$options[7])){
-          if(vals$options[7] == "="){
-            df <- df[which(input$seuratFindMarkerClusterInput == df$cluster),]
-          }
-          else if(vals$options[7] == "!="){
-            df <- df[-which(input$seuratFindMarkerClusterInput == df$cluster),]
-          }
-        }
-      }
-    }
-    else{
-      allOperators <- c(
-        "",
-        p_val_operators,
-        lfc_operators,
-        pct1_operators,
-        pct2_operators,
-        p_val_adj_operators
-      )
-      
-      allValues <- c(
-        "",
-        input$seuratFindMarkerPValInput,
-        input$seuratFindMarkerLFCInput,
-        input$seuratFindMarkerPct1Input,
-        input$seuratFindMarkerPct2Input,
-        input$seuratFindMarkerPValAdjInput
-      )
-      
-      parameters <- list()
-      for(i in seq(length(1:6))){
-        if(allOperators[i] != ""){
-          parameters$operators <- c(parameters$operators, allOperators[i])
-          parameters$values <- c(parameters$values, allValues[i])
-          parameters$cols <- c(parameters$cols, colnamesDF[i])
-        }
-      }
-      parameters$operators <- na.omit(parameters$operators)
-      parameters$values <- na.omit(parameters$values)
-      parameters$cols <- na.omit(parameters$cols)
-      
-      df <- dataframe
-      if(!is.null(vals$options[1])
-         || !is.null(vals$options[7])){
-        if(!is.null(vals$options[1])){
-          if(vals$options[1] == "="){
-            df <- df[input$seuratFindMarkerGeneIDInput,]
-          }
-          else if(vals$options[1] == "!="){
-            df <- df[-match(input$seuratFindMarkerGeneIDInput, df$gene.id),]
-          }
-        }
-        if(!is.null(vals$options[7])){
-          if(vals$options[7] == "="){
-            df <- df[which(input$seuratFindMarkerClusterInput == df$cluster),]
-          }
-          else if(vals$options[7] == "!="){
-            df <- df[-which(input$seuratFindMarkerClusterInput == df$cluster),]
-          }
-        }
-      }
-      print("parameters")
-      print(parameters)
-      df <- singleCellTK:::.filterDF(df = df,
+      df <- singleCellTK:::.filterDF(df = dataframe,
                                      operators = parameters$operators,
-                                     cols = parameters$cols,
+                                     cols = colnamesDF,
                                      values = parameters$values)
-    }
+    
     
     seuratObject <- convertSCEToSeurat(vals$counts, scaledAssay = "seuratScaledData")
     indices <- list()
@@ -678,7 +593,7 @@ filterTableServer <- function(input, output, session, vals, dataframe, selectPhe
       Idents(seuratObject, cells = cells[[i]]) <- groups[i]
     }
     
-    r$heatmapFull <- DoHeatmap(seuratObject, features = df$gene.id)
+    r$heatmapFull <- DoHeatmap(seuratObject, features = df$gene_id)
     # output$findMarkerHeatmapPlotFull <- renderPlot({
     #   DoHeatmap(seuratObject, features = df$gene.id)
     # })
@@ -688,55 +603,49 @@ filterTableServer <- function(input, output, session, vals, dataframe, selectPhe
     })
     
     output$seuratFindMarkerTable <- DT::renderDataTable({
-      metadata(vals$counts)$seuratMarkersSubset <- df
-      df$p_val <- format(df$p_val, nsmall = 7)
-      df$p_val_adj <- format(df$p_val_adj, nsmall = 7)
-      df$pct.1 <- format(df$pct.1, nsmall = 7)
-      df$pct.2 <- format(df$pct.2, nsmall = 7)
-      df$avg_logFC <- format(df$avg_logFC, nsmall = 7)
       df
     }, options = list(pageLength = 6, dom = "<'top'fl>t<'bottom'ip>", stateSave = TRUE
     ))
     
-    activeFilterString <- list()
-    choiceValuesFilter <- list()
-    if(!is.null(parameters)){
-      for(i in seq(length(parameters$cols))){
-        activeFilterString[i] <- paste(parameters$cols[i], parameters$operators[i], parameters$values[i])
-        choiceValuesFilter[i] <- paste(parameters$cols[i])
-      }
-      
-      if(!is.null(vals$options[1])){
-        activeFilterString <- append(activeFilterString, paste("gene.id", vals$options[1], paste(input$seuratFindMarkerGeneIDInput, collapse = ", ")))
-        choiceValuesFilter <- append(choiceValuesFilter, "gene.id")
-      }
-      
-      if(!is.null(vals$options[7])){
-        activeFilterString <- append(activeFilterString, paste("cluster", vals$options[7], paste(input$seuratFindMarkerClusterInput, collapse = ", ")))
-        choiceValuesFilter <- append(choiceValuesFilter, "cluster")
-      }
-      
-      vals$activeFilterString <- as.character(activeFilterString)
-      vals$choiceValuesFilter <- as.character(choiceValuesFilter)
-      output$seuratFindMarkerActiveFilters <- renderUI({
-        panel(
-          # HTML(activeFilterString),
-          checkboxGroupInput(
-            inputId = ns("checkboxFiltersToRemove"),
-            label = NULL,
-            choiceNames = vals$activeFilterString,
-            choiceValues = vals$choiceValuesFilter
-          )
-        )
-      })
-    }
-    else{
-      output$seuratFindMarkerActiveFilters <- renderUI({
-        panel(
-          HTML(paste("<span style='color:red'>No active filters!</span>")),
-        )
-      })
-    }
+    # activeFilterString <- list()
+    # choiceValuesFilter <- list()
+    # if(!is.null(parameters)){
+    #   for(i in seq(length(parameters$cols))){
+    #     activeFilterString[i] <- paste(parameters$cols[i], parameters$operators[i], parameters$values[i])
+    #     choiceValuesFilter[i] <- paste(parameters$cols[i])
+    #   }
+    #   
+    #   if(!is.null(vals$options[1])){
+    #     activeFilterString <- append(activeFilterString, paste("gene.id", vals$options[1], paste(input$seuratFindMarkerGeneIDInput, collapse = ", ")))
+    #     choiceValuesFilter <- append(choiceValuesFilter, "gene.id")
+    #   }
+    #   
+    #   if(!is.null(vals$options[7])){
+    #     activeFilterString <- append(activeFilterString, paste("cluster", vals$options[7], paste(input$seuratFindMarkerClusterInput, collapse = ", ")))
+    #     choiceValuesFilter <- append(choiceValuesFilter, "cluster")
+    #   }
+    #   
+    #   vals$activeFilterString <- as.character(activeFilterString)
+    #   vals$choiceValuesFilter <- as.character(choiceValuesFilter)
+    #   output$seuratFindMarkerActiveFilters <- renderUI({
+    #     panel(
+    #       # HTML(activeFilterString),
+    #       checkboxGroupInput(
+    #         inputId = ns("checkboxFiltersToRemove"),
+    #         label = NULL,
+    #         choiceNames = vals$activeFilterString,
+    #         choiceValues = vals$choiceValuesFilter
+    #       )
+    #     )
+    #   })
+    # }
+    # else{
+    #   output$seuratFindMarkerActiveFilters <- renderUI({
+    #     panel(
+    #       HTML(paste("<span style='color:red'>No active filters!</span>")),
+    #     )
+    #   })
+    # }
     
     r$data <- df
   }
@@ -745,7 +654,7 @@ filterTableServer <- function(input, output, session, vals, dataframe, selectPhe
                                             input$seuratFindMarkerTable_rows_selected
                                             isolate({
                                               if(!is.null(input$seuratFindMarkerTable_rows_selected)){
-                                                df <- metadata(vals$counts)$seuratMarkersSubset[input$seuratFindMarkerTable_rows_selected,]
+                                                df <- r$data[input$seuratFindMarkerTable_rows_selected,]
                                                 seuratObject <- convertSCEToSeurat(vals$counts, scaledAssay = "seuratScaledData")
                                         
                                                 indices <- list()
@@ -765,23 +674,23 @@ filterTableServer <- function(input, output, session, vals, dataframe, selectPhe
                                                   Idents(seuratObject, cells = cells[[i]]) <- groups[i]
                                                 }
                                                 
-                                                r$ridgePlot <- RidgePlot(seuratObject, features = df$gene.id, ncol = 2)
+                                                r$ridgePlot <- RidgePlot(seuratObject, features = df$gene_id, ncol = 2)
                                                 # output$findMarkerRidgePlot <- renderPlot({
                                                 #   RidgePlot(seuratObject, features = df$gene.id, ncol = 2)
                                                 # })
-                                                r$violinPlot <- VlnPlot(seuratObject, features = df$gene.id, ncol = 2)
+                                                r$violinPlot <- VlnPlot(seuratObject, features = df$gene_id, ncol = 2)
                                                 # output$findMarkerViolinPlot <- renderPlot({
                                                 #   VlnPlot(seuratObject, features = df$gene.id, ncol = 2)
                                                 # })
-                                                r$featurePlot <- FeaturePlot(seuratObject, features = df$gene.id, ncol = 2)
+                                                r$featurePlot <- FeaturePlot(seuratObject, features = df$gene_id, ncol = 2)
                                                 # output$findMarkerFeaturePlot <- renderPlot({
                                                 #   FeaturePlot(seuratObject, features = df$gene.id, ncol = 2)
                                                 # })
-                                                r$dotPlot <- DotPlot(seuratObject, features = df$gene.id)
+                                                r$dotPlot <- DotPlot(seuratObject, features = df$gene_id)
                                                 # output$findMarkerDotPlot <- renderPlot({
                                                 #   DotPlot(seuratObject, features = df$gene.id)
                                                 # })
-                                                r$heatmapPlot <- DoHeatmap(seuratObject, features = df$gene.id)
+                                                r$heatmapPlot <- DoHeatmap(seuratObject, features = df$gene_id)
                                                 # output$findMarkerHeatmapPlot <- renderPlot({
                                                 #   DoHeatmap(seuratObject, features = df$gene.id)
                                                 # })

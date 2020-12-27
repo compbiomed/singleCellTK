@@ -497,8 +497,9 @@ setMethod(f = "sctkAssay<-",
   for(i in seq(length(cols))){
     if(operators[i]!="NULL"){
       if(operators[i] == "="){
-        operators[i] = "=="
+        operators[i] <- "=="
       }
+      values[i] <- paste0("'", values[i], "'")
       filters <- c(filters, paste0("eval(call('", operators[i], "', df[['", cols[i], "']],", values[i], "))"))
     }
   }
