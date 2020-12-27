@@ -31,13 +31,15 @@ filterTableServer <- function(input, output, session, vals, dataframe, selectPhe
                       featurePlot = NULL,
                       dotPlot = NULL
                       )
+  colnames(dataframe) <- gsub("\\.", "_", colnames(dataframe))
+  colnamesDF <- colnames(dataframe)
   class <- NULL
   option <- NULL
   input2 <- NULL
-  for(i in seq(length(colnames(dataframe)))){
-    class[i] <- paste0("class_", colnames(dataframe)[i])
-    option[i] <- paste0("option_", colnames(dataframe)[i])
-    input2[i] <- paste0("input_", colnames(dataframe)[i])
+  for(i in seq(length(colnamesDF))){
+    class[i] <- paste0("class_", colnamesDF[i])
+    option[i] <- paste0("option_", colnamesDF[i])
+    input2[i] <- paste0("input_", colnamesDF[i])
   }
   print(class)
   # class <- c("class1",
@@ -91,12 +93,12 @@ filterTableServer <- function(input, output, session, vals, dataframe, selectPhe
   #                 "seuratFindMarkerClusterInput"
   #                 )
   
-  lapply(1:length(colnames(dataframe)), function(i) {
+  lapply(1:length(colnamesDF), function(i) {
     if(is.numeric(dataframe[,i])){
       output[[paste0("b",i)]] <- renderUI({
         hidden(div(class = class[i], wellPanel(style='border:0;',
                                                checkboxGroupButtons(
-                                                 inputId = ns(option[i]), label = colnames(dataframe)[i],
+                                                 inputId = ns(option[i]), label = colnamesDF[i],
                                                  choices = c("<", ">", "=", "<=", ">="),
                                                  justified = TRUE,
                                                  individual = TRUE,
@@ -118,7 +120,7 @@ filterTableServer <- function(input, output, session, vals, dataframe, selectPhe
         hidden(
           div(class = class[i], wellPanel(style='border:0;',
                                                checkboxGroupButtons(
-                                                 inputId = ns(option[i]), label = colnames(dataframe)[i],
+                                                 inputId = ns(option[i]), label = colnamesDF[i],
                                                  choices = c("=", "!="),
                                                  justified = TRUE,
                                                  individual = TRUE,
@@ -309,13 +311,7 @@ filterTableServer <- function(input, output, session, vals, dataframe, selectPhe
                            selectInput(
                              inputId = ns("seuratFindMarkerSelectFilter"),
                              label = "Select column to filter:",
-                             choices = c("gene.id",
-                                         "p_val",
-                                         "avg_logFC",
-                                         "pct.1",
-                                         "pct.2",
-                                         "p_val_adj",
-                                         "cluster")
+                             choices = colnamesDF
                            ),
                            uiOutput(ns("b1")),
                            uiOutput(ns("b2")),
@@ -629,7 +625,7 @@ filterTableServer <- function(input, output, session, vals, dataframe, selectPhe
         if(allOperators[i] != ""){
           parameters$operators <- c(parameters$operators, allOperators[i])
           parameters$values <- c(parameters$values, allValues[i])
-          parameters$cols <- c(parameters$cols, colnames(dataframe)[i])
+          parameters$cols <- c(parameters$cols, colnamesDF[i])
         }
       }
       parameters$operators <- na.omit(parameters$operators)
@@ -1065,50 +1061,11 @@ filterTableServer <- function(input, output, session, vals, dataframe, selectPhe
   })
   
   observeEvent(input$seuratFindMarkerSelectFilter,{
-    print(paste0(".class_",input$seuratFindMarkerSelectFilter))
-    shinyjs::show(selector = paste0(".class_",input$seuratFindMarkerSelectFilter))
-    
-    if(input$seuratFindMarkerSelectFilter == "gene.id"){
-      shinyjs::show(selector = ".seuratFindMarkerGeneIDDiv")
-    }
-    if(input$seuratFindMarkerSelectFilter != "gene.id"){
-      shinyjs::hide(selector = ".seuratFindMarkerGeneIDDiv")
-    }
-    if(input$seuratFindMarkerSelectFilter == "p_val"){
-      shinyjs::show(selector = ".seuratFindMarkerPValDiv")
-    }
-    if(input$seuratFindMarkerSelectFilter != "p_val"){
-      shinyjs::hide(selector = ".seuratFindMarkerPValDiv")
-    }
-    if(input$seuratFindMarkerSelectFilter == "avg_logFC"){
-      shinyjs::show(selector = ".seuratFindMarkerLFCDiv")
-    }
-    if(input$seuratFindMarkerSelectFilter != "avg_logFC"){
-      shinyjs::hide(selector = ".seuratFindMarkerLFCDiv")
-    }
-    if(input$seuratFindMarkerSelectFilter == "pct.1"){
-      shinyjs::show(selector = ".seuratFindMarkerPct1Div")
-    }
-    if(input$seuratFindMarkerSelectFilter != "pct.1"){
-      shinyjs::hide(selector = ".seuratFindMarkerPct1Div")
-    }
-    if(input$seuratFindMarkerSelectFilter == "pct.2"){
-      shinyjs::show(selector = ".seuratFindMarkerPct2Div")
-    }
-    if(input$seuratFindMarkerSelectFilter != "pct.2"){
-      shinyjs::hide(selector = ".seuratFindMarkerPct2Div")
-    }
-    if(input$seuratFindMarkerSelectFilter == "p_val_adj"){
-      shinyjs::show(selector = ".seuratFindMarkerPValAdjDiv")
-    }
-    if(input$seuratFindMarkerSelectFilter != "p_val_adj"){
-      shinyjs::hide(selector = ".seuratFindMarkerPValAdjDiv")
-    }
-    if(input$seuratFindMarkerSelectFilter == "cluster"){
-      shinyjs::show(selector = ".seuratFindMarkerClusterDiv")
-    }
-    if(input$seuratFindMarkerSelectFilter != "cluster"){
-      shinyjs::hide(selector = ".seuratFindMarkerClusterDiv")
+    shinyjs::show(selector = paste0(".class_", input$seuratFindMarkerSelectFilter))
+    for(i in seq(length(class))){
+      if(class[i] != paste0("class_", input$seuratFindMarkerSelectFilter)){
+        shinyjs::hide(selector = paste0(".", class[i]))
+      }
     }
   })
   
