@@ -22,22 +22,61 @@ filterTableServer <- function(input, output, session, dataframe){
                       selectedRows = NULL,
                       parameters = NULL
                       )
-  message("Removing '.' from column names of the input dataframe as it is not supported by the filters!")
+  message("Removing '.' from column names of the input dataframe as it is not supported by filters!")
   colnames(dataframe) <- gsub("\\.", "_", colnames(dataframe))
   colnamesDF <- colnames(dataframe)
   class <- NULL
   option <- NULL
+  option2 <- NULL
   input2 <- NULL
+  input3 <- NULL
+  input4 <- NULL
+  input5 <- NULL
   for(i in seq(length(colnamesDF))){
     class[i] <- paste0("class_", colnamesDF[i])
     option[i] <- paste0("option_", colnamesDF[i])
+    option2[i] <- paste0("option2_", colnamesDF[i])
     input2[i] <- paste0("input_", colnamesDF[i])
+    input3[i] <- paste0("input3_", colnamesDF[i])
+    input4[i] <- paste0("input4_", colnamesDF[i])
+    input5[i] <- paste0("input5_", colnamesDF[i])
   }
   
   lapply(1:length(colnamesDF), function(i) {
     if(is.numeric(dataframe[,i])){
       output[[paste0("filterOutput",i)]] <- renderUI({
         hidden(div(class = class[i], wellPanel(style='border:0;',
+                                               checkboxInput(
+                                                 inputId = ns(input4[i]),
+                                                 label = "Double?",
+                                                 value = FALSE
+                                               ),
+                                               conditionalPanel(
+                                                 condition = paste0("input['", input4[i], "']"),
+                                                 ns = ns,
+                                                 radioGroupButtons(
+                                                   inputId = ns(input3[i]), label = NULL,
+                                                   choices = c("OR", "AND"),
+                                                   justified = TRUE,
+                                                   individual = TRUE,
+                                                   size = "s",
+                                                   status = "primary"
+                                                 ),
+                                                 checkboxGroupButtons(
+                                                   inputId = ns(option2[i]), label = colnamesDF[i],
+                                                   choices = c("<", ">", "=", "<=", ">="),
+                                                   justified = TRUE,
+                                                   individual = TRUE,
+                                                   size = "s",
+                                                   status = "primary"
+                                                 ),
+                                                 numericInput(
+                                                   inputId = ns(input5[i]),
+                                                   label = NULL,
+                                                   step = 0.001,
+                                                   value = 0
+                                                 )
+                                               ),
                                                checkboxGroupButtons(
                                                  inputId = ns(option[i]), label = colnamesDF[i],
                                                  choices = c("<", ">", "=", "<=", ">="),
