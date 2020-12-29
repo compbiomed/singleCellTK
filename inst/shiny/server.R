@@ -6700,12 +6700,8 @@ shinyServer(function(input, output, session) {
     vals$fts <- callModule(
       module = filterTableServer,
       id = "filter1",
-      dataframe = metadata(vals$counts)$seuratMarkers)
-    
-    # vals$fts <- callModule(
-    #   module = filterTableServer, 
-    #   id = "filter1", 
-    #   dataframe = mtcars)
+      dataframe = metadata(vals$counts)$seuratMarkers
+      )
     
   })
   

@@ -57,7 +57,7 @@ filterTableServer <- function(input, output, session, dataframe){
                                                  radioGroupButtons(
                                                    inputId = ns(input3[i]), label = NULL,
                                                    choices = c("OR", "AND"),
-                                                   justified = TRUE,
+                                                   justified = FALSE,
                                                    individual = TRUE,
                                                    size = "s",
                                                    status = "primary"
@@ -65,7 +65,7 @@ filterTableServer <- function(input, output, session, dataframe){
                                                  checkboxGroupButtons(
                                                    inputId = ns(option2[i]), label = colnamesDF[i],
                                                    choices = c("<", ">", "=", "<=", ">="),
-                                                   justified = TRUE,
+                                                   justified = FALSE,
                                                    individual = TRUE,
                                                    size = "s",
                                                    status = "primary"
@@ -80,7 +80,7 @@ filterTableServer <- function(input, output, session, dataframe){
                                                checkboxGroupButtons(
                                                  inputId = ns(option[i]), label = colnamesDF[i],
                                                  choices = c("<", ">", "=", "<=", ">="),
-                                                 justified = TRUE,
+                                                 justified = FALSE,
                                                  individual = TRUE,
                                                  size = "s",
                                                  status = "primary"
@@ -102,7 +102,7 @@ filterTableServer <- function(input, output, session, dataframe){
                                                checkboxGroupButtons(
                                                  inputId = ns(option[i]), label = colnamesDF[i],
                                                  choices = c("=", "!="),
-                                                 justified = TRUE,
+                                                 justified = FALSE,
                                                  individual = TRUE,
                                                  size = "s",
                                                  status = "primary"
@@ -125,54 +125,39 @@ filterTableServer <- function(input, output, session, dataframe){
         h6("You can view the marker genes in the table below and apply custom filters to filter the table accordingly. A joint heatmap for all the marker genes available in the table is plotted underneath the table. Additional visualizations are plotted for select genes which can be selected by clicking on the rows of the table.")
       ),
       br(),
-      fluidRow(
-        column(4,offset = 0.1, style='padding:3px;', align = "center",
-        ),
-        column(4,offset = 0.1, style='padding:3px;', align = "center",
-               radioGroupButtons(
-                 inputId = ns("seuratFindMarkerFilterShowHide"), label = NULL,
-                 choices = c("Show Filters" = "Show", "Hide Filters" = "Hide"),
-                 justified = TRUE, status = "primary",
-                 selected = "Hide",
-                 size = "sm"
-               )
-        ),
-        column(4,offset = 0.1, style='padding:3px;', align = "center",
-        )
-      ),
-      div(class = "seuratFindMarkerShowHideDiv",
-          panel(
-            fluidRow(
-              column(4,
-                     panel(heading = "Options",
-                           selectInput(
-                             inputId = ns("seuratFindMarkerSelectFilter"),
-                             label = "Select column to filter:",
-                             choices = colnamesDF
-                           ),
-                           lapply(1:length(colnamesDF), function(i) {
-                             uiOutput(ns(paste0("filterOutput", i)))
-                           }),
-                           actionButton(
-                             inputId = ns("seuratFindMarkerFilterRun"),
-                             label = "Apply Filter"
-                           )
-                     )
-              ),
-              column(8,
                      panel(heading = "Active Filters",
                            uiOutput(ns("seuratFindMarkerActiveFilters")),
                            br(),
+                           dropdownButton(
+                             fluidRow(
+                               panel(
+                               column(12,
+                                      selectInput(
+                                        inputId = ns("seuratFindMarkerSelectFilter"),
+                                        label = "Select column to filter:",
+                                        choices = colnamesDF
+                                      ),
+                                      lapply(1:length(colnamesDF), function(i) {
+                                        uiOutput(ns(paste0("filterOutput", i)))
+                                      }),
+                                      actionButton(
+                                        inputId = ns("seuratFindMarkerFilterRun"),
+                                        label = "Apply Filter"
+                                      )
+                                      )
+                               )
+                             ),
+                             inputId = ns("addFilterDropdown"),
+                             label = "Add Filter",
+                             circle = FALSE,
+                             inline = TRUE
+                           ),
                            actionButton(
                              inputId = ns("seuratFindMarkerRemoveAllFilters"),
                              label = "Remove Filter"
                            )
-                     )
-              )
-            )
-          ),
-          br()
-      )
+                     ),
+      br()
     )
   })
   
@@ -191,6 +176,7 @@ filterTableServer <- function(input, output, session, dataframe){
   
   observeEvent(input$seuratFindMarkerFilterRun,{
     updateSeuratFindMarkerTable()
+    toggleDropdownButton("addFilterDropdown")
   })
   
   updateSeuratFindMarkerTable <- function(){
@@ -266,15 +252,6 @@ filterTableServer <- function(input, output, session, dataframe){
                                               }
                                             })
                                           })
-  
-  observeEvent(input$seuratFindMarkerFilterShowHide,{
-    if(input$seuratFindMarkerFilterShowHide == "Show"){
-      shinyjs::show(selector = ".seuratFindMarkerShowHideDiv")
-    }
-    else{
-      shinyjs::hide(selector = ".seuratFindMarkerShowHideDiv")
-    }
-  })
   
   observeEvent(input$seuratFindMarkerSelectFilter,{
     shinyjs::show(selector = paste0(".class_", input$seuratFindMarkerSelectFilter))
