@@ -5,6 +5,7 @@ filterTableUI <- function(id){
     fluidRow(
       tags$div(class = "seurat_findmarker_table", panel(heading = "Marker Genes",
                                                         uiOutput(ns("seuratFindMarkerFilter")),
+                                                        br(),
                                                         DT::dataTableOutput(
                                                           outputId = ns("seuratFindMarkerTable")
                                                         ) %>% withSpinner(type = 5, color = "#b2b2b2")
@@ -46,43 +47,51 @@ filterTableServer <- function(input, output, session, dataframe){
     if(is.numeric(dataframe[,i])){
       output[[paste0("filterOutput",i)]] <- renderUI({
         hidden(div(class = class[i], wellPanel(style='border:0;',
-                                               checkboxInput(
-                                                 inputId = ns(input4[i]),
-                                                 label = "Double?",
-                                                 value = FALSE
-                                               ),
-                                               conditionalPanel(
-                                                 condition = paste0("input['", input4[i], "']"),
-                                                 ns = ns,
-                                                 radioGroupButtons(
-                                                   inputId = ns(input3[i]), label = NULL,
-                                                   choices = c("OR", "AND"),
-                                                   justified = FALSE,
-                                                   individual = TRUE,
-                                                   size = "s",
-                                                   status = "primary"
-                                                 ),
-                                                 checkboxGroupButtons(
-                                                   inputId = ns(option2[i]), label = colnamesDF[i],
-                                                   choices = c("<", ">", "=", "<=", ">="),
-                                                   justified = FALSE,
-                                                   individual = TRUE,
-                                                   size = "s",
-                                                   status = "primary"
-                                                 ),
-                                                 numericInput(
-                                                   inputId = ns(input5[i]),
-                                                   label = NULL,
-                                                   step = 0.001,
-                                                   value = 0
-                                                 )
+                                               # checkboxInput(
+                                               #   inputId = ns(input4[i]),
+                                               #   label = "Double?",
+                                               #   value = FALSE
+                                               # ),
+                                               # conditionalPanel(
+                                               #   condition = paste0("input['", input4[i], "']"),
+                                               #   ns = ns,
+                                               #   radioGroupButtons(
+                                               #     inputId = ns(input3[i]), label = NULL,
+                                               #     choices = c("OR", "AND"),
+                                               #     justified = FALSE,
+                                               #     individual = TRUE,
+                                               #     size = "s",
+                                               #     status = "primary"
+                                               #   ),
+                                               #   checkboxGroupButtons(
+                                               #     inputId = ns(option2[i]), label = colnamesDF[i],
+                                               #     choices = c("<", ">", "=", "<=", ">="),
+                                               #     justified = FALSE,
+                                               #     individual = TRUE,
+                                               #     size = "s",
+                                               #     status = "primary"
+                                               #   ),
+                                               #   numericInput(
+                                               #     inputId = ns(input5[i]),
+                                               #     label = NULL,
+                                               #     step = 0.001,
+                                               #     value = 0
+                                               #   )
+                                               # ),
+                                               radioButtons(
+                                                 inputId = ns(option2[i]),
+                                                 label = NULL,
+                                                 choices = c("use single criteria" = "single", 
+                                                             "use extremes" = "extreme", 
+                                                             "use range" = "range"),
+                                                 selected = "single"
                                                ),
                                                checkboxGroupButtons(
-                                                 inputId = ns(option[i]), label = colnamesDF[i],
+                                                 inputId = ns(option[i]), 
+                                                 label = colnamesDF[i],
                                                  choices = c("<", ">", "=", "<=", ">="),
                                                  justified = FALSE,
-                                                 individual = TRUE,
-                                                 size = "s",
+                                                 individual = FALSE,
                                                  status = "primary"
                                                ),
                                                numericInput(
@@ -157,7 +166,6 @@ filterTableServer <- function(input, output, session, dataframe){
                              label = "Remove Filter"
                            )
                      ),
-      br()
     )
   })
   
