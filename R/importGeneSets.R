@@ -428,6 +428,75 @@ importGeneSetsFromMSigDB <- function(inSCE, categoryIDs,
 }
 
 
+
+#' @title Import mitochondrial gene sets
+#' @description Imports mitochondrial gene sets and  stores it in the metadata of the
+#' \linkS4class{SingleCellExperiment} object. These gene sets can be used in
+#' downstream quality control and analysis functions in \link{singleCellTK}. 
+#' @param inSCE Input \linkS4class{SingleCellExperiment} object.
+#' @param reference Character. Species available are "hg38", "hg19", "mm9" and "mm10." 
+#' @param by Character. Describes the location within \code{inSCE} where the gene 
+#' identifiers in the mitochondrial gene sets should be mapped. 
+#' If set to \code{"rownames"} then the features will
+#' be searched for among \code{rownames(inSCE)}. This can also be
+#' set to one of the column names of \code{rowData(inSCE)} in which case the
+#' gene identifies will be mapped to that column in the \code{rowData}
+#' of \code{inSCE}. See \link{featureIndex} for more information.
+#' Default \code{"rownames"}.
+#' @param id Types of gene id. Now it supports "symbol", "entrez", "ensemble"
+#' and "ensemble_transcriptID". 
+#' @param collectionName Character. Name of collection to add gene sets to.
+#' If this collection already exists in \code{inSCE}, then these gene sets will
+#' be added to that collection. Any gene sets within the collection with the
+#' same name will be overwritten.
+#' @return A \link[SingleCellExperiment]{SingleCellExperiment} object
+#' with gene set from \code{collectionName} output stored to the
+#' \link{metadata} slot.
+#' @details The gene identifiers of mitochondrial genes will be loaded with 
+#' "data(AllMito)". Currently, it supports hg38, hg19, mm9 and mm10 reference. 
+#' Also, it supports entrez ID, gene symbol, ensemble ID and ensemble transcript ID. 
+#' They will be mapped to the IDs in \code{inSCE} using the \code{by} parameter and
+#' stored in a \linkS4class{GeneSetCollection} object from package
+#' \link{GSEABase}. This object is stored in
+#' \code{metadata(inSCE)$sctk$genesets}, which can be accessed in downstream
+#' analysis functions such as \link[singleCellTK]{runCellQC}.
+#' @author Rui Hong
+#' @seealso \link{importGeneSetsFromList} for importing from lists,
+#' \link{importGeneSetsFromGMT} for importing from GMT files, and
+# \link{importGeneSetsFromCollection} for importing from
+#' \linkS4class{GeneSetCollection} objects.
+#' @examples
+#' data(scExample)
+#' sce <- importMitoGeneSet(inSCE = sce,
+#'                          reference = "hg38",
+#'                          id = "ensemble",
+#'                          collectionName = "hg38_mito",
+#'                          by = "rownames")
+#' @export
+importMitoGeneSet <- function(inSCE, reference, id, by, collectionName) {
+  if (!id %in% c("symbol", "entrez", "ensemble", "ensemble_transcriptID")) {
+    stop("id should be one of 'symbol', 'entrez', 'ensemble' or 'ensemble_transcriptID'")
+  }
+  
+  if (!reference %in% c("hg38", "hg19", "mm10", "mm9")) {
+    stop("Now it only supports hg38, hg19, mm10 and mm9 reference.")
+  }
+  
+  #utils::globalVariables(c("AllMito"))
+  MitoGenes <- NULL
+  utils::data(MitoGenes, envir = environment())
+  target <- paste(reference, id, sep="_")
+  if (!target %in% names(MitoGenes)) {
+    stop(target, " is not supported now. Please use function 'importGeneSetsFromGMT' or 'importGeneSetsFromList' to load mitochondrial gene sets.")
+  }
+  
+  mitogenes <- MitoGenes[[target]]
+  inSCE <- importGeneSetsFromList(inSCE = inSCE, geneSetList = mitogenes,
+                                  collectionName = collectionName, 
+                                  by = by)
+  return(inSCE)
+}
+
 #' @title Lists imported GeneSetCollections
 #' @description Returns a vector of GeneSetCollections that have been
 #' imported and stored in \code{metadata(inSCE)$sctk$genesets}.

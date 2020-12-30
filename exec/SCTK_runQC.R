@@ -216,7 +216,7 @@ if (numCores > 1) {
 ### checking output formats
 if (!all(formats %in% c("SCE", "AnnData", "FlatFile", "HTAN"))) {
     warning("Output format must be 'SCE', 'AnnData', 'HTAN' or 'FlatFile'. Format ", 
-         paste(formats[!format %in% c("SCE", "AnnData", "FlatFile", "HTAN")], sep = ","),
+         paste(formats[!formats %in% c("SCE", "AnnData", "FlatFile", "HTAN")], collapse = ","),
          " is not supported now. ")
 }
 
@@ -531,6 +531,11 @@ for(i in seq_along(process)) {
             reportDropletQC(inSCE = mergedDropletSCE, output_dir = directory, output_file = paste0("SCTK_", samplename,'_dropletQC.html'), subTitle = subTitle, studyDesign = studyDesign)
             reportCellQC(inSCE = mergedFilteredSCE, output_dir = directory, output_file = paste0("SCTK_", samplename,'_cellQC.html'), subTitle = subTitle, studyDesign = studyDesign)
 
+            ## generate QC metrics table for mergedFilteredSCE
+            QCsummary <- sampleSummaryStats(mergedFilteredSCE, simple=FALSE, sample = colData(mergedFilteredSCE)$sample) #colData(cellSCE)$Study_ID
+            write.csv(QCsummary, file.path(directory, 
+                                           samplename,
+                                           paste0("SCTK_", samplename,'_cellQC_summary.csv')))
         }
 
         if ((dataType == "Droplet") & (!isTRUE(detectCell))) {
@@ -577,6 +582,11 @@ for(i in seq_along(process)) {
             getSceParams(inSCE = mergedFilteredSCE, directory = directory, 
                          samplename = samplename, writeYAML = TRUE,
                          skip = c("scrublet", "runDecontX", "runBarcodeRanksMetaOutput"))
+
+            QCsummary <- sampleSummaryStats(mergedFilteredSCE, simple=FALSE, sample = colData(mergedFilteredSCE)$sample) #colData(cellSCE)$Study_ID
+            write.csv(QCsummary, file.path(directory, 
+                                           samplename,
+                                           paste0("SCTK_", samplename,'_cellQC_summary.csv')))
         }
 
     }
@@ -628,6 +638,12 @@ if (!isTRUE(split)) {
         } else {
             warning("'FlatFile' is not in output format. Skip exporting the manifest file.")
         }
+
+        ## generate QC summary
+        QCsummary <- sampleSummaryStats(cellSCE, simple=FALSE, sample = colData(cellSCE)$sample) 
+        write.csv(QCsummary, file.path(directory,
+                                       samplename, 
+                                       paste0("SCTK_", samplename,'_cellQC_summary.csv')))
     }
 
     if (dataType == "Cell") {
@@ -658,6 +674,11 @@ if (!isTRUE(split)) {
 
         reportCellQC(inSCE = cellSCE, output_dir = directory, output_file = paste0("SCTK_", samplename,'_cellQC.html'), subTitle = subTitle, studyDesign = studyDesign)
         getSceParams(inSCE = cellSCE, directory = directory, samplename = samplename, writeYAML = TRUE)
+
+        QCsummary <- sampleSummaryStats(cellSCE, simple=FALSE, sample = colData(cellSCE)$sample) 
+        write.csv(QCsummary, file.path(directory,
+                                       samplename, 
+                                       paste0("SCTK_", samplename,'_cellQC_summary.csv')))
     }
 
     if ((dataType == "Droplet") & (!isTRUE(detectCell))) {
