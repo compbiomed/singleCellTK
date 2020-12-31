@@ -151,8 +151,69 @@ filterTableServer <- function(input, output, session, dataframe){
   ))
   
   observeEvent(input$seuratFindMarkerFilterRun,{
+    #update table
     updateSeuratFindMarkerTable()
+    #close dropdown
     toggleDropdownButton("addFilterDropdown")
+    #reset inputs
+    lapply(1:length(colnamesDF), function(i) {
+      if(is.numeric(dataframe[,i])){
+        output[[paste0("filterOutput",i)]] <- renderUI({
+          hidden(div(class = class[i], wellPanel(style='border:1;',
+                                                 checkboxGroupButtons(
+                                                   inputId = ns(option[i]), 
+                                                   label = colnamesDF[i],
+                                                   choices = c("<", ">", "=", "<=", ">=",
+                                                               "extremes", "range"),
+                                                   justified = FALSE,
+                                                   individual = FALSE,
+                                                   size = "xs",
+                                                   status = "primary"
+                                                 ),
+                                                 numericInput(
+                                                   inputId = ns(inputFirst[i]),
+                                                   label = NULL,
+                                                   step = 0.001,
+                                                   value = 0
+                                                 ),
+                                                 conditionalPanel(
+                                                   condition = paste0("input['", option[i], "'] == 'extremes'
+                                                                    || input['", option[i], "'] == 'range'"),
+                                                   ns = ns,
+                                                   numericInput(
+                                                     inputId = ns(inputSecond[i]),
+                                                     label = NULL,
+                                                     step = 0.001,
+                                                     value = 0
+                                                   )
+                                                 )
+          )))
+        })
+      }
+      else if(is.character(dataframe[,i])
+              || is.factor(dataframe[,i])){
+        output[[paste0("filterOutput",i)]] <- renderUI({
+          hidden(
+            div(class = class[i], wellPanel(style='border:0;',
+                                            checkboxGroupButtons(
+                                              inputId = ns(option[i]), label = colnamesDF[i],
+                                              choices = c("=", "!="),
+                                              justified = FALSE,
+                                              individual = TRUE,
+                                              size = "s",
+                                              status = "primary"
+                                            ),
+                                            selectizeInput(
+                                              inputId = ns(inputFirst[i]),
+                                              choices = unique(dataframe[, colnamesDF[i]]),
+                                              label = NULL,
+                                              multiple = TRUE
+                                            )
+            ))
+          )
+        })
+      }
+    })
   })
   
   updateSeuratFindMarkerTable <- function(){
@@ -185,12 +246,23 @@ filterTableServer <- function(input, output, session, dataframe){
       }
     }
     
-    rv$parameters <- parameters
+    if(!is.null(rv$parameters)){
+      for(i in seq(length(colnamesDF))){
+        print(parameters$operators[i])
+        if(parameters$operators[i] != "NULL"){
+          rv$parameters$operators[i] <- parameters$operators[i]
+          rv$parameters$values[i] <- parameters$values[i]
+        }
+      }
+    }
+    else{
+      rv$parameters <- parameters
+    }
     
     df <- .filterDF(df = dataframe,
-                                   operators = parameters$operators,
+                                   operators = rv$parameters$operators,
                                    cols = colnamesDF,
-                                   values = parameters$values)
+                                   values = rv$parameters$values)
     
 
     
@@ -204,10 +276,10 @@ filterTableServer <- function(input, output, session, dataframe){
     
     activeFilters <- list()
     activeFiltersValues <- list()
-    if(!is.null(parameters)){
+    if(!is.null(rv$parameters)){
       for(i in seq(length(colnamesDF))){
-        if(parameters$operators[i] != 'NULL'){
-          activeFilters <- append(activeFilters, paste(colnamesDF[i], parameters$operators[i], parameters$values[i]))
+        if(rv$parameters$operators[i] != 'NULL'){
+          activeFilters <- append(activeFilters, paste(colnamesDF[i], rv$parameters$operators[i], rv$parameters$values[i]))
           activeFiltersValues <- append(activeFiltersValues, colnamesDF[i])
         }
       }
