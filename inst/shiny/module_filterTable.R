@@ -39,61 +39,117 @@ filterTableServer <- function(input, output, session, dataframe){
   
   lapply(1:length(colnamesDF), function(i) {
     if(is.numeric(dataframe[,i])){
-      output[[paste0("filterOutput",i)]] <- renderUI({
-        hidden(div(class = class[i], wellPanel(style='border:1;',
-                                               checkboxGroupButtons(
-                                                 inputId = ns(option[i]), 
-                                                 label = colnamesDF[i],
-                                                 choices = c("<", ">", "=", "<=", ">=",
-                                                             "extremes", "range"),
-                                                 justified = FALSE,
-                                                 individual = FALSE,
-                                                 size = "xs",
-                                                 status = "primary"
-                                               ),
-                                               numericInput(
-                                                 inputId = ns(inputFirst[i]),
-                                                 label = NULL,
-                                                 step = 0.001,
-                                                 value = 0
-                                               ),
-                                               conditionalPanel(
-                                                 condition = paste0("input['", option[i], "'] == 'extremes'
-                                                                    || input['", option[i], "'] == 'range'"),
-                                                 ns = ns,
+      if(i == 1){
+        output[[paste0("filterOutput",i)]] <- renderUI({
+          div(class = class[i], wellPanel(style='border:1;',
+                                                 checkboxGroupButtons(
+                                                   inputId = ns(option[i]), 
+                                                   label = colnamesDF[i],
+                                                   choices = c("<", ">", "=", "<=", ">=",
+                                                               "extremes", "range"),
+                                                   justified = FALSE,
+                                                   individual = FALSE,
+                                                   size = "xs",
+                                                   status = "primary"
+                                                 ),
                                                  numericInput(
-                                                   inputId = ns(inputSecond[i]),
+                                                   inputId = ns(inputFirst[i]),
                                                    label = NULL,
                                                    step = 0.001,
                                                    value = 0
+                                                 ),
+                                                 conditionalPanel(
+                                                   condition = paste0("input['", option[i], "'] == 'extremes'
+                                                                    || input['", option[i], "'] == 'range'"),
+                                                   ns = ns,
+                                                   numericInput(
+                                                     inputId = ns(inputSecond[i]),
+                                                     label = NULL,
+                                                     step = 0.001,
+                                                     value = 0
+                                                   )
                                                  )
-                                               )
-        )))
-      })
+          ))
+        })
+      }
+      else{
+        output[[paste0("filterOutput",i)]] <- renderUI({
+          hidden(div(class = class[i], wellPanel(style='border:1;',
+                                                 checkboxGroupButtons(
+                                                   inputId = ns(option[i]), 
+                                                   label = colnamesDF[i],
+                                                   choices = c("<", ">", "=", "<=", ">=",
+                                                               "extremes", "range"),
+                                                   justified = FALSE,
+                                                   individual = FALSE,
+                                                   size = "xs",
+                                                   status = "primary"
+                                                 ),
+                                                 numericInput(
+                                                   inputId = ns(inputFirst[i]),
+                                                   label = NULL,
+                                                   step = 0.001,
+                                                   value = 0
+                                                 ),
+                                                 conditionalPanel(
+                                                   condition = paste0("input['", option[i], "'] == 'extremes'
+                                                                    || input['", option[i], "'] == 'range'"),
+                                                   ns = ns,
+                                                   numericInput(
+                                                     inputId = ns(inputSecond[i]),
+                                                     label = NULL,
+                                                     step = 0.001,
+                                                     value = 0
+                                                   )
+                                                 )
+          )))
+        })
+      }
     }
     else if(is.character(dataframe[,i])
             || is.factor(dataframe[,i])){
-      output[[paste0("filterOutput",i)]] <- renderUI({
-        hidden(
-          div(class = class[i], wellPanel(style='border:0;',
-                                               checkboxGroupButtons(
-                                                 inputId = ns(option[i]), label = colnamesDF[i],
-                                                 choices = c("=", "!="),
-                                                 justified = FALSE,
-                                                 individual = FALSE,
-                                                 size = "xs",
-                                                 status = "primary"
-                                               ),
-                                               selectizeInput(
-                                                 inputId = ns(inputFirst[i]),
-                                                 choices = unique(dataframe[, colnamesDF[i]]),
-                                                 label = NULL,
-                                                 multiple = TRUE,
-                                                 selected = NULL
-                                               )
-        ))
-        )
-      })
+      if(i == 1){
+        output[[paste0("filterOutput",i)]] <- renderUI({
+            div(class = class[i], wellPanel(style='border:0;',
+                                            checkboxGroupButtons(
+                                              inputId = ns(option[i]), label = colnamesDF[i],
+                                              choices = c("=", "!="),
+                                              justified = FALSE,
+                                              individual = FALSE,
+                                              size = "xs",
+                                              status = "primary"
+                                            ),
+                                            selectizeInput(
+                                              inputId = ns(inputFirst[i]),
+                                              choices = unique(dataframe[, colnamesDF[i]]),
+                                              label = NULL,
+                                              multiple = TRUE
+                                            )
+            ))
+        })
+      }
+      else{
+        output[[paste0("filterOutput",i)]] <- renderUI({
+          hidden(
+            div(class = class[i], wellPanel(style='border:0;',
+                                            checkboxGroupButtons(
+                                              inputId = ns(option[i]), label = colnamesDF[i],
+                                              choices = c("=", "!="),
+                                              justified = FALSE,
+                                              individual = FALSE,
+                                              size = "xs",
+                                              status = "primary"
+                                            ),
+                                            selectizeInput(
+                                              inputId = ns(inputFirst[i]),
+                                              choices = unique(dataframe[, colnamesDF[i]]),
+                                              label = NULL,
+                                              multiple = TRUE
+                                            )
+            ))
+          )
+        })
+      }
     }
   })
   
@@ -161,61 +217,117 @@ filterTableServer <- function(input, output, session, dataframe){
     #reset inputs
     lapply(1:length(colnamesDF), function(i) {
       if(is.numeric(dataframe[,i])){
-        output[[paste0("filterOutput",i)]] <- renderUI({
-          hidden(div(class = class[i], wellPanel(style='border:1;',
-                                                 checkboxGroupButtons(
-                                                   inputId = ns(option[i]), 
-                                                   label = colnamesDF[i],
-                                                   choices = c("<", ">", "=", "<=", ">=",
-                                                               "extremes", "range"),
-                                                   justified = FALSE,
-                                                   individual = FALSE,
-                                                   size = "xs",
-                                                   status = "primary"
-                                                 ),
-                                                 numericInput(
-                                                   inputId = ns(inputFirst[i]),
-                                                   label = NULL,
-                                                   step = 0.001,
-                                                   value = 0
-                                                 ),
-                                                 conditionalPanel(
-                                                   condition = paste0("input['", option[i], "'] == 'extremes'
-                                                                    || input['", option[i], "'] == 'range'"),
-                                                   ns = ns,
+        if(input$seuratFindMarkerSelectFilter == colnamesDF[i]){
+          output[[paste0("filterOutput",i)]] <- renderUI({
+            div(class = class[i], wellPanel(style='border:1;',
+                                                   checkboxGroupButtons(
+                                                     inputId = ns(option[i]), 
+                                                     label = colnamesDF[i],
+                                                     choices = c("<", ">", "=", "<=", ">=",
+                                                                 "extremes", "range"),
+                                                     justified = FALSE,
+                                                     individual = FALSE,
+                                                     size = "xs",
+                                                     status = "primary"
+                                                   ),
                                                    numericInput(
-                                                     inputId = ns(inputSecond[i]),
+                                                     inputId = ns(inputFirst[i]),
                                                      label = NULL,
                                                      step = 0.001,
                                                      value = 0
+                                                   ),
+                                                   conditionalPanel(
+                                                     condition = paste0("input['", option[i], "'] == 'extremes'
+                                                                    || input['", option[i], "'] == 'range'"),
+                                                     ns = ns,
+                                                     numericInput(
+                                                       inputId = ns(inputSecond[i]),
+                                                       label = NULL,
+                                                       step = 0.001,
+                                                       value = 0
+                                                     )
                                                    )
-                                                 )
-          )))
-        })
+            ))
+          })
+        }
+        else{
+          output[[paste0("filterOutput",i)]] <- renderUI({
+            hidden(div(class = class[i], wellPanel(style='border:1;',
+                                                   checkboxGroupButtons(
+                                                     inputId = ns(option[i]), 
+                                                     label = colnamesDF[i],
+                                                     choices = c("<", ">", "=", "<=", ">=",
+                                                                 "extremes", "range"),
+                                                     justified = FALSE,
+                                                     individual = FALSE,
+                                                     size = "xs",
+                                                     status = "primary"
+                                                   ),
+                                                   numericInput(
+                                                     inputId = ns(inputFirst[i]),
+                                                     label = NULL,
+                                                     step = 0.001,
+                                                     value = 0
+                                                   ),
+                                                   conditionalPanel(
+                                                     condition = paste0("input['", option[i], "'] == 'extremes'
+                                                                    || input['", option[i], "'] == 'range'"),
+                                                     ns = ns,
+                                                     numericInput(
+                                                       inputId = ns(inputSecond[i]),
+                                                       label = NULL,
+                                                       step = 0.001,
+                                                       value = 0
+                                                     )
+                                                   )
+            )))
+          })
+        }
       }
       else if(is.character(dataframe[,i])
               || is.factor(dataframe[,i])){
-        output[[paste0("filterOutput",i)]] <- renderUI({
-          hidden(
-            div(class = class[i], wellPanel(style='border:0;',
-                                            checkboxGroupButtons(
-                                              inputId = ns(option[i]), label = colnamesDF[i],
-                                              choices = c("=", "!="),
-                                              justified = FALSE,
-                                              individual = FALSE,
-                                              size = "xs",
-                                              status = "primary"
-                                            ),
-                                            selectizeInput(
-                                              inputId = ns(inputFirst[i]),
-                                              choices = unique(dataframe[, colnamesDF[i]]),
-                                              label = NULL,
-                                              multiple = TRUE,
-                                              selected = NULL
-                                            )
-            ))
-          )
-        })
+        if(input$seuratFindMarkerSelectFilter == colnamesDF[i]){
+          output[[paste0("filterOutput",i)]] <- renderUI({
+              div(class = class[i], wellPanel(style='border:0;',
+                                              checkboxGroupButtons(
+                                                inputId = ns(option[i]), label = colnamesDF[i],
+                                                choices = c("=", "!="),
+                                                justified = FALSE,
+                                                individual = FALSE,
+                                                size = "xs",
+                                                status = "primary"
+                                              ),
+                                              selectizeInput(
+                                                inputId = ns(inputFirst[i]),
+                                                choices = unique(dataframe[, colnamesDF[i]]),
+                                                label = NULL,
+                                                multiple = TRUE
+                                              )
+              ))
+          })
+        }
+        else{
+          output[[paste0("filterOutput",i)]] <- renderUI({
+            hidden(
+              div(class = class[i], wellPanel(style='border:0;',
+                                              checkboxGroupButtons(
+                                                inputId = ns(option[i]), label = colnamesDF[i],
+                                                choices = c("=", "!="),
+                                                justified = FALSE,
+                                                individual = FALSE,
+                                                size = "xs",
+                                                status = "primary"
+                                              ),
+                                              selectizeInput(
+                                                inputId = ns(inputFirst[i]),
+                                                choices = unique(dataframe[, colnamesDF[i]]),
+                                                label = NULL,
+                                                multiple = TRUE
+                                              )
+              ))
+            )
+          })
+        }
       }
     })
     
