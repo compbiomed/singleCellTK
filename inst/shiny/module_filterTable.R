@@ -80,15 +80,16 @@ filterTableServer <- function(input, output, session, dataframe){
                                                  inputId = ns(option[i]), label = colnamesDF[i],
                                                  choices = c("=", "!="),
                                                  justified = FALSE,
-                                                 individual = TRUE,
-                                                 size = "s",
+                                                 individual = FALSE,
+                                                 size = "xs",
                                                  status = "primary"
                                                ),
                                                selectizeInput(
                                                  inputId = ns(inputFirst[i]),
                                                  choices = unique(dataframe[, colnamesDF[i]]),
                                                  label = NULL,
-                                                 multiple = TRUE
+                                                 multiple = TRUE,
+                                                 selected = NULL
                                                )
         ))
         )
@@ -129,9 +130,11 @@ filterTableServer <- function(input, output, session, dataframe){
                              circle = FALSE,
                              inline = TRUE
                            ),
-                           actionButton(
-                             inputId = ns("seuratFindMarkerRemoveAllFilters"),
-                             label = "Remove Filter"
+                           disabled(
+                             actionButton(
+                               inputId = ns("seuratFindMarkerRemoveAllFilters"),
+                               label = "Remove Filter"
+                             )
                            )
                      ),
     )
@@ -199,21 +202,25 @@ filterTableServer <- function(input, output, session, dataframe){
                                               inputId = ns(option[i]), label = colnamesDF[i],
                                               choices = c("=", "!="),
                                               justified = FALSE,
-                                              individual = TRUE,
-                                              size = "s",
+                                              individual = FALSE,
+                                              size = "xs",
                                               status = "primary"
                                             ),
                                             selectizeInput(
                                               inputId = ns(inputFirst[i]),
                                               choices = unique(dataframe[, colnamesDF[i]]),
                                               label = NULL,
-                                              multiple = TRUE
+                                              multiple = TRUE,
+                                              selected = NULL
                                             )
             ))
           )
         })
       }
     })
+    
+    shinyjs::enable(id = "seuratFindMarkerRemoveAllFilters")
+    
   })
   
   updateSeuratFindMarkerTable <- function(){
@@ -248,7 +255,6 @@ filterTableServer <- function(input, output, session, dataframe){
     
     if(!is.null(rv$parameters)){
       for(i in seq(length(colnamesDF))){
-        print(parameters$operators[i])
         if(parameters$operators[i] != "NULL"){
           rv$parameters$operators[i] <- parameters$operators[i]
           rv$parameters$values[i] <- parameters$values[i]
@@ -359,6 +365,21 @@ filterTableServer <- function(input, output, session, dataframe){
       )
     })
     
+  })
+  
+  observe({
+    req(rv$parameters)
+    if(all(rv$parameters$operators == "NULL")){
+      shinyjs::disable(id = "seuratFindMarkerRemoveAllFilters")
+      output$seuratFindMarkerActiveFilters <- renderUI({
+        panel(
+          HTML(paste("<span style='color:red'>No active filters!</span>")),
+        )
+      })
+    }
+    else{
+      shinyjs::enable(id = "seuratFindMarkerRemoveAllFilters")
+    }
   })
   
   
