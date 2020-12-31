@@ -28,77 +28,45 @@ filterTableServer <- function(input, output, session, dataframe){
   colnamesDF <- colnames(dataframe)
   class <- NULL
   option <- NULL
-  option2 <- NULL
-  input2 <- NULL
-  input3 <- NULL
-  input4 <- NULL
-  input5 <- NULL
+  inputFirst <- NULL
+  inputSecond <- NULL
   for(i in seq(length(colnamesDF))){
     class[i] <- paste0("class_", colnamesDF[i])
     option[i] <- paste0("option_", colnamesDF[i])
-    option2[i] <- paste0("option2_", colnamesDF[i])
-    input2[i] <- paste0("input_", colnamesDF[i])
-    input3[i] <- paste0("input3_", colnamesDF[i])
-    input4[i] <- paste0("input4_", colnamesDF[i])
-    input5[i] <- paste0("input5_", colnamesDF[i])
+    inputFirst[i] <- paste0("inputFirst_", colnamesDF[i])
+    inputSecond[i] <- paste0("inputSecond_", colnamesDF[i])
   }
   
   lapply(1:length(colnamesDF), function(i) {
     if(is.numeric(dataframe[,i])){
       output[[paste0("filterOutput",i)]] <- renderUI({
-        hidden(div(class = class[i], wellPanel(style='border:0;',
-                                               # checkboxInput(
-                                               #   inputId = ns(input4[i]),
-                                               #   label = "Double?",
-                                               #   value = FALSE
-                                               # ),
-                                               # conditionalPanel(
-                                               #   condition = paste0("input['", input4[i], "']"),
-                                               #   ns = ns,
-                                               #   radioGroupButtons(
-                                               #     inputId = ns(input3[i]), label = NULL,
-                                               #     choices = c("OR", "AND"),
-                                               #     justified = FALSE,
-                                               #     individual = TRUE,
-                                               #     size = "s",
-                                               #     status = "primary"
-                                               #   ),
-                                               #   checkboxGroupButtons(
-                                               #     inputId = ns(option2[i]), label = colnamesDF[i],
-                                               #     choices = c("<", ">", "=", "<=", ">="),
-                                               #     justified = FALSE,
-                                               #     individual = TRUE,
-                                               #     size = "s",
-                                               #     status = "primary"
-                                               #   ),
-                                               #   numericInput(
-                                               #     inputId = ns(input5[i]),
-                                               #     label = NULL,
-                                               #     step = 0.001,
-                                               #     value = 0
-                                               #   )
-                                               # ),
-                                               radioButtons(
-                                                 inputId = ns(option2[i]),
-                                                 label = NULL,
-                                                 choices = c("use single criteria" = "single", 
-                                                             "use extremes" = "extreme", 
-                                                             "use range" = "range"),
-                                                 selected = "single"
-                                               ),
+        hidden(div(class = class[i], wellPanel(style='border:1;',
                                                checkboxGroupButtons(
                                                  inputId = ns(option[i]), 
                                                  label = colnamesDF[i],
-                                                 choices = c("<", ">", "=", "<=", ">="),
+                                                 choices = c("<", ">", "=", "<=", ">=",
+                                                             "extremes", "range"),
                                                  justified = FALSE,
                                                  individual = FALSE,
+                                                 size = "xs",
                                                  status = "primary"
                                                ),
                                                numericInput(
-                                                 inputId = ns(input2[i]),
+                                                 inputId = ns(inputFirst[i]),
                                                  label = NULL,
                                                  step = 0.001,
                                                  value = 0
+                                               ),
+                                               conditionalPanel(
+                                                 condition = paste0("input['", option[i], "'] == 'extremes'
+                                                                    || input['", option[i], "'] == 'range'"),
+                                                 ns = ns,
+                                                 numericInput(
+                                                   inputId = ns(inputSecond[i]),
+                                                   label = NULL,
+                                                   step = 0.001,
+                                                   value = 0
+                                                 )
                                                )
         )))
       })
@@ -117,7 +85,7 @@ filterTableServer <- function(input, output, session, dataframe){
                                                  status = "primary"
                                                ),
                                                selectizeInput(
-                                                 inputId = ns(input2[i]),
+                                                 inputId = ns(inputFirst[i]),
                                                  choices = unique(dataframe[, colnamesDF[i]]),
                                                  label = NULL,
                                                  multiple = TRUE
@@ -199,11 +167,21 @@ filterTableServer <- function(input, output, session, dataframe){
       else{
         parameters$operators[i] <- input[[option[i]]]
       }
-      if(is.null(input[[input2[i]]])){
+      if(is.null(input[[inputFirst[i]]])){
         parameters$values[i] <- "NULL"
       }
       else{
-        parameters$values[i] <- input[[input2[i]]]
+        if(!is.null(input[[option[i]]])){
+          if(input[[option[i]]] == "range" || input[[option[i]]] == "extremes"){
+            parameters$values[i] <- paste0(input[[inputFirst[i]]], ",", input[[inputSecond[i]]])
+          }
+          else{
+            parameters$values[i] <- input[[inputFirst[i]]]
+          }
+        }
+        else{
+          parameters$values[i] <- input[[inputFirst[i]]]
+        }
       }
     }
     
@@ -322,8 +300,21 @@ filterTableServer <- function(input, output, session, dataframe){
       if(operators[i] == "="){
         operators[i] <- "=="
       }
-      values[i] <- paste0("'", values[i], "'")
-      filters <- c(filters, paste0("eval(call('", operators[i], "', df[['", cols[i], "']],", values[i], "))"))
+      if(operators[i] == "range" || operators[i] == "extremes"){
+        splitValues <- values[[i]]
+        splitValues <- strsplit(splitValues, ",")
+        if(operators[i] == "range"){
+          filters <- c(filters, paste0("eval(call('", ">=", "', df[['", cols[i], "']],", splitValues[[1]][1], "))"))
+          filters <- c(filters, paste0("eval(call('", "<=", "', df[['", cols[i], "']],", splitValues[[1]][2], "))"))
+        }
+        else{
+          filters <- c(filters, paste0("df[['", cols[i],"']] >= ", splitValues[[1]][1]," | df[['", cols[i],"']] <= ", splitValues[[1]][2]))
+        }
+      }
+      else{
+        values[i] <- paste0("'", values[i], "'")
+        filters <- c(filters, paste0("eval(call('", operators[i], "', df[['", cols[i], "']],", values[i], "))"))
+      }
     }
   }
   filters <- paste(filters, collapse = ",")

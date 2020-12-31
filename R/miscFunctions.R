@@ -491,4 +491,3 @@ setMethod(f = "sctkAssay<-",
             methods::callNextMethod()
           }
 )
-
