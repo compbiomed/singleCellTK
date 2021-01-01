@@ -16,13 +16,19 @@ filterTableUI <- function(id){
 }
 
 #server
-filterTableServer <- function(input, output, session, dataframe){
-  
+filterTableServer <- function(input, output, session, dataframe,
+                              defaultFilterColumns = NULL,
+                              defaultFilterOperators = NULL,
+                              defaultFilterValues = NULL){
   ns <- session$ns
   rv <- reactiveValues(data = NULL,
                       selectedRows = NULL,
                       parameters = NULL
                       )
+  if(length(defaultFilterValues) != length(defaultFilterColumns)
+     || length(defaultFilterOperators) != length(defaultFilterColumns)){
+    stop("Using a default filter requires all default filter parameters to be equal in length!")
+  }
   message("Removing '.' from column names of the input dataframe as it is not supported by filters!")
   colnames(dataframe) <- gsub("\\.", "_", colnames(dataframe))
   colnamesDF <- colnames(dataframe)
@@ -195,19 +201,61 @@ filterTableServer <- function(input, output, session, dataframe){
                      ),
     )
   })
-  
+    
+  if(!is.null(defaultFilterColumns)){
+    for(i in seq(length(colnamesDF))){
+      rv$parameters$operators[i] <- "NULL"
+      rv$parameters$values[i] <- "NULL"
+    }
+    index <- match(defaultFilterColumns, colnamesDF)
+    rv$parameters$operators[index] <- defaultFilterOperators
+    rv$parameters$values[index] <- defaultFilterValues
+    
+    output$seuratFindMarkerTable <- DT::renderDataTable({
+      df <- .filterDF(df = dataframe,
+                      operators = rv$parameters$operators,
+                      cols = colnamesDF,
+                      values = rv$parameters$values)
+      rv$data <- df
+      rv$data
+    }, options = list(pageLength = 6, dom = "<'top'fl>t<'bottom'ip>", stateSave = TRUE
+    ))
+    
+    activeFilters <- list()
+    activeFiltersValues <- list()
+    if(!is.null(rv$parameters)){
+      for(i in seq(length(colnamesDF))){
+        if(rv$parameters$operators[i] != 'NULL'){
+          activeFilters <- append(activeFilters, paste(colnamesDF[i], rv$parameters$operators[i], rv$parameters$values[i]))
+          activeFiltersValues <- append(activeFiltersValues, colnamesDF[i])
+        }
+      }
+    }
+    
     output$seuratFindMarkerActiveFilters <- renderUI({
       panel(
-        HTML(paste("<span style='color:red'>No active filters!</span>")),
+        checkboxGroupInput(
+          inputId = ns("checkboxFiltersToRemove"),
+          label = NULL,
+          choiceNames = as.character(activeFilters),
+          choiceValues = as.character(activeFiltersValues)
+        )
       )
     })
-  
-  
-  output$seuratFindMarkerTable <- DT::renderDataTable({
-    rv$data <- dataframe
-    dataframe
-  }, options = list(pageLength = 6, dom = "<'top'fl>t<'bottom'ip>", stateSave = TRUE
-  ))
+  }
+    else{
+      output$seuratFindMarkerTable <- DT::renderDataTable({
+        rv$data <- dataframe
+        rv$data
+      }, options = list(pageLength = 6, dom = "<'top'fl>t<'bottom'ip>", stateSave = TRUE
+      ))
+      
+      output$seuratFindMarkerActiveFilters <- renderUI({
+        panel(
+          HTML(paste("<span style='color:red'>No active filters!</span>")),
+        )
+      })
+    }
   
   observeEvent(input$seuratFindMarkerFilterRun,{
     #update table
