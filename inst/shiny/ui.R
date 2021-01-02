@@ -47,6 +47,7 @@ data("c2BroadSets")
 
 #source modules
 source("module_nonLinearWorkflow.R")
+source("module_filterTable.R")
 
 #test internet connection for enrichR connectivity
 internetConnection <- suppressWarnings(Biobase::testBioCConnection())

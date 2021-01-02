@@ -302,12 +302,9 @@ shinyPanelSeurat <- fluidPage(
                                        fluidRow(
                                            column(12,
                                                   hidden(
-                                                      tags$div(class = "seurat_findmarker_table", panel(heading = "Marker Genes",
-                                                                                                        uiOutput("seuratFindMarkerFilter"),
-                                                                                                        DT::dataTableOutput(
-                                                                                                            outputId = "seuratFindMarkerTable"
-                                                                                                        ) %>% withSpinner(type = 5, color = "#b2b2b2")
-                                                      )
+                                                      tags$div(
+                                                          class = "seurat_findmarker_table",
+                                                          filterTableUI(id = "filterSeuratFindMarker")
                                                       )
                                                   ),
                                                   br(),
@@ -316,13 +313,8 @@ shinyPanelSeurat <- fluidPage(
                                                                bsCollapse(
                                                                  bsCollapsePanel(
                                                                    title = "Heatmap Plot",
-                                                                  # panel(heading = "Heatmap Plot",
                                                                          fluidRow(
                                                                            column(12, align = "center",
-                                                                                  
-                                                                                  uiOutput(
-                                                                                    outputId = "findMarkerHeatmapPlotFullTopText"
-                                                                                  ),
                                                                                   panel(
                                                                                     jqui_resizable(
                                                                                       plotOutput(outputId = "findMarkerHeatmapPlotFull")
@@ -330,7 +322,6 @@ shinyPanelSeurat <- fluidPage(
                                                                                   )
                                                                            )
                                                                          )
-                                                                  # )
                                                                  )
                                                                )
                                                       )

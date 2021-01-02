@@ -491,16 +491,3 @@ setMethod(f = "sctkAssay<-",
             methods::callNextMethod()
           }
 )
-
-.filterDF <- function(df, operators, cols, values){
-  filters <- NULL
-  for(i in seq(length(cols))){
-    if(operators[i] == "="){
-      operators[i] = "=="
-    }
-    filters <- c(filters, paste0("eval(call('", operators[i], "', df[['", cols[i], "']],", values[i], "))"))
-  }
-  filters <- paste(filters, collapse = ",")
-  parseString <- paste0("df %>% filter(", filters, ")")
-  eval(parse(text = parseString))
-}
