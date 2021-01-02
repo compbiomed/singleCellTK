@@ -3,13 +3,14 @@ filterTableUI <- function(id){
   ns <- NS(id)
   fluidPage(
     fluidRow(
-      tags$div(class = "seurat_findmarker_table", panel(heading = "Marker Genes",
-                                                        uiOutput(ns("seuratFindMarkerFilter")),
-                                                        br(),
-                                                        DT::dataTableOutput(
-                                                          outputId = ns("seuratFindMarkerTable")
-                                                        ) %>% withSpinner(type = 5, color = "#b2b2b2")
-      )
+      panel(heading = "Marker Genes",
+            uiOutput(ns("seuratFindMarkerFilter")),
+            br(),
+            DT::dataTableOutput(
+              outputId = ns("seuratFindMarkerTable")) %>% withSpinner(
+                type = 5, 
+                color = "#b2b2b2"
+                )
       )
     )
   )
@@ -192,12 +193,19 @@ filterTableServer <- function(input, output, session, dataframe,
                              circle = FALSE,
                              inline = TRUE
                            ),
-                           disabled(
-                             actionButton(
-                               inputId = ns("seuratFindMarkerRemoveAllFilters"),
-                               label = "Remove Filter"
-                             )
-                           )
+                        if(all(rv$parameters$operators == "NULL")){
+                          disabled(actionButton(
+                            inputId = ns("seuratFindMarkerRemoveAllFilters"),
+                            label = "Remove Filter"
+                          )
+                          )
+                        }
+                        else{
+                          actionButton(
+                            inputId = ns("seuratFindMarkerRemoveAllFilters"),
+                            label = "Remove Filter"
+                          )
+                        }
                      ),
     )
   })
@@ -260,8 +268,12 @@ filterTableServer <- function(input, output, session, dataframe,
   observeEvent(input$seuratFindMarkerFilterRun,{
     #update table
     updateSeuratFindMarkerTable()
-    #close dropdown
-    toggleDropdownButton("addFilterDropdown")
+    
+    updateSelectInput(
+      session = session,
+      inputId = "seuratFindMarkerSelectFilter",
+      selected = colnamesDF[1]
+    )
     #reset inputs
     lapply(1:length(colnamesDF), function(i) {
       if(is.numeric(dataframe[,i])){
@@ -380,7 +392,6 @@ filterTableServer <- function(input, output, session, dataframe,
     })
     
     shinyjs::enable(id = "seuratFindMarkerRemoveAllFilters")
-    
   })
   
   updateSeuratFindMarkerTable <- function(){
@@ -525,10 +536,16 @@ filterTableServer <- function(input, output, session, dataframe,
       )
     })
     
+    updateSelectInput(
+      session = session,
+      inputId = "seuratFindMarkerSelectFilter",
+      selected = colnamesDF[index]
+    )
+    
   })
   
   observe({
-    req(rv$parameters)
+    req(rv)
     if(all(rv$parameters$operators == "NULL")){
       shinyjs::disable(id = "seuratFindMarkerRemoveAllFilters")
       output$seuratFindMarkerActiveFilters <- renderUI({

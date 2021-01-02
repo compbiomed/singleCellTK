@@ -6512,6 +6512,7 @@ shinyServer(function(input, output, session) {
     
     shinyjs::show(selector = ".seurat_findmarker_table")
     shinyjs::show(selector = ".seurat_findmarker_jointHeatmap")
+    shinyjs::show(selector = ".seurat_findmarker_plots")
 
     removeTab(inputId = "seuratFindMarkerPlotTabset", target = "Ridge Plot")
     removeTab(inputId = "seuratFindMarkerPlotTabset", target = "Violin Plot")
@@ -6612,29 +6613,6 @@ shinyServer(function(input, output, session) {
        h6(paste("Heatmap plotted across all groups against genes with adjusted p-values <", input$seuratFindMarkerPValAdjInput))
      })
     
-    #this is running
-    # output$seuratFindMarkerTable <- DT::renderDataTable({
-    #   metadata(vals$counts)$seuratMarkersSubset <- df
-    #   selectedGeneId <- input$seuratFindMarkerGeneIDInput
-    #   selectedCluster <- input$seuratFindMarkerClusterInput
-    #   updateSelectizeInput(session = session,
-    #                        inputId = "seuratFindMarkerGeneIDInput",
-    #                        selected = selectedGeneId,
-    #                        choices = df$gene.id)
-    #   updateSelectizeInput(session = session,
-    #                        inputId = "seuratFindMarkerClusterInput",
-    #                        selected = selectedCluster,
-    #                        choices = df$cluster)
-    #   df$p_val <- format(df$p_val, nsmall = 7)
-    #   df$p_val_adj <- format(df$p_val_adj, nsmall = 7)
-    #   df$pct.1 <- format(df$pct.1, nsmall = 7)
-    #   df$pct.2 <- format(df$pct.2, nsmall = 7)
-    #   df$avg_logFC <- format(df$avg_logFC, nsmall = 7)
-    #   df
-    # }, options = list(pageLength = 6, dom = "<'top'fl>t<'bottom'ip>", stateSave = TRUE
-    # ))
-    
-    
     showNotification("Find Markers Complete")
     
     #enable downstream analysis
@@ -6699,15 +6677,15 @@ shinyServer(function(input, output, session) {
     
     vals$fts <- callModule(
       module = filterTableServer,
-      id = "filter1",
+      id = "filterSeuratFindMarker",
       dataframe = metadata(vals$counts)$seuratMarkers,
-      defaultFilterColumns = "p_val_adj",
-      defaultFilterOperators = "<=",
-      defaultFilterValues = "0.05"
+      defaultFilterColumns = c("p_val_adj", "pct_1"),
+      defaultFilterOperators = c("<=", ">="),
+      defaultFilterValues = c("0.05", "0.8")
       )
     # vals$fts <- callModule(
     #   module = filterTableServer,
-    #   id = "filter1",
+    #   id = "filterSeuratFindMarker",
     #   dataframe = metadata(vals$counts)$seuratMarkers
     # )
     
