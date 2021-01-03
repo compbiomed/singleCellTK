@@ -39,6 +39,7 @@ Imports:
     batchelor,
     BiocGenerics,
     BiocParallel,
+    celldex,
     colourpicker,
     colorspace,
     cowplot,
@@ -82,6 +83,7 @@ Imports:
     shinyjs,
     shinyBS,
     shinyjqui,
+    SingleR,
     sva,
     reshape2,
     AnnotationDbi,
@@ -106,7 +108,8 @@ Imports:
     rmarkdown,
     magrittr,
     kableExtra,
-    scDblFinder
+    scDblFinder,
+    metap
 RoxygenNote: 7.1.1
 Suggests:
     testthat,

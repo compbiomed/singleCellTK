@@ -378,7 +378,16 @@ retrieveSCEIndex <- function(inSCE, IDs, axis, by = NULL,
 }
 
 .sctkSetTag <- function(inSCE, assayType, assays){
-    S4Vectors::metadata(inSCE)$assayType[[assayType]] <- assays
+  if(!assays %in% S4Vectors::metadata(inSCE)$assayType[[assayType]]){
+    S4Vectors::metadata(inSCE)$assayType[[assayType]] <- base::append(S4Vectors::metadata(inSCE)$assayType[[assayType]], assays)
+  }
+    #S4Vectors::metadata(inSCE)$assayType[[assayType]] <- assays
+  return(inSCE)
+}
+
+.sctkSetTagExternal <- function(inSCE, assayType, assays){
+  # S4Vectors::metadata(inSCE)$assayType[[assayType]] <- base::append(S4Vectors::metadata(inSCE)$assayType[[assayType]], assays)
+  S4Vectors::metadata(inSCE)$assayType[[assayType]] <- assays
   return(inSCE)
 }
 
@@ -482,16 +491,3 @@ setMethod(f = "sctkAssay<-",
             methods::callNextMethod()
           }
 )
-
-.filterDF <- function(df, operators, cols, values){
-  filters <- NULL
-  for(i in seq(length(cols))){
-    if(operators[i] == "="){
-      operators[i] = "=="
-    }
-    filters <- c(filters, paste0("eval(call('", operators[i], "', df[['", cols[i], "']],", values[i], "))"))
-  }
-  filters <- paste(filters, collapse = ",")
-  parseString <- paste0("df %>% filter(", filters, ")")
-  eval(parse(text = parseString))
-}

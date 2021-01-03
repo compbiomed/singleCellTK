@@ -11,7 +11,9 @@ seuratFindMarkers(
   group1 = NULL,
   group2 = NULL,
   allGroup = NULL,
-  conserved = FALSE
+  conserved = FALSE,
+  test = "wilcox",
+  onlyPos = FALSE
 )
 }
 \arguments{
@@ -29,6 +31,11 @@ seuratFindMarkers(
 
 \item{conserved}{Logical value indicating if markers conserved between two
 groups should be identified. Default is \code{FALSE}.}
+
+\item{test}{Test to use for DE. Default \code{"wilcox"}.}
+
+\item{onlyPos}{Logical value indicating if only positive markers should be
+returned.}
 }
 \value{
 A \code{SingleCellExperiment} object that contains marker genes populated in a data.frame stored inside metadata slot.

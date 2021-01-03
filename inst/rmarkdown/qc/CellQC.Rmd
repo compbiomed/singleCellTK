@@ -23,7 +23,6 @@ text-align: justify}
 ```{r "CellQC-lib", warning=FALSE, include=FALSE}
 require(singleCellTK)
 require(ggplot2)
-require(umap)
 require(dplyr)
 
 preprocessMeta <- function(meta, ignore=c("geneSetCollection", "sample")){
@@ -94,7 +93,7 @@ Comprehensive quality control (QC) of single-cell RNA-seq data was performed wit
 <br />
 <br />
 
-```{r, include=FALSE, warning=FALSE, message=FALSE}
+```{r, "runPerCellQC-description", include=FALSE, warning=FALSE, message=FALSE}
 description_runPerCellQC <- descriptionRunPerCellQC()
 ```
 
@@ -143,7 +142,7 @@ if (!skipCellData) {
 
 
 # {.unlisted .unnumbered .toc-ignore .tabset .tabset-fade}
-```{r results="asis", eval=(!skipCellData), fig.align="center", warning=FALSE, message=FALSE, echo=FALSE}
+```{r "plotsQCMetrics-plot", results="asis", eval=(!skipCellData), fig.align="center", warning=FALSE, message=FALSE, echo=FALSE}
 cat("\n")
 cat(paste0('## Sum {.tabset .tabset-fade} \n\n'))
 plotsQCMetrics$Violin$Sum
@@ -176,7 +175,7 @@ cat(description_runPerCellQC$parameter)
 
 
 # Doublet Detection
-```{r, include=FALSE, warning=FALSE, message=FALSE}
+```{r, "Scrublet-description", include=FALSE, warning=FALSE, message=FALSE}
 description_Scrublet <- descriptionScrublet()
 ```
 
@@ -216,7 +215,7 @@ if (!skipScrublet) {
 
 ## {.unlisted .unnumbered .toc-ignore .tabset .tabset-fade}
 
-```{r echo=FALSE, eval=(!skipScrublet), results="asis", fig.align="center"}
+```{r "Scrublet-plot", echo=FALSE, eval=(!skipScrublet), results="asis", fig.align="center"}
 cat("\n")
 for (sample in samples) {
   cat(paste0("### ", sample, " {.tabset .tabset-fade} \n"))
@@ -258,7 +257,7 @@ for (sample in samples) {
 
 
 
-```{r, include=FALSE, warning=FALSE, message=FALSE}
+```{r, "DoubletFinder-description", include=FALSE, warning=FALSE, message=FALSE}
 description_DoubletFinder <- descriptionDoubletFinder()
 ```
 
@@ -302,7 +301,7 @@ if (!skipFinder) {
 
 
 ## {.unlisted .unnumbered .toc-ignore .tabset .tabset-fade}
-```{r echo=FALSE, eval=!(skipFinder), results="asis", fig.align="center"}
+```{r "DoubletFinder-plot", echo=FALSE, eval=!(skipFinder), results="asis", fig.align="center"}
 cat("\n")
 for (sample in samples) {
   cat(paste0("### ", sample, " {.tabset .tabset-fade} \n"))
@@ -356,7 +355,7 @@ for (sample in samples) {
 
 
 
-```{r, include=FALSE, warning=FALSE, message=FALSE}
+```{r, "DoubletCells-description", include=FALSE, warning=FALSE, message=FALSE}
 description_DoubletCells<- descriptionDoubletCells()
 ```
 
@@ -396,7 +395,7 @@ if(!skipDoubletCell) {
 
 
 ## {.unlisted .unnumbered .toc-ignore .tabset .tabset-fade}
-```{r echo=FALSE, eval=!(skipDoubletCell), results="asis", fig.align="center"}
+```{r "DoubletCells-plot", echo=FALSE, eval=!(skipDoubletCell), results="asis", fig.align="center"}
 cat("\n")
 for (sample in samples){
   cat(paste0("### ", sample, " {.tabset .tabset-fade} \n"))
@@ -434,7 +433,7 @@ for (sample in samples){
 
 
 
-```{r, include=FALSE, warning=FALSE, message=FALSE}
+```{r, "Cxds-description", include=FALSE, warning=FALSE, message=FALSE}
 descriprion_CxdsResults<- descriptionCXDS()
 ```
 
@@ -475,7 +474,7 @@ if (!skipCxds) {
 
 
 ## {.unlisted .unnumbered .toc-ignore .tabset .tabset-fade}
-```{r echo=FALSE,eval=(!skipCxds), results="asis", fig.align="center"}
+```{r "Cxds-plot", echo=FALSE,eval=(!skipCxds), results="asis", fig.align="center"}
 cat("\n")
 for (sample in samples){
   cat(paste0("### ", sample, " {.tabset .tabset-fade} \n"))
@@ -523,7 +522,7 @@ for (sample in samples){
 
 
 
-```{r, include=FALSE, warning=FALSE, message=FALSE}
+```{r, "Bcds-description", include=FALSE, warning=FALSE, message=FALSE}
 descriprion_BcdsResults<- descriptionBCDS()
 ```
 
@@ -563,7 +562,7 @@ if (!skipBcds) {
 
 
 ## {.unlisted .unnumbered .toc-ignore .tabset .tabset-fade}
-```{r echo=FALSE, eval=(!skipBcds), results="asis", fig.align="center"}
+```{r "Bcds-plot", echo=FALSE, eval=(!skipBcds), results="asis", fig.align="center"}
 cat("\n")
 for (sample in samples){
   cat(paste0("### ", sample, " {.tabset .tabset-fade} \n"))
@@ -611,7 +610,7 @@ for (sample in samples){
 
 
 
-```{r, include=FALSE, warning=FALSE, message=FALSE}
+```{r, "ScdsHybrid-description", include=FALSE, warning=FALSE, message=FALSE}
 description_ScdsHybrid<- descriptionScdsHybrid()
 ```
 
@@ -652,7 +651,7 @@ if (!skipScdsHybrid) {
 
 
 ## {.unlisted .unnumbered .toc-ignore .tabset .tabset-fade}
-```{r echo=FALSE, eval=(!skipScdsHybrid), results="asis", fig.align="center"}
+```{r "ScdsHybrid-plot", echo=FALSE, eval=(!skipScdsHybrid), results="asis", fig.align="center"}
 cat("\n")
 for (sample in samples){
   cat(paste0("### ", sample, " {.tabset .tabset-fade} \n"))
@@ -696,7 +695,7 @@ for (sample in samples){
 
 
 # Ambient RNA Detection
-```{r, include=FALSE, warning=FALSE, message=FALSE}
+```{r, "DecontX-description", include=FALSE, warning=FALSE, message=FALSE}
 description_DecontX<- suppressWarnings(descriptionDecontX())
 ```
 
@@ -738,7 +737,7 @@ if (!skipDecontX) {
 
 
 ## {.unlisted .unnumbered .toc-ignore .tabset .tabset-fade}
-```{r echo=FALSE, eval=(!skipDecontX), results="asis", fig.align="center"}
+```{r "DecontX-plot", echo=FALSE, eval=(!skipDecontX), results="asis", fig.align="center"}
 cat("\n")
 for (sample in samples){
   cat(paste0("### ", sample, " {.tabset .tabset-fade} \n"))

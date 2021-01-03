@@ -13,19 +13,19 @@ singleCellExperiment object with a combined colData from inSCE1 and inSCE2.}
 \item{inSCE2}{Input SingleCellExperiment object. colData from this object
 will be merged with colData from inSCE1 and loaded into inSCE1.}
 
-\item{id1}{Character vector. Column in colData of inSCE1 that will be 
+\item{id1}{Character vector. Column in colData of inSCE1 that will be
 used to combine inSCE1 and inSCE2. Default "column_name"}
 
 \item{id2}{Character vector. Column in colData of inSCE2 that will be
 used to combine inSCE1 and inSCE2. Default "column_name"}
 }
 \value{
-SingleCellExperiment object containing combined colData from  
+SingleCellExperiment object containing combined colData from
  both singleCellExperiment for samples in inSCE1.
 }
 \description{
-Merges colData of the singleCellExperiment objects 
- obtained from the same dataset which contain differing colData. 
+Merges colData of the singleCellExperiment objects
+ obtained from the same dataset which contain differing colData.
  (i.e. raw data and filtered data)
 }
 \examples{

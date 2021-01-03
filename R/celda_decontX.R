@@ -84,6 +84,13 @@ runDecontX <- function(inSCE,
 
   message(paste0(date(), " ... Running 'DecontX'"))
 
+  rm.ix <- which(colSums(assay(inSCE, useAssay)) == 0)
+  if(length(rm.ix) > 0){
+    inSCEOrig <- inSCE
+    inSCE <- inSCE[,-rm.ix]
+    sample <- sample[-rm.ix]
+  }
+
   inSCE <- celda::decontX(x = inSCE,
                           batch = sample,
                           assayName = useAssay,
@@ -101,6 +108,9 @@ runDecontX <- function(inSCE,
 
   #argsList <- argsList[!names(argsList) %in% ("...")]
 
+  if(length(rm.ix) > 0){
+    inSCE <- mergeSCEColData(inSCE1 = inSCEOrig, inSCE2 = inSCE)
+  }
   inSCE@metadata$runDecontX <- argsList[-1]
   inSCE@metadata$runDecontX$packageVersion <- utils::packageDescription("celda")$Version
 
