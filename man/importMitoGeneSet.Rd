@@ -9,7 +9,7 @@ importMitoGeneSet(inSCE, reference, id, by, collectionName)
 \arguments{
 \item{inSCE}{Input \linkS4class{SingleCellExperiment} object.}
 
-\item{reference}{Character. Species available are "hg38", "hg19", "mm9" and "mm10."}
+\item{reference}{Character. Species available are "human" and "mouse".}
 
 \item{id}{Types of gene id. Now it supports "symbol", "entrez", "ensemble"
 and "ensemble_transcriptID".}
@@ -40,7 +40,7 @@ downstream quality control and analysis functions in \link{singleCellTK}.
 }
 \details{
 The gene identifiers of mitochondrial genes will be loaded with 
-"data(AllMito)". Currently, it supports hg38, hg19, mm9 and mm10 reference. 
+"data(AllMito)". Currently, it supports human and mouse reference. 
 Also, it supports entrez ID, gene symbol, ensemble ID and ensemble transcript ID. 
 They will be mapped to the IDs in \code{inSCE} using the \code{by} parameter and
 stored in a \linkS4class{GeneSetCollection} object from package
@@ -51,9 +51,9 @@ analysis functions such as \link[singleCellTK]{runCellQC}.
 \examples{
 data(scExample)
 sce <- importMitoGeneSet(inSCE = sce,
-                         reference = "hg38",
+                         reference = "human",
                          id = "ensemble",
-                         collectionName = "hg38_mito",
+                         collectionName = "human_mito",
                          by = "rownames")
 }
 \seealso{

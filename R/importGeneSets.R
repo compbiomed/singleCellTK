@@ -434,7 +434,7 @@ importGeneSetsFromMSigDB <- function(inSCE, categoryIDs,
 #' \linkS4class{SingleCellExperiment} object. These gene sets can be used in
 #' downstream quality control and analysis functions in \link{singleCellTK}. 
 #' @param inSCE Input \linkS4class{SingleCellExperiment} object.
-#' @param reference Character. Species available are "hg38", "hg19", "mm9" and "mm10." 
+#' @param reference Character. Species available are "human" and "mouse".  
 #' @param by Character. Describes the location within \code{inSCE} where the gene 
 #' identifiers in the mitochondrial gene sets should be mapped. 
 #' If set to \code{"rownames"} then the features will
@@ -453,7 +453,7 @@ importGeneSetsFromMSigDB <- function(inSCE, categoryIDs,
 #' with gene set from \code{collectionName} output stored to the
 #' \link{metadata} slot.
 #' @details The gene identifiers of mitochondrial genes will be loaded with 
-#' "data(AllMito)". Currently, it supports hg38, hg19, mm9 and mm10 reference. 
+#' "data(AllMito)". Currently, it supports human and mouse reference. 
 #' Also, it supports entrez ID, gene symbol, ensemble ID and ensemble transcript ID. 
 #' They will be mapped to the IDs in \code{inSCE} using the \code{by} parameter and
 #' stored in a \linkS4class{GeneSetCollection} object from package
@@ -468,21 +468,22 @@ importGeneSetsFromMSigDB <- function(inSCE, categoryIDs,
 #' @examples
 #' data(scExample)
 #' sce <- importMitoGeneSet(inSCE = sce,
-#'                          reference = "hg38",
+#'                          reference = "human",
 #'                          id = "ensemble",
-#'                          collectionName = "hg38_mito",
+#'                          collectionName = "human_mito",
 #'                          by = "rownames")
 #' @export
 importMitoGeneSet <- function(inSCE, reference, id, by, collectionName) {
+  id <- tolower(id)
   if (!id %in% c("symbol", "entrez", "ensemble", "ensemble_transcriptID")) {
     stop("id should be one of 'symbol', 'entrez', 'ensemble' or 'ensemble_transcriptID'")
   }
   
-  if (!reference %in% c("hg38", "hg19", "mm10", "mm9")) {
-    stop("Now it only supports hg38, hg19, mm10 and mm9 reference.")
+  reference <- tolower(reference)
+  if (!reference %in% c("human", "mouse")) {
+    stop("Now it only supports human and mouse reference.")
   }
   
-  #utils::globalVariables(c("AllMito"))
   MitoGenes <- NULL
   utils::data(MitoGenes, envir = environment())
   target <- paste(reference, id, sep="_")
