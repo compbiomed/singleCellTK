@@ -901,24 +901,24 @@ seuratGenePlot <- function(inSCE, scaledAssayName = "seuratScaledData", plotType
         x = t, 
         fixed = TRUE)
     )
-    Idents(seuratObject, cells = cells[[i]]) <- groups[i]
+    Seurat::Idents(seuratObject, cells = cells[[i]]) <- groups[i]
   }
   
   #plot required visualization
   if(plotType == "ridge"){
-    return(RidgePlot(seuratObject, features = features, ncol = ncol))
+    return(Seurat::RidgePlot(seuratObject, features = features, ncol = ncol))
   }
   else if(plotType == "violin"){
-    return(VlnPlot(seuratObject, features = features, ncol = ncol))
+    return(Seurat::VlnPlot(seuratObject, features = features, ncol = ncol))
   }
   else if(plotType == "feature"){
-    return(FeaturePlot(seuratObject, features = features, ncol = ncol))
+    return(Seurat::FeaturePlot(seuratObject, features = features, ncol = ncol))
   }
   else if(plotType == "dot"){
-    return(DotPlot(seuratObject, features = features))
+    return(Seurat::DotPlot(seuratObject, features = features))
   }
   else if(plotType == "heatmap"){
-    return(DoHeatmap(seuratObject, features = features))
+    return(Seurat::DoHeatmap(seuratObject, features = features))
   }
 }
 
