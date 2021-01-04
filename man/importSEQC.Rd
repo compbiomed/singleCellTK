@@ -10,7 +10,7 @@ importSEQC(
   prefix = NULL,
   gzipped = FALSE,
   class = c("Matrix", "matrix"),
-  delayedArray = TRUE,
+  delayedArray = FALSE,
   cbNotFirstCol = TRUE,
   feNotFirstCol = TRUE,
   combinedSample = TRUE
@@ -41,7 +41,7 @@ object. Can be one of "Matrix" (as returned by
 \link[base]{matrix} function). Default "Matrix".}
 
 \item{delayedArray}{Boolean. Whether to read the expression matrix as
-\link{DelayedArray} object or not. Default \code{TRUE}.}
+\link{DelayedArray} object or not. Default \code{FALSE}.}
 
 \item{cbNotFirstCol}{Boolean. \code{TRUE} if first column of
  sparse_counts_barcode.csv
