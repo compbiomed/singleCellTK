@@ -550,7 +550,8 @@ integrated = integrated[:, orderIdx]
   mat <- t(py$integrated)
   rownames(mat) <- rownames(inSCE)
   colnames(mat) <- colnames(inSCE)
-  SummarizedExperiment::assay(inSCE, assayName) <- mat
+  sctkAssay(inSCE, assayName, tag = "batchCorrected") <- mat
+  # SummarizedExperiment::assay(inSCE, assayName) <- mat
   return(inSCE)
 }
 
@@ -664,6 +665,9 @@ runSCMerge <- function(inSCE, useAssay = "logcounts", batch = 'batch',
                             BPPARAM = bpParam)
   colDataNames <- names(SummarizedExperiment::colData(inSCE))
   names(SummarizedExperiment::colData(inSCE))[colDataNames == 'batch'] <- batch
+  # scMerge's function automatically returns the SCE object with information
+  # completed, thus using this helper function to simply add the tag.
+  .sctkSetTag(inSCE, "batchCorrected", "scMerge")
   return(inSCE)
 }
 
