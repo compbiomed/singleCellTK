@@ -7884,7 +7884,11 @@ shinyServer(function(input, output, session) {
                                   featureType = input$ctLabelFeatureType,
                                   labelByCluster = cluster)
         updateColDataNames()
-        shinyalert(title = "Success")
+        shinyalert(
+          title = "Labeled!",
+          type = "success",
+          text = "Cell type labeling stored as cell annotations. Users can visualize via CellViewer."
+        )
       })
     }
   })

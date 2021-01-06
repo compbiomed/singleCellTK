@@ -136,6 +136,7 @@ source("ui_04_batchcorrect.R", local = TRUE) #creates shinyPanelBatchcorrect var
 source("ui_04_fs_dimred.R", local = TRUE) #creates shinyPanelFS_DimRed variable
 source("ui_05_1_diffex.R", local = TRUE) #creates shinyPanelDiffex variable
 source("ui_05_2_findMarker.R", local = TRUE) #creates shinyPanelfindMarker variable
+source("ui_05_3_cellTypeLabel.R", local = TRUE) # creates shinyPanelLabelCellType variable
 source("ui_06_1_pathway.R", local = TRUE) #creates shinyPanelPathway variable
 source("ui_06_2_enrichR.R", local = TRUE) #creates shinyPanelEnrichR variable
 source("ui_07_subsample.R", local = TRUE) #creates shinyPanelSubsample variable
@@ -143,7 +144,6 @@ source("ui_08_2_cellviewer.R", local = TRUE) #creates shinyPanelCellViewer varia
 source("ui_08_3_heatmap.R", local = TRUE) #creates shinyPanelHeatmap variable
 source("ui_09_curatedworkflows.R", local = TRUE) #creates shinyPanelCuratedWorkflows variable
 source("ui_09_2_seuratWorkflow.R", local = TRUE) #creates shinyPanelSeurat variable
-source("ui_10_cellTypeLabel.R", local = TRUE) # creates shinyPanelLabelCellType variable
 jsCode <- "
 
 shinyjs.disableTabs = function() {
@@ -196,9 +196,10 @@ shinyUI(
       tabPanel("Feature Selection & Dimensionality Reduction", shinyPanelFS_DimRed),
       tabPanel("Clustering", shinyPanelCluster),
       navbarMenu(
-        "Differential Expression & Marker Selection",
+        "Differential Expression & Cell Type Labeling",
         tabPanel("Differential Expression", shinyPanelDiffex),
-        tabPanel("Find Marker", shinyPanelfindMarker)
+        tabPanel("Find Marker", shinyPanelfindMarker),
+        tabPanel("Cell Type Labeling", shinyPanelLabelCellType)
       ),
       navbarMenu(
         "Cell Annotation & Pathway Analysis",
@@ -215,7 +216,6 @@ shinyUI(
       navbarMenu("Viewers",
                  tabPanel("Cell Viewer", value="CellViewer", shinyPanelCellViewer),
                  tabPanel("Heatmap", shinyPanelHeatmap)),
-      tabPanel("Cell Type Labeling", shinyPanelLabelCellType),
       footer = includeHTML("www/footer.html"),
       fluidRow(
         column(12, id = "consoleDiv",
