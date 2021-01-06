@@ -6,7 +6,7 @@ This pipeline is focused on single cell data generated from microfluidic devices
 
 ## Specifications
 
-* The pipeline is currently written in the R language. Users will need to install R version 3.6.2 (or higher) in order to run all of the required packages. The pipeline script "SCTK_runQC.R" can be download [here](https://github.com/rz2333/singleCellTK/blob/devel/exec/SCTK_runQC.R).
+* The pipeline is currently written in the R language. Users will need to install R version 3.6.2 (or higher) in order to run all of the required packages. The pipeline script "SCTK_runQC.R" can be download [here](https://github.com/compbiomed/singleCellTK/blob/sctk_qc_R/3.6.3/exec/SCTK_runQC.R).
 * For importing files from the HCA Optimus pipeline, the "scipy" module needs to be installed in the default version of Python on the system.
 * The pipeline depends on some Python package for Python > 3.0.0. User will need to install Python 3.6.3 (or higher) in order to install the proper version of Python packages. 
 
