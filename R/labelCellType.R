@@ -73,12 +73,12 @@ runSingleR <- function(inSCE,
     } else {
         if (useBltinRef == "hpca") {
             message("Loading reference data 'HumanPrimaryCellAtlasData'...")
-            ref <- SingleR::HumanPrimaryCellAtlasData(ensembl = useEnsembl,
+            ref <- celldex::HumanPrimaryCellAtlasData(ensembl = useEnsembl,
                                                       cell.ont = "none")
             labelColName <- paste0("label.", level)
         } else if (useBltinRef == "bpe") {
             message("Loading reference data 'BlueprintEncodeData'...")
-            ref <- SingleR::BlueprintEncodeData(ensembl = useEnsembl,
+            ref <- celldex::BlueprintEncodeData(ensembl = useEnsembl,
                                                 cell.ont = "none")
             labelColName <- paste0("label.", level)
         } else if (useBltinRef == "mp") {
@@ -93,16 +93,19 @@ runSingleR <- function(inSCE,
             warning("MuraroPancreasData does not have multiple levels of ",
                     "label. Using its default labeling.")
         } else if (useBltinRef == "dice") {
+            message("Loading reference data 'DatabaseImmuneCellExpressionData'...")
             ref <- celldex::DatabaseImmuneCellExpressionData(ensembl = useEnsembl)
             labelColName <- paste0("label.", level)
         } else if (useBltinRef == "immgen") {
+            message("Loading reference data 'ImmGenData'...")
             ref <- celldex::ImmGenData(ensembl = useEnsembl)
             labelColName <- paste0("label.", level)
         } else if (useBltinRef == "mouse") {
+            message("Loading reference data 'MouseRNAseqData'...")
             ref <- celldex::MouseRNAseqData(ensembl = useEnsembl)
             labelColName <- paste0("label.", level)
         } else if (useBltinRef == "zeisel") {
-            message("Loading reference data 'MuraroPancreasData'...")
+            message("Loading reference data 'ZeiselBrainData'...")
             ref <- scRNAseq::ZeiselBrainData(ensembl = useEnsembl)
             ref <- ref[,ref$level2class!="(none)"]
             ref <- scater_logNormCounts(ref, logAssayName = "logcounts")
