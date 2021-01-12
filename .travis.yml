@@ -18,6 +18,7 @@ bioc_required: true
 before_install:
   - pyenv install 3.6.1
   - pyenv global 3.6.1
+  - apt-get install -y libgit2-dev
   - Rscript -e 'install.packages("devtools")'
   - Rscript -e 'devtools::install_version("xgboost", version = "0.90.0.2", repos = "http://cran.us.r-project.org")'
   - pip install --upgrade pip
