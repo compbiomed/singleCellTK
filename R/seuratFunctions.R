@@ -873,6 +873,55 @@ seuratFindMarkers <- function(inSCE, cells1 = NULL, cells2 = NULL, group1 = NULL
   return(inSCE)
 }
 
+#' Compute and plot visualizations for marker genes
+#'
+#' @param inSCE Input \code{SingleCellExperiment} object.
+#' @param scaledAssayName Specify the name of the scaled assay stored in the input object.
+#' @param plotType Specify the type of the plot to compute. Options are limited to "ridge", "violing", "feature", "dot" and "heatmap".
+#' @param features Specify the features to compute the plot against.
+#' @param groupVariable Specify the column name from the colData slot that should be used as grouping variable.
+#' @param ncol Visualizations will be adjusted in "ncol" number of columns.
+#'
+#' @return Plot object
+#' @export
+seuratGenePlot <- function(inSCE, scaledAssayName = "seuratScaledData", plotType, features, groupVariable, ncol){
+  #setup seurat object and the corresponding groups
+  seuratObject <- convertSCEToSeurat(inSCE, scaledAssay = scaledAssayName)
+  indices <- list()
+  cells <- list()
+  groups <- unique(colData(inSCE)[[groupVariable]])
+  for(i in seq(length(groups))){
+    indices[[i]] <- which(colData(inSCE)[[groupVariable]] == groups[i], arr.ind = TRUE)
+    cells[[i]] <- colnames(inSCE)[indices[[i]]]
+    cells[[i]] <- lapply(
+      X = cells[[i]], 
+      FUN = function(t) gsub(
+        pattern = "_", 
+        replacement = "-", 
+        x = t, 
+        fixed = TRUE)
+    )
+    Seurat::Idents(seuratObject, cells = cells[[i]]) <- groups[i]
+  }
+  
+  #plot required visualization
+  if(plotType == "ridge"){
+    return(Seurat::RidgePlot(seuratObject, features = features, ncol = ncol))
+  }
+  else if(plotType == "violin"){
+    return(Seurat::VlnPlot(seuratObject, features = features, ncol = ncol))
+  }
+  else if(plotType == "feature"){
+    return(Seurat::FeaturePlot(seuratObject, features = features, ncol = ncol))
+  }
+  else if(plotType == "dot"){
+    return(Seurat::DotPlot(seuratObject, features = features))
+  }
+  else if(plotType == "heatmap"){
+    return(Seurat::DoHeatmap(seuratObject, features = features))
+  }
+}
+
 .findConservedMarkers <- function(object,
                                   ident.1, 
                                   ident.2, 
