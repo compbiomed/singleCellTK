@@ -442,8 +442,6 @@ plotSCEDimReduceColData <- function(inSCE,
 #' @param feature Name of feature stored in assay of SingleCellExperiment
 #'  object.
 #' @param featureLocation Indicates which column name of rowData to query gene.
-#' @param featureDisplay Indicates which column name of rowData to use
-#' to display feature for visualization.
 #' @param shape add shapes to each condition. Default NULL.
 #' @param reducedDimName saved dimension reduction name in the
 #' \linkS4class{SingleCellExperiment} object. Required.
@@ -498,7 +496,6 @@ plotSCEDimReduceFeatures <- function(inSCE,
                                      sample = NULL,
                                      feature,
                                      featureLocation = NULL,
-                                     featureDisplay = NULL,
                                      shape = NULL,
                                      reducedDimName,
                                      useAssay = "logcounts",
@@ -526,6 +523,12 @@ plotSCEDimReduceFeatures <- function(inSCE,
                                      plotLabels = NULL) {
   if(!combinePlot %in% c("all", "sample", "none")){
     stop("'combinePlot' must be set to either 'all', 'sample', or 'none'.")
+  }
+
+  if(exists(x = "featureDisplay", inSCE@metadata)){
+    featureDisplay <- inSCE@metadata$featureDisplay
+  }else{
+    featureDisplay <- NULL
   }
 
   mat <- getBiomarker(
@@ -1047,8 +1050,6 @@ plotSCEViolinColData <- function(inSCE,
 #' @param feature Name of feature stored in assay of SingleCellExperiment
 #'  object.
 #' @param featureLocation Indicates which column name of rowData to query gene.
-#' @param featureDisplay Indicates which column name of rowData to use
-#' to display feature for visualization.
 #' @param groupBy Groupings for each numeric value. A user may input a vector
 #'  equal length to the number of the samples in the SingleCellExperiment
 #'  object, or can be retrieved from the colData slot. Default NULL.
@@ -1087,7 +1088,6 @@ plotSCEViolinAssayData <- function(inSCE,
                                    useAssay = "counts",
                                    feature,
                                    featureLocation = NULL,
-                                   featureDisplay = NULL,
                                    groupBy = NULL,
                                    violin = TRUE,
                                    boxplot = TRUE,
@@ -1109,6 +1109,12 @@ plotSCEViolinAssayData <- function(inSCE,
     stop("'combinePlot' must be set to either 'all', 'sample', or 'none'.")
   }
 
+  if(exists(x = "featureDisplay", inSCE@metadata)){
+    featureDisplay <- inSCE@metadata$featureDisplay
+  }else{
+    featureDisplay <- NULL
+  }
+
   mat <- getBiomarker(
     inSCE = inSCE,
     useAssay = useAssay,
@@ -1117,6 +1123,7 @@ plotSCEViolinAssayData <- function(inSCE,
     gene = feature,
     binary = "Continuous"
   )
+
   counts <- mat[, 2]
   if (!is.null(groupBy)) {
     if (length(groupBy) > 1) {
@@ -1131,6 +1138,12 @@ plotSCEViolinAssayData <- function(inSCE,
       }
       groupBy <- as.character(SummarizedExperiment::colData(inSCE)[, groupBy])
     }
+  }
+  if(!is.null(featureDisplay) && is.null(title)){
+    title = utils::tail(colnames(mat),1)
+  }
+  if(is.null(xlab)){
+    ylab = "Expression"
   }
   if (!is.null(sample)) {
     if (length(sample) != ncol(inSCE)) {
@@ -1593,8 +1606,6 @@ plotSCEDensityColData <- function(inSCE,
 #' @param feature Name of feature stored in assay of SingleCellExperiment
 #'  object.
 #' @param featureLocation Indicates which column name of rowData to query gene.
-#' @param featureDisplay Indicates which column name of rowData to use
-#' to display feature for visualization.
 #' @param groupBy Groupings for each numeric value. A user may input a vector
 #'  equal length to the number of the samples in the SingleCellExperiment
 #'  object, or can be retrieved from the colData slot. Default NULL.
@@ -1624,7 +1635,6 @@ plotSCEDensityAssayData <- function(inSCE,
                                     useAssay = "counts",
                                     feature,
                                     featureLocation = NULL,
-                                    featureDisplay = NULL,
                                     groupBy = NULL,
                                     xlab = NULL,
                                     ylab = NULL,
@@ -1638,6 +1648,12 @@ plotSCEDensityAssayData <- function(inSCE,
                                     plotLabels = NULL) {
   if(!combinePlot %in% c("all", "sample", "none")){
     stop("'combinePlot' must be set to either 'all', 'sample', or 'none'.")
+  }
+
+  if(exists(x = "featureDisplay", inSCE@metadata)){
+    featureDisplay <- inSCE@metadata$featureDisplay
+  }else{
+    featureDisplay <- NULL
   }
 
   mat <- getBiomarker(
@@ -2412,8 +2428,6 @@ plotSCEBarColData <- function(inSCE,
 #' @param feature Name of feature stored in assay of SingleCellExperiment
 #'  object.
 #' @param featureLocation Indicates which column name of rowData to query gene.
-#' @param featureDisplay Indicates which column name of rowData to use
-#' to display feature for visualization.
 #' @param groupBy Groupings for each numeric value. A user may input a vector
 #'  equal length to the number of the samples in the SingleCellExperiment
 #'  object, or can be retrieved from the colData slot. Default NULL.
@@ -2446,7 +2460,6 @@ plotSCEBarAssayData <- function(inSCE,
                                 useAssay = "counts",
                                 feature,
                                 featureLocation = NULL,
-                                featureDisplay = NULL,
                                 groupBy = NULL,
                                 xlab = NULL,
                                 ylab = NULL,
@@ -2460,6 +2473,12 @@ plotSCEBarAssayData <- function(inSCE,
                                 title = NULL,
                                 titleSize = NULL,
                                 combinePlot = TRUE) {
+  if(exists(x = "featureDisplay", inSCE@metadata)){
+    featureDisplay <- inSCE@metadata$featureDisplay
+  }else{
+    featureDisplay <- NULL
+  }
+
   mat <- getBiomarker(
     inSCE = inSCE,
     useAssay = useAssay,
@@ -2516,6 +2535,25 @@ plotSCEBarAssayData <- function(inSCE,
   }
   value.bin <- cut(x = value, breaks = bin, labels = binLabel)
   return(value.bin)
+}
+
+#' @title Indicates which rowData to use for visualization
+#' @description This function is to be used to specify which
+#' @param inSCE Input \linkS4class{SingleCellExperiment} object with saved
+#' dimension reduction components or a variable with saved results. Required.
+#' @param featureDisplayRow Indicates which column name of rowData to be used for plots.
+#' @return A SingleCellExperiment object with the specific column name of rowData
+#'  to be used for plotting stored in metadata.
+#' @examples
+#' data(scExample, package="singleCellTK")
+#' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
+#' sce <- setSCTKDisplayRow(inSCE = sce, featureDisplayRow = "feature_name")
+#' plotSCEViolinAssayData(inSCE = sce, feature = "ENSG00000019582")
+#' @export
+setSCTKDisplayRow <- function(inSCE,
+                              featureDisplayRow) {
+  inSCE@metadata$featureDisplay <- featureDisplayRow
+  return(inSCE)
 }
 
 .ggSCTKCombinePlots <- function(plotlist,
