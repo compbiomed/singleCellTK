@@ -28,11 +28,6 @@
 #' @param relWidths Relative widths of plots when combine is set.
 #' @param plotNCols Number of columns when plots are combined in a grid.
 #' @param plotNRows Number of rows when plots are combined in a grid.
-#' @param plotLabels labels to each plot. If set to "default", will use the name of the samples
-#'  as the labels. If set to "none", no label will be plotted.
-#' @param plotLabelSize size of labels
-#' @param plotLabelPositionX Numeric vector. The X position of the plot label.
-#' @param plotLabelPositionY Numeric vector. The Y position of the plot label.
 #' @param samplePerColumn If TRUE, when there are multiple samples and combining by "all",
 #'  the output .ggplot will have plots from each sample on a single column. Default TRUE.
 #' @param sampleRelHeights If there are multiple samples and combining by "all",
@@ -65,10 +60,6 @@ plotRunPerCellQCResults <- function(inSCE,
                                     relWidths=c(1, 1, 1, 1),
                                     plotNCols = NULL,
                                     plotNRows = NULL,
-                                    plotLabels = "none",
-                                    plotLabelSize = 20,
-                                    plotLabelPositionX = NULL,
-                                    plotLabelPositionY = NULL,
                                     samplePerColumn = TRUE,
                                     sampleRelHeights = 1,
                                     sampleRelWidths = 1) {
@@ -337,10 +328,6 @@ plotRunPerCellQCResults <- function(inSCE,
       plotlist <- .ggSCTKCombinePlots(plotlist, combinePlot = combinePlot,
                                       relHeights = relHeights,
                                       relWidths = relWidths,
-                                      labels = plotLabels,
-                                      labelSize = plotLabelSize,
-                                      labelPositionX = plotLabelPositionX,
-                                      labelPositionY = plotLabelPositionY,
                                       nrows = plotNRows,
                                       ncols = plotNCols,
                                       samplePerColumn = samplePerColumn,

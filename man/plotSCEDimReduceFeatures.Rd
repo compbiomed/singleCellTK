@@ -9,7 +9,6 @@ plotSCEDimReduceFeatures(
   sample = NULL,
   feature,
   featureLocation = NULL,
-  featureDisplay = NULL,
   shape = NULL,
   reducedDimName,
   useAssay = "logcounts",
@@ -47,9 +46,6 @@ dimension reduction components or a variable with saved results. Required}
 object.}
 
 \item{featureLocation}{Indicates which column name of rowData to query gene.}
-
-\item{featureDisplay}{Indicates which column name of rowData to use
-to display feature for visualization.}
 
 \item{shape}{add shapes to each condition. Default NULL.}
 

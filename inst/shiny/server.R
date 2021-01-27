@@ -132,6 +132,8 @@ shinyServer(function(input, output, session) {
 
   updateFeatureAnnots <- function(){
     selectRowData <- colnames(rowData(vals$counts))
+    updateSelectInput(session, "importFeatureDispOpt",
+                      choices = c("Rownames (Default)", selectRowData))
     updateSelectInput(session, "filteredFeature",
                       choices = c("none", selectRowData))
     updateSelectInput(session, "deHMrowData",
@@ -305,7 +307,7 @@ shinyServer(function(input, output, session) {
   # session$onSessionEnded(stopApp)
 
   #-----------------------------------------------------------------------------
-  # Page 1: Upload
+  # Page 1: Upload ####
   #-----------------------------------------------------------------------------
 
   # Upload data through shiny app
@@ -949,6 +951,16 @@ shinyServer(function(input, output, session) {
     })
   })
 
+  observeEvent(input$importFeatureDipSet, {
+    if (!is.null(vals$counts)) {
+      withBusyIndicatorServer("importFeatureDipSet", {
+        if (!input$importFeatureDispOpt == "Rownames (Default)") {
+          vals$counts <- setSCTKDisplayRow(vals$counts, 
+                                           input$importFeatureDispOpt)
+        }
+      })
+    }
+  })
 
   #-----------#
   # Gene Sets #
