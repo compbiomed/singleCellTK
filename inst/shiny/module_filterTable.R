@@ -226,7 +226,7 @@ filterTableServer <- function(input, output, session, dataframe,
                       values = rv$parameters$values)
       rv$data <- df
       rv$data
-    }, options = list(pageLength = 6, dom = "<'top'fl>t<'bottom'ip>", stateSave = TRUE
+    }, extensions =  "Buttons", options = list(pageLength = 6, dom = "<'top'Bfl>t<'bottom'ip>", stateSave = TRUE, buttons = c('copy', 'csv', 'excel', 'pdf', 'print')
     ))
     
     activeFilters <- list()
@@ -255,7 +255,7 @@ filterTableServer <- function(input, output, session, dataframe,
       output$seuratFindMarkerTable <- DT::renderDataTable({
         rv$data <- dataframe
         rv$data
-      }, options = list(pageLength = 6, dom = "<'top'fl>t<'bottom'ip>", stateSave = TRUE
+      }, extensions =  "Buttons", options = list(pageLength = 6, dom = "<'top'Bfl>t<'bottom'ip>", stateSave = TRUE, buttons = c('copy', 'csv', 'excel', 'pdf', 'print')
       ))
       
       output$seuratFindMarkerActiveFilters <- renderUI({
@@ -447,7 +447,7 @@ filterTableServer <- function(input, output, session, dataframe,
     
     output$seuratFindMarkerTable <- DT::renderDataTable({
       df
-    }, options = list(pageLength = 6, dom = "<'top'fl>t<'bottom'ip>", stateSave = TRUE
+    }, extensions =  "Buttons", options = list(pageLength = 6, dom = "<'top'Bfl>t<'bottom'ip>", stateSave = TRUE, buttons = c('copy', 'csv', 'excel', 'pdf', 'print')
     ))
     
     
@@ -510,7 +510,7 @@ filterTableServer <- function(input, output, session, dataframe,
     
     output$seuratFindMarkerTable <- DT::renderDataTable({
       df
-    }, options = list(pageLength = 6, dom = "<'top'fl>t<'bottom'ip>", stateSave = TRUE
+    }, extensions =  "Buttons", options = list(pageLength = 6, dom = "<'top'Bfl>t<'bottom'ip>", stateSave = TRUE, buttons = c('copy', 'csv', 'excel', 'pdf', 'print')
     ))
     
     activeFilters <- list()
