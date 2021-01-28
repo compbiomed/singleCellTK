@@ -108,7 +108,7 @@
   rownames(unionCb) <- unionCb[['rownames']]
   newCbList <- list()
   for (i in seq_along(sceList)) {
-    newCbList[[i]] <- unionCb[colnames(sceList[[i]]),]
+    newCbList[[i]] <- unionCb[colnames(sceList[[i]]), , drop=FALSE]
   }
   return(newCbList)
 }
