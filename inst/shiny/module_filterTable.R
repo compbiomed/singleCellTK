@@ -59,12 +59,32 @@ filterTableServer <- function(input, output, session, dataframe,
                                                    size = "xs",
                                                    status = "primary"
                                                  ),
+                                          conditionalPanel(
+                                            condition = paste0("input['", option[i], "'] == 'extremes'"),
+                                            ns = ns,
+                                            h6("values greater than (or equal to):")
+                                          ),
+                                          conditionalPanel(
+                                            condition = paste0("input['", option[i], "'] == 'range'"),
+                                            ns = ns,
+                                            h6("values between:")
+                                          ),
                                                  numericInput(
                                                    inputId = ns(inputFirst[i]),
                                                    label = NULL,
                                                    step = 0.001,
                                                    value = 0
                                                  ),
+                                          conditionalPanel(
+                                            condition = paste0("input['", option[i], "'] == 'extremes'"),
+                                            ns = ns,
+                                            h6("and values less than (or equal to):")
+                                          ),
+                                          conditionalPanel(
+                                            condition = paste0("input['", option[i], "'] == 'range'"),
+                                            ns = ns,
+                                            h6("and:")
+                                          ),
                                                  conditionalPanel(
                                                    condition = paste0("input['", option[i], "'] == 'extremes'
                                                                     || input['", option[i], "'] == 'range'"),
@@ -92,11 +112,31 @@ filterTableServer <- function(input, output, session, dataframe,
                                                    size = "xs",
                                                    status = "primary"
                                                  ),
+                                                 conditionalPanel(
+                                                   condition = paste0("input['", option[i], "'] == 'extremes'"),
+                                                   ns = ns,
+                                                   h6("values greater than (or equal to):")
+                                                 ),
+                                                 conditionalPanel(
+                                                   condition = paste0("input['", option[i], "'] == 'range'"),
+                                                   ns = ns,
+                                                   h6("values between:")
+                                                 ),
                                                  numericInput(
                                                    inputId = ns(inputFirst[i]),
                                                    label = NULL,
                                                    step = 0.001,
                                                    value = 0
+                                                 ),
+                                                 conditionalPanel(
+                                                   condition = paste0("input['", option[i], "'] == 'extremes'"),
+                                                   ns = ns,
+                                                   h6("and values less than (or equal to):")
+                                                 ),
+                                                 conditionalPanel(
+                                                   condition = paste0("input['", option[i], "'] == 'range'"),
+                                                   ns = ns,
+                                                   h6("and:")
                                                  ),
                                                  conditionalPanel(
                                                    condition = paste0("input['", option[i], "'] == 'extremes'
@@ -290,12 +330,32 @@ filterTableServer <- function(input, output, session, dataframe,
                                                      size = "xs",
                                                      status = "primary"
                                                    ),
+                                            conditionalPanel(
+                                              condition = paste0("input['", option[i], "'] == 'extremes'"),
+                                              ns = ns,
+                                              h6("values greater than (or equal to):")
+                                            ),
+                                            conditionalPanel(
+                                              condition = paste0("input['", option[i], "'] == 'range'"),
+                                              ns = ns,
+                                              h6("values between:")
+                                            ),
                                                    numericInput(
                                                      inputId = ns(inputFirst[i]),
                                                      label = NULL,
                                                      step = 0.001,
                                                      value = 0
                                                    ),
+                                            conditionalPanel(
+                                              condition = paste0("input['", option[i], "'] == 'extremes'"),
+                                              ns = ns,
+                                              h6("and values less than (or equal to):")
+                                            ),
+                                            conditionalPanel(
+                                              condition = paste0("input['", option[i], "'] == 'range'"),
+                                              ns = ns,
+                                              h6("and:")
+                                            ),
                                                    conditionalPanel(
                                                      condition = paste0("input['", option[i], "'] == 'extremes'
                                                                     || input['", option[i], "'] == 'range'"),
@@ -323,11 +383,31 @@ filterTableServer <- function(input, output, session, dataframe,
                                                      size = "xs",
                                                      status = "primary"
                                                    ),
+                                                   conditionalPanel(
+                                                     condition = paste0("input['", option[i], "'] == 'extremes'"),
+                                                     ns = ns,
+                                                     h6("values greater than (or equal to):")
+                                                   ),
+                                                   conditionalPanel(
+                                                     condition = paste0("input['", option[i], "'] == 'range'"),
+                                                     ns = ns,
+                                                     h6("values between:")
+                                                   ),
                                                    numericInput(
                                                      inputId = ns(inputFirst[i]),
                                                      label = NULL,
                                                      step = 0.001,
                                                      value = 0
+                                                   ),
+                                                   conditionalPanel(
+                                                     condition = paste0("input['", option[i], "'] == 'extremes'"),
+                                                     ns = ns,
+                                                     h6("and values less than (or equal to):")
+                                                   ),
+                                                   conditionalPanel(
+                                                     condition = paste0("input['", option[i], "'] == 'range'"),
+                                                     ns = ns,
+                                                     h6("and:")
                                                    ),
                                                    conditionalPanel(
                                                      condition = paste0("input['", option[i], "'] == 'extremes'
