@@ -22,6 +22,8 @@ filterTableServer <- function(input, output, session, dataframe,
                               defaultFilterOperators = NULL,
                               defaultFilterValues = NULL){
   ns <- session$ns
+  x <- session$ns('tmp')
+  moduleID <- substr(x, 1, nchar(x)-4)
   rv <- reactiveValues(data = NULL,
                       selectedRows = NULL,
                       parameters = NULL
@@ -266,7 +268,15 @@ filterTableServer <- function(input, output, session, dataframe,
                       values = rv$parameters$values)
       rv$data <- df
       rv$data
-    }, extensions =  "Buttons", options = list(pageLength = 6, dom = "<'top'Bfl>t<'bottom'ip>", stateSave = TRUE, buttons = c('copy', 'csv', 'excel', 'pdf', 'print')
+    }, extensions = 'Buttons', options = list(pageLength = 6, dom = "<'top'fBl>t<'bottom'ip>", stateSave = TRUE,
+                                              buttons = list(
+                                                list(
+                                                  extend = "collection",
+                                                  text = 'Export',
+                                                  action = DT::JS(paste0("function ( e, dt, node, config ) {
+                                    Shiny.setInputValue('", moduleID,"-export', true, {priority: 'event'});}"))
+                                                )
+                                              )
     ))
     
     activeFilters <- list()
@@ -295,7 +305,15 @@ filterTableServer <- function(input, output, session, dataframe,
       output$seuratFindMarkerTable <- DT::renderDataTable({
         rv$data <- dataframe
         rv$data
-      }, extensions =  "Buttons", options = list(pageLength = 6, dom = "<'top'Bfl>t<'bottom'ip>", stateSave = TRUE, buttons = c('copy', 'csv', 'excel', 'pdf', 'print')
+      }, extensions = 'Buttons', options = list(pageLength = 6, dom = "<'top'fBl>t<'bottom'ip>", stateSave = TRUE,
+                                                buttons = list(
+                                                  list(
+                                                    extend = "collection",
+                                                    text = 'Export',
+                                                    action = DT::JS(paste0("function ( e, dt, node, config ) {
+                                    Shiny.setInputValue('", moduleID,"-export', true, {priority: 'event'});}"))
+                                                  )
+                                                )
       ))
       
       output$seuratFindMarkerActiveFilters <- renderUI({
@@ -527,7 +545,15 @@ filterTableServer <- function(input, output, session, dataframe,
     
     output$seuratFindMarkerTable <- DT::renderDataTable({
       df
-    }, extensions =  "Buttons", options = list(pageLength = 6, dom = "<'top'Bfl>t<'bottom'ip>", stateSave = TRUE, buttons = c('copy', 'csv', 'excel', 'pdf', 'print')
+    }, extensions = 'Buttons', options = list(pageLength = 6, dom = "<'top'fBl>t<'bottom'ip>", stateSave = TRUE,
+                                              buttons = list(
+                                                list(
+                                                  extend = "collection",
+                                                  text = 'Export',
+                                                  action = DT::JS(paste0("function ( e, dt, node, config ) {
+                                    Shiny.setInputValue('", moduleID,"-export', true, {priority: 'event'});}"))
+                                                )
+                                              )
     ))
     
     
@@ -590,7 +616,15 @@ filterTableServer <- function(input, output, session, dataframe,
     
     output$seuratFindMarkerTable <- DT::renderDataTable({
       df
-    }, extensions =  "Buttons", options = list(pageLength = 6, dom = "<'top'Bfl>t<'bottom'ip>", stateSave = TRUE, buttons = c('copy', 'csv', 'excel', 'pdf', 'print')
+    }, extensions = 'Buttons', options = list(pageLength = 6, dom = "<'top'fBl>t<'bottom'ip>", stateSave = TRUE,
+                                              buttons = list(
+                                                list(
+                                                  extend = "collection",
+                                                  text = 'Export',
+                                                  action = DT::JS(paste0("function ( e, dt, node, config ) {
+                                    Shiny.setInputValue('", moduleID,"-export', true, {priority: 'event'});}"))
+                                                )
+                                              )
     ))
     
     activeFilters <- list()
@@ -639,6 +673,11 @@ filterTableServer <- function(input, output, session, dataframe,
     }
   })
   
+  
+  observeEvent(input$export, {
+    write.csv(rv$data, file = paste0(moduleID, "-", Sys.Date(), ".csv"), row.names = TRUE)
+    showNotification("Table saved in working directory as", paste0(moduleID, "-", Sys.Date(), ".csv"), duration = 10)
+  })
   
   return(rv)
 }
