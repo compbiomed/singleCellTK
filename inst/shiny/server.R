@@ -166,10 +166,10 @@ shinyServer(function(input, output, session) {
                                    label = "Select assay:", tags = NULL, recommended = NULL, showTags = TRUE){
     if(!is.null(choices)
        && is.null(tags)){
-      choices <- singleCellTK:::.getAssays(vals$counts)
+      choices <- getAssays(vals$counts)
     }
     else{
-      choices <- singleCellTK:::.sctkGetTag(vals$counts, tags)
+      choices <- sctkGetTag(vals$counts, tags)
     }
     if(!showTags){
       allChoices <- NULL
@@ -913,7 +913,7 @@ shinyServer(function(input, output, session) {
         vals$counts <- vals$original
 
         #store assayType information in the metadata
-        vals$counts <- singleCellTK:::.sctkSetTagExternal(
+        vals$counts <- sctkSetTagExternal(
           inSCE = vals$counts,
           assayType = "raw",
           assays = assayNames(vals$counts))
