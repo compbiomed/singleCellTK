@@ -872,7 +872,7 @@ plotSCEScatter <- function(inSCE,
                      substr(summary, 2, nchar(summary)), sep="")
     summ$label <- paste0(summary,": ", round(summ$value, 5))
 
-    p <- p + ggplot2::geom_text(data = summ,
+    p <- p + ggrepel::geom_text_repel(data = summ,
                                 ggplot2::aes_string(x = "groupBy",
                                                     y = "statY",
                                                     label = "label"),
@@ -2298,7 +2298,7 @@ plotBarcodeRankScatter <- function(inSCE,
                      substr(summary, 2, nchar(summary)), sep="")
     summ$label <- paste0(summary,": ", round(summ$value, 5))
 
-    p <- p + ggplot2::geom_text(data = summ,
+    p <- p + ggrepel::geom_text_repel(data = summ,
       ggplot2::aes_string(x = "groupBy",
         y = "statY",
         label = "label"),
@@ -2569,6 +2569,7 @@ setSCTKDisplayRow <- function(inSCE,
                                 samplePerColumn = TRUE,
                                 sampleRelHeights = 1,
                                 sampleRelWidths = 1) {
+
   if ("Violin" %in% names(plotlist)) {
     plotlistViolin <- plotlist$Violin
   } else {
@@ -2624,11 +2625,12 @@ setSCTKDisplayRow <- function(inSCE,
       listNamePlot <- list()
 
       if(is.null(labelPositionX)){
-        labelPositionX = rep(0, length(plotlist))
+        labelPositionX = rep(-0.05, length(plotlist))
       }
       if(is.null(labelPositionY)){
         labelPositionY = rep(1, length(plotlist))
       }
+      labels[1] <- ""
 
       for(x in seq_along(plotlist)){
         labeled <- plotlist[[x]] + cowplot::draw_plot_label(
