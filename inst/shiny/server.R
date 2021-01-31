@@ -6777,6 +6777,8 @@ shinyServer(function(input, output, session) {
 
     )
 
+    #singleCellTK:::.exportMetaSlot(vals$counts, "seuratMarkers")
+    
     vals$fts <- callModule(
       module = filterTableServer,
       id = "filterSeuratFindMarker",

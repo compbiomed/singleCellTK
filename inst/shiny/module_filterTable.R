@@ -21,6 +21,7 @@ filterTableServer <- function(input, output, session, dataframe,
                               defaultFilterColumns = NULL,
                               defaultFilterOperators = NULL,
                               defaultFilterValues = NULL){
+  
   ns <- session$ns
   x <- session$ns('tmp')
   moduleID <- substr(x, 1, nchar(x)-4)
@@ -268,7 +269,7 @@ filterTableServer <- function(input, output, session, dataframe,
                       values = rv$parameters$values)
       rv$data <- df
       rv$data
-    }, extensions = 'Buttons', options = list(pageLength = 6, dom = "<'top'fBl>t<'bottom'ip>", stateSave = TRUE,
+    }, extensions = 'Buttons', options = list(pageLength = 6, dom = "<'top'li>t<'bottom'Bp>", stateSave = TRUE,
                                               buttons = list(
                                                 list(
                                                   extend = "collection",
@@ -305,7 +306,7 @@ filterTableServer <- function(input, output, session, dataframe,
       output$seuratFindMarkerTable <- DT::renderDataTable({
         rv$data <- dataframe
         rv$data
-      }, extensions = 'Buttons', options = list(pageLength = 6, dom = "<'top'fBl>t<'bottom'ip>", stateSave = TRUE,
+      }, extensions = 'Buttons', options = list(pageLength = 6, dom = "<'top'li>t<'bottom'Bp>", stateSave = TRUE,
                                                 buttons = list(
                                                   list(
                                                     extend = "collection",
@@ -545,7 +546,7 @@ filterTableServer <- function(input, output, session, dataframe,
     
     output$seuratFindMarkerTable <- DT::renderDataTable({
       df
-    }, extensions = 'Buttons', options = list(pageLength = 6, dom = "<'top'fBl>t<'bottom'ip>", stateSave = TRUE,
+    }, extensions = 'Buttons', options = list(pageLength = 6, dom = "<'top'li>t<'bottom'Bp>", stateSave = TRUE,
                                               buttons = list(
                                                 list(
                                                   extend = "collection",
@@ -616,7 +617,7 @@ filterTableServer <- function(input, output, session, dataframe,
     
     output$seuratFindMarkerTable <- DT::renderDataTable({
       df
-    }, extensions = 'Buttons', options = list(pageLength = 6, dom = "<'top'fBl>t<'bottom'ip>", stateSave = TRUE,
+    }, extensions = 'Buttons', options = list(pageLength = 6, dom = "<'top'li>t<'bottom'Bp>", stateSave = TRUE,
                                               buttons = list(
                                                 list(
                                                   extend = "collection",

@@ -492,4 +492,8 @@ setMethod(f = "sctkAssay<-",
           }
 )
 
-
+.exportMetaSlot <- function(inSCE, metaSlot){
+  temp <- metadata(inSCE)[[metaSlot]]
+  write.csv(temp, file = paste0(metaSlot, "-", Sys.Date(), ".csv"), row.names = TRUE)
+  message(paste0("File saved as ", metaSlot, "-", Sys.Date(), ".csv"))
+}
