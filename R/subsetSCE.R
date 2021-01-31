@@ -99,7 +99,7 @@ subsetSCERows <- function(inSCE, index = NULL, bool = NULL, rowData = NULL,
     if(isTRUE(prependAltExpName)) {
       names(assays(temp.SCE)) <- paste0(altExpName, names(assays(temp.SCE)))
     }
-    SingleCellExperiment::altExp(inSCE, altExpName) <- temp.SCE
+    sctkAltExp(inSCE, e = altExpName, tag = "subset") <- temp.SCE
   } else {
     inSCE <- temp.SCE
   }

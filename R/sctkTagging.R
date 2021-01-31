@@ -131,3 +131,57 @@ setMethod(f = "sctkAssay<-",
             methods::callNextMethod()
           }
 )
+
+#' sctkAltExp
+#' Store assays using tags to identify the type of assay stored. To be used
+#' within the singleCellTK as a replacement for assay<- setter function.
+#' @param inSCE Input \code{SingleCellExperiment} object.
+#' @param tag Specify the tag to store against the input assay. Default
+#'  is \code{NULL}, which will set the tag to 'uncategorized'.
+#' @param value Input matrix-type assay to store.
+#' @export
+setGeneric(name = "sctkAltExp<-", 
+           function(inSCE, e, tag = NULL, value) 
+             SingleCellExperiment::`altExp<-`(x = inSCE, 
+                                              e = e,
+                                             value = value)
+)
+
+#' sctkAltExp
+#' Store assays using tags to identify the type of assay stored. To be used
+#' within the singleCellTK as a replacement for assay<- setter function.
+#' @param inSCE Input \code{SingleCellExperiment} object.
+#' @param e altExp Name
+#' @param tag Specify the tag to store against the input assay. Default
+#'  is \code{NULL}, which will set the tag to 'uncategorized'.
+#' @param value Input matrix-type assay to store.
+#' @export
+setMethod(f = "sctkAltExp<-", 
+          signature = signature(inSCE = "ANY", e = "character", tag = "CharacterOrNullOrMissing"),
+          definition = function(inSCE, e, tag = NULL, value){
+            if(!is.null(value)){
+              if(is.null(tag)
+                 || missing(tag)){
+                inSCE <- sctkSetTag(
+                  inSCE = inSCE, 
+                  assayType = "altExp", 
+                  assays = e
+                )
+              }
+              else{
+                inSCE <- sctkSetTag(
+                  inSCE = inSCE, 
+                  assayType = tag, 
+                  assays = e
+                )
+              }
+            }
+            else{
+              inSCE <- sctkDeleteTag(
+                inSCE = inSCE,
+                assay = e
+              )
+            }
+            methods::callNextMethod()
+          }
+)
