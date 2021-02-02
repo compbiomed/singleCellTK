@@ -955,7 +955,7 @@ shinyServer(function(input, output, session) {
     if (!is.null(vals$counts)) {
       withBusyIndicatorServer("importFeatureDipSet", {
         if (!input$importFeatureDispOpt == "Rownames (Default)") {
-          vals$counts <- setSCTKDisplayRow(vals$counts, 
+          vals$counts <- setSCTKDisplayRow(vals$counts,
                                            input$importFeatureDispOpt)
         }
       })
@@ -1033,7 +1033,7 @@ shinyServer(function(input, output, session) {
   })
 
   #-----------------------------------------------------------------------------
-  # Page 2: Data Summary and Filtering
+  # Page 2: Data Summary and Filtering ####
   #-----------------------------------------------------------------------------
 
   #Sidebar buttons functionality - not an accordion
@@ -1070,7 +1070,7 @@ shinyServer(function(input, output, session) {
   shinyjs::addClass(id = "downsampleGo", class = "btn-block")
 
   #----#
-  # QC #
+  # QC #####
   #----#
   # Hide and show parameters for QC functions
   shinyjs::onclick("QCMetrics", shinyjs::toggle(id = "QCMetricsParams",
@@ -1326,7 +1326,7 @@ shinyServer(function(input, output, session) {
   }))
 
   #-----------#
-  # FILTERING #
+  # FILTERING #####
   #-----------#
   shinyjs::onclick("colGT", shinyjs::toggle(id = "filterThreshGT",
                                             anim = FALSE), add = TRUE)
@@ -1356,7 +1356,7 @@ shinyServer(function(input, output, session) {
     # check if column contains numerical values
     isNum <- is.numeric(vals$counts[[input$filterColSelect]][0])
     if (length(vals$counts[[input$filterColSelect]]) > 0) {
-      if (isNum) {
+      if (isTRUE(isNum)) {
         # (from partials) insertUI for choosing greater than and less than params
         addFilteringThresholdOptions(vals$counts[[input$filterColSelect]])
         # if less than 25 unique categories, give categorical option
@@ -1429,17 +1429,16 @@ shinyServer(function(input, output, session) {
       criteriaGT <- NULL
       criteriaLT <- NULL
       categoricalCol = FALSE
-      if (input$colGT) {
+      if (!is.null(input$colGT)) {
         criteriaGT = input$filterThreshGT
       }
-      if (input$colLT) {
+      if (!is.null(input$colLT)) {
         criteriaLT = input$filterThreshLT
       }
-      if (!is.null(input$convertToCat)) {
-        if (isTRUE(input$convertToCat)) {
+      if (!is.null(input$filterThresh)) {
           categoricalCol = TRUE
-        }
       }
+
       # new row in parameters table
       addToColFilterParams(name = input$filterColSelect,
                            categorial = categoricalCol,
@@ -1449,7 +1448,7 @@ shinyServer(function(input, output, session) {
                            id = id,
                            paramsReactive = filteringParams)
       threshStr <- ""
-      if (categoricalCol) {
+      if (isTRUE(categoricalCol)) {
         threshStr <- paste(input$filterThresh, collapse = ', ')
       } else {
         if (is.null(criteriaGT)) {
@@ -1460,7 +1459,6 @@ shinyServer(function(input, output, session) {
           threshStr <- sprintf("> %.5f & < %.5f", input$filterThreshGT, input$filterThreshLT)
         }
       }
-
       make3ColTableRow("#newFilteringParams", id, input$filterColSelect, threshStr)
       observeEvent(input[[paste0("remove", id)]],{
         removeUI(
@@ -1521,14 +1519,6 @@ shinyServer(function(input, output, session) {
     }
     rowFilteringParams$params <- list()
   })
-
-  formatFilteringCriteria <- function(paramsReactive) {
-    criteria = list()
-    for (entry in paramsReactive) {
-      criteria <- c(criteria, entry$param)
-    }
-    return(criteria)
-  }
 
   observeEvent(input$filterSCE, {
     withBusyIndicatorServer("filterSCE", {
