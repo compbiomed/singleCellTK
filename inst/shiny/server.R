@@ -1429,16 +1429,15 @@ shinyServer(function(input, output, session) {
       criteriaGT <- NULL
       criteriaLT <- NULL
       categoricalCol = FALSE
-      if (!is.null(input$colGT)) {
+      if (isTRUE(input$colGT)) {
         criteriaGT = input$filterThreshGT
       }
-      if (!is.null(input$colLT)) {
+      if (isTRUE(input$colLT)) {
         criteriaLT = input$filterThreshLT
       }
       if (!is.null(input$filterThresh)) {
           categoricalCol = TRUE
       }
-
       # new row in parameters table
       addToColFilterParams(name = input$filterColSelect,
                            categorial = categoricalCol,
