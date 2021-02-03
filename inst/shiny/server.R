@@ -1989,13 +1989,13 @@ shinyServer(function(input, output, session) {
   observeEvent(input$normalizeAssay, {
     req(vals$counts)
     withBusyIndicatorServer("normalizeAssay", {
-      if(!(input$normalizeAssaySelect %in% names(assays(vals$counts)))){
+      if(!(input$normalizeAssaySelect %in% sctkAssayNames(vals$counts))){
         stop("Selected assay does not exist!")
       }
       else if(input$normalizeAssayOutname == ""){
         stop("Assay Name cannot be empty!")
       }
-      else if(input$normalizeAssayOutname %in% names(assays(vals$counts))){
+      else if(input$normalizeAssayOutname %in% sctkAssayNames(vals$counts)){
         stop("Your selected Assay Name already exists! Try another Assay Name!")
       }
       else if(input$normalizeAssaySelect == ""){

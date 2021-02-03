@@ -1,3 +1,4 @@
+#remove tag from metadata if NULL is set to assay
 #' @export
 sctkDeleteTag <- function(inSCE, assay){
   for(i in seq(length(S4Vectors::metadata(inSCE)$assayType))){
@@ -14,6 +15,7 @@ sctkDeleteTag <- function(inSCE, assay){
   return(inSCE)
 }
 
+#set a tag to an assay(s), used in sctkassay
 #' @export
 sctkSetTag <- function(inSCE, assayType, assays){
   if(!assays %in% S4Vectors::metadata(inSCE)$assayType[[assayType]]){
@@ -23,6 +25,7 @@ sctkSetTag <- function(inSCE, assayType, assays){
   return(inSCE)
 }
 
+#when you upload the file and it already has assays stored, then give a tag to all assays (in import code)
 #' @export
 sctkSetTagExternal <- function(inSCE, assayType, assays){
   # S4Vectors::metadata(inSCE)$assayType[[assayType]] <- base::append(S4Vectors::metadata(inSCE)$assayType[[assayType]], assays)
@@ -30,6 +33,7 @@ sctkSetTagExternal <- function(inSCE, assayType, assays){
   return(inSCE)
 }
 
+#returns all assays names with their tags (if no tags, then returned as uncategorized)
 #' @export
 getAssays <- function(inSCE){
   retList <- list()
@@ -53,6 +57,7 @@ getAssays <- function(inSCE){
   return(retList)
 }
 
+#returns assaynames against a selected tag
 #' @export
 sctkGetTag <- function(inSCE, assayType){
   retList <- list()
@@ -84,10 +89,11 @@ setClassUnion("CharacterOrNullOrMissing", c("character", "NULL", "missing"))
 #' @param assayName Specify the name of the input assay.
 #' @param tag Specify the tag to store against the input assay. Default
 #'  is \code{NULL}, which will set the tag to 'uncategorized'.
+#' @param altExp Logical value
 #' @param value Input matrix-type assay to store.
 #' @export
 setGeneric(name = "sctkAssay<-", 
-           function(inSCE, assayName, tag = NULL, value) 
+           function(inSCE, assayName, tag = NULL, altExp = FALSE, value) 
              SummarizedExperiment::`assay<-`(x = inSCE, 
                                              i = assayName, 
                                              value = value)
@@ -100,11 +106,12 @@ setGeneric(name = "sctkAssay<-",
 #' @param assayName Specify the name of the input assay.
 #' @param tag Specify the tag to store against the input assay. Default
 #'  is \code{NULL}, which will set the tag to 'uncategorized'.
+#' @param altExp Logical value
 #' @param value Input matrix-type assay to store.
 #' @export
 setMethod(f = "sctkAssay<-", 
-          signature = signature(inSCE = "ANY", assayName = "character", tag = "CharacterOrNullOrMissing"),
-          definition = function(inSCE,  assayName, tag = NULL, value){
+          signature = signature(inSCE = "ANY", assayName = "character", tag = "CharacterOrNullOrMissing", altExp = "logical"),
+          definition = function(inSCE,  assayName, tag = NULL, altExp = FALSE, value){
             if(!is.null(value)){
               if(is.null(tag)
                  || missing(tag)){
@@ -128,60 +135,69 @@ setMethod(f = "sctkAssay<-",
                 assay = assayName
               )
             }
-            methods::callNextMethod()
+            if(altExp){
+              altExp(inSCE, assayName) <- SingleCellExperiment(list(counts = value))
+              assayNames(altExp(inSCE, assayName)) <- assayName
+            }
+            else{
+              inSCE <- methods::callNextMethod()
+            }
+            return(inSCE)
           }
 )
 
-#' sctkAltExp
+#' sctkAssay
 #' Store assays using tags to identify the type of assay stored. To be used
 #' within the singleCellTK as a replacement for assay<- setter function.
 #' @param inSCE Input \code{SingleCellExperiment} object.
-#' @param tag Specify the tag to store against the input assay. Default
-#'  is \code{NULL}, which will set the tag to 'uncategorized'.
-#' @param value Input matrix-type assay to store.
+#' @param assayName Specify the name of the input assay.
 #' @export
-setGeneric(name = "sctkAltExp<-", 
-           function(inSCE, e, tag = NULL, value) 
-             SingleCellExperiment::`altExp<-`(x = inSCE, 
-                                              e = e,
-                                             value = value)
+setGeneric(name = "sctkAssay", 
+           function(inSCE, assayName) 
+             SummarizedExperiment::assay(x = inSCE,
+                                         i = assayName)
 )
 
-#' sctkAltExp
+#' sctkAssay
 #' Store assays using tags to identify the type of assay stored. To be used
 #' within the singleCellTK as a replacement for assay<- setter function.
 #' @param inSCE Input \code{SingleCellExperiment} object.
-#' @param e altExp Name
-#' @param tag Specify the tag to store against the input assay. Default
-#'  is \code{NULL}, which will set the tag to 'uncategorized'.
-#' @param value Input matrix-type assay to store.
+#' @param assayName Specify the name of the input assay.
 #' @export
-setMethod(f = "sctkAltExp<-", 
-          signature = signature(inSCE = "ANY", e = "character", tag = "CharacterOrNullOrMissing"),
-          definition = function(inSCE, e, tag = NULL, value){
-            if(!is.null(value)){
-              if(is.null(tag)
-                 || missing(tag)){
-                inSCE <- sctkSetTag(
-                  inSCE = inSCE, 
-                  assayType = "altExp", 
-                  assays = e
-                )
-              }
-              else{
-                inSCE <- sctkSetTag(
-                  inSCE = inSCE, 
-                  assayType = tag, 
-                  assays = e
-                )
-              }
+setMethod(f = "sctkAssay", 
+          signature = signature(inSCE = "ANY", assayName = "character"),
+          definition = function(inSCE,  assayName){
+            result <- NULL
+            if(assayName %in% altExpNames(inSCE)){
+              result <- altExp(inSCE, assayName)
+              result <- assay(result, assayName)
             }
             else{
-              inSCE <- sctkDeleteTag(
-                inSCE = inSCE,
-                assay = e
-              )
+              result <- methods::callNextMethod()
             }
-            methods::callNextMethod()
+           return(result) 
+          }
+)
+
+#' sctkAssayNames
+#' Store assays using tags to identify the type of assay stored. To be used
+#' within the singleCellTK as a replacement for assay<- setter function.
+#' @param inSCE Input \code{SingleCellExperiment} object.
+#' @export
+setGeneric(name = "sctkAssayNames", 
+           function(inSCE) 
+             SummarizedExperiment::assayNames(x = inSCE)
+)
+
+#' sctkAssayNames
+#' Store assays using tags to identify the type of assay stored. To be used
+#' within the singleCellTK as a replacement for assay<- setter function.
+#' @param inSCE Input \code{SingleCellExperiment} object.
+#' @export
+setMethod(f = "sctkAssayNames", 
+          signature = signature(inSCE = "ANY"),
+          definition = function(inSCE){
+            result <- c(altExpNames(inSCE), methods::callNextMethod())
+            return(result)
           }
 )
