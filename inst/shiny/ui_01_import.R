@@ -284,18 +284,22 @@ shinyPanelImport <- fluidPage(
     ),
     tags$br(),
     tags$br(),
-    hidden(wellPanel(id = "annotationData",
-                     h3("Data summary"),
-                     tableOutput("summarycontents"))),
-    
-    tags$hr(),
-    h3("4. (Optional) Set Feature for Display:"),
-    selectInput("importFeatureDispOpt", 
-                "Select the feature ID type that should be displayed in downstream visualization",
-                c("Rownames (Default)", featureChoice)),
-    withBusyIndicatorUI(actionButton("importFeatureDipSet", "Set")),
-    
-    
+    hidden(
+      wellPanel(
+        id = "annotationData",
+        h3("Data summary"),
+        tableOutput("summarycontents"),
+
+        tags$hr(),
+
+        h3("(Optional) Set Feature for Display:"),
+        selectInput("importFeatureDispOpt",
+                    "Select the feature ID type that should be displayed in downstream visualization",
+                    c("Rownames (Default)", featureChoice)),
+        withBusyIndicatorUI(actionButton("importFeatureDipSet", "Set")),
+      )
+    ),
+
     tags$div(
       class = "container",
       p("")
