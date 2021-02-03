@@ -209,7 +209,7 @@ for (i in seq_along(samples)) {
 
 # Summary Statistics {.tabset .tabset-fade}
 # {.unlisted .unnumbered .toc-ignore .tabset .tabset-fade}
-```{r, "SummaryStats", echo = FALSE, "Summary of valid cells", results="asis", fig.align="center", warning=FALSE, message=FALSE}
+```{r "SummaryStats", echo = FALSE, results="asis", fig.align="center", warning=FALSE, message=FALSE}
 cat("\n")
 
 for (i in seq_along(samples)) {
