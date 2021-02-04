@@ -6,7 +6,7 @@
 \usage{
 runCellQC(
   inSCE,
-  algorithms = c("QCMetrics", "doubletCells", "cxds", "bcds", "cxds_bcds_hybrid",
+  algorithms = c("QCMetrics", "scDblFinder", "cxds", "bcds", "cxds_bcds_hybrid",
     "scrublet", "doubletFinder", "decontX"),
   sample = NULL,
   collectionName = NULL,
@@ -22,7 +22,7 @@ runCellQC(
 \item{inSCE}{A \link[SingleCellExperiment]{SingleCellExperiment} object.}
 
 \item{algorithms}{Character vector. Specify which QC algorithms to run.
-Available options are "QCMetrics", "scrublet", "doubletCells", "cxds", "bcds", "cxds_bcds_hybrid", and "decontX".}
+Available options are "QCMetrics", "scrublet", "scDblFinder", "cxds", "bcds", "cxds_bcds_hybrid", and "decontX".}
 
 \item{sample}{Character vector. Indicates which sample each cell belongs to.
 Algorithms will be run on cells from each sample separately.}

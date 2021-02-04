@@ -126,22 +126,22 @@ descriptionDoubletFinder <- function() {
     ))
 }
 
-descriptionDoubletCells <- function() {
+descriptionScDblFinder <- function() {
     return(list(
-        introduction = "[DoubletCells](https://rdrr.io/github/MarioniLab/scran/man/doubletCells.html) is a doublet detection algorithm in the `scran`
-             package. DoubletCells aims to detect doublets by creating a
+        introduction = "[scDblFinder](https://bioconductor.org/packages/release/bioc/html/scDblFinder.html) is a doublet detection algorithm in the `scran`
+             package. scDblFinder aims to detect doublets by creating a
              simulated doublet from existing cells and projecting it to
              the same PCA space as the cells. ",
-        runDoubletCells = "The wrapper function `runBarcodeRankDrops` can be used to separately run the
-              DoubletCells algorithm on its own. ",
+        runScDblFinder = "The wrapper function `runScDblFinder` can be used to separately run the
+              scDblFinder algorithm on its own. ",
         parameter = "The `nNeighbors` parameter is the number of nearest neighbor
 	used to calculate the density for doublet detection. `simDoublets` is used
 	to determine the number of simulated doublets used for doublet detection. ",
-        output = "The output of DoubletCells is a `scran_doubletCells_score`.
-             The doublet score of a droplet will be higher if the
+        output = "The output of scDblFinder is a `scDblFinder_doublet_score` and
+             `scDblFinder_doublet_call`. The doublet score of a droplet will be higher if the
              it is deemed likely to be a doublet. ",
-        plotDoubletCellsResults = "The wrapper function `plotDoubletCellsResults` can be used to plot the
-              QC outputs from the DoubletCells algorithm. "
+        plotScDblFinderResults = "The wrapper function `plotScDblFinderResults` can be used to plot the
+              QC outputs from the scDblFinder algorithm. "
     ))
 }
 

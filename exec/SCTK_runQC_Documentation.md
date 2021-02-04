@@ -315,7 +315,7 @@ The code above assumed that the dataset is in your current directory, which is a
 * [emptyDrops](https://rdrr.io/github/MarioniLab/DropletUtils/man/emptyDrops.html) from the package [DropletUtils](https://bioconductor.org/packages/release/bioc/html/DropletUtils.html)
 
 #### Doublet Detection
-* [doubletCells](https://rdrr.io/github/MarioniLab/scran/man/doubletCells.html) from the package [scran](http://bioconductor.org/packages/release/bioc/html/scran.html)
+* [scDblFinder](https://bioconductor.org/packages/release/bioc/html/scDblFinder.html) from the package [scran](http://bioconductor.org/packages/release/bioc/html/scran.html)
 * [cxds](https://rdrr.io/bioc/scds/man/cxds.html), [bcds](https://rdrr.io/bioc/scds/man/bcds.html), and [cxds_bcds_hybrid](https://rdrr.io/bioc/scds/man/cxds_bcds_hybrid.html) from the package [scds](http://bioconductor.org/packages/release/bioc/html/scds.html)
 * [doubletFinder](https://rdrr.io/github/chris-mcginnis-ucsf/DoubletFinder/man/doubletFinder.html) from the package [DoubletFinder](https://github.com/chris-mcginnis-ucsf/DoubletFinder)
 * [Scrublet](https://bioconda.github.io/recipes/scrublet/README.html) from the package [scrublet](https://github.com/allonkleinlab/scrublet)
