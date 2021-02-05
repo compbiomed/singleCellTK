@@ -7,7 +7,7 @@
 reportQCTool(
   inSCE,
   algorithm = c("BarcodeRankDrops", "EmptyDrops", "QCMetrics", "Scrublet",
-    "DoubletCells", "Cxds", "Bcds", "CxdsBcdsHybrid", "DoubletFinder", "DecontX"),
+    "ScDblFinder", "Cxds", "Bcds", "CxdsBcdsHybrid", "DoubletFinder", "DecontX"),
   output_file = NULL,
   output_dir = NULL
 )
@@ -15,10 +15,10 @@ reportQCTool(
 \arguments{
 \item{inSCE}{A \link[SingleCellExperiment]{SingleCellExperiment} object containing
 the count matrix (full droplets or filtered matrix, depends on the selected QC algorithm) with the output from at least one of these functions:
-runQCMetrics, runScrublet, runDoubletCells, runCxds, runBcds, runCxdsBcdsHybrid, runDecontX, runBarcodeRankDrops, runEmptyDrops}
+runQCMetrics, runScrublet, runScDblFinder, runCxds, runBcds, runCxdsBcdsHybrid, runDecontX, runBarcodeRankDrops, runEmptyDrops}
 
 \item{algorithm}{Character. Specifies which QC algorithm report to generate.
-Available options are "BarcodeRankDrops", "EmptyDrops", "QCMetrics", "Scrublet", "DoubletCells", "Cxds", "Bcds", "CxdsBcdsHybrid", "DoubletFinder"  and "DecontX".}
+Available options are "BarcodeRankDrops", "EmptyDrops", "QCMetrics", "Scrublet", "ScDblFinder", "Cxds", "Bcds", "CxdsBcdsHybrid", "DoubletFinder"  and "DecontX".}
 
 \item{output_file}{name of the generated file. If NULL/default then the output file name will be based on the name of the selected QC algorithm name .}
 
