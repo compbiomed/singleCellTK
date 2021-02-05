@@ -334,8 +334,8 @@ arrangeQCPlots <- function(inSCE, input, output, algoList, sampleList, plotIDs, 
   uniqueSampleNames <- unique(sampleList)
   combineP <- "none"
   for (a in algoList) {
-    if (a == "doubletCells") {
-      dcPlots <- plotDoubletCellsResults(inSCE, combinePlot = combineP, sample = sampleList,
+    if (a == "scDblFinder") {
+      dcPlots <- plotScDblFinderResults(inSCE, combinePlot = combineP, sample = sampleList,
                                          reducedDimName = redDimName, plotLabels = "none")
       combineQCSubPlots(output, combineP, a, uniqueSampleNames, dcPlots, plotIDs, statuses)
     } else if (a == "cxds") {

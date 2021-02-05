@@ -1007,10 +1007,10 @@ shinyServer(function(input, output, session) {
   shinyjs::onclick("doubletFinder", shinyjs::toggle(id = "doubletFinderParams",
                                                     anim = FALSE), add = TRUE)
 
-  qc_choice_list <- list("doubletCells", "cxds", "bcds",
+  qc_choice_list <- list("scDblFinder", "cxds", "bcds",
                          "cxds_bcds_hybrid", "decontX", "QCMetrics", "scrublet", "doubletFinder")
   # holds all the input ids for the QC algorithm parameters by algorithm name
-  qc_input_ids <- list(doubletCells = list(nNeighbors="DCnNeighbors", simDoublets="DCsimDoublets"),
+  qc_input_ids <- list(scDblFinder = list(nNeighbors="DCnNeighbors", simDoublets="DCsimDoublets"),
 
                        cxds = list(ntop="CXntop", binThresh="CXbinThresh", verb="CXverb", retRes="CXretRes", estNdbl="CXestNdbl"),
 
@@ -1031,10 +1031,10 @@ shinyServer(function(input, output, session) {
                                        normalizeVariance="SnormalizeVariance", nPrinComps="SnPrinComps", tsneAngle="StsneAngle", tsnePerplexity="StsnePerplexity", verbose="Sverbose")
   )
   # to keep track of whether an algo has already been run
-  qc_algo_status = reactiveValues(doubletCells=NULL, cxds=NULL, bcds=NULL, cxds_bcds_hybrid=NULL, decontX=NULL,
+  qc_algo_status = reactiveValues(scDblFinder=NULL, cxds=NULL, bcds=NULL, cxds_bcds_hybrid=NULL, decontX=NULL,
                                   QCMetrics=NULL, scrublet=NULL, doubletFinder=NULL)
 
-  qc_plot_ids = reactiveValues(doubletCells="DCplots", cxds="CXplots", bcds="BCplots", cxds_bcds_hybrid="CXBCplots", decontX="DXplots",
+  qc_plot_ids = reactiveValues(scDblFinder="DCplots", cxds="CXplots", bcds="BCplots", cxds_bcds_hybrid="CXBCplots", decontX="DXplots",
                                QCMetrics="QCMplots", scrublet="Splots", doubletFinder="DFplots")
 
 
