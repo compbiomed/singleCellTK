@@ -43,11 +43,11 @@ shinyPanelQC <- fluidPage(
           ),
           tags$hr(),
           h4("Doublet Detection"),
-          # doubletCells
-          checkboxInput("doubletCells", "doubletCells"),
+          # scDblFinder
+          checkboxInput("scDblFinder", "scDblFinder"),
           shinyjs::hidden(
-            tags$style(HTML("#doubletCellsParams {margin-left:40px}")),
-            tags$div(id = "doubletCellsParams",
+            tags$style(HTML("#scDblFinderParams {margin-left:40px}")),
+            tags$div(id = "scDblFinderParams",
                      actionLink("DChelp", "Help", icon = icon("info-circle")),
                      tags$hr(),
                      numericInput("DCnNeighbors", "nNeighbors - Number of nearest neighbors (default 50)", 50),
