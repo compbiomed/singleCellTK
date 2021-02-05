@@ -1,0 +1,44 @@
+---
+title: "Comprehensive reporting of QC metrics: doublet cell annotation using scran doublet??ells"
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+params: 
+  object: object
+output:
+  html_document:
+    number_sections: yes
+    toc: yes
+    code_folding: hide
+---
+
+```{r, "scdblfinder-lib", message = F, include=FALSE}
+require(singleCellTK)
+require(ggplot2)
+```
+
+```{r, "scdblfinder-import", warning=FALSE}
+sce.qc<- params$object
+```
+
+```{r, "scDblFinder", results="asis", fig.align="center", warning=FALSE, message=FALSE}
+    plotScDblFinder<- suppressWarnings(plotScDblFinderResults(inSCE = sce.qc, reducedDimName = "UMAP"))
+    i="ScDblFinder"
+    cat(paste0('# ', i, ' {.tabset} \n\n'))
+    cat(paste0('## Scatter Score \n\n'))
+    plotScDblFinder$scatter_doubletScore
+   
+    cat(paste0('## Density Score \n\n'))
+    plotScDblFinder$density_doubletScore
+
+    cat(paste0('## Violin Score \n\n'))
+    plotScDblFinder$violin_doubletScore
+    
+    cat(paste0('## Session info \n\n'))
+    sce.qc@metadata$runScDblFinder
+```
+
+```{r, "scdblfinder-description", include=FALSE, warning=FALSE, message=FALSE}
+description_scDblFinder<- descriptionScDblFinder()
+```
+
+# {.unlisted .unnumbered .toc-ignore}
+`r description_scDblFinder`
