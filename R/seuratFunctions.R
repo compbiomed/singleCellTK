@@ -62,6 +62,7 @@ seuratNormalizeData <- function(inSCE, useAssay, normAssayName = "seuratNormData
   inSCE <- .updateAssaySCE(inSCE, seuratObject, normAssayName, "data")
   inSCE <- .addSeuratToMetaDataSCE(inSCE, seuratObject)
   inSCE@metadata$seurat$normAssay <- normAssayName
+  inSCE <- sctkSetTag(inSCE = inSCE, assayType = "normalized", assays = normAssayName)
   return(inSCE)
 }
 
@@ -691,6 +692,7 @@ seuratSCTransform <- function(inSCE, normAssayName = "SCTCounts", useAssay = "co
     do.correct.umi = FALSE,
     verbose = TRUE))
   inSCE <- .updateAssaySCE(inSCE = inSCE, seuratObject = seuratObject, assaySlotSCE = normAssayName, seuratDataSlot = "data", seuratAssaySlot = "SCTransform")
+  inSCE <- sctkSetTag(inSCE = inSCE, assayType = "normalized", assays = normAssayName)
   return(inSCE)
 }
 

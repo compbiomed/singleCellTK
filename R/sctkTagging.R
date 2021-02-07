@@ -110,7 +110,11 @@ setGeneric(name = "sctkAssay<-",
 #' @param value Input matrix-type assay to store.
 #' @export
 setMethod(f = "sctkAssay<-", 
-          signature = signature(inSCE = "ANY", assayName = "character", tag = "CharacterOrNullOrMissing", altExp = "logical"),
+          signature = signature(
+            inSCE = "ANY", 
+            assayName = "character", 
+            tag = "CharacterOrNullOrMissing", 
+            altExp = "logical"),
           definition = function(inSCE,  assayName, tag = NULL, altExp = FALSE, value){
             if(!is.null(value)){
               if(is.null(tag)
@@ -140,7 +144,12 @@ setMethod(f = "sctkAssay<-",
               assayNames(altExp(inSCE, assayName)) <- assayName
             }
             else{
-              inSCE <- methods::callNextMethod()
+              # if(redDim){
+              #   reducedDim(inSCE, type = assayName) <- value
+              # }
+              # else{
+                inSCE <- methods::callNextMethod()
+              # }
             }
             return(inSCE)
           }
@@ -170,7 +179,14 @@ setMethod(f = "sctkAssay",
             result <- NULL
             if(assayName %in% altExpNames(inSCE)){
               result <- altExp(inSCE, assayName)
-              result <- assay(result, assayName)
+              if(nrow(inSCE)<=nrow(result)
+                 && ncol(inSCE) <= ncol(result)){
+                inSCE <- result[rownames(inSCE), colnames(inSCE)]
+              }
+              else{
+                inSCE <- result
+              }
+              result <- methods::callNextMethod()
             }
             else{
               result <- methods::callNextMethod()

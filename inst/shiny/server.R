@@ -213,8 +213,8 @@ shinyServer(function(input, output, session) {
 
   updateAssayInputs <- function(){
     currassays <- names(assays(vals$counts))
-    updateSelectInputTag(session, "dimRedAssaySelect", tags = c("raw", "normalized", "hvg"), recommended = "normalized")
-    updateSelectInputTag(session, "dimRedAssaySelect_tsneUmap", choices = currassays)
+    updateSelectInputTag(session, "dimRedAssaySelect", tags = c("raw", "normalized", "hvg", "reducedDim"), recommended = "normalized")
+    updateSelectInputTag(session, "dimRedAssaySelect_tsneUmap", tags = c("raw", "normalized", "hvg", "reducedDim"), recommended = "normalized")
     updateSelectInputTag(session, "batchCorrAssay", choices = currassays)
     updateSelectInputTag(session, "batchCheckAssay", choices = currassays)
     updateSelectInputTag(session, "batchCheckOrigAssay", choices = currassays)
@@ -222,11 +222,11 @@ shinyServer(function(input, output, session) {
     updateSelectInputTag(session, "fmAssay", choices = currassays)
     updateSelectInputTag(session, "fmHMAssay", choices = currassays, selected = input$fmAssay)
     updateSelectInputTag(session, "pathwayAssay", choices = currassays)
-    updateSelectInputTag(session, "modifyAssaySelect", choices = currassays)
+    updateSelectInputTag(session, "modifyAssaySelect", tags = c("raw", "normalized", "scaled", "transformed normalized", "trimmed"), recommended = "raw")
 
     #updateSelectInputTag(session, "normalizeAssaySelect", choices = currassays)
     #updateSelectInputTag(session, "normalizeAssaySelect",label = "Select normalized assay:", tags = c("raw", "normalized"), recommended = "raw")
-    updateSelectInputTag(session, "normalizeAssaySelect",label = "Select normalized assay:", tags = c("raw", "normalized"), recommended = "raw")
+    updateSelectInputTag(session, "normalizeAssaySelect",label = "Select assay to normalize:", tags = c("raw", "normalized", "scaled", "transformed normalized", "trimmed"), recommended = "raw")
     
     updateSelectInputTag(session, "seuratSelectNormalizationAssay", choices = currassays, showTags = FALSE)
     updateSelectInputTag(session, "assaySelectFS_Norm", choices = currassays)
@@ -1936,33 +1936,33 @@ shinyServer(function(input, output, session) {
         if (input$assayModifyAction == "log") {
           if (input$trimAssayCheckbox) {
             assay(vals$counts, input$modifyAssayOutname) <- log2(assay(vals$counts, input$modifyAssaySelect) + 1)
-            assay(vals$counts, input$modifyAssayOutname) <- trimCounts(assay(vals$counts, input$modifyAssayOutname), c(input$trimUpperValueAssay, input$trimLowerValueAssay))
+            sctkAssay(vals$counts, input$modifyAssayOutname, tag = "transformed normalized", altExp = FALSE) <- trimCounts(assay(vals$counts, input$modifyAssayOutname), c(input$trimUpperValueAssay, input$trimLowerValueAssay))
           }
           else {
-            assay(vals$counts, input$modifyAssayOutname) <- log2(assay(vals$counts, input$modifyAssaySelect) + 1)
+            sctkAssay(vals$counts, input$modifyAssayOutname, tag = "transformed normalized", altExp = FALSE) <- log2(assay(vals$counts, input$modifyAssaySelect) + 1)
           }
         }
         else if (input$assayModifyAction == "log1p") {
           if (input$trimAssayCheckbox) {
             assay(vals$counts, input$modifyAssayOutname) <- log1p(assay(vals$counts, input$modifyAssaySelect))
-            assay(vals$counts, input$modifyAssayOutname) <- trimCounts(assay(vals$counts, input$modifyAssayOutname), c(input$trimUpperValueAssay, input$trimLowerValueAssay))
+            sctkAssay(vals$counts, input$modifyAssayOutname, tag = "transformed normalized", altExp = FALSE) <- trimCounts(assay(vals$counts, input$modifyAssayOutname), c(input$trimUpperValueAssay, input$trimLowerValueAssay))
           }
           else {
-            assay(vals$counts, input$modifyAssayOutname) <- log1p(assay(vals$counts, input$modifyAssaySelect))
+            sctkAssay(vals$counts, input$modifyAssayOutname, tag = "transformed normalized", altExp = FALSE) <- log1p(assay(vals$counts, input$modifyAssaySelect))
           }
         }
         else if (input$assayModifyAction == "z.score") {
           if (input$trimAssayCheckbox) {
             assay(vals$counts, input$modifyAssayOutname) <- computeZScore(assay(vals$counts, input$modifyAssaySelect))
-            assay(vals$counts, input$modifyAssayOutname) <- trimCounts(assay(vals$counts, input$modifyAssayOutname), c(input$trimUpperValueAssay, input$trimLowerValueAssay))
+            sctkAssay(vals$counts, input$modifyAssayOutname, tag = "scaled", altExp = FALSE) <- trimCounts(assay(vals$counts, input$modifyAssayOutname), c(input$trimUpperValueAssay, input$trimLowerValueAssay))
           }
           else {
-            assay(vals$counts, input$modifyAssayOutname) <- computeZScore(assay(vals$counts, input$modifyAssaySelect))
+            sctkAssay(vals$counts, input$modifyAssayOutname, tag = "scaled", altExp = FALSE) <- computeZScore(assay(vals$counts, input$modifyAssaySelect))
           }
         }
-        else if(input$assayModifyAction == "trim"){
-          assay(vals$counts, input$modifyAssayOutname) <- trimCounts(assay(vals$counts, input$modifyAssaySelect), c(input$trimUpperValueAssay, input$trimLowerValueAssay))
-        }
+        # else if(input$assayModifyAction == "trim"){
+        #   sctkAssay(vals$counts, input$modifyAssayOutname, tag = "trimmed", altExp = FALSE) <- trimCounts(assay(vals$counts, input$modifyAssaySelect), c(input$trimUpperValueAssay, input$trimLowerValueAssay))
+        # }
         else {
           showNotification("Error during assay transformation!", type = "error")
         }
@@ -2335,6 +2335,7 @@ shinyServer(function(input, output, session) {
                                       useAssay = vals$runDimred$dimRedAssaySelect,
                                       useAltExp = vals$runDimred$dimRedAssaySelect,
                                       reducedDimName = dimrednamesave)
+                vals$counts <- sctkSetTag(vals$counts, "reducedDim", dimrednamesave)
               }
             } else if (input$dimRedPlotMethod == "PCASeurat"){
               if(vals$runDimred$dimRedAssaySelect %in% assayNames(vals$counts)){
@@ -5103,7 +5104,7 @@ shinyServer(function(input, output, session) {
           altAssaysToRemove <- assayNames(altExp(vals$counts, input$hvgAltExpName))
           sctkAssay(vals$counts, input$hvgAltExpName, tag = "hvg", altExp = TRUE) <- tempAssay
           for(i in seq(length(altAssaysToRemove))){
-            assays(altExp(vals$counts, input$hvgAltExpName))[[altAssaysToRemove[i]]] <- NULL
+            assays(altExp(vals$counts, input$hvgAltExpName), withDimnames = FALSE)[[altAssaysToRemove[i]]] <- NULL
           }
           
           updateAssayInputs()
@@ -5134,7 +5135,7 @@ shinyServer(function(input, output, session) {
   observeEvent(input$deAssay, {
     if(!is.null(vals$counts)){
       # MAST style sanity check for whether logged or not
-      x <- assay(vals$counts, input$deAssay)
+      x <- sctkAssay(vals$counts, input$deAssay)
       if (!all(floor(x) == x, na.rm = TRUE) & max(x, na.rm = TRUE) <
           100) {
         output$deSanityWarnThresh <- renderText("")

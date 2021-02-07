@@ -442,7 +442,7 @@ plotDEGHeatmap <- function(inSCE, useResult, doLog = FALSE, onlyPos = FALSE,
 plotMASTThresholdGenes <- function(inSCE, useAssay="logcounts", doPlot = TRUE,
                                    isLogged = TRUE, check_sanity = TRUE){
   # data preparation
-  expres <- SummarizedExperiment::assay(inSCE, useAssay)
+  expres <- sctkAssay(inSCE, useAssay)
   if(!is.matrix(expres)){
     expres <- as.matrix(expres)
   }
