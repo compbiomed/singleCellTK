@@ -1,3 +1,12 @@
+Changes in Version 2.0.1 (2021-01-07)
+
+* Added cell type labeling functional, wrapping SingleR method
+* Added cell type labeling UI under differential expression tab
+
+Changes in Version 2.0.1 (2020-12-30)
+
+* Added marker identification in Seurat workflow
+
 Changes in Version 2.0.0 (2020-10-16)
 
 * Added quality control (empty droplet detection, doublet detection, etc) functionality

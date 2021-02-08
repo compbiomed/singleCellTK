@@ -9,6 +9,7 @@ plotSCEBarAssayData(
   sample = NULL,
   useAssay = "counts",
   feature,
+  featureLocation = NULL,
   groupBy = NULL,
   xlab = NULL,
   ylab = NULL,
@@ -34,6 +35,8 @@ dimension reduction components or a variable with saved results. Required.}
 
 \item{feature}{Name of feature stored in assay of SingleCellExperiment
 object.}
+
+\item{featureLocation}{Indicates which column name of rowData to query gene.}
 
 \item{groupBy}{Groupings for each numeric value. A user may input a vector
 equal length to the number of the samples in the SingleCellExperiment

@@ -1,4 +1,3 @@
-
 .readDropEstFile <- function(sampleDir, dataType,rdsFileName){
   dropEst_cell_counts <- file.path(sampleDir, paste(rdsFileName, '.rds', sep=''))
   if (!file.exists(dropEst_cell_counts)){
@@ -56,7 +55,7 @@
 
   if (isTRUE(delayedArray)) {
     counts_matrix <- DelayedArray::DelayedArray(counts_matrix)
-  }
+    }
   ## Create SingleCellExperiment object
   ## Add SCE ColData. If using filtered counts matrix, colData is subset to include filtered cells.
   ## append sample name to cells in SCE
@@ -74,7 +73,7 @@
   ## Add SCE metadata
   sce_metadata <- .extractMetadata(dropEst_rds)
   sce@metadata$dropEst <- sce_metadata
-
+  
   return(sce)
 }
 
@@ -91,7 +90,7 @@
 #' @param dataType can be "filtered" or "raw". Default \code{"filtered"}.
 #' @param rdsFileName File name prefix of the DropEst RDS output. default is "cell.counts"
 #' @param delayedArray Boolean. Whether to read the expression matrix as
-#'  \link{DelayedArray} object or not. Default \code{TRUE}.
+#'  \link{DelayedArray} object or not. Default \code{FALSE}.
 #' @details
 #' \code{importDropEst} expects either raw counts matrix stored as "cm_raw" or filtered
 #' counts matrix stored as "cm" in the DropEst rds output.
@@ -108,13 +107,12 @@
 #' # https://github.com/hms-dbmi/dropEst/blob/master/examples/EXAMPLES.md
 #' sce <- importDropEst(sampleDirs = system.file("extdata/dropEst_scg71", package = "singleCellTK"),
 #'                      sampleNames = 'scg71')
-
 #' @export
 importDropEst <- function(sampleDirs = NULL,
                           dataType = c('filtered','raw'),
                           rdsFileName = 'cell.counts',
                           sampleNames = NULL,
-                          delayedArray = TRUE) {
+                          delayedArray = FALSE) {
   dataType <- match.arg(dataType)
 
   if (length(sampleDirs)!=length(sampleNames)){
@@ -125,16 +123,13 @@ importDropEst <- function(sampleDirs = NULL,
 
   for (i in seq_along(sampleDirs)){
     scei <- .importDropEstSample(sampleDir = sampleDirs[[i]],
-                                 sampleName = sampleNames[[i]],
-                                 dataType = dataType,
-                                 rdsFileName = rdsFileName,
-                                 delayedArray = delayedArray)
+                         sampleName = sampleNames[[i]],
+                         dataType = dataType,
+                         rdsFileName = rdsFileName,
+                         delayedArray = delayedArray)
     res[[i]] <- scei
   }
   sce <- do.call(SingleCellExperiment::cbind, res)
   return(sce)
 }
-
-
-
 

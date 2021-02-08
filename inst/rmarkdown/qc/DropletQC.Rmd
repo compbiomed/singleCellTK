@@ -15,7 +15,6 @@ output:
 ---
 
 ```{r "DropletQC-lib", include=FALSE, warning=FALSE}
-require(umap)
 require(SummarizedExperiment)
 require(SingleCellExperiment)
 require(singleCellTK)
@@ -66,7 +65,7 @@ Comprehensive quality control (QC) of single-cell RNA-seq data was performed wit
 
 
 # Empty Drops Detection
-```{r, include=FALSE, warning=FALSE, message=FALSE}
+```{r, "EmptyDrops-description", include=FALSE, warning=FALSE, message=FALSE}
 description_runEmptyDrops <- descriptionEmptyDrops()
 ```
 
@@ -110,7 +109,7 @@ if(!skipRunEmpty) {
 
 
 ## {.unlisted .unnumbered .toc-ignore .tabset .tabset-fade}
-```{r results="asis", eval=(!skipRunEmpty), fig.align="center", warning=FALSE, message=FALSE, echo=FALSE}
+```{r "EmptyDrops-plot", results="asis", eval=(!skipRunEmpty), fig.align="center", warning=FALSE, message=FALSE, echo=FALSE}
 cat("\n")
 for (i in seq_along(samples)) {
   cat(paste0("### ", samples[i], " {.tabset .tabset-fade} \n"))
@@ -137,7 +136,7 @@ for (i in seq_along(samples)) {
 
 
 
-```{r, include=FALSE, warning=FALSE, message=FALSE}
+```{r, "BarcodeRanks-description", include=FALSE, warning=FALSE, message=FALSE}
 description_runBarcodeRank <- descriptionBarcodeRank()
 ```
 
@@ -185,7 +184,7 @@ if(!skipBarcode) {
 
 
 ## {.unlisted .unnumbered .toc-ignore .tabset .tabset-fade}
-```{r results="asis", eval=!(skipBarcode), fig.align="center", warning=FALSE, message=FALSE, echo=FALSE}
+```{r "BarcodeRanks-plot", results="asis", eval=!(skipBarcode), fig.align="center", warning=FALSE, message=FALSE, echo=FALSE}
 cat("\n")
 for (i in seq_along(samples)) {
   cat(paste0("### ", samples[i], " {.tabset .tabset-fade} \n"))
@@ -210,7 +209,7 @@ for (i in seq_along(samples)) {
 
 # Summary Statistics {.tabset .tabset-fade}
 # {.unlisted .unnumbered .toc-ignore .tabset .tabset-fade}
-```{r, echo = FALSE, "Summary of valid cells", results="asis", fig.align="center", warning=FALSE, message=FALSE}
+```{r "SummaryStats", echo = FALSE, results="asis", fig.align="center", warning=FALSE, message=FALSE}
 cat("\n")
 
 for (i in seq_along(samples)) {

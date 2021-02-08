@@ -439,8 +439,9 @@ plotSCEDimReduceColData <- function(inSCE,
 #' @param inSCE Input \linkS4class{SingleCellExperiment} object with saved
 #' dimension reduction components or a variable with saved results. Required
 #' @param sample Character vector. Indicates which sample each cell belongs to.
-#' @param feature name of feature stored in assay of singleCellExperiment
-#'  object. Plot will be colored based on feature value.
+#' @param feature Name of feature stored in assay of SingleCellExperiment
+#'  object.
+#' @param featureLocation Indicates which column name of rowData to query gene.
 #' @param shape add shapes to each condition. Default NULL.
 #' @param reducedDimName saved dimension reduction name in the
 #' \linkS4class{SingleCellExperiment} object. Required.
@@ -494,6 +495,7 @@ plotSCEDimReduceColData <- function(inSCE,
 plotSCEDimReduceFeatures <- function(inSCE,
                                      sample = NULL,
                                      feature,
+                                     featureLocation = NULL,
                                      shape = NULL,
                                      reducedDimName,
                                      useAssay = "logcounts",
@@ -523,13 +525,25 @@ plotSCEDimReduceFeatures <- function(inSCE,
     stop("'combinePlot' must be set to either 'all', 'sample', or 'none'.")
   }
 
+  if(exists(x = "featureDisplay", inSCE@metadata)){
+    featureDisplay <- inSCE@metadata$featureDisplay
+  }else{
+    featureDisplay <- NULL
+  }
+
   mat <- getBiomarker(
     inSCE = inSCE,
     useAssay = useAssay,
     gene = feature,
-    binary = "Continuous"
+    binary = "Continuous",
+    featureLocation = featureLocation,
+    featureDisplay = featureDisplay
   )
   counts <- mat[, 2]
+
+  if(!is.null(featureDisplay)){
+    title = utils::tail(colnames(mat),1)
+  }
 
   g <- .ggScatter(
     inSCE = inSCE,
@@ -858,7 +872,7 @@ plotSCEScatter <- function(inSCE,
                      substr(summary, 2, nchar(summary)), sep="")
     summ$label <- paste0(summary,": ", round(summ$value, 5))
 
-    p <- p + ggplot2::geom_text(data = summ,
+    p <- p + ggrepel::geom_text_repel(data = summ,
                                 ggplot2::aes_string(x = "groupBy",
                                                     y = "statY",
                                                     label = "label"),
@@ -1035,6 +1049,7 @@ plotSCEViolinColData <- function(inSCE,
 #' @param useAssay Indicate which assay to use. Default "counts".
 #' @param feature Name of feature stored in assay of SingleCellExperiment
 #'  object.
+#' @param featureLocation Indicates which column name of rowData to query gene.
 #' @param groupBy Groupings for each numeric value. A user may input a vector
 #'  equal length to the number of the samples in the SingleCellExperiment
 #'  object, or can be retrieved from the colData slot. Default NULL.
@@ -1072,6 +1087,7 @@ plotSCEViolinAssayData <- function(inSCE,
                                    sample = NULL,
                                    useAssay = "counts",
                                    feature,
+                                   featureLocation = NULL,
                                    groupBy = NULL,
                                    violin = TRUE,
                                    boxplot = TRUE,
@@ -1093,12 +1109,21 @@ plotSCEViolinAssayData <- function(inSCE,
     stop("'combinePlot' must be set to either 'all', 'sample', or 'none'.")
   }
 
+  if(exists(x = "featureDisplay", inSCE@metadata)){
+    featureDisplay <- inSCE@metadata$featureDisplay
+  }else{
+    featureDisplay <- NULL
+  }
+
   mat <- getBiomarker(
     inSCE = inSCE,
     useAssay = useAssay,
+    featureLocation = featureLocation,
+    featureDisplay = featureDisplay,
     gene = feature,
     binary = "Continuous"
   )
+
   counts <- mat[, 2]
   if (!is.null(groupBy)) {
     if (length(groupBy) > 1) {
@@ -1113,6 +1138,12 @@ plotSCEViolinAssayData <- function(inSCE,
       }
       groupBy <- as.character(SummarizedExperiment::colData(inSCE)[, groupBy])
     }
+  }
+  if(!is.null(featureDisplay) && is.null(title)){
+    title = utils::tail(colnames(mat),1)
+  }
+  if(is.null(xlab)){
+    ylab = "Expression"
   }
   if (!is.null(sample)) {
     if (length(sample) != ncol(inSCE)) {
@@ -1574,6 +1605,7 @@ plotSCEDensityColData <- function(inSCE,
 #' @param useAssay Indicate which assay to use. Default "counts".
 #' @param feature Name of feature stored in assay of SingleCellExperiment
 #'  object.
+#' @param featureLocation Indicates which column name of rowData to query gene.
 #' @param groupBy Groupings for each numeric value. A user may input a vector
 #'  equal length to the number of the samples in the SingleCellExperiment
 #'  object, or can be retrieved from the colData slot. Default NULL.
@@ -1602,6 +1634,7 @@ plotSCEDensityAssayData <- function(inSCE,
                                     sample = NULL,
                                     useAssay = "counts",
                                     feature,
+                                    featureLocation = NULL,
                                     groupBy = NULL,
                                     xlab = NULL,
                                     ylab = NULL,
@@ -1617,13 +1650,28 @@ plotSCEDensityAssayData <- function(inSCE,
     stop("'combinePlot' must be set to either 'all', 'sample', or 'none'.")
   }
 
+  if(exists(x = "featureDisplay", inSCE@metadata)){
+    featureDisplay <- inSCE@metadata$featureDisplay
+  }else{
+    featureDisplay <- NULL
+  }
+
   mat <- getBiomarker(
     inSCE = inSCE,
     useAssay = useAssay,
     gene = feature,
-    binary = "Continuous"
+    binary = "Continuous",
+    featureLocation = featureLocation,
+    featureDisplay = featureDisplay
   )
   counts <- mat[, 2]
+
+  if(!is.null(featureDisplay)){
+    title = utils::tail(colnames(mat),1)
+  }
+  if(is.null(xlab)){
+    xlab = "Expression"
+  }
 
   if (!is.null(groupBy)) {
     if (length(groupBy) > 1) {
@@ -2250,7 +2298,7 @@ plotBarcodeRankScatter <- function(inSCE,
                      substr(summary, 2, nchar(summary)), sep="")
     summ$label <- paste0(summary,": ", round(summ$value, 5))
 
-    p <- p + ggplot2::geom_text(data = summ,
+    p <- p + ggrepel::geom_text_repel(data = summ,
       ggplot2::aes_string(x = "groupBy",
         y = "statY",
         label = "label"),
@@ -2379,6 +2427,7 @@ plotSCEBarColData <- function(inSCE,
 #' @param useAssay Indicate which assay to use. Default "counts".
 #' @param feature Name of feature stored in assay of SingleCellExperiment
 #'  object.
+#' @param featureLocation Indicates which column name of rowData to query gene.
 #' @param groupBy Groupings for each numeric value. A user may input a vector
 #'  equal length to the number of the samples in the SingleCellExperiment
 #'  object, or can be retrieved from the colData slot. Default NULL.
@@ -2410,6 +2459,7 @@ plotSCEBarAssayData <- function(inSCE,
                                 sample = NULL,
                                 useAssay = "counts",
                                 feature,
+                                featureLocation = NULL,
                                 groupBy = NULL,
                                 xlab = NULL,
                                 ylab = NULL,
@@ -2423,11 +2473,19 @@ plotSCEBarAssayData <- function(inSCE,
                                 title = NULL,
                                 titleSize = NULL,
                                 combinePlot = TRUE) {
+  if(exists(x = "featureDisplay", inSCE@metadata)){
+    featureDisplay <- inSCE@metadata$featureDisplay
+  }else{
+    featureDisplay <- NULL
+  }
+
   mat <- getBiomarker(
     inSCE = inSCE,
     useAssay = useAssay,
     gene = feature,
-    binary = "Continuous"
+    binary = "Continuous",
+    featureLocation = featureLocation,
+    featureDisplay = featureDisplay
   )
   counts <- mat[, 2]
 
@@ -2479,6 +2537,25 @@ plotSCEBarAssayData <- function(inSCE,
   return(value.bin)
 }
 
+#' @title Indicates which rowData to use for visualization
+#' @description This function is to be used to specify which
+#' @param inSCE Input \linkS4class{SingleCellExperiment} object with saved
+#' dimension reduction components or a variable with saved results. Required.
+#' @param featureDisplayRow Indicates which column name of rowData to be used for plots.
+#' @return A SingleCellExperiment object with the specific column name of rowData
+#'  to be used for plotting stored in metadata.
+#' @examples
+#' data(scExample, package="singleCellTK")
+#' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
+#' sce <- setSCTKDisplayRow(inSCE = sce, featureDisplayRow = "feature_name")
+#' plotSCEViolinAssayData(inSCE = sce, feature = "ENSG00000019582")
+#' @export
+setSCTKDisplayRow <- function(inSCE,
+                              featureDisplayRow) {
+  inSCE@metadata$featureDisplay <- featureDisplayRow
+  return(inSCE)
+}
+
 .ggSCTKCombinePlots <- function(plotlist,
                                 ncols = NULL,
                                 nrows = NULL,
@@ -2492,6 +2569,7 @@ plotSCEBarAssayData <- function(inSCE,
                                 samplePerColumn = TRUE,
                                 sampleRelHeights = 1,
                                 sampleRelWidths = 1) {
+
   if ("Violin" %in% names(plotlist)) {
     plotlistViolin <- plotlist$Violin
   } else {
@@ -2547,11 +2625,12 @@ plotSCEBarAssayData <- function(inSCE,
       listNamePlot <- list()
 
       if(is.null(labelPositionX)){
-        labelPositionX = rep(0, length(plotlist))
+        labelPositionX = rep(-0.05, length(plotlist))
       }
       if(is.null(labelPositionY)){
         labelPositionY = rep(1, length(plotlist))
       }
+      labels[1] <- ""
 
       for(x in seq_along(plotlist)){
         labeled <- plotlist[[x]] + cowplot::draw_plot_label(

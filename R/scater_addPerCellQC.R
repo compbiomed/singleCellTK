@@ -1,6 +1,6 @@
 #' @title Wrapper for calculating QC metrics with scater.
-#' @description A wrapper function for \link[celda]{decontX}. Identify
-#'  potential contamination from experimental factors such as ambient RNA.
+#' @description A wrapper function for \link[scater]{addPerCellQC}. Calculate
+#'  general quality control metrics for each cell in the count matrix.
 #' @param inSCE Input \link[SingleCellExperiment]{SingleCellExperiment} object.
 #' @param useAssay A string specifying which assay in the SCE to use. Default \code{"counts"}.
 #' @param collectionName Character. Name of a \code{GeneSetCollection} obtained by using one of the importGeneSet* functions. Default \code{NULL}.

@@ -8,6 +8,7 @@ plotSCEDimReduceFeatures(
   inSCE,
   sample = NULL,
   feature,
+  featureLocation = NULL,
   shape = NULL,
   reducedDimName,
   useAssay = "logcounts",
@@ -41,8 +42,10 @@ dimension reduction components or a variable with saved results. Required}
 
 \item{sample}{Character vector. Indicates which sample each cell belongs to.}
 
-\item{feature}{name of feature stored in assay of singleCellExperiment
-object. Plot will be colored based on feature value.}
+\item{feature}{Name of feature stored in assay of SingleCellExperiment
+object.}
+
+\item{featureLocation}{Indicates which column name of rowData to query gene.}
 
 \item{shape}{add shapes to each condition. Default NULL.}
 
