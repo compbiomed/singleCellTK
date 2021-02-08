@@ -75,7 +75,7 @@ plotDEGViolin <- function(inSCE, useResult, threshP = FALSE, labelBy = NULL,
   } else {
     replGeneName <- geneToPlot
   }
-  expres <- SummarizedExperiment::assay(inSCE[geneToPlot, c(cells1, cells2)],
+  expres <- sctkAssay(inSCE[geneToPlot, c(cells1, cells2)],
                                         useAssay)
   if(!is.matrix(expres)){
     expres <- as.matrix(expres)
@@ -163,7 +163,7 @@ plotDEGRegression <- function(inSCE, useResult, threshP = FALSE, labelBy = NULL,
   } else {
     replGeneName <- geneToPlot
   }
-  expres <- SummarizedExperiment::assay(inSCE[geneToPlot, c(cells1, cells2)],
+  expres <- sctkAssay(inSCE[geneToPlot, c(cells1, cells2)],
                                         useAssay)
   if(!is.matrix(expres)){
     expres <- as.matrix(expres)

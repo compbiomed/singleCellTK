@@ -5531,7 +5531,7 @@ shinyServer(function(input, output, session) {
         labelBy = input$deVioLabel
       }
       # MAST style sanity check for whether logged or not
-      x <- assay(vals$counts, useAssay)
+      x <- sctkAssay(vals$counts, useAssay)
       if (!all(floor(x) == x, na.rm = TRUE) & max(x, na.rm = TRUE) <
           100) {
         output$deSanityWarnViolin <- renderText("")
@@ -5568,7 +5568,7 @@ shinyServer(function(input, output, session) {
         labelBy = input$deRegLabel
       }
       # MAST style sanity check for whether logged or not
-      x <- assay(vals$counts, useAssay)
+      x <- sctkAssay(vals$counts, useAssay)
       if (!all(floor(x) == x, na.rm = TRUE) & max(x, na.rm = TRUE) <
           100) {
         output$deSanityWarnReg <- renderText("")
