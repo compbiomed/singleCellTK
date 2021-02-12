@@ -1,0 +1,35 @@
+---
+title: "Import Datasets- UI"
+---
+
+## Introduction
+
+- [SingleCellExperiment](https://bioconductor.org/packages/release/bioc/html/SingleCellExperiment.html) object saved in RDS file
+- [SingleCellExperiment](https://bioconductor.org/packages/release/bioc/html/SingleCellExperiment.html) object saved in [AnnData](https://github.com/theislab/anndata) hdf5 file  
+
+The UI of Single Cell ToolKit (SCTK) allows users to import multiple datasets, and the datasets can be from various forms. An output from preprocessing tools (listed later), a text file of count matrix, an RDS file saving a SingleCellExperiment object or an example dataset ready online are all acceptable. Users can add samples from as many sources, and import all together.  
+
+## Workflow
+
+<img src="import_ui_source.png" style="border: 1px solid rgba(0,0,0,0.2)"></img>
+
+For a single source of data, users need to choose one option from the radio buttons listed in the screenshot. The next step will depend on the option chosen.  
+
+### Import from a preprocessing tool
+
+<img src="import_ui_source1.png" style="border: 1px solid rgba(0,0,0,0.2)"></img>
+
+SCTK supports importing data from the following pre-processing tools in our UI workflow:  
+- [CellRanger](https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/what-is-cell-ranger)  
+- [STARSolo](https://github.com/alexdobin/STAR/blob/master/docs/STARsolo.md)  
+- [BUStools](https://github.com/BUStools/bustools)  
+- [Seqc](https://github.com/ambrosejcarr/seqc)  
+- [Optimus](https://data.humancellatlas.org/pipelines/optimus-workflow)  
+
+Choose the specific preprocessing tool that matches your dataset, and then press "**Add a Sample**". A corresponding dialog modal will pop out with description that instructs you to select the directory that stores your data. After selecting a directory and pressing "**OK**" button at the bottom of the dialog modal, a new line will be inserted to the next "**3. Import**" section, meaning that the path of this dataset is identified and ready to be read into SCTK's workspace. 
+
+<img src="import_ui_sampleList.png" style="border: 1px solid rgba(0,0,0,0.2)"></img>
+
+### Import from flat files (.csv, .txt, .mtx)
+
+<img src="import_ui_source2.png" style="border: 1px solid rgba(0,0,0,0.2)"></img>
