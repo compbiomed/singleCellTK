@@ -59,7 +59,7 @@ getAssays <- function(inSCE){
 
 #returns assaynames against a selected tag
 #' @export
-sctkGetTag <- function(inSCE, assayType){
+sctkGetTag <- function(inSCE, assayType, redDims = FALSE){
   retList <- list()
   if(!is.null(S4Vectors::metadata(inSCE)$assayType)){
     for(i in seq(assayType)){
@@ -77,6 +77,16 @@ sctkGetTag <- function(inSCE, assayType){
   else{
     S4Vectors::metadata(inSCE)$assayType[["uncategorized"]] <- SummarizedExperiment::assayNames(inSCE)
     retList[["uncategorized"]] <- S4Vectors::metadata(inSCE)$assayType[["uncategorized"]]
+  }
+  if(redDims){
+    if(length(reducedDimNames(inSCE)) > 0){
+      if(length(reducedDimNames(inSCE)) == 1){
+        retList[["redDims"]] <- list(reducedDimNames(inSCE))
+      }
+      else{
+        retList[["redDims"]] <- reducedDimNames(inSCE)
+      }
+    }
   }
   return(retList)
 }
