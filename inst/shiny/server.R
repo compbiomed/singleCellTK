@@ -6119,7 +6119,7 @@ shinyServer(function(input, output, session) {
                                             totalReads = input$numReadsSnap,
                                             cells = input$numCellsSnap,
                                             iterations = input$iterationsSnap)
-        vals$effectSizes <- calcEffectSizes(countMatrix = SummarizedExperiment::assay(vals$counts, input$snapshotAssay), condition = colData(vals$counts)[, input$selectSnapshotCondition])
+        vals$effectSizes <- calcEffectSizes(countMatrix = sctkAssay(vals$counts, input$snapshotAssay), condition = colData(vals$counts)[, input$selectSnapshotCondition])
         output$Snaplot <- renderPlot({
           plot(apply(vals$snapshot, 1, function(x){sum(x <= 0.05) / length(x)}) ~ vals$effectSizes,
                xlab = "Cohen's d effect size", ylab = "Detection power", lwd = 4, main = "Power to detect diffex by effect size")

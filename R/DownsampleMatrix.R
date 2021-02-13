@@ -35,7 +35,7 @@ downSampleDepth <- function(originalData, useAssay = "counts", minCount = 10, mi
                             maxDepth = 10000000, realLabels,
                             depthResolution = 10, iterations = 10){
   realLabels <- SingleCellExperiment::colData(originalData)[, realLabels]
-  originalData <- SummarizedExperiment::assay(originalData, useAssay)
+  originalData <- sctkAssay(originalData, useAssay)
   foundGenesMatrix <- matrix(nrow = iterations, ncol = depthResolution)
   minEffectSizeMatrix <- matrix(nrow = iterations, ncol = depthResolution)
   numSigGenesMatrix <- matrix(nrow = iterations, ncol = depthResolution)
@@ -104,7 +104,7 @@ downSampleCells <- function(originalData, useAssay = "counts", minCountDetec = 1
                             depthResolution = 10, iterations = 10,
                             totalReads = 1000000){
   realLabels <- SingleCellExperiment::colData(originalData)[, realLabels]
-  originalData <- SummarizedExperiment::assay(originalData, useAssay)
+  originalData <- sctkAssay(originalData, useAssay)
   foundGenesMatrix <- matrix(nrow = iterations, ncol = depthResolution)
   minEffectSizeMatrix <- matrix(nrow = iterations, ncol = depthResolution)
   numSigGenesMatrix <- matrix(nrow = iterations, ncol = depthResolution)
@@ -186,7 +186,7 @@ generateSimulatedData <- function(totalReads, cells, originalData, realLabels){
 iterateSimulations <- function(originalData, useAssay = "counts", realLabels, totalReads, cells,
                                iterations){
   realLabels <- SingleCellExperiment::colData(originalData)[, realLabels]
-  originalData <- SummarizedExperiment::assay(originalData, useAssay)
+  originalData <- sctkAssay(originalData, useAssay)
   sigMatrix <- matrix(nrow = dim(originalData)[1])
   for (i in seq_len(iterations)){
     tempData <- generateSimulatedData(totalReads, cells, originalData,
