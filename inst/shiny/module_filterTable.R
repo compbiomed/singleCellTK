@@ -16,6 +16,16 @@ filterTableUI <- function(id){
   )
 }
 
+myModal <- function() {
+  div(id = "downloadModal",
+      modalDialog(downloadButton("dlCSV","Download as CSV"),
+                  br(),
+                  downloadButton("dlPDF","Download as PDF"),
+                  easyClose = TRUE, title = "Download Table")
+  )
+}
+
+
 #server
 filterTableServer <- function(input, output, session, dataframe,
                               defaultFilterColumns = NULL,
@@ -676,9 +686,21 @@ filterTableServer <- function(input, output, session, dataframe,
   
   
   observeEvent(input$export, {
-    write.csv(rv$data, file = paste0(moduleID, "-", Sys.Date(), ".csv"), row.names = TRUE)
-    showNotification("Table saved in working directory as", paste0(moduleID, "-", Sys.Date(), ".csv"), duration = 10)
+    #write.csv(rv$data, file = paste0(moduleID, "-", Sys.Date(), ".csv"), row.names = TRUE)
+    #showNotification("Table saved in working directory as", paste0(moduleID, "-", Sys.Date(), ".csv"), duration = 10)
+    showModal(myModal())
   })
+  
+  output$dlCSV <- downloadHandler(
+    filename = function() {
+      paste0(moduleID, "-", Sys.Date(), ".csv")
+    },
+    content = function(file) {
+      write.csv(rv$data, file, row.names = TRUE)
+      showNotification("Table saved in working directory as", paste0(moduleID, "-", Sys.Date(), ".csv"), duration = 10)
+    },
+    contentType = "text/csv"
+  )
   
   return(rv)
 }
