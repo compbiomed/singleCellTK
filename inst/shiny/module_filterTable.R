@@ -676,14 +676,11 @@ filterTableServer <- function(input, output, session, dataframe,
   
   
   observeEvent(input$export, {
-    #write.csv(rv$data, file = paste0(moduleID, "-", Sys.Date(), ".csv"), row.names = TRUE)
-    #showNotification("Table saved in working directory as", paste0(moduleID, "-", Sys.Date(), ".csv"), duration = 10)
-    # showModal(myModal())
-    
-showModal(    modalDialog(actionButton(ns("dlCSV"),"Download as CSV"),
-                          br(),
-                          actionButton(ns("dlPDF"),"Download as PDF"),
-                          easyClose = TRUE, title = "Export Table"))
+    showModal(
+      modalDialog(actionButton(ns("dlCSV"),"Download as CSV"),
+                  br(),
+                  actionButton(ns("dlPDF"),"Download as PDF"),
+                  easyClose = TRUE, title = "Export Table"))
   })
   
   observeEvent(input$dlCSV, {

@@ -667,7 +667,7 @@ runSCMerge <- function(inSCE, useAssay = "logcounts", batch = 'batch',
   names(SummarizedExperiment::colData(inSCE))[colDataNames == 'batch'] <- batch
   # scMerge's function automatically returns the SCE object with information
   # completed, thus using this helper function to simply add the tag.
-  inSCE <- .sctkSetTag(inSCE, "batchCorrected", assayName)
+  inSCE <- sctkSetTag(inSCE, "batchCorrected", assayName)
   return(inSCE)
 }
 

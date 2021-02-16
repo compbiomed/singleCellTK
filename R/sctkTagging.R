@@ -1,5 +1,13 @@
 #remove tag from metadata if NULL is set to assay
+
+#' sctkDeleteTag
+#'
+#' @param inSCE input SCE
+#' @param assay assay to remove tag from
+#'
+#' @return Input SCE
 #' @export
+#'
 sctkDeleteTag <- function(inSCE, assay){
   for(i in seq(length(S4Vectors::metadata(inSCE)$assayType))){
     matchedIndex <- match(assay, S4Vectors::metadata(inSCE)$assayType[[i]])
@@ -16,7 +24,16 @@ sctkDeleteTag <- function(inSCE, assay){
 }
 
 #set a tag to an assay(s), used in sctkassay
+
+#' sctkSetTag
+#'
+#' @param inSCE input SCE
+#' @param assayType type of tag
+#' @param assays assay to set tag
+#'
+#' @return Input SCE
 #' @export
+#'
 sctkSetTag <- function(inSCE, assayType, assays){
   if(!assays %in% S4Vectors::metadata(inSCE)$assayType[[assayType]]){
     S4Vectors::metadata(inSCE)$assayType[[assayType]] <- base::append(S4Vectors::metadata(inSCE)$assayType[[assayType]], assays)
@@ -26,7 +43,16 @@ sctkSetTag <- function(inSCE, assayType, assays){
 }
 
 #when you upload the file and it already has assays stored, then give a tag to all assays (in import code)
+
+#' sctkSetTagExternal
+#'
+#' @param inSCE Input SingleCellExperiment
+#' @param assayType Type of assay
+#' @param assays assays to set to
+#'
+#' @return Input SCE
 #' @export
+#'
 sctkSetTagExternal <- function(inSCE, assayType, assays){
   # S4Vectors::metadata(inSCE)$assayType[[assayType]] <- base::append(S4Vectors::metadata(inSCE)$assayType[[assayType]], assays)
   S4Vectors::metadata(inSCE)$assayType[[assayType]] <- assays
@@ -34,7 +60,14 @@ sctkSetTagExternal <- function(inSCE, assayType, assays){
 }
 
 #returns all assays names with their tags (if no tags, then returned as uncategorized)
+ 
+#' getAssays
+#'
+#' @param inSCE Input SCE
+#'
+#' @return List
 #' @export
+#'
 getAssays <- function(inSCE){
   retList <- list()
   if(!is.null(S4Vectors::metadata(inSCE)$assayType)){
@@ -58,7 +91,16 @@ getAssays <- function(inSCE){
 }
 
 #returns assaynames against a selected tag
+
+#' sctkGetTag
+#'
+#' @param inSCE Input SCE
+#' @param assayType type of assay
+#' @param redDims redims iff required
+#'
+#' @return List
 #' @export
+#'
 sctkGetTag <- function(inSCE, assayType, redDims = FALSE){
   retList <- list()
   if(!is.null(S4Vectors::metadata(inSCE)$assayType)){
@@ -151,15 +193,10 @@ setMethod(f = "sctkAssay<-",
             }
             if(altExp){
               altExp(inSCE, assayName) <- SingleCellExperiment(list(counts = value))
-              assayNames(altExp(inSCE, assayName)) <- assayName
+             SummarizedExperiment::assayNames(altExp(inSCE, assayName)) <- assayName
             }
             else{
-              # if(redDim){
-              #   reducedDim(inSCE, type = assayName) <- value
-              # }
-              # else{
                 inSCE <- methods::callNextMethod()
-              # }
             }
             return(inSCE)
           }
