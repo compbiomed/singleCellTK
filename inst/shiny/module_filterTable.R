@@ -16,16 +16,6 @@ filterTableUI <- function(id){
   )
 }
 
-myModal <- function() {
-  div(id = "downloadModal",
-      modalDialog(downloadButton("dlCSV","Download as CSV"),
-                  br(),
-                  downloadButton("dlPDF","Download as PDF"),
-                  easyClose = TRUE, title = "Download Table")
-  )
-}
-
-
 #server
 filterTableServer <- function(input, output, session, dataframe,
                               defaultFilterColumns = NULL,
@@ -688,19 +678,43 @@ filterTableServer <- function(input, output, session, dataframe,
   observeEvent(input$export, {
     #write.csv(rv$data, file = paste0(moduleID, "-", Sys.Date(), ".csv"), row.names = TRUE)
     #showNotification("Table saved in working directory as", paste0(moduleID, "-", Sys.Date(), ".csv"), duration = 10)
-    showModal(myModal())
+    # showModal(myModal())
+    
+showModal(    modalDialog(actionButton(ns("dlCSV"),"Download as CSV"),
+                          br(),
+                          actionButton(ns("dlPDF"),"Download as PDF"),
+                          easyClose = TRUE, title = "Export Table"))
   })
   
-  output$dlCSV <- downloadHandler(
-    filename = function() {
-      paste0(moduleID, "-", Sys.Date(), ".csv")
-    },
-    content = function(file) {
-      write.csv(rv$data, file, row.names = TRUE)
-      showNotification("Table saved in working directory as", paste0(moduleID, "-", Sys.Date(), ".csv"), duration = 10)
-    },
-    contentType = "text/csv"
-  )
+  observeEvent(input$dlCSV, {
+    write.csv(rv$data, file = paste0(moduleID, "-", Sys.Date(), ".csv"), row.names = TRUE)
+    showNotification("Table saved in working directory as", paste0(moduleID, "-", Sys.Date(), ".csv"), duration = 10)
+    removeModal()
+  })
+  
+  observeEvent(input$dlPDF, {
+    df <- rv$data  
+    dim(df)  
+    maxrow = 35   
+    npages = ceiling(nrow(df)/maxrow)      
+    pdf(paste0(moduleID, "-", Sys.Date(), ".pdf"), height = 11, width = 8.5)  
+    idx = seq(1, maxrow)  
+    grid.table(df[idx,],rows = NULL)  
+    for(i in 2:npages){
+      grid.newpage();
+      if(i*maxrow <= nrow(df)){
+        idx = seq(1+((i-1)*maxrow), i * maxrow)
+      }
+      else{
+        idx = seq(1+((i-1)*maxrow), nrow(df))
+      }
+      grid.table(df[idx, ],rows = NULL)
+    }
+    dev.off()
+    showNotification("Table saved in working directory as", paste0(moduleID, "-", Sys.Date(), ".pdf"), duration = 10)
+    removeModal()
+  })
+  
   
   return(rv)
 }
