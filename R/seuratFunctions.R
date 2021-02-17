@@ -595,6 +595,8 @@ convertSeuratToSCE <- function(seuratObject, normAssayName = "seuratNormData", s
 #' @importFrom SummarizedExperiment assay assays
 convertSCEToSeurat <- function(inSCE, countsAssay = NULL, normAssay = NULL, scaledAssay = NULL) {
   
+  .checkSCEValidity(inSCE)
+  
   if(!is.null(countsAssay) && !(countsAssay %in% sctkAssayNames(inSCE))) {
     stop(paste0("'", countsAssay, "' not found in the list of assays: ",
                 paste(names(assays(inSCE)), collapse=",")))
