@@ -235,6 +235,9 @@ setMethod(f = "sctkAssay",
               }
               result <- methods::callNextMethod()
             }
+            else if (assayName %in% reducedDimNames(inSCE)){
+              result <- reducedDim(inSCE, assayName)
+            }
             else{
               result <- methods::callNextMethod()
             }

@@ -213,8 +213,8 @@ shinyServer(function(input, output, session) {
 
   updateAssayInputs <- function(){
     currassays <- names(assays(vals$counts))
-    updateSelectInputTag(session, "dimRedAssaySelect", tags = c("raw", "normalized", "hvg", "reducedDim"), recommended = "normalized", redDims = TRUE)
-    updateSelectInputTag(session, "dimRedAssaySelect_tsneUmap", tags = c("raw", "normalized", "hvg", "reducedDim"), recommended = "normalized")
+    updateSelectInputTag(session, "dimRedAssaySelect", tags = c("raw", "normalized", "hvg"), recommended = "normalized", redDims = TRUE)
+    updateSelectInputTag(session, "dimRedAssaySelect_tsneUmap", tags = c("raw", "normalized", "hvg"), recommended = "normalized")
     updateSelectInputTag(session, "batchCorrAssay", choices = currassays)
     updateSelectInputTag(session, "batchCheckAssay", choices = currassays)
     updateSelectInputTag(session, "batchCheckOrigAssay", choices = currassays)
