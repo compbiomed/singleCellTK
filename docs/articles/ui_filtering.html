@@ -5,13 +5,13 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Import Datasets- UI • singleCellTK</title>
+<title>Using the UI to filtering SCE objects • singleCellTK</title>
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/yeti/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="../bootstrap-toc.css">
 <script src="../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
-<script src="../pkgdown.js"></script><meta property="og:title" content="Import Datasets- UI">
+<script src="../pkgdown.js"></script><meta property="og:title" content="Using the UI to filtering SCE objects">
 <meta property="og:description" content="singleCellTK">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
@@ -105,6 +105,9 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
+      <a href="../articles/ui_import_datasets.html">Import Datasets</a>
+    </li>
+    <li>
       <a href="../articles/ui_batch_correction.html">Batch Correction</a>
     </li>
     <li>
@@ -142,53 +145,38 @@
 
       
 
-      </header><script src="import_ui_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+      </header><script src="ui_filtering_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
-      <h1 data-toc-skip>Import Datasets- UI</h1>
+      <h1 data-toc-skip>Using the UI to filtering SCE objects</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/compbiomed/singleCellTK/blob/master/vignettes/import_ui.Rmd"><code>vignettes/import_ui.Rmd</code></a></small>
-      <div class="hidden name"><code>import_ui.Rmd</code></div>
+      <small class="dont-index">Source: <a href="https://github.com/compbiomed/singleCellTK/blob/master/vignettes/ui_filtering.Rmd"><code>vignettes/ui_filtering.Rmd</code></a></small>
+      <div class="hidden name"><code>ui_filtering.Rmd</code></div>
 
     </div>
 
     
     
-<div id="introduction" class="section level2">
+<p>This section of the toolkit will allow users to filter their SCE objects after running QC metrics on them. Below is a guide on how to navigate the page.</p>
+<p><img src="ui_screenshots/filter_landing.png"></p>
+<div id="filtering-by-columns" class="section level2">
 <h2 class="hasAnchor">
-<a href="#introduction" class="anchor"></a>Introduction</h2>
-<ul>
-<li>
-<a href="https://bioconductor.org/packages/release/bioc/html/SingleCellExperiment.html">SingleCellExperiment</a> object saved in RDS file</li>
-<li>
-<a href="https://bioconductor.org/packages/release/bioc/html/SingleCellExperiment.html">SingleCellExperiment</a> object saved in <a href="https://github.com/theislab/anndata">AnnData</a> hdf5 file</li>
-</ul>
-<p>The UI of Single Cell ToolKit (SCTK) allows users to import multiple datasets, and the datasets can be from various forms. An output from preprocessing tools (listed later), a text file of count matrix, an RDS file saving a SingleCellExperiment object or an example dataset ready online are all acceptable. Users can add samples from as many sources, and import all together.</p>
+<a href="#filtering-by-columns" class="anchor"></a>Filtering by Columns</h2>
+<p>To filter by columns, the user must click the “Add a Filter” button in the Select Column Filtering Criteria" panel. A pop-up will appear which asks the user to select which column to filter, and based on that selection, more input fields will appear for the user to specify how they would like to filter. If the column contains categorial information, the user will have to select which values to keep. If the column contains numerical values, the user must provide a threshold value so that the filter will keep all values above that threshold.</p>
+<p><img src="ui_screenshots/filter_col_cat.png" width="450"><img src="ui_screenshots/filter_col_num.png" width="450"></p>
 </div>
-<div id="workflow" class="section level2">
+<div id="filtering-by-rows" class="section level2">
 <h2 class="hasAnchor">
-<a href="#workflow" class="anchor"></a>Workflow</h2>
-<p><img src="import_ui_source.png" style="border: 1px solid rgba(0,0,0,0.2)"></p>
-<p>For a single source of data, users need to choose one option from the radio buttons listed in the screenshot. The next step will depend on the option chosen.</p>
-<div id="import-from-a-preprocessing-tool" class="section level3">
-<h3 class="hasAnchor">
-<a href="#import-from-a-preprocessing-tool" class="anchor"></a>Import from a preprocessing tool</h3>
-<p><img src="import_ui_source1.png" style="border: 1px solid rgba(0,0,0,0.2)"></p>
-<p>SCTK supports importing data from the following pre-processing tools in our UI workflow:<br>
-- <a href="https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/what-is-cell-ranger">CellRanger</a><br>
-- <a href="https://github.com/alexdobin/STAR/blob/master/docs/STARsolo.md">STARSolo</a><br>
-- <a href="https://github.com/BUStools/bustools">BUStools</a><br>
-- <a href="https://github.com/ambrosejcarr/seqc">Seqc</a><br>
-- <a href="https://data.humancellatlas.org/pipelines/optimus-workflow">Optimus</a></p>
-<p>Choose the specific preprocessing tool that matches your dataset, and then press “<strong>Add a Sample</strong>”. A corresponding dialog modal will pop out with description that instructs you to select the directory that stores your data. After selecting a directory and pressing “<strong>OK</strong>” button at the bottom of the dialog modal, a new line will be inserted to the next “<strong>3. Import</strong>” section, meaning that the path of this dataset is identified and ready to be read into SCTK’s workspace.</p>
-<p><img src="import_ui_sampleList.png" style="border: 1px solid rgba(0,0,0,0.2)"></p>
+<a href="#filtering-by-rows" class="anchor"></a>Filtering by Rows</h2>
+<p>To filter by rows, the user must click the “Add a Filter” button in the Select Row Filtering Criteria" panel, and a pop-up will appear which asks the user to select which specify which rows to filter out. Rows are filtered by specifying how many counts genes should appear in how many cells by assay, so the user must first select an assay from the dropdown menu. Then, in the two numeric input fields that will appear, the user must specify how many counts and in how many cells they want to see the gene.</p>
+<p><img src="ui_screenshots/filter_assay.png"></p>
 </div>
-<div id="import-from-flat-files--csv--txt--mtx" class="section level3">
-<h3 class="hasAnchor">
-<a href="#import-from-flat-files--csv--txt--mtx" class="anchor"></a>Import from flat files (.csv, .txt, .mtx)</h3>
-<p><img src="import_ui_source2.png" style="border: 1px solid rgba(0,0,0,0.2)"></p>
-</div>
+<div id="applying-filters" class="section level2">
+<h2 class="hasAnchor">
+<a href="#applying-filters" class="anchor"></a>Applying Filters</h2>
+<p>For both row and column filtering, once a criterion has been specified in the pop-up, the user must click “OK” to see it in the corresponding table on the main page. Once the user has defined all their filtering criteria, the user must click “Filter” to apply the filters to the SCE object.</p>
+<p><img src="ui_screenshots/filter_complete.png"></p>
 </div>
   </div>
 
