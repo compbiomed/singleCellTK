@@ -1115,7 +1115,7 @@ shinyServer(function(input, output, session) {
 
   qcInputExists <- function() {
     for (algo in qc_choice_list) {
-      if (!is.null(input[[algo]])) {
+      if (isTRUE(input[[algo]])) {
         return(TRUE)
       }
     }
@@ -1134,7 +1134,7 @@ shinyServer(function(input, output, session) {
       # build list of selected algos
       algoList = list()
       for (algo in qc_choice_list) {
-        if (!is.null(input[[algo]])) {
+        if (isTRUE(input[[algo]])) {
           algoList <- c(algoList, algo)
         }
       }
@@ -1194,7 +1194,7 @@ shinyServer(function(input, output, session) {
         algoList = list()
         paramsList <- list()
         for (algo in qc_choice_list) {
-          if (input[[algo]]) {
+          if (isTRUE(input[[algo]])) {
             algoList <- c(algoList, algo)
             # use the specific prep functions for decontX and doubletFinder
             if (algo == "decontX") {
@@ -1227,18 +1227,18 @@ shinyServer(function(input, output, session) {
           }
         }
         # run selected cell QC algorithms
-        print(table(qcSample))
-        print(algoList)
-        print(input$qcAssaySelect)
-        print(qcCollName)
-        print(paramsList)
         vals$counts <- runCellQC(inSCE = vals$original,
                                  algorithms = algoList,
                                  sample = qcSample,
                                  collectionName = qcCollName,
                                  useAssay = input$qcAssaySelect,
                                  paramsList = paramsList)
-        redDimList <- strsplit(reducedDimNames(vals$counts), " ")
+        vals$counts <- singleCellTK:::.sctkSetTagExternal(
+          inSCE = vals$counts,
+          assayType = "raw",
+          assays = assayNames(vals$counts)
+          )
+        # redDimList <- strsplit(reducedDimNames(vals$counts), " ")
         # run getUMAP
         vals$counts <- getUMAP(inSCE = vals$counts,
                                  sample = qcSample,
@@ -1254,6 +1254,7 @@ shinyServer(function(input, output, session) {
         updateQCPlots()
       }
     })
+
   }))
 
   #-----------#
