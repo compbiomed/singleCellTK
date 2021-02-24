@@ -1,6 +1,6 @@
 .importAnnDataSample <- function(sampleDir = './',
                                  sampleName = 'sample',
-                                 delayedArray = TRUE){
+                                 delayedArray = FALSE){
 
   anndata_file <- file.path(sampleDir, paste0(sampleName,'.h5ad',sep=''))
   if (!file.exists(anndata_file)){
@@ -83,7 +83,7 @@
 #'   with the sample name appended to each colname in colData
 #' }
 #' @param delayedArray Boolean. Whether to read the expression matrix as
-#'  \link{DelayedArray} object. Default \code{TRUE}.
+#'  \link{DelayedArray} object. Default \code{FALSE}.
 #' @details
 #' \code{importAnnData} converts scRNA-seq data in the AnnData format to the
 #' \code{SingleCellExperiment} object. The .X slot in AnnData is transposed to the features x cells
@@ -107,7 +107,7 @@
 #' @export
 importAnnData <- function(sampleDirs = NULL,
                           sampleNames = NULL,
-                          delayedArray = TRUE) {
+                          delayedArray = FALSE) {
 
   if (length(sampleDirs)!=length(sampleNames)){
     stop("Number of sampleDirs must be equal to number of SampleNames. Please provide sample names for all input directories")

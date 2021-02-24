@@ -59,8 +59,8 @@ A \link[SingleCellExperiment]{SingleCellExperiment} object with
  cell QC metrics added to the \link{colData} slot. If \code{geneSetList} or \code{geneSetCollection} are provided, then the rownames for each gene set will be saved in \code{metadata(inSCE)$scater$addPerCellQC$geneSets}.
 }
 \description{
-A wrapper function for \link[celda]{decontX}. Identify
- potential contamination from experimental factors such as ambient RNA.
+A wrapper function for \link[scater]{addPerCellQC}. Calculate
+ general quality control metrics for each cell in the count matrix.
 }
 \examples{
 data(scExample, package = "singleCellTK")

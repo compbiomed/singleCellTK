@@ -12,7 +12,7 @@
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
-<link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/cosmo/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/yeti/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
 
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
@@ -71,7 +71,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.9.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.0</span>
       </span>
     </div>
 
@@ -121,6 +121,9 @@
       <a href="../articles/feature_selection.html">Feature Selection</a>
     </li>
     <li>
+      <a href="../articles/clustering.html">Clustering</a>
+    </li>
+    <li>
       <a href="../articles/differential_expression.html">Differential Expression</a>
     </li>
     <li>
@@ -141,6 +144,9 @@
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/ui_import_datasets.html">Import Datasets</a>
+    </li>
     <li>
       <a href="../articles/ui_batch_correction.html">Batch Correction</a>
     </li>
@@ -165,7 +171,7 @@
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/compbiomed/singleCellTK">
-    <span class="fa fa-github"></span>
+    <span class="fas fa-github"></span>
      
   </a>
 </li>
@@ -240,7 +246,7 @@
         <td>
           <p><code><a href="importDropEst.html">importDropEst()</a></code> </p>
         </td>
-        <td><p>Create a SCE Object from DropEst output</p></td>
+        <td><p>Create a SingleCellExperiment Object from DropEst output</p></td>
       </tr><tr>
         
         <td>
@@ -277,6 +283,18 @@
           <p><code><a href="importGeneSetsFromMSigDB.html">importGeneSetsFromMSigDB()</a></code> </p>
         </td>
         <td><p>Imports gene sets from MSigDB</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="importMitoGeneSet.html">importMitoGeneSet()</a></code> </p>
+        </td>
+        <td><p>Import mitochondrial gene sets</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="importMultipleSources.html">importMultipleSources()</a></code> </p>
+        </td>
+        <td><p>Imports samples from different sources and compiles them into a list of SCE objects</p></td>
       </tr><tr>
         
         <td>
@@ -366,12 +384,6 @@
       </tr><tr>
         
         <td>
-          <p><code><a href="runDoubletCells.html">runDoubletCells()</a></code> </p>
-        </td>
-        <td><p>Detect doublet cells using <a href='https://rdrr.io/pkg/scran/man/doubletCells.html'>doubletCells</a>.</p></td>
-      </tr><tr>
-        
-        <td>
           <p><code><a href="runDoubletFinder.html">runDoubletFinder()</a></code> </p>
         </td>
         <td><p>Generates a doublet score for each cell via doubletFinder</p></td>
@@ -416,18 +428,6 @@ correction method to SingleCellExperiment object</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="runHarmony.html">runHarmony()</a></code> </p>
-        </td>
-        <td><p>Apply Harmony batch effect correction method to SingleCellExperiment object</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="runLIGER.html">runLIGER()</a></code> </p>
-        </td>
-        <td><p>Apply LIGER batch effect correction method to SingleCellExperiment object</p></td>
-      </tr><tr>
-        
-        <td>
           <p><code><a href="runLimmaBC.html">runLimmaBC()</a></code> </p>
         </td>
         <td><p>Apply Limma's batch effect correction method to SingleCellExperiment object</p></td>
@@ -448,28 +448,29 @@ SingleCellExperiment object</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="runSCGEN.html">runSCGEN()</a></code> </p>
-        </td>
-        <td><p>Apply scGen batch effect correction method to SingleCellExperiment object</p></td>
-      </tr><tr>
-        
-        <td>
           <p><code><a href="runSCMerge.html">runSCMerge()</a></code> </p>
         </td>
         <td><p>Apply scMerge batch effect correction method to SingleCellExperiment object</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="runSeurat3Integration.html">runSeurat3Integration()</a></code> </p>
+          <p><code><a href="seuratIntegration.html">seuratIntegration()</a></code> </p>
         </td>
-        <td><p>Apply Integration batch effect correction method from Seurat v3 to
-SingleCellExperiment object</p></td>
+        <td><p>seuratIntegration
+A wrapper function to Seurat Batch-Correction/Integration workflow.</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="runZINBWaVE.html">runZINBWaVE()</a></code> </p>
         </td>
         <td><p>Apply ZINBWaVE Batch effect correction method to SingleCellExperiment object</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="plotBatchVariance.html">plotBatchVariance()</a></code> </p>
+        </td>
+        <td><p>Plot the percent of the variation that is explained by batch and condition
+in the data</p></td>
       </tr>
     </tbody><tbody>
       <tr>
@@ -585,6 +586,12 @@ identified by differential expression analysis</p></td>
           <p><code><a href="plotDEGHeatmap.html">plotDEGHeatmap()</a></code> </p>
         </td>
         <td><p>Heatmap visualization of DEG result</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="plotMASTThresholdGenes.html">plotMASTThresholdGenes()</a></code> </p>
+        </td>
+        <td><p>MAST Identify adaptive thresholds</p></td>
       </tr>
     </tbody><tbody>
       <tr>
@@ -667,6 +674,12 @@ values.</p></td>
       </tr><tr>
         
         <td>
+          <p><code><a href="plotDecontXResults.html">plotDecontXResults()</a></code> </p>
+        </td>
+        <td><p>Plots for runDecontX outputs.</p></td>
+      </tr><tr>
+        
+        <td>
           <p><code><a href="plotDEGHeatmap.html">plotDEGHeatmap()</a></code> </p>
         </td>
         <td><p>Heatmap visualization of DEG result</p></td>
@@ -687,15 +700,10 @@ identified by differential expression analysis</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="plotDecontXResults.html">plotDecontXResults()</a></code> </p>
+          <p><code><a href="plotDimRed.html">plotDimRed()</a></code> </p>
         </td>
-        <td><p>Plots for runDecontX outputs.</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="plotDoubletCellsResults.html">plotDoubletCellsResults()</a></code> </p>
-        </td>
-        <td><p>Plots for runDoubletCells outputs.</p></td>
+        <td><p>Plot dimensionality reduction from computed metrics including PCA, ICA, tSNE
+and UMAP</p></td>
       </tr><tr>
         
         <td>
@@ -717,9 +725,21 @@ identified by differential expression analysis</p></td>
       </tr><tr>
         
         <td>
+          <p><code><a href="plotHeatmapMulti.html">plotHeatmapMulti()</a></code> </p>
+        </td>
+        <td><p>plotHeatmapMulti</p></td>
+      </tr><tr>
+        
+        <td>
           <p><code><a href="plotMarkerDiffExp.html">plotMarkerDiffExp()</a></code> </p>
         </td>
         <td><p>Plot a heatmap to visualize the result of <code>findMarkerDiffExp</code></p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="plotMASTThresholdGenes.html">plotMASTThresholdGenes()</a></code> </p>
+        </td>
+        <td><p>MAST Identify adaptive thresholds</p></td>
       </tr><tr>
         
         <td>
@@ -732,6 +752,18 @@ identified by differential expression analysis</p></td>
           <p><code><a href="plotRunPerCellQCResults.html">plotRunPerCellQCResults()</a></code> </p>
         </td>
         <td><p>Plots for runPerCellQC outputs.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="plotScDblFinderResults.html">plotScDblFinderResults()</a></code> </p>
+        </td>
+        <td><p>Plots for runScDblFinder outputs.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="plotScdsHybridResults.html">plotScdsHybridResults()</a></code> </p>
+        </td>
+        <td><p>Plots for runCxdsBcdsHybrid outputs.</p></td>
       </tr><tr>
         
         <td>
@@ -813,15 +845,15 @@ identified by differential expression analysis</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="plotScdsHybridResults.html">plotScdsHybridResults()</a></code> </p>
-        </td>
-        <td><p>Plots for runCxdsBcdsHybrid outputs.</p></td>
-      </tr><tr>
-        
-        <td>
           <p><code><a href="plotScrubletResults.html">plotScrubletResults()</a></code> </p>
         </td>
         <td><p>Plots for runScrublet outputs.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="plotTopHVG.html">plotTopHVG()</a></code> </p>
+        </td>
+        <td><p>Plot highly variable genes</p></td>
       </tr><tr>
         
         <td>
@@ -858,7 +890,7 @@ identified by differential expression analysis</p></td>
         <td>
           <p><code><a href="exportSCEtoAnnData.html">exportSCEtoAnnData()</a></code> </p>
         </td>
-        <td><p>Export a <a href='https://rdrr.io/pkg/SingleCellExperiment/man/SingleCellExperiment.html'>SingleCellExperiment</a> R object as 
+        <td><p>Export a <a href='https://rdrr.io/pkg/SingleCellExperiment/man/SingleCellExperiment.html'>SingleCellExperiment</a> R object as
 Python annData object</p></td>
       </tr><tr>
         
@@ -881,11 +913,11 @@ Python annData object</p></td>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Joshua D. Campbell, David Jenkins, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, Emma Briars, Sebastian Carrasco Pro, W. Evan Johnson, Yusuke Koga, Shruthi Bandyadka, Anastasia Leshchyk, Rui Hong, Yichen Wang.</p>
+  <p>Developed by David Jenkins, Vidya Akavoor, Salam Alabdullatif, Shruthi Bandyadka, Emma Briars, Xinyun Cao, Sebastian Carrasco Pro, Tyler Faits, Rui Hong, Mohammed Muzamil Khan, Yusuke Koga, Anastasia Leshchyk, Irzam Sarfraz, Yichen Wang, Zhe Wang, W. Evan Johnson, Joshua David Campbell.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

@@ -12,7 +12,7 @@
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
-<link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/cosmo/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/yeti/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
 
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
@@ -71,7 +71,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.9.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.0</span>
       </span>
     </div>
 
@@ -121,6 +121,9 @@
       <a href="articles/feature_selection.html">Feature Selection</a>
     </li>
     <li>
+      <a href="articles/clustering.html">Clustering</a>
+    </li>
+    <li>
       <a href="articles/differential_expression.html">Differential Expression</a>
     </li>
     <li>
@@ -141,6 +144,9 @@
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="articles/ui_import_datasets.html">Import Datasets</a>
+    </li>
     <li>
       <a href="articles/ui_batch_correction.html">Batch Correction</a>
     </li>
@@ -165,7 +171,7 @@
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/compbiomed/singleCellTK">
-    <span class="fa fa-github"></span>
+    <span class="fas fa-github"></span>
      
   </a>
 </li>
@@ -187,39 +193,15 @@
 
     <ul class="list-unstyled">
       <li>
-        <p><strong>Joshua D. Campbell</strong>. Author, maintainer. 
-        </p>
-      </li>
-      <li>
         <p><strong>David Jenkins</strong>. Author. <a href='https://orcid.org/0000-0002-7451-4288' target='orcid.widget' aria-label='ORCID'><span class='fab fa-orcid orcid' aria-hidden='true'></span></a>
         </p>
       </li>
       <li>
-        <p><strong>Tyler Faits</strong>. Author. 
+        <p><strong>Vidya Akavoor</strong>. Author. 
         </p>
       </li>
       <li>
-        <p><strong>Mohammed Muzamil Khan</strong>. Author. 
-        </p>
-      </li>
-      <li>
-        <p><strong>Zhe Wang</strong>. Author. 
-        </p>
-      </li>
-      <li>
-        <p><strong>Emma Briars</strong>. Author. <a href='https://orcid.org/0000-0001-9350-5523' target='orcid.widget' aria-label='ORCID'><span class='fab fa-orcid orcid' aria-hidden='true'></span></a>
-        </p>
-      </li>
-      <li>
-        <p><strong>Sebastian Carrasco Pro</strong>. Author. 
-        </p>
-      </li>
-      <li>
-        <p><strong>W. Evan Johnson</strong>. Author. <a href='https://orcid.org/0000-0002-6247-6595' target='orcid.widget' aria-label='ORCID'><span class='fab fa-orcid orcid' aria-hidden='true'></span></a>
-        </p>
-      </li>
-      <li>
-        <p><strong>Yusuke Koga</strong>. Author. 
+        <p><strong>Salam Alabdullatif</strong>. Author. 
         </p>
       </li>
       <li>
@@ -227,7 +209,19 @@
         </p>
       </li>
       <li>
-        <p><strong>Anastasia Leshchyk</strong>. Author. 
+        <p><strong>Emma Briars</strong>. Author. <a href='https://orcid.org/0000-0001-9350-5523' target='orcid.widget' aria-label='ORCID'><span class='fab fa-orcid orcid' aria-hidden='true'></span></a>
+        </p>
+      </li>
+      <li>
+        <p><strong>Xinyun Cao</strong>. Author. 
+        </p>
+      </li>
+      <li>
+        <p><strong>Sebastian Carrasco Pro</strong>. Author. 
+        </p>
+      </li>
+      <li>
+        <p><strong>Tyler Faits</strong>. Author. 
         </p>
       </li>
       <li>
@@ -235,7 +229,35 @@
         </p>
       </li>
       <li>
+        <p><strong>Mohammed Muzamil Khan</strong>. Author. 
+        </p>
+      </li>
+      <li>
+        <p><strong>Yusuke Koga</strong>. Author, maintainer. 
+        </p>
+      </li>
+      <li>
+        <p><strong>Anastasia Leshchyk</strong>. Author. 
+        </p>
+      </li>
+      <li>
+        <p><strong>Irzam Sarfraz</strong>. Author. 
+        </p>
+      </li>
+      <li>
         <p><strong>Yichen Wang</strong>. Author. 
+        </p>
+      </li>
+      <li>
+        <p><strong>Zhe Wang</strong>. Author. 
+        </p>
+      </li>
+      <li>
+        <p><strong>W. Evan Johnson</strong>. Author. <a href='https://orcid.org/0000-0002-6247-6595' target='orcid.widget' aria-label='ORCID'><span class='fab fa-orcid orcid' aria-hidden='true'></span></a>
+        </p>
+      </li>
+      <li>
+        <p><strong>Joshua David Campbell</strong>. Author. 
         </p>
       </li>
     </ul>
@@ -248,7 +270,7 @@
 
       <footer>
       <div class="copyright">
-  <p>Developed by Joshua D. Campbell, David Jenkins, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, Emma Briars, Sebastian Carrasco Pro, W. Evan Johnson, Yusuke Koga, Shruthi Bandyadka, Anastasia Leshchyk, Rui Hong, Yichen Wang.</p>
+  <p>Developed by David Jenkins, Vidya Akavoor, Salam Alabdullatif, Shruthi Bandyadka, Emma Briars, Xinyun Cao, Sebastian Carrasco Pro, Tyler Faits, Rui Hong, Mohammed Muzamil Khan, Yusuke Koga, Anastasia Leshchyk, Irzam Sarfraz, Yichen Wang, Zhe Wang, W. Evan Johnson, Joshua David Campbell.</p>
 </div>
 
 <div class="pkgdown">

@@ -12,7 +12,7 @@
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
-<link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/cosmo/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/yeti/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
 
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.9.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.0</span>
       </span>
     </div>
 
@@ -104,7 +104,7 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/import_scRNAseq_data_as_SCE.html">Import data into SCTK</a>
+      <a href="../articles/import_scRNAseq_data_as_SCE_Console.html">Import data into SCTK</a>
     </li>
     <li>
       <a href="../articles/run_qcConsole.html">Quality Control</a>
@@ -120,6 +120,9 @@
     </li>
     <li>
       <a href="../articles/feature_selection.html">Feature Selection</a>
+    </li>
+    <li>
+      <a href="../articles/clustering.html">Clustering</a>
     </li>
     <li>
       <a href="../articles/differential_expression.html">Differential Expression</a>
@@ -142,6 +145,9 @@
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/ui_import_datasets.html">Import Datasets</a>
+    </li>
     <li>
       <a href="../articles/ui_batch_correction.html">Batch Correction</a>
     </li>
@@ -166,7 +172,7 @@
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/compbiomed/singleCellTK">
-    <span class="fa fa-github"></span>
+    <span class="fas fa-github"></span>
      
   </a>
 </li>
@@ -184,7 +190,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Combine a list of SingleCellExperiment objects as one SingleCellExperiment object</h1>
-    <small class="dont-index">Source: <a href='https://github.com/compbiomed/singleCellTK/blob/master/R/sctkQCUtils.R'><code>R/sctkQCUtils.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/compbiomed/singleCellTK/blob/master/R/combineSCE.R'><code>R/combineSCE.R</code></a></small>
     <div class="hidden name"><code>combineSCE.Rd</code></div>
     </div>
 
@@ -192,22 +198,39 @@
     <p>Combine a list of SingleCellExperiment objects as one SingleCellExperiment object</p>
     </div>
 
-    <pre class="usage"><span class='fu'>combineSCE</span>(<span class='no'>sceList</span>)</pre>
+    <pre class="usage"><span class='fu'>combineSCE</span><span class='op'>(</span><span class='va'>sceList</span>, <span class='va'>by.r</span>, <span class='va'>by.c</span>, <span class='va'>combined</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>sceList</th>
-      <td><p>A list contains <a href='https://rdrr.io/pkg/SingleCellExperiment/man/SingleCellExperiment.html'>SingleCellExperiment</a> objects</p></td>
+      <td><p>A list contains <a href='https://rdrr.io/pkg/SingleCellExperiment/man/SingleCellExperiment.html'>SingleCellExperiment</a> objects.
+Currently, combineSCE function only support combining SCE objects with assay in dgCMatrix format.
+It does not support combining SCE with assay in delayedArray format.</p></td>
+    </tr>
+    <tr>
+      <th>by.r</th>
+      <td><p>Specifications of the columns used for merging rowData. See 'Details'.</p></td>
+    </tr>
+    <tr>
+      <th>by.c</th>
+      <td><p>Specifications of the columns used for merging colData. See 'Details'.</p></td>
+    </tr>
+    <tr>
+      <th>combined</th>
+      <td><p>logical; if TRUE, it will combine the list of SingleCellExperiment objects. See 'Details'.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A <a href='https://rdrr.io/pkg/SingleCellExperiment/man/SingleCellExperiment.html'>SingleCellExperiment</a> object which combines all 
+    <p>A <a href='https://rdrr.io/pkg/SingleCellExperiment/man/SingleCellExperiment.html'>SingleCellExperiment</a> object which combines all
 objects in sceList. The colData is merged.</p>
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='va'>combinedsce</span> <span class='op'>&lt;-</span> <span class='fu'>combineSCE</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='va'>sce</span>,<span class='va'>sce</span><span class='op'>)</span>, by.r <span class='op'>=</span> <span class='cn'>NULL</span>, by.c <span class='op'>=</span> <span class='cn'>NULL</span>, combined <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -219,11 +242,11 @@ objects in sceList. The colData is merged.</p>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Joshua D. Campbell, David Jenkins, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, Emma Briars, Sebastian Carrasco Pro, W. Evan Johnson, Yusuke Koga, Shruthi Bandyadka, Anastasia Leshchyk, Rui Hong, Yichen Wang.</p>
+  <p>Developed by David Jenkins, Vidya Akavoor, Salam Alabdullatif, Shruthi Bandyadka, Emma Briars, Xinyun Cao, Sebastian Carrasco Pro, Tyler Faits, Rui Hong, Mohammed Muzamil Khan, Yusuke Koga, Anastasia Leshchyk, Irzam Sarfraz, Yichen Wang, Zhe Wang, W. Evan Johnson, Joshua David Campbell.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

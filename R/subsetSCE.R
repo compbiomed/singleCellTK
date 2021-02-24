@@ -74,6 +74,7 @@ subsetSCERows <- function(inSCE, index = NULL, bool = NULL, rowData = NULL,
 
   # Parse expressions for rowData variables
   if(!is.null(rowData)) {
+    temp <- rep(TRUE, nrow(inSCE))
     for(i in seq_along(rowData)) {
       temp <- eval(parse(text = as.character(rowData[i])),
                    envir = as.data.frame(rowData(inSCE)))
@@ -84,7 +85,7 @@ subsetSCERows <- function(inSCE, index = NULL, bool = NULL, rowData = NULL,
              "trying to use matches one of the column names in ",
              "'rowData(inSCE)' and that your expression is valid.")
       }
-      final.ix[temp] = TRUE
+      final.ix[!temp] <- FALSE
     }
   }
 
@@ -167,6 +168,7 @@ subsetSCECols <- function(inSCE, index = NULL, bool = NULL, colData = NULL) {
 
   # Parse expressions for colData variables
   if(!is.null(colData)) {
+    final.ix <- rep(TRUE, ncol(inSCE))
     for(i in seq_along(colData)) {
       temp <- eval(parse(text = as.character(colData[i])),
                    envir = as.data.frame(colData(inSCE)))
@@ -177,7 +179,7 @@ subsetSCECols <- function(inSCE, index = NULL, bool = NULL, colData = NULL) {
              "trying to use matches one of the column names in ",
              "'colData(inSCE)' and that your expression is valid.")
       }
-      final.ix[temp] = TRUE
+      final.ix[!temp] <- FALSE
     }
   }
 

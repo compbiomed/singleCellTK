@@ -5,7 +5,14 @@
 \title{Given a list of genes and a SingleCellExperiment object, return
 the binary or continuous expression of the genes.}
 \usage{
-getBiomarker(inSCE, gene, binary = "Binary", useAssay = "counts")
+getBiomarker(
+  inSCE,
+  gene,
+  binary = "Binary",
+  useAssay = "counts",
+  featureLocation = NULL,
+  featureDisplay = NULL
+)
 }
 \arguments{
 \item{inSCE}{Input \linkS4class{SingleCellExperiment} object.}
@@ -15,7 +22,12 @@ getBiomarker(inSCE, gene, binary = "Binary", useAssay = "counts")
 \item{binary}{"Binary" for binary expression or "Continuous" for a gradient.
 Default: "Binary"}
 
-\item{useAssay}{Indicate which assay to use. The default is "counts".}
+\item{useAssay}{Indicates which assay to use. The default is "counts".}
+
+\item{featureLocation}{Indicates which column name of rowData to query gene.}
+
+\item{featureDisplay}{Indicates which column name of rowData to use
+to display feature for visualization.}
 }
 \value{
 getBiomarker(): A data.frame of expression values
