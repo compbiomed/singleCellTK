@@ -104,9 +104,28 @@
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
+<li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Import</a>
+      <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../articles/ui_import_datasets.html">Import Datasets</a>
-    </li>
+          <a href="../articles/ui_import_data.html">Data</a>
+        </li>
+        <li>
+          <a href="../articles/ui_import_genesets.html">Gene Sets</a>
+        </li>
+      </ul>
+</li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">QC &amp; Filtering</a>
+      <ul class="dropdown-menu" role="menu">
+<li>
+          <a href="../articles/ui_qc.html">Quality Control</a>
+        </li>
+        <li>
+          <a href="../articles/ui_filtering.html">Filtering</a>
+        </li>
+      </ul>
+</li>
     <li>
       <a href="../articles/ui_batch_correction.html">Batch Correction</a>
     </li>
@@ -145,20 +164,26 @@
 
       
 
-      </header><script src="ui_qc_page_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+      </header><script src="ui_qc_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Using the UI to generate QC metrics</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/compbiomed/singleCellTK/blob/master/vignettes/ui_qc_page.Rmd"><code>vignettes/ui_qc_page.Rmd</code></a></small>
-      <div class="hidden name"><code>ui_qc_page.Rmd</code></div>
+      <small class="dont-index">Source: <a href="https://github.com/compbiomed/singleCellTK/blob/master/vignettes/ui_qc.Rmd"><code>vignettes/ui_qc.Rmd</code></a></small>
+      <div class="hidden name"><code>ui_qc.Rmd</code></div>
 
     </div>
 
     
     
-<p>This section of the toolkit will allow users to generate quality control (QC) metrics for the single-cell data that they have imported. Below is a guide on how to navigate the page.</p>
+<div id="introduction" class="section level2">
+<h2 class="hasAnchor">
+<a href="#introduction" class="anchor"></a>Introduction</h2>
+<p><img src="qc_ui_entry.png" alt="entry"><br></p>
+<p>Single Cell Toolkit (SCTK) allow users to generate quality control (QC) metrics for the single-cell data that they have imported. Users should enter the page through the way as shown in the screenshot above.</p>
+<p>Here SCTK provides generic QC metrics, as well as contamination control by <a href="https://rdrr.io/bioc/celda/man/decontX.html">decontX</a>, and doublet detection algorithms including <a href="https://rdrr.io/bioc/scDblFinder/">scDblFinder</a>, <a href="https://rdrr.io/bioc/scds/man/cxds.html">cxds</a>, <a href="https://rdrr.io/bioc/scds/man/bcds.html">bcds</a>, <a href="https://rdrr.io/bioc/scds/man/cxds_bcds_hybrid.html">cxds_bcds_hybrid</a>, <a href="https://rdrr.io/github/chris-mcginnis-ucsf/DoubletFinder/man/doubletFinder.html">doubletFinder</a>, and <a href="https://github.com/swolock/scrublet">scrublet</a>. Note that “scrublet” is Python based. Users should have it configured before trying to apply it. The configuration method would be introduced in the end.</p>
+</div>
 <div id="select-which-algorithms-to-run" class="section level2">
 <h2 class="hasAnchor">
 <a href="#select-which-algorithms-to-run" class="anchor"></a>Select which algorithms to run</h2>

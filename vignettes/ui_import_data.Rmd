@@ -85,32 +85,3 @@ Before importing, users can click on the "`[X]`" button on the right to remove t
 Note that it is normal that in the "Location" field, some paths might happen to point to a temporary cache.  
 
 <img src="import_ui_sampleList.png" style="border: 1px solid rgba(0,0,0,0.2)"></img>
-
-## Importing Gene Sets
-
-![gs entry](import_ui_gs_entry.png)\
-
-Users can import gene sets to use in later steps of the toolkit's pipeline. The UIs are implemented in the page that can be entered through the links, as shown in the screenshot above.  
-There are three ways to import gene sets, and they are described below.  
-
-### Import Gene Sets from a GMT File
-
-The first option is to upload the GMT file detailing a gene set. For this option, users must provide a GMT file through the file input **"Choose GMT File"**; a text collection name at **"Collection Name"**. If the collection name entered already exists in current session, the gene set from the GMT file will be added to that collection. Otherwise, a new collection with the given name will be created. Finally, users must click **"Upload"** to finish the procedure.  
-
-<img src="import_ui_gs_gmt.png" style="border: 1px solid rgba(0,0,0,0.2)"></img>
-
-### Select from a Database
-
-SCTK also has a database of gene sets that users can choose from. For this option, the user must simply select the gene sets they would like to upload and click **"Upload"**. A brief description of each gene set is provided in the checklist.  
-
-<img src="import_ui_gs_db.png" style="border: 1px solid rgba(0,0,0,0.2)"></img>
-
-### Paste in Gene Sets
-
-Users also have the option to paste their gene set into a text box. In order to do so, the user must paste their gene set into the provided text box and then provide a collection name to create a new collection. If there are already gene sets imported, the user can choose an existing collection to add their pasted gene set into. Then the user must click "Upload."
-
-<img src="import_ui_gs_paste.png" style="border: 1px solid rgba(0,0,0,0.2)"></img>
-
-### Map Gene Sets to Specific Feature IDs
-
-There is an additional selection input labeled with **"Location within SCE object where the gene identifiers in should be mapped"**, placed above the **"Upload"** button as already shown in screenshots above. This specifies the feature IDs stored in the imported single-cell dataset, to which the gene identifiers in the uploaded gene sets will be mapped. For example, if the uploaded gene sets are presented by gene symbols, users must make sure the selection here is pointing to gene symbols instead of ENSEMBL IDs. Most of the time, "rownames" is the default feature ID of the imported single-cell dataset.  

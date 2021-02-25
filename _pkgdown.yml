@@ -98,8 +98,18 @@ navbar:
           href: articles/heatmap.html
     - text: "Shiny UI Analysis"
       menu:
-        - text: "Import Datasets"
-          href: articles/ui_import_datasets.html
+        - text: "Import"
+          menu:
+            - text: "Data"
+              href: articles/ui_import_data.html
+            - text: "Gene Sets"
+              href: articles/ui_import_genesets.html 
+        - text: "QC & Filtering"
+          menu:
+            - text: "Quality Control"
+              href: articles/ui_qc.html
+            - text: "Filtering"
+              href: articles/ui_filtering.html
         - text: "Batch Correction"
           href: articles/ui_batch_correction.html
         - text: "Clustering"

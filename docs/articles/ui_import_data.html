@@ -104,9 +104,28 @@
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
+<li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Import</a>
+      <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../articles/ui_import_datasets.html">Import Datasets</a>
-    </li>
+          <a href="../articles/ui_import_data.html">Data</a>
+        </li>
+        <li>
+          <a href="../articles/ui_import_genesets.html">Gene Sets</a>
+        </li>
+      </ul>
+</li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">QC &amp; Filtering</a>
+      <ul class="dropdown-menu" role="menu">
+<li>
+          <a href="../articles/ui_qc_page.html">Quality Control</a>
+        </li>
+        <li>
+          <a href="../articles/ui_filtering.html">Filtering</a>
+        </li>
+      </ul>
+</li>
     <li>
       <a href="../articles/ui_batch_correction.html">Batch Correction</a>
     </li>
@@ -145,14 +164,14 @@
 
       
 
-      </header><script src="ui_import_datasets_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+      </header><script src="ui_import_data_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Import Datasets - UI</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/compbiomed/singleCellTK/blob/master/vignettes/ui_import_datasets.Rmd"><code>vignettes/ui_import_datasets.Rmd</code></a></small>
-      <div class="hidden name"><code>ui_import_datasets.Rmd</code></div>
+      <small class="dont-index">Source: <a href="https://github.com/compbiomed/singleCellTK/blob/master/vignettes/ui_import_data.Rmd"><code>vignettes/ui_import_data.Rmd</code></a></small>
+      <div class="hidden name"><code>ui_import_data.Rmd</code></div>
 
     </div>
 
@@ -239,36 +258,6 @@ After choosing a single file for uploading, user must wait until the progress ba
 Before importing, users can click on the “<code>[X]</code>” button on the right to remove the selection of the corresponding single dataset, or click on <strong>“Clear Samples”</strong> to reset all selections. This only clears this wait-list for importing, but will not work on any dataset already imported.<br>
 Note that it is normal that in the “Location” field, some paths might happen to point to a temporary cache.</p>
 <p><img src="import_ui_sampleList.png" style="border: 1px solid rgba(0,0,0,0.2)"></p>
-</div>
-</div>
-<div id="importing-gene-sets" class="section level2">
-<h2 class="hasAnchor">
-<a href="#importing-gene-sets" class="anchor"></a>Importing Gene Sets</h2>
-<p><img src="import_ui_gs_entry.png" alt="gs entry"><br></p>
-<p>Users can import gene sets to use in later steps of the toolkit’s pipeline. The UIs are implemented in the page that can be entered through the links, as shown in the screenshot above.<br>
-There are three ways to import gene sets, and they are described below.</p>
-<div id="import-gene-sets-from-a-gmt-file" class="section level3">
-<h3 class="hasAnchor">
-<a href="#import-gene-sets-from-a-gmt-file" class="anchor"></a>Import Gene Sets from a GMT File</h3>
-<p>The first option is to upload the GMT file detailing a gene set. For this option, users must provide a GMT file through the file input <strong>“Choose GMT File”</strong>; a text collection name at <strong>“Collection Name”</strong>. If the collection name entered already exists in current session, the gene set from the GMT file will be added to that collection. Otherwise, a new collection with the given name will be created. Finally, users must click <strong>“Upload”</strong> to finish the procedure.</p>
-<p><img src="import_ui_gs_gmt.png" style="border: 1px solid rgba(0,0,0,0.2)"></p>
-</div>
-<div id="select-from-a-database" class="section level3">
-<h3 class="hasAnchor">
-<a href="#select-from-a-database" class="anchor"></a>Select from a Database</h3>
-<p>SCTK also has a database of gene sets that users can choose from. For this option, the user must simply select the gene sets they would like to upload and click <strong>“Upload”</strong>. A brief description of each gene set is provided in the checklist.</p>
-<p><img src="import_ui_gs_db.png" style="border: 1px solid rgba(0,0,0,0.2)"></p>
-</div>
-<div id="paste-in-gene-sets" class="section level3">
-<h3 class="hasAnchor">
-<a href="#paste-in-gene-sets" class="anchor"></a>Paste in Gene Sets</h3>
-<p>Users also have the option to paste their gene set into a text box. In order to do so, the user must paste their gene set into the provided text box and then provide a collection name to create a new collection. If there are already gene sets imported, the user can choose an existing collection to add their pasted gene set into. Then the user must click “Upload.”</p>
-<p><img src="import_ui_gs_paste.png" style="border: 1px solid rgba(0,0,0,0.2)"></p>
-</div>
-<div id="map-gene-sets-to-specific-feature-ids" class="section level3">
-<h3 class="hasAnchor">
-<a href="#map-gene-sets-to-specific-feature-ids" class="anchor"></a>Map Gene Sets to Specific Feature IDs</h3>
-<p>There is an additional selection input labeled with <strong>“Location within SCE object where the gene identifiers in should be mapped”</strong>, placed above the <strong>“Upload”</strong> button as already shown in screenshots above. This specifies the feature IDs stored in the imported single-cell dataset, to which the gene identifiers in the uploaded gene sets will be mapped. For example, if the uploaded gene sets are presented by gene symbols, users must make sure the selection here is pointing to gene symbols instead of ENSEMBL IDs. Most of the time, “rownames” is the default feature ID of the imported single-cell dataset.</p>
 </div>
 </div>
   </div>
