@@ -42,7 +42,7 @@ runSingleR <- function(inSCE,
     if(!inherits(inSCE, "SingleCellExperiment")){
         stop('"inSCE" should be a SingleCellExperiment inherited Object.')
     }
-    if(!useAssay %in% SummarizedExperiment::assayNames(inSCE)){
+    if(!useAssay %in% expDataNames(inSCE)){
         stop('"useAssay" name: ', useAssay, ' not found.')
     }
 
@@ -119,7 +119,10 @@ runSingleR <- function(inSCE,
     } else {
         clusters <- inSCE[[labelByCluster]]
     }
-    predictions <- SingleR::SingleR(test = inSCE, assay.type.test = useAssay,
+    # predictions <- SingleR::SingleR(test = inSCE, assay.type.test = useAssay,
+    #                                 ref = ref, clusters = clusters,
+    #                                 labels = ref[[labelColName]])
+    predictions <- SingleR::SingleR(test = expData(inSCE, useAssay),
                                     ref = ref, clusters = clusters,
                                     labels = ref[[labelColName]])
     predictions$tuning.scores <- NULL
