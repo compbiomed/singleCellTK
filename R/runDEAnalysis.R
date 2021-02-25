@@ -37,7 +37,7 @@
     if(!inherits(inSCE, "SingleCellExperiment")){
         stop('"inSCE" should be a SingleCellExperiment inherited Object.')
     }
-    if(!useAssay %in% sctkAssayNames(inSCE)){
+    if(!useAssay %in% expDataNames(inSCE)){
         stop(paste('"useAssay" name: ', useAssay, ' not found.'))
     }
     if(is.null(index1) && (is.null(classGroup1) || is.null(class))){
@@ -230,7 +230,7 @@ runDESeq2 <- function(inSCE, useAssay = 'counts', index1 = NULL,
     cov <- SummarizedExperiment::colData(inSCE)[subsetIdx, covariates,
                                                 drop = FALSE]
     annotData <- cbind(annotData, cov)
-    mat <- sctkAssay(inSCE[,subsetIdx], useAssay)
+    mat <- expData(inSCE[,subsetIdx], useAssay)
     if(!inherits(mat, 'matrix')){
         mat <- as.matrix(mat)
     }
@@ -363,7 +363,7 @@ runLimmaDE <- function(inSCE, useAssay = 'logcounts', index1 = NULL,
     cov <- SummarizedExperiment::colData(inSCE)[subsetIdx, covariates,
                                                 drop = FALSE]
     annotData <- cbind(annotData, cov)
-    mat <- sctkAssay(inSCE[,subsetIdx], useAssay)
+    mat <- expData(inSCE[,subsetIdx], useAssay)
     if(!inherits(mat, 'matrix')){
         mat <- as.matrix(mat)
     }
@@ -504,7 +504,7 @@ runANOVA <- function(inSCE, useAssay = 'logcounts', index1 = NULL,
         stats::as.formula(paste0("~", paste0(covariates, collapse = "+"))),
         data = annotData)
     }
-    dat <- as.matrix(sctkAssay(inSCE[,subsetIdx], useAssay))
+    dat <- as.matrix(expData(inSCE[,subsetIdx], useAssay))
     if(!inherits(dat, 'matrix')){
         dat <- as.matrix(dat)
     }
@@ -637,7 +637,7 @@ runMAST <- function(inSCE, useAssay = 'logcounts', index1 = NULL,
     subsetIdx <- (ix1 | ix2)
     ## Extract
     mat <-
-      sctkAssay(inSCE[,subsetIdx], useAssay)
+      expData(inSCE[,subsetIdx], useAssay)
     if(!inherits(mat, 'matrix')){
       mat <- as.matrix(mat)
     }

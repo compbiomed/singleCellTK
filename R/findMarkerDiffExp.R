@@ -42,7 +42,7 @@ findMarkerDiffExp <- function(inSCE, useAssay = 'logcounts',
     if(!inherits(inSCE, "SingleCellExperiment")){
         stop('"inSCE" should be a SingleCellExperiment inherited Object.')
     }
-    if(!useAssay %in% sctkAssayNames(inSCE)){
+    if(!useAssay %in% expDataNames(inSCE)){
         stop('"useAssay" name: ', useAssay, ' not found.')
     }
     method <- match.arg(method)
@@ -125,10 +125,10 @@ findMarkerDiffExp <- function(inSCE, useAssay = 'logcounts',
             cells.in <- cellLabels == cluster
             cells.out <- cellLabels != cluster
             # cells.in expressed percentage
-            cells.in.expr <- sctkAssay(inSCE, useAssay)[gene, cells.in]
+            cells.in.expr <- expData(inSCE, useAssay)[gene, cells.in]
             cells.in.perc <- sum(cells.in.expr > 0) / length(which(cells.in))
             # cells.out expressed percentage
-            cells.out.expr <- sctkAssay(inSCE, useAssay)[gene, cells.out]
+            cells.out.expr <- expData(inSCE, useAssay)[gene, cells.out]
             cells.out.perc <- sum(cells.out.expr > 0) / length(which(cells.out))
             # Average Expression in the cluster
             cells.in.mean <- mean(cells.in.expr)
