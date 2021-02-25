@@ -75,7 +75,7 @@ plotDEGViolin <- function(inSCE, useResult, threshP = FALSE, labelBy = NULL,
   } else {
     replGeneName <- geneToPlot
   }
-  expres <- SummarizedExperiment::assay(inSCE[geneToPlot, c(cells1, cells2)],
+  expres <- expData(inSCE[geneToPlot, c(cells1, cells2)],
                                         useAssay)
   if(!is.matrix(expres)){
     expres <- as.matrix(expres)
@@ -163,7 +163,7 @@ plotDEGRegression <- function(inSCE, useResult, threshP = FALSE, labelBy = NULL,
   } else {
     replGeneName <- geneToPlot
   }
-  expres <- SummarizedExperiment::assay(inSCE[geneToPlot, c(cells1, cells2)],
+  expres <- expData(inSCE[geneToPlot, c(cells1, cells2)],
                                         useAssay)
   if(!is.matrix(expres)){
     expres <- as.matrix(expres)
@@ -442,7 +442,7 @@ plotDEGHeatmap <- function(inSCE, useResult, doLog = FALSE, onlyPos = FALSE,
 plotMASTThresholdGenes <- function(inSCE, useAssay="logcounts", doPlot = TRUE,
                                    isLogged = TRUE, check_sanity = TRUE){
   # data preparation
-  expres <- SummarizedExperiment::assay(inSCE, useAssay)
+  expres <- expData(inSCE, useAssay)
   if(!is.matrix(expres)){
     expres <- as.matrix(expres)
   }

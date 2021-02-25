@@ -20,6 +20,7 @@ plotRunPerCellQCResults(
   titleSize = 18,
   relHeights = c(1.5, 1.5, 1, 1),
   relWidths = c(1, 1, 1, 1),
+  plotLabels = "default",
   plotNCols = NULL,
   plotNRows = NULL,
   samplePerColumn = TRUE,
