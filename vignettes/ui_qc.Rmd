@@ -12,17 +12,32 @@ Here SCTK provides generic QC metrics, as well as contamination estimation by [d
 
 ## Select which algorithms to run
 
-Users must check which algorithms they would like to run. The parameters for the corresponding algorithms will pop out as users check it. Users may adjust the parameters as needed.
+Users must check all algorithms which they would like to run at once. **Rerunning the QC procedure will overwrite previous QC results as well as all downstream analysis.** The parameters for the corresponding algorithms will show up as users check it. Users may adjust the parameters as needed. Detailed explanation for each parameter can be accessed via the **"Help"** button in the parameter region of each algorithm, as shown below.  
 
+![check algorithms](qc_ui_checkAlgo.png)\
 
+## Other settings before running
 
-2. After filling out the parameters for each checked algorithm, users must click **"Run"** to start the QC procedure. There are "Help" menus that explain the parameters for each algorithm, and they are accesible once users check a certain algorithm.
+![general](qc_ui_general.png)\
 
-![](ui_screenshots/qc_landing.png) 
-![](ui_screenshots/qc_params.png) 
-![](ui_screenshots/qc_help.png) 
+After checking off all the desired QC algorithms, users should also go through other settings including:  
+- **Select assay**: Choose the expression matrix that should be used for calculation.  
+- **Select variable containing sample labels**: The cell level annotation that labels the sample source of each cell.  
+
+![umap](qc_ui_umap.png)\
+
+A UMAP embedding will be calculated when running SCTK QC workflow, and it will be used across all QC algorithms that requires a UMAP. Here are the explanation of the parameters.  
+
+Having everything checked and ready, users can then press **"Run"** to start the procedure.
 
 ## Plot the results
-Once the QC algorithms have finished running, plots for each algorithm's results will appear to the right of the QC algorithms' panel that, by default, will use UMAP as its reducedDimName parameter. The user can use the dropdown menu above the plots to change which reducedDimName to use when plotting, and the plots will automatically update to reflect that change. Each algorithm's plots will appear under their own tab, and each sample will get its own sub-tab.
 
-![](ui_screenshots/qc_plot.png) 
+Once the QC algorithms have finished running, plots for the metrics from each algorithm will automatically appear to the right of the QC algorithms' panel in a tab set manner. 
+
+![result1](qc_ui_result1.png)\
+
+The QC metrics are generated sample wise. For example, in the "counts per cell" violin plot above, the results for sample "pbmc3k" and "pbmc4k" are plotted separately. 
+
+![result1](qc_ui_result2.png)\
+
+While some types of plots are not able to be grouped, for certain algorithms, there will be sub-tabs for each sample if multiple samples are presented in users dataset.  

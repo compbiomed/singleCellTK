@@ -181,20 +181,34 @@
 <h2 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h2>
 <p><img src="qc_ui_entry.png" alt="entry"><br></p>
-<p>Single Cell Toolkit (SCTK) allow users to generate quality control (QC) metrics for the single-cell data that they have imported. Users should enter the page through the way as shown in the screenshot above.</p>
-<p>Here SCTK provides generic QC metrics, as well as contamination control by <a href="https://rdrr.io/bioc/celda/man/decontX.html">decontX</a>, and doublet detection algorithms including <a href="https://rdrr.io/bioc/scDblFinder/">scDblFinder</a>, <a href="https://rdrr.io/bioc/scds/man/cxds.html">cxds</a>, <a href="https://rdrr.io/bioc/scds/man/bcds.html">bcds</a>, <a href="https://rdrr.io/bioc/scds/man/cxds_bcds_hybrid.html">cxds_bcds_hybrid</a>, <a href="https://rdrr.io/github/chris-mcginnis-ucsf/DoubletFinder/man/doubletFinder.html">doubletFinder</a>, and <a href="https://github.com/swolock/scrublet">scrublet</a>. Note that “scrublet” is Python based. Users should have it configured before trying to apply it. The configuration method would be introduced in the end.</p>
+<p>Single Cell Toolkit (SCTK) allows users to generate quality control (QC) metrics for the single-cell data that they have imported. Users should enter the page through the way as shown in the screenshot above.</p>
+<p>Here SCTK provides generic QC metrics, as well as contamination estimation by <a href="https://rdrr.io/bioc/celda/man/decontX.html">decontX</a>, and doublet detection algorithms including <a href="https://rdrr.io/bioc/scDblFinder/">scDblFinder</a>, <a href="https://rdrr.io/bioc/scds/man/cxds.html">cxds</a>, <a href="https://rdrr.io/bioc/scds/man/bcds.html">bcds</a>, <a href="https://rdrr.io/bioc/scds/man/cxds_bcds_hybrid.html">cxds_bcds_hybrid</a>, <a href="https://rdrr.io/github/chris-mcginnis-ucsf/DoubletFinder/man/doubletFinder.html">doubletFinder</a>, and <a href="https://github.com/swolock/scrublet">scrublet</a>. Note that “scrublet” is Python based. Users should have it configured before trying to apply it. The configuration method would be introduced in the end.</p>
 </div>
 <div id="select-which-algorithms-to-run" class="section level2">
 <h2 class="hasAnchor">
 <a href="#select-which-algorithms-to-run" class="anchor"></a>Select which algorithms to run</h2>
-<p>The user must check off which algorithms they would like to run in order to see their parameters. After filling out the parameters for each checked algorithm, the user must click “Run” to see the results. There are “Help” menus that explain the parameters for each algorithm, and they are accesible once the user checks off a certain algorithm.</p>
-<p><img src="ui_screenshots/qc_landing.png"><img src="ui_screenshots/qc_params.png"><img src="ui_screenshots/qc_help.png"></p>
+<p>Users must check all algorithms which they would like to run at once. <strong>Rerunning the QC procedure will overwrite previous QC results as well as all downstream analysis.</strong> The parameters for the corresponding algorithms will show up as users check it. Users may adjust the parameters as needed. Detailed explanation for each parameter can be accessed via the <strong>“Help”</strong> button in the parameter region of each algorithm, as shown below.</p>
+<p><img src="qc_ui_checkAlgo.png" alt="check algorithms"><br></p>
+</div>
+<div id="other-settings-before-running" class="section level2">
+<h2 class="hasAnchor">
+<a href="#other-settings-before-running" class="anchor"></a>Other settings before running</h2>
+<p><img src="qc_ui_general.png" alt="general"><br></p>
+<p>After checking off all the desired QC algorithms, users should also go through other settings including:<br>
+- <strong>Select assay</strong>: Choose the expression matrix that should be used for calculation.<br>
+- <strong>Select variable containing sample labels</strong>: The cell level annotation that labels the sample source of each cell.</p>
+<p><img src="qc_ui_umap.png" alt="umap"><br></p>
+<p>A UMAP embedding will be calculated when running SCTK QC workflow, and it will be used across all QC algorithms that requires a UMAP. Here are the explanation of the parameters.</p>
+<p>Having everything checked and ready, users can then press <strong>“Run”</strong> to start the procedure.</p>
 </div>
 <div id="plot-the-results" class="section level2">
 <h2 class="hasAnchor">
 <a href="#plot-the-results" class="anchor"></a>Plot the results</h2>
-<p>Once the QC algorithms have finished running, plots for each algorithm’s results will appear to the right of the QC algorithms’ panel that, by default, will use UMAP as its reducedDimName parameter. The user can use the dropdown menu above the plots to change which reducedDimName to use when plotting, and the plots will automatically update to reflect that change. Each algorithm’s plots will appear under their own tab, and each sample will get its own sub-tab.</p>
-<p><img src="ui_screenshots/qc_plot.png"></p>
+<p>Once the QC algorithms have finished running, plots for the metrics from each algorithm will automatically appear to the right of the QC algorithms’ panel in a tab set manner.</p>
+<p><img src="qc_ui_result1.png" alt="result1"><br></p>
+<p>The QC metrics are generated sample wise. For example, in the “counts per cell” violin plot above, the results for sample “pbmc3k” and “pbmc4k” are plotted separately.</p>
+<p><img src="qc_ui_result2.png" alt="result1"><br></p>
+<p>While some types of plots are not able to be grouped, for certain algorithms, there will be sub-tabs for each sample if multiple samples are presented in users dataset.</p>
 </div>
   </div>
 
