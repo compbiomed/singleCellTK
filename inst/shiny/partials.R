@@ -277,7 +277,7 @@ filteringModal <- function(failed=FALSE, colNames) {
       )
     ),
     tags$div(id = "filterCriteria"),
-
+    tags$div(id = "filterCrErrors"),
     footer = tagList(
       modalButton("Cancel"),
       actionButton("filtModalOK", "OK")

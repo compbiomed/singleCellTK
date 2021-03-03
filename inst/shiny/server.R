@@ -1243,6 +1243,7 @@ shinyServer(function(input, output, session) {
           append = FALSE)
         # redDimList <- strsplit(reducedDimNames(vals$counts), " ")
         # run getUMAP
+        message(paste0(date(), " ... Running 'UMAP'"))
         vals$counts <- getUMAP(inSCE = vals$counts,
                                  sample = qcSample,
                                  useAssay = input$qcAssaySelect,
@@ -1372,6 +1373,17 @@ shinyServer(function(input, output, session) {
       }
       if (!is.null(input$filterThresh)) {
           categoricalCol = TRUE
+      }
+      if (isTRUE(input$colLT) && isTRUE(input$colGT)) {
+        if (criteriaGT > criteriaLT) {
+          insertUI(
+            selector = "#filterCrErrors",
+            ui = wellPanel(id = "voidRange",
+                           tags$b("Please set a valid range.",
+                                  style = "color: red;"))
+          )
+          return()
+        }
       }
       # new row in parameters table
       addToColFilterParams(name = input$filterColSelect,
