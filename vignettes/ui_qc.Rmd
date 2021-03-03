@@ -8,7 +8,7 @@ title: Using the UI to generate QC metrics
 
 Single Cell Toolkit (SCTK) allows users to generate quality control (QC) metrics for the single-cell data that they have imported. Users should enter the page through the way as shown in the screenshot above.  
 
-Here SCTK provides generic QC metrics, as well as contamination estimation by [decontX](https://rdrr.io/bioc/celda/man/decontX.html), and doublet detection algorithms including [scDblFinder](https://rdrr.io/bioc/scDblFinder/), [cxds](https://rdrr.io/bioc/scds/man/cxds.html), [bcds](https://rdrr.io/bioc/scds/man/bcds.html), [cxds_bcds_hybrid](https://rdrr.io/bioc/scds/man/cxds_bcds_hybrid.html), [doubletFinder](https://rdrr.io/github/chris-mcginnis-ucsf/DoubletFinder/man/doubletFinder.html), and [scrublet](https://github.com/swolock/scrublet). Note that "scrublet" is Python based. Users should have it configured before trying to apply it. The configuration method would be introduced in the end.  
+Here SCTK provides generic QC metrics, as well as contamination estimation by [decontX](https://rdrr.io/bioc/celda/man/decontX.html), and doublet detection algorithms including [scDblFinder](https://rdrr.io/bioc/scDblFinder/), [cxds](https://rdrr.io/bioc/scds/man/cxds.html), [bcds](https://rdrr.io/bioc/scds/man/bcds.html), [cxds_bcds_hybrid](https://rdrr.io/bioc/scds/man/cxds_bcds_hybrid.html), [doubletFinder](https://rdrr.io/github/chris-mcginnis-ucsf/DoubletFinder/man/doubletFinder.html), and [scrublet](https://github.com/swolock/scrublet). Note that "scrublet" is Python based. Users should have it configured before trying to apply it.  
 
 ## Select which algorithms to run
 
