@@ -62,6 +62,7 @@ seuratNormalizeData <- function(inSCE, useAssay, normAssayName = "seuratNormData
   inSCE <- .updateAssaySCE(inSCE, seuratObject, normAssayName, "data")
   inSCE <- .addSeuratToMetaDataSCE(inSCE, seuratObject)
   inSCE@metadata$seurat$normAssay <- normAssayName
+  inSCE <- expSetDataTag(inSCE = inSCE, assayType = "normalized", assays = normAssayName)
   return(inSCE)
 }
 
@@ -594,15 +595,17 @@ convertSeuratToSCE <- function(seuratObject, normAssayName = "seuratNormData", s
 #' @importFrom SummarizedExperiment assay assays
 convertSCEToSeurat <- function(inSCE, countsAssay = NULL, normAssay = NULL, scaledAssay = NULL) {
   
-  if(!is.null(countsAssay) && !(countsAssay %in% names(assays(inSCE)))) {
+  .checkSCEValidity(inSCE)
+  
+  if(!is.null(countsAssay) && !(countsAssay %in% expDataNames(inSCE))) {
     stop(paste0("'", countsAssay, "' not found in the list of assays: ",
                 paste(names(assays(inSCE)), collapse=",")))
   }
-  if(!is.null(normAssay) && !(normAssay %in% names(assays(inSCE)))) {
+  if(!is.null(normAssay) && !(normAssay %in% expDataNames(inSCE))) {
     stop(paste0("'", normAssay, "' not found in the list of assays: ",
                 paste(names(assays(inSCE)), collapse=",")))
   }
-  if(!is.null(scaledAssay) && !(scaledAssay %in% names(assays(inSCE)))) {
+  if(!is.null(scaledAssay) && !(scaledAssay %in% expDataNames(inSCE))) {
     stop(paste0("'", scaledAssay, "' not found in the list of assays: ",
                 paste(names(assays(inSCE)), collapse=",")))
   }
@@ -691,6 +694,7 @@ seuratSCTransform <- function(inSCE, normAssayName = "SCTCounts", useAssay = "co
     do.correct.umi = FALSE,
     verbose = TRUE))
   inSCE <- .updateAssaySCE(inSCE = inSCE, seuratObject = seuratObject, assaySlotSCE = normAssayName, seuratDataSlot = "data", seuratAssaySlot = "SCTransform")
+  inSCE <- expSetDataTag(inSCE = inSCE, assayType = "normalized", assays = normAssayName)
   return(inSCE)
 }
 

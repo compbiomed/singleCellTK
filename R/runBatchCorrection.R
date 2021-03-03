@@ -128,7 +128,7 @@ runComBat <- function(inSCE, useAssay = "logcounts", batch = 'batch',
                 batch = SummarizedExperiment::colData(inSCE)[[batch]],
                 mod = mod, par.prior = par.prior,
                 mean.only = mean.only, ref.batch = ref.batch)
-  sctkAssay(inSCE, assayName, tag = "batchCorrected") <- resassay
+  expData(inSCE, assayName, tag = "batchCorrected") <- resassay
   #SummarizedExperiment::assay(inSCE, assayName) <- resassay
   return(inSCE)
 }
@@ -394,7 +394,7 @@ runLimmaBC <- function(inSCE, useAssay = "logcounts", assayName = "LIMMA",
   batchCol <- SummarizedExperiment::colData(inSCE)[[batch]]
   mat <- SummarizedExperiment::assay(inSCE, useAssay)
   newMat <- limma::removeBatchEffect(mat, batch = batchCol)
-  sctkAssay(inSCE, assayName, "batchCorrected") <- newMat
+  expData(inSCE, assayName, "batchCorrected") <- newMat
   #SummarizedExperiment::assay(inSCE, assayName) <- newMat
   return(inSCE)
 }
@@ -550,7 +550,7 @@ integrated = integrated[:, orderIdx]
   mat <- t(py$integrated)
   rownames(mat) <- rownames(inSCE)
   colnames(mat) <- colnames(inSCE)
-  sctkAssay(inSCE, assayName, tag = "batchCorrected") <- mat
+  expData(inSCE, assayName, tag = "batchCorrected") <- mat
   # SummarizedExperiment::assay(inSCE, assayName) <- mat
   return(inSCE)
 }
@@ -667,7 +667,7 @@ runSCMerge <- function(inSCE, useAssay = "logcounts", batch = 'batch',
   names(SummarizedExperiment::colData(inSCE))[colDataNames == 'batch'] <- batch
   # scMerge's function automatically returns the SCE object with information
   # completed, thus using this helper function to simply add the tag.
-  inSCE <- .sctkSetTag(inSCE, "batchCorrected", assayName)
+  inSCE <- expSetDataTag(inSCE, "batchCorrected", assayName)
   return(inSCE)
 }
 

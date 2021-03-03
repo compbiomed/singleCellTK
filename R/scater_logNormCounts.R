@@ -14,5 +14,6 @@ scater_logNormCounts <- function(inSCE, logAssayName = "ScaterLogNormCounts", us
     x = inSCE, 
     name = logAssayName,
     exprs_values = useAssay)
+  inSCE <- expSetDataTag(inSCE = inSCE, assayType = "normalized", assays = logAssayName)
   return(inSCE)
 }

@@ -1947,18 +1947,6 @@
       "Repository": "CRAN",
       "Hash": "f895dafd39733c4a70d425f605a832e7"
     },
-    "shinyDirectoryInput": {
-      "Package": "shinyDirectoryInput",
-      "Version": "0.2.0",
-      "Source": "GitHub",
-      "RemoteType": "github",
-      "RemoteHost": "api.github.com",
-      "RemoteRepo": "shiny-directory-input",
-      "RemoteUsername": "joshua-d-campbell",
-      "RemoteRef": "master",
-      "RemoteSha": "ac2a4073a71b55622e319a3b8270dfd6cdef923e",
-      "Hash": "64f211af5eaf277f8326855bf8462cdc"
-    },
     "shinyFiles": {
       "Package": "shinyFiles",
       "Version": "0.8.0",

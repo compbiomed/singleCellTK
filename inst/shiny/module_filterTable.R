@@ -21,7 +21,10 @@ filterTableServer <- function(input, output, session, dataframe,
                               defaultFilterColumns = NULL,
                               defaultFilterOperators = NULL,
                               defaultFilterValues = NULL){
+  
   ns <- session$ns
+  x <- session$ns('tmp')
+  moduleID <- substr(x, 1, nchar(x)-4)
   rv <- reactiveValues(data = NULL,
                       selectedRows = NULL,
                       parameters = NULL
@@ -59,12 +62,32 @@ filterTableServer <- function(input, output, session, dataframe,
                                                    size = "xs",
                                                    status = "primary"
                                                  ),
+                                          conditionalPanel(
+                                            condition = paste0("input['", option[i], "'] == 'extremes'"),
+                                            ns = ns,
+                                            h6("values greater than (or equal to):")
+                                          ),
+                                          conditionalPanel(
+                                            condition = paste0("input['", option[i], "'] == 'range'"),
+                                            ns = ns,
+                                            h6("values between:")
+                                          ),
                                                  numericInput(
                                                    inputId = ns(inputFirst[i]),
                                                    label = NULL,
                                                    step = 0.001,
                                                    value = 0
                                                  ),
+                                          conditionalPanel(
+                                            condition = paste0("input['", option[i], "'] == 'extremes'"),
+                                            ns = ns,
+                                            h6("and values less than (or equal to):")
+                                          ),
+                                          conditionalPanel(
+                                            condition = paste0("input['", option[i], "'] == 'range'"),
+                                            ns = ns,
+                                            h6("and:")
+                                          ),
                                                  conditionalPanel(
                                                    condition = paste0("input['", option[i], "'] == 'extremes'
                                                                     || input['", option[i], "'] == 'range'"),
@@ -92,11 +115,31 @@ filterTableServer <- function(input, output, session, dataframe,
                                                    size = "xs",
                                                    status = "primary"
                                                  ),
+                                                 conditionalPanel(
+                                                   condition = paste0("input['", option[i], "'] == 'extremes'"),
+                                                   ns = ns,
+                                                   h6("values greater than (or equal to):")
+                                                 ),
+                                                 conditionalPanel(
+                                                   condition = paste0("input['", option[i], "'] == 'range'"),
+                                                   ns = ns,
+                                                   h6("values between:")
+                                                 ),
                                                  numericInput(
                                                    inputId = ns(inputFirst[i]),
                                                    label = NULL,
                                                    step = 0.001,
                                                    value = 0
+                                                 ),
+                                                 conditionalPanel(
+                                                   condition = paste0("input['", option[i], "'] == 'extremes'"),
+                                                   ns = ns,
+                                                   h6("and values less than (or equal to):")
+                                                 ),
+                                                 conditionalPanel(
+                                                   condition = paste0("input['", option[i], "'] == 'range'"),
+                                                   ns = ns,
+                                                   h6("and:")
                                                  ),
                                                  conditionalPanel(
                                                    condition = paste0("input['", option[i], "'] == 'extremes'
@@ -226,7 +269,15 @@ filterTableServer <- function(input, output, session, dataframe,
                       values = rv$parameters$values)
       rv$data <- df
       rv$data
-    }, options = list(pageLength = 6, dom = "<'top'fl>t<'bottom'ip>", stateSave = TRUE
+    }, extensions = 'Buttons', options = list(pageLength = 6, dom = "<'top'li>t<'bottom'Bp>", stateSave = TRUE,
+                                              buttons = list(
+                                                list(
+                                                  extend = "collection",
+                                                  text = 'Export',
+                                                  action = DT::JS(paste0("function ( e, dt, node, config ) {
+                                    Shiny.setInputValue('", moduleID,"-export', true, {priority: 'event'});}"))
+                                                )
+                                              )
     ))
     
     activeFilters <- list()
@@ -255,7 +306,15 @@ filterTableServer <- function(input, output, session, dataframe,
       output$seuratFindMarkerTable <- DT::renderDataTable({
         rv$data <- dataframe
         rv$data
-      }, options = list(pageLength = 6, dom = "<'top'fl>t<'bottom'ip>", stateSave = TRUE
+      }, extensions = 'Buttons', options = list(pageLength = 6, dom = "<'top'li>t<'bottom'Bp>", stateSave = TRUE,
+                                                buttons = list(
+                                                  list(
+                                                    extend = "collection",
+                                                    text = 'Export',
+                                                    action = DT::JS(paste0("function ( e, dt, node, config ) {
+                                    Shiny.setInputValue('", moduleID,"-export', true, {priority: 'event'});}"))
+                                                  )
+                                                )
       ))
       
       output$seuratFindMarkerActiveFilters <- renderUI({
@@ -290,12 +349,32 @@ filterTableServer <- function(input, output, session, dataframe,
                                                      size = "xs",
                                                      status = "primary"
                                                    ),
+                                            conditionalPanel(
+                                              condition = paste0("input['", option[i], "'] == 'extremes'"),
+                                              ns = ns,
+                                              h6("values greater than (or equal to):")
+                                            ),
+                                            conditionalPanel(
+                                              condition = paste0("input['", option[i], "'] == 'range'"),
+                                              ns = ns,
+                                              h6("values between:")
+                                            ),
                                                    numericInput(
                                                      inputId = ns(inputFirst[i]),
                                                      label = NULL,
                                                      step = 0.001,
                                                      value = 0
                                                    ),
+                                            conditionalPanel(
+                                              condition = paste0("input['", option[i], "'] == 'extremes'"),
+                                              ns = ns,
+                                              h6("and values less than (or equal to):")
+                                            ),
+                                            conditionalPanel(
+                                              condition = paste0("input['", option[i], "'] == 'range'"),
+                                              ns = ns,
+                                              h6("and:")
+                                            ),
                                                    conditionalPanel(
                                                      condition = paste0("input['", option[i], "'] == 'extremes'
                                                                     || input['", option[i], "'] == 'range'"),
@@ -323,11 +402,31 @@ filterTableServer <- function(input, output, session, dataframe,
                                                      size = "xs",
                                                      status = "primary"
                                                    ),
+                                                   conditionalPanel(
+                                                     condition = paste0("input['", option[i], "'] == 'extremes'"),
+                                                     ns = ns,
+                                                     h6("values greater than (or equal to):")
+                                                   ),
+                                                   conditionalPanel(
+                                                     condition = paste0("input['", option[i], "'] == 'range'"),
+                                                     ns = ns,
+                                                     h6("values between:")
+                                                   ),
                                                    numericInput(
                                                      inputId = ns(inputFirst[i]),
                                                      label = NULL,
                                                      step = 0.001,
                                                      value = 0
+                                                   ),
+                                                   conditionalPanel(
+                                                     condition = paste0("input['", option[i], "'] == 'extremes'"),
+                                                     ns = ns,
+                                                     h6("and values less than (or equal to):")
+                                                   ),
+                                                   conditionalPanel(
+                                                     condition = paste0("input['", option[i], "'] == 'range'"),
+                                                     ns = ns,
+                                                     h6("and:")
                                                    ),
                                                    conditionalPanel(
                                                      condition = paste0("input['", option[i], "'] == 'extremes'
@@ -447,7 +546,15 @@ filterTableServer <- function(input, output, session, dataframe,
     
     output$seuratFindMarkerTable <- DT::renderDataTable({
       df
-    }, options = list(pageLength = 6, dom = "<'top'fl>t<'bottom'ip>", stateSave = TRUE
+    }, extensions = 'Buttons', options = list(pageLength = 6, dom = "<'top'li>t<'bottom'Bp>", stateSave = TRUE,
+                                              buttons = list(
+                                                list(
+                                                  extend = "collection",
+                                                  text = 'Export',
+                                                  action = DT::JS(paste0("function ( e, dt, node, config ) {
+                                    Shiny.setInputValue('", moduleID,"-export', true, {priority: 'event'});}"))
+                                                )
+                                              )
     ))
     
     
@@ -510,7 +617,15 @@ filterTableServer <- function(input, output, session, dataframe,
     
     output$seuratFindMarkerTable <- DT::renderDataTable({
       df
-    }, options = list(pageLength = 6, dom = "<'top'fl>t<'bottom'ip>", stateSave = TRUE
+    }, extensions = 'Buttons', options = list(pageLength = 6, dom = "<'top'li>t<'bottom'Bp>", stateSave = TRUE,
+                                              buttons = list(
+                                                list(
+                                                  extend = "collection",
+                                                  text = 'Export',
+                                                  action = DT::JS(paste0("function ( e, dt, node, config ) {
+                                    Shiny.setInputValue('", moduleID,"-export', true, {priority: 'event'});}"))
+                                                )
+                                              )
     ))
     
     activeFilters <- list()
@@ -557,6 +672,44 @@ filterTableServer <- function(input, output, session, dataframe,
     else{
       shinyjs::enable(id = "seuratFindMarkerRemoveAllFilters")
     }
+  })
+  
+  
+  observeEvent(input$export, {
+    showModal(
+      modalDialog(actionButton(ns("dlCSV"),"Download as CSV"),
+                  br(),
+                  actionButton(ns("dlPDF"),"Download as PDF"),
+                  easyClose = TRUE, title = "Export Table"))
+  })
+  
+  observeEvent(input$dlCSV, {
+    write.csv(rv$data, file = paste0(moduleID, "-", Sys.Date(), ".csv"), row.names = TRUE)
+    showNotification("Table saved in working directory as", paste0(moduleID, "-", Sys.Date(), ".csv"), duration = 10)
+    removeModal()
+  })
+  
+  observeEvent(input$dlPDF, {
+    df <- rv$data  
+    dim(df)  
+    maxrow = 35   
+    npages = ceiling(nrow(df)/maxrow)      
+    pdf(paste0(moduleID, "-", Sys.Date(), ".pdf"), height = 11, width = 8.5)  
+    idx = seq(1, maxrow)  
+    grid.table(df[idx,],rows = NULL)  
+    for(i in 2:npages){
+      grid.newpage();
+      if(i*maxrow <= nrow(df)){
+        idx = seq(1+((i-1)*maxrow), i * maxrow)
+      }
+      else{
+        idx = seq(1+((i-1)*maxrow), nrow(df))
+      }
+      grid.table(df[idx, ],rows = NULL)
+    }
+    dev.off()
+    showNotification("Table saved in working directory as", paste0(moduleID, "-", Sys.Date(), ".pdf"), duration = 10)
+    removeModal()
   })
   
   
