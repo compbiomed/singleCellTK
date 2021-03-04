@@ -68,6 +68,9 @@ when TRUE. Default TRUE.}
 
 \item{relWidths}{Relative widths of plots when combine is set.}
 
+\item{plotLabels}{labels to each plot. If set to "default", will use the name of the samples
+as the labels. If set to "none", no label will be plotted.}
+
 \item{plotNCols}{Number of columns when plots are combined in a grid.}
 
 \item{plotNRows}{Number of rows when plots are combined in a grid.}
