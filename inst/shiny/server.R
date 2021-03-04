@@ -13,6 +13,7 @@ source("qc_help_pages/ui_cxds_bcds_hybrid_help.R", local = TRUE) # creates sever
 source("qc_help_pages/ui_doubletFinder_help.R", local = TRUE) # creates several smaller UI components
 source("qc_help_pages/ui_scrublet_help.R", local = TRUE) # creates several smaller UI components
 source("qc_help_pages/ui_dc_and_qcm_help.R", local = TRUE) # creates several smaller UI components
+source("qc_help_pages/ui_scDblFinder_help.R", local = TRUE) # creates several smaller UI components
 # source("server_partials/server_01_data.R", local = TRUE) # functions for Data section
 
 # Define server logic required to draw a histogram
@@ -226,7 +227,7 @@ shinyServer(function(input, output, session) {
     #updateSelectInputTag(session, "normalizeAssaySelect", choices = currassays)
     #updateSelectInputTag(session, "normalizeAssaySelect",label = "Select normalized assay:", tags = c("raw", "normalized"), recommended = "raw")
     updateSelectInputTag(session, "normalizeAssaySelect",label = "Select assay to normalize:", tags = c("raw", "normalized", "scaled", "transformed normalized", "trimmed"), recommended = "raw")
-    
+
     updateSelectInputTag(session, "seuratSelectNormalizationAssay", choices = currassays, showTags = FALSE)
     updateSelectInputTag(session, "assaySelectFS_Norm", choices = currassays)
     updateSelectInputTag(session, "filterAssaySelect", choices = currassays)
@@ -909,10 +910,16 @@ shinyServer(function(input, output, session) {
       shinyjs::hide(id = "gsUploadError", anim = FALSE)
       setList <- formatGeneSetList(input$geneSetText)
       if (nzchar(input$gsCollectionNameText)) {
-        vals$original <- importGeneSetsFromList(vals$original, setList, by = byParam, collectionName = input$gsCollectionNameText)
+        vals$original <- importGeneSetsFromList(vals$original,
+                                                setList,
+                                                by = byParam,
+                                                collectionName = input$gsCollectionNameText)
         addToGSTable(input$gsCollectionNameText, "Paste-In")
       } else if (input$gsExisting != "None") {
-        vals$original <- importGeneSetsFromList(vals$original, setList, by = byParam, collectionName = input$gsExisting)
+        vals$original <- importGeneSetsFromList(vals$original,
+                                                setList,
+                                                by = byParam,
+                                                collectionName = input$gsExisting)
         addToGSTable(input$gsExisting, "Paste-In")
       }
     }
@@ -931,7 +938,10 @@ shinyServer(function(input, output, session) {
           shinyjs::show(id = "gsUploadError", anim = FALSE)
         } else {
           shinyjs::hide(id = "gsUploadError", anim = FALSE)
-          vals$original <- importGeneSetsFromGMT(vals$original, input$geneSetGMT$datapath, by = byParam, collectionName = input$gsCollectionNameGMT)
+          vals$original <- importGeneSetsFromGMT(vals$original,
+                                                 input$geneSetGMT$datapath,
+                                                 by = byParam,
+                                                 collectionName = input$gsCollectionNameGMT)
           addToGSTable(input$gsCollectionNameGMT, input$geneSetGMT$datapath)
         }
 
@@ -940,8 +950,13 @@ shinyServer(function(input, output, session) {
           shinyjs::show(id = "gsUploadError", anim = FALSE)
         } else {
           shinyjs::hide(id = "gsUploadError", anim = FALSE)
-          vals$original <- importGeneSetsFromMSigDB(vals$original, input$geneSetDB, by = byParam)
-          addToGSTable(input$geneSetDB, "Database")
+          vals$original <- importGeneSetsFromMSigDB(vals$original,
+                                                    input$geneSetDB,
+                                                    by = byParam)
+          for(i in input$geneSetDB){
+            # Handling multiple selections from the checkboxInput
+            addToGSTable(i, "Database")
+          }
         }
 
       } else if (input$geneSetSourceChoice == "gsPasteUpload") {
@@ -1103,7 +1118,7 @@ shinyServer(function(input, output, session) {
 
   qcInputExists <- function() {
     for (algo in qc_choice_list) {
-      if (!is.null(input[[algo]])) {
+      if (isTRUE(input[[algo]])) {
         return(TRUE)
       }
     }
@@ -1122,7 +1137,7 @@ shinyServer(function(input, output, session) {
       # build list of selected algos
       algoList = list()
       for (algo in qc_choice_list) {
-        if (!is.null(input[[algo]])) {
+        if (isTRUE(input[[algo]])) {
           algoList <- c(algoList, algo)
         }
       }
@@ -1182,7 +1197,7 @@ shinyServer(function(input, output, session) {
         algoList = list()
         paramsList <- list()
         for (algo in qc_choice_list) {
-          if (input[[algo]]) {
+          if (isTRUE(input[[algo]])) {
             algoList <- c(algoList, algo)
             # use the specific prep functions for decontX and doubletFinder
             if (algo == "decontX") {
@@ -1215,19 +1230,20 @@ shinyServer(function(input, output, session) {
           }
         }
         # run selected cell QC algorithms
-        print(table(qcSample))
-        print(algoList)
-        print(input$qcAssaySelect)
-        print(qcCollName)
-        print(paramsList)
         vals$counts <- runCellQC(inSCE = vals$original,
                                  algorithms = algoList,
                                  sample = qcSample,
                                  collectionName = qcCollName,
                                  useAssay = input$qcAssaySelect,
                                  paramsList = paramsList)
-        redDimList <- strsplit(reducedDimNames(vals$counts), " ")
+        vals$counts <- expSetDataTag(
+          inSCE = vals$counts,
+          assayType = "raw",
+          assays = assayNames(vals$counts),
+          append = FALSE)
+        # redDimList <- strsplit(reducedDimNames(vals$counts), " ")
         # run getUMAP
+        message(paste0(date(), " ... Running 'UMAP'"))
         vals$counts <- getUMAP(inSCE = vals$counts,
                                  sample = qcSample,
                                  useAssay = input$qcAssaySelect,
@@ -1242,6 +1258,7 @@ shinyServer(function(input, output, session) {
         updateQCPlots()
       }
     })
+
   }))
 
   #-----------#
@@ -1356,6 +1373,17 @@ shinyServer(function(input, output, session) {
       }
       if (!is.null(input$filterThresh)) {
           categoricalCol = TRUE
+      }
+      if (isTRUE(input$colLT) && isTRUE(input$colGT)) {
+        if (criteriaGT > criteriaLT) {
+          insertUI(
+            selector = "#filterCrErrors",
+            ui = wellPanel(id = "voidRange",
+                           tags$b("Please set a valid range.",
+                                  style = "color: red;"))
+          )
+          return()
+        }
       }
       # new row in parameters table
       addToColFilterParams(name = input$filterColSelect,
@@ -1921,7 +1949,7 @@ shinyServer(function(input, output, session) {
         }
         else if (input$normalizeAssayMethodSelect == "CPM") {
           result <- scater::calculateCPM(x = assay(vals$counts, input$normalizeAssaySelect))
-          expData(vals$counts, input$normalizeAssayOutname, tag = "normalized", altExp = FALSE) <- result 
+          expData(vals$counts, input$normalizeAssayOutname, tag = "normalized", altExp = FALSE) <- result
           # updateAssayInputs()
         }
         else if(input$normalizeAssayMethodSelect == "LNC"){
@@ -4999,7 +5027,7 @@ shinyServer(function(input, output, session) {
           for(i in seq(length(altAssaysToRemove))){
             assays(altExp(vals$counts, input$hvgAltExpName), withDimnames = FALSE)[[altAssaysToRemove[i]]] <- NULL
           }
-          
+
           updateAssayInputs()
           #updateAltExpInputs()
         }
@@ -6686,7 +6714,7 @@ shinyServer(function(input, output, session) {
     )
 
     #singleCellTK:::.exportMetaSlot(vals$counts, "seuratMarkers")
-    
+
     vals$fts <- callModule(
       module = filterTableServer,
       id = "filterSeuratFindMarker",

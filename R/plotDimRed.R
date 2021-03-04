@@ -11,26 +11,26 @@
 #'
 #' @return plot object
 #' @export
-plotDimRed <- function(inSCE, useReduction, 
+plotDimRed <- function(inSCE, useReduction,
                        showLegend = FALSE,
                        xAxisLabel = NULL,
                        yAxisLabel = NULL) {
   dimRed <- reducedDim(inSCE, type = useReduction)
-  
+
   x <- dimRed[,1]
   y <- dimRed[,2]
-  
+
   dimRedPlot <- ggplot2::ggplot() +
-    ggplot2::geom_point(ggplot2::aes(x = x, y = y)) #+ .ggSCTKTheme()
-  #removing .ggSCTKTheme until I am sure how it works
-  
+    ggplot2::geom_point(ggplot2::aes(x = x, y = y))
+  dimRedPlot <- .ggSCTKTheme(dimRedPlot)
+
   if(!is.null(xAxisLabel)){
     dimRedPlot <- dimRedPlot + ggplot2::xlab(xAxisLabel)
   }
-  
+
   if(!is.null(yAxisLabel)){
     dimRedPlot <- dimRedPlot + ggplot2::ylab(yAxisLabel)
   }
-  
+
   return(dimRedPlot)
 }

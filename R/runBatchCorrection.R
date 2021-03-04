@@ -128,8 +128,8 @@ runComBat <- function(inSCE, useAssay = "logcounts", batch = 'batch',
                 batch = SummarizedExperiment::colData(inSCE)[[batch]],
                 mod = mod, par.prior = par.prior,
                 mean.only = mean.only, ref.batch = ref.batch)
-  expData(inSCE, assayName, tag = "batchCorrected") <- resassay
-  #SummarizedExperiment::assay(inSCE, assayName) <- resassay
+
+  expData(inSCE, assayName, tag = "batchCorrected", altExp = FALSE) <- resassay
   return(inSCE)
 }
 
@@ -394,7 +394,7 @@ runLimmaBC <- function(inSCE, useAssay = "logcounts", assayName = "LIMMA",
   batchCol <- SummarizedExperiment::colData(inSCE)[[batch]]
   mat <- SummarizedExperiment::assay(inSCE, useAssay)
   newMat <- limma::removeBatchEffect(mat, batch = batchCol)
-  expData(inSCE, assayName, "batchCorrected") <- newMat
+  expData(inSCE, assayName, tag = "batchCorrected", altExp = FALSE) <- newMat
   #SummarizedExperiment::assay(inSCE, assayName) <- newMat
   return(inSCE)
 }
@@ -458,7 +458,7 @@ runMNNCorrect <- function(inSCE, useAssay = 'logcounts', batch = 'batch',
   mnnSCE <- batchelor::mnnCorrect(inSCE, assay.type = useAssay,
                                   batch = batchFactor, k = k, sigma = sigma)
   corrected <- SummarizedExperiment::assay(mnnSCE, 'corrected')
-  SummarizedExperiment::assay(inSCE, assayName) <- corrected
+  expData(inSCE, assayName, tag = "batchCorrected", altExp = FALSE) <- corrected
   return(inSCE)
 }
 
@@ -550,7 +550,7 @@ integrated = integrated[:, orderIdx]
   mat <- t(py$integrated)
   rownames(mat) <- rownames(inSCE)
   colnames(mat) <- colnames(inSCE)
-  expData(inSCE, assayName, tag = "batchCorrected") <- mat
+  expData(inSCE, assayName, tag = "batchCorrected", altExp = FALSE) <- mat
   # SummarizedExperiment::assay(inSCE, assayName) <- mat
   return(inSCE)
 }
