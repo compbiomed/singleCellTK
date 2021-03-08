@@ -222,16 +222,23 @@ shinyServer(function(input, output, session) {
     updateSelectInputTag(session, "fmAssay", choices = currassays)
     updateSelectInputTag(session, "fmHMAssay", choices = currassays, selected = input$fmAssay)
     updateSelectInputTag(session, "pathwayAssay", choices = currassays)
-    updateSelectInputTag(session, "modifyAssaySelect", tags = c("raw", "normalized", "scaled", "transformed normalized", "trimmed"), recommended = "raw")
 
+    if(input$assayModifyAction == "log" || input$assayModifyAction == "log1p"){
+      updateSelectInputTag(session, "modifyAssaySelect", recommended = "raw")
+    }
+    else if(input$assayModifyAction == "z.score"){
+      updateSelectInputTag(session, "modifyAssaySelect", recommended = "normalized")
+    }
+    
     #updateSelectInputTag(session, "normalizeAssaySelect", choices = currassays)
     #updateSelectInputTag(session, "normalizeAssaySelect",label = "Select normalized assay:", tags = c("raw", "normalized"), recommended = "raw")
-    updateSelectInputTag(session, "normalizeAssaySelect",label = "Select assay to normalize:", tags = c("raw", "normalized", "scaled", "transformed normalized", "trimmed"), recommended = "raw")
+    updateSelectInputTag(session, "normalizeAssaySelect", label = "Select assay to normalize:", recommended = "raw")
     
     updateSelectInputTag(session, "seuratSelectNormalizationAssay", choices = currassays, showTags = FALSE)
     updateSelectInputTag(session, "assaySelectFS_Norm", choices = currassays)
     updateSelectInputTag(session, "filterAssaySelect", choices = currassays)
-    updateSelectInputTag(session, "qcAssaySelect", choices = currassays)
+    # updateSelectInputTag(session, "qcAssaySelect", choices = currassays)
+    updateSelectInputTag(session, "qcAssaySelect", recommended = "raw")
     updateSelectInputTag(session, "celdaAssay", choices = currassays)
     updateSelectInputTag(session, "celdaAssayGS", choices = currassays)
     updateSelectInputTag(session, "celdaAssaytSNE", choices = currassays)
@@ -1970,13 +1977,17 @@ shinyServer(function(input, output, session) {
   })
 
   observeEvent(input$assayModifyAction,{
+    req(vals$counts)
     if (input$assayModifyAction == "log"){
+      updateSelectInputTag(session, "modifyAssaySelect", tags = c("raw", "normalized", "scaled", "transformed normalized", "trimmed"), recommended = "raw")
       updateTextInput(session = session, inputId = "modifyAssayOutname", value = paste0(input$modifyAssaySelect, "Log"))
     }
     else if (input$assayModifyAction == "log1p"){
+      updateSelectInputTag(session, "modifyAssaySelect", tags = c("raw", "normalized", "scaled", "transformed normalized", "trimmed"), recommended = "raw")
       updateTextInput(session = session, inputId = "modifyAssayOutname", value = paste0(input$modifyAssaySelect, "Log1p"))
     }
     else if (input$assayModifyAction == "z.score") {
+      updateSelectInputTag(session, "modifyAssaySelect", tags = c("raw", "normalized", "scaled", "transformed normalized", "trimmed"), recommended = "normalized")
       updateTextInput(session = session, inputId = "modifyAssayOutname", value = paste0(input$modifyAssaySelect, "Scaled"))
     }
     else if(input$assayModifyAction == "trim"){
