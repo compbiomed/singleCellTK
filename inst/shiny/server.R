@@ -183,8 +183,10 @@ shinyServer(function(input, output, session) {
       if(!is.null(recommended)){
         namesChoices <- names(choices)
         for(i in seq(length(namesChoices))){
-          if(recommended == namesChoices[i]){
-            namesChoices[i] <- paste(namesChoices[i], "(recommended)")
+          for(j in seq(length(recommended))){
+            if(recommended[j] == namesChoices[i]){
+              namesChoices[i] <- paste(namesChoices[i], "(recommended)")
+            }
           }
         }
         names(choices) <- namesChoices
@@ -213,18 +215,18 @@ shinyServer(function(input, output, session) {
 
   updateAssayInputs <- function(){
     currassays <- names(assays(vals$counts))
-    updateSelectInputTag(session, "dimRedAssaySelect", tags = c("raw", "normalized", "hvg"), recommended = "normalized", redDims = TRUE)
-    updateSelectInputTag(session, "dimRedAssaySelect_tsneUmap", tags = c("raw", "normalized", "hvg"), recommended = "normalized")
+    updateSelectInputTag(session, "dimRedAssaySelect", recommended = c("normalized", "scaled"), redDims = TRUE)
+    updateSelectInputTag(session, "dimRedAssaySelect_tsneUmap", recommended = c("normalized", "scaled"))
     updateSelectInputTag(session, "batchCorrAssay", choices = currassays)
     updateSelectInputTag(session, "batchCheckAssay", choices = currassays)
     updateSelectInputTag(session, "batchCheckOrigAssay", choices = currassays)
     updateSelectInputTag(session, "deAssay", choices = currassays)
     updateSelectInputTag(session, "fmAssay", choices = currassays)
     updateSelectInputTag(session, "fmHMAssay", choices = currassays, selected = input$fmAssay)
-    updateSelectInputTag(session, "pathwayAssay", choices = currassays)
+    updateSelectInputTag(session, "pathwayAssay", recommended = c("normalized", "scaled"))
 
     if(input$assayModifyAction == "log" || input$assayModifyAction == "log1p"){
-      updateSelectInputTag(session, "modifyAssaySelect", recommended = "raw")
+      updateSelectInputTag(session, "modifyAssaySelect", recommended = c("raw", "normalized"))
     }
     else if(input$assayModifyAction == "z.score"){
       updateSelectInputTag(session, "modifyAssaySelect", recommended = "normalized")
@@ -235,7 +237,7 @@ shinyServer(function(input, output, session) {
     updateSelectInputTag(session, "normalizeAssaySelect", label = "Select assay to normalize:", recommended = "raw")
     
     updateSelectInputTag(session, "seuratSelectNormalizationAssay", choices = currassays, showTags = FALSE)
-    updateSelectInputTag(session, "assaySelectFS_Norm", choices = currassays)
+    updateSelectInputTag(session, "assaySelectFS_Norm", recommended = c("normalized", "scaled"))
     updateSelectInputTag(session, "filterAssaySelect", choices = currassays)
     # updateSelectInputTag(session, "qcAssaySelect", choices = currassays)
     updateSelectInputTag(session, "qcAssaySelect", recommended = "raw")
