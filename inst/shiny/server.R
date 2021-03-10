@@ -167,10 +167,10 @@ shinyServer(function(input, output, session) {
                                    redDims = FALSE){
     if(!is.null(choices)
        && is.null(tags)){
-      choices <- expTaggedData(vals$counts)
+      choices <- expTaggedData(vals$counts, redDims = redDims)
     }
     else{
-      choices <- expTaggedData(vals$counts, tags, redDims = TRUE)
+      choices <- expTaggedData(vals$counts, tags, redDims = redDims)
     }
     if(!showTags){
       allChoices <- NULL
@@ -182,33 +182,29 @@ shinyServer(function(input, output, session) {
     else{
       if(!is.null(recommended)){
         namesChoices <- names(choices)
-        for(i in seq(length(namesChoices))){
-          if(recommended == namesChoices[i]){
-            namesChoices[i] <- paste(namesChoices[i], "(recommended)")
+        if (recommended %in% namesChoices) {
+          for(i in seq(length(namesChoices))){
+            if(recommended == namesChoices[i]){
+              ix.recommend <- i
+              recommendedName <- paste(namesChoices[i], "(recommended)")
+              namesChoices[i] <- recommendedName
+            }
           }
+          names(choices) <- namesChoices
+          # Reorder the list, recommended at top
+          choices <- choices[c(recommendedName, namesChoices[-ix.recommend])]
         }
-        names(choices) <- namesChoices
       }
     }
-    if(!is.null(selected)){
-      output[[inputId]] <- renderUI({
-        selectInput(
-          inputId = inputId,
-          label = label,
-          choices = choices,
-          selected = selected
-        )
-      })
-    }
-    else{
-      output[[inputId]] <- renderUI({
-        selectInput(
-          inputId = inputId,
-          label = label,
-          choices = choices
-        )
-      })
-    }
+
+    output[[inputId]] <- renderUI({
+      selectInput(
+        inputId = inputId,
+        label = label,
+        choices = choices,
+        selected = selected
+      )
+    })
   }
 
   updateAssayInputs <- function(){
@@ -218,6 +214,9 @@ shinyServer(function(input, output, session) {
     updateSelectInputTag(session, "batchCorrAssay", choices = currassays)
     updateSelectInputTag(session, "batchCheckAssay", choices = currassays)
     updateSelectInputTag(session, "batchCheckOrigAssay", choices = currassays)
+    updateSelectInputTag(session, "clustScranSNNMat", label = "Select Input Matrix:",
+                         choices = expDataNames(vals$counts),
+                         recommended = "redDims", redDims = TRUE)
     updateSelectInputTag(session, "deAssay", choices = currassays)
     updateSelectInputTag(session, "fmAssay", choices = currassays)
     updateSelectInputTag(session, "fmHMAssay", choices = currassays, selected = input$fmAssay)
@@ -2097,30 +2096,6 @@ shinyServer(function(input, output, session) {
     updateAltExpInputs()
   })
 
-  observeEvent(input$dimRedAltExpSelect, {
-    if (!is.null(vals$counts) &&
-        !is.null(input$dimRedAltExpSelect)) {
-      ae <- altExp(vals$counts, input$dimRedAltExpSelect)
-      aeAssays <- assayNames(ae)
-      output$dimRedAltExpAssayUI <- renderUI({
-        selectInput("dimRedAltExpAssay", "Select the Assay in the subset",
-                    aeAssays)
-      })
-    }
-  })
-
-  observeEvent(input$dimRedAltExpSelect_tsneUmap, {
-    if (!is.null(vals$counts) &&
-        !is.null(input$dimRedAltExpSelect_tsneUmap)) {
-      ae <- altExp(vals$counts, input$dimRedAltExpSelect_tsneUmap)
-      aeAssays <- assayNames(ae)
-      output$dimRedAltExpAssayUI_tsneUmap <- renderUI({
-        selectInput("dimRedAltExpAssay_tsneUmap", "Select the Assay in the subset",
-                    aeAssays)
-      })
-    }
-  })
-
   output$dimRedNameUI <- renderUI({
     # if (input$dimRedAssayType == 1){
       defaultText <- paste(input$dimRedAssaySelect, input$dimRedPlotMethod,
@@ -2672,11 +2647,13 @@ shinyServer(function(input, output, session) {
                                              useAssay = input$dimRedAssaySelect_tsneUmap)
                 if(input$reductionMethodUMAPTSNEDimRed == "pca"){
                   vals$counts <- seuratPCA(inSCE = vals$counts,
-                                           useAssay = input$dimRedAssaySelect_tsneUmap)
+                                           useAssay = input$dimRedAssaySelect_tsneUmap,
+                                           reducedDimName = paste0(dimrednamesave, "_PCA"))
                 }
                 else{
                   vals$counts <- seuratICA(inSCE = vals$counts,
-                                           useAssay = input$dimRedAssaySelect_tsneUmap)
+                                           useAssay = input$dimRedAssaySelect_tsneUmap,
+                                           reducedDimName = paste0(dimrednamesave, "_ICA"))
                 }
                 vals$counts <- seuratRunTSNE(inSCE = vals$counts,
                                              reducedDimName = dimrednamesave,
@@ -2690,11 +2667,13 @@ shinyServer(function(input, output, session) {
                                              altExp = TRUE)
                 if(input$reductionMethodUMAPTSNEDimRed == "pca"){
                   altExps(vals$counts)[[vals$runDimred$dimRedAssaySelect_tsneUmap]] <- seuratPCA(inSCE = altExps(vals$counts)[[vals$runDimred$dimRedAssaySelect_tsneUmap]],
-                                           useAssay = vals$runDimred$dimRedAssaySelect_tsneUmap)
+                                           useAssay = vals$runDimred$dimRedAssaySelect_tsneUmap,
+                                           reducedDimName = paste0(dimrednamesave, "_PCA"))
                 }
                 else{
                   altExps(vals$counts)[[vals$runDimred$dimRedAssaySelect_tsneUmap]] <- seuratICA(inSCE = altExps(vals$counts)[[vals$runDimred$dimRedAssaySelect_tsneUmap]],
-                                           useAssay = vals$runDimred$dimRedAssaySelect_tsneUmap)
+                                           useAssay = vals$runDimred$dimRedAssaySelect_tsneUmap,
+                                           reducedDimName = paste0(dimrednamesave, "_ICA"))
                 }
                 altExps(vals$counts)[[vals$runDimred$dimRedAssaySelect_tsneUmap]] <- seuratRunTSNE(inSCE = altExps(vals$counts)[[vals$runDimred$dimRedAssaySelect_tsneUmap]],
                                              reducedDimName = dimrednamesave,
@@ -2708,11 +2687,13 @@ shinyServer(function(input, output, session) {
                                              useAssay = input$dimRedAssaySelect_tsneUmap)
                 if(input$reductionMethodUMAPTSNEDimRed == "pca"){
                   vals$counts <- seuratPCA(inSCE = vals$counts,
-                                           useAssay = input$dimRedAssaySelect_tsneUmap)
+                                           useAssay = input$dimRedAssaySelect_tsneUmap,
+                                           reducedDimName = paste0(dimrednamesave, "_PCA"))
                 }
                 else{
                   vals$counts <- seuratICA(inSCE = vals$counts,
-                                           useAssay = input$dimRedAssaySelect_tsneUmap)
+                                           useAssay = input$dimRedAssaySelect_tsneUmap,
+                                           reducedDimName = paste0(dimrednamesave, "_ICA"))
                 }
                 vals$counts <- seuratRunUMAP(inSCE = vals$counts,
                                              reducedDimName = dimrednamesave,
@@ -2728,11 +2709,13 @@ shinyServer(function(input, output, session) {
                                                                                            altExp = TRUE)
                 if(input$reductionMethodUMAPTSNEDimRed == "pca"){
                   altExps(vals$counts)[[vals$runDimred$dimRedAssaySelect_tsneUmap]] <- seuratPCA(inSCE = altExps(vals$counts)[[vals$runDimred$dimRedAssaySelect_tsneUmap]],
-                                                                                         useAssay = vals$runDimred$dimRedAssaySelect_tsneUmap)
+                                                                                         useAssay = vals$runDimred$dimRedAssaySelect_tsneUmap,
+                                                                                         reducedDimName = paste0(dimrednamesave, "_PCA"))
                 }
                 else{
                   altExps(vals$counts)[[vals$runDimred$dimRedAssaySelect_tsneUmap]] <- seuratICA(inSCE = altExps(vals$counts)[[vals$runDimred$dimRedAssaySelect_tsneUmap]],
-                                                                                         useAssay = vals$runDimred$dimRedAssaySelect_tsneUmap)
+                                                                                         useAssay = vals$runDimred$dimRedAssaySelect_tsneUmap,
+                                                                                         reducedDimName = paste0(dimrednamesave, "_ICA"))
                 }
                 altExps(vals$counts)[[vals$runDimred$dimRedAssaySelect_tsneUmap]] <- seuratRunUMAP(inSCE = altExps(vals$counts)[[vals$runDimred$dimRedAssaySelect_tsneUmap]],
                                                                                            reducedDimName = dimrednamesave,
@@ -2836,55 +2819,56 @@ shinyServer(function(input, output, session) {
   #-----------------------------------------------------------------------------
   # Page 3: Clustering ####
   #-----------------------------------------------------------------------------
-  scranSNNMats <- reactiveValues()
-  output$clustScranSNNMatUI <- renderUI({
-    if(!is.null(vals$counts)){
-      choices <- list()
+  #scranSNNMats <- reactiveValues()
 
-      nAssay <- length(assayNames(vals$counts))
-      assayId <- NULL
-      if (nAssay >= 1) {
-        assayValues <- list()
-        for (i in seq(nAssay)) {
-          assayValues[[assayNames(vals$counts)[i]]] <- i
-          assayId <- c(assayId, i)
-        }
-        choices[["Assays (full expression matrix)"]] <- assayValues
-      }
+  #output$clustScranSNNMatUI <- renderUI({
+  #  if(!is.null(vals$counts)){
+  #    choices <- list()
 
-      nReddim <- length(reducedDimNames(vals$counts))
-      reddimId <- NULL
-      if (nReddim >= 1) {
-        reddimValues <- list()
-        for (i in seq(nReddim)) {
-          reddimValues[[reducedDimNames(vals$counts)[i]]] <- nAssay + i
-          reddimId <- c(reddimId, nAssay + i)
-        }
-        choices[["ReducedDim (dimension reduction)"]] <- reddimValues
-      }
+  #    nAssay <- length(assayNames(vals$counts))
+  #    assayId <- NULL
+  #    if (nAssay >= 1) {
+  #      assayValues <- list()
+  #      for (i in seq(nAssay)) {
+  #        assayValues[[assayNames(vals$counts)[i]]] <- i
+  #        assayId <- c(assayId, i)
+  #      }
+  #      choices[["Assays (full expression matrix)"]] <- assayValues
+  #    }
 
-      nAltExp <- length(altExpNames(vals$counts))
-      altExpId <- NULL
-      if (nAltExp >= 1) {
-        altExpValues <- list()
-        for (i in seq(nAltExp)) {
-          altExpValues[[altExpNames(vals$counts)[i]]] <- nAssay + nReddim + i
-          altExpId <- c(altExpId, nAssay + nReddim + i)
-        }
-        choices[["AltExp (subset of expression matrix)"]] <- altExpValues
-      }
+  #    nReddim <- length(reducedDimNames(vals$counts))
+  #    reddimId <- NULL
+  #    if (nReddim >= 1) {
+  #      reddimValues <- list()
+  #      for (i in seq(nReddim)) {
+  #        reddimValues[[reducedDimNames(vals$counts)[i]]] <- nAssay + i
+  #        reddimId <- c(reddimId, nAssay + i)
+  #      }
+  #      choices[["ReducedDim (dimension reduction)"]] <- reddimValues
+  #    }
 
-      scranSNNMats$allChoices <- list(assay = assayId, reducedDim = reddimId,
-                                      altExp = altExpId)
-      scranSNNMats$allNames <- c(assayNames(vals$counts),
-                                 reducedDimNames(vals$counts),
-                                 altExpNames(vals$counts))
+  #    nAltExp <- length(altExpNames(vals$counts))
+  #    altExpId <- NULL
+  #    if (nAltExp >= 1) {
+  #      altExpValues <- list()
+  #      for (i in seq(nAltExp)) {
+  #        altExpValues[[altExpNames(vals$counts)[i]]] <- nAssay + nReddim + i
+  #        altExpId <- c(altExpId, nAssay + nReddim + i)
+  #      }
+  #      choices[["AltExp (subset of expression matrix)"]] <- altExpValues
+  #    }
 
-      selectInput("clustScranSNNMat", "Select Input Matrix:", choices)
-    } else {
-      selectInput("clustScranSNNMat", "Select Input Matrix:", NULL)
-    }
-  })
+  #    scranSNNMats$allChoices <- list(assay = assayId, reducedDim = reddimId,
+  #                                    altExp = altExpId)
+  #    scranSNNMats$allNames <- c(assayNames(vals$counts),
+  #                               reducedDimNames(vals$counts),
+  #                               altExpNames(vals$counts))
+
+  #    selectInput("clustScranSNNMat", "Select Input Matrix:", choices)
+  #  } else {
+  #    selectInput("clustScranSNNMat", "Select Input Matrix:", NULL)
+  #  }
+  #})
 
   output$clustNameUI <- renderUI({
     if(input$clustAlgo %in% seq(6)){
@@ -2907,18 +2891,47 @@ shinyServer(function(input, output, session) {
     }
   })
 
-  observeEvent(input$clustScranSNNMat, {
-    output$clustScranSNNAltExpAssayUI <- renderUI({
-      if (input$clustScranSNNMat %in% scranSNNMats$allChoices$altExp) {
-        altExpName <- scranSNNMats$allNames[as.integer(input$clustScranSNNMat)]
-        choices <- assayNames(altExp(vals$counts, altExpName))
-        selectInput("clustScranSNNAltExpAssay", "Select the Assay in AltExp:",
-                    choices = choices)
-      }
-    })
-  })
+  #observeEvent(input$clustScranSNNMat, {
+  #  if (!is.null(vals$counts) &&
+  #      !is.null(input$clustScranSNNMat) &&
+  #      input$clustScranSNNMat %in% altExpNames(vals$counts)) {
+  #    choices <- assayNames(altExp(vals$counts, input$clustScranSNNMat))
+  #    output$clustScranSNNAltExpAssayUI <- renderUI({
+  #      selectInput("clustScranSNNAltExpAssay", "Select the Assay in AltExp:",
+  #                  choices = choices)
+  #    })
+  #  } else {
+  #    output$clustScranSNNAltExpAssayUI <- NULL
+  #  }
+
+    #output$clustScranSNNAltExpAssayUI <- renderUI({
+    #  if (input$clustScranSNNMat %in% scranSNNMats$allChoices$altExp) {
+    #    altExpName <- scranSNNMats$allNames[as.integer(input$clustScranSNNMat)]
+    #    choices <- assayNames(altExp(vals$counts, altExpName))
+    #    selectInput("clustScranSNNAltExpAssay", "Select the Assay in AltExp:",
+    #                choices = choices)
+    #  }
+    #})
+  #})
 
   clustResults <- reactiveValues(names = NULL)
+
+  getTypeByMat <- function(inSCE, matName) {
+    if (matName %in% assayNames(inSCE)) {
+      return("assay")
+    } else if (matName %in% altExpNames(inSCE)) {
+      return("altExp")
+    } else if (matName %in% reducedDimNames(inSCE)) {
+      return("reducedDim")
+    } else {
+      for (i in altExpNames(inSCE)) {
+        if (matName %in% reducedDimNames(altExp(inSCE, i))) {
+          return(c("reducedDim", i))
+        }
+      }
+      return()
+    }
+  }
 
   observeEvent(input$clustRun, {
     if (is.null(vals$counts)){
@@ -2946,26 +2959,29 @@ shinyServer(function(input, output, session) {
                         k = input$clustScranSNNK,
                         weightType = input$clustScranSNNType,
                         algorithm = algo)
-          matNum <- as.integer(input$clustScranSNNMat)
-          for (i in seq_along(names(scranSNNMats$allChoices))) {
-            range <- scranSNNMats$allChoices[[i]]
-            if (matNum %in% range) {
-              matType <- names(scranSNNMats$allChoices)[i]
-              break
+          matType <- getTypeByMat(vals$counts, input$clustScranSNNMat)
+          if (is.null(matType)) {
+            return()
+          } else if (length(matType) == 1) {
+            if (matType == "assay") {
+              params$useAssay = input$clustScranSNNMat
+              params$nComp = input$clustScranSNNd
+            } else if (matType == "reducedDim") {
+              params$useReducedDim = input$clustScranSNNMat
+              updateSelectInput(session, "clustVisReddim",
+                                selected = input$clustScranSNNMat)
+            } else if (matType == "altExp") {
+              params$useAltExp = input$clustScranSNNMat
+              params$altExpAssay = input$clustScranSNNMat
+              params$nComp = input$clustScranSNNd
             }
-          }
-
-          if (matType == "assay") {
-            params$useAssay = scranSNNMats$allNames[matNum]
-            params$nComp = input$clustScranSNNd
-          } else if (matType == "reducedDim") {
-            params$useReducedDim = scranSNNMats$allNames[matNum]
+          } else if (length(matType) == 2 &&
+                     matType[1] == "reducedDim") {
+            # Using reddims saved in altExp
+            params$useAltExp = matType[2]
+            params$altExpRedDim = input$clustScranSNNMat
             updateSelectInput(session, "clustVisReddim",
-                              selected = scranSNNMats$allNames[matNum])
-          } else if (matType == "altExp") {
-            params$useAltExp = scranSNNMats$allNames[matNum]
-            params$altExpAssay = input$clustScranSNNAltExpAssay
-            params$nComp = input$clustScranSNNd
+                              selected = input$clustScranSNNMat)
           }
           vals$counts <- do.call(runScranSNN, params)
         } else if (input$clustAlgo %in% seq(7, 9)) {
@@ -5001,12 +5017,9 @@ shinyServer(function(input, output, session) {
 
                 #make sure no NA's are introduced in HVGs
                 HVGs <- stats::na.omit(HVGs)
-                vals$counts <- subsetSCERows(vals$counts,
-                                             which(rownames(vals$counts) %in% HVGs),
-                                             returnAsAltExp = TRUE,
-                                             altExpName = input$hvgAltExpName,
-                                             tag = "hvg")
-                updateAltExpInputs()
+                tempAssay <- expData(vals$counts, vals$hvgCalculated$assayName)[HVGs,]
+                expData(vals$counts, input$hvgAltExpName, tag = "hvg", altExp = TRUE) <- tempAssay
+                updateAssayInputs()
               }
             })
         } else {
@@ -5016,18 +5029,18 @@ shinyServer(function(input, output, session) {
 
           #make sure no NA's are introduced in HVGs
           HVGs <- stats::na.omit(HVGs)
-          vals$counts <- subsetSCERows(vals$counts,
-                                       which(rownames(vals$counts) %in% HVGs),
-                                       returnAsAltExp = TRUE,
-                                       altExpName = input$hvgAltExpName)
+          tempAssay <- expData(vals$counts, vals$hvgCalculated$assayName)[HVGs,]
+          #vals$counts <- subsetSCERows(vals$counts,
+          #                             which(rownames(vals$counts) %in% HVGs),
+          #                             returnAsAltExp = TRUE,
+          #                             altExpName = input$hvgAltExpName)
           #just keep the subset assay in altexp only
-          tempAssay <- assays(altExp(vals$counts, input$hvgAltExpName))[[paste0(input$hvgAltExpName, vals$hvgCalculated$assayName)]]
-          altAssaysToRemove <- assayNames(altExp(vals$counts, input$hvgAltExpName))
+          #tempAssay <- assays(altExp(vals$counts, input$hvgAltExpName))[[paste0(input$hvgAltExpName, vals$hvgCalculated$assayName)]]
+          #altAssaysToRemove <- assayNames(altExp(vals$counts, input$hvgAltExpName))
           expData(vals$counts, input$hvgAltExpName, tag = "hvg", altExp = TRUE) <- tempAssay
-          for(i in seq(length(altAssaysToRemove))){
-            assays(altExp(vals$counts, input$hvgAltExpName), withDimnames = FALSE)[[altAssaysToRemove[i]]] <- NULL
-          }
-
+          #for(i in seq(length(altAssaysToRemove))){
+          #  assays(altExp(vals$counts, input$hvgAltExpName), withDimnames = FALSE)[[altAssaysToRemove[i]]] <- NULL
+          #}
           updateAssayInputs()
           #updateAltExpInputs()
         }
