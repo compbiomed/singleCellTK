@@ -4578,6 +4578,7 @@ shinyServer(function(input, output, session) {
         output$batchOriPCA <- renderPlot({
           plotSCEDimReduceColData(inSCE, colorBy = batch, shape = shapeBy,
                                   reducedDimName = oriAssayPCAName,
+                                  dim1 = 1, dim2 = 2,
                                   title = paste0("Original ", useAssay, " PCA"))
         })
         output$batchCorrVars <- renderPlot({
@@ -4597,15 +4598,18 @@ shinyServer(function(input, output, session) {
             plotSCEDimReduceColData(inSCE, colorBy = batch, shape = shapeBy,
                                     reducedDimName = resName,
                                     conditionClass = "character",
+                                    dim1 = 1, dim2 = 2,
                                     title = paste0(resName, " corrected"))
           } else if (vals$batchRes[[resName]] == 'assay'){
             plotSCEDimReduceColData(inSCE, colorBy = batch, shape = shapeBy,
                                     reducedDimName = corrAssayPCAName,
                                     conditionClass = "character",
+                                    dim1 = 1, dim2 = 2,
                                     title = paste0(resName, " corrected"))
           } else if (vals$batchRes[[resName]] == 'altExp'){
             plotSCEDimReduceColData(inSCE, colorBy = batch, shape = shapeBy,
                                     reducedDimName = corrAltExpPCAName,
+                                    dim1 = 1, dim2 = 2,
                                     title = paste0(resName, " corrected"))
           }
         })

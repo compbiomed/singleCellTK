@@ -24,7 +24,8 @@
 #' @examples
 #' \dontrun{
 #' data('sceBatches', package = 'singleCellTK')
-#' sceCorr <- runBBKNN(sceBatches)
+#' sceBatches <- scater_logNormCounts(sceBatches)
+#' sceCorr <- runBBKNN(sceBatches, useAssay = "ScaterLogNormCounts")
 #' }
 runBBKNN <-function(inSCE, useAssay = 'logcounts', batch = 'batch',
                     reducedDimName = 'BBKNN', nComponents = 50L){
@@ -146,17 +147,17 @@ runComBatSeq <- function(inSCE, useAssay = "counts", batch = 'batch',
       data = annot)
   } else if (isTRUE(useSVA)) {
     # Do ComBat-SVA-Seq
-    mod.batch = model.matrix(
+    mod.batch = stats::model.matrix(
       stats::as.formula(paste0("~", batch)),
       data = annot)
-    mod0 = model.matrix(~1, data = annot)
+    mod0 = stats::model.matrix(~1, data = annot)
     svobj_filt = sva::svaseq(as.matrix(assay(inSCE, useAssay) + 2.5),
                              mod.batch, mod0)
     nSV <- dim(svobj_filt$sv)[2]
     for (i in seq_len(nSV)) {
       annot[[paste0("SV", i)]] <- svobj_filt$sv[,i]
     }
-    mod <- model.matrix(
+    mod <- stats::model.matrix(
       stats::as.formula(paste0("~", paste0(paste0("SV", seq_len(nSV)),
                                            collapse = "+"))),
       data = annot)
@@ -203,6 +204,7 @@ runComBatSeq <- function(inSCE, useAssay = "counts", batch = 'batch',
 #' @examples
 #' \dontrun{
 #' data('sceBatches', package = 'singleCellTK')
+#' logcounts(sceBatches) <- log(counts(sceBatches) + 1)
 #' sceCorr <- runFastMNN(sceBatches, useAssay = 'logcounts', pcInput = FALSE)
 #' }
 runFastMNN <- function(inSCE, useAssay = "logcounts",
@@ -416,9 +418,8 @@ runFastMNN <- function(inSCE, useAssay = "logcounts",
 #' @references Gordon K Smyth, et al., 2003
 #' @examples
 #' data('sceBatches', package = 'singleCellTK')
-#' \dontrun{
+#' logcounts(sceBatches) <- log(counts(sceBatches) + 1)
 #' sceCorr <- runLimmaBC(sceBatches)
-#' }
 runLimmaBC <- function(inSCE, useAssay = "logcounts", assayName = "LIMMA",
                        batch = "batch") {
   ## Input check
@@ -479,9 +480,8 @@ runLimmaBC <- function(inSCE, useAssay = "logcounts", assayName = "LIMMA",
 #' @references Lun ATL, et al., 2016 & 2018
 #' @examples
 #' data('sceBatches', package = 'singleCellTK')
-#' \dontrun{
+#' logcounts(sceBatches) <- log(counts(sceBatches) + 1)
 #' sceCorr <- runMNNCorrect(sceBatches)
-#' }
 runMNNCorrect <- function(inSCE, useAssay = 'logcounts', batch = 'batch',
                           assayName = 'MNN', k = 20L, sigma = 0.1){
   ## Input check
@@ -515,7 +515,8 @@ runMNNCorrect <- function(inSCE, useAssay = 'logcounts', batch = 'batch',
 #' panorama.
 #' @param inSCE \linkS4class{SingleCellExperiment} inherited object. Required.
 #' @param useAssay A single character indicating the name of the assay requiring
-#' batch correction. Default \code{"logcounts"}.
+#' batch correction. Scanorama requires a transformed normalized expression
+#' assay. Default \code{"logcounts"}.
 #' @param batch A single character indicating a field in
 #' \code{\link{colData}} that annotates the batches.
 #' Default \code{"batch"}.
@@ -535,7 +536,8 @@ runMNNCorrect <- function(inSCE, useAssay = 'logcounts', batch = 'batch',
 #' @examples
 #' \dontrun{
 #' data('sceBatches', package = 'singleCellTK')
-#' sceCorr <- runSCANORAMA(sceBatches)
+#' sceBatches <- scater_logNormCounts(sceBatches)
+#' sceCorr <- runSCANORAMA(sceBatches, "ScaterLogNormCounts")
 #' }
 runSCANORAMA <- function(inSCE, useAssay = 'logcounts', batch = 'batch',
                          SIGMA = 15, ALPHA = 0.1, KNN = 20L,
@@ -635,6 +637,7 @@ integrated = integrated[:, orderIdx]
 #' @examples
 #' data('sceBatches', package = 'singleCellTK')
 #' \dontrun{
+#' logcounts(sceBatches) <- log(counts(sceBatches) + 1)
 #' sceCorr <- runSCMerge(sceBatches)
 #' }
 runSCMerge <- function(inSCE, useAssay = "logcounts", batch = 'batch',
