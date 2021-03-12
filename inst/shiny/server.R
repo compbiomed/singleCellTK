@@ -2242,13 +2242,10 @@ shinyServer(function(input, output, session) {
           } else {
             if (input$dimRedPlotMethod == "PCA"){
               if (vals$runDimred$dimRedAssaySelect %in% assayNames(vals$counts)) {
-                print("PCA on assay")
                 vals$counts <- getPCA(inSCE = vals$counts,
                                       useAssay = vals$runDimred$dimRedAssaySelect,
                                       reducedDimName = dimrednamesave)
-                print(vals$counts)
               } else if (vals$runDimred$dimRedAssaySelect %in% expDataNames(vals$counts)) {
-                print("PCA on altExp")
                 vals$counts <- getPCA(inSCE = vals$counts,
                                       useAssay = vals$runDimred$dimRedAssaySelect,
                                       useAltExp = vals$runDimred$dimRedAssaySelect,
@@ -2256,7 +2253,6 @@ shinyServer(function(input, output, session) {
               }
             } else if (input$dimRedPlotMethod == "PCASeurat"){
               if(vals$runDimred$dimRedAssaySelect %in% assayNames(vals$counts)){
-                print("PCASeurat on assay")
                 vals$counts <- seuratFindHVG(
                   inSCE = vals$counts,
                   useAssay = input$dimRedAssaySelect
@@ -2268,7 +2264,6 @@ shinyServer(function(input, output, session) {
                   nPCs = input$dimRedNumberDims)
               }
               else if(vals$runDimred$dimRedAssaySelect %in% expDataNames(vals$counts)){
-                print("PCASeurat on altExp")
                 ae <- altExps(vals$counts)[[vals$runDimred$dimRedAssaySelect]]
                 ae <- seuratFindHVG(inSCE = ae,
                                     useAssay = vals$runDimred$dimRedAssaySelect,
@@ -2926,7 +2921,6 @@ shinyServer(function(input, output, session) {
   observeEvent(input$clustRun, {
     if (is.null(vals$counts)){
       shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
-      print(input$clustAlgo)
     } else if (input$clustName == "") {
       shinyalert::shinyalert("Error!", "Cluster name required.", type = "error")
     } else {
