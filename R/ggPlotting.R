@@ -55,11 +55,11 @@
 #'  as the labels. If set to "none", no label will be plotted.
 #' @return a ggplot of the reduced dimensions.
 .ggScatter <- function(inSCE,
+                       reducedDimName,
                        sample = NULL,
                        colorBy = NULL,
                        groupBy = NULL,
                        shape = NULL,
-                       reducedDimName,
                        conditionClass = NULL,
                        labelClusters = FALSE,
                        xlab = NULL,
@@ -362,12 +362,12 @@
 #' )
 #' @export
 plotSCEDimReduceColData <- function(inSCE,
-                                    sample = NULL,
                                     colorBy,
+                                    reducedDimName = NULL,
+                                    sample = NULL,
                                     groupBy = NULL,
                                     conditionClass = NULL,
                                     shape = NULL,
-                                    reducedDimName = NULL,
                                     xlab = NULL,
                                     ylab = NULL,
                                     axisSize = 10,
@@ -456,7 +456,6 @@ plotSCEDimReduceColData <- function(inSCE,
 #' @param dim2 2nd dimension to be used for plotting. Can either be a string which specifies
 #'  the name of the dimension to be plotted from reducedDims, or a numeric value which specifies
 #'  the index of the dimension to be plotted. Default is NULL.
-#'  Default is second PCA component for PCA data and NULL otherwise.
 #' @param bin Numeric vector. If single value, will divide the numeric values into the `bin` groups.
 #'  If more than one value, will bin numeric values using values as a cut point.
 #' @param binLabel Character vector. Labels for the bins created by the `bin` parameter.
@@ -493,11 +492,11 @@ plotSCEDimReduceColData <- function(inSCE,
 #' )
 #' @export
 plotSCEDimReduceFeatures <- function(inSCE,
-                                     sample = NULL,
                                      feature,
+                                     reducedDimName,
+                                     sample = NULL,
                                      featureLocation = NULL,
                                      shape = NULL,
-                                     reducedDimName,
                                      useAssay = "logcounts",
                                      xlab = NULL,
                                      ylab = NULL,
@@ -583,7 +582,9 @@ plotSCEDimReduceFeatures <- function(inSCE,
 #' @description Plot results of reduced dimensions data of counts stored in any
 #' slot in the SingleCellExperiment object.
 #' @param inSCE Input SingleCellExperiment object with saved dimension reduction
-#'  components or a variable with saved results. Required
+#'  components or a variable with saved results. Required.
+#' @param reducedDimName saved dimension reduction name in the
+#' \linkS4class{SingleCellExperiment} object. Required.
 #' @param sample Character vector. Indicates which sample each cell belongs to.
 #' @param slot Desired slot of SingleCellExperiment used for plotting. Possible
 #'  options: "assays", "colData", "metadata", "reducedDims". Default NULL.
@@ -593,8 +594,6 @@ plotSCEDimReduceFeatures <- function(inSCE,
 #' @param groupBy Group by a condition(any column of the annotation data).
 #'  Default NULL.
 #' @param shape add shapes to each condition.
-#' @param reducedDimName saved dimension reduction name in the
-#' \linkS4class{SingleCellExperiment} object. Required.
 #' @param conditionClass class of the annotation data used in colorBy. Options
 #'  are NULL, "factor" or "numeric". If NULL, class will default to the original
 #'  class. Default NULL.
@@ -645,13 +644,13 @@ plotSCEDimReduceFeatures <- function(inSCE,
 #' @export
 #' @import SingleCellExperiment
 plotSCEScatter <- function(inSCE,
+                           annotation,
+                           reducedDimName = NULL,
                            slot = NULL,
                            sample = NULL,
-                           annotation,
                            feature = NULL,
                            groupBy = NULL,
                            shape = NULL,
-                           reducedDimName = NULL,
                            conditionClass = NULL,
                            xlab = NULL,
                            ylab = NULL,
@@ -929,8 +928,8 @@ plotSCEScatter <- function(inSCE,
 #' )
 #' @export
 plotSCEViolinColData <- function(inSCE,
-                                 sample = NULL,
                                  coldata,
+                                 sample = NULL,
                                  groupBy = NULL,
                                  violin = TRUE,
                                  boxplot = TRUE,
@@ -1084,9 +1083,9 @@ plotSCEViolinColData <- function(inSCE,
 #' )
 #' @export
 plotSCEViolinAssayData <- function(inSCE,
+                                   feature,
                                    sample = NULL,
                                    useAssay = "counts",
-                                   feature,
                                    featureLocation = NULL,
                                    groupBy = NULL,
                                    violin = TRUE,
@@ -1261,8 +1260,8 @@ plotSCEViolinAssayData <- function(inSCE,
 plotSCEViolin <- function(inSCE,
                           sample = NULL,
                           slot,
-                          annotation,
                           feature,
+                          annotation,
                           groupBy = NULL,
                           violin = TRUE,
                           boxplot = TRUE,
@@ -1499,8 +1498,8 @@ plotSCEViolin <- function(inSCE,
 #' )
 #' @export
 plotSCEDensityColData <- function(inSCE,
-                                  sample = NULL,
                                   coldata,
+                                  sample = NULL,
                                   groupBy = NULL,
                                   xlab = NULL,
                                   ylab = NULL,
@@ -1631,9 +1630,9 @@ plotSCEDensityColData <- function(inSCE,
 #' )
 #' @export
 plotSCEDensityAssayData <- function(inSCE,
+                                    feature,
                                     sample = NULL,
                                     useAssay = "counts",
-                                    feature,
                                     featureLocation = NULL,
                                     groupBy = NULL,
                                     xlab = NULL,
@@ -2352,8 +2351,8 @@ plotBarcodeRankScatter <- function(inSCE,
 #' )
 #' @export
 plotSCEBarColData <- function(inSCE,
-                              sample = NULL,
                               coldata,
+                              sample = NULL,
                               groupBy = NULL,
                               dots = TRUE,
                               xlab = NULL,
@@ -2456,9 +2455,9 @@ plotSCEBarColData <- function(inSCE,
 #' )
 #' @export
 plotSCEBarAssayData <- function(inSCE,
+                                feature,
                                 sample = NULL,
                                 useAssay = "counts",
-                                feature,
                                 featureLocation = NULL,
                                 groupBy = NULL,
                                 xlab = NULL,
