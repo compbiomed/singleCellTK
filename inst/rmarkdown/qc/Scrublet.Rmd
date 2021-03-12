@@ -20,7 +20,7 @@ sce.qc<- params$object
 ```
 
 ```{r, "Scrublet", results="asis", fig.align="center", warning=FALSE, message=FALSE}
-    plotsScrublet<- suppressWarnings(plotScrubletResults(sce.qc, reducedDimName="UMAP"))
+    plotsScrublet<- plotScrubletResults(sce.qc, reducedDimName="UMAP")
     i="Scrublet"
     cat(paste0('# ', i, ' {.tabset .tabset-fade} \n\n'))
     cat(paste0('## Scatter Score \n\n'))

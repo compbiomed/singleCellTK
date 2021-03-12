@@ -20,7 +20,7 @@ sce.qc<- params$object
 ```
 
 ```{r, "QCMetrics", results="asis", fig.align="center", warning=FALSE, message=FALSE}
-    plotsQCMetrics<- suppressWarnings(plotRunPerCellQCResults(sce.qc))
+    plotsQCMetrics<- plotRunPerCellQCResults(sce.qc)
     i="QCMetrics"
     cat(paste0('# ', i, ' {.tabset .tabset-fade} \n\n'))
     cat(paste0('## Sum \n\n'))
