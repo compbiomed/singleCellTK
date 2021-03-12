@@ -43,6 +43,7 @@ robust performance. For introduction of MNN, see \code{\link{runMNNCorrect}}.
 \examples{
 \dontrun{
 data('sceBatches', package = 'singleCellTK')
+logcounts(sceBatches) <- log(counts(sceBatches) + 1)
 sceCorr <- runFastMNN(sceBatches, useAssay = 'logcounts', pcInput = FALSE)
 }
 }
