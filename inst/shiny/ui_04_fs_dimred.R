@@ -69,21 +69,21 @@ shinyPanelFS_DimRed <- fluidPage(
                                      fluidRow(
                                        column(12,
                                               panel(heading = "Options",
-                                                    h6("Select assay type:"),
-                                                    radioButtons(inputId = "dimRedAssayType", label = NULL,
-                                                                 choices = c("Use full sized assay" = 1,
-                                                                             "Use subset" = 2),
-                                                                 selected = 1, inline = TRUE),
-                                                    conditionalPanel(
-                                                      condition = "input.dimRedAssayType == 1",
-                                                      uiOutput("dimRedAssaySelect")
+                                                    # h6("Select assay type:"),
+                                                    # radioButtons(inputId = "dimRedAssayType", label = NULL,
+                                                    #              choices = c("Use full sized assay" = 1,
+                                                    #                          "Use subset" = 2),
+                                                    #              selected = 1, inline = TRUE),
+                                                    # conditionalPanel(
+                                                    #   condition = "input.dimRedAssayType == 1",
+                                                      uiOutput("dimRedAssaySelect"),
                                                       #selectInput("dimRedAssaySelect", "Select assay:", currassays),
-                                                    ),
-                                                    conditionalPanel(
-                                                      condition = "input.dimRedAssayType == 2",
-                                                      selectInput("dimRedAltExpSelect", "Select subset:", curraltExps),
-                                                      uiOutput("dimRedAltExpAssayUI")
-                                                    ),
+                                                    # ),
+                                                    # conditionalPanel(
+                                                    #   condition = "input.dimRedAssayType == 2",
+                                                    #   selectInput("dimRedAltExpSelect", "Select subset:", curraltExps),
+                                                    #   uiOutput("dimRedAltExpAssayUI")
+                                                    # ),
                                                     selectInput("dimRedPlotMethod", "Select method:",
                                                                 c("Scran - PCA" = "PCA",
                                                                   "Seurat - PCA" = "PCASeurat",
@@ -143,21 +143,21 @@ shinyPanelFS_DimRed <- fluidPage(
                           fluidRow(
                             column(12,
                                    panel(heading = "Options",
-                                         h6("Select assay type:"),
-                                         radioButtons(inputId = "dimRedAssayType_tsneUmap", label = NULL,
-                                                      choices = c("Use full sized assay" = 1,
-                                                                  "Use subset" = 2),
-                                                      selected = 1, inline = TRUE),
-                                         conditionalPanel(
-                                           condition = "input.dimRedAssayType_tsneUmap == 1",
-                                           uiOutput("dimRedAssaySelect_tsneUmap")
-                                           #selectInput("dimRedAssaySelect_tsneUmap", "Select assay:", currassays),
-                                         ),
-                                         conditionalPanel(
-                                           condition = "input.dimRedAssayType_tsneUmap == 2",
-                                           selectInput("dimRedAltExpSelect_tsneUmap", "Select subset:", curraltExps),
-                                           uiOutput("dimRedAltExpAssayUI_tsneUmap")
-                                         ),
+                                         # h6("Select assay type:"),
+                                         # radioButtons(inputId = "dimRedAssayType_tsneUmap", label = NULL,
+                                         #              choices = c("Use full sized assay" = 1,
+                                         #                          "Use subset" = 2),
+                                         #              selected = 1, inline = TRUE),
+                                         # conditionalPanel(
+                                         #   condition = "input.dimRedAssayType_tsneUmap == 1",
+                                           uiOutput("dimRedAssaySelect_tsneUmap"),
+                                         #   #selectInput("dimRedAssaySelect_tsneUmap", "Select assay:", currassays),
+                                         # ),
+                                         # conditionalPanel(
+                                         #   condition = "input.dimRedAssayType_tsneUmap == 2",
+                                         #   selectInput("dimRedAltExpSelect_tsneUmap", "Select subset:", curraltExps),
+                                         #   uiOutput("dimRedAltExpAssayUI_tsneUmap")
+                                         # ),
                                          selectInput("dimRedPlotMethod_tsneUmap", "Select method:",
                                                      c("tSNE", 
                                                        "UMAP",

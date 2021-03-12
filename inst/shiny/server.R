@@ -13,6 +13,7 @@ source("qc_help_pages/ui_cxds_bcds_hybrid_help.R", local = TRUE) # creates sever
 source("qc_help_pages/ui_doubletFinder_help.R", local = TRUE) # creates several smaller UI components
 source("qc_help_pages/ui_scrublet_help.R", local = TRUE) # creates several smaller UI components
 source("qc_help_pages/ui_dc_and_qcm_help.R", local = TRUE) # creates several smaller UI components
+source("qc_help_pages/ui_scDblFinder_help.R", local = TRUE) # creates several smaller UI components
 # source("server_partials/server_01_data.R", local = TRUE) # functions for Data section
 
 # Define server logic required to draw a histogram
@@ -162,13 +163,14 @@ shinyServer(function(input, output, session) {
   }
 
   updateSelectInputTag <- function(session, inputId, choices = NULL, selected = NULL,
-                                   label = "Select assay:", tags = NULL, recommended = NULL, showTags = TRUE){
+                                   label = "Select assay:", tags = NULL, recommended = NULL, showTags = TRUE,
+                                   redDims = FALSE){
     if(!is.null(choices)
        && is.null(tags)){
-      choices <- singleCellTK:::.getAssays(vals$counts)
+      choices <- expTaggedData(vals$counts)
     }
     else{
-      choices <- singleCellTK:::.sctkGetTag(vals$counts, tags)
+      choices <- expTaggedData(vals$counts, tags, redDims = TRUE)
     }
     if(!showTags){
       allChoices <- NULL
@@ -207,13 +209,12 @@ shinyServer(function(input, output, session) {
         )
       })
     }
-
   }
 
   updateAssayInputs <- function(){
     currassays <- names(assays(vals$counts))
-    updateSelectInputTag(session, "dimRedAssaySelect", choices = currassays)
-    updateSelectInputTag(session, "dimRedAssaySelect_tsneUmap", choices = currassays)
+    updateSelectInputTag(session, "dimRedAssaySelect", tags = c("raw", "normalized", "hvg"), recommended = "normalized", redDims = TRUE)
+    updateSelectInputTag(session, "dimRedAssaySelect_tsneUmap", tags = c("raw", "normalized", "hvg"), recommended = "normalized")
     updateSelectInputTag(session, "batchCorrAssay", choices = currassays)
     updateSelectInputTag(session, "batchCheckAssay", choices = currassays)
     updateSelectInputTag(session, "batchCheckOrigAssay", choices = currassays)
@@ -221,10 +222,11 @@ shinyServer(function(input, output, session) {
     updateSelectInputTag(session, "fmAssay", choices = currassays)
     updateSelectInputTag(session, "fmHMAssay", choices = currassays, selected = input$fmAssay)
     updateSelectInputTag(session, "pathwayAssay", choices = currassays)
-    updateSelectInputTag(session, "modifyAssaySelect", choices = currassays)
+    updateSelectInputTag(session, "modifyAssaySelect", tags = c("raw", "normalized", "scaled", "transformed normalized", "trimmed"), recommended = "raw")
 
     #updateSelectInputTag(session, "normalizeAssaySelect", choices = currassays)
-    updateSelectInputTag(session, "normalizeAssaySelect",label = "Select normalized assay:", tags = c("raw", "normalized"), recommended = "raw")
+    #updateSelectInputTag(session, "normalizeAssaySelect",label = "Select normalized assay:", tags = c("raw", "normalized"), recommended = "raw")
+    updateSelectInputTag(session, "normalizeAssaySelect",label = "Select assay to normalize:", tags = c("raw", "normalized", "scaled", "transformed normalized", "trimmed"), recommended = "raw")
 
     updateSelectInputTag(session, "seuratSelectNormalizationAssay", choices = currassays, showTags = FALSE)
     updateSelectInputTag(session, "assaySelectFS_Norm", choices = currassays)
@@ -830,10 +832,11 @@ shinyServer(function(input, output, session) {
         vals$counts <- vals$original
 
         #store assayType information in the metadata
-        vals$counts <- singleCellTK:::.sctkSetTagExternal(
+        vals$counts <- expSetDataTag(
           inSCE = vals$counts,
           assayType = "raw",
-          assays = assayNames(vals$counts))
+          assays = assayNames(vals$counts),
+          append = FALSE)
 
         # ToDo: Remove these automatic updates and replace with
         # observeEvents functions that activate upon the tab selection
@@ -907,10 +910,16 @@ shinyServer(function(input, output, session) {
       shinyjs::hide(id = "gsUploadError", anim = FALSE)
       setList <- formatGeneSetList(input$geneSetText)
       if (nzchar(input$gsCollectionNameText)) {
-        vals$original <- importGeneSetsFromList(vals$original, setList, by = byParam, collectionName = input$gsCollectionNameText)
+        vals$original <- importGeneSetsFromList(vals$original,
+                                                setList,
+                                                by = byParam,
+                                                collectionName = input$gsCollectionNameText)
         addToGSTable(input$gsCollectionNameText, "Paste-In")
       } else if (input$gsExisting != "None") {
-        vals$original <- importGeneSetsFromList(vals$original, setList, by = byParam, collectionName = input$gsExisting)
+        vals$original <- importGeneSetsFromList(vals$original,
+                                                setList,
+                                                by = byParam,
+                                                collectionName = input$gsExisting)
         addToGSTable(input$gsExisting, "Paste-In")
       }
     }
@@ -929,7 +938,10 @@ shinyServer(function(input, output, session) {
           shinyjs::show(id = "gsUploadError", anim = FALSE)
         } else {
           shinyjs::hide(id = "gsUploadError", anim = FALSE)
-          vals$original <- importGeneSetsFromGMT(vals$original, input$geneSetGMT$datapath, by = byParam, collectionName = input$gsCollectionNameGMT)
+          vals$original <- importGeneSetsFromGMT(vals$original,
+                                                 input$geneSetGMT$datapath,
+                                                 by = byParam,
+                                                 collectionName = input$gsCollectionNameGMT)
           addToGSTable(input$gsCollectionNameGMT, input$geneSetGMT$datapath)
         }
 
@@ -938,8 +950,13 @@ shinyServer(function(input, output, session) {
           shinyjs::show(id = "gsUploadError", anim = FALSE)
         } else {
           shinyjs::hide(id = "gsUploadError", anim = FALSE)
-          vals$original <- importGeneSetsFromMSigDB(vals$original, input$geneSetDB, by = byParam)
-          addToGSTable(input$geneSetDB, "Database")
+          vals$original <- importGeneSetsFromMSigDB(vals$original,
+                                                    input$geneSetDB,
+                                                    by = byParam)
+          for(i in input$geneSetDB){
+            # Handling multiple selections from the checkboxInput
+            addToGSTable(i, "Database")
+          }
         }
 
       } else if (input$geneSetSourceChoice == "gsPasteUpload") {
@@ -1101,7 +1118,7 @@ shinyServer(function(input, output, session) {
 
   qcInputExists <- function() {
     for (algo in qc_choice_list) {
-      if (!is.null(input[[algo]])) {
+      if (isTRUE(input[[algo]])) {
         return(TRUE)
       }
     }
@@ -1120,7 +1137,7 @@ shinyServer(function(input, output, session) {
       # build list of selected algos
       algoList = list()
       for (algo in qc_choice_list) {
-        if (!is.null(input[[algo]])) {
+        if (isTRUE(input[[algo]])) {
           algoList <- c(algoList, algo)
         }
       }
@@ -1180,7 +1197,7 @@ shinyServer(function(input, output, session) {
         algoList = list()
         paramsList <- list()
         for (algo in qc_choice_list) {
-          if (input[[algo]]) {
+          if (isTRUE(input[[algo]])) {
             algoList <- c(algoList, algo)
             # use the specific prep functions for decontX and doubletFinder
             if (algo == "decontX") {
@@ -1213,19 +1230,20 @@ shinyServer(function(input, output, session) {
           }
         }
         # run selected cell QC algorithms
-        print(table(qcSample))
-        print(algoList)
-        print(input$qcAssaySelect)
-        print(qcCollName)
-        print(paramsList)
         vals$counts <- runCellQC(inSCE = vals$original,
                                  algorithms = algoList,
                                  sample = qcSample,
                                  collectionName = qcCollName,
                                  useAssay = input$qcAssaySelect,
                                  paramsList = paramsList)
-        redDimList <- strsplit(reducedDimNames(vals$counts), " ")
+        vals$counts <- expSetDataTag(
+          inSCE = vals$counts,
+          assayType = "raw",
+          assays = assayNames(vals$counts),
+          append = FALSE)
+        # redDimList <- strsplit(reducedDimNames(vals$counts), " ")
         # run getUMAP
+        message(paste0(date(), " ... Running 'UMAP'"))
         vals$counts <- getUMAP(inSCE = vals$counts,
                                  sample = qcSample,
                                  useAssay = input$qcAssaySelect,
@@ -1240,6 +1258,7 @@ shinyServer(function(input, output, session) {
         updateQCPlots()
       }
     })
+
   }))
 
   #-----------#
@@ -1354,6 +1373,17 @@ shinyServer(function(input, output, session) {
       }
       if (!is.null(input$filterThresh)) {
           categoricalCol = TRUE
+      }
+      if (isTRUE(input$colLT) && isTRUE(input$colGT)) {
+        if (criteriaGT > criteriaLT) {
+          insertUI(
+            selector = "#filterCrErrors",
+            ui = wellPanel(id = "voidRange",
+                           tags$b("Please set a valid range.",
+                                  style = "color: red;"))
+          )
+          return()
+        }
       }
       # new row in parameters table
       addToColFilterParams(name = input$filterColSelect,
@@ -1841,32 +1871,29 @@ shinyServer(function(input, output, session) {
         if (input$assayModifyAction == "log") {
           if (input$trimAssayCheckbox) {
             assay(vals$counts, input$modifyAssayOutname) <- log2(assay(vals$counts, input$modifyAssaySelect) + 1)
-            assay(vals$counts, input$modifyAssayOutname) <- trimCounts(assay(vals$counts, input$modifyAssayOutname), c(input$trimUpperValueAssay, input$trimLowerValueAssay))
+            expData(vals$counts, input$modifyAssayOutname, tag = "transformed normalized", altExp = FALSE) <- trimCounts(assay(vals$counts, input$modifyAssayOutname), c(input$trimUpperValueAssay, input$trimLowerValueAssay))
           }
           else {
-            assay(vals$counts, input$modifyAssayOutname) <- log2(assay(vals$counts, input$modifyAssaySelect) + 1)
+            expData(vals$counts, input$modifyAssayOutname, tag = "transformed normalized", altExp = FALSE) <- log2(assay(vals$counts, input$modifyAssaySelect) + 1)
           }
         }
         else if (input$assayModifyAction == "log1p") {
           if (input$trimAssayCheckbox) {
             assay(vals$counts, input$modifyAssayOutname) <- log1p(assay(vals$counts, input$modifyAssaySelect))
-            assay(vals$counts, input$modifyAssayOutname) <- trimCounts(assay(vals$counts, input$modifyAssayOutname), c(input$trimUpperValueAssay, input$trimLowerValueAssay))
+            expData(vals$counts, input$modifyAssayOutname, tag = "transformed normalized", altExp = FALSE) <- trimCounts(assay(vals$counts, input$modifyAssayOutname), c(input$trimUpperValueAssay, input$trimLowerValueAssay))
           }
           else {
-            assay(vals$counts, input$modifyAssayOutname) <- log1p(assay(vals$counts, input$modifyAssaySelect))
+            expData(vals$counts, input$modifyAssayOutname, tag = "transformed normalized", altExp = FALSE) <- log1p(assay(vals$counts, input$modifyAssaySelect))
           }
         }
         else if (input$assayModifyAction == "z.score") {
           if (input$trimAssayCheckbox) {
             assay(vals$counts, input$modifyAssayOutname) <- computeZScore(assay(vals$counts, input$modifyAssaySelect))
-            assay(vals$counts, input$modifyAssayOutname) <- trimCounts(assay(vals$counts, input$modifyAssayOutname), c(input$trimUpperValueAssay, input$trimLowerValueAssay))
+            expData(vals$counts, input$modifyAssayOutname, tag = "scaled", altExp = FALSE) <- trimCounts(assay(vals$counts, input$modifyAssayOutname), c(input$trimUpperValueAssay, input$trimLowerValueAssay))
           }
           else {
-            assay(vals$counts, input$modifyAssayOutname) <- computeZScore(assay(vals$counts, input$modifyAssaySelect))
+            expData(vals$counts, input$modifyAssayOutname, tag = "scaled", altExp = FALSE) <- computeZScore(assay(vals$counts, input$modifyAssaySelect))
           }
-        }
-        else if(input$assayModifyAction == "trim"){
-          assay(vals$counts, input$modifyAssayOutname) <- trimCounts(assay(vals$counts, input$modifyAssaySelect), c(input$trimUpperValueAssay, input$trimLowerValueAssay))
         }
         else {
           showNotification("Error during assay transformation!", type = "error")
@@ -1894,13 +1921,13 @@ shinyServer(function(input, output, session) {
   observeEvent(input$normalizeAssay, {
     req(vals$counts)
     withBusyIndicatorServer("normalizeAssay", {
-      if(!(input$normalizeAssaySelect %in% names(assays(vals$counts)))){
+      if(!(input$normalizeAssaySelect %in% expDataNames(vals$counts))){
         stop("Selected assay does not exist!")
       }
       else if(input$normalizeAssayOutname == ""){
         stop("Assay Name cannot be empty!")
       }
-      else if(input$normalizeAssayOutname %in% names(assays(vals$counts))){
+      else if(input$normalizeAssayOutname %in% expDataNames(vals$counts)){
         stop("Your selected Assay Name already exists! Try another Assay Name!")
       }
       else if(input$normalizeAssaySelect == ""){
@@ -1921,12 +1948,8 @@ shinyServer(function(input, output, session) {
           # updateAssayInputs()
         }
         else if (input$normalizeAssayMethodSelect == "CPM") {
-          sctkAssay(vals$counts, input$normalizeAssayOutname, tag = "normalized") <- scater::calculateCPM(
-            x = assay(vals$counts, input$normalizeAssaySelect))
-
-          # assay(vals$counts, input$normalizeAssayOutname) <- scater::calculateCPM(
-          #   x = assay(vals$counts, input$normalizeAssaySelect))
-
+          result <- scater::calculateCPM(x = assay(vals$counts, input$normalizeAssaySelect))
+          expData(vals$counts, input$normalizeAssayOutname, tag = "normalized", altExp = FALSE) <- result
           # updateAssayInputs()
         }
         else if(input$normalizeAssayMethodSelect == "LNC"){
@@ -1945,12 +1968,6 @@ shinyServer(function(input, output, session) {
           )
           # updateAssayInputs()
         }
-        #update tags
-        # vals$counts <- singleCellTK:::.sctkSetTag(
-        #   inSCE = vals$counts,
-        #   assayType = "normalized",
-        #   input$normalizeAssayOutname
-        #   )
       }
     })
   })
@@ -2051,7 +2068,7 @@ shinyServer(function(input, output, session) {
     req(vals$counts)
     if(length(input$checkboxAssaysToRemove) > 0){
       for(i in seq(input$checkboxAssaysToRemove)){
-        sctkAssay(vals$counts, input$checkboxAssaysToRemove[i]) <- NULL
+        expData(vals$counts, input$checkboxAssaysToRemove[i]) <- NULL
       }
     }
     if(length(input$checkboxRedDimToRemove) > 0){
@@ -2105,30 +2122,30 @@ shinyServer(function(input, output, session) {
   })
 
   output$dimRedNameUI <- renderUI({
-    if (input$dimRedAssayType == 1){
+    # if (input$dimRedAssayType == 1){
       defaultText <- paste(input$dimRedAssaySelect, input$dimRedPlotMethod,
                            sep = '_')
-    } else if (input$dimRedAssayType == 2){
-      defaultText <- paste(input$dimRedAltExpAssay, input$dimRedPlotMethod,
-                           sep = '_')
-    }
+    # } else if (input$dimRedAssayType == 2){
+    #   defaultText <- paste(input$dimRedAltExpAssay, input$dimRedPlotMethod,
+    #                        sep = '_')
+    # }
     textInput('dimRedNameInput', "reducedDim Name:", defaultText)
   })
 
   output$dimRedNameUI_tsneUmap <- renderUI({
-    if (input$dimRedAssayType_tsneUmap == 1){
+    # if (input$dimRedAssayType_tsneUmap == 1){
       defaultText <- paste(input$dimRedAssaySelect_tsneUmap, input$dimRedPlotMethod_tsneUmap,
                            sep = '_')
-    } else if (input$dimRedAssayType_tsneUmap == 2){
-      defaultText <- paste(input$dimRedAltExpAssay_tsneUmap, input$dimRedPlotMethod_tsneUmap,
-                           sep = '_')
-    }
+    # } else if (input$dimRedAssayType_tsneUmap == 2){
+    #   defaultText <- paste(input$dimRedAltExpAssay_tsneUmap, input$dimRedPlotMethod_tsneUmap,
+    #                        sep = '_')
+    # }
     textInput('dimRedNameInput_tsneUmap', "reducedDim Name:", defaultText)
   })
 
   observeEvent(input$plot_heatmap_dimRed_button, {
     if (!is.null(input$picker_dimheatmap_components_dimRed)) {
-      if(input$dimRedAssayType == 1){
+      if(vals$runDimred$dimRedAssaySelect %in% assayNames(vals$counts)){
         output$plot_heatmap_dimRed <- renderPlot({
           plotHeatmapMulti(
             plots = vals$counts@metadata$seurat$heatmap_dimRed,
@@ -2136,10 +2153,10 @@ shinyServer(function(input, output, session) {
             nCol = input$slider_dimheatmap_dimRed)
         })
       }
-      else if(input$dimRedAssayType == 2){
+      else if(vals$runDimred$dimRedAssaySelect %in% expDataNames(vals$counts)){
         output$plot_heatmap_dimRed <- renderPlot({
           plotHeatmapMulti(
-            plots = altExps(vals$counts)[[input$dimRedAltExpSelect]]@metadata$seurat$heatmap_dimRed,
+            plots = altExps(vals$counts)[[vals$runDimred$dimRedAssaySelect]]@metadata$seurat$heatmap_dimRed,
             components = input$picker_dimheatmap_components_dimRed,
             nCol = input$slider_dimheatmap_dimRed)
         })
@@ -2150,6 +2167,7 @@ shinyServer(function(input, output, session) {
   observeEvent(input$runDimred, {
     if (!is.null(vals$counts)){
       withBusyIndicatorServer("runDimred", {
+        vals$runDimred$dimRedAssaySelect <- input$dimRedAssaySelect
         if (input$dimRedNameInput == ""){
           shinyalert::shinyalert("Error", "enter a reducedDim name", type = "error")
         } #check for named entered and if its a duplicate
@@ -2163,20 +2181,20 @@ shinyServer(function(input, output, session) {
               callbackR = function(x){if(isTRUE(x)){
                 dimrednamesave <- gsub(" ", "_", input$dimRedNameInput)
                 if (input$dimRedPlotMethod == "PCA"){
-                  if (input$dimRedAssayType == 1) {
+                  if (vals$runDimred$dimRedAssaySelect %in% assayNames(vals$counts)) {
                     vals$counts <- getPCA(inSCE = vals$counts,
                                           useAssay = input$dimRedAssaySelect,
                                           reducedDimName = dimrednamesave,
                                           ndim = input$dimRedNumberDims)
-                  } else if (input$dimRedAssayType == 2) {
+                  } else if (vals$runDimred$dimRedAssaySelect %in% expDataNames(vals$counts)) {
                     vals$counts <- getPCA(inSCE = vals$counts,
-                                          useAssay = input$dimRedAltExpAssay,
-                                          useAltExp = input$dimRedAltExpSelect,
+                                          useAssay = vals$runDimred$dimRedAssaySelect,
+                                          useAltExp = vals$runDimred$dimRedAssaySelect,
                                           reducedDimName = dimrednamesave,
                                           ndim = input$dimRedNumberDims)
                   }
                 } else if (input$dimRedPlotMethod == "PCASeurat"){
-                  if(input$dimRedAssayType == 1){
+                  if(vals$runDimred$dimRedAssaySelect %in% assayNames(vals$counts)){
                     vals$counts <- seuratFindHVG(
                       inSCE = vals$counts,
                       useAssay = input$dimRedAssaySelect
@@ -2187,21 +2205,21 @@ shinyServer(function(input, output, session) {
                       reducedDimName = gsub(" ", "_", input$dimRedNameInput),
                       nPCs = input$dimRedNumberDims)
                   }
-                  else if(input$dimRedAssayType == 2){
-                    altExps(vals$counts)[[input$dimRedAltExpSelect]] <- seuratFindHVG(
-                      inSCE = altExps(vals$counts)[[input$dimRedAltExpSelect]],
-                      useAssay = input$dimRedAltExpAssay,
+                  else if(vals$runDimred$dimRedAssaySelect %in% expDataNames(vals$counts)){
+                    altExps(vals$counts)[[vals$runDimred$dimRedAssaySelect]] <- seuratFindHVG(
+                      inSCE = altExps(vals$counts)[[vals$runDimred$dimRedAssaySelect]],
+                      useAssay = vals$runDimred$dimRedAssaySelect,
                       altExp = TRUE
                     )
-                    altExps(vals$counts)[[input$dimRedAltExpSelect]] <- seuratPCA(
-                      inSCE = altExps(vals$counts)[[input$dimRedAltExpSelect]],
-                      useAssay = input$dimRedAltExpAssay,
+                    altExps(vals$counts)[[vals$runDimred$dimRedAssaySelect]] <- seuratPCA(
+                      inSCE = altExps(vals$counts)[[vals$runDimred$dimRedAssaySelect]],
+                      useAssay = vals$runDimred$dimRedAssaySelect,
                       reducedDimName = gsub(" ", "_", input$dimRedNameInput),
                       nPCs = input$dimRedNumberDims)
                   }
                 }
                 else{
-                  if(input$dimRedAssayType == 1){
+                  if(vals$runDimred$dimRedAssaySelect %in% assayNames(vals$counts)){
                     vals$counts <- seuratFindHVG(
                       inSCE = vals$counts,
                       useAssay = input$dimRedAssaySelect
@@ -2212,14 +2230,14 @@ shinyServer(function(input, output, session) {
                       reducedDimName = gsub(" ", "_", input$dimRedNameInput),
                       nics = input$dimRedNumberDims)
                   }
-                  else if(input$dimRedAssayType == 2){
-                    altExps(vals$counts)[[input$dimRedAltExpSelect]] <- seuratFindHVG(
-                      inSCE = altExps(vals$counts)[[input$dimRedAltExpSelect]],
-                      useAssay = input$dimRedAltExpAssay
+                  else if(vals$runDimred$dimRedAssaySelect %in% expDataNames(vals$counts)){
+                    altExps(vals$counts)[[vals$runDimred$dimRedAssaySelect]] <- seuratFindHVG(
+                      inSCE = altExps(vals$counts)[[vals$runDimred$dimRedAssaySelect]],
+                      useAssay = vals$runDimred$dimRedAssaySelect
                     )
-                    altExps(vals$counts)[[input$dimRedAltExpSelect]] <- seuratICA(
-                      inSCE = altExps(vals$counts)[[input$dimRedAltExpSelect]],
-                      useAssay = input$dimRedAltExpAssay,
+                    altExps(vals$counts)[[vals$runDimred$dimRedAssaySelect]] <- seuratICA(
+                      inSCE = altExps(vals$counts)[[vals$runDimred$dimRedAssaySelect]],
+                      useAssay = vals$runDimred$dimRedAssaySelect,
                       reducedDimName = gsub(" ", "_", input$dimRedNameInput),
                       nics = input$dimRedNumberDims)
                   }
@@ -2230,18 +2248,18 @@ shinyServer(function(input, output, session) {
           } else {
             dimrednamesave <- gsub(" ", "_", input$dimRedNameInput)
             if (input$dimRedPlotMethod == "PCA"){
-              if (input$dimRedAssayType == 1) {
+              if (vals$runDimred$dimRedAssaySelect %in% assayNames(vals$counts)) {
                 vals$counts <- getPCA(inSCE = vals$counts,
-                                      useAssay = input$dimRedAssaySelect,
+                                      useAssay = vals$runDimred$dimRedAssaySelect,
                                       reducedDimName = dimrednamesave)
-              } else if (input$dimRedAssayType == 2) {
+              } else if (vals$runDimred$dimRedAssaySelect %in% expDataNames(vals$counts)) {
                 vals$counts <- getPCA(inSCE = vals$counts,
-                                      useAssay = input$dimRedAltExpAssay,
-                                      useAltExp = input$dimRedAltExpSelect,
+                                      useAssay = vals$runDimred$dimRedAssaySelect,
+                                      useAltExp = vals$runDimred$dimRedAssaySelect,
                                       reducedDimName = dimrednamesave)
               }
             } else if (input$dimRedPlotMethod == "PCASeurat"){
-              if(input$dimRedAssayType == 1){
+              if(vals$runDimred$dimRedAssaySelect %in% assayNames(vals$counts)){
                 vals$counts <- seuratFindHVG(
                   inSCE = vals$counts,
                   useAssay = input$dimRedAssaySelect
@@ -2252,21 +2270,21 @@ shinyServer(function(input, output, session) {
                   reducedDimName = gsub(" ", "_", input$dimRedNameInput),
                   nPCs = input$dimRedNumberDims)
               }
-              else if(input$dimRedAssayType == 2){
-                altExps(vals$counts)[[input$dimRedAltExpSelect]] <- seuratFindHVG(
-                  inSCE = altExps(vals$counts)[[input$dimRedAltExpSelect]],
-                  useAssay = input$dimRedAltExpAssay,
+              else if(vals$runDimred$dimRedAssaySelect %in% expDataNames(vals$counts)){
+                altExps(vals$counts)[[vals$runDimred$dimRedAssaySelect]] <- seuratFindHVG(
+                  inSCE = altExps(vals$counts)[[vals$runDimred$dimRedAssaySelect]],
+                  useAssay = vals$runDimred$dimRedAssaySelect,
                   altExp = TRUE
                 )
-                altExps(vals$counts)[[input$dimRedAltExpSelect]] <- seuratPCA(
-                  inSCE = altExps(vals$counts)[[input$dimRedAltExpSelect]],
-                  useAssay = input$dimRedAltExpAssay,
+                altExps(vals$counts)[[vals$runDimred$dimRedAssaySelect]] <- seuratPCA(
+                  inSCE = altExps(vals$counts)[[vals$runDimred$dimRedAssaySelect]],
+                  useAssay = vals$runDimred$dimRedAssaySelect,
                   reducedDimName = gsub(" ", "_", input$dimRedNameInput),
                   nPCs = input$dimRedNumberDims)
               }
             }
             else{
-              if(input$dimRedAssayType == 1){
+              if(vals$runDimred$dimRedAssaySelect %in% assayNames(vals$counts)){
                 vals$counts <- seuratFindHVG(
                   inSCE = vals$counts,
                   useAssay = input$dimRedAssaySelect
@@ -2277,15 +2295,15 @@ shinyServer(function(input, output, session) {
                   reducedDimName = gsub(" ", "_", input$dimRedNameInput),
                   nics = input$dimRedNumberDims)
               }
-              else if(input$dimRedAssayType == 2){
-                altExps(vals$counts)[[input$dimRedAltExpSelect]] <- seuratFindHVG(
-                  inSCE = altExps(vals$counts)[[input$dimRedAltExpSelect]],
-                  useAssay = input$dimRedAltExpAssay,
+              else if(vals$runDimred$dimRedAssaySelect %in% expDataNames(vals$counts)){
+                altExps(vals$counts)[[vals$runDimred$dimRedAssaySelect]] <- seuratFindHVG(
+                  inSCE = altExps(vals$counts)[[vals$runDimred$dimRedAssaySelect]],
+                  useAssay = vals$runDimred$dimRedAssaySelect,
                   altExp = TRUE
                 )
-                altExps(vals$counts)[[input$dimRedAltExpSelect]] <- seuratICA(
-                  inSCE = altExps(vals$counts)[[input$dimRedAltExpSelect]],
-                  useAssay = input$dimRedAltExpAssay,
+                altExps(vals$counts)[[vals$runDimred$dimRedAssaySelect]] <- seuratICA(
+                  inSCE = altExps(vals$counts)[[vals$runDimred$dimRedAssaySelect]],
+                  useAssay = vals$runDimred$dimRedAssaySelect,
                   reducedDimName = gsub(" ", "_", input$dimRedNameInput),
                   nics = input$dimRedNumberDims)
               }
@@ -2298,12 +2316,12 @@ shinyServer(function(input, output, session) {
 
     #extra code added by irzam starts here:
     if(input$dimRedPlotMethod == "PCA"){
-      if(input$dimRedAssayType == 1){
+      if(input$dimRedAssaySelect %in% assayNames(vals$counts)){
         redDim <- reducedDim(vals$counts, gsub(" ", "_", input$dimRedNameInput))
       }
-      else if(input$dimRedAssayType == 2){
+      else if(input$dimRedAssaySelect %in% expDataNames(vals$counts)){
         redDim <- reducedDim(vals$counts, gsub(" ", "_", input$dimRedNameInput))
-        reducedDim(altExps(vals$counts)[[input$dimRedAltExpSelect]],  gsub(" ", "_", input$dimRedNameInput)) <- redDim
+        reducedDim(altExps(vals$counts)[[input$dimRedAssaySelect]],  gsub(" ", "_", input$dimRedNameInput)) <- redDim
       }
       new_pca <- CreateDimReducObject(
         embeddings = redDim,
@@ -2327,7 +2345,7 @@ shinyServer(function(input, output, session) {
 
     withProgress(message = "Plotting PCA/ICA", max = 1, value = 1, {
       redDimName <- gsub(" ", "_", input$dimRedNameInput)
-      if(input$dimRedAssayType == 1){
+      if(input$dimRedAssaySelect %in% assayNames(vals$counts)){
         output$plotDimRed_pca <- renderPlotly({
           plotly::ggplotly(
             plotDimRed(
@@ -2338,11 +2356,11 @@ shinyServer(function(input, output, session) {
           )
         })
       }
-      else if(input$dimRedAssayType == 2){
+      else if(input$dimRedAssaySelect %in% expDataNames(vals$counts)){
         output$plotDimRed_pca <- renderPlotly({
           plotly::ggplotly(
             plotDimRed(
-              inSCE = altExps(vals$counts)[[input$dimRedAltExpSelect]],
+              inSCE = altExps(vals$counts)[[vals$runDimred$dimRedAssaySelect]],
               useReduction = redDimName,
               xAxisLabel = paste0(input$dimRedPlotMethod, "_1"),
               yAxisLabel = paste0(input$dimRedPlotMethod, "_2"))
@@ -2361,29 +2379,29 @@ shinyServer(function(input, output, session) {
 
       if (input$dimRedPlotMethod == "PCASeurat"){
         withProgress(message = "Generating Elbow Plot", max = 1, value = 1, {
-          if(input$dimRedAssayType == 1){
+          if(vals$runDimred$dimRedAssaySelect %in% assayNames(vals$counts)){
             output$plotDimRed_elbow <- renderPlotly({
               seuratElbowPlot(inSCE = vals$counts)
             })
           }
-          else if(input$dimRedAssayType == 2){
+          else if(vals$runDimred$dimRedAssaySelect %in% expDataNames(vals$counts)){
             output$plotDimRed_elbow <- renderPlotly({
-              seuratElbowPlot(inSCE = altExps(vals$counts)[[input$dimRedAltExpSelect]])
+              seuratElbowPlot(inSCE = altExps(vals$counts)[[vals$runDimred$dimRedAssaySelect]])
             })
           }
         })
       }
       else{
         withProgress(message = "Generating Elbow Plot", max = 1, value = 1, {
-          if(input$dimRedAssayType == 1){
+          if(input$dimRedAssaySelect %in% assayNames(vals$counts)){
             output$plotDimRed_elbow <- renderPlotly({
               seuratElbowPlot(inSCE = vals$counts,
                               externalReduction = new_pca)
             })
           }
-          else if(input$dimRedAssayType == 2){
+          else if(input$dimRedAssaySelect %in% expDataNames(vals$counts)){
             output$plotDimRed_elbow <- renderPlotly({
-              seuratElbowPlot(inSCE = altExps(vals$counts)[[input$dimRedAltExpSelect]],
+              seuratElbowPlot(inSCE = altExps(vals$counts)[[vals$runDimred$dimRedAssaySelect]],
                               externalReduction = new_pca)
             })
           }
@@ -2427,7 +2445,7 @@ shinyServer(function(input, output, session) {
       if (input$dimRedPlotMethod == "PCASeurat")
       {
         withProgress(message = "Generating Heatmaps", max = 1, value = 1, {
-          if(input$dimRedAssayType == 1){
+          if(input$dimRedAssaySelect %in% assayNames(vals$counts)){
             vals$counts@metadata$seurat$heatmap_dimRed <- singleCellTK::computeHeatmap(
               inSCE = vals$counts,
               useAssay = input$dimRedAssaySelect,
@@ -2439,23 +2457,23 @@ shinyServer(function(input, output, session) {
               plotHeatmapMulti(vals$counts@metadata$seurat$heatmap_dimRed)
             })
           }
-          else if(input$dimRedAssayType == 2){
-            altExps(vals$counts)[[input$dimRedAltExpSelect]]@metadata$seurat$heatmap_dimRed <- singleCellTK::computeHeatmap(
-              inSCE = altExps(vals$counts)[[input$dimRedAltExpSelect]],
-              useAssay = input$dimRedAltExpAssay,
+          else if(vals$runDimred$dimRedAssaySelect %in% expDataNames(vals$counts)){
+            altExps(vals$counts)[[vals$runDimred$dimRedAssaySelect]]@metadata$seurat$heatmap_dimRed <- singleCellTK::computeHeatmap(
+              inSCE = altExps(vals$counts)[[vals$runDimred$dimRedAssaySelect]],
+              useAssay = vals$runDimred$dimRedAssaySelect,
               dims = 1:input$dimRedNumberDims,
               nfeatures = input$dimRedNFeaturesHeatmap,
               reduction = "pca"
             )
             output$plot_heatmap_dimRed <- renderPlot({
-              plotHeatmapMulti(altExps(vals$counts)[[input$dimRedAltExpSelect]]@metadata$seurat$heatmap_dimRed)
+              plotHeatmapMulti(altExps(vals$counts)[[vals$runDimred$dimRedAssaySelect]]@metadata$seurat$heatmap_dimRed)
             })
           }
         })
       }
       else if(input$dimRedPlotMethod == "ICASeurat"){
         withProgress(message = "Generating Heatmaps", max = 1, value = 1, {
-          if(input$dimRedAssayType == 1){
+          if(vals$runDimred$dimRedAssaySelect %in% assayNames(vals$counts)){
             vals$counts@metadata$seurat$heatmap_dimRed <- singleCellTK::computeHeatmap(
               inSCE = vals$counts,
               useAssay = input$dimRedAssaySelect,
@@ -2467,23 +2485,23 @@ shinyServer(function(input, output, session) {
               plotHeatmapMulti(vals$counts@metadata$seurat$heatmap_dimRed)
             })
           }
-          else if(input$dimRedAssayType == 2){
-            altExps(vals$counts)[[input$dimRedAltExpSelect]]@metadata$seurat$heatmap_dimRed <- singleCellTK::computeHeatmap(
-              inSCE = altExps(vals$counts)[[input$dimRedAltExpSelect]],
-              useAssay = input$dimRedAltExpAssay,
+          else if(vals$runDimred$dimRedAssaySelect %in% expDataNames(vals$counts)){
+            altExps(vals$counts)[[vals$runDimred$dimRedAssaySelect]]@metadata$seurat$heatmap_dimRed <- singleCellTK::computeHeatmap(
+              inSCE = altExps(vals$counts)[[vals$runDimred$dimRedAssaySelect]],
+              useAssay = vals$runDimred$dimRedAssaySelect,
               dims = 1:input$dimRedNumberDims,
               nfeatures = input$dimRedNFeaturesHeatmap,
               reduction = "ica"
             )
             output$plot_heatmap_dimRed <- renderPlot({
-              plotHeatmapMulti(altExps(vals$counts)[[input$dimRedAltExpSelect]]@metadata$seurat$heatmap_dimRed)
+              plotHeatmapMulti(altExps(vals$counts)[[vals$runDimred$dimRedAssaySelect]]@metadata$seurat$heatmap_dimRed)
             })
           }
         })
       }
       else{
         withProgress(message = "Generating Heatmaps", max = 1, value = 1, {
-          if(input$dimRedAssayType == 1){
+          if(input$dimRedAssaySelect %in% assayNames(vals$counts)){
             vals$counts@metadata$seurat$heatmap_dimRed <- singleCellTK::computeHeatmap(
               inSCE = vals$counts,
               useAssay = input$dimRedAssaySelect,
@@ -2495,16 +2513,16 @@ shinyServer(function(input, output, session) {
               plotHeatmapMulti(vals$counts@metadata$seurat$heatmap_dimRed)
             })
           }
-          else if(input$dimRedAssayType == 2){
-            altExps(vals$counts)[[input$dimRedAltExpSelect]]@metadata$seurat$heatmap_dimRed <- singleCellTK::computeHeatmap(
-              inSCE = altExps(vals$counts)[[input$dimRedAltExpSelect]],
-              useAssay = input$dimRedAltExpAssay,
+          else if(input$dimRedAssaySelect %in% expDataNames(vals$counts)){
+            altExps(vals$counts)[[input$dimRedAssaySelect]]@metadata$seurat$heatmap_dimRed <- singleCellTK::computeHeatmap(
+              inSCE = altExps(vals$counts)[[input$dimRedAssaySelect]],
+              useAssay = input$dimRedAssaySelect,
               dims = 1:input$dimRedNumberDims,
               nfeatures = input$dimRedNFeaturesHeatmap,
               externalReduction = new_pca
             )
             output$plot_heatmap_dimRed <- renderPlot({
-              plotHeatmapMulti(altExps(vals$counts)[[input$dimRedAltExpSelect]]@metadata$seurat$heatmap_dimRed)
+              plotHeatmapMulti(altExps(vals$counts)[[vals$runDimred$dimRedAssaySelect]]@metadata$seurat$heatmap_dimRed)
             })
           }
         })
@@ -2528,7 +2546,7 @@ shinyServer(function(input, output, session) {
 
           if (input$dimRedPlotMethod == "PCASeurat"){
             withProgress(message = "Generating JackStraw Plot", max = 1, value = 1, {
-              if(input$dimRedAssayType == 1){
+              if(vals$runDimred$dimRedAssaySelect %in% assayNames(vals$counts)){
                 vals$counts <- seuratComputeJackStraw(inSCE = vals$counts,
                                                       useAssay = input$dimRedAssaySelect,
                                                       dims = input$dimRedNumberDims)
@@ -2536,19 +2554,19 @@ shinyServer(function(input, output, session) {
                   seuratJackStrawPlot(inSCE = vals$counts, dims = input$dimRedNumberDims)
                 })
               }
-              else if(input$dimRedAssayType == 2){
-                altExps(vals$counts)[[input$dimRedAltExpSelect]] <- seuratComputeJackStraw(inSCE = altExps(vals$counts)[[input$dimRedAltExpSelect]],
-                                                      useAssay = input$dimRedAltExpAssay,
+              else if(vals$runDimred$dimRedAssaySelect %in% expDataNames(vals$counts)){
+                altExps(vals$counts)[[vals$runDimred$dimRedAssaySelect]] <- seuratComputeJackStraw(inSCE = altExps(vals$counts)[[vals$runDimred$dimRedAssaySelect]],
+                                                      useAssay = vals$runDimred$dimRedAssaySelect,
                                                       dims = input$dimRedNumberDims)
                 output$plot_jackstraw_dimRed <- renderPlot({
-                  seuratJackStrawPlot(inSCE = altExps(vals$counts)[[input$dimRedAltExpSelect]], dims = input$dimRedNumberDims)
+                  seuratJackStrawPlot(inSCE = altExps(vals$counts)[[vals$runDimred$dimRedAssaySelect]], dims = input$dimRedNumberDims)
                 })
               }
             })
           }
           else{
             withProgress(message = "Generating JackStraw Plot", max = 1, value = 1, {
-              if(input$dimRedAssayType == 1){
+              if(input$dimRedAssaySelect %in% assayNames(vals$counts)){
                 vals$counts <- seuratComputeJackStraw(inSCE = vals$counts,
                                                       useAssay = input$dimRedAssaySelect,
                                                       dims = input$dimRedNumberDims,
@@ -2558,13 +2576,13 @@ shinyServer(function(input, output, session) {
                                       dims = input$dimRedNumberDims)
                 })
               }
-              else if(input$dimRedAssayType == 2){
-                altExps(vals$counts)[[input$dimRedAltExpSelect]] <- seuratComputeJackStraw(inSCE = altExps(vals$counts)[[input$dimRedAltExpSelect]],
-                                                      useAssay = input$dimRedAltExpAssay,
+              else if(input$dimRedAssaySelect %in% expDataNames(vals$counts)){
+                altExps(vals$counts)[[input$dimRedAssaySelect]] <- seuratComputeJackStraw(inSCE = altExps(vals$counts)[[input$dimRedAssaySelect]],
+                                                      useAssay = input$dimRedAssaySelect,
                                                       dims = input$dimRedNumberDims,
                                                       externalReduction = new_pca)
                 output$plot_jackstraw_dimRed <- renderPlot({
-                  seuratJackStrawPlot(inSCE = altExps(vals$counts)[[input$dimRedAltExpSelect]],
+                  seuratJackStrawPlot(inSCE = altExps(vals$counts)[[vals$runDimred$dimRedAssaySelect]],
                                       dims = input$dimRedNumberDims)
                 })
               }
@@ -2576,6 +2594,7 @@ shinyServer(function(input, output, session) {
   observeEvent(input$runDimred_tsneUmap, {
     if (!is.null(vals$counts)){
       withBusyIndicatorServer("runDimred_tsneUmap", {
+        vals$runDimred$dimRedAssaySelect_tsneUmap <- input$dimRedAssaySelect_tsneUmap
         if (input$dimRedNameInput_tsneUmap == ""){
           shinyalert::shinyalert("Error", "enter a reducedDim name", type = "error")
         } #check for named entered and if its a duplicate
@@ -2589,16 +2608,16 @@ shinyServer(function(input, output, session) {
               callbackR = function(x){if(isTRUE(x)){
                 dimrednamesave <- gsub(" ", "_", input$dimRedNameInput_tsneUmap)
                 if (input$dimRedPlotMethod_tsneUmap == "tSNE"){
-                  if (input$dimRedAssayType_tsneUmap == 1) {
+                  if (vals$runDimred$dimRedAssaySelect_tsneUmap %in% assayNames(vals$counts)) {
                     vals$counts <- getTSNE(inSCE = vals$counts,
                                            useAssay = input$dimRedAssaySelect_tsneUmap,
                                            reducedDimName = dimrednamesave,
                                            perplexity = input$perplexityTSNE,
                                            n_iterations = input$iterTSNE)
-                  } else if (input$dimRedAssayType_tsneUmap == 2) {
+                  } else if (vals$runDimred$dimRedAssaySelect_tsneUmap %in% expDataNames(vals$counts)) {
                     vals$counts <- getTSNE(inSCE = vals$counts,
-                                           useAssay = input$dimRedAltExpAssay_tsneUmap,
-                                           useAltExp = input$dimRedAltExpSelect_tsneUmap,
+                                           useAssay = vals$runDimred$dimRedAssaySelect_tsneUmap,
+                                           useAltExp = vals$runDimred$dimRedAssaySelect_tsneUmap,
                                            reducedDimName = dimrednamesave,
                                            perplexity = input$perplexityTSNE,
                                            n_iterations = input$iterTSNE)
@@ -2607,7 +2626,7 @@ shinyServer(function(input, output, session) {
                   if (is.na(input$alphaUMAP)) {
                     stop("Learning rate (alpha) must be a numeric non-empty value!")
                   }
-                  if (input$dimRedAssayType_tsneUmap == 1) {
+                  if (vals$runDimred$dimRedAssaySelect_tsneUmap %in% assayNames(vals$counts)) {
                     vals$counts <- getUMAP(inSCE = vals$counts,
                                            useAssay = input$dimRedAssaySelect_tsneUmap,
                                            reducedDimName = dimrednamesave,
@@ -2615,10 +2634,10 @@ shinyServer(function(input, output, session) {
                                            nIterations = input$iterUMAP,
                                            minDist = input$mindistUMAP,
                                            alpha = input$alphaUMAP)
-                  } else if (input$dimRedAssayType_tsneUmap == 2) {
+                  } else if (vals$runDimred$dimRedAssaySelect_tsneUmap %in% expDataNames(vals$counts)) {
                     vals$counts <- getUMAP(inSCE = vals$counts,
-                                           useAssay = input$dimRedAltExpAssay_tsneUmap,
-                                           useAltExp = input$dimRedAltExpSelect_tsneUmap,
+                                           useAssay = vals$runDimred$dimRedAssaySelect_tsneUmap,
+                                           useAltExp = vals$runDimred$dimRedAssaySelect_tsneUmap,
                                            reducedDimName = dimrednamesave,
                                            nNeighbors = input$neighborsUMAP,
                                            nIterations = input$iterUMAP,
@@ -2633,22 +2652,22 @@ shinyServer(function(input, output, session) {
           } else {
             dimrednamesave <- gsub(" ", "_", input$dimRedNameInput_tsneUmap)
             if (input$dimRedPlotMethod_tsneUmap == "tSNE"){
-              if (input$dimRedAssayType_tsneUmap == 1) {
+              if (vals$runDimred$dimRedAssaySelect_tsneUmap %in% assayNames(vals$counts)) {
                 vals$counts <- getTSNE(inSCE = vals$counts,
                                        useAssay = input$dimRedAssaySelect_tsneUmap,
                                        reducedDimName = dimrednamesave,
                                        perplexity = input$perplexityTSNE,
                                        n_iterations = input$iterTSNE)
-              } else if (input$dimRedAssayType_tsneUmap == 2) {
+              } else if (vals$runDimred$dimRedAssaySelect_tsneUmap %in% expDataNames(vals$counts)) {
                 vals$counts <- getTSNE(inSCE = vals$counts,
-                                       useAssay = input$dimRedAltExpAssay_tsneUmap,
-                                       useAltExp = input$dimRedAltExpSelect_tsneUmap,
+                                       useAssay = vals$runDimred$dimRedAssaySelect_tsneUmap,
+                                       useAltExp = vals$runDimred$dimRedAssaySelect_tsneUmap,
                                        reducedDimName = dimrednamesave,
                                        perplexity = input$perplexityTSNE,
                                        n_iterations = input$iterTSNE)
               }
             } else if(input$dimRedPlotMethod_tsneUmap == "seuratTSNE"){
-              if (input$dimRedAssayType_tsneUmap == 1){
+              if (vals$runDimred$dimRedAssaySelect_tsneUmap %in% assayNames(vals$counts)){
                 vals$counts <- seuratFindHVG(inSCE = vals$counts,
                                              useAssay = input$dimRedAssaySelect_tsneUmap)
                 if(input$reductionMethodUMAPTSNEDimRed == "pca"){
@@ -2666,25 +2685,25 @@ shinyServer(function(input, output, session) {
                                              useReduction = input$reductionMethodUMAPTSNEDimRed)
               }
               else{
-                altExps(vals$counts)[[input$dimRedAltExpSelect_tsneUmap]] <- seuratFindHVG(inSCE = altExps(vals$counts)[[input$dimRedAltExpSelect_tsneUmap]],
-                                             useAssay = input$dimRedAltExpAssay_tsneUmap,
+                altExps(vals$counts)[[vals$runDimred$dimRedAssaySelect_tsneUmap]] <- seuratFindHVG(inSCE = altExps(vals$counts)[[vals$runDimred$dimRedAssaySelect_tsneUmap]],
+                                             useAssay = vals$runDimred$dimRedAssaySelect_tsneUmap,
                                              altExp = TRUE)
                 if(input$reductionMethodUMAPTSNEDimRed == "pca"){
-                  altExps(vals$counts)[[input$dimRedAltExpSelect_tsneUmap]] <- seuratPCA(inSCE = altExps(vals$counts)[[input$dimRedAltExpSelect_tsneUmap]],
-                                           useAssay = input$dimRedAltExpAssay_tsneUmap)
+                  altExps(vals$counts)[[vals$runDimred$dimRedAssaySelect_tsneUmap]] <- seuratPCA(inSCE = altExps(vals$counts)[[vals$runDimred$dimRedAssaySelect_tsneUmap]],
+                                           useAssay = vals$runDimred$dimRedAssaySelect_tsneUmap)
                 }
                 else{
-                  altExps(vals$counts)[[input$dimRedAltExpSelect_tsneUmap]] <- seuratICA(inSCE = altExps(vals$counts)[[input$dimRedAltExpSelect_tsneUmap]],
-                                           useAssay = input$dimRedAltExpAssay_tsneUmap)
+                  altExps(vals$counts)[[vals$runDimred$dimRedAssaySelect_tsneUmap]] <- seuratICA(inSCE = altExps(vals$counts)[[vals$runDimred$dimRedAssaySelect_tsneUmap]],
+                                           useAssay = vals$runDimred$dimRedAssaySelect_tsneUmap)
                 }
-                altExps(vals$counts)[[input$dimRedAltExpSelect_tsneUmap]] <- seuratRunTSNE(inSCE = altExps(vals$counts)[[input$dimRedAltExpSelect_tsneUmap]],
+                altExps(vals$counts)[[vals$runDimred$dimRedAssaySelect_tsneUmap]] <- seuratRunTSNE(inSCE = altExps(vals$counts)[[vals$runDimred$dimRedAssaySelect_tsneUmap]],
                                              reducedDimName = dimrednamesave,
                                              dims = input$dimRedNumberDims_tsneUmap,
                                              perplexity = input$perplexityTSNEDimRed,
                                              useReduction = input$reductionMethodUMAPTSNEDimRed)
               }
             } else if(input$dimRedPlotMethod_tsneUmap == "seuratUMAP"){
-              if (input$dimRedAssayType_tsneUmap == 1){
+              if (vals$runDimred$dimRedAssaySelect_tsneUmap %in% assayNames(vals$counts)){
                 vals$counts <- seuratFindHVG(inSCE = vals$counts,
                                              useAssay = input$dimRedAssaySelect_tsneUmap)
                 if(input$reductionMethodUMAPTSNEDimRed == "pca"){
@@ -2704,18 +2723,18 @@ shinyServer(function(input, output, session) {
                                              spread = input$spreadUMAPDimRed)
               }
               else{
-                altExps(vals$counts)[[input$dimRedAltExpSelect_tsneUmap]] <- seuratFindHVG(inSCE = altExps(vals$counts)[[input$dimRedAltExpSelect_tsneUmap]],
-                                                                                           useAssay = input$dimRedAltExpAssay_tsneUmap,
+                altExps(vals$counts)[[vals$runDimred$dimRedAssaySelect_tsneUmap]] <- seuratFindHVG(inSCE = altExps(vals$counts)[[vals$runDimred$dimRedAssaySelect_tsneUmap]],
+                                                                                           useAssay = vals$runDimred$dimRedAssaySelect_tsneUmap,
                                                                                            altExp = TRUE)
                 if(input$reductionMethodUMAPTSNEDimRed == "pca"){
-                  altExps(vals$counts)[[input$dimRedAltExpSelect_tsneUmap]] <- seuratPCA(inSCE = altExps(vals$counts)[[input$dimRedAltExpSelect_tsneUmap]],
-                                                                                         useAssay = input$dimRedAltExpAssay_tsneUmap)
+                  altExps(vals$counts)[[vals$runDimred$dimRedAssaySelect_tsneUmap]] <- seuratPCA(inSCE = altExps(vals$counts)[[vals$runDimred$dimRedAssaySelect_tsneUmap]],
+                                                                                         useAssay = vals$runDimred$dimRedAssaySelect_tsneUmap)
                 }
                 else{
-                  altExps(vals$counts)[[input$dimRedAltExpSelect_tsneUmap]] <- seuratICA(inSCE = altExps(vals$counts)[[input$dimRedAltExpSelect_tsneUmap]],
-                                                                                         useAssay = input$dimRedAltExpAssay_tsneUmap)
+                  altExps(vals$counts)[[vals$runDimred$dimRedAssaySelect_tsneUmap]] <- seuratICA(inSCE = altExps(vals$counts)[[vals$runDimred$dimRedAssaySelect_tsneUmap]],
+                                                                                         useAssay = vals$runDimred$dimRedAssaySelect_tsneUmap)
                 }
-                altExps(vals$counts)[[input$dimRedAltExpSelect_tsneUmap]] <- seuratRunUMAP(inSCE = altExps(vals$counts)[[input$dimRedAltExpSelect_tsneUmap]],
+                altExps(vals$counts)[[vals$runDimred$dimRedAssaySelect_tsneUmap]] <- seuratRunUMAP(inSCE = altExps(vals$counts)[[vals$runDimred$dimRedAssaySelect_tsneUmap]],
                                                                                            reducedDimName = dimrednamesave,
                                                                                            useReduction = input$reductionMethodUMAPTSNEDimRed,
                                                                                            dims = input$dimRedNumberDims_tsneUmap,
@@ -2729,7 +2748,7 @@ shinyServer(function(input, output, session) {
               if (is.na(input$alphaUMAP)) {
                 stop("Learning rate (alpha) must be a numeric non-empty value!")
               }
-              if (input$dimRedAssayType_tsneUmap == 1) {
+              if (vals$runDimred$dimRedAssaySelect_tsneUmap %in% assayNames(vals$counts)) {
                 vals$counts <- getUMAP(inSCE = vals$counts,
                                        useAssay = input$dimRedAssaySelect_tsneUmap,
                                        reducedDimName = dimrednamesave,
@@ -2737,10 +2756,10 @@ shinyServer(function(input, output, session) {
                                        nIterations = input$iterUMAP,
                                        minDist = input$mindistUMAP,
                                        alpha = input$alphaUMAP)
-              } else if (input$dimRedAssayType_tsneUmap == 2) {
+              } else if (vals$runDimred$dimRedAssaySelect_tsneUmap %in% expDataNames(vals$counts)) {
                 vals$counts <- getUMAP(inSCE = vals$counts,
-                                       useAssay = input$dimRedAltExpAssay_tsneUmap,
-                                       useAltExp = input$dimRedAltExpSelect_tsneUmap,
+                                       useAssay = vals$runDimred$dimRedAssaySelect_tsneUmap,
+                                       useAltExp = vals$runDimred$dimRedAssaySelect_tsneUmap,
                                        reducedDimName = dimrednamesave,
                                        nNeighbors = input$neighborsUMAP,
                                        nIterations = input$iterUMAP,
@@ -2778,7 +2797,7 @@ shinyServer(function(input, output, session) {
 
     withProgress(message = "Plotting tSNE/UMAP", max = 1, value = 1, {
       redDimName <- gsub(" ", "_", input$dimRedNameInput_tsneUmap)
-      if(input$dimRedAssayType_tsneUmap == 1){
+      if(vals$runDimred$dimRedAssaySelect_tsneUmap %in% assayNames(vals$counts)){
         output$plotDimRed_tsneUmap <- renderPlotly({
           plotly::ggplotly(plotDimRed(
             inSCE = vals$counts,
@@ -2788,12 +2807,12 @@ shinyServer(function(input, output, session) {
           ))
         })
       }
-      else if(input$dimRedAssayType_tsneUmap == 2){
+      else if(vals$runDimred$dimRedAssaySelect_tsneUmap %in% expDataNames(vals$counts)){
         if(input$dimRedPlotMethod_tsneUmap == "seuratTSNE"
            || input$dimRedPlotMethod_tsneUmap == "seuratUMAP"){
           output$plotDimRed_tsneUmap <- renderPlotly({
             plotly::ggplotly(plotDimRed(
-              inSCE = altExps(vals$counts)[[input$dimRedAltExpSelect_tsneUmap]],
+              inSCE = altExps(vals$counts)[[vals$runDimred$dimRedAssaySelect_tsneUmap]],
               useReduction = redDimName,
               xAxisLabel = paste0(input$dimRedPlotMethod_tsneUmap,"_1"),
               yAxisLabel = paste0(input$dimRedPlotMethod_tsneUmap,"_2")
@@ -4919,6 +4938,7 @@ shinyServer(function(input, output, session) {
         }
         vals$hvgCalculated$status <- TRUE
         vals$hvgCalculated$method <- input$hvgMethodFS
+        vals$hvgCalculated$assayName <- input$assaySelectFS_Norm
       }
     })
   })
@@ -4984,7 +5004,8 @@ shinyServer(function(input, output, session) {
                 vals$counts <- subsetSCERows(vals$counts,
                                              which(rownames(vals$counts) %in% HVGs),
                                              returnAsAltExp = TRUE,
-                                             altExpName = input$hvgAltExpName)
+                                             altExpName = input$hvgAltExpName,
+                                             tag = "hvg")
                 updateAltExpInputs()
               }
             })
@@ -4999,7 +5020,16 @@ shinyServer(function(input, output, session) {
                                        which(rownames(vals$counts) %in% HVGs),
                                        returnAsAltExp = TRUE,
                                        altExpName = input$hvgAltExpName)
-          updateAltExpInputs()
+          #just keep the subset assay in altexp only
+          tempAssay <- assays(altExp(vals$counts, input$hvgAltExpName))[[paste0(input$hvgAltExpName, vals$hvgCalculated$assayName)]]
+          altAssaysToRemove <- assayNames(altExp(vals$counts, input$hvgAltExpName))
+          expData(vals$counts, input$hvgAltExpName, tag = "hvg", altExp = TRUE) <- tempAssay
+          for(i in seq(length(altAssaysToRemove))){
+            assays(altExp(vals$counts, input$hvgAltExpName), withDimnames = FALSE)[[altAssaysToRemove[i]]] <- NULL
+          }
+
+          updateAssayInputs()
+          #updateAltExpInputs()
         }
       } else {
         shinyalert::shinyalert(
@@ -5026,7 +5056,7 @@ shinyServer(function(input, output, session) {
   observeEvent(input$deAssay, {
     if(!is.null(vals$counts)){
       # MAST style sanity check for whether logged or not
-      x <- assay(vals$counts, input$deAssay)
+      x <- expData(vals$counts, input$deAssay)
       if (!all(floor(x) == x, na.rm = TRUE) & max(x, na.rm = TRUE) <
           100) {
         output$deSanityWarnThresh <- renderText("")
@@ -5422,7 +5452,7 @@ shinyServer(function(input, output, session) {
         labelBy = input$deVioLabel
       }
       # MAST style sanity check for whether logged or not
-      x <- assay(vals$counts, useAssay)
+      x <- expData(vals$counts, useAssay)
       if (!all(floor(x) == x, na.rm = TRUE) & max(x, na.rm = TRUE) <
           100) {
         output$deSanityWarnViolin <- renderText("")
@@ -5459,7 +5489,7 @@ shinyServer(function(input, output, session) {
         labelBy = input$deRegLabel
       }
       # MAST style sanity check for whether logged or not
-      x <- assay(vals$counts, useAssay)
+      x <- expData(vals$counts, useAssay)
       if (!all(floor(x) == x, na.rm = TRUE) & max(x, na.rm = TRUE) <
           100) {
         output$deSanityWarnReg <- renderText("")
@@ -6010,7 +6040,7 @@ shinyServer(function(input, output, session) {
                                             totalReads = input$numReadsSnap,
                                             cells = input$numCellsSnap,
                                             iterations = input$iterationsSnap)
-        vals$effectSizes <- calcEffectSizes(countMatrix = SummarizedExperiment::assay(vals$counts, input$snapshotAssay), condition = colData(vals$counts)[, input$selectSnapshotCondition])
+        vals$effectSizes <- calcEffectSizes(countMatrix = expData(vals$counts, input$snapshotAssay), condition = colData(vals$counts)[, input$selectSnapshotCondition])
         output$Snaplot <- renderPlot({
           plot(apply(vals$snapshot, 1, function(x){sum(x <= 0.05) / length(x)}) ~ vals$effectSizes,
                xlab = "Cohen's d effect size", ylab = "Detection power", lwd = 4, main = "Power to detect diffex by effect size")
@@ -6683,13 +6713,15 @@ shinyServer(function(input, output, session) {
 
     )
 
+    #singleCellTK:::.exportMetaSlot(vals$counts, "seuratMarkers")
+
     vals$fts <- callModule(
       module = filterTableServer,
       id = "filterSeuratFindMarker",
       dataframe = metadata(vals$counts)$seuratMarkers,
-      defaultFilterColumns = c("p_val_adj", "pct_1"),
-      defaultFilterOperators = c("<=", ">="),
-      defaultFilterValues = c("0.05", "0.8")
+      defaultFilterColumns = c("p_val_adj"),
+      defaultFilterOperators = c("<="),
+      defaultFilterValues = c("0.05")
       )
     # vals$fts <- callModule(
     #   module = filterTableServer,

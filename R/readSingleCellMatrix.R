@@ -71,7 +71,7 @@ readSingleCellMatrix <- function(file,
     if (ext2 %in% c("txt", "csv", "tab", "tsv", "unknown")) {
         dt <- data.table::fread(file)
         if (class == "Matrix") {
-            mat <- Matrix::Matrix(dt[, -1])
+            mat <- Matrix::Matrix(as.matrix(dt[, -1]))
             rownames(mat) <- dt[[1]]
         } else if (class == "matrix") {
             mat <- as.matrix(dt[, -1])
