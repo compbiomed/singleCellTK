@@ -106,14 +106,12 @@ shinyPanelBatchcorrect <- fluidPage(
     sidebarLayout(
       sidebarPanel(
         h3("Parameters"),
-        #uiOutput("batchCorrAssayUI"),
-        uiOutput("batchCorrAssay"),
-        #selectInput("batchCorrAssay", "Select Assay:", currassays),
-        selectInput("batchCorrVar", "Select Batch Annotation:", clusterChoice),
         selectInput('batchCorrMethods', "Select Batch Correction Method:",
-                    c("ComBat", "BBKNN", "FastMNN", "Limma", #"Harmony", "LIGER",
+                    c("ComBatSeq", "BBKNN", "FastMNN", "Limma", #"Harmony", "LIGER",
                       "MNN", "scanorama", "scMerge", "Seurat3 Integration",
                       "ZINBWaVE")),
+        uiOutput("batchCorrAssay"),
+        selectInput("batchCorrVar", "Select Batch Annotation:", clusterChoice),
         # BBKNN ####
         conditionalPanel(
           condition = "input.batchCorrMethods == 'BBKNN'",
@@ -125,23 +123,42 @@ shinyPanelBatchcorrect <- fluidPage(
                     value = "BBKNN"),
           withBusyIndicatorUI(actionButton("BBKNNRun", "Run"))
         ),
-        # ComBat ####
+        # ComBatSeq ####
         conditionalPanel(
-          condition = "input.batchCorrMethods == 'ComBat'",
-          h5(tags$a(href = "https://compbiomed.github.io/sctk_docs/references/runComBat.html",
-                    "(help for ComBat)", target = "_blank")),
-          selectInput("combatCond", "Select Condition of Covariance:",
+          condition = "input.batchCorrMethods == 'ComBatSeq'",
+          h5(tags$a(href = "https://compbiomed.github.io/sctk_docs/references/runComBatSeq.html",
+                    "(help for ComBatSeq)", target = "_blank")),
+          radioButtons("combatKnownCT", "Have known cell type variable?",
+                       choices = c("Yes", "No")),
+          conditionalPanel(
+            condition = "input.combatKnownCT == 'Yes'",
+            selectInput("combatCond", "Select Condition of Covariance:",
+                        clusterChoice),
+          ),
+          conditionalPanel(
+            condition = "input.combatKnownCT == 'No'",
+            radioButtons("combatCTBalance", "Are cell types balanced?",
+                         choices = c("Yes", "No")),
+            conditionalPanel(
+              condition = "input.combatCTBalance == 'No'",
+              p("Will estimate surrogate variables and use them as an empirical control"),
+            )
+          ),
+          selectInput("combatBioCond", "Select Biology Condition:",
                       clusterChoice),
-          radioButtons("combatParametric", "Adjustments:",
-                       c("Parametric", "Non-parametric"),
-                       selected = "Parametric"),
-          checkboxInput("combatMeanOnly",
-                        "Correct mean of the batch effect only",
+          checkboxInput("combatShrink",
+                        "Apply shrinkage on parameter estimation",
                         value = FALSE),
-          checkboxInput("combatRef", "Run reference batch combat:",
+          conditionalPanel(
+            condition = "input.combatShrink == true",
+            numericInput("combatNGene",
+                         "Number of random genes to use in empirical Bayes estimation",
+                         value = NULL)
+          ),
+          checkboxInput("combatShrinkDisp",
+                        "Apply shrinkage on dispersion",
                         value = FALSE),
-          uiOutput("selectCombatRefBatchUI"),
-          textInput("combatSaveAssay", "Assay Name to Use:", value = "ComBat"),
+          textInput("combatSaveAssay", "Assay Name to Use:", value = "ComBatSeq"),
           withBusyIndicatorUI(actionButton("combatRun", "Run"))
         ),
         # FastMNN ####

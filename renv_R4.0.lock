@@ -569,12 +569,6 @@
       "Repository": "CRAN",
       "Hash": "0b118d5900596bae6c4d4865374536a6"
     },
-    "bladderbatch": {
-      "Package": "bladderbatch",
-      "Version": "1.26.0",
-      "Source": "Bioconductor",
-      "Hash": "bd08c98c8a13f97421ecfa3ba939079f"
-    },
     "blob": {
       "Package": "blob",
       "Version": "1.2.1",
@@ -1946,18 +1940,6 @@
       "Source": "Repository",
       "Repository": "CRAN",
       "Hash": "f895dafd39733c4a70d425f605a832e7"
-    },
-    "shinyDirectoryInput": {
-      "Package": "shinyDirectoryInput",
-      "Version": "0.2.0",
-      "Source": "GitHub",
-      "RemoteType": "github",
-      "RemoteHost": "api.github.com",
-      "RemoteRepo": "shiny-directory-input",
-      "RemoteUsername": "joshua-d-campbell",
-      "RemoteRef": "master",
-      "RemoteSha": "ac2a4073a71b55622e319a3b8270dfd6cdef923e",
-      "Hash": "64f211af5eaf277f8326855bf8462cdc"
     },
     "shinyFiles": {
       "Package": "shinyFiles",

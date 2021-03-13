@@ -26,6 +26,8 @@
 #' .ggplot object, while "sample" will output a list of plots separated by sample. Default "all".
 #' @param relHeights Relative heights of plots when combine is set.
 #' @param relWidths Relative widths of plots when combine is set.
+#' @param plotLabels labels to each plot. If set to "default", will use the name of the samples
+#'  as the labels. If set to "none", no label will be plotted.
 #' @param plotNCols Number of columns when plots are combined in a grid.
 #' @param plotNRows Number of rows when plots are combined in a grid.
 #' @param samplePerColumn If TRUE, when there are multiple samples and combining by "all",
@@ -58,6 +60,7 @@ plotRunPerCellQCResults <- function(inSCE,
                                     titleSize=18,
                                     relHeights=c(1.5, 1.5, 1, 1),
                                     relWidths=c(1, 1, 1, 1),
+                                    plotLabels = "default",
                                     plotNCols = NULL,
                                     plotNRows = NULL,
                                     samplePerColumn = TRUE,
@@ -319,7 +322,6 @@ plotRunPerCellQCResults <- function(inSCE,
     }
   } else {
     plotlist <- unlist(plotlist, recursive=FALSE)
-    plotLabels <- "none"
     relHeights=1
   }
 
@@ -330,6 +332,7 @@ plotRunPerCellQCResults <- function(inSCE,
                                       relWidths = relWidths,
                                       nrows = plotNRows,
                                       ncols = plotNCols,
+                                      labels = plotLabels,
                                       samplePerColumn = samplePerColumn,
                                       sampleRelHeights = sampleRelHeights,
                                       sampleRelWidths = sampleRelWidths)
@@ -1089,13 +1092,13 @@ plotDoubletFinderResults <- function(inSCE,
   return(plotlist)
 }
 
-#' @title Plots for runDoubletCells outputs.
+#' @title Plots for runScDblFinder outputs.
 #' @description A wrapper function which visualizes outputs from the
-#'  runDoubletCells function stored in the colData slot of the
+#'  runScDblFinder function stored in the colData slot of the
 #'  SingleCellExperiment object via various plots.
 #' @param inSCE Input \linkS4class{SingleCellExperiment} object with saved
 #' dimension reduction components or a variable with saved results from
-#' \link{runDoubletCells}. Required.
+#' \link{runScDblFinder}. Required.
 #' @param sample Character vector. Indicates which sample each cell belongs to.
 #'  Default NULL.
 #' @param shape If provided, add shapes based on the value.
@@ -1152,10 +1155,10 @@ plotDoubletFinderResults <- function(inSCE,
 #' data(scExample, package="singleCellTK")
 #' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 #' sce <- getUMAP(inSCE=sce, useAssay="counts", reducedDimName="UMAP")
-#' sce <- runDoubletCells(sce)
-#' plotDoubletCellsResults(inSCE=sce, reducedDimName="UMAP")
+#' sce <- runScDblFinder(sce)
+#' plotScDblFinderResults(inSCE=sce, reducedDimName="UMAP")
 #' @export
-plotDoubletCellsResults <- function(inSCE,
+plotScDblFinderResults <- function(inSCE,
                                     sample=NULL,
                                     shape=NULL,
                                     groupBy=NULL,
@@ -1202,8 +1205,8 @@ plotDoubletCellsResults <- function(inSCE,
   sampleVector <- sample
 
 
-  coldata = "scran_doubletCells_score"
-  titleDoubletCells <- "DoubletCells Doublet Score"
+  coldata = "scDblFinder_doublet_score"
+  titleScDblFinder <- "ScDblFinder Doublet Score"
 
   samples <- unique(sample)
   if (length(samples) > 1) {
@@ -1219,7 +1222,7 @@ plotDoubletCellsResults <- function(inSCE,
       transparency=transparency,
       axisSize=axisSize,
       axisLabelSize=axisLabelSize,
-      title=titleDoubletCells,
+      title=titleScDblFinder,
       titleSize=titleSize,
       dotSize=dotSize,
       gridLine=TRUE,
@@ -1245,7 +1248,7 @@ plotDoubletCellsResults <- function(inSCE,
         ylab="Density",
         axisSize=axisSize, axisLabelSize=axisLabelSize,
         defaultTheme=defaultTheme,
-        title=paste0("Density, ", titleDoubletCells),
+        title=paste0("Density, ", titleScDblFinder),
         titleSize=titleSize,
         combinePlot="all"
     ))
@@ -1271,7 +1274,7 @@ plotDoubletCellsResults <- function(inSCE,
       defaultTheme=defaultTheme,
       axisSize=axisSize,
       axisLabelSize=axisLabelSize,
-      title=titleDoubletCells,
+      title=titleScDblFinder,
       titleSize=titleSize,
       labelClusters=FALSE,
       legendTitle="Doublet \nScore",
@@ -1293,7 +1296,7 @@ plotDoubletCellsResults <- function(inSCE,
       boxplot=boxplot,
       dots=dots,
       transparency=transparency,
-      title=titleDoubletCells,
+      title=titleScDblFinder,
       titleSize=titleSize,
       defaultTheme=defaultTheme,
       axisSize=axisSize,

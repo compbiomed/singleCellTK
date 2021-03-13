@@ -44,12 +44,11 @@
             )
         }
 
-        if ("scran_doubletCells_score_log10" %in% colnames(SummarizedExperiment::colData(inSCE))) {
-            metrics <- c(metrics, "DoubletCells - Doublet score outliers")
-            values <- c(values, sum(scater::isOutlier(inSCE$scran_doubletCells_score_log10,
-                                                  type = "higher"
-            )))
-
+        if ("scDblFinder_doublet_call" %in% colnames(SummarizedExperiment::colData(inSCE))) {
+            metrics <- c(metrics, "scDblFinder - Number of doublets",
+                         "scDblFinder - Percentage of doublets")
+            values <- c(values, sum(inSCE$scDblFinder_doublet_call == TRUE),
+                        signif(sum(inSCE$scDblFinder_doublet_call == TRUE)/length(inSCE$scDblFinder_doublet_call) * 100, 3))
         }
 
         if (any(grepl("doubletFinder_doublet_label_resolution",
