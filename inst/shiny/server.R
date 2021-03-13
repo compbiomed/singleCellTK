@@ -1898,19 +1898,19 @@ shinyServer(function(input, output, session) {
         if (input$assayModifyAction == "log") {
           if (input$trimAssayCheckbox) {
             assay(vals$counts, input$modifyAssayOutname) <- log2(assay(vals$counts, input$modifyAssaySelect) + 1)
-            expData(vals$counts, input$modifyAssayOutname, tag = "transformed normalized", altExp = FALSE) <- trimCounts(assay(vals$counts, input$modifyAssayOutname), c(input$trimUpperValueAssay, input$trimLowerValueAssay))
+            expData(vals$counts, input$modifyAssayOutname, tag = "normalized", altExp = FALSE) <- trimCounts(assay(vals$counts, input$modifyAssayOutname), c(input$trimUpperValueAssay, input$trimLowerValueAssay))
           }
           else {
-            expData(vals$counts, input$modifyAssayOutname, tag = "transformed normalized", altExp = FALSE) <- log2(assay(vals$counts, input$modifyAssaySelect) + 1)
+            expData(vals$counts, input$modifyAssayOutname, tag = "normalized", altExp = FALSE) <- log2(assay(vals$counts, input$modifyAssaySelect) + 1)
           }
         }
         else if (input$assayModifyAction == "log1p") {
           if (input$trimAssayCheckbox) {
             assay(vals$counts, input$modifyAssayOutname) <- log1p(assay(vals$counts, input$modifyAssaySelect))
-            expData(vals$counts, input$modifyAssayOutname, tag = "transformed normalized", altExp = FALSE) <- trimCounts(assay(vals$counts, input$modifyAssayOutname), c(input$trimUpperValueAssay, input$trimLowerValueAssay))
+            expData(vals$counts, input$modifyAssayOutname, tag = "normalized", altExp = FALSE) <- trimCounts(assay(vals$counts, input$modifyAssayOutname), c(input$trimUpperValueAssay, input$trimLowerValueAssay))
           }
           else {
-            expData(vals$counts, input$modifyAssayOutname, tag = "transformed normalized", altExp = FALSE) <- log1p(assay(vals$counts, input$modifyAssaySelect))
+            expData(vals$counts, input$modifyAssayOutname, tag = "normalized", altExp = FALSE) <- log1p(assay(vals$counts, input$modifyAssaySelect))
           }
         }
         else if (input$assayModifyAction == "z.score") {
