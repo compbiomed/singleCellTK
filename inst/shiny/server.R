@@ -221,8 +221,8 @@ shinyServer(function(input, output, session) {
     updateSelectInputTag(session, "clustScranSNNMat", label = "Select Input Matrix:",
                          choices = expDataNames(vals$counts),
                          recommended = "redDims", redDims = TRUE)
-    updateSelectInputTag(session, "deAssay", choices = currassays)
-    updateSelectInputTag(session, "fmAssay", choices = currassays)
+    updateSelectInputTag(session, "deAssay", recommended = c("normalized", "scaled"))
+    updateSelectInputTag(session, "fmAssay", recommended = c("normalized", "scaled"))
     updateSelectInputTag(session, "fmHMAssay", choices = currassays, selected = input$fmAssay)
     updateSelectInputTag(session, "pathwayAssay", recommended = c("normalized", "scaled"))
     
@@ -251,7 +251,7 @@ shinyServer(function(input, output, session) {
     updateSelectInputTag(session, "cellsAssay", choices = currassays)
     updateSelectInputTag(session, "snapshotAssay", choices = currassays)
     updateSelectInputTag(session, "exportAssay", choices = currassays)
-    updateSelectInputTag(session, "hmAssay", choices = currassays, tags = c("normalized", "transformed normalized", "scaled", "trimmed", "batchCorrected"))
+    updateSelectInputTag(session, "hmAssay")
     updateSelectInputTag(session, "ctLabelAssay", choices = currassays, recommended = "normalized")
     # batch correction assay conditions
     bc.recommended <- NULL
