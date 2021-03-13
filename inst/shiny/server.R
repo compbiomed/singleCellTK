@@ -184,21 +184,24 @@ shinyServer(function(input, output, session) {
     else{
       if(!is.null(recommended)){
         namesChoices <- names(choices)
-        if (recommended %in% namesChoices) {
+        ix.recommend <- NULL
           for(i in seq(length(namesChoices))){
-            if(recommended == namesChoices[i]){
-              ix.recommend <- i
-              recommendedName <- paste(namesChoices[i], "(recommended)")
-              namesChoices[i] <- recommendedName
+            for(j in seq(length(recommended))){
+              if(recommended[j] == namesChoices[i]){
+                ix.recommend <- c(ix.recommend, i)
+                recommendedName <- paste(namesChoices[i], "(recommended)")
+                namesChoices[i] <- recommendedName
+              }
             }
           }
-          names(choices) <- namesChoices
           # Reorder the list, recommended at top
-          choices <- choices[c(recommendedName, namesChoices[-ix.recommend])]
-        }
+          if(any(recommended %in% names(choices))){
+            names(choices) <- namesChoices
+            choices <- c(choices[ix.recommend], choices[-ix.recommend])
+          }
       }
     }
-
+    
     output[[inputId]] <- renderUI({
       selectInput(
         inputId = inputId,
@@ -211,39 +214,44 @@ shinyServer(function(input, output, session) {
 
   updateAssayInputs <- function(){
     currassays <- names(assays(vals$counts))
-    updateSelectInputTag(session, "dimRedAssaySelect", tags = c("raw", "normalized", "hvg"), recommended = "normalized", redDims = TRUE)
-    updateSelectInputTag(session, "dimRedAssaySelect_tsneUmap", tags = c("raw", "normalized", "hvg"), recommended = "normalized")
+    updateSelectInputTag(session, "dimRedAssaySelect", recommended = c("normalized", "scaled"), redDims = TRUE)
+    updateSelectInputTag(session, "dimRedAssaySelect_tsneUmap", recommended = c("normalized", "scaled"))
     updateSelectInputTag(session, "batchCheckAssay", choices = currassays)
     updateSelectInputTag(session, "batchCheckOrigAssay", choices = currassays)
     updateSelectInputTag(session, "clustScranSNNMat", label = "Select Input Matrix:",
                          choices = expDataNames(vals$counts),
                          recommended = "redDims", redDims = TRUE)
-    updateSelectInputTag(session, "deAssay", choices = currassays)
-    updateSelectInputTag(session, "fmAssay", choices = currassays)
+    updateSelectInputTag(session, "deAssay", recommended = c("normalized", "scaled"))
+    updateSelectInputTag(session, "fmAssay", recommended = c("normalized", "scaled"))
     updateSelectInputTag(session, "fmHMAssay", choices = currassays, selected = input$fmAssay)
-    updateSelectInputTag(session, "pathwayAssay", choices = currassays)
-    updateSelectInputTag(session, "modifyAssaySelect", tags = c("raw", "normalized", "scaled", "transformed normalized", "trimmed"), recommended = "raw")
-
-    #updateSelectInputTag(session, "normalizeAssaySelect", choices = currassays)
-    #updateSelectInputTag(session, "normalizeAssaySelect",label = "Select normalized assay:", tags = c("raw", "normalized"), recommended = "raw")
-    updateSelectInputTag(session, "normalizeAssaySelect",label = "Select assay to normalize:", tags = c("raw", "normalized", "scaled", "transformed normalized", "trimmed"), recommended = "raw")
-
+    updateSelectInputTag(session, "pathwayAssay", recommended = c("normalized", "scaled"))
+    
+    #modifyAssaySelect conditions
+    if(input$assayModifyAction == "log" || input$assayModifyAction == "log1p"){
+      updateSelectInputTag(session, "modifyAssaySelect", recommended = c("raw", "normalized"))
+    }
+    else if(input$assayModifyAction == "z.score"){
+      updateSelectInputTag(session, "modifyAssaySelect", recommended = "normalized")
+    }
+    
+    updateSelectInputTag(session, "normalizeAssaySelect", label = "Select assay to normalize:", recommended = "raw")
+    
     updateSelectInputTag(session, "seuratSelectNormalizationAssay", choices = currassays, showTags = FALSE)
-    updateSelectInputTag(session, "assaySelectFS_Norm", choices = currassays)
+    updateSelectInputTag(session, "assaySelectFS_Norm", recommended = c("normalized", "scaled"))
     updateSelectInputTag(session, "filterAssaySelect", choices = currassays)
-    updateSelectInputTag(session, "qcAssaySelect", choices = currassays)
+    updateSelectInputTag(session, "qcAssaySelect", recommended = "raw")
     updateSelectInputTag(session, "celdaAssay", choices = currassays)
     updateSelectInputTag(session, "celdaAssayGS", choices = currassays)
     updateSelectInputTag(session, "celdaAssaytSNE", choices = currassays)
     updateSelectInputTag(session, "celdaAssayProbabilityMap",
-                      choices = currassays)
+                         choices = currassays)
     updateSelectInputTag(session, "celdaAssayModuleHeatmap",
-                      choices = currassays)
+                         choices = currassays)
     updateSelectInputTag(session, "depthAssay", choices = currassays)
     updateSelectInputTag(session, "cellsAssay", choices = currassays)
     updateSelectInputTag(session, "snapshotAssay", choices = currassays)
     updateSelectInputTag(session, "exportAssay", choices = currassays)
-    updateSelectInputTag(session, "hmAssay", choices = currassays, tags = c("normalized", "transformed normalized", "scaled", "trimmed", "batchCorrected"))
+    updateSelectInputTag(session, "hmAssay")
     updateSelectInputTag(session, "ctLabelAssay", choices = currassays, recommended = "normalized")
     # batch correction assay conditions
     bc.recommended <- NULL
@@ -264,6 +272,7 @@ shinyServer(function(input, output, session) {
                          choices = assayNames(vals$counts),
                          recommended = bc.recommended)
   }
+  
 
   observeEvent(vals$counts, {
     # vals$counts
@@ -1889,19 +1898,19 @@ shinyServer(function(input, output, session) {
         if (input$assayModifyAction == "log") {
           if (input$trimAssayCheckbox) {
             assay(vals$counts, input$modifyAssayOutname) <- log2(assay(vals$counts, input$modifyAssaySelect) + 1)
-            expData(vals$counts, input$modifyAssayOutname, tag = "transformed normalized", altExp = FALSE) <- trimCounts(assay(vals$counts, input$modifyAssayOutname), c(input$trimUpperValueAssay, input$trimLowerValueAssay))
+            expData(vals$counts, input$modifyAssayOutname, tag = "normalized", altExp = FALSE) <- trimCounts(assay(vals$counts, input$modifyAssayOutname), c(input$trimUpperValueAssay, input$trimLowerValueAssay))
           }
           else {
-            expData(vals$counts, input$modifyAssayOutname, tag = "transformed normalized", altExp = FALSE) <- log2(assay(vals$counts, input$modifyAssaySelect) + 1)
+            expData(vals$counts, input$modifyAssayOutname, tag = "normalized", altExp = FALSE) <- log2(assay(vals$counts, input$modifyAssaySelect) + 1)
           }
         }
         else if (input$assayModifyAction == "log1p") {
           if (input$trimAssayCheckbox) {
             assay(vals$counts, input$modifyAssayOutname) <- log1p(assay(vals$counts, input$modifyAssaySelect))
-            expData(vals$counts, input$modifyAssayOutname, tag = "transformed normalized", altExp = FALSE) <- trimCounts(assay(vals$counts, input$modifyAssayOutname), c(input$trimUpperValueAssay, input$trimLowerValueAssay))
+            expData(vals$counts, input$modifyAssayOutname, tag = "normalized", altExp = FALSE) <- trimCounts(assay(vals$counts, input$modifyAssayOutname), c(input$trimUpperValueAssay, input$trimLowerValueAssay))
           }
           else {
-            expData(vals$counts, input$modifyAssayOutname, tag = "transformed normalized", altExp = FALSE) <- log1p(assay(vals$counts, input$modifyAssaySelect))
+            expData(vals$counts, input$modifyAssayOutname, tag = "normalized", altExp = FALSE) <- log1p(assay(vals$counts, input$modifyAssaySelect))
           }
         }
         else if (input$assayModifyAction == "z.score") {
@@ -1922,13 +1931,17 @@ shinyServer(function(input, output, session) {
   })
 
   observeEvent(input$assayModifyAction,{
+    req(vals$counts)
     if (input$assayModifyAction == "log"){
+      updateSelectInputTag(session, "modifyAssaySelect", recommended = c("raw", "normalized"))
       updateTextInput(session = session, inputId = "modifyAssayOutname", value = paste0(input$modifyAssaySelect, "Log"))
     }
     else if (input$assayModifyAction == "log1p"){
+      updateSelectInputTag(session, "modifyAssaySelect", recommended = c("raw", "normalized"))
       updateTextInput(session = session, inputId = "modifyAssayOutname", value = paste0(input$modifyAssaySelect, "Log1p"))
     }
     else if (input$assayModifyAction == "z.score") {
+      updateSelectInputTag(session, "modifyAssaySelect", recommended = "normalized")
       updateTextInput(session = session, inputId = "modifyAssayOutname", value = paste0(input$modifyAssaySelect, "Scaled"))
     }
     else if(input$assayModifyAction == "trim"){
