@@ -6,11 +6,12 @@
 \usage{
 plotSCEDimReduceFeatures(
   inSCE,
-  sample = NULL,
   feature,
-  featureLocation = NULL,
-  shape = NULL,
   reducedDimName,
+  sample = NULL,
+  featureLocation = NULL,
+  featureDisplay = NULL,
+  shape = NULL,
   useAssay = "logcounts",
   xlab = NULL,
   ylab = NULL,
@@ -38,19 +39,22 @@ plotSCEDimReduceFeatures(
 }
 \arguments{
 \item{inSCE}{Input \linkS4class{SingleCellExperiment} object with saved
-dimension reduction components or a variable with saved results. Required}
-
-\item{sample}{Character vector. Indicates which sample each cell belongs to.}
+dimension reduction components or a variable with saved results. Required.}
 
 \item{feature}{Name of feature stored in assay of SingleCellExperiment
 object.}
 
-\item{featureLocation}{Indicates which column name of rowData to query gene.}
-
-\item{shape}{add shapes to each condition. Default NULL.}
-
 \item{reducedDimName}{saved dimension reduction name in the
 \linkS4class{SingleCellExperiment} object. Required.}
+
+\item{sample}{Character vector. Indicates which sample each cell belongs to.}
+
+\item{featureLocation}{Indicates which column name of rowData to query gene.}
+
+\item{featureDisplay}{Indicates which column name of rowData to use
+to display feature for visualization.}
+
+\item{shape}{add shapes to each condition. Default NULL.}
 
 \item{useAssay}{Indicate which assay to use. The default is "logcounts"}
 
@@ -68,8 +72,7 @@ the index of the dimension to be plotted. Default is NULL.}
 
 \item{dim2}{2nd dimension to be used for plotting. Can either be a string which specifies
 the name of the dimension to be plotted from reducedDims, or a numeric value which specifies
-the index of the dimension to be plotted. Default is NULL.
-Default is second PCA component for PCA data and NULL otherwise.}
+the index of the dimension to be plotted. Default is NULL.}
 
 \item{bin}{Numeric vector. If single value, will divide the numeric values into the `bin` groups.
 If more than one value, will bin numeric values using values as a cut point.}

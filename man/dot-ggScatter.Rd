@@ -6,11 +6,11 @@
 \usage{
 .ggScatter(
   inSCE,
+  reducedDimName,
   sample = NULL,
   colorBy = NULL,
   groupBy = NULL,
   shape = NULL,
-  reducedDimName,
   conditionClass = NULL,
   labelClusters = FALSE,
   xlab = NULL,
@@ -41,6 +41,9 @@
 \item{inSCE}{Input \linkS4class{SingleCellExperiment} object with saved
 dimension reduction components or a variable with saved results. Required}
 
+\item{reducedDimName}{Saved dimension reduction name in the
+\linkS4class{SingleCellExperiment} object. Required.}
+
 \item{sample}{Character vector. Indicates which sample each cell belongs to.}
 
 \item{colorBy}{If provided, colors dots in the scatterplot based on value.}
@@ -48,9 +51,6 @@ dimension reduction components or a variable with saved results. Required}
 \item{groupBy}{If provided, facet wrap the scatterplot based on value.}
 
 \item{shape}{If provided, add shapes based on the value.}
-
-\item{reducedDimName}{Saved dimension reduction name in the
-\linkS4class{SingleCellExperiment} object. Required.}
 
 \item{conditionClass}{class of the annotation data used in colorBy. Options
 are NULL, "factor" or "numeric". If NULL, class will default to the original
