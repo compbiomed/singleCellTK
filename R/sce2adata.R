@@ -17,7 +17,7 @@
     stopifnot(inherits(SCE, "SingleCellExperiment"))
 
     # Extract information that correspond to AnnData structure
-    X <- t(SummarizedExperiment::assay(SCE, useAssay))
+    X <- as.matrix(t(SummarizedExperiment::assay(SCE, useAssay)))
     AnnData <- sc$AnnData(X = X)
     obs <- as.data.frame(SummarizedExperiment::colData(SCE))
     if(length(obs) > 0){
