@@ -21,7 +21,7 @@ sce.qc<- params$object
 ```
 
 ```{r, "DoubletFinder", results="asis", fig.align="center", warning=FALSE, message=FALSE}
-    plotDoubletFinder<- suppressWarnings(plotDoubletFinderResults(inSCE = sce.qc, reducedDimName = "UMAP"))
+    plotDoubletFinder<- plotDoubletFinderResults(inSCE = sce.qc, reducedDimName = "UMAP")
     i="DoubletFinder"
     cat(paste0('# ', i, ' {.tabset} \n\n'))
     cat(paste0('## Scatter Score Resolution 1.5 \n\n'))

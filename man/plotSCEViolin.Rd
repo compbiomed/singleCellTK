@@ -6,10 +6,10 @@
 \usage{
 plotSCEViolin(
   inSCE,
-  sample = NULL,
   slot,
-  annotation,
   feature,
+  annotation,
+  sample = NULL,
   groupBy = NULL,
   violin = TRUE,
   boxplot = TRUE,
@@ -33,16 +33,16 @@ plotSCEViolin(
 \item{inSCE}{Input \linkS4class{SingleCellExperiment} object with saved
 dimension reduction components or a variable with saved results. Required}
 
-\item{sample}{Character vector. Indicates which sample each cell belongs to.}
-
 \item{slot}{Desired slot of SingleCellExperiment used for plotting. Possible
 options: "assays", "colData", "metadata"}
 
+\item{feature}{name of feature stored in assay of SingleCellExperiment
+object. Required.
+Will be used only if "assays" slot is chosen. Default NULL.}
+
 \item{annotation}{Desired vector within the slot used for plotting.}
 
-\item{feature}{name of feature stored in assay of SingleCellExperiment
-object.
-Will be used only if "assays" slot is chosen. Default NULL.}
+\item{sample}{Character vector. Indicates which sample each cell belongs to.}
 
 \item{groupBy}{Groupings for each numeric value. A user may input a vector
 equal length to the number of the samples in the SingleCellExperiment
