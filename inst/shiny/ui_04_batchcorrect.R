@@ -58,8 +58,7 @@ shinyPanelBatchcorrect <- fluidPage(
                                          inputId = "normalizeAssayOutname",
                                          label = "Assay Name:",
                                          value = "SeuratLogNormalize"
-                                       ),
-                                       withBusyIndicatorUI(actionButton("normalizeAssay", "Normalize"))
+                                       )
                                      ),
                                      conditionalPanel(
                                        condition = "input.normalizeAssayMethodSelect == 'custom'",
@@ -94,7 +93,7 @@ shinyPanelBatchcorrect <- fluidPage(
                                        uiOutput("modifyAssaySelect"),
                                        #selectInput("modifyAssaySelect", "Select Assay:", currassays),
                                        textInput("modifyAssayOutname", "Assay Name",
-                                                 value = "countsLog"),
+                                                 value = "customNormalized"),
                                        # materialSwitch(
                                        #   inputId = "trimAssayCheckbox",
                                        #   label = "Trim Assay",
@@ -145,7 +144,14 @@ shinyPanelBatchcorrect <- fluidPage(
                             fluidRow(
                               tags$hr(),
                               column(12,
-                                     div(style = "display:inline-block; float:right", withBusyIndicatorUI(actionButton("modifyAssay", "Run")))
+                                     conditionalPanel(
+                                       condition = "input.normalizeAssayMethodSelect != 'custom'",
+                                       div(style = "display:inline-block; float:right", withBusyIndicatorUI(actionButton("normalizeAssay", "Normalize"))),
+                                      ),
+                                     conditionalPanel(
+                                       condition = "input.normalizeAssayMethodSelect == 'custom'",
+                                       div(style = "display:inline-block; float:right", withBusyIndicatorUI(actionButton("modifyAssay", "Run")))                                     
+                                       )
                                      )
                             )
                         )
