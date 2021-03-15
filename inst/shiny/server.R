@@ -227,12 +227,13 @@ shinyServer(function(input, output, session) {
     updateSelectInputTag(session, "pathwayAssay", recommended = c("normalized", "scaled"))
     
     #modifyAssaySelect conditions
-    if(input$assayModifyAction == "log" || input$assayModifyAction == "log1p"){
-      updateSelectInputTag(session, "modifyAssaySelect", recommended = c("raw", "normalized"))
-    }
-    else if(input$assayModifyAction == "z.score"){
-      updateSelectInputTag(session, "modifyAssaySelect", recommended = "normalized")
-    }
+    # if(input$assayModifyAction == "log" || input$assayModifyAction == "log1p"){
+    #   updateSelectInputTag(session, "modifyAssaySelect", recommended = c("raw", "normalized"))
+    # }
+    # else if(input$assayModifyAction == "z.score"){
+    #   updateSelectInputTag(session, "modifyAssaySelect", recommended = "normalized")
+    # }
+    updateSelectInputTag(session, "modifyAssaySelect")
     
     updateSelectInputTag(session, "normalizeAssaySelect", label = "Select assay to normalize:", recommended = "raw")
     
@@ -1771,14 +1772,6 @@ shinyServer(function(input, output, session) {
       saveRDS(vals$counts, file)
     })
 
-
-  output$assayList <- renderTable({
-    req(vals$counts)
-    if (!is.null(vals$counts) & length(names(assays(vals$counts))) > 0){
-      data.table(assays = names(assays(vals$counts)))
-    }
-  })
-
   output$reducedDimsList <- renderUI({
     req(vals$counts)
     if (!is.null(vals$counts) &&
@@ -1867,19 +1860,24 @@ shinyServer(function(input, output, session) {
     }
   })
 
-  observeEvent(input$modifyAssaySelect,{
-    if (input$assayModifyAction == "log"){
-      updateTextInput(session = session, inputId = "modifyAssayOutname", value = paste0(input$modifyAssaySelect, "Log"))
-    }
-    else if (input$assayModifyAction == "log1p"){
-      updateTextInput(session = session, inputId = "modifyAssayOutname", value = paste0(input$modifyAssaySelect, "Log1p"))
-    }
-    else if (input$assayModifyAction == "z.score") {
-      updateTextInput(session = session, inputId = "modifyAssayOutname", value = paste0(input$modifyAssaySelect, "Scaled"))
-    }
-    else if(input$assayModifyAction == "trim"){
-      updateTextInput(session = session, inputId = "modifyAssayOutname", value = paste0(input$modifyAssaySelect, "Trim"))
-    }
+  # observeEvent(input$modifyAssaySelect,{
+  #   if (input$assayModifyAction == "log"){
+  #     updateTextInput(session = session, inputId = "modifyAssayOutname", value = paste0(input$modifyAssaySelect, "Log"))
+  #   }
+  #   else if (input$assayModifyAction == "log1p"){
+  #     updateTextInput(session = session, inputId = "modifyAssayOutname", value = paste0(input$modifyAssaySelect, "Log1p"))
+  #   }
+  #   else if (input$assayModifyAction == "z.score") {
+  #     updateTextInput(session = session, inputId = "modifyAssayOutname", value = paste0(input$modifyAssaySelect, "Scaled"))
+  #   }
+  #   else if(input$assayModifyAction == "trim"){
+  #     updateTextInput(session = session, inputId = "modifyAssayOutname", value = paste0(input$modifyAssaySelect, "Trim"))
+  #   }
+  # })
+  
+  output$normalizeTabDescription <- renderText({
+    req(vals$counts)
+    input$normalizeAssayMethodSelect
   })
 
   observeEvent(input$modifyAssay, {
@@ -1895,8 +1893,8 @@ shinyServer(function(input, output, session) {
                 || is.na(input$trimLowerValueAssay)){
         stop("Upper or lower trim value cannot be empty!")
       } else {
-        if (input$assayModifyAction == "log") {
-          if (input$trimAssayCheckbox) {
+        if ("Log" %in% input$customNormalizeOptions) {
+          if ("Trim" %in% input$customNormalizeOptions) {
             assay(vals$counts, input$modifyAssayOutname) <- log2(assay(vals$counts, input$modifyAssaySelect) + 1)
             expData(vals$counts, input$modifyAssayOutname, tag = "normalized", altExp = FALSE) <- trimCounts(assay(vals$counts, input$modifyAssayOutname), c(input$trimUpperValueAssay, input$trimLowerValueAssay))
           }
@@ -1904,8 +1902,8 @@ shinyServer(function(input, output, session) {
             expData(vals$counts, input$modifyAssayOutname, tag = "normalized", altExp = FALSE) <- log2(assay(vals$counts, input$modifyAssaySelect) + 1)
           }
         }
-        else if (input$assayModifyAction == "log1p") {
-          if (input$trimAssayCheckbox) {
+        else if ("Log1p" %in% input$customNormalizeOptions) {
+          if ("Trim" %in% input$customNormalizeOptions) {
             assay(vals$counts, input$modifyAssayOutname) <- log1p(assay(vals$counts, input$modifyAssaySelect))
             expData(vals$counts, input$modifyAssayOutname, tag = "normalized", altExp = FALSE) <- trimCounts(assay(vals$counts, input$modifyAssayOutname), c(input$trimUpperValueAssay, input$trimLowerValueAssay))
           }
@@ -1913,8 +1911,8 @@ shinyServer(function(input, output, session) {
             expData(vals$counts, input$modifyAssayOutname, tag = "normalized", altExp = FALSE) <- log1p(assay(vals$counts, input$modifyAssaySelect))
           }
         }
-        else if (input$assayModifyAction == "z.score") {
-          if (input$trimAssayCheckbox) {
+        else if ("Z.Score" %in% input$customNormalizeOptions) {
+          if ("Trim" %in% input$customNormalizeOptions) {
             assay(vals$counts, input$modifyAssayOutname) <- computeZScore(assay(vals$counts, input$modifyAssaySelect))
             expData(vals$counts, input$modifyAssayOutname, tag = "scaled", altExp = FALSE) <- trimCounts(assay(vals$counts, input$modifyAssayOutname), c(input$trimUpperValueAssay, input$trimLowerValueAssay))
           }
@@ -1930,24 +1928,24 @@ shinyServer(function(input, output, session) {
     })
   })
 
-  observeEvent(input$assayModifyAction,{
-    req(vals$counts)
-    if (input$assayModifyAction == "log"){
-      updateSelectInputTag(session, "modifyAssaySelect", recommended = c("raw", "normalized"))
-      updateTextInput(session = session, inputId = "modifyAssayOutname", value = paste0(input$modifyAssaySelect, "Log"))
-    }
-    else if (input$assayModifyAction == "log1p"){
-      updateSelectInputTag(session, "modifyAssaySelect", recommended = c("raw", "normalized"))
-      updateTextInput(session = session, inputId = "modifyAssayOutname", value = paste0(input$modifyAssaySelect, "Log1p"))
-    }
-    else if (input$assayModifyAction == "z.score") {
-      updateSelectInputTag(session, "modifyAssaySelect", recommended = "normalized")
-      updateTextInput(session = session, inputId = "modifyAssayOutname", value = paste0(input$modifyAssaySelect, "Scaled"))
-    }
-    else if(input$assayModifyAction == "trim"){
-      updateTextInput(session = session, inputId = "modifyAssayOutname", value = paste0(input$modifyAssaySelect, "Trim"))
-    }
-  })
+  # observeEvent(input$assayModifyAction,{
+  #   req(vals$counts)
+  #   if (input$assayModifyAction == "log"){
+  #     updateSelectInputTag(session, "modifyAssaySelect", recommended = c("raw", "normalized"))
+  #     updateTextInput(session = session, inputId = "modifyAssayOutname", value = paste0(input$modifyAssaySelect, "Log"))
+  #   }
+  #   else if (input$assayModifyAction == "log1p"){
+  #     updateSelectInputTag(session, "modifyAssaySelect", recommended = c("raw", "normalized"))
+  #     updateTextInput(session = session, inputId = "modifyAssayOutname", value = paste0(input$modifyAssaySelect, "Log1p"))
+  #   }
+  #   else if (input$assayModifyAction == "z.score") {
+  #     updateSelectInputTag(session, "modifyAssaySelect", recommended = "normalized")
+  #     updateTextInput(session = session, inputId = "modifyAssayOutname", value = paste0(input$modifyAssaySelect, "Scaled"))
+  #   }
+  #   else if(input$assayModifyAction == "trim"){
+  #     updateTextInput(session = session, inputId = "modifyAssayOutname", value = paste0(input$modifyAssaySelect, "Trim"))
+  #   }
+  # })
 
   observeEvent(input$normalizeAssay, {
     req(vals$counts)
