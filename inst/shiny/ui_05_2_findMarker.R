@@ -6,12 +6,9 @@ shinyPanelfindMarker <- fluidPage(
            "(help)", target = "_blank"),
     sidebarLayout(
       sidebarPanel(
-        p("For 'MAST' and 'Limma', log-transformed count matrix is preferred; for 'DESeq2', count matrix is preferred.",
-          style = "color:grey;"),
-        uiOutput('fmAssay'),
-        #selectInput('fmAssay', "Select Assay", currassays),
         selectInput('fmMethod', "Select Differential Expression Method",
-                    c("MAST", "DESeq2", "Limma")),
+                    c("wilcox", "MAST", "DESeq2", "Limma", "ANOVA")),
+        uiOutput('fmAssay'),
         selectInput("fmCluster", "Cluster Annotation", clusterChoice),
         numericInput("fmLogFC", "Log2FC greater than",
                      value = 0.25, min = 0, step = 0.05),

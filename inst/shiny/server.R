@@ -201,7 +201,7 @@ shinyServer(function(input, output, session) {
           }
       }
     }
-    
+
     output[[inputId]] <- renderUI({
       selectInput(
         inputId = inputId,
@@ -221,11 +221,23 @@ shinyServer(function(input, output, session) {
     updateSelectInputTag(session, "clustScranSNNMat", label = "Select Input Matrix:",
                          choices = expDataNames(vals$counts),
                          recommended = "redDims", redDims = TRUE)
-    updateSelectInputTag(session, "deAssay", recommended = c("normalized", "scaled"))
-    updateSelectInputTag(session, "fmAssay", recommended = c("normalized", "scaled"))
+    if (is.null(input$deMethod)) {
+      updateSelectInputTag(session, "deAssay", recommended = c("normalized"))
+    } else if (input$deMethod == "DESeq2") {
+      updateSelectInputTag(session, "deAssay", recommended = c("raw"))
+    } else {
+      updateSelectInputTag(session, "deAssay", recommended = c("normalized"))
+    }
+    if (is.null(input$fmMethod)) {
+      updateSelectInputTag(session, "fmAssay", recommended = c("normalized"))
+    } else if (input$fmMethod == "DESeq2") {
+      updateSelectInputTag(session, "fmAssay", recommended = c("raw"))
+    } else {
+      updateSelectInputTag(session, "fmAssay", recommended = c("normalized"))
+    }
     updateSelectInputTag(session, "fmHMAssay", choices = currassays, selected = input$fmAssay)
     updateSelectInputTag(session, "pathwayAssay", recommended = c("normalized", "scaled"))
-    
+
     #modifyAssaySelect conditions
     if(input$assayModifyAction == "log" || input$assayModifyAction == "log1p"){
       updateSelectInputTag(session, "modifyAssaySelect", recommended = c("raw", "normalized"))
@@ -233,9 +245,9 @@ shinyServer(function(input, output, session) {
     else if(input$assayModifyAction == "z.score"){
       updateSelectInputTag(session, "modifyAssaySelect", recommended = "normalized")
     }
-    
+
     updateSelectInputTag(session, "normalizeAssaySelect", label = "Select assay to normalize:", recommended = "raw")
-    
+
     updateSelectInputTag(session, "seuratSelectNormalizationAssay", choices = currassays, showTags = FALSE)
     updateSelectInputTag(session, "assaySelectFS_Norm", recommended = c("normalized", "scaled"))
     updateSelectInputTag(session, "filterAssaySelect", choices = currassays)
@@ -272,7 +284,7 @@ shinyServer(function(input, output, session) {
                          choices = assayNames(vals$counts),
                          recommended = bc.recommended)
   }
-  
+
 
   observeEvent(vals$counts, {
     # vals$counts
@@ -843,7 +855,6 @@ shinyServer(function(input, output, session) {
       } else {
         vals$original <- sceObj
       }
-
       # clear table and empty reactive
       for (entry in allImportEntries$samples) {
         removeUI(selector = paste0("#", entry$id))
@@ -851,20 +862,21 @@ shinyServer(function(input, output, session) {
       allImportEntries$samples <- list()
 
       # Add sample variable if it was not included
-      if(is.null(colData(vals$original)$sample)) {
+      if (!"sample" %in% names(colData(vals$original)) &&
+          !"Sample" %in% names(colData(vals$original))) {
         colData(vals$original)$sample = "sample"
       }
 
       if (!is.null(vals$original)) {
         vals$counts <- vals$original
-
         #store assayType information in the metadata
-        vals$counts <- expSetDataTag(
-          inSCE = vals$counts,
-          assayType = "raw",
-          assays = assayNames(vals$counts),
-          append = FALSE)
-
+        if (!"assayType" %in% names(metadata(vals$counts))) {
+          vals$counts <- expSetDataTag(
+            inSCE = vals$counts,
+            assayType = "raw",
+            assays = assayNames(vals$counts),
+            append = FALSE)
+        }
         # ToDo: Remove these automatic updates and replace with
         # observeEvents functions that activate upon the tab selection
         updateColDataNames()
@@ -1263,11 +1275,11 @@ shinyServer(function(input, output, session) {
                                  collectionName = qcCollName,
                                  useAssay = input$qcAssaySelect,
                                  paramsList = paramsList)
-        vals$counts <- expSetDataTag(
-          inSCE = vals$counts,
-          assayType = "raw",
-          assays = assayNames(vals$counts),
-          append = FALSE)
+        #vals$counts <- expSetDataTag(
+        #  inSCE = vals$counts,
+        #  assayType = "raw",
+        #  assays = assayNames(vals$counts),
+        #  append = FALSE)
         # redDimList <- strsplit(reducedDimNames(vals$counts), " ")
         # run getUMAP
         message(paste0(date(), " ... Running 'UMAP'"))
@@ -3005,7 +3017,8 @@ shinyServer(function(input, output, session) {
                                    nStart = input$clustKMeansNStart,
                                    algorithm = algo,
                                    clusterName = saveClusterName)
-          updateSelectInput(session, "clustVisReddim", input$clustKMeansReddim)
+          updateSelectInput(session, "clustVisReddim",
+                            selected = input$clustKMeansReddim)
         } else if (input$clustAlgo %in% seq(10, 12)) {
           # Seurat
           if(input$clustSeuratReddim == ""){
@@ -3045,7 +3058,8 @@ shinyServer(function(input, output, session) {
                                             algorithm = algo,
                                             groupSingletons = input$clustSeuratGrpSgltn,
                                             resolution = input$clustSeuratRes)
-          updateSelectInput(session, "clustVisReddim", input$clustSeuratReddim)
+          updateSelectInput(session, "clustVisReddim",
+                            selected = input$clustSeuratReddim)
         }
         updateColDataNames()
         clustResults$names <- c(clustResults$names, saveClusterName)
@@ -3652,7 +3666,7 @@ shinyServer(function(input, output, session) {
       }else if(input$TypeSelect_Colorby == "Expression Assays"){
         a <- plotSCEDimReduceFeatures(vals$counts, feature = input$GeneSelect_Assays_Colorby,
                                       reducedDimName = input$QuickAccess, useAssay = input$AdvancedMethodSelect_Colorby,
-                                      xlab = xname, ylab = yname, legendTitle = legendname, title = input$adjustitle,
+                                      xlab = xname, ylab = yname, legendTitle = legendname, title = input$adjusttitle,
                                       groupBy = pltVars$groupby, bin = pltVars$bin, transparency = input$adjustalpha,
                                       colorLow = input$lowColor, colorMid = input$midColor, colorHigh = input$highColor,
                                       dotSize = input$adjustsize, combinePlot = "none", axisSize = input$adjustaxissize,
@@ -5080,51 +5094,64 @@ shinyServer(function(input, output, session) {
   #-----------------------------------------------------------------------------
   # Page 5.1: Differential Expression ####
   #-----------------------------------------------------------------------------
-  ## DE - Thresholding Vis ####
+  observeEvent(input$deMethod, {
+    if (!is.null(vals$counts)) {
+      if (is.null(input$deMethod)) {
+        updateSelectInputTag(session, "deAssay", recommended = c("normalized"))
+      } else if (input$deMethod == "DESeq2") {
+        updateSelectInputTag(session, "deAssay", recommended = c("raw"))
+      } else {
+        updateSelectInputTag(session, "deAssay", recommended = c("normalized"))
+      }
+    }
+  })
 
+  ## DE - Thresholding Vis ####
   observeEvent(input$deViewThresh, {
     if (!is.null(vals$counts) &&
         !is.null(input$deAssay)) {
       shinyjs::showElement(id= "deThreshpanel")
-    }
-  })
+      withProgress(message = "Plotting thresholding...", max = 1, value = 1, {
+        withBusyIndicatorServer("deViewThresh", {
+          # MAST style sanity check for whether logged or not
+          x <- expData(vals$counts, input$deAssay)
+          if (!all(floor(x) == x, na.rm = TRUE) & max(x, na.rm = TRUE) <
+              100) {
+            output$deSanityWarnThresh <- renderText("")
+            isLogged <- TRUE
+          } else {
+            output$deSanityWarnThresh <- renderText("Selected assay seems not logged (MAST style sanity check). Forcing to plot by automatically applying log-transformation. ")
+            isLogged <- FALSE
+          }
+          suppressMessages({
+            thres.grob <- plotMASTThresholdGenes(inSCE = vals$counts,
+                                                 useAssay = input$deAssay,
+                                                 check_sanity = FALSE,
+                                                 isLogged = isLogged,
+                                                 doPlot = FALSE)
+          })
+          nSub <- tail(strsplit(thres.grob$childrenOrder, split = '-'),
+                       n = 1)[[1]][3]
+          plotHeight <- ceiling(as.numeric(nSub) / 4) * 240
 
-  # Threshold adapting plot
-  observeEvent(input$deAssay, {
-    if(!is.null(vals$counts)){
-      # MAST style sanity check for whether logged or not
-      x <- expData(vals$counts, input$deAssay)
-      if (!all(floor(x) == x, na.rm = TRUE) & max(x, na.rm = TRUE) <
-          100) {
-        output$deSanityWarnThresh <- renderText("")
-        isLogged <- TRUE
-      } else {
-        output$deSanityWarnThresh <- renderText("Selected assay seems not logged (MAST style sanity check). Forcing to plot by automatically applying log-transformation. ")
-        isLogged <- FALSE
-      }
-      thres.grob <- plotMASTThresholdGenes(inSCE = vals$counts,
-                                           useAssay = input$deAssay,
-                                           check_sanity = FALSE,
-                                           isLogged = isLogged,
-                                           doPlot = FALSE)
-      nSub <- tail(strsplit(thres.grob$childrenOrder, split = '-'),
-                   n = 1)[[1]][3]
-      plotHeight <- ceiling(as.numeric(nSub) / 4) * 240
-
-      output$deThreshPlotDiv <- renderUI({
-        div(
-          style = paste0("height: ", plotHeight, "px;"),
-          plotOutput("deThreshplot"))
+          output$deThreshPlotDiv <- renderUI({
+            div(
+              style = paste0("height: ", plotHeight, "px;"),
+              plotOutput("deThreshplot"))
+          })
+          output$deThreshplot <- renderPlot({
+            grid.draw(thres.grob)
+          }, height = plotHeight)
+          updateActionButton(session, "deViewThresh", "Refresh")
+        })
       })
-      output$deThreshplot <- renderPlot({
-        grid.draw(thres.grob)
-      }, height = plotHeight)
     }
 
   })
 
   observeEvent(input$deHideThresh, {
     shinyjs::hideElement(id= "deThreshpanel")
+    updateActionButton(session, "deViewThresh", "View Thresholding")
   })
 
   ## DE - condition determination method1 ####
@@ -5443,7 +5470,8 @@ shinyServer(function(input, output, session) {
 
   # Data table
   output$deResult <- DT::renderDataTable({
-    if(!is.null(input$deResSel)){
+    if(!is.null(input$deResSel) &&
+       !is.null(vals$counts)){
       metadata(vals$counts)$diffExp[[input$deResSel]]$result
     }
   }, filter = 'top')
@@ -5476,7 +5504,8 @@ shinyServer(function(input, output, session) {
 
   observeEvent(input$dePlotVio, {
     if(!is.null(input$deResSel) &&
-       !input$deResSel == ""){
+       !input$deResSel == "" &&
+       !is.null(vals$counts)){
       sce <- vals$counts
       useResult <- input$deResSel
       nrow <- input$deVioNRow
@@ -5514,7 +5543,8 @@ shinyServer(function(input, output, session) {
 
   observeEvent(input$dePlotReg, {
     if(!is.null(input$deResSel) &&
-       !input$deResSel == ""){
+       !input$deResSel == "" &&
+       !is.null(vals$counts)){
       sce <- vals$counts
       useResult <- input$deResSel
       nrow <- input$deRegNRow
@@ -5584,6 +5614,17 @@ shinyServer(function(input, output, session) {
   #-----------------------------------------------------------------------------
   # Page 5.2: Find Marker ####
   #-----------------------------------------------------------------------------
+  observeEvent(input$fmMethod, {
+    if (!is.null(vals$counts)) {
+      if (is.null(input$fmMethod)) {
+        updateSelectInputTag(session, "fmAssay", recommended = c("normalized"))
+      } else if (input$fmMethod == "DESeq2") {
+        updateSelectInputTag(session, "fmAssay", recommended = c("raw"))
+      } else {
+        updateSelectInputTag(session, "fmAssay", recommended = c("normalized"))
+      }
+    }
+  })
   # findMarker RUN ####
   observeEvent(input$runFM, {
     if (is.null(vals$counts)){
@@ -5604,6 +5645,7 @@ shinyServer(function(input, output, session) {
                                          fdrThreshold = input$fmFDR)
         shinyalert::shinyalert("Success", "Find Marker completed.",
                                "success")
+        updateFMPlot()
       })
     }
   })
@@ -5615,7 +5657,7 @@ shinyServer(function(input, output, session) {
       fullTable[,5] <- as.factor(fullTable[,5])
       fullTable
     }
-  }, filter = "top")
+  }, filter = "top", options = list(scrollX = TRUE))
 
   observe({
     if (!is.null(vals$counts) &&
@@ -5646,51 +5688,53 @@ shinyServer(function(input, output, session) {
     }
   })
 
-  # output$fmHMAssayUI <- renderUI({
-  #   if(!is.null(vals$counts)){
-  #     allAssay <- assayNames(vals$counts)
-  #     selectInput('fmHMAssay', "Assay to plot", allAssay,
-  #                 selected = input$fmAssay)
-  #   }
-  # })
-
   observeEvent(input$plotFM, {
+    updateFMPlot()
+  })
+
+  updateFMPlot <- function() {
     if(!is.null(vals$counts) &&
        'findMarker' %in% names(metadata(vals$counts))){
       withBusyIndicatorServer("plotFM", {
-        if(isTRUE(input$fmUseTopN)
-           && is.na(input$fmTopN)){
-          stop("Top N marker must be a numeric non-empty value")
-        }
-        if(is.na(input$fmHMFC)){
-          stop("Log2FC must be a numeric non-empty value!")
-        }
-        if(is.na(input$fmHMFDR)){
-          stop("FDR must be a numeric non-empty value!")
-        }
-      inSCE <- vals$counts
-      orderBy <- input$fmHMOrder
-      log2fcThreshold <- input$fmHMFC
-      fdrThreshold <- input$fmHMFDR
-      decreasing <- input$fmHMdec
-      rowDataName <- input$fmHMrowData
-      colDataName <- input$fmHMcolData
-      if(!isTRUE(input$fmUseTopN)) {
-        topN <- NULL
-      } else {
-        topN <- input$fmTopN
-      }
-      # Take value before rendering plot, so that the plot doesnt auto re-render
-      # while we tweak the parameter
-      output$fmHeatmap <- renderPlot({
-        plotMarkerDiffExp(inSCE = inSCE, orderBy = orderBy,
-                          log2fcThreshold = log2fcThreshold, topN = topN,
-                          fdrThreshold = fdrThreshold, decreasing = decreasing,
-                          rowDataName = rowDataName, colDataName = colDataName)
-      })
+        withProgress(message = "Updating marker heatmap...", max = 1, value = 1, {
+          if(isTRUE(input$fmUseTopN)
+             && is.na(input$fmTopN)){
+            stop("Top N marker must be a numeric non-empty value")
+          }
+          if(is.na(input$fmHMFC)){
+            stop("Log2FC must be a numeric non-empty value!")
+          }
+          if(is.na(input$fmHMFDR)){
+            stop("FDR must be a numeric non-empty value!")
+          }
+          inSCE <- vals$counts
+          orderBy <- input$fmHMOrder
+          log2fcThreshold <- input$fmHMFC
+          fdrThreshold <- input$fmHMFDR
+          decreasing <- input$fmHMdec
+          rowDataName <- input$fmHMrowData
+          colDataName <- input$fmHMcolData
+          if(!isTRUE(input$fmUseTopN)) {
+            topN <- NULL
+          } else {
+            topN <- input$fmTopN
+          }
+          # Take value before rendering plot, so that the plot doesn't auto
+          # re-render while we tweak the parameter
+          output$fmHeatmap <- renderPlot({
+            plotMarkerDiffExp(inSCE = inSCE,
+                              orderBy = orderBy,
+                              log2fcThreshold = log2fcThreshold,
+                              topN = topN,
+                              fdrThreshold = fdrThreshold,
+                              decreasing = decreasing,
+                              rowDataName = rowDataName,
+                              colDataName = colDataName)
+          })
+        })
       })
     }
-  })
+  }
 
   #-----------------------------------------------------------------------------
   # Page 6: Pathway Activity Analysis
@@ -7820,8 +7864,9 @@ shinyServer(function(input, output, session) {
       }
 
       if (input$exportChoice == "rds") {
-        filename = paste("SCE-", Sys.Date(), ".rds", sep = "")
-        saveRDS(vals$counts, paste(exportPath, "/", filename, sep = ""))
+        filename = paste0("SCE_", strftime(Sys.time(), format = "%y%m%d_%H%m"),
+                         ".rds")
+        saveRDS(vals$counts, paste0(exportPath, "/", filename))
       } else if (input$exportChoice == "annData") {
         exportassay <- input$exportAssay
         compression <- input$compression
@@ -7831,7 +7876,9 @@ shinyServer(function(input, output, session) {
         exportSCEtoAnnData(sce=vals$counts,
                            useAssay = exportassay,
                            outputDir=exportPath,
-                           prefix = paste("SCE-", Sys.Date(),sep = ""),
+                           prefix = paste0("SCE-",
+                                           strftime(Sys.time(),
+                                                    format = "%y%m%d_%H%m")),
                            overwrite=overwrite,
                            compression = compression,
                            compressionOpts = compressionOpts,
@@ -7843,7 +7890,9 @@ shinyServer(function(input, output, session) {
                             outputDir=exportPath,
                             overwrite=overwrite,
                             gzipped=gzipped,
-                            sample = paste("SCE-", Sys.Date(),sep = ""))
+                            sample = paste0("SCE-",
+                                            strftime(Sys.time(),
+                                                     format = "%y%m%d_%H%m")))
       }
     })
   })

@@ -6,8 +6,8 @@
 #' @param useAssay character. A string specifying which assay to use for the
 #' MAST calculations. Default \code{"logcounts"}.
 #' @param method A single character for specific differential expression
-#' analysis method. Choose from \code{'MAST'}, \code{'DESeq2'}, \code{'Limma'},
-#' and \code{'wilcox'}. Default \code{"wilcox"}.
+#' analysis method. Choose from \code{'wilcox'}, \code{'MAST'}, \code{'DESeq2'},
+#' \code{'Limma'}, and \code{'ANOVA'}. Default \code{"wilcox"}.
 #' @param cluster One single character to specify a column in
 #' \code{colData(inSCE)} for the clustering label. Alternatively, a vector or
 #' a factor is also acceptable. Default \code{"cluster"}.
@@ -33,7 +33,8 @@
 #' @export
 #' @author Yichen Wang
 findMarkerDiffExp <- function(inSCE, useAssay = 'logcounts',
-                              method = c('wilcox', 'MAST', "DESeq2", "Limma"),
+                              method = c('wilcox', 'MAST', "DESeq2", "Limma",
+                                         "ANOVA"),
                               cluster = 'cluster', covariates = NULL,
                               log2fcThreshold = 0.25, fdrThreshold = 0.05,
                               minClustExprPerc = 0.6, maxCtrlExprPerc = 0.4,

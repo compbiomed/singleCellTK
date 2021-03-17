@@ -8,18 +8,15 @@ shinyPanelDiffex <- fluidPage(
       panel(
         style = "margin:2px;",
         h3("Method and Matrix"),
-        p("For 'MAST', 'Limma' and 'ANOVA', log-transformed count matrix is preferred; for 'DESeq2', count matrix is preferred.",
-          style = "color:grey;"),
         fluidRow(
           column(
             4,
             selectInput('deMethod', "Choose analysis method",
-                        c('MAST', 'DESeq2', 'Limma', 'ANOVA'))
+                        c('wilcox', 'MAST', 'DESeq2', 'Limma', 'ANOVA'))
           ),
           column(
             4,
             uiOutput("deAssay")
-            #selectInput("deAssay", "Select Assay:", currassays)
           )
         ),
         useShinyjs(),
@@ -142,7 +139,7 @@ shinyPanelDiffex <- fluidPage(
             width = 3,
             numericInput("deFCThresh",
                          "Output Log2FC Absolute value greater than:",
-                         min = 0, step = 0.05, value = 1)
+                         min = 0, step = 0.05, value = 0.5)
           ),
           column(
             width = 3,
