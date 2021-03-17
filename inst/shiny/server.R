@@ -1916,7 +1916,7 @@ shinyServer(function(input, output, session) {
           else if(input$customNormalizeAssayMethodSelect == "LNC"){
             obj <- scater_logNormCounts(
               inSCE = vals$counts,
-              logAssayName = input$normalizeAssayOutname,
+              assayName = input$normalizeAssayOutname,
               useAssay = input$modifyAssaySelect
             )
             selectedAssay <- assay(obj, input$normalizeAssayOutname)
@@ -2003,7 +2003,7 @@ shinyServer(function(input, output, session) {
         else if(input$normalizeAssayMethodSelect == "LNC"){
           vals$counts <- scater_logNormCounts(
             inSCE = vals$counts,
-            logAssayName = input$normalizeAssayOutname,
+            assayName = input$normalizeAssayOutname,
             useAssay = input$normalizeAssaySelect
           )
           # updateAssayInputs()

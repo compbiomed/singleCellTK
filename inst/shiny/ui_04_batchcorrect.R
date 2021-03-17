@@ -153,6 +153,9 @@ shinyPanelBatchcorrect <- fluidPage(
                                      h4("Description:"),
                                      textOutput("normalizeTabDescription"),
                                      tags$hr(),
+                                     h4("Recommended Tags:"),
+                                     h5("Scaled"),
+                                     tags$hr(),
                                      h4("Selected Options:"),
                                      conditionalPanel(
                                        condition = "input.customNormalizeOptions.includes('Normalize')",
