@@ -58,18 +58,29 @@ shinyPanelBatchcorrect <- fluidPage(
                                          inputId = "normalizeAssayOutname",
                                          label = "Assay Name:",
                                          value = "SeuratLogNormalize"
+                                       ),
+                                       awesomeCheckbox(
+                                         inputId = "normalizationScale",
+                                         label = "Scale data after normalization?",
+                                         value = FALSE
                                        )
                                      ),
                                      conditionalPanel(
                                        condition = "input.normalizeAssayMethodSelect == 'custom'",
+                                       h5("Select Options:"),
                                        awesomeCheckboxGroup(
                                          inputId = "customNormalizeOptions",
-                                         label = "Select options:", 
-                                         choices = c("Normalize", "Log", "Log1p", "Z.Score", "Trim"),
+                                         label = NULL, 
+                                         choices = c("Normalize", 
+                                                     "Transform",
+                                                     "Pseudocounts",
+                                                     "Scale", 
+                                                     "Trim"),
                                          selected = NULL,
                                        ),
                                        conditionalPanel(
                                          condition = "input.customNormalizeOptions.includes('Normalize')",
+                                         h5("Normalize Options:"),
                                          selectInput(
                                            inputId = "customNormalizeAssayMethodSelect",
                                            label = "Select normalization method: ",
@@ -81,26 +92,45 @@ shinyPanelBatchcorrect <- fluidPage(
                                                        "Scater - CPM" = "CPM")
                                          )
                                        ),
-                                       # selectInput(
-                                       #   "assayModifyAction",
-                                       #   "Assay Actions:",
-                                       #   c(
-                                       #     "Log Transform" = "log",
-                                       #     "log1p" = "log1p",
-                                       #     "Z-Score" = "z.score"
-                                       #   )
-                                       # ),
-                                       uiOutput("modifyAssaySelect"),
-                                       #selectInput("modifyAssaySelect", "Select Assay:", currassays),
-                                       textInput("modifyAssayOutname", "Assay Name",
-                                                 value = "customNormalized"),
-                                       # materialSwitch(
-                                       #   inputId = "trimAssayCheckbox",
-                                       #   label = "Trim Assay",
-                                       #   value = FALSE
-                                       # ),
+                                       conditionalPanel(
+                                         condition = "input.customNormalizeOptions.includes('Transform')",
+                                         h5("Transformation Options:"),
+                                         selectInput(
+                                           inputId = "customNormalizeTransformOptions",
+                                           label = "Select transformation method:",
+                                           choices = c("Log2" = "log2",
+                                                       "Log1p" = "log1p",
+                                                       "Sqrt" = "sqrt")
+                                         )
+                                       ),
+                                       conditionalPanel(
+                                         condition = "input.customNormalizeOptions.includes('Pseudocounts')",
+                                         h5("Pseudocounts Options:"),
+                                         awesomeRadio(
+                                           inputId = "customNormalizePseudoOptions",
+                                           label = "Select when to add a pseudo value:",
+                                           choices = c("before normalization",
+                                                       "before transformation")
+                                         ),
+                                         numericInput(
+                                           inputId = "customNormalizePseudoValue",
+                                           label = "Enter a pseudo value to add:",
+                                           value = 1,
+                                           min = 1
+                                         )
+                                       ),
+                                       conditionalPanel(
+                                         condition = "input.customNormalizeOptions.includes('Scale')",
+                                         h5("Scale Options:"),
+                                         selectInput(
+                                           inputId = "customNormalizeScaleOptions",
+                                           label = "Select scaling method:",
+                                           choices = c("Z.Score" = "zscore")
+                                         )
+                                       ),
                                        conditionalPanel(
                                          condition = "input.customNormalizeOptions.includes('Trim')",
+                                         h5("Trim Options:"),
                                          numericInput(
                                            inputId = "trimUpperValueAssay",
                                            label = "Specify upper trim value",
@@ -111,7 +141,12 @@ shinyPanelBatchcorrect <- fluidPage(
                                            label = "Specify lower trim value",
                                            value = -10
                                          )
-                                       )
+                                       ),
+                                       tags$hr(),
+                                       h5("Assay Options:"),
+                                       uiOutput("modifyAssaySelect"),
+                                       textInput("modifyAssayOutname", "Assay Name",
+                                                 value = "customNormalized"),
                                      )
                                      ),
                               column(6,
@@ -124,16 +159,16 @@ shinyPanelBatchcorrect <- fluidPage(
                                        h5("Normalize")
                                      ),
                                      conditionalPanel(
-                                       condition = "input.customNormalizeOptions.includes('Log')",
-                                       h5("Log")
+                                       condition = "input.customNormalizeOptions.includes('Transform')",
+                                       h5("Transform")
                                      ),
                                      conditionalPanel(
-                                       condition = "input.customNormalizeOptions.includes('Log1p')",
-                                       h5("Log1p")
+                                       condition = "input.customNormalizeOptions.includes('Scale')",
+                                       h5("Scale")
                                      ),
                                      conditionalPanel(
-                                       condition = "input.customNormalizeOptions.includes('Z.Score')",
-                                       h5("Z.Score")
+                                       condition = "input.customNormalizeOptions.includes('Pseudocounts')",
+                                       h5("Pseudocounts")
                                      ),
                                      conditionalPanel(
                                        condition = "input.customNormalizeOptions.includes('Trim')",
