@@ -19,9 +19,9 @@
 #'  "counts", 
 #'  "sctCounts")
 runNormalization <- function(inSCE,
-                             normalizationMethod,
-                             useAssay,
-                             normAssayName,
+                             normalizationMethod = NULL,
+                             useAssay = "counts",
+                             normAssayName = "customNormalizedAssay",
                              scale = FALSE,
                              seuratScaleFactor = 10,
                              log = FALSE,
@@ -33,73 +33,87 @@ runNormalization <- function(inSCE,
                              ){
   seuratMethods <- c("LogNormalize", "CLR", "RC", "SCTransform")
   scaterMethods <- c("logNormCounts", "CPM")
-  tempSCE <- NULL
+  tempAssay <- NULL
   
-  #Perform 'Normalization'
-  if(normalizationMethod %in% seuratMethods){
-    if(normalizationMethod == "SCTransform"){
-      tempSCE <- seuratSCTransform(
-        inSCE = inSCE,
-        normAssayName = normAssayName,
-        useAssay = useAssay
-      )
-    }
-    else{
-      tempSCE <- seuratNormalizeData(
-        inSCE = inSCE,
-        normalizationMethod = normalizationMethod,
-        useAssay = useAssay,
-        normAssayName = normAssayName,
-        scaleFactor = seuratScaleFactor
-      )
-    }
-  }
-  else if(normalizationMethod %in% scaterMethods){
-    tempSCE <- do.call(
-      paste0("scater_", normalizationMethod),
-      list(
-        inSCE = inSCE,
-        assayName = normAssayName,
-        useAssay = useAssay
-      )
-    )
+  if(is.null(normalizationMethod)){
+    #No normalizationMethod selected - Select the useAssay to perform other transformations
+    tempAssay <- assay(inSCE, useAssay)
   }
   else{
-    stop("Specified normalization method '", normalizationMethod, "' not found.")
+    tempSCE <- NULL
+    
+    #Perform 'Pseudocounts' before Normalization
+    if(!is.null(pseudocountsNorm)){
+      tempAssay <- assay(inSCE, useAssay)
+      tempAssay <- tempAssay + pseudocountsNorm
+      assay(inSCE, useAssay) <- tempAssay
+    }
+    
+    #Perform 'Normalization' - normalizationMethod is selected
+    if(normalizationMethod %in% seuratMethods){
+      if(normalizationMethod == "SCTransform"){
+        tempSCE <- seuratSCTransform(
+          inSCE = inSCE,
+          normAssayName = normAssayName,
+          useAssay = useAssay
+        )
+      }
+      else{
+        tempSCE <- seuratNormalizeData(
+          inSCE = inSCE,
+          normalizationMethod = normalizationMethod,
+          useAssay = useAssay,
+          normAssayName = normAssayName,
+          scaleFactor = seuratScaleFactor
+        )
+      }
+      tempAssay <- assay(tempSCE, normAssayName)
+    }
+    else if(normalizationMethod %in% scaterMethods){
+      tempSCE <- do.call(
+        paste0("scater_", normalizationMethod),
+        list(
+          inSCE = inSCE,
+          assayName = normAssayName,
+          useAssay = useAssay
+        )
+      )
+      tempAssay <- assay(tempSCE, normAssayName)
+    }
+    else{
+      stop("Specified normalization method '", normalizationMethod, "' not found.")
+    }
   }
   
   #Perform 'Scale'
   if(scale){
-    scaledAssay <- computeZScore(counts = assay(tempSCE, normAssayName))
-  }
-  
-  #Perform 'Transformation'
-  if(log){
-    selectedAssay <- log2(selectedAssay)
-  }
-  
-  if(log1p){
-    selectedAssay <- log1p(selectedAssay)
-  }
-  
-  if(sqrt){
-    selectedAssay <- sqrt(selectedAssay)
-  }
-  
-  #Perform 'Pseudocounts' before Normalization
-  if(!is.null(pseudocountsNorm)){
-    selectedAssay <- selectedAssay + pseudocountsNorm
+    tempAssay <- computeZScore(counts = tempAssay)
   }
   
   #Perform 'Pseudocounts' before Transformation
   if(!is.null(pseudocountsTransform)){
-    selectedAssay <- selectedAssay + pseudocountsTransform
+    tempAssay <- tempAssay + pseudocountsTransform
+  }
+  
+  #Perform 'Transformation'
+  if(log){
+    tempAssay <- log2(tempAssay)
+  }
+  
+  if(log1p){
+    tempAssay <- log1p(tempAssay)
+  }
+  
+  if(sqrt){
+    tempAssay <- sqrt(tempAssay)
   }
   
   #Perform 'Trim'
   if(!is.null(trim)){
-    selectedAssay <- trimCounts(selectedAssay, c(input$trimUpperValueAssay, input$trimLowerValueAssay))
+    tempAssay <- trimCounts(tempAssay, c(trim[1], trim[2]))
   }
+  
+  assay(inSCE, normAssayName) <- tempAssay
   
   return(inSCE)
 }
