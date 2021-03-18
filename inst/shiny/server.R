@@ -1897,28 +1897,40 @@ shinyServer(function(input, output, session) {
         #Setting initial parameters
         selectedAssay <- assay(vals$counts, input$modifyAssaySelect)
         tempSCE <- vals$counts
-        useAssay <- NULL
+        useAssay <- input$modifyAssaySelect
         
         if (input$customNormalizeOptionsNormalize == TRUE){
+          if(input$customNormalizeOptionsPsuedocounts == TRUE){
+            if(input$customNormalizePseudoOptions == "before normalization"){
+              tempSCE <- runNormalization(
+                inSCE = tempSCE,
+                useAssay = useAssay,
+                normAssayName = input$modifyAssayOutname,
+                pseudocountsNorm = input$customNormalizePseudoValue
+              )
+              useAssay <- input$modifyAssayOutname
+            }
+          }
+          
           if (input$customNormalizeAssayMethodSelect == "LogNormalize"
               || input$customNormalizeAssayMethodSelect == "CLR"
               || input$customNormalizeAssayMethodSelect == "RC") {
             tempSCE <- seuratNormalizeData(inSCE = tempSCE,
-                                               useAssay = input$modifyAssaySelect,
+                                               useAssay = useAssay,
                                                normAssayName = input$modifyAssayOutname,
                                                normalizationMethod = input$customNormalizeAssayMethodSelect,
                                                scaleFactor = as.numeric(input$normalizationScaleFactor))
             selectedAssay <- assay(tempSCE, input$modifyAssayOutname)
           }
           else if (input$customNormalizeAssayMethodSelect == "CPM") {
-            assay(tempSCE, input$modifyAssayOutname) <- scater::calculateCPM(x = assay(tempSCE, input$modifyAssaySelect))
+            assay(tempSCE, input$modifyAssayOutname) <- scater::calculateCPM(x = assay(tempSCE, useAssay))
             selectedAssay <- assay(tempSCE, input$modifyAssayOutname)
           }
           else if(input$customNormalizeAssayMethodSelect == "LNC"){
             tempSCE <- scater_logNormCounts(
               inSCE = tempSCE,
               assayName = input$modifyAssayOutname,
-              useAssay = input$modifyAssaySelect
+              useAssay = useAssay
             )
             selectedAssay <- assay(tempSCE, input$modifyAssayOutname)
           }
@@ -1926,7 +1938,7 @@ shinyServer(function(input, output, session) {
             tempSCE <- seuratSCTransform(
               inSCE = tempSCE,
               normAssayName = input$modifyAssayOutname,
-              useAssay = input$modifyAssaySelect
+              useAssay = useAssay
             )
             selectedAssay <- assay(tempSCE, input$modifyAssayOutname)
           }
@@ -1947,13 +1959,15 @@ shinyServer(function(input, output, session) {
         }
         
         if(input$customNormalizeOptionsPsuedocounts == TRUE){
-          tempSCE <- runNormalization(
-            inSCE = tempSCE,
-            useAssay = useAssay,
-            normAssayName = input$modifyAssayOutname,
-            pseudocountsTransform = input$customNormalizePseudoValue
-          )
-          useAssay <- input$modifyAssayOutname
+          if(input$customNormalizePseudoOptions == "before transformation"){
+            tempSCE <- runNormalization(
+              inSCE = tempSCE,
+              useAssay = useAssay,
+              normAssayName = input$modifyAssayOutname,
+              pseudocountsTransform = input$customNormalizePseudoValue
+            )
+            useAssay <- input$modifyAssayOutname
+          }
         }
         
         if (input$customNormalizeOptionsScale == TRUE) {

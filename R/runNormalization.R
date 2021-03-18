@@ -33,19 +33,19 @@ runNormalization <- function(inSCE,
   scaterMethods <- c("logNormCounts", "CPM")
   tempAssay <- NULL
   
+  #Perform 'Pseudocounts' before Normalization
+  if(!is.null(pseudocountsNorm)){
+    tempAssay <- assay(inSCE, useAssay)
+    tempAssay <- tempAssay + pseudocountsNorm
+    assay(inSCE, useAssay) <- tempAssay
+  }
+  
   if(is.null(normalizationMethod)){
     #No normalizationMethod selected - Select the useAssay to perform other transformations
     tempAssay <- assay(inSCE, useAssay)
   }
   else{
     tempSCE <- NULL
-    
-    #Perform 'Pseudocounts' before Normalization
-    if(!is.null(pseudocountsNorm)){
-      tempAssay <- assay(inSCE, useAssay)
-      tempAssay <- tempAssay + pseudocountsNorm
-      assay(inSCE, useAssay) <- tempAssay
-    }
     
     #Perform 'Normalization' - normalizationMethod is selected
     if(normalizationMethod %in% seuratMethods){
