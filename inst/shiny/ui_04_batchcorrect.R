@@ -67,19 +67,19 @@ shinyPanelBatchcorrect <- fluidPage(
                                      ),
                                      conditionalPanel(
                                        condition = "input.normalizeAssayMethodSelect == 'custom'",
+                                       h5("Assay Options:"),
+                                       uiOutput("modifyAssaySelect"),
+                                       textInput("modifyAssayOutname", "Assay Name",
+                                                 value = "customNormalized"),
+                                       tags$hr(),
                                        h5("Select Options:"),
-                                       awesomeCheckboxGroup(
-                                         inputId = "customNormalizeOptions",
-                                         label = NULL, 
-                                         choices = c("Normalize", 
-                                                     "Transform",
-                                                     "Pseudocounts",
-                                                     "Scale", 
-                                                     "Trim"),
-                                         selected = NULL,
+                                       awesomeCheckbox(
+                                         inputId = "customNormalizeOptionsNormalize",
+                                         label = "Normalize",
+                                         value = FALSE
                                        ),
                                        conditionalPanel(
-                                         condition = "input.customNormalizeOptions.includes('Normalize')",
+                                         condition = "input.customNormalizeOptionsNormalize == true",
                                          h5("Normalize Options:"),
                                          selectInput(
                                            inputId = "customNormalizeAssayMethodSelect",
@@ -92,8 +92,13 @@ shinyPanelBatchcorrect <- fluidPage(
                                                        "Scater - CPM" = "CPM")
                                          )
                                        ),
+                                       awesomeCheckbox(
+                                         inputId = "customNormalizeOptionsTransform",
+                                         label = "Transform",
+                                         value = FALSE
+                                       ),
                                        conditionalPanel(
-                                         condition = "input.customNormalizeOptions.includes('Transform')",
+                                         condition = "input.customNormalizeOptionsTransform == true",
                                          h5("Transformation Options:"),
                                          selectInput(
                                            inputId = "customNormalizeTransformOptions",
@@ -103,8 +108,13 @@ shinyPanelBatchcorrect <- fluidPage(
                                                        "Sqrt" = "sqrt")
                                          )
                                        ),
+                                       awesomeCheckbox(
+                                         inputId = "customNormalizeOptionsPsuedocounts",
+                                         label = "Psuedocounts",
+                                         value = FALSE
+                                       ),
                                        conditionalPanel(
-                                         condition = "input.customNormalizeOptions.includes('Pseudocounts')",
+                                         condition = "input.customNormalizeOptionsPsuedocounts == true",
                                          h5("Pseudocounts Options:"),
                                          awesomeRadio(
                                            inputId = "customNormalizePseudoOptions",
@@ -119,8 +129,13 @@ shinyPanelBatchcorrect <- fluidPage(
                                            min = 1
                                          )
                                        ),
+                                       awesomeCheckbox(
+                                         inputId = "customNormalizeOptionsScale",
+                                         label = "Scale",
+                                         value = FALSE
+                                       ),
                                        conditionalPanel(
-                                         condition = "input.customNormalizeOptions.includes('Scale')",
+                                         condition = "input.customNormalizeOptionsScale == true",
                                          h5("Scale Options:"),
                                          selectInput(
                                            inputId = "customNormalizeScaleOptions",
@@ -128,8 +143,13 @@ shinyPanelBatchcorrect <- fluidPage(
                                            choices = c("Z.Score" = "zscore")
                                          )
                                        ),
+                                       awesomeCheckbox(
+                                         inputId = "customNormalizeOptionsTrim",
+                                         label = "Trim",
+                                         value = FALSE
+                                       ),
                                        conditionalPanel(
-                                         condition = "input.customNormalizeOptions.includes('Trim')",
+                                         condition = "input.customNormalizeOptionsTrim == true",
                                          h5("Trim Options:"),
                                          numericInput(
                                            inputId = "trimUpperValueAssay",
@@ -141,12 +161,7 @@ shinyPanelBatchcorrect <- fluidPage(
                                            label = "Specify lower trim value",
                                            value = -10
                                          )
-                                       ),
-                                       tags$hr(),
-                                       h5("Assay Options:"),
-                                       uiOutput("modifyAssaySelect"),
-                                       textInput("modifyAssayOutname", "Assay Name",
-                                                 value = "customNormalized"),
+                                       )
                                      )
                                      ),
                               column(6,
