@@ -24,9 +24,7 @@ runNormalization <- function(inSCE,
                              normAssayName = "customNormalizedAssay",
                              scale = FALSE,
                              seuratScaleFactor = 10,
-                             log = FALSE,
-                             log1p = FALSE,
-                             sqrt = FALSE,
+                             transformation = NULL,
                              pseudocountsNorm = NULL,
                              pseudocountsTransform = NULL,
                              trim = NULL
@@ -96,15 +94,15 @@ runNormalization <- function(inSCE,
   }
   
   #Perform 'Transformation'
-  if(log){
+  if("log2" %in% transformation){
     tempAssay <- log2(tempAssay)
   }
   
-  if(log1p){
+  if("log1p" %in% transformation){
     tempAssay <- log1p(tempAssay)
   }
   
-  if(sqrt){
+  if("sqrt" %in% transformation){
     tempAssay <- sqrt(tempAssay)
   }
   

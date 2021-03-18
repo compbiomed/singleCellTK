@@ -70,7 +70,7 @@ shinyPanelBatchcorrect <- fluidPage(
                                        h5("Assay Options:"),
                                        uiOutput("modifyAssaySelect"),
                                        textInput("modifyAssayOutname", "Assay Name",
-                                                 value = "customNormalized"),
+                                                 value = "customNormalizedAssay"),
                                        tags$hr(),
                                        h5("Select Options:"),
                                        awesomeCheckbox(
@@ -173,23 +173,23 @@ shinyPanelBatchcorrect <- fluidPage(
                                      tags$hr(),
                                      h4("Selected Options:"),
                                      conditionalPanel(
-                                       condition = "input.customNormalizeOptions.includes('Normalize')",
+                                       condition = "input.customNormalizeOptionsNormalize == true",
                                        h5("Normalize")
                                      ),
                                      conditionalPanel(
-                                       condition = "input.customNormalizeOptions.includes('Transform')",
+                                       condition = "input.customNormalizeOptionsTransform == true",
                                        h5("Transform")
                                      ),
                                      conditionalPanel(
-                                       condition = "input.customNormalizeOptions.includes('Scale')",
+                                       condition = "input.customNormalizeOptionsScale == true",
                                        h5("Scale")
                                      ),
                                      conditionalPanel(
-                                       condition = "input.customNormalizeOptions.includes('Pseudocounts')",
+                                       condition = "input.customNormalizeOptionsPseudocounts == true",
                                        h5("Pseudocounts")
                                      ),
                                      conditionalPanel(
-                                       condition = "input.customNormalizeOptions.includes('Trim')",
+                                       condition = "input.customNormalizeOptionsTrim == true",
                                        h5("Trim")
                                      )
                                      )
