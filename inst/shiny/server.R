@@ -1948,6 +1948,18 @@ shinyServer(function(input, output, session) {
           useAssay <- input$modifyAssaySelect
         }
         
+        if(input$customNormalizeOptionsPsuedocounts == TRUE){
+          if(input$customNormalizePseudoOptions == "before transformation"){
+            tempSCE <- runNormalization(
+              inSCE = tempSCE,
+              useAssay = useAssay,
+              normAssayName = input$modifyAssayOutname,
+              pseudocountsBeforeTransform = input$customNormalizePseudoValue
+            )
+            useAssay <- input$modifyAssayOutname
+          }
+        }
+        
         if (input$customNormalizeOptionsTransform == TRUE) {
           tempSCE <- runNormalization(
             inSCE = tempSCE,
@@ -1959,12 +1971,12 @@ shinyServer(function(input, output, session) {
         }
         
         if(input$customNormalizeOptionsPsuedocounts == TRUE){
-          if(input$customNormalizePseudoOptions == "before transformation"){
+          if(input$customNormalizePseudoOptions == "after transformation"){
             tempSCE <- runNormalization(
               inSCE = tempSCE,
               useAssay = useAssay,
               normAssayName = input$modifyAssayOutname,
-              pseudocountsTransform = input$customNormalizePseudoValue
+              pseudocountsAfterTransform = input$customNormalizePseudoValue
             )
             useAssay <- input$modifyAssayOutname
           }

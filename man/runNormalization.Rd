@@ -17,8 +17,9 @@ runNormalization(
   scale = FALSE,
   seuratScaleFactor = 10,
   transformation = NULL,
-  pseudocountsNorm = NULL,
-  pseudocountsTransform = NULL,
+  pseudocountsBeforeNorm = NULL,
+  pseudocountsBeforeTransform = NULL,
+  pseudocountsAfterTransform = NULL,
   trim = NULL
 )
 }
@@ -46,18 +47,22 @@ selected assay. Options include `log2` (base 2 log transformation),
 `log1p` (natural log + 1 transformation) and `sqrt` (square root). Default
 value is \code{NULL}, which will not run any transformation.}
 
+\item{pseudocountsBeforeNorm}{Specify a numeric pseudo value that should be added 
+to the assay before normalization is performed. Default is \code{NULL},
+which will not add any value.}
+
+\item{pseudocountsBeforeTransform}{Specify a numeric pseudo value that should be 
+added to the assay before transformation is run. Default is \code{NULL},
+which will not add any value.}
+
+\item{pseudocountsAfterTransform}{Specify a numeric pseudo value that should be 
+added to the assay after transformation is run. Default is \code{NULL},
+which will not add any value.}
+
 \item{trim}{Specify a vector of two numeric values that should be used
 as the upper and lower trim values to trim the assay between these two
 values. For example, \code{c(10,-10)} will trim the values between 10
 and -10. Default is \code{NULL}, which will not trim the data assay.}
-
-\item{pseduoCountsNorm}{Specify a numeric pseudo value that should be added 
-to the assay before normalization is performed. Default is \code{NULL},
-which will not add any value.}
-
-\item{pseduoCountsTransform}{Specify a numeric pseudo value that should be 
-added to the assay before transformation is run. Default is \code{NULL},
-which will not add any value.}
 }
 \value{
 Output SCE object with new normalized/transformed assay stored.

@@ -120,7 +120,8 @@ shinyPanelBatchcorrect <- fluidPage(
                                            inputId = "customNormalizePseudoOptions",
                                            label = "Select when to add a pseudo value:",
                                            choices = c("before normalization",
-                                                       "before transformation")
+                                                       "before transformation",
+                                                       "after transformation")
                                          ),
                                          numericInput(
                                            inputId = "customNormalizePseudoValue",
