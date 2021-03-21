@@ -1,15 +1,39 @@
 
 #' Wrapper function to run any of the integrated normalization/transformation
-#' methods in the singleCellTK.
+#' methods in the singleCellTK. The available methods include 'LogNormalize',
+#' 'CLR', 'RC' and 'SCTransform' from Seurat, 'logNormCounts and 'CPM' from
+#' Scater. Additionally, users can 'scale' using Z.Score, 'transform' using
+#' log, log1p and sqrt, add 'pseudocounts' and trim the final matrices
+#' between a range of values.
 #'
-#' @param inSCE input
-#' @param normalizationMethod normal
-#' @param useAssay use
-#' @param normAssayName npr
-#' @param scale scale
-#' @param seuratScaleFactor factor
+#' @param inSCE Input \code{SingleCellExperiment} object.
+#' @param normalizationMethod Specify a normalization method from `LogNormalize`,
+#'  `CLR`, `RC` and `SCTransform` from Seurat or `logNormCounts` and `CPM` from
+#'  scater packages. Default \code{NULL} is set which will not run any
+#'  normalization method.
+#' @param useAssay Specify the name of the assay that should be used.
+#' @param normAssayName Specify the name of the new output assay.
+#' @param scale Logical value indicating if the data should be scaled using
+#'  Z.Score. Default \code{FALSE}.
+#' @param seuratScaleFactor Specify the `scaleFactor` argument if a Seurat
+#'  normalization method is selected. Default is \code{10}. This parameter
+#'  will not be used if methods other than seurat are selected.
+#' @param transformation Specify the transformation options to run on the
+#'  selected assay. Options include `log2` (base 2 log transformation),
+#'  `log1p` (natural log + 1 transformation) and `sqrt` (square root). Default
+#'  value is \code{NULL}, which will not run any transformation. 
+#' @param pseduoCountsNorm Specify a numeric pseudo value that should be added 
+#'  to the assay before normalization is performed. Default is \code{NULL},
+#'  which will not add any value.
+#' @param pseduoCountsTransform Specify a numeric pseudo value that should be 
+#'  added to the assay before transformation is run. Default is \code{NULL},
+#'  which will not add any value.
+#' @param trim Specify a vector of two numeric values that should be used
+#'  as the upper and lower trim values to trim the assay between these two
+#'  values. For example, \code{c(10,-10)} will trim the values between 10
+#'  and -10. Default is \code{NULL}, which will not trim the data assay.
 #'
-#' @return object
+#' @return Output SCE object with new normalized/transformed assay stored.
 #' @export
 #'
 #' @examples
