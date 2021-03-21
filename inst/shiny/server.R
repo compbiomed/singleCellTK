@@ -1875,11 +1875,29 @@ shinyServer(function(input, output, session) {
   #   }
   # })
   
-  
-  output$normalizeTabDescription <- renderText({
+  output$normalizationDataTagUI <- renderUI({
     req(vals$counts)
-    input$normalizeAssayMethodSelect
+    tag <- "normalized"
+    if(input$normalizeAssayMethodSelect != "custom"){
+      if(input$normalizationScale){
+        tag <- "scaled"
+      }
+    }
+    else{
+      if(input$customNormalizeOptionsScale){
+        tag <- "scaled"
+      }
+      else {
+        tag <- "normalized"
+      }
+    }
+    return(tag)
   })
+  
+  # output$normalizeTabDescription <- renderText({
+  #   req(vals$counts)
+  #   input$normalizeAssayMethodSelect
+  # })
 
   observeEvent(input$modifyAssay, {
     req(vals$counts)
@@ -1894,10 +1912,21 @@ shinyServer(function(input, output, session) {
                 || is.na(input$trimLowerValueAssay)){
         stop("Upper or lower trim value cannot be empty!")
       } else {
+        checkedOptions <- c(input$customNormalizeOptionsNormalize,
+                            input$customNormalizeOptionsTransform,
+                            input$customNormalizeOptionsPsuedocounts,
+                            input$customNormalizeOptionsScale,
+                            input$customNormalizeOptionsTrim)
+        
+        if(!any(checkedOptions)){
+          stop("Must select atleast one option!")
+        }
+        
         #Setting initial parameters
         selectedAssay <- assay(vals$counts, input$modifyAssaySelect)
         tempSCE <- vals$counts
         useAssay <- input$modifyAssaySelect
+        tag <- "normalized"
         
         if (input$customNormalizeOptionsNormalize == TRUE){
           if(input$customNormalizeOptionsPsuedocounts == TRUE){
@@ -1943,6 +1972,7 @@ shinyServer(function(input, output, session) {
             selectedAssay <- assay(tempSCE, input$modifyAssayOutname)
           }
           useAssay <- input$modifyAssayOutname
+          tag <- "normalized"
         }
         else{
           useAssay <- input$modifyAssaySelect
@@ -1968,6 +1998,7 @@ shinyServer(function(input, output, session) {
             transformation = input$customNormalizeTransformOptions
           )
           useAssay <- input$modifyAssayOutname
+          tag <- "normalized"
         }
         
         if(input$customNormalizeOptionsPsuedocounts == TRUE){
@@ -1990,6 +2021,7 @@ shinyServer(function(input, output, session) {
             scale = TRUE
           )
           useAssay <- input$modifyAssayOutname
+          tag <- "scaled"
         }
         
         if(input$customNormalizeOptionsTrim == TRUE){
@@ -2003,7 +2035,7 @@ shinyServer(function(input, output, session) {
         }
         
         selectedAssay <- assay(tempSCE, input$modifyAssayOutname)
-        expData(vals$counts, input$modifyAssayOutname, tag = "normalized", altExp = FALSE) <- selectedAssay
+        expData(vals$counts, input$modifyAssayOutname, tag = tag, altExp = FALSE) <- selectedAssay
       }
     })
   })

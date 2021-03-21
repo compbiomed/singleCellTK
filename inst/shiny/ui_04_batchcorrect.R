@@ -169,8 +169,8 @@ shinyPanelBatchcorrect <- fluidPage(
                                      h4("Description:"),
                                      textOutput("normalizeTabDescription"),
                                      tags$hr(),
-                                     h4("Recommended Tags:"),
-                                     h5("Scaled"),
+                                     h4("Data Tag:"),
+                                     uiOutput("normalizationDataTagUI"),
                                      tags$hr(),
                                      h4("Selected Options:"),
                                      conditionalPanel(
@@ -200,7 +200,7 @@ shinyPanelBatchcorrect <- fluidPage(
                               column(12,
                                      conditionalPanel(
                                        condition = "input.normalizeAssayMethodSelect != 'custom'",
-                                       div(style = "display:inline-block; float:right", withBusyIndicatorUI(actionButton("normalizeAssay", "Normalize"))),
+                                       div(style = "display:inline-block; float:right", withBusyIndicatorUI(actionButton("normalizeAssay", "Run"))),
                                       ),
                                      conditionalPanel(
                                        condition = "input.normalizeAssayMethodSelect == 'custom'",
