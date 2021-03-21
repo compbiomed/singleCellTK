@@ -169,28 +169,37 @@ shinyPanelBatchcorrect <- fluidPage(
                                      h4("Description:"),
                                      textOutput("normalizeTabDescription"),
                                      tags$hr(),
-                                     h4("Data Tag:"),
+                                     h4("Output Data Type:"),
                                      uiOutput("normalizationDataTagUI"),
                                      tags$hr(),
                                      h4("Selected Options:"),
                                      conditionalPanel(
-                                       condition = "input.customNormalizeOptionsNormalize == true",
+                                       condition = "input.normalizeAssayMethodSelect != 'custom'",
+                                       uiOutput("normalizationNormalizeSelectedMethodUI")
+                                     ),
+                                     conditionalPanel(
+                                       condition = "(input.customNormalizeOptionsNormalize == true
+                                       && input.normalizeAssayMethodSelect == 'custom')",
                                        h5("Normalize")
                                      ),
                                      conditionalPanel(
-                                       condition = "input.customNormalizeOptionsTransform == true",
+                                       condition = "input.customNormalizeOptionsTransform == true
+                                       && input.normalizeAssayMethodSelect == 'custom'",
                                        h5("Transform")
                                      ),
                                      conditionalPanel(
-                                       condition = "input.customNormalizeOptionsScale == true",
+                                       condition = "input.customNormalizeOptionsScale == true
+                                       && input.normalizeAssayMethodSelect == 'custom'",
                                        h5("Scale")
                                      ),
                                      conditionalPanel(
-                                       condition = "input.customNormalizeOptionsPseudocounts == true",
+                                       condition = "input.customNormalizeOptionsPsuedocounts == true
+                                       && input.normalizeAssayMethodSelect == 'custom'",
                                        h5("Pseudocounts")
                                      ),
                                      conditionalPanel(
-                                       condition = "input.customNormalizeOptionsTrim == true",
+                                       condition = "input.customNormalizeOptionsTrim == true
+                                       && input.normalizeAssayMethodSelect == 'custom'",
                                        h5("Trim")
                                      )
                                      )

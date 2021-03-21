@@ -1894,10 +1894,21 @@ shinyServer(function(input, output, session) {
     return(tag)
   })
   
-  # output$normalizeTabDescription <- renderText({
-  #   req(vals$counts)
-  #   input$normalizeAssayMethodSelect
-  # })
+  output$normalizeTabDescription <- renderText({
+    req(vals$counts)
+    "Need to add descriptions!"
+  })
+  
+  output$normalizationNormalizeSelectedMethodUI <- renderUI({
+    req(vals$counts)
+    if(input$normalizeAssayMethodSelect != "custom"){
+      h5(input$normalizeAssayMethodSelect)
+    }
+    else{
+      NULL
+    }
+    
+  })
 
   observeEvent(input$modifyAssay, {
     req(vals$counts)
