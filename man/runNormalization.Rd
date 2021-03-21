@@ -2,15 +2,20 @@
 % Please edit documentation in R/runNormalization.R
 \name{runNormalization}
 \alias{runNormalization}
-\title{Title}
+\title{Wrapper function to run any of the integrated normalization/transformation
+methods in the singleCellTK.}
 \usage{
 runNormalization(
   inSCE,
-  normalizationMethod,
-  useAssay,
-  normAssayName,
+  normalizationMethod = NULL,
+  useAssay = "counts",
+  normAssayName = "customNormalizedAssay",
   scale = FALSE,
-  seuratScaleFactor
+  seuratScaleFactor = 10,
+  transformation = NULL,
+  pseudocountsNorm = NULL,
+  pseudocountsTransform = NULL,
+  trim = NULL
 )
 }
 \arguments{
@@ -30,7 +35,8 @@ runNormalization(
 object
 }
 \description{
-Title
+Wrapper function to run any of the integrated normalization/transformation
+methods in the singleCellTK.
 }
 \examples{
 data(sce_chcl, package = "scds")

@@ -1,5 +1,6 @@
 
-#' Title
+#' Wrapper function to run any of the integrated normalization/transformation
+#' methods in the singleCellTK.
 #'
 #' @param inSCE input
 #' @param normalizationMethod normal
