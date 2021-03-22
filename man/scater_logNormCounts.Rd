@@ -7,14 +7,14 @@ Uses \link{logNormCounts} to log normalize input data}
 \usage{
 scater_logNormCounts(
   inSCE,
-  logAssayName = "ScaterLogNormCounts",
+  assayName = "ScaterLogNormCounts",
   useAssay = "counts"
 )
 }
 \arguments{
 \item{inSCE}{Input SingleCellExperiment object}
 
-\item{logAssayName}{New assay name for log normalized data}
+\item{assayName}{New assay name for log normalized data}
 
 \item{useAssay}{Input assay}
 }

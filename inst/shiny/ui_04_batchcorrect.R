@@ -22,67 +22,10 @@ shinyPanelBatchcorrect <- fluidPage(
                                           "Seurat - RC" = "RC",
                                           "Seurat - SCTransform" = "SCT",
                                           "Scater - LogNormCounts" = "LNC",
-                                          "Scater - CPM" = "CPM")
-                            ),
-                            uiOutput("normalizeAssaySelect"),
-                            #selectInput("normalizeAssaySelect", "Select Assay:", currassays),
-                            #uiOutput("about"),
-                            conditionalPanel(
-                              condition = "input.normalizeAssayMethodSelect == 'LogNormalize'
-                              || input.normalizeAssayMethodSelect == 'CLR'
-                              || input.normalizeAssayMethodSelect == 'RC'",
-                              textInput(
-                                inputId = "normalizationScaleFactor",
-                                label = "Set scaling factor: ",
-                                value = "10000"
-                              )
-                            ),
-                            textInput(
-                              inputId = "normalizeAssayOutname",
-                              label = "Assay Name:",
-                              value = "SeuratLogNormalize"
-                            ),
-                            withBusyIndicatorUI(actionButton("normalizeAssay", "Normalize"))
-                        )
-                    )
-                ),
-                fluidRow(
-                    column(
-                        width = 12,
-                        panel(
-                            heading = "Assay Options",
-                            selectInput(
-                                "assayModifyAction",
-                                "Assay Actions:",
-                                c(
-                                "Log Transform" = "log",
-                                "log1p" = "log1p",
-                                "Z-Score" = "z.score"
-                                )
-                            ),
-                            uiOutput("modifyAssaySelect"),
-                            #selectInput("modifyAssaySelect", "Select Assay:", currassays),
-                            textInput("modifyAssayOutname", "Assay Name",
-                                      value = "countsLog"),
-                            materialSwitch(
-                                inputId = "trimAssayCheckbox",
-                                label = "Trim Assay",
-                                value = FALSE
-                            ),
-                            conditionalPanel(
-                                condition = "input.trimAssayCheckbox == true",
-                                numericInput(
-                                    inputId = "trimUpperValueAssay",
-                                    label = "Specify upper trim value",
-                                    value = 10
-                                ),
-                                numericInput(
-                                  inputId = "trimLowerValueAssay",
-                                  label = "Specify lower trim value",
-                                  value = -10
-                                )
-                            ),
-                            withBusyIndicatorUI(actionButton("modifyAssay", "Run")),
+                                          "Scater - CPM" = "CPM",
+                                          "Custom Normalization" = "custom")
+                            )
+                            
                         )
                     )
                 )
@@ -93,8 +36,187 @@ shinyPanelBatchcorrect <- fluidPage(
                     column(
                         width = 12,
                         panel(
-                            heading = "Available Assays",
-                            tableOutput("assayList")
+                            heading = "Options",
+                            fluidRow(
+                              column(6, style='border-right:1px solid; border-color:#EDEDED;',
+                                     conditionalPanel(
+                                       condition = "input.normalizeAssayMethodSelect != 'custom'",
+                                       uiOutput("normalizeAssaySelect"),
+                                       #selectInput("normalizeAssaySelect", "Select Assay:", currassays),
+                                       #uiOutput("about"),
+                                       conditionalPanel(
+                                         condition = "input.normalizeAssayMethodSelect == 'LogNormalize'
+                              || input.normalizeAssayMethodSelect == 'CLR'
+                              || input.normalizeAssayMethodSelect == 'RC'",
+                                         textInput(
+                                           inputId = "normalizationScaleFactor",
+                                           label = "Set scaling factor: ",
+                                           value = "10000"
+                                         )
+                                       ),
+                                       textInput(
+                                         inputId = "normalizeAssayOutname",
+                                         label = "Assay Name:",
+                                         value = "SeuratLogNormalize"
+                                       ),
+                                       awesomeCheckbox(
+                                         inputId = "normalizationScale",
+                                         label = "Scale data after normalization?",
+                                         value = FALSE
+                                       )
+                                     ),
+                                     conditionalPanel(
+                                       condition = "input.normalizeAssayMethodSelect == 'custom'",
+                                       h5("Assay Options:"),
+                                       uiOutput("modifyAssaySelect"),
+                                       textInput("modifyAssayOutname", "Assay Name",
+                                                 value = "customNormalizedAssay"),
+                                       tags$hr(),
+                                       h5("Select Options:"),
+                                       awesomeCheckbox(
+                                         inputId = "customNormalizeOptionsNormalize",
+                                         label = "Normalize",
+                                         value = FALSE
+                                       ),
+                                       conditionalPanel(
+                                         condition = "input.customNormalizeOptionsNormalize == true",
+                                         h5("Normalize Options:"),
+                                         selectInput(
+                                           inputId = "customNormalizeAssayMethodSelect",
+                                           label = "Select normalization method: ",
+                                           choices = c("Seurat - LogNormalize" = "LogNormalize",
+                                                       "Seurat - CLR" = "CLR",
+                                                       "Seurat - RC" = "RC",
+                                                       "Seurat - SCTransform" = "SCT",
+                                                       "Scater - LogNormCounts" = "LNC",
+                                                       "Scater - CPM" = "CPM")
+                                         )
+                                       ),
+                                       awesomeCheckbox(
+                                         inputId = "customNormalizeOptionsTransform",
+                                         label = "Transform",
+                                         value = FALSE
+                                       ),
+                                       conditionalPanel(
+                                         condition = "input.customNormalizeOptionsTransform == true",
+                                         h5("Transformation Options:"),
+                                         selectInput(
+                                           inputId = "customNormalizeTransformOptions",
+                                           label = "Select transformation method:",
+                                           choices = c("Log2" = "log2",
+                                                       "Log1p" = "log1p",
+                                                       "Sqrt" = "sqrt")
+                                         )
+                                       ),
+                                       awesomeCheckbox(
+                                         inputId = "customNormalizeOptionsPsuedocounts",
+                                         label = "Psuedocounts",
+                                         value = FALSE
+                                       ),
+                                       conditionalPanel(
+                                         condition = "input.customNormalizeOptionsPsuedocounts == true",
+                                         h5("Pseudocounts Options:"),
+                                         awesomeRadio(
+                                           inputId = "customNormalizePseudoOptions",
+                                           label = "Select when to add a pseudo value:",
+                                           choices = c("before normalization",
+                                                       "before transformation",
+                                                       "after transformation")
+                                         ),
+                                         numericInput(
+                                           inputId = "customNormalizePseudoValue",
+                                           label = "Enter a pseudo value to add:",
+                                           value = 1,
+                                           min = 1
+                                         )
+                                       ),
+                                       awesomeCheckbox(
+                                         inputId = "customNormalizeOptionsScale",
+                                         label = "Scale",
+                                         value = FALSE
+                                       ),
+                                       conditionalPanel(
+                                         condition = "input.customNormalizeOptionsScale == true",
+                                         h5("Scale Options:"),
+                                         selectInput(
+                                           inputId = "customNormalizeScaleOptions",
+                                           label = "Select scaling method:",
+                                           choices = c("Z.Score" = "zscore")
+                                         )
+                                       ),
+                                       awesomeCheckbox(
+                                         inputId = "customNormalizeOptionsTrim",
+                                         label = "Trim",
+                                         value = FALSE
+                                       ),
+                                       conditionalPanel(
+                                         condition = "input.customNormalizeOptionsTrim == true",
+                                         h5("Trim Options:"),
+                                         numericInput(
+                                           inputId = "trimUpperValueAssay",
+                                           label = "Specify upper trim value",
+                                           value = 10
+                                         ),
+                                         numericInput(
+                                           inputId = "trimLowerValueAssay",
+                                           label = "Specify lower trim value",
+                                           value = -10
+                                         )
+                                       )
+                                     )
+                                     ),
+                              column(6,
+                                     h4("Description:"),
+                                     textOutput("normalizeTabDescription"),
+                                     tags$hr(),
+                                     h4("Output Data Type:"),
+                                     uiOutput("normalizationDataTagUI"),
+                                     tags$hr(),
+                                     h4("Selected Options:"),
+                                     conditionalPanel(
+                                       condition = "input.normalizeAssayMethodSelect != 'custom'",
+                                       uiOutput("normalizationNormalizeSelectedMethodUI")
+                                     ),
+                                     conditionalPanel(
+                                       condition = "(input.customNormalizeOptionsNormalize == true
+                                       && input.normalizeAssayMethodSelect == 'custom')",
+                                       h5("Normalize")
+                                     ),
+                                     conditionalPanel(
+                                       condition = "input.customNormalizeOptionsTransform == true
+                                       && input.normalizeAssayMethodSelect == 'custom'",
+                                       h5("Transform")
+                                     ),
+                                     conditionalPanel(
+                                       condition = "input.customNormalizeOptionsScale == true
+                                       && input.normalizeAssayMethodSelect == 'custom'",
+                                       h5("Scale")
+                                     ),
+                                     conditionalPanel(
+                                       condition = "input.customNormalizeOptionsPsuedocounts == true
+                                       && input.normalizeAssayMethodSelect == 'custom'",
+                                       h5("Pseudocounts")
+                                     ),
+                                     conditionalPanel(
+                                       condition = "input.customNormalizeOptionsTrim == true
+                                       && input.normalizeAssayMethodSelect == 'custom'",
+                                       h5("Trim")
+                                     )
+                                     )
+                            ),
+                            fluidRow(
+                              tags$hr(),
+                              column(12,
+                                     conditionalPanel(
+                                       condition = "input.normalizeAssayMethodSelect != 'custom'",
+                                       div(style = "display:inline-block; float:right", withBusyIndicatorUI(actionButton("normalizeAssay", "Run"))),
+                                      ),
+                                     conditionalPanel(
+                                       condition = "input.normalizeAssayMethodSelect == 'custom'",
+                                       div(style = "display:inline-block; float:right", withBusyIndicatorUI(actionButton("modifyAssay", "Run")))                                     
+                                       )
+                                     )
+                            )
                         )
                     )
                 )

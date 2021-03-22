@@ -227,12 +227,13 @@ shinyServer(function(input, output, session) {
     updateSelectInputTag(session, "pathwayAssay", recommended = c("normalized", "scaled"))
     
     #modifyAssaySelect conditions
-    if(input$assayModifyAction == "log" || input$assayModifyAction == "log1p"){
-      updateSelectInputTag(session, "modifyAssaySelect", recommended = c("raw", "normalized"))
-    }
-    else if(input$assayModifyAction == "z.score"){
-      updateSelectInputTag(session, "modifyAssaySelect", recommended = "normalized")
-    }
+    # if(input$assayModifyAction == "log" || input$assayModifyAction == "log1p"){
+    #   updateSelectInputTag(session, "modifyAssaySelect", recommended = c("raw", "normalized"))
+    # }
+    # else if(input$assayModifyAction == "z.score"){
+    #   updateSelectInputTag(session, "modifyAssaySelect", recommended = "normalized")
+    # }
+    updateSelectInputTag(session, "modifyAssaySelect")
     
     updateSelectInputTag(session, "normalizeAssaySelect", label = "Select assay to normalize:", recommended = "raw")
     
@@ -1771,14 +1772,6 @@ shinyServer(function(input, output, session) {
       saveRDS(vals$counts, file)
     })
 
-
-  output$assayList <- renderTable({
-    req(vals$counts)
-    if (!is.null(vals$counts) & length(names(assays(vals$counts))) > 0){
-      data.table(assays = names(assays(vals$counts)))
-    }
-  })
-
   output$reducedDimsList <- renderUI({
     req(vals$counts)
     if (!is.null(vals$counts) &&
@@ -1867,19 +1860,54 @@ shinyServer(function(input, output, session) {
     }
   })
 
-  observeEvent(input$modifyAssaySelect,{
-    if (input$assayModifyAction == "log"){
-      updateTextInput(session = session, inputId = "modifyAssayOutname", value = paste0(input$modifyAssaySelect, "Log"))
+  # observeEvent(input$modifyAssaySelect,{
+  #   if (input$assayModifyAction == "log"){
+  #     updateTextInput(session = session, inputId = "modifyAssayOutname", value = paste0(input$modifyAssaySelect, "Log"))
+  #   }
+  #   else if (input$assayModifyAction == "log1p"){
+  #     updateTextInput(session = session, inputId = "modifyAssayOutname", value = paste0(input$modifyAssaySelect, "Log1p"))
+  #   }
+  #   else if (input$assayModifyAction == "z.score") {
+  #     updateTextInput(session = session, inputId = "modifyAssayOutname", value = paste0(input$modifyAssaySelect, "Scaled"))
+  #   }
+  #   else if(input$assayModifyAction == "trim"){
+  #     updateTextInput(session = session, inputId = "modifyAssayOutname", value = paste0(input$modifyAssaySelect, "Trim"))
+  #   }
+  # })
+  
+  output$normalizationDataTagUI <- renderUI({
+    req(vals$counts)
+    tag <- "normalized"
+    if(input$normalizeAssayMethodSelect != "custom"){
+      if(input$normalizationScale){
+        tag <- "scaled"
+      }
     }
-    else if (input$assayModifyAction == "log1p"){
-      updateTextInput(session = session, inputId = "modifyAssayOutname", value = paste0(input$modifyAssaySelect, "Log1p"))
+    else{
+      if(input$customNormalizeOptionsScale){
+        tag <- "scaled"
+      }
+      else {
+        tag <- "normalized"
+      }
     }
-    else if (input$assayModifyAction == "z.score") {
-      updateTextInput(session = session, inputId = "modifyAssayOutname", value = paste0(input$modifyAssaySelect, "Scaled"))
+    return(tag)
+  })
+  
+  output$normalizeTabDescription <- renderText({
+    req(vals$counts)
+    "Need to add descriptions!"
+  })
+  
+  output$normalizationNormalizeSelectedMethodUI <- renderUI({
+    req(vals$counts)
+    if(input$normalizeAssayMethodSelect != "custom"){
+      h5(input$normalizeAssayMethodSelect)
     }
-    else if(input$assayModifyAction == "trim"){
-      updateTextInput(session = session, inputId = "modifyAssayOutname", value = paste0(input$modifyAssaySelect, "Trim"))
+    else{
+      NULL
     }
+    
   })
 
   observeEvent(input$modifyAssay, {
@@ -1895,59 +1923,152 @@ shinyServer(function(input, output, session) {
                 || is.na(input$trimLowerValueAssay)){
         stop("Upper or lower trim value cannot be empty!")
       } else {
-        if (input$assayModifyAction == "log") {
-          if (input$trimAssayCheckbox) {
-            assay(vals$counts, input$modifyAssayOutname) <- log2(assay(vals$counts, input$modifyAssaySelect) + 1)
-            expData(vals$counts, input$modifyAssayOutname, tag = "normalized", altExp = FALSE) <- trimCounts(assay(vals$counts, input$modifyAssayOutname), c(input$trimUpperValueAssay, input$trimLowerValueAssay))
+        checkedOptions <- c(input$customNormalizeOptionsNormalize,
+                            input$customNormalizeOptionsTransform,
+                            input$customNormalizeOptionsPsuedocounts,
+                            input$customNormalizeOptionsScale,
+                            input$customNormalizeOptionsTrim)
+        
+        if(!any(checkedOptions)){
+          stop("Must select atleast one option!")
+        }
+        
+        #Setting initial parameters
+        selectedAssay <- assay(vals$counts, input$modifyAssaySelect)
+        tempSCE <- vals$counts
+        useAssay <- input$modifyAssaySelect
+        tag <- "normalized"
+        
+        if (input$customNormalizeOptionsNormalize == TRUE){
+          if(input$customNormalizeOptionsPsuedocounts == TRUE){
+            if(input$customNormalizePseudoOptions == "before normalization"){
+              tempSCE <- runNormalization(
+                inSCE = tempSCE,
+                useAssay = useAssay,
+                normAssayName = input$modifyAssayOutname,
+                pseudocountsNorm = input$customNormalizePseudoValue
+              )
+              useAssay <- input$modifyAssayOutname
+            }
           }
-          else {
-            expData(vals$counts, input$modifyAssayOutname, tag = "normalized", altExp = FALSE) <- log2(assay(vals$counts, input$modifyAssaySelect) + 1)
+          
+          if (input$customNormalizeAssayMethodSelect == "LogNormalize"
+              || input$customNormalizeAssayMethodSelect == "CLR"
+              || input$customNormalizeAssayMethodSelect == "RC") {
+            tempSCE <- seuratNormalizeData(inSCE = tempSCE,
+                                               useAssay = useAssay,
+                                               normAssayName = input$modifyAssayOutname,
+                                               normalizationMethod = input$customNormalizeAssayMethodSelect,
+                                               scaleFactor = as.numeric(input$normalizationScaleFactor))
+            selectedAssay <- assay(tempSCE, input$modifyAssayOutname)
+          }
+          else if (input$customNormalizeAssayMethodSelect == "CPM") {
+            assay(tempSCE, input$modifyAssayOutname) <- scater::calculateCPM(x = assay(tempSCE, useAssay))
+            selectedAssay <- assay(tempSCE, input$modifyAssayOutname)
+          }
+          else if(input$customNormalizeAssayMethodSelect == "LNC"){
+            tempSCE <- scater_logNormCounts(
+              inSCE = tempSCE,
+              assayName = input$modifyAssayOutname,
+              useAssay = useAssay
+            )
+            selectedAssay <- assay(tempSCE, input$modifyAssayOutname)
+          }
+          else if(input$customNormalizeAssayMethodSelect == "SCT"){
+            tempSCE <- seuratSCTransform(
+              inSCE = tempSCE,
+              normAssayName = input$modifyAssayOutname,
+              useAssay = useAssay
+            )
+            selectedAssay <- assay(tempSCE, input$modifyAssayOutname)
+          }
+          useAssay <- input$modifyAssayOutname
+          tag <- "normalized"
+        }
+        else{
+          useAssay <- input$modifyAssaySelect
+        }
+        
+        if(input$customNormalizeOptionsPsuedocounts == TRUE){
+          if(input$customNormalizePseudoOptions == "before transformation"){
+            tempSCE <- runNormalization(
+              inSCE = tempSCE,
+              useAssay = useAssay,
+              normAssayName = input$modifyAssayOutname,
+              pseudocountsBeforeTransform = input$customNormalizePseudoValue
+            )
+            useAssay <- input$modifyAssayOutname
           }
         }
-        else if (input$assayModifyAction == "log1p") {
-          if (input$trimAssayCheckbox) {
-            assay(vals$counts, input$modifyAssayOutname) <- log1p(assay(vals$counts, input$modifyAssaySelect))
-            expData(vals$counts, input$modifyAssayOutname, tag = "normalized", altExp = FALSE) <- trimCounts(assay(vals$counts, input$modifyAssayOutname), c(input$trimUpperValueAssay, input$trimLowerValueAssay))
-          }
-          else {
-            expData(vals$counts, input$modifyAssayOutname, tag = "normalized", altExp = FALSE) <- log1p(assay(vals$counts, input$modifyAssaySelect))
+        
+        if (input$customNormalizeOptionsTransform == TRUE) {
+          tempSCE <- runNormalization(
+            inSCE = tempSCE,
+            useAssay = useAssay,
+            normAssayName = input$modifyAssayOutname,
+            transformation = input$customNormalizeTransformOptions
+          )
+          useAssay <- input$modifyAssayOutname
+          tag <- "normalized"
+        }
+        
+        if(input$customNormalizeOptionsPsuedocounts == TRUE){
+          if(input$customNormalizePseudoOptions == "after transformation"){
+            tempSCE <- runNormalization(
+              inSCE = tempSCE,
+              useAssay = useAssay,
+              normAssayName = input$modifyAssayOutname,
+              pseudocountsAfterTransform = input$customNormalizePseudoValue
+            )
+            useAssay <- input$modifyAssayOutname
           }
         }
-        else if (input$assayModifyAction == "z.score") {
-          if (input$trimAssayCheckbox) {
-            assay(vals$counts, input$modifyAssayOutname) <- computeZScore(assay(vals$counts, input$modifyAssaySelect))
-            expData(vals$counts, input$modifyAssayOutname, tag = "scaled", altExp = FALSE) <- trimCounts(assay(vals$counts, input$modifyAssayOutname), c(input$trimUpperValueAssay, input$trimLowerValueAssay))
-          }
-          else {
-            expData(vals$counts, input$modifyAssayOutname, tag = "scaled", altExp = FALSE) <- computeZScore(assay(vals$counts, input$modifyAssaySelect))
-          }
+        
+        if (input$customNormalizeOptionsScale == TRUE) {
+          tempSCE <- runNormalization(
+            inSCE = tempSCE,
+            useAssay = useAssay,
+            normAssayName = input$modifyAssayOutname,
+            scale = TRUE
+          )
+          useAssay <- input$modifyAssayOutname
+          tag <- "scaled"
         }
-        else {
-          showNotification("Error during assay transformation!", type = "error")
+        
+        if(input$customNormalizeOptionsTrim == TRUE){
+          tempSCE <- runNormalization(
+            inSCE = tempSCE,
+            useAssay = useAssay,
+            normAssayName = input$modifyAssayOutname,
+            trim = c(input$trimUpperValueAssay, input$trimLowerValueAssay)
+          )
+          useAssay <- input$modifyAssayOutname
         }
-        # updateAssayInputs()
+        
+        selectedAssay <- assay(tempSCE, input$modifyAssayOutname)
+        expData(vals$counts, input$modifyAssayOutname, tag = tag, altExp = FALSE) <- selectedAssay
       }
     })
   })
 
-  observeEvent(input$assayModifyAction,{
-    req(vals$counts)
-    if (input$assayModifyAction == "log"){
-      updateSelectInputTag(session, "modifyAssaySelect", recommended = c("raw", "normalized"))
-      updateTextInput(session = session, inputId = "modifyAssayOutname", value = paste0(input$modifyAssaySelect, "Log"))
-    }
-    else if (input$assayModifyAction == "log1p"){
-      updateSelectInputTag(session, "modifyAssaySelect", recommended = c("raw", "normalized"))
-      updateTextInput(session = session, inputId = "modifyAssayOutname", value = paste0(input$modifyAssaySelect, "Log1p"))
-    }
-    else if (input$assayModifyAction == "z.score") {
-      updateSelectInputTag(session, "modifyAssaySelect", recommended = "normalized")
-      updateTextInput(session = session, inputId = "modifyAssayOutname", value = paste0(input$modifyAssaySelect, "Scaled"))
-    }
-    else if(input$assayModifyAction == "trim"){
-      updateTextInput(session = session, inputId = "modifyAssayOutname", value = paste0(input$modifyAssaySelect, "Trim"))
-    }
-  })
+  # observeEvent(input$assayModifyAction,{
+  #   req(vals$counts)
+  #   if (input$assayModifyAction == "log"){
+  #     updateSelectInputTag(session, "modifyAssaySelect", recommended = c("raw", "normalized"))
+  #     updateTextInput(session = session, inputId = "modifyAssayOutname", value = paste0(input$modifyAssaySelect, "Log"))
+  #   }
+  #   else if (input$assayModifyAction == "log1p"){
+  #     updateSelectInputTag(session, "modifyAssaySelect", recommended = c("raw", "normalized"))
+  #     updateTextInput(session = session, inputId = "modifyAssayOutname", value = paste0(input$modifyAssaySelect, "Log1p"))
+  #   }
+  #   else if (input$assayModifyAction == "z.score") {
+  #     updateSelectInputTag(session, "modifyAssaySelect", recommended = "normalized")
+  #     updateTextInput(session = session, inputId = "modifyAssayOutname", value = paste0(input$modifyAssaySelect, "Scaled"))
+  #   }
+  #   else if(input$assayModifyAction == "trim"){
+  #     updateTextInput(session = session, inputId = "modifyAssayOutname", value = paste0(input$modifyAssaySelect, "Trim"))
+  #   }
+  # })
 
   observeEvent(input$normalizeAssay, {
     req(vals$counts)
@@ -1986,7 +2107,7 @@ shinyServer(function(input, output, session) {
         else if(input$normalizeAssayMethodSelect == "LNC"){
           vals$counts <- scater_logNormCounts(
             inSCE = vals$counts,
-            logAssayName = input$normalizeAssayOutname,
+            assayName = input$normalizeAssayOutname,
             useAssay = input$normalizeAssaySelect
           )
           # updateAssayInputs()
@@ -1998,6 +2119,16 @@ shinyServer(function(input, output, session) {
             useAssay = input$normalizeAssaySelect
           )
           # updateAssayInputs()
+        }
+        
+        #Scale data if selected by the user
+        if(input$normalizationScale){
+          vals$counts <- runNormalization(
+            inSCE = vals$counts,
+            useAssay = input$normalizeAssayOutname,
+            normAssayName = input$normalizeAssayOutname,
+            scale = TRUE
+          )
         }
       }
     })
