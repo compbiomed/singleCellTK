@@ -278,6 +278,8 @@ seuratJackStrawPlot <- function(inSCE, dims = NULL, externalReduction = NULL) {
 #' seuratPlotHVG
 #' Plot highly variable genes from input sce object (must have highly variable genes computations stored)
 #' @param inSCE (sce) object that contains the highly variable genes computations
+#' @param labelPoints Numeric value indicating the number of top genes that should be labeled.
+#'  Default is \code{0}, which will not label any point.
 #' @examples
 #' data(scExample, package = "singleCellTK")
 #' \dontrun{
@@ -287,12 +289,17 @@ seuratJackStrawPlot <- function(inSCE, dims = NULL, externalReduction = NULL) {
 #' }
 #' @return plot object
 #' @export
-seuratPlotHVG <- function(inSCE) {
+seuratPlotHVG <- function(inSCE, labelPoints = 0) {
   seuratObject <- convertSCEToSeurat(inSCE)
   plot <- Seurat::VariableFeaturePlot(seuratObject)
   plot$labels$colour <- "Variable"
   if(requireNamespace("stringr", quietly = TRUE)){
     plot$data$colors <- stringr::str_to_title(plot$data$colors)
+  }
+  if(labelPoints > 0){
+    plot <- Seurat::LabelPoints(plot, 
+                        points = Seurat::VariableFeatures(
+                          object = seuratObject)[1:labelPoints])
   }
   return(plot)
 }
