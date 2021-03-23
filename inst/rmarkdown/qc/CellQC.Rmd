@@ -162,7 +162,7 @@ cat("\n\n")
 cat(paste0('## Session info {.tabset .tabset-fade} \n\n'))
 
 runPerCellMeta <- sce.qc@metadata$scater
-x <- preprocessMeta(runPerCellMeta[[samples[1]]]$addPerCellQC)
+x <- preprocessMeta(runPerCellMeta[[samples]]$addPerCellQC)
 t(as.data.frame(x)) %>%
   knitr::kable(format = "html") %>% kableExtra::kable_styling() %>%
   kableExtra::scroll_box(width = "80%")
@@ -696,7 +696,7 @@ for (sample in samples){
 
 # Ambient RNA Detection
 ```{r, "DecontX-description", include=FALSE, warning=FALSE, message=FALSE}
-description_DecontX<- suppressWarnings(descriptionDecontX())
+description_DecontX<- descriptionDecontX()
 ```
 
 ```{r, "DecontX", results="asis", fig.align="center", warning=FALSE, message=FALSE, echo=FALSE}
