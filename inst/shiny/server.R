@@ -1943,7 +1943,7 @@ shinyServer(function(input, output, session) {
                             input$customNormalizeOptionsTrim)
 
         if(!any(checkedOptions)){
-          stop("Must select atleast one option!")
+          stop("Must select at least one option!")
         }
 
         #Setting initial parameters
