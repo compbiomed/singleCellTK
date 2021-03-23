@@ -246,8 +246,6 @@ shinyServer(function(input, output, session) {
     #   updateSelectInputTag(session, "modifyAssaySelect", recommended = "normalized")
     # }
     updateSelectInputTag(session, "modifyAssaySelect")
-
-
     updateSelectInputTag(session, "normalizeAssaySelect", label = "Select assay to normalize:", recommended = "raw")
 
     updateSelectInputTag(session, "seuratSelectNormalizationAssay", choices = currassays, showTags = FALSE)
