@@ -13,7 +13,9 @@ seuratFindMarkers(
   allGroup = NULL,
   conserved = FALSE,
   test = "wilcox",
-  onlyPos = FALSE
+  onlyPos = FALSE,
+  minPCT = 0.1,
+  threshUse = 0.25
 )
 }
 \arguments{
@@ -36,6 +38,13 @@ groups should be identified. Default is \code{FALSE}.}
 
 \item{onlyPos}{Logical value indicating if only positive markers should be
 returned.}
+
+\item{minPCT}{Numeric value indicating the minimum fraction of min.pct 
+cells in which genes are detected. Default is \code{0.1}.}
+
+\item{threshUse}{Numeric value indicating the logFC threshold value on 
+which on average, at least X-fold difference (log-scale) between the 
+two groups of cells exists. Default is \code{0.25}.}
 }
 \value{
 A \code{SingleCellExperiment} object that contains marker genes populated in a data.frame stored inside metadata slot.

@@ -398,6 +398,7 @@ seuratFindClusters <- function(inSCE, useAssay, useReduction = c("pca", "ica"), 
   seuratObject <- Seurat::FindClusters(seuratObject, algorithm = no_algorithm, group.singletons = groupSingletons, resolution = resolution)
   inSCE <- .addSeuratToMetaDataSCE(inSCE, seuratObject)
   colData(inSCE)[[paste0("Seurat","_",algorithm,"_","Resolution",resolution)]] <- seuratObject@meta.data$seurat_clusters
+  metadata(inSCE)$seurat$clusterName <- paste0("Seurat","_",algorithm,"_","Resolution",resolution)
   return(inSCE)
 }
 
@@ -835,13 +836,21 @@ seuratIntegration <- function(inSCE, useAssay = "counts", batch, newAssayName = 
 #' @param test Test to use for DE. Default \code{"wilcox"}.
 #' @param onlyPos Logical value indicating if only positive markers should be
 #' returned.
-#'
+#' @param minPCT Numeric value indicating the minimum fraction of min.pct 
+#'  cells in which genes are detected. Default is \code{0.1}.
+#' @param threshUse Numeric value indicating the logFC threshold value on 
+#'  which on average, at least X-fold difference (log-scale) between the 
+#'  two groups of cells exists. Default is \code{0.25}.
 #' @return A \code{SingleCellExperiment} object that contains marker genes populated in a data.frame stored inside metadata slot.
 #' @export
-seuratFindMarkers <- function(inSCE, cells1 = NULL, cells2 = NULL, group1 = NULL, group2 = NULL, allGroup = NULL, conserved = FALSE, test = "wilcox", onlyPos = FALSE){
+seuratFindMarkers <- function(
+  inSCE, cells1 = NULL, cells2 = NULL, group1 = NULL, group2 = NULL, 
+  allGroup = NULL, conserved = FALSE, test = "wilcox", onlyPos = FALSE,
+  minPCT = 0.1, threshUse = 0.25){
   seuratObject <- convertSCEToSeurat(inSCE)
   markerGenes <- NULL
-  if(is.null(allGroup)){
+  if(is.null(allGroup)
+     && (!is.null(group1) && !is.null(group2))){
     #convert (_) to (-) as required by Seurat
     cells1 <- lapply(
       X = cells1, 
@@ -887,13 +896,39 @@ seuratFindMarkers <- function(inSCE, cells1 = NULL, cells2 = NULL, group1 = NULL
     gene.id <- rownames(markerGenes)
     markerGenes <- cbind(gene.id, markerGenes)
   }
-  else{
+  else if(!is.null(allGroup)
+           && (is.null(group1) && is.null(group2))){
     Seurat::Idents(seuratObject, cells = colnames(seuratObject)) <- Seurat::Idents(S4Vectors::metadata(inSCE)$seurat$obj)
-    markerGenes <- Seurat::FindAllMarkers(seuratObject, test.use = test, only.pos = onlyPos)
+    markerGenes <- Seurat::FindAllMarkers(
+      seuratObject, 
+      test.use = test, 
+      only.pos = onlyPos,
+      logfc.threshold = threshUse,
+      min.pct = minPCT)
     gene.id <- markerGenes$gene
     markerGenes <- cbind(gene.id, markerGenes)
     markerGenes$gene <- NULL
     grp <- unique(colData(inSCE)[[allGroup]])
+    clust <- as.integer(unique(Seurat::Idents(seuratObject)))
+    for(i in seq(length(clust))){
+      levels(markerGenes$cluster)[clust[i]] <- grp[i]
+    }
+  }
+  else if(is.null(allGroup)
+          && (is.null(group1) && is.null(group2))){
+    Seurat::Idents(
+      seuratObject, 
+      cells = colnames(seuratObject)) <- colData(inSCE)[[metadata(inSCE)$seurat$clusterName]]
+    markerGenes <- Seurat::FindAllMarkers(
+      seuratObject, 
+      test.use = test, 
+      only.pos = onlyPos,
+      logfc.threshold = threshUse,
+      min.pct = minPCT)
+    gene.id <- markerGenes$gene
+    markerGenes <- cbind(gene.id, markerGenes)
+    markerGenes$gene <- NULL
+    grp <- unique(colData(inSCE)[[metadata(inSCE)$seurat$clusterName]])
     clust <- as.integer(unique(Seurat::Idents(seuratObject)))
     for(i in seq(length(clust))){
       levels(markerGenes$cluster)[clust[i]] <- grp[i]
