@@ -309,6 +309,8 @@ seuratPlotHVG <- function(inSCE, labelPoints = 0) {
 #' @param inSCE (sce) object which has the selected dimensionality reduction algorithm already computed and stored
 #' @param useReduction Dimentionality reduction to plot. One of "pca", "ica", "tsne", or "umap". Default \code{"umap"}.
 #' @param showLegend Select if legends should be shown on the output plot or not. Either "TRUE" or "FALSE". Default \code{FALSE}.
+#' @param groupBy Specify a colData column name that be used for grouping. Default is \code{NULL}. 
+#' @param splitBy Specify a colData column name that be used for splitting the output plot. Default is \code{NULL}. 
 #' @examples
 #' data(scExample, package = "singleCellTK")
 #' \dontrun{
@@ -319,13 +321,31 @@ seuratPlotHVG <- function(inSCE, labelPoints = 0) {
 #' seuratReductionPlot(sce, useReductionPlot = "pca")}
 #' @return plot object
 #' @export
-seuratReductionPlot <- function(inSCE, useReduction = c("pca", "ica", "tsne", "umap"), showLegend = FALSE) {
+seuratReductionPlot <- function(inSCE, useReduction = c("pca", "ica", "tsne", "umap"), 
+                                showLegend = FALSE, groupBy = NULL, splitBy = NULL) {
   seuratObject <- convertSCEToSeurat(inSCE)
-  if(showLegend){
-    plot <- Seurat::DimPlot(seuratObject, reduction = useReduction)
-  }else{
-    plot <- Seurat::DimPlot(seuratObject, reduction = useReduction) + Seurat::NoLegend()
+  
+  if(!is.null(groupBy)){
+    seuratObject[[groupBy]] <- colData(inSCE)[[groupBy]]
   }
+  
+  if(!is.null(splitBy)){
+    seuratObject[[splitBy]] <- colData(inSCE)[[splitBy]]
+  }
+  
+  args <- list(
+    object = seuratObject,
+    reduction = useReduction,
+    group.by = groupBy,
+    split.by = splitBy)
+  
+  if(showLegend){
+    plot <- do.call(eval(parse(text = "Seurat::DimPlot")), args = args)
+  }
+  else{
+    plot <- do.call(eval(parse(text = "Seurat::DimPlot")), args = args) + Seurat::NoLegend()
+  }
+  
   if ("ident" %in% names(plot$data) && "seurat_clusters" %in% names(seuratObject@meta.data)) {
     plot$data$ident <- seuratObject@meta.data$seurat_clusters
   }
