@@ -240,7 +240,7 @@ runDESeq2 <- function(inSCE, useAssay = 'counts', index1 = NULL,
     if (any(duplicated(rownames(mat)))) {
       warning("Duplicated feature names found in given dataset. Making them ",
               "unique in the result. They will not show in plots.")
-      mat <- featureNameDedup(mat)
+      mat <- dedupRowNames(mat)
     }
     dds <- DESeq2::DESeqDataSetFromMatrix(
         countData = mat, colData = annotData,
@@ -377,7 +377,7 @@ runLimmaDE <- function(inSCE, useAssay = 'logcounts', index1 = NULL,
     if (any(duplicated(rownames(mat)))) {
       warning("Duplicated feature names found in given dataset. Making them ",
               "unique in the result. They will not show in plots.")
-      mat <- featureNameDedup(mat)
+      mat <- dedupRowNames(mat)
     }
     design <- stats::model.matrix(
         stats::as.formula(paste0("~", paste0(c('condition', covariates),
@@ -521,7 +521,7 @@ runANOVA <- function(inSCE, useAssay = 'logcounts', index1 = NULL,
     if (any(duplicated(rownames(dat)))) {
       warning("Duplicated feature names found in given dataset. Making them ",
               "unique in the result. They will not show in plots.")
-      dat <- featureNameDedup(dat)
+      dat <- dedupRowNames(dat)
     }
 
     n <- dim(dat)[2]
@@ -657,7 +657,7 @@ runMAST <- function(inSCE, useAssay = 'logcounts', index1 = NULL,
     if (any(duplicated(rownames(mat)))) {
       warning("Duplicated feature names found in given dataset. Making them ",
               "unique in the result. They will not show in plots.")
-      mat <- featureNameDedup(mat)
+      mat <- dedupRowNames(mat)
     }
     cond <- rep(NA, ncol(inSCE))
     cond[ix1] <- 'c1'

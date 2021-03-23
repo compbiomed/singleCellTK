@@ -446,7 +446,7 @@ plotMASTThresholdGenes <- function(inSCE, useAssay="logcounts", doPlot = TRUE,
   if(!is.matrix(expres)){
     expres <- as.matrix(expres)
   }
-  expres <- featureNameDedup(expres)
+  expres <- dedupRowNames(expres)
   fdata <- data.frame(Gene = rownames(expres))
   rownames(fdata) <- fdata$Gene
   SCENew <- MAST::FromMatrix(expres, SingleCellExperiment::colData(inSCE),
