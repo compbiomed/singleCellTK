@@ -278,6 +278,8 @@ seuratJackStrawPlot <- function(inSCE, dims = NULL, externalReduction = NULL) {
 #' seuratPlotHVG
 #' Plot highly variable genes from input sce object (must have highly variable genes computations stored)
 #' @param inSCE (sce) object that contains the highly variable genes computations
+#' @param labelPoints Numeric value indicating the number of top genes that should be labeled.
+#'  Default is \code{0}, which will not label any point.
 #' @examples
 #' data(scExample, package = "singleCellTK")
 #' \dontrun{
@@ -287,12 +289,17 @@ seuratJackStrawPlot <- function(inSCE, dims = NULL, externalReduction = NULL) {
 #' }
 #' @return plot object
 #' @export
-seuratPlotHVG <- function(inSCE) {
+seuratPlotHVG <- function(inSCE, labelPoints = 0) {
   seuratObject <- convertSCEToSeurat(inSCE)
   plot <- Seurat::VariableFeaturePlot(seuratObject)
   plot$labels$colour <- "Variable"
   if(requireNamespace("stringr", quietly = TRUE)){
     plot$data$colors <- stringr::str_to_title(plot$data$colors)
+  }
+  if(labelPoints > 0){
+    plot <- Seurat::LabelPoints(plot, 
+                        points = Seurat::VariableFeatures(
+                          object = seuratObject)[1:labelPoints])
   }
   return(plot)
 }
@@ -302,6 +309,8 @@ seuratPlotHVG <- function(inSCE) {
 #' @param inSCE (sce) object which has the selected dimensionality reduction algorithm already computed and stored
 #' @param useReduction Dimentionality reduction to plot. One of "pca", "ica", "tsne", or "umap". Default \code{"umap"}.
 #' @param showLegend Select if legends should be shown on the output plot or not. Either "TRUE" or "FALSE". Default \code{FALSE}.
+#' @param groupBy Specify a colData column name that be used for grouping. Default is \code{NULL}. 
+#' @param splitBy Specify a colData column name that be used for splitting the output plot. Default is \code{NULL}. 
 #' @examples
 #' data(scExample, package = "singleCellTK")
 #' \dontrun{
@@ -312,13 +321,31 @@ seuratPlotHVG <- function(inSCE) {
 #' seuratReductionPlot(sce, useReductionPlot = "pca")}
 #' @return plot object
 #' @export
-seuratReductionPlot <- function(inSCE, useReduction = c("pca", "ica", "tsne", "umap"), showLegend = FALSE) {
+seuratReductionPlot <- function(inSCE, useReduction = c("pca", "ica", "tsne", "umap"), 
+                                showLegend = FALSE, groupBy = NULL, splitBy = NULL) {
   seuratObject <- convertSCEToSeurat(inSCE)
-  if(showLegend){
-    plot <- Seurat::DimPlot(seuratObject, reduction = useReduction)
-  }else{
-    plot <- Seurat::DimPlot(seuratObject, reduction = useReduction) + Seurat::NoLegend()
+  
+  if(!is.null(groupBy)){
+    seuratObject[[groupBy]] <- colData(inSCE)[[groupBy]]
   }
+  
+  if(!is.null(splitBy)){
+    seuratObject[[splitBy]] <- colData(inSCE)[[splitBy]]
+  }
+  
+  args <- list(
+    object = seuratObject,
+    reduction = useReduction,
+    group.by = groupBy,
+    split.by = splitBy)
+  
+  if(showLegend){
+    plot <- do.call(eval(parse(text = "Seurat::DimPlot")), args = args)
+  }
+  else{
+    plot <- do.call(eval(parse(text = "Seurat::DimPlot")), args = args) + Seurat::NoLegend()
+  }
+  
   if ("ident" %in% names(plot$data) && "seurat_clusters" %in% names(seuratObject@meta.data)) {
     plot$data$ident <- seuratObject@meta.data$seurat_clusters
   }
@@ -371,6 +398,7 @@ seuratFindClusters <- function(inSCE, useAssay, useReduction = c("pca", "ica"), 
   seuratObject <- Seurat::FindClusters(seuratObject, algorithm = no_algorithm, group.singletons = groupSingletons, resolution = resolution)
   inSCE <- .addSeuratToMetaDataSCE(inSCE, seuratObject)
   colData(inSCE)[[paste0("Seurat","_",algorithm,"_","Resolution",resolution)]] <- seuratObject@meta.data$seurat_clusters
+  S4Vectors::metadata(inSCE)$seurat$clusterName <- paste0("Seurat","_",algorithm,"_","Resolution",resolution)
   return(inSCE)
 }
 
@@ -808,13 +836,21 @@ seuratIntegration <- function(inSCE, useAssay = "counts", batch, newAssayName = 
 #' @param test Test to use for DE. Default \code{"wilcox"}.
 #' @param onlyPos Logical value indicating if only positive markers should be
 #' returned.
-#'
+#' @param minPCT Numeric value indicating the minimum fraction of min.pct 
+#'  cells in which genes are detected. Default is \code{0.1}.
+#' @param threshUse Numeric value indicating the logFC threshold value on 
+#'  which on average, at least X-fold difference (log-scale) between the 
+#'  two groups of cells exists. Default is \code{0.25}.
 #' @return A \code{SingleCellExperiment} object that contains marker genes populated in a data.frame stored inside metadata slot.
 #' @export
-seuratFindMarkers <- function(inSCE, cells1 = NULL, cells2 = NULL, group1 = NULL, group2 = NULL, allGroup = NULL, conserved = FALSE, test = "wilcox", onlyPos = FALSE){
+seuratFindMarkers <- function(
+  inSCE, cells1 = NULL, cells2 = NULL, group1 = NULL, group2 = NULL, 
+  allGroup = NULL, conserved = FALSE, test = "wilcox", onlyPos = FALSE,
+  minPCT = 0.1, threshUse = 0.25){
   seuratObject <- convertSCEToSeurat(inSCE)
   markerGenes <- NULL
-  if(is.null(allGroup)){
+  if(is.null(allGroup)
+     && (!is.null(group1) && !is.null(group2))){
     #convert (_) to (-) as required by Seurat
     cells1 <- lapply(
       X = cells1, 
@@ -860,13 +896,39 @@ seuratFindMarkers <- function(inSCE, cells1 = NULL, cells2 = NULL, group1 = NULL
     gene.id <- rownames(markerGenes)
     markerGenes <- cbind(gene.id, markerGenes)
   }
-  else{
+  else if(!is.null(allGroup)
+           && (is.null(group1) && is.null(group2))){
     Seurat::Idents(seuratObject, cells = colnames(seuratObject)) <- Seurat::Idents(S4Vectors::metadata(inSCE)$seurat$obj)
-    markerGenes <- Seurat::FindAllMarkers(seuratObject, test.use = test, only.pos = onlyPos)
+    markerGenes <- Seurat::FindAllMarkers(
+      seuratObject, 
+      test.use = test, 
+      only.pos = onlyPos,
+      logfc.threshold = threshUse,
+      min.pct = minPCT)
     gene.id <- markerGenes$gene
     markerGenes <- cbind(gene.id, markerGenes)
     markerGenes$gene <- NULL
     grp <- unique(colData(inSCE)[[allGroup]])
+    clust <- as.integer(unique(Seurat::Idents(seuratObject)))
+    for(i in seq(length(clust))){
+      levels(markerGenes$cluster)[clust[i]] <- grp[i]
+    }
+  }
+  else if(is.null(allGroup)
+          && (is.null(group1) && is.null(group2))){
+    Seurat::Idents(
+      seuratObject, 
+      cells = colnames(seuratObject)) <- colData(inSCE)[[S4Vectors::metadata(inSCE)$seurat$clusterName]]
+    markerGenes <- Seurat::FindAllMarkers(
+      seuratObject, 
+      test.use = test, 
+      only.pos = onlyPos,
+      logfc.threshold = threshUse,
+      min.pct = minPCT)
+    gene.id <- markerGenes$gene
+    markerGenes <- cbind(gene.id, markerGenes)
+    markerGenes$gene <- NULL
+    grp <- unique(colData(inSCE)[[S4Vectors::metadata(inSCE)$seurat$clusterName]])
     clust <- as.integer(unique(Seurat::Idents(seuratObject)))
     for(i in seq(length(clust))){
       levels(markerGenes$cluster)[clust[i]] <- grp[i]
