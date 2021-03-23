@@ -398,7 +398,7 @@ seuratFindClusters <- function(inSCE, useAssay, useReduction = c("pca", "ica"), 
   seuratObject <- Seurat::FindClusters(seuratObject, algorithm = no_algorithm, group.singletons = groupSingletons, resolution = resolution)
   inSCE <- .addSeuratToMetaDataSCE(inSCE, seuratObject)
   colData(inSCE)[[paste0("Seurat","_",algorithm,"_","Resolution",resolution)]] <- seuratObject@meta.data$seurat_clusters
-  metadata(inSCE)$seurat$clusterName <- paste0("Seurat","_",algorithm,"_","Resolution",resolution)
+  S4Vectors::metadata(inSCE)$seurat$clusterName <- paste0("Seurat","_",algorithm,"_","Resolution",resolution)
   return(inSCE)
 }
 
@@ -918,7 +918,7 @@ seuratFindMarkers <- function(
           && (is.null(group1) && is.null(group2))){
     Seurat::Idents(
       seuratObject, 
-      cells = colnames(seuratObject)) <- colData(inSCE)[[metadata(inSCE)$seurat$clusterName]]
+      cells = colnames(seuratObject)) <- colData(inSCE)[[S4Vectors::metadata(inSCE)$seurat$clusterName]]
     markerGenes <- Seurat::FindAllMarkers(
       seuratObject, 
       test.use = test, 
@@ -928,7 +928,7 @@ seuratFindMarkers <- function(
     gene.id <- markerGenes$gene
     markerGenes <- cbind(gene.id, markerGenes)
     markerGenes$gene <- NULL
-    grp <- unique(colData(inSCE)[[metadata(inSCE)$seurat$clusterName]])
+    grp <- unique(colData(inSCE)[[S4Vectors::metadata(inSCE)$seurat$clusterName]])
     clust <- as.integer(unique(Seurat::Idents(seuratObject)))
     for(i in seq(length(clust))){
       levels(markerGenes$cluster)[clust[i]] <- grp[i]
