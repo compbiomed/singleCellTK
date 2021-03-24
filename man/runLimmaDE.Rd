@@ -92,7 +92,7 @@ used.
 \examples{
 data(scExample, package = "singleCellTK")
 sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
-sce <- scater_logNormCounts(sce, logAssayName = "logcounts")
+sce <- scater_logNormCounts(sce, assayName = "logcounts")
 sce <- runLimmaDE(inSCE = sce, groupName1 = "Sample1",
  groupName2 = "Sample2", index1 = 1:20, index2 = 21:40,
  analysisName = "Limma")
