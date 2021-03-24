@@ -83,8 +83,8 @@ if (skipRunEmpty) {
   plotsEmptyDrops <- NULL
 } else {
     plotsEmptyDrops <- tryCatch(
-    { suppressWarnings(plotEmptyDropsResults(sce,sample = colData(sce)$sample,
-                                             combinePlot = "none")) },
+    { plotEmptyDropsResults(sce,sample = colData(sce)$sample,
+                                             combinePlot = "none") },
       error = function(e) {
         cat("runEmptyDrops did not run successfully. The section of EmptyDrops is skipped")
         skipRunEmpty <- TRUE
@@ -156,10 +156,10 @@ if (skipBarcode) {
   plotsBarcodeRank <- NA
 } else {
   plotsBarcodeRank <- tryCatch(
-    {suppressWarnings(plotBarcodeRankScatter(sce,
-                                             sample = colData(sce)$sample,
-                                             title="BarcodeRanks Rank Plot",
-                                             combinePlot = "none"))},
+    {plotBarcodeRankScatter(sce,
+                            sample = colData(sce)$sample, 
+                            title="BarcodeRanks Rank Plot",
+                            combinePlot = "none")},
       error = function(e) {
         cat("runBarcodeRankDrops did not run successfully. The section of EmptyDrops is skipped")
         skipBarcode <- TRUE

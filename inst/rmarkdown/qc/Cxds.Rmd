@@ -20,7 +20,7 @@ sce.qc<- params$object
 ```
 
 ```{r "Cxds", results="asis", fig.align="center", warning=FALSE, message=FALSE}
-    plotCxds<- suppressWarnings(plotCxdsResults( sce.qc, reducedDimName = "UMAP"))
+    plotCxds<- plotCxdsResults(sce.qc, reducedDimName = "UMAP")
     i="Cxds"
     cat(paste0('# ', i, ' {.tabset} \n\n'))
     cat(paste0('## Scatter Score \n\n'))

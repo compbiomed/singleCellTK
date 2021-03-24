@@ -52,7 +52,7 @@ subsetSCERows <- function(inSCE, index = NULL, bool = NULL, rowData = NULL,
   if(is.null(index) & is.null(bool) & is.null(rowData)) {
     stop("At least one of 'index', 'bool', or 'rowData' must be supplied.")
   }
-  final.ix <- rep(FALSE, nrow(inSCE))
+  final.ix <- rep(TRUE, nrow(inSCE))
 
   # Parse index containing integers
   if(!is.null(index)) {
@@ -60,7 +60,7 @@ subsetSCERows <- function(inSCE, index = NULL, bool = NULL, rowData = NULL,
       stop("'index' must contain integers between 1 and the number of rows ",
            "in 'inSCE': ", nrow(inSCE))
     }
-    final.ix[index] <- TRUE
+    final.ix[!seq(nrow(inSCE)) %in% index] <- FALSE
   }
 
   # Parse Boolean vector
@@ -69,12 +69,11 @@ subsetSCERows <- function(inSCE, index = NULL, bool = NULL, rowData = NULL,
       stop("'bool' must be a logical vector the same length as the number of ",
            "rows in 'inSCE': ", nrow(inSCE))
     }
-    final.ix[bool] <- TRUE
+    final.ix[!bool] <- FALSE
   }
 
   # Parse expressions for rowData variables
   if(!is.null(rowData)) {
-    temp <- rep(TRUE, nrow(inSCE))
     for(i in seq_along(rowData)) {
       temp <- eval(parse(text = as.character(rowData[i])),
                    envir = as.data.frame(rowData(inSCE)))
@@ -106,9 +105,6 @@ subsetSCERows <- function(inSCE, index = NULL, bool = NULL, rowData = NULL,
   }
   return(inSCE)
 }
-
-
-
 
 #' @title Subset a SingleCellExperiment object by columns
 #' @description Used to peform subsetting of a
@@ -146,7 +142,7 @@ subsetSCECols <- function(inSCE, index = NULL, bool = NULL, colData = NULL) {
   if(is.null(index) & is.null(bool) & is.null(colData)) {
     stop("At least one of 'index', 'bool', or 'colData' must be supplied.")
   }
-  final.ix <- rep(FALSE, ncol(inSCE))
+  final.ix <- rep(TRUE, ncol(inSCE))
 
   # Parse index containing integers
   if(!is.null(index)) {
@@ -154,7 +150,7 @@ subsetSCECols <- function(inSCE, index = NULL, bool = NULL, colData = NULL) {
       stop("'index' must contain integers between 1 and the number of columns ",
            "in 'inSCE': ", ncol(inSCE))
     }
-    final.ix[index] <- TRUE
+    final.ix[!seq(ncol(inSCE)) %in% index] <- FALSE
   }
 
   # Parse Boolean vector
@@ -163,12 +159,11 @@ subsetSCECols <- function(inSCE, index = NULL, bool = NULL, colData = NULL) {
       stop("'bool' must be a logical vector the same length as the number of ",
            "colmns in 'inSCE': ", ncol(inSCE))
     }
-    final.ix[bool] <- TRUE
+    final.ix[!bool] <- FALSE
   }
 
   # Parse expressions for colData variables
   if(!is.null(colData)) {
-    final.ix <- rep(TRUE, ncol(inSCE))
     for(i in seq_along(colData)) {
       temp <- eval(parse(text = as.character(colData[i])),
                    envir = as.data.frame(colData(inSCE)))

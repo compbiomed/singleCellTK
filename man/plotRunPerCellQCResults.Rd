@@ -20,6 +20,7 @@ plotRunPerCellQCResults(
   titleSize = 18,
   relHeights = c(1.5, 1.5, 1, 1),
   relWidths = c(1, 1, 1, 1),
+  plotLabels = "default",
   plotNCols = NULL,
   plotNRows = NULL,
   samplePerColumn = TRUE,
@@ -66,6 +67,9 @@ when TRUE. Default TRUE.}
 \item{relHeights}{Relative heights of plots when combine is set.}
 
 \item{relWidths}{Relative widths of plots when combine is set.}
+
+\item{plotLabels}{labels to each plot. If set to "default", will use the name of the samples
+as the labels. If set to "none", no label will be plotted.}
 
 \item{plotNCols}{Number of columns when plots are combined in a grid.}
 
