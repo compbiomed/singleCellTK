@@ -2012,17 +2012,17 @@ shinyServer(function(input, output, session) {
           tag <- "normalized"
         }
         
-        if(input$customNormalizeOptionsPsuedocounts == TRUE){
-          if(input$customNormalizePseudoOptions == "after transformation"){
-            tempSCE <- runNormalization(
-              inSCE = tempSCE,
-              useAssay = useAssay,
-              normAssayName = input$modifyAssayOutname,
-              pseudocountsAfterTransform = input$customNormalizePseudoValue
-            )
-            useAssay <- input$modifyAssayOutname
-          }
-        }
+        # if(input$customNormalizeOptionsPsuedocounts == TRUE){
+        #   if(input$customNormalizePseudoOptions == "after transformation"){
+        #     tempSCE <- runNormalization(
+        #       inSCE = tempSCE,
+        #       useAssay = useAssay,
+        #       normAssayName = input$modifyAssayOutname,
+        #       pseudocountsAfterTransform = input$customNormalizePseudoValue
+        #     )
+        #     useAssay <- input$modifyAssayOutname
+        #   }
+        # }
         
         if (input$customNormalizeOptionsScale == TRUE) {
           tempSCE <- runNormalization(
