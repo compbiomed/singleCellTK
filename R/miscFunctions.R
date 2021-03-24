@@ -29,7 +29,7 @@ summarizeSCE <- function(inSCE, useAssay = NULL, sampleVariableName = NULL){
       stop("'", sampleVariableName, "' was not found in the 'colData' of ",
            "'inSCE'.")
     }
-    sampleVariable <- colData(inSCE)[,sampleVariableName]
+    sampleVariable <- as.vector(colData(inSCE)[,sampleVariableName])
   }
 
   numCells <- table(sampleVariable)

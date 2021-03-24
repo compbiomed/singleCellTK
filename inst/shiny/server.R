@@ -864,7 +864,12 @@ shinyServer(function(input, output, session) {
       # Add sample variable if it was not included
       if (!"sample" %in% names(colData(vals$original)) &&
           !"Sample" %in% names(colData(vals$original))) {
-        colData(vals$original)$sample = "sample"
+        sampleVar <- "sample"
+        colData(vals$original)$sample = sampleVar
+      } else if ("sample" %in% names(colData(vals$original))) {
+        sampleVar <- "sample"
+      } else {
+        sampleVar <- "Sample"
       }
 
       if (!is.null(vals$original)) {
@@ -886,7 +891,9 @@ shinyServer(function(input, output, session) {
         updateGeneNames()
         updateReddimInputs()
         updateAltExpInputs()
-        updateSelectInput(session, "qcSampleSelect", choices = c("None", names(colData(vals$original))), selected = "sample")
+        updateSelectInput(session, "qcSampleSelect",
+                          choices = c("None", names(colData(vals$original))),
+                          selected = sampleVar)
         shinyjs::show(id="annotationData")
         js$enableTabs();
       } else {
@@ -1183,9 +1190,13 @@ shinyServer(function(input, output, session) {
       # only run getUMAP if there are no reducedDimNames
       # redDimName <- input$qcPlotRedDim
       # show the tabs for the result plots  output[[qc_plot_ids[[a]]]]
+
       showQCResTabs(vals, algoList, qc_algo_status, qc_plot_ids)
-      arrangeQCPlots(vals$counts, input, output, algoList, colData(vals$counts)[,"sample"], qc_plot_ids, qc_algo_status, input$QCUMAPName)
-      uniqueSampleNames = unique(colData(vals$counts)[,"sample"])
+      arrangeQCPlots(vals$counts, input, output, algoList,
+                     colData(vals$counts)[[input$qcSampleSelect]], qc_plot_ids,
+                     qc_algo_status, input$QCUMAPName)
+
+      uniqueSampleNames = unique(colData(vals$counts)[[input$qcSampleSelect]])
       for (algo in algoList) {
         qc_algo_status[[algo]] <- list(self="done")
         if (length(uniqueSampleNames) > 1) {
@@ -1269,17 +1280,13 @@ shinyServer(function(input, output, session) {
           }
         }
         # run selected cell QC algorithms
-        vals$counts <- runCellQC(inSCE = vals$original,
+        vals$counts <- runCellQC(inSCE = vals$counts,
                                  algorithms = algoList,
                                  sample = qcSample,
                                  collectionName = qcCollName,
                                  useAssay = input$qcAssaySelect,
                                  paramsList = paramsList)
-        #vals$counts <- expSetDataTag(
-        #  inSCE = vals$counts,
-        #  assayType = "raw",
-        #  assays = assayNames(vals$counts),
-        #  append = FALSE)
+
         # redDimList <- strsplit(reducedDimNames(vals$counts), " ")
         # run getUMAP
         message(paste0(date(), " ... Running 'UMAP'"))
@@ -1531,20 +1538,32 @@ shinyServer(function(input, output, session) {
   #Render summary table
   output$beforeFiltering <- renderTable({
     req(vals$original)
-
+    if ("Sample" %in% names(colData(vals$counts))) {
+      sampleVar <- "Sample"
+    } else if ("sample" %in% names(colData(vals$counts))) {
+      sampleVar <- "sample"
+    } else {
+      sampleVar <- NULL
+    }
     # Setting 'useAssay=NULL' assumes that the first assay is the one to count
     singleCellTK::summarizeSCE(inSCE = vals$original,
                                useAssay = NULL,
-                               sampleVariableName = "sample")
+                               sampleVariableName = sampleVar)
   }, striped = TRUE, border = TRUE, align = "c", spacing = "l")
 
   output$afterFiltering <- renderTable({
     req(vals$counts)
-
+    if ("Sample" %in% names(colData(vals$counts))) {
+      sampleVar <- "Sample"
+    } else if ("sample" %in% names(colData(vals$counts))) {
+      sampleVar <- "sample"
+    } else {
+      sampleVar <- NULL
+    }
     # Setting 'useAssay=NULL' assumes that the first assay is the one to count
     singleCellTK::summarizeSCE(inSCE = vals$counts,
                                useAssay = NULL,
-                               sampleVariableName = "sample")
+                               sampleVariableName = sampleVar)
   }, striped = TRUE, border = TRUE, align = "c", spacing = "l")
 
   #Render data table if there are fewer than 50 samples
@@ -1609,11 +1628,17 @@ shinyServer(function(input, output, session) {
   #Render summary table
   output$summarycontents <- renderTable({
     req(vals$counts)
-
+    if ("Sample" %in% names(colData(vals$counts))) {
+      sampleVar <- "Sample"
+    } else if ("sample" %in% names(colData(vals$counts))) {
+      sampleVar <- "sample"
+    } else {
+      sampleVar <- NULL
+    }
     # Setting 'useAssay=NULL' assumes that the first assay is the one to count
     singleCellTK::summarizeSCE(inSCE = vals$counts,
                                useAssay = NULL,
-                               sampleVariableName = "sample")
+                               sampleVariableName = sampleVar)
   }, striped = TRUE, border = TRUE, align = "c", spacing = "l")
 
 
