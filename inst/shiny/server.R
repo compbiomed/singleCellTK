@@ -58,7 +58,8 @@ shinyServer(function(input, output, session) {
     hmCSURL = NULL,
     hmTmpColData = NULL,
     hmTmpRowData = NULL,
-    hvgCalculated = list(status = FALSE, method = NULL)
+    hvgCalculated = list(status = FALSE, method = NULL),
+    fmHMshowHide = FALSE
   )
 
 
@@ -5835,6 +5836,19 @@ shinyServer(function(input, output, session) {
   )
 
   # findMarker Heatmap ####
+  observeEvent(input$fmShowHMSetting, {
+    if (isTRUE(vals$fmHMshowHide)) {
+      shinyjs::hide("fmHMsettings")
+      updateActionButton(session, "fmShowHMSetting", label = "Show Settings")
+      vals$fmHMshowHide <- FALSE
+    } else {
+      shinyjs::show("fmHMsettings")
+      updateActionButton(session, "fmShowHMSetting", label = "Hide Settings")
+      vals$fmHMshowHide <- TRUE
+    }
+  })
+
+
   observeEvent(input$fmUseTopN, {
     if (!isTRUE(input$fmUseTopN)) {
       shinyjs::disable("fmTopN")

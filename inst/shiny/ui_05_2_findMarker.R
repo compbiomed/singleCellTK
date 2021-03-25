@@ -25,31 +25,63 @@ shinyPanelfindMarker <- fluidPage(
           ),
           tabPanel(
             "Heatmap",
-            sidebarLayout(
-              position = 'right',
-              sidebarPanel(
-                shinyjs::useShinyjs(),
-                #uiOutput('fmHMAssay'),
-                radioButtons('fmHMOrder', "Order blocks by",
-                             c("size", "name")),
-                checkboxInput("fmHMdec", "Decreasing", TRUE),
-                checkboxInput("fmUseTopN", "Plot Top N markers of each cluster",
-                              TRUE),
-                numericInput("fmTopN", NULL, 10, min = 1, step = 1),
-                numericInput("fmHMFC", "Plot Log2FC greater than",
-                             value = 0.25, min = 0, step = 0.05),
-                numericInput("fmHMFDR", "Plot FDR less than",
-                             value = 0.05, max = 1, step = 0.01),
-                selectInput("fmHMrowData", "Additional feature annotation",
-                            featureChoice, multiple = TRUE),
-                selectInput("fmHMcolData", "Additional cell annotation",
-                            clusterChoice, multiple = TRUE),
-                withBusyIndicatorUI(actionButton('plotFM', "Plot"))
-              ),
-              mainPanel(
-                plotOutput('fmHeatmap')
+            shinyjs::useShinyjs(),
+            wellPanel(
+              actionButton(inputId = "fmShowHMSetting", "Show Settings"),
+              shinyjs::hidden(
+                tags$div(
+                  id = "fmHMsettings",
+                  fluidRow(
+                    column(
+                      width = 6,
+                      radioButtons('fmHMOrder', "Order blocks by",
+                                   c("size", "name"), inline = TRUE),
+                    ),
+                    column(
+                      width = 6,
+                      checkboxInput("fmHMdec", "Decreasing", TRUE),
+                    )
+                  ),
+                  fluidRow(
+                    column(
+                      width = 6,
+                      checkboxInput("fmUseTopN", "Plot Top N markers of each cluster",
+                                    TRUE)
+                    ),
+                    column(
+                      width = 6,
+                      numericInput("fmTopN", NULL, 10, min = 1, step = 1)
+                    )
+                  ),
+                  fluidRow(
+                    column(
+                      width = 6,
+                      numericInput("fmHMFC", "Plot Log2FC greater than",
+                                   value = 0.25, min = 0, step = 0.05),
+                    ),
+                    column(
+                      width = 6,
+                      numericInput("fmHMFDR", "Plot FDR less than",
+                                   value = 0.05, max = 1, step = 0.01),
+                    )
+                  ),
+                  fluidRow(
+                    column(
+                      width = 6,
+                      selectInput("fmHMrowData", "Additional feature annotation",
+                                  featureChoice, multiple = TRUE),
+                      withBusyIndicatorUI(actionButton('plotFM', "Plot"))
+                    ),
+                    column(
+                      width = 6,
+                      selectInput("fmHMcolData", "Additional cell annotation",
+                                  clusterChoice, multiple = TRUE)
+                    )
+                  )
+                )
               )
-            )
+            ),
+            plotOutput('fmHeatmap')
           )
         )
       )

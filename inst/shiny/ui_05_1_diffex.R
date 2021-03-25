@@ -26,7 +26,6 @@ shinyPanelDiffex <- fluidPage(
             id = "deThreshpanel",
             textOutput("deSanityWarnThresh"),
             uiOutput("deThreshPlotDiv"),
-            #plotOutput("deThreshplot"),
             actionButton("deHideThresh", label = "Hide")
             )
           ),
