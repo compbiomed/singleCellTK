@@ -1941,12 +1941,12 @@ shinyServer(function(input, output, session) {
         
         if (input$customNormalizeOptionsNormalize == TRUE){
           if(input$customNormalizeOptionsPsuedocounts == TRUE){
-            if(input$customNormalizePseudoOptions == "before normalization"){
+            if(input$customNormalizePseudoOptionsBefore == TRUE){
               tempSCE <- runNormalization(
                 inSCE = tempSCE,
                 useAssay = useAssay,
                 normAssayName = input$modifyAssayOutname,
-                pseudocountsNorm = input$customNormalizePseudoValue
+                pseudocountsNorm = input$customNormalizePseudoValueBefore
               )
               useAssay <- input$modifyAssayOutname
             }
@@ -1990,12 +1990,12 @@ shinyServer(function(input, output, session) {
         }
         
         if(input$customNormalizeOptionsPsuedocounts == TRUE){
-          if(input$customNormalizePseudoOptions == "before transformation"){
+          if(input$customNormalizePseudoOptionsAfter == TRUE){
             tempSCE <- runNormalization(
               inSCE = tempSCE,
               useAssay = useAssay,
               normAssayName = input$modifyAssayOutname,
-              pseudocountsBeforeTransform = input$customNormalizePseudoValue
+              pseudocountsBeforeTransform = input$customNormalizePseudoValueAfter
             )
             useAssay <- input$modifyAssayOutname
           }
@@ -2011,18 +2011,6 @@ shinyServer(function(input, output, session) {
           useAssay <- input$modifyAssayOutname
           tag <- "normalized"
         }
-        
-        # if(input$customNormalizeOptionsPsuedocounts == TRUE){
-        #   if(input$customNormalizePseudoOptions == "after transformation"){
-        #     tempSCE <- runNormalization(
-        #       inSCE = tempSCE,
-        #       useAssay = useAssay,
-        #       normAssayName = input$modifyAssayOutname,
-        #       pseudocountsAfterTransform = input$customNormalizePseudoValue
-        #     )
-        #     useAssay <- input$modifyAssayOutname
-        #   }
-        # }
         
         if (input$customNormalizeOptionsScale == TRUE) {
           tempSCE <- runNormalization(

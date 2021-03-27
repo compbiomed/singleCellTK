@@ -19,8 +19,8 @@ runNormalization(
   transformation = NULL,
   pseudocountsBeforeNorm = NULL,
   pseudocountsBeforeTransform = NULL,
-  pseudocountsAfterTransform = NULL,
-  trim = NULL
+  trim = NULL,
+  verbose = TRUE
 )
 }
 \arguments{
@@ -55,14 +55,13 @@ which will not add any value.}
 added to the assay before transformation is run. Default is \code{NULL},
 which will not add any value.}
 
-\item{pseudocountsAfterTransform}{Specify a numeric pseudo value that should be 
-added to the assay after transformation is run. Default is \code{NULL},
-which will not add any value.}
-
 \item{trim}{Specify a vector of two numeric values that should be used
 as the upper and lower trim values to trim the assay between these two
 values. For example, \code{c(10,-10)} will trim the values between 10
 and -10. Default is \code{NULL}, which will not trim the data assay.}
+
+\item{verbose}{Logical value indicating if progress messages should be
+displayed to the user. Default is \code{TRUE}.}
 }
 \value{
 Output SCE object with new normalized/transformed assay stored.
