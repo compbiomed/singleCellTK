@@ -1936,7 +1936,6 @@ shinyServer(function(input, output, session) {
           trimOptions <- c(input$trimUpperValueAssay, input$trimLowerValueAssay)
         
         outAssayName <- input$modifyAssayOutname
-        selectedAssay <- assay(vals$counts, input$modifyAssaySelect)
         useAssay <- input$modifyAssaySelect
         
         args <- list(
@@ -1975,47 +1974,29 @@ shinyServer(function(input, output, session) {
         stop("Scaling factor must be a numeric non-empty value!")
       }
       else{
-        if (input$normalizeAssayMethodSelect == "LogNormalize"
-            || input$normalizeAssayMethodSelect == "CLR"
-            || input$normalizeAssayMethodSelect == "RC") {
-          vals$counts <- seuratNormalizeData(inSCE = vals$counts,
-                                             useAssay = input$normalizeAssaySelect,
-                                             normAssayName = input$normalizeAssayOutname,
-                                             normalizationMethod = input$normalizeAssayMethodSelect,
-                                             scaleFactor = as.numeric(input$normalizationScaleFactor))
-          # updateAssayInputs()
-        }
-        else if (input$normalizeAssayMethodSelect == "CPM") {
-          result <- scater::calculateCPM(x = assay(vals$counts, input$normalizeAssaySelect))
-          expData(vals$counts, input$normalizeAssayOutname, tag = "normalized", altExp = FALSE) <- result
-          # updateAssayInputs()
-        }
-        else if(input$normalizeAssayMethodSelect == "LNC"){
-          vals$counts <- scater_logNormCounts(
-            inSCE = vals$counts,
-            assayName = input$normalizeAssayOutname,
-            useAssay = input$normalizeAssaySelect
-          )
-          # updateAssayInputs()
-        }
-        else if(input$normalizeAssayMethodSelect == "SCT"){
-          vals$counts <- seuratSCTransform(
-            inSCE = vals$counts,
-            normAssayName = input$normalizeAssayOutname,
-            useAssay = input$normalizeAssaySelect
-          )
-          # updateAssayInputs()
-        }
+        #Setting initial parameters
+        normalizeMethod <- input$normalizeAssayMethodSelect
+        doScale <- input$normalizationScale
+        trimOptions <- NULL
+        scaleFactor <- input$normalizationScaleFactor
         
-        #Scale data if selected by the user
-        if(input$normalizationScale){
-          vals$counts <- runNormalization(
-            inSCE = vals$counts,
-            useAssay = input$normalizeAssayOutname,
-            normAssayName = input$normalizeAssayOutname,
-            scale = TRUE
-          )
-        }
+        if(input$normalizationTrim)
+          trimOptions <- c(input$normalizationTrimUpper, input$normalizationTrimLower)
+        
+        outAssayName <- input$normalizeAssayOutname
+        useAssay <- input$normalizeAssaySelect
+        
+        args <- list(
+          inSCE = vals$counts,
+          useAssay = useAssay,
+          outAssayName = outAssayName,
+          normalizationMethod = normalizeMethod,
+          scale = doScale,
+          seuratScaleFactor = scaleFactor,
+          trim = trimOptions
+        )
+        
+        vals$counts <- do.call("runNormalization", args)
       }
     })
   })

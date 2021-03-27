@@ -8,7 +8,7 @@
 #' @author Irzam Sarfraz
 #' @examples
 #' data(sce_chcl, package = "scds")
-#' sce_chcl <- scater_CPM(sce_chcl,"countsCPM", "counts")
+#' sce_chcl <- scaterCPM(sce_chcl,"countsCPM", "counts")
 scaterCPM <- function(inSCE, 
                        assayName = "ScaterCPMCounts", 
                        useAssay = "counts"){

@@ -118,7 +118,7 @@ runNormalization <- function(inSCE,
     }
     
     if(verbose)
-      message("Normalization performed using", normalizationMethod, " method.")
+      message("Normalization performed using ", normalizationMethod, " method.")
   }
   
   #Perform 'Pseudocounts' before Transformation
