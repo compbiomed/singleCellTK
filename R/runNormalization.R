@@ -103,7 +103,7 @@ runNormalization <- function(inSCE,
     }
     else if(normalizationMethod %in% scaterMethods){
       tempSCE <- do.call(
-        paste0("scater_", normalizationMethod),
+        paste0("scater", normalizationMethod),
         list(
           inSCE = inSCE,
           assayName = normAssayName,
@@ -111,13 +111,13 @@ runNormalization <- function(inSCE,
         )
       )
       tempAssay <- assay(tempSCE, normAssayName)
+      
+      if(verbose)
+        message("Normalization performed using", normalizationMethod, " method.")
     }
     else{
       stop("Specified normalization method '", normalizationMethod, "' not found.")
     }
-    
-    if(verbose)
-      message("Normalization performed using", normalizationMethod, " method.")
   }
   
   #Perform 'Pseudocounts' before Transformation
