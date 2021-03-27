@@ -7,12 +7,12 @@
 #' between a range of values.
 #'
 #' @param inSCE Input \code{SingleCellExperiment} object.
+#' @param useAssay Specify the name of the assay that should be used.
+#' @param outAssayName Specify the name of the new output assay.
 #' @param normalizationMethod Specify a normalization method from `LogNormalize`,
 #'  `CLR`, `RC` and `SCTransform` from Seurat or `logNormCounts` and `CPM` from
 #'  scater packages. Default \code{NULL} is set which will not run any
 #'  normalization method.
-#' @param useAssay Specify the name of the assay that should be used.
-#' @param normAssayName Specify the name of the new output assay.
 #' @param scale Logical value indicating if the data should be scaled using
 #'  Z.Score. Default \code{FALSE}.
 #' @param seuratScaleFactor Specify the `scaleFactor` argument if a Seurat
@@ -42,13 +42,13 @@
 #' data(sce_chcl, package = "scds")
 #' sce_chcl <- runNormalization(
 #'  inSCE = sce_chcl, 
-#'  "SCTransform", 
-#'  "counts", 
-#'  "sctCounts")
+#'  normalizationMethod = "SCTransform", 
+#'  useAssay = "counts", 
+#'  outAssayName = "sctCounts")
 runNormalization <- function(inSCE,
-                             normalizationMethod = NULL,
                              useAssay = "counts",
-                             normAssayName = "customNormalizedAssay",
+                             outAssayName = "customNormalizedAssay",
+                             normalizationMethod = NULL,
                              scale = FALSE,
                              seuratScaleFactor = 10,
                              transformation = NULL,
@@ -60,6 +60,7 @@ runNormalization <- function(inSCE,
   seuratMethods <- c("LogNormalize", "CLR", "RC", "SCTransform")
   scaterMethods <- c("logNormCounts", "CPM")
   tempAssay <- NULL
+  tag <- "normalized"
 
   #Perform 'Pseudocounts' before Normalization
   if(!is.null(pseudocountsBeforeNorm)){
@@ -68,7 +69,7 @@ runNormalization <- function(inSCE,
     assay(inSCE, useAssay) <- tempAssay
     
     if(verbose)
-      message("Added ", pseudocountsBeforeNorm, "to input matrix before normalizing data.")
+      message("Added ", pseudocountsBeforeNorm, " to input matrix before normalizing data.")
   }
   
   #Normalization (if applicable)
@@ -84,7 +85,7 @@ runNormalization <- function(inSCE,
       if(normalizationMethod == "SCTransform"){
         tempSCE <- seuratSCTransform(
           inSCE = inSCE,
-          normAssayName = normAssayName,
+          normAssayName = outAssayName,
           useAssay = useAssay,
           verbose = verbose
         )
@@ -94,30 +95,30 @@ runNormalization <- function(inSCE,
           inSCE = inSCE,
           normalizationMethod = normalizationMethod,
           useAssay = useAssay,
-          normAssayName = normAssayName,
+          normAssayName = outAssayName,
           scaleFactor = seuratScaleFactor,
           verbose = verbose
         )
       }
-      tempAssay <- assay(tempSCE, normAssayName)
+      tempAssay <- assay(tempSCE, outAssayName)
     }
     else if(normalizationMethod %in% scaterMethods){
       tempSCE <- do.call(
         paste0("scater", normalizationMethod),
         list(
           inSCE = inSCE,
-          assayName = normAssayName,
+          assayName = outAssayName,
           useAssay = useAssay
         )
       )
-      tempAssay <- assay(tempSCE, normAssayName)
-      
-      if(verbose)
-        message("Normalization performed using", normalizationMethod, " method.")
+      tempAssay <- assay(tempSCE, outAssayName)
     }
     else{
       stop("Specified normalization method '", normalizationMethod, "' not found.")
     }
+    
+    if(verbose)
+      message("Normalization performed using", normalizationMethod, " method.")
   }
   
   #Perform 'Pseudocounts' before Transformation
@@ -125,12 +126,13 @@ runNormalization <- function(inSCE,
     tempAssay <- tempAssay + pseudocountsBeforeTransform
     
     if(verbose)
-      message("Added ", pseudocountsBeforeTransform, "to input matrix before transforming data.")
+      message("Added ", pseudocountsBeforeTransform, " to input matrix before transforming data.")
   }
   
   #Perform 'Transformation'
   if("log2" %in% transformation){
     tempAssay <- log2(tempAssay)
+    tag <- "transformed"
     
     if(verbose)
       message("Log2 transformation performed on the input data.")
@@ -138,6 +140,7 @@ runNormalization <- function(inSCE,
   
   if("log1p" %in% transformation){
     tempAssay <- log1p(tempAssay)
+    tag <- "transformed"
     
     if(verbose)
       message("Log1p transformation (natural log + 1) performed on the input data.")
@@ -145,6 +148,7 @@ runNormalization <- function(inSCE,
   
   if("sqrt" %in% transformation){
     tempAssay <- sqrt(tempAssay)
+    tag <- "transformed"
     
     if(verbose)
       message("Sqrt transformation (square root) performed on the input data.")
@@ -153,6 +157,7 @@ runNormalization <- function(inSCE,
   #Perform 'Scale'
   if(scale){
     tempAssay <- computeZScore(counts = tempAssay)
+    tag <- "scaled"
     
     if(verbose)
       message("Z.Score scaling performed on the input data.")
@@ -166,7 +171,7 @@ runNormalization <- function(inSCE,
       message("Data trimmed between ", trim[1], " and ", trim[2], ".")
   }
   
-  assay(inSCE, normAssayName) <- tempAssay
-  
+  expData(inSCE, outAssayName, tag = tag, altExp = FALSE) <- tempAssay
+
   return(inSCE)
 }

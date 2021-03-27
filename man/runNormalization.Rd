@@ -11,9 +11,9 @@ between a range of values.}
 \usage{
 runNormalization(
   inSCE,
-  normalizationMethod = NULL,
   useAssay = "counts",
-  normAssayName = "customNormalizedAssay",
+  outAssayName = "customNormalizedAssay",
+  normalizationMethod = NULL,
   scale = FALSE,
   seuratScaleFactor = 10,
   transformation = NULL,
@@ -26,14 +26,14 @@ runNormalization(
 \arguments{
 \item{inSCE}{Input \code{SingleCellExperiment} object.}
 
+\item{useAssay}{Specify the name of the assay that should be used.}
+
+\item{outAssayName}{Specify the name of the new output assay.}
+
 \item{normalizationMethod}{Specify a normalization method from `LogNormalize`,
 `CLR`, `RC` and `SCTransform` from Seurat or `logNormCounts` and `CPM` from
 scater packages. Default \code{NULL} is set which will not run any
 normalization method.}
-
-\item{useAssay}{Specify the name of the assay that should be used.}
-
-\item{normAssayName}{Specify the name of the new output assay.}
 
 \item{scale}{Logical value indicating if the data should be scaled using
 Z.Score. Default \code{FALSE}.}
@@ -78,7 +78,7 @@ between a range of values.
 data(sce_chcl, package = "scds")
 sce_chcl <- runNormalization(
  inSCE = sce_chcl, 
- "SCTransform", 
- "counts", 
- "sctCounts")
+ normalizationMethod = "SCTransform", 
+ useAssay = "counts", 
+ outAssayName = "sctCounts")
 }
