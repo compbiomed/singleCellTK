@@ -48,7 +48,7 @@ shinyPanelBatchcorrect <- fluidPage(
                                          condition = "input.normalizeAssayMethodSelect == 'LogNormalize'
                               || input.normalizeAssayMethodSelect == 'CLR'
                               || input.normalizeAssayMethodSelect == 'RC'",
-                                         textInput(
+                                         numericInput(
                                            inputId = "normalizationScaleFactor",
                                            label = "Set scaling factor: ",
                                            value = "10000"
@@ -63,6 +63,27 @@ shinyPanelBatchcorrect <- fluidPage(
                                          inputId = "normalizationScale",
                                          label = "Scale data after normalization?",
                                          value = FALSE
+                                       ),
+                                       conditionalPanel(
+                                         condition = "input.normalizationScale == true",
+                                         awesomeCheckbox(
+                                           inputId = "normalizationTrim",
+                                           label = "Trim data after scale?",
+                                           value = TRUE
+                                         ),
+                                         conditionalPanel(
+                                           condition = "input.normalizationTrim == true",
+                                           numericInput(
+                                             inputId = "normalizationTrimUpper",
+                                             label = "Upper trim value:",
+                                             value = 10
+                                           ),
+                                           numericInput(
+                                             inputId = "normalizationTrimLower",
+                                             label = "Lower trim value:",
+                                             value = -10
+                                           )
+                                         )
                                        )
                                      ),
                                      conditionalPanel(
@@ -116,18 +137,44 @@ shinyPanelBatchcorrect <- fluidPage(
                                        conditionalPanel(
                                          condition = "input.customNormalizeOptionsPsuedocounts == true",
                                          h5("Pseudocounts Options:"),
-                                         awesomeRadio(
-                                           inputId = "customNormalizePseudoOptions",
-                                           label = "Select when to add a pseudo value:",
-                                           choices = c("before normalization",
-                                                       "before transformation",
-                                                       "after transformation")
+                                         conditionalPanel(
+                                           condition = "input.customNormalizeOptionsNormalize == true",
+                                           awesomeCheckbox(
+                                             inputId = "customNormalizePseudoOptionsBefore",
+                                             label = "before normalization",
+                                             value = FALSE
+                                           ),
+                                           conditionalPanel(
+                                             condition = "input.customNormalizePseudoOptionsBefore == true",
+                                             numericInput(
+                                               inputId = "customNormalizePseudoValueBefore",
+                                               label = "Enter a pseudovalue to add:",
+                                               value = 1,
+                                               min = 1
+                                             )
+                                           )
                                          ),
-                                         numericInput(
-                                           inputId = "customNormalizePseudoValue",
-                                           label = "Enter a pseudo value to add:",
-                                           value = 1,
-                                           min = 1
+                                         conditionalPanel(
+                                           condition = "input.customNormalizeOptionsTransform == true",
+                                           awesomeCheckbox(
+                                             inputId = "customNormalizePseudoOptionsAfter",
+                                             label =  "before transformation",
+                                             value = FALSE
+                                           ),
+                                           conditionalPanel(
+                                             condition = "input.customNormalizePseudoOptionsAfter == true",
+                                             numericInput(
+                                               inputId = "customNormalizePseudoValueAfter",
+                                               label = "Enter a pseudovalue to add:",
+                                               value = 1,
+                                               min = 1
+                                             )
+                                           )
+                                         ),
+                                         conditionalPanel(
+                                           condition = "input.customNormalizeOptionsNormalize == false
+                                           && input.customNormalizeOptionsTransform == false",
+                                           h6("To add a pseudovalue, must select 'Normalize' or 'Transform' options!")
                                          )
                                        ),
                                        awesomeCheckbox(
@@ -166,12 +213,6 @@ shinyPanelBatchcorrect <- fluidPage(
                                      )
                                      ),
                               column(6,
-                                     h4("Description:"),
-                                     textOutput("normalizeTabDescription"),
-                                     tags$hr(),
-                                     h4("Output Data Type:"),
-                                     uiOutput("normalizationDataTagUI"),
-                                     tags$hr(),
                                      h4("Selected Options:"),
                                      conditionalPanel(
                                        condition = "input.normalizeAssayMethodSelect != 'custom'",
@@ -201,7 +242,10 @@ shinyPanelBatchcorrect <- fluidPage(
                                        condition = "input.customNormalizeOptionsTrim == true
                                        && input.normalizeAssayMethodSelect == 'custom'",
                                        h5("Trim")
-                                     )
+                                     ),
+                                     tags$hr(),
+                                     h4("Output Data Type:"),
+                                     uiOutput("normalizationDataTagUI")
                                      )
                             ),
                             fluidRow(
