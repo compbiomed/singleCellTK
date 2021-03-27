@@ -1,4 +1,4 @@
-#' scater_CPM
+#' scaterCPM
 #' Uses CPM from scater library to compute counts-per-million.
 #' @param inSCE Input SingleCellExperiment object
 #' @param assayName New assay name for cpm data.
@@ -8,8 +8,8 @@
 #' @author Irzam Sarfraz
 #' @examples
 #' data(sce_chcl, package = "scds")
-#' sce_chcl <- scater_CPM(sce_chcl,"countsCPM", "counts")
-scater_CPM <- function(inSCE, 
+#' sce_chcl <- scaterCPM(sce_chcl,"countsCPM", "counts")
+scaterCPM <- function(inSCE, 
                        assayName = "ScaterCPMCounts", 
                        useAssay = "counts"){
   assay(inSCE, assayName) <- scater::calculateCPM(

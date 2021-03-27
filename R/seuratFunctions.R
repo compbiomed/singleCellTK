@@ -50,6 +50,8 @@
 #' @param normAssayName Name of new assay containing normalized data. Default \code{seuratNormData}.
 #' @param normalizationMethod selected normalization method. Default \code{"LogNormalize"}.
 #' @param scaleFactor numeric value that represents the scaling factor. Default \code{10000}.
+#' @param verbose Logical value indicating if informative messages should 
+#'  be displayed. Default is \code{TRUE}.
 #' @examples
 #' data(scExample, package = "singleCellTK")
 #' \dontrun{
@@ -57,8 +59,8 @@
 #' }
 #' @return Normalized \code{SingleCellExperiment} object
 #' @export
-seuratNormalizeData <- function(inSCE, useAssay, normAssayName = "seuratNormData", normalizationMethod = "LogNormalize", scaleFactor = 10000) {
-  seuratObject <- Seurat::NormalizeData(convertSCEToSeurat(inSCE, useAssay), normalization.method = normalizationMethod, scale.factor = scaleFactor, verbose = FALSE)
+seuratNormalizeData <- function(inSCE, useAssay, normAssayName = "seuratNormData", normalizationMethod = "LogNormalize", scaleFactor = 10000, verbose = TRUE) {
+  seuratObject <- Seurat::NormalizeData(convertSCEToSeurat(inSCE, useAssay), normalization.method = normalizationMethod, scale.factor = scaleFactor, verbose = verbose)
   inSCE <- .updateAssaySCE(inSCE, seuratObject, normAssayName, "data")
   inSCE <- .addSeuratToMetaDataSCE(inSCE, seuratObject)
   inSCE@metadata$seurat$normAssay <- normAssayName
@@ -709,18 +711,20 @@ convertSCEToSeurat <- function(inSCE, countsAssay = NULL, normAssay = NULL, scal
 #' @param inSCE Input SingleCellExperiment object
 #' @param normAssayName Name for the output data assay. Default \code{"SCTCounts"}.
 #' @param useAssay Name for the input data assay. Default \code{"counts"}.
+#' @param verbose Logical value indicating if informative messages should 
+#'  be displayed. Default is \code{TRUE}.
 #' @return Updated SingleCellExperiment object containing the transformed data
 #' @export
 #' @examples
 #' data(sce_chcl, package = "scds")
 #' sce_chcl <- seuratSCTransform(sce_chcl, "SCTCounts", "counts")
-seuratSCTransform <- function(inSCE, normAssayName = "SCTCounts", useAssay = "counts") {
+seuratSCTransform <- function(inSCE, normAssayName = "SCTCounts", useAssay = "counts", verbose = TRUE) {
   seuratObject <- base::suppressWarnings(Seurat::SCTransform(
     object = convertSCEToSeurat(inSCE, useAssay),
     assay = "RNA",
     new.assay.name = "SCTransform",
     do.correct.umi = FALSE,
-    verbose = TRUE))
+    verbose = verbose))
   inSCE <- .updateAssaySCE(inSCE = inSCE, seuratObject = seuratObject, assaySlotSCE = normAssayName, seuratDataSlot = "data", seuratAssaySlot = "SCTransform")
   inSCE <- expSetDataTag(inSCE = inSCE, assayType = "normalized", assays = normAssayName)
   return(inSCE)
