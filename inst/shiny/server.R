@@ -2017,7 +2017,7 @@ shinyServer(function(input, output, session) {
         trimOptions <- NULL
         scaleFactor <- input$normalizationScaleFactor
 
-        if(input$normalizationTrim)
+        if(doScale && input$normalizationTrim)
           trimOptions <- c(input$normalizationTrimUpper, input$normalizationTrimLower)
 
         outAssayName <- input$normalizeAssayOutname
