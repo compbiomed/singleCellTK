@@ -211,13 +211,29 @@
     NewMeta[["runBarcodeRanksMetaOutput"]] <- unlist(NewMeta[["runBarcodeRanksMetaOutput"]])
   }
 
+  if ("assayType" %in% metaNames) {
+    tags <- unique(unlist(lapply(SCE_list,
+                                 function(x) {
+                                   names(S4Vectors::metadata(x)[["assayType"]])
+                                 })))
+    assayType <- list()
+    for (sample in SCE_list) {
+      assayType.each <- S4Vectors::metadata(sample)[["assayType"]]
+      for (t in tags) {
+        assayType[[t]] <- c(assayType[[t]], assayType.each[[t]])
+      }
+    }
+    assayType <- lapply(assayType, unique)
+    NewMeta[["assayType"]] <- assayType
+  }
+
   return(NewMeta)
 }
 
 #' Combine a list of SingleCellExperiment objects as one SingleCellExperiment object
-#' @param sceList A list contains \link[SingleCellExperiment]{SingleCellExperiment} objects. 
-#' Currently, combineSCE function only support combining SCE objects with assay in dgCMatrix format. 
-#' It does not support combining SCE with assay in delayedArray format. 
+#' @param sceList A list contains \link[SingleCellExperiment]{SingleCellExperiment} objects.
+#' Currently, combineSCE function only support combining SCE objects with assay in dgCMatrix format.
+#' It does not support combining SCE with assay in delayedArray format.
 #' @param by.r Specifications of the columns used for merging rowData. See 'Details'.
 #' @param by.c Specifications of the columns used for merging colData. See 'Details'.
 #' @param combined logical; if TRUE, it will combine the list of SingleCellExperiment objects. See 'Details'.
@@ -228,6 +244,9 @@
 #' @export
 
 combineSCE <- function(sceList, by.r, by.c, combined){
+  if(length(sceList) == 1){
+    return(sceList[[1]])
+  }
   ##  rowData
   newFeList <- .mergeRowDataSCE(sceList, by.r)
   ## colData
