@@ -25,7 +25,7 @@ Extracts the top variable genes from an input singleCellExperiment object
 }
 \examples{
 data(sce_chcl, package = "scds")
-sce_chcl <- scran_modelGeneVar(sce_chcl, "counts")
+sce_chcl <- scranModelGeneVar(sce_chcl, "counts")
 # return top 10 variable genes
 topGenes <- getTopHVG(sce_chcl, "modelGeneVar", 10)
 }

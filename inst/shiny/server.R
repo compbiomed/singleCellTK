@@ -2017,7 +2017,7 @@ shinyServer(function(input, output, session) {
         trimOptions <- NULL
         scaleFactor <- input$normalizationScaleFactor
 
-        if(input$normalizationTrim)
+        if(doScale && input$normalizationTrim)
           trimOptions <- c(input$normalizationTrimUpper, input$normalizationTrimLower)
 
         outAssayName <- input$normalizeAssayOutname
@@ -3178,7 +3178,7 @@ shinyServer(function(input, output, session) {
           vals$counts <- scater::logNormCounts(vals$counts, name = "ScaterLogNormCounts",
                                                exprs_values = input$celdaassayselect)
         }
-        vals$counts <- scran_modelGeneVar(vals$counts, assayName = "ScaterLogNormCounts")
+        vals$counts <- scranModelGeneVar(vals$counts, assayName = "ScaterLogNormCounts")
         altExp(vals$counts, "featureSubset") <- vals$counts[getTopHVG(vals$counts,
                                                                       method = "modelGeneVar", n = input$celdafeaturenum)]
       }
@@ -5011,7 +5011,7 @@ shinyServer(function(input, output, session) {
             #vals$counts <- seuratFindHVG(vals$counts, useAssay = input$assaySelectFS_Norm, seuratWorkflow$geneNamesSeurat, input$hvgMethodFS, as.numeric(input$hvgNoFeaturesFS))
           })
         } else if (input$hvgMethodFS == "modelGeneVar") {
-          vals$counts <- scran_modelGeneVar(inSCE = vals$counts, assayName = input$assaySelectFS_Norm)
+          vals$counts <- scranModelGeneVar(inSCE = vals$counts, assayName = input$assaySelectFS_Norm)
         }
         vals$hvgCalculated$status <- TRUE
         vals$hvgCalculated$method <- input$hvgMethodFS
