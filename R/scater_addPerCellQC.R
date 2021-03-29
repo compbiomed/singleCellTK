@@ -1,6 +1,6 @@
 #' @title Wrapper for calculating QC metrics with scater.
-#' @description A wrapper function for \link[celda]{decontX}. Identify
-#'  potential contamination from experimental factors such as ambient RNA.
+#' @description A wrapper function for \link[scater]{addPerCellQC}. Calculate
+#'  general quality control metrics for each cell in the count matrix.
 #' @param inSCE Input \link[SingleCellExperiment]{SingleCellExperiment} object.
 #' @param useAssay A string specifying which assay in the SCE to use. Default \code{"counts"}.
 #' @param collectionName Character. Name of a \code{GeneSetCollection} obtained by using one of the importGeneSet* functions. Default \code{NULL}.
@@ -9,7 +9,7 @@
 #' If another character is supplied, then genes will be looked up in the column names of \code{rowData(inSCE)}. A character vector with the same length as \code{geneSetList} can be supplied if the IDs for different
 #' gene sets are found in different places, including a mixture of 'rownames' and \code{rowData(inSCE)}. An integer or integer vector can be supplied to denote the column index in \code{rowData(inSCE)}. Default 'rownames'.
 #' @param geneSetCollection Class of \code{GeneSetCollection} from package \code{GSEAbase}. The location of the gene IDs in \code{inSCE} should be in the \code{description} slot of each gene set and should follow the
-#' same notation as \code{geneSetListLocation}. The function \link[GSEABase]{getGmt} can be used to read in gene sets from a GMT file. If reading a GMT file, the second column for each gene set should be the description denoting the location
+#' same notation as \code{geneSetListLocation}. The function \link{getGmt} can be used to read in gene sets from a GMT file. If reading a GMT file, the second column for each gene set should be the description denoting the location
 #' of the gene IDs in \code{inSCE}. These gene sets will be included with those from \code{geneSetList} if both parameters are provided.
 #' @param percent_top An integer vector. Each element is treated as a
 #' number of top genes to compute the percentage of library size occupied by
@@ -22,11 +22,11 @@
 #' Alternatively NULL, in which case alternative experiments are not used.
 #' @param flatten Logical scalar indicating whether the nested \link[S4Vectors]{DataFrame-class}
 #' in the output should be flattened.
-#' @param detection.limit A numeric scalar specifying the lower detection limit for expression.
-#' @param BPPARAM A \link[BiocParallel]{BiocParallelParam} object specifying
+#' @param detectionLimit A numeric scalar specifying the lower detection limit for expression.
+#' @param BPPARAM A \link{BiocParallelParam} object specifying
 #' whether the QC calculations should be parallelized.
 #' @return A \link[SingleCellExperiment]{SingleCellExperiment} object with
-#'  cell QC metrics added to the \link[SummarizedExperiment]{colData} slot. If \code{geneSetList} or \code{geneSetCollection} are provided, then the rownames for each gene set will be saved in \code{metadata(inSCE)$scater$addPerCellQC$geneSets}.
+#'  cell QC metrics added to the \link{colData} slot. If \code{geneSetList} or \code{geneSetCollection} are provided, then the rownames for each gene set will be saved in \code{metadata(inSCE)$scater$addPerCellQC$geneSets}.
 #' @examples
 #' data(scExample, package = "singleCellTK")
 #' mito.ix = grep("^MT-", rowData(sce)$feature_name)
@@ -43,7 +43,7 @@ runPerCellQC <- function(inSCE,
     percent_top = c(50, 100, 200, 500),
     use_altexps = FALSE,
     flatten = TRUE,
-    detection.limit = 0,
+    detectionLimit = 0,
     BPPARAM = BiocParallel::SerialParam()
 ) {
 
@@ -64,7 +64,8 @@ runPerCellQC <- function(inSCE,
   if(!is.null(geneSetCollection)) {
 
     ## Get the location where the gene set Ids are stored in SCE object
-    geneSetCollectionLocation <- sapply(geneSetCollection, GSEABase::description)
+    geneSetCollectionLocation <- vapply(geneSetCollection, GSEABase::description, 
+                                        FUN.VALUE = character(length(names(geneSetCollection))))
 
     ## If blank/null/NA, then set to rownames by default
     ix <- geneSetCollectionLocation == "" || is.na(geneSetCollectionLocation) || is.null(geneSetCollectionLocation)
@@ -149,7 +150,7 @@ runPerCellQC <- function(inSCE,
                                 percent_top = percent_top,
                                 use_altexps = use_altexps,
                                 flatten = flatten,
-                                detection.limit = detection.limit,
+                                detection_limit = detectionLimit,
                                 BPPARAM = BPPARAM)
 
   #argsList <- argsList[!names(argsList) %in% ("...")]

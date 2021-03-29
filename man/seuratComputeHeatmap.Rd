@@ -11,9 +11,13 @@ seuratComputeHeatmap(
   useReduction = c("pca", "ica"),
   dims = NULL,
   nfeatures = 30,
+  cells = NULL,
+  ncol = NULL,
+  balanced = TRUE,
   fast = TRUE,
   combine = TRUE,
-  raster = TRUE
+  raster = TRUE,
+  externalReduction = NULL
 )
 }
 \arguments{
@@ -25,13 +29,24 @@ seuratComputeHeatmap(
 
 \item{dims}{Number of components to generate heatmap plot objects. If \code{NULL}, a heatmap will be generated for all components. Default \code{NULL}.}
 
-\item{nfeatures}{Numer of features to include in the heatmap. Default \code{30}.}
+\item{nfeatures}{Number of features to include in the heatmap. Default \code{30}.}
+
+\item{cells}{Numeric value indicating the number of top cells to plot.
+Default is \code{NULL} which indicates all cells.}
+
+\item{ncol}{Numeric value indicating the number of columns to use for plot.
+Default is \code{NULL} which will automatically compute accordingly.}
+
+\item{balanced}{Plot equal number of genes with positive and negative scores.
+Default is \code{TRUE}.}
 
 \item{fast}{See \link[Seurat]{DimHeatmap} for more information. Default \code{TRUE}.}
 
 \item{combine}{See \link[Seurat]{DimHeatmap} for more information. Default \code{TRUE}.}
 
 \item{raster}{See \link[Seurat]{DimHeatmap} for more information. Default \code{TRUE}.}
+
+\item{externalReduction}{Pass DimReduc object if PCA/ICA computed through other libraries. Default \code{NULL}.}
 }
 \value{
 plot object
@@ -39,4 +54,15 @@ plot object
 \description{
 seuratComputeHeatmap
 Computes the heatmap plot object from the pca slot in the input sce object
+}
+\examples{
+data(scExample, package = "singleCellTK")
+\dontrun{
+sce <- seuratNormalizeData(sce, useAssay = "counts")
+sce <- seuratFindHVG(sce, useAssay = "counts")
+sce <- seuratScaleData(sce, useAssay = "counts")
+sce <- seuratPCA(sce, useAssay = "counts")
+heatmap <- seuratComputeHeatmap(sce, useAssay = "counts")
+seuratHeatmapPlot(heatmap)
+}
 }

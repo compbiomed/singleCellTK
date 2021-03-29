@@ -8,7 +8,9 @@ Plots the selected dimensionality reduction method}
 seuratReductionPlot(
   inSCE,
   useReduction = c("pca", "ica", "tsne", "umap"),
-  showLegend = FALSE
+  showLegend = FALSE,
+  groupBy = NULL,
+  splitBy = NULL
 )
 }
 \arguments{
@@ -17,6 +19,10 @@ seuratReductionPlot(
 \item{useReduction}{Dimentionality reduction to plot. One of "pca", "ica", "tsne", or "umap". Default \code{"umap"}.}
 
 \item{showLegend}{Select if legends should be shown on the output plot or not. Either "TRUE" or "FALSE". Default \code{FALSE}.}
+
+\item{groupBy}{Specify a colData column name that be used for grouping. Default is \code{NULL}.}
+
+\item{splitBy}{Specify a colData column name that be used for splitting the output plot. Default is \code{NULL}.}
 }
 \value{
 plot object
@@ -24,4 +30,13 @@ plot object
 \description{
 seuratReductionPlot
 Plots the selected dimensionality reduction method
+}
+\examples{
+data(scExample, package = "singleCellTK")
+\dontrun{
+sce <- seuratNormalizeData(sce, useAssay = "counts")
+sce <- seuratFindHVG(sce, useAssay = "counts")
+sce <- seuratScaleData(sce, useAssay = "counts")
+sce <- seuratPCA(sce, useAssay = "counts")
+seuratReductionPlot(sce, useReductionPlot = "pca")}
 }

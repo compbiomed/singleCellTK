@@ -44,12 +44,11 @@
             )
         }
 
-        if ("scran_doubletCells_score_log10" %in% colnames(SummarizedExperiment::colData(inSCE))) {
-            metrics <- c(metrics, "DoubletCells - Doublet score outliers")
-            values <- c(values, sum(scater::isOutlier(inSCE$scran_doubletCells_score_log10,
-                                                  type = "higher"
-            )))
-
+        if ("scDblFinder_class" %in% colnames(SummarizedExperiment::colData(inSCE))) {
+            metrics <- c(metrics, "scDblFinder - Number of doublets",
+                         "scDblFinder - Percentage of doublets")
+            values <- c(values, sum(inSCE$scDblFinder_class == "doublet"),
+                        signif(sum(inSCE$scDblFinder_class == "doublet")/length(inSCE$scDblFinder_class) * 100, 3))
         }
 
         if (any(grepl("doubletFinder_doublet_label_resolution",
@@ -106,19 +105,21 @@
     return(df)
 }
 
-#' @title Plot table of SCTK QC outputs.
-#' @description Plot QC metrics generated from QC algorithms via either kable or csv file.
+#' @title Generate table of SCTK QC outputs.
+#' @description  Creates a table of QC metrics generated from
+#'  QC algorithms via either kable or csv file.
 #' @param inSCE Input \linkS4class{SingleCellExperiment} object with saved
-#' dimension reduction components or a variable with saved results. Required
+#' \link{assay} data and/or \link{colData} data. Required.
 #' @param sample Character vector. Indicates which sample each cell belongs to.
 #' @param useAssay  A string specifying which assay in the SCE to use. Default
 #'  'counts'.
 #' @param simple Boolean. Indicates whether to generate a table of only
 #' basic QC stats (ex. library size), or to generate a summary table of all
 #' QC stats stored in the inSCE.
+#' @return A matrix/array object.
 #' @examples
 #' data(scExample, package = "singleCellTK")
-#' sce <- sce[, colData(sce)$type != 'EmptyDroplet']
+#' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 #' sampleSummaryStats(sce, simple = TRUE)
 #' @importFrom magrittr %>%
 #' @export

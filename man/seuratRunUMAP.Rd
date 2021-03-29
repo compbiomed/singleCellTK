@@ -37,3 +37,14 @@ Updated sce object with UMAP computations stored
 seuratRunUMAP
 Computes UMAP from the given sce object and stores the UMAP computations back into the sce object
 }
+\examples{
+data(scExample, package = "singleCellTK")
+\dontrun{
+sce <- seuratNormalizeData(sce, useAssay = "counts")
+sce <- seuratFindHVG(sce, useAssay = "counts")
+sce <- seuratScaleData(sce, useAssay = "counts")
+sce <- seuratPCA(sce, useAssay = "counts")
+sce <- seuratFindClusters(sce, useAssay = "counts")
+sce <- seuratRunUMAP(sce, useReduction = "pca")
+}
+}

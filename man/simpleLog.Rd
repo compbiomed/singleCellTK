@@ -9,6 +9,9 @@ simpleLog(f)
 \arguments{
 \item{f}{A function to decorate}
 }
+\value{
+Prints message
+}
 \description{
 A decorator that prints the arguments to the decorated function
 }

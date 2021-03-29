@@ -24,6 +24,10 @@ Update/Modify/Add an assay in the provided SingleCellExperiment object from a Se
 
 \item{seuratAssaySlot}{Selected assay from Seurat object. Default \code{"RNA"}.}
 }
+\value{
+A \link[SingleCellExperiment]{SingleCellExperiment} object with
+ data from Seurat object appended to the \link{assay} slot.
+}
 \description{
 .updateAssaySCE
 Update/Modify/Add an assay in the provided SingleCellExperiment object from a Seurat object

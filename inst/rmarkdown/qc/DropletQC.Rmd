@@ -15,7 +15,6 @@ output:
 ---
 
 ```{r "DropletQC-lib", include=FALSE, warning=FALSE}
-require(umap)
 require(SummarizedExperiment)
 require(SingleCellExperiment)
 require(singleCellTK)
@@ -66,32 +65,58 @@ Comprehensive quality control (QC) of single-cell RNA-seq data was performed wit
 
 
 # Empty Drops Detection
-```{r, include=FALSE, warning=FALSE, message=FALSE}
+```{r, "EmptyDrops-description", include=FALSE, warning=FALSE, message=FALSE}
 description_runEmptyDrops <- descriptionEmptyDrops()
 ```
 
 ```{r, "EmptyDrops", results="asis", fig.align="center", warning=TRUE, message=FALSE, echo=FALSE}
-plotsEmptyDrops<- suppressWarnings(plotEmptyDropsResults(sce, 
-                                                         sample = colData(sce)$sample))
 i="EmptyDrops"
 cat(paste0('## ', i, ' \n'))
+cat("\n")
+
+
+emptyData <- c("dropletUtils_emptyDrops_logprob", "dropletUtils_emptyDrops_total")
+skipRunEmpty <- any(!emptyData %in% names(colData(sce)))
+
+if (skipRunEmpty) {
+  cat("runEmptyDrops did not run successfully. The section of EmptyDrops is skipped")
+  plotsEmptyDrops <- NULL
+} else {
+    plotsEmptyDrops <- tryCatch(
+    { plotEmptyDropsResults(sce,sample = colData(sce)$sample,
+                                             combinePlot = "none") },
+      error = function(e) {
+        cat("runEmptyDrops did not run successfully. The section of EmptyDrops is skipped")
+        skipRunEmpty <- TRUE
+        return(NA)
+      }
+  )
+}
+
+if(!skipRunEmpty) {
+  if(length(samples) == 1) {
+    plotsEmptyDrops$scatterEmptyDrops <- list(Sample = list(plotsEmptyDrops$scatterEmptyDrops))
+    names(plotsEmptyDrops$scatterEmptyDrops$Sample) <- samples
+  }
+
+  cat(description_runEmptyDrops$introduction)
+  cat(description_runEmptyDrops$runEmptyDrops)
+  cat(description_runEmptyDrops$plotEmptyDropsResults)
+  cat(description_runEmptyDrops$plot2)
+}
+
 ```
-<br />
-`r description_runEmptyDrops$introduction`
-`r description_runEmptyDrops$runEmptyDrops`
-`r description_runEmptyDrops$plotEmptyDropsResults`
-`r description_runEmptyDrops$plot2`
 
 
 ## {.unlisted .unnumbered .toc-ignore .tabset .tabset-fade}
-```{r results="asis", fig.align="center", warning=FALSE, message=FALSE, echo=FALSE}
+```{r "EmptyDrops-plot", results="asis", eval=(!skipRunEmpty), fig.align="center", warning=FALSE, message=FALSE, echo=FALSE}
 cat("\n")
 for (i in seq_along(samples)) {
   cat(paste0("### ", samples[i], " {.tabset .tabset-fade} \n"))
   cat("\n\n")
   
   cat("#### Total UMI counts vs Log-Probability \n")
-  print(plotsEmptyDrops$scatterEmptyDrops[[i]])
+  print(plotsEmptyDrops$scatterEmptyDrops$Sample[[i]])
   cat("\n\n")
   
   cat("#### Parameters \n\n")
@@ -111,36 +136,62 @@ for (i in seq_along(samples)) {
 
 
 
-```{r, include=FALSE, warning=FALSE, message=FALSE}
+```{r, "BarcodeRanks-description", include=FALSE, warning=FALSE, message=FALSE}
 description_runBarcodeRank <- descriptionBarcodeRank()
 ```
 
-```{r, "BarcodeRanks", results="asis", fig.align="center", warning=FALSE, message=FALSE}
-# plotsBarcodeRank<- suppressWarnings(plotBarcodeRankDropsResults(sce,
-#                                                                 sample = colData(sce)$sample)
-plotsBarcodeRank <- suppressWarnings(plotBarcodeRankScatter(sce,
-                                                            sample = colData(sce)$sample,
-                                                            title="BarcodeRanks Rank Plot",
-                                                            combinePlot = FALSE))
-names(plotsBarcodeRank) <- samples
+```{r, "BarcodeRanks", results="asis", fig.align="center", warning=FALSE, message=FALSE, echo=FALSE}
 i="BarcodeRanks"
 cat(paste0('## ', i, ' \n'))
+cat("\n")
+
+
+barcodeData <- c("dropletUtils_barcodeRank_rank", "dropletUtils_barcodeRank_total", "dropletUtils_barcodeRank_knee", "dropletUtils_barcodeRank_inflection", "sample", "dropletUtils_barcodeRank_fitted")
+
+skipBarcode <- (!"runBarcodeRanksMetaOutput" %in% names(S4Vectors::metadata(sce))) || 
+              (any(!barcodeData %in% names(S4Vectors::metadata(sce)$runBarcodeRanksMetaOutput[[1]])))
+
+if (skipBarcode) {
+  cat("runBarcodeRankDrops did not run successfully. The section of EmptyDrops is skipped")
+  plotsBarcodeRank <- NA
+} else {
+  plotsBarcodeRank <- tryCatch(
+    {plotBarcodeRankScatter(sce,
+                            sample = colData(sce)$sample, 
+                            title="BarcodeRanks Rank Plot",
+                            combinePlot = "none")},
+      error = function(e) {
+        cat("runBarcodeRankDrops did not run successfully. The section of EmptyDrops is skipped")
+        skipBarcode <- TRUE
+        return(NA)
+      }
+  )
+}
+
+if(!skipBarcode) {
+  if(length(samples) == 1) {
+    plotsBarcodeRank <- list(Sample = list(plotsBarcodeRank))
+    names(plotsBarcodeRank$Sample) <- samples
+  }
+  
+  #names(plotsBarcodeRank) <- samples
+  cat(description_runBarcodeRank$introduction)
+  cat(description_runBarcodeRank$runBarcodeRankDrops)
+  cat(description_runBarcodeRank$plotBarcodeRankDropsResults)
+  cat(description_runBarcodeRank$plot)
+}
 ```
-<br />
-`r description_runBarcodeRank$introduction`
-`r description_runBarcodeRank$runBarcodeRankDrops`
-`r description_runBarcodeRank$plotBarcodeRankDropsResults`
-`r description_runBarcodeRank$plot`
+
 
 ## {.unlisted .unnumbered .toc-ignore .tabset .tabset-fade}
-```{r results="asis", fig.align="center", warning=FALSE, message=FALSE, echo=FALSE}
+```{r "BarcodeRanks-plot", results="asis", eval=!(skipBarcode), fig.align="center", warning=FALSE, message=FALSE, echo=FALSE}
 cat("\n")
 for (i in seq_along(samples)) {
   cat(paste0("### ", samples[i], " {.tabset .tabset-fade} \n"))
   cat("\n\n")
   
   cat("#### Total UMI counts vs Rank {.tabset .tabset-fade} \n\n")
-  print(plotsBarcodeRank[[samples[i]]])
+  print(plotsBarcodeRank$Sample[[samples[i]]])
   cat("\n\n")
   
   cat("#### Parameters {.tabset .tabset-fade} \n\n")
@@ -158,7 +209,7 @@ for (i in seq_along(samples)) {
 
 # Summary Statistics {.tabset .tabset-fade}
 # {.unlisted .unnumbered .toc-ignore .tabset .tabset-fade}
-```{r, echo = FALSE, "Summary of valid cells", results="asis", fig.align="center", warning=FALSE, message=FALSE}
+```{r "SummaryStats", echo = FALSE, results="asis", fig.align="center", warning=FALSE, message=FALSE}
 cat("\n")
 
 for (i in seq_along(samples)) {
@@ -177,8 +228,7 @@ for (i in seq_along(samples)) {
     dplyr::summarise('Number of cells' = n(), 'Median UMI' = median(sum), 
                      'Median Genes' = median(detected))
   })
-  # i="Summary Statistics"
-  # cat(paste0('## ', i, ' \n'))
+  
     
   cat(do.call(base::rbind, SummaryTable) %>% 
     knitr::kable(format = "html") %>% kableExtra::kable_styling() %>%

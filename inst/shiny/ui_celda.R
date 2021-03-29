@@ -19,8 +19,9 @@ shinyPanelCelda2 <- fluidPage(
                 # open by default
                 tags$div(id = "celdaCollapse1",
                   wellPanel(
-                    selectInput("celdaAssay", "Select Assay:",
-                      currassays),
+                    uiOutput("celdaAssay"),
+                    # selectInput("celdaAssay", "Select Assay:",
+                    #   currassays),
                     selectInput("celdaModel",
                       "Select Celda Model:",
                       c("celda_C", "celda_G", "celda_CG"),
@@ -183,8 +184,9 @@ shinyPanelCelda2 <- fluidPage(
                 # open by default
                 tags$div(id = "celdaCollapseGS1",
                   wellPanel(
-                    selectInput("celdaAssayGS", "Select Assay:",
-                      currassays),
+                    uiOutput("celdaAssayGS"),
+                    # selectInput("celdaAssayGS", "Select Assay:",
+                    #   currassays),
                     selectInput("celdaModelGS",
                       "Select Celda Model:",
                       c("celda_C", "celda_G", "celda_CG"),
@@ -371,8 +373,9 @@ shinyPanelCelda2 <- fluidPage(
                         #shinyjs::hidden(
                         #tags$div(id = "celdaCollapsetSNE",
                         #wellPanel(
-                        selectInput("celdaAssaytSNE", "Select Assay:",
-                          currassays),
+                        uiOutput("celdaAssaytSNE"),
+                        # selectInput("celdaAssaytSNE", "Select Assay:",
+                        #   currassays),
 
                         numericInput("celdatSNEmaxCells",
                           label =
@@ -440,9 +443,10 @@ shinyPanelCelda2 <- fluidPage(
                   fluidRow(
                     sidebarLayout(
                       sidebarPanel(
-                        selectInput("celdaAssayProbabilityMap",
-                          "Select Assay:",
-                          currassays),
+                        uiOutput("celdaAssayProbabilityMap"),
+                        # selectInput("celdaAssayProbabilityMap",
+                        #   "Select Assay:",
+                        #   currassays),
                         tags$hr(),
                         withBusyIndicatorUI(actionButton(
                           inputId = "renderCeldaProbabilityMap",
@@ -460,9 +464,10 @@ shinyPanelCelda2 <- fluidPage(
                   fluidRow(
                     sidebarLayout(
                       sidebarPanel(
-                        selectInput("celdaAssayModuleHeatmap",
-                          "Select Assay:",
-                          currassays),
+                        uiOutput("celdaAssayModuleHeatmap"),
+                        # selectInput("celdaAssayModuleHeatmap",
+                        #   "Select Assay:",
+                        #   currassays),
                         selectInput("celdaFeatureModule",
                           "Select Feature Modules:",
                           NULL,
@@ -502,3 +507,4 @@ shinyPanelCelda2 <- fluidPage(
     )
   )
 )
+

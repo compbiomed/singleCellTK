@@ -7,7 +7,9 @@
 combineSCE(sceList, by.r, by.c, combined)
 }
 \arguments{
-\item{sceList}{A list contains \link[SingleCellExperiment]{SingleCellExperiment} objects}
+\item{sceList}{A list contains \link[SingleCellExperiment]{SingleCellExperiment} objects.
+Currently, combineSCE function only support combining SCE objects with assay in dgCMatrix format.
+It does not support combining SCE with assay in delayedArray format.}
 
 \item{by.r}{Specifications of the columns used for merging rowData. See 'Details'.}
 
@@ -16,9 +18,12 @@ combineSCE(sceList, by.r, by.c, combined)
 \item{combined}{logical; if TRUE, it will combine the list of SingleCellExperiment objects. See 'Details'.}
 }
 \value{
-A \link[SingleCellExperiment]{SingleCellExperiment} object which combines all 
+A \link[SingleCellExperiment]{SingleCellExperiment} object which combines all
 objects in sceList. The colData is merged.
 }
 \description{
 Combine a list of SingleCellExperiment objects as one SingleCellExperiment object
+}
+\examples{
+combinedsce <- combineSCE(list(sce,sce), by.r = NULL, by.c = NULL, combined = TRUE)
 }

@@ -5,12 +5,14 @@
 \title{seuratJackStrawPlot
 Computes the plot object for jackstraw plot from the pca slot in the input sce object}
 \usage{
-seuratJackStrawPlot(inSCE, dims = NULL)
+seuratJackStrawPlot(inSCE, dims = NULL, externalReduction = NULL)
 }
 \arguments{
 \item{inSCE}{(sce) object from which to compute the jackstraw plot (pca should be computed)}
 
 \item{dims}{Number of components to plot in Jackstraw. If \code{NULL}, then all components are plotted Default \code{NULL}.}
+
+\item{externalReduction}{Pass DimReduc object if PCA/ICA computed through other libraries. Default \code{NULL}.}
 }
 \value{
 plot object
@@ -18,4 +20,15 @@ plot object
 \description{
 seuratJackStrawPlot
 Computes the plot object for jackstraw plot from the pca slot in the input sce object
+}
+\examples{
+data(scExample, package = "singleCellTK")
+\dontrun{
+sce <- seuratNormalizeData(sce, useAssay = "counts")
+sce <- seuratFindHVG(sce, useAssay = "counts")
+sce <- seuratScaleData(sce, useAssay = "counts")
+sce <- seuratPCA(sce, useAssay = "counts")
+sce <- seuratComputeJackStraw(sce, useAssay = "counts")
+seuratJackStrawPlot(sce)
+}
 }

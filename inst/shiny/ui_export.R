@@ -7,7 +7,12 @@ shinyPanelExport <- fluidPage(
   fluidRow(
     column(
       6,
-      shinyDirectoryInput::directoryInput('outputDirectory', label = 'Select directory', value = '~'),
+      #shinyDirectoryInput::directoryInput('outputDirectory', label = 'Select directory', value = '~'),
+
+      shinyDirButton("outputDirectory", label = "Select directory", title = "Download"),
+      # A UI to display what users select
+      verbatimTextOutput("outputDirectoryPath", placeholder = TRUE),
+
       tags$h5(style = "font-weight: bold; margin-bottom: 15px", "Choose export type"),
       radioButtons(
         "exportChoice",
@@ -48,3 +53,4 @@ shinyPanelExport <- fluidPage(
     )
     )
 ))
+

@@ -6,13 +6,13 @@
 \usage{
 plotSCEScatter(
   inSCE,
+  annotation,
+  reducedDimName = NULL,
   slot = NULL,
   sample = NULL,
-  annotation,
   feature = NULL,
   groupBy = NULL,
   shape = NULL,
-  reducedDimName = NULL,
   conditionClass = NULL,
   xlab = NULL,
   ylab = NULL,
@@ -40,14 +40,17 @@ plotSCEScatter(
 }
 \arguments{
 \item{inSCE}{Input SingleCellExperiment object with saved dimension reduction
-components or a variable with saved results. Required}
+components or a variable with saved results. Required.}
+
+\item{annotation}{Desired vector within the slot used for plotting. Default NULL.}
+
+\item{reducedDimName}{saved dimension reduction name in the
+\linkS4class{SingleCellExperiment} object.}
 
 \item{slot}{Desired slot of SingleCellExperiment used for plotting. Possible
 options: "assays", "colData", "metadata", "reducedDims". Default NULL.}
 
 \item{sample}{Character vector. Indicates which sample each cell belongs to.}
-
-\item{annotation}{Desired vector within the slot used for plotting. Default NULL.}
 
 \item{feature}{name of feature stored in assay of SingleCellExperiment
 object. Will be used only if "assays" slot is chosen. Default NULL.}
@@ -56,9 +59,6 @@ object. Will be used only if "assays" slot is chosen. Default NULL.}
 Default NULL.}
 
 \item{shape}{add shapes to each condition.}
-
-\item{reducedDimName}{saved dimension reduction name in the
-\linkS4class{SingleCellExperiment} object. Required.}
 
 \item{conditionClass}{class of the annotation data used in colorBy. Options
 are NULL, "factor" or "numeric". If NULL, class will default to the original
@@ -77,9 +77,8 @@ the name of the dimension to be plotted from reducedDims, or a numeric value whi
 the index of the dimension to be plotted. Default is NULL.}
 
 \item{dim2}{2nd dimension to be used for plotting. Can either be a string which specifies
- the name of the dimension to be plotted from reducedDims, or a numeric value which specifies
- the index of the dimension to be plotted. Default is NULL.
-Default is second PCA component for PCA data and NULL otherwise.}
+the name of the dimension to be plotted from reducedDims, or a numeric value which specifies
+the index of the dimension to be plotted. Default is NULL.}
 
 \item{bin}{Numeric vector. If single value, will divide the numeric values into the `bin` groups.
 If more than one value, will bin numeric values using values as a cut point.}
@@ -131,11 +130,9 @@ Plot results of reduced dimensions data of counts stored in any
 slot in the SingleCellExperiment object.
 }
 \examples{
-\donttest{
 plotSCEScatter(
   inSCE = mouseBrainSubsetSCE, legendTitle = NULL,
   slot = "assays", annotation = "counts", feature = "Apoe",
   reducedDimName = "TSNE_counts", labelClusters = FALSE
 )
-}
 }

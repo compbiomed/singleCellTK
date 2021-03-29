@@ -6,8 +6,8 @@
 \usage{
 plotSCEViolinColData(
   inSCE,
-  sample = NULL,
   coldata,
+  sample = NULL,
   groupBy = NULL,
   violin = TRUE,
   boxplot = TRUE,
@@ -31,9 +31,9 @@ plotSCEViolinColData(
 \item{inSCE}{Input \linkS4class{SingleCellExperiment} object with saved
 dimension reduction components or a variable with saved results. Required.}
 
-\item{sample}{Character vector. Indicates which sample each cell belongs to.}
-
 \item{coldata}{colData value that will be plotted.}
+
+\item{sample}{Character vector. Indicates which sample each cell belongs to.}
 
 \item{groupBy}{Groupings for each numeric value. A user may input a vector
 equal length to the number of the samples in the SingleCellExperiment
@@ -77,6 +77,9 @@ violin plot. Options are "mean" or "median". Default NULL.}
 
 \item{plotLabels}{labels to each plot. If set to "default", will use the name of the samples
 as the labels. If set to "none", no label will be plotted.}
+}
+\value{
+a ggplot of the violin plot of coldata.
 }
 \description{
 Visualizes values stored in the colData slot of a
