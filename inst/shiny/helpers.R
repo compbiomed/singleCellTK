@@ -39,10 +39,10 @@ actionButtonBusy <- function(buttonId, buttonTitle) {
       tags$div(
         buttonTitle,
         tags$span( class = "btn-loading-container", style = "float:right",
-          hidden(
-            img(src = "ajax-loader-bar.gif", class = "btn-loading-indicator"),
-            icon("check", class = "btn-done-indicator")
-          )
+                   hidden(
+                     img(src = "ajax-loader-bar.gif", class = "btn-loading-indicator"),
+                     icon("check", class = "btn-done-indicator")
+                   )
         )
       )
     ),
@@ -124,8 +124,8 @@ accordionSection <- function(collapseId, panelTitle, accordionId) {
   return(
     paste(
       '<button type="button" class="btn btn-default btn-block" ',
-        'data-toggle="collapse" data-target="#', collapseId, '" data-parent="#', accordionId, '">',
-        panelTitle,
+      'data-toggle="collapse" data-target="#', collapseId, '" data-parent="#', accordionId, '">',
+      panelTitle,
       '</button>
       <div id="', collapseId, '" class="collapse">',
       sep = ""
@@ -153,9 +153,9 @@ withConsoleRedirect <- function(expr) {
   tmpFD <- file(tmpSinkfileName, open = "wt")
   sink(tmpFD, type="output", split = TRUE)
   sink(tmpFD, type = "message")
-  
+
   result <- expr
-  
+
   sink(type = "message")
   sink()
   console.out <- readChar(tmpSinkfileName, file.info(tmpSinkfileName)$size)
@@ -194,12 +194,12 @@ formatGeneSetList <- function(setListStr) {
 formatGeneSetDBChoices <- function(dbIDs, dbCats) {
   splitIds = strsplit(dbIDs, " ")
   choices <- list()
-  
+
   for (i in seq_along(splitIds)) {
     entry <- splitIds[i][[1]]
     choices[[sprintf("%s - %s", entry, dbCats[i])]] <- entry
   }
-  
+
   return(choices)
 }
 
@@ -207,70 +207,166 @@ formatGeneSetDBChoices <- function(dbIDs, dbCats) {
 #--------------#
 # QC/Filtering #
 #--------------#
+combineQCMPlots <- function(input, output, combineP, sampleList, plots, plotIds, statuses) {
+  if (length(sampleList) == 1) {
+    # Plot output code from https://gist.github.com/wch/5436415/
+    output[[plotIds$QCMetrics]] <- renderUI({
+      plot_output_list <- lapply(names(plots), function(subScore) {
+        subPlotID <- paste0("QCMetrics", subScore)
+        plotOutput(subPlotID)
+      })
+
+      # Convert the list to a tagList - this is necessary for the list of items
+      # to display properly.
+      do.call(tagList, plot_output_list)
+    })
+
+    for (subScore in names(plots)) {
+      # Need local so that each item gets its own number. Without it, the value
+      # of i in the renderPlot() will be the same across all instances, because
+      # of when the expression is evaluated.
+      local({
+        my_subScore <- subScore
+        subPlotID <- paste0("QCMetrics", subScore)
+        output[[subPlotID]] <- renderPlot(plots[[my_subScore]])
+      })
+    }
+  } else {
+    output[[plotIds$QCMetrics]] <- renderUI({
+      plot_output_list <- lapply(names(plots$Violin), function(subScore) {
+        subPlotID <- paste0("QCMetrics", subScore)
+        if (is.null(input$subScore)){
+          plotOutput(subPlotID)
+        }
+      })
+
+      # Convert the list to a tagList - this is necessary for the list of items
+      # to display properly.
+      do.call(tagList, plot_output_list)
+    })
+
+    for (subScore in names(plots$Violin)) {
+      # Need local so that each item gets its own number. Without it, the value
+      # of i in the renderPlot() will be the same across all instances, because
+      # of when the expression is evaluated.
+      local({
+        my_subScore <- subScore
+        subPlotID <- paste0("QCMetrics", my_subScore)
+
+        output[[subPlotID]] <- renderPlot(plots$Violin[[my_subScore]])
+      })
+    }
+  }
+}
 
 combineQCSubPlots <- function(output, combineP, algo, sampleList, plots, plotIds, statuses) {
-  if (combineP=="all") {
-    output[[plotIds[[algo]]]] <- renderPlot(plots, height = 800)
+  if (length(sampleList) == 1) {
+    # Plot output code from https://gist.github.com/wch/5436415/
+    output[[plotIds[[algo]]]] <- renderUI({
+      plot_output_list <- lapply(names(plots), function(subScore) {
+        subPlotID <- paste(c(algo, subScore), collapse="")
+        plotOutput(subPlotID)
+      })
+
+      # Convert the list to a tagList - this is necessary for the list of items
+      # to display properly.
+      do.call(tagList, plot_output_list)
+    })
+
+    for (subScore in names(plots)) {
+      # Need local so that each item gets its own number. Without it, the value
+      # of i in the renderPlot() will be the same across all instances, because
+      # of when the expression is evaluated.
+      local({
+        my_subScore <- subScore
+        subPlotID <- paste(c(algo, my_subScore), collapse="")
+        output[[subPlotID]] <- renderPlot(plots[[my_subScore]])
+      })
+    }
   } else {
     tabsetID <- paste0(algo, "Tabs") # for the tabsetPanel within a tab
-    removeUI(selector = paste0("#", plotIds[[algo]]))
-    
+    mainPlotID <- paste0(plotIds[[algo]], "Main")
+    output[[plotIds[[algo]]]] <- renderUI(plotOutput(mainPlotID))
+    output[[mainPlotID]] <- renderPlot(plots$Violin)
+
     for (i in seq_along(sampleList)) {
-      s <- sampleList[[i]]
-      sID <- paste(c(algo, s, "Tab"), collapse = "")
-      subPlotID <- paste(c(algo, s, "Plot"), collapse = "")
-      if (is.null(statuses[[algo]][[s]])) {
-        if (i == 1) {
-          appendTab(tabsetID, tabPanel(s, fluidPage(id = sID, plotOutput(outputId = subPlotID))), select = TRUE)
-        } else {
-          appendTab(tabsetID, tabPanel(s, fluidPage(id = sID, plotOutput(outputId = subPlotID))), select = FALSE)
+      local({
+        s <- sampleList[[i]]
+        sID <- paste(c(algo, s, "Tab"), collapse = "")
+        if (is.null(statuses[[algo]][[s]])) {
+          if (i == 1) {
+            appendTab(tabsetID, tabPanel(s, uiOutput(sID)), select = TRUE)
+          } else {
+            appendTab(tabsetID, tabPanel(s, uiOutput(sID)), select = FALSE)
+          }
+
         }
-      }
-      output[[subPlotID]] <- renderPlot(plots$Sample[[s]])
+        # Plot output code from https://gist.github.com/wch/5436415/
+        output[[sID]] <- renderUI({
+          plot_output_list <- lapply(names(plots$Sample[[s]]), function(subScore) {
+            subPlotID <- paste(c(algo, s, subScore), collapse="")
+            plotOutput(subPlotID)
+          })
+
+          # Convert the list to a tagList - this is necessary for the list of items
+          # to display properly.
+          do.call(tagList, plot_output_list)
+        })
+
+        for (subScore in names(plots$Sample[[s]])) {
+          # Need local so that each item gets its own number. Without it, the value
+          # of i in the renderPlot() will be the same across all instances, because
+          # of when the expression is evaluated.
+          local({
+            my_subScore <- subScore
+            subPlotID <- paste(c(algo, s, my_subScore), collapse="")
+
+            output[[subPlotID]] <- renderPlot(plots$Sample[[s]][[my_subScore]])
+          })
+        }
+      })
     }
   }
 }
 
 
-arrangeQCPlots <- function(inSCE, output, algoList, sampleList, plotIDs, statuses, redDimName) {
+arrangeQCPlots <- function(inSCE, input, output, algoList, sampleList, plotIDs, statuses, redDimName) {
   uniqueSampleNames <- unique(sampleList)
-  combineP <- "all"
-  if (length(uniqueSampleNames) > 1) {
-    combineP <- "sample"
-  }
+  combineP <- "none"
   for (a in algoList) {
-    if (a == "doubletCells") {
-      dcPlots <- plotDoubletCellsResults(inSCE, combinePlot = combineP, sample = sampleList, 
-                                                     reducedDimName = redDimName, plotLabels = "none")
+    if (a == "scDblFinder") {
+      dcPlots <- plotScDblFinderResults(inSCE, combinePlot = combineP, sample = sampleList,
+                                         reducedDimName = redDimName, plotLabels = "none")
       combineQCSubPlots(output, combineP, a, uniqueSampleNames, dcPlots, plotIDs, statuses)
     } else if (a == "cxds") {
-      cxPlots <- plotCxdsResults(inSCE, combinePlot = combineP, sample = sampleList, 
-                                             reducedDimName = redDimName, plotLabels = "none")
+      cxPlots <- plotCxdsResults(inSCE, combinePlot = combineP, sample = sampleList,
+                                 reducedDimName = redDimName, plotLabels = "none")
       combineQCSubPlots(output, combineP, a, uniqueSampleNames, cxPlots, plotIDs, statuses)
     } else if (a == "bcds") {
-      bcPlots <- plotBcdsResults(inSCE, combinePlot = combineP, sample = sampleList, 
-                                             reducedDimName = redDimName, plotLabels = "none")
+      bcPlots <- plotBcdsResults(inSCE, combinePlot = combineP, sample = sampleList,
+                                 reducedDimName = redDimName, plotLabels = "none")
       combineQCSubPlots(output, combineP, a, uniqueSampleNames, bcPlots, plotIDs, statuses)
     } else if (a == "cxds_bcds_hybrid") {
-      cxbcPlots <- plotScdsHybridResults(inSCE, combinePlot = combineP, sample = sampleList, 
-                                                     reducedDimName = redDimName, plotLabels = "none")
+      cxbcPlots <- plotScdsHybridResults(inSCE, combinePlot = combineP, sample = sampleList,
+                                         reducedDimName = redDimName, plotLabels = "none")
       combineQCSubPlots(output, combineP, a, uniqueSampleNames, cxbcPlots, plotIDs, statuses)
     } else if (a == "decontX") {
-      dxPlots <- plotDecontXResults(inSCE, combinePlot = combineP, sample = sampleList, 
-                                                reducedDimName = redDimName, plotLabels = "none")
+      dxPlots <- plotDecontXResults(inSCE, combinePlot = combineP, sample = sampleList,
+                                    reducedDimName = redDimName, plotLabels = "none")
       combineQCSubPlots(output, combineP, a, uniqueSampleNames, dxPlots, plotIDs, statuses)
     } else if (a == "QCMetrics") {
       qcmPlots <- plotRunPerCellQCResults(inSCE, sample = sampleList, combinePlot = combineP, plotLabels = "none")
-      combineQCSubPlots(output, combineP, a, uniqueSampleNames, qcmPlots, plotIDs, statuses)
-      
+      combineQCMPlots(input, output, combineP, uniqueSampleNames, qcmPlots, plotIDs, statuses)
+
     } else if (a == "scrublet") {
-      sPlots <- plotScrubletResults(inSCE, combinePlot = combineP, sample = sampleList, 
-                                                reducedDimName = redDimName, plotLabels = "none")
+      sPlots <- plotScrubletResults(inSCE, combinePlot = combineP, sample = sampleList,
+                                    reducedDimName = redDimName, plotLabels = "none")
       combineQCSubPlots(output, combineP, a, uniqueSampleNames, sPlots, plotIDs, statuses)
-      
+      return(sPlots)
+
     } else if (a == "doubletFinder") {
-      dfPlots <- plotDoubletFinderResults(inSCE, combinePlot = combineP, sample = sampleList, 
-                                                      reducedDimName = redDimName, plotLabels = "none")
+      dfPlots <- plotDoubletFinderResults(inSCE, combinePlot = combineP, sample = sampleList,
+                                          reducedDimName = redDimName, plotLabels = "none")
       combineQCSubPlots(output, combineP, a, uniqueSampleNames, dfPlots, plotIDs, statuses)
     }
   }
@@ -289,25 +385,31 @@ findOverlapping <- function(arr1, arr2) {
   return(arr1[filter])
 }
 
-addToColFilterParams <- function(name, criteria, id, paramsReactive) {
+addToColFilterParams <- function(name, categorial, criteria, criteriaGT, criteriaLT, id, paramsReactive) {
   threshStr <- ""
-  if (is.numeric(criteria)) {
-    threshStr <- sprintf("%s > %.5f", name, criteria)
-  } else {
+  if (categorial) {
     threshArr <- list()
     for (c in criteria) {
       threshArr <- c(threshArr, sprintf("%s == '%s'", name, c))
     }
     threshStr <- paste(threshArr, collapse = " | ")
+  } else {
+    if (is.null(criteriaGT)) {
+      threshStr <- sprintf("%s < %.5f", name, criteriaLT)
+    } else if (is.null(criteriaLT)) {
+      threshStr <- sprintf("%s > %.5f", name, criteriaGT)
+    } else {
+      threshStr <- sprintf("%s > %.5f & %s < %.5f", name, criteriaGT, name, criteriaLT)
+    }
   }
-  
+
   entry <- list(col=name, param=threshStr, id=id)
   paramsReactive$params <- c(paramsReactive$params, list(entry))
   paramsReactive$id_count <- paramsReactive$id_count + 1
 }
 
 addToRowFilterParams <- function(name, X, Y, id, paramsReactive) {
-  entry <- list(row=name, X=X, Y=Y, id=id)
+  entry <- reactiveValues(row=name, X=X, Y=Y, id=id)
   paramsReactive$params <- c(paramsReactive$params, list(entry))
   paramsReactive$id_count <- paramsReactive$id_count + 1
 }
@@ -332,7 +434,4 @@ addRowFiltersToSCE <- function(inSCE, paramsReactive) {
   }
   return(inSCE)
 }
-
-
-
 

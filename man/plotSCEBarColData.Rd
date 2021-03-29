@@ -6,8 +6,8 @@
 \usage{
 plotSCEBarColData(
   inSCE,
-  sample = NULL,
   coldata,
+  sample = NULL,
   groupBy = NULL,
   dots = TRUE,
   xlab = NULL,
@@ -28,9 +28,9 @@ plotSCEBarColData(
 \item{inSCE}{Input \linkS4class{SingleCellExperiment} object with saved
 dimension reduction components or a variable with saved results. Required.}
 
-\item{sample}{Character vector. Indicates which sample each cell belongs to.}
-
 \item{coldata}{colData value that will be plotted.}
+
+\item{sample}{Character vector. Indicates which sample each cell belongs to.}
 
 \item{groupBy}{Groupings for each numeric value. A user may input a vector
 equal length to the number of the samples in the SingleCellExperiment
@@ -67,6 +67,9 @@ violin plot. Options are "mean" or "median". Default NULL.}
 \item{combinePlot}{Boolean. If multiple plots are generated (multiple
 samples, etc.), will combined plots using `cowplot::plot_grid`.
 Default TRUE.}
+}
+\value{
+a ggplot of the barplot of coldata.
 }
 \description{
 Visualizes values stored in the colData slot of a

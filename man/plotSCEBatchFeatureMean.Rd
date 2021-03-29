@@ -43,3 +43,9 @@ ggplot
 \description{
 Plot mean feature value in each batch of a SingleCellExperiment object
 }
+\examples{
+\dontrun{
+  data('sceBatches', package = 'singleCellTK')
+  plotSCEBatchFeatureMean(sceBatches, useAssay = "counts")
+}
+}

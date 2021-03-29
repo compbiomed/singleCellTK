@@ -20,12 +20,9 @@ plotRunPerCellQCResults(
   titleSize = 18,
   relHeights = c(1.5, 1.5, 1, 1),
   relWidths = c(1, 1, 1, 1),
+  plotLabels = "default",
   plotNCols = NULL,
   plotNRows = NULL,
-  plotLabels = "none",
-  plotLabelSize = 20,
-  plotLabelPositionX = NULL,
-  plotLabelPositionY = NULL,
   samplePerColumn = TRUE,
   sampleRelHeights = 1,
   sampleRelWidths = 1
@@ -71,18 +68,12 @@ when TRUE. Default TRUE.}
 
 \item{relWidths}{Relative widths of plots when combine is set.}
 
-\item{plotNCols}{Number of columns when plots are combined in a grid.}
-
-\item{plotNRows}{Number of rows when plots are combined in a grid.}
-
 \item{plotLabels}{labels to each plot. If set to "default", will use the name of the samples
 as the labels. If set to "none", no label will be plotted.}
 
-\item{plotLabelSize}{size of labels}
+\item{plotNCols}{Number of columns when plots are combined in a grid.}
 
-\item{plotLabelPositionX}{Numeric vector. The X position of the plot label.}
-
-\item{plotLabelPositionY}{Numeric vector. The Y position of the plot label.}
+\item{plotNRows}{Number of rows when plots are combined in a grid.}
 
 \item{samplePerColumn}{If TRUE, when there are multiple samples and combining by "all",
 the output .ggplot will have plots from each sample on a single column. Default TRUE.}
@@ -93,16 +84,18 @@ the relative heights for each plot.}
 \item{sampleRelWidths}{If there are multiple samples and combining by "all",
 the relative widths for each plot.}
 }
+\value{
+list of .ggplot objects
+}
 \description{
 A wrapper function which visualizes outputs from the
  runPerCellQC function stored in the colData slot of the SingleCellExperiment
  object via various plots.
 }
 \examples{
-\donttest{
 data(scExample, package="singleCellTK")
-sce <- sce[, colData(sce)$type != "EmptyDroplet"]
-sce <- getUMAP(inSCE=sce, useAssay="counts", reducedDimName="UMAP")
+\dontrun{
+sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 sce <- runPerCellQC(sce)
 plotRunPerCellQCResults(inSCE=sce)
 }

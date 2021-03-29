@@ -6,7 +6,7 @@
 \usage{
 runCellQC(
   inSCE,
-  algorithms = c("QCMetrics", "doubletCells", "cxds", "bcds", "cxds_bcds_hybrid",
+  algorithms = c("QCMetrics", "scDblFinder", "cxds", "bcds", "cxds_bcds_hybrid",
     "scrublet", "doubletFinder", "decontX"),
   sample = NULL,
   collectionName = NULL,
@@ -22,7 +22,7 @@ runCellQC(
 \item{inSCE}{A \link[SingleCellExperiment]{SingleCellExperiment} object.}
 
 \item{algorithms}{Character vector. Specify which QC algorithms to run.
-Available options are "QCMetrics", "scrublet", "doubletCells", "cxds", "bcds", "cxds_bcds_hybrid", and "decontX".}
+Available options are "QCMetrics", "scrublet", "scDblFinder", "cxds", "bcds", "cxds_bcds_hybrid", and "decontX".}
 
 \item{sample}{Character vector. Indicates which sample each cell belongs to.
 Algorithms will be run on cells from each sample separately.}
@@ -44,7 +44,7 @@ matrix for cells.}
 }
 \value{
 SingleCellExperiment object containing the outputs of the
- specified algorithms in the \link[SummarizedExperiment]{colData}
+ specified algorithms in the \link{colData}
 of \code{inSCE}.
 }
 \description{
@@ -53,9 +53,9 @@ A wrapper function to run several QC algorithms on a
  object containing cells after empty droplets have been removed.
 }
 \examples{
-\donttest{
 data(scExample, package = "singleCellTK")
-sce <- sce[, colData(sce)$type != 'EmptyDroplet']
+sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
+\dontrun{
 sce <- runCellQC(sce)
 }
 }

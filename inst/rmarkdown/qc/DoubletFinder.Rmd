@@ -12,7 +12,7 @@ output:
 
 ```{r, "DoubletFinder-lib", message = F, include=FALSE}
 require(singleCellTK)
-require(umap)
+require(uwot)
 require(ggplot2)
 ```
 
@@ -21,7 +21,7 @@ sce.qc<- params$object
 ```
 
 ```{r, "DoubletFinder", results="asis", fig.align="center", warning=FALSE, message=FALSE}
-    plotDoubletFinder<- suppressWarnings(plotDoubletFinderResults(inSCE = sce.qc, reducedDimName = "UMAP"))
+    plotDoubletFinder<- plotDoubletFinderResults(inSCE = sce.qc, reducedDimName = "UMAP")
     i="DoubletFinder"
     cat(paste0('# ', i, ' {.tabset} \n\n'))
     cat(paste0('## Scatter Score Resolution 1.5 \n\n'))
@@ -41,7 +41,7 @@ sce.qc<- params$object
 ```
 
 
-```{r, "DoubletFinder-desc", warning=FALSE, message=FALSE}
+```{r, "DoubletFinder-description", warning=FALSE, message=FALSE}
 description_DoubletFinder <- descriptionDoubletFinder()
 ```
 

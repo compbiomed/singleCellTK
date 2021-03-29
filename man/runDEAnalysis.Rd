@@ -5,11 +5,12 @@
 \title{Perform differential expression analysis on SCE with specified method
 Method supported: 'MAST', 'DESeq2', 'Limma', 'ANOVA'}
 \usage{
-runDEAnalysis(method = "MAST", ...)
+runDEAnalysis(method = c("MAST", "DESeq2", "Limma", "ANOVA", "wilcox"), ...)
 }
 \arguments{
-\item{method}{A single character for specific method. Choose from 'MAST',
-'DESeq2', 'Limma', 'ANOVA'. Required}
+\item{method}{A single character for specific method. Choose from
+\code{"MAST"}, \code{"DESeq2"}, \code{"Limma"}, \code{"ANOVA"}. Default
+\code{"MAST"}.}
 
 \item{...}{Other arguments passed to specific functions. Refer to
 \code{\link{runMAST}}, \code{\link{runDESeq2}}, \code{\link{runLimmaDE}},
@@ -23,4 +24,12 @@ functions.
 \description{
 Perform differential expression analysis on SCE with specified method
 Method supported: 'MAST', 'DESeq2', 'Limma', 'ANOVA'
+}
+\examples{
+data(scExample, package = "singleCellTK")
+sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
+sce <- scaterlogNormCounts(sce, "logcounts")
+sce <- runDEAnalysis(inSCE = sce, groupName1 = "Sample1", method = "wilcox",
+ groupName2 = "Sample2", index1 = 1:20, index2 = 21:40,
+ analysisName = "Limma")
 }

@@ -13,3 +13,4 @@ renv*
 Dockerfile
 exec/png
 
+^pkgdown$

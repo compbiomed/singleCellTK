@@ -2,14 +2,14 @@ shinyPanelEnrichR <- fluidPage(
   tags$div(
     class = "container",
     h1("Gene Set Enrichment Analysis using enrichR"),
-    h5(tags$a(href = "", "(help)", target = "_blank")),
+    h5(tags$a(href = "https://www.sctk.science/articles/tab06_enrichR",
+              "(help)", target = "_blank")),
     sidebarLayout(
       sidebarPanel(
         h3("Choose data source:"),
         radioButtons(
           "geneListChoice", label = NULL, c("Select Gene(s)" = "selectGenes",
-                                            "Upload file" = "geneFile",
-                                            "Saved top genes" = "biomarker")
+                                            "Upload file" = "geneFile")
         ),
         conditionalPanel(
           condition = sprintf("input['%s'] == 'selectGenes'", "geneListChoice"),
@@ -24,45 +24,32 @@ shinyPanelEnrichR <- fluidPage(
                        "text/tab-separated-values", "text/plain",
                        ".csv", ".tsv")
           ),
-          tags$b(tags$i("Sample files:")),
-          br(),
+          hr(),
+          h4("Sample files:"),
           tags$a(href = "https://drive.google.com/open?id=1iJZ6H_G2brbeww9B0dA5seMyYUZYyFrU",
                  "Gene Names", target = "_blank"
           ),
-          HTML('&nbsp;'),
-          HTML('&nbsp;'),
-          HTML('&nbsp;'),
           tags$a(href = "https://drive.google.com/open?id=1BLrwW0uMi2pxsX0m1zJrlOTnBLkIiOhk",
                  "Entrez ids", target = "_blank"
           ),
-          br(),
-          tags$div(
-            tags$b(tags$i("Options:")),
-            # Input: Checkbox if file has header ----
-            fluidRow(
-              column(width = 1,
-                     checkboxInput("header", "Header", value = TRUE)
-              ),
-              # Input: Select separator ----
-              column(width = 1,
-                     offset = 2,
-                     radioButtons("sep", "Separator",
-                                  choices = c(Comma = ",",
-                                              Semicolon = ";",
-                                              Tab = "\t"),
-                                  selected = ",")
-              ),
-              # Input: Select quotes ----
-              column(width = 1,
-                     offset = 3,
-                     radioButtons("quote", "Quote",
-                                  choices = c(None = "",
-                                              "Double Quote" = '"',
-                                              "Single Quote" = "'"),
-                                  selected = '""')
-              )
-            )
-          )
+          hr(),
+          h4("Options:"),
+          # Input: Checkbox if file has header ----
+          checkboxInput("header", "Header", value = TRUE),
+          # Input: Select separator ----
+          radioButtons("sep", "Separator",
+                       choices = c(Comma = ",",
+                                   Semicolon = ";",
+                                   Tab = "\t"),
+                       selected = ",",
+                       inline = TRUE),
+          # Input: Select quotes ----
+          radioButtons("quote", "Quote",
+                       choices = c(None = "",
+                                   "Double Quote" = '"',
+                                   "Single Quote" = "'"),
+                       selected = '""',
+                       inline = TRUE)
         ),
         conditionalPanel(
           helpText("To use this, first run Differential expression and save top genes."),
@@ -82,3 +69,4 @@ shinyPanelEnrichR <- fluidPage(
     )
   )
 )
+

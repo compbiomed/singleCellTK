@@ -5,7 +5,7 @@
 \title{seuratComputeJackStraw
 Compute jackstraw plot and store the computations in the input sce object}
 \usage{
-seuratComputeJackStraw(inSCE, useAssay, dims = NULL)
+seuratComputeJackStraw(inSCE, useAssay, dims = NULL, externalReduction = NULL)
 }
 \arguments{
 \item{inSCE}{(sce) object on which to compute and store jackstraw plot}
@@ -13,6 +13,8 @@ seuratComputeJackStraw(inSCE, useAssay, dims = NULL)
 \item{useAssay}{Assay containing scaled counts to use in JackStraw calculation.}
 
 \item{dims}{Number of components to test in Jackstraw. If \code{NULL}, then all components are used. Default \code{NULL}.}
+
+\item{externalReduction}{Pass DimReduc object if PCA/ICA computed through other libraries. Default \code{NULL}.}
 }
 \value{
 Updated \code{SingleCellExperiment} object with jackstraw computations stored in it
@@ -20,4 +22,14 @@ Updated \code{SingleCellExperiment} object with jackstraw computations stored in
 \description{
 seuratComputeJackStraw
 Compute jackstraw plot and store the computations in the input sce object
+}
+\examples{
+data(scExample, package = "singleCellTK")
+\dontrun{
+sce <- seuratNormalizeData(sce, useAssay = "counts")
+sce <- seuratFindHVG(sce, useAssay = "counts")
+sce <- seuratScaleData(sce, useAssay = "counts")
+sce <- seuratPCA(sce, useAssay = "counts")
+sce <- seuratComputeJackStraw(sce, useAssay = "counts")
+}
 }

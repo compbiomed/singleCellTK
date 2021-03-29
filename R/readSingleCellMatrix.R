@@ -36,13 +36,14 @@
 #'  will convert to a sparse format which should be used
 #'  for datasets with large numbers of cells.  Default "Matrix".
 #' @param delayedArray Boolean. Whether to read the expression matrix as
-#'  \link[DelayedArray]{DelayedArray} object or not. Default \code{TRUE}.
+#'  \link{DelayedArray} object or not. Default \code{TRUE}.
 #' @param colIndexLocation Character. For Optimus output, the path to the
 #'  barcode index .npy file. Used only if \code{file} has .npz extension.
 #'  Default \code{NULL}.
 #' @param rowIndexLocation Character. For Optimus output, The path to the
 #'  feature (gene) index .npy file. Used only if \code{file} has .npz extension.
 #'  Default \code{NULL}.
+#' @return A \link{DelayedArray} object or matrix.
 #' @examples
 #' mat <- readSingleCellMatrix(system.file("extdata/hgmm_1k_v3_20x20/outs/",
 #'     "filtered_feature_bc_matrix/matrix.mtx.gz", package = "singleCellTK"))
@@ -70,7 +71,7 @@ readSingleCellMatrix <- function(file,
     if (ext2 %in% c("txt", "csv", "tab", "tsv", "unknown")) {
         dt <- data.table::fread(file)
         if (class == "Matrix") {
-            mat <- Matrix::Matrix(dt[, -1])
+            mat <- Matrix::Matrix(as.matrix(dt[, -1]))
             rownames(mat) <- dt[[1]]
         } else if (class == "matrix") {
             mat <- as.matrix(dt[, -1])

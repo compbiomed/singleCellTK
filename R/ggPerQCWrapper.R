@@ -26,24 +26,21 @@
 #' .ggplot object, while "sample" will output a list of plots separated by sample. Default "all".
 #' @param relHeights Relative heights of plots when combine is set.
 #' @param relWidths Relative widths of plots when combine is set.
-#' @param plotNCols Number of columns when plots are combined in a grid.
-#' @param plotNRows Number of rows when plots are combined in a grid.
 #' @param plotLabels labels to each plot. If set to "default", will use the name of the samples
 #'  as the labels. If set to "none", no label will be plotted.
-#' @param plotLabelSize size of labels
-#' @param plotLabelPositionX Numeric vector. The X position of the plot label.
-#' @param plotLabelPositionY Numeric vector. The Y position of the plot label.
+#' @param plotNCols Number of columns when plots are combined in a grid.
+#' @param plotNRows Number of rows when plots are combined in a grid.
 #' @param samplePerColumn If TRUE, when there are multiple samples and combining by "all",
 #'  the output .ggplot will have plots from each sample on a single column. Default TRUE.
 #' @param sampleRelHeights If there are multiple samples and combining by "all",
 #'  the relative heights for each plot.
 #' @param sampleRelWidths If there are multiple samples and combining by "all",
 #'  the relative widths for each plot.
+#' @return list of .ggplot objects
 #' @examples
-#' \donttest{
 #' data(scExample, package="singleCellTK")
-#' sce <- sce[, colData(sce)$type != "EmptyDroplet"]
-#' sce <- getUMAP(inSCE=sce, useAssay="counts", reducedDimName="UMAP")
+#' \dontrun{
+#' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 #' sce <- runPerCellQC(sce)
 #' plotRunPerCellQCResults(inSCE=sce)
 #' }
@@ -63,12 +60,9 @@ plotRunPerCellQCResults <- function(inSCE,
                                     titleSize=18,
                                     relHeights=c(1.5, 1.5, 1, 1),
                                     relWidths=c(1, 1, 1, 1),
+                                    plotLabels = "default",
                                     plotNCols = NULL,
                                     plotNRows = NULL,
-                                    plotLabels = "none",
-                                    plotLabelSize = 20,
-                                    plotLabelPositionX = NULL,
-                                    plotLabelPositionY = NULL,
                                     samplePerColumn = TRUE,
                                     sampleRelHeights = 1,
                                     sampleRelWidths = 1) {
@@ -136,7 +130,7 @@ plotRunPerCellQCResults <- function(inSCE,
     )
     combined.toppercent <- plotSCEViolinColData(
       inSCE=inSCE,
-      coldata="percent_top_50",
+      coldata="percent.top_50",
       groupBy=sampleVector,
       xlab="",
       ylab="Gene expression percentage (%)",
@@ -205,7 +199,7 @@ plotRunPerCellQCResults <- function(inSCE,
     sampleSub <- sample[sampleInd]
     inSCESub <- inSCE[, sampleInd]
 
-    if(combinePlot == "sample" | length(samples) == 1){
+    if(combinePlot == "sample" | combinePlot == "none" | length(samples) == 1){
       violin.sum <- list(sum = plotSCEViolinColData(
         inSCE=inSCESub,
         coldata="sum",
@@ -248,9 +242,13 @@ plotRunPerCellQCResults <- function(inSCE,
       ))
       res.list <- c(res.list, violin.detected)
 
+      topPattern <- grep(
+        pattern="percent.top_50$",
+        names(colData(inSCESub)), value=TRUE
+      )
       violin.toppercent <- list(toppercent = plotSCEViolinColData(
         inSCE=inSCESub,
-        coldata="percent_top_50",
+        coldata=topPattern,
         sample=sampleSub,
         xlab="",
         ylab="Gene expression percentage (%)",
@@ -268,6 +266,7 @@ plotRunPerCellQCResults <- function(inSCE,
         combinePlot="all"
       ))
       res.list <- c(res.list, violin.toppercent)
+      names(res.list) <- c("Sum", "Detected", "TopPercent")
 
       if (any(grepl(
         pattern="subsets_",
@@ -318,9 +317,12 @@ plotRunPerCellQCResults <- function(inSCE,
       plotlist <- c(merged.plots)
     }else if(combinePlot == "sample"){
       plotlist <- c(merged.plots, list(Sample = plotlist))
+    }else if(combinePlot == "none"){
+      plotlist <- c(merged.plots, list(Sample = plotlist))
     }
   } else {
-    plotlist <- unlist(plotlist, recursive=F)
+    plotlist <- unlist(plotlist, recursive=FALSE)
+    relHeights=1
   }
 
   if(!is.null(combinePlot)){
@@ -328,12 +330,9 @@ plotRunPerCellQCResults <- function(inSCE,
       plotlist <- .ggSCTKCombinePlots(plotlist, combinePlot = combinePlot,
                                       relHeights = relHeights,
                                       relWidths = relWidths,
-                                      labels = plotLabels,
-                                      labelSize = plotLabelSize,
-                                      labelPositionX = plotLabelPositionX,
-                                      labelPositionY = plotLabelPositionY,
                                       nrows = plotNRows,
                                       ncols = plotNCols,
+                                      labels = plotLabels,
                                       samplePerColumn = samplePerColumn,
                                       sampleRelHeights = sampleRelHeights,
                                       sampleRelWidths = sampleRelWidths)
@@ -371,6 +370,7 @@ plotRunPerCellQCResults <- function(inSCE,
 #'  the relative heights for each plot.
 #' @param sampleRelWidths If there are multiple samples and combining by "all",
 #'  the relative widths for each plot.
+#' @return list of .ggplot objects
 #' @examples
 #' data(scExample, package="singleCellTK")
 #' sce <- runEmptyDrops(inSCE=sce)
@@ -435,6 +435,7 @@ plotEmptyDropsResults <- function(inSCE,
 #' @param axisSize Size of x/y-axis ticks. Default 15.
 #' @param axisLabelSize Size of x/y-axis labels. Default 18.
 #' @param legendSize size of legend. Default 15.
+#' @return list of .ggplot objects
 #' @examples
 #' data(scExample, package="singleCellTK")
 #' sce <- runBarcodeRankDrops(inSCE=sce)
@@ -522,12 +523,15 @@ plotBarcodeRankDropsResults <- function(inSCE,
 #'  the relative heights for each plot.
 #' @param sampleRelWidths If there are multiple samples and combining by "all",
 #'  the relative widths for each plot.
+#' @return list of .ggplot objects
 #' @examples
 #' data(scExample, package="singleCellTK")
-#' sce <- sce[, colData(sce)$type != "EmptyDroplet"]
+#' \dontrun{
+#' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 #' sce <- getUMAP(inSCE=sce, useAssay="counts", reducedDimName="UMAP")
 #' sce <- runScrublet(sce)
 #' plotScrubletResults(inSCE=sce, reducedDimName="UMAP")
+#' }
 #' @export
 plotScrubletResults <- function(inSCE,
                                 sample=NULL,
@@ -709,7 +713,9 @@ plotScrubletResults <- function(inSCE,
       names(plotlist) <- samples
       plotlist <- c(merged.plots, list(Sample = plotlist))
   } else {
-      plotlist <- unlist(plotlist, recursive=F)
+      plotlist <- unlist(plotlist, recursive=FALSE)
+      plotLabels <- "none"
+      relHeights=1
   }
 
   if(!is.null(combinePlot)){
@@ -790,9 +796,10 @@ plotScrubletResults <- function(inSCE,
 #'  the relative heights for each plot.
 #' @param sampleRelWidths If there are multiple samples and combining by "all",
 #'  the relative widths for each plot.
+#' @return list of .ggplot objects
 #' @examples
 #' data(scExample, package="singleCellTK")
-#' sce <- sce[, colData(sce)$type != "EmptyDroplet"]
+#' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 #' sce <- getUMAP(inSCE=sce, useAssay="counts", reducedDimName="UMAP")
 #' sce <- runDoubletFinder(sce)
 #' plotDoubletFinderResults(inSCE=sce, reducedDimName="UMAP")
@@ -883,12 +890,13 @@ plotDoubletFinderResults <- function(inSCE,
       )
     })
 
-    names(merged.plots) <- sapply(df.scores, function(x) {
+    names(merged.plots) <- vapply(df.scores, function(x) {
       paste0("Violin_", gsub(
         pattern="doubletFinder_doublet_score_",
         "", x=x
       ))
-    })
+    }, character(1))
+
     # merged.plots <- list(merged.plots)
     merged.plots <- list(Violin = merged.plots)
   }
@@ -921,12 +929,12 @@ plotDoubletFinderResults <- function(inSCE,
             )
         )
     })
-    names(densityScore) <- sapply(df.scores, function(x) {
+    names(densityScore) <- vapply(df.scores, function(x) {
         paste0("Density_", gsub(
             pattern="doubletFinder_doublet_score_",
             "", x=x
         ))
-    })
+    }, character(1))
     res.list <- c(res.list, densityScore)
 
     scatterScore <- lapply(df.scores, function(x) {
@@ -964,12 +972,12 @@ plotDoubletFinderResults <- function(inSCE,
       )
     })
 
-    names(scatterScore) <- sapply(df.scores, function(x) {
+    names(scatterScore) <- vapply(df.scores, function(x) {
       paste0("Scatter_Score_", gsub(
         pattern="doubletFinder_doublet_score_",
         "", x=x
       ))
-    })
+    }, character(1))
     res.list <- c(res.list, scatterScore)
 
     if(combinePlot != "all" | length(samples) == 1){
@@ -1002,12 +1010,12 @@ plotDoubletFinderResults <- function(inSCE,
       )
     })
 
-    names(violinScore) <- sapply(df.scores, function(x) {
+    names(violinScore) <- vapply(df.scores, function(x) {
       paste0("violin_", gsub(
         pattern="doubletFinder_doublet_score_",
         "", x=x
       ))
-    })
+    }, character(1))
     res.list <- c(res.list, violinScore)
     }
 
@@ -1048,12 +1056,12 @@ plotDoubletFinderResults <- function(inSCE,
       )
     })
 
-    names(scatterCall) <- sapply(df.labels, function(x) {
+    names(scatterCall) <- vapply(df.labels, function(x) {
       paste0("Scatter_Call_", gsub(
         pattern="doubletFinder_doublet_label_",
         "", x=x
       ))
-    })
+    }, character(1))
     res.list <- c(res.list, scatterCall)
     return(res.list)
   })
@@ -1061,7 +1069,9 @@ plotDoubletFinderResults <- function(inSCE,
       names(plotlist) <- samples
       plotlist <- c(merged.plots, list(Sample = plotlist))
   } else {
-      plotlist <- unlist(plotlist, recursive=F)
+      plotlist <- unlist(plotlist, recursive=FALSE)
+      plotLabels <- "none"
+      relHeights=1
   }
   if(!is.null(combinePlot)){
     if(combinePlot %in% c("all", "sample")){
@@ -1082,13 +1092,13 @@ plotDoubletFinderResults <- function(inSCE,
   return(plotlist)
 }
 
-#' @title Plots for runDoubletCells outputs.
+#' @title Plots for runScDblFinder outputs.
 #' @description A wrapper function which visualizes outputs from the
-#'  runDoubletCells function stored in the colData slot of the
+#'  runScDblFinder function stored in the colData slot of the
 #'  SingleCellExperiment object via various plots.
 #' @param inSCE Input \linkS4class{SingleCellExperiment} object with saved
 #' dimension reduction components or a variable with saved results from
-#' \link{runDoubletCells}. Required.
+#' \link{runScDblFinder}. Required.
 #' @param sample Character vector. Indicates which sample each cell belongs to.
 #'  Default NULL.
 #' @param shape If provided, add shapes based on the value.
@@ -1100,7 +1110,6 @@ plotDoubletFinderResults <- function(inSCE,
 #'  Default TRUE.
 #' @param dots Boolean. If TRUE, will plot dots for each violin plot.
 #'  Default TRUE.
-#' @param logScore Boolean. If TRUE, the log normalized doublet score will be used.
 #' @param reducedDimName Saved dimension reduction name in the
 #' \linkS4class{SingleCellExperiment} object. Required.
 #' @param xlab Character vector. Label for x-axis. Default NULL.
@@ -1141,14 +1150,15 @@ plotDoubletFinderResults <- function(inSCE,
 #'  the relative heights for each plot.
 #' @param sampleRelWidths If there are multiple samples and combining by "all",
 #'  the relative widths for each plot.
+#' @return list of .ggplot objects
 #' @examples
 #' data(scExample, package="singleCellTK")
-#' sce <- sce[, colData(sce)$type != "EmptyDroplet"]
+#' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 #' sce <- getUMAP(inSCE=sce, useAssay="counts", reducedDimName="UMAP")
-#' sce <- runDoubletCells(sce)
-#' plotDoubletCellsResults(inSCE=sce, reducedDimName="UMAP")
+#' sce <- runScDblFinder(sce)
+#' plotScDblFinderResults(inSCE=sce, reducedDimName="UMAP")
 #' @export
-plotDoubletCellsResults <- function(inSCE,
+plotScDblFinderResults <- function(inSCE,
                                     sample=NULL,
                                     shape=NULL,
                                     groupBy=NULL,
@@ -1156,7 +1166,6 @@ plotDoubletCellsResults <- function(inSCE,
                                     violin=TRUE,
                                     boxplot=FALSE,
                                     dots=TRUE,
-                                    logScore=TRUE,
                                     reducedDimName=NULL,
                                     xlab=NULL,
                                     ylab=NULL,
@@ -1195,13 +1204,9 @@ plotDoubletCellsResults <- function(inSCE,
   }
   sampleVector <- sample
 
-  if (logScore) {
-    coldata = "scran_doubletCells_score_log10"
-    titleDoubletCells <- "DoubletCells Doublet Score, log10"
-  } else {
-    coldata = "scran_doubletCells_score"
-    titleDoubletCells <- "DoubletCells Doublet Score"
-  }
+
+  coldata = "scDblFinder_doublet_score"
+  titleScDblFinder <- "ScDblFinder Doublet Score"
 
   samples <- unique(sample)
   if (length(samples) > 1) {
@@ -1217,7 +1222,7 @@ plotDoubletCellsResults <- function(inSCE,
       transparency=transparency,
       axisSize=axisSize,
       axisLabelSize=axisLabelSize,
-      title=titleDoubletCells,
+      title=titleScDblFinder,
       titleSize=titleSize,
       dotSize=dotSize,
       gridLine=TRUE,
@@ -1243,7 +1248,7 @@ plotDoubletCellsResults <- function(inSCE,
         ylab="Density",
         axisSize=axisSize, axisLabelSize=axisLabelSize,
         defaultTheme=defaultTheme,
-        title=paste0("Density, ", titleDoubletCells),
+        title=paste0("Density, ", titleScDblFinder),
         titleSize=titleSize,
         combinePlot="all"
     ))
@@ -1269,7 +1274,7 @@ plotDoubletCellsResults <- function(inSCE,
       defaultTheme=defaultTheme,
       axisSize=axisSize,
       axisLabelSize=axisLabelSize,
-      title=titleDoubletCells,
+      title=titleScDblFinder,
       titleSize=titleSize,
       labelClusters=FALSE,
       legendTitle="Doublet \nScore",
@@ -1291,7 +1296,7 @@ plotDoubletCellsResults <- function(inSCE,
       boxplot=boxplot,
       dots=dots,
       transparency=transparency,
-      title=titleDoubletCells,
+      title=titleScDblFinder,
       titleSize=titleSize,
       defaultTheme=defaultTheme,
       axisSize=axisSize,
@@ -1309,7 +1314,9 @@ plotDoubletCellsResults <- function(inSCE,
       names(plotlist) <- samples
       plotlist <- c(merged.plots, list(Sample = plotlist))
   } else {
-      plotlist <- unlist(plotlist, recursive=F)
+      plotlist <- unlist(plotlist, recursive=FALSE)
+      plotLabels <- "none"
+      relHeights=1
   }
   if(!is.null(combinePlot)){
     if(combinePlot %in% c("all", "sample")){
@@ -1388,9 +1395,10 @@ plotDoubletCellsResults <- function(inSCE,
 #'  the relative heights for each plot.
 #' @param sampleRelWidths If there are multiple samples and combining by "all",
 #'  the relative widths for each plot.
+#' @return list of .ggplot objects
 #' @examples
 #' data(scExample, package="singleCellTK")
-#' sce <- sce[, colData(sce)$type != "EmptyDroplet"]
+#' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 #' sce <- getUMAP(inSCE=sce, useAssay="counts", reducedDimName="UMAP")
 #' sce <- runCxds(sce)
 #' plotCxdsResults(inSCE=sce, reducedDimName="UMAP")
@@ -1578,7 +1586,9 @@ plotCxdsResults <- function(inSCE,
       names(plotlist) <- samples
       plotlist <- c(merged.plots, list(Sample = plotlist))
   } else {
-      plotlist <- unlist(plotlist, recursive=F)
+      plotlist <- unlist(plotlist, recursive=FALSE)
+      plotLabels <- "none"
+      relHeights=1
   }
   if(!is.null(combinePlot)){
     if(combinePlot %in% c("all", "sample")){
@@ -1657,9 +1667,10 @@ plotCxdsResults <- function(inSCE,
 #'  the relative heights for each plot.
 #' @param sampleRelWidths If there are multiple samples and combining by "all",
 #'  the relative widths for each plot.
+#' @return list of .ggplot objects
 #' @examples
 #' data(scExample, package="singleCellTK")
-#' sce <- sce[, colData(sce)$type != "EmptyDroplet"]
+#' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 #' sce <- getUMAP(inSCE=sce, useAssay="counts", reducedDimName="UMAP")
 #' sce <- runBcds(sce)
 #' plotBcdsResults(inSCE=sce, reducedDimName="UMAP")
@@ -1847,7 +1858,9 @@ plotBcdsResults <- function(inSCE,
     names(plotlist) <- samples
     plotlist <- c(merged.plots, list(Sample = plotlist))
   } else {
-    plotlist <- unlist(plotlist, recursive=F)
+    plotlist <- unlist(plotlist, recursive=FALSE)
+    plotLabels <- "none"
+    relHeights=1
   }
   if(!is.null(combinePlot)){
     if(combinePlot %in% c("all", "sample")){
@@ -1927,9 +1940,10 @@ plotBcdsResults <- function(inSCE,
 #'  the relative heights for each plot.
 #' @param sampleRelWidths If there are multiple samples and combining by "all",
 #'  the relative widths for each plot.
+#' @return list of .ggplot objects
 #' @examples
 #' data(scExample, package="singleCellTK")
-#' sce <- sce[, colData(sce)$type != "EmptyDroplet"]
+#' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 #' sce <- getUMAP(inSCE=sce, useAssay="counts", reducedDimName="UMAP")
 #' sce <- runCxdsBcdsHybrid(sce)
 #' plotScdsHybridResults(inSCE=sce, reducedDimName="UMAP")
@@ -2116,7 +2130,9 @@ plotScdsHybridResults <- function(inSCE,
       names(plotlist) <- samples
       plotlist <- c(merged.plots, list(Sample = plotlist))
   } else {
-      plotlist <- unlist(plotlist, recursive=F)
+      plotlist <- unlist(plotlist, recursive=FALSE)
+      plotLabels <- "none"
+      relHeights=1
   }
   if(!is.null(combinePlot)){
     if(combinePlot %in% c("all", "sample")){
@@ -2195,9 +2211,10 @@ plotScdsHybridResults <- function(inSCE,
 #'  the relative heights for each plot.
 #' @param sampleRelWidths If there are multiple samples and combining by "all",
 #'  the relative widths for each plot.
+#' @return list of .ggplot objects
 #' @examples
 #' data(scExample, package="singleCellTK")
-#' sce <- sce[, colData(sce)$type != "EmptyDroplet"]
+#' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 #' sce <- getUMAP(inSCE=sce, useAssay="counts", reducedDimName="UMAP")
 #' sce <- runDecontX(sce)
 #' plotDecontXResults(inSCE=sce, reducedDimName="UMAP")
@@ -2382,7 +2399,9 @@ plotDecontXResults <- function(inSCE,
       names(plotlist) <- samples
       plotlist <- c(merged.plots, list(Sample = plotlist))
   } else {
-      plotlist <- unlist(plotlist, recursive=F)
+      plotlist <- unlist(plotlist, recursive=FALSE)
+      plotLabels <- "none"
+      relHeights=1
   }
   if(!is.null(combinePlot)){
     if(combinePlot %in% c("all", "sample")){

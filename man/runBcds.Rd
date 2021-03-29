@@ -48,7 +48,7 @@ Default NULL.}
 \value{
 A \link[SingleCellExperiment]{SingleCellExperiment} object with
  \link[scds]{bcds} output appended to the
- \link[SummarizedExperiment]{colData} slot. The columns include
+ \link{colData} slot. The columns include
  \emph{bcds_score} and optionally \emph{bcds_call}.
  Please refer to the documentation of \link[scds]{bcds} for details.
 }
@@ -60,6 +60,6 @@ A wrapper function for \link[scds]{bcds}. Annotate
 }
 \examples{
 data(scExample, package = "singleCellTK")
-sce <- sce[, colData(sce)$type != 'EmptyDroplet']
+sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 sce <- runBcds(sce)
 }
