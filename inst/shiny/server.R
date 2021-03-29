@@ -3124,23 +3124,26 @@ shinyServer(function(input, output, session) {
       }
       inSCE <- vals$counts
       reducedDimName <- input$clustVisReddim
-      output$clustVisPlot <- renderPlot({
-        if (!is.null(choice) && choice != "" &&
-            !is.null(reducedDimName) && reducedDimName != "") {
-          plotSCEDimReduceColData(inSCE = inSCE,
-                                  colorBy = choice,
-                                  conditionClass = "factor",
-                                  reducedDimName = reducedDimName,
-                                  labelClusters = TRUE,
-                                  dim1 = 1, dim2 = 2,
-                                  legendTitle = choice)
-        }
-      })
+
+      if (!is.null(choice) && choice != "" &&
+          !is.null(reducedDimName) && reducedDimName != "") {
+        a <- plotSCEDimReduceColData(inSCE = inSCE,
+                                     colorBy = choice,
+                                     conditionClass = "factor",
+                                     reducedDimName = reducedDimName,
+                                     labelClusters = TRUE,
+                                     dim1 = 1, dim2 = 2,
+                                     legendTitle = choice)
+        a <- plotly::ggplotly(a)
+        output$clustVisPlot <- renderPlotly({
+          plotly::subplot(plotlist = a, titleX = TRUE, titleY = TRUE)
+        })
+      }
     }
   })
 
   #-----------------------------------------------------------------------------
-  # Page 3.2: Celda
+  # Page 3.2: Celda ####
   #-----------------------------------------------------------------------------
 
   observeEvent(input$navbar, {
@@ -3328,7 +3331,7 @@ shinyServer(function(input, output, session) {
   })
 
   #-----------------------------------------------------------------------------
-  # Page 3.3: Cell Viewer
+  # Page 3.3: Cell Viewer ####
   #-----------------------------------------------------------------------------
   #-+-+-+-+-+-For Functional Panel collapse##############
   shinyjs::onclick("cv_button1", shinyjs::toggle(id = "cv_collapse1",
@@ -3599,8 +3602,8 @@ shinyServer(function(input, output, session) {
   })
 
   #-+-+-+-+-+-cellviewer prepare step1: choose data. (next steps included)###########################################################
-  cellviewer <- eventReactive(input$runCellViewer,{
-
+  #cellviewer <- eventReactive(input$runCellViewer,{
+  observeEvent(input$runCellViewer,{
     colors <- c()
     if (!is.null(numColors) && input$SelectColorType == 'Categorical') {
       for (i in 1: numColors) {
@@ -3759,9 +3762,12 @@ shinyServer(function(input, output, session) {
       a <- a + ggplot2::theme_bw()
     }
     a <- plotly::ggplotly(a)
-    plotly::subplot(plotlist = a, titleX = TRUE, titleY = TRUE)
+    output$scatter <- renderPlotly({
+      plotly::subplot(plotlist = a, titleX = TRUE, titleY = TRUE)
+    })
+    #plotly::subplot(plotlist = a, titleX = TRUE, titleY = TRUE)
   })
-  output$scatter <- renderPlotly({cellviewer()})
+  #output$scatter <- renderPlotly({cellviewer()})
   #
   #
   #-+-+-+-+-+-cellviewer prepare done: plot#####################
