@@ -883,6 +883,10 @@ shinyServer(function(input, output, session) {
             assays = assayNames(vals$counts),
             append = FALSE)
         }
+        if (any(duplicated(rownames(vals$counts)))) {
+          warning("Duplicated rownames detected, making them unique...")
+          vals$counts <- dedupRowNames(vals$counts)
+        }
         # ToDo: Remove these automatic updates and replace with
         # observeEvents functions that activate upon the tab selection
         updateColDataNames()
@@ -4314,7 +4318,7 @@ shinyServer(function(input, output, session) {
   })
 
   output$hmTrimUI <- renderUI({
-    if(!is.null(vals$counts)){
+    if(!is.null(vals$counts) && !is.null(input$hmAssay)){
       # This might be slow when running with real data
       mat <- as.matrix(assay(vals$counts, input$hmAssay))
       if(isTRUE(input$hmScale)){

@@ -205,6 +205,7 @@ discreteColorPalette <- function(n, palette = c("random", "ggplot", "celda"),
 #' the deduplicated rownames.
 #' @param return.list When set to \code{TRUE}, will return a character vector
 #' with deduplicated rownames.
+#' @export
 #' @return By default, a matrix or /linkS4class{SingleCellExperiment} object
 #' with rownames deduplicated.
 #' When \code{x} is a /linkS4class{SingleCellExperiment} and \code{as.rowData}
