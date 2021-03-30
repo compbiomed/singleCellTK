@@ -15,7 +15,7 @@ runNormalization(
   outAssayName = "customNormalizedAssay",
   normalizationMethod = NULL,
   scale = FALSE,
-  seuratScaleFactor = 10,
+  seuratScaleFactor = 10000,
   transformation = NULL,
   pseudocountsBeforeNorm = NULL,
   pseudocountsBeforeTransform = NULL,
@@ -39,7 +39,7 @@ normalization method.}
 Z.Score. Default \code{FALSE}.}
 
 \item{seuratScaleFactor}{Specify the `scaleFactor` argument if a Seurat
-normalization method is selected. Default is \code{10}. This parameter
+normalization method is selected. Default is \code{10000}. This parameter
 will not be used if methods other than seurat are selected.}
 
 \item{transformation}{Specify the transformation options to run on the
