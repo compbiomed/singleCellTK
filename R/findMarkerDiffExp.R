@@ -6,8 +6,8 @@
 #' @param useAssay character. A string specifying which assay to use for the
 #' MAST calculations. Default \code{"logcounts"}.
 #' @param method A single character for specific differential expression
-#' analysis method. Choose from \code{'MAST'}, \code{'DESeq2'}, \code{'Limma'}.
-#' Default \code{"MAST"}.
+#' analysis method. Choose from \code{'wilcox'}, \code{'MAST'}, \code{'DESeq2'},
+#' \code{'Limma'}, and \code{'ANOVA'}. Default \code{"wilcox"}.
 #' @param cluster One single character to specify a column in
 #' \code{colData(inSCE)} for the clustering label. Alternatively, a vector or
 #' a factor is also acceptable. Default \code{"cluster"}.
@@ -33,7 +33,8 @@
 #' @export
 #' @author Yichen Wang
 findMarkerDiffExp <- function(inSCE, useAssay = 'logcounts',
-                              method = c('MAST', "DESeq2", "Limma"),
+                              method = c('wilcox', 'MAST', "DESeq2", "Limma",
+                                         "ANOVA"),
                               cluster = 'cluster', covariates = NULL,
                               log2fcThreshold = 0.25, fdrThreshold = 0.05,
                               minClustExprPerc = 0.6, maxCtrlExprPerc = 0.4,
@@ -110,44 +111,28 @@ findMarkerDiffExp <- function(inSCE, useAssay = 'logcounts',
 }
 
 .calcMarkerExpr <- function(markerTable, inSCE, clusterName, params) {
+    markerTable <- markerTable[markerTable$Gene %in% rownames(inSCE),]
     genes <- markerTable$Gene
-    cellLabels <- SummarizedExperiment::colData(inSCE)[[clusterName]]
+    uniqClust <- unique(markerTable[[clusterName]])
     useAssay <- attr(markerTable, "useAssay")
-    cells.in.col <- c()
-    cells.out.col <- c()
-    exprs.avg <- c()
-    toRemove <- integer()
-    for (i in seq_len(nrow(markerTable))) {
-        gene <- genes[i]
-        cluster <- markerTable[[clusterName]][i]
-        if (gene %in% rownames(inSCE)) {
-            # Logical indices
-            cells.in <- cellLabels == cluster
-            cells.out <- cellLabels != cluster
-            # cells.in expressed percentage
-            cells.in.expr <- expData(inSCE, useAssay)[gene, cells.in]
-            cells.in.perc <- sum(cells.in.expr > 0) / length(which(cells.in))
-            # cells.out expressed percentage
-            cells.out.expr <- expData(inSCE, useAssay)[gene, cells.out]
-            cells.out.perc <- sum(cells.out.expr > 0) / length(which(cells.out))
-            # Average Expression in the cluster
-            cells.in.mean <- mean(cells.in.expr)
-            if (cells.in.perc >= params[1] &&
-                cells.out.perc <= params[2] &&
-                cells.in.mean >= params[3]) {
-                cells.in.col <- c(cells.in.col, cells.in.perc)
-                cells.out.col <- c(cells.out.col, cells.out.perc)
-                exprs.avg <- c(exprs.avg, cells.in.mean)
-            } else {
-                toRemove <- c(toRemove, i)
-            }
-        } else {
-            toRemove <- c(toRemove, i)
-        }
+    cells.in.col <- rep(NA, length(genes))
+    cells.out.col <- rep(NA, length(genes))
+    exprs.avg <- rep(NA, length(genes))
+    for (i in uniqClust) {
+        markers <- genes[markerTable[[clusterName]] == i]
+        cells.ix <- inSCE[[clusterName]] == i
+        assay.in <- expData(inSCE, useAssay)[markers, cells.ix, drop = FALSE]
+        assay.out <- expData(inSCE, useAssay)[markers, !cells.ix, drop = FALSE]
+        assay.in.expr.perc <- rowSums(assay.in > 0) / ncol(assay.in)
+        cells.in.col[markerTable[[clusterName]] == i] <- assay.in.expr.perc
+        assay.out.expr.perc <- rowSums(assay.out > 0) / ncol(assay.out)
+        cells.out.col[markerTable[[clusterName]] == i] <- assay.out.expr.perc
+        assay.in.mean <- rowMeans(assay.in)
+        exprs.avg[markerTable[[clusterName]] == i] <- assay.in.mean
     }
-    markerTable <- markerTable[-toRemove,]
     markerTable$clusterExprPerc <- cells.in.col
     markerTable$ControlExprPerc <- cells.out.col
     markerTable$clusterAveExpr <- exprs.avg
     return(markerTable)
 }
+

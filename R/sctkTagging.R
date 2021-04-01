@@ -26,7 +26,7 @@ expDeleteDataTag <- function(inSCE, assay){
 #' Set tag to an assay or a data item in the input SCE object.
 #' @param inSCE Input \code{SingleCellExperiment} object.
 #' @param assayType Specify a \code{character(1)} value as a tag that should be set against a data item.
-#' @param assays Specify name(s) \code{character()} of data item(s) against which the tag should be set. 
+#' @param assays Specify name(s) \code{character()} of data item(s) against which the tag should be set.
 #' @param append A \code{logical} value indicating if this assay should be appended to the object or overridden. Default value is \code{TRUE} indicating that it should be appended.
 #' @return The input \code{SingleCellExperiment} object with tag information stored in the metadata slot.
 #' @export
@@ -113,10 +113,10 @@ setClassUnion("CharacterOrNullOrMissing", c("character", "NULL", "missing"))
 #' @param altExp A \code{logical} value indicating if the input assay is a \code{altExp} or a subset assay.
 #' @param value An input matrix-like value to store in the SCE object.
 #' @export
-setGeneric(name = "expData<-", 
-           function(inSCE, assayName, tag = NULL, altExp = FALSE, value) 
-             SummarizedExperiment::`assay<-`(x = inSCE, 
-                                             i = assayName, 
+setGeneric(name = "expData<-",
+           function(inSCE, assayName, tag = NULL, altExp = FALSE, value)
+             SummarizedExperiment::`assay<-`(x = inSCE,
+                                             i = assayName,
                                              value = value)
 )
 
@@ -128,26 +128,26 @@ setGeneric(name = "expData<-",
 #' @param altExp A \code{logical} value indicating if the input assay is a \code{altExp} or a subset assay.
 #' @param value An input matrix-like value to store in the SCE object.
 #' @export
-setMethod(f = "expData<-", 
+setMethod(f = "expData<-",
           signature = signature(
-            inSCE = "ANY", 
-            assayName = "character", 
-            tag = "CharacterOrNullOrMissing", 
+            inSCE = "ANY",
+            assayName = "character",
+            tag = "CharacterOrNullOrMissing",
             altExp = "logical"),
           definition = function(inSCE,  assayName, tag = NULL, altExp = FALSE, value){
             if(!is.null(value)){
               if(is.null(tag)
                  || missing(tag)){
                 inSCE <- expSetDataTag(
-                  inSCE = inSCE, 
-                  assayType = "uncategorized", 
+                  inSCE = inSCE,
+                  assayType = "uncategorized",
                   assays = assayName
                 )
               }
               else{
                 inSCE <- expSetDataTag(
-                  inSCE = inSCE, 
-                  assayType = tag, 
+                  inSCE = inSCE,
+                  assayType = tag,
                   assays = assayName
                 )
               }
@@ -174,8 +174,8 @@ setMethod(f = "expData<-",
 #' @param inSCE Input \code{SingleCellExperiment} object.
 #' @param assayName Specify the name of the data item to retrieve.
 #' @export
-setGeneric(name = "expData", 
-           function(inSCE, assayName) 
+setGeneric(name = "expData",
+           function(inSCE, assayName)
              SummarizedExperiment::assay(x = inSCE,
                                          i = assayName)
 )
@@ -185,7 +185,7 @@ setGeneric(name = "expData",
 #' @param inSCE Input \code{SingleCellExperiment} object.
 #' @param assayName Specify the name of the data item to retrieve.
 #' @export
-setMethod(f = "expData", 
+setMethod(f = "expData",
           signature = signature(inSCE = "ANY", assayName = "character"),
           definition = function(inSCE,  assayName){
             result <- NULL
@@ -206,26 +206,26 @@ setMethod(f = "expData",
             else{
               result <- methods::callNextMethod()
             }
-           return(result) 
+           return(result)
           }
 )
 
 #' expDataNames
 #' Get names of all the data items in the input \code{SingleCellExperiment} object including assays, altExps and reducedDims.
 #' @param inSCE Input \code{SingleCellExperiment} object.
-#' @return A combined \code{vector} of \code{assayNames}, \code{altExpNames} and \code{reducedDimNames}. 
+#' @return A combined \code{vector} of \code{assayNames}, \code{altExpNames} and \code{reducedDimNames}.
 #' @export
-setGeneric(name = "expDataNames", 
-           function(inSCE) 
+setGeneric(name = "expDataNames",
+           function(inSCE)
              SummarizedExperiment::assayNames(x = inSCE)
 )
 
 #' expDataNames
 #' Get names of all the data items in the input \code{SingleCellExperiment} object including assays, altExps and reducedDims.
 #' @param inSCE Input \code{SingleCellExperiment} object.
-#' @return A combined \code{vector} of \code{assayNames}, \code{altExpNames} and \code{reducedDimNames}. 
+#' @return A combined \code{vector} of \code{assayNames}, \code{altExpNames} and \code{reducedDimNames}.
 #' @export
-setMethod(f = "expDataNames", 
+setMethod(f = "expDataNames",
           signature = signature(inSCE = "ANY"),
           definition = function(inSCE){
             result <- c(altExpNames(inSCE), methods::callNextMethod())

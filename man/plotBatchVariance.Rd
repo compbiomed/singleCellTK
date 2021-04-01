@@ -56,16 +56,10 @@ by the conditions.
 }
 \examples{
 \dontrun{
-  if(requireNamespace("bladderbatch", quietly = TRUE)) {
-    library(bladderbatch)
-    data(bladderdata)
-    dat <- as(as(bladderEset, "SummarizedExperiment"),
-              "SingleCellExperiment")
-    plotBatchVariance(dat,
-                      useAssay="exprs",
-                      batch="batch",
-                      condition = "cancer")
-  }
+  data('sceBatches', package = 'singleCellTK')
+  plotBatchVariance(sceBatches,
+                    useAssay="logcounts",
+                    batch="batch",
+                    condition = "cell_type")
 }
-
 }

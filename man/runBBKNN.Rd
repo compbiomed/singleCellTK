@@ -44,7 +44,8 @@ across all batches of the data.
 \examples{
 \dontrun{
 data('sceBatches', package = 'singleCellTK')
-sceCorr <- runBBKNN(sceBatches)
+sceBatches <- scaterlogNormCounts(sceBatches)
+sceCorr <- runBBKNN(sceBatches, useAssay = "ScaterLogNormCounts")
 }
 }
 \references{
