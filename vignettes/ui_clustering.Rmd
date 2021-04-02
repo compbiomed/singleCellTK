@@ -13,7 +13,7 @@ This section describes the usage of the user interface (UI) for singleCellTK (SC
 
 From anywhere of the UI, the panel for clustering can be accessed from the top navigation panel at the circled tab shown below.  
 
-![Entry](clst_ui_entry.png)\
+![Entry](ui_screenshots/clustering/clst_ui_entry.png)\
 
 The UI is includes two panels. The top one is for setting the parameters and run the clustering, while the bottom one is for visualizing the results. 
 
@@ -21,7 +21,7 @@ The UI is includes two panels. The top one is for setting the parameters and run
 
 #### Choose An Algorithm
 
-<img src="clst_ui_algo.png" style="border: 1px solid rgba(0,0,0,0.2)"></img>
+<img src="ui_screenshots/clustering/clst_ui_algo.png" style="border: 1px solid rgba(0,0,0,0.2)"></img>
 
 User will choose an algorithm to run the clustering at the very first step. The slide-down option list is constructed in a grouped style. Each group lists all the algorithm that a dependency (shown with grey text) supports. By selecting an algorithm that belongs to different groups, the parameter settings will change.
 
@@ -29,7 +29,7 @@ User will choose an algorithm to run the clustering at the very first step. The 
 
 ##### Scran SNN
 
-![scran](clst_ui_scran.png)\
+![scran](ui_screenshots/clustering/clst_ui_scran.png)\
 
 When the selected algorithm belongs to "Scran SNN" group, the parameter settings will look like the figure above. For the choices in the algorithm list, please refer to `igraph::cluster_walktrap()`, `igraph::cluster_louvain()`, `igraph::cluster_infomap()`, `igraph::cluster_fast_greedy()`, `igraph::cluster_label_prop()`, and `igraph::cluster_leading_eigen()`.  
 
@@ -40,7 +40,7 @@ When the selected algorithm belongs to "Scran SNN" group, the parameter settings
 
 ##### K-Means
 
-![kmeans](clst_ui_kmeans.png)\
+![kmeans](ui_screenshots/clustering/clst_ui_kmeans.png)\
 
 When the selected algorithm belongs to "K-Means" group, the parameter settings will look like the figure above.  
 
@@ -51,7 +51,7 @@ When the selected algorithm belongs to "K-Means" group, the parameter settings w
 
 ##### Seurat
 
-![seurat](clst_ui_seurat.png)\
+![seurat](ui_screenshots/clustering/clst_ui_seurat.png)\
 
 When the selected algorithm belongs to "Seurat" group, the parameter settings will look like the figure above.  
 
@@ -62,7 +62,7 @@ When the selected algorithm belongs to "Seurat" group, the parameter settings wi
 
 ### Visualization
 
-<img src="clst_ui_vis.png" style="border: 1px solid rgba(0,0,0,0.2)"></img>
+<img src="ui_screenshots/clustering/clst_ui_vis.png" style="border: 1px solid rgba(0,0,0,0.2)"></img>
 
 The visualization is implemented with a plotting of a chosen dimension reduction, colored with a chosen cluster assignment.  
 

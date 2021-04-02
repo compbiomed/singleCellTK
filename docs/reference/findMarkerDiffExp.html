@@ -15,7 +15,7 @@ on each cluster against all the others. — findMarkerDiffExp • singleCellTK</
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
-<link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/cosmo/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/yeti/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
 
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
@@ -81,7 +81,7 @@ on each cluster against all the others." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.9.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.0</span>
       </span>
     </div>
 
@@ -98,10 +98,10 @@ on each cluster against all the others." />
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/import_scRNAseq_data_as_SCE_Commandline.html">Import data into SCTK</a>
+      <a href="../articles/cmd_import_scRNAseq_data_as_SCE.html">Import data into SCTK</a>
     </li>
     <li>
-      <a href="../articles/run_qcCommandline.html">Quality Control</a>
+      <a href="../articles/cmd_qc.html">Quality Control</a>
     </li>
   </ul>
 </li>
@@ -113,34 +113,34 @@ on each cluster against all the others." />
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/import_scRNAseq_data_as_SCE.html">Import data into SCTK</a>
+      <a href="../articles/cnsl_import_scRNAseq_data_as_SCE.html">Import data into SCTK</a>
     </li>
     <li>
-      <a href="../articles/run_qcConsole.html">Quality Control</a>
+      <a href="../articles/cnsl_qc.html">Quality Control</a>
     </li>
     <li>
-      <a href="../articles/normalization.html">Normalization</a>
+      <a href="../articles/cnsl_normalization.html">Normalization</a>
     </li>
     <li>
-      <a href="../articles/batch_correction.html">Batch Correction</a>
+      <a href="../articles/cnsl_batch_correction.html">Batch Correction</a>
     </li>
     <li>
-      <a href="../articles/variability.html">Variability</a>
+      <a href="../articles/cnsl_feature_selection.html">Feature Selection</a>
     </li>
     <li>
-      <a href="../articles/feature_selection.html">Feature Selection</a>
+      <a href="../articles/cnsl_clustering.html">Clustering</a>
     </li>
     <li>
-      <a href="../articles/differential_expression.html">Differential Expression</a>
+      <a href="../articles/cnsl_differential_expression.html">Differential Expression</a>
     </li>
     <li>
-      <a href="../articles/find_marker.html">Find Marker via DE</a>
+      <a href="../articles/cnsl_find_marker.html">Find Marker via DE</a>
     </li>
     <li>
-      <a href="../articles/visualize_results.html">Visualize Results</a>
+      <a href="../articles/cnsl_visualization.html">Visualization</a>
     </li>
     <li>
-      <a href="../articles/heatmap.html">Heatmap Visualization</a>
+      <a href="../articles/cnsl_heatmap.html">Heatmap Visualization</a>
     </li>
   </ul>
 </li>
@@ -151,17 +151,75 @@ on each cluster against all the others." />
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
-    <li>
-      <a href="../articles/ui_batch_correction.html">Batch Correction</a>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Import</a>
+      <ul class="dropdown-menu" role="menu">
+        <li>
+          <a href="../articles/ui_import_data.html">Data</a>
+        </li>
+        <li>
+          <a href="../articles/ui_import_genesets.html">Gene Sets</a>
+        </li>
+        <li>
+          <a href="../articles/ui_import_cell_annotation.html">Cell Annotation</a>
+        </li>
+        <li>
+          <a href="../articles/ui_import_feature_annotation.html">Feature Annotation</a>
+        </li>
+        <li>
+          <a href="../articles/ui_export_data.html">Export Data</a>
+        </li>
+        <li>
+          <a href="../articles/ui_delete_data.html">Delete Data</a>
+        </li>
+      </ul>
+    </li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">QC &amp; Filtering</a>
+      <ul class="dropdown-menu" role="menu">
+        <li>
+          <a href="../articles/ui_qc.html">Quality Control</a>
+        </li>
+        <li>
+          <a href="../articles/ui_filtering.html">Filtering</a>
+        </li>
+      </ul>
+    </li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Normalization &amp; Batch Correction</a>
+      <ul class="dropdown-menu" role="menu">
+        <li>
+          <a href="../articles/ui_normalization.html">Normalization</a>
+        </li>
+        <li>
+          <a href="../articles/ui_batch_correction.html">Batch Correction</a>
+        </li>
+      </ul>
+    </li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Feature Selection &amp; Dimensionality Reduction</a>
+      <ul class="dropdown-menu" role="menu">
+        <li>
+          <a href="../articles/ui_feature_selection.html">Feature Selection</a>
+        </li>
+        <li>
+          <a href="../articles/ui_dimred.html">Dimensionality Reduction</a>
+        </li>
+      </ul>
     </li>
     <li>
       <a href="../articles/ui_clustering.html">Clustering</a>
     </li>
-    <li>
-      <a href="../articles/ui_differential_expression.html">Differential Expression</a>
-    </li>
-    <li>
-      <a href="../articles/ui_find_marker.html">Find Marker</a>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Differential Expression &amp; Cell Type Labeling</a>
+      <ul class="dropdown-menu" role="menu">
+        <li>
+          <a href="../articles/ui_differential_expression.html">Differential Expression</a>
+        </li>
+        <li>
+          <a href="../articles/ui_find_marker.html">Find Marker</a>
+        </li>
+      </ul>
     </li>
     <li>
       <a href="../articles/ui_heatmap.html">Generic Heatmap</a>
@@ -175,7 +233,7 @@ on each cluster against all the others." />
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/compbiomed/singleCellTK">
-    <span class="fa fa-github"></span>
+    <span class="fas fa-github"></span>
      
   </a>
 </li>
@@ -207,15 +265,18 @@ labels, this function iteratively call the differential expression analysis
 on each cluster against all the others.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>findMarkerDiffExp</span>(
-  <span class='no'>inSCE</span>,
-  <span class='kw'>useAssay</span> <span class='kw'>=</span> <span class='st'>"logcounts"</span>,
-  <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"MAST"</span>,
-  <span class='kw'>cluster</span> <span class='kw'>=</span> <span class='st'>"cluster"</span>,
-  <span class='kw'>covariates</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>log2fcThreshold</span> <span class='kw'>=</span> <span class='fl'>0.25</span>,
-  <span class='kw'>fdrThreshold</span> <span class='kw'>=</span> <span class='fl'>0.05</span>
-)</pre>
+    <pre class="usage"><span class='fu'>findMarkerDiffExp</span><span class='op'>(</span>
+  <span class='va'>inSCE</span>,
+  useAssay <span class='op'>=</span> <span class='st'>"logcounts"</span>,
+  method <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"wilcox"</span>, <span class='st'>"MAST"</span>, <span class='st'>"DESeq2"</span>, <span class='st'>"Limma"</span>, <span class='st'>"ANOVA"</span><span class='op'>)</span>,
+  cluster <span class='op'>=</span> <span class='st'>"cluster"</span>,
+  covariates <span class='op'>=</span> <span class='cn'>NULL</span>,
+  log2fcThreshold <span class='op'>=</span> <span class='fl'>0.25</span>,
+  fdrThreshold <span class='op'>=</span> <span class='fl'>0.05</span>,
+  minClustExprPerc <span class='op'>=</span> <span class='fl'>0.6</span>,
+  maxCtrlExprPerc <span class='op'>=</span> <span class='fl'>0.4</span>,
+  minMeanExpr <span class='op'>=</span> <span class='fl'>0.5</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -232,8 +293,8 @@ MAST calculations. Default <code>"logcounts"</code>.</p></td>
     <tr>
       <th>method</th>
       <td><p>A single character for specific differential expression
-analysis method. Choose from 'MAST', 'DESeq2', 'Limma', 'ANOVA'. Default
-<code>"MAST"</code>.</p></td>
+analysis method. Choose from <code>'wilcox'</code>, <code>'MAST'</code>, <code>'DESeq2'</code>,
+<code>'Limma'</code>, and <code>'ANOVA'</code>. Default <code>"wilcox"</code>.</p></td>
     </tr>
     <tr>
       <th>cluster</th>
@@ -258,6 +319,23 @@ larger than this value. Default <code>NULL</code></p></td>
       <td><p>Only out put DEGs with FDR value smaller than this
 value. Default <code>1</code></p></td>
     </tr>
+    <tr>
+      <th>minClustExprPerc</th>
+      <td><p>A numeric scalar. The minimum cutoff of the
+percentage of cells in the cluster of interests that expressed the marker
+gene. Default <code>0.7</code>.</p></td>
+    </tr>
+    <tr>
+      <th>maxCtrlExprPerc</th>
+      <td><p>A numeric scalar. The maximum cutoff of the
+percentage of cells out of the cluster (control group) that expressed the
+marker gene. Default <code>0.4</code>.</p></td>
+    </tr>
+    <tr>
+      <th>minMeanExpr</th>
+      <td><p>A numeric scalar. The minimum cutoff of the mean
+expression value of the marker in the cluster of interests. Default <code>1</code>.</p></td>
+    </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
@@ -265,6 +343,9 @@ value. Default <code>1</code></p></td>
     <p>The input SingleCellExperiment object with
 <code>metadata(inSCE)$findMarker</code> updated with a data.table of the up-
 regulated DEGs for each cluster.</p>
+    <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
+
+    <p>Yichen Wang</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -277,11 +358,11 @@ regulated DEGs for each cluster.</p>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Joshua D. Campbell, David Jenkins, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, Emma Briars, Sebastian Carrasco Pro, W. Evan Johnson, Yusuke Koga, Shruthi Bandyadka, Anastasia Leshchyk, Rui Hong, Yichen Wang.</p>
+  <p>Developed by David Jenkins, Vidya Akavoor, Salam Alabdullatif, Shruthi Bandyadka, Emma Briars, Xinyun Cao, Sebastian Carrasco Pro, Tyler Faits, Rui Hong, Mohammed Muzamil Khan, Yusuke Koga, Anastasia Leshchyk, Irzam Sarfraz, Yichen Wang, Zhe Wang, W. Evan Johnson, Joshua David Campbell.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

@@ -113,6 +113,18 @@
         <li>
           <a href="../articles/ui_import_genesets.html">Gene Sets</a>
         </li>
+        <li>
+          <a href="../articles/ui_import_cell_annotation.html">Cell Annotation</a>
+        </li>
+        <li>
+          <a href="../articles/ui_import_feature_annotation.html">Feature Annotation</a>
+        </li>
+        <li>
+          <a href="../articles/ui_export_data.html">Export Data</a>
+        </li>
+        <li>
+          <a href="../articles/ui_delete_data.html">Delete Data</a>
+        </li>
       </ul>
 </li>
     <li class="dropdown-submenu">
@@ -126,18 +138,42 @@
         </li>
       </ul>
 </li>
-    <li>
-      <a href="../articles/ui_batch_correction.html">Batch Correction</a>
-    </li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Normalization &amp; Batch Correction</a>
+      <ul class="dropdown-menu" role="menu">
+<li>
+          <a href="../articles/ui_normalization.html">Normalization</a>
+        </li>
+        <li>
+          <a href="../articles/ui_batch_correction.html">Batch Correction</a>
+        </li>
+      </ul>
+</li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Feature Selection &amp; Dimensionality Reduction</a>
+      <ul class="dropdown-menu" role="menu">
+<li>
+          <a href="../articles/ui_feature_selection.html">Feature Selection</a>
+        </li>
+        <li>
+          <a href="../articles/ui_dimred.html">Dimensionality Reduction</a>
+        </li>
+      </ul>
+</li>
     <li>
       <a href="../articles/ui_clustering.html">Clustering</a>
     </li>
-    <li>
-      <a href="../articles/ui_differential_expression.html">Differential Expression</a>
-    </li>
-    <li>
-      <a href="../articles/ui_find_marker.html">Find Marker</a>
-    </li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Differential Expression &amp; Cell Type Labeling</a>
+      <ul class="dropdown-menu" role="menu">
+<li>
+          <a href="../articles/ui_differential_expression.html">Differential Expression</a>
+        </li>
+        <li>
+          <a href="../articles/ui_find_marker.html">Find Marker</a>
+        </li>
+      </ul>
+</li>
     <li>
       <a href="../articles/ui_heatmap.html">Generic Heatmap</a>
     </li>
@@ -164,7 +200,7 @@
 
       
 
-      </header><script src="ui_import_genesets_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+      </header><script src="ui_import_genesets_files/header-attrs-2.7/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Import Gene Sets - UI</h1>
@@ -177,26 +213,26 @@
 
     
     
-<p><img src="import_ui_gs_entry.png" alt="gs entry"><br></p>
+<p><img src="ui_screenshots/import/import_ui_gs_entry.png" alt="gs entry"><br></p>
 <p>Users can import gene sets to use in later steps of the toolkit’s pipeline. The UIs are implemented in the page that can be entered through the links, as shown in the screenshot above.<br>
 There are three ways to import gene sets, and they are described below.</p>
 <div id="import-gene-sets-from-a-gmt-file" class="section level2">
 <h2 class="hasAnchor">
 <a href="#import-gene-sets-from-a-gmt-file" class="anchor"></a>Import Gene Sets from a GMT File</h2>
 <p>The first option is to upload the GMT file detailing a gene set. For this option, users must provide a GMT file through the file input <strong>“Choose GMT File”</strong>; a text collection name at <strong>“Collection Name”</strong>. If the collection name entered already exists in current session, the gene set from the GMT file will be added to that collection. Otherwise, a new collection with the given name will be created. Finally, users must click <strong>“Upload”</strong> to finish the procedure.</p>
-<p><img src="import_ui_gs_gmt.png" style="border: 1px solid rgba(0,0,0,0.2)"></p>
+<p><img src="ui_screenshots/import/import_ui_gs_gmt.png" style="border: 1px solid rgba(0,0,0,0.2)"></p>
 </div>
 <div id="select-from-a-database" class="section level2">
 <h2 class="hasAnchor">
 <a href="#select-from-a-database" class="anchor"></a>Select from a Database</h2>
 <p>SCTK also has a database of gene sets that users can choose from. For this option, the user must simply select the gene sets they would like to upload and click <strong>“Upload”</strong>. A brief description of each gene set is provided in the checklist.</p>
-<p><img src="import_ui_gs_db.png" style="border: 1px solid rgba(0,0,0,0.2)"></p>
+<p><img src="ui_screenshots/import/import_ui_gs_db.png" style="border: 1px solid rgba(0,0,0,0.2)"></p>
 </div>
 <div id="paste-in-gene-sets" class="section level2">
 <h2 class="hasAnchor">
 <a href="#paste-in-gene-sets" class="anchor"></a>Paste in Gene Sets</h2>
 <p>Users also have the option to paste their gene set into a text box. In order to do so, the user must paste their gene set into the provided text box and then provide a collection name to create a new collection. If there are already gene sets imported, the user can choose an existing collection to add their pasted gene set into. Then the user must click “Upload.”</p>
-<p><img src="import_ui_gs_paste.png" style="border: 1px solid rgba(0,0,0,0.2)"></p>
+<p><img src="ui_screenshots/import/import_ui_gs_paste.png" style="border: 1px solid rgba(0,0,0,0.2)"></p>
 </div>
 <div id="map-gene-sets-to-specific-feature-ids" class="section level2">
 <h2 class="hasAnchor">

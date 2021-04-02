@@ -12,7 +12,7 @@
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
-<link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/cosmo/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/yeti/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
 
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
@@ -76,7 +76,7 @@ list of available datasets." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.9.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.0</span>
       </span>
     </div>
 
@@ -93,10 +93,10 @@ list of available datasets." />
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/import_scRNAseq_data_as_SCE_Commandline.html">Import data into SCTK</a>
+      <a href="../articles/cmd_import_scRNAseq_data_as_SCE.html">Import data into SCTK</a>
     </li>
     <li>
-      <a href="../articles/run_qcCommandline.html">Quality Control</a>
+      <a href="../articles/cmd_qc.html">Quality Control</a>
     </li>
   </ul>
 </li>
@@ -108,34 +108,34 @@ list of available datasets." />
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/import_scRNAseq_data_as_SCE.html">Import data into SCTK</a>
+      <a href="../articles/cnsl_import_scRNAseq_data_as_SCE.html">Import data into SCTK</a>
     </li>
     <li>
-      <a href="../articles/run_qcConsole.html">Quality Control</a>
+      <a href="../articles/cnsl_qc.html">Quality Control</a>
     </li>
     <li>
-      <a href="../articles/normalization.html">Normalization</a>
+      <a href="../articles/cnsl_normalization.html">Normalization</a>
     </li>
     <li>
-      <a href="../articles/batch_correction.html">Batch Correction</a>
+      <a href="../articles/cnsl_batch_correction.html">Batch Correction</a>
     </li>
     <li>
-      <a href="../articles/variability.html">Variability</a>
+      <a href="../articles/cnsl_feature_selection.html">Feature Selection</a>
     </li>
     <li>
-      <a href="../articles/feature_selection.html">Feature Selection</a>
+      <a href="../articles/cnsl_clustering.html">Clustering</a>
     </li>
     <li>
-      <a href="../articles/differential_expression.html">Differential Expression</a>
+      <a href="../articles/cnsl_differential_expression.html">Differential Expression</a>
     </li>
     <li>
-      <a href="../articles/find_marker.html">Find Marker via DE</a>
+      <a href="../articles/cnsl_find_marker.html">Find Marker via DE</a>
     </li>
     <li>
-      <a href="../articles/visualize_results.html">Visualize Results</a>
+      <a href="../articles/cnsl_visualization.html">Visualization</a>
     </li>
     <li>
-      <a href="../articles/heatmap.html">Heatmap Visualization</a>
+      <a href="../articles/cnsl_heatmap.html">Heatmap Visualization</a>
     </li>
   </ul>
 </li>
@@ -146,17 +146,75 @@ list of available datasets." />
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
-    <li>
-      <a href="../articles/ui_batch_correction.html">Batch Correction</a>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Import</a>
+      <ul class="dropdown-menu" role="menu">
+        <li>
+          <a href="../articles/ui_import_data.html">Data</a>
+        </li>
+        <li>
+          <a href="../articles/ui_import_genesets.html">Gene Sets</a>
+        </li>
+        <li>
+          <a href="../articles/ui_import_cell_annotation.html">Cell Annotation</a>
+        </li>
+        <li>
+          <a href="../articles/ui_import_feature_annotation.html">Feature Annotation</a>
+        </li>
+        <li>
+          <a href="../articles/ui_export_data.html">Export Data</a>
+        </li>
+        <li>
+          <a href="../articles/ui_delete_data.html">Delete Data</a>
+        </li>
+      </ul>
+    </li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">QC &amp; Filtering</a>
+      <ul class="dropdown-menu" role="menu">
+        <li>
+          <a href="../articles/ui_qc.html">Quality Control</a>
+        </li>
+        <li>
+          <a href="../articles/ui_filtering.html">Filtering</a>
+        </li>
+      </ul>
+    </li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Normalization &amp; Batch Correction</a>
+      <ul class="dropdown-menu" role="menu">
+        <li>
+          <a href="../articles/ui_normalization.html">Normalization</a>
+        </li>
+        <li>
+          <a href="../articles/ui_batch_correction.html">Batch Correction</a>
+        </li>
+      </ul>
+    </li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Feature Selection &amp; Dimensionality Reduction</a>
+      <ul class="dropdown-menu" role="menu">
+        <li>
+          <a href="../articles/ui_feature_selection.html">Feature Selection</a>
+        </li>
+        <li>
+          <a href="../articles/ui_dimred.html">Dimensionality Reduction</a>
+        </li>
+      </ul>
     </li>
     <li>
       <a href="../articles/ui_clustering.html">Clustering</a>
     </li>
-    <li>
-      <a href="../articles/ui_differential_expression.html">Differential Expression</a>
-    </li>
-    <li>
-      <a href="../articles/ui_find_marker.html">Find Marker</a>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Differential Expression &amp; Cell Type Labeling</a>
+      <ul class="dropdown-menu" role="menu">
+        <li>
+          <a href="../articles/ui_differential_expression.html">Differential Expression</a>
+        </li>
+        <li>
+          <a href="../articles/ui_find_marker.html">Find Marker</a>
+        </li>
+      </ul>
     </li>
     <li>
       <a href="../articles/ui_heatmap.html">Generic Heatmap</a>
@@ -170,7 +228,7 @@ list of available datasets." />
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/compbiomed/singleCellTK">
-    <span class="fa fa-github"></span>
+    <span class="fas fa-github"></span>
      
   </a>
 </li>
@@ -195,12 +253,12 @@ list of available datasets." />
     <div class="ref-description">
     <p>Retrieves published example datasets stored in
 <a href='https://rdrr.io/pkg/SingleCellExperiment/man/SingleCellExperiment.html'>SingleCellExperiment</a> using the
-<a href='https://rdrr.io/pkg/scRNAseq/man/scRNAseq-package.html'>scRNAseq</a> and
+scRNAseq and
 <a href='https://rdrr.io/pkg/TENxPBMCData/man/TENxPBMCData.html'>TENxPBMCData</a> packages. See 'Details' for a
 list of available datasets.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>importExampleData</span>(<span class='no'>dataset</span>, <span class='kw'>class</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"Matrix"</span>, <span class='st'>"matrix"</span>), <span class='kw'>delayedArray</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+    <pre class="usage"><span class='fu'>importExampleData</span><span class='op'>(</span><span class='va'>dataset</span>, class <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"Matrix"</span>, <span class='st'>"matrix"</span><span class='op'>)</span>, delayedArray <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -211,7 +269,7 @@ list of available datasets.</p>
     </tr>
     <tr>
       <th>class</th>
-      <td><p>Character. The class of the expression matrix stored in the SCE 
+      <td><p>Character. The class of the expression matrix stored in the SCE
 object. Can be one of <code>"Matrix"</code> or <code>"matrix"</code>. <code>"Matrix"</code>
 will store the data as a sparse matrix from package Matrix while
 <code>"matrix"</code> will store the data in a standard matrix. Default
@@ -219,42 +277,47 @@ will store the data as a sparse matrix from package Matrix while
     </tr>
     <tr>
       <th>delayedArray</th>
-      <td><p>Boolean. Whether to read the expression matrix as 
-<a href='https://rdrr.io/pkg/DelayedArray/man/DelayedArray-class.html'>DelayedArray</a> object or not. Default <code>FALSE</code>.</p></td>
+      <td><p>Boolean. Whether to read the expression matrix as
+DelayedArray object or not. Default <code>FALSE</code>.</p></td>
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>The specified <a href='https://rdrr.io/pkg/SingleCellExperiment/man/SingleCellExperiment.html'>SingleCellExperiment</a> object.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>See the list below for the available datasets and their
-descriptions.</p><dl'>
+descriptions.</p><dl>
 <dt>"fluidigm_pollen"</dt><dd><p>Retrieved with
-<code><a href='https://rdrr.io/pkg/scRNAseq/man/ReprocessedData.html'>ReprocessedFluidigmData</a></code>. Returns a dataset of 65
+<code>ReprocessedFluidigmData</code>. Returns a dataset of 65
  human neural cells from Pollen et al. (2014), each sequenced at high and low
  coverage (SRA accession SRP041736).</p></dd>
 <dt>"allen_tasic"</dt><dd><p>Retrieved with
-<code><a href='https://rdrr.io/pkg/scRNAseq/man/ReprocessedData.html'>ReprocessedAllenData</a></code>. Returns a dataset of 379 mouse
+<code>ReprocessedAllenData</code>. Returns a dataset of 379 mouse
 brain cells from Tasic et al. (2016).</p></dd>
 <dt>"pbmc3k"</dt><dd><p>Retrieved with <code><a href='https://rdrr.io/pkg/TENxPBMCData/man/TENxPBMCData.html'>TENxPBMCData</a></code>.
- 2,700 peripheral blood mononuclear cells (PBMCs) from 10X Genomics.</p></dd> 
+ 2,700 peripheral blood mononuclear cells (PBMCs) from 10X Genomics.</p></dd>
 <dt>"pbmc4k"</dt><dd><p>Retrieved with <code><a href='https://rdrr.io/pkg/TENxPBMCData/man/TENxPBMCData.html'>TENxPBMCData</a></code>.
- 4,340 peripheral blood mononuclear cells (PBMCs) from 10X Genomics.</p></dd> 
+ 4,340 peripheral blood mononuclear cells (PBMCs) from 10X Genomics.</p></dd>
 <dt>"pbmc6k"</dt><dd><p>Retrieved with <code><a href='https://rdrr.io/pkg/TENxPBMCData/man/TENxPBMCData.html'>TENxPBMCData</a></code>.
- 5,419 peripheral blood mononuclear cells (PBMCs) from 10X Genomics.</p></dd> 
+ 5,419 peripheral blood mononuclear cells (PBMCs) from 10X Genomics.</p></dd>
 <dt>"pbmc8k"</dt><dd><p>Retrieved with <code><a href='https://rdrr.io/pkg/TENxPBMCData/man/TENxPBMCData.html'>TENxPBMCData</a></code>.
  8,381 peripheral blood mononuclear cells (PBMCs) from 10X Genomics.</p></dd>
 <dt>"pbmc33k"</dt><dd><p>Retrieved with <code><a href='https://rdrr.io/pkg/TENxPBMCData/man/TENxPBMCData.html'>TENxPBMCData</a></code>.
- 33,148 peripheral blood mononuclear cells (PBMCs) from 10X Genomics.</p></dd> 
+ 33,148 peripheral blood mononuclear cells (PBMCs) from 10X Genomics.</p></dd>
 <dt>"pbmc68k"</dt><dd><p>Retrieved with <code><a href='https://rdrr.io/pkg/TENxPBMCData/man/TENxPBMCData.html'>TENxPBMCData</a></code>.
  68,579 peripheral blood mononuclear cells (PBMCs) from 10X Genomics.</p></dd>
 
 </dl>
 
+    <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
+
+    <p>Joshua D. Campbell, David Jenkins</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
-<span class='no'>sce</span> <span class='kw'>&lt;-</span> <span class='fu'>importExampleData</span>(<span class='st'>"pbmc3k"</span>)
-}</div></pre>
+    <pre class="examples"><div class='input'><span class='va'>sce</span> <span class='op'>&lt;-</span> <span class='fu'>importExampleData</span><span class='op'>(</span><span class='st'>"pbmc3k"</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'>snapshotDate(): 2020-10-27</span></div><div class='output co'>#&gt; <span class='message'>see ?TENxPBMCData and browseVignettes('TENxPBMCData') for documentation</span></div><div class='output co'>#&gt; <span class='message'>loading from cache</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -266,11 +329,11 @@ brain cells from Tasic et al. (2016).</p></dd>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Joshua D. Campbell, David Jenkins, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, Emma Briars, Sebastian Carrasco Pro, W. Evan Johnson, Yusuke Koga, Shruthi Bandyadka, Anastasia Leshchyk, Rui Hong, Yichen Wang.</p>
+  <p>Developed by David Jenkins, Vidya Akavoor, Salam Alabdullatif, Shruthi Bandyadka, Emma Briars, Xinyun Cao, Sebastian Carrasco Pro, Tyler Faits, Rui Hong, Mohammed Muzamil Khan, Yusuke Koga, Anastasia Leshchyk, Irzam Sarfraz, Yichen Wang, Zhe Wang, W. Evan Johnson, Joshua David Campbell.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

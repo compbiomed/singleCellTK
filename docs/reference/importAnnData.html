@@ -12,7 +12,7 @@
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
-<link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/cosmo/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/yeti/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
 
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
@@ -40,8 +40,8 @@
 
 
 <meta property="og:title" content="Create a SingleCellExperiment Object from Python AnnData .h5ad files — importAnnData" />
-<meta property="og:description" content="This function reads in one or more Python AnnData files in the .h5ad format 
-and returns a single SingleCellExperiment object containing all the 
+<meta property="og:description" content="This function reads in one or more Python AnnData files in the .h5ad format
+and returns a single SingleCellExperiment object containing all the
 AnnData samples by concatenating their counts matrices and related information slots." />
 
 
@@ -74,7 +74,7 @@ AnnData samples by concatenating their counts matrices and related information s
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.9.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.0</span>
       </span>
     </div>
 
@@ -91,10 +91,10 @@ AnnData samples by concatenating their counts matrices and related information s
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/import_scRNAseq_data_as_SCE_Commandline.html">Import data into SCTK</a>
+      <a href="../articles/cmd_import_scRNAseq_data_as_SCE.html">Import data into SCTK</a>
     </li>
     <li>
-      <a href="../articles/run_qcCommandline.html">Quality Control</a>
+      <a href="../articles/cmd_qc.html">Quality Control</a>
     </li>
   </ul>
 </li>
@@ -106,34 +106,34 @@ AnnData samples by concatenating their counts matrices and related information s
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/import_scRNAseq_data_as_SCE.html">Import data into SCTK</a>
+      <a href="../articles/cnsl_import_scRNAseq_data_as_SCE.html">Import data into SCTK</a>
     </li>
     <li>
-      <a href="../articles/run_qcConsole.html">Quality Control</a>
+      <a href="../articles/cnsl_qc.html">Quality Control</a>
     </li>
     <li>
-      <a href="../articles/normalization.html">Normalization</a>
+      <a href="../articles/cnsl_normalization.html">Normalization</a>
     </li>
     <li>
-      <a href="../articles/batch_correction.html">Batch Correction</a>
+      <a href="../articles/cnsl_batch_correction.html">Batch Correction</a>
     </li>
     <li>
-      <a href="../articles/variability.html">Variability</a>
+      <a href="../articles/cnsl_feature_selection.html">Feature Selection</a>
     </li>
     <li>
-      <a href="../articles/feature_selection.html">Feature Selection</a>
+      <a href="../articles/cnsl_clustering.html">Clustering</a>
     </li>
     <li>
-      <a href="../articles/differential_expression.html">Differential Expression</a>
+      <a href="../articles/cnsl_differential_expression.html">Differential Expression</a>
     </li>
     <li>
-      <a href="../articles/find_marker.html">Find Marker via DE</a>
+      <a href="../articles/cnsl_find_marker.html">Find Marker via DE</a>
     </li>
     <li>
-      <a href="../articles/visualize_results.html">Visualize Results</a>
+      <a href="../articles/cnsl_visualization.html">Visualization</a>
     </li>
     <li>
-      <a href="../articles/heatmap.html">Heatmap Visualization</a>
+      <a href="../articles/cnsl_heatmap.html">Heatmap Visualization</a>
     </li>
   </ul>
 </li>
@@ -144,17 +144,75 @@ AnnData samples by concatenating their counts matrices and related information s
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
-    <li>
-      <a href="../articles/ui_batch_correction.html">Batch Correction</a>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Import</a>
+      <ul class="dropdown-menu" role="menu">
+        <li>
+          <a href="../articles/ui_import_data.html">Data</a>
+        </li>
+        <li>
+          <a href="../articles/ui_import_genesets.html">Gene Sets</a>
+        </li>
+        <li>
+          <a href="../articles/ui_import_cell_annotation.html">Cell Annotation</a>
+        </li>
+        <li>
+          <a href="../articles/ui_import_feature_annotation.html">Feature Annotation</a>
+        </li>
+        <li>
+          <a href="../articles/ui_export_data.html">Export Data</a>
+        </li>
+        <li>
+          <a href="../articles/ui_delete_data.html">Delete Data</a>
+        </li>
+      </ul>
+    </li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">QC &amp; Filtering</a>
+      <ul class="dropdown-menu" role="menu">
+        <li>
+          <a href="../articles/ui_qc.html">Quality Control</a>
+        </li>
+        <li>
+          <a href="../articles/ui_filtering.html">Filtering</a>
+        </li>
+      </ul>
+    </li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Normalization &amp; Batch Correction</a>
+      <ul class="dropdown-menu" role="menu">
+        <li>
+          <a href="../articles/ui_normalization.html">Normalization</a>
+        </li>
+        <li>
+          <a href="../articles/ui_batch_correction.html">Batch Correction</a>
+        </li>
+      </ul>
+    </li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Feature Selection &amp; Dimensionality Reduction</a>
+      <ul class="dropdown-menu" role="menu">
+        <li>
+          <a href="../articles/ui_feature_selection.html">Feature Selection</a>
+        </li>
+        <li>
+          <a href="../articles/ui_dimred.html">Dimensionality Reduction</a>
+        </li>
+      </ul>
     </li>
     <li>
       <a href="../articles/ui_clustering.html">Clustering</a>
     </li>
-    <li>
-      <a href="../articles/ui_differential_expression.html">Differential Expression</a>
-    </li>
-    <li>
-      <a href="../articles/ui_find_marker.html">Find Marker</a>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Differential Expression &amp; Cell Type Labeling</a>
+      <ul class="dropdown-menu" role="menu">
+        <li>
+          <a href="../articles/ui_differential_expression.html">Differential Expression</a>
+        </li>
+        <li>
+          <a href="../articles/ui_find_marker.html">Find Marker</a>
+        </li>
+      </ul>
     </li>
     <li>
       <a href="../articles/ui_heatmap.html">Generic Heatmap</a>
@@ -168,7 +226,7 @@ AnnData samples by concatenating their counts matrices and related information s
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/compbiomed/singleCellTK">
-    <span class="fa fa-github"></span>
+    <span class="fas fa-github"></span>
      
   </a>
 </li>
@@ -191,12 +249,12 @@ AnnData samples by concatenating their counts matrices and related information s
     </div>
 
     <div class="ref-description">
-    <p>This function reads in one or more Python AnnData files in the .h5ad format 
-and returns a single <a href='https://rdrr.io/pkg/SingleCellExperiment/man/SingleCellExperiment.html'>SingleCellExperiment</a> object containing all the 
+    <p>This function reads in one or more Python AnnData files in the .h5ad format
+and returns a single <a href='https://rdrr.io/pkg/SingleCellExperiment/man/SingleCellExperiment.html'>SingleCellExperiment</a> object containing all the
 AnnData samples by concatenating their counts matrices and related information slots.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>importAnnData</span>(<span class='kw'>sampleDirs</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>sampleNames</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>delayedArray</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
+    <pre class="usage"><span class='fu'>importAnnData</span><span class='op'>(</span>sampleDirs <span class='op'>=</span> <span class='cn'>NULL</span>, sampleNames <span class='op'>=</span> <span class='cn'>NULL</span>, delayedArray <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -205,30 +263,30 @@ AnnData samples by concatenating their counts matrices and related information s
       <th>sampleDirs</th>
       <td><p>Folder containing the .h5ad file. Can be one of -</p><ul>
 <li><p>Default <code>current working directory</code>.</p></li>
-<li><p>Full path to the directory containing the .h5ad file. 
+<li><p>Full path to the directory containing the .h5ad file.
   E.g <code>sampleDirs = '/path/to/sample'</code></p></li>
-<li><p>A vector of folder paths for the samples to import. 
+<li><p>A vector of folder paths for the samples to import.
   E.g. <code>sampleDirs = c('/path/to/sample1', '/path/to/sample2','/path/to/sample3')</code>
-  importAnnData will return a single SCE object containing all the samples 
+  importAnnData will return a single SCE object containing all the samples
   with the sample name appended to each colname in colData</p></li>
 </ul></td>
     </tr>
     <tr>
       <th>sampleNames</th>
-      <td><p>The prefix/name of the .h5ad file without the .h5ad extension 
+      <td><p>The prefix/name of the .h5ad file without the .h5ad extension
 e.g. if 'sample.h5ad' is the filename, pass <code>sampleNames = 'sample'</code>.
 Can be one of -</p><ul>
 <li><p>Default <code>sample</code>.</p></li>
 <li><p>A vector of samples to import. Length of vector must be equal to length of sampleDirs vector
   E.g. <code>sampleDirs = c('sample1', 'sample2','sample3')</code>
-  importAnnData will return a single SCE object containing all the samples 
+  importAnnData will return a single SCE object containing all the samples
   with the sample name appended to each colname in colData</p></li>
 </ul></td>
     </tr>
     <tr>
       <th>delayedArray</th>
       <td><p>Boolean. Whether to read the expression matrix as
-<a href='https://rdrr.io/pkg/DelayedArray/man/DelayedArray-class.html'>DelayedArray</a> object. Default <code>TRUE</code>.</p></td>
+DelayedArray object. Default <code>FALSE</code>.</p></td>
     </tr>
     </table>
 
@@ -238,31 +296,25 @@ Can be one of -</p><ul>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p><code>importAnnData</code> converts scRNA-seq data in the AnnData format to the
-<code>SingleCellExperiment</code> object. The .X slot in AnnData is transposed to the features x cells 
+<code>SingleCellExperiment</code> object. The .X slot in AnnData is transposed to the features x cells
 format and becomes the 'counts' matrix in the assay slot. The .vars AnnData slot becomes the SCE rowData
 and the .obs AnnData slot becomes the SCE colData. Multidimensional data in the .obsm AnnData slot is
-ported over to the SCE reducedDims slot. Additionally, unstructured data in the .uns AnnData slot is 
-available through the SCE metadata slot. 
-There are 2 currently known minor issues - 
+ported over to the SCE reducedDims slot. Additionally, unstructured data in the .uns AnnData slot is
+available through the SCE metadata slot.
+There are 2 currently known minor issues -
 Anndata python module depends on another python module h5pyto read hd5 format files.
 If there are errors reading the .h5ad files, such as "ValueError: invalid shape in fixed-type tuple."
-the user will need to do downgrade h5py by running <code>pip3 install --user h5py==2.9.0</code> 
+the user will need to do downgrade h5py by running <code>pip3 install --user h5py==2.9.0</code>
 Additionally there might be errors in converting some python objects in the unstructured data slots.
 There are no known R solutions at present. Refer <a href='https://github.com/rstudio/reticulate/issues/209'>https://github.com/rstudio/reticulate/issues/209</a></p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>sce</span> <span class='kw'>&lt;-</span> <span class='fu'>importAnnData</span>(<span class='kw'>sampleDirs</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='st'>"extdata/annData_pbmc_3k"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"singleCellTK"</span>),
-                     <span class='kw'>sampleNames</span> <span class='kw'>=</span> <span class='st'>'pbmc3k_20by20'</span>)</div><div class='output co'>#&gt; <span class='error'>Error: Python module anndata was not found.</span>
-#&gt; <span class='error'></span>
-#&gt; <span class='error'>Detected Python configuration:</span>
-#&gt; <span class='error'></span>
-#&gt; <span class='error'>python:         /Users/rz2333/Library/r-miniconda/envs/r-reticulate/bin/python</span>
-#&gt; <span class='error'>libpython:      /Users/rz2333/Library/r-miniconda/envs/r-reticulate/lib/libpython3.6m.dylib</span>
-#&gt; <span class='error'>pythonhome:     /Users/rz2333/Library/r-miniconda/envs/r-reticulate:/Users/rz2333/Library/r-miniconda/envs/r-reticulate</span>
-#&gt; <span class='error'>version:        3.6.10 |Anaconda, Inc.| (default, May  7 2020, 23:06:31)  [GCC 4.2.1 Compatible Clang 4.0.1 (tags/RELEASE_401/final)]</span>
-#&gt; <span class='error'>numpy:          /Users/rz2333/Library/r-miniconda/envs/r-reticulate/lib/python3.6/site-packages/numpy</span>
-#&gt; <span class='error'>numpy_version:  1.18.5</span>
-#&gt; <span class='error'></span></div></pre>
+    <pre class="examples"><div class='input'><span class='va'>file.path</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata/annData_pbmc_3k"</span>, package <span class='op'>=</span> <span class='st'>"singleCellTK"</span><span class='op'>)</span>
+<span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
+<span class='va'>sce</span> <span class='op'>&lt;-</span> <span class='fu'>importAnnData</span><span class='op'>(</span>sampleDirs <span class='op'>=</span> <span class='va'>file.path</span>,
+                     sampleNames <span class='op'>=</span> <span class='st'>'pbmc3k_20by20'</span><span class='op'>)</span>
+<span class='op'>}</span>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -274,11 +326,11 @@ There are no known R solutions at present. Refer <a href='https://github.com/rst
 
       <footer>
       <div class="copyright">
-  <p>Developed by Joshua D. Campbell, David Jenkins, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, Emma Briars, Sebastian Carrasco Pro, W. Evan Johnson, Yusuke Koga, Shruthi Bandyadka, Anastasia Leshchyk, Rui Hong, Yichen Wang.</p>
+  <p>Developed by David Jenkins, Vidya Akavoor, Salam Alabdullatif, Shruthi Bandyadka, Emma Briars, Xinyun Cao, Sebastian Carrasco Pro, Tyler Faits, Rui Hong, Mohammed Muzamil Khan, Yusuke Koga, Anastasia Leshchyk, Irzam Sarfraz, Yichen Wang, Zhe Wang, W. Evan Johnson, Joshua David Campbell.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

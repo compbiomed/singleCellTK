@@ -12,7 +12,7 @@
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
-<link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/cosmo/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/yeti/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
 
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
@@ -40,7 +40,7 @@
 
 
 <meta property="og:title" content="Lists imported GeneSetCollections — sctkListGeneSetCollections" />
-<meta property="og:description" content="Returns a vector of GeneSetCollections that have been 
+<meta property="og:description" content="Returns a vector of GeneSetCollections that have been
 imported and stored in metadata(inSCE)$sctk$genesets." />
 
 
@@ -73,7 +73,7 @@ imported and stored in metadata(inSCE)$sctk$genesets." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.9.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.0</span>
       </span>
     </div>
 
@@ -90,10 +90,10 @@ imported and stored in metadata(inSCE)$sctk$genesets." />
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/import_scRNAseq_data_as_SCE_Commandline.html">Import data into SCTK</a>
+      <a href="../articles/cmd_import_scRNAseq_data_as_SCE.html">Import data into SCTK</a>
     </li>
     <li>
-      <a href="../articles/run_qcCommandline.html">Quality Control</a>
+      <a href="../articles/cmd_qc.html">Quality Control</a>
     </li>
   </ul>
 </li>
@@ -105,34 +105,34 @@ imported and stored in metadata(inSCE)$sctk$genesets." />
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/import_scRNAseq_data_as_SCE.html">Import data into SCTK</a>
+      <a href="../articles/cnsl_import_scRNAseq_data_as_SCE.html">Import data into SCTK</a>
     </li>
     <li>
-      <a href="../articles/run_qcConsole.html">Quality Control</a>
+      <a href="../articles/cnsl_qc.html">Quality Control</a>
     </li>
     <li>
-      <a href="../articles/normalization.html">Normalization</a>
+      <a href="../articles/cnsl_normalization.html">Normalization</a>
     </li>
     <li>
-      <a href="../articles/batch_correction.html">Batch Correction</a>
+      <a href="../articles/cnsl_batch_correction.html">Batch Correction</a>
     </li>
     <li>
-      <a href="../articles/variability.html">Variability</a>
+      <a href="../articles/cnsl_feature_selection.html">Feature Selection</a>
     </li>
     <li>
-      <a href="../articles/feature_selection.html">Feature Selection</a>
+      <a href="../articles/cnsl_clustering.html">Clustering</a>
     </li>
     <li>
-      <a href="../articles/differential_expression.html">Differential Expression</a>
+      <a href="../articles/cnsl_differential_expression.html">Differential Expression</a>
     </li>
     <li>
-      <a href="../articles/find_marker.html">Find Marker via DE</a>
+      <a href="../articles/cnsl_find_marker.html">Find Marker via DE</a>
     </li>
     <li>
-      <a href="../articles/visualize_results.html">Visualize Results</a>
+      <a href="../articles/cnsl_visualization.html">Visualization</a>
     </li>
     <li>
-      <a href="../articles/heatmap.html">Heatmap Visualization</a>
+      <a href="../articles/cnsl_heatmap.html">Heatmap Visualization</a>
     </li>
   </ul>
 </li>
@@ -143,17 +143,75 @@ imported and stored in metadata(inSCE)$sctk$genesets." />
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
-    <li>
-      <a href="../articles/ui_batch_correction.html">Batch Correction</a>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Import</a>
+      <ul class="dropdown-menu" role="menu">
+        <li>
+          <a href="../articles/ui_import_data.html">Data</a>
+        </li>
+        <li>
+          <a href="../articles/ui_import_genesets.html">Gene Sets</a>
+        </li>
+        <li>
+          <a href="../articles/ui_import_cell_annotation.html">Cell Annotation</a>
+        </li>
+        <li>
+          <a href="../articles/ui_import_feature_annotation.html">Feature Annotation</a>
+        </li>
+        <li>
+          <a href="../articles/ui_export_data.html">Export Data</a>
+        </li>
+        <li>
+          <a href="../articles/ui_delete_data.html">Delete Data</a>
+        </li>
+      </ul>
+    </li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">QC &amp; Filtering</a>
+      <ul class="dropdown-menu" role="menu">
+        <li>
+          <a href="../articles/ui_qc.html">Quality Control</a>
+        </li>
+        <li>
+          <a href="../articles/ui_filtering.html">Filtering</a>
+        </li>
+      </ul>
+    </li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Normalization &amp; Batch Correction</a>
+      <ul class="dropdown-menu" role="menu">
+        <li>
+          <a href="../articles/ui_normalization.html">Normalization</a>
+        </li>
+        <li>
+          <a href="../articles/ui_batch_correction.html">Batch Correction</a>
+        </li>
+      </ul>
+    </li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Feature Selection &amp; Dimensionality Reduction</a>
+      <ul class="dropdown-menu" role="menu">
+        <li>
+          <a href="../articles/ui_feature_selection.html">Feature Selection</a>
+        </li>
+        <li>
+          <a href="../articles/ui_dimred.html">Dimensionality Reduction</a>
+        </li>
+      </ul>
     </li>
     <li>
       <a href="../articles/ui_clustering.html">Clustering</a>
     </li>
-    <li>
-      <a href="../articles/ui_differential_expression.html">Differential Expression</a>
-    </li>
-    <li>
-      <a href="../articles/ui_find_marker.html">Find Marker</a>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Differential Expression &amp; Cell Type Labeling</a>
+      <ul class="dropdown-menu" role="menu">
+        <li>
+          <a href="../articles/ui_differential_expression.html">Differential Expression</a>
+        </li>
+        <li>
+          <a href="../articles/ui_find_marker.html">Find Marker</a>
+        </li>
+      </ul>
     </li>
     <li>
       <a href="../articles/ui_heatmap.html">Generic Heatmap</a>
@@ -167,7 +225,7 @@ imported and stored in metadata(inSCE)$sctk$genesets." />
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/compbiomed/singleCellTK">
-    <span class="fa fa-github"></span>
+    <span class="fas fa-github"></span>
      
   </a>
 </li>
@@ -190,11 +248,11 @@ imported and stored in metadata(inSCE)$sctk$genesets." />
     </div>
 
     <div class="ref-description">
-    <p>Returns a vector of GeneSetCollections that have been 
+    <p>Returns a vector of GeneSetCollections that have been
 imported and stored in <code>metadata(inSCE)$sctk$genesets</code>.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>sctkListGeneSetCollections</span>(<span class='no'>inSCE</span>)</pre>
+    <pre class="usage"><span class='fu'>sctkListGeneSetCollections</span><span class='op'>(</span><span class='va'>inSCE</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -205,29 +263,36 @@ imported and stored in <code>metadata(inSCE)$sctk$genesets</code>.</p>
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>Character vector.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p><a href='importGeneSetsFromList.html'>importGeneSetsFromList</a> for importing from lists,
 <a href='importGeneSetsFromGMT.html'>importGeneSetsFromGMT</a> for importing from GMT files,
 <a href='https://rdrr.io/pkg/GSEABase/man/GeneSetCollection-class.html'>GeneSetCollection</a> objects, and <a href='importGeneSetsFromMSigDB.html'>importGeneSetsFromMSigDB</a>
 for importing MSigDB gene sets.</p></div>
+    <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
+
+    <p>Joshua D. Campbell</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='no'>scExample</span>)
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>GSEABase</span>)
-<span class='no'>gs1</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/GSEABase/man/GeneSet-methods.html'>GeneSet</a></span>(<span class='kw'>setName</span> <span class='kw'>=</span> <span class='st'>"geneset1"</span>, <span class='kw'>geneIds</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>rownames</a></span>(<span class='no'>sce</span>)[<span class='fl'>1</span>:<span class='fl'>10</span>])
-<span class='no'>gs2</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/GSEABase/man/GeneSet-methods.html'>GeneSet</a></span>(<span class='kw'>setName</span> <span class='kw'>=</span> <span class='st'>"geneset2"</span>, <span class='kw'>geneIds</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>rownames</a></span>(<span class='no'>sce</span>)[<span class='fl'>11</span>:<span class='fl'>20</span>])
-<span class='no'>gsc1</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/GSEABase/man/GeneSetCollection-methods.html'>GeneSetCollection</a></span>(<span class='no'>gs1</span>)
-<span class='no'>gsc2</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/GSEABase/man/GeneSetCollection-methods.html'>GeneSetCollection</a></span>(<span class='no'>gs2</span>)
-<span class='no'>sce</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='importGeneSetsFromCollection.html'>importGeneSetsFromCollection</a></span>(<span class='kw'>inSCE</span> <span class='kw'>=</span> <span class='no'>sce</span>,
-                                    <span class='kw'>geneSetCollection</span> <span class='kw'>=</span> <span class='no'>gsc1</span>,
-                                    <span class='kw'>by</span> <span class='kw'>=</span> <span class='st'>"rownames"</span>,
-                                    <span class='kw'>collectionName</span> <span class='kw'>=</span> <span class='st'>"Collection1"</span>)
-<span class='no'>sce</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='importGeneSetsFromCollection.html'>importGeneSetsFromCollection</a></span>(<span class='kw'>inSCE</span> <span class='kw'>=</span> <span class='no'>sce</span>,
-                                    <span class='kw'>geneSetCollection</span> <span class='kw'>=</span> <span class='no'>gsc2</span>,
-                                    <span class='kw'>by</span> <span class='kw'>=</span> <span class='st'>"rownames"</span>,
-                                    <span class='kw'>collectionName</span> <span class='kw'>=</span> <span class='st'>"Collection2"</span>)
-<span class='no'>collections</span> <span class='kw'>&lt;-</span> <span class='fu'>sctkListGeneSetCollections</span>(<span class='no'>sce</span>)</div></pre>
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>scExample</span><span class='op'>)</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'>GSEABase</span><span class='op'>)</span>
+<span class='va'>gs1</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/GSEABase/man/GeneSet-methods.html'>GeneSet</a></span><span class='op'>(</span>setName <span class='op'>=</span> <span class='st'>"geneset1"</span>, geneIds <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>rownames</a></span><span class='op'>(</span><span class='va'>sce</span><span class='op'>)</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>10</span><span class='op'>]</span><span class='op'>)</span>
+<span class='va'>gs2</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/GSEABase/man/GeneSet-methods.html'>GeneSet</a></span><span class='op'>(</span>setName <span class='op'>=</span> <span class='st'>"geneset2"</span>, geneIds <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>rownames</a></span><span class='op'>(</span><span class='va'>sce</span><span class='op'>)</span><span class='op'>[</span><span class='fl'>11</span><span class='op'>:</span><span class='fl'>20</span><span class='op'>]</span><span class='op'>)</span>
+<span class='va'>gsc1</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/GSEABase/man/GeneSetCollection-methods.html'>GeneSetCollection</a></span><span class='op'>(</span><span class='va'>gs1</span><span class='op'>)</span>
+<span class='va'>gsc2</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/GSEABase/man/GeneSetCollection-methods.html'>GeneSetCollection</a></span><span class='op'>(</span><span class='va'>gs2</span><span class='op'>)</span>
+<span class='va'>sce</span> <span class='op'>&lt;-</span> <span class='fu'><a href='importGeneSetsFromCollection.html'>importGeneSetsFromCollection</a></span><span class='op'>(</span>inSCE <span class='op'>=</span> <span class='va'>sce</span>,
+                                    geneSetCollection <span class='op'>=</span> <span class='va'>gsc1</span>,
+                                    by <span class='op'>=</span> <span class='st'>"rownames"</span>,
+                                    collectionName <span class='op'>=</span> <span class='st'>"Collection1"</span><span class='op'>)</span>
+<span class='va'>sce</span> <span class='op'>&lt;-</span> <span class='fu'><a href='importGeneSetsFromCollection.html'>importGeneSetsFromCollection</a></span><span class='op'>(</span>inSCE <span class='op'>=</span> <span class='va'>sce</span>,
+                                    geneSetCollection <span class='op'>=</span> <span class='va'>gsc2</span>,
+                                    by <span class='op'>=</span> <span class='st'>"rownames"</span>,
+                                    collectionName <span class='op'>=</span> <span class='st'>"Collection2"</span><span class='op'>)</span>
+<span class='va'>collections</span> <span class='op'>&lt;-</span> <span class='fu'>sctkListGeneSetCollections</span><span class='op'>(</span><span class='va'>sce</span><span class='op'>)</span>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -239,11 +304,11 @@ for importing MSigDB gene sets.</p></div>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Joshua D. Campbell, David Jenkins, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, Emma Briars, Sebastian Carrasco Pro, W. Evan Johnson, Yusuke Koga, Shruthi Bandyadka, Anastasia Leshchyk, Rui Hong, Yichen Wang.</p>
+  <p>Developed by David Jenkins, Vidya Akavoor, Salam Alabdullatif, Shruthi Bandyadka, Emma Briars, Xinyun Cao, Sebastian Carrasco Pro, Tyler Faits, Rui Hong, Mohammed Muzamil Khan, Yusuke Koga, Anastasia Leshchyk, Irzam Sarfraz, Yichen Wang, Zhe Wang, W. Evan Johnson, Joshua David Campbell.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

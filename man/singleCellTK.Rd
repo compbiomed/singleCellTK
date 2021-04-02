@@ -22,15 +22,12 @@ The shiny app will open
 Use this function to run the single cell analysis app.
 }
 \examples{
+\dontrun{
 #Upload data through the app
-if(interactive()){
   singleCellTK()
-}
 
 # Load the app with a SingleCellExperiment object
-if(interactive()){
   data("mouseBrainSubsetSCE")
   singleCellTK(mouseBrainSubsetSCE)
 }
-
 }

@@ -6,10 +6,14 @@ reference:
 - title: "Importing scRNA-seq data"
 - contents:
   - starts_with("import")
+  - readSingleCellMatrix
 - title: "Quality Control & Preprocessing"
 - contents:
   - runCellQC
   - runDropletQC
+- title: "Decontamination"
+- contents:
+  - runDecontX
 - title: "Doublet/Empty Droplet Detection"
 - contents:
   - runBarcodeRankDrops
@@ -17,13 +21,22 @@ reference:
   - runBcds
   - runCxds
   - runCxdsBcdsHybrid
-  - runDoubletCells
+  - runScDblFinder
   - runDoubletFinder
   - runScrublet
+- title: "Normalization"
+- contents:
+  - runNormalization
+  - scaterlogNormCounts
+  - scaterCPM
+  - seuratNormalizeData
+  - seuratScaleData
+  - computeZScore
+  - trimCounts
 - title: "Batch Effect Correction"
 - contents:
+  - runComBatSeq
   - runBBKNN
-  - runComBat
   - runFastMNN
   - runLimmaBC
   - runMNNCorrect
@@ -32,9 +45,23 @@ reference:
   - seuratIntegration
   - runZINBWaVE
   - plotBatchVariance
-- title: "Decontamination"
+- title: "Feature Selection"
 - contents:
-  - runDecontX
+  - scranModelGeneVar
+  - seuratFindHVG
+  - getTopHVG
+  - seuratPlotHVG
+- title: "Dimensionality Reduction"
+- contents:
+  - getPCA
+  - getUMAP
+  - getTSNE
+  - seuratICA
+  - seuratPCA
+  - seuratRunUMAP
+  - seuratRunTSNE
+  - plotSCEDimReduceColData
+  - plotSCEDimReduceFeatures
 - title: "Clustering"
 - contents:
   - runScranSNN
@@ -43,6 +70,7 @@ reference:
 - title: "Differential Expression"
 - contents:
   - runDEAnalysis
+  - runWilcox
   - runMAST
   - runDESeq2
   - runLimmaDE
@@ -61,6 +89,14 @@ reference:
 - title: "Exporting Results"
 - contents:
   - starts_with("export")
+- title: "Other Data processing"
+- contents:
+  - combineSCE
+  - convertSCEToSeurat
+  - convertSeuratToSCE
+  - subsetSCECols
+  - subsetSCERows
+  - dedupRowNames
 navbar:
   title: "singleCellTK"
   left:
@@ -69,33 +105,31 @@ navbar:
     - text: "Shell Command Line Analysis"
       menu:
         - text: "Import data into SCTK"
-          href: articles/import_scRNAseq_data_as_SCE_Commandline.html
+          href: articles/cmd_import_scRNAseq_data_as_SCE.html
         - text: "Quality Control"
-          href: articles/run_qcCommandline.html
+          href: articles/cmd_qc.html
     - text: "R Console Analysis"
       menu:
         - text: "Import data into SCTK"
-          href: articles/import_scRNAseq_data_as_SCE_Console.html
+          href: articles/cnsl_import_scRNAseq_data_as_SCE.html
         - text: "Quality Control"
-          href: articles/run_qcConsole.html
+          href: articles/cnsl_qc.html
         - text: "Normalization"
-          href: articles/normalization.html
+          href: articles/cnsl_normalization.html
         - text: "Batch Correction"
-          href: articles/batch_correction.html
-        - text: "Variability"
-          href: articles/variability.html
+          href: articles/cnsl_batch_correction.html
         - text: "Feature Selection"
-          href: articles/feature_selection.html
+          href: articles/cnsl_feature_selection.html
         - text: "Clustering"
-          href: articles/clustering.html
+          href: articles/cnsl_clustering.html
         - text: "Differential Expression"
-          href: articles/differential_expression.html
+          href: articles/cnsl_differential_expression.html
         - text: "Find Marker via DE"
-          href: articles/find_marker.html
-        - text: "Visualize Results"
-          href: articles/visualize_results.html
+          href: articles/cnsl_find_marker.html
+        - text: "Visualization"
+          href: articles/cnsl_visualization.html
         - text: "Heatmap Visualization"
-          href: articles/heatmap.html
+          href: articles/cnsl_heatmap.html
     - text: "Shiny UI Analysis"
       menu:
         - text: "Import"
@@ -103,21 +137,41 @@ navbar:
             - text: "Data"
               href: articles/ui_import_data.html
             - text: "Gene Sets"
-              href: articles/ui_import_genesets.html 
+              href: articles/ui_import_genesets.html
+            - text: "Cell Annotation"
+              href: articles/ui_import_cell_annotation.html
+            - text: "Feature Annotation"
+              href: articles/ui_import_feature_annotation.html
+            - text: "Export Data"
+              href: articles/ui_export_data.html
+            - text: "Delete Data"
+              href: articles/ui_delete_data.html
         - text: "QC & Filtering"
           menu:
             - text: "Quality Control"
               href: articles/ui_qc.html
             - text: "Filtering"
               href: articles/ui_filtering.html
-        - text: "Batch Correction"
-          href: articles/ui_batch_correction.html
+        - text: "Normalization & Batch Correction"
+          menu:
+          - text: "Normalization"
+            href: articles/ui_normalization.html
+          - text: "Batch Correction"
+            href: articles/ui_batch_correction.html
+        - text: "Feature Selection & Dimensionality Reduction"
+          menu:
+          - text: "Feature Selection"
+            href: articles/ui_feature_selection.html
+          - text: "Dimensionality Reduction"
+            href: articles/ui_dimred.html
         - text: "Clustering"
           href: articles/ui_clustering.html
-        - text: "Differential Expression"
-          href: articles/ui_differential_expression.html
-        - text: "Find Marker"
-          href: articles/ui_find_marker.html
+        - text: "Differential Expression & Cell Type Labeling"
+          menu:
+            - text: "Differential Expression"
+              href: articles/ui_differential_expression.html
+            - text: "Find Marker"
+              href: articles/ui_find_marker.html
         - text: "Generic Heatmap"
           href: articles/ui_heatmap.html
     - text: "Reference"

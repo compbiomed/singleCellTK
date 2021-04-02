@@ -6,21 +6,21 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Example Single Cell RNA-Seq data in SingleCellExperiment Object, 
+<title>Example Single Cell RNA-Seq data in SingleCellExperiment Object,
 subset of 10x public dataset
 https://support.10xgenomics.com/single-cell-gene-expression/datasets/2.1.0/pbmc4k
 A subset of 390 barcodes and top 200 genes were included in this example.
-Within 390 barcodes, 195 barcodes are empty droplet, 150 barcodes are cell barcode
-and 45 barcodes are doublets predicted by scrublet and doubletFinder package. 
-This example only serves as a proof of concept and a tutoriol on how to
-run the functions in this package. The results should not be
-used for drawing scientific conclusions. — sce • singleCellTK</title>
+Within 390 barcodes, 195 barcodes are empty droplet, 150 barcodes are cell
+barcode and 45 barcodes are doublets predicted by scrublet and doubletFinder
+package. This example only serves as a proof of concept and a tutoriol on how
+to run the functions in this package. The results should not be used for
+drawing scientific conclusions. — sce • singleCellTK</title>
 
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
-<link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/cosmo/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/yeti/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
 
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
@@ -47,24 +47,24 @@ used for drawing scientific conclusions. — sce • singleCellTK</title>
 
 
 
-<meta property="og:title" content="Example Single Cell RNA-Seq data in SingleCellExperiment Object, 
+<meta property="og:title" content="Example Single Cell RNA-Seq data in SingleCellExperiment Object,
 subset of 10x public dataset
 https://support.10xgenomics.com/single-cell-gene-expression/datasets/2.1.0/pbmc4k
 A subset of 390 barcodes and top 200 genes were included in this example.
-Within 390 barcodes, 195 barcodes are empty droplet, 150 barcodes are cell barcode
-and 45 barcodes are doublets predicted by scrublet and doubletFinder package. 
-This example only serves as a proof of concept and a tutoriol on how to
-run the functions in this package. The results should not be
-used for drawing scientific conclusions. — sce" />
-<meta property="og:description" content="Example Single Cell RNA-Seq data in SingleCellExperiment Object, 
+Within 390 barcodes, 195 barcodes are empty droplet, 150 barcodes are cell
+barcode and 45 barcodes are doublets predicted by scrublet and doubletFinder
+package. This example only serves as a proof of concept and a tutoriol on how
+to run the functions in this package. The results should not be used for
+drawing scientific conclusions. — sce" />
+<meta property="og:description" content="Example Single Cell RNA-Seq data in SingleCellExperiment Object,
 subset of 10x public dataset
 https://support.10xgenomics.com/single-cell-gene-expression/datasets/2.1.0/pbmc4k
 A subset of 390 barcodes and top 200 genes were included in this example.
-Within 390 barcodes, 195 barcodes are empty droplet, 150 barcodes are cell barcode
-and 45 barcodes are doublets predicted by scrublet and doubletFinder package. 
-This example only serves as a proof of concept and a tutoriol on how to
-run the functions in this package. The results should not be
-used for drawing scientific conclusions." />
+Within 390 barcodes, 195 barcodes are empty droplet, 150 barcodes are cell
+barcode and 45 barcodes are doublets predicted by scrublet and doubletFinder
+package. This example only serves as a proof of concept and a tutoriol on how
+to run the functions in this package. The results should not be used for
+drawing scientific conclusions." />
 
 
 
@@ -96,7 +96,7 @@ used for drawing scientific conclusions." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.9.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.0</span>
       </span>
     </div>
 
@@ -113,10 +113,10 @@ used for drawing scientific conclusions." />
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/import_scRNAseq_data_as_SCE_Commandline.html">Import data into SCTK</a>
+      <a href="../articles/cmd_import_scRNAseq_data_as_SCE.html">Import data into SCTK</a>
     </li>
     <li>
-      <a href="../articles/run_qcCommandline.html">Quality Control</a>
+      <a href="../articles/cmd_qc.html">Quality Control</a>
     </li>
   </ul>
 </li>
@@ -128,34 +128,34 @@ used for drawing scientific conclusions." />
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/import_scRNAseq_data_as_SCE.html">Import data into SCTK</a>
+      <a href="../articles/cnsl_import_scRNAseq_data_as_SCE.html">Import data into SCTK</a>
     </li>
     <li>
-      <a href="../articles/run_qcConsole.html">Quality Control</a>
+      <a href="../articles/cnsl_qc.html">Quality Control</a>
     </li>
     <li>
-      <a href="../articles/normalization.html">Normalization</a>
+      <a href="../articles/cnsl_normalization.html">Normalization</a>
     </li>
     <li>
-      <a href="../articles/batch_correction.html">Batch Correction</a>
+      <a href="../articles/cnsl_batch_correction.html">Batch Correction</a>
     </li>
     <li>
-      <a href="../articles/variability.html">Variability</a>
+      <a href="../articles/cnsl_feature_selection.html">Feature Selection</a>
     </li>
     <li>
-      <a href="../articles/feature_selection.html">Feature Selection</a>
+      <a href="../articles/cnsl_clustering.html">Clustering</a>
     </li>
     <li>
-      <a href="../articles/differential_expression.html">Differential Expression</a>
+      <a href="../articles/cnsl_differential_expression.html">Differential Expression</a>
     </li>
     <li>
-      <a href="../articles/find_marker.html">Find Marker via DE</a>
+      <a href="../articles/cnsl_find_marker.html">Find Marker via DE</a>
     </li>
     <li>
-      <a href="../articles/visualize_results.html">Visualize Results</a>
+      <a href="../articles/cnsl_visualization.html">Visualization</a>
     </li>
     <li>
-      <a href="../articles/heatmap.html">Heatmap Visualization</a>
+      <a href="../articles/cnsl_heatmap.html">Heatmap Visualization</a>
     </li>
   </ul>
 </li>
@@ -166,17 +166,75 @@ used for drawing scientific conclusions." />
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
-    <li>
-      <a href="../articles/ui_batch_correction.html">Batch Correction</a>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Import</a>
+      <ul class="dropdown-menu" role="menu">
+        <li>
+          <a href="../articles/ui_import_data.html">Data</a>
+        </li>
+        <li>
+          <a href="../articles/ui_import_genesets.html">Gene Sets</a>
+        </li>
+        <li>
+          <a href="../articles/ui_import_cell_annotation.html">Cell Annotation</a>
+        </li>
+        <li>
+          <a href="../articles/ui_import_feature_annotation.html">Feature Annotation</a>
+        </li>
+        <li>
+          <a href="../articles/ui_export_data.html">Export Data</a>
+        </li>
+        <li>
+          <a href="../articles/ui_delete_data.html">Delete Data</a>
+        </li>
+      </ul>
+    </li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">QC &amp; Filtering</a>
+      <ul class="dropdown-menu" role="menu">
+        <li>
+          <a href="../articles/ui_qc.html">Quality Control</a>
+        </li>
+        <li>
+          <a href="../articles/ui_filtering.html">Filtering</a>
+        </li>
+      </ul>
+    </li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Normalization &amp; Batch Correction</a>
+      <ul class="dropdown-menu" role="menu">
+        <li>
+          <a href="../articles/ui_normalization.html">Normalization</a>
+        </li>
+        <li>
+          <a href="../articles/ui_batch_correction.html">Batch Correction</a>
+        </li>
+      </ul>
+    </li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Feature Selection &amp; Dimensionality Reduction</a>
+      <ul class="dropdown-menu" role="menu">
+        <li>
+          <a href="../articles/ui_feature_selection.html">Feature Selection</a>
+        </li>
+        <li>
+          <a href="../articles/ui_dimred.html">Dimensionality Reduction</a>
+        </li>
+      </ul>
     </li>
     <li>
       <a href="../articles/ui_clustering.html">Clustering</a>
     </li>
-    <li>
-      <a href="../articles/ui_differential_expression.html">Differential Expression</a>
-    </li>
-    <li>
-      <a href="../articles/ui_find_marker.html">Find Marker</a>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Differential Expression &amp; Cell Type Labeling</a>
+      <ul class="dropdown-menu" role="menu">
+        <li>
+          <a href="../articles/ui_differential_expression.html">Differential Expression</a>
+        </li>
+        <li>
+          <a href="../articles/ui_find_marker.html">Find Marker</a>
+        </li>
+      </ul>
     </li>
     <li>
       <a href="../articles/ui_heatmap.html">Generic Heatmap</a>
@@ -190,7 +248,7 @@ used for drawing scientific conclusions." />
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/compbiomed/singleCellTK">
-    <span class="fa fa-github"></span>
+    <span class="fas fa-github"></span>
      
   </a>
 </li>
@@ -207,32 +265,32 @@ used for drawing scientific conclusions." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Example Single Cell RNA-Seq data in SingleCellExperiment Object, 
+    <h1>Example Single Cell RNA-Seq data in SingleCellExperiment Object,
 subset of 10x public dataset
 https://support.10xgenomics.com/single-cell-gene-expression/datasets/2.1.0/pbmc4k
 A subset of 390 barcodes and top 200 genes were included in this example.
-Within 390 barcodes, 195 barcodes are empty droplet, 150 barcodes are cell barcode
-and 45 barcodes are doublets predicted by scrublet and doubletFinder package. 
-This example only serves as a proof of concept and a tutoriol on how to
-run the functions in this package. The results should not be
-used for drawing scientific conclusions.</h1>
+Within 390 barcodes, 195 barcodes are empty droplet, 150 barcodes are cell
+barcode and 45 barcodes are doublets predicted by scrublet and doubletFinder
+package. This example only serves as a proof of concept and a tutoriol on how
+to run the functions in this package. The results should not be used for
+drawing scientific conclusions.</h1>
     <small class="dont-index">Source: <a href='https://github.com/compbiomed/singleCellTK/blob/master/R/data.R'><code>R/data.R</code></a></small>
     <div class="hidden name"><code>sce.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Example Single Cell RNA-Seq data in SingleCellExperiment Object, 
+    <p>Example Single Cell RNA-Seq data in SingleCellExperiment Object,
 subset of 10x public dataset
 https://support.10xgenomics.com/single-cell-gene-expression/datasets/2.1.0/pbmc4k
 A subset of 390 barcodes and top 200 genes were included in this example.
-Within 390 barcodes, 195 barcodes are empty droplet, 150 barcodes are cell barcode
-and 45 barcodes are doublets predicted by scrublet and doubletFinder package. 
-This example only serves as a proof of concept and a tutoriol on how to
-run the functions in this package. The results should not be
-used for drawing scientific conclusions.</p>
+Within 390 barcodes, 195 barcodes are empty droplet, 150 barcodes are cell
+barcode and 45 barcodes are doublets predicted by scrublet and doubletFinder
+package. This example only serves as a proof of concept and a tutoriol on how
+to run the functions in this package. The results should not be used for
+drawing scientific conclusions.</p>
     </div>
 
-    <pre class="usage"><span class='no'>sce</span></pre>
+    <pre class="usage"><span class='va'>sce</span></pre>
 
 
     <h2 class="hasAnchor" id="format"><a class="anchor" href="#format"></a>Format</h2>
@@ -240,7 +298,8 @@ used for drawing scientific conclusions.</p>
     <p>A <a href='https://rdrr.io/pkg/SingleCellExperiment/man/SingleCellExperiment.html'>SingleCellExperiment</a> object.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>"scExample"</span>)</div></pre>
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='st'>"scExample"</span><span class='op'>)</span>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -252,11 +311,11 @@ used for drawing scientific conclusions.</p>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Joshua D. Campbell, David Jenkins, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, Emma Briars, Sebastian Carrasco Pro, W. Evan Johnson, Yusuke Koga, Shruthi Bandyadka, Anastasia Leshchyk, Rui Hong, Yichen Wang.</p>
+  <p>Developed by David Jenkins, Vidya Akavoor, Salam Alabdullatif, Shruthi Bandyadka, Emma Briars, Xinyun Cao, Sebastian Carrasco Pro, Tyler Faits, Rui Hong, Mohammed Muzamil Khan, Yusuke Koga, Anastasia Leshchyk, Irzam Sarfraz, Yichen Wang, Zhe Wang, W. Evan Johnson, Joshua David Campbell.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>
