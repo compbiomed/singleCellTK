@@ -127,7 +127,7 @@ shinyPanelCluster <- fluidPage(
       ),
       selectInput("clustVisReddim", "Use Reduction:", currreddim),
       withBusyIndicatorUI(actionButton("clustPlot", "Plot")),
-      plotOutput("clustVisPlot")
+      plotlyOutput("clustVisPlot")
     )
   )
 )
