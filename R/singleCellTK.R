@@ -15,11 +15,11 @@
 #' @examples
 #' \dontrun{
 #' #Upload data through the app
-#'   singleCellTK()
+#' singleCellTK()
 #'
 #' # Load the app with a SingleCellExperiment object
-#'   data("mouseBrainSubsetSCE")
-#'   singleCellTK(mouseBrainSubsetSCE)
+#' data("mouseBrainSubsetSCE")
+#' singleCellTK(mouseBrainSubsetSCE)
 #' }
 singleCellTK <- function(inSCE=NULL, includeVersion=TRUE, theme='yeti') {
   appDir <- system.file("shiny", package = "singleCellTK")

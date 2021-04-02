@@ -24,10 +24,10 @@ Use this function to run the single cell analysis app.
 \examples{
 \dontrun{
 #Upload data through the app
-  singleCellTK()
+singleCellTK()
 
 # Load the app with a SingleCellExperiment object
-  data("mouseBrainSubsetSCE")
-  singleCellTK(mouseBrainSubsetSCE)
+data("mouseBrainSubsetSCE")
+singleCellTK(mouseBrainSubsetSCE)
 }
 }
