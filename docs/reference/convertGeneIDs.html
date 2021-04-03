@@ -12,7 +12,7 @@
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
-<link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/cosmo/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/yeti/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
 
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
@@ -76,7 +76,7 @@ conversion." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.9.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.0</span>
       </span>
     </div>
 
@@ -93,10 +93,10 @@ conversion." />
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/import_scRNAseq_data_as_SCE_Commandline.html">Import data into SCTK</a>
+      <a href="../articles/cmd_import_scRNAseq_data_as_SCE.html">Import data into SCTK</a>
     </li>
     <li>
-      <a href="../articles/run_qcCommandline.html">Quality Control</a>
+      <a href="../articles/cmd_qc.html">Quality Control</a>
     </li>
   </ul>
 </li>
@@ -108,34 +108,34 @@ conversion." />
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/import_scRNAseq_data_as_SCE.html">Import data into SCTK</a>
+      <a href="../articles/cnsl_import_scRNAseq_data_as_SCE.html">Import data into SCTK</a>
     </li>
     <li>
-      <a href="../articles/run_qcConsole.html">Quality Control</a>
+      <a href="../articles/cnsl_qc.html">Quality Control</a>
     </li>
     <li>
-      <a href="../articles/normalization.html">Normalization</a>
+      <a href="../articles/cnsl_normalization.html">Normalization</a>
     </li>
     <li>
-      <a href="../articles/batch_correction.html">Batch Correction</a>
+      <a href="../articles/cnsl_batch_correction.html">Batch Correction</a>
     </li>
     <li>
-      <a href="../articles/variability.html">Variability</a>
+      <a href="../articles/cnsl_feature_selection.html">Feature Selection</a>
     </li>
     <li>
-      <a href="../articles/feature_selection.html">Feature Selection</a>
+      <a href="../articles/cnsl_clustering.html">Clustering</a>
     </li>
     <li>
-      <a href="../articles/differential_expression.html">Differential Expression</a>
+      <a href="../articles/cnsl_differential_expression.html">Differential Expression</a>
     </li>
     <li>
-      <a href="../articles/find_marker.html">Find Marker via DE</a>
+      <a href="../articles/cnsl_find_marker.html">Find Marker via DE</a>
     </li>
     <li>
-      <a href="../articles/visualize_results.html">Visualize Results</a>
+      <a href="../articles/cnsl_visualization.html">Visualization</a>
     </li>
     <li>
-      <a href="../articles/heatmap.html">Heatmap Visualization</a>
+      <a href="../articles/cnsl_heatmap.html">Heatmap Visualization</a>
     </li>
   </ul>
 </li>
@@ -146,17 +146,75 @@ conversion." />
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
-    <li>
-      <a href="../articles/ui_batch_correction.html">Batch Correction</a>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Import</a>
+      <ul class="dropdown-menu" role="menu">
+        <li>
+          <a href="../articles/ui_import_data.html">Data</a>
+        </li>
+        <li>
+          <a href="../articles/ui_import_genesets.html">Gene Sets</a>
+        </li>
+        <li>
+          <a href="../articles/ui_import_cell_annotation.html">Cell Annotation</a>
+        </li>
+        <li>
+          <a href="../articles/ui_import_feature_annotation.html">Feature Annotation</a>
+        </li>
+        <li>
+          <a href="../articles/ui_export_data.html">Export Data</a>
+        </li>
+        <li>
+          <a href="../articles/ui_delete_data.html">Delete Data</a>
+        </li>
+      </ul>
+    </li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">QC &amp; Filtering</a>
+      <ul class="dropdown-menu" role="menu">
+        <li>
+          <a href="../articles/ui_qc.html">Quality Control</a>
+        </li>
+        <li>
+          <a href="../articles/ui_filtering.html">Filtering</a>
+        </li>
+      </ul>
+    </li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Normalization &amp; Batch Correction</a>
+      <ul class="dropdown-menu" role="menu">
+        <li>
+          <a href="../articles/ui_normalization.html">Normalization</a>
+        </li>
+        <li>
+          <a href="../articles/ui_batch_correction.html">Batch Correction</a>
+        </li>
+      </ul>
+    </li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Feature Selection &amp; Dimensionality Reduction</a>
+      <ul class="dropdown-menu" role="menu">
+        <li>
+          <a href="../articles/ui_feature_selection.html">Feature Selection</a>
+        </li>
+        <li>
+          <a href="../articles/ui_dimred.html">Dimensionality Reduction</a>
+        </li>
+      </ul>
     </li>
     <li>
       <a href="../articles/ui_clustering.html">Clustering</a>
     </li>
-    <li>
-      <a href="../articles/ui_differential_expression.html">Differential Expression</a>
-    </li>
-    <li>
-      <a href="../articles/ui_find_marker.html">Find Marker</a>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Differential Expression &amp; Cell Type Labeling</a>
+      <ul class="dropdown-menu" role="menu">
+        <li>
+          <a href="../articles/ui_differential_expression.html">Differential Expression</a>
+        </li>
+        <li>
+          <a href="../articles/ui_find_marker.html">Find Marker</a>
+        </li>
+      </ul>
     </li>
     <li>
       <a href="../articles/ui_heatmap.html">Generic Heatmap</a>
@@ -170,7 +228,7 @@ conversion." />
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/compbiomed/singleCellTK">
-    <span class="fa fa-github"></span>
+    <span class="fas fa-github"></span>
      
   </a>
 </li>
@@ -200,7 +258,7 @@ your desired annotation, and remove any duplicate annotations after
 conversion.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>convertGeneIDs</span>(<span class='no'>inSCE</span>, <span class='no'>inSymbol</span>, <span class='no'>outSymbol</span>, <span class='kw'>database</span> <span class='kw'>=</span> <span class='st'>"org.Hs.eg.db"</span>)</pre>
+    <pre class="usage"><span class='fu'>convertGeneIDs</span><span class='op'>(</span><span class='va'>inSCE</span>, <span class='va'>inSymbol</span>, <span class='va'>outSymbol</span>, database <span class='op'>=</span> <span class='st'>"org.Hs.eg.db"</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -228,32 +286,33 @@ conversion.</p>
     <p>A SingleCellExperiment object with converted gene IDs.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>if</span>(<span class='fu'><a href='https://rdrr.io/r/base/ns-load.html'>requireNamespace</a></span>(<span class='st'>"org.Mm.eg.db"</span>, <span class='kw'>quietly</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)) {
+    <pre class="examples"><div class='input'><span class='kw'>if</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/ns-load.html'>requireNamespace</a></span><span class='op'>(</span><span class='st'>"org.Mm.eg.db"</span>, quietly <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>{</span>
   <span class='co'>#convert mouse gene symbols to ensembl IDs</span>
-  <span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='st'>"org.Mm.eg.db"</span>)
-  <span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>rownames</a></span>(<span class='no'>mouseBrainSubsetSCE</span>), <span class='fl'>50</span>)
-  <span class='no'>mouseBrainSubsetSymbol</span> <span class='kw'>&lt;-</span> <span class='fu'>convertGeneIDs</span>(<span class='kw'>inSCE</span> <span class='kw'>=</span> <span class='no'>mouseBrainSubsetSCE</span>,
-                                           <span class='kw'>inSymbol</span> <span class='kw'>=</span> <span class='st'>"SYMBOL"</span>,
-                                           <span class='kw'>outSymbol</span> <span class='kw'>=</span> <span class='st'>"ENSEMBL"</span>,
-                                           <span class='kw'>database</span> <span class='kw'>=</span> <span class='st'>"org.Mm.eg.db"</span>)
-  <span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>rownames</a></span>(<span class='no'>mouseBrainSubsetSymbol</span>), <span class='fl'>50</span>)
-}</div><div class='output co'>#&gt; </div><div class='output co'>#&gt; <span class='message'>Loading required package: AnnotationDbi</span></div><div class='output co'>#&gt; <span class='message'>'select()' returned 1:many mapping between keys and columns</span></div><div class='output co'>#&gt; <span class='message'>109 ENSEMBL are NA after conversion. Removing</span></div><div class='output co'>#&gt; <span class='message'>34 SYMBOL are duplicated after conversion. Removing additional copies</span></div><div class='output co'>#&gt; <span class='message'>2314 SYMBOL originally, 2205 ENSEMBLs</span></div><div class='output co'>#&gt;  [1] "ENSMUSG00000028719" "ENSMUSG00000050854" "ENSMUSG00000026867"
-#&gt;  [4] "ENSMUSG00000026853" "ENSMUSG00000068039" "ENSMUSG00000026234"
-#&gt;  [7] "ENSMUSG00000030824" "ENSMUSG00000094870" "ENSMUSG00000033379"
-#&gt; [10] "ENSMUSG00000019362" "ENSMUSG00000094483" "ENSMUSG00000046985"
-#&gt; [13] "ENSMUSG00000039361" "ENSMUSG00000026204" "ENSMUSG00000024597"
-#&gt; [16] "ENSMUSG00000022337" "ENSMUSG00000021024" "ENSMUSG00000036402"
-#&gt; [19] "ENSMUSG00000050121" "ENSMUSG00000006800" "ENSMUSG00000033184"
-#&gt; [22] "ENSMUSG00000005312" "ENSMUSG00000037826" "ENSMUSG00000003974"
-#&gt; [25] "ENSMUSG00000073676" "ENSMUSG00000028568" "ENSMUSG00000040249"
-#&gt; [28] "ENSMUSG00000033004" "ENSMUSG00000015850" "ENSMUSG00000028484"
-#&gt; [31] "ENSMUSG00000029461" "ENSMUSG00000000131" "ENSMUSG00000063229"
-#&gt; [34] "ENSMUSG00000050708" "ENSMUSG00000032026" "ENSMUSG00000066551"
-#&gt; [37] "ENSMUSG00000006005" "ENSMUSG00000020831" "ENSMUSG00000004151"
-#&gt; [40] "ENSMUSG00000054162" "ENSMUSG00000027642" "ENSMUSG00000009013"
-#&gt; [43] "ENSMUSG00000047675" "ENSMUSG00000015961" "ENSMUSG00000022283"
-#&gt; [46] "ENSMUSG00000000346" "ENSMUSG00000037062" "ENSMUSG00000060703"
-#&gt; [49] "ENSMUSG00000029405" "ENSMUSG00000027523"</div><div class='input'>
+  <span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='st'>"org.Mm.eg.db"</span><span class='op'>)</span>
+  <span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>rownames</a></span><span class='op'>(</span><span class='va'>mouseBrainSubsetSCE</span><span class='op'>)</span>, <span class='fl'>50</span><span class='op'>)</span>
+  <span class='va'>mouseBrainSubsetSymbol</span> <span class='op'>&lt;-</span> <span class='fu'>convertGeneIDs</span><span class='op'>(</span>inSCE <span class='op'>=</span> <span class='va'>mouseBrainSubsetSCE</span>,
+                                           inSymbol <span class='op'>=</span> <span class='st'>"SYMBOL"</span>,
+                                           outSymbol <span class='op'>=</span> <span class='st'>"ENSEMBL"</span>,
+                                           database <span class='op'>=</span> <span class='st'>"org.Mm.eg.db"</span><span class='op'>)</span>
+  <span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>rownames</a></span><span class='op'>(</span><span class='va'>mouseBrainSubsetSymbol</span><span class='op'>)</span>, <span class='fl'>50</span><span class='op'>)</span>
+<span class='op'>}</span>
+</div><div class='output co'>#&gt; </div><div class='output co'>#&gt; <span class='message'>'select()' returned 1:many mapping between keys and columns</span></div><div class='output co'>#&gt; <span class='message'>127 ENSEMBL are NA after conversion. Removing</span></div><div class='output co'>#&gt; <span class='message'>29 SYMBOL are duplicated after conversion. Removing additional copies</span></div><div class='output co'>#&gt; <span class='message'>2314 SYMBOL originally, 2187 ENSEMBLs</span></div><div class='output co'>#&gt;  [1] "ENSMUSG00000028797" "ENSMUSG00000066129" "ENSMUSG00000002102"
+#&gt;  [4] "ENSMUSG00000027087" "ENSMUSG00000024194" "ENSMUSG00000006005"
+#&gt;  [7] "ENSMUSG00000030726" "ENSMUSG00000021796" "ENSMUSG00000028790"
+#&gt; [10] "ENSMUSG00000031812" "ENSMUSG00000026509" "ENSMUSG00000062234"
+#&gt; [13] "ENSMUSG00000030663" "ENSMUSG00000024952" "ENSMUSG00000057134"
+#&gt; [16] "ENSMUSG00000022404" "ENSMUSG00000091803" "ENSMUSG00000026675"
+#&gt; [19] "ENSMUSG00000003534" "ENSMUSG00000006800" "ENSMUSG00000024853"
+#&gt; [22] "ENSMUSG00000041685" "ENSMUSG00000026833" "ENSMUSG00000020431"
+#&gt; [25] "ENSMUSG00000073676" "ENSMUSG00000057236" "ENSMUSG00000000581"
+#&gt; [28] "ENSMUSG00000013236" "ENSMUSG00000005125" "ENSMUSG00000107722"
+#&gt; [31] "ENSMUSG00000032637" "ENSMUSG00000059119" "ENSMUSG00000021670"
+#&gt; [34] "ENSMUSG00000026421" "ENSMUSG00000052698" "ENSMUSG00000053119"
+#&gt; [37] "ENSMUSG00000038936" "ENSMUSG00000010277" "ENSMUSG00000059173"
+#&gt; [40] "ENSMUSG00000039716" "ENSMUSG00000019528" "ENSMUSG00000031342"
+#&gt; [43] "ENSMUSG00000028795" "ENSMUSG00000037608" "ENSMUSG00000022427"
+#&gt; [46] "ENSMUSG00000000326" "ENSMUSG00000035649" "ENSMUSG00000071866"
+#&gt; [49] "ENSMUSG00000027457" "ENSMUSG00000027523"</div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -266,11 +325,11 @@ conversion.</p>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Joshua D. Campbell, David Jenkins, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, Emma Briars, Sebastian Carrasco Pro, W. Evan Johnson, Yusuke Koga, Shruthi Bandyadka, Anastasia Leshchyk, Rui Hong, Yichen Wang.</p>
+  <p>Developed by David Jenkins, Vidya Akavoor, Salam Alabdullatif, Shruthi Bandyadka, Emma Briars, Xinyun Cao, Sebastian Carrasco Pro, Tyler Faits, Rui Hong, Mohammed Muzamil Khan, Yusuke Koga, Anastasia Leshchyk, Irzam Sarfraz, Yichen Wang, Zhe Wang, W. Evan Johnson, Joshua David Campbell.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

@@ -7,13 +7,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>seuratSCTransform
-Runs the <a href='https://rdrr.io/pkg/Seurat/man/SCTransform.html'>SCTransform</a> function to transform/normalize the input data — seuratSCTransform • singleCellTK</title>
+Runs the SCTransform function to transform/normalize the input data — seuratSCTransform • singleCellTK</title>
 
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
-<link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/cosmo/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/yeti/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
 
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
@@ -41,7 +41,7 @@ Runs the <a href='https://rdrr.io/pkg/Seurat/man/SCTransform.html'>SCTransform</
 
 
 <meta property="og:title" content="seuratSCTransform
-Runs the <a href='https://rdrr.io/pkg/Seurat/man/SCTransform.html'>SCTransform</a> function to transform/normalize the input data — seuratSCTransform" />
+Runs the SCTransform function to transform/normalize the input data — seuratSCTransform" />
 <meta property="og:description" content="seuratSCTransform
 Runs the SCTransform function to transform/normalize the input data" />
 
@@ -75,7 +75,7 @@ Runs the SCTransform function to transform/normalize the input data" />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.9.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.0</span>
       </span>
     </div>
 
@@ -92,10 +92,10 @@ Runs the SCTransform function to transform/normalize the input data" />
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/import_scRNAseq_data_as_SCE_Commandline.html">Import data into SCTK</a>
+      <a href="../articles/cmd_import_scRNAseq_data_as_SCE.html">Import data into SCTK</a>
     </li>
     <li>
-      <a href="../articles/run_qcCommandline.html">Quality Control</a>
+      <a href="../articles/cmd_qc.html">Quality Control</a>
     </li>
   </ul>
 </li>
@@ -107,34 +107,34 @@ Runs the SCTransform function to transform/normalize the input data" />
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/import_scRNAseq_data_as_SCE.html">Import data into SCTK</a>
+      <a href="../articles/cnsl_import_scRNAseq_data_as_SCE.html">Import data into SCTK</a>
     </li>
     <li>
-      <a href="../articles/run_qcConsole.html">Quality Control</a>
+      <a href="../articles/cnsl_qc.html">Quality Control</a>
     </li>
     <li>
-      <a href="../articles/normalization.html">Normalization</a>
+      <a href="../articles/cnsl_normalization.html">Normalization</a>
     </li>
     <li>
-      <a href="../articles/batch_correction.html">Batch Correction</a>
+      <a href="../articles/cnsl_batch_correction.html">Batch Correction</a>
     </li>
     <li>
-      <a href="../articles/variability.html">Variability</a>
+      <a href="../articles/cnsl_feature_selection.html">Feature Selection</a>
     </li>
     <li>
-      <a href="../articles/feature_selection.html">Feature Selection</a>
+      <a href="../articles/cnsl_clustering.html">Clustering</a>
     </li>
     <li>
-      <a href="../articles/differential_expression.html">Differential Expression</a>
+      <a href="../articles/cnsl_differential_expression.html">Differential Expression</a>
     </li>
     <li>
-      <a href="../articles/find_marker.html">Find Marker via DE</a>
+      <a href="../articles/cnsl_find_marker.html">Find Marker via DE</a>
     </li>
     <li>
-      <a href="../articles/visualize_results.html">Visualize Results</a>
+      <a href="../articles/cnsl_visualization.html">Visualization</a>
     </li>
     <li>
-      <a href="../articles/heatmap.html">Heatmap Visualization</a>
+      <a href="../articles/cnsl_heatmap.html">Heatmap Visualization</a>
     </li>
   </ul>
 </li>
@@ -145,17 +145,75 @@ Runs the SCTransform function to transform/normalize the input data" />
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
-    <li>
-      <a href="../articles/ui_batch_correction.html">Batch Correction</a>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Import</a>
+      <ul class="dropdown-menu" role="menu">
+        <li>
+          <a href="../articles/ui_import_data.html">Data</a>
+        </li>
+        <li>
+          <a href="../articles/ui_import_genesets.html">Gene Sets</a>
+        </li>
+        <li>
+          <a href="../articles/ui_import_cell_annotation.html">Cell Annotation</a>
+        </li>
+        <li>
+          <a href="../articles/ui_import_feature_annotation.html">Feature Annotation</a>
+        </li>
+        <li>
+          <a href="../articles/ui_export_data.html">Export Data</a>
+        </li>
+        <li>
+          <a href="../articles/ui_delete_data.html">Delete Data</a>
+        </li>
+      </ul>
+    </li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">QC &amp; Filtering</a>
+      <ul class="dropdown-menu" role="menu">
+        <li>
+          <a href="../articles/ui_qc.html">Quality Control</a>
+        </li>
+        <li>
+          <a href="../articles/ui_filtering.html">Filtering</a>
+        </li>
+      </ul>
+    </li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Normalization &amp; Batch Correction</a>
+      <ul class="dropdown-menu" role="menu">
+        <li>
+          <a href="../articles/ui_normalization.html">Normalization</a>
+        </li>
+        <li>
+          <a href="../articles/ui_batch_correction.html">Batch Correction</a>
+        </li>
+      </ul>
+    </li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Feature Selection &amp; Dimensionality Reduction</a>
+      <ul class="dropdown-menu" role="menu">
+        <li>
+          <a href="../articles/ui_feature_selection.html">Feature Selection</a>
+        </li>
+        <li>
+          <a href="../articles/ui_dimred.html">Dimensionality Reduction</a>
+        </li>
+      </ul>
     </li>
     <li>
       <a href="../articles/ui_clustering.html">Clustering</a>
     </li>
-    <li>
-      <a href="../articles/ui_differential_expression.html">Differential Expression</a>
-    </li>
-    <li>
-      <a href="../articles/ui_find_marker.html">Find Marker</a>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Differential Expression &amp; Cell Type Labeling</a>
+      <ul class="dropdown-menu" role="menu">
+        <li>
+          <a href="../articles/ui_differential_expression.html">Differential Expression</a>
+        </li>
+        <li>
+          <a href="../articles/ui_find_marker.html">Find Marker</a>
+        </li>
+      </ul>
     </li>
     <li>
       <a href="../articles/ui_heatmap.html">Generic Heatmap</a>
@@ -169,7 +227,7 @@ Runs the SCTransform function to transform/normalize the input data" />
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/compbiomed/singleCellTK">
-    <span class="fa fa-github"></span>
+    <span class="fas fa-github"></span>
      
   </a>
 </li>
@@ -187,17 +245,22 @@ Runs the SCTransform function to transform/normalize the input data" />
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>seuratSCTransform
-Runs the <a href='https://rdrr.io/pkg/Seurat/man/SCTransform.html'>SCTransform</a> function to transform/normalize the input data</h1>
+Runs the <a href='https://satijalab.org/seurat/reference/SCTransform.html'>SCTransform</a> function to transform/normalize the input data</h1>
     <small class="dont-index">Source: <a href='https://github.com/compbiomed/singleCellTK/blob/master/R/seuratFunctions.R'><code>R/seuratFunctions.R</code></a></small>
     <div class="hidden name"><code>seuratSCTransform.Rd</code></div>
     </div>
 
     <div class="ref-description">
     <p>seuratSCTransform
-Runs the <a href='https://rdrr.io/pkg/Seurat/man/SCTransform.html'>SCTransform</a> function to transform/normalize the input data</p>
+Runs the <a href='https://satijalab.org/seurat/reference/SCTransform.html'>SCTransform</a> function to transform/normalize the input data</p>
     </div>
 
-    <pre class="usage"><span class='fu'>seuratSCTransform</span>(<span class='no'>inSCE</span>, <span class='kw'>normAssayName</span> <span class='kw'>=</span> <span class='st'>"SCTCounts"</span>, <span class='kw'>useAssay</span> <span class='kw'>=</span> <span class='st'>"counts"</span>)</pre>
+    <pre class="usage"><span class='fu'>seuratSCTransform</span><span class='op'>(</span>
+  <span class='va'>inSCE</span>,
+  normAssayName <span class='op'>=</span> <span class='st'>"SCTCounts"</span>,
+  useAssay <span class='op'>=</span> <span class='st'>"counts"</span>,
+  verbose <span class='op'>=</span> <span class='cn'>TRUE</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -214,6 +277,11 @@ Runs the <a href='https://rdrr.io/pkg/Seurat/man/SCTransform.html'>SCTransform</
       <th>useAssay</th>
       <td><p>Name for the input data assay. Default <code>"counts"</code>.</p></td>
     </tr>
+    <tr>
+      <th>verbose</th>
+      <td><p>Logical value indicating if informative messages should 
+be displayed. Default is <code>TRUE</code>.</p></td>
+    </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
@@ -221,8 +289,9 @@ Runs the <a href='https://rdrr.io/pkg/Seurat/man/SCTransform.html'>SCTransform</
     <p>Updated SingleCellExperiment object containing the transformed data</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='no'>sce_chcl</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"scds"</span>)
-<span class='no'>sce_chcl</span> <span class='kw'>&lt;-</span> <span class='fu'>seuratSCTransform</span>(<span class='no'>sce_chcl</span>, <span class='st'>"SCTCounts"</span>, <span class='st'>"counts"</span>)</div><div class='output co'>#&gt; <span class='message'>Calculating cell attributes for input UMI matrix</span></div><div class='output co'>#&gt; <span class='message'>Variance stabilizing transformation of count matrix of size 1260 by 2000</span></div><div class='output co'>#&gt; <span class='message'>Model formula is y ~ log_umi</span></div><div class='output co'>#&gt; <span class='message'>Get Negative Binomial regression parameters per gene</span></div><div class='output co'>#&gt; <span class='message'>Using 1260 genes, 2000 cells</span></div><div class='output co'>#&gt;   |                                                                              |                                                                      |   0%  |                                                                              |==============                                                        |  20%  |                                                                              |============================                                          |  40%  |                                                                              |==========================================                            |  60%  |                                                                              |========================================================              |  80%  |                                                                              |======================================================================| 100%</div><div class='output co'>#&gt; <span class='message'>Found 9 outliers - those will be ignored in fitting/regularization step</span></div><div class='output co'>#&gt; <span class='message'>Second step: Get residuals using fitted parameters for 1260 genes</span></div><div class='output co'>#&gt;   |                                                                              |                                                                      |   0%  |                                                                              |==============                                                        |  20%  |                                                                              |============================                                          |  40%  |                                                                              |==========================================                            |  60%  |                                                                              |========================================================              |  80%  |                                                                              |======================================================================| 100%</div><div class='output co'>#&gt; <span class='message'>Calculating gene attributes</span></div><div class='output co'>#&gt; <span class='message'>Wall clock passed: Time difference of 20.35627 secs</span></div><div class='output co'>#&gt; <span class='message'>Determine variable features</span></div><div class='output co'>#&gt; <span class='message'>Set 1260 variable features</span></div><div class='output co'>#&gt; <span class='message'>Centering data matrix</span></div><div class='output co'>#&gt; <span class='message'>Set default assay to SCTransform</span></div></pre>
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>sce_chcl</span>, package <span class='op'>=</span> <span class='st'>"scds"</span><span class='op'>)</span>
+<span class='va'>sce_chcl</span> <span class='op'>&lt;-</span> <span class='fu'>seuratSCTransform</span><span class='op'>(</span><span class='va'>sce_chcl</span>, <span class='st'>"SCTCounts"</span>, <span class='st'>"counts"</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'>Calculating cell attributes from input UMI matrix: log_umi</span></div><div class='output co'>#&gt; <span class='message'>Variance stabilizing transformation of count matrix of size 1260 by 2000</span></div><div class='output co'>#&gt; <span class='message'>Model formula is y ~ log_umi</span></div><div class='output co'>#&gt; <span class='message'>Get Negative Binomial regression parameters per gene</span></div><div class='output co'>#&gt; <span class='message'>Using 1260 genes, 2000 cells</span></div><div class='output co'>#&gt;   |                                                                              |                                                                      |   0%  |                                                                              |=======================                                               |  33%  |                                                                              |===============================================                       |  67%  |                                                                              |======================================================================| 100%</div><div class='output co'>#&gt; <span class='message'>Found 62 outliers - those will be ignored in fitting/regularization step</span></div><div class='output co'>#&gt; <span class='message'>Second step: Get residuals using fitted parameters for 1260 genes</span></div><div class='output co'>#&gt;   |                                                                              |                                                                      |   0%  |                                                                              |=======================                                               |  33%  |                                                                              |===============================================                       |  67%  |                                                                              |======================================================================| 100%</div><div class='output co'>#&gt; <span class='message'>Calculating gene attributes</span></div><div class='output co'>#&gt; <span class='message'>Wall clock passed: Time difference of 13.52833 secs</span></div><div class='output co'>#&gt; <span class='message'>Determine variable features</span></div><div class='output co'>#&gt; <span class='message'>Centering data matrix</span></div><div class='output co'>#&gt; <span class='message'>Set default assay to SCTransform</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -234,11 +303,11 @@ Runs the <a href='https://rdrr.io/pkg/Seurat/man/SCTransform.html'>SCTransform</
 
       <footer>
       <div class="copyright">
-  <p>Developed by Joshua D. Campbell, David Jenkins, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, Emma Briars, Sebastian Carrasco Pro, W. Evan Johnson, Yusuke Koga, Shruthi Bandyadka, Anastasia Leshchyk, Rui Hong, Yichen Wang.</p>
+  <p>Developed by David Jenkins, Vidya Akavoor, Salam Alabdullatif, Shruthi Bandyadka, Emma Briars, Xinyun Cao, Sebastian Carrasco Pro, Tyler Faits, Rui Hong, Mohammed Muzamil Khan, Yusuke Koga, Anastasia Leshchyk, Irzam Sarfraz, Yichen Wang, Zhe Wang, W. Evan Johnson, Joshua David Campbell.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

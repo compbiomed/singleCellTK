@@ -13,13 +13,13 @@ This section describes the usage of the user interface (UI) for singleCellTK (SC
 
 From anywhere of the UI, the panel for normalization and batch correction can be accessed from the top navigation panel at the circled tab. After this, click on the second circled tab to enter the sub-page for batch correction.  
 
-![Entry](bc_ui_entry.png)\
+![Entry](ui_screenshots/batch_correction/bc_ui_entry.png)\
 
 The UI is constructed in a sidebar style, where the left-sided sidebar works for setting the parameters and running the batch correction, and the right part main panel is for visualization checking.  
 
 ### Running Batch Correction
 
-![Parameters](bc_ui_param.png)\
+![Parameters](ui_screenshots/batch_correction/bc_ui_param.png)\
 
 For running any types of batch correction, there are always three essential inputs that users should be sure with:  
 
@@ -31,7 +31,7 @@ After the batch correction method is confirmed, the lower part will dynamically 
 
 ### Visualization
 
-![Visualization](bc_ui_vis.png)\
+![Visualization](ui_screenshots/batch_correction/bc_ui_vis.png)\
 
 SCTK adopts to approach to demonstrate the effect of batch correction. First, SCTK attempts to plot the variance explained by annotations calculated with the assay to correct and the output data matrix. And second, SCTK plots the PCA projections of the assay selected for correction, and the output corrected data matrix. For both cases, user should use the same batch annotation as used when running the algorithm to see a plausible result.  
 

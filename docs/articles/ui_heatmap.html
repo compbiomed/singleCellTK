@@ -104,21 +104,76 @@
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
+<li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Import</a>
+      <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../articles/ui_import_datasets.html">Import Datasets</a>
-    </li>
-    <li>
-      <a href="../articles/ui_batch_correction.html">Batch Correction</a>
-    </li>
+          <a href="../articles/ui_import_data.html">Data</a>
+        </li>
+        <li>
+          <a href="../articles/ui_import_genesets.html">Gene Sets</a>
+        </li>
+        <li>
+          <a href="../articles/ui_import_cell_annotation.html">Cell Annotation</a>
+        </li>
+        <li>
+          <a href="../articles/ui_import_feature_annotation.html">Feature Annotation</a>
+        </li>
+        <li>
+          <a href="../articles/ui_export_data.html">Export Data</a>
+        </li>
+        <li>
+          <a href="../articles/ui_delete_data.html">Delete Data</a>
+        </li>
+      </ul>
+</li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">QC &amp; Filtering</a>
+      <ul class="dropdown-menu" role="menu">
+<li>
+          <a href="../articles/ui_qc.html">Quality Control</a>
+        </li>
+        <li>
+          <a href="../articles/ui_filtering.html">Filtering</a>
+        </li>
+      </ul>
+</li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Normalization &amp; Batch Correction</a>
+      <ul class="dropdown-menu" role="menu">
+<li>
+          <a href="../articles/ui_normalization.html">Normalization</a>
+        </li>
+        <li>
+          <a href="../articles/ui_batch_correction.html">Batch Correction</a>
+        </li>
+      </ul>
+</li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Feature Selection &amp; Dimensionality Reduction</a>
+      <ul class="dropdown-menu" role="menu">
+<li>
+          <a href="../articles/ui_feature_selection.html">Feature Selection</a>
+        </li>
+        <li>
+          <a href="../articles/ui_dimred.html">Dimensionality Reduction</a>
+        </li>
+      </ul>
+</li>
     <li>
       <a href="../articles/ui_clustering.html">Clustering</a>
     </li>
-    <li>
-      <a href="../articles/ui_differential_expression.html">Differential Expression</a>
-    </li>
-    <li>
-      <a href="../articles/ui_find_marker.html">Find Marker</a>
-    </li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Differential Expression &amp; Cell Type Labeling</a>
+      <ul class="dropdown-menu" role="menu">
+<li>
+          <a href="../articles/ui_differential_expression.html">Differential Expression</a>
+        </li>
+        <li>
+          <a href="../articles/ui_find_marker.html">Find Marker</a>
+        </li>
+      </ul>
+</li>
     <li>
       <a href="../articles/ui_heatmap.html">Generic Heatmap</a>
     </li>
@@ -145,7 +200,7 @@
 
       
 
-      </header><script src="ui_heatmap_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+      </header><script src="ui_heatmap_files/header-attrs-2.7/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Heatmap - UI</h1>
@@ -168,43 +223,43 @@
 <h2 class="hasAnchor">
 <a href="#ui-layout" class="anchor"></a>UI Layout</h2>
 <div class="figure">
-<img src="hm_ui_entry.png" alt=""><p class="caption">entry</p>
+<img src="ui_screenshots/heatmap/hm_ui_entry.png" alt=""><p class="caption">entry</p>
 </div>
 <p>The UI for plotting a generic heatmap is constructed with 5 sections: data input, data subsetting, annotation adding, parameter setting, and finally, plotting.</p>
 <div id="data-input" class="section level3">
 <h3 class="hasAnchor">
 <a href="#data-input" class="anchor"></a>Data Input</h3>
-<p><img src="hm_ui_main1.png" style="border: 1px solid rgba(0,0,0,0.2)"></p>
+<p><img src="ui_screenshots/heatmap/hm_ui_main1.png" style="border: 1px solid rgba(0,0,0,0.2)"></p>
 <p>The data used for plotting a heatmap can only be a feature expression matrix, technically called <code>assay</code> in R language. This will be set at the selection input <strong>“Assay to Plot”</strong>.</p>
 <p>There is a second selection called <strong>“Import from analysis”</strong> which is used for the fast setting of plotting a differential expression (DE) analysis or marker detection specific style. The detail of this feature will be introduced <a href="#additional-usage">later</a>.</p>
 </div>
 <div id="data-subsetting" class="section level3">
 <h3 class="hasAnchor">
 <a href="#data-subsetting" class="anchor"></a>Data Subsetting</h3>
-<p><img src="hm_ui_main2_1.png" style="border: 1px solid rgba(0,0,0,0.2)"></p>
+<p><img src="ui_screenshots/heatmap/hm_ui_main2_1.png" style="border: 1px solid rgba(0,0,0,0.2)"></p>
 <p>Similar to the condition definition in the DE analysis panel, here SCTK also adopts a data table to do a filtering and select the cells and features, in order to maintain the maximum flexibility. By default, all the cell annotation available will be displayed as shown in the screenshot above, as well as the feature annotation.</p>
 <p>Generally, to make a selection, users will first find the annotations which can define the cells or features of interests, apply the filter, and then press <strong>“Add all filtered”</strong> to finish the selection.</p>
 <p>To make the operation cleaner, user can choose to only display the annotation classes of interests at the multi-selection input <strong>“Columns to display”</strong>. The outcome will look like the screenshot below.</p>
-<p><img src="hm_ui_main2_1_2.png" style="border: 1px solid rgba(0,0,0,0.2)"></p>
+<p><img src="ui_screenshots/heatmap/hm_ui_main2_1_2.png" style="border: 1px solid rgba(0,0,0,0.2)"></p>
 <p>The screenshot above also demonstrates one type of annotation filtering - by category. When the annotation of interests is categorical (in terms of R language, a <code>character</code> or <code>logical</code> vector or a <code>factor</code>), filters can be applied by selecting the categories of interest. While the screenshots below demonstrates another type of filering - by limiting a range to a continuous data (in R, a <code>numeric</code> or <code>integer</code> vector).</p>
-<p><img src="hm_ui_main2_1_3.png" style="border: 1px solid rgba(0,0,0,0.2)"></p>
+<p><img src="ui_screenshots/heatmap/hm_ui_main2_1_3.png" style="border: 1px solid rgba(0,0,0,0.2)"></p>
 <p>Finally, if no annotation is available, or if users are not sure what annotation to use, SCTK provides a third tab that allows direct pasting a list of unique cell/feature identifiers. As shown below:</p>
-<p><img src="hm_ui_main2_2.png" style="border: 1px solid rgba(0,0,0,0.2)"></p>
+<p><img src="ui_screenshots/heatmap/hm_ui_main2_2.png" style="border: 1px solid rgba(0,0,0,0.2)"></p>
 <p>The identifiers pasted to the text box should be able to uniquely identify the cells or features, and they have to be able to be found in the background information (i.e. the background SingleCellExperiment [SCE] object). However, they do not necessarily have to be the default identifiers. That is to say, identifiers that can be found in existing annotation are also acceptable. To accomplish this, users only need to select what class of annotation they intend to use at the selection input <strong>“Match input cell/feature identifiers by”</strong>. Note that the option “Row Names” indicates the default identifier when no annotation is available. For example, usually in a “cellRanger” style data, the default feature identifiers would usually be “Ensembl IDs”, while “gene symbols” will be embedded in the feature annotation. When users only have a list of genes symbol, they can directly use this list, and select the annotation for “gene symbol”, instead of going for some other external tools to transfer the “symbols” into “IDs”.</p>
 </div>
 <div id="annotation-adding" class="section level3">
 <h3 class="hasAnchor">
 <a href="#annotation-adding" class="anchor"></a>Annotation Adding</h3>
-<p><img src="hm_ui_main3_1.png" style="border: 1px solid rgba(0,0,0,0.2)"></p>
+<p><img src="ui_screenshots/heatmap/hm_ui_main3_1.png" style="border: 1px solid rgba(0,0,0,0.2)"></p>
 <p>In this sub-panel, users can attach the annotations to be shown in the heatmap legend, and changes in colors are allowed. As mentioned previously, there are two types of values - categorical and continuous. For categorical information, the color setting will look like the screenshot above. All categories will be displayed with a color input.</p>
-<p><img src="hm_ui_main3_2.png" style="border: 1px solid rgba(0,0,0,0.2)"></p>
+<p><img src="ui_screenshots/heatmap/hm_ui_main3_2.png" style="border: 1px solid rgba(0,0,0,0.2)"></p>
 <p>While for a continuous value, users will still be asked if the value is categorical or continuous. The reason is that, technically, sometimes there are annotations generated in a continuous numeric data type but indicating categorical information, such as clusters labeled with integers. If users select “Categorical”, the similar color selections will be displayed as in the previous screenshot. If “Continuous” is selected, a different color selection UI will be shown, as the screenshot above. Here users will be asked to set two colors for a color gradient.</p>
 <p>Note that when categorical annotation is wanted but too many categories are detected, SCTK will not display any color selection, in order to avoid a UI “overflow”.</p>
 </div>
 <div id="other-parameters" class="section level3">
 <h3 class="hasAnchor">
 <a href="#other-parameters" class="anchor"></a>Other Parameters</h3>
-<p><img src="hm_ui_main4.png" style="border: 1px solid rgba(0,0,0,0.2)"></p>
+<p><img src="ui_screenshots/heatmap/hm_ui_main4.png" style="border: 1px solid rgba(0,0,0,0.2)"></p>
 <p>This is the last sub-panel for the generic heatmap setting.</p>
 <ul>
 <li>Heatmap splitting - multi-selection inputs <strong>“Split columns (cell) by”</strong> and <strong>“Split rows (feature) by”</strong>. By splitting the heatmap in row/column, the clustering of rows/columns will be performed in each splitted group separately. The procedure is also called semi-heatmap in some cases.</li>
@@ -218,7 +273,7 @@
 <div id="plotting-region" class="section level3">
 <h3 class="hasAnchor">
 <a href="#plotting-region" class="anchor"></a>Plotting Region</h3>
-<p><img src="hm_ui_plot1.png" style="border: 1px solid rgba(0,0,0,0.2)"></p>
+<p><img src="ui_screenshots/heatmap/hm_ui_plot1.png" style="border: 1px solid rgba(0,0,0,0.2)"></p>
 <p>By applying all the settings shown in the screenshots of the previous sections, a heatmap in the screenshot above will be generated, by clicking on the button <strong>“Plot Heatmap”</strong>.</p>
 </div>
 </div>
@@ -226,14 +281,14 @@
 <h2 class="hasAnchor">
 <a href="#additional-usage" class="anchor"></a>Additional Usage</h2>
 <p>The documentation above is for the general usage of SCTK Heatmap page. While heatmap is an important visualization method for other analysis, SCTK allows importing some types analysis results. Currently, DE analysis and marker detection results are supported. Here, we will present an example of importing the DE analysis result, which was produced in the <a href="ui_differential_expression.html">DE UI documentation</a>.</p>
-<p><img src="hm_ui_de_1.png" style="border: 1px solid rgba(0,0,0,0.2)"></p>
+<p><img src="ui_screenshots/heatmap/hm_ui_de_1.png" style="border: 1px solid rgba(0,0,0,0.2)"></p>
 <p>First, users need to go back to the top of the Heatmap panel, and find <strong>“Import from analysis”</strong> selection input. On selecting <code>"Differential Expression"</code>, the session will scan the background data and show a list of the analysis information for users to choose from. After selecting the analysis of interests, click <strong>“Import”</strong>.</p>
 <p>The import functionality will automatically fill most of the options afterwards, including making up some temporary DE specific annotations and subset the data accordingly.</p>
-<p><img src="hm_ui_de_2.png" style="border: 1px solid rgba(0,0,0,0.2)"><img src="hm_ui_de_3.png" style="border: 1px solid rgba(0,0,0,0.2)"></p>
+<p><img src="ui_screenshots/heatmap/hm_ui_de_2.png" style="border: 1px solid rgba(0,0,0,0.2)"><img src="ui_screenshots/heatmap/hm_ui_de_3.png" style="border: 1px solid rgba(0,0,0,0.2)"></p>
 <p>Note that the features automatically selected are all of the ones stored to the result. In other words, this is affected by the parameters used when running the DE analysis. However, sometimes users might not want to plot all of them but apply some further filters instead. For example, using features with the absolute value of Log2FC greater than <code>1</code> usually produces cleaner figure, than setting that bound to <code>0.25</code>. To apply this filter in the UI, users need to click on the input box below the column title in the table. If the column is for categorical information, then just click on the categories of interests; else if it is numeric, users can either manually drag the sliders or type a “formula” into the input box. The formula follows the rule: <code>{low}...{high}</code>, where one of the two bounds can be omitted for a one-end range. For example if users want to apply a filter described above for Log2FC values, they need to first click <strong>“Clear selection”</strong>, type <code>1...</code> , click <strong>“Add all filtered”</strong>, then type <code>...-1</code>, and click <strong>“Add all filtered”</strong> again.</p>
-<p><img src="hm_ui_de_8.png" style="border: 1px solid rgba(0,0,0,0.2)"></p>
+<p><img src="ui_screenshots/heatmap/hm_ui_de_8.png" style="border: 1px solid rgba(0,0,0,0.2)"></p>
 <p>Other heatmap settings will also be automatically filled for a DE specific heatmap.</p>
-<p><img src="hm_ui_de_4.png" style="border: 1px solid rgba(0,0,0,0.2)"><img src="hm_ui_de_5.png" style="border: 1px solid rgba(0,0,0,0.2)"><img src="hm_ui_de_6.png" style="border: 1px solid rgba(0,0,0,0.2)"><img src="hm_ui_de_7.png" style="border: 1px solid rgba(0,0,0,0.2)"></p>
+<p><img src="ui_screenshots/heatmap/hm_ui_de_4.png" style="border: 1px solid rgba(0,0,0,0.2)"><img src="ui_screenshots/heatmap/hm_ui_de_5.png" style="border: 1px solid rgba(0,0,0,0.2)"><img src="ui_screenshots/heatmap/hm_ui_de_6.png" style="border: 1px solid rgba(0,0,0,0.2)"><img src="ui_screenshots/heatmap/hm_ui_de_7.png" style="border: 1px solid rgba(0,0,0,0.2)"></p>
 </div>
   </div>
 

@@ -13,7 +13,7 @@ identified by differential expression analysis — plotDEGRegression • singleC
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
-<link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/cosmo/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/yeti/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
 
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
@@ -75,7 +75,7 @@ identified by differential expression analysis" />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.9.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.0</span>
       </span>
     </div>
 
@@ -92,10 +92,10 @@ identified by differential expression analysis" />
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/import_scRNAseq_data_as_SCE_Commandline.html">Import data into SCTK</a>
+      <a href="../articles/cmd_import_scRNAseq_data_as_SCE.html">Import data into SCTK</a>
     </li>
     <li>
-      <a href="../articles/run_qcCommandline.html">Quality Control</a>
+      <a href="../articles/cmd_qc.html">Quality Control</a>
     </li>
   </ul>
 </li>
@@ -107,34 +107,34 @@ identified by differential expression analysis" />
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/import_scRNAseq_data_as_SCE.html">Import data into SCTK</a>
+      <a href="../articles/cnsl_import_scRNAseq_data_as_SCE.html">Import data into SCTK</a>
     </li>
     <li>
-      <a href="../articles/run_qcConsole.html">Quality Control</a>
+      <a href="../articles/cnsl_qc.html">Quality Control</a>
     </li>
     <li>
-      <a href="../articles/normalization.html">Normalization</a>
+      <a href="../articles/cnsl_normalization.html">Normalization</a>
     </li>
     <li>
-      <a href="../articles/batch_correction.html">Batch Correction</a>
+      <a href="../articles/cnsl_batch_correction.html">Batch Correction</a>
     </li>
     <li>
-      <a href="../articles/variability.html">Variability</a>
+      <a href="../articles/cnsl_feature_selection.html">Feature Selection</a>
     </li>
     <li>
-      <a href="../articles/feature_selection.html">Feature Selection</a>
+      <a href="../articles/cnsl_clustering.html">Clustering</a>
     </li>
     <li>
-      <a href="../articles/differential_expression.html">Differential Expression</a>
+      <a href="../articles/cnsl_differential_expression.html">Differential Expression</a>
     </li>
     <li>
-      <a href="../articles/find_marker.html">Find Marker via DE</a>
+      <a href="../articles/cnsl_find_marker.html">Find Marker via DE</a>
     </li>
     <li>
-      <a href="../articles/visualize_results.html">Visualize Results</a>
+      <a href="../articles/cnsl_visualization.html">Visualization</a>
     </li>
     <li>
-      <a href="../articles/heatmap.html">Heatmap Visualization</a>
+      <a href="../articles/cnsl_heatmap.html">Heatmap Visualization</a>
     </li>
   </ul>
 </li>
@@ -145,17 +145,75 @@ identified by differential expression analysis" />
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
-    <li>
-      <a href="../articles/ui_batch_correction.html">Batch Correction</a>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Import</a>
+      <ul class="dropdown-menu" role="menu">
+        <li>
+          <a href="../articles/ui_import_data.html">Data</a>
+        </li>
+        <li>
+          <a href="../articles/ui_import_genesets.html">Gene Sets</a>
+        </li>
+        <li>
+          <a href="../articles/ui_import_cell_annotation.html">Cell Annotation</a>
+        </li>
+        <li>
+          <a href="../articles/ui_import_feature_annotation.html">Feature Annotation</a>
+        </li>
+        <li>
+          <a href="../articles/ui_export_data.html">Export Data</a>
+        </li>
+        <li>
+          <a href="../articles/ui_delete_data.html">Delete Data</a>
+        </li>
+      </ul>
+    </li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">QC &amp; Filtering</a>
+      <ul class="dropdown-menu" role="menu">
+        <li>
+          <a href="../articles/ui_qc.html">Quality Control</a>
+        </li>
+        <li>
+          <a href="../articles/ui_filtering.html">Filtering</a>
+        </li>
+      </ul>
+    </li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Normalization &amp; Batch Correction</a>
+      <ul class="dropdown-menu" role="menu">
+        <li>
+          <a href="../articles/ui_normalization.html">Normalization</a>
+        </li>
+        <li>
+          <a href="../articles/ui_batch_correction.html">Batch Correction</a>
+        </li>
+      </ul>
+    </li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Feature Selection &amp; Dimensionality Reduction</a>
+      <ul class="dropdown-menu" role="menu">
+        <li>
+          <a href="../articles/ui_feature_selection.html">Feature Selection</a>
+        </li>
+        <li>
+          <a href="../articles/ui_dimred.html">Dimensionality Reduction</a>
+        </li>
+      </ul>
     </li>
     <li>
       <a href="../articles/ui_clustering.html">Clustering</a>
     </li>
-    <li>
-      <a href="../articles/ui_differential_expression.html">Differential Expression</a>
-    </li>
-    <li>
-      <a href="../articles/ui_find_marker.html">Find Marker</a>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Differential Expression &amp; Cell Type Labeling</a>
+      <ul class="dropdown-menu" role="menu">
+        <li>
+          <a href="../articles/ui_differential_expression.html">Differential Expression</a>
+        </li>
+        <li>
+          <a href="../articles/ui_find_marker.html">Find Marker</a>
+        </li>
+      </ul>
     </li>
     <li>
       <a href="../articles/ui_heatmap.html">Generic Heatmap</a>
@@ -169,7 +227,7 @@ identified by differential expression analysis" />
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/compbiomed/singleCellTK">
-    <span class="fa fa-github"></span>
+    <span class="fas fa-github"></span>
      
   </a>
 </li>
@@ -197,15 +255,17 @@ identified by differential expression analysis</h1>
 identified by differential expression analysis</p>
     </div>
 
-    <pre class="usage"><span class='fu'>plotDEGRegression</span>(
-  <span class='no'>inSCE</span>,
-  <span class='no'>useResult</span>,
-  <span class='kw'>threshP</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>labelBy</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>nrow</span> <span class='kw'>=</span> <span class='fl'>6</span>,
-  <span class='kw'>ncol</span> <span class='kw'>=</span> <span class='fl'>6</span>,
-  <span class='kw'>defaultTheme</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>
-)</pre>
+    <pre class="usage"><span class='fu'>plotDEGRegression</span><span class='op'>(</span>
+  <span class='va'>inSCE</span>,
+  <span class='va'>useResult</span>,
+  threshP <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  labelBy <span class='op'>=</span> <span class='cn'>NULL</span>,
+  nrow <span class='op'>=</span> <span class='fl'>6</span>,
+  ncol <span class='op'>=</span> <span class='fl'>6</span>,
+  defaultTheme <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  isLogged <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  check_sanity <span class='op'>=</span> <span class='cn'>TRUE</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -244,6 +304,17 @@ where to search for the labeling text. Default <code>NULL</code>.</p></td>
       <td><p>Logical scalar. Whether to use default SCTK theme in
 ggplot. Default <code>TRUE</code>.</p></td>
     </tr>
+    <tr>
+      <th>isLogged</th>
+      <td><p>Logical scalar. Whether the assay used for the analysis is
+logged. If not, will do a <code><a href='https://rdrr.io/r/base/Log.html'>log(assay + 1)</a></code> transformation. Default
+<code>TRUE</code>.</p></td>
+    </tr>
+    <tr>
+      <th>check_sanity</th>
+      <td><p>Logical scalar. Whether to perform MAST's sanity check
+to see if the counts are logged. Default <code>TRUE</code></p></td>
+    </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
@@ -261,11 +332,11 @@ ggplot. Default <code>TRUE</code>.</p></td>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Joshua D. Campbell, David Jenkins, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, Emma Briars, Sebastian Carrasco Pro, W. Evan Johnson, Yusuke Koga, Shruthi Bandyadka, Anastasia Leshchyk, Rui Hong, Yichen Wang.</p>
+  <p>Developed by David Jenkins, Vidya Akavoor, Salam Alabdullatif, Shruthi Bandyadka, Emma Briars, Xinyun Cao, Sebastian Carrasco Pro, Tyler Faits, Rui Hong, Mohammed Muzamil Khan, Yusuke Koga, Anastasia Leshchyk, Irzam Sarfraz, Yichen Wang, Zhe Wang, W. Evan Johnson, Joshua David Campbell.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

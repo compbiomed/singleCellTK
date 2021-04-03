@@ -12,7 +12,7 @@
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
-<link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/cosmo/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/yeti/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
 
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
@@ -40,8 +40,8 @@
 
 
 <meta property="og:title" content="Wrapper for calculating QC metrics with scater. — runPerCellQC" />
-<meta property="og:description" content="A wrapper function for decontX. Identify
- potential contamination from experimental factors such as ambient RNA." />
+<meta property="og:description" content="A wrapper function for addPerCellQC. Calculate
+ general quality control metrics for each cell in the count matrix." />
 
 
 
@@ -73,7 +73,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.9.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.0</span>
       </span>
     </div>
 
@@ -90,10 +90,10 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/import_scRNAseq_data_as_SCE_Commandline.html">Import data into SCTK</a>
+      <a href="../articles/cmd_import_scRNAseq_data_as_SCE.html">Import data into SCTK</a>
     </li>
     <li>
-      <a href="../articles/run_qcCommandline.html">Quality Control</a>
+      <a href="../articles/cmd_qc.html">Quality Control</a>
     </li>
   </ul>
 </li>
@@ -105,34 +105,34 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/import_scRNAseq_data_as_SCE.html">Import data into SCTK</a>
+      <a href="../articles/cnsl_import_scRNAseq_data_as_SCE.html">Import data into SCTK</a>
     </li>
     <li>
-      <a href="../articles/run_qcConsole.html">Quality Control</a>
+      <a href="../articles/cnsl_qc.html">Quality Control</a>
     </li>
     <li>
-      <a href="../articles/normalization.html">Normalization</a>
+      <a href="../articles/cnsl_normalization.html">Normalization</a>
     </li>
     <li>
-      <a href="../articles/batch_correction.html">Batch Correction</a>
+      <a href="../articles/cnsl_batch_correction.html">Batch Correction</a>
     </li>
     <li>
-      <a href="../articles/variability.html">Variability</a>
+      <a href="../articles/cnsl_feature_selection.html">Feature Selection</a>
     </li>
     <li>
-      <a href="../articles/feature_selection.html">Feature Selection</a>
+      <a href="../articles/cnsl_clustering.html">Clustering</a>
     </li>
     <li>
-      <a href="../articles/differential_expression.html">Differential Expression</a>
+      <a href="../articles/cnsl_differential_expression.html">Differential Expression</a>
     </li>
     <li>
-      <a href="../articles/find_marker.html">Find Marker via DE</a>
+      <a href="../articles/cnsl_find_marker.html">Find Marker via DE</a>
     </li>
     <li>
-      <a href="../articles/visualize_results.html">Visualize Results</a>
+      <a href="../articles/cnsl_visualization.html">Visualization</a>
     </li>
     <li>
-      <a href="../articles/heatmap.html">Heatmap Visualization</a>
+      <a href="../articles/cnsl_heatmap.html">Heatmap Visualization</a>
     </li>
   </ul>
 </li>
@@ -143,17 +143,75 @@
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
-    <li>
-      <a href="../articles/ui_batch_correction.html">Batch Correction</a>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Import</a>
+      <ul class="dropdown-menu" role="menu">
+        <li>
+          <a href="../articles/ui_import_data.html">Data</a>
+        </li>
+        <li>
+          <a href="../articles/ui_import_genesets.html">Gene Sets</a>
+        </li>
+        <li>
+          <a href="../articles/ui_import_cell_annotation.html">Cell Annotation</a>
+        </li>
+        <li>
+          <a href="../articles/ui_import_feature_annotation.html">Feature Annotation</a>
+        </li>
+        <li>
+          <a href="../articles/ui_export_data.html">Export Data</a>
+        </li>
+        <li>
+          <a href="../articles/ui_delete_data.html">Delete Data</a>
+        </li>
+      </ul>
+    </li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">QC &amp; Filtering</a>
+      <ul class="dropdown-menu" role="menu">
+        <li>
+          <a href="../articles/ui_qc.html">Quality Control</a>
+        </li>
+        <li>
+          <a href="../articles/ui_filtering.html">Filtering</a>
+        </li>
+      </ul>
+    </li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Normalization &amp; Batch Correction</a>
+      <ul class="dropdown-menu" role="menu">
+        <li>
+          <a href="../articles/ui_normalization.html">Normalization</a>
+        </li>
+        <li>
+          <a href="../articles/ui_batch_correction.html">Batch Correction</a>
+        </li>
+      </ul>
+    </li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Feature Selection &amp; Dimensionality Reduction</a>
+      <ul class="dropdown-menu" role="menu">
+        <li>
+          <a href="../articles/ui_feature_selection.html">Feature Selection</a>
+        </li>
+        <li>
+          <a href="../articles/ui_dimred.html">Dimensionality Reduction</a>
+        </li>
+      </ul>
     </li>
     <li>
       <a href="../articles/ui_clustering.html">Clustering</a>
     </li>
-    <li>
-      <a href="../articles/ui_differential_expression.html">Differential Expression</a>
-    </li>
-    <li>
-      <a href="../articles/ui_find_marker.html">Find Marker</a>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Differential Expression &amp; Cell Type Labeling</a>
+      <ul class="dropdown-menu" role="menu">
+        <li>
+          <a href="../articles/ui_differential_expression.html">Differential Expression</a>
+        </li>
+        <li>
+          <a href="../articles/ui_find_marker.html">Find Marker</a>
+        </li>
+      </ul>
     </li>
     <li>
       <a href="../articles/ui_heatmap.html">Generic Heatmap</a>
@@ -167,7 +225,7 @@
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/compbiomed/singleCellTK">
-    <span class="fa fa-github"></span>
+    <span class="fas fa-github"></span>
      
   </a>
 </li>
@@ -190,23 +248,23 @@
     </div>
 
     <div class="ref-description">
-    <p>A wrapper function for <a href='https://rdrr.io/pkg/celda/man/decontX.html'>decontX</a>. Identify
- potential contamination from experimental factors such as ambient RNA.</p>
+    <p>A wrapper function for <a href='https://rdrr.io/pkg/scuttle/man/addPerCellQC.html'>addPerCellQC</a>. Calculate
+ general quality control metrics for each cell in the count matrix.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>runPerCellQC</span>(
-  <span class='no'>inSCE</span>,
-  <span class='kw'>useAssay</span> <span class='kw'>=</span> <span class='st'>"counts"</span>,
-  <span class='kw'>collectionName</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>geneSetList</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>geneSetListLocation</span> <span class='kw'>=</span> <span class='st'>"rownames"</span>,
-  <span class='kw'>geneSetCollection</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>percent_top</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>50</span>, <span class='fl'>100</span>, <span class='fl'>200</span>, <span class='fl'>500</span>),
-  <span class='kw'>use_altexps</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>flatten</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>detection.limit</span> <span class='kw'>=</span> <span class='fl'>0</span>,
-  <span class='kw'>BPPARAM</span> <span class='kw'>=</span> <span class='kw pkg'>BiocParallel</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/BiocParallel/man/SerialParam-class.html'>SerialParam</a></span>()
-)</pre>
+    <pre class="usage"><span class='fu'>runPerCellQC</span><span class='op'>(</span>
+  <span class='va'>inSCE</span>,
+  useAssay <span class='op'>=</span> <span class='st'>"counts"</span>,
+  collectionName <span class='op'>=</span> <span class='cn'>NULL</span>,
+  geneSetList <span class='op'>=</span> <span class='cn'>NULL</span>,
+  geneSetListLocation <span class='op'>=</span> <span class='st'>"rownames"</span>,
+  geneSetCollection <span class='op'>=</span> <span class='cn'>NULL</span>,
+  percent_top <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>50</span>, <span class='fl'>100</span>, <span class='fl'>200</span>, <span class='fl'>500</span><span class='op'>)</span>,
+  use_altexps <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  flatten <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  detectionLimit <span class='op'>=</span> <span class='fl'>0</span>,
+  BPPARAM <span class='op'>=</span> <span class='fu'>BiocParallel</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/BiocParallel/man/SerialParam-class.html'>SerialParam</a></span><span class='op'>(</span><span class='op'>)</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -241,31 +299,31 @@ of the gene IDs in <code>inSCE</code>. These gene sets will be included with tho
     </tr>
     <tr>
       <th>percent_top</th>
-      <td><p>An integer vector. Each element is treated as a 
-number of top genes to compute the percentage of library size occupied by 
+      <td><p>An integer vector. Each element is treated as a
+number of top genes to compute the percentage of library size occupied by
 the most highly expressed genes in each cell.</p></td>
     </tr>
     <tr>
       <th>use_altexps</th>
-      <td><p>Logical scalar indicating whether QC statistics should 
-be computed for alternative Experiments in x. If TRUE, statistics are computed 
+      <td><p>Logical scalar indicating whether QC statistics should
+be computed for alternative Experiments in x. If TRUE, statistics are computed
 for all alternative experiments.
-Alternatively, an integer or character vector specifying the alternative 
+Alternatively, an integer or character vector specifying the alternative
 Experiments to use to compute QC statistics.
 Alternatively NULL, in which case alternative experiments are not used.</p></td>
     </tr>
     <tr>
       <th>flatten</th>
-      <td><p>Logical scalar indicating whether the nested <a href='https://rdrr.io/pkg/S4Vectors/man/DataFrame-class.html'>DataFrame-class</a> 
+      <td><p>Logical scalar indicating whether the nested <a href='https://rdrr.io/pkg/S4Vectors/man/DataFrame-class.html'>DataFrame-class</a>
 in the output should be flattened.</p></td>
     </tr>
     <tr>
-      <th>detection.limit</th>
+      <th>detectionLimit</th>
       <td><p>A numeric scalar specifying the lower detection limit for expression.</p></td>
     </tr>
     <tr>
       <th>BPPARAM</th>
-      <td><p>A <a href='https://rdrr.io/pkg/BiocParallel/man/BiocParallelParam-class.html'>BiocParallelParam</a> object specifying 
+      <td><p>A BiocParallelParam object specifying
 whether the QC calculations should be parallelized.</p></td>
     </tr>
     </table>
@@ -273,13 +331,14 @@ whether the QC calculations should be parallelized.</p></td>
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>A <a href='https://rdrr.io/pkg/SingleCellExperiment/man/SingleCellExperiment.html'>SingleCellExperiment</a> object with
- cell QC metrics added to the <a href='https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html'>colData</a> slot. If <code>geneSetList</code> or <code>geneSetCollection</code> are provided, then the rownames for each gene set will be saved in <code>metadata(inSCE)$scater$addPerCellQC$geneSets</code>.</p>
+ cell QC metrics added to the colData slot. If <code>geneSetList</code> or <code>geneSetCollection</code> are provided, then the rownames for each gene set will be saved in <code>metadata(inSCE)$scater$addPerCellQC$geneSets</code>.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='no'>scExample</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"singleCellTK"</span>)
-<span class='no'>mito.ix</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/grep.html'>grep</a></span>(<span class='st'>"^MT-"</span>, <span class='fu'>rowData</span>(<span class='no'>sce</span>)$<span class='no'>feature_name</span>)
-<span class='no'>geneSet</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='st'>"Mito"</span><span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>rownames</a></span>(<span class='no'>sce</span>)[<span class='no'>mito.ix</span>])
-<span class='no'>sce</span> <span class='kw'>&lt;-</span> <span class='fu'>runPerCellQC</span>(<span class='no'>sce</span>, <span class='kw'>geneSetList</span> <span class='kw'>=</span> <span class='no'>geneSet</span>)</div><div class='output co'>#&gt; <span class='message'>Mon Oct  5 10:13:23 2020 ... Running 'perCellQCMetrics'</span></div></pre>
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>scExample</span>, package <span class='op'>=</span> <span class='st'>"singleCellTK"</span><span class='op'>)</span>
+<span class='va'>mito.ix</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/grep.html'>grep</a></span><span class='op'>(</span><span class='st'>"^MT-"</span>, <span class='fu'>rowData</span><span class='op'>(</span><span class='va'>sce</span><span class='op'>)</span><span class='op'>$</span><span class='va'>feature_name</span><span class='op'>)</span>
+<span class='va'>geneSet</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='st'>"Mito"</span><span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>rownames</a></span><span class='op'>(</span><span class='va'>sce</span><span class='op'>)</span><span class='op'>[</span><span class='va'>mito.ix</span><span class='op'>]</span><span class='op'>)</span>
+<span class='va'>sce</span> <span class='op'>&lt;-</span> <span class='fu'>runPerCellQC</span><span class='op'>(</span><span class='va'>sce</span>, geneSetList <span class='op'>=</span> <span class='va'>geneSet</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'>Thu Apr 01 20:18:28 2021 ... Running 'perCellQCMetrics'</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -291,11 +350,11 @@ whether the QC calculations should be parallelized.</p></td>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Joshua D. Campbell, David Jenkins, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, Emma Briars, Sebastian Carrasco Pro, W. Evan Johnson, Yusuke Koga, Shruthi Bandyadka, Anastasia Leshchyk, Rui Hong, Yichen Wang.</p>
+  <p>Developed by David Jenkins, Vidya Akavoor, Salam Alabdullatif, Shruthi Bandyadka, Emma Briars, Xinyun Cao, Sebastian Carrasco Pro, Tyler Faits, Rui Hong, Mohammed Muzamil Khan, Yusuke Koga, Anastasia Leshchyk, Irzam Sarfraz, Yichen Wang, Zhe Wang, W. Evan Johnson, Joshua David Campbell.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

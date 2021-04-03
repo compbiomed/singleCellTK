@@ -27,8 +27,7 @@ shinyPanelCluster <- fluidPage(
           "input.clustAlgo >=1 && input.clustAlgo <= 6",
           column(
             6,
-            uiOutput("clustScranSNNMatUI"),
-            uiOutput("clustScranSNNAltExpAssayUI")
+            uiOutput('clustScranSNNMat'),
           ),
           column(
             4,
@@ -128,7 +127,7 @@ shinyPanelCluster <- fluidPage(
       ),
       selectInput("clustVisReddim", "Use Reduction:", currreddim),
       withBusyIndicatorUI(actionButton("clustPlot", "Plot")),
-      plotOutput("clustVisPlot")
+      plotlyOutput("clustVisPlot")
     )
   )
 )

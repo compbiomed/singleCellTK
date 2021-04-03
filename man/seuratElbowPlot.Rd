@@ -9,7 +9,8 @@ seuratElbowPlot(
   inSCE,
   significantPC = NULL,
   reduction = "pca",
-  externalReduction = NULL
+  externalReduction = NULL,
+  interactive = TRUE
 )
 }
 \arguments{
@@ -20,6 +21,10 @@ seuratElbowPlot(
 \item{reduction}{Reduction to use for elbow plot generation. Either \code{"pca"} or \code{"ica"}. Default \code{"pca"}.}
 
 \item{externalReduction}{Pass DimReduc object if PCA/ICA computed through other libraries. Default \code{NULL}.}
+
+\item{interactive}{Logical value indicating if the returned object should
+be an interactive plotly object if \code{TRUE} or a ggplot object if
+set to \code{FALSE}. Default is \code{TRUE}.}
 }
 \value{
 plot object

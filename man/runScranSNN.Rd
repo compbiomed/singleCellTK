@@ -10,6 +10,7 @@ runScranSNN(
   useReducedDim = NULL,
   useAltExp = NULL,
   altExpAssay = "counts",
+  altExpRedDim = NULL,
   clusterName = "scranSNN_cluster",
   k = 10,
   nComp = 50,
@@ -38,6 +39,11 @@ algorithm on. Default \code{NULL}.}
 \code{\link{assay}} in the chosen
 \code{\link{altExp}} to work on. Only used when
 \code{useAltExp} is set. Default \code{"counts"}.}
+
+\item{altExpRedDim}{A single \code{character}, specifying which
+\code{\link{reducedDim}} within the \code{\link{altExp}} specified by
+\code{useAltExp} to use. Only used when \code{useAltExp} is set. Default
+\code{NULL}.}
 
 \item{clusterName}{A single \code{character}, specifying the name to store
 the cluster label in \code{\link{colData}}. Default

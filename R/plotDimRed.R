@@ -21,7 +21,7 @@ plotDimRed <- function(inSCE, useReduction,
   y <- dimRed[,2]
 
   dimRedPlot <- ggplot2::ggplot() +
-    ggplot2::geom_point(ggplot2::aes(x = x, y = y))# + .ggSCTKTheme()
+    ggplot2::geom_point(ggplot2::aes(x = x, y = y))
   dimRedPlot <- .ggSCTKTheme(dimRedPlot)
 
   if(!is.null(xAxisLabel)){

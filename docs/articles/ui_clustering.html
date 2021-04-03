@@ -104,21 +104,76 @@
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
+<li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Import</a>
+      <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../articles/ui_import_datasets.html">Import Datasets</a>
-    </li>
-    <li>
-      <a href="../articles/ui_batch_correction.html">Batch Correction</a>
-    </li>
+          <a href="../articles/ui_import_data.html">Data</a>
+        </li>
+        <li>
+          <a href="../articles/ui_import_genesets.html">Gene Sets</a>
+        </li>
+        <li>
+          <a href="../articles/ui_import_cell_annotation.html">Cell Annotation</a>
+        </li>
+        <li>
+          <a href="../articles/ui_import_feature_annotation.html">Feature Annotation</a>
+        </li>
+        <li>
+          <a href="../articles/ui_export_data.html">Export Data</a>
+        </li>
+        <li>
+          <a href="../articles/ui_delete_data.html">Delete Data</a>
+        </li>
+      </ul>
+</li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">QC &amp; Filtering</a>
+      <ul class="dropdown-menu" role="menu">
+<li>
+          <a href="../articles/ui_qc.html">Quality Control</a>
+        </li>
+        <li>
+          <a href="../articles/ui_filtering.html">Filtering</a>
+        </li>
+      </ul>
+</li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Normalization &amp; Batch Correction</a>
+      <ul class="dropdown-menu" role="menu">
+<li>
+          <a href="../articles/ui_normalization.html">Normalization</a>
+        </li>
+        <li>
+          <a href="../articles/ui_batch_correction.html">Batch Correction</a>
+        </li>
+      </ul>
+</li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Feature Selection &amp; Dimensionality Reduction</a>
+      <ul class="dropdown-menu" role="menu">
+<li>
+          <a href="../articles/ui_feature_selection.html">Feature Selection</a>
+        </li>
+        <li>
+          <a href="../articles/ui_dimred.html">Dimensionality Reduction</a>
+        </li>
+      </ul>
+</li>
     <li>
       <a href="../articles/ui_clustering.html">Clustering</a>
     </li>
-    <li>
-      <a href="../articles/ui_differential_expression.html">Differential Expression</a>
-    </li>
-    <li>
-      <a href="../articles/ui_find_marker.html">Find Marker</a>
-    </li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Differential Expression &amp; Cell Type Labeling</a>
+      <ul class="dropdown-menu" role="menu">
+<li>
+          <a href="../articles/ui_differential_expression.html">Differential Expression</a>
+        </li>
+        <li>
+          <a href="../articles/ui_find_marker.html">Find Marker</a>
+        </li>
+      </ul>
+</li>
     <li>
       <a href="../articles/ui_heatmap.html">Generic Heatmap</a>
     </li>
@@ -145,7 +200,7 @@
 
       
 
-      </header><script src="ui_clustering_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+      </header><script src="ui_clustering_files/header-attrs-2.7/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Clustering - UI</h1>
@@ -171,7 +226,7 @@
 <h3 class="hasAnchor">
 <a href="#entry-of-the-panel" class="anchor"></a>Entry of The Panel</h3>
 <p>From anywhere of the UI, the panel for clustering can be accessed from the top navigation panel at the circled tab shown below.</p>
-<p><img src="clst_ui_entry.png" alt="Entry"><br></p>
+<p><img src="ui_screenshots/clustering/clst_ui_entry.png" alt="Entry"><br></p>
 <p>The UI is includes two panels. The top one is for setting the parameters and run the clustering, while the bottom one is for visualizing the results.</p>
 </div>
 <div id="run-clustering" class="section level3">
@@ -180,7 +235,7 @@
 <div id="choose-an-algorithm" class="section level4">
 <h4 class="hasAnchor">
 <a href="#choose-an-algorithm" class="anchor"></a>Choose An Algorithm</h4>
-<p><img src="clst_ui_algo.png" style="border: 1px solid rgba(0,0,0,0.2)"></p>
+<p><img src="ui_screenshots/clustering/clst_ui_algo.png" style="border: 1px solid rgba(0,0,0,0.2)"></p>
 <p>User will choose an algorithm to run the clustering at the very first step. The slide-down option list is constructed in a grouped style. Each group lists all the algorithm that a dependency (shown with grey text) supports. By selecting an algorithm that belongs to different groups, the parameter settings will change.</p>
 </div>
 <div id="parameter-settings" class="section level4">
@@ -189,7 +244,7 @@
 <div id="scran-snn" class="section level5">
 <h5 class="hasAnchor">
 <a href="#scran-snn" class="anchor"></a>Scran SNN</h5>
-<p><img src="clst_ui_scran.png" alt="scran"><br></p>
+<p><img src="ui_screenshots/clustering/clst_ui_scran.png" alt="scran"><br></p>
 <p>When the selected algorithm belongs to “Scran SNN” group, the parameter settings will look like the figure above. For the choices in the algorithm list, please refer to <code><a href="https://rdrr.io/pkg/igraph/man/cluster_walktrap.html">igraph::cluster_walktrap()</a></code>, <code><a href="https://rdrr.io/pkg/igraph/man/cluster_louvain.html">igraph::cluster_louvain()</a></code>, <code><a href="https://rdrr.io/pkg/igraph/man/cluster_infomap.html">igraph::cluster_infomap()</a></code>, <code><a href="https://rdrr.io/pkg/igraph/man/cluster_fast_greedy.html">igraph::cluster_fast_greedy()</a></code>, <code><a href="https://rdrr.io/pkg/igraph/man/cluster_label_prop.html">igraph::cluster_label_prop()</a></code>, and <code><a href="https://rdrr.io/pkg/igraph/man/cluster_leading_eigen.html">igraph::cluster_leading_eigen()</a></code>.</p>
 <ul>
 <li>Data matrix selection - selection input <strong>“Select Input Matrix”</strong>. Scran SNN method allows various type of data matrix. Either A full-sized or subsetted expression matrix, technically called <code>assay</code> or <code>altExp</code>, respectively, or a dimension reduction, technically <code>reducedDim</code>, is allowed.</li>
@@ -201,7 +256,7 @@
 <div id="k-means" class="section level5">
 <h5 class="hasAnchor">
 <a href="#k-means" class="anchor"></a>K-Means</h5>
-<p><img src="clst_ui_kmeans.png" alt="kmeans"><br></p>
+<p><img src="ui_screenshots/clustering/clst_ui_kmeans.png" alt="kmeans"><br></p>
 <p>When the selected algorithm belongs to “K-Means” group, the parameter settings will look like the figure above.</p>
 <ul>
 <li>Data matrix selection - selection input <strong>“Select a ReducedDim”</strong>. Here the data matrix allowed can only be a dimension reduction, technically called <code>reducedDim</code>. Should be obtained in advance from <a href="#">“Feature Selection &amp; Dimension Reduction” tab</a>.</li>
@@ -213,7 +268,7 @@
 <div id="seurat" class="section level5">
 <h5 class="hasAnchor">
 <a href="#seurat" class="anchor"></a>Seurat</h5>
-<p><img src="clst_ui_seurat.png" alt="seurat"><br></p>
+<p><img src="ui_screenshots/clustering/clst_ui_seurat.png" alt="seurat"><br></p>
 <p>When the selected algorithm belongs to “Seurat” group, the parameter settings will look like the figure above.</p>
 <ul>
 <li>Data matrix selection - selection input <strong>“Select a ReducedDim”</strong>. Here the data matrix allowed can only be a dimension reduction, technically called <code>reducedDim</code>. Should be obtained in advance from <a href="#">“Feature Selection &amp; Dimension Reduction” tab</a>.</li>
@@ -227,7 +282,7 @@
 <div id="visualization" class="section level3">
 <h3 class="hasAnchor">
 <a href="#visualization" class="anchor"></a>Visualization</h3>
-<p><img src="clst_ui_vis.png" style="border: 1px solid rgba(0,0,0,0.2)"></p>
+<p><img src="ui_screenshots/clustering/clst_ui_vis.png" style="border: 1px solid rgba(0,0,0,0.2)"></p>
 <p>The visualization is implemented with a plotting of a chosen dimension reduction, colored with a chosen cluster assignment.</p>
 <ul>
 <li>Cluster annotation selection. radio button selection <strong>“Select from Current Results”</strong> and <strong>“Select from All Present Annotation”</strong>. And a selection input follows. Only a successful run of clustering in the current SCTK session adds an option for the new result to “Select from Current Results”, while all the cell annotation stored in background (i.e. <code>colData(sce)</code>) are accessible if “Select from All Present Annotation” is chosen.</li>

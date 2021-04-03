@@ -267,7 +267,7 @@ showQCResTabs <- function(obj, algoList, statuses, plotIds) {
 
 filteringModal <- function(failed=FALSE, colNames) {
   modalDialog(
-    h3("Select a Column"),
+    h3("Select an Annotation"),
     selectInput("filterColSelect", "", colNames),
     if (failed)
       div(tags$b("Please fill out all the required fields", style = "color: red;")),
@@ -277,7 +277,7 @@ filteringModal <- function(failed=FALSE, colNames) {
       )
     ),
     tags$div(id = "filterCriteria"),
-
+    tags$div(id = "filterCrErrors"),
     footer = tagList(
       modalButton("Cancel"),
       actionButton("filtModalOK", "OK")

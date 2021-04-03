@@ -55,9 +55,8 @@ applying a Gaussian smoothing kernel with bandwidth `sigma`.
 }
 \examples{
 data('sceBatches', package = 'singleCellTK')
-\dontrun{
+logcounts(sceBatches) <- log(counts(sceBatches) + 1)
 sceCorr <- runMNNCorrect(sceBatches)
-}
 }
 \references{
 Lun ATL, et al., 2016 & 2018

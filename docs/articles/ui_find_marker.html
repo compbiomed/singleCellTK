@@ -104,21 +104,76 @@
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
+<li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Import</a>
+      <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../articles/ui_import_datasets.html">Import Datasets</a>
-    </li>
-    <li>
-      <a href="../articles/ui_batch_correction.html">Batch Correction</a>
-    </li>
+          <a href="../articles/ui_import_data.html">Data</a>
+        </li>
+        <li>
+          <a href="../articles/ui_import_genesets.html">Gene Sets</a>
+        </li>
+        <li>
+          <a href="../articles/ui_import_cell_annotation.html">Cell Annotation</a>
+        </li>
+        <li>
+          <a href="../articles/ui_import_feature_annotation.html">Feature Annotation</a>
+        </li>
+        <li>
+          <a href="../articles/ui_export_data.html">Export Data</a>
+        </li>
+        <li>
+          <a href="../articles/ui_delete_data.html">Delete Data</a>
+        </li>
+      </ul>
+</li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">QC &amp; Filtering</a>
+      <ul class="dropdown-menu" role="menu">
+<li>
+          <a href="../articles/ui_qc.html">Quality Control</a>
+        </li>
+        <li>
+          <a href="../articles/ui_filtering.html">Filtering</a>
+        </li>
+      </ul>
+</li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Normalization &amp; Batch Correction</a>
+      <ul class="dropdown-menu" role="menu">
+<li>
+          <a href="../articles/ui_normalization.html">Normalization</a>
+        </li>
+        <li>
+          <a href="../articles/ui_batch_correction.html">Batch Correction</a>
+        </li>
+      </ul>
+</li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Feature Selection &amp; Dimensionality Reduction</a>
+      <ul class="dropdown-menu" role="menu">
+<li>
+          <a href="../articles/ui_feature_selection.html">Feature Selection</a>
+        </li>
+        <li>
+          <a href="../articles/ui_dimred.html">Dimensionality Reduction</a>
+        </li>
+      </ul>
+</li>
     <li>
       <a href="../articles/ui_clustering.html">Clustering</a>
     </li>
-    <li>
-      <a href="../articles/ui_differential_expression.html">Differential Expression</a>
-    </li>
-    <li>
-      <a href="../articles/ui_find_marker.html">Find Marker</a>
-    </li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Differential Expression &amp; Cell Type Labeling</a>
+      <ul class="dropdown-menu" role="menu">
+<li>
+          <a href="../articles/ui_differential_expression.html">Differential Expression</a>
+        </li>
+        <li>
+          <a href="../articles/ui_find_marker.html">Find Marker</a>
+        </li>
+      </ul>
+</li>
     <li>
       <a href="../articles/ui_heatmap.html">Generic Heatmap</a>
     </li>
@@ -145,7 +200,7 @@
 
       
 
-      </header><script src="ui_find_marker_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+      </header><script src="ui_find_marker_files/header-attrs-2.7/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Find Marker - UI</h1>
@@ -171,13 +226,13 @@
 <h3 class="hasAnchor">
 <a href="#entry-of-the-panel" class="anchor"></a>Entry of The Panel</h3>
 <p>From anywhere of the UI, the panel for marker finding can be accessed from the top navigation panel at the circled tab shown below.</p>
-<p><img src="fm_ui_entry.png" alt="Entry"><br></p>
+<p><img src="ui_screenshots/find_marker/fm_ui_entry.png" alt="Entry"><br></p>
 <p>The UI is constructed in a sidebar pattern. The sidebar is mainly for the parameters essential for running the marker finding algorithm. The main panel is mainly for demonstrating the results, including the marker table and the heatmap.</p>
 </div>
 <div id="sidebar---parameters" class="section level3">
 <h3 class="hasAnchor">
 <a href="#sidebar---parameters" class="anchor"></a>Sidebar - Parameters</h3>
-<p><img src="fm_ui_main1.png" style="border: 1px solid rgba(0,0,0,0.2)"></p>
+<p><img src="ui_screenshots/find_marker/fm_ui_main1.png" style="border: 1px solid rgba(0,0,0,0.2)"></p>
 <ul>
 <li>Assay selection - selection input <strong>“Select Assay”</strong>. Users will choose which expression data matrix to use for marker detection. Note that for method “MAST” and “Limma”, a logged count matrix is required.</li>
 <li>Method selection - selection input <strong>“Select Differential Expression Method”</strong>. Users will choose which method to use. The method here means the intrinsic dependency used for differential expression (DE) analysis.</li>
@@ -194,7 +249,7 @@
 <div id="main-panel---heatmap" class="section level3">
 <h3 class="hasAnchor">
 <a href="#main-panel---heatmap" class="anchor"></a>Main Panel - Heatmap</h3>
-<p><img src="fm_ui_main2.png" style="border: 1px solid rgba(0,0,0,0.2)"></p>
+<p><img src="ui_screenshots/find_marker/fm_ui_main2.png" style="border: 1px solid rgba(0,0,0,0.2)"></p>
 <p>For the heatmap visualization, we have another inside sidebar for its setting.</p>
 <ul>
 <li>Assay selection - selection input <strong>“Assay to plot”</strong>. User will select the expression data matrix here for the heatmap plotting. The UI will automatically make a selection basing on the selected one in the left side bar when “Find Marker” button is pressed, but users are allowed to change to another option.</li>

@@ -10,7 +10,9 @@ seuratGenePlot(
   plotType,
   features,
   groupVariable,
-  ncol
+  splitBy = NULL,
+  cols = c("lightgrey", "blue"),
+  ncol = 1
 )
 }
 \arguments{
@@ -24,7 +26,13 @@ seuratGenePlot(
 
 \item{groupVariable}{Specify the column name from the colData slot that should be used as grouping variable.}
 
-\item{ncol}{Visualizations will be adjusted in "ncol" number of columns.}
+\item{splitBy}{Specify the column name from the colData slot that should be used to split samples.
+Default is \code{NULL}.}
+
+\item{cols}{Specify two colors to form a gradient between. Default is \code{c("lightgrey", "blue")}.}
+
+\item{ncol}{Visualizations will be adjusted in "ncol" number of columns.
+Default is \code{1}.}
 }
 \value{
 Plot object

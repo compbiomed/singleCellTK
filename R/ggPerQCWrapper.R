@@ -26,6 +26,8 @@
 #' .ggplot object, while "sample" will output a list of plots separated by sample. Default "all".
 #' @param relHeights Relative heights of plots when combine is set.
 #' @param relWidths Relative widths of plots when combine is set.
+#' @param plotLabels labels to each plot. If set to "default", will use the name of the samples
+#'  as the labels. If set to "none", no label will be plotted.
 #' @param plotNCols Number of columns when plots are combined in a grid.
 #' @param plotNRows Number of rows when plots are combined in a grid.
 #' @param samplePerColumn If TRUE, when there are multiple samples and combining by "all",
@@ -58,6 +60,7 @@ plotRunPerCellQCResults <- function(inSCE,
                                     titleSize=18,
                                     relHeights=c(1.5, 1.5, 1, 1),
                                     relWidths=c(1, 1, 1, 1),
+                                    plotLabels = "default",
                                     plotNCols = NULL,
                                     plotNRows = NULL,
                                     samplePerColumn = TRUE,
@@ -329,6 +332,7 @@ plotRunPerCellQCResults <- function(inSCE,
                                       relWidths = relWidths,
                                       nrows = plotNRows,
                                       ncols = plotNCols,
+                                      labels = plotLabels,
                                       samplePerColumn = samplePerColumn,
                                       sampleRelHeights = sampleRelHeights,
                                       sampleRelWidths = sampleRelWidths)

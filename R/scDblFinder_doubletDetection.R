@@ -22,8 +22,7 @@
 #'  scDblFinder QC outputs added to the
 #'  \link{colData} slot.
 #' @references Lun ATL (2018). Detecting doublet cells with scran.
-#'  \url{https://ltla.github.io/SingleCellThoughts/software/
-#' doublet_detection/bycell.html}
+#'  \url{https://ltla.github.io/SingleCellThoughts/software/doublet_detection/bycell.html}
 #' @seealso \link[scDblFinder]{scDblFinder}
 #' @examples
 #' data(scExample, package = "singleCellTK")

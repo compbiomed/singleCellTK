@@ -13,13 +13,13 @@ This section describes the usage of the user interface (UI) for singleCellTK (SC
 
 From anywhere of the UI, the panel for marker finding can be accessed from the top navigation panel at the circled tab shown below.  
 
-![Entry](fm_ui_entry.png)\
+![Entry](ui_screenshots/find_marker/fm_ui_entry.png)\
 
 The UI is constructed in a sidebar pattern. The sidebar is mainly for the parameters essential for running the marker finding algorithm. The main panel is mainly for demonstrating the results, including the marker table and the heatmap.  
 
 ### Sidebar - Parameters
 
-<img src="fm_ui_main1.png" style="border: 1px solid rgba(0,0,0,0.2)"></img>
+<img src="ui_screenshots/find_marker/fm_ui_main1.png" style="border: 1px solid rgba(0,0,0,0.2)"></img>
 
 - Assay selection - selection input **"Select Assay"**. Users will choose which expression data matrix to use for marker detection. Note that for method "MAST" and "Limma", a logged count matrix is required. 
 - Method selection - selection input **"Select Differential Expression Method"**. Users will choose which method to use. The method here means the intrinsic dependency used for differential expression (DE) analysis.
@@ -33,7 +33,7 @@ The table is shown in the figure above. In this tab, there will be a table for a
 
 ### Main Panel - Heatmap
 
-<img src="fm_ui_main2.png" style="border: 1px solid rgba(0,0,0,0.2)"></img>
+<img src="ui_screenshots/find_marker/fm_ui_main2.png" style="border: 1px solid rgba(0,0,0,0.2)"></img>
 
 For the heatmap visualization, we have another inside sidebar for its setting.  
 

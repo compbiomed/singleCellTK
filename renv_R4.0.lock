@@ -569,12 +569,6 @@
       "Repository": "CRAN",
       "Hash": "0b118d5900596bae6c4d4865374536a6"
     },
-    "bladderbatch": {
-      "Package": "bladderbatch",
-      "Version": "1.26.0",
-      "Source": "Bioconductor",
-      "Hash": "bd08c98c8a13f97421ecfa3ba939079f"
-    },
     "blob": {
       "Package": "blob",
       "Version": "1.2.1",

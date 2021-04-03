@@ -11,7 +11,8 @@ seuratNormalizeData(
   useAssay,
   normAssayName = "seuratNormData",
   normalizationMethod = "LogNormalize",
-  scaleFactor = 10000
+  scaleFactor = 10000,
+  verbose = TRUE
 )
 }
 \arguments{
@@ -24,6 +25,9 @@ seuratNormalizeData(
 \item{normalizationMethod}{selected normalization method. Default \code{"LogNormalize"}.}
 
 \item{scaleFactor}{numeric value that represents the scaling factor. Default \code{10000}.}
+
+\item{verbose}{Logical value indicating if informative messages should 
+be displayed. Default is \code{TRUE}.}
 }
 \value{
 Normalized \code{SingleCellExperiment} object

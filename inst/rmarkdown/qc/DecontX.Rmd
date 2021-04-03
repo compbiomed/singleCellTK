@@ -20,7 +20,7 @@ sce.qc<- params$object
 ```
 
 ```{r, "DecontX", results="asis", fig.align="center", warning=FALSE, message=FALSE}
-    plotDecontX<- suppressWarnings(plotDecontXResults(sce.qc, reducedDimName = "UMAP"))
+    plotDecontX<- plotDecontXResults(sce.qc, reducedDimName = "UMAP")
     i="DecontX"
     cat(paste0('# ', i, ' {.tabset} \n\n'))
     cat(paste0('## Scatter Score \n\n'))

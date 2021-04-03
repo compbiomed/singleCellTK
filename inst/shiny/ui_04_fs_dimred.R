@@ -62,51 +62,51 @@ shinyPanelFS_DimRed <- fluidPage(
     ),
     tabPanel(
       "Dimensionality Reduction",
-      tabsetPanel(      
+      tabsetPanel(
         tabPanel("PCA/ICA",
                             fluidRow(
                               column(4,
                                      fluidRow(
                                        column(12,
                                               panel(heading = "Options",
-                                                    h6("Select assay type:"),
-                                                    radioButtons(inputId = "dimRedAssayType", label = NULL,
-                                                                 choices = c("Use full sized assay" = 1,
-                                                                             "Use subset" = 2),
-                                                                 selected = 1, inline = TRUE),
-                                                    conditionalPanel(
-                                                      condition = "input.dimRedAssayType == 1",
-                                                      uiOutput("dimRedAssaySelect")
+                                                    # h6("Select assay type:"),
+                                                    # radioButtons(inputId = "dimRedAssayType", label = NULL,
+                                                    #              choices = c("Use full sized assay" = 1,
+                                                    #                          "Use subset" = 2),
+                                                    #              selected = 1, inline = TRUE),
+                                                    # conditionalPanel(
+                                                    #   condition = "input.dimRedAssayType == 1",
+                                                    uiOutput("dimRedAssaySelect"),
                                                       #selectInput("dimRedAssaySelect", "Select assay:", currassays),
-                                                    ),
-                                                    conditionalPanel(
-                                                      condition = "input.dimRedAssayType == 2",
-                                                      selectInput("dimRedAltExpSelect", "Select subset:", curraltExps),
-                                                      uiOutput("dimRedAltExpAssayUI")
-                                                    ),
+                                                    # ),
+                                                    # conditionalPanel(
+                                                    #   condition = "input.dimRedAssayType == 2",
+                                                    #   selectInput("dimRedAltExpSelect", "Select subset:", curraltExps),
+                                                    #   uiOutput("dimRedAltExpAssayUI"),
+                                                    # ),
                                                     selectInput("dimRedPlotMethod", "Select method:",
                                                                 c("Scran - PCA" = "PCA",
                                                                   "Seurat - PCA" = "PCASeurat",
                                                                   "Seurat - ICA" = "ICASeurat")),
                                                     uiOutput("dimRedNameUI"),
                                                     textInput(
-                                                      inputId = "dimRedNumberDims", 
+                                                      inputId = "dimRedNumberDims",
                                                       label = "Number of dimensions:",
                                                       value = 10),
                                                     conditionalPanel(
                                                       condition = "input.dimRedPlotMethod != 'ICASeurat'",
                                                       materialSwitch(
-                                                        inputId = "computeElbowPlot", 
-                                                        label = "Compute ElbowPlot?", 
+                                                        inputId = "computeElbowPlot",
+                                                        label = "Compute ElbowPlot?",
                                                         value = TRUE),
                                                       materialSwitch(
-                                                        inputId = "computeJackstrawPlot", 
-                                                        label = "Compute JackstrawPlot?", 
+                                                        inputId = "computeJackstrawPlot",
+                                                        label = "Compute JackstrawPlot?",
                                                         value = FALSE)
                                                     ),
                                                     materialSwitch(
-                                                      inputId = "computeHeatmapPlot", 
-                                                      label = "Compute HeatmapPlot?", 
+                                                      inputId = "computeHeatmapPlot",
+                                                      label = "Compute HeatmapPlot?",
                                                       value = TRUE),
                                                     conditionalPanel(
                                                       condition = "input.computeHeatmapPlot == true",
@@ -127,8 +127,8 @@ shinyPanelFS_DimRed <- fluidPage(
                                        column(12,
                                               hidden(
                                                 tags$div(
-                                                  class = "dimRedPCAICA_plotTabset_class", 
-                                                  tabsetPanel(id = "dimRedPCAICA_plotTabset", 
+                                                  class = "dimRedPCAICA_plotTabset_class",
+                                                  tabsetPanel(id = "dimRedPCAICA_plotTabset",
                                                               type = "tabs"
                                                               )
                                                 ))
@@ -143,29 +143,29 @@ shinyPanelFS_DimRed <- fluidPage(
                           fluidRow(
                             column(12,
                                    panel(heading = "Options",
-                                         h6("Select assay type:"),
-                                         radioButtons(inputId = "dimRedAssayType_tsneUmap", label = NULL,
-                                                      choices = c("Use full sized assay" = 1,
-                                                                  "Use subset" = 2),
-                                                      selected = 1, inline = TRUE),
-                                         conditionalPanel(
-                                           condition = "input.dimRedAssayType_tsneUmap == 1",
-                                           uiOutput("dimRedAssaySelect_tsneUmap")
-                                           #selectInput("dimRedAssaySelect_tsneUmap", "Select assay:", currassays),
-                                         ),
-                                         conditionalPanel(
-                                           condition = "input.dimRedAssayType_tsneUmap == 2",
-                                           selectInput("dimRedAltExpSelect_tsneUmap", "Select subset:", curraltExps),
-                                           uiOutput("dimRedAltExpAssayUI_tsneUmap")
-                                         ),
+                                         # h6("Select assay type:"),
+                                         # radioButtons(inputId = "dimRedAssayType_tsneUmap", label = NULL,
+                                         #              choices = c("Use full sized assay" = 1,
+                                         #                          "Use subset" = 2),
+                                         #              selected = 1, inline = TRUE),
+                                         # conditionalPanel(
+                                         #   condition = "input.dimRedAssayType_tsneUmap == 1",
+                                         uiOutput("dimRedAssaySelect_tsneUmap"),
+                                         #   #selectInput("dimRedAssaySelect_tsneUmap", "Select assay:", currassays),
+                                         # ),
+                                         # conditionalPanel(
+                                         #   condition = "input.dimRedAssayType_tsneUmap == 2",
+                                         #   selectInput("dimRedAltExpSelect_tsneUmap", "Select subset:", curraltExps),
+                                         #   uiOutput("dimRedAltExpAssayUI_tsneUmap"),
+                                         # ),
                                          selectInput("dimRedPlotMethod_tsneUmap", "Select method:",
-                                                     c("tSNE", 
+                                                     c("tSNE",
                                                        "UMAP",
                                                        "Seurat - tSNE" = "seuratTSNE",
                                                        "Seurat - UMAP" = "seuratUMAP")),
                                          uiOutput("dimRedNameUI_tsneUmap"),
                                          numericInput(
-                                           inputId = "dimRedNumberDims_tsneUmap", 
+                                           inputId = "dimRedNumberDims_tsneUmap",
                                            label = "Set number of dimensions:",
                                            value = 10),
                                          conditionalPanel(
@@ -192,8 +192,8 @@ shinyPanelFS_DimRed <- fluidPage(
                                          conditionalPanel(
                                            condition = "input.dimRedPlotMethod_tsneUmap == 'seuratTSNE'
                                            || input.dimRedPlotMethod_tsneUmap == 'seuratUMAP'",
-                                           selectInput(inputId = "reductionMethodUMAPTSNEDimRed", 
-                                                       label = "Select reduction method: ", 
+                                           selectInput(inputId = "reductionMethodUMAPTSNEDimRed",
+                                                       label = "Select reduction method: ",
                                                        choices = c("pca", "ica"))
                                          ),
                                          conditionalPanel(
@@ -204,15 +204,15 @@ shinyPanelFS_DimRed <- fluidPage(
                                          ),
                                          conditionalPanel(
                                            condition = "input.dimRedPlotMethod_tsneUmap == 'seuratUMAP'",
-                                           numericInput(inputId = "minDistUMAPDimRed", 
-                                                        label = "Set min.dist:", 
+                                           numericInput(inputId = "minDistUMAPDimRed",
+                                                        label = "Set min.dist:",
                                                         value = 0.3),
-                                           numericInput(inputId = "nNeighboursUMAPDimRed", 
-                                                        label = "Set n.neighbors:", 
-                                                        value = 30, 
+                                           numericInput(inputId = "nNeighboursUMAPDimRed",
+                                                        label = "Set n.neighbors:",
+                                                        value = 30,
                                                         step = 1),
-                                           numericInput(inputId = "spreadUMAPDimRed", 
-                                                        label = "Set spread:", 
+                                           numericInput(inputId = "spreadUMAPDimRed",
+                                                        label = "Set spread:",
                                                         value = 1),
                                          ),
                                          withBusyIndicatorUI(actionButton("runDimred_tsneUmap", "Run"))
@@ -224,8 +224,8 @@ shinyPanelFS_DimRed <- fluidPage(
                             column(12,
                                    hidden(
                                    tags$div(
-                                     class = "dimRedTSNEUMAP_plotTabset_class", 
-                                     tabsetPanel(id = "dimRedTSNEUMAP_plotTabset", 
+                                     class = "dimRedTSNEUMAP_plotTabset_class",
+                                     tabsetPanel(id = "dimRedTSNEUMAP_plotTabset",
                                                  type = "tabs"
                                      )
                                    ))

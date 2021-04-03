@@ -95,10 +95,8 @@ only.
 \examples{
 data(scExample, package = "singleCellTK")
 sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
-library(scater)
-sce <- logNormCounts(sce)
+sce <- scaterlogNormCounts(sce, assayName = "logcounts")
 sce <- runANOVA(inSCE = sce, groupName1 = "Sample1",
  groupName2 = "Sample2", index1 = 1:20, index2 = 21:40,
  analysisName = "ANOVA", fdrThreshold = NULL)
-
 }

@@ -104,21 +104,76 @@
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
+<li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Import</a>
+      <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../articles/ui_import_datasets.html">Import Datasets</a>
-    </li>
-    <li>
-      <a href="../articles/ui_batch_correction.html">Batch Correction</a>
-    </li>
+          <a href="../articles/ui_import_data.html">Data</a>
+        </li>
+        <li>
+          <a href="../articles/ui_import_genesets.html">Gene Sets</a>
+        </li>
+        <li>
+          <a href="../articles/ui_import_cell_annotation.html">Cell Annotation</a>
+        </li>
+        <li>
+          <a href="../articles/ui_import_feature_annotation.html">Feature Annotation</a>
+        </li>
+        <li>
+          <a href="../articles/ui_export_data.html">Export Data</a>
+        </li>
+        <li>
+          <a href="../articles/ui_delete_data.html">Delete Data</a>
+        </li>
+      </ul>
+</li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">QC &amp; Filtering</a>
+      <ul class="dropdown-menu" role="menu">
+<li>
+          <a href="../articles/ui_qc.html">Quality Control</a>
+        </li>
+        <li>
+          <a href="../articles/ui_filtering.html">Filtering</a>
+        </li>
+      </ul>
+</li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Normalization &amp; Batch Correction</a>
+      <ul class="dropdown-menu" role="menu">
+<li>
+          <a href="../articles/ui_normalization.html">Normalization</a>
+        </li>
+        <li>
+          <a href="../articles/ui_batch_correction.html">Batch Correction</a>
+        </li>
+      </ul>
+</li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Feature Selection &amp; Dimensionality Reduction</a>
+      <ul class="dropdown-menu" role="menu">
+<li>
+          <a href="../articles/ui_feature_selection.html">Feature Selection</a>
+        </li>
+        <li>
+          <a href="../articles/ui_dimred.html">Dimensionality Reduction</a>
+        </li>
+      </ul>
+</li>
     <li>
       <a href="../articles/ui_clustering.html">Clustering</a>
     </li>
-    <li>
-      <a href="../articles/ui_differential_expression.html">Differential Expression</a>
-    </li>
-    <li>
-      <a href="../articles/ui_find_marker.html">Find Marker</a>
-    </li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Differential Expression &amp; Cell Type Labeling</a>
+      <ul class="dropdown-menu" role="menu">
+<li>
+          <a href="../articles/ui_differential_expression.html">Differential Expression</a>
+        </li>
+        <li>
+          <a href="../articles/ui_find_marker.html">Find Marker</a>
+        </li>
+      </ul>
+</li>
     <li>
       <a href="../articles/ui_heatmap.html">Generic Heatmap</a>
     </li>
@@ -145,7 +200,7 @@
 
       
 
-      </header><script src="ui_differential_expression_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+      </header><script src="ui_differential_expression_files/header-attrs-2.7/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Differential Expression - UI</h1>
@@ -171,14 +226,14 @@
 <h3 class="hasAnchor">
 <a href="#entry-of-the-panel" class="anchor"></a>Entry of The Panel</h3>
 <p>From anywhere of the UI, the panel for DE can be accessed from the top navigation panel at the circled tab shown below.</p>
-<p><img src="de_ui_entry.png" alt="Entry"><br></p>
+<p><img src="ui_screenshots/differential_expression/de_ui_entry.png" alt="Entry"><br></p>
 <p>The UI is constructed with mainly four parts: <strong>1.</strong> Assay input; <strong>2.</strong> Condition selection; <strong>3.</strong> Parameter settings; <strong>4.</strong> Result and other visualization.</p>
 </div>
 <div id="assay-input" class="section level3">
 <h3 class="hasAnchor">
 <a href="#assay-input" class="anchor"></a>Assay Input</h3>
 <p>A SingleCellExperiment (SCE) object, which stores all the expression, reduction, and metadata, is active behind the interface. The assay needed here is a matrix that contains the expression information for all cells and all features (genes), and is saved in the <code>assay</code> slot of the SCE object. The selection for this should be made at the top of the panel, as shown in the screenshot below.</p>
-<p><img src="de_ui_assay.png" style="border: 1px solid rgba(0,0,0,0.2)"></p>
+<p><img src="ui_screenshots/differential_expression/de_ui_assay.png" style="border: 1px solid rgba(0,0,0,0.2)"></p>
 </div>
 <div id="condition-selection" class="section level3">
 <h3 class="hasAnchor">
@@ -197,7 +252,7 @@
 <h4 class="hasAnchor">
 <a href="#categorical-selection" class="anchor"></a>Categorical Selection</h4>
 <p>The first approach is designed for the fastest use, where conditions of interests and of control can be simply defined by categorical variables of the same class in the cell annotation (i.e. within one single column in <code>colData</code> of the background SCE object).</p>
-<p><img src="de_ui_condMeth1.png" style="border: 1px solid rgba(0,0,0,0.2)"></p>
+<p><img src="ui_screenshots/differential_expression/de_ui_condMeth1.png" style="border: 1px solid rgba(0,0,0,0.2)"></p>
 <p>First, users need to choose one single option from the selection list <strong>“Choose Annotation Class”</strong>. Then, in the UI, there will be two columns for each condition. For each of them, users can make selections for which categories should belong to the condition, at the selection input <strong>“Select Condition(s)”</strong>. One or more selections are acceptable. When selections are made for one condition while no selection for the other, all the categories but those already used for the former will go to the latter. The text boxes, <strong>“Cells selected”</strong>, are only for showing users what are selected. While the text span below the boxes summaries the total number of cells selected.<br><strong>TODO check if text box actually is editable</strong></p>
 <p>In the example in the figure shown above, we intend to define the conditions based on the clustering result generated by Seurat’s louvain clustering, with resolution 0.8, <code>"Seurat_louvain_Resolution0.8"</code>. Then we define that the cells assigned to “cluster 2” are of our interests, while the cells assigned to both “cluster 4” and “cluster 5” should be a control against “cluster 2”. (Same as the example in the <a href="differential_expression.html#example">R console tutorial for DE</a>)</p>
 </div>
@@ -205,7 +260,7 @@
 <h4 class="hasAnchor">
 <a href="#data-table-firtering-selection" class="anchor"></a>Data Table Firtering Selection</h4>
 <p>The second approach allows users to make the most use of all the cell annotations available. Meanwhile, single selection on each cell is also enabled to ensure the highest flexibility, though can be relatively ineffective.</p>
-<p><img src="de_ui_condMeth2.png" style="border: 1px solid rgba(0,0,0,0.2)"></p>
+<p><img src="ui_screenshots/differential_expression/de_ui_condMeth2.png" style="border: 1px solid rgba(0,0,0,0.2)"></p>
 <p>In this approach, we utilize a data table, where filters can be applied, for the flexible definition on each condition. By default, all classes of annotations are displayed. In the selection input <strong>“Columns to display”</strong>, users can select one or more classes annotations, which should be displayed and used for filtering. The blank box under each column title is where the filters are applied. For categorical columns, one or more selections on available variables can be made; for numeric columns (with continuous values), value range can be set. All filters applied are not technically making any selection on cells, but adjusting which cells to display in the table. This can be inferred from the first text span summary below the table area. After users applied all necessary filters, click on <strong>“Add all filtered”</strong> button below the table area to technically make the selection. Meanwhile, Each row in the table is clickable to make a single selection/cancellation on cells. The advantage of the approach is that conditions defined by necessarily multiple classes of annotations can be fulfilled.</p>
 <p>Similarly as the first approach, in the figure, we are making an equivalent condition definition.</p>
 </div>
@@ -213,13 +268,13 @@
 <h4 class="hasAnchor">
 <a href="#select-by-pasting-a-list" class="anchor"></a>Select by Pasting a list</h4>
 <p>The final way allows users without any useful annotation but still know which cells are interesting to perform the analysis. It is just by easily pasting a list of cell identifiers into the text box for each condition. Note that the cell identifiers used must be the default cell IDs in the background SCE object (i.e. <code>colnames</code>). The input text should be formatted by one ID per line, splitted with no symbol. A summary text span below each text box will be dynamically updated after pasting, for the number of valid IDs found in the input.</p>
-<p><img src="de_ui_condMeth3.png" style="border: 1px solid rgba(0,0,0,0.2)"></p>
+<p><img src="ui_screenshots/differential_expression/de_ui_condMeth3.png" style="border: 1px solid rgba(0,0,0,0.2)"></p>
 </div>
 </div>
 <div id="other-parameters" class="section level3">
 <h3 class="hasAnchor">
 <a href="#other-parameters" class="anchor"></a>Other Parameters</h3>
-<p><img src="de_ui_param.png" style="border: 1px solid rgba(0,0,0,0.2)"></p>
+<p><img src="ui_screenshots/differential_expression/de_ui_param.png" style="border: 1px solid rgba(0,0,0,0.2)"></p>
 <ul>
 <li>
 <strong>Method</strong>. At the selection input <strong>“Choose analysis method”</strong>, where “MAST”, “DESeq2”, “Limma” and “ANOVA” are available. Note that these method requires different types of input assay, so please pay attention to the red notification.</li>
@@ -241,25 +296,25 @@
 <div id="gene-table" class="section level4">
 <h4 class="hasAnchor">
 <a href="#gene-table" class="anchor"></a>Gene Table</h4>
-<p><img src="de_ui_res1.png" style="border: 1px solid rgba(0,0,0,0.2)"></p>
+<p><img src="ui_screenshots/differential_expression/de_ui_res1.png" style="border: 1px solid rgba(0,0,0,0.2)"></p>
 <p>In this tab, there will be a table with all the genes that are thought to be differentially expressed in the condition of interest against the condition of control, with high significance and passed all filter parameters. The gene names (default identifier in the background object, not necessarily a gene symbol), p-values, log2FC values, and FDR values will be present. The table will be saved in background by the name of the analysis, entered before running. Users can also download the table in comma-splitted value (CSV) format, by clicking <strong>“Download Result Table”</strong> button.</p>
 </div>
 <div id="violin-plot" class="section level4">
 <h4 class="hasAnchor">
 <a href="#violin-plot" class="anchor"></a>Violin Plot</h4>
-<p><img src="de_ui_res2.png" style="border: 1px solid rgba(0,0,0,0.2)"></p>
+<p><img src="ui_screenshots/differential_expression/de_ui_res2.png" style="border: 1px solid rgba(0,0,0,0.2)"></p>
 <p>In the violin plot tab, the UI will present a standard violin plot showing how expression differs in the top N selected genes between cells in both conditions.</p>
 </div>
 <div id="linear-modeling-plot" class="section level4">
 <h4 class="hasAnchor">
 <a href="#linear-modeling-plot" class="anchor"></a>Linear Modeling Plot</h4>
-<p><img src="de_ui_res3.png" style="border: 1px solid rgba(0,0,0,0.2)"></p>
+<p><img src="ui_screenshots/differential_expression/de_ui_res3.png" style="border: 1px solid rgba(0,0,0,0.2)"></p>
 <p>In the linear modeling plot tab, an analysis of covariance (ANCOVA) is done, showing how expression differs in the top N selected genes between cells in both conditions.</p>
 </div>
 <div id="heatmap" class="section level4">
 <h4 class="hasAnchor">
 <a href="#heatmap" class="anchor"></a>Heatmap</h4>
-<p><img src="de_ui_res4.png" style="border: 1px solid rgba(0,0,0,0.2)"></p>
+<p><img src="ui_screenshots/differential_expression/de_ui_res4.png" style="border: 1px solid rgba(0,0,0,0.2)"></p>
 <p>This tab enables a limited heatmap visualization for the DE analysis selected. Here SCTK will automatically group the cells to the two conditions where they are assigned to, and group the genes by the log2FC values, which indicate whether a gene is up-regulated or down-regulated.</p>
 <ul>
 <li>Further filtering by the statistics can be applied through numeric inputs <strong>“Absolute log2FC value greater than”</strong> and <strong>“FDR value less than”</strong>.</li>
