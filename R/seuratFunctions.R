@@ -60,6 +60,10 @@
 #' @return Normalized \code{SingleCellExperiment} object
 #' @export
 seuratNormalizeData <- function(inSCE, useAssay, normAssayName = "seuratNormData", normalizationMethod = "LogNormalize", scaleFactor = 10000, verbose = TRUE) {
+  if(missing(useAssay)){
+    useAssay <- assayNames(inSCE)[1]
+    message("'useAssay' parameter missing. Using the first available assay instead: '", useAssay, "'")
+  }
   seuratObject <- Seurat::NormalizeData(convertSCEToSeurat(inSCE, useAssay), normalization.method = normalizationMethod, scale.factor = scaleFactor, verbose = verbose)
   inSCE <- .updateAssaySCE(inSCE, seuratObject, normAssayName, "data")
   inSCE <- .addSeuratToMetaDataSCE(inSCE, seuratObject)
@@ -77,6 +81,8 @@ seuratNormalizeData <- function(inSCE, useAssay, normAssayName = "seuratNormData
 #' @param scale boolean if data should be scaled or not. Default \code{TRUE}.
 #' @param center boolean if data should be centered or not. Default \code{TRUE}
 #' @param scaleMax maximum numeric value to return for scaled data. Default \code{10}.
+#' @param verbose Logical value indicating if informative messages should 
+#'  be displayed. Default is \code{TRUE}.
 #' @examples
 #' data(scExample, package = "singleCellTK")
 #' \dontrun{
@@ -86,9 +92,9 @@ seuratNormalizeData <- function(inSCE, useAssay, normAssayName = "seuratNormData
 #' }
 #' @return Scaled \code{SingleCellExperiment} object
 #' @export
-seuratScaleData <- function(inSCE, useAssay, scaledAssayName = "seuratScaledData", model = "linear", scale = TRUE, center = TRUE, scaleMax = 10) {
+seuratScaleData <- function(inSCE, useAssay = "seuratNormData", scaledAssayName = "seuratScaledData", model = "linear", scale = TRUE, center = TRUE, scaleMax = 10, verbose = TRUE) {
   seuratObject <- convertSCEToSeurat(inSCE, useAssay)
-  seuratObject <- Seurat::ScaleData(seuratObject, features = rownames(seuratObject), model.use = model, do.scale = scale, do.center = center, scale.max = as.double(scaleMax), verbose = FALSE)
+  seuratObject <- Seurat::ScaleData(seuratObject, features = rownames(seuratObject), model.use = model, do.scale = scale, do.center = center, scale.max = as.double(scaleMax), verbose = verbose)
   inSCE <- .updateAssaySCE(inSCE, seuratObject, scaledAssayName, "scale.data")
   inSCE <- .addSeuratToMetaDataSCE(inSCE, seuratObject)
   return(inSCE)
@@ -101,6 +107,8 @@ seuratScaleData <- function(inSCE, useAssay, scaledAssayName = "seuratScaledData
 #' @param hvgMethod selected method to use for computation of highly variable genes. One of 'vst', 'dispersion', or 'mean.var.plot'. Default \code{"vst"}.
 #' @param hvgNumber numeric value of how many genes to select as highly variable. Default \code{2000}
 #' @param altExp Logical value indicating if the input object is an altExperiment. Default \code{FALSE}.
+#' @param verbose Logical value indicating if informative messages should 
+#'  be displayed. Default is \code{TRUE}.
 #' @examples
 #' data(scExample, package = "singleCellTK")
 #' \dontrun{
@@ -110,9 +118,9 @@ seuratScaleData <- function(inSCE, useAssay, scaledAssayName = "seuratScaledData
 #' @return Updated \code{SingleCellExperiment} object with highly variable genes computation stored
 #' @export
 #' @importFrom SummarizedExperiment rowData rowData<-
-seuratFindHVG <- function(inSCE, useAssay,  hvgMethod = "vst", hvgNumber = 2000, altExp = FALSE) {
+seuratFindHVG <- function(inSCE, useAssay = "seuratNormData",  hvgMethod = "vst", hvgNumber = 2000, altExp = FALSE, verbose = TRUE) {
   seuratObject <- convertSCEToSeurat(inSCE, normAssay = useAssay)
-  seuratObject <- Seurat::FindVariableFeatures(seuratObject, selection.method = hvgMethod, nfeatures = hvgNumber, verbose = FALSE)
+  seuratObject <- Seurat::FindVariableFeatures(seuratObject, selection.method = hvgMethod, nfeatures = hvgNumber, verbose = verbose)
   inSCE <- .addSeuratToMetaDataSCE(inSCE, seuratObject)
   if (hvgMethod == "vst") {
     if(!altExp){
@@ -144,6 +152,8 @@ seuratFindHVG <- function(inSCE, useAssay,  hvgMethod = "vst", hvgNumber = 2000,
 #' @param useAssay Assay containing scaled counts to use in PCA.
 #' @param reducedDimName Name of new reducedDims object containing Seurat PCA. Default \code{seuratPCA}.
 #' @param nPCs numeric value of how many components to compute. Default \code{20}.
+#' @param verbose Logical value indicating if informative messages should 
+#'  be displayed. Default is \code{TRUE}.
 #' @examples
 #' data(scExample, package = "singleCellTK")
 #' \dontrun{
@@ -155,8 +165,8 @@ seuratFindHVG <- function(inSCE, useAssay,  hvgMethod = "vst", hvgNumber = 2000,
 #' @return Updated \code{SingleCellExperiment} object which now contains the computed principal components
 #' @export
 #' @importFrom SingleCellExperiment reducedDim<-
-seuratPCA <- function(inSCE, useAssay, reducedDimName = "seuratPCA", nPCs = 20) {
-  seuratObject <- Seurat::RunPCA(convertSCEToSeurat(inSCE, scaledAssay = useAssay), npcs = as.double(nPCs), verbose = FALSE)
+seuratPCA <- function(inSCE, useAssay = "seuratScaledData", reducedDimName = "seuratPCA", nPCs = 20, verbose = TRUE) {
+  seuratObject <- Seurat::RunPCA(convertSCEToSeurat(inSCE, scaledAssay = useAssay), npcs = as.double(nPCs), verbose = verbose)
   inSCE <- .addSeuratToMetaDataSCE(inSCE, seuratObject)
   
   temp <- seuratObject@reductions$pca@cell.embeddings
@@ -1154,4 +1164,19 @@ seuratGenePlot <- function(inSCE,
   colnames(markers.combined) <- gsub(pattern = paste0(ident.1, "_"), replacement = "", x = colnames(markers.combined))
   colnames(markers.combined) <- c(colnames(markers.combined)[-length(colnames(markers.combined))], "p_val_adj")
   return(markers.combined)
+}
+
+#' Get variable feature names after running seuratFindHVG function
+#'
+#' @param inSCE Input \code{SingleCellExperiment} object.
+#'
+#' @return A list of variable feature names.
+#' @export
+seuratVariableFeatures <- function(inSCE){
+  if(!is.null(metadata(inSCE)$seurat$obj)){
+    return(Seurat::VariableFeatures(metadata(inSCE)$seurat$obj))
+  }
+  else{
+    return(NULL)
+  }
 }

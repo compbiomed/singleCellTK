@@ -5,7 +5,13 @@
 \title{seuratPCA
 Computes PCA on the input sce object and stores the calculated principal components within the sce object}
 \usage{
-seuratPCA(inSCE, useAssay, reducedDimName = "seuratPCA", nPCs = 20)
+seuratPCA(
+  inSCE,
+  useAssay = "seuratScaledData",
+  reducedDimName = "seuratPCA",
+  nPCs = 20,
+  verbose = TRUE
+)
 }
 \arguments{
 \item{inSCE}{(sce) object on which to compute PCA}
@@ -15,6 +21,9 @@ seuratPCA(inSCE, useAssay, reducedDimName = "seuratPCA", nPCs = 20)
 \item{reducedDimName}{Name of new reducedDims object containing Seurat PCA. Default \code{seuratPCA}.}
 
 \item{nPCs}{numeric value of how many components to compute. Default \code{20}.}
+
+\item{verbose}{Logical value indicating if informative messages should 
+be displayed. Default is \code{TRUE}.}
 }
 \value{
 Updated \code{SingleCellExperiment} object which now contains the computed principal components
