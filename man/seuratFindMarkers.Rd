@@ -15,7 +15,8 @@ seuratFindMarkers(
   test = "wilcox",
   onlyPos = FALSE,
   minPCT = 0.1,
-  threshUse = 0.25
+  threshUse = 0.25,
+  verbose = TRUE
 )
 }
 \arguments{
@@ -45,6 +46,9 @@ cells in which genes are detected. Default is \code{0.1}.}
 \item{threshUse}{Numeric value indicating the logFC threshold value on 
 which on average, at least X-fold difference (log-scale) between the 
 two groups of cells exists. Default is \code{0.25}.}
+
+\item{verbose}{Logical value indicating if informative messages should 
+be displayed. Default is \code{TRUE}.}
 }
 \value{
 A \code{SingleCellExperiment} object that contains marker genes populated in a data.frame stored inside metadata slot.
