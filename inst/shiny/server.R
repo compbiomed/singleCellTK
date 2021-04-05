@@ -915,8 +915,21 @@ shinyServer(function(input, output, session) {
       dbList <- getMSigDBTable()
       geneSetDBChoices <- formatGeneSetDBChoices(dbIDs = dbList$ID, dbCats = dbList$Category_Description)
       updateCheckboxGroupInput(session, 'geneSetDB', choices = geneSetDBChoices)
+      
+      updateSeuratUIFromRDS(vals$counts)
     })
   })
+  
+  updateSeuratUIFromRDS <- function(inSCE){
+    if(!is.null(metadata(inSCE)$seurat$plots)){
+      showNotification("Seurat report (Seurat_V3.rmd) computation detected in the input object and therefore populating saved plots in the Seurat tab for further inspection.")
+      if(!is.null(metadata(inSCE)$seurat$plots$hvg)){
+        output$plot_hvg <- renderPlotly({
+          plotly::ggplotly(metadata(inSCE)$seurat$plots$hvg)
+        })
+      }
+    }
+  }
 
   observeEvent(input$importFeatureDipSet, {
     if (!is.null(vals$counts)) {
