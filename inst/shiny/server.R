@@ -1897,6 +1897,19 @@ shinyServer(function(input, output, session) {
     }
   })
 
+  observeEvent(input$customNormalizeAssayMethodSelect,{
+    if(input$customNormalizeAssayMethodSelect == "LogNormalize"
+       || input$customNormalizeAssayMethodSelect == "CLR"
+       || input$customNormalizeAssayMethodSelect == "SCT"
+       || input$customNormalizeAssayMethodSelect == "LNC"){
+      updateAwesomeCheckbox(
+        session = session,
+        inputId = "customNormalizeOptionsTransform",
+        value = FALSE
+      )
+    }
+  })
+  
   output$normalizationDataTagUI <- renderUI({
     req(vals$counts)
     tag <- "normalized"
