@@ -1,4 +1,4 @@
-#' scater_logNormCounts
+#' scaterlogNormCounts
 #' Uses \link{logNormCounts} to log normalize input data
 #' @param inSCE Input SingleCellExperiment object
 #' @param assayName New assay name for log normalized data
@@ -8,8 +8,8 @@
 #' @author Irzam Sarfraz
 #' @examples
 #' data(sce_chcl, package = "scds")
-#' sce_chcl <- scater_logNormCounts(sce_chcl,"logcounts", "counts")
-scater_logNormCounts <- function(inSCE, 
+#' sce_chcl <- scaterlogNormCounts(sce_chcl,"logcounts", "counts")
+scaterlogNormCounts <- function(inSCE, 
                                  assayName = "ScaterLogNormCounts", 
                                  useAssay = "counts"){
   inSCE <- scater::logNormCounts(

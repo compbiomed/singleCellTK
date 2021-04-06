@@ -11,29 +11,29 @@ between a range of values.}
 \usage{
 runNormalization(
   inSCE,
-  normalizationMethod = NULL,
   useAssay = "counts",
-  normAssayName = "customNormalizedAssay",
+  outAssayName = "customNormalizedAssay",
+  normalizationMethod = NULL,
   scale = FALSE,
   seuratScaleFactor = 10,
   transformation = NULL,
   pseudocountsBeforeNorm = NULL,
   pseudocountsBeforeTransform = NULL,
-  pseudocountsAfterTransform = NULL,
-  trim = NULL
+  trim = NULL,
+  verbose = TRUE
 )
 }
 \arguments{
 \item{inSCE}{Input \code{SingleCellExperiment} object.}
 
+\item{useAssay}{Specify the name of the assay that should be used.}
+
+\item{outAssayName}{Specify the name of the new output assay.}
+
 \item{normalizationMethod}{Specify a normalization method from `LogNormalize`,
 `CLR`, `RC` and `SCTransform` from Seurat or `logNormCounts` and `CPM` from
 scater packages. Default \code{NULL} is set which will not run any
 normalization method.}
-
-\item{useAssay}{Specify the name of the assay that should be used.}
-
-\item{normAssayName}{Specify the name of the new output assay.}
 
 \item{scale}{Logical value indicating if the data should be scaled using
 Z.Score. Default \code{FALSE}.}
@@ -55,14 +55,13 @@ which will not add any value.}
 added to the assay before transformation is run. Default is \code{NULL},
 which will not add any value.}
 
-\item{pseudocountsAfterTransform}{Specify a numeric pseudo value that should be 
-added to the assay after transformation is run. Default is \code{NULL},
-which will not add any value.}
-
 \item{trim}{Specify a vector of two numeric values that should be used
 as the upper and lower trim values to trim the assay between these two
 values. For example, \code{c(10,-10)} will trim the values between 10
 and -10. Default is \code{NULL}, which will not trim the data assay.}
+
+\item{verbose}{Logical value indicating if progress messages should be
+displayed to the user. Default is \code{TRUE}.}
 }
 \value{
 Output SCE object with new normalized/transformed assay stored.
@@ -79,7 +78,7 @@ between a range of values.
 data(sce_chcl, package = "scds")
 sce_chcl <- runNormalization(
  inSCE = sce_chcl, 
- "SCTransform", 
- "counts", 
- "sctCounts")
+ normalizationMethod = "SCTransform", 
+ useAssay = "counts", 
+ outAssayName = "sctCounts")
 }

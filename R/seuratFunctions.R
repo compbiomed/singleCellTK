@@ -50,6 +50,8 @@
 #' @param normAssayName Name of new assay containing normalized data. Default \code{seuratNormData}.
 #' @param normalizationMethod selected normalization method. Default \code{"LogNormalize"}.
 #' @param scaleFactor numeric value that represents the scaling factor. Default \code{10000}.
+#' @param verbose Logical value indicating if informative messages should 
+#'  be displayed. Default is \code{TRUE}.
 #' @examples
 #' data(scExample, package = "singleCellTK")
 #' \dontrun{
@@ -57,8 +59,8 @@
 #' }
 #' @return Normalized \code{SingleCellExperiment} object
 #' @export
-seuratNormalizeData <- function(inSCE, useAssay, normAssayName = "seuratNormData", normalizationMethod = "LogNormalize", scaleFactor = 10000) {
-  seuratObject <- Seurat::NormalizeData(convertSCEToSeurat(inSCE, useAssay), normalization.method = normalizationMethod, scale.factor = scaleFactor, verbose = FALSE)
+seuratNormalizeData <- function(inSCE, useAssay, normAssayName = "seuratNormData", normalizationMethod = "LogNormalize", scaleFactor = 10000, verbose = TRUE) {
+  seuratObject <- Seurat::NormalizeData(convertSCEToSeurat(inSCE, useAssay), normalization.method = normalizationMethod, scale.factor = scaleFactor, verbose = verbose)
   inSCE <- .updateAssaySCE(inSCE, seuratObject, normAssayName, "data")
   inSCE <- .addSeuratToMetaDataSCE(inSCE, seuratObject)
   inSCE@metadata$seurat$normAssay <- normAssayName
@@ -483,6 +485,9 @@ seuratRunUMAP <- function(inSCE, useReduction = c("pca", "ica"), reducedDimName 
 #' @param significantPC Number of significant principal components to plot. This is used to alter the color of the points for the corresponding PCs. If \code{NULL}, all points will be the same color. Default \code{NULL}.
 #' @param reduction Reduction to use for elbow plot generation. Either \code{"pca"} or \code{"ica"}. Default \code{"pca"}.
 #' @param externalReduction Pass DimReduc object if PCA/ICA computed through other libraries. Default \code{NULL}.
+#' @param interactive Logical value indicating if the returned object should
+#'  be an interactive plotly object if \code{TRUE} or a ggplot object if
+#'  set to \code{FALSE}. Default is \code{TRUE}.
 #' @examples
 #' data(scExample, package = "singleCellTK")
 #' \dontrun{
@@ -494,7 +499,11 @@ seuratRunUMAP <- function(inSCE, useReduction = c("pca", "ica"), reducedDimName 
 #' }
 #' @return plot object
 #' @export
-seuratElbowPlot <- function(inSCE, significantPC = NULL, reduction = "pca", externalReduction = NULL) {
+seuratElbowPlot <- function(inSCE, 
+                            significantPC = NULL, 
+                            reduction = "pca", 
+                            externalReduction = NULL,
+                            interactive = TRUE) {
   seuratObject <- convertSCEToSeurat(inSCE)
   if(!is.null(externalReduction)){
     seuratObject@reductions <- list(pca = externalReduction)
@@ -508,14 +517,16 @@ seuratElbowPlot <- function(inSCE, significantPC = NULL, reduction = "pca", exte
   plot$labels$y <- "Standard Deviation"
   plot$labels$colour <- "Significant"
   
-  hoverText <- paste("Dimension:", plot$data$dims, "\nStandard Deviation:", round(plot$data$stdev, 1), "\nIs Significant?", plot$data$Significant)
-  significant <- plot$data$Significant
-  if(length(unique(significant))>1){
-    plot <- plotly::style(plot, text = hoverText[1:which(significant == "No")[1]-1])
-    plot <- plotly::style(plot, text = hoverText[which(significant == "No")[1]:length(significant)], traces = 1) 
-  }
-  else{
-    plot <- plotly::style(plot, text = hoverText)
+  if(interactive){
+    hoverText <- paste("Dimension:", plot$data$dims, "\nStandard Deviation:", round(plot$data$stdev, 1), "\nIs Significant?", plot$data$Significant)
+    significant <- plot$data$Significant
+    if(length(unique(significant))>1){
+      plot <- plotly::style(plot, text = hoverText[1:which(significant == "No")[1]-1])
+      plot <- plotly::style(plot, text = hoverText[which(significant == "No")[1]:length(significant)], traces = 1) 
+    }
+    else{
+      plot <- plotly::style(plot, text = hoverText)
+    }
   }
   
   return(plot)
@@ -527,7 +538,13 @@ seuratElbowPlot <- function(inSCE, significantPC = NULL, reduction = "pca", exte
 #' @param useAssay Assay containing scaled counts to use in heatmap.
 #' @param useReduction Reduction method to use for computing clusters. One of "pca" or "ica". Default \code{"pca"}.
 #' @param dims Number of components to generate heatmap plot objects. If \code{NULL}, a heatmap will be generated for all components. Default \code{NULL}.
-#' @param nfeatures Numer of features to include in the heatmap. Default \code{30}.
+#' @param nfeatures Number of features to include in the heatmap. Default \code{30}.
+#' @param cells Numeric value indicating the number of top cells to plot.
+#'  Default is \code{NULL} which indicates all cells.
+#' @param ncol Numeric value indicating the number of columns to use for plot.
+#'  Default is \code{NULL} which will automatically compute accordingly.
+#' @param balanced Plot equal number of genes with positive and negative scores.
+#'  Default is \code{TRUE}.
 #' @param fast See \link[Seurat]{DimHeatmap} for more information. Default \code{TRUE}.
 #' @param combine See \link[Seurat]{DimHeatmap} for more information. Default \code{TRUE}.
 #' @param raster See \link[Seurat]{DimHeatmap} for more information. Default \code{TRUE}.
@@ -544,7 +561,18 @@ seuratElbowPlot <- function(inSCE, significantPC = NULL, reduction = "pca", exte
 #' }
 #' @return plot object
 #' @export
-seuratComputeHeatmap <- function(inSCE, useAssay, useReduction = c("pca", "ica"), dims = NULL, nfeatures = 30, fast = TRUE, combine = TRUE, raster = TRUE, externalReduction = NULL) {
+seuratComputeHeatmap <- function(inSCE, 
+                                 useAssay, 
+                                 useReduction = c("pca", "ica"), 
+                                 dims = NULL, 
+                                 nfeatures = 30,
+                                 cells = NULL,
+                                 ncol = NULL,
+                                 balanced = TRUE,
+                                 fast = TRUE, 
+                                 combine = TRUE, 
+                                 raster = TRUE, 
+                                 externalReduction = NULL) {
   useReduction <- match.arg(useReduction)
   seuratObject <- convertSCEToSeurat(inSCE, scaledAssay = useAssay)
   if(!is.null(externalReduction)){
@@ -553,7 +581,16 @@ seuratComputeHeatmap <- function(inSCE, useAssay, useReduction = c("pca", "ica")
   if(is.null(dims)) {
     dims <- ncol(seuratObject@reductions[[useReduction]])
   }
-  return(Seurat::DimHeatmap(seuratObject, dims = 1:dims, nfeatures = nfeatures, reduction = useReduction, fast = fast, combine = combine, raster = raster))
+  return(Seurat::DimHeatmap(seuratObject, 
+                            dims = 1:dims, 
+                            nfeatures = nfeatures, 
+                            cells = cells,
+                            reduction = useReduction,
+                            ncol = ncol,
+                            fast = fast, 
+                            combine = combine, 
+                            raster = raster,
+                            balanced = balanced))
 }
 
 #' seuratHeatmapPlot
@@ -709,18 +746,20 @@ convertSCEToSeurat <- function(inSCE, countsAssay = NULL, normAssay = NULL, scal
 #' @param inSCE Input SingleCellExperiment object
 #' @param normAssayName Name for the output data assay. Default \code{"SCTCounts"}.
 #' @param useAssay Name for the input data assay. Default \code{"counts"}.
+#' @param verbose Logical value indicating if informative messages should 
+#'  be displayed. Default is \code{TRUE}.
 #' @return Updated SingleCellExperiment object containing the transformed data
 #' @export
 #' @examples
 #' data(sce_chcl, package = "scds")
 #' sce_chcl <- seuratSCTransform(sce_chcl, "SCTCounts", "counts")
-seuratSCTransform <- function(inSCE, normAssayName = "SCTCounts", useAssay = "counts") {
+seuratSCTransform <- function(inSCE, normAssayName = "SCTCounts", useAssay = "counts", verbose = TRUE) {
   seuratObject <- base::suppressWarnings(Seurat::SCTransform(
     object = convertSCEToSeurat(inSCE, useAssay),
     assay = "RNA",
     new.assay.name = "SCTransform",
     do.correct.umi = FALSE,
-    verbose = TRUE))
+    verbose = verbose))
   inSCE <- .updateAssaySCE(inSCE = inSCE, seuratObject = seuratObject, assaySlotSCE = normAssayName, seuratDataSlot = "data", seuratAssaySlot = "SCTransform")
   inSCE <- expSetDataTag(inSCE = inSCE, assayType = "normalized", assays = normAssayName)
   return(inSCE)
@@ -946,11 +985,22 @@ seuratFindMarkers <- function(
 #' @param plotType Specify the type of the plot to compute. Options are limited to "ridge", "violing", "feature", "dot" and "heatmap".
 #' @param features Specify the features to compute the plot against.
 #' @param groupVariable Specify the column name from the colData slot that should be used as grouping variable.
+#' @param splitBy Specify the column name from the colData slot that should be used to split samples.
+#'  Default is \code{NULL}.
+#' @param cols Specify two colors to form a gradient between. Default is \code{c("lightgrey", "blue")}.
 #' @param ncol Visualizations will be adjusted in "ncol" number of columns.
+#'  Default is \code{1}.
 #'
 #' @return Plot object
 #' @export
-seuratGenePlot <- function(inSCE, scaledAssayName = "seuratScaledData", plotType, features, groupVariable, ncol){
+seuratGenePlot <- function(inSCE, 
+                           scaledAssayName = "seuratScaledData", 
+                           plotType, 
+                           features, 
+                           groupVariable,
+                           splitBy = NULL, 
+                           cols = c("lightgrey", "blue"), 
+                           ncol = 1){
   #setup seurat object and the corresponding groups
   seuratObject <- convertSCEToSeurat(inSCE, scaledAssay = scaledAssayName)
   indices <- list()
@@ -970,18 +1020,37 @@ seuratGenePlot <- function(inSCE, scaledAssayName = "seuratScaledData", plotType
     Seurat::Idents(seuratObject, cells = cells[[i]]) <- groups[i]
   }
   
+  if(!is.null(splitBy)){
+    seuratObject[[splitBy]] <- colData(inSCE)[[splitBy]]
+  }
+  
   #plot required visualization
   if(plotType == "ridge"){
-    return(Seurat::RidgePlot(seuratObject, features = features, ncol = ncol))
+    return(Seurat::RidgePlot(
+      seuratObject, 
+      features = features, 
+      ncol = ncol))
   }
   else if(plotType == "violin"){
-    return(Seurat::VlnPlot(seuratObject, features = features, ncol = ncol))
+    return(Seurat::VlnPlot(
+      seuratObject, 
+      features = features, 
+      ncol = ncol,
+      split.by = splitBy))
   }
   else if(plotType == "feature"){
-    return(Seurat::FeaturePlot(seuratObject, features = features, ncol = ncol))
+    return(Seurat::FeaturePlot(
+      seuratObject, 
+      features = features, 
+      cols = cols, 
+      ncol = ncol,
+      split.by = splitBy))
   }
   else if(plotType == "dot"){
-    return(Seurat::DotPlot(seuratObject, features = features))
+    return(Seurat::DotPlot(
+      seuratObject, 
+      features = features,
+      split.by = splitBy))
   }
   else if(plotType == "heatmap"){
     return(Seurat::DoHeatmap(seuratObject, features = features))
