@@ -12,7 +12,8 @@ seuratRunUMAP(
   dims = 10,
   minDist = 0.3,
   nNeighbors = 30L,
-  spread = 1
+  spread = 1,
+  verbose = TRUE
 )
 }
 \arguments{
@@ -29,6 +30,9 @@ seuratRunUMAP(
 \item{nNeighbors}{Sets the \code{"n.neighbors"} parameter to the underlying UMAP call. See \link[Seurat]{RunUMAP} for more information. Default \code{30L}.}
 
 \item{spread}{Sets the \code{"spread"} parameter to the underlying UMAP call. See \link[Seurat]{RunUMAP} for more information. Default \code{1}.}
+
+\item{verbose}{Logical value indicating if informative messages should 
+be displayed. Default is \code{TRUE}.}
 }
 \value{
 Updated sce object with UMAP computations stored
@@ -36,4 +40,15 @@ Updated sce object with UMAP computations stored
 \description{
 seuratRunUMAP
 Computes UMAP from the given sce object and stores the UMAP computations back into the sce object
+}
+\examples{
+data(scExample, package = "singleCellTK")
+\dontrun{
+sce <- seuratNormalizeData(sce, useAssay = "counts")
+sce <- seuratFindHVG(sce, useAssay = "counts")
+sce <- seuratScaleData(sce, useAssay = "counts")
+sce <- seuratPCA(sce, useAssay = "counts")
+sce <- seuratFindClusters(sce, useAssay = "counts")
+sce <- seuratRunUMAP(sce, useReduction = "pca")
+}
 }

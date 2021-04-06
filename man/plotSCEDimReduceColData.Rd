@@ -6,12 +6,12 @@
 \usage{
 plotSCEDimReduceColData(
   inSCE,
-  sample = NULL,
   colorBy,
+  reducedDimName,
+  sample = NULL,
   groupBy = NULL,
   conditionClass = NULL,
   shape = NULL,
-  reducedDimName = NULL,
   xlab = NULL,
   ylab = NULL,
   axisSize = 10,
@@ -39,12 +39,15 @@ plotSCEDimReduceColData(
 }
 \arguments{
 \item{inSCE}{Input \linkS4class{SingleCellExperiment} object with saved
-dimension reduction components or a variable with saved results. Required}
-
-\item{sample}{Character vector. Indicates which sample each cell belongs to.}
+dimension reduction components or a variable with saved results. Required.}
 
 \item{colorBy}{Color by a condition(any column of the annotation data).
 Required.}
+
+\item{reducedDimName}{Saved dimension reduction matrix name in the
+\linkS4class{SingleCellExperiment} object. Required.}
+
+\item{sample}{Character vector. Indicates which sample each cell belongs to.}
 
 \item{groupBy}{Group by a condition(any column of the annotation data).
 Default NULL.}
@@ -54,9 +57,6 @@ Options are NULL, "factor" or "numeric". If NULL, class will default to the
 original class. Default NULL.}
 
 \item{shape}{Add shapes to each condition.}
-
-\item{reducedDimName}{Saved dimension reduction matrix name in the
-\linkS4class{SingleCellExperiment} object. Required.}
 
 \item{xlab}{Character vector. Label for x-axis. Default NULL.}
 
@@ -122,7 +122,7 @@ Default FALSE.}
 as the labels. If set to "none", no label will be plotted.}
 }
 \value{
-a ggplot of the reduced dimensions.
+a ggplot of the reduced dimension plot of coldata.
 }
 \description{
 Plot results of reduced dimensions data and

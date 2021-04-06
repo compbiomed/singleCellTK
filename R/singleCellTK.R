@@ -13,20 +13,17 @@
 #' @return The shiny app will open
 #' @export
 #' @examples
+#' \dontrun{
 #' #Upload data through the app
-#' if(interactive()){
-#'   singleCellTK()
-#' }
+#' singleCellTK()
 #'
 #' # Load the app with a SingleCellExperiment object
-#' if(interactive()){
-#'   data("mouseBrainSubsetSCE")
-#'   singleCellTK(mouseBrainSubsetSCE)
+#' data("mouseBrainSubsetSCE")
+#' singleCellTK(mouseBrainSubsetSCE)
 #' }
-#'
 singleCellTK <- function(inSCE=NULL, includeVersion=TRUE, theme='yeti') {
   appDir <- system.file("shiny", package = "singleCellTK")
-  if (!is.null(inSCE) && is.null(rownames(inSCE))){
+  if (!is.null(inSCE) & is.null(rownames(inSCE))){
     stop("ERROR: No row names (gene names) found.")
   }
   shiny::shinyOptions(inputSCEset = inSCE)

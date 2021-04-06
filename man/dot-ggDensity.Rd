@@ -42,6 +42,9 @@ when TRUE. Default TRUE.}
 \item{cutoff}{Numeric value. The plot will be annotated with a vertical line
 if set. Default NULL.}
 }
+\value{
+density plot, in .ggplot.
+}
 \description{
 Visualizes values stored in the specified slot of a
  SingleCellExperiment object via a density plot.

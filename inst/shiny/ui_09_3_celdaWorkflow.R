@@ -1,196 +1,213 @@
 # User Interface for Celda Workflow ---
 shinyPanelCelda <- fluidPage(
+    h1("Celda"),
+    h5(tags$a(href = "https://www.sctk.science/articles/tab09_celda-workflow",
+              "(help)", target = "_blank")),
     inlineCSS(list(".panel-danger>.panel-heading" = "background-color:#dcdcdc; color:#000000", ".panel-primary>.panel-heading" = "background-color:#f5f5f5; color:#000000; border-color:#dddddd", ".panel-primary" = "border-color:#dddddd;", ".panel-primary>.panel-heading+.panel-collapse>.panel-body" = "border-color:#dddddd;")),
     bsCollapse(id = "CeldaUI", open = "Data Input",
-        bsCollapsePanel("Module Splitting",
-            sidebarPanel(
-                numericInput("celdaLinit", "Select Number of Initial Feature Modules:", min = 1, max = 25, value = 10),
-                numericInput("celdaLmax", "Select Number of Maximum Feature Modules:", min = 15, max = 200, value = 100),
-                actionButton("celdamodsplit", "Recursive Module Split"),
-                actionButton("celdamodsplitdiff", "Plot Perplexity Difference"),
-                numericInput("celdaLselect", "Select Number of Feature Modules:", min = 1, max = 100, value = 25),
-                actionButton("celdaLbtn", "Subset Celda List")
-            ),
-            mainPanel(
-                plotlyOutput("modsplitplot", height = 300) %>% withSpinner(size = 3, color = "#0dc5c1", type = 8),
-                plotlyOutput("modsplitplotdiff") %>% withSpinner(size = 3, color = "#0dc5c1", type = 8)
-            )
-        ),
-        bsCollapsePanel("Cell Splitting",
-            sidebarPanel(
-                numericInput("celdaKinit", "Select Number of Initial Cell Modules:", min = 1, max = 10, value = 5),
-                numericInput("celdaKmax", "Select Number of Maximum Cell Modules:", min = 15, max = 40, value = 25),
-                actionButton("celdacellsplit", "Subset Celda Model"),
-                numericInput("celdaKselect", "Select Number of Cell Modules:", min = 2, max = 20, value = 10),
-                actionButton("celdaKbtn", "Subset Celda List")
-            ),
-            mainPanel(
-                plotlyOutput("cellsplitplot", height = 300) %>% withSpinner(size = 3, color = "#0dc5c1", type = 8)
-            )
-        ),
-
-        bsCollapsePanel("Dimensionality Reduction",
-            panel(
-                actionButton("CeldaUmap", "Run UMAP"),
-                actionButton("CeldaTsne", "Run tSNE")
-            )
-        ),
-
-        bsCollapsePanel("Cluster Data",
-            fluidRow(
-                    panel(
-                        actionButton("celdaBasicSet", "Basic Settings"),
-                        # open by default
-                        tags$div(id = "celdaCollapse1",
-                            wellPanel(
-                                selectInput("celdaAssay", "Select Assay:",
-                                    currassays),
-                                selectInput("celdaModel",
-                                    "Select Celda Model:",
-                                    c("celda_C", "celda_G", "celda_CG"),
-                                    selected = "celda_CG"),
-                                # c("celda_C"),
-                                # selected = "celda_C"),
-                                conditionalPanel(
-                                    condition = sprintf("input['%s'] == 'celda_C'",
-                                        "celdaModel"),
-                                    numericInput("cellClusterC",
-                                        label = "Number of Cell Clusters (K):",
-                                        value = 15,
-                                        min = 1,
-                                        max = 100,
-                                        step = 1)
-                                ),
-                                conditionalPanel(
-                                    condition = sprintf("input['%s'] == 'celda_G'",
-                                        "celdaModel"),
-                                    numericInput("geneModuleG",
-                                        label = "Number of Gene Modules (L):",
-                                        value = 50,
-                                        min = 1,
-                                        max = 200,
-                                        step = 1)
-                                ),
-                                conditionalPanel(
-                                    condition = sprintf("input['%s'] == 'celda_CG'",
-                                        "celdaModel"),
-                                    numericInput("cellClusterCG",
-                                        label = "Number of Cell Clusters (K):",
-                                        value = 15,
-                                        min = 1,
-                                        max = 100,
-                                        step = 1),
-                                    numericInput("geneModuleCG",
-                                        label = "Number of Gene Modules (L):",
-                                        value = 50,
-                                        min = 1,
-                                        max = 200,
-                                        step = 1))
-                            )
-                        ),
-                        # Section 2 - Advanced Settings
-                        actionButton("celdaAdvSet", "Advanced Settings"),
-                        shinyjs::hidden(
-                            tags$div(id = "celdaCollapse2",
-                                wellPanel(
-                                    conditionalPanel(
-                                        condition = sprintf("input['%s'] == 'celda_C' ||
-                  input['%s'] == 'celda_CG'", "celdaModel", "celdaModel"),
-                                        selectInput("celdaAlgorithm",
-                                            "Select Algorithm:",
-                                            list("Expectation Maximization" = "EM",
-                                                "Gibbs Sampling" = "Gibbs"),
-                                            selected = "Expectation Maximization")
-                                    ),
-                                    conditionalPanel(
-                                        condition = sprintf("input['%s'] == 'celda_C' ||
-                  input['%s'] == 'celda_CG'", "celdaModel", "celdaModel"),
-                                        numericInput("celdaAlpha",
-                                            label = "Alpha",
-                                            value = 1,
-                                            min = 0.00000001,
-                                            max = 100000)
-                                    ),
-                                    numericInput("celdaBeta",
-                                        label = "Beta",
-                                        value = 1,
-                                        min = 0.00000001,
-                                        max = 100000),
-                                    conditionalPanel(
-                                        condition = sprintf("input['%s'] == 'celda_G' ||
-                  input['%s'] == 'celda_CG'", "celdaModel", "celdaModel"),
-                                        numericInput("celdaDelta",
-                                            label = "Delta:",
-                                            value = 1,
-                                            min = 0.00000001,
-                                            max = 100000),
-                                        numericInput("celdaGamma",
-                                            label = "Gamma:",
-                                            value = 1,
-                                            min = 0.00000001,
-                                            max = 100000)
-                                    ),
-                                    numericInput("celdaMaxIter",
-                                        label = "Maximum Number of Iterations:",
-                                        value = 200,
-                                        min = 1,
-                                        max = 100000,
-                                        step = 1),
-                                    numericInput("celdaStopIter",
-                                        label = "Number of Converging Iterations for Gibbs
-                          sampler to stop:",
-                                        value = 10,
-                                        min = 1,
-                                        max = 100000,
-                                        step = 1),
-                                    numericInput("celdaSplitIter",
-                                        label = "Split on Every This Number of Iteration:",
-                                        value = 10,
-                                        min = 1,
-                                        max = 100000,
-                                        step = 1),
-                                    numericInput("celdaNChains",
-                                        label = "Number of random cluster initializations
-                          for every K/L combination:",
-                                        value = 3,
-                                        min = 1,
-                                        max = 100000,
-                                        step = 1),
-                                    # numericInput("celdaCores",
-                                    #   label = "Number of Cores used for parallel computing:",
-                                    #   value = 1,
-                                    #   min = 1,
-                                    #   max = 100000,
-                                    #   step = 1),
-                                    numericInput("celdaSeed",
-                                        label = "Base Seed For Random Number Generation:",
-                                        value = 12345,
-                                        min = 1,
-                                        max = 100000,
-                                        step = 1)
-                                )
-                            )
-                    )
-                    ),
-                tags$hr(),
-                withBusyIndicatorUI(actionButton(inputId = "runCelda",
-                    label = "Run Celda")),
-                withBusyIndicatorUI(actionButton(inputId = "renderHeatmap",
-                    label = "Render Heatmap")),
-                tags$hr(),
-                downloadButton("downloadSCECelda", "Download SingleCellExperiment object (.rds)")
-            ),
+        bsCollapsePanel("Identify Number of Feature Modules",
+           fluidRow(
+               column(4,
+                   panel(
+                       selectInput("celdaassayselect", "Choose an Assay:",
+                                   choices = c()),
+                       selectInput("celdafeatureselect", "Choose Feature Selection Method:",
+                                   choices = c("Simple Filter", "SeuratFindHVG", "Scran_modelGeneVar")),
+                       conditionalPanel("input.celdafeatureselect == 'SeuratFindHVG'",
+                                        selectInput("celdaseurathvgmethod", "Select HVG method:",
+                                                    choices = c("vst", "dispersion", "mean.var.plot"))
+                       ),
+                       conditionalPanel("input.celdafeatureselect == 'Simple Filter'",
+                                        numericInput("celdarowcountsmin",
+                                                     "Keep features with this many counts:", value = 3),
+                                        numericInput("celdacolcountsmin",
+                                                     "In at least this many cells:", value = 3)
+                       ),
+                       conditionalPanel("input.celdafeatureselect != 'Simple Filter'",
+                                        numericInput("celdafeaturenum",
+                                                     "Select number of variable features:", min = 1, max = 5000, value = 2000)
+                       ),
+                       numericInput("celdaLinit", "Select Number of Initial Feature Modules:", min = 1, max = 25, value = 10),
+                       numericInput("celdaLmax", "Select Number of Maximum Feature Modules:", min = 15, max = 200, value = 100),
+                       actionButton("celdamodsplit", "Recursive Module Split"),
+                       hidden(
+                           numericInput("celdaLselect", "Select Number of Feature Modules:", min = 1, max = 100, value = 25),
+                           actionButton("celdaLbtn", "Select Number of Modules")
+                       )
+                   )
+               ),
+               column(8,
+                   fluidRow(
+                       column(12,
+                           hidden(
+                               tags$div(class = "celda_modsplit_plots", tabsetPanel(id = "celdaModsplitTabset", type = "tabs"
+                               ))
+                           )
+                       )
+                   )
+               )
+           ),
             style = "primary"),
 
-        bsCollapsePanel("Factorize Data",
+        bsCollapsePanel("Identify Number of Cell Clusters",
             fluidRow(
                 column(4,
                     panel(
-                        actionButton(inputId = "celda_factorize", "Factorize")
+                        numericInput("celdaKinit", "Select Number of Initial Cell Modules:", min = 1, max = 10, value = 5),
+                        numericInput("celdaKmax", "Select Number of Maximum Cell Modules:", min = 15, max = 40, value = 25),
+                        actionButton("celdacellsplit", "Recursive Cell Split"),
+                        hidden(
+                            numericInput("celdaKselect", "Select Number of Cell Clusters:", min = 2, max = 20, value = 10),
+                            actionButton("celdaKbtn", "Select Number of Clusters")
+                        )
                     )
+                ),
+                column(8,
+                    fluidRow(
+                        column(12,
+                            hidden(
+                                tags$div(class = "celda_cellsplit_plots",
+                                    tabsetPanel(
+                                    tabPanel("Perplexity Plot",
+                                             panel(
+                                                 plotlyOutput(outputId = "plot_cellsplit_perp", height = "auto")
+                                             )
+                                    ),
+                                    tabPanel("Perplexity Diff Plot",
+                                             panel(
+                                                 plotlyOutput(outputId = "plot_cellsplit_perpdiff", height = "auto")
+                                             )
+                                    ),
+                                    tabPanel("Preliminary UMAP Plots",
+                                            uiOutput("celdaKplots")
+                                    )
+                                )
+                                )
+                            )
+                        )
+                    )
+                )
+            ),
+            style = "primary"),
+
+        bsCollapsePanel("Visualization",
+            tabsetPanel(
+                tabPanel("UMAP",
+                    fluidRow(
+                        column(4,
+                            panel(
+                                numericInput("celdaUMAPmaxCells",
+                                             label =
+                                                 "Max.cells: Maximum number of cells to plot",
+                                             value = 25000,
+                                             min = 1,
+                                             step = 1),
+                                numericInput("celdaUMAPminClusterSize",
+                                             label =
+                                                 "Min.cluster.size: Do not subsample cell
+                              clusters below this threshold",
+                                             value = 100,
+                                             min = 1,
+                                             step = 1),
+                                numericInput("celdaUMAPSeed",
+                                             label =
+                                                 "Seed: ",
+                                             value = 12345),
+                                numericInput("celdaUMAPmindist",
+                                             label =
+                                                 "Min.dist: Effective minimum distance
+                                between embedded points",
+                                             value = 0.75),
+                                numericInput("celdaUMAPspread",
+                                             label =
+                                                 "Spread: ",
+                                             value = 1),
+                                numericInput("celdaUMAPnn",
+                                             label =
+                                                 "nNeighbors: ",
+                                             value = 30),
+                                actionButton("CeldaUmap", "Run UMAP")
+                            )
+                        ),
+                        column(8,
+                            panel(
+                                plotlyOutput("celdaumapplot", height = "auto")
+                            )
+                        )
+                    )
+                ),
+                tabPanel("TSNE",
+                    fluidRow(
+                        column(4,
+                            panel(
+                                numericInput("celdatSNEmaxCells",
+                                             label =
+                                                 "Max.cells: Maximum number of cells to
+                                plot",
+                                             value = 25000,
+                                             min = 1,
+                                             step = 1),
+                                numericInput("celdatSNEminClusterSize",
+                                             label =
+                                                 "Min.cluster.size: Do not subsample cell
+                              clusters below this threshold",
+                                             value = 100,
+                                             min = 1,
+                                             step = 1),
+                                numericInput("celdatSNEPerplexity",
+                                             label =
+                                                 "Perplexity: ",
+                                             value = 20),
+                                numericInput("celdatSNEmaxIter",
+                                             label =
+                                                 "Max.iter: Maximum number of iterations in
+                              tSNE generation",
+                                             value = 2500),
+                                numericInput("celdatSNESeed",
+                                             label =
+                                                 "Seed: ",
+                                             value = 12345),
+                                actionButton("CeldaTsne", "Run tSNE")
+                            )
+                        ),
+                        column(8,
+                            panel(
+                                plotlyOutput("celdatsneplot", height = "auto")
+                            )
+                        )
+                    )
+                ),
+                tabPanel("Heatmap",
+                         fluidRow(
+                             panel(
+                                 plotOutput("celdaheatmapplt")
+                             )
+                         )
+                ),
+                tabPanel("Module Heatmap",
+                         fluidRow(
+                             column(4,
+                                    panel(
+                                        numericInput(inputId = "celdamodheatmapnum",
+                                                     label = "Select module to display on heatmap:", value = 10, step = 1),
+                                        actionButton("celdamodheatmapbtn", "Plot Module Heatmap")
+                                    )
+                             ),
+                             column(8,
+                                    panel(
+                                        plotOutput(outputId = "celdamodheatmapplt") %>% withSpinner(size = 3, color = "#0dc5c1", type = 8)
+                                    )
+                             )
+                         )
+                ),
+                tabPanel("Probablity Map",
+                        fluidRow(
+                            panel(
+                                plotOutput("celdaprobmapplt")
+                            )
+                        )
                 )
             ),
             style = "primary")
     )
-
 )

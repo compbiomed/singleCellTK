@@ -2,7 +2,7 @@
 % Please edit documentation in R/exportSCEtoAnndata.R
 \name{exportSCEtoAnnData}
 \alias{exportSCEtoAnnData}
-\title{Export a \link[SingleCellExperiment]{SingleCellExperiment} R object as 
+\title{Export a \link[SingleCellExperiment]{SingleCellExperiment} R object as
 Python annData object}
 \usage{
 exportSCEtoAnnData(
@@ -38,6 +38,9 @@ Default \code{"counts"}.}
 \item{forceDense}{Default \code{False} Write sparse data as a dense matrix.
 Refer \code{anndata.write_h5ad} documentation for details. Default \code{NULL}.}
 }
+\value{
+Generates a Python anndata object containing data from \code{inSCE}.
+}
 \description{
 Writes all assays, colData, rowData, reducedDims, and altExps objects in a
 \link[SingleCellExperiment]{SingleCellExperiment} to a Python annData object in the .h5ad format
@@ -46,9 +49,8 @@ are available as parameters to this export function and set to defaults. Default
 overridden at function call.
 }
 \examples{
-\dontrun{
 data(sce_chcl, package = "scds")
+\dontrun{
 exportSCEtoAnnData(sce=sce_chcl, compression="gzip")
 }
-
 }

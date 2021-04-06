@@ -8,8 +8,8 @@
 #' @param output_dir name of the output directory to save the rendered file. If NULL/default the file is stored to the current working directory
 #' @return .html file
 #' @examples
-#' \dontrun{
 #' data(scExample, package = "singleCellTK")
+#' \dontrun{
 #' sce <- runDropletQC(sce)
 #' reportDropletQC(inSCE = sce)
 #' }
@@ -46,9 +46,9 @@ reportDropletQC <- function(inSCE, output_file = NULL,
 #' @param output_dir name of the output directory to save the rendered file. If NULL/default the file is stored to the current working directory
 #' @return .html file
 #' @examples
-#' \dontrun{
 #' data(scExample, package = "singleCellTK")
-#' sce <- sce[, colData(sce)$type != 'EmptyDroplet']
+#' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
+#' \dontrun{
 #' sce <- runCellQC(sce)
 #' reportCellQC(inSCE = sce)
 #' }
@@ -76,17 +76,18 @@ reportCellQC <- function(inSCE, output_file = NULL,
 #' @description A  function to generate .html Rmarkdown report for the specified QC algorithm output
 #' @param inSCE A \link[SingleCellExperiment]{SingleCellExperiment} object containing
 #' the count matrix (full droplets or filtered matrix, depends on the selected QC algorithm) with the output from at least one of these functions:
-#' runQCMetrics, runScrublet, runDoubletCells, runCxds, runBcds, runCxdsBcdsHybrid, runDecontX, runBarcodeRankDrops, runEmptyDrops
+#' runQCMetrics, runScrublet, runScDblFinder, runCxds, runBcds, runCxdsBcdsHybrid, runDecontX, runBarcodeRankDrops, runEmptyDrops
 #' @param algorithm Character. Specifies which QC algorithm report to generate.
-#'  Available options are "BarcodeRankDrops", "EmptyDrops", "QCMetrics", "Scrublet", "DoubletCells", "Cxds", "Bcds", "CxdsBcdsHybrid", "DoubletFinder"  and "DecontX".
+#'  Available options are "BarcodeRankDrops", "EmptyDrops", "QCMetrics", "Scrublet", "ScDblFinder", "Cxds", "Bcds", "CxdsBcdsHybrid", "DoubletFinder"  and "DecontX".
 #' @param output_file name of the generated file. If NULL/default then the output file name will be based on the name of the selected QC algorithm name .
 #' @param output_dir name of the output directory to save the rendered file. If NULL/default the file is stored to the current working directory
 #' @return .html file
 #' @examples
-#' \donttest{
 #' data(scExample, package = "singleCellTK")
-#' sce <- sce[, colData(sce)$type != 'EmptyDroplet']
+#' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
+#' \dontrun{
 #' sce <- runDecontX(sce)
+#' sce <- getUMAP(sce)
 #' reportQCTool(inSCE = sce, algorithm = "DecontX")
 #' }
 #' @export
@@ -94,7 +95,7 @@ reportQCTool <- function(inSCE, algorithm=c("BarcodeRankDrops",
                                             "EmptyDrops",
                                             "QCMetrics",
                                             "Scrublet",
-                                            "DoubletCells",
+                                            "ScDblFinder",
                                             "Cxds",
                                             "Bcds",
                                             "CxdsBcdsHybrid",
@@ -133,8 +134,8 @@ reportQCTool <- function(inSCE, algorithm=c("BarcodeRankDrops",
     rmarkdown::render(system.file("rmarkdown/qc/DecontX.Rmd", package="singleCellTK"), params = list(
       object=inSCE), output_file = output_file, output_dir = output_dir)
   }
-  if (algorithm =="DoubletCells"){
-    rmarkdown::render(system.file("rmarkdown/qc/DoubletCells.Rmd", package="singleCellTK"), params = list(
+  if (algorithm =="ScDblFinder"){
+    rmarkdown::render(system.file("rmarkdown/qc/ScDblFinder.Rmd", package="singleCellTK"), params = list(
       object=inSCE), output_file = output_file, output_dir = output_dir)
   }
   if (algorithm =="QCMetrics"){
@@ -150,7 +151,6 @@ reportQCTool <- function(inSCE, algorithm=c("BarcodeRankDrops",
       object=inSCE), output_file = output_file, output_dir = output_dir)
   }
  }
-
 
 #' @title Get runDEAnalysis .html report
 #' @description A  function to generate .html Rmarkdown report containing the

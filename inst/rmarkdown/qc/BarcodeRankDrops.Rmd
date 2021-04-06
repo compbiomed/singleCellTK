@@ -12,7 +12,6 @@ output:
 ---
 
 ```{r "BarcodeRank-lib", include=FALSE, warning=FALSE}
-require(umap)
 require(ggplot2)
 require(SingleCellExperiment)
 require(singleCellTK)
@@ -23,7 +22,7 @@ sce<-params$object
 ```
 
 ```{r, "BarcodeRanks", results="asis", fig.align="center", warning=FALSE, message=FALSE}
-   plotsBarcodeRank<- suppressWarnings(plotBarcodeRankScatter(sce))
+   plotsBarcodeRank<- plotBarcodeRankScatter(sce)
     i="BarcodeRanks"
     cat(paste0('# ', i, ' {.tabset .tabset-fade} \n\n'))
     cat(paste0('## BarcodeRanks, Total UMI counts vs Rank \n\n'))
@@ -32,7 +31,7 @@ sce<-params$object
     sce@metadata$runBarcodeRankDrops
 ```
 
-```{r, include=FALSE, warning=FALSE, message=FALSE}
+```{r, "BarcodeRank-description", include=FALSE, warning=FALSE, message=FALSE}
 description_runBarcodeRank <- descriptionBarcodeRank()
 ```
 # {.unlisted .unnumbered .toc-ignore}

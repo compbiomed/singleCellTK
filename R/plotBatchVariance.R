@@ -31,14 +31,12 @@
 #' @export
 #' @examples
 #' \dontrun{
-#'   if(requireNamespace("bladderbatch", quietly = TRUE)) {
-#'     library(bladderbatch)
-#'     data(bladderdata)
-#'     dat <- as(as(bladderEset, "SummarizedExperiment"), "SingleCellExperiment")
-#'     plotBatchVariance(dat, useAssay="exprs", batch="batch", condition = "cancer")
-#'   }
+#'   data('sceBatches', package = 'singleCellTK')
+#'   plotBatchVariance(sceBatches,
+#'                     useAssay="logcounts",
+#'                     batch="batch",
+#'                     condition = "cell_type")
 #' }
-#'
 plotBatchVariance <- function(inSCE, useAssay = NULL, useReddim = NULL,
                               useAltExp = NULL, batch = 'batch',
                               condition=NULL, title = NULL) {
@@ -172,6 +170,11 @@ plotBatchVariance <- function(inSCE, useAssay = NULL, useReddim = NULL,
 #' @param xlab label for x-axis. Default \code{"batch"}.
 #' @param ylab label for y-axis. Default \code{"Feature Mean"}.
 #' @param ... Additional arguments passed to \code{\link{.ggViolin}}.
+#' @examples
+#' \dontrun{
+#'   data('sceBatches', package = 'singleCellTK')
+#'   plotSCEBatchFeatureMean(sceBatches, useAssay = "counts")
+#' }
 #' @return ggplot
 #' @export
 plotSCEBatchFeatureMean <- function(inSCE, useAssay = NULL, useReddim = NULL,

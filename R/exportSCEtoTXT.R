@@ -10,13 +10,13 @@
 #' @param gzipped Boolean. \code{TRUE} if the output files are to be
 #'  gzip compressed. \code{FALSE} otherwise. Default
 #'  \code{TRUE}.
-#' @param sample Name of the sample. It will be used as the prefix of file names. 
+#' @param sample Name of the sample. It will be used as the prefix of file names.
+#' @return Generates text files containing data from \code{inSCE}.
 #' @examples
-#' \dontrun{
 #' data(sce_chcl, package = "scds")
+#' \dontrun{
 #' exportSCEtoFlatFile(sce_chcl, "sce_chcl")
 #' }
-#' 
 #' @export
 #' @importFrom SummarizedExperiment colData rowData
 exportSCEtoFlatFile <- function(sce,
@@ -24,10 +24,10 @@ exportSCEtoFlatFile <- function(sce,
                                 overwrite = TRUE,
                                 gzipped = TRUE,
                                 sample = 'sample') {
-  
+
   .writeAssays(sce, outputDir, overwrite, gzipped, sample)
-  .writeColData(sce, outputDir, overwrite, gzipped, sample)  
-  .writeRowData(sce, outputDir, overwrite, gzipped, sample)  
+  .writeColData(sce, outputDir, overwrite, gzipped, sample)
+  .writeRowData(sce, outputDir, overwrite, gzipped, sample)
   .writeMetaData(sce, outputDir, overwrite, sample)
   .writeReducedDims(sce, outputDir, overwrite, gzipped, sample)
   .writeAltExps(sce, outputDir, overwrite, gzipped, sample)
@@ -42,13 +42,13 @@ exportSCEtoFlatFile <- function(sce,
 
 # function to write txt gz files
 .writeSCEFile <- function(data, path, overwrite, gzipped) {
-  
+
   if(is.null(rownames(data))) {
     data <- data.frame(ID = seq(nrow(data)), data)
   } else {
     data <- data.frame(ID = rownames(data), data)
   }
-  
+
   if (isTRUE(gzipped)) {
     filename <- paste0(path, ".txt.gz")
   } else {
@@ -65,7 +65,7 @@ exportSCEtoFlatFile <- function(sce,
   if (length(SummarizedExperiment::assays(sce)) > 0) {
     assaysFolder <- file.path(path, "/assays")
     dir.create(assaysFolder, showWarnings = FALSE, recursive = TRUE)
-    
+
     assayNames <- names(SummarizedExperiment::assays(sce))
     if(is.null(assayNames)) {
       assayNames <- paste0("assay", seq(SummarizedExperiment::assays(sce)))
@@ -74,16 +74,16 @@ exportSCEtoFlatFile <- function(sce,
       message(date(), " .. Writing assay '", assayNames[i], "'")
       filename <- paste(sample, paste0(assayNames[i], ".mtx"), sep="_")
       assaypath <- file.path(assaysFolder, filename)
-      
+
       .checkOverwrite(assaypath, overwrite)
       mat <- .convertToMatrix(SummarizedExperiment::assays(sce)[[i]])
       out <- Matrix::writeMM(mat, assaypath)
-      
+
       if(isTRUE(gzipped)) {
         .checkOverwrite(paste0(assaypath, ".gz"), overwrite)
         R.utils::gzip(filename = assaypath, overwrite = overwrite)
       }
-    }  
+    }
   }
 }
 
@@ -94,13 +94,13 @@ exportSCEtoFlatFile <- function(sce,
   if (length(SingleCellExperiment::altExpNames(sce)) > 0) {
     altExpsFolder <- file.path(path, "/altExps")
     dir.create(altExpsFolder, showWarnings = FALSE, recursive = TRUE)
-    
+
     altExpNames <- SingleCellExperiment::altExpNames(sce)
     for (i in altExpNames) {
       sceAltExp <- SingleCellExperiment::altExp(sce, i, withColData = FALSE)
       altExpPath <- file.path(path, i)
       message(date(), " .. Writing altExp '", i, "'")
-      
+
       assaysFolder <- file.path(altExpPath, "/assays")
       dir.create(assaysFolder, showWarnings = FALSE, recursive = TRUE)
       .writeAssays(sceAltExp, path = assaysFolder, overwrite = overwrite, gzipped = gzipped, sample)
@@ -117,7 +117,7 @@ exportSCEtoFlatFile <- function(sce,
     data <- SummarizedExperiment::colData(sce)
     colDataPath <- file.path(path, paste(sample, "colData", sep="_"))
     .writeSCEFile(data, colDataPath, overwrite, gzipped)
-  } 
+  }
 }
 
 
@@ -137,7 +137,7 @@ exportSCEtoFlatFile <- function(sce,
   if (length(SingleCellExperiment::reducedDimNames(sce)) > 0) {
     reducedDimsFolder <- file.path(path, "reducedDims")
     dir.create(reducedDimsFolder, showWarnings = FALSE, recursive = TRUE)
-    
+
     if (length(reducedDimNames(sce)) > 0) {
       reducedDimNames <- SingleCellExperiment::reducedDimNames(sce)
       for (i in reducedDimNames) {
@@ -155,7 +155,7 @@ exportSCEtoFlatFile <- function(sce,
   if (length(S4Vectors::metadata(sce)) > 0) {
     metadataFolder <- file.path(path, "/metadata")
     dir.create(metadataFolder, showWarnings = FALSE, recursive = TRUE)
-    
+
     filename <- file.path(metadataFolder, paste(sample, "metadata.rds", sep="_"))
     .checkOverwrite(filename, overwrite)
     saveRDS(object = S4Vectors::metadata(sce), file = filename)

@@ -44,6 +44,11 @@ Modified for also retrieving cell indices and only working for
 features among the \code{rowData}/\code{colData}. Partial matching (i.e.
 grepping) can be used.
 }
+\examples{
+data(scExample, package = "singleCellTK")
+retrieveSCEIndex(inSCE = sce, IDs = "ENSG00000205542",
+ axis = "row")
+}
 \author{
 Yusuke Koga, Joshua Campbell
 }

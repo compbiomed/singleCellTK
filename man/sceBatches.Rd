@@ -6,10 +6,7 @@
 \title{Example Single Cell RNA-Seq data in SingleCellExperiment object, with
 different batches annotated}
 \format{
-SingleCellExperiment
-}
-\source{
-DOI: 10.2337/db16-0405 and 10.1016/j.cmet.2016.08.018
+An object of class \code{SingleCellExperiment} with 100 rows and 250 columns.
 }
 \usage{
 sceBatches
@@ -21,8 +18,6 @@ Two batches came from Wang, et al., 2016, annotated as `'w'`; and Xin, et
 al., 2016, annotated as `'x'`. Two common cell types, `'alpha'` and
 `'beta'`, that could be found in both original studies with relatively
 large population were kept for cleaner demonstration.
-}
-\examples{
 data('sceBatches')
 }
 \keyword{datasets}
