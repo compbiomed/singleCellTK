@@ -257,10 +257,11 @@ Find highly variable genes and store in the input sce object</p>
 
     <pre class="usage"><span class='fu'>seuratFindHVG</span><span class='op'>(</span>
   <span class='va'>inSCE</span>,
-  <span class='va'>useAssay</span>,
+  useAssay <span class='op'>=</span> <span class='st'>"seuratNormData"</span>,
   hvgMethod <span class='op'>=</span> <span class='st'>"vst"</span>,
   hvgNumber <span class='op'>=</span> <span class='fl'>2000</span>,
-  altExp <span class='op'>=</span> <span class='cn'>FALSE</span>
+  altExp <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  verbose <span class='op'>=</span> <span class='cn'>TRUE</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -285,6 +286,11 @@ Find highly variable genes and store in the input sce object</p>
     <tr>
       <th>altExp</th>
       <td><p>Logical value indicating if the input object is an altExperiment. Default <code>FALSE</code>.</p></td>
+    </tr>
+    <tr>
+      <th>verbose</th>
+      <td><p>Logical value indicating if informative messages should 
+be displayed. Default is <code>TRUE</code>.</p></td>
     </tr>
     </table>
 

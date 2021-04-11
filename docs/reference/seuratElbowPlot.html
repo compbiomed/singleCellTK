@@ -259,6 +259,7 @@ Computes the plot object for elbow plot from the pca slot in the input sce objec
   <span class='va'>inSCE</span>,
   significantPC <span class='op'>=</span> <span class='cn'>NULL</span>,
   reduction <span class='op'>=</span> <span class='st'>"pca"</span>,
+  ndims <span class='op'>=</span> <span class='fl'>20</span>,
   externalReduction <span class='op'>=</span> <span class='cn'>NULL</span>,
   interactive <span class='op'>=</span> <span class='cn'>TRUE</span>
 <span class='op'>)</span></pre>
@@ -277,6 +278,10 @@ Computes the plot object for elbow plot from the pca slot in the input sce objec
     <tr>
       <th>reduction</th>
       <td><p>Reduction to use for elbow plot generation. Either <code>"pca"</code> or <code>"ica"</code>. Default <code>"pca"</code>.</p></td>
+    </tr>
+    <tr>
+      <th>ndims</th>
+      <td><p>Number of components to use. Default <code>20</code>.</p></td>
     </tr>
     <tr>
       <th>externalReduction</th>

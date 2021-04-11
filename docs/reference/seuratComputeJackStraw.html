@@ -255,7 +255,14 @@ Compute jackstraw plot and store the computations in the input sce object</h1>
 Compute jackstraw plot and store the computations in the input sce object</p>
     </div>
 
-    <pre class="usage"><span class='fu'>seuratComputeJackStraw</span><span class='op'>(</span><span class='va'>inSCE</span>, <span class='va'>useAssay</span>, dims <span class='op'>=</span> <span class='cn'>NULL</span>, externalReduction <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>seuratComputeJackStraw</span><span class='op'>(</span>
+  <span class='va'>inSCE</span>,
+  <span class='va'>useAssay</span>,
+  dims <span class='op'>=</span> <span class='cn'>NULL</span>,
+  numReplicate <span class='op'>=</span> <span class='fl'>100</span>,
+  propFreq <span class='op'>=</span> <span class='fl'>0.025</span>,
+  externalReduction <span class='op'>=</span> <span class='cn'>NULL</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -271,6 +278,16 @@ Compute jackstraw plot and store the computations in the input sce object</p>
     <tr>
       <th>dims</th>
       <td><p>Number of components to test in Jackstraw. If <code>NULL</code>, then all components are used. Default <code>NULL</code>.</p></td>
+    </tr>
+    <tr>
+      <th>numReplicate</th>
+      <td><p>Numeric value indicating the number of replicate samplings to perform.
+Default value is <code>100</code>.</p></td>
+    </tr>
+    <tr>
+      <th>propFreq</th>
+      <td><p>Numeric value indicating the proportion of data to randomly permute for each replicate.
+Default value is <code>0.025</code>.</p></td>
     </tr>
     <tr>
       <th>externalReduction</th>
