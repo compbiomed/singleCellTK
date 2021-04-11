@@ -186,8 +186,8 @@ shinyUI(
         "Data",
         tabPanel("Import Single Cell Data", shinyPanelImport),
         tabPanel("Import Gene Sets", shinyPanelGeneSets),
-        tabPanel("Column Annotation", shinyPanelColumnAnnotation),
-        tabPanel("Row Annotation", shinyPanelRowAnnotation),
+        tabPanel("Cell Annotation", shinyPanelColumnAnnotation),
+        tabPanel("Feature Annotation", shinyPanelRowAnnotation),
         tabPanel("Export Single Cell Data", shinyPanelExport),
         tabPanel("Delete Single Cell Data", shinyPanelRemove)
       ),
