@@ -215,29 +215,29 @@ shinyServer(function(input, output, session) {
 
   updateAssayInputs <- function(){
     currassays <- names(assays(vals$counts))
-    updateSelectInputTag(session, "dimRedAssaySelect", recommended = c("normalized", "scaled"), redDims = TRUE)
-    updateSelectInputTag(session, "dimRedAssaySelect_tsneUmap", recommended = c("normalized", "scaled"))
+    updateSelectInputTag(session, "dimRedAssaySelect", recommended = c("transformed", "normalized", "scaled"), redDims = TRUE)
+    updateSelectInputTag(session, "dimRedAssaySelect_tsneUmap", recommended = c("transformed", "normalized", "scaled"))
     updateSelectInputTag(session, "batchCheckAssay", choices = currassays)
     updateSelectInputTag(session, "batchCheckOrigAssay", choices = currassays)
     updateSelectInputTag(session, "clustScranSNNMat", label = "Select Input Matrix:",
                          choices = expDataNames(vals$counts),
                          recommended = "redDims", redDims = TRUE)
     if (is.null(input$deMethod)) {
-      updateSelectInputTag(session, "deAssay", recommended = c("normalized"))
+      updateSelectInputTag(session, "deAssay", recommended = c("transformed", "normalized"))
     } else if (input$deMethod == "DESeq2") {
       updateSelectInputTag(session, "deAssay", recommended = c("raw"))
     } else {
-      updateSelectInputTag(session, "deAssay", recommended = c("normalized"))
+      updateSelectInputTag(session, "deAssay", recommended = c("transformed", "normalized"))
     }
     if (is.null(input$fmMethod)) {
-      updateSelectInputTag(session, "fmAssay", recommended = c("normalized"))
+      updateSelectInputTag(session, "fmAssay", recommended = c("transformed", "normalized"))
     } else if (input$fmMethod == "DESeq2") {
       updateSelectInputTag(session, "fmAssay", recommended = c("raw"))
     } else {
       updateSelectInputTag(session, "fmAssay", recommended = c("normalized"))
     }
     updateSelectInputTag(session, "fmHMAssay", choices = currassays, selected = input$fmAssay)
-    updateSelectInputTag(session, "pathwayAssay", recommended = c("normalized", "scaled"))
+    updateSelectInputTag(session, "pathwayAssay", recommended = c("transformed", "normalized", "scaled"))
 
     #modifyAssaySelect conditions
     # if(input$assayModifyAction == "log" || input$assayModifyAction == "log1p"){
@@ -250,7 +250,7 @@ shinyServer(function(input, output, session) {
     updateSelectInputTag(session, "normalizeAssaySelect", label = "Select assay to normalize:", recommended = "raw")
 
     updateSelectInputTag(session, "seuratSelectNormalizationAssay", choices = currassays, showTags = FALSE)
-    updateSelectInputTag(session, "assaySelectFS_Norm", recommended = c("normalized", "scaled"))
+    updateSelectInputTag(session, "assaySelectFS_Norm", recommended = c("transformed", "normalized", "scaled"))
     updateSelectInputTag(session, "filterAssaySelect", choices = currassays)
     updateSelectInputTag(session, "qcAssaySelect", recommended = "raw")
     updateSelectInputTag(session, "celdaAssay", choices = currassays)
@@ -265,7 +265,7 @@ shinyServer(function(input, output, session) {
     updateSelectInputTag(session, "snapshotAssay", choices = currassays)
     updateSelectInputTag(session, "exportAssay", choices = currassays)
     updateSelectInputTag(session, "hmAssay")
-    updateSelectInputTag(session, "ctLabelAssay", choices = currassays, recommended = "normalized")
+    updateSelectInputTag(session, "ctLabelAssay", choices = currassays, recommended = c("transformed", "normalized"))
     # batch correction assay conditions
     bc.recommended <- NULL
     method.log <- c("FastMNN", "Limma", "MNN")
@@ -274,7 +274,7 @@ shinyServer(function(input, output, session) {
     if (is.null(input$batchCorrMethods)) {
       bc.recommended <- "raw"
     } else if (input$batchCorrMethods %in% method.log) {
-      bc.recommended <- "normalized"
+      bc.recommended <- c("transformed", "normalized")
     } else if (input$batchCorrMethods %in% method.raw) {
       bc.recommended <- "raw"
     } else if (input$batchCorrMethods %in% method.scale) {
@@ -919,8 +919,21 @@ shinyServer(function(input, output, session) {
       dbList <- getMSigDBTable()
       geneSetDBChoices <- formatGeneSetDBChoices(dbIDs = dbList$ID, dbCats = dbList$Category_Description)
       updateCheckboxGroupInput(session, 'geneSetDB', choices = geneSetDBChoices)
+      
+      updateSeuratUIFromRDS(vals$counts)
     })
   })
+  
+  updateSeuratUIFromRDS <- function(inSCE){
+    if(!is.null(metadata(inSCE)$seurat$plots)){
+      showNotification("Seurat report (Seurat_V3.rmd) computation detected in the input object and therefore populating saved plots in the Seurat tab for further inspection.")
+      if(!is.null(metadata(inSCE)$seurat$plots$hvg)){
+        output$plot_hvg <- renderPlotly({
+          plotly::ggplotly(metadata(inSCE)$seurat$plots$hvg)
+        })
+      }
+    }
+  }
 
   observeEvent(input$importFeatureDipSet, {
     if (!is.null(vals$counts)) {
@@ -1901,17 +1914,43 @@ shinyServer(function(input, output, session) {
     }
   })
 
+  observeEvent(input$customNormalizeAssayMethodSelect,{
+    if(input$customNormalizeAssayMethodSelect == "LogNormalize"
+       || input$customNormalizeAssayMethodSelect == "CLR"
+       || input$customNormalizeAssayMethodSelect == "SCT"
+       || input$customNormalizeAssayMethodSelect == "LNC"){
+      updateAwesomeCheckbox(
+        session = session,
+        inputId = "customNormalizeOptionsTransform",
+        value = FALSE
+      )
+    }
+  })
+  
   output$normalizationDataTagUI <- renderUI({
     req(vals$counts)
-    tag <- "normalized"
+    tag <- ""
     if(input$normalizeAssayMethodSelect != "custom"){
+      if(input$normalizeAssayMethodSelect
+         %in% c("LogNormalize", "SCT", "CLR", "LNC")){
+        tag <- "transformed"
+      }
+      else{
+        tag <- "normalized"
+      }
       if(input$normalizationScale){
         tag <- "scaled"
       }
     }
     else{
       if(input$customNormalizeOptionsNormalize){
-        tag <- "normalized"
+        if(input$customNormalizeAssayMethodSelect
+           %in% c("LogNormalize", "SCT", "CLR", "LNC")){
+          tag <- "transformed"
+        }
+        else{
+          tag <- "normalized"
+        }
       }
       if(input$customNormalizeOptionsTransform){
         tag <- "transformed"
@@ -4566,7 +4605,7 @@ shinyServer(function(input, output, session) {
       if (is.null(input$batchCorrMethods)) {
         bc.recommended <- "raw"
       } else if (input$batchCorrMethods %in% method.log) {
-        bc.recommended <- "normalized"
+        bc.recommended <- c("transformed", "normalized")
       } else if (input$batchCorrMethods %in% method.raw) {
         bc.recommended <- "raw"
       } else if (input$batchCorrMethods %in% method.scale) {
@@ -5130,11 +5169,11 @@ shinyServer(function(input, output, session) {
   observeEvent(input$deMethod, {
     if (!is.null(vals$counts)) {
       if (is.null(input$deMethod)) {
-        updateSelectInputTag(session, "deAssay", recommended = c("normalized"))
+        updateSelectInputTag(session, "deAssay", recommended = c("transformed", "normalized"))
       } else if (input$deMethod == "DESeq2") {
         updateSelectInputTag(session, "deAssay", recommended = c("raw"))
       } else {
-        updateSelectInputTag(session, "deAssay", recommended = c("normalized"))
+        updateSelectInputTag(session, "deAssay", recommended = c("transformed", "normalized"))
       }
     }
   })
@@ -5650,11 +5689,11 @@ shinyServer(function(input, output, session) {
   observeEvent(input$fmMethod, {
     if (!is.null(vals$counts)) {
       if (is.null(input$fmMethod)) {
-        updateSelectInputTag(session, "fmAssay", recommended = c("normalized"))
+        updateSelectInputTag(session, "fmAssay", recommended = c("transformed", "normalized"))
       } else if (input$fmMethod == "DESeq2") {
         updateSelectInputTag(session, "fmAssay", recommended = c("raw"))
       } else {
-        updateSelectInputTag(session, "fmAssay", recommended = c("normalized"))
+        updateSelectInputTag(session, "fmAssay", recommended = c("transformed", "normalized"))
       }
     }
   })

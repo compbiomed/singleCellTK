@@ -113,10 +113,17 @@ shinyPanelBatchcorrect <- fluidPage(
                                                        "Scater - CPM" = "CPM")
                                          )
                                        ),
-                                       awesomeCheckbox(
-                                         inputId = "customNormalizeOptionsTransform",
-                                         label = "Transform",
-                                         value = FALSE
+                                       conditionalPanel(
+                                         condition = "!(input.customNormalizeOptionsNormalize == true
+                                         && (input.customNormalizeAssayMethodSelect == 'LogNormalize'
+                                         || input.customNormalizeAssayMethodSelect == 'CLR'
+                                         || input.customNormalizeAssayMethodSelect == 'SCT'
+                                         || input.customNormalizeAssayMethodSelect == 'LNC'))",
+                                         awesomeCheckbox(
+                                           inputId = "customNormalizeOptionsTransform",
+                                           label = "Transform",
+                                           value = FALSE
+                                         )
                                        ),
                                        conditionalPanel(
                                          condition = "input.customNormalizeOptionsTransform == true",

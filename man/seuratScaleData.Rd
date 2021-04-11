@@ -7,12 +7,13 @@ Scales the input sce object according to the input parameters}
 \usage{
 seuratScaleData(
   inSCE,
-  useAssay,
+  useAssay = "seuratNormData",
   scaledAssayName = "seuratScaledData",
   model = "linear",
   scale = TRUE,
   center = TRUE,
-  scaleMax = 10
+  scaleMax = 10,
+  verbose = TRUE
 )
 }
 \arguments{
@@ -29,6 +30,9 @@ seuratScaleData(
 \item{center}{boolean if data should be centered or not. Default \code{TRUE}}
 
 \item{scaleMax}{maximum numeric value to return for scaled data. Default \code{10}.}
+
+\item{verbose}{Logical value indicating if informative messages should 
+be displayed. Default is \code{TRUE}.}
 }
 \value{
 Scaled \code{SingleCellExperiment} object
