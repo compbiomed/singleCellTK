@@ -17,7 +17,7 @@ importCellRanger(
   barcodesFileNames = "barcodes.tsv.gz",
   gzipped = "auto",
   class = c("Matrix", "matrix"),
-  delayedArray = TRUE
+  delayedArray = FALSE
 )
 
 importCellRangerV2(
@@ -26,7 +26,7 @@ importCellRangerV2(
   sampleNames = NULL,
   dataTypeV2 = c("filtered", "raw"),
   class = c("Matrix", "matrix"),
-  delayedArray = TRUE,
+  delayedArray = FALSE,
   reference = NULL,
   cellRangerOutsV2 = NULL
 )
@@ -37,7 +37,7 @@ importCellRangerV3(
   sampleNames = NULL,
   dataType = c("filtered", "raw"),
   class = c("Matrix", "matrix"),
-  delayedArray = TRUE
+  delayedArray = FALSE
 )
 }
 \arguments{
@@ -138,7 +138,7 @@ object. Can be one of "Matrix" (as returned by
 \link[base]{matrix} function). Default \code{"Matrix"}.}
 
 \item{delayedArray}{Boolean. Whether to read the expression matrix as
-\link{DelayedArray} object or not. Default \code{TRUE}.}
+\link{DelayedArray} object or not. Default \code{FALSE}.}
 
 \item{dataTypeV2}{Character. The type of output to import for
 Cellranger version below 3.0.0. Whether to import the filtered or the 

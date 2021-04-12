@@ -41,7 +41,7 @@
 #' @param featureSep Separater used for the feature annotation file. Default is "\\t".
 #' @param gzipped Whether the input file is gzipped. Default is "auto" and it will automatically detect whether the file is gzipped. Other options is TRUE or FALSE. 
 #' @param delayedArray Boolean. Whether to read the expression matrix as
-#'  \link{DelayedArray} object or not. Default \code{TRUE}.
+#'  \link{DelayedArray} object or not. Default \code{FALSE}.
 #' @return a SingleCellExperiment object
 #' @export
 

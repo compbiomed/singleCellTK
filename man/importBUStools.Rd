@@ -12,7 +12,7 @@ importBUStools(
   barcodesFileNames = "genes.barcodes.txt",
   gzipped = "auto",
   class = c("Matrix", "matrix"),
-  delayedArray = TRUE
+  delayedArray = FALSE
 )
 }
 \arguments{
@@ -46,7 +46,7 @@ object. Can be one of "Matrix" (as returned by
 \link[base]{matrix} function). Default "Matrix".}
 
 \item{delayedArray}{Boolean. Whether to read the expression matrix as
-\link[DelayedArray]{DelayedArray-class} object or not. Default \code{TRUE}.}
+\link[DelayedArray]{DelayedArray-class} object or not. Default \code{FALSE}.}
 }
 \value{
 A \code{SingleCellExperiment} object containing the count

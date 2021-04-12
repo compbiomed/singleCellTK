@@ -19,7 +19,8 @@ runSCANORAMA(
 \item{inSCE}{\linkS4class{SingleCellExperiment} inherited object. Required.}
 
 \item{useAssay}{A single character indicating the name of the assay requiring
-batch correction. Default \code{"logcounts"}.}
+batch correction. Scanorama requires a transformed normalized expression
+assay. Default \code{"logcounts"}.}
 
 \item{batch}{A single character indicating a field in
 \code{\link{colData}} that annotates the batches.
@@ -50,7 +51,8 @@ panorama.
 \examples{
 \dontrun{
 data('sceBatches', package = 'singleCellTK')
-sceCorr <- runSCANORAMA(sceBatches)
+sceBatches <- scaterlogNormCounts(sceBatches)
+sceCorr <- runSCANORAMA(sceBatches, "ScaterLogNormCounts")
 }
 }
 \references{
