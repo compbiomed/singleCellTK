@@ -24,7 +24,8 @@
 #' @examples
 #' \dontrun{
 #' data('sceBatches', package = 'singleCellTK')
-#' sceCorr <- runBBKNN(sceBatches)
+#' sceBatches <- scaterlogNormCounts(sceBatches)
+#' sceCorr <- runBBKNN(sceBatches, useAssay = "ScaterLogNormCounts")
 #' }
 runBBKNN <-function(inSCE, useAssay = 'logcounts', batch = 'batch',
                     reducedDimName = 'BBKNN', nComponents = 50L){
@@ -60,76 +61,121 @@ runBBKNN <-function(inSCE, useAssay = 'logcounts', batch = 'batch',
   return(inSCE)
 }
 
-#' Apply ComBat batch effect correction method to SingleCellExperiment object
+#' Apply ComBat-Seq batch effect correction method to SingleCellExperiment
+#' object
 #'
-#' The ComBat batch adjustment approach assumes that batch effects represent
+#' The ComBat-Seq batch adjustment approach assumes that batch effects represent
 #' non-biological but systematic shifts in the mean or variability of genomic
 #' features for all samples within a processing batch. It uses either parametric
 #' or non-parametric empirical Bayes frameworks for adjusting data for batch
 #' effects.
+#'
+#' For the parameters \code{covariates} and \code{useSVA}, when the cell type
+#' information is known, it is recommended to specify the cell type annotation
+#' to the argument \code{covariates}; if the cell types are unknown but
+#' expected to be balanced, it is recommended to run with default settings, yet
+#' informative covariates could still be useful. If the cell types are unknown
+#' and are expected to be unbalanced, it is recommended to set \code{useSVA}
+#' to \code{TRUE}.
 #' @param inSCE \linkS4class{SingleCellExperiment} inherited object. Required.
 #' @param useAssay A single character indicating the name of the assay requiring
-#' batch correction. Default \code{"logcounts"}.
+#' batch correction. Default \code{"counts"}.
 #' @param batch A single character indicating a field in
-#' \code{\link{colData}} that annotates the batches.
+#' \code{\link[SummarizedExperiment]{colData}} that annotates the batches.
 #' Default \code{"batch"}.
-#' @param par.prior A logical scalar. TRUE indicates parametric adjustments
-#' will be used, FALSE indicates non-parametric adjustments will be used.
-#' Default \code{TRUE}.
-#' @param covariates List of other column names in colData to be added to the
-#' ComBat model as covariates. Default \code{NULL}.
-#' @param mean.only If TRUE ComBat only corrects the mean of the batch effect.
-#' Default \code{FALSE}.
-#' @param ref.batch If given, will use the selected batch as a reference for
-#' batch adjustment. Default \code{NULL}.
+#' @param covariates A character vector indicating the fields in
+#' \code{\link[SummarizedExperiment]{colData}} that annotates other covariates,
+#' such as the cell types. Default \code{NULL}.
+#' @param bioCond A single character indicating a field in
+#' \code{\link[SummarizedExperiment]{colData}} that annotates the biological
+#' conditions. Default \code{NULL}.
+#' @param useSVA A logical scalar. Whether to estimate surrogate variables and
+#' use them as an empirical control. Default \code{FALSE}.
 #' @param assayName A single characeter. The name for the corrected assay. Will
-#' be saved to \code{\link{assay}}. Default
+#' be saved to \code{\link[SummarizedExperiment]{assay}}. Default
 #' \code{"ComBat"}.
+#' @param shrink A logical scalar. Whether to apply shrinkage on parameter
+#' estimation. Default \code{FALSE}.
+#' @param shrinkDisp A logical scalar. Whether to apply shrinkage on dispersion.
+#' Default \code{FALSE}.
+#' @param nGene An integer. Number of random genes to use in empirical Bayes
+#' estimation, only useful when \code{shrink} is set to \code{TRUE}. Default
+#' \code{NULL}.
 #' @return The input \linkS4class{SingleCellExperiment} object with
 #' \code{assay(inSCE, assayName)} updated.
 #' @examples
-#' \dontrun{
 #' data('sceBatches', package = 'singleCellTK')
-#' # parametric adjustment
-#' sceCorr <- runComBat(sceBatches)
-#' # non-parametric adjustment, mean-only version
-#' sceCorr <- runComBat(sceBatches, par.prior=FALSE, mean.only=TRUE)
-#' # reference-batch version, with covariates
-#' sceCorr <- runComBat(sceBatches, covariates = "cell_type", ref.batch = 'w')
-#' }
+#' # Cell type known
+#' sceBatches <- runComBatSeq(sceBatches, "counts", "batch",
+#'                            covariates = "cell_type",
+#'                            assayName = "ComBat_cell_seq")
+#' # Cell type unknown but balanced
+#' sceBatches <- runComBatSeq(sceBatches, "counts", "batch",
+#'                            assayName = "ComBat_seq")
+#' # Cell type unknown and unbalanced
+#' sceBatches <- runComBatSeq(sceBatches, "counts", "batch",
+#'                            useSVA = TRUE,
+#'                            assayName = "ComBat_sva_seq")
 #' @export
-runComBat <- function(inSCE, useAssay = "logcounts", batch = 'batch',
-                      par.prior = TRUE, covariates = NULL,
-                      mean.only = FALSE, ref.batch = NULL,
-                      assayName = "ComBat") {
+runComBatSeq <- function(inSCE, useAssay = "counts", batch = 'batch',
+                         covariates = NULL, bioCond = NULL, useSVA = FALSE,
+                         assayName = "ComBatSeq", shrink = FALSE,
+                         shrinkDisp = FALSE, nGene = NULL) {
   if(!inherits(inSCE, "SingleCellExperiment")){
     stop("\"inSCE\" should be a SingleCellExperiment Object.")
   }
   if(!useAssay %in% SummarizedExperiment::assayNames(inSCE)) {
     stop(paste("\"useAssay\" (assay) name: ", useAssay, " not found."))
   }
-  if(any(!c(batch, covariates) %in%
+  if(any(!c(batch, covariates, bioCond) %in%
          names(SummarizedExperiment::colData(inSCE)))){
-    anns <- c(batch, covariates)
+    anns <- c(batch, covariates, bioCond)
     notFound <- which(!anns %in% names(SummarizedExperiment::colData(inSCE)))
     notFound <- anns[notFound]
     stop("\"annotation\" name:", paste(notFound, collapse = ', '), "not found")
   }
-  #prepare model matrix
-  mod <- NULL
-  if (!is.null(covariates)){
+  if (!is.null(covariates) &&
+      isTRUE(useSVA)) {
+    stop("Only one of 'covariates' and 'useSVA' can be specified.")
+  }
+  # Modeling
+  annot <- data.frame(SummarizedExperiment::colData(inSCE))
+  if (!is.null(covariates)) {
+    # Do ComBat-Cell-Seq
     mod <- stats::model.matrix(
       stats::as.formula(paste0("~", paste0(covariates, collapse = "+"))),
-      data = data.frame(SummarizedExperiment::colData(inSCE)))
+      data = annot)
+  } else if (isTRUE(useSVA)) {
+    # Do ComBat-SVA-Seq
+    mod.batch = stats::model.matrix(
+      stats::as.formula(paste0("~", batch)),
+      data = annot)
+    mod0 = stats::model.matrix(~1, data = annot)
+    svobj_filt = sva::svaseq(as.matrix(assay(inSCE, useAssay) + 2.5),
+                             mod.batch, mod0)
+    nSV <- dim(svobj_filt$sv)[2]
+    for (i in seq_len(nSV)) {
+      annot[[paste0("SV", i)]] <- svobj_filt$sv[,i]
+    }
+    mod <- stats::model.matrix(
+      stats::as.formula(paste0("~", paste0(paste0("SV", seq_len(nSV)),
+                                           collapse = "+"))),
+      data = annot)
+  } else {
+    mod <- NULL
   }
-
-  resassay <-
-    sva::ComBat(dat = SummarizedExperiment::assay(inSCE, useAssay),
-                batch = SummarizedExperiment::colData(inSCE)[[batch]],
-                mod = mod, par.prior = par.prior,
-                mean.only = mean.only, ref.batch = ref.batch)
-
-  SummarizedExperiment::assay(inSCE, assayName) <- resassay
+  # Running
+  mat <- as.matrix(SummarizedExperiment::assay(inSCE, useAssay))
+  batchCol <- annot[[batch]]
+  if (!is.null(bioCond)) {
+    groupCol <- annot[[bioCond]]
+  } else {
+    groupCol <- NULL
+  }
+  mat.corr <-  sva::ComBat_seq(counts = mat, batch = batchCol, group = groupCol,
+                               covar_mod = mod, shrink = shrink,
+                               shrink.disp = shrinkDisp, gene.subset.n = nGene)
+  expData(inSCE, assayName, tag = "batchCorrected", altExp = FALSE) <- mat.corr
   return(inSCE)
 }
 
@@ -158,6 +204,7 @@ runComBat <- function(inSCE, useAssay = "logcounts", batch = 'batch',
 #' @examples
 #' \dontrun{
 #' data('sceBatches', package = 'singleCellTK')
+#' logcounts(sceBatches) <- log(counts(sceBatches) + 1)
 #' sceCorr <- runFastMNN(sceBatches, useAssay = 'logcounts', pcInput = FALSE)
 #' }
 runFastMNN <- function(inSCE, useAssay = "logcounts",
@@ -371,9 +418,8 @@ runFastMNN <- function(inSCE, useAssay = "logcounts",
 #' @references Gordon K Smyth, et al., 2003
 #' @examples
 #' data('sceBatches', package = 'singleCellTK')
-#' \dontrun{
+#' logcounts(sceBatches) <- log(counts(sceBatches) + 1)
 #' sceCorr <- runLimmaBC(sceBatches)
-#' }
 runLimmaBC <- function(inSCE, useAssay = "logcounts", assayName = "LIMMA",
                        batch = "batch") {
   ## Input check
@@ -394,7 +440,8 @@ runLimmaBC <- function(inSCE, useAssay = "logcounts", assayName = "LIMMA",
   batchCol <- SummarizedExperiment::colData(inSCE)[[batch]]
   mat <- SummarizedExperiment::assay(inSCE, useAssay)
   newMat <- limma::removeBatchEffect(mat, batch = batchCol)
-  SummarizedExperiment::assay(inSCE, assayName) <- newMat
+  expData(inSCE, assayName, tag = "batchCorrected", altExp = FALSE) <- newMat
+  #SummarizedExperiment::assay(inSCE, assayName) <- newMat
   return(inSCE)
 }
 
@@ -433,9 +480,8 @@ runLimmaBC <- function(inSCE, useAssay = "logcounts", assayName = "LIMMA",
 #' @references Lun ATL, et al., 2016 & 2018
 #' @examples
 #' data('sceBatches', package = 'singleCellTK')
-#' \dontrun{
+#' logcounts(sceBatches) <- log(counts(sceBatches) + 1)
 #' sceCorr <- runMNNCorrect(sceBatches)
-#' }
 runMNNCorrect <- function(inSCE, useAssay = 'logcounts', batch = 'batch',
                           assayName = 'MNN', k = 20L, sigma = 0.1){
   ## Input check
@@ -457,7 +503,7 @@ runMNNCorrect <- function(inSCE, useAssay = 'logcounts', batch = 'batch',
   mnnSCE <- batchelor::mnnCorrect(inSCE, assay.type = useAssay,
                                   batch = batchFactor, k = k, sigma = sigma)
   corrected <- SummarizedExperiment::assay(mnnSCE, 'corrected')
-  SummarizedExperiment::assay(inSCE, assayName) <- corrected
+  expData(inSCE, assayName, tag = "batchCorrected", altExp = FALSE) <- corrected
   return(inSCE)
 }
 
@@ -469,7 +515,8 @@ runMNNCorrect <- function(inSCE, useAssay = 'logcounts', batch = 'batch',
 #' panorama.
 #' @param inSCE \linkS4class{SingleCellExperiment} inherited object. Required.
 #' @param useAssay A single character indicating the name of the assay requiring
-#' batch correction. Default \code{"logcounts"}.
+#' batch correction. Scanorama requires a transformed normalized expression
+#' assay. Default \code{"logcounts"}.
 #' @param batch A single character indicating a field in
 #' \code{\link{colData}} that annotates the batches.
 #' Default \code{"batch"}.
@@ -489,7 +536,8 @@ runMNNCorrect <- function(inSCE, useAssay = 'logcounts', batch = 'batch',
 #' @examples
 #' \dontrun{
 #' data('sceBatches', package = 'singleCellTK')
-#' sceCorr <- runSCANORAMA(sceBatches)
+#' sceBatches <- scaterlogNormCounts(sceBatches)
+#' sceCorr <- runSCANORAMA(sceBatches, "ScaterLogNormCounts")
 #' }
 runSCANORAMA <- function(inSCE, useAssay = 'logcounts', batch = 'batch',
                          SIGMA = 15, ALPHA = 0.1, KNN = 20L,
@@ -549,7 +597,7 @@ integrated = integrated[:, orderIdx]
   mat <- t(py$integrated)
   rownames(mat) <- rownames(inSCE)
   colnames(mat) <- colnames(inSCE)
-  SummarizedExperiment::assay(inSCE, assayName) <- mat
+  expData(inSCE, assayName, tag = "batchCorrected", altExp = FALSE) <- mat
   return(inSCE)
 }
 
@@ -589,6 +637,7 @@ integrated = integrated[:, orderIdx]
 #' @examples
 #' data('sceBatches', package = 'singleCellTK')
 #' \dontrun{
+#' logcounts(sceBatches) <- log(counts(sceBatches) + 1)
 #' sceCorr <- runSCMerge(sceBatches)
 #' }
 runSCMerge <- function(inSCE, useAssay = "logcounts", batch = 'batch',
@@ -663,6 +712,9 @@ runSCMerge <- function(inSCE, useAssay = "logcounts", batch = 'batch',
                             BPPARAM = bpParam)
   colDataNames <- names(SummarizedExperiment::colData(inSCE))
   names(SummarizedExperiment::colData(inSCE))[colDataNames == 'batch'] <- batch
+  # scMerge's function automatically returns the SCE object with information
+  # completed, thus using this helper function to simply add the tag.
+  inSCE <- expSetDataTag(inSCE, "batchCorrected", assayName)
   return(inSCE)
 }
 

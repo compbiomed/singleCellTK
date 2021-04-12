@@ -1,4 +1,4 @@
-#' scran_modelGeneVar
+#' scranModelGeneVar
 #' Generates and stores variability data from scran::modelGeneVar in the input singleCellExperiment object
 #' @param inSCE a singleCellExperiment object
 #' @param assayName selected assay to compute variable features from
@@ -7,9 +7,9 @@
 #' @author Irzam Sarfraz
 #' @examples
 #' data(sce_chcl, package = "scds")
-#' sce_chcl <- scran_modelGeneVar(sce_chcl, "counts")
+#' sce_chcl <- scranModelGeneVar(sce_chcl, "counts")
 #' @importFrom SummarizedExperiment assay rowData rowData<-
-scran_modelGeneVar <- function(inSCE, assayName) {
+scranModelGeneVar <- function(inSCE, assayName) {
     tempDataFrame <- data.frame(scran::modelGeneVar(assay(inSCE, assayName)))
     rowData(inSCE)$scran_modelGeneVar_mean <- tempDataFrame$mean
     rowData(inSCE)$scran_modelGeneVar_totalVariance <- tempDataFrame$total

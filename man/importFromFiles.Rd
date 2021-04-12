@@ -46,7 +46,7 @@ object. Can be one of "Matrix" (as returned by
 \link[base]{matrix} function). Default "Matrix".}
 
 \item{delayedArray}{Boolean. Whether to read the expression matrix as
-\link{DelayedArray} object or not. Default \code{TRUE}.}
+\link{DelayedArray} object or not. Default \code{FALSE}.}
 
 \item{annotFileHeader}{Whether there's a header (colnames) in the cell annotation file. Default is FALSE}
 

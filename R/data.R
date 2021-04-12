@@ -75,3 +75,18 @@
 #' @examples
 #' data("msigdb_table")
 "msigdb_table"
+
+#' List of mitochondrial genes of multiple reference
+#' 
+#' A list of gene set that contains mitochondrial genes of multiple reference
+#' (hg38, hg19, mm10 and mm9). It contains multiple types of gene identifier:
+#' gene symbol, entrez ID, ensemble ID and ensemble transcript ID. It's used 
+#' for the function 'importMitoGeneSet'. 
+
+#' @name MitoGenes
+#' @docType data
+#' @format A list
+#' @keywords datasets
+#' @examples
+#' data("MitoGenes")
+"MitoGenes"

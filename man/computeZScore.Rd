@@ -7,7 +7,7 @@
 computeZScore(counts)
 }
 \arguments{
-\item{counts}{matrix (base matrix, dgCMatrix or DelaymedMatrix)}
+\item{counts}{matrix (base matrix, dgCMatrix or DelayedMatrix)}
 }
 \value{
 z-score computed counts matrix (DelayedMatrix)

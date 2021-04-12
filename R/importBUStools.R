@@ -102,7 +102,7 @@
 #'  \link{readMM} function), or "matrix" (as returned by
 #'  \link[base]{matrix} function). Default "Matrix".
 #' @param delayedArray Boolean. Whether to read the expression matrix as
-#'  \link[DelayedArray]{DelayedArray-class} object or not. Default \code{TRUE}.
+#'  \link[DelayedArray]{DelayedArray-class} object or not. Default \code{FALSE}.
 #' @return A \code{SingleCellExperiment} object containing the count
 #'  matrix, the gene annotation, and the cell annotation.
 #' @examples
@@ -140,7 +140,7 @@ importBUStools <- function(
     barcodesFileNames = "genes.barcodes.txt",
     gzipped = "auto",
     class = c("Matrix", "matrix"),
-    delayedArray = TRUE) {
+    delayedArray = FALSE) {
 
     class <- match.arg(class)
 

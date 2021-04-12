@@ -7,6 +7,7 @@
 plotMASTThresholdGenes(
   inSCE,
   useAssay = "logcounts",
+  doPlot = TRUE,
   isLogged = TRUE,
   check_sanity = TRUE
 )
@@ -16,6 +17,10 @@ plotMASTThresholdGenes(
 
 \item{useAssay}{character, default \code{"logcounts"}}
 
+\item{doPlot}{Logical scalar. Whether to directly plot in the plotting area.
+If \code{FALSE}, will return a graphical object which can be visualized with
+\code{grid.draw()}. Default \code{TRUE}.}
+
 \item{isLogged}{Logical scalar. Whether the assay used for the analysis is
 logged. If not, will do a \code{log(assay + 1)} transformation. Default
 \code{TRUE}.}
@@ -24,7 +29,8 @@ logged. If not, will do a \code{log(assay + 1)} transformation. Default
 to see if the counts are logged. Default \code{TRUE}}
 }
 \value{
-Plot the thresholding onto the plotting region.
+Plot the thresholding onto the plotting region if \code{plot == TRUE}
+or a graphical object if \code{plot == FALSE}.
 }
 \description{
 Calculate and produce a list of thresholded counts (on natural scale),

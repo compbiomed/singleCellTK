@@ -12,7 +12,6 @@ output:
 
 ```{r, "runCxds-lib", message = F, include=FALSE}
 require(singleCellTK)
-require(umap)
 require(ggplot2)
 ```
 
@@ -21,7 +20,7 @@ sce.qc<- params$object
 ```
 
 ```{r "Cxds", results="asis", fig.align="center", warning=FALSE, message=FALSE}
-    plotCxds<- suppressWarnings(plotCxdsResults( sce.qc, reducedDimName = "UMAP"))
+    plotCxds<- plotCxdsResults(sce.qc, reducedDimName = "UMAP")
     i="Cxds"
     cat(paste0('# ', i, ' {.tabset} \n\n'))
     cat(paste0('## Scatter Score \n\n'))
@@ -37,7 +36,7 @@ sce.qc<- params$object
     sce.qc@metadata$runCxds
 ```
 
-```{r, "Cxds-desc", include=FALSE, warning=FALSE, message=FALSE}
+```{r, "Cxds-description", include=FALSE, warning=FALSE, message=FALSE}
 description_CxdsResults<- descriptionCXDS()
 ```
 
