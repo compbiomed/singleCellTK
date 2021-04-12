@@ -54,7 +54,7 @@ addToGeneralSampleTable <- function(inputID, id, col2, col3) {
   } else if (inputID == "optimus") {
     col1 <- "Optimus"
   }
-  
+
   fluidRowStyle <- paste0(paste0("#", id), "{border-bottom: 1px solid #bababa; padding-top: .9%; padding-bottom: .5%}")
   removeBtnStyle <- paste0(paste0("#remove", id), "{padding-top: 0; padding-bottom: 0;}")
   insertUI(
@@ -75,29 +75,7 @@ addToGeneralSampleTable <- function(inputID, id, col2, col3) {
 # IMPORT MODALS #
 #---------------#
 
-importModal <- function(failed=FALSE, needsDir=FALSE) {
-  modalDialog(
-    h3("Sample Name"),
-    textInput("sampleName", "*This is the name you would like to give your sample."),
-    # only some functions need this input
-    if (needsDir)
-      h3("Sample ID"),
-    if (needsDir)
-      textInput("sampleID", "*This name must match your sample's directory name."),
-    
-    h3("Base Directory"),
-    shinyDirectoryInput::directoryInput('directory', label = 'Choose Directory', value = '~'),
-    if (failed)
-      div(tags$b("Please fill out all the required fields", style = "color: red;")),
-    
-    footer = tagList(
-      modalButton("Cancel"),
-      actionButton("modalOk", "OK")
-    )
-  )
-}
-
-
+# modal to import CellRanger data
 importCRModal <- function() {
   modalDialog(
     h3("Add a Cell Ranger Sample"),
@@ -110,7 +88,7 @@ importCRModal <- function() {
     tags$br(),
     h4("Option 3 - Select a directory containing your data files (barcodes.tsv, features.tsv, matrix.mtx)."),
     actionButton("crOpt3", "Add"),
-    
+
     footer = tagList(
       modalButton("Cancel"),
       actionButton("crOK", "OK")
@@ -118,60 +96,109 @@ importCRModal <- function() {
   )
 }
 
-
-
-importCRSDir <- function(failed = FALSE) {
-  modalDialog(
-    h3("Sample Directory"),
-    shinyDirectoryInput::directoryInput('sDirectory', label = 'Choose Directory', value = '~'),
-    h3("Sample Name"),
-    h5("If you do not provide an alternate sample name, the sample name will be set to the sample directory name."),
-    textInput("sSampleID", ""),
-    
-    if (failed)
-      div(tags$b("Please fill out all the required fields", style = "color: red;")),
-    
-    footer = tagList(
-      modalButton("Cancel"),
-      actionButton("SDirOK", "OK")
-    )
-  )
-}
-# Upload a data directory (CR) (parent of 'data files')
-importCRDDir <- function(failed = FALSE) {
-  modalDialog(
-    h3("Data Directory"),
-    shinyDirectoryInput::directoryInput('directory', label = 'Choose Directory', value = '~'),
-    h3("Sample Name"),
-    textInput("dSampleID", "*This field is mandatory when uploading a data directory"),
-    
-    if (failed)
-      div(tags$b("Please fill out all the required fields", style = "color: red;")),
-    
-    footer = tagList(
-      modalButton("Cancel"),
-      actionButton("DDirOK", "OK")
-    )
-  )
-}
 # Upload a base directory (CR) (parent of possibly multiple sample directories)
+# For crOpt1
 importCRBDir <- function(failed = FALSE) {
   modalDialog(
     h3("Base Directory"),
-    shinyDirectoryInput::directoryInput('bDirectory', label = 'Choose Directory', value = '~'),
+    #shinyDirectoryInput::directoryInput('bDirectory', label = 'Choose Directory', value = getwd()),
+
+    shinyFiles::shinyDirButton("bDirectory", label = "Choose Directory", title = "Upload"),
+    # A UI to display what users select
+    verbatimTextOutput("bDirectoryPath", placeholder = TRUE),
+
     wellPanel(h5("*For any sample names that you do not provide, the sample name will be set to the sample directory name.")),
-    
+
     tags$div(id = "bDirTable"),
-    
+
     if (failed)
       div(tags$b("Please fill out all the required fields", style = "color: red;")),
-    
+
     footer = tagList(
       modalButton("Cancel"),
       actionButton("BDirOK", "OK")
     )
   )
 }
+
+# Upload a sample directory (CR) (parent of 'outs' directory)
+# For crOpt2
+importCRSDir <- function(failed = FALSE) {
+  modalDialog(
+    h3("Sample Directory"),
+    #shinyDirectoryInput::directoryInput('sDirectory', label = 'Choose Directory', value = '~'),
+
+    shinyFiles::shinyDirButton("sDirectory", label = "Choose Directory", title = "Upload"),
+    # A UI to display what users select
+    verbatimTextOutput("sDirectoryPath", placeholder = TRUE),
+
+    h3("Sample Name"),
+    h5("If you do not provide an alternate sample name, the sample name will be set to the sample directory name."),
+    textInput("sSampleID", ""),
+
+    if (failed)
+      div(tags$b("Please fill out all the required fields", style = "color: red;")),
+
+    footer = tagList(
+      modalButton("Cancel"),
+      actionButton("SDirOK", "OK")
+    )
+  )
+}
+
+# Upload a data directory (CR) (parent of 'data files')
+# For crOpt3
+importCRDDir <- function(failed = FALSE) {
+  modalDialog(
+    h3("Data Directory"),
+    #shinyDirectoryInput::directoryInput('directory', label = 'Choose Directory', value = '~'),
+
+    shinyFiles::shinyDirButton("directory", label = "Choose Directory", title = "Upload"),
+    # A UI to display what users select
+    verbatimTextOutput("directoryPath", placeholder = TRUE),
+
+    h3("Sample Name"),
+    textInput("dSampleID", "*This field is mandatory when uploading a data directory"),
+
+    if (failed)
+      div(tags$b("Please fill out all the required fields", style = "color: red;")),
+
+    footer = tagList(
+      modalButton("Cancel"),
+      actionButton("DDirOK", "OK")
+    )
+  )
+}
+
+importModal <- function(failed=FALSE, needsDir=FALSE) {
+  modalDialog(
+    h3("Sample Name"),
+    textInput("sampleName", "*This is the name you would like to give your sample."),
+    # only some functions need this input
+    if (needsDir)
+      h3("Sample ID"),
+    if (needsDir)
+      textInput("sampleID", "*This name must match your sample's directory name."),
+
+    h3("Base Directory"),
+    #shinyDirectoryInput::directoryInput('directory', label = 'Choose Directory', value = ),
+
+    shinyFiles::shinyDirButton("directory", label = "Choose Directory", title = "Upload"),
+    # A UI to display what users select
+    verbatimTextOutput("directoryPath", placeholder = TRUE),
+
+    if (failed)
+      div(tags$b("Please fill out all the required fields", style = "color: red;")),
+
+    footer = tagList(
+      modalButton("Cancel"),
+      actionButton("modalOk", "OK")
+    )
+  )
+}
+
+
+
 
 #--------------#
 # QC/FILTERING #
@@ -194,10 +221,10 @@ importCRBDir <- function(failed = FALSE) {
 #       selectInput("geneLocation", "Select Gene Set List Location", assays),
 #     if (geneSetCollection)
 #       selectInput("geneCollection", "Select Gene Set Collection", assays),
-#     
+#
 #     if (failed)
 #       div(tags$b("Please fill out all the required fields", style = "color: red;")),
-#     
+#
 #     footer = tagList(
 #       modalButton("Cancel"),
 #       actionButton("modalRunQC", "Run")
@@ -208,13 +235,13 @@ importCRBDir <- function(failed = FALSE) {
 # creates tabs for results from QC
 showQCResTabs <- function(obj, algoList, statuses, plotIds) {
   if (("QCMetrics" %in% algoList) && is.null(statuses$QCMetrics)) {
-    appendTab("qcResPlotTabs", tabPanel("QCMetrics", 
-                                        fluidPage(id = "QCMetricsTab", 
+    appendTab("qcResPlotTabs", tabPanel("QCMetrics",
+                                        fluidPage(id = "QCMetricsTab",
                                                   uiOutput(outputId = plotIds$QCMetrics),
                                                   tabsetPanel(
                                                     id ="QCMetricsTabs"
                                                   )
-                                        ), 
+                                        ),
                                 ),
               select = TRUE
     )
@@ -223,13 +250,13 @@ showQCResTabs <- function(obj, algoList, statuses, plotIds) {
     algo <- algoList[[i]]
     id <- paste0(algo, "Tab")
     if ((algo != "QCMetrics") && is.null(statuses[[algo]])) {
-      appendTab("qcResPlotTabs", tabPanel(algo, 
-                                          fluidPage(id = id, 
+      appendTab("qcResPlotTabs", tabPanel(algo,
+                                          fluidPage(id = id,
                                                     uiOutput(outputId = plotIds[[algo]]),
                                                     tabsetPanel(
                                                       id = paste0(algo, "Tabs")
                                                     )
-                                          ), 
+                                          ),
                                   ),
                 select = FALSE
       )
@@ -240,7 +267,7 @@ showQCResTabs <- function(obj, algoList, statuses, plotIds) {
 
 filteringModal <- function(failed=FALSE, colNames) {
   modalDialog(
-    h3("Select a Column"),
+    h3("Select an Annotation"),
     selectInput("filterColSelect", "", colNames),
     if (failed)
       div(tags$b("Please fill out all the required fields", style = "color: red;")),
@@ -250,7 +277,7 @@ filteringModal <- function(failed=FALSE, colNames) {
       )
     ),
     tags$div(id = "filterCriteria"),
-    
+    tags$div(id = "filterCrErrors"),
     footer = tagList(
       modalButton("Cancel"),
       actionButton("filtModalOK", "OK")
@@ -265,7 +292,7 @@ rowFilteringModal <- function(failed=FALSE, assayInput) {
     if (failed)
       div(tags$b("Please fill out all the required fields", style = "color: red;")),
     tags$div(id = "rowFilterCriteria"),
-    
+
     footer = tagList(
       modalButton("Cancel"),
       actionButton("rowFiltModalOK", "OK")
@@ -276,15 +303,15 @@ rowFilteringModal <- function(failed=FALSE, assayInput) {
 addFilteringThresholdOptions <- function(colInput) {
   minCol <- min(colInput)
   maxCol <- max(colInput)
-  
+
   gt_label_str <- sprintf("Keep values above (please pick a number between %.5f and %.5f):", minCol, maxCol)
   lt_label_str <- sprintf("Keep values below (please pick a number between %.5f and %.5f):", minCol, maxCol)
-  
-  
+
+
   insertUI(
     selector = "#filterCriteria",
     ui = tags$div(
-      id="newThresh", 
+      id="newThresh",
       checkboxInput("colGT", "Greater than:"),
       shinyjs::hidden(
         numericInput("filterThreshGT", gt_label_str, minCol, min = minCol, max = maxCol)

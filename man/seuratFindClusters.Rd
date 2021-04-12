@@ -7,13 +7,14 @@ Computes the clusters from the input sce object and stores them back in sce obje
 \usage{
 seuratFindClusters(
   inSCE,
-  useAssay,
+  useAssay = "seuratScaledData",
   useReduction = c("pca", "ica"),
   dims = 10,
   algorithm = c("louvain", "multilevel", "SLM"),
   groupSingletons = TRUE,
   resolution = 0.8,
-  externalReduction = NULL
+  externalReduction = NULL,
+  verbose = TRUE
 )
 }
 \arguments{
@@ -32,6 +33,9 @@ seuratFindClusters(
 \item{resolution}{Set the resolution parameter to find larger (value above 1) or smaller (value below 1) number of communities. Default \code{0.8}.}
 
 \item{externalReduction}{Pass DimReduc object if PCA/ICA computed through other libraries. Default \code{NULL}.}
+
+\item{verbose}{Logical value indicating if informative messages should 
+be displayed. Default is \code{TRUE}.}
 }
 \value{
 Updated sce object which now contains the computed clusters

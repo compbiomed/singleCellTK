@@ -4,7 +4,7 @@
 #'  object containing cells after empty droplets have been removed.
 #' @param inSCE A \link[SingleCellExperiment]{SingleCellExperiment} object.
 #' @param algorithms Character vector. Specify which QC algorithms to run.
-#'  Available options are "QCMetrics", "scrublet", "doubletCells", "cxds", "bcds", "cxds_bcds_hybrid", and "decontX".
+#'  Available options are "QCMetrics", "scrublet", "scDblFinder", "cxds", "bcds", "cxds_bcds_hybrid", and "decontX".
 #' @param sample Character vector. Indicates which sample each cell belongs to.
 #'  Algorithms will be run on cells from each sample separately.
 #' @param collectionName Character. Name of a \code{GeneSetCollection} obtained by using one of the importGeneSet* functions. Default \code{NULL}.
@@ -26,7 +26,7 @@
 #' }
 #' @export
 runCellQC <- function(inSCE,
-  algorithms = c("QCMetrics", "doubletCells", "cxds", "bcds",
+  algorithms = c("QCMetrics", "scDblFinder", "cxds", "bcds",
     "cxds_bcds_hybrid", "scrublet", "doubletFinder", "decontX"),
   sample = NULL,
   collectionName = NULL,
@@ -37,7 +37,7 @@ runCellQC <- function(inSCE,
   seed = 12345,
   paramsList = NULL) {
 
-  nonmatch <- setdiff(algorithms, c("doubletCells", "cxds", "bcds",
+  nonmatch <- setdiff(algorithms, c("scDblFinder", "cxds", "bcds",
     "cxds_bcds_hybrid", "decontX", "QCMetrics", "scrublet", "doubletFinder"))
   if (length(nonmatch) > 0) {
     stop("'", paste(nonmatch, collapse=","), "' are not supported algorithms.")
@@ -64,13 +64,13 @@ runCellQC <- function(inSCE,
         paramsList[["scrublet"]]))
   }
 
-  if ("doubletCells" %in% algorithms) {
-    inSCE <- do.call(runDoubletCells,
+  if ("scDblFinder" %in% algorithms) {
+    inSCE <- do.call(runScDblFinder,
       c(list(inSCE = quote(inSCE),
       sample = sample,
       useAssay = useAssay,
       seed = seed),
-      paramsList[["doubletCells"]]))
+      paramsList[["scDblFinder"]]))
   }
 
   if ("doubletFinder" %in% algorithms) {

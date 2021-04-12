@@ -60,6 +60,7 @@ scRNA-Seq data.
 \examples{
 data('sceBatches', package = 'singleCellTK')
 \dontrun{
+logcounts(sceBatches) <- log(counts(sceBatches) + 1)
 sceCorr <- runSCMerge(sceBatches)
 }
 }

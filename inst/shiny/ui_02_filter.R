@@ -13,9 +13,9 @@ orgpkgs <- c("Anopheles" = "org.Ag.eg.db", "Arabidopsis" = "org.At.tair.db",
 shinyPanelFilter <- fluidPage(
   useShinyalert(),
   wellPanel(
-    h4("Select Column Filtering Criteria:"),
+    h4("Select Cell Filtering Criteria:"),
     fluidRow(
-      column(4, tags$b("Column Name")),
+      column(4, tags$b("Annotation Name")),
       column(4, tags$b("Filter Condition")),
       column(4, tags$b("Remove"))
     ),
@@ -25,10 +25,10 @@ shinyPanelFilter <- fluidPage(
     actionButton("addFilteringParam", "Add a Filter"),
     actionButton("clearAllFilters", "Clear Filters"),
   ),
-  
+
   # *** Uncomment when row filtering is finalized ***
   wellPanel(
-    h4("Select Row Filtering Criteria:"),
+    h4("Select Feature Filtering Criteria:"),
     fluidRow(
       column(4, tags$b("Assay Name")),
       column(4, tags$b("Filter Condition")),
@@ -42,6 +42,14 @@ shinyPanelFilter <- fluidPage(
   ),
   withBusyIndicatorUI(
     actionButton("filterSCE", "Filter")
-  )
+  ),
+  tags$br(),
+  tags$br(),
+  hidden(wellPanel(id = "filteringSummary",
+                   h3("Before Filtering:"),
+                   tableOutput("beforeFiltering"),
+                   h3("After Filtering:"),
+                   tableOutput("afterFiltering"))),
+
 )
 

@@ -1,7 +1,7 @@
 Package: singleCellTK
 Type: Package
 Title: Comprehensive and Interactive Analysis of Single Cell RNA-Seq Data
-Version: 1.99.1
+Version: 2.0.0
 Authors@R: c(person(given="David", family="Jenkins", email="dfj@bu.edu", role=c("aut"),
                     comment = c(ORCID = "0000-0002-7451-4288")),
              person(given="Vidya", family="Akavoor", email="vidyaap@bu.edu", role=c("aut")),
@@ -39,6 +39,7 @@ Imports:
     batchelor,
     BiocGenerics,
     BiocParallel,
+    celldex,
     colourpicker,
     colorspace,
     cowplot,
@@ -82,6 +83,7 @@ Imports:
     shinyjs,
     shinyBS,
     shinyjqui,
+    SingleR,
     sva,
     reshape2,
     AnnotationDbi,
@@ -106,7 +108,8 @@ Imports:
     rmarkdown,
     magrittr,
     kableExtra,
-    scDblFinder
+    scDblFinder,
+    metap
 RoxygenNote: 7.1.1
 Suggests:
     testthat,
@@ -114,7 +117,6 @@ Suggests:
     BiocStyle,
     knitr,
     lintr,
-    bladderbatch,
     xtable,
     spelling,
     org.Mm.eg.db,

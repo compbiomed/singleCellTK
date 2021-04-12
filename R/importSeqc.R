@@ -167,7 +167,7 @@
 #'  \link{readMM} function), or "matrix" (as returned by
 #'  \link[base]{matrix} function). Default "Matrix".
 #' @param delayedArray Boolean. Whether to read the expression matrix as
-#'  \link{DelayedArray} object or not. Default \code{TRUE}.
+#'  \link{DelayedArray} object or not. Default \code{FALSE}.
 #' @param feNotFirstCol Boolean. \code{TRUE} if first column of
 #'  sparse_counts_genes.csv
 #' is row index and it will be removed. \code{FALSE} the first column will
@@ -217,7 +217,7 @@ importSEQC <- function(
     prefix = NULL,
     gzipped = FALSE,
     class = c("Matrix", "matrix"),
-    delayedArray = TRUE,
+    delayedArray = FALSE,
     cbNotFirstCol = TRUE,
     feNotFirstCol = TRUE,
     combinedSample = TRUE) {

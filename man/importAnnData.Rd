@@ -4,7 +4,7 @@
 \alias{importAnnData}
 \title{Create a SingleCellExperiment Object from Python AnnData .h5ad files}
 \usage{
-importAnnData(sampleDirs = NULL, sampleNames = NULL, delayedArray = TRUE)
+importAnnData(sampleDirs = NULL, sampleNames = NULL, delayedArray = FALSE)
 }
 \arguments{
 \item{sampleDirs}{Folder containing the .h5ad file. Can be one of -
@@ -30,7 +30,7 @@ Can be one of -
 }}
 
 \item{delayedArray}{Boolean. Whether to read the expression matrix as
-\link{DelayedArray} object. Default \code{TRUE}.}
+\link{DelayedArray} object. Default \code{FALSE}.}
 }
 \value{
 A \code{SingleCellExperiment} object.
