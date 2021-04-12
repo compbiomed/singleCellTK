@@ -926,14 +926,30 @@ shinyServer(function(input, output, session) {
   
   updateSeuratUIFromRDS <- function(inSCE){
     if(!is.null(metadata(inSCE)$seurat$plots)){
-      showNotification("Seurat report (Seurat_V3.rmd) computation detected in the input object and therefore populating saved plots in the Seurat tab for further inspection.")
+      showNotification(HTML("Computation from Seurat Report detected in the input object, therefore the toolkit will now populate the Seurat tab with computated data & plots for further inspection. Click on the button below to directly go the the Seurat tab of the toolkit now! <br><br>"), 
+                       type = "message", duration = 0, action = actionBttn(
+        inputId = "goToSeurat",
+        label = "Go to Seurat", 
+        style = "bordered",
+        color = "royal",
+        size = "s",
+        icon = icon("arrow-right")
+      ), id = "goSeuratNotification")
       if(!is.null(metadata(inSCE)$seurat$plots$hvg)){
         output$plot_hvg <- renderPlotly({
           plotly::ggplotly(metadata(inSCE)$seurat$plots$hvg)
         })
+        shinyjs::enable(selector = "div[value='Highly Variable Genes']")
+        updateCollapse(session = session, "SeuratUI", style = list("Highly Variable Genes" = "success"))
       }
     }
   }
+  
+  observeEvent(input$goToSeurat,{
+    updateTabsetPanel(session, "navbar",
+                      selected = "Seurat")
+    removeNotification(id = "goSeuratNotification", session = session)
+  })
 
   observeEvent(input$importFeatureDipSet, {
     if (!is.null(vals$counts)) {

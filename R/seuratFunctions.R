@@ -969,7 +969,7 @@ seuratFindMarkers <- function(
   }
   else if(!is.null(allGroup)
            && (is.null(group1) && is.null(group2))){
-    Seurat::Idents(seuratObject, cells = colnames(seuratObject)) <- Seurat::Idents(S4Vectors::metadata(inSCE)$seurat$obj)
+    Seurat::Idents(seuratObject, cells = colnames(seuratObject)) <- colData(inSCE)[[allGroup]]
     markerGenes <- Seurat::FindAllMarkers(
       seuratObject, 
       test.use = test, 
