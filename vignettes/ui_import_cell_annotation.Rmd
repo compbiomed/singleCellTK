@@ -1,5 +1,5 @@
 ---
-title: Manipulate Cell Annotations
+title: "Manipulate Cell Annotations"
 ---
 
 ## Introduction
@@ -20,13 +20,13 @@ After any changes are confirmed, users must click on **"Save"** button to take t
 
 ## Import New Annotation from File
 
-PLACEHOLDER~~~
+TODO
 
 ## Edit Existing Annotation
 
 ### Bins
 
-?????
+TODO
 
 ### Merge columns
 
@@ -36,7 +36,7 @@ Users can merge any two columns that exist in the cell annotation table. SCTK me
 
 ### Magic Fill
 
-????
+TODO
 
 ### Clean
 
