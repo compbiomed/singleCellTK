@@ -216,7 +216,8 @@ shinyServer(function(input, output, session) {
 
   updateAssayInputs <- function(){
     currassays <- names(assays(vals$counts))
-    updateSelectInputTag(session, "dimRedAssaySelect", recommended = c("transformed", "normalized", "scaled"), redDims = TRUE)
+    updateSelectInputTag(session, "dimRedAssaySelect", recommended = c("transformed", "normalized", "scaled"),
+                         choices = expDataNames(vals$counts), redDims = TRUE)
     updateSelectInputTag(session, "dimRedAssaySelect_tsneUmap", recommended = c("transformed", "normalized", "scaled"))
     updateSelectInputTag(session, "batchCheckAssay", choices = currassays)
     updateSelectInputTag(session, "batchCheckOrigAssay", choices = currassays)
@@ -283,7 +284,7 @@ shinyServer(function(input, output, session) {
     }
     updateSelectInputTag(session, "batchCorrAssay",
                          label = "Select Assay to Correct:",
-                         choices = assayNames(vals$counts),
+                         choices = currassays,
                          recommended = bc.recommended)
   }
 
@@ -324,12 +325,6 @@ shinyServer(function(input, output, session) {
     updateSelectInput(session, "clustSeuratReddim", choices = currreddim)
   }
 
-  updateAltExpInputs <- function(){
-    options <- altExpNames(vals$counts)
-    updateSelectInput(session, "clustScranSNNAltExp", choices = options)
-    updateSelectInput(session, "dimRedAltExpSelect", choices = options)
-    updateSelectInput(session, "dimRedAltExpSelect_tsneUmap", choices = options)
-  }
   updateEnrichDB <- function(){
     if (internetConnection){
       enrDB <- enrichR::listEnrichrDbs()$libraryName
@@ -896,7 +891,6 @@ shinyServer(function(input, output, session) {
         # updateAssayInputs()
         updateGeneNames()
         updateReddimInputs()
-        updateAltExpInputs()
         shinyjs::show(id="annotationData")
         js$enableTabs();
       } else {
@@ -1421,7 +1415,6 @@ shinyServer(function(input, output, session) {
     }
   })
 
-
   observeEvent(input$filterAssaySelect, {
     removeUI(selector = "#newThresh")
     insertUI(
@@ -1598,65 +1591,6 @@ shinyServer(function(input, output, session) {
                                sampleVariableName = sampleVar)
   }, striped = TRUE, border = TRUE, align = "c", spacing = "l")
 
-  #Render data table if there are fewer than 50 samples
-  output$contents <- DT::renderDataTable({
-    req(vals$counts)
-    if (!is.null(getShinyOption("inputSCEset"))){
-      updateGeneNames()
-    }
-    if (!(is.null(vals$counts)) & ncol(vals$counts) < 50){
-      temptable <- cbind(rownames(vals$counts), assay(vals$counts, input$filterAssaySelect))
-      colnames(temptable)[1] <- "Gene"
-      temptable
-    }
-  }, options = list(scrollX = TRUE), rownames = FALSE)
-
-  #Render histogram of read counts per cell
-  output$countshist <- renderPlotly({
-    if (!(is.null(vals$counts))){
-      f <- list(family = "Arial", size = 14, color = "#7f7f7f")
-      x <- list(title = "Reads per cell", titlefont = f)
-      y <- list(title = "Number of cells", titlefont = f)
-      plotly::plot_ly(x = apply(assay(vals$counts, input$filterAssaySelect), 2, function(x) sum(x)),
-                      type = "histogram") %>%
-        plotly::layout(xaxis = x, yaxis = y)
-    } else {
-      plotly::plotly_empty(type = "scatter") %>% plotly::add_trace(mode = "lines")
-    }
-  })
-
-  #Render histogram of genes detected per cell
-  output$geneshist <- renderPlotly({
-    if (!(is.null(vals$counts))){
-      f <- list(family = "Arial", size = 14, color = "#7f7f7f")
-      x <- list(title = "Genes detected per cell", titlefont = f)
-      y <- list(title = "Number of cells", titlefont = f)
-      plotly::plot_ly(x = apply(assay(vals$counts, input$filterAssaySelect), 2,
-                                function(x) sum(x > 0)), type = "histogram") %>%
-        plotly::layout(xaxis = x, yaxis = y)
-    } else {
-      plotly::plotly_empty(type = "scatter") %>% plotly::add_trace(mode = "lines")
-    }
-  })
-
-  #random downsample of samples
-  #  observeEvent(input$downsampleGo, {
-  #    req(vals$counts)
-  #    withBusyIndicatorServer("downsampleGo", {
-  #      vals$counts <- vals$counts[, sample(ncol(vals$counts), input$downsampleNum)]
-  #      updateNumSamples()
-  #      vals$gsvaRes <- NULL
-  #      vals$gsvaLimma <- NULL
-  #      vals$visplotobject <- NULL
-  #      vals$enrichRes <- NULL
-  #      vals$dimRedPlot <- NULL
-  #      vals$dimRedPlot_geneExp <- NULL
-  #      vals$dendrogram <- NULL
-  #      vals$pcX <- NULL
-  #      vals$pcY <- NULL
-  #    })
-  #  })
-
   #Render summary table
   output$summarycontents <- renderTable({
     req(vals$counts)
@@ -1695,8 +1629,9 @@ shinyServer(function(input, output, session) {
       vals$batchRes <- NULL
       #Refresh things for the clustering tab
       updateColDataNames()
+      updateFeatureAnnots()
       updateNumSamples()
-      # updateAssayInputs()
+      updateAssayInputs()
       updateGeneNames()
       updateEnrichDB()
     }
@@ -1840,6 +1775,8 @@ shinyServer(function(input, output, session) {
       saveRDS(vals$counts, file)
     })
 
+  # Delete Data ####
+
   output$reducedDimsList <- renderUI({
     req(vals$counts)
     if (!is.null(vals$counts) &&
@@ -1909,24 +1846,40 @@ shinyServer(function(input, output, session) {
     }
   })
 
-  output$removeDataWarningUI <- renderUI({
+  observeEvent(input$delRedDim, {
     req(vals$counts)
-    if(length(input$checkboxRedDimToRemove) > 0
-       || length(input$checkboxAssaysToRemove) > 0
-       || length(input$checkboxRowDataToRemove) > 0
-       || length(input$checkboxColDataToRemove) > 0
-       || length(input$checkboxAltExpToRemove) > 0){
-      totalItemsSelected <- length(input$checkboxRedDimToRemove) +
-        length(input$checkboxAssaysToRemove) +
-        length(input$checkboxRowDataToRemove) +
-        length(input$checkboxColDataToRemove) +
-        length(input$checkboxAltExpToRemove)
-      HTML("<h6><span style='color:red'>", paste0("Warning: You have selected to delete <b>", totalItemsSelected, "</b> data items! This action is inreversible. Press 'Delete' button below to permanently delete this data."), " </span></h6>")
+    if(length(input$checkboxAssaysToRemove) > 0){
+      for(i in seq(input$checkboxAssaysToRemove)){
+        expData(vals$counts, input$checkboxAssaysToRemove[i]) <- NULL
+      }
     }
-    else{
-      return(NULL)
+    if(length(input$checkboxRedDimToRemove) > 0){
+      for(i in seq(input$checkboxRedDimToRemove)){
+        reducedDim(vals$counts, input$checkboxRedDimToRemove[i]) <- NULL
+      }
     }
+    if(length(input$checkboxRowDataToRemove) > 0){
+      for(i in seq(input$checkboxRowDataToRemove)){
+        rowData(vals$counts)[[input$checkboxRowDataToRemove[i]]] <- NULL
+      }
+    }
+    if(length(input$checkboxColDataToRemove) > 0){
+      for(i in seq(input$checkboxColDataToRemove)){
+        colData(vals$counts)[[input$checkboxColDataToRemove[i]]] <- NULL
+      }
+    }
+    if(length(input$checkboxAltExpToRemove) > 0){
+      for(i in seq(input$checkboxAltExpToRemove)){
+        altExps(vals$counts)[[input$checkboxAltExpToRemove[i]]] <- NULL
+      }
+    }
+    updateAssayInputs()
+    updateReddimInputs()
+    updateFeatureAnnots()
+    updateColDataNames()
   })
+
+  # Normalization ####
 
   observeEvent(input$customNormalizeAssayMethodSelect,{
     if(input$customNormalizeAssayMethodSelect == "LogNormalize"
@@ -2186,39 +2139,6 @@ shinyServer(function(input, output, session) {
   #-----------------------------------------------------------------------------
   # Page 3: dimRed ####
   #-----------------------------------------------------------------------------
-
-  observeEvent(input$delRedDim, {
-    req(vals$counts)
-    if(length(input$checkboxAssaysToRemove) > 0){
-      for(i in seq(input$checkboxAssaysToRemove)){
-        expData(vals$counts, input$checkboxAssaysToRemove[i]) <- NULL
-      }
-    }
-    if(length(input$checkboxRedDimToRemove) > 0){
-          for(i in seq(input$checkboxRedDimToRemove)){
-            reducedDim(vals$counts, input$checkboxRedDimToRemove[i]) <- NULL
-          }
-    }
-    if(length(input$checkboxRowDataToRemove) > 0){
-      for(i in seq(input$checkboxRowDataToRemove)){
-        rowData(vals$counts)[[input$checkboxRowDataToRemove[i]]] <- NULL
-      }
-    }
-    if(length(input$checkboxColDataToRemove) > 0){
-      for(i in seq(input$checkboxColDataToRemove)){
-        colData(vals$counts)[[input$checkboxColDataToRemove[i]]] <- NULL
-      }
-    }
-    if(length(input$checkboxAltExpToRemove) > 0){
-      for(i in seq(input$checkboxAltExpToRemove)){
-        altExps(vals$counts)[[input$checkboxAltExpToRemove[i]]] <- NULL
-      }
-    }
-    updateAssayInputs()
-    updateReddimInputs()
-    updateColDataNames()
-    updateAltExpInputs()
-  })
 
   output$dimRedNameUI <- renderUI({
     # if (input$dimRedAssayType == 1){
@@ -5166,7 +5086,6 @@ shinyServer(function(input, output, session) {
           #  assays(altExp(vals$counts, input$hvgAltExpName), withDimnames = FALSE)[[altAssaysToRemove[i]]] <- NULL
           #}
           updateAssayInputs()
-          #updateAltExpInputs()
         }
       } else {
         shinyalert::shinyalert(
