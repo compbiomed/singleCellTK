@@ -120,6 +120,8 @@ navbar:
           href: articles/cnsl_batch_correction.html
         - text: "Feature Selection"
           href: articles/cnsl_feature_selection.html
+        - text: "Dimensionality Reduction"
+          href: articles/cnsl_dimensionality_reduction.html
         - text: "Clustering"
           href: articles/cnsl_clustering.html
         - text: "Differential Expression"
@@ -163,7 +165,7 @@ navbar:
           - text: "Feature Selection"
             href: articles/ui_feature_selection.html
           - text: "Dimensionality Reduction"
-            href: articles/ui_dimred.html
+            href: articles/ui_dimemsionality_reduction.html
         - text: "Clustering"
           href: articles/ui_clustering.html
         - text: "Differential Expression & Cell Type Labeling"

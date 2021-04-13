@@ -1,0 +1,37 @@
+---
+title: "EnrichR Console"
+author: "Irzam Sarfraz"
+---
+```{r develSetting, include=FALSE}
+doEval = TRUE
+```
+## Introduction
+***EnrichR*** ([Kuleshov MV, Jones MR, Rouillard AD, et al. Enrichr: a comprehensive gene set enrichment analysis web server 2016 update. Nucleic Acids Res. 2016;44(W1):W90-W97.](https://dx.doi.org/10.1093%2Fnar%2Fgkw377) and [Chen, E.Y., Tan, C.M., Kou, Y. et al. Enrichr: interactive and collaborative HTML5 gene list enrichment analysis tool. BMC Bioinformatics 14, 128 (2013).](https://doi.org/10.1186/1471-2105-14-128)) is a ***GSE*** (Gene Set Enrichment) method that infers biological knowledge by performing enrichment of input gene sets with curated biologically relevant prior databases that represent biological functions or functional pathways. The ***singleCellTK*** offers an easy to use interface to the ***EnrichR*** method and only requires the selection of ***input genes*** and the ***databases*** against which the genes should be tested.
+
+## General Worflow
+The figure below describes the workflow of using ***EnrichR*** through ***singleCellTK*** console interface:
+
+![](ui_screenshots/pathway_analysis/enrichR_workflow.png)
+
+## Workflow Guide
+An overall workflow guide on how to use ***EnrichR*** is described below.
+
+1. Select genes and databases:
+```{r, eval = FALSE}
+genes <- c("HES1", "PON2", "FBXO44", "DEK", "SOX4", "FBXL16")
+databases <- enrichR::listEnrichrDbs()$libraryName
+```
+
+2. Run ***enrichR***:
+
+```{r, eval = FALSE}
+enrichRes <- enrichRSCE(inSCE = sce,
+                        glist = genes,
+                        db = databases)
+```
+
+3. Display results:
+```{r, eval = FALSE}
+print(enrichRes)
+```
+
