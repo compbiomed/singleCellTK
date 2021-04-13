@@ -31,7 +31,7 @@ Default \code{"counts"}.}
 \item{overwrite}{Boolean. Default \code{TRUE}.}
 
 \item{compression}{If output file compression is required, this variable accepts
-'gzip', 'lzf' or "None" as inputs. Default \code{gzip"}.}
+'gzip', 'lzf' or "None" as inputs. Default \code{"gzip"}.}
 
 \item{compressionOpts}{Integer. Sets the compression level}
 

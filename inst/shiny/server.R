@@ -8022,16 +8022,26 @@ shinyServer(function(input, output, session) {
     } else if (input$exportChoice == "textfile") {
       extName <- ".txt"
     }
-    tags$div(
-      div(style = "display: inline-block;vertical-align:top; width: 160px;",
-          textInput("exportPrefix", label = NULL,
-                    value = defaultName, placeholder = "Required!",
-                    width = '160px')),
-      div(
-        style = "display: inline-block;vertical-align:top; width: 50px;",
-        p(extName, style = "margin-top: 8px; margin-left: 2px; font-size: 16px;")
+    if (input$exportChoice != "textfile") {
+      tags$div(
+        div(style = "display: inline-block;vertical-align:top; width: 160px;",
+            textInput("exportPrefix", label = NULL,
+                      value = defaultName, placeholder = "Required!",
+                      width = '160px')),
+        div(
+          style = "display: inline-block;vertical-align:top; width: 50px;",
+          p(extName, style = "margin-top: 8px; margin-left: 2px; font-size: 16px;")
+        )
       )
-    )
+    } else {
+      tags$div(
+        div(style = "display: inline-block;vertical-align:top; width: 160px;",
+            textInput("exportPrefix", label = NULL,
+                      value = defaultName, placeholder = "Required!",
+                      width = '160px')),
+      )
+    }
+
   })
 
   addPopover(session, 'exportAssayLabel', '', "The name of assay of interests that will be set as the primary matrix of the output AnnData.", 'right')
