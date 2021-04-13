@@ -924,14 +924,30 @@ shinyServer(function(input, output, session) {
 
   updateSeuratUIFromRDS <- function(inSCE){
     if(!is.null(metadata(inSCE)$seurat$plots)){
-      showNotification("Seurat report (Seurat_V3.rmd) computation detected in the input object and therefore populating saved plots in the Seurat tab for further inspection.")
+      showNotification(HTML("Computation from Seurat Report detected in the input object, therefore the toolkit will now populate the Seurat tab with computated data & plots for further inspection. Click on the button below to directly go the the Seurat tab of the toolkit now! <br><br>"),
+                       type = "message", duration = 0, action = actionBttn(
+        inputId = "goToSeurat",
+        label = "Go to Seurat",
+        style = "bordered",
+        color = "royal",
+        size = "s",
+        icon = icon("arrow-right")
+      ), id = "goSeuratNotification")
       if(!is.null(metadata(inSCE)$seurat$plots$hvg)){
         output$plot_hvg <- renderPlotly({
           plotly::ggplotly(metadata(inSCE)$seurat$plots$hvg)
         })
+        shinyjs::enable(selector = "div[value='Highly Variable Genes']")
+        updateCollapse(session = session, "SeuratUI", style = list("Highly Variable Genes" = "success"))
       }
     }
   }
+
+  observeEvent(input$goToSeurat,{
+    updateTabsetPanel(session, "navbar",
+                      selected = "Seurat")
+    removeNotification(id = "goSeuratNotification", session = session)
+  })
 
   observeEvent(input$importFeatureDipSet, {
     if (!is.null(vals$counts)) {
@@ -7997,6 +8013,27 @@ shinyServer(function(input, output, session) {
     }
   )
 
+  output$exportFileName <- renderUI({
+    defaultName <- paste0("SCE-", strftime(Sys.time(), format = "%y%m%d_%H%M"))
+    if (input$exportChoice == "rds") {
+      extName <- ".rds"
+    } else if (input$exportChoice == "annData") {
+      extName <- ".h5ad"
+    } else if (input$exportChoice == "textfile") {
+      extName <- ".txt"
+    }
+    tags$div(
+      div(style = "display: inline-block;vertical-align:top; width: 160px;",
+          textInput("exportPrefix", label = NULL,
+                    value = defaultName, placeholder = "Required!",
+                    width = '160px')),
+      div(
+        style = "display: inline-block;vertical-align:top; width: 50px;",
+        p(extName, style = "margin-top: 8px; margin-left: 2px; font-size: 16px;")
+      )
+    )
+  })
+
   addPopover(session, 'exportAssayLabel', '', "The name of assay of interests that will be set as the primary matrix of the output AnnData.", 'right')
   addPopover(session, 'compressionLabel', '', "If output file compression is required, this variable accepts 'gzip' or 'lzf' as inputs", 'right')
   addPopover(session, 'compressionOptsLabel', '', "Sets the compression level", 'right')
@@ -8009,39 +8046,26 @@ shinyServer(function(input, output, session) {
     withBusyIndicatorServer("exportData", {
       if (is.null(vals$counts) && is.null(vals$original)) {
         shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
-        return
-      }
-
-      if (input$exportChoice == "rds") {
-        filename = paste0("SCE_", strftime(Sys.time(), format = "%y%m%d_%H%m"),
-                         ".rds")
-        saveRDS(vals$counts, paste0(exportPath, "/", filename))
-      } else if (input$exportChoice == "annData") {
-        exportassay <- input$exportAssay
-        compression <- input$compression
-        compressionOpts = input$compressionOpts
-        forceDense <- input$forceDense
-        overwrite <- if(input$overwrite == 'True') TRUE else FALSE
-        exportSCEtoAnnData(sce=vals$counts,
-                           useAssay = exportassay,
-                           outputDir=exportPath,
-                           prefix = paste0("SCE-",
-                                           strftime(Sys.time(),
-                                                    format = "%y%m%d_%H%m")),
-                           overwrite=overwrite,
-                           compression = compression,
-                           compressionOpts = compressionOpts,
-                           forceDense = forceDense)
-      } else if (input$exportChoice == "textfile") {
-        overwrite <- if(input$overwrite == 'True') TRUE else FALSE
-        gzipped <- if(input$gzip == 'True') TRUE else FALSE
-        exportSCEtoFlatFile(sce = vals$counts,
-                            outputDir=exportPath,
-                            overwrite=overwrite,
-                            gzipped=gzipped,
-                            sample = paste0("SCE-",
-                                            strftime(Sys.time(),
-                                                     format = "%y%m%d_%H%m")))
+      } else {
+        if (input$exportChoice == "rds") {
+          filename <- paste0(input$exportPrefix, ".rds")
+          saveRDS(vals$counts, paste0(exportPath, "/", filename))
+        } else if (input$exportChoice == "annData") {
+          exportSCEtoAnnData(sce=vals$counts,
+                             useAssay = input$exportAssay,
+                             outputDir = exportPath,
+                             prefix = input$exportPrefix,
+                             overwrite = input$exportOverwrite,
+                             compression = "gzip",
+                             compressionOpts = input$compressionOpts,
+                             forceDense = input$forceDense)
+        } else if (input$exportChoice == "textfile") {
+          exportSCEtoFlatFile(sce = vals$counts,
+                              outputDir = exportPath,
+                              overwrite = input$exportOverwrite,
+                              gzipped = input$exportFlatGzip,
+                              prefix = input$exportPrefix)
+        }
       }
     })
   })
