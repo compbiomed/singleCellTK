@@ -14,7 +14,7 @@
 #' @param prefix Prefix to use for the name of the output file. Default \code{"sample"}.
 #' @param overwrite Boolean. Default \code{TRUE}.
 #' @param compression If output file compression is required, this variable accepts
-#' 'gzip', 'lzf' or "None" as inputs. Default \code{gzip"}.
+#' 'gzip', 'lzf' or "None" as inputs. Default \code{"gzip"}.
 #' @param compressionOpts Integer. Sets the compression level
 #' @param forceDense Default \code{False} Write sparse data as a dense matrix.
 #' Refer \code{anndata.write_h5ad} documentation for details. Default \code{NULL}.
