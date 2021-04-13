@@ -925,29 +925,27 @@ shinyServer(function(input, output, session) {
       showNotification(HTML("Computation from Seurat Report detected in the input object, therefore the toolkit will now populate the Seurat tab with computated data & plots for further inspection. Click on the button below to directly go the the Seurat tab of the toolkit now! <br><br>"), 
                        type = "message", duration = 0, action = actionBttn(
         inputId = "goToSeurat",
-        label = "Go to Seurat", 
+        label = "Go to Seurat Curated Workflow", 
         style = "bordered",
         color = "royal",
         size = "s",
         icon = icon("arrow-right")
       ), id = "goSeuratNotification")
       
-      #Normalize
+      #Normalize - todo
       shinyjs::enable(selector = "div[value='Normalize Data']")
       updateCollapse(session = session, "SeuratUI", style = list("Normalize Data" = "success"))
       
-      #Scale
+      #Scale - todo
       shinyjs::enable(selector = "div[value='Scale Data']")
       updateCollapse(session = session, "SeuratUI", style = list("Scale Data" = "success"))
       
-      #HVG
-      if(!is.null(metadata(inSCE)$seurat$plots$hvg)){
+      #HVG - plot done, but need to add labels and settings
         output$plot_hvg <- renderPlotly({
-          plotly::ggplotly(metadata(inSCE)$seurat$plots$hvg)
+          plotly::ggplotly(seuratPlotHVG(vals$counts))
         })
         shinyjs::enable(selector = "div[value='Highly Variable Genes']")
         updateCollapse(session = session, "SeuratUI", style = list("Highly Variable Genes" = "success"))
-      }
       
       #DR
       shinyjs::enable(selector = "div[value='Dimensionality Reduction']")
@@ -995,24 +993,43 @@ shinyServer(function(input, output, session) {
       ))
       
       
-        output$plot_pca <- renderPlotly({
-          plotly::ggplotly(metadata(inSCE)$seurat$plots$pca)
-        })
+        # output$plot_pca <- renderPlotly({
+        #   plotly::ggplotly(metadata(inSCE)$seurat$plots$pca)
+        # })
+      
+      output$plot_pca <- renderPlotly({
+        plotly::ggplotly(seuratReductionPlot(inSCE = vals$counts, useReduction = "pca"))
+      })
 
 
           updateNumericInput(session = session, inputId = "pca_significant_pc_counter", value = singleCellTK:::.computeSignificantPC(vals$counts))
+          # output$plot_elbow_pca <- renderPlotly({
+          #   metadata(inSCE)$seurat$plots$elbow
+          # })
+          
+          #update parameters from seurat report
           output$plot_elbow_pca <- renderPlotly({
-            metadata(inSCE)$seurat$plots$elbow
+            plotly::ggplotly(seuratElbowPlot(inSCE = vals$counts))
           })
+          
           output$pca_significant_pc_output <- renderText({
             paste("<p>Number of significant components suggested by ElbowPlot: <span style='color:red'>", singleCellTK:::.computeSignificantPC(vals$counts)," </span> </p> <hr>")
           })
 
+          # output$plot_jackstraw_pca <- renderPlotly({
+          #   plotly::ggplotly(metadata(inSCE)$seurat$plots$jackstraw)
+          # })
+          
           output$plot_jackstraw_pca <- renderPlotly({
-            plotly::ggplotly(metadata(inSCE)$seurat$plots$jackstraw)
+            plotly::ggplotly(seuratJackStrawPlot(vals$counts))
           })
 
 
+          # output$plot_heatmap_pca <- renderPlot({
+          #   metadata(inSCE)$seurat$plots$heatmap
+          # })
+          
+          #find solution for this
           output$plot_heatmap_pca <- renderPlot({
             metadata(inSCE)$seurat$plots$heatmap
           })
@@ -1025,12 +1042,20 @@ shinyServer(function(input, output, session) {
           shinyjs::enable(selector = "div[value='tSNE/UMAP']")
           updateCollapse(session = session, "SeuratUI", style = list("tSNE/UMAP" = "success"))
           
+          # output$plot_tsne <- renderPlotly({
+          #   metadata(inSCE)$seurat$plots$tsne
+          # })
+          # 
+          # output$plot_umap <- renderPlotly({
+          #   metadata(inSCE)$seurat$plots$umap
+          # })
+          
           output$plot_tsne <- renderPlotly({
-            metadata(inSCE)$seurat$plots$tsne
+            plotly::ggplotly(seuratReductionPlot(vals$counts, useReduction = "tsne"))
           })
           
           output$plot_umap <- renderPlotly({
-            metadata(inSCE)$seurat$plots$umap
+            plotly::ggplotly(seuratReductionPlot(vals$counts, useReduction = "umap"))
           })
           
       
@@ -1052,7 +1077,7 @@ shinyServer(function(input, output, session) {
           )
           
           output$plot_pca_clustering <- renderPlotly({
-            plotly::ggplotly(metadata(inSCE)$seurat$plots$pca)
+            plotly::ggplotly(seuratReductionPlot(vals$counts, useReduction = "pca", showLegend = TRUE))
           })
           
           appendTab(inputId = "seuratClusteringPlotTabset", tabPanel(title = "tSNE Plot",
@@ -1063,7 +1088,7 @@ shinyServer(function(input, output, session) {
           )
           
           output$plot_tsne_clustering <- renderPlotly({
-            plotly::ggplotly(metadata(inSCE)$seurat$plots$tsne)
+            plotly::ggplotly(seuratReductionPlot(vals$counts, useReduction = "tsne", showLegend = TRUE))
           })
           
           appendTab(inputId = "seuratClusteringPlotTabset", tabPanel(title = "UMAP Plot",
@@ -1074,7 +1099,7 @@ shinyServer(function(input, output, session) {
           )
           
           output$plot_umap_clustering <- renderPlotly({
-            plotly::ggplotly(metadata(inSCE)$seurat$plots$umap)
+            plotly::ggplotly(seuratReductionPlot(vals$counts, useReduction = "umap", showLegend = TRUE))
           })
           
           shinyjs::show(selector = ".seurat_clustering_plots")
@@ -1155,6 +1180,7 @@ shinyServer(function(input, output, session) {
           })
           
           updateSelectInput(session, "seuratFindMarkerSelectPhenotype", choices = colnames(colData(vals$counts)), selected = metadata(vals$counts)$seurat$plots$group)
+          
           
           vals$fts <- callModule(
             module = filterTableServer,
