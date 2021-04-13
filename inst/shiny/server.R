@@ -1097,48 +1097,32 @@ shinyServer(function(input, output, session) {
           
           appendTab(inputId = "seuratFindMarkerPlotTabset", tabPanel(title = "Ridge Plot",
                                                                      panel(heading = "Ridge Plot",
-                                                                           fluidRow(
-                                                                             column(12, align = "center",
-                                                                                    panel(
-                                                                                      HTML(paste("<span style='color:red'>Select genes from the above table to plot!</span>"))
-                                                                                    )
-                                                                             )
+                                                                           jqui_resizable(
+                                                                             plotOutput(outputId = "findMarkerRidgePlot")
                                                                            )
                                                                      )
           )
           )
           appendTab(inputId = "seuratFindMarkerPlotTabset", tabPanel(title = "Violin Plot",
                                                                      panel(heading = "Violin Plot",
-                                                                           fluidRow(
-                                                                             column(12, align = "center",
-                                                                                    panel(
-                                                                                      HTML(paste("<span style='color:red'>Select genes from the above table to plot!</span>"))
-                                                                                    )
-                                                                             )
+                                                                           jqui_resizable(
+                                                                             plotOutput(outputId = "findMarkerViolinPlot")
                                                                            )
                                                                      )
           )
           )
           appendTab(inputId = "seuratFindMarkerPlotTabset", tabPanel(title = "Feature Plot",
                                                                      panel(heading = "Feature Plot",
-                                                                           fluidRow(
-                                                                             column(12, align = "center",
-                                                                                    panel(
-                                                                                      HTML(paste("<span style='color:red'>Select genes from the above table to plot!</span>"))
-                                                                                    )
-                                                                             )
+                                                                           jqui_resizable(
+                                                                             plotOutput(outputId = "findMarkerFeaturePlot")
                                                                            )
                                                                      )
           )
           )
           appendTab(inputId = "seuratFindMarkerPlotTabset", tabPanel(title = "Dot Plot",
                                                                      panel(heading = "Dot Plot",
-                                                                           fluidRow(
-                                                                             column(12, align = "center",
-                                                                                    panel(
-                                                                                      HTML(paste("<span style='color:red'>Select genes from the above table to plot!</span>"))
-                                                                                    )
-                                                                             )
+                                                                           jqui_resizable(
+                                                                             plotOutput(outputId = "findMarkerDotPlot")
                                                                            )
                                                                      )
           )
@@ -1148,12 +1132,13 @@ shinyServer(function(input, output, session) {
                                                                            fluidRow(
                                                                              column(12, align = "center",
                                                                                     panel(
-                                                                                      HTML(paste("<span style='color:red'>Select genes from the above table to plot!</span>"))
+                                                                                      plotOutput(outputId = "findMarkerHeatmapPlot")
                                                                                     )
                                                                              )
                                                                            )
                                                                      )
           )
+          
           )
           
           showTab(inputId = "seuratFindMarkerPlotTabset", target = "Joint Heatmap Plot")
