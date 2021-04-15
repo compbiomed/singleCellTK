@@ -134,16 +134,14 @@ navbar:
           href: articles/cnsl_heatmap.html
     - text: "Shiny UI Analysis"
       menu:
-        - text: "Import"
+        - text: "Data"
           menu:
-            - text: "Data"
+            - text: "Import Data"
               href: articles/ui_import_data.html
-            - text: "Gene Sets"
+            - text: "Import Gene Sets"
               href: articles/ui_import_genesets.html
-            - text: "Cell Annotation"
-              href: articles/ui_import_cell_annotation.html
-            - text: "Feature Annotation"
-              href: articles/ui_import_feature_annotation.html
+            - text: "Annotation"
+              href: articles/ui_import_annotation.html
             - text: "Export Data"
               href: articles/ui_export_data.html
             - text: "Delete Data"
@@ -174,8 +172,12 @@ navbar:
               href: articles/ui_differential_expression.html
             - text: "Find Marker"
               href: articles/ui_find_marker.html
-        - text: "Generic Heatmap"
-          href: articles/ui_heatmap.html
+        - text: "Visualization"
+          menu:
+          - text: "cellViewer"
+            href: articles/ui_cellViewer.html
+          - text: "Generic Heatmap"
+            href: articles/ui_heatmap.html
     - text: "Reference"
       href: reference/index.html
   right:

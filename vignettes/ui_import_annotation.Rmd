@@ -1,12 +1,14 @@
 ---
-title: "Manipulate Cell Annotations"
+title: "Manipulate Cell and Feature Annotations"
 ---
 
 ## Introduction
 
 ![entry](ui_screenshots/cell_annotation/cell_ann_ui_entry.png)\
 
-After successfully uploading single-cell dataset, users are allowed to manipulate the cell level annotation in the UI. Users can enter the interface as instructed by the screenshot above. With this interface, users can either upload extra annotations or edit existing annotations.  
+After successfully uploading single-cell dataset, users are allowed to manipulate the cell and feature level annotations in the UI. The operation for the two types of annotation is distributed to two separated tabs, which work in the same way. This documentation will only describe the usage for the cell annotation tab.  
+
+Users can enter the interface as instructed by the screenshot above. With this interface, users can either upload extra annotations or edit existing annotations.  
 
 Here we will take the example PBMC3K dataset as an example. We imported this dataset through the **“Data” -> “Import Single Cell Data” tab**, by selecting **“Import example datasets”** first and using the default “PBMC 3K (10X)” option then.  
 

@@ -1,21 +1,41 @@
-pandoc: 2.10.1
-pkgdown: 1.5.1
+pandoc: '2.13'
+pkgdown: 1.6.1
 pkgdown_sha: ~
 articles:
-  batch_correction: batch_correction.html
-  clustering: clustering.html
-  differential_expression: differential_expression.html
-  find_marker: find_marker.html
-  heatmap: heatmap.html
-  import_scRNAseq_data_as_SCE_Commandline: import_scRNAseq_data_as_SCE_Commandline.html
-  import_scRNAseq_data_as_SCE_Console: import_scRNAseq_data_as_SCE_Console.html
+  cmd_import_scRNAseq_data_as_SCE: cmd_import_scRNAseq_data_as_SCE.html
+  cmd_qc: cmd_qc.html
+  cnsl_batch_correction: cnsl_batch_correction.html
+  cnsl_clustering: cnsl_clustering.html
+  cnsl_differential_expression: cnsl_differential_expression.html
+  cnsl_dimensionality_reduction: cnsl_dimensionality_reduction.html
+  cnsl_enrichR: cnsl_enrichR.html
+  cnsl_feature_selection: cnsl_feature_selection.html
+  cnsl_find_marker: cnsl_find_marker.html
+  cnsl_gsva: cnsl_gsva.html
+  cnsl_heatmap: cnsl_heatmap.html
+  cnsl_import_scRNAseq_data_as_SCE: cnsl_import_scRNAseq_data_as_SCE.html
+  cnsl_normalization: cnsl_normalization.html
+  cnsl_qc: cnsl_qc.html
+  cnsl_seurat_curated_workflow: cnsl_seurat_curated_workflow.html
   introduction_to_SCTK: introduction_to_SCTK.html
-  run_qcCommandline: run_qcCommandline.html
-  run_qcConsole: run_qcConsole.html
+  singleCellTK: singleCellTK.html
   ui_batch_correction: ui_batch_correction.html
   ui_clustering: ui_clustering.html
+  ui_delete_data: ui_delete_data.html
   ui_differential_expression: ui_differential_expression.html
+  ui_dimensionality_reduction: ui_dimensionality_reduction.html
+  ui_enrichR: ui_enrichR.html
+  ui_export_data: ui_export_data.html
+  ui_feature_selection: ui_feature_selection.html
+  ui_filtering: ui_filtering.html
   ui_find_marker: ui_find_marker.html
+  ui_gsva: ui_gsva.html
   ui_heatmap: ui_heatmap.html
-last_built: 2020-10-05T14:10Z
+  ui_import_annotation: ui_import_annotation.html
+  ui_import_data: ui_import_data.html
+  ui_import_genesets: ui_import_genesets.html
+  ui_normalization: ui_normalization.html
+  ui_qc: ui_qc.html
+  ui_seurat_curated_workflow: ui_seurat_curated_workflow.html
+last_built: 2021-04-13T19:44Z
 

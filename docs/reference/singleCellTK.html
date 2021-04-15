@@ -119,6 +119,9 @@
       <a href="../articles/cnsl_feature_selection.html">Feature Selection</a>
     </li>
     <li>
+      <a href="../articles/cnsl_dimensionality_reduction.html">Dimensionality Reduction</a>
+    </li>
+    <li>
       <a href="../articles/cnsl_clustering.html">Clustering</a>
     </li>
     <li>
@@ -143,19 +146,16 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Import</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Data</a>
       <ul class="dropdown-menu" role="menu">
         <li>
-          <a href="../articles/ui_import_data.html">Data</a>
+          <a href="../articles/ui_import_data.html">Import Data</a>
         </li>
         <li>
-          <a href="../articles/ui_import_genesets.html">Gene Sets</a>
+          <a href="../articles/ui_import_genesets.html">Import Gene Sets</a>
         </li>
         <li>
-          <a href="../articles/ui_import_cell_annotation.html">Cell Annotation</a>
-        </li>
-        <li>
-          <a href="../articles/ui_import_feature_annotation.html">Feature Annotation</a>
+          <a href="../articles/ui_import_annotation.html">Annotation</a>
         </li>
         <li>
           <a href="../articles/ui_export_data.html">Export Data</a>
@@ -194,7 +194,7 @@
           <a href="../articles/ui_feature_selection.html">Feature Selection</a>
         </li>
         <li>
-          <a href="../articles/ui_dimred.html">Dimensionality Reduction</a>
+          <a href="../articles/ui_dimemsionality_reduction.html">Dimensionality Reduction</a>
         </li>
       </ul>
     </li>
@@ -212,8 +212,16 @@
         </li>
       </ul>
     </li>
-    <li>
-      <a href="../articles/ui_heatmap.html">Generic Heatmap</a>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Visualization</a>
+      <ul class="dropdown-menu" role="menu">
+        <li>
+          <a href="../articles/ui_cellViewer.html">cellViewer</a>
+        </li>
+        <li>
+          <a href="../articles/ui_heatmap.html">Generic Heatmap</a>
+        </li>
+      </ul>
     </li>
   </ul>
 </li>
@@ -278,11 +286,11 @@ is 'flatly'.</p></td>
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
 <span class='co'>#Upload data through the app</span>
-  <span class='fu'>singleCellTK</span><span class='op'>(</span><span class='op'>)</span>
+<span class='fu'>singleCellTK</span><span class='op'>(</span><span class='op'>)</span>
 
 <span class='co'># Load the app with a SingleCellExperiment object</span>
-  <span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='st'>"mouseBrainSubsetSCE"</span><span class='op'>)</span>
-  <span class='fu'>singleCellTK</span><span class='op'>(</span><span class='va'>mouseBrainSubsetSCE</span><span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='st'>"mouseBrainSubsetSCE"</span><span class='op'>)</span>
+<span class='fu'>singleCellTK</span><span class='op'>(</span><span class='va'>mouseBrainSubsetSCE</span><span class='op'>)</span>
 <span class='op'>}</span>
 </div></pre>
   </div>
