@@ -103,14 +103,27 @@ findMarkerDiffExp <- function(inSCE, useAssay = 'logcounts',
     }
     degFull <- degFull[stats::complete.cases(degFull),]
     attr(degFull, "useAssay") <- useAssay
-    degFull <- .calcMarkerExpr(degFull, inSCE, clusterName,
-                               c(minClustExprPerc, maxCtrlExprPerc,
-                                 minMeanExpr))
+    degFull <- .calcMarkerExpr(degFull, inSCE, clusterName)
+    if (!is.null(minClustExprPerc)) {
+        degFull <- degFull[degFull$clusterExprPerc > minClustExprPerc,]
+    }
+    if (!is.null(maxCtrlExprPerc)) {
+        degFull <- degFull[degFull$ControlExprPerc < maxCtrlExprPerc,]
+    }
+    if (!is.null(minMeanExpr)) {
+        degFull <- degFull[degFull$clusterAveExpr > minMeanExpr,]
+    }
+    attr(degFull, "method") <- method
+    attr(degFull, "params") <- list(log2fcThreshold = log2fcThreshold,
+                                    fdrThreshold = fdrThreshold,
+                                    minClustExprPerc = minClustExprPerc,
+                                    maxCtrlExprPerc = maxCtrlExprPerc,
+                                    minMeanExpr = minMeanExpr)
     S4Vectors::metadata(inSCE)$findMarker <- degFull
     return(inSCE)
 }
 
-.calcMarkerExpr <- function(markerTable, inSCE, clusterName, params) {
+.calcMarkerExpr <- function(markerTable, inSCE, clusterName) {
     markerTable <- markerTable[markerTable$Gene %in% rownames(inSCE),]
     genes <- markerTable$Gene
     uniqClust <- unique(markerTable[[clusterName]])

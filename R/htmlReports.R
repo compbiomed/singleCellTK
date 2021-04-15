@@ -165,7 +165,6 @@ reportQCTool <- function(inSCE, algorithm=c("BarcodeRankDrops",
 #' @param output_dir name of the output directory to save the rendered file. If
 #' \code{NULL} the file is stored to the current working directory.
 #' Default \code{NULL}.
-#' @return .html file
 #' @export
 reportDiffExp <- function(inSCE, study,
                           output_file = NULL,
@@ -180,6 +179,39 @@ reportDiffExp <- function(inSCE, study,
   rmarkdown::render(system.file("rmarkdown/de/DifferentialExpression.Rmd",
                                 package="singleCellTK"),
                     params = list(object=inSCE, study=study),
+                    output_file = output_file,
+                    output_dir = output_dir )
+}
+
+#' @title Get findMarkerDiffExp .html report
+#' @description A  function to generate .html Rmarkdown report containing the
+#' visualizations of the \code{\link{findMarkerDiffExp}} function output
+#' @param inSCE A \code{\link[SingleCellExperiment]{SingleCellExperiment}}
+#' object containing the output from \code{\link{findMarkerDiffExp}} function
+#' @param output_file name of the generated file. If \code{NULL} then the output
+#' file name will be based on the name of the Rmarkdown template. Default
+#' \code{NULL}.
+#' @param output_dir name of the output directory to save the rendered file. If
+#' \code{NULL} the file is stored to the current working directory.
+#' Default \code{NULL}.
+#' @export
+reportFindMarker <- function(inSCE, output_file = NULL, output_dir = NULL) {
+
+  if (is.null(output_dir)){
+    output_dir <- getwd()
+  }
+  if (!"findMarker" %in% names(S4Vectors::metadata(inSCE))) {
+    stop("Find marker result not presented in input SCE object. Run ",
+         "findMarkerDiffExp() first. ")
+  }
+  att <- names(attributes(S4Vectors::metadata(inSCE)$findMarker))
+  if (!"useAssay" %in% att) {
+    stop("Can't identify the structure of find marker result. Run ",
+         "findMarkerDiffExp() first. ")
+  }
+  rmarkdown::render(system.file("rmarkdown/de/FindMarker.Rmd",
+                                package="singleCellTK"),
+                    params = list(object = inSCE),
                     output_file = output_file,
                     output_dir = output_dir )
 }
