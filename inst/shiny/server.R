@@ -7067,9 +7067,10 @@ shinyServer(function(input, output, session) {
      updateTabsetPanel(session = session, inputId = "seuratFindMarkerPlotTabset", selected = "Ridge Plot")
      shinyjs::show(selector = ".seurat_findmarker_plots")
 
-    #table
+    #output the heatmap
+     top10markers <- df %>% group_by(cluster) %>% top_n(n = 10, wt = avg_logFC)
      output$findMarkerHeatmapPlotFull <- renderPlot({
-       DoHeatmap(seuratObject, features = df$gene.id)
+       DoHeatmap(seuratObject, features = top10markers$gene.id)
      })
 
      output$findMarkerHeatmapPlotFullTopText <- renderUI({
@@ -7210,19 +7211,19 @@ shinyServer(function(input, output, session) {
     })
   })
 
-  observe({
-    req(vals$fts$data)
-    df <- vals$fts$data
-    output$findMarkerHeatmapPlotFull <- renderPlot({
-      seuratGenePlot(
-        inSCE = vals$counts,
-        scaledAssayName = "seuratScaledData",
-        plotType = "heatmap",
-        features = df$gene_id,
-        groupVariable = input$seuratFindMarkerSelectPhenotype
-      )
-    })
-  })
+  # observe({
+  #   req(vals$fts$data)
+  #   df <- vals$fts$data
+  #   output$findMarkerHeatmapPlotFull <- renderPlot({
+  #     seuratGenePlot(
+  #       inSCE = vals$counts,
+  #       scaledAssayName = "seuratScaledData",
+  #       plotType = "heatmap",
+  #       features = df$gene_id,
+  #       groupVariable = input$seuratFindMarkerSelectPhenotype
+  #     )
+  #   })
+  # })
 
 
   #Update PCA/ICA message in clustering tab
