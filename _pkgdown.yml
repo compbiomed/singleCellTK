@@ -132,6 +132,10 @@ navbar:
           href: articles/cnsl_visualization.html
         - text: "Heatmap Visualization"
           href: articles/cnsl_heatmap.html
+        - text: "Curated Workflows"
+          menu:
+            - text: "Seurat"
+              href: articles/cnsl_seurat_curated_workflow.html
     - text: "Shiny UI Analysis"
       menu:
         - text: "Import"
@@ -176,6 +180,11 @@ navbar:
               href: articles/ui_find_marker.html
         - text: "Generic Heatmap"
           href: articles/ui_heatmap.html
+        - text: "Curated Workflows"
+          menu:
+            - text: "Seurat"
+              href: articles/ui_seurat_curated_workflow.html
+              
     - text: "Reference"
       href: reference/index.html
   right:
