@@ -98,6 +98,8 @@ Imports:
     scds (>= 1.2.0),
     reticulate (>= 1.14),
     tools,
+    tximport,
+    fishpond,
     withr,
     GSEABase,
     R.utils,
