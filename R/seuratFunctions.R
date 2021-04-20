@@ -1209,6 +1209,8 @@ seuratVariableFeatures <- function(inSCE){
 #' Compute Seurat report and returns the output SCE object with the Seurat 
 #'  workflow computations stored in it.
 #' @param pathToReport Specify the path to Seurat report RMD file.
+#' @param outputPath Specify the output path where the generated HTML and 
+#'  output SCE object should be stored.
 #' @param subtitle A \code{character} value specifying the subtitle to use in the
 #'  Seurat report.
 #' @param authors A \code{character} value specifying the names of the authors 
@@ -1236,6 +1238,7 @@ seuratVariableFeatures <- function(inSCE){
 #'  in the \code{singleCellTK} user interface.
 #' @export
 seuratReport <- function(pathToReport = NULL,
+                         outputPath = NULL,
                          subtitle = "BUMC Single Cell Sequencing Core",
                          authors = "Tianmu (Timo) Hu, Irzam Sarfraz",
                          sce = NULL,
@@ -1256,9 +1259,11 @@ seuratReport <- function(pathToReport = NULL,
                       selected.markers = selected.markers,
                       clustering.resolution = clustering.resolution,
                       variable.features = variable.features,
-                      pc.count = pc.count
-                    ))
+                      pc.count = pc.count,
+                      outputPath = outputPath
+                    ), output_dir = outputPath)
   
-  outSCE <- readRDS("C:/Users/HP/Desktop/Seurat Report/SeuratReportProject/data.rds")
+  path <- paste0(outputPath, gsub("\\..*","", basename(sce)), "-", gsub(" ", "_", Sys.Date()), ".rds")
+  outSCE <- readRDS(path)
   return(outSCE)
 }
