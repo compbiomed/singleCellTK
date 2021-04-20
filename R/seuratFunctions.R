@@ -1206,11 +1206,15 @@ seuratVariableFeatures <- function(inSCE){
 }
 
 
-#' Compute Seurat report and returns the output SCE object with the Seurat 
-#'  workflow computations stored in it.
-#' @param pathToReport Specify the path to Seurat report RMD file.
-#' @param outputPath Specify the output path where the generated HTML and 
-#'  output SCE object should be stored.
+#' Computes an HTML report from the Seurat workflow and returns the output SCE 
+#'  object with the computations stored in it.
+#' @param inSCE Input \code{SingleCellExperiment} object.
+#' @param outputFile Specify the name of the generated output HTML file. If \code{NULL} then the output
+#' file name will be based on the name of the Rmarkdown template. Default
+#' \code{NULL}.
+#' @param outputDir Specify the name of the output directory to save the 
+#'  rendered HTML file. If \code{NULL} the file is stored to the current 
+#'  working directory.
 #' @param subtitle A \code{character} value specifying the subtitle to use in the
 #'  Seurat report.
 #' @param authors A \code{character} value specifying the names of the authors 
@@ -1237,8 +1241,9 @@ seuratVariableFeatures <- function(inSCE){
 #'  stored and can be used to interactively visualize the plots by importing
 #'  in the \code{singleCellTK} user interface.
 #' @export
-seuratReport <- function(pathToReport = NULL,
-                         outputPath = NULL,
+seuratReport <- function(inSCE,
+                         outputFile = NULL,
+                         outputDir = NULL,
                          subtitle = "BUMC Single Cell Sequencing Core",
                          authors = "Tianmu (Timo) Hu, Irzam Sarfraz",
                          sce = NULL,
@@ -1249,21 +1254,24 @@ seuratReport <- function(pathToReport = NULL,
                          variable.features = 2000,
                          pc.count = 10){
 
-  rmarkdown::render(pathToReport,
+  rmarkdown::render(system.file("rmarkdown/seurat/SeuratReport.Rmd",
+                                package="singleCellTK"),
                     params = list(
                       subtitle = subtitle,
                       authors = authors,
-                      sce = sce,
+                      sce = inSCE,
                       biological.group = biological.group,
                       phenotype.groups = phenotype.groups,
                       selected.markers = selected.markers,
                       clustering.resolution = clustering.resolution,
                       variable.features = variable.features,
                       pc.count = pc.count,
-                      outputPath = outputPath
-                    ), output_dir = outputPath)
+                      outputPath = outputDir
+                    ),
+                    output_file = outputFile,
+                    output_dir = outputDir)
   
-  path <- paste0(outputPath, gsub("\\..*","", basename(sce)), "-", gsub(" ", "_", Sys.Date()), ".rds")
+  path <- paste0(outputDir, "SCE_SeuratReport", "-", gsub(" ", "_", Sys.Date()), ".rds")
   outSCE <- readRDS(path)
   return(outSCE)
 }

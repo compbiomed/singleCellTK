@@ -2,11 +2,13 @@
 % Please edit documentation in R/seuratFunctions.R
 \name{seuratReport}
 \alias{seuratReport}
-\title{Compute Seurat report and returns the output SCE object with the Seurat 
- workflow computations stored in it.}
+\title{Computes an HTML report from the Seurat workflow and returns the output SCE 
+ object with the computations stored in it.}
 \usage{
 seuratReport(
-  pathToReport = NULL,
+  inSCE,
+  outputFile = NULL,
+  outputDir = NULL,
   subtitle = "BUMC Single Cell Sequencing Core",
   authors = "Tianmu (Timo) Hu, Irzam Sarfraz",
   sce = NULL,
@@ -19,7 +21,15 @@ seuratReport(
 )
 }
 \arguments{
-\item{pathToReport}{Specify the path to Seurat report RMD file.}
+\item{inSCE}{Input \code{SingleCellExperiment} object.}
+
+\item{outputFile}{Specify the name of the generated output HTML file. If \code{NULL} then the output
+file name will be based on the name of the Rmarkdown template. Default
+\code{NULL}.}
+
+\item{outputDir}{Specify the name of the output directory to save the 
+rendered HTML file. If \code{NULL} the file is stored to the current 
+working directory.}
 
 \item{subtitle}{A \code{character} value specifying the subtitle to use in the
 Seurat report.}
@@ -57,6 +67,6 @@ A \code{SingleCellExperiment} object that has the seurat computations
  in the \code{singleCellTK} user interface.
 }
 \description{
-Compute Seurat report and returns the output SCE object with the Seurat 
- workflow computations stored in it.
+Computes an HTML report from the Seurat workflow and returns the output SCE 
+ object with the computations stored in it.
 }
