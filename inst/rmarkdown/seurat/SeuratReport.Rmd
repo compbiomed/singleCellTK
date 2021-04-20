@@ -118,7 +118,6 @@ data <- seuratFindHVG(
 num.variable.genes <- length(seuratVariableFeatures(data))
 
 Labeled_Variable_data <- seuratPlotHVG(inSCE = data, labelPoints = 10)
-metadata(data)$seurat$plots$hvg <- Labeled_Variable_data
 Labeled_Variable_data
 ```
 
@@ -951,12 +950,11 @@ for(i in 1:numMarkerGenes) {
 
 
 ## Output Data
-The output SingleCellExperiment object is saved in the working directory which contains all of the stored computations and plots. This object can be loaded into the singleCellTK R toolkit to further inspect and visualize the data and plots through a interactive user interface. Additionally, all figures and tables have been stored to the working directory.
+The output SingleCellExperiment object **"`r paste0(outputPath, "SCE_SeuratReport", "-", gsub(" ", "_", Sys.Date()), ".rds")`"** is saved in the output directory which contains all of the stored computations and plots. This object can be loaded into the singleCellTK R toolkit to further inspect and visualize the data and plots through a interactive user interface. Additionally, all figures and tables have been stored to the output directory as well.
 
 ```{r Saving RDS Object, echo = TRUE}
 saveRDS(data, paste0(outputPath, "SCE_SeuratReport", "-", gsub(" ", "_", Sys.Date()), ".rds"))
 ```
-
 
 ## Summary
 The analysis of single cell data was performed by Seurat package. Firstly the data was normalized using LogNormalize method, variable features were identified using vst method and the data was then scaled using linear transformation method. PCA analysis was performed on the data and clustering was performed using multiple resolutions. The clusters were visualized using tSNE/UMAP methods and differential expression (marker selection) was run on the data. Gene marker plots were used to visualize the top genes sorted by adjusted p values. The figures, tables and the output SCE object were stored in the working directory which can be further visualized. The output object can be imported into the sctk shiny application to visualize and modify the workflow using the user interface.
