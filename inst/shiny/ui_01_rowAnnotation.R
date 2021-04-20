@@ -5,9 +5,9 @@ shinyPanelRowAnnotation <- fluidPage(
                                tabPanel("Bins",
                                         panel(
                                           uiOutput("inputSelectAttribute_rowData"),
-                                          uiOutput("inputSelectAttributeValue_rowData"),
+                                          selectizeInput("inputSelectAttributeValue_rowData", "select attribute value", choices = NULL),
                                           textInput("inputCriteria_rowData", "criteria parameter"),
-                                          selectInput("inputOperator_rowData", "select comparison", choices = c("=",">","<",">=","<=")),                 
+                                          selectInput("inputOperator_rowData", "select comparison", choices = c("=",">","<",">=","<=")),
                                           textInput("inputBinName_rowData", "bin name"),
                                           actionButton("buttonConfirmBin_rowData", "Confirm Bin")
                                         )
@@ -24,7 +24,7 @@ shinyPanelRowAnnotation <- fluidPage(
                                         panel(
                                           uiOutput("inputSelectAttributeFill1_rowData"),
                                           uiOutput("inputSelectAttributeFill2_rowData"),
-                                          uiOutput("inputSelectAttributeFillvalue_rowData"),
+                                          selectizeInput("inputSelectAttributeFillvalue_rowData", "select attribute value", choices = NULL),
                                           textInput("inputReplaceText_rowData", "new value"),
                                           actionButton("buttonConfirmFill_rowData","Confirm Fill")
                                         )
@@ -68,11 +68,11 @@ shinyPanelRowAnnotation <- fluidPage(
                                                       'text/comma-separated-values',
                                                       '.csv'
                                                     )),
-                                          actionButton(inputId = "importDataButton_rowData", label = "Import")  
+                                          actionButton(inputId = "importDataButton_rowData", label = "Import")
                                         )
                                )
                              ),
-                             
+
                              br(),
                              uiOutput("changesWarning_rowData"),
                              br(),
@@ -87,11 +87,11 @@ shinyPanelRowAnnotation <- fluidPage(
                                           h6("Reset annotation to point after changes were last saved:"),
                                           actionButton("buttonRestore_rowData","Reset",icon = icon("refresh"))
                                     )
-                                    
+
                              )
                              )
              ),
-             
+
              panel(heading = "Table of Feature Annotations",
                              uiOutput("outputColumnAnnotationTable_rowData")
              )
