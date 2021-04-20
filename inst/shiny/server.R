@@ -225,18 +225,18 @@ shinyServer(function(input, output, session) {
                          choices = expDataNames(vals$counts),
                          recommended = "redDims", redDims = TRUE)
     if (is.null(input$deMethod)) {
-      updateSelectInputTag(session, "deAssay", recommended = c("transformed", "normalized"))
+      updateSelectInputTag(session, "deAssay", recommended = c("transformed"))
     } else if (input$deMethod == "DESeq2") {
       updateSelectInputTag(session, "deAssay", recommended = c("raw"))
     } else {
-      updateSelectInputTag(session, "deAssay", recommended = c("transformed", "normalized"))
+      updateSelectInputTag(session, "deAssay", recommended = c("transformed"))
     }
     if (is.null(input$fmMethod)) {
-      updateSelectInputTag(session, "fmAssay", recommended = c("transformed", "normalized"))
+      updateSelectInputTag(session, "fmAssay", recommended = c("transformed"))
     } else if (input$fmMethod == "DESeq2") {
       updateSelectInputTag(session, "fmAssay", recommended = c("raw"))
     } else {
-      updateSelectInputTag(session, "fmAssay", recommended = c("normalized"))
+      updateSelectInputTag(session, "fmAssay", recommended = c("transformed"))
     }
     updateSelectInputTag(session, "fmHMAssay", choices = currassays, selected = input$fmAssay)
     updateSelectInputTag(session, "pathwayAssay", recommended = c("transformed", "normalized", "scaled"))
@@ -266,8 +266,8 @@ shinyServer(function(input, output, session) {
     updateSelectInputTag(session, "cellsAssay", choices = currassays)
     updateSelectInputTag(session, "snapshotAssay", choices = currassays)
     updateSelectInputTag(session, "exportAssay", choices = currassays)
-    updateSelectInputTag(session, "hmAssay")
-    updateSelectInputTag(session, "ctLabelAssay", choices = currassays, recommended = c("transformed", "normalized"))
+    updateSelectInputTag(session, "hmAssay", recommended = "transformed")
+    updateSelectInputTag(session, "ctLabelAssay", choices = currassays, recommended = c("transformed"))
     # batch correction assay conditions
     bc.recommended <- NULL
     method.log <- c("FastMNN", "Limma", "MNN")
@@ -276,7 +276,7 @@ shinyServer(function(input, output, session) {
     if (is.null(input$batchCorrMethods)) {
       bc.recommended <- "raw"
     } else if (input$batchCorrMethods %in% method.log) {
-      bc.recommended <- c("transformed", "normalized")
+      bc.recommended <- c("transformed")
     } else if (input$batchCorrMethods %in% method.raw) {
       bc.recommended <- "raw"
     } else if (input$batchCorrMethods %in% method.scale) {
@@ -286,6 +286,16 @@ shinyServer(function(input, output, session) {
                          label = "Select Assay to Correct:",
                          choices = currassays,
                          recommended = bc.recommended)
+    updateSelectInputTag(session, "AdvancedMethodSelect_Colorby",
+                         label = h5("Advanced Method"),
+                         choices = currassays)
+    updateSelectInputTag(session, "AdvancedMethodSelect_Xaxis",
+                         label = h5("Advanced Method"),
+                         choices = currassays)
+    updateSelectInputTag(session, "AdvancedMethodSelect_Yaxis",
+                         label = h5("Advanced Method"),
+                         choices = currassays)
+
   }
 
 
@@ -323,6 +333,11 @@ shinyServer(function(input, output, session) {
     updateSelectInput(session, "clustVisReddim", choices = currreddim)
     updateSelectInput(session, "clustKMeansReddim", choices = currreddim)
     updateSelectInput(session, "clustSeuratReddim", choices = currreddim)
+    updateSelectInput(session, "QuickAccess",
+                      choices = c(currreddim, "Custom"))
+    updateSelectInput(session, "ApproachSelect_Xaxis", choices = currreddim)
+    updateSelectInput(session, "ApproachSelect_Yaxis", choices = currreddim)
+    updateSelectInput(session, "ApproachSelect_Colorby", choices = currreddim)
   }
 
   updateEnrichDB <- function(){
@@ -3328,10 +3343,7 @@ shinyServer(function(input, output, session) {
       if (is.null(vals$counts)){
         shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
       }else{
-        cell_list <- BiocGenerics::colnames(vals$counts)
         gene_list <- BiocGenerics::rownames(vals$counts)
-        method_list <- names(assays(vals$counts))
-        approach_list <- names(reducedDims(vals$counts))
         annotation_list <- names(colData(vals$counts))
         annotation_list2 <- list()
         for (i in 1:length(annotation_list)){
@@ -3343,30 +3355,16 @@ shinyServer(function(input, output, session) {
         }
         annotation_list <- annotation_list2
         rm(annotation_list2)
-        updateSelectInput(session, "QuickAccess",
-                          choices = c("",approach_list, "Custom"))
-        updateSelectInput(session, "ApproachSelect_Xaxis",
-                          choices = c(approach_list))
-        updateSelectInput(session, "AdvancedMethodSelect_Xaxis",
-                          choices = c(method_list))
-        updateSelectInput(session, "GeneSelect_Assays_Xaxis",
-                          choices = c(gene_list))
+        updateSelectizeInput(session, "GeneSelect_Assays_Xaxis",
+                          choices = c(gene_list), server = TRUE)
         updateSelectInput(session, "AnnotationSelect_Xaxis",
                           choices = c(annotation_list))
-        updateSelectInput(session, "ApproachSelect_Yaxis",
-                          choices = c(approach_list))
-        updateSelectInput(session, "AdvancedMethodSelect_Yaxis",
-                          choices = c(method_list))
-        updateSelectInput(session, "GeneSelect_Assays_Yaxis",
-                          choices = c(gene_list))
+        updateSelectizeInput(session, "GeneSelect_Assays_Yaxis",
+                          choices = c(gene_list), server = TRUE)
         updateSelectInput(session, "AnnotationSelect_Yaxis",
                           choices = c(annotation_list))
-        updateSelectInput(session, "ApproachSelect_Colorby",
-                          choices = c(approach_list))
-        updateSelectInput(session, "AdvancedMethodSelect_Colorby",
-                          choices = c(method_list))
-        updateSelectInput(session, "GeneSelect_Assays_Colorby",
-                          choices = c(gene_list))
+        updateSelectizeInput(session, "GeneSelect_Assays_Colorby",
+                          choices = c(gene_list), server = TRUE)
         updateSelectInput(session, "AnnotationSelect_Colorby",
                           choices = c(annotation_list))
         updateSelectizeInput(session, "adjustgroupby", label = NULL, choices = c("None", annotation_list))
@@ -3598,6 +3596,7 @@ shinyServer(function(input, output, session) {
     }else{
       xname <- input$AnnotationSelect_Xaxis
     }
+    xname <- gsub("-", "_", xname)
     ###Yaxis label name
     if(input$QuickAccess != "Custom" & input$QuickAccess != "" & input$adjustylab == ""){
       yname <- paste0(input$QuickAccess, 2)
@@ -3611,8 +3610,8 @@ shinyServer(function(input, output, session) {
     }else{
       yname <- input$AnnotationSelect_Yaxis
     }
-
-    ###Yaxis label name
+    yname <- gsub("-", "_", yname)
+    ###Legend name
     if(input$TypeSelect_Colorby != 'Pick a Color'){
       if(input$TypeSelect_Colorby == 'Reduced Dimensions' && input$adjustlegendtitle == ""){
         legendname <- paste0(input$ApproachSelect_Colorby,"_",substr(input$ColumnSelect_Colorby,
@@ -3625,7 +3624,7 @@ shinyServer(function(input, output, session) {
         legendname <- input$adjustlegendtitle
       }
     }
-
+    legendname <- gsub("-", "_", legendname)
     #-+-+-+-+-+-cellviewer prepare4 : choose group by and create plotly function###################
     pltVars <- list()
     if(input$viewertabs == "Violin/Box Plot" || input$viewertabs == "Bar Plot"){
@@ -3659,6 +3658,43 @@ shinyServer(function(input, output, session) {
     }
 
     if(input$viewertabs == "Scatter Plot"){
+      #### Prepare Custom plotting matrix acis ####
+      if (input$QuickAccess == "Custom") {
+        # X Axis
+        message("CellViewer: Custom plotting mode, making up the axis")
+        if (input$TypeSelect_Xaxis == "Expression Assays") {
+          message("X axis: Using expression of ", input$GeneSelect_Assays_Xaxis,
+                  " from ", input$AdvancedMethodSelect_Xaxis)
+          xvec <- expData(vals$counts, input$AdvancedMethodSelect_Xaxis)[input$GeneSelect_Assays_Xaxis,]
+        } else if (input$TypeSelect_Xaxis == "Reduced Dimensions") {
+          message("X axis: Using dimension reduction ", input$ColumnSelect_Xaxis,
+                  " from ", input$ApproachSelect_Xaxis)
+          xvec <- reducedDim(vals$counts, input$ApproachSelect_Xaxis)[,input$ColumnSelect_Xaxis]
+        } else if (input$TypeSelect_Xaxis == 'Cell Annotation') {
+          message("X axis: Using cell annotation ",
+                  input$AnnotationSelect_Xaxis)
+          xvec <- vals$counts[[input$AnnotationSelect_Xaxis]]
+        }
+        # Y Axis
+        if (input$TypeSelect_Yaxis == "Expression Assays") {
+          message("Y axis: Using expression of ", input$GeneSelect_Assays_Yaxis,
+                  " from ", input$AdvancedMethodSelect_Yaxis)
+          yvec <- expData(vals$counts, input$AdvancedMethodSelect_Yaxis)[input$GeneSelect_Assays_Yaxis,]
+        } else if (input$TypeSelect_Yaxis == "Reduced Dimensions") {
+          message("Y axis: Using dimension reduction ", input$ColumnSelect_Yaxis,
+                  " from ", input$ApproachSelect_Yaxis)
+          yvec <- reducedDim(vals$counts, input$ApproachSelect_Yaxis)[,input$ColumnSelect_Yaxis]
+        } else if (input$TypeSelect_Yaxis == 'Cell Annotation') {
+          message("Y axis: Using cell annotation ",
+                  input$AnnotationSelect_Yaxis)
+          yvec <- vals$counts[[input$AnnotationSelect_Yaxis]]
+        }
+        # Merge and insert to reducedDim(sce, "Custom")
+        customMat <- matrix(c(xvec, yvec), nrow = length(xvec))
+        colnames(customMat) <- c(xname, yname)
+        rownames(customMat) <- names(xvec)
+        reducedDim(vals$counts, "Custom") <- customMat
+      }
       if(input$TypeSelect_Colorby == "Single Color"){
         a <- plotSCEScatter(vals$counts, reducedDimName = input$QuickAccess,
                             xlab = xname, ylab = yname, title = input$adjusttitle, groupBy = pltVars$groupby,
@@ -7620,14 +7656,14 @@ shinyServer(function(input, output, session) {
   })
 
   #create selectinput for selecting column to delete
-  output$inputSelectAttributeValue_rowData <- renderUI({
+  observeEvent(input$inputSelectAttribute_rowData, {
     if(!is.null(vals$rowAnnotation) &&
        ncol(vals$rowAnnotation) > 0 &&
        !is.null(input$inputSelectAttribute_rowData) &&
        input$inputSelectAttribute_rowData %in% colnames(vals$rowAnnotation)){
-      selectInput("inputSelectAttributeValue_rowData",
-                  label = "select attribute value",
-                  choices = vals$rowAnnotation[, input$inputSelectAttribute_rowData])
+      updateSelectizeInput(session, "inputSelectAttributeValue_rowData",
+                           choices = vals$rowAnnotation[, input$inputSelectAttribute_rowData],
+                           server = TRUE)
     }
   })
 
@@ -7674,13 +7710,13 @@ shinyServer(function(input, output, session) {
   })
 
   #create selectinput for selecting attribute value for magic fill
-  output$inputSelectAttributeFillvalue_rowData <- renderUI({
+  observeEvent(input$inputSelectAttributeFill1_rowData, {
     if(!is.null(vals$rowAnnotation)){
       if(ncol(vals$rowAnnotation) > 0){
-        selectInput("inputSelectAttributeFillvalue_rowData",
-                    label = "select attribute value",
-                    choices = vals$rowAnnotation[, match(input$inputSelectAttributeFill1_rowData,
-                                                         colnames(vals$rowAnnotation))])
+        updateSelectizeInput(session, "inputSelectAttributeFillvalue_rowData",
+                             choices = vals$rowAnnotation[, match(input$inputSelectAttributeFill1_rowData,
+                                                                  colnames(vals$rowAnnotation))],
+                             server = TRUE)
       }
     }
   })
