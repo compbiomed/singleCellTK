@@ -216,7 +216,8 @@ reportDiffExp <- function(inSCE, study,
 #'  components to use in the analysis workflow. Default is \code{10}.
 #' @param showSession A \code{logical} value indicating if session information
 #'  should be displayed or not. Default is \code{TRUE}.
-#'
+#' @param pdf A \code{logical} value indicating if a pdf should also be
+#'  generated for each figure in the report. Default is \code{TRUE}.
 #' @return A \code{SingleCellExperiment} object that has the seurat computations
 #'  stored and can be used to interactively visualize the plots by importing
 #'  in the \code{singleCellTK} user interface.
@@ -233,7 +234,8 @@ seuratReport <- function(inSCE,
                          clustering.resolution = 0.8,
                          variable.features = 2000,
                          pc.count = 10,
-                         showSession = TRUE){
+                         showSession = TRUE,
+                         pdf = TRUE){
   
   if(is.null(biological.group)){
     stop("Must specify atleast one biological.group that is present in the colData of input object.")
@@ -267,7 +269,8 @@ seuratReport <- function(inSCE,
                       variable.features = variable.features,
                       pc.count = pc.count,
                       outputPath = outputDir,
-                      showSession = showSession
+                      showSession = showSession,
+                      pdf = pdf
                     ),
                     output_file = outputFile,
                     output_dir = outputDir,

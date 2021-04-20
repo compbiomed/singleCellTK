@@ -14,6 +14,7 @@ params:
   pc.count: 10
   outputPath: !r NULL
   showSession: TRUE
+  pdf: TRUE
 output:
   html_document:
     toc: yes
@@ -63,6 +64,7 @@ data <- params$sce
 sampleNames <- unique(colData(data)[[group]])
 outputPath <- params$outputPath
 showSession <- params$showSession
+pdf <- params$pdf
 ```
 
 ```{r Seurat setup, include=FALSE}
@@ -228,7 +230,7 @@ A **resolution parameter** is used for clustering in Seurat. This resolution set
 We visualize the input dataset highlighted with cluster labels computed using multiple resolutions with tSNE that is considerably effective when data is high-dimensional and non-linear. More information on tSNE is provided in a separate section below.
 
 ##### RES 0.3 {-}
-```{r Seurat resolution as 0.3, eval = TRUE, warning = FALSE, message=FALSE}
+```{r Seurat tSNE resolution as 0.3, eval = TRUE, warning = FALSE, message=FALSE}
 data <- seuratFindClusters(data, useReduction = "pca", resolution = 0.3, verbose = FALSE)
 data <- seuratRunUMAP(data, useReduction = "pca", dims = significant_PC)
 data <- seuratRunTSNE(data, useReduction = "pca", dims = significant_PC)
@@ -239,7 +241,7 @@ p1
 ```
 
 ##### RES 0.4 {-}
-```{r Seurat resolution as 0.4, eval = TRUE, warning = FALSE, message=FALSE}
+```{r Seurat tSNE resolution as 0.4, eval = TRUE, warning = FALSE, message=FALSE}
 data <- seuratFindClusters(data, useReduction = "pca", resolution = 0.4, verbose = FALSE)
 data <- seuratRunUMAP(data, useReduction = "pca", dims = significant_PC)
 data <- seuratRunTSNE(data, useReduction = "pca", dims = significant_PC)
@@ -250,7 +252,7 @@ p1
 ```
 
 ##### RES 0.5 {-}
-```{r Seurat resolution as 0.5, eval = TRUE, warning = FALSE, message=FALSE}
+```{r Seurat tSNE resolution as 0.5, eval = TRUE, warning = FALSE, message=FALSE}
 data <- seuratFindClusters(data, useReduction = "pca", resolution = 0.5, verbose = FALSE)
 data <- seuratRunUMAP(data, useReduction = "pca", dims = significant_PC)
 data <- seuratRunTSNE(data, useReduction = "pca", dims = significant_PC)
@@ -261,7 +263,7 @@ p1
 ```
 
 ##### RES 0.6 {-}
-```{r Seurat resolution as 0.6, eval = TRUE, warning = FALSE, message=FALSE}
+```{r Seurat tSNE resolution as 0.6, eval = TRUE, warning = FALSE, message=FALSE}
 data <- seuratFindClusters(data, useReduction = "pca", resolution = 0.6, verbose = FALSE)
 data <- seuratRunUMAP(data, useReduction = "pca", dims = significant_PC)
 data <- seuratRunTSNE(data, useReduction = "pca", dims = significant_PC)
@@ -272,7 +274,7 @@ p1
 ```
 
 ##### RES 0.7 {-}
-```{r Seurat resolution as 0.7, eval = TRUE, warning = FALSE, message=FALSE}
+```{r Seurat tSNE resolution as 0.7, eval = TRUE, warning = FALSE, message=FALSE}
 data <- seuratFindClusters(data, useReduction = "pca", resolution = 0.7, verbose = FALSE)
 data <- seuratRunUMAP(data, useReduction = "pca", dims = significant_PC)
 data <- seuratRunTSNE(data, useReduction = "pca", dims = significant_PC)
@@ -283,7 +285,7 @@ p1
 ```
 
 ##### RES 0.8 {-}
-```{r Seurat resolution as 0.8, eval = TRUE, warning = FALSE, message=FALSE}
+```{r Seurat tSNE resolution as 0.8, eval = TRUE, warning = FALSE, message=FALSE}
 data <- seuratFindClusters(data, useReduction = "pca", resolution = 0.8, verbose = FALSE)
 data <- seuratRunUMAP(data, useReduction = "pca", dims = significant_PC)
 data <- seuratRunTSNE(data, useReduction = "pca", dims = significant_PC)
@@ -294,7 +296,7 @@ p1
 ```
 
 ##### RES 0.9 {-}
-```{r Seurat resolution as 0.9, eval = TRUE, warning = FALSE, message=FALSE}
+```{r Seurat tSNE resolution as 0.9, eval = TRUE, warning = FALSE, message=FALSE}
 data <- seuratFindClusters(data, useReduction = "pca", resolution = 0.9, verbose = FALSE)
 data <- seuratRunUMAP(data, useReduction = "pca", dims = significant_PC)
 data <- seuratRunTSNE(data, useReduction = "pca", dims = significant_PC)
@@ -305,7 +307,7 @@ p1
 ```
 
 ##### RES 1.0 {-}
-```{r Seurat resolution as 1.0, eval = TRUE, warning = FALSE, message=FALSE}
+```{r Seurat tSNE resolution as 1.0, eval = TRUE, warning = FALSE, message=FALSE}
 data <- seuratFindClusters(data, useReduction = "pca", resolution = 1.0, verbose = FALSE)
 data <- seuratRunUMAP(data, useReduction = "pca", dims = significant_PC)
 data <- seuratRunTSNE(data, useReduction = "pca", dims = significant_PC)
@@ -316,7 +318,7 @@ p1
 ```
 
 ##### RES 1.1 {-}
-```{r Seurat resolution as 1.1, eval = TRUE, warning = FALSE, message=FALSE}
+```{r Seurat tSNE resolution as 1.1, eval = TRUE, warning = FALSE, message=FALSE}
 data <- seuratFindClusters(data, useReduction = "pca", resolution = 1.1, verbose = FALSE)
 data <- seuratRunUMAP(data, useReduction = "pca", dims = significant_PC)
 data <- seuratRunTSNE(data, useReduction = "pca", dims = significant_PC)
@@ -327,7 +329,7 @@ p1
 ```
 
 ##### RES 1.2 {-}
-```{r Seurat resolution as 1.2, eval = TRUE, warning = FALSE, message=FALSE}
+```{r Seurat tSNE resolution as 1.2, eval = TRUE, warning = FALSE, message=FALSE}
 data <- seuratFindClusters(data, useReduction = "pca", resolution = 1.2, verbose = FALSE)
 data <- seuratRunUMAP(data, useReduction = "pca", dims = significant_PC)
 data <- seuratRunTSNE(data, useReduction = "pca", dims = significant_PC)
@@ -338,7 +340,7 @@ p1
 ```
 
 ##### RES 1.3 {-}
-```{r Seurat resolution as 1.3, eval = TRUE, warning = FALSE, message=FALSE}
+```{r Seurat tSNE resolution as 1.3, eval = TRUE, warning = FALSE, message=FALSE}
 data <- seuratFindClusters(data, useReduction = "pca", resolution = 1.3, verbose = FALSE)
 data <- seuratRunUMAP(data, useReduction = "pca", dims = significant_PC)
 data <- seuratRunTSNE(data, useReduction = "pca", dims = significant_PC)
@@ -349,7 +351,7 @@ p1
 ```
 
 ##### RES 1.4 {-}
-```{r Seurat resolution as 1.4, eval = TRUE, warning = FALSE, message=FALSE}
+```{r Seurat tSNE resolution as 1.4, eval = TRUE, warning = FALSE, message=FALSE}
 data <- seuratFindClusters(data, useReduction = "pca", resolution = 1.4, verbose = FALSE)
 data <- seuratRunUMAP(data, useReduction = "pca", dims = significant_PC)
 data <- seuratRunTSNE(data, useReduction = "pca", dims = significant_PC)
@@ -360,7 +362,7 @@ p1
 ```
 
 ##### RES 1.5 {-}
-```{r Seurat resolution as 1.5, eval = TRUE, warning = FALSE, message=FALSE}
+```{r Seurat tSNE resolution as 1.5, eval = TRUE, warning = FALSE, message=FALSE}
 data <- seuratFindClusters(data, useReduction = "pca", resolution = 1.5, verbose = FALSE)
 data <- seuratRunUMAP(data, useReduction = "pca", dims = significant_PC)
 data <- seuratRunTSNE(data, useReduction = "pca", dims = significant_PC)
@@ -375,7 +377,7 @@ p1
 UMAP can also be used for visualizing high-dimensional non-linear datasets, particularly it has an advantage of preserving the global structure of the dataset. More information on UMAP is provided in a separate section below.
 
 ##### RES 0.3 {-}
-```{r, eval = TRUE, warning = FALSE, message=FALSE}
+```{r Seurat UMAP resolution as 0.3, eval = TRUE, warning = FALSE, message=FALSE}
 data <- seuratFindClusters(data, useReduction = "pca", resolution = 0.3, verbose = FALSE)
 data <- seuratRunUMAP(data, useReduction = "pca", dims = significant_PC)
 data <- seuratRunTSNE(data, useReduction = "pca", dims = significant_PC)
@@ -386,7 +388,7 @@ p2
 ```
 
 ##### RES 0.4 {-}
-```{r, eval = TRUE, warning = FALSE, message=FALSE}
+```{r Seurat UMAP resolution as 0.4, eval = TRUE, warning = FALSE, message=FALSE}
 data <- seuratFindClusters(data, useReduction = "pca", resolution = 0.4, verbose = FALSE)
 data <- seuratRunUMAP(data, useReduction = "pca", dims = significant_PC)
 data <- seuratRunTSNE(data, useReduction = "pca", dims = significant_PC)
@@ -397,7 +399,7 @@ p2
 ```
 
 ##### RES 0.5 {-}
-```{r, eval = TRUE, warning = FALSE, message=FALSE}
+```{r Seurat UMAP resolution as 0.5, eval = TRUE, warning = FALSE, message=FALSE}
 data <- seuratFindClusters(data, useReduction = "pca", resolution = 0.5, verbose = FALSE)
 data <- seuratRunUMAP(data, useReduction = "pca", dims = significant_PC)
 data <- seuratRunTSNE(data, useReduction = "pca", dims = significant_PC)
@@ -408,7 +410,7 @@ p2
 ```
 
 ##### RES 0.6 {-}
-```{r, eval = TRUE, warning = FALSE, message=FALSE}
+```{r Seurat UMAP resolution as 0.6, eval = TRUE, warning = FALSE, message=FALSE}
 data <- seuratFindClusters(data, useReduction = "pca", resolution = 0.6, verbose = FALSE)
 data <- seuratRunUMAP(data, useReduction = "pca", dims = significant_PC)
 data <- seuratRunTSNE(data, useReduction = "pca", dims = significant_PC)
@@ -419,7 +421,7 @@ p2
 ```
 
 ##### RES 0.7 {-}
-```{r, eval = TRUE, warning = FALSE, message=FALSE}
+```{r Seurat UMAP resolution as 0.7, eval = TRUE, warning = FALSE, message=FALSE}
 data <- seuratFindClusters(data, useReduction = "pca", resolution = 0.7, verbose = FALSE)
 data <- seuratRunUMAP(data, useReduction = "pca", dims = significant_PC)
 data <- seuratRunTSNE(data, useReduction = "pca", dims = significant_PC)
@@ -430,7 +432,7 @@ p2
 ```
 
 ##### RES 0.8 {-}
-```{r, eval = TRUE, warning = FALSE, message=FALSE}
+```{r Seurat UMAP resolution as 0.8, eval = TRUE, warning = FALSE, message=FALSE}
 data <- seuratFindClusters(data, useReduction = "pca", resolution = 0.8, verbose = FALSE)
 data <- seuratRunUMAP(data, useReduction = "pca", dims = significant_PC)
 data <- seuratRunTSNE(data, useReduction = "pca", dims = significant_PC)
@@ -441,7 +443,7 @@ p2
 ```
 
 ##### RES 0.9 {-}
-```{r, eval = TRUE, warning = FALSE, message=FALSE}
+```{r Seurat UMAP resolution as 0.9, eval = TRUE, warning = FALSE, message=FALSE}
 data <- seuratFindClusters(data, useReduction = "pca", resolution = 0.9, verbose = FALSE)
 data <- seuratRunUMAP(data, useReduction = "pca", dims = significant_PC)
 data <- seuratRunTSNE(data, useReduction = "pca", dims = significant_PC)
@@ -452,7 +454,7 @@ p2
 ```
 
 ##### RES 1.0 {-}
-```{r, eval = TRUE, warning = FALSE, message=FALSE}
+```{r Seurat UMAP resolution as 1.0, eval = TRUE, warning = FALSE, message=FALSE}
 data <- seuratFindClusters(data, useReduction = "pca", resolution = 1.0, verbose = FALSE)
 data <- seuratRunUMAP(data, useReduction = "pca", dims = significant_PC)
 data <- seuratRunTSNE(data, useReduction = "pca", dims = significant_PC)
@@ -463,7 +465,7 @@ p2
 ```
 
 ##### RES 1.1 {-}
-```{r, eval = TRUE, warning = FALSE, message=FALSE}
+```{r Seurat UMAP resolution as 1.1, eval = TRUE, warning = FALSE, message=FALSE}
 data <- seuratFindClusters(data, useReduction = "pca", resolution = 1.1, verbose = FALSE)
 data <- seuratRunUMAP(data, useReduction = "pca", dims = significant_PC)
 data <- seuratRunTSNE(data, useReduction = "pca", dims = significant_PC)
@@ -474,7 +476,7 @@ p2
 ```
 
 ##### RES 1.2 {-}
-```{r, eval = TRUE, warning = FALSE, message=FALSE}
+```{r Seurat UMAP resolution as 1.2, eval = TRUE, warning = FALSE, message=FALSE}
 data <- seuratFindClusters(data, useReduction = "pca", resolution = 1.2, verbose = FALSE)
 data <- seuratRunUMAP(data, useReduction = "pca", dims = significant_PC)
 data <- seuratRunTSNE(data, useReduction = "pca", dims = significant_PC)
@@ -485,7 +487,7 @@ p2
 ```
 
 ##### RES 1.3 {-}
-```{r, eval = TRUE, warning = FALSE, message=FALSE}
+```{r Seurat UMAP resolution as 1.3, eval = TRUE, warning = FALSE, message=FALSE}
 data <- seuratFindClusters(data, useReduction = "pca", resolution = 1.3, verbose = FALSE)
 data <- seuratRunUMAP(data, useReduction = "pca", dims = significant_PC)
 data <- seuratRunTSNE(data, useReduction = "pca", dims = significant_PC)
@@ -496,7 +498,7 @@ p2
 ```
 
 ##### RES 1.4 {-}
-```{r, eval = TRUE, warning = FALSE, message=FALSE}
+```{r Seurat UMAP resolution as 1.4, eval = TRUE, warning = FALSE, message=FALSE}
 data <- seuratFindClusters(data, useReduction = "pca", resolution = 1.4, verbose = FALSE)
 data <- seuratRunUMAP(data, useReduction = "pca", dims = significant_PC)
 data <- seuratRunTSNE(data, useReduction = "pca", dims = significant_PC)
@@ -507,7 +509,7 @@ p2
 ```
 
 ##### RES 1.5 {-}
-```{r, eval = TRUE, warning = FALSE, message=FALSE}
+```{r Seurat UMAP resolution as 1.5, eval = TRUE, warning = FALSE, message=FALSE}
 data <- seuratFindClusters(data, useReduction = "pca", resolution = 1.5, verbose = FALSE)
 data <- seuratRunUMAP(data, useReduction = "pca", dims = significant_PC)
 data <- seuratRunTSNE(data, useReduction = "pca", dims = significant_PC)
@@ -530,13 +532,13 @@ numClusters <- length(unique(colData(data)[[paste0("Seurat_louvain_Resolution", 
 ### tSNE {.tabset .tabset-fade -}
 tSNE (Non-linear Dimensional Reduction) is a dimension reduction technique that places cells with similar local neighborhoods in high-dimensional space together in low-dimensional space. tSNE has been the default method for such task in the past years. Using default parameters, a final resolution of **`r seurat.selected.resolution`** and **`r significant_PC`** PCs was chosen to better reflect the data, visualized in the following tSNE.
 
-```{r Seurat tsne1}
+```{r Seurat selected tsne}
 data <- seuratRunTSNE(data, useReduction = "pca", dims = significant_PC)
 ```
 
 #### Clusters {-}
 Seurat clusters cells and assigned a cluster label to each cell. The following plot is the tSNE representation of the clustering results, colored by the cluster labels.
-```{r Seurat tsne2}
+```{r Seurat tsne clusters 0.6}
 tSNE_coloredby_cluster <- seuratReductionPlot(data, useReduction = "tsne", showLegend = TRUE)
 tSNE_coloredby_cluster <- tSNE_coloredby_cluster + annotate(geom = "text", x = mean(tSNE_coloredby_cluster$data[tSNE_coloredby_cluster$data$ident == 0,]$tSNE_1), y =  mean(tSNE_coloredby_cluster$data[tSNE_coloredby_cluster$data$ident == 0,]$tSNE_2), label = "Cluster 0", hjust = "left") + annotate(geom = "text", x = mean(tSNE_coloredby_cluster$data[tSNE_coloredby_cluster$data$ident == 1,]$tSNE_1), y =  mean(tSNE_coloredby_cluster$data[tSNE_coloredby_cluster$data$ident == 1,]$tSNE_2), label = "Cluster 1", hjust = "left") + annotate(geom = "text", x = mean(tSNE_coloredby_cluster$data[tSNE_coloredby_cluster$data$ident == 2,]$tSNE_1), y =  mean(tSNE_coloredby_cluster$data[tSNE_coloredby_cluster$data$ident == 2,]$tSNE_2), label = "Cluster 2", hjust = "left") + annotate(geom = "text", x = mean(tSNE_coloredby_cluster$data[tSNE_coloredby_cluster$data$ident == 3,]$tSNE_1), y =  mean(tSNE_coloredby_cluster$data[tSNE_coloredby_cluster$data$ident == 3,]$tSNE_2), label = "Cluster 3", hjust = "left") + annotate(geom = "text", x = mean(tSNE_coloredby_cluster$data[tSNE_coloredby_cluster$data$ident == 4,]$tSNE_1), y =  mean(tSNE_coloredby_cluster$data[tSNE_coloredby_cluster$data$ident == 4,]$tSNE_2), label = "Cluster 4", hjust = "left") + annotate(geom = "text", x = mean(tSNE_coloredby_cluster$data[tSNE_coloredby_cluster$data$ident == 5,]$tSNE_1), y =  mean(tSNE_coloredby_cluster$data[tSNE_coloredby_cluster$data$ident == 5,]$tSNE_2), label = "Cluster 5", hjust = "left")
 metadata(data)$seurat$plots$tsne <- tSNE_coloredby_cluster
@@ -547,7 +549,7 @@ tSNE_coloredby_cluster
 
 The clustering pattern above determined to hold the true dimensionality of the dataset was grouped by sample (color) to visualize sample clusters.
 
-```{r Seurat tsne3}
+```{r Seurat tsne samples 0.6}
 tSNE_coloredby_sample <- seuratReductionPlot(data, useReduction = "tsne", groupBy = group, showLegend = TRUE)
 tSNE_coloredby_sample
 ```
@@ -556,13 +558,13 @@ tSNE_coloredby_sample
 
 Seurat clusters cells and assigned a cluster label to each cell. The following plot is the tSNE representation of the clustering results, split by each samples.
 
-```{r Seurat tsne4}
+```{r Seurat tsne samples separated 0.6}
 # Plot each sample individually
 tSNE_splitby_sample <- seuratReductionPlot(data, useReduction = "tsne", splitBy = group, showLegend = TRUE)
 tSNE_splitby_sample
 ```
 
-```{r}
+```{r Seurat tsne samples separated 0.6 phenotypes}
 tSNE_coloredby_phenotype <- list()
 for (i in 1:length(selected_phenotypes)){
   tSNE_coloredby_phenotype[[i]] <- seuratReductionPlot(data, useReduction = "tsne", groupBy = selected_phenotypes[i], showLegend = TRUE)
@@ -570,7 +572,7 @@ for (i in 1:length(selected_phenotypes)){
   
 ```
 
-```{r, results='asis', echo = FALSE}
+```{r Seurat tsne samples separated 0.6 phenotypes plot, results='asis', echo = FALSE}
 for (i in 1:length(selected_phenotypes)){
   cat('\n\n#### Phenotype variable:  `', selected_phenotypes[i], '` {-} \n\n')
   print(tSNE_coloredby_phenotype[[i]])
@@ -582,13 +584,13 @@ for (i in 1:length(selected_phenotypes)){
 ### UMAP {.tabset .tabset-fade -}
 The uniform manifold approximation and projection(UMAP) are another dimension reduction techniques to visualize the cell clusters in a low-dimensional space. Comparing to formal tSNE techniques, UMAP was considered to provide faster run times, better reproducibility and more meaningful inter-clustering distances and relationships. Using default parameters, a final resolution of **`r seurat.selected.resolution`** and **`r significant_PC`** PCs was chosen to better reflect the data, visualized in the following UMAP.
 
-```{r Seurat umap1}
+```{r Seurat UMAP selected resolution}
 data <- seuratRunUMAP(data, useReduction = "pca", dims = significant_PC, verbose = FALSE)
 ```
 
 #### Clusters {-}
 Seurat clusters cells and assigned a cluster label to each cell. The following plot is the UMAP representation of the clustering results, colored by the cluster labels.
-```{r Seurat umap2}
+```{r Seurat UMAP clusters}
 UMAP_coloredby_cluster <- seuratReductionPlot(data, useReduction = "umap", showLegend = TRUE)
 UMAP_coloredby_cluster <- UMAP_coloredby_cluster + annotate(geom = "text", x = mean(UMAP_coloredby_cluster$data[UMAP_coloredby_cluster$data$ident == 0,]$UMAP_1), y =  mean(UMAP_coloredby_cluster$data[UMAP_coloredby_cluster$data$ident == 0,]$UMAP_2), label = "Cluster 0", hjust = "left") + annotate(geom = "text", x = mean(UMAP_coloredby_cluster$data[UMAP_coloredby_cluster$data$ident == 1,]$UMAP_1), y =  mean(UMAP_coloredby_cluster$data[UMAP_coloredby_cluster$data$ident == 1,]$UMAP_2), label = "Cluster 1", hjust = "left") + annotate(geom = "text", x = mean(UMAP_coloredby_cluster$data[UMAP_coloredby_cluster$data$ident == 2,]$UMAP_1), y =  mean(UMAP_coloredby_cluster$data[UMAP_coloredby_cluster$data$ident == 2,]$UMAP_2), label = "Cluster 2", hjust = "left") + annotate(geom = "text", x = mean(UMAP_coloredby_cluster$data[UMAP_coloredby_cluster$data$ident == 3,]$UMAP_1), y =  mean(UMAP_coloredby_cluster$data[UMAP_coloredby_cluster$data$ident == 3,]$UMAP_2), label = "Cluster 3", hjust = "left") + annotate(geom = "text", x = mean(UMAP_coloredby_cluster$data[UMAP_coloredby_cluster$data$ident == 4,]$UMAP_1), y =  mean(UMAP_coloredby_cluster$data[UMAP_coloredby_cluster$data$ident == 4,]$UMAP_2), label = "Cluster 4", hjust = "left") + annotate(geom = "text", x = mean(UMAP_coloredby_cluster$data[UMAP_coloredby_cluster$data$ident == 5,]$UMAP_1), y =  mean(UMAP_coloredby_cluster$data[UMAP_coloredby_cluster$data$ident == 5,]$UMAP_2), label = "Cluster 5", hjust = "left")
 metadata(data)$seurat$plots$umap <- UMAP_coloredby_cluster
@@ -597,7 +599,7 @@ UMAP_coloredby_cluster
 
 #### Samples {-}
 Seurat clusters cells and assigned a cluster label to each cell. The following plot is the UMAP representation of the clustering results, colored by the sample labels. 
-```{r Seurat umap3}
+```{r Seurat umap samples}
 UMAP_coloredby_sample <- seuratReductionPlot(data, useReduction = "umap", groupBy = group, showLegend = TRUE)
 UMAP_coloredby_sample
 ```
@@ -605,12 +607,12 @@ UMAP_coloredby_sample
 #### Sample separated {-}
 Seurat clusters cells and assigned a cluster label to each cell. The following plot is the UMAP representation of the clustering results, split by each samples.
 
-```{r Seurat umap4}
+```{r Seurat umap samples separated}
 UMAP_splitby_sample <- seuratReductionPlot(data, useReduction = "umap", splitBy = group, showLegend = TRUE)
 UMAP_splitby_sample
 ```
 
-```{r}
+```{r Seurat umap samples separated phenotype}
 UMAP_coloredby_phenotype <- list()
 for (i in 1:length(selected_phenotypes)){
   UMAP_coloredby_phenotype[[i]] <- seuratReductionPlot(data, useReduction = "umap", groupBy = selected_phenotypes[i], showLegend = TRUE)
@@ -618,7 +620,7 @@ for (i in 1:length(selected_phenotypes)){
   
 ```
 
-```{r, results='asis'}
+```{r Seurat umap samples separated phenotype plots, results='asis'}
 for (i in 1:length(selected_phenotypes)){
   cat('\n\n#### Phenotype variable:  `', selected_phenotypes[i], '` {-} \n\n')
   print(UMAP_coloredby_phenotype[[i]])
@@ -630,7 +632,7 @@ for (i in 1:length(selected_phenotypes)){
 ## Differential Expression **(`r group`)**
 Gene markers defining **`r group`** were identified via differential expression using the **Wilcoxon rank sum test**. **Differentially expressed genes** were determined by genes detected at a **minimum percentage of 25% in either of the two groups of cells** (clusters being compared), and requiring **a gene to be differentially expressed (on average) at a 25% threshold between the two groups**.
 
-```{r, message=FALSE}
+```{r DEG, message=FALSE}
 data <- seuratFindMarkers(data, allGroup = group, minPCT = 0.25, threshUse = 0.25,)
 # data <- seuratFindMarkers(data, minPCT = 0.25, threshUse = 0.25, verbose = FALSE)
 data.markers <- metadata(data)$seuratMarkers
@@ -646,7 +648,7 @@ Gene plot for the top marker genes in each of the identified clusters are visual
 
 #### Feature Plot {.tabset .tabset-fade .tabset-dropdown -}
 A **feature plot** visualizes the **expression level** of a particular **gene marker in all cells of the data** on a **UMAP** plot. Here we visualize the **feature plots** of the **top 9 marker genes** in each unique **group** separately. Use the drop-down box to view top 9 markers from each of the group.
-```{r, echo = TRUE, results = "asis", fig.height =9, fig.width = 9}
+```{r DEG FeaturePlot, echo = TRUE, results = "asis", fig.height =9, fig.width = 9}
 
 template <- "##### %s {.tabset .tabset-fade -}
 
@@ -675,7 +677,7 @@ for (currentCluster in 0:(numClusters-1)) {
 
 #### Ridge Plot {.tabset .tabset-fade .tabset-dropdown -}
 A **ridge plot** visualizes the **expression level** of a particular **gene marker in all cells of the data** separated by **group** in the form of ridges. Here we visualize the **ridge plots** of the **top 9 marker genes** separated by **group**. Use the drop-down box to view top 9 markers from each of the group.
-```{r, echo = TRUE, results = "asis", fig.height =9, fig.width = 9}
+```{r DEG RidgePlot, echo = TRUE, results = "asis", fig.height =9, fig.width = 9}
 
 template <- "##### %s {.tabset .tabset-fade}
 "
@@ -701,7 +703,7 @@ for (currentCluster in 0:(numClusters-1)) {
 
 #### Violin Plot {.tabset .tabset-fade .tabset-dropdown -}
 A **violin plot** visualizes the **expression level** of a particular **gene marker in all cells of the data** separated by **group**. Here we visualize the **violin plots** of the **top 9 marker genes** separated by **group**. Use the drop-down box to view top 9 markers from each of the group.
-```{r, echo = TRUE, results = "asis", fig.height =9, fig.width = 9}
+```{r DEG ViolinPlot, echo = TRUE, results = "asis", fig.height =9, fig.width = 9}
 
 template <- "##### %s {.tabset .tabset-fade}
 "
@@ -728,7 +730,7 @@ for (currentCluster in 0:(numClusters-1)) {
 
 #### Dot Plot {-}
 A **dot plot** visualizes the **change in the expression levels** of a particular **gene marker in all cells of the data** separated by **group** in the form of dots where the color of the dots indicate the expression level of that gene in a class and the size of the dot indicates the total percentage of the cells in that class.
-```{r}
+```{r DEG DotPlot}
 top9 <- data.frame(data.markers %>% group_by(cluster) %>% top_n(-9, p_val_adj))
 top9 <- top9$gene.id
 seuratGenePlot(data, plotType = "dot", features = top9, groupVariable = group, ncol = 1, cols = c("grey", "blue")) + theme(axis.text.x = element_text(angle = 90))
@@ -736,7 +738,7 @@ seuratGenePlot(data, plotType = "dot", features = top9, groupVariable = group, n
 
 #### Heatmap Plot {-}
 
-```{r}
+```{r DEG HeatmapPlot}
 top9 <- data.frame(data.markers %>% group_by(cluster) %>% top_n(-9, p_val_adj))
 metadata(data)$seurat$plots$top9 <- top9
 metadata(data)$seurat$plots$group <- group
@@ -769,7 +771,7 @@ kable(top10, style = 'html', row.names = F) %>%
 ## Differential Expression (Clusters)
 Gene markers defining clusters via differential expression using the Wilcoxon rank sum test. Differentially expressed genes were determined by genes detected at a minimum percentage of 25% in either of the two groups of cells (clusters being compared), and requiring a gene to be differentially expressed (on average) at a 25% threshold between the two groups.
 
-```{r, echo = TRUE}
+```{r DEG Clusters, echo = TRUE}
 # data <- seuratFindMarkers(data, allGroup = group)
 data <- seuratFindMarkers(data, minPCT = 0.25, threshUse = 0.25, verbose = FALSE)
 data.markers <- metadata(data)$seuratMarkers
@@ -866,7 +868,7 @@ for (currentCluster in 0:(numClusters-1)) {
 
 #### Dot Plot {-}
 A **dot plot** visualizes the **change in the expression levels** of a particular **gene marker in all cells of the data** separated by **clusters** in the form of dots where the color of the dots indicate the expression level of that gene in a cluster and the size of the dot indicates the total percentage of the cells in that cluster.
-```{r}
+```{r DEG Clusters Dotplot}
 top9 <- data.frame(data.markers %>% group_by(cluster) %>% top_n(-9, p_val_adj))
 top9 <- top9$gene.id
 seuratGenePlot(data, plotType = "dot", features = top9, groupVariable = paste0("Seurat_louvain_Resolution", seurat.selected.resolution), ncol = 1, cols = c("grey", "blue")) + theme(axis.text.x = element_text(angle = 90))
@@ -874,7 +876,7 @@ seuratGenePlot(data, plotType = "dot", features = top9, groupVariable = paste0("
 
 #### Heatmap Plot {-}
 
-```{r}
+```{r DEG Clusters HeatmapPlot}
 top9 <- data.frame(data.markers %>% group_by(cluster) %>% top_n(-9, p_val_adj))
 top9 <- top9$gene.id
 seuratGenePlot(data, plotType = "heatmap", features = top9, groupVariable = paste0("Seurat_louvain_Resolution", seurat.selected.resolution), ncol = 1, cols = c("grey", "blue"))

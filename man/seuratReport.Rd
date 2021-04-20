@@ -18,7 +18,8 @@ seuratReport(
   clustering.resolution = 0.8,
   variable.features = 2000,
   pc.count = 10,
-  showSession = TRUE
+  showSession = TRUE,
+  pdf = TRUE
 )
 }
 \arguments{
@@ -64,6 +65,9 @@ components to use in the analysis workflow. Default is \code{10}.}
 
 \item{showSession}{A \code{logical} value indicating if session information
 should be displayed or not. Default is \code{TRUE}.}
+
+\item{pdf}{A \code{logical} value indicating if a pdf should also be
+generated for each figure in the report. Default is \code{TRUE}.}
 }
 \value{
 A \code{SingleCellExperiment} object that has the seurat computations
