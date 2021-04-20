@@ -214,6 +214,8 @@ reportDiffExp <- function(inSCE, study,
 #'  top variable genes to identify in the seurat report. Default is \code{2000}.
 #' @param pc.count A \code{numeric} value indicating the number of principal
 #'  components to use in the analysis workflow. Default is \code{10}.
+#' @param showSession A \code{logical} value indicating if session information
+#'  should be displayed or not. Default is \code{TRUE}.
 #'
 #' @return A \code{SingleCellExperiment} object that has the seurat computations
 #'  stored and can be used to interactively visualize the plots by importing
@@ -230,7 +232,27 @@ seuratReport <- function(inSCE,
                          selected.markers = NULL,
                          clustering.resolution = 0.8,
                          variable.features = 2000,
-                         pc.count = 10){
+                         pc.count = 10,
+                         showSession = TRUE){
+  
+  if(is.null(biological.group)){
+    stop("Must specify atleast one biological.group that is present in the colData of input object.")
+  }
+  
+  if(!biological.group %in% names(colData(inSCE))){
+    stop(biological.group, " not found in the colData of input object.")
+  }
+  
+  if(!is.null(phenotype.groups)){
+    if(!all(phenotype.groups %in% names(colData(inSCE)))){
+      stop(phenotype.groups, " not found in the colData of input object.")
+    }
+  }
+  
+  if(is.null(outputDir)){
+    output_dir <- getwd()
+    message("No output directory defined, using current working directory ", output_dir, " instead.")
+  }
   
   rmarkdown::render(system.file("rmarkdown/seurat/SeuratReport.Rmd",
                                 package="singleCellTK"),
@@ -244,10 +266,13 @@ seuratReport <- function(inSCE,
                       clustering.resolution = clustering.resolution,
                       variable.features = variable.features,
                       pc.count = pc.count,
-                      outputPath = outputDir
+                      outputPath = outputDir,
+                      showSession = showSession
                     ),
                     output_file = outputFile,
-                    output_dir = outputDir)
+                    output_dir = outputDir,
+                    intermediates_dir = outputDir,
+                    knit_root_dir = outputDir)
   
   path <- paste0(outputDir, "SCE_SeuratReport", "-", gsub(" ", "_", Sys.Date()), ".rds")
   outSCE <- readRDS(path)

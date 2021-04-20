@@ -3,8 +3,8 @@ title: "Single Cell Analysis with Seurat using singleCellTK Package"
 author: "`r params$authors`"
 date: "`r format(Sys.time(), '%B %d, %Y')`"
 params:
-  subtitle: "BUMC Single Cell Sequencing Core"
-  authors: "Tianmu (Timo) Hu, Irzam Sarfraz"
+  subtitle: !r NULL
+  authors: !r NULL
   sce: !r NULL
   biological.group: !r NULL
   phenotype.groups: !r NULL
@@ -13,6 +13,7 @@ params:
   variable.features: 2000
   pc.count: 10
   outputPath: !r NULL
+  showSession: TRUE
 output:
   html_document:
     toc: yes
@@ -61,6 +62,7 @@ Custom_Markers <- Pre_selected_markers
 data <- params$sce
 sampleNames <- unique(colData(data)[[group]])
 outputPath <- params$outputPath
+showSession <- params$showSession
 ```
 
 ```{r Seurat setup, include=FALSE}
@@ -90,6 +92,14 @@ opts_chunk$set(
  sample_coord_ratio = h.w.mtx[,Numofsamples][1]/h.w.mtx[,Numofsamples][2]
 ```
 
+Number of Features/Genes/Markers: **`r Numofmarkers`** <br>
+Number of Samples/Cells: **`r Numofbarbodes`** <br>
+Selected Main Biological Group: **`r group`** <br>
+Selected Additional Phenotype Groups: **`r selected_phenotypes`** <br>
+Specified Custom Markers: **`r Pre_selected_markers`** <br>
+Selected # of Variable Features to detect: **`r seurat.selected.features.numbers`** <br>
+Selected # of PC: **`r initial.PC.numbers`** <br>
+Selected Resolution for Clustering: **`r seurat.selected.resolution`** <br>
 
 ## Normalization
 The global-scaling normalization method, "LogNormalize" was used to normalize the gene expression measurements for each cell by the total expression, multiplied by a scale factor of 10,000 (default), and log-transform the results.
@@ -950,7 +960,7 @@ for(i in 1:numMarkerGenes) {
 
 
 ## Output Data
-The output SingleCellExperiment object **"`r paste0(outputPath, "SCE_SeuratReport", "-", gsub(" ", "_", Sys.Date()), ".rds")`"** is saved in the output directory which contains all of the stored computations and plots. This object can be loaded into the singleCellTK R toolkit to further inspect and visualize the data and plots through a interactive user interface. Additionally, all figures and tables have been stored to the output directory as well.
+The output SingleCellExperiment object **`r paste0(outputPath, "SCE_SeuratReport", "-", gsub(" ", "_", Sys.Date()), ".rds")`** is saved in the output directory which contains all of the stored computations and plots. This object can be loaded into the singleCellTK R toolkit to further inspect and visualize the data and plots through a interactive user interface. Additionally, all figures and tables have been stored to the output directory as well.
 
 ```{r Saving RDS Object, echo = TRUE}
 saveRDS(data, paste0(outputPath, "SCE_SeuratReport", "-", gsub(" ", "_", Sys.Date()), ".rds"))
@@ -960,7 +970,7 @@ saveRDS(data, paste0(outputPath, "SCE_SeuratReport", "-", gsub(" ", "_", Sys.Dat
 The analysis of single cell data was performed by Seurat package. Firstly the data was normalized using LogNormalize method, variable features were identified using vst method and the data was then scaled using linear transformation method. PCA analysis was performed on the data and clustering was performed using multiple resolutions. The clusters were visualized using tSNE/UMAP methods and differential expression (marker selection) was run on the data. Gene marker plots were used to visualize the top genes sorted by adjusted p values. The figures, tables and the output SCE object were stored in the working directory which can be further visualized. The output object can be imported into the sctk shiny application to visualize and modify the workflow using the user interface.
 
 # Session Information {-}
-```{r session_info}
+```{r session, eval = showSession, echo = showSession}
 sessionInfo()
 ```
 
