@@ -252,8 +252,8 @@ seuratReport <- function(inSCE,
   }
   
   if(is.null(outputDir)){
-    output_dir <- getwd()
-    message("No output directory defined, using current working directory ", output_dir, " instead.")
+    outputDir <- getwd()
+    message("No output directory defined, using current working directory ", outputDir, " instead.")
   }
   
   rmarkdown::render(system.file("rmarkdown/seurat/SeuratReport.Rmd",
