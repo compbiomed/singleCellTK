@@ -22,6 +22,7 @@ output:
     number_sections: yes
     theme: cosmo
     code_folding: hide
+    self_contained: false
   pdf_document:
     toc: yes
 subtitle: "`r params$subtitle`"
@@ -201,14 +202,8 @@ PC.separated.height <- 3.5 * ceiling(initial.PC.numbers/3)
 The heatmap allows for easy exploration of the primary sources of heterogeneity. Both cells and features are ordered according to their PCA scores. This supervised analysis is still a valuable tool for exploring correlated feature sets.
 
 ```{r Seurat PC Heatmap, fig.height = PC.separated.height, fig.width = 15, warning=FALSE}
-#for specific number of cells
-# heatmap <- seuratComputeHeatmap(data, useAssay = "seuratScaledData", useReduction = "pca", dims = initial.PC.numbers, cells = 500, balanced = TRUE, ncol = 3, fast = FALSE)
-
-#for all cells in dataset
 heatmap <- seuratComputeHeatmap(data, useAssay = "seuratScaledData", useReduction = "pca", dims = initial.PC.numbers, balanced = TRUE, ncol = 4, fast = FALSE)
-metadata(data)$seurat$plots$heatmap <- heatmap
 heatmap
-
 ```
 
 
@@ -634,13 +629,9 @@ Gene markers defining **`r group`** were identified via differential expression 
 
 ```{r DEG, message=FALSE}
 data <- seuratFindMarkers(data, allGroup = group, minPCT = 0.25, threshUse = 0.25,)
-# data <- seuratFindMarkers(data, minPCT = 0.25, threshUse = 0.25, verbose = FALSE)
 data.markers <- metadata(data)$seuratMarkers
 
-kable(data.markers, "html") %>%
-  kable_styling(bootstrap_options = c("striped", "hover")) %>%
-  cat(., file = "df.html")
-
+write.csv(data.markers, file = paste0(outputPath, "DEGTableGroup", "-", gsub(" ", "_", Sys.Date()), ".csv"), row.names = FALSE)
 ```
 
 ### Gene Plots of Top Markers by Group {.tabset .tabset-fade}
@@ -659,8 +650,7 @@ template_inside <- "###### %s {-}
 space <- " 
 
 "
-# top9 <- data.frame(data.markers %>% group_by(cluster) %>% top_n(9, avg_log2FC))
-top9 <- data.frame(data.markers %>% group_by(cluster) %>% top_n(-9, p_val_adj))
+top9 <- data.frame(data.markers %>% group_by(cluster) %>% top_n(9, avg_logFC))
 numClusters <- length(unique(data.markers$cluster))
 for (currentCluster in 0:(numClusters-1)) {
   cat(sprintf(template, paste0("Cluster ", unique(data.markers$cluster)[currentCluster])))
@@ -686,8 +676,7 @@ template_inside <- "###### %s {-}
 space <- " 
 
 "
-# top9 <- data.frame(data.markers %>% group_by(cluster) %>% top_n(9, avg_log2FC))
-top9 <- data.frame(data.markers %>% group_by(cluster) %>% top_n(-9, p_val_adj))
+top9 <- data.frame(data.markers %>% group_by(cluster) %>% top_n(9, avg_logFC))
 numClusters <- length(unique(data.markers$cluster))
 for (currentCluster in 0:(numClusters-1)) {
   cat(sprintf(template, paste0("Cluster ", currentCluster)))
@@ -712,8 +701,7 @@ template_inside <- "###### %s {-}
 space <- " 
 
 "
-# top9 <- data.frame(data.markers %>% group_by(cluster) %>% top_n(9, avg_log2FC))
-top9 <- data.frame(data.markers %>% group_by(cluster) %>% top_n(-9, p_val_adj))
+top9 <- data.frame(data.markers %>% group_by(cluster) %>% top_n(9, avg_logFC))
 numClusters <- length(unique(data.markers$cluster))
 for (currentCluster in 0:(numClusters-1)) {
   cat(sprintf(template, paste0("Cluster ", currentCluster)))
@@ -731,7 +719,7 @@ for (currentCluster in 0:(numClusters-1)) {
 #### Dot Plot {-}
 A **dot plot** visualizes the **change in the expression levels** of a particular **gene marker in all cells of the data** separated by **group** in the form of dots where the color of the dots indicate the expression level of that gene in a class and the size of the dot indicates the total percentage of the cells in that class.
 ```{r DEG DotPlot}
-top9 <- data.frame(data.markers %>% group_by(cluster) %>% top_n(-9, p_val_adj))
+top9 <- data.frame(data.markers %>% group_by(cluster) %>% top_n(9, avg_logFC))
 top9 <- top9$gene.id
 seuratGenePlot(data, plotType = "dot", features = top9, groupVariable = group, ncol = 1, cols = c("grey", "blue")) + theme(axis.text.x = element_text(angle = 90))
 ```
@@ -739,7 +727,7 @@ seuratGenePlot(data, plotType = "dot", features = top9, groupVariable = group, n
 #### Heatmap Plot {-}
 
 ```{r DEG HeatmapPlot}
-top9 <- data.frame(data.markers %>% group_by(cluster) %>% top_n(-9, p_val_adj))
+top9 <- data.frame(data.markers %>% group_by(cluster) %>% top_n(9, avg_logFC))
 metadata(data)$seurat$plots$top9 <- top9
 metadata(data)$seurat$plots$group <- group
 top9 <- top9$gene.id
@@ -755,12 +743,11 @@ List of top **10** genes for each group are listed below.
 
 ```{r Seurat Top Markers by group Table, echo = FALSE, results='asis'}
 # Top genes table
-top5 <- data.frame(data.markers %>% group_by(cluster) %>% top_n(-5, p_val_adj))
-top10 <- data.frame(data.markers %>% group_by(cluster) %>% top_n(-10, p_val_adj))
+top5 <- data.frame(data.markers %>% group_by(cluster) %>% top_n(5, avg_logFC))
+top10 <- data.frame(data.markers %>% group_by(cluster) %>% top_n(10, avg_logFC))
 top_all <- data.frame(data.markers %>% group_by(cluster))
 
-#update this
-#write.csv(top_all, file = paste0(paste(cachePath,projectName,"_top_genes", sep = ""), ".csv"), row.names = FALSE)
+write.csv(top10, file = paste0(outputPath, "DEGTableGroupTop10", "-", gsub(" ", "_", Sys.Date()), ".csv"), row.names = FALSE)
 
 colNames<-colnames(top10)
 kable(top10, style = 'html', row.names = F) %>%
@@ -772,14 +759,10 @@ kable(top10, style = 'html', row.names = F) %>%
 Gene markers defining clusters via differential expression using the Wilcoxon rank sum test. Differentially expressed genes were determined by genes detected at a minimum percentage of 25% in either of the two groups of cells (clusters being compared), and requiring a gene to be differentially expressed (on average) at a 25% threshold between the two groups.
 
 ```{r DEG Clusters, echo = TRUE}
-# data <- seuratFindMarkers(data, allGroup = group)
 data <- seuratFindMarkers(data, minPCT = 0.25, threshUse = 0.25, verbose = FALSE)
 data.markers <- metadata(data)$seuratMarkers
 
-kable(data.markers, "html") %>%
-  kable_styling(bootstrap_options = c("striped", "hover")) %>%
-  cat(., file = "df.html")
-
+write.csv(data.markers, file = paste0(outputPath, "DEGTableClusters", "-", gsub(" ", "_", Sys.Date()), ".csv"), row.names = FALSE)
 ```
 
 
@@ -797,8 +780,7 @@ template_inside <- "###### %s {-}
 space <- " 
 
 "
-# top9 <- data.frame(data.markers %>% group_by(cluster) %>% top_n(9, avg_log2FC))
-top9 <- data.frame(data.markers %>% group_by(cluster) %>% top_n(-9, p_val_adj))
+top9 <- data.frame(data.markers %>% group_by(cluster) %>% top_n(9, avg_logFC))
 numClusters <- length(unique(data.markers$cluster))
 for (currentCluster in 0:(numClusters-1)) {
   cat(sprintf(template, paste0("Cluster ", currentCluster)))
@@ -824,8 +806,7 @@ template_inside <- "###### %s {-}
 space <- " 
 
 "
-# top9 <- data.frame(data.markers %>% group_by(cluster) %>% top_n(9, avg_log2FC))
-top9 <- data.frame(data.markers %>% group_by(cluster) %>% top_n(-9, p_val_adj))
+top9 <- data.frame(data.markers %>% group_by(cluster) %>% top_n(9, avg_logFC))
 numClusters <- length(unique(data.markers$cluster))
 for (currentCluster in 0:(numClusters-1)) {
   cat(sprintf(template, paste0("Cluster ", currentCluster)))
@@ -850,8 +831,7 @@ template_inside <- "###### %s {-}
 space <- " 
 
 "
-# top9 <- data.frame(data.markers %>% group_by(cluster) %>% top_n(9, avg_log2FC))
-top9 <- data.frame(data.markers %>% group_by(cluster) %>% top_n(-9, p_val_adj))
+top9 <- data.frame(data.markers %>% group_by(cluster) %>% top_n(9, avg_logFC))
 numClusters <- length(unique(data.markers$cluster))
 for (currentCluster in 0:(numClusters-1)) {
   cat(sprintf(template, paste0("Cluster ", currentCluster)))
@@ -869,7 +849,7 @@ for (currentCluster in 0:(numClusters-1)) {
 #### Dot Plot {-}
 A **dot plot** visualizes the **change in the expression levels** of a particular **gene marker in all cells of the data** separated by **clusters** in the form of dots where the color of the dots indicate the expression level of that gene in a cluster and the size of the dot indicates the total percentage of the cells in that cluster.
 ```{r DEG Clusters Dotplot}
-top9 <- data.frame(data.markers %>% group_by(cluster) %>% top_n(-9, p_val_adj))
+top9 <- data.frame(data.markers %>% group_by(cluster) %>% top_n(9, avg_logFC))
 top9 <- top9$gene.id
 seuratGenePlot(data, plotType = "dot", features = top9, groupVariable = paste0("Seurat_louvain_Resolution", seurat.selected.resolution), ncol = 1, cols = c("grey", "blue")) + theme(axis.text.x = element_text(angle = 90))
 ```
@@ -877,7 +857,7 @@ seuratGenePlot(data, plotType = "dot", features = top9, groupVariable = paste0("
 #### Heatmap Plot {-}
 
 ```{r DEG Clusters HeatmapPlot}
-top9 <- data.frame(data.markers %>% group_by(cluster) %>% top_n(-9, p_val_adj))
+top9 <- data.frame(data.markers %>% group_by(cluster) %>% top_n(9, avg_logFC))
 top9 <- top9$gene.id
 seuratGenePlot(data, plotType = "heatmap", features = top9, groupVariable = paste0("Seurat_louvain_Resolution", seurat.selected.resolution), ncol = 1, cols = c("grey", "blue"))
 ```
@@ -889,12 +869,11 @@ List of top **10** genes for each clusters are listed below.
 
 ```{r Seurat Top Markers by cluster Table, echo = FALSE, results='asis'}
 # Top genes table
-top5 <- data.frame(data.markers %>% group_by(cluster) %>% top_n(-5, p_val_adj))
-top10 <- data.frame(data.markers %>% group_by(cluster) %>% top_n(-10, p_val_adj))
+top5 <- data.frame(data.markers %>% group_by(cluster) %>% top_n(5, avg_logFC))
+top10 <- data.frame(data.markers %>% group_by(cluster) %>% top_n(10, avg_logFC))
 top_all <- data.frame(data.markers %>% group_by(cluster))
 
-#update this
-#write.csv(top_all, file = paste0(paste(cachePath,projectName,"_top_genes", sep = ""), ".csv"), row.names = FALSE)
+write.csv(top10, file = paste0(outputPath, "DEGTableClustersTop10", "-", gsub(" ", "_", Sys.Date()), ".csv"), row.names = FALSE)
 
 colNames<-colnames(top10)
 kable(top10, style = 'html', row.names = F) %>%
