@@ -24,7 +24,7 @@
 #' @examples
 #' \dontrun{
 #' data('sceBatches', package = 'singleCellTK')
-#' sceBatches <- scater_logNormCounts(sceBatches)
+#' sceBatches <- scaterlogNormCounts(sceBatches)
 #' sceCorr <- runBBKNN(sceBatches, useAssay = "ScaterLogNormCounts")
 #' }
 runBBKNN <-function(inSCE, useAssay = 'logcounts', batch = 'batch',
@@ -536,7 +536,7 @@ runMNNCorrect <- function(inSCE, useAssay = 'logcounts', batch = 'batch',
 #' @examples
 #' \dontrun{
 #' data('sceBatches', package = 'singleCellTK')
-#' sceBatches <- scater_logNormCounts(sceBatches)
+#' sceBatches <- scaterlogNormCounts(sceBatches)
 #' sceCorr <- runSCANORAMA(sceBatches, "ScaterLogNormCounts")
 #' }
 runSCANORAMA <- function(inSCE, useAssay = 'logcounts', batch = 'batch',

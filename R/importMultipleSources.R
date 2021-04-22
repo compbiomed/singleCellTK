@@ -24,7 +24,7 @@ importMultipleSources <- function(allImportEntries, delayedArray = FALSE) {
           delayedArray = delayedArray
         )
       }
-      
+
     } else if (entry$type == "cellRanger3") {
       if (is.null(entry$params$cellRangerDirs)) {
         newSce <- importCellRangerV3Sample(
@@ -93,11 +93,10 @@ importMultipleSources <- function(allImportEntries, delayedArray = FALSE) {
           SummarizedExperiment::assay(newSce, assay) <- DelayedArray::DelayedArray(SummarizedExperiment::assay(newSce, assay))
         }
       }
-      
+
     }
     sceObjs = c(sceObjs, list(newSce))
   }
-  
   return(combineSCE(sceList = sceObjs,
                     by.r = Reduce(base::intersect, lapply(sceObjs, function(x) { colnames(rowData(x))})),
                     by.c = Reduce(base::intersect, lapply(sceObjs, function(x) { colnames(colData(x))})),

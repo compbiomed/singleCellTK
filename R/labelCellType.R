@@ -88,7 +88,7 @@ runSingleR <- function(inSCE,
                 rownames(ref) <- SummarizedExperiment::rowData(ref)$symbol
             }
             ref <- ref[,!is.na(ref$label) & ref$label!="unclear"]
-            ref <- scater_logNormCounts(ref, logAssayName = "logcounts")
+            ref <- scaterlogNormCounts(ref, assayName = "logcounts")
             labelColName <- "label"
             warning("MuraroPancreasData does not have multiple levels of ",
                     "label. Using its default labeling.")
@@ -108,7 +108,7 @@ runSingleR <- function(inSCE,
             message("Loading reference data 'ZeiselBrainData'...")
             ref <- scRNAseq::ZeiselBrainData(ensembl = useEnsembl)
             ref <- ref[,ref$level2class!="(none)"]
-            ref <- scater_logNormCounts(ref, logAssayName = "logcounts")
+            ref <- scaterlogNormCounts(ref, assayName = "logcounts")
             labelColName <- "level2class"
             warning("ZeiselBrainData does not support levels. ",
                     "Using its default labeling.")

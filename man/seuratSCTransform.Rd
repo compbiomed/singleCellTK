@@ -5,7 +5,12 @@
 \title{seuratSCTransform
 Runs the \link[Seurat]{SCTransform} function to transform/normalize the input data}
 \usage{
-seuratSCTransform(inSCE, normAssayName = "SCTCounts", useAssay = "counts")
+seuratSCTransform(
+  inSCE,
+  normAssayName = "SCTCounts",
+  useAssay = "counts",
+  verbose = TRUE
+)
 }
 \arguments{
 \item{inSCE}{Input SingleCellExperiment object}
@@ -13,6 +18,9 @@ seuratSCTransform(inSCE, normAssayName = "SCTCounts", useAssay = "counts")
 \item{normAssayName}{Name for the output data assay. Default \code{"SCTCounts"}.}
 
 \item{useAssay}{Name for the input data assay. Default \code{"counts"}.}
+
+\item{verbose}{Logical value indicating if informative messages should 
+be displayed. Default is \code{TRUE}.}
 }
 \value{
 Updated SingleCellExperiment object containing the transformed data

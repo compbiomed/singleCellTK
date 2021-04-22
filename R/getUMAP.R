@@ -92,7 +92,7 @@ getUMAP <- function(inSCE, useAssay = "counts", useAltExp = NULL,
     sceSampleInd <- sample == samples[i]
     sceSample <- sce[, sceSampleInd]
     if(logNorm){
-      sceSample <- scater_logNormCounts(sceSample, useAssay = useAssay)
+      sceSample <- scaterlogNormCounts(sceSample, useAssay = useAssay)
       useAssayTemp = "ScaterLogNormCounts"
     }
 

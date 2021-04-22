@@ -29,7 +29,7 @@ summarizeSCE <- function(inSCE, useAssay = NULL, sampleVariableName = NULL){
       stop("'", sampleVariableName, "' was not found in the 'colData' of ",
            "'inSCE'.")
     }
-    sampleVariable <- colData(inSCE)[,sampleVariableName]
+    sampleVariable <- as.vector(colData(inSCE)[,sampleVariableName])
   }
 
   numCells <- table(sampleVariable)
@@ -193,32 +193,46 @@ discreteColorPalette <- function(n, palette = c("random", "ggplot", "celda"),
   return(x)
 }
 
-#' Resolve duplicated feature names in a matrix
-#'
-#' Adds '-1', '-2', ... '-i' to multiple duplicated feature names
-#' @param countmat matrix, with row names as feature names that need to be
-#' resolved.
-#' @return The same matrix as input with rowname duplication resolved.
-featureNameDedup <- function(countmat){
-    if(!inherits(rownames(countmat), "character")){
-        stop("No character feature name found.")
+#' Deduplicate the rownames of a matrix or SingleCellExperiment object
+#' Adds '-1', '-2', ... '-i' to multiple duplicated rownames, and in place
+#' replace the unique rownames, store unique rownames in \code{rowData}, or
+#' return the unique rownames as character vecetor.
+#' @param x A matrix like or /linkS4class{SingleCellExperiment} object, on which
+#' we can apply \code{rownames()} to and has duplicated rownames.
+#' @param as.rowData Only applicable when \code{x} is a
+#' /linkS4class{SingleCellExperiment} object. When set to \code{TRUE}, will
+#' insert a new column called \code{"rownames.uniq"} to \code{rowData(x)}, with
+#' the deduplicated rownames.
+#' @param return.list When set to \code{TRUE}, will return a character vector
+#' with deduplicated rownames.
+#' @return By default, a matrix or /linkS4class{SingleCellExperiment} object
+#' with rownames deduplicated.
+#' When \code{x} is a /linkS4class{SingleCellExperiment} and \code{as.rowData}
+#' is set to \code{TRUE}, will return \code{x} with \code{rowData} updated.
+#' When \code{return.list} is set to \code{TRUE}, will return a character vector
+#' with the deduplicated rownames.
+dedupRowNames <- function(x, as.rowData = FALSE, return.list = FALSE){
+  if(!inherits(rownames(x), "character")){
+    stop("No character rownames found.")
+  }
+  dup.names <- unique(rownames(x)[duplicated(rownames(x))])
+  dedup.names <- rownames(x)
+  for (feature in dup.names) {
+    idx <- which(rownames(x) == feature)
+    dedup.names[idx] <- paste(feature, seq_along(idx), sep = "-")
+  }
+  if(isTRUE(return.list)){
+    return(dedup.names)
+  } else {
+    if (inherits(x, "SummarizedExperiment") &&
+        isTRUE(as.rowData)) {
+      SummarizedExperiment::rowData(x)[["rownames.uniq"]] <- dedup.names
+    } else {
+      rownames(x) <- dedup.names
     }
-    gene.table <- table(rownames(countmat))
-    gene.duplicates <- gene.table[gene.table > 1]
-    gene.duplicates.names <- names(gene.duplicates)
-    empty <- character(0)
-    if (!identical(empty, gene.duplicates.names)){
-        for (genename in gene.duplicates.names){
-            genename <- gsub(" (1 of many)", "", genename, fixed=TRUE)
-            indices <- which(grepl(genename, rownames(countmat)))
-            for (i in seq_along(indices)){
-                rownames(countmat)[indices[i]] <- paste0(genename, "-", i)
-            }
-        }
-    }
-    return(countmat)
+    return(x)
+  }
 }
-
 
 #' Retrieve cell/feature index by giving identifiers saved in col/rowData
 #'
