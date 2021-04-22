@@ -929,19 +929,272 @@ shinyServer(function(input, output, session) {
       showNotification(HTML("Computation from Seurat Report detected in the input object, therefore the toolkit will now populate the Seurat tab with computated data & plots for further inspection. Click on the button below to directly go the the Seurat tab of the toolkit now! <br><br>"), 
                        type = "message", duration = 0, action = actionBttn(
         inputId = "goToSeurat",
-        label = "Go to Seurat", 
+        label = "Go to Seurat Curated Workflow", 
         style = "bordered",
         color = "royal",
         size = "s",
         icon = icon("arrow-right")
       ), id = "goSeuratNotification")
-      if(!is.null(metadata(inSCE)$seurat$plots$hvg)){
+      
+      #Normalize - todo
+      shinyjs::enable(selector = "div[value='Normalize Data']")
+      updateCollapse(session = session, "SeuratUI", style = list("Normalize Data" = "success"))
+      
+      #Scale - todo
+      shinyjs::enable(selector = "div[value='Scale Data']")
+      updateCollapse(session = session, "SeuratUI", style = list("Scale Data" = "success"))
+      
+      #HVG - plot done, but need to add labels and settings
         output$plot_hvg <- renderPlotly({
-          plotly::ggplotly(metadata(inSCE)$seurat$plots$hvg)
+          plotly::ggplotly(seuratPlotHVG(vals$counts))
         })
         shinyjs::enable(selector = "div[value='Highly Variable Genes']")
         updateCollapse(session = session, "SeuratUI", style = list("Highly Variable Genes" = "success"))
-      }
+      
+      #DR
+      shinyjs::enable(selector = "div[value='Dimensionality Reduction']")
+      updateCollapse(session = session, "SeuratUI", style = list("Dimensionality Reduction" = "success"))
+      
+      removeTab(inputId = "seuratPCAPlotTabset", target = "PCA Plot")
+      removeTab(inputId = "seuratPCAPlotTabset", target = "Elbow Plot")
+      removeTab(inputId = "seuratPCAPlotTabset", target = "JackStraw Plot")
+      removeTab(inputId = "seuratPCAPlotTabset", target = "Heatmap Plot")
+      
+      shinyjs::show(selector = ".seurat_pca_plots")
+      
+      appendTab(inputId = "seuratPCAPlotTabset", tabPanel(title = "PCA Plot",
+                                                          panel(heading = "PCA Plot",
+                                                                plotlyOutput(outputId = "plot_pca")
+                                                          )
+      ), select = TRUE)
+      appendTab(inputId = "seuratPCAPlotTabset", tabPanel(title = "Elbow Plot",
+                                                          panel(heading = "Elbow Plot",
+                                                                plotlyOutput(outputId = "plot_elbow_pca")
+                                                          )
+      ))
+      appendTab(inputId = "seuratPCAPlotTabset", tabPanel(title = "JackStraw Plot",
+                                                          panel(heading = "JackStraw Plot",
+                                                                plotlyOutput(outputId = "plot_jackstraw_pca")
+                                                          )
+      ))
+      appendTab(inputId = "seuratPCAPlotTabset", tabPanel(title = "Heatmap Plot",
+                                                          panel(heading = "Heatmap Plot",
+                                                                panel(heading = "Plot Options",
+                                                                      fluidRow(
+                                                                        column(6,
+                                                                               pickerInput(inputId = "picker_dimheatmap_components_pca", label = "Select principal components to plot:", choices = c(), options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3"), multiple = TRUE)
+                                                                        ),
+                                                                        column(6,
+                                                                               sliderInput(inputId = "slider_dimheatmap_pca", label = "Number of columns for the plot: ", min = 1, max = 4, value = 2)
+                                                                        )
+                                                                      ),
+                                                                      actionButton(inputId = "plot_heatmap_pca_button", "Plot")
+                                                                ),
+                                                                panel(heading = "Plot",
+                                                                      jqui_resizable(plotOutput(outputId = "plot_heatmap_pca"), options = list(maxWidth = 700))
+                                                                )
+                                                          )
+      ))
+      
+      
+        # output$plot_pca <- renderPlotly({
+        #   plotly::ggplotly(metadata(inSCE)$seurat$plots$pca)
+        # })
+      
+      output$plot_pca <- renderPlotly({
+        plotly::ggplotly(seuratReductionPlot(inSCE = vals$counts, useReduction = "pca"))
+      })
+
+
+          updateNumericInput(session = session, inputId = "pca_significant_pc_counter", value = singleCellTK:::.computeSignificantPC(vals$counts))
+          # output$plot_elbow_pca <- renderPlotly({
+          #   metadata(inSCE)$seurat$plots$elbow
+          # })
+          
+          #update parameters from seurat report
+          output$plot_elbow_pca <- renderPlotly({
+            plotly::ggplotly(seuratElbowPlot(inSCE = vals$counts))
+          })
+          
+          output$pca_significant_pc_output <- renderText({
+            paste("<p>Number of significant components suggested by ElbowPlot: <span style='color:red'>", singleCellTK:::.computeSignificantPC(vals$counts)," </span> </p> <hr>")
+          })
+
+          # output$plot_jackstraw_pca <- renderPlotly({
+          #   plotly::ggplotly(metadata(inSCE)$seurat$plots$jackstraw)
+          # })
+          
+          output$plot_jackstraw_pca <- renderPlotly({
+            plotly::ggplotly(seuratJackStrawPlot(vals$counts))
+          })
+
+
+          # output$plot_heatmap_pca <- renderPlot({
+          #   metadata(inSCE)$seurat$plots$heatmap
+          # })
+          
+          #find solution for this
+          output$plot_heatmap_pca <- renderPlot({
+            metadata(inSCE)$seurat$plots$heatmap
+          })
+
+          updatePickerInput(session = session, inputId = "picker_dimheatmap_components_pca", choices = singleCellTK:::.getComponentNames(vals$counts@metadata$seurat$count_pc, "PC"))
+
+
+
+      #tSNE/UMAP
+          shinyjs::enable(selector = "div[value='tSNE/UMAP']")
+          updateCollapse(session = session, "SeuratUI", style = list("tSNE/UMAP" = "success"))
+          
+          # output$plot_tsne <- renderPlotly({
+          #   metadata(inSCE)$seurat$plots$tsne
+          # })
+          # 
+          # output$plot_umap <- renderPlotly({
+          #   metadata(inSCE)$seurat$plots$umap
+          # })
+          
+          output$plot_tsne <- renderPlotly({
+            plotly::ggplotly(seuratReductionPlot(vals$counts, useReduction = "tsne"))
+          })
+          
+          output$plot_umap <- renderPlotly({
+            plotly::ggplotly(seuratReductionPlot(vals$counts, useReduction = "umap"))
+          })
+          
+      
+      #Clustering
+          shinyjs::enable(selector = "div[value='Clustering']")
+          updateCollapse(session = session, "SeuratUI", style = list("Clustering" = "success"))
+          
+          removeTab(inputId = "seuratClusteringPlotTabset", target = "PCA Plot")
+          removeTab(inputId = "seuratClusteringPlotTabset", target = "ICA Plot")
+          removeTab(inputId = "seuratClusteringPlotTabset", target = "tSNE Plot")
+          removeTab(inputId = "seuratClusteringPlotTabset", target = "UMAP Plot")
+          
+          appendTab(inputId = "seuratClusteringPlotTabset", tabPanel(title = "PCA Plot",
+                                                                     panel(heading = "PCA Plot",
+                                                                           plotlyOutput(outputId = "plot_pca_clustering")
+                                                                     )
+          ), select = TRUE
+          
+          )
+          
+          output$plot_pca_clustering <- renderPlotly({
+            plotly::ggplotly(seuratReductionPlot(vals$counts, useReduction = "pca", showLegend = TRUE))
+          })
+          
+          appendTab(inputId = "seuratClusteringPlotTabset", tabPanel(title = "tSNE Plot",
+                                                                     panel(heading = "tSNE Plot",
+                                                                           plotlyOutput(outputId = "plot_tsne_clustering")
+                                                                     )
+          )
+          )
+          
+          output$plot_tsne_clustering <- renderPlotly({
+            plotly::ggplotly(seuratReductionPlot(vals$counts, useReduction = "tsne", showLegend = TRUE))
+          })
+          
+          appendTab(inputId = "seuratClusteringPlotTabset", tabPanel(title = "UMAP Plot",
+                                                                     panel(heading = "UMAP Plot",
+                                                                           plotlyOutput(outputId = "plot_umap_clustering")
+                                                                     )
+          )
+          )
+          
+          output$plot_umap_clustering <- renderPlotly({
+            plotly::ggplotly(seuratReductionPlot(vals$counts, useReduction = "umap", showLegend = TRUE))
+          })
+          
+          shinyjs::show(selector = ".seurat_clustering_plots")
+          
+          
+      
+      #Find Markers
+          shinyjs::enable(selector = "div[value='Find Markers']")
+          updateCollapse(session = session, "SeuratUI", style = list("Find Markers" = "success"))
+          
+          shinyjs::show(selector = ".seurat_findmarker_table")
+          shinyjs::show(selector = ".seurat_findmarker_jointHeatmap")
+          shinyjs::show(selector = ".seurat_findmarker_plots")
+          
+          removeTab(inputId = "seuratFindMarkerPlotTabset", target = "Ridge Plot")
+          removeTab(inputId = "seuratFindMarkerPlotTabset", target = "Violin Plot")
+          removeTab(inputId = "seuratFindMarkerPlotTabset", target = "Feature Plot")
+          removeTab(inputId = "seuratFindMarkerPlotTabset", target = "Dot Plot")
+          removeTab(inputId = "seuratFindMarkerPlotTabset", target = "Heatmap Plot")
+          
+          appendTab(inputId = "seuratFindMarkerPlotTabset", tabPanel(title = "Ridge Plot",
+                                                                     panel(heading = "Ridge Plot",
+                                                                           jqui_resizable(
+                                                                             plotOutput(outputId = "findMarkerRidgePlot")
+                                                                           )
+                                                                     )
+          )
+          )
+          appendTab(inputId = "seuratFindMarkerPlotTabset", tabPanel(title = "Violin Plot",
+                                                                     panel(heading = "Violin Plot",
+                                                                           jqui_resizable(
+                                                                             plotOutput(outputId = "findMarkerViolinPlot")
+                                                                           )
+                                                                     )
+          )
+          )
+          appendTab(inputId = "seuratFindMarkerPlotTabset", tabPanel(title = "Feature Plot",
+                                                                     panel(heading = "Feature Plot",
+                                                                           jqui_resizable(
+                                                                             plotOutput(outputId = "findMarkerFeaturePlot")
+                                                                           )
+                                                                     )
+          )
+          )
+          appendTab(inputId = "seuratFindMarkerPlotTabset", tabPanel(title = "Dot Plot",
+                                                                     panel(heading = "Dot Plot",
+                                                                           jqui_resizable(
+                                                                             plotOutput(outputId = "findMarkerDotPlot")
+                                                                           )
+                                                                     )
+          )
+          )
+          appendTab(inputId = "seuratFindMarkerPlotTabset", tabPanel(title = "Heatmap Plot",
+                                                                     panel(heading = "Heatmap Plot",
+                                                                           fluidRow(
+                                                                             column(12, align = "center",
+                                                                                    panel(
+                                                                                      plotOutput(outputId = "findMarkerHeatmapPlot")
+                                                                                    )
+                                                                             )
+                                                                           )
+                                                                     )
+          )
+          
+          )
+          
+          showTab(inputId = "seuratFindMarkerPlotTabset", target = "Joint Heatmap Plot")
+          updateTabsetPanel(session = session, inputId = "seuratFindMarkerPlotTabset", selected = "Ridge Plot")
+          shinyjs::show(selector = ".seurat_findmarker_plots")
+          
+          #table
+          # output$findMarkerHeatmapPlotFull <- renderPlot({
+          #   metadata(vals$counts)$seurat$plots$heatmap_complete
+          # })
+          
+          output$findMarkerHeatmapPlotFullTopText <- renderUI({
+            h6(paste("Heatmap plotted across all groups against genes with adjusted p-values <", input$seuratFindMarkerPValAdjInput))
+          })
+          
+          updateSelectInput(session, "seuratFindMarkerSelectPhenotype", choices = colnames(colData(vals$counts)), selected = metadata(vals$counts)$seurat$plots$group)
+          
+          
+          vals$fts <- callModule(
+            module = filterTableServer,
+            id = "filterSeuratFindMarker",
+            dataframe = metadata(vals$counts)$seurat$plots$top9
+          )
+      
+      #Downstream Analysis
+          shinyjs::show(selector = "div[value='Downstream Analysis']")
+          updateCollapse(session = session, "SeuratUI", style = list("Downstream Analysis" = "info"))
     }
   }
   
@@ -6824,9 +7077,10 @@ shinyServer(function(input, output, session) {
      updateTabsetPanel(session = session, inputId = "seuratFindMarkerPlotTabset", selected = "Ridge Plot")
      shinyjs::show(selector = ".seurat_findmarker_plots")
 
-    #table
+    #output the heatmap
+     top10markers <- df %>% group_by(cluster) %>% top_n(n = 10, wt = avg_logFC)
      output$findMarkerHeatmapPlotFull <- renderPlot({
-       DoHeatmap(seuratObject, features = df$gene.id)
+       DoHeatmap(seuratObject, features = top10markers$gene.id)
      })
 
      output$findMarkerHeatmapPlotFullTopText <- renderUI({
@@ -6967,19 +7221,19 @@ shinyServer(function(input, output, session) {
     })
   })
 
-  observe({
-    req(vals$fts$data)
-    df <- vals$fts$data
-    output$findMarkerHeatmapPlotFull <- renderPlot({
-      seuratGenePlot(
-        inSCE = vals$counts,
-        scaledAssayName = "seuratScaledData",
-        plotType = "heatmap",
-        features = df$gene_id,
-        groupVariable = input$seuratFindMarkerSelectPhenotype
-      )
-    })
-  })
+  # observe({
+  #   req(vals$fts$data)
+  #   df <- vals$fts$data
+  #   output$findMarkerHeatmapPlotFull <- renderPlot({
+  #     seuratGenePlot(
+  #       inSCE = vals$counts,
+  #       scaledAssayName = "seuratScaledData",
+  #       plotType = "heatmap",
+  #       features = df$gene_id,
+  #       groupVariable = input$seuratFindMarkerSelectPhenotype
+  #     )
+  #   })
+  # })
 
 
   #Update PCA/ICA message in clustering tab
