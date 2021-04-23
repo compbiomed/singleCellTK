@@ -936,39 +936,39 @@ shinyServer(function(input, output, session) {
       showNotification(HTML("Computation from Seurat Report detected in the input object, therefore the toolkit will now populate the Seurat tab with computated data & plots for further inspection. Click on the button below to directly go the the Seurat tab of the toolkit now! <br><br>"),
                        type = "message", duration = 0, action = actionBttn(
         inputId = "goToSeurat",
-        label = "Go to Seurat Curated Workflow", 
+        label = "Go to Seurat Curated Workflow",
         style = "bordered",
         color = "royal",
         size = "s",
         icon = icon("arrow-right")
       ), id = "goSeuratNotification")
-      
+
       #Normalize - todo
       shinyjs::enable(selector = "div[value='Normalize Data']")
       updateCollapse(session = session, "SeuratUI", style = list("Normalize Data" = "success"))
-      
+
       #Scale - todo
       shinyjs::enable(selector = "div[value='Scale Data']")
       updateCollapse(session = session, "SeuratUI", style = list("Scale Data" = "success"))
-      
+
       #HVG - plot done, but need to add labels and settings
         output$plot_hvg <- renderPlotly({
           plotly::ggplotly(seuratPlotHVG(vals$counts))
         })
         shinyjs::enable(selector = "div[value='Highly Variable Genes']")
         updateCollapse(session = session, "SeuratUI", style = list("Highly Variable Genes" = "success"))
-      
+
       #DR
       shinyjs::enable(selector = "div[value='Dimensionality Reduction']")
       updateCollapse(session = session, "SeuratUI", style = list("Dimensionality Reduction" = "success"))
-      
+
       removeTab(inputId = "seuratPCAPlotTabset", target = "PCA Plot")
       removeTab(inputId = "seuratPCAPlotTabset", target = "Elbow Plot")
       removeTab(inputId = "seuratPCAPlotTabset", target = "JackStraw Plot")
       removeTab(inputId = "seuratPCAPlotTabset", target = "Heatmap Plot")
-      
+
       shinyjs::show(selector = ".seurat_pca_plots")
-      
+
       appendTab(inputId = "seuratPCAPlotTabset", tabPanel(title = "PCA Plot",
                                                           panel(heading = "PCA Plot",
                                                                 plotlyOutput(outputId = "plot_pca")
@@ -1002,12 +1002,12 @@ shinyServer(function(input, output, session) {
                                                                 )
                                                           )
       ))
-      
-      
+
+
         # output$plot_pca <- renderPlotly({
         #   plotly::ggplotly(metadata(inSCE)$seurat$plots$pca)
         # })
-      
+
       output$plot_pca <- renderPlotly({
         plotly::ggplotly(seuratReductionPlot(inSCE = vals$counts, useReduction = "pca"))
       })
@@ -1017,12 +1017,12 @@ shinyServer(function(input, output, session) {
           # output$plot_elbow_pca <- renderPlotly({
           #   metadata(inSCE)$seurat$plots$elbow
           # })
-          
+
           #update parameters from seurat report
           output$plot_elbow_pca <- renderPlotly({
             plotly::ggplotly(seuratElbowPlot(inSCE = vals$counts))
           })
-          
+
           output$pca_significant_pc_output <- renderText({
             paste("<p>Number of significant components suggested by ElbowPlot: <span style='color:red'>", singleCellTK:::.computeSignificantPC(vals$counts)," </span> </p> <hr>")
           })
@@ -1030,7 +1030,7 @@ shinyServer(function(input, output, session) {
           # output$plot_jackstraw_pca <- renderPlotly({
           #   plotly::ggplotly(metadata(inSCE)$seurat$plots$jackstraw)
           # })
-          
+
           output$plot_jackstraw_pca <- renderPlotly({
             plotly::ggplotly(seuratJackStrawPlot(vals$counts))
           })
@@ -1039,7 +1039,7 @@ shinyServer(function(input, output, session) {
           # output$plot_heatmap_pca <- renderPlot({
           #   metadata(inSCE)$seurat$plots$heatmap
           # })
-          
+
           #find solution for this
           output$plot_heatmap_pca <- renderPlot({
             metadata(inSCE)$seurat$plots$heatmap
@@ -1052,85 +1052,85 @@ shinyServer(function(input, output, session) {
       #tSNE/UMAP
           shinyjs::enable(selector = "div[value='tSNE/UMAP']")
           updateCollapse(session = session, "SeuratUI", style = list("tSNE/UMAP" = "success"))
-          
+
           # output$plot_tsne <- renderPlotly({
           #   metadata(inSCE)$seurat$plots$tsne
           # })
-          # 
+          #
           # output$plot_umap <- renderPlotly({
           #   metadata(inSCE)$seurat$plots$umap
           # })
-          
+
           output$plot_tsne <- renderPlotly({
             plotly::ggplotly(seuratReductionPlot(vals$counts, useReduction = "tsne"))
           })
-          
+
           output$plot_umap <- renderPlotly({
             plotly::ggplotly(seuratReductionPlot(vals$counts, useReduction = "umap"))
           })
-          
-      
+
+
       #Clustering
           shinyjs::enable(selector = "div[value='Clustering']")
           updateCollapse(session = session, "SeuratUI", style = list("Clustering" = "success"))
-          
+
           removeTab(inputId = "seuratClusteringPlotTabset", target = "PCA Plot")
           removeTab(inputId = "seuratClusteringPlotTabset", target = "ICA Plot")
           removeTab(inputId = "seuratClusteringPlotTabset", target = "tSNE Plot")
           removeTab(inputId = "seuratClusteringPlotTabset", target = "UMAP Plot")
-          
+
           appendTab(inputId = "seuratClusteringPlotTabset", tabPanel(title = "PCA Plot",
                                                                      panel(heading = "PCA Plot",
                                                                            plotlyOutput(outputId = "plot_pca_clustering")
                                                                      )
           ), select = TRUE
-          
+
           )
-          
+
           output$plot_pca_clustering <- renderPlotly({
             plotly::ggplotly(seuratReductionPlot(vals$counts, useReduction = "pca", showLegend = TRUE))
           })
-          
+
           appendTab(inputId = "seuratClusteringPlotTabset", tabPanel(title = "tSNE Plot",
                                                                      panel(heading = "tSNE Plot",
                                                                            plotlyOutput(outputId = "plot_tsne_clustering")
                                                                      )
           )
           )
-          
+
           output$plot_tsne_clustering <- renderPlotly({
             plotly::ggplotly(seuratReductionPlot(vals$counts, useReduction = "tsne", showLegend = TRUE))
           })
-          
+
           appendTab(inputId = "seuratClusteringPlotTabset", tabPanel(title = "UMAP Plot",
                                                                      panel(heading = "UMAP Plot",
                                                                            plotlyOutput(outputId = "plot_umap_clustering")
                                                                      )
           )
           )
-          
+
           output$plot_umap_clustering <- renderPlotly({
             plotly::ggplotly(seuratReductionPlot(vals$counts, useReduction = "umap", showLegend = TRUE))
           })
-          
+
           shinyjs::show(selector = ".seurat_clustering_plots")
-          
-          
-      
+
+
+
       #Find Markers
           shinyjs::enable(selector = "div[value='Find Markers']")
           updateCollapse(session = session, "SeuratUI", style = list("Find Markers" = "success"))
-          
+
           shinyjs::show(selector = ".seurat_findmarker_table")
           shinyjs::show(selector = ".seurat_findmarker_jointHeatmap")
           shinyjs::show(selector = ".seurat_findmarker_plots")
-          
+
           removeTab(inputId = "seuratFindMarkerPlotTabset", target = "Ridge Plot")
           removeTab(inputId = "seuratFindMarkerPlotTabset", target = "Violin Plot")
           removeTab(inputId = "seuratFindMarkerPlotTabset", target = "Feature Plot")
           removeTab(inputId = "seuratFindMarkerPlotTabset", target = "Dot Plot")
           removeTab(inputId = "seuratFindMarkerPlotTabset", target = "Heatmap Plot")
-          
+
           appendTab(inputId = "seuratFindMarkerPlotTabset", tabPanel(title = "Ridge Plot",
                                                                      panel(heading = "Ridge Plot",
                                                                            jqui_resizable(
@@ -1174,31 +1174,31 @@ shinyServer(function(input, output, session) {
                                                                            )
                                                                      )
           )
-          
+
           )
-          
+
           showTab(inputId = "seuratFindMarkerPlotTabset", target = "Joint Heatmap Plot")
           updateTabsetPanel(session = session, inputId = "seuratFindMarkerPlotTabset", selected = "Ridge Plot")
           shinyjs::show(selector = ".seurat_findmarker_plots")
-          
+
           #table
           # output$findMarkerHeatmapPlotFull <- renderPlot({
           #   metadata(vals$counts)$seurat$plots$heatmap_complete
           # })
-          
+
           output$findMarkerHeatmapPlotFullTopText <- renderUI({
             h6(paste("Heatmap plotted across all groups against genes with adjusted p-values <", input$seuratFindMarkerPValAdjInput))
           })
-          
+
           updateSelectInput(session, "seuratFindMarkerSelectPhenotype", choices = colnames(colData(vals$counts)), selected = metadata(vals$counts)$seurat$plots$group)
-          
-          
+
+
           vals$fts <- callModule(
             module = filterTableServer,
             id = "filterSeuratFindMarker",
             dataframe = metadata(vals$counts)$seurat$plots$top9
           )
-      
+
       #Downstream Analysis
           shinyjs::show(selector = "div[value='Downstream Analysis']")
           updateCollapse(session = session, "SeuratUI", style = list("Downstream Analysis" = "info"))
@@ -2152,8 +2152,8 @@ shinyServer(function(input, output, session) {
   observeEvent(input$customNormalizeAssayMethodSelect,{
     if(input$customNormalizeAssayMethodSelect == "LogNormalize"
        || input$customNormalizeAssayMethodSelect == "CLR"
-       || input$customNormalizeAssayMethodSelect == "SCT"
-       || input$customNormalizeAssayMethodSelect == "LNC"){
+       || input$customNormalizeAssayMethodSelect == "SCTransform"
+       || input$customNormalizeAssayMethodSelect == "logNormCounts"){
       updateAwesomeCheckbox(
         session = session,
         inputId = "customNormalizeOptionsTransform",
@@ -2167,7 +2167,7 @@ shinyServer(function(input, output, session) {
     tag <- ""
     if(input$normalizeAssayMethodSelect != "custom"){
       if(input$normalizeAssayMethodSelect
-         %in% c("LogNormalize", "SCT", "CLR", "LNC")){
+         %in% c("LogNormalize", "SCTransform", "CLR", "logNormCounts")){
         tag <- "transformed"
       }
       else{
@@ -2180,7 +2180,7 @@ shinyServer(function(input, output, session) {
     else{
       if(input$customNormalizeOptionsNormalize){
         if(input$customNormalizeAssayMethodSelect
-           %in% c("LogNormalize", "SCT", "CLR", "LNC")){
+           %in% c("LogNormalize", "SCTransform", "CLR", "logNormCounts")){
           tag <- "transformed"
         }
         else{
@@ -2325,9 +2325,9 @@ shinyServer(function(input, output, session) {
       updateTextInput(session = session, inputId = "normalizeAssayOutname", value = "SeuratRC")
     } else if(input$normalizeAssayMethodSelect == "CPM"){
       updateTextInput(session = session, inputId = "normalizeAssayOutname", value = "ScaterCPMCounts")
-    } else if(input$normalizeAssayMethodSelect == "LNC"){
+    } else if(input$normalizeAssayMethodSelect == "logNormCounts"){
       updateTextInput(session = session, inputId = "normalizeAssayOutname", value = "ScaterLogNormCounts")
-    } else if(input$normalizeAssayMethodSelect == "SCT"){
+    } else if(input$normalizeAssayMethodSelect == "SCTransform"){
       updateTextInput(session = session, inputId = "normalizeAssayOutname", value = "SeuratSCTransform")
     }
   })
@@ -3634,16 +3634,11 @@ shinyServer(function(input, output, session) {
     if(!is.null(vals$counts)) {
       if(!is.null(reducedDims(vals$counts))) {
         approach_list <- names(reducedDims(vals$counts))
-        if(input$viewertabs != "Scatter Plot"){
+        if (input$viewertabs != "Scatter Plot") {
           updateSelectInput(session, "QuickAccess",
                             choices = c("Custom"))
           shinyjs::delay(5,shinyjs::disable("QuickAccess"))
-        }else{
-          updateSelectInput(session, "QuickAccess",
-                            choices = c("", approach_list, "Custom"))
-          shinyjs::delay(5,shinyjs::enable("QuickAccess"))
-        }
-        if(input$viewertabs == "Violin/Box Plot" || input$viewertabs == "Bar Plot"){
+
           updateSelectInput(session, "TypeSelect_Xaxis",
                             choices = c("None", "Cell Annotation"))
           updateSelectInput(session, "TypeSelect_Yaxis",
@@ -3657,7 +3652,15 @@ shinyServer(function(input, output, session) {
           hide_TypeSelect("hide")
           shinyjs::delay(5,shinyjs::disable("TypeSelect_Colorby"))
           shinyjs::delay(5,shinyjs::disable("adjustgroupby"))
-        }else{
+
+          shinyjs::delay(5, shinyjs::disable("adjustlegendtitle"))
+          shinyjs::delay(5, shinyjs::disable("adjustlegendtitlesize"))
+          shinyjs::delay(5, shinyjs::disable("adjustlegendsize"))
+        } else {
+          updateSelectInput(session, "QuickAccess",
+                            choices = c("", approach_list, "Custom"))
+          shinyjs::delay(5,shinyjs::enable("QuickAccess"))
+
           updateSelectInput(session, "TypeSelect_Xaxis",
                             choices = c("Reduced Dimensions", "Expression Assays", "Cell Annotation"))
           updateSelectInput(session, "TypeSelect_Yaxis",
@@ -3671,7 +3674,40 @@ shinyServer(function(input, output, session) {
           hide_TypeSelect("hide")
           shinyjs::delay(5,shinyjs::enable("TypeSelect_Colorby"))
           shinyjs::delay(5,shinyjs::enable("adjustgroupby"))
+          shinyjs::delay(5, shinyjs::enable("adjustlegendtitle"))
+          if (!is.null(input$adjustgridlines) &
+              isFALSE(input$adjustgridlines)) {
+            shinyjs::delay(5, shinyjs::enable("adjustlegendtitlesize"))
+            shinyjs::delay(5, shinyjs::enable("adjustlegendsize"))
+          }
         }
+
+        if (input$viewertabs != "Bar Plot") {
+          shinyjs::delay(5, shinyjs::enable("adjustalpha"))
+          shinyjs::delay(5, shinyjs::enable("adjustsize"))
+        } else {
+          shinyjs::delay(5, shinyjs::disable("adjustalpha"))
+          shinyjs::delay(5, shinyjs::disable("adjustsize"))
+        }
+      }
+    }
+  })
+
+  observeEvent(input$adjustgridlines, {
+    req(vals$counts)
+    if (!is.null(input$adjustgridlines)) {
+      if (isTRUE(input$adjustgridlines)) {
+        shinyjs::delay(5, shinyjs::disable("adjustlegendtitlesize"))
+        shinyjs::delay(5, shinyjs::disable("adjustlegendsize"))
+        shinyjs::delay(5, shinyjs::disable("adjustaxissize"))
+        shinyjs::delay(5, shinyjs::disable("adjustaxislabelsize"))
+      } else {
+        if (input$viewertabs == "Scatter Plot") {
+          shinyjs::delay(5, shinyjs::enable("adjustlegendtitlesize"))
+          shinyjs::delay(5, shinyjs::enable("adjustlegendsize"))
+        }
+        shinyjs::delay(5, shinyjs::enable("adjustaxissize"))
+        shinyjs::delay(5, shinyjs::enable("adjustaxislabelsize"))
       }
     }
   })
@@ -3837,43 +3873,59 @@ shinyServer(function(input, output, session) {
     }
     #-+-+-+-+-+-cellviewer prepare3 : prepare Axis Label Name#####################
     ###Xaxis label name
-    if(input$QuickAccess != "Custom" & input$QuickAccess != "" & input$adjustxlab == ""){
-      xname <- paste0(input$QuickAccess, 1)
-    }else if(input$QuickAccess != "Custom" & input$QuickAccess != ""& input$adjustxlab != ""){
+    if (!is.null(input$adjustxlab) &
+        input$adjustxlab != "") {
       xname <- input$adjustxlab
-    }else if(input$TypeSelect_Xaxis == 'Reduced Dimensions'){
-      xname <- paste0(input$ApproachSelect_Xaxis,"_",substr(input$ColumnSelect_Xaxis,
-                                                            str_length(input$ColumnSelect_Xaxis),str_length(input$ColumnSelect_Xaxis)))
-    }else if(input$TypeSelect_Xaxis == 'Expression Assays'){
-      xname <- input$GeneSelect_Assays_Xaxis
-    }else{
-      xname <- input$AnnotationSelect_Xaxis
+    } else {
+      if (input$QuickAccess != "Custom" &
+          input$QuickAccess != "") {
+        # reddim selected
+        xname <- paste0(input$QuickAccess, 1)
+      } else if (input$TypeSelect_Xaxis == 'Reduced Dimensions') {
+        xname <- paste0(input$ApproachSelect_Xaxis, "_",
+                        substr(input$ColumnSelect_Xaxis,
+                               str_length(input$ColumnSelect_Xaxis),
+                               str_length(input$ColumnSelect_Xaxis)))
+      } else if (input$TypeSelect_Xaxis == 'Expression Assays') {
+        xname <- input$GeneSelect_Assays_Xaxis
+      } else if (input$TypeSelect_Xaxis == "Cell Annotation") {
+        xname <- input$AnnotationSelect_Xaxis
+      } else {
+        xname <- ""
+      }
     }
     xname <- gsub("-", "_", xname)
     ###Yaxis label name
-    if(input$QuickAccess != "Custom" & input$QuickAccess != "" & input$adjustylab == ""){
-      yname <- paste0(input$QuickAccess, 2)
-    }else if(input$QuickAccess != "Custom" & input$QuickAccess != "" & input$adjustylab != ""){
+    if (!is.null(input$adjustylab) &
+        input$adjustylab != "") {
       yname <- input$adjustylab
-    }else if(input$TypeSelect_Yaxis == 'Reduced Dimensions'){
-      yname <- paste0(input$ApproachSelect_Yaxis,"_",substr(input$ColumnSelect_Yaxis,
-                                                            str_length(input$ColumnSelect_Yaxis),str_length(input$ColumnSelect_Yaxis)))
-    }else if(input$TypeSelect_Yaxis == 'Expression Assays'){
-      yname <- input$GeneSelect_Assays_Yaxis
-    }else{
-      yname <- input$AnnotationSelect_Yaxis
+    } else {
+      if (input$QuickAccess != "Custom" &
+          input$QuickAccess != "") {
+        # reddim selected
+        yname <- paste0(input$QuickAccess, 2)
+      } else if (input$TypeSelect_Yaxis == 'Reduced Dimensions') {
+        yname <- paste0(input$ApproachSelect_Yaxis, "_",
+                        substr(input$ColumnSelect_Yaxis,
+                               str_length(input$ColumnSelect_Yaxis),
+                               str_length(input$ColumnSelect_Yaxis)))
+      } else if (input$TypeSelect_Yaxis == 'Expression Assays') {
+        yname <- input$GeneSelect_Assays_Yaxis
+      } else {
+        yname <- input$AnnotationSelect_Yaxis
+      }
     }
     yname <- gsub("-", "_", yname)
     ###Legend name
-    if(input$TypeSelect_Colorby != 'Pick a Color'){
-      if(input$TypeSelect_Colorby == 'Reduced Dimensions' && input$adjustlegendtitle == ""){
+    if (input$TypeSelect_Colorby != 'Pick a Color') {
+      if (input$TypeSelect_Colorby == 'Reduced Dimensions' && input$adjustlegendtitle == "") {
         legendname <- paste0(input$ApproachSelect_Colorby,"_",substr(input$ColumnSelect_Colorby,
                                                                      str_length(input$ColumnSelect_Colorby),str_length(input$ColumnSelect_Colorby)))
-      }else if(input$TypeSelect_Colorby == 'Expression Assays' && input$adjustlegendtitle == ""){
+      } else if (input$TypeSelect_Colorby == 'Expression Assays' && input$adjustlegendtitle == "") {
         legendname <- input$GeneSelect_Assays_Colorby
-      }else if(input$adjustlegendtitle == ""){
+      } else if (input$adjustlegendtitle == "") {
         legendname <- input$AnnotationSelect_Colorby
-      }else{
+      } else {
         legendname <- input$adjustlegendtitle
       }
     }
@@ -3911,7 +3963,7 @@ shinyServer(function(input, output, session) {
     }
 
     if(input$viewertabs == "Scatter Plot"){
-      #### Prepare Custom plotting matrix acis ####
+      #### Prepare Custom plotting matrix axis ####
       if (input$QuickAccess == "Custom") {
         # X Axis
         message("CellViewer: Custom plotting mode, making up the axis")
@@ -3982,35 +4034,35 @@ shinyServer(function(input, output, session) {
       }
     }else if(input$viewertabs == "Bar Plot"){
       if(input$TypeSelect_Yaxis == "Expression Assays"){
-        a <- plotSCEBarAssayData(vals$counts, title = input$adjusttitle,
+        a <- plotSCEBarAssayData(vals$counts, title = input$adjusttitle, xlab = xname, ylab = yname,
                                  useAssay = input$AdvancedMethodSelect_Yaxis, groupBy = pltVars$groupby,
-                                 feature = input$GeneSelect_Assays_Yaxis, transparency = input$adjustalpha,
-                                 dotSize = input$adjustsize, combinePlot = "none", axisSize = input$adjustaxissize,
+                                 feature = input$GeneSelect_Assays_Yaxis,
+                                 combinePlot = "none", axisSize = input$adjustaxissize,
                                  axisLabelSize = input$adjustaxislabelsize, defaultTheme = as.logical(pltVars$defTheme))
       }else if(input$TypeSelect_Yaxis == "Cell Annotation"){
-        a <- plotSCEBarColData(vals$counts, title = input$adjusttitle,
+        a <- plotSCEBarColData(vals$counts, title = input$adjusttitle, xlab = xname, ylab = yname,
                                coldata = input$AnnotationSelect_Yaxis, groupBy = pltVars$groupby,
-                               transparency = input$adjustalpha, dotSize = input$adjustsize, combinePlot = "none",
+                               combinePlot = "none",
                                axisSize = input$adjustaxissize, axisLabelSize = input$adjustaxislabelsize,
                                defaultTheme = as.logical(pltVars$defTheme))
       }
     }else if(input$viewertabs == "Violin/Box Plot"){
-      if(input$vlnboxcheck == TRUE){
+      if(isTRUE(input$vlnboxcheck)){
         vln <- TRUE
         bx <- FALSE
-      }else if(input$vlnboxcheck == FALSE){
+      }else if(isFALSE(input$vlnboxcheck)){
         vln <- FALSE
         bx <- TRUE
       }
       if(input$TypeSelect_Yaxis == "Expression Assays"){
-        a <- plotSCEViolinAssayData(vals$counts, violin = vln, box = bx,
+        a <- plotSCEViolinAssayData(vals$counts, violin = vln, box = bx, xlab = xname, ylab = yname,
                                     useAssay = input$AdvancedMethodSelect_Yaxis, title = input$adjusttitle,
                                     feature = input$GeneSelect_Assays_Yaxis, groupBy = pltVars$groupby,
                                     transparency = input$adjustalpha, dotSize = input$adjustsize, combinePlot = "none",
                                     axisSize = input$adjustaxissize, axisLabelSize = input$adjustaxislabelsize,
                                     defaultTheme = as.logical(pltVars$defTheme))
       }else if(input$TypeSelect_Yaxis == "Cell Annotation"){
-        a <- plotSCEViolinColData(vals$counts, title = input$adjusttitle,
+        a <- plotSCEViolinColData(vals$counts, title = input$adjusttitle, xlab = xname, ylab = yname,
                                   coldata = input$AnnotationSelect_Yaxis, violin = vln, box = bx,
                                   groupBy = pltVars$groupby, transparency = input$adjustalpha,
                                   dotSize = input$adjustsize, combinePlot = "none", axisSize = input$adjustaxissize,
@@ -4020,20 +4072,14 @@ shinyServer(function(input, output, session) {
     if (input$TypeSelect_Colorby == "Single Color"){
       a$layers[[1]]$aes_params$colour <- input$Col
     }
-    if (input$adjustgridlines == TRUE){
+    if (isTRUE(input$adjustgridlines)){
       a <- a + ggplot2::theme_bw()
     }
     a <- plotly::ggplotly(a)
     output$scatter <- renderPlotly({
       plotly::subplot(plotlist = a, titleX = TRUE, titleY = TRUE)
     })
-    #plotly::subplot(plotlist = a, titleX = TRUE, titleY = TRUE)
   })
-  #output$scatter <- renderPlotly({cellviewer()})
-  #
-  #
-  #-+-+-+-+-+-cellviewer prepare done: plot#####################
-  ###plotly_after_reactive
 
   #-----------------------------------------------------------------------------
   # Page 3.4: Heatmap ####

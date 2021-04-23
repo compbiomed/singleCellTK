@@ -321,7 +321,8 @@ shinyPanelCellViewer <- fluidPage(tags$div(
           h5(strong("Opacity:")),
           min = 0,
           max = 1,
-          value = 1
+          value = 1,
+          step = 0.1
         )),
         column(3, numericInput(
           "adjustsize",
@@ -332,7 +333,7 @@ shinyPanelCellViewer <- fluidPage(tags$div(
         )),
         column(3, checkboxInput(
           "adjustgridlines",
-          h5(strong("Add gridlines")),
+          h5(strong("Use default theme")),
           value = FALSE,
         ))
       )
