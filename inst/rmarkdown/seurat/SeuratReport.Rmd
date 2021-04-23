@@ -202,10 +202,22 @@ PC.separated.height <- 3.5 * ceiling(initial.PC.numbers/3)
 The heatmap allows for easy exploration of the primary sources of heterogeneity. Both cells and features are ordered according to their PCA scores. This supervised analysis is still a valuable tool for exploring correlated feature sets.
 
 ```{r Seurat PC Heatmap, fig.height = PC.separated.height, fig.width = 15, warning=FALSE}
-heatmap <- seuratComputeHeatmap(data, useAssay = "seuratScaledData", useReduction = "pca", dims = initial.PC.numbers, balanced = TRUE, ncol = 4, fast = FALSE)
+pcHeatmapParams <- list(
+  inSCE = data,
+  useAssay = "seuratScaledData",
+  useReduction = "pca",
+  dims = initial.PC.numbers,
+  balanced = TRUE,
+  ncol = 4,
+  fast = FALSE
+)
+heatmap <- do.call("seuratComputeHeatmap", pcHeatmapParams)  
 heatmap
 ```
-
+```{r, include=FALSE}
+pcHeatmapParams$inSCE <- NULL
+metadata(data)$seurat$plots$heatmap <- pcHeatmapParams
+```
 
 ## {-}
 
@@ -727,13 +739,25 @@ seuratGenePlot(data, plotType = "dot", features = top9, groupVariable = group, n
 #### Heatmap Plot {-}
 
 ```{r DEG HeatmapPlot, fig.width=15, fig.height=15}
-top9 <- data.frame(data.markers %>% group_by(cluster) %>% top_n(9, avg_logFC))
-metadata(data)$seurat$plots$top9 <- top9
-metadata(data)$seurat$plots$group <- group
-top9 <- top9$gene.id
-heatmap_complete <- seuratGenePlot(data, plotType = "heatmap", features = top9, groupVariable = group, ncol = 1, cols = c("grey", "blue")) + theme(axis.text.y = element_text(size = 8), legend.text = element_text(size = 8), legend.key.size = unit(0.5, "cm"), legend.position = "top")
+top9DF <- data.frame(data.markers %>% group_by(cluster) %>% top_n(9, avg_logFC))
+top9 <- top9DF$gene.id
+groupHeatmapParams <- list(inSCE = data,
+                           plotType = "heatmap", 
+                           features = top9, 
+                           groupVariable = group, 
+                           ncol = 1, 
+                           cols = c("grey", "blue"))
+heatmap_complete <- do.call("seuratGenePlot", groupHeatmapParams)
+heatmap_complete <- heatmap_complete + theme(axis.text.y = element_text(size = 8), legend.text = element_text(size = 8), legend.key.size = unit(0.5, "cm"), legend.position = "top")
 heatmap_complete
 ```
+```{r, include=FALSE}
+metadata(data)$seurat$plots$top9 <- top9DF
+metadata(data)$seurat$plots$group <- group
+groupHeatmapParams$inSCE <- NULL
+metadata(data)$seurat$plots$groupHeatmapParams <- groupHeatmapParams
+```
+
 
 ### Table of Top Markers by Group
 List of top genes for each clusters are saved as **top_genes_group.csv** which is available within the working directory.

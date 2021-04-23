@@ -1029,9 +1029,10 @@ shinyServer(function(input, output, session) {
           #   metadata(inSCE)$seurat$plots$heatmap
           # })
           
-          #find solution for this
+          pcHeatmapParams <- metadata(inSCE)$seurat$plots$heatmap
+          pcHeatmapParams$inSCE <- vals$counts
           output$plot_heatmap_pca <- renderPlot({
-            metadata(inSCE)$seurat$plots$heatmap
+            do.call("seuratComputeHeatmap", pcHeatmapParams)  
           })
 
           updatePickerInput(session = session, inputId = "picker_dimheatmap_components_pca", choices = singleCellTK:::.getComponentNames(vals$counts@metadata$seurat$count_pc, "PC"))
@@ -1170,10 +1171,11 @@ shinyServer(function(input, output, session) {
           updateTabsetPanel(session = session, inputId = "seuratFindMarkerPlotTabset", selected = "Ridge Plot")
           shinyjs::show(selector = ".seurat_findmarker_plots")
           
-          #table
-          # output$findMarkerHeatmapPlotFull <- renderPlot({
-          #   metadata(vals$counts)$seurat$plots$heatmap_complete
-          # })
+          groupHeatmapParams <- metadata(vals$counts)$seurat$plots$groupHeatmapParams
+          groupHeatmapParams$inSCE <- vals$counts
+          output$findMarkerHeatmapPlotFull <- renderPlot({
+            do.call("seuratGenePlot", groupHeatmapParams)
+          })
           
           output$findMarkerHeatmapPlotFullTopText <- renderUI({
             h6(paste("Heatmap plotted across all groups against genes with adjusted p-values <", input$seuratFindMarkerPValAdjInput))
