@@ -735,7 +735,9 @@ filterTableServer <- function(input, output, session, dataframe,
         }
       }
       else{
-        values[i] <- paste0("'", values[i], "'")
+        if(is.na(as.numeric(values[i]))){
+          values[i] <- paste0("'", values[i], "'")
+        }
         filters <- c(filters, paste0("eval(call('", operators[i], "', df[['", cols[i], "']],", values[i], "))"))
       }
     }
