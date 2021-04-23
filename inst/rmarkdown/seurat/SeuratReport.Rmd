@@ -652,8 +652,8 @@ space <- "
 "
 top9 <- data.frame(data.markers %>% group_by(cluster) %>% top_n(9, avg_logFC))
 numClusters <- length(unique(data.markers$cluster))
-for (currentCluster in 0:(numClusters-1)) {
-  cat(sprintf(template, paste0("Cluster ", unique(data.markers$cluster)[currentCluster])))
+for (currentCluster in 1:(numClusters)) {
+  cat(sprintf(template, paste0("Cluster ", as.character(unique(data.markers$cluster))[currentCluster])))
   for (inside_count in 1:9){
     current_feature <- top9$gene.id[(9*currentCluster+inside_count)]
     cat(sprintf(template_inside, paste0(current_feature)))
@@ -669,7 +669,7 @@ for (currentCluster in 0:(numClusters-1)) {
 A **ridge plot** visualizes the **expression level** of a particular **gene marker in all cells of the data** separated by **group** in the form of ridges. Here we visualize the **ridge plots** of the **top 9 marker genes** separated by **group**. Use the drop-down box to view top 9 markers from each of the group.
 ```{r DEG RidgePlot, echo = TRUE, results = "asis", fig.height =9, fig.width = 9}
 
-template <- "##### %s {.tabset .tabset-fade}
+template <- "##### %s {.tabset .tabset-fade -}
 "
 template_inside <- "###### %s {-}
 "
@@ -678,8 +678,8 @@ space <- "
 "
 top9 <- data.frame(data.markers %>% group_by(cluster) %>% top_n(9, avg_logFC))
 numClusters <- length(unique(data.markers$cluster))
-for (currentCluster in 0:(numClusters-1)) {
-  cat(sprintf(template, paste0("Cluster ", currentCluster)))
+for (currentCluster in 1:(numClusters)) {
+  cat(sprintf(template, paste0("Cluster ", as.character(unique(data.markers$cluster))[currentCluster])))
   for (inside_count in 1:9){
     current_feature <- top9$gene.id[(9*currentCluster+inside_count)]
     cat(sprintf(template_inside, paste0(current_feature)))
@@ -694,7 +694,7 @@ for (currentCluster in 0:(numClusters-1)) {
 A **violin plot** visualizes the **expression level** of a particular **gene marker in all cells of the data** separated by **group**. Here we visualize the **violin plots** of the **top 9 marker genes** separated by **group**. Use the drop-down box to view top 9 markers from each of the group.
 ```{r DEG ViolinPlot, echo = TRUE, results = "asis", fig.height =9, fig.width = 9}
 
-template <- "##### %s {.tabset .tabset-fade}
+template <- "##### %s {.tabset .tabset-fade -}
 "
 template_inside <- "###### %s {-}
 "
@@ -703,8 +703,8 @@ space <- "
 "
 top9 <- data.frame(data.markers %>% group_by(cluster) %>% top_n(9, avg_logFC))
 numClusters <- length(unique(data.markers$cluster))
-for (currentCluster in 0:(numClusters-1)) {
-  cat(sprintf(template, paste0("Cluster ", currentCluster)))
+for (currentCluster in 1:(numClusters)) {
+  cat(sprintf(template, paste0("Cluster ", as.character(unique(data.markers$cluster))[currentCluster])))
   for (inside_count in 1:9){
     current_feature <- top9$gene.id[(9*currentCluster+inside_count)]
     cat(sprintf(template_inside, paste0(current_feature)))
@@ -718,21 +718,20 @@ for (currentCluster in 0:(numClusters-1)) {
 
 #### Dot Plot {-}
 A **dot plot** visualizes the **change in the expression levels** of a particular **gene marker in all cells of the data** separated by **group** in the form of dots where the color of the dots indicate the expression level of that gene in a class and the size of the dot indicates the total percentage of the cells in that class.
-```{r DEG DotPlot}
+```{r DEG DotPlot, fig.width=15, fig.height=8}
 top9 <- data.frame(data.markers %>% group_by(cluster) %>% top_n(9, avg_logFC))
 top9 <- top9$gene.id
-seuratGenePlot(data, plotType = "dot", features = top9, groupVariable = group, ncol = 1, cols = c("grey", "blue")) + theme(axis.text.x = element_text(angle = 90))
+seuratGenePlot(data, plotType = "dot", features = top9, groupVariable = group, ncol = 1, cols = c("grey", "blue")) + theme(axis.text.x = element_text(angle = 90, size = 7), legend.text = element_text(size = 8), legend.key.size = unit(0.4, "cm"), legend.position = "top")
 ```
 
 #### Heatmap Plot {-}
 
-```{r DEG HeatmapPlot}
+```{r DEG HeatmapPlot, fig.width=15, fig.height=15}
 top9 <- data.frame(data.markers %>% group_by(cluster) %>% top_n(9, avg_logFC))
 metadata(data)$seurat$plots$top9 <- top9
 metadata(data)$seurat$plots$group <- group
 top9 <- top9$gene.id
-heatmap_complete <- seuratGenePlot(data, plotType = "heatmap", features = top9, groupVariable = group, ncol = 1, cols = c("grey", "blue"))
-metadata(data)$seurat$plots$heatmap_complete <- heatmap_complete
+heatmap_complete <- seuratGenePlot(data, plotType = "heatmap", features = top9, groupVariable = group, ncol = 1, cols = c("grey", "blue")) + theme(axis.text.y = element_text(size = 8), legend.text = element_text(size = 8), legend.key.size = unit(0.5, "cm"), legend.position = "top")
 heatmap_complete
 ```
 
@@ -782,8 +781,8 @@ space <- "
 "
 top9 <- data.frame(data.markers %>% group_by(cluster) %>% top_n(9, avg_logFC))
 numClusters <- length(unique(data.markers$cluster))
-for (currentCluster in 0:(numClusters-1)) {
-  cat(sprintf(template, paste0("Cluster ", currentCluster)))
+for (currentCluster in 1:(numClusters)) {
+  cat(sprintf(template, paste0("Cluster ", as.character(unique(data.markers$cluster))[currentCluster])))
   for (inside_count in 1:9){
     current_feature <- top9$gene.id[(9*currentCluster+inside_count)]
     cat(sprintf(template_inside, paste0(current_feature)))
@@ -799,7 +798,7 @@ for (currentCluster in 0:(numClusters-1)) {
 A **ridge plot** visualizes the **expression level** of a particular **gene marker in all cells of the data** separated by **clusters** in the form of ridges. Here we visualize the **ridge plots** of the **top 9 marker genes** across all **clusters**. Use the drop-down box to view top 9 markers from each of the cluster.
 ```{r Seurat Top Markers by cluster ridge, echo = TRUE, results = "asis", fig.height =9, fig.width = 9}
 
-template <- "##### %s {.tabset .tabset-fade}
+template <- "##### %s {.tabset .tabset-fade -}
 "
 template_inside <- "###### %s {-}
 "
@@ -808,8 +807,8 @@ space <- "
 "
 top9 <- data.frame(data.markers %>% group_by(cluster) %>% top_n(9, avg_logFC))
 numClusters <- length(unique(data.markers$cluster))
-for (currentCluster in 0:(numClusters-1)) {
-  cat(sprintf(template, paste0("Cluster ", currentCluster)))
+for (currentCluster in 1:(numClusters)) {
+  cat(sprintf(template, paste0("Cluster ", as.character(unique(data.markers$cluster))[currentCluster])))
   for (inside_count in 1:9){
     current_feature <- top9$gene.id[(9*currentCluster+inside_count)]
     cat(sprintf(template_inside, paste0(current_feature)))
@@ -824,7 +823,7 @@ for (currentCluster in 0:(numClusters-1)) {
 A **violin plot** visualizes the **expression level** of a particular **gene marker in all cells of the data** separated by **clusters**. Here we visualize the **violin plots** of the **top 9 marker genes** separated across all **clusters**. Use the drop-down box to view top 9 markers from each of the group.
 ```{r Seurat Top Markers by cluster violin, echo = TRUE, results = "asis", fig.height =9, fig.width = 9}
 
-template <- "##### %s {.tabset .tabset-fade}
+template <- "##### %s {.tabset .tabset-fade -}
 "
 template_inside <- "###### %s {-}
 "
@@ -833,8 +832,8 @@ space <- "
 "
 top9 <- data.frame(data.markers %>% group_by(cluster) %>% top_n(9, avg_logFC))
 numClusters <- length(unique(data.markers$cluster))
-for (currentCluster in 0:(numClusters-1)) {
-  cat(sprintf(template, paste0("Cluster ", currentCluster)))
+for (currentCluster in 1:(numClusters)) {
+  cat(sprintf(template, paste0("Cluster ", as.character(unique(data.markers$cluster))[currentCluster])))
   for (inside_count in 1:9){
     current_feature <- top9$gene.id[(9*currentCluster+inside_count)]
     cat(sprintf(template_inside, paste0(current_feature)))
@@ -848,18 +847,18 @@ for (currentCluster in 0:(numClusters-1)) {
 
 #### Dot Plot {-}
 A **dot plot** visualizes the **change in the expression levels** of a particular **gene marker in all cells of the data** separated by **clusters** in the form of dots where the color of the dots indicate the expression level of that gene in a cluster and the size of the dot indicates the total percentage of the cells in that cluster.
-```{r DEG Clusters Dotplot}
+```{r DEG Clusters Dotplot, fig.width=15, fig.height=8}
 top9 <- data.frame(data.markers %>% group_by(cluster) %>% top_n(9, avg_logFC))
 top9 <- top9$gene.id
-seuratGenePlot(data, plotType = "dot", features = top9, groupVariable = paste0("Seurat_louvain_Resolution", seurat.selected.resolution), ncol = 1, cols = c("grey", "blue")) + theme(axis.text.x = element_text(angle = 90))
+seuratGenePlot(data, plotType = "dot", features = top9, groupVariable = paste0("Seurat_louvain_Resolution", seurat.selected.resolution), ncol = 1, cols = c("grey", "blue")) + theme(axis.text.x = element_text(angle = 90, size = 7), legend.text = element_text(size = 8), legend.key.size = unit(0.4, "cm"), legend.position = "top")
 ```
 
 #### Heatmap Plot {-}
 
-```{r DEG Clusters HeatmapPlot}
+```{r DEG Clusters HeatmapPlot, fig.width=15, fig.height=15}
 top9 <- data.frame(data.markers %>% group_by(cluster) %>% top_n(9, avg_logFC))
 top9 <- top9$gene.id
-seuratGenePlot(data, plotType = "heatmap", features = top9, groupVariable = paste0("Seurat_louvain_Resolution", seurat.selected.resolution), ncol = 1, cols = c("grey", "blue"))
+seuratGenePlot(data, plotType = "heatmap", features = top9, groupVariable = paste0("Seurat_louvain_Resolution", seurat.selected.resolution), ncol = 1, cols = c("grey", "blue")) + theme(axis.text.y = element_text(size = 8), legend.text = element_text(size = 8), legend.key.size = unit(0.5, "cm"), legend.position = "top")
 ```
 
 ### Table of Top Markers by Cluster
@@ -905,7 +904,7 @@ if (numMarkerGenes == 0){
 
 ```{r Seurat Custom markers, echo=TRUE, results = "asis", fig.height = 10, fig.width = 10, eval = custom_eval, echo = custom_eval}
 
-template <- "### %s {.tabset .tabset-fade}
+template <- "### %s {.tabset .tabset-fade -}
 "
 template_inside <- "#### %s {-}
 "
