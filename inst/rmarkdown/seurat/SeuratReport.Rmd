@@ -107,10 +107,17 @@ Selected Resolution for Clustering: **`r seurat.selected.resolution`** <br>
 ## Normalization
 The global-scaling normalization method, "LogNormalize" was used to normalize the gene expression measurements for each cell by the total expression, multiplied by a scale factor of 10,000 (default), and log-transform the results.
 ```{r Seurat Normalization, message=FALSE}
-data <- seuratNormalizeData(
+normalizeParams <- list(
   inSCE = data,
+  normalizationMethod = "LogNormalize",
+  scaleFactor = 10000,
   verbose = FALSE
 )
+data <- do.call("seuratNormalizeData", normalizeParams)
+```
+```{r, include=FALSE}
+normalizeParams$inSCE <- NULL
+metadata(data)$seurat$sctk$report$normalizeParams <- normalizeParams
 ```
 
 The selected assay **`r assayNames(data)[1]`** was normalized using **LogNormalize** method and the output normalized assay was stored back into the input object to be used in the downstream analysis.
@@ -123,15 +130,21 @@ Highly variables genes for downstream analysis were found by calculating the ave
 A scatter plot of standardized variance (y-axis) versus average expression (x-axis) for each of the gene is visualized below. Top 10 most variable genes are labeled with their gene symbols and the points (genes) highlighted in red are considered as highly variable genes.
 
 ```{r Seurat Variable Genes, warning=FALSE}
-data <- seuratFindHVG(
+hvgParams <- list(
   inSCE = data,
   hvgMethod = "vst", 
   hvgNumber = seurat.selected.features.numbers)
+data <- do.call("seuratFindHVG", hvgParams)
 
 num.variable.genes <- length(seuratVariableFeatures(data))
 
 Labeled_Variable_data <- seuratPlotHVG(inSCE = data, labelPoints = 10)
 Labeled_Variable_data
+```
+```{r, include=FALSE}
+hvgParams$inSCE <- NULL
+hvgParams$labelPoints <- 10
+metadata(data)$seurat$sctk$report$hvgParams <- hvgParams
 ```
 
 A total of **`r formatC(num.variable.genes, format="d", big.mark=",")`** top variable genes were selected for downstream analysis using the **vst** method. The **standardized variance** to **average expression** plot is visualized above where the **top `r formatC(num.variable.genes, format="d", big.mark=",")`** selected genes are highlighted in red and the **top 10** genes are labeled with their gene symbols. 
@@ -139,7 +152,15 @@ A total of **`r formatC(num.variable.genes, format="d", big.mark=",")`** top var
 ## Scaling
 The previous step identifies and selects the top highly variable genes that represent the majority of the total variation (both biological and unwanted sources) in the dataset. As we intend to regress out the unwanted sources of the variation in the data and focus on the variation that most reflects the biological variability, we scale this variation with the expression level of the data. This approach shifts the mean expression for each gene across cells to 0, and scales the variance for expression of each gene across cells to 1.
 ```{r Seurat Scaling Data}
-data <- seuratScaleData(inSCE = data, verbose = FALSE)
+scaleParams <- list(
+  inSCE = data, 
+  model = "linear", 
+  verbose = FALSE)
+data <- do.call("seuratScaleData", scaleParams)
+```
+```{r, include=FALSE}
+scaleParams$inSCE <- NULL
+metadata(data)$seurat$sctk$report$scaleParams <- scaleParams
 ```
 
 The data was scaled using **linear** transformation method. It was further **centered** and **trimmed** to a maximum value of **10** and stored back into the input data for downstream analysis.

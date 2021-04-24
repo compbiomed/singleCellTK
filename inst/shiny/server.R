@@ -932,20 +932,31 @@ shinyServer(function(input, output, session) {
         icon = icon("arrow-right")
       ), id = "goSeuratNotification")
       
-      #Normalize - todo
+      #Normalize Data
       shinyjs::enable(selector = "div[value='Normalize Data']")
       updateCollapse(session = session, "SeuratUI", style = list("Normalize Data" = "success"))
+      normalizeParams <- metadata(vals$counts)$seurat$sctk$report$normalizeParams
+      updateSelectInput(session, "normalization_method", selected = normalizeParams$normalizationMethod)
+      updateTextInput(session, "scale_factor", value = normalizeParams$scaleFactor)
       
-      #Scale - todo
+      #Scale Data
       shinyjs::enable(selector = "div[value='Scale Data']")
       updateCollapse(session = session, "SeuratUI", style = list("Scale Data" = "success"))
+      scaleParams <- metadata(vals$counts)$seurat$sctk$report$scaleParams
+      updateSelectInput(session, "model.use", selected = scaleParams$model)
       
-      #HVG - plot done, but need to add labels and settings
-        output$plot_hvg <- renderPlotly({
-          plotly::ggplotly(seuratPlotHVG(vals$counts))
-        })
-        shinyjs::enable(selector = "div[value='Highly Variable Genes']")
-        updateCollapse(session = session, "SeuratUI", style = list("Highly Variable Genes" = "success"))
+      #HVG
+      output$plot_hvg <- renderPlotly({
+        plotly::ggplotly(seuratPlotHVG(vals$counts))
+      })
+      shinyjs::enable(selector = "div[value='Highly Variable Genes']")
+      updateCollapse(session = session, "SeuratUI", style = list("Highly Variable Genes" = "success"))
+      hvgParams <- metadata(vals$counts)$seurat$sctk$report$hvgParams
+      print(hvgParams)
+      updateSelectInput(session, "hvg_method", selected = hvgParams$hvgMethod)
+      updateTextInput(session, "hvg_no_features", value = hvgParams$hvgNumber)
+      print(hvgParams$labelPoints)
+      updateTextInput(session, "hvg_no_features_view", value = hvgParams$labelPoints)
       
       #DR
       shinyjs::enable(selector = "div[value='Dimensionality Reduction']")
