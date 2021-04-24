@@ -315,12 +315,9 @@ shinyPanelSeurat <- fluidPage(
                                                                          fluidRow(
                                                                            column(12, align = "center",
                                                                                                panel(
-                                                                                                   radioGroupButtons(
-                                                                                                       inputId = "Id004",
-                                                                                                       label = NULL, 
-                                                                                                       choices = c("Top 5", "Top 10", "Top 20"),
-                                                                                                       status = "primary"
-                                                                                                   ),
+                                                                                                   numericInput("findMarkerHeatmapPlotFullNumeric", value = 10, max = 100, min = 2, step = 1, label = "Select number of top genes from each cluster/group to visualize in the heatmap below based on highest average log fold change value:"),
+                                                                                                   actionButton("findMarkerHeatmapPlotFullNumericRun", label = "Plot"),
+                                                                                                   hr(),
                                                                                                    jqui_resizable(
                                                                                                        plotOutput(outputId = "findMarkerHeatmapPlotFull")
                                                                                                    )

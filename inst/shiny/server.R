@@ -7091,9 +7091,9 @@ shinyServer(function(input, output, session) {
        DoHeatmap(seuratObject, features = top10markers$gene.id)
      })
 
-     output$findMarkerHeatmapPlotFullTopText <- renderUI({
-       h6(paste("Heatmap plotted across all groups against genes with adjusted p-values <", input$seuratFindMarkerPValAdjInput))
-     })
+     # output$findMarkerHeatmapPlotFullTopText <- renderUI({
+     #   h6(paste("Heatmap plotted across all groups against genes with adjusted p-values <", input$seuratFindMarkerPValAdjInput))
+     # })
 
     showNotification("Find Markers Complete")
 
@@ -7173,6 +7173,35 @@ shinyServer(function(input, output, session) {
     #   dataframe = metadata(vals$counts)$seuratMarkers
     # )
 
+  })
+  
+  observeEvent(input$findMarkerHeatmapPlotFullNumericRun,{
+    ##df <- metadata(vals$counts)$seuratMarkers[which(metadata(vals$counts)$seuratMarkers$p_val_adj < 0.05, arr.ind = TRUE),]
+    df <- metadata(vals$counts)$seuratMarkers
+    seuratObject <- convertSCEToSeurat(vals$counts, scaledAssay = "seuratScaledData")
+    indices <- list()
+    cells <- list()
+    groups <- unique(colData(vals$counts)[[input$seuratFindMarkerSelectPhenotype]])
+    for(i in seq(length(groups))){
+      indices[[i]] <- which(colData(vals$counts)[[input$seuratFindMarkerSelectPhenotype]] == groups[i], arr.ind = TRUE)
+      cells[[i]] <- colnames(vals$counts)[indices[[i]]]
+      cells[[i]] <- lapply(
+        X = cells[[i]],
+        FUN = function(t) gsub(
+          pattern = "_",
+          replacement = "-",
+          x = t,
+          fixed = TRUE)
+      )
+      Idents(seuratObject, cells = cells[[i]]) <- groups[i]
+    }
+    topMarkers <- data.frame(df %>% group_by(cluster) %>% top_n(input$findMarkerHeatmapPlotFullNumeric, avg_logFC))
+    if(nrow(topMarkers) > (input$findMarkerHeatmapPlotFullNumeric * length(groups))){
+      topMarkers <- data.frame(topMarkers %>% group_by(cluster) %>% top_n(input$findMarkerHeatmapPlotFullNumeric, -p_val_adj))
+    }
+    output$findMarkerHeatmapPlotFull <- renderPlot({
+      DoHeatmap(seuratObject, features = topMarkers$gene.id)
+    })
   })
 
   observe({
