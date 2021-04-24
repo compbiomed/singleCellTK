@@ -10,7 +10,8 @@ seuratReductionPlot(
   useReduction = c("pca", "ica", "tsne", "umap"),
   showLegend = FALSE,
   groupBy = NULL,
-  splitBy = NULL
+  splitBy = NULL,
+  clusterLabels = TRUE
 )
 }
 \arguments{
@@ -23,6 +24,8 @@ seuratReductionPlot(
 \item{groupBy}{Specify a colData column name that be used for grouping. Default is \code{NULL}.}
 
 \item{splitBy}{Specify a colData column name that be used for splitting the output plot. Default is \code{NULL}.}
+
+\item{clusterLabels}{Specify if clusters should be labeled over the points. Default is \code{TRUE}.}
 }
 \value{
 plot object

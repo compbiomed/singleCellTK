@@ -578,9 +578,7 @@ data <- seuratRunTSNE(data, useReduction = "pca", dims = significant_PC)
 #### Clusters {-}
 Seurat clusters cells and assigned a cluster label to each cell. The following plot is the tSNE representation of the clustering results, colored by the cluster labels.
 ```{r Seurat tsne clusters 0.6}
-tSNE_coloredby_cluster <- seuratReductionPlot(data, useReduction = "tsne", showLegend = TRUE)
-tSNE_coloredby_cluster <- tSNE_coloredby_cluster + annotate(geom = "text", x = mean(tSNE_coloredby_cluster$data[tSNE_coloredby_cluster$data$ident == 0,]$tSNE_1), y =  mean(tSNE_coloredby_cluster$data[tSNE_coloredby_cluster$data$ident == 0,]$tSNE_2), label = "Cluster 0", hjust = "left") + annotate(geom = "text", x = mean(tSNE_coloredby_cluster$data[tSNE_coloredby_cluster$data$ident == 1,]$tSNE_1), y =  mean(tSNE_coloredby_cluster$data[tSNE_coloredby_cluster$data$ident == 1,]$tSNE_2), label = "Cluster 1", hjust = "left") + annotate(geom = "text", x = mean(tSNE_coloredby_cluster$data[tSNE_coloredby_cluster$data$ident == 2,]$tSNE_1), y =  mean(tSNE_coloredby_cluster$data[tSNE_coloredby_cluster$data$ident == 2,]$tSNE_2), label = "Cluster 2", hjust = "left") + annotate(geom = "text", x = mean(tSNE_coloredby_cluster$data[tSNE_coloredby_cluster$data$ident == 3,]$tSNE_1), y =  mean(tSNE_coloredby_cluster$data[tSNE_coloredby_cluster$data$ident == 3,]$tSNE_2), label = "Cluster 3", hjust = "left") + annotate(geom = "text", x = mean(tSNE_coloredby_cluster$data[tSNE_coloredby_cluster$data$ident == 4,]$tSNE_1), y =  mean(tSNE_coloredby_cluster$data[tSNE_coloredby_cluster$data$ident == 4,]$tSNE_2), label = "Cluster 4", hjust = "left") + annotate(geom = "text", x = mean(tSNE_coloredby_cluster$data[tSNE_coloredby_cluster$data$ident == 5,]$tSNE_1), y =  mean(tSNE_coloredby_cluster$data[tSNE_coloredby_cluster$data$ident == 5,]$tSNE_2), label = "Cluster 5", hjust = "left")
-metadata(data)$seurat$plots$tsne <- tSNE_coloredby_cluster
+tSNE_coloredby_cluster <- seuratReductionPlot(data, useReduction = "tsne", showLegend = TRUE, clusterLabels = TRUE)
 tSNE_coloredby_cluster
 ```
 
@@ -630,9 +628,7 @@ data <- seuratRunUMAP(data, useReduction = "pca", dims = significant_PC, verbose
 #### Clusters {-}
 Seurat clusters cells and assigned a cluster label to each cell. The following plot is the UMAP representation of the clustering results, colored by the cluster labels.
 ```{r Seurat UMAP clusters}
-UMAP_coloredby_cluster <- seuratReductionPlot(data, useReduction = "umap", showLegend = TRUE)
-UMAP_coloredby_cluster <- UMAP_coloredby_cluster + annotate(geom = "text", x = mean(UMAP_coloredby_cluster$data[UMAP_coloredby_cluster$data$ident == 0,]$UMAP_1), y =  mean(UMAP_coloredby_cluster$data[UMAP_coloredby_cluster$data$ident == 0,]$UMAP_2), label = "Cluster 0", hjust = "left") + annotate(geom = "text", x = mean(UMAP_coloredby_cluster$data[UMAP_coloredby_cluster$data$ident == 1,]$UMAP_1), y =  mean(UMAP_coloredby_cluster$data[UMAP_coloredby_cluster$data$ident == 1,]$UMAP_2), label = "Cluster 1", hjust = "left") + annotate(geom = "text", x = mean(UMAP_coloredby_cluster$data[UMAP_coloredby_cluster$data$ident == 2,]$UMAP_1), y =  mean(UMAP_coloredby_cluster$data[UMAP_coloredby_cluster$data$ident == 2,]$UMAP_2), label = "Cluster 2", hjust = "left") + annotate(geom = "text", x = mean(UMAP_coloredby_cluster$data[UMAP_coloredby_cluster$data$ident == 3,]$UMAP_1), y =  mean(UMAP_coloredby_cluster$data[UMAP_coloredby_cluster$data$ident == 3,]$UMAP_2), label = "Cluster 3", hjust = "left") + annotate(geom = "text", x = mean(UMAP_coloredby_cluster$data[UMAP_coloredby_cluster$data$ident == 4,]$UMAP_1), y =  mean(UMAP_coloredby_cluster$data[UMAP_coloredby_cluster$data$ident == 4,]$UMAP_2), label = "Cluster 4", hjust = "left") + annotate(geom = "text", x = mean(UMAP_coloredby_cluster$data[UMAP_coloredby_cluster$data$ident == 5,]$UMAP_1), y =  mean(UMAP_coloredby_cluster$data[UMAP_coloredby_cluster$data$ident == 5,]$UMAP_2), label = "Cluster 5", hjust = "left")
-metadata(data)$seurat$plots$umap <- UMAP_coloredby_cluster
+UMAP_coloredby_cluster <- seuratReductionPlot(data, useReduction = "umap", showLegend = TRUE, clusterLabels = TRUE)
 UMAP_coloredby_cluster
 ```
 

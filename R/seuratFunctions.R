@@ -329,6 +329,7 @@ seuratPlotHVG <- function(inSCE, labelPoints = 0) {
 #' @param showLegend Select if legends should be shown on the output plot or not. Either "TRUE" or "FALSE". Default \code{FALSE}.
 #' @param groupBy Specify a colData column name that be used for grouping. Default is \code{NULL}. 
 #' @param splitBy Specify a colData column name that be used for splitting the output plot. Default is \code{NULL}. 
+#' @param clusterLabels Specify if clusters should be labeled over the points. Default is \code{TRUE}.
 #' @examples
 #' data(scExample, package = "singleCellTK")
 #' \dontrun{
@@ -340,7 +341,7 @@ seuratPlotHVG <- function(inSCE, labelPoints = 0) {
 #' @return plot object
 #' @export
 seuratReductionPlot <- function(inSCE, useReduction = c("pca", "ica", "tsne", "umap"), 
-                                showLegend = FALSE, groupBy = NULL, splitBy = NULL) {
+                                showLegend = FALSE, groupBy = NULL, splitBy = NULL, clusterLabels = TRUE) {
   seuratObject <- convertSCEToSeurat(inSCE)
   
   if(!is.null(groupBy)){
@@ -356,6 +357,14 @@ seuratReductionPlot <- function(inSCE, useReduction = c("pca", "ica", "tsne", "u
     reduction = useReduction,
     group.by = groupBy,
     split.by = splitBy)
+  
+  if(clusterLabels){
+    if(!is.null(seuratObject@meta.data$seurat_clusters)){
+      Seurat::Idents(seuratObject) <- seuratObject@meta.data$seurat_clusters
+      args$object <- seuratObject
+      args$label <- clusterLabels
+    }
+  }
   
   if(showLegend){
     plot <- do.call(eval(parse(text = "Seurat::DimPlot")), args = args)
