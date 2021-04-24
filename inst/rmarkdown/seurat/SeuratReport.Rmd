@@ -152,14 +152,12 @@ A total of **`r formatC(num.variable.genes, format="d", big.mark=",")`** top var
 ## Scaling
 The previous step identifies and selects the top highly variable genes that represent the majority of the total variation (both biological and unwanted sources) in the dataset. As we intend to regress out the unwanted sources of the variation in the data and focus on the variation that most reflects the biological variability, we scale this variation with the expression level of the data. This approach shifts the mean expression for each gene across cells to 0, and scales the variance for expression of each gene across cells to 1.
 ```{r Seurat Scaling Data}
-scaleParams <- list(
-  inSCE = data, 
-  model = "linear", 
-  verbose = FALSE)
-data <- do.call("seuratScaleData", scaleParams)
+data <- seuratScaleData(inSCE = data, model = "linear", verbose = FALSE)
 ```
 ```{r, include=FALSE}
-scaleParams$inSCE <- NULL
+scaleParams <- list(
+  model = "linear", 
+  verbose = FALSE)
 metadata(data)$seurat$sctk$report$scaleParams <- scaleParams
 ```
 
@@ -169,19 +167,22 @@ The data was scaled using **linear** transformation method. It was further **cen
 Now we perform **principal component analysis** on the scaled data using the variable genes as input. However, **determining how many components to include in the downstream analysis is an important step**. A resampling **JackStraw** procedure ([Macosko et al.](http://www.cell.com/abstract/S0092-8674(15)00549-8)) is implemented to randomly permute (100 times) PCA reruns on a subset of the data (1% by default) to construct a 'null distribution' of gene scores. To overcome the extensive technical noise in any single feature of the scRNA-seq data, Seurat clusters cells based on their PCA scores, with each principal component essentially representing a 'metafeature' that combines information across a correlated feature set. Another heuristic method of determining how many components to use is to look at the plot of the standard deviations of the principal components known as the **Elbow Plot**.
 
 ```{r Seurat PCAs, JackStraw and Elbow plot, warning=FALSE}
-data <- seuratPCA(
+pcaParams <- list(
   inSCE = data,
   nPCs = initial.PC.numbers,
   verbose = FALSE)
+data <- do.call("seuratPCA", pcaParams)
 
-data <- seuratComputeJackStraw(
+jackStrawParams <- list(
   inSCE = data,
   useAssay = "seuratScaledData",
   dims = initial.PC.numbers,
   numReplicate = 100,
   propFreq = 0.025
 )
+data <- do.call("seuratComputeJackStraw", jackStrawParams)
 ```
+
 
 Below we visualize the principal components from the PCA computation and see how much of heterogeneity is captured by each of the principal component and try to compute that how many of these components can be considered significant for downstream analysis.
 
@@ -216,6 +217,11 @@ if (!exists("significant_PC") || significant_PC == 0){
 }
 
 PC.separated.height <- 3.5 * ceiling(initial.PC.numbers/3)
+```
+```{r, include=FALSE}
+pcaParams$inSCE <- NULL
+pcaParams$significant_PC <- significant_PC
+metadata(data)$seurat$sctk$report$pcaParams <- pcaParams
 ```
 
 
@@ -556,7 +562,12 @@ Among different options of resolution above, a final resolution of **`r seurat.s
 data <- seuratFindClusters(data, useReduction = "pca", resolution = seurat.selected.resolution, verbose = FALSE)
 numClusters <- length(unique(colData(data)[[paste0("Seurat_louvain_Resolution", seurat.selected.resolution)]]))
 ```
-
+```{r, include=FALSE}
+clusterParams <- list(
+  resolution = seurat.selected.resolution
+)
+metadata(data)$seurat$sctk$report$clusterParams <- clusterParams
+```
 ### tSNE {.tabset .tabset-fade -}
 tSNE (Non-linear Dimensional Reduction) is a dimension reduction technique that places cells with similar local neighborhoods in high-dimensional space together in low-dimensional space. tSNE has been the default method for such task in the past years. Using default parameters, a final resolution of **`r seurat.selected.resolution`** and **`r significant_PC`** PCs was chosen to better reflect the data, visualized in the following tSNE.
 

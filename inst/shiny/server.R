@@ -946,19 +946,18 @@ shinyServer(function(input, output, session) {
       updateSelectInput(session, "model.use", selected = scaleParams$model)
       
       #HVG
+      hvgParams <- metadata(vals$counts)$seurat$sctk$report$hvgParams
       output$plot_hvg <- renderPlotly({
-        plotly::ggplotly(seuratPlotHVG(vals$counts))
+        plotly::ggplotly(seuratPlotHVG(vals$counts, labelPoints = hvgParams$labelPoints))
       })
       shinyjs::enable(selector = "div[value='Highly Variable Genes']")
       updateCollapse(session = session, "SeuratUI", style = list("Highly Variable Genes" = "success"))
-      hvgParams <- metadata(vals$counts)$seurat$sctk$report$hvgParams
-      print(hvgParams)
       updateSelectInput(session, "hvg_method", selected = hvgParams$hvgMethod)
       updateTextInput(session, "hvg_no_features", value = hvgParams$hvgNumber)
-      print(hvgParams$labelPoints)
       updateTextInput(session, "hvg_no_features_view", value = hvgParams$labelPoints)
       
       #DR
+      pcaParams <- metadata(vals$counts)$seurat$sctk$report$pcaParams
       shinyjs::enable(selector = "div[value='Dimensionality Reduction']")
       updateCollapse(session = session, "SeuratUI", style = list("Dimensionality Reduction" = "success"))
       
@@ -1013,7 +1012,7 @@ shinyServer(function(input, output, session) {
       })
 
 
-          updateNumericInput(session = session, inputId = "pca_significant_pc_counter", value = singleCellTK:::.computeSignificantPC(vals$counts))
+          #updateNumericInput(session = session, inputId = "pca_significant_pc_counter", value = singleCellTK:::.computeSignificantPC(vals$counts))
           # output$plot_elbow_pca <- renderPlotly({
           #   metadata(inSCE)$seurat$plots$elbow
           # })
@@ -1024,7 +1023,7 @@ shinyServer(function(input, output, session) {
           })
           
           output$pca_significant_pc_output <- renderText({
-            paste("<p>Number of significant components suggested by ElbowPlot: <span style='color:red'>", singleCellTK:::.computeSignificantPC(vals$counts)," </span> </p> <hr>")
+            paste("<p>Number of significant components suggested by ElbowPlot: <span style='color:red'>", pcaParams$significant_PC," </span> </p> <hr>")
           })
 
           # output$plot_jackstraw_pca <- renderPlotly({
@@ -1039,6 +1038,10 @@ shinyServer(function(input, output, session) {
           # output$plot_heatmap_pca <- renderPlot({
           #   metadata(inSCE)$seurat$plots$heatmap
           # })
+          
+          updateTextInput(session, "pca_no_components", value = pcaParams$nPCs)
+          updateMaterialSwitch(session, "pca_compute_jackstraw", value = TRUE)
+          updateNumericInput(session, "pca_significant_pc_counter", value = pcaParams$significant_PC)
           
           pcHeatmapParams <- metadata(inSCE)$seurat$plots$heatmap
           pcHeatmapParams$inSCE <- vals$counts
@@ -1072,6 +1075,7 @@ shinyServer(function(input, output, session) {
           
       
       #Clustering
+          clusterParams <- metadata(vals$counts)$seurat$sctk$report$clusterParams
           shinyjs::enable(selector = "div[value='Clustering']")
           updateCollapse(session = session, "SeuratUI", style = list("Clustering" = "success"))
           
@@ -1116,6 +1120,7 @@ shinyServer(function(input, output, session) {
           
           shinyjs::show(selector = ".seurat_clustering_plots")
           
+          updateNumericInput(session, "resolution_clustering", value = clusterParams$resolution)
           
       
       #Find Markers
@@ -6545,7 +6550,7 @@ shinyServer(function(input, output, session) {
     })
     withProgress(message = "Plotting HVG", max = 1, value = 1, {
       output$plot_hvg <- renderPlotly({
-        plotly::ggplotly(seuratPlotHVG(vals$counts))
+        plotly::ggplotly(seuratPlotHVG(vals$counts, input$hvg_no_features_view))
       })
     })
     updateCollapse(session = session, "SeuratUI", style = list("Highly Variable Genes" = "success"))
