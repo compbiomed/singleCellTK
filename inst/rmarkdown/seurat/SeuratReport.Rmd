@@ -578,7 +578,7 @@ data <- seuratRunTSNE(data, useReduction = "pca", dims = significant_PC)
 #### Clusters {-}
 Seurat clusters cells and assigned a cluster label to each cell. The following plot is the tSNE representation of the clustering results, colored by the cluster labels.
 ```{r Seurat tsne clusters 0.6}
-tSNE_coloredby_cluster <- seuratReductionPlot(data, useReduction = "tsne", showLegend = TRUE, clusterLabels = TRUE)
+tSNE_coloredby_cluster <- seuratReductionPlot(data, useReduction = "tsne", showLegend = TRUE)
 tSNE_coloredby_cluster
 ```
 
@@ -628,7 +628,7 @@ data <- seuratRunUMAP(data, useReduction = "pca", dims = significant_PC, verbose
 #### Clusters {-}
 Seurat clusters cells and assigned a cluster label to each cell. The following plot is the UMAP representation of the clustering results, colored by the cluster labels.
 ```{r Seurat UMAP clusters}
-UMAP_coloredby_cluster <- seuratReductionPlot(data, useReduction = "umap", showLegend = TRUE, clusterLabels = TRUE)
+UMAP_coloredby_cluster <- seuratReductionPlot(data, useReduction = "umap", showLegend = TRUE)
 UMAP_coloredby_cluster
 ```
 
