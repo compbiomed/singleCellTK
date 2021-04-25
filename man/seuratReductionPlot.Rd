@@ -10,8 +10,7 @@ seuratReductionPlot(
   useReduction = c("pca", "ica", "tsne", "umap"),
   showLegend = FALSE,
   groupBy = NULL,
-  splitBy = NULL,
-  clusterLabels = TRUE
+  splitBy = NULL
 )
 }
 \arguments{
@@ -19,13 +18,11 @@ seuratReductionPlot(
 
 \item{useReduction}{Dimentionality reduction to plot. One of "pca", "ica", "tsne", or "umap". Default \code{"umap"}.}
 
-\item{showLegend}{Select if legends should be shown on the output plot or not. Either "TRUE" or "FALSE". Default \code{FALSE}.}
+\item{showLegend}{Select if legends and labels should be shown on the output plot or not. Either "TRUE" or "FALSE". Default \code{FALSE}.}
 
 \item{groupBy}{Specify a colData column name that be used for grouping. Default is \code{NULL}.}
 
 \item{splitBy}{Specify a colData column name that be used for splitting the output plot. Default is \code{NULL}.}
-
-\item{clusterLabels}{Specify if clusters should be labeled over the points. Default is \code{TRUE}.}
 }
 \value{
 plot object
