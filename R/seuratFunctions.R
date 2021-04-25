@@ -349,19 +349,19 @@ seuratReductionPlot <- function(inSCE, useReduction = c("pca", "ica", "tsne", "u
     seuratObject@meta.data <- data.frame()
   }
   
+  if(showLegend){
+    if(!is.null(seuratObject@meta.data$seurat_clusters)){
+      Seurat::Idents(seuratObject) <- seuratObject@meta.data$seurat_clusters
+      seuratObject@meta.data <- data.frame()
+    }
+  }
+  
   if(!is.null(groupBy)){
     seuratObject[[groupBy]] <- colData(inSCE)[[groupBy]]
   }
   
   if(!is.null(splitBy)){
     seuratObject[[splitBy]] <- colData(inSCE)[[splitBy]]
-  }
-  
-  if(showLegend){
-    if(!is.null(seuratObject@meta.data$seurat_clusters)){
-      Seurat::Idents(seuratObject) <- seuratObject@meta.data$seurat_clusters
-      seuratObject@meta.data <- data.frame()
-    }
   }
   
   if(showLegend){
