@@ -315,11 +315,17 @@ shinyPanelSeurat <- fluidPage(
                                                                    title = "Heatmap Plot",
                                                                          fluidRow(
                                                                            column(12, align = "center",
-                                                                                  panel(
-                                                                                    jqui_resizable(
-                                                                                      plotOutput(outputId = "findMarkerHeatmapPlotFull")
-                                                                                    )
-                                                                                  )
+                                                                                               panel(
+                                                                                                   radioGroupButtons(
+                                                                                                       inputId = "Id004",
+                                                                                                       label = NULL, 
+                                                                                                       choices = c("Top 5", "Top 10", "Top 20"),
+                                                                                                       status = "primary"
+                                                                                                   ),
+                                                                                                   jqui_resizable(
+                                                                                                       plotOutput(outputId = "findMarkerHeatmapPlotFull")
+                                                                                                   )
+                                                                                               )
                                                                            )
                                                                          )
                                                                  )
