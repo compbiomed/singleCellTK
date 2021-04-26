@@ -234,8 +234,12 @@
 
     
     
-<p><img src="" alt="entry"><br></p>
+<div id="introduction" class="section level2">
+<h2 class="hasAnchor">
+<a href="#introduction" class="anchor"></a>Introduction</h2>
+<p><img src="ui_screenshots/cellViewer/ui_cellViewer_entry.png" alt="entry"><br></p>
 <p>SingleCellTK provides a general portal for cell level visualization, including the functionality to create <strong>scatter plot</strong>, <strong>bar plot</strong>, and <strong>violin plot</strong>. Users should find the Cell Viewer as instructed in the screenshot above. This documentation will start with a quick example and then talk about the detail.</p>
+</div>
 <div id="quick-example" class="section level2">
 <h2 class="hasAnchor">
 <a href="#quick-example" class="anchor"></a>Quick Example</h2>
@@ -246,7 +250,7 @@
 <li>Use the log-normalized assay to produce a UMAP by using Seurat’s method. Note that usually it is recommended to find the variable features and calculate the PCA before reaching to the UMAP, but “SeuratUMAP” has integrated all these steps at one click.</li>
 <li>For the clustering, select the PCA embedding (produced when calculating the UMAP) as the matrix to perform Seurat’s louvain algorithm on.</li>
 </ol>
-<p><img src="" alt="example"><br></p>
+<p><img src="ui_screenshots/cellViewer/ui_cellViewer_example.png" alt="example"><br></p>
 <p>In Cell Viewer:</p>
 <ol style="list-style-type: decimal">
 <li>Locate at <strong>“Scatter Plot”</strong> tab</li>
@@ -264,20 +268,20 @@
 <div id="axis" class="section level3">
 <h3 class="hasAnchor">
 <a href="#axis" class="anchor"></a>Axis</h3>
-<p><img src="" alt="axis"><br></p>
+<p><img src="ui_screenshots/cellViewer/ui_cellViewer_coord.png" alt="axis"><br></p>
 <p>In <strong>“scatter plot”</strong> tab, the X-/Y-axis can be fully customized, while quick access for existing dimension reduction results will also be listed. “Fully customized” means an axis can be <strong>a dimension of a dimension reduction</strong>, <strong>the expression of a feature from an assay</strong>, or <strong>one of the cell annotations</strong>. In <strong>“bar plot”</strong> and <strong>“violin plot”</strong> tab, the X-axis is limited to cell annotation level, while the Y-axis can still be fully customized.</p>
 </div>
 <div id="color" class="section level3">
 <h3 class="hasAnchor">
 <a href="#color" class="anchor"></a>Color</h3>
-<p><img src="" alt="color"><br></p>
+<p><img src="ui_screenshots/cellViewer/ui_cellViewer_color.png" alt="color"><br></p>
 <p>The color setting determines the color of each dot or bar in the plot. In <strong>“Scatter Plot”</strong> tab, colors can be set by the value of <strong>a dimension from a dimension reduction embedding</strong>, <strong>the expression value of a gene from an assay</strong>, <strong>one of the cell annotation</strong>, or a <strong>single color</strong> for all dots (cells). While SCTK only supports single color plotting for bar plot and violin plot.</p>
 </div>
 <div id="other-settings" class="section level3">
 <h3 class="hasAnchor">
 <a href="#other-settings" class="anchor"></a>Other Settings</h3>
-<p><img src="" alt="others"><br></p>
-<p>Besides the informative settings, Cell Viewer gives users the control on title, legend, axis labels, dots and etc., as shown in the screenshot above and can be freely explored explored.</p>
+<p><img src="ui_screenshots/cellViewer/ui_cellViewer_other.png" alt="others"><br></p>
+<p>Besides the informative settings, Cell Viewer gives users the control on title, legend, axis labels, dots and etc., as shown in the screenshot above and can be freely explored.</p>
 </div>
 </div>
   </div>
