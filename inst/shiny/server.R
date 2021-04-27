@@ -936,22 +936,32 @@ shinyServer(function(input, output, session) {
         icon = icon("arrow-right")
       ), id = "goSeuratNotification")
       
-      #Normalize - todo
+      #Normalize Data
       shinyjs::enable(selector = "div[value='Normalize Data']")
       updateCollapse(session = session, "SeuratUI", style = list("Normalize Data" = "success"))
+      normalizeParams <- metadata(vals$counts)$seurat$sctk$report$normalizeParams
+      updateSelectInput(session, "normalization_method", selected = normalizeParams$normalizationMethod)
+      updateTextInput(session, "scale_factor", value = normalizeParams$scaleFactor)
       
-      #Scale - todo
+      #Scale Data
       shinyjs::enable(selector = "div[value='Scale Data']")
       updateCollapse(session = session, "SeuratUI", style = list("Scale Data" = "success"))
+      scaleParams <- metadata(vals$counts)$seurat$sctk$report$scaleParams
+      updateSelectInput(session, "model.use", selected = scaleParams$model)
       
-      #HVG - plot done, but need to add labels and settings
-        output$plot_hvg <- renderPlotly({
-          plotly::ggplotly(seuratPlotHVG(vals$counts))
-        })
-        shinyjs::enable(selector = "div[value='Highly Variable Genes']")
-        updateCollapse(session = session, "SeuratUI", style = list("Highly Variable Genes" = "success"))
+      #HVG
+      hvgParams <- metadata(vals$counts)$seurat$sctk$report$hvgParams
+      output$plot_hvg <- renderPlotly({
+        plotly::ggplotly(seuratPlotHVG(vals$counts, labelPoints = hvgParams$labelPoints))
+      })
+      shinyjs::enable(selector = "div[value='Highly Variable Genes']")
+      updateCollapse(session = session, "SeuratUI", style = list("Highly Variable Genes" = "success"))
+      updateSelectInput(session, "hvg_method", selected = hvgParams$hvgMethod)
+      updateTextInput(session, "hvg_no_features", value = hvgParams$hvgNumber)
+      updateTextInput(session, "hvg_no_features_view", value = hvgParams$labelPoints)
       
       #DR
+      pcaParams <- metadata(vals$counts)$seurat$sctk$report$pcaParams
       shinyjs::enable(selector = "div[value='Dimensionality Reduction']")
       updateCollapse(session = session, "SeuratUI", style = list("Dimensionality Reduction" = "success"))
       
@@ -1006,7 +1016,7 @@ shinyServer(function(input, output, session) {
       })
 
 
-          updateNumericInput(session = session, inputId = "pca_significant_pc_counter", value = singleCellTK:::.computeSignificantPC(vals$counts))
+          #updateNumericInput(session = session, inputId = "pca_significant_pc_counter", value = singleCellTK:::.computeSignificantPC(vals$counts))
           # output$plot_elbow_pca <- renderPlotly({
           #   metadata(inSCE)$seurat$plots$elbow
           # })
@@ -1017,7 +1027,7 @@ shinyServer(function(input, output, session) {
           })
           
           output$pca_significant_pc_output <- renderText({
-            paste("<p>Number of significant components suggested by ElbowPlot: <span style='color:red'>", singleCellTK:::.computeSignificantPC(vals$counts)," </span> </p> <hr>")
+            paste("<p>Number of significant components suggested by ElbowPlot: <span style='color:red'>", pcaParams$significant_PC," </span> </p> <hr>")
           })
 
           # output$plot_jackstraw_pca <- renderPlotly({
@@ -1033,9 +1043,14 @@ shinyServer(function(input, output, session) {
           #   metadata(inSCE)$seurat$plots$heatmap
           # })
           
-          #find solution for this
+          updateTextInput(session, "pca_no_components", value = pcaParams$nPCs)
+          updateMaterialSwitch(session, "pca_compute_jackstraw", value = TRUE)
+          updateNumericInput(session, "pca_significant_pc_counter", value = pcaParams$significant_PC)
+          
+          pcHeatmapParams <- metadata(inSCE)$seurat$plots$heatmap
+          pcHeatmapParams$inSCE <- vals$counts
           output$plot_heatmap_pca <- renderPlot({
-            metadata(inSCE)$seurat$plots$heatmap
+            do.call("seuratComputeHeatmap", pcHeatmapParams)  
           })
 
           updatePickerInput(session = session, inputId = "picker_dimheatmap_components_pca", choices = singleCellTK:::.getComponentNames(vals$counts@metadata$seurat$count_pc, "PC"))
@@ -1064,6 +1079,7 @@ shinyServer(function(input, output, session) {
           
       
       #Clustering
+          clusterParams <- metadata(vals$counts)$seurat$sctk$report$clusterParams
           shinyjs::enable(selector = "div[value='Clustering']")
           updateCollapse(session = session, "SeuratUI", style = list("Clustering" = "success"))
           
@@ -1108,6 +1124,7 @@ shinyServer(function(input, output, session) {
           
           shinyjs::show(selector = ".seurat_clustering_plots")
           
+          updateNumericInput(session, "resolution_clustering", value = clusterParams$resolution)
           
       
       #Find Markers
@@ -1174,10 +1191,11 @@ shinyServer(function(input, output, session) {
           updateTabsetPanel(session = session, inputId = "seuratFindMarkerPlotTabset", selected = "Ridge Plot")
           shinyjs::show(selector = ".seurat_findmarker_plots")
           
-          #table
-          # output$findMarkerHeatmapPlotFull <- renderPlot({
-          #   metadata(vals$counts)$seurat$plots$heatmap_complete
-          # })
+          groupHeatmapParams <- metadata(vals$counts)$seurat$plots$groupHeatmapParams
+          groupHeatmapParams$inSCE <- vals$counts
+          output$findMarkerHeatmapPlotFull <- renderPlot({
+            do.call("seuratGenePlot", groupHeatmapParams)
+          })
           
           output$findMarkerHeatmapPlotFullTopText <- renderUI({
             h6(paste("Heatmap plotted across all groups against genes with adjusted p-values <", input$seuratFindMarkerPValAdjInput))
@@ -2176,7 +2194,7 @@ shinyServer(function(input, output, session) {
         length(input$checkboxRowDataToRemove) +
         length(input$checkboxColDataToRemove) +
         length(input$checkboxAltExpToRemove)
-      HTML("<h6><span style='color:red'>", paste0("Warning: You have selected to delete <b>", totalItemsSelected, "</b> data items! This action is inreversible. Press 'Delete' button below to permanently delete this data."), " </span></h6>")
+      HTML("<h6><span style='color:red'>", paste0("Warning: You have selected to delete <b>", totalItemsSelected, "</b> data items! This action is irreversible. Press 'Delete' button below to permanently delete this data."), " </span></h6>")
     }
     else{
       return(NULL)
@@ -2447,6 +2465,7 @@ shinyServer(function(input, output, session) {
     if(length(input$checkboxAssaysToRemove) > 0){
       for(i in seq(input$checkboxAssaysToRemove)){
         expData(vals$counts, input$checkboxAssaysToRemove[i]) <- NULL
+        vals$counts <- expDeleteDataTag(vals$counts, input$checkboxAssaysToRemove[i])
       }
     }
     if(length(input$checkboxRedDimToRemove) > 0){
@@ -2467,12 +2486,14 @@ shinyServer(function(input, output, session) {
     if(length(input$checkboxAltExpToRemove) > 0){
       for(i in seq(input$checkboxAltExpToRemove)){
         altExps(vals$counts)[[input$checkboxAltExpToRemove[i]]] <- NULL
+        vals$counts <- expDeleteDataTag(vals$counts, input$checkboxAltExpToRemove[i])
       }
     }
     updateAssayInputs()
     updateReddimInputs()
     updateColDataNames()
     updateAltExpInputs()
+    updateCheckboxGroupInput(session, "checkboxAssaysToRemove", selected = NULL)
   })
 
   output$dimRedNameUI <- renderUI({
@@ -6542,7 +6563,7 @@ shinyServer(function(input, output, session) {
     })
     withProgress(message = "Plotting HVG", max = 1, value = 1, {
       output$plot_hvg <- renderPlotly({
-        plotly::ggplotly(seuratPlotHVG(vals$counts))
+        plotly::ggplotly(seuratPlotHVG(vals$counts, input$hvg_no_features_view))
       })
     })
     updateCollapse(session = session, "SeuratUI", style = list("Highly Variable Genes" = "success"))
@@ -7083,9 +7104,9 @@ shinyServer(function(input, output, session) {
        DoHeatmap(seuratObject, features = top10markers$gene.id)
      })
 
-     output$findMarkerHeatmapPlotFullTopText <- renderUI({
-       h6(paste("Heatmap plotted across all groups against genes with adjusted p-values <", input$seuratFindMarkerPValAdjInput))
-     })
+     # output$findMarkerHeatmapPlotFullTopText <- renderUI({
+     #   h6(paste("Heatmap plotted across all groups against genes with adjusted p-values <", input$seuratFindMarkerPValAdjInput))
+     # })
 
     showNotification("Find Markers Complete")
 
@@ -7165,6 +7186,35 @@ shinyServer(function(input, output, session) {
     #   dataframe = metadata(vals$counts)$seuratMarkers
     # )
 
+  })
+  
+  observeEvent(input$findMarkerHeatmapPlotFullNumericRun,{
+    ##df <- metadata(vals$counts)$seuratMarkers[which(metadata(vals$counts)$seuratMarkers$p_val_adj < 0.05, arr.ind = TRUE),]
+    df <- metadata(vals$counts)$seuratMarkers
+    seuratObject <- convertSCEToSeurat(vals$counts, scaledAssay = "seuratScaledData")
+    indices <- list()
+    cells <- list()
+    groups <- unique(colData(vals$counts)[[input$seuratFindMarkerSelectPhenotype]])
+    for(i in seq(length(groups))){
+      indices[[i]] <- which(colData(vals$counts)[[input$seuratFindMarkerSelectPhenotype]] == groups[i], arr.ind = TRUE)
+      cells[[i]] <- colnames(vals$counts)[indices[[i]]]
+      cells[[i]] <- lapply(
+        X = cells[[i]],
+        FUN = function(t) gsub(
+          pattern = "_",
+          replacement = "-",
+          x = t,
+          fixed = TRUE)
+      )
+      Idents(seuratObject, cells = cells[[i]]) <- groups[i]
+    }
+    topMarkers <- data.frame(df %>% group_by(cluster) %>% top_n(input$findMarkerHeatmapPlotFullNumeric, avg_logFC))
+    if(nrow(topMarkers) > (input$findMarkerHeatmapPlotFullNumeric * length(groups))){
+      topMarkers <- data.frame(topMarkers %>% group_by(cluster) %>% top_n(input$findMarkerHeatmapPlotFullNumeric, -p_val_adj))
+    }
+    output$findMarkerHeatmapPlotFull <- renderPlot({
+      DoHeatmap(seuratObject, features = topMarkers$gene.id)
+    })
   })
 
   observe({

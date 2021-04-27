@@ -107,10 +107,17 @@ Selected Resolution for Clustering: **`r seurat.selected.resolution`** <br>
 ## Normalization
 The global-scaling normalization method, "LogNormalize" was used to normalize the gene expression measurements for each cell by the total expression, multiplied by a scale factor of 10,000 (default), and log-transform the results.
 ```{r Seurat Normalization, message=FALSE}
-data <- seuratNormalizeData(
+normalizeParams <- list(
   inSCE = data,
+  normalizationMethod = "LogNormalize",
+  scaleFactor = 10000,
   verbose = FALSE
 )
+data <- do.call("seuratNormalizeData", normalizeParams)
+```
+```{r, include=FALSE}
+normalizeParams$inSCE <- NULL
+metadata(data)$seurat$sctk$report$normalizeParams <- normalizeParams
 ```
 
 The selected assay **`r assayNames(data)[1]`** was normalized using **LogNormalize** method and the output normalized assay was stored back into the input object to be used in the downstream analysis.
@@ -123,15 +130,21 @@ Highly variables genes for downstream analysis were found by calculating the ave
 A scatter plot of standardized variance (y-axis) versus average expression (x-axis) for each of the gene is visualized below. Top 10 most variable genes are labeled with their gene symbols and the points (genes) highlighted in red are considered as highly variable genes.
 
 ```{r Seurat Variable Genes, warning=FALSE}
-data <- seuratFindHVG(
+hvgParams <- list(
   inSCE = data,
   hvgMethod = "vst", 
   hvgNumber = seurat.selected.features.numbers)
+data <- do.call("seuratFindHVG", hvgParams)
 
 num.variable.genes <- length(seuratVariableFeatures(data))
 
 Labeled_Variable_data <- seuratPlotHVG(inSCE = data, labelPoints = 10)
 Labeled_Variable_data
+```
+```{r, include=FALSE}
+hvgParams$inSCE <- NULL
+hvgParams$labelPoints <- 10
+metadata(data)$seurat$sctk$report$hvgParams <- hvgParams
 ```
 
 A total of **`r formatC(num.variable.genes, format="d", big.mark=",")`** top variable genes were selected for downstream analysis using the **vst** method. The **standardized variance** to **average expression** plot is visualized above where the **top `r formatC(num.variable.genes, format="d", big.mark=",")`** selected genes are highlighted in red and the **top 10** genes are labeled with their gene symbols. 
@@ -139,7 +152,13 @@ A total of **`r formatC(num.variable.genes, format="d", big.mark=",")`** top var
 ## Scaling
 The previous step identifies and selects the top highly variable genes that represent the majority of the total variation (both biological and unwanted sources) in the dataset. As we intend to regress out the unwanted sources of the variation in the data and focus on the variation that most reflects the biological variability, we scale this variation with the expression level of the data. This approach shifts the mean expression for each gene across cells to 0, and scales the variance for expression of each gene across cells to 1.
 ```{r Seurat Scaling Data}
-data <- seuratScaleData(inSCE = data, verbose = FALSE)
+data <- seuratScaleData(inSCE = data, model = "linear", verbose = FALSE)
+```
+```{r, include=FALSE}
+scaleParams <- list(
+  model = "linear", 
+  verbose = FALSE)
+metadata(data)$seurat$sctk$report$scaleParams <- scaleParams
 ```
 
 The data was scaled using **linear** transformation method. It was further **centered** and **trimmed** to a maximum value of **10** and stored back into the input data for downstream analysis.
@@ -148,19 +167,22 @@ The data was scaled using **linear** transformation method. It was further **cen
 Now we perform **principal component analysis** on the scaled data using the variable genes as input. However, **determining how many components to include in the downstream analysis is an important step**. A resampling **JackStraw** procedure ([Macosko et al.](http://www.cell.com/abstract/S0092-8674(15)00549-8)) is implemented to randomly permute (100 times) PCA reruns on a subset of the data (1% by default) to construct a 'null distribution' of gene scores. To overcome the extensive technical noise in any single feature of the scRNA-seq data, Seurat clusters cells based on their PCA scores, with each principal component essentially representing a 'metafeature' that combines information across a correlated feature set. Another heuristic method of determining how many components to use is to look at the plot of the standard deviations of the principal components known as the **Elbow Plot**.
 
 ```{r Seurat PCAs, JackStraw and Elbow plot, warning=FALSE}
-data <- seuratPCA(
+pcaParams <- list(
   inSCE = data,
   nPCs = initial.PC.numbers,
   verbose = FALSE)
+data <- do.call("seuratPCA", pcaParams)
 
-data <- seuratComputeJackStraw(
+jackStrawParams <- list(
   inSCE = data,
   useAssay = "seuratScaledData",
   dims = initial.PC.numbers,
   numReplicate = 100,
   propFreq = 0.025
 )
+data <- do.call("seuratComputeJackStraw", jackStrawParams)
 ```
+
 
 Below we visualize the principal components from the PCA computation and see how much of heterogeneity is captured by each of the principal component and try to compute that how many of these components can be considered significant for downstream analysis.
 
@@ -196,16 +218,33 @@ if (!exists("significant_PC") || significant_PC == 0){
 
 PC.separated.height <- 3.5 * ceiling(initial.PC.numbers/3)
 ```
+```{r, include=FALSE}
+pcaParams$inSCE <- NULL
+pcaParams$significant_PC <- significant_PC
+metadata(data)$seurat$sctk$report$pcaParams <- pcaParams
+```
 
 
 ### PC Heatmap {-}
 The heatmap allows for easy exploration of the primary sources of heterogeneity. Both cells and features are ordered according to their PCA scores. This supervised analysis is still a valuable tool for exploring correlated feature sets.
 
 ```{r Seurat PC Heatmap, fig.height = PC.separated.height, fig.width = 15, warning=FALSE}
-heatmap <- seuratComputeHeatmap(data, useAssay = "seuratScaledData", useReduction = "pca", dims = initial.PC.numbers, balanced = TRUE, ncol = 4, fast = FALSE)
+pcHeatmapParams <- list(
+  inSCE = data,
+  useAssay = "seuratScaledData",
+  useReduction = "pca",
+  dims = initial.PC.numbers,
+  balanced = TRUE,
+  ncol = 4,
+  fast = FALSE
+)
+heatmap <- do.call("seuratComputeHeatmap", pcHeatmapParams)  
 heatmap
 ```
-
+```{r, include=FALSE}
+pcHeatmapParams$inSCE <- NULL
+metadata(data)$seurat$plots$heatmap <- pcHeatmapParams
+```
 
 ## {-}
 
@@ -523,7 +562,12 @@ Among different options of resolution above, a final resolution of **`r seurat.s
 data <- seuratFindClusters(data, useReduction = "pca", resolution = seurat.selected.resolution, verbose = FALSE)
 numClusters <- length(unique(colData(data)[[paste0("Seurat_louvain_Resolution", seurat.selected.resolution)]]))
 ```
-
+```{r, include=FALSE}
+clusterParams <- list(
+  resolution = seurat.selected.resolution
+)
+metadata(data)$seurat$sctk$report$clusterParams <- clusterParams
+```
 ### tSNE {.tabset .tabset-fade -}
 tSNE (Non-linear Dimensional Reduction) is a dimension reduction technique that places cells with similar local neighborhoods in high-dimensional space together in low-dimensional space. tSNE has been the default method for such task in the past years. Using default parameters, a final resolution of **`r seurat.selected.resolution`** and **`r significant_PC`** PCs was chosen to better reflect the data, visualized in the following tSNE.
 
@@ -535,8 +579,6 @@ data <- seuratRunTSNE(data, useReduction = "pca", dims = significant_PC)
 Seurat clusters cells and assigned a cluster label to each cell. The following plot is the tSNE representation of the clustering results, colored by the cluster labels.
 ```{r Seurat tsne clusters 0.6}
 tSNE_coloredby_cluster <- seuratReductionPlot(data, useReduction = "tsne", showLegend = TRUE)
-tSNE_coloredby_cluster <- tSNE_coloredby_cluster + annotate(geom = "text", x = mean(tSNE_coloredby_cluster$data[tSNE_coloredby_cluster$data$ident == 0,]$tSNE_1), y =  mean(tSNE_coloredby_cluster$data[tSNE_coloredby_cluster$data$ident == 0,]$tSNE_2), label = "Cluster 0", hjust = "left") + annotate(geom = "text", x = mean(tSNE_coloredby_cluster$data[tSNE_coloredby_cluster$data$ident == 1,]$tSNE_1), y =  mean(tSNE_coloredby_cluster$data[tSNE_coloredby_cluster$data$ident == 1,]$tSNE_2), label = "Cluster 1", hjust = "left") + annotate(geom = "text", x = mean(tSNE_coloredby_cluster$data[tSNE_coloredby_cluster$data$ident == 2,]$tSNE_1), y =  mean(tSNE_coloredby_cluster$data[tSNE_coloredby_cluster$data$ident == 2,]$tSNE_2), label = "Cluster 2", hjust = "left") + annotate(geom = "text", x = mean(tSNE_coloredby_cluster$data[tSNE_coloredby_cluster$data$ident == 3,]$tSNE_1), y =  mean(tSNE_coloredby_cluster$data[tSNE_coloredby_cluster$data$ident == 3,]$tSNE_2), label = "Cluster 3", hjust = "left") + annotate(geom = "text", x = mean(tSNE_coloredby_cluster$data[tSNE_coloredby_cluster$data$ident == 4,]$tSNE_1), y =  mean(tSNE_coloredby_cluster$data[tSNE_coloredby_cluster$data$ident == 4,]$tSNE_2), label = "Cluster 4", hjust = "left") + annotate(geom = "text", x = mean(tSNE_coloredby_cluster$data[tSNE_coloredby_cluster$data$ident == 5,]$tSNE_1), y =  mean(tSNE_coloredby_cluster$data[tSNE_coloredby_cluster$data$ident == 5,]$tSNE_2), label = "Cluster 5", hjust = "left")
-metadata(data)$seurat$plots$tsne <- tSNE_coloredby_cluster
 tSNE_coloredby_cluster
 ```
 
@@ -587,8 +629,6 @@ data <- seuratRunUMAP(data, useReduction = "pca", dims = significant_PC, verbose
 Seurat clusters cells and assigned a cluster label to each cell. The following plot is the UMAP representation of the clustering results, colored by the cluster labels.
 ```{r Seurat UMAP clusters}
 UMAP_coloredby_cluster <- seuratReductionPlot(data, useReduction = "umap", showLegend = TRUE)
-UMAP_coloredby_cluster <- UMAP_coloredby_cluster + annotate(geom = "text", x = mean(UMAP_coloredby_cluster$data[UMAP_coloredby_cluster$data$ident == 0,]$UMAP_1), y =  mean(UMAP_coloredby_cluster$data[UMAP_coloredby_cluster$data$ident == 0,]$UMAP_2), label = "Cluster 0", hjust = "left") + annotate(geom = "text", x = mean(UMAP_coloredby_cluster$data[UMAP_coloredby_cluster$data$ident == 1,]$UMAP_1), y =  mean(UMAP_coloredby_cluster$data[UMAP_coloredby_cluster$data$ident == 1,]$UMAP_2), label = "Cluster 1", hjust = "left") + annotate(geom = "text", x = mean(UMAP_coloredby_cluster$data[UMAP_coloredby_cluster$data$ident == 2,]$UMAP_1), y =  mean(UMAP_coloredby_cluster$data[UMAP_coloredby_cluster$data$ident == 2,]$UMAP_2), label = "Cluster 2", hjust = "left") + annotate(geom = "text", x = mean(UMAP_coloredby_cluster$data[UMAP_coloredby_cluster$data$ident == 3,]$UMAP_1), y =  mean(UMAP_coloredby_cluster$data[UMAP_coloredby_cluster$data$ident == 3,]$UMAP_2), label = "Cluster 3", hjust = "left") + annotate(geom = "text", x = mean(UMAP_coloredby_cluster$data[UMAP_coloredby_cluster$data$ident == 4,]$UMAP_1), y =  mean(UMAP_coloredby_cluster$data[UMAP_coloredby_cluster$data$ident == 4,]$UMAP_2), label = "Cluster 4", hjust = "left") + annotate(geom = "text", x = mean(UMAP_coloredby_cluster$data[UMAP_coloredby_cluster$data$ident == 5,]$UMAP_1), y =  mean(UMAP_coloredby_cluster$data[UMAP_coloredby_cluster$data$ident == 5,]$UMAP_2), label = "Cluster 5", hjust = "left")
-metadata(data)$seurat$plots$umap <- UMAP_coloredby_cluster
 UMAP_coloredby_cluster
 ```
 
@@ -652,8 +692,8 @@ space <- "
 "
 top9 <- data.frame(data.markers %>% group_by(cluster) %>% top_n(9, avg_logFC))
 numClusters <- length(unique(data.markers$cluster))
-for (currentCluster in 0:(numClusters-1)) {
-  cat(sprintf(template, paste0("Cluster ", unique(data.markers$cluster)[currentCluster])))
+for (currentCluster in 1:(numClusters)) {
+  cat(sprintf(template, paste0("Cluster ", as.character(unique(data.markers$cluster))[currentCluster])))
   for (inside_count in 1:9){
     current_feature <- top9$gene.id[(9*currentCluster+inside_count)]
     cat(sprintf(template_inside, paste0(current_feature)))
@@ -669,7 +709,7 @@ for (currentCluster in 0:(numClusters-1)) {
 A **ridge plot** visualizes the **expression level** of a particular **gene marker in all cells of the data** separated by **group** in the form of ridges. Here we visualize the **ridge plots** of the **top 9 marker genes** separated by **group**. Use the drop-down box to view top 9 markers from each of the group.
 ```{r DEG RidgePlot, echo = TRUE, results = "asis", fig.height =9, fig.width = 9}
 
-template <- "##### %s {.tabset .tabset-fade}
+template <- "##### %s {.tabset .tabset-fade -}
 "
 template_inside <- "###### %s {-}
 "
@@ -678,8 +718,8 @@ space <- "
 "
 top9 <- data.frame(data.markers %>% group_by(cluster) %>% top_n(9, avg_logFC))
 numClusters <- length(unique(data.markers$cluster))
-for (currentCluster in 0:(numClusters-1)) {
-  cat(sprintf(template, paste0("Cluster ", currentCluster)))
+for (currentCluster in 1:(numClusters)) {
+  cat(sprintf(template, paste0("Cluster ", as.character(unique(data.markers$cluster))[currentCluster])))
   for (inside_count in 1:9){
     current_feature <- top9$gene.id[(9*currentCluster+inside_count)]
     cat(sprintf(template_inside, paste0(current_feature)))
@@ -694,7 +734,7 @@ for (currentCluster in 0:(numClusters-1)) {
 A **violin plot** visualizes the **expression level** of a particular **gene marker in all cells of the data** separated by **group**. Here we visualize the **violin plots** of the **top 9 marker genes** separated by **group**. Use the drop-down box to view top 9 markers from each of the group.
 ```{r DEG ViolinPlot, echo = TRUE, results = "asis", fig.height =9, fig.width = 9}
 
-template <- "##### %s {.tabset .tabset-fade}
+template <- "##### %s {.tabset .tabset-fade -}
 "
 template_inside <- "###### %s {-}
 "
@@ -703,8 +743,8 @@ space <- "
 "
 top9 <- data.frame(data.markers %>% group_by(cluster) %>% top_n(9, avg_logFC))
 numClusters <- length(unique(data.markers$cluster))
-for (currentCluster in 0:(numClusters-1)) {
-  cat(sprintf(template, paste0("Cluster ", currentCluster)))
+for (currentCluster in 1:(numClusters)) {
+  cat(sprintf(template, paste0("Cluster ", as.character(unique(data.markers$cluster))[currentCluster])))
   for (inside_count in 1:9){
     current_feature <- top9$gene.id[(9*currentCluster+inside_count)]
     cat(sprintf(template_inside, paste0(current_feature)))
@@ -718,23 +758,34 @@ for (currentCluster in 0:(numClusters-1)) {
 
 #### Dot Plot {-}
 A **dot plot** visualizes the **change in the expression levels** of a particular **gene marker in all cells of the data** separated by **group** in the form of dots where the color of the dots indicate the expression level of that gene in a class and the size of the dot indicates the total percentage of the cells in that class.
-```{r DEG DotPlot}
+```{r DEG DotPlot, fig.width=15, fig.height=8}
 top9 <- data.frame(data.markers %>% group_by(cluster) %>% top_n(9, avg_logFC))
 top9 <- top9$gene.id
-seuratGenePlot(data, plotType = "dot", features = top9, groupVariable = group, ncol = 1, cols = c("grey", "blue")) + theme(axis.text.x = element_text(angle = 90))
+seuratGenePlot(data, plotType = "dot", features = top9, groupVariable = group, ncol = 1, cols = c("grey", "blue")) + theme(axis.text.x = element_text(angle = 90, size = 7), legend.text = element_text(size = 8), legend.key.size = unit(0.4, "cm"), legend.position = "top")
 ```
 
 #### Heatmap Plot {-}
 
-```{r DEG HeatmapPlot}
-top9 <- data.frame(data.markers %>% group_by(cluster) %>% top_n(9, avg_logFC))
-metadata(data)$seurat$plots$top9 <- top9
-metadata(data)$seurat$plots$group <- group
-top9 <- top9$gene.id
-heatmap_complete <- seuratGenePlot(data, plotType = "heatmap", features = top9, groupVariable = group, ncol = 1, cols = c("grey", "blue"))
-metadata(data)$seurat$plots$heatmap_complete <- heatmap_complete
+```{r DEG HeatmapPlot, fig.width=15, fig.height=15}
+top9DF <- data.frame(data.markers %>% group_by(cluster) %>% top_n(9, avg_logFC))
+top9 <- top9DF$gene.id
+groupHeatmapParams <- list(inSCE = data,
+                           plotType = "heatmap", 
+                           features = top9, 
+                           groupVariable = group, 
+                           ncol = 1, 
+                           cols = c("grey", "blue"))
+heatmap_complete <- do.call("seuratGenePlot", groupHeatmapParams)
+heatmap_complete <- heatmap_complete + theme(axis.text.y = element_text(size = 8), legend.text = element_text(size = 8), legend.key.size = unit(0.5, "cm"), legend.position = "top")
 heatmap_complete
 ```
+```{r, include=FALSE}
+metadata(data)$seurat$plots$top9 <- top9DF
+metadata(data)$seurat$plots$group <- group
+groupHeatmapParams$inSCE <- NULL
+metadata(data)$seurat$plots$groupHeatmapParams <- groupHeatmapParams
+```
+
 
 ### Table of Top Markers by Group
 List of top genes for each clusters are saved as **top_genes_group.csv** which is available within the working directory.
@@ -782,8 +833,8 @@ space <- "
 "
 top9 <- data.frame(data.markers %>% group_by(cluster) %>% top_n(9, avg_logFC))
 numClusters <- length(unique(data.markers$cluster))
-for (currentCluster in 0:(numClusters-1)) {
-  cat(sprintf(template, paste0("Cluster ", currentCluster)))
+for (currentCluster in 1:(numClusters)) {
+  cat(sprintf(template, paste0("Cluster ", as.character(unique(data.markers$cluster))[currentCluster])))
   for (inside_count in 1:9){
     current_feature <- top9$gene.id[(9*currentCluster+inside_count)]
     cat(sprintf(template_inside, paste0(current_feature)))
@@ -799,7 +850,7 @@ for (currentCluster in 0:(numClusters-1)) {
 A **ridge plot** visualizes the **expression level** of a particular **gene marker in all cells of the data** separated by **clusters** in the form of ridges. Here we visualize the **ridge plots** of the **top 9 marker genes** across all **clusters**. Use the drop-down box to view top 9 markers from each of the cluster.
 ```{r Seurat Top Markers by cluster ridge, echo = TRUE, results = "asis", fig.height =9, fig.width = 9}
 
-template <- "##### %s {.tabset .tabset-fade}
+template <- "##### %s {.tabset .tabset-fade -}
 "
 template_inside <- "###### %s {-}
 "
@@ -808,8 +859,8 @@ space <- "
 "
 top9 <- data.frame(data.markers %>% group_by(cluster) %>% top_n(9, avg_logFC))
 numClusters <- length(unique(data.markers$cluster))
-for (currentCluster in 0:(numClusters-1)) {
-  cat(sprintf(template, paste0("Cluster ", currentCluster)))
+for (currentCluster in 1:(numClusters)) {
+  cat(sprintf(template, paste0("Cluster ", as.character(unique(data.markers$cluster))[currentCluster])))
   for (inside_count in 1:9){
     current_feature <- top9$gene.id[(9*currentCluster+inside_count)]
     cat(sprintf(template_inside, paste0(current_feature)))
@@ -824,7 +875,7 @@ for (currentCluster in 0:(numClusters-1)) {
 A **violin plot** visualizes the **expression level** of a particular **gene marker in all cells of the data** separated by **clusters**. Here we visualize the **violin plots** of the **top 9 marker genes** separated across all **clusters**. Use the drop-down box to view top 9 markers from each of the group.
 ```{r Seurat Top Markers by cluster violin, echo = TRUE, results = "asis", fig.height =9, fig.width = 9}
 
-template <- "##### %s {.tabset .tabset-fade}
+template <- "##### %s {.tabset .tabset-fade -}
 "
 template_inside <- "###### %s {-}
 "
@@ -833,8 +884,8 @@ space <- "
 "
 top9 <- data.frame(data.markers %>% group_by(cluster) %>% top_n(9, avg_logFC))
 numClusters <- length(unique(data.markers$cluster))
-for (currentCluster in 0:(numClusters-1)) {
-  cat(sprintf(template, paste0("Cluster ", currentCluster)))
+for (currentCluster in 1:(numClusters)) {
+  cat(sprintf(template, paste0("Cluster ", as.character(unique(data.markers$cluster))[currentCluster])))
   for (inside_count in 1:9){
     current_feature <- top9$gene.id[(9*currentCluster+inside_count)]
     cat(sprintf(template_inside, paste0(current_feature)))
@@ -848,18 +899,18 @@ for (currentCluster in 0:(numClusters-1)) {
 
 #### Dot Plot {-}
 A **dot plot** visualizes the **change in the expression levels** of a particular **gene marker in all cells of the data** separated by **clusters** in the form of dots where the color of the dots indicate the expression level of that gene in a cluster and the size of the dot indicates the total percentage of the cells in that cluster.
-```{r DEG Clusters Dotplot}
+```{r DEG Clusters Dotplot, fig.width=15, fig.height=8}
 top9 <- data.frame(data.markers %>% group_by(cluster) %>% top_n(9, avg_logFC))
 top9 <- top9$gene.id
-seuratGenePlot(data, plotType = "dot", features = top9, groupVariable = paste0("Seurat_louvain_Resolution", seurat.selected.resolution), ncol = 1, cols = c("grey", "blue")) + theme(axis.text.x = element_text(angle = 90))
+seuratGenePlot(data, plotType = "dot", features = top9, groupVariable = paste0("Seurat_louvain_Resolution", seurat.selected.resolution), ncol = 1, cols = c("grey", "blue")) + theme(axis.text.x = element_text(angle = 90, size = 7), legend.text = element_text(size = 8), legend.key.size = unit(0.4, "cm"), legend.position = "top")
 ```
 
 #### Heatmap Plot {-}
 
-```{r DEG Clusters HeatmapPlot}
+```{r DEG Clusters HeatmapPlot, fig.width=15, fig.height=15}
 top9 <- data.frame(data.markers %>% group_by(cluster) %>% top_n(9, avg_logFC))
 top9 <- top9$gene.id
-seuratGenePlot(data, plotType = "heatmap", features = top9, groupVariable = paste0("Seurat_louvain_Resolution", seurat.selected.resolution), ncol = 1, cols = c("grey", "blue"))
+seuratGenePlot(data, plotType = "heatmap", features = top9, groupVariable = paste0("Seurat_louvain_Resolution", seurat.selected.resolution), ncol = 1, cols = c("grey", "blue")) + theme(axis.text.y = element_text(size = 8), legend.text = element_text(size = 8), legend.key.size = unit(0.5, "cm"), legend.position = "top")
 ```
 
 ### Table of Top Markers by Cluster
@@ -905,7 +956,7 @@ if (numMarkerGenes == 0){
 
 ```{r Seurat Custom markers, echo=TRUE, results = "asis", fig.height = 10, fig.width = 10, eval = custom_eval, echo = custom_eval}
 
-template <- "### %s {.tabset .tabset-fade}
+template <- "### %s {.tabset .tabset-fade -}
 "
 template_inside <- "#### %s {-}
 "
