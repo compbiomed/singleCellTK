@@ -89,6 +89,7 @@ runNormalization <- function(inSCE,
           useAssay = useAssay,
           verbose = verbose
         )
+        tag <- "transformed"
       }
       else{
         tempSCE <- seuratNormalizeData(
@@ -99,6 +100,9 @@ runNormalization <- function(inSCE,
           scaleFactor = seuratScaleFactor,
           verbose = verbose
         )
+        if(normalizationMethod %in% c("LogNormalize", "CLR")){
+          tag <- "transformed"
+        }
       }
       tempAssay <- assay(tempSCE, outAssayName)
     }
@@ -112,6 +116,9 @@ runNormalization <- function(inSCE,
         )
       )
       tempAssay <- assay(tempSCE, outAssayName)
+      if(normalizationMethod == "logNormCounts"){
+        tag <- "transformed"
+      }
     }
     else{
       stop("Specified normalization method '", normalizationMethod, "' not found.")

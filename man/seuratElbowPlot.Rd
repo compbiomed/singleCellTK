@@ -9,6 +9,7 @@ seuratElbowPlot(
   inSCE,
   significantPC = NULL,
   reduction = "pca",
+  ndims = 20,
   externalReduction = NULL,
   interactive = TRUE
 )
@@ -19,6 +20,8 @@ seuratElbowPlot(
 \item{significantPC}{Number of significant principal components to plot. This is used to alter the color of the points for the corresponding PCs. If \code{NULL}, all points will be the same color. Default \code{NULL}.}
 
 \item{reduction}{Reduction to use for elbow plot generation. Either \code{"pca"} or \code{"ica"}. Default \code{"pca"}.}
+
+\item{ndims}{Number of components to use. Default \code{20}.}
 
 \item{externalReduction}{Pass DimReduc object if PCA/ICA computed through other libraries. Default \code{NULL}.}
 

@@ -122,6 +122,9 @@ Scales the input sce object according to the input parameters" />
       <a href="../articles/cnsl_feature_selection.html">Feature Selection</a>
     </li>
     <li>
+      <a href="../articles/cnsl_dimensionality_reduction.html">Dimensionality Reduction</a>
+    </li>
+    <li>
       <a href="../articles/cnsl_clustering.html">Clustering</a>
     </li>
     <li>
@@ -146,19 +149,16 @@ Scales the input sce object according to the input parameters" />
   </a>
   <ul class="dropdown-menu" role="menu">
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Import</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Data</a>
       <ul class="dropdown-menu" role="menu">
         <li>
-          <a href="../articles/ui_import_data.html">Data</a>
+          <a href="../articles/ui_import_data.html">Import Data</a>
         </li>
         <li>
-          <a href="../articles/ui_import_genesets.html">Gene Sets</a>
+          <a href="../articles/ui_import_genesets.html">Import Gene Sets</a>
         </li>
         <li>
-          <a href="../articles/ui_import_cell_annotation.html">Cell Annotation</a>
-        </li>
-        <li>
-          <a href="../articles/ui_import_feature_annotation.html">Feature Annotation</a>
+          <a href="../articles/ui_import_annotation.html">Annotation</a>
         </li>
         <li>
           <a href="../articles/ui_export_data.html">Export Data</a>
@@ -197,7 +197,7 @@ Scales the input sce object according to the input parameters" />
           <a href="../articles/ui_feature_selection.html">Feature Selection</a>
         </li>
         <li>
-          <a href="../articles/ui_dimred.html">Dimensionality Reduction</a>
+          <a href="../articles/ui_dimemsionality_reduction.html">Dimensionality Reduction</a>
         </li>
       </ul>
     </li>
@@ -215,8 +215,16 @@ Scales the input sce object according to the input parameters" />
         </li>
       </ul>
     </li>
-    <li>
-      <a href="../articles/ui_heatmap.html">Generic Heatmap</a>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Visualization</a>
+      <ul class="dropdown-menu" role="menu">
+        <li>
+          <a href="../articles/ui_cellViewer.html">cellViewer</a>
+        </li>
+        <li>
+          <a href="../articles/ui_heatmap.html">Generic Heatmap</a>
+        </li>
+      </ul>
     </li>
   </ul>
 </li>
@@ -257,12 +265,13 @@ Scales the input sce object according to the input parameters</p>
 
     <pre class="usage"><span class='fu'>seuratScaleData</span><span class='op'>(</span>
   <span class='va'>inSCE</span>,
-  <span class='va'>useAssay</span>,
+  useAssay <span class='op'>=</span> <span class='st'>"seuratNormData"</span>,
   scaledAssayName <span class='op'>=</span> <span class='st'>"seuratScaledData"</span>,
   model <span class='op'>=</span> <span class='st'>"linear"</span>,
   scale <span class='op'>=</span> <span class='cn'>TRUE</span>,
   center <span class='op'>=</span> <span class='cn'>TRUE</span>,
-  scaleMax <span class='op'>=</span> <span class='fl'>10</span>
+  scaleMax <span class='op'>=</span> <span class='fl'>10</span>,
+  verbose <span class='op'>=</span> <span class='cn'>TRUE</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -295,6 +304,11 @@ Scales the input sce object according to the input parameters</p>
     <tr>
       <th>scaleMax</th>
       <td><p>maximum numeric value to return for scaled data. Default <code>10</code>.</p></td>
+    </tr>
+    <tr>
+      <th>verbose</th>
+      <td><p>Logical value indicating if informative messages should 
+be displayed. Default is <code>TRUE</code>.</p></td>
     </tr>
     </table>
 

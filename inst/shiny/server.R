@@ -66,6 +66,7 @@ shinyServer(function(input, output, session) {
   #Update all of the columns that depend on pvals columns
   updateColDataNames <- function(){
     pdataOptions <- colnames(colData(vals$counts))
+    updateSelectInput(session, "qcSampleSelect", choices = pdataOptions)
     updateSelectInput(session, "filteredSample",
                       choices = c("none", pdataOptions))
     updateSelectInput(session, "deleterowdatacolumn",
@@ -215,29 +216,30 @@ shinyServer(function(input, output, session) {
 
   updateAssayInputs <- function(){
     currassays <- names(assays(vals$counts))
-    updateSelectInputTag(session, "dimRedAssaySelect", recommended = c("normalized", "scaled"), redDims = TRUE)
-    updateSelectInputTag(session, "dimRedAssaySelect_tsneUmap", recommended = c("normalized", "scaled"))
+    updateSelectInputTag(session, "dimRedAssaySelect", recommended = c("transformed", "normalized", "scaled"),
+                         choices = expDataNames(vals$counts), redDims = TRUE)
+    updateSelectInputTag(session, "dimRedAssaySelect_tsneUmap", recommended = c("transformed", "normalized", "scaled"))
     updateSelectInputTag(session, "batchCheckAssay", choices = currassays)
     updateSelectInputTag(session, "batchCheckOrigAssay", choices = currassays)
     updateSelectInputTag(session, "clustScranSNNMat", label = "Select Input Matrix:",
                          choices = expDataNames(vals$counts),
                          recommended = "redDims", redDims = TRUE)
     if (is.null(input$deMethod)) {
-      updateSelectInputTag(session, "deAssay", recommended = c("normalized"))
+      updateSelectInputTag(session, "deAssay", recommended = c("transformed"))
     } else if (input$deMethod == "DESeq2") {
       updateSelectInputTag(session, "deAssay", recommended = c("raw"))
     } else {
-      updateSelectInputTag(session, "deAssay", recommended = c("normalized"))
+      updateSelectInputTag(session, "deAssay", recommended = c("transformed"))
     }
     if (is.null(input$fmMethod)) {
-      updateSelectInputTag(session, "fmAssay", recommended = c("normalized"))
+      updateSelectInputTag(session, "fmAssay", recommended = c("transformed"))
     } else if (input$fmMethod == "DESeq2") {
       updateSelectInputTag(session, "fmAssay", recommended = c("raw"))
     } else {
-      updateSelectInputTag(session, "fmAssay", recommended = c("normalized"))
+      updateSelectInputTag(session, "fmAssay", recommended = c("transformed"))
     }
     updateSelectInputTag(session, "fmHMAssay", choices = currassays, selected = input$fmAssay)
-    updateSelectInputTag(session, "pathwayAssay", recommended = c("normalized", "scaled"))
+    updateSelectInputTag(session, "pathwayAssay", recommended = c("transformed", "normalized", "scaled"))
 
     #modifyAssaySelect conditions
     # if(input$assayModifyAction == "log" || input$assayModifyAction == "log1p"){
@@ -250,7 +252,7 @@ shinyServer(function(input, output, session) {
     updateSelectInputTag(session, "normalizeAssaySelect", label = "Select assay to normalize:", recommended = "raw")
 
     updateSelectInputTag(session, "seuratSelectNormalizationAssay", choices = currassays, showTags = FALSE)
-    updateSelectInputTag(session, "assaySelectFS_Norm", recommended = c("normalized", "scaled"))
+    updateSelectInputTag(session, "assaySelectFS_Norm", recommended = c("transformed", "normalized", "scaled"))
     updateSelectInputTag(session, "filterAssaySelect", choices = currassays)
     updateSelectInputTag(session, "qcAssaySelect", recommended = "raw")
     updateSelectInputTag(session, "celdaAssay", choices = currassays)
@@ -264,8 +266,8 @@ shinyServer(function(input, output, session) {
     updateSelectInputTag(session, "cellsAssay", choices = currassays)
     updateSelectInputTag(session, "snapshotAssay", choices = currassays)
     updateSelectInputTag(session, "exportAssay", choices = currassays)
-    updateSelectInputTag(session, "hmAssay")
-    updateSelectInputTag(session, "ctLabelAssay", choices = currassays, recommended = "normalized")
+    updateSelectInputTag(session, "hmAssay", recommended = "transformed")
+    updateSelectInputTag(session, "ctLabelAssay", choices = currassays, recommended = c("transformed"))
     # batch correction assay conditions
     bc.recommended <- NULL
     method.log <- c("FastMNN", "Limma", "MNN")
@@ -274,7 +276,7 @@ shinyServer(function(input, output, session) {
     if (is.null(input$batchCorrMethods)) {
       bc.recommended <- "raw"
     } else if (input$batchCorrMethods %in% method.log) {
-      bc.recommended <- "normalized"
+      bc.recommended <- c("transformed")
     } else if (input$batchCorrMethods %in% method.raw) {
       bc.recommended <- "raw"
     } else if (input$batchCorrMethods %in% method.scale) {
@@ -282,8 +284,18 @@ shinyServer(function(input, output, session) {
     }
     updateSelectInputTag(session, "batchCorrAssay",
                          label = "Select Assay to Correct:",
-                         choices = assayNames(vals$counts),
+                         choices = currassays,
                          recommended = bc.recommended)
+    updateSelectInputTag(session, "AdvancedMethodSelect_Colorby",
+                         label = h5("Advanced Method"),
+                         choices = currassays)
+    updateSelectInputTag(session, "AdvancedMethodSelect_Xaxis",
+                         label = h5("Advanced Method"),
+                         choices = currassays)
+    updateSelectInputTag(session, "AdvancedMethodSelect_Yaxis",
+                         label = h5("Advanced Method"),
+                         choices = currassays)
+
   }
 
 
@@ -321,14 +333,13 @@ shinyServer(function(input, output, session) {
     updateSelectInput(session, "clustVisReddim", choices = currreddim)
     updateSelectInput(session, "clustKMeansReddim", choices = currreddim)
     updateSelectInput(session, "clustSeuratReddim", choices = currreddim)
+    updateSelectInput(session, "QuickAccess",
+                      choices = c(currreddim, "Custom"))
+    updateSelectInput(session, "ApproachSelect_Xaxis", choices = currreddim)
+    updateSelectInput(session, "ApproachSelect_Yaxis", choices = currreddim)
+    updateSelectInput(session, "ApproachSelect_Colorby", choices = currreddim)
   }
 
-  updateAltExpInputs <- function(){
-    options <- altExpNames(vals$counts)
-    updateSelectInput(session, "clustScranSNNAltExp", choices = options)
-    updateSelectInput(session, "dimRedAltExpSelect", choices = options)
-    updateSelectInput(session, "dimRedAltExpSelect_tsneUmap", choices = options)
-  }
   updateEnrichDB <- function(){
     if (internetConnection){
       enrDB <- enrichR::listEnrichrDbs()$libraryName
@@ -895,10 +906,6 @@ shinyServer(function(input, output, session) {
         # updateAssayInputs()
         updateGeneNames()
         updateReddimInputs()
-        updateAltExpInputs()
-        updateSelectInput(session, "qcSampleSelect",
-                          choices = c("None", names(colData(vals$original))),
-                          selected = sampleVar)
         shinyjs::show(id="annotationData")
         js$enableTabs();
       } else {
@@ -919,7 +926,289 @@ shinyServer(function(input, output, session) {
       dbList <- getMSigDBTable()
       geneSetDBChoices <- formatGeneSetDBChoices(dbIDs = dbList$ID, dbCats = dbList$Category_Description)
       updateCheckboxGroupInput(session, 'geneSetDB', choices = geneSetDBChoices)
+
+      updateSeuratUIFromRDS(vals$counts)
     })
+  })
+
+  updateSeuratUIFromRDS <- function(inSCE){
+    if(!is.null(metadata(inSCE)$seurat$plots)){
+      showNotification(HTML("Computation from Seurat Report detected in the input object, therefore the toolkit will now populate the Seurat tab with computated data & plots for further inspection. Click on the button below to directly go the the Seurat tab of the toolkit now! <br><br>"),
+                       type = "message", duration = 0, action = actionBttn(
+        inputId = "goToSeurat",
+        label = "Go to Seurat Curated Workflow",
+        style = "bordered",
+        color = "royal",
+        size = "s",
+        icon = icon("arrow-right")
+      ), id = "goSeuratNotification")
+
+      #Normalize - todo
+      shinyjs::enable(selector = "div[value='Normalize Data']")
+      updateCollapse(session = session, "SeuratUI", style = list("Normalize Data" = "success"))
+
+      #Scale - todo
+      shinyjs::enable(selector = "div[value='Scale Data']")
+      updateCollapse(session = session, "SeuratUI", style = list("Scale Data" = "success"))
+
+      #HVG - plot done, but need to add labels and settings
+        output$plot_hvg <- renderPlotly({
+          plotly::ggplotly(seuratPlotHVG(vals$counts))
+        })
+        shinyjs::enable(selector = "div[value='Highly Variable Genes']")
+        updateCollapse(session = session, "SeuratUI", style = list("Highly Variable Genes" = "success"))
+
+      #DR
+      shinyjs::enable(selector = "div[value='Dimensionality Reduction']")
+      updateCollapse(session = session, "SeuratUI", style = list("Dimensionality Reduction" = "success"))
+
+      removeTab(inputId = "seuratPCAPlotTabset", target = "PCA Plot")
+      removeTab(inputId = "seuratPCAPlotTabset", target = "Elbow Plot")
+      removeTab(inputId = "seuratPCAPlotTabset", target = "JackStraw Plot")
+      removeTab(inputId = "seuratPCAPlotTabset", target = "Heatmap Plot")
+
+      shinyjs::show(selector = ".seurat_pca_plots")
+
+      appendTab(inputId = "seuratPCAPlotTabset", tabPanel(title = "PCA Plot",
+                                                          panel(heading = "PCA Plot",
+                                                                plotlyOutput(outputId = "plot_pca")
+                                                          )
+      ), select = TRUE)
+      appendTab(inputId = "seuratPCAPlotTabset", tabPanel(title = "Elbow Plot",
+                                                          panel(heading = "Elbow Plot",
+                                                                plotlyOutput(outputId = "plot_elbow_pca")
+                                                          )
+      ))
+      appendTab(inputId = "seuratPCAPlotTabset", tabPanel(title = "JackStraw Plot",
+                                                          panel(heading = "JackStraw Plot",
+                                                                plotlyOutput(outputId = "plot_jackstraw_pca")
+                                                          )
+      ))
+      appendTab(inputId = "seuratPCAPlotTabset", tabPanel(title = "Heatmap Plot",
+                                                          panel(heading = "Heatmap Plot",
+                                                                panel(heading = "Plot Options",
+                                                                      fluidRow(
+                                                                        column(6,
+                                                                               pickerInput(inputId = "picker_dimheatmap_components_pca", label = "Select principal components to plot:", choices = c(), options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3"), multiple = TRUE)
+                                                                        ),
+                                                                        column(6,
+                                                                               sliderInput(inputId = "slider_dimheatmap_pca", label = "Number of columns for the plot: ", min = 1, max = 4, value = 2)
+                                                                        )
+                                                                      ),
+                                                                      actionButton(inputId = "plot_heatmap_pca_button", "Plot")
+                                                                ),
+                                                                panel(heading = "Plot",
+                                                                      jqui_resizable(plotOutput(outputId = "plot_heatmap_pca"), options = list(maxWidth = 700))
+                                                                )
+                                                          )
+      ))
+
+
+        # output$plot_pca <- renderPlotly({
+        #   plotly::ggplotly(metadata(inSCE)$seurat$plots$pca)
+        # })
+
+      output$plot_pca <- renderPlotly({
+        plotly::ggplotly(seuratReductionPlot(inSCE = vals$counts, useReduction = "pca"))
+      })
+
+
+          updateNumericInput(session = session, inputId = "pca_significant_pc_counter", value = singleCellTK:::.computeSignificantPC(vals$counts))
+          # output$plot_elbow_pca <- renderPlotly({
+          #   metadata(inSCE)$seurat$plots$elbow
+          # })
+
+          #update parameters from seurat report
+          output$plot_elbow_pca <- renderPlotly({
+            plotly::ggplotly(seuratElbowPlot(inSCE = vals$counts))
+          })
+
+          output$pca_significant_pc_output <- renderText({
+            paste("<p>Number of significant components suggested by ElbowPlot: <span style='color:red'>", singleCellTK:::.computeSignificantPC(vals$counts)," </span> </p> <hr>")
+          })
+
+          # output$plot_jackstraw_pca <- renderPlotly({
+          #   plotly::ggplotly(metadata(inSCE)$seurat$plots$jackstraw)
+          # })
+
+          output$plot_jackstraw_pca <- renderPlotly({
+            plotly::ggplotly(seuratJackStrawPlot(vals$counts))
+          })
+
+
+          # output$plot_heatmap_pca <- renderPlot({
+          #   metadata(inSCE)$seurat$plots$heatmap
+          # })
+
+          #find solution for this
+          output$plot_heatmap_pca <- renderPlot({
+            metadata(inSCE)$seurat$plots$heatmap
+          })
+
+          updatePickerInput(session = session, inputId = "picker_dimheatmap_components_pca", choices = singleCellTK:::.getComponentNames(vals$counts@metadata$seurat$count_pc, "PC"))
+
+
+
+      #tSNE/UMAP
+          shinyjs::enable(selector = "div[value='tSNE/UMAP']")
+          updateCollapse(session = session, "SeuratUI", style = list("tSNE/UMAP" = "success"))
+
+          # output$plot_tsne <- renderPlotly({
+          #   metadata(inSCE)$seurat$plots$tsne
+          # })
+          #
+          # output$plot_umap <- renderPlotly({
+          #   metadata(inSCE)$seurat$plots$umap
+          # })
+
+          output$plot_tsne <- renderPlotly({
+            plotly::ggplotly(seuratReductionPlot(vals$counts, useReduction = "tsne"))
+          })
+
+          output$plot_umap <- renderPlotly({
+            plotly::ggplotly(seuratReductionPlot(vals$counts, useReduction = "umap"))
+          })
+
+
+      #Clustering
+          shinyjs::enable(selector = "div[value='Clustering']")
+          updateCollapse(session = session, "SeuratUI", style = list("Clustering" = "success"))
+
+          removeTab(inputId = "seuratClusteringPlotTabset", target = "PCA Plot")
+          removeTab(inputId = "seuratClusteringPlotTabset", target = "ICA Plot")
+          removeTab(inputId = "seuratClusteringPlotTabset", target = "tSNE Plot")
+          removeTab(inputId = "seuratClusteringPlotTabset", target = "UMAP Plot")
+
+          appendTab(inputId = "seuratClusteringPlotTabset", tabPanel(title = "PCA Plot",
+                                                                     panel(heading = "PCA Plot",
+                                                                           plotlyOutput(outputId = "plot_pca_clustering")
+                                                                     )
+          ), select = TRUE
+
+          )
+
+          output$plot_pca_clustering <- renderPlotly({
+            plotly::ggplotly(seuratReductionPlot(vals$counts, useReduction = "pca", showLegend = TRUE))
+          })
+
+          appendTab(inputId = "seuratClusteringPlotTabset", tabPanel(title = "tSNE Plot",
+                                                                     panel(heading = "tSNE Plot",
+                                                                           plotlyOutput(outputId = "plot_tsne_clustering")
+                                                                     )
+          )
+          )
+
+          output$plot_tsne_clustering <- renderPlotly({
+            plotly::ggplotly(seuratReductionPlot(vals$counts, useReduction = "tsne", showLegend = TRUE))
+          })
+
+          appendTab(inputId = "seuratClusteringPlotTabset", tabPanel(title = "UMAP Plot",
+                                                                     panel(heading = "UMAP Plot",
+                                                                           plotlyOutput(outputId = "plot_umap_clustering")
+                                                                     )
+          )
+          )
+
+          output$plot_umap_clustering <- renderPlotly({
+            plotly::ggplotly(seuratReductionPlot(vals$counts, useReduction = "umap", showLegend = TRUE))
+          })
+
+          shinyjs::show(selector = ".seurat_clustering_plots")
+
+
+
+      #Find Markers
+          shinyjs::enable(selector = "div[value='Find Markers']")
+          updateCollapse(session = session, "SeuratUI", style = list("Find Markers" = "success"))
+
+          shinyjs::show(selector = ".seurat_findmarker_table")
+          shinyjs::show(selector = ".seurat_findmarker_jointHeatmap")
+          shinyjs::show(selector = ".seurat_findmarker_plots")
+
+          removeTab(inputId = "seuratFindMarkerPlotTabset", target = "Ridge Plot")
+          removeTab(inputId = "seuratFindMarkerPlotTabset", target = "Violin Plot")
+          removeTab(inputId = "seuratFindMarkerPlotTabset", target = "Feature Plot")
+          removeTab(inputId = "seuratFindMarkerPlotTabset", target = "Dot Plot")
+          removeTab(inputId = "seuratFindMarkerPlotTabset", target = "Heatmap Plot")
+
+          appendTab(inputId = "seuratFindMarkerPlotTabset", tabPanel(title = "Ridge Plot",
+                                                                     panel(heading = "Ridge Plot",
+                                                                           jqui_resizable(
+                                                                             plotOutput(outputId = "findMarkerRidgePlot")
+                                                                           )
+                                                                     )
+          )
+          )
+          appendTab(inputId = "seuratFindMarkerPlotTabset", tabPanel(title = "Violin Plot",
+                                                                     panel(heading = "Violin Plot",
+                                                                           jqui_resizable(
+                                                                             plotOutput(outputId = "findMarkerViolinPlot")
+                                                                           )
+                                                                     )
+          )
+          )
+          appendTab(inputId = "seuratFindMarkerPlotTabset", tabPanel(title = "Feature Plot",
+                                                                     panel(heading = "Feature Plot",
+                                                                           jqui_resizable(
+                                                                             plotOutput(outputId = "findMarkerFeaturePlot")
+                                                                           )
+                                                                     )
+          )
+          )
+          appendTab(inputId = "seuratFindMarkerPlotTabset", tabPanel(title = "Dot Plot",
+                                                                     panel(heading = "Dot Plot",
+                                                                           jqui_resizable(
+                                                                             plotOutput(outputId = "findMarkerDotPlot")
+                                                                           )
+                                                                     )
+          )
+          )
+          appendTab(inputId = "seuratFindMarkerPlotTabset", tabPanel(title = "Heatmap Plot",
+                                                                     panel(heading = "Heatmap Plot",
+                                                                           fluidRow(
+                                                                             column(12, align = "center",
+                                                                                    panel(
+                                                                                      plotOutput(outputId = "findMarkerHeatmapPlot")
+                                                                                    )
+                                                                             )
+                                                                           )
+                                                                     )
+          )
+
+          )
+
+          showTab(inputId = "seuratFindMarkerPlotTabset", target = "Joint Heatmap Plot")
+          updateTabsetPanel(session = session, inputId = "seuratFindMarkerPlotTabset", selected = "Ridge Plot")
+          shinyjs::show(selector = ".seurat_findmarker_plots")
+
+          #table
+          # output$findMarkerHeatmapPlotFull <- renderPlot({
+          #   metadata(vals$counts)$seurat$plots$heatmap_complete
+          # })
+
+          output$findMarkerHeatmapPlotFullTopText <- renderUI({
+            h6(paste("Heatmap plotted across all groups against genes with adjusted p-values <", input$seuratFindMarkerPValAdjInput))
+          })
+
+          updateSelectInput(session, "seuratFindMarkerSelectPhenotype", choices = colnames(colData(vals$counts)), selected = metadata(vals$counts)$seurat$plots$group)
+
+
+          vals$fts <- callModule(
+            module = filterTableServer,
+            id = "filterSeuratFindMarker",
+            dataframe = metadata(vals$counts)$seurat$plots$top9
+          )
+
+      #Downstream Analysis
+          shinyjs::show(selector = "div[value='Downstream Analysis']")
+          updateCollapse(session = session, "SeuratUI", style = list("Downstream Analysis" = "info"))
+    }
+  }
+
+  observeEvent(input$goToSeurat,{
+    updateTabsetPanel(session, "navbar",
+                      selected = "Seurat")
+    removeNotification(id = "goSeuratNotification", session = session)
   })
 
   observeEvent(input$importFeatureDipSet, {
@@ -1291,7 +1580,7 @@ shinyServer(function(input, output, session) {
                                  collectionName = qcCollName,
                                  useAssay = input$qcAssaySelect,
                                  paramsList = paramsList)
-
+        updateColDataNames()
         # redDimList <- strsplit(reducedDimNames(vals$counts), " ")
         # run getUMAP
         message(paste0(date(), " ... Running 'UMAP'"))
@@ -1393,7 +1682,6 @@ shinyServer(function(input, output, session) {
       }
     }
   })
-
 
   observeEvent(input$filterAssaySelect, {
     removeUI(selector = "#newThresh")
@@ -1571,65 +1859,6 @@ shinyServer(function(input, output, session) {
                                sampleVariableName = sampleVar)
   }, striped = TRUE, border = TRUE, align = "c", spacing = "l")
 
-  #Render data table if there are fewer than 50 samples
-  output$contents <- DT::renderDataTable({
-    req(vals$counts)
-    if (!is.null(getShinyOption("inputSCEset"))){
-      updateGeneNames()
-    }
-    if (!(is.null(vals$counts)) & ncol(vals$counts) < 50){
-      temptable <- cbind(rownames(vals$counts), assay(vals$counts, input$filterAssaySelect))
-      colnames(temptable)[1] <- "Gene"
-      temptable
-    }
-  }, options = list(scrollX = TRUE), rownames = FALSE)
-
-  #Render histogram of read counts per cell
-  output$countshist <- renderPlotly({
-    if (!(is.null(vals$counts))){
-      f <- list(family = "Arial", size = 14, color = "#7f7f7f")
-      x <- list(title = "Reads per cell", titlefont = f)
-      y <- list(title = "Number of cells", titlefont = f)
-      plotly::plot_ly(x = apply(assay(vals$counts, input$filterAssaySelect), 2, function(x) sum(x)),
-                      type = "histogram") %>%
-        plotly::layout(xaxis = x, yaxis = y)
-    } else {
-      plotly::plotly_empty(type = "scatter") %>% plotly::add_trace(mode = "lines")
-    }
-  })
-
-  #Render histogram of genes detected per cell
-  output$geneshist <- renderPlotly({
-    if (!(is.null(vals$counts))){
-      f <- list(family = "Arial", size = 14, color = "#7f7f7f")
-      x <- list(title = "Genes detected per cell", titlefont = f)
-      y <- list(title = "Number of cells", titlefont = f)
-      plotly::plot_ly(x = apply(assay(vals$counts, input$filterAssaySelect), 2,
-                                function(x) sum(x > 0)), type = "histogram") %>%
-        plotly::layout(xaxis = x, yaxis = y)
-    } else {
-      plotly::plotly_empty(type = "scatter") %>% plotly::add_trace(mode = "lines")
-    }
-  })
-
-  #random downsample of samples
-  #  observeEvent(input$downsampleGo, {
-  #    req(vals$counts)
-  #    withBusyIndicatorServer("downsampleGo", {
-  #      vals$counts <- vals$counts[, sample(ncol(vals$counts), input$downsampleNum)]
-  #      updateNumSamples()
-  #      vals$gsvaRes <- NULL
-  #      vals$gsvaLimma <- NULL
-  #      vals$visplotobject <- NULL
-  #      vals$enrichRes <- NULL
-  #      vals$dimRedPlot <- NULL
-  #      vals$dimRedPlot_geneExp <- NULL
-  #      vals$dendrogram <- NULL
-  #      vals$pcX <- NULL
-  #      vals$pcY <- NULL
-  #    })
-  #  })
-
   #Render summary table
   output$summarycontents <- renderTable({
     req(vals$counts)
@@ -1668,8 +1897,9 @@ shinyServer(function(input, output, session) {
       vals$batchRes <- NULL
       #Refresh things for the clustering tab
       updateColDataNames()
+      updateFeatureAnnots()
       updateNumSamples()
-      # updateAssayInputs()
+      updateAssayInputs()
       updateGeneNames()
       updateEnrichDB()
     }
@@ -1813,6 +2043,8 @@ shinyServer(function(input, output, session) {
       saveRDS(vals$counts, file)
     })
 
+  # Delete Data ####
+
   output$reducedDimsList <- renderUI({
     req(vals$counts)
     if (!is.null(vals$counts) &&
@@ -1882,36 +2114,78 @@ shinyServer(function(input, output, session) {
     }
   })
 
-  output$removeDataWarningUI <- renderUI({
+  observeEvent(input$delRedDim, {
     req(vals$counts)
-    if(length(input$checkboxRedDimToRemove) > 0
-       || length(input$checkboxAssaysToRemove) > 0
-       || length(input$checkboxRowDataToRemove) > 0
-       || length(input$checkboxColDataToRemove) > 0
-       || length(input$checkboxAltExpToRemove) > 0){
-      totalItemsSelected <- length(input$checkboxRedDimToRemove) +
-        length(input$checkboxAssaysToRemove) +
-        length(input$checkboxRowDataToRemove) +
-        length(input$checkboxColDataToRemove) +
-        length(input$checkboxAltExpToRemove)
-      HTML("<h6><span style='color:red'>", paste0("Warning: You have selected to delete <b>", totalItemsSelected, "</b> data items! This action is inreversible. Press 'Delete' button below to permanently delete this data."), " </span></h6>")
+    if(length(input$checkboxAssaysToRemove) > 0){
+      for(i in seq(input$checkboxAssaysToRemove)){
+        expData(vals$counts, input$checkboxAssaysToRemove[i]) <- NULL
+      }
     }
-    else{
-      return(NULL)
+    if(length(input$checkboxRedDimToRemove) > 0){
+      for(i in seq(input$checkboxRedDimToRemove)){
+        reducedDim(vals$counts, input$checkboxRedDimToRemove[i]) <- NULL
+      }
+    }
+    if(length(input$checkboxRowDataToRemove) > 0){
+      for(i in seq(input$checkboxRowDataToRemove)){
+        rowData(vals$counts)[[input$checkboxRowDataToRemove[i]]] <- NULL
+      }
+    }
+    if(length(input$checkboxColDataToRemove) > 0){
+      for(i in seq(input$checkboxColDataToRemove)){
+        colData(vals$counts)[[input$checkboxColDataToRemove[i]]] <- NULL
+      }
+    }
+    if(length(input$checkboxAltExpToRemove) > 0){
+      for(i in seq(input$checkboxAltExpToRemove)){
+        altExps(vals$counts)[[input$checkboxAltExpToRemove[i]]] <- NULL
+      }
+    }
+    updateAssayInputs()
+    updateReddimInputs()
+    updateFeatureAnnots()
+    updateColDataNames()
+  })
+
+  # Normalization ####
+
+  observeEvent(input$customNormalizeAssayMethodSelect,{
+    if(input$customNormalizeAssayMethodSelect == "LogNormalize"
+       || input$customNormalizeAssayMethodSelect == "CLR"
+       || input$customNormalizeAssayMethodSelect == "SCTransform"
+       || input$customNormalizeAssayMethodSelect == "logNormCounts"){
+      updateAwesomeCheckbox(
+        session = session,
+        inputId = "customNormalizeOptionsTransform",
+        value = FALSE
+      )
     }
   })
 
   output$normalizationDataTagUI <- renderUI({
     req(vals$counts)
-    tag <- "normalized"
+    tag <- ""
     if(input$normalizeAssayMethodSelect != "custom"){
+      if(input$normalizeAssayMethodSelect
+         %in% c("LogNormalize", "SCTransform", "CLR", "logNormCounts")){
+        tag <- "transformed"
+      }
+      else{
+        tag <- "normalized"
+      }
       if(input$normalizationScale){
         tag <- "scaled"
       }
     }
     else{
       if(input$customNormalizeOptionsNormalize){
-        tag <- "normalized"
+        if(input$customNormalizeAssayMethodSelect
+           %in% c("LogNormalize", "SCTransform", "CLR", "logNormCounts")){
+          tag <- "transformed"
+        }
+        else{
+          tag <- "normalized"
+        }
       }
       if(input$customNormalizeOptionsTransform){
         tag <- "transformed"
@@ -2051,9 +2325,9 @@ shinyServer(function(input, output, session) {
       updateTextInput(session = session, inputId = "normalizeAssayOutname", value = "SeuratRC")
     } else if(input$normalizeAssayMethodSelect == "CPM"){
       updateTextInput(session = session, inputId = "normalizeAssayOutname", value = "ScaterCPMCounts")
-    } else if(input$normalizeAssayMethodSelect == "LNC"){
+    } else if(input$normalizeAssayMethodSelect == "logNormCounts"){
       updateTextInput(session = session, inputId = "normalizeAssayOutname", value = "ScaterLogNormCounts")
-    } else if(input$normalizeAssayMethodSelect == "SCT"){
+    } else if(input$normalizeAssayMethodSelect == "SCTransform"){
       updateTextInput(session = session, inputId = "normalizeAssayOutname", value = "SeuratSCTransform")
     }
   })
@@ -2133,39 +2407,6 @@ shinyServer(function(input, output, session) {
   #-----------------------------------------------------------------------------
   # Page 3: dimRed ####
   #-----------------------------------------------------------------------------
-
-  observeEvent(input$delRedDim, {
-    req(vals$counts)
-    if(length(input$checkboxAssaysToRemove) > 0){
-      for(i in seq(input$checkboxAssaysToRemove)){
-        expData(vals$counts, input$checkboxAssaysToRemove[i]) <- NULL
-      }
-    }
-    if(length(input$checkboxRedDimToRemove) > 0){
-          for(i in seq(input$checkboxRedDimToRemove)){
-            reducedDim(vals$counts, input$checkboxRedDimToRemove[i]) <- NULL
-          }
-    }
-    if(length(input$checkboxRowDataToRemove) > 0){
-      for(i in seq(input$checkboxRowDataToRemove)){
-        rowData(vals$counts)[[input$checkboxRowDataToRemove[i]]] <- NULL
-      }
-    }
-    if(length(input$checkboxColDataToRemove) > 0){
-      for(i in seq(input$checkboxColDataToRemove)){
-        colData(vals$counts)[[input$checkboxColDataToRemove[i]]] <- NULL
-      }
-    }
-    if(length(input$checkboxAltExpToRemove) > 0){
-      for(i in seq(input$checkboxAltExpToRemove)){
-        altExps(vals$counts)[[input$checkboxAltExpToRemove[i]]] <- NULL
-      }
-    }
-    updateAssayInputs()
-    updateReddimInputs()
-    updateColDataNames()
-    updateAltExpInputs()
-  })
 
   output$dimRedNameUI <- renderUI({
     # if (input$dimRedAssayType == 1){
@@ -3355,10 +3596,7 @@ shinyServer(function(input, output, session) {
       if (is.null(vals$counts)){
         shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
       }else{
-        cell_list <- BiocGenerics::colnames(vals$counts)
         gene_list <- BiocGenerics::rownames(vals$counts)
-        method_list <- names(assays(vals$counts))
-        approach_list <- names(reducedDims(vals$counts))
         annotation_list <- names(colData(vals$counts))
         annotation_list2 <- list()
         for (i in 1:length(annotation_list)){
@@ -3370,30 +3608,16 @@ shinyServer(function(input, output, session) {
         }
         annotation_list <- annotation_list2
         rm(annotation_list2)
-        updateSelectInput(session, "QuickAccess",
-                          choices = c("",approach_list, "Custom"))
-        updateSelectInput(session, "ApproachSelect_Xaxis",
-                          choices = c(approach_list))
-        updateSelectInput(session, "AdvancedMethodSelect_Xaxis",
-                          choices = c(method_list))
-        updateSelectInput(session, "GeneSelect_Assays_Xaxis",
-                          choices = c(gene_list))
+        updateSelectizeInput(session, "GeneSelect_Assays_Xaxis",
+                          choices = c(gene_list), server = TRUE)
         updateSelectInput(session, "AnnotationSelect_Xaxis",
                           choices = c(annotation_list))
-        updateSelectInput(session, "ApproachSelect_Yaxis",
-                          choices = c(approach_list))
-        updateSelectInput(session, "AdvancedMethodSelect_Yaxis",
-                          choices = c(method_list))
-        updateSelectInput(session, "GeneSelect_Assays_Yaxis",
-                          choices = c(gene_list))
+        updateSelectizeInput(session, "GeneSelect_Assays_Yaxis",
+                          choices = c(gene_list), server = TRUE)
         updateSelectInput(session, "AnnotationSelect_Yaxis",
                           choices = c(annotation_list))
-        updateSelectInput(session, "ApproachSelect_Colorby",
-                          choices = c(approach_list))
-        updateSelectInput(session, "AdvancedMethodSelect_Colorby",
-                          choices = c(method_list))
-        updateSelectInput(session, "GeneSelect_Assays_Colorby",
-                          choices = c(gene_list))
+        updateSelectizeInput(session, "GeneSelect_Assays_Colorby",
+                          choices = c(gene_list), server = TRUE)
         updateSelectInput(session, "AnnotationSelect_Colorby",
                           choices = c(annotation_list))
         updateSelectizeInput(session, "adjustgroupby", label = NULL, choices = c("None", annotation_list))
@@ -3410,16 +3634,11 @@ shinyServer(function(input, output, session) {
     if(!is.null(vals$counts)) {
       if(!is.null(reducedDims(vals$counts))) {
         approach_list <- names(reducedDims(vals$counts))
-        if(input$viewertabs != "Scatter Plot"){
+        if (input$viewertabs != "Scatter Plot") {
           updateSelectInput(session, "QuickAccess",
                             choices = c("Custom"))
           shinyjs::delay(5,shinyjs::disable("QuickAccess"))
-        }else{
-          updateSelectInput(session, "QuickAccess",
-                            choices = c("", approach_list, "Custom"))
-          shinyjs::delay(5,shinyjs::enable("QuickAccess"))
-        }
-        if(input$viewertabs == "Violin/Box Plot" || input$viewertabs == "Bar Plot"){
+
           updateSelectInput(session, "TypeSelect_Xaxis",
                             choices = c("None", "Cell Annotation"))
           updateSelectInput(session, "TypeSelect_Yaxis",
@@ -3433,7 +3652,15 @@ shinyServer(function(input, output, session) {
           hide_TypeSelect("hide")
           shinyjs::delay(5,shinyjs::disable("TypeSelect_Colorby"))
           shinyjs::delay(5,shinyjs::disable("adjustgroupby"))
-        }else{
+
+          shinyjs::delay(5, shinyjs::disable("adjustlegendtitle"))
+          shinyjs::delay(5, shinyjs::disable("adjustlegendtitlesize"))
+          shinyjs::delay(5, shinyjs::disable("adjustlegendsize"))
+        } else {
+          updateSelectInput(session, "QuickAccess",
+                            choices = c("", approach_list, "Custom"))
+          shinyjs::delay(5,shinyjs::enable("QuickAccess"))
+
           updateSelectInput(session, "TypeSelect_Xaxis",
                             choices = c("Reduced Dimensions", "Expression Assays", "Cell Annotation"))
           updateSelectInput(session, "TypeSelect_Yaxis",
@@ -3447,7 +3674,40 @@ shinyServer(function(input, output, session) {
           hide_TypeSelect("hide")
           shinyjs::delay(5,shinyjs::enable("TypeSelect_Colorby"))
           shinyjs::delay(5,shinyjs::enable("adjustgroupby"))
+          shinyjs::delay(5, shinyjs::enable("adjustlegendtitle"))
+          if (!is.null(input$adjustgridlines) &
+              isFALSE(input$adjustgridlines)) {
+            shinyjs::delay(5, shinyjs::enable("adjustlegendtitlesize"))
+            shinyjs::delay(5, shinyjs::enable("adjustlegendsize"))
+          }
         }
+
+        if (input$viewertabs != "Bar Plot") {
+          shinyjs::delay(5, shinyjs::enable("adjustalpha"))
+          shinyjs::delay(5, shinyjs::enable("adjustsize"))
+        } else {
+          shinyjs::delay(5, shinyjs::disable("adjustalpha"))
+          shinyjs::delay(5, shinyjs::disable("adjustsize"))
+        }
+      }
+    }
+  })
+
+  observeEvent(input$adjustgridlines, {
+    req(vals$counts)
+    if (!is.null(input$adjustgridlines)) {
+      if (isTRUE(input$adjustgridlines)) {
+        shinyjs::delay(5, shinyjs::disable("adjustlegendtitlesize"))
+        shinyjs::delay(5, shinyjs::disable("adjustlegendsize"))
+        shinyjs::delay(5, shinyjs::disable("adjustaxissize"))
+        shinyjs::delay(5, shinyjs::disable("adjustaxislabelsize"))
+      } else {
+        if (input$viewertabs == "Scatter Plot") {
+          shinyjs::delay(5, shinyjs::enable("adjustlegendtitlesize"))
+          shinyjs::delay(5, shinyjs::enable("adjustlegendsize"))
+        }
+        shinyjs::delay(5, shinyjs::enable("adjustaxissize"))
+        shinyjs::delay(5, shinyjs::enable("adjustaxislabelsize"))
       }
     }
   })
@@ -3613,46 +3873,63 @@ shinyServer(function(input, output, session) {
     }
     #-+-+-+-+-+-cellviewer prepare3 : prepare Axis Label Name#####################
     ###Xaxis label name
-    if(input$QuickAccess != "Custom" & input$QuickAccess != "" & input$adjustxlab == ""){
-      xname <- paste0(input$QuickAccess, 1)
-    }else if(input$QuickAccess != "Custom" & input$QuickAccess != ""& input$adjustxlab != ""){
+    if (!is.null(input$adjustxlab) &
+        input$adjustxlab != "") {
       xname <- input$adjustxlab
-    }else if(input$TypeSelect_Xaxis == 'Reduced Dimensions'){
-      xname <- paste0(input$ApproachSelect_Xaxis,"_",substr(input$ColumnSelect_Xaxis,
-                                                            str_length(input$ColumnSelect_Xaxis),str_length(input$ColumnSelect_Xaxis)))
-    }else if(input$TypeSelect_Xaxis == 'Expression Assays'){
-      xname <- input$GeneSelect_Assays_Xaxis
-    }else{
-      xname <- input$AnnotationSelect_Xaxis
+    } else {
+      if (input$QuickAccess != "Custom" &
+          input$QuickAccess != "") {
+        # reddim selected
+        xname <- paste0(input$QuickAccess, 1)
+      } else if (input$TypeSelect_Xaxis == 'Reduced Dimensions') {
+        xname <- paste0(input$ApproachSelect_Xaxis, "_",
+                        substr(input$ColumnSelect_Xaxis,
+                               str_length(input$ColumnSelect_Xaxis),
+                               str_length(input$ColumnSelect_Xaxis)))
+      } else if (input$TypeSelect_Xaxis == 'Expression Assays') {
+        xname <- input$GeneSelect_Assays_Xaxis
+      } else if (input$TypeSelect_Xaxis == "Cell Annotation") {
+        xname <- input$AnnotationSelect_Xaxis
+      } else {
+        xname <- ""
+      }
     }
+    xname <- gsub("-", "_", xname)
     ###Yaxis label name
-    if(input$QuickAccess != "Custom" & input$QuickAccess != "" & input$adjustylab == ""){
-      yname <- paste0(input$QuickAccess, 2)
-    }else if(input$QuickAccess != "Custom" & input$QuickAccess != "" & input$adjustylab != ""){
+    if (!is.null(input$adjustylab) &
+        input$adjustylab != "") {
       yname <- input$adjustylab
-    }else if(input$TypeSelect_Yaxis == 'Reduced Dimensions'){
-      yname <- paste0(input$ApproachSelect_Yaxis,"_",substr(input$ColumnSelect_Yaxis,
-                                                            str_length(input$ColumnSelect_Yaxis),str_length(input$ColumnSelect_Yaxis)))
-    }else if(input$TypeSelect_Yaxis == 'Expression Assays'){
-      yname <- input$GeneSelect_Assays_Yaxis
-    }else{
-      yname <- input$AnnotationSelect_Yaxis
+    } else {
+      if (input$QuickAccess != "Custom" &
+          input$QuickAccess != "") {
+        # reddim selected
+        yname <- paste0(input$QuickAccess, 2)
+      } else if (input$TypeSelect_Yaxis == 'Reduced Dimensions') {
+        yname <- paste0(input$ApproachSelect_Yaxis, "_",
+                        substr(input$ColumnSelect_Yaxis,
+                               str_length(input$ColumnSelect_Yaxis),
+                               str_length(input$ColumnSelect_Yaxis)))
+      } else if (input$TypeSelect_Yaxis == 'Expression Assays') {
+        yname <- input$GeneSelect_Assays_Yaxis
+      } else {
+        yname <- input$AnnotationSelect_Yaxis
+      }
     }
-
-    ###Yaxis label name
-    if(input$TypeSelect_Colorby != 'Pick a Color'){
-      if(input$TypeSelect_Colorby == 'Reduced Dimensions' && input$adjustlegendtitle == ""){
+    yname <- gsub("-", "_", yname)
+    ###Legend name
+    if (input$TypeSelect_Colorby != 'Pick a Color') {
+      if (input$TypeSelect_Colorby == 'Reduced Dimensions' && input$adjustlegendtitle == "") {
         legendname <- paste0(input$ApproachSelect_Colorby,"_",substr(input$ColumnSelect_Colorby,
                                                                      str_length(input$ColumnSelect_Colorby),str_length(input$ColumnSelect_Colorby)))
-      }else if(input$TypeSelect_Colorby == 'Expression Assays' && input$adjustlegendtitle == ""){
+      } else if (input$TypeSelect_Colorby == 'Expression Assays' && input$adjustlegendtitle == "") {
         legendname <- input$GeneSelect_Assays_Colorby
-      }else if(input$adjustlegendtitle == ""){
+      } else if (input$adjustlegendtitle == "") {
         legendname <- input$AnnotationSelect_Colorby
-      }else{
+      } else {
         legendname <- input$adjustlegendtitle
       }
     }
-
+    legendname <- gsub("-", "_", legendname)
     #-+-+-+-+-+-cellviewer prepare4 : choose group by and create plotly function###################
     pltVars <- list()
     if(input$viewertabs == "Violin/Box Plot" || input$viewertabs == "Bar Plot"){
@@ -3686,6 +3963,43 @@ shinyServer(function(input, output, session) {
     }
 
     if(input$viewertabs == "Scatter Plot"){
+      #### Prepare Custom plotting matrix axis ####
+      if (input$QuickAccess == "Custom") {
+        # X Axis
+        message("CellViewer: Custom plotting mode, making up the axis")
+        if (input$TypeSelect_Xaxis == "Expression Assays") {
+          message("X axis: Using expression of ", input$GeneSelect_Assays_Xaxis,
+                  " from ", input$AdvancedMethodSelect_Xaxis)
+          xvec <- expData(vals$counts, input$AdvancedMethodSelect_Xaxis)[input$GeneSelect_Assays_Xaxis,]
+        } else if (input$TypeSelect_Xaxis == "Reduced Dimensions") {
+          message("X axis: Using dimension reduction ", input$ColumnSelect_Xaxis,
+                  " from ", input$ApproachSelect_Xaxis)
+          xvec <- reducedDim(vals$counts, input$ApproachSelect_Xaxis)[,input$ColumnSelect_Xaxis]
+        } else if (input$TypeSelect_Xaxis == 'Cell Annotation') {
+          message("X axis: Using cell annotation ",
+                  input$AnnotationSelect_Xaxis)
+          xvec <- vals$counts[[input$AnnotationSelect_Xaxis]]
+        }
+        # Y Axis
+        if (input$TypeSelect_Yaxis == "Expression Assays") {
+          message("Y axis: Using expression of ", input$GeneSelect_Assays_Yaxis,
+                  " from ", input$AdvancedMethodSelect_Yaxis)
+          yvec <- expData(vals$counts, input$AdvancedMethodSelect_Yaxis)[input$GeneSelect_Assays_Yaxis,]
+        } else if (input$TypeSelect_Yaxis == "Reduced Dimensions") {
+          message("Y axis: Using dimension reduction ", input$ColumnSelect_Yaxis,
+                  " from ", input$ApproachSelect_Yaxis)
+          yvec <- reducedDim(vals$counts, input$ApproachSelect_Yaxis)[,input$ColumnSelect_Yaxis]
+        } else if (input$TypeSelect_Yaxis == 'Cell Annotation') {
+          message("Y axis: Using cell annotation ",
+                  input$AnnotationSelect_Yaxis)
+          yvec <- vals$counts[[input$AnnotationSelect_Yaxis]]
+        }
+        # Merge and insert to reducedDim(sce, "Custom")
+        customMat <- matrix(c(xvec, yvec), nrow = length(xvec))
+        colnames(customMat) <- c(xname, yname)
+        rownames(customMat) <- names(xvec)
+        reducedDim(vals$counts, "Custom") <- customMat
+      }
       if(input$TypeSelect_Colorby == "Single Color"){
         a <- plotSCEScatter(vals$counts, reducedDimName = input$QuickAccess,
                             xlab = xname, ylab = yname, title = input$adjusttitle, groupBy = pltVars$groupby,
@@ -3720,35 +4034,35 @@ shinyServer(function(input, output, session) {
       }
     }else if(input$viewertabs == "Bar Plot"){
       if(input$TypeSelect_Yaxis == "Expression Assays"){
-        a <- plotSCEBarAssayData(vals$counts, title = input$adjusttitle,
+        a <- plotSCEBarAssayData(vals$counts, title = input$adjusttitle, xlab = xname, ylab = yname,
                                  useAssay = input$AdvancedMethodSelect_Yaxis, groupBy = pltVars$groupby,
-                                 feature = input$GeneSelect_Assays_Yaxis, transparency = input$adjustalpha,
-                                 dotSize = input$adjustsize, combinePlot = "none", axisSize = input$adjustaxissize,
+                                 feature = input$GeneSelect_Assays_Yaxis,
+                                 combinePlot = "none", axisSize = input$adjustaxissize,
                                  axisLabelSize = input$adjustaxislabelsize, defaultTheme = as.logical(pltVars$defTheme))
       }else if(input$TypeSelect_Yaxis == "Cell Annotation"){
-        a <- plotSCEBarColData(vals$counts, title = input$adjusttitle,
+        a <- plotSCEBarColData(vals$counts, title = input$adjusttitle, xlab = xname, ylab = yname,
                                coldata = input$AnnotationSelect_Yaxis, groupBy = pltVars$groupby,
-                               transparency = input$adjustalpha, dotSize = input$adjustsize, combinePlot = "none",
+                               combinePlot = "none",
                                axisSize = input$adjustaxissize, axisLabelSize = input$adjustaxislabelsize,
                                defaultTheme = as.logical(pltVars$defTheme))
       }
     }else if(input$viewertabs == "Violin/Box Plot"){
-      if(input$vlnboxcheck == TRUE){
+      if(isTRUE(input$vlnboxcheck)){
         vln <- TRUE
         bx <- FALSE
-      }else if(input$vlnboxcheck == FALSE){
+      }else if(isFALSE(input$vlnboxcheck)){
         vln <- FALSE
         bx <- TRUE
       }
       if(input$TypeSelect_Yaxis == "Expression Assays"){
-        a <- plotSCEViolinAssayData(vals$counts, violin = vln, box = bx,
+        a <- plotSCEViolinAssayData(vals$counts, violin = vln, box = bx, xlab = xname, ylab = yname,
                                     useAssay = input$AdvancedMethodSelect_Yaxis, title = input$adjusttitle,
                                     feature = input$GeneSelect_Assays_Yaxis, groupBy = pltVars$groupby,
                                     transparency = input$adjustalpha, dotSize = input$adjustsize, combinePlot = "none",
                                     axisSize = input$adjustaxissize, axisLabelSize = input$adjustaxislabelsize,
                                     defaultTheme = as.logical(pltVars$defTheme))
       }else if(input$TypeSelect_Yaxis == "Cell Annotation"){
-        a <- plotSCEViolinColData(vals$counts, title = input$adjusttitle,
+        a <- plotSCEViolinColData(vals$counts, title = input$adjusttitle, xlab = xname, ylab = yname,
                                   coldata = input$AnnotationSelect_Yaxis, violin = vln, box = bx,
                                   groupBy = pltVars$groupby, transparency = input$adjustalpha,
                                   dotSize = input$adjustsize, combinePlot = "none", axisSize = input$adjustaxissize,
@@ -3758,20 +4072,14 @@ shinyServer(function(input, output, session) {
     if (input$TypeSelect_Colorby == "Single Color"){
       a$layers[[1]]$aes_params$colour <- input$Col
     }
-    if (input$adjustgridlines == TRUE){
+    if (isTRUE(input$adjustgridlines)){
       a <- a + ggplot2::theme_bw()
     }
     a <- plotly::ggplotly(a)
     output$scatter <- renderPlotly({
       plotly::subplot(plotlist = a, titleX = TRUE, titleY = TRUE)
     })
-    #plotly::subplot(plotlist = a, titleX = TRUE, titleY = TRUE)
   })
-  #output$scatter <- renderPlotly({cellviewer()})
-  #
-  #
-  #-+-+-+-+-+-cellviewer prepare done: plot#####################
-  ###plotly_after_reactive
 
   #-----------------------------------------------------------------------------
   # Page 3.4: Heatmap ####
@@ -4566,7 +4874,7 @@ shinyServer(function(input, output, session) {
       if (is.null(input$batchCorrMethods)) {
         bc.recommended <- "raw"
       } else if (input$batchCorrMethods %in% method.log) {
-        bc.recommended <- "normalized"
+        bc.recommended <- c("transformed", "normalized")
       } else if (input$batchCorrMethods %in% method.raw) {
         bc.recommended <- "raw"
       } else if (input$batchCorrMethods %in% method.scale) {
@@ -5113,7 +5421,6 @@ shinyServer(function(input, output, session) {
           #  assays(altExp(vals$counts, input$hvgAltExpName), withDimnames = FALSE)[[altAssaysToRemove[i]]] <- NULL
           #}
           updateAssayInputs()
-          #updateAltExpInputs()
         }
       } else {
         shinyalert::shinyalert(
@@ -5130,11 +5437,11 @@ shinyServer(function(input, output, session) {
   observeEvent(input$deMethod, {
     if (!is.null(vals$counts)) {
       if (is.null(input$deMethod)) {
-        updateSelectInputTag(session, "deAssay", recommended = c("normalized"))
+        updateSelectInputTag(session, "deAssay", recommended = c("transformed", "normalized"))
       } else if (input$deMethod == "DESeq2") {
         updateSelectInputTag(session, "deAssay", recommended = c("raw"))
       } else {
-        updateSelectInputTag(session, "deAssay", recommended = c("normalized"))
+        updateSelectInputTag(session, "deAssay", recommended = c("transformed", "normalized"))
       }
     }
   })
@@ -5650,11 +5957,11 @@ shinyServer(function(input, output, session) {
   observeEvent(input$fmMethod, {
     if (!is.null(vals$counts)) {
       if (is.null(input$fmMethod)) {
-        updateSelectInputTag(session, "fmAssay", recommended = c("normalized"))
+        updateSelectInputTag(session, "fmAssay", recommended = c("transformed", "normalized"))
       } else if (input$fmMethod == "DESeq2") {
         updateSelectInputTag(session, "fmAssay", recommended = c("raw"))
       } else {
-        updateSelectInputTag(session, "fmAssay", recommended = c("normalized"))
+        updateSelectInputTag(session, "fmAssay", recommended = c("transformed", "normalized"))
       }
     }
   })
@@ -6769,9 +7076,10 @@ shinyServer(function(input, output, session) {
      updateTabsetPanel(session = session, inputId = "seuratFindMarkerPlotTabset", selected = "Ridge Plot")
      shinyjs::show(selector = ".seurat_findmarker_plots")
 
-    #table
+    #output the heatmap
+     top10markers <- df %>% group_by(cluster) %>% top_n(n = 10, wt = avg_logFC)
      output$findMarkerHeatmapPlotFull <- renderPlot({
-       DoHeatmap(seuratObject, features = df$gene.id)
+       DoHeatmap(seuratObject, features = top10markers$gene.id)
      })
 
      output$findMarkerHeatmapPlotFullTopText <- renderUI({
@@ -6912,19 +7220,19 @@ shinyServer(function(input, output, session) {
     })
   })
 
-  observe({
-    req(vals$fts$data)
-    df <- vals$fts$data
-    output$findMarkerHeatmapPlotFull <- renderPlot({
-      seuratGenePlot(
-        inSCE = vals$counts,
-        scaledAssayName = "seuratScaledData",
-        plotType = "heatmap",
-        features = df$gene_id,
-        groupVariable = input$seuratFindMarkerSelectPhenotype
-      )
-    })
-  })
+  # observe({
+  #   req(vals$fts$data)
+  #   df <- vals$fts$data
+  #   output$findMarkerHeatmapPlotFull <- renderPlot({
+  #     seuratGenePlot(
+  #       inSCE = vals$counts,
+  #       scaledAssayName = "seuratScaledData",
+  #       plotType = "heatmap",
+  #       features = df$gene_id,
+  #       groupVariable = input$seuratFindMarkerSelectPhenotype
+  #     )
+  #   })
+  # })
 
 
   #Update PCA/ICA message in clustering tab
@@ -7204,7 +7512,7 @@ shinyServer(function(input, output, session) {
   })
 
   #-----------------------------------------------------------------------------
-  # Page: Column Annotation (colData)
+  # Page: Column Annotation (colData) ####
   #-----------------------------------------------------------------------------
 
   #populate colData from sce object when uploaded
@@ -7251,254 +7559,287 @@ shinyServer(function(input, output, session) {
   })
 
   #Render table with colData
-  output$outputColumnAnnotationTable_colData <- renderUI(
-    {
-      output$colOutTable <- DT::renderDataTable({ DT::datatable(vals$columnAnnotation, editable = 'cell', options = list(pageLength = 5)) })
-      DT::dataTableOutput("colOutTable")
+  output$outputColumnAnnotationTable_colData <- renderUI({
+    output$colOutTable <- DT::renderDataTable({
+      DT::datatable(vals$columnAnnotation,
+                    editable = 'cell',
+                    options = list(pageLength = 5,
+                                   scrollX = TRUE))
     })
+    DT::dataTableOutput("colOutTable")
+  })
 
   #create selectinput for selecting attribute with colnames from incoming dataset
   #create selectinput for selecting attribute value
-  output$inputSelectAttribute_colData <- renderUI(
-    {
+  output$inputSelectAttribute_colData <- renderUI({
+    if(!is.null(vals$columnAnnotation)){
       if(ncol(vals$columnAnnotation) > 0){
-        selectInput("inputSelectAttribute_colData", label = "select attribute", choices = colnames(vals$columnAnnotation))
+        selectInput("inputSelectAttribute_colData",
+                    label = "select attribute",
+                    choices = colnames(vals$columnAnnotation))
       }
-    })
-  output$inputSelectAttributeDelete_colData <- renderUI(
-    {
+    }
+  })
+  output$inputSelectAttributeDelete_colData <- renderUI({
+    if(!is.null(vals$columnAnnotation)){
       if(ncol(vals$columnAnnotation) > 0){
-        selectInput("inputSelectAttributeDelete_colData", label = "select attribute to delete", choices = colnames(vals$columnAnnotation))
+        selectInput("inputSelectAttributeDelete_colData",
+                    label = "select attribute to delete",
+                    choices = colnames(vals$columnAnnotation))
       }
-    })
+    }
+  })
 
   #create selectinput for selecting column to delete
-  output$inputSelectAttributeValue_colData <- renderUI(
-    {
-      if(ncol(vals$columnAnnotation) > 0){
-        selectInput("inputSelectAttributeValue_colData", label = "select attribute value", choices = vals$columnAnnotation[, match(input$inputSelectAttribute_colData, colnames(vals$columnAnnotation))])
-      }
-    })
+  output$inputSelectAttributeValue_colData <- renderUI({
+    if(!is.null(vals$columnAnnotation) &&
+       ncol(vals$columnAnnotation) > 0 &&
+       !is.null(input$inputSelectAttribute_colData) &&
+       input$inputSelectAttribute_colData %in% colnames(vals$columnAnnotation)){
+      selectInput("inputSelectAttributeValue_colData",
+                  label = "select attribute value",
+                  choices = vals$columnAnnotation[, input$inputSelectAttribute_colData])
+    }
+  })
 
   #create selectinput for selecting merge_1 attribute
   #create selectinput for selecting merge_2 attribute
-  output$inputSelectAttributeMerge1_colData <- renderUI(
-    {
+  output$inputSelectAttributeMerge1_colData <- renderUI({
+    if(!is.null(vals$columnAnnotation)){
       if(ncol(vals$columnAnnotation) > 0){
-        selectInput("inputSelectAttributeMerge1_colData", label = "select first column", choices = colnames(vals$columnAnnotation))
+        selectInput("inputSelectAttributeMerge1_colData",
+                    label = "select first column",
+                    choices = colnames(vals$columnAnnotation))
       }
-    })
-  output$inputSelectAttributeMerge2_colData <- renderUI(
-    {
+    }
+  })
+  output$inputSelectAttributeMerge2_colData <- renderUI({
+    if(!is.null(vals$columnAnnotation)){
       if(ncol(vals$columnAnnotation) > 0){
-        selectInput("inputSelectAttributeMerge2_colData", label = "select second column", choices = colnames(vals$columnAnnotation))
+        selectInput("inputSelectAttributeMerge2_colData",
+                    label = "select second column",
+                    choices = colnames(vals$columnAnnotation))
       }
-    })
+    }
+  })
 
   #create selectinput for selecting fill_1 attribute
   #create selectinput for selecting fill_2 attribute
-  output$inputSelectAttributeFill1_colData <- renderUI(
-    {
+  output$inputSelectAttributeFill1_colData <- renderUI({
+    if(!is.null(vals$columnAnnotation)){
       if(ncol(vals$columnAnnotation) > 0){
-        selectInput("inputSelectAttributeFill1_colData", label = "select attribute column", choices = colnames(vals$columnAnnotation))
+        selectInput("inputSelectAttributeFill1_colData",
+                    label = "select attribute column",
+                    choices = colnames(vals$columnAnnotation))
       }
-    })
-  output$inputSelectAttributeFill2_colData <- renderUI(
-    {
+    }
+  })
+  output$inputSelectAttributeFill2_colData <- renderUI({
+    if(!is.null(vals$columnAnnotation)){
       if(ncol(vals$columnAnnotation) > 0){
-        selectInput("inputSelectAttributeFill2_colData", label = "select column to fill", choices = colnames(vals$columnAnnotation))
+        selectInput("inputSelectAttributeFill2_colData",
+                    label = "select column to fill",
+                    choices = colnames(vals$columnAnnotation))
       }
-    })
+    }
+  })
 
   #create selectinput for selecting attribute value for magic fill
-  output$inputSelectAttributeFillvalue_colData <- renderUI(
-    {
+  output$inputSelectAttributeFillvalue_colData <- renderUI({
+    if(!is.null(vals$columnAnnotation)){
       if(ncol(vals$columnAnnotation) > 0){
-        selectInput("inputSelectAttributeFillvalue_colData", label = "select attribute value", choices = vals$columnAnnotation[, match(input$inputSelectAttributeFill1_colData, colnames(vals$columnAnnotation))])
+        selectInput("inputSelectAttributeFillvalue_colData",
+                    label = "select attribute value",
+                    choices = vals$columnAnnotation[, match(input$inputSelectAttributeFill1_colData,
+                                                            colnames(vals$columnAnnotation))])
       }
-    })
+    }
+  })
 
   #update criteria parameter text input when attribute value selectinput is changed
-  observeEvent(input$inputSelectAttributeValue_colData,
-               {
-                 updateTextInput(session = session, "inputCriteria_colData",value = input$inputSelectAttributeValue_colData)
-               })
+  observeEvent(input$inputSelectAttributeValue_colData, {
+    updateTextInput(session = session,
+                    "inputCriteria_colData",
+                    value = input$inputSelectAttributeValue_colData)
+  })
 
   #create selectinput for selecting attribute for clean operation
-  output$inputSelectAttributeClean_colData <- renderUI(
-    {
+  output$inputSelectAttributeClean_colData <- renderUI({
+    if(!is.null(vals$columnAnnotation)){
       if(ncol(vals$columnAnnotation) > 0){
-        selectInput("inputSelectAttributeClean_colData", label = "select attribute column", choices = colnames(vals$columnAnnotation))
+        selectInput("inputSelectAttributeClean_colData",
+                    label = "select attribute column",
+                    choices = colnames(vals$columnAnnotation))
       }
-    })
+    }
+  })
 
   #confirm create bin button
-  observeEvent(input$buttonConfirmBin_colData,
-               {
-                 #getting variables
-                 selected_attribute <- input$inputSelectAttribute_colData
-                 bin_name <- input$inputBinName_colData
-                 selected_column_no <- match(selected_attribute, colnames(vals$columnAnnotation))
-                 criteria_term <- input$inputCriteria_colData
-                 operator_term <- input$inputOperator_colData
+  observeEvent(input$buttonConfirmBin_colData, {
+    #getting variables
+    selected_attribute <- input$inputSelectAttribute_colData
+    bin_name <- input$inputBinName_colData
+    selected_column_no <- match(selected_attribute, colnames(vals$columnAnnotation))
+    criteria_term <- input$inputCriteria_colData
+    operator_term <- input$inputOperator_colData
 
-                 #get df from reactive input, backup column datatypes and convert factor to character
-                 data <- singleCellTK:::.manageFactor(vals$columnAnnotation, operation = "backup")
-                 df <- data$df
+    #get df from reactive input, backup column datatypes and convert factor to character
+    data <- singleCellTK:::.manageFactor(vals$columnAnnotation, operation = "backup")
+    df <- data$df
 
-                 #perform operations
-                 if (operator_term == "=")
-                 {
-                   df[, selected_column_no][df[, selected_column_no] %in% criteria_term] <- bin_name
-                 }
-                 else if (operator_term == ">")
-                 {
-                   df[, selected_column_no][as.numeric(df[, selected_column_no]) > criteria_term] <- bin_name
-                 }
-                 else if (operator_term == "<")
-                 {
-                   df[, selected_column_no][as.numeric(df[, selected_column_no]) < criteria_term] <- bin_name
-                 }
-                 else if (operator_term == "<=")
-                 {
-                   df[, selected_column_no][as.numeric(df[, selected_column_no]) <= criteria_term] <- bin_name
-                 }
-                 else if (operator_term == ">=")
-                 {
-                   df[, selected_column_no][as.numeric(df[, selected_column_no]) >= criteria_term] <- bin_name
-                 }
+    #perform operations
+    if (operator_term == "=")
+    {
+      df[, selected_column_no][df[, selected_column_no] %in% criteria_term] <- bin_name
+    }
+    else if (operator_term == ">")
+    {
+      df[, selected_column_no][as.numeric(df[, selected_column_no]) > criteria_term] <- bin_name
+    }
+    else if (operator_term == "<")
+    {
+      df[, selected_column_no][as.numeric(df[, selected_column_no]) < criteria_term] <- bin_name
+    }
+    else if (operator_term == "<=")
+    {
+      df[, selected_column_no][as.numeric(df[, selected_column_no]) <= criteria_term] <- bin_name
+    }
+    else if (operator_term == ">=")
+    {
+      df[, selected_column_no][as.numeric(df[, selected_column_no]) >= criteria_term] <- bin_name
+    }
 
-                 #restore datatypes
-                 data$df <- df
-                 data <- singleCellTK:::.manageFactor(data, operation = "restore")
-                 vals$columnAnnotation <- data$df
+    #restore datatypes
+    data$df <- df
+    data <- singleCellTK:::.manageFactor(data, operation = "restore")
+    vals$columnAnnotation <- data$df
 
-                 output$changesWarning_colData <- renderUI({
-                   HTML("<h5><span style='color:red'> You have made changes to the Cell Annotation data. Select 'Save' to finalize these changes or 'Reset' to discard the changes.</span></h5></br>")
-                 })
-                 showNotification("You have made changes to the Cell Annotation data. Select 'Save' to finalize these changes or 'Reset' to discard the changes.", type = "error")
-               })
+    output$changesWarning_colData <- renderUI({
+      HTML("<h5><span style='color:red'> You have made changes to the Cell Annotation data. Select 'Save' to finalize these changes or 'Reset' to discard the changes.</span></h5></br>")
+    })
+    showNotification("You have made changes to the Cell Annotation data. Select 'Save' to finalize these changes or 'Reset' to discard the changes.", type = "error")
+  })
 
   #confirm merge button
-  observeEvent(input$buttonConfirmMerge_colData,
-               {
-                 df <- vals$columnAnnotation
-                 colname1 <- input$inputSelectAttributeMerge1_colData
-                 colname2 <- input$inputSelectAttributeMerge2_colData
-                 df <- unite_(df, col = colname1, c(colname1, colname2), sep = input$inputSelectSeparatorMerge_colData)
+  observeEvent(input$buttonConfirmMerge_colData, {
+    df <- vals$columnAnnotation
+    colname1 <- input$inputSelectAttributeMerge1_colData
+    colname2 <- input$inputSelectAttributeMerge2_colData
+    df <- unite_(df, col = colname1, c(colname1, colname2),
+                 sep = input$inputSelectSeparatorMerge_colData)
 
-                 vals$columnAnnotation <- df
+    vals$columnAnnotation <- df
 
-                 output$changesWarning_colData <- renderUI({
-                   HTML("<h5><span style='color:red'> You have made changes to the Cell Annotation data. Select 'Save' to finalize these changes or 'Reset' to discard the changes.</span></h5></br>")
-                 })
-                 showNotification("You have made changes to the Cell Annotation data. Select 'Save' to finalize these changes or 'Reset' to discard the changes.", type = "error")
-               })
+    output$changesWarning_colData <- renderUI({
+      HTML("<h5><span style='color:red'> You have made changes to the Cell Annotation data. Select 'Save' to finalize these changes or 'Reset' to discard the changes.</span></h5></br>")
+    })
+    showNotification("You have made changes to the Cell Annotation data. Select 'Save' to finalize these changes or 'Reset' to discard the changes.", type = "error")
+  })
 
   #fill column button
-  observeEvent(input$buttonConfirmFill_colData,
-               {
-                 #get df from reactive input, backup column datatypes and convert factor to character
-                 data <- singleCellTK:::.manageFactor(vals$columnAnnotation, operation = "backup")
-                 df <- data$df
+  observeEvent(input$buttonConfirmFill_colData, {
+    #get df from reactive input, backup column datatypes and convert factor to character
+    data <- singleCellTK:::.manageFactor(vals$columnAnnotation, operation = "backup")
+    df <- data$df
 
-                 #perform operation
-                 selected_attribute_1 <- input$inputSelectAttributeFill1_colData
-                 selected_attribute_2 <- input$inputSelectAttributeFill2_colData
-                 selected_column_no_1 <- match(selected_attribute_1, colnames(df))
-                 selected_column_no_2 <- match(selected_attribute_2, colnames(df))
-                 old_value <- input$inputSelectAttributeFillvalue_colData
-                 new_value <- input$inputReplaceText_colData
+    #perform operation
+    selected_attribute_1 <- input$inputSelectAttributeFill1_colData
+    selected_attribute_2 <- input$inputSelectAttributeFill2_colData
+    selected_column_no_1 <- match(selected_attribute_1, colnames(df))
+    selected_column_no_2 <- match(selected_attribute_2, colnames(df))
+    old_value <- input$inputSelectAttributeFillvalue_colData
+    new_value <- input$inputReplaceText_colData
 
-                 for (i in 1:nrow(df))
-                 {
-                   if (df[i, selected_column_no_1] == old_value)
-                   {
-                     df[i, selected_column_no_2] <- new_value
-                   }
-                 }
+    for (i in 1:nrow(df))
+    {
+      if (df[i, selected_column_no_1] == old_value)
+      {
+        df[i, selected_column_no_2] <- new_value
+      }
+    }
 
-                 #restore datatypes
-                 data$df <- df
-                 data <- singleCellTK:::.manageFactor(data, operation = "restore")
-                 vals$columnAnnotation <- data$df
+    #restore datatypes
+    data$df <- df
+    data <- singleCellTK:::.manageFactor(data, operation = "restore")
+    vals$columnAnnotation <- data$df
 
-                 output$changesWarning_colData <- renderUI({
-                   HTML("<h5><span style='color:red'> You have made changes to the Cell Annotation data. Select 'Save' to finalize these changes or 'Reset' to discard the changes.</span></h5></br>")
-                 })
-                 showNotification("You have made changes to the Cell Annotation data. Select 'Save' to finalize these changes or 'Reset' to discard the changes.", type = "error")
-               })
+    output$changesWarning_colData <- renderUI({
+      HTML("<h5><span style='color:red'> You have made changes to the Cell Annotation data. Select 'Save' to finalize these changes or 'Reset' to discard the changes.</span></h5></br>")
+    })
+    showNotification("You have made changes to the Cell Annotation data. Select 'Save' to finalize these changes or 'Reset' to discard the changes.", type = "error")
+  })
 
   #confirm clean button
-  observeEvent(input$buttonConfirmClean_colData,
-               {
-                 #get df from reactive input, backup column datatypes and convert factor to character
-                 data <- singleCellTK:::.manageFactor(vals$columnAnnotation, operation = "backup")
-                 df <- data$df
+  observeEvent(input$buttonConfirmClean_colData, {
+    #get df from reactive input, backup column datatypes and convert factor to character
+    data <- singleCellTK:::.manageFactor(vals$columnAnnotation, operation = "backup")
+    df <- data$df
 
-                 #perform operation
-                 selected_attribute <- input$inputSelectAttributeClean_colData
-                 selected_column_no <- match(selected_attribute, colnames(df))
-                 selected_choice <- input$inputRemovalOperation_colData
-                 selected_choice_no <- match(selected_choice, c("remove alphabets", "remove digits", "remove spaces", "remove symbols"))
+    #perform operation
+    selected_attribute <- input$inputSelectAttributeClean_colData
+    selected_column_no <- match(selected_attribute, colnames(df))
+    selected_choice <- input$inputRemovalOperation_colData
+    selected_choice_no <- match(selected_choice, c("remove alphabets",
+                                                   "remove digits",
+                                                   "remove spaces",
+                                                   "remove symbols"))
 
-                 if (selected_choice_no == 1)
-                 {
-                   for (i in 1:nrow(df))
-                   {
-                     df[i, selected_column_no] <- gsub("[A-z]", "", df[i, selected_column_no])
-                   }
+    if (selected_choice_no == 1)
+    {
+      for (i in 1:nrow(df))
+      {
+        df[i, selected_column_no] <- gsub("[A-z]", "", df[i, selected_column_no])
+      }
 
-                 }
-                 else if (selected_choice_no == 2)
-                 {
-                   for (i in 1:nrow(df))
-                   {
-                     df[i, selected_column_no] <- gsub("[0-9]", "", df[i, selected_column_no])
-                   }
-                 }
-                 else if (selected_choice_no == 3)
-                 {
-                   for (i in 1:nrow(df))
-                   {
-                     df[i, selected_column_no] <- gsub(" ", "", df[i, selected_column_no])
-                   }
-                 }
-                 else if (selected_choice_no == 4)
-                 {
-                   for (i in 1:nrow(df))
-                   {
-                     df[i, selected_column_no] <- gsub("[[:punct:]]", "", df[i, selected_column_no])
-                   }
-                 }
+    }
+    else if (selected_choice_no == 2)
+    {
+      for (i in 1:nrow(df))
+      {
+        df[i, selected_column_no] <- gsub("[0-9]", "", df[i, selected_column_no])
+      }
+    }
+    else if (selected_choice_no == 3)
+    {
+      for (i in 1:nrow(df))
+      {
+        df[i, selected_column_no] <- gsub(" ", "", df[i, selected_column_no])
+      }
+    }
+    else if (selected_choice_no == 4)
+    {
+      for (i in 1:nrow(df))
+      {
+        df[i, selected_column_no] <- gsub("[[:punct:]]", "", df[i, selected_column_no])
+      }
+    }
 
-                 #restore datatypes
-                 data$df <- df
-                 data <- singleCellTK:::.manageFactor(data, operation = "restore")
-                 vals$columnAnnotation <- data$df
+    #restore datatypes
+    data$df <- df
+    data <- singleCellTK:::.manageFactor(data, operation = "restore")
+    vals$columnAnnotation <- data$df
 
-                 output$changesWarning_colData <- renderUI({
-                   HTML("<h5><span style='color:red'> You have made changes to the Cell Annotation data. Select 'Save' to finalize these changes or 'Reset' to discard the changes.</span></h5></br>")
-                 })
-                 showNotification("You have made changes to the Cell Annotation data. Select 'Save' to finalize these changes or 'Reset' to discard the changes.", type = "error")
-               })
+    output$changesWarning_colData <- renderUI({
+      HTML("<h5><span style='color:red'> You have made changes to the Cell Annotation data. Select 'Save' to finalize these changes or 'Reset' to discard the changes.</span></h5></br>")
+    })
+    showNotification("You have made changes to the Cell Annotation data. Select 'Save' to finalize these changes or 'Reset' to discard the changes.", type = "error")
+  })
 
   #add new empty column button
-  observeEvent(input$buttonConfirmEmptyColumnName_colData,
-               {
-                 df <- vals$columnAnnotation
+  observeEvent(input$buttonConfirmEmptyColumnName_colData, {
+    df <- vals$columnAnnotation
 
-                 colname <- input$inputEmptyColumnName_colData
-                 df$newcolumn <- input$inputDefaultValueAddColumn_colData
-                 names(df)[ncol(df)] <- colname
+    colname <- input$inputEmptyColumnName_colData
+    df$newcolumn <- input$inputDefaultValueAddColumn_colData
+    names(df)[ncol(df)] <- colname
 
-                 vals$columnAnnotation <- df
+    vals$columnAnnotation <- df
 
-                 output$changesWarning_colData <- renderUI({
-                   HTML("<h5><span style='color:red'> You have made changes to the Cell Annotation data. Select 'Save' to finalize these changes or 'Reset' to discard the changes.</span></h5></br>")
-                 })
-                 showNotification("You have made changes to the Cell Annotation data. Select 'Save' to finalize these changes or 'Reset' to discard the changes.", type = "error")
-               })
+    output$changesWarning_colData <- renderUI({
+      HTML("<h5><span style='color:red'> You have made changes to the Cell Annotation data. Select 'Save' to finalize these changes or 'Reset' to discard the changes.</span></h5></br>")
+    })
+    showNotification("You have made changes to the Cell Annotation data. Select 'Save' to finalize these changes or 'Reset' to discard the changes.", type = "error")
+  })
 
   #delete column button
   observeEvent(input$buttonConfirmDeleteColumn_colData,{
@@ -7531,11 +7872,12 @@ shinyServer(function(input, output, session) {
   observeEvent(input$buttonSave_colData,{
     colData(vals$counts) <- DataFrame(vals$columnAnnotation)
     output$changesWarning_colData <- NULL
+    updateColDataNames()
     showNotification("Changes saved successfully.")
   })
 
   #-----------------------------------------------------------------------------
-  # Page: Row Annotation (rowData)
+  # Page: Row Annotation (rowData) ####
   #-----------------------------------------------------------------------------
 
   #populate colData from sce object when uploaded
@@ -7582,255 +7924,286 @@ shinyServer(function(input, output, session) {
   })
 
   #Render table with rowData
-  output$outputColumnAnnotationTable_rowData <- renderUI(
-    {
-      output$rowOutTable <- DT::renderDataTable({ DT::datatable(vals$rowAnnotation, editable = 'cell', options = list(pageLength = 5)) })
-      DT::dataTableOutput("rowOutTable")
+  output$outputColumnAnnotationTable_rowData <- renderUI({
+    output$rowOutTable <- DT::renderDataTable({
+      DT::datatable(vals$rowAnnotation,
+                    editable = 'cell',
+                    options = list(pageLength = 5,
+                                   scrollX = TRUE))
     })
+    DT::dataTableOutput("rowOutTable")
+  })
 
   #create selectinput for selecting attribute with colnames from incoming dataset
   #create selectinput for selecting attribute value
-  output$inputSelectAttribute_rowData <- renderUI(
-    {
+  output$inputSelectAttribute_rowData <- renderUI({
+    if(!is.null(vals$rowAnnotation)){
       if(ncol(vals$rowAnnotation) > 0){
-        selectInput("inputSelectAttribute_rowData", label = "select attribute", choices = colnames(vals$rowAnnotation))
+        selectInput("inputSelectAttribute_rowData",
+                    label = "select attribute",
+                    choices = colnames(vals$rowAnnotation))
       }
-    })
-  output$inputSelectAttributeDelete_rowData <- renderUI(
-    {
+    }
+  })
+  output$inputSelectAttributeDelete_rowData <- renderUI({
+    if(!is.null(vals$rowAnnotation)){
       if(ncol(vals$rowAnnotation) > 0){
-        selectInput("inputSelectAttributeDelete_rowData", label = "select attribute to delete", choices = colnames(vals$rowAnnotation))
+        selectInput("inputSelectAttributeDelete_rowData",
+                    label = "select attribute to delete",
+                    choices = colnames(vals$rowAnnotation))
       }
-    })
+    }
+  })
 
   #create selectinput for selecting column to delete
-  output$inputSelectAttributeValue_rowData <- renderUI(
-    {
-      if(ncol(vals$rowAnnotation) > 0){
-        selectInput("inputSelectAttributeValue_rowData", label = "select attribute value", choices = vals$rowAnnotation[, match(input$inputSelectAttribute_rowData, colnames(vals$rowAnnotation))])
-      }
-    })
+  observeEvent(input$inputSelectAttribute_rowData, {
+    if(!is.null(vals$rowAnnotation) &&
+       ncol(vals$rowAnnotation) > 0 &&
+       !is.null(input$inputSelectAttribute_rowData) &&
+       input$inputSelectAttribute_rowData %in% colnames(vals$rowAnnotation)){
+      updateSelectizeInput(session, "inputSelectAttributeValue_rowData",
+                           choices = vals$rowAnnotation[, input$inputSelectAttribute_rowData],
+                           server = TRUE)
+    }
+  })
 
   #create selectinput for selecting merge_1 attribute
   #create selectinput for selecting merge_2 attribute
-  output$inputSelectAttributeMerge1_rowData <- renderUI(
-    {
+  output$inputSelectAttributeMerge1_rowData <- renderUI({
+    if(!is.null(vals$rowAnnotation)){
       if(ncol(vals$rowAnnotation) > 0){
-        selectInput("inputSelectAttributeMerge1_rowData", label = "select first column", choices = colnames(vals$rowAnnotation))
+        selectInput("inputSelectAttributeMerge1_rowData",
+                    label = "select first column",
+                    choices = colnames(vals$rowAnnotation))
       }
-    })
-  output$inputSelectAttributeMerge2_rowData <- renderUI(
-    {
+    }
+  })
+  output$inputSelectAttributeMerge2_rowData <- renderUI({
+    if(!is.null(vals$rowAnnotation)){
       if(ncol(vals$rowAnnotation) > 0){
-        selectInput("inputSelectAttributeMerge2_rowData", label = "select second column", choices = colnames(vals$rowAnnotation))
+        selectInput("inputSelectAttributeMerge2_rowData",
+                    label = "select second column",
+                    choices = colnames(vals$rowAnnotation))
       }
-    })
+    }
+  })
 
   #create selectinput for selecting fill_1 attribute
   #create selectinput for selecting fill_2 attribute
-  output$inputSelectAttributeFill1_rowData <- renderUI(
-    {
+  output$inputSelectAttributeFill1_rowData <- renderUI({
+    if(!is.null(vals$rowAnnotation)){
       if(ncol(vals$rowAnnotation) > 0){
-        selectInput("inputSelectAttributeFill1_rowData", label = "select attribute column", choices = colnames(vals$rowAnnotation))
+        selectInput("inputSelectAttributeFill1_rowData",
+                    label = "select attribute column",
+                    choices = colnames(vals$rowAnnotation))
       }
-    })
-  output$inputSelectAttributeFill2_rowData <- renderUI(
-    {
+    }
+  })
+  output$inputSelectAttributeFill2_rowData <- renderUI({
+    if(!is.null(vals$rowAnnotation)){
       if(ncol(vals$rowAnnotation) > 0){
-        selectInput("inputSelectAttributeFill2_rowData", label = "select column to fill", choices = colnames(vals$rowAnnotation))
+        selectInput("inputSelectAttributeFill2_rowData",
+                    label = "select column to fill",
+                    choices = colnames(vals$rowAnnotation))
       }
-    })
+    }
+  })
 
   #create selectinput for selecting attribute value for magic fill
-  output$inputSelectAttributeFillvalue_rowData <- renderUI(
-    {
+  observeEvent(input$inputSelectAttributeFill1_rowData, {
+    if(!is.null(vals$rowAnnotation)){
       if(ncol(vals$rowAnnotation) > 0){
-        selectInput("inputSelectAttributeFillvalue_rowData", label = "select attribute value", choices = vals$rowAnnotation[, match(input$inputSelectAttributeFill1_rowData, colnames(vals$rowAnnotation))])
+        updateSelectizeInput(session, "inputSelectAttributeFillvalue_rowData",
+                             choices = vals$rowAnnotation[, match(input$inputSelectAttributeFill1_rowData,
+                                                                  colnames(vals$rowAnnotation))],
+                             server = TRUE)
       }
-    })
+    }
+  })
 
   #update criteria parameter text input when attribute value selectinput is changed
-  observeEvent(input$inputSelectAttributeValue_rowData,
-               {
-                 updateTextInput(session = session, "inputCriteria_rowData",value = input$inputSelectAttributeValue_rowData)
-               })
+  observeEvent(input$inputSelectAttributeValue_rowData, {
+    updateTextInput(session = session,
+                    "inputCriteria_rowData",
+                    value = input$inputSelectAttributeValue_rowData)
+  })
 
   #create selectinput for selecting attribute for clean operation
-  output$inputSelectAttributeClean_rowData <- renderUI(
-    {
+  output$inputSelectAttributeClean_rowData <- renderUI({
+    if(!is.null(vals$rowAnnotation)){
       if(ncol(vals$rowAnnotation) > 0){
-        selectInput("inputSelectAttributeClean_rowData", label = "select attribute column", choices = colnames(vals$rowAnnotation))
+        selectInput("inputSelectAttributeClean_rowData",
+                    label = "select attribute column",
+                    choices = colnames(vals$rowAnnotation))
       }
-    })
+    }
+  })
 
   #confirm create bin button
-  observeEvent(input$buttonConfirmBin_rowData,
-               {
-                 #getting variables
-                 selected_attribute <- input$inputSelectAttribute_rowData
-                 bin_name <- input$inputBinName_rowData
-                 selected_column_no <- match(selected_attribute, colnames(vals$rowAnnotation))
-                 criteria_term <- input$inputCriteria_rowData
-                 operator_term <- input$inputOperator_rowData
+  observeEvent(input$buttonConfirmBin_rowData, {
+    #getting variables
+    selected_attribute <- input$inputSelectAttribute_rowData
+    bin_name <- input$inputBinName_rowData
+    selected_column_no <- match(selected_attribute, colnames(vals$rowAnnotation))
+    criteria_term <- input$inputCriteria_rowData
+    operator_term <- input$inputOperator_rowData
 
-                 #get df from reactive input, backup column datatypes and convert factor to character
-                 data <- singleCellTK:::.manageFactor(vals$rowAnnotation, operation = "backup")
-                 df <- data$df
+    #get df from reactive input, backup column datatypes and convert factor to character
+    data <- singleCellTK:::.manageFactor(vals$rowAnnotation, operation = "backup")
+    df <- data$df
 
-                 #operations
-                 if (operator_term == "=")
-                 {
-                   df[, selected_column_no][df[, selected_column_no] %in% criteria_term] <- bin_name
-                 }
-                 else if (operator_term == ">")
-                 {
-                   df[, selected_column_no][as.numeric(df[, selected_column_no]) > criteria_term] <- bin_name
-                 }
-                 else if (operator_term == "<")
-                 {
-                   df[, selected_column_no][as.numeric(df[, selected_column_no]) < criteria_term] <- bin_name
-                 }
-                 else if (operator_term == "<=")
-                 {
-                   df[, selected_column_no][as.numeric(df[, selected_column_no]) <= criteria_term] <- bin_name
-                 }
-                 else if (operator_term == ">=")
-                 {
-                   df[, selected_column_no][as.numeric(df[, selected_column_no]) >= criteria_term] <- bin_name
-                 }
+    #operations
+    if (operator_term == "=")
+    {
+      df[, selected_column_no][df[, selected_column_no] %in% criteria_term] <- bin_name
+    }
+    else if (operator_term == ">")
+    {
+      df[, selected_column_no][as.numeric(df[, selected_column_no]) > criteria_term] <- bin_name
+    }
+    else if (operator_term == "<")
+    {
+      df[, selected_column_no][as.numeric(df[, selected_column_no]) < criteria_term] <- bin_name
+    }
+    else if (operator_term == "<=")
+    {
+      df[, selected_column_no][as.numeric(df[, selected_column_no]) <= criteria_term] <- bin_name
+    }
+    else if (operator_term == ">=")
+    {
+      df[, selected_column_no][as.numeric(df[, selected_column_no]) >= criteria_term] <- bin_name
+    }
 
-                 #restore datatypes
-                 data$df <- df
-                 data <- singleCellTK:::.manageFactor(data, operation = "restore")
-                 vals$rowAnnotation <- data$df
+    #restore datatypes
+    data$df <- df
+    data <- singleCellTK:::.manageFactor(data, operation = "restore")
+    vals$rowAnnotation <- data$df
 
-                 output$changesWarning_rowData <- renderUI({
-                   HTML("<h5><span style='color:red'> You have made changes to the Cell Annotation data. Select 'Save' to finalize these changes or 'Reset' to discard the changes.</span></h5></br>")
-                 })
-                 showNotification("You have made changes to the Cell Annotation data. Select 'Save' to finalize these changes or 'Reset' to discard the changes.", type = "error")
-               })
+    output$changesWarning_rowData <- renderUI({
+      HTML("<h5><span style='color:red'> You have made changes to the Cell Annotation data. Select 'Save' to finalize these changes or 'Reset' to discard the changes.</span></h5></br>")
+    })
+    showNotification("You have made changes to the Cell Annotation data. Select 'Save' to finalize these changes or 'Reset' to discard the changes.", type = "error")
+  })
 
   #confirm merge button
-  observeEvent(input$buttonConfirmMerge_rowData,
-               {
-                 df <- vals$rowAnnotation
-                 colname1 <- input$inputSelectAttributeMerge1_rowData
-                 colname2 <- input$inputSelectAttributeMerge2_rowData
-                 df <- unite_(df, col = colname1, c(colname1, colname2), sep = input$inputSelectSeparatorMerge_rowData)
+  observeEvent(input$buttonConfirmMerge_rowData, {
+    df <- vals$rowAnnotation
+    colname1 <- input$inputSelectAttributeMerge1_rowData
+    colname2 <- input$inputSelectAttributeMerge2_rowData
+    df <- unite_(df, col = colname1, c(colname1, colname2),
+                 sep = input$inputSelectSeparatorMerge_rowData)
 
-                 vals$rowAnnotation <- df
+    vals$rowAnnotation <- df
 
-                 output$changesWarning_rowData <- renderUI({
-                   HTML("<h5><span style='color:red'> You have made changes to the Cell Annotation data. Select 'Save' to finalize these changes or 'Reset' to discard the changes.</span></h5></br>")
-                 })
-                 showNotification("You have made changes to the Cell Annotation data. Select 'Save' to finalize these changes or 'Reset' to discard the changes.", type = "error")
-               })
+    output$changesWarning_rowData <- renderUI({
+      HTML("<h5><span style='color:red'> You have made changes to the Cell Annotation data. Select 'Save' to finalize these changes or 'Reset' to discard the changes.</span></h5></br>")
+    })
+    showNotification("You have made changes to the Cell Annotation data. Select 'Save' to finalize these changes or 'Reset' to discard the changes.", type = "error")
+  })
 
   #fill column button
-  observeEvent(input$buttonConfirmFill_rowData,
-               {
-                 #get df from reactive input, backup column datatypes and convert factor to character
-                 data <- singleCellTK:::.manageFactor(vals$rowAnnotation, operation = "backup")
-                 df <- data$df
+  observeEvent(input$buttonConfirmFill_rowData, {
+    #get df from reactive input, backup column datatypes and convert factor to character
+    data <- singleCellTK:::.manageFactor(vals$rowAnnotation, operation = "backup")
+    df <- data$df
 
-                 #operations
-                 selected_attribute_1 <- input$inputSelectAttributeFill1_rowData
-                 selected_attribute_2 <- input$inputSelectAttributeFill2_rowData
-                 selected_column_no_1 <- match(selected_attribute_1, colnames(df))
-                 selected_column_no_2 <- match(selected_attribute_2, colnames(df))
-                 old_value <- input$inputSelectAttributeFillvalue_rowData
-                 new_value <- input$inputReplaceText_rowData
+    #operations
+    selected_attribute_1 <- input$inputSelectAttributeFill1_rowData
+    selected_attribute_2 <- input$inputSelectAttributeFill2_rowData
+    selected_column_no_1 <- match(selected_attribute_1, colnames(df))
+    selected_column_no_2 <- match(selected_attribute_2, colnames(df))
+    old_value <- input$inputSelectAttributeFillvalue_rowData
+    new_value <- input$inputReplaceText_rowData
 
-                 for (i in 1:nrow(df))
-                 {
-                   if (df[i, selected_column_no_1] == old_value)
-                   {
-                     df[i, selected_column_no_2] <- new_value
-                   }
-                 }
+    for (i in 1:nrow(df))
+    {
+      if (df[i, selected_column_no_1] == old_value)
+      {
+        df[i, selected_column_no_2] <- new_value
+      }
+    }
 
-                 #restore datatypes
-                 data$df <- df
-                 data <- singleCellTK:::.manageFactor(data, operation = "restore")
-                 vals$rowAnnotation <- data$df
+    #restore datatypes
+    data$df <- df
+    data <- singleCellTK:::.manageFactor(data, operation = "restore")
+    vals$rowAnnotation <- data$df
 
-                 output$changesWarning_rowData <- renderUI({
-                   HTML("<h5><span style='color:red'> You have made changes to the Cell Annotation data. Select 'Save' to finalize these changes or 'Reset' to discard the changes.</span></h5></br>")
-                 })
-                 showNotification("You have made changes to the Cell Annotation data. Select 'Save' to finalize these changes or 'Reset' to discard the changes.", type = "error")
-               })
+    output$changesWarning_rowData <- renderUI({
+      HTML("<h5><span style='color:red'> You have made changes to the Cell Annotation data. Select 'Save' to finalize these changes or 'Reset' to discard the changes.</span></h5></br>")
+    })
+    showNotification("You have made changes to the Cell Annotation data. Select 'Save' to finalize these changes or 'Reset' to discard the changes.", type = "error")
+  })
 
   #confirm clean button
-  observeEvent(input$buttonConfirmClean_rowData,
-               {
-                 #get df from reactive input, backup column datatypes and convert factor to character
-                 data <- singleCellTK:::.manageFactor(vals$rowAnnotation, operation = "backup")
-                 df <- data$df
+  observeEvent(input$buttonConfirmClean_rowData, {
+    #get df from reactive input, backup column datatypes and convert factor to character
+    data <- singleCellTK:::.manageFactor(vals$rowAnnotation, operation = "backup")
+    df <- data$df
 
-                 #operations
-                 selected_attribute <- input$inputSelectAttributeClean_rowData
-                 selected_column_no <- match(selected_attribute, colnames(df))
-                 selected_choice <- input$inputRemovalOperation_rowData
-                 selected_choice_no <- match(selected_choice, c("remove alphabets", "remove digits", "remove spaces", "remove symbols"))
+    #operations
+    selected_attribute <- input$inputSelectAttributeClean_rowData
+    selected_column_no <- match(selected_attribute, colnames(df))
+    selected_choice <- input$inputRemovalOperation_rowData
+    selected_choice_no <- match(selected_choice, c("remove alphabets",
+                                                   "remove digits",
+                                                   "remove spaces",
+                                                   "remove symbols"))
 
-                 if (selected_choice_no == 1)
-                 {
-                   for (i in 1:nrow(df))
-                   {
-                     df[i, selected_column_no] <- gsub("[A-z]", "", df[i, selected_column_no])
-                   }
+    if (selected_choice_no == 1)
+    {
+      for (i in 1:nrow(df))
+      {
+        df[i, selected_column_no] <- gsub("[A-z]", "", df[i, selected_column_no])
+      }
 
-                 }
-                 else if (selected_choice_no == 2)
-                 {
-                   for (i in 1:nrow(df))
-                   {
-                     df[i, selected_column_no] <- gsub("[0-9]", "", df[i, selected_column_no])
-                   }
-                 }
-                 else if (selected_choice_no == 3)
-                 {
-                   for (i in 1:nrow(df))
-                   {
-                     df[i, selected_column_no] <- gsub(" ", "", df[i, selected_column_no])
-                   }
-                 }
-                 else if (selected_choice_no == 4)
-                 {
-                   for (i in 1:nrow(df))
-                   {
-                     df[i, selected_column_no] <- gsub("[[:punct:]]", "", df[i, selected_column_no])
-                   }
-                 }
+    }
+    else if (selected_choice_no == 2)
+    {
+      for (i in 1:nrow(df))
+      {
+        df[i, selected_column_no] <- gsub("[0-9]", "", df[i, selected_column_no])
+      }
+    }
+    else if (selected_choice_no == 3)
+    {
+      for (i in 1:nrow(df))
+      {
+        df[i, selected_column_no] <- gsub(" ", "", df[i, selected_column_no])
+      }
+    }
+    else if (selected_choice_no == 4)
+    {
+      for (i in 1:nrow(df))
+      {
+        df[i, selected_column_no] <- gsub("[[:punct:]]", "", df[i, selected_column_no])
+      }
+    }
 
-                 #restore datatypes
-                 data$df <- df
-                 data <- singleCellTK:::.manageFactor(data, operation = "restore")
-                 vals$rowAnnotation <- data$df
+    #restore datatypes
+    data$df <- df
+    data <- singleCellTK:::.manageFactor(data, operation = "restore")
+    vals$rowAnnotation <- data$df
 
-                 output$changesWarning_rowData <- renderUI({
-                   HTML("<h5><span style='color:red'> You have made changes to the Cell Annotation data. Select 'Save' to finalize these changes or 'Reset' to discard the changes.</span></h5></br>")
-                 })
-                 showNotification("You have made changes to the Cell Annotation data. Select 'Save' to finalize these changes or 'Reset' to discard the changes.", type = "error")
-               })
+    output$changesWarning_rowData <- renderUI({
+      HTML("<h5><span style='color:red'> You have made changes to the Cell Annotation data. Select 'Save' to finalize these changes or 'Reset' to discard the changes.</span></h5></br>")
+    })
+    showNotification("You have made changes to the Cell Annotation data. Select 'Save' to finalize these changes or 'Reset' to discard the changes.", type = "error")
+  })
 
   #add new empty column button
-  observeEvent(input$buttonConfirmEmptyColumnName_rowData,
-               {
-                 df <- vals$rowAnnotation
+  observeEvent(input$buttonConfirmEmptyColumnName_rowData, {
+    df <- vals$rowAnnotation
+    colname <- input$inputEmptyColumnName_rowData
+    df$newcolumn <- input$inputDefaultValueAddColumn_rowData
+    names(df)[ncol(df)] <- colname
 
+    vals$columnAnnotation <- df
 
-                 colname <- input$inputEmptyColumnName_rowData
-                 df$newcolumn <- input$inputDefaultValueAddColumn_rowData
-                 names(df)[ncol(df)] <- colname
-
-                 vals$columnAnnotation <- df
-
-                 output$changesWarning_rowData <- renderUI({
-                   HTML("<h5><span style='color:red'> You have made changes to the Cell Annotation data. Select 'Save' to finalize these changes or 'Reset' to discard the changes.</span></h5></br>")
-                 })
-                 showNotification("You have made changes to the Cell Annotation data. Select 'Save' to finalize these changes or 'Reset' to discard the changes.", type = "error")
-               })
+    output$changesWarning_rowData <- renderUI({
+      HTML("<h5><span style='color:red'> You have made changes to the Cell Annotation data. Select 'Save' to finalize these changes or 'Reset' to discard the changes.</span></h5></br>")
+    })
+    showNotification("You have made changes to the Cell Annotation data. Select 'Save' to finalize these changes or 'Reset' to discard the changes.", type = "error")
+  })
 
   #delete column button
   observeEvent(input$buttonConfirmDeleteColumn_rowData,{
@@ -7863,6 +8236,7 @@ shinyServer(function(input, output, session) {
   observeEvent(input$buttonSave_rowData,{
     rowData(vals$counts) <- DataFrame(vals$rowAnnotation)
     output$changesWarning_rowData <- NULL
+    updateFeatureAnnots()
     showNotification("Changes saved successfully.")
   })
 
@@ -7894,6 +8268,37 @@ shinyServer(function(input, output, session) {
     }
   )
 
+  output$exportFileName <- renderUI({
+    defaultName <- paste0("SCE-", strftime(Sys.time(), format = "%y%m%d_%H%M"))
+    if (input$exportChoice == "rds") {
+      extName <- ".rds"
+    } else if (input$exportChoice == "annData") {
+      extName <- ".h5ad"
+    } else if (input$exportChoice == "textfile") {
+      extName <- ".txt"
+    }
+    if (input$exportChoice != "textfile") {
+      tags$div(
+        div(style = "display: inline-block;vertical-align:top; width: 160px;",
+            textInput("exportPrefix", label = NULL,
+                      value = defaultName, placeholder = "Required!",
+                      width = '160px')),
+        div(
+          style = "display: inline-block;vertical-align:top; width: 50px;",
+          p(extName, style = "margin-top: 8px; margin-left: 2px; font-size: 16px;")
+        )
+      )
+    } else {
+      tags$div(
+        div(style = "display: inline-block;vertical-align:top; width: 160px;",
+            textInput("exportPrefix", label = NULL,
+                      value = defaultName, placeholder = "Required!",
+                      width = '160px')),
+      )
+    }
+
+  })
+
   addPopover(session, 'exportAssayLabel', '', "The name of assay of interests that will be set as the primary matrix of the output AnnData.", 'right')
   addPopover(session, 'compressionLabel', '', "If output file compression is required, this variable accepts 'gzip' or 'lzf' as inputs", 'right')
   addPopover(session, 'compressionOptsLabel', '', "Sets the compression level", 'right')
@@ -7906,39 +8311,26 @@ shinyServer(function(input, output, session) {
     withBusyIndicatorServer("exportData", {
       if (is.null(vals$counts) && is.null(vals$original)) {
         shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
-        return
-      }
-
-      if (input$exportChoice == "rds") {
-        filename = paste0("SCE_", strftime(Sys.time(), format = "%y%m%d_%H%m"),
-                         ".rds")
-        saveRDS(vals$counts, paste0(exportPath, "/", filename))
-      } else if (input$exportChoice == "annData") {
-        exportassay <- input$exportAssay
-        compression <- input$compression
-        compressionOpts = input$compressionOpts
-        forceDense <- input$forceDense
-        overwrite <- if(input$overwrite == 'True') TRUE else FALSE
-        exportSCEtoAnnData(sce=vals$counts,
-                           useAssay = exportassay,
-                           outputDir=exportPath,
-                           prefix = paste0("SCE-",
-                                           strftime(Sys.time(),
-                                                    format = "%y%m%d_%H%m")),
-                           overwrite=overwrite,
-                           compression = compression,
-                           compressionOpts = compressionOpts,
-                           forceDense = forceDense)
-      } else if (input$exportChoice == "textfile") {
-        overwrite <- if(input$overwrite == 'True') TRUE else FALSE
-        gzipped <- if(input$gzip == 'True') TRUE else FALSE
-        exportSCEtoFlatFile(sce = vals$counts,
-                            outputDir=exportPath,
-                            overwrite=overwrite,
-                            gzipped=gzipped,
-                            sample = paste0("SCE-",
-                                            strftime(Sys.time(),
-                                                     format = "%y%m%d_%H%m")))
+      } else {
+        if (input$exportChoice == "rds") {
+          filename <- paste0(input$exportPrefix, ".rds")
+          saveRDS(vals$counts, paste0(exportPath, "/", filename))
+        } else if (input$exportChoice == "annData") {
+          exportSCEtoAnnData(sce=vals$counts,
+                             useAssay = input$exportAssay,
+                             outputDir = exportPath,
+                             prefix = input$exportPrefix,
+                             overwrite = input$exportOverwrite,
+                             compression = "gzip",
+                             compressionOpts = input$compressionOpts,
+                             forceDense = input$forceDense)
+        } else if (input$exportChoice == "textfile") {
+          exportSCEtoFlatFile(sce = vals$counts,
+                              outputDir = exportPath,
+                              overwrite = input$exportOverwrite,
+                              gzipped = input$exportFlatGzip,
+                              prefix = input$exportPrefix)
+        }
       }
     })
   })

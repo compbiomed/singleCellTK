@@ -78,6 +78,9 @@
       <a href="../articles/cnsl_feature_selection.html">Feature Selection</a>
     </li>
     <li>
+      <a href="../articles/cnsl_dimensionality_reduction.html">Dimensionality Reduction</a>
+    </li>
+    <li>
       <a href="../articles/cnsl_clustering.html">Clustering</a>
     </li>
     <li>
@@ -102,19 +105,16 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Import</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Data</a>
       <ul class="dropdown-menu" role="menu">
 <li>
-          <a href="../articles/ui_import_data.html">Data</a>
+          <a href="../articles/ui_import_data.html">Import Data</a>
         </li>
         <li>
-          <a href="../articles/ui_import_genesets.html">Gene Sets</a>
+          <a href="../articles/ui_import_genesets.html">Import Gene Sets</a>
         </li>
         <li>
-          <a href="../articles/ui_import_cell_annotation.html">Cell Annotation</a>
-        </li>
-        <li>
-          <a href="../articles/ui_import_feature_annotation.html">Feature Annotation</a>
+          <a href="../articles/ui_import_annotation.html">Annotation</a>
         </li>
         <li>
           <a href="../articles/ui_export_data.html">Export Data</a>
@@ -153,7 +153,7 @@
           <a href="../articles/ui_feature_selection.html">Feature Selection</a>
         </li>
         <li>
-          <a href="../articles/ui_dimred.html">Dimensionality Reduction</a>
+          <a href="../articles/ui_dimemsionality_reduction.html">Dimensionality Reduction</a>
         </li>
       </ul>
 </li>
@@ -171,9 +171,17 @@
         </li>
       </ul>
 </li>
-    <li>
-      <a href="../articles/ui_heatmap.html">Generic Heatmap</a>
-    </li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Visualization</a>
+      <ul class="dropdown-menu" role="menu">
+<li>
+          <a href="../articles/ui_cellViewer.html">cellViewer</a>
+        </li>
+        <li>
+          <a href="../articles/ui_heatmap.html">Generic Heatmap</a>
+        </li>
+      </ul>
+</li>
   </ul>
 </li>
 <li>
@@ -262,9 +270,9 @@ text-align: justify}
 <p>All droplet-based QC functions are able to be run under the wrapper function runDropletQC. By default all possible QC algorithms will be run.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">pbmc4k.droplet</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runDropletQC.html">runDropletQC</a></span><span class="op">(</span><span class="va">pbmc4k.droplet</span><span class="op">)</span></code></pre></div>
-<pre><code>## Thu Apr 01 19:25:40 2021 ... Running 'perCellQCMetrics'</code></pre>
-<pre><code>## Thu Apr 01 19:25:43 2021 ... Running 'emptyDrops'</code></pre>
-<pre><code>## Thu Apr 01 19:26:54 2021 ... Running 'barcodeRanks'</code></pre>
+<pre><code>## Tue Apr 13 15:49:41 2021 ... Running 'perCellQCMetrics'</code></pre>
+<pre><code>## Tue Apr 13 15:49:43 2021 ... Running 'emptyDrops'</code></pre>
+<pre><code>## Tue Apr 13 15:50:54 2021 ... Running 'barcodeRanks'</code></pre>
 <p>If users choose to only run a specific set of algorithms, they can specify which to run with the algorithms parameter.</p>
 <p>When quality control functions are run in singleCellTK, the output of the function is stored in the colData slot of the SingleCellExperiment object.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
@@ -708,7 +716,7 @@ NA
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co">#After filtering:</span>
 <span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span><span class="op">(</span><span class="va">pbmc4k.droplet</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1] 33694  4236</code></pre>
+<pre><code>## [1] 33694  4237</code></pre>
 <p>We can compare the average total UMI counts per cell before and after cell filtration:</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plotSCEViolinColData.html">plotSCEViolinColData</a></span><span class="op">(</span><span class="va">pbmc4k.droplet.prefilt</span>, coldata <span class="op">=</span> <span class="st">"sum"</span>, summary <span class="op">=</span> <span class="st">"mean"</span>, title <span class="op">=</span> <span class="st">"Pre-filter"</span>, ylab <span class="op">=</span> <span class="st">"Total counts"</span><span class="op">)</span>
@@ -793,10 +801,10 @@ NA
 ## To use Python UMAP via reticulate, set umap.method to 'umap-learn' and metric to 'correlation'
 ## This message will be shown once per session</code></pre>
 <pre><code>## [1] "Creating 1806 artificial doublets..."
-## [19:40:52] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-## [19:41:25] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-## [19:41:43] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-## [19:42:14] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.</code></pre>
+## [16:04:53] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+## [16:05:26] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+## [16:05:44] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+## [16:06:15] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.</code></pre>
 <p>If users choose to only run a specific set of algorithms, they can specify which to run with the <code>algorithms</code> parameter.</p>
 <p>When quality control functions are run in singleCellTK, the output of the function is stored in the <code>colData</code> slot of the <code>SingleCellExperiment</code> object.</p>
 <div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
