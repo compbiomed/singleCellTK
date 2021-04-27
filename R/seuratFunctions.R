@@ -326,7 +326,7 @@ seuratPlotHVG <- function(inSCE, labelPoints = 0) {
 #' Plots the selected dimensionality reduction method
 #' @param inSCE (sce) object which has the selected dimensionality reduction algorithm already computed and stored
 #' @param useReduction Dimentionality reduction to plot. One of "pca", "ica", "tsne", or "umap". Default \code{"umap"}.
-#' @param showLegend Select if legends should be shown on the output plot or not. Either "TRUE" or "FALSE". Default \code{FALSE}.
+#' @param showLegend Select if legends and labels should be shown on the output plot or not. Either "TRUE" or "FALSE". Default \code{FALSE}.
 #' @param groupBy Specify a colData column name that be used for grouping. Default is \code{NULL}. 
 #' @param splitBy Specify a colData column name that be used for splitting the output plot. Default is \code{NULL}. 
 #' @examples
@@ -342,6 +342,19 @@ seuratPlotHVG <- function(inSCE, labelPoints = 0) {
 seuratReductionPlot <- function(inSCE, useReduction = c("pca", "ica", "tsne", "umap"), 
                                 showLegend = FALSE, groupBy = NULL, splitBy = NULL) {
   seuratObject <- convertSCEToSeurat(inSCE)
+  if(!is.null(seuratObject@meta.data$seurat_cluster)){
+    seuratObject@meta.data <- seuratObject@meta.data[, "seurat_clusters", drop=FALSE]
+  }
+  else{
+    seuratObject@meta.data <- data.frame()
+  }
+  
+  if(showLegend){
+    if(!is.null(seuratObject@meta.data$seurat_clusters)){
+      Seurat::Idents(seuratObject) <- seuratObject@meta.data$seurat_clusters
+      seuratObject@meta.data <- data.frame()
+    }
+  }
   
   if(!is.null(groupBy)){
     seuratObject[[groupBy]] <- colData(inSCE)[[groupBy]]
@@ -351,17 +364,21 @@ seuratReductionPlot <- function(inSCE, useReduction = c("pca", "ica", "tsne", "u
     seuratObject[[splitBy]] <- colData(inSCE)[[splitBy]]
   }
   
-  args <- list(
-    object = seuratObject,
-    reduction = useReduction,
-    group.by = groupBy,
-    split.by = splitBy)
-  
   if(showLegend){
-    plot <- do.call(eval(parse(text = "Seurat::DimPlot")), args = args)
+    plot <- Seurat::DimPlot(
+      object = seuratObject, 
+      reduction = useReduction, 
+      group.by = groupBy,
+      split.by = splitBy,
+      label = TRUE)
   }
   else{
-    plot <- do.call(eval(parse(text = "Seurat::DimPlot")), args = args) + Seurat::NoLegend()
+    plot <- Seurat::DimPlot(
+      object = seuratObject, 
+      reduction = useReduction, 
+      group.by = groupBy,
+      split.by = splitBy,
+      label = FALSE) + Seurat::NoLegend()
   }
   
   if ("ident" %in% names(plot$data) && "seurat_clusters" %in% names(seuratObject@meta.data)) {
@@ -423,7 +440,10 @@ seuratFindClusters <- function(
   } else if (algorithm == "SLM") {
     no_algorithm = 3
   }
-  seuratObject <- Seurat::FindClusters(seuratObject, algorithm = no_algorithm, group.singletons = groupSingletons, resolution = resolution, verbose = verbose)
+  tempSeuratObject <- seuratObject
+  tempSeuratObject@meta.data <- data.frame()
+  tempSeuratObject <- Seurat::FindClusters(tempSeuratObject, algorithm = no_algorithm, group.singletons = groupSingletons, resolution = resolution, verbose = verbose)
+  seuratObject@meta.data$seurat_clusters <- tempSeuratObject@meta.data$seurat_clusters
   inSCE <- .addSeuratToMetaDataSCE(inSCE, seuratObject)
   colData(inSCE)[[paste0("Seurat","_",algorithm,"_","Resolution",resolution)]] <- seuratObject@meta.data$seurat_clusters
   S4Vectors::metadata(inSCE)$seurat$clusterName <- paste0("Seurat","_",algorithm,"_","Resolution",resolution)

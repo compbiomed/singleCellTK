@@ -10,7 +10,6 @@ shinyPanelSeurat <- fluidPage(
                     column(4,
                         panel(heading = "Options",
                             uiOutput("seuratSelectNormalizationAssay"),
-                            #selectInput(inputId = "seuratSelectNormalizationAssay", label = "Select assay: ", choices = c()),
                             selectInput(inputId = "normalization_method", label = "Select normalization method: ", choices = c("LogNormalize", "CLR", "RC")),
                             textInput(inputId = "scale_factor", label = "Set scaling factor: ", value = "10000"),
                             actionButton(inputId = "normalize_button", "Normalize")
@@ -51,7 +50,7 @@ shinyPanelSeurat <- fluidPage(
                         fluidRow(
                             column(12,
                                 panel(heading = "Display HVG",
-                                    textInput(inputId = "hvg_no_features_view", label = "Select number of features to display: ", value = "100"),
+                                    textInput(inputId = "hvg_no_features_view", label = "Select number of features to display: ", value = "10"),
                                     verbatimTextOutput(outputId = "hvg_output", placeholder = TRUE)
                                      )
                                   )
@@ -316,12 +315,9 @@ shinyPanelSeurat <- fluidPage(
                                                                          fluidRow(
                                                                            column(12, align = "center",
                                                                                                panel(
-                                                                                                   radioGroupButtons(
-                                                                                                       inputId = "Id004",
-                                                                                                       label = NULL, 
-                                                                                                       choices = c("Top 5", "Top 10", "Top 20"),
-                                                                                                       status = "primary"
-                                                                                                   ),
+                                                                                                   numericInput("findMarkerHeatmapPlotFullNumeric", value = 10, max = 100, min = 2, step = 1, label = "Select number of top genes from each cluster/group to visualize in the heatmap below based on highest average log fold change value:"),
+                                                                                                   actionButton("findMarkerHeatmapPlotFullNumericRun", label = "Plot"),
+                                                                                                   hr(),
                                                                                                    jqui_resizable(
                                                                                                        plotOutput(outputId = "findMarkerHeatmapPlotFull")
                                                                                                    )
