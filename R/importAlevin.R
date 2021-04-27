@@ -28,6 +28,7 @@ importAlevin <- function(
 		mat <- DelayedArray::DelayedArray(mat)
 	}
 
+	genes <- rownames(mat)
 	cb <- .readBarcodes(file.path(alevinDir, 'alevin/featureDump.txt'),
 						header = 'auto',
               			colname = "cell_barcode",
