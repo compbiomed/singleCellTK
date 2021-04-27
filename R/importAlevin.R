@@ -1,15 +1,15 @@
 #' @name importAlevin
 #' @rdname importAlevin
 #' @title Construct SCE object from Salmon-Alevin output
-#' @param alevinDir Character. The output directory of salmon-Alevin pipeline. 
-#'  It should contain subfolder named 'alevin', which contains the count data which is stored 
+#' @param alevinDir Character. The output directory of salmon-Alevin pipeline.
+#'  It should contain subfolder named 'alevin', which contains the count data which is stored
 #'  in 'quants_mat.gz'. Default \code{NULL}.
 #' @param sampleName Character. A user-defined sample name for the sample to be
-#'  imported. The 'sampleName' will be appended to the begining of cell barcodes. Default is 'sample'. 
+#'  imported. The 'sampleName' will be appended to the begining of cell barcodes. Default is 'sample'.
 #' @param delayedArray Boolean. Whether to read the expression matrix as
 #'  \link{DelayedArray} object or not. Default \code{FALSE}.
 #' @return A \code{SingleCellExperiment} object containing the count
-#'  matrix, the feature annotations, and the cell annotation 
+#'  matrix, the feature annotations, and the cell annotation
 #'  (which includes QC metrics stored in 'featureDump.txt').
 #' @export
 
@@ -27,7 +27,7 @@ importAlevin <- function(
 	if (delayedArray) {
 		mat <- DelayedArray::DelayedArray(mat)
 	}
-
+	genes <- rownames(mat)
 	cb <- .readBarcodes(file.path(alevinDir, 'alevin/featureDump.txt'),
 						header = 'auto',
               			colname = "cell_barcode",
@@ -37,7 +37,7 @@ importAlevin <- function(
 	sce <- SingleCellExperiment::SingleCellExperiment(
   											assays = list(counts = mat))
 	SummarizedExperiment::rowData(sce) <- S4Vectors::DataFrame(
-											'feature_name' = genes, 
+											'feature_name' = genes,
                                    			row.names = genes)
 	SummarizedExperiment::colData(sce) <- S4Vectors::DataFrame(
 											cb,
