@@ -7,8 +7,8 @@
 importAlevin(alevinDir = NULL, sampleName = "sample", delayedArray = FALSE)
 }
 \arguments{
-\item{alevinDir}{Character. The output directory of salmon-Alevin pipeline. 
-It should contain subfolder named 'alevin', which contains the count data which is stored 
+\item{alevinDir}{Character. The output directory of salmon-Alevin pipeline.
+It should contain subfolder named 'alevin', which contains the count data which is stored
 in 'quants_mat.gz'. Default \code{NULL}.}
 
 \item{sampleName}{Character. A user-defined sample name for the sample to be
@@ -19,7 +19,7 @@ imported. The 'sampleName' will be appended to the begining of cell barcodes. De
 }
 \value{
 A \code{SingleCellExperiment} object containing the count
- matrix, the feature annotations, and the cell annotation 
+ matrix, the feature annotations, and the cell annotation
  (which includes QC metrics stored in 'featureDump.txt').
 }
 \description{

@@ -9,7 +9,10 @@ convertSCEToSeurat(
   inSCE,
   countsAssay = NULL,
   normAssay = NULL,
-  scaledAssay = NULL
+  scaledAssay = NULL,
+  copyColData = FALSE,
+  copyReducedDim = FALSE,
+  copyDecontX = FALSE
 )
 }
 \arguments{
@@ -19,7 +22,13 @@ convertSCEToSeurat(
 
 \item{normAssay}{Which assay to use from sce object for normalized data. Default \code{NULL}.}
 
-\item{scaledAssay}{Which assay to use from sce object for scaled data. Default \code{NULL}}
+\item{scaledAssay}{Which assay to use from sce object for scaled data. Default \code{NULL}.}
+
+\item{copyColData}{Boolean. Whether copy 'colData' of SCE object to the 'meta.data' of Seurat object. Default \code{FALSE}.}
+
+\item{copyReducedDim}{Boolean. Whether copy 'reducedDims' of the SCE object to the 'reductions' of Seurat object. Default \code{FALSE}.}
+
+\item{copyDecontX}{Boolean. Whether copy 'decontXcounts' assay of the SCE object to the 'assays' of Seurat object. Default \code{TRUE}.}
 }
 \value{
 Updated seurat object that contains all data from the input sce object

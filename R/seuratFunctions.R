@@ -701,14 +701,19 @@ convertSeuratToSCE <- function(seuratObject, normAssayName = "seuratNormData", s
 #' @param inSCE A \code{SingleCellExperiment} object to convert to a Seurat object.
 #' @param countsAssay Which assay to use from sce object for raw counts. Default \code{NULL}.
 #' @param normAssay Which assay to use from sce object for normalized data. Default \code{NULL}.
-#' @param scaledAssay Which assay to use from sce object for scaled data. Default \code{NULL}
+#' @param scaledAssay Which assay to use from sce object for scaled data. Default \code{NULL}.
+#' @param copyColData Boolean. Whether copy 'colData' of SCE object to the 'meta.data' of Seurat object. Default \code{FALSE}.
+#' @param copyReducedDim Boolean. Whether copy 'reducedDims' of the SCE object to the 'reductions' of Seurat object. Default \code{FALSE}.
+#' @param copyDecontX Boolean. Whether copy 'decontXcounts' assay of the SCE object to the 'assays' of Seurat object. Default \code{TRUE}.
 #' @examples
 #' data(scExample, package = "singleCellTK")
 #' seurat <- convertSCEToSeurat(sce)
 #' @return Updated seurat object that contains all data from the input sce object
 #' @export
 #' @importFrom SummarizedExperiment assay assays
-convertSCEToSeurat <- function(inSCE, countsAssay = NULL, normAssay = NULL, scaledAssay = NULL) {
+convertSCEToSeurat <- function(inSCE, countsAssay = NULL, normAssay = NULL, 
+                               scaledAssay = NULL, copyColData = FALSE, 
+                               copyReducedDim = FALSE, copyDecontX = FALSE) {
   
   .checkSCEValidity(inSCE)
   
@@ -786,6 +791,31 @@ convertSCEToSeurat <- function(inSCE, countsAssay = NULL, normAssay = NULL, scal
     if (!is.null(inSCE@metadata$seurat$obj@commands)) {
       seuratObject@commands <- inSCE@metadata$seurat$obj@commands
     }
+  }
+  
+  # Set colData from inSCE object if required
+  if (!is.null(colData(inSCE)) && copyColData) {
+    seuratObject@meta.data <- cbind(seuratObject@meta.data, colData(inSCE))
+  }
+  
+  # Set additional reducedDims from inSCE object if required
+  if (length(SingleCellExperiment::reducedDims(inSCE)) > 0 && copyReducedDim) {
+    for (redc in SingleCellExperiment::reducedDimNames(inSCE)) {
+      reDim <- SingleCellExperiment::reducedDim(inSCE, redc)
+      colnames(reDim) <- paste0(redc, "_", 1:length(colnames(reDim)))
+      rownames(reDim) <- gsub('_', '-', rownames(reDim))
+      key <-  gsub('_', '', redc)
+      seuratObject@reductions[[redc]] <- Seurat::CreateDimReducObject(embeddings = reDim,
+                                                                key = paste0(key, "_"), assay = "RNA")
+    }
+  }
+  
+  # Set 'decontXCounts' assay to seurat object if required
+  if ("decontXcounts" %in% SummarizedExperiment::assayNames(inSCE) && copyDecontX) {
+    decontM <- SummarizedExperiment::assay(inSCE, "decontXcounts")
+    colnames(decontM) <- colnames(seuratObject)
+    rownames(decontM) <- gsub('_', '-', rownames(decontM))
+    seuratObject[["decontXcounts"]] <- Seurat::CreateAssayObject(counts = .convertToMatrix(decontM))
   }
   
   return(seuratObject)
