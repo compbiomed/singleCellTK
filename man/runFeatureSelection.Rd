@@ -7,7 +7,7 @@ within the singleCellTK package including three methods from
 Seurat (`vst`, `mean.var.plot` or `dispersion`) and the Scran `modelGeneVar`
 method.}
 \usage{
-runFeatureSelection(inSCE, useAssay, hvgMethod, hvgNumber = 2000)
+runFeatureSelection(inSCE, useAssay, hvgMethod)
 }
 \arguments{
 \item{inSCE}{Input \code{SingleCellExperiment} object.}
@@ -17,14 +17,6 @@ runFeatureSelection(inSCE, useAssay, hvgMethod, hvgNumber = 2000)
 \item{hvgMethod}{Specify the method to use for variable gene selection.
 Options include `vst`, `mean.var.plot` or `dispersion` from Seurat
 and `modelGeneVar` from Scran.}
-
-\item{hvgNumber}{Specify the number of features for which the statistics
-should be computed. This parameter is only used for Seurat methods and
-ignored if `modelGeneVar` method is selected. This function does not return
-the names of the variable features but only computes the statistics 
-that are stored in the \code{rowData} slot of the. To get the names of the
-variable features \code{getTopHVG} function should be used after computing
-these statistics.}
 }
 \value{
 A \code{SingleCellExperiment} object that contains the computed

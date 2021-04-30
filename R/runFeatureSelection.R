@@ -8,13 +8,6 @@
 #' @param hvgMethod Specify the method to use for variable gene selection.
 #'  Options include `vst`, `mean.var.plot` or `dispersion` from Seurat
 #'  and `modelGeneVar` from Scran.
-#' @param hvgNumber Specify the number of features for which the statistics
-#'  should be computed. This parameter is only used for Seurat methods and
-#'  ignored if `modelGeneVar` method is selected. This function does not return
-#'  the names of the variable features but only computes the statistics 
-#'  that are stored in the \code{rowData} slot of the. To get the names of the
-#'  variable features \code{getTopHVG} function should be used after computing
-#'  these statistics.
 #' @return A \code{SingleCellExperiment} object that contains the computed
 #'  statistics in the \code{rowData} slot of the output object. This function 
 #'  does not return the names of the variable features but only computes the 
@@ -26,8 +19,7 @@
 #' @examples
 runFeatureSelection <- function(inSCE,
                                 useAssay,
-                                hvgMethod,
-                                hvgNumber = 2000
+                                hvgMethod
                                 ){
   
   seuratMethods <- c("vst", "mean.var.plot", "dispersion")
@@ -40,7 +32,6 @@ runFeatureSelection <- function(inSCE,
   if(hvgMethod %in% seuratMethods){
     params$useAssay <- useAssay
     params$hvgMethod <- hvgMethod
-    params$hvgNumber <- hvgNumber 
     inSCE <- do.call("seuratFindHVG", args = params)
   }
   else if(hvgMethod %in% scranMethods){

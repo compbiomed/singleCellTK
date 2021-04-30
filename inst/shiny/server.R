@@ -5335,19 +5335,11 @@ shinyServer(function(input, output, session) {
   observeEvent(input$findHvgButtonFS, {
     withBusyIndicatorServer("findHvgButtonFS", {
       if (!is.null(vals$counts)) {
-        if (input$hvgMethodFS == "vst"
-            || input$hvgMethodFS == "mean.var.plot"
-            || input$hvgMethodFS == "dispersion") {
-          withProgress(message = "Finding highly variable genes", max = 1, value = 1, {
-            tryCatch(vals$counts <- seuratFindHVG(inSCE = vals$counts,
-                                                  useAssay = input$assaySelectFS_Norm,
-                                                  hvgMethod = input$hvgMethodFS,
-                                                  hvgNumber = 100), error = function(e)
-                                                    stop("HVG computation failed. Try re-computing with a normalized assay!"))
-          })
-        } else if (input$hvgMethodFS == "modelGeneVar") {
-          vals$counts <- scranModelGeneVar(inSCE = vals$counts, assayName = input$assaySelectFS_Norm)
-        }
+        tryCatch(vals$counts <- runFeatureSelection(
+          inSCE = vals$counts,
+          useAssay = input$assaySelectFS_Norm,
+          hvgMethod = input$hvgMethodFS
+        ), error = function(e) stop("HVG computation failed. Try re-computing with a normalized assay!"))
         vals$hvgCalculated$status <- TRUE
         vals$hvgCalculated$method <- input$hvgMethodFS
         vals$hvgCalculated$assayName <- input$assaySelectFS_Norm
