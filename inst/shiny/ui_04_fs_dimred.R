@@ -18,10 +18,6 @@ shinyPanelFS_DimRed <- fluidPage(
                        "Seurat - dispersion" = "dispersion",
                        "Scran - modelGeneVar" = "modelGeneVar")),
                    uiOutput("assaySelectFS_Norm"),
-                   # selectInput(
-                   #   inputId = "assaySelectFS_Norm",
-                   #   label = "Select normalized assay:",
-                   #   choices = currassays),
                    withBusyIndicatorUI(actionButton("findHvgButtonFS",
                                                     "Compute Variability"))
                  ),
@@ -69,32 +65,19 @@ shinyPanelFS_DimRed <- fluidPage(
                                      fluidRow(
                                        column(12,
                                               panel(heading = "Options",
-                                                    # h6("Select assay type:"),
-                                                    # radioButtons(inputId = "dimRedAssayType", label = NULL,
-                                                    #              choices = c("Use full sized assay" = 1,
-                                                    #                          "Use subset" = 2),
-                                                    #              selected = 1, inline = TRUE),
-                                                    # conditionalPanel(
-                                                    #   condition = "input.dimRedAssayType == 1",
                                                     uiOutput("dimRedAssaySelect"),
-                                                      #selectInput("dimRedAssaySelect", "Select assay:", currassays),
-                                                    # ),
-                                                    # conditionalPanel(
-                                                    #   condition = "input.dimRedAssayType == 2",
-                                                    #   selectInput("dimRedAltExpSelect", "Select subset:", curraltExps),
-                                                    #   uiOutput("dimRedAltExpAssayUI"),
-                                                    # ),
                                                     selectInput("dimRedPlotMethod", "Select method:",
-                                                                c("Scater - PCA" = "PCA",
-                                                                  "Seurat - PCA" = "PCASeurat",
-                                                                  "Seurat - ICA" = "ICASeurat")),
+                                                                c("Scater - PCA" = "scaterPCA",
+                                                                  "Seurat - PCA" = "seuratPCA",
+                                                                  "Seurat - ICA" = "seuratICA")),
                                                     uiOutput("dimRedNameUI"),
-                                                    textInput(
+                                                    numericInput(
                                                       inputId = "dimRedNumberDims",
                                                       label = "Number of dimensions:",
-                                                      value = 10),
+                                                      value = 10,
+                                                      step = 1),
                                                     conditionalPanel(
-                                                      condition = "input.dimRedPlotMethod != 'ICASeurat'",
+                                                      condition = "input.dimRedPlotMethod != 'seuratICA'",
                                                       materialSwitch(
                                                         inputId = "computeElbowPlot",
                                                         label = "Compute ElbowPlot?",
@@ -143,21 +126,7 @@ shinyPanelFS_DimRed <- fluidPage(
                           fluidRow(
                             column(12,
                                    panel(heading = "Options",
-                                         # h6("Select assay type:"),
-                                         # radioButtons(inputId = "dimRedAssayType_tsneUmap", label = NULL,
-                                         #              choices = c("Use full sized assay" = 1,
-                                         #                          "Use subset" = 2),
-                                         #              selected = 1, inline = TRUE),
-                                         # conditionalPanel(
-                                         #   condition = "input.dimRedAssayType_tsneUmap == 1",
                                          uiOutput("dimRedAssaySelect_tsneUmap"),
-                                         #   #selectInput("dimRedAssaySelect_tsneUmap", "Select assay:", currassays),
-                                         # ),
-                                         # conditionalPanel(
-                                         #   condition = "input.dimRedAssayType_tsneUmap == 2",
-                                         #   selectInput("dimRedAltExpSelect_tsneUmap", "Select subset:", curraltExps),
-                                         #   uiOutput("dimRedAltExpAssayUI_tsneUmap"),
-                                         # ),
                                          selectInput("dimRedPlotMethod_tsneUmap", "Select method:",
                                                      c("tSNE",
                                                        "UMAP",

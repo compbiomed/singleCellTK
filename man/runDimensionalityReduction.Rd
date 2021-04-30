@@ -11,7 +11,7 @@ runDimensionalityReduction(
   useAssay,
   reducedDimName,
   method = c("scaterPCA", "seuratPCA", "seuratICA"),
-  nPCs = 10
+  nComponents = 10
 )
 }
 \arguments{
@@ -23,7 +23,7 @@ runDimensionalityReduction(
 
 \item{method}{Specify a method from 'scaterPCA', 'seuratPCA' or 'seuratICA'.}
 
-\item{nPCs}{Specify the number of dimensions to use with 'seuratPCA' or 
+\item{nComponents}{Specify the number of dimensions to use with 'seuratPCA' or 
 'seuratICA' methods. Not applicable for 'scaterPCA' method. Default
 is \code{10}.}
 }

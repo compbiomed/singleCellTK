@@ -2427,24 +2427,14 @@ shinyServer(function(input, output, session) {
   #-----------------------------------------------------------------------------
 
   output$dimRedNameUI <- renderUI({
-    # if (input$dimRedAssayType == 1){
       defaultText <- paste(input$dimRedAssaySelect, input$dimRedPlotMethod,
                            sep = '_')
-    # } else if (input$dimRedAssayType == 2){
-    #   defaultText <- paste(input$dimRedAltExpAssay, input$dimRedPlotMethod,
-    #                        sep = '_')
-    # }
     textInput('dimRedNameInput', "reducedDim Name:", defaultText)
   })
 
   output$dimRedNameUI_tsneUmap <- renderUI({
-    # if (input$dimRedAssayType_tsneUmap == 1){
       defaultText <- paste(input$dimRedAssaySelect_tsneUmap, input$dimRedPlotMethod_tsneUmap,
                            sep = '_')
-    # } else if (input$dimRedAssayType_tsneUmap == 2){
-    #   defaultText <- paste(input$dimRedAltExpAssay_tsneUmap, input$dimRedPlotMethod_tsneUmap,
-    #                        sep = '_')
-    # }
     textInput('dimRedNameInput_tsneUmap', "reducedDim Name:", defaultText)
   })
 
@@ -2479,146 +2469,22 @@ shinyServer(function(input, output, session) {
         else if (!is.null(input$dimRedNameInput)){
           dimrednamesave <- gsub(" ", "_", input$dimRedNameInput)
           if (input$dimRedNameInput %in% names(reducedDims(vals$counts))){
-            shinyalert(
-              "Warning",
-              "Name already exits. Overwrite?",
-              "warning", showCancelButton = TRUE,
-              confirmButtonText = "Overwrite",
-              callbackR = function(x){if(isTRUE(x)){
-                if (input$dimRedPlotMethod == "PCA"){
-                  if (vals$runDimred$dimRedAssaySelect %in% assayNames(vals$counts)) {
-                    vals$counts <- scaterPCA(inSCE = vals$counts,
-                                          useAssay = input$dimRedAssaySelect,
-                                          reducedDimName = dimrednamesave,
-                                          ndim = input$dimRedNumberDims)
-                  } else if (vals$runDimred$dimRedAssaySelect %in% expDataNames(vals$counts)) {
-                    vals$counts <- scaterPCA(inSCE = vals$counts,
-                                          useAssay = vals$runDimred$dimRedAssaySelect,
-                                          useAltExp = vals$runDimred$dimRedAssaySelect,
-                                          reducedDimName = dimrednamesave,
-                                          ndim = input$dimRedNumberDims)
-                  }
-                } else if (input$dimRedPlotMethod == "PCASeurat"){
-                  if(vals$runDimred$dimRedAssaySelect %in% assayNames(vals$counts)){
-                    vals$counts <- seuratFindHVG(
-                      inSCE = vals$counts,
-                      useAssay = input$dimRedAssaySelect
-                    )
-                    vals$counts <- seuratPCA(
-                      inSCE = vals$counts,
-                      useAssay = input$dimRedAssaySelect,
-                      reducedDimName = dimrednamesave,
-                      nPCs = input$dimRedNumberDims)
-                  }
-                  else if(vals$runDimred$dimRedAssaySelect %in% expDataNames(vals$counts)){
-                    ae <- altExps(vals$counts)[[vals$runDimred$dimRedAssaySelect]]
-                    ae <- seuratFindHVG(inSCE = ae,
-                                        useAssay = vals$runDimred$dimRedAssaySelect,
-                                        altExp = TRUE)
-                    ae <- seuratPCA(inSCE = ae,
-                                    useAssay = vals$runDimred$dimRedAssaySelect,
-                                    reducedDimName = dimrednamesave,
-                                    nPCs = input$dimRedNumberDims)
-                    altExps(vals$counts)[[vals$runDimred$dimRedAssaySelect]] <- ae
-                    reducedDim(vals$counts, dimrednamesave) <- reducedDim(ae, dimrednamesave)
-                  }
-                }
-                else{
-                  if(vals$runDimred$dimRedAssaySelect %in% assayNames(vals$counts)){
-                    vals$counts <- seuratFindHVG(
-                      inSCE = vals$counts,
-                      useAssay = input$dimRedAssaySelect
-                    )
-                    vals$counts <- seuratICA(
-                      inSCE = vals$counts,
-                      useAssay = input$dimRedAssaySelect,
-                      reducedDimName = dimrednamesave,
-                      nics = input$dimRedNumberDims)
-                  }
-                  else if(vals$runDimred$dimRedAssaySelect %in% expDataNames(vals$counts)){
-                    ae <- altExps(vals$counts)[[vals$runDimred$dimRedAssaySelect]]
-                    ae <- seuratFindHVG(inSCE = ae,
-                                        useAssay = vals$runDimred$dimRedAssaySelect)
-                    ae <- seuratICA(inSCE = ae,
-                                    useAssay = vals$runDimred$dimRedAssaySelect,
-                                    reducedDimName = dimrednamesave,
-                                    nics = input$dimRedNumberDims)
-                    altExps(vals$counts)[[vals$runDimred$dimRedAssaySelect]] <- ae
-                    reducedDim(vals$counts, dimrednamesave) <- reducedDim(ae, dimrednamesave)
-                  }
-                }
-                updateReddimInputs()
-              }}
-            )
+            stop("A reducedDim with name '", dimrednamesave, "' is already stored in the object. Please specify a different name for this reducedDim.")
           } else {
-            if (input$dimRedPlotMethod == "PCA"){
-              if (vals$runDimred$dimRedAssaySelect %in% assayNames(vals$counts)) {
-                vals$counts <- scaterPCA(inSCE = vals$counts,
-                                      useAssay = vals$runDimred$dimRedAssaySelect,
-                                      reducedDimName = dimrednamesave)
-              } else if (vals$runDimred$dimRedAssaySelect %in% expDataNames(vals$counts)) {
-                vals$counts <- scaterPCA(inSCE = vals$counts,
-                                      useAssay = vals$runDimred$dimRedAssaySelect,
-                                      useAltExp = vals$runDimred$dimRedAssaySelect,
-                                      reducedDimName = dimrednamesave)
-              }
-            } else if (input$dimRedPlotMethod == "PCASeurat"){
-              if(vals$runDimred$dimRedAssaySelect %in% assayNames(vals$counts)){
-                vals$counts <- seuratFindHVG(
-                  inSCE = vals$counts,
-                  useAssay = input$dimRedAssaySelect
-                )
-                vals$counts <- seuratPCA(
-                  inSCE = vals$counts,
-                  useAssay = input$dimRedAssaySelect,
-                  reducedDimName = dimrednamesave,
-                  nPCs = input$dimRedNumberDims)
-              }
-              else if(vals$runDimred$dimRedAssaySelect %in% expDataNames(vals$counts)){
-                ae <- altExps(vals$counts)[[vals$runDimred$dimRedAssaySelect]]
-                ae <- seuratFindHVG(inSCE = ae,
-                                    useAssay = vals$runDimred$dimRedAssaySelect,
-                                    altExp = TRUE)
-                ae <- seuratPCA(inSCE = ae,
-                                useAssay = vals$runDimred$dimRedAssaySelect,
-                                reducedDimName = dimrednamesave,
-                                nPCs = input$dimRedNumberDims)
-                altExps(vals$counts)[[vals$runDimred$dimRedAssaySelect]] <- ae
-                reducedDim(vals$counts, dimrednamesave) <- reducedDim(ae, dimrednamesave)
-              }
-            }
-            else{
-              if(vals$runDimred$dimRedAssaySelect %in% assayNames(vals$counts)){
-                vals$counts <- seuratFindHVG(
-                  inSCE = vals$counts,
-                  useAssay = input$dimRedAssaySelect
-                )
-                vals$counts <- seuratICA(
-                  inSCE = vals$counts,
-                  useAssay = input$dimRedAssaySelect,
-                  reducedDimName = dimrednamesave,
-                  nics = input$dimRedNumberDims)
-              }
-              else if(vals$runDimred$dimRedAssaySelect %in% expDataNames(vals$counts)){
-                ae <- altExps(vals$counts)[[vals$runDimred$dimRedAssaySelect]]
-                ae <- seuratFindHVG(inSCE = ae,
-                                    useAssay = vals$runDimred$dimRedAssaySelect)
-                ae <- seuratICA(inSCE = ae,
-                                useAssay = vals$runDimred$dimRedAssaySelect,
-                                reducedDimName = dimrednamesave,
-                                nics = input$dimRedNumberDims)
-                altExps(vals$counts)[[vals$runDimred$dimRedAssaySelect]] <- ae
-                reducedDim(vals$counts, dimrednamesave) <- reducedDim(ae, dimrednamesave)
-              }
-            }
+            vals$counts <- runDimensionalityReduction(
+              inSCE = vals$counts,
+              useAssay = vals$runDimred$dimRedAssaySelect,
+              reducedDimName = dimrednamesave,
+              method = input$dimRedPlotMethod,
+              nComponents = input$dimRedNumberDims
+            )
             updateReddimInputs()
           }
         }
       })
     }
     dimrednamesave <- gsub(" ", "_", input$dimRedNameInput)
-    #extra code added by irzam starts here:
-    if(input$dimRedPlotMethod == "PCA"){
+    if(input$dimRedPlotMethod == "scaterPCA"){
       redDim <- reducedDim(vals$counts, dimrednamesave)
       new_pca <- CreateDimReducObject(
         embeddings = redDim,
@@ -2634,14 +2500,13 @@ shinyServer(function(input, output, session) {
     removeTab(inputId = "dimRedPCAICA_plotTabset", target = "JackStraw Plot")
 
     shinyjs::show(selector = ".dimRedPCAICA_plotTabset_class")
-    appendTab(inputId = "dimRedPCAICA_plotTabset", tabPanel(title = "PCA Plot",
-                                                            panel(heading = "PCA Plot",
+    appendTab(inputId = "dimRedPCAICA_plotTabset", tabPanel(title = "Component Plot",
+                                                            panel(heading = "Component Plot",
                                                                   plotlyOutput(outputId = "plotDimRed_pca")
                                                             )
     ), select = TRUE)
 
     withProgress(message = "Plotting PCA/ICA", max = 1, value = 1, {
-      #if(input$dimRedAssaySelect %in% assayNames(vals$counts)){
         output$plotDimRed_pca <- renderPlotly({
           plotly::ggplotly(
             plotDimRed(
@@ -2651,22 +2516,10 @@ shinyServer(function(input, output, session) {
               yAxisLabel = paste0(input$dimRedPlotMethod, "_2"))
           )
         })
-      #}
-      #else if(input$dimRedAssaySelect %in% expDataNames(vals$counts)){
-      #  output$plotDimRed_pca <- renderPlotly({
-      #    plotly::ggplotly(
-      #      plotDimRed(
-      #        inSCE = altExps(vals$counts)[[vals$runDimred$dimRedAssaySelect]],
-      #        useReduction = dimrednamesave,
-      #        xAxisLabel = paste0(input$dimRedPlotMethod, "_1"),
-      #        yAxisLabel = paste0(input$dimRedPlotMethod, "_2"))
-      #    )
-      #  })
-      #}
     })
 
     if(input$computeElbowPlot
-       && input$dimRedPlotMethod != "ICASeurat"){
+       && input$dimRedPlotMethod != "seuratICA"){
       appendTab(
         inputId = "dimRedPCAICA_plotTabset",
         tabPanel(
@@ -2677,7 +2530,7 @@ shinyServer(function(input, output, session) {
           )
         )
       )
-      if (input$dimRedPlotMethod == "PCASeurat"){
+      if (input$dimRedPlotMethod == "seuratPCA"){
         withProgress(message = "Generating Elbow Plot", max = 1, value = 1, {
           if(vals$runDimred$dimRedAssaySelect %in% assayNames(vals$counts)){
             output$plotDimRed_elbow <- renderPlotly({
@@ -2753,7 +2606,7 @@ shinyServer(function(input, output, session) {
           )
         )
       )
-      if (input$dimRedPlotMethod == "PCASeurat") {
+      if (input$dimRedPlotMethod == "seuratPCA") {
         withProgress(message = "Generating Heatmaps", max = 1, value = 1, {
           if(input$dimRedAssaySelect %in% assayNames(vals$counts)){
             vals$counts@metadata$seurat$heatmap_dimRed <- singleCellTK::computeHeatmap(
@@ -2781,7 +2634,7 @@ shinyServer(function(input, output, session) {
           }
         })
       }
-      else if(input$dimRedPlotMethod == "ICASeurat"){
+      else if(input$dimRedPlotMethod == "seuratICA"){
         withProgress(message = "Generating Heatmaps", max = 1, value = 1, {
           if(vals$runDimred$dimRedAssaySelect %in% assayNames(vals$counts)){
             vals$counts@metadata$seurat$heatmap_dimRed <- singleCellTK::computeHeatmap(
@@ -2838,7 +2691,7 @@ shinyServer(function(input, output, session) {
         })
       }
 
-      if(input$dimRedPlotMethod == "ICASeurat"){
+      if(input$dimRedPlotMethod == "seuratICA"){
         updatePickerInput(session = session, inputId = "picker_dimheatmap_components_dimRed", choices = rep(paste0("IC",seq(as.numeric(input$dimRedNumberDims)))))
       }
       else{
@@ -2847,14 +2700,14 @@ shinyServer(function(input, output, session) {
     }
 
         if(input$computeJackstrawPlot
-           && input$dimRedPlotMethod != "ICASeurat"){
+           && input$dimRedPlotMethod != "seuratICA"){
           appendTab(inputId = "dimRedPCAICA_plotTabset", tabPanel(title = "JackStraw Plot",
                                                                   panel(heading = "JackStraw Plot",
                                                                         plotOutput(outputId = "plot_jackstraw_dimRed")
                                                                   )
           ))
 
-          if (input$dimRedPlotMethod == "PCASeurat"){
+          if (input$dimRedPlotMethod == "seuratPCA"){
             withProgress(message = "Generating JackStraw Plot", max = 1, value = 1, {
               if(vals$runDimred$dimRedAssaySelect %in% assayNames(vals$counts)){
                 vals$counts <- seuratComputeJackStraw(inSCE = vals$counts,

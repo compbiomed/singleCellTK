@@ -15,8 +15,6 @@
 #'  names of the variable features \code{getTopHVG} function should be used 
 #'  after computing these statistics.
 #' @export
-#'
-#' @examples
 runFeatureSelection <- function(inSCE,
                                 useAssay,
                                 hvgMethod

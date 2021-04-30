@@ -6,7 +6,7 @@
 #' @param useAssay Specify the name of the assay that should be used.
 #' @param reducedDimName Specify the name of the output reducedDim.
 #' @param method Specify a method from 'scaterPCA', 'seuratPCA' or 'seuratICA'.
-#' @param nPCs Specify the number of dimensions to use with 'seuratPCA' or 
+#' @param nComponents Specify the number of dimensions to use with 'seuratPCA' or 
 #'  'seuratICA' methods. Not applicable for 'scaterPCA' method. Default
 #'  is \code{10}. 
 #' @return A \linkS4class{SingleCellExperiment} object with PCA computation
@@ -19,7 +19,7 @@ runDimensionalityReduction <- function(inSCE,
                                          c("scaterPCA", 
                                            "seuratPCA", 
                                            "seuratICA"),
-                                       nPCs = 10){
+                                       nComponents = 10){
   
   tempSCE <- inSCE
   
@@ -45,10 +45,13 @@ runDimensionalityReduction <- function(inSCE,
       useAssay = useAssay
     )
     params$inSCE <- tempSCE
-    params$nPCs <- nPCs
+    if(method == "seuratPCA") params$nPCs <- nComponents
+    if(method == "seuratICA") params$nics <- nComponents
   }
-  
-  
+  else{
+    params$ndim <- nComponents
+  }
+
   tempSCE <- do.call(method, args = params)
   
   if(useAssay %in% altExpNames(inSCE)){
