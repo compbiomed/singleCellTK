@@ -22,8 +22,8 @@
 #' data(scExample, package = "singleCellTK")
 #' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 #' logcounts(sce) <- log(counts(sce) + 1)
-#' sce <- getPCA(sce, ntop = 500)
-getPCA <- function(inSCE, useAssay = "logcounts", useAltExp = NULL,
+#' sce <- scaterPCA(sce, ntop = 500)
+scaterPCA <- function(inSCE, useAssay = "logcounts", useAltExp = NULL,
                    reducedDimName = "PCA", ndim = 50, scale = TRUE,
                    ntop = NULL){
   if (!is.null(useAltExp)) {
