@@ -12,23 +12,58 @@ convertSCEToSeurat(
   scaledAssay = NULL,
   copyColData = FALSE,
   copyReducedDim = FALSE,
-  copyDecontX = FALSE
+  copyDecontX = FALSE,
+  pcaReducedDim = NULL,
+  icaReducedDim = NULL,
+  tsneReducedDim = NULL,
+  umapReducedDim = NULL
 )
 }
 \arguments{
-\item{inSCE}{A \code{SingleCellExperiment} object to convert to a Seurat object.}
+\item{inSCE}{A \code{SingleCellExperiment} object to convert to a Seurat 
+object.}
 
-\item{countsAssay}{Which assay to use from sce object for raw counts. Default \code{NULL}.}
+\item{countsAssay}{Which assay to use from sce object for raw counts. 
+Default \code{NULL}.}
 
-\item{normAssay}{Which assay to use from sce object for normalized data. Default \code{NULL}.}
+\item{normAssay}{Which assay to use from sce object for normalized data. 
+Default \code{NULL}.}
 
-\item{scaledAssay}{Which assay to use from sce object for scaled data. Default \code{NULL}.}
+\item{scaledAssay}{Which assay to use from sce object for scaled data. 
+Default \code{NULL}.}
 
-\item{copyColData}{Boolean. Whether copy 'colData' of SCE object to the 'meta.data' of Seurat object. Default \code{FALSE}.}
+\item{copyColData}{Boolean. Whether copy 'colData' of SCE object to 
+the 'meta.data' of Seurat object. Default \code{FALSE}.}
 
-\item{copyReducedDim}{Boolean. Whether copy 'reducedDims' of the SCE object to the 'reductions' of Seurat object. Default \code{FALSE}.}
+\item{copyReducedDim}{Boolean. Whether copy 'reducedDims' of the SCE 
+object to the 'reductions' of Seurat object. Default \code{FALSE}.}
 
-\item{copyDecontX}{Boolean. Whether copy 'decontXcounts' assay of the SCE object to the 'assays' of Seurat object. Default \code{TRUE}.}
+\item{copyDecontX}{Boolean. Whether copy 'decontXcounts' assay of the 
+SCE object to the 'assays' of Seurat object. Default \code{TRUE}.}
+
+\item{pcaReducedDim}{Specify a character value indicating the name of 
+the reducedDim to store as default pca computation in the output seurat 
+object. Default is \code{NULL} which will not store any reducedDim as the 
+default pca. This will only work when \code{copyReducedDim} parameter is
+set to \code{TRUE}.}
+
+\item{icaReducedDim}{Specify a character value indicating the name of 
+the reducedDim to store as default ica computation in the output seurat 
+object. Default is \code{NULL} which will not store any reducedDim as the 
+default ica. This will only work when \code{copyReducedDim} parameter is
+set to \code{TRUE}.}
+
+\item{tsneReducedDim}{Specify a character value indicating the name of 
+the reducedDim to store as default tsne computation in the output seurat 
+object. Default is \code{NULL} which will not store any reducedDim as the 
+default tsne. This will only work when \code{copyReducedDim} parameter is
+set to \code{TRUE}.}
+
+\item{umapReducedDim}{Specify a character value indicating the name of 
+the reducedDim to store as default umap computation in the output seurat 
+object. Default is \code{NULL} which will not store any reducedDim as the 
+default umap. This will only work when \code{copyReducedDim} parameter is
+set to \code{TRUE}.}
 }
 \value{
 Updated seurat object that contains all data from the input sce object
