@@ -2487,12 +2487,12 @@ shinyServer(function(input, output, session) {
               callbackR = function(x){if(isTRUE(x)){
                 if (input$dimRedPlotMethod == "PCA"){
                   if (vals$runDimred$dimRedAssaySelect %in% assayNames(vals$counts)) {
-                    vals$counts <- getPCA(inSCE = vals$counts,
+                    vals$counts <- scaterPCA(inSCE = vals$counts,
                                           useAssay = input$dimRedAssaySelect,
                                           reducedDimName = dimrednamesave,
                                           ndim = input$dimRedNumberDims)
                   } else if (vals$runDimred$dimRedAssaySelect %in% expDataNames(vals$counts)) {
-                    vals$counts <- getPCA(inSCE = vals$counts,
+                    vals$counts <- scaterPCA(inSCE = vals$counts,
                                           useAssay = vals$runDimred$dimRedAssaySelect,
                                           useAltExp = vals$runDimred$dimRedAssaySelect,
                                           reducedDimName = dimrednamesave,
@@ -2553,11 +2553,11 @@ shinyServer(function(input, output, session) {
           } else {
             if (input$dimRedPlotMethod == "PCA"){
               if (vals$runDimred$dimRedAssaySelect %in% assayNames(vals$counts)) {
-                vals$counts <- getPCA(inSCE = vals$counts,
+                vals$counts <- scaterPCA(inSCE = vals$counts,
                                       useAssay = vals$runDimred$dimRedAssaySelect,
                                       reducedDimName = dimrednamesave)
               } else if (vals$runDimred$dimRedAssaySelect %in% expDataNames(vals$counts)) {
-                vals$counts <- getPCA(inSCE = vals$counts,
+                vals$counts <- scaterPCA(inSCE = vals$counts,
                                       useAssay = vals$runDimred$dimRedAssaySelect,
                                       useAltExp = vals$runDimred$dimRedAssaySelect,
                                       reducedDimName = dimrednamesave)
@@ -4928,7 +4928,7 @@ shinyServer(function(input, output, session) {
         ## Original assay PCA
         oriAssayPCAName <- paste0(input$batchCheckOrigAssay, "_PCA")
         if(!oriAssayPCAName %in% names(reducedDims(vals$counts))){
-          vals$counts <- getPCA(vals$counts,
+          vals$counts <- scaterPCA(vals$counts,
                                 useAssay = input$batchCheckOrigAssay,
                                 reducedDimName = oriAssayPCAName)
           updateReddimInputs()
@@ -4937,13 +4937,13 @@ shinyServer(function(input, output, session) {
         ## Corrected assay/altExp PCA
         if (vals$batchRes[[resName]] == 'assay'){
           corrAssayPCAName = paste0(resName, "_PCA")
-          vals$counts <- getPCA(vals$counts, useAssay = resName,
+          vals$counts <- scaterPCA(vals$counts, useAssay = resName,
                                 reducedDimName = corrAssayPCAName)
           updateReddimInputs()
         } else if (vals$batchRes[[resName]] == 'altExp'){
           ae <- altExp(vals$counts, resName)
           corrAltExpPCAName <- paste0(resName, "_PCA")
-          ae <- getPCA(ae, useAssay = resName,
+          ae <- scaterPCA(ae, useAssay = resName,
                        reducedDimName = corrAltExpPCAName)
           reducedDim(vals$counts, corrAltExpPCAName) <-
             reducedDim(ae, corrAltExpPCAName)
