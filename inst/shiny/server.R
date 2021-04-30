@@ -5344,7 +5344,6 @@ shinyServer(function(input, output, session) {
                                                   hvgMethod = input$hvgMethodFS,
                                                   hvgNumber = 100), error = function(e)
                                                     stop("HVG computation failed. Try re-computing with a normalized assay!"))
-            #vals$counts <- seuratFindHVG(vals$counts, useAssay = input$assaySelectFS_Norm, seuratWorkflow$geneNamesSeurat, input$hvgMethodFS, as.numeric(input$hvgNoFeaturesFS))
           })
         } else if (input$hvgMethodFS == "modelGeneVar") {
           vals$counts <- scranModelGeneVar(inSCE = vals$counts, assayName = input$assaySelectFS_Norm)
