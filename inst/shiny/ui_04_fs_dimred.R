@@ -128,17 +128,13 @@ shinyPanelFS_DimRed <- fluidPage(
                                    panel(heading = "Options",
                                          uiOutput("dimRedAssaySelect_tsneUmap"),
                                          selectInput("dimRedPlotMethod_tsneUmap", "Select method:",
-                                                     c("tSNE",
-                                                       "UMAP",
-                                                       "Seurat - tSNE" = "seuratTSNE",
-                                                       "Seurat - UMAP" = "seuratUMAP")),
+                                                     c("rtSNE" = "rTSNE",
+                                                       "uwotUMAP" = "uwotUMAP",
+                                                       "seuratTSNE" = "seuratTSNE",
+                                                       "seuratUMAP" = "seuratUMAP")),
                                          uiOutput("dimRedNameUI_tsneUmap"),
-                                         numericInput(
-                                           inputId = "dimRedNumberDims_tsneUmap",
-                                           label = "Set number of dimensions:",
-                                           value = 10),
                                          conditionalPanel(
-                                           condition = "input.dimRedPlotMethod_tsneUmap == 'UMAP'",
+                                           condition = "input.dimRedPlotMethod_tsneUmap == 'uwotUMAP'",
                                            checkboxInput("logNormUMAP", " Log Normalize the data",
                                                          TRUE),
                                            numericInput("iterUMAP", "# of iterations", min = 50,
@@ -152,10 +148,10 @@ shinyPanelFS_DimRed <- fluidPage(
                                                         value = 1)
                                          ),
                                          conditionalPanel(
-                                           condition = "input.dimRedPlotMethod_tsneUmap == 'tSNE'",
-                                           numericInput("iterTSNE", "# of iterations", min = 100,
+                                           condition = "input.dimRedPlotMethod_tsneUmap == 'rTSNE'",
+                                           numericInput("iterTSNE", "No. of iterations:", min = 100,
                                                        max = 2000, value = 1000),
-                                           numericInput("perplexityTSNE", "Perplexity paramter",
+                                           numericInput("perplexityTSNE", "Set perplexity:",
                                                        min = 5, max = 50, value = 5)
                                          ),
                                          conditionalPanel(
@@ -163,7 +159,11 @@ shinyPanelFS_DimRed <- fluidPage(
                                            || input.dimRedPlotMethod_tsneUmap == 'seuratUMAP'",
                                            selectInput(inputId = "reductionMethodUMAPTSNEDimRed",
                                                        label = "Select reduction method: ",
-                                                       choices = c("pca", "ica"))
+                                                       choices = c("pca", "ica")),
+                                           numericInput(
+                                             inputId = "dimRedNumberDims_tsneUmap",
+                                             label = "Set number of dimensions:",
+                                             value = 10),
                                          ),
                                          conditionalPanel(
                                            condition = "input.dimRedPlotMethod_tsneUmap == 'seuratTSNE'",
