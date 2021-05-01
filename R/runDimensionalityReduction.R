@@ -1,14 +1,22 @@
-#' Wrapper function to run one of the three available dimensionality
-#' reduction algorithms integrated within the singleCellTK from 'scaterPCA',
-#' 'seuratPCA' and 'seuratICA'.
+#' Wrapper function to run one of the available dimensionality
+#' reduction algorithms integrated within the toolkit from `scaterPCA`,
+#' `seuratPCA`, `seuratICA`, `rTSNE`, `seuratTSNE`, `uwotUMAP` and `seuratUMAP`.
 #'
 #' @param inSCE Input \code{SingleCellExperiment} object.
 #' @param useAssay Specify the name of the assay that should be used.
 #' @param reducedDimName Specify the name of the output reducedDim.
-#' @param method Specify a method from 'scaterPCA', 'seuratPCA' or 'seuratICA'.
-#' @param nComponents Specify the number of dimensions to use with 'seuratPCA' or 
-#'  'seuratICA' methods. Not applicable for 'scaterPCA' method. Default
-#'  is \code{10}. 
+#' @param method Specify a method from `scaterPCA`, `seuratPCA`, `seuratICA`, 
+#'  `rTSNE`, `seuratTSNE`, `uwotUMAP` and `seuratUMAP`.
+#' @param nComponents Specify the number of dimensions to compute with the
+#'  selected method.
+#' @param ... Additional parameters for the selected method. For `rTSNE`, must
+#'  specify `perplexity` (default \code{30}) and  `nIterations` 
+#'  (default \code{1000}). For `seuratTSNE`, must specify `perplexity` (default
+#'  \code{30}). For `uwotUMAP`, must specify `nNeighbors` (default \code{30}), 
+#'  `nIterations` (default \code{200}), `minDist` (default \code{0.01}) and 
+#'  `alpha` (default \code{1}). For `seuratUMAP`, must specify `minDist` 
+#'  (default \code{0.3}), `nNeighbors` (default \code{30}) and `spread` 
+#'  (default \code{1}).
 #' @return A \linkS4class{SingleCellExperiment} object with PCA computation
 #' updated in \code{reducedDim(inSCE, reducedDimName)}.
 #' @export
@@ -18,8 +26,13 @@ runDimensionalityReduction <- function(inSCE,
                                        method = 
                                          c("scaterPCA", 
                                            "seuratPCA", 
-                                           "seuratICA"),
-                                       nComponents = 10){
+                                           "seuratICA",
+                                           "rTSNE",
+                                           "seuratTSNE",
+                                           "uwotUMAP",
+                                           "seuratUMAP"),
+                                       nComponents = 10,
+                                       ...){
   
   tempSCE <- inSCE
   

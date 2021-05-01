@@ -2776,14 +2776,14 @@ shinyServer(function(input, output, session) {
                                            useAssay = input$dimRedAssaySelect_tsneUmap,
                                            reducedDimName = dimrednamesave,
                                            perplexity = input$perplexityTSNE,
-                                           n_iterations = input$iterTSNE)
+                                           nIterations = input$iterTSNE)
                   } else if (vals$runDimred$dimRedAssaySelect_tsneUmap %in% expDataNames(vals$counts)) {
                     vals$counts <- getTSNE(inSCE = vals$counts,
                                            useAssay = vals$runDimred$dimRedAssaySelect_tsneUmap,
                                            useAltExp = vals$runDimred$dimRedAssaySelect_tsneUmap,
                                            reducedDimName = dimrednamesave,
                                            perplexity = input$perplexityTSNE,
-                                           n_iterations = input$iterTSNE)
+                                           nIterations = input$iterTSNE)
                   }
                 } else {
                   if (is.na(input$alphaUMAP)) {
@@ -2820,14 +2820,14 @@ shinyServer(function(input, output, session) {
                                        useAssay = input$dimRedAssaySelect_tsneUmap,
                                        reducedDimName = dimrednamesave,
                                        perplexity = input$perplexityTSNE,
-                                       n_iterations = input$iterTSNE)
+                                       nIterations = input$iterTSNE)
               } else if (vals$runDimred$dimRedAssaySelect_tsneUmap %in% expDataNames(vals$counts)) {
                 vals$counts <- getTSNE(inSCE = vals$counts,
                                        useAssay = vals$runDimred$dimRedAssaySelect_tsneUmap,
                                        useAltExp = vals$runDimred$dimRedAssaySelect_tsneUmap,
                                        reducedDimName = dimrednamesave,
                                        perplexity = input$perplexityTSNE,
-                                       n_iterations = input$iterTSNE)
+                                       nIterations = input$iterTSNE)
               }
             } else if(input$dimRedPlotMethod_tsneUmap == "seuratTSNE"){
               if (vals$runDimred$dimRedAssaySelect_tsneUmap %in% assayNames(vals$counts)){
@@ -2867,24 +2867,6 @@ shinyServer(function(input, output, session) {
                                     perplexity = input$perplexityTSNEDimRed,
                                     useReduction = input$reductionMethodUMAPTSNEDimRed)
                 reducedDim(vals$counts, dimrednamesave) <- reducedDim(ae, dimrednamesave)
-                #altExps(vals$counts)[[vals$runDimred$dimRedAssaySelect_tsneUmap]] <- seuratFindHVG(inSCE = altExps(vals$counts)[[vals$runDimred$dimRedAssaySelect_tsneUmap]],
-                #                             useAssay = vals$runDimred$dimRedAssaySelect_tsneUmap,
-                #                             altExp = TRUE)
-                #if(input$reductionMethodUMAPTSNEDimRed == "pca"){
-                #  altExps(vals$counts)[[vals$runDimred$dimRedAssaySelect_tsneUmap]] <- seuratPCA(inSCE = altExps(vals$counts)[[vals$runDimred$dimRedAssaySelect_tsneUmap]],
-                #                           useAssay = vals$runDimred$dimRedAssaySelect_tsneUmap,
-                #                           reducedDimName = paste0(dimrednamesave, "_PCA"))
-                #}
-                #else{
-                #  altExps(vals$counts)[[vals$runDimred$dimRedAssaySelect_tsneUmap]] <- seuratICA(inSCE = altExps(vals$counts)[[vals$runDimred$dimRedAssaySelect_tsneUmap]],
-                #                           useAssay = vals$runDimred$dimRedAssaySelect_tsneUmap,
-                #                           reducedDimName = paste0(dimrednamesave, "_ICA"))
-                #}
-                #altExps(vals$counts)[[vals$runDimred$dimRedAssaySelect_tsneUmap]] <- seuratRunTSNE(inSCE = altExps(vals$counts)[[vals$runDimred$dimRedAssaySelect_tsneUmap]],
-                #                             reducedDimName = dimrednamesave,
-                #                             dims = input$dimRedNumberDims_tsneUmap,
-                #                             perplexity = input$perplexityTSNEDimRed,
-                #                             useReduction = input$reductionMethodUMAPTSNEDimRed)
               }
             } else if(input$dimRedPlotMethod_tsneUmap == "seuratUMAP"){
               if (vals$runDimred$dimRedAssaySelect_tsneUmap %in% assayNames(vals$counts)){

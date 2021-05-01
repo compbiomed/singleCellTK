@@ -2,16 +2,18 @@
 % Please edit documentation in R/runDimensionalityReduction.R
 \name{runDimensionalityReduction}
 \alias{runDimensionalityReduction}
-\title{Wrapper function to run one of the three available dimensionality
-reduction algorithms integrated within the singleCellTK from 'scaterPCA',
-'seuratPCA' and 'seuratICA'.}
+\title{Wrapper function to run one of the available dimensionality
+reduction algorithms integrated within the toolkit from `scaterPCA`,
+`seuratPCA`, `seuratICA`, `rTSNE`, `seuratTSNE`, `uwotUMAP` and `seuratUMAP`.}
 \usage{
 runDimensionalityReduction(
   inSCE,
   useAssay,
   reducedDimName,
-  method = c("scaterPCA", "seuratPCA", "seuratICA"),
-  nComponents = 10
+  method = c("scaterPCA", "seuratPCA", "seuratICA", "rTSNE", "seuratTSNE", "uwotUMAP",
+    "seuratUMAP"),
+  nComponents = 10,
+  ...
 )
 }
 \arguments{
@@ -21,18 +23,27 @@ runDimensionalityReduction(
 
 \item{reducedDimName}{Specify the name of the output reducedDim.}
 
-\item{method}{Specify a method from 'scaterPCA', 'seuratPCA' or 'seuratICA'.}
+\item{method}{Specify a method from `scaterPCA`, `seuratPCA`, `seuratICA`, 
+`rTSNE`, `seuratTSNE`, `uwotUMAP` and `seuratUMAP`.}
 
-\item{nComponents}{Specify the number of dimensions to use with 'seuratPCA' or 
-'seuratICA' methods. Not applicable for 'scaterPCA' method. Default
-is \code{10}.}
+\item{nComponents}{Specify the number of dimensions to compute with the
+selected method.}
+
+\item{...}{Additional parameters for the selected method. For `rTSNE`, must
+specify `perplexity` (default \code{30}) and  `nIterations` 
+(default \code{1000}). For `seuratTSNE`, must specify `perplexity` (default
+\code{30}). For `uwotUMAP`, must specify `nNeighbors` (default \code{30}), 
+`nIterations` (default \code{200}), `minDist` (default \code{0.01}) and 
+`alpha` (default \code{1}). For `seuratUMAP`, must specify `minDist` 
+(default \code{0.3}), `nNeighbors` (default \code{30}) and `spread` 
+(default \code{1}).}
 }
 \value{
 A \linkS4class{SingleCellExperiment} object with PCA computation
 updated in \code{reducedDim(inSCE, reducedDimName)}.
 }
 \description{
-Wrapper function to run one of the three available dimensionality
-reduction algorithms integrated within the singleCellTK from 'scaterPCA',
-'seuratPCA' and 'seuratICA'.
+Wrapper function to run one of the available dimensionality
+reduction algorithms integrated within the toolkit from `scaterPCA`,
+`seuratPCA`, `seuratICA`, `rTSNE`, `seuratTSNE`, `uwotUMAP` and `seuratUMAP`.
 }
