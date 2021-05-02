@@ -16,15 +16,32 @@ bioc_required: true
 # These parts can be deleted once the xgboost error is fixed
 
 before_install:
-  - pyenv install 3.9-dev
-  - pyenv global 3.9-dev
   - Rscript -e 'install.packages("devtools")'
   - Rscript -e 'devtools::install_version("xgboost", version = "0.90.0.2", repos = "http://cran.us.r-project.org")'
-  - pip install --upgrade pip
-  - pip install scipy scrublet scanpy scanorama bbknn
 
 install:
-- R -e 'devtools::install_deps(dep = TRUE, upgrade="never")'
+  - PYENV_VERSION=1.2.20
+  - PYTHON_VERSION=3.7.8
+  - pushd $(pyenv root)
+  - git fetch
+  - git checkout v$PYENV_VERSION
+  - pyenv install -v $PYTHON_VERSION
+  - popd
+  - pip install --upgrade pip
+  - pip install scipy scrublet scanpy scanorama bbknn
+  - R -e 'devtools::install_deps(dep = TRUE, upgrade="never")'
+
+before_script:
+  - pyenv global $PYTHON_VERSION
+  - PYTHON_PREFIX=$(python-config --prefix)
+  - PYTHON_XY=python${PYTHON_VERSION%.*} # X.Y.Z -> pythonX.Y
+  - CMAKE_EXTRA_ARGS+=" -DPYTHON_EXECUTABLE=$PYTHON_PREFIX/bin/$PYTHON_XY"
+  - CMAKE_EXTRA_ARGS+=" -DPYTHON_LIBRARY=$PYTHON_PREFIX/lib/lib${PYTHON_XY}m.so"
+  - CMAKE_EXTRA_ARGS+=" -DPYTHON_INCLUDE_DIR=$PYTHON_PREFIX/include/${PYTHON_XY}m"
+    
+script:
+  - cmake .. -DCMAKE_BUILD_TYPE=Release ${CMAKE_EXTRA_ARGS}
+  - make
 
 addons:
   apt:
