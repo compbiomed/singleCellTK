@@ -16,6 +16,11 @@ bioc_required: true
 # These parts can be deleted once the xgboost error is fixed
 
 before_install:
+  - /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
+  - export PATH=/home/linuxbrew/.linuxbrew/bin:$PATH
+  - source ~/.bashrc
+  - sudo apt-get install linuxbrew-wrapper
+  - brew tap --shallow linuxbrew/xorg
   - brew upgrade pyenv
   - pyenv install 3.7.8
   - pyenv global 3.7.8
