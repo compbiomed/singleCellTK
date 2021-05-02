@@ -27,7 +27,7 @@ install:
   - git checkout v$PYENV_VERSION
   - pyenv install -v $PYTHON_VERSION
   - popd
-  - pip install scipy scrublet scanpy scanorama bbknn
+  - pip3 install scipy scrublet scanpy scanorama bbknn
   - R -e 'devtools::install_deps(dep = TRUE, upgrade="never")'
 
 before_script:
