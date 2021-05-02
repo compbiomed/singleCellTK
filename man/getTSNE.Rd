@@ -9,7 +9,7 @@ getTSNE(
   useAssay = "logcounts",
   useAltExp = NULL,
   reducedDimName = "TSNE",
-  n_iterations = 1000,
+  nIterations = 1000,
   perplexity = NULL,
   run_pca = TRUE,
   ntop = NULL
@@ -28,7 +28,7 @@ selected.variable features. Default \code{NULL}.}
 \item{reducedDimName}{a name to store the results of the dimension
 reductions. Default \code{"TSNE"}.}
 
-\item{n_iterations}{maximum iterations. Default \code{1000}.}
+\item{nIterations}{maximum iterations. Default \code{1000}.}
 
 \item{perplexity}{perplexity parameter. Default \code{NULL}.}
 
