@@ -4,7 +4,7 @@ cache:
   - pip
 r:
   - release
-sudo: required
+sudo: false
 warnings_are_errors: true
 bioc_required: true
 
@@ -15,10 +15,9 @@ bioc_required: true
 #    Therefore, a new install command is used with 'upgrade="never"'
 # These parts can be deleted once the xgboost error is fixed
 
-python:
-  - "3.7"
-
 before_install:
+  - pyenv install 3.9-dev
+  - pyenv global 3.9-dev
   - Rscript -e 'install.packages("devtools")'
   - Rscript -e 'devtools::install_version("xgboost", version = "0.90.0.2", repos = "http://cran.us.r-project.org")'
   - pip install --upgrade pip
