@@ -37,7 +37,7 @@ before_script:
   - CMAKE_EXTRA_ARGS+=" -DPYTHON_INCLUDE_DIR=$PYTHON_PREFIX/include/${PYTHON_XY}m"
     
 script:
-  - cmake .. -DCMAKE_BUILD_TYPE=Release ${CMAKE_EXTRA_ARGS}
+  - cmake . -DCMAKE_BUILD_TYPE=Release ${CMAKE_EXTRA_ARGS}
   - make
 addons:
   apt:
