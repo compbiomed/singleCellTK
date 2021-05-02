@@ -21,6 +21,8 @@ before_install:
   - source ~/.bashrc
   - sudo apt-get install linuxbrew-wrapper
   - brew tap --shallow linuxbrew/xorg
+  - brew update
+  - brew install pyenv
   - brew upgrade pyenv
   - pyenv install 3.7.8
   - pyenv global 3.7.8
