@@ -16,8 +16,8 @@ bioc_required: true
 # These parts can be deleted once the xgboost error is fixed
 
 before_install:
-  - pyenv install 3.7.0
-  - pyenv global 3.7.0
+  - pyenv install 3.9.0
+  - pyenv global 3.9.0
   - Rscript -e 'install.packages("devtools")'
   - Rscript -e 'devtools::install_version("xgboost", version = "0.90.0.2", repos = "http://cran.us.r-project.org")'
   - pip install --upgrade pip
