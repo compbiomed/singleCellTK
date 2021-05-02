@@ -7,8 +7,6 @@ r:
 sudo: false
 warnings_are_errors: true
 bioc_required: true
-python:
-  - "3.7"
 
 # Current version of xgboost fails install
 # Need to force install older version using 'devtools::install_version'
@@ -18,7 +16,9 @@ python:
 # These parts can be deleted once the xgboost error is fixed
 
 before_install:
-  - pyenv global 3.7.0
+  - brew upgrade pyenv
+  - pyenv install 3.7.8
+  - pyenv global 3.7.8
   - Rscript -e 'install.packages("devtools")'
   - Rscript -e 'devtools::install_version("xgboost", version = "0.90.0.2", repos = "http://cran.us.r-project.org")'
   - pip install --upgrade pip
