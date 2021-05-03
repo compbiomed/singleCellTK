@@ -24,8 +24,8 @@ before_install:
   - brew update
   - brew install pyenv
   - pyenv install --list | grep 3.8
-  - pyenv install 3.8.3
-  - pyenv global 3.8.3
+  - pyenv install miniconda-3.8.3
+  - pyenv global miniconda-3.8.3
   - Rscript -e 'install.packages("devtools")'
   - Rscript -e 'devtools::install_version("xgboost", version = "0.90.0.2", repos = "http://cran.us.r-project.org")'
   - pip install --upgrade pip
