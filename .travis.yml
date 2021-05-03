@@ -24,8 +24,9 @@ before_install:
   - brew update
   - brew install pyenv
   - brew upgrade pyenv
-  - pyenv install 3.7.0
-  - pyenv global 3.7.0
+  - brew unlink pyenv
+  - brew install pyenv --head
+  - pyenv install 3.8.3
   - Rscript -e 'install.packages("devtools")'
   - Rscript -e 'devtools::install_version("xgboost", version = "0.90.0.2", repos = "http://cran.us.r-project.org")'
   - pip install --upgrade pip
