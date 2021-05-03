@@ -23,6 +23,7 @@ before_install:
   - brew tap --shallow linuxbrew/xorg
   - brew update
   - brew install pyenv
+  - pyenv install --list | grep 3.8
   - pyenv install 3.8.0
   - pyenv global 3.8.0
   - Rscript -e 'install.packages("devtools")'
