@@ -1,3 +1,4 @@
+#' differentialAbundanceFET
 #' @export
 differentialAbundanceFET <- function(inSCE, variable, phenotype, control, case) {
     #if (method == "celda"){
@@ -40,6 +41,7 @@ differentialAbundanceFET <- function(inSCE, variable, phenotype, control, case) 
     return(res)
 }
 
+#' plotClusterAbundance
 #' @export
 plotClusterAbundance <- function(inSCE, variable, phenotype) {
     #if (method == "celda"){
