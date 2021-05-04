@@ -1,13 +1,5 @@
-#' @title differentialAbundanceFET
 #' @export
 differentialAbundanceFET <- function(inSCE, variable, phenotype, control, case) {
-    #if (method == "celda"){
-    #    cluster <- celdaClusters(inSCE)
-    #}else if(method == "seurat"){
-    #    cluster <- inSCE$Seurat_selected_res
-    #}
-
-    #variable <- inSCE$sample
     cluster <- colData(inSCE)[, variable]
     variable <- colData(inSCE)[, phenotype]
 
@@ -41,22 +33,11 @@ differentialAbundanceFET <- function(inSCE, variable, phenotype, control, case) 
     return(res)
 }
 
-#' @title plotClusterAbundance
 #' @export
 plotClusterAbundance <- function(inSCE, variable, phenotype) {
-    #if (method == "celda"){
-    #    cluster <- celdaClusters(inSCE)
-    #    color_palette <- celda::distinctColors(length(unique(sce$Celda)))
-    #}else if(method == "seurat"){
-    #    cluster <- inSCE$Seurat_selected_res
-    #    palette_data <- ggplot2::ggplot_build(UMAP_coloredby_cluster)$data[[1]]
-    #    color_palette <- unique((palette_data[order(palette_data$group), ])$colour)
-    #}
-
     cluster <- colData(inSCE)[, variable]
     color_palette <- celda::distinctColors(length(unique(cluster)))
 
-    #label <- inSCE$sample
     label <- colData(inSCE)[, phenotype]
 
     cluster.color <- color_palette
