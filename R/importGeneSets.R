@@ -397,7 +397,7 @@ importGeneSetsFromMSigDB <- function(inSCE, categoryIDs,
     for(j in seq_along(gs.names)) {
       gs.sub <- gs[gs$gs_name == gs.names[j],mapping]
       gs.list[[j]] <- GSEABase::GeneSet(setName = gs.names[j],
-                        geneIds = gs.sub,
+                        geneIds = unique(gs.sub),
                         collectionType = GSEABase::BroadCollection(
                           category = tolower(category),
                           subCategory = subcat))
