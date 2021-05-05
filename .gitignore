@@ -8,4 +8,5 @@ singleCellTK.Rproj
 .Rprofile
 renv/
 vignettes/*_cache/*
+vignettes/articles/*_cache/*
 *.rds
