@@ -11,32 +11,14 @@
 #' @return Generates a Seurat object containing data from \code{inSCE}.
 #' @export
 
-exportSCEToSeurat <- function(inSCE, prefix="sample", outputDir="./", overwrite=TRUE, 
-                              copyColData=TRUE, copyReducedDim=TRUE, 
+exportSCEToSeurat <- function(inSCE, prefix="sample", outputDir="./", overwrite=TRUE,
+                              copyColData=TRUE, copyReducedDim=TRUE,
                               copyDecontX=TRUE) {
-  Seurat <- singleCellTK::convertSCEToSeurat(inSCE, countsAssay = "counts")
-  if (!is.null(inSCE@colData) && isTRUE(copyColData)) {
-    Seurat@meta.data <- cbind(Seurat@meta.data, inSCE@colData)
-  }
-  
-  if ("decontXcounts" %in% SummarizedExperiment::assayNames(inSCE) && isTRUE(copyDecontX)) {
-    decontM <- SummarizedExperiment::assay(inSCE, "decontXcounts")
-    colnames(decontM) <- colnames(Seurat)
-    rownames(decontM) <- gsub('_', '-', rownames(decontM))
-    Seurat[["decontXcounts"]] <- Seurat::CreateAssayObject(counts = .convertToMatrix(decontM))
-  }
-  
-  if (!is.null(SingleCellExperiment::reducedDims(inSCE)) && isTRUE(copyReducedDim)) {
-    for (redc in SingleCellExperiment::reducedDimNames(inSCE)) {
-      reDim <- SingleCellExperiment::reducedDim(inSCE, redc)
-      colnames(reDim) <- paste0(redc, "_", 1:2)
-      rownames(reDim) <- gsub('_', '-', rownames(reDim))
-      key <-  gsub('_', '', redc)
-      Seurat@reductions[[redc]] <- Seurat::CreateDimReducObject(embeddings = reDim, 
-                                                        key = paste0(key, "_"), assay = "RNA")
-    }
-  }
-  
+  Seurat <- singleCellTK::convertSCEToSeurat(inSCE, countsAssay = "counts", 
+                                             copyColData = copyColData,
+                                             copyReducedDim = copyReducedDim,
+                                             copyDecontX = copyDecontX)
+
   fileName <- paste0(prefix,"_Seurat.RDS")
   filePath <- file.path(outputDir,fileName)
 
@@ -44,7 +26,7 @@ exportSCEToSeurat <- function(inSCE, prefix="sample", outputDir="./", overwrite=
     message("outputDir does not exists. Create the directory. ")
     dir.create(outputDir)
   }
-  
+
   if (file.exists(filePath) && !isTRUE(overwrite)) {
     stop(paste0(path, " already exists. Change 'outputDir' or set 'overwrite' to TRUE."))
   }
@@ -109,7 +91,7 @@ exportSCE <- function(inSCE,
         fp <- file.path(directory, samplename, "FlatFile")
         dir.create(fp, showWarnings = TRUE, recursive = TRUE)
         fn <- file.path(fp, type)
-        exportSCEtoFlatFile(inSCE, outputDir = fn, sample=samplename)
+        exportSCEtoFlatFile(inSCE, outputDir = fn, prefix=samplename)
     }
 
     if ("AnnData" %in% format) {
