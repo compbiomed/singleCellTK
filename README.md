@@ -5,18 +5,22 @@
 [![BioC status](https://www.bioconductor.org/shields/build/release/bioc/singleCellTK.svg)](https://bioconductor.org/checkResults/release/bioc-LATEST/singleCellTK)
 [![lifecycle](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://www.tidyverse.org/lifecycle/#stable)
 
+The Single Cell ToolKit (SCTK) is an analysis platform that provides an **R interface to several popular scRNA-seq preprocessing, quality control, and visualization tools**. SCTK imports raw or filtered counts from various single cell sequencing technologies and upstream tools such as 10x CellRanger, BUStools, Optimus, STARSolo, and more. By integrating several publicly available tools written in R as well as Python, SCTK performs extensive quality control measures including doublet detection and batch effect correction. Additionally, SCTK summarizes results and related visualizations in a comprehensive R markdown and/or HTML report. SCTK provides a standardized single cell analysis workflow by representing the counts data and the results using the [SingleCellExperiment](https://www.bioconductor.org/packages/release/bioc/html/SingleCellExperiment.html) R object. Furthermore, SCTK enables seamless downstream analysis by exporting data and results in flat .txt and Python Anndata formats.  
+
+A comprehensive list of available functions is listed in the Reference section.  
+
 ## Installation
 
 ### System setup
 
 If you are the first time to install R, please don't install 32 bit R. Make sure to uncheck the '32-bit Files' box when you see the following window:
 
-![](/exec/png/32bit-R.png)
+![](exec/png/32bit-R.png)
 
 #### Window's user
 For window's users, please install [rtools](https://cran.r-project.org/bin/windows/Rtools/history.html) based on your R version. Make sure to click 'Edit the system PATH' box when you see this window:
 
-![](/exec/png/rtools.png)
+![](exec/png/rtools.png)
 
 After installing rtools, install 'devtools' package with the following command. If it asks whether install the package that requires compilation, type 'y'. 
 ```
