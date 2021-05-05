@@ -17,20 +17,26 @@ seuratComputeJackStraw(
 \arguments{
 \item{inSCE}{(sce) object on which to compute and store jackstraw plot}
 
-\item{useAssay}{Assay containing scaled counts to use in JackStraw calculation.}
+\item{useAssay}{Assay containing scaled counts to use in JackStraw
+calculation.}
 
-\item{dims}{Number of components to test in Jackstraw. If \code{NULL}, then all components are used. Default \code{NULL}.}
+\item{dims}{Number of components to test in Jackstraw. If \code{NULL}, then
+all components are used. Default \code{NULL}.}
 
-\item{numReplicate}{Numeric value indicating the number of replicate samplings to perform.
-Default value is \code{100}.}
+\item{numReplicate}{Numeric value indicating the number of replicate
+samplings to perform.
+ Default value is \code{100}.}
 
-\item{propFreq}{Numeric value indicating the proportion of data to randomly permute for each replicate.
-Default value is \code{0.025}.}
+\item{propFreq}{Numeric value indicating the proportion of data to randomly
+permute for each replicate.
+ Default value is \code{0.025}.}
 
-\item{externalReduction}{Pass DimReduc object if PCA/ICA computed through other libraries. Default \code{NULL}.}
+\item{externalReduction}{Pass DimReduc object if PCA/ICA computed through
+other libraries. Default \code{NULL}.}
 }
 \value{
-Updated \code{SingleCellExperiment} object with jackstraw computations stored in it
+Updated \code{SingleCellExperiment} object with jackstraw
+computations stored in it
 }
 \description{
 seuratComputeJackStraw

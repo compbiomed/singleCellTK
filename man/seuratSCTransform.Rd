@@ -3,7 +3,8 @@
 \name{seuratSCTransform}
 \alias{seuratSCTransform}
 \title{seuratSCTransform
-Runs the \link[Seurat]{SCTransform} function to transform/normalize the input data}
+Runs the \link[Seurat]{SCTransform} function to transform/normalize the input
+data}
 \usage{
 seuratSCTransform(
   inSCE,
@@ -15,11 +16,12 @@ seuratSCTransform(
 \arguments{
 \item{inSCE}{Input SingleCellExperiment object}
 
-\item{normAssayName}{Name for the output data assay. Default \code{"SCTCounts"}.}
+\item{normAssayName}{Name for the output data assay. Default
+\code{"SCTCounts"}.}
 
 \item{useAssay}{Name for the input data assay. Default \code{"counts"}.}
 
-\item{verbose}{Logical value indicating if informative messages should 
+\item{verbose}{Logical value indicating if informative messages should
 be displayed. Default is \code{TRUE}.}
 }
 \value{
@@ -27,7 +29,8 @@ Updated SingleCellExperiment object containing the transformed data
 }
 \description{
 seuratSCTransform
-Runs the \link[Seurat]{SCTransform} function to transform/normalize the input data
+Runs the \link[Seurat]{SCTransform} function to transform/normalize the input
+data
 }
 \examples{
 data(sce_chcl, package = "scds")

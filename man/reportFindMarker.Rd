@@ -18,6 +18,10 @@ file name will be based on the name of the Rmarkdown template. Default
 \code{NULL} the file is stored to the current working directory.
 Default \code{NULL}.}
 }
+\value{
+An HTML file of the report will be generated at the path specified
+in the arguments.
+}
 \description{
 A  function to generate .html Rmarkdown report containing the
 visualizations of the \code{\link{findMarkerDiffExp}} function output

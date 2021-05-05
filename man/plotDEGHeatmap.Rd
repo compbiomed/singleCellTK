@@ -103,7 +103,7 @@ data(scExample, package = "singleCellTK")
 sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 sce <- runDEAnalysis(inSCE = sce, method = "DESeq2",
                      groupName1 = "Sample1", groupName2 = "Sample2",
-                     index1 = 1:100, index2 = 101:190,
+                     index1 = seq(100), index2 = seq(101,190),
                      analysisName = "DESeq2")
 plotDEGHeatmap(sce, useResult = "DESeq2", fdrThreshold = 1, doLog = TRUE)
 }

@@ -202,11 +202,9 @@ runComBatSeq <- function(inSCE, useAssay = "counts", batch = 'batch',
 #' @export
 #' @references Lun ATL, et al., 2016
 #' @examples
-#' \dontrun{
 #' data('sceBatches', package = 'singleCellTK')
 #' logcounts(sceBatches) <- log(counts(sceBatches) + 1)
 #' sceCorr <- runFastMNN(sceBatches, useAssay = 'logcounts', pcInput = FALSE)
-#' }
 runFastMNN <- function(inSCE, useAssay = "logcounts",
                        reducedDimName = "fastMNN", batch = 'batch',
                        pcInput = FALSE){

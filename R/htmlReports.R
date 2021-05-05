@@ -194,6 +194,8 @@ reportDiffExp <- function(inSCE, study,
 #' @param output_dir name of the output directory to save the rendered file. If
 #' \code{NULL} the file is stored to the current working directory.
 #' Default \code{NULL}.
+#' @return An HTML file of the report will be generated at the path specified
+#' in the arguments.
 #' @export
 reportFindMarker <- function(inSCE, output_file = NULL, output_dir = NULL) {
 
@@ -216,18 +218,18 @@ reportFindMarker <- function(inSCE, output_file = NULL, output_dir = NULL) {
                     output_dir = output_dir )
 }
 
-#' Computes an HTML report from the Seurat workflow and returns the output SCE 
+#' Computes an HTML report from the Seurat workflow and returns the output SCE
 #'  object with the computations stored in it.
 #' @param inSCE Input \code{SingleCellExperiment} object.
 #' @param outputFile Specify the name of the generated output HTML file. If \code{NULL} then the output
 #' file name will be based on the name of the Rmarkdown template. Default
 #' \code{NULL}.
-#' @param outputDir Specify the name of the output directory to save the 
-#'  rendered HTML file. If \code{NULL} the file is stored to the current 
+#' @param outputDir Specify the name of the output directory to save the
+#'  rendered HTML file. If \code{NULL} the file is stored to the current
 #'  working directory.
 #' @param subtitle A \code{character} value specifying the subtitle to use in the
 #'  Seurat report.
-#' @param authors A \code{character} value specifying the names of the authors 
+#' @param authors A \code{character} value specifying the names of the authors
 #'  to use in the Seurat report.
 #' @param sce A \code{character} value specifying the path of the input
 #'  \code{SingleCellExperiment} object.
@@ -238,7 +240,7 @@ reportFindMarker <- function(inSCE, output_file = NULL, output_dir = NULL) {
 #'  of the \code{colData} columns to use for differential expression in addition
 #'  to the \code{biological.group} parameter.
 #' @param selected.markers A \code{character} vector specifying the user decided
-#'  gene symbols of pre-selected markers that be used to generate gene plots in 
+#'  gene symbols of pre-selected markers that be used to generate gene plots in
 #'  addition to the gene markers computed from differential expression.
 #' @param clustering.resolution A \code{numeric} value indicating the resolution
 #'  to use with clustering. Default is \code{0.8}.
@@ -268,26 +270,26 @@ seuratReport <- function(inSCE,
                          pc.count = 10,
                          showSession = TRUE,
                          pdf = TRUE){
-  
+
   if(is.null(biological.group)){
     stop("Must specify atleast one biological.group that is present in the colData of input object.")
   }
-  
+
   if(!biological.group %in% names(colData(inSCE))){
     stop(biological.group, " not found in the colData of input object.")
   }
-  
+
   if(!is.null(phenotype.groups)){
     if(!all(phenotype.groups %in% names(colData(inSCE)))){
       stop(phenotype.groups, " not found in the colData of input object.")
     }
   }
-  
+
   if(is.null(outputDir)){
     outputDir <- getwd()
     message("No output directory defined, using current working directory ", outputDir, " instead.")
   }
-  
+
   rmarkdown::render(system.file("rmarkdown/seurat/SeuratReport.Rmd",
                                 package="singleCellTK"),
                     params = list(
@@ -308,13 +310,13 @@ seuratReport <- function(inSCE,
                     output_dir = outputDir,
                     intermediates_dir = outputDir,
                     knit_root_dir = outputDir)
-  
+
   path <- paste0(outputDir, "SCE_SeuratReport", "-", gsub(" ", "_", Sys.Date()), ".rds")
   outSCE <- readRDS(path)
-  
+
   message("Output SCE object stored as ", paste0("SCE_SeuratReport", "-", gsub(" ", "_", Sys.Date()), ".rds"), " in ", outputDir, ".")
   message("Output HTML file stored as ", outputFile, " in ", outputDir, ".")
-  
+
   return(outSCE)
 }
 
