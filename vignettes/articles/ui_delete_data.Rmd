@@ -1,0 +1,11 @@
+---
+title: "Delete Data"
+---
+
+![entry](ui_screenshots/delete_data/del_ui_entry.png)\
+
+SCTK provides a page that allows users to delete existing data, including count matrices (assays), cell (column) annotation, feature (row) annotation, dimension reduction and subsets. Users should enter this page through the way indicated by the screenshot above.
+
+![panel](ui_screenshots/delete_data/del_ui_panel.png)\
+
+The operation here is intuitive. As shown in the screenshot above, users can easily delete any unwanted or useless information by checking the corresponding checkboxes. Users have to be careful when checking the data because this deletion operation is **not reversible**. Finally, users should click on **"Delete"** button to finish the operation.  

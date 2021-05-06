@@ -9,7 +9,7 @@ exportSCEtoFlatFile(
   outputDir = "./",
   overwrite = TRUE,
   gzipped = TRUE,
-  sample = "sample"
+  prefix = "SCE"
 )
 }
 \arguments{
@@ -25,7 +25,7 @@ exported.}
 gzip compressed. \code{FALSE} otherwise. Default
 \code{TRUE}.}
 
-\item{sample}{Name of the sample. It will be used as the prefix of file names.}
+\item{prefix}{Prefix of file names.}
 }
 \value{
 Generates text files containing data from \code{inSCE}.

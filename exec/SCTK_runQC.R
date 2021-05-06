@@ -91,7 +91,7 @@ option_list <- list(optparse::make_option(c("-b", "--basePath"),
     optparse::make_option(c("-F", "--outputFormat"),
         type="character",
         default=NULL,
-        help="The output format of this QC pipeline. Currently, it supports SCE, Flatfile, AnnData and HTAN."),
+        help="The output format of this QC pipeline. Currently, it supports SCE, Flatfile, Seurat, AnnData and HTAN."),
     optparse::make_option(c("-y", "--yamlFile"),
         type="character",
         default=NULL,
@@ -214,20 +214,20 @@ if (numCores > 1) {
 }
 
 ### checking output formats
-if (!all(formats %in% c("SCE", "AnnData", "FlatFile", "HTAN"))) {
-    warning("Output format must be 'SCE', 'AnnData', 'HTAN' or 'FlatFile'. Format ", 
-         paste(formats[!formats %in% c("SCE", "AnnData", "FlatFile", "HTAN")], collapse = ","),
+if (!all(formats %in% c("SCE", "AnnData", "FlatFile", "HTAN", "Seurat"))) {
+    warning("Output format must be 'SCE', 'AnnData', 'HTAN', 'Seurat' or 'FlatFile'. Format ", 
+         paste(formats[!formats %in% c("SCE", "AnnData", "FlatFile", "HTAN", "Seurat")], collapse = ","),
          " is not supported now. ")
 }
 
-formats <- formats[formats %in% c("SCE", "AnnData", "FlatFile", "HTAN")]
+formats <- formats[formats %in% c("SCE", "AnnData", "FlatFile", "HTAN", "Seurat")]
 message("The output format is [", 
         paste(formats, collapse = ","), "]. ")
 
 if (length(formats) == 0) {
     warning("None of the provided format is supported now. Therefore, the output ", 
-        "will be SCE, AnnData, FlatFile and HTAN. ")
-    formats <- c("SCE", "AnnData", "FlatFile", "HTAN")
+        "will be SCE, AnnData, Seurat, FlatFile and HTAN. ")
+    formats <- c("SCE", "AnnData", "FlatFile", "HTAN", "Seurat")
 }
 
 if (!(dataType %in% c("Both", "Droplet", "Cell"))) {

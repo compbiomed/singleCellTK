@@ -16,7 +16,7 @@
 #' @param scale Logical value indicating if the data should be scaled using
 #'  Z.Score. Default \code{FALSE}.
 #' @param seuratScaleFactor Specify the `scaleFactor` argument if a Seurat
-#'  normalization method is selected. Default is \code{10}. This parameter
+#'  normalization method is selected. Default is \code{10000}. This parameter
 #'  will not be used if methods other than seurat are selected.
 #' @param transformation Specify the transformation options to run on the
 #'  selected assay. Options include `log2` (base 2 log transformation),
@@ -50,7 +50,7 @@ runNormalization <- function(inSCE,
                              outAssayName = "customNormalizedAssay",
                              normalizationMethod = NULL,
                              scale = FALSE,
-                             seuratScaleFactor = 10,
+                             seuratScaleFactor = 10000,
                              transformation = NULL,
                              pseudocountsBeforeNorm = NULL,
                              pseudocountsBeforeTransform = NULL,
@@ -89,6 +89,7 @@ runNormalization <- function(inSCE,
           useAssay = useAssay,
           verbose = verbose
         )
+        tag <- "transformed"
       }
       else{
         tempSCE <- seuratNormalizeData(
@@ -99,6 +100,9 @@ runNormalization <- function(inSCE,
           scaleFactor = seuratScaleFactor,
           verbose = verbose
         )
+        if(normalizationMethod %in% c("LogNormalize", "CLR")){
+          tag <- "transformed"
+        }
       }
       tempAssay <- assay(tempSCE, outAssayName)
     }
@@ -112,6 +116,9 @@ runNormalization <- function(inSCE,
         )
       )
       tempAssay <- assay(tempSCE, outAssayName)
+      if(normalizationMethod == "logNormCounts"){
+        tag <- "transformed"
+      }
     }
     else{
       stop("Specified normalization method '", normalizationMethod, "' not found.")

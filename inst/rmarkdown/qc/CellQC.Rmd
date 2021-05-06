@@ -25,6 +25,29 @@ require(singleCellTK)
 require(ggplot2)
 require(dplyr)
 
+metaChecking <- function(metainfo, sample){
+  if (any(!sample %in% names(metainfo))) {
+
+    ### if length of metainfo is 1, it indicates that the name is the sample name
+    ### This format is compatible with the QC report.
+    ### In this case, all samples are ran with single run. Return any sublist is fine. 
+    if (length(names(metainfo)) == 1) {
+      names(metainfo) <- sample
+      return(metainfo)
+    }
+
+    ### if QC is ran in R console instead of QC pipeline, we will add place holder.
+    ### In this case, different samples also share parameters. Return anny sublist is fine 
+    newMeta <- list() 
+    for (sample in samples) {
+      newMeta[[sample]] <- metainfo
+    }
+    metainfo <- newMeta
+  }
+
+  return(metainfo)
+}
+
 preprocessMeta <- function(meta, ignore=c("geneSetCollection", "sample")){
   meta <- meta[!names(meta) %in% ignore]
   lapply(meta, function(y){
@@ -65,6 +88,9 @@ sce.qc <- params$object
 subTitle <- params$subTitle
 studyDesign <- params$studyDesign
 samples <- unique(colData(sce.qc)$sample)
+
+### when 'sample' doesnn't exists in colData
+if (is.null(samples)) { samples <- "sample" }
 
 # reduceDims<- grep('UMAP', reducedDimNames(sce.qc), value = TRUE)
 # if (length(reduceDims) != 0) {
@@ -162,10 +188,11 @@ cat("\n\n")
 cat(paste0('## Subsets mito percent {.tabset .tabset-fade} \n\n'))
 plotsQCMetrics$Violin$Gene_Subset_Top50_Percent
 cat("\n\n")
-cat(paste0('## Session info {.tabset .tabset-fade} \n\n'))
+cat(paste0('## Parameters {.tabset .tabset-fade} \n\n'))
 
-runPerCellMeta <- sce.qc@metadata$scater
-x <- preprocessMeta(runPerCellMeta[[samples]]$addPerCellQC)
+runPerCellMeta <- sce.qc@metadata$scater_addPerCellQC
+runPerCellMeta <- metaChecking(runPerCellMeta, samples[[1]])
+x <- preprocessMeta(runPerCellMeta[[ samples[[1]] ]])
 t(as.data.frame(x)) %>%
   knitr::kable(format = "html") %>% kableExtra::kable_styling() %>%
   kableExtra::scroll_box(width = "80%")
@@ -245,11 +272,12 @@ for (sample in samples) {
   
   cat("#### Parameters {.tabset .tabset-fade} \n\n")
   runScrubletMeta <- sce.qc@metadata$runScrublet
+  runScrubletMeta <- metaChecking(runScrubletMeta, sample)
   # if(length(samples) == 1) {
   #   runScrubletMeta <- list(runScrubletMeta)
   #   names(runScrubletMeta) <- sample
   # }
-    
+  
   x <- preprocessMeta(runScrubletMeta[[sample]])
   cat(t(as.data.frame(x)) %>%
     knitr::kable(format = "html") %>% kableExtra::kable_styling() %>%
@@ -337,6 +365,8 @@ for (sample in samples) {
     
     cat("##### Parameters {.tabset .tabset-fade} \n\n")
     DoubletFinderMeta <- sce.qc@metadata$runDoubletFinder
+    DoubletFinderMeta <- metaChecking(DoubletFinderMeta, sample)
+
     # if(length(samples) == 1) {
     #   DoubletFinderMeta <- list(DoubletFinderMeta)
     #   names(DoubletFinderMeta) <- sample
@@ -427,6 +457,8 @@ for (sample in samples){
   
   cat("#### Parameters {.tabset .tabset-fade} \n\n")
   ScDblFinderMeta <- sce.qc@metadata$runScDblFinder
+  ScDblFinderMeta <- metaChecking(ScDblFinderMeta, sample)
+
   # if(length(samples) == 1) {
   #   DoubletCellMeta <- list(DoubletCellMeta)
   #   names(DoubletCellMeta) <- sample
@@ -513,6 +545,8 @@ for (sample in samples){
   
   cat("#### Parameters {.tabset .tabset-fade} \n\n")
   CxdsMeta <- sce.qc@metadata$runCxds
+  CxdsMeta <- metaChecking(CxdsMeta, sample)
+
   # if(length(samples) == 1) {
   #   CxdsMeta <- list(CxdsMeta)
   #   names(CxdsMeta) <- sample
@@ -604,6 +638,8 @@ for (sample in samples){
   
   cat("#### Parameters {.tabset .tabset-fade} \n\n")
   BcdsMeta <- sce.qc@metadata$runBcds
+  BcdsMeta <- metaChecking(BcdsMeta, sample)
+
   # if(length(samples) == 1) {
   #   BcdsMeta <- list(BcdsMeta)
   #   names(BcdsMeta) <- sample
@@ -696,6 +732,8 @@ for (sample in samples){
   
   cat("#### Parameters {.tabset .tabset-fade} \n\n")
   HybridMeta <- sce.qc@metadata$runCxdsBcdsHybrid
+  HybridMeta <- metaChecking(HybridMeta, sample)
+
   # if(length(samples) == 1) {
   #   HybridMeta <- list(HybridMeta)
   #   names(HybridMeta) <- sample
@@ -785,6 +823,8 @@ for (sample in samples){
   
   cat("#### Parameters {.tabset .tabset-fade} \n\n")
   DecontXMeta <- sce.qc@metadata$runDecontX
+  DecontXMeta <- metaChecking(DecontXMeta, sample)
+
   # if(length(samples) == 1) {
   #   DecontXMeta <- list(DecontXMeta)
   #   names(DecontXMeta) <- sample

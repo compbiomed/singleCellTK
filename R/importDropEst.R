@@ -1,4 +1,3 @@
-
 .readDropEstFile <- function(sampleDir, dataType,rdsFileName){
   dropEst_cell_counts <- file.path(sampleDir, paste(rdsFileName, '.rds', sep=''))
   if (!file.exists(dropEst_cell_counts)){
@@ -108,7 +107,6 @@
 #' # https://github.com/hms-dbmi/dropEst/blob/master/examples/EXAMPLES.md
 #' sce <- importDropEst(sampleDirs = system.file("extdata/dropEst_scg71", package = "singleCellTK"),
 #'                      sampleNames = 'scg71')
-
 #' @export
 importDropEst <- function(sampleDirs = NULL,
                           dataType = c('filtered','raw'),
@@ -134,8 +132,4 @@ importDropEst <- function(sampleDirs = NULL,
   sce <- do.call(SingleCellExperiment::cbind, res)
   return(sce)
 }
-
-
-
-
 

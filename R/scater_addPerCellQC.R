@@ -65,7 +65,7 @@ runPerCellQC <- function(inSCE,
 
     ## Get the location where the gene set Ids are stored in SCE object
     geneSetCollectionLocation <- vapply(geneSetCollection, GSEABase::description, 
-                                        FUN.VALUE = character(length(names(geneSetCollection))))
+                                        FUN.VALUE = character(1)) #character(length(names(geneSetCollection)))
 
     ## If blank/null/NA, then set to rownames by default
     ix <- geneSetCollectionLocation == "" || is.na(geneSetCollectionLocation) || is.null(geneSetCollectionLocation)
@@ -134,7 +134,7 @@ runPerCellQC <- function(inSCE,
 
 		if(length(gs.diff) > 0 & length(gs.i) > 0) {
 		  warning(paste0("Some features were not found in 'rowData(inSCE)' under column '",
-		   temp.location, "'for gene set '", names(geneSetList)[i], "': ", paste(gs.diff, collapse=","), sep=""))
+		   temp.location, " 'for gene set '", names(geneSetList)[i], "': ", paste(gs.diff, collapse=","), sep=""))
 		}
 	  }
 	}
@@ -158,8 +158,8 @@ runPerCellQC <- function(inSCE,
   #dotList <- dotList[!names(dotList) %in% c("BPPARAM")]
   #argsList <- c(argsList, dotList)
   argsList <- argsList[!names(argsList) %in% ("BPPARAM")]
-  S4Vectors::metadata(inSCE)$scater$addPerCellQC <- argsList[-1]
-  S4Vectors::metadata(inSCE)$scater$addPerCellQC$packageVersion <- utils::packageDescription("scran")$Version
+  S4Vectors::metadata(inSCE)$scater_addPerCellQC <- argsList[-1]
+  S4Vectors::metadata(inSCE)$scater_addPerCellQC$packageVersion <- utils::packageDescription("scran")$Version
 
   if(is.null(geneSets)){
       geneSets = as.character(geneSets)
