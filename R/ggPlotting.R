@@ -765,6 +765,8 @@ plotSCEScatter <- function(inSCE,
 #'  drawn even if defaultTheme is TRUE. Default FALSE.
 #' @param summary Adds a summary statistic, as well as a crossbar to the
 #'  violin plot. Options are "mean" or "median". Default NULL.
+#' @param combinePlot Must be either "all", "sample", or "none". "all" will combine all plots into a single
+#' .ggplot object, while "sample" will output a list of plots separated by sample. Default "none".
 #' @param title Title of plot. Default NULL.
 #' @param titleSize Size of title of plot. Default 15.
 #' @return a ggplot of the reduced dimensions.
@@ -778,15 +780,16 @@ plotSCEScatter <- function(inSCE,
                       dots = TRUE,
                       xlab = NULL,
                       ylab = NULL,
-                      axisSize = 10,
-                      axisLabelSize = 10,
+                      axisSize = NULL,
+                      axisLabelSize = NULL,
                       dotSize = 1,
                       transparency = 1,
                       defaultTheme = TRUE,
                       gridLine = FALSE,
                       summary = NULL,
+                      combinePlot = "none",
                       title = NULL,
-                      titleSize = 15) {
+                      titleSize = NULL) {
   if (is.null(groupBy)) {
     groupBy <- rep("Sample", length(y))
   }
@@ -818,7 +821,7 @@ plotSCEScatter <- function(inSCE,
                                   alpha = 0.75)
   }
   if (defaultTheme == TRUE) {
-    p <- .ggSCTKTheme(p)
+    p <- .ggSCTKTheme(p, groupBy, combinePlot)
   }
   if (!is.null(title)) {
     p <- p + ggplot2::ggtitle(label = title) +
@@ -828,9 +831,7 @@ plotSCEScatter <- function(inSCE,
       ))
   }
 
-  ###
   p <- p + ggplot2::theme(axis.text.y = ggplot2::element_text(size = axisSize))
-  ###
 
   if(length(unique(df$groupBy)) > 1){
     p <- p + ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45,
@@ -843,7 +844,7 @@ plotSCEScatter <- function(inSCE,
   }
 
   if (gridLine == TRUE){
-    p <- p + ggplot2::theme(panel.grid.major.y = ggplot2::element_line("grey"))
+      p <- p + ggplot2::theme(panel.grid.major.y = ggplot2::element_line("grey"))
   }
   if (!is.null(xlab)) {
     p <- p + ggplot2::xlab(xlab) +
@@ -866,23 +867,30 @@ plotSCEScatter <- function(inSCE,
     summ$statY <-  max(df$y) + (max(df$y) - min(df$y)) * 0.1
     summary <- paste(toupper(substr(summary, 1, 1)),
                      substr(summary, 2, nchar(summary)), sep="")
-    summ$label <- paste0(summary,": ", round(summ$value, 5))
 
-    p <- p + ggrepel::geom_text_repel(data = summ,
+    ##Truncate label of mean/median if too many sample types
+    if(length(unique(groupBy)) > 5){
+      summ$label <- round(summ$value, 1)
+      angle <- 45
+    }else{
+      summ$label <- paste0(summary,": ", round(summ$value, 2))
+      angle <- 0
+    }
+
+    p <- p + ggplot2::geom_text(data = summ, angle = angle,
                                 ggplot2::aes_string(x = "groupBy",
                                                     y = "statY",
-                                                    label = "label"),
-                                size = 5)
+                                                    label = "label"))
     p <- p + ggplot2::stat_summary(fun = fun, fun.min = fun,
                                    fun.max = fun,
                                    geom = "crossbar",
                                    color = "red",
                                    linetype = "dashed")
+    p <- p + ggplot2::ylim(NA,max(df$y) + (max(df$y) - min(df$y)) * 0.2)
   }
 
   return(p)
 }
-
 
 #' @title Violin plot of colData.
 #' @description Visualizes values stored in the colData slot of a
@@ -1008,6 +1016,7 @@ plotSCEViolinColData <- function(inSCE,
       defaultTheme = defaultTheme,
       gridLine = gridLine,
       summary = summary,
+      combinePlot = combinePlot,
       title = title,
       titleSize = titleSize
     )
@@ -1178,6 +1187,7 @@ plotSCEViolinAssayData <- function(inSCE,
       defaultTheme = defaultTheme,
       gridLine = gridLine,
       summary = summary,
+      combinePlot = combinePlot,
       title = title,
       titleSize = titleSize
     )
@@ -1353,6 +1363,7 @@ plotSCEViolin <- function(inSCE,
       defaultTheme = defaultTheme,
       gridLine = gridLine,
       summary = summary,
+      combinePlot = combinePlot,
       title = title,
       titleSize = titleSize
     )
@@ -2680,12 +2691,24 @@ setSCTKDisplayRow <- function(inSCE,
     }
   }
 }
-.ggSCTKTheme <- function(gg) {
-  return(gg + ggplot2::theme_bw() +
+.ggSCTKTheme <- function(gg, groupBy = NULL, combinePlot = "none") {
+  if(!is.null(groupBy)){
+    if(length(unique(groupBy) > 6)){
+      scaleFactor = 0.5
+    }else if(length(unique(groupBy) > 2)){
+      scaleFactor = 0.75
+    }
+  }else{
+    scaleFactor = 1
+  }
+  if(combinePlot == "all"){
+    scaleFactor = scaleFactor * 0.75
+  }
+  return(gg + ggplot2::theme_bw(base_size = 20 * scaleFactor) +
            ggplot2::theme(
              panel.grid.major = ggplot2::element_blank(),
              panel.grid.minor = ggplot2::element_blank(),
-             axis.text = ggplot2::element_text(size = 10),
-             axis.title = ggplot2::element_text(size = 10)
+             axis.text = ggplot2::element_text(),
+             axis.title = ggplot2::element_text()
            ))
 }

@@ -12,15 +12,16 @@
   dots = TRUE,
   xlab = NULL,
   ylab = NULL,
-  axisSize = 10,
-  axisLabelSize = 10,
+  axisSize = NULL,
+  axisLabelSize = NULL,
   dotSize = 1,
   transparency = 1,
   defaultTheme = TRUE,
   gridLine = FALSE,
   summary = NULL,
+  combinePlot = "none",
   title = NULL,
-  titleSize = 15
+  titleSize = NULL
 )
 }
 \arguments{
@@ -58,6 +59,9 @@ drawn even if defaultTheme is TRUE. Default FALSE.}
 
 \item{summary}{Adds a summary statistic, as well as a crossbar to the
 violin plot. Options are "mean" or "median". Default NULL.}
+
+\item{combinePlot}{Must be either "all", "sample", or "none". "all" will combine all plots into a single
+.ggplot object, while "sample" will output a list of plots separated by sample. Default "none".}
 
 \item{title}{Title of plot. Default NULL.}
 
