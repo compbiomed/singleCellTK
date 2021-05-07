@@ -34,9 +34,16 @@
 .computeSignificantPC <- function(inSCE) {
   seuratObject <- convertSCEToSeurat(inSCE)
   max_components <- 0
+  currentDistance <- 0
+  previousDistance <- 0
   for (i in seq(seuratObject[["pca"]]@stdev)[-1]-1) {
-    if (abs(seuratObject[["pca"]]@stdev[i + 1] - seuratObject[["pca"]]@stdev[i]) > 0.1) {
+    currentDistance <- abs(seuratObject[["pca"]]@stdev[i + 1] - seuratObject[["pca"]]@stdev[i])
+    if (abs(currentDistance - previousDistance) > 0.01) {
+      previousDistance <- currentDistance
       max_components <- i
+    }
+    else{
+      break
     }
   }
   return(max_components)
