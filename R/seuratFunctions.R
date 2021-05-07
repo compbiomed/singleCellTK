@@ -560,6 +560,9 @@ seuratElbowPlot <- function(inSCE,
   }
   plot <- Seurat::ElbowPlot(seuratObject, reduction = reduction, ndims = ndims)
   if(!is.null(significantPC)){
+    if(significantPC > ndims){
+      significantPC <- ndims
+    }
     plot$data$Significant <- c(rep("Yes", significantPC), rep("No", length(rownames(plot$data)) - significantPC))
     plot <- ggplot2::ggplot(data = plot$data, ggplot2::aes(x = plot$data$dims, y = plot$data$stdev, color = plot$data$Significant)) + ggplot2::geom_point()
   }
