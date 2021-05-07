@@ -262,7 +262,7 @@ importGeneSetsFromCollection <- function(inSCE, geneSetCollection,
   }
 
   if(length(gs) == 0) {
-    stop("No gene sets were succesfully imported.")
+    stop("No gene sets could be imported. This is either because the no overlapping genes were identified between the gene sets and the input data or different types of identifiers are used between the two. Please check if the gene identifiers of both gene sets and input data belong to same type.")
   }
 
   # Add GeneSetCollection back to metadata
