@@ -126,15 +126,33 @@ computeHeatmap <- function(inSCE,
       fixed = TRUE)
     )
   
+  features.keyed <- lapply(
+    X = features.keyed, 
+    FUN = function(t) gsub(
+      pattern = "_", 
+      replacement = "-", 
+      x = t, 
+      fixed = TRUE)
+  )
+  
+  for (i in 1:length(x = dims)){
+    features[[i]] <- lapply(
+      X = features[[i]], 
+      FUN = function(t) gsub(
+        pattern = "_", 
+        replacement = "-", 
+        x = t, 
+        fixed = TRUE)
+    )
+  }
+  
   #get assay data with only selected features (all dims) and selected cells (all)
   data.all <- Seurat::FetchData(
     object = object,
-    vars = features.keyed,
+    vars = unique(x = unlist(x = features.keyed)),
     cells = unique(x = unlist(x = cells)),
     slot = slot
   )
-  
-  #
   
   #clip off values for heatmap
   data.all <- Seurat::MinMax(data = data.all, min = disp.min, max = disp.max)
