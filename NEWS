@@ -1,3 +1,13 @@
+Changes in Version 2.0.2 (2021-05-08)
+
+* Expanded convertSCEtoSeurat() function to copy additional data
+* Updated and merged pkgdown docs
+* Added HTML reports for Seurat curated workflow
+* Refactor of Normalization UI
+* Added generic wrapper function for dimensionality reduction
+* Added tagging system for matrix type
+* Several bug fixes
+
 Changes in Version 2.0.1 (2021-01-07)
 
 * Added cell type labeling functional, wrapping SingleR method
