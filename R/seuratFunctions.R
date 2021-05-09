@@ -326,7 +326,7 @@ seuratPlotHVG <- function(inSCE, labelPoints = 0) {
 #' Plots the selected dimensionality reduction method
 #' @param inSCE (sce) object which has the selected dimensionality reduction algorithm already computed and stored
 #' @param useReduction Dimentionality reduction to plot. One of "pca", "ica", "tsne", or "umap". Default \code{"umap"}.
-#' @param showLegend Select if legends should be shown on the output plot or not. Either "TRUE" or "FALSE". Default \code{FALSE}.
+#' @param showLegend Select if legends and labels should be shown on the output plot or not. Either "TRUE" or "FALSE". Default \code{FALSE}.
 #' @param groupBy Specify a colData column name that be used for grouping. Default is \code{NULL}. 
 #' @param splitBy Specify a colData column name that be used for splitting the output plot. Default is \code{NULL}. 
 #' @examples
@@ -342,6 +342,19 @@ seuratPlotHVG <- function(inSCE, labelPoints = 0) {
 seuratReductionPlot <- function(inSCE, useReduction = c("pca", "ica", "tsne", "umap"), 
                                 showLegend = FALSE, groupBy = NULL, splitBy = NULL) {
   seuratObject <- convertSCEToSeurat(inSCE)
+  if(!is.null(seuratObject@meta.data$seurat_cluster)){
+    seuratObject@meta.data <- seuratObject@meta.data[, "seurat_clusters", drop=FALSE]
+  }
+  else{
+    seuratObject@meta.data <- data.frame()
+  }
+  
+  if(showLegend){
+    if(!is.null(seuratObject@meta.data$seurat_clusters)){
+      Seurat::Idents(seuratObject) <- seuratObject@meta.data$seurat_clusters
+      seuratObject@meta.data <- data.frame()
+    }
+  }
   
   if(!is.null(groupBy)){
     seuratObject[[groupBy]] <- colData(inSCE)[[groupBy]]
@@ -351,17 +364,21 @@ seuratReductionPlot <- function(inSCE, useReduction = c("pca", "ica", "tsne", "u
     seuratObject[[splitBy]] <- colData(inSCE)[[splitBy]]
   }
   
-  args <- list(
-    object = seuratObject,
-    reduction = useReduction,
-    group.by = groupBy,
-    split.by = splitBy)
-  
   if(showLegend){
-    plot <- do.call(eval(parse(text = "Seurat::DimPlot")), args = args)
+    plot <- Seurat::DimPlot(
+      object = seuratObject, 
+      reduction = useReduction, 
+      group.by = groupBy,
+      split.by = splitBy,
+      label = TRUE)
   }
   else{
-    plot <- do.call(eval(parse(text = "Seurat::DimPlot")), args = args) + Seurat::NoLegend()
+    plot <- Seurat::DimPlot(
+      object = seuratObject, 
+      reduction = useReduction, 
+      group.by = groupBy,
+      split.by = splitBy,
+      label = FALSE) + Seurat::NoLegend()
   }
   
   if ("ident" %in% names(plot$data) && "seurat_clusters" %in% names(seuratObject@meta.data)) {
@@ -423,7 +440,10 @@ seuratFindClusters <- function(
   } else if (algorithm == "SLM") {
     no_algorithm = 3
   }
-  seuratObject <- Seurat::FindClusters(seuratObject, algorithm = no_algorithm, group.singletons = groupSingletons, resolution = resolution, verbose = verbose)
+  tempSeuratObject <- seuratObject
+  tempSeuratObject@meta.data <- data.frame()
+  tempSeuratObject <- Seurat::FindClusters(tempSeuratObject, algorithm = no_algorithm, group.singletons = groupSingletons, resolution = resolution, verbose = verbose)
+  seuratObject@meta.data$seurat_clusters <- tempSeuratObject@meta.data$seurat_clusters
   inSCE <- .addSeuratToMetaDataSCE(inSCE, seuratObject)
   colData(inSCE)[[paste0("Seurat","_",algorithm,"_","Resolution",resolution)]] <- seuratObject@meta.data$seurat_clusters
   S4Vectors::metadata(inSCE)$seurat$clusterName <- paste0("Seurat","_",algorithm,"_","Resolution",resolution)
@@ -678,17 +698,51 @@ convertSeuratToSCE <- function(seuratObject, normAssayName = "seuratNormData", s
 
 #' convertSCEToSeurat
 #' Converts sce object to seurat while retaining all assays and metadata
-#' @param inSCE A \code{SingleCellExperiment} object to convert to a Seurat object.
-#' @param countsAssay Which assay to use from sce object for raw counts. Default \code{NULL}.
-#' @param normAssay Which assay to use from sce object for normalized data. Default \code{NULL}.
-#' @param scaledAssay Which assay to use from sce object for scaled data. Default \code{NULL}
+#' @param inSCE A \code{SingleCellExperiment} object to convert to a Seurat 
+#'  object.
+#' @param countsAssay Which assay to use from sce object for raw counts. 
+#'  Default \code{NULL}.
+#' @param normAssay Which assay to use from sce object for normalized data. 
+#'  Default \code{NULL}.
+#' @param scaledAssay Which assay to use from sce object for scaled data. 
+#'  Default \code{NULL}.
+#' @param copyColData Boolean. Whether copy 'colData' of SCE object to 
+#'  the 'meta.data' of Seurat object. Default \code{FALSE}.
+#' @param copyReducedDim Boolean. Whether copy 'reducedDims' of the SCE 
+#'  object to the 'reductions' of Seurat object. Default \code{FALSE}.
+#' @param copyDecontX Boolean. Whether copy 'decontXcounts' assay of the 
+#'  SCE object to the 'assays' of Seurat object. Default \code{TRUE}.
+#' @param pcaReducedDim Specify a character value indicating the name of 
+#'  the reducedDim to store as default pca computation in the output seurat 
+#'  object. Default is \code{NULL} which will not store any reducedDim as the 
+#'  default pca. This will only work when \code{copyReducedDim} parameter is
+#'  set to \code{TRUE}.
+#' @param icaReducedDim Specify a character value indicating the name of 
+#'  the reducedDim to store as default ica computation in the output seurat 
+#'  object. Default is \code{NULL} which will not store any reducedDim as the 
+#'  default ica. This will only work when \code{copyReducedDim} parameter is
+#'  set to \code{TRUE}.
+#' @param tsneReducedDim Specify a character value indicating the name of 
+#'  the reducedDim to store as default tsne computation in the output seurat 
+#'  object. Default is \code{NULL} which will not store any reducedDim as the 
+#'  default tsne. This will only work when \code{copyReducedDim} parameter is
+#'  set to \code{TRUE}.
+#' @param umapReducedDim Specify a character value indicating the name of 
+#'  the reducedDim to store as default umap computation in the output seurat 
+#'  object. Default is \code{NULL} which will not store any reducedDim as the 
+#'  default umap. This will only work when \code{copyReducedDim} parameter is
+#'  set to \code{TRUE}.
 #' @examples
 #' data(scExample, package = "singleCellTK")
 #' seurat <- convertSCEToSeurat(sce)
 #' @return Updated seurat object that contains all data from the input sce object
 #' @export
 #' @importFrom SummarizedExperiment assay assays
-convertSCEToSeurat <- function(inSCE, countsAssay = NULL, normAssay = NULL, scaledAssay = NULL) {
+convertSCEToSeurat <- function(inSCE, countsAssay = NULL, normAssay = NULL, 
+                               scaledAssay = NULL, copyColData = FALSE, 
+                               copyReducedDim = FALSE, copyDecontX = FALSE, 
+                               pcaReducedDim = NULL, icaReducedDim = NULL,
+                               tsneReducedDim = NULL, umapReducedDim = NULL) {
   
   .checkSCEValidity(inSCE)
   
@@ -703,6 +757,22 @@ convertSCEToSeurat <- function(inSCE, countsAssay = NULL, normAssay = NULL, scal
   if(!is.null(scaledAssay) && !(scaledAssay %in% expDataNames(inSCE))) {
     stop(paste0("'", scaledAssay, "' not found in the list of assays: ",
                 paste(names(assays(inSCE)), collapse=",")))
+  }
+  if(!is.null(pcaReducedDim) && !(pcaReducedDim %in% reducedDimNames(inSCE))){
+    stop(paste0("'", pcaReducedDim, "' not found in the list of reducedDims: ",
+                paste(reducedDimNames(inSCE), collapse=",")))
+  }
+  if(!is.null(icaReducedDim) && !(icaReducedDim %in% reducedDimNames(inSCE))){
+    stop(paste0("'", icaReducedDim, "' not found in the list of reducedDims: ",
+                paste(reducedDimNames(inSCE), collapse=",")))
+  }
+  if(!is.null(tsneReducedDim) && !(tsneReducedDim %in% reducedDimNames(inSCE))){
+    stop(paste0("'", tsneReducedDim, "' not found in the list of reducedDims: ",
+                paste(reducedDimNames(inSCE), collapse=",")))
+  }
+  if(!is.null(umapReducedDim) && !(umapReducedDim %in% reducedDimNames(inSCE))){
+    stop(paste0("'", umapReducedDim, "' not found in the list of reducedDims: ",
+                paste(reducedDimNames(inSCE), collapse=",")))
   }
   
   # Seurat has a particular way of modifying row/colnames
@@ -766,6 +836,40 @@ convertSCEToSeurat <- function(inSCE, countsAssay = NULL, normAssay = NULL, scal
     if (!is.null(inSCE@metadata$seurat$obj@commands)) {
       seuratObject@commands <- inSCE@metadata$seurat$obj@commands
     }
+  }
+  
+  # Set colData from inSCE object if required
+  if (!is.null(colData(inSCE)) && copyColData) {
+    seuratObject@meta.data <- cbind(seuratObject@meta.data, colData(inSCE))
+  }
+  
+  # Set additional reducedDims from inSCE object if required
+  if (length(SingleCellExperiment::reducedDims(inSCE)) > 0 && copyReducedDim) {
+    for (redc in SingleCellExperiment::reducedDimNames(inSCE)) {
+      reDim <- SingleCellExperiment::reducedDim(inSCE, redc)
+      colnames(reDim) <- paste0(redc, "_", 1:length(colnames(reDim)))
+      rownames(reDim) <- gsub('_', '-', rownames(reDim))
+      key <-  gsub('_', '', redc)
+      seuratObject@reductions[[redc]] <- Seurat::CreateDimReducObject(embeddings = reDim,
+                                                                key = paste0(key, "_"), assay = "RNA")
+    }
+    
+    availReducedDims <- c("pca", "ica", "tsne", "umap")
+    for(i in availReducedDims){
+      if(!is.null(eval(parse(text = paste0(i, "ReducedDim"))))){
+        seuratObject@reductions[[i]] <- seuratObject@reductions[[eval(parse(text = paste0(i, "ReducedDim")))]]
+        seuratObject@reductions[[eval(parse(text = paste0(i, "ReducedDim")))]] <- NULL
+        message("'", eval(parse(text = paste0(i, "ReducedDim"))), "' reducedDim from input SCE object saved to the default ", i, " slot of seurat object.")
+      }
+    }
+  }
+  
+  # Set 'decontXCounts' assay to seurat object if required
+  if ("decontXcounts" %in% SummarizedExperiment::assayNames(inSCE) && copyDecontX) {
+    decontM <- SummarizedExperiment::assay(inSCE, "decontXcounts")
+    colnames(decontM) <- colnames(seuratObject)
+    rownames(decontM) <- gsub('_', '-', rownames(decontM))
+    seuratObject[["decontXcounts"]] <- Seurat::CreateAssayObject(counts = .convertToMatrix(decontM))
   }
   
   return(seuratObject)

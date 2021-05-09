@@ -21,9 +21,6 @@ file name will be based on the name of the Rmarkdown template. Default
 \code{NULL} the file is stored to the current working directory.
 Default \code{NULL}.}
 }
-\value{
-.html file
-}
 \description{
 A  function to generate .html Rmarkdown report containing the
 visualizations of the \code{\link{runDEAnalysis}} function output

@@ -3,104 +3,201 @@ template:
     bootswatch: yeti
 
 reference:
-  - title: Shiny App
-    contents:
-    - singleCellTK
-  - title: Data Summary and Filtering
-    contents:
-    - filterSCData
-    - summarizeTable
-    - convertGeneIDs
-  - title: Dimensionality Reduction and Clustering
-    contents:
-    - getPCA
-    - getTSNE
-    - getBiomarker
-    - getClusterInputData
-    - plotBiomarker
-    - plotPCA
-    - plotTSNE
-  - title: Batch Correction
-    contents:
-    - plotBatchVariance
-    - plotSCEBatchFeatureMean
-    - runComBat
-    - runBBKNN
-    - runHarmony
-    - runLimmaBC
-    - runFastMNN
-    - runLIGER
-    - runMNNCorrect
-    - runSCANORAMA
-    - runSCMerge
-    - runZINBWaVE
-    - seuratIntegration
-  - title: Differential Expression
-    contents:
-    - runDESeq2
-    - runLimmaDE
-    - runANOVA
-    - runMAST
-    - plotDEGViolin
-    - plotDEGRegression
-    - plotDEGHeatmap
-    - thresholdGenes
-    - findMarkerDiffExp
-    - plotMarkerDiffExp
-  - title: Pathway Activity Analysis
-    contents:
-    - gsvaPlot
-    - gsvaSCE
-  - title: Sample Size
-    contents:
-    - calcEffectSizes
-    - downSampleCells
-    - downSampleDepth
-    - generateSimulatedData
-    - iterateSimulations
-    - subDiffEx
-    - subDiffExANOVA
-    - subDiffExttest
-  - title: Data
-    contents:
-    - mouseBrainSubsetSCE
-  - title: SCtkExperiment
-    contents:
-    - createSCE
-    - starts_with("SCtkExperiment")
-    - starts_with("pcaVariances")
-  - title: Alignment
-    contents:
-    - alignSingleCellData
-    - parseRsubreadLogs
-
+- title: "Importing scRNA-seq data"
+- contents:
+  - starts_with("import")
+  - readSingleCellMatrix
+- title: "Quality Control & Preprocessing"
+- contents:
+  - runCellQC
+  - runDropletQC
+- title: "Decontamination"
+- contents:
+  - runDecontX
+- title: "Doublet/Empty Droplet Detection"
+- contents:
+  - runBarcodeRankDrops
+  - runEmptyDrops
+  - runBcds
+  - runCxds
+  - runCxdsBcdsHybrid
+  - runScDblFinder
+  - runDoubletFinder
+  - runScrublet
+- title: "Normalization"
+- contents:
+  - runNormalization
+  - scaterlogNormCounts
+  - scaterCPM
+  - seuratNormalizeData
+  - seuratScaleData
+  - computeZScore
+  - trimCounts
+- title: "Batch Effect Correction"
+- contents:
+  - runComBatSeq
+  - runBBKNN
+  - runFastMNN
+  - runLimmaBC
+  - runMNNCorrect
+  - runSCANORAMA
+  - runSCMerge
+  - seuratIntegration
+  - runZINBWaVE
+  - plotBatchVariance
+- title: "Feature Selection"
+- contents:
+  - scranModelGeneVar
+  - seuratFindHVG
+  - getTopHVG
+  - seuratPlotHVG
+- title: "Dimensionality Reduction"
+- contents:
+  - scaterPCA
+  - getUMAP
+  - getTSNE
+  - seuratICA
+  - seuratPCA
+  - seuratRunUMAP
+  - seuratRunTSNE
+  - plotSCEDimReduceColData
+  - plotSCEDimReduceFeatures
+- title: "Clustering"
+- contents:
+  - runScranSNN
+  - seuratFindClusters
+  - runKMeans
+- title: "Differential Expression"
+- contents:
+  - runDEAnalysis
+  - runWilcox
+  - runMAST
+  - runDESeq2
+  - runLimmaDE
+  - runANOVA
+  - plotDEGViolin
+  - plotDEGRegression
+  - plotDEGHeatmap
+  - plotMASTThresholdGenes
+- title: "Find Marker"
+- contents:
+  - findMarkerDiffExp
+  - plotMarkerDiffExp
+- title: "Visualization"
+- contents:
+  - starts_with("plot")
+- title: "Exporting Results"
+- contents:
+  - starts_with("export")
+- title: "Other Data processing"
+- contents:
+  - combineSCE
+  - convertSCEToSeurat
+  - convertSeuratToSCE
+  - subsetSCECols
+  - subsetSCERows
+  - dedupRowNames
 navbar:
   title: "singleCellTK"
   left:
-    - text: "Introduction to singleCellTK"
-      href: articles/v01-Introduction_to_singleCellTK.html
-    - text: "Interactive Shiny Analysis"
+    - text: "General Workflow"
+      href: articles/articles/introduction_to_SCTK.html
+    - text: "Shell Command Line Analysis"
       menu:
-        - text: "1: Upload"
-          href: articles/v03-tab01_Upload.html
-        - text: "2: Data Summary and Filtering"
-          href: articles/v04-tab02_Data-Summary-and-Filtering.html
-        - text: "3: Visualization and Clustering"
-          href: articles/v05-tab03_Visualization-and-Clustering.html
-        - text: "4: Batch Correction"
-          href: articles/v06-tab04_Batch-Correction.html
-        - text: "5: Differential Expression"
-          href: articles/v07-tab05_Differential-Expression.html
-        - text: "6: Pathway Activity Analysis"
-          href: articles/v08-tab06_Pathway-Activity-Analysis.html
-        - text: "7: Sample Size"
-          href: articles/v09-tab07_Sample-Size.html
-    - text: "Command Line Analysis"
+        - text: "Import data into SCTK"
+          href: articles/articles/cmd_import_scRNAseq_data_as_SCE.html
+        - text: "Quality Control"
+          href: articles/articles/cmd_qc.html
+    - text: "R Console Analysis"
       menu:
-        - text: "Processing and Visualizing Data"
-          href: articles/v02-Processing_and_Visualizing_Data_in_the_SingleCellTK.html
-        - text: "Aligning and Quantifying scRNA-Seq Data"
-          href: articles/v10-Aligning_and_Quantifying_scRNA-Seq_Data.html
+        - text: "Import data into SCTK"
+          href: articles/articles/cnsl_import_scRNAseq_data_as_SCE.html
+        - text: "Quality Control"
+          href: articles/articles/cnsl_qc.html
+        - text: "Normalization"
+          href: articles/articles/cnsl_normalization.html
+        - text: "Batch Correction"
+          href: articles/articles/cnsl_batch_correction.html
+        - text: "Feature Selection"
+          href: articles/articles/cnsl_feature_selection.html
+        - text: "Dimensionality Reduction"
+          href: articles/articles/cnsl_dimensionality_reduction.html
+        - text: "Clustering"
+          href: articles/articles/cnsl_clustering.html
+        - text: "Differential Expression"
+          menu:
+            - text: "Differential Expression"
+              href: articles/articles/cnsl_differential_expression.html
+            - text: "Find Marker via DE"
+              href: articles/articles/cnsl_find_marker.html
+        - text: "Enrichment Analysis"
+          menu:
+            - text: "GSVA"
+              href: articles/articles/cnsl_gsva.html
+            - text: "EnrichR"
+              href: articles/articles/cnsl_enrichR.html
+        - text: "Visualization"
+          menu:
+            - text: "General Visualization"
+              href: articles/articles/cnsl_visualization.html
+            - text: "Heatmap Visualization"
+              href: articles/articles/cnsl_heatmap.html
+        - text: "Curated Workflows"
+          menu:
+            - text: "Seurat"
+              href: articles/articles/cnsl_seurat_curated_workflow.html
+            - text: "Celda"
+              href: articles/articles/cnsl_celda_curated_workflow.html
+    - text: "Shiny UI Analysis"
+      menu:
+        - text: "Data"
+          menu:
+            - text: "Import Data"
+              href: articles/articles/ui_import_data.html
+            - text: "Import Gene Sets"
+              href: articles/articles/ui_import_genesets.html
+            - text: "Annotation"
+              href: articles/articles/ui_import_annotation.html
+            - text: "Export Data"
+              href: articles/articles/ui_export_data.html
+            - text: "Delete Data"
+              href: articles/articles/ui_delete_data.html
+        - text: "QC & Filtering"
+          menu:
+            - text: "Quality Control"
+              href: articles/articles/ui_qc.html
+            - text: "Filtering"
+              href: articles/articles/ui_filtering.html
+        - text: "Normalization & Batch Correction"
+          menu:
+          - text: "Normalization"
+            href: articles/articles/ui_normalization.html
+          - text: "Batch Correction"
+            href: articles/articles/ui_batch_correction.html
+        - text: "Feature Selection & Dimensionality Reduction"
+          menu:
+          - text: "Feature Selection"
+            href: articles/articles/ui_feature_selection.html
+          - text: "Dimensionality Reduction"
+            href: articles/articles/ui_dimemsionality_reduction.html
+        - text: "Clustering"
+          href: articles/articles/ui_clustering.html
+        - text: "Differential Expression & Cell Type Labeling"
+          menu:
+            - text: "Differential Expression"
+              href: articles/articles/ui_differential_expression.html
+            - text: "Find Marker"
+              href: articles/articles/ui_find_marker.html
+        - text: "Curated Workflows"
+          menu:
+            - text: "Seurat"
+              href: articles/articles/ui_seurat_curated_workflow.html
+        - text: "Visualization"
+          menu:
+          - text: "cellViewer"
+            href: articles/articles/ui_cellViewer.html
+          - text: "Generic Heatmap"
+            href: articles/articles/ui_heatmap.html
     - text: "Reference"
       href: reference/index.html
   right:

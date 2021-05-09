@@ -7,7 +7,7 @@
 #' selected.variable features. Default \code{NULL}.
 #' @param reducedDimName a name to store the results of the dimension
 #' reductions. Default \code{"TSNE"}.
-#' @param n_iterations maximum iterations. Default \code{1000}.
+#' @param nIterations maximum iterations. Default \code{1000}.
 #' @param perplexity perplexity parameter. Default \code{NULL}.
 #' @param run_pca run tSNE on PCA components? Default \code{TRUE}.
 #' @param ntop Number of top features to use as a further variable feature
@@ -26,7 +26,7 @@
 #'                                reducedDimName = "TSNE_cpm")
 #' reducedDims(mouseBrainSubsetSCE)
 getTSNE <- function(inSCE, useAssay = "logcounts", useAltExp = NULL,
-                    reducedDimName = "TSNE", n_iterations = 1000,
+                    reducedDimName = "TSNE", nIterations = 1000,
                     perplexity = NULL, run_pca = TRUE, ntop = NULL){
   if (!inherits(inSCE, "SingleCellExperiment")){
     stop("Please use a SingleCellExperiment object")
@@ -64,7 +64,7 @@ getTSNE <- function(inSCE, useAssay = "logcounts", useAltExp = NULL,
   }
   tsneOut <- Rtsne::Rtsne(exprsToPlot, perplexity = perplexity,
                           initial_dims = max(50, ncol(inSCE)),
-                          max_iter = n_iterations, pca = run_pca)
+                          max_iter = nIterations, pca = run_pca)
   tsneOut <- tsneOut$Y[, c(1, 2)]
   rownames(tsneOut) <- colnames(inSCE)
   colnames(tsneOut) <- c("tSNE1", "tSNE2")

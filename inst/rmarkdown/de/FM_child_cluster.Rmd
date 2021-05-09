@@ -1,0 +1,11 @@
+
+### Cluster: `r {{i}}`
+
+```{r}
+table <- {{fmTable.cluster.top}}
+rownames(table) <- NULL
+datatable(table,
+          options = list(dom = "t",
+                         scrollX = TRUE))
+```
+
