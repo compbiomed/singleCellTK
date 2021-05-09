@@ -112,6 +112,7 @@ setClassUnion("CharacterOrNullOrMissing", c("character", "NULL", "missing"))
 #' @param tag Specify the tag to store against the input assay. Default is \code{NULL}, which will set the tag to "uncategorized".
 #' @param altExp A \code{logical} value indicating if the input assay is a \code{altExp} or a subset assay.
 #' @param value An input matrix-like value to store in the SCE object.
+#' @return A \code{SingleCellExperiment} object containing the newly stored data.
 #' @export
 setGeneric(name = "expData<-",
            function(inSCE, assayName, tag = NULL, altExp = FALSE, value)
@@ -127,6 +128,7 @@ setGeneric(name = "expData<-",
 #' @param tag Specify the tag to store against the input assay. Default is \code{NULL}, which will set the tag to "uncategorized".
 #' @param altExp A \code{logical} value indicating if the input assay is a \code{altExp} or a subset assay.
 #' @param value An input matrix-like value to store in the SCE object.
+#' @return A \code{SingleCellExperiment} object containing the newly stored data.
 #' @export
 setMethod(f = "expData<-",
           signature = signature(
@@ -173,6 +175,7 @@ setMethod(f = "expData<-",
 #' Get data item from an input \code{SingleCellExperiment} object. The data item can be an \code{assay}, \code{altExp} (subset) or a \code{reducedDim}, which is retrieved based on the name of the data item.
 #' @param inSCE Input \code{SingleCellExperiment} object.
 #' @param assayName Specify the name of the data item to retrieve.
+#' @return Specified data item.
 #' @export
 setGeneric(name = "expData",
            function(inSCE, assayName)
@@ -184,6 +187,7 @@ setGeneric(name = "expData",
 #' Get data item from an input \code{SingleCellExperiment} object. The data item can be an \code{assay}, \code{altExp} (subset) or a \code{reducedDim}, which is retrieved based on the name of the data item.
 #' @param inSCE Input \code{SingleCellExperiment} object.
 #' @param assayName Specify the name of the data item to retrieve.
+#' @return Specified data item.
 #' @export
 setMethod(f = "expData",
           signature = signature(inSCE = "ANY", assayName = "character"),

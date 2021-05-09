@@ -5,7 +5,7 @@
 #'  plots the heatmap using \code{ComplexHeatmap} and \code{cowplot} libraries.
 #' @param inSCE Input \code{SingleCellExperiment} object.
 #' @param useAssay The assay to use for heatmap computation.
-#' @param dims Specify the number of dimensions to use for heatmap.
+#' @param dims Specify the number of dimensions to use for heatmap. Default \code{10}.
 #' @param nfeatures Specify the number of features to use for heatmap. Default 
 #' is \code{30}.
 #' @param cells Specify the samples/cells to use for heatmap computation. 
@@ -28,7 +28,7 @@
 #' @export
 computeHeatmap <- function(inSCE,
                         useAssay,
-                        dims = 1:dims,
+                        dims = 10,
                         nfeatures = 30,
                         cells = NULL,
                         reduction = 'pca',
@@ -121,7 +121,7 @@ computeHeatmap <- function(inSCE,
   
   features.keyed <- .convertToHyphen(features.keyed)
   
-  for (i in 1:length(x = dims)){
+  for (i in seq_len(length(dims))){
     features[[i]] <- .convertToHyphen(features[[i]])
   }
   
@@ -138,7 +138,7 @@ computeHeatmap <- function(inSCE,
   data.limits <- c(min(data.all), max(data.all))
   
   #draw heatmap for each dim
-  for (i in 1:length(x = dims)) {
+  for (i in seq_len(length(dims))) {
     dim.features <- c(features[[i]][[2]], rev(x = features[[i]][[1]]))
     dim.features <- rev(x = unlist(x = lapply(
       X = dim.features,
