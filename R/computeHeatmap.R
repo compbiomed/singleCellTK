@@ -117,33 +117,12 @@ computeHeatmap <- function(inSCE,
   Seurat::DefaultAssay(object = object) <- assays
   
   #convert (_) to (-) as required by FetchData function below
-  cells <- lapply(
-    X = cells, 
-    FUN = function(t) gsub(
-      pattern = "_", 
-      replacement = "-", 
-      x = t, 
-      fixed = TRUE)
-    )
+  cells <- .convertToHyphen(cells)
   
-  features.keyed <- lapply(
-    X = features.keyed, 
-    FUN = function(t) gsub(
-      pattern = "_", 
-      replacement = "-", 
-      x = t, 
-      fixed = TRUE)
-  )
+  features.keyed <- .convertToHyphen(features.keyed)
   
   for (i in 1:length(x = dims)){
-    features[[i]] <- lapply(
-      X = features[[i]], 
-      FUN = function(t) gsub(
-        pattern = "_", 
-        replacement = "-", 
-        x = t, 
-        fixed = TRUE)
-    )
+    features[[i]] <- .convertToHyphen(features[[i]])
   }
   
   #get assay data with only selected features (all dims) and selected cells (all)

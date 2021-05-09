@@ -236,14 +236,7 @@ seuratComputeJackStraw <- function(inSCE, useAssay, dims = NULL, numReplicate = 
   seuratObject <- convertSCEToSeurat(inSCE, scaledAssay = useAssay)
   if(!is.null(externalReduction)){
     #convert (_) to (-) as required by Seurat
-    rownames(externalReduction@cell.embeddings) <- lapply(
-      X = rownames(externalReduction@cell.embeddings), 
-      FUN = function(t) gsub(
-        pattern = "_", 
-        replacement = "-", 
-        x = t, 
-        fixed = TRUE)
-    )
+    rownames(externalReduction@cell.embeddings) <- .convertToHyphen(rownames(externalReduction@cell.embeddings))
     seuratObject <- Seurat::FindVariableFeatures(seuratObject)
     seuratObject <- Seurat::ScaleData(seuratObject)
     seuratObject@reductions <- list(pca = externalReduction)
@@ -1037,22 +1030,8 @@ seuratFindMarkers <- function(
   if(is.null(allGroup)
      && (!is.null(group1) && !is.null(group2))){
     #convert (_) to (-) as required by Seurat
-    cells1 <- lapply(
-      X = cells1, 
-      FUN = function(t) gsub(
-        pattern = "_", 
-        replacement = "-", 
-        x = t, 
-        fixed = TRUE)
-    )
-    cells2 <- lapply(
-      X = cells2, 
-      FUN = function(t) gsub(
-        pattern = "_", 
-        replacement = "-", 
-        x = t, 
-        fixed = TRUE)
-    )
+    cells1 <- .convertToHyphen(cells1)
+    cells2 <- .convertToHyphen(cells2)
     Seurat::Idents(seuratObject, cells = cells1) <- group1
     Seurat::Idents(seuratObject, cells = cells2) <- group2
     markerGenes <- NULL
@@ -1157,14 +1136,7 @@ seuratGenePlot <- function(inSCE,
   for(i in seq(length(groups))){
     indices[[i]] <- which(colData(inSCE)[[groupVariable]] == groups[i], arr.ind = TRUE)
     cells[[i]] <- colnames(inSCE)[indices[[i]]]
-    cells[[i]] <- lapply(
-      X = cells[[i]], 
-      FUN = function(t) gsub(
-        pattern = "_", 
-        replacement = "-", 
-        x = t, 
-        fixed = TRUE)
-    )
+    cells[[i]] <- .convertToHyphen(cells[[i]])
     Seurat::Idents(seuratObject, cells = cells[[i]]) <- groups[i]
   }
   
