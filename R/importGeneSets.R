@@ -218,7 +218,7 @@ importGeneSetsFromCollection <- function(inSCE, geneSetCollection,
 
   # If 'by' is NULL, then the location will be derived from the description
   if(is.null(by)) {
-    location <- unlist(lapply(1:length(geneSetCollection),
+    location <- unlist(lapply(seq_len(length(geneSetCollection)),
                    function(i) GSEABase::description(geneSetCollection[[i]])))
   } else {
     if(length(by) != 1 & length(by) != length(geneSetCollection)) {

@@ -10,7 +10,7 @@ runDoubletFinder(
   sample = NULL,
   seed = 12345,
   seuratNfeatures = 2000,
-  seuratPcs = 1:15,
+  seuratPcs = seq(15),
   seuratRes = 1.5,
   formationRate = 0.075,
   nCores = NULL,

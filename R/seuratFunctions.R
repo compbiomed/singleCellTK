@@ -255,7 +255,7 @@ seuratComputeJackStraw <- function(inSCE, useAssay, dims = NULL, numReplicate = 
     dims <- ncol(seuratObject@reductions[["pca"]])
   }
   seuratObject <- Seurat::JackStraw(seuratObject, dims = as.double(dims), num.replicate = numReplicate, prop.freq = propFreq)
-  seuratObject <- Seurat::ScoreJackStraw(seuratObject, dims = 1:dims)
+  seuratObject <- Seurat::ScoreJackStraw(seuratObject, dims = seq(dims))
   inSCE <- .addSeuratToMetaDataSCE(inSCE, seuratObject)
   return(inSCE)
 }
@@ -290,7 +290,7 @@ seuratJackStrawPlot <- function(inSCE, dims = NULL, xmax = 0.1, ymax = 0.3, exte
   if(is.null(dims)) {
     dims <- ncol(seuratObject@reductions[["pca"]])
   }
-  return(Seurat::JackStrawPlot(seuratObject, dims = 1:dims, xmax = xmax, ymax = ymax))
+  return(Seurat::JackStrawPlot(seuratObject, dims = seq(dims), xmax = xmax, ymax = ymax))
 }
 
 #' seuratPlotHVG
@@ -317,7 +317,7 @@ seuratPlotHVG <- function(inSCE, labelPoints = 0) {
   if(labelPoints > 0){
     plot <- Seurat::LabelPoints(plot, 
                         points = Seurat::VariableFeatures(
-                          object = seuratObject)[1:labelPoints])
+                          object = seuratObject)[seq(labelPoints)])
   }
   return(plot)
 }
@@ -463,7 +463,7 @@ seuratFindClusters <- function(
 seuratRunTSNE <- function(inSCE, useReduction = c("pca", "ica"), reducedDimName = "seuratTSNE", dims = 10, perplexity = 30) {
   useReduction <- match.arg(useReduction)
   seuratObject <- convertSCEToSeurat(inSCE)
-  seuratObject <- Seurat::RunTSNE(seuratObject, reduction = useReduction, dims = 1:dims, perplexity = perplexity)
+  seuratObject <- Seurat::RunTSNE(seuratObject, reduction = useReduction, dims = seq(dims), perplexity = perplexity)
   inSCE <- .addSeuratToMetaDataSCE(inSCE, seuratObject)
   temp <- seuratObject@reductions$tsne@cell.embeddings
   rownames(temp) <- colnames(inSCE)
@@ -501,7 +501,7 @@ seuratRunUMAP <- function(inSCE, useReduction = c("pca", "ica"), reducedDimName 
   seuratObject <- convertSCEToSeurat(inSCE)
   seuratObject <- Seurat::RunUMAP(seuratObject,
                                   reduction = useReduction,
-                                  dims = 1:dims,
+                                  dims = seq(dims),
                                   min.dist = minDist,
                                   n.neighbors = nNeighbors,
                                   spread = spread,
@@ -523,7 +523,7 @@ seuratRunUMAP <- function(inSCE, useReduction = c("pca", "ica"), reducedDimName 
 .seuratGetVariableFeatures <- function(inSCE, numberOfFeatures) {
   seuratObject <- convertSCEToSeurat(inSCE)
   if (length(seuratObject@assays$RNA@var.features) > 0) {
-    return(seuratObject@assays$RNA@var.features[1:numberOfFeatures])
+    return(seuratObject@assays$RNA@var.features[seq(numberOfFeatures)])
   }
 }
 
@@ -574,7 +574,7 @@ seuratElbowPlot <- function(inSCE,
     hoverText <- paste("Dimension:", plot$data$dims, "\nStandard Deviation:", round(plot$data$stdev, 1), "\nIs Significant?", plot$data$Significant)
     significant <- plot$data$Significant
     if(length(unique(significant))>1){
-      plot <- plotly::style(plot, text = hoverText[1:which(significant == "No")[1]-1])
+      plot <- plotly::style(plot, text = hoverText[seq(which(significant == "No")[1])-1])
       plot <- plotly::style(plot, text = hoverText[which(significant == "No")[1]:length(significant)], traces = 1) 
     }
     else{
@@ -635,7 +635,7 @@ seuratComputeHeatmap <- function(inSCE,
     dims <- ncol(seuratObject@reductions[[useReduction]])
   }
   return(Seurat::DimHeatmap(seuratObject, 
-                            dims = 1:dims, 
+                            dims = seq(dims), 
                             nfeatures = nfeatures, 
                             cells = cells,
                             reduction = useReduction,
@@ -850,7 +850,7 @@ convertSCEToSeurat <- function(inSCE, countsAssay = NULL, normAssay = NULL,
   if (length(SingleCellExperiment::reducedDims(inSCE)) > 0 && copyReducedDim) {
     for (redc in SingleCellExperiment::reducedDimNames(inSCE)) {
       reDim <- SingleCellExperiment::reducedDim(inSCE, redc)
-      colnames(reDim) <- paste0(redc, "_", 1:length(colnames(reDim)))
+      colnames(reDim) <- paste0(redc, "_", seq_len(length(colnames(reDim))))
       rownames(reDim) <- gsub('_', '-', rownames(reDim))
       key <-  gsub('_', '', redc)
       seuratObject@reductions[[redc]] <- Seurat::CreateDimReducObject(embeddings = reDim,
@@ -977,8 +977,8 @@ seuratIntegration <- function(inSCE, useAssay = "counts", batch, newAssayName = 
   seurat.list <- seurat.list[c(unique(seuratObject@meta.data[[batch]]))]
   
   #find anchors
-  seurat.anchors <- Seurat::FindIntegrationAnchors(object.list = seurat.list, dims = 1:ndims, k.anchor = kAnchor, k.filter = kFilter)
-  seurat.integrated <- Seurat::IntegrateData(anchorset = seurat.anchors, dims = 1:ndims, k.weight = kWeight)
+  seurat.anchors <- Seurat::FindIntegrationAnchors(object.list = seurat.list, dims = seq(ndims), k.anchor = kAnchor, k.filter = kFilter)
+  seurat.integrated <- Seurat::IntegrateData(anchorset = seurat.anchors, dims = seq(ndims), k.weight = kWeight)
   
   #store results back in altExp slot of sce object
   altExp(inSCE, newAssayName) <- SingleCellExperiment(list(counts = Seurat::GetAssayData(seurat.integrated@assays$integrated, "data")))
@@ -1234,7 +1234,7 @@ seuratGenePlot <- function(inSCE,
     )
   )
   markers.conserved <- list()
-  for (i in 1:length(x = marker.test)) {
+  for (i in seq_len(length(x = marker.test))) {
     markers.conserved[[i]] <- marker.test[[i]][genes.conserved, ]
     colnames(x = markers.conserved[[i]]) <- paste(
       names(x = marker.test)[i],

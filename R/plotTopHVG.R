@@ -49,13 +49,13 @@ plotTopHVG <- function(inSCE,
   }
   vfplot <- ggplot2::ggplot() +
     ggplot2::geom_point(ggplot2::aes(x = x, y = y)) +
-    ggplot2::geom_point(ggplot2::aes(x = subset(x, rownames(inSCE) %in% hvgList[1:n]),
-                   y = subset(y, rownames(inSCE) %in% hvgList[1:n])),
+    ggplot2::geom_point(ggplot2::aes(x = subset(x, rownames(inSCE) %in% hvgList[seq(n)]),
+                   y = subset(y, rownames(inSCE) %in% hvgList[seq(n)])),
                colour = "red") +
-    ggplot2::geom_label(ggplot2::aes(x = subset(x, rownames(inSCE) %in% hvgList[1:labelsCount]),
-                   y = subset(y, rownames(inSCE) %in% hvgList[1:labelsCount]),
+    ggplot2::geom_label(ggplot2::aes(x = subset(x, rownames(inSCE) %in% hvgList[seq(labelsCount)]),
+                   y = subset(y, rownames(inSCE) %in% hvgList[seq(labelsCount)]),
                    label = subset(rownames(inSCE),
-                                  rownames(inSCE) %in% hvgList[1:labelsCount])),
+                                  rownames(inSCE) %in% hvgList[seq(labelsCount)])),
                colour = "red",
                size = 2) +
     ggplot2::labs(x = "Mean", y = labeling)
