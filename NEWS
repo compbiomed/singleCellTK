@@ -1,3 +1,13 @@
+Changes in Version 2.0.3 (2021-xx-xx)
+
+*
+
+Changes in Version 2.0.2 (2021-05-08)
+
+* Added missing documentation
+* Added wrapper functions for normalization, dimensionality reduction and feature selection
+* Added function seuratReport() to generate a seurat report from input SCE object
+
 Changes in Version 2.0.1 (2021-01-07)
 
 * Added cell type labeling functional, wrapping SingleR method

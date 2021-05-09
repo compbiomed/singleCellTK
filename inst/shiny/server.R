@@ -2494,7 +2494,7 @@ shinyServer(function(input, output, session) {
         key = "PC_")
     }
 
-    removeTab(inputId = "dimRedPCAICA_plotTabset", target = "PCA Plot")
+    removeTab(inputId = "dimRedPCAICA_plotTabset", target = "Component Plot")
     removeTab(inputId = "dimRedPCAICA_plotTabset", target = "Elbow Plot")
     removeTab(inputId = "dimRedPCAICA_plotTabset", target = "Heatmap Plot")
     removeTab(inputId = "dimRedPCAICA_plotTabset", target = "JackStraw Plot")
