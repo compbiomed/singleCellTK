@@ -39,7 +39,7 @@
   if (isTRUE(combineRow) & (!is.null(row))) {
     missRow <- row[!row %in% rownames(x)]
     missMat <- Matrix::Matrix(fill, nrow = length(missRow), ncol = ncol(matOrigin),
-                            dimnames = list(missRow, colnames(matOrigin)))
+                              dimnames = list(missRow, colnames(matOrigin)))
     if (!isTRUE(sparse)) {
       missMat <- as.matrix(missMat)
     }
@@ -55,7 +55,7 @@
   if (isTRUE(combineCol) & (!is.null(col))) {
     missCol <- col[!col %in% colnames(x)]
     missMat <- Matrix::Matrix(fill, nrow = nrow(matOrigin), ncol = length(missCol),
-                            dimnames = list(rownames(matOrigin), missCol))
+                              dimnames = list(rownames(matOrigin), missCol))
     if (!isTRUE(sparse)) {
       missMat <- as.matrix(missMat)
     }
