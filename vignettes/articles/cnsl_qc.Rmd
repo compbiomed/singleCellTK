@@ -213,7 +213,7 @@ We will use a filtered form of the PBMC 3K and 6K dataset from the package [TENx
 pbmc3k <- importExampleData(dataset = "pbmc3k")
 pbmc6k <- importExampleData(dataset = "pbmc6k")
 
-pbmc.combined <- BiocGenerics::cbind(pbmc3k, pbmc6k)
+pbmc.combined <- cbind(pbmc3k, pbmc6k)
 
 sample.vector = colData(pbmc.combined)$sample
 ```

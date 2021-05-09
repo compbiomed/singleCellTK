@@ -11,6 +11,7 @@
 #' @return A \code{SingleCellExperiment} object containing the count
 #'  matrix, the feature annotations, and the cell annotation
 #'  (which includes QC metrics stored in 'featureDump.txt').
+#' @import fishpond
 #' @export
 
 importAlevin <- function(
