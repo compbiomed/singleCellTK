@@ -24,8 +24,10 @@ A brief summary of the two tabs is described below:
 #### Implemented Algorithms from Packages:
 |Method|Packages|Reference|
 |---|---|---| 
-| tSNE | ?  | ? |
-| UMAP | ?  | ? |
+| tSNE | Rtsne  | [L.J.P. van der Maaten and G.E. Hinton. Visualizing High-Dimensional Data Using t-SNE. Journal of Machine Learning Research
+  9(Nov):2579-2605, 2008.](http://jmlr.org/papers/v9/vandermaaten08a.html), [L.J.P. van der Maaten. Accelerating t-SNE using Tree-Based Algorithms. Journal of Machine Learning Research 15(Oct):3221-3245, 2014.](http://jmlr.org/papers/v15/vandermaaten14a.html) and [Jesse H. Krijthe (2015). Rtsne: T-Distributed Stochastic Neighbor Embedding using a Barnes-Hut Implementation](https://github.com/jkrijthe/Rtsne) |
+| UMAP | uwot  | [James Melville (2020). uwot: The Uniform Manifold Approximation and Projection (UMAP) Method for Dimensionality Reduction. R
+  package version 0.1.8.](https://CRAN.R-project.org/package=uwot)|
 | tSNE | Seurat | [Butler et al., Nature Biotechnology 2018](https://www.nature.com/articles/nbt.4096) & [Stuart*, Butler*, et al., Cell 2019](https://www.cell.com/cell/fulltext/S0092-8674(19)30559-8) |
 | UMAP | Seurat | [Butler et al., Nature Biotechnology 2018](https://www.nature.com/articles/nbt.4096) & [Stuart*, Butler*, et al., Cell 2019](https://www.cell.com/cell/fulltext/S0092-8674(19)30559-8) |
 
