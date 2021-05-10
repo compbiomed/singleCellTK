@@ -5,7 +5,7 @@
 #'  plots the heatmap using \code{ComplexHeatmap} and \code{cowplot} libraries.
 #' @param inSCE Input \code{SingleCellExperiment} object.
 #' @param useAssay The assay to use for heatmap computation.
-#' @param dims Specify the number of dimensions to use for heatmap.
+#' @param dims Specify the number of dimensions to use for heatmap. Default \code{10}.
 #' @param nfeatures Specify the number of features to use for heatmap. Default 
 #' is \code{30}.
 #' @param cells Specify the samples/cells to use for heatmap computation. 
@@ -28,7 +28,7 @@
 #' @export
 computeHeatmap <- function(inSCE,
                         useAssay,
-                        dims = 1:dims,
+                        dims = 10,
                         nfeatures = 30,
                         cells = NULL,
                         reduction = 'pca',
@@ -117,31 +117,28 @@ computeHeatmap <- function(inSCE,
   Seurat::DefaultAssay(object = object) <- assays
   
   #convert (_) to (-) as required by FetchData function below
-  cells <- lapply(
-    X = cells, 
-    FUN = function(t) gsub(
-      pattern = "_", 
-      replacement = "-", 
-      x = t, 
-      fixed = TRUE)
-    )
+  cells <- .convertToHyphen(cells)
+  
+  features.keyed <- .convertToHyphen(features.keyed)
+  
+  for (i in seq_len(length(dims))){
+    features[[i]] <- .convertToHyphen(features[[i]])
+  }
   
   #get assay data with only selected features (all dims) and selected cells (all)
   data.all <- Seurat::FetchData(
     object = object,
-    vars = features.keyed,
+    vars = unique(x = unlist(x = features.keyed)),
     cells = unique(x = unlist(x = cells)),
     slot = slot
   )
-  
-  #
   
   #clip off values for heatmap
   data.all <- Seurat::MinMax(data = data.all, min = disp.min, max = disp.max)
   data.limits <- c(min(data.all), max(data.all))
   
   #draw heatmap for each dim
-  for (i in 1:length(x = dims)) {
+  for (i in seq_len(length(dims))) {
     dim.features <- c(features[[i]][[2]], rev(x = features[[i]][[1]]))
     dim.features <- rev(x = unlist(x = lapply(
       X = dim.features,
