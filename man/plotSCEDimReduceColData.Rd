@@ -14,8 +14,9 @@ plotSCEDimReduceColData(
   shape = NULL,
   xlab = NULL,
   ylab = NULL,
-  axisSize = 10,
-  axisLabelSize = 10,
+  baseSize = 12,
+  axisSize = NULL,
+  axisLabelSize = NULL,
   dim1 = NULL,
   dim2 = NULL,
   bin = NULL,
@@ -31,8 +32,8 @@ plotSCEDimReduceColData(
   titleSize = 15,
   labelClusters = TRUE,
   legendTitle = NULL,
-  legendTitleSize = 12,
-  legendSize = 10,
+  legendTitleSize = NULL,
+  legendSize = NULL,
   combinePlot = "none",
   plotLabels = NULL
 )

@@ -173,20 +173,20 @@ if (!skipCellData) {
 # {.unlisted .unnumbered .toc-ignore .tabset .tabset-fade}
 ```{r "plotsQCMetrics-plot", results="asis", eval=(!skipCellData), fig.align="center", warning=FALSE, message=FALSE, echo=FALSE}
 cat("\n")
-cat(paste0('## Sum {.tabset .tabset-fade} \n\n'))
+cat(paste0('## Total Counts {.tabset .tabset-fade} \n\n'))
 plotsQCMetrics$Violin$Sum
 cat("\n\n")
-cat(paste0('## Total {.tabset .tabset-fade} \n\n'))
+cat(paste0('## Total Features {.tabset .tabset-fade} \n\n'))
 plotsQCMetrics$Violin$Detected
 cat("\n\n")
-cat(paste0('## Subsets mito sum {.tabset .tabset-fade} \n\n'))
+cat(paste0('## Total Mitochondrial Counts {.tabset .tabset-fade} \n\n'))
 plotsQCMetrics$Violin$Gene_Subset_Sum
 cat("\n\n")
-cat(paste0('## Subsets mito detected {.tabset .tabset-fade} \n\n'))
+cat(paste0('## Total Mitochondrial Features {.tabset .tabset-fade} \n\n'))
 plotsQCMetrics$Violin$Gene_Subset_Features
 cat("\n\n")
-cat(paste0('## Subsets mito percent {.tabset .tabset-fade} \n\n'))
-plotsQCMetrics$Violin$Gene_Subset_Top50_Percent
+cat(paste0('## % of Library Size Occupied by Top 50 Exp. Genes {.tabset .tabset-fade} \n\n'))
+plotsQCMetrics$Violin$TopPercent
 cat("\n\n")
 cat(paste0('## Parameters {.tabset .tabset-fade} \n\n'))
 

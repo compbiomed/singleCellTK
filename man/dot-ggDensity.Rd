@@ -9,11 +9,13 @@
   groupBy = NULL,
   xlab = NULL,
   ylab = NULL,
-  axisSize = 10,
-  axisLabelSize = 10,
+  baseSize = 12,
+  axisSize = NULL,
+  axisLabelSize = NULL,
   defaultTheme = TRUE,
   title = NULL,
-  titleSize = 18,
+  titleSize = NULL,
+  combinePlot = "none",
   cutoff = NULL
 )
 }
