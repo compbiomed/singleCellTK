@@ -2339,6 +2339,10 @@ plotScdsHybridResults <- function(inSCE,
 #' @param axisLabelSize Size of x/y-axis labels. Default 18.
 #' @param legendSize size of legend. Default 15.
 #' @param legendTitleSize size of legend title. Default 16.
+#' @param labelClusters Logical. Whether the cluster labels are plotted.
+#'  Default FALSE.
+#' @param clusterLabelSize Numeric. Determines the size of cluster label
+#'  when `labelClusters` is set to TRUE. Default 3.5.
 #' @param combinePlot Must be either "all", "sample", or "none". "all" will combine all plots into a single .ggplot object,
 #' while "sample" will output a list of plots separated by sample. Default "all".
 #' @param relHeights Relative heights of plots when combine is set.
@@ -2391,6 +2395,8 @@ plotDecontXResults <- function(inSCE,
                                plotNCols = NULL,
                                plotNRows = NULL,
                                labelSamples = TRUE,
+                               labelClusters = TRUE,
+                               clusterLabelSize = 3.5,
                                samplePerColumn = TRUE,
                                sampleRelHeights = 1,
                                sampleRelWidths = 1) {
@@ -2445,6 +2451,7 @@ plotDecontXResults <- function(inSCE,
     }
     if(combinePlot == "sample" | combinePlot == "all"){
       baseSize = baseSize * 0.5
+      clusterLabelSize <- clusterLabelSize * 0.5
     }
     densityContamination <- list(density_decontXContamination = plotSCEDensityColData(
         inSCE=inSCESub,
@@ -2530,6 +2537,7 @@ plotDecontXResults <- function(inSCE,
     if(labelSamples && length(samples) > 1){
       title = paste0(title, ", ", x)
     }
+
     scatterCluster <- list(scatter_decontXClusters = plotSCEDimReduceColData(
         inSCE=inSCESub,
         sample=sampleSub,
@@ -2551,7 +2559,8 @@ plotDecontXResults <- function(inSCE,
         defaultTheme=defaultTheme,
         title=title,
         titleSize=titleSize,
-        labelClusters=TRUE,
+        labelClusters=labelClusters,
+        clusterLabelSize = clusterLabelSize,
         legendTitle="Clusters",
         legendSize=legendSizeScatterCluster,
         legendTitleSize=legendTitleSize,

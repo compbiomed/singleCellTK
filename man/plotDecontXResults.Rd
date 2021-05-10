@@ -36,6 +36,8 @@ plotDecontXResults(
   plotNCols = NULL,
   plotNRows = NULL,
   labelSamples = TRUE,
+  labelClusters = TRUE,
+  clusterLabelSize = 3.5,
   samplePerColumn = TRUE,
   sampleRelHeights = 1,
   sampleRelWidths = 1
@@ -113,6 +115,12 @@ when TRUE. Default TRUE.}
 \item{plotNRows}{Number of rows when plots are combined in a grid.}
 
 \item{labelSamples}{Will label sample name in title of plot if TRUE. Default TRUE.}
+
+\item{labelClusters}{Logical. Whether the cluster labels are plotted.
+Default FALSE.}
+
+\item{clusterLabelSize}{Numeric. Determines the size of cluster label
+when `labelClusters` is set to TRUE. Default 3.5.}
 
 \item{samplePerColumn}{If TRUE, when there are multiple samples and combining by "all",
 the output .ggplot will have plots from each sample on a single column. Default TRUE.}

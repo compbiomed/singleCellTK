@@ -13,6 +13,7 @@
   shape = NULL,
   conditionClass = NULL,
   labelClusters = FALSE,
+  clusterLabelSize = 3.5,
   xlab = NULL,
   ylab = NULL,
   baseSize = 12,
@@ -59,6 +60,9 @@ class. Default NULL.}
 
 \item{labelClusters}{Logical. Whether the cluster labels are plotted.
 Default FALSE.}
+
+\item{clusterLabelSize}{Numeric. Determines the size of cluster label
+when `labelClusters` is set to TRUE. Default 3.5.}
 
 \item{xlab}{Character vector. Label for x-axis. Default NULL.}
 

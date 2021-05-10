@@ -31,6 +31,7 @@ plotSCEDimReduceColData(
   title = NULL,
   titleSize = 15,
   labelClusters = TRUE,
+  clusterLabelSize = 3.5,
   legendTitle = NULL,
   legendTitleSize = NULL,
   legendSize = NULL,
@@ -108,6 +109,9 @@ Default 'blue'.}
 \item{titleSize}{Size of title of plot. Default 15.}
 
 \item{labelClusters}{Logical. Whether the cluster labels are plotted.}
+
+\item{clusterLabelSize}{Numeric. Determines the size of cluster label
+when `labelClusters` is set to TRUE. Default 3.5.}
 
 \item{legendTitle}{title of legend. Default NULL.}
 

@@ -46,6 +46,8 @@
 #' @param titleSize Size of title of plot. Default 15.
 #' @param labelClusters Logical. Whether the cluster labels are plotted.
 #'  Default FALSE.
+#' @param clusterLabelSize Numeric. Determines the size of cluster label
+#'  when `labelClusters` is set to TRUE. Default 3.5.
 #' @param legendTitle title of legend. Default NULL.
 #' @param legendTitleSize size of legend title. Default 12.
 #' @param legendSize size of legend. Default 10.
@@ -62,6 +64,7 @@
                        shape = NULL,
                        conditionClass = NULL,
                        labelClusters = FALSE,
+                       clusterLabelSize = 3.5,
                        xlab = NULL,
                        ylab = NULL,
                        baseSize = 12,
@@ -263,7 +266,8 @@
           data = centroid,
           mapping = ggplot2::aes_string(label = "color"),
           show.legend = FALSE,
-          color = "black"
+          color = "black",
+          size = clusterLabelSize
         )
     }
     return(g)
@@ -340,6 +344,8 @@
 #' @param title Title of plot. Default NULL.
 #' @param titleSize Size of title of plot. Default 15.
 #' @param labelClusters Logical. Whether the cluster labels are plotted.
+#' @param clusterLabelSize Numeric. Determines the size of cluster label
+#'  when `labelClusters` is set to TRUE. Default 3.5.
 #' @param legendTitle title of legend. Default NULL.
 #' @param legendTitleSize size of legend title. Default 12.
 #' @param legendSize size of legend. Default 10.
@@ -390,6 +396,7 @@ plotSCEDimReduceColData <- function(inSCE,
                                     title = NULL,
                                     titleSize = 15,
                                     labelClusters = TRUE,
+                                    clusterLabelSize = 3.5,
                                     legendTitle = NULL,
                                     legendTitleSize = NULL,
                                     legendSize = NULL,
@@ -426,6 +433,7 @@ plotSCEDimReduceColData <- function(inSCE,
     title = title,
     titleSize = titleSize,
     labelClusters = labelClusters,
+    clusterLabelSize = clusterLabelSize,
     legendTitle = legendTitle,
     legendTitleSize = legendTitleSize,
     legendSize = legendSize,
