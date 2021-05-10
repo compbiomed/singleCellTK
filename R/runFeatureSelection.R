@@ -5,9 +5,10 @@
 #'
 #' @param inSCE Input \code{SingleCellExperiment} object.
 #' @param useAssay Specify the name of the assay that should be used.
+#'  A normalized assay is recommended for use with this function.
 #' @param hvgMethod Specify the method to use for variable gene selection.
 #'  Options include `vst`, `mean.var.plot` or `dispersion` from Seurat
-#'  and `modelGeneVar` from Scran.
+#'  and `modelGeneVar` from Scran. Default is \code{"vst"}.
 #' @return A \code{SingleCellExperiment} object that contains the computed
 #'  statistics in the \code{rowData} slot of the output object. This function 
 #'  does not return the names of the variable features but only computes the 
@@ -17,8 +18,14 @@
 #' @export
 runFeatureSelection <- function(inSCE,
                                 useAssay,
-                                hvgMethod
+                                hvgMethod = c("vst", "mean.var.plot", 
+                                              "dispersion", "modelGeneVar")
                                 ){
+  
+  if(missing(hvgMethod)
+     || is.null(hvgMethod)){
+    hvgMethod <- "vst"
+  }
   
   seuratMethods <- c("vst", "mean.var.plot", "dispersion")
   scranMethods <- c("modelGeneVar")
