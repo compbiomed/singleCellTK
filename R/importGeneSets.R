@@ -543,6 +543,8 @@ sctkListGeneSetCollections <- function(inSCE) {
 #' @author Joshua D. Campbell
 #' @seealso \link{importGeneSetsFromMSigDB} for importing MSigDB gene sets.
 #' @export
+#' @examples
+#' getMSigDBTable()
 getMSigDBTable <- function() {
   # Issues for getting this to pass R CMD Check:
   # https://support.bioconductor.org/p/24756/#24768

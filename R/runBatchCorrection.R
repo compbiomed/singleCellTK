@@ -24,8 +24,10 @@
 #' @examples
 #' \dontrun{
 #' data('sceBatches', package = 'singleCellTK')
-#' sceBatches <- scaterlogNormCounts(sceBatches)
-#' sceCorr <- runBBKNN(sceBatches, useAssay = "ScaterLogNormCounts")
+#' logcounts(sceBatches) <- log(counts(sceBatches) + 1)
+#' sceBatches.small <- sample(sceBatches, 20)
+#' sceCorr <- runBBKNN(sceBatches.small, useAssay = "logcounts",
+#'                     nComponents = 10)
 #' }
 runBBKNN <-function(inSCE, useAssay = 'logcounts', batch = 'batch',
                     reducedDimName = 'BBKNN', nComponents = 50L){
@@ -105,17 +107,18 @@ runBBKNN <-function(inSCE, useAssay = 'logcounts', batch = 'batch',
 #' \code{assay(inSCE, assayName)} updated.
 #' @examples
 #' data('sceBatches', package = 'singleCellTK')
+#' sceBatches <- sample(sceBatches, 40)
 #' # Cell type known
 #' sceBatches <- runComBatSeq(sceBatches, "counts", "batch",
 #'                            covariates = "cell_type",
 #'                            assayName = "ComBat_cell_seq")
 #' # Cell type unknown but balanced
-#' sceBatches <- runComBatSeq(sceBatches, "counts", "batch",
-#'                            assayName = "ComBat_seq")
+#' #sceBatches <- runComBatSeq(sceBatches, "counts", "batch",
+#' #                           assayName = "ComBat_seq")
 #' # Cell type unknown and unbalanced
-#' sceBatches <- runComBatSeq(sceBatches, "counts", "batch",
-#'                            useSVA = TRUE,
-#'                            assayName = "ComBat_sva_seq")
+#' #sceBatches <- runComBatSeq(sceBatches, "counts", "batch",
+#' #                           useSVA = TRUE,
+#' #                           assayName = "ComBat_sva_seq")
 #' @export
 runComBatSeq <- function(inSCE, useAssay = "counts", batch = 'batch',
                          covariates = NULL, bioCond = NULL, useSVA = FALSE,

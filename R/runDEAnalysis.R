@@ -201,7 +201,7 @@ runDEAnalysis <- function(method = c('MAST', 'DESeq2', 'Limma', 'ANOVA',
 #' data(scExample, package = "singleCellTK")
 #' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 #' sce <- runDESeq2(inSCE = sce, groupName1 = "Sample1",
-#'  groupName2 = "Sample2", index1 = seq(20), index2 = seq(21,40),
+#'  groupName2 = "Sample2", index1 = seq(5), index2 = seq(6,10),
 #'  analysisName = "DESeq2")
 #' @return The input \linkS4class{SingleCellExperiment} object with
 #' \code{metadata(inSCE)$DESeq2} updated with the results: a list named by
@@ -621,9 +621,9 @@ runANOVA <- function(inSCE, useAssay = 'logcounts', index1 = NULL,
 #' @examples
 #' data(scExample, package = "singleCellTK")
 #' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
-#' sce <- scaterlogNormCounts(sce, assayName = "logcounts")
+#' sce <- scaterlogNormCounts(sce[,seq(20)], assayName = "logcounts")
 #' sce <- runMAST(inSCE = sce, groupName1 = "Sample1",
-#'  groupName2 = "Sample2", index1 = seq(20), index2 = seq(21,40),
+#'  groupName2 = "Sample2", index1 = seq(10), index2 = seq(11,20),
 #'  analysisName = "MAST")
 #' @return The input \linkS4class{SingleCellExperiment} object with
 #' \code{metadata(inSCE)$diffExp} updated with the results: a list named by

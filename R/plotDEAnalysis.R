@@ -52,6 +52,14 @@
 #' to see if the counts are logged. Default \code{TRUE}
 #' @return A ggplot object of violin plot
 #' @export
+#' @examples
+#' data("sceBatches")
+#' logcounts(sceBatches) <- log(counts(sceBatches) + 1)
+#' sce.w <- subsetSCECols(sceBatches, colData = "batch == 'w'")
+#' sce.w <- runWilcox(sce.w, class = "cell_type", classGroup1 = "alpha",
+#'                    groupName1 = "w.alpha", groupName2 = "w.beta",
+#'                    analysisName = "w.aVSb")
+#' plotDEGViolin(sce.w, "w.aVSb")
 plotDEGViolin <- function(inSCE, useResult, threshP = FALSE, labelBy = NULL,
                           nrow = 6, ncol = 6, defaultTheme = TRUE,
                           isLogged = TRUE, check_sanity = TRUE){
@@ -141,6 +149,14 @@ plotDEGViolin <- function(inSCE, useResult, threshP = FALSE, labelBy = NULL,
 #' to see if the counts are logged. Default \code{TRUE}
 #' @return A ggplot object of linear regression
 #' @export
+#' @examples
+#' data("sceBatches")
+#' logcounts(sceBatches) <- log(counts(sceBatches) + 1)
+#' sce.w <- subsetSCECols(sceBatches, colData = "batch == 'w'")
+#' sce.w <- runWilcox(sce.w, class = "cell_type", classGroup1 = "alpha",
+#'                    groupName1 = "w.alpha", groupName2 = "w.beta",
+#'                    analysisName = "w.aVSb")
+#' plotDEGRegression(sce.w, "w.aVSb")
 plotDEGRegression <- function(inSCE, useResult, threshP = FALSE, labelBy = NULL,
                               nrow = 6, ncol = 6, defaultTheme = TRUE,
                               isLogged = TRUE, check_sanity = TRUE){
@@ -284,16 +300,13 @@ plotDEGRegression <- function(inSCE, useResult, threshP = FALSE, labelBy = NULL,
 #' \code{"MAST Result: <useResult>"}.
 #' @param ... Other arguments passed to \code{\link{plotSCEHeatmap}}
 #' @examples
-#' data(scExample, package = "singleCellTK")
-#' \dontrun{
-#' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
-#' sce <- runDEAnalysis(inSCE = sce, method = "DESeq2",
-#'                      groupName1 = "Sample1", groupName2 = "Sample2",
-#'                      index1 = seq(100), index2 = seq(101,190),
-#'                      analysisName = "DESeq2")
-#' plotDEGHeatmap(sce, useResult = "DESeq2", fdrThreshold = 1, doLog = TRUE)
-#' }
-#'
+#' data("sceBatches")
+#' logcounts(sceBatches) <- log(counts(sceBatches) + 1)
+#' sce.w <- subsetSCECols(sceBatches, colData = "batch == 'w'")
+#' sce.w <- runWilcox(sce.w, class = "cell_type", classGroup1 = "alpha",
+#'                    groupName1 = "w.alpha", groupName2 = "w.beta",
+#'                    analysisName = "w.aVSb")
+#' plotDEGHeatmap(sce.w, "w.aVSb")
 #' @return A \code{ComplexHeatmap::Heatmap} object
 #' @export
 #' @author Yichen Wang

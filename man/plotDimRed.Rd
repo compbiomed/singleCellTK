@@ -33,3 +33,7 @@ plot object
 Plot dimensionality reduction from computed metrics including PCA, ICA, tSNE
 and UMAP
 }
+\examples{
+data("mouseBrainSubsetSCE", package = "singleCellTK")
+plotDimRed(mouseBrainSubsetSCE, "PCA_logcounts")
+}

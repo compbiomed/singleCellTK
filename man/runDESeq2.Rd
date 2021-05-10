@@ -97,6 +97,6 @@ used.
 data(scExample, package = "singleCellTK")
 sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 sce <- runDESeq2(inSCE = sce, groupName1 = "Sample1",
- groupName2 = "Sample2", index1 = seq(20), index2 = seq(21,40),
+ groupName2 = "Sample2", index1 = seq(5), index2 = seq(6,10),
  analysisName = "DESeq2")
 }

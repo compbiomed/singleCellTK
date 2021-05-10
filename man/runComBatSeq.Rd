@@ -75,15 +75,16 @@ to \code{TRUE}.
 }
 \examples{
 data('sceBatches', package = 'singleCellTK')
+sceBatches <- sample(sceBatches, 40)
 # Cell type known
 sceBatches <- runComBatSeq(sceBatches, "counts", "batch",
                            covariates = "cell_type",
                            assayName = "ComBat_cell_seq")
 # Cell type unknown but balanced
-sceBatches <- runComBatSeq(sceBatches, "counts", "batch",
-                           assayName = "ComBat_seq")
+#sceBatches <- runComBatSeq(sceBatches, "counts", "batch",
+#                           assayName = "ComBat_seq")
 # Cell type unknown and unbalanced
-sceBatches <- runComBatSeq(sceBatches, "counts", "batch",
-                           useSVA = TRUE,
-                           assayName = "ComBat_sva_seq")
+#sceBatches <- runComBatSeq(sceBatches, "counts", "batch",
+#                           useSVA = TRUE,
+#                           assayName = "ComBat_sva_seq")
 }

@@ -14,12 +14,19 @@
 #'  By default, all top genes will be labeled.
 #' @return plot object
 #' @export
+#' @examples
+#' data("mouseBrainSubsetSCE", package = "singleCellTK")
+#' mouseBrainSubsetSCE <- scranModelGeneVar(mouseBrainSubsetSCE, "logcounts")
+#' plotTopHVG(mouseBrainSubsetSCE, method = "modelGeneVar",
+#'            n = 1000, labelsCount = 0)
 plotTopHVG <- function(inSCE,
-                       method = "vst",
+                       method = c("vst", "mean.var.plot", "dispersion",
+                                  "modelGeneVar"),
                        hvgList = NULL,
                        n = NULL,
                        labelsCount = NULL)
 {
+  method <- match.arg(method)
   if(is.null(n)){
     n = length(hvgList)
   }

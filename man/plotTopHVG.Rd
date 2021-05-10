@@ -4,7 +4,13 @@
 \alias{plotTopHVG}
 \title{Plot highly variable genes}
 \usage{
-plotTopHVG(inSCE, method = "vst", hvgList = NULL, n = NULL, labelsCount = NULL)
+plotTopHVG(
+  inSCE,
+  method = c("vst", "mean.var.plot", "dispersion", "modelGeneVar"),
+  hvgList = NULL,
+  n = NULL,
+  labelsCount = NULL
+)
 }
 \arguments{
 \item{inSCE}{Input \code{SingleCellExperiment} object containing the
@@ -29,4 +35,10 @@ plot object
 }
 \description{
 Plot highly variable genes
+}
+\examples{
+data("mouseBrainSubsetSCE", package = "singleCellTK")
+mouseBrainSubsetSCE <- scranModelGeneVar(mouseBrainSubsetSCE, "logcounts")
+plotTopHVG(mouseBrainSubsetSCE, method = "modelGeneVar",
+           n = 1000, labelsCount = 0)
 }

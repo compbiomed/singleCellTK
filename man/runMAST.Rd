@@ -96,8 +96,8 @@ used.
 \examples{
 data(scExample, package = "singleCellTK")
 sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
-sce <- scaterlogNormCounts(sce, assayName = "logcounts")
+sce <- scaterlogNormCounts(sce[,seq(20)], assayName = "logcounts")
 sce <- runMAST(inSCE = sce, groupName1 = "Sample1",
- groupName2 = "Sample2", index1 = seq(20), index2 = seq(21,40),
+ groupName2 = "Sample2", index1 = seq(10), index2 = seq(11,20),
  analysisName = "MAST")
 }

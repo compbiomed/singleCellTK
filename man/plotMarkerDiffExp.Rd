@@ -110,6 +110,13 @@ cluster each gene belongs to. And by default we split the heatmap by these
 two annotations. Additional legends can be added and the splitting can be
 canceled.
 }
+\examples{
+data("sceBatches")
+logcounts(sceBatches) <- log(counts(sceBatches) + 1)
+sce.w <- subsetSCECols(sceBatches, colData = "batch == 'w'")
+sce.w <- findMarkerDiffExp(sce.w, method = "wilcox", cluster = "cell_type")
+plotMarkerDiffExp(sce.w)
+}
 \author{
 Yichen Wang
 }
