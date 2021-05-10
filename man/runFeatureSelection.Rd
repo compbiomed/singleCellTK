@@ -7,16 +7,21 @@ within the singleCellTK package including three methods from
 Seurat (`vst`, `mean.var.plot` or `dispersion`) and the Scran `modelGeneVar`
 method.}
 \usage{
-runFeatureSelection(inSCE, useAssay, hvgMethod)
+runFeatureSelection(
+  inSCE,
+  useAssay,
+  hvgMethod = c("vst", "mean.var.plot", "dispersion", "modelGeneVar")
+)
 }
 \arguments{
 \item{inSCE}{Input \code{SingleCellExperiment} object.}
 
-\item{useAssay}{Specify the name of the assay that should be used.}
+\item{useAssay}{Specify the name of the assay that should be used.
+A normalized assay is recommended for use with this function.}
 
 \item{hvgMethod}{Specify the method to use for variable gene selection.
 Options include `vst`, `mean.var.plot` or `dispersion` from Seurat
-and `modelGeneVar` from Scran.}
+and `modelGeneVar` from Scran. Default is \code{"vst"}.}
 }
 \value{
 A \code{SingleCellExperiment} object that contains the computed
