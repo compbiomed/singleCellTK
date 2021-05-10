@@ -1,3 +1,7 @@
+Changes in Version 2.0.3 (2021-xx-xx)
+
+*
+
 Changes in Version 2.0.2 (2021-05-08)
 
 * Expanded convertSCEtoSeurat() function to copy additional data
@@ -7,6 +11,9 @@ Changes in Version 2.0.2 (2021-05-08)
 * Added generic wrapper function for dimensionality reduction
 * Added tagging system for matrix type
 * Several bug fixes
+* Added missing documentation
+* Added wrapper functions for normalization, dimensionality reduction and feature selection
+* Added function seuratReport() to generate a seurat report from input SCE object
 
 Changes in Version 2.0.1 (2021-01-07)
 

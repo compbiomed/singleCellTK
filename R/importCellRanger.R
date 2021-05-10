@@ -23,7 +23,7 @@
     if (ncol(res) == 1) {
         colnames(res) <- colnames[1]
     } else if (ncol(res) == 2) {
-        colnames(res) <- colnames[1:2]
+        colnames(res) <- colnames[seq(2)]
     } else if (ncol(res) == 3) {
         colnames(res) <- colnames
     } else {

@@ -15,7 +15,7 @@
     real.cells1 <- sample(real.cells, n_doublets, replace = TRUE)
     real.cells2 <- sample(real.cells, n_doublets, replace = TRUE)
     doublets <- (data[, real.cells1] + data[, real.cells2]) / 2
-    colnames(doublets) <- paste("X", 1:n_doublets, sep = "")
+    colnames(doublets) <- paste("X", seq(n_doublets), sep = "")
     data_wdoublets <- cbind(data, doublets)
 
     ## Pre-process Seurat object
@@ -109,7 +109,7 @@
     pca.coord <- seu_wdoublets@reductions$pca@cell.embeddings[, PCs]
     seu_wdoublets <- NULL
     gc()
-    dist.mat <- fields::rdist(pca.coord)[, 1:n.real.cells]
+    dist.mat <- fields::rdist(pca.coord)[, seq(n.real.cells)]
 
     ## Pre-order PC distance matrix prior to iterating across pK
     ## for pANN computations
@@ -117,20 +117,20 @@
         print("Defining neighborhoods...")
     }
 
-    for (i in 1:n.real.cells) {
+    for (i in seq(n.real.cells)) {
         dist.mat[, i] <- order(dist.mat[, i])
     }
 
     ## Trim PC distance matrix for faster manipulations
     ind <- round(nCells * max(pK)) + 5
-    dist.mat <- dist.mat[1:ind, ]
+    dist.mat <- dist.mat[seq(ind), ]
 
     ## Compute pANN across pK sweep
 
     if (verbose) {
         print("Computing pANN across all pK...")
     }
-    for (k in 1:length(pK)) {
+    for (k in seq_len(length(pK))) {
         if (verbose) {
             print(paste("pK = ", pK[k], "...", sep = ""))
         }
@@ -140,7 +140,7 @@
         rownames(pANN) <- real.cells
         list.ind <- list.ind + 1
 
-        for (i in 1:n.real.cells) {
+        for (i in seq(n.real.cells)) {
             neighbors <- dist.mat[2:(pk.temp + 1), i]
             pANN$pANN[i] <- length(which(neighbors > n.real.cells)) / pk.temp
         }
@@ -151,7 +151,7 @@
     return(sweep.res.list)
 }
 
-.paramSweep <- function(seu, PCs = 1:10, sct = FALSE,
+.paramSweep <- function(seu, PCs = seq(10), sct = FALSE,
                           verbose = FALSE, num.cores, seed) {
     ## Set pN-pK param sweep ranges
     pK <- c(0.0005, 0.001, 0.005, seq(0.01, 0.3, by = 0.01))
@@ -166,7 +166,7 @@
 
     ## Down-sample cells to 10000 (when applicable) for computational effiency
     if (nrow(seu@meta.data) > 10000) {
-        real.cells <- rownames(seu@meta.data)[sample(1:nrow(seu@meta.data),
+        real.cells <- rownames(seu@meta.data)[sample(seq(nrow(seu@meta.data)),
                                                      10000, replace = FALSE)]
         data <- seu@assays$RNA@counts[, real.cells]
         n.real.cells <- ncol(data)
@@ -188,7 +188,7 @@
 
         output2 <- withr::with_seed(
             seed,
-            parallel::mclapply(as.list(1:length(pN)),
+            parallel::mclapply(as.list(seq_len(length(pN))),
                      FUN = .parallel_paramSweep,
                      n.real.cells,
                      real.cells,
@@ -205,7 +205,7 @@
         )
         parallel::stopCluster(cl)
     } else {
-        output2 <- lapply(as.list(1:length(pN)),
+        output2 <- lapply(as.list(seq_len(length(pN))),
                           FUN = .parallel_paramSweep,
                           n.real.cells,
                           real.cells,
@@ -223,15 +223,15 @@
     ## Write parallelized output into list
     sweep.res.list <- list()
     list.ind <- 0
-    for (i in 1:length(output2)) {
-        for (j in 1:length(output2[[i]])) {
+    for (i in seq_len(length(output2))) {
+        for (j in seq_len(length(output2[[i]]))) {
             list.ind <- list.ind + 1
             sweep.res.list[[list.ind]] <- output2[[i]][[j]]
         }
     }
     ## Assign names to list of results
     name.vec <- NULL
-    for (j in 1:length(pN)) {
+    for (j in seq_len(length(pN))) {
         name.vec <- c(name.vec, paste("pN", pN[j], "pK", pK, sep = "_"))
     }
     names(sweep.res.list) <- name.vec
@@ -340,7 +340,7 @@ runDoubletFinder <- function(inSCE,
                              sample = NULL,
                              seed = 12345,
                              seuratNfeatures = 2000,
-                             seuratPcs = 1:15,
+                             seuratPcs = seq(15),
                              seuratRes = 1.5,
                              formationRate = 0.075,
                              nCores = NULL,
@@ -382,7 +382,7 @@ runDoubletFinder <- function(inSCE,
       sceSample <- inSCE[, sceSampleInd]
       mat <- SummarizedExperiment::assay(sceSample, i = useAssay)
       if(length(seuratPcs) > ncol(mat)){
-        seuratPcs <- 1:ncol(mat)
+        seuratPcs <- seq(ncol(mat))
       }
 
       result <- suppressMessages(withr::with_seed(
@@ -399,7 +399,7 @@ runDoubletFinder <- function(inSCE,
         )
       ))
       result <- suppressMessages(Seurat::RunUMAP(result,
-                                                 dims = 1:10,
+                                                 dims = seq(10),
                                                  verbose = verbose,
                                                  umap.method = "uwot"))
 
@@ -448,7 +448,7 @@ runDoubletFinder <- function(inSCE,
   }
 
   ## Perform pN-pK parameter sweep summary
-  for (i in 1:length(sweep.list)) {
+  for (i in seq_len(length(sweep.list))) {
     res.temp <- sweep.list[[i]]
 
     ## Use gaussian kernel density estimation of pANN vector to compute bimodality coefficient
@@ -463,8 +463,8 @@ runDoubletFinder <- function(inSCE,
     meta <- as.data.frame(matrix(0L, nrow=nrow(res.temp), ncol=2))
     meta[,1] <- GT.calls
     meta[,2] <- res.temp$pANN
-    train.ind <- sample(1:nrow(meta), round(nrow(meta)/2), replace=FALSE)
-    test.ind <- (1:nrow(meta))[-train.ind]
+    train.ind <- sample(seq(nrow(meta)), round(nrow(meta)/2), replace=FALSE)
+    test.ind <- (seq(nrow(meta)))[-train.ind]
     colnames(meta) <- c("SinDub","pANN")
     meta$SinDub <- factor(meta$SinDub, levels = c("Doublet","Singlet"))
     model.lm <- stats::glm(SinDub ~ pANN, family=stats::binomial(link='logit'), data=meta, subset=train.ind)
@@ -516,7 +516,7 @@ runDoubletFinder <- function(inSCE,
     bc.mvn <- as.data.frame(matrix(0L, nrow=length(unique(sweep.stats$pK)), ncol=5))
     colnames(bc.mvn) <- c("ParamID","pK","MeanBC","VarBC","BCmetric")
     bc.mvn$pK <- unique(sweep.stats$pK)
-    bc.mvn$ParamID <- 1:nrow(bc.mvn)
+    bc.mvn$ParamID <- seq(nrow(bc.mvn))
 
     ## Compute bimodality coefficient mean, variance, and BCmvn across pN-pK sweep results
     x <- 0
@@ -536,7 +536,7 @@ runDoubletFinder <- function(inSCE,
     bc.mvn <- as.data.frame(matrix(0L, nrow=length(unique(sweep.stats$pK)), ncol=6))
     colnames(bc.mvn) <- c("ParamID","pK","MeanAUC","MeanBC","VarBC","BCmetric")
     bc.mvn$pK <- unique(sweep.stats$pK)
-    bc.mvn$ParamID <- 1:nrow(bc.mvn)
+    bc.mvn$ParamID <- seq(nrow(bc.mvn))
 
     ## Compute bimodality coefficient mean, variance, and BCmvn across pN-pK sweep results
     x <- 0
@@ -560,7 +560,7 @@ runDoubletFinder <- function(inSCE,
   if (reuse.pANN != FALSE ) {
     pANN.old <- seu@meta.data[ , reuse.pANN]
     classifications <- rep("Singlet", length(pANN.old))
-    classifications[order(pANN.old, decreasing=TRUE)[1:nExp]] <- "Doublet"
+    classifications[order(pANN.old, decreasing=TRUE)[seq(nExp)]] <- "Doublet"
     seu@meta.data[, paste("DF.classifications",pN,pK,nExp,sep="_")] <- classifications
     return(seu)
   }
@@ -575,7 +575,7 @@ runDoubletFinder <- function(inSCE,
     real.cells1 <- sample(real.cells, n_doublets, replace = TRUE)
     real.cells2 <- sample(real.cells, n_doublets, replace = TRUE)
     doublets <- (data[, real.cells1] + data[, real.cells2])/2
-    colnames(doublets) <- paste("X", 1:n_doublets, sep = "")
+    colnames(doublets) <- paste("X", seq(n_doublets), sep = "")
     data_wdoublets <- cbind(data, doublets)
 
     ## Store important pre-processing information
@@ -647,7 +647,7 @@ runDoubletFinder <- function(inSCE,
     rownames(pANN) <- real.cells
     colnames(pANN) <- "pANN"
     k <- round(nCells * pK)
-    for (i in 1:n_real.cells) {
+    for (i in seq(n_real.cells)) {
       neighbors <- order(dist.mat[, i])
       neighbors <- neighbors[2:(k + 1)]
       neighbor.names <- rownames(dist.mat)[neighbors]
@@ -655,7 +655,7 @@ runDoubletFinder <- function(inSCE,
     }
 
     classifications <- rep("Singlet",n_real.cells)
-    classifications[order(pANN$pANN[1:n_real.cells], decreasing=TRUE)[1:nExp]] <- "Doublet"
+    classifications[order(pANN$pANN[seq(n_real.cells)], decreasing=TRUE)[seq(nExp)]] <- "Doublet"
     seu@meta.data[, paste("pANN",pN,pK,nExp,sep="_")] <- pANN[rownames(seu@meta.data), 1]
     seu@meta.data[, paste("DF.classifications",pN,pK,nExp,sep="_")] <- classifications
     return(seu)

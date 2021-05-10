@@ -218,7 +218,7 @@ importGeneSetsFromCollection <- function(inSCE, geneSetCollection,
 
   # If 'by' is NULL, then the location will be derived from the description
   if(is.null(by)) {
-    location <- unlist(lapply(1:length(geneSetCollection),
+    location <- unlist(lapply(seq_len(length(geneSetCollection)),
                    function(i) GSEABase::description(geneSetCollection[[i]])))
   } else {
     if(length(by) != 1 & length(by) != length(geneSetCollection)) {
@@ -262,7 +262,7 @@ importGeneSetsFromCollection <- function(inSCE, geneSetCollection,
   }
 
   if(length(gs) == 0) {
-    stop("No gene sets were succesfully imported.")
+    stop("No gene sets could be imported. This is either because the no overlapping genes were identified between the gene sets and the input data or different types of identifiers are used between the two. Please check if the gene identifiers of both gene sets and input data belong to same type.")
   }
 
   # Add GeneSetCollection back to metadata
