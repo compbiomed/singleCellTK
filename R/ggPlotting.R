@@ -2727,7 +2727,7 @@ setSCTKDisplayRow <- function(inSCE,
 .ggSetScaleFactor <- function(groupBy = NULL,
                               combinePlot = "none"){
   if(!is.null(groupBy)){
-    scaleFactor = 1/length(levels(groupBy)) + 0.4
+    scaleFactor = 1/length(levels(groupBy)) + 0.5
   }else{
     scaleFactor = 1
   }
