@@ -6,8 +6,8 @@
 
     if ("sum" %in% colnames(SummarizedExperiment::colData(inSCE))) {
         metrics <- c(metrics, "Mean counts", "Median counts")
-        values <- c(values, signif(mean(inSCE$sum), 3),
-                    signif(stats::median(inSCE$sum), 3))
+        values <- c(values, mean(inSCE$sum),
+                    stats::median(inSCE$sum))
     }
 
     if ("detected" %in% colnames(SummarizedExperiment::colData(inSCE))) {
@@ -15,8 +15,8 @@
             metrics, "Mean features detected",
             "Median features detected"
         )
-        values <- c(values, signif(mean(inSCE$detected), 3),
-                    signif(stats::median(inSCE$detected), 3))
+        values <- c(values, mean(inSCE$detected),
+                    stats::median(inSCE$detected))
     }
 
     if(simple != TRUE){
