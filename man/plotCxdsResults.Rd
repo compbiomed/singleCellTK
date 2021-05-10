@@ -25,7 +25,7 @@ plotCxdsResults(
   summary = "median",
   summaryTextSize = 3,
   transparency = 1,
-  baseSize = 14,
+  baseSize = 15,
   titleSize = NULL,
   axisLabelSize = NULL,
   axisSize = NULL,
@@ -92,17 +92,27 @@ when TRUE. Default TRUE.}
 
 \item{dotSize}{Size of dots. Default 1.}
 
+\item{summary}{Adds a summary statistic, as well as a crossbar to the
+violin plot. Options are "mean" or "median". Default NULL.}
+
+\item{summaryTextSize}{The text size of the summary statistic displayed
+above the violin plot. Default 3.}
+
 \item{transparency}{Transparency of the dots, values will be 0-1. Default 1.}
 
-\item{titleSize}{Size of title of plot. Default 18.}
+\item{baseSize}{The base font size for all text. Default 12.
+Can be overwritten by titleSize, axisSize, and axisLabelSize,
+legendSize, legendTitleSize.}
 
-\item{axisLabelSize}{Size of x/y-axis labels. Default 18.}
+\item{titleSize}{Size of title of plot. Default NULL.}
 
-\item{axisSize}{Size of x/y-axis ticks. Default 15.}
+\item{axisLabelSize}{Size of x/y-axis labels. Default NULL.}
 
-\item{legendSize}{size of legend. Default 15.}
+\item{axisSize}{Size of x/y-axis ticks. Default NULL.}
 
-\item{legendTitleSize}{size of legend title. Default 16.}
+\item{legendSize}{size of legend. Default NULL.}
+
+\item{legendTitleSize}{size of legend title. Default NULL.}
 
 \item{relHeights}{Relative heights of plots when combine is set.}
 

@@ -14,8 +14,11 @@
 #' \linkS4class{SingleCellExperiment} object. Required.
 #' @param xlab Character vector. Label for x-axis. Default NULL.
 #' @param ylab Character vector. Label for y-axis. Default NULL.
-#' @param axisSize Size of x/y-axis ticks. Default 10.
-#' @param axisLabelSize Size of x/y-axis labels. Default 10.
+#' @param baseSize The base font size for all text. Default 12.
+#'  Can be overwritten by titleSize, axisSize, and axisLabelSize,
+#'  legendSize, legendTitleSize.
+#' @param axisSize Size of x/y-axis ticks. Default NULL.
+#' @param axisLabelSize Size of x/y-axis labels. Default NULL.
 #' @param dim1 1st dimension to be used for plotting. Can either be a string which specifies
 #'  the name of the dimension to be plotted from reducedDims, or a numeric value which specifies
 #'  the index of the dimension to be plotted. Default is NULL.
@@ -49,8 +52,8 @@
 #' @param clusterLabelSize Numeric. Determines the size of cluster label
 #'  when `labelClusters` is set to TRUE. Default 3.5.
 #' @param legendTitle title of legend. Default NULL.
-#' @param legendTitleSize size of legend title. Default 12.
-#' @param legendSize size of legend. Default 10.
+#' @param legendTitleSize size of legend title. Default NULL.
+#' @param legendSize size of legend. Default NULL.
 #' @param combinePlot Must be either "all", "sample", or "none". "all" will combine all plots into a single
 #' .ggplot object, while "sample" will output a list of plots separated by sample. Default "none".
 #' @param plotLabels labels to each plot. If set to "default", will use the name of the samples
@@ -320,8 +323,11 @@
 #' @param dim2 2nd dimension to be used for plotting. Can either be a string which specifies
 #'  the name of the dimension to be plotted from reducedDims, or a numeric value which specifies
 #'  the index of the dimension to be plotted. Default is NULL.
-#' @param axisSize Size of x/y-axis ticks. Default 10.
-#' @param axisLabelSize Size of x/y-axis labels. Default 10.
+#' @param baseSize The base font size for all text. Default 12.
+#'  Can be overwritten by titleSize, axisSize, and axisLabelSize,
+#'  legendSize, legendTitleSize.
+#' @param axisSize Size of x/y-axis ticks. Default NULL.
+#' @param axisLabelSize Size of x/y-axis labels. Default NULL.
 #' @param bin Numeric vector. If single value, will divide the numeric values into the `bin` groups.
 #'  If more than one value, will bin numeric values using values as a cut point.
 #' @param binLabel Character vector. Labels for the bins created by the `bin` parameter.
@@ -348,7 +354,7 @@
 #'  when `labelClusters` is set to TRUE. Default 3.5.
 #' @param legendTitle title of legend. Default NULL.
 #' @param legendTitleSize size of legend title. Default 12.
-#' @param legendSize size of legend. Default 10.
+#' @param legendSize size of legend. Default NULL.
 #'  Default FALSE.
 #' @param combinePlot Must be either "all", "sample", or "none". "all" will combine all plots into a single
 #' .ggplot object, while "sample" will output a list of plots separated by sample. Default "none".
@@ -1454,14 +1460,18 @@ plotSCEViolin <- function(inSCE,
 #'  object, or can be retrieved from the colData slot. Default NULL.
 #' @param xlab Character vector. Label for x-axis. Default NULL.
 #' @param ylab Character vector. Label for y-axis. Default NULL.
-#' @param axisSize Size of x/y-axis ticks. Default 10.
-#' @param axisLabelSize Size of x/y-axis labels. Default 10.
+#' @param baseSize The base font size for all text. Default 12.
+#'  Can be overwritten by titleSize, axisSize, and axisLabelSize.
+#' @param axisSize Size of x/y-axis ticks. Default NULL.
+#' @param axisLabelSize Size of x/y-axis labels. Default NULL.
 #' @param defaultTheme Removes grid in plot and sets axis title size to 10
 #'  when TRUE. Default TRUE.
 #' @param title Title of plot. Default NULL.
 #' @param titleSize Size of title of plot. Default 15.
 #' @param cutoff Numeric value. The plot will be annotated with a vertical line
 #'  if set. Default NULL.
+#' @param combinePlot Must be either "all", "sample", or "none". "all" will combine all plots into a single
+#' .ggplot object, while "sample" will output a list of plots separated by sample. Default "none".
 #' @return density plot, in .ggplot.
 .ggDensity <- function(value,
                        groupBy = NULL,
@@ -1534,8 +1544,11 @@ plotSCEViolin <- function(inSCE,
 #'  object, or can be retrieved from the colData slot. Default NULL.
 #' @param xlab Character vector. Label for x-axis. Default NULL.
 #' @param ylab Character vector. Label for y-axis. Default NULL.
-#' @param axisSize Size of x/y-axis ticks. Default 10.
-#' @param axisLabelSize Size of x/y-axis labels. Default 10.
+#' @param baseSize The base font size for all text. Default 12.
+#'  Can be overwritten by titleSize, axisSize, and axisLabelSize,
+#'  legendSize, legendTitleSize.
+#' @param axisSize Size of x/y-axis ticks. Default NULL.
+#' @param axisLabelSize Size of x/y-axis labels. Default NULL.
 #' @param defaultTheme Removes grid in plot and sets axis title size to 10
 #'  when TRUE. Default TRUE.
 #' @param title Title of plot. Default NULL.

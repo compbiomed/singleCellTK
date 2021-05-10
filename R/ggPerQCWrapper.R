@@ -544,12 +544,19 @@ plotBarcodeRankDropsResults <- function(inSCE,
 #' @param defaultTheme Removes grid in plot and sets axis title size to 10
 #'  when TRUE. Default TRUE.
 #' @param dotSize Size of dots. Default 1.
+#' @param summary Adds a summary statistic, as well as a crossbar to the
+#'  violin plot. Options are "mean" or "median". Default NULL.
+#' @param summaryTextSize The text size of the summary statistic displayed
+#'  above the violin plot. Default 3.
 #' @param transparency Transparency of the dots, values will be 0-1. Default 1.
-#' @param titleSize Size of title of plot. Default 18.
-#' @param axisSize Size of x/y-axis ticks. Default 15.
-#' @param axisLabelSize Size of x/y-axis labels. Default 18.
-#' @param legendSize size of legend. Default 15.
-#' @param legendTitleSize size of legend title. Default 16.
+#' @param baseSize The base font size for all text. Default 12.
+#'  Can be overwritten by titleSize, axisSize, and axisLabelSize,
+#'  legendSize, legendTitleSize.
+#' @param titleSize Size of title of plot. Default NULL.
+#' @param axisSize Size of x/y-axis ticks. Default NULL.
+#' @param axisLabelSize Size of x/y-axis labels. Default NULL.
+#' @param legendSize size of legend. Default NULL.
+#' @param legendTitleSize size of legend title. Default NULL.
 #' @param combinePlot Must be either "all", "sample", or "none". "all" will combine all plots into a single .ggplot object,
 #' while "sample" will output a list of plots separated by sample. Default "all".
 #' @param relHeights Relative heights of plots when combine is set.
@@ -836,12 +843,19 @@ plotScrubletResults <- function(inSCE,
 #' @param defaultTheme Removes grid in plot and sets axis title size to 10
 #'  when TRUE. Default TRUE.
 #' @param dotSize Size of dots. Default 1.
+#' @param summary Adds a summary statistic, as well as a crossbar to the
+#'  violin plot. Options are "mean" or "median". Default NULL.
+#' @param summaryTextSize The text size of the summary statistic displayed
+#'  above the violin plot. Default 3.
 #' @param transparency Transparency of the dots, values will be 0-1. Default 1.
-#' @param titleSize Size of title of plot. Default 18.
-#' @param axisSize Size of x/y-axis ticks. Default 15.
-#' @param axisLabelSize Size of x/y-axis labels. Default 18.
-#' @param legendSize size of legend. Default 15.
-#' @param legendTitleSize size of legend title. Default 16.
+#' @param baseSize The base font size for all text. Default 12.
+#'  Can be overwritten by titleSize, axisSize, and axisLabelSize,
+#'  legendSize, legendTitleSize.
+#' @param titleSize Size of title of plot. Default NULL.
+#' @param axisSize Size of x/y-axis ticks. Default NULL.
+#' @param axisLabelSize Size of x/y-axis labels. Default NULL.
+#' @param legendSize size of legend. Default NULL.
+#' @param legendTitleSize size of legend title. Default NULL.
 #' @param combinePlot Must be either "all", "sample", or "none". "all" will combine all plots into a single .ggplot object,
 #' while "sample" will output a list of plots separated by sample. Default "all".
 #' @param relHeights Relative heights of plots when combine is set.
@@ -1205,12 +1219,19 @@ plotDoubletFinderResults <- function(inSCE,
 #' @param defaultTheme Removes grid in plot and sets axis title size to 10
 #'  when TRUE. Default TRUE.
 #' @param dotSize Size of dots. Default 1.
+#' @param summary Adds a summary statistic, as well as a crossbar to the
+#'  violin plot. Options are "mean" or "median". Default NULL.
+#' @param summaryTextSize The text size of the summary statistic displayed
+#'  above the violin plot. Default 3.
 #' @param transparency Transparency of the dots, values will be 0-1. Default 1.
-#' @param titleSize Size of title of plot. Default 18.
-#' @param axisSize Size of x/y-axis ticks. Default 15.
-#' @param axisLabelSize Size of x/y-axis labels. Default 18.
-#' @param legendSize size of legend. Default 15.
-#' @param legendTitleSize size of legend title. Default 16.
+#' @param baseSize The base font size for all text. Default 12.
+#'  Can be overwritten by titleSize, axisSize, and axisLabelSize,
+#'  legendSize, legendTitleSize.
+#' @param titleSize Size of title of plot. Default NULL.
+#' @param axisSize Size of x/y-axis ticks. Default NULL.
+#' @param axisLabelSize Size of x/y-axis labels. Default NULL.
+#' @param legendSize size of legend. Default NULL.
+#' @param legendTitleSize size of legend title. Default NULL.
 #' @param combinePlot Must be either "all", "sample", or "none". "all" will combine all plots into a single .ggplot object,
 #' while "sample" will output a list of plots separated by sample. Default "all".
 #' @param relHeights Relative heights of plots when combine is set.
@@ -1463,12 +1484,19 @@ plotScDblFinderResults <- function(inSCE,
 #' @param defaultTheme Removes grid in plot and sets axis title size to 10
 #'  when TRUE. Default TRUE.
 #' @param dotSize Size of dots. Default 1.
+#' @param summary Adds a summary statistic, as well as a crossbar to the
+#'  violin plot. Options are "mean" or "median". Default NULL.
+#' @param summaryTextSize The text size of the summary statistic displayed
+#'  above the violin plot. Default 3.
 #' @param transparency Transparency of the dots, values will be 0-1. Default 1.
-#' @param titleSize Size of title of plot. Default 18.
-#' @param axisSize Size of x/y-axis ticks. Default 15.
-#' @param axisLabelSize Size of x/y-axis labels. Default 18.
-#' @param legendSize size of legend. Default 15.
-#' @param legendTitleSize size of legend title. Default 16.
+#' @param baseSize The base font size for all text. Default 12.
+#'  Can be overwritten by titleSize, axisSize, and axisLabelSize,
+#'  legendSize, legendTitleSize.
+#' @param titleSize Size of title of plot. Default NULL.
+#' @param axisSize Size of x/y-axis ticks. Default NULL.
+#' @param axisLabelSize Size of x/y-axis labels. Default NULL.
+#' @param legendSize size of legend. Default NULL.
+#' @param legendTitleSize size of legend title. Default NULL.
 #' @param combinePlot Must be either "all", "sample", or "none". "all" will combine all plots into a single .ggplot object,
 #' while "sample" will output a list of plots separated by sample. Default "all".
 #' @param relHeights Relative heights of plots when combine is set.
@@ -1753,12 +1781,19 @@ plotCxdsResults <- function(inSCE,
 #' @param defaultTheme Removes grid in plot and sets axis title size to 10
 #'  when TRUE. Default TRUE.
 #' @param dotSize Size of dots. Default 1.
+#' @param summary Adds a summary statistic, as well as a crossbar to the
+#'  violin plot. Options are "mean" or "median". Default NULL.
+#' @param summaryTextSize The text size of the summary statistic displayed
+#'  above the violin plot. Default 3.
 #' @param transparency Transparency of the dots, values will be 0-1. Default 1.
-#' @param titleSize Size of title of plot. Default 18.
-#' @param axisSize Size of x/y-axis ticks. Default 15.
-#' @param axisLabelSize Size of x/y-axis labels. Default 18.
-#' @param legendSize size of legend. Default 15.
-#' @param legendTitleSize size of legend title. Default 16.
+#' @param baseSize The base font size for all text. Default 12.
+#'  Can be overwritten by titleSize, axisSize, and axisLabelSize,
+#'  legendSize, legendTitleSize.
+#' @param titleSize Size of title of plot. Default NULL.
+#' @param axisSize Size of x/y-axis ticks. Default NULL.
+#' @param axisLabelSize Size of x/y-axis labels. Default NULL.
+#' @param legendSize size of legend. Default NULL.
+#' @param legendTitleSize size of legend title. Default NULL.
 #' @param combinePlot Must be either "all", "sample", or "none". "all" will combine all plots into a single .ggplot object,
 #' while "sample" will output a list of plots separated by sample. Default "all".
 #' @param relHeights Relative heights of plots when combine is set.
@@ -2044,12 +2079,19 @@ plotBcdsResults <- function(inSCE,
 #' @param defaultTheme Removes grid in plot and sets axis title size to 10
 #'  when TRUE. Default TRUE.
 #' @param dotSize Size of dots. Default 1.
+#' @param summary Adds a summary statistic, as well as a crossbar to the
+#'  violin plot. Options are "mean" or "median". Default NULL.
+#' @param summaryTextSize The text size of the summary statistic displayed
+#'  above the violin plot. Default 3.
 #' @param transparency Transparency of the dots, values will be 0-1. Default 1.
-#' @param titleSize Size of title of plot. Default 18.
-#' @param axisSize Size of x/y-axis ticks. Default 15.
-#' @param axisLabelSize Size of x/y-axis labels. Default 18.
-#' @param legendSize size of legend. Default 15.
-#' @param legendTitleSize size of legend title. Default 16.
+#' @param baseSize The base font size for all text. Default 12.
+#'  Can be overwritten by titleSize, axisSize, and axisLabelSize,
+#'  legendSize, legendTitleSize.
+#' @param titleSize Size of title of plot. Default NULL.
+#' @param axisSize Size of x/y-axis ticks. Default NULL.
+#' @param axisLabelSize Size of x/y-axis labels. Default NULL.
+#' @param legendSize size of legend. Default NULL.
+#' @param legendTitleSize size of legend title. Default NULL.
 #' @param combinePlot Must be either "all", "sample", or "none". "all" will combine all plots into a single .ggplot object,
 #' while "sample" will output a list of plots separated by sample. Default "all".
 #' @param relHeights Relative heights of plots when combine is set.
@@ -2333,12 +2375,19 @@ plotScdsHybridResults <- function(inSCE,
 #' @param defaultTheme Removes grid in plot and sets axis title size to 10
 #'  when TRUE. Default TRUE.
 #' @param dotSize Size of dots. Default 1.
+#' @param summary Adds a summary statistic, as well as a crossbar to the
+#'  violin plot. Options are "mean" or "median". Default NULL.
+#' @param summaryTextSize The text size of the summary statistic displayed
+#'  above the violin plot. Default 3.
 #' @param transparency Transparency of the dots, values will be 0-1. Default 1.
-#' @param titleSize Size of title of plot. Default 18.
-#' @param axisSize Size of x/y-axis ticks. Default 15.
-#' @param axisLabelSize Size of x/y-axis labels. Default 18.
-#' @param legendSize size of legend. Default 15.
-#' @param legendTitleSize size of legend title. Default 16.
+#' @param baseSize The base font size for all text. Default 12.
+#'  Can be overwritten by titleSize, axisSize, and axisLabelSize,
+#'  legendSize, legendTitleSize.
+#' @param titleSize Size of title of plot. Default NULL.
+#' @param axisSize Size of x/y-axis ticks. Default NULL.
+#' @param axisLabelSize Size of x/y-axis labels. Default NULL.
+#' @param legendSize size of legend. Default NULL.
+#' @param legendTitleSize size of legend title. Default NULL.
 #' @param labelClusters Logical. Whether the cluster labels are plotted.
 #'  Default FALSE.
 #' @param clusterLabelSize Numeric. Determines the size of cluster label

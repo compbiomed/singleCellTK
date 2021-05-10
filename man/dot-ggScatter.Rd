@@ -68,9 +68,13 @@ when `labelClusters` is set to TRUE. Default 3.5.}
 
 \item{ylab}{Character vector. Label for y-axis. Default NULL.}
 
-\item{axisSize}{Size of x/y-axis ticks. Default 10.}
+\item{baseSize}{The base font size for all text. Default 12.
+Can be overwritten by titleSize, axisSize, and axisLabelSize,
+legendSize, legendTitleSize.}
 
-\item{axisLabelSize}{Size of x/y-axis labels. Default 10.}
+\item{axisSize}{Size of x/y-axis ticks. Default NULL.}
+
+\item{axisLabelSize}{Size of x/y-axis labels. Default NULL.}
 
 \item{dim1}{1st dimension to be used for plotting. Can either be a string which specifies
 the name of the dimension to be plotted from reducedDims, or a numeric value which specifies
@@ -115,9 +119,9 @@ when TRUE. Default TRUE.}
 
 \item{legendTitle}{title of legend. Default NULL.}
 
-\item{legendTitleSize}{size of legend title. Default 12.}
+\item{legendTitleSize}{size of legend title. Default NULL.}
 
-\item{legendSize}{size of legend. Default 10.}
+\item{legendSize}{size of legend. Default NULL.}
 
 \item{combinePlot}{Must be either "all", "sample", or "none". "all" will combine all plots into a single
 .ggplot object, while "sample" will output a list of plots separated by sample. Default "none".}

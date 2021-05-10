@@ -15,7 +15,7 @@ plotRunPerCellQCResults(
   dotSize = 1,
   summary = "median",
   summaryTextSize = 3,
-  baseSize = 14,
+  baseSize = 15,
   axisSize = NULL,
   axisLabelSize = NULL,
   transparency = 1,
@@ -62,7 +62,7 @@ violin plot. Options are "mean" or "median". Default "median".}
 \item{summaryTextSize}{The text size of the summary statistic displayed
 above the violin plot. Default 3.}
 
-\item{baseSize}{The base font size for all text. Default 14.
+\item{baseSize}{The base font size for all text. Default 15.
 Can be overwritten by titleSize, axisSize, and axisLabelSize.}
 
 \item{axisSize}{Size of x/y-axis ticks. Default NULL.}
