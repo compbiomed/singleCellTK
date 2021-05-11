@@ -47,11 +47,11 @@ selected assay. Options include `log2` (base 2 log transformation),
 `log1p` (natural log + 1 transformation) and `sqrt` (square root). Default
 value is \code{NULL}, which will not run any transformation.}
 
-\item{pseudocountsBeforeNorm}{Specify a numeric pseudo value that should be added 
+\item{pseudocountsBeforeNorm}{Specify a numeric pseudo value that should be added
 to the assay before normalization is performed. Default is \code{NULL},
 which will not add any value.}
 
-\item{pseudocountsBeforeTransform}{Specify a numeric pseudo value that should be 
+\item{pseudocountsBeforeTransform}{Specify a numeric pseudo value that should be
 added to the assay before transformation is run. Default is \code{NULL},
 which will not add any value.}
 
@@ -77,8 +77,8 @@ between a range of values.
 \examples{
 data(sce_chcl, package = "scds")
 sce_chcl <- runNormalization(
- inSCE = sce_chcl, 
- normalizationMethod = "SCTransform", 
- useAssay = "counts", 
- outAssayName = "sctCounts")
+ inSCE = sce_chcl,
+ normalizationMethod = "LogNormalize",
+ useAssay = "counts",
+ outAssayName = "logcounts")
 }

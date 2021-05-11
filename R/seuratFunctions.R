@@ -1047,8 +1047,8 @@ convertSCEToSeurat <- function(inSCE, countsAssay = NULL, normAssay = NULL,
 #' @return Updated SingleCellExperiment object containing the transformed data
 #' @export
 #' @examples
-#' data(sce_chcl, package = "scds")
-#' sce_chcl <- seuratSCTransform(sce_chcl, "SCTCounts", "counts")
+#' data("mouseBrainSubsetSCE", package = "singleCellTK")
+#' mouseBrainSubsetSCE <- seuratSCTransform(mouseBrainSubsetSCE)
 seuratSCTransform <- function(inSCE, normAssayName = "SCTCounts",
                               useAssay = "counts", verbose = TRUE) {
   seuratObject <- base::suppressWarnings(Seurat::SCTransform(

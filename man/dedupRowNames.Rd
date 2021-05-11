@@ -36,6 +36,6 @@ replace the unique rownames, store unique rownames in \code{rowData}, or
 return the unique rownames as character vecetor.
 }
 \examples{
-data("sce")
+data("scExample", package = "singleCellTK")
 sce <- dedupRowNames(sce)
 }

@@ -213,7 +213,7 @@ discreteColorPalette <- function(n, palette = c("random", "ggplot", "celda"),
 #' When \code{return.list} is set to \code{TRUE}, will return a character vector
 #' with the deduplicated rownames.
 #' @examples
-#' data("sce")
+#' data("scExample", package = "singleCellTK")
 #' sce <- dedupRowNames(sce)
 dedupRowNames <- function(x, as.rowData = FALSE, return.list = FALSE){
   if(!inherits(rownames(x), "character")){
@@ -381,12 +381,12 @@ retrieveSCEIndex <- function(inSCE, IDs, axis, by = NULL,
 # Convert underscore in an input vector to hyphen (for Seurat code).
 .convertToHyphen <- function(input){
   input <- lapply(
-    X = input, 
+    X = input,
     FUN = function(t) gsub(
-      pattern = "_", 
-      replacement = "-", 
-      x = t, 
+      pattern = "_",
+      replacement = "-",
+      x = t,
       fixed = TRUE)
   )
   return(input)
-} 
+}

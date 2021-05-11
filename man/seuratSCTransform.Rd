@@ -33,6 +33,6 @@ Runs the \link[Seurat]{SCTransform} function to transform/normalize the input
 data
 }
 \examples{
-data(sce_chcl, package = "scds")
-sce_chcl <- seuratSCTransform(sce_chcl, "SCTCounts", "counts")
+data("mouseBrainSubsetSCE", package = "singleCellTK")
+mouseBrainSubsetSCE <- seuratSCTransform(mouseBrainSubsetSCE)
 }
