@@ -8,11 +8,13 @@ importAlevin(alevinDir = NULL, sampleName = "sample", delayedArray = FALSE)
 }
 \arguments{
 \item{alevinDir}{Character. The output directory of salmon-Alevin pipeline.
-It should contain subfolder named 'alevin', which contains the count data which is stored
+It should contain subfolder named 'alevin', which contains the count data
+which is stored
 in 'quants_mat.gz'. Default \code{NULL}.}
 
 \item{sampleName}{Character. A user-defined sample name for the sample to be
-imported. The 'sampleName' will be appended to the begining of cell barcodes. Default is 'sample'.}
+imported. The 'sampleName' will be appended to the begining of cell
+barcodes. Default is 'sample'.}
 
 \item{delayedArray}{Boolean. Whether to read the expression matrix as
 \link{DelayedArray} object or not. Default \code{FALSE}.}

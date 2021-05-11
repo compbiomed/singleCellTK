@@ -8,9 +8,11 @@
 #' will specify the label as 'x'.
 #' @param yAxisLabel Specify the label for y-axis. Default is \code{NULL} which
 #' will specify the label as 'y'.
-#'
 #' @return plot object
 #' @export
+#' @examples
+#' data("mouseBrainSubsetSCE", package = "singleCellTK")
+#' plotDimRed(mouseBrainSubsetSCE, "PCA_logcounts")
 plotDimRed <- function(inSCE, useReduction,
                        showLegend = FALSE,
                        xAxisLabel = NULL,

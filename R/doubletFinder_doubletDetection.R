@@ -130,7 +130,7 @@
     if (verbose) {
         print("Computing pANN across all pK...")
     }
-    for (k in seq_len(length(pK))) {
+    for (k in seq_along(pK)) {
         if (verbose) {
             print(paste("pK = ", pK[k], "...", sep = ""))
         }
@@ -188,7 +188,7 @@
 
         output2 <- withr::with_seed(
             seed,
-            parallel::mclapply(as.list(seq_len(length(pN))),
+            parallel::mclapply(as.list(seq_along(pN)),
                      FUN = .parallel_paramSweep,
                      n.real.cells,
                      real.cells,
@@ -205,7 +205,7 @@
         )
         parallel::stopCluster(cl)
     } else {
-        output2 <- lapply(as.list(seq_len(length(pN))),
+        output2 <- lapply(as.list(seq_along(pN)),
                           FUN = .parallel_paramSweep,
                           n.real.cells,
                           real.cells,
@@ -223,15 +223,15 @@
     ## Write parallelized output into list
     sweep.res.list <- list()
     list.ind <- 0
-    for (i in seq_len(length(output2))) {
-        for (j in seq_len(length(output2[[i]]))) {
+    for (i in seq_along(output2)) {
+        for (j in seq_along(output2[[i]])) {
             list.ind <- list.ind + 1
             sweep.res.list[[list.ind]] <- output2[[i]][[j]]
         }
     }
     ## Assign names to list of results
     name.vec <- NULL
-    for (j in seq_len(length(pN))) {
+    for (j in seq_along(pN)) {
         name.vec <- c(name.vec, paste("pN", pN[j], "pK", pK, sep = "_"))
     }
     names(sweep.res.list) <- name.vec
@@ -448,7 +448,7 @@ runDoubletFinder <- function(inSCE,
   }
 
   ## Perform pN-pK parameter sweep summary
-  for (i in seq_len(length(sweep.list))) {
+  for (i in seq_along(sweep.list)) {
     res.temp <- sweep.list[[i]]
 
     ## Use gaussian kernel density estimation of pANN vector to compute bimodality coefficient
@@ -464,7 +464,7 @@ runDoubletFinder <- function(inSCE,
     meta[,1] <- GT.calls
     meta[,2] <- res.temp$pANN
     train.ind <- sample(seq(nrow(meta)), round(nrow(meta)/2), replace=FALSE)
-    test.ind <- (seq(nrow(meta)))[-train.ind]
+    test.ind <- seq(nrow(meta))[-train.ind]
     colnames(meta) <- c("SinDub","pANN")
     meta$SinDub <- factor(meta$SinDub, levels = c("Doublet","Singlet"))
     model.lm <- stats::glm(SinDub ~ pANN, family=stats::binomial(link='logit'), data=meta, subset=train.ind)

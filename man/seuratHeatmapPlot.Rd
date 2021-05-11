@@ -3,7 +3,8 @@
 \name{seuratHeatmapPlot}
 \alias{seuratHeatmapPlot}
 \title{seuratHeatmapPlot
-Modifies the heatmap plot object so it contains specified number of heatmaps in a single plot}
+Modifies the heatmap plot object so it contains specified number of heatmaps
+in a single plot}
 \usage{
 seuratHeatmapPlot(plotObject, dims, ncol, labels)
 }
@@ -12,7 +13,8 @@ seuratHeatmapPlot(plotObject, dims, ncol, labels)
 
 \item{dims}{numerical value of how many heatmaps to draw (default is 0)}
 
-\item{ncol}{numerical value indicating that in how many columns should the heatmaps be distrbuted (default is 2)}
+\item{ncol}{numerical value indicating that in how many columns should the
+heatmaps be distrbuted (default is 2)}
 
 \item{labels}{list() of labels to draw on heatmaps}
 }
@@ -21,5 +23,6 @@ modified plot object
 }
 \description{
 seuratHeatmapPlot
-Modifies the heatmap plot object so it contains specified number of heatmaps in a single plot
+Modifies the heatmap plot object so it contains specified number of heatmaps
+in a single plot
 }

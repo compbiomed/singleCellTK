@@ -3,7 +3,8 @@
 \name{.getComponentNames}
 \alias{.getComponentNames}
 \title{.getComponentNames
-Creates a list of PC/IC components to populate the picker for PC/IC heatmap generation}
+Creates a list of PC/IC components to populate the picker for PC/IC heatmap
+generation}
 \usage{
 .getComponentNames(maxComponents, component = c("PC", "IC"))
 }
@@ -17,5 +18,6 @@ List of component names (appended with \code{PC} or \code{IC})
 }
 \description{
 .getComponentNames
-Creates a list of PC/IC components to populate the picker for PC/IC heatmap generation
+Creates a list of PC/IC components to populate the picker for PC/IC heatmap
+generation
 }

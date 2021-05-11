@@ -31,7 +31,11 @@
 #' \code{metadata(inSCE)$findMarker} updated with a data.table of the up-
 #' regulated DEGs for each cluster.
 #' @export
-#' @author Yichen Wang
+#' @examples
+#' data("mouseBrainSubsetSCE", package = "singleCellTK")
+#' mouseBrainSubsetSCE <- findMarkerDiffExp(mouseBrainSubsetSCE,
+#'                                          useAssay = "logcounts",
+#'                                          cluster = "level1class")
 findMarkerDiffExp <- function(inSCE, useAssay = 'logcounts',
                               method = c('wilcox', 'MAST', "DESeq2", "Limma",
                                          "ANOVA"),
