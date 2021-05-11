@@ -10,7 +10,8 @@ Retrieves the requested number of variable feature names}
 \arguments{
 \item{inSCE}{(sce) object from which to extract the variable feature names}
 
-\item{numberOfFeatures}{numerical value indicating how many feature names should be retrieved (default is 100)}
+\item{numberOfFeatures}{numerical value indicating how many feature names
+should be retrieved (default is 100)}
 }
 \value{
 list() of variable feature names

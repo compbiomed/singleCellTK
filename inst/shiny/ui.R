@@ -23,7 +23,6 @@ library(singleCellTK)
 library(celda)
 library(shinycssloaders)
 library(shinythemes)
-library(shinyWidgets);
 library(shinyBS);
 library(shinyjqui);
 library(Seurat);
@@ -97,8 +96,8 @@ if (!is.null(getShinyOption("inputSCEset"))){
   curraltExps <- names(altExp(getShinyOption("inputSCEset")))
   ###############################################################
   #from sce
-  cell_list <- BiocGenerics::colnames(getShinyOption("inputSCEset"))
-  gene_list <- BiocGenerics::rownames(getShinyOption("inputSCEset"))
+  cell_list <- colnames(getShinyOption("inputSCEset"))
+  gene_list <- rownames(getShinyOption("inputSCEset"))
   #from assays
   method_list <- names(assays(getShinyOption("inputSCEset")))
   #from reduced

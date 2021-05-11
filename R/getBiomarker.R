@@ -30,7 +30,7 @@ getBiomarker <- function(inSCE, gene, binary="Binary", useAssay="counts",
   }
 
   # Get counts for gene in sample
-  c <- SummarizedExperiment::assay(inSCE, useAssay)[gene.ix, ,drop = F]
+  c <- SummarizedExperiment::assay(inSCE, useAssay)[gene.ix, ,drop = FALSE]
 
   # If color scale is "yes"/"no"
   if (binary == "Binary"){

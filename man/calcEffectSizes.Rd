@@ -24,6 +24,6 @@ significance.
 \examples{
 data("mouseBrainSubsetSCE")
 res <- calcEffectSizes(assay(mouseBrainSubsetSCE, "counts"),
-                       condition = colData(mouseBrainSubsetSCE)[, "level1class"])
+                       condition = colData(mouseBrainSubsetSCE)$level1class)
 
 }

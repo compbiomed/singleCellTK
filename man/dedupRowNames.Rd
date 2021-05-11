@@ -35,3 +35,7 @@ Adds '-1', '-2', ... '-i' to multiple duplicated rownames, and in place
 replace the unique rownames, store unique rownames in \code{rowData}, or
 return the unique rownames as character vecetor.
 }
+\examples{
+data("scExample", package = "singleCellTK")
+sce <- dedupRowNames(sce)
+}

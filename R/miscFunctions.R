@@ -212,6 +212,9 @@ discreteColorPalette <- function(n, palette = c("random", "ggplot", "celda"),
 #' is set to \code{TRUE}, will return \code{x} with \code{rowData} updated.
 #' When \code{return.list} is set to \code{TRUE}, will return a character vector
 #' with the deduplicated rownames.
+#' @examples
+#' data("scExample", package = "singleCellTK")
+#' sce <- dedupRowNames(sce)
 dedupRowNames <- function(x, as.rowData = FALSE, return.list = FALSE){
   if(!inherits(rownames(x), "character")){
     stop("No character rownames found.")
@@ -342,8 +345,7 @@ retrieveSCEIndex <- function(inSCE, IDs, axis, by = NULL,
 }
 
 
-# backup or restore 'factor' columns in a dataframe
-# (for use in col/row annotation editor)
+# Backup or restore 'factor' columns in a dataframe.
 .manageFactor <- function(df, operation = "backup"){
   if(operation == "backup"){
     data <- list()
@@ -366,8 +368,7 @@ retrieveSCEIndex <- function(inSCE, IDs, axis, by = NULL,
   return(data)
 }
 
-#converts the columns of a dataframe from factor to character
-#for use with .manageFactor
+# Converts the columns of a dataframe from factor to character.
 .convertFactorToCharacter <- function(df){
   for (i in seq(length(colnames(df)))) {
     if (is.factor(df[, i])) {
@@ -375,4 +376,17 @@ retrieveSCEIndex <- function(inSCE, IDs, axis, by = NULL,
     }
   }
   return(df)
+}
+
+# Convert underscore in an input vector to hyphen (for Seurat code).
+.convertToHyphen <- function(input){
+  input <- lapply(
+    X = input,
+    FUN = function(t) gsub(
+      pattern = "_",
+      replacement = "-",
+      x = t,
+      fixed = TRUE)
+  )
+  return(input)
 }
