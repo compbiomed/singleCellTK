@@ -11,7 +11,7 @@ The computeHeatmap method computes the heatmap visualization for a set
 computeHeatmap(
   inSCE,
   useAssay,
-  dims = NULL,
+  dims = 10,
   nfeatures = 30,
   cells = NULL,
   reduction = "pca",
@@ -27,7 +27,8 @@ computeHeatmap(
 
 \item{useAssay}{The assay to use for heatmap computation.}
 
-\item{dims}{Specify the number of dimensions to use for heatmap.}
+\item{dims}{Specify the number of dimensions to use for heatmap. Default
+\code{10}.}
 
 \item{nfeatures}{Specify the number of features to use for heatmap. Default
 is \code{30}.}

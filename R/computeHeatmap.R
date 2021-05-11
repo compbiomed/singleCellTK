@@ -5,7 +5,8 @@
 #'  plots the heatmap using \code{ComplexHeatmap} and \code{cowplot} libraries.
 #' @param inSCE Input \code{SingleCellExperiment} object.
 #' @param useAssay The assay to use for heatmap computation.
-#' @param dims Specify the number of dimensions to use for heatmap.
+#' @param dims Specify the number of dimensions to use for heatmap. Default
+#' \code{10}.
 #' @param nfeatures Specify the number of features to use for heatmap. Default
 #' is \code{30}.
 #' @param cells Specify the samples/cells to use for heatmap computation.
@@ -28,7 +29,7 @@
 #' @export
 computeHeatmap <- function(inSCE,
                         useAssay,
-                        dims = NULL,
+                        dims = 10,
                         nfeatures = 30,
                         cells = NULL,
                         reduction = 'pca',
@@ -59,7 +60,8 @@ computeHeatmap <- function(inSCE,
   else{
     ncol <- length(x = dims)
   }
-  #ncol <- ncol %||% ifelse(test = length(x = dims) > 2, yes = 3, no = length(x = dims))
+  #ncol <- ncol %||% ifelse(test = length(x = dims) > 2, yes = 3,
+  #no = length(x = dims))
 
   #empty list = number of dims
   plots <- vector(mode = 'list', length = length(x = dims))
@@ -118,24 +120,22 @@ computeHeatmap <- function(inSCE,
   Seurat::DefaultAssay(object = object) <- assays
 
   #convert (_) to (-) as required by FetchData function below
-  cells <- lapply(
-    X = cells,
-    FUN = function(t) gsub(
-      pattern = "_",
-      replacement = "-",
-      x = t,
-      fixed = TRUE)
-    )
+  cells <- .convertToHyphen(cells)
 
-  #get assay data with only selected features (all dims) and selected cells (all)
+  features.keyed <- .convertToHyphen(features.keyed)
+
+  for (i in seq_len(length(dims))){
+    features[[i]] <- .convertToHyphen(features[[i]])
+  }
+
+  # get assay data with only selected features (all dims) and
+  # selected cells (all)
   data.all <- Seurat::FetchData(
     object = object,
-    vars = features.keyed,
+    vars = unique(x = unlist(x = features.keyed)),
     cells = unique(x = unlist(x = cells)),
     slot = slot
   )
-
-  #
 
   #clip off values for heatmap
   data.all <- Seurat::MinMax(data = data.all, min = disp.min, max = disp.max)
@@ -147,7 +147,8 @@ computeHeatmap <- function(inSCE,
     dim.features <- rev(x = unlist(x = lapply(
       X = dim.features,
       FUN = function(feat) {
-        return(grep(pattern = paste0(feat, '$'), x = features.keyed, value = TRUE))
+        return(grep(pattern = paste0(feat, '$'),
+                    x = features.keyed, value = TRUE))
       }
     )))
     dim.cells <- cells[[i]]

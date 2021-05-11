@@ -5,6 +5,7 @@
 #'
 #' @param inSCE Input \code{SingleCellExperiment} object.
 #' @param useAssay Specify the name of the assay that should be used.
+#'  A normalized assay is recommended for use with this function.
 #' @param hvgMethod Specify the method to use for variable gene selection.
 #'  Options include \code{"vst"}, \code{"mean.var.plot"} or \code{"dispersion"}
 #'  from Seurat and \code{"modelGeneVar"} from Scran.
@@ -22,9 +23,10 @@
 #'                                            "modelGeneVar")
 runFeatureSelection <- function(inSCE,
                                 useAssay,
-                                hvgMethod
+                                hvgMethod = c("vst", "mean.var.plot",
+                                              "dispersion", "modelGeneVar")
                                 ){
-
+  hvgMethod <- match.arg(hvgMethod)
   seuratMethods <- c("vst", "mean.var.plot", "dispersion")
   scranMethods <- c("modelGeneVar")
 

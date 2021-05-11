@@ -318,7 +318,7 @@ shinyPanelSeurat <- fluidPage(
                                                                                                    numericInput("findMarkerHeatmapPlotFullNumeric", value = 10, max = 100, min = 2, step = 1, label = "Select number of top genes from each cluster/group to visualize in the heatmap below based on highest average log fold change value:"),
                                                                                                    actionButton("findMarkerHeatmapPlotFullNumericRun", label = "Plot"),
                                                                                                    hr(),
-                                                                                                   jqui_resizable(
+                                                                                                   shinyjqui::jqui_resizable(
                                                                                                        plotOutput(outputId = "findMarkerHeatmapPlotFull")
                                                                                                    )
                                                                                                )

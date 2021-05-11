@@ -41,10 +41,17 @@
 .computeSignificantPC <- function(inSCE) {
   seuratObject <- convertSCEToSeurat(inSCE)
   max_components <- 0
+  currentDistance <- 0
+  previousDistance <- 0
   for (i in seq(seuratObject[["pca"]]@stdev)[-1]-1) {
-    if (abs(seuratObject[["pca"]]@stdev[i + 1] -
-            seuratObject[["pca"]]@stdev[i]) > 0.1) {
+    currentDistance <- abs(seuratObject[["pca"]]@stdev[i + 1] -
+                             seuratObject[["pca"]]@stdev[i])
+    if (abs(currentDistance - previousDistance) > 0.01) {
+      previousDistance <- currentDistance
       max_components <- i
+    }
+    else{
+      break
     }
   }
   return(max_components)
@@ -291,14 +298,8 @@ seuratComputeJackStraw <- function(inSCE, useAssay, dims = NULL,
   seuratObject <- convertSCEToSeurat(inSCE, scaledAssay = useAssay)
   if(!is.null(externalReduction)){
     #convert (_) to (-) as required by Seurat
-    rownames(externalReduction@cell.embeddings) <- lapply(
-      X = rownames(externalReduction@cell.embeddings),
-      FUN = function(t) gsub(
-        pattern = "_",
-        replacement = "-",
-        x = t,
-        fixed = TRUE)
-    )
+
+    rownames(externalReduction@cell.embeddings) <- .convertToHyphen(rownames(externalReduction@cell.embeddings))
     seuratObject <- Seurat::FindVariableFeatures(seuratObject)
     seuratObject <- Seurat::ScaleData(seuratObject)
     seuratObject@reductions <- list(pca = externalReduction)
@@ -685,6 +686,9 @@ seuratElbowPlot <- function(inSCE,
   }
   plot <- Seurat::ElbowPlot(seuratObject, reduction = reduction, ndims = ndims)
   if(!is.null(significantPC)){
+    if(significantPC > ndims){
+      significantPC <- ndims
+    }
     plot$data$Significant <- c(rep("Yes", significantPC),
                                rep("No", length(rownames(plot$data)) - significantPC))
     plot <- ggplot2::ggplot(data = plot$data,
@@ -703,12 +707,8 @@ seuratElbowPlot <- function(inSCE,
                        plot$data$Significant)
     significant <- plot$data$Significant
     if(length(unique(significant))>1){
-      plot <- plotly::style(plot,
-                            text = hoverText[seq(which(significant == "No")[1])-1])
-      plot <- plotly::style(plot,
-                            text = hoverText[seq(which(significant == "No")[1],
-                                                 length(significant))],
-                            traces = 1)
+      plot <- plotly::style(plot, text = hoverText[seq(which(significant == "No")[1])-1])
+      plot <- plotly::style(plot, text = hoverText[which(significant == "No")[1]:length(significant)], traces = 1)
     }
     else{
       plot <- plotly::style(plot, text = hoverText)
@@ -1007,7 +1007,7 @@ convertSCEToSeurat <- function(inSCE, countsAssay = NULL, normAssay = NULL,
   if (length(SingleCellExperiment::reducedDims(inSCE)) > 0 && copyReducedDim) {
     for (redc in SingleCellExperiment::reducedDimNames(inSCE)) {
       reDim <- SingleCellExperiment::reducedDim(inSCE, redc)
-      colnames(reDim) <- paste0(redc, "_", seq_along(colnames(reDim)))
+      colnames(reDim) <- paste0(redc, "_", seq_len(length(colnames(reDim))))
       rownames(reDim) <- gsub('_', '-', rownames(reDim))
       key <-  gsub('_', '', redc)
       seuratObject@reductions[[redc]] <- Seurat::CreateDimReducObject(embeddings = reDim,
@@ -1163,7 +1163,6 @@ seuratIntegration <- function(inSCE, useAssay = "counts", batch,
   seurat.integrated <- Seurat::IntegrateData(anchorset = seurat.anchors,
                                              dims = seq(ndims),
                                              k.weight = kWeight)
-
   #store results back in altExp slot of sce object
   altExp(inSCE, newAssayName) <- SingleCellExperiment(list(counts = Seurat::GetAssayData(seurat.integrated@assays$integrated, "data")))
   SummarizedExperiment::assayNames(altExp(inSCE,newAssayName)) <- newAssayName
@@ -1217,22 +1216,8 @@ seuratFindMarkers <- function(
   if(is.null(allGroup)
      && (!is.null(group1) && !is.null(group2))){
     #convert (_) to (-) as required by Seurat
-    cells1 <- lapply(
-      X = cells1,
-      FUN = function(t) gsub(
-        pattern = "_",
-        replacement = "-",
-        x = t,
-        fixed = TRUE)
-    )
-    cells2 <- lapply(
-      X = cells2,
-      FUN = function(t) gsub(
-        pattern = "_",
-        replacement = "-",
-        x = t,
-        fixed = TRUE)
-    )
+    cells1 <- .convertToHyphen(cells1)
+    cells2 <- .convertToHyphen(cells2)
     Seurat::Idents(seuratObject, cells = cells1) <- group1
     Seurat::Idents(seuratObject, cells = cells2) <- group2
     markerGenes <- NULL
@@ -1344,14 +1329,7 @@ seuratGenePlot <- function(inSCE,
     indices[[i]] <- which(colData(inSCE)[[groupVariable]] == groups[i],
                           arr.ind = TRUE)
     cells[[i]] <- colnames(inSCE)[indices[[i]]]
-    cells[[i]] <- lapply(
-      X = cells[[i]],
-      FUN = function(t) gsub(
-        pattern = "_",
-        replacement = "-",
-        x = t,
-        fixed = TRUE)
-    )
+    cells[[i]] <- .convertToHyphen(cells[[i]])
     Seurat::Idents(seuratObject, cells = cells[[i]]) <- groups[i]
   }
 
@@ -1449,7 +1427,7 @@ seuratGenePlot <- function(inSCE,
     )
   )
   markers.conserved <- list()
-  for (i in seq_along(marker.test)) {
+  for (i in seq_len(length(x = marker.test))) {
     markers.conserved[[i]] <- marker.test[[i]][genes.conserved, ]
     colnames(x = markers.conserved[[i]]) <- paste(
       names(x = marker.test)[i],

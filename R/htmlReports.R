@@ -165,6 +165,7 @@ reportQCTool <- function(inSCE, algorithm=c("BarcodeRankDrops",
 #' @param output_dir name of the output directory to save the rendered file. If
 #' \code{NULL} the file is stored to the current working directory.
 #' Default \code{NULL}.
+#' @return Saves the HTML report in the specified output directory.
 #' @export
 reportDiffExp <- function(inSCE, study,
                           output_file = NULL,
