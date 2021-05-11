@@ -10,11 +10,14 @@ on each cluster against all the others.}
 findMarkerDiffExp(
   inSCE,
   useAssay = "logcounts",
-  method = "MAST",
+  method = c("wilcox", "MAST", "DESeq2", "Limma", "ANOVA"),
   cluster = "cluster",
   covariates = NULL,
   log2fcThreshold = 0.25,
-  fdrThreshold = 0.05
+  fdrThreshold = 0.05,
+  minClustExprPerc = 0.6,
+  maxCtrlExprPerc = 0.4,
+  minMeanExpr = 0.5
 )
 }
 \arguments{
@@ -24,8 +27,8 @@ findMarkerDiffExp(
 MAST calculations. Default \code{"logcounts"}.}
 
 \item{method}{A single character for specific differential expression
-analysis method. Choose from 'MAST', 'DESeq2', 'Limma', 'ANOVA'. Default
-\code{"MAST"}.}
+analysis method. Choose from \code{'wilcox'}, \code{'MAST'}, \code{'DESeq2'},
+\code{'Limma'}, and \code{'ANOVA'}. Default \code{"wilcox"}.}
 
 \item{cluster}{One single character to specify a column in
 \code{colData(inSCE)} for the clustering label. Alternatively, a vector or
@@ -41,6 +44,17 @@ larger than this value. Default \code{NULL}}
 
 \item{fdrThreshold}{Only out put DEGs with FDR value smaller than this
 value. Default \code{1}}
+
+\item{minClustExprPerc}{A numeric scalar. The minimum cutoff of the
+percentage of cells in the cluster of interests that expressed the marker
+gene. Default \code{0.7}.}
+
+\item{maxCtrlExprPerc}{A numeric scalar. The maximum cutoff of the
+percentage of cells out of the cluster (control group) that expressed the
+marker gene. Default \code{0.4}.}
+
+\item{minMeanExpr}{A numeric scalar. The minimum cutoff of the mean
+expression value of the marker in the cluster of interests. Default \code{1}.}
 }
 \value{
 The input \linkS4class{SingleCellExperiment} object with
@@ -53,6 +67,9 @@ With an input SingleCellExperiment object and specifying the clustering
 labels, this function iteratively call the differential expression analysis
 on each cluster against all the others.
 }
-\author{
-Yichen Wang
+\examples{
+data("mouseBrainSubsetSCE", package = "singleCellTK")
+mouseBrainSubsetSCE <- findMarkerDiffExp(mouseBrainSubsetSCE,
+                                         useAssay = "logcounts",
+                                         cluster = "level1class")
 }

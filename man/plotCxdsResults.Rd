@@ -22,20 +22,20 @@ plotCxdsResults(
   binLabel = NULL,
   defaultTheme = TRUE,
   dotSize = 1,
+  summary = "median",
+  summaryTextSize = 3,
   transparency = 1,
-  titleSize = 18,
-  axisLabelSize = 18,
-  axisSize = 15,
-  legendSize = 15,
-  legendTitleSize = 16,
-  relHeights = c(1.5, 1, 1),
+  baseSize = 15,
+  titleSize = NULL,
+  axisLabelSize = NULL,
+  axisSize = NULL,
+  legendSize = NULL,
+  legendTitleSize = NULL,
+  relHeights = 1,
   relWidths = c(1, 1, 1),
   plotNCols = NULL,
   plotNRows = NULL,
-  plotLabels = "default",
-  plotLabelSize = 20,
-  plotLabelPositionX = NULL,
-  plotLabelPositionY = NULL,
+  labelSamples = TRUE,
   samplePerColumn = TRUE,
   sampleRelHeights = 1,
   sampleRelWidths = 1
@@ -92,17 +92,27 @@ when TRUE. Default TRUE.}
 
 \item{dotSize}{Size of dots. Default 1.}
 
+\item{summary}{Adds a summary statistic, as well as a crossbar to the
+violin plot. Options are "mean" or "median". Default NULL.}
+
+\item{summaryTextSize}{The text size of the summary statistic displayed
+above the violin plot. Default 3.}
+
 \item{transparency}{Transparency of the dots, values will be 0-1. Default 1.}
 
-\item{titleSize}{Size of title of plot. Default 18.}
+\item{baseSize}{The base font size for all text. Default 12.
+Can be overwritten by titleSize, axisSize, and axisLabelSize,
+legendSize, legendTitleSize.}
 
-\item{axisLabelSize}{Size of x/y-axis labels. Default 18.}
+\item{titleSize}{Size of title of plot. Default NULL.}
 
-\item{axisSize}{Size of x/y-axis ticks. Default 15.}
+\item{axisLabelSize}{Size of x/y-axis labels. Default NULL.}
 
-\item{legendSize}{size of legend. Default 15.}
+\item{axisSize}{Size of x/y-axis ticks. Default NULL.}
 
-\item{legendTitleSize}{size of legend title. Default 16.}
+\item{legendSize}{size of legend. Default NULL.}
+
+\item{legendTitleSize}{size of legend title. Default NULL.}
 
 \item{relHeights}{Relative heights of plots when combine is set.}
 
@@ -112,14 +122,7 @@ when TRUE. Default TRUE.}
 
 \item{plotNRows}{Number of rows when plots are combined in a grid.}
 
-\item{plotLabels}{labels to each plot. If set to "default", will use the name of the samples
-as the labels. If set to "none", no label will be plotted.}
-
-\item{plotLabelSize}{size of labels}
-
-\item{plotLabelPositionX}{Numeric vector. The X position of the plot label.}
-
-\item{plotLabelPositionY}{Numeric vector. The Y position of the plot label.}
+\item{labelSamples}{Will label sample name in title of plot if TRUE. Default TRUE.}
 
 \item{samplePerColumn}{If TRUE, when there are multiple samples and combining by "all",
 the output .ggplot will have plots from each sample on a single column. Default TRUE.}

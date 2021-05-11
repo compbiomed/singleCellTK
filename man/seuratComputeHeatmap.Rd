@@ -11,27 +11,51 @@ seuratComputeHeatmap(
   useReduction = c("pca", "ica"),
   dims = NULL,
   nfeatures = 30,
+  cells = NULL,
+  ncol = NULL,
+  balanced = TRUE,
   fast = TRUE,
   combine = TRUE,
-  raster = TRUE
+  raster = TRUE,
+  externalReduction = NULL
 )
 }
 \arguments{
-\item{inSCE}{(sce) object from which to compute heatmap (pca should be computed)}
+\item{inSCE}{(sce) object from which to compute heatmap (pca should be
+computed)}
 
 \item{useAssay}{Assay containing scaled counts to use in heatmap.}
 
-\item{useReduction}{Reduction method to use for computing clusters. One of "pca" or "ica". Default \code{"pca"}.}
+\item{useReduction}{Reduction method to use for computing clusters. One of
+"pca" or "ica". Default \code{"pca"}.}
 
-\item{dims}{Number of components to generate heatmap plot objects. If \code{NULL}, a heatmap will be generated for all components. Default \code{NULL}.}
+\item{dims}{Number of components to generate heatmap plot objects. If
+\code{NULL}, a heatmap will be generated for all components. Default
+\code{NULL}.}
 
-\item{nfeatures}{Numer of features to include in the heatmap. Default \code{30}.}
+\item{nfeatures}{Number of features to include in the heatmap. Default
+\code{30}.}
 
-\item{fast}{See \link[Seurat]{DimHeatmap} for more information. Default \code{TRUE}.}
+\item{cells}{Numeric value indicating the number of top cells to plot.
+Default is \code{NULL} which indicates all cells.}
 
-\item{combine}{See \link[Seurat]{DimHeatmap} for more information. Default \code{TRUE}.}
+\item{ncol}{Numeric value indicating the number of columns to use for plot.
+Default is \code{NULL} which will automatically compute accordingly.}
 
-\item{raster}{See \link[Seurat]{DimHeatmap} for more information. Default \code{TRUE}.}
+\item{balanced}{Plot equal number of genes with positive and negative scores.
+Default is \code{TRUE}.}
+
+\item{fast}{See \link[Seurat]{DimHeatmap} for more information. Default
+\code{TRUE}.}
+
+\item{combine}{See \link[Seurat]{DimHeatmap} for more information. Default
+\code{TRUE}.}
+
+\item{raster}{See \link[Seurat]{DimHeatmap} for more information. Default
+\code{TRUE}.}
+
+\item{externalReduction}{Pass DimReduc object if PCA/ICA computed through
+other libraries. Default \code{NULL}.}
 }
 \value{
 plot object

@@ -52,6 +52,14 @@
 #' to see if the counts are logged. Default \code{TRUE}
 #' @return A ggplot object of violin plot
 #' @export
+#' @examples
+#' data("sceBatches")
+#' logcounts(sceBatches) <- log(counts(sceBatches) + 1)
+#' sce.w <- subsetSCECols(sceBatches, colData = "batch == 'w'")
+#' sce.w <- runWilcox(sce.w, class = "cell_type", classGroup1 = "alpha",
+#'                    groupName1 = "w.alpha", groupName2 = "w.beta",
+#'                    analysisName = "w.aVSb")
+#' plotDEGViolin(sce.w, "w.aVSb")
 plotDEGViolin <- function(inSCE, useResult, threshP = FALSE, labelBy = NULL,
                           nrow = 6, ncol = 6, defaultTheme = TRUE,
                           isLogged = TRUE, check_sanity = TRUE){
@@ -75,7 +83,7 @@ plotDEGViolin <- function(inSCE, useResult, threshP = FALSE, labelBy = NULL,
   } else {
     replGeneName <- geneToPlot
   }
-  expres <- SummarizedExperiment::assay(inSCE[geneToPlot, c(cells1, cells2)],
+  expres <- expData(inSCE[geneToPlot, c(cells1, cells2)],
                                         useAssay)
   if(!is.matrix(expres)){
     expres <- as.matrix(expres)
@@ -141,6 +149,14 @@ plotDEGViolin <- function(inSCE, useResult, threshP = FALSE, labelBy = NULL,
 #' to see if the counts are logged. Default \code{TRUE}
 #' @return A ggplot object of linear regression
 #' @export
+#' @examples
+#' data("sceBatches")
+#' logcounts(sceBatches) <- log(counts(sceBatches) + 1)
+#' sce.w <- subsetSCECols(sceBatches, colData = "batch == 'w'")
+#' sce.w <- runWilcox(sce.w, class = "cell_type", classGroup1 = "alpha",
+#'                    groupName1 = "w.alpha", groupName2 = "w.beta",
+#'                    analysisName = "w.aVSb")
+#' plotDEGRegression(sce.w, "w.aVSb")
 plotDEGRegression <- function(inSCE, useResult, threshP = FALSE, labelBy = NULL,
                               nrow = 6, ncol = 6, defaultTheme = TRUE,
                               isLogged = TRUE, check_sanity = TRUE){
@@ -163,7 +179,7 @@ plotDEGRegression <- function(inSCE, useResult, threshP = FALSE, labelBy = NULL,
   } else {
     replGeneName <- geneToPlot
   }
-  expres <- SummarizedExperiment::assay(inSCE[geneToPlot, c(cells1, cells2)],
+  expres <- expData(inSCE[geneToPlot, c(cells1, cells2)],
                                         useAssay)
   if(!is.matrix(expres)){
     expres <- as.matrix(expres)
@@ -284,16 +300,13 @@ plotDEGRegression <- function(inSCE, useResult, threshP = FALSE, labelBy = NULL,
 #' \code{"MAST Result: <useResult>"}.
 #' @param ... Other arguments passed to \code{\link{plotSCEHeatmap}}
 #' @examples
-#' data(scExample, package = "singleCellTK")
-#' \dontrun{
-#' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
-#' sce <- runDEAnalysis(inSCE = sce, method = "DESeq2",
-#'                      groupName1 = "Sample1", groupName2 = "Sample2",
-#'                      index1 = 1:100, index2 = 101:190,
-#'                      analysisName = "DESeq2")
-#' plotDEGHeatmap(sce, useResult = "DESeq2", fdrThreshold = 1, doLog = TRUE)
-#' }
-#'
+#' data("sceBatches")
+#' logcounts(sceBatches) <- log(counts(sceBatches) + 1)
+#' sce.w <- subsetSCECols(sceBatches, colData = "batch == 'w'")
+#' sce.w <- runWilcox(sce.w, class = "cell_type", classGroup1 = "alpha",
+#'                    groupName1 = "w.alpha", groupName2 = "w.beta",
+#'                    analysisName = "w.aVSb")
+#' plotDEGHeatmap(sce.w, "w.aVSb")
 #' @return A \code{ComplexHeatmap::Heatmap} object
 #' @export
 #' @author Yichen Wang
@@ -425,24 +438,28 @@ plotDEGHeatmap <- function(inSCE, useResult, doLog = FALSE, onlyPos = FALSE,
 #' \code{\link[MAST]{thresholdSCRNACountMatrix}}
 #' @param inSCE SingleCellExperiment object
 #' @param useAssay character, default \code{"logcounts"}
+#' @param doPlot Logical scalar. Whether to directly plot in the plotting area.
+#' If \code{FALSE}, will return a graphical object which can be visualized with
+#' \code{grid.draw()}. Default \code{TRUE}.
 #' @param isLogged Logical scalar. Whether the assay used for the analysis is
 #' logged. If not, will do a \code{log(assay + 1)} transformation. Default
 #' \code{TRUE}.
 #' @param check_sanity Logical scalar. Whether to perform MAST's sanity check
 #' to see if the counts are logged. Default \code{TRUE}
-#' @return Plot the thresholding onto the plotting region.
+#' @return Plot the thresholding onto the plotting region if \code{plot == TRUE}
+#' or a graphical object if \code{plot == FALSE}.
 #' @export
 #' @examples
 #' data("mouseBrainSubsetSCE")
 #' plotMASTThresholdGenes(mouseBrainSubsetSCE)
-plotMASTThresholdGenes <- function(inSCE, useAssay="logcounts",
+plotMASTThresholdGenes <- function(inSCE, useAssay="logcounts", doPlot = TRUE,
                                    isLogged = TRUE, check_sanity = TRUE){
   # data preparation
-  expres <- SummarizedExperiment::assay(inSCE, useAssay)
+  expres <- expData(inSCE, useAssay)
   if(!is.matrix(expres)){
     expres <- as.matrix(expres)
   }
-  expres <- featureNameDedup(expres)
+  expres <- dedupRowNames(expres)
   fdata <- data.frame(Gene = rownames(expres))
   rownames(fdata) <- fdata$Gene
   SCENew <- MAST::FromMatrix(expres, SingleCellExperiment::colData(inSCE),
@@ -452,8 +469,15 @@ plotMASTThresholdGenes <- function(inSCE, useAssay="logcounts",
     SummarizedExperiment::assay(SCENew), nbins = 20, min_per_bin = 30,
     data_log = isLogged)))
   # plotting
-  graphics::par(mfrow = c(5, 4))
-  graphics::plot(thres)
-  graphics::par(mfrow = c(1, 1))
-  # return(thres)
+  plotNRow <- ceiling(length(thres$valleys) / 4)
+  thres.grob <- ggplotify::as.grob(function(){
+    graphics::par(mfrow = c(plotNRow, 4), mar = c(3, 3, 2, 1),
+        mgp = c(2, 0.7, 0), tck = -0.01, new = TRUE)
+    plot(thres)
+  })
+  if (isTRUE(doPlot)) {
+    grid::grid.draw(thres.grob)
+  } else {
+    return(thres.grob)
+  }
 }

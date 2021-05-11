@@ -6,13 +6,14 @@
 \usage{
 plotSCEDensityColData(
   inSCE,
-  sample = NULL,
   coldata,
+  sample = NULL,
   groupBy = NULL,
   xlab = NULL,
   ylab = NULL,
-  axisSize = 10,
-  axisLabelSize = 10,
+  baseSize = 12,
+  axisSize = NULL,
+  axisLabelSize = NULL,
   defaultTheme = TRUE,
   title = NULL,
   titleSize = 18,
@@ -25,9 +26,9 @@ plotSCEDensityColData(
 \item{inSCE}{Input \linkS4class{SingleCellExperiment} object with saved
 dimension reduction components or a variable with saved results. Required.}
 
-\item{sample}{Character vector. Indicates which sample each cell belongs to.}
-
 \item{coldata}{colData value that will be plotted.}
+
+\item{sample}{Character vector. Indicates which sample each cell belongs to.}
 
 \item{groupBy}{Groupings for each numeric value. A user may input a vector
 equal length to the number of the samples in the SingleCellExperiment
@@ -37,9 +38,13 @@ object, or can be retrieved from the colData slot. Default NULL.}
 
 \item{ylab}{Character vector. Label for y-axis. Default NULL.}
 
-\item{axisSize}{Size of x/y-axis ticks. Default 10.}
+\item{baseSize}{The base font size for all text. Default 12.
+Can be overwritten by titleSize, axisSize, and axisLabelSize,
+legendSize, legendTitleSize.}
 
-\item{axisLabelSize}{Size of x/y-axis labels. Default 10.}
+\item{axisSize}{Size of x/y-axis ticks. Default NULL.}
+
+\item{axisLabelSize}{Size of x/y-axis labels. Default NULL.}
 
 \item{defaultTheme}{Removes grid in plot and sets axis title size to 10
 when TRUE. Default TRUE.}

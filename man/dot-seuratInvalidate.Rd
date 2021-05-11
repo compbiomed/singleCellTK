@@ -3,7 +3,8 @@
 \name{.seuratInvalidate}
 \alias{.seuratInvalidate}
 \title{.seuratInvalidate
-Removes seurat data from the input SingleCellExperiment object specified by the task in the Seurat workflow.}
+Removes seurat data from the input SingleCellExperiment object specified by
+the task in the Seurat workflow.}
 \usage{
 .seuratInvalidate(
   inSCE,
@@ -17,7 +18,8 @@ Removes seurat data from the input SingleCellExperiment object specified by the 
 )
 }
 \arguments{
-\item{inSCE}{Input \code{SingleCellExperiment} object to remove Seurat data from.}
+\item{inSCE}{Input \code{SingleCellExperiment} object to remove Seurat data
+from.}
 
 \item{scaleData}{Remove scaled data from seurat. Default \code{TRUE}.}
 
@@ -34,9 +36,11 @@ Removes seurat data from the input SingleCellExperiment object specified by the 
 \item{clusters}{Remove clusters from seurat. Default \code{TRUE}.}
 }
 \value{
-Updated SingleCellExperiment object containing the Seurat object in the metadata slot with the data removed
+Updated SingleCellExperiment object containing the Seurat object in
+the metadata slot with the data removed
 }
 \description{
 .seuratInvalidate
-Removes seurat data from the input SingleCellExperiment object specified by the task in the Seurat workflow.
+Removes seurat data from the input SingleCellExperiment object specified by
+the task in the Seurat workflow.
 }

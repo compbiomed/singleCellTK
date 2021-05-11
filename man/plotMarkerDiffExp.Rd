@@ -6,10 +6,12 @@
 \usage{
 plotMarkerDiffExp(
   inSCE,
-  useAssay = "logcounts",
   orderBy = "size",
   log2fcThreshold = 1,
   fdrThreshold = 0.05,
+  minClustExprPerc = 0.7,
+  maxCtrlExprPerc = 0.4,
+  minMeanExpr = 1,
   topN = 10,
   decreasing = TRUE,
   rowDataName = NULL,
@@ -26,9 +28,6 @@ plotMarkerDiffExp(
 \arguments{
 \item{inSCE}{\linkS4class{SingleCellExperiment} inherited object.}
 
-\item{useAssay}{character. A string specifying which assay to use for the
-expression values. Default \code{"logcounts"}.}
-
 \item{orderBy}{The ordering method of the clusters on the splitted heatmap.
 Can be chosen from \code{"size"} or \code{"name"}, specified with vector of
 ordered unique cluster labels, or set as \code{NULL} for unsplitted heatmap.
@@ -39,6 +38,17 @@ larger than this value. Default \code{1}}
 
 \item{fdrThreshold}{Only use DEGs with FDR value smaller than this value.
 Default \code{0.05}}
+
+\item{minClustExprPerc}{A numeric scalar. The minimum cutoff of the
+percentage of cells in the cluster of interests that expressed the marker
+gene. Default \code{0.7}.}
+
+\item{maxCtrlExprPerc}{A numeric scalar. The maximum cutoff of the
+percentage of cells out of the cluster (control group) that expressed the
+marker gene. Default \code{0.4}.}
+
+\item{minMeanExpr}{A numeric scalar. The minimum cutoff of the mean
+expression value of the marker in the cluster of interests. Default \code{1}.}
 
 \item{topN}{An integer. Only to plot this number of top markers for each
 cluster in maximum, in terms of log2FC value. Use \code{NULL} to cancel the
@@ -99,6 +109,13 @@ labeling used when finding the markers, and a feature annotation for which
 cluster each gene belongs to. And by default we split the heatmap by these
 two annotations. Additional legends can be added and the splitting can be
 canceled.
+}
+\examples{
+data("sceBatches")
+logcounts(sceBatches) <- log(counts(sceBatches) + 1)
+sce.w <- subsetSCECols(sceBatches, colData = "batch == 'w'")
+sce.w <- findMarkerDiffExp(sce.w, method = "wilcox", cluster = "cell_type")
+plotMarkerDiffExp(sce.w)
 }
 \author{
 Yichen Wang

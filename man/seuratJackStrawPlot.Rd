@@ -3,21 +3,38 @@
 \name{seuratJackStrawPlot}
 \alias{seuratJackStrawPlot}
 \title{seuratJackStrawPlot
-Computes the plot object for jackstraw plot from the pca slot in the input sce object}
+Computes the plot object for jackstraw plot from the pca slot in the input
+sce object}
 \usage{
-seuratJackStrawPlot(inSCE, dims = NULL)
+seuratJackStrawPlot(
+  inSCE,
+  dims = NULL,
+  xmax = 0.1,
+  ymax = 0.3,
+  externalReduction = NULL
+)
 }
 \arguments{
-\item{inSCE}{(sce) object from which to compute the jackstraw plot (pca should be computed)}
+\item{inSCE}{(sce) object from which to compute the jackstraw plot (pca
+should be computed)}
 
-\item{dims}{Number of components to plot in Jackstraw. If \code{NULL}, then all components are plotted Default \code{NULL}.}
+\item{dims}{Number of components to plot in Jackstraw. If \code{NULL}, then
+all components are plotted Default \code{NULL}.}
+
+\item{xmax}{X-axis maximum on each QQ plot. Default \code{0.1}.}
+
+\item{ymax}{Y-axis maximum on each QQ plot. Default \code{0.3}.}
+
+\item{externalReduction}{Pass DimReduc object if PCA/ICA computed through
+other libraries. Default \code{NULL}.}
 }
 \value{
 plot object
 }
 \description{
 seuratJackStrawPlot
-Computes the plot object for jackstraw plot from the pca slot in the input sce object
+Computes the plot object for jackstraw plot from the pca slot in the input
+sce object
 }
 \examples{
 data(scExample, package = "singleCellTK")

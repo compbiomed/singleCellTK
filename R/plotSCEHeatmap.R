@@ -199,7 +199,7 @@ plotSCEHeatmap <- function(inSCE, useAssay = 'logcounts', doLog = FALSE,
     if(!inherits(inSCE, "SingleCellExperiment")){
         stop('Input object is not a valid SingleCellExperiment object.')
     }
-    if(!useAssay %in% SummarizedExperiment::assayNames(inSCE)){
+    if(!useAssay %in% expDataNames(inSCE)){
         stop('Specified assay does not exist in input SCE object')
     }
     if(!all(rowDataName %in% names(SummarizedExperiment::rowData(inSCE)))){
@@ -363,7 +363,7 @@ plotSCEHeatmap <- function(inSCE, useAssay = 'logcounts', doLog = FALSE,
     }
 
     # Extract
-    mat <- as.matrix(SummarizedExperiment::assay(inSCE, useAssay))
+    mat <- as.matrix(expData(inSCE, useAssay))
     if (isTRUE(doLog)) {
       mat <- log(mat + 1)
     }

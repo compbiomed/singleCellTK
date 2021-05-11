@@ -27,7 +27,8 @@ runDESeq2(
 \item{inSCE}{\linkS4class{SingleCellExperiment} inherited object.}
 
 \item{useAssay}{character. A string specifying which assay to use for the
-DESeq2 regression. Default \code{"logcounts"}.}
+DESeq2 regression. The assay should be a raw count assay. Default
+\code{"counts"}.}
 
 \item{index1}{Any type of indices that can subset a
 \linkS4class{SingleCellExperiment} inherited object by cells. Specifies
@@ -96,7 +97,6 @@ used.
 data(scExample, package = "singleCellTK")
 sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 sce <- runDESeq2(inSCE = sce, groupName1 = "Sample1",
- groupName2 = "Sample2", index1 = 1:20, index2 = 21:40,
+ groupName2 = "Sample2", index1 = seq(5), index2 = seq(6,10),
  analysisName = "DESeq2")
-
 }

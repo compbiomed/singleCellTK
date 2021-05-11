@@ -18,6 +18,10 @@
 #' \code{\link{assay}} in the chosen
 #' \code{\link{altExp}} to work on. Only used when
 #' \code{useAltExp} is set. Default \code{"counts"}.
+#' @param altExpRedDim A single \code{character}, specifying which
+#' \code{\link{reducedDim}} within the \code{\link{altExp}} specified by
+#' \code{useAltExp} to use. Only used when \code{useAltExp} is set. Default
+#' \code{NULL}.
 #' @param clusterName A single \code{character}, specifying the name to store
 #' the cluster label in \code{\link{colData}}. Default
 #' \code{"scranSNN_cluster"}.
@@ -45,6 +49,7 @@
 #'                                    useReducedDim = "PCA_logcounts")
 runScranSNN <- function(inSCE, useAssay = NULL, useReducedDim = NULL,
                         useAltExp = NULL, altExpAssay = "counts",
+                        altExpRedDim = NULL,
                         clusterName = "scranSNN_cluster",
                         k = 10, nComp = 50,
                         weightType = c("rank", "number", "jaccard"),
@@ -86,11 +91,19 @@ runScranSNN <- function(inSCE, useAssay = NULL, useReducedDim = NULL,
       stop("Specified altExp '", useAltExp, "' not found.")
     }
     ae <- SingleCellExperiment::altExp(inSCE, useAltExp)
-    if (!altExpAssay %in% SummarizedExperiment::assayNames(ae)) {
-      stop("altExpAssay: '", altExpAssay, "' not in specified altExp.")
+    if (!is.null(altExpRedDim)) {
+      if (!altExpRedDim %in% SingleCellExperiment::reducedDimNames(ae)) {
+        stop("altExpRedDim: '", altExpRedDim, "' not in specified altExp.")
+      }
+      g <- scran::buildSNNGraph(x = ae, k = k, use.dimred = altExpRedDim,
+                                type = weightType)
+    } else {
+      if (!altExpAssay %in% SummarizedExperiment::assayNames(ae)) {
+        stop("altExpAssay: '", altExpAssay, "' not in specified altExp.")
+      }
+      g <- scran::buildSNNGraph(x = ae, k = k, assay.type = altExpAssay,
+                                d = nComp, type = weightType, use.dimred = NULL)
     }
-    g <- scran::buildSNNGraph(x = ae, k = k, assay.type = altExpAssay,
-                              d = nComp, type = weightType, use.dimred = NULL)
   }
 
   clustFunc = graphClustAlgoList[[algorithm]]

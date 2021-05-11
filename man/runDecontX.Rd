@@ -24,9 +24,11 @@ runDecontX(
 \arguments{
 \item{inSCE}{A \link[SingleCellExperiment]{SingleCellExperiment} object.}
 
-\item{sample}{Character vector. Indicates which sample each cell belongs to.
-Default NULL. \link[celda]{decontX} will be run on cells from each
-sample separately.}
+\item{sample}{A single character specifying a name that can be found in
+\code{colData(inSCE)} to directly use the cell annotation; or a character
+vector with as many elements as cells to indicates which sample each cell
+belongs to. Default NULL. \link[celda]{decontX} will be run on cells from
+each sample separately.}
 
 \item{useAssay}{A string specifying which assay in the SCE to use. Default
 'counts'.}
@@ -97,5 +99,5 @@ A wrapper function for \link[celda]{decontX}. Identify
 \examples{
 data(scExample, package = "singleCellTK")
 sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
-sce <- runDecontX(sce)
+sce <- runDecontX(sce[,sample(ncol(sce),20)])
 }

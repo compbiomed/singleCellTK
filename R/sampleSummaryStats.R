@@ -6,8 +6,8 @@
 
     if ("sum" %in% colnames(SummarizedExperiment::colData(inSCE))) {
         metrics <- c(metrics, "Mean counts", "Median counts")
-        values <- c(values, signif(mean(inSCE$sum), 3),
-                    signif(stats::median(inSCE$sum), 3))
+        values <- c(values, mean(inSCE$sum),
+                    stats::median(inSCE$sum))
     }
 
     if ("detected" %in% colnames(SummarizedExperiment::colData(inSCE))) {
@@ -15,8 +15,8 @@
             metrics, "Mean features detected",
             "Median features detected"
         )
-        values <- c(values, signif(mean(inSCE$detected), 3),
-                    signif(stats::median(inSCE$detected), 3))
+        values <- c(values, mean(inSCE$detected),
+                    stats::median(inSCE$detected))
     }
 
     if(simple != TRUE){
@@ -44,12 +44,11 @@
             )
         }
 
-        if ("scran_doubletCells_score_log10" %in% colnames(SummarizedExperiment::colData(inSCE))) {
-            metrics <- c(metrics, "DoubletCells - Doublet score outliers")
-            values <- c(values, sum(scater::isOutlier(inSCE$scran_doubletCells_score_log10,
-                                                  type = "higher"
-            )))
-
+        if ("scDblFinder_class" %in% colnames(SummarizedExperiment::colData(inSCE))) {
+            metrics <- c(metrics, "scDblFinder - Number of doublets",
+                         "scDblFinder - Percentage of doublets")
+            values <- c(values, sum(inSCE$scDblFinder_class == "doublet"),
+                        signif(sum(inSCE$scDblFinder_class == "doublet")/length(inSCE$scDblFinder_class) * 100, 3))
         }
 
         if (any(grepl("doubletFinder_doublet_label_resolution",
@@ -175,7 +174,7 @@ sampleSummaryStats <- function(inSCE,
     }
 
     dfTableRes <- as.data.frame(dfTableRes)
-    dfTableRes <- apply(dfTableRes, 1:2, function(x){
+    dfTableRes <- apply(dfTableRes, seq(2), function(x){
         if(grepl(as.character(x), "\\.0000")){
             return(as.integer(x))
         }else{

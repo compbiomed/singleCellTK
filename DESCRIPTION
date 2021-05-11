@@ -1,7 +1,7 @@
 Package: singleCellTK
 Type: Package
 Title: Comprehensive and Interactive Analysis of Single Cell RNA-Seq Data
-Version: 2.1.0
+Version: 2.0.2
 Authors@R: c(person(given="David", family="Jenkins", email="dfj@bu.edu", role=c("aut"),
                     comment = c(ORCID = "0000-0002-7451-4288")),
              person(given="Vidya", family="Akavoor", email="vidyaap@bu.edu", role=c("aut")),
@@ -37,8 +37,8 @@ LazyData: TRUE
 Imports:
     ape,
     batchelor,
-    BiocGenerics,
     BiocParallel,
+    celldex,
     colourpicker,
     colorspace,
     cowplot,
@@ -77,11 +77,8 @@ Imports:
     scran,
     Seurat (>= 3.1.3),
     shiny,
-    shinyFiles,
-    shinyWidgets,
     shinyjs,
-    shinyBS,
-    shinyjqui,
+    SingleR,
     sva,
     reshape2,
     AnnotationDbi,
@@ -90,12 +87,13 @@ Imports:
     enrichR,
     celda,
     shinycssloaders,
-    shinythemes,
     uwot,
     DropletUtils,
     scds (>= 1.2.0),
     reticulate (>= 1.14),
     tools,
+    tximport,
+    fishpond,
     withr,
     GSEABase,
     R.utils,
@@ -105,8 +103,8 @@ Imports:
     yaml,
     rmarkdown,
     magrittr,
-    kableExtra,
-    scDblFinder
+    scDblFinder,
+    metap
 RoxygenNote: 7.1.1
 Suggests:
     testthat,
@@ -114,11 +112,17 @@ Suggests:
     BiocStyle,
     knitr,
     lintr,
-    bladderbatch,
     xtable,
     spelling,
     org.Mm.eg.db,
-    stringr
+    stringr,
+    kableExtra,
+    shinythemes,
+    shinyBS,
+    shinyjqui,
+    shinyWidgets,
+    shinyFiles,
+    BiocGenerics
 VignetteBuilder: knitr
 URL: https://compbiomed.github.io/sctk_docs/
 BugReports: https://github.com/compbiomed/singleCellTK/issues

@@ -2,7 +2,7 @@
 #' Imports samples from different sources and compiles them into a list of SCE objects
 #' @param allImportEntries object containing the sources and parameters of all the samples being imported (from the UI)
 #' @param delayedArray Boolean. Whether to read the expression matrix as
-#'  \link{DelayedArray} object or not. Default \code{TRUE}.
+#'  \link{DelayedArray} object or not. Default \code{FALSE}.
 #' @return A list of \link[SingleCellExperiment]{SingleCellExperiment} object containing
 #' the droplet or cell data or both,depending on the dataType that users provided.
 #' @export
@@ -24,7 +24,7 @@ importMultipleSources <- function(allImportEntries, delayedArray = FALSE) {
           delayedArray = delayedArray
         )
       }
-      
+
     } else if (entry$type == "cellRanger3") {
       if (is.null(entry$params$cellRangerDirs)) {
         newSce <- importCellRangerV3Sample(
@@ -93,11 +93,10 @@ importMultipleSources <- function(allImportEntries, delayedArray = FALSE) {
           SummarizedExperiment::assay(newSce, assay) <- DelayedArray::DelayedArray(SummarizedExperiment::assay(newSce, assay))
         }
       }
-      
+
     }
     sceObjs = c(sceObjs, list(newSce))
   }
-  
   return(combineSCE(sceList = sceObjs,
                     by.r = Reduce(base::intersect, lapply(sceObjs, function(x) { colnames(rowData(x))})),
                     by.c = Reduce(base::intersect, lapply(sceObjs, function(x) { colnames(colData(x))})),

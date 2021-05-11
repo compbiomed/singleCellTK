@@ -1,0 +1,112 @@
+---
+title: "Seurat Curated Workflow (Console)"
+author: "Irzam Sarfraz"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Introduction
+[Seurat](https://satijalab.org/seurat/) is an R package ([Butler et al., Nature Biotechnology 2018](https://www.nature.com/articles/nbt.4096) & [Stuart*, Butler*, et al., Cell 2019](https://www.cell.com/cell/fulltext/S0092-8674(19)30559-8)) that offers various functions to perform analysis of scRNA-Seq data on the R console.
+
+All methods provided by SCTK for Seurat workflow use a \code{SingleCellExperiment} object both as an input and output.
+
+Using a sample dataset:
+```{r,  message=FALSE}
+library(singleCellTK)
+```
+```{r, message=FALSE}
+sce <- importExampleData('pbmc3k')
+```
+```{r}
+sce
+```
+
+## 1.	Normalize Data
+Once raw data is uploaded and stored in a SingleCellExperiment object, seuratNormalizeData function can be used to normalize the data. The method returns a SingleCellExperiment object with normalized data stored as a new assay in the input object. 
+
+Parameters to this function include useAssay (specify the assay that should be normalized), normAssayName (specify the new name of the normalized assay, defaults to "seuratNormData"), normalizationMethod (specify the normalization method to use, defaults to "LogNormalize") and scaleFactor (defaults to 10000).
+
+```{r}
+sce <- seuratNormalizeData(inSCE = sce, useAssay = "counts", normAssayName = "seuratNormData")
+```
+
+## 2.	Scale Data
+Normalized data can be scaled by using the seuratScaleData function that takes inputs a SingleCellExperiment object that has been normalized previously by the seuratNormalizeData function. Scaled assay is stored back in the input object. 
+
+Parameters include  useAssay (specify the name of normalized assay), scaledAssayName (specify the new name for scaled assay, defaults to "seuratScaledData"), model (specify the method to use, defaults to "linear"), scale (specify if the data should be scaled, defaults to TRUE), center (specify if the data should be centered, defaults to TRUE) and scaleMax (specify the maximum clipping value, defaults to 10).
+
+```{r}
+sce <- seuratScaleData(inSCE = sce, useAssay = "seuratNormData", scaledAssayName = "seuratScaledData")
+```
+
+## 3.	Highly Variable Genes
+Highly variable genes can be identified by first using the seuratFindHVG function that computes that statistics against a selected HVG method in the rowData of input object. The genes can be identified by using the .seuratGetVariableFeatures function. The variable genes can be visualized using the seuratPlotHVG(vals$counts) method. 
+Parameters for seuratFindHVG include useAssay (specify the name of the scaled assay, defaults to "seuratScaledData") and hvgMethod (specify the method to use for variable genes computation, defaults to "vst").
+
+```{r}
+sce <- seuratFindHVG(inSCE = sce, useAssay = "seuratScaledData", hvgMethod = "vst")
+print(singleCellTK:::.seuratGetVariableFeatures(sce, 100))
+seuratPlotHVG(sce)
+```
+
+## 4.	Dimensionality Reduction
+PCA or ICA can be computed using the seuratPCA and seuratICA functions respectively. Plots can be visualized using seuratReductionPlot, seuratElbowPlot, seuratComputeJackStraw, seuratJackStrawPlot, seuratComputeHeatmap.
+
+```{r}
+sce <- seuratPCA(inSCE = sce, useAssay = "seuratScaledData", reducedDimName = "seuratPCA", nPCs = 20)
+seuratReductionPlot(inSCE = sce, useReduction = "pca")
+seuratElbowPlot(inSCE = sce)
+sce <- seuratComputeJackStraw(inSCE = sce, useAssay = "seuratScaledData", dims = 20)
+seuratJackStrawPlot(inSCE = sce, dims = 20)
+seuratComputeHeatmap(inSCE = sce, useAssay = "seuratScaledData", useReduction = "pca", nfeatures = 20, dims = 2)
+```
+
+## 5.	tSNE/UMAP
+seuratRunTSNE/seuratRunUMAP can be used to compute tSNE/UMAP statistics and store into the input object. Parameters to both functions include inSCE(input SCE object), useReduction (specify the reduction to use i.e. pca or ica), reducedDimName (name of this new reduction) and dims (number of dims to use). seuratReductionPlot can be used to visualize the results.
+```{r}
+sce <- seuratRunTSNE(inSCE = sce, useReduction = "pca", reducedDimName = "seuratTSNE", dims = 10)
+seuratReductionPlot(sce, "tsne")
+```
+```{r, message=FALSE}
+sce <- seuratRunUMAP(inSCE = sce, useReduction = "pca", reducedDimName = "seuratUMAP", dims = 10)
+```
+```{r}
+seuratReductionPlot(sce, "umap")
+```
+
+## 6.	Clustering
+seuratFindClusters function can be used to compute the clusters, which can later be plotted through the seuratReductionPlot method with cluster labels. The parameters to the function include inSCE (input SCE object), useAssay (name of the scaled assay), useReduction (specify which reduction to use i.e. pca or ica), dims (number of dims to use) and the algorithm (either louvain, multilevel or SLM).
+```{r, message=FALSE}
+sce <- seuratFindClusters(inSCE = sce, useAssay = "seuratScaledData", useReduction = "pca", dims = 10, algorithm = "louvain")
+```
+
+seuratReductionPlot can then be used to plot all reductions previously computed with cluster labels:
+```{r}
+seuratReductionPlot(sce, "pca")
+seuratReductionPlot(sce, "tsne")
+seuratReductionPlot(sce, "umap")
+```
+
+## 7.	Find Markers
+Marker genes can be identified using the seuratFindMarers function. This function can either use one specified column from colData of the input object as a group variable if all groups from that variable are to be used (\code{allGroup} parameter) or users can manually specify the cells included in one group vs cells included in the second group (\code{cells1} and \code{cells2} parameter). 
+```{r, message=FALSE}
+sce <- seuratFindMarkers(inSCE = sce, allGroup = "Seurat_louvain_Resolution0.8")
+```
+```{r}
+print(head(metadata(sce)[["seuratMarkers"]]))
+```
+
+The marker genes identified can be visualized through one of the available plots from ridge plot, violin plot, feature plot, dot plot and heatmap plot. All marker genes visualizations can be plotted through the wrapper function \code{seuratGenePlot}, which must be supplied the SCE object (markers previously computed), name of the scaled assay, type of the plot (available options are \code{"ridge"}, \code{"feature"}, \code{"violin"}, \code{"dot"} and \code{"heatmap"}), features that should be plotted (character vector) and the grouping variable that is available in the colData slot of the input object. An additional parameter \code{ncol} decides in how many columns should the visualizations be plotted.
+```{r}
+seuratGenePlot(
+        inSCE = sce,
+        scaledAssayName = "seuratScaledData",
+        plotType = "ridge",
+        features = metadata(sce)[["seuratMarkers"]]$gene.id[1:4],
+        groupVariable = "Seurat_louvain_Resolution0.8",
+        ncol = 2
+      )
+```
+

@@ -14,7 +14,7 @@ importOptimus(
   geneMetricsLocation = "call-MergeGeneMetrics/merged-gene-metrics.csv.gz",
   emptyDropsLocation = "call-RunEmptyDrops/empty_drops_result.csv",
   class = c("Matrix", "matrix"),
-  delayedArray = TRUE
+  delayedArray = FALSE
 )
 }
 \arguments{
@@ -62,7 +62,7 @@ object. Can be one of "Matrix" (as returned by
 \link[base]{matrix} function). Default "Matrix".}
 
 \item{delayedArray}{Boolean. Whether to read the expression matrix as
-\link{DelayedArray} object or not. Default \code{TRUE}.}
+\link{DelayedArray} object or not. Default \code{FALSE}.}
 }
 \value{
 A \link[SingleCellExperiment]{SingleCellExperiment} object

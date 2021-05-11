@@ -45,5 +45,5 @@ Plot mean feature value in each batch of a SingleCellExperiment object
 }
 \examples{
 data('sceBatches', package = 'singleCellTK')
-plotSCEBatchFeatureMean(sceBatches, useAssay = "logcounts")
+plotSCEBatchFeatureMean(sceBatches, useAssay = "counts")
 }

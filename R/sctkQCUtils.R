@@ -1,3 +1,40 @@
+#' Export data in Seurat object
+#' @param inSCE A \link[SingleCellExperiment]{SingleCellExperiment} object
+#' that contains the data. QC metrics are stored in colData of the
+#' singleCellExperiment object.
+#' @param outputDir Path to the directory where outputs will be written. Default is the current working directory.
+#' @param prefix Prefix to use for the name of the output file. Default \code{"sample"}.
+#' @param overwrite Boolean. Whether overwrite the output if it already exists in the outputDir. Default \code{TRUE}.
+#' @param copyColData Boolean. Whether copy 'colData' of SCE object to the 'meta.data' of Seurat object. Default \code{TRUE}.
+#' @param copyReducedDim Boolean. Whether copy 'reducedDims' of the SCE object to the 'reductions' of Seurat object. Default \code{TRUE}.
+#' @param copyDecontX Boolean. Whether copy 'decontXcounts' assay of the SCE object to the 'assays' of Seurat object. Default \code{TRUE}.
+#' @return Generates a Seurat object containing data from \code{inSCE}.
+#' @export
+
+exportSCEToSeurat <- function(inSCE, prefix="sample", outputDir="./", overwrite=TRUE,
+                              copyColData=TRUE, copyReducedDim=TRUE,
+                              copyDecontX=TRUE) {
+  Seurat <- singleCellTK::convertSCEToSeurat(inSCE, countsAssay = "counts", 
+                                             copyColData = copyColData,
+                                             copyReducedDim = copyReducedDim,
+                                             copyDecontX = copyDecontX)
+
+  fileName <- paste0(prefix,"_Seurat.RDS")
+  filePath <- file.path(outputDir,fileName)
+
+  if (!dir.exists(outputDir)) {
+    message("outputDir does not exists. Create the directory. ")
+    dir.create(outputDir)
+  }
+
+  if (file.exists(filePath) && !isTRUE(overwrite)) {
+    stop(paste0(path, " already exists. Change 'outputDir' or set 'overwrite' to TRUE."))
+  }
+
+
+  saveRDS(Seurat, filePath)
+}
+
 #' Export data in SingleCellExperiment object
 #' @param inSCE A \link[SingleCellExperiment]{SingleCellExperiment} object
 #' that contains the data. QC metrics are stored in colData of the
@@ -20,22 +57,22 @@ exportSCE <- function(inSCE,
                       samplename = "sample",
                       directory = "./",
                       type = "Cells",
-                      format = c("SCE", "AnnData", "FlatFile", "HTAN")) {
+                      format = c("SCE", "AnnData", "FlatFile", "HTAN", "Seurat")) {
 
-    if (any(!format %in% c("SCE", "AnnData", "FlatFile", "HTAN"))) {
-        warning("Output format must be 'SCE', 'AnnData', 'HTAN' or 'FlatFile'. Format ",
+    if (any(!format %in% c("SCE", "AnnData", "FlatFile", "HTAN", "Seurat"))) {
+        warning("Output format must be 'SCE', 'AnnData', 'HTAN', 'Seurat' or 'FlatFile'. Format ",
              paste(format[!format %in% c("SCE", "AnnData", "FlatFile", "HTAN")], sep = ","),
              " is not supported now. ") #             "Only output the supported formats in the provided options. "
     }
 
-    format <- format[format %in% c("SCE", "AnnData", "FlatFile", "HTAN")]
+    format <- format[format %in% c("SCE", "AnnData", "FlatFile", "HTAN", "Seurat")]
     message("The output format is [",
             paste(format, collapse = ","), "]. ")
 
     if (length(format) == 0) {
         warning("None of the provided format is supported now. Therefore, the output ",
-            "will be SCE, AnnData, FlatFile and HTAN. ")
-        format <- c("SCE", "AnnData", "FlatFile", "HTAN")
+            "will be SCE, AnnData, FlatFile, Seurat and HTAN. ")
+        format <- c("SCE", "AnnData", "FlatFile", "HTAN", "Seurat")
     }
 
     ## Create directories and save objects
@@ -54,7 +91,7 @@ exportSCE <- function(inSCE,
         fp <- file.path(directory, samplename, "FlatFile")
         dir.create(fp, showWarnings = TRUE, recursive = TRUE)
         fn <- file.path(fp, type)
-        exportSCEtoFlatFile(inSCE, outputDir = fn, sample=samplename)
+        exportSCEtoFlatFile(inSCE, outputDir = fn, prefix=samplename)
     }
 
     if ("AnnData" %in% format) {
@@ -63,6 +100,14 @@ exportSCE <- function(inSCE,
         dir.create(fp, showWarnings = TRUE, recursive = TRUE)
         fn <- file.path(fp, type)
         exportSCEtoAnnData(inSCE, outputDir=fn, compression='gzip', prefix=samplename)
+    }
+
+    if ("Seurat" %in% format) {
+        ## Export to Seurat object
+        fp <- file.path(directory, samplename, "Seurat")
+        dir.create(fp, showWarnings = TRUE, recursive = TRUE)
+        prefix <- paste0(samplename , paste0("_", type, ".rds"))
+        exportSCEToSeurat(inSCE, prefix = prefix, outputDir = fp, overwrite = TRUE)
     }
 }
 

@@ -1,0 +1,54 @@
+---
+title: "Feature Selection"
+author: "Irzam Sarfraz"
+---
+```{r develSetting, include=FALSE}
+doEval = TRUE
+```
+## Introduction
+*singleCellTK* offers a convenient way to compute and select the most variable features 
+that show the highest biological variability to use them in the downstream 
+analysis. The available methods to compute the HVG include `seuratFindHVG` and
+`scranModelGeneVar`, both of which essentially compute the variability statistics
+and store them into the `rowData` of the input `SingleCellExperiment` object.
+The `getTopHVG` method can retrieve the names of the top variable genes from
+these statistics from the input object. Furthermore, `plotTopHVG` method can be
+used to plot the top most variable genes.
+
+### Available Methods
+|Method|Reference|
+|---|---|
+|Seurat - vst|[Butler et al., Nature Biotechnology 2018](https://www.nature.com/articles/nbt.4096) & [Stuart*, Butler*, et al., Cell 2019](https://www.cell.com/cell/fulltext/S0092-8674(19)30559-8)|
+|Seurat - mean.var.plot|[Butler et al., Nature Biotechnology 2018](https://www.nature.com/articles/nbt.4096) & [Stuart*, Butler*, et al., Cell 2019](https://www.cell.com/cell/fulltext/S0092-8674(19)30559-8)|
+|Seurat - dispersion|[Butler et al., Nature Biotechnology 2018](https://www.nature.com/articles/nbt.4096) & [Stuart*, Butler*, et al., Cell 2019](https://www.cell.com/cell/fulltext/S0092-8674(19)30559-8)|
+|Scran - modelGeneVar|[Lun ATL, McCarthy DJ, Marioni JC (2016). “A step-by-step workflow for low-level analysis of single-cell RNA-seq data with Bioconductor.” F1000Res., 5, 2122.](https://doi.org/10.12688/f1000research.9501.2)| 
+
+### General Workflow
+A general workflow for the *Feature Selection* sub-tab is summarized in the figure below:
+![](ui_screenshots/feature_selection/FS_workflow.png)
+
+## Workflow Guide
+
+1. Compute statistics for the highly variable genes using the wrapper function `runFeatureSelection` as below:
+```{r, eval=FALSE}
+sce <- runFeatureSelection(
+          inSCE = sce,
+          useAssay = "normalizedCounts",
+          hvgMethod = "vst"
+        )
+```
+
+In the above function, it is recommended to use a normalized assay for the `useAssay` parameter and the 
+available options for the `hvgMethod` method include `vst`, `mean.var.plot` and `dispersion` from Seurat
+and `modelGeneVar` from Scran package.
+
+2. Get names of top genes using the `getTopHVG` function and specify the same method which was used for computation
+in the step 1:
+```{r, eval=FALSE}
+topGenes <- getTopHVG(inSCE = sce, method = "vst", n = 1000)
+```
+
+3. Visualize top genes using the `plotTopHVG` function and specify the same method which was used previously:
+```{r, eval=FALSE}
+plotTopHVG(inSCE = sce, method = "vst", hvgList = topGenes, labelsCount = 10)
+```

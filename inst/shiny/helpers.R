@@ -72,7 +72,7 @@ withBusyIndicatorServer <- function(buttonId, expr) {
     shinyjs::enable(buttonId)
     shinyjs::hide(selector = loadingEl)
   })
-  
+
   # Try to run the code when the button is clicked and show an error message if
   # an error occurs or a success message if it completes
   tryCatch({
@@ -153,9 +153,9 @@ withConsoleRedirect <- function(expr) {
   tmpFD <- file(tmpSinkfileName, open = "wt")
   sink(tmpFD, type="output", split = TRUE)
   sink(tmpFD, type = "message")
-  
+
   result <- expr
-  
+
   sink(type = "message")
   sink()
   console.out <- readChar(tmpSinkfileName, file.info(tmpSinkfileName)$size)
@@ -194,12 +194,12 @@ formatGeneSetList <- function(setListStr) {
 formatGeneSetDBChoices <- function(dbIDs, dbCats) {
   splitIds = strsplit(dbIDs, " ")
   choices <- list()
-  
+
   for (i in seq_along(splitIds)) {
     entry <- splitIds[i][[1]]
     choices[[sprintf("%s - %s", entry, dbCats[i])]] <- entry
   }
-  
+
   return(choices)
 }
 
@@ -215,12 +215,12 @@ combineQCMPlots <- function(input, output, combineP, sampleList, plots, plotIds,
         subPlotID <- paste0("QCMetrics", subScore)
         plotOutput(subPlotID)
       })
-      
+
       # Convert the list to a tagList - this is necessary for the list of items
       # to display properly.
       do.call(tagList, plot_output_list)
     })
-    
+
     for (subScore in names(plots)) {
       # Need local so that each item gets its own number. Without it, the value
       # of i in the renderPlot() will be the same across all instances, because
@@ -239,12 +239,12 @@ combineQCMPlots <- function(input, output, combineP, sampleList, plots, plotIds,
           plotOutput(subPlotID)
         }
       })
-      
+
       # Convert the list to a tagList - this is necessary for the list of items
       # to display properly.
       do.call(tagList, plot_output_list)
     })
-    
+
     for (subScore in names(plots$Violin)) {
       # Need local so that each item gets its own number. Without it, the value
       # of i in the renderPlot() will be the same across all instances, because
@@ -252,7 +252,7 @@ combineQCMPlots <- function(input, output, combineP, sampleList, plots, plotIds,
       local({
         my_subScore <- subScore
         subPlotID <- paste0("QCMetrics", my_subScore)
-        
+
         output[[subPlotID]] <- renderPlot(plots$Violin[[my_subScore]])
       })
     }
@@ -267,12 +267,12 @@ combineQCSubPlots <- function(output, combineP, algo, sampleList, plots, plotIds
         subPlotID <- paste(c(algo, subScore), collapse="")
         plotOutput(subPlotID)
       })
-      
+
       # Convert the list to a tagList - this is necessary for the list of items
       # to display properly.
       do.call(tagList, plot_output_list)
     })
-    
+
     for (subScore in names(plots)) {
       # Need local so that each item gets its own number. Without it, the value
       # of i in the renderPlot() will be the same across all instances, because
@@ -288,7 +288,7 @@ combineQCSubPlots <- function(output, combineP, algo, sampleList, plots, plotIds
     mainPlotID <- paste0(plotIds[[algo]], "Main")
     output[[plotIds[[algo]]]] <- renderUI(plotOutput(mainPlotID))
     output[[mainPlotID]] <- renderPlot(plots$Violin)
-    
+
     for (i in seq_along(sampleList)) {
       local({
         s <- sampleList[[i]]
@@ -299,7 +299,7 @@ combineQCSubPlots <- function(output, combineP, algo, sampleList, plots, plotIds
           } else {
             appendTab(tabsetID, tabPanel(s, uiOutput(sID)), select = FALSE)
           }
-          
+
         }
         # Plot output code from https://gist.github.com/wch/5436415/
         output[[sID]] <- renderUI({
@@ -307,12 +307,12 @@ combineQCSubPlots <- function(output, combineP, algo, sampleList, plots, plotIds
             subPlotID <- paste(c(algo, s, subScore), collapse="")
             plotOutput(subPlotID)
           })
-          
+
           # Convert the list to a tagList - this is necessary for the list of items
           # to display properly.
           do.call(tagList, plot_output_list)
         })
-        
+
         for (subScore in names(plots$Sample[[s]])) {
           # Need local so that each item gets its own number. Without it, the value
           # of i in the renderPlot() will be the same across all instances, because
@@ -320,7 +320,7 @@ combineQCSubPlots <- function(output, combineP, algo, sampleList, plots, plotIds
           local({
             my_subScore <- subScore
             subPlotID <- paste(c(algo, s, my_subScore), collapse="")
-            
+
             output[[subPlotID]] <- renderPlot(plots$Sample[[s]][[my_subScore]])
           })
         }
@@ -334,39 +334,39 @@ arrangeQCPlots <- function(inSCE, input, output, algoList, sampleList, plotIDs, 
   uniqueSampleNames <- unique(sampleList)
   combineP <- "none"
   for (a in algoList) {
-    if (a == "doubletCells") {
-      dcPlots <- plotDoubletCellsResults(inSCE, combinePlot = combineP, sample = sampleList, 
-                                         reducedDimName = redDimName, plotLabels = "none")
+    if (a == "scDblFinder") {
+      dcPlots <- plotScDblFinderResults(inSCE, combinePlot = combineP, sample = sampleList,
+                                         reducedDimName = redDimName)
       combineQCSubPlots(output, combineP, a, uniqueSampleNames, dcPlots, plotIDs, statuses)
     } else if (a == "cxds") {
-      cxPlots <- plotCxdsResults(inSCE, combinePlot = combineP, sample = sampleList, 
-                                 reducedDimName = redDimName, plotLabels = "none")
+      cxPlots <- plotCxdsResults(inSCE, combinePlot = combineP, sample = sampleList,
+                                 reducedDimName = redDimName)
       combineQCSubPlots(output, combineP, a, uniqueSampleNames, cxPlots, plotIDs, statuses)
     } else if (a == "bcds") {
-      bcPlots <- plotBcdsResults(inSCE, combinePlot = combineP, sample = sampleList, 
-                                 reducedDimName = redDimName, plotLabels = "none")
+      bcPlots <- plotBcdsResults(inSCE, combinePlot = combineP, sample = sampleList,
+                                 reducedDimName = redDimName)
       combineQCSubPlots(output, combineP, a, uniqueSampleNames, bcPlots, plotIDs, statuses)
     } else if (a == "cxds_bcds_hybrid") {
-      cxbcPlots <- plotScdsHybridResults(inSCE, combinePlot = combineP, sample = sampleList, 
-                                         reducedDimName = redDimName, plotLabels = "none")
+      cxbcPlots <- plotScdsHybridResults(inSCE, combinePlot = combineP, sample = sampleList,
+                                         reducedDimName = redDimName)
       combineQCSubPlots(output, combineP, a, uniqueSampleNames, cxbcPlots, plotIDs, statuses)
     } else if (a == "decontX") {
-      dxPlots <- plotDecontXResults(inSCE, combinePlot = combineP, sample = sampleList, 
-                                    reducedDimName = redDimName, plotLabels = "none")
+      dxPlots <- plotDecontXResults(inSCE, combinePlot = combineP, sample = sampleList,
+                                    reducedDimName = redDimName)
       combineQCSubPlots(output, combineP, a, uniqueSampleNames, dxPlots, plotIDs, statuses)
     } else if (a == "QCMetrics") {
-      qcmPlots <- plotRunPerCellQCResults(inSCE, sample = sampleList, combinePlot = combineP, plotLabels = "none")
+      qcmPlots <- plotRunPerCellQCResults(inSCE, sample = sampleList, combinePlot = combineP)
       combineQCMPlots(input, output, combineP, uniqueSampleNames, qcmPlots, plotIDs, statuses)
-      
+
     } else if (a == "scrublet") {
-      sPlots <- plotScrubletResults(inSCE, combinePlot = combineP, sample = sampleList, 
-                                    reducedDimName = redDimName, plotLabels = "none")
+      sPlots <- plotScrubletResults(inSCE, combinePlot = combineP, sample = sampleList,
+                                    reducedDimName = redDimName)
       combineQCSubPlots(output, combineP, a, uniqueSampleNames, sPlots, plotIDs, statuses)
       return(sPlots)
-      
+
     } else if (a == "doubletFinder") {
-      dfPlots <- plotDoubletFinderResults(inSCE, combinePlot = combineP, sample = sampleList, 
-                                          reducedDimName = redDimName, plotLabels = "none")
+      dfPlots <- plotDoubletFinderResults(inSCE, combinePlot = combineP, sample = sampleList,
+                                          reducedDimName = redDimName)
       combineQCSubPlots(output, combineP, a, uniqueSampleNames, dfPlots, plotIDs, statuses)
     }
   }
@@ -402,7 +402,7 @@ addToColFilterParams <- function(name, categorial, criteria, criteriaGT, criteri
       threshStr <- sprintf("%s > %.5f & %s < %.5f", name, criteriaGT, name, criteriaLT)
     }
   }
-  
+
   entry <- list(col=name, param=threshStr, id=id)
   paramsReactive$params <- c(paramsReactive$params, list(entry))
   paramsReactive$id_count <- paramsReactive$id_count + 1

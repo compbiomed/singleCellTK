@@ -3,23 +3,45 @@
 \name{seuratElbowPlot}
 \alias{seuratElbowPlot}
 \title{seuratElbowPlot
-Computes the plot object for elbow plot from the pca slot in the input sce object}
+Computes the plot object for elbow plot from the pca slot in the input sce
+object}
 \usage{
-seuratElbowPlot(inSCE, significantPC = NULL, reduction = "pca")
+seuratElbowPlot(
+  inSCE,
+  significantPC = NULL,
+  reduction = "pca",
+  ndims = 20,
+  externalReduction = NULL,
+  interactive = TRUE
+)
 }
 \arguments{
-\item{inSCE}{(sce) object from which to compute the elbow plot (pca should be computed)}
+\item{inSCE}{(sce) object from which to compute the elbow plot (pca should
+be computed)}
 
-\item{significantPC}{Number of significant principal components to plot. This is used to alter the color of the points for the corresponding PCs. If \code{NULL}, all points will be the same color. Default \code{NULL}.}
+\item{significantPC}{Number of significant principal components to plot.
+This is used to alter the color of the points for the corresponding PCs.
+If \code{NULL}, all points will be the same color. Default \code{NULL}.}
 
-\item{reduction}{Reduction to use for elbow plot generation. Either \code{"pca"} or \code{"ica"}. Default \code{"pca"}.}
+\item{reduction}{Reduction to use for elbow plot generation. Either
+\code{"pca"} or \code{"ica"}. Default \code{"pca"}.}
+
+\item{ndims}{Number of components to use. Default \code{20}.}
+
+\item{externalReduction}{Pass DimReduc object if PCA/ICA computed through
+other libraries. Default \code{NULL}.}
+
+\item{interactive}{Logical value indicating if the returned object should
+be an interactive plotly object if \code{TRUE} or a ggplot object if
+set to \code{FALSE}. Default is \code{TRUE}.}
 }
 \value{
 plot object
 }
 \description{
 seuratElbowPlot
-Computes the plot object for elbow plot from the pca slot in the input sce object
+Computes the plot object for elbow plot from the pca slot in the input sce
+object
 }
 \examples{
 data(scExample, package = "singleCellTK")

@@ -26,8 +26,9 @@ runMAST(
 \arguments{
 \item{inSCE}{\linkS4class{SingleCellExperiment} inherited object.}
 
-\item{useAssay}{character. A string specifying which assay to use for MAST
-Default \code{"logcounts"}.}
+\item{useAssay}{character. A string specifying which assay to use for MAST.
+The assay should be a log-transformed normalized assay. Default
+\code{"logcounts"}.}
 
 \item{index1}{Any type of indices that can subset a
 \linkS4class{SingleCellExperiment} inherited object by cells. Specifies
@@ -95,9 +96,8 @@ used.
 \examples{
 data(scExample, package = "singleCellTK")
 sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
-logcounts(sce) <- log(counts(sce) + 1)
+sce <- scaterlogNormCounts(sce[,seq(20)], assayName = "logcounts")
 sce <- runMAST(inSCE = sce, groupName1 = "Sample1",
- groupName2 = "Sample2", index1 = 1:20, index2 = 21:40,
+ groupName2 = "Sample2", index1 = seq(10), index2 = seq(11,20),
  analysisName = "MAST")
-
 }

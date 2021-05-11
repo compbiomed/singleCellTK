@@ -19,8 +19,8 @@ imported and stored in \code{metadata(inSCE)$sctk$genesets}.
 \examples{
 data(scExample)
 library(GSEABase)
-gs1 <- GeneSet(setName = "geneset1", geneIds = rownames(sce)[1:10])
-gs2 <- GeneSet(setName = "geneset2", geneIds = rownames(sce)[11:20])
+gs1 <- GeneSet(setName = "geneset1", geneIds = rownames(sce)[seq(10)])
+gs2 <- GeneSet(setName = "geneset2", geneIds = rownames(sce)[seq(11,20)])
 gsc1 <- GeneSetCollection(gs1)
 gsc2 <- GeneSetCollection(gs2)
 sce <- importGeneSetsFromCollection(inSCE = sce,

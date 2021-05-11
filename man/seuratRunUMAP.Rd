@@ -3,7 +3,8 @@
 \name{seuratRunUMAP}
 \alias{seuratRunUMAP}
 \title{seuratRunUMAP
-Computes UMAP from the given sce object and stores the UMAP computations back into the sce object}
+Computes UMAP from the given sce object and stores the UMAP computations back
+into the sce object}
 \usage{
 seuratRunUMAP(
   inSCE,
@@ -12,30 +13,42 @@ seuratRunUMAP(
   dims = 10,
   minDist = 0.3,
   nNeighbors = 30L,
-  spread = 1
+  spread = 1,
+  verbose = TRUE
 )
 }
 \arguments{
 \item{inSCE}{(sce) object on which to compute the UMAP}
 
-\item{useReduction}{Reduction to use for computing UMAP. One of "pca" or "ica". Default is \code{"pca"}.}
+\item{useReduction}{Reduction to use for computing UMAP. One of "pca" or
+"ica". Default is \code{"pca"}.}
 
-\item{reducedDimName}{Name of new reducedDims object containing Seurat UMAP Default \code{seuratUMAP}.}
+\item{reducedDimName}{Name of new reducedDims object containing Seurat UMAP
+Default \code{seuratUMAP}.}
 
-\item{dims}{Numerical value of how many reduction components to use for UMAP computation. Default \code{10}.}
+\item{dims}{Numerical value of how many reduction components to use for UMAP
+computation. Default \code{10}.}
 
-\item{minDist}{Sets the \code{"min.dist"} parameter to the underlying UMAP call. See \link[Seurat]{RunUMAP} for more information. Default \code{0.3}.}
+\item{minDist}{Sets the \code{"min.dist"} parameter to the underlying UMAP
+call. See \link[Seurat]{RunUMAP} for more information. Default \code{0.3}.}
 
-\item{nNeighbors}{Sets the \code{"n.neighbors"} parameter to the underlying UMAP call. See \link[Seurat]{RunUMAP} for more information. Default \code{30L}.}
+\item{nNeighbors}{Sets the \code{"n.neighbors"} parameter to the underlying
+UMAP call. See \link[Seurat]{RunUMAP} for more information. Default
+\code{30L}.}
 
-\item{spread}{Sets the \code{"spread"} parameter to the underlying UMAP call. See \link[Seurat]{RunUMAP} for more information. Default \code{1}.}
+\item{spread}{Sets the \code{"spread"} parameter to the underlying UMAP call.
+See \link[Seurat]{RunUMAP} for more information. Default \code{1}.}
+
+\item{verbose}{Logical value indicating if informative messages should
+be displayed. Default is \code{TRUE}.}
 }
 \value{
 Updated sce object with UMAP computations stored
 }
 \description{
 seuratRunUMAP
-Computes UMAP from the given sce object and stores the UMAP computations back into the sce object
+Computes UMAP from the given sce object and stores the UMAP computations back
+into the sce object
 }
 \examples{
 data(scExample, package = "singleCellTK")

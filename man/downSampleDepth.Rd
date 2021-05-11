@@ -54,7 +54,7 @@ genes, and median significant effect size
 }
 \examples{
 data("mouseBrainSubsetSCE")
-subset <- mouseBrainSubsetSCE[1:1000,]
+subset <- mouseBrainSubsetSCE[seq(1000),]
 res <- downSampleDepth(subset,
                        realLabels = "level1class",
                        iterations=2)

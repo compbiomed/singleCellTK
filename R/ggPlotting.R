@@ -14,8 +14,11 @@
 #' \linkS4class{SingleCellExperiment} object. Required.
 #' @param xlab Character vector. Label for x-axis. Default NULL.
 #' @param ylab Character vector. Label for y-axis. Default NULL.
-#' @param axisSize Size of x/y-axis ticks. Default 10.
-#' @param axisLabelSize Size of x/y-axis labels. Default 10.
+#' @param baseSize The base font size for all text. Default 12.
+#'  Can be overwritten by titleSize, axisSize, and axisLabelSize,
+#'  legendSize, legendTitleSize.
+#' @param axisSize Size of x/y-axis ticks. Default NULL.
+#' @param axisLabelSize Size of x/y-axis labels. Default NULL.
 #' @param dim1 1st dimension to be used for plotting. Can either be a string which specifies
 #'  the name of the dimension to be plotted from reducedDims, or a numeric value which specifies
 #'  the index of the dimension to be plotted. Default is NULL.
@@ -46,26 +49,30 @@
 #' @param titleSize Size of title of plot. Default 15.
 #' @param labelClusters Logical. Whether the cluster labels are plotted.
 #'  Default FALSE.
+#' @param clusterLabelSize Numeric. Determines the size of cluster label
+#'  when `labelClusters` is set to TRUE. Default 3.5.
 #' @param legendTitle title of legend. Default NULL.
-#' @param legendTitleSize size of legend title. Default 12.
-#' @param legendSize size of legend. Default 10.
+#' @param legendTitleSize size of legend title. Default NULL.
+#' @param legendSize size of legend. Default NULL.
 #' @param combinePlot Must be either "all", "sample", or "none". "all" will combine all plots into a single
 #' .ggplot object, while "sample" will output a list of plots separated by sample. Default "none".
 #' @param plotLabels labels to each plot. If set to "default", will use the name of the samples
 #'  as the labels. If set to "none", no label will be plotted.
 #' @return a ggplot of the reduced dimensions.
 .ggScatter <- function(inSCE,
+                       reducedDimName,
                        sample = NULL,
                        colorBy = NULL,
                        groupBy = NULL,
                        shape = NULL,
-                       reducedDimName,
                        conditionClass = NULL,
                        labelClusters = FALSE,
+                       clusterLabelSize = 3.5,
                        xlab = NULL,
                        ylab = NULL,
-                       axisSize = 10,
-                       axisLabelSize = 10,
+                       baseSize = 12,
+                       axisSize = NULL,
+                       axisLabelSize = NULL,
                        dim1 = NULL,
                        dim2 = NULL,
                        bin = NULL,
@@ -78,15 +85,13 @@
                        colorHigh = "blue",
                        defaultTheme = TRUE,
                        title = NULL,
-                       titleSize = 15,
+                       titleSize = NULL,
                        legendTitle = NULL,
-                       legendTitleSize = 12,
-                       legendSize = 10,
+                       legendTitleSize = NULL,
+                       legendSize = NULL,
                        combinePlot = "none",
                        plotLabels = NULL) {
-  if(!combinePlot %in% c("all", "sample", "none")){
-    stop("'combinePlot' must be set to either 'all', 'sample', or 'none'.")
-  }
+  combinePlot <- match.arg(combinePlot,c("all", "sample", "none"))
 
   if (!is.null(sample)) {
     if (length(sample) != ncol(inSCE)) {
@@ -196,8 +201,12 @@
         ggplot2::labs(shape = shape)
     }
     if (defaultTheme == TRUE) {
-      g <- .ggSCTKTheme(g)
+      g <- .ggSCTKTheme(g, baseSize, groupBy = factor(sample),
+                        combinePlot)
+    }else{
+      g <- g + ggplot2::theme_gray(base_size = baseSize)
     }
+
     g <- g + ggplot2::theme(axis.title =
                               ggplot2::element_text(size = axisLabelSize),
                             axis.text =
@@ -260,7 +269,8 @@
           data = centroid,
           mapping = ggplot2::aes_string(label = "color"),
           show.legend = FALSE,
-          color = "black"
+          color = "black",
+          size = clusterLabelSize
         )
     }
     return(g)
@@ -293,7 +303,9 @@
 #' @description Plot results of reduced dimensions data and
 #'  colors by annotation data stored in the colData slot.
 #' @param inSCE Input \linkS4class{SingleCellExperiment} object with saved
-#' dimension reduction components or a variable with saved results. Required
+#' dimension reduction components or a variable with saved results. Required.
+#' @param reducedDimName Saved dimension reduction matrix name in the
+#' \linkS4class{SingleCellExperiment} object. Required.
 #' @param sample Character vector. Indicates which sample each cell belongs to.
 #' @param colorBy Color by a condition(any column of the annotation data).
 #'  Required.
@@ -303,8 +315,6 @@
 #'  Options are NULL, "factor" or "numeric". If NULL, class will default to the
 #'  original class. Default NULL.
 #' @param shape Add shapes to each condition.
-#' @param reducedDimName Saved dimension reduction matrix name in the
-#' \linkS4class{SingleCellExperiment} object. Required.
 #' @param xlab Character vector. Label for x-axis. Default NULL.
 #' @param ylab Character vector. Label for y-axis. Default NULL.
 #' @param dim1 1st dimension to be used for plotting. Can either be a string which specifies
@@ -313,8 +323,11 @@
 #' @param dim2 2nd dimension to be used for plotting. Can either be a string which specifies
 #'  the name of the dimension to be plotted from reducedDims, or a numeric value which specifies
 #'  the index of the dimension to be plotted. Default is NULL.
-#' @param axisSize Size of x/y-axis ticks. Default 10.
-#' @param axisLabelSize Size of x/y-axis labels. Default 10.
+#' @param baseSize The base font size for all text. Default 12.
+#'  Can be overwritten by titleSize, axisSize, and axisLabelSize,
+#'  legendSize, legendTitleSize.
+#' @param axisSize Size of x/y-axis ticks. Default NULL.
+#' @param axisLabelSize Size of x/y-axis labels. Default NULL.
 #' @param bin Numeric vector. If single value, will divide the numeric values into the `bin` groups.
 #'  If more than one value, will bin numeric values using values as a cut point.
 #' @param binLabel Character vector. Labels for the bins created by the `bin` parameter.
@@ -337,9 +350,11 @@
 #' @param title Title of plot. Default NULL.
 #' @param titleSize Size of title of plot. Default 15.
 #' @param labelClusters Logical. Whether the cluster labels are plotted.
+#' @param clusterLabelSize Numeric. Determines the size of cluster label
+#'  when `labelClusters` is set to TRUE. Default 3.5.
 #' @param legendTitle title of legend. Default NULL.
 #' @param legendTitleSize size of legend title. Default 12.
-#' @param legendSize size of legend. Default 10.
+#' @param legendSize size of legend. Default NULL.
 #'  Default FALSE.
 #' @param combinePlot Must be either "all", "sample", or "none". "all" will combine all plots into a single
 #' .ggplot object, while "sample" will output a list of plots separated by sample. Default "none".
@@ -362,16 +377,17 @@
 #' )
 #' @export
 plotSCEDimReduceColData <- function(inSCE,
-                                    sample = NULL,
                                     colorBy,
+                                    reducedDimName,
+                                    sample = NULL,
                                     groupBy = NULL,
                                     conditionClass = NULL,
                                     shape = NULL,
-                                    reducedDimName = NULL,
                                     xlab = NULL,
                                     ylab = NULL,
-                                    axisSize = 10,
-                                    axisLabelSize = 10,
+                                    baseSize = 12,
+                                    axisSize = NULL,
+                                    axisLabelSize = NULL,
                                     dim1 = NULL,
                                     dim2 = NULL,
                                     bin = NULL,
@@ -386,14 +402,13 @@ plotSCEDimReduceColData <- function(inSCE,
                                     title = NULL,
                                     titleSize = 15,
                                     labelClusters = TRUE,
+                                    clusterLabelSize = 3.5,
                                     legendTitle = NULL,
-                                    legendTitleSize = 12,
-                                    legendSize = 10,
+                                    legendTitleSize = NULL,
+                                    legendSize = NULL,
                                     combinePlot = "none",
                                     plotLabels = NULL) {
-  if(!combinePlot %in% c("all", "sample", "none")){
-    stop("'combinePlot' must be set to either 'all', 'sample', or 'none'.")
-  }
+  combinePlot <- match.arg(combinePlot,c("all", "sample", "none"))
 
   colorPlot <- SingleCellExperiment::colData(inSCE)[, colorBy]
 
@@ -420,9 +435,11 @@ plotSCEDimReduceColData <- function(inSCE,
     colorMid = colorMid,
     colorHigh = colorHigh,
     defaultTheme = defaultTheme,
+    baseSize = baseSize,
     title = title,
     titleSize = titleSize,
     labelClusters = labelClusters,
+    clusterLabelSize = clusterLabelSize,
     legendTitle = legendTitle,
     legendTitleSize = legendTitleSize,
     legendSize = legendSize,
@@ -437,13 +454,16 @@ plotSCEDimReduceColData <- function(inSCE,
 #' @description Plot results of reduced dimensions data and
 #'  colors by feature data stored in the assays slot.
 #' @param inSCE Input \linkS4class{SingleCellExperiment} object with saved
-#' dimension reduction components or a variable with saved results. Required
-#' @param sample Character vector. Indicates which sample each cell belongs to.
-#' @param feature name of feature stored in assay of singleCellExperiment
-#'  object. Plot will be colored based on feature value.
-#' @param shape add shapes to each condition. Default NULL.
+#' dimension reduction components or a variable with saved results. Required.
 #' @param reducedDimName saved dimension reduction name in the
 #' \linkS4class{SingleCellExperiment} object. Required.
+#' @param sample Character vector. Indicates which sample each cell belongs to.
+#' @param feature Name of feature stored in assay of SingleCellExperiment
+#'  object.
+#' @param featureLocation Indicates which column name of rowData to query gene.
+#' @param featureDisplay Indicates which column name of rowData to use
+#' to display feature for visualization.
+#' @param shape add shapes to each condition. Default NULL.
 #' @param useAssay Indicate which assay to use. The default is "logcounts"
 #' @param xlab Character vector. Label for x-axis. Default NULL.
 #' @param ylab Character vector. Label for y-axis. Default NULL.
@@ -455,7 +475,6 @@ plotSCEDimReduceColData <- function(inSCE,
 #' @param dim2 2nd dimension to be used for plotting. Can either be a string which specifies
 #'  the name of the dimension to be plotted from reducedDims, or a numeric value which specifies
 #'  the index of the dimension to be plotted. Default is NULL.
-#'  Default is second PCA component for PCA data and NULL otherwise.
 #' @param bin Numeric vector. If single value, will divide the numeric values into the `bin` groups.
 #'  If more than one value, will bin numeric values using values as a cut point.
 #' @param binLabel Character vector. Labels for the bins created by the `bin` parameter.
@@ -492,10 +511,12 @@ plotSCEDimReduceColData <- function(inSCE,
 #' )
 #' @export
 plotSCEDimReduceFeatures <- function(inSCE,
-                                     sample = NULL,
                                      feature,
-                                     shape = NULL,
                                      reducedDimName,
+                                     sample = NULL,
+                                     featureLocation = NULL,
+                                     featureDisplay = NULL,
+                                     shape = NULL,
                                      useAssay = "logcounts",
                                      xlab = NULL,
                                      ylab = NULL,
@@ -519,17 +540,30 @@ plotSCEDimReduceFeatures <- function(inSCE,
                                      groupBy = NULL,
                                      combinePlot = "none",
                                      plotLabels = NULL) {
-  if(!combinePlot %in% c("all", "sample", "none")){
-    stop("'combinePlot' must be set to either 'all', 'sample', or 'none'.")
+  combinePlot <- match.arg(combinePlot,c("all", "sample", "none"))
+
+  if(!is.null(featureDisplay)){
+    featureDisplay <- match.arg(featureDisplay,
+                                colnames(SummarizedExperiment::rowData(inSCE)))
+  }else{
+    if(exists(x = "featureDisplay", inSCE@metadata)){
+      featureDisplay <- inSCE@metadata$featureDisplay
+    }
   }
 
   mat <- getBiomarker(
     inSCE = inSCE,
     useAssay = useAssay,
     gene = feature,
-    binary = "Continuous"
+    binary = "Continuous",
+    featureLocation = featureLocation,
+    featureDisplay = featureDisplay
   )
   counts <- mat[, 2]
+
+  if(!is.null(featureDisplay)){
+    title = utils::tail(colnames(mat),1)
+  }
 
   g <- .ggScatter(
     inSCE = inSCE,
@@ -569,7 +603,9 @@ plotSCEDimReduceFeatures <- function(inSCE,
 #' @description Plot results of reduced dimensions data of counts stored in any
 #' slot in the SingleCellExperiment object.
 #' @param inSCE Input SingleCellExperiment object with saved dimension reduction
-#'  components or a variable with saved results. Required
+#'  components or a variable with saved results. Required.
+#' @param reducedDimName saved dimension reduction name in the
+#' \linkS4class{SingleCellExperiment} object.
 #' @param sample Character vector. Indicates which sample each cell belongs to.
 #' @param slot Desired slot of SingleCellExperiment used for plotting. Possible
 #'  options: "assays", "colData", "metadata", "reducedDims". Default NULL.
@@ -579,8 +615,6 @@ plotSCEDimReduceFeatures <- function(inSCE,
 #' @param groupBy Group by a condition(any column of the annotation data).
 #'  Default NULL.
 #' @param shape add shapes to each condition.
-#' @param reducedDimName saved dimension reduction name in the
-#' \linkS4class{SingleCellExperiment} object. Required.
 #' @param conditionClass class of the annotation data used in colorBy. Options
 #'  are NULL, "factor" or "numeric". If NULL, class will default to the original
 #'  class. Default NULL.
@@ -594,7 +628,6 @@ plotSCEDimReduceFeatures <- function(inSCE,
 #' @param dim2 2nd dimension to be used for plotting. Can either be a string which specifies
 #'  the name of the dimension to be plotted from reducedDims, or a numeric value which specifies
 #'  the index of the dimension to be plotted. Default is NULL.
-#' Default is second PCA component for PCA data and NULL otherwise.
 #' @param bin Numeric vector. If single value, will divide the numeric values into the `bin` groups.
 #'  If more than one value, will bin numeric values using values as a cut point.
 #' @param binLabel Character vector. Labels for the bins created by the `bin` parameter.
@@ -631,13 +664,13 @@ plotSCEDimReduceFeatures <- function(inSCE,
 #' @export
 #' @import SingleCellExperiment
 plotSCEScatter <- function(inSCE,
+                           annotation,
+                           reducedDimName = NULL,
                            slot = NULL,
                            sample = NULL,
-                           annotation,
                            feature = NULL,
                            groupBy = NULL,
                            shape = NULL,
-                           reducedDimName = NULL,
                            conditionClass = NULL,
                            xlab = NULL,
                            ylab = NULL,
@@ -661,18 +694,16 @@ plotSCEScatter <- function(inSCE,
                            legendSize = 10,
                            combinePlot = "none",
                            plotLabels = NULL){
-  if(!combinePlot %in% c("all", "sample", "none")){
-    stop("'combinePlot' must be set to either 'all', 'sample', or 'none'.")
-  }
+  combinePlot <- match.arg(combinePlot,c("all", "sample", "none"))
 
   if (!is.null(slot)){
     if (slot == "reducedDims"){
       annotation_clm <- substr(annotation, stringr::str_length(annotation), stringr::str_length(annotation))
       annotation <- substr(annotation, 1, stringr::str_length(annotation) - 2)
     }else if (!slot %in% methods::slotNames(inSCE)) {
-      stop("'slot' must be a slot within the SingleCellExperiment object.
-             Please run 'methods::slotNames' if you are unsure the
-	     specified slot exists.")
+      stop("'slot' must be a slot within the SingleCellExperiment object.",
+           "Please run 'methods::slotNames' if you are unsure the",
+           "specified slot exists.")
     }
 
     sceSubset <- do.call(slot, args = list(inSCE))
@@ -745,8 +776,10 @@ plotSCEScatter <- function(inSCE,
 #'  Default TRUE.
 #' @param xlab Character vector. Label for x-axis. Default NULL.
 #' @param ylab Character vector. Label for y-axis. Default NULL.
-#' @param axisSize Size of x/y-axis ticks. Default 10.
-#' @param axisLabelSize Size of x/y-axis labels. Default 10.
+#' @param baseSize The base font size for all text. Default 12.
+#'  Can be overwritten by titleSize, axisSize, and axisLabelSize.
+#' @param axisSize Size of x/y-axis ticks. Default NULL.
+#' @param axisLabelSize Size of x/y-axis labels. Default NULL.
 #' @param dotSize Size of dots. Default 1.
 #' @param transparency Transparency of the dots, values will be 0-1. Default 1.
 #' @param defaultTheme Removes grid in plot and sets axis title size to 10
@@ -755,6 +788,10 @@ plotSCEScatter <- function(inSCE,
 #'  drawn even if defaultTheme is TRUE. Default FALSE.
 #' @param summary Adds a summary statistic, as well as a crossbar to the
 #'  violin plot. Options are "mean" or "median". Default NULL.
+#' @param summaryTextSize The text size of the summary statistic displayed
+#'  above the violin plot. Default 3.
+#' @param combinePlot Must be either "all", "sample", or "none". "all" will combine all plots into a single
+#' .ggplot object, while "sample" will output a list of plots separated by sample. Default "none".
 #' @param title Title of plot. Default NULL.
 #' @param titleSize Size of title of plot. Default 15.
 #' @return a ggplot of the reduced dimensions.
@@ -768,18 +805,22 @@ plotSCEScatter <- function(inSCE,
                       dots = TRUE,
                       xlab = NULL,
                       ylab = NULL,
-                      axisSize = 10,
-                      axisLabelSize = 10,
+                      baseSize = 12,
+                      axisSize = NULL,
+                      axisLabelSize = NULL,
                       dotSize = 1,
                       transparency = 1,
                       defaultTheme = TRUE,
                       gridLine = FALSE,
                       summary = NULL,
+                      summaryTextSize = 3,
+                      combinePlot = "none",
                       title = NULL,
-                      titleSize = 15) {
+                      titleSize = NULL) {
   if (is.null(groupBy)) {
     groupBy <- rep("Sample", length(y))
   }
+  groupBy <- factor(groupBy, levels = unique(groupBy))
   df <- data.frame(groupBy = groupBy, y = y)
 
   p <- ggplot2::ggplot(df) +
@@ -808,7 +849,9 @@ plotSCEScatter <- function(inSCE,
                                   alpha = 0.75)
   }
   if (defaultTheme == TRUE) {
-    p <- .ggSCTKTheme(p)
+    p <- .ggSCTKTheme(p, baseSize, groupBy, combinePlot)
+  }else{
+    p <- p + ggplot2::theme_gray(base_size = baseSize)
   }
   if (!is.null(title)) {
     p <- p + ggplot2::ggtitle(label = title) +
@@ -818,9 +861,7 @@ plotSCEScatter <- function(inSCE,
       ))
   }
 
-  ###
   p <- p + ggplot2::theme(axis.text.y = ggplot2::element_text(size = axisSize))
-  ###
 
   if(length(unique(df$groupBy)) > 1){
     p <- p + ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45,
@@ -853,16 +894,34 @@ plotSCEScatter <- function(inSCE,
     }else{
       stop("`summary`` must be either `mean` or `median`.")
     }
-    summ$statY <-  max(df$y) + (max(df$y) - min(df$y)) * 0.1
+    summ$statY <-  max(df$y) + (max(df$y) - min(df$y)) * 0.05
     summary <- paste(toupper(substr(summary, 1, 1)),
                      substr(summary, 2, nchar(summary)), sep="")
-    summ$label <- paste0(summary,": ", round(summ$value, 5))
 
-    p <- p + ggplot2::geom_text(data = summ,
+    ##Truncate label of mean/median if too many sample types
+    if(length(levels(groupBy)) > 5){
+      if(all(summ$value>1)){
+        summ$label <- round(summ$value, 1)
+      }else{
+        summ$label <- signif(summ$value, 1)
+      }
+      p <- p + ggplot2::labs(subtitle = paste0(summary," values shown"))
+    }else{
+      if(all(summ$value>1)){
+        summ$label <- paste0(summary,": ", round(summ$value, 2))
+      }else{
+        summ$label <- paste0(summary,": ", signif(summ$value, 2))
+      }
+    }
+
+    if(!is.null(groupBy)){
+      summaryTextSize = summaryTextSize/length(levels(groupBy)) + 2
+    }
+
+    p <- p + ggplot2::geom_text(data = summ, size = summaryTextSize,
                                 ggplot2::aes_string(x = "groupBy",
                                                     y = "statY",
-                                                    label = "label"),
-                                size = 5)
+                                                    label = "label"))
     p <- p + ggplot2::stat_summary(fun = fun, fun.min = fun,
                                    fun.max = fun,
                                    geom = "crossbar",
@@ -891,8 +950,10 @@ plotSCEScatter <- function(inSCE,
 #'  Default TRUE.
 #' @param xlab Character vector. Label for x-axis. Default NULL.
 #' @param ylab Character vector. Label for y-axis. Default NULL.
-#' @param axisSize Size of x/y-axis ticks. Default 10.
-#' @param axisLabelSize Size of x/y-axis labels. Default 10.
+#' @param baseSize The base font size for all text. Default 12.
+#'  Can be overwritten by titleSize, axisSize, and axisLabelSize.
+#' @param axisSize Size of x/y-axis ticks. Default NULL.
+#' @param axisLabelSize Size of x/y-axis labels. Default NULL.
 #' @param dotSize Size of dots. Default 1.
 #' @param transparency Transparency of the dots, values will be 0-1. Default 1.
 #' @param defaultTheme Removes grid in plot and sets axis title size to 10
@@ -901,6 +962,8 @@ plotSCEScatter <- function(inSCE,
 #'  drawn even if defaultTheme is TRUE. Default FALSE.
 #' @param summary Adds a summary statistic, as well as a crossbar to the
 #'  violin plot. Options are "mean" or "median". Default NULL.
+#' @param summaryTextSize The text size of the summary statistic displayed
+#'  above the violin plot. Default 3.
 #' @param title Title of plot. Default NULL.
 #' @param titleSize Size of title of plot. Default 15.
 #' @param combinePlot Must be either "all", "sample", or "none". "all" will combine all plots into a single
@@ -915,28 +978,28 @@ plotSCEScatter <- function(inSCE,
 #' )
 #' @export
 plotSCEViolinColData <- function(inSCE,
-                                 sample = NULL,
                                  coldata,
+                                 sample = NULL,
                                  groupBy = NULL,
                                  violin = TRUE,
                                  boxplot = TRUE,
                                  dots = TRUE,
                                  xlab = NULL,
                                  ylab = NULL,
-                                 axisSize = 10,
-                                 axisLabelSize = 10,
+                                 baseSize = 12,
+                                 axisSize = NULL,
+                                 axisLabelSize = NULL,
                                  dotSize = 1,
                                  transparency = 1,
                                  defaultTheme = TRUE,
                                  gridLine = FALSE,
                                  summary = NULL,
+                                 summaryTextSize = 3,
                                  title = NULL,
                                  titleSize = NULL,
                                  combinePlot = "none",
                                  plotLabels = NULL) {
-  if(!combinePlot %in% c("all", "sample", "none")){
-    stop("'combinePlot' must be set to either 'all', 'sample', or 'none'.")
-  }
+  combinePlot <- match.arg(combinePlot,c("all", "sample", "none"))
 
   if (!is.null(coldata)) {
     if (!coldata %in% names(SummarizedExperiment::colData(inSCE))) {
@@ -982,7 +1045,7 @@ plotSCEViolinColData <- function(inSCE,
     }
 
     if(!is.null(title) && length(samples) > 1){
-      title = paste(title, x, sep = "_")
+      title = paste(title, x, sep = ", ")
     }
 
     p <- .ggViolin(
@@ -993,6 +1056,7 @@ plotSCEViolinColData <- function(inSCE,
       dots = dots,
       xlab = xlab,
       ylab = ylab,
+      baseSize=baseSize,
       axisSize = axisSize,
       axisLabelSize = axisLabelSize,
       dotSize = dotSize,
@@ -1000,6 +1064,8 @@ plotSCEViolinColData <- function(inSCE,
       defaultTheme = defaultTheme,
       gridLine = gridLine,
       summary = summary,
+      summaryTextSize=summaryTextSize,
+      combinePlot = combinePlot,
       title = title,
       titleSize = titleSize
     )
@@ -1035,6 +1101,9 @@ plotSCEViolinColData <- function(inSCE,
 #' @param useAssay Indicate which assay to use. Default "counts".
 #' @param feature Name of feature stored in assay of SingleCellExperiment
 #'  object.
+#' @param featureLocation Indicates which column name of rowData to query gene.
+#' @param featureDisplay Indicates which column name of rowData to use
+#' to display feature for visualization.
 #' @param groupBy Groupings for each numeric value. A user may input a vector
 #'  equal length to the number of the samples in the SingleCellExperiment
 #'  object, or can be retrieved from the colData slot. Default NULL.
@@ -1069,9 +1138,11 @@ plotSCEViolinColData <- function(inSCE,
 #' )
 #' @export
 plotSCEViolinAssayData <- function(inSCE,
+                                   feature,
                                    sample = NULL,
                                    useAssay = "counts",
-                                   feature,
+                                   featureLocation = NULL,
+                                   featureDisplay = NULL,
                                    groupBy = NULL,
                                    violin = TRUE,
                                    boxplot = TRUE,
@@ -1089,16 +1160,26 @@ plotSCEViolinAssayData <- function(inSCE,
                                    titleSize = NULL,
                                    combinePlot = "none",
                                    plotLabels = NULL) {
-  if(!combinePlot %in% c("all", "sample", "none")){
-    stop("'combinePlot' must be set to either 'all', 'sample', or 'none'.")
+  combinePlot <- match.arg(combinePlot,c("all", "sample", "none"))
+
+  if(!is.null(featureDisplay)){
+    featureDisplay <- match.arg(featureDisplay,
+                                colnames(SummarizedExperiment::rowData(inSCE)))
+  }else{
+    if(exists(x = "featureDisplay", inSCE@metadata)){
+      featureDisplay <- inSCE@metadata$featureDisplay
+    }
   }
 
   mat <- getBiomarker(
     inSCE = inSCE,
     useAssay = useAssay,
+    featureLocation = featureLocation,
+    featureDisplay = featureDisplay,
     gene = feature,
     binary = "Continuous"
   )
+
   counts <- mat[, 2]
   if (!is.null(groupBy)) {
     if (length(groupBy) > 1) {
@@ -1113,6 +1194,12 @@ plotSCEViolinAssayData <- function(inSCE,
       }
       groupBy <- as.character(SummarizedExperiment::colData(inSCE)[, groupBy])
     }
+  }
+  if(!is.null(featureDisplay) && is.null(title)){
+    title = utils::tail(colnames(mat),1)
+  }
+  if(is.null(xlab)){
+    ylab = "Expression"
   }
   if (!is.null(sample)) {
     if (length(sample) != ncol(inSCE)) {
@@ -1149,6 +1236,7 @@ plotSCEViolinAssayData <- function(inSCE,
       defaultTheme = defaultTheme,
       gridLine = gridLine,
       summary = summary,
+      combinePlot = combinePlot,
       title = title,
       titleSize = titleSize
     )
@@ -1187,13 +1275,13 @@ plotSCEViolinAssayData <- function(inSCE,
 #'  SingleCellExperiment object via a violin plot.
 #' @param inSCE Input \linkS4class{SingleCellExperiment} object with saved
 #' dimension reduction components or a variable with saved results. Required
-#' @param sample Character vector. Indicates which sample each cell belongs to.
 #' @param slot Desired slot of SingleCellExperiment used for plotting. Possible
 #'  options: "assays", "colData", "metadata"
 #' @param annotation Desired vector within the slot used for plotting.
 #' @param feature name of feature stored in assay of SingleCellExperiment
-#'  object.
+#'  object. Required.
 #'  Will be used only if "assays" slot is chosen. Default NULL.
+#' @param sample Character vector. Indicates which sample each cell belongs to.
 #' @param groupBy Groupings for each numeric value. A user may input a vector
 #' equal length to the number of the samples in the SingleCellExperiment
 #' object, or can be retrieved from the colData slot. Default NULL.
@@ -1228,10 +1316,10 @@ plotSCEViolinAssayData <- function(inSCE,
 #' )
 #' @export
 plotSCEViolin <- function(inSCE,
-                          sample = NULL,
                           slot,
-                          annotation,
                           feature,
+                          annotation,
+                          sample = NULL,
                           groupBy = NULL,
                           violin = TRUE,
                           boxplot = TRUE,
@@ -1249,14 +1337,12 @@ plotSCEViolin <- function(inSCE,
                           titleSize = NULL,
                           combinePlot = "none",
                           plotLabels = NULL) {
-  if(!combinePlot %in% c("all", "sample", "none")){
-    stop("'combinePlot' must be set to either 'all', 'sample', or 'none'.")
-  }
+  combinePlot <- match.arg(combinePlot,c("all", "sample", "none"))
 
   if (!slot %in% methods::slotNames(inSCE)) {
-    stop("'slot' must be a slot within the SingleCellExperiment object.
-             Please run 'methods::slotNames' if you are unsure the
-	 specified slot exists.")
+    stop("'slot' must be a slot within the SingleCellExperiment object.",
+         "Please run 'methods::slotNames' if you are unsure the",
+         "specified slot exists.")
   }
 
   sceSubset <- do.call(slot, args = list(inSCE))
@@ -1326,6 +1412,7 @@ plotSCEViolin <- function(inSCE,
       defaultTheme = defaultTheme,
       gridLine = gridLine,
       summary = summary,
+      combinePlot = combinePlot,
       title = title,
       titleSize = titleSize
     )
@@ -1373,28 +1460,35 @@ plotSCEViolin <- function(inSCE,
 #'  object, or can be retrieved from the colData slot. Default NULL.
 #' @param xlab Character vector. Label for x-axis. Default NULL.
 #' @param ylab Character vector. Label for y-axis. Default NULL.
-#' @param axisSize Size of x/y-axis ticks. Default 10.
-#' @param axisLabelSize Size of x/y-axis labels. Default 10.
+#' @param baseSize The base font size for all text. Default 12.
+#'  Can be overwritten by titleSize, axisSize, and axisLabelSize.
+#' @param axisSize Size of x/y-axis ticks. Default NULL.
+#' @param axisLabelSize Size of x/y-axis labels. Default NULL.
 #' @param defaultTheme Removes grid in plot and sets axis title size to 10
 #'  when TRUE. Default TRUE.
 #' @param title Title of plot. Default NULL.
 #' @param titleSize Size of title of plot. Default 15.
 #' @param cutoff Numeric value. The plot will be annotated with a vertical line
 #'  if set. Default NULL.
+#' @param combinePlot Must be either "all", "sample", or "none". "all" will combine all plots into a single
+#' .ggplot object, while "sample" will output a list of plots separated by sample. Default "none".
 #' @return density plot, in .ggplot.
 .ggDensity <- function(value,
                        groupBy = NULL,
                        xlab = NULL,
                        ylab = NULL,
-                       axisSize = 10,
-                       axisLabelSize = 10,
+                       baseSize = 12,
+                       axisSize = NULL,
+                       axisLabelSize = NULL,
                        defaultTheme = TRUE,
                        title = NULL,
-                       titleSize = 18,
+                       titleSize = NULL,
+                       combinePlot = "none",
                        cutoff = NULL) {
   if (is.null(groupBy)) {
     groupBy <- rep("Sample", length(value))
   }
+  groupBy <- factor(groupBy, levels = unique(groupBy))
   df <- data.frame(x = groupBy, y = value)
 
   p <- ggplot2::ggplot(df, ggplot2::aes_string(x = value)) +
@@ -1402,8 +1496,10 @@ plotSCEViolin <- function(inSCE,
     ggplot2::facet_grid(. ~ x)
 
   if (defaultTheme == TRUE) {
-    p <- .ggSCTKTheme(p) +
+    p <- .ggSCTKTheme(p, baseSize, groupBy, combinePlot) +
       ggplot2::theme(strip.background = ggplot2::element_blank())
+  }else{
+    p <- p + ggplot2::theme_gray(base_size = baseSize)
   }
 
   if (all(unique(groupBy) == "Sample")) {
@@ -1448,8 +1544,11 @@ plotSCEViolin <- function(inSCE,
 #'  object, or can be retrieved from the colData slot. Default NULL.
 #' @param xlab Character vector. Label for x-axis. Default NULL.
 #' @param ylab Character vector. Label for y-axis. Default NULL.
-#' @param axisSize Size of x/y-axis ticks. Default 10.
-#' @param axisLabelSize Size of x/y-axis labels. Default 10.
+#' @param baseSize The base font size for all text. Default 12.
+#'  Can be overwritten by titleSize, axisSize, and axisLabelSize,
+#'  legendSize, legendTitleSize.
+#' @param axisSize Size of x/y-axis ticks. Default NULL.
+#' @param axisLabelSize Size of x/y-axis labels. Default NULL.
 #' @param defaultTheme Removes grid in plot and sets axis title size to 10
 #'  when TRUE. Default TRUE.
 #' @param title Title of plot. Default NULL.
@@ -1468,22 +1567,21 @@ plotSCEViolin <- function(inSCE,
 #' )
 #' @export
 plotSCEDensityColData <- function(inSCE,
-                                  sample = NULL,
                                   coldata,
+                                  sample = NULL,
                                   groupBy = NULL,
                                   xlab = NULL,
                                   ylab = NULL,
-                                  axisSize = 10,
-                                  axisLabelSize = 10,
+                                  baseSize = 12,
+                                  axisSize = NULL,
+                                  axisLabelSize = NULL,
                                   defaultTheme = TRUE,
                                   title = NULL,
                                   titleSize = 18,
                                   cutoff = NULL,
                                   combinePlot = "none",
                                   plotLabels = NULL) {
-  if(!combinePlot %in% c("all", "sample", "none")){
-    stop("'combinePlot' must be set to either 'all', 'sample', or 'none'.")
-  }
+  combinePlot <- match.arg(combinePlot,c("all", "sample", "none"))
 
   if (!is.null(coldata)) {
     if (!coldata %in% names(SummarizedExperiment::colData(inSCE))) {
@@ -1532,18 +1630,20 @@ plotSCEDensityColData <- function(inSCE,
     }
 
     if (!is.null(title) && length(samples) > 1) {
-      title <- paste(title, x, sep = "_")
+      title <- paste(title, x, sep = ", ")
     }
     p <- .ggDensity(
       value = coldataSub,
       groupBy = groupbySub,
       xlab = xlab,
       ylab = ylab,
+      baseSize = baseSize,
       axisSize = axisSize,
       axisLabelSize = axisLabelSize,
       defaultTheme = defaultTheme,
       title = title,
       titleSize = titleSize,
+      combinePlot = combinePlot,
       cutoff = cutoff
     )
     return(p)
@@ -1574,6 +1674,9 @@ plotSCEDensityColData <- function(inSCE,
 #' @param useAssay Indicate which assay to use. Default "counts".
 #' @param feature Name of feature stored in assay of SingleCellExperiment
 #'  object.
+#' @param featureLocation Indicates which column name of rowData to query gene.
+#' @param featureDisplay Indicates which column name of rowData to use
+#' to display feature for visualization.
 #' @param groupBy Groupings for each numeric value. A user may input a vector
 #'  equal length to the number of the samples in the SingleCellExperiment
 #'  object, or can be retrieved from the colData slot. Default NULL.
@@ -1599,9 +1702,11 @@ plotSCEDensityColData <- function(inSCE,
 #' )
 #' @export
 plotSCEDensityAssayData <- function(inSCE,
+                                    feature,
                                     sample = NULL,
                                     useAssay = "counts",
-                                    feature,
+                                    featureLocation = NULL,
+                                    featureDisplay = NULL,
                                     groupBy = NULL,
                                     xlab = NULL,
                                     ylab = NULL,
@@ -1613,17 +1718,33 @@ plotSCEDensityAssayData <- function(inSCE,
                                     titleSize = 18,
                                     combinePlot = "none",
                                     plotLabels = NULL) {
-  if(!combinePlot %in% c("all", "sample", "none")){
-    stop("'combinePlot' must be set to either 'all', 'sample', or 'none'.")
+  combinePlot <- match.arg(combinePlot,c("all", "sample", "none"))
+
+  if(!is.null(featureDisplay)){
+    featureDisplay <- match.arg(featureDisplay,
+                                colnames(SummarizedExperiment::rowData(inSCE)))
+  }else{
+    if(exists(x = "featureDisplay", inSCE@metadata)){
+      featureDisplay <- inSCE@metadata$featureDisplay
+    }
   }
 
   mat <- getBiomarker(
     inSCE = inSCE,
     useAssay = useAssay,
     gene = feature,
-    binary = "Continuous"
+    binary = "Continuous",
+    featureLocation = featureLocation,
+    featureDisplay = featureDisplay
   )
   counts <- mat[, 2]
+
+  if(!is.null(featureDisplay)){
+    title = utils::tail(colnames(mat),1)
+  }
+  if(is.null(xlab)){
+    xlab = "Expression"
+  }
 
   if (!is.null(groupBy)) {
     if (length(groupBy) > 1) {
@@ -1750,9 +1871,7 @@ plotSCEDensity <- function(inSCE,
                            cutoff = NULL,
                            combinePlot = "none",
                            plotLabels = NULL) {
-  if(!combinePlot %in% c("all", "sample", "none")){
-    stop("'combinePlot' must be set to either 'all', 'sample', or 'none'.")
-  }
+  combinePlot <- match.arg(combinePlot,c("all", "sample", "none"))
 
   if (!slot %in% methods::slotNames(inSCE)) {
     stop("'slot' must be a slot within the SingleCellExperiment object.
@@ -2250,7 +2369,7 @@ plotBarcodeRankScatter <- function(inSCE,
                      substr(summary, 2, nchar(summary)), sep="")
     summ$label <- paste0(summary,": ", round(summ$value, 5))
 
-    p <- p + ggplot2::geom_text(data = summ,
+    p <- p + ggrepel::geom_text_repel(data = summ,
       ggplot2::aes_string(x = "groupBy",
         y = "statY",
         label = "label"),
@@ -2304,8 +2423,8 @@ plotBarcodeRankScatter <- function(inSCE,
 #' )
 #' @export
 plotSCEBarColData <- function(inSCE,
-                              sample = NULL,
                               coldata,
+                              sample = NULL,
                               groupBy = NULL,
                               dots = TRUE,
                               xlab = NULL,
@@ -2379,6 +2498,9 @@ plotSCEBarColData <- function(inSCE,
 #' @param useAssay Indicate which assay to use. Default "counts".
 #' @param feature Name of feature stored in assay of SingleCellExperiment
 #'  object.
+#' @param featureLocation Indicates which column name of rowData to query gene.
+#' @param featureDisplay Indicates which column name of rowData to use
+#' to display feature for visualization.
 #' @param groupBy Groupings for each numeric value. A user may input a vector
 #'  equal length to the number of the samples in the SingleCellExperiment
 #'  object, or can be retrieved from the colData slot. Default NULL.
@@ -2407,9 +2529,11 @@ plotSCEBarColData <- function(inSCE,
 #' )
 #' @export
 plotSCEBarAssayData <- function(inSCE,
+                                feature,
                                 sample = NULL,
                                 useAssay = "counts",
-                                feature,
+                                featureLocation = NULL,
+                                featureDisplay = NULL,
                                 groupBy = NULL,
                                 xlab = NULL,
                                 ylab = NULL,
@@ -2423,11 +2547,22 @@ plotSCEBarAssayData <- function(inSCE,
                                 title = NULL,
                                 titleSize = NULL,
                                 combinePlot = TRUE) {
+  if(!is.null(featureDisplay)){
+    featureDisplay <- match.arg(featureDisplay,
+                                colnames(SummarizedExperiment::rowData(inSCE)))
+  }else{
+    if(exists(x = "featureDisplay", inSCE@metadata)){
+      featureDisplay <- inSCE@metadata$featureDisplay
+    }
+  }
+
   mat <- getBiomarker(
     inSCE = inSCE,
     useAssay = useAssay,
     gene = feature,
-    binary = "Continuous"
+    binary = "Continuous",
+    featureLocation = featureLocation,
+    featureDisplay = featureDisplay
   )
   counts <- mat[, 2]
 
@@ -2479,6 +2614,25 @@ plotSCEBarAssayData <- function(inSCE,
   return(value.bin)
 }
 
+#' @title Indicates which rowData to use for visualization
+#' @description This function is to be used to specify which
+#' @param inSCE Input \linkS4class{SingleCellExperiment} object with saved
+#' dimension reduction components or a variable with saved results. Required.
+#' @param featureDisplayRow Indicates which column name of rowData to be used for plots.
+#' @return A SingleCellExperiment object with the specific column name of rowData
+#'  to be used for plotting stored in metadata.
+#' @examples
+#' data(scExample, package="singleCellTK")
+#' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
+#' sce <- setSCTKDisplayRow(inSCE = sce, featureDisplayRow = "feature_name")
+#' plotSCEViolinAssayData(inSCE = sce, feature = "ENSG00000019582")
+#' @export
+setSCTKDisplayRow <- function(inSCE,
+                              featureDisplayRow) {
+  inSCE@metadata$featureDisplay <- featureDisplayRow
+  return(inSCE)
+}
+
 .ggSCTKCombinePlots <- function(plotlist,
                                 ncols = NULL,
                                 nrows = NULL,
@@ -2492,6 +2646,7 @@ plotSCEBarAssayData <- function(inSCE,
                                 samplePerColumn = TRUE,
                                 sampleRelHeights = 1,
                                 sampleRelWidths = 1) {
+
   if ("Violin" %in% names(plotlist)) {
     plotlistViolin <- plotlist$Violin
   } else {
@@ -2534,37 +2689,6 @@ plotSCEBarAssayData <- function(inSCE,
   }
 
   if (combinePlot == "all") {
-    if (!is.null(labels) && labels != "none") {
-      # If default, sample name will be used as labels
-      if(length(labels) == 1){
-        if (labels == "default") {
-          if(!is.null(names(plotlist))){
-            labels <- names(plotlist)
-          }
-        }
-      }
-
-      listNamePlot <- list()
-
-      if(is.null(labelPositionX)){
-        labelPositionX = rep(0, length(plotlist))
-      }
-      if(is.null(labelPositionY)){
-        labelPositionY = rep(1, length(plotlist))
-      }
-
-      for(x in seq_along(plotlist)){
-        labeled <- plotlist[[x]] + cowplot::draw_plot_label(
-          labels[x],
-          x = labelPositionX[x],
-          y = labelPositionY[x],
-          size = labelSize)
-        listNamePlot[[x]] <- labeled
-      }
-
-      plotlist <- listNamePlot
-    }
-
     plotRes <- cowplot::plot_grid(
       plotlist = plotlist,
       ncol = ncols,
@@ -2599,12 +2723,29 @@ plotSCEBarAssayData <- function(inSCE,
     }
   }
 }
-.ggSCTKTheme <- function(gg) {
-  return(gg + ggplot2::theme_bw() +
+.ggSCTKTheme <- function(gg, baseSize = 12,
+                         groupBy = NULL, combinePlot = "none") {
+
+  scaleFactor <- .ggSetScaleFactor(groupBy = groupBy,
+                    combinePlot = combinePlot)
+  return(gg + ggplot2::theme_bw(base_size = baseSize * scaleFactor) +
            ggplot2::theme(
              panel.grid.major = ggplot2::element_blank(),
              panel.grid.minor = ggplot2::element_blank(),
-             axis.text = ggplot2::element_text(size = 10),
-             axis.title = ggplot2::element_text(size = 10)
+             axis.text = ggplot2::element_text(),
+             axis.title = ggplot2::element_text()
            ))
+}
+
+.ggSetScaleFactor <- function(groupBy = NULL,
+                              combinePlot = "none"){
+  if(!is.null(groupBy)){
+    scaleFactor = 1/length(levels(groupBy)) + 0.5
+  }else{
+    scaleFactor = 1
+  }
+  if(combinePlot == "all"){
+    scaleFactor = scaleFactor * 0.75
+  }
+  return(scaleFactor)
 }

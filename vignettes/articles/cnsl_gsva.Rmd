@@ -1,0 +1,71 @@
+---
+title: "GSVA"
+author: "Irzam Sarfraz"
+---
+```{r develSetting, include=FALSE}
+doEval = TRUE
+```
+## Introduction
+The ***GSVA*** (Gene Set Variation Analysis) ([Hänzelmann, S., Castelo, R. & Guinney, J. GSVA: gene set variation analysis for microarray and RNA-Seq data. BMC Bioinformatics 14, 7 (2013).](https://doi.org/10.1186/1471-2105-14-7)) is a popular method for ***GSE*** (Gene Set Enrichment) and allows the identification of changes in pathway activity
+in RNA-Seq data. Overall, ***gene sets*** can be uploaded or selected from the available databases and the ***GSVA*** method can be run on the selected ***gene sets*** which can eventually be visualized using ***Violin*** or ***Heatmap*** plots.
+
+## General Worflow
+The figure below describes the workflow of using ***GSVA*** through ***singleCellTK*** package:
+![](ui_screenshots/pathway_analysis/capa_workflow.png)
+
+## Workflow Guide
+1. Upload or import ***gene sets***:
+```{r, eval=FALSE}
+#import a GMT file
+gmtFilePath <- "C:/Users/HP/Desktop/gmtfile.GMT"
+sce <- importGeneSetsFromGMT(inSCE = sce,
+                             file = gmtFilePath,
+                             by = "rownames",
+                             collectionName = "Collection1")
+
+#select from an existing database
+sce <- importGeneSetsFromMSigDB(inSCE = sce,
+                                categoryIDs = "C1",
+                                by = "rownames")
+
+```
+
+2. Run ***GSVA***:
+```{r, eval=FALSE}
+sce$gsvaRes <- gsvaSCE(inSCE = sce,
+               useAssay = "logcounts",
+               pathwayNames = c("C1"))
+
+```
+
+3. Visualize the results:
+```{r, eval=FALSE}
+#populate results
+conditionFactor <- factor(colData(sce)[, "Biological_Condition"])
+      if(nlevels(conditionFactor)<=1){
+        stop("Condition variable must have atleast two levels!")
+      }
+fit <- limma::lmFit(sce$gsvaRes, stats::model.matrix(~conditionFactor))
+fit <- limma::eBayes(fit)
+toptableres <- limma::topTable(fit, number = nrow(sce$gsvaRes))
+temptable <- cbind(rownames(toptableres), toptableres)
+rownames(temptable) <- NULL
+colnames(temptable)[1] <- "Pathway"
+     
+
+tempgsvares <- sce$gsvaRes
+topPaths <- 10
+#visualize violin plot
+tempgsvares <- tempgsvares[1:min(49, topPaths, nrow(tempgsvares)), , drop = FALSE]
+gsvaPlot(inSCE = sce,
+         gsvaData = tempgsvares,
+         plotType = "Violin",
+         condition = "Biological_Condition")
+
+#visualize heatmap plot
+gsvaPlot(inSCE = sce,
+         gsvaData = tempgsvares,
+         plotType = "Heatmap",
+         condition = "Biological_Condition")
+
+```

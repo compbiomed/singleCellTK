@@ -246,7 +246,7 @@
 #'  \link{readMM} function), or "matrix" (as returned by
 #'  \link[base]{matrix} function). Default "Matrix".
 #' @param delayedArray Boolean. Whether to read the expression matrix as
-#'  \link{DelayedArray} object or not. Default \code{TRUE}.
+#'  \link{DelayedArray} object or not. Default \code{FALSE}.
 #' @return A \link[SingleCellExperiment]{SingleCellExperiment} object
 #'  containing the count
 #'  matrix, the gene annotation, and the cell annotation.
@@ -267,7 +267,7 @@ importOptimus <- function(OptimusDirs,
   geneMetricsLocation = "call-MergeGeneMetrics/merged-gene-metrics.csv.gz",
   emptyDropsLocation = "call-RunEmptyDrops/empty_drops_result.csv",
   class = c("Matrix", "matrix"),
-  delayedArray = TRUE) {
+  delayedArray = FALSE) {
 
   class <- match.arg(class)
 
