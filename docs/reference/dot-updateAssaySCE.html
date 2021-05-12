@@ -7,7 +7,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>.updateAssaySCE
-Update/Modify/Add an assay in the provided SingleCellExperiment object from a Seurat object — .updateAssaySCE • singleCellTK</title>
+Update/Modify/Add an assay in the provided SingleCellExperiment object from
+a Seurat object — .updateAssaySCE • singleCellTK</title>
 
 
 <!-- jquery -->
@@ -41,9 +42,11 @@ Update/Modify/Add an assay in the provided SingleCellExperiment object from a Se
 
 
 <meta property="og:title" content=".updateAssaySCE
-Update/Modify/Add an assay in the provided SingleCellExperiment object from a Seurat object — .updateAssaySCE" />
+Update/Modify/Add an assay in the provided SingleCellExperiment object from
+a Seurat object — .updateAssaySCE" />
 <meta property="og:description" content=".updateAssaySCE
-Update/Modify/Add an assay in the provided SingleCellExperiment object from a Seurat object" />
+Update/Modify/Add an assay in the provided SingleCellExperiment object from
+a Seurat object" />
 
 
 
@@ -75,7 +78,7 @@ Update/Modify/Add an assay in the provided SingleCellExperiment object from a Se
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.2</span>
       </span>
     </div>
 
@@ -110,7 +113,10 @@ Update/Modify/Add an assay in the provided SingleCellExperiment object from a Se
       <a href="../articles/articles/cnsl_import_scRNAseq_data_as_SCE.html">Import data into SCTK</a>
     </li>
     <li>
-      <a href="../articles/articles/cnsl_qc.html">Quality Control</a>
+      <a href="../articles/articles/cnsl_dropletqc.html">Quality Control of droplet data</a>
+    </li>
+    <li>
+      <a href="../articles/articles/cnsl_cellqc.html">Quality Control of cell data</a>
     </li>
     <li>
       <a href="../articles/articles/cnsl_normalization.html">Normalization</a>
@@ -275,7 +281,7 @@ Update/Modify/Add an assay in the provided SingleCellExperiment object from a Se
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/compbiomed/singleCellTK">
-    <span class="fas fa-github"></span>
+    <span class="fa fa-github"></span>
      
   </a>
 </li>
@@ -293,14 +299,16 @@ Update/Modify/Add an assay in the provided SingleCellExperiment object from a Se
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>.updateAssaySCE
-Update/Modify/Add an assay in the provided SingleCellExperiment object from a Seurat object</h1>
+Update/Modify/Add an assay in the provided SingleCellExperiment object from
+a Seurat object</h1>
     <small class="dont-index">Source: <a href='https://github.com/compbiomed/singleCellTK/blob/master/R/seuratFunctions.R'><code>R/seuratFunctions.R</code></a></small>
     <div class="hidden name"><code>dot-updateAssaySCE.Rd</code></div>
     </div>
 
     <div class="ref-description">
     <p>.updateAssaySCE
-Update/Modify/Add an assay in the provided SingleCellExperiment object from a Seurat object</p>
+Update/Modify/Add an assay in the provided SingleCellExperiment object from
+a Seurat object</p>
     </div>
 
     <pre class="usage"><span class='fu'>.updateAssaySCE</span><span class='op'>(</span>
@@ -324,15 +332,18 @@ Update/Modify/Add an assay in the provided SingleCellExperiment object from a Se
     </tr>
     <tr>
       <th>assaySlotSCE</th>
-      <td><p>Selected assay to update in the input SingleCellExperiment object</p></td>
+      <td><p>Selected assay to update in the input
+SingleCellExperiment object</p></td>
     </tr>
     <tr>
       <th>seuratDataSlot</th>
-      <td><p>Selected data slot from the Seurat object. Default <code>"counts"</code>.</p></td>
+      <td><p>Selected data slot from the Seurat object. Default
+<code>"counts"</code>.</p></td>
     </tr>
     <tr>
       <th>seuratAssaySlot</th>
-      <td><p>Selected assay from Seurat object. Default <code>"RNA"</code>.</p></td>
+      <td><p>Selected assay from Seurat object. Default
+<code>"RNA"</code>.</p></td>
     </tr>
     </table>
 

@@ -74,7 +74,7 @@ downstream quality control and analysis functions in singleCellTK." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.2</span>
       </span>
     </div>
 
@@ -109,7 +109,10 @@ downstream quality control and analysis functions in singleCellTK." />
       <a href="../articles/articles/cnsl_import_scRNAseq_data_as_SCE.html">Import data into SCTK</a>
     </li>
     <li>
-      <a href="../articles/articles/cnsl_qc.html">Quality Control</a>
+      <a href="../articles/articles/cnsl_dropletqc.html">Quality Control of droplet data</a>
+    </li>
+    <li>
+      <a href="../articles/articles/cnsl_cellqc.html">Quality Control of cell data</a>
     </li>
     <li>
       <a href="../articles/articles/cnsl_normalization.html">Normalization</a>
@@ -274,7 +277,7 @@ downstream quality control and analysis functions in singleCellTK." />
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/compbiomed/singleCellTK">
-    <span class="fas fa-github"></span>
+    <span class="fa fa-github"></span>
      
   </a>
 </li>
@@ -322,8 +325,8 @@ and "ensemble_transcriptID".</p></td>
     </tr>
     <tr>
       <th>by</th>
-      <td><p>Character. Describes the location within <code>inSCE</code> where the gene 
-identifiers in the mitochondrial gene sets should be mapped. 
+      <td><p>Character. Describes the location within <code>inSCE</code> where the gene
+identifiers in the mitochondrial gene sets should be mapped.
 If set to <code>"rownames"</code> then the features will
 be searched for among <code><a href='https://rdrr.io/r/base/colnames.html'>rownames(inSCE)</a></code>. This can also be
 set to one of the column names of <code>rowData(inSCE)</code> in which case the
@@ -347,9 +350,9 @@ with gene set from <code>collectionName</code> output stored to the
 metadata slot.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>The gene identifiers of mitochondrial genes will be loaded with 
-"data(AllMito)". Currently, it supports human and mouse reference. 
-Also, it supports entrez ID, gene symbol, ensemble ID and ensemble transcript ID. 
+    <p>The gene identifiers of mitochondrial genes will be loaded with
+"data(AllMito)". Currently, it supports human and mouse reference.
+Also, it supports entrez ID, gene symbol, ensemble ID and ensemble transcript ID.
 They will be mapped to the IDs in <code>inSCE</code> using the <code>by</code> parameter and
 stored in a <a href='https://rdrr.io/pkg/GSEABase/man/GeneSetCollection-class.html'>GeneSetCollection</a> object from package
 <a href='https://rdrr.io/pkg/GSEABase/man/GSEABase-package.html'>GSEABase</a>. This object is stored in

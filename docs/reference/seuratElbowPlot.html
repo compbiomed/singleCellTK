@@ -7,7 +7,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>seuratElbowPlot
-Computes the plot object for elbow plot from the pca slot in the input sce object — seuratElbowPlot • singleCellTK</title>
+Computes the plot object for elbow plot from the pca slot in the input sce
+object — seuratElbowPlot • singleCellTK</title>
 
 
 <!-- jquery -->
@@ -41,9 +42,11 @@ Computes the plot object for elbow plot from the pca slot in the input sce objec
 
 
 <meta property="og:title" content="seuratElbowPlot
-Computes the plot object for elbow plot from the pca slot in the input sce object — seuratElbowPlot" />
+Computes the plot object for elbow plot from the pca slot in the input sce
+object — seuratElbowPlot" />
 <meta property="og:description" content="seuratElbowPlot
-Computes the plot object for elbow plot from the pca slot in the input sce object" />
+Computes the plot object for elbow plot from the pca slot in the input sce
+object" />
 
 
 
@@ -75,7 +78,7 @@ Computes the plot object for elbow plot from the pca slot in the input sce objec
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.2</span>
       </span>
     </div>
 
@@ -110,7 +113,10 @@ Computes the plot object for elbow plot from the pca slot in the input sce objec
       <a href="../articles/articles/cnsl_import_scRNAseq_data_as_SCE.html">Import data into SCTK</a>
     </li>
     <li>
-      <a href="../articles/articles/cnsl_qc.html">Quality Control</a>
+      <a href="../articles/articles/cnsl_dropletqc.html">Quality Control of droplet data</a>
+    </li>
+    <li>
+      <a href="../articles/articles/cnsl_cellqc.html">Quality Control of cell data</a>
     </li>
     <li>
       <a href="../articles/articles/cnsl_normalization.html">Normalization</a>
@@ -275,7 +281,7 @@ Computes the plot object for elbow plot from the pca slot in the input sce objec
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/compbiomed/singleCellTK">
-    <span class="fas fa-github"></span>
+    <span class="fa fa-github"></span>
      
   </a>
 </li>
@@ -293,14 +299,16 @@ Computes the plot object for elbow plot from the pca slot in the input sce objec
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>seuratElbowPlot
-Computes the plot object for elbow plot from the pca slot in the input sce object</h1>
+Computes the plot object for elbow plot from the pca slot in the input sce
+object</h1>
     <small class="dont-index">Source: <a href='https://github.com/compbiomed/singleCellTK/blob/master/R/seuratFunctions.R'><code>R/seuratFunctions.R</code></a></small>
     <div class="hidden name"><code>seuratElbowPlot.Rd</code></div>
     </div>
 
     <div class="ref-description">
     <p>seuratElbowPlot
-Computes the plot object for elbow plot from the pca slot in the input sce object</p>
+Computes the plot object for elbow plot from the pca slot in the input sce
+object</p>
     </div>
 
     <pre class="usage"><span class='fu'>seuratElbowPlot</span><span class='op'>(</span>
@@ -317,15 +325,19 @@ Computes the plot object for elbow plot from the pca slot in the input sce objec
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>inSCE</th>
-      <td><p>(sce) object from which to compute the elbow plot (pca should be computed)</p></td>
+      <td><p>(sce) object from which to compute the elbow plot (pca should
+be computed)</p></td>
     </tr>
     <tr>
       <th>significantPC</th>
-      <td><p>Number of significant principal components to plot. This is used to alter the color of the points for the corresponding PCs. If <code>NULL</code>, all points will be the same color. Default <code>NULL</code>.</p></td>
+      <td><p>Number of significant principal components to plot.
+This is used to alter the color of the points for the corresponding PCs.
+If <code>NULL</code>, all points will be the same color. Default <code>NULL</code>.</p></td>
     </tr>
     <tr>
       <th>reduction</th>
-      <td><p>Reduction to use for elbow plot generation. Either <code>"pca"</code> or <code>"ica"</code>. Default <code>"pca"</code>.</p></td>
+      <td><p>Reduction to use for elbow plot generation. Either
+<code>"pca"</code> or <code>"ica"</code>. Default <code>"pca"</code>.</p></td>
     </tr>
     <tr>
       <th>ndims</th>
@@ -333,7 +345,8 @@ Computes the plot object for elbow plot from the pca slot in the input sce objec
     </tr>
     <tr>
       <th>externalReduction</th>
-      <td><p>Pass DimReduc object if PCA/ICA computed through other libraries. Default <code>NULL</code>.</p></td>
+      <td><p>Pass DimReduc object if PCA/ICA computed through
+other libraries. Default <code>NULL</code>.</p></td>
     </tr>
     <tr>
       <th>interactive</th>

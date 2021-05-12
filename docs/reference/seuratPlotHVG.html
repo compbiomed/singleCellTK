@@ -7,7 +7,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>seuratPlotHVG
-Plot highly variable genes from input sce object (must have highly variable genes computations stored) — seuratPlotHVG • singleCellTK</title>
+Plot highly variable genes from input sce object (must have highly variable
+genes computations stored) — seuratPlotHVG • singleCellTK</title>
 
 
 <!-- jquery -->
@@ -41,9 +42,11 @@ Plot highly variable genes from input sce object (must have highly variable gene
 
 
 <meta property="og:title" content="seuratPlotHVG
-Plot highly variable genes from input sce object (must have highly variable genes computations stored) — seuratPlotHVG" />
+Plot highly variable genes from input sce object (must have highly variable
+genes computations stored) — seuratPlotHVG" />
 <meta property="og:description" content="seuratPlotHVG
-Plot highly variable genes from input sce object (must have highly variable genes computations stored)" />
+Plot highly variable genes from input sce object (must have highly variable
+genes computations stored)" />
 
 
 
@@ -75,7 +78,7 @@ Plot highly variable genes from input sce object (must have highly variable gene
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.2</span>
       </span>
     </div>
 
@@ -110,7 +113,10 @@ Plot highly variable genes from input sce object (must have highly variable gene
       <a href="../articles/articles/cnsl_import_scRNAseq_data_as_SCE.html">Import data into SCTK</a>
     </li>
     <li>
-      <a href="../articles/articles/cnsl_qc.html">Quality Control</a>
+      <a href="../articles/articles/cnsl_dropletqc.html">Quality Control of droplet data</a>
+    </li>
+    <li>
+      <a href="../articles/articles/cnsl_cellqc.html">Quality Control of cell data</a>
     </li>
     <li>
       <a href="../articles/articles/cnsl_normalization.html">Normalization</a>
@@ -275,7 +281,7 @@ Plot highly variable genes from input sce object (must have highly variable gene
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/compbiomed/singleCellTK">
-    <span class="fas fa-github"></span>
+    <span class="fa fa-github"></span>
      
   </a>
 </li>
@@ -293,14 +299,16 @@ Plot highly variable genes from input sce object (must have highly variable gene
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>seuratPlotHVG
-Plot highly variable genes from input sce object (must have highly variable genes computations stored)</h1>
+Plot highly variable genes from input sce object (must have highly variable
+genes computations stored)</h1>
     <small class="dont-index">Source: <a href='https://github.com/compbiomed/singleCellTK/blob/master/R/seuratFunctions.R'><code>R/seuratFunctions.R</code></a></small>
     <div class="hidden name"><code>seuratPlotHVG.Rd</code></div>
     </div>
 
     <div class="ref-description">
     <p>seuratPlotHVG
-Plot highly variable genes from input sce object (must have highly variable genes computations stored)</p>
+Plot highly variable genes from input sce object (must have highly variable
+genes computations stored)</p>
     </div>
 
     <pre class="usage"><span class='fu'>seuratPlotHVG</span><span class='op'>(</span><span class='va'>inSCE</span>, labelPoints <span class='op'>=</span> <span class='fl'>0</span><span class='op'>)</span></pre>
@@ -310,12 +318,14 @@ Plot highly variable genes from input sce object (must have highly variable gene
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>inSCE</th>
-      <td><p>(sce) object that contains the highly variable genes computations</p></td>
+      <td><p>(sce) object that contains the highly variable genes
+computations</p></td>
     </tr>
     <tr>
       <th>labelPoints</th>
-      <td><p>Numeric value indicating the number of top genes that should be labeled.
-Default is <code>0</code>, which will not label any point.</p></td>
+      <td><p>Numeric value indicating the number of top genes that
+should be labeled.
+ Default is <code>0</code>, which will not label any point.</p></td>
     </tr>
     </table>
 

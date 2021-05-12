@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.2</span>
       </span>
     </div>
 
@@ -66,7 +66,10 @@
       <a href="../../articles/articles/cnsl_import_scRNAseq_data_as_SCE.html">Import data into SCTK</a>
     </li>
     <li>
-      <a href="../../articles/articles/cnsl_qc.html">Quality Control</a>
+      <a href="../../articles/articles/cnsl_dropletqc.html">Quality Control of droplet data</a>
+    </li>
+    <li>
+      <a href="../../articles/articles/cnsl_cellqc.html">Quality Control of cell data</a>
     </li>
     <li>
       <a href="../../articles/articles/cnsl_normalization.html">Normalization</a>
@@ -231,7 +234,7 @@
 <ul class="nav navbar-nav navbar-right">
 <li>
   <a href="https://github.com/compbiomed/singleCellTK">
-    <span class="fas fa-github"></span>
+    <span class="fa fa-github"></span>
      
   </a>
 </li>
@@ -245,7 +248,8 @@
 
       
 
-      </header><script src="cnsl_visualization_files/header-attrs-2.7/header-attrs.js"></script><div class="row">
+      </header><script src="cnsl_visualization_files/header-attrs-2.5/header-attrs.js"></script><script src="cnsl_visualization_files/accessible-code-block-0.0.1/empty-anchor.js"></script><link href="cnsl_visualization_files/anchor-sections-1.0/anchor-sections.css" rel="stylesheet">
+<script src="cnsl_visualization_files/anchor-sections-1.0/anchor-sections.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>SingleCellTK Visualization</h1>
@@ -288,7 +292,7 @@
 <span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span><span class="va">pbmc3k</span><span class="op">$</span><span class="va">Seurat_louvain_Resolution0.8</span><span class="op">)</span></code></pre></div>
 <pre><code>## 
 ##   0   1   2   3   4   5   6   7   8   9  10 
-## 550 486 349 303 257 236 162 158 149  36  14</code></pre>
+## 550 492 349 302 257 235 159 157 149  36  14</code></pre>
 <p>Then we will present the method to generate a scatter plot of the UMAP of this dataset, with clusters labeled by color.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">pbmc3k</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/seuratRunUMAP.html">seuratRunUMAP</a></span><span class="op">(</span><span class="va">pbmc3k</span><span class="op">)</span>

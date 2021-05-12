@@ -75,7 +75,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.2</span>
       </span>
     </div>
 
@@ -110,7 +110,10 @@
       <a href="../articles/articles/cnsl_import_scRNAseq_data_as_SCE.html">Import data into SCTK</a>
     </li>
     <li>
-      <a href="../articles/articles/cnsl_qc.html">Quality Control</a>
+      <a href="../articles/articles/cnsl_dropletqc.html">Quality Control of droplet data</a>
+    </li>
+    <li>
+      <a href="../articles/articles/cnsl_cellqc.html">Quality Control of cell data</a>
     </li>
     <li>
       <a href="../articles/articles/cnsl_normalization.html">Normalization</a>
@@ -275,7 +278,7 @@
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/compbiomed/singleCellTK">
-    <span class="fas fa-github"></span>
+    <span class="fa fa-github"></span>
      
   </a>
 </li>
@@ -463,27 +466,27 @@ DelayedArray object or not. Default <code>FALSE</code>.</p></td>
     <tr>
       <th>dataTypeV2</th>
       <td><p>Character. The type of output to import for
-Cellranger version below 3.0.0. Whether to import the filtered or the 
-raw data. Can be one of 'filtered' or 'raw'. Default 'filtered'. When 
-<code>cellRangerOuts</code> is specified, <code>dataTypeV2</code> and <code>reference</code> will 
+Cellranger version below 3.0.0. Whether to import the filtered or the
+raw data. Can be one of 'filtered' or 'raw'. Default 'filtered'. When
+<code>cellRangerOuts</code> is specified, <code>dataTypeV2</code> and <code>reference</code> will
 be ignored.</p></td>
     </tr>
     <tr>
       <th>reference</th>
-      <td><p>Character vector. The reference genome names. 
-Default <code>NULL</code>. If not <code>NULL</code>, it must gave the length and order as 
+      <td><p>Character vector. The reference genome names.
+Default <code>NULL</code>. If not <code>NULL</code>, it must gave the length and order as
 <code><a href='https://rdrr.io/r/base/length.html'>length(unlist(sampleDirs))</a></code> if <code>sampleDirs</code> is not <code>NULL</code>.
 Otherwise, make sure the length and order match the output of
-<code><a href='https://rdrr.io/r/base/unlist.html'>unlist(lapply(cellRangerDirs, list.dirs, recursive = FALSE))</a></code>. Only needed 
+<code><a href='https://rdrr.io/r/base/unlist.html'>unlist(lapply(cellRangerDirs, list.dirs, recursive = FALSE))</a></code>. Only needed
 for Cellranger version below 3.0.0.</p></td>
     </tr>
     <tr>
       <th>cellRangerOutsV2</th>
       <td><p>Character vector. The intermediate paths
-to filtered or raw cell barcode, feature, and matrix files for each 
-sample for Cellranger version below 3.0.0. If <code>NULL</code>, <code>reference</code> and 
-<code>dataTypeV2</code> will be used to determine Cell Ranger output directory. If it has 
-length 1, it assumes that all samples use the same genome reference and 
+to filtered or raw cell barcode, feature, and matrix files for each
+sample for Cellranger version below 3.0.0. If <code>NULL</code>, <code>reference</code> and
+<code>dataTypeV2</code> will be used to determine Cell Ranger output directory. If it has
+length 1, it assumes that all samples use the same genome reference and
 the function will load only filtered or raw data.</p></td>
     </tr>
     </table>
