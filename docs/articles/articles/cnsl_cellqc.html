@@ -234,7 +234,7 @@
 <ul class="nav navbar-nav navbar-right">
 <li>
   <a href="https://github.com/compbiomed/singleCellTK">
-    <span class="fa fa-github"></span>
+    <span class="fas fa-github"></span>
      
   </a>
 </li>
@@ -248,8 +248,7 @@
 
       
 
-      </header><script src="cnsl_cellqc_files/header-attrs-2.5/header-attrs.js"></script><script src="cnsl_cellqc_files/accessible-code-block-0.0.1/empty-anchor.js"></script><link href="cnsl_cellqc_files/anchor-sections-1.0/anchor-sections.css" rel="stylesheet">
-<script src="cnsl_cellqc_files/anchor-sections-1.0/anchor-sections.js"></script><script src="cnsl_cellqc_files/kePrint-0.0.1/kePrint.js"></script><link href="cnsl_cellqc_files/lightable-0.0.1/lightable.css" rel="stylesheet">
+      </header><script src="cnsl_cellqc_files/header-attrs-2.8/header-attrs.js"></script><script src="cnsl_cellqc_files/kePrint-0.0.1/kePrint.js"></script><link href="cnsl_cellqc_files/lightable-0.0.1/lightable.css" rel="stylesheet">
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
@@ -288,7 +287,6 @@ text-align: justify}
 <span class="va">pbmc6k</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/importExampleData.html">importExampleData</a></span><span class="op">(</span>dataset <span class="op">=</span> <span class="st">"pbmc6k"</span><span class="op">)</span>
 
 <span class="va">pbmc.combined</span> <span class="op">&lt;-</span> <span class="fu">BiocGenerics</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/cbind.html">cbind</a></span><span class="op">(</span><span class="va">pbmc3k</span>, <span class="va">pbmc6k</span><span class="op">)</span>
-<span class="va">pbmc.combined</span> <span class="op">&lt;-</span> <span class="va">pbmc.combined</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">pbmc.combined</span><span class="op">)</span>, <span class="fl">300</span><span class="op">)</span><span class="op">]</span>
 <span class="va">sample.vector</span> <span class="op">=</span> <span class="fu">colData</span><span class="op">(</span><span class="va">pbmc.combined</span><span class="op">)</span><span class="op">$</span><span class="va">sample</span></code></pre></div>
 <p>singleCellTK also supports the importing of single-cell data from the following platforms: <a href="https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/what-is-cell-ranger">10X CellRanger</a>, <a href="https://github.com/alexdobin/STAR/blob/master/docs/STARsolo.md">STARSolo</a>, <a href="https://www.kallistobus.tools/">BUSTools</a>, <a href="https://github.com/ambrosejcarr/seqc">SEQC</a>, <a href="https://github.com/hms-dbmi/dropEst">DropEST</a>, and <a href="https://github.com/theislab/anndata">AnnData</a>. To load your own input data, please refer <a href="./import_scRNAseq_data_as_SCE_Console.html">Import data into SCTK</a> for deailed instruction.</p>
 </div>
@@ -315,8 +313,8 @@ text-align: justify}
 
 <span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">12345</span><span class="op">)</span>
 <span class="va">pbmc.combined</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/runCellQC.html">runCellQC</a></span><span class="op">(</span><span class="va">pbmc.combined</span>, sample <span class="op">=</span> <span class="va">sample.vector</span>, collectionName <span class="op">=</span> <span class="st">"mito"</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1] "Creating 69 artificial doublets..."
-## [1] "Creating 31 artificial doublets..."</code></pre>
+<pre><code>## [1] "Creating 900 artificial doublets..."
+## [1] "Creating 1806 artificial doublets..."</code></pre>
 <p><br> If users choose to only run a specific set of algorithms, they can specify which to run with the <code>algorithms</code> parameter.</p>
 <p>When quality control functions are run in singleCellTK, the output of the function is stored in the <code>colData</code> slot of the <code>SingleCellExperiment</code> object.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
@@ -465,156 +463,16 @@ decontX_clusters
 <tbody>
 <tr>
 <td style="text-align:left;">
-pbmc6k_GCAAACTGTGTTTC-1
-</td>
-<td style="text-align:left;">
-pbmc6k
-</td>
-<td style="text-align:left;">
-GCAAACTGTGTTTC-1
-</td>
-<td style="text-align:left;">
-GCAAACTGTGTTTC
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:left;">
-v1.1.0
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-GemCode
-</td>
-<td style="text-align:left;">
-Chromium_v1
-</td>
-<td style="text-align:left;">
-NextSeq500
-</td>
-<td style="text-align:left;">
-HealthyDonor2
-</td>
-<td style="text-align:left;">
-2016-07-31
-</td>
-<td style="text-align:left;">
-pbmc6k
-</td>
-<td style="text-align:right;">
-2338
-</td>
-<td style="text-align:right;">
-835
-</td>
-<td style="text-align:right;">
-45.25235
-</td>
-<td style="text-align:right;">
-60.43627
-</td>
-<td style="text-align:right;">
-71.0864
-</td>
-<td style="text-align:right;">
-85.67151
-</td>
-<td style="text-align:right;">
-58
-</td>
-<td style="text-align:right;">
-8
-</td>
-<td style="text-align:right;">
-2.480753
-</td>
-<td style="text-align:right;">
-2338
-</td>
-<td style="text-align:right;">
-0.1666667
-</td>
-<td style="text-align:left;">
-FALSE
-</td>
-<td style="text-align:left;">
-pbmc6k
-</td>
-<td style="text-align:right;">
-5
-</td>
-<td style="text-align:left;">
-singlet
-</td>
-<td style="text-align:right;">
-0.0848633
-</td>
-<td style="text-align:right;">
-0.98
-</td>
-<td style="text-align:right;">
-0.9869055
-</td>
-<td style="text-align:left;">
-artificialDoublet
-</td>
-<td style="text-align:right;">
-0.0228476
-</td>
-<td style="text-align:right;">
-0.1067283
-</td>
-<td style="text-align:left;">
-1+5
-</td>
-<td style="text-align:left;">
-FALSE
-</td>
-<td style="text-align:right;">
-0.0000000
-</td>
-<td style="text-align:left;">
-Singlet
-</td>
-<td style="text-align:right;">
-22386.86
-</td>
-<td style="text-align:left;">
-FALSE
-</td>
-<td style="text-align:right;">
-0.1911637
-</td>
-<td style="text-align:left;">
-FALSE
-</td>
-<td style="text-align:right;">
-0.6134358
-</td>
-<td style="text-align:left;">
-FALSE
-</td>
-<td style="text-align:right;">
-0.0171328
-</td>
-<td style="text-align:left;">
-pbmc6k-1
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-pbmc3k_CGGCGAACCAGTCA-1
+pbmc3k_AAACATACAACCAC-1
 </td>
 <td style="text-align:left;">
 pbmc3k
 </td>
 <td style="text-align:left;">
-CGGCGAACCAGTCA-1
+AAACATACAACCAC-1
 </td>
 <td style="text-align:left;">
-CGGCGAACCAGTCA
+AAACATACAACCAC
 </td>
 <td style="text-align:right;">
 1
@@ -644,103 +502,243 @@ HealthyDonor2
 pbmc3k
 </td>
 <td style="text-align:right;">
-3765
+2421
 </td>
 <td style="text-align:right;">
-1241
+781
 </td>
 <td style="text-align:right;">
-38.75166
+47.74886
 </td>
 <td style="text-align:right;">
-52.03187
+63.27964
 </td>
 <td style="text-align:right;">
-65.9761
+74.96902
 </td>
 <td style="text-align:right;">
-80.31873
+88.39323
 </td>
 <td style="text-align:right;">
-78
+73
 </td>
 <td style="text-align:right;">
-9
+10
 </td>
 <td style="text-align:right;">
-2.071713
+3.015283
 </td>
 <td style="text-align:right;">
-3765
+2421
 </td>
 <td style="text-align:right;">
-0.2941176
+0.2394366
 </td>
 <td style="text-align:left;">
-TRUE
+FALSE
 </td>
 <td style="text-align:left;">
 pbmc3k
 </td>
 <td style="text-align:right;">
-2
+1
 </td>
 <td style="text-align:left;">
 singlet
 </td>
 <td style="text-align:right;">
-0.0131408
+0.5404512
 </td>
 <td style="text-align:right;">
-1.00
+0.82
 </td>
 <td style="text-align:right;">
-1.0000000
+0.8295422
 </td>
 <td style="text-align:left;">
 artificialDoublet
 </td>
 <td style="text-align:right;">
-0.0068871
+0.1078092
 </td>
 <td style="text-align:right;">
-0.1796662
+0.0248409
 </td>
 <td style="text-align:left;">
-1+5
+1+2
 </td>
 <td style="text-align:left;">
 FALSE
 </td>
 <td style="text-align:right;">
-0.0454545
+0.0138889
 </td>
 <td style="text-align:left;">
 Singlet
 </td>
 <td style="text-align:right;">
-38213.04
+22794.14
 </td>
 <td style="text-align:left;">
 FALSE
 </td>
 <td style="text-align:right;">
-0.6413223
+0.0023788
 </td>
 <td style="text-align:left;">
-TRUE
+FALSE
 </td>
 <td style="text-align:right;">
-1.2852434
+0.208113
 </td>
 <td style="text-align:left;">
-TRUE
+FALSE
 </td>
 <td style="text-align:right;">
-0.0815170
+0.0322299
 </td>
 <td style="text-align:left;">
 pbmc3k-1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+pbmc3k_AAACATTGAGCTAC-1
+</td>
+<td style="text-align:left;">
+pbmc3k
+</td>
+<td style="text-align:left;">
+AAACATTGAGCTAC-1
+</td>
+<td style="text-align:left;">
+AAACATTGAGCTAC
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+v1.1.0
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+GemCode
+</td>
+<td style="text-align:left;">
+Chromium_v1
+</td>
+<td style="text-align:left;">
+NextSeq500
+</td>
+<td style="text-align:left;">
+HealthyDonor2
+</td>
+<td style="text-align:left;">
+2016-05-26
+</td>
+<td style="text-align:left;">
+pbmc3k
+</td>
+<td style="text-align:right;">
+4903
+</td>
+<td style="text-align:right;">
+1352
+</td>
+<td style="text-align:right;">
+45.50275
+</td>
+<td style="text-align:right;">
+61.02386
+</td>
+<td style="text-align:right;">
+71.81318
+</td>
+<td style="text-align:right;">
+82.62288
+</td>
+<td style="text-align:right;">
+186
+</td>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:right;">
+3.793596
+</td>
+<td style="text-align:right;">
+4903
+</td>
+<td style="text-align:right;">
+0.0935252
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+pbmc3k
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:left;">
+singlet
+</td>
+<td style="text-align:right;">
+0.2076700
+</td>
+<td style="text-align:right;">
+0.48
+</td>
+<td style="text-align:right;">
+0.5434718
+</td>
+<td style="text-align:left;">
+artificialDoublet
+</td>
+<td style="text-align:right;">
+0.0333764
+</td>
+<td style="text-align:right;">
+0.1137545
+</td>
+<td style="text-align:left;">
+1+4
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:right;">
+0.1527778
+</td>
+<td style="text-align:left;">
+Singlet
+</td>
+<td style="text-align:right;">
+35689.05
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:right;">
+0.8127224
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:right;">
+1.110518
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:right;">
+0.1193377
+</td>
+<td style="text-align:left;">
+pbmc3k-2
 </td>
 </tr>
 </tbody>
@@ -870,7 +868,7 @@ pbmc3k-1
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu">reducedDims</span><span class="op">(</span><span class="va">pbmc.combined</span><span class="op">)</span></code></pre></div>
 <pre><code>## List of length 6
-## names(6): UMAP scrublet_TSNE ... decontX_pbmc6k_UMAP decontX_pbmc3k_UMAP</code></pre>
+## names(6): UMAP scrublet_TSNE ... decontX_pbmc3k_UMAP decontX_pbmc6k_UMAP</code></pre>
 <p><br></p>
 </div>
 <div id="plotting-qc-metrics" class="section level3">
@@ -907,7 +905,7 @@ pbmc3k-1
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu">reducedDims</span><span class="op">(</span><span class="va">pbmc.combined</span><span class="op">)</span></code></pre></div>
 <pre><code>## List of length 6
-## names(6): UMAP scrublet_TSNE ... decontX_pbmc6k_UMAP decontX_pbmc3k_UMAP</code></pre>
+## names(6): UMAP scrublet_TSNE ... decontX_pbmc3k_UMAP decontX_pbmc6k_UMAP</code></pre>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">scrublet.results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/plotScrubletResults.html">plotScrubletResults</a></span><span class="op">(</span>
   inSCE <span class="op">=</span> <span class="va">pbmc.combined</span>,
@@ -1055,7 +1053,7 @@ pbmc3k-1
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co">#Before filtering:</span>
 <span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span><span class="op">(</span><span class="va">pbmc.combined</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1] 32738   300</code></pre>
+<pre><code>## [1] 32738  8119</code></pre>
 <p>Remove barcodes with high mitochondrial gene expression:</p>
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">pbmc.combined</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/subsetSCECols.html">subsetSCECols</a></span><span class="op">(</span><span class="va">pbmc.combined</span>, colData <span class="op">=</span> <span class="st">'subsets_mito_percent &lt; 20'</span><span class="op">)</span></code></pre></div>
@@ -1068,7 +1066,7 @@ pbmc3k-1
 <div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co">#After filtering:</span>
 <span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span><span class="op">(</span><span class="va">pbmc.combined</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1] 32738   277</code></pre>
+<pre><code>## [1] 32738  7925</code></pre>
 </div>
 <div id="running-individual-qc-methods" class="section level3">
 <h3 class="hasAnchor">
@@ -1217,9 +1215,9 @@ pbmc3k-1
 ##  [23] webshot_0.5.2                 xml2_1.3.2                   
 ##  [25] spatstat.data_1.4-3           httpuv_1.5.4                 
 ##  [27] assertthat_0.2.1              viridis_0.5.1                
-##  [29] xfun_0.19                     evaluate_0.14                
-##  [31] promises_1.1.1                dbplyr_2.0.0                 
-##  [33] assertive.files_0.0-2         igraph_1.2.6                 
+##  [29] xfun_0.22                     evaluate_0.14                
+##  [31] promises_1.1.1                assertive.files_0.0-2        
+##  [33] dbplyr_2.0.0                  igraph_1.2.6                 
 ##  [35] DBI_1.1.0                     htmlwidgets_1.5.2            
 ##  [37] purrr_0.3.4                   ellipsis_0.3.1               
 ##  [39] RSpectra_0.16-0               annotate_1.68.0              
@@ -1297,7 +1295,7 @@ pbmc3k-1
 ## [183] leiden_0.3.5                  scDblFinder_1.4.0            
 ## [185] gtools_3.8.2                  magick_2.5.1                 
 ## [187] survival_3.2-7                limma_3.46.0                 
-## [189] rmarkdown_2.5                 desc_1.2.0                   
+## [189] rmarkdown_2.8                 desc_1.2.0                   
 ## [191] munsell_0.5.0                 GenomeInfoDbData_1.2.4       
 ## [193] iterators_1.0.13              reshape2_1.4.4               
 ## [195] gtable_0.3.0                  Seurat_3.2.2</code></pre>

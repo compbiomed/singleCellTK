@@ -234,7 +234,7 @@
 <ul class="nav navbar-nav navbar-right">
 <li>
   <a href="https://github.com/compbiomed/singleCellTK">
-    <span class="fa fa-github"></span>
+    <span class="fas fa-github"></span>
      
   </a>
 </li>
@@ -248,8 +248,7 @@
 
       
 
-      </header><script src="cnsl_dropletqc_files/header-attrs-2.5/header-attrs.js"></script><script src="cnsl_dropletqc_files/accessible-code-block-0.0.1/empty-anchor.js"></script><link href="cnsl_dropletqc_files/anchor-sections-1.0/anchor-sections.css" rel="stylesheet">
-<script src="cnsl_dropletqc_files/anchor-sections-1.0/anchor-sections.js"></script><script src="cnsl_dropletqc_files/kePrint-0.0.1/kePrint.js"></script><link href="cnsl_dropletqc_files/lightable-0.0.1/lightable.css" rel="stylesheet">
+      </header><script src="cnsl_dropletqc_files/header-attrs-2.8/header-attrs.js"></script><script src="cnsl_dropletqc_files/kePrint-0.0.1/kePrint.js"></script><link href="cnsl_dropletqc_files/lightable-0.0.1/lightable.css" rel="stylesheet">
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
@@ -302,7 +301,6 @@ text-align: justify}
 
 <span class="va">fname</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html">tempdir</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"pbmc4k/raw_gene_bc_matrices/GRCh38"</span><span class="op">)</span>
 <span class="va">pbmc4k.droplet</span> <span class="op">&lt;-</span> <span class="fu">DropletUtils</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/DropletUtils/man/read10xCounts.html">read10xCounts</a></span><span class="op">(</span><span class="va">fname</span>, col.names <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-<span class="va">pbmc4k.droplet</span> <span class="op">&lt;-</span> <span class="va">pbmc4k.droplet</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">pbmc4k.droplet</span><span class="op">)</span>, <span class="fl">3000</span><span class="op">)</span><span class="op">]</span>
 
 <span class="co">### change the sample column</span>
 <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="fu">colData</span><span class="op">(</span><span class="va">pbmc4k.droplet</span><span class="op">)</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"sample"</span>, <span class="st">"Barcode"</span><span class="op">)</span>
@@ -315,9 +313,9 @@ text-align: justify}
 <p>All droplet-based QC functions are able to be run under the wrapper function runDropletQC. By default all possible QC algorithms will be run.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">pbmc4k.droplet</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/runDropletQC.html">runDropletQC</a></span><span class="op">(</span><span class="va">pbmc4k.droplet</span><span class="op">)</span></code></pre></div>
-<pre><code>## Tue May 11 18:23:40 2021 ... Running 'perCellQCMetrics'</code></pre>
-<pre><code>## Tue May 11 18:23:40 2021 ... Running 'emptyDrops'</code></pre>
-<pre><code>## Tue May 11 18:23:57 2021 ... Running 'barcodeRanks'</code></pre>
+<pre><code>## Thu May 13 10:38:42 2021 ... Running 'perCellQCMetrics'</code></pre>
+<pre><code>## Thu May 13 10:38:43 2021 ... Running 'emptyDrops'</code></pre>
+<pre><code>## Thu May 13 10:39:08 2021 ... Running 'barcodeRanks'</code></pre>
 <p>If users choose to only run a specific set of algorithms, they can specify which to run with the <code>algorithms</code> parameter.</p>
 <p>When quality control functions are run in singleCellTK, the output of the function is stored in the colData slot of the SingleCellExperiment object.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
@@ -379,13 +377,13 @@ dropletUtils_BarcodeRank_Inflection
 <tbody>
 <tr>
 <td style="text-align:left;">
-AAAGATGGTTAAGTAG-1
+AAAGATGGTACCGTAT-1
 </td>
 <td style="text-align:left;">
 pbmc4k
 </td>
 <td style="text-align:left;">
-AAAGATGGTTAAGTAG-1
+AAAGATGGTACCGTAT-1
 </td>
 <td style="text-align:right;">
 1
@@ -432,37 +430,37 @@ NA
 </tr>
 <tr>
 <td style="text-align:left;">
-ATTGGTGAGAATTCCC-1
+AACTCAGTCGCCTGTT-1
 </td>
 <td style="text-align:left;">
 pbmc4k
 </td>
 <td style="text-align:left;">
-ATTGGTGAGAATTCCC-1
+AACTCAGTCGCCTGTT-1
 </td>
 <td style="text-align:right;">
-0
+1
 </td>
 <td style="text-align:right;">
-0
+1
 </td>
 <td style="text-align:right;">
-NaN
+100
 </td>
 <td style="text-align:right;">
-NaN
+100
 </td>
 <td style="text-align:right;">
-NaN
+100
 </td>
 <td style="text-align:right;">
-NaN
+100
 </td>
 <td style="text-align:right;">
-0
+1
 </td>
 <td style="text-align:right;">
-0
+1
 </td>
 <td style="text-align:right;">
 NA
@@ -485,37 +483,37 @@ NA
 </tr>
 <tr>
 <td style="text-align:left;">
-GTAGTCAGTACGCTGC-1
+ATCATGGCACATAACC-1
 </td>
 <td style="text-align:left;">
 pbmc4k
 </td>
 <td style="text-align:left;">
-GTAGTCAGTACGCTGC-1
+ATCATGGCACATAACC-1
 </td>
 <td style="text-align:right;">
-0
+35
 </td>
 <td style="text-align:right;">
-0
+35
 </td>
 <td style="text-align:right;">
-NaN
+100
 </td>
 <td style="text-align:right;">
-NaN
+100
 </td>
 <td style="text-align:right;">
-NaN
+100
 </td>
 <td style="text-align:right;">
-NaN
+100
 </td>
 <td style="text-align:right;">
-0
+35
 </td>
 <td style="text-align:right;">
-0
+35
 </td>
 <td style="text-align:right;">
 NA
@@ -538,37 +536,37 @@ NA
 </tr>
 <tr>
 <td style="text-align:left;">
-GCGCAGTCAATCTACG-1
+CTGATCCGTTCAGGCC-1
 </td>
 <td style="text-align:left;">
 pbmc4k
 </td>
 <td style="text-align:left;">
-GCGCAGTCAATCTACG-1
+CTGATCCGTTCAGGCC-1
 </td>
 <td style="text-align:right;">
-0
+27
 </td>
 <td style="text-align:right;">
-0
+25
 </td>
 <td style="text-align:right;">
-NaN
+100
 </td>
 <td style="text-align:right;">
-NaN
+100
 </td>
 <td style="text-align:right;">
-NaN
+100
 </td>
 <td style="text-align:right;">
-NaN
+100
 </td>
 <td style="text-align:right;">
-0
+27
 </td>
 <td style="text-align:right;">
-0
+27
 </td>
 <td style="text-align:right;">
 NA
@@ -591,37 +589,37 @@ NA
 </tr>
 <tr>
 <td style="text-align:left;">
-CATCGAAAGTTGAGTA-1
+TGGGAAGAGCCAGTTT-1
 </td>
 <td style="text-align:left;">
 pbmc4k
 </td>
 <td style="text-align:left;">
-CATCGAAAGTTGAGTA-1
+TGGGAAGAGCCAGTTT-1
 </td>
 <td style="text-align:right;">
-0
+27
 </td>
 <td style="text-align:right;">
-0
+25
 </td>
 <td style="text-align:right;">
-NaN
+100
 </td>
 <td style="text-align:right;">
-NaN
+100
 </td>
 <td style="text-align:right;">
-NaN
+100
 </td>
 <td style="text-align:right;">
-NaN
+100
 </td>
 <td style="text-align:right;">
-0
+27
 </td>
 <td style="text-align:right;">
-0
+27
 </td>
 <td style="text-align:right;">
 NA
@@ -749,7 +747,7 @@ NA
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co">#Before filtering:</span>
 <span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span><span class="op">(</span><span class="va">pbmc4k.droplet</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1] 33694  3000</code></pre>
+<pre><code>## [1] 33694 60000</code></pre>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">pbmc4k.droplet</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/subsetSCECols.html">subsetSCECols</a></span><span class="op">(</span><span class="va">pbmc4k.droplet</span>, colData <span class="op">=</span> <span class="st">'dropletUtils_BarcodeRank_Inflection == 1'</span><span class="op">)</span>
 <span class="va">pbmc4k.droplet</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/subsetSCECols.html">subsetSCECols</a></span><span class="op">(</span><span class="va">pbmc4k.droplet</span>, colData <span class="op">=</span> <span class="st">'!is.na(pbmc4k.droplet$dropletUtils_emptyDrops_fdr)'</span><span class="op">)</span>
@@ -757,7 +755,7 @@ NA
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co">#After filtering:</span>
 <span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span><span class="op">(</span><span class="va">pbmc4k.droplet</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1] 33694    18</code></pre>
+<pre><code>## [1] 33694   334</code></pre>
 <p>We can compare the average total UMI counts per cell before and after cell filtration:</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/plotSCEViolinColData.html">plotSCEViolinColData</a></span><span class="op">(</span><span class="va">pbmc4k.droplet.prefilt</span>, coldata <span class="op">=</span> <span class="st">"sum"</span>, summary <span class="op">=</span> <span class="st">"mean"</span>, title <span class="op">=</span> <span class="st">"Pre-filter"</span>, ylab <span class="op">=</span> <span class="st">"Total counts"</span><span class="op">)</span>
@@ -845,8 +843,8 @@ NA
 ## [27] scales_1.1.1              rappdirs_0.3.1           
 ## [29] pkgdown_1.6.1             systemfonts_0.3.2        
 ## [31] stringr_1.4.0             digest_0.6.27            
-## [33] rmarkdown_2.5             R.utils_2.10.1           
-## [35] XVector_0.30.0            scater_1.18.3            
+## [33] rmarkdown_2.8             R.utils_2.10.1           
+## [35] XVector_0.30.0            scater_1.18.6            
 ## [37] pkgconfig_2.0.3           htmltools_0.5.0          
 ## [39] sparseMatrixStats_1.2.0   highr_0.8                
 ## [41] limma_3.46.0              rlang_0.4.8              
@@ -873,7 +871,7 @@ NA
 ## [83] evaluate_0.14             vctrs_0.3.4              
 ## [85] gtable_0.3.0              purrr_0.3.4              
 ## [87] assertthat_0.2.1          ggplot2_3.3.3            
-## [89] xfun_0.19                 rsvd_1.0.3               
+## [89] xfun_0.22                 rsvd_1.0.3               
 ## [91] DropletUtils_1.10.0       GSVAdata_1.26.0          
 ## [93] viridisLite_0.3.0         ragg_0.4.0               
 ## [95] tibble_3.0.4              beeswarm_0.2.3           

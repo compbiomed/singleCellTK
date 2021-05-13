@@ -32,7 +32,6 @@ pbmc3k <- importExampleData(dataset = "pbmc3k")
 pbmc6k <- importExampleData(dataset = "pbmc6k")
 
 pbmc.combined <- BiocGenerics::cbind(pbmc3k, pbmc6k)
-pbmc.combined <- pbmc.combined[, sample(colnames(pbmc.combined), 300)]
 sample.vector = colData(pbmc.combined)$sample
 ```
 

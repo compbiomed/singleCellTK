@@ -46,11 +46,14 @@ untar(raw.path, exdir = file.path(tempdir(), "pbmc4k"))
 
 fname <- file.path(tempdir(), "pbmc4k/raw_gene_bc_matrices/GRCh38")
 pbmc4k.droplet <- DropletUtils::read10xCounts(fname, col.names = TRUE)
-pbmc4k.droplet <- pbmc4k.droplet[, sample(colnames(pbmc4k.droplet), 3000)]
 
 ### change the sample column
 names(colData(pbmc4k.droplet)) <- c("sample", "Barcode")
 colData(pbmc4k.droplet)$sample <- rep("pbmc4k", ncol(colData(pbmc4k.droplet)))
+```
+
+```{r echo=FALSE}
+pbmc4k.droplet <- pbmc4k.droplet[, sample(colnames(pbmc4k.droplet), 60000)]
 ```
 
 singleCellTK also supports the importing of single-cell data from the following platforms: [10X CellRanger](https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/what-is-cell-ranger), [STARSolo](https://github.com/alexdobin/STAR/blob/master/docs/STARsolo.md), [BUSTools](https://www.kallistobus.tools/), [SEQC](https://github.com/ambrosejcarr/seqc), [DropEST](https://github.com/hms-dbmi/dropEst), and [AnnData](https://github.com/theislab/anndata). To load your own input data, please refer [Import data into SCTK](./import_scRNAseq_data_as_SCE_Console.html) for deailed instruction. 
