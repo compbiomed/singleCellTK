@@ -118,7 +118,7 @@ legendSize, legendTitleSize.}
 
 \item{relHeights}{Relative heights of plots when combine is set.}
 
-\item{relWidths}{Relative widths of plots#' @param labelSamples Will label sample name in title of plot if TRUE. Default TRUE. when combine is set.}
+\item{relWidths}{Relative widths of plots when combine is set.}
 
 \item{plotNCols}{Number of columns when plots are combined in a grid.}
 
