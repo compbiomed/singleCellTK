@@ -2,7 +2,7 @@ shinyPanelPathway <- fluidPage(
   tags$div(
     class = "container",
     h1("Pathway Activity Analysis"),
-    h5(tags$a(href = "https://www.sctk.science/articles/tab06_pathway-activity-analysis",
+    h5(tags$a(href = paste0(docs.artPath, "ui_gsva.html"),
               "(help)", target = "_blank")),
     sidebarLayout(
       sidebarPanel(

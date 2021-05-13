@@ -181,7 +181,7 @@ navbar:
           - text: "Feature Selection"
             href: articles/articles/ui_feature_selection.html
           - text: "Dimensionality Reduction"
-            href: articles/articles/ui_dimemsionality_reduction.html
+            href: articles/articles/ui_dimensionality_reduction.html
         - text: "Clustering"
           href: articles/articles/ui_clustering.html
         - text: "Differential Expression & Cell Type Labeling"
@@ -190,10 +190,22 @@ navbar:
               href: articles/articles/ui_differential_expression.html
             - text: "Find Marker"
               href: articles/articles/ui_find_marker.html
+            - text: "Cell Type Labeling"
+              href: articles/articles/ui_cell_type_labeling.html
+        - text: "Pathway & Enrichment Analysis"
+          menu:
+            - text: "GSVA"
+              href: articles/articles/ui_gsva.html
+            - text: "EnrichR"
+              href: articles/articles/ui_enrichR.html
+        - text: "Sample Size Calculator"
+          href: articles/articles/ui_sample_size_calc.html
         - text: "Curated Workflows"
           menu:
             - text: "Seurat"
               href: articles/articles/ui_seurat_curated_workflow.html
+            - text: "Celda"
+              href: articles/articles/ui_celda_curated_workflow.html
         - text: "Visualization"
           menu:
           - text: "cellViewer"

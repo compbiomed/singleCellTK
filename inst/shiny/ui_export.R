@@ -3,6 +3,8 @@ shinyPanelExport <- fluidPage(
   class = "container",
   style = "margin-bottom: 10px",
   h1("Export Data"),
+  h5(tags$a(href = paste0(docs.artPath, "ui_export_data.html"),
+            "(help)", target = "_blank")),
   tags$hr(),
   fluidRow(
     column(
