@@ -46,11 +46,7 @@ shinyPanelCellViewer <- fluidPage(tags$div(
           #Expression Assays condition
           conditionalPanel(
             condition = sprintf("input['%s'] == 'Expression Assays'", "TypeSelect_Xaxis"),
-            selectizeInput(
-              "AdvancedMethodSelect_Xaxis",
-              label = h5("Advanced Method"),
-              choices = c(method_list)
-            ),
+            uiOutput("AdvancedMethodSelect_Xaxis"),
             selectizeInput(
               "GeneSelect_Assays_Xaxis",
               label = h5("Feature"),
@@ -89,11 +85,7 @@ shinyPanelCellViewer <- fluidPage(tags$div(
           #Expression Assays condition
           conditionalPanel(
             condition = sprintf("input['%s'] == 'Expression Assays'", "TypeSelect_Yaxis"),
-            selectizeInput(
-              "AdvancedMethodSelect_Yaxis",
-              label = h5("Advanced Method"),
-              choices = c(method_list)
-            ),
+            uiOutput("AdvancedMethodSelect_Yaxis"),
             selectizeInput(
               "GeneSelect_Assays_Yaxis",
               label = h5("Feature"),
@@ -150,11 +142,7 @@ shinyPanelCellViewer <- fluidPage(tags$div(
         #Expression Assays condition
         conditionalPanel(
           condition = sprintf("input['%s'] == 'Expression Assays'", "TypeSelect_Colorby"),
-          selectizeInput(
-            "AdvancedMethodSelect_Colorby",
-            label = h5("Advanced Method"),
-            choices = c(method_list)
-          ),
+          uiOutput("AdvancedMethodSelect_Colorby"),
           selectizeInput(
             "GeneSelect_Assays_Colorby",
             label = h5("Feature"),
@@ -279,13 +267,8 @@ shinyPanelCellViewer <- fluidPage(tags$div(
   column(
     9,
     wellPanel(
-      plotlyOutput("scatter", height = "600px") %>% withSpinner(size = 3, color = "#0dc5c1", type = 8),
-      tags$br(),
-      verbatimTextOutput("testprint"),
-      tags$br(),
-      actionButton("subsetCelda", "Add cells to new cluster"),
-      tags$br(),
-      actionButton("subsetCelda2", "Create new subset with selected cells"),
+      h5(strong("Plotting Region")),
+      plotlyOutput("scatter", height = "600px"),# %>% withSpinner(size = 3, color = "#0dc5c1", type = 8),
       tags$br(),
       # conditionalPanel("$('#scatter').hasClass('recalculating')",
       #                  tags$div('Your plot is loading, due to large manipulation.
@@ -337,7 +320,8 @@ shinyPanelCellViewer <- fluidPage(tags$div(
           h5(strong("Opacity:")),
           min = 0,
           max = 1,
-          value = 1
+          value = 1,
+          step = 0.1
         )),
         column(3, numericInput(
           "adjustsize",
@@ -348,7 +332,7 @@ shinyPanelCellViewer <- fluidPage(tags$div(
         )),
         column(3, checkboxInput(
           "adjustgridlines",
-          h5(strong("Add gridlines")),
+          h5(strong("Use default theme")),
           value = FALSE,
         ))
       )

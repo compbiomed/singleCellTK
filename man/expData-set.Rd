@@ -18,6 +18,9 @@ expData(inSCE, assayName, tag = NULL, altExp = FALSE) <- value
 
 \item{value}{An input matrix-like value to store in the SCE object.}
 }
+\value{
+A \code{SingleCellExperiment} object containing the newly stored data.
+}
 \description{
 expData
 Store data items using tags to identify the type of data item stored. To be used as a replacement for assay<- setter function but with additional parameter to set a tag to a data item.

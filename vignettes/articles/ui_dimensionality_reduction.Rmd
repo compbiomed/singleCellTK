@@ -1,0 +1,86 @@
+---
+title: "Dimensionality Reduction"
+author: "Irzam Sarfraz"
+---
+```{r develSetting, include=FALSE}
+doEval = TRUE
+```
+## Introduction
+Dimensionality Reduction tab offers a convenient way to run and visualize dimensionality reduction algorithms i.e., PCA & ICA, that have been implemented from various packages and integrated together in a single interface. Additionally, high-dimensional data visualization methods such as tSNE & UMAP have also been provided under the umbrella of dimensionality reduction in a separate sub-tab. The dimensionality reduction tab in divided into two separate sub-tabs, one for PCA/ICA and the other one for tSNE/UMAP, both of which offer customization options and separate visualizations.
+
+---
+
+A brief summary of the two tabs is described below:
+
+### PCA/ICA
+#### Implemented Algorithms from Packages:
+|reducedDims Method|Packages|Reference|
+|---|---|---| 
+| PCA | Scran  | [Lun ATL, McCarthy DJ, Marioni JC (2016). “A step-by-step workflow for low-level analysis of single-cell RNA-seq data with Bioconductor.” F1000Res., 5, 2122.](https://doi.org/10.12688/f1000research.9501.2) |
+| PCA | Seurat | [Butler et al., Nature Biotechnology 2018](https://www.nature.com/articles/nbt.4096) & [Stuart*, Butler*, et al., Cell 2019](https://www.cell.com/cell/fulltext/S0092-8674(19)30559-8) |
+| ICA | Seurat | [Butler et al., Nature Biotechnology 2018](https://www.nature.com/articles/nbt.4096) & [Stuart*, Butler*, et al., Cell 2019](https://www.cell.com/cell/fulltext/S0092-8674(19)30559-8) |
+
+### tSNE/UMAP
+#### Implemented Algorithms from Packages:
+|Method|Packages|Reference|
+|---|---|---| 
+| tSNE | Rtsne  | [L.J.P. van der Maaten and G.E. Hinton. Visualizing High-Dimensional Data Using t-SNE. Journal of Machine Learning Research
+  9(Nov):2579-2605, 2008.](http://jmlr.org/papers/v9/vandermaaten08a.html), [L.J.P. van der Maaten. Accelerating t-SNE using Tree-Based Algorithms. Journal of Machine Learning Research 15(Oct):3221-3245, 2014.](http://jmlr.org/papers/v15/vandermaaten14a.html) and [Jesse H. Krijthe (2015). Rtsne: T-Distributed Stochastic Neighbor Embedding using a Barnes-Hut Implementation](https://github.com/jkrijthe/Rtsne) |
+| UMAP | uwot  | [James Melville (2020). uwot: The Uniform Manifold Approximation and Projection (UMAP) Method for Dimensionality Reduction. R
+  package version 0.1.8.](https://CRAN.R-project.org/package=uwot)|
+| tSNE | Seurat | [Butler et al., Nature Biotechnology 2018](https://www.nature.com/articles/nbt.4096) & [Stuart*, Butler*, et al., Cell 2019](https://www.cell.com/cell/fulltext/S0092-8674(19)30559-8) |
+| UMAP | Seurat | [Butler et al., Nature Biotechnology 2018](https://www.nature.com/articles/nbt.4096) & [Stuart*, Butler*, et al., Cell 2019](https://www.cell.com/cell/fulltext/S0092-8674(19)30559-8) |
+
+### Visualizations Supported
+| Method | 2-Dimensional Component Plot | Elbow Plot | JackStraw Plot | Heatmap Plot |
+|---|---|---|---|---|
+|PCA| $\checkmark$ | $\checkmark$ | $\checkmark$ | $\checkmark$ |
+|ICA| $\checkmark$ |x|x|$\checkmark$|
+|tSNE| $\checkmark$ |x|x|x|
+|UMAP| $\checkmark$ |x|x|x|
+
+### General Worflow
+![](ui_screenshots/dimensionality_reduction/dr_workflow.png)
+
+---
+
+## Workflow Guide
+In general, both sub-tabs offer options for selection of data items and choice of parameters on the left side, and a visualization panel on the right side of the interface. A detailed workflow guide to run and visualize dimensionality reduction (DR) algorithms is described below:
+
+![](ui_screenshots/dimensionality_reduction/dr_1.png)
+1. To begin the DR workflow, click on the "Feature Selection & Dimensionality Reduction" tab from the top menu. This workflow assumes that before proceeding towards computation of DR, data has been uploaded, filtered and normalized (and optionally variable features have been identified) through the preceding tabs.
+![](ui_screenshots/dimensionality_reduction/dr_2.png)
+2. Select "Dimensionality Reduction" tab.
+![](ui_screenshots/dimensionality_reduction/dr_3.png)
+3. Select "PCA/ICA" or "tSNE/UMAP" appropriately. 
+![](ui_screenshots/dimensionality_reduction/dr_4.png)
+4. Select a data item (assay or a feature subset) which should be used for computation. <br>
+5. Select an appropriate method for dimensionality reduction. Available choices are "PCA" from \code{scran} package and "PCA" & "ICA" from \code{seurat} package. <br>
+6. Specify a name for the new data (reducedDim). <br>
+7. Specify the number of dimensions to compute against the selected algorithm. Default value is \code{10}. <br>
+8. Check the boxes against the visualizations that should be plotted after computation of reducedDims. This visualizations become available after computation on the right panel. <br>
+9. If "Compute HeatmapPlot?" is selected in step 8, you can specify how many features should be plotted in the heatmap by default. This setting can be changed later as well from the visualization panel on the right. <br> 
+10. Press "Run" to start computation. <br>
+11. Once processing is complete, selected visualizations appear in this panel. <br>
+![](ui_screenshots/dimensionality_reduction/dr_5.png)
+12. A 2D plot between the top two components is computed for all methods.
+![](ui_screenshots/dimensionality_reduction/dr_6.png)
+13. Elbow plot (optional) can be computed against PCA methods. It shows a relationship between the increasing number of components and the standard deviation, where components before an elbow break should be selected for downstream analysis. <br>
+![](ui_screenshots/dimensionality_reduction/dr_7.png)
+
+14. Heatmap plot panel can be used to visualize the features against each of the computed component. <br>
+15. Customizations for the heatmap plot can be made by selecting the components that should be selected. Number of columns for visualization can be specified as well for better viewing experience.
+![](ui_screenshots/dimensionality_reduction/dr_8.png)
+16. Jackstraw plot can be computed with PCA methods.
+![](ui_screenshots/dimensionality_reduction/dr_9.png)
+17. To compute tSNE or UMAP, select the "tSNE/UMAP" sub-tab from the interface. The steps below are only concerned with the computation of tSNE or UMAP and may vary between both of these methods. <br>
+18. Select a data item (assay or feature subset) to use for tSNE/UMAP computation. <br>
+19. Select method for tSNE or UMAP computation. <br>
+20. Specify the name of the new reducedDim. <br>
+21. Specify the number of components to compute with the selected method. Default value is set to \code{10}. <br>
+22. Specify number of iterations. Default value is set to \code{1000}. <br>
+23. Set perplexity parameter for tSNE. Default value is set to code{5}. <br>
+24. Start processing of the selected method. <br>
+25. Once computation is complete, a 2D plot between the components can be visualized in this panel.
+
+*Note: Some parameters may differ between different methods and may not have shown here.*

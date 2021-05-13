@@ -135,8 +135,8 @@ descriptionScDblFinder <- function() {
         runScDblFinder = "The wrapper function `runScDblFinder` can be used to separately run the
               scDblFinder algorithm on its own. ",
         parameter = "The `nNeighbors` parameter is the number of nearest neighbor
-	used to calculate the density for doublet detection. `simDoublets` is used
-	to determine the number of simulated doublets used for doublet detection. ",
+used to calculate the density for doublet detection. `simDoublets` is used
+to determine the number of simulated doublets used for doublet detection. ",
         output = "The output of scDblFinder is a `scDblFinder_doublet_score` and
              `scDblFinder_doublet_call`. The doublet score of a droplet will be higher if the
              it is deemed likely to be a doublet. ",

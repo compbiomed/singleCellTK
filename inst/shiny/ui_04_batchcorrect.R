@@ -20,12 +20,12 @@ shinyPanelBatchcorrect <- fluidPage(
                               choices = c("Seurat - LogNormalize" = "LogNormalize",
                                           "Seurat - CLR" = "CLR",
                                           "Seurat - RC" = "RC",
-                                          "Seurat - SCTransform" = "SCT",
-                                          "Scater - LogNormCounts" = "LNC",
+                                          "Seurat - SCTransform" = "SCTransform",
+                                          "Scater - LogNormCounts" = "logNormCounts",
                                           "Scater - CPM" = "CPM",
                                           "Custom Normalization" = "custom")
                             )
-                            
+
                         )
                     )
                 )
@@ -108,8 +108,8 @@ shinyPanelBatchcorrect <- fluidPage(
                                            choices = c("Seurat - LogNormalize" = "LogNormalize",
                                                        "Seurat - CLR" = "CLR",
                                                        "Seurat - RC" = "RC",
-                                                       "Seurat - SCTransform" = "SCT",
-                                                       "Scater - LogNormCounts" = "LNC",
+                                                       "Seurat - SCTransform" = "SCTransform",
+                                                       "Scater - LogNormCounts" = "logNormCounts",
                                                        "Scater - CPM" = "CPM")
                                          )
                                        ),
@@ -117,8 +117,8 @@ shinyPanelBatchcorrect <- fluidPage(
                                          condition = "!(input.customNormalizeOptionsNormalize == true
                                          && (input.customNormalizeAssayMethodSelect == 'LogNormalize'
                                          || input.customNormalizeAssayMethodSelect == 'CLR'
-                                         || input.customNormalizeAssayMethodSelect == 'SCT'
-                                         || input.customNormalizeAssayMethodSelect == 'LNC'))",
+                                         || input.customNormalizeAssayMethodSelect == 'SCTransform'
+                                         || input.customNormalizeAssayMethodSelect == 'logNormCounts'))",
                                          awesomeCheckbox(
                                            inputId = "customNormalizeOptionsTransform",
                                            label = "Transform",
@@ -264,7 +264,7 @@ shinyPanelBatchcorrect <- fluidPage(
                                       ),
                                      conditionalPanel(
                                        condition = "input.normalizeAssayMethodSelect == 'custom'",
-                                       div(style = "display:inline-block; float:right", withBusyIndicatorUI(actionButton("modifyAssay", "Run")))                                     
+                                       div(style = "display:inline-block; float:right", withBusyIndicatorUI(actionButton("modifyAssay", "Run")))
                                        )
                                      )
                             )

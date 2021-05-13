@@ -8,7 +8,7 @@ filterTableUI <- function(id){
             br(),
             DT::dataTableOutput(
               outputId = ns("seuratFindMarkerTable")) %>% withSpinner(
-                type = 5, 
+                type = 5,
                 color = "#b2b2b2"
                 )
       )
@@ -21,7 +21,7 @@ filterTableServer <- function(input, output, session, dataframe,
                               defaultFilterColumns = NULL,
                               defaultFilterOperators = NULL,
                               defaultFilterValues = NULL){
-  
+
   ns <- session$ns
   x <- session$ns('tmp')
   moduleID <- substr(x, 1, nchar(x)-4)
@@ -46,14 +46,14 @@ filterTableServer <- function(input, output, session, dataframe,
     inputFirst[i] <- paste0("inputFirst_", colnamesDF[i])
     inputSecond[i] <- paste0("inputSecond_", colnamesDF[i])
   }
-  
+
   lapply(1:length(colnamesDF), function(i) {
     if(is.numeric(dataframe[,i])){
       if(i == 1){
         output[[paste0("filterOutput",i)]] <- renderUI({
           div(class = class[i], wellPanel(style='border:1;',
                                                  checkboxGroupButtons(
-                                                   inputId = ns(option[i]), 
+                                                   inputId = ns(option[i]),
                                                    label = colnamesDF[i],
                                                    choices = c("<", ">", "=", "<=", ">=",
                                                                "extremes", "range"),
@@ -106,7 +106,7 @@ filterTableServer <- function(input, output, session, dataframe,
         output[[paste0("filterOutput",i)]] <- renderUI({
           hidden(div(class = class[i], wellPanel(style='border:1;',
                                                  checkboxGroupButtons(
-                                                   inputId = ns(option[i]), 
+                                                   inputId = ns(option[i]),
                                                    label = colnamesDF[i],
                                                    choices = c("<", ">", "=", "<=", ">=",
                                                                "extremes", "range"),
@@ -202,7 +202,7 @@ filterTableServer <- function(input, output, session, dataframe,
       }
     }
   })
-  
+
   output$seuratFindMarkerFilter <- renderUI({
     fluidPage(
       fluidRow(
@@ -252,7 +252,7 @@ filterTableServer <- function(input, output, session, dataframe,
                      ),
     )
   })
-    
+
   if(!is.null(defaultFilterColumns)){
     for(i in seq(length(colnamesDF))){
       rv$parameters$operators[i] <- "NULL"
@@ -261,7 +261,7 @@ filterTableServer <- function(input, output, session, dataframe,
     index <- match(defaultFilterColumns, colnamesDF)
     rv$parameters$operators[index] <- defaultFilterOperators
     rv$parameters$values[index] <- defaultFilterValues
-    
+
     output$seuratFindMarkerTable <- DT::renderDataTable({
       df <- .filterDF(df = dataframe,
                       operators = rv$parameters$operators,
@@ -279,7 +279,7 @@ filterTableServer <- function(input, output, session, dataframe,
                                                 )
                                               )
     ))
-    
+
     activeFilters <- list()
     activeFiltersValues <- list()
     if(!is.null(rv$parameters)){
@@ -290,7 +290,7 @@ filterTableServer <- function(input, output, session, dataframe,
         }
       }
     }
-    
+
     output$seuratFindMarkerActiveFilters <- renderUI({
       panel(
         checkboxGroupInput(
@@ -316,18 +316,18 @@ filterTableServer <- function(input, output, session, dataframe,
                                                   )
                                                 )
       ))
-      
+
       output$seuratFindMarkerActiveFilters <- renderUI({
         panel(
           HTML(paste("<span style='color:red'>No active filters!</span>")),
         )
       })
     }
-  
+
   observeEvent(input$seuratFindMarkerFilterRun,{
     #update table
     updateSeuratFindMarkerTable()
-    
+
     updateSelectInput(
       session = session,
       inputId = "seuratFindMarkerSelectFilter",
@@ -340,7 +340,7 @@ filterTableServer <- function(input, output, session, dataframe,
           output[[paste0("filterOutput",i)]] <- renderUI({
             div(class = class[i], wellPanel(style='border:1;',
                                                    checkboxGroupButtons(
-                                                     inputId = ns(option[i]), 
+                                                     inputId = ns(option[i]),
                                                      label = colnamesDF[i],
                                                      choices = c("<", ">", "=", "<=", ">=",
                                                                  "extremes", "range"),
@@ -393,7 +393,7 @@ filterTableServer <- function(input, output, session, dataframe,
           output[[paste0("filterOutput",i)]] <- renderUI({
             hidden(div(class = class[i], wellPanel(style='border:1;',
                                                    checkboxGroupButtons(
-                                                     inputId = ns(option[i]), 
+                                                     inputId = ns(option[i]),
                                                      label = colnamesDF[i],
                                                      choices = c("<", ">", "=", "<=", ">=",
                                                                  "extremes", "range"),
@@ -489,10 +489,10 @@ filterTableServer <- function(input, output, session, dataframe,
         }
       }
     })
-    
+
     shinyjs::enable(id = "seuratFindMarkerRemoveAllFilters")
   })
-  
+
   updateSeuratFindMarkerTable <- function(){
     df <- NULL
     parameters <- list()
@@ -522,7 +522,7 @@ filterTableServer <- function(input, output, session, dataframe,
         }
       }
     }
-    
+
     if(!is.null(rv$parameters)){
       for(i in seq(length(colnamesDF))){
         if(parameters$operators[i] != "NULL"){
@@ -534,16 +534,16 @@ filterTableServer <- function(input, output, session, dataframe,
     else{
       rv$parameters <- parameters
     }
-    
+
     df <- .filterDF(df = dataframe,
                                    operators = rv$parameters$operators,
                                    cols = colnamesDF,
                                    values = rv$parameters$values)
-    
 
-    
 
-    
+
+
+
     output$seuratFindMarkerTable <- DT::renderDataTable({
       df
     }, extensions = 'Buttons', options = list(pageLength = 6, dom = "<'top'li>t<'bottom'Bp>", stateSave = TRUE,
@@ -556,8 +556,8 @@ filterTableServer <- function(input, output, session, dataframe,
                                                 )
                                               )
     ))
-    
-    
+
+
     activeFilters <- list()
     activeFiltersValues <- list()
     if(!is.null(rv$parameters)){
@@ -579,14 +579,14 @@ filterTableServer <- function(input, output, session, dataframe,
               )
       )
     })
-    
-    
+
+
     if(!is.null(df)){
       rv$data <- df
     }
   }
-  
-  seuratfindMarkerTableObserve <- observe(suspended = F, {
+
+  seuratfindMarkerTableObserve <- observe(suspended = FALSE, {
                                             input$seuratFindMarkerTable_rows_selected
                                             isolate({
                                               if(!is.null(input$seuratFindMarkerTable_rows_selected)){
@@ -594,7 +594,7 @@ filterTableServer <- function(input, output, session, dataframe,
                                               }
                                             })
                                           })
-  
+
   observeEvent(input$seuratFindMarkerSelectFilter,{
     shinyjs::show(selector = paste0(".class_", input$seuratFindMarkerSelectFilter))
     for(i in seq(length(class))){
@@ -603,7 +603,7 @@ filterTableServer <- function(input, output, session, dataframe,
       }
     }
   })
-  
+
   observeEvent(input$seuratFindMarkerRemoveAllFilters, {
     index <- match(input$checkboxFiltersToRemove, colnamesDF)
     rv$parameters$operators[index] <- "NULL"
@@ -612,9 +612,9 @@ filterTableServer <- function(input, output, session, dataframe,
                     operators = rv$parameters$operators,
                     cols = colnamesDF,
                     values = rv$parameters$values)
-    
+
     rv$data <- df
-    
+
     output$seuratFindMarkerTable <- DT::renderDataTable({
       df
     }, extensions = 'Buttons', options = list(pageLength = 6, dom = "<'top'li>t<'bottom'Bp>", stateSave = TRUE,
@@ -627,7 +627,7 @@ filterTableServer <- function(input, output, session, dataframe,
                                                 )
                                               )
     ))
-    
+
     activeFilters <- list()
     activeFiltersValues <- list()
     if(!is.null(rv$parameters)){
@@ -639,7 +639,7 @@ filterTableServer <- function(input, output, session, dataframe,
         }
       }
     }
-    
+
     output$seuratFindMarkerActiveFilters <- renderUI({
       panel(
         checkboxGroupInput(
@@ -650,15 +650,15 @@ filterTableServer <- function(input, output, session, dataframe,
         )
       )
     })
-    
+
     updateSelectInput(
       session = session,
       inputId = "seuratFindMarkerSelectFilter",
       selected = colnamesDF[index]
     )
-    
+
   })
-  
+
   observe({
     req(rv)
     if(all(rv$parameters$operators == "NULL")){
@@ -673,8 +673,8 @@ filterTableServer <- function(input, output, session, dataframe,
       shinyjs::enable(id = "seuratFindMarkerRemoveAllFilters")
     }
   })
-  
-  
+
+
   observeEvent(input$export, {
     showModal(
       modalDialog(actionButton(ns("dlCSV"),"Download as CSV"),
@@ -682,21 +682,21 @@ filterTableServer <- function(input, output, session, dataframe,
                   actionButton(ns("dlPDF"),"Download as PDF"),
                   easyClose = TRUE, title = "Export Table"))
   })
-  
+
   observeEvent(input$dlCSV, {
     write.csv(rv$data, file = paste0(moduleID, "-", Sys.Date(), ".csv"), row.names = TRUE)
     showNotification("Table saved in working directory as", paste0(moduleID, "-", Sys.Date(), ".csv"), duration = 10)
     removeModal()
   })
-  
+
   observeEvent(input$dlPDF, {
-    df <- rv$data  
-    dim(df)  
-    maxrow = 35   
-    npages = ceiling(nrow(df)/maxrow)      
-    pdf(paste0(moduleID, "-", Sys.Date(), ".pdf"), height = 11, width = 8.5)  
-    idx = seq(1, maxrow)  
-    grid.table(df[idx,],rows = NULL)  
+    df <- rv$data
+    dim(df)
+    maxrow = 35
+    npages = ceiling(nrow(df)/maxrow)
+    pdf(paste0(moduleID, "-", Sys.Date(), ".pdf"), height = 11, width = 8.5)
+    idx = seq(1, maxrow)
+    grid.table(df[idx,],rows = NULL)
     for(i in 2:npages){
       grid.newpage();
       if(i*maxrow <= nrow(df)){
@@ -711,8 +711,8 @@ filterTableServer <- function(input, output, session, dataframe,
     showNotification("Table saved in working directory as", paste0(moduleID, "-", Sys.Date(), ".pdf"), duration = 10)
     removeModal()
   })
-  
-  
+
+
   return(rv)
 }
 
@@ -735,7 +735,9 @@ filterTableServer <- function(input, output, session, dataframe,
         }
       }
       else{
-        values[i] <- paste0("'", values[i], "'")
+        if(is.na(as.numeric(values[i]))){
+          values[i] <- paste0("'", values[i], "'")
+        }
         filters <- c(filters, paste0("eval(call('", operators[i], "', df[['", cols[i], "']],", values[i], "))"))
       }
     }

@@ -24,11 +24,11 @@ plotPCA <- function(inSCE, colorBy="No Color", shape="No Shape", pcX="PC1",
                     useAssay="logcounts"){
   if(!(reducedDimName %in% names(SingleCellExperiment::reducedDims(inSCE)))){
     if (runPCA){
-      inSCE <- getPCA(inSCE, useAssay = useAssay,
+      inSCE <- scaterPCA(inSCE, useAssay = useAssay,
                       reducedDimName = reducedDimName)
     } else {
       stop(reducedDimName,
-           " dimension not found. Run getPCA() or set runPCA to TRUE.")
+           " dimension not found. Run scaterPCA() or set runPCA to TRUE.")
     }
   }
   pcaDf <- data.frame(SingleCellExperiment::reducedDim(inSCE,

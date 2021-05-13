@@ -51,50 +51,50 @@ nonLinearWorkflowUI <- function(id, de = FALSE, cv = FALSE, pa = FALSE)
 nonLinearWorkflow <- function(input, output, session, parent)
 {
   ns <- session$ns
-  
+
   observeEvent(input$goDE,{
     showTab(inputId = "navbar",
             target = "Differential Expression",
             select = TRUE,
             session = parent)
   })
-  
+
   observeEvent(input$goMS,{
     showTab(inputId = "navbar",
             target = "Find Marker",
             select = TRUE,
             session = parent)
   })
-  
+
   observeEvent(input$goGSVA,{
     showTab(inputId = "navbar",
             target = "GSVA",
             select = TRUE,
             session = parent)
   })
-  
+
   observeEvent(input$goEnrichR,{
     showTab(inputId = "navbar",
             target = "EnrichR",
             select = TRUE,
             session = parent)
   })
-  
+
     output$displayDE <- reactive({
       returnedValue = input$de
       return(as.logical(returnedValue))
     })
-    
+
     output$displayPA <- reactive({
       returnedValue = input$pa
       return(as.logical(returnedValue))
     })
-    
+
     output$displayCV <- reactive({
       returnedValue = input$cv
       return(as.logical(returnedValue))
     })
-    
+
   outputOptions(output, "displayDE", suspendWhenHidden = FALSE)
   outputOptions(output, "displayPA", suspendWhenHidden = FALSE)
   outputOptions(output, "displayCV", suspendWhenHidden = FALSE)

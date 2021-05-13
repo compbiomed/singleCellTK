@@ -1,0 +1,49 @@
+---
+title: "Batch Correction - UI"
+author: "Yichen Wang"
+---
+
+## Introduction
+
+This section describes the usage of the user interface (UI) for singleCellTK (SCTK) batch correction. The underneath process is wrapped by R functions for batch correction. For the list of supported functions or methods, and the R console workflow, please refer to [the help page for R console](batch_correction.html).  
+
+## UI Layout
+
+### Entry of The Panel
+
+From anywhere of the UI, the panel for normalization and batch correction can be accessed from the top navigation panel at the circled tab. After this, click on the second circled tab to enter the sub-page for batch correction.  
+
+![Entry](ui_screenshots/batch_correction/bc_ui_entry.png)\
+
+The UI is constructed in a sidebar style, where the left-sided sidebar works for setting the parameters and running the batch correction, and the right part main panel is for visualization checking.  
+
+### Running Batch Correction
+
+![Parameters](ui_screenshots/batch_correction/bc_ui_param.png)\
+
+For running any types of batch correction, there are always three essential inputs that users should be sure with:  
+
+- The data matrix to correct - selection input **"Select Assay"**. In terms of batch correction, SCTK always requires a full-sized feature expression data (i.e. assay) as a valid input. 
+- The annotation for batches - selection input **"Select Batch Annotation"**. Users will choose from the cell annotation list. The chosen annotation class should be able to define from which batch each cell sampled. Usually, `"Sample"` or `"sample"`, as the preprocessing steps generate this annotation by default. 
+- The batch correction method - selection input **"Select Batch Correction Method"**. All methods supported are listed as options, in the alphabetic order. 
+
+After the batch correction method is confirmed, the lower part will dynamically switch to the method specific settings. Different types of method have various parameter requirements, and various forms of output. For the detailed help information of each method, users can go to [reference](../reference/index.html) page and click on the function that stands for the method chosen, or click on the "(help for {method})" link in the UI.  
+
+### Visualization
+
+![Visualization](ui_screenshots/batch_correction/bc_ui_vis.png)\
+
+SCTK adopts to approach to demonstrate the effect of batch correction. First, SCTK attempts to plot the variance explained by annotations calculated with the assay to correct and the output data matrix. And second, SCTK plots the PCA projections of the assay selected for correction, and the output corrected data matrix. For both cases, user should use the same batch annotation as used when running the algorithm to see a plausible result.  
+
+There will be three columns in the plots for the variance explained. The third one is for the variance explained by batch division, the second is for that of an additional condition, which is optional, and the first one is the variance explained by combining both annotations. The additional condition is usually an annotation that indicates the differences between cells that should not be eliminated, such as cell types and treatments. In the first plot, the combined variance should ideally be close to the sum of the two types of variance. (i.e. the height of the first column should be closed to the sum of the heights of the other two) As a result that makes sense, the changes between the two plots in the second column should not be too much, while the third column should be largely eliminated after correction.  
+
+In the PCA plots, cells (i.e. dots) will be labeled with different colors to mark the batch belonging, and different shapes to mark for the additional condition, which was mentioned in the previous paragraph. Usually in the result, in the plot for the output, users can observe that different colors of dots are mixed up together, while different shapes are still grouped into separate clusters.  
+
+As for the parameter panel for visualization:  
+
+- The data matrix used for correction - selection input **"Original Assay"**. User should choose the one that was used when generating the result they want to visualize. 
+- The batch annotation used for correction - selection input **"Batch Annotation"**. User should choose the one that was used when generating the result they want to visualize. 
+- The additional condition - selection input **"Additional Condition (optional)"**. See the explanation in the previous paragraphs. Such a condition that makes the most sense does not always exist, so it becomes optional in SCTK. 
+- The result to visualize - selection input **"Corrected Matrix"**. Only the results generated in the current SCTK UI session will be gathered in the option list here. 
+
+

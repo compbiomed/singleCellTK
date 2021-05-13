@@ -56,3 +56,8 @@ labeling is given. Given a reference dataset of samples (single-cell or bulk)
 with known labels, it assigns those labels to new cells from a test dataset
 based on similarities in their expression profiles.
 }
+\examples{
+data("sceBatches")
+logcounts(sceBatches) <- log(counts(sceBatches) + 1)
+#sceBatches <- runSingleR(sceBatches, useBltinRef = "mp")
+}

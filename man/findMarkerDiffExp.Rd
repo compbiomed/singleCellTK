@@ -67,6 +67,9 @@ With an input SingleCellExperiment object and specifying the clustering
 labels, this function iteratively call the differential expression analysis
 on each cluster against all the others.
 }
-\author{
-Yichen Wang
+\examples{
+data("mouseBrainSubsetSCE", package = "singleCellTK")
+mouseBrainSubsetSCE <- findMarkerDiffExp(mouseBrainSubsetSCE,
+                                         useAssay = "logcounts",
+                                         cluster = "level1class")
 }

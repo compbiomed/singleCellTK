@@ -1,0 +1,112 @@
+---
+title: "Dimensionality Reduction"
+author: "Irzam Sarfraz"
+---
+```{r develSetting, include=FALSE}
+doEval = TRUE
+```
+## Introduction
+'runDimensionalityReduction' function offers a convenient way to run dimensionality reduction algorithms i.e., PCA & ICA, that have been implemented from various packages and integrated together in a single wrapper function. Additionally, high-dimensional data visualization methods such as tSNE & UMAP have also been provided under the umbrella of dimensionality reduction from within the same wrapper function.
+---
+
+A brief summary of the available methods is described below:
+
+### PCA/ICA
+#### Implemented Algorithms from Packages:
+|reducedDims Method|Packages|Reference|
+|---|---|---| 
+| PCA | Scran  | [Lun ATL, McCarthy DJ, Marioni JC (2016). “A step-by-step workflow for low-level analysis of single-cell RNA-seq data with Bioconductor.” F1000Res., 5, 2122.](https://doi.org/10.12688/f1000research.9501.2) |
+| PCA | Seurat | [Butler et al., Nature Biotechnology 2018](https://www.nature.com/articles/nbt.4096) & [Stuart*, Butler*, et al., Cell 2019](https://www.cell.com/cell/fulltext/S0092-8674(19)30559-8) |
+| ICA | Seurat | [Butler et al., Nature Biotechnology 2018](https://www.nature.com/articles/nbt.4096) & [Stuart*, Butler*, et al., Cell 2019](https://www.cell.com/cell/fulltext/S0092-8674(19)30559-8) |
+
+### tSNE/UMAP
+#### Implemented Algorithms from Packages:
+|Method|Packages|Reference|
+|---|---|---| 
+| tSNE | Rtsne  | [L.J.P. van der Maaten and G.E. Hinton. Visualizing High-Dimensional Data Using t-SNE. Journal of Machine Learning Research
+  9(Nov):2579-2605, 2008.](http://jmlr.org/papers/v9/vandermaaten08a.html), [L.J.P. van der Maaten. Accelerating t-SNE using Tree-Based Algorithms. Journal of Machine Learning Research 15(Oct):3221-3245, 2014.](http://jmlr.org/papers/v15/vandermaaten14a.html) and [Jesse H. Krijthe (2015). Rtsne: T-Distributed Stochastic Neighbor Embedding using a Barnes-Hut Implementation](https://github.com/jkrijthe/Rtsne) |
+| UMAP | uwot  | [James Melville (2020). uwot: The Uniform Manifold Approximation and Projection (UMAP) Method for Dimensionality Reduction. R
+  package version 0.1.8.](https://CRAN.R-project.org/package=uwot)|
+| tSNE | Seurat | [Butler et al., Nature Biotechnology 2018](https://www.nature.com/articles/nbt.4096) & [Stuart*, Butler*, et al., Cell 2019](https://www.cell.com/cell/fulltext/S0092-8674(19)30559-8) |
+| UMAP | Seurat | [Butler et al., Nature Biotechnology 2018](https://www.nature.com/articles/nbt.4096) & [Stuart*, Butler*, et al., Cell 2019](https://www.cell.com/cell/fulltext/S0092-8674(19)30559-8) |
+
+### Visualizations Supported
+| Method | 2-Dimensional Component Plot | Elbow Plot | JackStraw Plot | Heatmap Plot |
+|---|---|---|---|---|
+|PCA| $\checkmark$ | $\checkmark$ | $\checkmark$ | $\checkmark$ |
+|ICA| $\checkmark$ |x|x|$\checkmark$|
+|tSNE| $\checkmark$ |x|x|x|
+|UMAP| $\checkmark$ |x|x|x|
+
+### General Worflow
+![](ui_screenshots/dimensionality_reduction/dr_workflow.png)
+
+---
+
+## Workflow Guide
+In general, the first step is to compute a dimensionality reduction (e.g. PCA) and then the second
+step is to visualize the computed results. The usage of functions to compute and visualize 
+results is described below.
+
+1. Compute dimensionality reduction statistics using one of the available functions.
+```{r, eval = FALSE}
+sce <- runDimensionalityReduction(
+              inSCE = sce,
+              useAssay = "normalizedCounts",
+              reducedDimName = "redDimPCA",
+              method = "seuratPCA",
+              nComponents = 20
+            )
+```
+
+The following table illustrates the parameters that must be passed for each specific method:
+| Method | Parameters |
+|---|---|
+|scaterPCA|`inSCE`, `useAssay`, `reducedDimName`, `method` = "scaterPCA", `nComponents` 
+(default is 10)|
+|seuratPCA|`inSCE`, `useAssay`, `reducedDimName`, `method` = "seuratPCA", `nComponents` 
+(default is 10)|
+|seuratICA|`inSCE`, `useAssay`, `reducedDimName`, `method` = "seuratICA", `nComponents` 
+(default is 10)|
+|rTSNE|`inSCE`, `useAssay`, `reducedDimName`, `method` = "rTSNE", `perplexity` 
+(default is 30), `nIterations` (default is 1000)|
+|seuratTSNE|`inSCE`, `useAssay`, `reducedDimName`, `method` = "seuratTSNE", `nComponents`
+ (default is 10), `useReduction` (either `pca` or `ica`) and 
+ `perplexity` (default is 30)|
+|uwotUMAP|`inSCE`, `useAssay`, `reducedDimName`, `method` = "uwotUMAP", `nNeighbors` 
+(default is 30), `nIterations` (default is 200), `minDist` (default is 0.01) and
+`alpha` (default is 1)|
+|seuratUMAP|`inSCE`, `useAssay`, `reducedDimName`, `method` = "seuratUMAP", `nComponents` 
+(default is 10), `useReduction` (either `pca` or `ica`), `minDist` 
+(default is 0.3), `nNeighbors` (default is 30) and `spread` (default is 1)|
+
+2. Visualize the dimensionality reduction results using of the available visualization options.
+```{r, eval=FALSE}
+#To plot a simple 2D component plot for any of the 4 methods i.e. PCA, ICA, tSNE and UMAP
+seuratReductionPlot(
+  inSCE = sce,
+  useReduction = "pca")
+
+#To visualize a JackStraw plot
+sce <- seuratComputeJackStraw(
+  inSCE = sce,
+  useAssay = "scaledCounts"
+)
+
+seuratJackStrawPlot(inSCE = sce)
+
+#To visualize heatmap plot
+seuratComputeHeatmap(
+  inSCE = sce,
+  useAssay = "scaledCounts",
+  useReduction = "pca",
+  dims = 10,
+  nfeatures = 10)
+
+#To visualize Elbow plot
+seuratElbowPlot(
+  inSCE = sce,
+  reduction = "pca"
+)
+
+```

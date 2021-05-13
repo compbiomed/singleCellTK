@@ -11,9 +11,9 @@ exportSCEtoAnnData(
   outputDir = "./",
   prefix = "sample",
   overwrite = TRUE,
-  compression = c("None", "lzf", "gzip"),
+  compression = c("gzip", "lzf", "None"),
   compressionOpts = NULL,
-  forceDense = c("False", "True")
+  forceDense = FALSE
 )
 }
 \arguments{
@@ -31,7 +31,7 @@ Default \code{"counts"}.}
 \item{overwrite}{Boolean. Default \code{TRUE}.}
 
 \item{compression}{If output file compression is required, this variable accepts
-'gzip' or 'lzf' as inputs. Default \code{None}.}
+'gzip', 'lzf' or "None" as inputs. Default \code{"gzip"}.}
 
 \item{compressionOpts}{Integer. Sets the compression level}
 

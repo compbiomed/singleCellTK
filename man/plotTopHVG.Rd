@@ -4,18 +4,28 @@
 \alias{plotTopHVG}
 \title{Plot highly variable genes}
 \usage{
-plotTopHVG(inSCE, method = "vst", hvgList = NULL, n = NULL, labelsCount = NULL)
+plotTopHVG(
+  inSCE,
+  method = c("vst", "mean.var.plot", "dispersion", "modelGeneVar"),
+  hvgList = NULL,
+  n = NULL,
+  labelsCount = NULL
+)
 }
 \arguments{
-\item{inSCE}{Input \code{SingleCellExperiment} object containing the computations.}
+\item{inSCE}{Input \code{SingleCellExperiment} object containing the
+computations.}
 
-\item{method}{Select either "vst", "mean.var.plot", "dispersion" or "modelGeneVar".}
+\item{method}{Select either "vst", "mean.var.plot", "dispersion" or
+"modelGeneVar".}
 
-\item{hvgList}{Character vector indicating the labels of highly variable genes.}
+\item{hvgList}{Character vector indicating the labels of highly variable
+genes.}
 
-\item{n}{Specify the number of top genes to highlight in red. If `hvgList`
-parameter is not provided, this parameter can be used simply to specify
-the number of top genes to highlight in red.}
+\item{n}{Specify the number of top genes to highlight in red. If
+\code{hvgList}
+ parameter is not provided, this parameter can be used simply to specify
+ the number of top genes to highlight in red.}
 
 \item{labelsCount}{Specify the number of data points/genes to label.
 By default, all top genes will be labeled.}
@@ -25,4 +35,10 @@ plot object
 }
 \description{
 Plot highly variable genes
+}
+\examples{
+data("mouseBrainSubsetSCE", package = "singleCellTK")
+mouseBrainSubsetSCE <- scranModelGeneVar(mouseBrainSubsetSCE, "logcounts")
+plotTopHVG(mouseBrainSubsetSCE, method = "modelGeneVar",
+           n = 1000, labelsCount = 0)
 }

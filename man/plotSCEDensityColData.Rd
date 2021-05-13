@@ -11,8 +11,9 @@ plotSCEDensityColData(
   groupBy = NULL,
   xlab = NULL,
   ylab = NULL,
-  axisSize = 10,
-  axisLabelSize = 10,
+  baseSize = 12,
+  axisSize = NULL,
+  axisLabelSize = NULL,
   defaultTheme = TRUE,
   title = NULL,
   titleSize = 18,
@@ -37,9 +38,13 @@ object, or can be retrieved from the colData slot. Default NULL.}
 
 \item{ylab}{Character vector. Label for y-axis. Default NULL.}
 
-\item{axisSize}{Size of x/y-axis ticks. Default 10.}
+\item{baseSize}{The base font size for all text. Default 12.
+Can be overwritten by titleSize, axisSize, and axisLabelSize,
+legendSize, legendTitleSize.}
 
-\item{axisLabelSize}{Size of x/y-axis labels. Default 10.}
+\item{axisSize}{Size of x/y-axis ticks. Default NULL.}
+
+\item{axisLabelSize}{Size of x/y-axis labels. Default NULL.}
 
 \item{defaultTheme}{Removes grid in plot and sets axis title size to 10
 when TRUE. Default TRUE.}

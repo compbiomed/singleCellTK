@@ -14,15 +14,20 @@ seuratReductionPlot(
 )
 }
 \arguments{
-\item{inSCE}{(sce) object which has the selected dimensionality reduction algorithm already computed and stored}
+\item{inSCE}{(sce) object which has the selected dimensionality reduction
+algorithm already computed and stored}
 
-\item{useReduction}{Dimentionality reduction to plot. One of "pca", "ica", "tsne", or "umap". Default \code{"umap"}.}
+\item{useReduction}{Dimentionality reduction to plot. One of "pca", "ica",
+"tsne", or "umap". Default \code{"umap"}.}
 
-\item{showLegend}{Select if legends should be shown on the output plot or not. Either "TRUE" or "FALSE". Default \code{FALSE}.}
+\item{showLegend}{Select if legends and labels should be shown on the output
+plot or not. Either "TRUE" or "FALSE". Default \code{FALSE}.}
 
-\item{groupBy}{Specify a colData column name that be used for grouping. Default is \code{NULL}.}
+\item{groupBy}{Specify a colData column name that be used for grouping.
+Default is \code{NULL}.}
 
-\item{splitBy}{Specify a colData column name that be used for splitting the output plot. Default is \code{NULL}.}
+\item{splitBy}{Specify a colData column name that be used for splitting the
+output plot. Default is \code{NULL}.}
 }
 \value{
 plot object
