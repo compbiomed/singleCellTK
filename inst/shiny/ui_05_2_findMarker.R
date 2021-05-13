@@ -2,8 +2,8 @@ shinyPanelfindMarker <- fluidPage(
   tags$div(
     class = "container",
     h1("Find Marker"),
-    tags$a(href = "https://www.sctk.science/articles/tab05_find-marker",
-           "(help)", target = "_blank"),
+    h5(tags$a(href = paste0(docs.artPath, "ui_find_marker.html"),
+              "(help)", target = "_blank")),
     sidebarLayout(
       sidebarPanel(
         selectInput('fmMethod', "Select Differential Expression Method",
