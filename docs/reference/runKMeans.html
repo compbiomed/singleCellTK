@@ -231,7 +231,7 @@ kmeans." />
           <a href="../articles/articles/ui_feature_selection.html">Feature Selection</a>
         </li>
         <li>
-          <a href="../articles/articles/ui_dimemsionality_reduction.html">Dimensionality Reduction</a>
+          <a href="../articles/articles/ui_dimensionality_reduction.html">Dimensionality Reduction</a>
         </li>
       </ul>
     </li>
@@ -247,13 +247,33 @@ kmeans." />
         <li>
           <a href="../articles/articles/ui_find_marker.html">Find Marker</a>
         </li>
+        <li>
+          <a href="../articles/articles/ui_cell_type_labeling.html">Cell Type Labeling</a>
+        </li>
       </ul>
+    </li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Pathway &amp; Enrichment Analysis</a>
+      <ul class="dropdown-menu" role="menu">
+        <li>
+          <a href="../articles/articles/ui_gsva.html">GSVA</a>
+        </li>
+        <li>
+          <a href="../articles/articles/ui_enrichR.html">EnrichR</a>
+        </li>
+      </ul>
+    </li>
+    <li>
+      <a href="../articles/articles/ui_sample_size_calc.html">Sample Size Calculator</a>
     </li>
     <li class="dropdown-submenu">
       <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Curated Workflows</a>
       <ul class="dropdown-menu" role="menu">
         <li>
           <a href="../articles/articles/ui_seurat_curated_workflow.html">Seurat</a>
+        </li>
+        <li>
+          <a href="../articles/articles/ui_celda_curated_workflow.html">Celda</a>
         </li>
       </ul>
     </li>
@@ -277,7 +297,7 @@ kmeans." />
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/compbiomed/singleCellTK">
-    <span class="fa fa-github"></span>
+    <span class="fas fa-github"></span>
      
   </a>
 </li>
@@ -374,7 +394,7 @@ object with <code>factor</code> cluster labeling updated in
 <span class='va'>mouseBrainSubsetSCE</span> <span class='op'>&lt;-</span> <span class='fu'>runKMeans</span><span class='op'>(</span><span class='va'>mouseBrainSubsetSCE</span>,
                                  useReducedDim <span class='op'>=</span> <span class='st'>"PCA_logcounts"</span>,
                                  nCenters <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'>Tue May 11 18:06:03 2021 ... Running 'KMeans clustering'</span></div></pre>
+</div><div class='output co'>#&gt; <span class='message'>Thu May 13 18:19:57 2021 ... Running 'KMeans clustering'</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

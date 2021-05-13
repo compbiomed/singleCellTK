@@ -188,7 +188,7 @@
           <a href="../../articles/articles/ui_feature_selection.html">Feature Selection</a>
         </li>
         <li>
-          <a href="../../articles/articles/ui_dimemsionality_reduction.html">Dimensionality Reduction</a>
+          <a href="../../articles/articles/ui_dimensionality_reduction.html">Dimensionality Reduction</a>
         </li>
       </ul>
 </li>
@@ -204,13 +204,33 @@
         <li>
           <a href="../../articles/articles/ui_find_marker.html">Find Marker</a>
         </li>
+        <li>
+          <a href="../../articles/articles/ui_cell_type_labeling.html">Cell Type Labeling</a>
+        </li>
       </ul>
 </li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Pathway &amp; Enrichment Analysis</a>
+      <ul class="dropdown-menu" role="menu">
+<li>
+          <a href="../../articles/articles/ui_gsva.html">GSVA</a>
+        </li>
+        <li>
+          <a href="../../articles/articles/ui_enrichR.html">EnrichR</a>
+        </li>
+      </ul>
+</li>
+    <li>
+      <a href="../../articles/articles/ui_sample_size_calc.html">Sample Size Calculator</a>
+    </li>
     <li class="dropdown-submenu">
       <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Curated Workflows</a>
       <ul class="dropdown-menu" role="menu">
 <li>
           <a href="../../articles/articles/ui_seurat_curated_workflow.html">Seurat</a>
+        </li>
+        <li>
+          <a href="../../articles/articles/ui_celda_curated_workflow.html">Celda</a>
         </li>
       </ul>
 </li>
@@ -234,7 +254,7 @@
 <ul class="nav navbar-nav navbar-right">
 <li>
   <a href="https://github.com/compbiomed/singleCellTK">
-    <span class="fa fa-github"></span>
+    <span class="fas fa-github"></span>
      
   </a>
 </li>
@@ -248,8 +268,7 @@
 
       
 
-      </header><script src="cnsl_find_marker_files/header-attrs-2.5/header-attrs.js"></script><script src="cnsl_find_marker_files/accessible-code-block-0.0.1/empty-anchor.js"></script><link href="cnsl_find_marker_files/anchor-sections-1.0/anchor-sections.css" rel="stylesheet">
-<script src="cnsl_find_marker_files/anchor-sections-1.0/anchor-sections.js"></script><script src="cnsl_find_marker_files/kePrint-0.0.1/kePrint.js"></script><link href="cnsl_find_marker_files/lightable-0.0.1/lightable.css" rel="stylesheet">
+      </header><script src="cnsl_find_marker_files/header-attrs-2.7/header-attrs.js"></script><script src="cnsl_find_marker_files/kePrint-0.0.1/kePrint.js"></script><link href="cnsl_find_marker_files/lightable-0.0.1/lightable.css" rel="stylesheet">
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
@@ -386,129 +405,13 @@ clusterAveExpr
 <tbody>
 <tr>
 <td style="text-align:left;">
-5
-</td>
-<td style="text-align:left;">
-IL7R
-</td>
-<td style="text-align:right;">
-0.7243084
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:left;">
-0
-</td>
-<td style="text-align:right;">
-0.7363636
-</td>
-<td style="text-align:right;">
-0.3162791
-</td>
-<td style="text-align:right;">
-1.1959683
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-9
-</td>
-<td style="text-align:left;">
-CD3E
-</td>
-<td style="text-align:right;">
-0.6925999
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:left;">
-0
-</td>
-<td style="text-align:right;">
-0.8272727
-</td>
-<td style="text-align:right;">
-0.3930233
-</td>
-<td style="text-align:right;">
-1.2985727
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-14
-</td>
-<td style="text-align:left;">
-CD2
-</td>
-<td style="text-align:right;">
-0.5177898
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:left;">
-0
-</td>
-<td style="text-align:right;">
-0.6309091
-</td>
-<td style="text-align:right;">
-0.2367442
-</td>
-<td style="text-align:right;">
-0.8349347
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-57
-</td>
-<td style="text-align:left;">
-LCK
-</td>
-<td style="text-align:right;">
-0.3700685
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:left;">
-0
-</td>
-<td style="text-align:right;">
-0.6109091
-</td>
-<td style="text-align:right;">
-0.2948837
-</td>
-<td style="text-align:right;">
-0.7614846
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-63
+74
 </td>
 <td style="text-align:left;">
 NOSIP
 </td>
 <td style="text-align:right;">
-0.4170043
+0.5152459
 </td>
 <td style="text-align:right;">
 0
@@ -526,18 +429,18 @@ NOSIP
 0.3641860
 </td>
 <td style="text-align:right;">
-0.9249822
+1.0032117
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-197
+121
 </td>
 <td style="text-align:left;">
-TMEM123
+IL7R
 </td>
 <td style="text-align:right;">
-0.2520777
+0.4715791
 </td>
 <td style="text-align:right;">
 0
@@ -549,13 +452,129 @@ TMEM123
 0
 </td>
 <td style="text-align:right;">
-0.6018182
+0.6418182
 </td>
 <td style="text-align:right;">
-0.3795349
+0.3404651
 </td>
 <td style="text-align:right;">
-0.7281577
+0.9947208
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+126
+</td>
+<td style="text-align:left;">
+CD7
+</td>
+<td style="text-align:right;">
+0.4285577
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:left;">
+0
+</td>
+<td style="text-align:right;">
+0.6200000
+</td>
+<td style="text-align:right;">
+0.3018605
+</td>
+<td style="text-align:right;">
+0.8756739
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+410
+</td>
+<td style="text-align:left;">
+IL7R
+</td>
+<td style="text-align:right;">
+0.7250848
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:left;">
+1
+</td>
+<td style="text-align:right;">
+0.7448560
+</td>
+<td style="text-align:right;">
+0.3265583
+</td>
+<td style="text-align:right;">
+1.2137737
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+7
+</td>
+<td style="text-align:left;">
+CD2
+</td>
+<td style="text-align:right;">
+0.5424127
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:left;">
+1
+</td>
+<td style="text-align:right;">
+0.6502058
+</td>
+<td style="text-align:right;">
+0.2439024
+</td>
+<td style="text-align:right;">
+0.8673990
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+601
+</td>
+<td style="text-align:left;">
+LCK
+</td>
+<td style="text-align:right;">
+0.3528016
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:left;">
+1
+</td>
+<td style="text-align:right;">
+0.6090535
+</td>
+<td style="text-align:right;">
+0.3044264
+</td>
+<td style="text-align:right;">
+0.7560978
 </td>
 </tr>
 </tbody>
