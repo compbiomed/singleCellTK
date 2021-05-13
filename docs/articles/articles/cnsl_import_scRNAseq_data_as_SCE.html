@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.2</span>
       </span>
     </div>
 
@@ -66,7 +66,10 @@
       <a href="../../articles/articles/cnsl_import_scRNAseq_data_as_SCE.html">Import data into SCTK</a>
     </li>
     <li>
-      <a href="../../articles/articles/cnsl_qc.html">Quality Control</a>
+      <a href="../../articles/articles/cnsl_dropletqc.html">Quality Control of droplet data</a>
+    </li>
+    <li>
+      <a href="../../articles/articles/cnsl_cellqc.html">Quality Control of cell data</a>
     </li>
     <li>
       <a href="../../articles/articles/cnsl_normalization.html">Normalization</a>
@@ -245,7 +248,7 @@
 
       
 
-      </header><script src="cnsl_import_scRNAseq_data_as_SCE_files/header-attrs-2.7/header-attrs.js"></script><div class="row">
+      </header><script src="cnsl_import_scRNAseq_data_as_SCE_files/header-attrs-2.8/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Importing scRNA-seq data into Single Cell ToolKit</h1>
@@ -271,6 +274,11 @@
 <li>
 <a href="https://bioconductor.org/packages/release/bioc/html/SingleCellExperiment.html">SingleCellExperiment</a> object saved in <a href="https://github.com/theislab/anndata">AnnData</a> hdf5 file</li>
 </ul>
+<p>One example to import CellRangerV3 data is shown below</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">dropletSCE</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/importCellRanger.html">importCellRangerV3</a></span><span class="op">(</span>cellRangerDirs <span class="op">=</span> <span class="st">"BasePath"</span>, dataType<span class="op">=</span><span class="st">"raw"</span><span class="op">)</span>
+<span class="va">cellSCE</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/importCellRanger.html">importCellRangerV3</a></span><span class="op">(</span>cellRangerDirs <span class="op">=</span> <span class="st">"BasePath"</span>, dataType<span class="op">=</span><span class="st">"filtered"</span><span class="op">)</span></code></pre></div>
+<p><br></p>
 <p>The following table describes how SingleCellTK expects the inputs to be structured and passed for each import function. In all cases, SingleCellTK retains the standard output directory structure for upstream tools. All the import functions return the imported counts matrix as a SingleCellExperiment object assay, with associated information in respective colData, rowData, reducedDims, and metadata fields.</p>
 <center>
 <img src="qc_inputConsole.png" alt="QC data format"> 

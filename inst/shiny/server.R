@@ -213,6 +213,11 @@ shinyServer(function(input, output, session) {
       )
     })
   }
+  
+  observeEvent(input$hvgMethodFS,{
+    req(vals$counts)
+    updateAssayInputs()
+  })
 
   updateAssayInputs <- function(){
     currassays <- names(assays(vals$counts))
@@ -240,19 +245,16 @@ shinyServer(function(input, output, session) {
     }
     updateSelectInputTag(session, "fmHMAssay", choices = currassays, selected = input$fmAssay)
     updateSelectInputTag(session, "pathwayAssay", recommended = c("transformed", "normalized", "scaled"))
-
-    #modifyAssaySelect conditions
-    # if(input$assayModifyAction == "log" || input$assayModifyAction == "log1p"){
-    #   updateSelectInputTag(session, "modifyAssaySelect", recommended = c("raw", "normalized"))
-    # }
-    # else if(input$assayModifyAction == "z.score"){
-    #   updateSelectInputTag(session, "modifyAssaySelect", recommended = "normalized")
-    # }
     updateSelectInputTag(session, "modifyAssaySelect")
     updateSelectInputTag(session, "normalizeAssaySelect", label = "Select assay to normalize:", recommended = "raw")
 
     updateSelectInputTag(session, "seuratSelectNormalizationAssay", choices = currassays, showTags = FALSE)
-    updateSelectInputTag(session, "assaySelectFS_Norm", recommended = c("transformed", "normalized", "scaled"))
+    if(input$hvgMethodFS == "vst"){
+      updateSelectInputTag(session, "assaySelectFS_Norm", recommended = c("raw"))
+    }
+    else{
+      updateSelectInputTag(session, "assaySelectFS_Norm", recommended = c("transformed", "normalized", "scaled")) 
+    }
     updateSelectInputTag(session, "filterAssaySelect", choices = currassays)
     updateSelectInputTag(session, "qcAssaySelect", recommended = "raw")
     updateSelectInputTag(session, "celdaAssay", choices = currassays)

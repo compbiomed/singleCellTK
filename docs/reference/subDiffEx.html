@@ -78,7 +78,7 @@ multiple conditions, respectively." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.2</span>
       </span>
     </div>
 
@@ -113,7 +113,10 @@ multiple conditions, respectively." />
       <a href="../articles/articles/cnsl_import_scRNAseq_data_as_SCE.html">Import data into SCTK</a>
     </li>
     <li>
-      <a href="../articles/articles/cnsl_qc.html">Quality Control</a>
+      <a href="../articles/articles/cnsl_dropletqc.html">Quality Control of droplet data</a>
+    </li>
+    <li>
+      <a href="../articles/articles/cnsl_cellqc.html">Quality Control of cell data</a>
     </li>
     <li>
       <a href="../articles/articles/cnsl_normalization.html">Normalization</a>
@@ -278,7 +281,7 @@ multiple conditions, respectively." />
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/compbiomed/singleCellTK">
-    <span class="fas fa-github"></span>
+    <span class="fa fa-github"></span>
      
   </a>
 </li>
@@ -375,7 +378,7 @@ more than 2 conditions, and adjusts for FDR.</p></li>
 <span class='co'>#sort first 100 expressed genes</span>
 <span class='va'>ord</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>rownames</a></span><span class='op'>(</span><span class='va'>mouseBrainSubsetSCE</span><span class='op'>)</span><span class='op'>[</span>
   <span class='fu'><a href='https://rdrr.io/r/base/order.html'>order</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/colSums.html'>rowSums</a></span><span class='op'>(</span><span class='fu'>assay</span><span class='op'>(</span><span class='va'>mouseBrainSubsetSCE</span>, <span class='st'>"counts"</span><span class='op'>)</span><span class='op'>)</span>,
-        decreasing <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span><span class='op'>]</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>100</span><span class='op'>]</span>
+        decreasing <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span><span class='op'>]</span><span class='op'>[</span><span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>100</span><span class='op'>)</span><span class='op'>]</span>
 <span class='co'>#subset to those first 100 genes</span>
 <span class='va'>subset</span> <span class='op'>&lt;-</span> <span class='va'>mouseBrainSubsetSCE</span><span class='op'>[</span><span class='va'>ord</span>, <span class='op'>]</span>
 <span class='va'>res</span> <span class='op'>&lt;-</span> <span class='fu'><a href='generateSimulatedData.html'>generateSimulatedData</a></span><span class='op'>(</span>totalReads <span class='op'>=</span> <span class='fl'>1000</span>, cells<span class='op'>=</span><span class='fl'>10</span>,
@@ -389,7 +392,7 @@ more than 2 conditions, and adjusts for FDR.</p></li>
 <span class='co'>#sort first 100 expressed genes</span>
 <span class='va'>ord</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>rownames</a></span><span class='op'>(</span><span class='va'>mouseBrainSubsetSCE</span><span class='op'>)</span><span class='op'>[</span>
   <span class='fu'><a href='https://rdrr.io/r/base/order.html'>order</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/colSums.html'>rowSums</a></span><span class='op'>(</span><span class='fu'>assay</span><span class='op'>(</span><span class='va'>mouseBrainSubsetSCE</span>, <span class='st'>"counts"</span><span class='op'>)</span><span class='op'>)</span>,
-        decreasing <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span><span class='op'>]</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>100</span><span class='op'>]</span>
+        decreasing <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span><span class='op'>]</span><span class='op'>[</span><span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>100</span><span class='op'>)</span><span class='op'>]</span>
 <span class='co'># subset to those first 100 genes</span>
 <span class='va'>subset</span> <span class='op'>&lt;-</span> <span class='va'>mouseBrainSubsetSCE</span><span class='op'>[</span><span class='va'>ord</span>, <span class='op'>]</span>
 <span class='va'>res</span> <span class='op'>&lt;-</span> <span class='fu'><a href='generateSimulatedData.html'>generateSimulatedData</a></span><span class='op'>(</span>totalReads <span class='op'>=</span> <span class='fl'>1000</span>, cells<span class='op'>=</span><span class='fl'>10</span>,

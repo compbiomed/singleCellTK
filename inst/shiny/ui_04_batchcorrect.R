@@ -42,8 +42,6 @@ shinyPanelBatchcorrect <- fluidPage(
                                      conditionalPanel(
                                        condition = "input.normalizeAssayMethodSelect != 'custom'",
                                        uiOutput("normalizeAssaySelect"),
-                                       #selectInput("normalizeAssaySelect", "Select Assay:", currassays),
-                                       #uiOutput("about"),
                                        conditionalPanel(
                                          condition = "input.normalizeAssayMethodSelect == 'LogNormalize'
                               || input.normalizeAssayMethodSelect == 'CLR'

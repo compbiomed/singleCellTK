@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.2</span>
       </span>
     </div>
 
@@ -66,7 +66,10 @@
       <a href="../../articles/articles/cnsl_import_scRNAseq_data_as_SCE.html">Import data into SCTK</a>
     </li>
     <li>
-      <a href="../../articles/articles/cnsl_qc.html">Quality Control</a>
+      <a href="../../articles/articles/cnsl_dropletqc.html">Quality Control of droplet data</a>
+    </li>
+    <li>
+      <a href="../../articles/articles/cnsl_cellqc.html">Quality Control of cell data</a>
     </li>
     <li>
       <a href="../../articles/articles/cnsl_normalization.html">Normalization</a>
@@ -231,7 +234,7 @@
 <ul class="nav navbar-nav navbar-right">
 <li>
   <a href="https://github.com/compbiomed/singleCellTK">
-    <span class="fas fa-github"></span>
+    <span class="fa fa-github"></span>
      
   </a>
 </li>
@@ -245,7 +248,8 @@
 
       
 
-      </header><script src="introduction_to_SCTK_files/header-attrs-2.7/header-attrs.js"></script><div class="row">
+      </header><script src="introduction_to_SCTK_files/header-attrs-2.5/header-attrs.js"></script><script src="introduction_to_SCTK_files/accessible-code-block-0.0.1/empty-anchor.js"></script><link href="introduction_to_SCTK_files/anchor-sections-1.0/anchor-sections.css" rel="stylesheet">
+<script src="introduction_to_SCTK_files/anchor-sections-1.0/anchor-sections.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Introduction to singleCellTK - Basic Analysis Workflow</h1>
@@ -331,31 +335,28 @@ sampleDirs <span class="op">=</span> <span class="st">"hgmm_1k_v3_20x20"</span>,
 <a href="#session-info" class="anchor"></a>Session info</h1>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
-<pre><code>## R version 4.0.4 (2021-02-15)
-## Platform: x86_64-w64-mingw32/x64 (64-bit)
-## Running under: Windows 10 x64 (build 19042)
+<pre><code>## R version 4.0.3 (2020-10-10)
+## Platform: x86_64-apple-darwin17.0 (64-bit)
+## Running under: macOS Catalina 10.15.7
 ## 
 ## Matrix products: default
+## BLAS:   /Library/Frameworks/R.framework/Versions/4.0/Resources/lib/libRblas.dylib
+## LAPACK: /Library/Frameworks/R.framework/Versions/4.0/Resources/lib/libRlapack.dylib
 ## 
 ## locale:
-## [1] LC_COLLATE=Chinese (Simplified)_China.936 
-## [2] LC_CTYPE=Chinese (Simplified)_China.936   
-## [3] LC_MONETARY=Chinese (Simplified)_China.936
-## [4] LC_NUMERIC=C                              
-## [5] LC_TIME=Chinese (Simplified)_China.936    
+## [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
 ## 
 ## attached base packages:
 ## [1] stats     graphics  grDevices utils     datasets  methods   base     
 ## 
 ## loaded via a namespace (and not attached):
-##  [1] rprojroot_2.0.2   digest_0.6.27     crayon_1.4.1      R6_2.5.0         
-##  [5] jsonlite_1.7.2    magrittr_2.0.1    evaluate_0.14     stringi_1.5.3    
-##  [9] rlang_0.4.10      cachem_1.0.4      fs_1.5.0          jquerylib_0.1.3  
-## [13] bslib_0.2.4       ragg_1.1.1        rmarkdown_2.7     pkgdown_1.6.1    
-## [17] textshaping_0.3.1 desc_1.3.0        tools_4.0.4       stringr_1.4.0    
-## [21] yaml_2.2.1        xfun_0.21         fastmap_1.1.0     compiler_4.0.4   
-## [25] systemfonts_1.0.1 memoise_2.0.0     htmltools_0.5.1.1 knitr_1.31       
-## [29] sass_0.3.1</code></pre>
+##  [1] rprojroot_2.0.2   digest_0.6.27     crayon_1.3.4      assertthat_0.2.1 
+##  [5] R6_2.5.0          magrittr_1.5      evaluate_0.14     stringi_1.5.3    
+##  [9] rlang_0.4.8       rstudioapi_0.11   fs_1.5.0          ragg_0.4.0       
+## [13] rmarkdown_2.5     pkgdown_1.6.1     textshaping_0.1.2 desc_1.2.0       
+## [17] tools_4.0.3       stringr_1.4.0     yaml_2.2.1        xfun_0.19        
+## [21] compiler_4.0.3    systemfonts_0.3.2 memoise_1.1.0     htmltools_0.5.0  
+## [25] knitr_1.30</code></pre>
 </div>
   </div>
 
