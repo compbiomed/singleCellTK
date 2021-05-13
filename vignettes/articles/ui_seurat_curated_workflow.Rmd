@@ -9,7 +9,7 @@ doEval = TRUE
 [Seurat](https://satijalab.org/seurat/) is an R package ([Butler et al., Nature Biotechnology 2018](https://www.nature.com/articles/nbt.4096) & [Stuart*, Butler*, et al., Cell 2019](https://www.cell.com/cell/fulltext/S0092-8674(19)30559-8)) that offers various functions to perform analysis of scRNA-Seq data on the R console. In the singleCellTK, we implement all the common steps of the proposed workflow in an interactive and easy to use graphical interface including interactive visualizations. The purpose of this curated workflow is to allow the users to follow a standardized step-by-step workflow for an effortless analysis of their data.
 
 ### General Workflow
-A general workflow for the *Feature Selection* sub-tab is summarized in the figure below:
+A general workflow for the *Seurat* tab is summarized in the figure below:
 ![](ui_screenshots/seurat/seurat_workflow.png)
 
 In this tutorial example, we illustrate all the steps of the curated workflow and focus on the options available to manipulate and customize the steps of the workflow as per user requirements. To initiate the `Seurat` workflow, click on the 'Curated Workflows' from the top menu and select `Seurat`. 
