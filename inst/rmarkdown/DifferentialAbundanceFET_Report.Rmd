@@ -1,0 +1,56 @@
+---
+title: "differentialAbundanceFET Results"
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+params:
+  sce: sce
+  res: res
+  pdf: pdf
+  showSession: showSession
+output: 
+ html_document:
+     toc: true
+     toc_float: true
+     number_sections: true
+     theme: cosmo
+     code_folding: hide
+---
+
+```{r setup, include=FALSE}
+require(singleCellTK)
+require(celda)
+require(knitr)
+require(gridExtra)
+require(ggplot2)
+
+sce <- params$sce
+res <- params$res
+pdf <- params$pdf
+showSession <- params$showSession
+
+
+dev <- ifelse(isTRUE(pdf), c("png"), c("png", "pdf"))
+knitr::opts_chunk$set(
+  echo = TRUE,
+  cache = FALSE,
+  cache.lazy = FALSE,
+  # don't do lazy-loading for big objects
+  cache.comments = FALSE,
+  fig.align = "center",
+  fig.keep = "all",
+  dev = dev
+)
+
+
+```
+
+## Differential Abundance FET
+
+
+```{r }
+
+```
+
+## Session Information
+```{r session, eval = showSession, echo = showSession}
+sessionInfo()
+```
