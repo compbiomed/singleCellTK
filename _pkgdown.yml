@@ -112,8 +112,10 @@ navbar:
       menu:
         - text: "Import data into SCTK"
           href: articles/articles/cnsl_import_scRNAseq_data_as_SCE.html
-        - text: "Quality Control"
-          href: articles/articles/cnsl_qc.html
+        - text: "Quality Control of droplet data"
+          href: articles/articles/cnsl_dropletqc.html
+        - text: "Quality Control of cell data"
+          href: articles/articles/cnsl_cellqc.html
         - text: "Normalization"
           href: articles/articles/cnsl_normalization.html
         - text: "Batch Correction"

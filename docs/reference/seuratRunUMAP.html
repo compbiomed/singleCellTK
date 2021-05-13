@@ -7,7 +7,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>seuratRunUMAP
-Computes UMAP from the given sce object and stores the UMAP computations back into the sce object — seuratRunUMAP • singleCellTK</title>
+Computes UMAP from the given sce object and stores the UMAP computations back
+into the sce object — seuratRunUMAP • singleCellTK</title>
 
 
 <!-- jquery -->
@@ -41,9 +42,11 @@ Computes UMAP from the given sce object and stores the UMAP computations back in
 
 
 <meta property="og:title" content="seuratRunUMAP
-Computes UMAP from the given sce object and stores the UMAP computations back into the sce object — seuratRunUMAP" />
+Computes UMAP from the given sce object and stores the UMAP computations back
+into the sce object — seuratRunUMAP" />
 <meta property="og:description" content="seuratRunUMAP
-Computes UMAP from the given sce object and stores the UMAP computations back into the sce object" />
+Computes UMAP from the given sce object and stores the UMAP computations back
+into the sce object" />
 
 
 
@@ -75,7 +78,7 @@ Computes UMAP from the given sce object and stores the UMAP computations back in
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.2</span>
       </span>
     </div>
 
@@ -110,7 +113,10 @@ Computes UMAP from the given sce object and stores the UMAP computations back in
       <a href="../articles/articles/cnsl_import_scRNAseq_data_as_SCE.html">Import data into SCTK</a>
     </li>
     <li>
-      <a href="../articles/articles/cnsl_qc.html">Quality Control</a>
+      <a href="../articles/articles/cnsl_dropletqc.html">Quality Control of droplet data</a>
+    </li>
+    <li>
+      <a href="../articles/articles/cnsl_cellqc.html">Quality Control of cell data</a>
     </li>
     <li>
       <a href="../articles/articles/cnsl_normalization.html">Normalization</a>
@@ -275,7 +281,7 @@ Computes UMAP from the given sce object and stores the UMAP computations back in
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/compbiomed/singleCellTK">
-    <span class="fas fa-github"></span>
+    <span class="fa fa-github"></span>
      
   </a>
 </li>
@@ -293,14 +299,16 @@ Computes UMAP from the given sce object and stores the UMAP computations back in
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>seuratRunUMAP
-Computes UMAP from the given sce object and stores the UMAP computations back into the sce object</h1>
+Computes UMAP from the given sce object and stores the UMAP computations back
+into the sce object</h1>
     <small class="dont-index">Source: <a href='https://github.com/compbiomed/singleCellTK/blob/master/R/seuratFunctions.R'><code>R/seuratFunctions.R</code></a></small>
     <div class="hidden name"><code>seuratRunUMAP.Rd</code></div>
     </div>
 
     <div class="ref-description">
     <p>seuratRunUMAP
-Computes UMAP from the given sce object and stores the UMAP computations back into the sce object</p>
+Computes UMAP from the given sce object and stores the UMAP computations back
+into the sce object</p>
     </div>
 
     <pre class="usage"><span class='fu'>seuratRunUMAP</span><span class='op'>(</span>
@@ -323,31 +331,38 @@ Computes UMAP from the given sce object and stores the UMAP computations back in
     </tr>
     <tr>
       <th>useReduction</th>
-      <td><p>Reduction to use for computing UMAP. One of "pca" or "ica". Default is <code>"pca"</code>.</p></td>
+      <td><p>Reduction to use for computing UMAP. One of "pca" or
+"ica". Default is <code>"pca"</code>.</p></td>
     </tr>
     <tr>
       <th>reducedDimName</th>
-      <td><p>Name of new reducedDims object containing Seurat UMAP Default <code>seuratUMAP</code>.</p></td>
+      <td><p>Name of new reducedDims object containing Seurat UMAP
+Default <code>seuratUMAP</code>.</p></td>
     </tr>
     <tr>
       <th>dims</th>
-      <td><p>Numerical value of how many reduction components to use for UMAP computation. Default <code>10</code>.</p></td>
+      <td><p>Numerical value of how many reduction components to use for UMAP
+computation. Default <code>10</code>.</p></td>
     </tr>
     <tr>
       <th>minDist</th>
-      <td><p>Sets the <code>"min.dist"</code> parameter to the underlying UMAP call. See <a href='https://satijalab.org/seurat/reference/RunUMAP.html'>RunUMAP</a> for more information. Default <code>0.3</code>.</p></td>
+      <td><p>Sets the <code>"min.dist"</code> parameter to the underlying UMAP
+call. See <a href='https://satijalab.org/seurat/reference/RunUMAP.html'>RunUMAP</a> for more information. Default <code>0.3</code>.</p></td>
     </tr>
     <tr>
       <th>nNeighbors</th>
-      <td><p>Sets the <code>"n.neighbors"</code> parameter to the underlying UMAP call. See <a href='https://satijalab.org/seurat/reference/RunUMAP.html'>RunUMAP</a> for more information. Default <code>30L</code>.</p></td>
+      <td><p>Sets the <code>"n.neighbors"</code> parameter to the underlying
+UMAP call. See <a href='https://satijalab.org/seurat/reference/RunUMAP.html'>RunUMAP</a> for more information. Default
+<code>30L</code>.</p></td>
     </tr>
     <tr>
       <th>spread</th>
-      <td><p>Sets the <code>"spread"</code> parameter to the underlying UMAP call. See <a href='https://satijalab.org/seurat/reference/RunUMAP.html'>RunUMAP</a> for more information. Default <code>1</code>.</p></td>
+      <td><p>Sets the <code>"spread"</code> parameter to the underlying UMAP call.
+See <a href='https://satijalab.org/seurat/reference/RunUMAP.html'>RunUMAP</a> for more information. Default <code>1</code>.</p></td>
     </tr>
     <tr>
       <th>verbose</th>
-      <td><p>Logical value indicating if informative messages should 
+      <td><p>Logical value indicating if informative messages should
 be displayed. Default is <code>TRUE</code>.</p></td>
     </tr>
     </table>

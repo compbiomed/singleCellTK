@@ -75,7 +75,7 @@ downstream quality control and analysis functions in singleCellTK." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.2</span>
       </span>
     </div>
 
@@ -110,7 +110,10 @@ downstream quality control and analysis functions in singleCellTK." />
       <a href="../articles/articles/cnsl_import_scRNAseq_data_as_SCE.html">Import data into SCTK</a>
     </li>
     <li>
-      <a href="../articles/articles/cnsl_qc.html">Quality Control</a>
+      <a href="../articles/articles/cnsl_dropletqc.html">Quality Control of droplet data</a>
+    </li>
+    <li>
+      <a href="../articles/articles/cnsl_cellqc.html">Quality Control of cell data</a>
     </li>
     <li>
       <a href="../articles/articles/cnsl_normalization.html">Normalization</a>
@@ -275,7 +278,7 @@ downstream quality control and analysis functions in singleCellTK." />
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/compbiomed/singleCellTK">
-    <span class="fas fa-github"></span>
+    <span class="fa fa-github"></span>
      
   </a>
 </li>
@@ -375,11 +378,11 @@ analysis functions such as <a href='runCellQC.html'>runCellQC</a>.</p>
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>scExample</span><span class='op'>)</span>
 <span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'>GSEABase</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'>Loading required package: annotate</span></div><div class='output co'>#&gt; <span class='message'>Loading required package: XML</span></div><div class='output co'>#&gt; <span class='message'>Loading required package: graph</span></div><div class='output co'>#&gt; <span class='message'></span>
-#&gt; <span class='message'>Attaching package: 'graph'</span></div><div class='output co'>#&gt; <span class='message'>The following object is masked from 'package:XML':</span>
+</div><div class='output co'>#&gt; <span class='message'>Loading required package: annotate</span></div><div class='output co'>#&gt; <span class='message'>Loading required package: AnnotationDbi</span></div><div class='output co'>#&gt; <span class='message'>Loading required package: XML</span></div><div class='output co'>#&gt; <span class='message'>Loading required package: graph</span></div><div class='output co'>#&gt; <span class='message'></span>
+#&gt; <span class='message'>Attaching package: ‘graph’</span></div><div class='output co'>#&gt; <span class='message'>The following object is masked from ‘package:XML’:</span>
 #&gt; <span class='message'></span>
-#&gt; <span class='message'>    addNode</span></div><div class='input'><span class='va'>gs1</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/GSEABase/man/GeneSet-methods.html'>GeneSet</a></span><span class='op'>(</span>setName <span class='op'>=</span> <span class='st'>"geneset1"</span>, geneIds <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>rownames</a></span><span class='op'>(</span><span class='va'>sce</span><span class='op'>)</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>10</span><span class='op'>]</span><span class='op'>)</span>
-<span class='va'>gs2</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/GSEABase/man/GeneSet-methods.html'>GeneSet</a></span><span class='op'>(</span>setName <span class='op'>=</span> <span class='st'>"geneset2"</span>, geneIds <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>rownames</a></span><span class='op'>(</span><span class='va'>sce</span><span class='op'>)</span><span class='op'>[</span><span class='fl'>11</span><span class='op'>:</span><span class='fl'>20</span><span class='op'>]</span><span class='op'>)</span>
+#&gt; <span class='message'>    addNode</span></div><div class='input'><span class='va'>gs1</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/GSEABase/man/GeneSet-methods.html'>GeneSet</a></span><span class='op'>(</span>setName <span class='op'>=</span> <span class='st'>"geneset1"</span>, geneIds <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>rownames</a></span><span class='op'>(</span><span class='va'>sce</span><span class='op'>)</span><span class='op'>[</span><span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>10</span><span class='op'>)</span><span class='op'>]</span><span class='op'>)</span>
+<span class='va'>gs2</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/GSEABase/man/GeneSet-methods.html'>GeneSet</a></span><span class='op'>(</span>setName <span class='op'>=</span> <span class='st'>"geneset2"</span>, geneIds <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>rownames</a></span><span class='op'>(</span><span class='va'>sce</span><span class='op'>)</span><span class='op'>[</span><span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>11</span>,<span class='fl'>20</span><span class='op'>)</span><span class='op'>]</span><span class='op'>)</span>
 <span class='va'>gsc</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/GSEABase/man/GeneSetCollection-methods.html'>GeneSetCollection</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='va'>gs1</span>, <span class='va'>gs2</span><span class='op'>)</span><span class='op'>)</span>
 <span class='va'>sce</span> <span class='op'>&lt;-</span> <span class='fu'>importGeneSetsFromCollection</span><span class='op'>(</span>inSCE <span class='op'>=</span> <span class='va'>sce</span>,
                                     geneSetCollection <span class='op'>=</span> <span class='va'>gsc</span>,

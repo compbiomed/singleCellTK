@@ -7,7 +7,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>seuratICA
-Computes ICA on the input sce object and stores the calculated independent components within the sce object — seuratICA • singleCellTK</title>
+Computes ICA on the input sce object and stores the calculated independent
+components within the sce object — seuratICA • singleCellTK</title>
 
 
 <!-- jquery -->
@@ -41,9 +42,11 @@ Computes ICA on the input sce object and stores the calculated independent compo
 
 
 <meta property="og:title" content="seuratICA
-Computes ICA on the input sce object and stores the calculated independent components within the sce object — seuratICA" />
+Computes ICA on the input sce object and stores the calculated independent
+components within the sce object — seuratICA" />
 <meta property="og:description" content="seuratICA
-Computes ICA on the input sce object and stores the calculated independent components within the sce object" />
+Computes ICA on the input sce object and stores the calculated independent
+components within the sce object" />
 
 
 
@@ -75,7 +78,7 @@ Computes ICA on the input sce object and stores the calculated independent compo
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.2</span>
       </span>
     </div>
 
@@ -110,7 +113,10 @@ Computes ICA on the input sce object and stores the calculated independent compo
       <a href="../articles/articles/cnsl_import_scRNAseq_data_as_SCE.html">Import data into SCTK</a>
     </li>
     <li>
-      <a href="../articles/articles/cnsl_qc.html">Quality Control</a>
+      <a href="../articles/articles/cnsl_dropletqc.html">Quality Control of droplet data</a>
+    </li>
+    <li>
+      <a href="../articles/articles/cnsl_cellqc.html">Quality Control of cell data</a>
     </li>
     <li>
       <a href="../articles/articles/cnsl_normalization.html">Normalization</a>
@@ -275,7 +281,7 @@ Computes ICA on the input sce object and stores the calculated independent compo
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/compbiomed/singleCellTK">
-    <span class="fas fa-github"></span>
+    <span class="fa fa-github"></span>
      
   </a>
 </li>
@@ -293,14 +299,16 @@ Computes ICA on the input sce object and stores the calculated independent compo
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>seuratICA
-Computes ICA on the input sce object and stores the calculated independent components within the sce object</h1>
+Computes ICA on the input sce object and stores the calculated independent
+components within the sce object</h1>
     <small class="dont-index">Source: <a href='https://github.com/compbiomed/singleCellTK/blob/master/R/seuratFunctions.R'><code>R/seuratFunctions.R</code></a></small>
     <div class="hidden name"><code>seuratICA.Rd</code></div>
     </div>
 
     <div class="ref-description">
     <p>seuratICA
-Computes ICA on the input sce object and stores the calculated independent components within the sce object</p>
+Computes ICA on the input sce object and stores the calculated independent
+components within the sce object</p>
     </div>
 
     <pre class="usage"><span class='fu'>seuratICA</span><span class='op'>(</span><span class='va'>inSCE</span>, <span class='va'>useAssay</span>, reducedDimName <span class='op'>=</span> <span class='st'>"seuratICA"</span>, nics <span class='op'>=</span> <span class='fl'>20</span><span class='op'>)</span></pre>
@@ -318,7 +326,8 @@ Computes ICA on the input sce object and stores the calculated independent compo
     </tr>
     <tr>
       <th>reducedDimName</th>
-      <td><p>Name of new reducedDims object containing Seurat ICA Default <code>seuratICA</code>.</p></td>
+      <td><p>Name of new reducedDims object containing Seurat ICA
+Default <code>seuratICA</code>.</p></td>
     </tr>
     <tr>
       <th>nics</th>
@@ -328,7 +337,8 @@ Computes ICA on the input sce object and stores the calculated independent compo
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Updated <code>SingleCellExperiment</code> object which now contains the computed independent components</p>
+    <p>Updated <code>SingleCellExperiment</code> object which now contains the
+computed independent components</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>scExample</span>, package <span class='op'>=</span> <span class='st'>"singleCellTK"</span><span class='op'>)</span>

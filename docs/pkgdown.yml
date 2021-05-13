@@ -1,13 +1,15 @@
-pandoc: '2.13'
+pandoc: 2.9.2.1
 pkgdown: 1.6.1
 pkgdown_sha: ~
 articles:
   articles/cmd_import_scRNAseq_data_as_SCE: cmd_import_scRNAseq_data_as_SCE.html
   articles/cmd_qc: cmd_qc.html
   articles/cnsl_batch_correction: cnsl_batch_correction.html
+  articles/cnsl_cellqc: cnsl_cellqc.html
   articles/cnsl_clustering: cnsl_clustering.html
   articles/cnsl_differential_expression: cnsl_differential_expression.html
   articles/cnsl_dimensionality_reduction: cnsl_dimensionality_reduction.html
+  articles/cnsl_dropletqc: cnsl_dropletqc.html
   articles/cnsl_enrichR: cnsl_enrichR.html
   articles/cnsl_feature_selection: cnsl_feature_selection.html
   articles/cnsl_find_marker: cnsl_find_marker.html
@@ -15,7 +17,6 @@ articles:
   articles/cnsl_heatmap: cnsl_heatmap.html
   articles/cnsl_import_scRNAseq_data_as_SCE: cnsl_import_scRNAseq_data_as_SCE.html
   articles/cnsl_normalization: cnsl_normalization.html
-  articles/cnsl_qc: cnsl_qc.html
   articles/cnsl_seurat_curated_workflow: cnsl_seurat_curated_workflow.html
   articles/cnsl_visualization: cnsl_visualization.html
   articles/introduction_to_SCTK: introduction_to_SCTK.html
@@ -40,5 +41,5 @@ articles:
   articles/ui_qc: ui_qc.html
   articles/ui_seurat_curated_workflow: ui_seurat_curated_workflow.html
   singleCellTK: singleCellTK.html
-last_built: 2021-05-05T16:14Z
+last_built: 2021-05-11T22:01Z
 

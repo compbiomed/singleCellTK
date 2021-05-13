@@ -73,7 +73,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.2</span>
       </span>
     </div>
 
@@ -108,7 +108,10 @@
       <a href="../articles/articles/cnsl_import_scRNAseq_data_as_SCE.html">Import data into SCTK</a>
     </li>
     <li>
-      <a href="../articles/articles/cnsl_qc.html">Quality Control</a>
+      <a href="../articles/articles/cnsl_dropletqc.html">Quality Control of droplet data</a>
+    </li>
+    <li>
+      <a href="../articles/articles/cnsl_cellqc.html">Quality Control of cell data</a>
     </li>
     <li>
       <a href="../articles/articles/cnsl_normalization.html">Normalization</a>
@@ -273,7 +276,7 @@
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/compbiomed/singleCellTK">
-    <span class="fas fa-github"></span>
+    <span class="fa fa-github"></span>
      
   </a>
 </li>
@@ -307,8 +310,9 @@
   groupBy <span class='op'>=</span> <span class='cn'>NULL</span>,
   xlab <span class='op'>=</span> <span class='cn'>NULL</span>,
   ylab <span class='op'>=</span> <span class='cn'>NULL</span>,
-  axisSize <span class='op'>=</span> <span class='fl'>10</span>,
-  axisLabelSize <span class='op'>=</span> <span class='fl'>10</span>,
+  baseSize <span class='op'>=</span> <span class='fl'>12</span>,
+  axisSize <span class='op'>=</span> <span class='cn'>NULL</span>,
+  axisLabelSize <span class='op'>=</span> <span class='cn'>NULL</span>,
   defaultTheme <span class='op'>=</span> <span class='cn'>TRUE</span>,
   title <span class='op'>=</span> <span class='cn'>NULL</span>,
   titleSize <span class='op'>=</span> <span class='fl'>18</span>,
@@ -348,12 +352,18 @@ object, or can be retrieved from the colData slot. Default NULL.</p></td>
       <td><p>Character vector. Label for y-axis. Default NULL.</p></td>
     </tr>
     <tr>
+      <th>baseSize</th>
+      <td><p>The base font size for all text. Default 12.
+Can be overwritten by titleSize, axisSize, and axisLabelSize,
+legendSize, legendTitleSize.</p></td>
+    </tr>
+    <tr>
       <th>axisSize</th>
-      <td><p>Size of x/y-axis ticks. Default 10.</p></td>
+      <td><p>Size of x/y-axis ticks. Default NULL.</p></td>
     </tr>
     <tr>
       <th>axisLabelSize</th>
-      <td><p>Size of x/y-axis labels. Default 10.</p></td>
+      <td><p>Size of x/y-axis labels. Default NULL.</p></td>
     </tr>
     <tr>
       <th>defaultTheme</th>

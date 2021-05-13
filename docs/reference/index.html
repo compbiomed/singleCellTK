@@ -71,7 +71,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.2</span>
       </span>
     </div>
 
@@ -106,7 +106,10 @@
       <a href="../articles/articles/cnsl_import_scRNAseq_data_as_SCE.html">Import data into SCTK</a>
     </li>
     <li>
-      <a href="../articles/articles/cnsl_qc.html">Quality Control</a>
+      <a href="../articles/articles/cnsl_dropletqc.html">Quality Control of droplet data</a>
+    </li>
+    <li>
+      <a href="../articles/articles/cnsl_cellqc.html">Quality Control of cell data</a>
     </li>
     <li>
       <a href="../articles/articles/cnsl_normalization.html">Normalization</a>
@@ -271,7 +274,7 @@
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/compbiomed/singleCellTK">
-    <span class="fas fa-github"></span>
+    <span class="fa fa-github"></span>
      
   </a>
 </li>
@@ -714,7 +717,8 @@ Extracts the top variable genes from an input singleCellExperiment object</p></t
           <p><code><a href="seuratPlotHVG.html">seuratPlotHVG()</a></code> </p>
         </td>
         <td><p>seuratPlotHVG
-Plot highly variable genes from input sce object (must have highly variable genes computations stored)</p></td>
+Plot highly variable genes from input sce object (must have highly variable
+genes computations stored)</p></td>
       </tr>
     </tbody><tbody>
       <tr>
@@ -755,28 +759,32 @@ dimension reduction.</p></td>
           <p><code><a href="seuratICA.html">seuratICA()</a></code> </p>
         </td>
         <td><p>seuratICA
-Computes ICA on the input sce object and stores the calculated independent components within the sce object</p></td>
+Computes ICA on the input sce object and stores the calculated independent
+components within the sce object</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="seuratPCA.html">seuratPCA()</a></code> </p>
         </td>
         <td><p>seuratPCA
-Computes PCA on the input sce object and stores the calculated principal components within the sce object</p></td>
+Computes PCA on the input sce object and stores the calculated principal
+components within the sce object</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="seuratRunUMAP.html">seuratRunUMAP()</a></code> </p>
         </td>
         <td><p>seuratRunUMAP
-Computes UMAP from the given sce object and stores the UMAP computations back into the sce object</p></td>
+Computes UMAP from the given sce object and stores the UMAP computations back
+into the sce object</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="seuratRunTSNE.html">seuratRunTSNE()</a></code> </p>
         </td>
         <td><p>seuratRunTSNE
-Computes tSNE from the given sce object and stores the tSNE computations back into the sce object</p></td>
+Computes tSNE from the given sce object and stores the tSNE computations back
+into the sce object</p></td>
       </tr><tr>
         
         <td>
@@ -814,7 +822,8 @@ Computes tSNE from the given sce object and stores the tSNE computations back in
           <p><code><a href="seuratFindClusters.html">seuratFindClusters()</a></code> </p>
         </td>
         <td><p>seuratFindClusters
-Computes the clusters from the input sce object and stores them back in sce object</p></td>
+Computes the clusters from the input sce object and stores them back in sce
+object</p></td>
       </tr><tr>
         
         <td>
@@ -979,12 +988,6 @@ values.</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="plotDecontXResults.html">plotDecontXResults()</a></code> </p>
-        </td>
-        <td><p>Plots for runDecontX outputs.</p></td>
-      </tr><tr>
-        
-        <td>
           <p><code><a href="plotDEGHeatmap.html">plotDEGHeatmap()</a></code> </p>
         </td>
         <td><p>Heatmap visualization of DEG result</p></td>
@@ -1002,6 +1005,12 @@ identified by differential expression analysis</p></td>
         </td>
         <td><p>plot the violin plot to show visualize the expression distribution of DEGs
 identified by differential expression analysis</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="plotDecontXResults.html">plotDecontXResults()</a></code> </p>
+        </td>
+        <td><p>Plots for runDecontX outputs.</p></td>
       </tr><tr>
         
         <td>
@@ -1036,15 +1045,15 @@ and UMAP</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="plotMarkerDiffExp.html">plotMarkerDiffExp()</a></code> </p>
-        </td>
-        <td><p>Plot a heatmap to visualize the result of <code><a href='https://compbiomed.github.io/sctk_docs/reference/findMarkerDiffExp.html'>findMarkerDiffExp</a></code></p></td>
-      </tr><tr>
-        
-        <td>
           <p><code><a href="plotMASTThresholdGenes.html">plotMASTThresholdGenes()</a></code> </p>
         </td>
         <td><p>MAST Identify adaptive thresholds</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="plotMarkerDiffExp.html">plotMarkerDiffExp()</a></code> </p>
+        </td>
+        <td><p>Plot a heatmap to visualize the result of <code><a href='https://compbiomed.github.io/sctk_docs/reference/findMarkerDiffExp.html'>findMarkerDiffExp</a></code></p></td>
       </tr><tr>
         
         <td>
@@ -1057,18 +1066,6 @@ and UMAP</p></td>
           <p><code><a href="plotRunPerCellQCResults.html">plotRunPerCellQCResults()</a></code> </p>
         </td>
         <td><p>Plots for runPerCellQC outputs.</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="plotScDblFinderResults.html">plotScDblFinderResults()</a></code> </p>
-        </td>
-        <td><p>Plots for runScDblFinder outputs.</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="plotScdsHybridResults.html">plotScdsHybridResults()</a></code> </p>
-        </td>
-        <td><p>Plots for runCxdsBcdsHybrid outputs.</p></td>
       </tr><tr>
         
         <td>
@@ -1150,21 +1147,33 @@ and UMAP</p></td>
       </tr><tr>
         
         <td>
+          <p><code><a href="plotScDblFinderResults.html">plotScDblFinderResults()</a></code> </p>
+        </td>
+        <td><p>Plots for runScDblFinder outputs.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="plotScdsHybridResults.html">plotScdsHybridResults()</a></code> </p>
+        </td>
+        <td><p>Plots for runCxdsBcdsHybrid outputs.</p></td>
+      </tr><tr>
+        
+        <td>
           <p><code><a href="plotScrubletResults.html">plotScrubletResults()</a></code> </p>
         </td>
         <td><p>Plots for runScrublet outputs.</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="plotTopHVG.html">plotTopHVG()</a></code> </p>
-        </td>
-        <td><p>Plot highly variable genes</p></td>
-      </tr><tr>
-        
-        <td>
           <p><code><a href="plotTSNE.html">plotTSNE()</a></code> </p>
         </td>
         <td><p>Plot t-SNE plot on dimensionality reduction data run from t-SNE method.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="plotTopHVG.html">plotTopHVG()</a></code> </p>
+        </td>
+        <td><p>Plot highly variable genes</p></td>
       </tr><tr>
         
         <td>
@@ -1193,6 +1202,12 @@ and UMAP</p></td>
       </tr><tr>
         
         <td>
+          <p><code><a href="exportSCEToSeurat.html">exportSCEToSeurat()</a></code> </p>
+        </td>
+        <td><p>Export data in Seurat object</p></td>
+      </tr><tr>
+        
+        <td>
           <p><code><a href="exportSCEtoAnnData.html">exportSCEtoAnnData()</a></code> </p>
         </td>
         <td><p>Export a <a href='https://rdrr.io/pkg/SingleCellExperiment/man/SingleCellExperiment.html'>SingleCellExperiment</a> R object as
@@ -1203,12 +1218,6 @@ Python annData object</p></td>
           <p><code><a href="exportSCEtoFlatFile.html">exportSCEtoFlatFile()</a></code> </p>
         </td>
         <td><p>Export a <a href='https://rdrr.io/pkg/SingleCellExperiment/man/SingleCellExperiment.html'>SingleCellExperiment</a> object to flat text files</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="exportSCEToSeurat.html">exportSCEToSeurat()</a></code> </p>
-        </td>
-        <td><p>Export data in Seurat object</p></td>
       </tr>
     </tbody><tbody>
       <tr>
