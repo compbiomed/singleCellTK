@@ -1786,7 +1786,7 @@ plotCxdsResults <- function(inSCE,
 #' @param summaryTextSize The text size of the summary statistic displayed
 #'  above the violin plot. Default 3.
 #' @param transparency Transparency of the dots, values will be 0-1. Default 1.
-#' @param baseSize The base font size for all text. Default 12.
+#' @param baseSize The base font size for all text. Default 15.
 #'  Can be overwritten by titleSize, axisSize, and axisLabelSize,
 #'  legendSize, legendTitleSize.
 #' @param titleSize Size of title of plot. Default NULL.
