@@ -74,7 +74,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.2</span>
       </span>
     </div>
 
@@ -109,7 +109,10 @@
       <a href="../articles/articles/cnsl_import_scRNAseq_data_as_SCE.html">Import data into SCTK</a>
     </li>
     <li>
-      <a href="../articles/articles/cnsl_qc.html">Quality Control</a>
+      <a href="../articles/articles/cnsl_dropletqc.html">Quality Control of droplet data</a>
+    </li>
+    <li>
+      <a href="../articles/articles/cnsl_cellqc.html">Quality Control of cell data</a>
     </li>
     <li>
       <a href="../articles/articles/cnsl_normalization.html">Normalization</a>
@@ -228,7 +231,7 @@
           <a href="../articles/articles/ui_feature_selection.html">Feature Selection</a>
         </li>
         <li>
-          <a href="../articles/articles/ui_dimemsionality_reduction.html">Dimensionality Reduction</a>
+          <a href="../articles/articles/ui_dimensionality_reduction.html">Dimensionality Reduction</a>
         </li>
       </ul>
     </li>
@@ -244,13 +247,33 @@
         <li>
           <a href="../articles/articles/ui_find_marker.html">Find Marker</a>
         </li>
+        <li>
+          <a href="../articles/articles/ui_cell_type_labeling.html">Cell Type Labeling</a>
+        </li>
       </ul>
+    </li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Pathway &amp; Enrichment Analysis</a>
+      <ul class="dropdown-menu" role="menu">
+        <li>
+          <a href="../articles/articles/ui_gsva.html">GSVA</a>
+        </li>
+        <li>
+          <a href="../articles/articles/ui_enrichR.html">EnrichR</a>
+        </li>
+      </ul>
+    </li>
+    <li>
+      <a href="../articles/articles/ui_sample_size_calc.html">Sample Size Calculator</a>
     </li>
     <li class="dropdown-submenu">
       <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Curated Workflows</a>
       <ul class="dropdown-menu" role="menu">
         <li>
           <a href="../articles/articles/ui_seurat_curated_workflow.html">Seurat</a>
+        </li>
+        <li>
+          <a href="../articles/articles/ui_celda_curated_workflow.html">Celda</a>
         </li>
       </ul>
     </li>
@@ -311,14 +334,17 @@
   boxplot <span class='op'>=</span> <span class='cn'>FALSE</span>,
   dots <span class='op'>=</span> <span class='cn'>TRUE</span>,
   dotSize <span class='op'>=</span> <span class='fl'>1</span>,
-  axisSize <span class='op'>=</span> <span class='fl'>15</span>,
-  axisLabelSize <span class='op'>=</span> <span class='fl'>18</span>,
+  summary <span class='op'>=</span> <span class='st'>"median"</span>,
+  summaryTextSize <span class='op'>=</span> <span class='fl'>3</span>,
+  baseSize <span class='op'>=</span> <span class='fl'>15</span>,
+  axisSize <span class='op'>=</span> <span class='cn'>NULL</span>,
+  axisLabelSize <span class='op'>=</span> <span class='cn'>NULL</span>,
   transparency <span class='op'>=</span> <span class='fl'>1</span>,
   defaultTheme <span class='op'>=</span> <span class='cn'>TRUE</span>,
-  titleSize <span class='op'>=</span> <span class='fl'>18</span>,
-  relHeights <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1.5</span>, <span class='fl'>1.5</span>, <span class='fl'>1</span>, <span class='fl'>1</span><span class='op'>)</span>,
-  relWidths <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>1</span><span class='op'>)</span>,
-  plotLabels <span class='op'>=</span> <span class='st'>"default"</span>,
+  titleSize <span class='op'>=</span> <span class='cn'>NULL</span>,
+  relHeights <span class='op'>=</span> <span class='fl'>1</span>,
+  relWidths <span class='op'>=</span> <span class='fl'>1</span>,
+  labelSamples <span class='op'>=</span> <span class='cn'>TRUE</span>,
   plotNCols <span class='op'>=</span> <span class='cn'>NULL</span>,
   plotNRows <span class='op'>=</span> <span class='cn'>NULL</span>,
   samplePerColumn <span class='op'>=</span> <span class='cn'>TRUE</span>,
@@ -370,12 +396,27 @@ Default TRUE.</p></td>
       <td><p>Size of dots. Default 1.</p></td>
     </tr>
     <tr>
+      <th>summary</th>
+      <td><p>Adds a summary statistic, as well as a crossbar to the
+violin plot. Options are "mean" or "median". Default "median".</p></td>
+    </tr>
+    <tr>
+      <th>summaryTextSize</th>
+      <td><p>The text size of the summary statistic displayed
+above the violin plot. Default 3.</p></td>
+    </tr>
+    <tr>
+      <th>baseSize</th>
+      <td><p>The base font size for all text. Default 15.
+Can be overwritten by titleSize, axisSize, and axisLabelSize.</p></td>
+    </tr>
+    <tr>
       <th>axisSize</th>
-      <td><p>Size of x/y-axis ticks. Default 15.</p></td>
+      <td><p>Size of x/y-axis ticks. Default NULL.</p></td>
     </tr>
     <tr>
       <th>axisLabelSize</th>
-      <td><p>Size of x/y-axis labels. Default 18.</p></td>
+      <td><p>Size of x/y-axis labels. Default NULL.</p></td>
     </tr>
     <tr>
       <th>transparency</th>
@@ -388,7 +429,7 @@ when TRUE. Default TRUE.</p></td>
     </tr>
     <tr>
       <th>titleSize</th>
-      <td><p>Size of title of plot. Default 18.</p></td>
+      <td><p>Size of title of plot. Default NULL.</p></td>
     </tr>
     <tr>
       <th>relHeights</th>
@@ -399,9 +440,8 @@ when TRUE. Default TRUE.</p></td>
       <td><p>Relative widths of plots when combine is set.</p></td>
     </tr>
     <tr>
-      <th>plotLabels</th>
-      <td><p>labels to each plot. If set to "default", will use the name of the samples
-as the labels. If set to "none", no label will be plotted.</p></td>
+      <th>labelSamples</th>
+      <td><p>Will label sample name in title of plot if TRUE. Default TRUE.</p></td>
     </tr>
     <tr>
       <th>plotNCols</th>

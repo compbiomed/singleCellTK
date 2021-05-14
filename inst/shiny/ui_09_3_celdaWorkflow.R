@@ -1,7 +1,7 @@
 # User Interface for Celda Workflow ---
 shinyPanelCelda <- fluidPage(
     h1("Celda"),
-    h5(tags$a(href = "https://www.sctk.science/articles/tab09_celda-workflow",
+    h5(tags$a(href = paste0(docs.artPath, "ui_celda_curated_workflow.html"),
               "(help)", target = "_blank")),
     inlineCSS(list(".panel-danger>.panel-heading" = "background-color:#dcdcdc; color:#000000", ".panel-primary>.panel-heading" = "background-color:#f5f5f5; color:#000000; border-color:#dddddd", ".panel-primary" = "border-color:#dddddd;", ".panel-primary>.panel-heading+.panel-collapse>.panel-body" = "border-color:#dddddd;")),
     bsCollapse(id = "CeldaUI", open = "Data Input",

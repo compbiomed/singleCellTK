@@ -19,7 +19,8 @@ file name will be based on the name of the Rmarkdown template. Default
 Default \code{NULL}.}
 }
 \value{
-Saves the HTML report in the specified output directory.
+An HTML file of the report will be generated at the path specified
+in the arguments.
 }
 \description{
 A  function to generate .html Rmarkdown report containing the

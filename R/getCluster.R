@@ -58,7 +58,7 @@ runScranSNN <- function(inSCE, useAssay = NULL, useReducedDim = NULL,
                                       "leadingEigen")) {
   # TODO: parallele parameter
   if (!inherits(inSCE, "SingleCellExperiment")) {
-    stop("SCE")
+    stop("'inSCE' should be a SingleCellExperiment object.")
   }
   if (is.null(useAssay) + is.null(useReducedDim) + is.null(useAltExp) != 2) {
     stop("Scran SNN clustering requires one and only one of 'useAssay', ",
@@ -148,7 +148,7 @@ runKMeans <- function(inSCE, useReducedDim = "PCA",
                       nStart = 1, seed = 12345,
                       algorithm = c("Hartigan-Wong", "Lloyd", "MacQueen")){
   if (!inherits(inSCE, "SingleCellExperiment")) {
-    stop("SCE")
+    stop("'inSCE' should be a SingleCellExperiment object.")
   }
   if (is.null(useReducedDim)) {
     stop("runKMeans requires 'useReducedDim' input.")

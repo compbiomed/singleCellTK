@@ -5,33 +5,38 @@
 #' @param inSCE Input \code{SingleCellExperiment} object.
 #' @param useAssay Specify the name of the assay that should be used.
 #' @param reducedDimName Specify the name of the output reducedDim.
-#' @param method Specify a method from `scaterPCA`, `seuratPCA`, `seuratICA`, 
+#' @param method Specify a method from `scaterPCA`, `seuratPCA`, `seuratICA`,
 #'  `rTSNE`, `seuratTSNE`, `uwotUMAP` and `seuratUMAP`.
 #' @param nComponents Specify the number of dimensions to compute with the
-#'  selected method. 
-#'  Only applicable with `scaterPCA`, `seuratPCA`, `seuratICA`, `seuratTSNE` 
+#'  selected method.
+#'  Only applicable with `scaterPCA`, `seuratPCA`, `seuratICA`, `seuratTSNE`
 #'  and `seuratUMAP` methods.
-#' @param ... Additional parameters for the selected method. 
-#'  For `rTSNE`, must specify `perplexity` (default \code{30}) and  
-#'  `nIterations` (default \code{1000}). 
-#'  For `seuratTSNE`, must specify `useReduction` (either `pca` or `ica`) and 
-#'  `perplexity` (default \code{30}). 
-#'  For `uwotUMAP`, must specify `nNeighbors` (default \code{30}), 
-#'  `nIterations` (default \code{200}), `minDist` (default \code{0.01}) and 
-#'  `alpha` (default \code{1}). 
-#'  For `seuratUMAP`, must specify `useReduction` 
-#'  (either `pca` or `ica`), `minDist` (default \code{0.3}), `nNeighbors` 
+#' @param ... Additional parameters for the selected method.
+#'  For `rTSNE`, must specify `perplexity` (default \code{30}) and
+#'  `nIterations` (default \code{1000}).
+#'  For `seuratTSNE`, must specify `useReduction` (either `pca` or `ica`) and
+#'  `perplexity` (default \code{30}).
+#'  For `uwotUMAP`, must specify `nNeighbors` (default \code{30}),
+#'  `nIterations` (default \code{200}), `minDist` (default \code{0.01}) and
+#'  `alpha` (default \code{1}).
+#'  For `seuratUMAP`, must specify `useReduction`
+#'  (either `pca` or `ica`), `minDist` (default \code{0.3}), `nNeighbors`
 #'  (default \code{30}) and `spread` (default \code{1}).
-#'  
+#'
 #' @return A \linkS4class{SingleCellExperiment} object with PCA computation
 #' updated in \code{reducedDim(inSCE, reducedDimName)}.
 #' @export
+#' @examples
+#' data("mouseBrainSubsetSCE", package = "singleCellTK")
+#' mouseBrainSubsetSCE <- runDimensionalityReduction(mouseBrainSubsetSCE,
+#'                                                   "logcounts",
+#'                                                   reducedDimName = "PCA")
 runDimensionalityReduction <- function(inSCE,
                                        useAssay,
                                        reducedDimName,
-                                       method = 
-                                         c("scaterPCA", 
-                                           "seuratPCA", 
+                                       method =
+                                         c("scaterPCA",
+                                           "seuratPCA",
                                            "seuratICA",
                                            "rTSNE",
                                            "seuratTSNE",
@@ -39,17 +44,18 @@ runDimensionalityReduction <- function(inSCE,
                                            "seuratUMAP"),
                                        nComponents = 10,
                                        ...){
+  method <- match.arg(method)
   args <- list(...)
   tempSCE <- inSCE
-  
+
   params <- list(
     inSCE = tempSCE,
     useAssay = useAssay,
     reducedDimName = reducedDimName
   )
-  
+
   params <- c(params, args)
-  
+
   if(useAssay %in% altExpNames(inSCE)){
     if(method %in% c("seuratPCA", "seuratICA", "seuratTSNE", "seuratUMAP")){
       tempSCE <- altExps(tempSCE)[[useAssay]]
@@ -59,7 +65,7 @@ runDimensionalityReduction <- function(inSCE,
       params$useAltExp = useAssay
     }
   }
-  
+
   if(method %in% c("seuratPCA", "seuratICA", "seuratTSNE", "seuratUMAP")){
     if(useAssay %in% altExpNames(inSCE)){
       tempSCE <- seuratFindHVG(
@@ -117,7 +123,7 @@ runDimensionalityReduction <- function(inSCE,
   }
 
   tempSCE <- do.call(method, args = params)
-  
+
   if(useAssay %in% altExpNames(inSCE)){
     if(method %in% c("seuratPCA", "seuratICA", "seuratRunTSNE", "seuratRunUMAP")){
       altExps(inSCE)[[useAssay]] <- tempSCE
@@ -130,6 +136,6 @@ runDimensionalityReduction <- function(inSCE,
   else{
     inSCE <- tempSCE
   }
-  
+
   return(inSCE)
 }

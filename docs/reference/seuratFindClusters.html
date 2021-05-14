@@ -7,7 +7,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>seuratFindClusters
-Computes the clusters from the input sce object and stores them back in sce object — seuratFindClusters • singleCellTK</title>
+Computes the clusters from the input sce object and stores them back in sce
+object — seuratFindClusters • singleCellTK</title>
 
 
 <!-- jquery -->
@@ -41,9 +42,11 @@ Computes the clusters from the input sce object and stores them back in sce obje
 
 
 <meta property="og:title" content="seuratFindClusters
-Computes the clusters from the input sce object and stores them back in sce object — seuratFindClusters" />
+Computes the clusters from the input sce object and stores them back in sce
+object — seuratFindClusters" />
 <meta property="og:description" content="seuratFindClusters
-Computes the clusters from the input sce object and stores them back in sce object" />
+Computes the clusters from the input sce object and stores them back in sce
+object" />
 
 
 
@@ -75,7 +78,7 @@ Computes the clusters from the input sce object and stores them back in sce obje
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.2</span>
       </span>
     </div>
 
@@ -110,7 +113,10 @@ Computes the clusters from the input sce object and stores them back in sce obje
       <a href="../articles/articles/cnsl_import_scRNAseq_data_as_SCE.html">Import data into SCTK</a>
     </li>
     <li>
-      <a href="../articles/articles/cnsl_qc.html">Quality Control</a>
+      <a href="../articles/articles/cnsl_dropletqc.html">Quality Control of droplet data</a>
+    </li>
+    <li>
+      <a href="../articles/articles/cnsl_cellqc.html">Quality Control of cell data</a>
     </li>
     <li>
       <a href="../articles/articles/cnsl_normalization.html">Normalization</a>
@@ -229,7 +235,7 @@ Computes the clusters from the input sce object and stores them back in sce obje
           <a href="../articles/articles/ui_feature_selection.html">Feature Selection</a>
         </li>
         <li>
-          <a href="../articles/articles/ui_dimemsionality_reduction.html">Dimensionality Reduction</a>
+          <a href="../articles/articles/ui_dimensionality_reduction.html">Dimensionality Reduction</a>
         </li>
       </ul>
     </li>
@@ -245,13 +251,33 @@ Computes the clusters from the input sce object and stores them back in sce obje
         <li>
           <a href="../articles/articles/ui_find_marker.html">Find Marker</a>
         </li>
+        <li>
+          <a href="../articles/articles/ui_cell_type_labeling.html">Cell Type Labeling</a>
+        </li>
       </ul>
+    </li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Pathway &amp; Enrichment Analysis</a>
+      <ul class="dropdown-menu" role="menu">
+        <li>
+          <a href="../articles/articles/ui_gsva.html">GSVA</a>
+        </li>
+        <li>
+          <a href="../articles/articles/ui_enrichR.html">EnrichR</a>
+        </li>
+      </ul>
+    </li>
+    <li>
+      <a href="../articles/articles/ui_sample_size_calc.html">Sample Size Calculator</a>
     </li>
     <li class="dropdown-submenu">
       <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Curated Workflows</a>
       <ul class="dropdown-menu" role="menu">
         <li>
           <a href="../articles/articles/ui_seurat_curated_workflow.html">Seurat</a>
+        </li>
+        <li>
+          <a href="../articles/articles/ui_celda_curated_workflow.html">Celda</a>
         </li>
       </ul>
     </li>
@@ -293,14 +319,16 @@ Computes the clusters from the input sce object and stores them back in sce obje
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>seuratFindClusters
-Computes the clusters from the input sce object and stores them back in sce object</h1>
+Computes the clusters from the input sce object and stores them back in sce
+object</h1>
     <small class="dont-index">Source: <a href='https://github.com/compbiomed/singleCellTK/blob/master/R/seuratFunctions.R'><code>R/seuratFunctions.R</code></a></small>
     <div class="hidden name"><code>seuratFindClusters.Rd</code></div>
     </div>
 
     <div class="ref-description">
     <p>seuratFindClusters
-Computes the clusters from the input sce object and stores them back in sce object</p>
+Computes the clusters from the input sce object and stores them back in sce
+object</p>
     </div>
 
     <pre class="usage"><span class='fu'>seuratFindClusters</span><span class='op'>(</span>
@@ -320,7 +348,8 @@ Computes the clusters from the input sce object and stores them back in sce obje
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>inSCE</th>
-      <td><p>(sce) object from which clusters should be computed and stored in</p></td>
+      <td><p>(sce) object from which clusters should be computed and stored
+in</p></td>
     </tr>
     <tr>
       <th>useAssay</th>
@@ -328,31 +357,39 @@ Computes the clusters from the input sce object and stores them back in sce obje
     </tr>
     <tr>
       <th>useReduction</th>
-      <td><p>Reduction method to use for computing clusters. One of "pca" or "ica". Default <code>"pca"</code>.</p></td>
+      <td><p>Reduction method to use for computing clusters. One of
+"pca" or "ica". Default <code>"pca"</code>.</p></td>
     </tr>
     <tr>
       <th>dims</th>
-      <td><p>numeric value of how many components to use for computing clusters. Default <code>10</code>.</p></td>
+      <td><p>numeric value of how many components to use for computing
+clusters. Default <code>10</code>.</p></td>
     </tr>
     <tr>
       <th>algorithm</th>
-      <td><p>selected algorithm to compute clusters. One of "louvain", "multilevel", or "SLM". Use <code>louvain</code> for "original Louvain algorithm" and <code>multilevel</code> for "Louvain algorithm with multilevel refinement". Default <code>louvain</code>.</p></td>
+      <td><p>selected algorithm to compute clusters. One of "louvain",
+"multilevel", or "SLM". Use <code>louvain</code> for "original Louvain algorithm"
+and <code>multilevel</code> for "Louvain algorithm with multilevel refinement".
+Default <code>louvain</code>.</p></td>
     </tr>
     <tr>
       <th>groupSingletons</th>
-      <td><p>boolean if singletons should be grouped together or not. Default <code>TRUE</code>.</p></td>
+      <td><p>boolean if singletons should be grouped together or
+not. Default <code>TRUE</code>.</p></td>
     </tr>
     <tr>
       <th>resolution</th>
-      <td><p>Set the resolution parameter to find larger (value above 1) or smaller (value below 1) number of communities. Default <code>0.8</code>.</p></td>
+      <td><p>Set the resolution parameter to find larger (value above 1)
+or smaller (value below 1) number of communities. Default <code>0.8</code>.</p></td>
     </tr>
     <tr>
       <th>externalReduction</th>
-      <td><p>Pass DimReduc object if PCA/ICA computed through other libraries. Default <code>NULL</code>.</p></td>
+      <td><p>Pass DimReduc object if PCA/ICA computed through
+other libraries. Default <code>NULL</code>.</p></td>
     </tr>
     <tr>
       <th>verbose</th>
-      <td><p>Logical value indicating if informative messages should 
+      <td><p>Logical value indicating if informative messages should
 be displayed. Default is <code>TRUE</code>.</p></td>
     </tr>
     </table>

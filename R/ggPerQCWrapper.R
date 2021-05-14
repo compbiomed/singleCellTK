@@ -2395,7 +2395,7 @@ plotScdsHybridResults <- function(inSCE,
 #' @param combinePlot Must be either "all", "sample", or "none". "all" will combine all plots into a single .ggplot object,
 #' while "sample" will output a list of plots separated by sample. Default "all".
 #' @param relHeights Relative heights of plots when combine is set.
-#' @param relWidths Relative widths of plots#' @param labelSamples Will label sample name in title of plot if TRUE. Default TRUE. when combine is set.
+#' @param relWidths Relative widths of plots when combine is set.
 #' @param plotNCols Number of columns when plots are combined in a grid.
 #' @param plotNRows Number of rows when plots are combined in a grid.
 #' @param labelSamples Will label sample name in title of plot if TRUE. Default TRUE.

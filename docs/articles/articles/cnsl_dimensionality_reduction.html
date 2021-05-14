@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.2</span>
       </span>
     </div>
 
@@ -66,7 +66,10 @@
       <a href="../../articles/articles/cnsl_import_scRNAseq_data_as_SCE.html">Import data into SCTK</a>
     </li>
     <li>
-      <a href="../../articles/articles/cnsl_qc.html">Quality Control</a>
+      <a href="../../articles/articles/cnsl_dropletqc.html">Quality Control of droplet data</a>
+    </li>
+    <li>
+      <a href="../../articles/articles/cnsl_cellqc.html">Quality Control of cell data</a>
     </li>
     <li>
       <a href="../../articles/articles/cnsl_normalization.html">Normalization</a>
@@ -185,7 +188,7 @@
           <a href="../../articles/articles/ui_feature_selection.html">Feature Selection</a>
         </li>
         <li>
-          <a href="../../articles/articles/ui_dimemsionality_reduction.html">Dimensionality Reduction</a>
+          <a href="../../articles/articles/ui_dimensionality_reduction.html">Dimensionality Reduction</a>
         </li>
       </ul>
 </li>
@@ -201,13 +204,33 @@
         <li>
           <a href="../../articles/articles/ui_find_marker.html">Find Marker</a>
         </li>
+        <li>
+          <a href="../../articles/articles/ui_cell_type_labeling.html">Cell Type Labeling</a>
+        </li>
       </ul>
 </li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Pathway &amp; Enrichment Analysis</a>
+      <ul class="dropdown-menu" role="menu">
+<li>
+          <a href="../../articles/articles/ui_gsva.html">GSVA</a>
+        </li>
+        <li>
+          <a href="../../articles/articles/ui_enrichR.html">EnrichR</a>
+        </li>
+      </ul>
+</li>
+    <li>
+      <a href="../../articles/articles/ui_sample_size_calc.html">Sample Size Calculator</a>
+    </li>
     <li class="dropdown-submenu">
       <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Curated Workflows</a>
       <ul class="dropdown-menu" role="menu">
 <li>
           <a href="../../articles/articles/ui_seurat_curated_workflow.html">Seurat</a>
+        </li>
+        <li>
+          <a href="../../articles/articles/ui_celda_curated_workflow.html">Celda</a>
         </li>
       </ul>
 </li>
@@ -262,9 +285,11 @@
 <div id="introduction" class="section level2">
 <h2 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h2>
-<p><code>singleCellTK</code> offers multiple functions to compute and visualize dimensionality reduction results. A summary of the available methods and visualization options are described below.</p>
-<hr>
-<p>A brief summary of the two tabs is described below:</p>
+</div>
+<div id="rundimensionalityreduction-function-offers-a-convenient-way-to-run-dimensionality-reduction-algorithms-i-e--pca-ica-that-have-been-implemented-from-various-packages-and-integrated-together-in-a-single-wrapper-function--additionally-high-dimensional-data-visualization-methods-such-as-tsne-umap-have-also-been-provided-under-the-umbrella-of-dimensionality-reduction-from-within-the-same-wrapper-function-" class="section level2">
+<h2 class="hasAnchor">
+<a href="#rundimensionalityreduction-function-offers-a-convenient-way-to-run-dimensionality-reduction-algorithms-i-e--pca-ica-that-have-been-implemented-from-various-packages-and-integrated-together-in-a-single-wrapper-function--additionally-high-dimensional-data-visualization-methods-such-as-tsne-umap-have-also-been-provided-under-the-umbrella-of-dimensionality-reduction-from-within-the-same-wrapper-function-" class="anchor"></a>‘runDimensionalityReduction’ function offers a convenient way to run dimensionality reduction algorithms i.e., PCA &amp; ICA, that have been implemented from various packages and integrated together in a single wrapper function. Additionally, high-dimensional data visualization methods such as tSNE &amp; UMAP have also been provided under the umbrella of dimensionality reduction from within the same wrapper function.</h2>
+<p>A brief summary of the available methods is described below:</p>
 <div id="pcaica" class="section level3">
 <h3 class="hasAnchor">
 <a href="#pcaica" class="anchor"></a>PCA/ICA</h3>
@@ -326,13 +351,24 @@
 <tbody>
 <tr class="odd">
 <td>tSNE</td>
-<td>?</td>
-<td>?</td>
+<td>Rtsne</td>
+<td>[L.J.P. van der Maaten and G.E. Hinton. Visualizing High-Dimensional Data Using t-SNE. Journal of Machine Learning Research</td>
 </tr>
 <tr class="even">
+<td>9(Nov):2579-2605, 2008.](<a href="http://jmlr.org/papers/v9/vandermaaten08a.html" class="uri">http://jmlr.org/papers/v9/vandermaaten08a.html</a>), <a href="http://jmlr.org/papers/v15/vandermaaten14a.html">L.J.P. van der Maaten. Accelerating t-SNE using Tree-Based Algorithms. Journal of Machine Learning Research 15(Oct):3221-3245, 2014.</a> and <a href="https://github.com/jkrijthe/Rtsne">Jesse H. Krijthe (2015). Rtsne: T-Distributed Stochastic Neighbor Embedding using a Barnes-Hut Implementation</a>
+</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
 <td>UMAP</td>
-<td>?</td>
-<td>?</td>
+<td>uwot</td>
+<td>[James Melville (2020). uwot: The Uniform Manifold Approximation and Projection (UMAP) Method for Dimensionality Reduction. R</td>
+</tr>
+<tr class="even">
+<td>package version 0.1.8.](<a href="https://CRAN.R-project.org/package=uwot" class="uri">https://CRAN.R-project.org/package=uwot</a>)</td>
+<td></td>
+<td></td>
 </tr>
 <tr class="odd">
 <td>tSNE</td>
@@ -410,47 +446,14 @@
 <li>Compute dimensionality reduction statistics using one of the available functions.</li>
 </ol>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/getTSNE.html">getTSNE</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>,
-               useAssay <span class="op">=</span> <span class="st">"normCounts"</span>,
-               reducedDimName <span class="op">=</span> <span class="st">"tsne"</span>,
-               perplexity <span class="op">=</span> <span class="fl">30</span>,
-               n_iterations <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span>
-
-<span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/getUMAP.html">getUMAP</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>,
-               useAssay <span class="op">=</span> <span class="st">"normCounts"</span>,
-               reducedDimName <span class="op">=</span> <span class="st">"umap"</span>,
-               nNeighbors <span class="op">=</span> <span class="fl">30</span>,
-               nIterations <span class="op">=</span> <span class="fl">200</span>,
-               minDist <span class="op">=</span> <span class="fl">0.01</span>,
-               alpha <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>
-
-<span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/scaterPCA.html">scaterPCA</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>,
-              useAssay <span class="op">=</span> <span class="st">"scaledCounts"</span>,
-              reducedDimName <span class="op">=</span> <span class="st">"pca"</span><span class="op">)</span>
-
-<span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/seuratPCA.html">seuratPCA</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>,
-                 useAssay <span class="op">=</span> <span class="st">"scaledCounts"</span>,
-                 reducedDimName <span class="op">=</span> <span class="st">"pca"</span>,
-                 nPCs <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>
-
-<span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/seuratICA.html">seuratICA</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>,
-                 useAssay <span class="op">=</span> <span class="st">"scaledCounts"</span>,
-                 reducedDimName <span class="op">=</span> <span class="st">"ica"</span>,
-                 nics <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>
-
-<span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/seuratRunTSNE.html">seuratRunTSNE</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>,
-                     useReduction <span class="op">=</span> <span class="st">"pca"</span>,
-                     reducedDimName <span class="op">=</span> <span class="st">"tsne"</span>,
-                     dims <span class="op">=</span> <span class="fl">10</span>,
-                     perplexity <span class="op">=</span> <span class="fl">30</span><span class="op">)</span>
-
-<span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/seuratRunUMAP.html">seuratRunUMAP</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>,
-                     useReduction <span class="op">=</span> <span class="st">"pca"</span>,
-                     reducedDimName <span class="op">=</span> <span class="st">"umap"</span>,
-                     dims <span class="op">=</span> <span class="fl">10</span>,
-                     minDist <span class="op">=</span> <span class="fl">0.3</span>,
-                     nNeighbors <span class="op">=</span> <span class="fl">30</span>,
-                     spread <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/runDimensionalityReduction.html">runDimensionalityReduction</a></span><span class="op">(</span>
+              inSCE <span class="op">=</span> <span class="va">sce</span>,
+              useAssay <span class="op">=</span> <span class="st">"normalizedCounts"</span>,
+              reducedDimName <span class="op">=</span> <span class="st">"redDimPCA"</span>,
+              method <span class="op">=</span> <span class="st">"seuratPCA"</span>,
+              nComponents <span class="op">=</span> <span class="fl">20</span>
+            <span class="op">)</span></code></pre></div>
+<p>The following table illustrates the parameters that must be passed for each specific method: | Method | Parameters | |—|—| |scaterPCA|<code>inSCE</code>, <code>useAssay</code>, <code>reducedDimName</code>, <code>method</code> = “scaterPCA”, <code>nComponents</code> (default is 10)| |seuratPCA|<code>inSCE</code>, <code>useAssay</code>, <code>reducedDimName</code>, <code>method</code> = “seuratPCA”, <code>nComponents</code> (default is 10)| |seuratICA|<code>inSCE</code>, <code>useAssay</code>, <code>reducedDimName</code>, <code>method</code> = “seuratICA”, <code>nComponents</code> (default is 10)| |rTSNE|<code>inSCE</code>, <code>useAssay</code>, <code>reducedDimName</code>, <code>method</code> = “rTSNE”, <code>perplexity</code> (default is 30), <code>nIterations</code> (default is 1000)| |seuratTSNE|<code>inSCE</code>, <code>useAssay</code>, <code>reducedDimName</code>, <code>method</code> = “seuratTSNE”, <code>nComponents</code> (default is 10), <code>useReduction</code> (either <code>pca</code> or <code>ica</code>) and <code>perplexity</code> (default is 30)| |uwotUMAP|<code>inSCE</code>, <code>useAssay</code>, <code>reducedDimName</code>, <code>method</code> = “uwotUMAP”, <code>nNeighbors</code> (default is 30), <code>nIterations</code> (default is 200), <code>minDist</code> (default is 0.01) and <code>alpha</code> (default is 1)| |seuratUMAP|<code>inSCE</code>, <code>useAssay</code>, <code>reducedDimName</code>, <code>method</code> = “seuratUMAP”, <code>nComponents</code> (default is 10), <code>useReduction</code> (either <code>pca</code> or <code>ica</code>), <code>minDist</code> (default is 0.3), <code>nNeighbors</code> (default is 30) and <code>spread</code> (default is 1)|</p>
 <ol start="2" style="list-style-type: decimal">
 <li>Visualize the dimensionality reduction results using of the available visualization options.</li>
 </ol>
@@ -480,12 +483,7 @@
 <span class="fu"><a href="../../reference/seuratElbowPlot.html">seuratElbowPlot</a></span><span class="op">(</span>
   inSCE <span class="op">=</span> <span class="va">sce</span>,
   reduction <span class="op">=</span> <span class="st">"pca"</span>
-<span class="op">)</span>
-
-<span class="co">#Redundant functions (need appropriate use within a higher wrapper function)</span>
-<span class="co">#seuratHeatmapPlot()</span>
-<span class="co">#plotDimRed()</span>
-<span class="co">#plotHeatmapMulti()</span></code></pre></div>
+<span class="op">)</span></code></pre></div>
 </div>
   </div>
 

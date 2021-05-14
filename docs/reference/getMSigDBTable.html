@@ -74,7 +74,7 @@ column in this table can be used as input for importGeneSetsFromMSigDB." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.2</span>
       </span>
     </div>
 
@@ -109,7 +109,10 @@ column in this table can be used as input for importGeneSetsFromMSigDB." />
       <a href="../articles/articles/cnsl_import_scRNAseq_data_as_SCE.html">Import data into SCTK</a>
     </li>
     <li>
-      <a href="../articles/articles/cnsl_qc.html">Quality Control</a>
+      <a href="../articles/articles/cnsl_dropletqc.html">Quality Control of droplet data</a>
+    </li>
+    <li>
+      <a href="../articles/articles/cnsl_cellqc.html">Quality Control of cell data</a>
     </li>
     <li>
       <a href="../articles/articles/cnsl_normalization.html">Normalization</a>
@@ -228,7 +231,7 @@ column in this table can be used as input for importGeneSetsFromMSigDB." />
           <a href="../articles/articles/ui_feature_selection.html">Feature Selection</a>
         </li>
         <li>
-          <a href="../articles/articles/ui_dimemsionality_reduction.html">Dimensionality Reduction</a>
+          <a href="../articles/articles/ui_dimensionality_reduction.html">Dimensionality Reduction</a>
         </li>
       </ul>
     </li>
@@ -244,13 +247,33 @@ column in this table can be used as input for importGeneSetsFromMSigDB." />
         <li>
           <a href="../articles/articles/ui_find_marker.html">Find Marker</a>
         </li>
+        <li>
+          <a href="../articles/articles/ui_cell_type_labeling.html">Cell Type Labeling</a>
+        </li>
       </ul>
+    </li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Pathway &amp; Enrichment Analysis</a>
+      <ul class="dropdown-menu" role="menu">
+        <li>
+          <a href="../articles/articles/ui_gsva.html">GSVA</a>
+        </li>
+        <li>
+          <a href="../articles/articles/ui_enrichR.html">EnrichR</a>
+        </li>
+      </ul>
+    </li>
+    <li>
+      <a href="../articles/articles/ui_sample_size_calc.html">Sample Size Calculator</a>
     </li>
     <li class="dropdown-submenu">
       <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Curated Workflows</a>
       <ul class="dropdown-menu" role="menu">
         <li>
           <a href="../articles/articles/ui_seurat_curated_workflow.html">Seurat</a>
+        </li>
+        <li>
+          <a href="../articles/articles/ui_celda_curated_workflow.html">Celda</a>
         </li>
       </ul>
     </li>
@@ -315,6 +338,62 @@ column in this table can be used as input for <a href='importGeneSetsFromMSigDB.
 
     <p>Joshua D. Campbell</p>
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='fu'>getMSigDBTable</span><span class='op'>(</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;                ID Category Subcategory
+#&gt; 7              C1       C1         N/A
+#&gt; 3          C2-CGP       C2         CGP
+#&gt; 15          C2-CP       C2          CP
+#&gt; 5  C2-CP:BIOCARTA       C2 CP:BIOCARTA
+#&gt; 13     C2-CP:KEGG       C2     CP:KEGG
+#&gt; 16      C2-CP:PID       C2      CP:PID
+#&gt; 17 C2-CP:REACTOME       C2 CP:REACTOME
+#&gt; 1          C3-MIR       C3         MIR
+#&gt; 2          C3-TFT       C3         TFT
+#&gt; 6          C4-CGN       C4         CGN
+#&gt; 14          C4-CM       C4          CM
+#&gt; 9           C5-BP       C5          BP
+#&gt; 10          C5-CC       C5          CC
+#&gt; 8           C5-MF       C5          MF
+#&gt; 4              C6       C6         N/A
+#&gt; 11             C7       C7         N/A
+#&gt; 12              H        H         N/A
+#&gt;                                                                                                                                                                                                                                                                                                                  Category_Description
+#&gt; 7                                                                                                                                                                                                                                                          Gene sets corresponding to each human chromosome and each cytogenetic band
+#&gt; 3                                                                                                                                       Gene sets in this collection are curated from various sources, including online pathway databases and the biomedical literature. Many sets are also contributed by individual domain experts.
+#&gt; 15                                                                                                                                      Gene sets in this collection are curated from various sources, including online pathway databases and the biomedical literature. Many sets are also contributed by individual domain experts.
+#&gt; 5                                                                                                                                       Gene sets in this collection are curated from various sources, including online pathway databases and the biomedical literature. Many sets are also contributed by individual domain experts.
+#&gt; 13                                                                                                                                      Gene sets in this collection are curated from various sources, including online pathway databases and the biomedical literature. Many sets are also contributed by individual domain experts.
+#&gt; 16                                                                                                                                      Gene sets in this collection are curated from various sources, including online pathway databases and the biomedical literature. Many sets are also contributed by individual domain experts.
+#&gt; 17                                                                                                                                      Gene sets in this collection are curated from various sources, including online pathway databases and the biomedical literature. Many sets are also contributed by individual domain experts.
+#&gt; 1                                                Gene sets representing potential targets of regulation by transcription factors or microRNAs. The sets consist of genes grouped by elements they share in their non-protein coding regions. The elements represent known or likely cis-regulatory elements in promoters and 3'-UTRs.
+#&gt; 2                                                Gene sets representing potential targets of regulation by transcription factors or microRNAs. The sets consist of genes grouped by elements they share in their non-protein coding regions. The elements represent known or likely cis-regulatory elements in promoters and 3'-UTRs.
+#&gt; 6                                                                                                                                                                                                                                     Computational gene sets defined by mining large collections of cancer-oriented microarray data.
+#&gt; 14                                                                                                                                                                                                                                    Computational gene sets defined by mining large collections of cancer-oriented microarray data.
+#&gt; 9                                                                                                                                                                                                                                                                         Gene sets that contain genes annotated by the same GO term.
+#&gt; 10                                                                                                                                                                                                                                                                        Gene sets that contain genes annotated by the same GO term.
+#&gt; 8                                                                                                                                                                                                                                                                         Gene sets that contain genes annotated by the same GO term.
+#&gt; 4                                            Gene sets that represent signatures of cellular pathways which are often dis-regulated in cancer. The majority of signatures were generated directly from microarray data from NCBI GEO or from internal unpublished profiling experiments involving perturbation of known cancer genes.
+#&gt; 11                                                                                                                                              Gene sets that represent cell states and perturbations within the immune system. The signatures were generated by manual curation of published studies in human and mouse immunology.
+#&gt; 12 Hallmark gene sets summarize and represent specific well-defined biological states or processes and display coherent expression. These gene sets were generated by a computational methodology based on identifying overlaps between gene sets in other MSigDB collections and retaining genes that display coordinate expression.
+#&gt;                                                                                                                                                                                                                                                                                               Subcategory_Description
+#&gt; 7                                                                                                                                                                                                                                                                                           No subcategory available.
+#&gt; 3                                                                                                                                                                                                                                                                                  Chemical and genetic perturbations
+#&gt; 15                                                                                                                                                                                                                                                                                       Additional currated pathways
+#&gt; 5                                                                                                                                                                                                                                            Canonical Pathways gene sets derived from the BioCarta pathway database.
+#&gt; 13                                                                                                                                                                                                                                               Canonical Pathways gene sets derived from the KEGG pathway database.
+#&gt; 16                                                                                                                                                                                                                 Canonical Pathways gene sets derived from the Pathway Interaction Database (PID) pathway database.
+#&gt; 17                                                                                                                                                                                                                                           Canonical Pathways gene sets derived from the Reactome pathway database.
+#&gt; 1                                                                                                                                                                                                          All miRNA target prediction gene sets. Combined superset of both miRDB prediction methods and legacy sets.
+#&gt; 2                                                                                                                                                                                            All transcription factor target prediction gene sets. Combined superset of both GTRD prediction methods and legacy sets.
+#&gt; 6                                                                                                                                                              Gene sets defined by expression neighborhoods centered on 380 cancer-associated genes. This collection is described in Subramanian, Tamayo et al. 2005
+#&gt; 14 Gene sets defined by Segal et al. 2004. Briefly, the authors compiled gene sets ('modules') from a variety of resources such as KEGG, GO, and others. By mining a large compendium of cancer-related microarray data, they identified 456 such modules as significantly changed in a variety of cancer conditions.
+#&gt; 9                                                                                                                                                                                                                                                          Gene sets derived from the GO Biological Process Ontology.
+#&gt; 10                                                                                                                                                                                                                                                         Gene sets derived from the GO Cellular Component Ontology.
+#&gt; 8                                                                                                                                                                                                                                                          Gene sets derived from the GO Molecular Function Ontology.
+#&gt; 4                                                                                                                                                                                                                                                                                           No subcategory available.
+#&gt; 11                                                                                                                                                                                                                                                                                          No subcategory available.
+#&gt; 12                                                                                                                                                                                                                                                                                          No subcategory available.</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

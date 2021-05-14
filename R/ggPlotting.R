@@ -701,9 +701,9 @@ plotSCEScatter <- function(inSCE,
       annotation_clm <- substr(annotation, stringr::str_length(annotation), stringr::str_length(annotation))
       annotation <- substr(annotation, 1, stringr::str_length(annotation) - 2)
     }else if (!slot %in% methods::slotNames(inSCE)) {
-      stop("'slot' must be a slot within the SingleCellExperiment object.
-             Please run 'methods::slotNames' if you are unsure the
-	     specified slot exists.")
+      stop("'slot' must be a slot within the SingleCellExperiment object.",
+           "Please run 'methods::slotNames' if you are unsure the",
+           "specified slot exists.")
     }
 
     sceSubset <- do.call(slot, args = list(inSCE))
@@ -1340,9 +1340,9 @@ plotSCEViolin <- function(inSCE,
   combinePlot <- match.arg(combinePlot,c("all", "sample", "none"))
 
   if (!slot %in% methods::slotNames(inSCE)) {
-    stop("'slot' must be a slot within the SingleCellExperiment object.
-             Please run 'methods::slotNames' if you are unsure the
-	 specified slot exists.")
+    stop("'slot' must be a slot within the SingleCellExperiment object.",
+         "Please run 'methods::slotNames' if you are unsure the",
+         "specified slot exists.")
   }
 
   sceSubset <- do.call(slot, args = list(inSCE))

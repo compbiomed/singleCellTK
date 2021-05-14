@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.2</span>
       </span>
     </div>
 
@@ -107,7 +107,10 @@
       <a href="../articles/articles/cnsl_import_scRNAseq_data_as_SCE.html">Import data into SCTK</a>
     </li>
     <li>
-      <a href="../articles/articles/cnsl_qc.html">Quality Control</a>
+      <a href="../articles/articles/cnsl_dropletqc.html">Quality Control of droplet data</a>
+    </li>
+    <li>
+      <a href="../articles/articles/cnsl_cellqc.html">Quality Control of cell data</a>
     </li>
     <li>
       <a href="../articles/articles/cnsl_normalization.html">Normalization</a>
@@ -226,7 +229,7 @@
           <a href="../articles/articles/ui_feature_selection.html">Feature Selection</a>
         </li>
         <li>
-          <a href="../articles/articles/ui_dimemsionality_reduction.html">Dimensionality Reduction</a>
+          <a href="../articles/articles/ui_dimensionality_reduction.html">Dimensionality Reduction</a>
         </li>
       </ul>
     </li>
@@ -242,13 +245,33 @@
         <li>
           <a href="../articles/articles/ui_find_marker.html">Find Marker</a>
         </li>
+        <li>
+          <a href="../articles/articles/ui_cell_type_labeling.html">Cell Type Labeling</a>
+        </li>
       </ul>
+    </li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Pathway &amp; Enrichment Analysis</a>
+      <ul class="dropdown-menu" role="menu">
+        <li>
+          <a href="../articles/articles/ui_gsva.html">GSVA</a>
+        </li>
+        <li>
+          <a href="../articles/articles/ui_enrichR.html">EnrichR</a>
+        </li>
+      </ul>
+    </li>
+    <li>
+      <a href="../articles/articles/ui_sample_size_calc.html">Sample Size Calculator</a>
     </li>
     <li class="dropdown-submenu">
       <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Curated Workflows</a>
       <ul class="dropdown-menu" role="menu">
         <li>
           <a href="../articles/articles/ui_seurat_curated_workflow.html">Seurat</a>
+        </li>
+        <li>
+          <a href="../articles/articles/ui_celda_curated_workflow.html">Celda</a>
         </li>
       </ul>
     </li>
@@ -298,28 +321,38 @@
     <p>Plot highly variable genes</p>
     </div>
 
-    <pre class="usage"><span class='fu'>plotTopHVG</span><span class='op'>(</span><span class='va'>inSCE</span>, method <span class='op'>=</span> <span class='st'>"vst"</span>, hvgList <span class='op'>=</span> <span class='cn'>NULL</span>, n <span class='op'>=</span> <span class='cn'>NULL</span>, labelsCount <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>plotTopHVG</span><span class='op'>(</span>
+  <span class='va'>inSCE</span>,
+  method <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"vst"</span>, <span class='st'>"mean.var.plot"</span>, <span class='st'>"dispersion"</span>, <span class='st'>"modelGeneVar"</span><span class='op'>)</span>,
+  hvgList <span class='op'>=</span> <span class='cn'>NULL</span>,
+  n <span class='op'>=</span> <span class='cn'>NULL</span>,
+  labelsCount <span class='op'>=</span> <span class='cn'>NULL</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>inSCE</th>
-      <td><p>Input <code>SingleCellExperiment</code> object containing the computations.</p></td>
+      <td><p>Input <code>SingleCellExperiment</code> object containing the
+computations.</p></td>
     </tr>
     <tr>
       <th>method</th>
-      <td><p>Select either "vst", "mean.var.plot", "dispersion" or "modelGeneVar".</p></td>
+      <td><p>Select either "vst", "mean.var.plot", "dispersion" or
+"modelGeneVar".</p></td>
     </tr>
     <tr>
       <th>hvgList</th>
-      <td><p>Character vector indicating the labels of highly variable genes.</p></td>
+      <td><p>Character vector indicating the labels of highly variable
+genes.</p></td>
     </tr>
     <tr>
       <th>n</th>
-      <td><p>Specify the number of top genes to highlight in red. If `hvgList`
-parameter is not provided, this parameter can be used simply to specify
-the number of top genes to highlight in red.</p></td>
+      <td><p>Specify the number of top genes to highlight in red. If
+<code>hvgList</code>
+ parameter is not provided, this parameter can be used simply to specify
+ the number of top genes to highlight in red.</p></td>
     </tr>
     <tr>
       <th>labelsCount</th>
@@ -332,6 +365,12 @@ By default, all top genes will be labeled.</p></td>
 
     <p>plot object</p>
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='st'>"mouseBrainSubsetSCE"</span>, package <span class='op'>=</span> <span class='st'>"singleCellTK"</span><span class='op'>)</span>
+<span class='va'>mouseBrainSubsetSCE</span> <span class='op'>&lt;-</span> <span class='fu'><a href='scranModelGeneVar.html'>scranModelGeneVar</a></span><span class='op'>(</span><span class='va'>mouseBrainSubsetSCE</span>, <span class='st'>"logcounts"</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='warning'>Warning: collapsing to unique 'x' values</span></div><div class='input'><span class='fu'>plotTopHVG</span><span class='op'>(</span><span class='va'>mouseBrainSubsetSCE</span>, method <span class='op'>=</span> <span class='st'>"modelGeneVar"</span>,
+           n <span class='op'>=</span> <span class='fl'>1000</span>, labelsCount <span class='op'>=</span> <span class='fl'>0</span><span class='op'>)</span>
+</div><div class='img'><img src='plotTopHVG-1.png' alt='' width='700' height='433' /></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

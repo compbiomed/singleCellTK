@@ -7,7 +7,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>seuratPCA
-Computes PCA on the input sce object and stores the calculated principal components within the sce object — seuratPCA • singleCellTK</title>
+Computes PCA on the input sce object and stores the calculated principal
+components within the sce object — seuratPCA • singleCellTK</title>
 
 
 <!-- jquery -->
@@ -41,9 +42,11 @@ Computes PCA on the input sce object and stores the calculated principal compone
 
 
 <meta property="og:title" content="seuratPCA
-Computes PCA on the input sce object and stores the calculated principal components within the sce object — seuratPCA" />
+Computes PCA on the input sce object and stores the calculated principal
+components within the sce object — seuratPCA" />
 <meta property="og:description" content="seuratPCA
-Computes PCA on the input sce object and stores the calculated principal components within the sce object" />
+Computes PCA on the input sce object and stores the calculated principal
+components within the sce object" />
 
 
 
@@ -75,7 +78,7 @@ Computes PCA on the input sce object and stores the calculated principal compone
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.2</span>
       </span>
     </div>
 
@@ -110,7 +113,10 @@ Computes PCA on the input sce object and stores the calculated principal compone
       <a href="../articles/articles/cnsl_import_scRNAseq_data_as_SCE.html">Import data into SCTK</a>
     </li>
     <li>
-      <a href="../articles/articles/cnsl_qc.html">Quality Control</a>
+      <a href="../articles/articles/cnsl_dropletqc.html">Quality Control of droplet data</a>
+    </li>
+    <li>
+      <a href="../articles/articles/cnsl_cellqc.html">Quality Control of cell data</a>
     </li>
     <li>
       <a href="../articles/articles/cnsl_normalization.html">Normalization</a>
@@ -229,7 +235,7 @@ Computes PCA on the input sce object and stores the calculated principal compone
           <a href="../articles/articles/ui_feature_selection.html">Feature Selection</a>
         </li>
         <li>
-          <a href="../articles/articles/ui_dimemsionality_reduction.html">Dimensionality Reduction</a>
+          <a href="../articles/articles/ui_dimensionality_reduction.html">Dimensionality Reduction</a>
         </li>
       </ul>
     </li>
@@ -245,13 +251,33 @@ Computes PCA on the input sce object and stores the calculated principal compone
         <li>
           <a href="../articles/articles/ui_find_marker.html">Find Marker</a>
         </li>
+        <li>
+          <a href="../articles/articles/ui_cell_type_labeling.html">Cell Type Labeling</a>
+        </li>
       </ul>
+    </li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Pathway &amp; Enrichment Analysis</a>
+      <ul class="dropdown-menu" role="menu">
+        <li>
+          <a href="../articles/articles/ui_gsva.html">GSVA</a>
+        </li>
+        <li>
+          <a href="../articles/articles/ui_enrichR.html">EnrichR</a>
+        </li>
+      </ul>
+    </li>
+    <li>
+      <a href="../articles/articles/ui_sample_size_calc.html">Sample Size Calculator</a>
     </li>
     <li class="dropdown-submenu">
       <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Curated Workflows</a>
       <ul class="dropdown-menu" role="menu">
         <li>
           <a href="../articles/articles/ui_seurat_curated_workflow.html">Seurat</a>
+        </li>
+        <li>
+          <a href="../articles/articles/ui_celda_curated_workflow.html">Celda</a>
         </li>
       </ul>
     </li>
@@ -293,14 +319,16 @@ Computes PCA on the input sce object and stores the calculated principal compone
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>seuratPCA
-Computes PCA on the input sce object and stores the calculated principal components within the sce object</h1>
+Computes PCA on the input sce object and stores the calculated principal
+components within the sce object</h1>
     <small class="dont-index">Source: <a href='https://github.com/compbiomed/singleCellTK/blob/master/R/seuratFunctions.R'><code>R/seuratFunctions.R</code></a></small>
     <div class="hidden name"><code>seuratPCA.Rd</code></div>
     </div>
 
     <div class="ref-description">
     <p>seuratPCA
-Computes PCA on the input sce object and stores the calculated principal components within the sce object</p>
+Computes PCA on the input sce object and stores the calculated principal
+components within the sce object</p>
     </div>
 
     <pre class="usage"><span class='fu'>seuratPCA</span><span class='op'>(</span>
@@ -324,22 +352,25 @@ Computes PCA on the input sce object and stores the calculated principal compone
     </tr>
     <tr>
       <th>reducedDimName</th>
-      <td><p>Name of new reducedDims object containing Seurat PCA. Default <code>seuratPCA</code>.</p></td>
+      <td><p>Name of new reducedDims object containing Seurat PCA.
+Default <code>seuratPCA</code>.</p></td>
     </tr>
     <tr>
       <th>nPCs</th>
-      <td><p>numeric value of how many components to compute. Default <code>20</code>.</p></td>
+      <td><p>numeric value of how many components to compute. Default
+<code>20</code>.</p></td>
     </tr>
     <tr>
       <th>verbose</th>
-      <td><p>Logical value indicating if informative messages should 
+      <td><p>Logical value indicating if informative messages should
 be displayed. Default is <code>TRUE</code>.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Updated <code>SingleCellExperiment</code> object which now contains the computed principal components</p>
+    <p>Updated <code>SingleCellExperiment</code> object which now contains the
+computed principal components</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>scExample</span>, package <span class='op'>=</span> <span class='st'>"singleCellTK"</span><span class='op'>)</span>

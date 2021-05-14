@@ -9,8 +9,8 @@ trimCounts(counts, trimValue = c(10, -10))
 \arguments{
 \item{counts}{matrix}
 
-\item{trimValue}{where trimValue[1] for upper threshold and trimValue[2] as lower threshold
-(default is c(10,-10))}
+\item{trimValue}{where trimValue[1] for upper threshold and trimValue[2] as
+lower threshold. Default is \code{c(10,-10)}}
 }
 \value{
 trimmed counts matrix
@@ -22,6 +22,6 @@ lower threshold value is trimmed to the lower treshold value.
 }
 \examples{
 data(sce_chcl, package = "scds")
-assay(sce_chcl, "countsTrimmed") <- trimCounts(assay(sce_chcl, "counts"), c(10, -10))
-
+assay(sce_chcl, "countsTrimmed") <- trimCounts(assay(sce_chcl, "counts"),
+                                               c(10, -10))
 }

@@ -3,7 +3,7 @@
 \name{runFeatureSelection}
 \alias{runFeatureSelection}
 \title{Wrapper function to run all of the feature selection methods integrated
-within the singleCellTK package including three methods from 
+within the singleCellTK package including three methods from
 Seurat (`vst`, `mean.var.plot` or `dispersion`) and the Scran `modelGeneVar`
 method.}
 \usage{
@@ -20,20 +20,26 @@ runFeatureSelection(
 A normalized assay is recommended for use with this function.}
 
 \item{hvgMethod}{Specify the method to use for variable gene selection.
-Options include `vst`, `mean.var.plot` or `dispersion` from Seurat
-and `modelGeneVar` from Scran. Default is \code{"vst"}.}
+Options include \code{"vst"}, \code{"mean.var.plot"} or \code{"dispersion"}
+from Seurat and \code{"modelGeneVar"} from Scran.}
 }
 \value{
 A \code{SingleCellExperiment} object that contains the computed
- statistics in the \code{rowData} slot of the output object. This function 
- does not return the names of the variable features but only computes the 
- statistics that are stored in the \code{rowData} slot of the. To get the 
- names of the variable features \code{getTopHVG} function should be used 
+ statistics in the \code{rowData} slot of the output object. This function
+ does not return the names of the variable features but only computes the
+ statistics that are stored in the \code{rowData} slot of the. To get the
+ names of the variable features \code{getTopHVG} function should be used
  after computing these statistics.
 }
 \description{
 Wrapper function to run all of the feature selection methods integrated
-within the singleCellTK package including three methods from 
+within the singleCellTK package including three methods from
 Seurat (`vst`, `mean.var.plot` or `dispersion`) and the Scran `modelGeneVar`
 method.
+}
+\examples{
+data("mouseBrainSubsetSCE", package = "singleCellTK")
+mouseBrainSubsetSCE <- runFeatureSelection(mouseBrainSubsetSCE,
+                                           "logcounts",
+                                           "modelGeneVar")
 }

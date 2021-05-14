@@ -98,16 +98,13 @@ annotations used from \code{colData(inSCE)} while setting the condition and
 covariates will also be added.
 }
 \examples{
-data(scExample, package = "singleCellTK")
-\dontrun{
-sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
-sce <- runDEAnalysis(inSCE = sce, method = "DESeq2",
-                     groupName1 = "Sample1", groupName2 = "Sample2",
-                     index1 = 1:100, index2 = 101:190,
-                     analysisName = "DESeq2")
-plotDEGHeatmap(sce, useResult = "DESeq2", fdrThreshold = 1, doLog = TRUE)
-}
-
+data("sceBatches")
+logcounts(sceBatches) <- log(counts(sceBatches) + 1)
+sce.w <- subsetSCECols(sceBatches, colData = "batch == 'w'")
+sce.w <- runWilcox(sce.w, class = "cell_type", classGroup1 = "alpha",
+                   groupName1 = "w.alpha", groupName2 = "w.beta",
+                   analysisName = "w.aVSb")
+plotDEGHeatmap(sce.w, "w.aVSb")
 }
 \author{
 Yichen Wang
