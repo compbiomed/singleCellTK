@@ -5,6 +5,8 @@ shinyPanelQC <- fluidPage(
     wellPanel(
       sidebarLayout(
         sidebarPanel(
+          h5(tags$a(href = paste0(docs.artPath, "ui_qc.html"),
+                    "(help)", target = "_blank")),
           fluidRow(
             column(12, h3("Choose which algorithms to run:"))
           ),

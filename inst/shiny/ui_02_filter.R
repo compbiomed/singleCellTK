@@ -12,6 +12,8 @@ orgpkgs <- c("Anopheles" = "org.Ag.eg.db", "Arabidopsis" = "org.At.tair.db",
 
 shinyPanelFilter <- fluidPage(
   useShinyalert(),
+  h5(tags$a(href = paste0(docs.artPath, "ui_filtering.html"),
+            "(help)", target = "_blank")),
   wellPanel(
     h4("Select Cell Filtering Criteria:"),
     fluidRow(

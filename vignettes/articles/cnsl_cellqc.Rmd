@@ -21,188 +21,6 @@ library(singleCellTK)
 library(dplyr)
 ```
 
-
-## Running quality control of droplet raw count data with singleCellTK
-### Load PBMC4k data from 10X
-
-singleCellTK takes in a `SingleCellExperiment` object from the [SingleCellExperiment](https://bioconductor.org/packages/release/bioc/html/SingleCellExperiment.html) package. We will utilize the 10X PBMC 4K dataset as an example. For the quality control of droplet-based counts data, we will install the dataset from the 10X Genomics website using the `BiocFileCache`(https://www.bioconductor.org/packages/release/bioc/html/BiocFileCache.html) package.
-
-```{r, message=FALSE, echo=TRUE, eval=TRUE, warning=FALSE}
-# Install BiocFileCache if is it not already
-if (!requireNamespace("BiocFileCache", quietly = TRUE)) {
-  if (!requireNamespace("BiocManager", quietly = TRUE)) {
-    install.packages("BiocManager")
-  }
-  BiocManager::install("BiocFileCache")
-}
-
-library("BiocFileCache")
-bfc <- BiocFileCache::BiocFileCache("raw_data", ask = FALSE)
-raw.path <- bfcrpath(bfc, file.path(
-  "http://cf.10xgenomics.com/samples",
-  "cell-exp/2.1.0/pbmc4k/pbmc4k_raw_gene_bc_matrices.tar.gz"
-))
-untar(raw.path, exdir = file.path(tempdir(), "pbmc4k"))
-
-fname <- file.path(tempdir(), "pbmc4k/raw_gene_bc_matrices/GRCh38")
-pbmc4k.droplet <- DropletUtils::read10xCounts(fname, col.names = TRUE)
-
-### change the sample column
-names(colData(pbmc4k.droplet)) <- c("sample", "Barcode")
-colData(pbmc4k.droplet)$sample <- rep("pbmc4k", ncol(colData(pbmc4k.droplet)))
-```
-
-singleCellTK also supports the importing of single-cell data from the following platforms: [10X CellRanger](https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/what-is-cell-ranger), [STARSolo](https://github.com/alexdobin/STAR/blob/master/docs/STARsolo.md), [BUSTools](https://www.kallistobus.tools/), [SEQC](https://github.com/ambrosejcarr/seqc), [DropEST](https://github.com/hms-dbmi/dropEst), and [AnnData](https://github.com/theislab/anndata). To load your own input data, please refer [Import data into SCTK](./import_scRNAseq_data_as_SCE_Console.html) for deailed instruction. 
-
-### runDropletQC
-
-All droplet-based QC functions are able to be run under the wrapper function runDropletQC. By default all possible QC algorithms will be run.
-
-```{r rundropletqc, eval=TRUE, message = TRUE}
-pbmc4k.droplet <- runDropletQC(pbmc4k.droplet)
-```
-
-If users choose to only run a specific set of algorithms, they can specify which to run with the algorithms parameter.
-
-When quality control functions are run in singleCellTK, the output of the function is stored in the colData slot of the SingleCellExperiment object.
-
-```{r, coldata_drop, echo=TRUE, eval=FALSE}
-head(colData(pbmc4k.droplet), 5)
-```
-
-```{r, coldata_drop2, echo=TRUE, eval=TRUE}
-df.matrix <- head(colData(pbmc4k.droplet), 5)
-df.matrix %>%
-  knitr::kable(format = "html") %>% kableExtra::kable_styling() %>%
-  kableExtra::scroll_box(width = "80%")
-```
-
-A summary of all outputs is shown below:
-```{r table2, fig.wide = TRUE, echo=FALSE, message=FALSE, warnings=FALSE, results='asis', fig.align="center"}
-tabl <- "
-| QC output                              | Description                                                       | Methods             | Package/Tool  |
-|:---------------------------------------|:------------------------------------------------------------------|:--------------------|:--------------|
-| dropletUtils_emptyDrops_total          | Total counts                                                      | runEmptyDrops       | DropletUtils  |
-| dropletUtils_emptyDrops_logprob        | The log-probability of droplet being empty                        | runEmptyDrops       | DropletUtils  |
-| dropletUtils_emptyDrops_pvalue         | Monte Carlo p-value of droplet being empty                        | runEmptyDrops       | DropletUtils  |
-| dropletUtils_emptyDrops_limited        | Whether a lower p-value could be obtained by increasing niters    | runEmptyDrops       | DropletUtils  |
-| dropletUtils_emptyDrops_fdr            | p-value of droplet being empty, corrected for false detection rate| runEmptyDrops       | DropletUtils  |
-| dropletUtils_BarcodeRank_Knee          | Whether total UMI count value is higher than knee point           | runBarcodeRankDrops | DropletUtils  |
-| dropletUtils_BarcodeRank_Inflection    | Whether total UMI count value is higher than inflection point     | runBarcodeRankDrops | DropletUtils  |
-"
-cat(tabl)
-```
-
-### Plotting QC metrics
-Upon running runDropletQC, the QC outputs will need to be plotted. For each QC method, singleCellTK contains specialized plotting functions that may be used for the generation of QC plots.
-
-#### EmptyDrops
-
-It is crucial to distinguish the data occurring from real cells and empty droplets containing ambient RNA. SCTK employs the [EmptyDrops](https://rdrr.io/github/MarioniLab/DropletUtils/man/emptyDrops.html) algorithm from the [DropletUtils](https://bioconductor.org/packages/release/bioc/html/DropletUtils.html) package to test for empty droplets. 
-
-The wrapper function `plotEmptyDropsResults` can be used to plot the results from the EmptyDrops algorithm. This will visualize the empty droplets, by plotting the total UMI counts against the log probability for each barcode.
-
-```{r run_emptydrops, message=FALSE}
-emptyDropsResults <- plotEmptyDropsResults(
-  inSCE = pbmc4k.droplet,
-  axisLabelSize = 20,
-  sample = NULL,
-  fdrCutoff = 0.01,
-  dotSize = 0.5,
-  defaultTheme = TRUE
-)
-```
-
-```{r scatter_emptydrops, fig.height = 4, fig.width = 8, fig.align="center"}
-emptyDropsResults$scatterEmptyDrops
-```
-<br />
-Data points are colored by FDR values, where we see a small portion of the dataset contains barcodes that do not meet the threshold.
-
-#### BarcodeRanks
-
-[BarcodeRanks](https://rdrr.io/bioc/DropletUtils/man/barcodeRanks.html) from the [DropletUtils](https://bioconductor.org/packages/release/bioc/html/DropletUtils.html) package computes barcode rank statistics and identifies the knee and inflection points on the total count curve. The knee and inflection points on the curve represent the difference between empty droplets and cell-containing droplets with much more RNA. The lower parameter is again the lower bound of the total UMI count, in which all barcodes below the lower bound are assumed to be empty droplets.
-
-```{r run_kneeplot_barcoderank, message=FALSE, warning=FALSE, fig.align="center", fig.height = 4, fig.width = 8}
-plotBarcodeRankScatter(
-  inSCE = pbmc4k.droplet,
-  title = "BarcodeRanks Rank Plot",
-  legendSize = 14
-)
-```
-
-The total UMI count of each barcode is plotted against its rank, where we see a steep dropoff of UMI counts around the inflection point, where we see a separation between cell containing and empty droplets.
-
-### Filtering the dataset
-
-SingleCellExperiment objects can be subset by its colData using `subsetSCECols`. The `colData` parameter takes in an expression in character vector form which will be used to identify a subset of columns using variables found in the colData of the SingleCellExperiment object. For example, if x is a numeric vector in colData, then “x < 5” will return all columns with x less than 5. The `index` parameter takes in a vector of indices which should be kept, while `bool` takes in a vector of TRUE or FALSE which should be the same length as the number of columns in the SingleCellExperiment object.
-
-```{r, echo = FALSE}
-pbmc4k.droplet.prefilt <- pbmc4k.droplet
-```
-
-```{r}
-#Before filtering:
-dim(pbmc4k.droplet)
-```
-
-```{r, "filtering droplet QC", message=FALSE, warning=FALSE}
-pbmc4k.droplet <- subsetSCECols(pbmc4k.droplet, colData = 'dropletUtils_BarcodeRank_Inflection == 1')
-pbmc4k.droplet <- subsetSCECols(pbmc4k.droplet, colData = '!is.na(pbmc4k.droplet$dropletUtils_emptyDrops_fdr)')
-pbmc4k.droplet <- subsetSCECols(pbmc4k.droplet, colData = 'pbmc4k.droplet$dropletUtils_emptyDrops_fdr < 0.01')
-```
-
-```{r}
-#After filtering:
-dim(pbmc4k.droplet)
-```
-
-We can compare the average total UMI counts per cell before and after cell filtration:
-
-```{r, "Count Violin after filtering", eval = TRUE, echo = TRUE, warning=FALSE, message=FALSE, fig.height = 4, fig.width = 6, fig.align="center"}
-p1 <- plotSCEViolinColData(pbmc4k.droplet.prefilt, coldata = "sum", summary = "mean", title = "Pre-filter", ylab = "Total counts")
-p2 <- plotSCEViolinColData(pbmc4k.droplet, coldata = "sum", summary = "mean", title = "Post-filter", ylab = "Total counts")
-plot(cowplot::plot_grid(p1, p2, ncol = 2))
-```
-
-For additional cell-filtered quality control with singleCellTK, please refer to “Running quality control of cell-filtered single cell data with singleCellTK”.
-
-
-### Running individual QC methods
-Instead of running all quality control methods on the dataset at once, users may elect to execute QC methods individually. The parameters as well as the outputs to individual QC functions are described in detail as follows:
-
-#### runEmptyDrops
-The wrapper function `runEmptyDrops` can be used to separately run the EmptyDrops algorithm on its own.
-
-In runEmptyDrops, the `lower` parameter is the lower bound of the total UMI count, in which all barcodes below the lower bound are assumed to be empty droplets. The `niters` parameter is the number of iterations the function will run for the calculation. `testAmbient` indicates whether results should be returned for barcodes that have a total UMI count below what is specified in `lower`.
-
-```{r runemptydrops, eval = FALSE}
-pbmc4k.droplet <- runEmptyDrops(
-  inSCE = pbmc4k.droplet,
-  useAssay = "counts",
-  lower = 100,
-  niters = 10000
-)
-```
-
-
-#### runBarcodeRankDrops
-The wrapper function `runBarcodeRankDrops` can be used to separately run the BarcodeRanks algorithm on its own.
-
-The `lower` parameter is again the lower bound of the total UMI count, in which all barcodes below the lower bound are assumed to be empty droplets.
-```{r run_barcoderanks, message=FALSE, eval=FALSE}
-pbmc4k.droplet <- runBarcodeRankDrops(
-  inSCE = pbmc4k.droplet,
-  useAssay = "counts",
-  fitBounds = NULL, df = 20
-)
-```
-<br />
-<br />
-
-
-
-
 ## Running quality control of cell-filtered single cell data with singleCellTK
 ### Load PBMC data from 10X
 
@@ -213,8 +31,7 @@ We will use a filtered form of the PBMC 3K and 6K dataset from the package [TENx
 pbmc3k <- importExampleData(dataset = "pbmc3k")
 pbmc6k <- importExampleData(dataset = "pbmc6k")
 
-pbmc.combined <- cbind(pbmc3k, pbmc6k)
-
+pbmc.combined <- BiocGenerics::cbind(pbmc3k, pbmc6k)
 sample.vector = colData(pbmc.combined)$sample
 ```
 
@@ -244,13 +61,13 @@ Users may set a `sample` parameter if you would like to compare between multiple
 If the user wishes, a list of gene sets can be applied to the function to determine the expression of a set of specific genes. A gene list imported into the SingleCellExperiment object using `importGeneSets` functions can be set as `collectionName`. Additionally, a pre-made list of genes can be used to determine the level of gene expression per cell. A list containing gene symbols may be set as `geneSetList`, or the user may instead use the `geneSetCollection` parameter to supply a `GeneSetCollection` object from the [GSEABase](https://bioconductor.org/packages/release/bioc/html/GSEABase.html) package.
 
 
-```{r load_geneset, eval=TRUE,  message = FALSE}
+```{r load_geneset, eval=TRUE,  message = FALSE, warning = FALSE}
 pbmc.combined <- importGeneSetsFromGMT(inSCE = pbmc.combined, collectionName = "mito", file = system.file("extdata/mito_subset.gmt", package = "singleCellTK"))
 
 set.seed(12345)
 pbmc.combined <- runCellQC(pbmc.combined, sample = sample.vector, collectionName = "mito")
 ```
-
+<br />
 If users choose to only run a specific set of algorithms, they can specify which to run with the `algorithms` parameter.
 
 When quality control functions are run in singleCellTK, the output of the function is stored in the `colData` slot of the `SingleCellExperiment` object.
@@ -265,6 +82,7 @@ df.matrix %>%
   knitr::kable(format = "html") %>% kableExtra::kable_styling() %>%
   kableExtra::scroll_box(width = "80%")
 ```
+<br />
 
 A summary of all outputs is shown below:
 ```{r table3, fig.wide = TRUE, echo=FALSE, message=FALSE, warnings=FALSE, results='asis', fig.align="center"}
@@ -304,14 +122,14 @@ reducedDims(pbmc.combined)
 Upon running runCellQC, the QC outputs will need to be plotted. For each QC method, singleCellTK contains specialized plotting functions that may be used for the generation of QC plots.
 
 #### General QC metrics
-##### runPerCellQC
+##### **runPerCellQC**
 
 SingleCellTK utilizes the [scater](https://bioconductor.org/packages/release/bioc/html/scater.html) package to compute cell-level QC metrics.
 
 The wrapper function plotRunPerCellQCResults can be used to plot the general QC outputs.
 
 ```{r plot_percellqc, message=FALSE, warning=FALSE}
-runpercellqc.results <- plotRunPerCellQCResults(inSCE = pbmc.combined, sample = sample.vector, combinePlot = "all", axisSize = 8, axisLabelSize = 9, titleSize = 20)
+runpercellqc.results <- plotRunPerCellQCResults(inSCE = pbmc.combined, sample = sample.vector, combinePlot = "all", axisSize = 8, axisLabelSize = 9, titleSize = 20, labelSamples=TRUE)
 ```
 
 ```{r fig.wide = TRUE, fig.height = 10, fig.width = 10}
@@ -322,7 +140,7 @@ runpercellqc.results
 
 Doublets hinder cell-type identification by appearing as a distinct transcriptomic state, and need to be removed for downstream analysis. singleCellTK contains various doublet detection tools that the user may choose from.
 
-##### Scrublet
+##### **Scrublet**
 [Scrublet](https://github.com/swolock/scrublet/blob/master/examples/scrublet_basics.ipynb) aims to detect doublets by creating simulated doublets from combining transcriptomic profiles of existing cells in the dataset.
 
 The wrapper function `plotScrubletResults` can be used to plot the results from the Scrublet algorithm.
@@ -340,11 +158,11 @@ scrublet.results <- plotScrubletResults(
   reducedDimName = "UMAP",
   sample = colData(pbmc.combined)$sample, 
   combinePlot = "all",
-  titleSize = 13,
-  axisLabelSize = 13,
-  axisSize = 13,
-  legendSize = 13,
-  legendTitleSize = 13
+  titleSize = 10,
+  axisLabelSize = 8,
+  axisSize = 10,
+  legendSize = 10,
+  legendTitleSize = 10
 )
 ```
 
@@ -352,12 +170,12 @@ scrublet.results <- plotScrubletResults(
 scrublet.results 
 ```
 
-##### ScDblFinder
+##### **ScDblFinder**
 [ScDblFinder](https://rdrr.io/bioc/scDblFinder/) is a doublet detection algorithm. ScDblFinder aims to detect doublets by creating a simulated doublet from existing cells and projecting it to the same PCA space as the cells.
 
 The wrapper function plotScDblFinderResults can be used to plot the QC outputs from the ScDblFinder algorithm.
 
-```{r umap_scDblFinder_plots, message=FALSE, warning=FALSE}
+```{r umap_scDblFinder_plots, eval=FALSE, message=FALSE, warning=FALSE}
 scDblFinder.results <- plotScDblFinderResults(
   inSCE = pbmc.combined, sample = colData(pbmc.combined)$sample, 
   reducedDimName = "UMAP", combinePlot = "all",
@@ -368,17 +186,14 @@ scDblFinder.results <- plotScDblFinderResults(
   legendTitleSize = 13
 )
 ```
+<br />
 
-```{r plot_umap_scDblFinder, fig.wide = TRUE, fig.height = 12, fig.width = 10}
-scDblFinder.results
-```
-
-##### DoubletFinder
+##### **DoubletFinder**
 [DoubletFinder](https://github.com/chris-mcginnis-ucsf/DoubletFinder) is a doublet detection algorithm which depends on the single cell analysis package Seurat.
 
 The wrapper function plotDoubletFinderResults can be used to plot the QC outputs from the DoubletFinder algorithm.
 
-```{r, umap_doubletfinder_plots, message=FALSE, warning=FALSE}
+```{r, umap_doubletfinder_plots, eval=FALSE, message=FALSE, warning=FALSE}
 doubletFinderResults <- plotDoubletFinderResults(
   inSCE = pbmc.combined,
   sample = colData(pbmc.combined)$sample, 
@@ -391,17 +206,14 @@ doubletFinderResults <- plotDoubletFinderResults(
   legendTitleSize = 13
 )
 ```
+<br />
 
-```{r plot_umap_doubletfinder, fig.wide = TRUE, fig.height = 12, fig.width = 11}
-doubletFinderResults 
-```
-
-##### SCDS, CXDS
+##### **SCDS, CXDS**
 CXDS, or co-expression based doublet scoring, is an algorithm in the [SCDS](https://www.bioconductor.org/packages/release/bioc/html/scds.html) package which employs a binomial model for the co-expression of pairs of genes to determine doublets.
 
 The wrapper function `plotCxdsResults` can be used to plot the QC outputs from the CXDS algorithm.
 
-```{r umap_cxds_plots, umap_cxds_plots, warning=FALSE, message=FALSE}
+```{r umap_cxds_plots, eval=FALSE, warning=FALSE, message=FALSE}
 cxdsResults <- plotCxdsResults(
   inSCE = pbmc.combined,
   sample = colData(pbmc.combined)$sample, 
@@ -413,18 +225,14 @@ cxdsResults <- plotCxdsResults(
   legendTitleSize = 13
 )
 ```
+<br />
 
-```{r plot_umap_cxds, fig.wide = TRUE, fig.height = 12, fig.width = 11}
-cxdsResults
-```
-
-
-##### SCDS, BCDS
+##### **SCDS, BCDS**
 BCDS, or binary classification based doublet scoring, is an algorithm in the [SCDS](https://www.bioconductor.org/packages/release/bioc/html/scds.html) package which uses a binary classification approach to determine doublets.
 
 The wrapper function plotBCDSResults can be used to plot the QC outputs from the BCDS algorithm
 
-```{r umap_bcds_plots, eval=TRUE, warning=FALSE, message=FALSE}
+```{r umap_bcds_plots, eval=FALSE, warning=FALSE, message=FALSE}
 bcdsResults <- plotBcdsResults(
   inSCE = pbmc.combined,
   sample = colData(pbmc.combined)$sample, 
@@ -436,18 +244,14 @@ bcdsResults <- plotBcdsResults(
   legendTitleSize = 13
 )
 ```
+<br />
 
-```{r plot_umap_bcds, fig.wide = TRUE, fig.height = 12, fig.width = 11}
-bcdsResults
-```
-
-
-##### SCDS, CXDS-BCDS hybrid
+##### **SCDS, CXDS-BCDS hybrid**
 The CXDS-BCDS hybrid algorithm, uses both CXDS and BCDS algorithms from the [SCDS](https://www.bioconductor.org/packages/release/bioc/html/scds.html) package.
 
 The wrapper function plotScdsHybridResults can be used to plot the QC outputs from the CXDS-BCDS hybrid algorithm.
 
-```{r umap_hybrid_plots, eval=TRUE, warning=FALSE, message=FALSE}
+```{r umap_hybrid_plots, eval=FALSE, warning=FALSE, message=FALSE}
 bcdsCxdsHybridResults <- plotScdsHybridResults(
   inSCE = pbmc.combined, sample = colData(pbmc.combined)$sample, 
   reducedDimName = "UMAP", combinePlot = "all",
@@ -458,13 +262,10 @@ bcdsCxdsHybridResults <- plotScdsHybridResults(
   legendTitleSize = 13
 )
 ```
-
-```{r plot_umap_hybrid, fig.wide = TRUE, fig.height = 10, fig.width = 11}
-bcdsCxdsHybridResults
-```
+<br />
 
 #### Ambient RNA detection
-##### DecontX
+##### **DecontX**
 In droplet-based single cell technologies, ambient RNA that may have been released from apoptotic or damaged cells may get incorporated into another droplet, and can lead to contamination. [decontX](https://rdrr.io/bioc/celda/man/decontX.html), available from the [celda](https://bioconductor.org/packages/release/bioc/html/celda.html), is a Bayesian method for the identification of the contamination level at a cellular level.
 
 The wrapper function plotDecontXResults can be used to plot the QC outputs from the DecontX algorithm.
@@ -473,11 +274,15 @@ The wrapper function plotDecontXResults can be used to plot the QC outputs from 
 decontxResults <- plotDecontXResults(
   inSCE = pbmc.combined, sample = colData(pbmc.combined)$sample, 
   reducedDimName = "UMAP", combinePlot = "all",
-  titleSize = 13,
-  axisLabelSize = 13,
-  axisSize = 13,
-  legendSize = 13,
-  legendTitleSize = 13
+  titleSize = 8,
+  axisLabelSize = 8,
+  axisSize = 10,
+  legendSize = 5,
+  legendTitleSize = 7,
+  relWidths = c(0.5, 1, 1),
+  sampleRelWidths = c(0.5, 1, 1),
+  labelSamples = TRUE,
+  labelClusters = FALSE
 )
 ```
 
@@ -487,7 +292,7 @@ decontxResults
 
 ### Filtering the dataset
 
-SingleCellExperiment objects can be subset by its colData using `subsetSCECols`. The usage of each argument is described in the **Quality Control of Droplet Counts Data** section above. 
+SingleCellExperiment objects can be subset by its colData using subsetSCECols. The colData parameter takes in an expression in character vector form which will be used to identify a subset of columns using variables found in the colData of the SingleCellExperiment object. For example, if x is a numeric vector in colData, then “x < 5” will return all columns with x less than 5. The index parameter takes in a vector of indices which should be kept, while bool takes in a vector of TRUE or FALSE which should be the same length as the number of columns in the SingleCellExperiment object.
 
 ```{r}
 #Before filtering:

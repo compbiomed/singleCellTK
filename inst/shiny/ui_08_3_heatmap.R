@@ -4,8 +4,8 @@ shinyPanelHeatmap <- fluidPage(
     h1("Heatmap"),
     p("Generic heatmap plotting panel for customized figure.",
       style = "color:grey;"),
-    tags$a(href = "https://www.sctk.science/articles/tab08_heatmap",
-           "(help)", target = "_blank"),
+    h5(tags$a(href = paste0(docs.artPath, "ui_heatmap.html"),
+              "(help)", target = "_blank")),
     panel(
       fluidRow(
         div(style="display:inline-block;vertical-align:top;width:120px;margin-left:20px;",
