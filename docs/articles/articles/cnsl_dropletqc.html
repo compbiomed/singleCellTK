@@ -188,7 +188,7 @@
           <a href="../../articles/articles/ui_feature_selection.html">Feature Selection</a>
         </li>
         <li>
-          <a href="../../articles/articles/ui_dimemsionality_reduction.html">Dimensionality Reduction</a>
+          <a href="../../articles/articles/ui_dimensionality_reduction.html">Dimensionality Reduction</a>
         </li>
       </ul>
 </li>
@@ -204,13 +204,33 @@
         <li>
           <a href="../../articles/articles/ui_find_marker.html">Find Marker</a>
         </li>
+        <li>
+          <a href="../../articles/articles/ui_cell_type_labeling.html">Cell Type Labeling</a>
+        </li>
       </ul>
 </li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Pathway &amp; Enrichment Analysis</a>
+      <ul class="dropdown-menu" role="menu">
+<li>
+          <a href="../../articles/articles/ui_gsva.html">GSVA</a>
+        </li>
+        <li>
+          <a href="../../articles/articles/ui_enrichR.html">EnrichR</a>
+        </li>
+      </ul>
+</li>
+    <li>
+      <a href="../../articles/articles/ui_sample_size_calc.html">Sample Size Calculator</a>
+    </li>
     <li class="dropdown-submenu">
       <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Curated Workflows</a>
       <ul class="dropdown-menu" role="menu">
 <li>
           <a href="../../articles/articles/ui_seurat_curated_workflow.html">Seurat</a>
+        </li>
+        <li>
+          <a href="../../articles/articles/ui_celda_curated_workflow.html">Celda</a>
         </li>
       </ul>
 </li>
@@ -248,7 +268,7 @@
 
       
 
-      </header><script src="cnsl_dropletqc_files/header-attrs-2.8/header-attrs.js"></script><script src="cnsl_dropletqc_files/kePrint-0.0.1/kePrint.js"></script><link href="cnsl_dropletqc_files/lightable-0.0.1/lightable.css" rel="stylesheet">
+      </header><script src="cnsl_dropletqc_files/header-attrs-2.7/header-attrs.js"></script><script src="cnsl_dropletqc_files/kePrint-0.0.1/kePrint.js"></script><link href="cnsl_dropletqc_files/lightable-0.0.1/lightable.css" rel="stylesheet">
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
@@ -313,9 +333,9 @@ text-align: justify}
 <p>All droplet-based QC functions are able to be run under the wrapper function runDropletQC. By default all possible QC algorithms will be run.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">pbmc4k.droplet</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/runDropletQC.html">runDropletQC</a></span><span class="op">(</span><span class="va">pbmc4k.droplet</span><span class="op">)</span></code></pre></div>
-<pre><code>## Thu May 13 10:38:42 2021 ... Running 'perCellQCMetrics'</code></pre>
-<pre><code>## Thu May 13 10:38:43 2021 ... Running 'emptyDrops'</code></pre>
-<pre><code>## Thu May 13 10:39:08 2021 ... Running 'barcodeRanks'</code></pre>
+<pre><code>## Thu May 13 18:38:03 2021 ... Running 'perCellQCMetrics'</code></pre>
+<pre><code>## Thu May 13 18:38:04 2021 ... Running 'emptyDrops'</code></pre>
+<pre><code>## Thu May 13 18:38:27 2021 ... Running 'barcodeRanks'</code></pre>
 <p>If users choose to only run a specific set of algorithms, they can specify which to run with the <code>algorithms</code> parameter.</p>
 <p>When quality control functions are run in singleCellTK, the output of the function is stored in the colData slot of the SingleCellExperiment object.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
@@ -377,37 +397,37 @@ dropletUtils_BarcodeRank_Inflection
 <tbody>
 <tr>
 <td style="text-align:left;">
-AAAGATGGTACCGTAT-1
+CGAGAAGTCGTAGATC-1
 </td>
 <td style="text-align:left;">
 pbmc4k
 </td>
 <td style="text-align:left;">
-AAAGATGGTACCGTAT-1
+CGAGAAGTCGTAGATC-1
 </td>
 <td style="text-align:right;">
-1
+0
 </td>
 <td style="text-align:right;">
-1
+0
 </td>
 <td style="text-align:right;">
-100
+NaN
 </td>
 <td style="text-align:right;">
-100
+NaN
 </td>
 <td style="text-align:right;">
-100
+NaN
 </td>
 <td style="text-align:right;">
-100
+NaN
 </td>
 <td style="text-align:right;">
-1
+0
 </td>
 <td style="text-align:right;">
-1
+0
 </td>
 <td style="text-align:right;">
 NA
@@ -430,37 +450,37 @@ NA
 </tr>
 <tr>
 <td style="text-align:left;">
-AACTCAGTCGCCTGTT-1
+TACCTTACATAACCTG-1
 </td>
 <td style="text-align:left;">
 pbmc4k
 </td>
 <td style="text-align:left;">
-AACTCAGTCGCCTGTT-1
+TACCTTACATAACCTG-1
 </td>
 <td style="text-align:right;">
-1
+0
 </td>
 <td style="text-align:right;">
-1
+0
 </td>
 <td style="text-align:right;">
-100
+NaN
 </td>
 <td style="text-align:right;">
-100
+NaN
 </td>
 <td style="text-align:right;">
-100
+NaN
 </td>
 <td style="text-align:right;">
-100
+NaN
 </td>
 <td style="text-align:right;">
-1
+0
 </td>
 <td style="text-align:right;">
-1
+0
 </td>
 <td style="text-align:right;">
 NA
@@ -483,37 +503,37 @@ NA
 </tr>
 <tr>
 <td style="text-align:left;">
-ATCATGGCACATAACC-1
+CTAGTGATCACGATGT-1
 </td>
 <td style="text-align:left;">
 pbmc4k
 </td>
 <td style="text-align:left;">
-ATCATGGCACATAACC-1
+CTAGTGATCACGATGT-1
 </td>
 <td style="text-align:right;">
-35
+0
 </td>
 <td style="text-align:right;">
-35
+0
 </td>
 <td style="text-align:right;">
-100
+NaN
 </td>
 <td style="text-align:right;">
-100
+NaN
 </td>
 <td style="text-align:right;">
-100
+NaN
 </td>
 <td style="text-align:right;">
-100
+NaN
 </td>
 <td style="text-align:right;">
-35
+0
 </td>
 <td style="text-align:right;">
-35
+0
 </td>
 <td style="text-align:right;">
 NA
@@ -536,37 +556,37 @@ NA
 </tr>
 <tr>
 <td style="text-align:left;">
-CTGATCCGTTCAGGCC-1
+TAGCCGGCATTGAGCT-1
 </td>
 <td style="text-align:left;">
 pbmc4k
 </td>
 <td style="text-align:left;">
-CTGATCCGTTCAGGCC-1
+TAGCCGGCATTGAGCT-1
 </td>
 <td style="text-align:right;">
-27
+0
 </td>
 <td style="text-align:right;">
-25
+0
 </td>
 <td style="text-align:right;">
-100
+NaN
 </td>
 <td style="text-align:right;">
-100
+NaN
 </td>
 <td style="text-align:right;">
-100
+NaN
 </td>
 <td style="text-align:right;">
-100
+NaN
 </td>
 <td style="text-align:right;">
-27
+0
 </td>
 <td style="text-align:right;">
-27
+0
 </td>
 <td style="text-align:right;">
 NA
@@ -589,37 +609,37 @@ NA
 </tr>
 <tr>
 <td style="text-align:left;">
-TGGGAAGAGCCAGTTT-1
+CGGGTCAAGGGAAACA-1
 </td>
 <td style="text-align:left;">
 pbmc4k
 </td>
 <td style="text-align:left;">
-TGGGAAGAGCCAGTTT-1
+CGGGTCAAGGGAAACA-1
 </td>
 <td style="text-align:right;">
-27
+0
 </td>
 <td style="text-align:right;">
-25
+0
 </td>
 <td style="text-align:right;">
-100
+NaN
 </td>
 <td style="text-align:right;">
-100
+NaN
 </td>
 <td style="text-align:right;">
-100
+NaN
 </td>
 <td style="text-align:right;">
-100
+NaN
 </td>
 <td style="text-align:right;">
-27
+0
 </td>
 <td style="text-align:right;">
-27
+0
 </td>
 <td style="text-align:right;">
 NA
@@ -755,7 +775,7 @@ NA
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co">#After filtering:</span>
 <span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span><span class="op">(</span><span class="va">pbmc4k.droplet</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1] 33694   334</code></pre>
+<pre><code>## [1] 33694   316</code></pre>
 <p>We can compare the average total UMI counts per cell before and after cell filtration:</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/plotSCEViolinColData.html">plotSCEViolinColData</a></span><span class="op">(</span><span class="va">pbmc4k.droplet.prefilt</span>, coldata <span class="op">=</span> <span class="st">"sum"</span>, summary <span class="op">=</span> <span class="st">"mean"</span>, title <span class="op">=</span> <span class="st">"Pre-filter"</span>, ylab <span class="op">=</span> <span class="st">"Total counts"</span><span class="op">)</span>
@@ -801,81 +821,87 @@ NA
 <a href="#session-information" class="anchor"></a>Session Information</h1>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
-<pre><code>## R version 4.0.3 (2020-10-10)
-## Platform: x86_64-apple-darwin17.0 (64-bit)
-## Running under: macOS Catalina 10.15.7
+<pre><code>## R version 4.0.4 (2021-02-15)
+## Platform: x86_64-w64-mingw32/x64 (64-bit)
+## Running under: Windows 10 x64 (build 19042)
 ## 
 ## Matrix products: default
-## BLAS:   /Library/Frameworks/R.framework/Versions/4.0/Resources/lib/libRblas.dylib
-## LAPACK: /Library/Frameworks/R.framework/Versions/4.0/Resources/lib/libRlapack.dylib
 ## 
 ## locale:
-## [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+## [1] LC_COLLATE=Chinese (Simplified)_China.936 
+## [2] LC_CTYPE=Chinese (Simplified)_China.936   
+## [3] LC_MONETARY=Chinese (Simplified)_China.936
+## [4] LC_NUMERIC=C                              
+## [5] LC_TIME=Chinese (Simplified)_China.936    
 ## 
 ## attached base packages:
 ## [1] parallel  stats4    stats     graphics  grDevices utils     datasets 
 ## [8] methods   base     
 ## 
 ## other attached packages:
-##  [1] BiocFileCache_1.14.0        dbplyr_2.0.0               
-##  [3] dplyr_1.0.2                 singleCellTK_2.0.2         
-##  [5] DelayedArray_0.16.0         Matrix_1.2-18              
+##  [1] BiocFileCache_1.14.0        dbplyr_2.1.0               
+##  [3] dplyr_1.0.5                 singleCellTK_2.0.2         
+##  [5] DelayedArray_0.16.2         Matrix_1.3-3               
 ##  [7] SingleCellExperiment_1.12.0 SummarizedExperiment_1.20.0
 ##  [9] Biobase_2.50.0              GenomicRanges_1.42.0       
-## [11] GenomeInfoDb_1.26.0         IRanges_2.24.0             
-## [13] S4Vectors_0.28.0            BiocGenerics_0.36.0        
-## [15] MatrixGenerics_1.2.0        matrixStats_0.57.0         
+## [11] GenomeInfoDb_1.26.2         IRanges_2.24.1             
+## [13] S4Vectors_0.28.1            BiocGenerics_0.36.0        
+## [15] MatrixGenerics_1.2.1        matrixStats_0.58.0         
 ## 
 ## loaded via a namespace (and not attached):
-##  [1] bitops_1.0-6              fs_1.5.0                 
-##  [3] bit64_4.0.5               webshot_0.5.2            
-##  [5] httr_1.4.2                rprojroot_2.0.2          
-##  [7] tools_4.0.3               R6_2.5.0                 
-##  [9] irlba_2.3.3               vipor_0.4.5              
-## [11] HDF5Array_1.18.0          colorspace_1.4-1         
-## [13] DBI_1.1.0                 rhdf5filters_1.2.0       
-## [15] withr_2.3.0               gridExtra_2.3            
-## [17] tidyselect_1.1.0          bit_4.0.4                
-## [19] curl_4.3                  compiler_4.0.3           
-## [21] rvest_0.3.6               textshaping_0.1.2        
-## [23] BiocNeighbors_1.8.1       xml2_1.3.2               
-## [25] desc_1.2.0                labeling_0.4.2           
-## [27] scales_1.1.1              rappdirs_0.3.1           
-## [29] pkgdown_1.6.1             systemfonts_0.3.2        
-## [31] stringr_1.4.0             digest_0.6.27            
-## [33] rmarkdown_2.8             R.utils_2.10.1           
-## [35] XVector_0.30.0            scater_1.18.6            
-## [37] pkgconfig_2.0.3           htmltools_0.5.0          
-## [39] sparseMatrixStats_1.2.0   highr_0.8                
-## [41] limma_3.46.0              rlang_0.4.8              
-## [43] rstudioapi_0.11           RSQLite_2.2.1            
-## [45] DelayedMatrixStats_1.12.0 farver_2.0.3             
-## [47] generics_0.1.0            jsonlite_1.7.1           
-## [49] BiocParallel_1.24.1       gtools_3.8.2             
-## [51] R.oo_1.24.0               RCurl_1.98-1.2           
-## [53] magrittr_1.5              BiocSingular_1.6.0       
-## [55] kableExtra_1.3.1          GenomeInfoDbData_1.2.4   
-## [57] scuttle_1.0.0             munsell_0.5.0            
-## [59] ggbeeswarm_0.6.0          Rcpp_1.0.5               
-## [61] Rhdf5lib_1.12.0           viridis_0.5.1            
-## [63] reticulate_1.18           lifecycle_0.2.0          
-## [65] R.methodsS3_1.8.1         stringi_1.5.3            
-## [67] yaml_2.2.1                edgeR_3.32.0             
-## [69] zlibbioc_1.36.0           rhdf5_2.34.0             
-## [71] grid_4.0.3                blob_1.2.1               
-## [73] dqrng_0.2.1               crayon_1.3.4             
-## [75] lattice_0.20-41           cowplot_1.1.0            
-## [77] beachmat_2.6.1            locfit_1.5-9.4           
-## [79] knitr_1.30                fishpond_1.6.0           
-## [81] pillar_1.4.6              glue_1.4.2               
-## [83] evaluate_0.14             vctrs_0.3.4              
-## [85] gtable_0.3.0              purrr_0.3.4              
-## [87] assertthat_0.2.1          ggplot2_3.3.3            
-## [89] xfun_0.22                 rsvd_1.0.3               
-## [91] DropletUtils_1.10.0       GSVAdata_1.26.0          
-## [93] viridisLite_0.3.0         ragg_0.4.0               
-## [95] tibble_3.0.4              beeswarm_0.2.3           
-## [97] memoise_1.1.0             ellipsis_0.3.1</code></pre>
+##   [1] ggbeeswarm_0.6.0          colorspace_2.0-0         
+##   [3] ellipsis_0.3.1            rprojroot_2.0.2          
+##   [5] GSVAdata_1.26.0           scuttle_1.0.4            
+##   [7] XVector_0.30.0            BiocNeighbors_1.8.2      
+##   [9] fs_1.5.0                  rstudioapi_0.13          
+##  [11] farver_2.1.0              bit64_4.0.5              
+##  [13] fansi_0.4.2               xml2_1.3.2               
+##  [15] R.methodsS3_1.8.1         sparseMatrixStats_1.2.1  
+##  [17] cachem_1.0.4              knitr_1.31               
+##  [19] scater_1.18.6             jsonlite_1.7.2           
+##  [21] R.oo_1.24.0               HDF5Array_1.18.1         
+##  [23] compiler_4.0.4            httr_1.4.2               
+##  [25] dqrng_0.2.1               assertthat_0.2.1         
+##  [27] fastmap_1.1.0             limma_3.46.0             
+##  [29] BiocSingular_1.6.0        htmltools_0.5.1.1        
+##  [31] tools_4.0.4               rsvd_1.0.3               
+##  [33] gtable_0.3.0              glue_1.4.2               
+##  [35] GenomeInfoDbData_1.2.4    rappdirs_0.3.3           
+##  [37] Rcpp_1.0.6                jquerylib_0.1.3          
+##  [39] pkgdown_1.6.1             vctrs_0.3.6              
+##  [41] rhdf5filters_1.2.0        svglite_2.0.0            
+##  [43] DelayedMatrixStats_1.12.3 xfun_0.21                
+##  [45] stringr_1.4.0             beachmat_2.6.4           
+##  [47] rvest_0.3.6               lifecycle_1.0.0          
+##  [49] irlba_2.3.3               gtools_3.8.2             
+##  [51] edgeR_3.32.1              zlibbioc_1.36.0          
+##  [53] scales_1.1.1              ragg_1.1.1               
+##  [55] rhdf5_2.34.0              yaml_2.2.1               
+##  [57] curl_4.3                  memoise_2.0.0            
+##  [59] reticulate_1.18           gridExtra_2.3            
+##  [61] ggplot2_3.3.3             sass_0.3.1               
+##  [63] stringi_1.5.3             RSQLite_2.2.3            
+##  [65] highr_0.8                 desc_1.3.0               
+##  [67] BiocParallel_1.24.1       rlang_0.4.10             
+##  [69] pkgconfig_2.0.3           systemfonts_1.0.1        
+##  [71] bitops_1.0-6              evaluate_0.14            
+##  [73] lattice_0.20-41           purrr_0.3.4              
+##  [75] Rhdf5lib_1.12.1           labeling_0.4.2           
+##  [77] cowplot_1.1.1             bit_4.0.4                
+##  [79] tidyselect_1.1.0          magrittr_2.0.1           
+##  [81] R6_2.5.0                  generics_0.1.0           
+##  [83] fishpond_1.6.0            DBI_1.1.1                
+##  [85] pillar_1.5.1              withr_2.4.1              
+##  [87] RCurl_1.98-1.2            tibble_3.1.0             
+##  [89] crayon_1.4.1              DropletUtils_1.10.3      
+##  [91] utf8_1.1.4                rmarkdown_2.7            
+##  [93] viridis_0.5.1             locfit_1.5-9.4           
+##  [95] grid_4.0.4                blob_1.2.1               
+##  [97] webshot_0.5.2             digest_0.6.27            
+##  [99] R.utils_2.10.1            textshaping_0.3.1        
+## [101] munsell_0.5.0             beeswarm_0.3.1           
+## [103] viridisLite_0.3.0         kableExtra_1.3.4         
+## [105] vipor_0.4.5               bslib_0.2.4</code></pre>
 </div>
   </div>
 
