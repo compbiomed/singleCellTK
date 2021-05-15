@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.2</span>
       </span>
     </div>
 
@@ -66,7 +66,10 @@
       <a href="../../articles/articles/cnsl_import_scRNAseq_data_as_SCE.html">Import data into SCTK</a>
     </li>
     <li>
-      <a href="../../articles/articles/cnsl_qc.html">Quality Control</a>
+      <a href="../../articles/articles/cnsl_dropletqc.html">Quality Control of droplet data</a>
+    </li>
+    <li>
+      <a href="../../articles/articles/cnsl_cellqc.html">Quality Control of cell data</a>
     </li>
     <li>
       <a href="../../articles/articles/cnsl_normalization.html">Normalization</a>
@@ -185,7 +188,7 @@
           <a href="../../articles/articles/ui_feature_selection.html">Feature Selection</a>
         </li>
         <li>
-          <a href="../../articles/articles/ui_dimemsionality_reduction.html">Dimensionality Reduction</a>
+          <a href="../../articles/articles/ui_dimensionality_reduction.html">Dimensionality Reduction</a>
         </li>
       </ul>
 </li>
@@ -201,13 +204,33 @@
         <li>
           <a href="../../articles/articles/ui_find_marker.html">Find Marker</a>
         </li>
+        <li>
+          <a href="../../articles/articles/ui_cell_type_labeling.html">Cell Type Labeling</a>
+        </li>
       </ul>
 </li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Pathway &amp; Enrichment Analysis</a>
+      <ul class="dropdown-menu" role="menu">
+<li>
+          <a href="../../articles/articles/ui_gsva.html">GSVA</a>
+        </li>
+        <li>
+          <a href="../../articles/articles/ui_enrichR.html">EnrichR</a>
+        </li>
+      </ul>
+</li>
+    <li>
+      <a href="../../articles/articles/ui_sample_size_calc.html">Sample Size Calculator</a>
+    </li>
     <li class="dropdown-submenu">
       <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Curated Workflows</a>
       <ul class="dropdown-menu" role="menu">
 <li>
           <a href="../../articles/articles/ui_seurat_curated_workflow.html">Seurat</a>
+        </li>
+        <li>
+          <a href="../../articles/articles/ui_celda_curated_workflow.html">Celda</a>
         </li>
       </ul>
 </li>
@@ -524,10 +547,10 @@ Additionally, most of the batch correction methods provided <strong>require a lo
 ## dim: 800 800 
 ## metadata(1): assayType
 ## assays(2): counts logcounts
-## rownames(800): AKAP7 CCDC137 ... ATG4A ZNF319
+## rownames(800): CLCC1 ANKRD37 ... LILRA4 CCDC94
 ## rowData names(4): rownames ENSEMBL_ID Symbol_TENx Symbol
-## colnames(800): pbmc8k_ACCTTTAAGCGCTCCA-1 pbmc8k_CATCAGAAGCGTAGTG-1 ...
-##   pbmc8k_GTCTCGTTCTTGCCGT-1 pbmc8k_CGTTCTGGTCGTTGTA-1
+## colnames(800): pbmc8k_ACGAGGAAGTGCAAGC-1 pbmc6k_ATGCGATGTAGAAG-1 ...
+##   pbmc8k_CTCGTCACATCTCGCT-1 pbmc6k_GATTCTACTGTCTT-1
 ## colData names(14): rownames Sample ... sample sizeFactor
 ## reducedDimNames(0):
 ## altExpNames(0):</code></pre>
@@ -547,10 +570,10 @@ Additionally, most of the batch correction methods provided <strong>require a lo
 ## dim: 800 800 
 ## metadata(1): assayType
 ## assays(3): counts logcounts LIMMA
-## rownames(800): AKAP7 CCDC137 ... ATG4A ZNF319
+## rownames(800): CLCC1 ANKRD37 ... LILRA4 CCDC94
 ## rowData names(4): rownames ENSEMBL_ID Symbol_TENx Symbol
-## colnames(800): pbmc8k_ACCTTTAAGCGCTCCA-1 pbmc8k_CATCAGAAGCGTAGTG-1 ...
-##   pbmc8k_GTCTCGTTCTTGCCGT-1 pbmc8k_CGTTCTGGTCGTTGTA-1
+## colnames(800): pbmc8k_ACGAGGAAGTGCAAGC-1 pbmc6k_ATGCGATGTAGAAG-1 ...
+##   pbmc8k_CTCGTCACATCTCGCT-1 pbmc6k_GATTCTACTGTCTT-1
 ## colData names(14): rownames Sample ... sample sizeFactor
 ## reducedDimNames(0):
 ## altExpNames(0):</code></pre>

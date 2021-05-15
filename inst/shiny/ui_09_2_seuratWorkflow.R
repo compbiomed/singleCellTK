@@ -1,7 +1,7 @@
 # User Interface for Seurat Workflow ---
 shinyPanelSeurat <- fluidPage(
     h1("Seurat"),
-    h5(tags$a(href = "https://www.sctk.science/articles/tab09_seurat-workflow",
+    h5(tags$a(href = paste0(docs.artPath, "ui_seurat_curated_workflow.html"),
               "(help)", target = "_blank")),
     inlineCSS(list(".panel-danger>.panel-heading" = "background-color:#dcdcdc; color:#000000", ".panel-primary>.panel-heading" = "background-color:#f5f5f5; color:#000000; border-color:#dddddd", ".panel-primary" = "border-color:#dddddd;", ".panel-primary>.panel-heading+.panel-collapse>.panel-body" = "border-color:#dddddd;")),
         bsCollapse(id = "SeuratUI", open = "Data Input",
@@ -283,7 +283,7 @@ shinyPanelSeurat <- fluidPage(
                                                               inputId = "seuratFindMarkerTest",
                                                               label = "Select test:",
                                                               choices = c("wilcox", "bimod",
-                                                                          "t", "negbinom", 
+                                                                          "t", "negbinom",
                                                                           "poisson", "LR",
                                                                           "DESeq2")
                                                           ),
@@ -318,7 +318,7 @@ shinyPanelSeurat <- fluidPage(
                                                                                                    numericInput("findMarkerHeatmapPlotFullNumeric", value = 10, max = 100, min = 2, step = 1, label = "Select number of top genes from each cluster/group to visualize in the heatmap below based on highest average log fold change value:"),
                                                                                                    actionButton("findMarkerHeatmapPlotFullNumericRun", label = "Plot"),
                                                                                                    hr(),
-                                                                                                   jqui_resizable(
+                                                                                                   shinyjqui::jqui_resizable(
                                                                                                        plotOutput(outputId = "findMarkerHeatmapPlotFull")
                                                                                                    )
                                                                                                )
@@ -330,14 +330,14 @@ shinyPanelSeurat <- fluidPage(
                                                   ),
                                                   br(),
                                                   hidden(
-                                                      tags$div(class = "seurat_findmarker_plots", 
+                                                      tags$div(class = "seurat_findmarker_plots",
                                                                panel(heading = "Marker Gene Plots",
                                                                      HTML("<center><h5><span style='color:red; font-weight:bold; text-align:center;'>Click on the rows of the table above to plot the selected marker genes below!</span></h5></br></center>"),
                                                                      tabsetPanel(id = "seuratFindMarkerPlotTabset", type = "tabs"))
                                                       )
                                                   )
                                            )
-                                           
+
                                        )
                                 )
                             ),

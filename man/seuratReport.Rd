@@ -2,7 +2,7 @@
 % Please edit documentation in R/htmlReports.R
 \name{seuratReport}
 \alias{seuratReport}
-\title{Computes an HTML report from the Seurat workflow and returns the output SCE 
+\title{Computes an HTML report from the Seurat workflow and returns the output SCE
  object with the computations stored in it.}
 \usage{
 seuratReport(
@@ -29,14 +29,14 @@ seuratReport(
 file name will be based on the name of the Rmarkdown template. Default
 \code{NULL}.}
 
-\item{outputDir}{Specify the name of the output directory to save the 
-rendered HTML file. If \code{NULL} the file is stored to the current 
+\item{outputDir}{Specify the name of the output directory to save the
+rendered HTML file. If \code{NULL} the file is stored to the current
 working directory.}
 
 \item{subtitle}{A \code{character} value specifying the subtitle to use in the
 Seurat report.}
 
-\item{authors}{A \code{character} value specifying the names of the authors 
+\item{authors}{A \code{character} value specifying the names of the authors
 to use in the Seurat report.}
 
 \item{sce}{A \code{character} value specifying the path of the input
@@ -51,7 +51,7 @@ of the \code{colData} columns to use for differential expression in addition
 to the \code{biological.group} parameter.}
 
 \item{selected.markers}{A \code{character} vector specifying the user decided
-gene symbols of pre-selected markers that be used to generate gene plots in 
+gene symbols of pre-selected markers that be used to generate gene plots in
 addition to the gene markers computed from differential expression.}
 
 \item{clustering.resolution}{A \code{numeric} value indicating the resolution
@@ -75,6 +75,6 @@ A \code{SingleCellExperiment} object that has the seurat computations
  in the \code{singleCellTK} user interface.
 }
 \description{
-Computes an HTML report from the Seurat workflow and returns the output SCE 
+Computes an HTML report from the Seurat workflow and returns the output SCE
  object with the computations stored in it.
 }

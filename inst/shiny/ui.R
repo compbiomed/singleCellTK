@@ -23,7 +23,6 @@ library(singleCellTK)
 library(celda)
 library(shinycssloaders)
 library(shinythemes)
-library(shinyWidgets);
 library(shinyBS);
 library(shinyjqui);
 library(Seurat);
@@ -48,6 +47,10 @@ data("c2BroadSets")
 #source modules
 source("module_nonLinearWorkflow.R")
 source("module_filterTable.R")
+
+docs.base <- paste0("https://sctk.camplab.net/v",
+                    package.version("singleCellTK"), "/")
+docs.artPath <- paste0(docs.base, "articles/articles/")
 
 #test internet connection for enrichR connectivity
 internetConnection <- suppressWarnings(Biobase::testBioCConnection())
@@ -97,8 +100,8 @@ if (!is.null(getShinyOption("inputSCEset"))){
   curraltExps <- names(altExp(getShinyOption("inputSCEset")))
   ###############################################################
   #from sce
-  cell_list <- BiocGenerics::colnames(getShinyOption("inputSCEset"))
-  gene_list <- BiocGenerics::rownames(getShinyOption("inputSCEset"))
+  cell_list <- colnames(getShinyOption("inputSCEset"))
+  gene_list <- rownames(getShinyOption("inputSCEset"))
   #from assays
   method_list <- names(assays(getShinyOption("inputSCEset")))
   #from reduced

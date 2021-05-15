@@ -87,7 +87,7 @@ opts_chunk$set(
  Numofmarkers_filtered <- nrow(data)
  
  Numofsamples <- length(sampleNames)
- h.w.mtx = matrix(c(1,1,1,1,2,2,3,3,3,3, 1,2,3,4,3,3,3,3,3,4), nrow =2, byrow = T)
+ h.w.mtx = matrix(c(1,1,1,1,2,2,3,3,3,3, 1,2,3,4,3,3,3,3,3,4), nrow =2, byrow = TRUE)
  dimnames(h.w.mtx) = list(c("s.s.height.index", "s.s.width.index"))
  sample.separated.height = 6 * h.w.mtx[,Numofsamples][1]
  sample.separated.width = 6 * h.w.mtx[,Numofsamples][2]
@@ -801,7 +801,7 @@ top_all <- data.frame(data.markers %>% group_by(cluster))
 write.csv(top10, file = paste0(outputPath, "DEGTableGroupTop10", "-", gsub(" ", "_", Sys.Date()), ".csv"), row.names = FALSE)
 
 colNames<-colnames(top10)
-kable(top10, style = 'html', row.names = F) %>%
+kable(top10, style = 'html', row.names = FALSE) %>%
   kable_styling(bootstrap_options = "striped") %>%
   scroll_box(width = "100%", height = "500px")
 ```
@@ -927,7 +927,7 @@ top_all <- data.frame(data.markers %>% group_by(cluster))
 write.csv(top10, file = paste0(outputPath, "DEGTableClustersTop10", "-", gsub(" ", "_", Sys.Date()), ".csv"), row.names = FALSE)
 
 colNames<-colnames(top10)
-kable(top10, style = 'html', row.names = F) %>%
+kable(top10, style = 'html', row.names = FALSE) %>%
   kable_styling(bootstrap_options = "striped") %>%
   scroll_box(width = "100%", height = "500px")
 ```

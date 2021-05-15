@@ -76,7 +76,7 @@ classGroup2 will be used." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.2</span>
       </span>
     </div>
 
@@ -111,7 +111,10 @@ classGroup2 will be used." />
       <a href="../articles/articles/cnsl_import_scRNAseq_data_as_SCE.html">Import data into SCTK</a>
     </li>
     <li>
-      <a href="../articles/articles/cnsl_qc.html">Quality Control</a>
+      <a href="../articles/articles/cnsl_dropletqc.html">Quality Control of droplet data</a>
+    </li>
+    <li>
+      <a href="../articles/articles/cnsl_cellqc.html">Quality Control of cell data</a>
     </li>
     <li>
       <a href="../articles/articles/cnsl_normalization.html">Normalization</a>
@@ -230,7 +233,7 @@ classGroup2 will be used." />
           <a href="../articles/articles/ui_feature_selection.html">Feature Selection</a>
         </li>
         <li>
-          <a href="../articles/articles/ui_dimemsionality_reduction.html">Dimensionality Reduction</a>
+          <a href="../articles/articles/ui_dimensionality_reduction.html">Dimensionality Reduction</a>
         </li>
       </ul>
     </li>
@@ -246,13 +249,33 @@ classGroup2 will be used." />
         <li>
           <a href="../articles/articles/ui_find_marker.html">Find Marker</a>
         </li>
+        <li>
+          <a href="../articles/articles/ui_cell_type_labeling.html">Cell Type Labeling</a>
+        </li>
       </ul>
+    </li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Pathway &amp; Enrichment Analysis</a>
+      <ul class="dropdown-menu" role="menu">
+        <li>
+          <a href="../articles/articles/ui_gsva.html">GSVA</a>
+        </li>
+        <li>
+          <a href="../articles/articles/ui_enrichR.html">EnrichR</a>
+        </li>
+      </ul>
+    </li>
+    <li>
+      <a href="../articles/articles/ui_sample_size_calc.html">Sample Size Calculator</a>
     </li>
     <li class="dropdown-submenu">
       <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Curated Workflows</a>
       <ul class="dropdown-menu" role="menu">
         <li>
           <a href="../articles/articles/ui_seurat_curated_workflow.html">Seurat</a>
+        </li>
+        <li>
+          <a href="../articles/articles/ui_celda_curated_workflow.html">Celda</a>
         </li>
       </ul>
     </li>
@@ -428,9 +451,9 @@ the DEGs summary, and <code>$method</code> storing <code>"MAST"</code>.</p>
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>scExample</span>, package <span class='op'>=</span> <span class='st'>"singleCellTK"</span><span class='op'>)</span>
 <span class='va'>sce</span> <span class='op'>&lt;-</span> <span class='fu'><a href='subsetSCECols.html'>subsetSCECols</a></span><span class='op'>(</span><span class='va'>sce</span>, colData <span class='op'>=</span> <span class='st'>"type != 'EmptyDroplet'"</span><span class='op'>)</span>
-<span class='va'>sce</span> <span class='op'>&lt;-</span> <span class='fu'><a href='scaterlogNormCounts.html'>scaterlogNormCounts</a></span><span class='op'>(</span><span class='va'>sce</span>, assayName <span class='op'>=</span> <span class='st'>"logcounts"</span><span class='op'>)</span>
+<span class='va'>sce</span> <span class='op'>&lt;-</span> <span class='fu'><a href='scaterlogNormCounts.html'>scaterlogNormCounts</a></span><span class='op'>(</span><span class='va'>sce</span><span class='op'>[</span>,<span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>20</span><span class='op'>)</span><span class='op'>]</span>, assayName <span class='op'>=</span> <span class='st'>"logcounts"</span><span class='op'>)</span>
 <span class='va'>sce</span> <span class='op'>&lt;-</span> <span class='fu'>runMAST</span><span class='op'>(</span>inSCE <span class='op'>=</span> <span class='va'>sce</span>, groupName1 <span class='op'>=</span> <span class='st'>"Sample1"</span>,
- groupName2 <span class='op'>=</span> <span class='st'>"Sample2"</span>, index1 <span class='op'>=</span> <span class='fl'>1</span><span class='op'>:</span><span class='fl'>20</span>, index2 <span class='op'>=</span> <span class='fl'>21</span><span class='op'>:</span><span class='fl'>40</span>,
+ groupName2 <span class='op'>=</span> <span class='st'>"Sample2"</span>, index1 <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>10</span><span class='op'>)</span>, index2 <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>11</span>,<span class='fl'>20</span><span class='op'>)</span>,
  analysisName <span class='op'>=</span> <span class='st'>"MAST"</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; <span class='message'>Assuming data assay in position 1, with name et is log-transformed.</span></div><div class='output co'>#&gt; <span class='message'></span>
 #&gt; <span class='message'>Done!</span></div><div class='output co'>#&gt; <span class='message'>Combining coefficients and standard errors</span></div><div class='output co'>#&gt; <span class='message'>Calculating log-fold changes</span></div><div class='output co'>#&gt; <span class='message'>Calculating likelihood ratio tests</span></div><div class='output co'>#&gt; <span class='message'>Refitting on reduced model...</span></div><div class='output co'>#&gt; <span class='message'></span>

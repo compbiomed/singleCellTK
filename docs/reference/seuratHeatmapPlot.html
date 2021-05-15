@@ -7,7 +7,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>seuratHeatmapPlot
-Modifies the heatmap plot object so it contains specified number of heatmaps in a single plot — seuratHeatmapPlot • singleCellTK</title>
+Modifies the heatmap plot object so it contains specified number of heatmaps
+in a single plot — seuratHeatmapPlot • singleCellTK</title>
 
 
 <!-- jquery -->
@@ -41,9 +42,11 @@ Modifies the heatmap plot object so it contains specified number of heatmaps in 
 
 
 <meta property="og:title" content="seuratHeatmapPlot
-Modifies the heatmap plot object so it contains specified number of heatmaps in a single plot — seuratHeatmapPlot" />
+Modifies the heatmap plot object so it contains specified number of heatmaps
+in a single plot — seuratHeatmapPlot" />
 <meta property="og:description" content="seuratHeatmapPlot
-Modifies the heatmap plot object so it contains specified number of heatmaps in a single plot" />
+Modifies the heatmap plot object so it contains specified number of heatmaps
+in a single plot" />
 
 
 
@@ -75,7 +78,7 @@ Modifies the heatmap plot object so it contains specified number of heatmaps in 
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.2</span>
       </span>
     </div>
 
@@ -110,7 +113,10 @@ Modifies the heatmap plot object so it contains specified number of heatmaps in 
       <a href="../articles/articles/cnsl_import_scRNAseq_data_as_SCE.html">Import data into SCTK</a>
     </li>
     <li>
-      <a href="../articles/articles/cnsl_qc.html">Quality Control</a>
+      <a href="../articles/articles/cnsl_dropletqc.html">Quality Control of droplet data</a>
+    </li>
+    <li>
+      <a href="../articles/articles/cnsl_cellqc.html">Quality Control of cell data</a>
     </li>
     <li>
       <a href="../articles/articles/cnsl_normalization.html">Normalization</a>
@@ -229,7 +235,7 @@ Modifies the heatmap plot object so it contains specified number of heatmaps in 
           <a href="../articles/articles/ui_feature_selection.html">Feature Selection</a>
         </li>
         <li>
-          <a href="../articles/articles/ui_dimemsionality_reduction.html">Dimensionality Reduction</a>
+          <a href="../articles/articles/ui_dimensionality_reduction.html">Dimensionality Reduction</a>
         </li>
       </ul>
     </li>
@@ -245,13 +251,33 @@ Modifies the heatmap plot object so it contains specified number of heatmaps in 
         <li>
           <a href="../articles/articles/ui_find_marker.html">Find Marker</a>
         </li>
+        <li>
+          <a href="../articles/articles/ui_cell_type_labeling.html">Cell Type Labeling</a>
+        </li>
       </ul>
+    </li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Pathway &amp; Enrichment Analysis</a>
+      <ul class="dropdown-menu" role="menu">
+        <li>
+          <a href="../articles/articles/ui_gsva.html">GSVA</a>
+        </li>
+        <li>
+          <a href="../articles/articles/ui_enrichR.html">EnrichR</a>
+        </li>
+      </ul>
+    </li>
+    <li>
+      <a href="../articles/articles/ui_sample_size_calc.html">Sample Size Calculator</a>
     </li>
     <li class="dropdown-submenu">
       <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Curated Workflows</a>
       <ul class="dropdown-menu" role="menu">
         <li>
           <a href="../articles/articles/ui_seurat_curated_workflow.html">Seurat</a>
+        </li>
+        <li>
+          <a href="../articles/articles/ui_celda_curated_workflow.html">Celda</a>
         </li>
       </ul>
     </li>
@@ -293,14 +319,16 @@ Modifies the heatmap plot object so it contains specified number of heatmaps in 
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>seuratHeatmapPlot
-Modifies the heatmap plot object so it contains specified number of heatmaps in a single plot</h1>
+Modifies the heatmap plot object so it contains specified number of heatmaps
+in a single plot</h1>
     <small class="dont-index">Source: <a href='https://github.com/compbiomed/singleCellTK/blob/master/R/seuratFunctions.R'><code>R/seuratFunctions.R</code></a></small>
     <div class="hidden name"><code>seuratHeatmapPlot.Rd</code></div>
     </div>
 
     <div class="ref-description">
     <p>seuratHeatmapPlot
-Modifies the heatmap plot object so it contains specified number of heatmaps in a single plot</p>
+Modifies the heatmap plot object so it contains specified number of heatmaps
+in a single plot</p>
     </div>
 
     <pre class="usage"><span class='fu'>seuratHeatmapPlot</span><span class='op'>(</span><span class='va'>plotObject</span>, <span class='va'>dims</span>, <span class='va'>ncol</span>, <span class='va'>labels</span><span class='op'>)</span></pre>
@@ -318,7 +346,8 @@ Modifies the heatmap plot object so it contains specified number of heatmaps in 
     </tr>
     <tr>
       <th>ncol</th>
-      <td><p>numerical value indicating that in how many columns should the heatmaps be distrbuted (default is 2)</p></td>
+      <td><p>numerical value indicating that in how many columns should the
+heatmaps be distrbuted (default is 2)</p></td>
     </tr>
     <tr>
       <th>labels</th>

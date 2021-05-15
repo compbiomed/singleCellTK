@@ -23,21 +23,24 @@ runDimensionalityReduction(
 
 \item{reducedDimName}{Specify the name of the output reducedDim.}
 
-\item{method}{Specify a method from `scaterPCA`, `seuratPCA`, `seuratICA`, 
+\item{method}{Specify a method from `scaterPCA`, `seuratPCA`, `seuratICA`,
 `rTSNE`, `seuratTSNE`, `uwotUMAP` and `seuratUMAP`.}
 
 \item{nComponents}{Specify the number of dimensions to compute with the
-selected method. Only applicable with `scaterPCA`, `seuratPCA`, `seuratICA`,
-`seuratTSNE` and `seuratTSNE` methods.}
+selected method.
+Only applicable with `scaterPCA`, `seuratPCA`, `seuratICA`, `seuratTSNE`
+and `seuratUMAP` methods.}
 
-\item{...}{Additional parameters for the selected method. For `rTSNE`, must
-specify `perplexity` (default \code{30}) and  `nIterations` 
-(default \code{1000}). For `seuratTSNE`, must specify `useReduction` 
-(either `pca` or `ica`) and `perplexity` (default \code{30}). 
-For `uwotUMAP`, must specify `nNeighbors` (default \code{30}), 
-`nIterations` (default \code{200}), `minDist` (default \code{0.01}) and 
-`alpha` (default \code{1}). For `seuratUMAP`, must specify `useReduction` 
-(either `pca` or `ica`), `minDist` (default \code{0.3}), `nNeighbors` 
+\item{...}{Additional parameters for the selected method.
+For `rTSNE`, must specify `perplexity` (default \code{30}) and
+`nIterations` (default \code{1000}).
+For `seuratTSNE`, must specify `useReduction` (either `pca` or `ica`) and
+`perplexity` (default \code{30}).
+For `uwotUMAP`, must specify `nNeighbors` (default \code{30}),
+`nIterations` (default \code{200}), `minDist` (default \code{0.01}) and
+`alpha` (default \code{1}).
+For `seuratUMAP`, must specify `useReduction`
+(either `pca` or `ica`), `minDist` (default \code{0.3}), `nNeighbors`
 (default \code{30}) and `spread` (default \code{1}).}
 }
 \value{
@@ -48,4 +51,10 @@ updated in \code{reducedDim(inSCE, reducedDimName)}.
 Wrapper function to run one of the available dimensionality
 reduction algorithms integrated within the toolkit from `scaterPCA`,
 `seuratPCA`, `seuratICA`, `rTSNE`, `seuratTSNE`, `uwotUMAP` and `seuratUMAP`.
+}
+\examples{
+data("mouseBrainSubsetSCE", package = "singleCellTK")
+mouseBrainSubsetSCE <- runDimensionalityReduction(mouseBrainSubsetSCE,
+                                                  "logcounts",
+                                                  reducedDimName = "PCA")
 }

@@ -73,7 +73,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.2</span>
       </span>
     </div>
 
@@ -108,7 +108,10 @@
       <a href="../articles/articles/cnsl_import_scRNAseq_data_as_SCE.html">Import data into SCTK</a>
     </li>
     <li>
-      <a href="../articles/articles/cnsl_qc.html">Quality Control</a>
+      <a href="../articles/articles/cnsl_dropletqc.html">Quality Control of droplet data</a>
+    </li>
+    <li>
+      <a href="../articles/articles/cnsl_cellqc.html">Quality Control of cell data</a>
     </li>
     <li>
       <a href="../articles/articles/cnsl_normalization.html">Normalization</a>
@@ -227,7 +230,7 @@
           <a href="../articles/articles/ui_feature_selection.html">Feature Selection</a>
         </li>
         <li>
-          <a href="../articles/articles/ui_dimemsionality_reduction.html">Dimensionality Reduction</a>
+          <a href="../articles/articles/ui_dimensionality_reduction.html">Dimensionality Reduction</a>
         </li>
       </ul>
     </li>
@@ -243,13 +246,33 @@
         <li>
           <a href="../articles/articles/ui_find_marker.html">Find Marker</a>
         </li>
+        <li>
+          <a href="../articles/articles/ui_cell_type_labeling.html">Cell Type Labeling</a>
+        </li>
       </ul>
+    </li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Pathway &amp; Enrichment Analysis</a>
+      <ul class="dropdown-menu" role="menu">
+        <li>
+          <a href="../articles/articles/ui_gsva.html">GSVA</a>
+        </li>
+        <li>
+          <a href="../articles/articles/ui_enrichR.html">EnrichR</a>
+        </li>
+      </ul>
+    </li>
+    <li>
+      <a href="../articles/articles/ui_sample_size_calc.html">Sample Size Calculator</a>
     </li>
     <li class="dropdown-submenu">
       <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Curated Workflows</a>
       <ul class="dropdown-menu" role="menu">
         <li>
           <a href="../articles/articles/ui_seurat_curated_workflow.html">Seurat</a>
+        </li>
+        <li>
+          <a href="../articles/articles/ui_celda_curated_workflow.html">Celda</a>
         </li>
       </ul>
     </li>
@@ -323,27 +346,41 @@
     </tr>
     <tr>
       <th>useAssay</th>
-      <td><p>A string specifying which assay in the SCE to use. Default <code>"counts"</code>.</p></td>
+      <td><p>A string specifying which assay in the SCE to use. Default
+<code>"counts"</code>.</p></td>
     </tr>
     <tr>
       <th>collectionName</th>
-      <td><p>Character. Name of a <code>GeneSetCollection</code> obtained by using one of the importGeneSet* functions. Default <code>NULL</code>.</p></td>
+      <td><p>Character. Name of a <code>GeneSetCollection</code> obtained
+by using one of the importGeneSet* functions. Default <code>NULL</code>.</p></td>
     </tr>
     <tr>
       <th>geneSetList</th>
-      <td><p>List of gene sets to be quantified. The genes in the assays will be matched to the genes in the list based on <code>geneSetListLocation</code>. Default <code>NULL</code>.</p></td>
+      <td><p>List of gene sets to be quantified. The genes in the
+assays will be matched to the genes in the list based on
+<code>geneSetListLocation</code>. Default <code>NULL</code>.</p></td>
     </tr>
     <tr>
       <th>geneSetListLocation</th>
-      <td><p>Character or numeric vector. If set to 'rownames', then the genes in 'geneSetList' will be looked up in <code><a href='https://rdrr.io/r/base/colnames.html'>rownames(inSCE)</a></code>.
-If another character is supplied, then genes will be looked up in the column names of <code>rowData(inSCE)</code>. A character vector with the same length as <code>geneSetList</code> can be supplied if the IDs for different
-gene sets are found in different places, including a mixture of 'rownames' and <code>rowData(inSCE)</code>. An integer or integer vector can be supplied to denote the column index in <code>rowData(inSCE)</code>. Default 'rownames'.</p></td>
+      <td><p>Character or numeric vector. If set to 'rownames',
+then the genes in 'geneSetList' will be looked up in <code><a href='https://rdrr.io/r/base/colnames.html'>rownames(inSCE)</a></code>.
+If another character is supplied, then genes will be looked up in the column
+ names of <code>rowData(inSCE)</code>. A character vector with the same length as
+ <code>geneSetList</code> can be supplied if the IDs for different
+gene sets are found in different places, including a mixture of 'rownames'
+and <code>rowData(inSCE)</code>. An integer or integer vector can be supplied to
+denote the column index in <code>rowData(inSCE)</code>. Default 'rownames'.</p></td>
     </tr>
     <tr>
       <th>geneSetCollection</th>
-      <td><p>Class of <code>GeneSetCollection</code> from package <code>GSEAbase</code>. The location of the gene IDs in <code>inSCE</code> should be in the <code>description</code> slot of each gene set and should follow the
-same notation as <code>geneSetListLocation</code>. The function <a href='https://rdrr.io/pkg/GSEABase/man/getObjects.html'>getGmt</a> can be used to read in gene sets from a GMT file. If reading a GMT file, the second column for each gene set should be the description denoting the location
-of the gene IDs in <code>inSCE</code>. These gene sets will be included with those from <code>geneSetList</code> if both parameters are provided.</p></td>
+      <td><p>Class of <code>GeneSetCollection</code> from package
+<code>GSEAbase</code>. The location of the gene IDs in <code>inSCE</code> should be in
+the <code>description</code> slot of each gene set and should follow the
+same notation as <code>geneSetListLocation</code>. The function <a href='https://rdrr.io/pkg/GSEABase/man/getObjects.html'>getGmt</a> can
+be used to read in gene sets from a GMT file. If reading a GMT file, the
+second column for each gene set should be the description denoting the
+location of the gene IDs in <code>inSCE</code>. These gene sets will be included
+with those from <code>geneSetList</code> if both parameters are provided.</p></td>
     </tr>
     <tr>
       <th>percent_top</th>
@@ -354,7 +391,8 @@ the most highly expressed genes in each cell.</p></td>
     <tr>
       <th>use_altexps</th>
       <td><p>Logical scalar indicating whether QC statistics should
-be computed for alternative Experiments in x. If TRUE, statistics are computed
+be computed for alternative Experiments in x. If TRUE, statistics are
+computed
 for all alternative experiments.
 Alternatively, an integer or character vector specifying the alternative
 Experiments to use to compute QC statistics.
@@ -362,12 +400,14 @@ Alternatively NULL, in which case alternative experiments are not used.</p></td>
     </tr>
     <tr>
       <th>flatten</th>
-      <td><p>Logical scalar indicating whether the nested <a href='https://rdrr.io/pkg/S4Vectors/man/DataFrame-class.html'>DataFrame-class</a>
+      <td><p>Logical scalar indicating whether the nested
+<a href='https://rdrr.io/pkg/S4Vectors/man/DataFrame-class.html'>DataFrame-class</a>
 in the output should be flattened.</p></td>
     </tr>
     <tr>
       <th>detectionLimit</th>
-      <td><p>A numeric scalar specifying the lower detection limit for expression.</p></td>
+      <td><p>A numeric scalar specifying the lower detection limit
+for expression.</p></td>
     </tr>
     <tr>
       <th>BPPARAM</th>
@@ -379,14 +419,16 @@ whether the QC calculations should be parallelized.</p></td>
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>A <a href='https://rdrr.io/pkg/SingleCellExperiment/man/SingleCellExperiment.html'>SingleCellExperiment</a> object with
- cell QC metrics added to the colData slot. If <code>geneSetList</code> or <code>geneSetCollection</code> are provided, then the rownames for each gene set will be saved in <code>metadata(inSCE)$scater$addPerCellQC$geneSets</code>.</p>
+ cell QC metrics added to the colData slot. If <code>geneSetList</code> or
+ <code>geneSetCollection</code> are provided, then the rownames for each gene set
+ will be saved in <code>metadata(inSCE)$scater$addPerCellQC$geneSets</code>.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>scExample</span>, package <span class='op'>=</span> <span class='st'>"singleCellTK"</span><span class='op'>)</span>
 <span class='va'>mito.ix</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/grep.html'>grep</a></span><span class='op'>(</span><span class='st'>"^MT-"</span>, <span class='fu'>rowData</span><span class='op'>(</span><span class='va'>sce</span><span class='op'>)</span><span class='op'>$</span><span class='va'>feature_name</span><span class='op'>)</span>
 <span class='va'>geneSet</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='st'>"Mito"</span><span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>rownames</a></span><span class='op'>(</span><span class='va'>sce</span><span class='op'>)</span><span class='op'>[</span><span class='va'>mito.ix</span><span class='op'>]</span><span class='op'>)</span>
 <span class='va'>sce</span> <span class='op'>&lt;-</span> <span class='fu'>runPerCellQC</span><span class='op'>(</span><span class='va'>sce</span>, geneSetList <span class='op'>=</span> <span class='va'>geneSet</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'>Wed May 05 12:17:54 2021 ... Running 'perCellQCMetrics'</span></div></pre>
+</div><div class='output co'>#&gt; <span class='message'>Thu May 13 18:20:01 2021 ... Running 'perCellQCMetrics'</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

@@ -7,7 +7,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>seuratRunTSNE
-Computes tSNE from the given sce object and stores the tSNE computations back into the sce object — seuratRunTSNE • singleCellTK</title>
+Computes tSNE from the given sce object and stores the tSNE computations back
+into the sce object — seuratRunTSNE • singleCellTK</title>
 
 
 <!-- jquery -->
@@ -41,9 +42,11 @@ Computes tSNE from the given sce object and stores the tSNE computations back in
 
 
 <meta property="og:title" content="seuratRunTSNE
-Computes tSNE from the given sce object and stores the tSNE computations back into the sce object — seuratRunTSNE" />
+Computes tSNE from the given sce object and stores the tSNE computations back
+into the sce object — seuratRunTSNE" />
 <meta property="og:description" content="seuratRunTSNE
-Computes tSNE from the given sce object and stores the tSNE computations back into the sce object" />
+Computes tSNE from the given sce object and stores the tSNE computations back
+into the sce object" />
 
 
 
@@ -75,7 +78,7 @@ Computes tSNE from the given sce object and stores the tSNE computations back in
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.2</span>
       </span>
     </div>
 
@@ -110,7 +113,10 @@ Computes tSNE from the given sce object and stores the tSNE computations back in
       <a href="../articles/articles/cnsl_import_scRNAseq_data_as_SCE.html">Import data into SCTK</a>
     </li>
     <li>
-      <a href="../articles/articles/cnsl_qc.html">Quality Control</a>
+      <a href="../articles/articles/cnsl_dropletqc.html">Quality Control of droplet data</a>
+    </li>
+    <li>
+      <a href="../articles/articles/cnsl_cellqc.html">Quality Control of cell data</a>
     </li>
     <li>
       <a href="../articles/articles/cnsl_normalization.html">Normalization</a>
@@ -229,7 +235,7 @@ Computes tSNE from the given sce object and stores the tSNE computations back in
           <a href="../articles/articles/ui_feature_selection.html">Feature Selection</a>
         </li>
         <li>
-          <a href="../articles/articles/ui_dimemsionality_reduction.html">Dimensionality Reduction</a>
+          <a href="../articles/articles/ui_dimensionality_reduction.html">Dimensionality Reduction</a>
         </li>
       </ul>
     </li>
@@ -245,13 +251,33 @@ Computes tSNE from the given sce object and stores the tSNE computations back in
         <li>
           <a href="../articles/articles/ui_find_marker.html">Find Marker</a>
         </li>
+        <li>
+          <a href="../articles/articles/ui_cell_type_labeling.html">Cell Type Labeling</a>
+        </li>
       </ul>
+    </li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Pathway &amp; Enrichment Analysis</a>
+      <ul class="dropdown-menu" role="menu">
+        <li>
+          <a href="../articles/articles/ui_gsva.html">GSVA</a>
+        </li>
+        <li>
+          <a href="../articles/articles/ui_enrichR.html">EnrichR</a>
+        </li>
+      </ul>
+    </li>
+    <li>
+      <a href="../articles/articles/ui_sample_size_calc.html">Sample Size Calculator</a>
     </li>
     <li class="dropdown-submenu">
       <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Curated Workflows</a>
       <ul class="dropdown-menu" role="menu">
         <li>
           <a href="../articles/articles/ui_seurat_curated_workflow.html">Seurat</a>
+        </li>
+        <li>
+          <a href="../articles/articles/ui_celda_curated_workflow.html">Celda</a>
         </li>
       </ul>
     </li>
@@ -293,14 +319,16 @@ Computes tSNE from the given sce object and stores the tSNE computations back in
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>seuratRunTSNE
-Computes tSNE from the given sce object and stores the tSNE computations back into the sce object</h1>
+Computes tSNE from the given sce object and stores the tSNE computations back
+into the sce object</h1>
     <small class="dont-index">Source: <a href='https://github.com/compbiomed/singleCellTK/blob/master/R/seuratFunctions.R'><code>R/seuratFunctions.R</code></a></small>
     <div class="hidden name"><code>seuratRunTSNE.Rd</code></div>
     </div>
 
     <div class="ref-description">
     <p>seuratRunTSNE
-Computes tSNE from the given sce object and stores the tSNE computations back into the sce object</p>
+Computes tSNE from the given sce object and stores the tSNE computations back
+into the sce object</p>
     </div>
 
     <pre class="usage"><span class='fu'>seuratRunTSNE</span><span class='op'>(</span>
@@ -320,19 +348,23 @@ Computes tSNE from the given sce object and stores the tSNE computations back in
     </tr>
     <tr>
       <th>useReduction</th>
-      <td><p>selected reduction algorithm to use for computing tSNE. One of "pca" or "ica". Default <code>"pca"</code>.</p></td>
+      <td><p>selected reduction algorithm to use for computing tSNE.
+One of "pca" or "ica". Default <code>"pca"</code>.</p></td>
     </tr>
     <tr>
       <th>reducedDimName</th>
-      <td><p>Name of new reducedDims object containing Seurat tSNE Default <code>seuratTSNE</code>.</p></td>
+      <td><p>Name of new reducedDims object containing Seurat tSNE
+Default <code>seuratTSNE</code>.</p></td>
     </tr>
     <tr>
       <th>dims</th>
-      <td><p>Number of reduction components to use for tSNE computation. Default <code>10</code>.</p></td>
+      <td><p>Number of reduction components to use for tSNE computation.
+Default <code>10</code>.</p></td>
     </tr>
     <tr>
       <th>perplexity</th>
-      <td><p>Adjust the preplexity tuneable parameter for the underlying tSNE call. Default <code>30</code>.</p></td>
+      <td><p>Adjust the preplexity tuneable parameter for the underlying
+tSNE call. Default <code>30</code>.</p></td>
     </tr>
     </table>
 

@@ -75,7 +75,7 @@ A wrapper function to Seurat Batch-Correction/Integration workflow." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.2</span>
       </span>
     </div>
 
@@ -110,7 +110,10 @@ A wrapper function to Seurat Batch-Correction/Integration workflow." />
       <a href="../articles/articles/cnsl_import_scRNAseq_data_as_SCE.html">Import data into SCTK</a>
     </li>
     <li>
-      <a href="../articles/articles/cnsl_qc.html">Quality Control</a>
+      <a href="../articles/articles/cnsl_dropletqc.html">Quality Control of droplet data</a>
+    </li>
+    <li>
+      <a href="../articles/articles/cnsl_cellqc.html">Quality Control of cell data</a>
     </li>
     <li>
       <a href="../articles/articles/cnsl_normalization.html">Normalization</a>
@@ -229,7 +232,7 @@ A wrapper function to Seurat Batch-Correction/Integration workflow." />
           <a href="../articles/articles/ui_feature_selection.html">Feature Selection</a>
         </li>
         <li>
-          <a href="../articles/articles/ui_dimemsionality_reduction.html">Dimensionality Reduction</a>
+          <a href="../articles/articles/ui_dimensionality_reduction.html">Dimensionality Reduction</a>
         </li>
       </ul>
     </li>
@@ -245,13 +248,33 @@ A wrapper function to Seurat Batch-Correction/Integration workflow." />
         <li>
           <a href="../articles/articles/ui_find_marker.html">Find Marker</a>
         </li>
+        <li>
+          <a href="../articles/articles/ui_cell_type_labeling.html">Cell Type Labeling</a>
+        </li>
       </ul>
+    </li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Pathway &amp; Enrichment Analysis</a>
+      <ul class="dropdown-menu" role="menu">
+        <li>
+          <a href="../articles/articles/ui_gsva.html">GSVA</a>
+        </li>
+        <li>
+          <a href="../articles/articles/ui_enrichR.html">EnrichR</a>
+        </li>
+      </ul>
+    </li>
+    <li>
+      <a href="../articles/articles/ui_sample_size_calc.html">Sample Size Calculator</a>
     </li>
     <li class="dropdown-submenu">
       <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Curated Workflows</a>
       <ul class="dropdown-menu" role="menu">
         <li>
           <a href="../articles/articles/ui_seurat_curated_workflow.html">Seurat</a>
+        </li>
+        <li>
+          <a href="../articles/articles/ui_celda_curated_workflow.html">Celda</a>
         </li>
       </ul>
     </li>
@@ -319,7 +342,8 @@ A wrapper function to Seurat Batch-Correction/Integration workflow.</p>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>inSCE</th>
-      <td><p>Input <code>SingleCellExperiment</code> object that contains the assay to batch-correct.</p></td>
+      <td><p>Input <code>SingleCellExperiment</code> object that contains the assay
+to batch-correct.</p></td>
     </tr>
     <tr>
       <th>useAssay</th>
@@ -327,7 +351,8 @@ A wrapper function to Seurat Batch-Correction/Integration workflow.</p>
     </tr>
     <tr>
       <th>batch</th>
-      <td><p>Batch variable from <code>colData</code> slot of <code>SingleCellExperiment</code> object.</p></td>
+      <td><p>Batch variable from <code>colData</code> slot of
+<code>SingleCellExperiment</code> object.</p></td>
     </tr>
     <tr>
       <th>newAssayName</th>
@@ -335,15 +360,18 @@ A wrapper function to Seurat Batch-Correction/Integration workflow.</p>
     </tr>
     <tr>
       <th>kAnchor</th>
-      <td><p>Number of neighbours to use for finding the anchors in the <a href='https://satijalab.org/seurat/reference/FindIntegrationAnchors.html'>FindIntegrationAnchors</a> function.</p></td>
+      <td><p>Number of neighbours to use for finding the anchors in the
+<a href='https://satijalab.org/seurat/reference/FindIntegrationAnchors.html'>FindIntegrationAnchors</a> function.</p></td>
     </tr>
     <tr>
       <th>kFilter</th>
-      <td><p>Number of neighbours to use for filtering the anchors in the <a href='https://satijalab.org/seurat/reference/FindIntegrationAnchors.html'>FindIntegrationAnchors</a> function.</p></td>
+      <td><p>Number of neighbours to use for filtering the anchors in the
+<a href='https://satijalab.org/seurat/reference/FindIntegrationAnchors.html'>FindIntegrationAnchors</a> function.</p></td>
     </tr>
     <tr>
       <th>kWeight</th>
-      <td><p>Number of neighbours to use when weigthing the anchors in the <a href='https://satijalab.org/seurat/reference/IntegrateData.html'>IntegrateData</a> function.</p></td>
+      <td><p>Number of neighbours to use when weigthing the anchors in the
+<a href='https://satijalab.org/seurat/reference/IntegrateData.html'>IntegrateData</a> function.</p></td>
     </tr>
     <tr>
       <th>ndims</th>
@@ -353,7 +381,8 @@ A wrapper function to Seurat Batch-Correction/Integration workflow.</p>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A <code>SingleCellExperiment</code> object that contains the batch-corrected assay inside the <code>altExp</code> slot of the object</p>
+    <p>A <code>SingleCellExperiment</code> object that contains the
+batch-corrected assay inside the <code>altExp</code> slot of the object</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

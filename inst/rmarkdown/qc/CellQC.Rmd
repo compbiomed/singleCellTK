@@ -115,7 +115,7 @@ subtitle: "`r subTitle`"
 
 
 # Introduction
-Comprehensive quality control (QC) of single-cell RNA-seq data was performed with the [**singleCellTK**](https://github.com/compbiomed/singleCellTK/tree/sctk_qc_1.7.6) package. This report contains information about each QC tool and visualization of the QC metrics for each sample. For more information on running this pipeline and performing quality control, see the [**documentation**](https://github.com/compbiomed/singleCellTK/blob/devel/exec/SCTK_runQC_Documentation2.md). If you use the singleCellTK package for quality control, please include a [**reference**](https://www.biorxiv.org/content/10.1101/329755v1.article-info) in your publication.
+Comprehensive quality control (QC) of single-cell RNA-seq data was performed with the [**singleCellTK**](https://github.com/compbiomed/singleCellTK/tree/sctk_qc_1.7.6) package. This report contains information about each QC tool and visualization of the QC metrics for each sample. For more information on running this pipeline and performing quality control, see the [**documentation**](http://sctk.camplab.net/articles/cmd_qc.html). If you use the singleCellTK package for quality control, please include a [**reference**](https://www.biorxiv.org/content/10.1101/329755v1.article-info) in your publication.
 <br />
 <br />
 
@@ -137,8 +137,11 @@ if (skipCellData) {
 } else {
   plotsQCMetrics<- tryCatch(
     {plotRunPerCellQCResults(sce.qc, 
-                             sample = colData(sce.qc)$sample, 
-                             combinePlot="none")},
+                             sample = colData(sce.qc)$sample,
+                             combinePlot="none",
+                             axisSize = NULL,
+                             axisLabelSize = NULL,
+                             titleSize = NULL)},
     error = function(e) {
       cat("runPerCellQC did not complete successfully. The section of General quality control metrics is skipped")
       skipCellData <- TRUE
@@ -170,20 +173,20 @@ if (!skipCellData) {
 # {.unlisted .unnumbered .toc-ignore .tabset .tabset-fade}
 ```{r "plotsQCMetrics-plot", results="asis", eval=(!skipCellData), fig.align="center", warning=FALSE, message=FALSE, echo=FALSE}
 cat("\n")
-cat(paste0('## Sum {.tabset .tabset-fade} \n\n'))
+cat(paste0('## Total Counts {.tabset .tabset-fade} \n\n'))
 plotsQCMetrics$Violin$Sum
 cat("\n\n")
-cat(paste0('## Total {.tabset .tabset-fade} \n\n'))
+cat(paste0('## Total Features {.tabset .tabset-fade} \n\n'))
 plotsQCMetrics$Violin$Detected
 cat("\n\n")
-cat(paste0('## Subsets mito sum {.tabset .tabset-fade} \n\n'))
+cat(paste0('## Total Mitochondrial Counts {.tabset .tabset-fade} \n\n'))
 plotsQCMetrics$Violin$Gene_Subset_Sum
 cat("\n\n")
-cat(paste0('## Subsets mito detected {.tabset .tabset-fade} \n\n'))
+cat(paste0('## Total Mitochondrial Features {.tabset .tabset-fade} \n\n'))
 plotsQCMetrics$Violin$Gene_Subset_Features
 cat("\n\n")
-cat(paste0('## Subsets mito percent {.tabset .tabset-fade} \n\n'))
-plotsQCMetrics$Violin$Gene_Subset_Top50_Percent
+cat(paste0('## % of Library Size Occupied by Top 50 Exp. Genes {.tabset .tabset-fade} \n\n'))
+plotsQCMetrics$Violin$TopPercent
 cat("\n\n")
 cat(paste0('## Parameters {.tabset .tabset-fade} \n\n'))
 
@@ -221,7 +224,10 @@ if (skipScrublet) {
       {plotScrubletResults(sce.qc, 
                            reducedDimName="QC_UMAP",
                            sample = colData(sce.qc)$sample,
-                           combinePlot = "none")},
+                           combinePlot = "none",
+                           axisSize = NULL,
+                           axisLabelSize = NULL,
+                           titleSize = NULL)},
     error = function(e) {
       cat("runScrublet did not complete successfully. The section of Scrublet is skipped")
       skipScrublet <- TRUE
@@ -305,7 +311,10 @@ if (skipFinder) {
     {plotDoubletFinderResults(inSCE = sce.qc, 
                               reducedDimName = "QC_UMAP",
                               sample = colData(sce.qc)[['sample']],
-                              combinePlot = "none")},
+                              combinePlot = "none",
+                              axisSize = NULL,
+                              axisLabelSize = NULL,
+                              titleSize = NULL)},
     error = function(e) {
       cat("runDoubletFinder did not complete successfully. The section of DoubletFinder is skipped")
       skipFinder <- TRUE
@@ -402,9 +411,12 @@ if (skipScDblFinder) {
 } else {
   plotScDblFinder<- tryCatch(
     {plotScDblFinderResults(inSCE = sce.qc, 
-                             sample = colData(sce.qc)[['sample']],
-                             combinePlot = "none",
-                             reducedDimName = "QC_UMAP")},
+                            sample = colData(sce.qc)[['sample']],
+                            combinePlot = "none",
+                            reducedDimName = "QC_UMAP",
+                            axisSize = NULL,
+                            axisLabelSize = NULL,
+                            titleSize = NULL)},
     error = function(e) {
       cat("runScDblFinder did not complete successfully. The section of ScDblFinder is skipped")
       skipScDblFinder <- TRUE
@@ -482,9 +494,12 @@ if (skipCxds) {
 } else {
   plotCxds<- tryCatch(
     {plotCxdsResults(inSCE = sce.qc, 
-                              sample = colData(sce.qc)[['sample']],
-                              combinePlot = "none",
-                              reducedDimName = "QC_UMAP")},
+                     sample = colData(sce.qc)[['sample']],
+                     combinePlot = "none",
+                     reducedDimName = "QC_UMAP",
+                     axisSize = NULL,
+                     axisLabelSize = NULL,
+                     titleSize = NULL)},
     error = function(e) {
       cat("runCxds did not complete successfully. The section of Cxds is skipped")
       skipCxds <- TRUE
@@ -573,9 +588,12 @@ if (skipBcds) {
 } else {
   plotBcds<- tryCatch(
     {plotBcdsResults(inSCE = sce.qc, 
-                              sample = colData(sce.qc)[['sample']],
-                              combinePlot = "none",
-                              reducedDimName = "QC_UMAP")},
+                     sample = colData(sce.qc)[['sample']],
+                     combinePlot = "none",
+                     reducedDimName = "QC_UMAP",
+                     axisSize = NULL,
+                     axisLabelSize = NULL,
+                     titleSize = NULL)},
     error = function(e) {
       cat("runBcds did not complete successfully. The section of Bcds is skipped")
       skipBcds <- TRUE
@@ -664,9 +682,12 @@ if (skipScdsHybrid) {
 } else {
   plotScdsHybrid<- tryCatch(
     {plotScdsHybridResults(inSCE = sce.qc, 
-                              sample = colData(sce.qc)[['sample']],
-                              combinePlot = "none",
-                              reducedDimName = "QC_UMAP")},
+                           sample = colData(sce.qc)[['sample']],
+                           combinePlot = "none",
+                           reducedDimName = "QC_UMAP",
+                           axisSize = NULL,
+                           axisLabelSize = NULL,
+                           titleSize = NULL)},
     error = function(e) {
       cat("runCxdsBcdsHybrid did not complete successfully. The section of ScdsHybrid is skipped")
       skipScdsHybrid <- TRUE
@@ -750,9 +771,12 @@ if (skipDecontX) {
 } else {
   plotDecontX<- tryCatch(
     {plotDecontXResults(inSCE = sce.qc, 
-                              sample = colData(sce.qc)[['sample']],
-                              combinePlot = "none",
-                              reducedDimName = "QC_UMAP")},
+                        sample = colData(sce.qc)[['sample']],
+                        combinePlot = "none",
+                        reducedDimName = "QC_UMAP",
+                        axisSize = NULL,
+                        axisLabelSize = NULL,
+                        titleSize = NULL)},
     error = function(e) {
       cat("runDecontX did not complete successfully. The section of DecontX is skipped")
       skipDecontX <- TRUE

@@ -7,7 +7,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>.seuratInvalidate
-Removes seurat data from the input SingleCellExperiment object specified by the task in the Seurat workflow. — .seuratInvalidate • singleCellTK</title>
+Removes seurat data from the input SingleCellExperiment object specified by
+the task in the Seurat workflow. — .seuratInvalidate • singleCellTK</title>
 
 
 <!-- jquery -->
@@ -41,9 +42,11 @@ Removes seurat data from the input SingleCellExperiment object specified by the 
 
 
 <meta property="og:title" content=".seuratInvalidate
-Removes seurat data from the input SingleCellExperiment object specified by the task in the Seurat workflow. — .seuratInvalidate" />
+Removes seurat data from the input SingleCellExperiment object specified by
+the task in the Seurat workflow. — .seuratInvalidate" />
 <meta property="og:description" content=".seuratInvalidate
-Removes seurat data from the input SingleCellExperiment object specified by the task in the Seurat workflow." />
+Removes seurat data from the input SingleCellExperiment object specified by
+the task in the Seurat workflow." />
 
 
 
@@ -75,7 +78,7 @@ Removes seurat data from the input SingleCellExperiment object specified by the 
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.2</span>
       </span>
     </div>
 
@@ -110,7 +113,10 @@ Removes seurat data from the input SingleCellExperiment object specified by the 
       <a href="../articles/articles/cnsl_import_scRNAseq_data_as_SCE.html">Import data into SCTK</a>
     </li>
     <li>
-      <a href="../articles/articles/cnsl_qc.html">Quality Control</a>
+      <a href="../articles/articles/cnsl_dropletqc.html">Quality Control of droplet data</a>
+    </li>
+    <li>
+      <a href="../articles/articles/cnsl_cellqc.html">Quality Control of cell data</a>
     </li>
     <li>
       <a href="../articles/articles/cnsl_normalization.html">Normalization</a>
@@ -229,7 +235,7 @@ Removes seurat data from the input SingleCellExperiment object specified by the 
           <a href="../articles/articles/ui_feature_selection.html">Feature Selection</a>
         </li>
         <li>
-          <a href="../articles/articles/ui_dimemsionality_reduction.html">Dimensionality Reduction</a>
+          <a href="../articles/articles/ui_dimensionality_reduction.html">Dimensionality Reduction</a>
         </li>
       </ul>
     </li>
@@ -245,13 +251,33 @@ Removes seurat data from the input SingleCellExperiment object specified by the 
         <li>
           <a href="../articles/articles/ui_find_marker.html">Find Marker</a>
         </li>
+        <li>
+          <a href="../articles/articles/ui_cell_type_labeling.html">Cell Type Labeling</a>
+        </li>
       </ul>
+    </li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Pathway &amp; Enrichment Analysis</a>
+      <ul class="dropdown-menu" role="menu">
+        <li>
+          <a href="../articles/articles/ui_gsva.html">GSVA</a>
+        </li>
+        <li>
+          <a href="../articles/articles/ui_enrichR.html">EnrichR</a>
+        </li>
+      </ul>
+    </li>
+    <li>
+      <a href="../articles/articles/ui_sample_size_calc.html">Sample Size Calculator</a>
     </li>
     <li class="dropdown-submenu">
       <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Curated Workflows</a>
       <ul class="dropdown-menu" role="menu">
         <li>
           <a href="../articles/articles/ui_seurat_curated_workflow.html">Seurat</a>
+        </li>
+        <li>
+          <a href="../articles/articles/ui_celda_curated_workflow.html">Celda</a>
         </li>
       </ul>
     </li>
@@ -293,14 +319,16 @@ Removes seurat data from the input SingleCellExperiment object specified by the 
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>.seuratInvalidate
-Removes seurat data from the input SingleCellExperiment object specified by the task in the Seurat workflow.</h1>
+Removes seurat data from the input SingleCellExperiment object specified by
+the task in the Seurat workflow.</h1>
     <small class="dont-index">Source: <a href='https://github.com/compbiomed/singleCellTK/blob/master/R/seuratFunctions.R'><code>R/seuratFunctions.R</code></a></small>
     <div class="hidden name"><code>dot-seuratInvalidate.Rd</code></div>
     </div>
 
     <div class="ref-description">
     <p>.seuratInvalidate
-Removes seurat data from the input SingleCellExperiment object specified by the task in the Seurat workflow.</p>
+Removes seurat data from the input SingleCellExperiment object specified by
+the task in the Seurat workflow.</p>
     </div>
 
     <pre class="usage"><span class='fu'>.seuratInvalidate</span><span class='op'>(</span>
@@ -319,7 +347,8 @@ Removes seurat data from the input SingleCellExperiment object specified by the 
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>inSCE</th>
-      <td><p>Input <code>SingleCellExperiment</code> object to remove Seurat data from.</p></td>
+      <td><p>Input <code>SingleCellExperiment</code> object to remove Seurat data
+from.</p></td>
     </tr>
     <tr>
       <th>scaleData</th>
@@ -353,7 +382,8 @@ Removes seurat data from the input SingleCellExperiment object specified by the 
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Updated SingleCellExperiment object containing the Seurat object in the metadata slot with the data removed</p>
+    <p>Updated SingleCellExperiment object containing the Seurat object in
+the metadata slot with the data removed</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

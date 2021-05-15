@@ -1,8 +1,6 @@
 shinyPanelBatchcorrect <- fluidPage(
   includeCSS('styles.CSS'),
   h1("Normalization & Batch Correction"),
-  h5(tags$a(href = "https://www.sctk.science/articles/tab04_batch-correction",
-            "(help)", target = "_blank")),
   tabsetPanel(
   tabPanel(
     "Normalization", fluid = TRUE,
@@ -14,6 +12,8 @@ shinyPanelBatchcorrect <- fluidPage(
                         width = 12,
                         panel(
                             heading = "Normalization Options",
+                            h5(tags$a(href = paste0(docs.artPath, "ui_normalization.html"),
+                                      "(help)", target = "_blank")),
                             selectInput(
                               inputId = "normalizeAssayMethodSelect",
                               label = "Select normalization method: ",
@@ -42,8 +42,6 @@ shinyPanelBatchcorrect <- fluidPage(
                                      conditionalPanel(
                                        condition = "input.normalizeAssayMethodSelect != 'custom'",
                                        uiOutput("normalizeAssaySelect"),
-                                       #selectInput("normalizeAssaySelect", "Select Assay:", currassays),
-                                       #uiOutput("about"),
                                        conditionalPanel(
                                          condition = "input.normalizeAssayMethodSelect == 'LogNormalize'
                               || input.normalizeAssayMethodSelect == 'CLR'
@@ -279,6 +277,8 @@ shinyPanelBatchcorrect <- fluidPage(
     sidebarLayout(
       sidebarPanel(
         h3("Parameters"),
+        h5(tags$a(href = paste0(docs.artPath, "ui_batch_correction.html"),
+                  "(help)", target = "_blank")),
         selectInput('batchCorrMethods', "Select Batch Correction Method:",
                     c("ComBatSeq", "BBKNN", "FastMNN", "Limma", #"Harmony", "LIGER",
                       "MNN", "scanorama", "scMerge", "Seurat3 Integration",

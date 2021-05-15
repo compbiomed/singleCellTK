@@ -14,8 +14,9 @@ plotSCEDimReduceColData(
   shape = NULL,
   xlab = NULL,
   ylab = NULL,
-  axisSize = 10,
-  axisLabelSize = 10,
+  baseSize = 12,
+  axisSize = NULL,
+  axisLabelSize = NULL,
   dim1 = NULL,
   dim2 = NULL,
   bin = NULL,
@@ -30,9 +31,10 @@ plotSCEDimReduceColData(
   title = NULL,
   titleSize = 15,
   labelClusters = TRUE,
+  clusterLabelSize = 3.5,
   legendTitle = NULL,
-  legendTitleSize = 12,
-  legendSize = 10,
+  legendTitleSize = NULL,
+  legendSize = NULL,
   combinePlot = "none",
   plotLabels = NULL
 )
@@ -62,9 +64,13 @@ original class. Default NULL.}
 
 \item{ylab}{Character vector. Label for y-axis. Default NULL.}
 
-\item{axisSize}{Size of x/y-axis ticks. Default 10.}
+\item{baseSize}{The base font size for all text. Default 12.
+Can be overwritten by titleSize, axisSize, and axisLabelSize,
+legendSize, legendTitleSize.}
 
-\item{axisLabelSize}{Size of x/y-axis labels. Default 10.}
+\item{axisSize}{Size of x/y-axis ticks. Default NULL.}
+
+\item{axisLabelSize}{Size of x/y-axis labels. Default NULL.}
 
 \item{dim1}{1st dimension to be used for plotting. Can either be a string which specifies
 the name of the dimension to be plotted from reducedDims, or a numeric value which specifies
@@ -108,11 +114,14 @@ Default 'blue'.}
 
 \item{labelClusters}{Logical. Whether the cluster labels are plotted.}
 
+\item{clusterLabelSize}{Numeric. Determines the size of cluster label
+when `labelClusters` is set to TRUE. Default 3.5.}
+
 \item{legendTitle}{title of legend. Default NULL.}
 
 \item{legendTitleSize}{size of legend title. Default 12.}
 
-\item{legendSize}{size of legend. Default 10.
+\item{legendSize}{size of legend. Default NULL.
 Default FALSE.}
 
 \item{combinePlot}{Must be either "all", "sample", or "none". "all" will combine all plots into a single

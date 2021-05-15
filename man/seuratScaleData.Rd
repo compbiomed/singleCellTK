@@ -21,7 +21,8 @@ seuratScaleData(
 
 \item{useAssay}{Assay containing normalized counts to scale.}
 
-\item{scaledAssayName}{Name of new assay containing scaled data. Default \code{seuratScaledData}.}
+\item{scaledAssayName}{Name of new assay containing scaled data. Default
+\code{seuratScaledData}.}
 
 \item{model}{selected model to use for scaling data. Default \code{"linear"}.}
 
@@ -29,9 +30,10 @@ seuratScaleData(
 
 \item{center}{boolean if data should be centered or not. Default \code{TRUE}}
 
-\item{scaleMax}{maximum numeric value to return for scaled data. Default \code{10}.}
+\item{scaleMax}{maximum numeric value to return for scaled data. Default
+\code{10}.}
 
-\item{verbose}{Logical value indicating if informative messages should 
+\item{verbose}{Logical value indicating if informative messages should
 be displayed. Default is \code{TRUE}.}
 }
 \value{

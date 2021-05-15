@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Computes an HTML report from the Seurat workflow and returns the output SCE 
+<title>Computes an HTML report from the Seurat workflow and returns the output SCE
  object with the computations stored in it. — seuratReport • singleCellTK</title>
 
 
@@ -40,9 +40,9 @@
 
 
 
-<meta property="og:title" content="Computes an HTML report from the Seurat workflow and returns the output SCE 
+<meta property="og:title" content="Computes an HTML report from the Seurat workflow and returns the output SCE
  object with the computations stored in it. — seuratReport" />
-<meta property="og:description" content="Computes an HTML report from the Seurat workflow and returns the output SCE 
+<meta property="og:description" content="Computes an HTML report from the Seurat workflow and returns the output SCE
  object with the computations stored in it." />
 
 
@@ -75,7 +75,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.2</span>
       </span>
     </div>
 
@@ -110,7 +110,10 @@
       <a href="../articles/articles/cnsl_import_scRNAseq_data_as_SCE.html">Import data into SCTK</a>
     </li>
     <li>
-      <a href="../articles/articles/cnsl_qc.html">Quality Control</a>
+      <a href="../articles/articles/cnsl_dropletqc.html">Quality Control of droplet data</a>
+    </li>
+    <li>
+      <a href="../articles/articles/cnsl_cellqc.html">Quality Control of cell data</a>
     </li>
     <li>
       <a href="../articles/articles/cnsl_normalization.html">Normalization</a>
@@ -229,7 +232,7 @@
           <a href="../articles/articles/ui_feature_selection.html">Feature Selection</a>
         </li>
         <li>
-          <a href="../articles/articles/ui_dimemsionality_reduction.html">Dimensionality Reduction</a>
+          <a href="../articles/articles/ui_dimensionality_reduction.html">Dimensionality Reduction</a>
         </li>
       </ul>
     </li>
@@ -245,13 +248,33 @@
         <li>
           <a href="../articles/articles/ui_find_marker.html">Find Marker</a>
         </li>
+        <li>
+          <a href="../articles/articles/ui_cell_type_labeling.html">Cell Type Labeling</a>
+        </li>
       </ul>
+    </li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Pathway &amp; Enrichment Analysis</a>
+      <ul class="dropdown-menu" role="menu">
+        <li>
+          <a href="../articles/articles/ui_gsva.html">GSVA</a>
+        </li>
+        <li>
+          <a href="../articles/articles/ui_enrichR.html">EnrichR</a>
+        </li>
+      </ul>
+    </li>
+    <li>
+      <a href="../articles/articles/ui_sample_size_calc.html">Sample Size Calculator</a>
     </li>
     <li class="dropdown-submenu">
       <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Curated Workflows</a>
       <ul class="dropdown-menu" role="menu">
         <li>
           <a href="../articles/articles/ui_seurat_curated_workflow.html">Seurat</a>
+        </li>
+        <li>
+          <a href="../articles/articles/ui_celda_curated_workflow.html">Celda</a>
         </li>
       </ul>
     </li>
@@ -292,14 +315,14 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Computes an HTML report from the Seurat workflow and returns the output SCE 
+    <h1>Computes an HTML report from the Seurat workflow and returns the output SCE
  object with the computations stored in it.</h1>
     <small class="dont-index">Source: <a href='https://github.com/compbiomed/singleCellTK/blob/master/R/htmlReports.R'><code>R/htmlReports.R</code></a></small>
     <div class="hidden name"><code>seuratReport.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Computes an HTML report from the Seurat workflow and returns the output SCE 
+    <p>Computes an HTML report from the Seurat workflow and returns the output SCE
  object with the computations stored in it.</p>
     </div>
 
@@ -335,8 +358,8 @@ file name will be based on the name of the Rmarkdown template. Default
     </tr>
     <tr>
       <th>outputDir</th>
-      <td><p>Specify the name of the output directory to save the 
-rendered HTML file. If <code>NULL</code> the file is stored to the current 
+      <td><p>Specify the name of the output directory to save the
+rendered HTML file. If <code>NULL</code> the file is stored to the current
 working directory.</p></td>
     </tr>
     <tr>
@@ -346,7 +369,7 @@ Seurat report.</p></td>
     </tr>
     <tr>
       <th>authors</th>
-      <td><p>A <code>character</code> value specifying the names of the authors 
+      <td><p>A <code>character</code> value specifying the names of the authors
 to use in the Seurat report.</p></td>
     </tr>
     <tr>
@@ -369,7 +392,7 @@ to the <code>biological.group</code> parameter.</p></td>
     <tr>
       <th>selected.markers</th>
       <td><p>A <code>character</code> vector specifying the user decided
-gene symbols of pre-selected markers that be used to generate gene plots in 
+gene symbols of pre-selected markers that be used to generate gene plots in
 addition to the gene markers computed from differential expression.</p></td>
     </tr>
     <tr>

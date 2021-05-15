@@ -75,7 +75,7 @@ Plots the selected dimensionality reduction method" />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.2</span>
       </span>
     </div>
 
@@ -110,7 +110,10 @@ Plots the selected dimensionality reduction method" />
       <a href="../articles/articles/cnsl_import_scRNAseq_data_as_SCE.html">Import data into SCTK</a>
     </li>
     <li>
-      <a href="../articles/articles/cnsl_qc.html">Quality Control</a>
+      <a href="../articles/articles/cnsl_dropletqc.html">Quality Control of droplet data</a>
+    </li>
+    <li>
+      <a href="../articles/articles/cnsl_cellqc.html">Quality Control of cell data</a>
     </li>
     <li>
       <a href="../articles/articles/cnsl_normalization.html">Normalization</a>
@@ -229,7 +232,7 @@ Plots the selected dimensionality reduction method" />
           <a href="../articles/articles/ui_feature_selection.html">Feature Selection</a>
         </li>
         <li>
-          <a href="../articles/articles/ui_dimemsionality_reduction.html">Dimensionality Reduction</a>
+          <a href="../articles/articles/ui_dimensionality_reduction.html">Dimensionality Reduction</a>
         </li>
       </ul>
     </li>
@@ -245,13 +248,33 @@ Plots the selected dimensionality reduction method" />
         <li>
           <a href="../articles/articles/ui_find_marker.html">Find Marker</a>
         </li>
+        <li>
+          <a href="../articles/articles/ui_cell_type_labeling.html">Cell Type Labeling</a>
+        </li>
       </ul>
+    </li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Pathway &amp; Enrichment Analysis</a>
+      <ul class="dropdown-menu" role="menu">
+        <li>
+          <a href="../articles/articles/ui_gsva.html">GSVA</a>
+        </li>
+        <li>
+          <a href="../articles/articles/ui_enrichR.html">EnrichR</a>
+        </li>
+      </ul>
+    </li>
+    <li>
+      <a href="../articles/articles/ui_sample_size_calc.html">Sample Size Calculator</a>
     </li>
     <li class="dropdown-submenu">
       <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Curated Workflows</a>
       <ul class="dropdown-menu" role="menu">
         <li>
           <a href="../articles/articles/ui_seurat_curated_workflow.html">Seurat</a>
+        </li>
+        <li>
+          <a href="../articles/articles/ui_celda_curated_workflow.html">Celda</a>
         </li>
       </ul>
     </li>
@@ -316,23 +339,28 @@ Plots the selected dimensionality reduction method</p>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>inSCE</th>
-      <td><p>(sce) object which has the selected dimensionality reduction algorithm already computed and stored</p></td>
+      <td><p>(sce) object which has the selected dimensionality reduction
+algorithm already computed and stored</p></td>
     </tr>
     <tr>
       <th>useReduction</th>
-      <td><p>Dimentionality reduction to plot. One of "pca", "ica", "tsne", or "umap". Default <code>"umap"</code>.</p></td>
+      <td><p>Dimentionality reduction to plot. One of "pca", "ica",
+"tsne", or "umap". Default <code>"umap"</code>.</p></td>
     </tr>
     <tr>
       <th>showLegend</th>
-      <td><p>Select if legends and labels should be shown on the output plot or not. Either "TRUE" or "FALSE". Default <code>FALSE</code>.</p></td>
+      <td><p>Select if legends and labels should be shown on the output
+plot or not. Either "TRUE" or "FALSE". Default <code>FALSE</code>.</p></td>
     </tr>
     <tr>
       <th>groupBy</th>
-      <td><p>Specify a colData column name that be used for grouping. Default is <code>NULL</code>.</p></td>
+      <td><p>Specify a colData column name that be used for grouping.
+Default is <code>NULL</code>.</p></td>
     </tr>
     <tr>
       <th>splitBy</th>
-      <td><p>Specify a colData column name that be used for splitting the output plot. Default is <code>NULL</code>.</p></td>
+      <td><p>Specify a colData column name that be used for splitting the
+output plot. Default is <code>NULL</code>.</p></td>
     </tr>
     </table>
 

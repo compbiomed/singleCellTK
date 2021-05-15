@@ -63,6 +63,12 @@
 #' @return A \code{\link[ComplexHeatmap]{Heatmap}} object
 #' @author Yichen Wang
 #' @export
+#' @examples
+#' data("sceBatches")
+#' logcounts(sceBatches) <- log(counts(sceBatches) + 1)
+#' sce.w <- subsetSCECols(sceBatches, colData = "batch == 'w'")
+#' sce.w <- findMarkerDiffExp(sce.w, method = "wilcox", cluster = "cell_type")
+#' plotMarkerDiffExp(sce.w)
 plotMarkerDiffExp <- function(inSCE, orderBy = 'size',
     log2fcThreshold = 1, fdrThreshold = 0.05, minClustExprPerc = 0.7,
     maxCtrlExprPerc = 0.4, minMeanExpr = 1, topN = 10, decreasing = TRUE,

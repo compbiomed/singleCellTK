@@ -52,3 +52,12 @@ A ggplot object of violin plot
 plot the violin plot to show visualize the expression distribution of DEGs
 identified by differential expression analysis
 }
+\examples{
+data("sceBatches")
+logcounts(sceBatches) <- log(counts(sceBatches) + 1)
+sce.w <- subsetSCECols(sceBatches, colData = "batch == 'w'")
+sce.w <- runWilcox(sce.w, class = "cell_type", classGroup1 = "alpha",
+                   groupName1 = "w.alpha", groupName2 = "w.beta",
+                   analysisName = "w.aVSb")
+plotDEGViolin(sce.w, "w.aVSb")
+}

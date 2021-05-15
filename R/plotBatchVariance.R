@@ -30,13 +30,11 @@
 #' condition, and batch+condition.
 #' @export
 #' @examples
-#' \dontrun{
-#'   data('sceBatches', package = 'singleCellTK')
-#'   plotBatchVariance(sceBatches,
-#'                     useAssay="logcounts",
-#'                     batch="batch",
-#'                     condition = "cell_type")
-#' }
+#' data('sceBatches', package = 'singleCellTK')
+#' plotBatchVariance(sceBatches,
+#'                   useAssay="counts",
+#'                   batch="batch",
+#'                   condition = "cell_type")
 plotBatchVariance <- function(inSCE, useAssay = NULL, useReddim = NULL,
                               useAltExp = NULL, batch = 'batch',
                               condition=NULL, title = NULL) {
@@ -171,10 +169,8 @@ plotBatchVariance <- function(inSCE, useAssay = NULL, useReddim = NULL,
 #' @param ylab label for y-axis. Default \code{"Feature Mean"}.
 #' @param ... Additional arguments passed to \code{\link{.ggViolin}}.
 #' @examples
-#' \dontrun{
-#'   data('sceBatches', package = 'singleCellTK')
-#'   plotSCEBatchFeatureMean(sceBatches, useAssay = "counts")
-#' }
+#' data('sceBatches', package = 'singleCellTK')
+#' plotSCEBatchFeatureMean(sceBatches, useAssay = "counts")
 #' @return ggplot
 #' @export
 plotSCEBatchFeatureMean <- function(inSCE, useAssay = NULL, useReddim = NULL,

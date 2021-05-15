@@ -213,6 +213,11 @@ shinyServer(function(input, output, session) {
       )
     })
   }
+  
+  observeEvent(input$hvgMethodFS,{
+    req(vals$counts)
+    updateAssayInputs()
+  })
 
   updateAssayInputs <- function(){
     currassays <- names(assays(vals$counts))
@@ -240,19 +245,16 @@ shinyServer(function(input, output, session) {
     }
     updateSelectInputTag(session, "fmHMAssay", choices = currassays, selected = input$fmAssay)
     updateSelectInputTag(session, "pathwayAssay", recommended = c("transformed", "normalized", "scaled"))
-
-    #modifyAssaySelect conditions
-    # if(input$assayModifyAction == "log" || input$assayModifyAction == "log1p"){
-    #   updateSelectInputTag(session, "modifyAssaySelect", recommended = c("raw", "normalized"))
-    # }
-    # else if(input$assayModifyAction == "z.score"){
-    #   updateSelectInputTag(session, "modifyAssaySelect", recommended = "normalized")
-    # }
     updateSelectInputTag(session, "modifyAssaySelect")
     updateSelectInputTag(session, "normalizeAssaySelect", label = "Select assay to normalize:", recommended = "raw")
 
     updateSelectInputTag(session, "seuratSelectNormalizationAssay", choices = currassays, showTags = FALSE)
-    updateSelectInputTag(session, "assaySelectFS_Norm", recommended = c("transformed", "normalized", "scaled"))
+    if(input$hvgMethodFS == "vst"){
+      updateSelectInputTag(session, "assaySelectFS_Norm", recommended = c("raw"))
+    }
+    else{
+      updateSelectInputTag(session, "assaySelectFS_Norm", recommended = c("transformed", "normalized", "scaled")) 
+    }
     updateSelectInputTag(session, "filterAssaySelect", choices = currassays)
     updateSelectInputTag(session, "qcAssaySelect", recommended = "raw")
     updateSelectInputTag(session, "celdaAssay", choices = currassays)
@@ -1008,7 +1010,7 @@ shinyServer(function(input, output, session) {
                                                                       actionButton(inputId = "plot_heatmap_pca_button", "Plot")
                                                                 ),
                                                                 panel(heading = "Plot",
-                                                                      jqui_resizable(plotOutput(outputId = "plot_heatmap_pca"), options = list(maxWidth = 700))
+                                                                      shinyjqui::jqui_resizable(plotOutput(outputId = "plot_heatmap_pca"), options = list(maxWidth = 700))
                                                                 )
                                                           )
       ))
@@ -1150,7 +1152,7 @@ shinyServer(function(input, output, session) {
 
           appendTab(inputId = "seuratFindMarkerPlotTabset", tabPanel(title = "Ridge Plot",
                                                                      panel(heading = "Ridge Plot",
-                                                                           jqui_resizable(
+                                                                           shinyjqui::jqui_resizable(
                                                                              plotOutput(outputId = "findMarkerRidgePlot")
                                                                            )
                                                                      )
@@ -1158,7 +1160,7 @@ shinyServer(function(input, output, session) {
           )
           appendTab(inputId = "seuratFindMarkerPlotTabset", tabPanel(title = "Violin Plot",
                                                                      panel(heading = "Violin Plot",
-                                                                           jqui_resizable(
+                                                                           shinyjqui::jqui_resizable(
                                                                              plotOutput(outputId = "findMarkerViolinPlot")
                                                                            )
                                                                      )
@@ -1166,7 +1168,7 @@ shinyServer(function(input, output, session) {
           )
           appendTab(inputId = "seuratFindMarkerPlotTabset", tabPanel(title = "Feature Plot",
                                                                      panel(heading = "Feature Plot",
-                                                                           jqui_resizable(
+                                                                           shinyjqui::jqui_resizable(
                                                                              plotOutput(outputId = "findMarkerFeaturePlot")
                                                                            )
                                                                      )
@@ -1174,7 +1176,7 @@ shinyServer(function(input, output, session) {
           )
           appendTab(inputId = "seuratFindMarkerPlotTabset", tabPanel(title = "Dot Plot",
                                                                      panel(heading = "Dot Plot",
-                                                                           jqui_resizable(
+                                                                           shinyjqui::jqui_resizable(
                                                                              plotOutput(outputId = "findMarkerDotPlot")
                                                                            )
                                                                      )
@@ -2494,7 +2496,7 @@ shinyServer(function(input, output, session) {
         key = "PC_")
     }
 
-    removeTab(inputId = "dimRedPCAICA_plotTabset", target = "PCA Plot")
+    removeTab(inputId = "dimRedPCAICA_plotTabset", target = "Component Plot")
     removeTab(inputId = "dimRedPCAICA_plotTabset", target = "Elbow Plot")
     removeTab(inputId = "dimRedPCAICA_plotTabset", target = "Heatmap Plot")
     removeTab(inputId = "dimRedPCAICA_plotTabset", target = "JackStraw Plot")
@@ -2598,7 +2600,7 @@ shinyServer(function(input, output, session) {
             ),
             panel(
               heading = "Plot",
-              jqui_resizable(
+              shinyjqui::jqui_resizable(
                 plotOutput(outputId = "plot_heatmap_dimRed"),
                 options = list(maxWidth = 700)
               )
@@ -3284,7 +3286,7 @@ shinyServer(function(input, output, session) {
       if (is.null(vals$counts)){
         shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
       }else{
-        gene_list <- BiocGenerics::rownames(vals$counts)
+        gene_list <- rownames(vals$counts)
         annotation_list <- names(colData(vals$counts))
         annotation_list2 <- list()
         for (i in 1:length(annotation_list)){
@@ -6325,7 +6327,7 @@ shinyServer(function(input, output, session) {
                                                                       actionButton(inputId = "plot_heatmap_pca_button", "Plot")
                                                                 ),
                                                                 panel(heading = "Plot",
-                                                                      jqui_resizable(plotOutput(outputId = "plot_heatmap_pca"), options = list(maxWidth = 700))
+                                                                      shinyjqui::jqui_resizable(plotOutput(outputId = "plot_heatmap_pca"), options = list(maxWidth = 700))
                                                                 )
                                                           )
       ))
@@ -6422,7 +6424,7 @@ shinyServer(function(input, output, session) {
                                                                       actionButton(inputId = "plot_heatmap_ica_button", "Plot")
                                                                 ),
                                                                 panel(heading = "Plot",
-                                                                      jqui_resizable(plotOutput(outputId = "plot_heatmap_ica"), options = list(maxWidth = 700))
+                                                                      shinyjqui::jqui_resizable(plotOutput(outputId = "plot_heatmap_ica"), options = list(maxWidth = 700))
                                                                 )
                                                           )
       ))
@@ -6783,7 +6785,7 @@ shinyServer(function(input, output, session) {
 
     appendTab(inputId = "seuratFindMarkerPlotTabset", tabPanel(title = "Ridge Plot",
                                                                                              panel(heading = "Ridge Plot",
-                                                                                                   jqui_resizable(
+                                                                                                   shinyjqui::jqui_resizable(
                                                                                                      plotOutput(outputId = "findMarkerRidgePlot")
                                                                                                    )
                                                                                              )
@@ -6791,7 +6793,7 @@ shinyServer(function(input, output, session) {
     )
     appendTab(inputId = "seuratFindMarkerPlotTabset", tabPanel(title = "Violin Plot",
                                                                                              panel(heading = "Violin Plot",
-                                                                                                   jqui_resizable(
+                                                                                                   shinyjqui::jqui_resizable(
                                                                                                      plotOutput(outputId = "findMarkerViolinPlot")
                                                                                                    )
                                                                                              )
@@ -6799,7 +6801,7 @@ shinyServer(function(input, output, session) {
     )
     appendTab(inputId = "seuratFindMarkerPlotTabset", tabPanel(title = "Feature Plot",
                                                                                              panel(heading = "Feature Plot",
-                                                                                                   jqui_resizable(
+                                                                                                   shinyjqui::jqui_resizable(
                                                                                                      plotOutput(outputId = "findMarkerFeaturePlot")
                                                                                                    )
                                                                                              )
@@ -6807,7 +6809,7 @@ shinyServer(function(input, output, session) {
     )
     appendTab(inputId = "seuratFindMarkerPlotTabset", tabPanel(title = "Dot Plot",
                                                                                              panel(heading = "Dot Plot",
-                                                                                                   jqui_resizable(
+                                                                                                   shinyjqui::jqui_resizable(
                                                                                                      plotOutput(outputId = "findMarkerDotPlot")
                                                                                                    )
                                                                                              )
