@@ -6177,6 +6177,7 @@ shinyServer(function(input, output, session) {
                                          normAssayName = "seuratNormData",
                                          normalizationMethod = input$normalization_method,
                                          scaleFactor = as.numeric(input$scale_factor))
+      metadata(vals$counts)$sctk$seuratUseAssay <- input$seuratSelectNormalizationAssay
       # updateAssayInputs()
       vals$counts <- singleCellTK:::.seuratInvalidate(inSCE = vals$counts)
     })
@@ -6214,10 +6215,18 @@ shinyServer(function(input, output, session) {
   observeEvent(input$find_hvg_button, {
     req(vals$counts)
     withProgress(message = "Finding highly variable genes", max = 1, value = 1, {
-      vals$counts <- seuratFindHVG(inSCE = vals$counts,
-                                   useAssay = "seuratNormData",
-                                   hvgMethod = input$hvg_method,
-                                   hvgNumber = as.numeric(input$hvg_no_features))
+      if(input$hvg_method == "vst"){
+        vals$counts <- seuratFindHVG(inSCE = vals$counts,
+                                     useAssay = metadata(vals$counts)$sctk$seuratUseAssay,
+                                     hvgMethod = input$hvg_method,
+                                     hvgNumber = as.numeric(input$hvg_no_features))
+      }
+      else{
+        vals$counts <- seuratFindHVG(inSCE = vals$counts,
+                                     useAssay = "seuratNormData",
+                                     hvgMethod = input$hvg_method,
+                                     hvgNumber = as.numeric(input$hvg_no_features))
+      }
       vals$counts <- singleCellTK:::.seuratInvalidate(inSCE = vals$counts, scaleData = FALSE, varFeatures = FALSE)
     })
     withProgress(message = "Plotting HVG", max = 1, value = 1, {
