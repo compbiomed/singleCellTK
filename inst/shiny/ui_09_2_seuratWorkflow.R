@@ -4,7 +4,19 @@ shinyPanelSeurat <- fluidPage(
     h5(tags$a(href = "https://www.sctk.science/articles/tab09_seurat-workflow",
               "(help)", target = "_blank")),
     inlineCSS(list(".panel-danger>.panel-heading" = "background-color:#dcdcdc; color:#000000", ".panel-primary>.panel-heading" = "background-color:#f5f5f5; color:#000000; border-color:#dddddd", ".panel-primary" = "border-color:#dddddd;", ".panel-primary>.panel-heading+.panel-collapse>.panel-body" = "border-color:#dddddd;")),
-        bsCollapse(id = "SeuratUI", open = "Data Input",
+    conditionalPanel(
+        condition = "false",
+        selectInput(
+            "activePanelSelectSeurat",
+            label = "Active Panel:",
+            choices = c("",
+                        "Normalize Data",
+                        "Scale Data",
+                        "Highly Variable Genes"),
+            selected = ""
+        )
+    ),    
+    bsCollapse(id = "SeuratUI", open = "Data Input",
             bsCollapsePanel("Normalize Data",
                 fluidRow(
                     column(4,

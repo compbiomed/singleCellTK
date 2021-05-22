@@ -8095,4 +8095,13 @@ shinyServer(function(input, output, session) {
       })
     }
   })
+  
+  ##############################################################################
+  # Code for ShinyTest ####
+  ##############################################################################
+  observe({
+    shinyBS::updateCollapse(session,
+                            "SeuratUI",
+                            open = input$activePanelSelectSeurat)
+  })
 })
