@@ -15,7 +15,7 @@ shinyPanelSeurat <- fluidPage(
                         "Highly Variable Genes"),
             selected = ""
         )
-    ),    
+    ),
     bsCollapse(id = "SeuratUI", open = "Data Input",
             bsCollapsePanel("Normalize Data",
                 fluidRow(

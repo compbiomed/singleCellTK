@@ -38,6 +38,8 @@ library(grDevices)
 library(shinyWidgets)
 library(stringr)
 library(Hmisc)
+library(pushbar)
+library(spsComps)
 
 
 source("helpers.R")
@@ -220,6 +222,25 @@ shinyUI(
         column(12, id = "consoleDiv",
                actionButton(inputId="consoleToggle", label = "Console Log"),
                hidden(verbatimTextOutput(outputId="console")),
+        )
+      ),
+      fluidRow(
+        column(12, id = "consoleDiv", align = "right",
+               actionButton(inputId="interpretToggle", label = "Interpret"),
+               pushbar_deps(),
+               pushbar(
+                 from = "bottom",
+                 id = "myPushbar",
+                 spsTimeline(
+                   "b",
+                   up_labels = c("Data Import", 
+                                 "Quality Control", 
+                                 "Normalization"),
+                   down_labels = c("step 1", "step 2", "step3"),
+                   icons = list(icon("dna"), icon("dna"), icon("dna")),
+                   completes = c(TRUE, TRUE, FALSE)
+                 )
+               )
         )
       ),
       useShinyjs(),

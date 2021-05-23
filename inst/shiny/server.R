@@ -22,6 +22,9 @@ shinyServer(function(input, output, session) {
   #call modules server part
   callModule(module = nonLinearWorkflow, id = "id_1", parent = session)
 
+  #PushBar setup
+  setup_pushbar(blur = FALSE, overlay = FALSE)
+  
   # library(fs)
   # library(shinyFiles)
 
@@ -8104,4 +8107,11 @@ shinyServer(function(input, output, session) {
                             "SeuratUI",
                             open = input$activePanelSelectSeurat)
   })
+  
+  ##############################################################################
+  # Code for PushBar ####
+  ##############################################################################
+  observeEvent(input$interpretToggle, {
+    pushbar_open(id = "myPushbar")
+  })  
 })
