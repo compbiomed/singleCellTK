@@ -8111,7 +8111,7 @@ shinyServer(function(input, output, session) {
   ##############################################################################
   # Code for PushBar ####
   ##############################################################################
-  observeEvent(input$interpretToggle, {
-    pushbar_open(id = "myPushbar")
-  })  
+  # observeEvent(input$interpretToggle, {
+  #   pushbar_open(id = "myPushbar")
+  # })  
 })

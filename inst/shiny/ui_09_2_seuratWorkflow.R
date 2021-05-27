@@ -12,7 +12,12 @@ shinyPanelSeurat <- fluidPage(
             choices = c("",
                         "Normalize Data",
                         "Scale Data",
-                        "Highly Variable Genes"),
+                        "Highly Variable Genes",
+                        "Dimensionality Reduction",
+                        "tSNE/UMAP",
+                        "Clustering",
+                        "Find Markers",
+                        "Heatmap Plot"),
             selected = ""
         )
     ),
@@ -89,7 +94,7 @@ shinyPanelSeurat <- fluidPage(
                                 fluidRow(
                                     column(12,
                                         panel(heading = "PCA",
-                                            textInput(inputId = "pca_no_components", label = "Select number of components to compute: ", value = "50"),
+                                            numericInput(inputId = "pca_no_components", label = "Select number of components to compute: ", value = 50),
                                             materialSwitch(inputId = "pca_compute_elbow", label = "Compute ElbowPlot?", value = TRUE),
                                             materialSwitch(inputId = "pca_compute_jackstraw", label = "Compute JackStrawPlot?", value = FALSE),
                                             materialSwitch(inputId = "pca_compute_heatmap", label = "Compute Heatmap?", value = TRUE),
@@ -164,7 +169,7 @@ shinyPanelSeurat <- fluidPage(
 
 
             bsCollapsePanel("tSNE/UMAP",
-                tabsetPanel(type = "tabs",
+                tabsetPanel(id = "tsneUmapTabsetSeurat", type = "tabs",
                     tabPanel("tSNE",
                         br(),
                         fluidRow(
