@@ -855,7 +855,10 @@ seuratHeatmapPlot <- function(plotObject, dims, ncol, labels) {
 #' @export
 convertSeuratToSCE <- function(seuratObject, normAssayName = "seuratNormData",
                                scaledAssayName = "seuratScaledData") {
-  inSCE <- Seurat::as.SingleCellExperiment(seuratObject)
+  inSCE <- SingleCellExperiment(
+    assays = list(counts = seuratObject@assays[[1]]@counts),
+    colData = seuratObject@meta.data)
+  
   assay(inSCE, normAssayName) <- methods::slot(seuratObject@assays$RNA, "data")
   if (length(methods::slot(seuratObject, "assays")[["RNA"]]@scale.data) > 0) {
     assay(inSCE, scaledAssayName) <- methods::slot(seuratObject@assays$RNA,
