@@ -1044,6 +1044,9 @@ convertSCEToSeurat <- function(inSCE, countsAssay = NULL, normAssay = NULL,
     rownames(decontM) <- gsub('_', '-', rownames(decontM))
     seuratObject[["decontXcounts"]] <- Seurat::CreateAssayObject(counts = .convertToMatrix(decontM))
   }
+  
+  # Ensuring that colnames from input SCE converted to Seurat object are same in the Seurat metadata slot
+  rownames(seuratObject@meta.data) <- colnames(seuratObject)
 
   return(seuratObject)
 }
