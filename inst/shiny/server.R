@@ -23,7 +23,7 @@ shinyServer(function(input, output, session) {
   callModule(module = nonLinearWorkflow, id = "id_1", parent = session)
 
   #PushBar setup
-  setup_pushbar(blur = FALSE, overlay = FALSE)
+  # setup_pushbar(blur = FALSE, overlay = FALSE)
   
   # library(fs)
   # library(shinyFiles)
