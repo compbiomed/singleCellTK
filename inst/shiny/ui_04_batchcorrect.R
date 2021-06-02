@@ -518,6 +518,10 @@ shinyPanelBatchcorrect <- fluidPage(
       )
     )
   )
-  )
+  ),
+  nonLinearWorkflowUI(
+    id = "id_4",
+    dr = TRUE,
+    fs = TRUE)
 )
 

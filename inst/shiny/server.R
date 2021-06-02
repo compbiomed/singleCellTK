@@ -18,9 +18,16 @@ source("qc_help_pages/ui_scDblFinder_help.R", local = TRUE) # creates several sm
 
 # Define server logic required to draw a histogram
 shinyServer(function(input, output, session) {
-
+  
   #call modules server part
   callModule(module = nonLinearWorkflow, id = "id_1", parent = session)
+  callModule(module = nonLinearWorkflow, id = "id_2", parent = session)
+  callModule(module = nonLinearWorkflow, id = "id_3", parent = session)
+  callModule(module = nonLinearWorkflow, id = "id_4", parent = session)
+  callModule(module = nonLinearWorkflow, id = "id_5", parent = session)
+  callModule(module = nonLinearWorkflow, id = "id_6", parent = session)
+  callModule(module = nonLinearWorkflow, id = "id_7", parent = session)
+  callModule(module = nonLinearWorkflow, id = "id_8", parent = session)
 
   #PushBar setup
   # setup_pushbar(blur = FALSE, overlay = FALSE)
@@ -8115,3 +8122,4 @@ shinyServer(function(input, output, session) {
   #   pushbar_open(id = "myPushbar")
   # })  
 })
+

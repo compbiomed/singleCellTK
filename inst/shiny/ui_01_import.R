@@ -304,7 +304,10 @@ shinyPanelImport <- fluidPage(
       class = "container",
       p("")
     ),
-  )
+  ),
+                         nonLinearWorkflowUI(
+                           id = "id_2",
+                           qcf = TRUE)
   #includeHTML("www/footer.html")
 )
 

@@ -9,6 +9,10 @@ shinyPanelQCFilter <- fluidPage(
   tabsetPanel(
     tabPanel("QC", shinyPanelQC),
     tabPanel("Filtering", shinyPanelFilter)
-  )
+  ),
+  nonLinearWorkflowUI(
+    id = "id_3",
+    nbc = TRUE,
+    cw = TRUE)
 )
 

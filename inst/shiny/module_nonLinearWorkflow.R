@@ -1,5 +1,14 @@
 #UI
-nonLinearWorkflowUI <- function(id, de = FALSE, cv = FALSE, pa = FALSE)
+nonLinearWorkflowUI <- function(id, 
+                                de = FALSE, 
+                                cv = FALSE, 
+                                pa = FALSE, 
+                                qcf = FALSE, 
+                                nbc = FALSE, 
+                                cw = FALSE, 
+                                dr = FALSE, 
+                                fs = FALSE,
+                                cl = FALSE)
 {
   ns <- NS(id)
   fluidPage(
@@ -11,7 +20,25 @@ nonLinearWorkflowUI <- function(id, de = FALSE, cv = FALSE, pa = FALSE)
                      value = cv),
            textInput(inputId = ns("pa"),
                      label = "",
-                     value = pa)
+                     value = pa),
+           textInput(inputId = ns("qcf"),
+                     label = "",
+                     value = qcf),
+           textInput(inputId = ns("nbc"),
+                     label = "",
+                     value = nbc),
+           textInput(inputId = ns("cw"),
+                     label = "",
+                     value = cw),
+           textInput(inputId = ns("dr"),
+                     label = "",
+                     value = dr),
+           textInput(inputId = ns("fs"),
+                     label = "",
+                     value = fs),
+           textInput(inputId = ns("cl"),
+                     label = "",
+                     value = cl)
     ),
       conditionalPanel(
         condition = "output.displayDE",
@@ -42,6 +69,61 @@ nonLinearWorkflowUI <- function(id, de = FALSE, cv = FALSE, pa = FALSE)
         heading = "Cell Viewer",
         h5("Discover quantitative changes between experimental conditions using one of the many integrated statistical frameworks:"),
         actionButton(inputId = ns("goCV"), label = "Go to Cell Viewer!")
+      )
+    ),
+    conditionalPanel(
+      condition = "output.displayQCF",
+      ns = ns,
+      panel(
+        heading = "Quality Control & Filtering",
+        h5("Perform quality control checks / filtering."),
+        actionButton(inputId = ns("goQC"), label = "Go to Quality Control!")
+      )
+    ),
+    conditionalPanel(
+      condition = "output.displayNBC",
+      ns = ns,
+      panel(
+        heading = "Normalization & Batch-Correction",
+        h5("go nbc"),
+        actionButton(inputId = ns("goNBC"), label = "Go to Normalization/Batch-Correction!")
+      )
+    ),
+    conditionalPanel(
+      condition = "output.displayCW",
+      ns = ns,
+      panel(
+        heading = "Curated Workflows",
+        h5("go cw"),
+        actionButton(inputId = ns("goCelda"), label = "Go to Celda!"),
+        actionButton(inputId = ns("goSeurat"), label = "Go to Seurat!")
+      )
+    ),
+    conditionalPanel(
+      condition = "output.displayDR",
+      ns = ns,
+      panel(
+        heading = "Dimensionality Reduction",
+        h5("go dr"),
+        actionButton(inputId = ns("goDR"), label = "Go to Dimensionality Reduction!")
+      )
+    ),
+    conditionalPanel(
+      condition = "output.displayFS",
+      ns = ns,
+      panel(
+        heading = "Feature Selection",
+        h5("go fs"),
+        actionButton(inputId = ns("goFS"), label = "Go to Feature Selection!")
+      )
+    ),
+    conditionalPanel(
+      condition = "output.displayCL",
+      ns = ns,
+      panel(
+        heading = "Clustering",
+        h5("go cl"),
+        actionButton(inputId = ns("goCL"), label = "Go to Clustering!")
       )
     )
   )
@@ -79,6 +161,55 @@ nonLinearWorkflow <- function(input, output, session, parent)
             select = TRUE,
             session = parent)
   })
+  
+  observeEvent(input$goQC,{
+    showTab(inputId = "navbar",
+            target = "QC & Filtering",
+            select = TRUE,
+            session = parent)
+  })
+  
+  observeEvent(input$goNBC,{
+    showTab(inputId = "navbar",
+            target = "Normalization & Batch Correction",
+            select = TRUE,
+            session = parent)
+  })
+  
+  observeEvent(input$goCelda,{
+    showTab(inputId = "navbar",
+            target = "Celda",
+            select = TRUE,
+            session = parent)
+  })
+  
+  observeEvent(input$goSeurat,{
+    showTab(inputId = "navbar",
+            target = "Seurat",
+            select = TRUE,
+            session = parent)
+  })
+  
+  observeEvent(input$goDR,{
+    showTab(inputId = "navbar",
+            target = "DR",
+            select = TRUE,
+            session = parent)
+  })
+  
+  observeEvent(input$goFS,{
+    showTab(inputId = "navbar",
+            target = "FS",
+            select = TRUE,
+            session = parent)
+  })
+  
+  observeEvent(input$goCL,{
+    showTab(inputId = "navbar",
+            target = "CL",
+            select = TRUE,
+            session = parent)
+  })
 
     output$displayDE <- reactive({
       returnedValue = input$de
@@ -94,8 +225,44 @@ nonLinearWorkflow <- function(input, output, session, parent)
       returnedValue = input$cv
       return(as.logical(returnedValue))
     })
+    
+    output$displayQCF <- reactive({
+      returnedValue = input$qcf
+      return(as.logical(returnedValue))
+    })
+    
+    output$displayNBC <- reactive({
+      returnedValue = input$nbc
+      return(as.logical(returnedValue))
+    })
+    
+    output$displayCW <- reactive({
+      returnedValue = input$cw
+      return(as.logical(returnedValue))
+    })
+    
+    output$displayDR <- reactive({
+      returnedValue = input$dr
+      return(as.logical(returnedValue))
+    })
+    
+    output$displayFS <- reactive({
+      returnedValue = input$fs
+      return(as.logical(returnedValue))
+    })
+    
+    output$displayCL <- reactive({
+      returnedValue = input$cl
+      return(as.logical(returnedValue))
+    })
 
   outputOptions(output, "displayDE", suspendWhenHidden = FALSE)
   outputOptions(output, "displayPA", suspendWhenHidden = FALSE)
   outputOptions(output, "displayCV", suspendWhenHidden = FALSE)
+  outputOptions(output, "displayQCF", suspendWhenHidden = FALSE)
+  outputOptions(output, "displayNBC", suspendWhenHidden = FALSE)
+  outputOptions(output, "displayCW", suspendWhenHidden = FALSE)
+  outputOptions(output, "displayDR", suspendWhenHidden = FALSE)
+  outputOptions(output, "displayFS", suspendWhenHidden = FALSE)
+  outputOptions(output, "displayCL", suspendWhenHidden = FALSE)
 }
