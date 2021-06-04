@@ -1,6 +1,6 @@
 var busy = 0;
 $(function(){ 
-    $(document).on('shiny:busy', function(event) {
+    $(document).on('shiny:connected', function(event) {
     $.busyLoadSetup({ animation: "slide", background: "rgba(245, 245, 245, 0.86)" });
     if(busy == 0){
       $.busyLoadFull("show",{

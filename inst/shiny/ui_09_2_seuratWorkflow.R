@@ -358,14 +358,8 @@ shinyPanelSeurat <- fluidPage(
                                        )
                                 )
                             ),
-                            style = "primary"),
-            hidden(bsCollapsePanel("Downstream Analysis",
-                                   nonLinearWorkflowUI(
-                                       id = "id_1",
-                                       de = TRUE,
-                                       pa = TRUE),
                             style = "primary")
-        )
-       )
+       ),
+    nonLinearWorkflowUI(id = "nlw-seurat")
     )
 

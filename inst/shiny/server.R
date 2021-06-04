@@ -18,18 +18,8 @@ source("qc_help_pages/ui_scDblFinder_help.R", local = TRUE) # creates several sm
 
 # Define server logic required to draw a histogram
 shinyServer(function(input, output, session) {
-  
-  #call modules server part
-  callModule(module = nonLinearWorkflow, id = "id_1", parent = session)
-  callModule(module = nonLinearWorkflow, id = "id_2", parent = session)
-  callModule(module = nonLinearWorkflow, id = "id_3", parent = session)
-  callModule(module = nonLinearWorkflow, id = "id_4", parent = session)
-  callModule(module = nonLinearWorkflow, id = "id_5", parent = session)
-  callModule(module = nonLinearWorkflow, id = "id_6", parent = session)
-  callModule(module = nonLinearWorkflow, id = "id_7", parent = session)
-  callModule(module = nonLinearWorkflow, id = "id_8", parent = session)
 
-  #PushBar setup
+  # PushBar setup
   # setup_pushbar(blur = FALSE, overlay = FALSE)
   
   # library(fs)
@@ -941,6 +931,7 @@ shinyServer(function(input, output, session) {
 
       updateSeuratUIFromRDS(vals$counts)
     })
+    callModule(module = nonLinearWorkflow, id = "nlw-import", parent = session, qcf = TRUE)
   })
 
   updateSeuratUIFromRDS <- function(inSCE){
@@ -1626,6 +1617,9 @@ shinyServer(function(input, output, session) {
                                  reducedDimName = input$QCUMAPName
         )
         updateQCPlots()
+        
+        # Show downstream analysis options
+        shinyjs::show(selector = ".nlw-qcf")
       }
     })
 
@@ -1855,6 +1849,9 @@ shinyServer(function(input, output, session) {
         }
       }
       shinyjs::show(id="filteringSummary")
+      
+      # Show downstream analysis options
+      shinyjs::show(selector = ".nlw-qcf")
     })
   })
 
@@ -6789,8 +6786,7 @@ shinyServer(function(input, output, session) {
     showNotification("Find Markers Complete")
 
     #enable downstream analysis
-    shinyjs::show(
-      selector = "div[value='Downstream Analysis']")
+    callModule(module = nonLinearWorkflow, id = "nlw-seurat", parent = session, de = TRUE, pa = TRUE)
 
     updateCollapse(session = session, "SeuratUI", style = list("Find Markers" = "success"))
 

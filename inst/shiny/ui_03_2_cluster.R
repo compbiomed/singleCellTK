@@ -131,9 +131,6 @@ shinyPanelCluster <- fluidPage(
     )
   ),
   
-  nonLinearWorkflowUI(
-    id = "id_7",
-    de = TRUE,
-    pa = TRUE)
+  nonLinearWorkflowUI(id = "nlw-cl")
 )
 

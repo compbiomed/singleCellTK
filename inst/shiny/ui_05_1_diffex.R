@@ -274,9 +274,6 @@ shinyPanelDiffex <- fluidPage(
       )
     )
   ),
-  
-  nonLinearWorkflowUI(
-    id = "id_8",
-    pa = TRUE)
+  nonLinearWorkflowUI(id = "nlw-de")
 )
 
