@@ -55,10 +55,7 @@ shinyPanelFS_DimRed <- fluidPage(
                  )
                )
              ),
-             
-             # nonLinearWorkflowUI(
-             #   id = "id_6",
-             #   dr = TRUE)
+             nonLinearWorkflowUI(id = "nlw-fs")
     ),
     tabPanel(
       "Dimensionality Reduction",
@@ -208,7 +205,7 @@ shinyPanelFS_DimRed <- fluidPage(
                  )
                  )
         ),
-      nonLinearWorkflowUI(id = "nlw-fs-dr")
+      nonLinearWorkflowUI(id = "nlw-dr")
     )
   )
 )
