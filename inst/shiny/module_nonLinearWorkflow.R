@@ -17,8 +17,7 @@ nonLinearWorkflow <- function(input, output, session, parent,
                               cw = FALSE,
                               dr = FALSE,
                               fs = FALSE,
-                              cl = FALSE,
-                              curated = FALSE)
+                              cl = FALSE)
 {
   ns <- session$ns
   
@@ -33,7 +32,6 @@ nonLinearWorkflow <- function(input, output, session, parent,
                     uiOutput(ns("dr")),
                     uiOutput(ns("fs")),
                     uiOutput(ns("cl")),
-                    uiOutput(ns("curated")),
                     style = "success")
   })
   
@@ -75,8 +73,9 @@ nonLinearWorkflow <- function(input, output, session, parent,
     output$qcf <- renderUI({
       panel(
         heading = "Quality Control & Filtering",
-        h5("Perform quality control checks / filtering."),
-        actionButton(inputId = ns("goQC"), label = "Go to Quality Control!")
+        h5("Perform quality control checks to get a better sense of the quality of the input data using a number of available methods. Additionally, perform filtering on the data to remove samples that do not pass a quality criteria."),
+        actionButton(inputId = ns("goQC"), label = "Go to QC"),
+        actionButton(inputId = ns("goQC"), label = "Go to Filtering")
       )
     })
   }
@@ -85,7 +84,7 @@ nonLinearWorkflow <- function(input, output, session, parent,
     output$nbc <- renderUI({
       panel(
         heading = "Normalization & Batch-Correction",
-        h5("go nbc"),
+        h5("Normalize the raw/filtered input data to remove biasness of technical variation from the data or additionally adjust for batch-effect if the data is processed in multiple batches."),
         actionButton(inputId = ns("goNBC"), label = "Go to Normalization/Batch-Correction!")
       )
     })
@@ -95,9 +94,9 @@ nonLinearWorkflow <- function(input, output, session, parent,
     output$cw <- renderUI({
       panel(
         heading = "Curated Workflows",
-        h5("go cw"),
-        actionButton(inputId = ns("goCelda"), label = "Go to Celda!"),
-        actionButton(inputId = ns("goSeurat"), label = "Go to Seurat!")
+        h5("Interactively analyze raw or filtered data in a step-by-step curated workflow using either Seurat or Celda pipeline."),
+        actionButton(inputId = ns("goSeurat"), label = "Go to Seurat"),
+        actionButton(inputId = ns("goSeurat"), label = "Go to Celda")
       )
     })
   }
@@ -106,8 +105,8 @@ nonLinearWorkflow <- function(input, output, session, parent,
     output$dr <- renderUI({
       panel(
         heading = "Dimensionality Reduction",
-        h5("go dr"),
-        actionButton(inputId = ns("goDR"), label = "Go to Dimensionality Reduction!")
+        h5("Reduce high-dimensional normalized data into low-dimension using PCA/ICA or tSNE/UMAP which may further be used with some clustering algorithms as the recommended input data type."),
+        actionButton(inputId = ns("goDR"), label = "Go to Dimensionality Reduction")
       )
     })
   }
@@ -116,8 +115,8 @@ nonLinearWorkflow <- function(input, output, session, parent,
     output$fs <- renderUI({
       panel(
         heading = "Feature Selection",
-        h5("go fs"),
-        actionButton(inputId = ns("goFS"), label = "Go to Feature Selection!")
+        h5("Find and select a subset of features/genes that show the most heterogeneity among the data samples and use this subset in the downstream analysis."),
+        actionButton(inputId = ns("goFS"), label = "Go to Feature Selection")
       )
     })
   }
@@ -126,19 +125,8 @@ nonLinearWorkflow <- function(input, output, session, parent,
     output$cl <- renderUI({
       panel(
         heading = "Clustering",
-        h5("go cl"),
-        actionButton(inputId = ns("goCL"), label = "Go to Clustering!")
-      )
-    })
-  }
-  
-  if(curated){
-    output$curated <- renderUI({
-      panel(
-        heading = "Curated Workflows",
-        h5("go curated"),
-        actionButton(inputId = ns("goSeurat"), label = "Go to Seurat!"),
-        actionButton(inputId = ns("goSeurat"), label = "Go to Celda!")
+        h5("Identify cluster labels for each of the sample of the input data by grouping together similar samples through a number of available clustering algorithms."),
+        actionButton(inputId = ns("goCL"), label = "Go to Clustering")
       )
     })
   }

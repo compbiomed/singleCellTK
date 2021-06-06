@@ -1619,7 +1619,7 @@ shinyServer(function(input, output, session) {
         updateQCPlots()
         
         # Show downstream analysis options
-        callModule(module = nonLinearWorkflow, id = "nlw-qcf", parent = session, nbc = TRUE, curated = TRUE)
+        callModule(module = nonLinearWorkflow, id = "nlw-qcf", parent = session, nbc = TRUE, cw = TRUE)
       }
     })
 
