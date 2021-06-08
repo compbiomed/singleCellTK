@@ -292,7 +292,7 @@ shinyPanelImport <- fluidPage(
 
         tags$hr(),
 
-        h3("(Optional) Set Feature for Display:"),
+        h3("Set Feature for Display:"),
         selectInput("importFeatureDispOpt",
                     "Select the feature ID type that should be displayed in downstream visualization",
                     c("Rownames (Default)", featureChoice)),
