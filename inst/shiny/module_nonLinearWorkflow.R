@@ -24,7 +24,6 @@ nonLinearWorkflow <- function(input, output, session, parent,
   output$ui <- renderUI({
     bsCollapsePanel("Downstream Analysis", 
                     uiOutput(ns("de")),
-                    uiOutput(ns("cv")),
                     uiOutput(ns("pa")),
                     uiOutput(ns("qcf")),
                     uiOutput(ns("nbc")),
@@ -32,6 +31,7 @@ nonLinearWorkflow <- function(input, output, session, parent,
                     uiOutput(ns("dr")),
                     uiOutput(ns("fs")),
                     uiOutput(ns("cl")),
+                    uiOutput(ns("cv")),
                     style = "success")
   })
   
@@ -52,7 +52,7 @@ nonLinearWorkflow <- function(input, output, session, parent,
     output$cv <- renderUI({
       panel(
         heading = "Cell Viewer",
-        h5("Discover quantitative changes between experimental conditions using one of the many integrated statistical frameworks:"),
+        h5("Visualize data using scatter plot, violin plot, bar or box plots."),
         actionButton(inputId = ns("goCV"), label = "Go to Cell Viewer!")
       )
     })

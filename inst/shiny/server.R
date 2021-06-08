@@ -1619,7 +1619,7 @@ shinyServer(function(input, output, session) {
         updateQCPlots()
         
         # Show downstream analysis options
-        callModule(module = nonLinearWorkflow, id = "nlw-qcf", parent = session, nbc = TRUE, cw = TRUE)
+        callModule(module = nonLinearWorkflow, id = "nlw-qcf", parent = session, nbc = TRUE, cw = TRUE, cv = TRUE)
       }
     })
 
@@ -2344,7 +2344,7 @@ shinyServer(function(input, output, session) {
         vals$counts <- do.call("runNormalization", args)
         
         # Show downstream analysis options
-        callModule(module = nonLinearWorkflow, id = "nlw-nbc", parent = session, de = TRUE, pa = TRUE)
+        callModule(module = nonLinearWorkflow, id = "nlw-nbc", parent = session, dr = TRUE, fs = TRUE)
       }
     })
   })
@@ -2495,7 +2495,7 @@ shinyServer(function(input, output, session) {
             )
             updateReddimInputs()
             # Show downstream analysis options
-            callModule(module = nonLinearWorkflow, id = "nlw-dr", parent = session, cl = TRUE)
+            callModule(module = nonLinearWorkflow, id = "nlw-dr", parent = session, cl = TRUE, cv = TRUE)
           }
         }
       })
@@ -2832,7 +2832,7 @@ shinyServer(function(input, output, session) {
             }
             updateReddimInputs()
             # Show downstream analysis options
-            callModule(module = nonLinearWorkflow, id = "nlw-dr", parent = session, cl = TRUE)
+            callModule(module = nonLinearWorkflow, id = "nlw-dr", parent = session, cl = TRUE, cv = TRUE)
           }
         }
       })
@@ -3040,7 +3040,7 @@ shinyServer(function(input, output, session) {
         clustResults$names <- c(clustResults$names, saveClusterName)
         updateSelectInput(session, "clustVisRes", choices = clustResults$names)
         # Show downstream analysis options
-        callModule(module = nonLinearWorkflow, id = "nlw-cl", parent = session, de = TRUE, pa = TRUE)
+        callModule(module = nonLinearWorkflow, id = "nlw-cl", parent = session, de = TRUE, pa = TRUE, cv = TRUE)
       })
     }
   })
@@ -5490,7 +5490,7 @@ shinyServer(function(input, output, session) {
         runDEfromShiny(FALSE)
       }
       # Show downstream analysis options
-      callModule(module = nonLinearWorkflow, id = "nlw-de", parent = session, pa = TRUE)
+      callModule(module = nonLinearWorkflow, id = "nlw-de", parent = session, pa = TRUE, cv = TRUE)
     }
   })
 
