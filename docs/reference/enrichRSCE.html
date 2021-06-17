@@ -78,7 +78,7 @@ enrichment" />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.2.0</span>
       </span>
     </div>
 
@@ -113,7 +113,10 @@ enrichment" />
       <a href="../articles/articles/cnsl_import_scRNAseq_data_as_SCE.html">Import data into SCTK</a>
     </li>
     <li>
-      <a href="../articles/articles/cnsl_qc.html">Quality Control</a>
+      <a href="../articles/articles/cnsl_dropletqc.html">Quality Control of droplet data</a>
+    </li>
+    <li>
+      <a href="../articles/articles/cnsl_cellqc.html">Quality Control of cell data</a>
     </li>
     <li>
       <a href="../articles/articles/cnsl_normalization.html">Normalization</a>
@@ -232,7 +235,7 @@ enrichment" />
           <a href="../articles/articles/ui_feature_selection.html">Feature Selection</a>
         </li>
         <li>
-          <a href="../articles/articles/ui_dimemsionality_reduction.html">Dimensionality Reduction</a>
+          <a href="../articles/articles/ui_dimensionality_reduction.html">Dimensionality Reduction</a>
         </li>
       </ul>
     </li>
@@ -248,13 +251,33 @@ enrichment" />
         <li>
           <a href="../articles/articles/ui_find_marker.html">Find Marker</a>
         </li>
+        <li>
+          <a href="../articles/articles/ui_cell_type_labeling.html">Cell Type Labeling</a>
+        </li>
       </ul>
+    </li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Pathway &amp; Enrichment Analysis</a>
+      <ul class="dropdown-menu" role="menu">
+        <li>
+          <a href="../articles/articles/ui_gsva.html">GSVA</a>
+        </li>
+        <li>
+          <a href="../articles/articles/ui_enrichR.html">EnrichR</a>
+        </li>
+      </ul>
+    </li>
+    <li>
+      <a href="../articles/articles/ui_sample_size_calc.html">Sample Size Calculator</a>
     </li>
     <li class="dropdown-submenu">
       <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Curated Workflows</a>
       <ul class="dropdown-menu" role="menu">
         <li>
           <a href="../articles/articles/ui_seurat_curated_workflow.html">Seurat</a>
+        </li>
+        <li>
+          <a href="../articles/articles/ui_celda_curated_workflow.html">Celda</a>
         </li>
       </ul>
     </li>
@@ -334,10 +357,15 @@ enrichR will be run on all the available databases on the enrichR database.</p><
 the respective databases along with p-values, z-scores etc.,</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
-<span class='fu'>enrichRSCE</span><span class='op'>(</span><span class='va'>mouseBrainSubsetSCE</span>, <span class='st'>"Cmtm5"</span>, <span class='st'>"GO_Cellular_Component_2017"</span><span class='op'>)</span>
-<span class='op'>}</span>
-</div></pre>
+    <pre class="examples"><div class='input'><span class='fu'>enrichRSCE</span><span class='op'>(</span><span class='va'>mouseBrainSubsetSCE</span>, <span class='st'>"Cmtm5"</span>, <span class='st'>"GO_Cellular_Component_2017"</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; Uploading data to Enrichr... Done.
+#&gt;   Querying GO_Cellular_Component_2017... Done.
+#&gt; Parsing results... Done.</div><div class='output co'>#&gt;            Database_selected                                        Term
+#&gt; 1 GO_Cellular_Component_2017 integral component of membrane (GO:0016021)
+#&gt;   Overlap   P.value Adjusted.P.value Old.P.value Old.Adjusted.P.value
+#&gt; 1   1/842 0.0420998        0.0420998           0                    0
+#&gt;   Odds.Ratio Combined.Score Genes                         link
+#&gt; 1      19158       60687.03 CMTM5 http://www.geneontology.org/</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

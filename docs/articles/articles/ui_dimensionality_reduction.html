@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.2.0</span>
       </span>
     </div>
 
@@ -66,7 +66,10 @@
       <a href="../../articles/articles/cnsl_import_scRNAseq_data_as_SCE.html">Import data into SCTK</a>
     </li>
     <li>
-      <a href="../../articles/articles/cnsl_qc.html">Quality Control</a>
+      <a href="../../articles/articles/cnsl_dropletqc.html">Quality Control of droplet data</a>
+    </li>
+    <li>
+      <a href="../../articles/articles/cnsl_cellqc.html">Quality Control of cell data</a>
     </li>
     <li>
       <a href="../../articles/articles/cnsl_normalization.html">Normalization</a>
@@ -185,7 +188,7 @@
           <a href="../../articles/articles/ui_feature_selection.html">Feature Selection</a>
         </li>
         <li>
-          <a href="../../articles/articles/ui_dimemsionality_reduction.html">Dimensionality Reduction</a>
+          <a href="../../articles/articles/ui_dimensionality_reduction.html">Dimensionality Reduction</a>
         </li>
       </ul>
 </li>
@@ -201,13 +204,33 @@
         <li>
           <a href="../../articles/articles/ui_find_marker.html">Find Marker</a>
         </li>
+        <li>
+          <a href="../../articles/articles/ui_cell_type_labeling.html">Cell Type Labeling</a>
+        </li>
       </ul>
 </li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Pathway &amp; Enrichment Analysis</a>
+      <ul class="dropdown-menu" role="menu">
+<li>
+          <a href="../../articles/articles/ui_gsva.html">GSVA</a>
+        </li>
+        <li>
+          <a href="../../articles/articles/ui_enrichR.html">EnrichR</a>
+        </li>
+      </ul>
+</li>
+    <li>
+      <a href="../../articles/articles/ui_sample_size_calc.html">Sample Size Calculator</a>
+    </li>
     <li class="dropdown-submenu">
       <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Curated Workflows</a>
       <ul class="dropdown-menu" role="menu">
 <li>
           <a href="../../articles/articles/ui_seurat_curated_workflow.html">Seurat</a>
+        </li>
+        <li>
+          <a href="../../articles/articles/ui_celda_curated_workflow.html">Celda</a>
         </li>
       </ul>
 </li>
@@ -326,13 +349,24 @@
 <tbody>
 <tr class="odd">
 <td>tSNE</td>
-<td>?</td>
-<td>?</td>
+<td>Rtsne</td>
+<td>[L.J.P. van der Maaten and G.E. Hinton. Visualizing High-Dimensional Data Using t-SNE. Journal of Machine Learning Research</td>
 </tr>
 <tr class="even">
+<td>9(Nov):2579-2605, 2008.](<a href="http://jmlr.org/papers/v9/vandermaaten08a.html" class="uri">http://jmlr.org/papers/v9/vandermaaten08a.html</a>), <a href="http://jmlr.org/papers/v15/vandermaaten14a.html">L.J.P. van der Maaten. Accelerating t-SNE using Tree-Based Algorithms. Journal of Machine Learning Research 15(Oct):3221-3245, 2014.</a> and <a href="https://github.com/jkrijthe/Rtsne">Jesse H. Krijthe (2015). Rtsne: T-Distributed Stochastic Neighbor Embedding using a Barnes-Hut Implementation</a>
+</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
 <td>UMAP</td>
-<td>?</td>
-<td>?</td>
+<td>uwot</td>
+<td>[James Melville (2020). uwot: The Uniform Manifold Approximation and Projection (UMAP) Method for Dimensionality Reduction. R</td>
+</tr>
+<tr class="even">
+<td>package version 0.1.8.](<a href="https://CRAN.R-project.org/package=uwot" class="uri">https://CRAN.R-project.org/package=uwot</a>)</td>
+<td></td>
+<td></td>
 </tr>
 <tr class="odd">
 <td>tSNE</td>

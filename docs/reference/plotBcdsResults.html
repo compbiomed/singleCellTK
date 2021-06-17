@@ -74,7 +74,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.2.0</span>
       </span>
     </div>
 
@@ -109,7 +109,10 @@
       <a href="../articles/articles/cnsl_import_scRNAseq_data_as_SCE.html">Import data into SCTK</a>
     </li>
     <li>
-      <a href="../articles/articles/cnsl_qc.html">Quality Control</a>
+      <a href="../articles/articles/cnsl_dropletqc.html">Quality Control of droplet data</a>
+    </li>
+    <li>
+      <a href="../articles/articles/cnsl_cellqc.html">Quality Control of cell data</a>
     </li>
     <li>
       <a href="../articles/articles/cnsl_normalization.html">Normalization</a>
@@ -228,7 +231,7 @@
           <a href="../articles/articles/ui_feature_selection.html">Feature Selection</a>
         </li>
         <li>
-          <a href="../articles/articles/ui_dimemsionality_reduction.html">Dimensionality Reduction</a>
+          <a href="../articles/articles/ui_dimensionality_reduction.html">Dimensionality Reduction</a>
         </li>
       </ul>
     </li>
@@ -244,13 +247,33 @@
         <li>
           <a href="../articles/articles/ui_find_marker.html">Find Marker</a>
         </li>
+        <li>
+          <a href="../articles/articles/ui_cell_type_labeling.html">Cell Type Labeling</a>
+        </li>
       </ul>
+    </li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Pathway &amp; Enrichment Analysis</a>
+      <ul class="dropdown-menu" role="menu">
+        <li>
+          <a href="../articles/articles/ui_gsva.html">GSVA</a>
+        </li>
+        <li>
+          <a href="../articles/articles/ui_enrichR.html">EnrichR</a>
+        </li>
+      </ul>
+    </li>
+    <li>
+      <a href="../articles/articles/ui_sample_size_calc.html">Sample Size Calculator</a>
     </li>
     <li class="dropdown-submenu">
       <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Curated Workflows</a>
       <ul class="dropdown-menu" role="menu">
         <li>
           <a href="../articles/articles/ui_seurat_curated_workflow.html">Seurat</a>
+        </li>
+        <li>
+          <a href="../articles/articles/ui_celda_curated_workflow.html">Celda</a>
         </li>
       </ul>
     </li>
@@ -320,20 +343,20 @@
   binLabel <span class='op'>=</span> <span class='cn'>NULL</span>,
   defaultTheme <span class='op'>=</span> <span class='cn'>TRUE</span>,
   dotSize <span class='op'>=</span> <span class='fl'>1</span>,
+  summary <span class='op'>=</span> <span class='st'>"median"</span>,
+  summaryTextSize <span class='op'>=</span> <span class='fl'>3</span>,
   transparency <span class='op'>=</span> <span class='fl'>1</span>,
-  titleSize <span class='op'>=</span> <span class='fl'>18</span>,
-  axisLabelSize <span class='op'>=</span> <span class='fl'>18</span>,
-  axisSize <span class='op'>=</span> <span class='fl'>15</span>,
-  legendSize <span class='op'>=</span> <span class='fl'>15</span>,
-  legendTitleSize <span class='op'>=</span> <span class='fl'>16</span>,
-  relHeights <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1.5</span>, <span class='fl'>1</span>, <span class='fl'>1</span><span class='op'>)</span>,
+  baseSize <span class='op'>=</span> <span class='fl'>15</span>,
+  titleSize <span class='op'>=</span> <span class='cn'>NULL</span>,
+  axisLabelSize <span class='op'>=</span> <span class='cn'>NULL</span>,
+  axisSize <span class='op'>=</span> <span class='cn'>NULL</span>,
+  legendSize <span class='op'>=</span> <span class='cn'>NULL</span>,
+  legendTitleSize <span class='op'>=</span> <span class='cn'>NULL</span>,
+  relHeights <span class='op'>=</span> <span class='fl'>1</span>,
   relWidths <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>1</span><span class='op'>)</span>,
   plotNCols <span class='op'>=</span> <span class='cn'>NULL</span>,
   plotNRows <span class='op'>=</span> <span class='cn'>NULL</span>,
-  plotLabels <span class='op'>=</span> <span class='st'>"default"</span>,
-  plotLabelSize <span class='op'>=</span> <span class='fl'>20</span>,
-  plotLabelPositionX <span class='op'>=</span> <span class='cn'>NULL</span>,
-  plotLabelPositionY <span class='op'>=</span> <span class='cn'>NULL</span>,
+  labelSamples <span class='op'>=</span> <span class='cn'>TRUE</span>,
   samplePerColumn <span class='op'>=</span> <span class='cn'>TRUE</span>,
   sampleRelHeights <span class='op'>=</span> <span class='fl'>1</span>,
   sampleRelWidths <span class='op'>=</span> <span class='fl'>1</span>
@@ -427,28 +450,44 @@ when TRUE. Default TRUE.</p></td>
       <td><p>Size of dots. Default 1.</p></td>
     </tr>
     <tr>
+      <th>summary</th>
+      <td><p>Adds a summary statistic, as well as a crossbar to the
+violin plot. Options are "mean" or "median". Default NULL.</p></td>
+    </tr>
+    <tr>
+      <th>summaryTextSize</th>
+      <td><p>The text size of the summary statistic displayed
+above the violin plot. Default 3.</p></td>
+    </tr>
+    <tr>
       <th>transparency</th>
       <td><p>Transparency of the dots, values will be 0-1. Default 1.</p></td>
     </tr>
     <tr>
+      <th>baseSize</th>
+      <td><p>The base font size for all text. Default 12.
+Can be overwritten by titleSize, axisSize, and axisLabelSize,
+legendSize, legendTitleSize.</p></td>
+    </tr>
+    <tr>
       <th>titleSize</th>
-      <td><p>Size of title of plot. Default 18.</p></td>
+      <td><p>Size of title of plot. Default NULL.</p></td>
     </tr>
     <tr>
       <th>axisLabelSize</th>
-      <td><p>Size of x/y-axis labels. Default 18.</p></td>
+      <td><p>Size of x/y-axis labels. Default NULL.</p></td>
     </tr>
     <tr>
       <th>axisSize</th>
-      <td><p>Size of x/y-axis ticks. Default 15.</p></td>
+      <td><p>Size of x/y-axis ticks. Default NULL.</p></td>
     </tr>
     <tr>
       <th>legendSize</th>
-      <td><p>size of legend. Default 15.</p></td>
+      <td><p>size of legend. Default NULL.</p></td>
     </tr>
     <tr>
       <th>legendTitleSize</th>
-      <td><p>size of legend title. Default 16.</p></td>
+      <td><p>size of legend title. Default NULL.</p></td>
     </tr>
     <tr>
       <th>relHeights</th>
@@ -467,21 +506,8 @@ when TRUE. Default TRUE.</p></td>
       <td><p>Number of rows when plots are combined in a grid.</p></td>
     </tr>
     <tr>
-      <th>plotLabels</th>
-      <td><p>labels to each plot. If set to "default", will use the name of the samples
-as the labels. If set to "none", no label will be plotted.</p></td>
-    </tr>
-    <tr>
-      <th>plotLabelSize</th>
-      <td><p>size of labels</p></td>
-    </tr>
-    <tr>
-      <th>plotLabelPositionX</th>
-      <td><p>Numeric vector. The X position of the plot label.</p></td>
-    </tr>
-    <tr>
-      <th>plotLabelPositionY</th>
-      <td><p>Numeric vector. The Y position of the plot label.</p></td>
+      <th>labelSamples</th>
+      <td><p>Will label sample name in title of plot if TRUE. Default TRUE.</p></td>
     </tr>
     <tr>
       <th>samplePerColumn</th>
@@ -509,7 +535,7 @@ the relative widths for each plot.</p></td>
 <span class='va'>sce</span> <span class='op'>&lt;-</span> <span class='fu'><a href='subsetSCECols.html'>subsetSCECols</a></span><span class='op'>(</span><span class='va'>sce</span>, colData <span class='op'>=</span> <span class='st'>"type != 'EmptyDroplet'"</span><span class='op'>)</span>
 <span class='va'>sce</span> <span class='op'>&lt;-</span> <span class='fu'><a href='getUMAP.html'>getUMAP</a></span><span class='op'>(</span>inSCE<span class='op'>=</span><span class='va'>sce</span>, useAssay<span class='op'>=</span><span class='st'>"counts"</span>, reducedDimName<span class='op'>=</span><span class='st'>"UMAP"</span><span class='op'>)</span>
 <span class='va'>sce</span> <span class='op'>&lt;-</span> <span class='fu'><a href='runBcds.html'>runBcds</a></span><span class='op'>(</span><span class='va'>sce</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'>Wed May 05 12:15:29 2021 ... Running 'bcds'</span></div><div class='output co'>#&gt; [12:15:30] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.</div><div class='input'><span class='fu'>plotBcdsResults</span><span class='op'>(</span>inSCE<span class='op'>=</span><span class='va'>sce</span>, reducedDimName<span class='op'>=</span><span class='st'>"UMAP"</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'>Thu May 27 15:38:57 2021 ... Running 'bcds'</span></div><div class='output co'>#&gt; [15:38:58] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.</div><div class='input'><span class='fu'>plotBcdsResults</span><span class='op'>(</span>inSCE<span class='op'>=</span><span class='va'>sce</span>, reducedDimName<span class='op'>=</span><span class='st'>"UMAP"</span><span class='op'>)</span>
 </div><div class='img'><img src='plotBcdsResults-1.png' alt='' width='700' height='433' /></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

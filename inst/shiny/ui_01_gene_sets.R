@@ -3,6 +3,8 @@ shinyPanelGeneSets <- fluidPage(
     class = "container",
     style = "margin-bottom: 10px",
     h1("Import Gene Sets"),
+    h5(tags$a(href = paste0(docs.artPath, "ui_import_genesets.html"),
+              "(help)", target = "_blank")),
     tags$hr(),
     tags$style(HTML("
       div {
@@ -35,7 +37,7 @@ shinyPanelGeneSets <- fluidPage(
       condition = sprintf("input['%s'] == 'gsDBUpload'", "geneSetSourceChoice"),
       h3("Select from a database:"),
       tags$style(HTML("#geneSetDB {width:100%}")),
-      checkboxGroupInput('geneSetDB', 'Check the gene sets you want to import', 
+      checkboxGroupInput('geneSetDB', 'Check the gene sets you want to import',
                          choices = c()),
     ),
 
@@ -51,9 +53,9 @@ shinyPanelGeneSets <- fluidPage(
       ),
       textAreaInput('geneSetText', 'Please enter values separated by new lines', width = "300px")
     ),
-    
+
     selectInput("gsByParam", "Location within SCE object where the gene identifiers in should be mapped.", list()),
-    
+
     withBusyIndicatorUI(
       actionButton("uploadGS", "Upload")
     ),

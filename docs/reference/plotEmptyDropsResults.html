@@ -74,7 +74,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.2.0</span>
       </span>
     </div>
 
@@ -109,7 +109,10 @@
       <a href="../articles/articles/cnsl_import_scRNAseq_data_as_SCE.html">Import data into SCTK</a>
     </li>
     <li>
-      <a href="../articles/articles/cnsl_qc.html">Quality Control</a>
+      <a href="../articles/articles/cnsl_dropletqc.html">Quality Control of droplet data</a>
+    </li>
+    <li>
+      <a href="../articles/articles/cnsl_cellqc.html">Quality Control of cell data</a>
     </li>
     <li>
       <a href="../articles/articles/cnsl_normalization.html">Normalization</a>
@@ -228,7 +231,7 @@
           <a href="../articles/articles/ui_feature_selection.html">Feature Selection</a>
         </li>
         <li>
-          <a href="../articles/articles/ui_dimemsionality_reduction.html">Dimensionality Reduction</a>
+          <a href="../articles/articles/ui_dimensionality_reduction.html">Dimensionality Reduction</a>
         </li>
       </ul>
     </li>
@@ -244,13 +247,33 @@
         <li>
           <a href="../articles/articles/ui_find_marker.html">Find Marker</a>
         </li>
+        <li>
+          <a href="../articles/articles/ui_cell_type_labeling.html">Cell Type Labeling</a>
+        </li>
       </ul>
+    </li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Pathway &amp; Enrichment Analysis</a>
+      <ul class="dropdown-menu" role="menu">
+        <li>
+          <a href="../articles/articles/ui_gsva.html">GSVA</a>
+        </li>
+        <li>
+          <a href="../articles/articles/ui_enrichR.html">EnrichR</a>
+        </li>
+      </ul>
+    </li>
+    <li>
+      <a href="../articles/articles/ui_sample_size_calc.html">Sample Size Calculator</a>
     </li>
     <li class="dropdown-submenu">
       <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Curated Workflows</a>
       <ul class="dropdown-menu" role="menu">
         <li>
           <a href="../articles/articles/ui_seurat_curated_workflow.html">Seurat</a>
+        </li>
+        <li>
+          <a href="../articles/articles/ui_celda_curated_workflow.html">Celda</a>
         </li>
       </ul>
     </li>
@@ -406,7 +429,7 @@ the relative widths for each plot.</p></td>
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>scExample</span>, package<span class='op'>=</span><span class='st'>"singleCellTK"</span><span class='op'>)</span>
 <span class='va'>sce</span> <span class='op'>&lt;-</span> <span class='fu'><a href='runEmptyDrops.html'>runEmptyDrops</a></span><span class='op'>(</span>inSCE<span class='op'>=</span><span class='va'>sce</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'>Wed May 05 12:16:06 2021 ... Running 'emptyDrops'</span></div><div class='input'><span class='fu'>plotEmptyDropsResults</span><span class='op'>(</span>inSCE<span class='op'>=</span><span class='va'>sce</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'>Thu May 27 15:39:44 2021 ... Running 'emptyDrops'</span></div><div class='input'><span class='fu'>plotEmptyDropsResults</span><span class='op'>(</span>inSCE<span class='op'>=</span><span class='va'>sce</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; $scatterEmptyDrops</div><div class='img'><img src='plotEmptyDropsResults-1.png' alt='' width='700' height='433' /></div><div class='output co'>#&gt; </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

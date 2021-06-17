@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Wrapper function to run all of the feature selection methods integrated
-within the singleCellTK package including three methods from 
+within the singleCellTK package including three methods from
 Seurat (`vst`, `mean.var.plot` or `dispersion`) and the Scran `modelGeneVar`
 method. — runFeatureSelection • singleCellTK</title>
 
@@ -43,11 +43,11 @@ method. — runFeatureSelection • singleCellTK</title>
 
 
 <meta property="og:title" content="Wrapper function to run all of the feature selection methods integrated
-within the singleCellTK package including three methods from 
+within the singleCellTK package including three methods from
 Seurat (`vst`, `mean.var.plot` or `dispersion`) and the Scran `modelGeneVar`
 method. — runFeatureSelection" />
 <meta property="og:description" content="Wrapper function to run all of the feature selection methods integrated
-within the singleCellTK package including three methods from 
+within the singleCellTK package including three methods from
 Seurat (`vst`, `mean.var.plot` or `dispersion`) and the Scran `modelGeneVar`
 method." />
 
@@ -81,7 +81,7 @@ method." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.2.0</span>
       </span>
     </div>
 
@@ -116,7 +116,10 @@ method." />
       <a href="../articles/articles/cnsl_import_scRNAseq_data_as_SCE.html">Import data into SCTK</a>
     </li>
     <li>
-      <a href="../articles/articles/cnsl_qc.html">Quality Control</a>
+      <a href="../articles/articles/cnsl_dropletqc.html">Quality Control of droplet data</a>
+    </li>
+    <li>
+      <a href="../articles/articles/cnsl_cellqc.html">Quality Control of cell data</a>
     </li>
     <li>
       <a href="../articles/articles/cnsl_normalization.html">Normalization</a>
@@ -235,7 +238,7 @@ method." />
           <a href="../articles/articles/ui_feature_selection.html">Feature Selection</a>
         </li>
         <li>
-          <a href="../articles/articles/ui_dimemsionality_reduction.html">Dimensionality Reduction</a>
+          <a href="../articles/articles/ui_dimensionality_reduction.html">Dimensionality Reduction</a>
         </li>
       </ul>
     </li>
@@ -251,13 +254,33 @@ method." />
         <li>
           <a href="../articles/articles/ui_find_marker.html">Find Marker</a>
         </li>
+        <li>
+          <a href="../articles/articles/ui_cell_type_labeling.html">Cell Type Labeling</a>
+        </li>
       </ul>
+    </li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Pathway &amp; Enrichment Analysis</a>
+      <ul class="dropdown-menu" role="menu">
+        <li>
+          <a href="../articles/articles/ui_gsva.html">GSVA</a>
+        </li>
+        <li>
+          <a href="../articles/articles/ui_enrichR.html">EnrichR</a>
+        </li>
+      </ul>
+    </li>
+    <li>
+      <a href="../articles/articles/ui_sample_size_calc.html">Sample Size Calculator</a>
     </li>
     <li class="dropdown-submenu">
       <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Curated Workflows</a>
       <ul class="dropdown-menu" role="menu">
         <li>
           <a href="../articles/articles/ui_seurat_curated_workflow.html">Seurat</a>
+        </li>
+        <li>
+          <a href="../articles/articles/ui_celda_curated_workflow.html">Celda</a>
         </li>
       </ul>
     </li>
@@ -299,7 +322,7 @@ method." />
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Wrapper function to run all of the feature selection methods integrated
-within the singleCellTK package including three methods from 
+within the singleCellTK package including three methods from
 Seurat (`vst`, `mean.var.plot` or `dispersion`) and the Scran `modelGeneVar`
 method.</h1>
     <small class="dont-index">Source: <a href='https://github.com/compbiomed/singleCellTK/blob/master/R/runFeatureSelection.R'><code>R/runFeatureSelection.R</code></a></small>
@@ -308,12 +331,16 @@ method.</h1>
 
     <div class="ref-description">
     <p>Wrapper function to run all of the feature selection methods integrated
-within the singleCellTK package including three methods from 
+within the singleCellTK package including three methods from
 Seurat (`vst`, `mean.var.plot` or `dispersion`) and the Scran `modelGeneVar`
 method.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>runFeatureSelection</span><span class='op'>(</span><span class='va'>inSCE</span>, <span class='va'>useAssay</span>, <span class='va'>hvgMethod</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>runFeatureSelection</span><span class='op'>(</span>
+  <span class='va'>inSCE</span>,
+  <span class='va'>useAssay</span>,
+  hvgMethod <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"vst"</span>, <span class='st'>"mean.var.plot"</span>, <span class='st'>"dispersion"</span>, <span class='st'>"modelGeneVar"</span><span class='op'>)</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -324,25 +351,32 @@ method.</p>
     </tr>
     <tr>
       <th>useAssay</th>
-      <td><p>Specify the name of the assay that should be used.</p></td>
+      <td><p>Specify the name of the assay that should be used.
+A normalized assay is recommended for use with this function.</p></td>
     </tr>
     <tr>
       <th>hvgMethod</th>
       <td><p>Specify the method to use for variable gene selection.
-Options include `vst`, `mean.var.plot` or `dispersion` from Seurat
-and `modelGeneVar` from Scran.</p></td>
+Options include <code>"vst"</code>, <code>"mean.var.plot"</code> or <code>"dispersion"</code>
+from Seurat and <code>"modelGeneVar"</code> from Scran.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>A <code>SingleCellExperiment</code> object that contains the computed
- statistics in the <code>rowData</code> slot of the output object. This function 
- does not return the names of the variable features but only computes the 
- statistics that are stored in the <code>rowData</code> slot of the. To get the 
- names of the variable features <code>getTopHVG</code> function should be used 
+ statistics in the <code>rowData</code> slot of the output object. This function
+ does not return the names of the variable features but only computes the
+ statistics that are stored in the <code>rowData</code> slot of the. To get the
+ names of the variable features <code>getTopHVG</code> function should be used
  after computing these statistics.</p>
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='st'>"mouseBrainSubsetSCE"</span>, package <span class='op'>=</span> <span class='st'>"singleCellTK"</span><span class='op'>)</span>
+<span class='va'>mouseBrainSubsetSCE</span> <span class='op'>&lt;-</span> <span class='fu'>runFeatureSelection</span><span class='op'>(</span><span class='va'>mouseBrainSubsetSCE</span>,
+                                           <span class='st'>"logcounts"</span>,
+                                           <span class='st'>"modelGeneVar"</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='warning'>Warning: collapsing to unique 'x' values</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

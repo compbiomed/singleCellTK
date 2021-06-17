@@ -71,7 +71,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.2.0</span>
       </span>
     </div>
 
@@ -106,7 +106,10 @@
       <a href="../articles/articles/cnsl_import_scRNAseq_data_as_SCE.html">Import data into SCTK</a>
     </li>
     <li>
-      <a href="../articles/articles/cnsl_qc.html">Quality Control</a>
+      <a href="../articles/articles/cnsl_dropletqc.html">Quality Control of droplet data</a>
+    </li>
+    <li>
+      <a href="../articles/articles/cnsl_cellqc.html">Quality Control of cell data</a>
     </li>
     <li>
       <a href="../articles/articles/cnsl_normalization.html">Normalization</a>
@@ -225,7 +228,7 @@
           <a href="../articles/articles/ui_feature_selection.html">Feature Selection</a>
         </li>
         <li>
-          <a href="../articles/articles/ui_dimemsionality_reduction.html">Dimensionality Reduction</a>
+          <a href="../articles/articles/ui_dimensionality_reduction.html">Dimensionality Reduction</a>
         </li>
       </ul>
     </li>
@@ -241,13 +244,33 @@
         <li>
           <a href="../articles/articles/ui_find_marker.html">Find Marker</a>
         </li>
+        <li>
+          <a href="../articles/articles/ui_cell_type_labeling.html">Cell Type Labeling</a>
+        </li>
       </ul>
+    </li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Pathway &amp; Enrichment Analysis</a>
+      <ul class="dropdown-menu" role="menu">
+        <li>
+          <a href="../articles/articles/ui_gsva.html">GSVA</a>
+        </li>
+        <li>
+          <a href="../articles/articles/ui_enrichR.html">EnrichR</a>
+        </li>
+      </ul>
+    </li>
+    <li>
+      <a href="../articles/articles/ui_sample_size_calc.html">Sample Size Calculator</a>
     </li>
     <li class="dropdown-submenu">
       <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Curated Workflows</a>
       <ul class="dropdown-menu" role="menu">
         <li>
           <a href="../articles/articles/ui_seurat_curated_workflow.html">Seurat</a>
+        </li>
+        <li>
+          <a href="../articles/articles/ui_celda_curated_workflow.html">Celda</a>
         </li>
       </ul>
     </li>
@@ -714,7 +737,8 @@ Extracts the top variable genes from an input singleCellExperiment object</p></t
           <p><code><a href="seuratPlotHVG.html">seuratPlotHVG()</a></code> </p>
         </td>
         <td><p>seuratPlotHVG
-Plot highly variable genes from input sce object (must have highly variable genes computations stored)</p></td>
+Plot highly variable genes from input sce object (must have highly variable
+genes computations stored)</p></td>
       </tr>
     </tbody><tbody>
       <tr>
@@ -755,28 +779,32 @@ dimension reduction.</p></td>
           <p><code><a href="seuratICA.html">seuratICA()</a></code> </p>
         </td>
         <td><p>seuratICA
-Computes ICA on the input sce object and stores the calculated independent components within the sce object</p></td>
+Computes ICA on the input sce object and stores the calculated independent
+components within the sce object</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="seuratPCA.html">seuratPCA()</a></code> </p>
         </td>
         <td><p>seuratPCA
-Computes PCA on the input sce object and stores the calculated principal components within the sce object</p></td>
+Computes PCA on the input sce object and stores the calculated principal
+components within the sce object</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="seuratRunUMAP.html">seuratRunUMAP()</a></code> </p>
         </td>
         <td><p>seuratRunUMAP
-Computes UMAP from the given sce object and stores the UMAP computations back into the sce object</p></td>
+Computes UMAP from the given sce object and stores the UMAP computations back
+into the sce object</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="seuratRunTSNE.html">seuratRunTSNE()</a></code> </p>
         </td>
         <td><p>seuratRunTSNE
-Computes tSNE from the given sce object and stores the tSNE computations back into the sce object</p></td>
+Computes tSNE from the given sce object and stores the tSNE computations back
+into the sce object</p></td>
       </tr><tr>
         
         <td>
@@ -814,7 +842,8 @@ Computes tSNE from the given sce object and stores the tSNE computations back in
           <p><code><a href="seuratFindClusters.html">seuratFindClusters()</a></code> </p>
         </td>
         <td><p>seuratFindClusters
-Computes the clusters from the input sce object and stores them back in sce object</p></td>
+Computes the clusters from the input sce object and stores them back in sce
+object</p></td>
       </tr><tr>
         
         <td>
@@ -924,7 +953,7 @@ on each cluster against all the others.</p></td>
         <td>
           <p><code><a href="plotMarkerDiffExp.html">plotMarkerDiffExp()</a></code> </p>
         </td>
-        <td><p>Plot a heatmap to visualize the result of <code><a href='https://compbiomed.github.io/sctk_docs/reference/findMarkerDiffExp.html'>findMarkerDiffExp</a></code></p></td>
+        <td><p>Plot a heatmap to visualize the result of <code>findMarkerDiffExp</code></p></td>
       </tr>
     </tbody><tbody>
       <tr>
@@ -970,6 +999,12 @@ in the data</p></td>
         </td>
         <td><p>Given a set of genes, return a ggplot of expression
 values.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="plotClusterAbundance.html">plotClusterAbundance()</a></code> </p>
+        </td>
+        <td><p>Plot the differential Abundance</p></td>
       </tr><tr>
         
         <td>
@@ -1038,7 +1073,7 @@ and UMAP</p></td>
         <td>
           <p><code><a href="plotMarkerDiffExp.html">plotMarkerDiffExp()</a></code> </p>
         </td>
-        <td><p>Plot a heatmap to visualize the result of <code><a href='https://compbiomed.github.io/sctk_docs/reference/findMarkerDiffExp.html'>findMarkerDiffExp</a></code></p></td>
+        <td><p>Plot a heatmap to visualize the result of <code>findMarkerDiffExp</code></p></td>
       </tr><tr>
         
         <td>
