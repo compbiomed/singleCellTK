@@ -34,15 +34,13 @@ the type of the transformation.
 
 <div class="tab">
   <button class="tablinks" onclick="openTab(event, 'interactive')" id="ia-button">Interactive Analysis</button>
-  <button class="tablinks" onclick="openTab(event, 'console')">Console Analysis</button>
+  <button class="tablinks" onclick="openTab(event, 'console')" id="console-button">Console Analysis</button>
 </div>
 
 <div id="interactive" class="tabcontent">
-  <p>
+Normalization tab can be opened up by clicking on the <b>Normalization & Batch Correction</b> from the top menu and further selecting the <b>Normalization</b> sub-tab in the subsequent window as shown below.
   
 ````
-
-Normalization tab can be opened up by clicking on the <b>Normalization & Batch Correction</b> from the top menu and further selecting the <b>Normalization</b> sub-tab in the subsequent window as shown below.
 
 <!-- ![](ui_screenshots/normalization/normalization_1_select_menu.png) -->
 
@@ -73,7 +71,6 @@ The currently available 'assays' are listed in the 'Available Assays' window. Wh
 
 
 ````{=html}
-  </p>
 </div>
 
 <div id="console" class="tabcontent">
@@ -236,19 +233,6 @@ The parameters to the above function include: <br><br>
 </div>
 <script>
 document.getElementById("ia-button").click();
-function openTab(evt, tabName) {
-  var i, tabcontent, tablinks;
-  tabcontent = document.getElementsByClassName("tabcontent");
-  for (i = 0; i < tabcontent.length; i++) {
-    tabcontent[i].style.display = "none";
-  }
-  tablinks = document.getElementsByClassName("tablinks");
-  for (i = 0; i < tablinks.length; i++) {
-    tablinks[i].className = tablinks[i].className.replace(" active", "");
-  }
-  document.getElementById(tabName).style.display = "block";
-  evt.currentTarget.className += " active";
-}
 </script>
    
 </body>
