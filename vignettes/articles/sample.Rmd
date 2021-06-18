@@ -4,13 +4,14 @@ author: "Irzam Sarfraz"
 output:
   html_document:
     toc: true
+    toc_depth: 5
 bibliography: references.bib
 csl: ieee.csl.txt
 ---
 ```{r develSetting, include=FALSE}
 doEval = TRUE
 ```
-### Introduction
+## Introduction
 Data once uploaded and filtered through the preceding tabs can be normalized and
 corrected for batch-effect. This guide particularly focuses on normalization of 
 data for downstream analysis which can be achieved through various methods
@@ -24,45 +25,12 @@ the type of the transformation.
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
-body {font-family: Arial;}
 
-.tab {
-  overflow: hidden;
-  border: 1px solid #ccc;
-  background-color: #f1f1f1;
-}
-
-.tab button {
-  background-color: inherit;
-  float: left;
-  border: 1px solid lightgrey;
-  outline: none;
-  cursor: pointer;
-  padding: 14px 16px;
-  transition: 0.3s;
-  font-size: 17px;
-  width: 50%;
-}
-
-.tab button:hover {
-  background-color: #ddd;
-}
-
-.tab button.active {
-  background-color: #ccc;
-}
-
-.tabcontent {
-  display: none;
-  padding: 6px 12px;
-  border: 1px solid #ccc;
-  border-top: none;
-}
 </style>
 </head>
 <body>
 
-<h3>Workflow Guide</h3>
+<h2>Workflow Guide</h2>
 
 <div class="tab">
   <button class="tablinks" onclick="openTab(event, 'interactive')" id="ia-button">Interactive Analysis</button>
@@ -72,6 +40,7 @@ body {font-family: Arial;}
 <div id="interactive" class="tabcontent">
   <p>
   
+````
 
 Normalization tab can be opened up by clicking on the <b>Normalization & Batch Correction</b> from the top menu and further selecting the <b>Normalization</b> sub-tab in the subsequent window as shown below.
 
@@ -83,14 +52,14 @@ The <b>Normalization</b> user-interface is divided into three parts, a) <b>Norma
 
 <!-- ![](ui_screenshots/normalization/normalization_2_overview_2.png) -->
 
-<h5> a) Normalization Options </h5>
+<h4> a) Normalization Options </h4>
 In the <b>Normalization Options</b>, users can select a method for normalization from `Scater - CPM` or one of the methods from <b>Seurat</b> i.e. `LogNormalize`, `CLR` (Centered Log Ratio), `RC` (Relative Counts) and `SCTransform`. Users can also set a manual <b>Scaling Factor</b> (numeric value multiplied by the data values) and specify the <b>Assay Name</b> for the new `assay`. 
 
 <!-- ![](ui_screenshots/normalization/normalization_3_seurat.png) -->
 
 <!-- ![](ui_screenshots/normalization/normalization_4_cpm.png) -->
 
-<h5> b) Assay Options </h5>
+<h4> b) Assay Options </h4>
 In addition to the normalization methods, manually implemented transformation methods can be used to perform different transformations on the data. These transformations include `Log Transform`, `log1p` and standard `Z-score`. 
 
 <!-- ![](ui_screenshots/normalization/normalization_5_assay_options.png) -->
@@ -99,10 +68,9 @@ If trimming of an `assay` is required, 'Trim Assay' option can be enabled and lo
 
 <!-- ![](ui_screenshots/normalization/normalization_6_trim_assay.png) -->
 
-<h5> c) Available Assays </h5>
+<h4> c) Available Assays </h4>
 The currently available 'assays' are listed in the 'Available Assays' window. Whenever a new `assay` is generated, the list is updated automatically.
 
-````
 
 ````{=html}
   </p>
@@ -286,4 +254,4 @@ function openTab(evt, tabName) {
 </body>
 ````
 
-### References
+## References
