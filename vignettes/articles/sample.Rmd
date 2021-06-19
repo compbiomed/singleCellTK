@@ -111,16 +111,7 @@ sce <- runNormalization(
 ```
 ```{r "normalization_console_example_2", message=FALSE, warning = FALSE}
   # Perform normalization
-  sce <- runNormalization(
-    inSCE = sce,
-    normalizationMethod = "RC",
-    useAssay = "counts",
-    outAssayName = "RCLogScaledCounts",
-    scale = TRUE,
-    transformation = "log2",
-    pseudocountsBeforeTransform = 1, 
-    trim = c(10, -10)
-  )
+  sce <- runNormalization(inSCE = sce, normalizationMethod = "RC", useAssay = "counts", outAssayName = "RCLogScaledCounts", scale = TRUE, transformation = "log2", pseudocountsBeforeTransform = 1, trim = c(10, -10))
 ```
 
 ````{=html}
