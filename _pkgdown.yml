@@ -110,8 +110,6 @@ navbar:
           href: articles/articles/cmd_qc.html
     - text: "R Console Analysis"
       menu:
-        - text: "Sample"
-          href: articles/articles/sample.html
         - text: "Import data into SCTK"
           href: articles/articles/cnsl_import_scRNAseq_data_as_SCE.html
         - text: "Quality Control of droplet data"
