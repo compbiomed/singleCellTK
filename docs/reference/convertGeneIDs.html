@@ -38,6 +38,8 @@
 
 
 
+  <link href="../extra.css" rel="stylesheet">
+  <script src="../extra.js"></script>
 
 <meta property="og:title" content="Convert Gene IDs — convertGeneIDs" />
 <meta property="og:description" content="Convert the gene IDs in a SingleCellExperiment object using Bioconductor
@@ -299,7 +301,7 @@ conversion." />
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/compbiomed/singleCellTK">
-    <span class="fas fa-github"></span>
+    <span class="fa fa-github"></span>
      
   </a>
 </li>
@@ -367,23 +369,7 @@ conversion.</p>
                                            database <span class='op'>=</span> <span class='st'>"org.Mm.eg.db"</span><span class='op'>)</span>
   <span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>rownames</a></span><span class='op'>(</span><span class='va'>mouseBrainSubsetSymbol</span><span class='op'>)</span>, <span class='fl'>50</span><span class='op'>)</span>
 <span class='op'>}</span>
-</div><div class='output co'>#&gt; </div><div class='output co'>#&gt; <span class='message'>Loading required package: AnnotationDbi</span></div><div class='output co'>#&gt; <span class='message'>'select()' returned 1:many mapping between keys and columns</span></div><div class='output co'>#&gt; <span class='message'>127 ENSEMBL are NA after conversion. Removing</span></div><div class='output co'>#&gt; <span class='message'>29 SYMBOL are duplicated after conversion. Removing additional copies</span></div><div class='output co'>#&gt; <span class='message'>2314 SYMBOL originally, 2187 ENSEMBLs</span></div><div class='output co'>#&gt;  [1] "ENSMUSG00000028797" "ENSMUSG00000066129" "ENSMUSG00000002102"
-#&gt;  [4] "ENSMUSG00000027087" "ENSMUSG00000024194" "ENSMUSG00000006005"
-#&gt;  [7] "ENSMUSG00000030726" "ENSMUSG00000021796" "ENSMUSG00000028790"
-#&gt; [10] "ENSMUSG00000031812" "ENSMUSG00000026509" "ENSMUSG00000062234"
-#&gt; [13] "ENSMUSG00000030663" "ENSMUSG00000024952" "ENSMUSG00000057134"
-#&gt; [16] "ENSMUSG00000022404" "ENSMUSG00000091803" "ENSMUSG00000026675"
-#&gt; [19] "ENSMUSG00000003534" "ENSMUSG00000006800" "ENSMUSG00000024853"
-#&gt; [22] "ENSMUSG00000041685" "ENSMUSG00000026833" "ENSMUSG00000020431"
-#&gt; [25] "ENSMUSG00000073676" "ENSMUSG00000057236" "ENSMUSG00000000581"
-#&gt; [28] "ENSMUSG00000013236" "ENSMUSG00000005125" "ENSMUSG00000107722"
-#&gt; [31] "ENSMUSG00000032637" "ENSMUSG00000059119" "ENSMUSG00000021670"
-#&gt; [34] "ENSMUSG00000026421" "ENSMUSG00000052698" "ENSMUSG00000053119"
-#&gt; [37] "ENSMUSG00000038936" "ENSMUSG00000010277" "ENSMUSG00000059173"
-#&gt; [40] "ENSMUSG00000039716" "ENSMUSG00000019528" "ENSMUSG00000031342"
-#&gt; [43] "ENSMUSG00000028795" "ENSMUSG00000037608" "ENSMUSG00000022427"
-#&gt; [46] "ENSMUSG00000000326" "ENSMUSG00000035649" "ENSMUSG00000071866"
-#&gt; [49] "ENSMUSG00000027457" "ENSMUSG00000027523"</div><div class='input'>
+
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

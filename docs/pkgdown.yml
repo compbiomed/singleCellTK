@@ -1,4 +1,4 @@
-pandoc: '2.13'
+pandoc: 2.11.4
 pkgdown: 1.6.1
 pkgdown_sha: ~
 articles:
@@ -20,6 +20,7 @@ articles:
   articles/cnsl_seurat_curated_workflow: cnsl_seurat_curated_workflow.html
   articles/cnsl_visualization: cnsl_visualization.html
   articles/introduction_to_SCTK: introduction_to_SCTK.html
+  articles/sample: sample.html
   articles/singleCellTK: singleCellTK.html
   articles/ui_batch_correction: ui_batch_correction.html
   articles/ui_cellViewer: ui_cellViewer.html
@@ -41,5 +42,5 @@ articles:
   articles/ui_qc: ui_qc.html
   articles/ui_seurat_curated_workflow: ui_seurat_curated_workflow.html
   singleCellTK: singleCellTK.html
-last_built: 2021-05-27T19:37Z
+last_built: 2021-06-19T16:08Z
 

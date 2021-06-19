@@ -11,7 +11,8 @@
 <script src="../../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../../pkgdown.css" rel="stylesheet">
-<script src="../../pkgdown.js"></script><meta property="og:title" content="Normalization">
+<script src="../../pkgdown.js"></script><link href="../../extra.css" rel="stylesheet">
+<script src="../../extra.js"></script><meta property="og:title" content="Normalization">
 <meta property="og:description" content="singleCellTK">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
@@ -283,103 +284,48 @@
 
     
     
-<div id="introduction" class="section level3">
-<h3 class="hasAnchor">
-<a href="#introduction" class="anchor"></a>Introduction</h3>
+<div id="introduction" class="section level2">
+<h2 class="hasAnchor">
+<a href="#introduction" class="anchor"></a>Introduction</h2>
 <p>Data once uploaded and filtered through the preceding tabs can be normalized and corrected for batch-effect. This guide particularly focuses on normalization of data for downstream analysis which can be achieved through various methods and options integrated together in a single interface. Generally, users can use one of the provided normalization methods integrated from other packages, or use transformation options to manually normalize/scale data. Additionally, these transformation options can be applied to normalized data as well depending upon the type of the transformation.</p>
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<style>
-body {font-family: Arial;}
-
-.tab {
-  overflow: hidden;
-  border: 1px solid #ccc;
-  background-color: #f1f1f1;
-}
-
-.tab button {
-  background-color: inherit;
-  float: left;
-  border: 1px solid lightgrey;
-  outline: none;
-  cursor: pointer;
-  padding: 14px 16px;
-  transition: 0.3s;
-  font-size: 17px;
-  width: 50%;
-}
-
-.tab button:hover {
-  background-color: #ddd;
-}
-
-.tab button.active {
-  background-color: #ccc;
-}
-
-.tabcontent {
-  display: none;
-  padding: 6px 12px;
-  border: 1px solid #ccc;
-  border-top: none;
-}
-</style>
-<h3>Workflow Guide</h3>
-
+</div>
+<div id="workflow-guide" class="section level2">
+<h2 class="hasAnchor">
+<a href="#workflow-guide" class="anchor"></a>Workflow Guide</h2>
 <div class="tab">
   <button class="tablinks" onclick="openTab(event, 'interactive')" id="ia-button">Interactive Analysis</button>
-  <button class="tablinks" onclick="openTab(event, 'console')">Console Analysis</button>
+  <button class="tablinks" onclick="openTab(event, 'console')" id="console-button">Console Analysis</button>
 </div>
 
 <div id="interactive" class="tabcontent">
-  <p>
-  
-
-Normalization tab can be opened up by clicking on the <b>Normalization &amp; Batch Correction</b> from the top menu and further selecting the <b>Normalization</b> sub-tab in the subsequent window as shown below.
-
-<!-- ![](ui_screenshots/normalization/normalization_1_select_menu.png) -->
-
-<!-- ![](ui_screenshots/normalization/normalization_2_overview_1.png) -->
-
-The <b>Normalization</b> user-interface is divided into three parts, a) <b>Normalization Options</b>, b) <b>Assay Options</b>, and c) <b>Available Assays</b>.
-
-<!-- ![](ui_screenshots/normalization/normalization_2_overview_2.png) -->
-
-</p>
-<h5 class="hasAnchor">
-<a href="#interactive" class="anchor"></a> a) Normalization Options </h5>
-In the <b>Normalization Options</b>, users can select a method for normalization from `Scater - CPM` or one of the methods from <b>Seurat</b> i.e. `LogNormalize`, `CLR` (Centered Log Ratio), `RC` (Relative Counts) and `SCTransform`. Users can also set a manual <b>Scaling Factor</b> (numeric value multiplied by the data values) and specify the <b>Assay Name</b> for the new `assay`. 
-
-<!-- ![](ui_screenshots/normalization/normalization_3_seurat.png) -->
-
-<!-- ![](ui_screenshots/normalization/normalization_4_cpm.png) -->
-
-<h5> b) Assay Options </h5>
-In addition to the normalization methods, manually implemented transformation methods can be used to perform different transformations on the data. These transformations include `Log Transform`, `log1p` and standard `Z-score`. 
-
-<!-- ![](ui_screenshots/normalization/normalization_5_assay_options.png) -->
-
-If trimming of an `assay` is required, 'Trim Assay' option can be enabled and lower/upper bound values can be set. The default value for upper and lower trim values is `10` and `-10` respectively.
-
-<!-- ![](ui_screenshots/normalization/normalization_6_trim_assay.png) -->
-
-<h5> c) Available Assays </h5>
-The currently available 'assays' are listed in the 'Available Assays' window. Whenever a new `assay` is generated, the list is updated automatically.
-
-  
+<p>Normalization tab can be opened up by clicking on the <strong>Normalization &amp; Batch Correction</strong> from the top menu and further selecting the <strong>Normalization</strong> sub-tab in the subsequent window as shown below.</p>
+<p><img src="ui_screenshots/normalization/normalization_1_select_menu.png"></p>
+<p><img src="ui_screenshots/normalization/normalization_2_overview_1.png"></p>
+<p>The <strong>Normalization</strong> user-interface is divided into three parts, a) <strong>Normalization Options</strong>, b) <strong>Assay Options</strong>, and c) <strong>Available Assays</strong>.</p>
+<p><img src="ui_screenshots/normalization/normalization_2_overview_2.png"></p>
+<ol style="list-style-type: lower-alpha">
+<li>
+<strong>Normalization Options</strong> In the <strong>Normalization Options</strong>, users can select a method for normalization from <code>Scater - CPM</code> or one of the methods from <strong>Seurat</strong> i.e. <code>LogNormalize</code>, <code>CLR</code> (Centered Log Ratio), <code>RC</code> (Relative Counts) and <code>SCTransform</code>. Users can also set a manual <strong>Scaling Factor</strong> (numeric value multiplied by the data values) and specify the <strong>Assay Name</strong> for the new <code>assay</code>.</li>
+</ol>
+<p><img src="ui_screenshots/normalization/normalization_3_seurat.png"></p>
+<p><img src="ui_screenshots/normalization/normalization_4_cpm.png"></p>
+<ol start="2" style="list-style-type: lower-alpha">
+<li>
+<strong>Assay Options</strong> In addition to the normalization methods, manually implemented transformation methods can be used to perform different transformations on the data. These transformations include <code>Log Transform</code>, <code>log1p</code> and standard <code>Z-score</code>.</li>
+</ol>
+<p><img src="ui_screenshots/normalization/normalization_5_assay_options.png"></p>
+<p>If trimming of an <code>assay</code> is required, ‘Trim Assay’ option can be enabled and lower/upper bound values can be set. The default value for upper and lower trim values is <code>10</code> and <code>-10</code> respectively.</p>
+<p><img src="ui_screenshots/normalization/normalization_6_trim_assay.png"></p>
+<ol start="3" style="list-style-type: lower-alpha">
+<li>
+<strong>Available Assays</strong> The currently available ‘assays’ are listed in the ‘Available Assays’ window. Whenever a new <code>assay</code> is generated, the list is updated automatically.</li>
+</ol>
 </div>
-
 <div id="console" class="tabcontent">
-The `singleCellTK` allows the users to run all normalization and
-transformation methods on the input data by using a single `runNormalization`
-function. The `runNormalization` function takes in input a 
-`SingleCellExperiment` object and a series of parameters that define the
-normalization/transformation options to run on the specified `assay`. The
-output of this function is a `SingleCellExperiment` object which now contains
-the normalized/transformed assay.
-
-To use the function, input a `SingleCellExperiment` object that contains the data assay and specify the required parameters:
+<p>The <code>singleCellTK</code> allows the users to run all normalization and transformation methods on the input data by using a single <code>runNormalization</code> function. The <code>runNormalization</code> function takes in input a <code>SingleCellExperiment</code> object and a series of parameters that define the normalization/transformation options to run on the specified <code>assay</code>. The output of this function is a <code>SingleCellExperiment</code> object which now contains the normalized/transformed assay.</p>
+<p>To use the function, input a <code>SingleCellExperiment</code> object that contains the data assay and specify the required parameters:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/runNormalization.html">runNormalization</a></span><span class="op">(</span>
   inSCE <span class="op">=</span> <span class="va">sce</span>, 
@@ -390,25 +336,14 @@ To use the function, input a `SingleCellExperiment` object that contains the dat
   transformation <span class="op">=</span> <span class="st">"log2"</span>, 
   pseudocountsBeforeTransform <span class="op">=</span> <span class="fl">1</span>, 
   trim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="op">-</span><span class="fl">10</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<details><summary><strong>Example</strong>
-</summary><div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<details><summary><b>Example</b></summary><div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R">  <span class="co"># Load singleCellTK &amp; pbmc3k example data</span>
   <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://compbiomed.github.io/sctk_docs/">singleCellTK</a></span><span class="op">)</span>
   <span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/importExampleData.html">importExampleData</a></span><span class="op">(</span>dataset <span class="op">=</span> <span class="st">"pbmc3k"</span><span class="op">)</span></code></pre></div>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R">  <span class="co"># Perform normalization</span>
-  <span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/runNormalization.html">runNormalization</a></span><span class="op">(</span>
-    inSCE <span class="op">=</span> <span class="va">sce</span>,
-    normalizationMethod <span class="op">=</span> <span class="st">"RC"</span>,
-    useAssay <span class="op">=</span> <span class="st">"counts"</span>,
-    outAssayName <span class="op">=</span> <span class="st">"RCLogScaledCounts"</span>,
-    scale <span class="op">=</span> <span class="cn">TRUE</span>,
-    transformation <span class="op">=</span> <span class="st">"log2"</span>,
-    pseudocountsBeforeTransform <span class="op">=</span> <span class="fl">1</span>, 
-    trim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="op">-</span><span class="fl">10</span><span class="op">)</span>
-  <span class="op">)</span></code></pre></div>
-</details><details><summary><strong>Parameters</strong>
-</summary><p>The <code>runNormalization</code> function specifies the following parameters:</p>
+  <span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/runNormalization.html">runNormalization</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, normalizationMethod <span class="op">=</span> <span class="st">"RC"</span>, useAssay <span class="op">=</span> <span class="st">"counts"</span>, outAssayName <span class="op">=</span> <span class="st">"RCLogScaledCounts"</span>, scale <span class="op">=</span> <span class="cn">TRUE</span>, transformation <span class="op">=</span> <span class="st">"log2"</span>, pseudocountsBeforeTransform <span class="op">=</span> <span class="fl">1</span>, trim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="op">-</span><span class="fl">10</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+</details><details><summary><b>Parameters</b></summary><p>The <code>runNormalization</code> function specifies the following parameters:</p>
 <table class="table">
 <colgroup>
 <col width="50%">
@@ -464,12 +399,11 @@ To use the function, input a `SingleCellExperiment` object that contains the dat
 <td>A <code>logical</code> value indicating if informative/progress messages should be displayed on the console.</td>
 </tr>
 </tbody>
-</table></details><details><summary><strong>Individual Functions</strong>
-</summary><p>While the <code>runNormalization</code> wrapper function can be used to perform all available normalization and transformation options, separate functions are also available for all of the included normalization methods. The following functions can be used for specific normalization methods:</p>
-<style>
-div.blue { background-color:#FFFFFF; border-radius: 5px; padding: 20px; margin-left: 10px;}
+</table></details><details><summary><b>Individual Functions</b></summary><p>While the <code>runNormalization</code> wrapper function can be used to perform all available normalization and transformation options, separate functions are also available for all of the included normalization methods. The following functions can be used for specific normalization methods:</p>
+ <style>
+div.offset { background-color:inherit ; border-radius: 5px; margin-left: 15px;}
 </style>
-<div class="blue">
+<div class="offset">
 <details><summary><code>LogNormalize</code>, <code>CLR</code> or <code>RC</code> from <strong>Seurat</strong> <span class="citation">[1]</span><span class="citation">[2]</span> package:
 </summary><div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R">  <span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/seuratNormalizeData.html">seuratNormalizeData</a></span><span class="op">(</span>
@@ -481,7 +415,7 @@ div.blue { background-color:#FFFFFF; border-radius: 5px; padding: 20px; margin-l
           verbose <span class="op">=</span> <span class="cn">TRUE</span>
         <span class="op">)</span></code></pre></div>
 <p>The parameters to the above function include: <br><br><code>inSCE</code>: an input <code>SingleCellExperiment</code> object <br><code>normalizationMethod</code>: one of the options from “LogNormalize,” “CLR” or “RC” <br><code>useAssay</code>: name of the assay to use for normalization <br><code>normAssayName</code>: name of the output normalized assay <br><code>scaleFactor</code>: a numeric value that represents the scaling factor <br><code>verbose</code>: a logical value indicating if progress should be printed <br><br></p>
-</details><details><summary><code>SCTransform</code> from <strong>Seurat</strong> <span class="citation">[3]</span><span class="citation">[1]</span><span class="citation">[2]</span> package:
+</details><details><summary><code>SCTransform</code> from <strong>Seurat</strong> <span class="citation">[1]</span><span class="citation">[2]</span><span class="citation">[3]</span> package:
 </summary><div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R">  <span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/seuratSCTransform.html">seuratSCTransform</a></span><span class="op">(</span>
           inSCE <span class="op">=</span> <span class="va">sce</span>,
@@ -501,38 +435,21 @@ div.blue { background-color:#FFFFFF; border-radius: 5px; padding: 20px; margin-l
           inSCE <span class="op">=</span> <span class="va">sce</span>,
           useAssay <span class="op">=</span> <span class="st">"counts"</span>,
           assayName <span class="op">=</span> <span class="st">"countsCPM"</span><span class="op">)</span></code></pre></div>
-</details><details><summary>
-Compute <strong>Z-Score</strong>:
-</summary><div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+</details><details><summary>Compute <b>Z-Score</b>:</summary><div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R">  <span class="fu">assay</span><span class="op">(</span><span class="va">sce</span>, <span class="st">"countsZScore"</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/computeZScore.html">computeZScore</a></span><span class="op">(</span><span class="fu">assay</span><span class="op">(</span><span class="va">sce</span>, <span class="st">"counts"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-</details><details><summary>
-Matrix <strong>trimming</strong>:
-</summary><div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+</details><details><summary>Matrix <b>trimming</b>:</summary><div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R">  <span class="fu">assay</span><span class="op">(</span><span class="va">sce</span>, <span class="st">"countsTrimmed"</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/trimCounts.html">trimCounts</a></span><span class="op">(</span><span class="fu">assay</span><span class="op">(</span><span class="va">sce</span>, <span class="st">"counts"</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="op">-</span><span class="fl">10</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 </details>
 </div>
-</details>
+    </details>
 </div>
 <script>
 document.getElementById("ia-button").click();
-function openTab(evt, tabName) {
-  var i, tabcontent, tablinks;
-  tabcontent = document.getElementsByClassName("tabcontent");
-  for (i = 0; i < tabcontent.length; i++) {
-    tabcontent[i].style.display = "none";
-  }
-  tablinks = document.getElementsByClassName("tablinks");
-  for (i = 0; i < tablinks.length; i++) {
-    tablinks[i].className = tablinks[i].className.replace(" active", "");
-  }
-  document.getElementById(tabName).style.display = "block";
-  evt.currentTarget.className += " active";
-}
 </script>
 </div>
-<div id="references" class="section level3 unnumbered">
-<h3 class="hasAnchor">
-<a href="#references" class="anchor"></a>References</h3>
+<div id="references" class="section level2 unnumbered">
+<h2 class="hasAnchor">
+<a href="#references" class="anchor"></a>References</h2>
 <div id="refs" class="references csl-bib-body">
 <div id="ref-Butler2018" class="csl-entry">
 <div class="csl-left-margin">[1] </div>
@@ -556,7 +473,9 @@ function openTab(evt, tabName) {
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
 
-      </div>
+        <nav id="toc" data-toggle="toc"><h2 data-toc-skip>Contents</h2>
+    </nav>
+</div>
 
 </div>
 
