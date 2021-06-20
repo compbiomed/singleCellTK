@@ -248,7 +248,13 @@ shinyUI(
       #   )
       # ),
       useShinyjs(),
-      extendShinyjs(text = jsCode, functions = c("enableTabs", "disableTabs"))
+      extendShinyjs(text = jsCode, functions = c("enableTabs", "disableTabs")),
+      
+      # Following lines of code add a loading spinner when toolkit launches and
+      # loads several ui elements/plots etc.
+      includeCSS("busy-load-piccard21.css"),
+      tags$script(src = "initialLoading.js"),
+      tags$script(src = "busy-load-piccard21.js")
     )
 )
 

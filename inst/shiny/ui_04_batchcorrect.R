@@ -520,6 +520,7 @@ shinyPanelBatchcorrect <- fluidPage(
       )
     )
   )
-  )
+  ),
+  nonLinearWorkflowUI(id = "nlw-nbc")
 )
 

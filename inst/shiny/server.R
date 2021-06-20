@@ -19,10 +19,7 @@ source("qc_help_pages/ui_scDblFinder_help.R", local = TRUE) # creates several sm
 # Define server logic required to draw a histogram
 shinyServer(function(input, output, session) {
 
-  #call modules server part
-  callModule(module = nonLinearWorkflow, id = "id_1", parent = session)
-
-  #PushBar setup
+  # PushBar setup
   # setup_pushbar(blur = FALSE, overlay = FALSE)
   
   # library(fs)
@@ -934,6 +931,7 @@ shinyServer(function(input, output, session) {
 
       updateSeuratUIFromRDS(vals$counts)
     })
+    callModule(module = nonLinearWorkflow, id = "nlw-import", parent = session, qcf = TRUE)
   })
 
   updateSeuratUIFromRDS <- function(inSCE){
@@ -1619,6 +1617,9 @@ shinyServer(function(input, output, session) {
                                  reducedDimName = input$QCUMAPName
         )
         updateQCPlots()
+        
+        # Show downstream analysis options
+        callModule(module = nonLinearWorkflow, id = "nlw-qcf", parent = session, nbc = TRUE, cw = TRUE, cv = TRUE)
       }
     })
 
@@ -1848,6 +1849,9 @@ shinyServer(function(input, output, session) {
         }
       }
       shinyjs::show(id="filteringSummary")
+      
+      # Show downstream analysis options
+      shinyjs::show(selector = ".nlw-qcf")
     })
   })
 
@@ -2289,6 +2293,9 @@ shinyServer(function(input, output, session) {
         )
 
         vals$counts <- do.call("runNormalization", args)
+        
+        # Show downstream analysis options
+        callModule(module = nonLinearWorkflow, id = "nlw-nbc", parent = session, dr = TRUE, fs = TRUE)
       }
     })
   })
@@ -2335,6 +2342,9 @@ shinyServer(function(input, output, session) {
         )
 
         vals$counts <- do.call("runNormalization", args)
+        
+        # Show downstream analysis options
+        callModule(module = nonLinearWorkflow, id = "nlw-nbc", parent = session, dr = TRUE, fs = TRUE)
       }
     })
   })
@@ -2484,6 +2494,8 @@ shinyServer(function(input, output, session) {
               nComponents = input$dimRedNumberDims
             )
             updateReddimInputs()
+            # Show downstream analysis options
+            callModule(module = nonLinearWorkflow, id = "nlw-dr", parent = session, cl = TRUE, cv = TRUE)
           }
         }
       })
@@ -2819,6 +2831,8 @@ shinyServer(function(input, output, session) {
               )
             }
             updateReddimInputs()
+            # Show downstream analysis options
+            callModule(module = nonLinearWorkflow, id = "nlw-dr", parent = session, cl = TRUE, cv = TRUE)
           }
         }
       })
@@ -3025,6 +3039,8 @@ shinyServer(function(input, output, session) {
         updateColDataNames()
         clustResults$names <- c(clustResults$names, saveClusterName)
         updateSelectInput(session, "clustVisRes", choices = clustResults$names)
+        # Show downstream analysis options
+        callModule(module = nonLinearWorkflow, id = "nlw-cl", parent = session, de = TRUE, pa = TRUE, cv = TRUE)
       })
     }
   })
@@ -5093,19 +5109,11 @@ shinyServer(function(input, output, session) {
           #make sure no NA's are introduced in HVGs
           HVGs <- stats::na.omit(HVGs)
           tempAssay <- expData(vals$counts, vals$hvgCalculated$assayName)[HVGs,]
-          #vals$counts <- subsetSCERows(vals$counts,
-          #                             which(rownames(vals$counts) %in% HVGs),
-          #                             returnAsAltExp = TRUE,
-          #                             altExpName = input$hvgAltExpName)
-          #just keep the subset assay in altexp only
-          #tempAssay <- assays(altExp(vals$counts, input$hvgAltExpName))[[paste0(input$hvgAltExpName, vals$hvgCalculated$assayName)]]
-          #altAssaysToRemove <- assayNames(altExp(vals$counts, input$hvgAltExpName))
           expData(vals$counts, input$hvgAltExpName, tag = "hvg", altExp = TRUE) <- tempAssay
-          #for(i in seq(length(altAssaysToRemove))){
-          #  assays(altExp(vals$counts, input$hvgAltExpName), withDimnames = FALSE)[[altAssaysToRemove[i]]] <- NULL
-          #}
           updateAssayInputs()
         }
+        # Show downstream analysis options
+        callModule(module = nonLinearWorkflow, id = "nlw-fs", parent = session, dr = TRUE, cl = TRUE)
       } else {
         shinyalert::shinyalert(
           "Error",
@@ -5481,6 +5489,8 @@ shinyServer(function(input, output, session) {
       } else {
         runDEfromShiny(FALSE)
       }
+      # Show downstream analysis options
+      callModule(module = nonLinearWorkflow, id = "nlw-de", parent = session, pa = TRUE, cv = TRUE)
     }
   })
 
@@ -6781,9 +6791,8 @@ shinyServer(function(input, output, session) {
 
     showNotification("Find Markers Complete")
 
-    #enable downstream analysis
-    shinyjs::show(
-      selector = "div[value='Downstream Analysis']")
+    # Show downstream analysis options
+    callModule(module = nonLinearWorkflow, id = "nlw-seurat", parent = session, de = TRUE, pa = TRUE)
 
     updateCollapse(session = session, "SeuratUI", style = list("Find Markers" = "success"))
 
@@ -8115,3 +8124,4 @@ shinyServer(function(input, output, session) {
   #   pushbar_open(id = "myPushbar")
   # })  
 })
+
