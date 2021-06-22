@@ -7,6 +7,7 @@ shinyPanelQCFilter <- fluidPage(
   tabsetPanel(
     tabPanel("QC", shinyPanelQC),
     tabPanel("Filtering", shinyPanelFilter)
-  )
+  ),
+  nonLinearWorkflowUI(id = "nlw-qcf")
 )
 

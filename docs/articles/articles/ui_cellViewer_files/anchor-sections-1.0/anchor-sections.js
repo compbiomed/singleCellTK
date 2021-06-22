@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', function() {
   // Add anchors
   h.forEach(function(x) {
     const id = x.id || section_id(x.parentElement);
-    if (id === '' || x.matches(':empty')) {
+    if (id === '') {
       return null;
     }
     let anchor = document.createElement('a');
