@@ -94,11 +94,25 @@ getTopHVG <- function(inSCE, method, n = 2000, altExp = NULL) {
             disp = rowData(inSCE)$seurat_variableFeatures_mvp_dispersion,
             dispScaled = rowData(inSCE)$seurat_variableFeatures_mvp_dispersionScaled)
         tempDataFrame <- tempDataFrame[order(-tempDataFrame$disp),]
+        
+        tempDataFrame <- 
+            tempDataFrame[tempDataFrame[varianceColumnName] > 0, ]
+        
+        if(nrow(tempDataFrame) < n){
+            n <- nrow(tempDataFrame)
+        }
+        
         means.use <- (tempDataFrame[, "mean"] > 0.1) &
                      (tempDataFrame[, "mean"] < 8)
         dispersions.use <- (tempDataFrame[, "dispScaled"] > 1) &
                            (tempDataFrame[, "dispScaled"] < Inf)
         topGenes <- as.character(tempDataFrame$featureNames[which(x = means.use & dispersions.use)])[seq_len(n)]
+        
+        if(!is.null(altExp)){
+            topGenes <- inSCE[topGenes, ]
+            altExp(inSCE, altExp) <- topGenes
+            topGenes <- inSCE
+        }
     }
     return(topGenes)
 }
