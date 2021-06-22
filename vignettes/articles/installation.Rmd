@@ -1,0 +1,117 @@
+---
+title: "Installation"
+output: html_document
+---
+
+## General Prerequistes
+
+1. **R (>=4.0)**. [Install R](#install-r-4-0-)
+
+SingleCellTK is an R based package, allowing users to run analysis in system command-line, R console, and R Shiny user interface. To get your machine fully equipped with SCTK, you must have **R (>=4.0)** pre-installed.   
+
+2. **singleCellTK** package. [See detail](#install-sctk)
+
+With R successfully installed, users can now start to install SingleCellTK to your local. For quick start, BioConductor users can directly requiste our released version with the following command:  
+
+```{R biocSCTK, eval=FALSE}
+if (!requireNamespace("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+
+BiocManager::install("singleCellTK")
+```
+
+3. **Python environment**. [Install Python](#install-python-dependencies)  
+
+Additionally, SCTK wraps a number of useful toolkits, where a part of them are Python based. To enable this part of functionality, users need to get Python (3.x) and a set of Python package built.  
+
+For users who would like to perform console interactive analysis, we strongly suggest that you have [RStudio](https://www.rstudio.com/products/rstudio/download/#download) installed. 
+
+## Step by Step Installation
+
+### Install R (>=4.0)
+
+Users can go to [**R Official Site**](https://www.r-project.org/) to choose the preferred installer.  
+
+In the site, users will need to first **specify a CRAN mirror**. CRAN is a network of servers around the world that store approved R dependencies. Specifying a mirror that is the nearest to you helps minimize network load.  
+
+![chooseMirror](ui_screenshots/installation/RChooseMirror.png)\
+
+Linux, Windows and MacOS users will be able to find the corresponding installer at the top of the page after choosing a mirror.  
+
+![chooseMirror](ui_screenshots/installation/RSystem.png)\
+
+### Install SCTK
+
+#### Released version (BioConductor) 
+
+Our latest stable release is available on BioConductor. BioConductor is a distribution platform for biology-related packages. The page for SCTK can be found [here](https://bioconductor.org/packages/release/bioc/html/singleCellTK.html)
+
+Run the following command in **R console** to install SCTK from BioConductor:
+
+```{R biocSCTK2, eval=FALSE}
+if (!requireNamespace("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+
+BiocManager::install("singleCellTK")
+```
+
+#### Released version (GitHub)
+
+We occasionally push new releases of our source code on GitHub. See our [GitHub Releases](https://github.com/compbiomed/singleCellTK/releases)  
+
+![chooseMirror](ui_screenshots/installation/sourceCodeAssets.png)\
+
+To install from source code, you need to first **download the tarball file (ending with `.tar.gz`)**, which is a compressed file for the whole directory. Then **in R console**, run the following command:  
+
+```{R sourceSCTK, eval=FALSE}
+# REPLACE {PATH} with the path you place the downloaded tarball file
+# REPLACE {VERSION} with the version number in the filename
+install.packages("{PATH}/singleCellTK_{VERSION}.tar.gz", repos = NULL)
+```
+
+It is not suggested to directly install SCTK from our source code, since that we require a lot of dependencies. BioConductor helps with automatically fetching all of them.  
+
+#### Developing version
+
+For users who want to use our devel version, please use the R package `devtools` to directly install from our GitHub repository. 
+
+```{R installDevel, eval=FALSE}
+if (!requireNamespace("devtools", quietly = TRUE)) {
+    install.packages("devtools")
+}
+devtools::install_github("compbiomed/singleCellTK")
+```
+
+For developers of SCTK, please refer to the [guidance](https://github.com/compbiomed/singleCellTK#develop-singlecelltk) in the README of our repository.  
+
+### Install Python Dependencies
+
+SCTK can be successfully loaded without a Python installation. While there are some parts of our analysis that support multiple methods, some options among them would require a live Python environment. For example, the quality control and batch correction sections.  
+
+For experienced Python programmers, the minimum required Python packages are listed below:
+
+```
+scipy numpy astroid six scrublet scanpy bbknn scanorama
+```
+
+#### Non-Python users
+
+If you have not had Python installed before, and do not have a plan to use Python. We have prepared a simple command to minimize the workload for you to clear the barrier, **after installing SCTK** in your R console.
+
+```{R reticulateSetup, eval=FALSE}
+library(singleCellTK)
+sctkPythonInstallConda()
+```
+
+#### Work with Python
+
+If you would like to start to work with Python or are already an experienced Python programmer, here we skip the approach to the Python installation. If you have a standalone Python installation, it is not necessary to run the command above because it is likely to create a redundant Miniconda copy in your machine. The dependencies needed are listed above in this section and you can install them with either `conda` or `pip`.  
+
+SCTK adopts [reticulate](https://rstudio.github.io/reticulate/) to connect R with Python. If the specific functions in SCTK, which requires Python dependencies, do not properly start to run after you have installed the dependencies or restart the R session, please try to specify the correct Python executable/binary file in a **new R session**. (here "new" means no Python or reticulate related operations have been performed)
+
+```{R reticulateFix, eval=FALSE}
+library(reticulate)
+use_python("{PATH to the correct Python exexutable/binary file}")
+```
+
+You can always use `reticulate::py_config()` to check what specific Python version you are using and what other versions are available. `py_config()` configures the R-to-Python connection at once, so you will have to restart the R session if you need to change the configuration with `use_python()` after you have the check done.  
