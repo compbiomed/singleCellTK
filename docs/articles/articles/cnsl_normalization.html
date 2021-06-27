@@ -305,23 +305,14 @@
 <p><img src="ui_screenshots/normalization/normalization_2_overview_1.png"></p>
 <p>The <strong>Normalization</strong> user-interface is divided into three parts, a) <strong>Normalization Options</strong>, b) <strong>Assay Options</strong>, and c) <strong>Available Assays</strong>.</p>
 <p><img src="ui_screenshots/normalization/normalization_2_overview_2.png"></p>
-<ol style="list-style-type: lower-alpha">
-<li>
-<strong>Normalization Options</strong> In the <strong>Normalization Options</strong>, users can select a method for normalization from <code>Scater - LogNormCounts</code>, <code>Scater - CPM</code> or one of the methods from <strong>Seurat</strong> i.e. <code>LogNormalize</code>, <code>CLR</code> (Centered Log Ratio), <code>RC</code> (Relative Counts) and <code>SCTransform</code>. Users can also set a manual <strong>Scaling Factor</strong> (numeric value multiplied by the data values) and specify the <strong>Assay Name</strong> for the new <code>assay</code>.</li>
-</ol>
+<p><strong>a) Normalization Options</strong> In the <strong>Normalization Options</strong>, users can select a method for normalization from <code>Scater - LogNormCounts</code>, <code>Scater - CPM</code> or one of the methods from <strong>Seurat</strong> i.e. <code>LogNormalize</code>, <code>CLR</code> (Centered Log Ratio), <code>RC</code> (Relative Counts) and <code>SCTransform</code>. Users can also set a manual <strong>Scaling Factor</strong> (numeric value multiplied by the data values) and specify the <strong>Assay Name</strong> for the new <code>assay</code>.</p>
 <p><img src="ui_screenshots/normalization/normalization_3_seurat.png"></p>
 <p><img src="ui_screenshots/normalization/normalization_4_cpm.png"></p>
-<ol start="2" style="list-style-type: lower-alpha">
-<li>
-<strong>Assay Options</strong> In addition to the normalization methods, manually implemented transformation methods can be used to perform different transformations on the data. These transformations include <code>Log Transform</code>, <code>log1p</code> and standard <code>Z-score</code>.</li>
-</ol>
+<p><strong>b) Assay Options</strong> In addition to the normalization methods, manually implemented transformation methods can be used to perform different transformations on the data. These transformations include <code>Log Transform</code>, <code>log1p</code> and standard <code>Z-score</code>.</p>
 <p><img src="ui_screenshots/normalization/normalization_5_assay_options.png"></p>
 <p>If trimming of an <code>assay</code> is required, ‘Trim Assay’ option can be enabled and lower/upper bound values can be set. The default value for upper and lower trim values is <code>10</code> and <code>-10</code> respectively.</p>
 <p><img src="ui_screenshots/normalization/normalization_6_trim_assay.png"></p>
-<ol start="3" style="list-style-type: lower-alpha">
-<li>
-<strong>Available Assays</strong> The currently available ‘assays’ are listed in the ‘Available Assays’ window. Whenever a new <code>assay</code> is generated, the list is updated automatically.</li>
-</ol>
+<p><strong>c) Available Assays</strong> The currently available ‘assays’ are listed in the ‘Available Assays’ window. Whenever a new <code>assay</code> is generated, the list is updated automatically.</p>
 </div>
 <div id="console" class="tabcontent">
 <p>The <code>singleCellTK</code> allows the users to run all normalization and transformation methods on the input data by using a single <code>runNormalization</code> function. The <code>runNormalization</code> function takes in input a <code>SingleCellExperiment</code> object and a series of parameters that define the normalization/transformation options to run on the specified <code>assay</code>. The output of this function is a <code>SingleCellExperiment</code> object which now contains the normalized/transformed assay.</p>

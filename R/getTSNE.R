@@ -8,7 +8,7 @@
 #' @param reducedDimName a name to store the results of the dimension
 #' reductions. Default \code{"TSNE"}.
 #' @param nIterations maximum iterations. Default \code{1000}.
-#' @param perplexity perplexity parameter. Default \code{NULL}.
+#' @param perplexity perplexity parameter. Default \code{30}.
 #' @param run_pca run tSNE on PCA components? Default \code{TRUE}.
 #' @param ntop Number of top features to use as a further variable feature
 #' selection. Default \code{NULL}.
@@ -27,7 +27,7 @@
 #' reducedDims(mouseBrainSubsetSCE)
 getTSNE <- function(inSCE, useAssay = "logcounts", useAltExp = NULL,
                     reducedDimName = "TSNE", nIterations = 1000,
-                    perplexity = NULL, run_pca = TRUE, ntop = NULL){
+                    perplexity = 30, run_pca = TRUE, ntop = NULL){
   if (!inherits(inSCE, "SingleCellExperiment")){
     stop("Please use a SingleCellExperiment object")
   }

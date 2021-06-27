@@ -1,84 +1,145 @@
 ---
 title: "Dimensionality Reduction"
 author: "Irzam Sarfraz"
+output:
+  html_document:
+    toc: true
+    toc_depth: 2
+bibliography: references.bib
+csl: ieee.csl
 ---
 ```{r develSetting, include=FALSE}
 doEval = TRUE
 ```
 ## Introduction
-'runDimensionalityReduction' function offers a convenient way to run dimensionality reduction algorithms i.e., PCA & ICA, that have been implemented from various packages and integrated together in a single wrapper function. Additionally, high-dimensional data visualization methods such as tSNE & UMAP have also been provided under the umbrella of dimensionality reduction from within the same wrapper function.
----
+**singleCellTK** offers a convenient way to normalize data for downstream analysis using a number of methods available through the toolkit. The integrated normalization methods and other transformation options can be used through both R console and interactive shiny application. 
 
-A brief summary of the available methods is described below:
+Normalization methods available with the toolkit include `"LogNormalize"`, `"CLR"`, `"RC"` & `"SCTransform"` from `Seurat` package and `"logNormCounts"` or `"CPM"` from `Scater` package. Additional transformation options are available for users including 'log' & 'log1p', trimming of data assays and Z-Score scaling. To view detailed instructions on how to use these methods, please select 'Interactive Analysis' for using normalization in shiny application or 'Console Analysis' for using these methods on R console from the tabs below:
 
-### PCA/ICA
-#### Implemented Algorithms from Packages:
-|reducedDims Method|Packages|Reference|
-|---|---|---| 
-| PCA | Scran  | [Lun ATL, McCarthy DJ, Marioni JC (2016). “A step-by-step workflow for low-level analysis of single-cell RNA-seq data with Bioconductor.” F1000Res., 5, 2122.](https://doi.org/10.12688/f1000research.9501.2) |
-| PCA | Seurat | [Butler et al., Nature Biotechnology 2018](https://www.nature.com/articles/nbt.4096) & [Stuart*, Butler*, et al., Cell 2019](https://www.cell.com/cell/fulltext/S0092-8674(19)30559-8) |
-| ICA | Seurat | [Butler et al., Nature Biotechnology 2018](https://www.nature.com/articles/nbt.4096) & [Stuart*, Butler*, et al., Cell 2019](https://www.cell.com/cell/fulltext/S0092-8674(19)30559-8) |
+````{=html}
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+````
 
-### tSNE/UMAP
-#### Implemented Algorithms from Packages:
-|Method|Packages|Reference|
-|---|---|---| 
-| tSNE | Rtsne  | [L.J.P. van der Maaten and G.E. Hinton. Visualizing High-Dimensional Data Using t-SNE. Journal of Machine Learning Research
-  9(Nov):2579-2605, 2008.](http://jmlr.org/papers/v9/vandermaaten08a.html), [L.J.P. van der Maaten. Accelerating t-SNE using Tree-Based Algorithms. Journal of Machine Learning Research 15(Oct):3221-3245, 2014.](http://jmlr.org/papers/v15/vandermaaten14a.html) and [Jesse H. Krijthe (2015). Rtsne: T-Distributed Stochastic Neighbor Embedding using a Barnes-Hut Implementation](https://github.com/jkrijthe/Rtsne) |
-| UMAP | uwot  | [James Melville (2020). uwot: The Uniform Manifold Approximation and Projection (UMAP) Method for Dimensionality Reduction. R
-  package version 0.1.8.](https://CRAN.R-project.org/package=uwot)|
-| tSNE | Seurat | [Butler et al., Nature Biotechnology 2018](https://www.nature.com/articles/nbt.4096) & [Stuart*, Butler*, et al., Cell 2019](https://www.cell.com/cell/fulltext/S0092-8674(19)30559-8) |
-| UMAP | Seurat | [Butler et al., Nature Biotechnology 2018](https://www.nature.com/articles/nbt.4096) & [Stuart*, Butler*, et al., Cell 2019](https://www.cell.com/cell/fulltext/S0092-8674(19)30559-8) |
-
-### Visualizations Supported
-| Method | 2-Dimensional Component Plot | Elbow Plot | JackStraw Plot | Heatmap Plot |
-|---|---|---|---|---|
-|PCA| $\checkmark$ | $\checkmark$ | $\checkmark$ | $\checkmark$ |
-|ICA| $\checkmark$ |x|x|$\checkmark$|
-|tSNE| $\checkmark$ |x|x|x|
-|UMAP| $\checkmark$ |x|x|x|
-
-### General Worflow
-![](ui_screenshots/dimensionality_reduction/dr_workflow.png)
-
----
 
 ## Workflow Guide
+
+````{=html}
+<div class="tab">
+  <button class="tablinks" onclick="openTab(event, 'interactive')" id="ia-button">Interactive Analysis</button>
+  <button class="tablinks" onclick="openTab(event, 'console')" id="console-button">Console Analysis</button>
+</div>
+
+<div id="interactive" class="tabcontent">
+````
+
+In general, both sub-tabs offer options for selection of data items and choice of parameters on the left side, and a visualization panel on the right side of the interface. A detailed workflow guide to run and visualize dimensionality reduction (DR) algorithms is described below:
+
+![](ui_screenshots/dimensionality_reduction/dr_1.png)
+1. To begin the DR workflow, click on the "Feature Selection & Dimensionality Reduction" tab from the top menu. This workflow assumes that before proceeding towards computation of DR, data has been uploaded, filtered and normalized (and optionally variable features have been identified) through the preceding tabs.
+![](ui_screenshots/dimensionality_reduction/dr_2.png)
+2. Select "Dimensionality Reduction" tab.
+![](ui_screenshots/dimensionality_reduction/dr_3.png)
+3. Select "PCA/ICA" or "tSNE/UMAP" appropriately. 
+![](ui_screenshots/dimensionality_reduction/dr_4.png)
+4. Select a data item (assay or a feature subset) which should be used for computation. <br>
+5. Select an appropriate method for dimensionality reduction. Available choices are "PCA" from \code{scran} package and "PCA" & "ICA" from \code{seurat} package. <br>
+6. Specify a name for the new data (reducedDim). <br>
+7. Specify the number of dimensions to compute against the selected algorithm. Default value is \code{10}. <br>
+8. Check the boxes against the visualizations that should be plotted after computation of reducedDims. This visualizations become available after computation on the right panel. <br>
+9. If "Compute HeatmapPlot?" is selected in step 8, you can specify how many features should be plotted in the heatmap by default. This setting can be changed later as well from the visualization panel on the right. <br> 
+10. Press "Run" to start computation. <br>
+11. Once processing is complete, selected visualizations appear in this panel. <br>
+![](ui_screenshots/dimensionality_reduction/dr_5.png)
+12. A 2D plot between the top two components is computed for all methods.
+![](ui_screenshots/dimensionality_reduction/dr_6.png)
+13. Elbow plot (optional) can be computed against PCA methods. It shows a relationship between the increasing number of components and the standard deviation, where components before an elbow break should be selected for downstream analysis. <br>
+![](ui_screenshots/dimensionality_reduction/dr_7.png)
+
+14. Heatmap plot panel can be used to visualize the features against each of the computed component. <br>
+15. Customizations for the heatmap plot can be made by selecting the components that should be selected. Number of columns for visualization can be specified as well for better viewing experience.
+![](ui_screenshots/dimensionality_reduction/dr_8.png)
+16. Jackstraw plot can be computed with PCA methods.
+![](ui_screenshots/dimensionality_reduction/dr_9.png)
+17. To compute tSNE or UMAP, select the "tSNE/UMAP" sub-tab from the interface. The steps below are only concerned with the computation of tSNE or UMAP and may vary between both of these methods. <br>
+18. Select a data item (assay or feature subset) to use for tSNE/UMAP computation. <br>
+19. Select method for tSNE or UMAP computation. <br>
+20. Specify the name of the new reducedDim. <br>
+21. Specify the number of components to compute with the selected method. Default value is set to \code{10}. <br>
+22. Specify number of iterations. Default value is set to \code{1000}. <br>
+23. Set perplexity parameter for tSNE. Default value is set to code{5}. <br>
+24. Start processing of the selected method. <br>
+25. Once computation is complete, a 2D plot between the components can be visualized in this panel.
+
+*Note: Some parameters may differ between different methods and may not have shown here.*
+
+
+
+````{=html}
+</div>
+<div id="console" class="tabcontent">
+````
+
 In general, the first step is to compute a dimensionality reduction (e.g. PCA) and then the second
 step is to visualize the computed results. The usage of functions to compute and visualize 
 results is described below.
 
-1. Compute dimensionality reduction statistics using one of the available functions.
+1. Compute dimensionality reduction statistics using `runDimensionalityReduction` wrapper function:
 ```{r, eval = FALSE}
-sce <- runDimensionalityReduction(
-              inSCE = sce,
-              useAssay = "normalizedCounts",
-              reducedDimName = "redDimPCA",
-              method = "seuratPCA",
-              nComponents = 20
-            )
+sce <- runDimensionalityReduction(inSCE = sce, useAssay = "normalizedCounts", reducedDimName = "redDimPCA", method = "seuratPCA", nComponents = 20)
 ```
 
-The following table illustrates the parameters that must be passed for each specific method:
-| Method | Parameters |
-|---|---|
-|scaterPCA|`inSCE`, `useAssay`, `reducedDimName`, `method` = "scaterPCA", `nComponents` 
-(default is 10)|
-|seuratPCA|`inSCE`, `useAssay`, `reducedDimName`, `method` = "seuratPCA", `nComponents` 
-(default is 10)|
-|seuratICA|`inSCE`, `useAssay`, `reducedDimName`, `method` = "seuratICA", `nComponents` 
-(default is 10)|
-|rTSNE|`inSCE`, `useAssay`, `reducedDimName`, `method` = "rTSNE", `perplexity` 
-(default is 30), `nIterations` (default is 1000)|
-|seuratTSNE|`inSCE`, `useAssay`, `reducedDimName`, `method` = "seuratTSNE", `nComponents`
- (default is 10), `useReduction` (either `pca` or `ica`) and 
- `perplexity` (default is 30)|
-|uwotUMAP|`inSCE`, `useAssay`, `reducedDimName`, `method` = "uwotUMAP", `nNeighbors` 
-(default is 30), `nIterations` (default is 200), `minDist` (default is 0.01) and
-`alpha` (default is 1)|
-|seuratUMAP|`inSCE`, `useAssay`, `reducedDimName`, `method` = "seuratUMAP", `nComponents` 
-(default is 10), `useReduction` (either `pca` or `ica`), `minDist` 
-(default is 0.3), `nNeighbors` (default is 30) and `spread` (default is 1)|
+To use the function, input a `SingleCellExperiment` object that contains the data assay and specify the required parameters (to see a complete list of supported parameters and to copy the function call against each method with the supported parameters, please view the 'Parameters' heading at the end of this page).
+
+```{=html}
+<div class = "offset">
+<details>
+````
+    
+  <summary>**Function Call for Each Method:**</summary> 
+
+***scaterPCA***:
+```{r, eval = FALSE}
+sce <- runDimensionalityReduction(inSCE = sce, useAssay = "normalizedCounts", reducedDimName = "redDimPCA", method = "scaterPCA", nComponents = 10)
+```
+
+***seuratPCA***:
+```{r, eval = FALSE}
+sce <- runDimensionalityReduction(inSCE = sce, useAssay = "normalizedCounts", reducedDimName = "redDimPCA", method = "seuratPCA", nComponents = 10)
+```
+
+***seuratICA***:
+```{r, eval = FALSE}
+sce <- runDimensionalityReduction(inSCE = sce, useAssay = "normalizedCounts", reducedDimName = "redDimICA", `method` = "seuratICA", nComponents = 10)
+```
+
+***rTSNE***:
+```{r, eval = FALSE}
+sce <- runDimensionalityReduction(inSCE = sce, useAssay = "normalizedCounts", reducedDimName = "redDimTSNE", method = "rTSNE", perplexity = 30, nIterations = 1000)
+```
+
+***seuratTSNE***:
+```{r, eval = FALSE}
+sce <- runDimensionalityReduction(inSCE = sce, useAssay = "normalizedCounts", reducedDimName = "redDimTSNE", method = "seuratTSNE", nComponents = 10, useReduction = "pca", perplexity = 30)
+```
+
+***uwotUMAP***:
+```{r, eval = FALSE}
+sce <- runDimensionalityReduction(inSCE = sce, useAssay = "normalizedCounts", reducedDimName = "redDimUMAP", method = "uwotUMAP", nNeighbors = 30, nIterations = 200, minDist = 0.01, alpha = 1)
+```
+
+***seuratUMAP***:
+```{r, eval = FALSE}
+sce <- runDimensionalityReduction(inSCE = sce, useAssay = "normalizedCounts", reducedDimName = "redDimUMAP", method = "seuratUMAP", nComponents = 10, useReduction = "pca", minDist = 0.3, nNeighbors = 30, spread = 1)
+```
+
+````{=html}
+</details>
+</div>
+````
+<br><br>
 
 2. Visualize the dimensionality reduction results using of the available visualization options.
 ```{r, eval=FALSE}
@@ -110,3 +171,160 @@ seuratElbowPlot(
 )
 
 ```
+
+````{=html}
+<details>
+  <summary><b>Example</b></summary>
+````  
+  
+```{r "normalization_console_example_1", message = FALSE, warning = FALSE}
+  # Load singleCellTK & pbmc3k example data
+  library(singleCellTK)
+  sce <- importExampleData(dataset = "pbmc3k")
+  # Perform normalization
+  sce <- runNormalization(inSCE = sce, normalizationMethod = "RC", useAssay = "counts", outAssayName = "RCLogScaledCounts", scale = TRUE, transformation = "log2", pseudocountsBeforeTransform = 1, trim = c(10, -10))
+  # Run PCA
+  sce <- runDimensionalityReduction(inSCE = sce, useAssay = "RCLogScaledCounts", reducedDimName = "pca", method = "seuratPCA", nComponents = 10)
+  # Plot PCA & ElbowPlot
+  seuratReductionPlot(inSCE = sce, useReduction = "pca")
+  seuratElbowPlot(inSCE = sce, reduction = "pca")
+```
+
+````{=html}
+</details> 
+  <details>
+  <summary><b>Parameters</b></summary>
+````
+
+The `runDimensionalityReduction` function takes in different parameters based on the specific method used for dimensionality reduction. See below for a complete description of parameters for each individual method in the `runDimensionalityReduction` function:
+
+| Method | Parameters |
+|---|---|
+|scaterPCA|`inSCE` (input `SingleCellExperiment` object), `useAssay` (name of the assay to use), `reducedDimName` (name of the computed reducedDim), `method` = "scaterPCA", `nComponents` (number of components to compute, default is 10)|
+|seuratPCA|`inSCE` (input `SingleCellExperiment` object), `useAssay` (name of the assay to use), `reducedDimName` (name of the computed reducedDim), `method` = "seuratPCA", `nComponents` (number of components to compute, default is 10)|
+|seuratICA|`inSCE` (input `SingleCellExperiment` object), `useAssay` (name of the assay to use), `reducedDimName` (name of the computed reducedDim), `method` = "seuratICA", `nComponents` (number of components to compute, default is 10)|
+|rTSNE|`inSCE` (input `SingleCellExperiment` object), `useAssay` (name of the assay to use), `reducedDimName` (name of the computed reducedDim), `method` = "rTSNE", `perplexity` (adjust the perplexity tuneable parameter for the underlying tSNE call, default is `30`), `nIterations` (maximum iterations, default is 1000)|
+|seuratTSNE|`inSCE` (input `SingleCellExperiment` object), `useAssay` (name of the assay to use), `reducedDimName` (name of the computed reducedDim), `method` = "seuratTSNE", `nComponents`(number of components to use from pca/ica, default is 10), `useReduction` (either `pca` or `ica`) and `perplexity` (adjust the perplexity tuneable parameter for the underlying tSNE call, default is 30)|
+|uwotUMAP|`inSCE` (input `SingleCellExperiment` object), `useAssay` (name of the assay to use), `reducedDimName` (name of the computed reducedDim), `method` = "uwotUMAP", `nNeighbors` (size of local neighborhood used for manifold approximation, default is 30), `nIterations` (number of iterations performed, default is 200), `minDist` (minimum distance between embedded points, default is 0.01) and `alpha` (initial value of learning rate, default is 1)|
+|seuratUMAP|`inSCE` (input `SingleCellExperiment` object), `useAssay` (name of the assay to use), `reducedDimName` (name of the computed reducedDim), `method` = "seuratUMAP", `nComponents` (number of components to use from pca/ica, default is 10), `useReduction` (either `pca` or `ica`), `minDist` (minimum distance between embedded points, default is 0.3), `nNeighbors` (size of local neighborhood, default is 30) and `spread` (effective scale of embedded points, default is 1)|
+
+````{=html}
+</details>
+<details>
+  <summary><b>Individual Functions</b></summary>
+````
+
+  While the `runNormalization` wrapper function can be used to perform all
+  available normalization and transformation options, separate functions are also
+  available for all of the included normalization methods. The following functions
+  can be used for specific normalization methods:
+  
+````{=html} 
+ <style>
+div.offset { background-color:inherit ; border-radius: 5px; margin-left: 15px;}
+</style>
+<div class = "offset">
+<details>
+````
+    
+  <summary>`LogNormalize`, `CLR` or `RC` from **Seurat** [@Butler2018][@Stuart2019] package:</summary> 
+
+```{r, eval = FALSE}
+  sce <- seuratNormalizeData(inSCE = sce, normalizationMethod = "CLR", useAssay = "counts", normAssayName = "CLRCounts", scaleFactor = 10000, verbose = TRUE)
+```
+The parameters to the above function include: <br><br>
+`inSCE`: an input `SingleCellExperiment` object <br>
+`normalizationMethod`: one of the options from "LogNormalize", "CLR" or "RC" <br>
+`useAssay`: name of the assay to use for normalization <br>
+`normAssayName`: name of the output normalized assay <br>
+`scaleFactor`: a numeric value that represents the scaling factor <br>
+`verbose`: a logical value indicating if progress should be printed <br><br>
+
+````{=html}
+</details>
+ <details>
+````
+    
+  <summary>`SCTransform` from **Seurat** [@Butler2018][@Stuart2019][@Hafemeister2019]  package:</summary> 
+
+```{r, eval = FALSE}
+  sce <- seuratSCTransform(inSCE = sce, useAssay = "counts", normAssayName = "SCTCounts", verbose = TRUE)
+```
+
+The parameters to the above function include: <br><br>
+`inSCE`: an input `SingleCellExperiment` object <br>
+`useAssay`: name of the assay to use for normalization <br>
+`normAssayName`: name of the output normalized assay <br>
+`verbose`: a logical value indicating if progress should be printed <br><br>
+
+````{=html}
+</details>
+   <details>
+````
+
+  <summary>`logNormCounts` from **Scater** [@McCarthy2017] package:</summary> 
+
+```{r, eval = FALSE}
+  sce <- scaterlogNormCounts(inSCE = sce, useAssay = "counts", assayName = "logcounts")
+```
+
+The parameters to the above function include: <br><br>
+`inSCE`: an input `SingleCellExperiment` object <br>
+`useAssay`: name of the assay to use for normalization <br>
+`assayName`: name of the output normalized assay <br><br>
+
+````{=html}
+</details>
+<details>
+````
+    
+  <summary>`CPM` from **Scater** [@McCarthy2017] package:</summary> 
+
+```{r, eval = FALSE}
+  sce <- scaterCPM(inSCE = sce, useAssay = "counts", assayName = "countsCPM")
+```
+
+The parameters to the above function include: <br><br>
+`inSCE`: an input `SingleCellExperiment` object <br>
+`useAssay`: name of the assay to use for normalization <br>
+`assayName`: name of the output normalized assay <br><br>
+
+````{=html}
+</details>
+  <details>
+    <summary>Compute <b>Z-Score</b>:</summary> 
+````   
+
+```{r, eval = FALSE}
+  assay(sce, "countsZScore") <- computeZScore(counts = assay(sce, "counts"))
+```
+
+The parameters to the above function include: <br><br>
+`counts`: input matrix to scale with Z-Score <br><br>
+
+````{=html}
+</details>
+  <details>
+  <summary>Matrix <b>trimming</b>:</summary> 
+````
+
+```{r, eval = FALSE}
+  assay(sce, "countsTrimmed") <- trimCounts(counts = assay(sce, "counts"), trimValue = c(10, -10))
+```
+
+The parameters to the above function include: <br><br>
+`counts`: an input `SingleCellExperiment` object <br>
+`trimValue`: a `numeric(2)` vector with the first value indicating the upper trim value and the second value indicating the lower trim value <br><br>
+
+````{=html} 
+</details>
+  </div>
+    </details> 
+      </div>
+<script>
+document.getElementById("ia-button").click();
+</script>
+</body>
+````
+
+## References

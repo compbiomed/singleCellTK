@@ -287,64 +287,44 @@
 <div id="introduction" class="section level2">
 <h2 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h2>
-<p><em>singleCellTK</em> offers a convenient way to compute and select the most variable features that show the highest biological variability to use them in the downstream analysis. The available methods to compute the HVG include <code>seuratFindHVG</code> and <code>scranModelGeneVar</code>, both of which essentially compute the variability statistics and store them into the <code>rowData</code> of the input <code>SingleCellExperiment</code> object. The <code>getTopHVG</code> method can retrieve the names of the top variable genes from these statistics from the input object. Furthermore, <code>plotTopHVG</code> method can be used to plot the top most variable genes.</p>
-<div id="available-methods" class="section level3">
-<h3 class="hasAnchor">
-<a href="#available-methods" class="anchor"></a>Available Methods</h3>
-<table class="table">
-<colgroup>
-<col width="50%">
-<col width="50%">
-</colgroup>
-<thead><tr class="header">
-<th>Method</th>
-<th>Reference</th>
-</tr></thead>
-<tbody>
-<tr class="odd">
-<td>Seurat - vst</td>
-<td>
-<a href="https://www.nature.com/articles/nbt.4096">Butler et al., Nature Biotechnology 2018</a> &amp; <a href="https://www.cell.com/cell/fulltext/S0092-8674(19)30559-8">Stuart<em>, Butler</em>, et al., Cell 2019</a>
-</td>
-</tr>
-<tr class="even">
-<td>Seurat - mean.var.plot</td>
-<td>
-<a href="https://www.nature.com/articles/nbt.4096">Butler et al., Nature Biotechnology 2018</a> &amp; <a href="https://www.cell.com/cell/fulltext/S0092-8674(19)30559-8">Stuart<em>, Butler</em>, et al., Cell 2019</a>
-</td>
-</tr>
-<tr class="odd">
-<td>Seurat - dispersion</td>
-<td>
-<a href="https://www.nature.com/articles/nbt.4096">Butler et al., Nature Biotechnology 2018</a> &amp; <a href="https://www.cell.com/cell/fulltext/S0092-8674(19)30559-8">Stuart<em>, Butler</em>, et al., Cell 2019</a>
-</td>
-</tr>
-<tr class="even">
-<td>Scran - modelGeneVar</td>
-<td><a href="https://doi.org/10.12688/f1000research.9501.2">Lun ATL, McCarthy DJ, Marioni JC (2016). “A step-by-step workflow for low-level analysis of single-cell RNA-seq data with Bioconductor.” F1000Res., 5, 2122.</a></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div id="general-workflow" class="section level3">
-<h3 class="hasAnchor">
-<a href="#general-workflow" class="anchor"></a>General Workflow</h3>
-<p>A general workflow for the <em>Feature Selection</em> sub-tab is summarized in the figure below: <img src="ui_screenshots/feature_selection/FS_workflow.png"></p>
-</div>
+<p><strong>singleCellTK</strong> offers a convenient way to compute and select the most variable features that show the highest biological variability to use them in the downstream analysis. Feature selection methods available with the toolkit include <code>vst</code>, <code>mean.var.plot</code> &amp; <code>dispersion</code> from <code>Seurat</code> package and <code>modelGeneVar</code> from <code>Scran</code> package. Users can additionally use visualization options and methods to visualize the top variable genes interactively as well as from R console. To view detailed instructions on how to use these methods, please select ‘Interactive Analysis’ for using feature selection in shiny application or ‘Console Analysis’ for using these methods on R console from the tabs below:</p>
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
 </div>
 <div id="workflow-guide" class="section level2">
 <h2 class="hasAnchor">
 <a href="#workflow-guide" class="anchor"></a>Workflow Guide</h2>
+<div class="tab">
+  <button class="tablinks" onclick="openTab(event, 'interactive')" id="ia-button">Interactive Analysis</button>
+  <button class="tablinks" onclick="openTab(event, 'console')" id="console-button">Console Analysis</button>
+</div>
+
+<div id="interactive" class="tabcontent">
+<ul>
+<li><p>Select <em>Feature Selection &amp; Dimensionality Reduction</em> tab from the top menu. This workflow guide assumes that the data as been previously uploaded, filtered and normalized before proceeding with this tab. <img src="ui_screenshots/feature_selection/FS_1_select_1.png"></p></li>
+<li><p>Select <em>Feature Selection</em> sub-tab (selected by default) to open up the feature selection user-interface. <img src="ui_screenshots/feature_selection/FS_1_select_2.png"></p></li>
+<li><p>The <em>Feature Selection</em> sub-tab is divided into three panels namely, <em>a) Compute HVG</em>, <em>b) Select and Subset</em>, and <em>c) Plot</em>. <img src="ui_screenshots/feature_selection/FS_2_overview.png"></p></li>
+</ul>
+<p>The working of sections <em>a</em>, <em>b</em> and <em>c</em> are described below:</p>
+<p><strong>a) Compute HVG</strong></p>
+<p><img src="ui_screenshots/feature_selection/FS_4_computeHVG.png"></p>
+<p>The <em>Compute HVG</em> window allows the processing of highly variable genes by selecting an appropriate method either from <code>Seurat</code> (<code>vst</code>, <code>mean.var.plot</code>, <code>dispersion</code>) or <code>Scran</code> (<code>modelGeneVar</code>) packages.</p>
+<p><img src="ui_screenshots/feature_selection/FS_3_methods.png"></p>
+<p>A numeric value indicating the number of features to identify must be set (default is <code>2000</code>) and an <code>assay</code> must be selected from the list of available <code>assays</code>.</p>
+<p><strong>b) Select and Subset</strong></p>
+<p><img src="ui_screenshots/feature_selection/FS_5_display.png"></p>
+<p>Once the highly variable genes have been computed in (a), subset of these features can be selected for downstream analysis. A numeric value (default is <code>100</code>) can be input to set the number of genes that should be displayed in (b), labeled (highlighted in red) in the plot (c) and selected for further analysis in the succeeding tabs as a subset.</p>
+<p><strong>c) Plot</strong></p>
+<p><img src="ui_screenshots/feature_selection/FS_6_plot.png"></p>
+<p>A plot is generated against the HVG computation in (a) and the number of genes to display set in (b) are labeled over corresponding data points in the plot.</p>
+</div>
+<div id="console" class="tabcontent">
 <ol style="list-style-type: decimal">
 <li>Compute statistics for the highly variable genes using the wrapper function <code>runFeatureSelection</code> as below:</li>
 </ol>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/runFeatureSelection.html">runFeatureSelection</a></span><span class="op">(</span>
-          inSCE <span class="op">=</span> <span class="va">sce</span>,
-          useAssay <span class="op">=</span> <span class="st">"normalizedCounts"</span>,
-          hvgMethod <span class="op">=</span> <span class="st">"vst"</span>
-        <span class="op">)</span></code></pre></div>
-<p>In the above function, it is recommended to use a normalized assay for the <code>useAssay</code> parameter and the available options for the <code>hvgMethod</code> method include <code>vst</code>, <code>mean.var.plot</code> and <code>dispersion</code> from Seurat and <code>modelGeneVar</code> from Scran package.</p>
+<code class="sourceCode R"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/runFeatureSelection.html">runFeatureSelection</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"normalizedCounts"</span>, hvgMethod <span class="op">=</span> <span class="st">"modelGeneVar"</span><span class="op">)</span></code></pre></div>
+<p>In the above function, it is recommended to use a normalized assay for the <code>useAssay</code> parameter and the available options for the <code>hvgMethod</code> method include <code>vst</code> (recommended assay is raw counts), <code>mean.var.plot</code> and <code>dispersion</code> from Seurat and <code>modelGeneVar</code> from Scran package.</p>
 <ol start="2" style="list-style-type: decimal">
 <li>Get names of top genes using the <code>getTopHVG</code> function and specify the same method which was used for computation in the step 1:</li>
 </ol>
@@ -355,6 +335,56 @@
 </ol>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../../reference/plotTopHVG.html">plotTopHVG</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, method <span class="op">=</span> <span class="st">"vst"</span>, hvgList <span class="op">=</span> <span class="va">topGenes</span>, labelsCount <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></code></pre></div>
+<details><summary><b>Example</b></summary><div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R">  <span class="co"># Load singleCellTK &amp; pbmc3k example data</span>
+  <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://compbiomed.github.io/sctk_docs/">singleCellTK</a></span><span class="op">)</span>
+  <span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/importExampleData.html">importExampleData</a></span><span class="op">(</span>dataset <span class="op">=</span> <span class="st">"pbmc3k"</span><span class="op">)</span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R">  <span class="co"># Compute metrics for 'vst' feature selection method</span>
+  <span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/runFeatureSelection.html">runFeatureSelection</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"counts"</span>, hvgMethod <span class="op">=</span> <span class="st">"vst"</span><span class="op">)</span>
+  <span class="co"># Get the names of the top 1000 highly variable genes</span>
+  <span class="va">topGenes</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/getTopHVG.html">getTopHVG</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, method <span class="op">=</span> <span class="st">"vst"</span>, n <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span>
+  <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">topGenes</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">]</span><span class="op">)</span></code></pre></div>
+<pre><code>##  [1] "PPBP"   "LYZ"    "S100A9" "IGLL5"  "GNLY"   "FTL"    "PF4"    "FTH1"  
+##  [9] "GNG11"  "FCER1A"</code></pre>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R">  <span class="co"># Visualize the top variable genes and label the first top 10 genes</span>
+  <span class="fu"><a href="../../reference/plotTopHVG.html">plotTopHVG</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, method <span class="op">=</span> <span class="st">"vst"</span>, hvgList <span class="op">=</span> <span class="va">topGenes</span>, labelsCount <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></code></pre></div>
+<p><img src="cnsl_feature_selection_files/figure-html/normalization_console_example_2-1.png" width="700"></p>
+</details><details><summary><b>Individual Functions</b></summary><p>While the <code>runFeatureSelection</code> wrapper function can be used to run all available feature selection methods, separate functions are also available for all of the included methods. The following functions can be used for specific feature selection methods:</p>
+ <style>
+div.offset { background-color:inherit ; border-radius: 5px; margin-left: 15px;}
+</style>
+<div class="offset">
+<details><summary><code>vst</code>, <code>mean.var.plot</code> or <code>dispersion</code> from <strong>Seurat</strong> <span class="citation">[1]</span><span class="citation">[2]</span> package:
+</summary><div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R">  <span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/seuratFindHVG.html">seuratFindHVG</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"counts"</span>, hvgMethod <span class="op">=</span> <span class="st">"vst"</span>, hvgNumber <span class="op">=</span> <span class="fl">2000</span>, altExp <span class="op">=</span> <span class="cn">FALSE</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+<p>The parameters to the above function include: <br><br><code>inSCE</code>: an input <code>SingleCellExperiment</code> object <br><code>useAssay</code>: specify the name of the assay to use for feature selection <br><code>hvgMethod</code>: one of the options from “vst,” “mean.var.plot” or “dispersion” <br><code>hvgNumber</code>: specify the number of variable genes to compute by default <br><code>altExp</code>: a logical value indicating if the input object is an altExperiment <br><code>verbose</code>: a logical value indicating if progress should be printed <br><br></p>
+</details><details><summary><code>modelGeneVar</code> from <strong>Scran</strong> package:
+</summary><div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R">  <span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/scranModelGeneVar.html">scranModelGeneVar</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, assayName <span class="op">=</span> <span class="st">"counts"</span><span class="op">)</span></code></pre></div>
+<p>The parameters to the above function include: <br><br><code>inSCE</code>: an input <code>SingleCellExperiment</code> object <br><code>assayName</code>: selected assay to compute variable features from <br></p>
+</details>
+</div>
+    </details>
+</div>
+<script>
+document.getElementById("ia-button").click();
+</script>
+</div>
+<div id="references" class="section level2 unnumbered">
+<h2 class="hasAnchor">
+<a href="#references" class="anchor"></a>References</h2>
+<div id="refs" class="references csl-bib-body">
+<div id="ref-Butler2018" class="csl-entry">
+<div class="csl-left-margin">[1] </div>
+<div class="csl-right-inline">A. Butler, P. Hoffman, P. Smibert, E. Papalexi, and R. Satija, <span>“<span class="nocase">Integrating single-cell transcriptomic data across different conditions, technologies, and species</span>,”</span> <em>Nature Biotechnology</em>, vol. 36, no. 5, pp. 411–420, Jun. 2018, doi: <a href="https://doi.org/10.1038/nbt.4096">10.1038/nbt.4096</a>.</div>
+</div>
+<div id="ref-Stuart2019" class="csl-entry">
+<div class="csl-left-margin">[2] </div>
+<div class="csl-right-inline">T. Stuart <em>et al.</em>, <span>“<span class="nocase">Comprehensive Integration of Single-Cell Data</span>,”</span> <em>Cell</em>, vol. 177, no. 7, pp. 1888–1902.e21, Jun. 2019, doi: <a href="https://doi.org/10.1016/j.cell.2019.05.031">10.1016/j.cell.2019.05.031</a>.</div>
+</div>
+</div>
 </div>
   </div>
 

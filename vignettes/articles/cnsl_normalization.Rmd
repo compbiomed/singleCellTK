@@ -44,14 +44,14 @@ The **Normalization** user-interface is divided into three parts, a) **Normaliza
 
 ![](ui_screenshots/normalization/normalization_2_overview_2.png)
 
-a) **Normalization Options**
+**a) Normalization Options**
 In the **Normalization Options**, users can select a method for normalization from `Scater - LogNormCounts`, `Scater - CPM` or one of the methods from **Seurat** i.e. `LogNormalize`, `CLR` (Centered Log Ratio), `RC` (Relative Counts) and `SCTransform`. Users can also set a manual **Scaling Factor** (numeric value multiplied by the data values) and specify the **Assay Name** for the new `assay`. 
 
 ![](ui_screenshots/normalization/normalization_3_seurat.png)
 
 ![](ui_screenshots/normalization/normalization_4_cpm.png)
 
-b) **Assay Options**
+**b) Assay Options**
 In addition to the normalization methods, manually implemented transformation methods can be used to perform different transformations on the data. These transformations include `Log Transform`, `log1p` and standard `Z-score`. 
 
 ![](ui_screenshots/normalization/normalization_5_assay_options.png)
@@ -60,7 +60,7 @@ If trimming of an `assay` is required, 'Trim Assay' option can be enabled and lo
 
 ![](ui_screenshots/normalization/normalization_6_trim_assay.png)
 
-c) **Available Assays**
+**c) Available Assays**
 The currently available 'assays' are listed in the 'Available Assays' window. Whenever a new `assay` is generated, the list is updated automatically.
 
 
