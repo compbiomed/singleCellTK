@@ -287,97 +287,55 @@
 <div id="introduction" class="section level2">
 <h2 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h2>
-<p>Data once uploaded and filtered through the preceding tabs can be normalized and corrected for batch-effect. This guide particularly focuses on normalization of data for downstream analysis which can be achieved through a single <code>runNormalization</code> wrapper function. A detailed list of available normalization methods, transformation options and usage of this function is described below.</p>
-<div id="available-normalization-methods" class="section level3">
-<h3 class="hasAnchor">
-<a href="#available-normalization-methods" class="anchor"></a>Available Normalization Methods</h3>
-<table class="table">
-<colgroup>
-<col width="50%">
-<col width="50%">
-</colgroup>
-<thead><tr class="header">
-<th>Method</th>
-<th>Reference</th>
-</tr></thead>
-<tbody>
-<tr class="odd">
-<td>Seurat - LogNormalize</td>
-<td>
-<a href="https://www.nature.com/articles/nbt.4096">Butler et al., Nature Biotechnology 2018</a> &amp; <a href="https://www.cell.com/cell/fulltext/S0092-8674(19)30559-8">Stuart<em>, Butler</em>, et al., Cell 2019</a>
-</td>
-</tr>
-<tr class="even">
-<td>Seurat - CLR</td>
-<td>
-<a href="https://www.nature.com/articles/nbt.4096">Butler et al., Nature Biotechnology 2018</a> &amp; <a href="https://www.cell.com/cell/fulltext/S0092-8674(19)30559-8">Stuart<em>, Butler</em>, et al., Cell 2019</a>
-</td>
-</tr>
-<tr class="odd">
-<td>Seurat - RC</td>
-<td>
-<a href="https://www.nature.com/articles/nbt.4096">Butler et al., Nature Biotechnology 2018</a> &amp; <a href="https://www.cell.com/cell/fulltext/S0092-8674(19)30559-8">Stuart<em>, Butler</em>, et al., Cell 2019</a>
-</td>
-</tr>
-<tr class="even">
-<td>Seurat - SCTransform</td>
-<td>
-<a href="https://genomebiology.biomedcentral.com/articles/10.1186/s13059-019-1874-1">Normalization and variance stabilization of single-cell RNA-seq data using regularized negative binomial regression</a>, <a href="https://www.nature.com/articles/nbt.4096">Butler et al., Nature Biotechnology 2018</a> &amp; <a href="https://www.cell.com/cell/fulltext/S0092-8674(19)30559-8">Stuart<em>, Butler</em>, et al., Cell 2019</a>
-</td>
-</tr>
-<tr class="odd">
-<td>Scater - LogNormCounts</td>
-<td><a href="https://doi.org/10.1093/bioinformatics/btw777">McCarthy DJ, Campbell KR, Lun ATL, Willis QF (2017). “Scater: pre-processing, quality control, normalisation and visualisation of single-cell RNA-seq data in R.” Bioinformatics, 33, 1179-1186.</a></td>
-</tr>
-<tr class="even">
-<td>Scater - CPM</td>
-<td><a href="https://doi.org/10.1093/bioinformatics/btw777">McCarthy DJ, Campbell KR, Lun ATL, Willis QF (2017). “Scater: pre-processing, quality control, normalisation and visualisation of single-cell RNA-seq data in R.” Bioinformatics, 33, 1179-1186.</a></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div id="additional-options" class="section level3">
-<h3 class="hasAnchor">
-<a href="#additional-options" class="anchor"></a>Additional Options</h3>
-<table class="table">
-<colgroup>
-<col width="50%">
-<col width="50%">
-</colgroup>
-<thead><tr class="header">
-<th>Option</th>
-<th>Description</th>
-</tr></thead>
-<tbody>
-<tr class="odd">
-<td>Log2</td>
-<td>Log base 2 transformation</td>
-</tr>
-<tr class="even">
-<td>Log1p</td>
-<td>Natural log + 1 transformation</td>
-</tr>
-<tr class="odd">
-<td>Z.Score</td>
-<td>Standard z.score scaling</td>
-</tr>
-<tr class="even">
-<td>Pseudocounts</td>
-<td>Add a specified pseudo value to matrices before or after normalization/transformation</td>
-</tr>
-<tr class="odd">
-<td>Trim</td>
-<td>Trim values based on an upper and lower limits (can be applied with all of the above methods)</td>
-</tr>
-</tbody>
-</table>
-</div>
+<p><strong>singleCellTK</strong> offers a convenient way to normalize data for downstream analysis using a number of methods available through the toolkit. The integrated normalization methods and other transformation options can be used through both R console and interactive shiny application. Normalization methods available with the toolkit include <code>"LogNormalize"</code>, <code>"CLR"</code>, <code>"RC"</code> &amp; <code>"SCTransform"</code> from <code>Seurat</code> package and <code>"logNormCounts"</code> or <code>"CPM"</code> from <code>Scater</code> package. Additional transformation options are available for users including ‘log’ &amp; ‘log1p,’ trimming of data assays and Z-Score scaling. To view detailed instructions on how to use these methods, please select ‘Interactive Analysis’ for using normalization in shiny application or ‘Console Analysis’ for using these methods on R console from the tabs below:</p>
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
 </div>
 <div id="workflow-guide" class="section level2">
 <h2 class="hasAnchor">
 <a href="#workflow-guide" class="anchor"></a>Workflow Guide</h2>
+<div class="tab">
+  <button class="tablinks" onclick="openTab(event, 'interactive')" id="ia-button">Interactive Analysis</button>
+  <button class="tablinks" onclick="openTab(event, 'console')" id="console-button">Console Analysis</button>
+</div>
+
+<div id="interactive" class="tabcontent">
+<p>Normalization tab can be opened up by clicking on the <strong>Normalization &amp; Batch Correction</strong> from the top menu and further selecting the <strong>Normalization</strong> sub-tab in the subsequent window as shown below.</p>
+<p><img src="ui_screenshots/normalization/normalization_1_select_menu.png"></p>
+<p><img src="ui_screenshots/normalization/normalization_2_overview_1.png"></p>
+<p>The <strong>Normalization</strong> user-interface is divided into three parts, a) <strong>Normalization Options</strong>, b) <strong>Assay Options</strong>, and c) <strong>Available Assays</strong>.</p>
+<p><img src="ui_screenshots/normalization/normalization_2_overview_2.png"></p>
+<ol style="list-style-type: lower-alpha">
+<li>
+<strong>Normalization Options</strong> In the <strong>Normalization Options</strong>, users can select a method for normalization from <code>Scater - LogNormCounts</code>, <code>Scater - CPM</code> or one of the methods from <strong>Seurat</strong> i.e. <code>LogNormalize</code>, <code>CLR</code> (Centered Log Ratio), <code>RC</code> (Relative Counts) and <code>SCTransform</code>. Users can also set a manual <strong>Scaling Factor</strong> (numeric value multiplied by the data values) and specify the <strong>Assay Name</strong> for the new <code>assay</code>.</li>
+</ol>
+<p><img src="ui_screenshots/normalization/normalization_3_seurat.png"></p>
+<p><img src="ui_screenshots/normalization/normalization_4_cpm.png"></p>
+<ol start="2" style="list-style-type: lower-alpha">
+<li>
+<strong>Assay Options</strong> In addition to the normalization methods, manually implemented transformation methods can be used to perform different transformations on the data. These transformations include <code>Log Transform</code>, <code>log1p</code> and standard <code>Z-score</code>.</li>
+</ol>
+<p><img src="ui_screenshots/normalization/normalization_5_assay_options.png"></p>
+<p>If trimming of an <code>assay</code> is required, ‘Trim Assay’ option can be enabled and lower/upper bound values can be set. The default value for upper and lower trim values is <code>10</code> and <code>-10</code> respectively.</p>
+<p><img src="ui_screenshots/normalization/normalization_6_trim_assay.png"></p>
+<ol start="3" style="list-style-type: lower-alpha">
+<li>
+<strong>Available Assays</strong> The currently available ‘assays’ are listed in the ‘Available Assays’ window. Whenever a new <code>assay</code> is generated, the list is updated automatically.</li>
+</ol>
+</div>
+<div id="console" class="tabcontent">
 <p>The <code>singleCellTK</code> allows the users to run all normalization and transformation methods on the input data by using a single <code>runNormalization</code> function. The <code>runNormalization</code> function takes in input a <code>SingleCellExperiment</code> object and a series of parameters that define the normalization/transformation options to run on the specified <code>assay</code>. The output of this function is a <code>SingleCellExperiment</code> object which now contains the normalized/transformed assay.</p>
-<p>The <code>runNormalization</code> function specifies the following parameters:</p>
+<p>To use the function, input a <code>SingleCellExperiment</code> object that contains the data assay and specify the required parameters:</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/runNormalization.html">runNormalization</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, normalizationMethod <span class="op">=</span> <span class="st">"RC"</span>, useAssay <span class="op">=</span> <span class="st">"counts"</span>, outAssayName <span class="op">=</span> <span class="st">"RCLogScaledCounts"</span>, scale <span class="op">=</span> <span class="cn">TRUE</span>, transformation <span class="op">=</span> <span class="st">"log2"</span>, pseudocountsBeforeTransform <span class="op">=</span> <span class="fl">1</span>, trim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="op">-</span><span class="fl">10</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<details><summary><b>Example</b></summary><div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R">  <span class="co"># Load singleCellTK &amp; pbmc3k example data</span>
+  <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://compbiomed.github.io/sctk_docs/">singleCellTK</a></span><span class="op">)</span>
+  <span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/importExampleData.html">importExampleData</a></span><span class="op">(</span>dataset <span class="op">=</span> <span class="st">"pbmc3k"</span><span class="op">)</span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R">  <span class="co"># Perform normalization</span>
+  <span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/runNormalization.html">runNormalization</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, normalizationMethod <span class="op">=</span> <span class="st">"RC"</span>, useAssay <span class="op">=</span> <span class="st">"counts"</span>, outAssayName <span class="op">=</span> <span class="st">"RCLogScaledCounts"</span>, scale <span class="op">=</span> <span class="cn">TRUE</span>, transformation <span class="op">=</span> <span class="st">"log2"</span>, pseudocountsBeforeTransform <span class="op">=</span> <span class="fl">1</span>, trim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="op">-</span><span class="fl">10</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+</details><details><summary><b>Parameters</b></summary><p>The <code>runNormalization</code> function specifies the following parameters:</p>
 <table class="table">
 <colgroup>
 <col width="50%">
@@ -410,7 +368,7 @@
 </tr>
 <tr class="even">
 <td>seuratScaleFactor</td>
-<td>Specify the <code>scaleFactor</code> parameter if any of the <code>seurat</code> normalization method is selected.</td>
+<td>Specify the <code>scaleFactor</code> parameter if any of the <strong>seurat</strong> normalization method is selected.</td>
 </tr>
 <tr class="odd">
 <td>transformation</td>
@@ -433,18 +391,62 @@
 <td>A <code>logical</code> value indicating if informative/progress messages should be displayed on the console.</td>
 </tr>
 </tbody>
-</table>
-<p>To use the function, input a <code>SingleCellExperiment</code> object that contains the data assay and specify the required parameters:</p>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/runNormalization.html">runNormalization</a></span><span class="op">(</span>
-  inSCE <span class="op">=</span> <span class="va">sce</span>, 
-  normalizationMethod <span class="op">=</span> <span class="st">"RC"</span>, 
-  useAssay <span class="op">=</span> <span class="st">"counts"</span>, 
-  outAssayName <span class="op">=</span> <span class="st">"RCLogScaledCounts"</span>, 
-  scale <span class="op">=</span> <span class="cn">TRUE</span>, 
-  transformation <span class="op">=</span> <span class="st">"log2"</span>, 
-  pseudocountsBeforeTransform <span class="op">=</span> <span class="fl">1</span>, 
-  trim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="op">-</span><span class="fl">10</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+</table></details><details><summary><b>Individual Functions</b></summary><p>While the <code>runNormalization</code> wrapper function can be used to perform all available normalization and transformation options, separate functions are also available for all of the included normalization methods. The following functions can be used for specific normalization methods:</p>
+ <style>
+div.offset { background-color:inherit ; border-radius: 5px; margin-left: 15px;}
+</style>
+<div class="offset">
+<details><summary><code>LogNormalize</code>, <code>CLR</code> or <code>RC</code> from <strong>Seurat</strong> <span class="citation">[1]</span><span class="citation">[2]</span> package:
+</summary><div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R">  <span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/seuratNormalizeData.html">seuratNormalizeData</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, normalizationMethod <span class="op">=</span> <span class="st">"CLR"</span>, useAssay <span class="op">=</span> <span class="st">"counts"</span>, normAssayName <span class="op">=</span> <span class="st">"CLRCounts"</span>, scaleFactor <span class="op">=</span> <span class="fl">10000</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+<p>The parameters to the above function include: <br><br><code>inSCE</code>: an input <code>SingleCellExperiment</code> object <br><code>normalizationMethod</code>: one of the options from “LogNormalize,” “CLR” or “RC” <br><code>useAssay</code>: name of the assay to use for normalization <br><code>normAssayName</code>: name of the output normalized assay <br><code>scaleFactor</code>: a numeric value that represents the scaling factor <br><code>verbose</code>: a logical value indicating if progress should be printed <br><br></p>
+</details><details><summary><code>SCTransform</code> from <strong>Seurat</strong> <span class="citation">[1]</span><span class="citation">[2]</span><span class="citation">[3]</span> package:
+</summary><div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R">  <span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/seuratSCTransform.html">seuratSCTransform</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"counts"</span>, normAssayName <span class="op">=</span> <span class="st">"SCTCounts"</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+<p>The parameters to the above function include: <br><br><code>inSCE</code>: an input <code>SingleCellExperiment</code> object <br><code>useAssay</code>: name of the assay to use for normalization <br><code>normAssayName</code>: name of the output normalized assay <br><code>verbose</code>: a logical value indicating if progress should be printed <br><br></p>
+</details><details><summary><code>logNormCounts</code> from <strong>Scater</strong> <span class="citation">[4]</span> package:
+</summary><div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R">  <span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/scaterlogNormCounts.html">scaterlogNormCounts</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"counts"</span>, assayName <span class="op">=</span> <span class="st">"logcounts"</span><span class="op">)</span></code></pre></div>
+<p>The parameters to the above function include: <br><br><code>inSCE</code>: an input <code>SingleCellExperiment</code> object <br><code>useAssay</code>: name of the assay to use for normalization <br><code>assayName</code>: name of the output normalized assay <br><br></p>
+</details><details><summary><code>CPM</code> from <strong>Scater</strong> <span class="citation">[4]</span> package:
+</summary><div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R">  <span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/scaterCPM.html">scaterCPM</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"counts"</span>, assayName <span class="op">=</span> <span class="st">"countsCPM"</span><span class="op">)</span></code></pre></div>
+<p>The parameters to the above function include: <br><br><code>inSCE</code>: an input <code>SingleCellExperiment</code> object <br><code>useAssay</code>: name of the assay to use for normalization <br><code>assayName</code>: name of the output normalized assay <br><br></p>
+</details><details><summary>Compute <b>Z-Score</b>:</summary><div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R">  <span class="fu">assay</span><span class="op">(</span><span class="va">sce</span>, <span class="st">"countsZScore"</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/computeZScore.html">computeZScore</a></span><span class="op">(</span>counts <span class="op">=</span> <span class="fu">assay</span><span class="op">(</span><span class="va">sce</span>, <span class="st">"counts"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<p>The parameters to the above function include: <br><br><code>counts</code>: input matrix to scale with Z-Score <br><br></p>
+</details><details><summary>Matrix <b>trimming</b>:</summary><div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R">  <span class="fu">assay</span><span class="op">(</span><span class="va">sce</span>, <span class="st">"countsTrimmed"</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/trimCounts.html">trimCounts</a></span><span class="op">(</span>counts <span class="op">=</span> <span class="fu">assay</span><span class="op">(</span><span class="va">sce</span>, <span class="st">"counts"</span><span class="op">)</span>, trimValue <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="op">-</span><span class="fl">10</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<p>The parameters to the above function include: <br><br><code>counts</code>: an input <code>SingleCellExperiment</code> object <br><code>trimValue</code>: a <code><a href="https://rdrr.io/r/base/numeric.html">numeric(2)</a></code> vector with the first value indicating the upper trim value and the second value indicating the lower trim value <br><br></p>
+</details>
+</div>
+    </details>
+</div>
+<script>
+document.getElementById("ia-button").click();
+</script>
+</div>
+<div id="references" class="section level2 unnumbered">
+<h2 class="hasAnchor">
+<a href="#references" class="anchor"></a>References</h2>
+<div id="refs" class="references csl-bib-body">
+<div id="ref-Butler2018" class="csl-entry">
+<div class="csl-left-margin">[1] </div>
+<div class="csl-right-inline">A. Butler, P. Hoffman, P. Smibert, E. Papalexi, and R. Satija, <span>“<span class="nocase">Integrating single-cell transcriptomic data across different conditions, technologies, and species</span>,”</span> <em>Nature Biotechnology</em>, vol. 36, no. 5, pp. 411–420, Jun. 2018, doi: <a href="https://doi.org/10.1038/nbt.4096">10.1038/nbt.4096</a>.</div>
+</div>
+<div id="ref-Stuart2019" class="csl-entry">
+<div class="csl-left-margin">[2] </div>
+<div class="csl-right-inline">T. Stuart <em>et al.</em>, <span>“<span class="nocase">Comprehensive Integration of Single-Cell Data</span>,”</span> <em>Cell</em>, vol. 177, no. 7, pp. 1888–1902.e21, Jun. 2019, doi: <a href="https://doi.org/10.1016/j.cell.2019.05.031">10.1016/j.cell.2019.05.031</a>.</div>
+</div>
+<div id="ref-Hafemeister2019" class="csl-entry">
+<div class="csl-left-margin">[3] </div>
+<div class="csl-right-inline">C. Hafemeister and R. Satija, <span>“<span class="nocase">Normalization and variance stabilization of single-cell RNA-seq data using regularized negative binomial regression</span>,”</span> <em>Genome Biology</em>, vol. 20, no. 1, pp. 1–15, Dec. 2019, doi: <a href="https://doi.org/10.1186/s13059-019-1874-1">10.1186/s13059-019-1874-1</a>.</div>
+</div>
+<div id="ref-McCarthy2017" class="csl-entry">
+<div class="csl-left-margin">[4] </div>
+<div class="csl-right-inline">D. J. McCarthy, K. R. Campbell, A. T. L. Lun, and Q. F. Wills, <span>“<span class="nocase">Scater: Pre-processing, quality control, normalization and visualization of single-cell RNA-seq data in R</span>,”</span> <em>Bioinformatics</em>, vol. 33, no. 8, pp. 1179–1186, Apr. 2017, doi: <a href="https://doi.org/10.1093/bioinformatics/btw777">10.1093/bioinformatics/btw777</a>.</div>
+</div>
+</div>
 </div>
   </div>
 
