@@ -101,7 +101,7 @@ sce <- importGeneSetsFromMSigDB(inSCE = sce, categoryIDs = "C1", by = "rownames"
 
 **2. Run GSVA using `gsvaSCE` function:**
 ```{r, eval=FALSE}
-sce$gsvaRes <- gsvaSCE(inSCE = sce, useAssay = "logcounts", pathwayNames = c("C1"))
+gsvaRes <- gsvaSCE(inSCE = sce, useAssay = "logcounts", pathwayNames = c("C1"))
 ```
 
 The parameters to the `gsvaSCE` function above include: <br>
@@ -116,15 +116,15 @@ conditionFactor <- factor(colData(sce)[, "Biological_Condition"])
       if(nlevels(conditionFactor)<=1){
         stop("Condition variable must have atleast two levels!")
       }
-fit <- limma::lmFit(sce$gsvaRes, stats::model.matrix(~conditionFactor))
+fit <- limma::lmFit(gsvaRes, stats::model.matrix(~conditionFactor))
 fit <- limma::eBayes(fit)
-toptableres <- limma::topTable(fit, number = nrow(sce$gsvaRes))
+toptableres <- limma::topTable(fit, number = nrow(gsvaRes))
 temptable <- cbind(rownames(toptableres), toptableres)
 rownames(temptable) <- NULL
 colnames(temptable)[1] <- "Pathway"
      
 
-tempgsvares <- sce$gsvaRes
+tempgsvares <- gsvaRes
 topPaths <- 10
 
 # Visualize violin plot
@@ -144,11 +144,38 @@ gsvaPlot(inSCE = sce, gsvaData = tempgsvares, plotType = "Heatmap", condition = 
   # Load singleCellTK & pbmc3k example data
   library(singleCellTK)
   sce <- importExampleData(dataset = "pbmc3k")
-
+ #hallmark c7,c8
+  #runnormalization
   sce <- importGeneSetsFromMSigDB(inSCE = sce, categoryIDs = "C1", by = "rownames")
   sce <- scaterlogNormCounts(inSCE = sce, useAssay = "counts", assayName = "logcounts")
-  #gsvaSCE(inSCE = sce, useAssay = "logcounts", pathwayNames = c("C1"))
-  #print(sce$gsvaRes)
+  sce <- seuratFindHVG(inSCE = sce, useAssay = "logcounts")
+  sce <- seuratPCA(inSCE = sce, useAssay = "logcounts", reducedDimName = "pca")
+  sce <- seuratFindClusters(inSCE = sce, useAssay = "logcounts", useReduction = "pca", resolution = 1.5)
+  colData(sce)$Biological_Condition <- colData(sce)$Seurat_louvain_Resolution1.5
+  sce <- sce[, 1:200]
+  gsvaRes <- gsvaSCE(inSCE = sce, useAssay = "logcounts", pathwayNames = c("C1"))
+  
+  conditionFactor <- factor(colData(sce)[, "Biological_Condition"])
+      if(nlevels(conditionFactor)<=1){
+        stop("Condition variable must have atleast two levels!")
+      }
+fit <- limma::lmFit(gsvaRes, stats::model.matrix(~conditionFactor))
+fit <- limma::eBayes(fit)
+toptableres <- limma::topTable(fit, number = nrow(gsvaRes))
+temptable <- cbind(rownames(toptableres), toptableres)
+rownames(temptable) <- NULL
+colnames(temptable)[1] <- "Pathway"
+     
+
+tempgsvares <- gsvaRes
+topPaths <- 10
+
+# Visualize violin plot
+tempgsvares <- tempgsvares[1:min(49, topPaths, nrow(tempgsvares)), , drop = FALSE]
+gsvaPlot(inSCE = sce, gsvaData = tempgsvares, plotType = "Violin", condition = "Biological_Condition")
+
+# Visualize heatmap plot
+gsvaPlot(inSCE = sce, gsvaData = tempgsvares, plotType = "Heatmap", condition = "Biological_Condition")
 ```
 
 ````{=html}
