@@ -2,8 +2,8 @@ shinyPanelDiffex <- fluidPage(
   tags$div(
     class = "container",
     h1("Differential Expression"),
-    tags$a(href = "https://www.sctk.science/articles/tab05_differential-expression",
-           "(help)", target = "_blank"),
+    h5(tags$a(href = paste0(docs.artPath, "ui_differential_expression.html"),
+              "(help)", target = "_blank")),
     fluidRow(
       panel(
         style = "margin:2px;",
@@ -273,6 +273,7 @@ shinyPanelDiffex <- fluidPage(
         )
       )
     )
-  )
+  ),
+  nonLinearWorkflowUI(id = "nlw-de")
 )
 

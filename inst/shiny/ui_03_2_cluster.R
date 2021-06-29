@@ -1,8 +1,8 @@
 shinyPanelCluster <- fluidPage(
   tags$div(
     class = "container",
-    h3("Clustering"),
-    h5(tags$a(href = "https://compbiomed.github.io/sctk_docs/articles/clustering.html",
+    h1("Clustering"),
+    h5(tags$a(href = paste0(docs.artPath, "ui_clustering.html"),
               "(help)", target = "_blank")),
     wellPanel(
       # CLUSTERING --> VISUALIZATION
@@ -129,6 +129,7 @@ shinyPanelCluster <- fluidPage(
       withBusyIndicatorUI(actionButton("clustPlot", "Plot")),
       plotlyOutput("clustVisPlot")
     )
-  )
+  ),
+  nonLinearWorkflowUI(id = "nlw-cl")
 )
 

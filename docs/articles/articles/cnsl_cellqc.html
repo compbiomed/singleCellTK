@@ -11,7 +11,8 @@
 <script src="../../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../../pkgdown.css" rel="stylesheet">
-<script src="../../pkgdown.js"></script><meta property="og:title" content="Quality Control in R console">
+<script src="../../pkgdown.js"></script><link href="../../extra.css" rel="stylesheet">
+<script src="../../extra.js"></script><meta property="og:title" content="Quality Control in R console">
 <meta property="og:description" content="singleCellTK">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
@@ -31,7 +32,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.2.0</span>
       </span>
     </div>
 
@@ -188,7 +189,7 @@
           <a href="../../articles/articles/ui_feature_selection.html">Feature Selection</a>
         </li>
         <li>
-          <a href="../../articles/articles/ui_dimemsionality_reduction.html">Dimensionality Reduction</a>
+          <a href="../../articles/articles/ui_dimensionality_reduction.html">Dimensionality Reduction</a>
         </li>
       </ul>
 </li>
@@ -204,13 +205,33 @@
         <li>
           <a href="../../articles/articles/ui_find_marker.html">Find Marker</a>
         </li>
+        <li>
+          <a href="../../articles/articles/ui_cell_type_labeling.html">Cell Type Labeling</a>
+        </li>
       </ul>
 </li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Pathway &amp; Enrichment Analysis</a>
+      <ul class="dropdown-menu" role="menu">
+<li>
+          <a href="../../articles/articles/ui_gsva.html">GSVA</a>
+        </li>
+        <li>
+          <a href="../../articles/articles/ui_enrichR.html">EnrichR</a>
+        </li>
+      </ul>
+</li>
+    <li>
+      <a href="../../articles/articles/ui_sample_size_calc.html">Sample Size Calculator</a>
+    </li>
     <li class="dropdown-submenu">
       <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Curated Workflows</a>
       <ul class="dropdown-menu" role="menu">
 <li>
           <a href="../../articles/articles/ui_seurat_curated_workflow.html">Seurat</a>
+        </li>
+        <li>
+          <a href="../../articles/articles/ui_celda_curated_workflow.html">Celda</a>
         </li>
       </ul>
 </li>
@@ -234,7 +255,7 @@
 <ul class="nav navbar-nav navbar-right">
 <li>
   <a href="https://github.com/compbiomed/singleCellTK">
-    <span class="fas fa-github"></span>
+    <span class="fa fa-github"></span>
      
   </a>
 </li>
@@ -248,7 +269,8 @@
 
       
 
-      </header><script src="cnsl_cellqc_files/header-attrs-2.8/header-attrs.js"></script><script src="cnsl_cellqc_files/kePrint-0.0.1/kePrint.js"></script><link href="cnsl_cellqc_files/lightable-0.0.1/lightable.css" rel="stylesheet">
+      </header><script src="cnsl_cellqc_files/header-attrs-2.5/header-attrs.js"></script><link href="cnsl_cellqc_files/anchor-sections-1.0/anchor-sections.css" rel="stylesheet">
+<script src="cnsl_cellqc_files/anchor-sections-1.0/anchor-sections.js"></script><script src="cnsl_cellqc_files/kePrint-0.0.1/kePrint.js"></script><link href="cnsl_cellqc_files/lightable-0.0.1/lightable.css" rel="stylesheet">
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
@@ -532,7 +554,7 @@ pbmc3k
 2421
 </td>
 <td style="text-align:right;">
-0.2394366
+0.1707317
 </td>
 <td style="text-align:left;">
 FALSE
@@ -595,7 +617,7 @@ FALSE
 FALSE
 </td>
 <td style="text-align:right;">
-0.0322299
+0.0333002
 </td>
 <td style="text-align:left;">
 pbmc3k-1
@@ -672,7 +694,7 @@ pbmc3k
 4903
 </td>
 <td style="text-align:right;">
-0.0935252
+0.1034483
 </td>
 <td style="text-align:left;">
 FALSE
@@ -735,7 +757,7 @@ TRUE
 TRUE
 </td>
 <td style="text-align:right;">
-0.1193377
+0.1377323
 </td>
 <td style="text-align:left;">
 pbmc3k-2
@@ -1066,7 +1088,7 @@ pbmc3k-2
 <div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co">#After filtering:</span>
 <span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span><span class="op">(</span><span class="va">pbmc.combined</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1] 32738  7925</code></pre>
+<pre><code>## [1] 32738  7931</code></pre>
 </div>
 <div id="running-individual-qc-methods" class="section level3">
 <h3 class="hasAnchor">
@@ -1175,15 +1197,17 @@ pbmc3k-2
 <div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
 <pre><code>## R version 4.0.3 (2020-10-10)
-## Platform: x86_64-apple-darwin17.0 (64-bit)
-## Running under: macOS Catalina 10.15.7
+## Platform: x86_64-w64-mingw32/x64 (64-bit)
+## Running under: Windows 10 x64 (build 19042)
 ## 
 ## Matrix products: default
-## BLAS:   /Library/Frameworks/R.framework/Versions/4.0/Resources/lib/libRblas.dylib
-## LAPACK: /Library/Frameworks/R.framework/Versions/4.0/Resources/lib/libRlapack.dylib
 ## 
 ## locale:
-## [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+## [1] LC_COLLATE=English_United States.1252 
+## [2] LC_CTYPE=English_United States.1252   
+## [3] LC_MONETARY=English_United States.1252
+## [4] LC_NUMERIC=C                          
+## [5] LC_TIME=English_United States.1252    
 ## 
 ## attached base packages:
 ## [1] parallel  stats4    stats     graphics  grDevices utils     datasets 
@@ -1204,9 +1228,9 @@ pbmc3k-2
 ##   [1] rappdirs_0.3.1                MCMCprecision_0.4.0          
 ##   [3] scds_1.6.0                    R.methodsS3_1.8.1            
 ##   [5] ragg_0.4.0                    tidyr_1.1.2                  
-##   [7] ggplot2_3.3.3                 bit64_4.0.5                  
+##   [7] ggplot2_3.3.2                 bit64_4.0.5                  
 ##   [9] knitr_1.30                    irlba_2.3.3                  
-##  [11] R.utils_2.10.1                data.table_1.13.4            
+##  [11] R.utils_2.10.1                data.table_1.13.2            
 ##  [13] rpart_4.1-15                  RCurl_1.98-1.2               
 ##  [15] doParallel_1.0.16             generics_0.1.0               
 ##  [17] cowplot_1.1.0                 RSQLite_2.2.1                
@@ -1214,91 +1238,92 @@ pbmc3k-2
 ##  [21] future_1.20.1                 bit_4.0.4                    
 ##  [23] webshot_0.5.2                 xml2_1.3.2                   
 ##  [25] spatstat.data_1.4-3           httpuv_1.5.4                 
-##  [27] assertthat_0.2.1              viridis_0.5.1                
-##  [29] xfun_0.22                     evaluate_0.14                
+##  [27] assertthat_0.2.1              viridis_0.6.1                
+##  [29] xfun_0.19                     evaluate_0.14                
 ##  [31] promises_1.1.1                assertive.files_0.0-2        
 ##  [33] dbplyr_2.0.0                  igraph_1.2.6                 
 ##  [35] DBI_1.1.0                     htmlwidgets_1.5.2            
 ##  [37] purrr_0.3.4                   ellipsis_0.3.1               
-##  [39] RSpectra_0.16-0               annotate_1.68.0              
-##  [41] deldir_0.2-3                  sparseMatrixStats_1.2.0      
-##  [43] vctrs_0.3.4                   ROCR_1.0-11                  
-##  [45] abind_1.4-5                   RcppEigen_0.3.3.7.0          
-##  [47] withr_2.3.0                   GSVAdata_1.26.0              
-##  [49] sctransform_0.3.1             scran_1.18.1                 
-##  [51] goftest_1.2-2                 cluster_2.1.0                
-##  [53] ExperimentHub_1.16.0          dotCall64_1.0-0              
-##  [55] lazyeval_0.2.2                crayon_1.3.4                 
-##  [57] labeling_0.4.2                edgeR_3.32.0                 
-##  [59] pkgconfig_2.0.3               nlme_3.1-150                 
-##  [61] vipor_0.4.5                   rlang_0.4.8                  
-##  [63] globals_0.13.1                lifecycle_0.2.0              
-##  [65] miniUI_0.1.1.1                dbscan_1.1-5                 
-##  [67] BiocFileCache_1.14.0          enrichR_2.1                  
-##  [69] rsvd_1.0.3                    AnnotationHub_2.22.0         
-##  [71] rprojroot_2.0.2               polyclip_1.10-0              
-##  [73] lmtest_0.9-38                 graph_1.68.0                 
-##  [75] Rhdf5lib_1.12.0               zoo_1.8-8                    
-##  [77] beeswarm_0.2.3                ggridges_0.5.2               
-##  [79] png_0.1-7                     viridisLite_0.3.0            
-##  [81] rjson_0.2.20                  bitops_1.0-6                 
-##  [83] R.oo_1.24.0                   KernSmooth_2.23-18           
-##  [85] spam_2.5-1                    rhdf5filters_1.2.0           
-##  [87] pROC_1.17.0.1                 blob_1.2.1                   
-##  [89] DelayedMatrixStats_1.12.0     stringr_1.4.0                
-##  [91] parallelly_1.21.0             gridGraphics_0.5-0           
-##  [93] beachmat_2.6.1                scales_1.1.1                 
-##  [95] memoise_1.1.0                 GSEABase_1.52.0              
-##  [97] magrittr_1.5                  plyr_1.8.6                   
-##  [99] ica_1.0-2                     zlibbioc_1.36.0              
-## [101] compiler_4.0.3                kableExtra_1.3.1             
-## [103] dqrng_0.2.1                   RColorBrewer_1.1-2           
-## [105] fitdistrplus_1.1-1            XVector_0.30.0               
-## [107] listenv_0.8.0                 patchwork_1.1.0              
-## [109] pbapply_1.4-3                 MASS_7.3-53                  
-## [111] mgcv_1.8-33                   tidyselect_1.1.0             
-## [113] MAST_1.16.0                   stringi_1.5.3                
-## [115] textshaping_0.1.2             highr_0.8                    
-## [117] yaml_2.2.1                    assertive.numbers_0.0-2      
-## [119] BiocSingular_1.6.0            locfit_1.5-9.4               
-## [121] ggrepel_0.8.2                 grid_4.0.3                   
-## [123] tools_4.0.3                   future.apply_1.6.0           
-## [125] rstudioapi_0.11               bluster_1.0.0                
-## [127] foreach_1.5.1                 celda_1.7.1                  
-## [129] gridExtra_2.3                 farver_2.0.3                 
-## [131] assertive.types_0.0-3         Rtsne_0.15                   
-## [133] DropletUtils_1.10.0           digest_0.6.27                
-## [135] BiocManager_1.30.10           FNN_1.1.3                    
-## [137] shiny_1.5.0                   Rcpp_1.0.5                   
-## [139] scuttle_1.0.0                 BiocVersion_3.12.0           
-## [141] later_1.1.0.1                 RcppAnnoy_0.0.16             
-## [143] httr_1.4.2                    AnnotationDbi_1.52.0         
-## [145] assertive.properties_0.0-4    colorspace_1.4-1             
-## [147] rvest_0.3.6                   XML_3.99-0.5                 
-## [149] fs_1.5.0                      tensor_1.5                   
-## [151] reticulate_1.18               splines_4.0.3                
-## [153] fields_11.6                   uwot_0.1.9                   
-## [155] statmod_1.4.35                spatstat.utils_1.17-0        
-## [157] pkgdown_1.6.1                 scater_1.18.3                
-## [159] xgboost_1.2.0.1               plotly_4.9.2.1               
-## [161] systemfonts_0.3.2             xtable_1.8-4                 
-## [163] jsonlite_1.7.1                assertive.base_0.0-7         
-## [165] spatstat_1.64-1               R6_2.5.0                     
-## [167] pillar_1.4.6                  htmltools_0.5.0              
-## [169] mime_0.9                      glue_1.4.2                   
-## [171] fastmap_1.0.1                 BiocParallel_1.24.1          
-## [173] BiocNeighbors_1.8.1           interactiveDisplayBase_1.28.0
-## [175] codetools_0.2-18              maps_3.3.0                   
-## [177] fishpond_1.6.0                lattice_0.20-41              
-## [179] tibble_3.0.4                  multipanelfigure_2.1.2       
-## [181] curl_4.3                      ggbeeswarm_0.6.0             
-## [183] leiden_0.3.5                  scDblFinder_1.4.0            
-## [185] gtools_3.8.2                  magick_2.5.1                 
-## [187] survival_3.2-7                limma_3.46.0                 
-## [189] rmarkdown_2.8                 desc_1.2.0                   
-## [191] munsell_0.5.0                 GenomeInfoDbData_1.2.4       
-## [193] iterators_1.0.13              reshape2_1.4.4               
-## [195] gtable_0.3.0                  Seurat_3.2.2</code></pre>
+##  [39] RSpectra_0.16-0               backports_1.1.10             
+##  [41] annotate_1.68.0               deldir_0.1-29                
+##  [43] sparseMatrixStats_1.2.0       vctrs_0.3.7                  
+##  [45] ROCR_1.0-11                   abind_1.4-5                  
+##  [47] RcppEigen_0.3.3.7.0           withr_2.3.0                  
+##  [49] GSVAdata_1.26.0               sctransform_0.3.1            
+##  [51] scran_1.18.0                  goftest_1.2-2                
+##  [53] cluster_2.1.0                 ExperimentHub_1.16.0         
+##  [55] dotCall64_1.0-0               lazyeval_0.2.2               
+##  [57] crayon_1.3.4                  labeling_0.4.2               
+##  [59] edgeR_3.32.0                  pkgconfig_2.0.3              
+##  [61] nlme_3.1-149                  vipor_0.4.5                  
+##  [63] rlang_0.4.10                  globals_0.13.1               
+##  [65] lifecycle_0.2.0               miniUI_0.1.1.1               
+##  [67] dbscan_1.1-5                  BiocFileCache_1.14.0         
+##  [69] enrichR_2.1                   rsvd_1.0.3                   
+##  [71] AnnotationHub_2.22.0          rprojroot_1.3-2              
+##  [73] polyclip_1.10-0               lmtest_0.9-38                
+##  [75] graph_1.68.0                  Rhdf5lib_1.12.0              
+##  [77] zoo_1.8-8                     beeswarm_0.2.3               
+##  [79] ggridges_0.5.2                rjson_0.2.20                 
+##  [81] png_0.1-7                     viridisLite_0.4.0            
+##  [83] bitops_1.0-6                  R.oo_1.24.0                  
+##  [85] KernSmooth_2.23-17            spam_2.5-1                   
+##  [87] rhdf5filters_1.2.0            pROC_1.16.2                  
+##  [89] blob_1.2.1                    DelayedMatrixStats_1.12.0    
+##  [91] stringr_1.4.0                 parallelly_1.21.0            
+##  [93] gridGraphics_0.5-0            beachmat_2.6.0               
+##  [95] scales_1.1.1                  memoise_1.1.0                
+##  [97] GSEABase_1.52.0               magrittr_2.0.1.9000          
+##  [99] plyr_1.8.6                    ica_1.0-2                    
+## [101] zlibbioc_1.36.0               compiler_4.0.3               
+## [103] kableExtra_1.3.1              dqrng_0.2.1                  
+## [105] RColorBrewer_1.1-2            fitdistrplus_1.1-1           
+## [107] XVector_0.30.0                listenv_0.8.0                
+## [109] patchwork_1.0.1               pbapply_1.4-3                
+## [111] MASS_7.3-53                   mgcv_1.8-33                  
+## [113] tidyselect_1.1.0              MAST_1.16.0                  
+## [115] stringi_1.5.3                 textshaping_0.1.2            
+## [117] highr_0.8                     yaml_2.2.1                   
+## [119] assertive.numbers_0.0-2       BiocSingular_1.6.0           
+## [121] locfit_1.5-9.4                ggrepel_0.8.2                
+## [123] grid_4.0.3                    tools_4.0.3                  
+## [125] future.apply_1.6.0            rstudioapi_0.11              
+## [127] bluster_1.0.0                 foreach_1.5.1                
+## [129] celda_1.6.1                   gridExtra_2.3                
+## [131] farver_2.0.3                  assertive.types_0.0-3        
+## [133] Rtsne_0.15                    DropletUtils_1.10.0          
+## [135] digest_0.6.27                 BiocManager_1.30.10          
+## [137] FNN_1.1.3                     shiny_1.5.0                  
+## [139] Rcpp_1.0.5                    scuttle_1.0.0                
+## [141] BiocVersion_3.12.0            later_1.1.0.1                
+## [143] RcppAnnoy_0.0.16              httr_1.4.2                   
+## [145] AnnotationDbi_1.52.0          assertive.properties_0.0-4   
+## [147] colorspace_1.4-1              rvest_0.3.6                  
+## [149] XML_3.99-0.5                  fs_1.5.0                     
+## [151] tensor_1.5                    reticulate_1.18              
+## [153] splines_4.0.3                 fields_11.6                  
+## [155] uwot_0.1.8                    statmod_1.4.35               
+## [157] spatstat.utils_1.17-0         pkgdown_1.6.1                
+## [159] scater_1.18.0                 xgboost_1.2.0.1              
+## [161] plotly_4.9.2.1                systemfonts_0.3.2            
+## [163] xtable_1.8-4                  assertive.base_0.0-7         
+## [165] jsonlite_1.7.1                spatstat_1.64-1              
+## [167] R6_2.5.0                      pillar_1.4.6                 
+## [169] htmltools_0.5.1.1             mime_0.9                     
+## [171] glue_1.4.2                    fastmap_1.0.1                
+## [173] BiocParallel_1.24.0           BiocNeighbors_1.8.0          
+## [175] interactiveDisplayBase_1.28.0 codetools_0.2-18             
+## [177] maps_3.3.0                    fishpond_1.6.0               
+## [179] lattice_0.20-41               tibble_3.0.4                 
+## [181] multipanelfigure_2.1.2        curl_4.3                     
+## [183] ggbeeswarm_0.6.0              leiden_0.3.4                 
+## [185] scDblFinder_1.4.0             gtools_3.8.2                 
+## [187] magick_2.5.0                  survival_3.2-7               
+## [189] limma_3.46.0                  rmarkdown_2.5                
+## [191] desc_1.2.0                    munsell_0.5.0                
+## [193] GenomeInfoDbData_1.2.4        iterators_1.0.13             
+## [195] reshape2_1.4.4                gtable_0.3.0                 
+## [197] Seurat_3.2.2</code></pre>
 </div>
   </div>
 

@@ -11,7 +11,8 @@
 <script src="../../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../../pkgdown.css" rel="stylesheet">
-<script src="../../pkgdown.js"></script><meta property="og:title" content="Find Markers by Differential Expression">
+<script src="../../pkgdown.js"></script><link href="../../extra.css" rel="stylesheet">
+<script src="../../extra.js"></script><meta property="og:title" content="Find Markers by Differential Expression">
 <meta property="og:description" content="singleCellTK">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
@@ -31,7 +32,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.2.0</span>
       </span>
     </div>
 
@@ -188,7 +189,7 @@
           <a href="../../articles/articles/ui_feature_selection.html">Feature Selection</a>
         </li>
         <li>
-          <a href="../../articles/articles/ui_dimemsionality_reduction.html">Dimensionality Reduction</a>
+          <a href="../../articles/articles/ui_dimensionality_reduction.html">Dimensionality Reduction</a>
         </li>
       </ul>
 </li>
@@ -204,13 +205,33 @@
         <li>
           <a href="../../articles/articles/ui_find_marker.html">Find Marker</a>
         </li>
+        <li>
+          <a href="../../articles/articles/ui_cell_type_labeling.html">Cell Type Labeling</a>
+        </li>
       </ul>
 </li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Pathway &amp; Enrichment Analysis</a>
+      <ul class="dropdown-menu" role="menu">
+<li>
+          <a href="../../articles/articles/ui_gsva.html">GSVA</a>
+        </li>
+        <li>
+          <a href="../../articles/articles/ui_enrichR.html">EnrichR</a>
+        </li>
+      </ul>
+</li>
+    <li>
+      <a href="../../articles/articles/ui_sample_size_calc.html">Sample Size Calculator</a>
+    </li>
     <li class="dropdown-submenu">
       <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Curated Workflows</a>
       <ul class="dropdown-menu" role="menu">
 <li>
           <a href="../../articles/articles/ui_seurat_curated_workflow.html">Seurat</a>
+        </li>
+        <li>
+          <a href="../../articles/articles/ui_celda_curated_workflow.html">Celda</a>
         </li>
       </ul>
 </li>
@@ -248,7 +269,7 @@
 
       
 
-      </header><script src="cnsl_find_marker_files/header-attrs-2.5/header-attrs.js"></script><script src="cnsl_find_marker_files/accessible-code-block-0.0.1/empty-anchor.js"></script><link href="cnsl_find_marker_files/anchor-sections-1.0/anchor-sections.css" rel="stylesheet">
+      </header><script src="cnsl_find_marker_files/header-attrs-2.5/header-attrs.js"></script><link href="cnsl_find_marker_files/anchor-sections-1.0/anchor-sections.css" rel="stylesheet">
 <script src="cnsl_find_marker_files/anchor-sections-1.0/anchor-sections.js"></script><script src="cnsl_find_marker_files/kePrint-0.0.1/kePrint.js"></script><link href="cnsl_find_marker_files/lightable-0.0.1/lightable.css" rel="stylesheet">
 <div class="row">
   <div class="col-md-9 contents">
@@ -386,13 +407,13 @@ clusterAveExpr
 <tbody>
 <tr>
 <td style="text-align:left;">
-5
+3
 </td>
 <td style="text-align:left;">
 IL7R
 </td>
 <td style="text-align:right;">
-0.7243084
+0.8022290
 </td>
 <td style="text-align:right;">
 0
@@ -404,24 +425,24 @@ IL7R
 0
 </td>
 <td style="text-align:right;">
-0.7363636
+0.7504000
 </td>
 <td style="text-align:right;">
-0.3162791
+0.2968675
 </td>
 <td style="text-align:right;">
-1.1959683
+1.2357321
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-9
+19
 </td>
 <td style="text-align:left;">
 CD3E
 </td>
 <td style="text-align:right;">
-0.6925999
+0.6286077
 </td>
 <td style="text-align:right;">
 0
@@ -433,82 +454,24 @@ CD3E
 0
 </td>
 <td style="text-align:right;">
-0.8272727
+0.7824000
 </td>
 <td style="text-align:right;">
-0.3930233
+0.3908434
 </td>
 <td style="text-align:right;">
-1.2985727
+1.2301546
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-14
-</td>
-<td style="text-align:left;">
-CD2
-</td>
-<td style="text-align:right;">
-0.5177898
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:left;">
-0
-</td>
-<td style="text-align:right;">
-0.6309091
-</td>
-<td style="text-align:right;">
-0.2367442
-</td>
-<td style="text-align:right;">
-0.8349347
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-57
-</td>
-<td style="text-align:left;">
-LCK
-</td>
-<td style="text-align:right;">
-0.3700685
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:left;">
-0
-</td>
-<td style="text-align:right;">
-0.6109091
-</td>
-<td style="text-align:right;">
-0.2948837
-</td>
-<td style="text-align:right;">
-0.7614846
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-63
+88
 </td>
 <td style="text-align:left;">
 NOSIP
 </td>
 <td style="text-align:right;">
-0.4170043
+0.3945648
 </td>
 <td style="text-align:right;">
 0
@@ -520,24 +483,24 @@ NOSIP
 0
 </td>
 <td style="text-align:right;">
-0.6709091
+0.6336000
 </td>
 <td style="text-align:right;">
-0.3641860
+0.3643373
 </td>
 <td style="text-align:right;">
-0.9249822
+0.8961536
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-197
+236
 </td>
 <td style="text-align:left;">
-TMEM123
+IL2RG
 </td>
 <td style="text-align:right;">
-0.2520777
+0.2514040
 </td>
 <td style="text-align:right;">
 0
@@ -549,13 +512,71 @@ TMEM123
 0
 </td>
 <td style="text-align:right;">
-0.6018182
+0.6032000
 </td>
 <td style="text-align:right;">
-0.3795349
+0.3840964
 </td>
 <td style="text-align:right;">
-0.7281577
+0.7521517
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+421
+</td>
+<td style="text-align:left;">
+NOSIP
+</td>
+<td style="text-align:right;">
+0.6006385
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:left;">
+1
+</td>
+<td style="text-align:right;">
+0.6989899
+</td>
+<td style="text-align:right;">
+0.3655329
+</td>
+<td style="text-align:right;">
+1.0834447
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+1111
+</td>
+<td style="text-align:left;">
+CD7
+</td>
+<td style="text-align:right;">
+0.4625257
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:left;">
+1
+</td>
+<td style="text-align:right;">
+0.6363636
+</td>
+<td style="text-align:right;">
+0.3061224
+</td>
+<td style="text-align:right;">
+0.9121443
 </td>
 </tr>
 </tbody>

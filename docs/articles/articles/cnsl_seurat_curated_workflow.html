@@ -11,7 +11,8 @@
 <script src="../../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../../pkgdown.css" rel="stylesheet">
-<script src="../../pkgdown.js"></script><meta property="og:title" content="Seurat Curated Workflow (Console)">
+<script src="../../pkgdown.js"></script><link href="../../extra.css" rel="stylesheet">
+<script src="../../extra.js"></script><meta property="og:title" content="Seurat Curated Workflow (Console)">
 <meta property="og:description" content="singleCellTK">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
@@ -31,7 +32,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.2.0</span>
       </span>
     </div>
 
@@ -188,7 +189,7 @@
           <a href="../../articles/articles/ui_feature_selection.html">Feature Selection</a>
         </li>
         <li>
-          <a href="../../articles/articles/ui_dimemsionality_reduction.html">Dimensionality Reduction</a>
+          <a href="../../articles/articles/ui_dimensionality_reduction.html">Dimensionality Reduction</a>
         </li>
       </ul>
 </li>
@@ -204,13 +205,33 @@
         <li>
           <a href="../../articles/articles/ui_find_marker.html">Find Marker</a>
         </li>
+        <li>
+          <a href="../../articles/articles/ui_cell_type_labeling.html">Cell Type Labeling</a>
+        </li>
       </ul>
 </li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Pathway &amp; Enrichment Analysis</a>
+      <ul class="dropdown-menu" role="menu">
+<li>
+          <a href="../../articles/articles/ui_gsva.html">GSVA</a>
+        </li>
+        <li>
+          <a href="../../articles/articles/ui_enrichR.html">EnrichR</a>
+        </li>
+      </ul>
+</li>
+    <li>
+      <a href="../../articles/articles/ui_sample_size_calc.html">Sample Size Calculator</a>
+    </li>
     <li class="dropdown-submenu">
       <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Curated Workflows</a>
       <ul class="dropdown-menu" role="menu">
 <li>
           <a href="../../articles/articles/ui_seurat_curated_workflow.html">Seurat</a>
+        </li>
+        <li>
+          <a href="../../articles/articles/ui_celda_curated_workflow.html">Celda</a>
         </li>
       </ul>
 </li>
@@ -248,7 +269,7 @@
 
       
 
-      </header><script src="cnsl_seurat_curated_workflow_files/header-attrs-2.5/header-attrs.js"></script><script src="cnsl_seurat_curated_workflow_files/accessible-code-block-0.0.1/empty-anchor.js"></script><link href="cnsl_seurat_curated_workflow_files/anchor-sections-1.0/anchor-sections.css" rel="stylesheet">
+      </header><script src="cnsl_seurat_curated_workflow_files/header-attrs-2.5/header-attrs.js"></script><link href="cnsl_seurat_curated_workflow_files/anchor-sections-1.0/anchor-sections.css" rel="stylesheet">
 <script src="cnsl_seurat_curated_workflow_files/anchor-sections-1.0/anchor-sections.js"></script><script src="cnsl_seurat_curated_workflow_files/htmlwidgets-1.5.2/htmlwidgets.js"></script><script src="cnsl_seurat_curated_workflow_files/plotly-binding-4.9.2.1/plotly.js"></script><script src="cnsl_seurat_curated_workflow_files/typedarray-0.1/typedarray.min.js"></script><script src="cnsl_seurat_curated_workflow_files/jquery-1.11.3/jquery.min.js"></script><link href="cnsl_seurat_curated_workflow_files/crosstalk-1.1.0.1/css/crosstalk.css" rel="stylesheet">
 <script src="cnsl_seurat_curated_workflow_files/crosstalk-1.1.0.1/js/crosstalk.min.js"></script><link href="cnsl_seurat_curated_workflow_files/plotly-htmlwidgets-css-1.52.2/plotly-htmlwidgets.css" rel="stylesheet">
 <script src="cnsl_seurat_curated_workflow_files/plotly-main-1.52.2/plotly-latest.min.js"></script><div class="row">
@@ -318,104 +339,112 @@
 <code class="sourceCode R"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/seuratFindHVG.html">seuratFindHVG</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"seuratScaledData"</span>, hvgMethod <span class="op">=</span> <span class="st">"vst"</span><span class="op">)</span></code></pre></div>
 <pre><code>## Warning: Non-unique features (rownames) present in the input matrix, making
 ## unique</code></pre>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<pre><code>## Warning in eval(predvars, data, env): NaNs produced</code></pre>
+<pre><code>## Warning in hvf.info$variance.expected[not.const] &lt;- 10^fit$fitted: number of
+## items to replace is not a multiple of replacement length</code></pre>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="fu">singleCellTK</span><span class="fu">:::</span><span class="fu"><a href="../../reference/.seuratGetVariableFeatures.html">.seuratGetVariableFeatures</a></span><span class="op">(</span><span class="va">sce</span>, <span class="fl">100</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <pre><code>## Warning: Non-unique features (rownames) present in the input matrix, making
 ## unique</code></pre>
-<pre><code>##   [1] "PPBP"       "LYZ"        "S100A9"     "IGLL5"      "GNLY"      
-##   [6] "FTL"        "PF4"        "FTH1"       "GNG11"      "FCER1A"    
-##  [11] "HLA-DRA"    "S100A8"     "CD74"       "CLU"        "GZMB"      
-##  [16] "NKG7"       "C1QA"       "CST3"       "CCL4"       "HLA-DPB1"  
-##  [21] "SDPR"       "C1QB"       "AL928768.3" "TYMS"       "TUBB1"     
-##  [26] "RRM2"       "STMN1"      "GUSB"       "MZB1"       "C10orf32"  
-##  [31] "GP9"        "IGJ"        "LYPD2"      "HAGH"       "TK1"       
-##  [36] "FUS"        "LYAR"       "DSCR3"      "SLA"        "SMIM7"     
-##  [41] "KIF5B"      "PPP6C"      "HBP1"       "TMX2"       "HBA1"      
-##  [46] "INTS12"     "HLA-DPA1"   "KIAA0101"   "CA2"        "APOBEC3B"  
-##  [51] "CCL3"       "LILRA4"     "PRDX1"      "GIMAP5"     "CD79A"     
-##  [56] "HLA-DRB1"   "SERPINF1"   "MYL9"       "PRKCB"      "C16orf13"  
-##  [61] "MLLT11"     "LST1"       "BIRC5"      "TNFRSF17"   "NDUFA12"   
-##  [66] "CCL5"       "THOC7"      "RABL6"      "SIVA1"      "SDHB"      
-##  [71] "STK38"      "CLDN5"      "TREML1"     "UBLCP1"     "IFI27"     
-##  [76] "SPARC"      "HIST1H2AC"  "PTGDS"      "C14orf1"    "RALY"      
-##  [81] "IL8"        "PRF1"       "CLEC2B"     "TNFSF10"    "FCGR3A"    
-##  [86] "ODC1"       "MED30"      "STAMBP"     "GMPR"       "GZMH"      
-##  [91] "CWC15"      "DNASE1L3"   "TMEM208"    "ACTB"       "FGFBP2"    
-##  [96] "CXCL3"      "IDH2"       "TYROBP"     "NXT2"       "FCER1G"</code></pre>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<pre><code>##   [1] "SREBF2"       "MIR4519"      "ANKS3"        "FAM122B"      "LSR"         
+##   [6] "FCRL6"        "DNAJC17"      "HSDL2"        "HK3"          "SGSM3"       
+##  [11] "INO80"        "VCPKMT"       "RPRD1A"       "TREM1"        "ING3"        
+##  [16] "CSTA"         "IFRD2"        "CD83"         "KCMF1"        "ZCCHC6"      
+##  [21] "LEMD2"        "RP11-244H3.4" "HAUS7"        "SLC25A1"      "KTI12"       
+##  [26] "GPR137B"      "CBLL1"        "MDM1"         "SLC39A6"      "PLXNB2"      
+##  [31] "LIPA"         "ANKRD36C"     "LONP2"        "TOMM40"       "SLC25A38"    
+##  [36] "XIAP"         "RNF20"        "TFG"          "YIPF5"        "STYXL1"      
+##  [41] "CLUAP1"       "PNPLA6"       "OSBPL9"       "TOB2"         "NRG1"        
+##  [46] "PPAPDC1B"     "DNAJC9"       "CERK"         "PDLIM5"       "CXorf40A"    
+##  [51] "NFRKB"        "CCDC65"       "XPNPEP3"      "PPIL3"        "MRPL17"      
+##  [56] "CLASP2"       "UBXN7"        "RCN1"         "PAK1"         "XRCC1"       
+##  [61] "OGFOD2"       "GMIP"         "IWS1"         "MAD2L1"       "STARD3NL"    
+##  [66] "NUDT5"        "PPM1F"        "ACSS1"        "CD180"        "C14orf159"   
+##  [71] "RASA2"        "FAM105A"      "ORAI2"        "ITSN2"        "LATS1"       
+##  [76] "PTEN"         "PKN1"         "SCAF1"        "ZCCHC11"      "DNAJB11"     
+##  [81] "WDR54"        "TMEM248"      "PPP1R35"      "NAPRT1"       "PRDX3"       
+##  [86] "IL17RA"       "C21orf59"     "MRPS22"       "BCAP29"       "FAM160A2"    
+##  [91] "NUP62"        "TMEM184B"     "RFWD2"        "GSK3B"        "ZNF354A"     
+##  [96] "ITPK1"        "TM2D3"        "NFATC3"       "MAGED2"       "TRAF2"</code></pre>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../../reference/seuratPlotHVG.html">seuratPlotHVG</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span></code></pre></div>
 <pre><code>## Warning: Non-unique features (rownames) present in the input matrix, making
 ## unique</code></pre>
+<pre><code>## Warning in self$trans$transform(x): NaNs produced</code></pre>
 <pre><code>## Warning: Transformation introduced infinite values in continuous x-axis</code></pre>
+<pre><code>## Warning: Removed 13847 rows containing missing values (geom_point).</code></pre>
 <p><img src="cnsl_seurat_curated_workflow_files/figure-html/unnamed-chunk-6-1.png" width="700"></p>
 </div>
 <div id="dimensionality-reduction" class="section level2">
 <h2 class="hasAnchor">
 <a href="#dimensionality-reduction" class="anchor"></a>4. Dimensionality Reduction</h2>
 <p>PCA or ICA can be computed using the seuratPCA and seuratICA functions respectively. Plots can be visualized using seuratReductionPlot, seuratElbowPlot, seuratComputeJackStraw, seuratJackStrawPlot, seuratComputeHeatmap.</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/seuratPCA.html">seuratPCA</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"seuratScaledData"</span>, reducedDimName <span class="op">=</span> <span class="st">"seuratPCA"</span>, nPCs <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></code></pre></div>
 <pre><code>## Warning: Non-unique features (rownames) present in the input matrix, making
 ## unique</code></pre>
+<pre><code>## Warning in PrepDR(object = object, features = features, verbose = verbose): The
+## following 4 features requested have not been scaled (running reduction without
+## them): NDUFA7.1, PSMA2.1, CLN3.1, IER3IP1.1</code></pre>
 <pre><code>## PC_ 1 
-## Positive:  CST3, TYROBP, LST1, AIF1, FTL, FCN1, LYZ, FTH1, S100A9, FCER1G 
-##     TYMP, CFD, LGALS1, S100A8, CTSS, LGALS2, SERPINA1, SPI1, IFITM3, PSAP 
-##     CFP, SAT1, IFI30, COTL1, S100A11, NPC2, LGALS3, GSTP1, PYCARD, NCF2 
-## Negative:  MALAT1, LTB, IL32, CD2, ACAP1, STK17A, CTSW, CD247, CCL5, GIMAP5 
-##     AQP3, GZMA, CST7, TRAF3IP3, MAL, HOPX, ITM2A, GZMK, MYC, GIMAP7 
-##     BEX2, ETS1, LDLRAP1, ZAP70, LYAR, RIC3, TNFAIP8, NKG7, KLRG1, SAMD3 
+## Positive:  PTPRCAP, RPL10A, CD69, ACAP1, EVL, OCIAD2, LAT, TRAT1, AQP3, GIMAP5 
+##     C12orf57, LEF1, MAL, SELL, SIT1, ARHGAP15, RPL22, CD8B, LBH, HSPA8 
+##     MYC, LDLRAP1, CMPK1, PIM1, MZT2A, GIMAP7, TMEM123, SKAP1, STMN3, SVIP 
+## Negative:  LST1, AIF1, LYZ, FCN1, S100A9, LGALS1, PSAP, S100A11, GRN, LILRA5 
+##     CEBPB, RNF130, ANXA2, RAC1, FGR, IGSF6, HLA-DRA, CTSB, NUP214, FPR1 
+##     MAFB, ALDH2, FGL2, RGS2, TGFBI, TALDO1, STX11, CSF3R, BLVRA, ATP6V0B 
 ## PC_ 2 
-## Positive:  NKG7, PRF1, CST7, GZMA, GZMB, FGFBP2, CTSW, GNLY, GZMH, SPON2 
-##     CCL4, FCGR3A, CCL5, CD247, XCL2, CLIC3, AKR1C3, SRGN, HOPX, CTSC 
-##     TTC38, S100A4, ANXA1, IL32, IGFBP7, ID2, ACTB, XCL1, APOBEC3G, SAMD3 
-## Negative:  CD79A, MS4A1, TCL1A, HLA-DQA1, HLA-DRA, HLA-DQB1, LINC00926, CD79B, HLA-DRB1, CD74 
-##     HLA-DPB1, HLA-DMA, HLA-DQA2, HLA-DRB5, HLA-DPA1, HLA-DMB, FCRLA, HVCN1, LTB, BLNK 
-##     KIAA0125, P2RX5, IRF8, IGLL5, SWAP70, ARHGAP24, SMIM14, PPP1R14A, FCRL2, C16orf74 
+## Positive:  CST7, GNLY, GZMH, CCL4, KLRD1, CLIC3, ITGB2, ANXA1, RHOC, CD53 
+##     HSPA8, GIMAP7, S1PR5, ID2, PLEKHF1, TPST2, LITAF, SH2D1B, XCL1, FCRL6 
+##     ENO1, ZAP70, C1orf21, EVL, XBP1, CLIC1, CD63, PSMB9, KLRG1, GIMAP4 
+## Negative:  HLA-DRA, LINC00926, VPREB3, S100A9, HLA-DQB1, HLA-DQA1, NCF1, HLA-DMA, CD79B, BANK1 
+##     LYZ, PKIG, GNG7, S100A12, FCN1, MARCH1, PPAPDC1B, CD19, CD40, CSF3R 
+##     MEF2C, SNX29P2, GAPT, CD22, NUP214, AIF1, ADAM28, IL8, FOSB, LST1 
 ## PC_ 3 
-## Positive:  PPBP, PF4, SDPR, SPARC, GNG11, NRGN, GP9, RGS18, TUBB1, CLU 
-##     HIST1H2AC, AP001189.4, ITGA2B, CD9, TMEM40, CA2, PTCRA, ACRBP, MMD, NGFRAP1 
-##     TREML1, F13A1, RUFY1, SEPT5, MPP1, TSC22D1, CMTM5, RP11-367G6.3, MYL9, GP1BA 
-## Negative:  HLA-DQA1, CD79A, CD79B, HLA-DQB1, HLA-DPB1, CD74, HLA-DPA1, MS4A1, HLA-DRB1, HLA-DRB5 
-##     HLA-DRA, HLA-DQA2, TCL1A, LINC00926, HLA-DMB, HLA-DMA, HVCN1, FCRLA, IRF8, BLNK 
-##     KIAA0125, SMIM14, PLD4, P2RX5, IGLL5, SWAP70, LAT2, TMSB10, IGJ, MZB1 
+## Positive:  HLA-DQA1, CD79B, HLA-DQB1, LINC00926, HLA-DRA, VPREB3, BANK1, HLA-DMA, PKIG, CD40 
+##     GNG7, CD19, PPAPDC1B, MEF2C, SNX2, MARCH1, CD22, ADAM28, CD180, SNX29P2 
+##     STX7, LAT2, GAPT, PLAC8, TSPAN3, ORAI2, CD53, NCF1, ITM2C, PTPRCAP 
+## Negative:  GIMAP7, ANXA1, GIMAP4, S100A9, S100A11, RGCC, GIMAP5, LEF1, TRAT1, AQP3 
+##     MAL, LYZ, FCN1, S100A12, LAT, LGALS1, LDLRAP1, AIF1, CSF3R, IL8 
+##     CD8B, C14orf64, RP11-664D1.1, NUP214, APBA2, NUCB2, BST1, PIM1, RGL4, CD44 
 ## PC_ 4 
-## Positive:  VIM, S100A8, S100A6, S100A4, TMSB10, S100A9, IL32, GIMAP7, S100A10, LGALS2 
-##     RBP7, MAL, FCN1, LYZ, CD2, S100A12, MS4A6A, FYB, S100A11, AQP3 
-##     GIMAP4, FOLR3, ANXA1, MALAT1, AIF1, GIMAP5, IL8, IFI6, TRABD2A, ASGR1 
-## Negative:  HLA-DQA1, HIST1H2AC, PF4, CD79A, SDPR, CD79B, PPBP, GNG11, HLA-DQB1, SPARC 
-##     MS4A1, CD74, GP9, HLA-DPB1, RGS18, NRGN, PTCRA, CD9, HLA-DQA2, AP001189.4 
-##     CLU, TUBB1, CA2, HLA-DRB1, HLA-DPA1, ITGA2B, HLA-DRA, TCL1A, TMEM40, ACRBP 
+## Positive:  RPL10A, RPL22, AQP3, C6orf48, MAL, LEF1, TMEM123, RGCC, TRAT1, CCDC109B 
+##     CD44, HSPA8, ST13, MYC, CORO1B, RPL41, LDLRAP1, ANXA5, RP11-664D1.1, RCAN3 
+##     TRADD, CRIP2, TSHZ2, ARHGAP15, MZT2A, CD69, TOMM20, CCNL1, EIF4B, ID3 
+## Negative:  CST7, GNLY, CCL4, GZMH, KLRD1, CLIC3, S1PR5, C1orf21, XCL1, TPST2 
+##     FCRL6, PLEKHF1, SH2D1B, CD63, ASCL2, KLRG1, NCR3, PLA2G16, SYNGR1, ID2 
+##     ITGB2, ZBTB16, LPCAT1, YPEL1, AOAH, RGS3, CTSD, GNPTAB, FBXO6, CLIC1 
 ## PC_ 5 
-## Positive:  LTB, VIM, AQP3, PPA1, MAL, KIAA0101, CD2, CORO1B, CYTIP, FYB 
-##     IL32, TRADD, ANXA5, TUBA1B, HN1, PTGES3, TYMS, ITM2A, COTL1, GPR183 
-##     ACTG1, TNFAIP8, ATP5C1, TRAF3IP3, GIMAP4, PRDX1, ZWINT, ABRACL, NGFRAP1, LDLRAP1 
-## Negative:  GZMB, FGFBP2, NKG7, GNLY, PRF1, CCL4, CST7, SPON2, GZMA, GZMH 
-##     CLIC3, XCL2, CTSW, TTC38, AKR1C3, CCL5, IGFBP7, XCL1, S100A8, CCL3 
-##     TYROBP, HOPX, CD160, HAVCR2, S100A9, FCER1G, PTGDR, LGALS2, RBP7, S100A12</code></pre>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+## Positive:  HES4, CKB, RHOC, CTSL, SIGLEC10, CXCL16, TCF7L2, UNC119, CUX1, SLC2A6 
+##     CEBPB, ARRB1, LYST, DRAP1, SPN, NAAA, LILRA5, PHF19, ASAH1, CSTB 
+##     SEC14L1, PCGF5, LST1, GPR137B, PLXNB2, PRADC1, PIK3AP1, RAB8A, CD300E, PTP4A2 
+## Negative:  CSF3R, ID1, NCF1, ALDH2, GRN, S100A12, S100A9, PLBD1, LYZ, NRG1 
+##     BST1, NFKBIA, HMGB2, METTL9, CATSPER1, CSF2RA, IL8, NUP214, FCN1, CD33 
+##     HLA-DMA, ITGAM, TMEM205, SYNGR1, BNIP3L, FPR1, TREM1, ARHGAP26, MEGF9, GM2A</code></pre>
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../../reference/seuratReductionPlot.html">seuratReductionPlot</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useReduction <span class="op">=</span> <span class="st">"pca"</span><span class="op">)</span></code></pre></div>
 <pre><code>## Warning: Non-unique features (rownames) present in the input matrix, making
 ## unique</code></pre>
 <p><img src="cnsl_seurat_curated_workflow_files/figure-html/unnamed-chunk-7-1.png" width="700"></p>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../../reference/seuratElbowPlot.html">seuratElbowPlot</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span><span class="op">)</span></code></pre></div>
 <pre><code>## Warning: Non-unique features (rownames) present in the input matrix, making
 ## unique</code></pre>
-<div id="htmlwidget-530cfa52d3babb35245b" style="width:700px;height:432.632880098888px;" class="plotly html-widget"></div>
-<script type="application/json" data-for="htmlwidget-530cfa52d3babb35245b">{"x":{"data":[{"x":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20],"y":[6.84331509490855,4.43266497066943,3.82578185893236,3.69748479873892,3.19756193915266,2.58392430187118,2.26480770931356,2.029611661165,1.89546913976367,1.82208912025757,1.80293123317712,1.77708578524215,1.77026966721517,1.75990881185454,1.7352149251099,1.73199558067672,1.72031464668751,1.7159379460096,1.71286389434164,1.71160640658426],"text":["Dimension: 1 <br />Standard Deviation: 6.8 <br />Is Significant? ","Dimension: 2 <br />Standard Deviation: 4.4 <br />Is Significant? ","Dimension: 3 <br />Standard Deviation: 3.8 <br />Is Significant? ","Dimension: 4 <br />Standard Deviation: 3.7 <br />Is Significant? ","Dimension: 5 <br />Standard Deviation: 3.2 <br />Is Significant? ","Dimension: 6 <br />Standard Deviation: 2.6 <br />Is Significant? ","Dimension: 7 <br />Standard Deviation: 2.3 <br />Is Significant? ","Dimension: 8 <br />Standard Deviation: 2 <br />Is Significant? ","Dimension: 9 <br />Standard Deviation: 1.9 <br />Is Significant? ","Dimension: 10 <br />Standard Deviation: 1.8 <br />Is Significant? ","Dimension: 11 <br />Standard Deviation: 1.8 <br />Is Significant? ","Dimension: 12 <br />Standard Deviation: 1.8 <br />Is Significant? ","Dimension: 13 <br />Standard Deviation: 1.8 <br />Is Significant? ","Dimension: 14 <br />Standard Deviation: 1.8 <br />Is Significant? ","Dimension: 15 <br />Standard Deviation: 1.7 <br />Is Significant? ","Dimension: 16 <br />Standard Deviation: 1.7 <br />Is Significant? ","Dimension: 17 <br />Standard Deviation: 1.7 <br />Is Significant? ","Dimension: 18 <br />Standard Deviation: 1.7 <br />Is Significant? ","Dimension: 19 <br />Standard Deviation: 1.7 <br />Is Significant? ","Dimension: 20 <br />Standard Deviation: 1.7 <br />Is Significant? "],"type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(0,0,0,1)","opacity":1,"size":5.66929133858268,"symbol":"circle","line":{"width":1.88976377952756,"color":"rgba(0,0,0,1)"}},"hoveron":"points","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null}],"layout":{"margin":{"t":31.049537260322,"r":9.29846409298464,"b":54.2359216521858,"l":40.5147364051474},"font":{"color":"rgba(0,0,0,1)","family":"","size":18.5969281859693},"xaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[0.0499999999999999,20.95],"tickmode":"array","ticktext":["5","10","15","20"],"tickvals":[5,10,15,20],"categoryorder":"array","categoryarray":["5","10","15","20"],"nticks":null,"ticks":"outside","tickcolor":"rgba(0,0,0,1)","ticklen":4.64923204649232,"tickwidth":0.66417600664176,"showticklabels":true,"tickfont":{"color":"rgba(0,0,0,1)","family":"","size":15.9402241594022},"tickangle":-0,"showline":true,"linecolor":"rgba(0,0,0,1)","linewidth":0.66417600664176,"showgrid":false,"gridcolor":null,"gridwidth":0,"zeroline":false,"anchor":"y","title":{"text":"PC","font":{"color":"rgba(0,0,0,1)","family":"","size":18.5969281859693}},"hoverformat":".2f"},"yaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[1.45502097216805,7.09990052932476],"tickmode":"array","ticktext":["2","3","4","5","6","7"],"tickvals":[2,3,4,5,6,7],"categoryorder":"array","categoryarray":["2","3","4","5","6","7"],"nticks":null,"ticks":"outside","tickcolor":"rgba(0,0,0,1)","ticklen":4.64923204649232,"tickwidth":0.66417600664176,"showticklabels":true,"tickfont":{"color":"rgba(0,0,0,1)","family":"","size":15.9402241594022},"tickangle":-0,"showline":true,"linecolor":"rgba(0,0,0,1)","linewidth":0.66417600664176,"showgrid":false,"gridcolor":null,"gridwidth":0,"zeroline":false,"anchor":"x","title":{"text":"Standard Deviation","font":{"color":"rgba(0,0,0,1)","family":"","size":18.5969281859693}},"hoverformat":".2f"},"shapes":[{"type":"rect","fillcolor":null,"line":{"color":null,"width":0,"linetype":[]},"yref":"paper","xref":"paper","x0":0,"x1":1,"y0":0,"y1":1}],"showlegend":false,"legend":{"bgcolor":null,"bordercolor":null,"borderwidth":0,"font":{"color":"rgba(0,0,0,1)","family":"","size":15.9402241594022}},"hovermode":"closest","barmode":"relative"},"config":{"doubleClick":"reset","showSendToCloud":false},"source":"A","attrs":{"15fe5425f42":{"x":{},"y":{},"type":"scatter"}},"cur_data":"15fe5425f42","visdat":{"15fe5425f42":["function (y) ","x"]},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.2,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script><div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<div id="htmlwidget-344f8d8bc8cfa1ac530c" style="width:700px;height:432.632880098888px;" class="plotly html-widget"></div>
+<script type="application/json" data-for="htmlwidget-344f8d8bc8cfa1ac530c">{"x":{"data":[{"x":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20],"y":[5.76021670451582,4.06389618799781,3.19290003430594,2.95648273106819,2.27491048170988,1.95821981187463,1.9084479843415,1.87443181515442,1.84928259383782,1.84543226650673,1.84004207660624,1.83535040452515,1.83053137282115,1.82329173764466,1.82138359536113,1.8164100456568,1.81164493612068,1.8069503385347,1.80279606763887,1.80127285848147],"text":["Dimension: 1 <br />Standard Deviation: 5.8 <br />Is Significant? ","Dimension: 2 <br />Standard Deviation: 4.1 <br />Is Significant? ","Dimension: 3 <br />Standard Deviation: 3.2 <br />Is Significant? ","Dimension: 4 <br />Standard Deviation: 3 <br />Is Significant? ","Dimension: 5 <br />Standard Deviation: 2.3 <br />Is Significant? ","Dimension: 6 <br />Standard Deviation: 2 <br />Is Significant? ","Dimension: 7 <br />Standard Deviation: 1.9 <br />Is Significant? ","Dimension: 8 <br />Standard Deviation: 1.9 <br />Is Significant? ","Dimension: 9 <br />Standard Deviation: 1.8 <br />Is Significant? ","Dimension: 10 <br />Standard Deviation: 1.8 <br />Is Significant? ","Dimension: 11 <br />Standard Deviation: 1.8 <br />Is Significant? ","Dimension: 12 <br />Standard Deviation: 1.8 <br />Is Significant? ","Dimension: 13 <br />Standard Deviation: 1.8 <br />Is Significant? ","Dimension: 14 <br />Standard Deviation: 1.8 <br />Is Significant? ","Dimension: 15 <br />Standard Deviation: 1.8 <br />Is Significant? ","Dimension: 16 <br />Standard Deviation: 1.8 <br />Is Significant? ","Dimension: 17 <br />Standard Deviation: 1.8 <br />Is Significant? ","Dimension: 18 <br />Standard Deviation: 1.8 <br />Is Significant? ","Dimension: 19 <br />Standard Deviation: 1.8 <br />Is Significant? ","Dimension: 20 <br />Standard Deviation: 1.8 <br />Is Significant? "],"type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(0,0,0,1)","opacity":1,"size":5.66929133858268,"symbol":"circle","line":{"width":1.88976377952756,"color":"rgba(0,0,0,1)"}},"hoveron":"points","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null}],"layout":{"margin":{"t":31.049537260322,"r":9.29846409298464,"b":54.2359216521858,"l":40.5147364051474},"font":{"color":"rgba(0,0,0,1)","family":"","size":18.5969281859693},"xaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[0.0499999999999999,20.95],"tickmode":"array","ticktext":["5","10","15","20"],"tickvals":[5,10,15,20],"categoryorder":"array","categoryarray":["5","10","15","20"],"nticks":null,"ticks":"outside","tickcolor":"rgba(0,0,0,1)","ticklen":4.64923204649232,"tickwidth":0.66417600664176,"showticklabels":true,"tickfont":{"color":"rgba(0,0,0,1)","family":"","size":15.9402241594022},"tickangle":-0,"showline":true,"linecolor":"rgba(0,0,0,1)","linewidth":0.66417600664176,"showgrid":false,"gridcolor":null,"gridwidth":0,"zeroline":false,"anchor":"y","title":{"text":"PC","font":{"color":"rgba(0,0,0,1)","family":"","size":18.5969281859693}},"hoverformat":".2f"},"yaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[1.60332566617976,5.95816389681753],"tickmode":"array","ticktext":["2","3","4","5"],"tickvals":[2,3,4,5],"categoryorder":"array","categoryarray":["2","3","4","5"],"nticks":null,"ticks":"outside","tickcolor":"rgba(0,0,0,1)","ticklen":4.64923204649232,"tickwidth":0.66417600664176,"showticklabels":true,"tickfont":{"color":"rgba(0,0,0,1)","family":"","size":15.9402241594022},"tickangle":-0,"showline":true,"linecolor":"rgba(0,0,0,1)","linewidth":0.66417600664176,"showgrid":false,"gridcolor":null,"gridwidth":0,"zeroline":false,"anchor":"x","title":{"text":"Standard Deviation","font":{"color":"rgba(0,0,0,1)","family":"","size":18.5969281859693}},"hoverformat":".2f"},"shapes":[{"type":"rect","fillcolor":null,"line":{"color":null,"width":0,"linetype":[]},"yref":"paper","xref":"paper","x0":0,"x1":1,"y0":0,"y1":1}],"showlegend":false,"legend":{"bgcolor":null,"bordercolor":null,"borderwidth":0,"font":{"color":"rgba(0,0,0,1)","family":"","size":15.9402241594022}},"hovermode":"closest","barmode":"relative"},"config":{"doubleClick":"reset","showSendToCloud":false},"source":"A","attrs":{"d89843b521e3":{"x":{},"y":{},"type":"scatter"}},"cur_data":"d89843b521e3","visdat":{"d89843b521e3":["function (y) ","x"]},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.2,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script><div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/seuratComputeJackStraw.html">seuratComputeJackStraw</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"seuratScaledData"</span>, dims <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></code></pre></div>
 <pre><code>## Warning: Non-unique features (rownames) present in the input matrix, making
 ## unique</code></pre>
 <pre><code>## Warning: Invalid name supplied, making object name syntactically valid. New
 ## object name is Seurat..JackStraw.RNA.pca; see ?make.names for more details on
 ## syntax validity</code></pre>
-<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../../reference/seuratJackStrawPlot.html">seuratJackStrawPlot</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, dims <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></code></pre></div>
 <pre><code>## Warning: Non-unique features (rownames) present in the input matrix, making
 ## unique</code></pre>
-<pre><code>## Warning: Removed 32235 rows containing missing values (geom_point).</code></pre>
+<pre><code>## Warning: Removed 33322 rows containing missing values (geom_point).</code></pre>
 <p><img src="cnsl_seurat_curated_workflow_files/figure-html/unnamed-chunk-7-3.png" width="700"></p>
-<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../../reference/seuratComputeHeatmap.html">seuratComputeHeatmap</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"seuratScaledData"</span>, useReduction <span class="op">=</span> <span class="st">"pca"</span>, nfeatures <span class="op">=</span> <span class="fl">20</span>, dims <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></code></pre></div>
 <pre><code>## Warning: Non-unique features (rownames) present in the input matrix, making
 ## unique</code></pre>
@@ -425,23 +454,23 @@
 <h2 class="hasAnchor">
 <a href="#tsneumap" class="anchor"></a>5. tSNE/UMAP</h2>
 <p>seuratRunTSNE/seuratRunUMAP can be used to compute tSNE/UMAP statistics and store into the input object. Parameters to both functions include inSCE(input SCE object), useReduction (specify the reduction to use i.e. pca or ica), reducedDimName (name of this new reduction) and dims (number of dims to use). seuratReductionPlot can be used to visualize the results.</p>
-<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/seuratRunTSNE.html">seuratRunTSNE</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useReduction <span class="op">=</span> <span class="st">"pca"</span>, reducedDimName <span class="op">=</span> <span class="st">"seuratTSNE"</span>, dims <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></code></pre></div>
 <pre><code>## Warning: Non-unique features (rownames) present in the input matrix, making
 ## unique</code></pre>
-<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../../reference/seuratReductionPlot.html">seuratReductionPlot</a></span><span class="op">(</span><span class="va">sce</span>, <span class="st">"tsne"</span><span class="op">)</span></code></pre></div>
 <pre><code>## Warning: Non-unique features (rownames) present in the input matrix, making
 ## unique</code></pre>
 <p><img src="cnsl_seurat_curated_workflow_files/figure-html/unnamed-chunk-8-1.png" width="700"></p>
-<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/seuratRunUMAP.html">seuratRunUMAP</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useReduction <span class="op">=</span> <span class="st">"pca"</span>, reducedDimName <span class="op">=</span> <span class="st">"seuratUMAP"</span>, dims <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></code></pre></div>
 <pre><code>## Warning: Non-unique features (rownames) present in the input matrix, making
 ## unique</code></pre>
 <pre><code>## Warning: The default method for RunUMAP has changed from calling Python UMAP via reticulate to the R-native UWOT using the cosine metric
 ## To use Python UMAP via reticulate, set umap.method to 'umap-learn' and metric to 'correlation'
 ## This message will be shown once per session</code></pre>
-<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb45"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../../reference/seuratReductionPlot.html">seuratReductionPlot</a></span><span class="op">(</span><span class="va">sce</span>, <span class="st">"umap"</span><span class="op">)</span></code></pre></div>
 <pre><code>## Warning: Non-unique features (rownames) present in the input matrix, making
 ## unique</code></pre>
@@ -451,31 +480,31 @@
 <h2 class="hasAnchor">
 <a href="#clustering" class="anchor"></a>6. Clustering</h2>
 <p>seuratFindClusters function can be used to compute the clusters, which can later be plotted through the seuratReductionPlot method with cluster labels. The parameters to the function include inSCE (input SCE object), useAssay (name of the scaled assay), useReduction (specify which reduction to use i.e. pca or ica), dims (number of dims to use) and the algorithm (either louvain, multilevel or SLM).</p>
-<div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb47"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/seuratFindClusters.html">seuratFindClusters</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"seuratScaledData"</span>, useReduction <span class="op">=</span> <span class="st">"pca"</span>, dims <span class="op">=</span> <span class="fl">10</span>, algorithm <span class="op">=</span> <span class="st">"louvain"</span><span class="op">)</span></code></pre></div>
 <pre><code>## Warning: Non-unique features (rownames) present in the input matrix, making
 ## unique</code></pre>
 <pre><code>## Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
 ## 
 ## Number of nodes: 2700
-## Number of edges: 98240
+## Number of edges: 98129
 ## 
 ## Running Louvain algorithm...
-## Maximum modularity in 10 random starts: 0.8279
-## Number of communities: 11
+## Maximum modularity in 10 random starts: 0.7937
+## Number of communities: 9
 ## Elapsed time: 0 seconds</code></pre>
 <p>seuratReductionPlot can then be used to plot all reductions previously computed with cluster labels:</p>
-<div class="sourceCode" id="cb45"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb50"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../../reference/seuratReductionPlot.html">seuratReductionPlot</a></span><span class="op">(</span><span class="va">sce</span>, <span class="st">"pca"</span><span class="op">)</span></code></pre></div>
 <pre><code>## Warning: Non-unique features (rownames) present in the input matrix, making
 ## unique</code></pre>
 <p><img src="cnsl_seurat_curated_workflow_files/figure-html/unnamed-chunk-12-1.png" width="700"></p>
-<div class="sourceCode" id="cb47"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb52"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../../reference/seuratReductionPlot.html">seuratReductionPlot</a></span><span class="op">(</span><span class="va">sce</span>, <span class="st">"tsne"</span><span class="op">)</span></code></pre></div>
 <pre><code>## Warning: Non-unique features (rownames) present in the input matrix, making
 ## unique</code></pre>
 <p><img src="cnsl_seurat_curated_workflow_files/figure-html/unnamed-chunk-12-2.png" width="700"></p>
-<div class="sourceCode" id="cb49"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb54"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../../reference/seuratReductionPlot.html">seuratReductionPlot</a></span><span class="op">(</span><span class="va">sce</span>, <span class="st">"umap"</span><span class="op">)</span></code></pre></div>
 <pre><code>## Warning: Non-unique features (rownames) present in the input matrix, making
 ## unique</code></pre>
@@ -485,21 +514,21 @@
 <h2 class="hasAnchor">
 <a href="#find-markers" class="anchor"></a>7. Find Markers</h2>
 <p>Marker genes can be identified using the seuratFindMarers function. This function can either use one specified column from colData of the input object as a group variable if all groups from that variable are to be used ( parameter) or users can manually specify the cells included in one group vs cells included in the second group ( and  parameter).</p>
-<div class="sourceCode" id="cb51"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb56"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/seuratFindMarkers.html">seuratFindMarkers</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, allGroup <span class="op">=</span> <span class="st">"Seurat_louvain_Resolution0.8"</span><span class="op">)</span></code></pre></div>
 <pre><code>## Warning: Non-unique features (rownames) present in the input matrix, making
 ## unique</code></pre>
-<div class="sourceCode" id="cb53"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb58"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="fu">metadata</span><span class="op">(</span><span class="va">sce</span><span class="op">)</span><span class="op">[[</span><span class="st">"seuratMarkers"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<pre><code>##   gene.id         p_val avg_logFC pct.1 pct.2     p_val_adj cluster
-## 1    IL32 8.501667e-123  9.356589 0.942 0.455 2.783276e-118       1
-## 2     LTB 1.012873e-122 14.236382 0.978 0.630 3.315943e-118       1
-## 3    LDHB 4.895835e-110  7.370065 0.956 0.597 1.602799e-105       1
-## 4    CD3D 1.348847e-105 -2.636582 0.915 0.420 4.415855e-101       1
-## 5    CD3E  3.157117e-87 -1.943688 0.827 0.393  1.033577e-82       1
-## 6    IL7R  5.321387e-87 -2.636694 0.736 0.316  1.742116e-82       1</code></pre>
+<pre><code>##   gene.id         p_val  avg_logFC pct.1 pct.2     p_val_adj cluster
+## 1    IL32 1.070058e-151 -24.831282 0.938 0.435 3.503155e-147       1
+## 2     LTB 7.310774e-124  11.074068 0.961 0.620 2.393401e-119       1
+## 3    IL7R 1.645826e-113  -2.831004 0.745 0.295 5.388105e-109       1
+## 4    CD3D 1.460671e-110 -11.800585 0.898 0.403 4.781946e-106       1
+## 5    LDHB  1.565523e-97   7.175754 0.934 0.588  5.125208e-93       1
+## 6    CD3E  2.353710e-88  10.204984 0.808 0.380  7.705577e-84       1</code></pre>
 <p>The marker genes identified can be visualized through one of the available plots from ridge plot, violin plot, feature plot, dot plot and heatmap plot. All marker genes visualizations can be plotted through the wrapper function , which must be supplied the SCE object (markers previously computed), name of the scaled assay, type of the plot (available options are , , ,  and ), features that should be plotted (character vector) and the grouping variable that is available in the colData slot of the input object. An additional parameter  decides in how many columns should the visualizations be plotted.</p>
-<div class="sourceCode" id="cb55"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb60"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../../reference/seuratGenePlot.html">seuratGenePlot</a></span><span class="op">(</span>
         inSCE <span class="op">=</span> <span class="va">sce</span>,
         scaledAssayName <span class="op">=</span> <span class="st">"seuratScaledData"</span>,
@@ -510,10 +539,10 @@
       <span class="op">)</span></code></pre></div>
 <pre><code>## Warning: Non-unique features (rownames) present in the input matrix, making
 ## unique</code></pre>
-<pre><code>## Picking joint bandwidth of 0.324</code></pre>
-<pre><code>## Picking joint bandwidth of 0.545</code></pre>
-<pre><code>## Picking joint bandwidth of 0.365</code></pre>
-<pre><code>## Picking joint bandwidth of 0.184</code></pre>
+<pre><code>## Picking joint bandwidth of 0.374</code></pre>
+<pre><code>## Picking joint bandwidth of 0.667</code></pre>
+<pre><code>## Picking joint bandwidth of 0.191</code></pre>
+<pre><code>## Picking joint bandwidth of 0.281</code></pre>
 <p><img src="cnsl_seurat_curated_workflow_files/figure-html/unnamed-chunk-15-1.png" width="700"></p>
 </div>
   </div>

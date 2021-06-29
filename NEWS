@@ -1,6 +1,8 @@
-Changes in Version 2.0.3 (2021-xx-xx)
+Changes in Version 2.1.3 (2021-05-14)
 
-*
+* Added diffAbundanceFET and plotClusterAbundance function
+* Linked Shiny UI help buttons to new online help pages
+* Several bug fixes
 
 Changes in Version 2.0.2 (2021-05-08)
 
