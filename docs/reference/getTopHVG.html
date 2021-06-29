@@ -7,7 +7,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>getTopHVG
-Extracts the top variable genes from an input singleCellExperiment object — getTopHVG • singleCellTK</title>
+Extracts the top variable genes from an input SingleCellExperiment object.
+Note that the variability metrics must be computed using the `runFeatureSelection`
+method before extracting the feature names of the top variable features. If
+`altExp` parameter is a character value, this function will return the
+input SingleCellExperiment object with the subset containing only the
+top variable features stored as an altExp slot in returned object.
+However, if this parameter is set to NULL, only the names of the top
+variable features will be returned as a character vector. — getTopHVG • singleCellTK</title>
 
 
 <!-- jquery -->
@@ -43,9 +50,23 @@ Extracts the top variable genes from an input singleCellExperiment object — ge
   <script src="../extra.js"></script>
 
 <meta property="og:title" content="getTopHVG
-Extracts the top variable genes from an input singleCellExperiment object — getTopHVG" />
+Extracts the top variable genes from an input SingleCellExperiment object.
+Note that the variability metrics must be computed using the `runFeatureSelection`
+method before extracting the feature names of the top variable features. If
+`altExp` parameter is a character value, this function will return the
+input SingleCellExperiment object with the subset containing only the
+top variable features stored as an altExp slot in returned object.
+However, if this parameter is set to NULL, only the names of the top
+variable features will be returned as a character vector. — getTopHVG" />
 <meta property="og:description" content="getTopHVG
-Extracts the top variable genes from an input singleCellExperiment object" />
+Extracts the top variable genes from an input SingleCellExperiment object.
+Note that the variability metrics must be computed using the `runFeatureSelection`
+method before extracting the feature names of the top variable features. If
+`altExp` parameter is a character value, this function will return the
+input SingleCellExperiment object with the subset containing only the
+top variable features stored as an altExp slot in returned object.
+However, if this parameter is set to NULL, only the names of the top
+variable features will be returned as a character vector." />
 
 
 
@@ -318,40 +339,64 @@ Extracts the top variable genes from an input singleCellExperiment object" />
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>getTopHVG
-Extracts the top variable genes from an input singleCellExperiment object</h1>
+Extracts the top variable genes from an input <code>SingleCellExperiment</code> object.
+Note that the variability metrics must be computed using the `runFeatureSelection`
+method before extracting the feature names of the top variable features. If
+`altExp` parameter is a <code>character</code> value, this function will return the
+input <code>SingleCellExperiment</code> object with the subset containing only the
+top variable features stored as an <code>altExp</code> slot in returned object.
+However, if this parameter is set to <code>NULL</code>, only the names of the top
+variable features will be returned as a <code>character</code> vector.</h1>
     <small class="dont-index">Source: <a href='https://github.com/compbiomed/singleCellTK/blob/master/R/getTopHVG.R'><code>R/getTopHVG.R</code></a></small>
     <div class="hidden name"><code>getTopHVG.Rd</code></div>
     </div>
 
     <div class="ref-description">
     <p>getTopHVG
-Extracts the top variable genes from an input singleCellExperiment object</p>
+Extracts the top variable genes from an input <code>SingleCellExperiment</code> object.
+Note that the variability metrics must be computed using the `runFeatureSelection`
+method before extracting the feature names of the top variable features. If
+`altExp` parameter is a <code>character</code> value, this function will return the
+input <code>SingleCellExperiment</code> object with the subset containing only the
+top variable features stored as an <code>altExp</code> slot in returned object.
+However, if this parameter is set to <code>NULL</code>, only the names of the top
+variable features will be returned as a <code>character</code> vector.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>getTopHVG</span><span class='op'>(</span><span class='va'>inSCE</span>, <span class='va'>method</span>, n <span class='op'>=</span> <span class='fl'>2000</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>getTopHVG</span><span class='op'>(</span><span class='va'>inSCE</span>, <span class='va'>method</span>, n <span class='op'>=</span> <span class='fl'>2000</span>, altExp <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>inSCE</th>
-      <td><p>an input singleCellExperiment object</p></td>
+      <td><p>Input <code>SingleCellExperiment</code> object</p></td>
     </tr>
     <tr>
       <th>method</th>
-      <td><p>represents which method to use for variable gene extraction
+      <td><p>Specify which method to use for variable gene extraction
 from either Seurat "vst", "mean.var.plot", "dispersion" or Scran
-"modelGeneVar"</p></td>
+"modelGeneVar".</p></td>
     </tr>
     <tr>
       <th>n</th>
-      <td><p>number of top variable genes to extract</p></td>
+      <td><p>Specify the number of top variable genes to extract.</p></td>
+    </tr>
+    <tr>
+      <th>altExp</th>
+      <td><p>A <code>character</code> value that specifies the name of the <code>altExp</code>
+slot that should be created to store the subset <code>SingleCellExperiment</code>
+object containing only the top `n` variable features. Default value is
+<code>NULL</code>, which will not store the subset <code>SingleCellExperiment</code> object
+and instead will only return the names of the top `n` variable features.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>list of top variable gene names</p>
+    <p>A <code>character</code> vector of the top variable feature names or the
+ input <code>SingleCellExperiment</code> object with subset of variable features
+ stored as an <code>altExp</code> in the object.</p>
     <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
 
     <p>Irzam Sarfraz</p>
