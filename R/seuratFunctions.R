@@ -570,7 +570,7 @@ seuratFindClusters <- function(
 #' Default \code{seuratTSNE}.
 #' @param dims Number of reduction components to use for tSNE computation.
 #' Default \code{10}.
-#' @param perplexity Adjust the preplexity tuneable parameter for the underlying
+#' @param perplexity Adjust the perplexity tuneable parameter for the underlying
 #' tSNE call. Default \code{30}.
 #' @return Updated sce object with tSNE computations stored
 #' @export

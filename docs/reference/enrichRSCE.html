@@ -360,7 +360,14 @@ the respective databases along with p-values, z-scores etc.,</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='fu'>enrichRSCE</span><span class='op'>(</span><span class='va'>mouseBrainSubsetSCE</span>, <span class='st'>"Cmtm5"</span>, <span class='st'>"GO_Cellular_Component_2017"</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'>EnrichR website not responding</span></div><div class='output co'>#&gt; <span class='error'>Error in enrichRSCE(mouseBrainSubsetSCE, "Cmtm5", "GO_Cellular_Component_2017"): database 'GO_Cellular_Component_2017' does not exist.</span></div></pre>
+</div><div class='output co'>#&gt; Uploading data to Enrichr... Done.
+#&gt;   Querying GO_Cellular_Component_2017... Done.
+#&gt; Parsing results... Done.</div><div class='output co'>#&gt;            Database_selected                                        Term
+#&gt; 1 GO_Cellular_Component_2017 integral component of membrane (GO:0016021)
+#&gt;   Overlap   P.value Adjusted.P.value Old.P.value Old.Adjusted.P.value
+#&gt; 1   1/842 0.0420998        0.0420998           0                    0
+#&gt;   Odds.Ratio Combined.Score Genes                         link
+#&gt; 1      19158       60687.03 CMTM5 http://www.geneontology.org/</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

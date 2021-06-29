@@ -26,7 +26,7 @@ Default \code{seuratTSNE}.}
 \item{dims}{Number of reduction components to use for tSNE computation.
 Default \code{10}.}
 
-\item{perplexity}{Adjust the preplexity tuneable parameter for the underlying
+\item{perplexity}{Adjust the perplexity tuneable parameter for the underlying
 tSNE call. Default \code{30}.}
 }
 \value{
