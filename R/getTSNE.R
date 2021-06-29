@@ -23,7 +23,8 @@
 #'     x / (sum(x) / 1000000)
 #'   })
 #' mouseBrainSubsetSCE <- getTSNE(mouseBrainSubsetSCE, useAssay = "cpm",
-#'                                reducedDimName = "TSNE_cpm")
+#'                                reducedDimName = "TSNE_cpm",
+#'                                perplexity = NULL)
 #' reducedDims(mouseBrainSubsetSCE)
 getTSNE <- function(inSCE, useAssay = "logcounts", useAltExp = NULL,
                     reducedDimName = "TSNE", nIterations = 1000,
