@@ -398,28 +398,21 @@
 <span class="co"># Visualize heatmap plot</span>
 <span class="fu"><a href="../../reference/gsvaSCE.html">gsvaPlot</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, gsvaData <span class="op">=</span> <span class="va">tempgsvares</span>, plotType <span class="op">=</span> <span class="st">"Heatmap"</span>, condition <span class="op">=</span> <span class="st">"Biological_Condition"</span><span class="op">)</span></code></pre></div>
   <details><summary><b>Example</b></summary><div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R">  <span class="co"># Load singleCellTK &amp; pbmc3k example data</span>
+<code class="sourceCode R">  <span class="co"># Load singleCellTK, pbmc3k example data &amp; gene sets</span>
   <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://compbiomed.github.io/sctk_docs/">singleCellTK</a></span><span class="op">)</span>
   <span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/importExampleData.html">importExampleData</a></span><span class="op">(</span>dataset <span class="op">=</span> <span class="st">"pbmc3k"</span><span class="op">)</span>
- <span class="co">#hallmark c7,c8</span>
-  <span class="co">#runnormalization</span>
   <span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/importGeneSetsFromMSigDB.html">importGeneSetsFromMSigDB</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, categoryIDs <span class="op">=</span> <span class="st">"C1"</span>, by <span class="op">=</span> <span class="st">"rownames"</span><span class="op">)</span>
-  <span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/scaterlogNormCounts.html">scaterlogNormCounts</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"counts"</span>, assayName <span class="op">=</span> <span class="st">"logcounts"</span><span class="op">)</span>
-  <span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/seuratFindHVG.html">seuratFindHVG</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"logcounts"</span><span class="op">)</span>
-  <span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/seuratPCA.html">seuratPCA</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"logcounts"</span>, reducedDimName <span class="op">=</span> <span class="st">"pca"</span><span class="op">)</span>
-  <span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/seuratFindClusters.html">seuratFindClusters</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"logcounts"</span>, useReduction <span class="op">=</span> <span class="st">"pca"</span>, resolution <span class="op">=</span> <span class="fl">1.5</span><span class="op">)</span></code></pre></div>
-<pre><code>## Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
-## 
-## Number of nodes: 2700
-## Number of edges: 95493
-## 
-## Running Louvain algorithm...
-## Maximum modularity in 10 random starts: 0.7756
-## Number of communities: 14
-## Elapsed time: 0 seconds</code></pre>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R">  <span class="fu">colData</span><span class="op">(</span><span class="va">sce</span><span class="op">)</span><span class="op">$</span><span class="va">Biological_Condition</span> <span class="op">&lt;-</span> <span class="fu">colData</span><span class="op">(</span><span class="va">sce</span><span class="op">)</span><span class="op">$</span><span class="va">Seurat_louvain_Resolution1.5</span>
+  
+  <span class="co"># Normalize data using runNormalization function from the toolkit</span>
+  <span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/runNormalization.html">runNormalization</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"counts"</span>, outAssayName <span class="op">=</span> <span class="st">"logcounts"</span>, normalizationMethod <span class="op">=</span> <span class="st">"logNormCounts"</span><span class="op">)</span>
+  
+  <span class="co"># Compute clusters using louvain algorithm</span>
+  <span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/runScranSNN.html">runScranSNN</a></span><span class="op">(</span><span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"logcounts"</span>, algorithm <span class="op">=</span> <span class="st">"louvain"</span>, clusterName <span class="op">=</span> <span class="st">"clusterLouvain"</span><span class="op">)</span>
+  
+  <span class="co"># Subset data to run GSVA faster</span>
   <span class="va">sce</span> <span class="op">&lt;-</span> <span class="va">sce</span><span class="op">[</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">200</span><span class="op">]</span>
+  
+  <span class="co"># Run GSVA</span>
   <span class="va">gsvaRes</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/gsvaSCE.html">gsvaSCE</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"logcounts"</span>, pathwayNames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"C1"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <pre><code>## Estimating GSVA scores for 290 gene sets.
 ## Estimating ECDFs with Gaussian kernels
@@ -726,29 +719,28 @@
   |======================================================================|  99%
   |                                                                            
   |======================================================================| 100%</code></pre>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R">  <span class="va">conditionFactor</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="fu">colData</span><span class="op">(</span><span class="va">sce</span><span class="op">)</span><span class="op">[</span>, <span class="st">"Biological_Condition"</span><span class="op">]</span><span class="op">)</span>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R">  <span class="co"># Fit Limma &amp; Visualize Results</span>
+  <span class="va">conditionFactor</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="fu">colData</span><span class="op">(</span><span class="va">sce</span><span class="op">)</span><span class="op">[</span>, <span class="st">"clusterLouvain"</span><span class="op">]</span><span class="op">)</span>
       <span class="kw">if</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nlevels.html">nlevels</a></span><span class="op">(</span><span class="va">conditionFactor</span><span class="op">)</span><span class="op">&lt;=</span><span class="fl">1</span><span class="op">)</span><span class="op">{</span>
         <span class="kw"><a href="https://rdrr.io/r/base/stop.html">stop</a></span><span class="op">(</span><span class="st">"Condition variable must have atleast two levels!"</span><span class="op">)</span>
       <span class="op">}</span>
-<span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu">limma</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/limma/man/lmFit.html">lmFit</a></span><span class="op">(</span><span class="va">gsvaRes</span>, <span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/model.matrix.html">model.matrix</a></span><span class="op">(</span><span class="op">~</span><span class="va">conditionFactor</span><span class="op">)</span><span class="op">)</span>
-<span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu">limma</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/limma/man/ebayes.html">eBayes</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span>
-<span class="va">toptableres</span> <span class="op">&lt;-</span> <span class="fu">limma</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/limma/man/toptable.html">topTable</a></span><span class="op">(</span><span class="va">fit</span>, number <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">gsvaRes</span><span class="op">)</span><span class="op">)</span>
-<span class="va">temptable</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span><span class="op">(</span><span class="va">toptableres</span><span class="op">)</span>, <span class="va">toptableres</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span><span class="op">(</span><span class="va">temptable</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="cn">NULL</span>
-<span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">temptable</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"Pathway"</span>
-     
+  <span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu">limma</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/limma/man/lmFit.html">lmFit</a></span><span class="op">(</span><span class="va">gsvaRes</span>, <span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/model.matrix.html">model.matrix</a></span><span class="op">(</span><span class="op">~</span><span class="va">conditionFactor</span><span class="op">)</span><span class="op">)</span>
+  <span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu">limma</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/limma/man/ebayes.html">eBayes</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span>
+  <span class="va">toptableres</span> <span class="op">&lt;-</span> <span class="fu">limma</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/limma/man/toptable.html">topTable</a></span><span class="op">(</span><span class="va">fit</span>, number <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">gsvaRes</span><span class="op">)</span><span class="op">)</span>
+  <span class="va">temptable</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span><span class="op">(</span><span class="va">toptableres</span><span class="op">)</span>, <span class="va">toptableres</span><span class="op">)</span>
+  <span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span><span class="op">(</span><span class="va">temptable</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="cn">NULL</span>
+  <span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">temptable</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"Pathway"</span>
+  <span class="va">tempgsvares</span> <span class="op">&lt;-</span> <span class="va">gsvaRes</span>
+  <span class="va">topPaths</span> <span class="op">&lt;-</span> <span class="fl">10</span>
 
-<span class="va">tempgsvares</span> <span class="op">&lt;-</span> <span class="va">gsvaRes</span>
-<span class="va">topPaths</span> <span class="op">&lt;-</span> <span class="fl">10</span>
-
-<span class="co"># Visualize violin plot</span>
-<span class="va">tempgsvares</span> <span class="op">&lt;-</span> <span class="va">tempgsvares</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">min</a></span><span class="op">(</span><span class="fl">49</span>, <span class="va">topPaths</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">tempgsvares</span><span class="op">)</span><span class="op">)</span>, , drop <span class="op">=</span> <span class="cn">FALSE</span><span class="op">]</span>
-<span class="fu"><a href="../../reference/gsvaSCE.html">gsvaPlot</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, gsvaData <span class="op">=</span> <span class="va">tempgsvares</span>, plotType <span class="op">=</span> <span class="st">"Violin"</span>, condition <span class="op">=</span> <span class="st">"Biological_Condition"</span><span class="op">)</span></code></pre></div>
+  <span class="co"># Visualize violin plot</span>
+  <span class="va">tempgsvares</span> <span class="op">&lt;-</span> <span class="va">tempgsvares</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">min</a></span><span class="op">(</span><span class="fl">49</span>, <span class="va">topPaths</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">tempgsvares</span><span class="op">)</span><span class="op">)</span>, , drop <span class="op">=</span> <span class="cn">FALSE</span><span class="op">]</span>
+  <span class="fu"><a href="../../reference/gsvaSCE.html">gsvaPlot</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, gsvaData <span class="op">=</span> <span class="va">tempgsvares</span>, plotType <span class="op">=</span> <span class="st">"Violin"</span>, condition <span class="op">=</span> <span class="st">"clusterLouvain"</span><span class="op">)</span></code></pre></div>
 <p><img src="cnsl_gsva_files/figure-html/normalization_console_example_1-1.png" width="700"></p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># Visualize heatmap plot</span>
-<span class="fu"><a href="../../reference/gsvaSCE.html">gsvaPlot</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, gsvaData <span class="op">=</span> <span class="va">tempgsvares</span>, plotType <span class="op">=</span> <span class="st">"Heatmap"</span>, condition <span class="op">=</span> <span class="st">"Biological_Condition"</span><span class="op">)</span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R">  <span class="co"># Visualize heatmap plot</span>
+  <span class="fu"><a href="../../reference/gsvaSCE.html">gsvaPlot</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, gsvaData <span class="op">=</span> <span class="va">tempgsvares</span>, plotType <span class="op">=</span> <span class="st">"Heatmap"</span>, condition <span class="op">=</span> <span class="st">"clusterLouvain"</span>, show_column_names <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
 <p><img src="cnsl_gsva_files/figure-html/normalization_console_example_1-2.png" width="700"></p>
     </details>
 </div>
