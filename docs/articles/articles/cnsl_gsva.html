@@ -287,7 +287,7 @@
 <div id="introduction" class="section level2">
 <h2 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h2>
-<p>The <strong><em>GSVA</em></strong> (Gene Set Variation Analysis) (<a href="https://doi.org/10.1186/1471-2105-14-7">Hänzelmann, S., Castelo, R. &amp; Guinney, J. GSVA: gene set variation analysis for microarray and RNA-Seq data. BMC Bioinformatics 14, 7 (2013).</a>) is a popular method for <strong><em>GSE</em></strong> (Gene Set Enrichment) and allows the identification of changes in pathway activity in RNA-Seq data. Overall, <strong><em>gene sets</em></strong> can be uploaded or selected from the available databases and the <strong><em>GSVA</em></strong> method can be run on the selected <strong><em>gene sets</em></strong> which can eventually be visualized using <strong><em>Violin</em></strong> or <strong><em>Heatmap</em></strong> plots.</p>
+<p>The <strong><em>GSVA</em></strong> (Gene Set Variation Analysis) <span class="citation">[1]</span> is a popular method for GSE (Gene Set Enrichment) and allows the identification of changes in pathway activity in RNA-Seq data. Overall, gene sets can be uploaded or selected from the available databases and the GSVA method can be run on the selected gene sets which can eventually be visualized using Violin or Heatmap plots.</p>
 <p>To view detailed instructions on how to use the method from the toolkit, please select ‘Interactive Analysis’ for using GSVA in shiny application or ‘Console Analysis’ for using this method on R console from the tabs below:</p>
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -301,7 +301,7 @@
 </div>
 
 <div id="interactive" class="tabcontent">
-<p>Before running the <strong><em>GSVA</em></strong> algorithm, the gene sets must be selected or uploaded through the <strong><em>Import Gene Sets</em></strong> sub-tab from the <strong><em>Data</em></strong> tab in the toolkit menu. An overall workflow guide on how to import/upload <strong><em>gene sets</em></strong> and consequently using them with <strong><em>GSVA</em></strong> sub-tab is described below. <strong><em>This workflow guide assumes that the </em>SingleCell Data* has already been uploaded through the <em>Import Single Cell Data</em></strong> sub-tab.**<br></p>
+<p>Before running the <strong><em>GSVA</em></strong> algorithm, the gene sets must be selected or uploaded through the <strong><em>Import Gene Sets</em></strong> sub-tab from the <strong><em>Data</em></strong> tab in the toolkit menu. An overall workflow guide on how to import/upload <strong><em>gene sets</em></strong> and consequently using them with <strong><em>GSVA</em></strong> sub-tab is described below. <strong><em>This workflow guide assumes that the </em>Single Cell Data* has already been uploaded through the <a href="">Import Single Cell Data</a></strong>* sub-tab.<br></p>
 <p><img src="ui_screenshots/pathway_analysis/capa_1.png"></p>
 <ol style="list-style-type: decimal">
 <li><p>Select the <strong><em>Data</em></strong> tab from the <strong><em>singleCellTK</em></strong> top menu.<br></p></li>
@@ -748,9 +748,15 @@
 document.getElementById("ia-button").click();
 </script>
 </div>
-<div id="references" class="section level2">
+<div id="references" class="section level2 unnumbered">
 <h2 class="hasAnchor">
 <a href="#references" class="anchor"></a>References</h2>
+<div id="refs" class="references csl-bib-body">
+<div id="ref-Hanzelmann2013" class="csl-entry">
+<div class="csl-left-margin">[1] </div>
+<div class="csl-right-inline">S. Hänzelmann, R. Castelo, and J. Guinney, <span>“<span class="nocase">GSVA: Gene set variation analysis for microarray and RNA-Seq data</span>,”</span> <em>BMC Bioinformatics</em>, vol. 14, no. 1, p. 7, Jan. 2013, doi: <a href="https://doi.org/10.1186/1471-2105-14-7">10.1186/1471-2105-14-7</a>.</div>
+</div>
+</div>
 </div>
   </div>
 

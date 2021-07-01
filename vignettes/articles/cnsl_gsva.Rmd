@@ -12,8 +12,7 @@ csl: ieee.csl
 doEval = TRUE
 ```
 ## Introduction
-The ***GSVA*** (Gene Set Variation Analysis) ([Hänzelmann, S., Castelo, R. & Guinney, J. GSVA: gene set variation analysis for microarray and RNA-Seq data. BMC Bioinformatics 14, 7 (2013).](https://doi.org/10.1186/1471-2105-14-7)) is a popular method for ***GSE*** (Gene Set Enrichment) and allows the identification of changes in pathway activity
-in RNA-Seq data. Overall, ***gene sets*** can be uploaded or selected from the available databases and the ***GSVA*** method can be run on the selected ***gene sets*** which can eventually be visualized using ***Violin*** or ***Heatmap*** plots.
+The ***GSVA*** (Gene Set Variation Analysis) [@Hanzelmann2013] is a popular method for GSE (Gene Set Enrichment) and allows the identification of changes in pathway activity in RNA-Seq data. Overall, gene sets can be uploaded or selected from the available databases and the GSVA method can be run on the selected gene sets which can eventually be visualized using Violin or Heatmap plots.
 
 To view detailed instructions on how to use the method from the toolkit, please select 'Interactive Analysis' for using GSVA in shiny application or 'Console Analysis' for using this method on R console from the tabs below:
 
@@ -37,7 +36,7 @@ To view detailed instructions on how to use the method from the toolkit, please 
 <div id="interactive" class="tabcontent">
 ````
 
-Before running the ***GSVA*** algorithm, the gene sets must be selected or uploaded through the ***Import Gene Sets*** sub-tab from the ***Data*** tab in the toolkit menu. An overall workflow guide on how to import/upload ***gene sets*** and consequently using them with ***GSVA*** sub-tab is described below. ***This workflow guide assumes that the *SingleCell Data* has already been uploaded through the *Import Single Cell Data*** sub-tab.**<br>
+Before running the ***GSVA*** algorithm, the gene sets must be selected or uploaded through the ***Import Gene Sets*** sub-tab from the ***Data*** tab in the toolkit menu. An overall workflow guide on how to import/upload ***gene sets*** and consequently using them with ***GSVA*** sub-tab is described below. ***This workflow guide assumes that the *Single Cell Data* has already been uploaded through the [Import Single Cell Data]()*** sub-tab.<br>
 
 ![](ui_screenshots/pathway_analysis/capa_1.png)
 
