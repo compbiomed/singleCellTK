@@ -287,7 +287,7 @@
 <div id="introduction" class="section level2">
 <h2 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h2>
-<p><strong>EnrichR</strong> <span class="citation">[1]</span><span class="citation">[2]</span> is a GSE (Gene Set Enrichment) method that infers biological knowledge by performing enrichment of input gene sets with curated biologically relevant prior databases that represent biological functions or functional pathways. The <strong>singleCellTK</strong> toolkit offers an easy to use interface to the EnrichR method and only requires the selection of input genes and the databases against which the genes should be tested.</p>
+<p><strong>EnrichR</strong> <span class="citation">[1]</span><span class="citation">[2]</span> is a GSE (Gene Set Enrichment) method that infers biological knowledge by performing enrichment of input gene sets with curated biologically relevant prior databases that represent biological functions or functional pathways. The <strong>singleCellTK</strong> toolkit offers an easy to use interface to the EnrichR method and only requires the selection of input genes and the databases against which the genes should be tested. <br></p>
 <p>To view detailed instructions on how to use the method from the toolkit, please select ‘Interactive Analysis’ for using enrichR in shiny application or ‘Console Analysis’ for using this method on R console from the tabs below:</p>
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -301,7 +301,7 @@
 </div>
 
 <div id="interactive" class="tabcontent">
-<p>An overall workflow guide on how to use <strong><em>EnrichR</em></strong> sub-tab is described below. <strong><em>This workflow guide assumes that the </em>SingleCell Data* has already been uploaded through the <em>Import Single Cell Data</em></strong> sub-tab. <br></p>
+<p>An overall workflow guide on how to use <strong><em>EnrichR</em></strong> sub-tab is described below. <strong><em>This workflow guide assumes that the Single Cell Data has already been uploaded through the <a href="">Import Single Cell Data</a> sub-tab</em></strong>. <br></p>
 <p><img src="ui_screenshots/pathway_analysis/enrichR_1.png"></p>
 <ol style="list-style-type: decimal">
 <li>Select <strong><em>Cell Annotation &amp; Pathway Analysis</em></strong> tab from the top menu. <br>
@@ -331,9 +331,7 @@
 <span class="va">databases</span> <span class="op">&lt;-</span> <span class="fu">enrichR</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/enrichR/man/listEnrichrDbs.html">listEnrichrDbs</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="va">libraryName</span></code></pre></div>
 <p><strong>2. Run ‘enrichR’ using <code>enrichRSCE</code> function:</strong></p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">enrichRes</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/enrichRSCE.html">enrichRSCE</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>,
-                        glist <span class="op">=</span> <span class="va">genes</span>,
-                        db <span class="op">=</span> <span class="va">databases</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="va">enrichRes</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/enrichRSCE.html">enrichRSCE</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, glist <span class="op">=</span> <span class="va">genes</span>, db <span class="op">=</span> <span class="va">databases</span><span class="op">)</span></code></pre></div>
 <p>The <code>enrichRSCE</code> function above, takes the following parameters: <br><code>inSCE</code>: input <code>SingleCellExperiment</code> object <br><code>glist</code>: vector of input gene names <br><code>db</code>: a list of databases to test <br></p>
 <p><strong>3. Print results:</strong></p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
@@ -348,189 +346,7 @@
   <span class="va">databases</span> <span class="op">&lt;-</span> <span class="fu">enrichR</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/enrichR/man/listEnrichrDbs.html">listEnrichrDbs</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="va">libraryName</span>
   <span class="co"># Run enrichR</span>
   <span class="va">enrichRes</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/enrichRSCE.html">enrichRSCE</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, glist <span class="op">=</span> <span class="va">genes</span>, db <span class="op">=</span> <span class="va">databases</span><span class="op">)</span></code></pre></div>
-<pre><code>## Uploading data to Enrichr... Done.
-##   Querying Genome_Browser_PWMs... Done.
-##   Querying TRANSFAC_and_JASPAR_PWMs... Done.
-##   Querying Transcription_Factor_PPIs... Done.
-##   Querying ChEA_2013... Done.
-##   Querying Drug_Perturbations_from_GEO_2014... Done.
-##   Querying ENCODE_TF_ChIP-seq_2014... Done.
-##   Querying BioCarta_2013... Done.
-##   Querying Reactome_2013... Done.
-##   Querying WikiPathways_2013... Done.
-##   Querying Disease_Signatures_from_GEO_up_2014... Done.
-##   Querying KEGG_2013... Done.
-##   Querying TF-LOF_Expression_from_GEO... Done.
-##   Querying TargetScan_microRNA... Done.
-##   Querying PPI_Hub_Proteins... Done.
-##   Querying GO_Molecular_Function_2015... Done.
-##   Querying GeneSigDB... Done.
-##   Querying Chromosome_Location... Done.
-##   Querying Human_Gene_Atlas... Done.
-##   Querying Mouse_Gene_Atlas... Done.
-##   Querying GO_Cellular_Component_2015... Done.
-##   Querying GO_Biological_Process_2015... Done.
-##   Querying Human_Phenotype_Ontology... Done.
-##   Querying Epigenomics_Roadmap_HM_ChIP-seq... Done.
-##   Querying KEA_2013... Done.
-##   Querying NURSA_Human_Endogenous_Complexome... Done.
-##   Querying CORUM... Done.
-##   Querying SILAC_Phosphoproteomics... Done.
-##   Querying MGI_Mammalian_Phenotype_Level_3... Done.
-##   Querying MGI_Mammalian_Phenotype_Level_4... Done.
-##   Querying Old_CMAP_up... Done.
-##   Querying Old_CMAP_down... Done.
-##   Querying OMIM_Disease... Done.
-##   Querying OMIM_Expanded... Done.
-##   Querying VirusMINT... Done.
-##   Querying MSigDB_Computational... Done.
-##   Querying MSigDB_Oncogenic_Signatures... Done.
-##   Querying Disease_Signatures_from_GEO_down_2014... Done.
-##   Querying Virus_Perturbations_from_GEO_up... Done.
-##   Querying Virus_Perturbations_from_GEO_down... Done.
-##   Querying Cancer_Cell_Line_Encyclopedia... Done.
-##   Querying NCI-60_Cancer_Cell_Lines... Done.
-##   Querying Tissue_Protein_Expression_from_ProteomicsDB... Done.
-##   Querying Tissue_Protein_Expression_from_Human_Proteome_Map... Done.
-##   Querying HMDB_Metabolites... Done.
-##   Querying Pfam_InterPro_Domains... Done.
-##   Querying GO_Biological_Process_2013... Done.
-##   Querying GO_Cellular_Component_2013... Done.
-##   Querying GO_Molecular_Function_2013... Done.
-##   Querying Allen_Brain_Atlas_up... Done.
-##   Querying ENCODE_TF_ChIP-seq_2015... Done.
-##   Querying ENCODE_Histone_Modifications_2015... Done.
-##   Querying Phosphatase_Substrates_from_DEPOD... Done.
-##   Querying Allen_Brain_Atlas_down... Done.
-##   Querying ENCODE_Histone_Modifications_2013... Done.
-##   Querying Achilles_fitness_increase... Done.
-##   Querying Achilles_fitness_decrease... Done.
-##   Querying MGI_Mammalian_Phenotype_2013... Done.
-##   Querying BioCarta_2015... Done.
-##   Querying HumanCyc_2015... Done.
-##   Querying KEGG_2015... Done.
-##   Querying NCI-Nature_2015... Done.
-##   Querying Panther_2015... Done.
-##   Querying WikiPathways_2015... Done.
-##   Querying Reactome_2015... Done.
-##   Querying ESCAPE... Done.
-##   Querying HomoloGene... Done.
-##   Querying Disease_Perturbations_from_GEO_down... Done.
-##   Querying Disease_Perturbations_from_GEO_up... Done.
-##   Querying Drug_Perturbations_from_GEO_down... Done.
-##   Querying Genes_Associated_with_NIH_Grants... Done.
-##   Querying Drug_Perturbations_from_GEO_up... Done.
-##   Querying KEA_2015... Done.
-##   Querying Gene_Perturbations_from_GEO_up... Done.
-##   Querying Gene_Perturbations_from_GEO_down... Done.
-##   Querying ChEA_2015... Done.
-##   Querying dbGaP... Done.
-##   Querying LINCS_L1000_Chem_Pert_up... Done.
-##   Querying LINCS_L1000_Chem_Pert_down... Done.
-##   Querying GTEx_Tissue_Sample_Gene_Expression_Profiles_down... Done.
-##   Querying GTEx_Tissue_Sample_Gene_Expression_Profiles_up... Done.
-##   Querying Ligand_Perturbations_from_GEO_down... Done.
-##   Querying Aging_Perturbations_from_GEO_down... Done.
-##   Querying Aging_Perturbations_from_GEO_up... Done.
-##   Querying Ligand_Perturbations_from_GEO_up... Done.
-##   Querying MCF7_Perturbations_from_GEO_down... Done.
-##   Querying MCF7_Perturbations_from_GEO_up... Done.
-##   Querying Microbe_Perturbations_from_GEO_down... Done.
-##   Querying Microbe_Perturbations_from_GEO_up... Done.
-##   Querying LINCS_L1000_Ligand_Perturbations_down... Done.
-##   Querying LINCS_L1000_Ligand_Perturbations_up... Done.
-##   Querying L1000_Kinase_and_GPCR_Perturbations_down... Done.
-##   Querying L1000_Kinase_and_GPCR_Perturbations_up... Done.
-##   Querying Reactome_2016... Done.
-##   Querying KEGG_2016... Done.
-##   Querying WikiPathways_2016... Done.
-##   Querying ENCODE_and_ChEA_Consensus_TFs_from_ChIP-X... Done.
-##   Querying Kinase_Perturbations_from_GEO_down... Done.
-##   Querying Kinase_Perturbations_from_GEO_up... Done.
-##   Querying BioCarta_2016... Done.
-##   Querying HumanCyc_2016... Done.
-##   Querying NCI-Nature_2016... Done.
-##   Querying Panther_2016... Done.
-##   Querying DrugMatrix... Done.
-##   Querying ChEA_2016... Done.
-##   Querying huMAP... Done.
-##   Querying Jensen_TISSUES... Done.
-##   Querying RNA-Seq_Disease_Gene_and_Drug_Signatures_from_GEO... Done.
-##   Querying MGI_Mammalian_Phenotype_2017... Done.
-##   Querying Jensen_COMPARTMENTS... Done.
-##   Querying Jensen_DISEASES... Done.
-##   Querying BioPlex_2017... Done.
-##   Querying GO_Cellular_Component_2017... Done.
-##   Querying GO_Molecular_Function_2017... Done.
-##   Querying GO_Biological_Process_2017... Done.
-##   Querying GO_Cellular_Component_2017b... Done.
-##   Querying GO_Molecular_Function_2017b... Done.
-##   Querying GO_Biological_Process_2017b... Done.
-##   Querying ARCHS4_Tissues... Done.
-##   Querying ARCHS4_Cell-lines... Done.
-##   Querying ARCHS4_IDG_Coexp... Done.
-##   Querying ARCHS4_Kinases_Coexp... Done.
-##   Querying ARCHS4_TFs_Coexp... Done.
-##   Querying SysMyo_Muscle_Gene_Sets... Done.
-##   Querying miRTarBase_2017... Done.
-##   Querying TargetScan_microRNA_2017... Done.
-##   Querying Enrichr_Libraries_Most_Popular_Genes... Done.
-##   Querying Enrichr_Submissions_TF-Gene_Coocurrence... Done.
-##   Querying Data_Acquisition_Method_Most_Popular_Genes... Done.
-##   Querying DSigDB... Done.
-##   Querying GO_Biological_Process_2018... Done.
-##   Querying GO_Cellular_Component_2018... Done.
-##   Querying GO_Molecular_Function_2018... Done.
-##   Querying TF_Perturbations_Followed_by_Expression... Done.
-##   Querying Chromosome_Location_hg19... Done.
-##   Querying NIH_Funded_PIs_2017_Human_GeneRIF... Done.
-##   Querying NIH_Funded_PIs_2017_Human_AutoRIF... Done.
-##   Querying Rare_Diseases_AutoRIF_ARCHS4_Predictions... Done.
-##   Querying Rare_Diseases_GeneRIF_ARCHS4_Predictions... Done.
-##   Querying NIH_Funded_PIs_2017_AutoRIF_ARCHS4_Predictions... Done.
-##   Querying NIH_Funded_PIs_2017_GeneRIF_ARCHS4_Predictions... Done.
-##   Querying Rare_Diseases_GeneRIF_Gene_Lists... Done.
-##   Querying Rare_Diseases_AutoRIF_Gene_Lists... Done.
-##   Querying SubCell_BarCode... Done.
-##   Querying GWAS_Catalog_2019... Done.
-##   Querying WikiPathways_2019_Human... Done.
-##   Querying WikiPathways_2019_Mouse... Done.
-##   Querying TRRUST_Transcription_Factors_2019... Done.
-##   Querying KEGG_2019_Human... Done.
-##   Querying KEGG_2019_Mouse... Done.
-##   Querying InterPro_Domains_2019... Done.
-##   Querying Pfam_Domains_2019... Done.
-##   Querying DepMap_WG_CRISPR_Screens_Broad_CellLines_2019... Done.
-##   Querying DepMap_WG_CRISPR_Screens_Sanger_CellLines_2019... Done.
-##   Querying MGI_Mammalian_Phenotype_Level_4_2019... Done.
-##   Querying UK_Biobank_GWAS_v1... Done.
-##   Querying BioPlanet_2019... Done.
-##   Querying ClinVar_2019... Done.
-##   Querying PheWeb_2019... Done.
-##   Querying DisGeNET... Done.
-##   Querying HMS_LINCS_KinomeScan... Done.
-##   Querying CCLE_Proteomics_2020... Done.
-##   Querying ProteomicsDB_2020... Done.
-##   Querying lncHUB_lncRNA_Co-Expression... Done.
-##   Querying Virus-Host_PPI_P-HIPSTer_2020... Done.
-##   Querying Elsevier_Pathway_Collection... Done.
-##   Querying Table_Mining_of_CRISPR_Studies... Done.
-##   Querying COVID-19_Related_Gene_Sets... Done.
-##   Querying MSigDB_Hallmark_2020... Done.
-##   Querying Enrichr_Users_Contributed_Lists_2020... Done.
-##   Querying TG_GATES_2020... Done.
-##   Querying Allen_Brain_Atlas_10x_scRNA_2021... Done.
-##   Querying Descartes_Cell_Types_and_Tissue_2021... Done.
-##   Querying KEGG_2021_Human... Done.
-##   Querying WikiPathway_2021_Human... Done.
-##   Querying HuBMAP_ASCT_plus_B_augmented_w_RNAseq_Coexpression... Done.
-##   Querying GO_Biological_Process_2021... Done.
-##   Querying GO_Cellular_Component_2021... Done.
-##   Querying GO_Molecular_Function_2021... Done.
-##   Querying MGI_Mammalian_Phenotype_Level_4_2021... Done.
-##   Querying CellMarker_Augmented_2021... Done.
-## Parsing results... Done.</code></pre>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R">  <span class="co"># Print the first five results</span>
   <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">enrichRes</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span>, <span class="op">]</span><span class="op">)</span></code></pre></div>
 <pre><code>##                     Database_selected                               Term

@@ -42,7 +42,7 @@ NOTE: This tutorial assumes that the data has already been uploaded via the [upl
 **1. Normalize Data** <br>
 Assuming that the data has been uploaded via the Upload tab of the toolkit, the first step for the analysis of the data is the Normalization of data. For this purpose, any assay available in the uploaded data can be used against one of the three methods of normalization available through `Seurat` i.e. `LogNormalize`, `CLR` (Centered Log Ratio) or `RC` (Relative Counts).
 
-![](ui_screenshots/seurat/seurat_1_normalize_annotated.png)
+![](ui_screenshots/seurat/seurat_1_normalize_annotated.png) <br>
 
 1. Open up the 'Normalize' tab by clicking on it.
 2. Select the `assay` to normalize from the dropdown menu.
@@ -53,7 +53,7 @@ Assuming that the data has been uploaded via the Upload tab of the toolkit, the 
 **2. Scale Data** <br>
 Once normalization is complete, data needs to be scaled and centered accordingly. `Seurat` uses `linear` (linear model), `poisson` (generalized linear model) or `negbinom` (generalized linear model) as a regression model.
 
-![](ui_screenshots/seurat/seurat_2_scale_annotated.png)
+![](ui_screenshots/seurat/seurat_2_scale_annotated.png) <br>
 
 1. Open up the 'Scale Data' tab.
 2. Select model for scaling from `linear`, `poisson` or `negbinom`.
@@ -64,7 +64,7 @@ Once normalization is complete, data needs to be scaled and centered accordingly
 **3. Highly Variable Genes** <br>
 Identification of the highly variable genes is core to the `Seurat` workflow and these highly variable genes are used throughout the remaining workflow. `Seurat` provides three methods for variable genes identification i.e. `vst` (uses local polynomial regression to fit a relationship between log of variance and log of mean), `mean.var.plot` (uses mean and dispersion to divide features into bins) and `dispersion` (uses highest dispersion values only).
 
-![](ui_screenshots/seurat/seurat_3_hvg_annotated.png)
+![](ui_screenshots/seurat/seurat_3_hvg_annotated.png) <br>
 
 1. Open up the 'Highly Variable Genes' tab.
 2. Select method for computation of highly variable genes from `vst`, `mean.var.plot` and `dispersion`.
@@ -77,9 +77,9 @@ Identification of the highly variable genes is core to the `Seurat` workflow and
 **4. Dimensionality Reduction** <br>
 `Seurat` workflow offers `PCA` or `ICA` for dimensionality reduction and the components from these methods can be used in the downstream analysis. Moreover, several plots are available for the user to inspect the output of the dimensionality reduction such as the standard 'PCA Plot', 'Elbow Plot', 'Jackstraw Plot' and 'Heatmap Plot'.
 
-![](ui_screenshots/seurat/seurat_4_dimensionalityReduction_annotated_1.png)
+![](ui_screenshots/seurat/seurat_4_dimensionalityReduction_annotated_1.png) <br>
 
-![](ui_screenshots/seurat/seurat_4_dimensionalityReduction_annotated_2.png)
+![](ui_screenshots/seurat/seurat_4_dimensionalityReduction_annotated_2.png) <br>
 
 1. Open up the 'Dimensionality Reduction' tab.
 2. Select a sub-tab for either 'PCA' or 'ICA' computation. Separate tabs are available for both methods if the user wishes to compute and inspect both separately.
@@ -94,7 +94,7 @@ Identification of the highly variable genes is core to the `Seurat` workflow and
 **5. tSNE/UMAP** <br>
 'tSNE' and 'UMAP' can be computed and plotted once components are available from 'Dimensionality Reduction' tab.
 
-![](ui_screenshots/seurat/seurat_5_tsneUmap.png)
+![](ui_screenshots/seurat/seurat_5_tsneUmap.png) <br>
 
 1. Open up the 'tSNE/UMAP' tab.
 2. Select 'tSNE' or 'UMAP' sub-tab.
@@ -107,7 +107,7 @@ Identification of the highly variable genes is core to the `Seurat` workflow and
 **6. Clustering** <br>
 Cluster labels can be generated for all cells/samples using one of the computed reduction method. Plots are automatically re-computed with cluster labels. The available algorithms for clustering as provided by `Seurat` include `original Louvain algorithm`, `Louvain algorithm with multilevel refinement` and `SLM algorithm`.
 
-![](ui_screenshots/seurat/seurat_6_clustering.png)
+![](ui_screenshots/seurat/seurat_6_clustering.png) <br>
 
 1. Open up the 'Clustering' tab.
 2. Select a previously computed reduction method.
@@ -121,34 +121,34 @@ Cluster labels can be generated for all cells/samples using one of the computed 
 **7. Find Markers** <br>
 'Find Markers' tab can be used to identify and visualize the marker genes using on of the provided visualization methods. The tab offers identification of markers between two selected phenotype groups or between all groups and can be decided at the time of the computation. Furthermore, markers that are conserved between two phenotype groups can also be identified. Visualizations such as Ridge Plot, Violin Plot, Feature Plot and Heatmap Plot can be used to visualize the individual marker genes. 
 
-![](ui_screenshots/seurat/seurat_7_findmarkers_1.png)
+![](ui_screenshots/seurat/seurat_7_findmarkers_1.png) <br>
 1. Select if you want to identify marker genes against all groups in a biological variable or between two pre-defined groups. Additionally, users can select the last option to identify the marker genes that are conserved between two groups.
 2. Select phenotype variable that contains the grouping information.
 3. Select test used for marker genes identification.
 4. Select if only positive markers should be returned.
 5. Press "Find Markers" button to run marker identification.
 
-![](ui_screenshots/seurat/seurat_7_findmarkers_2.png)
+![](ui_screenshots/seurat/seurat_7_findmarkers_2.png) <br>
 6. Identified marker genes are populated in the table.
 7. Filters can be applied on the table.
 
-![](ui_screenshots/seurat/seurat_7_findmarkers_3.png)
+![](ui_screenshots/seurat/seurat_7_findmarkers_3.png) <br>
 8. Filters allow different comparisons based on the type of the column of the table.
 
-![](ui_screenshots/seurat/seurat_7_findmarkers_4.png)
+![](ui_screenshots/seurat/seurat_7_findmarkers_4.png) <br>
 9. Table re-populated after applying filters.
 10. Heatmap plot can be visualized for all genes populated in the table (9) against all biological groups in the selected phenotype variable.
 
-![](ui_screenshots/seurat/seurat_7_findmarkers_5.png)
+![](ui_screenshots/seurat/seurat_7_findmarkers_5.png) <br>
 11. To visualize each individual marker gene through gene plots, they can be selected by clicking on the relevant rows of the table.
 
-![](ui_screenshots/seurat/seurat_7_findmarkers_6.png)
+![](ui_screenshots/seurat/seurat_7_findmarkers_6.png) <br>
 12. Selected marker genes from the table are plotted with gene plots.
 
 **8. Downstream Analysis** <br>
 Once all steps of the Seurat workflow are completed, users can further analyze the data by directly going to the various downstream analysis options (Differential Expression, Marker Selection & Pathway Analysis) from within the Seurat workflow.
 
-![](ui_screenshots/seurat/seurat_7_findmarkers_7.png)
+![](ui_screenshots/seurat/seurat_7_findmarkers_7.png) <br>
 
 
 ````{=html}
@@ -156,51 +156,47 @@ Once all steps of the Seurat workflow are completed, users can further analyze t
 <div id="console" class="tabcontent">
 ````
 
-All methods provided by SCTK for Seurat workflow use a \code{SingleCellExperiment} object both as an input and output.
+All methods provided by SCTK for Seurat workflow use a `SingleCellExperiment` object both as an input and output.
 
 Using a sample dataset:
-```{r, warning=FALSE,  message=FALSE}
+```{r "seurat_import", warning=FALSE,  message=FALSE}
 library(singleCellTK)
-```
-```{r, warning=FALSE, message=FALSE}
 sce <- importExampleData('pbmc3k')
-```
-```{r, warning=FALSE}
-sce
+print(sce)
 ```
 
 **1. Normalize Data** <br>
-Once raw data is uploaded and stored in a SingleCellExperiment object, seuratNormalizeData function can be used to normalize the data. The method returns a SingleCellExperiment object with normalized data stored as a new assay in the input object. 
+Once raw data is uploaded and stored in a `SingleCellExperiment` object, `seuratNormalizeData()` function can be used to normalize the data. The method returns a `SingleCellExperiment` object with normalized data stored as a new assay in the input object. 
 
-Parameters to this function include useAssay (specify the assay that should be normalized), normAssayName (specify the new name of the normalized assay, defaults to "seuratNormData"), normalizationMethod (specify the normalization method to use, defaults to "LogNormalize") and scaleFactor (defaults to 10000).
+Parameters to this function include `useAssay` (specify the assay that should be normalized), `normAssayName` (specify the new name of the normalized assay, defaults to `"seuratNormData"`), `normalizationMethod` (specify the normalization method to use, defaults to `"LogNormalize"`) and `scaleFactor` (defaults to `10000`).
 
-```{r, warning=FALSE}
+```{r "seurat_normalize", warning=FALSE, message=FALSE}
 sce <- seuratNormalizeData(inSCE = sce, useAssay = "counts", normAssayName = "seuratNormData")
 ```
 
 **2. Scale Data** <br>
-Normalized data can be scaled by using the seuratScaleData function that takes inputs a SingleCellExperiment object that has been normalized previously by the seuratNormalizeData function. Scaled assay is stored back in the input object. 
+Normalized data can be scaled by using the `seuratScaleData()` function that takes input a `SingleCellExperiment` object that has been normalized previously by the `seuratNormalizeData()` function. Scaled assay is stored back in the input object. 
 
-Parameters include  useAssay (specify the name of normalized assay), scaledAssayName (specify the new name for scaled assay, defaults to "seuratScaledData"), model (specify the method to use, defaults to "linear"), scale (specify if the data should be scaled, defaults to TRUE), center (specify if the data should be centered, defaults to TRUE) and scaleMax (specify the maximum clipping value, defaults to 10).
+Parameters include `useAssay` (specify the name of normalized assay), `scaledAssayName` (specify the new name for scaled assay, defaults to `"seuratScaledData"`), `model` (specify the method to use, defaults to `"linear"`), `scale` (specify if the data should be scaled, defaults to `TRUE`), `center` (specify if the data should be centered, defaults to `TRUE`) and `scaleMax` (specify the maximum clipping value, defaults to `10`).
 
-```{r, warning=FALSE}
+```{r "seurat_scale", warning=FALSE, message=FALSE}
 sce <- seuratScaleData(inSCE = sce, useAssay = "seuratNormData", scaledAssayName = "seuratScaledData")
 ```
 
 **3. Highly Variable Genes** <br>
-Highly variable genes can be identified by first using the seuratFindHVG function that computes that statistics against a selected HVG method in the rowData of input object. The genes can be identified by using the .seuratGetVariableFeatures function. The variable genes can be visualized using the seuratPlotHVG(vals$counts) method. 
-Parameters for seuratFindHVG include useAssay (specify the name of the scaled assay, defaults to "counts" for "vst" and "seuratScaledData" for other methods) and hvgMethod (specify the method to use for variable genes computation, defaults to "vst").
+Highly variable genes can be identified by first using the `seuratFindHVG()` function that computes that statistics against a selected HVG method in the rowData of input object. The genes can be identified by using the `getTopHVG()` function. The variable genes can be visualized using the `seuratPlotHVG()` method. <br> 
+Parameters for `seuratFindHVG()` include `useAssay` (specify the name of the scaled assay, defaults to `"seuratScaledData"` but `"counts"` should be used with `"vst"` method) and `hvgMethod()` (specify the method to use for variable genes computation, defaults to `"vst"`).
 
-```{r, warning=FALSE}
+```{r "seurat_hvg", warning=FALSE, message=FALSE}
 sce <- seuratFindHVG(inSCE = sce, useAssay = "counts", hvgMethod = "vst")
-print(singleCellTK:::.seuratGetVariableFeatures(sce, 100))
+print(getTopHVG(inSCE = sce, method = "vst", n = 10))
 seuratPlotHVG(sce, labelPoints = 10)
 ```
 
 **4. Dimensionality Reduction** <br>
-PCA or ICA can be computed using the seuratPCA and seuratICA functions respectively. Plots can be visualized using seuratReductionPlot, seuratElbowPlot, seuratComputeJackStraw, seuratJackStrawPlot, seuratComputeHeatmap.
+PCA or ICA can be computed using the `seuratPCA()` and `seuratICA()` functions respectively. Plots can be visualized using `seuratReductionPlot()`, `seuratElbowPlot()`, `seuratComputeJackStraw()`, `seuratJackStrawPlot()` and `seuratComputeHeatmap()`.
 
-```{r, warning=FALSE}
+```{r "seurat_dm", warning=FALSE, message=FALSE}
 sce <- seuratPCA(inSCE = sce, useAssay = "seuratScaledData", reducedDimName = "seuratPCA", nPCs = 20)
 seuratReductionPlot(inSCE = sce, useReduction = "pca")
 seuratElbowPlot(inSCE = sce)
@@ -210,8 +206,8 @@ seuratComputeHeatmap(inSCE = sce, useAssay = "seuratScaledData", useReduction = 
 ```
 
 **5. tSNE/UMAP** <br>
-seuratRunTSNE/seuratRunUMAP can be used to compute tSNE/UMAP statistics and store into the input object. Parameters to both functions include inSCE(input SCE object), useReduction (specify the reduction to use i.e. pca or ica), reducedDimName (name of this new reduction) and dims (number of dims to use). seuratReductionPlot can be used to visualize the results.
-```{r, warning=FALSE}
+`seuratRunTSNE()` and `seuratRunUMAP()` can be used to compute tSNE/UMAP statistics and store into the input object. Parameters to both functions include `inSCE` (input SCE object), `useReduction` (specify the reduction to use i.e. `"pca"` or `"ica"`), `reducedDimName` (name of this new reduction) and `dims` (number of dims to use). `seuratReductionPlot()` can be used to visualize the results.
+```{r "seurat_tsne_umap", warning=FALSE, message=FALSE}
 sce <- seuratRunTSNE(inSCE = sce, useReduction = "pca", reducedDimName = "seuratTSNE", dims = 10)
 seuratReductionPlot(sce, "tsne")
 ```
@@ -223,32 +219,29 @@ seuratReductionPlot(sce, "umap")
 ```
 
 **6. Clustering** <br>
-seuratFindClusters function can be used to compute the clusters, which can later be plotted through the seuratReductionPlot method with cluster labels. The parameters to the function include inSCE (input SCE object), useAssay (name of the scaled assay), useReduction (specify which reduction to use i.e. pca or ica), dims (number of dims to use) and the algorithm (either louvain, multilevel or SLM).
-```{r, warning=FALSE, message=FALSE}
+`seuratFindClusters()` function can be used to compute the clusters, which can later be plotted through the `seuratReductionPlot()` method with cluster labels. The parameters to the function include `inSCE` (input SCE object), `useAssay` (name of the scaled assay), `useReduction` (specify which reduction to use i.e. `"pca"` or `"ica"`), `dims` (number of dims to use) and the algorithm (either `"louvain"`, `"multilevel"` or `"SLM"`).
+```{r "seurat_clustering", warning=FALSE, message=FALSE}
 sce <- seuratFindClusters(inSCE = sce, useAssay = "seuratScaledData", useReduction = "pca", dims = 10, algorithm = "louvain")
 ```
 
-seuratReductionPlot can then be used to plot all reductions previously computed with cluster labels:
-```{r, warning=FALSE}
+`seuratReductionPlot()` can then be used to plot all reductions previously computed with cluster labels:
+```{r "seurat_cluster_plots", warning=FALSE, message=FALSE}
 seuratReductionPlot(sce, "pca", showLegend = TRUE)
 seuratReductionPlot(sce, "tsne", showLegend = TRUE)
 seuratReductionPlot(sce, "umap", showLegend = TRUE)
 ```
 
 **7. Find Markers** <br>
-Marker genes can be identified using the seuratFindMarers function. This function can either use one specified column from colData of the input object as a group variable if all groups from that variable are to be used (\code{allGroup} parameter) or users can manually specify the cells included in one group vs cells included in the second group (\code{cells1} and \code{cells2} parameter). 
-```{r, warning=FALSE, message=FALSE}
+Marker genes can be identified using the `seuratFindMarkers()` function. This function can either use one specified column from `colData` of the input object as a group variable if all groups from that variable are to be used (`allGroup` parameter) or users can manually specify the cells included in one group vs cells included in the second group (`cells1` and `cells2` parameter). 
+```{r "seurat_findMarkers", warning=FALSE, message=FALSE}
 sce <- seuratFindMarkers(inSCE = sce, allGroup = "Seurat_louvain_Resolution0.8")
-```
-```{r}
 print(head(metadata(sce)[["seuratMarkers"]]))
 ```
 
-The marker genes identified can be visualized through one of the available plots from ridge plot, violin plot, feature plot, dot plot and heatmap plot. All marker genes visualizations can be plotted through the wrapper function \code{seuratGenePlot}, which must be supplied the SCE object (markers previously computed), name of the scaled assay, type of the plot (available options are \code{"ridge"}, \code{"feature"}, \code{"violin"}, \code{"dot"} and \code{"heatmap"}), features that should be plotted (character vector) and the grouping variable that is available in the colData slot of the input object. An additional parameter \code{ncol} decides in how many columns should the visualizations be plotted.
-```{r, warning=FALSE}
+The marker genes identified can be visualized through one of the available plots from `ridge plot`, `violin plot`, `feature plot`, `dot plot` and `heatmap plot`. All marker genes visualizations can be plotted through the wrapper function `seuratGenePlot()`, which must be supplied the SCE object (markers previously computed), name of the scaled assay, type of the plot (available options are `"ridge"`, `"feature"`, `"violin"`, `"dot"` and `"heatmap"`), features that should be plotted (`character` vector) and the grouping variable that is available in the `colData` slot of the input object. An additional parameter `ncol` decides in how many columns should the visualizations be plotted.
+```{r "seurat_genePlots", warning=FALSE, message=FALSE}
 seuratGenePlot(inSCE = sce, scaledAssayName = "seuratScaledData", plotType = "ridge", features = metadata(sce)[["seuratMarkers"]]$gene.id[1:4], groupVariable = "Seurat_louvain_Resolution0.8", ncol = 2)
 ```
-
 
 ````{=html} 
       </div>

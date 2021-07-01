@@ -306,7 +306,7 @@
 <p>In this tutorial example, we illustrate all the steps of the curated workflow and focus on the options available to manipulate and customize the steps of the workflow as per user requirements. To initiate the <code>Seurat</code> workflow, click on the ‘Curated Workflows’ from the top menu and select <code>Seurat</code>.</p>
 <p>NOTE: This tutorial assumes that the data has already been uploaded via the <a href="">upload tab</a> of the toolkit and <a href="">filtered</a> before using the workflow.</p>
 <p><strong>1. Normalize Data</strong> <br> Assuming that the data has been uploaded via the Upload tab of the toolkit, the first step for the analysis of the data is the Normalization of data. For this purpose, any assay available in the uploaded data can be used against one of the three methods of normalization available through <code>Seurat</code> i.e. <code>LogNormalize</code>, <code>CLR</code> (Centered Log Ratio) or <code>RC</code> (Relative Counts).</p>
-<p><img src="ui_screenshots/seurat/seurat_1_normalize_annotated.png"></p>
+<p><img src="ui_screenshots/seurat/seurat_1_normalize_annotated.png"><br></p>
 <ol style="list-style-type: decimal">
 <li>Open up the ‘Normalize’ tab by clicking on it.</li>
 <li>Select the <code>assay</code> to normalize from the dropdown menu.</li>
@@ -315,7 +315,7 @@
 <li>Press the ‘Normalize’ button to start the normalization process.</li>
 </ol>
 <p><strong>2. Scale Data</strong> <br> Once normalization is complete, data needs to be scaled and centered accordingly. <code>Seurat</code> uses <code>linear</code> (linear model), <code>poisson</code> (generalized linear model) or <code>negbinom</code> (generalized linear model) as a regression model.</p>
-<p><img src="ui_screenshots/seurat/seurat_2_scale_annotated.png"></p>
+<p><img src="ui_screenshots/seurat/seurat_2_scale_annotated.png"><br></p>
 <ol style="list-style-type: decimal">
 <li>Open up the ‘Scale Data’ tab.</li>
 <li>Select model for scaling from <code>linear</code>, <code>poisson</code> or <code>negbinom</code>.</li>
@@ -324,7 +324,7 @@
 <li>Press ‘Scale’ button to start processing.</li>
 </ol>
 <p><strong>3. Highly Variable Genes</strong> <br> Identification of the highly variable genes is core to the <code>Seurat</code> workflow and these highly variable genes are used throughout the remaining workflow. <code>Seurat</code> provides three methods for variable genes identification i.e. <code>vst</code> (uses local polynomial regression to fit a relationship between log of variance and log of mean), <code>mean.var.plot</code> (uses mean and dispersion to divide features into bins) and <code>dispersion</code> (uses highest dispersion values only).</p>
-<p><img src="ui_screenshots/seurat/seurat_3_hvg_annotated.png"></p>
+<p><img src="ui_screenshots/seurat/seurat_3_hvg_annotated.png"><br></p>
 <ol style="list-style-type: decimal">
 <li>Open up the ‘Highly Variable Genes’ tab.</li>
 <li>Select method for computation of highly variable genes from <code>vst</code>, <code>mean.var.plot</code> and <code>dispersion</code>.</li>
@@ -335,8 +335,8 @@
 <li>Graph that plots each gene and its relationship based upon the selected model in (2), and identifies if a gene is highly variable or not.</li>
 </ol>
 <p><strong>4. Dimensionality Reduction</strong> <br><code>Seurat</code> workflow offers <code>PCA</code> or <code>ICA</code> for dimensionality reduction and the components from these methods can be used in the downstream analysis. Moreover, several plots are available for the user to inspect the output of the dimensionality reduction such as the standard ‘PCA Plot,’ ‘Elbow Plot,’ ‘Jackstraw Plot’ and ‘Heatmap Plot.’</p>
-<p><img src="ui_screenshots/seurat/seurat_4_dimensionalityReduction_annotated_1.png"></p>
-<p><img src="ui_screenshots/seurat/seurat_4_dimensionalityReduction_annotated_2.png"></p>
+<p><img src="ui_screenshots/seurat/seurat_4_dimensionalityReduction_annotated_1.png"><br></p>
+<p><img src="ui_screenshots/seurat/seurat_4_dimensionalityReduction_annotated_2.png"><br></p>
 <ol style="list-style-type: decimal">
 <li>Open up the ‘Dimensionality Reduction’ tab.</li>
 <li>Select a sub-tab for either ‘PCA’ or ‘ICA’ computation. Separate tabs are available for both methods if the user wishes to compute and inspect both separately.</li>
@@ -349,7 +349,7 @@
 <li>Heatmap plot has various options available for the users to customize the plot. Since a plot is computed against each component, a user-defined number of components can be selected against. Moreover, for viewing quality, a number of columns can be selected in which the plots should be shown.</li>
 </ol>
 <p><strong>5. tSNE/UMAP</strong> <br> ‘tSNE’ and ‘UMAP’ can be computed and plotted once components are available from ‘Dimensionality Reduction’ tab.</p>
-<p><img src="ui_screenshots/seurat/seurat_5_tsneUmap.png"></p>
+<p><img src="ui_screenshots/seurat/seurat_5_tsneUmap.png"><br></p>
 <ol style="list-style-type: decimal">
 <li>Open up the ‘tSNE/UMAP’ tab.</li>
 <li>Select ‘tSNE’ or ‘UMAP’ sub-tab.</li>
@@ -360,7 +360,7 @@
 <li>‘tSNE’ or ‘UMAP’ plot depending upon the selected computation.</li>
 </ol>
 <p><strong>6. Clustering</strong> <br> Cluster labels can be generated for all cells/samples using one of the computed reduction method. Plots are automatically re-computed with cluster labels. The available algorithms for clustering as provided by <code>Seurat</code> include <code>original Louvain algorithm</code>, <code>Louvain algorithm with multilevel refinement</code> and <code>SLM algorithm</code>.</p>
-<p><img src="ui_screenshots/seurat/seurat_6_clustering.png"></p>
+<p><img src="ui_screenshots/seurat/seurat_6_clustering.png"><br></p>
 <ol style="list-style-type: decimal">
 <li>Open up the ‘Clustering’ tab.</li>
 <li>Select a previously computed reduction method.</li>
@@ -373,24 +373,22 @@
 <li>Re-computed plots with cluster labels. Only those plots are available that have previously been computed.</li>
 </ol>
 <p><strong>7. Find Markers</strong> <br> ‘Find Markers’ tab can be used to identify and visualize the marker genes using on of the provided visualization methods. The tab offers identification of markers between two selected phenotype groups or between all groups and can be decided at the time of the computation. Furthermore, markers that are conserved between two phenotype groups can also be identified. Visualizations such as Ridge Plot, Violin Plot, Feature Plot and Heatmap Plot can be used to visualize the individual marker genes.</p>
-<p><img src="ui_screenshots/seurat/seurat_7_findmarkers_1.png"> 1. Select if you want to identify marker genes against all groups in a biological variable or between two pre-defined groups. Additionally, users can select the last option to identify the marker genes that are conserved between two groups. 2. Select phenotype variable that contains the grouping information. 3. Select test used for marker genes identification. 4. Select if only positive markers should be returned. 5. Press “Find Markers” button to run marker identification.</p>
-<p><img src="ui_screenshots/seurat/seurat_7_findmarkers_2.png"> 6. Identified marker genes are populated in the table. 7. Filters can be applied on the table.</p>
-<p><img src="ui_screenshots/seurat/seurat_7_findmarkers_3.png"> 8. Filters allow different comparisons based on the type of the column of the table.</p>
-<p><img src="ui_screenshots/seurat/seurat_7_findmarkers_4.png"> 9. Table re-populated after applying filters. 10. Heatmap plot can be visualized for all genes populated in the table (9) against all biological groups in the selected phenotype variable.</p>
-<p><img src="ui_screenshots/seurat/seurat_7_findmarkers_5.png"> 11. To visualize each individual marker gene through gene plots, they can be selected by clicking on the relevant rows of the table.</p>
-<p><img src="ui_screenshots/seurat/seurat_7_findmarkers_6.png"> 12. Selected marker genes from the table are plotted with gene plots.</p>
+<p><img src="ui_screenshots/seurat/seurat_7_findmarkers_1.png"><br> 1. Select if you want to identify marker genes against all groups in a biological variable or between two pre-defined groups. Additionally, users can select the last option to identify the marker genes that are conserved between two groups. 2. Select phenotype variable that contains the grouping information. 3. Select test used for marker genes identification. 4. Select if only positive markers should be returned. 5. Press “Find Markers” button to run marker identification.</p>
+<p><img src="ui_screenshots/seurat/seurat_7_findmarkers_2.png"><br> 6. Identified marker genes are populated in the table. 7. Filters can be applied on the table.</p>
+<p><img src="ui_screenshots/seurat/seurat_7_findmarkers_3.png"><br> 8. Filters allow different comparisons based on the type of the column of the table.</p>
+<p><img src="ui_screenshots/seurat/seurat_7_findmarkers_4.png"><br> 9. Table re-populated after applying filters. 10. Heatmap plot can be visualized for all genes populated in the table (9) against all biological groups in the selected phenotype variable.</p>
+<p><img src="ui_screenshots/seurat/seurat_7_findmarkers_5.png"><br> 11. To visualize each individual marker gene through gene plots, they can be selected by clicking on the relevant rows of the table.</p>
+<p><img src="ui_screenshots/seurat/seurat_7_findmarkers_6.png"><br> 12. Selected marker genes from the table are plotted with gene plots.</p>
 <p><strong>8. Downstream Analysis</strong> <br> Once all steps of the Seurat workflow are completed, users can further analyze the data by directly going to the various downstream analysis options (Differential Expression, Marker Selection &amp; Pathway Analysis) from within the Seurat workflow.</p>
-<p><img src="ui_screenshots/seurat/seurat_7_findmarkers_7.png"></p>
+<p><img src="ui_screenshots/seurat/seurat_7_findmarkers_7.png"><br></p>
 </div>
 <div id="console" class="tabcontent">
-<p>All methods provided by SCTK for Seurat workflow use a  object both as an input and output.</p>
+<p>All methods provided by SCTK for Seurat workflow use a <code>SingleCellExperiment</code> object both as an input and output.</p>
 <p>Using a sample dataset:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://compbiomed.github.io/sctk_docs/">singleCellTK</a></span><span class="op">)</span></code></pre></div>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/importExampleData.html">importExampleData</a></span><span class="op">(</span><span class="st">'pbmc3k'</span><span class="op">)</span></code></pre></div>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">sce</span></code></pre></div>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://compbiomed.github.io/sctk_docs/">singleCellTK</a></span><span class="op">)</span>
+<span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/importExampleData.html">importExampleData</a></span><span class="op">(</span><span class="st">'pbmc3k'</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span></code></pre></div>
 <pre><code>## class: SingleCellExperiment 
 ## dim: 32738 2700 
 ## metadata(0):
@@ -402,105 +400,50 @@
 ## colData names(12): Sample Barcode ... Date_published sample
 ## reducedDimNames(0):
 ## altExpNames(0):</code></pre>
-<p><strong>1. Normalize Data</strong> <br> Once raw data is uploaded and stored in a SingleCellExperiment object, seuratNormalizeData function can be used to normalize the data. The method returns a SingleCellExperiment object with normalized data stored as a new assay in the input object.</p>
-<p>Parameters to this function include useAssay (specify the assay that should be normalized), normAssayName (specify the new name of the normalized assay, defaults to “seuratNormData”), normalizationMethod (specify the normalization method to use, defaults to “LogNormalize”) and scaleFactor (defaults to 10000).</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<p><strong>1. Normalize Data</strong> <br> Once raw data is uploaded and stored in a <code>SingleCellExperiment</code> object, <code><a href="../../reference/seuratNormalizeData.html">seuratNormalizeData()</a></code> function can be used to normalize the data. The method returns a <code>SingleCellExperiment</code> object with normalized data stored as a new assay in the input object.</p>
+<p>Parameters to this function include <code>useAssay</code> (specify the assay that should be normalized), <code>normAssayName</code> (specify the new name of the normalized assay, defaults to <code>"seuratNormData"</code>), <code>normalizationMethod</code> (specify the normalization method to use, defaults to <code>"LogNormalize"</code>) and <code>scaleFactor</code> (defaults to <code>10000</code>).</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/seuratNormalizeData.html">seuratNormalizeData</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"counts"</span>, normAssayName <span class="op">=</span> <span class="st">"seuratNormData"</span><span class="op">)</span></code></pre></div>
-<p><strong>2. Scale Data</strong> <br> Normalized data can be scaled by using the seuratScaleData function that takes inputs a SingleCellExperiment object that has been normalized previously by the seuratNormalizeData function. Scaled assay is stored back in the input object.</p>
-<p>Parameters include useAssay (specify the name of normalized assay), scaledAssayName (specify the new name for scaled assay, defaults to “seuratScaledData”), model (specify the method to use, defaults to “linear”), scale (specify if the data should be scaled, defaults to TRUE), center (specify if the data should be centered, defaults to TRUE) and scaleMax (specify the maximum clipping value, defaults to 10).</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<p><strong>2. Scale Data</strong> <br> Normalized data can be scaled by using the <code><a href="../../reference/seuratScaleData.html">seuratScaleData()</a></code> function that takes input a <code>SingleCellExperiment</code> object that has been normalized previously by the <code><a href="../../reference/seuratNormalizeData.html">seuratNormalizeData()</a></code> function. Scaled assay is stored back in the input object.</p>
+<p>Parameters include <code>useAssay</code> (specify the name of normalized assay), <code>scaledAssayName</code> (specify the new name for scaled assay, defaults to <code>"seuratScaledData"</code>), <code>model</code> (specify the method to use, defaults to <code>"linear"</code>), <code>scale</code> (specify if the data should be scaled, defaults to <code>TRUE</code>), <code>center</code> (specify if the data should be centered, defaults to <code>TRUE</code>) and <code>scaleMax</code> (specify the maximum clipping value, defaults to <code>10</code>).</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/seuratScaleData.html">seuratScaleData</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"seuratNormData"</span>, scaledAssayName <span class="op">=</span> <span class="st">"seuratScaledData"</span><span class="op">)</span></code></pre></div>
-<pre><code>## Centering and scaling data matrix</code></pre>
-<p><strong>3. Highly Variable Genes</strong> <br> Highly variable genes can be identified by first using the seuratFindHVG function that computes that statistics against a selected HVG method in the rowData of input object. The genes can be identified by using the .seuratGetVariableFeatures function. The variable genes can be visualized using the seuratPlotHVG(vals$counts) method. Parameters for seuratFindHVG include useAssay (specify the name of the scaled assay, defaults to “counts” for “vst” and “seuratScaledData” for other methods) and hvgMethod (specify the method to use for variable genes computation, defaults to “vst”).</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<p><strong>3. Highly Variable Genes</strong> <br> Highly variable genes can be identified by first using the <code><a href="../../reference/seuratFindHVG.html">seuratFindHVG()</a></code> function that computes that statistics against a selected HVG method in the rowData of input object. The genes can be identified by using the <code><a href="../../reference/getTopHVG.html">getTopHVG()</a></code> function. The variable genes can be visualized using the <code><a href="../../reference/seuratPlotHVG.html">seuratPlotHVG()</a></code> method. <br> Parameters for <code><a href="../../reference/seuratFindHVG.html">seuratFindHVG()</a></code> include <code>useAssay</code> (specify the name of the scaled assay, defaults to <code>"seuratScaledData"</code> but <code>"counts"</code> should be used with <code>"vst"</code> method) and <code>hvgMethod()</code> (specify the method to use for variable genes computation, defaults to <code>"vst"</code>).</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/seuratFindHVG.html">seuratFindHVG</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"counts"</span>, hvgMethod <span class="op">=</span> <span class="st">"vst"</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="fu">singleCellTK</span><span class="fu">:::</span><span class="fu"><a href="../../reference/.seuratGetVariableFeatures.html">.seuratGetVariableFeatures</a></span><span class="op">(</span><span class="va">sce</span>, <span class="fl">100</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<pre><code>##   [1] "PPBP"       "LYZ"        "S100A9"     "IGLL5"      "GNLY"      
-##   [6] "FTL"        "PF4"        "FTH1"       "GNG11"      "FCER1A"    
-##  [11] "HLA-DRA"    "S100A8"     "CD74"       "CLU"        "GZMB"      
-##  [16] "NKG7"       "C1QA"       "CST3"       "CCL4"       "HLA-DPB1"  
-##  [21] "SDPR"       "C1QB"       "AL928768.3" "TYMS"       "TUBB1"     
-##  [26] "RRM2"       "STMN1"      "GUSB"       "MZB1"       "C10orf32"  
-##  [31] "GP9"        "IGJ"        "LYPD2"      "HAGH"       "TK1"       
-##  [36] "FUS"        "LYAR"       "DSCR3"      "SLA"        "SMIM7"     
-##  [41] "KIF5B"      "PPP6C"      "HBP1"       "TMX2"       "HBA1"      
-##  [46] "INTS12"     "HLA-DPA1"   "KIAA0101"   "CA2"        "APOBEC3B"  
-##  [51] "CCL3"       "LILRA4"     "PRDX1"      "GIMAP5"     "CD79A"     
-##  [56] "HLA-DRB1"   "SERPINF1"   "MYL9"       "PRKCB"      "C16orf13"  
-##  [61] "MLLT11"     "LST1"       "BIRC5"      "TNFRSF17"   "NDUFA12"   
-##  [66] "CCL5"       "THOC7"      "RABL6"      "SIVA1"      "SDHB"      
-##  [71] "STK38"      "CLDN5"      "TREML1"     "UBLCP1"     "IFI27"     
-##  [76] "SPARC"      "HIST1H2AC"  "PTGDS"      "C14orf1"    "RALY"      
-##  [81] "IL8"        "PRF1"       "CLEC2B"     "TNFSF10"    "FCGR3A"    
-##  [86] "ODC1"       "MED30"      "STAMBP"     "GMPR"       "GZMH"      
-##  [91] "CWC15"      "DNASE1L3"   "TMEM208"    "ACTB"       "FGFBP2"    
-##  [96] "CXCL3"      "IDH2"       "TYROBP"     "NXT2"       "FCER1G"</code></pre>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="fu"><a href="../../reference/getTopHVG.html">getTopHVG</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, method <span class="op">=</span> <span class="st">"vst"</span>, n <span class="op">=</span> <span class="fl">10</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<pre><code>##  [1] "PPBP"   "LYZ"    "S100A9" "IGLL5"  "GNLY"   "FTL"    "PF4"    "FTH1"  
+##  [9] "GNG11"  "FCER1A"</code></pre>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../../reference/seuratPlotHVG.html">seuratPlotHVG</a></span><span class="op">(</span><span class="va">sce</span>, labelPoints <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></code></pre></div>
-<p><img src="cnsl_seurat_curated_workflow_files/figure-html/unnamed-chunk-6-1.png" width="700"></p>
-<p><strong>4. Dimensionality Reduction</strong> <br> PCA or ICA can be computed using the seuratPCA and seuratICA functions respectively. Plots can be visualized using seuratReductionPlot, seuratElbowPlot, seuratComputeJackStraw, seuratJackStrawPlot, seuratComputeHeatmap.</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/seuratPCA.html">seuratPCA</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"seuratScaledData"</span>, reducedDimName <span class="op">=</span> <span class="st">"seuratPCA"</span>, nPCs <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></code></pre></div>
-<pre><code>## PC_ 1 
-## Positive:  CST3, TYROBP, LST1, AIF1, FTL, FCN1, LYZ, FTH1, S100A9, FCER1G 
-##     TYMP, CFD, LGALS1, S100A8, CTSS, LGALS2, SERPINA1, SPI1, IFITM3, PSAP 
-##     CFP, SAT1, IFI30, COTL1, S100A11, NPC2, LGALS3, GSTP1, PYCARD, NCF2 
-## Negative:  MALAT1, LTB, IL32, CD2, ACAP1, STK17A, CTSW, CD247, CCL5, GIMAP5 
-##     AQP3, GZMA, CST7, TRAF3IP3, MAL, HOPX, ITM2A, GZMK, MYC, GIMAP7 
-##     BEX2, ETS1, LDLRAP1, ZAP70, LYAR, RIC3, TNFAIP8, NKG7, KLRG1, SAMD3 
-## PC_ 2 
-## Positive:  NKG7, PRF1, CST7, GZMA, GZMB, FGFBP2, CTSW, GNLY, GZMH, SPON2 
-##     CCL4, FCGR3A, CCL5, CD247, XCL2, CLIC3, AKR1C3, SRGN, HOPX, CTSC 
-##     TTC38, S100A4, ANXA1, IL32, IGFBP7, ID2, ACTB, XCL1, APOBEC3G, SAMD3 
-## Negative:  CD79A, MS4A1, TCL1A, HLA-DQA1, HLA-DRA, HLA-DQB1, LINC00926, CD79B, HLA-DRB1, CD74 
-##     HLA-DPB1, HLA-DMA, HLA-DQA2, HLA-DRB5, HLA-DPA1, HLA-DMB, FCRLA, HVCN1, LTB, BLNK 
-##     KIAA0125, P2RX5, IRF8, IGLL5, SWAP70, ARHGAP24, SMIM14, PPP1R14A, FCRL2, C16orf74 
-## PC_ 3 
-## Positive:  HLA-DQA1, CD79A, CD79B, HLA-DQB1, HLA-DPB1, CD74, HLA-DPA1, MS4A1, HLA-DRB1, HLA-DRB5 
-##     HLA-DRA, HLA-DQA2, TCL1A, LINC00926, HLA-DMB, HLA-DMA, HVCN1, FCRLA, IRF8, BLNK 
-##     KIAA0125, SMIM14, PLD4, P2RX5, IGLL5, SWAP70, LAT2, TMSB10, IGJ, MZB1 
-## Negative:  PPBP, PF4, SDPR, SPARC, GNG11, NRGN, GP9, RGS18, TUBB1, CLU 
-##     HIST1H2AC, AP001189.4, ITGA2B, CD9, TMEM40, CA2, PTCRA, ACRBP, MMD, NGFRAP1 
-##     TREML1, F13A1, RUFY1, SEPT5, MPP1, TSC22D1, CMTM5, RP11-367G6.3, MYL9, GP1BA 
-## PC_ 4 
-## Positive:  HLA-DQA1, HIST1H2AC, PF4, CD79A, SDPR, CD79B, PPBP, GNG11, HLA-DQB1, SPARC 
-##     MS4A1, CD74, GP9, HLA-DPB1, RGS18, NRGN, PTCRA, CD9, HLA-DQA2, AP001189.4 
-##     CLU, TUBB1, CA2, HLA-DRB1, HLA-DPA1, ITGA2B, HLA-DRA, TCL1A, TMEM40, ACRBP 
-## Negative:  VIM, S100A8, S100A6, S100A4, TMSB10, S100A9, IL32, GIMAP7, S100A10, LGALS2 
-##     RBP7, MAL, FCN1, LYZ, CD2, S100A12, MS4A6A, FYB, S100A11, AQP3 
-##     GIMAP4, FOLR3, ANXA1, MALAT1, AIF1, GIMAP5, IL8, IFI6, TRABD2A, ASGR1 
-## PC_ 5 
-## Positive:  GZMB, FGFBP2, NKG7, GNLY, PRF1, CCL4, CST7, SPON2, GZMA, GZMH 
-##     CLIC3, XCL2, CTSW, TTC38, AKR1C3, CCL5, IGFBP7, XCL1, S100A8, CCL3 
-##     TYROBP, HOPX, CD160, HAVCR2, S100A9, FCER1G, PTGDR, LGALS2, RBP7, S100A12 
-## Negative:  LTB, VIM, AQP3, PPA1, MAL, KIAA0101, CD2, CORO1B, CYTIP, FYB 
-##     IL32, TRADD, ANXA5, TUBA1B, HN1, PTGES3, TYMS, ITM2A, COTL1, GPR183 
-##     ACTG1, TNFAIP8, ATP5C1, TRAF3IP3, GIMAP4, PRDX1, ZWINT, ABRACL, NGFRAP1, LDLRAP1</code></pre>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../../reference/seuratReductionPlot.html">seuratReductionPlot</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useReduction <span class="op">=</span> <span class="st">"pca"</span><span class="op">)</span></code></pre></div>
-<p><img src="cnsl_seurat_curated_workflow_files/figure-html/unnamed-chunk-7-1.png" width="700"></p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<p><img src="cnsl_seurat_curated_workflow_files/figure-html/seurat_hvg-1.png" width="700"></p>
+<p><strong>4. Dimensionality Reduction</strong> <br> PCA or ICA can be computed using the <code><a href="../../reference/seuratPCA.html">seuratPCA()</a></code> and <code><a href="../../reference/seuratICA.html">seuratICA()</a></code> functions respectively. Plots can be visualized using <code><a href="../../reference/seuratReductionPlot.html">seuratReductionPlot()</a></code>, <code><a href="../../reference/seuratElbowPlot.html">seuratElbowPlot()</a></code>, <code><a href="../../reference/seuratComputeJackStraw.html">seuratComputeJackStraw()</a></code>, <code><a href="../../reference/seuratJackStrawPlot.html">seuratJackStrawPlot()</a></code> and <code><a href="../../reference/seuratComputeHeatmap.html">seuratComputeHeatmap()</a></code>.</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/seuratPCA.html">seuratPCA</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"seuratScaledData"</span>, reducedDimName <span class="op">=</span> <span class="st">"seuratPCA"</span>, nPCs <span class="op">=</span> <span class="fl">20</span><span class="op">)</span>
+<span class="fu"><a href="../../reference/seuratReductionPlot.html">seuratReductionPlot</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useReduction <span class="op">=</span> <span class="st">"pca"</span><span class="op">)</span></code></pre></div>
+<p><img src="cnsl_seurat_curated_workflow_files/figure-html/seurat_dm-1.png" width="700"></p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../../reference/seuratElbowPlot.html">seuratElbowPlot</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span><span class="op">)</span></code></pre></div>
 <div id="htmlwidget-530cfa52d3babb35245b" style="width:700px;height:432.632880098888px;" class="plotly html-widget"></div>
-<script type="application/json" data-for="htmlwidget-530cfa52d3babb35245b">{"x":{"data":[{"x":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20],"y":[6.84331509490855,4.43266497066943,3.82578185893237,3.69748479873893,3.19756193915266,2.58392430187118,2.26480770931354,2.02961166116501,1.89546913976367,1.82208912025757,1.80293123317712,1.77708578524214,1.77026966721517,1.75990881185453,1.73521492510991,1.73199558067671,1.72031464668751,1.7159379460096,1.71286389434164,1.71160640658426],"text":["Dimension: 1 <br />Standard Deviation: 6.8 <br />Is Significant? ","Dimension: 2 <br />Standard Deviation: 4.4 <br />Is Significant? ","Dimension: 3 <br />Standard Deviation: 3.8 <br />Is Significant? ","Dimension: 4 <br />Standard Deviation: 3.7 <br />Is Significant? ","Dimension: 5 <br />Standard Deviation: 3.2 <br />Is Significant? ","Dimension: 6 <br />Standard Deviation: 2.6 <br />Is Significant? ","Dimension: 7 <br />Standard Deviation: 2.3 <br />Is Significant? ","Dimension: 8 <br />Standard Deviation: 2 <br />Is Significant? ","Dimension: 9 <br />Standard Deviation: 1.9 <br />Is Significant? ","Dimension: 10 <br />Standard Deviation: 1.8 <br />Is Significant? ","Dimension: 11 <br />Standard Deviation: 1.8 <br />Is Significant? ","Dimension: 12 <br />Standard Deviation: 1.8 <br />Is Significant? ","Dimension: 13 <br />Standard Deviation: 1.8 <br />Is Significant? ","Dimension: 14 <br />Standard Deviation: 1.8 <br />Is Significant? ","Dimension: 15 <br />Standard Deviation: 1.7 <br />Is Significant? ","Dimension: 16 <br />Standard Deviation: 1.7 <br />Is Significant? ","Dimension: 17 <br />Standard Deviation: 1.7 <br />Is Significant? ","Dimension: 18 <br />Standard Deviation: 1.7 <br />Is Significant? ","Dimension: 19 <br />Standard Deviation: 1.7 <br />Is Significant? ","Dimension: 20 <br />Standard Deviation: 1.7 <br />Is Significant? "],"type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(0,0,0,1)","opacity":1,"size":5.66929133858268,"symbol":"circle","line":{"width":1.88976377952756,"color":"rgba(0,0,0,1)"}},"hoveron":"points","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null}],"layout":{"margin":{"t":31.049537260322,"r":9.29846409298464,"b":54.2359216521858,"l":40.5147364051474},"font":{"color":"rgba(0,0,0,1)","family":"","size":18.5969281859693},"xaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[0.0499999999999999,20.95],"tickmode":"array","ticktext":["5","10","15","20"],"tickvals":[5,10,15,20],"categoryorder":"array","categoryarray":["5","10","15","20"],"nticks":null,"ticks":"outside","tickcolor":"rgba(0,0,0,1)","ticklen":4.64923204649232,"tickwidth":0.66417600664176,"showticklabels":true,"tickfont":{"color":"rgba(0,0,0,1)","family":"","size":15.9402241594022},"tickangle":-0,"showline":true,"linecolor":"rgba(0,0,0,1)","linewidth":0.66417600664176,"showgrid":false,"gridcolor":null,"gridwidth":0,"zeroline":false,"anchor":"y","title":{"text":"PC","font":{"color":"rgba(0,0,0,1)","family":"","size":18.5969281859693}},"hoverformat":".2f"},"yaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[1.45502097216805,7.09990052932476],"tickmode":"array","ticktext":["2","3","4","5","6","7"],"tickvals":[2,3,4,5,6,7],"categoryorder":"array","categoryarray":["2","3","4","5","6","7"],"nticks":null,"ticks":"outside","tickcolor":"rgba(0,0,0,1)","ticklen":4.64923204649232,"tickwidth":0.66417600664176,"showticklabels":true,"tickfont":{"color":"rgba(0,0,0,1)","family":"","size":15.9402241594022},"tickangle":-0,"showline":true,"linecolor":"rgba(0,0,0,1)","linewidth":0.66417600664176,"showgrid":false,"gridcolor":null,"gridwidth":0,"zeroline":false,"anchor":"x","title":{"text":"Standard Deviation","font":{"color":"rgba(0,0,0,1)","family":"","size":18.5969281859693}},"hoverformat":".2f"},"shapes":[{"type":"rect","fillcolor":null,"line":{"color":null,"width":0,"linetype":[]},"yref":"paper","xref":"paper","x0":0,"x1":1,"y0":0,"y1":1}],"showlegend":false,"legend":{"bgcolor":null,"bordercolor":null,"borderwidth":0,"font":{"color":"rgba(0,0,0,1)","family":"","size":15.9402241594022}},"hovermode":"closest","barmode":"relative"},"config":{"doubleClick":"reset","showSendToCloud":false},"source":"A","attrs":{"307d854067a19":{"x":{},"y":{},"type":"scatter"}},"cur_data":"307d854067a19","visdat":{"307d854067a19":["function (y) ","x"]},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.2,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script><div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<script type="application/json" data-for="htmlwidget-530cfa52d3babb35245b">{"x":{"data":[{"x":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20],"y":[6.84331509490855,4.43266497066943,3.82578185893237,3.69748479873893,3.19756193915266,2.58392430187118,2.26480770931354,2.02961166116501,1.89546913976367,1.82208912025757,1.80293123317712,1.77708578524214,1.77026966721517,1.75990881185453,1.73521492510991,1.73199558067671,1.72031464668751,1.7159379460096,1.71286389434164,1.71160640658426],"text":["Dimension: 1 <br />Standard Deviation: 6.8 <br />Is Significant? ","Dimension: 2 <br />Standard Deviation: 4.4 <br />Is Significant? ","Dimension: 3 <br />Standard Deviation: 3.8 <br />Is Significant? ","Dimension: 4 <br />Standard Deviation: 3.7 <br />Is Significant? ","Dimension: 5 <br />Standard Deviation: 3.2 <br />Is Significant? ","Dimension: 6 <br />Standard Deviation: 2.6 <br />Is Significant? ","Dimension: 7 <br />Standard Deviation: 2.3 <br />Is Significant? ","Dimension: 8 <br />Standard Deviation: 2 <br />Is Significant? ","Dimension: 9 <br />Standard Deviation: 1.9 <br />Is Significant? ","Dimension: 10 <br />Standard Deviation: 1.8 <br />Is Significant? ","Dimension: 11 <br />Standard Deviation: 1.8 <br />Is Significant? ","Dimension: 12 <br />Standard Deviation: 1.8 <br />Is Significant? ","Dimension: 13 <br />Standard Deviation: 1.8 <br />Is Significant? ","Dimension: 14 <br />Standard Deviation: 1.8 <br />Is Significant? ","Dimension: 15 <br />Standard Deviation: 1.7 <br />Is Significant? ","Dimension: 16 <br />Standard Deviation: 1.7 <br />Is Significant? ","Dimension: 17 <br />Standard Deviation: 1.7 <br />Is Significant? ","Dimension: 18 <br />Standard Deviation: 1.7 <br />Is Significant? ","Dimension: 19 <br />Standard Deviation: 1.7 <br />Is Significant? ","Dimension: 20 <br />Standard Deviation: 1.7 <br />Is Significant? "],"type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(0,0,0,1)","opacity":1,"size":5.66929133858268,"symbol":"circle","line":{"width":1.88976377952756,"color":"rgba(0,0,0,1)"}},"hoveron":"points","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null}],"layout":{"margin":{"t":31.049537260322,"r":9.29846409298464,"b":54.2359216521858,"l":40.5147364051474},"font":{"color":"rgba(0,0,0,1)","family":"","size":18.5969281859693},"xaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[0.0499999999999999,20.95],"tickmode":"array","ticktext":["5","10","15","20"],"tickvals":[5,10,15,20],"categoryorder":"array","categoryarray":["5","10","15","20"],"nticks":null,"ticks":"outside","tickcolor":"rgba(0,0,0,1)","ticklen":4.64923204649232,"tickwidth":0.66417600664176,"showticklabels":true,"tickfont":{"color":"rgba(0,0,0,1)","family":"","size":15.9402241594022},"tickangle":-0,"showline":true,"linecolor":"rgba(0,0,0,1)","linewidth":0.66417600664176,"showgrid":false,"gridcolor":null,"gridwidth":0,"zeroline":false,"anchor":"y","title":{"text":"PC","font":{"color":"rgba(0,0,0,1)","family":"","size":18.5969281859693}},"hoverformat":".2f"},"yaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[1.45502097216805,7.09990052932476],"tickmode":"array","ticktext":["2","3","4","5","6","7"],"tickvals":[2,3,4,5,6,7],"categoryorder":"array","categoryarray":["2","3","4","5","6","7"],"nticks":null,"ticks":"outside","tickcolor":"rgba(0,0,0,1)","ticklen":4.64923204649232,"tickwidth":0.66417600664176,"showticklabels":true,"tickfont":{"color":"rgba(0,0,0,1)","family":"","size":15.9402241594022},"tickangle":-0,"showline":true,"linecolor":"rgba(0,0,0,1)","linewidth":0.66417600664176,"showgrid":false,"gridcolor":null,"gridwidth":0,"zeroline":false,"anchor":"x","title":{"text":"Standard Deviation","font":{"color":"rgba(0,0,0,1)","family":"","size":18.5969281859693}},"hoverformat":".2f"},"shapes":[{"type":"rect","fillcolor":null,"line":{"color":null,"width":0,"linetype":[]},"yref":"paper","xref":"paper","x0":0,"x1":1,"y0":0,"y1":1}],"showlegend":false,"legend":{"bgcolor":null,"bordercolor":null,"borderwidth":0,"font":{"color":"rgba(0,0,0,1)","family":"","size":15.9402241594022}},"hovermode":"closest","barmode":"relative"},"config":{"doubleClick":"reset","showSendToCloud":false},"source":"A","attrs":{"31ed44af8217":{"x":{},"y":{},"type":"scatter"}},"cur_data":"31ed44af8217","visdat":{"31ed44af8217":["function (y) ","x"]},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.2,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script><div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/seuratComputeJackStraw.html">seuratComputeJackStraw</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"seuratScaledData"</span>, dims <span class="op">=</span> <span class="fl">20</span><span class="op">)</span>
 <span class="fu"><a href="../../reference/seuratJackStrawPlot.html">seuratJackStrawPlot</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, dims <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></code></pre></div>
-<p><img src="cnsl_seurat_curated_workflow_files/figure-html/unnamed-chunk-7-3.png" width="700"></p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<p><img src="cnsl_seurat_curated_workflow_files/figure-html/seurat_dm-3.png" width="700"></p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../../reference/seuratComputeHeatmap.html">seuratComputeHeatmap</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"seuratScaledData"</span>, useReduction <span class="op">=</span> <span class="st">"pca"</span>, nfeatures <span class="op">=</span> <span class="fl">20</span>, dims <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></code></pre></div>
-<p><img src="cnsl_seurat_curated_workflow_files/figure-html/unnamed-chunk-7-4.png" width="700"></p>
-<p><strong>5. tSNE/UMAP</strong> <br> seuratRunTSNE/seuratRunUMAP can be used to compute tSNE/UMAP statistics and store into the input object. Parameters to both functions include inSCE(input SCE object), useReduction (specify the reduction to use i.e. pca or ica), reducedDimName (name of this new reduction) and dims (number of dims to use). seuratReductionPlot can be used to visualize the results.</p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<p><img src="cnsl_seurat_curated_workflow_files/figure-html/seurat_dm-4.png" width="700"></p>
+<p><strong>5. tSNE/UMAP</strong> <br><code><a href="../../reference/seuratRunTSNE.html">seuratRunTSNE()</a></code> and <code><a href="../../reference/seuratRunUMAP.html">seuratRunUMAP()</a></code> can be used to compute tSNE/UMAP statistics and store into the input object. Parameters to both functions include <code>inSCE</code> (input SCE object), <code>useReduction</code> (specify the reduction to use i.e. <code>"pca"</code> or <code>"ica"</code>), <code>reducedDimName</code> (name of this new reduction) and <code>dims</code> (number of dims to use). <code><a href="../../reference/seuratReductionPlot.html">seuratReductionPlot()</a></code> can be used to visualize the results.</p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/seuratRunTSNE.html">seuratRunTSNE</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useReduction <span class="op">=</span> <span class="st">"pca"</span>, reducedDimName <span class="op">=</span> <span class="st">"seuratTSNE"</span>, dims <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>
 <span class="fu"><a href="../../reference/seuratReductionPlot.html">seuratReductionPlot</a></span><span class="op">(</span><span class="va">sce</span>, <span class="st">"tsne"</span><span class="op">)</span></code></pre></div>
-<p><img src="cnsl_seurat_curated_workflow_files/figure-html/unnamed-chunk-8-1.png" width="700"></p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<p><img src="cnsl_seurat_curated_workflow_files/figure-html/seurat_tsne_umap-1.png" width="700"></p>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/seuratRunUMAP.html">seuratRunUMAP</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useReduction <span class="op">=</span> <span class="st">"pca"</span>, reducedDimName <span class="op">=</span> <span class="st">"seuratUMAP"</span>, dims <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></code></pre></div>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../../reference/seuratReductionPlot.html">seuratReductionPlot</a></span><span class="op">(</span><span class="va">sce</span>, <span class="st">"umap"</span><span class="op">)</span></code></pre></div>
-<p><img src="cnsl_seurat_curated_workflow_files/figure-html/unnamed-chunk-10-1.png" width="700"></p>
-<p><strong>6. Clustering</strong> <br> seuratFindClusters function can be used to compute the clusters, which can later be plotted through the seuratReductionPlot method with cluster labels. The parameters to the function include inSCE (input SCE object), useAssay (name of the scaled assay), useReduction (specify which reduction to use i.e. pca or ica), dims (number of dims to use) and the algorithm (either louvain, multilevel or SLM).</p>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<p><img src="cnsl_seurat_curated_workflow_files/figure-html/unnamed-chunk-2-1.png" width="700"></p>
+<p><strong>6. Clustering</strong> <br><code><a href="../../reference/seuratFindClusters.html">seuratFindClusters()</a></code> function can be used to compute the clusters, which can later be plotted through the <code><a href="../../reference/seuratReductionPlot.html">seuratReductionPlot()</a></code> method with cluster labels. The parameters to the function include <code>inSCE</code> (input SCE object), <code>useAssay</code> (name of the scaled assay), <code>useReduction</code> (specify which reduction to use i.e. <code>"pca"</code> or <code>"ica"</code>), <code>dims</code> (number of dims to use) and the algorithm (either <code>"louvain"</code>, <code>"multilevel"</code> or <code>"SLM"</code>).</p>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/seuratFindClusters.html">seuratFindClusters</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"seuratScaledData"</span>, useReduction <span class="op">=</span> <span class="st">"pca"</span>, dims <span class="op">=</span> <span class="fl">10</span>, algorithm <span class="op">=</span> <span class="st">"louvain"</span><span class="op">)</span></code></pre></div>
 <pre><code>## Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
 ## 
@@ -511,21 +454,20 @@
 ## Maximum modularity in 10 random starts: 0.8279
 ## Number of communities: 11
 ## Elapsed time: 0 seconds</code></pre>
-<p>seuratReductionPlot can then be used to plot all reductions previously computed with cluster labels:</p>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<p><code><a href="../../reference/seuratReductionPlot.html">seuratReductionPlot()</a></code> can then be used to plot all reductions previously computed with cluster labels:</p>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../../reference/seuratReductionPlot.html">seuratReductionPlot</a></span><span class="op">(</span><span class="va">sce</span>, <span class="st">"pca"</span>, showLegend <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
-<p><img src="cnsl_seurat_curated_workflow_files/figure-html/unnamed-chunk-12-1.png" width="700"></p>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<p><img src="cnsl_seurat_curated_workflow_files/figure-html/seurat_cluster_plots-1.png" width="700"></p>
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../../reference/seuratReductionPlot.html">seuratReductionPlot</a></span><span class="op">(</span><span class="va">sce</span>, <span class="st">"tsne"</span>, showLegend <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
-<p><img src="cnsl_seurat_curated_workflow_files/figure-html/unnamed-chunk-12-2.png" width="700"></p>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<p><img src="cnsl_seurat_curated_workflow_files/figure-html/seurat_cluster_plots-2.png" width="700"></p>
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../../reference/seuratReductionPlot.html">seuratReductionPlot</a></span><span class="op">(</span><span class="va">sce</span>, <span class="st">"umap"</span>, showLegend <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
-<p><img src="cnsl_seurat_curated_workflow_files/figure-html/unnamed-chunk-12-3.png" width="700"></p>
-<p><strong>7. Find Markers</strong> <br> Marker genes can be identified using the seuratFindMarers function. This function can either use one specified column from colData of the input object as a group variable if all groups from that variable are to be used ( parameter) or users can manually specify the cells included in one group vs cells included in the second group ( and  parameter).</p>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/seuratFindMarkers.html">seuratFindMarkers</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, allGroup <span class="op">=</span> <span class="st">"Seurat_louvain_Resolution0.8"</span><span class="op">)</span></code></pre></div>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="fu">metadata</span><span class="op">(</span><span class="va">sce</span><span class="op">)</span><span class="op">[[</span><span class="st">"seuratMarkers"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<p><img src="cnsl_seurat_curated_workflow_files/figure-html/seurat_cluster_plots-3.png" width="700"></p>
+<p><strong>7. Find Markers</strong> <br> Marker genes can be identified using the <code><a href="../../reference/seuratFindMarkers.html">seuratFindMarkers()</a></code> function. This function can either use one specified column from <code>colData</code> of the input object as a group variable if all groups from that variable are to be used (<code>allGroup</code> parameter) or users can manually specify the cells included in one group vs cells included in the second group (<code>cells1</code> and <code>cells2</code> parameter).</p>
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/seuratFindMarkers.html">seuratFindMarkers</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, allGroup <span class="op">=</span> <span class="st">"Seurat_louvain_Resolution0.8"</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="fu">metadata</span><span class="op">(</span><span class="va">sce</span><span class="op">)</span><span class="op">[[</span><span class="st">"seuratMarkers"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <pre><code>##   gene.id         p_val avg_logFC pct.1 pct.2     p_val_adj cluster
 ## 1    IL32 8.501667e-123  9.356589 0.942 0.455 2.783276e-118       1
 ## 2     LTB 1.012873e-122 14.236382 0.978 0.630 3.315943e-118       1
@@ -533,14 +475,10 @@
 ## 4    CD3D 1.348847e-105 -2.636582 0.915 0.420 4.415855e-101       1
 ## 5    CD3E  3.157117e-87 -1.943688 0.827 0.393  1.033577e-82       1
 ## 6    IL7R  5.321387e-87 -2.636694 0.736 0.316  1.742116e-82       1</code></pre>
-<p>The marker genes identified can be visualized through one of the available plots from ridge plot, violin plot, feature plot, dot plot and heatmap plot. All marker genes visualizations can be plotted through the wrapper function , which must be supplied the SCE object (markers previously computed), name of the scaled assay, type of the plot (available options are , , ,  and ), features that should be plotted (character vector) and the grouping variable that is available in the colData slot of the input object. An additional parameter  decides in how many columns should the visualizations be plotted.</p>
-<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<p>The marker genes identified can be visualized through one of the available plots from <code>ridge plot</code>, <code>violin plot</code>, <code>feature plot</code>, <code>dot plot</code> and <code>heatmap plot</code>. All marker genes visualizations can be plotted through the wrapper function <code><a href="../../reference/seuratGenePlot.html">seuratGenePlot()</a></code>, which must be supplied the SCE object (markers previously computed), name of the scaled assay, type of the plot (available options are <code>"ridge"</code>, <code>"feature"</code>, <code>"violin"</code>, <code>"dot"</code> and <code>"heatmap"</code>), features that should be plotted (<code>character</code> vector) and the grouping variable that is available in the <code>colData</code> slot of the input object. An additional parameter <code>ncol</code> decides in how many columns should the visualizations be plotted.</p>
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../../reference/seuratGenePlot.html">seuratGenePlot</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, scaledAssayName <span class="op">=</span> <span class="st">"seuratScaledData"</span>, plotType <span class="op">=</span> <span class="st">"ridge"</span>, features <span class="op">=</span> <span class="fu">metadata</span><span class="op">(</span><span class="va">sce</span><span class="op">)</span><span class="op">[[</span><span class="st">"seuratMarkers"</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">gene.id</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span><span class="op">]</span>, groupVariable <span class="op">=</span> <span class="st">"Seurat_louvain_Resolution0.8"</span>, ncol <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></code></pre></div>
-<pre><code>## Picking joint bandwidth of 0.324</code></pre>
-<pre><code>## Picking joint bandwidth of 0.545</code></pre>
-<pre><code>## Picking joint bandwidth of 0.365</code></pre>
-<pre><code>## Picking joint bandwidth of 0.184</code></pre>
-<p><img src="cnsl_seurat_curated_workflow_files/figure-html/unnamed-chunk-15-1.png" width="700"></p>
+<p><img src="cnsl_seurat_curated_workflow_files/figure-html/seurat_genePlots-1.png" width="700"></p>
       </div>
 <script>
 document.getElementById("ia-button").click();
