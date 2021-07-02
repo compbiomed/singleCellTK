@@ -335,9 +335,9 @@ text-align: justify}
 <p>All droplet-based QC functions are able to be run under the wrapper function runDropletQC. By default all possible QC algorithms will be run.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">pbmc4k.droplet</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/runDropletQC.html">runDropletQC</a></span><span class="op">(</span><span class="va">pbmc4k.droplet</span><span class="op">)</span></code></pre></div>
-<pre><code>## Tue Jun 29 16:24:03 2021 ... Running 'perCellQCMetrics'</code></pre>
-<pre><code>## Tue Jun 29 16:24:03 2021 ... Running 'emptyDrops'</code></pre>
-<pre><code>## Tue Jun 29 16:24:50 2021 ... Running 'barcodeRanks'</code></pre>
+<pre><code>## Fri Jul 02 01:12:59 2021 ... Running 'perCellQCMetrics'</code></pre>
+<pre><code>## Fri Jul 02 01:13:00 2021 ... Running 'emptyDrops'</code></pre>
+<pre><code>## Fri Jul 02 01:13:43 2021 ... Running 'barcodeRanks'</code></pre>
 <p>If users choose to only run a specific set of algorithms, they can specify which to run with the <code>algorithms</code> parameter.</p>
 <p>When quality control functions are run in singleCellTK, the output of the function is stored in the colData slot of the SingleCellExperiment object.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
@@ -399,119 +399,13 @@ dropletUtils_BarcodeRank_Inflection
 <tbody>
 <tr>
 <td style="text-align:left;">
-TCAGGTACAGCTTAAC-1
+GTGTTAGGTCTAGTGT-1
 </td>
 <td style="text-align:left;">
 pbmc4k
 </td>
 <td style="text-align:left;">
-TCAGGTACAGCTTAAC-1
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-NaN
-</td>
-<td style="text-align:right;">
-NaN
-</td>
-<td style="text-align:right;">
-NaN
-</td>
-<td style="text-align:right;">
-NaN
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-NA
-</td>
-<td style="text-align:right;">
-NA
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:right;">
-NA
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-ACTATCTTCCTAGAAC-1
-</td>
-<td style="text-align:left;">
-pbmc4k
-</td>
-<td style="text-align:left;">
-ACTATCTTCCTAGAAC-1
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-NaN
-</td>
-<td style="text-align:right;">
-NaN
-</td>
-<td style="text-align:right;">
-NaN
-</td>
-<td style="text-align:right;">
-NaN
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-NA
-</td>
-<td style="text-align:right;">
-NA
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:right;">
-NA
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-GGCGTGTGTCAGATAA-1
-</td>
-<td style="text-align:left;">
-pbmc4k
-</td>
-<td style="text-align:left;">
-GGCGTGTGTCAGATAA-1
+GTGTTAGGTCTAGTGT-1
 </td>
 <td style="text-align:right;">
 1
@@ -558,13 +452,66 @@ NA
 </tr>
 <tr>
 <td style="text-align:left;">
-TGCGCAGAGCAGGTCA-1
+GACTACATCACGAAGG-1
 </td>
 <td style="text-align:left;">
 pbmc4k
 </td>
 <td style="text-align:left;">
-TGCGCAGAGCAGGTCA-1
+GACTACATCACGAAGG-1
+</td>
+<td style="text-align:right;">
+15
+</td>
+<td style="text-align:right;">
+15
+</td>
+<td style="text-align:right;">
+100
+</td>
+<td style="text-align:right;">
+100
+</td>
+<td style="text-align:right;">
+100
+</td>
+<td style="text-align:right;">
+100
+</td>
+<td style="text-align:right;">
+15
+</td>
+<td style="text-align:right;">
+15
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+TTCGGTCCAGCTGGCT-1
+</td>
+<td style="text-align:left;">
+pbmc4k
+</td>
+<td style="text-align:left;">
+TTCGGTCCAGCTGGCT-1
 </td>
 <td style="text-align:right;">
 1
@@ -611,13 +558,66 @@ NA
 </tr>
 <tr>
 <td style="text-align:left;">
-TCATTTGCACATCTTT-1
+GGGTTGCCATTCCTCG-1
 </td>
 <td style="text-align:left;">
 pbmc4k
 </td>
 <td style="text-align:left;">
-TCATTTGCACATCTTT-1
+GGGTTGCCATTCCTCG-1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+NaN
+</td>
+<td style="text-align:right;">
+NaN
+</td>
+<td style="text-align:right;">
+NaN
+</td>
+<td style="text-align:right;">
+NaN
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+CGTCAGGCAGATCCAT-1
+</td>
+<td style="text-align:left;">
+pbmc4k
+</td>
+<td style="text-align:left;">
+CGTCAGGCAGATCCAT-1
 </td>
 <td style="text-align:right;">
 0
@@ -777,7 +777,7 @@ NA
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co">#After filtering:</span>
 <span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span><span class="op">(</span><span class="va">pbmc4k.droplet</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1] 33694   327</code></pre>
+<pre><code>## [1] 33694   328</code></pre>
 <p>We can compare the average total UMI counts per cell before and after cell filtration:</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/plotSCEViolinColData.html">plotSCEViolinColData</a></span><span class="op">(</span><span class="va">pbmc4k.droplet.prefilt</span>, coldata <span class="op">=</span> <span class="st">"sum"</span>, summary <span class="op">=</span> <span class="st">"mean"</span>, title <span class="op">=</span> <span class="st">"Pre-filter"</span>, ylab <span class="op">=</span> <span class="st">"Total counts"</span><span class="op">)</span>

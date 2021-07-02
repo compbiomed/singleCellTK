@@ -12,9 +12,11 @@ csl: ieee.csl
 doEval = TRUE
 ```
 ## Introduction
-Dimensionality reduction algorithms (PCA/ICA & tSNE/UMAP) can be run through the **singleCellTK** toolkit using both interactive shiny application and R console. For the interactive analysis, the toolkit offers a streamlined workflow to both compute metrics for dimensionality reduction and then visualize the results using any of the available interactive plots. For the console analysis, the toolkit offers a single wrapper function `runDimensionalityReduction` to compute metrics for any of the integrated algorithms and multiple methods to visualize the computed results. 
+Dimensionality reduction algorithms (PCA/ICA & tSNE/UMAP) can be run through the **singleCellTK** toolkit using both interactive shiny application and R console. For the interactive analysis, the toolkit offers a streamlined workflow to both compute metrics for dimensionality reduction and then visualize the results using any of the available interactive plots. For the console analysis, the toolkit offers a single wrapper function `runDimensionalityReduction` to compute metrics for any of the integrated algorithms and multiple methods to visualize the computed results. <br>
 
- Methods available with the toolkit include `PCA` from `Scater` package, `PCA`, `ICA`, `tSNE` & `UMAP` from `Seurat` package, `tSNE` from `Rtsne` package and `UMAP` from `uwot` package. Visualization options available for users include '2D Component Plot', 'Elbow Plot', 'JackStraw Plot' and 'Heatmap Plot'. A complete list of supported visualization options against each method are specified at the bottom of the tabs below. To view detailed instructions on how to use these methods, please select 'Interactive Analysis' for using normalization in shiny application or 'Console Analysis' for using these methods on R console from the tabs below:
+Methods available with the toolkit include `PCA` from `Scater` [@McCarthy2017] package, `PCA`, `ICA`, `tSNE` & `UMAP` from `Seurat` [@Butler2018][@Stuart2019][@Satija2017][@Hao2021] package, `tSNE` from `Rtsne` [@Maaten2014][@Maaten2008] package and `UMAP` from `uwot` [@Melville2020] package. Visualization options available for users include `2D Component Plot`, `Elbow Plot`, `JackStraw Plot` and `Heatmap Plot`. A complete list of supported visualization options against each method are specified at the bottom of the tabs below. <br> 
+
+To view detailed instructions on how to use these methods, please select 'Interactive Analysis' for using normalization in shiny application or 'Console Analysis' for using these methods on R console from the tabs below: <br>
 
 ````{=html}
 <head>
@@ -79,7 +81,7 @@ In general, both sub-tabs offer options for selection of data items and choice o
 24. Start processing of the selected method. <br><br>
 25. Once computation is complete, a 2D plot between the components can be visualized in this panel.<br><br>
 
-*Note: Some parameters may differ between different methods and may not have shown here.*
+*Note: Some parameters may differ between different methods and may not have been shown here.*
 
 ````{=html}
 <details>
@@ -104,7 +106,7 @@ step is to visualize the computed results. The usage of functions to compute and
 results is described below.
 
 **1. Compute dimensionality reduction statistics using `runDimensionalityReduction` wrapper function:**
-```{r, eval = FALSE}
+```{r "dm_overview_1", eval = FALSE}
 sce <- runDimensionalityReduction(inSCE = sce, useAssay = "normalizedCounts", reducedDimName = "redDimPCA", method = "seuratPCA", nComponents = 20)
 ```
 
@@ -118,37 +120,37 @@ To use the function, input a `SingleCellExperiment` object that contains the dat
   <summary>**Function Call for Each Method:**</summary> 
 
 ***scaterPCA***:
-```{r, eval = FALSE}
+```{r "dm_scaterPCA_rn", eval = FALSE}
 sce <- runDimensionalityReduction(inSCE = sce, useAssay = "normalizedCounts", reducedDimName = "redDimPCA", method = "scaterPCA", nComponents = 10)
 ```
 
 ***seuratPCA***:
-```{r, eval = FALSE}
+```{r "dm_seuratPCA_rn", eval = FALSE}
 sce <- runDimensionalityReduction(inSCE = sce, useAssay = "normalizedCounts", reducedDimName = "redDimPCA", method = "seuratPCA", nComponents = 10)
 ```
 
 ***seuratICA***:
-```{r, eval = FALSE}
+```{r "dm_seuratICA_rn", eval = FALSE}
 sce <- runDimensionalityReduction(inSCE = sce, useAssay = "normalizedCounts", reducedDimName = "redDimICA", `method` = "seuratICA", nComponents = 10)
 ```
 
 ***rTSNE***:
-```{r, eval = FALSE}
+```{r "dm_rTSNE_rn", eval = FALSE}
 sce <- runDimensionalityReduction(inSCE = sce, useAssay = "normalizedCounts", reducedDimName = "redDimTSNE", method = "rTSNE", perplexity = 30, nIterations = 1000)
 ```
 
 ***seuratTSNE***:
-```{r, eval = FALSE}
+```{r "dm_seuratTSNE_rn", eval = FALSE}
 sce <- runDimensionalityReduction(inSCE = sce, useAssay = "normalizedCounts", reducedDimName = "redDimTSNE", method = "seuratTSNE", nComponents = 10, useReduction = "pca", perplexity = 30)
 ```
 
 ***uwotUMAP***:
-```{r, eval = FALSE}
+```{r "dm_uwotUMAP_rn", eval = FALSE}
 sce <- runDimensionalityReduction(inSCE = sce, useAssay = "normalizedCounts", reducedDimName = "redDimUMAP", method = "uwotUMAP", nNeighbors = 30, nIterations = 200, minDist = 0.01, alpha = 1)
 ```
 
 ***seuratUMAP***:
-```{r, eval = FALSE}
+```{r "dm_seuratUMAP_rn", eval = FALSE}
 sce <- runDimensionalityReduction(inSCE = sce, useAssay = "normalizedCounts", reducedDimName = "redDimUMAP", method = "seuratUMAP", nComponents = 10, useReduction = "pca", minDist = 0.3, nNeighbors = 30, spread = 1)
 ```
 
@@ -160,7 +162,7 @@ sce <- runDimensionalityReduction(inSCE = sce, useAssay = "normalizedCounts", re
 <br>
 
 **2. Visualize the dimensionality reduction results using of the available visualization options.**
-```{r, eval=FALSE}
+```{r "dm_overview_2", eval=FALSE}
 #To plot a simple 2D component plot for any of the 4 methods i.e. PCA, ICA, tSNE and UMAP
 seuratReductionPlot(inSCE = sce, useReduction = "pca")
 
@@ -180,7 +182,7 @@ seuratElbowPlot(inSCE = sce, reduction = "pca")
   <summary><b>Example</b></summary>
 ````  
   
-```{r "normalization_console_example_1", message = FALSE, warning = FALSE}
+```{r "dm_console_example", message = FALSE, warning = FALSE}
   # Load singleCellTK & pbmc3k example data
   library(singleCellTK)
   sce <- importExampleData(dataset = "pbmc3k")
@@ -234,9 +236,9 @@ div.offset { background-color:inherit ; border-radius: 5px; margin-left: 15px;}
 <details>
 ````
     
-  <summary>`PCA` from **Seurat** [@Butler2018][@Stuart2019] package:</summary> 
+  <summary>`PCA` from **Seurat** package:</summary> 
 
-```{r, eval = FALSE}
+```{r "dm_seuratPCA", eval = FALSE}
   # Recommended to find variable features before running seuratPCA
   # sce <- seuratFindHVG(inSCE = sce, useAssay = "seuratScaledData")
   sce <- seuratPCA(inSCE = sce, useAssay = "seuratScaledData", reducedDimName = "seuratPCA", nPCs = 20, verbose = TRUE)
@@ -254,9 +256,9 @@ The parameters to the above function include: <br><br>
  <details>
 ````
     
-  <summary>`ICA` from **Seurat** [@Butler2018][@Stuart2019] package:</summary> 
+  <summary>`ICA` from **Seurat** package:</summary> 
 
-```{r, eval = FALSE}
+```{r "dm_seuratICA", eval = FALSE}
   # Recommended to find variable features before running seuratICA
   # sce <- seuratFindHVG(inSCE = sce, useAssay = "seuratScaledData")
   sce <- seuratICA(inSCE = sce, useAssay = "seuratScaledData", reducedDimName = "seuratICA", nics = 20)
@@ -273,9 +275,9 @@ The parameters to the above function include: <br><br>
    <details>
 ````
 
-  <summary>`PCA` from **Scater** [@McCarthy2017] package:</summary> 
+  <summary>`PCA` from **Scater** package:</summary> 
 
-```{r, eval = FALSE}
+```{r "scaterPCA", eval = FALSE}
   sce <- scaterPCA(inSCE = sce, useAssay = "logcounts", reducedDimName = "PCA", ndim = 50, scale = TRUE, ntop = NULL)
 ```
 
@@ -294,7 +296,7 @@ The parameters to the above function include: <br><br>
     
   <summary>`TSNE` from Rtsne package:</summary> 
 
-```{r, eval = FALSE}
+```{r "getTSNE", eval = FALSE}
   sce <- getTSNE(inSCE = sce, useAssay = "logcounts", reducedDimName = "TSNE", nIterations = 1000, perplexity = 30, run_pca = TRUE, ntop = NULL)
 ```
 
@@ -314,7 +316,7 @@ The parameters to the above function include: <br><br>
     
   <summary>`TSNE` from Seurat package:</summary> 
 
-```{r, eval = FALSE}
+```{r "seuratRunTSNE", eval = FALSE}
   # Recommended to find variable features & compute PCA before running seuratRunTSNE
   # sce <- seuratFindHVG(inSCE = sce, useAssay = "seuratScaledData")
   # sce <- seuratPCA(inSCE = sce, useAssay = "seuratScaledData", reducedDimName = "pca", nPCs = 20, verbose = TRUE)
@@ -335,7 +337,7 @@ The parameters to the above function include: <br><br>
   
   <summary>`UMAP` from uwot package:</summary> 
 
-```{r, eval = FALSE}
+```{r "getUMAP", eval = FALSE}
   sce <- getUMAP(inSCE = sce, useAssay = "counts", reducedDimName = "UMAP", logNorm = TRUE, nNeighbors = 30, alpha = 1, nIterations = 200, minDist = 0.01, spread = 1, pca = TRUE, initialDims = 50)
 ```
 
@@ -359,7 +361,7 @@ The parameters to the above function include: <br><br>
 
   <summary>`UMAP` from Seurat package:</summary> 
   
-```{r, eval = FALSE}
+```{r "seuratRunUMAP", eval = FALSE}
   # Recommended to find variable features & compute PCA before running seuratRunUMAP
   # sce <- seuratFindHVG(inSCE = sce, useAssay = "seuratScaledData")
   # sce <- seuratPCA(inSCE = sce, useAssay = "seuratScaledData", reducedDimName = "pca", nPCs = 20, verbose = TRUE)
