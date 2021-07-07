@@ -22,7 +22,7 @@ BiocManager::install("singleCellTK")
 
 3. **Python environment**. [Install Python](#install-python-dependencies)  
 
-Additionally, SCTK wraps a number of useful toolkits, where a part of them are Python based. To enable this part of functionality, users need to get Python (3.x) and a set of Python package built.  
+Additionally, SCTK wraps a number of useful toolkits, where a part of them are Python based. To enable this part of functionality, users need to get Python (3.x) and a set of Python packages built.  
 
 For users who would like to perform console interactive analysis, we strongly suggest that you have [RStudio](https://www.rstudio.com/products/rstudio/download/#download) installed. 
 
@@ -55,9 +55,20 @@ if (!requireNamespace("BiocManager", quietly = TRUE))
 BiocManager::install("singleCellTK")
 ```
 
-#### Released version (GitHub)
+#### Devel version (GitHub)
 
-We occasionally push new releases of our source code on GitHub. See our [GitHub Releases](https://github.com/compbiomed/singleCellTK/releases)  
+We occasionally push new developmental releases of our source code on GitHub.  
+
+The simplest way to install the developing version is as followed:  
+
+```{R installDevel, eval=FALSE}
+if (!requireNamespace("devtools", quietly = TRUE)) {
+    install.packages("devtools")
+}
+devtools::install_github("compbiomed/singleCellTK")
+```
+
+Meanwhile, the source code can be downloaded [Here](https://github.com/compbiomed/singleCellTK/releases)  
 
 ![chooseMirror](ui_screenshots/installation/sourceCodeAssets.png)\
 
@@ -68,21 +79,6 @@ To install from source code, you need to first **download the tarball file (endi
 # REPLACE {VERSION} with the version number in the filename
 install.packages("{PATH}/singleCellTK_{VERSION}.tar.gz", repos = NULL)
 ```
-
-It is not suggested to directly install SCTK from our source code, since that we require a lot of dependencies. BioConductor helps with automatically fetching all of them.  
-
-#### Developing version
-
-For users who want to use our devel version, please use the R package `devtools` to directly install from our GitHub repository. 
-
-```{R installDevel, eval=FALSE}
-if (!requireNamespace("devtools", quietly = TRUE)) {
-    install.packages("devtools")
-}
-devtools::install_github("compbiomed/singleCellTK")
-```
-
-For developers of SCTK, please refer to the [guidance](https://github.com/compbiomed/singleCellTK#develop-singlecelltk) in the README of our repository.  
 
 ### Install Python Dependencies
 
@@ -96,7 +92,7 @@ scipy numpy astroid six scrublet scanpy bbknn scanorama
 
 #### Non-Python users
 
-If you have not had Python installed before, and do not have a plan to use Python. We have prepared a simple command to minimize the workload for you to clear the barrier, **after installing SCTK** in your R console.
+If you have not had Python installed before, and do not have a plan to use Python. We have prepared a simple command to minimize the workload for you to clear the barrier. **After installing SCTK** in your R console:
 
 ```{R reticulateSetup, eval=FALSE}
 library(singleCellTK)
@@ -107,6 +103,42 @@ sctkPythonInstallConda()
 
 If you would like to start to work with Python or are already an experienced Python programmer, here we skip the approach to the Python installation. If you have a standalone Python installation, it is not necessary to run the command above because it is likely to create a redundant Miniconda copy in your machine. The dependencies needed are listed above in this section and you can install them with either `conda` or `pip`.  
 
+## Troubleshooting Installation
+
+### BioConductor Versioning
+
+For the majority of users, the commands above will install the latest version of the singleCellTK without any errors.  
+
+Rarely, you may encounter an error due to previously installed versions of some packages that are required for the singleCellTK. If you encounter an error during installation, use the commands below to check the version of Bioconductor that is installed:
+
+```{R biocmV, eval=FALSE}
+if (!requireNamespace("BiocManager", quietly=TRUE))
+    install.packages("BiocManager")
+BiocManager::version()
+```
+
+If the version number is not 3.6 or higher, you must upgrade Bioconductor to install the toolkit:
+
+```{R biocmI, eval=FALSE}
+BiocManager::install()
+```
+
+After you install Bioconductor 3.6 or higher, you should be able to install the toolkit. If you still encounter an error, ensure your Bioconductor packages are up to date by running the following command.
+
+```{R biocmVld, eval=FALSE}
+BiocManager::valid()
+```
+
+If the command above does not return `TRUE`, run the following command to update your R packages:
+
+```{R biocmI2, eval=FALSE}
+BiocManager::install()
+```
+
+Then, try to install the toolkit again.  
+
+### Python and Reticulate
+
 SCTK adopts [reticulate](https://rstudio.github.io/reticulate/) to connect R with Python. If the specific functions in SCTK, which requires Python dependencies, do not properly start to run after you have installed the dependencies or restart the R session, please try to specify the correct Python executable/binary file in a **new R session**. (here "new" means no Python or reticulate related operations have been performed)
 
 ```{R reticulateFix, eval=FALSE}
@@ -115,3 +147,31 @@ use_python("{PATH to the correct Python exexutable/binary file}")
 ```
 
 You can always use `reticulate::py_config()` to check what specific Python version you are using and what other versions are available. `py_config()` configures the R-to-Python connection at once, so you will have to restart the R session if you need to change the configuration with `use_python()` after you have the check done.  
+
+If you still encounter an error, please [raise an Issue](https://github.com/compbiomed/singleCellTK/issues) at our GitHub repository and we'd be happy to help.  
+
+## Develop singleCellTK
+
+To contribute to singleCellTK, follow these steps:
+
+**Note:** Development of the singleCellTK is done using the latest version of R.
+
+1. Fork the repo using the "Fork" button at the top-right corner of our [GitHub repository page](https://github.com/compbiomed/singleCellTK).
+2. Download a local copy of **your forked** repository 
+
+```{shell gitCloneFork}
+git clone https://github.com/{username}/singleCellTK.git
+```
+
+3. Open Rstudio
+4. Go to "File" -> "New Project" -> "Existing Directory" and select your git repository directory  
+
+You can then make your changes and test your code using the Rstudio build tools. There is a lot of information about building packages available here: [http://r-pkgs.had.co.nz/](http://r-pkgs.had.co.nz/).
+
+Information about building shiny packages is available here: [http://shiny.rstudio.com/tutorial/](http://shiny.rstudio.com/tutorial/).
+
+When you are ready to upload your changes, commit them locally, push them to your forked repo, and make a pull request to the compbiomed repository.
+
+Report bugs and request features on our [GitHub issue tracker](https://github.com/compbiomed/singleCellTK/issues).
+
+Join us on [slack](https://compbiomed.slack.com/)!
