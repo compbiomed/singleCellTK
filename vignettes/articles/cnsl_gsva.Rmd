@@ -12,8 +12,7 @@ csl: ieee.csl
 doEval = TRUE
 ```
 ## Introduction
-The ***GSVA*** (Gene Set Variation Analysis) ([Hänzelmann, S., Castelo, R. & Guinney, J. GSVA: gene set variation analysis for microarray and RNA-Seq data. BMC Bioinformatics 14, 7 (2013).](https://doi.org/10.1186/1471-2105-14-7)) is a popular method for ***GSE*** (Gene Set Enrichment) and allows the identification of changes in pathway activity
-in RNA-Seq data. Overall, ***gene sets*** can be uploaded or selected from the available databases and the ***GSVA*** method can be run on the selected ***gene sets*** which can eventually be visualized using ***Violin*** or ***Heatmap*** plots.
+The ***GSVA*** (Gene Set Variation Analysis) [@Hanzelmann2013] is a popular method for GSE (Gene Set Enrichment) and allows the identification of changes in pathway activity in RNA-Seq data. Overall, gene sets can be uploaded or selected from the available databases and the GSVA method can be run on the selected gene sets which can eventually be visualized using Violin or Heatmap plots. <br>
 
 To view detailed instructions on how to use the method from the toolkit, please select 'Interactive Analysis' for using GSVA in shiny application or 'Console Analysis' for using this method on R console from the tabs below:
 
@@ -37,7 +36,7 @@ To view detailed instructions on how to use the method from the toolkit, please 
 <div id="interactive" class="tabcontent">
 ````
 
-Before running the ***GSVA*** algorithm, the gene sets must be selected or uploaded through the ***Import Gene Sets*** sub-tab from the ***Data*** tab in the toolkit menu. An overall workflow guide on how to import/upload ***gene sets*** and consequently using them with ***GSVA*** sub-tab is described below. ***This workflow guide assumes that the *SingleCell Data* has already been uploaded through the *Import Single Cell Data*** sub-tab.**<br>
+Before running the ***GSVA*** algorithm, the gene sets must be selected or uploaded through the ***Import Gene Sets*** sub-tab from the ***Data*** tab in the toolkit menu. An overall workflow guide on how to import/upload ***gene sets*** and consequently using them with ***GSVA*** sub-tab is described below. ***This workflow guide assumes that the Single Cell Data has already been uploaded through the [Import Single Cell Data]() sub-tab***.<br>
 
 ![](ui_screenshots/pathway_analysis/capa_1.png)
 
@@ -89,7 +88,7 @@ Before running the ***GSVA*** algorithm, the gene sets must be selected or uploa
 ````
 
 **1. Upload or import gene sets:**
-```{r, eval=FALSE}
+```{r "gsva_1", eval=FALSE}
 # Import a GMT file
 gmtFilePath <- "C:/Users/HP/Desktop/gmtfile.GMT" # Specify user-defined location for the GMT file
 sce <- importGeneSetsFromGMT(inSCE = sce, file = gmtFilePath, by = "rownames", collectionName = "Collection1")
@@ -100,8 +99,8 @@ sce <- importGeneSetsFromMSigDB(inSCE = sce, categoryIDs = "C1", by = "rownames"
 ```
 
 **2. Run GSVA using `gsvaSCE` function:**
-```{r, eval=FALSE}
-sce$gsvaRes <- gsvaSCE(inSCE = sce, useAssay = "logcounts", pathwayNames = c("C1"))
+```{r "gsva_2", eval=FALSE}
+gsvaRes <- gsvaSCE(inSCE = sce, useAssay = "logcounts", pathwayNames = c("C1"))
 ```
 
 The parameters to the `gsvaSCE` function above include: <br>
@@ -110,21 +109,21 @@ The parameters to the `gsvaSCE` function above include: <br>
 `pathwayNames`: names of the pathways to use with GSVA (previously stored in the input object) <br>
 
 **3. Visualize the results:**
-```{r, eval=FALSE}
+```{r "gsva_3", eval=FALSE}
 # Fit Limma & Populate Results
 conditionFactor <- factor(colData(sce)[, "Biological_Condition"])
       if(nlevels(conditionFactor)<=1){
         stop("Condition variable must have atleast two levels!")
       }
-fit <- limma::lmFit(sce$gsvaRes, stats::model.matrix(~conditionFactor))
+fit <- limma::lmFit(gsvaRes, stats::model.matrix(~conditionFactor))
 fit <- limma::eBayes(fit)
-toptableres <- limma::topTable(fit, number = nrow(sce$gsvaRes))
+toptableres <- limma::topTable(fit, number = nrow(gsvaRes))
 temptable <- cbind(rownames(toptableres), toptableres)
 rownames(temptable) <- NULL
 colnames(temptable)[1] <- "Pathway"
      
 
-tempgsvares <- sce$gsvaRes
+tempgsvares <- gsvaRes
 topPaths <- 10
 
 # Visualize violin plot
@@ -140,15 +139,44 @@ gsvaPlot(inSCE = sce, gsvaData = tempgsvares, plotType = "Heatmap", condition = 
   <summary><b>Example</b></summary>
 ````
 
-```{r "normalization_console_example_1", message = FALSE, warning = FALSE}
-  # Load singleCellTK & pbmc3k example data
+```{r "gsva_console_example_1", results='hide', fig.keep='all', message = FALSE, warning = FALSE}
+  # Load singleCellTK, pbmc3k example data & gene sets
   library(singleCellTK)
   sce <- importExampleData(dataset = "pbmc3k")
-
   sce <- importGeneSetsFromMSigDB(inSCE = sce, categoryIDs = "C1", by = "rownames")
-  sce <- scaterlogNormCounts(inSCE = sce, useAssay = "counts", assayName = "logcounts")
-  #gsvaSCE(inSCE = sce, useAssay = "logcounts", pathwayNames = c("C1"))
-  #print(sce$gsvaRes)
+  
+  # Normalize data using runNormalization function from the toolkit
+  sce <- runNormalization(inSCE = sce, useAssay = "counts", outAssayName = "logcounts", normalizationMethod = "logNormCounts")
+  
+  # Compute clusters using louvain algorithm
+  sce <- runScranSNN(sce, useAssay = "logcounts", algorithm = "louvain", clusterName = "clusterLouvain")
+  
+  # Subset data to run GSVA faster
+  sce <- sce[, 1:200]
+  
+  # Run GSVA
+  gsvaRes <- gsvaSCE(inSCE = sce, useAssay = "logcounts", pathwayNames = c("C1"))
+  
+  # Fit Limma & Visualize Results
+  conditionFactor <- factor(colData(sce)[, "clusterLouvain"])
+      if(nlevels(conditionFactor)<=1){
+        stop("Condition variable must have atleast two levels!")
+      }
+  fit <- limma::lmFit(gsvaRes, stats::model.matrix(~conditionFactor))
+  fit <- limma::eBayes(fit)
+  toptableres <- limma::topTable(fit, number = nrow(gsvaRes))
+  temptable <- cbind(rownames(toptableres), toptableres)
+  rownames(temptable) <- NULL
+  colnames(temptable)[1] <- "Pathway"
+  tempgsvares <- gsvaRes
+  topPaths <- 10
+
+  # Visualize violin plot
+  tempgsvares <- tempgsvares[1:min(49, topPaths, nrow(tempgsvares)), , drop = FALSE]
+  gsvaPlot(inSCE = sce, gsvaData = tempgsvares, plotType = "Violin", condition = "clusterLouvain")
+
+  # Visualize heatmap plot
+  gsvaPlot(inSCE = sce, gsvaData = tempgsvares, plotType = "Heatmap", condition = "clusterLouvain", show_column_names = FALSE)
 ```
 
 ````{=html}
