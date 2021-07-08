@@ -288,82 +288,8 @@
 <div id="introduction" class="section level2">
 <h2 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h2>
-<p>This guide helps users with performing batch correction when necessary. SingleCellTK provides 11 methods that are already published. A detailed referencing table can be expanded and viewed below.</p>
-<details><summary><b>Method Reference</b></summary><table class="table">
-<thead><tr class="header">
-<th align="center">Method</th>
-<th align="center">Function</th>
-<th align="center">Result Slots</th>
-</tr></thead>
-<tbody>
-<tr class="odd">
-<td align="center">BBKNN <span class="citation">[1]</span>
-</td>
-<td align="center"><code><a href="../../reference/runBBKNN.html">runBBKNN()</a></code></td>
-<td align="center"><code>reducedDim</code></td>
-</tr>
-<tr class="even">
-<td align="center">ComBatSeq <span class="citation">[2]</span>
-</td>
-<td align="center"><code><a href="../../reference/runComBatSeq.html">runComBatSeq()</a></code></td>
-<td align="center"><code>assay</code></td>
-</tr>
-<tr class="odd">
-<td align="center">FastMNN <span class="citation">[3]</span>
-</td>
-<td align="center"><code><a href="../../reference/runFastMNN.html">runFastMNN()</a></code></td>
-<td align="center"><code>reducedDim</code></td>
-</tr>
-<tr class="even">
-<td align="center">MNN <span class="citation">[3]</span>
-</td>
-<td align="center"><code><a href="../../reference/runMNNCorrect.html">runMNNCorrect()</a></code></td>
-<td align="center"><code>assay</code></td>
-</tr>
-<tr class="odd">
-<td align="center">Harmony <span class="citation">[4]</span>
-</td>
-<td align="center"><code>runHarmony()</code></td>
-<td align="center"><code>reducedDim</code></td>
-</tr>
-<tr class="even">
-<td align="center">LIGER <span class="citation">[5]</span>
-</td>
-<td align="center"><code>runLIGER()</code></td>
-<td align="center"><code>reducedDim</code></td>
-</tr>
-<tr class="odd">
-<td align="center">Limma <span class="citation">[6]</span>
-</td>
-<td align="center"><code><a href="../../reference/runLimmaBC.html">runLimmaBC()</a></code></td>
-<td align="center"><code>assay</code></td>
-</tr>
-<tr class="even">
-<td align="center">Scanorama <span class="citation">[7]</span>
-</td>
-<td align="center"><code><a href="../../reference/runSCANORAMA.html">runSCANORAMA()</a></code></td>
-<td align="center"><code>assay</code></td>
-</tr>
-<tr class="odd">
-<td align="center">scMerge <span class="citation">[8]</span>
-</td>
-<td align="center"><code><a href="../../reference/runSCMerge.html">runSCMerge()</a></code></td>
-<td align="center"><code>assay</code></td>
-</tr>
-<tr class="even">
-<td align="center">Seurat Integration <span class="citation">[9]</span>
-</td>
-<td align="center"><code><a href="../../reference/seuratIntegration.html">seuratIntegration()</a></code></td>
-<td align="center"><code>altExp</code></td>
-</tr>
-<tr class="odd">
-<td align="center">ZINBWaVE <span class="citation">[10]</span>
-</td>
-<td align="center"><code><a href="../../reference/runZINBWaVE.html">runZINBWaVE()</a></code></td>
-<td align="center"><code>reducedDim</code></td>
-</tr>
-</tbody>
-</table></details>
+<p>This guide helps users with performing batch correction when necessary. SingleCellTK provides 11 methods that are already published. They are: BBKNN, ComBatSeq, FastMNN, MNN, Harmony, LIGER, Limma, Scanorama, scMerge, Seurat Integration and ZINBWaVE. All of them will be available in a selection list in our UI, and each of them is wrapped in a function.</p>
+<p>These methods accept various type of input expression matrices (e.g. raw counts or log-normalized counts), and generate either a new corrected expression matrix or a low-dimensional representation. Users should choose a function according to their needs. A more detailed description will be followed in the “Console” tab.</p>
 </div>
 <div id="workflow-guide" class="section level2">
 <h2 class="hasAnchor">
@@ -417,6 +343,95 @@
 <blockquote>
 <p>Note that the batch annotation should better be saved as a <code>factor</code> in the <code>colData</code>, especially when the batches are represented by integer numbers, because some downstream analysis are likely to parse the non-character and non-logical information as continuous values instead of categorical values.</p>
 </blockquote>
+<p><strong>Choosing a Method</strong></p>
+<p>As mentioned in the introduction, our 11 methods vary in type of input and output. Input type for the expression matrix could be raw counts, log-transformed counts or scaled counts. Users need to make sure the assay being used is of the correct type. The output matrix can be an expression matrix (<code>assay</code>), a low-dimensional representation (<code>reducedDim</code>), or a subset features of expression matrix (<code>altExp</code>). Users need to choose a method that produce a matrix that fits in their analysis.</p>
+<details><summary><b>Method Reference</b></summary><table class="table">
+<thead><tr class="header">
+<th align="center">Method</th>
+<th align="center">Function</th>
+<th align="center">Input Type</th>
+<th align="center">Output Type</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="center">BBKNN <span class="citation">[1]</span>
+</td>
+<td align="center"><code><a href="../../reference/runBBKNN.html">runBBKNN()</a></code></td>
+<td align="center">Scaled</td>
+<td align="center"><code>reducedDim</code></td>
+</tr>
+<tr class="even">
+<td align="center">ComBatSeq <span class="citation">[2]</span>
+</td>
+<td align="center"><code><a href="../../reference/runComBatSeq.html">runComBatSeq()</a></code></td>
+<td align="center">raw counts</td>
+<td align="center"><code>assay</code></td>
+</tr>
+<tr class="odd">
+<td align="center">FastMNN <span class="citation">[3]</span>
+</td>
+<td align="center"><code><a href="../../reference/runFastMNN.html">runFastMNN()</a></code></td>
+<td align="center">log-normalized</td>
+<td align="center"><code>reducedDim</code></td>
+</tr>
+<tr class="even">
+<td align="center">MNN <span class="citation">[3]</span>
+</td>
+<td align="center"><code><a href="../../reference/runMNNCorrect.html">runMNNCorrect()</a></code></td>
+<td align="center">log-normalized</td>
+<td align="center"><code>assay</code></td>
+</tr>
+<tr class="odd">
+<td align="center">Harmony <span class="citation">[4]</span>
+</td>
+<td align="center"><code>runHarmony()</code></td>
+<td align="center">log-normalized</td>
+<td align="center"><code>reducedDim</code></td>
+</tr>
+<tr class="even">
+<td align="center">LIGER <span class="citation">[5]</span>
+</td>
+<td align="center"><code>runLIGER()</code></td>
+<td align="center">raw counts</td>
+<td align="center"><code>reducedDim</code></td>
+</tr>
+<tr class="odd">
+<td align="center">Limma <span class="citation">[6]</span>
+</td>
+<td align="center"><code><a href="../../reference/runLimmaBC.html">runLimmaBC()</a></code></td>
+<td align="center">log-normalized</td>
+<td align="center"><code>assay</code></td>
+</tr>
+<tr class="even">
+<td align="center">Scanorama <span class="citation">[7]</span>
+</td>
+<td align="center"><code><a href="../../reference/runSCANORAMA.html">runSCANORAMA()</a></code></td>
+<td align="center">log-normalized</td>
+<td align="center"><code>assay</code></td>
+</tr>
+<tr class="odd">
+<td align="center">scMerge <span class="citation">[8]</span>
+</td>
+<td align="center"><code><a href="../../reference/runSCMerge.html">runSCMerge()</a></code></td>
+<td align="center">log-normalized</td>
+<td align="center"><code>assay</code></td>
+</tr>
+<tr class="even">
+<td align="center">Seurat Integration <span class="citation">[9]</span>
+</td>
+<td align="center"><code><a href="../../reference/seuratIntegration.html">seuratIntegration()</a></code></td>
+<td align="center">raw counts</td>
+<td align="center"><code>altExp</code></td>
+</tr>
+<tr class="odd">
+<td align="center">ZINBWaVE <span class="citation">[10]</span>
+</td>
+<td align="center"><code><a href="../../reference/runZINBWaVE.html">runZINBWaVE()</a></code></td>
+<td align="center">raw counts</td>
+<td align="center"><code>reducedDim</code></td>
+</tr>
+</tbody>
+</table></details><p><br></p>
 <p><strong>Console Examples</strong></p>
 <p><strong>1. Prepare an SCE object with multiple batches</strong></p>
 <p>Here we present an example dataset that is combined from “pbmc3k” and “pbmc4k” (Kasper D. Hansen <em>et al.</em>, 2017), which you can import by a function called <code><a href="../../reference/importExampleData.html">importExampleData()</a></code>.</p>
@@ -438,10 +453,11 @@
 Additionally, most of the batch correction methods provided <strong>require a log-normalized assay</strong> as input, users can check the required assay type of each method by looking at its default setting. (i.e. if by default <code>useAssay = "logcounts"</code>, then it requires log-normalized assay; else if by default <code>useAssay = "counts"</code>, then the raw count assay.)</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co">## Simply filter out the genes that are expressed in less than 1% of all cells.</span>
-<span class="va">sce.filter</span> <span class="op">&lt;-</span> <span class="va">sce.combine</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/colSums.html">rowSums</a></span><span class="op">(</span><span class="fu">assay</span><span class="op">(</span><span class="va">sce.combine</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">&gt;=</span> <span class="fl">0.01</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">ncol</a></span><span class="op">(</span><span class="va">sce.combine</span><span class="op">)</span>,<span class="op">]</span>
+<span class="fu">rowData</span><span class="op">(</span><span class="va">sce.combine</span><span class="op">)</span><span class="op">$</span><span class="va">expPerc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colSums.html">rowSums</a></span><span class="op">(</span><span class="fu">assay</span><span class="op">(</span><span class="va">sce.combine</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">ncol</a></span><span class="op">(</span><span class="va">sce.combine</span><span class="op">)</span>
+<span class="va">sce.filter</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/subsetSCERows.html">subsetSCERows</a></span><span class="op">(</span><span class="va">sce.combine</span>, rowData <span class="op">=</span> <span class="st">"expPerc &gt;= 0.01"</span>, returnAsAltExp <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
 <span class="va">sce.filter</span>
 <span class="va">sce.small</span> <span class="op">&lt;-</span> <span class="va">sce.filter</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">sce.filter</span><span class="op">)</span>, <span class="fl">800</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">ncol</a></span><span class="op">(</span><span class="va">sce.filter</span><span class="op">)</span>, <span class="fl">800</span><span class="op">)</span><span class="op">]</span>
-<span class="va">sce.small</span> <span class="op">&lt;-</span> <span class="fu">scater_logNormCounts</span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce.small</span>,
+<span class="va">sce.small</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/scaterlogNormCounts.html">scaterlogNormCounts</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce.small</span>,
                                  useAssay <span class="op">=</span> <span class="st">'counts'</span>,
                                  assayName <span class="op">=</span> <span class="st">'logcounts'</span><span class="op">)</span>
 <span class="va">sce.small</span></code></pre></div>

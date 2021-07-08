@@ -22,30 +22,9 @@ doEval = FALSE
 
 ## Introduction
 
-This guide helps users with performing batch correction when necessary. SingleCellTK provides 11 methods that are already published. A detailed referencing table can be expanded and viewed below.
+This guide helps users with performing batch correction when necessary. SingleCellTK provides 11 methods that are already published. They are: BBKNN, ComBatSeq, FastMNN, MNN, Harmony, LIGER, Limma, Scanorama, scMerge, Seurat Integration and ZINBWaVE. All of them will be available in a selection list in our UI, and each of them is wrapped in a function.  
 
-````{=html}
-<details>
-  <summary><b>Method Reference</b></summary>
-````  
-
-| Method |   Function   | Result Slots |
-| :----: |    :----:    |    :----:    |
-| BBKNN [@Polanski2020] | `runBBKNN()` | `reducedDim` |
-| ComBatSeq [@ZhangY2020]  | `runComBatSeq()` | `assay` |
-| FastMNN [@Haghverdi2018]  | `runFastMNN()` | `reducedDim` |
-| MNN [@Haghverdi2018] | `runMNNCorrect()` | `assay` |
-| Harmony [@Korsunsky2019]  | `runHarmony()` | `reducedDim` |
-| LIGER [@LiuL2020] | `runLIGER()` | `reducedDim` |
-| Limma [@Ritchie2015] | `runLimmaBC()` | `assay` |
-| Scanorama [@Hie2019] | `runSCANORAMA()` | `assay` |
-| scMerge [@LinY2019] | `runSCMerge()` | `assay` |
-| Seurat Integration [@Butler2018a] | `seuratIntegration()` | `altExp` |
-| ZINBWaVE [@Risso2018] | `runZINBWaVE()` | `reducedDim` |
-
-````{=html}
-</details> 
-````
+These methods accept various type of input expression matrices (e.g. raw counts or log-normalized counts), and generate either a new corrected expression matrix or a low-dimensional representation. Users should choose a function according to their needs. A more detailed description will be followed in the "Console" tab.
 
 ## Workflow Guide
 
@@ -137,6 +116,35 @@ As we adopt [`SingleCellExperiment`](https://rdrr.io/bioc/SingleCellExperiment/)
 
 > Note that the batch annotation should better be saved as a `factor` in the `colData`, especially when the batches are represented by integer numbers, because some downstream analysis are likely to parse the non-character and non-logical information as continuous values instead of categorical values.
 
+**Choosing a Method**
+
+As mentioned in the introduction, our 11 methods vary in type of input and output. Input type for the expression matrix could be raw counts, log-transformed counts or scaled counts. Users need to make sure the assay being used is of the correct type. The output matrix can be an expression matrix (`assay`), a low-dimensional representation (`reducedDim`), or a subset features of expression matrix (`altExp`). Users need to choose a method that produce a matrix that fits in their analysis.  
+
+````{=html}
+<details>
+  <summary><b>Method Reference</b></summary>
+````  
+
+| Method |   Function   | Input Type | Output Type |
+| :----: |    :----:    |   :----:   |   :----:    |
+| BBKNN [@Polanski2020] | `runBBKNN()` | Scaled |`reducedDim` |
+| ComBatSeq [@ZhangY2020]  | `runComBatSeq()` | raw counts | `assay` |
+| FastMNN [@Haghverdi2018]  | `runFastMNN()` | log-normalized | `reducedDim` |
+| MNN [@Haghverdi2018] | `runMNNCorrect()` | log-normalized | `assay` |
+| Harmony [@Korsunsky2019]  | `runHarmony()` | log-normalized | `reducedDim` |
+| LIGER [@LiuL2020] | `runLIGER()` | raw counts | `reducedDim` |
+| Limma [@Ritchie2015] | `runLimmaBC()` | log-normalized | `assay` |
+| Scanorama [@Hie2019] | `runSCANORAMA()` | log-normalized | `assay` |
+| scMerge [@LinY2019] | `runSCMerge()` | log-normalized | `assay` |
+| Seurat Integration [@Butler2018a] | `seuratIntegration()` | raw counts | `altExp` |
+| ZINBWaVE [@Risso2018] | `runZINBWaVE()` | raw counts | `reducedDim` |
+
+````{=html}
+</details> 
+````
+
+<br />
+
 **Console Examples**
 
 **1. Prepare an SCE object with multiple batches**
@@ -162,10 +170,11 @@ In this manual, we only present a toy example instead of a best practice for rea
 Additionally, most of the batch correction methods provided **require a log-normalized assay** as input, users can check the required assay type of each method by looking at its default setting. (i.e. if by default `useAssay = "logcounts"`, then it requires log-normalized assay; else if by default `useAssay = "counts"`, then the raw count assay.)  
 ```{r subset, eval=doEval, message=FALSE, warning=FALSE}
 ## Simply filter out the genes that are expressed in less than 1% of all cells.
-sce.filter <- sce.combine[rowSums(assay(sce.combine) > 0) >= 0.01 * ncol(sce.combine),]
+rowData(sce.combine)$expPerc <- rowSums(assay(sce.combine) > 0) / ncol(sce.combine)
+sce.filter <- subsetSCERows(sce.combine, rowData = "expPerc >= 0.01", returnAsAltExp = FALSE)
 sce.filter
 sce.small <- sce.filter[sample(nrow(sce.filter), 800), sample(ncol(sce.filter), 800)]
-sce.small <- scater_logNormCounts(inSCE = sce.small,
+sce.small <- scaterlogNormCounts(inSCE = sce.small,
                                  useAssay = 'counts',
                                  assayName = 'logcounts')
 sce.small
