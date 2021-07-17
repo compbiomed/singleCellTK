@@ -1,6 +1,6 @@
 shinyPanelFS_DimRed <- fluidPage(
   h1("Feature Selection & Dimensionality Reduction"),
-  tabsetPanel(
+  tabsetPanel(id = "FSDimRedTabsetPanel",
     tabPanel(
       "Feature Selection",
       fluidRow(
