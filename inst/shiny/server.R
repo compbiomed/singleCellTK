@@ -2720,7 +2720,7 @@ shinyServer(function(input, output, session) {
            && input$dimRedPlotMethod != "seuratICA"){
           appendTab(inputId = "dimRedPCAICA_plotTabset", tabPanel(title = "JackStraw Plot",
                                                                   panel(heading = "JackStraw Plot",
-                                                                        plotOutput(outputId = "plot_jackstraw_dimRed")
+                                                                        shinyjqui::jqui_resizable(plotOutput(outputId = "plot_jackstraw_dimRed"))
                                                                   )
           ))
 
@@ -5059,7 +5059,7 @@ shinyServer(function(input, output, session) {
           if (!is.null(vals$vfplot)) {
             vals$vfplot
           }
-        }, width = 400, height = 400)
+        })
         output$hvgOutputFS <- renderText({HVGs})
       } else {
         shinyalert::shinyalert(

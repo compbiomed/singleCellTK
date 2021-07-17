@@ -48,10 +48,10 @@ shinyPanelFS_DimRed <- fluidPage(
                 outputId = "hvgOutputFS",
                 placeholder = TRUE)
             ),
-            plotOutput(
-              outputId = "plotFS",
-              width = 400,
-              height = 400
+            shinyjqui::jqui_resizable(
+              plotOutput(
+                outputId = "plotFS"
+              )
             )
           )
         )

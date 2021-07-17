@@ -25,7 +25,7 @@ shinyPanelPathway <- fluidPage(
         tabsetPanel(
           tabPanel(
             "Plot",
-            plotOutput("pathwayPlot", height = "600px")
+            shinyjqui::jqui_resizable(plotOutput("pathwayPlot"))
           ),
           tabPanel(
             "Results Table",
