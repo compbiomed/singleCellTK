@@ -6780,6 +6780,7 @@ shinyServer(function(input, output, session) {
      shinyjs::show(selector = ".seurat_findmarker_plots")
 
     #output the heatmap
+     colnames(df)[which(startsWith(colnames(df), "avg") == TRUE)] <- "avg_log2FC"  
      top10markers <- df %>% group_by(cluster) %>% top_n(n = 10, wt = avg_log2FC)
      output$findMarkerHeatmapPlotFull <- renderPlot({
        DoHeatmap(seuratObject, features = top10markers$gene.id)
@@ -6888,6 +6889,7 @@ shinyServer(function(input, output, session) {
       )
       Idents(seuratObject, cells = cells[[i]]) <- groups[i]
     }
+    colnames(df)[which(startsWith(colnames(df), "avg") == TRUE)] <- "avg_log2FC"  
     topMarkers <- data.frame(df %>% group_by(cluster) %>% top_n(input$findMarkerHeatmapPlotFullNumeric, avg_log2FC))
     if(nrow(topMarkers) > (input$findMarkerHeatmapPlotFullNumeric * length(groups))){
       topMarkers <- data.frame(topMarkers %>% group_by(cluster) %>% top_n(input$findMarkerHeatmapPlotFullNumeric, -p_val_adj))
