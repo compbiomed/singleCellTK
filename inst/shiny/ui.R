@@ -1,3 +1,12 @@
+# Check if CRAN packages are installed, otherwise prompt user to install them.
+requiredPackages <- c("shinyjqui", "shinyWidgets", "shinythemes", "shinyFiles")
+if(!all(requiredPackages %in% installed.packages())){
+  missingPackages <- requiredPackages[which(requiredPackages %in% installed.packages() == FALSE)]
+  message("Installing missing packages: ")
+  message(paste0(missingPackages, collapse = " "))
+  install.packages(missingPackages)
+}
+
 library(shiny)
 library(shinyjs)
 library(shinyFiles)
