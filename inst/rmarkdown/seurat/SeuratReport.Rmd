@@ -28,11 +28,13 @@ output:
 subtitle: "`r params$subtitle`"
 editor_options:
   chunk_output_type: console
+bibliography: references.bib
+csl: ieee.csl
 ---
 # Seurat Run
 
 ## Introduction
-Seurat is an R package that offers a streamlined workflow to analyze single cell genomics data including quality control, normalization, exploration of data and differential expression (marker selection), all integrated within the same package and can be run through separate functions provided for each step of the workflow which offers multiple algorithms/methods for each of the task in the workflow. The singleCellTK offers use of this workflow with SingleCellExperiment objects by providing wrapper functions to the methods available from Seurat. 
+[**Seurat**](https://satijalab.org/seurat/) [@Butler2018][@Stuart2019][@Satija2017][@Hao2021] is an R package that offers a streamlined workflow to analyze single cell genomics data including quality control, normalization, exploration of data and differential expression (marker selection), all integrated within the same package and can be run through separate functions provided for each step of the workflow which offers multiple algorithms/methods for each of the task in the workflow. The **singleCellTK** offers use of this workflow with [SingleCellExperiment](https://bioconductor.org/packages/release/bioc/html/SingleCellExperiment.html) [@Amezquita2020] objects by providing wrapper functions to the methods available from Seurat. 
 
 ## Setup
 We load the required libraries, read in the parameters and setup the variables to use with this analysis.
@@ -1006,3 +1008,4 @@ The analysis of single cell data was performed by Seurat package. Firstly the da
 sessionInfo()
 ```
 
+# References {-}
