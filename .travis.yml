@@ -24,6 +24,8 @@ before_install:
   - brew install pyenv
   - pyenv install miniconda-3.8.3
   - pyenv global miniconda-3.8.3
+  - Rscript -e 'install.packages("gert")'
+  - Rscript -e 'install.packages("gh")'
   - Rscript -e 'install.packages("usethis")'
   - Rscript -e 'install.packages("httr")'
   - Rscript -e 'install.packages("devtools")'
