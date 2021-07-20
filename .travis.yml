@@ -24,13 +24,6 @@ before_install:
   - brew install pyenv
   - pyenv install miniconda-3.8.3
   - pyenv global miniconda-3.8.3
-  - Rscript -e 'install.packages("openssl")'
-  - Rscript -e 'install.packages("gert")'
-  - Rscript -e 'install.packages("gh")'
-  - Rscript -e 'install.packages("usethis")'
-  - Rscript -e 'install.packages("httr")'
-  - Rscript -e 'install.packages("devtools")'
-  - Rscript -e 'devtools::install_version("xgboost", version = "0.90.0.2", repos = "http://cran.us.r-project.org")'
   - pip install --upgrade pip
   - pip3 install scipy scrublet scanpy scanorama bbknn
 
