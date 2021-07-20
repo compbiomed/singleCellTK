@@ -42,6 +42,7 @@ addons:
       - libv8-dev
       - libgit2-dev
       - libmagick++-dev
+      - libssl-dev
 
 r_check_args: "--as-cran"
 r_github_packages:
