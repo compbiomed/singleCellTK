@@ -8,7 +8,6 @@ bioc_required: true
 addons:
   apt:
     packages:
-      - python3.6
       - libv8-dev
       - libgit2-dev
       - libmagick++-dev
