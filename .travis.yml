@@ -25,7 +25,7 @@ before_install:
   - pyenv install miniconda-3.8.3
   - pyenv global miniconda-3.8.3
   - pip install --upgrade pip
-  - pip3 install scipy scrublet scanpy scanorama bbknn
+  - pip install scipy scrublet scanpy scanorama bbknn
 
 install:
 - R -e 'devtools::install_deps(dep = TRUE, upgrade="never")'
