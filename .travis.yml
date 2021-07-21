@@ -5,12 +5,10 @@ sudo: true
 warnings_are_errors: true
 bioc_required: true
 
-install:
-  - sudo apt-get install -y python3.6 
-
 addons:
   apt:
     packages:
+      - python3.6
       - libv8-dev
       - libgit2-dev
       - libmagick++-dev
