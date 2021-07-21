@@ -1,6 +1,8 @@
 language: r
+cache:
+ - packages
 r:
-  - release
+  - 4.1.0
 sudo: true
 warnings_are_errors: true
 bioc_required: true
