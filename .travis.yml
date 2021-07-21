@@ -25,7 +25,6 @@ before_install:
   - pyenv install miniconda-3.8.3
   - pyenv global miniconda-3.8.3
   - pip install --upgrade pip
-  - pip install -U pip setuptools 
   - pip3 install scipy scrublet scanpy scanorama bbknn
 
 install:
@@ -37,9 +36,6 @@ addons:
       - libv8-dev
       - libgit2-dev
       - libmagick++-dev
-      - libssl-dev
-      - "python3"
-      - "python3-pip"
 
 r_check_args: "--as-cran"
 r_github_packages:
