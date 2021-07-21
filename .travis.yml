@@ -1,5 +1,4 @@
 language: r
-dist: "trusty"
 cache:
   - packages
   - pip
