@@ -287,69 +287,171 @@
 <div id="introduction" class="section level2">
 <h2 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h2>
-<p>The <strong><em>GSVA</em></strong> (Gene Set Variation Analysis) (<a href="https://doi.org/10.1186/1471-2105-14-7">Hänzelmann, S., Castelo, R. &amp; Guinney, J. GSVA: gene set variation analysis for microarray and RNA-Seq data. BMC Bioinformatics 14, 7 (2013).</a>) is a popular method for <strong><em>GSE</em></strong> (Gene Set Enrichment) and allows the identification of changes in pathway activity in RNA-Seq data. Overall, <strong><em>gene sets</em></strong> can be uploaded or selected from the available databases and the <strong><em>GSVA</em></strong> method can be run on the selected <strong><em>gene sets</em></strong> which can eventually be visualized using <strong><em>Violin</em></strong> or <strong><em>Heatmap</em></strong> plots.</p>
-</div>
-<div id="general-worflow" class="section level2">
-<h2 class="hasAnchor">
-<a href="#general-worflow" class="anchor"></a>General Worflow</h2>
-<p>The figure below describes the workflow of using <strong><em>GSVA</em></strong> through <strong><em>singleCellTK</em></strong> package: <img src="ui_screenshots/pathway_analysis/capa_workflow.png"></p>
+<p>The <strong><em>GSVA</em></strong> (Gene Set Variation Analysis) <span class="citation">[1]</span> is a popular method for GSE (Gene Set Enrichment) and allows the identification of changes in pathway activity in RNA-Seq data. Overall, gene sets can be uploaded or selected from the available databases and the GSVA method can be run on the selected gene sets which can eventually be visualized using Violin or Heatmap plots. <br></p>
+<p>To view detailed instructions on how to use the method from the toolkit, please select ‘Interactive Analysis’ for using GSVA in shiny application or ‘Console Analysis’ for using this method on R console from the tabs below:</p>
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
 </div>
 <div id="workflow-guide" class="section level2">
 <h2 class="hasAnchor">
 <a href="#workflow-guide" class="anchor"></a>Workflow Guide</h2>
-<ol style="list-style-type: decimal">
-<li>Upload or import <strong><em>gene sets</em></strong>:</li>
-</ol>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co">#import a GMT file</span>
-<span class="va">gmtFilePath</span> <span class="op">&lt;-</span> <span class="st">"C:/Users/HP/Desktop/gmtfile.GMT"</span>
-<span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/importGeneSetsFromGMT.html">importGeneSetsFromGMT</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>,
-                             file <span class="op">=</span> <span class="va">gmtFilePath</span>,
-                             by <span class="op">=</span> <span class="st">"rownames"</span>,
-                             collectionName <span class="op">=</span> <span class="st">"Collection1"</span><span class="op">)</span>
+<div class="tab">
+  <button class="tablinks" onclick="openTab(event, 'interactive')" id="ia-button">Interactive Analysis</button>
+  <button class="tablinks" onclick="openTab(event, 'console')" id="console-button">Console Analysis</button>
+</div>
 
-<span class="co">#select from an existing database</span>
-<span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/importGeneSetsFromMSigDB.html">importGeneSetsFromMSigDB</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>,
-                                categoryIDs <span class="op">=</span> <span class="st">"C1"</span>,
-                                by <span class="op">=</span> <span class="st">"rownames"</span><span class="op">)</span></code></pre></div>
-<ol start="2" style="list-style-type: decimal">
-<li>Run <strong><em>GSVA</em></strong>:</li>
+<div id="interactive" class="tabcontent">
+<p>Before running the <strong><em>GSVA</em></strong> algorithm, the gene sets must be selected or uploaded through the <strong><em>Import Gene Sets</em></strong> sub-tab from the <strong><em>Data</em></strong> tab in the toolkit menu. An overall workflow guide on how to import/upload <strong><em>gene sets</em></strong> and consequently using them with <strong><em>GSVA</em></strong> sub-tab is described below. <strong><em>This workflow guide assumes that the Single Cell Data has already been uploaded through the <a href="">Import Single Cell Data</a> sub-tab</em></strong>.<br></p>
+<p><img src="ui_screenshots/pathway_analysis/capa_1.png"></p>
+<ol style="list-style-type: decimal">
+<li><p>Select the <strong><em>Data</em></strong> tab from the <strong><em>singleCellTK</em></strong> top menu.<br></p></li>
+<li><p>Select the <strong><em>Import Gene Sets</em></strong> from the drop-down menu.<br></p></li>
 </ol>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">sce</span><span class="op">$</span><span class="va">gsvaRes</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/gsvaSCE.html">gsvaSCE</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>,
-               useAssay <span class="op">=</span> <span class="st">"logcounts"</span>,
-               pathwayNames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"C1"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<p><img src="ui_screenshots/pathway_analysis/capa_2.png"></p>
 <ol start="3" style="list-style-type: decimal">
-<li>Visualize the results:</li>
+<li><p>Users can choose the <strong><em>Upload a GMT file</em></strong> option to upload gene sets directly stored in a GMT file or choose <strong><em>Select from a database</em></strong> option to select gene sets from multiple databases integrated within the toolkit or lastly choose the <strong><em>Paste in your gene set</em></strong> option to paste gene identifiers directly into the user-interface to create a gene set.<br></p></li>
+<li><ol style="list-style-type: lower-alpha">
+<li>If <strong><em>Upload a GMT file</em></strong> option is selected, users can upload a .GMT file containing the gene sets. <br>
+</li>
+</ol></li>
 </ol>
+<p><img src="ui_screenshots/pathway_analysis/capa_3.png"></p>
+<ol start="4" style="list-style-type: decimal">
+<li><ol start="2" style="list-style-type: lower-alpha">
+<li>If <strong><em>Select from a database</em></strong> option is selected, the available gene sets are populated. Users can select the gene sets and click on the <strong><em>Upload</em></strong> button to get them to use in the downstream analysis. <br>
+</li>
+</ol></li>
+</ol>
+<p><img src="ui_screenshots/pathway_analysis/capa_4.png"></p>
+<ol start="5" style="list-style-type: decimal">
+<li>Once <strong><em>gene sets</em></strong> are uploaded, the selected gene sets are listed in this table. <br>
+</li>
+</ol>
+<p><img src="ui_screenshots/pathway_analysis/capa_5.png"></p>
+<ol start="6" style="list-style-type: decimal">
+<li>To run the <strong><em>GSVA</em></strong> algorithm, go to <strong><em>Cell Annotation &amp; Pathway Analysis</em></strong> tab. <br>
+</li>
+</ol>
+<p><img src="ui_screenshots/pathway_analysis/capa_6.png"></p>
+<ol start="7" style="list-style-type: decimal">
+<li>Select <strong><em>GSVA</em></strong> option from the drop-down menu. <br>
+</li>
+</ol>
+<p><img src="ui_screenshots/pathway_analysis/capa_7.png"></p>
+<ol start="8" style="list-style-type: decimal">
+<li>Select <strong><em>assay</em></strong> to use with <strong><em>GSVA</em></strong>. <br>
+</li>
+<li>Select <strong><em>GSVA</em></strong> as the method.</li>
+<li>Select <strong><em>gene sets</em></strong> to use with <strong><em>GSVA</em></strong>. Only uploaded <strong><em>gene sets</em></strong> from the <strong><em>Import Gene Sets</em></strong> page are available here. <br>
+</li>
+<li>Select a <strong><em>phenotype variable</em></strong> to use with the <strong><em>plots</em></strong>. <br>
+</li>
+<li>Select if a <strong><em>Heatmap</em></strong> should be plotted or a *<strong>Violin</strong> plot. <br>
+</li>
+<li>Press <strong><em>Run</em></strong> to start computation. <br>
+</li>
+<li>Once computation is complete, users use the <strong><em>Save Pathways</em></strong> button to store the pathways in the internal object for use in downstream analysis or use the <strong><em>Download Pathway Results</em></strong> option to download the results to the local drive. <br>
+</li>
+</ol>
+<p><img src="ui_screenshots/pathway_analysis/capa_8.png"></p>
+<ol start="15" style="list-style-type: decimal">
+<li>Results can be visualized by selecting the <strong><em>Plot</em></strong> tab <strong>(16)</strong> or the <strong><em>Results Table</em></strong> tab <strong>(17)</strong>. <br>
+</li>
+</ol>
+</div>
+<div id="console" class="tabcontent">
+<p><strong>1. Upload or import gene sets:</strong></p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># Import a GMT file</span>
+<span class="va">gmtFilePath</span> <span class="op">&lt;-</span> <span class="st">"C:/Users/HP/Desktop/gmtfile.GMT"</span> <span class="co"># Specify user-defined location for the GMT file</span>
+<span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/importGeneSetsFromGMT.html">importGeneSetsFromGMT</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, file <span class="op">=</span> <span class="va">gmtFilePath</span>, by <span class="op">=</span> <span class="st">"rownames"</span>, collectionName <span class="op">=</span> <span class="st">"Collection1"</span><span class="op">)</span>
+
+<span class="co"># Alternatively</span>
+<span class="co"># Select from an existing database</span>
+<span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/importGeneSetsFromMSigDB.html">importGeneSetsFromMSigDB</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, categoryIDs <span class="op">=</span> <span class="st">"C1"</span>, by <span class="op">=</span> <span class="st">"rownames"</span><span class="op">)</span></code></pre></div>
+<p><strong>2. Run GSVA using <code>gsvaSCE</code> function:</strong></p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">gsvaRes</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/gsvaSCE.html">gsvaSCE</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"logcounts"</span>, pathwayNames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"C1"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<p>The parameters to the <code>gsvaSCE</code> function above include: <br><code>inSCE</code>: input <code>SingleCellExperiment</code> object that contains the stored gene sets <br><code>useAssay</code>: name of the assay to use for GSVA computation <br><code>pathwayNames</code>: names of the pathways to use with GSVA (previously stored in the input object) <br></p>
+<p><strong>3. Visualize the results:</strong></p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co">#populate results</span>
+<code class="sourceCode R"><span class="co"># Fit Limma &amp; Populate Results</span>
 <span class="va">conditionFactor</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="fu">colData</span><span class="op">(</span><span class="va">sce</span><span class="op">)</span><span class="op">[</span>, <span class="st">"Biological_Condition"</span><span class="op">]</span><span class="op">)</span>
       <span class="kw">if</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nlevels.html">nlevels</a></span><span class="op">(</span><span class="va">conditionFactor</span><span class="op">)</span><span class="op">&lt;=</span><span class="fl">1</span><span class="op">)</span><span class="op">{</span>
         <span class="kw"><a href="https://rdrr.io/r/base/stop.html">stop</a></span><span class="op">(</span><span class="st">"Condition variable must have atleast two levels!"</span><span class="op">)</span>
       <span class="op">}</span>
-<span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu">limma</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/limma/man/lmFit.html">lmFit</a></span><span class="op">(</span><span class="va">sce</span><span class="op">$</span><span class="va">gsvaRes</span>, <span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/model.matrix.html">model.matrix</a></span><span class="op">(</span><span class="op">~</span><span class="va">conditionFactor</span><span class="op">)</span><span class="op">)</span>
+<span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu">limma</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/limma/man/lmFit.html">lmFit</a></span><span class="op">(</span><span class="va">gsvaRes</span>, <span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/model.matrix.html">model.matrix</a></span><span class="op">(</span><span class="op">~</span><span class="va">conditionFactor</span><span class="op">)</span><span class="op">)</span>
 <span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu">limma</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/limma/man/ebayes.html">eBayes</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span>
-<span class="va">toptableres</span> <span class="op">&lt;-</span> <span class="fu">limma</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/limma/man/toptable.html">topTable</a></span><span class="op">(</span><span class="va">fit</span>, number <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">sce</span><span class="op">$</span><span class="va">gsvaRes</span><span class="op">)</span><span class="op">)</span>
+<span class="va">toptableres</span> <span class="op">&lt;-</span> <span class="fu">limma</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/limma/man/toptable.html">topTable</a></span><span class="op">(</span><span class="va">fit</span>, number <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">gsvaRes</span><span class="op">)</span><span class="op">)</span>
 <span class="va">temptable</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span><span class="op">(</span><span class="va">toptableres</span><span class="op">)</span>, <span class="va">toptableres</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span><span class="op">(</span><span class="va">temptable</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="cn">NULL</span>
 <span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">temptable</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"Pathway"</span>
      
 
-<span class="va">tempgsvares</span> <span class="op">&lt;-</span> <span class="va">sce</span><span class="op">$</span><span class="va">gsvaRes</span>
+<span class="va">tempgsvares</span> <span class="op">&lt;-</span> <span class="va">gsvaRes</span>
 <span class="va">topPaths</span> <span class="op">&lt;-</span> <span class="fl">10</span>
-<span class="co">#visualize violin plot</span>
-<span class="va">tempgsvares</span> <span class="op">&lt;-</span> <span class="va">tempgsvares</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">min</a></span><span class="op">(</span><span class="fl">49</span>, <span class="va">topPaths</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">tempgsvares</span><span class="op">)</span><span class="op">)</span>, , drop <span class="op">=</span> <span class="cn">FALSE</span><span class="op">]</span>
-<span class="fu"><a href="../../reference/gsvaSCE.html">gsvaPlot</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>,
-         gsvaData <span class="op">=</span> <span class="va">tempgsvares</span>,
-         plotType <span class="op">=</span> <span class="st">"Violin"</span>,
-         condition <span class="op">=</span> <span class="st">"Biological_Condition"</span><span class="op">)</span>
 
-<span class="co">#visualize heatmap plot</span>
-<span class="fu"><a href="../../reference/gsvaSCE.html">gsvaPlot</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>,
-         gsvaData <span class="op">=</span> <span class="va">tempgsvares</span>,
-         plotType <span class="op">=</span> <span class="st">"Heatmap"</span>,
-         condition <span class="op">=</span> <span class="st">"Biological_Condition"</span><span class="op">)</span></code></pre></div>
+<span class="co"># Visualize violin plot</span>
+<span class="va">tempgsvares</span> <span class="op">&lt;-</span> <span class="va">tempgsvares</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">min</a></span><span class="op">(</span><span class="fl">49</span>, <span class="va">topPaths</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">tempgsvares</span><span class="op">)</span><span class="op">)</span>, , drop <span class="op">=</span> <span class="cn">FALSE</span><span class="op">]</span>
+<span class="fu"><a href="../../reference/gsvaSCE.html">gsvaPlot</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, gsvaData <span class="op">=</span> <span class="va">tempgsvares</span>, plotType <span class="op">=</span> <span class="st">"Violin"</span>, condition <span class="op">=</span> <span class="st">"Biological_Condition"</span><span class="op">)</span>
+
+<span class="co"># Visualize heatmap plot</span>
+<span class="fu"><a href="../../reference/gsvaSCE.html">gsvaPlot</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, gsvaData <span class="op">=</span> <span class="va">tempgsvares</span>, plotType <span class="op">=</span> <span class="st">"Heatmap"</span>, condition <span class="op">=</span> <span class="st">"Biological_Condition"</span><span class="op">)</span></code></pre></div>
+  <details><summary><b>Example</b></summary><div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R">  <span class="co"># Load singleCellTK, pbmc3k example data &amp; gene sets</span>
+  <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://compbiomed.github.io/sctk_docs/">singleCellTK</a></span><span class="op">)</span>
+  <span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/importExampleData.html">importExampleData</a></span><span class="op">(</span>dataset <span class="op">=</span> <span class="st">"pbmc3k"</span><span class="op">)</span>
+  <span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/importGeneSetsFromMSigDB.html">importGeneSetsFromMSigDB</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, categoryIDs <span class="op">=</span> <span class="st">"C1"</span>, by <span class="op">=</span> <span class="st">"rownames"</span><span class="op">)</span>
+  
+  <span class="co"># Normalize data using runNormalization function from the toolkit</span>
+  <span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/runNormalization.html">runNormalization</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"counts"</span>, outAssayName <span class="op">=</span> <span class="st">"logcounts"</span>, normalizationMethod <span class="op">=</span> <span class="st">"logNormCounts"</span><span class="op">)</span>
+  
+  <span class="co"># Compute clusters using louvain algorithm</span>
+  <span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/runScranSNN.html">runScranSNN</a></span><span class="op">(</span><span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"logcounts"</span>, algorithm <span class="op">=</span> <span class="st">"louvain"</span>, clusterName <span class="op">=</span> <span class="st">"clusterLouvain"</span><span class="op">)</span>
+  
+  <span class="co"># Subset data to run GSVA faster</span>
+  <span class="va">sce</span> <span class="op">&lt;-</span> <span class="va">sce</span><span class="op">[</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">200</span><span class="op">]</span>
+  
+  <span class="co"># Run GSVA</span>
+  <span class="va">gsvaRes</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/gsvaSCE.html">gsvaSCE</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"logcounts"</span>, pathwayNames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"C1"</span><span class="op">)</span><span class="op">)</span>
+  
+  <span class="co"># Fit Limma &amp; Visualize Results</span>
+  <span class="va">conditionFactor</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="fu">colData</span><span class="op">(</span><span class="va">sce</span><span class="op">)</span><span class="op">[</span>, <span class="st">"clusterLouvain"</span><span class="op">]</span><span class="op">)</span>
+      <span class="kw">if</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nlevels.html">nlevels</a></span><span class="op">(</span><span class="va">conditionFactor</span><span class="op">)</span><span class="op">&lt;=</span><span class="fl">1</span><span class="op">)</span><span class="op">{</span>
+        <span class="kw"><a href="https://rdrr.io/r/base/stop.html">stop</a></span><span class="op">(</span><span class="st">"Condition variable must have atleast two levels!"</span><span class="op">)</span>
+      <span class="op">}</span>
+  <span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu">limma</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/limma/man/lmFit.html">lmFit</a></span><span class="op">(</span><span class="va">gsvaRes</span>, <span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/model.matrix.html">model.matrix</a></span><span class="op">(</span><span class="op">~</span><span class="va">conditionFactor</span><span class="op">)</span><span class="op">)</span>
+  <span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu">limma</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/limma/man/ebayes.html">eBayes</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span>
+  <span class="va">toptableres</span> <span class="op">&lt;-</span> <span class="fu">limma</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/limma/man/toptable.html">topTable</a></span><span class="op">(</span><span class="va">fit</span>, number <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">gsvaRes</span><span class="op">)</span><span class="op">)</span>
+  <span class="va">temptable</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span><span class="op">(</span><span class="va">toptableres</span><span class="op">)</span>, <span class="va">toptableres</span><span class="op">)</span>
+  <span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span><span class="op">(</span><span class="va">temptable</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="cn">NULL</span>
+  <span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">temptable</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"Pathway"</span>
+  <span class="va">tempgsvares</span> <span class="op">&lt;-</span> <span class="va">gsvaRes</span>
+  <span class="va">topPaths</span> <span class="op">&lt;-</span> <span class="fl">10</span>
+
+  <span class="co"># Visualize violin plot</span>
+  <span class="va">tempgsvares</span> <span class="op">&lt;-</span> <span class="va">tempgsvares</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">min</a></span><span class="op">(</span><span class="fl">49</span>, <span class="va">topPaths</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">tempgsvares</span><span class="op">)</span><span class="op">)</span>, , drop <span class="op">=</span> <span class="cn">FALSE</span><span class="op">]</span>
+  <span class="fu"><a href="../../reference/gsvaSCE.html">gsvaPlot</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, gsvaData <span class="op">=</span> <span class="va">tempgsvares</span>, plotType <span class="op">=</span> <span class="st">"Violin"</span>, condition <span class="op">=</span> <span class="st">"clusterLouvain"</span><span class="op">)</span></code></pre></div>
+<p><img src="cnsl_gsva_files/figure-html/gsva_console_example_1-1.png" width="700"></p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R">  <span class="co"># Visualize heatmap plot</span>
+  <span class="fu"><a href="../../reference/gsvaSCE.html">gsvaPlot</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, gsvaData <span class="op">=</span> <span class="va">tempgsvares</span>, plotType <span class="op">=</span> <span class="st">"Heatmap"</span>, condition <span class="op">=</span> <span class="st">"clusterLouvain"</span>, show_column_names <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
+<p><img src="cnsl_gsva_files/figure-html/gsva_console_example_1-2.png" width="700"></p>
+    </details>
+</div>
+<script>
+document.getElementById("ia-button").click();
+</script>
+</div>
+<div id="references" class="section level2 unnumbered">
+<h2 class="hasAnchor">
+<a href="#references" class="anchor"></a>References</h2>
+<div id="refs" class="references csl-bib-body">
+<div id="ref-Hanzelmann2013" class="csl-entry">
+<div class="csl-left-margin">[1] </div>
+<div class="csl-right-inline">S. Hänzelmann, R. Castelo, and J. Guinney, <span>“<span class="nocase">GSVA: Gene set variation analysis for microarray and RNA-Seq data</span>,”</span> <em>BMC Bioinformatics</em>, vol. 14, no. 1, p. 7, Jan. 2013, doi: <a href="https://doi.org/10.1186/1471-2105-14-7">10.1186/1471-2105-14-7</a>.</div>
+</div>
+</div>
 </div>
   </div>
 

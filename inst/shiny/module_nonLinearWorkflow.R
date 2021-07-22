@@ -75,7 +75,7 @@ nonLinearWorkflow <- function(input, output, session, parent,
         heading = "Quality Control & Filtering",
         h5("Perform quality control checks to get a better sense of the quality of the input data using a number of available methods. Additionally, perform filtering on the data to remove samples that do not pass a quality criteria."),
         actionButton(inputId = ns("goQC"), label = "Go to QC"),
-        actionButton(inputId = ns("goQC"), label = "Go to Filtering")
+        actionButton(inputId = ns("goFilter"), label = "Go to Filtering")
       )
     })
   }
@@ -96,7 +96,7 @@ nonLinearWorkflow <- function(input, output, session, parent,
         heading = "Curated Workflows",
         h5("Interactively analyze raw or filtered data in a step-by-step curated workflow using either Seurat or Celda pipeline."),
         actionButton(inputId = ns("goSeurat"), label = "Go to Seurat"),
-        actionButton(inputId = ns("goSeurat"), label = "Go to Celda")
+        actionButton(inputId = ns("goCelda"), label = "Go to Celda")
       )
     })
   }
@@ -131,6 +131,13 @@ nonLinearWorkflow <- function(input, output, session, parent,
     })
   }
   
+  observeEvent(input$goCV,{
+    showTab(inputId = "navbar",
+            target = "CellViewer",
+            select = TRUE,
+            session = parent)
+  })
+  
     observeEvent(input$goDE,{
       showTab(inputId = "navbar",
               target = "Differential Expression",
@@ -164,6 +171,19 @@ nonLinearWorkflow <- function(input, output, session, parent,
               target = "QC & Filtering",
               select = TRUE,
               session = parent)
+      updateTabsetPanel(session = parent, 
+                        inputId = "QCFilterTabsetPanel", 
+                        selected = "QC")
+    })
+    
+    observeEvent(input$goFilter,{
+      showTab(inputId = "navbar",
+              target = "QC & Filtering",
+              select = TRUE,
+              session = parent)
+      updateTabsetPanel(session = parent, 
+                        inputId = "QCFilterTabsetPanel", 
+                        selected = "Filtering")
     })
     
     observeEvent(input$goNBC,{
@@ -189,21 +209,27 @@ nonLinearWorkflow <- function(input, output, session, parent,
     
     observeEvent(input$goDR,{
       showTab(inputId = "navbar",
-              target = "DR",
+              target = "Feature Selection & Dimensionality Reduction",
               select = TRUE,
               session = parent)
+      updateTabsetPanel(session = parent, 
+                        inputId = "FSDimRedTabsetPanel", 
+                        selected = "Dimensionality Reduction")
     })
     
     observeEvent(input$goFS,{
       showTab(inputId = "navbar",
-              target = "FS",
+              target = "Feature Selection & Dimensionality Reduction",
               select = TRUE,
               session = parent)
+      updateTabsetPanel(session = parent, 
+                        inputId = "FSDimRedTabsetPanel", 
+                        selected = "Feature Selection")
     })
     
     observeEvent(input$goCL,{
       showTab(inputId = "navbar",
-              target = "CL",
+              target = "Clustering",
               select = TRUE,
               session = parent)
     })

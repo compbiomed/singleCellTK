@@ -10,7 +10,7 @@ getTSNE(
   useAltExp = NULL,
   reducedDimName = "TSNE",
   nIterations = 1000,
-  perplexity = NULL,
+  perplexity = 30,
   run_pca = TRUE,
   ntop = NULL
 )
@@ -30,7 +30,7 @@ reductions. Default \code{"TSNE"}.}
 
 \item{nIterations}{maximum iterations. Default \code{1000}.}
 
-\item{perplexity}{perplexity parameter. Default \code{NULL}.}
+\item{perplexity}{perplexity parameter. Default \code{30}.}
 
 \item{run_pca}{run tSNE on PCA components? Default \code{TRUE}.}
 
@@ -52,6 +52,7 @@ assay(mouseBrainSubsetSCE, "cpm") <- apply(
     x / (sum(x) / 1000000)
   })
 mouseBrainSubsetSCE <- getTSNE(mouseBrainSubsetSCE, useAssay = "cpm",
-                               reducedDimName = "TSNE_cpm")
+                               reducedDimName = "TSNE_cpm",
+                               perplexity = NULL)
 reducedDims(mouseBrainSubsetSCE)
 }
