@@ -81,7 +81,7 @@ shinyPanelfindMarker <- fluidPage(
                 )
               )
             ),
-            plotOutput('fmHeatmap')
+            shinyjqui::jqui_resizable(plotOutput('fmHeatmap'))
           )
         )
       )

@@ -133,7 +133,7 @@ nonLinearWorkflow <- function(input, output, session, parent,
   
   observeEvent(input$goCV,{
     showTab(inputId = "navbar",
-            target = "Cell Viewer",
+            target = "CellViewer",
             select = TRUE,
             session = parent)
   })
@@ -209,16 +209,22 @@ nonLinearWorkflow <- function(input, output, session, parent,
     
     observeEvent(input$goDR,{
       showTab(inputId = "navbar",
-              target = "DR",
+              target = "Feature Selection & Dimensionality Reduction",
               select = TRUE,
               session = parent)
+      updateTabsetPanel(session = parent, 
+                        inputId = "FSDimRedTabsetPanel", 
+                        selected = "Dimensionality Reduction")
     })
     
     observeEvent(input$goFS,{
       showTab(inputId = "navbar",
-              target = "FS",
+              target = "Feature Selection & Dimensionality Reduction",
               select = TRUE,
               session = parent)
+      updateTabsetPanel(session = parent, 
+                        inputId = "FSDimRedTabsetPanel", 
+                        selected = "Feature Selection")
     })
     
     observeEvent(input$goCL,{

@@ -2457,7 +2457,7 @@ shinyServer(function(input, output, session) {
     if (!is.null(input$picker_dimheatmap_components_dimRed)) {
       if(vals$runDimred$dimRedAssaySelect %in% assayNames(vals$counts)){
         output$plot_heatmap_dimRed <- renderPlot({
-          plotHeatmapMulti(
+          singleCellTK:::.plotHeatmapMulti(
             plots = vals$counts@metadata$seurat$heatmap_dimRed,
             components = input$picker_dimheatmap_components_dimRed,
             nCol = input$slider_dimheatmap_dimRed)
@@ -2465,7 +2465,7 @@ shinyServer(function(input, output, session) {
       }
       else if(vals$runDimred$dimRedAssaySelect %in% expDataNames(vals$counts)){
         output$plot_heatmap_dimRed <- renderPlot({
-          plotHeatmapMulti(
+          singleCellTK:::.plotHeatmapMulti(
             plots = altExps(vals$counts)[[vals$runDimred$dimRedAssaySelect]]@metadata$seurat$heatmap_dimRed,
             components = input$picker_dimheatmap_components_dimRed,
             nCol = input$slider_dimheatmap_dimRed)
@@ -2634,7 +2634,7 @@ shinyServer(function(input, output, session) {
               reduction = "pca"
             )
             output$plot_heatmap_dimRed <- renderPlot({
-              plotHeatmapMulti(vals$counts@metadata$seurat$heatmap_dimRed)
+              singleCellTK:::.plotHeatmapMulti(vals$counts@metadata$seurat$heatmap_dimRed)
             })
           }
           else if(vals$runDimred$dimRedAssaySelect %in% expDataNames(vals$counts)){
@@ -2646,7 +2646,7 @@ shinyServer(function(input, output, session) {
               reduction = "pca"
             )
             output$plot_heatmap_dimRed <- renderPlot({
-              plotHeatmapMulti(altExps(vals$counts)[[vals$runDimred$dimRedAssaySelect]]@metadata$seurat$heatmap_dimRed)
+              singleCellTK:::.plotHeatmapMulti(altExps(vals$counts)[[vals$runDimred$dimRedAssaySelect]]@metadata$seurat$heatmap_dimRed)
             })
           }
         })
@@ -2662,7 +2662,7 @@ shinyServer(function(input, output, session) {
               reduction = "ica"
             )
             output$plot_heatmap_dimRed <- renderPlot({
-              plotHeatmapMulti(vals$counts@metadata$seurat$heatmap_dimRed)
+              singleCellTK:::.plotHeatmapMulti(vals$counts@metadata$seurat$heatmap_dimRed)
             })
           }
           else if(vals$runDimred$dimRedAssaySelect %in% expDataNames(vals$counts)){
@@ -2674,7 +2674,7 @@ shinyServer(function(input, output, session) {
               reduction = "ica"
             )
             output$plot_heatmap_dimRed <- renderPlot({
-              plotHeatmapMulti(altExps(vals$counts)[[vals$runDimred$dimRedAssaySelect]]@metadata$seurat$heatmap_dimRed)
+              singleCellTK:::.plotHeatmapMulti(altExps(vals$counts)[[vals$runDimred$dimRedAssaySelect]]@metadata$seurat$heatmap_dimRed)
             })
           }
         })
@@ -2690,7 +2690,7 @@ shinyServer(function(input, output, session) {
               externalReduction = new_pca
             )
             output$plot_heatmap_dimRed <- renderPlot({
-              plotHeatmapMulti(vals$counts@metadata$seurat$heatmap_dimRed)
+              singleCellTK:::.plotHeatmapMulti(vals$counts@metadata$seurat$heatmap_dimRed)
             })
           }
           else if(input$dimRedAssaySelect %in% expDataNames(vals$counts)){
@@ -2702,7 +2702,7 @@ shinyServer(function(input, output, session) {
               externalReduction = new_pca
             )
             output$plot_heatmap_dimRed <- renderPlot({
-              plotHeatmapMulti(altExps(vals$counts)[[vals$runDimred$dimRedAssaySelect]]@metadata$seurat$heatmap_dimRed)
+              singleCellTK:::.plotHeatmapMulti(altExps(vals$counts)[[vals$runDimred$dimRedAssaySelect]]@metadata$seurat$heatmap_dimRed)
             })
           }
         })
@@ -2720,7 +2720,7 @@ shinyServer(function(input, output, session) {
            && input$dimRedPlotMethod != "seuratICA"){
           appendTab(inputId = "dimRedPCAICA_plotTabset", tabPanel(title = "JackStraw Plot",
                                                                   panel(heading = "JackStraw Plot",
-                                                                        plotOutput(outputId = "plot_jackstraw_dimRed")
+                                                                        shinyjqui::jqui_resizable(plotOutput(outputId = "plot_jackstraw_dimRed"))
                                                                   )
           ))
 
@@ -5059,7 +5059,7 @@ shinyServer(function(input, output, session) {
           if (!is.null(vals$vfplot)) {
             vals$vfplot
           }
-        }, width = 400, height = 400)
+        })
         output$hvgOutputFS <- renderText({HVGs})
       } else {
         shinyalert::shinyalert(
