@@ -113,17 +113,4 @@ test_that(desc = "Testing importGeneSetFromMSigDB", {
 }) 
 
 
-test_that(desc = "Testing runVAM", {
-  data(scExample, package = "singleCellTK")
-  sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
-  sce <- scaterlogNormCounts(sce, assayName = "logcounts")
-  sce <- importGeneSetsFromMSigDB(inSCE = sce,
-                                  categoryIDs = "H",
-                                  species = "Homo sapiens",
-                                  mapping = "gene_symbol",
-                                  by = "feature_name")
-   
-  sce <- runVAM(inSCE = sce, geneSetCollectionName = "H", useAssay = "logcounts")
-  expect_true(validObject(reducedDim(sce)))
-})
 
