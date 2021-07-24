@@ -104,7 +104,9 @@ Imports:
     rmarkdown,
     magrittr,
     scDblFinder,
-    metap
+    metap,
+    MASS,
+    VAM
 RoxygenNote: 7.1.1
 Suggests:
     testthat,
