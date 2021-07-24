@@ -1282,7 +1282,7 @@ shinyServer(function(input, output, session) {
         vals$original <- importGeneSetsFromList(vals$original,
                                                 setList,
                                                 by = byParam,
-                                                collectionName = input$gsExistdaing)
+                                                collectionName = input$gsExisting)
         addToGSTable(input$gsExisting, "Paste-In")
       }
     }
