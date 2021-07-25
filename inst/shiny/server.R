@@ -223,7 +223,7 @@ shinyServer(function(input, output, session) {
     currassays <- names(assays(vals$counts))
     updateSelectInputTag(session, "dimRedAssaySelect", recommended = c("transformed", "normalized", "scaled"),
                          choices = expDataNames(vals$counts), redDims = TRUE)
-    updateSelectInputTag(session, "dimRedAssaySelect_tsneUmap", recommended = c("transformed", "normalized", "scaled"))
+    updateSelectInputTag(session, "dimRedAssaySelect_tsneUmap", recommended = c("redDims"), redDims = TRUE)
     updateSelectInputTag(session, "batchCheckAssay", choices = currassays)
     updateSelectInputTag(session, "batchCheckOrigAssay", choices = currassays)
     updateSelectInputTag(session, "clustScranSNNMat", label = "Select Input Matrix:",
@@ -2528,7 +2528,7 @@ shinyServer(function(input, output, session) {
             heading = "Elbow Plot",
             plotlyOutput(outputId = "plotDimRed_elbow")
           )
-        )
+        ), select = TRUE
       )
       if (input$dimRedPlotMethod == "seuratPCA"){
         withProgress(message = "Generating Elbow Plot", max = 1, value = 1, {
@@ -2704,7 +2704,7 @@ shinyServer(function(input, output, session) {
                                                             panel(heading = "Component Plot",
                                                                   plotlyOutput(outputId = "plotDimRed_pca")
                                                             )
-    ), select = TRUE)
+    ))
 
     withProgress(message = "Plotting PCA/ICA", max = 1, value = 1, {
         output$plotDimRed_pca <- renderPlotly({

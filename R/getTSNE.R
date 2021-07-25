@@ -42,12 +42,12 @@ getTSNE <- function(inSCE, useAssay = "logcounts", useAltExp = NULL,
            "specified altExp. ")
     }
   } else {
-    if (!(useAssay %in% SummarizedExperiment::assayNames(inSCE))) {
+    if (!(useAssay %in% expDataNames(inSCE))) {
       stop("Specified assay '", useAssay, "' not found. ")
     }
     sce <- inSCE
   }
-  exprsMat <- as.matrix(SummarizedExperiment::assay(sce, useAssay))
+  exprsMat <- as.matrix(expData(sce, useAssay))
   if (!is.null(ntop) && ntop < nrow(inSCE)) {
     rv <- matrixStats::rowVars(exprsMat)
     featureSet <- order(rv, decreasing = TRUE)[seq_len(min(ntop, length(rv)))]
@@ -57,7 +57,13 @@ getTSNE <- function(inSCE, useAssay = "logcounts", useAltExp = NULL,
     exprsToPlot <- exprsToPlot[keepFeature, ]
     exprsToPlot <- scale(t(exprsToPlot))
   } else {
-    exprsToPlot <- t(exprsMat)
+    if(useAssay %in% reducedDimNames(inSCE)){
+      exprsToPlot <- exprsMat
+      run_pca <- FALSE
+    }
+    else{
+      exprsToPlot <- t(exprsMat) 
+    }
   }
 
   if (is.null(perplexity)){
@@ -67,7 +73,7 @@ getTSNE <- function(inSCE, useAssay = "logcounts", useAltExp = NULL,
                           initial_dims = max(50, ncol(inSCE)),
                           max_iter = nIterations, pca = run_pca)
   tsneOut <- tsneOut$Y[, c(1, 2)]
-  rownames(tsneOut) <- colnames(inSCE)
+  rownames(tsneOut) <- rownames(exprsToPlot)
   colnames(tsneOut) <- c("tSNE1", "tSNE2")
   SingleCellExperiment::reducedDim(inSCE, reducedDimName) <- tsneOut
   return(inSCE)
