@@ -2517,24 +2517,7 @@ shinyServer(function(input, output, session) {
     removeTab(inputId = "dimRedPCAICA_plotTabset", target = "JackStraw Plot")
 
     shinyjs::show(selector = ".dimRedPCAICA_plotTabset_class")
-    appendTab(inputId = "dimRedPCAICA_plotTabset", tabPanel(title = "Component Plot",
-                                                            panel(heading = "Component Plot",
-                                                                  plotlyOutput(outputId = "plotDimRed_pca")
-                                                            )
-    ), select = TRUE)
-
-    withProgress(message = "Plotting PCA/ICA", max = 1, value = 1, {
-        output$plotDimRed_pca <- renderPlotly({
-          plotly::ggplotly(
-            plotDimRed(
-              inSCE = vals$counts,
-              useReduction = dimrednamesave,
-              xAxisLabel = paste0(input$dimRedPlotMethod, "_1"),
-              yAxisLabel = paste0(input$dimRedPlotMethod, "_2"))
-          )
-        })
-    })
-
+    
     if(input$computeElbowPlot
        && input$dimRedPlotMethod != "seuratICA"){
       appendTab(
@@ -2575,7 +2558,7 @@ shinyServer(function(input, output, session) {
         })
       }
     }
-
+    
     if(input$computeHeatmapPlot){
       appendTab(
         inputId = "dimRedPCAICA_plotTabset",
@@ -2707,7 +2690,7 @@ shinyServer(function(input, output, session) {
           }
         })
       }
-
+      
       if(input$dimRedPlotMethod == "seuratICA"){
         updatePickerInput(session = session, inputId = "picker_dimheatmap_components_dimRed", choices = rep(paste0("IC",seq(as.numeric(input$dimRedNumberDims)))))
       }
@@ -2715,6 +2698,27 @@ shinyServer(function(input, output, session) {
         updatePickerInput(session = session, inputId = "picker_dimheatmap_components_dimRed", choices = rep(paste0("PC",seq(as.numeric(input$dimRedNumberDims)))))
       }
     }
+    
+    
+    appendTab(inputId = "dimRedPCAICA_plotTabset", tabPanel(title = "Component Plot",
+                                                            panel(heading = "Component Plot",
+                                                                  plotlyOutput(outputId = "plotDimRed_pca")
+                                                            )
+    ), select = TRUE)
+
+    withProgress(message = "Plotting PCA/ICA", max = 1, value = 1, {
+        output$plotDimRed_pca <- renderPlotly({
+          plotly::ggplotly(
+            plotDimRed(
+              inSCE = vals$counts,
+              useReduction = dimrednamesave,
+              xAxisLabel = paste0(input$dimRedPlotMethod, "_1"),
+              yAxisLabel = paste0(input$dimRedPlotMethod, "_2"))
+          )
+        })
+    })
+
+
 
         if(input$computeJackstrawPlot
            && input$dimRedPlotMethod != "seuratICA"){
