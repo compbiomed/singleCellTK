@@ -390,3 +390,19 @@ retrieveSCEIndex <- function(inSCE, IDs, axis, by = NULL,
   )
   return(input)
 }
+
+
+# creates a class of geneset collection where all genesets are imported which belong to the category genesetCOllectionName
+.getGeneSetCollection <- function(inSCE, geneSetCollectionName) {
+  gs <- S4Vectors::metadata(inSCE)$sctk$genesets
+  if(is.null(gs)) {
+    stop("No gene set collections have been imported.")
+  }
+  
+  if(!geneSetCollectionName %in% names(gs)) {
+    stop("'", geneSetCollectionName, "' is not in the list of imported gene set collections: ",
+         paste(names(gs), collapse = ","))
+  }
+  
+  return(gs[[geneSetCollectionName]]) 
+}
