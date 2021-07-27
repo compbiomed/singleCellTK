@@ -42,7 +42,7 @@ runVAM <- function(inSCE, geneSetCollectionName, useAssay, resultNamePrefix = NU
   gene.Set.Rows <- list()
   gene.Set.Collection <- list()
   
-  for (i in 1:num.Genes){
+  for (i in seq(num.Genes)){
     
     gene.Set.Rows[i] <- slot(gene.Set[[i]], "setName")
     gene.Set.Ids <- slot(gene.Set[[i]], "geneIds")
