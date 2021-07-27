@@ -6,6 +6,7 @@ r:
 sudo: true
 warnings_are_errors: true
 bioc_required: true
+bioc_check: true
 
 addons:
   apt:
