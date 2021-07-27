@@ -213,7 +213,7 @@ shinyServer(function(input, output, session) {
       )
     })
   }
-  
+
   observeEvent(input$hvgMethodFS,{
     req(vals$counts)
     updateAssayInputs()
@@ -253,7 +253,7 @@ shinyServer(function(input, output, session) {
       updateSelectInputTag(session, "assaySelectFS_Norm", recommended = c("raw"))
     }
     else{
-      updateSelectInputTag(session, "assaySelectFS_Norm", recommended = c("transformed", "normalized", "scaled")) 
+      updateSelectInputTag(session, "assaySelectFS_Norm", recommended = c("transformed", "normalized", "scaled"))
     }
     updateSelectInputTag(session, "filterAssaySelect", choices = currassays)
     updateSelectInputTag(session, "qcAssaySelect", recommended = "raw")
@@ -944,20 +944,20 @@ shinyServer(function(input, output, session) {
         size = "s",
         icon = icon("arrow-right")
       ), id = "goSeuratNotification")
-      
+
       #Normalize Data
       shinyjs::enable(selector = "div[value='Normalize Data']")
       updateCollapse(session = session, "SeuratUI", style = list("Normalize Data" = "success"))
       normalizeParams <- metadata(vals$counts)$seurat$sctk$report$normalizeParams
       updateSelectInput(session, "normalization_method", selected = normalizeParams$normalizationMethod)
       updateTextInput(session, "scale_factor", value = normalizeParams$scaleFactor)
-      
+
       #Scale Data
       shinyjs::enable(selector = "div[value='Scale Data']")
       updateCollapse(session = session, "SeuratUI", style = list("Scale Data" = "success"))
       scaleParams <- metadata(vals$counts)$seurat$sctk$report$scaleParams
       updateSelectInput(session, "model.use", selected = scaleParams$model)
-      
+
       #HVG
       hvgParams <- metadata(vals$counts)$seurat$sctk$report$hvgParams
       output$plot_hvg <- renderPlotly({
@@ -968,7 +968,7 @@ shinyServer(function(input, output, session) {
       updateSelectInput(session, "hvg_method", selected = hvgParams$hvgMethod)
       updateTextInput(session, "hvg_no_features", value = hvgParams$hvgNumber)
       updateTextInput(session, "hvg_no_features_view", value = hvgParams$labelPoints)
-      
+
       #DR
       pcaParams <- metadata(vals$counts)$seurat$sctk$report$pcaParams
       shinyjs::enable(selector = "div[value='Dimensionality Reduction']")
@@ -1051,15 +1051,15 @@ shinyServer(function(input, output, session) {
           # output$plot_heatmap_pca <- renderPlot({
           #   metadata(inSCE)$seurat$plots$heatmap
           # })
-          
+
           updateTextInput(session, "pca_no_components", value = pcaParams$nPCs)
           updateMaterialSwitch(session, "pca_compute_jackstraw", value = TRUE)
           updateNumericInput(session, "pca_significant_pc_counter", value = pcaParams$significant_PC)
-          
+
           pcHeatmapParams <- metadata(inSCE)$seurat$plots$heatmap
           pcHeatmapParams$inSCE <- vals$counts
           output$plot_heatmap_pca <- renderPlot({
-            do.call("seuratComputeHeatmap", pcHeatmapParams)  
+            do.call("seuratComputeHeatmap", pcHeatmapParams)
           })
 
           updatePickerInput(session = session, inputId = "picker_dimheatmap_components_pca", choices = singleCellTK:::.getComponentNames(vals$counts@metadata$seurat$count_pc, "PC"))
@@ -1132,10 +1132,10 @@ shinyServer(function(input, output, session) {
           })
 
           shinyjs::show(selector = ".seurat_clustering_plots")
-          
+
           updateNumericInput(session, "resolution_clustering", value = clusterParams$resolution)
-          
-      
+
+
       #Find Markers
           shinyjs::enable(selector = "div[value='Find Markers']")
           updateCollapse(session = session, "SeuratUI", style = list("Find Markers" = "success"))
@@ -1199,13 +1199,13 @@ shinyServer(function(input, output, session) {
           showTab(inputId = "seuratFindMarkerPlotTabset", target = "Joint Heatmap Plot")
           updateTabsetPanel(session = session, inputId = "seuratFindMarkerPlotTabset", selected = "Ridge Plot")
           shinyjs::show(selector = ".seurat_findmarker_plots")
-          
+
           groupHeatmapParams <- metadata(vals$counts)$seurat$plots$groupHeatmapParams
           groupHeatmapParams$inSCE <- vals$counts
           output$findMarkerHeatmapPlotFull <- renderPlot({
             do.call("seuratGenePlot", groupHeatmapParams)
           })
-          
+
           output$findMarkerHeatmapPlotFullTopText <- renderUI({
             h6(paste("Heatmap plotted across all groups against genes with adjusted p-values <", input$seuratFindMarkerPValAdjInput))
           })
@@ -1602,9 +1602,12 @@ shinyServer(function(input, output, session) {
                                  paramsList = paramsList)
         updateColDataNames()
         # redDimList <- strsplit(reducedDimNames(vals$counts), " ")
-        # run getUMAP
-        message(paste0(date(), " ... Running 'UMAP'"))
-        vals$counts <- getUMAP(inSCE = vals$counts,
+        # run getUMAP if doublet/ambient RNA detection conducted
+        if(length(intersect(c("scDblFinder", "cxds", "bcds",
+             "cxds_bcds_hybrid", "decontX",
+             "scrublet", "doubletFinder"), algoList))){
+          message(paste0(date(), " ... Running 'UMAP'"))
+          vals$counts <- getUMAP(inSCE = vals$counts,
                                  sample = qcSample,
                                  useAssay = input$qcAssaySelect,
                                  nNeighbors = input$UnNeighbors,
@@ -1614,7 +1617,8 @@ shinyServer(function(input, output, session) {
                                  spread = input$Uspread,
                                  initialDims = input$UinitialDims,
                                  reducedDimName = input$QCUMAPName
-        )
+                                 )
+        }
         updateQCPlots()
       }
     })
@@ -6846,7 +6850,7 @@ shinyServer(function(input, output, session) {
     # )
 
   })
-  
+
   observeEvent(input$findMarkerHeatmapPlotFullNumericRun,{
     ##df <- metadata(vals$counts)$seuratMarkers[which(metadata(vals$counts)$seuratMarkers$p_val_adj < 0.05, arr.ind = TRUE),]
     df <- metadata(vals$counts)$seuratMarkers
