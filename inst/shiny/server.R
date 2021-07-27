@@ -2779,6 +2779,7 @@ shinyServer(function(input, output, session) {
     if (!is.null(vals$counts)){
       withBusyIndicatorServer("runDimred_tsneUmap", {
         vals$runDimred$dimRedAssaySelect_tsneUmap <- input$dimRedAssaySelect_tsneUmap
+        dimrednamesave <- NULL
         if (input$dimRedNameInput_tsneUmap == ""){
           shinyalert::shinyalert("Error", "enter a reducedDim name", type = "error")
         } #check for named entered and if its a duplicate
@@ -2842,15 +2843,15 @@ shinyServer(function(input, output, session) {
       })
     }
 
-    removeTab(inputId = "dimRedTSNEUMAP_plotTabset", target = "tSNE Plot")
+    #removeTab(inputId = "dimRedTSNEUMAP_plotTabset", target = "tSNE Plot")
     removeTab(inputId = "dimRedTSNEUMAP_plotTabset", target = "UMAP Plot")
 
     shinyjs::show(selector = ".dimRedTSNEUMAP_plotTabset_class")
 
     if(input$dimRedPlotMethod_tsneUmap == "seuratTSNE"
        || input$dimRedPlotMethod_tsneUmap == "rTSNE"){
-      appendTab(inputId = "dimRedTSNEUMAP_plotTabset", tabPanel(title = "tSNE Plot",
-                                                                panel(heading = "tSNE Plot",
+      appendTab(inputId = "dimRedTSNEUMAP_plotTabset", tabPanel(title = dimrednamesave,
+                                                                panel(heading = dimrednamesave,
                                                                       plotlyOutput(outputId = "plotDimRed_tsneUmap")
                                                                 )
       ), select = TRUE)
