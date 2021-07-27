@@ -38,6 +38,8 @@
 
 
 
+  <link href="../extra.css" rel="stylesheet">
+  <script src="../extra.js"></script>
 
 <meta property="og:title" content="Run t-SNE dimensionality reduction method on a SingleCellExperiment Object — getTSNE" />
 <meta property="og:description" content="Run t-SNE dimensionality reduction method on a SingleCellExperiment Object" />
@@ -72,7 +74,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.2.0</span>
       </span>
     </div>
 
@@ -295,7 +297,7 @@
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/compbiomed/singleCellTK">
-    <span class="fas fa-github"></span>
+    <span class="fa fa-github"></span>
      
   </a>
 </li>
@@ -327,7 +329,7 @@
   useAltExp <span class='op'>=</span> <span class='cn'>NULL</span>,
   reducedDimName <span class='op'>=</span> <span class='st'>"TSNE"</span>,
   nIterations <span class='op'>=</span> <span class='fl'>1000</span>,
-  perplexity <span class='op'>=</span> <span class='cn'>NULL</span>,
+  perplexity <span class='op'>=</span> <span class='fl'>30</span>,
   run_pca <span class='op'>=</span> <span class='cn'>TRUE</span>,
   ntop <span class='op'>=</span> <span class='cn'>NULL</span>
 <span class='op'>)</span></pre>
@@ -361,7 +363,7 @@ reductions. Default <code>"TSNE"</code>.</p></td>
     </tr>
     <tr>
       <th>perplexity</th>
-      <td><p>perplexity parameter. Default <code>NULL</code>.</p></td>
+      <td><p>perplexity parameter. Default <code>30</code>.</p></td>
     </tr>
     <tr>
       <th>run_pca</th>
@@ -387,7 +389,8 @@ updated in <code>reducedDim(inSCE, reducedDimName)</code>.</p>
     <span class='va'>x</span> <span class='op'>/</span> <span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/sum.html'>sum</a></span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span> <span class='op'>/</span> <span class='fl'>1000000</span><span class='op'>)</span>
   <span class='op'>}</span><span class='op'>)</span>
 <span class='va'>mouseBrainSubsetSCE</span> <span class='op'>&lt;-</span> <span class='fu'>getTSNE</span><span class='op'>(</span><span class='va'>mouseBrainSubsetSCE</span>, useAssay <span class='op'>=</span> <span class='st'>"cpm"</span>,
-                               reducedDimName <span class='op'>=</span> <span class='st'>"TSNE_cpm"</span><span class='op'>)</span>
+                               reducedDimName <span class='op'>=</span> <span class='st'>"TSNE_cpm"</span>,
+                               perplexity <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span>
 <span class='fu'>reducedDims</span><span class='op'>(</span><span class='va'>mouseBrainSubsetSCE</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; List of length 5
 #&gt; names(5): PCA_counts PCA_logcounts TSNE_counts TSNE_logcounts TSNE_cpm</div></pre>

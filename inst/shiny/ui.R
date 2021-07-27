@@ -1,3 +1,12 @@
+# Check if CRAN packages are installed, otherwise prompt user to install them.
+requiredPackages <- c("shinyjqui", "shinyWidgets", "shinythemes", "shinyFiles")
+if(!all(requiredPackages %in% installed.packages())){
+  missingPackages <- requiredPackages[which(requiredPackages %in% installed.packages() == FALSE)]
+  message("Installing missing packages: ")
+  message(paste0(missingPackages, collapse = " "))
+  install.packages(missingPackages)
+}
+
 library(shiny)
 library(shinyjs)
 library(shinyFiles)
@@ -38,6 +47,8 @@ library(grDevices)
 library(shinyWidgets)
 library(stringr)
 library(Hmisc)
+# library(pushbar)
+# library(spsComps)
 
 
 source("helpers.R")
@@ -226,8 +237,33 @@ shinyUI(
                hidden(verbatimTextOutput(outputId="console")),
         )
       ),
+      # fluidRow(
+      #   column(12, id = "consoleDiv", align = "right",
+      #          actionButton(inputId="interpretToggle", label = "Interpret"),
+      #          pushbar_deps(),
+      #          pushbar(
+      #            from = "bottom",
+      #            id = "myPushbar",
+      #            spsTimeline(
+      #              "b",
+      #              up_labels = c("Data Import", 
+      #                            "Quality Control", 
+      #                            "Normalization"),
+      #              down_labels = c("step 1", "step 2", "step3"),
+      #              icons = list(icon("dna"), icon("dna"), icon("dna")),
+      #              completes = c(TRUE, TRUE, FALSE)
+      #            )
+      #          )
+      #   )
+      # ),
       useShinyjs(),
-      extendShinyjs(text = jsCode, functions = c("enableTabs", "disableTabs"))
+      extendShinyjs(text = jsCode, functions = c("enableTabs", "disableTabs")),
+      
+      # Following lines of code add a loading spinner when toolkit launches and
+      # loads several ui elements/plots etc.
+      includeCSS("busy-load-piccard21.css"),
+      tags$script(src = "initialLoading.js"),
+      tags$script(src = "busy-load-piccard21.js")
     )
 )
 

@@ -28,3 +28,18 @@ test_that(desc = "Testing subsetSCERows", {
   expect_true(length(altExps(sce)) == 1)
 })
 
+
+test_that(desc = "Testing runVAM", {
+  sce <- scaterlogNormCounts(sce, assayName = "logcounts")
+  sce <- importGeneSetsFromMSigDB(inSCE = sce,
+                                  categoryIDs = "H",
+                                  species = "Homo sapiens",
+                                  mapping = "gene_symbol",
+                                  by = "feature_name")
+  
+  sce <- runVAM(inSCE = sce, geneSetCollectionName = "H", useAssay = "logcounts")
+  expect_true(validObject(reducedDim(sce)))
+})
+
+
+

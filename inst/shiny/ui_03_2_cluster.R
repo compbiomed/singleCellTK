@@ -129,6 +129,7 @@ shinyPanelCluster <- fluidPage(
       withBusyIndicatorUI(actionButton("clustPlot", "Plot")),
       plotlyOutput("clustVisPlot")
     )
-  )
+  ),
+  nonLinearWorkflowUI(id = "nlw-cl")
 )
 

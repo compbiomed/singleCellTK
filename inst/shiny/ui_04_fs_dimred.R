@@ -1,6 +1,6 @@
 shinyPanelFS_DimRed <- fluidPage(
   h1("Feature Selection & Dimensionality Reduction"),
-  tabsetPanel(
+  tabsetPanel(id = "FSDimRedTabsetPanel",
     tabPanel(
       "Feature Selection",
       fluidRow(
@@ -48,14 +48,15 @@ shinyPanelFS_DimRed <- fluidPage(
                 outputId = "hvgOutputFS",
                 placeholder = TRUE)
             ),
-            plotOutput(
-              outputId = "plotFS",
-              width = 400,
-              height = 400
+            shinyjqui::jqui_resizable(
+              plotOutput(
+                outputId = "plotFS"
+              )
             )
           )
         )
-      )
+      ),
+      nonLinearWorkflowUI(id = "nlw-fs")
     ),
     tabPanel(
       "Dimensionality Reduction",
@@ -220,7 +221,8 @@ shinyPanelFS_DimRed <- fluidPage(
             )
           )
         )
-      )
+      ),
+nonLinearWorkflowUI(id = "nlw-dr")
     )
   )
 )

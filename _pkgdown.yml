@@ -217,3 +217,5 @@ navbar:
   right:
     - icon: fa-github
       href: https://github.com/compbiomed/singleCellTK
+    - icon: fa-twitter
+      href: https://twitter.com/camplab1
