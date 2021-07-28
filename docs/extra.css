@@ -49,3 +49,8 @@ img:hover {
 summary {
   cursor: pointer;
 }
+
+details {
+  padding-inline-start: 1em;
+  margin-bottom: 10px;
+}
