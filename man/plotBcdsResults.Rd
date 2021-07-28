@@ -100,7 +100,7 @@ above the violin plot. Default 3.}
 
 \item{transparency}{Transparency of the dots, values will be 0-1. Default 1.}
 
-\item{baseSize}{The base font size for all text. Default 12.
+\item{baseSize}{The base font size for all text. Default 15.
 Can be overwritten by titleSize, axisSize, and axisLabelSize,
 legendSize, legendTitleSize.}
 
