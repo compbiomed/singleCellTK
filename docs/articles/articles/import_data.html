@@ -296,12 +296,20 @@
 <a href="#introduction" class="anchor"></a>Introduction</h2>
 <p>Single Cell ToolKit (singleCellTK, SCTK) enables importing data from the following pre-processing tools</p>
 <ul>
-<li><a href="https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/what-is-cell-ranger">CellRanger</a></li>
+<li>
+<a href="https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/what-is-cell-ranger">CellRanger</a> <span class="citation">[1]</span>
+</li>
 <li><a href="https://data.humancellatlas.org/pipelines/optimus-workflow">Optimus</a></li>
-<li><a href="https://github.com/hms-dbmi/dropEst">DropEst</a></li>
-<li><a href="https://github.com/BUStools/bustools">BUStools</a></li>
-<li><a href="https://github.com/ambrosejcarr/seqc">Seqc</a></li>
-<li><a href="https://github.com/alexdobin/STAR/blob/master/docs/STARsolo.md">STARSolo</a></li>
+<li>
+<a href="https://github.com/hms-dbmi/dropEst">DropEst</a> <span class="citation">[2]</span>
+</li>
+<li>
+<a href="https://github.com/BUStools/bustools">BUStools</a> <span class="citation">[3]</span>
+</li>
+<li><a href="https://github.com/dpeerlab/seqc">Seqc</a></li>
+<li>
+<a href="https://github.com/alexdobin/STAR/blob/master/docs/STARsolo.md">STARSolo</a> <span class="citation">[4]</span>
+</li>
 </ul>
 <p>In all cases, SCTK retains the standard output directory structure from the upstream tools.</p>
 <p>Meanwhile, SCTK also supports importing raw count matrix, with metadata, stored in the following format</p>
@@ -442,9 +450,27 @@ After choosing a single file for uploading, user must wait until the progress ba
 document.getElementById("ia-button").click();
 </script>
 </div>
-<div id="references" class="section level2">
+<div id="references" class="section level2 unnumbered">
 <h2 class="hasAnchor">
 <a href="#references" class="anchor"></a>References</h2>
+<div id="refs" class="references csl-bib-body">
+<div id="ref-Zheng2017" class="csl-entry">
+<div class="csl-left-margin">[1] </div>
+<div class="csl-right-inline">P. B. Grace X. Y. Zheng Jessica M. Terry, <span>“<span class="nocase">Massively parallel digital transcriptional profiling of single cells</span>,”</span> <em>Nature Communications</em>, vol. 8, no. 14049, 2017, doi: <a href="https://doi.org/10.1038/ncomms14049">10.1038/ncomms14049</a>.</div>
+</div>
+<div id="ref-Petukhov2018" class="csl-entry">
+<div class="csl-left-margin">[2] </div>
+<div class="csl-right-inline">N. B. Viktor Petukhov Jimin Guo, <span>“<span class="nocase">dropEst: pipeline for accurate estimation of molecular counts in droplet-based single-cell RNA-seq experiments</span>,”</span> <em>Genome Biology</em>, vol. 19, no. 78, 2018, doi: <a href="https://doi.org/10.1186/s13059-018-1449-6">10.1186/s13059-018-1449-6</a>.</div>
+</div>
+<div id="ref-Melsted2019" class="csl-entry">
+<div class="csl-left-margin">[3] </div>
+<div class="csl-right-inline">L. P. Páll Melsted Vasilis Ntranos, <span>“<span class="nocase">The barcode, UMI, set format and BUStools</span>,”</span> <em>Bioinformatics</em>, vol. 35, pp. 4472--4473, Nov. 2019, doi: <a href="https://doi.org/10.1093/bioinformatics/btz279">10.1093/bioinformatics/btz279</a>.</div>
+</div>
+<div id="ref-Dobin2013" class="csl-entry">
+<div class="csl-left-margin">[4] </div>
+<div class="csl-right-inline">F. S. Alexander Dobin Carrie A. Davis, <span>“<span class="nocase">STAR: ultrafast universal RNA-seq aligner</span>,”</span> <em>Bioinformatics</em>, vol. 29, pp. 15--21, Jan. 2013, doi: <a href="https://doi.org/10.1093/bioinformatics/bts635">10.1093/bioinformatics/bts635</a>.</div>
+</div>
+</div>
 </div>
   </div>
 

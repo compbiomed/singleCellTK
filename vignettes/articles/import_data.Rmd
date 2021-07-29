@@ -24,12 +24,12 @@ doEval = FALSE
 
 Single Cell ToolKit (singleCellTK, SCTK) enables importing data from the following pre-processing tools  
 
-- [CellRanger](https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/what-is-cell-ranger)
-- [Optimus](https://data.humancellatlas.org/pipelines/optimus-workflow)
-- [DropEst](https://github.com/hms-dbmi/dropEst)
-- [BUStools](https://github.com/BUStools/bustools)
-- [Seqc](https://github.com/ambrosejcarr/seqc)
-- [STARSolo](https://github.com/alexdobin/STAR/blob/master/docs/STARsolo.md)
+- [CellRanger](https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/what-is-cell-ranger) [@Zheng2017]
+- [Optimus](https://data.humancellatlas.org/pipelines/optimus-workflow) 
+- [DropEst](https://github.com/hms-dbmi/dropEst) [@Petukhov2018]
+- [BUStools](https://github.com/BUStools/bustools) [@Melsted2019]
+- [Seqc](https://github.com/dpeerlab/seqc)
+- [STARSolo](https://github.com/alexdobin/STAR/blob/master/docs/STARsolo.md) [@Dobin2013]
 
 In all cases, SCTK retains the standard output directory structure from the upstream tools.  
 
