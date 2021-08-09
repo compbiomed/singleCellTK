@@ -15,6 +15,7 @@ runCellQC(
   geneSetCollection = NULL,
   useAssay = "counts",
   seed = 12345,
+  verbose = FALSE,
   paramsList = NULL
 )
 }
