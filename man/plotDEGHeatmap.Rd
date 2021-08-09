@@ -7,6 +7,7 @@
 plotDEGHeatmap(
   inSCE,
   useResult,
+  doLog = FALSE,
   onlyPos = FALSE,
   log2fcThreshold = 0.25,
   fdrThreshold = 0.05,
@@ -29,6 +30,9 @@ plotDEGHeatmap(
 
 \item{useResult}{character. A string specifying the \code{analysisName}
 used when running a differential expression analysis function.}
+
+\item{doLog}{Logical scalar. Whether to do \code{log(assay + 1)}
+transformation on the assay used for the analysis. Default \code{FALSE}.}
 
 \item{onlyPos}{logical. Whether to only plot DEG with positive log2_FC
 value. Default \code{FALSE}.}
@@ -81,7 +85,7 @@ this(these) annotation(s). Should exist in either \code{rowDataName} or
 \item{...}{Other arguments passed to \code{\link{plotSCEHeatmap}}}
 }
 \value{
-A ComplexHeatmap::Heatmap object
+A \code{ComplexHeatmap::Heatmap} object
 }
 \description{
 A differential expression analysis function has to be run in advance so that
@@ -92,6 +96,15 @@ will be automatically added. A cell annotation basing on the condition
 selection while running the analysis called \code{"condition"}, and the
 annotations used from \code{colData(inSCE)} while setting the condition and
 covariates will also be added.
+}
+\examples{
+data("sceBatches")
+logcounts(sceBatches) <- log(counts(sceBatches) + 1)
+sce.w <- subsetSCECols(sceBatches, colData = "batch == 'w'")
+sce.w <- runWilcox(sce.w, class = "cell_type", classGroup1 = "alpha",
+                   groupName1 = "w.alpha", groupName2 = "w.beta",
+                   analysisName = "w.aVSb")
+plotDEGHeatmap(sce.w, "w.aVSb")
 }
 \author{
 Yichen Wang

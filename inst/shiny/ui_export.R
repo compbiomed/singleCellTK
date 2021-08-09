@@ -3,11 +3,18 @@ shinyPanelExport <- fluidPage(
   class = "container",
   style = "margin-bottom: 10px",
   h1("Export Data"),
+  h5(tags$a(href = paste0(docs.artPath, "ui_export_data.html"),
+            "(help)", target = "_blank")),
   tags$hr(),
   fluidRow(
     column(
       6,
-      shinyDirectoryInput::directoryInput('outputDirectory', label = 'Select directory', value = '~'),
+      #shinyDirectoryInput::directoryInput('outputDirectory', label = 'Select directory', value = '~'),
+
+      shinyDirButton("outputDirectory", label = "Select directory", title = "Download"),
+      # A UI to display what users select
+      verbatimTextOutput("outputDirectoryPath", placeholder = TRUE),
+
       tags$h5(style = "font-weight: bold; margin-bottom: 15px", "Choose export type"),
       radioButtons(
         "exportChoice",
@@ -18,33 +25,39 @@ shinyPanelExport <- fluidPage(
           "Flat text files" = "textfile"
         )
       ),
+      conditionalPanel(
+        condition = "input.exportChoice == 'annData' || input.exportChoice == 'rds'",
+        tags$label(id="exportFileNameLabel", "File Name"),
+      ),
+      conditionalPanel(
+        condition = "input.exportChoice == 'textfile'",
+        tags$label(id="exportFileNameLabel", "File prefix"),
+      ),
+      uiOutput("exportFileName"),
       actionButton("exportData", "Download")
     ),
     column(
       6,
       conditionalPanel(
-        condition = "input.exportChoice === 'textfile'",
+        condition = "input.exportChoice == 'textfile'",
         tags$h5(style = "font-weight: bold; margin-bottom: 15px", "Set export specifications"),
-        tags$label(id="gzipLabel", "Gzip"),
-        selectInput("gzip", label=NULL, c("True", "False"), width = '140px')
+        checkboxInput("exportFlatGzip", "Gzip Compress", value = TRUE)
       ),
       conditionalPanel(
-        condition = "input.exportChoice === 'annData'",
+        condition = "input.exportChoice == 'annData'",
         tags$h5(style = "font-weight: bold; margin-bottom: 15px", "Set export specifications"),
-        tags$label(id="exportAssayLabel", "Assay"),
-        selectInput("exportAssay", label=NULL, c(""), width='140px'),
-        tags$label(id="compressionLabel", "Compression"),
-        selectInput("compression", label = NULL, c("None", "lzf", "gzip"), width='140px'),
+        uiOutput("exportAssay"),
+        # tags$label(id="compressionLabel", "Compression"),
+        # selectInput("compression", label = NULL, c("None", "lzf", "gzip"), width='140px'),
         tags$label(id="compressionOptsLabel", "Compression Opts"),
-        numericInput("compressionOpts", label = NULL, 0, min = 1, max = 100, width='140px'),
-        tags$label(id="forceDenseLabel", "Force Dense"),
-        selectInput("forceDense", label = NULL, c("False", "True"), width='140px'),
+        numericInput("compressionOpts", label = NULL, 1, min = 1, max = 100, width='140px'),
+        checkboxInput("forceDense", "Force Dense", value = FALSE)
       ),
       conditionalPanel(
-        condition = "input.exportChoice === 'textfile' || input.exportChoice === 'annData'",
-        tags$label(id="overwriteLabel", "Overwrite"),
-        selectInput("overwrite", label = NULL,c("True", "False"), width = '140px'),
+        condition = "input.exportChoice == 'textfile' || input.exportChoice == 'annData'",
+        checkboxInput("exportOverwrite", "Overwrite", value = TRUE)
       )
     )
     )
 ))
+

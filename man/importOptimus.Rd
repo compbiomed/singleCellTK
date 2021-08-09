@@ -14,7 +14,7 @@ importOptimus(
   geneMetricsLocation = "call-MergeGeneMetrics/merged-gene-metrics.csv.gz",
   emptyDropsLocation = "call-RunEmptyDrops/empty_drops_result.csv",
   class = c("Matrix", "matrix"),
-  delayedArray = TRUE
+  delayedArray = FALSE
 )
 }
 \arguments{
@@ -58,11 +58,11 @@ optimus_v1.4.0.}
 
 \item{class}{Character. The class of the expression matrix stored in the SCE
 object. Can be one of "Matrix" (as returned by
-\link[Matrix]{readMM} function), or "matrix" (as returned by
+\link{readMM} function), or "matrix" (as returned by
 \link[base]{matrix} function). Default "Matrix".}
 
 \item{delayedArray}{Boolean. Whether to read the expression matrix as
-\link[DelayedArray]{DelayedArray} object or not. Default \code{TRUE}.}
+\link{DelayedArray} object or not. Default \code{FALSE}.}
 }
 \value{
 A \link[SingleCellExperiment]{SingleCellExperiment} object
@@ -75,10 +75,10 @@ Read the barcodes, features (genes), and matrices from Optimus
  as one \link[SingleCellExperiment]{SingleCellExperiment} object.
 }
 \examples{
+file.path <- system.file("extdata/Optimus_20x1000",
+  package = "singleCellTK")
 \dontrun{
-sce <- importOptimus(OptimusDirs =
-  system.file("extdata/Optimus_20x1000",
-  package = "singleCellTK"),
+sce <- importOptimus(OptimusDirs = file.path,
   samples = "Optimus_20x1000")
 }
 }

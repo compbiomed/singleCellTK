@@ -3,26 +3,41 @@ shinyPanelGeneSets <- fluidPage(
     class = "container",
     style = "margin-bottom: 10px",
     h1("Import Gene Sets"),
+    h5(tags$a(href = paste0(docs.artPath, "ui_import_genesets.html"),
+              "(help)", target = "_blank")),
     tags$hr(),
-    
+    tags$style(HTML("
+      div {
+        word-wrap: break-word;
+      }
+      ")
+    ),
+    wellPanel(
+      h4("Existing Gene Sets:"),
+      fluidRow(
+        column(3, tags$b("Collection Name")),
+        column(9, tags$b("Location")),
+      ),
+      tags$div(id = "newGSImport"),
+      tags$br(),
+      tags$br(),
+    ),
     radioButtons("geneSetSourceChoice", label = NULL, c("Upload a GMT file" = 'gsGMTUpload',
                                                  "Select from a database" = "gsDBUpload",
                                                  "Paste in your gene set" = "gsPasteUpload")
     ),
-    
     conditionalPanel(
       condition = sprintf("input['%s'] == 'gsGMTUpload'", "geneSetSourceChoice"),
       h3("Upload a GMT file:"),
+      fileInput('geneSetGMT', 'Choose GMT File', accept = ".gmt"),
       textInput('gsCollectionNameGMT', label='Collection Name'),
-      fileInput('geneSetGMT', 'Choose GMT File', accept = ".gmt")
-      # shinyFilesButton('geneSetGMT', 'Choose File', 'Select a .gmt file', FALSE)
     ),
 
     conditionalPanel(
       condition = sprintf("input['%s'] == 'gsDBUpload'", "geneSetSourceChoice"),
       h3("Select from a database:"),
       tags$style(HTML("#geneSetDB {width:100%}")),
-      checkboxGroupInput('geneSetDB', 'Check the gene sets you want to import', 
+      checkboxGroupInput('geneSetDB', 'Check the gene sets you want to import',
                          choices = c()),
     ),
 
@@ -34,18 +49,13 @@ shinyPanelGeneSets <- fluidPage(
         tags$div(id = "gsAddToExisting",
                  h4("-OR-"),
                  selectInput("gsExisting", "Add to an existing collection", c("None")),
-                 textAreaInput('geneSetText', 'Please enter values separated by new lines', width = "300px")
         )
       ),
-      # shinyjs::hidden(
-      #   tags$div(id = "gsAddToExisting",
-      #            h4("-OR-"),
-                 # selectInput("gsExisting", "Add to an existing collection", c("None")),
-                 # textAreaInput('geneSetText', 'Please enter values separated by new lines', width = "300px")
-      #   ),
-      # )
+      textAreaInput('geneSetText', 'Please enter values separated by new lines', width = "300px")
     ),
-    
+
+    selectInput("gsByParam", "Location within SCE object where the gene identifiers in should be mapped.", list()),
+
     withBusyIndicatorUI(
       actionButton("uploadGS", "Upload")
     ),
@@ -56,3 +66,4 @@ shinyPanelGeneSets <- fluidPage(
     ),
   )
 )
+

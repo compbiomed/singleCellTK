@@ -10,6 +10,7 @@ runScranSNN(
   useReducedDim = NULL,
   useAltExp = NULL,
   altExpAssay = "counts",
+  altExpRedDim = NULL,
   clusterName = "scranSNN_cluster",
   k = 10,
   nComp = 50,
@@ -23,24 +24,29 @@ runScranSNN(
 object.}
 
 \item{useAssay}{A single \code{character}, specifying which
-\code{\link[SummarizedExperiment]{assay}} to perform the clustering algorithm
+\code{\link{assay}} to perform the clustering algorithm
 on. Default \code{NULL}.}
 
 \item{useReducedDim}{A single \code{character}, specifying which
-low-dimension representation (\code{\link[SingleCellExperiment]{reducedDim}})
+low-dimension representation (\code{\link{reducedDim}})
 to perform the clustering algorithm on. Default \code{NULL}.}
 
 \item{useAltExp}{A single \code{character}, specifying the assay which
-\code{\link[SingleCellExperiment]{altExp}} to perform the clustering
+\code{\link{altExp}} to perform the clustering
 algorithm on. Default \code{NULL}.}
 
 \item{altExpAssay}{A single \code{character}, specifying which
-\code{\link[SummarizedExperiment]{assay}} in the chosen
-\code{\link[SingleCellExperiment]{altExp}} to work on. Only used when
+\code{\link{assay}} in the chosen
+\code{\link{altExp}} to work on. Only used when
 \code{useAltExp} is set. Default \code{"counts"}.}
 
+\item{altExpRedDim}{A single \code{character}, specifying which
+\code{\link{reducedDim}} within the \code{\link{altExp}} specified by
+\code{useAltExp} to use. Only used when \code{useAltExp} is set. Default
+\code{NULL}.}
+
 \item{clusterName}{A single \code{character}, specifying the name to store
-the cluster label in \code{\link[SummarizedExperiment]{colData}}. Default
+the cluster label in \code{\link{colData}}. Default
 \code{"scranSNN_cluster"}.}
 
 \item{k}{An \code{integer}, the number of nearest neighbors used to construct

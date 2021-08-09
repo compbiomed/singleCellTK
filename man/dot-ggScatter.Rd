@@ -6,17 +6,19 @@
 \usage{
 .ggScatter(
   inSCE,
+  reducedDimName,
   sample = NULL,
   colorBy = NULL,
   groupBy = NULL,
   shape = NULL,
-  reducedDimName,
   conditionClass = NULL,
   labelClusters = FALSE,
+  clusterLabelSize = 3.5,
   xlab = NULL,
   ylab = NULL,
-  axisSize = 10,
-  axisLabelSize = 10,
+  baseSize = 12,
+  axisSize = NULL,
+  axisLabelSize = NULL,
   dim1 = NULL,
   dim2 = NULL,
   bin = NULL,
@@ -29,10 +31,10 @@
   colorHigh = "blue",
   defaultTheme = TRUE,
   title = NULL,
-  titleSize = 15,
+  titleSize = NULL,
   legendTitle = NULL,
-  legendTitleSize = 12,
-  legendSize = 10,
+  legendTitleSize = NULL,
+  legendSize = NULL,
   combinePlot = "none",
   plotLabels = NULL
 )
@@ -40,6 +42,9 @@
 \arguments{
 \item{inSCE}{Input \linkS4class{SingleCellExperiment} object with saved
 dimension reduction components or a variable with saved results. Required}
+
+\item{reducedDimName}{Saved dimension reduction name in the
+\linkS4class{SingleCellExperiment} object. Required.}
 
 \item{sample}{Character vector. Indicates which sample each cell belongs to.}
 
@@ -49,9 +54,6 @@ dimension reduction components or a variable with saved results. Required}
 
 \item{shape}{If provided, add shapes based on the value.}
 
-\item{reducedDimName}{Saved dimension reduction name in the
-\linkS4class{SingleCellExperiment} object. Required.}
-
 \item{conditionClass}{class of the annotation data used in colorBy. Options
 are NULL, "factor" or "numeric". If NULL, class will default to the original
 class. Default NULL.}
@@ -59,13 +61,20 @@ class. Default NULL.}
 \item{labelClusters}{Logical. Whether the cluster labels are plotted.
 Default FALSE.}
 
+\item{clusterLabelSize}{Numeric. Determines the size of cluster label
+when `labelClusters` is set to TRUE. Default 3.5.}
+
 \item{xlab}{Character vector. Label for x-axis. Default NULL.}
 
 \item{ylab}{Character vector. Label for y-axis. Default NULL.}
 
-\item{axisSize}{Size of x/y-axis ticks. Default 10.}
+\item{baseSize}{The base font size for all text. Default 12.
+Can be overwritten by titleSize, axisSize, and axisLabelSize,
+legendSize, legendTitleSize.}
 
-\item{axisLabelSize}{Size of x/y-axis labels. Default 10.}
+\item{axisSize}{Size of x/y-axis ticks. Default NULL.}
+
+\item{axisLabelSize}{Size of x/y-axis labels. Default NULL.}
 
 \item{dim1}{1st dimension to be used for plotting. Can either be a string which specifies
 the name of the dimension to be plotted from reducedDims, or a numeric value which specifies
@@ -110,9 +119,9 @@ when TRUE. Default TRUE.}
 
 \item{legendTitle}{title of legend. Default NULL.}
 
-\item{legendTitleSize}{size of legend title. Default 12.}
+\item{legendTitleSize}{size of legend title. Default NULL.}
 
-\item{legendSize}{size of legend. Default 10.}
+\item{legendSize}{size of legend. Default NULL.}
 
 \item{combinePlot}{Must be either "all", "sample", or "none". "all" will combine all plots into a single
 .ggplot object, while "sample" will output a list of plots separated by sample. Default "none".}

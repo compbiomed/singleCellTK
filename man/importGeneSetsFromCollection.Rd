@@ -15,7 +15,7 @@ importGeneSetsFromCollection(
 \item{inSCE}{Input \linkS4class{SingleCellExperiment} object.}
 
 \item{geneSetCollection}{A \linkS4class{GeneSetCollection} object. See
-\link[GSEABase]{GeneSetCollection} for more details.}
+\link{GeneSetCollection} for more details.}
 
 \item{collectionName}{Character. Name of collection to add gene sets to.
 If this collection already exists in \code{inSCE}, then these gene sets will
@@ -31,11 +31,16 @@ gene identifies will be mapped to that column in the \code{rowData}
 of \code{inSCE}. \code{by} can be a vector the same length as
 the number of gene sets in the \code{GeneSetCollection} and the elements of the vector
 can point to different locations within \code{inSCE}. Finally, \code{by}
-can be \code{NULL}. In this case, the location of the gene identifiers 
+can be \code{NULL}. In this case, the location of the gene identifiers
 in \code{inSCE} should be saved in the description slot for each gene set
 in the \code{GeneSetCollection}.
 See \link{featureIndex} for more information.
 Default \code{"rownames"}.}
+}
+\value{
+A \link[SingleCellExperiment]{SingleCellExperiment} object
+with gene set from \code{collectionName} output stored to the
+\link{metadata} slot.
 }
 \description{
 Converts a list of gene sets stored in a
@@ -46,7 +51,7 @@ downstream quality control and analysis functions in \link{singleCellTK}.
 \details{
 The gene identifiers in gene sets in the
 \code{GeneSetCollection} will be mapped to the rownames of
-\code{inSCE} using the \code{by} parameter and 
+\code{inSCE} using the \code{by} parameter and
 stored in a \linkS4class{GeneSetCollection} object from package
 \link{GSEABase}. This object is stored in
 \code{metadata(inSCE)$sctk$genesets}, which can be accessed in downstream
@@ -55,8 +60,8 @@ analysis functions such as \link[singleCellTK]{runCellQC}.
 \examples{
 data(scExample)
 library(GSEABase)
-gs1 <- GeneSet(setName = "geneset1", geneIds = rownames(sce)[1:10])
-gs2 <- GeneSet(setName = "geneset2", geneIds = rownames(sce)[11:20])
+gs1 <- GeneSet(setName = "geneset1", geneIds = rownames(sce)[seq(10)])
+gs2 <- GeneSet(setName = "geneset2", geneIds = rownames(sce)[seq(11,20)])
 gsc <- GeneSetCollection(list(gs1, gs2))
 sce <- importGeneSetsFromCollection(inSCE = sce,
                                     geneSetCollection = gsc,

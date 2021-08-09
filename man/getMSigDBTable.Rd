@@ -6,10 +6,16 @@
 \usage{
 getMSigDBTable()
 }
+\value{
+data.frame, containing MSigDB categories
+}
 \description{
-Returns a data.frame that shows MSigDB categories and 
+Returns a data.frame that shows MSigDB categories and
 subcategories as well as descriptions for each. The entries in the ID
 column in this table can be used as input for \link{importGeneSetsFromMSigDB}.
+}
+\examples{
+getMSigDBTable()
 }
 \seealso{
 \link{importGeneSetsFromMSigDB} for importing MSigDB gene sets.

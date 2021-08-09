@@ -2,33 +2,47 @@
 % Please edit documentation in R/getTSNE.R
 \name{getTSNE}
 \alias{getTSNE}
-\title{Run t-SNE dimensionality reduction method on the assay data.}
+\title{Run t-SNE dimensionality reduction method on a SingleCellExperiment Object}
 \usage{
 getTSNE(
   inSCE,
   useAssay = "logcounts",
+  useAltExp = NULL,
   reducedDimName = "TSNE",
-  n_iterations = 1000,
-  perplexity = NULL
+  nIterations = 1000,
+  perplexity = 30,
+  run_pca = TRUE,
+  ntop = NULL
 )
 }
 \arguments{
 \item{inSCE}{Input \linkS4class{SingleCellExperiment} object.}
 
-\item{useAssay}{Indicate which assay to use. The default is "logcounts".}
+\item{useAssay}{Assay to use for tSNE computation. If \code{useAltExp} is
+specified, \code{useAssay} has to exist in
+\code{assays(altExp(inSCE, useAltExp))}. Default \code{"logcounts"}}
 
-\item{reducedDimName}{a name to store the results of the dimension reductions}
+\item{useAltExp}{The subset to use for tSNE computation, usually for the
+selected.variable features. Default \code{NULL}.}
 
-\item{n_iterations}{maximum iterations. Default is 1000}
+\item{reducedDimName}{a name to store the results of the dimension
+reductions. Default \code{"TSNE"}.}
 
-\item{perplexity}{perplexity parameter. Default is 5}
+\item{nIterations}{maximum iterations. Default \code{1000}.}
+
+\item{perplexity}{perplexity parameter. Default \code{30}.}
+
+\item{run_pca}{run tSNE on PCA components? Default \code{TRUE}.}
+
+\item{ntop}{Number of top features to use as a further variable feature
+selection. Default \code{NULL}.}
 }
 \value{
-A \linkS4class{SingleCellExperiment} object with the specified
-reducedDim updated
+A \linkS4class{SingleCellExperiment} object with tSNE computation
+updated in \code{reducedDim(inSCE, reducedDimName)}.
 }
 \description{
-Run t-SNE dimensionality reduction method on the assay data.
+Run t-SNE dimensionality reduction method on a SingleCellExperiment Object
 }
 \examples{
 data("mouseBrainSubsetSCE")
@@ -38,7 +52,7 @@ assay(mouseBrainSubsetSCE, "cpm") <- apply(
     x / (sum(x) / 1000000)
   })
 mouseBrainSubsetSCE <- getTSNE(mouseBrainSubsetSCE, useAssay = "cpm",
-                               reducedDimName = "TSNE_cpm")
+                               reducedDimName = "TSNE_cpm",
+                               perplexity = NULL)
 reducedDims(mouseBrainSubsetSCE)
-
 }

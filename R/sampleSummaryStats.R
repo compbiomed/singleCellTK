@@ -6,8 +6,8 @@
 
     if ("sum" %in% colnames(SummarizedExperiment::colData(inSCE))) {
         metrics <- c(metrics, "Mean counts", "Median counts")
-        values <- c(values, signif(mean(inSCE$sum), 3),
-                    signif(stats::median(inSCE$sum), 3))
+        values <- c(values, mean(inSCE$sum),
+                    stats::median(inSCE$sum))
     }
 
     if ("detected" %in% colnames(SummarizedExperiment::colData(inSCE))) {
@@ -15,8 +15,8 @@
             metrics, "Mean features detected",
             "Median features detected"
         )
-        values <- c(values, signif(mean(inSCE$detected), 3),
-                    signif(stats::median(inSCE$detected), 3))
+        values <- c(values, mean(inSCE$detected),
+                    stats::median(inSCE$detected))
     }
 
     if(simple != TRUE){
@@ -44,12 +44,11 @@
             )
         }
 
-        if ("scran_doubletCells_score_log10" %in% colnames(SummarizedExperiment::colData(inSCE))) {
-            metrics <- c(metrics, "DoubletCells - Doublet score outliers")
-            values <- c(values, sum(scater::isOutlier(inSCE$scran_doubletCells_score_log10,
-                                                  type = "higher"
-            )))
-
+        if ("scDblFinder_class" %in% colnames(SummarizedExperiment::colData(inSCE))) {
+            metrics <- c(metrics, "scDblFinder - Number of doublets",
+                         "scDblFinder - Percentage of doublets")
+            values <- c(values, sum(inSCE$scDblFinder_class == "doublet"),
+                        signif(sum(inSCE$scDblFinder_class == "doublet")/length(inSCE$scDblFinder_class) * 100, 3))
         }
 
         if (any(grepl("doubletFinder_doublet_label_resolution",
@@ -106,19 +105,21 @@
     return(df)
 }
 
-#' @title Plot table of SCTK QC outputs.
-#' @description Plot QC metrics generated from QC algorithms via either kable or csv file.
+#' @title Generate table of SCTK QC outputs.
+#' @description  Creates a table of QC metrics generated from
+#'  QC algorithms via either kable or csv file.
 #' @param inSCE Input \linkS4class{SingleCellExperiment} object with saved
-#' dimension reduction components or a variable with saved results. Required
+#' \link{assay} data and/or \link{colData} data. Required.
 #' @param sample Character vector. Indicates which sample each cell belongs to.
 #' @param useAssay  A string specifying which assay in the SCE to use. Default
 #'  'counts'.
 #' @param simple Boolean. Indicates whether to generate a table of only
 #' basic QC stats (ex. library size), or to generate a summary table of all
 #' QC stats stored in the inSCE.
+#' @return A matrix/array object.
 #' @examples
 #' data(scExample, package = "singleCellTK")
-#' sce <- sce[, colData(sce)$type != 'EmptyDroplet']
+#' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 #' sampleSummaryStats(sce, simple = TRUE)
 #' @importFrom magrittr %>%
 #' @export
@@ -173,7 +174,7 @@ sampleSummaryStats <- function(inSCE,
     }
 
     dfTableRes <- as.data.frame(dfTableRes)
-    dfTableRes <- apply(dfTableRes, 1:2, function(x){
+    dfTableRes <- apply(dfTableRes, seq(2), function(x){
         if(grepl(as.character(x), "\\.0000")){
             return(as.integer(x))
         }else{

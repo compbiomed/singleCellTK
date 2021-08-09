@@ -68,7 +68,7 @@ data("mouseBrainSubsetSCE")
 #sort first 100 expressed genes
 ord <- rownames(mouseBrainSubsetSCE)[
   order(rowSums(assay(mouseBrainSubsetSCE, "counts")),
-        decreasing = TRUE)][1:100]
+        decreasing = TRUE)][seq(100)]
 #subset to those first 100 genes
 subset <- mouseBrainSubsetSCE[ord, ]
 res <- generateSimulatedData(totalReads = 1000, cells=10,
@@ -82,7 +82,7 @@ data("mouseBrainSubsetSCE")
 #sort first 100 expressed genes
 ord <- rownames(mouseBrainSubsetSCE)[
   order(rowSums(assay(mouseBrainSubsetSCE, "counts")),
-        decreasing = TRUE)][1:100]
+        decreasing = TRUE)][seq(100)]
 # subset to those first 100 genes
 subset <- mouseBrainSubsetSCE[ord, ]
 res <- generateSimulatedData(totalReads = 1000, cells=10,

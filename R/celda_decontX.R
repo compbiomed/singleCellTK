@@ -2,9 +2,11 @@
 #' @description A wrapper function for \link[celda]{decontX}. Identify
 #'  potential contamination from experimental factors such as ambient RNA.
 #' @param inSCE A \link[SingleCellExperiment]{SingleCellExperiment} object.
-#' @param sample Character vector. Indicates which sample each cell belongs to.
-#' Default NULL. \link[celda]{decontX} will be run on cells from each
-#' sample separately.
+#' @param sample A single character specifying a name that can be found in
+#' \code{colData(inSCE)} to directly use the cell annotation; or a character
+#' vector with as many elements as cells to indicates which sample each cell
+#' belongs to. Default NULL. \link[celda]{decontX} will be run on cells from
+#' each sample separately.
 #' @param useAssay  A string specifying which assay in the SCE to use. Default
 #' 'counts'.
 #' @param z Numeric or character vector. Cell cluster labels. If NULL,
@@ -49,15 +51,15 @@
 #' @param logfile Character. Messages will be redirected to a file named
 #'  `logfile`. If NULL, messages will be printed to stdout.  Default NULL.
 #' @param verbose Logical. Whether to print log messages. Default TRUE.
-#' 
+#'
 #' @return A \link[SingleCellExperiment]{SingleCellExperiment} object with
 #'  'decontX_Contamination' and 'decontX_Clusters' added to the
-#'  \link[SummarizedExperiment]{colData} slot. Additionally, the
+#'  \link{colData} slot. Additionally, the
 #' decontaminated counts will be added as an assay called 'decontXCounts'.
 #' @examples
 #' data(scExample, package = "singleCellTK")
-#' sce <- sce[, colData(sce)$type != 'EmptyDroplet']
-#' sce <- runDecontX(sce)
+#' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
+#' sce <- runDecontX(sce[,sample(ncol(sce),20)])
 #' @export
 runDecontX <- function(inSCE,
     sample = NULL,
@@ -77,15 +79,30 @@ runDecontX <- function(inSCE,
   #argsList <- as.list(formals(fun = sys.function(sys.parent()), envir = parent.frame()))
   argsList <- mget(names(formals()),sys.frame(sys.nframe()))
   if(!is.null(sample)) {
-    if(length(sample) != ncol(inSCE)) {
+    if (length(sample) == 1) {
+      if (!sample %in% names(SummarizedExperiment::colData(inSCE))) {
+        stop("Specified Sample variable not found in colData.")
+      }
+      sample <- SummarizedExperiment::colData(inSCE)[[sample]]
+    } else if(length(sample) != ncol(inSCE)) {
       stop("'sample' must be the same length as the number of columns in 'inSCE'")
+    }
+    if (is.factor(sample)) {
+      sample <- as.character(sample)
     }
   }
 
   message(paste0(date(), " ... Running 'DecontX'"))
 
-  inSCE <- celda::decontX(x = inSCE, 
-                          batch = sample, 
+  rm.ix <- which(colSums(assay(inSCE, useAssay)) == 0)
+  if(length(rm.ix) > 0){
+    inSCEOrig <- inSCE
+    inSCE <- inSCE[,-rm.ix]
+    sample <- sample[-rm.ix]
+  }
+
+  inSCE <- celda::decontX(x = inSCE,
+                          batch = sample,
                           assayName = useAssay,
                           z = z,
                           maxIter = maxIter,
@@ -100,10 +117,13 @@ runDecontX <- function(inSCE,
                           verbose = verbose)
 
   #argsList <- argsList[!names(argsList) %in% ("...")]
-  
+
+  if(length(rm.ix) > 0){
+    inSCE <- mergeSCEColData(inSCE1 = inSCEOrig, inSCE2 = inSCE)
+  }
   inSCE@metadata$runDecontX <- argsList[-1]
   inSCE@metadata$runDecontX$packageVersion <- utils::packageDescription("celda")$Version
-
+  inSCE <- expSetDataTag(inSCE, "raw", "decontXcounts")
   return(inSCE)
 }
 

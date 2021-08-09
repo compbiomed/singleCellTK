@@ -17,7 +17,7 @@ importCellRanger(
   barcodesFileNames = "barcodes.tsv.gz",
   gzipped = "auto",
   class = c("Matrix", "matrix"),
-  delayedArray = TRUE
+  delayedArray = FALSE
 )
 
 importCellRangerV2(
@@ -26,7 +26,7 @@ importCellRangerV2(
   sampleNames = NULL,
   dataTypeV2 = c("filtered", "raw"),
   class = c("Matrix", "matrix"),
-  delayedArray = TRUE,
+  delayedArray = FALSE,
   reference = NULL,
   cellRangerOutsV2 = NULL
 )
@@ -37,7 +37,7 @@ importCellRangerV3(
   sampleNames = NULL,
   dataType = c("filtered", "raw"),
   class = c("Matrix", "matrix"),
-  delayedArray = TRUE
+  delayedArray = FALSE
 )
 }
 \arguments{
@@ -50,7 +50,7 @@ argument.}
 \itemize{
   \item \code{NULL}. All samples within \code{cellRangerDirs} will be
    imported. The order of samples will be first determined by the order of
-   \code{cellRangerDirs} and then by \link[base]{list.dirs}. This is only
+   \code{cellRangerDirs} and then by \link{list.dirs}. This is only
    for the case where \code{cellRangerDirs} is specified.
   \item A list of vectors containing the folder names for samples to import.
    Each vector in
@@ -134,30 +134,30 @@ order match the output of
 
 \item{class}{Character. The class of the expression matrix stored in the SCE
 object. Can be one of "Matrix" (as returned by
-\link[Matrix]{readMM} function), or "matrix" (as returned by
+\link{readMM} function), or "matrix" (as returned by
 \link[base]{matrix} function). Default \code{"Matrix"}.}
 
 \item{delayedArray}{Boolean. Whether to read the expression matrix as
-\link[DelayedArray]{DelayedArray} object or not. Default \code{TRUE}.}
+\link{DelayedArray} object or not. Default \code{FALSE}.}
 
 \item{dataTypeV2}{Character. The type of output to import for
-Cellranger version below 3.0.0. Whether to import the filtered or the 
-raw data. Can be one of 'filtered' or 'raw'. Default 'filtered'. When 
-\code{cellRangerOuts} is specified, \code{dataTypeV2} and \code{reference} will 
+Cellranger version below 3.0.0. Whether to import the filtered or the
+raw data. Can be one of 'filtered' or 'raw'. Default 'filtered'. When
+\code{cellRangerOuts} is specified, \code{dataTypeV2} and \code{reference} will
 be ignored.}
 
-\item{reference}{Character vector. The reference genome names. 
-Default \code{NULL}. If not \code{NULL}, it must gave the length and order as 
+\item{reference}{Character vector. The reference genome names.
+Default \code{NULL}. If not \code{NULL}, it must gave the length and order as
 \code{length(unlist(sampleDirs))} if \code{sampleDirs} is not \code{NULL}.
 Otherwise, make sure the length and order match the output of
-\code{unlist(lapply(cellRangerDirs, list.dirs, recursive = FALSE))}. Only needed 
+\code{unlist(lapply(cellRangerDirs, list.dirs, recursive = FALSE))}. Only needed
 for Cellranger version below 3.0.0.}
 
 \item{cellRangerOutsV2}{Character vector. The intermediate paths
-to filtered or raw cell barcode, feature, and matrix files for each 
-sample for Cellranger version below 3.0.0. If \code{NULL}, \code{reference} and 
-\code{dataTypeV2} will be used to determine Cell Ranger output directory. If it has 
-length 1, it assumes that all samples use the same genome reference and 
+to filtered or raw cell barcode, feature, and matrix files for each
+sample for Cellranger version below 3.0.0. If \code{NULL}, \code{reference} and
+\code{dataTypeV2} will be used to determine Cell Ranger output directory. If it has
+length 1, it assumes that all samples use the same genome reference and
 the function will load only filtered or raw data.}
 }
 \value{

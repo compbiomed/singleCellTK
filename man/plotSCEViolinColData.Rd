@@ -6,21 +6,23 @@
 \usage{
 plotSCEViolinColData(
   inSCE,
-  sample = NULL,
   coldata,
+  sample = NULL,
   groupBy = NULL,
   violin = TRUE,
   boxplot = TRUE,
   dots = TRUE,
   xlab = NULL,
   ylab = NULL,
-  axisSize = 10,
-  axisLabelSize = 10,
+  baseSize = 12,
+  axisSize = NULL,
+  axisLabelSize = NULL,
   dotSize = 1,
   transparency = 1,
   defaultTheme = TRUE,
   gridLine = FALSE,
   summary = NULL,
+  summaryTextSize = 3,
   title = NULL,
   titleSize = NULL,
   combinePlot = "none",
@@ -31,9 +33,9 @@ plotSCEViolinColData(
 \item{inSCE}{Input \linkS4class{SingleCellExperiment} object with saved
 dimension reduction components or a variable with saved results. Required.}
 
-\item{sample}{Character vector. Indicates which sample each cell belongs to.}
-
 \item{coldata}{colData value that will be plotted.}
+
+\item{sample}{Character vector. Indicates which sample each cell belongs to.}
 
 \item{groupBy}{Groupings for each numeric value. A user may input a vector
 equal length to the number of the samples in the SingleCellExperiment
@@ -51,9 +53,12 @@ Default TRUE.}
 
 \item{ylab}{Character vector. Label for y-axis. Default NULL.}
 
-\item{axisSize}{Size of x/y-axis ticks. Default 10.}
+\item{baseSize}{The base font size for all text. Default 12.
+Can be overwritten by titleSize, axisSize, and axisLabelSize.}
 
-\item{axisLabelSize}{Size of x/y-axis labels. Default 10.}
+\item{axisSize}{Size of x/y-axis ticks. Default NULL.}
+
+\item{axisLabelSize}{Size of x/y-axis labels. Default NULL.}
 
 \item{dotSize}{Size of dots. Default 1.}
 
@@ -68,6 +73,9 @@ drawn even if defaultTheme is TRUE. Default FALSE.}
 \item{summary}{Adds a summary statistic, as well as a crossbar to the
 violin plot. Options are "mean" or "median". Default NULL.}
 
+\item{summaryTextSize}{The text size of the summary statistic displayed
+above the violin plot. Default 3.}
+
 \item{title}{Title of plot. Default NULL.}
 
 \item{titleSize}{Size of title of plot. Default 15.}
@@ -77,6 +85,9 @@ violin plot. Options are "mean" or "median". Default NULL.}
 
 \item{plotLabels}{labels to each plot. If set to "default", will use the name of the samples
 as the labels. If set to "none", no label will be plotted.}
+}
+\value{
+a ggplot of the violin plot of coldata.
 }
 \description{
 Visualizes values stored in the colData slot of a

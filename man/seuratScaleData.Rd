@@ -7,12 +7,13 @@ Scales the input sce object according to the input parameters}
 \usage{
 seuratScaleData(
   inSCE,
-  useAssay,
+  useAssay = "seuratNormData",
   scaledAssayName = "seuratScaledData",
   model = "linear",
   scale = TRUE,
   center = TRUE,
-  scaleMax = 10
+  scaleMax = 10,
+  verbose = TRUE
 )
 }
 \arguments{
@@ -20,7 +21,8 @@ seuratScaleData(
 
 \item{useAssay}{Assay containing normalized counts to scale.}
 
-\item{scaledAssayName}{Name of new assay containing scaled data. Default \code{seuratScaledData}.}
+\item{scaledAssayName}{Name of new assay containing scaled data. Default
+\code{seuratScaledData}.}
 
 \item{model}{selected model to use for scaling data. Default \code{"linear"}.}
 
@@ -28,7 +30,11 @@ seuratScaleData(
 
 \item{center}{boolean if data should be centered or not. Default \code{TRUE}}
 
-\item{scaleMax}{maximum numeric value to return for scaled data. Default \code{10}.}
+\item{scaleMax}{maximum numeric value to return for scaled data. Default
+\code{10}.}
+
+\item{verbose}{Logical value indicating if informative messages should
+be displayed. Default is \code{TRUE}.}
 }
 \value{
 Scaled \code{SingleCellExperiment} object
@@ -36,4 +42,12 @@ Scaled \code{SingleCellExperiment} object
 \description{
 seuratScaleData
 Scales the input sce object according to the input parameters
+}
+\examples{
+data(scExample, package = "singleCellTK")
+\dontrun{
+sce <- seuratNormalizeData(sce, useAssay = "counts")
+sce <- seuratFindHVG(sce, useAssay = "counts")
+sce <- seuratScaleData(sce, useAssay = "counts")
+}
 }

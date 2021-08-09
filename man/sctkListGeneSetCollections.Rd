@@ -9,15 +9,18 @@ sctkListGeneSetCollections(inSCE)
 \arguments{
 \item{inSCE}{A \link[SingleCellExperiment]{SingleCellExperiment} object.}
 }
+\value{
+Character vector.
+}
 \description{
-Returns a vector of GeneSetCollections that have been 
+Returns a vector of GeneSetCollections that have been
 imported and stored in \code{metadata(inSCE)$sctk$genesets}.
 }
 \examples{
 data(scExample)
 library(GSEABase)
-gs1 <- GeneSet(setName = "geneset1", geneIds = rownames(sce)[1:10])
-gs2 <- GeneSet(setName = "geneset2", geneIds = rownames(sce)[11:20])
+gs1 <- GeneSet(setName = "geneset1", geneIds = rownames(sce)[seq(10)])
+gs2 <- GeneSet(setName = "geneset2", geneIds = rownames(sce)[seq(11,20)])
 gsc1 <- GeneSetCollection(gs1)
 gsc2 <- GeneSetCollection(gs2)
 sce <- importGeneSetsFromCollection(inSCE = sce,
@@ -28,7 +31,7 @@ sce <- importGeneSetsFromCollection(inSCE = sce,
                                     geneSetCollection = gsc2,
                                     by = "rownames",
                                     collectionName = "Collection2")
-collections <- sctkListGeneSetCollections(sce)                              
+collections <- sctkListGeneSetCollections(sce)
 }
 \seealso{
 \link{importGeneSetsFromList} for importing from lists,

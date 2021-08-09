@@ -11,7 +11,7 @@ cran.package.check <- lapply(cran.packages, FUN = function(x) {
 })
 
 #Bioconductor packages
-bioc.packages <- c("singleCellTK", "celda")
+bioc.packages <- c("singleCellTK", "celda", "BiocParallel")
 
 bioc.package.check <- lapply(bioc.packages, FUN = function(x) {
     if (!require(x, character.only = TRUE)) {
@@ -52,6 +52,10 @@ option_list <- list(optparse::make_option(c("-b", "--basePath"),
         type="character",
         default=".",
         help="Output directory"),
+    optparse::make_option(c("-O","--outputPrefix"),
+        type="character",
+        default="CombinedSamples",
+        help="Prefix of the name of output file when --splitSample=FALSE."),
     optparse::make_option(c("-g","--gmt"),
         type="character",
         default=NULL,
@@ -87,7 +91,7 @@ option_list <- list(optparse::make_option(c("-b", "--basePath"),
     optparse::make_option(c("-F", "--outputFormat"),
         type="character",
         default=NULL,
-        help="The output format of this QC pipeline. Currently, it supports SCE, Flatfile, AnnData and HTAN."),
+        help="The output format of this QC pipeline. Currently, it supports SCE, Flatfile, Seurat, AnnData and HTAN."),
     optparse::make_option(c("-y", "--yamlFile"),
         type="character",
         default=NULL,
@@ -145,6 +149,7 @@ parallelType <- opt[["parallelType"]]
 cellCalling <- opt[["cellDetectMethod"]]
 studyDesign <- opt[["studyDesign"]]
 subTitles <- opt[["subTitle"]]
+CombinedSamplesName <- opt[["outputPrefix"]]
 
 if (!is.null(basepath)) { basepath <- unlist(strsplit(opt[["basePath"]], ",")) } 
 
@@ -209,20 +214,20 @@ if (numCores > 1) {
 }
 
 ### checking output formats
-if (!all(formats %in% c("SCE", "AnnData", "FlatFile", "HTAN"))) {
-    warning("Output format must be 'SCE', 'AnnData', 'HTAN' or 'FlatFile'. Format ", 
-         paste(formats[!format %in% c("SCE", "AnnData", "FlatFile", "HTAN")], sep = ","),
+if (!all(formats %in% c("SCE", "AnnData", "FlatFile", "HTAN", "Seurat"))) {
+    warning("Output format must be 'SCE', 'AnnData', 'HTAN', 'Seurat' or 'FlatFile'. Format ", 
+         paste(formats[!formats %in% c("SCE", "AnnData", "FlatFile", "HTAN", "Seurat")], collapse = ","),
          " is not supported now. ")
 }
 
-formats <- formats[formats %in% c("SCE", "AnnData", "FlatFile", "HTAN")]
+formats <- formats[formats %in% c("SCE", "AnnData", "FlatFile", "HTAN", "Seurat")]
 message("The output format is [", 
         paste(formats, collapse = ","), "]. ")
 
 if (length(formats) == 0) {
     warning("None of the provided format is supported now. Therefore, the output ", 
-        "will be SCE, AnnData, FlatFile and HTAN. ")
-    formats <- c("SCE", "AnnData", "FlatFile", "HTAN")
+        "will be SCE, AnnData, Seurat, FlatFile and HTAN. ")
+    formats <- c("SCE", "AnnData", "FlatFile", "HTAN", "Seurat")
 }
 
 if (!(dataType %in% c("Both", "Droplet", "Cell"))) {
@@ -258,7 +263,7 @@ if (dataType == "Both") {
                          'the length of "--sample"!')   
 
             if (length(Reference) != sum(process == 'CellRangerV2')) {
-                stop('The length of "--ref" should be the same as ',
+                stop('The length of --genome should be the same as ',
                         'the number of "CellRangerV2" in the "--preproc"!')        
         }  
             }
@@ -306,7 +311,7 @@ if (dataType == "Cell") {
                          'the length of "--sample"!')    
             }
             if (length(Reference) != sum(process == 'CellRangerV2')) {
-                stop('The length of "--ref" should be the same as ',
+                stop('The length of --genome should be the same as ',
                         'the number of "CellRangerV2" in the "--preproc"!')        
             }
         }
@@ -349,7 +354,7 @@ if (dataType == "Droplet") {
                          'the length of "--sample"!')    
             }
             if (length(Reference) != sum(process == 'CellRangerV2')) {
-                stop('The length of "--ref" should be the same as ',
+                stop('The length of --genome should be the same as ',
                         'the number of "CellRangerV2" in the "--preproc"!')        
             }
         }       
@@ -526,6 +531,11 @@ for(i in seq_along(process)) {
             reportDropletQC(inSCE = mergedDropletSCE, output_dir = directory, output_file = paste0("SCTK_", samplename,'_dropletQC.html'), subTitle = subTitle, studyDesign = studyDesign)
             reportCellQC(inSCE = mergedFilteredSCE, output_dir = directory, output_file = paste0("SCTK_", samplename,'_cellQC.html'), subTitle = subTitle, studyDesign = studyDesign)
 
+            ## generate QC metrics table for mergedFilteredSCE
+            QCsummary <- sampleSummaryStats(mergedFilteredSCE, simple=FALSE, sample = colData(mergedFilteredSCE)$sample) #colData(cellSCE)$Study_ID
+            write.csv(QCsummary, file.path(directory, 
+                                           samplename,
+                                           paste0("SCTK_", samplename,'_cellQC_summary.csv')))
         }
 
         if ((dataType == "Droplet") & (!isTRUE(detectCell))) {
@@ -572,6 +582,11 @@ for(i in seq_along(process)) {
             getSceParams(inSCE = mergedFilteredSCE, directory = directory, 
                          samplename = samplename, writeYAML = TRUE,
                          skip = c("scrublet", "runDecontX", "runBarcodeRanksMetaOutput"))
+
+            QCsummary <- sampleSummaryStats(mergedFilteredSCE, simple=FALSE, sample = colData(mergedFilteredSCE)$sample) #colData(cellSCE)$Study_ID
+            write.csv(QCsummary, file.path(directory, 
+                                           samplename,
+                                           paste0("SCTK_", samplename,'_cellQC_summary.csv')))
         }
 
     }
@@ -581,7 +596,7 @@ for(i in seq_along(process)) {
 
 if (!isTRUE(split)) {
     if (length(sample) > 1) {
-        samplename <- paste(sample, collapse="-")
+        samplename <- CombinedSamplesName #paste(sample, collapse="-")
         subTitle <- paste("SCTK QC HTML report for sample", samplename)
     }
 
@@ -623,6 +638,12 @@ if (!isTRUE(split)) {
         } else {
             warning("'FlatFile' is not in output format. Skip exporting the manifest file.")
         }
+
+        ## generate QC summary
+        QCsummary <- sampleSummaryStats(cellSCE, simple=FALSE, sample = colData(cellSCE)$sample) 
+        write.csv(QCsummary, file.path(directory,
+                                       samplename, 
+                                       paste0("SCTK_", samplename,'_cellQC_summary.csv')))
     }
 
     if (dataType == "Cell") {
@@ -653,6 +674,11 @@ if (!isTRUE(split)) {
 
         reportCellQC(inSCE = cellSCE, output_dir = directory, output_file = paste0("SCTK_", samplename,'_cellQC.html'), subTitle = subTitle, studyDesign = studyDesign)
         getSceParams(inSCE = cellSCE, directory = directory, samplename = samplename, writeYAML = TRUE)
+
+        QCsummary <- sampleSummaryStats(cellSCE, simple=FALSE, sample = colData(cellSCE)$sample) 
+        write.csv(QCsummary, file.path(directory,
+                                       samplename, 
+                                       paste0("SCTK_", samplename,'_cellQC_summary.csv')))
     }
 
     if ((dataType == "Droplet") & (!isTRUE(detectCell))) {

@@ -1,6 +1,6 @@
 shinyPanelSubsample <- fluidPage(
   tags$h1("Sample Size Calculator"),
-  h5(tags$a(href = "https://compbiomed.github.io/sctk_docs/articles/v09-tab07_Sample-Size.html",
+  h5(tags$a(href = paste0(docs.artPath, "ui_sample_size_calc.html"),
             "(help)", target = "_blank")),
   tabsetPanel(
     tabPanel(
@@ -9,7 +9,8 @@ shinyPanelSubsample <- fluidPage(
         column(
           4,
           wellPanel(
-            selectInput("depthAssay", "Select Assay:", currassays),
+            uiOutput("depthAssay"),
+            # selectInput("depthAssay", "Select Assay:", currassays),
             numericInput("minCount", "Minimum readcount to detect gene",
                          value = 10, min = 1, max = 10000),
             numericInput("minCells", "Minimum number of cells with nonzero expression to detect gene",
@@ -39,7 +40,8 @@ shinyPanelSubsample <- fluidPage(
         column(
           4,
           wellPanel(
-            selectInput("cellsAssay", "Select Assay:", currassays),
+            uiOutput("cellsAssay"),
+            #selectInput("cellsAssay", "Select Assay:", currassays),
             numericInput("minCellNum", "Minimum number of cells to simulate",
                          value = 10, min = 1, max = 10000),
             numericInput("maxCellNum", "Maximum number of cells to simulate",
@@ -78,7 +80,8 @@ shinyPanelSubsample <- fluidPage(
         column(
           4,
           wellPanel(
-            selectInput("snapshotAssay", "Select Assay:", currassays),
+            uiOutput("snapshotAssay"),
+            #selectInput("snapshotAssay", "Select Assay:", currassays),
             numericInput("numCellsSnap", "How many simulated cells?",
                          value = 100, min = 2, max = 10000),
             numericInput("numReadsSnap", "How many total reads?",
@@ -96,3 +99,4 @@ shinyPanelSubsample <- fluidPage(
     )
   )
 )
+

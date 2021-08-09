@@ -14,9 +14,11 @@ convertSeuratToSCE(
 \arguments{
 \item{seuratObject}{Input Seurat object}
 
-\item{normAssayName}{Name of assay to store the normalized data. Default \code{"seuratNormData"}.}
+\item{normAssayName}{Name of assay to store the normalized data. Default
+\code{"seuratNormData"}.}
 
-\item{scaledAssayName}{Name of assay to store the scaled data. Default \code{"seuratScaledData"}.}
+\item{scaledAssayName}{Name of assay to store the scaled data. Default
+\code{"seuratScaledData"}.}
 }
 \value{
 \code{SingleCellExperiment} output object
@@ -24,4 +26,9 @@ convertSeuratToSCE(
 \description{
 convertSeuratToSCE
 Converts the input seurat object to a sce object
+}
+\examples{
+data(scExample, package = "singleCellTK")
+seurat <- convertSCEToSeurat(sce)
+sce <- convertSeuratToSCE(seurat)
 }

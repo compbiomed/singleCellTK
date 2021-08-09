@@ -51,7 +51,7 @@ visPlot <- function(inSCE, useAssay, method, condition = NULL, glist,
   } else {
     countsData <- data.frame(SummarizedExperiment::assay(inSCE, useAssay)[glist, , drop = FALSE])
     if (!is.null(condition)){
-      if (class(inSCE) == "SummarizedExperiment") {
+      if (inherits(inSCE, "SummarizedExperiment")) {
         annotData <- data.frame(SummarizedExperiment::colData(inSCE)[, condition, drop = FALSE])
       } else {
         annotData <- data.frame(SingleCellExperiment::colData(inSCE)[, condition, drop = FALSE])

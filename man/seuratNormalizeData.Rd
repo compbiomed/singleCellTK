@@ -11,7 +11,8 @@ seuratNormalizeData(
   useAssay,
   normAssayName = "seuratNormData",
   normalizationMethod = "LogNormalize",
-  scaleFactor = 10000
+  scaleFactor = 10000,
+  verbose = TRUE
 )
 }
 \arguments{
@@ -19,11 +20,17 @@ seuratNormalizeData(
 
 \item{useAssay}{Assay containing raw counts to use for normalization.}
 
-\item{normAssayName}{Name of new assay containing normalized data. Default \code{seuratNormData}.}
+\item{normAssayName}{Name of new assay containing normalized data. Default
+\code{seuratNormData}.}
 
-\item{normalizationMethod}{selected normalization method. Default \code{"LogNormalize"}.}
+\item{normalizationMethod}{selected normalization method. Default
+\code{"LogNormalize"}.}
 
-\item{scaleFactor}{numeric value that represents the scaling factor. Default \code{10000}.}
+\item{scaleFactor}{numeric value that represents the scaling factor. Default
+\code{10000}.}
+
+\item{verbose}{Logical value indicating if informative messages should
+be displayed. Default is \code{TRUE}.}
 }
 \value{
 Normalized \code{SingleCellExperiment} object
@@ -32,4 +39,10 @@ Normalized \code{SingleCellExperiment} object
 seuratNormalizeData
 Wrapper for NormalizeData() function from seurat library
 Normalizes the sce object according to the input parameters
+}
+\examples{
+data(scExample, package = "singleCellTK")
+\dontrun{
+sce <- seuratNormalizeData(sce, useAssay = "counts")
+}
 }

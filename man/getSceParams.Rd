@@ -25,8 +25,11 @@ getSceParams(
 
 \item{samplename}{The sample name of the \link[SingleCellExperiment]{SingleCellExperiment} objects.}
 
-\item{writeYAML}{Whether output yaml file to store parameters. Default if TRUE. If FALSE, 
+\item{writeYAML}{Whether output yaml file to store parameters. Default if TRUE. If FALSE,
 return character object.}
+}
+\value{
+If \code{writeYAML} TRUE, a yaml object will be generated. If FALSE, character object.
 }
 \description{
 Extract QC parameters from the SingleCellExperiment object

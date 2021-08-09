@@ -26,7 +26,8 @@ runLimmaDE(
 \item{inSCE}{\linkS4class{SingleCellExperiment} inherited object.}
 
 \item{useAssay}{character. A string specifying which assay to use for the
-Limma regression. Default \code{"logcounts"}.}
+Limma regression. The assay should be a log-transformed normalized assay.
+Default \code{"logcounts"}.}
 
 \item{index1}{Any type of indices that can subset a
 \linkS4class{SingleCellExperiment} inherited object by cells. Specifies
@@ -87,4 +88,13 @@ Condition specification allows two methods:
 used.
 2. Annotation level selection. Arguments \code{class}, \code{classGroup1} and
 \code{classGroup2} will be used.
+}
+\examples{
+data(scExample, package = "singleCellTK")
+sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
+sce <- scaterlogNormCounts(sce, assayName = "logcounts")
+sce <- runLimmaDE(inSCE = sce, groupName1 = "Sample1",
+ groupName2 = "Sample2", index1 = seq(20), index2 = seq(21,40),
+ analysisName = "Limma")
+
 }

@@ -1,3 +1,38 @@
+Changes in Version 2.1.3 (2021-05-14)
+
+* Added diffAbundanceFET and plotClusterAbundance function
+* Linked Shiny UI help buttons to new online help pages
+* Several bug fixes
+
+Changes in Version 2.0.2 (2021-05-08)
+
+* Expanded convertSCEtoSeurat() function to copy additional data
+* Updated and merged pkgdown docs
+* Added HTML reports for Seurat curated workflow
+* Refactor of Normalization UI
+* Added generic wrapper function for dimensionality reduction
+* Added tagging system for matrix type
+* Several bug fixes
+* Added missing documentation
+* Added wrapper functions for normalization, dimensionality reduction and feature selection
+* Added function seuratReport() to generate a seurat report from input SCE object
+
+Changes in Version 2.0.1 (2021-01-07)
+
+* Added cell type labeling functional, wrapping SingleR method
+* Added cell type labeling UI under differential expression tab
+* Added marker identification in Seurat workflow
+
+Changes in Version 2.0.0 (2020-10-16)
+
+* Added quality control (empty droplet detection, doublet detection, etc) functionality
+* Ability to import data from varying preprocessing tools
+* Ability to export SingleCellExperiment object as varying file types (flat file, Python anndata)
+* Added functions for visualization of data
+* New CellViewer functionality in UI
+* Improvements to differential expression, now includes DESeq2, limma, ANOVA
+* Incorporates Seurat workflow
+
 Changes in Version 1.1.26 (2018-10-23)
 
 * New UI design for the Differential Expression tab.

@@ -9,7 +9,7 @@ exportSCEtoFlatFile(
   outputDir = "./",
   overwrite = TRUE,
   gzipped = TRUE,
-  sample = "sample"
+  prefix = "SCE"
 )
 }
 \arguments{
@@ -25,7 +25,10 @@ exported.}
 gzip compressed. \code{FALSE} otherwise. Default
 \code{TRUE}.}
 
-\item{sample}{Name of the sample. It will be used as the prefix of file names.}
+\item{prefix}{Prefix of file names.}
+}
+\value{
+Generates text files containing data from \code{inSCE}.
 }
 \description{
 Writes all assays, colData, rowData, reducedDims, and altExps objects in a
@@ -33,9 +36,8 @@ Writes all assays, colData, rowData, reducedDims, and altExps objects in a
 The items in the 'metadata' slot remain stored in list and are saved in an RDS file.
 }
 \examples{
-\dontrun{
 data(sce_chcl, package = "scds")
+\dontrun{
 exportSCEtoFlatFile(sce_chcl, "sce_chcl")
 }
-
 }

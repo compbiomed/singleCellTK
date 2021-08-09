@@ -1,0 +1,110 @@
+---
+title: "Normalization"
+author: "Irzam Sarfraz"
+---
+```{r develSetting, include=FALSE}
+doEval = TRUE
+```
+## Introduction
+Data once uploaded and filtered through the preceding tabs can be normalized and
+corrected for batch-effect. This guide particularly focuses on normalization of 
+data for downstream analysis which can be achieved through various methods
+and options integrated together in a single interface. Generally, users can use
+one of the provided normalization methods integrated from other packages, or
+use transformation options to manually normalize/scale data. Additionally, these
+transformation options can be applied to normalized data as well depending upon
+the type of the transformation.
+
+### General Workflow
+<!-- ![](ui_screenshots/normalization/normalization_workflow.png) -->
+
+## Workflow Guide {.tabset}
+
+### Interactive
+Normalization tab can be opened up by clicking on the *Normalization & Batch Correction* from the top menu and further selecting the *Normalization* sub-tab in the subsequent window as shown below.
+
+<!-- ![](ui_screenshots/normalization/normalization_1_select_menu.png) -->
+
+<!-- ![](ui_screenshots/normalization/normalization_2_overview_1.png) -->
+
+The *Normalization* user-interface is divided into three parts, a) *Normalization Options*, b) *Assay Options*, and c) *Available Assays*.
+
+<!-- ![](ui_screenshots/normalization/normalization_2_overview_2.png) -->
+
+#### a) Normalization Options
+In the *Normalization Options*, users can select a method for normalization from `Scater - CPM` or one of the methods from `Seurat` i.e. `LogNormalize`, `CLR` (Centered Log Ratio), `RC` (Relative Counts) and `SCTransform`. Users can also set a manual *Scaling Factor* (numeric value multiplied by the data values) and specify the *Assay Name* for the new `assay`. 
+
+<!-- ![](ui_screenshots/normalization/normalization_3_seurat.png) -->
+
+<!-- ![](ui_screenshots/normalization/normalization_4_cpm.png) -->
+
+#### b) Assay Options
+In addition to the normalization methods, manually implemented transformation methods can be used to perform different transformations on the data. These transformations include `Log Transform`, `log1p` and standard `Z-score`. 
+
+<!-- ![](ui_screenshots/normalization/normalization_5_assay_options.png) -->
+
+If trimming of an `assay` is required, 'Trim Assay' option can be enabled and lower/upper bound values can be set. The default value for upper and lower trim values is `10` and `-10` respectively.
+
+<!-- ![](ui_screenshots/normalization/normalization_6_trim_assay.png) -->
+
+#### c) Available Assays
+The currently available `assays` are listed in the 'Available Assays' window. Whenever a new `assay` is generated, the list is updated automatically.
+
+### Console
+The `singleCellTK` allows the users to run all normalization and
+transformation methods on the input data by using a single `runNormalization`
+function. The `runNormalization` function takes in input a 
+`SingleCellExperiment` object and a series of parameters that define the
+normalization/transformation options to run on the specified `assay`. The
+output of this function is a `SingleCellExperiment` object which now contains
+the normalized/transformed assay.
+
+The `runNormalization` function specifies the following parameters:
+
+|Parameter|Description|
+|---|---|
+|inSCE|Input `SingleCellExperiment` object.|
+|useAssay|Specify the input `assay` to use for normalization/transformation.|
+|outAssayName|A `character` value indicating the name of the new output assay.|
+|normalizationMethod|Specify a normalization method from `"LogNormalize"`, `"CLR"`, `"RC"`, `"SCTransform"`, `"logNormCounts"` or `"CPM"`. If no method is specified, normalization will not be performed.|
+|scale|Logical value indicating if Z.Score scaling should be performed or not.|
+|seuratScaleFactor|Specify the `scaleFactor` parameter if any of the `seurat` normalization method is selected.|
+|transformation|Specify if a transformation should be applied to the input `assay` (if normalization is selected, this transformation is applied after normalization). Available transformation options include `"log2"`, `"log1p"`, `"sqrt"`.|
+|pseudocountsBeforeNorm|A `numeric` value to add to the input `assay`  before performing normalization.|
+|pseudocountsBeforeTransform|A `numeric` value to add to the input `assay` before performing a transformation.|
+|trim|A `numeric(2)` vector that specifies the upper and the lower trim values between (exclusive) which the input `assay` should be trimmed.|
+|verbose|A `logical` value indicating if informative/progress messages should be displayed on the console.|
+
+To use the function, input a `SingleCellExperiment` object that contains the data assay and specify the required parameters:
+
+```{r, eval=FALSE}
+sce <- runNormalization(
+  inSCE = sce, 
+  normalizationMethod = "RC", 
+  useAssay = "counts", 
+  outAssayName = "RCLogScaledCounts", 
+  scale = TRUE, 
+  transformation = "log2", 
+  pseudocountsBeforeTransform = 1, 
+  trim = c(10, -10))
+```
+
+## Available Methods & Options {.tabset}
+
+### Normalization Methods
+|Method|Reference|
+|---|---|
+|Seurat - LogNormalize|[Butler et al., Nature Biotechnology 2018](https://www.nature.com/articles/nbt.4096) & [Stuart*, Butler*, et al., Cell 2019](https://www.cell.com/cell/fulltext/S0092-8674(19)30559-8)|
+|Seurat - CLR|[Butler et al., Nature Biotechnology 2018](https://www.nature.com/articles/nbt.4096) & [Stuart*, Butler*, et al., Cell 2019](https://www.cell.com/cell/fulltext/S0092-8674(19)30559-8)|
+|Seurat - RC|[Butler et al., Nature Biotechnology 2018](https://www.nature.com/articles/nbt.4096) & [Stuart*, Butler*, et al., Cell 2019](https://www.cell.com/cell/fulltext/S0092-8674(19)30559-8)|
+|Seurat - SCTransform|[Normalization and variance stabilization of single-cell RNA-seq data using regularized negative binomial regression](https://genomebiology.biomedcentral.com/articles/10.1186/s13059-019-1874-1), [Butler et al., Nature Biotechnology 2018](https://www.nature.com/articles/nbt.4096) & [Stuart*, Butler*, et al., Cell 2019](https://www.cell.com/cell/fulltext/S0092-8674(19)30559-8)|
+|Scater - LogNormCounts|[McCarthy DJ, Campbell KR, Lun ATL, Willis QF (2017). “Scater: pre-processing, quality control, normalisation and visualisation of single-cell RNA-seq data in R.” Bioinformatics, 33, 1179-1186.](https://doi.org/10.1093/bioinformatics/btw777)|
+|Scater - CPM|[McCarthy DJ, Campbell KR, Lun ATL, Willis QF (2017). “Scater: pre-processing, quality control, normalisation and visualisation of single-cell RNA-seq data in R.” Bioinformatics, 33, 1179-1186.](https://doi.org/10.1093/bioinformatics/btw777)|
+
+### Transformation Options
+|Option|Description|
+|---|---|
+|Log Transform|Simple log base 2 transformation|
+|log1p|Natural log transformation and additionally adds 1 to remove zeros|
+|Z-Score|Standard z-score scaling|
+|trim|Trim values based on an upper and lower limits (can be applied with all of the above methods)|

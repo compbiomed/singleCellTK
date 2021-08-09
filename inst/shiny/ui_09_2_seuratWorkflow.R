@@ -1,12 +1,32 @@
 # User Interface for Seurat Workflow ---
 shinyPanelSeurat <- fluidPage(
+    h1("Seurat"),
+    h5(tags$a(href = paste0(docs.artPath, "ui_seurat_curated_workflow.html"),
+              "(help)", target = "_blank")),
     inlineCSS(list(".panel-danger>.panel-heading" = "background-color:#dcdcdc; color:#000000", ".panel-primary>.panel-heading" = "background-color:#f5f5f5; color:#000000; border-color:#dddddd", ".panel-primary" = "border-color:#dddddd;", ".panel-primary>.panel-heading+.panel-collapse>.panel-body" = "border-color:#dddddd;")),
-        bsCollapse(id = "SeuratUI", open = "Data Input",
+    conditionalPanel(
+        condition = "false",
+        selectInput(
+            "activePanelSelectSeurat",
+            label = "Active Panel:",
+            choices = c("",
+                        "Normalize Data",
+                        "Scale Data",
+                        "Highly Variable Genes",
+                        "Dimensionality Reduction",
+                        "tSNE/UMAP",
+                        "Clustering",
+                        "Find Markers",
+                        "Heatmap Plot"),
+            selected = ""
+        )
+    ),
+    bsCollapse(id = "SeuratUI", open = "Data Input",
             bsCollapsePanel("Normalize Data",
                 fluidRow(
                     column(4,
-                        panel(
-                            selectInput(inputId = "seuratSelectNormalizationAssay", label = "Select assay: ", choices = c()),
+                        panel(heading = "Options",
+                            uiOutput("seuratSelectNormalizationAssay"),
                             selectInput(inputId = "normalization_method", label = "Select normalization method: ", choices = c("LogNormalize", "CLR", "RC")),
                             textInput(inputId = "scale_factor", label = "Set scaling factor: ", value = "10000"),
                             actionButton(inputId = "normalize_button", "Normalize")
@@ -19,7 +39,7 @@ shinyPanelSeurat <- fluidPage(
             bsCollapsePanel("Scale Data",
                 fluidRow(
                     column(4,
-                        panel(
+                        panel(heading = "Options",
                             selectInput(inputId = "model.use", label = "Select model for scaling: ", choices = c("linear", "poisson", "negbinom")),
                             materialSwitch(inputId = "do.scale", label = "Scale data?", value = TRUE),
                             materialSwitch(inputId = "do.center", label = "Center data?", value = TRUE),
@@ -47,7 +67,7 @@ shinyPanelSeurat <- fluidPage(
                         fluidRow(
                             column(12,
                                 panel(heading = "Display HVG",
-                                    textInput(inputId = "hvg_no_features_view", label = "Select number of features to display: ", value = "100"),
+                                    numericInput(inputId = "hvg_no_features_view", label = "Select number of features to display: ", value = 10, step = 1),
                                     verbatimTextOutput(outputId = "hvg_output", placeholder = TRUE)
                                      )
                                   )
@@ -74,7 +94,7 @@ shinyPanelSeurat <- fluidPage(
                                 fluidRow(
                                     column(12,
                                         panel(heading = "PCA",
-                                            textInput(inputId = "pca_no_components", label = "Select number of components to compute: ", value = "50"),
+                                            numericInput(inputId = "pca_no_components", label = "Select number of components to compute: ", value = 50),
                                             materialSwitch(inputId = "pca_compute_elbow", label = "Compute ElbowPlot?", value = TRUE),
                                             materialSwitch(inputId = "pca_compute_jackstraw", label = "Compute JackStrawPlot?", value = FALSE),
                                             materialSwitch(inputId = "pca_compute_heatmap", label = "Compute Heatmap?", value = TRUE),
@@ -141,7 +161,7 @@ shinyPanelSeurat <- fluidPage(
                                       )
                                       )
                              )
-                             
+
                              )
                     ),
                     style = "primary"),
@@ -149,7 +169,7 @@ shinyPanelSeurat <- fluidPage(
 
 
             bsCollapsePanel("tSNE/UMAP",
-                tabsetPanel(type = "tabs",
+                tabsetPanel(id = "tsneUmapTabsetSeurat", type = "tabs",
                     tabPanel("tSNE",
                         br(),
                         fluidRow(
@@ -214,7 +234,7 @@ shinyPanelSeurat <- fluidPage(
                     column(4,
                         fluidRow(
                             column(12,
-                                panel(
+                                panel(heading = "Options",
                                     selectInput(inputId = "reduction_clustering_method", label = "Select reduction method: ", choices = c("pca", "ica")),
                                     #textInput(inputId = "reduction_clustering_count", label = "Select number of reduction components: ", value = "20"),
                                     selectInput(inputId = "algorithm.use", label = "Select clustering algorithm: ", choices = list("Original Louvain algorithm" = "louvain",
@@ -236,11 +256,110 @@ shinyPanelSeurat <- fluidPage(
                                     ))
                                     )
                              )
-                             
+
                            )
                     )
                     ),
-                    style = "primary")
-       )
+                    style = "primary"),
+            bsCollapsePanel("Find Markers",
+                            fluidRow(
+                                column(4,
+                                       fluidRow(
+                                           column(12,
+                                                  panel(heading = "Options",
+                                                        h6("Compute marker genes that are either differentially expressed or conserved between selected groups and visualize them from the selected plots on right panel."),
+                                                      radioButtons(
+                                                          inputId = "seuratFindMarkerType",
+                                                          label = "Select type of markers to identify:",
+                                                          choices = c(
+                                                              "markers between all groups" = "markerAll",
+                                                              "markers differentially expressed between two selected groups" = "markerDiffExp",
+                                                              "markers conserved between two selected groups" = "markerConserved"
+                                                                      )
+                                                      ),
+                                                      selectInput(
+                                                          inputId = "seuratFindMarkerSelectPhenotype",
+                                                          label = "Select biological phenotype:",
+                                                          choices = NULL
+                                                      ),
+                                                      conditionalPanel(
+                                                          condition = "input.seuratFindMarkerType == 'markerDiffExp'
+                                                          || input.seuratFindMarkerType == 'markerConserved'",
+                                                          selectInput(
+                                                              inputId = "seuratFindMarkerGroup1",
+                                                              label = "Select first group of interest:",
+                                                              choices = NULL
+                                                          ),
+                                                          selectInput(
+                                                              inputId = "seuratFindMarkerGroup2",
+                                                              label = "Select second group of interest:",
+                                                              choices = NULL
+                                                          )
+                                                      ),
+                                                          selectInput(
+                                                              inputId = "seuratFindMarkerTest",
+                                                              label = "Select test:",
+                                                              choices = c("wilcox", "bimod",
+                                                                          "t", "negbinom",
+                                                                          "poisson", "LR",
+                                                                          "DESeq2")
+                                                          ),
+                                                          materialSwitch(
+                                                              inputId = "seuratFindMarkerPosOnly",
+                                                              label = "Only return positive markers?",
+                                                              value = FALSE
+                                                          ),
+                                                      actionButton(inputId = "seuratFindMarkerRun", "Find Markers")
+                                                  )
+                                           )
+                                       )
+                                ),
+                                column(8,
+                                       fluidRow(
+                                           column(12,
+                                                  hidden(
+                                                      tags$div(
+                                                          class = "seurat_findmarker_table",
+                                                          filterTableUI(id = "filterSeuratFindMarker")
+                                                      )
+                                                  ),
+                                                  br(),
+                                                  hidden(
+                                                      tags$div(class = "seurat_findmarker_jointHeatmap",
+                                                               bsCollapse(
+                                                                 bsCollapsePanel(
+                                                                   title = "Heatmap Plot",
+                                                                         fluidRow(
+                                                                           column(12, align = "center",
+                                                                                               panel(
+                                                                                                   numericInput("findMarkerHeatmapPlotFullNumeric", value = 10, max = 100, min = 2, step = 1, label = "Select number of top genes from each cluster/group to visualize in the heatmap below based on highest average log fold change value:"),
+                                                                                                   actionButton("findMarkerHeatmapPlotFullNumericRun", label = "Plot"),
+                                                                                                   hr(),
+                                                                                                   shinyjqui::jqui_resizable(
+                                                                                                       plotOutput(outputId = "findMarkerHeatmapPlotFull")
+                                                                                                   )
+                                                                                               )
+                                                                           )
+                                                                         )
+                                                                 )
+                                                               )
+                                                      )
+                                                  ),
+                                                  br(),
+                                                  hidden(
+                                                      tags$div(class = "seurat_findmarker_plots",
+                                                               panel(heading = "Marker Gene Plots",
+                                                                     HTML("<center><h5><span style='color:red; font-weight:bold; text-align:center;'>Click on the rows of the table above to plot the selected marker genes below!</span></h5></br></center>"),
+                                                                     tabsetPanel(id = "seuratFindMarkerPlotTabset", type = "tabs"))
+                                                      )
+                                                  )
+                                           )
+
+                                       )
+                                )
+                            ),
+                            style = "primary")
+       ),
+    nonLinearWorkflowUI(id = "nlw-seurat")
     )
-# ----
+

@@ -1,9 +1,4 @@
 exampleDatasets <- c() ## Need to add final small example data here
-if ("scRNAseq" %in% rownames(installed.packages())){
-  exampleDatasets <- c(exampleDatasets,
-                       "Fluidigm (Pollen et al, 2014)" = "fluidigm_pollen",
-                       "Mouse Brain (Tasic et al, 2016)" = "allen_tasic")
-}
 if ("TENxPBMCData" %in% rownames(installed.packages())){
   exampleDatasets <- c(exampleDatasets,
                        "PBMC 3K (10X)" = "pbmc3k",
@@ -12,6 +7,12 @@ if ("TENxPBMCData" %in% rownames(installed.packages())){
                        "PBMC 8K (10X)" = "pbmc8k",
                        "PBMC 33K (10X)" = "pbmc33k",
                        "PBMC 68K (10X)" = "pbmc68k")
+}
+
+if ("scRNAseq" %in% rownames(installed.packages())){
+  exampleDatasets <- c(exampleDatasets,
+                       "Fluidigm (Pollen et al, 2014)" = "fluidigm_pollen",
+                       "Mouse Brain (Tasic et al, 2016)" = "allen_tasic")
 }
 
 shinyPanelImport <- fluidPage(
@@ -25,7 +26,7 @@ shinyPanelImport <- fluidPage(
       p("Filter, cluster, and analyze single cell RNA-Seq data"),
       p(
         "Need help?",
-        tags$a(href = "https://compbiomed.github.io/sctk_docs/",
+        tags$a(href = paste0(docs.base, "index.html"),
                "Read the docs.", target = "_blank")
       )
     )
@@ -33,23 +34,19 @@ shinyPanelImport <- fluidPage(
   tags$br(),
   tags$div(
     class = "container",
-    h1("Upload"),
-    h5(tags$a(href = "https://compbiomed.github.io/sctk_docs/articles/v03-tab01_Upload.html",
+    h1("Import"),
+    h5(tags$a(href = paste0(docs.artPath, "ui_import_data.html"),
               "(help)", target = "_blank")),
     tags$hr(),
-    hidden(wellPanel(id = "annotationData",
-                     h3("Data summary"),
-                     tableOutput("summarycontents"))), 
-
-    h3("Choose data source:"),
+    h3("1. Choose data source:"),
     radioButtons("uploadChoice", label = NULL, c("Import from a preprocessing tool" = 'directory',
-                                                 "Upload files" = "files",
+                                                 "Import from flat files (.csv, .txt, .mtx)" = "files",
                                                  "Upload SingleCellExperiment or Seurat object stored in an RDS File" = "rds",
-                                                 "Use example data" = "example")
+                                                 "Import example datasets" = "example")
     ),
     tags$hr(),
     conditionalPanel(condition = sprintf("input['%s'] == 'files'", "uploadChoice"),
-                     h3("Upload data in tab separated text format:"),
+                     h3("2. Upload data in tab separated text format:"),
                      fluidRow(
                        column(width = 4,
                               wellPanel(
@@ -138,7 +135,7 @@ shinyPanelImport <- fluidPage(
     ),
     conditionalPanel(
       condition = sprintf("input['%s'] == 'example'", "uploadChoice"),
-      h3("Choose Example Dataset:"),
+      h3("2. Choose Example Dataset:"),
       selectInput("selectExampleData", label = NULL, exampleDatasets),
       conditionalPanel(
         condition = sprintf("input['%s'] == 'fluidigm_pollen'", "selectExampleData"),
@@ -200,7 +197,7 @@ shinyPanelImport <- fluidPage(
     ),
     conditionalPanel(
       condition = sprintf("input['%s'] == 'rds'", "uploadChoice"),
-      h3("Choose an RDS file that contains a SingleCellExperiment or Seurat object:"),
+      h3("2. Choose an RDS file that contains a SingleCellExperiment or Seurat object:"),
       fileInput(
         "rdsFile", "SingleCellExperiment RDS file:", accept = c(".rds", ".RDS")
       ),
@@ -213,7 +210,7 @@ shinyPanelImport <- fluidPage(
         word-wrap: break-word;
       }
       ")),
-      h3("Choose a Preprocessing Tool:"),
+      h3("2. Choose a Preprocessing Tool:"),
       radioButtons("algoChoice", label = NULL, c("Cell Ranger v2" = "cellRanger2",
                                                  "Cell Ranger v3" = "cellRanger3",
                                                  "STARsolo" = "starSolo",
@@ -260,8 +257,9 @@ shinyPanelImport <- fluidPage(
       ),
     ),
     tags$hr(),
+    h3("3. Import:"),
     wellPanel(
-      h4("Current Samples:"),
+      h4("Samples to Import:"),
       fluidRow(
         column(3, tags$b("Type")),
         column(3, tags$b("Location")),
@@ -273,17 +271,42 @@ shinyPanelImport <- fluidPage(
       tags$br(),
       actionButton("clearAllImport", "Clear Samples")
     ),
-    radioButtons("combineSCEChoice", label = NULL, c("Add to existing SCE object" = 'addToExistingSCE',
-                                                 "Overwrite existing SCE object" = "overwriteSCE")
+    shinyjs::hidden(
+      tags$div(
+        id = "combineOptions",
+        radioButtons("combineSCEChoice", label = NULL, c("Add to existing SCE object" = 'addToExistingSCE',
+                                                         "Overwrite existing SCE object" = "overwriteSCE")
+        )
+      )
     ),
     withBusyIndicatorUI(
-      actionButton("uploadData", "Upload")
+      actionButton("uploadData", "Import")
     ),
-    
+    tags$br(),
+    tags$br(),
+    hidden(
+      wellPanel(
+        id = "annotationData",
+        h3("Data summary"),
+        tableOutput("summarycontents"),
+
+        tags$hr(),
+
+        h3("Set Feature for Display:"),
+        selectInput("importFeatureDispOpt",
+                    "Select the feature ID type that should be displayed in downstream visualization",
+                    c("Rownames (Default)", featureChoice)),
+        withBusyIndicatorUI(actionButton("importFeatureDipSet", "Set")),
+      )
+    ),
+
     tags$div(
       class = "container",
       p("")
-    )
+    ),
+    
+    nonLinearWorkflowUI(id = "nlw-import")
   )
   #includeHTML("www/footer.html")
 )
+

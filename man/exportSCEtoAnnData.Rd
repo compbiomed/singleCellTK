@@ -2,7 +2,7 @@
 % Please edit documentation in R/exportSCEtoAnndata.R
 \name{exportSCEtoAnnData}
 \alias{exportSCEtoAnnData}
-\title{Export a \link[SingleCellExperiment]{SingleCellExperiment} R object as 
+\title{Export a \link[SingleCellExperiment]{SingleCellExperiment} R object as
 Python annData object}
 \usage{
 exportSCEtoAnnData(
@@ -11,9 +11,9 @@ exportSCEtoAnnData(
   outputDir = "./",
   prefix = "sample",
   overwrite = TRUE,
-  compression = c("None", "lzf", "gzip"),
+  compression = c("gzip", "lzf", "None"),
   compressionOpts = NULL,
-  forceDense = c("False", "True")
+  forceDense = FALSE
 )
 }
 \arguments{
@@ -31,12 +31,15 @@ Default \code{"counts"}.}
 \item{overwrite}{Boolean. Default \code{TRUE}.}
 
 \item{compression}{If output file compression is required, this variable accepts
-'gzip' or 'lzf' as inputs. Default \code{None}.}
+'gzip', 'lzf' or "None" as inputs. Default \code{"gzip"}.}
 
 \item{compressionOpts}{Integer. Sets the compression level}
 
 \item{forceDense}{Default \code{False} Write sparse data as a dense matrix.
 Refer \code{anndata.write_h5ad} documentation for details. Default \code{NULL}.}
+}
+\value{
+Generates a Python anndata object containing data from \code{inSCE}.
 }
 \description{
 Writes all assays, colData, rowData, reducedDims, and altExps objects in a
@@ -46,9 +49,8 @@ are available as parameters to this export function and set to defaults. Default
 overridden at function call.
 }
 \examples{
-\dontrun{
 data(sce_chcl, package = "scds")
+\dontrun{
 exportSCEtoAnnData(sce=sce_chcl, compression="gzip")
 }
-
 }

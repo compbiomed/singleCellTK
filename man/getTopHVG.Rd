@@ -3,29 +3,53 @@
 \name{getTopHVG}
 \alias{getTopHVG}
 \title{getTopHVG
-Extracts the top variable genes from an input singleCellExperiment object}
+Extracts the top variable genes from an input \code{SingleCellExperiment} object.
+Note that the variability metrics must be computed using the `runFeatureSelection`
+method before extracting the feature names of the top variable features. If
+`altExp` parameter is a \code{character} value, this function will return the
+input \code{SingleCellExperiment} object with the subset containing only the
+top variable features stored as an \code{altExp} slot in returned object.
+However, if this parameter is set to \code{NULL}, only the names of the top
+variable features will be returned as a \code{character} vector.}
 \usage{
-getTopHVG(inSCE, method, n = 2000)
+getTopHVG(inSCE, method, n = 2000, altExp = NULL)
 }
 \arguments{
-\item{inSCE}{an input singleCellExperiment object}
+\item{inSCE}{Input \code{SingleCellExperiment} object}
 
-\item{method}{represents which method to use for variable gene extraction from
-either Seurat "vst", "mean.var.plot", "dispersion" or Scran "modelGeneVar"}
+\item{method}{Specify which method to use for variable gene extraction
+from either Seurat "vst", "mean.var.plot", "dispersion" or Scran
+"modelGeneVar".}
 
-\item{n}{number of top variable genes to extract}
+\item{n}{Specify the number of top variable genes to extract.}
+
+\item{altExp}{A \code{character} value that specifies the name of the \code{altExp}
+slot that should be created to store the subset \code{SingleCellExperiment}
+object containing only the top `n` variable features. Default value is
+\code{NULL}, which will not store the subset \code{SingleCellExperiment} object
+and instead will only return the names of the top `n` variable features.}
 }
 \value{
-list of top variable gene names
+A \code{character} vector of the top variable feature names or the
+ input \code{SingleCellExperiment} object with subset of variable features
+ stored as an \code{altExp} in the object.
 }
 \description{
 getTopHVG
-Extracts the top variable genes from an input singleCellExperiment object
+Extracts the top variable genes from an input \code{SingleCellExperiment} object.
+Note that the variability metrics must be computed using the `runFeatureSelection`
+method before extracting the feature names of the top variable features. If
+`altExp` parameter is a \code{character} value, this function will return the
+input \code{SingleCellExperiment} object with the subset containing only the
+top variable features stored as an \code{altExp} slot in returned object.
+However, if this parameter is set to \code{NULL}, only the names of the top
+variable features will be returned as a \code{character} vector.
 }
 \examples{
 data(sce_chcl, package = "scds")
-sce_chcl <- scran_modelGeneVar(sce_chcl, "counts")
-topGenes <- getTopHVG(sce_chcl, "modelGeneVar", 10) #return top 10 variable genes
+sce_chcl <- scranModelGeneVar(sce_chcl, "counts")
+# return top 10 variable genes
+topGenes <- getTopHVG(sce_chcl, "modelGeneVar", 10)
 }
 \author{
 Irzam Sarfraz

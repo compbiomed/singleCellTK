@@ -12,12 +12,18 @@
 #' two annotations. Additional legends can be added and the splitting can be
 #' canceled.
 #' @param inSCE \linkS4class{SingleCellExperiment} inherited object.
-#' @param useAssay character. A string specifying which assay to use for the
-#' expression values. Default \code{"logcounts"}.
 #' @param log2fcThreshold Only use DEGs with the absolute values of log2FC
 #' larger than this value. Default \code{1}
 #' @param fdrThreshold Only use DEGs with FDR value smaller than this value.
 #' Default \code{0.05}
+#' @param minClustExprPerc A numeric scalar. The minimum cutoff of the
+#' percentage of cells in the cluster of interests that expressed the marker
+#' gene. Default \code{0.7}.
+#' @param maxCtrlExprPerc A numeric scalar. The maximum cutoff of the
+#' percentage of cells out of the cluster (control group) that expressed the
+#' marker gene. Default \code{0.4}.
+#' @param minMeanExpr A numeric scalar. The minimum cutoff of the mean
+#' expression value of the marker in the cluster of interests. Default \code{1}.
 #' @param topN An integer. Only to plot this number of top markers for each
 #' cluster in maximum, in terms of log2FC value. Use \code{NULL} to cancel the
 #' top N subscription. Default \code{10}.
@@ -57,8 +63,15 @@
 #' @return A \code{\link[ComplexHeatmap]{Heatmap}} object
 #' @author Yichen Wang
 #' @export
-plotMarkerDiffExp <- function(inSCE, useAssay = 'logcounts', orderBy = 'size',
-    log2fcThreshold = 1, fdrThreshold = 0.05, topN = 10, decreasing = TRUE,
+#' @examples
+#' data("sceBatches")
+#' logcounts(sceBatches) <- log(counts(sceBatches) + 1)
+#' sce.w <- subsetSCECols(sceBatches, colData = "batch == 'w'")
+#' sce.w <- findMarkerDiffExp(sce.w, method = "wilcox", cluster = "cell_type")
+#' plotMarkerDiffExp(sce.w)
+plotMarkerDiffExp <- function(inSCE, orderBy = 'size',
+    log2fcThreshold = 1, fdrThreshold = 0.05, minClustExprPerc = 0.7,
+    maxCtrlExprPerc = 0.4, minMeanExpr = 1, topN = 10, decreasing = TRUE,
     rowDataName = NULL, colDataName = NULL, featureAnnotations = NULL,
     cellAnnotations = NULL, featureAnnotationColor = NULL,
     cellAnnotationColor = NULL,
@@ -81,13 +94,16 @@ plotMarkerDiffExp <- function(inSCE, useAssay = 'logcounts', orderBy = 'size',
         }# else if(any(!SummarizedExperiment::colData(inSCE)[[cluster]] %in%
          #             orderBy)){
          #   stop('Invalid "orderBy", please input a vector of unique ordered ',
-         #        'cluster identifiers that match all clusters in colData(inSCE) ',
-         #        'specified by "cluster" to adjust the order of clusters.')
+         #        'cluster identifiers that match all clusters in ',
+         #        'colData(inSCE) specified by "cluster" to adjust the order ',
+         #        'of clusters.')
         #}
     }
     # Extract and basic filter
     degFull <- S4Vectors::metadata(inSCE)$findMarker
-    if(!all(c("Gene", "Pvalue", "Log2_FC", "FDR") %in% colnames(degFull)[1:4])){
+    useAssay <- attr(degFull, "useAssay")
+    if(!all(c("Gene", "Pvalue", "Log2_FC", "FDR") %in%
+            colnames(degFull)[seq_len(4)])){
         stop('"findMarker" result cannot be interpreted properly')
     }
     if(length(which(!degFull$Gene %in% rownames(inSCE))) > 0){
@@ -99,6 +115,15 @@ plotMarkerDiffExp <- function(inSCE, useAssay = 'logcounts', orderBy = 'size',
     }
     if(!is.null(fdrThreshold)){
         degFull <- degFull[degFull$FDR < fdrThreshold,]
+    }
+    if (!is.null(minClustExprPerc)) {
+      degFull <- degFull[degFull$clusterExprPerc >= minClustExprPerc,]
+    }
+    if (!is.null(maxCtrlExprPerc)) {
+      degFull <- degFull[degFull$ControlExprPerc <= maxCtrlExprPerc,]
+    }
+    if (!is.null(minMeanExpr)) {
+      degFull <- degFull[degFull$clusterAveExpr >= minMeanExpr,]
     }
     # Remove duplicate by assigning the duplicated genes to the cluster where
     # their log2FC is the highest.
@@ -117,9 +142,10 @@ plotMarkerDiffExp <- function(inSCE, useAssay = 'logcounts', orderBy = 'size',
     if (!is.null(topN)) {
       for (c in unique(degFull[[clusterName]])) {
         deg.cluster <- degFull[degFull[[clusterName]] == c,]
-        deg.cluster <- deg.cluster[order(deg.cluster$Log2_FC, decreasing = TRUE),]
+        deg.cluster <- deg.cluster[order(deg.cluster$Log2_FC,
+                                         decreasing = TRUE),]
         if (dim(deg.cluster)[1] > topN) {
-          deg.cluster <- deg.cluster[1:topN,]
+          deg.cluster <- deg.cluster[seq_len(topN),]
         }
         selected <- c(selected, deg.cluster$Gene)
       }
@@ -138,7 +164,8 @@ plotMarkerDiffExp <- function(inSCE, useAssay = 'logcounts', orderBy = 'size',
         SummarizedExperiment::rowData(inSCE)[[clusterName]] <-
             factor(degFull[[clusterName]], levels = z.order)
     } else {
-        SummarizedExperiment::rowData(inSCE)[[clusterName]] <- degFull[[clusterName]]
+        SummarizedExperiment::rowData(inSCE)[[clusterName]] <-
+          degFull[[clusterName]]
     }
     y <- SummarizedExperiment::rowData(inSCE)[[clusterName]]
     if(!is.null(orderBy)){
@@ -165,12 +192,13 @@ plotMarkerDiffExp <- function(inSCE, useAssay = 'logcounts', orderBy = 'size',
         list(marker = dataAnnotationColor(inSCE, 'col')[[clusterName]])
     featureAnnotationColor <- c(featureAnnotationColor, markerConsistColor)
     hm <- plotSCEHeatmap(inSCE, useAssay = useAssay, colDataName = colDataName,
-        rowDataName = rowDataName, colSplitBy = colSplitBy, rowSplitBy = rowSplitBy,
-        featureAnnotations = featureAnnotations,
-        cellAnnotations = cellAnnotations,
-        featureAnnotationColor = featureAnnotationColor,
-        cellAnnotationColor = cellAnnotationColor,
-        cluster_row_slices = FALSE,
-        cluster_column_slices = FALSE, ...)
+                         rowDataName = rowDataName, colSplitBy = colSplitBy,
+                         rowSplitBy = rowSplitBy,
+                         featureAnnotations = featureAnnotations,
+                         cellAnnotations = cellAnnotations,
+                         featureAnnotationColor = featureAnnotationColor,
+                         cellAnnotationColor = cellAnnotationColor,
+                         cluster_row_slices = FALSE,
+                         cluster_column_slices = FALSE, ...)
     return(hm)
 }

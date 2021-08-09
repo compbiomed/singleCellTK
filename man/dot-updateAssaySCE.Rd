@@ -3,7 +3,8 @@
 \name{.updateAssaySCE}
 \alias{.updateAssaySCE}
 \title{.updateAssaySCE
-Update/Modify/Add an assay in the provided SingleCellExperiment object from a Seurat object}
+Update/Modify/Add an assay in the provided SingleCellExperiment object from
+a Seurat object}
 \usage{
 .updateAssaySCE(
   inSCE,
@@ -18,13 +19,21 @@ Update/Modify/Add an assay in the provided SingleCellExperiment object from a Se
 
 \item{seuratObject}{Input Seurat object}
 
-\item{assaySlotSCE}{Selected assay to update in the input SingleCellExperiment object}
+\item{assaySlotSCE}{Selected assay to update in the input
+SingleCellExperiment object}
 
-\item{seuratDataSlot}{Selected data slot from the Seurat object. Default \code{"counts"}.}
+\item{seuratDataSlot}{Selected data slot from the Seurat object. Default
+\code{"counts"}.}
 
-\item{seuratAssaySlot}{Selected assay from Seurat object. Default \code{"RNA"}.}
+\item{seuratAssaySlot}{Selected assay from Seurat object. Default
+\code{"RNA"}.}
+}
+\value{
+A \link[SingleCellExperiment]{SingleCellExperiment} object with
+ data from Seurat object appended to the \link{assay} slot.
 }
 \description{
 .updateAssaySCE
-Update/Modify/Add an assay in the provided SingleCellExperiment object from a Seurat object
+Update/Modify/Add an assay in the provided SingleCellExperiment object from
+a Seurat object
 }

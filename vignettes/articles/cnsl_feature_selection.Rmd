@@ -1,0 +1,180 @@
+---
+title: "Feature Selection"
+author: "Irzam Sarfraz"
+output:
+  html_document:
+    toc: true
+    toc_depth: 2
+bibliography: references.bib
+csl: ieee.csl
+---
+```{r develSetting, include=FALSE}
+doEval = TRUE
+```
+## Introduction
+**singleCellTK** offers a convenient way to compute and select the most variable features 
+that show the highest biological variability to use them in the downstream 
+analysis. Feature selection methods available with the toolkit include `vst`, `mean.var.plot` & `dispersion` from `Seurat` [@Butler2018][@Stuart2019][@Satija2017][@Hao2021] package and `modelGeneVar` from `Scran` [@Aaron2016] package. Users can additionally use visualization options and methods to visualize the top variable genes interactively as well as from R console. <br>
+
+To view detailed instructions on how to use these methods, please select 'Interactive Analysis' for using feature selection in shiny application or 'Console Analysis' for using these methods on R console from the tabs below:
+
+````{=html}
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+````
+
+
+## Workflow Guide
+
+````{=html}
+<div class="tab">
+  <button class="tablinks" onclick="openTab(event, 'interactive')" id="ia-button">Interactive Analysis</button>
+  <button class="tablinks" onclick="openTab(event, 'console')" id="console-button">Console Analysis</button>
+</div>
+
+<div id="interactive" class="tabcontent">
+````
+
+**1.** Select **Feature Selection & Dimensionality Reduction** tab from the top menu. This workflow guide assumes that the data as been previously uploaded, filtered and normalized before proceeding with this tab. <br>
+![](ui_screenshots/feature_selection/FS_1_select_1.png)
+<br>
+
+**2.** Select **Feature Selection** sub-tab (selected by default) to open up the feature selection user-interface.<br>
+![](ui_screenshots/feature_selection/FS_1_select_2.png)
+<br>
+
+**3.** The **Feature Selection** sub-tab is divided into three panels namely, **a) Compute HVG**, **b) Select and Subset**, and **c) Plot**. <br>
+![](ui_screenshots/feature_selection/fs_1.png)
+<br>
+
+The working of sections *a*, *b* and *c* are described below: <br>
+
+**a) Compute HVG** <br>
+
+![](ui_screenshots/feature_selection/fs_2.png)
+<br>
+
+The *Compute HVG* window allows the processing of highly variable genes by selecting an appropriate method either from `Seurat` (`vst`, `mean.var.plot`, `dispersion`) or `Scran` (`modelGeneVar`) packages. <br>
+
+![](ui_screenshots/feature_selection/FS_3_methods.png)
+<br>
+
+A numeric value indicating the number of features to identify must be set (default is `2000`) and an `assay` must be selected from the list of available `assays`. <br>
+
+**b) Select and Subset** <br>
+
+![](ui_screenshots/feature_selection/fs_3.png)
+<br>
+
+Once the highly variable genes have been computed in (a), subset of these features can be selected for downstream analysis. A numeric value (default is `100`) can be input to set the number of genes that should be displayed in (b), labeled (highlighted in red) in the plot (c) and selected for further analysis in the succeeding tabs as a subset. <br>
+
+**c) Plot** <br>
+
+![](ui_screenshots/feature_selection/fs_4.png) <br>
+
+A plot is generated against the HVG computation in (a) and the number of genes to display set in (b) are labeled over corresponding data points in the plot. <br>
+
+
+````{=html}
+</div>
+<div id="console" class="tabcontent">
+````
+
+**1.** Compute statistics for the highly variable genes using the wrapper function `runFeatureSelection` as below:
+```{r "fs_overview_1", eval=FALSE}
+sce <- runFeatureSelection(inSCE = sce, useAssay = "counts", hvgMethod = "vst")
+```
+
+In the above function, it is recommended to use a **normalized assay for the `useAssay` parameter** and the 
+available options for the `hvgMethod` method include `vst` ***(recommended assay is raw counts)***, `mean.var.plot` and `dispersion` from Seurat and `modelGeneVar` from Scran package.
+
+**2.** Get names of top genes using the `getTopHVG` function and specify the same method which was used for computation
+in the step 1:
+```{r "fs_overview_2", eval=FALSE}
+topGenes <- getTopHVG(inSCE = sce, method = "vst", n = 1000)
+```
+
+**3.** Visualize top genes using the `plotTopHVG` function and specify the same method which was used previously:
+```{r "fs_overview_3", eval=FALSE}
+plotTopHVG(inSCE = sce, method = "vst", hvgList = topGenes, labelsCount = 10)
+```
+
+````{=html}
+<details>
+  <summary><b>Example</b></summary>
+````  
+  
+```{r "fs_console_example_1", message = FALSE, warning = FALSE}
+  # Load singleCellTK & pbmc3k example data
+  library(singleCellTK)
+  sce <- importExampleData(dataset = "pbmc3k")
+  # Compute metrics for 'vst' feature selection method
+  sce <- runFeatureSelection(inSCE = sce, useAssay = "counts", hvgMethod = "vst")
+  # Get the names of the top 1000 highly variable genes
+  topGenes <- getTopHVG(inSCE = sce, method = "vst", n = 1000)
+  print(topGenes[1:10])
+  # Visualize the top variable genes and label the first top 10 genes
+  plotTopHVG(inSCE = sce, method = "vst", hvgList = topGenes, labelsCount = 10)
+```
+
+````{=html}
+</details> 
+<details>
+  <summary><b>Individual Functions</b></summary>
+````
+
+  While the `runFeatureSelection` wrapper function can be used to run all
+  available feature selection methods, separate functions are also
+  available for all of the included methods. The following functions
+  can be used for specific feature selection methods:
+  
+````{=html} 
+ <style>
+div.offset { background-color:inherit ; border-radius: 5px; margin-left: 15px;}
+</style>
+<div class = "offset">
+<details>
+````
+    
+  <summary>`vst`, `mean.var.plot` or `dispersion` from **Seurat** [@Butler2018][@Stuart2019] package:</summary> 
+
+```{r "fs_seurat", eval = FALSE}
+  sce <- seuratFindHVG(inSCE = sce, useAssay = "counts", hvgMethod = "vst", hvgNumber = 2000, altExp = FALSE, verbose = TRUE)
+```
+The parameters to the above function include: <br><br>
+`inSCE`: an input `SingleCellExperiment` object <br>
+`useAssay`: specify the name of the assay to use for feature selection <br>
+`hvgMethod`: one of the options from "vst", "mean.var.plot" or "dispersion" <br>
+`hvgNumber`: specify the number of variable genes to compute by default <br>
+`altExp`: a logical value indicating if the input object is an altExperiment <br>
+`verbose`: a logical value indicating if progress should be printed <br><br>
+
+````{=html}
+</details>
+ <details>
+````
+    
+  <summary>`modelGeneVar` from **Scran** package:</summary> 
+
+```{r "fs_scran", eval = FALSE}
+  sce <- scranModelGeneVar(inSCE = sce, assayName = "counts")
+```
+
+The parameters to the above function include: <br><br>
+`inSCE`: an input `SingleCellExperiment` object <br>
+`assayName`: selected assay to compute variable features from <br>
+
+````{=html} 
+</details>
+  </div>
+    </details> 
+      </div>
+<script>
+document.getElementById("ia-button").click();
+</script>
+</body>
+````
+
+## References

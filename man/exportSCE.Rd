@@ -9,12 +9,12 @@ exportSCE(
   samplename = "sample",
   directory = "./",
   type = "Cells",
-  format = c("SCE", "AnnData", "FlatFile", "HTAN")
+  format = c("SCE", "AnnData", "FlatFile", "HTAN", "Seurat")
 )
 }
 \arguments{
-\item{inSCE}{A \link[SingleCellExperiment]{SingleCellExperiment} object 
-that contains the data. QC metrics are stored in colData of the 
+\item{inSCE}{A \link[SingleCellExperiment]{SingleCellExperiment} object
+that contains the data. QC metrics are stored in colData of the
 singleCellExperiment object.}
 
 \item{samplename}{Sample name. This will be used as name of subdirectories
@@ -22,12 +22,21 @@ and the prefix of flat file output. Default is 'sample'.}
 
 \item{directory}{Output directory. Default is './'.}
 
-\item{type}{Type of data. The type of data stored in SingleCellExperiment object. 
+\item{type}{Type of data. The type of data stored in SingleCellExperiment object.
 It can be 'Droplets'(raw droplets matrix) or 'Cells' (cells matrix).}
 
 \item{format}{The format of output. It currently supports flat files, rds files
 and python h5 files. It can output multiple formats. Default: c("SCE", "AnnData", "FlatFile", "HTAN").}
 }
+\value{
+Generates a file containing data from \code{inSCE}, in specified \code{format}.
+}
 \description{
 Export data in SingleCellExperiment object
+}
+\examples{
+data(scExample)
+\dontrun{
+exportSCE(sce, format = "SCE")
+}
 }
