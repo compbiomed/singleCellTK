@@ -1274,14 +1274,17 @@ plotSCEViolinAssayData <- function(inSCE,
 #' @description Visualizes values stored in any slot of a
 #'  SingleCellExperiment object via a violin plot.
 #' @param inSCE Input \linkS4class{SingleCellExperiment} object with saved
-#' dimension reduction components or a variable with saved results. Required
-#' @param slot Desired slot of SingleCellExperiment used for plotting. Possible
-#'  options: "assays", "colData", "metadata"
-#' @param annotation Desired vector within the slot used for plotting.
-#' @param feature name of feature stored in assay of SingleCellExperiment
-#'  object. Required.
-#'  Will be used only if "assays" slot is chosen. Default NULL.
+#' dimension reduction components or a variable with saved results. Required.
+#' @param slotName Desired slot of SingleCellExperiment used for plotting. Possible
+#'  options: "assays", "colData", "metadata", "reducedDims". Required.
+#' @param itemName Desired vector within the slot used for plotting. Required.
+#' @param feature Desired name of feature stored in assay of SingleCellExperiment
+#'  object. Only used when "assays" slotName is selected. Default NULL.
 #' @param sample Character vector. Indicates which sample each cell belongs to.
+#' @param dimension Desired dimension stored in the specified reducedDims. 
+#'  Either an integer which indicates the column or a character vector specifies
+#'  column name. By default, the 1st dimension/column will be used. 
+#'  Only used when "reducedDims" slotName is selected. Default NULL.
 #' @param groupBy Groupings for each numeric value. A user may input a vector
 #' equal length to the number of the samples in the SingleCellExperiment
 #' object, or can be retrieved from the colData slot. Default NULL.
@@ -1316,10 +1319,11 @@ plotSCEViolinAssayData <- function(inSCE,
 #' )
 #' @export
 plotSCEViolin <- function(inSCE,
-                          slot,
-                          feature,
-                          annotation,
+                          slotName,
+                          itemName,
+                          feature = NULL,
                           sample = NULL,
+                          dimension = NULL,
                           groupBy = NULL,
                           violin = TRUE,
                           boxplot = TRUE,
@@ -1337,118 +1341,125 @@ plotSCEViolin <- function(inSCE,
                           titleSize = NULL,
                           combinePlot = "none",
                           plotLabels = NULL) {
-  combinePlot <- match.arg(combinePlot,c("all", "sample", "none"))
-
-  if (!slot %in% methods::slotNames(inSCE)) {
-    stop("'slot' must be a slot within the SingleCellExperiment object.",
-         "Please run 'methods::slotNames' if you are unsure the",
-         "specified slot exists.")
-  }
-
-  sceSubset <- do.call(slot, args = list(inSCE))
-
-  if (!annotation %in% names(sceSubset)) {
-    stop("'annotation' must be an annotation stored within the specified
-             slot of the SingleCellExperiment object.")
-  }
-
-  annotation.ix <- match(annotation, names(sceSubset))
-
-  if (slot == "assays" && !is.null(feature)) {
-    counts <- sceSubset[[annotation.ix]]
-    if (feature %in% rownames(counts)) {
-      counts <- counts[feature, ]
+    combinePlot <- match.arg(combinePlot,c("all", "sample", "none"))
+    
+    if (!slotName %in% c("rowData", "colData", "assays", "metadata", "reducedDims")) {
+        stop("'slotName' must be a slotName within the SingleCellExperiment object.",
+             "Please run 'methods::slot' if you are unsure the",
+             "specified slotName exists.")
     }
-  } else if (slot == "colData") {
-    counts <- sceSubset[, annotation.ix]
-  } else if (slot == "metadata") {
-    counts <- sceSubset[[annotation.ix]]
-  }
-
-  if (!is.null(groupBy)) {
-    if (length(groupBy) > 1) {
-      if (length(groupBy) != length(counts)) {
-        stop("The input vector for 'groupBy' needs to be the same
+    
+    sceSubset <- do.call(slotName, args = list(inSCE))
+    
+    if (!itemName %in% names(sceSubset)) {
+        stop("'itemName' must be an itemName stored within the specified
+             slotName of the SingleCellExperiment object.")
+    }
+    
+    itemName.ix <- match(itemName, names(sceSubset))
+    
+    if (slotName == "assays" && !is.null(feature)) {
+        counts <- sceSubset[[itemName.ix]]
+        if (feature %in% rownames(counts)) {
+            counts <- counts[feature, ]
+        }
+    } else if (slotName == "colData") {
+        counts <- sceSubset[, itemName.ix]
+    } else if (slotName == "metadata") {
+        counts <- sceSubset[[itemName.ix]]
+    } else if (slotName == "reducedDims") {
+        if(is.null(dimension)){
+            dimension <- 1
+        }else if(is.character(dimension)){
+            dimension <- match(dimension, colnames(sceSubset[[itemName.ix]]))
+        }
+        counts <- sceSubset[[itemName.ix]][,dimension]
+    }
+    
+    if (!is.null(groupBy)) {
+        if (length(groupBy) > 1) {
+            if (length(groupBy) != length(counts)) {
+                stop("The input vector for 'groupBy' needs to be the same
                      length as the number of samples in your
                      SingleCellExperiment object.")
-      }
+            }
+        } else {
+            if (!groupBy %in% names(SummarizedExperiment::colData(inSCE))) {
+                stop("'", paste(groupBy), "' is not found in ColData.")
+            }
+            groupBy <- as.character(SummarizedExperiment::colData(inSCE)[, groupBy])
+        }
+    }
+    
+    if (!is.null(sample)) {
+        if (length(sample) != ncol(inSCE)) {
+            stop("'sample' must be the same length as the number",
+                 " of columns in 'inSCE'")
+        }
     } else {
-      if (!groupBy %in% names(SummarizedExperiment::colData(inSCE))) {
-        stop("'", paste(groupBy), "' is not found in ColData.")
-      }
-      groupBy <- as.character(SummarizedExperiment::colData(inSCE)[, groupBy])
+        sample <- rep(1, ncol(inSCE))
     }
-  }
-
-  if (!is.null(sample)) {
-    if (length(sample) != ncol(inSCE)) {
-      stop("'sample' must be the same length as the number",
-           " of columns in 'inSCE'")
+    samples <- unique(sample)
+    plotlist <- lapply(samples, function(x) {
+        sampleInd <- which(sample == x)
+        countSub <- counts[sampleInd]
+        if(!is.null(groupBy)){
+            groupbySub <- groupBy[sampleInd]
+        }else{
+            groupbySub <- NULL
+        }
+        p <- .ggViolin(
+            y = countSub,
+            groupBy = groupbySub,
+            violin = violin,
+            boxplot = boxplot,
+            dots = dots,
+            xlab = xlab,
+            ylab = ylab,
+            axisSize = axisSize,
+            axisLabelSize = axisLabelSize,
+            dotSize = dotSize,
+            transparency = transparency,
+            defaultTheme = defaultTheme,
+            gridLine = gridLine,
+            summary = summary,
+            combinePlot = combinePlot,
+            title = title,
+            titleSize = titleSize
+        )
+        
+        return(p)
+    })
+    
+    if (length(unique(samples)) > 1) {
+        names(plotlist) <- samples
+        if(!is.null(combinePlot)){
+            if(combinePlot == "sample"){
+                plotlist <- c(list(Sample = plotlist))
+            }
+        }
+    } else {
+        plotlist <- plotlist[[1]]
+        # plotlist <- unlist(plotlist, recursive=F)
     }
-  } else {
-    sample <- rep(1, ncol(inSCE))
-  }
-  samples <- unique(sample)
-  plotlist <- lapply(samples, function(x) {
-    sampleInd <- which(sample == x)
-    countSub <- counts[sampleInd]
-    if(!is.null(groupBy)){
-      groupbySub <- groupBy[sampleInd]
-    }else{
-      groupbySub <- NULL
+    
+    ##Needs to be turned off for Shiny User Interface
+    if(combinePlot %in% c("all", "sample") &&
+       length(unique(samples)) > 1){
+        figNcol = NULL
+        if(!is.null(groupBy)){
+            if(length(unique(groupBy)) > 1){
+                figNcol = 1
+            }
+        }
+        plotlist <- .ggSCTKCombinePlots(plotlist,
+                                        combinePlot = combinePlot,
+                                        ncols = figNcol,
+                                        labels = plotLabels)
+    }else if(combinePlot == "none" && length(plotlist) == 1){
+        plotlist <- plotlist[[1]]
     }
-    p <- .ggViolin(
-      y = countSub,
-      groupBy = groupbySub,
-      violin = violin,
-      boxplot = boxplot,
-      dots = dots,
-      xlab = xlab,
-      ylab = ylab,
-      axisSize = axisSize,
-      axisLabelSize = axisLabelSize,
-      dotSize = dotSize,
-      transparency = transparency,
-      defaultTheme = defaultTheme,
-      gridLine = gridLine,
-      summary = summary,
-      combinePlot = combinePlot,
-      title = title,
-      titleSize = titleSize
-    )
-
-    return(p)
-  })
-
-  if (length(unique(samples)) > 1) {
-    names(plotlist) <- samples
-    if(!is.null(combinePlot)){
-      if(combinePlot == "sample"){
-        plotlist <- c(list(Sample = plotlist))
-      }
-    }
-  } else {
-    plotlist <- plotlist[[1]]
-    # plotlist <- unlist(plotlist, recursive=F)
-  }
-
-  ##Needs to be turned off for Shiny User Interface
-  if(combinePlot %in% c("all", "sample") &&
-     length(unique(samples)) > 1){
-    figNcol = NULL
-    if(!is.null(groupBy)){
-      if(length(unique(groupBy)) > 1){
-        figNcol = 1
-      }
-    }
-    plotlist <- .ggSCTKCombinePlots(plotlist,
-                                    combinePlot = combinePlot,
-                                    ncols = figNcol,
-                                    labels = plotLabels)
-  }else if(combinePlot == "none" && length(plotlist) == 1){
-    plotlist <- plotlist[[1]]
-  }
-  return(plotlist)
+    return(plotlist)
 }
 
 #' @title Density plot plotting tool.
@@ -1821,15 +1832,16 @@ plotSCEDensityAssayData <- function(inSCE,
 #' @title Density plot of any data stored in the SingleCellExperiment object.
 #' @description Visualizes values stored in any slot of a
 #'  SingleCellExperiment object via a densityn plot.
-#' @param inSCE Input \linkS4class{SingleCellExperiment} object with saved
-#' dimension reduction components or a variable with saved results. Required
-#' @param slot Desired slot of SingleCellExperiment used for plotting. Possible
-#'  options: "assays", "colData", "metadata"
+#' @param slotName Desired slot of SingleCellExperiment used for plotting. Possible
+#'  options: "assays", "colData", "metadata", "reducedDims". Required.
+#' @param itemName Desired vector within the slot used for plotting. Required.
 #' @param sample Character vector. Indicates which sample each cell belongs to.
-#' @param annotation Desired vector within the slot used for plotting.
-#' @param useAssay Indicate which assay to use. Default "counts".
-#' @param feature name of feature stored in assay of SingleCellExperiment
-#'  object. Will be used only if "assays" slot is chosen. Default NULL.
+#' @param feature Desired name of feature stored in assay of SingleCellExperiment
+#'  object. Only used when "assays" slotName is selected. Default NULL.
+#' @param dimension Desired dimension stored in the specified reducedDims. 
+#'  Either an integer which indicates the column or a character vector specifies
+#'  column name. By default, the 1st dimension/column will be used. 
+#'  Only used when "reducedDims" slotName is selected. Default NULL.
 #' @param groupBy Groupings for each numeric value. A user may input a vector
 #' equal length to the number of the samples in the SingleCellExperiment
 #' object, or can be retrieved from the colData slot. Default NULL.
@@ -1855,11 +1867,11 @@ plotSCEDensityAssayData <- function(inSCE,
 #' )
 #' @export
 plotSCEDensity <- function(inSCE,
-                           slot,
-                           annotation,
+                           slotName,
+                           itemName,
                            sample = NULL,
-                           useAssay = "counts",
                            feature = NULL,
+                           dimension = NULL,
                            groupBy = NULL,
                            xlab = NULL,
                            ylab = NULL,
@@ -1871,107 +1883,116 @@ plotSCEDensity <- function(inSCE,
                            cutoff = NULL,
                            combinePlot = "none",
                            plotLabels = NULL) {
-  combinePlot <- match.arg(combinePlot,c("all", "sample", "none"))
-
-  if (!slot %in% methods::slotNames(inSCE)) {
-    stop("'slot' must be a slot within the SingleCellExperiment object.
-             Please run 'methods::slotNames' if you are unsure the
-             specified slot exists.")
-  }
-
-  sceSubset <- do.call(slot, args = list(inSCE))
-
-  if (!annotation %in% names(sceSubset)) {
-    stop("'annotation' must be an annotation stored within the specified
-             slot of the SingleCellExperiment object.")
-  }
-
-  annotation.ix <- match(annotation, names(sceSubset))
-
-  if (slot == "assays" && !is.null(feature)) {
-    counts <- sceSubset[[annotation.ix]]
-    if (feature %in% rownames(counts)) {
-      counts <- counts[feature, ]
+    combinePlot <- match.arg(combinePlot,c("all", "sample", "none"))
+    
+    if (!slotName %in% c("rowData", "colData", "assays", "metadata", "reducedDims")) {
+        stop("'slotName' must be a slotName within the SingleCellExperiment object.",
+             "Please run 'methods::slotNames' if you are unsure the",
+             "specified slot exists.")
     }
-  } else if (slot == "colData") {
-    counts <- sceSubset[, annotation.ix]
-  } else if (slot == "metadata") {
-    counts <- sceSubset[[annotation.ix]]
-  }
-
-  if (!is.null(groupBy)) {
-    if (length(groupBy) > 1) {
-      if (length(groupBy) != length(counts)) {
-        stop("The input vector for 'groupBy' needs to be the same
+    
+    sceSubset <- do.call(slotName, args = list(inSCE))
+    
+    if (!itemName %in% names(sceSubset)) {
+        stop("'itemName' must be an itemName stored within the specified
+             slot of the SingleCellExperiment object.")
+    }
+    
+    itemName.ix <- match(itemName, names(sceSubset))
+    
+    if (slotName == "assays" && !is.null(feature)) {
+        counts <- sceSubset[[itemName.ix]]
+        if (feature %in% rownames(counts)) {
+            counts <- counts[feature, ]
+        }
+    } else if (slotName == "colData") {
+        counts <- sceSubset[, itemName.ix]
+    } else if (slotName == "metadata") {
+        counts <- sceSubset[[itemName.ix]]
+    } else if (slotName == "reducedDims") {
+        if(is.null(dimension)){
+            dimension <- 1
+        }else if(is.character(dimension)){
+            dimension <- match(dimension, colnames(sceSubset[[itemName.ix]]))
+        }
+        counts <- sceSubset[[itemName.ix]][,dimension]
+    }
+    
+    if (!is.null(groupBy)) {
+        if (length(groupBy) > 1) {
+            if (length(groupBy) != length(counts)) {
+                stop("The input vector for 'groupBy' needs to be the same
                      length as the number of samples in your
                      SingleCellExperiment object.")
-      }
+            }
+        } else {
+            if (!groupBy %in% names(SummarizedExperiment::colData(inSCE))) {
+                stop("'", paste(groupBy), "' is not found in ColData.")
+            }
+            groupBy <- as.character(SummarizedExperiment::colData(inSCE)[, groupBy])
+        }
+    }
+    
+    if (!is.null(sample)) {
+        if (length(sample) != ncol(inSCE)) {
+            stop(
+                "'sample' must be the same length as the number",
+                " of columns in 'inSCE'"
+            )
+        }
     } else {
-      if (!groupBy %in% names(SummarizedExperiment::colData(inSCE))) {
-        stop("'", paste(groupBy), "' is not found in ColData.")
-      }
-      groupBy <- as.character(SummarizedExperiment::colData(inSCE)[, groupBy])
+        sample <- rep(1, ncol(inSCE))
     }
-  }
-
-  if (!is.null(sample)) {
-    if (length(sample) != ncol(inSCE)) {
-      stop(
-        "'sample' must be the same length as the number",
-        " of columns in 'inSCE'"
-      )
+    
+    samples <- unique(sample)
+    
+    plotlist <- lapply(samples, function(x) {
+        sampleInd <- which(sample == x)
+        countsSub <- counts[sampleInd]
+        if (!is.null(groupBy)) {
+            groupbySub <- groupBy[sampleInd]
+        } else {
+            groupbySub <- NULL
+        }
+        
+        if (!is.null(title) && length(samples) > 1) {
+            title <- paste(title, x, sep = "_")
+        }
+        
+        p <- .ggDensity(
+            value = countsSub,
+            groupBy = groupbySub,
+            xlab = xlab,
+            ylab = ylab,
+            axisSize = axisSize,
+            axisLabelSize = axisLabelSize,
+            defaultTheme = defaultTheme,
+            title = title,
+            titleSize = titleSize
+        )
+        return(p)
+    })
+    if(!is.null(feature)){
+        names(plotlist) <- feature
     }
-  } else {
-    sample <- rep(1, ncol(inSCE))
-  }
-
-  samples <- unique(sample)
-
-  plotlist <- lapply(samples, function(x) {
-    sampleInd <- which(sample == x)
-    countsSub <- counts[sampleInd]
-    if (!is.null(groupBy)) {
-      groupbySub <- groupBy[sampleInd]
-    } else {
-      groupbySub <- NULL
+    
+    ##Needs to be turned off for Shiny User Interface
+    if(combinePlot %in% c("all", "sample")){
+        figNcol = NULL
+        if(!is.null(groupBy)){
+            if(length(unique(groupBy)) > 1){
+                figNcol = 1
+            }
+        }
+        plotlist <- .ggSCTKCombinePlots(plotlist,
+                                        combinePlot = combinePlot,
+                                        ncols = figNcol,
+                                        labels = plotLabels)
+    }else if(combinePlot == "none" && length(plotlist) == 1){
+        plotlist <- plotlist[[1]]
     }
-
-    if (!is.null(title) && length(samples) > 1) {
-      title <- paste(title, x, sep = "_")
-    }
-
-    p <- .ggDensity(
-      value = countsSub,
-      groupBy = groupbySub,
-      xlab = xlab,
-      ylab = ylab,
-      axisSize = axisSize,
-      axisLabelSize = axisLabelSize,
-      defaultTheme = defaultTheme,
-      title = title,
-      titleSize = titleSize
-    )
-    return(p)
-  })
-  if(!is.null(feature)){
-    names(plotlist) <- feature
-  }
-
-  ##Needs to be turned off for Shiny User Interface
-  if(combinePlot %in% c("all", "sample")){
-    figNcol = NULL
-    if(!is.null(groupBy)){
-      if(length(unique(groupBy)) > 1){
-        figNcol = 1
-      }
-    }
-    plotlist <- .ggSCTKCombinePlots(plotlist,
-                                    combinePlot = combinePlot,
-                                    ncols = figNcol,
-                                    labels = plotLabels)
-  }
-
-  return(plotlist)
+    
+    return(plotlist)
 }
 
 #' @title Plots for runEmptyDrops outputs.
