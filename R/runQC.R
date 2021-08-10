@@ -35,7 +35,6 @@ runCellQC <- function(inSCE,
   geneSetCollection = NULL,
   useAssay = "counts",
   seed = 12345,
-  verbose = FALSE,
   paramsList = NULL) {
 
   nonmatch <- setdiff(algorithms, c("scDblFinder", "cxds", "bcds",
@@ -78,8 +77,7 @@ runCellQC <- function(inSCE,
     inSCE <- do.call(runDoubletFinder,
       c(list(inSCE = quote(inSCE),
       sample = sample,
-      seed = seed,
-      verbose = verbose),
+      seed = seed),
       paramsList[["doubletFinder"]]))
   }
 
