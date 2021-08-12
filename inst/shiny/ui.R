@@ -142,8 +142,9 @@ source("ui_04_fs_dimred.R", local = TRUE) #creates shinyPanelFS_DimRed variable
 source("ui_05_1_diffex.R", local = TRUE) #creates shinyPanelDiffex variable
 source("ui_05_2_findMarker.R", local = TRUE) #creates shinyPanelfindMarker variable
 source("ui_05_3_cellTypeLabel.R", local = TRUE) # creates shinyPanelLabelCellType variable
-source("ui_06_1_pathway.R", local = TRUE) #creates shinyPanelPathway variable
+#source("ui_06_1_pathway.R", local = TRUE) #creates shinyPanelPathway variable
 source("ui_06_2_enrichR.R", local = TRUE) #creates shinyPanelEnrichR variable
+source("ui_06_1_Pathway.R", local = TRUE) #creates shinyPanelvam variable
 source("ui_07_subsample.R", local = TRUE) #creates shinyPanelSubsample variable
 source("ui_08_2_cellviewer.R", local = TRUE) #creates shinyPanelCellViewer variable
 source("ui_08_3_heatmap.R", local = TRUE) #creates shinyPanelHeatmap variable
@@ -205,11 +206,15 @@ shinyUI(
         tabPanel("Differential Expression", shinyPanelDiffex),
         tabPanel("Find Marker", shinyPanelfindMarker),
         tabPanel("Cell Type Labeling", shinyPanelLabelCellType)
+       
       ),
       navbarMenu(
         "Cell Annotation & Pathway Analysis",
-        tabPanel("GSVA", value = "GSVA", shinyPanelPathway),
-        tabPanel("EnrichR", shinyPanelEnrichR)
+        #tabPanel("GSVA", value = "GSVA", shinyPanelPathway),
+        tabPanel("EnrichR", shinyPanelEnrichR),
+        tabPanel("Pathway Activity", shinyPanelvam)
+        
+        
       ),
       tabPanel("Sample Size Calculator", shinyPanelSubsample),
       navbarMenu(
