@@ -44,9 +44,9 @@ object. Only used when "assays" slotName is selected. Default NULL.}
 
 \item{sample}{Character vector. Indicates which sample each cell belongs to.}
 
-\item{dimension}{Desired dimension stored in the specified reducedDims. 
+\item{dimension}{Desired dimension stored in the specified reducedDims.
 Either an integer which indicates the column or a character vector specifies
-column name. By default, the 1st dimension/column will be used. 
+column name. By default, the 1st dimension/column will be used.
 Only used when "reducedDims" slotName is selected. Default NULL.}
 
 \item{groupBy}{Groupings for each numeric value. A user may input a vector
@@ -101,7 +101,7 @@ Visualizes values stored in any slot of a
 }
 \examples{
 plotSCEViolin(
-  inSCE = mouseBrainSubsetSCE, slot = "assays",
-  annotation = "counts", feature = "Apoe", groupBy = "sex"
+  inSCE = mouseBrainSubsetSCE, slotName = "assays",
+  itemName = "counts", feature = "Apoe", groupBy = "sex"
 )
 }
