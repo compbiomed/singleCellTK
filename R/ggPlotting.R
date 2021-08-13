@@ -1281,9 +1281,9 @@ plotSCEViolinAssayData <- function(inSCE,
 #' @param feature Desired name of feature stored in assay of SingleCellExperiment
 #'  object. Only used when "assays" slotName is selected. Default NULL.
 #' @param sample Character vector. Indicates which sample each cell belongs to.
-#' @param dimension Desired dimension stored in the specified reducedDims. 
+#' @param dimension Desired dimension stored in the specified reducedDims.
 #'  Either an integer which indicates the column or a character vector specifies
-#'  column name. By default, the 1st dimension/column will be used. 
+#'  column name. By default, the 1st dimension/column will be used.
 #'  Only used when "reducedDims" slotName is selected. Default NULL.
 #' @param groupBy Groupings for each numeric value. A user may input a vector
 #' equal length to the number of the samples in the SingleCellExperiment
@@ -1314,8 +1314,8 @@ plotSCEViolinAssayData <- function(inSCE,
 #' @return a ggplot of the violin plot.
 #' @examples
 #' plotSCEViolin(
-#'   inSCE = mouseBrainSubsetSCE, slot = "assays",
-#'   annotation = "counts", feature = "Apoe", groupBy = "sex"
+#'   inSCE = mouseBrainSubsetSCE, slotName = "assays",
+#'   itemName = "counts", feature = "Apoe", groupBy = "sex"
 #' )
 #' @export
 plotSCEViolin <- function(inSCE,
@@ -1342,22 +1342,22 @@ plotSCEViolin <- function(inSCE,
                           combinePlot = "none",
                           plotLabels = NULL) {
     combinePlot <- match.arg(combinePlot,c("all", "sample", "none"))
-    
+
     if (!slotName %in% c("rowData", "colData", "assays", "metadata", "reducedDims")) {
         stop("'slotName' must be a slotName within the SingleCellExperiment object.",
              "Please run 'methods::slot' if you are unsure the",
              "specified slotName exists.")
     }
-    
+
     sceSubset <- do.call(slotName, args = list(inSCE))
-    
+
     if (!itemName %in% names(sceSubset)) {
         stop("'itemName' must be an itemName stored within the specified
              slotName of the SingleCellExperiment object.")
     }
-    
+
     itemName.ix <- match(itemName, names(sceSubset))
-    
+
     if (slotName == "assays" && !is.null(feature)) {
         counts <- sceSubset[[itemName.ix]]
         if (feature %in% rownames(counts)) {
@@ -1375,7 +1375,7 @@ plotSCEViolin <- function(inSCE,
         }
         counts <- sceSubset[[itemName.ix]][,dimension]
     }
-    
+
     if (!is.null(groupBy)) {
         if (length(groupBy) > 1) {
             if (length(groupBy) != length(counts)) {
@@ -1390,7 +1390,7 @@ plotSCEViolin <- function(inSCE,
             groupBy <- as.character(SummarizedExperiment::colData(inSCE)[, groupBy])
         }
     }
-    
+
     if (!is.null(sample)) {
         if (length(sample) != ncol(inSCE)) {
             stop("'sample' must be the same length as the number",
@@ -1427,10 +1427,10 @@ plotSCEViolin <- function(inSCE,
             title = title,
             titleSize = titleSize
         )
-        
+
         return(p)
     })
-    
+
     if (length(unique(samples)) > 1) {
         names(plotlist) <- samples
         if(!is.null(combinePlot)){
@@ -1442,7 +1442,7 @@ plotSCEViolin <- function(inSCE,
         plotlist <- plotlist[[1]]
         # plotlist <- unlist(plotlist, recursive=F)
     }
-    
+
     ##Needs to be turned off for Shiny User Interface
     if(combinePlot %in% c("all", "sample") &&
        length(unique(samples)) > 1){
@@ -1832,15 +1832,17 @@ plotSCEDensityAssayData <- function(inSCE,
 #' @title Density plot of any data stored in the SingleCellExperiment object.
 #' @description Visualizes values stored in any slot of a
 #'  SingleCellExperiment object via a densityn plot.
+#' @param inSCE Input \linkS4class{SingleCellExperiment} object with saved
+#' dimension reduction components or a variable with saved results. Required.
 #' @param slotName Desired slot of SingleCellExperiment used for plotting. Possible
 #'  options: "assays", "colData", "metadata", "reducedDims". Required.
 #' @param itemName Desired vector within the slot used for plotting. Required.
 #' @param sample Character vector. Indicates which sample each cell belongs to.
 #' @param feature Desired name of feature stored in assay of SingleCellExperiment
 #'  object. Only used when "assays" slotName is selected. Default NULL.
-#' @param dimension Desired dimension stored in the specified reducedDims. 
+#' @param dimension Desired dimension stored in the specified reducedDims.
 #'  Either an integer which indicates the column or a character vector specifies
-#'  column name. By default, the 1st dimension/column will be used. 
+#'  column name. By default, the 1st dimension/column will be used.
 #'  Only used when "reducedDims" slotName is selected. Default NULL.
 #' @param groupBy Groupings for each numeric value. A user may input a vector
 #' equal length to the number of the samples in the SingleCellExperiment
@@ -1862,8 +1864,8 @@ plotSCEDensityAssayData <- function(inSCE,
 #' @return a ggplot object of the density plot.
 #' @examples
 #' plotSCEDensity(
-#'   inSCE = mouseBrainSubsetSCE, slot = "assays",
-#'   annotation = "counts", feature = "Apoe", groupBy = "sex"
+#'   inSCE = mouseBrainSubsetSCE, slotName = "assays",
+#'   itemName = "counts", feature = "Apoe", groupBy = "sex"
 #' )
 #' @export
 plotSCEDensity <- function(inSCE,
@@ -1884,22 +1886,22 @@ plotSCEDensity <- function(inSCE,
                            combinePlot = "none",
                            plotLabels = NULL) {
     combinePlot <- match.arg(combinePlot,c("all", "sample", "none"))
-    
+
     if (!slotName %in% c("rowData", "colData", "assays", "metadata", "reducedDims")) {
         stop("'slotName' must be a slotName within the SingleCellExperiment object.",
              "Please run 'methods::slotNames' if you are unsure the",
              "specified slot exists.")
     }
-    
+
     sceSubset <- do.call(slotName, args = list(inSCE))
-    
+
     if (!itemName %in% names(sceSubset)) {
         stop("'itemName' must be an itemName stored within the specified
              slot of the SingleCellExperiment object.")
     }
-    
+
     itemName.ix <- match(itemName, names(sceSubset))
-    
+
     if (slotName == "assays" && !is.null(feature)) {
         counts <- sceSubset[[itemName.ix]]
         if (feature %in% rownames(counts)) {
@@ -1917,7 +1919,7 @@ plotSCEDensity <- function(inSCE,
         }
         counts <- sceSubset[[itemName.ix]][,dimension]
     }
-    
+
     if (!is.null(groupBy)) {
         if (length(groupBy) > 1) {
             if (length(groupBy) != length(counts)) {
@@ -1932,7 +1934,7 @@ plotSCEDensity <- function(inSCE,
             groupBy <- as.character(SummarizedExperiment::colData(inSCE)[, groupBy])
         }
     }
-    
+
     if (!is.null(sample)) {
         if (length(sample) != ncol(inSCE)) {
             stop(
@@ -1943,9 +1945,9 @@ plotSCEDensity <- function(inSCE,
     } else {
         sample <- rep(1, ncol(inSCE))
     }
-    
+
     samples <- unique(sample)
-    
+
     plotlist <- lapply(samples, function(x) {
         sampleInd <- which(sample == x)
         countsSub <- counts[sampleInd]
@@ -1954,11 +1956,11 @@ plotSCEDensity <- function(inSCE,
         } else {
             groupbySub <- NULL
         }
-        
+
         if (!is.null(title) && length(samples) > 1) {
             title <- paste(title, x, sep = "_")
         }
-        
+
         p <- .ggDensity(
             value = countsSub,
             groupBy = groupbySub,
@@ -1975,7 +1977,7 @@ plotSCEDensity <- function(inSCE,
     if(!is.null(feature)){
         names(plotlist) <- feature
     }
-    
+
     ##Needs to be turned off for Shiny User Interface
     if(combinePlot %in% c("all", "sample")){
         figNcol = NULL
@@ -1991,7 +1993,7 @@ plotSCEDensity <- function(inSCE,
     }else if(combinePlot == "none" && length(plotlist) == 1){
         plotlist <- plotlist[[1]]
     }
-    
+
     return(plotlist)
 }
 
