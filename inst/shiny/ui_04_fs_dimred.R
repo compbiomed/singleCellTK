@@ -53,7 +53,11 @@ shinyPanelFS_DimRed <- fluidPage(
             verbatimTextOutput(outputId = "hvgOutputFS",
                                placeholder = TRUE)
           ),
-          shinyjqui::jqui_resizable(plotOutput(outputId = "plotFS"))
+          shinyjqui::jqui_resizable(plotOutput(outputId = "plotFS")),
+          
+          selectizeInput(inputId = "scatterFSGenes", label = "Select genes:", multiple = TRUE, choices = c(gene_list)),
+          actionButton(inputId = "scatterFSRun", "Run"),
+          plotlyOutput("scatterFS", height = "600px") 
         )
       )),
       nonLinearWorkflowUI(id = "nlw-fs")

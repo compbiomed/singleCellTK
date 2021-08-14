@@ -3339,6 +3339,13 @@ shinyServer(function(input, output, session) {
                              choices = c("RdYlBu",color_seqdiv))
       }
     }
+    
+    if(input$navbar == "Feature Selection & Dimensionality Reduction"){
+      gene_list <- rownames(vals$counts)
+      updateSelectizeInput(session, "scatterFSGenes",
+                           choices = c(gene_list),
+                           server = TRUE)
+    }
   })
 
   hide_TypeSelect <- reactiveVal("hide")
@@ -5128,6 +5135,38 @@ shinyServer(function(input, output, session) {
       }
     })
   })
+  
+  observeEvent(input$scatterFSRun,{
+    useAssay <- "tophat_counts"
+    xname <- input$scatterFSGenes[1]
+    yname <- input$scatterFSGenes[2]
+    xvec <- expData(vals$counts, useAssay)[xname,]
+    yvec <- expData(vals$counts, useAssay)[yname,]
+    customMat <- matrix(c(xvec, yvec), nrow = length(xvec))
+    colnames(customMat) <- c(xname, yname)
+    rownames(customMat) <- names(xvec)
+    reducedDim(vals$counts, "Custom") <- customMat
+    reducedDimName <- "Custom"
+    colorLow <- "#FFFFFF"
+    colorMid <- "#666666"
+    colorHigh <- "#0000FF"
+    
+    
+    a <- plotSCEDimReduceFeatures(vals$counts, feature = xname,
+                                  reducedDimName = reducedDimName, useAssay = useAssay,
+                                  xlab = xname, ylab = yname, transparency = 1,
+                                  colorLow = colorLow, colorMid = colorMid, colorHigh = colorHigh,
+                                  combinePlot = "none")
+    
+    
+    a <- a + ggplot2::theme_bw()
+    a <- plotly::ggplotly(a)
+    
+    output$scatterFS <- renderPlotly({
+      plotly::subplot(plotlist = a, titleX = TRUE, titleY = TRUE)
+    })
+  })
+  
   #-----------------------------------------------------------------------------
   # Page 5.1: Differential Expression ####
   #-----------------------------------------------------------------------------
