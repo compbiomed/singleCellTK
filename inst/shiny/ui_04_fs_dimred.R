@@ -55,9 +55,14 @@ shinyPanelFS_DimRed <- fluidPage(
           ),
           shinyjqui::jqui_resizable(plotOutput(outputId = "plotFS")),
           
-          selectizeInput(inputId = "scatterFSGenes", label = "Select genes:", multiple = TRUE, choices = c(gene_list)),
+          selectizeInput(
+            inputId = "scatterFSGenes",
+            label = "Select genes:",
+            multiple = TRUE,
+            choices = c(gene_list)
+          ),
           actionButton(inputId = "scatterFSRun", "Run"),
-          plotlyOutput("scatterFS", height = "600px") 
+          plotlyOutput("scatterFS", height = "600px")
         )
       )),
       nonLinearWorkflowUI(id = "nlw-fs")
@@ -254,13 +259,20 @@ shinyPanelFS_DimRed <- fluidPage(
                column(8,
                       fluidRow(column(
                         12,
-                        hidden(
-                          tags$div(
-                            class = "dimRedTSNEUMAP_plotTabset_class",
-                            tabsetPanel(id = "dimRedTSNEUMAP_plotTabset",
-                                        type = "tabs")
-                          )
-                        )
+                        tags$div(class = "dimRedTSNEUMAP_plotTabset_class",
+                                 tabPanel(
+                                   title = "Plot",
+                                   fluidRow(
+                                     selectizeInput(
+                                       inputId = "selectRedDimPlot_tsneUmap",
+                                       label = "Select reducedDim:",
+                                       choices = NULL
+                                     ),
+                                     align = "center"
+                                   ),
+                                   panel(heading = "Plot",
+                                         plotlyOutput(outputId = "plotDimRed_tsneUmap"))
+                                 ))
                       )))
              ))
   )

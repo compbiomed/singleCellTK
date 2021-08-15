@@ -2842,32 +2842,15 @@ shinyServer(function(input, output, session) {
         }
       })
     }
-
-    #removeTab(inputId = "dimRedTSNEUMAP_plotTabset", target = "tSNE Plot")
-    removeTab(inputId = "dimRedTSNEUMAP_plotTabset", target = "UMAP Plot")
-
-    shinyjs::show(selector = ".dimRedTSNEUMAP_plotTabset_class")
-
-    if(input$dimRedPlotMethod_tsneUmap == "seuratTSNE"
-       || input$dimRedPlotMethod_tsneUmap == "rTSNE"){
-      appendTab(inputId = "dimRedTSNEUMAP_plotTabset", tabPanel(title = dimrednamesave,
-                                                                panel(heading = dimrednamesave,
-                                                                      plotlyOutput(outputId = "plotDimRed_tsneUmap")
-                                                                )
-      ), select = TRUE)
-    }
-    else if(input$dimRedPlotMethod_tsneUmap == "seuratUMAP"
-            || input$dimRedPlotMethod_tsneUmap == "uwotUMAP"){
-      appendTab(inputId = "dimRedTSNEUMAP_plotTabset", tabPanel(title = "UMAP Plot",
-                                                                panel(heading = "UMAP Plot",
-                                                                      plotlyOutput(outputId = "plotDimRed_tsneUmap")
-                                                                )
-      ), select = TRUE)
-    }
-
+    
+    redDimName <- gsub(" ", "_", input$dimRedNameInput_tsneUmap)
+    
+    updateSelectizeInput(session, "selectRedDimPlot_tsneUmap",
+                         choices = c(reducedDimNames(vals$counts)),
+                         selected = redDimName,
+                         server = TRUE)
+    
     withProgress(message = "Plotting tSNE/UMAP", max = 1, value = 1, {
-      redDimName <- gsub(" ", "_", input$dimRedNameInput_tsneUmap)
-      #if(vals$runDimred$dimRedAssaySelect_tsneUmap %in% assayNames(vals$counts)){
         output$plotDimRed_tsneUmap <- renderPlotly({
           plotly::ggplotly(plotDimRed(
             inSCE = vals$counts,
@@ -2876,6 +2859,18 @@ shinyServer(function(input, output, session) {
             yAxisLabel = paste0(input$dimRedPlotMethod_tsneUmap,"_2")
           ))
         })
+    })
+  })
+  
+  observeEvent(input$selectRedDimPlot_tsneUmap,{
+    req(vals$counts)
+    output$plotDimRed_tsneUmap <- renderPlotly({
+      plotly::ggplotly(plotDimRed(
+        inSCE = vals$counts,
+        useReduction = input$selectRedDimPlot_tsneUmap,
+        xAxisLabel = paste0(input$dimRedPlotMethod_tsneUmap,"_1"),
+        yAxisLabel = paste0(input$dimRedPlotMethod_tsneUmap,"_2")
+      ))
     })
   })
 
