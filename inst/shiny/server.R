@@ -2832,7 +2832,8 @@ shinyServer(function(input, output, session) {
                 nNeighbors = input$neighborsUMAP,
                 nIterations = input$iterUMAP,
                 minDist = input$mindistUMAP,
-                alpha = input$alphaUMAP
+                alpha = input$alphaUMAP,
+                logNorm = input$logNormUMAP
               )
             }
             updateReddimInputs()

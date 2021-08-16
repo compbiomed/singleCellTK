@@ -121,6 +121,9 @@ runDimensionalityReduction <- function(inSCE,
   }
   if(method == "uwotUMAP"){
     method <- "getUMAP"
+    if(!is.null(externalReduction)){
+      params$pca <- FALSE
+    }
   }
   if(method == "seuratUMAP"){
     method <- "seuratRunUMAP"
