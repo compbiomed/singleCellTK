@@ -14,6 +14,7 @@ seuratRunUMAP(
   minDist = 0.3,
   nNeighbors = 30L,
   spread = 1,
+  externalReduction = NULL,
   verbose = TRUE
 )
 }
@@ -38,6 +39,9 @@ UMAP call. See \link[Seurat]{RunUMAP} for more information. Default
 
 \item{spread}{Sets the \code{"spread"} parameter to the underlying UMAP call.
 See \link[Seurat]{RunUMAP} for more information. Default \code{1}.}
+
+\item{externalReduction}{Pass DimReduc object if PCA/ICA computed through
+other libraries. Default \code{NULL}.}
 
 \item{verbose}{Logical value indicating if informative messages should
 be displayed. Default is \code{TRUE}.}

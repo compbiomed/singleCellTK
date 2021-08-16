@@ -65,7 +65,7 @@ getUMAP <- function(inSCE, useAssay = "counts", useAltExp = NULL,
            "specified altExp. ")
     }
   } else {
-    if (!(useAssay %in% SummarizedExperiment::assayNames(inSCE))) {
+    if (!(useAssay %in% expDataNames(inSCE))) {
       stop("Specified assay '", useAssay, "' not found. ")
     }
     sce <- inSCE
@@ -96,7 +96,7 @@ getUMAP <- function(inSCE, useAssay = "counts", useAltExp = NULL,
       useAssayTemp = "ScaterLogNormCounts"
     }
 
-    matColData <- SummarizedExperiment::assay(sceSample, useAssayTemp)
+    matColData <- expData(sceSample, useAssayTemp)
     matColData <- as.matrix(matColData)
 
     if (isTRUE(pca)) {
