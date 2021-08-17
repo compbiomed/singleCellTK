@@ -300,7 +300,8 @@
     pK = pkOptimal,
     nExp = nExpPoi,
     reuse.pANN = FALSE,
-    sct = FALSE
+    sct = FALSE,
+    verbose = FALSE
   )
   names(seurat@meta.data)[6] <- "doubletFinderAnnScore"
   names(seurat@meta.data)[7] <- "doubletFinderLabel"
@@ -554,7 +555,7 @@ runDoubletFinder <- function(inSCE,
   }
 }
 
-.doubletFinder_v3 <- function(seu, PCs, pN = 0.25, pK, nExp, reuse.pANN = FALSE, sct = FALSE) {
+.doubletFinder_v3 <- function(seu, PCs, pN = 0.25, pK, nExp, reuse.pANN = FALSE, sct = FALSE, verbose = FALSE) {
 
   ## Generate new list of doublet classificatons from existing pANN vector to save time
   if (reuse.pANN != FALSE ) {
@@ -571,7 +572,9 @@ runDoubletFinder <- function(inSCE,
     data <- seu@assays$RNA@counts[, real.cells]
     n_real.cells <- length(real.cells)
     n_doublets <- round(n_real.cells/(1 - pN) - n_real.cells)
-    print(paste("Creating",n_doublets,"artificial doublets...",sep=" "))
+    if (verbose) {
+      print(paste("Creating",n_doublets,"artificial doublets...",sep=" "))
+    }
     real.cells1 <- sample(real.cells, n_doublets, replace = TRUE)
     real.cells2 <- sample(real.cells, n_doublets, replace = TRUE)
     doublets <- (data[, real.cells1] + data[, real.cells2])/2

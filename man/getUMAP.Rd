@@ -7,8 +7,9 @@ dimension reduction.}
 \usage{
 getUMAP(
   inSCE,
-  useAssay = "counts",
+  useAssay = NULL,
   useAltExp = NULL,
+  useReducedDim = NULL,
   sample = NULL,
   reducedDimName = "UMAP",
   logNorm = TRUE,
@@ -30,6 +31,9 @@ specified, \code{useAssay} has to exist in
 
 \item{useAltExp}{The subset to use for UMAP computation, usually for the
 selected.variable features. Default \code{NULL}.}
+
+\item{useReducedDim}{The low dimension representation to use for UMAP
+computation. Default \code{NULL}.}
 
 \item{sample}{Character vector. Indicates which sample each cell belongs to.
 If given a single character, will take the annotation from
