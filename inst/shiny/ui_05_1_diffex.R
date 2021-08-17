@@ -193,7 +193,7 @@ shinyPanelDiffex <- fluidPage(
                 withBusyIndicatorUI(actionButton('dePlotHM', 'Plot'))
               ),
               mainPanel(
-                plotOutput("deHeatmap", height = "600px")
+                shinyjqui::jqui_resizable(plotOutput("deHeatmap"))
               )
             )
           )
@@ -234,7 +234,7 @@ shinyPanelDiffex <- fluidPage(
             )
           ),
           textOutput("deSanityWarnViolin"),
-          plotOutput("deViolinPlot", height = "800px")
+          shinyjqui::jqui_resizable(plotOutput("deViolinPlot"))
         ),
         tabPanel(
           "Linear Model",
@@ -269,10 +269,11 @@ shinyPanelDiffex <- fluidPage(
             ),
           ),
           textOutput("deSanityWarnReg"),
-          plotOutput("deRegPlot", height = "800px")
+          shinyjqui::jqui_resizable(plotOutput("deRegPlot"))
         )
       )
     )
-  )
+  ),
+  nonLinearWorkflowUI(id = "nlw-de")
 )
 

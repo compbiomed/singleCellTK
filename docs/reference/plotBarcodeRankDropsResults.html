@@ -38,6 +38,8 @@
 
 
 
+  <link href="../extra.css" rel="stylesheet">
+  <script src="../extra.js"></script>
 
 <meta property="og:title" content="Plots for runEmptyDrops outputs. — plotBarcodeRankDropsResults" />
 <meta property="og:description" content="A wrapper function which visualizes outputs from the
@@ -297,7 +299,7 @@
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/compbiomed/singleCellTK">
-    <span class="fas fa-github"></span>
+    <span class="fa fa-github"></span>
      
   </a>
 </li>
@@ -384,7 +386,7 @@ when TRUE. Default TRUE.</p></td>
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>scExample</span>, package<span class='op'>=</span><span class='st'>"singleCellTK"</span><span class='op'>)</span>
 <span class='va'>sce</span> <span class='op'>&lt;-</span> <span class='fu'><a href='runBarcodeRankDrops.html'>runBarcodeRankDrops</a></span><span class='op'>(</span>inSCE<span class='op'>=</span><span class='va'>sce</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'>Thu May 27 15:38:51 2021 ... Running 'barcodeRanks'</span></div><div class='input'><span class='fu'>plotBarcodeRankDropsResults</span><span class='op'>(</span>inSCE<span class='op'>=</span><span class='va'>sce</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'>Fri Jul 02 00:43:39 2021 ... Running 'barcodeRanks'</span></div><div class='input'><span class='fu'>plotBarcodeRankDropsResults</span><span class='op'>(</span>inSCE<span class='op'>=</span><span class='va'>sce</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; $scatterBarcodeRank</div><div class='output co'>#&gt; <span class='warning'>Warning: Transformation introduced infinite values in continuous y-axis</span></div><div class='img'><img src='plotBarcodeRankDropsResults-1.png' alt='' width='700' height='433' /></div><div class='output co'>#&gt; </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
