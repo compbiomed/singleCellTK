@@ -1,3 +1,12 @@
+# Check if CRAN packages are installed, otherwise prompt user to install them.
+requiredPackages <- c("shinyjqui", "shinyWidgets", "shinythemes", "shinyFiles")
+if(!all(requiredPackages %in% installed.packages())){
+  missingPackages <- requiredPackages[which(requiredPackages %in% installed.packages() == FALSE)]
+  message("Installing missing packages: ")
+  message(paste0(missingPackages, collapse = " "))
+  install.packages(missingPackages)
+}
+
 library(shiny)
 library(shinyjs)
 library(shinyFiles)
@@ -253,7 +262,13 @@ shinyUI(
       #   )
       # ),
       useShinyjs(),
-      extendShinyjs(text = jsCode, functions = c("enableTabs", "disableTabs"))
+      extendShinyjs(text = jsCode, functions = c("enableTabs", "disableTabs")),
+      
+      # Following lines of code add a loading spinner when toolkit launches and
+      # loads several ui elements/plots etc.
+      includeCSS("busy-load-piccard21.css"),
+      tags$script(src = "initialLoading.js"),
+      tags$script(src = "busy-load-piccard21.js")
     )
 )
 

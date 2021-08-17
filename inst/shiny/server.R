@@ -19,10 +19,7 @@ source("qc_help_pages/ui_scDblFinder_help.R", local = TRUE) # creates several sm
 # Define server logic required to draw a histogram
 shinyServer(function(input, output, session) {
 
-  #call modules server part
-  callModule(module = nonLinearWorkflow, id = "id_1", parent = session)
-
-  #PushBar setup
+  # PushBar setup
   # setup_pushbar(blur = FALSE, overlay = FALSE)
   
   # library(fs)
@@ -219,7 +216,7 @@ shinyServer(function(input, output, session) {
       )
     })
   }
-  
+
   observeEvent(input$hvgMethodFS,{
     req(vals$counts)
     updateAssayInputs()
@@ -261,7 +258,7 @@ shinyServer(function(input, output, session) {
       updateSelectInputTag(session, "assaySelectFS_Norm", recommended = c("raw"))
     }
     else{
-      updateSelectInputTag(session, "assaySelectFS_Norm", recommended = c("transformed", "normalized", "scaled")) 
+      updateSelectInputTag(session, "assaySelectFS_Norm", recommended = c("transformed", "normalized", "scaled"))
     }
     updateSelectInputTag(session, "filterAssaySelect", choices = currassays)
     updateSelectInputTag(session, "qcAssaySelect", recommended = "raw")
@@ -940,6 +937,7 @@ shinyServer(function(input, output, session) {
 
       updateSeuratUIFromRDS(vals$counts)
     })
+    callModule(module = nonLinearWorkflow, id = "nlw-import", parent = session, qcf = TRUE)
   })
 
   updateSeuratUIFromRDS <- function(inSCE){
@@ -953,20 +951,20 @@ shinyServer(function(input, output, session) {
         size = "s",
         icon = icon("arrow-right")
       ), id = "goSeuratNotification")
-      
+
       #Normalize Data
       shinyjs::enable(selector = "div[value='Normalize Data']")
       updateCollapse(session = session, "SeuratUI", style = list("Normalize Data" = "success"))
       normalizeParams <- metadata(vals$counts)$seurat$sctk$report$normalizeParams
       updateSelectInput(session, "normalization_method", selected = normalizeParams$normalizationMethod)
       updateTextInput(session, "scale_factor", value = normalizeParams$scaleFactor)
-      
+
       #Scale Data
       shinyjs::enable(selector = "div[value='Scale Data']")
       updateCollapse(session = session, "SeuratUI", style = list("Scale Data" = "success"))
       scaleParams <- metadata(vals$counts)$seurat$sctk$report$scaleParams
       updateSelectInput(session, "model.use", selected = scaleParams$model)
-      
+
       #HVG
       hvgParams <- metadata(vals$counts)$seurat$sctk$report$hvgParams
       output$plot_hvg <- renderPlotly({
@@ -977,7 +975,7 @@ shinyServer(function(input, output, session) {
       updateSelectInput(session, "hvg_method", selected = hvgParams$hvgMethod)
       updateTextInput(session, "hvg_no_features", value = hvgParams$hvgNumber)
       updateTextInput(session, "hvg_no_features_view", value = hvgParams$labelPoints)
-      
+
       #DR
       pcaParams <- metadata(vals$counts)$seurat$sctk$report$pcaParams
       shinyjs::enable(selector = "div[value='Dimensionality Reduction']")
@@ -1060,15 +1058,15 @@ shinyServer(function(input, output, session) {
           # output$plot_heatmap_pca <- renderPlot({
           #   metadata(inSCE)$seurat$plots$heatmap
           # })
-          
+
           updateTextInput(session, "pca_no_components", value = pcaParams$nPCs)
           updateMaterialSwitch(session, "pca_compute_jackstraw", value = TRUE)
           updateNumericInput(session, "pca_significant_pc_counter", value = pcaParams$significant_PC)
-          
+
           pcHeatmapParams <- metadata(inSCE)$seurat$plots$heatmap
           pcHeatmapParams$inSCE <- vals$counts
           output$plot_heatmap_pca <- renderPlot({
-            do.call("seuratComputeHeatmap", pcHeatmapParams)  
+            do.call("seuratComputeHeatmap", pcHeatmapParams)
           })
 
           updatePickerInput(session = session, inputId = "picker_dimheatmap_components_pca", choices = singleCellTK:::.getComponentNames(vals$counts@metadata$seurat$count_pc, "PC"))
@@ -1141,10 +1139,10 @@ shinyServer(function(input, output, session) {
           })
 
           shinyjs::show(selector = ".seurat_clustering_plots")
-          
+
           updateNumericInput(session, "resolution_clustering", value = clusterParams$resolution)
-          
-      
+
+
       #Find Markers
           shinyjs::enable(selector = "div[value='Find Markers']")
           updateCollapse(session = session, "SeuratUI", style = list("Find Markers" = "success"))
@@ -1208,13 +1206,13 @@ shinyServer(function(input, output, session) {
           showTab(inputId = "seuratFindMarkerPlotTabset", target = "Joint Heatmap Plot")
           updateTabsetPanel(session = session, inputId = "seuratFindMarkerPlotTabset", selected = "Ridge Plot")
           shinyjs::show(selector = ".seurat_findmarker_plots")
-          
+
           groupHeatmapParams <- metadata(vals$counts)$seurat$plots$groupHeatmapParams
           groupHeatmapParams$inSCE <- vals$counts
           output$findMarkerHeatmapPlotFull <- renderPlot({
             do.call("seuratGenePlot", groupHeatmapParams)
           })
-          
+
           output$findMarkerHeatmapPlotFullTopText <- renderUI({
             h6(paste("Heatmap plotted across all groups against genes with adjusted p-values <", input$seuratFindMarkerPValAdjInput))
           })
@@ -1611,9 +1609,12 @@ shinyServer(function(input, output, session) {
                                  paramsList = paramsList)
         updateColDataNames()
         # redDimList <- strsplit(reducedDimNames(vals$counts), " ")
-        # run getUMAP
-        message(paste0(date(), " ... Running 'UMAP'"))
-        vals$counts <- getUMAP(inSCE = vals$counts,
+        # run getUMAP if doublet/ambient RNA detection conducted
+        if(length(intersect(c("scDblFinder", "cxds", "bcds",
+             "cxds_bcds_hybrid", "decontX",
+             "scrublet", "doubletFinder"), algoList))){
+          message(paste0(date(), " ... Running 'UMAP'"))
+          vals$counts <- getUMAP(inSCE = vals$counts,
                                  sample = qcSample,
                                  useAssay = input$qcAssaySelect,
                                  nNeighbors = input$UnNeighbors,
@@ -1623,8 +1624,12 @@ shinyServer(function(input, output, session) {
                                  spread = input$Uspread,
                                  initialDims = input$UinitialDims,
                                  reducedDimName = input$QCUMAPName
-        )
+                                 )
+        }
         updateQCPlots()
+        
+        # Show downstream analysis options
+        callModule(module = nonLinearWorkflow, id = "nlw-qcf", parent = session, nbc = TRUE, cw = TRUE, cv = TRUE)
       }
     })
 
@@ -1854,6 +1859,9 @@ shinyServer(function(input, output, session) {
         }
       }
       shinyjs::show(id="filteringSummary")
+      
+      # Show downstream analysis options
+      shinyjs::show(selector = ".nlw-qcf")
     })
   })
 
@@ -2296,6 +2304,9 @@ shinyServer(function(input, output, session) {
         )
 
         vals$counts <- do.call("runNormalization", args)
+        
+        # Show downstream analysis options
+        callModule(module = nonLinearWorkflow, id = "nlw-nbc", parent = session, dr = TRUE, fs = TRUE)
       }
     })
   })
@@ -2342,6 +2353,9 @@ shinyServer(function(input, output, session) {
         )
 
         vals$counts <- do.call("runNormalization", args)
+        
+        # Show downstream analysis options
+        callModule(module = nonLinearWorkflow, id = "nlw-nbc", parent = session, dr = TRUE, fs = TRUE)
       }
     })
   })
@@ -2454,7 +2468,7 @@ shinyServer(function(input, output, session) {
     if (!is.null(input$picker_dimheatmap_components_dimRed)) {
       if(vals$runDimred$dimRedAssaySelect %in% assayNames(vals$counts)){
         output$plot_heatmap_dimRed <- renderPlot({
-          plotHeatmapMulti(
+          singleCellTK:::.plotHeatmapMulti(
             plots = vals$counts@metadata$seurat$heatmap_dimRed,
             components = input$picker_dimheatmap_components_dimRed,
             nCol = input$slider_dimheatmap_dimRed)
@@ -2462,7 +2476,7 @@ shinyServer(function(input, output, session) {
       }
       else if(vals$runDimred$dimRedAssaySelect %in% expDataNames(vals$counts)){
         output$plot_heatmap_dimRed <- renderPlot({
-          plotHeatmapMulti(
+          singleCellTK:::.plotHeatmapMulti(
             plots = altExps(vals$counts)[[vals$runDimred$dimRedAssaySelect]]@metadata$seurat$heatmap_dimRed,
             components = input$picker_dimheatmap_components_dimRed,
             nCol = input$slider_dimheatmap_dimRed)
@@ -2491,6 +2505,8 @@ shinyServer(function(input, output, session) {
               nComponents = input$dimRedNumberDims
             )
             updateReddimInputs()
+            # Show downstream analysis options
+            callModule(module = nonLinearWorkflow, id = "nlw-dr", parent = session, cl = TRUE, cv = TRUE)
           }
         }
       })
@@ -2629,7 +2645,7 @@ shinyServer(function(input, output, session) {
               reduction = "pca"
             )
             output$plot_heatmap_dimRed <- renderPlot({
-              plotHeatmapMulti(vals$counts@metadata$seurat$heatmap_dimRed)
+              singleCellTK:::.plotHeatmapMulti(vals$counts@metadata$seurat$heatmap_dimRed)
             })
           }
           else if(vals$runDimred$dimRedAssaySelect %in% expDataNames(vals$counts)){
@@ -2641,7 +2657,7 @@ shinyServer(function(input, output, session) {
               reduction = "pca"
             )
             output$plot_heatmap_dimRed <- renderPlot({
-              plotHeatmapMulti(altExps(vals$counts)[[vals$runDimred$dimRedAssaySelect]]@metadata$seurat$heatmap_dimRed)
+              singleCellTK:::.plotHeatmapMulti(altExps(vals$counts)[[vals$runDimred$dimRedAssaySelect]]@metadata$seurat$heatmap_dimRed)
             })
           }
         })
@@ -2657,7 +2673,7 @@ shinyServer(function(input, output, session) {
               reduction = "ica"
             )
             output$plot_heatmap_dimRed <- renderPlot({
-              plotHeatmapMulti(vals$counts@metadata$seurat$heatmap_dimRed)
+              singleCellTK:::.plotHeatmapMulti(vals$counts@metadata$seurat$heatmap_dimRed)
             })
           }
           else if(vals$runDimred$dimRedAssaySelect %in% expDataNames(vals$counts)){
@@ -2669,7 +2685,7 @@ shinyServer(function(input, output, session) {
               reduction = "ica"
             )
             output$plot_heatmap_dimRed <- renderPlot({
-              plotHeatmapMulti(altExps(vals$counts)[[vals$runDimred$dimRedAssaySelect]]@metadata$seurat$heatmap_dimRed)
+              singleCellTK:::.plotHeatmapMulti(altExps(vals$counts)[[vals$runDimred$dimRedAssaySelect]]@metadata$seurat$heatmap_dimRed)
             })
           }
         })
@@ -2685,7 +2701,7 @@ shinyServer(function(input, output, session) {
               externalReduction = new_pca
             )
             output$plot_heatmap_dimRed <- renderPlot({
-              plotHeatmapMulti(vals$counts@metadata$seurat$heatmap_dimRed)
+              singleCellTK:::.plotHeatmapMulti(vals$counts@metadata$seurat$heatmap_dimRed)
             })
           }
           else if(input$dimRedAssaySelect %in% expDataNames(vals$counts)){
@@ -2697,7 +2713,7 @@ shinyServer(function(input, output, session) {
               externalReduction = new_pca
             )
             output$plot_heatmap_dimRed <- renderPlot({
-              plotHeatmapMulti(altExps(vals$counts)[[vals$runDimred$dimRedAssaySelect]]@metadata$seurat$heatmap_dimRed)
+              singleCellTK:::.plotHeatmapMulti(altExps(vals$counts)[[vals$runDimred$dimRedAssaySelect]]@metadata$seurat$heatmap_dimRed)
             })
           }
         })
@@ -2715,7 +2731,7 @@ shinyServer(function(input, output, session) {
            && input$dimRedPlotMethod != "seuratICA"){
           appendTab(inputId = "dimRedPCAICA_plotTabset", tabPanel(title = "JackStraw Plot",
                                                                   panel(heading = "JackStraw Plot",
-                                                                        plotOutput(outputId = "plot_jackstraw_dimRed")
+                                                                        shinyjqui::jqui_resizable(plotOutput(outputId = "plot_jackstraw_dimRed"))
                                                                   )
           ))
 
@@ -2826,6 +2842,8 @@ shinyServer(function(input, output, session) {
               )
             }
             updateReddimInputs()
+            # Show downstream analysis options
+            callModule(module = nonLinearWorkflow, id = "nlw-dr", parent = session, cl = TRUE, cv = TRUE)
           }
         }
       })
@@ -3032,6 +3050,8 @@ shinyServer(function(input, output, session) {
         updateColDataNames()
         clustResults$names <- c(clustResults$names, saveClusterName)
         updateSelectInput(session, "clustVisRes", choices = clustResults$names)
+        # Show downstream analysis options
+        callModule(module = nonLinearWorkflow, id = "nlw-cl", parent = session, de = TRUE, pa = TRUE, cv = TRUE)
       })
     }
   })
@@ -5050,7 +5070,7 @@ shinyServer(function(input, output, session) {
           if (!is.null(vals$vfplot)) {
             vals$vfplot
           }
-        }, width = 400, height = 400)
+        })
         output$hvgOutputFS <- renderText({HVGs})
       } else {
         shinyalert::shinyalert(
@@ -5100,19 +5120,11 @@ shinyServer(function(input, output, session) {
           #make sure no NA's are introduced in HVGs
           HVGs <- stats::na.omit(HVGs)
           tempAssay <- expData(vals$counts, vals$hvgCalculated$assayName)[HVGs,]
-          #vals$counts <- subsetSCERows(vals$counts,
-          #                             which(rownames(vals$counts) %in% HVGs),
-          #                             returnAsAltExp = TRUE,
-          #                             altExpName = input$hvgAltExpName)
-          #just keep the subset assay in altexp only
-          #tempAssay <- assays(altExp(vals$counts, input$hvgAltExpName))[[paste0(input$hvgAltExpName, vals$hvgCalculated$assayName)]]
-          #altAssaysToRemove <- assayNames(altExp(vals$counts, input$hvgAltExpName))
           expData(vals$counts, input$hvgAltExpName, tag = "hvg", altExp = TRUE) <- tempAssay
-          #for(i in seq(length(altAssaysToRemove))){
-          #  assays(altExp(vals$counts, input$hvgAltExpName), withDimnames = FALSE)[[altAssaysToRemove[i]]] <- NULL
-          #}
           updateAssayInputs()
         }
+        # Show downstream analysis options
+        callModule(module = nonLinearWorkflow, id = "nlw-fs", parent = session, dr = TRUE, cl = TRUE)
       } else {
         shinyalert::shinyalert(
           "Error",
@@ -5488,6 +5500,8 @@ shinyServer(function(input, output, session) {
       } else {
         runDEfromShiny(FALSE)
       }
+      # Show downstream analysis options
+      callModule(module = nonLinearWorkflow, id = "nlw-de", parent = session, pa = TRUE, cv = TRUE)
     }
   })
 
@@ -6833,7 +6847,8 @@ shinyServer(function(input, output, session) {
      shinyjs::show(selector = ".seurat_findmarker_plots")
 
     #output the heatmap
-     top10markers <- df %>% group_by(cluster) %>% top_n(n = 10, wt = avg_logFC)
+     colnames(df)[which(startsWith(colnames(df), "avg") == TRUE)] <- "avg_log2FC"  
+     top10markers <- df %>% group_by(cluster) %>% top_n(n = 10, wt = avg_log2FC)
      output$findMarkerHeatmapPlotFull <- renderPlot({
        DoHeatmap(seuratObject, features = top10markers$gene.id)
      })
@@ -6844,9 +6859,8 @@ shinyServer(function(input, output, session) {
 
     showNotification("Find Markers Complete")
 
-    #enable downstream analysis
-    shinyjs::show(
-      selector = "div[value='Downstream Analysis']")
+    # Show downstream analysis options
+    callModule(module = nonLinearWorkflow, id = "nlw-seurat", parent = session, de = TRUE, pa = TRUE)
 
     updateCollapse(session = session, "SeuratUI", style = list("Find Markers" = "success"))
 
@@ -6921,7 +6935,7 @@ shinyServer(function(input, output, session) {
     # )
 
   })
-  
+
   observeEvent(input$findMarkerHeatmapPlotFullNumericRun,{
     ##df <- metadata(vals$counts)$seuratMarkers[which(metadata(vals$counts)$seuratMarkers$p_val_adj < 0.05, arr.ind = TRUE),]
     df <- metadata(vals$counts)$seuratMarkers
@@ -6942,7 +6956,8 @@ shinyServer(function(input, output, session) {
       )
       Idents(seuratObject, cells = cells[[i]]) <- groups[i]
     }
-    topMarkers <- data.frame(df %>% group_by(cluster) %>% top_n(input$findMarkerHeatmapPlotFullNumeric, avg_logFC))
+    colnames(df)[which(startsWith(colnames(df), "avg") == TRUE)] <- "avg_log2FC"  
+    topMarkers <- data.frame(df %>% group_by(cluster) %>% top_n(input$findMarkerHeatmapPlotFullNumeric, avg_log2FC))
     if(nrow(topMarkers) > (input$findMarkerHeatmapPlotFullNumeric * length(groups))){
       topMarkers <- data.frame(topMarkers %>% group_by(cluster) %>% top_n(input$findMarkerHeatmapPlotFullNumeric, -p_val_adj))
     }
@@ -8178,3 +8193,4 @@ shinyServer(function(input, output, session) {
   #   pushbar_open(id = "myPushbar")
   # })  
 })
+
