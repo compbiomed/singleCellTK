@@ -7,6 +7,8 @@
 #' \code{assays(altExp(inSCE, useAltExp))}. Default \code{"counts"}.
 #' @param useAltExp The subset to use for UMAP computation, usually for the
 #' selected.variable features. Default \code{NULL}.
+#' @param useReducedDim The low dimension representation to use for UMAP
+#' computation. Default \code{NULL}.
 #' @param sample Character vector. Indicates which sample each cell belongs to.
 #' If given a single character, will take the annotation from
 #' \code{\link{colData}}. Default \code{NULL}.
@@ -47,28 +49,44 @@
 #'                     nIterations = 200, spread = 1, pca = TRUE,
 #'                     initialDims = 50)
 #' reducedDims(umap_res)
-getUMAP <- function(inSCE, useAssay = "counts", useAltExp = NULL,
-                    sample = NULL, reducedDimName = "UMAP", logNorm = TRUE,
-                    nNeighbors = 30, nIterations = 200, alpha = 1,
-                    minDist = 0.01, spread = 1, pca = TRUE,
-                    initialDims = 50) {
+getUMAP <- function(inSCE, useAssay = NULL, useAltExp = NULL,
+                    useReducedDim = NULL, sample = NULL,
+                    reducedDimName = "UMAP", logNorm = TRUE, nNeighbors = 30,
+                    nIterations = 200, alpha = 1, minDist = 0.01, spread = 1,
+                    pca = TRUE, initialDims = 50) {
   if (!inherits(inSCE, "SingleCellExperiment")){
     stop("Please use a SingleCellExperiment object")
   }
-  if (!is.null(useAltExp)) {
-    if (!(useAltExp %in% SingleCellExperiment::altExpNames(inSCE))) {
-      stop("Specified altExp '", useAltExp, "' not found. ")
-    }
-    sce <- SingleCellExperiment::altExp(inSCE, useAltExp)
-    if (!(useAssay %in% SummarizedExperiment::assayNames(sce))) {
-      stop("Specified assay '", useAssay, "' not found in the ",
-           "specified altExp. ")
-    }
+
+  if (is.null(useAssay) && is.null(useReducedDim)) {
+    stop("`useAssay` and `useReducedDim` cannot be NULL at the same time.")
+  } else if (!is.null(useAssay) && !is.null(useReducedDim)) {
+    stop("`useAssay` and `useReducedDim` cannot be specified at the same time.")
   } else {
-    if (!(useAssay %in% SummarizedExperiment::assayNames(inSCE))) {
-      stop("Specified assay '", useAssay, "' not found. ")
+    if (!is.null(useReducedDim)) {
+      if (!useReducedDim %in% SingleCellExperiment::reducedDimNames(inSCE)) {
+        stop("Specified `useReducedDim` not found.")
+      }
+      if (!is.null(useAltExp)) {
+        warning("`useAltExp` will be ignored when using `useReducedDim`.")
+      }
+      sce <- inSCE
+    } else {
+      if (!is.null(useAltExp)) {
+        if (!useAltExp %in% SingleCellExperiment::altExpNames(inSCE)) {
+          stop("Specified `useAltExp` not found.")
+        }
+        sce <- SingleCellExperiment::altExp(inSCE, useAltExp)
+        if (!useAssay %in% SummarizedExperiment::assayNames(sce)) {
+          stop("Specified `useAssay` not found in `useAltExp`.")
+        }
+      } else {
+        if (!useAssay %in% SummarizedExperiment::assayNames(inSCE)) {
+          stop("Specified `useAssay` not found.")
+        }
+        sce <- inSCE
+      }
     }
-    sce <- inSCE
   }
 
   if(!is.null(sample)) {
@@ -88,15 +106,20 @@ getUMAP <- function(inSCE, useAssay = "counts", useAltExp = NULL,
   samples <- unique(sample)
   umapDims = matrix(nrow = ncol(inSCE), ncol = 2)
   for (i in seq_along(samples)){
-    useAssayTemp <- useAssay
     sceSampleInd <- sample == samples[i]
     sceSample <- sce[, sceSampleInd]
-    if(logNorm){
-      sceSample <- scaterlogNormCounts(sceSample, useAssay = useAssay)
-      useAssayTemp = "ScaterLogNormCounts"
+    if (!is.null(useAssay)) {
+      useAssayTemp <- useAssay
+      if(logNorm){
+        sceSample <- scaterlogNormCounts(sceSample, useAssay = useAssay)
+        useAssayTemp = "ScaterLogNormCounts"
+      }
+
+      matColData <- SummarizedExperiment::assay(sceSample, useAssayTemp)
+    } else {
+      matColData <- t(SingleCellExperiment::reducedDim(sce, useReducedDim))
     }
 
-    matColData <- SummarizedExperiment::assay(sceSample, useAssayTemp)
     matColData <- as.matrix(matColData)
 
     if (isTRUE(pca)) {
