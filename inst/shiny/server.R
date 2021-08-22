@@ -2703,7 +2703,14 @@ shinyServer(function(input, output, session) {
     appendTab(inputId = "dimRedPCAICA_plotTabset", tabPanel(title = "Component Plot",
                                                             panel(
                                                               #heading = "Component Plot",
-                                                                  plotlyOutput(outputId = "plotDimRed_pca")
+                                                                  plotlyOutput(outputId = "plotDimRed_pca"),
+                                                                  selectizeInput(
+                                                                    inputId = "plotDimRed_pca_selectRedDim",
+                                                                    label = "Select reducedDim:",
+                                                                    choices = reducedDimNames(vals$counts)
+                                                                  ),
+                                                                  numericInput(inputId = "plotDimRed_pca_dimX", label = "X:", value = 1),
+                                                                  numericInput(inputId = "plotDimRed_pca_dimY", label = "Y:", value = 2)
                                                             )
     ))
 
@@ -2774,6 +2781,21 @@ shinyServer(function(input, output, session) {
             })
           }
         }
+  })
+  
+  observeEvent(input$plotDimRed_pca_selectRedDim,{
+    req(vals$counts)
+      output$plotDimRed_pca <- renderPlotly({
+        plotly::ggplotly(
+          plotDimRed(
+            inSCE = vals$counts,
+            useReduction = input$plotDimRed_pca_selectRedDim,
+            xDim = input$plotDimRed_pca_dimX,
+            yDim = input$plotDimRed_pca_dimY,
+            xAxisLabel = paste0(input$dimRedPlotMethod, "_", input$plotDimRed_pca_dimX),
+            yAxisLabel = paste0(input$dimRedPlotMethod, "_", input$plotDimRed_pca_dimY))
+        )
+      })
   })
 
   observeEvent(input$runDimred_tsneUmap, {
