@@ -42,27 +42,27 @@ shinyPanelFS_DimRed <- fluidPage(
         panel(
           heading = "Plot",
           p("Visualization will be based on the latest computation on the left."),
+          shinyjqui::jqui_resizable(plotOutput(outputId = "plotFS")),
           numericInput(
             inputId = "hvgNoFeaturesViewFS",
             label = "Select number of features to display: ",
             value = 100
           ),
-          withBusyIndicatorUI(actionButton("showHVG", "Show")),
           div(
             style = "margin-top: 15px;",
             verbatimTextOutput(outputId = "hvgOutputFS",
                                placeholder = TRUE)
           ),
-          shinyjqui::jqui_resizable(plotOutput(outputId = "plotFS")),
-          
-          selectizeInput(
-            inputId = "scatterFSGenes",
-            label = "Select genes:",
-            multiple = TRUE,
-            choices = c(gene_list)
-          ),
-          actionButton(inputId = "scatterFSRun", "Run"),
-          plotlyOutput("scatterFS", height = "600px")
+          withBusyIndicatorUI(actionButton("showHVG", "Update"))
+          # ,
+          # selectizeInput(
+          #   inputId = "scatterFSGenes",
+          #   label = "Select genes:",
+          #   multiple = TRUE,
+          #   choices = c(gene_list)
+          # ),
+          # actionButton(inputId = "scatterFSRun", "Run"),
+          # plotlyOutput("scatterFS", height = "600px")
         )
       )),
       nonLinearWorkflowUI(id = "nlw-fs")

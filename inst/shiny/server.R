@@ -2525,7 +2525,7 @@ shinyServer(function(input, output, session) {
         tabPanel(
           title = "Elbow Plot",
           panel(
-            heading = "Elbow Plot",
+            #heading = "Elbow Plot",
             plotlyOutput(outputId = "plotDimRed_elbow")
           )
         ), select = TRUE
@@ -2565,7 +2565,7 @@ shinyServer(function(input, output, session) {
         tabPanel(
           title = "Heatmap Plot",
           panel(
-            heading = "Heatmap Plot",
+            #heading = "Heatmap Plot",
             panel(
               heading = "Plot Options",
               fluidRow(
@@ -2701,7 +2701,8 @@ shinyServer(function(input, output, session) {
     
     
     appendTab(inputId = "dimRedPCAICA_plotTabset", tabPanel(title = "Component Plot",
-                                                            panel(heading = "Component Plot",
+                                                            panel(
+                                                              #heading = "Component Plot",
                                                                   plotlyOutput(outputId = "plotDimRed_pca")
                                                             )
     ))
@@ -3336,12 +3337,12 @@ shinyServer(function(input, output, session) {
       }
     }
     
-    if(input$navbar == "Feature Selection & Dimensionality Reduction"){
-      gene_list <- rownames(vals$counts)
-      updateSelectizeInput(session, "scatterFSGenes",
-                           choices = c(gene_list),
-                           server = TRUE)
-    }
+    # if(input$navbar == "Feature Selection & Dimensionality Reduction"){
+    #   gene_list <- rownames(vals$counts)
+    #   updateSelectizeInput(session, "scatterFSGenes",
+    #                        choices = c(gene_list),
+    #                        server = TRUE)
+    # }
   })
 
   hide_TypeSelect <- reactiveVal("hide")
@@ -5119,6 +5120,22 @@ shinyServer(function(input, output, session) {
           tempAssay <- expData(vals$counts, vals$hvgCalculated$assayName)[HVGs,]
           expData(vals$counts, input$hvgAltExpName, tag = "hvg", altExp = TRUE) <- tempAssay
           updateAssayInputs()
+          
+          # added this
+          HVGs <- getTopHVG(inSCE = vals$counts,
+                            method = input$hvgMethodFS,
+                            n = 100)
+          vals$vfplot <- plotTopHVG(
+            inSCE =  vals$counts,
+            method = input$hvgMethodFS,
+            hvgList = HVGs
+          )
+          output$plotFS <- renderPlot({
+            if (!is.null(vals$vfplot)) {
+              vals$vfplot
+            }
+          })
+          output$hvgOutputFS <- renderText({HVGs})
         }
         # Show downstream analysis options
         callModule(module = nonLinearWorkflow, id = "nlw-fs", parent = session, dr = TRUE, cl = TRUE)
@@ -5132,36 +5149,36 @@ shinyServer(function(input, output, session) {
     })
   })
   
-  observeEvent(input$scatterFSRun,{
-    useAssay <- "tophat_counts"
-    xname <- input$scatterFSGenes[1]
-    yname <- input$scatterFSGenes[2]
-    xvec <- expData(vals$counts, useAssay)[xname,]
-    yvec <- expData(vals$counts, useAssay)[yname,]
-    customMat <- matrix(c(xvec, yvec), nrow = length(xvec))
-    colnames(customMat) <- c(xname, yname)
-    rownames(customMat) <- names(xvec)
-    reducedDim(vals$counts, "Custom") <- customMat
-    reducedDimName <- "Custom"
-    colorLow <- "#FFFFFF"
-    colorMid <- "#666666"
-    colorHigh <- "#0000FF"
-    
-    
-    a <- plotSCEDimReduceFeatures(vals$counts, feature = xname,
-                                  reducedDimName = reducedDimName, useAssay = useAssay,
-                                  xlab = xname, ylab = yname, transparency = 1,
-                                  colorLow = colorLow, colorMid = colorMid, colorHigh = colorHigh,
-                                  combinePlot = "none")
-    
-    
-    a <- a + ggplot2::theme_bw()
-    a <- plotly::ggplotly(a)
-    
-    output$scatterFS <- renderPlotly({
-      plotly::subplot(plotlist = a, titleX = TRUE, titleY = TRUE)
-    })
-  })
+  # observeEvent(input$scatterFSRun,{
+  #   useAssay <- "tophat_counts"
+  #   xname <- input$scatterFSGenes[1]
+  #   yname <- input$scatterFSGenes[2]
+  #   xvec <- expData(vals$counts, useAssay)[xname,]
+  #   yvec <- expData(vals$counts, useAssay)[yname,]
+  #   customMat <- matrix(c(xvec, yvec), nrow = length(xvec))
+  #   colnames(customMat) <- c(xname, yname)
+  #   rownames(customMat) <- names(xvec)
+  #   reducedDim(vals$counts, "Custom") <- customMat
+  #   reducedDimName <- "Custom"
+  #   colorLow <- "#FFFFFF"
+  #   colorMid <- "#666666"
+  #   colorHigh <- "#0000FF"
+  #   
+  #   
+  #   a <- plotSCEDimReduceFeatures(vals$counts, feature = xname,
+  #                                 reducedDimName = reducedDimName, useAssay = useAssay,
+  #                                 xlab = xname, ylab = yname, transparency = 1,
+  #                                 colorLow = colorLow, colorMid = colorMid, colorHigh = colorHigh,
+  #                                 combinePlot = "none")
+  #   
+  #   
+  #   a <- a + ggplot2::theme_bw()
+  #   a <- plotly::ggplotly(a)
+  #   
+  #   output$scatterFS <- renderPlotly({
+  #     plotly::subplot(plotlist = a, titleX = TRUE, titleY = TRUE)
+  #   })
+  # })
   
   #-----------------------------------------------------------------------------
   # Page 5.1: Differential Expression ####
@@ -6341,7 +6358,8 @@ shinyServer(function(input, output, session) {
     })
     if (input$pca_compute_elbow) {
       appendTab(inputId = "seuratPCAPlotTabset", tabPanel(title = "Elbow Plot",
-                                                          panel(heading = "Elbow Plot",
+                                                          panel(
+                                                            heading = "Elbow Plot",
                                                                 plotlyOutput(outputId = "plot_elbow_pca")
                                                           )
       ))
