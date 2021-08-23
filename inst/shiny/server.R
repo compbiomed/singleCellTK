@@ -5856,8 +5856,8 @@ shinyServer(function(input, output, session) {
         
           #vals$vamCdf <- SingleCellExperiment::reducedDim(vals$vamRes, paste0(paste0("VAM_", input$PathwayGeneLists, "_"), "CDF"))
           vals$vamResults <- SingleCellExperiment::reducedDim(vals$vamRes)
-          vals$vamGeneset <- paste0(paste0("VAM_", input$PathwayGeneLists, "_"), "CDF")
-          
+          #vals$vamGeneset <- paste0(paste0("VAM_", input$PathwayGeneLists, "_"), "CDF")
+          vals$dimreduced <- reducedDims(vals$vamRes)
           
         
         }
@@ -5868,7 +5868,8 @@ shinyServer(function(input, output, session) {
                                   geneSetCollectionName = input$PathwayGeneLists)
           
           vals$gsvaResults <- SingleCellExperiment::reducedDim(vals$gsvaRes)
-          vals$gsvaGeneset <- paste0(paste0("GSVA_", input$PathwayGeneLists, "_"), "Scores")
+          #vals$gsvaGeneset <- paste0(paste0("GSVA_", input$PathwayGeneLists, "_"), "Scores")
+          vals$dimreduced <- append(vals$dimreduced, reducedDims(vals$gsvaRes))
         }
         
       })
@@ -5891,13 +5892,21 @@ shinyServer(function(input, output, session) {
       }
     }
   })
- 
+  
+  #select from reducedDimNames
+  output$selectReduceDim <- renderUI({
+    if (!(is.null(vals$counts))){
+      selectizeInput("reducedDimNames", "Select Score matrix which you want to plot:",
+                     choices = names((vals$dimreduced)), multiple = FALSE)
+    }
+  })
+  
  #plot results
   observeEvent(input$Plot, {
     output$depathwayPlot <- renderPlot({
       if (input$pathway == "VAM"){
         if (!(is.null(vals$vamRes))){
-          plotSCEViolin(inSCE = vals$vamRes, slotName = "reducedDims", itemName = vals$vamGeneset, dimension = input$GeneSets, xlab = "Sample", ylab = "Value", groupBy = input$pathwayPlotVar)
+          plotSCEViolin(inSCE = vals$vamRes, slotName = "reducedDims", itemName = input$reducedDimNames, dimension = input$GeneSets, xlab = "Sample", ylab = "Value", groupBy = input$pathwayPlotVar)
           #groupby can be used for indicating colnames (optional)
         }
           else{
@@ -5906,7 +5915,7 @@ shinyServer(function(input, output, session) {
       }
       else if (input$pathway == "GSVA"){
         if (!(is.null(vals$gsvaRes))){
-          plotSCEViolin(inSCE = vals$gsvaRes, slotName = "reducedDims", itemName = vals$gsvaGeneset, dimension = input$GeneSets, xlab = "Sample", ylab = "Value", groupBy = input$pathwayPlotVar)
+          plotSCEViolin(inSCE = vals$gsvaRes, slotName = "reducedDims", itemName = input$reducedDimNames, dimension = input$GeneSets, xlab = "Sample", ylab = "Value", groupBy = input$pathwayPlotVar)
           #groupby can be used for indicating colnames (optional)
         
         }
