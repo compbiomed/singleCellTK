@@ -9,8 +9,8 @@ runVAM(
   geneSetCollectionName,
   useAssay,
   resultNamePrefix = NULL,
-  center = FALSE,
-  gamma = TRUE
+  center = TRUE,
+  gamma = FALSE
 )
 }
 \arguments{
@@ -22,9 +22,9 @@ runVAM(
 
 \item{resultNamePrefix}{Character. Prefix to the name the VAM results which will be stored in the reducedDim slot of \code{inSCE}. The names of the output matrices will be \code{resultNamePrefix_Distance} and \code{resultNamePrefix_CDF}. If this parameter is set to \code{NULL}, then "VAM_geneSetCollectionName_" will be used. Default \code{NULL}.}
 
-\item{center}{Boolean. If \code{TRUE}, values will be mean centered when computating the Mahalanobis statistic. Default \code{FALSE}.}
+\item{center}{Boolean. If \code{TRUE}, values will be mean centered when computating the Mahalanobis statistic. Default \code{TRUE}.}
 
-\item{gamma}{Boolean. If \code{TRUE}, a gamma distribution will be fit to the non-zero squared Mahalanobis distances computed from a row-permuted version of the gene expression matrix. The estimated gamma distribution will be used to compute a one-sided p-value for each cell. If \code{FALSE}, the p-value will be computed using the standard chi-square approximation for the squared Mahalanobis distance (or non-central if center = FALSE). Default \code{TRUE}.}
+\item{gamma}{Boolean. If \code{TRUE}, a gamma distribution will be fit to the non-zero squared Mahalanobis distances computed from a row-permuted version of the gene expression matrix. The estimated gamma distribution will be used to compute a one-sided p-value for each cell. If \code{FALSE}, the p-value will be computed using the standard chi-square approximation for the squared Mahalanobis distance (or non-central if center = FALSE). Default \code{FALSE}.}
 }
 \value{
 A \link[SingleCellExperiment]{SingleCellExperiment} object with VAM metrics stored in \code{reducedDim} as \code{VAM_NameOfTheGeneset_Distance} and \code{VAM_NameOfTheGeneset_CDF}.

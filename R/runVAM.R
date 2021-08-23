@@ -5,8 +5,8 @@
 #' @param geneSetCollectionName Character. The name of the gene set collection to use.
 #' @param useAssay Character. The name of the assay to use. This assay should contain log normalized counts. 
 #' @param resultNamePrefix  Character. Prefix to the name the VAM results which will be stored in the reducedDim slot of \code{inSCE}. The names of the output matrices will be \code{resultNamePrefix_Distance} and \code{resultNamePrefix_CDF}. If this parameter is set to \code{NULL}, then "VAM_geneSetCollectionName_" will be used. Default \code{NULL}.
-#' @param center Boolean. If \code{TRUE}, values will be mean centered when computating the Mahalanobis statistic. Default \code{FALSE}.
-#' @param gamma Boolean. If \code{TRUE}, a gamma distribution will be fit to the non-zero squared Mahalanobis distances computed from a row-permuted version of the gene expression matrix. The estimated gamma distribution will be used to compute a one-sided p-value for each cell. If \code{FALSE}, the p-value will be computed using the standard chi-square approximation for the squared Mahalanobis distance (or non-central if center = FALSE). Default \code{TRUE}.
+#' @param center Boolean. If \code{TRUE}, values will be mean centered when computating the Mahalanobis statistic. Default \code{TRUE}.
+#' @param gamma Boolean. If \code{TRUE}, a gamma distribution will be fit to the non-zero squared Mahalanobis distances computed from a row-permuted version of the gene expression matrix. The estimated gamma distribution will be used to compute a one-sided p-value for each cell. If \code{FALSE}, the p-value will be computed using the standard chi-square approximation for the squared Mahalanobis distance (or non-central if center = FALSE). Default \code{FALSE}.
 #' 
 #' @importFrom methods slot
 #' 
@@ -28,7 +28,7 @@
 #' sce <- runVAM(inSCE = sce, geneSetCollectionName = "GeneSetCollection", useAssay = "logcounts")
 #'
 #'  
-runVAM <- function(inSCE, geneSetCollectionName, useAssay, resultNamePrefix = NULL, center = FALSE, gamma = TRUE) { 
+runVAM <- function(inSCE, geneSetCollectionName, useAssay, resultNamePrefix = NULL, center = TRUE, gamma = FALSE) { 
   
   
   
