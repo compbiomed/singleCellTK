@@ -46,4 +46,15 @@ test_that(desc = "Testing runVAM", {
 })
 
 
+test_that(desc = "Testing runGSVA", {
+  sce <- scaterlogNormCounts(sce, assayName = "logcounts")
+  sce <- importGeneSetsFromMSigDB(inSCE = sce,
+                                  categoryIDs = "H",
+                                  species = "Homo sapiens",
+                                  mapping = "gene_symbol",
+                                  by = "feature_name")
+  
+  sce <- runGSVA(inSCE = sce, geneSetCollectionName = "H", useAssay = "logcounts")
+  expect_true(validObject(reducedDim(sce)))
+})
 
