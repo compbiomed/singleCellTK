@@ -62,7 +62,6 @@ shinyServer(function(input, output, session) {
     fmHMshowHide = FALSE
   )
 
-
   #Update all of the columns that depend on pvals columns
   updateColDataNames <- function(){
     pdataOptions <- colnames(colData(vals$counts))
@@ -2603,7 +2602,7 @@ shinyServer(function(input, output, session) {
                   #   inputId = "plot_heatmap_dimRed_button",
                   #   "Plot")
                 ),
-                inputId = "addFilterDropdown2",
+                inputId = "dropDownDimRedHeatmap",
                 label = "Plot Options",
                 circle = FALSE,
                 inline = TRUE
@@ -2611,7 +2610,6 @@ shinyServer(function(input, output, session) {
               column(8, fluidRow(h6("the plot highlights the top variable features (can be labeled from the button on the left) with respect to the metrics computed by the selected algorithm"), align="center"))
             ),
             br(),
-              heading = "Plot",
               shinyjqui::jqui_resizable(
                 plotOutput(outputId = "plot_heatmap_dimRed"),
                 options = list(maxWidth = 700)
@@ -2716,14 +2714,30 @@ shinyServer(function(input, output, session) {
     appendTab(inputId = "dimRedPCAICA_plotTabset", tabPanel(title = "Component Plot",
                                                             panel(
                                                               #heading = "Component Plot",
-                                                                  plotlyOutput(outputId = "plotDimRed_pca"),
-                                                                  selectizeInput(
-                                                                    inputId = "plotDimRed_pca_selectRedDim",
-                                                                    label = "Select reducedDim:",
-                                                                    choices = reducedDimNames(vals$counts)
-                                                                  ),
-                                                                  numericInput(inputId = "plotDimRed_pca_dimX", label = "X:", value = 1),
-                                                                  numericInput(inputId = "plotDimRed_pca_dimY", label = "Y:", value = 2)
+                                                              fluidRow(
+                                                                column(4, dropdownButton(
+                                                                  br(),
+                                                                  panel(fluidRow(
+                                                                    column(12,
+                                                                           br(),
+                                                                           selectizeInput(
+                                                                             inputId = "plotDimRed_pca_selectRedDim",
+                                                                             label = "Select reducedDim:",
+                                                                             choices = reducedDimNames(vals$counts)
+                                                                           ),
+                                                                           numericInput(inputId = "plotDimRed_pca_dimX", label = "X:", value = 1),
+                                                                           numericInput(inputId = "plotDimRed_pca_dimY", label = "Y:", value = 2)
+                                                                    )
+                                                                  )),
+                                                                  inputId = "dropDownDimRedComponentPlot",
+                                                                  label = "Plot Options",
+                                                                  circle = FALSE,
+                                                                  inline = TRUE
+                                                                )),
+                                                                column(8, fluidRow(h6("the plot highlights the top variable features (can be labeled from the button on the left) with respect to the metrics computed by the selected algorithm"), align="center"))
+                                                              ),
+                                                              br(),
+                                                                  plotlyOutput(outputId = "plotDimRed_pca")
                                                             )
     ))
 
@@ -8217,6 +8231,6 @@ shinyServer(function(input, output, session) {
   ##############################################################################
   # observeEvent(input$interpretToggle, {
   #   pushbar_open(id = "myPushbar")
-  # })  
+  # })
 })
 

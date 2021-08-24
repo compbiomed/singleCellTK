@@ -56,7 +56,7 @@ shinyPanelFS_DimRed <- fluidPage(
                        # withBusyIndicatorUI(actionButton("showHVG", "Update"))
                 )
               )),
-              inputId = "addFilterDropdown",
+              inputId = "dropDownFS",
               label = "Plot Options",
               circle = FALSE,
               inline = TRUE
@@ -279,15 +279,28 @@ shinyPanelFS_DimRed <- fluidPage(
                         tags$div(class = "dimRedTSNEUMAP_plotTabset_class",
                                  tabPanel(
                                    title = "Plot",
-                                   fluidRow(
-                                     selectizeInput(
-                                       inputId = "selectRedDimPlot_tsneUmap",
-                                       label = "Select reducedDim:",
-                                       choices = NULL
-                                     ),
-                                     align = "center"
-                                   ),
                                    panel(heading = "Plot",
+                                     fluidRow(
+                                       column(4, dropdownButton(
+                                         br(),
+                                         fluidRow(
+                                           column(12,
+                                                  br(),
+                                                    selectizeInput(
+                                                      inputId = "selectRedDimPlot_tsneUmap",
+                                                      label = "Select reducedDim:",
+                                                      choices = NULL
+                                                    )
+                                           )
+                                         ),
+                                         inputId = "dropDownDimRedEmbedding",
+                                         label = "Plot Options",
+                                         circle = FALSE,
+                                         inline = TRUE
+                                       )),
+                                       column(8, fluidRow(h6("the plot highlights the top variable features (can be labeled from the button on the left) with respect to the metrics computed by the selected algorithm"), align="center"))
+                                     ),
+                                     br(),
                                          plotlyOutput(outputId = "plotDimRed_tsneUmap"))
                                  ))
                       )))
