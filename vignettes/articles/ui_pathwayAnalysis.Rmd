@@ -1,0 +1,52 @@
+---
+title: "Pathway Analysis - UI"
+author: "Nida Pervaiz"
+output: html_document
+---
+
+## Introduction
+
+This section describes the usage of the user interface (UI) for singleCellTK (SCTK) pathway analysis workflow. The underneath process is wrapped by R function for pathway analysis, including `runVAM()` and `runGSVA``. For the help of R console workflow, also refer to [the help page for R console](pathwayAnalysis.html).  
+
+## UI Layout
+
+### Entry of The Panel
+
+From anywhere of the UI, the panel for pathway analysis can be accessed from the top navigation panel at the highlighted tab shown below.
+
+![entry](ui_screenshots/pathwayAnalysis/path_ui_entry.PNG)\
+
+The UI is constructed in a sidebar style, where the left-sided sidebar works for setting the parameters and running the pathway analysis, and the right part main panel is for visualization checking.  
+
+### Running Pathway Analysis
+
+![parameters](ui_screenshots/pathwayAnalysis/path_ui_parameters.PNG)\
+
+For running any types of pathway analysis, there are always three essential inputs that users should be sure with.
+
+- The data matrix to use - selection input **"Select Assay"**. In terms of pathway analysis, SCTK always requires a full-sized feature expression data (i.e. assay) as a valid input.
+- The pathway analysis method - selection input **"Select Method"**. All methods supported are listed as options.
+- The geneset collection name - selection input **"Select Geneset Collection"**. All geneset names are listed as options.
+
+After the pathway analysis method is confirmed, the lower part will dynamically switch to the method specific settings. While in GSVA no additional input parameters are presented, for VAM there are two additional parameters: 
+
+- center  - selection input **"Select center value"**. If True, values will be mean centered when computating the Mahalanobis statistic. 
+- gamma  -selection input **"Select gamma value"**. If True, a gamma distribution will be fit to the non-zero squared Mahalanobis distances computed from a row-permuted version of the gene expression matrix. The estimated gamma distribution will be used to compute a one-sided p-value for each cell. If False, the p-value will be computed using the standard chi-square approximation for the squared Mahalanobis distance (or non-central if center = FALSE).
+ 
+
+For the detailed help information of each method, users can go to [reference](../reference/index.html) page and click on the function that stands for the method chosen, or click on the "(help for {method})" link in the UI.  
+
+### Visualization
+
+![visualization](ui_screenshots/pathwayAnalysis/path_ui_visualization.PNG)\
+
+The parameter panel for visualization comprises of:
+
+- The result to visualize - selection input **"Select Score matrix which you want to plot:"**. User should choose one of the data frames produced within the results which they want to visualize.
+- The geneset to visualize  - selection input **"Select Geneset:"**. User should choose the geneset from the collection used for running the algorithm.
+- The additional condition of grouping the data- selection input **"Select Condition(s) of interest to group data (optional)"**. User may select a condition to group the data in accordance with the colData. 
+
+The plot will enable the user to visualize cell by geneset matrix score. 
+
+![result](ui_screenshots/pathwayAnalysis/path_ui_result.PNG)\
+

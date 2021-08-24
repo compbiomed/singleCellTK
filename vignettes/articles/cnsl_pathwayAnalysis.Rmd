@@ -1,0 +1,80 @@
+---
+title: "Pathway Analysis"
+author: "Nida Pervaiz"
+output:
+  html_document: default
+---
+
+
+## Introduction
+
+VAM and GSVA are popular methods for GSE (Gene Set Enrichment) and allows the identification of changes in pathway activity in RNA-Seq data. Overall, gene sets can be uploaded or selected from the available databases and the pathway analysis method can be run on the selected gene sets which can eventually be visualized using Violin plot.
+For this section, we provide wrappers of two methods, listed in the table below. All functions takes an input [`SingleCellExperiment`](https://rdrr.io/bioc/SingleCellExperiment/man/SingleCellExperiment.html) (SCE) object and other settings as arguments and returns the same SCE object with results updated in `reducedDim``.  
+
+|  Method   |    Citation             |    Function             |
+|  :----:   |   :---            | :---                             |     :----:              |
+| VAM       | Hildreth Robert Frost, Variance-adjusted Mahalanobis (VAM): a fast and accurate method for cell-specific gene set scoring, 18 September 2020 | `runVAM()`              |
+| GSVA      | Hänzelmann, S., Castelo, R. & Guinney, J. GSVA: gene set variation analysis for microarray and RNA-Seq data. BMC Bioinformatics 14, 7 (2013)    | `runGSVA()`  |
+
+## Workflow
+
+The pathway analysis methods listed in the table above can be easily applied to an SCE object. Meanwhile, there are other algorithms too but based on performance and effectiveness we here present these two algorithms only.  
+
+### Parameters
+
+For each of the three functions, the common things are:
+
+- The input SCE object - `inSCE`.
+- The user must select the gene sets they would like to upload from `Import Gene Sets` tab - `geneSetCollectionName`. - Users need to use `useAssay` for a full-sized expression data. 
+
+As for another essential parameter, the data matrix used for running the algorithm is a must. Here, users should notice that:
+
+- For `runVAM()`, there are two extra parameters: `center` and `gamma`. Please refer to the function manual pages for the details.
+
+### Example on Each
+
+#### Preprocessing
+
+To demonstrate a simple and clear example, here we use the "PBMC-3k" dataset from "10X" which can be easily imported with SCTK functions.
+
+```{R pathway_prep, eval=TRUE, message=FALSE, warning=FALSE, fig.align="center", cache=TRUE, results='hide'}
+library(singleCellTK)
+pbmc3k <- importExampleData("pbmc3k")
+pbmc3k <- scaterlogNormCounts(pbmc3k, assayName = "logcounts")
+pbmc3k <- importGeneSetsFromMSigDB(inSCE = pbmc3k, 
+                             categoryIDs = "H",
+                             species = "Homo sapiens",
+                             mapping = "gene_symbol",
+                             by = "rownames")
+
+```
+
+#### VAM
+
+The method specific parameters include:
+
+- `center`, If True, values will be mean centered when computating the Mahalanobis statistic.
+- `gamma`, If True, a gamma distribution will be fit to the non-zero squared Mahalanobis distances computed from a row-permuted version of the gene expression matrix. The estimated gamma distribution will be used to compute a one-sided p-value for each cell. If False, the p-value will be computed using the standard chi-square approximation for the squared Mahalanobis distance (or non-central if center = FALSE).
+
+
+```{R pathwayVAM, eval=FALSE, message=FALSE, warning=FALSE, cache=TRUE}
+pbmc3k <- runVAM(inSCE = pbmc3k, geneSetCollectionName = "H", useAssay = "logcounts", center = TRUE, gamma = FALSE)
+
+```
+
+
+#### GSVA
+
+
+```{R pathwayGSVA, eval=FALSE, message=FALSE, warning=FALSE, cache=TRUE}
+
+pbmc3k <- runGSVA(inSCE = pbmc3k, geneSetCollectionName = "GeneSetCollection", useAssay = "logcounts")
+
+```
+
+
+
+
+
+
+ 
