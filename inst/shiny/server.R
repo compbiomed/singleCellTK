@@ -2453,7 +2453,7 @@ shinyServer(function(input, output, session) {
     textInput('dimRedNameInput_tsneUmap', "reducedDim Name:", defaultText)
   })
 
-  observeEvent(input$plot_heatmap_dimRed_button, {
+  observeEvent(input$picker_dimheatmap_components_dimRed, {
     if (!is.null(input$picker_dimheatmap_components_dimRed)) {
       if(vals$runDimred$dimRedAssaySelect %in% assayNames(vals$counts)){
         output$plot_heatmap_dimRed <- renderPlot({
@@ -2566,43 +2566,56 @@ shinyServer(function(input, output, session) {
           title = "Heatmap Plot",
           panel(
             #heading = "Heatmap Plot",
-            panel(
-              heading = "Plot Options",
-              fluidRow(
-                column(
-                  width = 6,
-                  pickerInput(
-                    inputId = "picker_dimheatmap_components_dimRed",
-                    label = "Select principal components to plot:",
-                    choices = c(),
-                    options = list(`actions-box` = TRUE,
-                                   size = 10,
-                                   `selected-text-format` = "count > 3"),
-                    multiple = TRUE
+            fluidRow(
+              column(4, dropdownButton(
+                br(),
+                panel(
+                  fluidRow(
+                    column(
+                      width = 6,
+                      selectizeInput(inputId = "picker_dimheatmap_components_dimRed",
+                                     label = "Select principal components to plot:",
+                                     choices = c(),
+                                     multiple = TRUE),
+                      # pickerInput(
+                      #   inputId = "picker_dimheatmap_components_dimRed",
+                      #   label = "Select principal components to plot:",
+                      #   choices = c(),
+                      #   options = list(`actions-box` = TRUE,
+                      #                  size = 10,
+                      #                  `selected-text-format` = "count > 3"),
+                      #   multiple = TRUE
+                      # )
+                    ),
+                    column(
+                      width = 6,
+                      numericInput(
+                        inputId = "slider_dimheatmap_dimRed",
+                        label = "Number of columns for the plot: ",
+                        min = 1,
+                        max = 4,
+                        value = 2
+                      )
+                    )
                   )
+                  # ,
+                  # actionButton(
+                  #   inputId = "plot_heatmap_dimRed_button",
+                  #   "Plot")
                 ),
-                column(
-                  width = 6,
-                  numericInput(
-                    inputId = "slider_dimheatmap_dimRed",
-                    label = "Number of columns for the plot: ",
-                    min = 1,
-                    max = 4,
-                    value = 2
-                  )
-                )
-              ),
-              actionButton(
-                inputId = "plot_heatmap_dimRed_button",
-                "Plot")
+                inputId = "addFilterDropdown2",
+                label = "Plot Options",
+                circle = FALSE,
+                inline = TRUE
+              )),
+              column(8, fluidRow(h6("the plot highlights the top variable features (can be labeled from the button on the left) with respect to the metrics computed by the selected algorithm"), align="center"))
             ),
-            panel(
+            br(),
               heading = "Plot",
               shinyjqui::jqui_resizable(
                 plotOutput(outputId = "plot_heatmap_dimRed"),
                 options = list(maxWidth = 700)
               )
-            )
           )
         )
       )
@@ -2692,10 +2705,10 @@ shinyServer(function(input, output, session) {
       }
       
       if(input$dimRedPlotMethod == "seuratICA"){
-        updatePickerInput(session = session, inputId = "picker_dimheatmap_components_dimRed", choices = rep(paste0("IC",seq(as.numeric(input$dimRedNumberDims)))))
+        updateSelectizeInput(session = session, inputId = "picker_dimheatmap_components_dimRed", choices = rep(paste0("IC",seq(as.numeric(input$dimRedNumberDims)))))
       }
       else{
-        updatePickerInput(session = session, inputId = "picker_dimheatmap_components_dimRed", choices = rep(paste0("PC",seq(as.numeric(input$dimRedNumberDims)))))
+        updateSelectizeInput(session = session, inputId = "picker_dimheatmap_components_dimRed", choices = rep(paste0("PC",seq(as.numeric(input$dimRedNumberDims)))))
       }
     }
     
@@ -5069,8 +5082,8 @@ shinyServer(function(input, output, session) {
     })
   })
 
-  observeEvent(input$showHVG, {
-    withBusyIndicatorServer("showHVG", {
+  observeEvent(input$hvgNoFeaturesViewFS, {
+    req(vals$counts)
       if (isTRUE(vals$hvgCalculated$status) &&
           !is.null(vals$hvgCalculated$method)) {
         #checks
@@ -5092,14 +5105,14 @@ shinyServer(function(input, output, session) {
           }
         })
         output$hvgOutputFS <- renderText({HVGs})
-      } else {
-        shinyalert::shinyalert(
-          "Error",
-          text = "Please compute the variance before the visualization!",
-          type = "error"
-        )
-      }
-    })
+      } 
+    # else {
+    #     shinyalert::shinyalert(
+    #       "Error",
+    #       text = "Please compute the variance before the visualization!",
+    #       type = "error"
+    #     )
+    #   }
   })
 
   observeEvent(input$hvgSubsetRun, {

@@ -51,8 +51,9 @@ shinyPanelFS_DimRed <- fluidPage(
                          inputId = "hvgNoFeaturesViewFS",
                          label = "Select number of features to display: ",
                          value = 100
-                       ),
-                       withBusyIndicatorUI(actionButton("showHVG", "Update"))
+                       )
+                       # ,
+                       # withBusyIndicatorUI(actionButton("showHVG", "Update"))
                 )
               )),
               inputId = "addFilterDropdown",
@@ -60,12 +61,13 @@ shinyPanelFS_DimRed <- fluidPage(
               circle = FALSE,
               inline = TRUE
             )),
-            column(8, fluidRow(h6("visualization will be based on the latest computation"), align="center"))
+            column(8, fluidRow(h6("the plot highlights the top variable features (can be labeled from the button on the left) with respect to the metrics computed by the selected algorithm"), align="center"))
           ),
           br(),
           shinyjqui::jqui_resizable(plotOutput(outputId = "plotFS")),
+          fluidRow(h6("highlighted features"), align="center"),
           div(
-            style = "margin-top: 15px;",
+            style = "margin-top: 2px;",
             verbatimTextOutput(outputId = "hvgOutputFS",
                                placeholder = TRUE)
           )
