@@ -2603,12 +2603,15 @@ shinyServer(function(input, output, session) {
                   #   "Plot")
                 ),
                 inputId = "dropDownDimRedHeatmap",
-                label = "Plot Options",
-                circle = FALSE,
+                icon = icon("cog"),
+                status = "primary",
+                circle = TRUE,
+                size = "sm",
                 inline = TRUE
               )),
-              column(8, fluidRow(h6("the plot highlights the top variable features (can be labeled from the button on the left) with respect to the metrics computed by the selected algorithm"), align="center"))
+              column(8)
             ),
+            fluidRow(h6("the plot highlights the top variable features (can be labeled from the button on the left) with respect to the metrics computed by the selected algorithm"), align="center"),
             br(),
               shinyjqui::jqui_resizable(
                 plotOutput(outputId = "plot_heatmap_dimRed"),
@@ -2715,6 +2718,7 @@ shinyServer(function(input, output, session) {
                                                             panel(
                                                               #heading = "Component Plot",
                                                               fluidRow(
+                                                                column(8, fluidRow(h6("the plot highlights the top variable features (can be labeled from the button on the left) with respect to the metrics computed by the selected algorithm"), align="center")),
                                                                 column(4, dropdownButton(
                                                                   br(),
                                                                   panel(fluidRow(
@@ -2730,11 +2734,13 @@ shinyServer(function(input, output, session) {
                                                                     )
                                                                   )),
                                                                   inputId = "dropDownDimRedComponentPlot",
-                                                                  label = "Plot Options",
-                                                                  circle = FALSE,
+                                                                  icon = icon("cog"),
+                                                                  status = "primary",
+                                                                  circle = TRUE,
+                                                                  size = "sm",
                                                                   inline = TRUE
-                                                                )),
-                                                                column(8, fluidRow(h6("the plot highlights the top variable features (can be labeled from the button on the left) with respect to the metrics computed by the selected algorithm"), align="center"))
+                                                                ))
+                                                                
                                                               ),
                                                               br(),
                                                                   plotlyOutput(outputId = "plotDimRed_pca")
