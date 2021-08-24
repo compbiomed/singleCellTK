@@ -57,8 +57,10 @@ shinyPanelFS_DimRed <- fluidPage(
                 )
               )),
               inputId = "dropDownFS",
-              label = "Plot Options",
-              circle = FALSE,
+              icon = icon("cog"),
+              status = "primary",
+              circle = TRUE,
+              size = "sm",
               inline = TRUE
             )),
             column(8, fluidRow(h6("the plot highlights the top variable features (can be labeled from the button on the left) with respect to the metrics computed by the selected algorithm"), align="center"))
@@ -294,7 +296,8 @@ shinyPanelFS_DimRed <- fluidPage(
                                            )
                                          ),
                                          inputId = "dropDownDimRedEmbedding",
-                                         label = "Plot Options",
+                                         icon = icon("cog"),
+                                         status = "primary",
                                          circle = FALSE,
                                          inline = TRUE
                                        )),
