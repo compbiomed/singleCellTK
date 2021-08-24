@@ -105,7 +105,7 @@ Imports:
     magrittr,
     scDblFinder,
     metap,
-    VAM
+    VAM (>= 0.5.3)
 RoxygenNote: 7.1.1
 Suggests:
     testthat,
