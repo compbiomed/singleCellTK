@@ -29,7 +29,7 @@ shinyPanelFS_DimRed <- fluidPage(
         ),
         panel(
           heading = "Select and Subset",
-          p("Selection will be based on the latest computation above."),
+          fluidRow(h6("selection of features will be based on the latest computation above"), align="center"),
           numericInput("hvgNumberSelect", "Number of HVG to select",
                        2000, step = 100),
           textInput("hvgAltExpName", "Name for the subset",
@@ -41,19 +41,34 @@ shinyPanelFS_DimRed <- fluidPage(
         8,
         panel(
           heading = "Plot",
-          p("Visualization will be based on the latest computation on the left."),
-          shinyjqui::jqui_resizable(plotOutput(outputId = "plotFS")),
-          numericInput(
-            inputId = "hvgNoFeaturesViewFS",
-            label = "Select number of features to display: ",
-            value = 100
+          fluidRow(
+            column(4, dropdownButton(
+              br(),
+              panel(fluidRow(
+                column(12,
+                       br(),
+                       numericInput(
+                         inputId = "hvgNoFeaturesViewFS",
+                         label = "Select number of features to display: ",
+                         value = 100
+                       ),
+                       withBusyIndicatorUI(actionButton("showHVG", "Update"))
+                )
+              )),
+              inputId = "addFilterDropdown",
+              label = "Plot Options",
+              circle = FALSE,
+              inline = TRUE
+            )),
+            column(8, fluidRow(h6("visualization will be based on the latest computation"), align="center"))
           ),
+          br(),
+          shinyjqui::jqui_resizable(plotOutput(outputId = "plotFS")),
           div(
             style = "margin-top: 15px;",
             verbatimTextOutput(outputId = "hvgOutputFS",
                                placeholder = TRUE)
-          ),
-          withBusyIndicatorUI(actionButton("showHVG", "Update"))
+          )
           # ,
           # selectizeInput(
           #   inputId = "scatterFSGenes",
