@@ -5901,27 +5901,26 @@ shinyServer(function(input, output, session) {
     }
   })
   
+  
+  
+  
  #plot results
   observeEvent(input$Plot, {
-    output$depathwayPlot <- renderPlot({
+    output$pathwayPlot <- renderPlot({
       if (input$pathway == "VAM"){
         if (!(is.null(vals$vamRes))){
-          plotSCEViolin(inSCE = vals$vamRes, slotName = "reducedDims", itemName = input$reducedDimNames, dimension = input$GeneSets, xlab = "Sample", ylab = "Value", groupBy = input$pathwayPlotVar)
+          plotSCEViolin(inSCE = vals$vamRes, slotName = "reducedDims", itemName = input$reducedDimNames, dimension = input$GeneSets, xlab = "Sample", ylab = input$GeneSets, groupBy = input$pathwayPlotVar, violin = input$violinplot, boxplot = input$boxplot, summary = input$summary)
           #groupby can be used for indicating colnames (optional)
         }
-          else{
-            shinyalert::shinyalert("Error!", "Run pathway analysis first.", type = "error")
-          }
+          
       }
       else if (input$pathway == "GSVA"){
         if (!(is.null(vals$gsvaRes))){
-          plotSCEViolin(inSCE = vals$gsvaRes, slotName = "reducedDims", itemName = input$reducedDimNames, dimension = input$GeneSets, xlab = "Sample", ylab = "Value", groupBy = input$pathwayPlotVar)
+          plotSCEViolin(inSCE = vals$gsvaRes, slotName = "reducedDims", itemName = input$reducedDimNames, dimension = input$GeneSets, xlab = "Sample", ylab = input$GeneSets, groupBy = input$pathwayPlotVar, violin = input$violinplot, boxplot = input$boxplot, summary = input$summary)
           #groupby can be used for indicating colnames (optional)
         
         }
-        else{
-          shinyalert::shinyalert("Error!", "Run pathway analysis first.", type = "error")
-         }
+        
       }
       
       })
