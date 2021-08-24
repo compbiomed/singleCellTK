@@ -1,9 +1,12 @@
 context("misc functions")
 
-data(scExample, package = "singleCellTK")
-sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
+### this code runs outside of test_that({})
+# data(scExample, package = "singleCellTK")
+# sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 
 test_that("summarizeSCE", {
+  data(scExample, package = "singleCellTK")
+  sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
   ta <- summarizeSCE(sce, sample = NULL)
   expect_is(ta, "data.frame")
 })
@@ -30,6 +33,7 @@ test_that(desc = "Testing subsetSCERows", {
 
 
 test_that(desc = "Testing runVAM", {
+  data(scExample)
   sce <- scaterlogNormCounts(sce, assayName = "logcounts")
   sce <- importGeneSetsFromMSigDB(inSCE = sce,
                                   categoryIDs = "H",
