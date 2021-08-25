@@ -181,7 +181,7 @@ generateMeta <- function(dropletSCE = NULL,
                    ColData = file.path(filterDir, paste0(samplename,'_colData.txt.gz')),
                    DecontXUMAP = file.path(filterDir, 'reducedDims', paste0(samplename,'_decontX_UMAP.txt.gz')),
                    ScrubletTSNE = file.path(filterDir, 'reducedDims', paste0(samplename,'_scrublet_TSNE.txt.gz')),
-                   ScrubletUMAP = file.path(filterDir, 'reducedDims', paste0(samplename,'_scrublet_TSNE.txt.gz')))
+                   ScrubletUMAP = file.path(filterDir, 'reducedDims', paste0(samplename,'_scrublet_UMAP.txt.gz')))
   }
 
   data <- list("Raw" = if (exists("droplet_stat")) {droplet_stat} else {NULL},
