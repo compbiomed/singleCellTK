@@ -104,7 +104,7 @@ if (is.null(samples)) { samples <- "sample" }
 #   }
 # }
 
-sce.qc <- getUMAP(sce.qc, reducedDimName = "QC_UMAP")
+sce.qc <- getUMAP(sce.qc, useAssay = "counts", reducedDimName = "QC_UMAP")
 ```
 
 ---
