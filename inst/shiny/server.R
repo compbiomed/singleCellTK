@@ -36,6 +36,12 @@ shinyServer(function(input, output, session) {
     batchRes = NULL,
     gsvaRes = NULL,
     gsvaLimma = NULL,
+    vamRes = NULL,
+    vamCdf = NULL,
+    vamResults = NULL,
+    vamGeneset = NULL,
+    gsvaGeneset = NULL,
+    gsvaResults = NULL,
     visplotobject = NULL,
     enrichRes = NULL,
     celdaMod = NULL,
@@ -66,6 +72,7 @@ shinyServer(function(input, output, session) {
   #Update all of the columns that depend on pvals columns
   updateColDataNames <- function(){
     pdataOptions <- colnames(colData(vals$counts))
+    
     updateSelectInput(session, "qcSampleSelect", choices = pdataOptions)
     updateSelectInput(session, "filteredSample",
                       choices = c("none", pdataOptions))
@@ -245,6 +252,8 @@ shinyServer(function(input, output, session) {
     }
     updateSelectInputTag(session, "fmHMAssay", choices = currassays, selected = input$fmAssay)
     updateSelectInputTag(session, "pathwayAssay", recommended = c("transformed", "normalized", "scaled"))
+    updateSelectInputTag(session, "vamAssay", recommended = c("transformed", "normalized", "scaled"))
+    
     updateSelectInputTag(session, "modifyAssaySelect")
     updateSelectInputTag(session, "normalizeAssaySelect", label = "Select assay to normalize:", recommended = "raw")
 
@@ -915,7 +924,12 @@ shinyServer(function(input, output, session) {
                                type = "error")
       }
       vals$gsvaRes <- NULL
+      vals$vamRes <- NULL
+      vals$vamResults <- NULL
+      vals$gsvaResults <- NULL
       vals$gsvaLimma <- NULL
+      vals$vamGeneset <- NULL
+      vals$gsvaGeneset <- NULL
       vals$visplotobject <- NULL
       vals$enrichRes <- NULL
       vals$dimRedPlot <- NULL
@@ -1917,6 +1931,11 @@ shinyServer(function(input, output, session) {
       #updateSelectInput(session, "deletesamplelist",
       #                  choices = colnames(vals$counts))
       vals$gsvaRes <- NULL
+      vals$vamRes <- NULL
+      vals$vamResults <- NULL
+      vals$gsvaResults <- NULL
+      vals$vamGeneset <- NULL
+      vals$gsvaGeneset <- NULL
       vals$gsvaLimma <- NULL
       vals$visplotobject <- NULL
       vals$enrichRes <- NULL
@@ -5787,134 +5806,153 @@ shinyServer(function(input, output, session) {
     }
   }
 
+  
   #-----------------------------------------------------------------------------
   # Page 6: Pathway Activity Analysis
   #-----------------------------------------------------------------------------
-
-  output$selectPathwayGeneLists <- renderUI({
-      if (!is.null(vals$counts)){
-        if (!is.null(metadata(vals$original)$sctk$genesets)) {
-          newGSchoices <- sctkListGeneSetCollections(vals$original)
-          selectizeInput("pathwayGeneLists", "Select Gene List(s):",
-                         choices = newGSchoices, multiple = TRUE)
-        }
-      } else {
-        HTML("<h5><span style='color:red'>Must upload data first!</span></h5></br>")
-      }
-  })
-
-  observeEvent(input$navbar, {
+  
+  #colData for grouping the data (optional for user)
+  observeEvent(input$pathway, {
     if(!is.null(vals$counts)){
-      if(input$navbar == "GSVA"){
-        updateSelectInput(session, "pathwayPlotVar", choices = colnames(colData(vals$counts)))
-      }
+      updateSelectInput(session, "pathwayPlotVar", choices = colnames(colData(vals$counts)))
     }
   })
-
+  
+  #select geneset collection name for pathway analysis
+  output$selectPathwayGeneLists <- renderUI({
+    if (!is.null(vals$counts)){
+      if (!is.null(metadata(vals$original)$sctk$genesets)) {
+        newGSchoices <- sctkListGeneSetCollections(vals$original)
+        selectizeInput("PathwayGeneLists", "Select Geneset Collection(s):",
+                       choices = newGSchoices, multiple = TRUE)
+        
+      }
+    } else {
+      HTML("<h5><span style='color:red'>Must upload data first!</span></h5></br>")
+    }
+  })
+  
+  #Run algorithm
   observeEvent(input$pathwayRun, {
     if (is.null(vals$counts)){
       shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
     } else {
       withBusyIndicatorServer("pathwayRun", {
         #checks
-        if(is.null(input$pathwayPlotVar)){
-          stop("Must select a condition variable!")
-        }
-        if(is.null(input$pathwayGeneLists)){
+        
+        if(is.null(input$PathwayGeneLists)){
           stop("Must select atleast one Gene List! Gene Lists can be uploaded/selected from 'Import Gene Sets tab'")
-        }
-        conditionFactor <- factor(colData(vals$counts)[, input$pathwayPlotVar])
-        if(nlevels(conditionFactor)<=1){
-          stop("Condition variable must have atleast two levels!")
         }
         #update metadata of vals$counts
         metadata(vals$counts)$sctk <- metadata(vals$original)$sctk
-        #call gsva
-        vals$gsvaRes <- gsvaSCE(inSCE = vals$counts,
-                                useAssay = input$pathwayAssay,
-                                pathwayNames = input$pathwayGeneLists)
+        
+        if(input$pathway == "VAM"){
+          
+          vals$vamRes <- runVAM(inSCE = vals$counts,
+                                useAssay = input$vamAssay,
+                                geneSetCollectionName = input$PathwayGeneLists,
+                                center = input$vamCenterParameter,
+                                gamma = input$vamGammaParameter)
+        
+          #vals$vamCdf <- SingleCellExperiment::reducedDim(vals$vamRes, paste0(paste0("VAM_", input$PathwayGeneLists, "_"), "CDF"))
+          vals$vamResults <- SingleCellExperiment::reducedDim(vals$vamRes)
+          #vals$vamGeneset <- paste0(paste0("VAM_", input$PathwayGeneLists, "_"), "CDF")
+          vals$dimreduced <- reducedDims(vals$vamRes)
+          
+        
+        }
+        else if (input$pathway == "GSVA"){
+          
+          vals$gsvaRes <- runGSVA(inSCE = vals$counts,
+                                  useAssay = input$vamAssay,
+                                  geneSetCollectionName = input$PathwayGeneLists)
+          
+          vals$gsvaResults <- SingleCellExperiment::reducedDim(vals$gsvaRes)
+          #vals$gsvaGeneset <- paste0(paste0("GSVA_", input$PathwayGeneLists, "_"), "Scores")
+          vals$dimreduced <- append(vals$dimreduced, reducedDims(vals$gsvaRes))
+        }
+        
       })
     }
   })
-
-  observe({
-    if (length(input$pathwayPlotVar) == 1 & !(is.null(vals$gsvaRes))){
-      conditionFactor <- factor(colData(vals$counts)[, input$pathwayPlotVar])
-      if(nlevels(conditionFactor)<=1){
-        stop("Condition variable must have atleast two levels!")
+  
+  #select geneset for plotting
+  output$selectGeneSets <- renderUI({
+    if(input$pathway == "VAM"){
+      if (!(is.null(vals$vamRes))){
+        selectizeInput("GeneSets", "Select Geneset:",
+                       choices = colnames((vals$vamResults)), multiple = FALSE)
       }
-      fit <- limma::lmFit(vals$gsvaRes, stats::model.matrix(~conditionFactor))
-      fit <- limma::eBayes(fit)
-      toptableres <- limma::topTable(fit, number = nrow(vals$gsvaRes))
-      temptable <- cbind(rownames(toptableres), toptableres)
-      rownames(temptable) <- NULL
-      colnames(temptable)[1] <- "Pathway"
-      vals$gsvaLimma <- temptable
-    } else {
-      vals$gsvaLimma <- NULL
     }
-  })
-
-  output$pathwaytable <- DT::renderDataTable({
-    if (!is.null(vals$gsvaLimma)){
-        vals$gsvaLimma
-    }
-  }, options = list(scrollX = TRUE, pageLength = 30))
-
-  output$pathwayPlot <- renderPlot({
-    if (!(is.null(vals$gsvaRes))){
-        tempgsvares <- vals$gsvaRes
-      if (input$pathwayOutPlot == "Violin" & length(input$pathwayPlotVar) > 0){
-        tempgsvares <- tempgsvares[1:min(49, input$pickNtopPaths, nrow(tempgsvares)), , drop = FALSE]
-        gsvaPlot(inSCE = vals$counts,
-                 gsvaData = tempgsvares,
-                 plotType = input$pathwayOutPlot,
-                 condition = input$pathwayPlotVar)
-      } else if (input$pathwayOutPlot == "Heatmap"){
-        gsvaPlot(inSCE = vals$counts,
-                 gsvaData = tempgsvares,
-                 plotType = input$pathwayOutPlot,
-                 condition = input$pathwayPlotVar)
+    else if(input$pathway == "GSVA"){
+      
+      if (!(is.null(vals$gsvaRes))){
+        selectizeInput("GeneSets", "Select Geneset:",
+                       choices = colnames((vals$gsvaResults)), multiple = FALSE)
       }
     }
   })
-
-  #save pathawy activity results in the colData
-  observeEvent(input$savePathway, {
-    if (!(is.null(vals$gsvaRes))){
-      if (all(colnames(vals$counts) == colnames(vals$gsvaRes))){
-        if (!(is.null(vals$gsvaLimma))){
-          tempdf <- DataFrame(t(vals$gsvaRes[, , drop = FALSE]))
-          tempdf <- tempdf[, !(colnames(tempdf) %in% colnames(colData(vals$counts))), drop = FALSE]
-          colData(vals$counts) <- cbind(colData(vals$counts), tempdf)
-          #updateColDataNames()
+  
+  #select from reducedDimNames
+  output$selectReduceDim <- renderUI({
+    if (!(is.null(vals$counts))){
+      selectizeInput("reducedDimNames", "Select Score matrix which you want to plot:",
+                     choices = names((vals$dimreduced)), multiple = FALSE)
+    }
+  })
+  
+ #plot results
+  observeEvent(input$Plot, {
+    output$depathwayPlot <- renderPlot({
+      if (input$pathway == "VAM"){
+        if (!(is.null(vals$vamRes))){
+          plotSCEViolin(inSCE = vals$vamRes, slotName = "reducedDims", itemName = input$reducedDimNames, dimension = input$GeneSets, xlab = "Sample", ylab = "Value", groupBy = input$pathwayPlotVar)
+          #groupby can be used for indicating colnames (optional)
         }
+          else{
+            shinyalert::shinyalert("Error!", "Run pathway analysis first.", type = "error")
+          }
       }
-    } else {
-      shinyalert::shinyalert("Error!", "Run pathway first.", type = "error")
-    }
+      else if (input$pathway == "GSVA"){
+        if (!(is.null(vals$gsvaRes))){
+          plotSCEViolin(inSCE = vals$gsvaRes, slotName = "reducedDims", itemName = input$reducedDimNames, dimension = input$GeneSets, xlab = "Sample", ylab = "Value", groupBy = input$pathwayPlotVar)
+          #groupby can be used for indicating colnames (optional)
+        
+        }
+        else{
+          shinyalert::shinyalert("Error!", "Run pathway analysis first.", type = "error")
+         }
+      }
+      
+      })
   })
-
+  
   #disable downloadPathway button if the pathway data doesn't exist
-  isPathwayResult <- reactive(is.null(vals$gsvaRes))
+  isVamResult <- reactive(is.null(vals$vamResults))
+  isGsvaResult <- reactive(is.null(vals$gsvaResults))
   observe({
-    if (isPathwayResult()) {
+    if (isVamResult() && isGsvaResult()) {
       shinyjs::disable("downloadPathway")
     } else {
       shinyjs::enable("downloadPathway")
     }
   })
-
-  #download mast results
+  
+  #download pathway results
   output$downloadPathway <- downloadHandler(
     filename = function() {
-      paste("pathway_results-", Sys.Date(), ".csv", sep = "")
+      paste("Pathway_results-", Sys.Date(), ".csv", sep = "")
     },
     content = function(file) {
-      utils::write.csv(vals$gsvaRes, file)
+      if(input$pathway == "VAM"){
+        utils::write.csv(vals$vamResults, file)
+      }
+      else if (input$pathway == "GSVA"){
+        utils::write.csv(vals$gsvaResults, file)
+      }
     }
   )
-
+  
   #-----------------------------------------------------------------------------
   # Page 6.2 : Enrichment Analysis - EnrichR
   #-----------------------------------------------------------------------------
