@@ -174,6 +174,15 @@ findMarkerDiffExp <- function(inSCE, useAssay = 'logcounts',
 #' @param topN An integer. Only to fetch this number of top markers for each
 #' cluster in maximum, in terms of log2FC value. Use \code{NULL} to cancel the
 #' top N subscription. Default \code{10}.
+#' @return An organized \code{data.frame} object, with the top marker gene
+#' information.
+#' @export
+#' @examples
+#' data("mouseBrainSubsetSCE", package = "singleCellTK")
+#' mouseBrainSubsetSCE <- findMarkerDiffExp(mouseBrainSubsetSCE,
+#'                                          useAssay = "logcounts",
+#'                                          cluster = "level1class")
+#' findMarkerTopTable(mouseBrainSubsetSCE)
 findMarkerTopTable <- function(inSCE, log2fcThreshold = 1,
                                fdrThreshold = 0.05, minClustExprPerc = 0.7,
                                maxCtrlExprPerc = 0.4, minMeanExpr = 1,

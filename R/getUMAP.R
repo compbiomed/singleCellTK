@@ -15,8 +15,8 @@
 #' @param reducedDimName A name to store the results of the dimension reduction
 #' coordinates obtained from this method. Default \code{"UMAP"}.
 #' @param logNorm Whether the counts will need to be log-normalized prior to
-#' generating the UMAP via \code{\link{logNormCounts}}. Default
-#' \code{TRUE}.
+#' generating the UMAP via \code{\link{logNormCounts}}. Will not normalize when
+#' using \code{useReducedDim}. Default \code{TRUE}.
 #' @param nNeighbors The size of local neighborhood used for manifold
 #' approximation. Larger values result in more global views of the manifold,
 #' while smaller values result in more local data being preserved. Default
@@ -28,13 +28,13 @@
 #' @param minDist The effective minimum distance between embedded points.
 #' Smaller values will result in a more clustered/clumped embedding where nearby
 #' points on the manifold are drawn closer together, while larger values will
-#' result on a more even dispersal of points. Default \code{0.01}. See
+#' result on a more even dispersal of points. Default \code{0.5}. See
 #' `?uwot::umap` for more information.
 #' @param spread The effective scale of embedded points. In combination with
 #' minDist, this determines how clustered/clumped the embedded points are.
-#' Default \code{1}. See `?uwot::umap` for more information.
+#' Default \code{5}. See `?uwot::umap` for more information.
 #' @param pca Logical. Whether to perform dimension reduction with PCA before
-#' UMAP. Default \code{TRUE}
+#' UMAP. Will not perform PCA if using \code{useReducedDim}. Default \code{TRUE}
 #' @param initialDims  Number of dimensions from PCA to use as input in UMAP.
 #' Default \code{50}.
 #' @return A \linkS4class{SingleCellExperiment} object with UMAP computation
@@ -52,7 +52,7 @@
 getUMAP <- function(inSCE, useAssay = NULL, useAltExp = NULL,
                     useReducedDim = NULL, sample = NULL,
                     reducedDimName = "UMAP", logNorm = TRUE, nNeighbors = 30,
-                    nIterations = 200, alpha = 1, minDist = 0.01, spread = 1,
+                    nIterations = 200, alpha = 1, minDist = 0.5, spread = 5,
                     pca = TRUE, initialDims = 50) {
   if (!inherits(inSCE, "SingleCellExperiment")){
     stop("Please use a SingleCellExperiment object")
@@ -118,6 +118,7 @@ getUMAP <- function(inSCE, useAssay = NULL, useAltExp = NULL,
       matColData <- SummarizedExperiment::assay(sceSample, useAssayTemp)
     } else {
       matColData <- t(SingleCellExperiment::reducedDim(sce, useReducedDim))
+      pca <- FALSE
     }
 
     matColData <- as.matrix(matColData)

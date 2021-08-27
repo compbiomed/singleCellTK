@@ -38,10 +38,21 @@ expression value of the marker in the cluster of interests. Default \code{1}.}
 cluster in maximum, in terms of log2FC value. Use \code{NULL} to cancel the
 top N subscription. Default \code{10}.}
 }
+\value{
+An organized \code{data.frame} object, with the top marker gene
+information.
+}
 \description{
 Fetch the table of top markers that pass the filtering
 }
 \details{
 Users have to run \code{findMarkerDiffExp()} prior to using this
 function to extract a top marker table.
+}
+\examples{
+data("mouseBrainSubsetSCE", package = "singleCellTK")
+mouseBrainSubsetSCE <- findMarkerDiffExp(mouseBrainSubsetSCE,
+                                         useAssay = "logcounts",
+                                         cluster = "level1class")
+findMarkerTopTable(mouseBrainSubsetSCE)
 }
