@@ -4,9 +4,11 @@ shinyPanelvam <- fluidPage(
     h1("Pathway Analysis"),
     #h5(tags$a(href = paste0(docs.artPath, "ui_gsva.html"),
      #         "(help)", target = "_blank")),
+    
     sidebarLayout(
       sidebarPanel(
         uiOutput("vamAssay"),
+        
         selectInput(
                     inputId = "pathway",
                     label = "Select Method: ",
@@ -37,34 +39,53 @@ shinyPanelvam <- fluidPage(
            )),
        ),
         
-       conditionalPanel(
-         condition = "input.pathway == 'GSVA'",
-         #radioButtons("pathwayOutPlot", "Plot Type:", c("Heatmap", "Violin"))
-         
+       withBusyIndicatorUI(actionButton("pathwayRun", "Run")),
+       tags$hr(),
+       #h3("Save results:"),
+       #downloadButton("downloadPathway", "Download Results")
+      
        ),
-       
-        withBusyIndicatorUI(actionButton("pathwayRun", "Run")),
-        tags$hr(),
-        h3("Save results:"),
-        downloadButton("downloadPathway", "Download Results")
-      ),
       mainPanel(
         
-
-          panel(
-            heading = "Visualization"
-          ),
-      
-         
-        #h2("Visualization"),
-        uiOutput("selectGeneSets"),
+        dropdown(
+          
+          tags$h3("List of Input"),
+          uiOutput("selectReduceDim"),
+          uiOutput("selectGeneSets"),
+          selectInput(inputId = 'pathwayPlotVar',
+                      label = 'Select Condition(s) of interest to group data (OPTIONAL) : ', 
+                      choices = clusterChoice,
+                      multiple = FALSE),
+          
+          radioButtons("boxplot", "Box Plot:", 
+                       c("TRUE" = "TRUE", 
+                         "FALSE" = "FALSE"), inline = TRUE),
+          
+          radioButtons("violinplot", "Violin Plot:", 
+                       c("TRUE" = "TRUE", 
+                         "FALSE" = "FALSE"), inline = TRUE),
+          
+          pickerInput(
+            inputId = "summary",
+            label = "Select Summary parameter: ",
+            choices = c(
+              "Mean" = "mean",
+              "Median" = "median"
+            )),
+          
+          withBusyIndicatorUI(actionButton("Plot", "Update Plot")),  
+          
+          tags$style(".btn-custom {background-color: #e5e5e5; ;}"),
+          label = "Plot Options", 
+          status = "custom", width = "300px", 
+          animate = animateOptions(
+            enter = animations$fading_entrances$fadeInLeftBig,
+            exit = animations$fading_exits$fadeOutRightBig
+          )
+        ),
         
-        selectInput("pathwayPlotVar",
-                       "Select Condition(s) of interest to group data (OPTIONAL) : ", clusterChoice,
-                       multiple = TRUE),
-           
-        withBusyIndicatorUI(actionButton('Plot', 'Plot')),
-        shinyjqui::jqui_resizable(plotOutput("depathwayPlot", height = "600px"))   
+        plotOutput("pathwayPlot", height = "600px") 
+          
         
       )
     )
