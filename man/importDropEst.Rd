@@ -9,7 +9,8 @@ importDropEst(
   dataType = c("filtered", "raw"),
   rdsFileName = "cell.counts",
   sampleNames = NULL,
-  delayedArray = FALSE
+  delayedArray = FALSE,
+  class = c("Matrix", "matrix")
 )
 }
 \arguments{
@@ -24,6 +25,11 @@ Default "sample".}
 
 \item{delayedArray}{Boolean. Whether to read the expression matrix as
 \link{DelayedArray} object or not. Default \code{FALSE}.}
+
+\item{class}{Character. The class of the expression matrix stored in the SCE
+object. Can be one of "Matrix" (as returned by
+\link{readMM} function), or "matrix" (as returned by
+\link[base]{matrix} function). Default \code{"Matrix"}.}
 }
 \value{
 A \code{SingleCellExperiment} object containing the count matrix,
