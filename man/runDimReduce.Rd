@@ -12,6 +12,7 @@ runDimReduce(
   useReducedDim = NULL,
   useAltExp = NULL,
   reducedDimName,
+  nComponents = 20,
   ...
 )
 }

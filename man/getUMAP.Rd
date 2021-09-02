@@ -12,7 +12,7 @@ getUMAP(
   useReducedDim = NULL,
   sample = NULL,
   reducedDimName = "UMAP",
-  logNorm = TRUE,
+  logNorm = FALSE,
   nNeighbors = 30,
   nIterations = 200,
   alpha = 1,
@@ -44,7 +44,7 @@ coordinates obtained from this method. Default \code{"UMAP"}.}
 
 \item{logNorm}{Whether the counts will need to be log-normalized prior to
 generating the UMAP via \code{\link{logNormCounts}}. Will not normalize when
-using \code{useReducedDim}. Default \code{TRUE}.}
+using \code{useReducedDim}. Default \code{FALSE}.}
 
 \item{nNeighbors}{The size of local neighborhood used for manifold
 approximation. Larger values result in more global views of the manifold,

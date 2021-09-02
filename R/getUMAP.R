@@ -16,7 +16,7 @@
 #' coordinates obtained from this method. Default \code{"UMAP"}.
 #' @param logNorm Whether the counts will need to be log-normalized prior to
 #' generating the UMAP via \code{\link{logNormCounts}}. Will not normalize when
-#' using \code{useReducedDim}. Default \code{TRUE}.
+#' using \code{useReducedDim}. Default \code{FALSE}.
 #' @param nNeighbors The size of local neighborhood used for manifold
 #' approximation. Larger values result in more global views of the manifold,
 #' while smaller values result in more local data being preserved. Default
@@ -46,7 +46,7 @@
 #' sce <- getUMAP(inSCE = sce, useAssay = "counts", reducedDimName = "UMAP")
 getUMAP <- function(inSCE, useAssay = NULL, useAltExp = NULL,
                     useReducedDim = NULL, sample = NULL,
-                    reducedDimName = "UMAP", logNorm = TRUE, nNeighbors = 30,
+                    reducedDimName = "UMAP", logNorm = FALSE, nNeighbors = 30,
                     nIterations = 200, alpha = 1, minDist = 0.5, spread = 5,
                     pca = TRUE, initialDims = 50) {
   if (!inherits(inSCE, "SingleCellExperiment")){

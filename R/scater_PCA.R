@@ -12,7 +12,7 @@
 #' @param nComponents Number of principal components to obtain from the PCA
 #' computation. Default \code{50}.
 #' @param scale Logical scalar, whether to standardize the expression values.
-#' Default \code{TRUE}.
+#' Default \code{FALSE}.
 #' @param ntop Number of top features to use as a further variable feature
 #' selection. Default \code{NULL}.
 #' @return A \linkS4class{SingleCellExperiment} object with PCA computation
@@ -24,7 +24,7 @@
 #' sce <- scaterlogNormCounts(sce, "logcounts")
 #' sce <- scaterPCA(sce, "logcounts")
 scaterPCA <- function(inSCE, useAssay = "logcounts", useAltExp = NULL,
-                   reducedDimName = "PCA", nComponents = 50, scale = TRUE,
+                   reducedDimName = "PCA", nComponents = 50, scale = FALSE,
                    ntop = NULL){
   if (!is.null(useAltExp)) {
     if (!(useAltExp %in% SingleCellExperiment::altExpNames(inSCE))) {

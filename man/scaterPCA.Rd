@@ -12,7 +12,7 @@ scaterPCA(
   useAltExp = NULL,
   reducedDimName = "PCA",
   nComponents = 50,
-  scale = TRUE,
+  scale = FALSE,
   ntop = NULL
 )
 }
@@ -33,7 +33,7 @@ selected.variable features. Default \code{NULL}.}
 computation. Default \code{50}.}
 
 \item{scale}{Logical scalar, whether to standardize the expression values.
-Default \code{TRUE}.}
+Default \code{FALSE}.}
 
 \item{ntop}{Number of top features to use as a further variable feature
 selection. Default \code{NULL}.}

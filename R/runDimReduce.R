@@ -105,29 +105,21 @@ runDimReduce <- function(inSCE,
                                     "uwotUMAP",
                                     "seuratUMAP"),
                          useAssay = NULL, useReducedDim = NULL,
-                         useAltExp = NULL, reducedDimName, ...
+                         useAltExp = NULL, reducedDimName, nComponents = 20, ...
 ) {
 
   method <- match.arg(method)
   args <- list(...)
 
-  params <- list(
-    inSCE = inSCE,
-    useAssay = useAssay,
-    useAltExp = useAltExp,
-    reducedDimName = reducedDimName
-  )
-
   if (method %in% c("scaterPCA", "seuratPCA", "seuratICA")) {
     .matrixTypeCheck(inSCE, "linear", useAssay, useReducedDim, useAltExp)
   } else {
     .matrixTypeCheck(inSCE, "embedding", useAssay, useReducedDim, useAltExp)
-    params$useReducedDim <- useReducedDim
   }
 
   if (method == "scaterPCA") {
     inSCE <- scaterPCA(inSCE = inSCE, useAssay = useAssay, useAltExp = useAltExp,
-                       reducedDimName = reducedDimName, ...)
+                       reducedDimName = reducedDimName, nComponents = nComponents, ...)
   } else if (method == "uwotUMAP") {
     inSCE <- getUMAP(inSCE = inSCE, useAssay = useAssay, useAltExp = useAltExp,
                      useReducedDim = useReducedDim,
@@ -150,10 +142,18 @@ runDimReduce <- function(inSCE,
       ## SeuratPCA/ICA
       if (method == "seuratPCA") {
         tempSCE <- seuratPCA(tempSCE, useAssay = useAssay,
-                             reducedDimName = reducedDimName, ...)
+                             reducedDimName = reducedDimName,
+                             nPCs = nComponents, ...)
       } else if (method == "seuratICA") {
         tempSCE <- seuratICA(tempSCE, useAssay = useAssay,
-                             reducedDimName = reducedDimName, ...)
+                             reducedDimName = reducedDimName,
+                             nics = nComponents, ...)
+      }
+      seuratObj <- tempSCE@metadata$seurat
+      if (!is.null(useAltExp)) {
+        altExp(inSCE, useAltExp)@metadata$seurat <- seuratObj
+      } else if (!is.null(useAssay)) {
+        inSCE@metadata$seurat <- seuratObj
       }
     } else {
       ## SeuratUMAP/TSNE
@@ -173,10 +173,12 @@ runDimReduce <- function(inSCE,
         }
         if (method == "seuratUMAP") {
           tempSCE <- seuratRunUMAP(inSCE = tempSCE,
-                                   reducedDimName = reducedDimName, ...)
+                                   reducedDimName = reducedDimName,
+                                   dims = nComponents, ...)
         } else {
           tempSCE <- seuratRunTSNE(inSCE = tempSCE,
-                                   reducedDimName = reducedDimName, ...)
+                                   reducedDimName = reducedDimName,
+                                   dims = nComponents, ...)
         }
       } else {
         ### using external reducedDim
@@ -195,11 +197,13 @@ runDimReduce <- function(inSCE,
         if (method == "seuratUMAP") {
           # hard-code useReduction="pca"
           tempSCE <- seuratRunUMAP(inSCE = tempSCE, useReduction = "pca",
-                                   reducedDimName = reducedDimName, ...)
+                                   reducedDimName = reducedDimName,
+                                   dims = nComponents, ...)
         } else {
           # hard-code useReduction="pca"
           tempSCE <- seuratRunTSNE(inSCE = tempSCE, useReduction = "pca",
-                                   reducedDimName = reducedDimName, ...)
+                                   reducedDimName = reducedDimName,
+                                   dims = nComponents, ...)
         }
       }
     }
