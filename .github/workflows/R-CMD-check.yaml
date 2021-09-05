@@ -41,6 +41,10 @@ jobs:
         with:
           extra-packages: rcmdcheck
 
+      - name: Install XQuartz on macOS
+        if: runner.os == 'macOS'
+        run: brew install xquartz --cask
+        
       - name: Check
         env:
           _R_CHECK_CRAN_INCOMING_: false
