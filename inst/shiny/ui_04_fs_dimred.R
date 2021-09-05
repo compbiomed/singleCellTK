@@ -2,6 +2,9 @@ shinyPanelFS_DimRed <- fluidPage(
   tags$script("Shiny.addCustomMessageHandler('close_dropDownDimRedEmbedding', function(x){
                   $('html').click();
                 });"),
+  tags$script("Shiny.addCustomMessageHandler('close_dropDownFS', function(x){
+                  $('html').click();
+                });"),
   h1("Feature Selection & Dimensionality Reduction"),
   tabsetPanel(
     id = "FSDimRedTabsetPanel",
@@ -45,20 +48,24 @@ shinyPanelFS_DimRed <- fluidPage(
         panel(
           heading = "Plot",
           fluidRow(
-            column(4, dropdownButton(
-              br(),
-              panel(fluidRow(
+            column(4, dropdown(
+              fluidRow(
                 column(12,
-                       br(),
+                       fluidRow(actionBttn(inputId = "closeDropDownFS", label = NULL, style = "simple", color = "danger", icon = icon("times"), size = "xs"), align = "right"),
                        numericInput(
                          inputId = "hvgNoFeaturesViewFS",
                          label = "Select number of features to display: ",
                          value = 100
+                       ),
+                       actionBttn(
+                         inputId = "updatePlotFS",
+                         label = "update", 
+                         style = "bordered",
+                         color = "primary",
+                         size = "sm"
                        )
-                       # ,
-                       # withBusyIndicatorUI(actionButton("showHVG", "Update"))
                 )
-              )),
+              ),
               inputId = "dropDownFS",
               icon = icon("cog"),
               status = "primary",
@@ -76,15 +83,6 @@ shinyPanelFS_DimRed <- fluidPage(
             verbatimTextOutput(outputId = "hvgOutputFS",
                                placeholder = TRUE)
           )
-          # ,
-          # selectizeInput(
-          #   inputId = "scatterFSGenes",
-          #   label = "Select genes:",
-          #   multiple = TRUE,
-          #   choices = c(gene_list)
-          # ),
-          # actionButton(inputId = "scatterFSRun", "Run"),
-          # plotlyOutput("scatterFS", height = "600px")
         )
       )),
       nonLinearWorkflowUI(id = "nlw-fs")

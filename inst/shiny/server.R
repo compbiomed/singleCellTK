@@ -2578,7 +2578,6 @@ shinyServer(function(input, output, session) {
                   $('html').click();
                 });"),
           panel(
-            #heading = "Heatmap Plot",
             fluidRow(
               column(4, dropdown(
                 fluidRow(actionBttn(inputId = "closeDropDownDimRedHeatmap", label = NULL, style = "simple", color = "danger", icon = icon("times"), size = "xs"), align = "right"),
@@ -2713,22 +2712,28 @@ shinyServer(function(input, output, session) {
     
     appendTab(inputId = "dimRedPCAICA_plotTabset", tabPanel(title = "Component Plot",
                                                             panel(
-                                                              #heading = "Component Plot",
+                                                              tags$script("Shiny.addCustomMessageHandler('close_dropDownDimRedComponentPlot', function(x){$('html').click();});"),
                                                               fluidRow(
-                                                                column(4, dropdownButton(
-                                                                  br(),
-                                                                  panel(fluidRow(
+                                                                column(4, dropdown(
+                                                                  fluidRow(
                                                                     column(12,
-                                                                           br(),
+                                                                           fluidRow(actionBttn(inputId = "closeDropDownDimRedComponentPlot", label = NULL, style = "simple", color = "danger", icon = icon("times"), size = "xs"), align = "right"),
                                                                            selectizeInput(
                                                                              inputId = "plotDimRed_pca_selectRedDim",
                                                                              label = "Select reducedDim:",
                                                                              choices = reducedDimNames(vals$counts)
                                                                            ),
                                                                            numericInput(inputId = "plotDimRed_pca_dimX", label = "Select component for X-axis:", value = 1),
-                                                                           numericInput(inputId = "plotDimRed_pca_dimY", label = "Select component for Y-axis:", value = 2)
+                                                                           numericInput(inputId = "plotDimRed_pca_dimY", label = "Select component for Y-axis:", value = 2),
+                                                                           actionBttn(
+                                                                             inputId = "updateRedDimPlot_pca",
+                                                                             label = "update", 
+                                                                             style = "bordered",
+                                                                             color = "primary",
+                                                                             size = "sm"
+                                                                           )
                                                                     )
-                                                                  )),
+                                                                  ),
                                                                   inputId = "dropDownDimRedComponentPlot",
                                                                   icon = icon("cog"),
                                                                   status = "primary",
@@ -2812,19 +2817,27 @@ shinyServer(function(input, output, session) {
         }
   })
   
-  observeEvent(input$plotDimRed_pca_selectRedDim,{
+  observeEvent(input$updateRedDimPlot_pca,{
     req(vals$counts)
       output$plotDimRed_pca <- renderPlotly({
-        plotly::ggplotly(
-          plotDimRed(
-            inSCE = vals$counts,
-            useReduction = input$plotDimRed_pca_selectRedDim,
-            xDim = input$plotDimRed_pca_dimX,
-            yDim = input$plotDimRed_pca_dimY,
-            xAxisLabel = paste0(input$dimRedPlotMethod, "_", input$plotDimRed_pca_dimX),
-            yAxisLabel = paste0(input$dimRedPlotMethod, "_", input$plotDimRed_pca_dimY))
-        )
+        isolate({
+          plotly::ggplotly(
+            plotDimRed(
+              inSCE = vals$counts,
+              useReduction = input$plotDimRed_pca_selectRedDim,
+              xDim = input$plotDimRed_pca_dimX,
+              yDim = input$plotDimRed_pca_dimY,
+              xAxisLabel = paste0(input$dimRedPlotMethod, "_", input$plotDimRed_pca_dimX),
+              yAxisLabel = paste0(input$dimRedPlotMethod, "_", input$plotDimRed_pca_dimY))
+          )
+        })
       })
+      session$sendCustomMessage("close_dropDownDimRedComponentPlot", "")
+  })
+  
+  observeEvent(input$closeDropDownDimRedComponentPlot, {
+    req(vals$counts)
+    session$sendCustomMessage("close_dropDownDimRedComponentPlot", "")
   })
 
   observeEvent(input$runDimred_tsneUmap, {
@@ -5108,7 +5121,7 @@ shinyServer(function(input, output, session) {
     })
   })
 
-  observeEvent(input$hvgNoFeaturesViewFS, {
+  observeEvent(input$updatePlotFS, {
     req(vals$counts)
       if (isTRUE(vals$hvgCalculated$status) &&
           !is.null(vals$hvgCalculated$method)) {
@@ -5126,19 +5139,24 @@ shinyServer(function(input, output, session) {
           hvgList = HVGs
         )
         output$plotFS <- renderPlot({
-          if (!is.null(vals$vfplot)) {
-            vals$vfplot
-          }
+          isolate({
+            if (!is.null(vals$vfplot)) {
+              vals$vfplot
+            }
+          })
         })
-        output$hvgOutputFS <- renderText({HVGs})
-      } 
-    # else {
-    #     shinyalert::shinyalert(
-    #       "Error",
-    #       text = "Please compute the variance before the visualization!",
-    #       type = "error"
-    #     )
-    #   }
+        output$hvgOutputFS <- renderText({
+          isolate({
+            HVGs
+          })
+        })
+      }
+    session$sendCustomMessage("close_dropDownFS", "")
+  })
+  
+  observeEvent(input$closeDropDownFS, {
+    req(vals$counts)
+    session$sendCustomMessage("close_dropDownFS", "")
   })
 
   observeEvent(input$hvgSubsetRun, {
@@ -5192,11 +5210,17 @@ shinyServer(function(input, output, session) {
             hvgList = HVGs
           )
           output$plotFS <- renderPlot({
-            if (!is.null(vals$vfplot)) {
-              vals$vfplot
-            }
+            isolate({
+              if (!is.null(vals$vfplot)) {
+                vals$vfplot
+              }
+            })
           })
-          output$hvgOutputFS <- renderText({HVGs})
+          output$hvgOutputFS <- renderText({
+            isolate({
+              HVGs
+            })
+          })
         }
         # Show downstream analysis options
         callModule(module = nonLinearWorkflow, id = "nlw-fs", parent = session, dr = TRUE, cl = TRUE)
