@@ -27,6 +27,7 @@ shinyPanelFS_DimRed <- fluidPage(
             p("Selection will be based on the latest computation above."),
             numericInput("hvgNumberSelect", "Number of HVG to select",
                          2000, step = 100),
+            uiOutput("hvgSubsetAssay"),
             textInput("hvgAltExpName", "Name for the subset",
                       "featureSubset"),
             withBusyIndicatorUI(actionButton("hvgSubsetRun", "Select"))
@@ -82,7 +83,7 @@ shinyPanelFS_DimRed <- fluidPage(
                     numericInput(
                       inputId = "dimRedNumberDims",
                       label = "Number of dimensions:",
-                      value = 10,
+                      value = 50,
                       step = 1),
                     conditionalPanel(
                       condition = "input.dimRedPlotMethod != 'seuratICA'",
@@ -151,16 +152,17 @@ shinyPanelFS_DimRed <- fluidPage(
                     conditionalPanel(
                       condition = "input.dimRedPlotMethod_tsneUmap == 'uwotUMAP'",
                       checkboxInput("logNormUMAP", " Log Normalize the data",
-                                    TRUE),
+                                    FALSE),
                       numericInput("iterUMAP", "# of iterations", min = 50,
                                    max = 500, value = 200),
                       numericInput("neighborsUMAP", "# of nearest neighbors",
-                                   min = 2, max = 100, value = 5),
+                                   min = 2, max = 100, value = 30),
                       numericInput("mindistUMAP",
                                    "minimum distance between points",
-                                   min = 0.001, max = 0.1, value = 0.01),
+                                   min = 0.001, max = 0.1, value = 0.5),
                       numericInput("alphaUMAP", "learning rate(alpha)",
-                                   value = 1)
+                                   value = 1),
+                      numericInput("spreadUMAP", "spread", min = 0.001, value = 5)
                     ),
                     conditionalPanel(
                       condition = "input.dimRedPlotMethod_tsneUmap == 'rTSNE'",

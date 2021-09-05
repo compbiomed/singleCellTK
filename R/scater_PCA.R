@@ -9,10 +9,10 @@
 #' selected.variable features. Default \code{NULL}.
 #' @param reducedDimName Name to use for the reduced output assay. Default
 #' \code{"PCA"}.
-#' @param ndim Number of principal components to obtain from the PCA
+#' @param nComponents Number of principal components to obtain from the PCA
 #' computation. Default \code{50}.
 #' @param scale Logical scalar, whether to standardize the expression values.
-#' Default \code{TRUE}.
+#' Default \code{FALSE}.
 #' @param ntop Number of top features to use as a further variable feature
 #' selection. Default \code{NULL}.
 #' @return A \linkS4class{SingleCellExperiment} object with PCA computation
@@ -21,10 +21,10 @@
 #' @examples
 #' data(scExample, package = "singleCellTK")
 #' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
-#' logcounts(sce) <- log(counts(sce) + 1)
-#' sce <- scaterPCA(sce, ntop = 500)
+#' sce <- scaterlogNormCounts(sce, "logcounts")
+#' sce <- scaterPCA(sce, "logcounts")
 scaterPCA <- function(inSCE, useAssay = "logcounts", useAltExp = NULL,
-                   reducedDimName = "PCA", ndim = 50, scale = TRUE,
+                   reducedDimName = "PCA", nComponents = 50, scale = FALSE,
                    ntop = NULL){
   if (!is.null(useAltExp)) {
     if (!(useAltExp %in% SingleCellExperiment::altExpNames(inSCE))) {
@@ -47,7 +47,7 @@ scaterPCA <- function(inSCE, useAssay = "logcounts", useAltExp = NULL,
     ntop <- min(ntop, nrow(inSCE))
   }
   sce <- scater::runPCA(sce, name = reducedDimName, exprs_values = useAssay,
-                        ncomponents = ndim,  ntop = ntop, scale = scale)
+                        ncomponents = nComponents,  ntop = ntop, scale = scale)
   SingleCellExperiment::reducedDim(inSCE, reducedDimName) <-
     SingleCellExperiment::reducedDim(sce, reducedDimName)
   return(inSCE)

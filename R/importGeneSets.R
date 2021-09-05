@@ -476,12 +476,12 @@ importGeneSetsFromMSigDB <- function(inSCE, categoryIDs,
 importMitoGeneSet <- function(inSCE, reference, id, by, collectionName) {
   id <- tolower(id)
   if (!id %in% c("symbol", "entrez", "ensemble", "ensemble_transcriptID")) {
-    stop("id should be one of 'symbol', 'entrez', 'ensemble' or 'ensemble_transcriptID'")
+    stop("`id` should be one of 'symbol', 'entrez', 'ensemble' or 'ensemble_transcriptID'")
   }
 
   reference <- tolower(reference)
   if (!reference %in% c("human", "mouse")) {
-    stop("Now it only supports human and mouse reference.")
+    stop("Now it only supports 'human' and 'mouse' reference.")
   }
 
   MitoGenes <- NULL
@@ -492,6 +492,7 @@ importMitoGeneSet <- function(inSCE, reference, id, by, collectionName) {
   }
 
   mitogenes <- MitoGenes[[target]]
+  names(mitogenes) <- collectionName
   inSCE <- importGeneSetsFromList(inSCE = inSCE, geneSetList = mitogenes,
                                   collectionName = collectionName,
                                   by = by)
