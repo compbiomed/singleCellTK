@@ -2814,14 +2814,11 @@ shinyServer(function(input, output, session) {
     if (!is.null(input$dimRedAssaySelect_tsneUmap)) {
       if (input$dimRedAssaySelect_tsneUmap %in% reducedDimNames(vals$counts)) {
         shinyjs::disable("reductionMethodUMAPTSNEDimRed")
-        vals$srtUMAPTSNE_useRed <- NULL
       } else {
         shinyjs::enable("reductionMethodUMAPTSNEDimRed")
-        vals$srtUMAPTSNE_useRed <- input$reductionMethodUMAPTSNEDimRed
       }
     } else {
       shinyjs::enable("reductionMethodUMAPTSNEDimRed")
-      vals$srtUMAPTSNE_useRed <- input$reductionMethodUMAPTSNEDimRed
     }
   })
   observeEvent(input$runDimred_tsneUmap, {
@@ -2869,17 +2866,30 @@ shinyServer(function(input, output, session) {
               #  nIterations = input$iterTSNE
               #)
             } else if(input$dimRedPlotMethod_tsneUmap == "seuratTSNE"){
-              vals$counts <- runDimReduce(
-                inSCE = vals$counts,
-                useAssay = embedUseAssay,
-                useReducedDim = embedUseRedDim,
-                useAltExp = embedUseAltExp,
-                method = "seuratTSNE",
-                reducedDimName = dimrednamesave,
-                nComponents = input$dimRedNumberDims_tsneUmap,
-                perplexity = input$perplexityTSNE,
-                useReduction = vals$srtUMAPTSNE_useRed
-              )
+              if (!is.null(embedUseRedDim)) {
+                vals$counts <- runDimReduce(
+                  inSCE = vals$counts,
+                  useAssay = embedUseAssay,
+                  useReducedDim = embedUseRedDim,
+                  useAltExp = embedUseAltExp,
+                  method = "seuratTSNE",
+                  reducedDimName = dimrednamesave,
+                  dims = input$dimRedNumberDims_tsneUmap,
+                  perplexity = input$perplexityTSNE
+                )
+              } else {
+                vals$counts <- runDimReduce(
+                  inSCE = vals$counts,
+                  useAssay = embedUseAssay,
+                  useReducedDim = embedUseRedDim,
+                  useAltExp = embedUseAltExp,
+                  method = "seuratTSNE",
+                  reducedDimName = dimrednamesave,
+                  dims = input$dimRedNumberDims_tsneUmap,
+                  perplexity = input$perplexityTSNE,
+                  useReduction = input$reductionMethodUMAPTSNEDimRed
+                )
+              }
               #vals$counts <- runDimensionalityReduction(
               #  inSCE = vals$counts,
               #  useAssay = input$dimRedAssaySelect_tsneUmap,
@@ -2890,19 +2900,34 @@ shinyServer(function(input, output, session) {
               #  useReduction = input$reductionMethodUMAPTSNEDimRed
               #)
             } else if(input$dimRedPlotMethod_tsneUmap == "seuratUMAP"){
-              vals$counts <- runDimReduce(
-                inSCE = vals$counts,
-                useAssay = embedUseAssay,
-                useReducedDim = embedUseRedDim,
-                useAltExp = embedUseAltExp,
-                method = "seuratUMAP",
-                reducedDimName = dimrednamesave,
-                nComponents = input$dimRedNumberDims_tsneUmap,
-                minDist = input$minDistUMAPDimRed,
-                nNeighbors = input$nNeighboursUMAPDimRed,
-                spread = input$spreadUMAPDimRed,
-                useReduction = vals$srtUMAPTSNE_useRed
-              )
+              if (!is.null(embedUseRedDim)) {
+                vals$counts <- runDimReduce(
+                  inSCE = vals$counts,
+                  useAssay = embedUseAssay,
+                  useReducedDim = embedUseRedDim,
+                  useAltExp = embedUseAltExp,
+                  method = "seuratUMAP",
+                  reducedDimName = dimrednamesave,
+                  dims = input$dimRedNumberDims_tsneUmap,
+                  minDist = input$minDistUMAPDimRed,
+                  nNeighbors = input$nNeighboursUMAPDimRed,
+                  spread = input$spreadUMAPDimRed
+                )
+              } else {
+                vals$counts <- runDimReduce(
+                  inSCE = vals$counts,
+                  useAssay = embedUseAssay,
+                  useReducedDim = embedUseRedDim,
+                  useAltExp = embedUseAltExp,
+                  method = "seuratUMAP",
+                  reducedDimName = dimrednamesave,
+                  dims = input$dimRedNumberDims_tsneUmap,
+                  minDist = input$minDistUMAPDimRed,
+                  nNeighbors = input$nNeighboursUMAPDimRed,
+                  spread = input$spreadUMAPDimRed,
+                  useReduction = input$reductionMethodUMAPTSNEDimRed
+                )
+              }
               #vals$counts <- runDimensionalityReduction(
               #  inSCE = vals$counts,
               #  useAssay = input$dimRedAssaySelect_tsneUmap,
@@ -2919,7 +2944,6 @@ shinyServer(function(input, output, session) {
               if (is.na(input$alphaUMAP)) {
                 stop("Learning rate (alpha) must be a numeric non-empty value!")
               }
-              print(altExp(vals$counts))
               vals$counts <- runDimReduce(
                 inSCE = vals$counts,
                 useAssay = embedUseAssay,
@@ -5795,8 +5819,12 @@ shinyServer(function(input, output, session) {
                                          method = input$fmMethod,
                                          useAssay = input$fmAssay,
                                          cluster = input$fmCluster,
+                                         covariates = input$fmCovar,
                                          log2fcThreshold = input$fmLogFC,
-                                         fdrThreshold = input$fmFDR)
+                                         fdrThreshold = input$fmFDR,
+                                         minClustExprPerc = input$fmMinClustExprPerc,
+                                         maxCtrlExprPerc = input$fmMaxCtrlExprPerc,
+                                         minMeanExpr = input$fmMinMeanExpr)
         shinyalert::shinyalert("Success", "Find Marker completed.",
                                "success")
         updateFMPlot()
@@ -5881,6 +5909,9 @@ shinyServer(function(input, output, session) {
           decreasing <- input$fmHMdec
           rowDataName <- input$fmHMrowData
           colDataName <- input$fmHMcolData
+          minClustExprPerc <- input$fmHMMinClustExprPerc
+          maxCtrlExprPerc <- input$fmHMMaxCtrlExprPerc
+          minMeanExpr <- input$fmHMMinMeanExpr
           if(!isTRUE(input$fmUseTopN)) {
             topN <- NULL
           } else {
@@ -5896,7 +5927,10 @@ shinyServer(function(input, output, session) {
                               fdrThreshold = fdrThreshold,
                               decreasing = decreasing,
                               rowDataName = rowDataName,
-                              colDataName = colDataName)
+                              colDataName = colDataName,
+                              minClustExprPerc = minClustExprPerc,
+                              maxCtrlExprPerc = maxCtrlExprPerc,
+                              minMeanExpr = minMeanExpr)
           })
         })
       })

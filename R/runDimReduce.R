@@ -110,7 +110,9 @@ runDimReduce <- function(inSCE,
 
   method <- match.arg(method)
   args <- list(...)
-
+  if (is.null(reducedDimName)) {
+    stop("Must specify `reducedDimName` to store the result.")
+  }
   if (method %in% c("scaterPCA", "seuratPCA", "seuratICA")) {
     .matrixTypeCheck(inSCE, "linear", useAssay, useReducedDim, useAltExp)
   } else {
@@ -173,19 +175,19 @@ runDimReduce <- function(inSCE,
         }
         if (method == "seuratUMAP") {
           tempSCE <- seuratRunUMAP(inSCE = tempSCE,
-                                   reducedDimName = reducedDimName,
-                                   dims = nComponents, ...)
+                                   reducedDimName = reducedDimName, ...)
         } else {
           tempSCE <- seuratRunTSNE(inSCE = tempSCE,
-                                   reducedDimName = reducedDimName,
-                                   dims = nComponents, ...)
+                                   reducedDimName = reducedDimName, ...)
         }
       } else {
         ### using external reducedDim
-        if ("useReduction" %in% names(args)) {
+        if (!is.null(args$useReduction)) {
           stop("Cannot specify `useReduction` when using `useReducedDim` in seuratUMAP/TSNE")
         }
         tempSCE <- inSCE
+        seuratObj <- convertSCEToSeurat(inSCE)
+        tempSCE@metadata$seurat$obj <- seuratObj
         reDim <- SingleCellExperiment::reducedDim(inSCE, useReducedDim)
         colnames(reDim) <- paste0(useReducedDim, "_", seq_len(length(colnames(reDim))))
         rownames(reDim) <- gsub('_', '-', rownames(reDim))
@@ -197,13 +199,11 @@ runDimReduce <- function(inSCE,
         if (method == "seuratUMAP") {
           # hard-code useReduction="pca"
           tempSCE <- seuratRunUMAP(inSCE = tempSCE, useReduction = "pca",
-                                   reducedDimName = reducedDimName,
-                                   dims = nComponents, ...)
+                                   reducedDimName = reducedDimName, ...)
         } else {
           # hard-code useReduction="pca"
           tempSCE <- seuratRunTSNE(inSCE = tempSCE, useReduction = "pca",
-                                   reducedDimName = reducedDimName,
-                                   dims = nComponents, ...)
+                                   reducedDimName = reducedDimName, ...)
         }
       }
     }
