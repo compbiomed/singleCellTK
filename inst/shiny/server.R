@@ -2452,25 +2452,36 @@ shinyServer(function(input, output, session) {
     textInput('dimRedNameInput_tsneUmap', "reducedDim Name:", defaultText)
   })
 
-  observeEvent(input$picker_dimheatmap_components_dimRed, {
+  observeEvent(input$updateHeatmap_dimRed, {
+    req(vals$counts)
     if (!is.null(input$picker_dimheatmap_components_dimRed)) {
       if(vals$runDimred$dimRedAssaySelect %in% assayNames(vals$counts)){
         output$plot_heatmap_dimRed <- renderPlot({
-          singleCellTK:::.plotHeatmapMulti(
-            plots = vals$counts@metadata$seurat$heatmap_dimRed,
-            components = input$picker_dimheatmap_components_dimRed,
-            nCol = input$slider_dimheatmap_dimRed)
+          isolate({
+            singleCellTK:::.plotHeatmapMulti(
+              plots = vals$counts@metadata$seurat$heatmap_dimRed,
+              components = input$picker_dimheatmap_components_dimRed,
+              nCol = input$slider_dimheatmap_dimRed)
+          })
         })
       }
       else if(vals$runDimred$dimRedAssaySelect %in% expDataNames(vals$counts)){
         output$plot_heatmap_dimRed <- renderPlot({
-          singleCellTK:::.plotHeatmapMulti(
-            plots = altExps(vals$counts)[[vals$runDimred$dimRedAssaySelect]]@metadata$seurat$heatmap_dimRed,
-            components = input$picker_dimheatmap_components_dimRed,
-            nCol = input$slider_dimheatmap_dimRed)
+          isolate({
+            singleCellTK:::.plotHeatmapMulti(
+              plots = altExps(vals$counts)[[vals$runDimred$dimRedAssaySelect]]@metadata$seurat$heatmap_dimRed,
+              components = input$picker_dimheatmap_components_dimRed,
+              nCol = input$slider_dimheatmap_dimRed)
+          })
         })
       }
     }
+    session$sendCustomMessage("close_dropDownDimRedHeatmap", "")
+  })
+  
+  observeEvent(input$closeDropDownDimRedHeatmap, {
+    req(vals$counts)
+    session$sendCustomMessage("close_dropDownDimRedHeatmap", "")
   })
 
   observeEvent(input$runDimred, {
@@ -2563,55 +2574,41 @@ shinyServer(function(input, output, session) {
         inputId = "dimRedPCAICA_plotTabset",
         tabPanel(
           title = "Heatmap Plot",
+          tags$script("Shiny.addCustomMessageHandler('close_dropDownDimRedHeatmap', function(x){
+                  $('html').click();
+                });"),
           panel(
             #heading = "Heatmap Plot",
             fluidRow(
-              column(4, dropdownButton(
-                br(),
-                panel(
-                  fluidRow(
-                    column(
-                      width = 6,
+              column(4, dropdown(
+                fluidRow(actionBttn(inputId = "closeDropDownDimRedHeatmap", label = NULL, style = "simple", color = "danger", icon = icon("times"), size = "xs"), align = "right"),
                       selectizeInput(inputId = "picker_dimheatmap_components_dimRed",
                                      label = "Select principal components to plot:",
                                      choices = c(),
                                      multiple = TRUE),
-                      # pickerInput(
-                      #   inputId = "picker_dimheatmap_components_dimRed",
-                      #   label = "Select principal components to plot:",
-                      #   choices = c(),
-                      #   options = list(`actions-box` = TRUE,
-                      #                  size = 10,
-                      #                  `selected-text-format` = "count > 3"),
-                      #   multiple = TRUE
-                      # )
-                    ),
-                    column(
-                      width = 6,
                       numericInput(
                         inputId = "slider_dimheatmap_dimRed",
                         label = "Number of columns for the plot: ",
                         min = 1,
                         max = 4,
                         value = 2
-                      )
-                    )
-                  )
-                  # ,
-                  # actionButton(
-                  #   inputId = "plot_heatmap_dimRed_button",
-                  #   "Plot")
-                ),
+                      ),
+                  actionBttn(
+                    inputId = "updateHeatmap_dimRed",
+                    label = "update", 
+                    style = "bordered",
+                    color = "primary",
+                    size = "sm"
+                  ),
                 inputId = "dropDownDimRedHeatmap",
                 icon = icon("cog"),
                 status = "primary",
-                circle = TRUE,
-                size = "sm",
+                circle = FALSE,
                 inline = TRUE
               )),
-              column(8)
+              column(6, fluidRow(h6("information"), align = "center"))
             ),
-            fluidRow(h6("the plot highlights the top variable features (can be labeled from the button on the left) with respect to the metrics computed by the selected algorithm"), align="center"),
+            hr(),
             br(),
               shinyjqui::jqui_resizable(
                 plotOutput(outputId = "plot_heatmap_dimRed"),
@@ -2718,7 +2715,6 @@ shinyServer(function(input, output, session) {
                                                             panel(
                                                               #heading = "Component Plot",
                                                               fluidRow(
-                                                                column(8, fluidRow(h6("the plot highlights the top variable features (can be labeled from the button on the left) with respect to the metrics computed by the selected algorithm"), align="center")),
                                                                 column(4, dropdownButton(
                                                                   br(),
                                                                   panel(fluidRow(
@@ -2729,19 +2725,19 @@ shinyServer(function(input, output, session) {
                                                                              label = "Select reducedDim:",
                                                                              choices = reducedDimNames(vals$counts)
                                                                            ),
-                                                                           numericInput(inputId = "plotDimRed_pca_dimX", label = "X:", value = 1),
-                                                                           numericInput(inputId = "plotDimRed_pca_dimY", label = "Y:", value = 2)
+                                                                           numericInput(inputId = "plotDimRed_pca_dimX", label = "Select component for X-axis:", value = 1),
+                                                                           numericInput(inputId = "plotDimRed_pca_dimY", label = "Select component for Y-axis:", value = 2)
                                                                     )
                                                                   )),
                                                                   inputId = "dropDownDimRedComponentPlot",
                                                                   icon = icon("cog"),
                                                                   status = "primary",
-                                                                  circle = TRUE,
-                                                                  size = "sm",
+                                                                  circle = FALSE,
                                                                   inline = TRUE
-                                                                ))
-                                                                
+                                                                )),
+                                                                column(6, fluidRow(h6("information"), align = "center"))
                                                               ),
+                                                              hr(),
                                                               br(),
                                                                   plotlyOutput(outputId = "plotDimRed_pca")
                                                             )
@@ -2919,16 +2915,26 @@ shinyServer(function(input, output, session) {
     })
   })
   
-  observeEvent(input$selectRedDimPlot_tsneUmap,{
+  observeEvent(input$updateRedDimPlot_tsneUmap,{
     req(vals$counts)
+    isolate
     output$plotDimRed_tsneUmap <- renderPlotly({
-      plotly::ggplotly(plotDimRed(
-        inSCE = vals$counts,
-        useReduction = input$selectRedDimPlot_tsneUmap,
-        xAxisLabel = paste0(input$dimRedPlotMethod_tsneUmap,"_1"),
-        yAxisLabel = paste0(input$dimRedPlotMethod_tsneUmap,"_2")
-      ))
+      isolate({
+        plotly::ggplotly(plotDimRed(
+          inSCE = vals$counts,
+          useReduction = input$selectRedDimPlot_tsneUmap,
+          xAxisLabel = paste0(input$selectRedDimPlot_tsneUmap,"_1"),
+          yAxisLabel = paste0(input$selectRedDimPlot_tsneUmap,"_2")
+        ))
+      })
     })
+    
+    session$sendCustomMessage("close_dropDownDimRedEmbedding", "")
+  })
+  
+  observeEvent(input$closeDropDownDimRedEmbedding,{
+    req(vals$counts)
+    session$sendCustomMessage("close_dropDownDimRedEmbedding", "")
   })
 
   #-----------------------------------------------------------------------------

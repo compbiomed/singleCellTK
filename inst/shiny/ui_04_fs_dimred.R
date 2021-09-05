@@ -1,4 +1,7 @@
 shinyPanelFS_DimRed <- fluidPage(
+  tags$script("Shiny.addCustomMessageHandler('close_dropDownDimRedEmbedding', function(x){
+                  $('html').click();
+                });"),
   h1("Feature Selection & Dimensionality Reduction"),
   tabsetPanel(
     id = "FSDimRedTabsetPanel",
@@ -59,12 +62,12 @@ shinyPanelFS_DimRed <- fluidPage(
               inputId = "dropDownFS",
               icon = icon("cog"),
               status = "primary",
-              circle = TRUE,
-              size = "sm",
+              circle = FALSE,
               inline = TRUE
             )),
-            column(8, fluidRow(h6("the plot highlights the top variable features (can be labeled from the button on the left) with respect to the metrics computed by the selected algorithm"), align="center"))
+            column(6, fluidRow(h6("the plot highlights the top variable features (can be labeled from the button on the left) with respect to the metrics computed by the selected algorithm"), align="center"))
           ),
+          hr(),
           br(),
           shinyjqui::jqui_resizable(plotOutput(outputId = "plotFS")),
           fluidRow(h6("highlighted features"), align="center"),
@@ -283,16 +286,22 @@ shinyPanelFS_DimRed <- fluidPage(
                                    title = "Plot",
                                    panel(heading = "Plot",
                                      fluidRow(
-                                       column(4, dropdownButton(
-                                         br(),
+                                       column(4, dropdown(
                                          fluidRow(
                                            column(12,
-                                                  br(),
+                                                  fluidRow(actionBttn(inputId = "closeDropDownDimRedEmbedding", label = NULL, style = "simple", color = "danger", icon = icon("times"), size = "xs"), align = "right"),
                                                     selectizeInput(
                                                       inputId = "selectRedDimPlot_tsneUmap",
                                                       label = "Select reducedDim:",
                                                       choices = NULL
-                                                    )
+                                                    ),
+                                                  actionBttn(
+                                                    inputId = "updateRedDimPlot_tsneUmap",
+                                                    label = "update", 
+                                                    style = "bordered",
+                                                    color = "primary",
+                                                    size = "sm"
+                                                  )
                                            )
                                          ),
                                          inputId = "dropDownDimRedEmbedding",
@@ -301,8 +310,9 @@ shinyPanelFS_DimRed <- fluidPage(
                                          circle = FALSE,
                                          inline = TRUE
                                        )),
-                                       column(8, fluidRow(h6("the plot highlights the top variable features (can be labeled from the button on the left) with respect to the metrics computed by the selected algorithm"), align="center"))
+                                       column(6, fluidRow(h6("the plot highlights the top variable features (can be labeled from the button on the left) with respect to the metrics computed by the selected algorithm"), align="center"))
                                      ),
+                                     hr(),
                                      br(),
                                          plotlyOutput(outputId = "plotDimRed_tsneUmap"))
                                  ))
