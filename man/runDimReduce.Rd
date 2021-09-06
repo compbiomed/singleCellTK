@@ -35,6 +35,10 @@ selected variable features. Default \code{NULL}.}
 
 \item{reducedDimName}{The name of the result matrix. Required.}
 
+\item{nComponents}{Specify the number of dimensions to compute with the
+selected method in case of PCA/ICA and the number of components to
+use in the case of TSNE/UMAP methods.}
+
 \item{...}{The other arguments for running a specific algorithm. Please refer
 to the one you use.}
 }

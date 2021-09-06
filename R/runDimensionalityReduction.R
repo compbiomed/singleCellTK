@@ -60,7 +60,7 @@ runDimensionalityReduction <- function(inSCE,
   if(useAssay %in% reducedDimNames(inSCE)){
     externalReduction <- reducedDim(inSCE, useAssay)
     stdev <- as.numeric(attr(externalReduction, "percentVar"))
-    externalReduction <- CreateDimReducObject(embeddings = externalReduction, assay = "RNA",
+    externalReduction <- Seurat::CreateDimReducObject(embeddings = externalReduction, assay = "RNA",
                                               stdev = stdev, key = "PC_")
   }
 
