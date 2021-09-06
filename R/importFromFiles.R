@@ -33,13 +33,13 @@
 #'  object. Can be one of "Matrix" (as returned by
 #'  \link{readMM} function), or "matrix" (as returned by
 #'  \link[base]{matrix} function). Default "Matrix".
-#' @param annotFileHeader Whether there's a header (colnames) in the cell annotation file. Default is FALSE  
-#' @param annotFileRowName Which column is used as the rownames for the cell annotation file. Default is 1 (first column). 
-#' @param annotFileSep Separater used for the cell annotation file. Default is "\\t". 
-#' @param featureHeader Whether there's a header (colnames) in the feature annotation file. Default is FALSE  
+#' @param annotFileHeader Whether there's a header (colnames) in the cell annotation file. Default is FALSE
+#' @param annotFileRowName Which column is used as the rownames for the cell annotation file. Default is 1 (first column).
+#' @param annotFileSep Separater used for the cell annotation file. Default is "\\t".
+#' @param featureHeader Whether there's a header (colnames) in the feature annotation file. Default is FALSE
 #' @param featureRowName Which column is used as the rownames for the feature annotation file. Default is 1 (first column).
 #' @param featureSep Separater used for the feature annotation file. Default is "\\t".
-#' @param gzipped Whether the input file is gzipped. Default is "auto" and it will automatically detect whether the file is gzipped. Other options is TRUE or FALSE. 
+#' @param gzipped Whether the input file is gzipped. Default is "auto" and it will automatically detect whether the file is gzipped. Other options is TRUE or FALSE.
 #' @param delayedArray Boolean. Whether to read the expression matrix as
 #'  \link{DelayedArray} object or not. Default \code{FALSE}.
 #' @return a SingleCellExperiment object
@@ -48,13 +48,13 @@
 importFromFiles <- function(assayFile, annotFile = NULL, featureFile = NULL,
                             assayName = "counts", inputDataFrames = FALSE,
                             class = c("Matrix", "matrix"), delayedArray = FALSE,
-                            annotFileHeader = FALSE, annotFileRowName = 1, 
+                            annotFileHeader = FALSE, annotFileRowName = 1,
                             annotFileSep = "\t", featureHeader = FALSE,
                             featureRowName = 1, featureSep = "\t", gzipped = "auto"
                             ){
-  
+
   class <- match.arg(class)
-  
+
   if (inputDataFrames){
     countsin <- assayFile
     annotin <- annotFile
@@ -74,7 +74,6 @@ importFromFiles <- function(assayFile, annotFile = NULL, featureFile = NULL,
   }
   if (is.null(annotFile)){
     annotin <- data.frame(row.names = colnames(countsin))
-    annotin$Sample <- rownames(annotin)
     annotin <- S4Vectors::DataFrame(annotin)
   }
   if (is.null(featureFile)){
@@ -113,10 +112,10 @@ importFromFiles <- function(assayFile, annotFile = NULL, featureFile = NULL,
   newassay <- SingleCellExperiment::SingleCellExperiment(assays = assaylist,
                                                          colData = annotin,
                                                          rowData = featurein)
-  
+
   if(is.null(newassay$sample)) {
     newassay$sample <- "sample"
   }
-  
+
   return(newassay)
 }

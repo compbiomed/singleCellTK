@@ -38,6 +38,7 @@ shinyPanelFS_DimRed <- fluidPage(
           fluidRow(h6("selection of features will be based on the latest computation above"), align="center"),
           numericInput("hvgNumberSelect", "Number of HVG to select",
                        2000, step = 100),
+          uiOutput("hvgSubsetAssay"),
           textInput("hvgAltExpName", "Name for the subset",
                     "featureSubset"),
           withBusyIndicatorUI(actionButton("hvgSubsetRun", "Select"))
@@ -283,35 +284,35 @@ shinyPanelFS_DimRed <- fluidPage(
                                  tabPanel(
                                    title = "Plot",
                                    panel(heading = "Plot",
-                                     fluidRow(
-                                       column(4, dropdown(
                                          fluidRow(
-                                           column(12,
-                                                  fluidRow(actionBttn(inputId = "closeDropDownDimRedEmbedding", label = NULL, style = "simple", color = "danger", icon = icon("times"), size = "xs"), align = "right"),
-                                                    selectizeInput(
-                                                      inputId = "selectRedDimPlot_tsneUmap",
-                                                      label = "Select reducedDim:",
-                                                      choices = NULL
-                                                    ),
-                                                  actionBttn(
-                                                    inputId = "updateRedDimPlot_tsneUmap",
-                                                    label = "update", 
-                                                    style = "bordered",
-                                                    color = "primary",
-                                                    size = "sm"
-                                                  )
-                                           )
+                                           column(4, dropdown(
+                                             fluidRow(
+                                               column(12,
+                                                      fluidRow(actionBttn(inputId = "closeDropDownDimRedEmbedding", label = NULL, style = "simple", color = "danger", icon = icon("times"), size = "xs"), align = "right"),
+                                                      selectizeInput(
+                                                        inputId = "selectRedDimPlot_tsneUmap",
+                                                        label = "Select reducedDim:",
+                                                        choices = NULL
+                                                      ),
+                                                      actionBttn(
+                                                        inputId = "updateRedDimPlot_tsneUmap",
+                                                        label = "update", 
+                                                        style = "bordered",
+                                                        color = "primary",
+                                                        size = "sm"
+                                                      )
+                                               )
+                                             ),
+                                             inputId = "dropDownDimRedEmbedding",
+                                             icon = icon("cog"),
+                                             status = "primary",
+                                             circle = FALSE,
+                                             inline = TRUE
+                                           )),
+                                           column(6, fluidRow(h6("the plot highlights the top variable features (can be labeled from the button on the left) with respect to the metrics computed by the selected algorithm"), align="center"))
                                          ),
-                                         inputId = "dropDownDimRedEmbedding",
-                                         icon = icon("cog"),
-                                         status = "primary",
-                                         circle = FALSE,
-                                         inline = TRUE
-                                       )),
-                                       column(6, fluidRow(h6("the plot highlights the top variable features (can be labeled from the button on the left) with respect to the metrics computed by the selected algorithm"), align="center"))
-                                     ),
-                                     hr(),
-                                     br(),
+                                         hr(),
+                                         br(),
                                          plotlyOutput(outputId = "plotDimRed_tsneUmap"))
                                  ))
                       )))

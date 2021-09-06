@@ -5,6 +5,8 @@
 #' \code{assays(altExp(inSCE, useAltExp))}. Default \code{"logcounts"}
 #' @param useAltExp The subset to use for tSNE computation, usually for the
 #' selected.variable features. Default \code{NULL}.
+#' @param useReducedDim The low dimension representation to use for UMAP
+#' computation. Default \code{NULL}.
 #' @param reducedDimName a name to store the results of the dimension
 #' reductions. Default \code{"TSNE"}.
 #' @param nIterations maximum iterations. Default \code{1000}.
@@ -25,47 +27,68 @@
 #' mouseBrainSubsetSCE <- getTSNE(mouseBrainSubsetSCE, useAssay = "cpm",
 #'                                reducedDimName = "TSNE_cpm",
 #'                                perplexity = NULL)
-#' reducedDims(mouseBrainSubsetSCE)
 getTSNE <- function(inSCE, useAssay = "logcounts", useAltExp = NULL,
-                    reducedDimName = "TSNE", nIterations = 1000,
-                    perplexity = 30, run_pca = TRUE, ntop = NULL){
+                    useReducedDim = NULL, reducedDimName = "TSNE",
+                    nIterations = 1000, perplexity = 30, run_pca = TRUE,
+                    ntop = NULL){
+  
   if (!inherits(inSCE, "SingleCellExperiment")){
     stop("Please use a SingleCellExperiment object")
   }
-  if (!is.null(useAltExp)) {
-    if (!(useAltExp %in% SingleCellExperiment::altExpNames(inSCE))) {
-      stop("Specified altExp '", useAltExp, "' not found. ")
+  
+  if (is.null(useAssay) && is.null(useReducedDim)) {
+    stop("`useAssay` and `useReducedDim` cannot be NULL at the same time.")
+  } else if (!is.null(useAssay) && !is.null(useReducedDim)) {
+    stop("`useAssay` and `useReducedDim` cannot be specified at the same time.")
+  } else {
+    if (!is.null(useReducedDim)) {
+      if (!useReducedDim %in% SingleCellExperiment::reducedDimNames(inSCE)) {
+        stop("Specified `useReducedDim` not found.")
+      }
+      if (!is.null(useAltExp)) {
+        warning("`useAltExp` will be ignored when using `useReducedDim`.")
+      }
+      if (isTRUE(run_pca)) {
+        warning("using `useReducedDim`, `run_pca` and `ntop` forced to be FALSE/NULL")
+        run_pca <- FALSE
+        ntop <- NULL
+      }
+      sce <- inSCE
+    } else {
+      if (!is.null(useAltExp)) {
+        if (!useAltExp %in% SingleCellExperiment::altExpNames(inSCE)) {
+          stop("Specified `useAltExp` not found.")
+        }
+        sce <- SingleCellExperiment::altExp(inSCE, useAltExp)
+        if (!useAssay %in% SummarizedExperiment::assayNames(sce)) {
+          stop("Specified `useAssay` not found in `useAltExp`.")
+        }
+      } else {
+        if (!useAssay %in% SummarizedExperiment::assayNames(inSCE)) {
+          stop("Specified `useAssay` not found.")
+        }
+        sce <- inSCE
+      }
     }
-    sce <- SingleCellExperiment::altExp(inSCE, useAltExp)
-    if (!(useAssay %in% SummarizedExperiment::assayNames(sce))) {
-      stop("Specified assay '", useAssay, "' not found in the ",
-           "specified altExp. ")
+  }
+  
+  if (!is.null(useAssay)) {
+    exprsMat <- as.matrix(SummarizedExperiment::assay(sce, useAssay))
+    if (!is.null(ntop) && ntop < nrow(inSCE)) {
+      rv <- matrixStats::rowVars(exprsMat)
+      featureSet <- order(rv, decreasing = TRUE)[seq_len(min(ntop, length(rv)))]
+      exprsToPlot <- exprsMat[featureSet, ]
+      keepFeature <- (matrixStats::rowVars(exprsToPlot) > 0.001)
+      keepFeature[is.na(keepFeature)] <- FALSE
+      exprsToPlot <- exprsToPlot[keepFeature, ]
+      exprsToPlot <- scale(t(exprsToPlot))
+    } else {
+      exprsToPlot <- t(exprsMat)
     }
   } else {
-    if (!(useAssay %in% expDataNames(inSCE))) {
-      stop("Specified assay '", useAssay, "' not found. ")
-    }
-    sce <- inSCE
+    exprsToPlot <- SingleCellExperiment::reducedDim(sce, useReducedDim)
   }
-  exprsMat <- as.matrix(expData(sce, useAssay))
-  if (!is.null(ntop) && ntop < nrow(inSCE)) {
-    rv <- matrixStats::rowVars(exprsMat)
-    featureSet <- order(rv, decreasing = TRUE)[seq_len(min(ntop, length(rv)))]
-    exprsToPlot <- exprsMat[featureSet, ]
-    keepFeature <- (matrixStats::rowVars(exprsToPlot) > 0.001)
-    keepFeature[is.na(keepFeature)] <- FALSE
-    exprsToPlot <- exprsToPlot[keepFeature, ]
-    exprsToPlot <- scale(t(exprsToPlot))
-  } else {
-    if(useAssay %in% reducedDimNames(inSCE)){
-      exprsToPlot <- exprsMat
-      run_pca <- FALSE
-    }
-    else{
-      exprsToPlot <- t(exprsMat) 
-    }
-  }
-
+  
   if (is.null(perplexity)){
     perplexity <- floor(ncol(inSCE) / 5)
   }
@@ -73,7 +96,7 @@ getTSNE <- function(inSCE, useAssay = "logcounts", useAltExp = NULL,
                           initial_dims = max(50, ncol(inSCE)),
                           max_iter = nIterations, pca = run_pca)
   tsneOut <- tsneOut$Y[, c(1, 2)]
-  rownames(tsneOut) <- rownames(exprsToPlot)
+  rownames(tsneOut) <- colnames(inSCE)
   colnames(tsneOut) <- c("tSNE1", "tSNE2")
   SingleCellExperiment::reducedDim(inSCE, reducedDimName) <- tsneOut
   return(inSCE)

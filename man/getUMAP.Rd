@@ -7,16 +7,17 @@ dimension reduction.}
 \usage{
 getUMAP(
   inSCE,
-  useAssay = "counts",
+  useAssay = NULL,
   useAltExp = NULL,
+  useReducedDim = NULL,
   sample = NULL,
   reducedDimName = "UMAP",
-  logNorm = TRUE,
+  logNorm = FALSE,
   nNeighbors = 30,
   nIterations = 200,
   alpha = 1,
-  minDist = 0.01,
-  spread = 1,
+  minDist = 0.5,
+  spread = 5,
   pca = TRUE,
   initialDims = 50
 )
@@ -31,6 +32,9 @@ specified, \code{useAssay} has to exist in
 \item{useAltExp}{The subset to use for UMAP computation, usually for the
 selected.variable features. Default \code{NULL}.}
 
+\item{useReducedDim}{The low dimension representation to use for UMAP
+computation. Default \code{NULL}.}
+
 \item{sample}{Character vector. Indicates which sample each cell belongs to.
 If given a single character, will take the annotation from
 \code{\link{colData}}. Default \code{NULL}.}
@@ -39,8 +43,8 @@ If given a single character, will take the annotation from
 coordinates obtained from this method. Default \code{"UMAP"}.}
 
 \item{logNorm}{Whether the counts will need to be log-normalized prior to
-generating the UMAP via \code{\link{logNormCounts}}. Default
-\code{TRUE}.}
+generating the UMAP via \code{\link{logNormCounts}}. Will not normalize when
+using \code{useReducedDim}. Default \code{FALSE}.}
 
 \item{nNeighbors}{The size of local neighborhood used for manifold
 approximation. Larger values result in more global views of the manifold,
@@ -56,15 +60,15 @@ Default is \code{1}.}
 \item{minDist}{The effective minimum distance between embedded points.
 Smaller values will result in a more clustered/clumped embedding where nearby
 points on the manifold are drawn closer together, while larger values will
-result on a more even dispersal of points. Default \code{0.01}. See
+result on a more even dispersal of points. Default \code{0.5}. See
 `?uwot::umap` for more information.}
 
 \item{spread}{The effective scale of embedded points. In combination with
 minDist, this determines how clustered/clumped the embedded points are.
-Default \code{1}. See `?uwot::umap` for more information.}
+Default \code{5}. See `?uwot::umap` for more information.}
 
 \item{pca}{Logical. Whether to perform dimension reduction with PCA before
-UMAP. Default \code{TRUE}}
+UMAP. Will not perform PCA if using \code{useReducedDim}. Default \code{TRUE}}
 
 \item{initialDims}{Number of dimensions from PCA to use as input in UMAP.
 Default \code{50}.}
@@ -80,10 +84,5 @@ dimension reduction.
 \examples{
 data(scExample, package = "singleCellTK")
 sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
-umap_res <- getUMAP(inSCE = sce, useAssay = "counts",
-                    reducedDimName = "UMAP", logNorm = TRUE,
-                    nNeighbors = 30, alpha = 1,
-                    nIterations = 200, spread = 1, pca = TRUE,
-                    initialDims = 50)
-reducedDims(umap_res)
+sce <- getUMAP(inSCE = sce, useAssay = "counts", reducedDimName = "UMAP")
 }

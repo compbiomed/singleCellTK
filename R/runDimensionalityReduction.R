@@ -95,7 +95,7 @@ runDimensionalityReduction <- function(inSCE,
     if(method == "seuratICA") params$nics <- nComponents
   }
   if(method == "scaterPCA"){
-    params$ndim <- nComponents
+    params$nComponents <- nComponents
   }
   if(method == "rTSNE"){
     method <- "getTSNE"
