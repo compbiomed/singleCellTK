@@ -81,6 +81,9 @@
 #' @param useReducedDim The low dimension representation to use for embedding
 #' computation. Default \code{NULL}.
 #' @param reducedDimName The name of the result matrix. Required.
+#' @param nComponents Specify the number of dimensions to compute with the
+#'  selected method in case of PCA/ICA and the number of components to
+#'  use in the case of TSNE/UMAP methods.
 #' @param ... The other arguments for running a specific algorithm. Please refer
 #' to the one you use.
 #' @return The input \linkS4class{SingleCellExperiment} object with

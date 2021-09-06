@@ -68,7 +68,6 @@ shinyServer(function(input, output, session) {
     fmHMshowHide = FALSE
   )
 
-
   #Update all of the columns that depend on pvals columns
   updateColDataNames <- function(){
     pdataOptions <- colnames(colData(vals$counts))
@@ -2481,25 +2480,36 @@ shinyServer(function(input, output, session) {
     textInput('dimRedNameInput_tsneUmap', "reducedDim Name:", defaultText)
   })
 
-  observeEvent(input$plot_heatmap_dimRed_button, {
+  observeEvent(input$updateHeatmap_dimRed, {
+    req(vals$counts)
     if (!is.null(input$picker_dimheatmap_components_dimRed)) {
       if(vals$runDimred$dimRedAssaySelect %in% assayNames(vals$counts)){
         output$plot_heatmap_dimRed <- renderPlot({
-          singleCellTK:::.plotHeatmapMulti(
-            plots = vals$counts@metadata$seurat$heatmap_dimRed,
-            components = input$picker_dimheatmap_components_dimRed,
-            nCol = input$slider_dimheatmap_dimRed)
+          isolate({
+            singleCellTK:::.plotHeatmapMulti(
+              plots = vals$counts@metadata$seurat$heatmap_dimRed,
+              components = input$picker_dimheatmap_components_dimRed,
+              nCol = input$slider_dimheatmap_dimRed)
+          })
         })
       }
       else if(vals$runDimred$dimRedAssaySelect %in% expDataNames(vals$counts)){
         output$plot_heatmap_dimRed <- renderPlot({
-          singleCellTK:::.plotHeatmapMulti(
-            plots = altExps(vals$counts)[[vals$runDimred$dimRedAssaySelect]]@metadata$seurat$heatmap_dimRed,
-            components = input$picker_dimheatmap_components_dimRed,
-            nCol = input$slider_dimheatmap_dimRed)
+          isolate({
+            singleCellTK:::.plotHeatmapMulti(
+              plots = altExps(vals$counts)[[vals$runDimred$dimRedAssaySelect]]@metadata$seurat$heatmap_dimRed,
+              components = input$picker_dimheatmap_components_dimRed,
+              nCol = input$slider_dimheatmap_dimRed)
+          })
         })
       }
     }
+    session$sendCustomMessage("close_dropDownDimRedHeatmap", "")
+  })
+  
+  observeEvent(input$closeDropDownDimRedHeatmap, {
+    req(vals$counts)
+    session$sendCustomMessage("close_dropDownDimRedHeatmap", "")
   })
 
   observeEvent(input$runDimred, {
@@ -2557,24 +2567,7 @@ shinyServer(function(input, output, session) {
     removeTab(inputId = "dimRedPCAICA_plotTabset", target = "JackStraw Plot")
 
     shinyjs::show(selector = ".dimRedPCAICA_plotTabset_class")
-    appendTab(inputId = "dimRedPCAICA_plotTabset", tabPanel(title = "Component Plot",
-                                                            panel(heading = "Component Plot",
-                                                                  plotlyOutput(outputId = "plotDimRed_pca")
-                                                            )
-    ), select = TRUE)
-
-    withProgress(message = "Plotting PCA/ICA", max = 1, value = 1, {
-        output$plotDimRed_pca <- renderPlotly({
-          plotly::ggplotly(
-            plotDimRed(
-              inSCE = vals$counts,
-              useReduction = dimrednamesave,
-              xAxisLabel = paste0(input$dimRedPlotMethod, "_1"),
-              yAxisLabel = paste0(input$dimRedPlotMethod, "_2"))
-          )
-        })
-    })
-
+    
     if(input$computeElbowPlot
        && input$dimRedPlotMethod != "seuratICA"){
       appendTab(
@@ -2582,10 +2575,10 @@ shinyServer(function(input, output, session) {
         tabPanel(
           title = "Elbow Plot",
           panel(
-            heading = "Elbow Plot",
+            #heading = "Elbow Plot",
             plotlyOutput(outputId = "plotDimRed_elbow")
           )
-        )
+        ), select = TRUE
       )
       if (input$dimRedPlotMethod == "seuratPCA"){
         withProgress(message = "Generating Elbow Plot", max = 1, value = 1, {
@@ -2615,51 +2608,51 @@ shinyServer(function(input, output, session) {
         })
       }
     }
-
+    
     if(input$computeHeatmapPlot){
       appendTab(
         inputId = "dimRedPCAICA_plotTabset",
         tabPanel(
           title = "Heatmap Plot",
+          tags$script("Shiny.addCustomMessageHandler('close_dropDownDimRedHeatmap', function(x){
+                  $('html').click();
+                });"),
           panel(
-            heading = "Heatmap Plot",
-            panel(
-              heading = "Plot Options",
-              fluidRow(
-                column(
-                  width = 6,
-                  pickerInput(
-                    inputId = "picker_dimheatmap_components_dimRed",
-                    label = "Select principal components to plot:",
-                    choices = c(),
-                    options = list(`actions-box` = TRUE,
-                                   size = 10,
-                                   `selected-text-format` = "count > 3"),
-                    multiple = TRUE
-                  )
-                ),
-                column(
-                  width = 6,
-                  numericInput(
-                    inputId = "slider_dimheatmap_dimRed",
-                    label = "Number of columns for the plot: ",
-                    min = 1,
-                    max = 4,
-                    value = 2
-                  )
-                )
-              ),
-              actionButton(
-                inputId = "plot_heatmap_dimRed_button",
-                "Plot")
+            fluidRow(
+              column(4, dropdown(
+                fluidRow(actionBttn(inputId = "closeDropDownDimRedHeatmap", label = NULL, style = "simple", color = "danger", icon = icon("times"), size = "xs"), align = "right"),
+                      selectizeInput(inputId = "picker_dimheatmap_components_dimRed",
+                                     label = "Select principal components to plot:",
+                                     choices = c(),
+                                     multiple = TRUE),
+                      numericInput(
+                        inputId = "slider_dimheatmap_dimRed",
+                        label = "Number of columns for the plot: ",
+                        min = 1,
+                        max = 4,
+                        value = 2
+                      ),
+                  actionBttn(
+                    inputId = "updateHeatmap_dimRed",
+                    label = "update", 
+                    style = "bordered",
+                    color = "primary",
+                    size = "sm"
+                  ),
+                inputId = "dropDownDimRedHeatmap",
+                icon = icon("cog"),
+                status = "primary",
+                circle = FALSE,
+                inline = TRUE
+              )),
+              column(6, fluidRow(h6("information"), align = "center"))
             ),
-            panel(
-              heading = "Plot",
+            hr(),
+            br(),
               shinyjqui::jqui_resizable(
                 plotOutput(outputId = "plot_heatmap_dimRed"),
                 options = list(maxWidth = 700)
               )
-            )
           )
         )
       )
@@ -2747,14 +2740,65 @@ shinyServer(function(input, output, session) {
           }
         })
       }
-
+      
       if(input$dimRedPlotMethod == "seuratICA"){
-        updatePickerInput(session = session, inputId = "picker_dimheatmap_components_dimRed", choices = rep(paste0("IC",seq(as.numeric(input$dimRedNumberDims)))))
+        updateSelectizeInput(session = session, inputId = "picker_dimheatmap_components_dimRed", choices = rep(paste0("IC",seq(as.numeric(input$dimRedNumberDims)))))
       }
       else{
-        updatePickerInput(session = session, inputId = "picker_dimheatmap_components_dimRed", choices = rep(paste0("PC",seq(as.numeric(input$dimRedNumberDims)))))
+        updateSelectizeInput(session = session, inputId = "picker_dimheatmap_components_dimRed", choices = rep(paste0("PC",seq(as.numeric(input$dimRedNumberDims)))))
       }
     }
+
+    appendTab(inputId = "dimRedPCAICA_plotTabset", tabPanel(title = "Component Plot",
+                                                            panel(
+                                                              tags$script("Shiny.addCustomMessageHandler('close_dropDownDimRedComponentPlot', function(x){$('html').click();});"),
+                                                              fluidRow(
+                                                                column(4, dropdown(
+                                                                  fluidRow(
+                                                                    column(12,
+                                                                           fluidRow(actionBttn(inputId = "closeDropDownDimRedComponentPlot", label = NULL, style = "simple", color = "danger", icon = icon("times"), size = "xs"), align = "right"),
+                                                                           selectizeInput(
+                                                                             inputId = "plotDimRed_pca_selectRedDim",
+                                                                             label = "Select reducedDim:",
+                                                                             choices = reducedDimNames(vals$counts)
+                                                                           ),
+                                                                           numericInput(inputId = "plotDimRed_pca_dimX", label = "Select component for X-axis:", value = 1),
+                                                                           numericInput(inputId = "plotDimRed_pca_dimY", label = "Select component for Y-axis:", value = 2),
+                                                                           actionBttn(
+                                                                             inputId = "updateRedDimPlot_pca",
+                                                                             label = "update", 
+                                                                             style = "bordered",
+                                                                             color = "primary",
+                                                                             size = "sm"
+                                                                           )
+                                                                    )
+                                                                  ),
+                                                                  inputId = "dropDownDimRedComponentPlot",
+                                                                  icon = icon("cog"),
+                                                                  status = "primary",
+                                                                  circle = FALSE,
+                                                                  inline = TRUE
+                                                                )),
+                                                                column(6, fluidRow(h6("information"), align = "center"))
+                                                              ),
+                                                              hr(),
+                                                              br(),
+                                                                  plotlyOutput(outputId = "plotDimRed_pca")
+                                                            )
+    ))
+
+    withProgress(message = "Plotting PCA/ICA", max = 1, value = 1, {
+        output$plotDimRed_pca <- renderPlotly({
+          plotly::ggplotly(
+            plotDimRed(
+              inSCE = vals$counts,
+              useReduction = dimrednamesave,
+              xAxisLabel = paste0(input$dimRedPlotMethod, "_1"),
+              yAxisLabel = paste0(input$dimRedPlotMethod, "_2"))
+          )
+        })
+    })
+    
         if(input$computeJackstrawPlot
            && input$dimRedPlotMethod != "seuratICA"){
           appendTab(inputId = "dimRedPCAICA_plotTabset", tabPanel(title = "JackStraw Plot",
@@ -2808,6 +2852,29 @@ shinyServer(function(input, output, session) {
             })
           }
         }
+  })
+  
+  observeEvent(input$updateRedDimPlot_pca,{
+    req(vals$counts)
+      output$plotDimRed_pca <- renderPlotly({
+        isolate({
+          plotly::ggplotly(
+            plotDimRed(
+              inSCE = vals$counts,
+              useReduction = input$plotDimRed_pca_selectRedDim,
+              xDim = input$plotDimRed_pca_dimX,
+              yDim = input$plotDimRed_pca_dimY,
+              xAxisLabel = paste0(input$dimRedPlotMethod, "_", input$plotDimRed_pca_dimX),
+              yAxisLabel = paste0(input$dimRedPlotMethod, "_", input$plotDimRed_pca_dimY))
+          )
+        })
+      })
+      session$sendCustomMessage("close_dropDownDimRedComponentPlot", "")
+  })
+  
+  observeEvent(input$closeDropDownDimRedComponentPlot, {
+    req(vals$counts)
+    session$sendCustomMessage("close_dropDownDimRedComponentPlot", "")
   })
 
   observeEvent(input$dimRedAssaySelect_tsneUmap, {
@@ -2975,32 +3042,15 @@ shinyServer(function(input, output, session) {
         }
       })
     }
-
-    removeTab(inputId = "dimRedTSNEUMAP_plotTabset", target = "tSNE Plot")
-    removeTab(inputId = "dimRedTSNEUMAP_plotTabset", target = "UMAP Plot")
-
-    shinyjs::show(selector = ".dimRedTSNEUMAP_plotTabset_class")
-
-    if(input$dimRedPlotMethod_tsneUmap == "seuratTSNE"
-       || input$dimRedPlotMethod_tsneUmap == "rTSNE"){
-      appendTab(inputId = "dimRedTSNEUMAP_plotTabset", tabPanel(title = "tSNE Plot",
-                                                                panel(heading = "tSNE Plot",
-                                                                      plotlyOutput(outputId = "plotDimRed_tsneUmap")
-                                                                )
-      ), select = TRUE)
-    }
-    else if(input$dimRedPlotMethod_tsneUmap == "seuratUMAP"
-            || input$dimRedPlotMethod_tsneUmap == "uwotUMAP"){
-      appendTab(inputId = "dimRedTSNEUMAP_plotTabset", tabPanel(title = "UMAP Plot",
-                                                                panel(heading = "UMAP Plot",
-                                                                      plotlyOutput(outputId = "plotDimRed_tsneUmap")
-                                                                )
-      ), select = TRUE)
-    }
-
+    
+    redDimName <- gsub(" ", "_", input$dimRedNameInput_tsneUmap)
+    
+    updateSelectizeInput(session, "selectRedDimPlot_tsneUmap",
+                         choices = c(reducedDimNames(vals$counts)),
+                         selected = redDimName,
+                         server = TRUE)
+    
     withProgress(message = "Plotting tSNE/UMAP", max = 1, value = 1, {
-      redDimName <- gsub(" ", "_", input$dimRedNameInput_tsneUmap)
-      #if(vals$runDimred$dimRedAssaySelect_tsneUmap %in% assayNames(vals$counts)){
         output$plotDimRed_tsneUmap <- renderPlotly({
           plotly::ggplotly(plotDimRed(
             inSCE = vals$counts,
@@ -3010,6 +3060,28 @@ shinyServer(function(input, output, session) {
           ))
         })
     })
+  })
+  
+  observeEvent(input$updateRedDimPlot_tsneUmap,{
+    req(vals$counts)
+    isolate
+    output$plotDimRed_tsneUmap <- renderPlotly({
+      isolate({
+        plotly::ggplotly(plotDimRed(
+          inSCE = vals$counts,
+          useReduction = input$selectRedDimPlot_tsneUmap,
+          xAxisLabel = paste0(input$selectRedDimPlot_tsneUmap,"_1"),
+          yAxisLabel = paste0(input$selectRedDimPlot_tsneUmap,"_2")
+        ))
+      })
+    })
+    
+    session$sendCustomMessage("close_dropDownDimRedEmbedding", "")
+  })
+  
+  observeEvent(input$closeDropDownDimRedEmbedding,{
+    req(vals$counts)
+    session$sendCustomMessage("close_dropDownDimRedEmbedding", "")
   })
 
   #-----------------------------------------------------------------------------
@@ -3472,6 +3544,13 @@ shinyServer(function(input, output, session) {
                              choices = c("RdYlBu",color_seqdiv))
       }
     }
+    
+    # if(input$navbar == "Feature Selection & Dimensionality Reduction"){
+    #   gene_list <- rownames(vals$counts)
+    #   updateSelectizeInput(session, "scatterFSGenes",
+    #                        choices = c(gene_list),
+    #                        server = TRUE)
+    # }
   })
 
   hide_TypeSelect <- reactiveVal("hide")
@@ -5179,8 +5258,8 @@ shinyServer(function(input, output, session) {
                          choices = expDataNames(vals$counts))
   })
 
-  observeEvent(input$showHVG, {
-    withBusyIndicatorServer("showHVG", {
+  observeEvent(input$updatePlotFS, {
+    req(vals$counts)
       if (isTRUE(vals$hvgCalculated$status) &&
           !is.null(vals$hvgCalculated$method)) {
         #checks
@@ -5197,19 +5276,24 @@ shinyServer(function(input, output, session) {
           hvgList = HVGs
         )
         output$plotFS <- renderPlot({
-          if (!is.null(vals$vfplot)) {
-            vals$vfplot
-          }
+          isolate({
+            if (!is.null(vals$vfplot)) {
+              vals$vfplot
+            }
+          })
         })
-        output$hvgOutputFS <- renderText({HVGs})
-      } else {
-        shinyalert::shinyalert(
-          "Error",
-          text = "Please compute the variance before the visualization!",
-          type = "error"
-        )
+        output$hvgOutputFS <- renderText({
+          isolate({
+            HVGs
+          })
+        })
       }
-    })
+    session$sendCustomMessage("close_dropDownFS", "")
+  })
+  
+  observeEvent(input$closeDropDownFS, {
+    req(vals$counts)
+    session$sendCustomMessage("close_dropDownFS", "")
   })
 
   observeEvent(input$hvgSubsetRun, {
@@ -5255,6 +5339,28 @@ shinyServer(function(input, output, session) {
           tempAssay <- expData(vals$counts, input$hvgSubsetAssay)[HVGs,]
           expData(vals$counts, input$hvgAltExpName, tag = "hvg", altExp = TRUE) <- tempAssay
           updateAssayInputs()
+          
+          # added this
+          HVGs <- getTopHVG(inSCE = vals$counts,
+                            method = input$hvgMethodFS,
+                            n = 100)
+          vals$vfplot <- plotTopHVG(
+            inSCE =  vals$counts,
+            method = input$hvgMethodFS,
+            hvgList = HVGs
+          )
+          output$plotFS <- renderPlot({
+            isolate({
+              if (!is.null(vals$vfplot)) {
+                vals$vfplot
+              }
+            })
+          })
+          output$hvgOutputFS <- renderText({
+            isolate({
+              HVGs
+            })
+          })
         }
         # Show downstream analysis options
         callModule(module = nonLinearWorkflow, id = "nlw-fs", parent = session, dr = TRUE, cl = TRUE)
@@ -5267,6 +5373,38 @@ shinyServer(function(input, output, session) {
       }
     })
   })
+  
+  # observeEvent(input$scatterFSRun,{
+  #   useAssay <- "tophat_counts"
+  #   xname <- input$scatterFSGenes[1]
+  #   yname <- input$scatterFSGenes[2]
+  #   xvec <- expData(vals$counts, useAssay)[xname,]
+  #   yvec <- expData(vals$counts, useAssay)[yname,]
+  #   customMat <- matrix(c(xvec, yvec), nrow = length(xvec))
+  #   colnames(customMat) <- c(xname, yname)
+  #   rownames(customMat) <- names(xvec)
+  #   reducedDim(vals$counts, "Custom") <- customMat
+  #   reducedDimName <- "Custom"
+  #   colorLow <- "#FFFFFF"
+  #   colorMid <- "#666666"
+  #   colorHigh <- "#0000FF"
+  #   
+  #   
+  #   a <- plotSCEDimReduceFeatures(vals$counts, feature = xname,
+  #                                 reducedDimName = reducedDimName, useAssay = useAssay,
+  #                                 xlab = xname, ylab = yname, transparency = 1,
+  #                                 colorLow = colorLow, colorMid = colorMid, colorHigh = colorHigh,
+  #                                 combinePlot = "none")
+  #   
+  #   
+  #   a <- a + ggplot2::theme_bw()
+  #   a <- plotly::ggplotly(a)
+  #   
+  #   output$scatterFS <- renderPlotly({
+  #     plotly::subplot(plotlist = a, titleX = TRUE, titleY = TRUE)
+  #   })
+  # })
+  
   #-----------------------------------------------------------------------------
   # Page 5.1: Differential Expression ####
   #-----------------------------------------------------------------------------
@@ -6498,7 +6636,8 @@ shinyServer(function(input, output, session) {
     })
     if (input$pca_compute_elbow) {
       appendTab(inputId = "seuratPCAPlotTabset", tabPanel(title = "Elbow Plot",
-                                                          panel(heading = "Elbow Plot",
+                                                          panel(
+                                                            heading = "Elbow Plot",
                                                                 plotlyOutput(outputId = "plot_elbow_pca")
                                                           )
       ))

@@ -9,6 +9,8 @@ plotDimRed(
   inSCE,
   useReduction,
   showLegend = FALSE,
+  xDim = 1,
+  yDim = 2,
   xAxisLabel = NULL,
   yAxisLabel = NULL
 )
@@ -19,6 +21,12 @@ plotDimRed(
 \item{useReduction}{Reduction to plot}
 
 \item{showLegend}{If legends should be plotted or not}
+
+\item{xDim}{Numeric value indicating the dimension to use for X-axis.
+Default is 1 (refers to PC1).}
+
+\item{yDim}{Numeric value indicating the dimension to use for Y-axis.
+Default is 2 (refers to PC2).}
 
 \item{xAxisLabel}{Specify the label for x-axis. Default is \code{NULL} which
 will specify the label as 'x'.}

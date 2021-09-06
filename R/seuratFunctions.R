@@ -531,6 +531,7 @@ seuratFindClusters <- function(
 
   if(!is.null(externalReduction)){
     seuratObject@reductions <- list(pca = externalReduction)
+    useReduction <- "pca"
   }
 
   seuratObject <- Seurat::FindNeighbors(seuratObject, reduction = useReduction,
@@ -572,14 +573,22 @@ seuratFindClusters <- function(
 #' Default \code{10}.
 #' @param perplexity Adjust the perplexity tuneable parameter for the underlying
 #' tSNE call. Default \code{30}.
+#' @param externalReduction Pass DimReduc object if PCA/ICA computed through
+#' other libraries. Default \code{NULL}.
 #' @return Updated sce object with tSNE computations stored
 #' @export
 #' @importFrom SingleCellExperiment reducedDim<-
 seuratRunTSNE <- function(inSCE, useReduction = c("pca", "ica"),
                           reducedDimName = "seuratTSNE", dims = 10,
-                          perplexity = 30) {
+                          perplexity = 30, externalReduction = NULL) {
   useReduction <- match.arg(useReduction)
   seuratObject <- convertSCEToSeurat(inSCE)
+  
+  if(!is.null(externalReduction)){
+    seuratObject@reductions <- list(pca = externalReduction)
+    useReduction <- "pca"
+  }
+  
   seuratObject <- Seurat::RunTSNE(seuratObject, reduction = useReduction,
                                   dims = seq(dims), perplexity = perplexity)
   inSCE <- .addSeuratToMetaDataSCE(inSCE, seuratObject)
@@ -607,6 +616,8 @@ seuratRunTSNE <- function(inSCE, useReduction = c("pca", "ica"),
 #' \code{30L}.
 #' @param spread Sets the \code{"spread"} parameter to the underlying UMAP call.
 #' See \link[Seurat]{RunUMAP} for more information. Default \code{1}.
+#' @param externalReduction Pass DimReduc object if PCA/ICA computed through
+#' other libraries. Default \code{NULL}.
 #' @param verbose Logical value indicating if informative messages should
 #'  be displayed. Default is \code{TRUE}.
 #' @examples
@@ -625,9 +636,16 @@ seuratRunTSNE <- function(inSCE, useReduction = c("pca", "ica"),
 seuratRunUMAP <- function(inSCE, useReduction = c("pca", "ica"),
                           reducedDimName = "seuratUMAP", dims = 10,
                           minDist = 0.3, nNeighbors = 30L, spread = 1,
+                          externalReduction = NULL,
                           verbose = TRUE) {
   useReduction <- match.arg(useReduction)
   seuratObject <- convertSCEToSeurat(inSCE)
+  
+  if(!is.null(externalReduction)){
+    seuratObject@reductions <- list(pca = externalReduction)
+    useReduction <- "pca"
+  }
+  
   seuratObject <- Seurat::RunUMAP(seuratObject,
                                   reduction = useReduction,
                                   dims = seq(dims),
@@ -693,6 +711,7 @@ seuratElbowPlot <- function(inSCE,
   seuratObject <- convertSCEToSeurat(inSCE)
   if(!is.null(externalReduction)){
     seuratObject@reductions <- list(pca = externalReduction)
+    reduction <- "pca"
   }
   plot <- Seurat::ElbowPlot(seuratObject, reduction = reduction, ndims = ndims)
   if(!is.null(significantPC)){
@@ -782,6 +801,7 @@ seuratComputeHeatmap <- function(inSCE,
   seuratObject <- convertSCEToSeurat(inSCE, scaledAssay = useAssay)
   if(!is.null(externalReduction)){
     seuratObject@reductions <- list(pca = externalReduction)
+    useReduction <- "pca"
   }
   if(is.null(dims)) {
     dims <- ncol(seuratObject@reductions[[useReduction]])

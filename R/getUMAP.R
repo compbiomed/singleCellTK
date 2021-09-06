@@ -52,7 +52,7 @@ getUMAP <- function(inSCE, useAssay = NULL, useAltExp = NULL,
   if (!inherits(inSCE, "SingleCellExperiment")){
     stop("Please use a SingleCellExperiment object")
   }
-
+  
   if (is.null(useAssay) && is.null(useReducedDim)) {
     stop("`useAssay` and `useReducedDim` cannot be NULL at the same time.")
   } else if (!is.null(useAssay) && !is.null(useReducedDim)) {
@@ -83,7 +83,7 @@ getUMAP <- function(inSCE, useAssay = NULL, useAltExp = NULL,
       }
     }
   }
-
+  
   if(!is.null(sample)) {
     if (is.character(sample) && length(sample) == 1) {
       if (!sample %in% names(SummarizedExperiment::colData(inSCE))) {
@@ -109,15 +109,15 @@ getUMAP <- function(inSCE, useAssay = NULL, useAltExp = NULL,
         sceSample <- scaterlogNormCounts(sceSample, useAssay = useAssay)
         useAssayTemp = "ScaterLogNormCounts"
       }
-
+      
       matColData <- SummarizedExperiment::assay(sceSample, useAssayTemp)
     } else {
       matColData <- t(SingleCellExperiment::reducedDim(sce, useReducedDim))
       pca <- FALSE
     }
-
+    
     matColData <- as.matrix(matColData)
-
+    
     if (isTRUE(pca)) {
       if(initialDims > ncol(matColData)){
         doPCA <- ncol(matColData)
@@ -130,7 +130,7 @@ getUMAP <- function(inSCE, useAssay = NULL, useAltExp = NULL,
     if(nNeighbors > ncol(matColData)){
       nNeighbors <- ncol(matColData)
     }
-
+    
     umapRes <- uwot::umap(t(matColData), n_neighbors = nNeighbors,
                           learning_rate = alpha,
                           min_dist = minDist, spread = spread,

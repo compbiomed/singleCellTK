@@ -31,11 +31,11 @@ getTSNE <- function(inSCE, useAssay = "logcounts", useAltExp = NULL,
                     useReducedDim = NULL, reducedDimName = "TSNE",
                     nIterations = 1000, perplexity = 30, run_pca = TRUE,
                     ntop = NULL){
-
+  
   if (!inherits(inSCE, "SingleCellExperiment")){
     stop("Please use a SingleCellExperiment object")
   }
-
+  
   if (is.null(useAssay) && is.null(useReducedDim)) {
     stop("`useAssay` and `useReducedDim` cannot be NULL at the same time.")
   } else if (!is.null(useAssay) && !is.null(useReducedDim)) {
@@ -71,7 +71,7 @@ getTSNE <- function(inSCE, useAssay = "logcounts", useAltExp = NULL,
       }
     }
   }
-
+  
   if (!is.null(useAssay)) {
     exprsMat <- as.matrix(SummarizedExperiment::assay(sce, useAssay))
     if (!is.null(ntop) && ntop < nrow(inSCE)) {
@@ -88,7 +88,7 @@ getTSNE <- function(inSCE, useAssay = "logcounts", useAltExp = NULL,
   } else {
     exprsToPlot <- SingleCellExperiment::reducedDim(sce, useReducedDim)
   }
-
+  
   if (is.null(perplexity)){
     perplexity <- floor(ncol(inSCE) / 5)
   }
