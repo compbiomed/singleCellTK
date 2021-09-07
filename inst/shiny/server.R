@@ -39,8 +39,8 @@ shinyServer(function(input, output, session) {
     vamRes = NULL,
     vamCdf = NULL,
     vamResults = NULL,
-    vamGeneset = NULL,
-    gsvaGeneset = NULL,
+    vamScore = NULL,
+    gsvaScore = NULL,
     gsvaResults = NULL,
     visplotobject = NULL,
     enrichRes = NULL,
@@ -928,8 +928,8 @@ shinyServer(function(input, output, session) {
       vals$vamResults <- NULL
       vals$gsvaResults <- NULL
       vals$gsvaLimma <- NULL
-      vals$vamGeneset <- NULL
-      vals$gsvaGeneset <- NULL
+      vals$vamScore <- NULL
+      vals$gsvaScore <- NULL
       vals$visplotobject <- NULL
       vals$enrichRes <- NULL
       vals$dimRedPlot <- NULL
@@ -1934,8 +1934,8 @@ shinyServer(function(input, output, session) {
       vals$vamRes <- NULL
       vals$vamResults <- NULL
       vals$gsvaResults <- NULL
-      vals$vamGeneset <- NULL
-      vals$gsvaGeneset <- NULL
+      vals$vamScore <- NULL
+      vals$gsvaScore <- NULL
       vals$gsvaLimma <- NULL
       vals$visplotobject <- NULL
       vals$enrichRes <- NULL
@@ -5857,7 +5857,7 @@ shinyServer(function(input, output, session) {
         
           #vals$vamCdf <- SingleCellExperiment::reducedDim(vals$vamRes, paste0(paste0("VAM_", input$PathwayGeneLists, "_"), "CDF"))
           vals$vamResults <- SingleCellExperiment::reducedDim(vals$vamRes)
-          #vals$vamGeneset <- paste0(paste0("VAM_", input$PathwayGeneLists, "_"), "CDF")
+          vals$vamScore <- paste0(paste0("VAM_", input$PathwayGeneLists, "_"), "CDF")
           vals$dimreduced <- reducedDims(vals$vamRes)
           
         
@@ -5869,7 +5869,7 @@ shinyServer(function(input, output, session) {
                                   geneSetCollectionName = input$PathwayGeneLists)
           
           vals$gsvaResults <- SingleCellExperiment::reducedDim(vals$gsvaRes)
-          #vals$gsvaGeneset <- paste0(paste0("GSVA_", input$PathwayGeneLists, "_"), "Scores")
+          vals$gsvaScore <- paste0(paste0("GSVA_", input$PathwayGeneLists, "_"), "Scores")
           vals$dimreduced <- append(vals$dimreduced, reducedDims(vals$gsvaRes))
         }
         
@@ -5882,14 +5882,14 @@ shinyServer(function(input, output, session) {
     if(input$pathway == "VAM"){
       if (!(is.null(vals$vamRes))){
         selectizeInput("GeneSets", "Select Geneset:",
-                       choices = colnames((vals$vamResults)), multiple = FALSE)
+                       choices = colnames(reducedDim(vals$vamRes, vals$vamScore)), multiple = FALSE)
       }
     }
     else if(input$pathway == "GSVA"){
       
       if (!(is.null(vals$gsvaRes))){
         selectizeInput("GeneSets", "Select Geneset:",
-                       choices = colnames((vals$gsvaResults)), multiple = FALSE)
+                       choices = colnames(reducedDim(vals$gsvaRes, vals$gsvaScore)), multiple = FALSE)
       }
     }
   })
@@ -5908,14 +5908,14 @@ shinyServer(function(input, output, session) {
     output$pathwayPlot <- renderPlot({
       if (input$pathway == "VAM"){
         if (!(is.null(vals$vamRes))){
-          plotSCEViolin(inSCE = vals$vamRes, slotName = "reducedDims", itemName = reducedDimNames(vals$vamRes)[[2]], dimension = colnames(reducedDim(vals$vamRes))[[1]], xlab = "sample", ylab = colnames(reducedDim(vals$vamRes))[[1]])
+          plotSCEViolin(inSCE = vals$vamRes, slotName = "reducedDims", itemName = vals$vamScore, dimension = colnames(reducedDim(vals$vamRes, vals$vamScore))[[1]], xlab = "sample", ylab = colnames(reducedDim(vals$vamRes, vals$vamScore))[[1]])
           #groupby can be used for indicating colnames (optional)
         }
         
       }
       else if (input$pathway == "GSVA"){
         if (!(is.null(vals$gsvaRes))){
-          plotSCEViolin(inSCE = vals$gsvaRes, slotName = "reducedDims", itemName = reducedDimNames(vals$gsvaRes)[[2]], dimension = colnames(reducedDim(vals$vamRes))[[1]], xlab = "Sample", ylab = colnames(reducedDim(vals$vamRes))[[1]])
+          plotSCEViolin(inSCE = vals$gsvaRes, slotName = "reducedDims", itemName = vals$gsvaScore, dimension = colnames(reducedDim(vals$gsvaRes, vals$gsvaScore))[[1]], xlab = "Sample", ylab = colnames(reducedDim(vals$gsvaRes, vals$gsvaScore))[[1]])
           #groupby can be used for indicating colnames (optional)
           
         }
@@ -5925,7 +5925,6 @@ shinyServer(function(input, output, session) {
       
     })
   })
-  
   
  
   
