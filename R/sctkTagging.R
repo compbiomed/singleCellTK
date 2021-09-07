@@ -55,6 +55,7 @@ expTaggedData <- function(inSCE, tags = NULL, redDims = FALSE){
   retList <- list()
   if(is.null(tags)){
     if(!is.null(S4Vectors::metadata(inSCE)$assayType)){
+      taggedAssays <- NULL
       for(i in seq(S4Vectors::metadata(inSCE)$assayType)){
         if(!is.null(S4Vectors::metadata(inSCE)$assayType[[i]])){
           if(length(S4Vectors::metadata(inSCE)$assayType[[i]]) == 1){
@@ -64,8 +65,22 @@ expTaggedData <- function(inSCE, tags = NULL, redDims = FALSE){
           else{
             retList[[names(S4Vectors::metadata(inSCE)$assayType)[i]]] <- S4Vectors::metadata(inSCE)$assayType[[i]]
           }
+          taggedAssays <- c(taggedAssays, S4Vectors::metadata(inSCE)$assayType[[i]])
         }
       }
+      # If an assay has no tag, assign it "uncategorized".
+      if(!all(expDataNames(inSCE) %in% taggedAssays)){
+        untaggedAssays <- expDataNames(inSCE)[!expDataNames(inSCE) %in% taggedAssays]
+        if(length(untaggedAssays) == 1){
+          S4Vectors::metadata(inSCE)$assayType[["uncategorized"]] <- list(untaggedAssays)
+          retList[["uncategorized"]] <- S4Vectors::metadata(inSCE)$assayType[["uncategorized"]]
+        }
+        else{
+          S4Vectors::metadata(inSCE)$assayType[["uncategorized"]] <- untaggedAssays
+          retList[["uncategorized"]] <- S4Vectors::metadata(inSCE)$assayType[["uncategorized"]]
+        }
+      }
+      # ====
     }
     else{
       S4Vectors::metadata(inSCE)$assayType[["uncategorized"]] <- SummarizedExperiment::assayNames(inSCE)
