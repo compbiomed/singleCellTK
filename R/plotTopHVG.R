@@ -70,6 +70,7 @@ plotTopHVG <- function(inSCE,
                colour = "red",
                size = 2) +
     ggplot2::labs(x = "Mean", y = labeling)
-
+  
+  vfplot <- .ggSCTKTheme(vfplot)
   return(vfplot)
 }

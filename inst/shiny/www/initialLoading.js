@@ -15,4 +15,5 @@ $(function(){
     $(document).on('shiny:idle', function(event) {
     $.busyLoadFull("hide");
   });
+
 });
