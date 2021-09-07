@@ -123,7 +123,16 @@ option_list <- list(optparse::make_option(c("-b", "--basePath"),
     optparse::make_option(c("-T", "--parallelType"),
         type="character",
         default="MulticoreParam",
-        help="Type of clusters used for parallel computing. Default is 'MulticoreParam'. It can be 'MulticoreParam' or 'SnowParam'. This argument will be evaluated only when numCores > 1.")
+        help="Type of clusters used for parallel computing. Default is 'MulticoreParam'. It can be 'MulticoreParam' or 'SnowParam'. This argument will be evaluated only when numCores > 1."),
+    optparse::make_option(c("-M", "--detectMitoLevel"),
+        type="logical",
+        default=TRUE,
+        help="Detect mitochondrial gene expression level. If TRUE, the pipeline will examinate mito gene expression level automatically without the need of importing user defined gmt file. Default is TRUE"),
+    optparse::make_option(c("-E", "--mitoType"),
+        type="character",
+        default="human-ensemble",
+        help="Type of mitochondrial gene set to be used when --detectMitoLevel is set to TRUE. Possible choices are: 'human-ensemble', 'human-symbol', 'human-entrez', 'human-ensemble_transcriptID', 
+        'mouse-ensemble', 'mouse-symbol', 'mouse-entrez', 'mouse-ensemble_transcriptID'. The first part defines the species and second part defines type of gene ID used as the rownames of the count matrix")  
     )
 ## Define arguments
 arguments <- optparse::parse_args(optparse::OptionParser(option_list=option_list), positional_arguments=TRUE)
@@ -150,6 +159,8 @@ cellCalling <- opt[["cellDetectMethod"]]
 studyDesign <- opt[["studyDesign"]]
 subTitles <- opt[["subTitle"]]
 CombinedSamplesName <- opt[["outputPrefix"]]
+MitoImport <- opt[["detectMitoLevel"]]
+MitoType <- opt[["mitoType"]]
 
 if (!is.null(basepath)) { basepath <- unlist(strsplit(opt[["basePath"]], ",")) } 
 
@@ -212,6 +223,35 @@ if (numCores > 1) {
     #Params$doubletCells$BPPARAM <- parallelParam
     Params$doubletFinder$nCores <- numCores
 }
+
+
+### helper function for importing Mito gene set
+.importMito <- function(inSCE, geneSetCollection, MitoImport, MitoType) {
+    if (isTRUE(MitoImport)) {
+        mito_info <- strsplit(MitoType, split="-")
+        reference <- mito_info[[1]][1]
+        id <- mito_info[[1]][2]
+        inSCE <- importMitoGeneSet(inSCE = inSCE,
+                     reference = reference,
+                     id = id,
+                     collectionName = MitoType,
+                     by = "rownames")
+        mito_gs <- inSCE@metadata$sctk$genesets[[MitoType]]@.Data[[1]]
+        mito_gs@shortDescription <- "rownames"
+
+        if (!is.null(geneSetCollection)) {
+          geneSetCollection@.Data <- c(geneSetCollection@.Data, mito_gs)
+        } else {
+          geneSetCollection <- GSEABase::GeneSetCollection(mito_gs)
+        }
+    }
+
+    return(geneSetCollection)
+}
+
+ 
+    
+
 
 ### checking output formats
 if (!all(formats %in% c("SCE", "AnnData", "FlatFile", "HTAN", "Seurat"))) {
@@ -409,6 +449,7 @@ for(i in seq_along(process)) {
 
     dropletSCE <- INPUT[[1]]
     cellSCE <- INPUT[[2]]
+    geneSetCollection <- .importMito(inSCE = dropletSCE, geneSetCollection = geneSetCollection, MitoImport=MitoImport, MitoType=MitoType)
     
     if (dataType == "Cell") {
         if (is.null(cellSCE) && (preproc %in% c("BUStools", "SEQC"))) {

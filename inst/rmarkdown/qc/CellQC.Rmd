@@ -185,8 +185,8 @@ cat("\n\n")
 cat(paste0('## Total Mitochondrial Features {.tabset .tabset-fade} \n\n'))
 plotsQCMetrics$Violin$Gene_Subset_Features
 cat("\n\n")
-cat(paste0('## % of Library Size Occupied by Top 50 Exp. Genes {.tabset .tabset-fade} \n\n'))
-plotsQCMetrics$Violin$TopPercent
+cat(paste0('## The percentage of Library Size Occupied by Top 50 Exp. Genes {.tabset .tabset-fade} \n\n'))
+plotsQCMetrics$Violin$Gene_Subset_Top50_Percent
 cat("\n\n")
 cat(paste0('## Parameters {.tabset .tabset-fade} \n\n'))
 
