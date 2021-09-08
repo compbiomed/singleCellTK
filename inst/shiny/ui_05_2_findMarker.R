@@ -36,11 +36,10 @@ shinyPanelfindMarker <- fluidPage(
           tabPanel(
             "Heatmap",
             shinyjs::useShinyjs(),
-            wellPanel(
-              actionButton(inputId = "fmShowHMSetting", "Show Settings"),
-              shinyjs::hidden(
-                tags$div(
-                  id = "fmHMsettings",
+            fluidRow(
+              column(
+                width = 4,
+                dropdown(
                   fluidRow(
                     column(
                       width = 6,
@@ -100,17 +99,34 @@ shinyPanelfindMarker <- fluidPage(
                       width = 6,
                       selectInput("fmHMrowData", "Additional feature annotation",
                                   featureChoice, multiple = TRUE),
-                      withBusyIndicatorUI(actionButton('plotFM', "Plot"))
+                      withBusyIndicatorUI(actionButton('plotFM', "Update"))
                     ),
                     column(
                       width = 6,
                       selectInput("fmHMcolData", "Additional cell annotation",
                                   clusterChoice, multiple = TRUE)
                     )
-                  )
+                  ),
+                  inputId = "dropDownFM",
+                  icon = icon("cog"),
+                  status = "primary",
+                  circle = FALSE,
+                  inline = FALSE,
+                  width = "500px"
+                )
+              ),
+              column(
+                width = 7,
+                fluidRow(
+                  h6(
+                    "The heatmap plots the expression level of top markers found for each cluster"
+                  ),
+                  align="center"
                 )
               )
             ),
+            hr(),
+            br(),
             shinyjqui::jqui_resizable(plotOutput('fmHeatmap'))
           )
         )
