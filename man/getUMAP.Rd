@@ -7,7 +7,7 @@ dimension reduction.}
 \usage{
 getUMAP(
   inSCE,
-  useAssay = NULL,
+  useAssay = "counts",
   useAltExp = NULL,
   useReducedDim = NULL,
   sample = NULL,

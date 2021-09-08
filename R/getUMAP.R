@@ -44,7 +44,7 @@
 #' data(scExample, package = "singleCellTK")
 #' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 #' sce <- getUMAP(inSCE = sce, useAssay = "counts", reducedDimName = "UMAP")
-getUMAP <- function(inSCE, useAssay = NULL, useAltExp = NULL,
+getUMAP <- function(inSCE, useAssay = "counts", useAltExp = NULL,
                     useReducedDim = NULL, sample = NULL,
                     reducedDimName = "UMAP", logNorm = FALSE, nNeighbors = 30,
                     nIterations = 200, alpha = 1, minDist = 0.5, spread = 5,
