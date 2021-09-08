@@ -69,4 +69,5 @@ jobs:
         run: |
           BiocManager::install("BiocCheck")
           BiocCheck(".")
+        shell: Rscript {0}
           
