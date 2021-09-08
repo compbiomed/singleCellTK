@@ -199,7 +199,7 @@ shinyPanelImport <- fluidPage(
       condition = sprintf("input['%s'] == 'rds'", "uploadChoice"),
       h3("2. Choose an RDS file that contains a SingleCellExperiment or Seurat object:"),
       fileInput(
-        "rdsFile", "SingleCellExperiment RDS file:", accept = c(".rds", ".RDS")
+        "rdsFile", "SingleCellExperiment or Seurat RDS file:", accept = c(".rds", ".RDS")
       ),
       actionButton("addRDSImport", "Add To Sample List")
     ),

@@ -33,9 +33,10 @@ test_that(desc = "Testing plotSCEScatter functions", {
 })
 
 test_that(desc = "Testing plotSCEViolin functions", {
-    p1 <- plotSCEViolin(inSCE = sceres, slot = "assays",
-        annotation = "counts", feature = "ENSG00000251562",
-        groupBy = "type", sample = sampleVector, combinePlot = "all")
+    p1 <- plotSCEViolin(inSCE = sceres, slotName = "assays",
+                        itemName = "counts", feature = "ENSG00000251562",
+                        groupBy = "type", sample = sampleVector,
+                        combinePlot = "all")
     expect_is(p1, c("gg","ggplot"))
     p2 <- plotSCEViolinAssayData(inSCE = sceres,
         feature = "ENSG00000251562", groupBy = "type",

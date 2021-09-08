@@ -12,3 +12,4 @@ vignettes/articles/*_cache/*
 vignettes/articles/raw_data/*
 raw_data/*
 *.rds
+.RDataTmp

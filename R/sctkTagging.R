@@ -232,7 +232,7 @@ setGeneric(name = "expDataNames",
 setMethod(f = "expDataNames",
           signature = signature(inSCE = "ANY"),
           definition = function(inSCE){
-            result <- c(altExpNames(inSCE), methods::callNextMethod())
+            result <- c(methods::callNextMethod(), altExpNames(inSCE), reducedDimNames(inSCE))
             return(result)
           }
 )

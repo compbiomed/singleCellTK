@@ -435,3 +435,30 @@ year = {2021},
 note = {R package version 1.54.0},
 url = {https://bioconductor.org/packages/release/bioc/html/GSEABase.html},
 }
+
+
+
+@article {Frost2020.02.18.954321,
+	author = {Frost, H. Robert},
+	title = {Variance-adjusted Mahalanobis (VAM): a fast and accurate method for cell-specific gene set scoring},
+	elocation-id = {2020.02.18.954321},
+	year = {2020},
+	doi = {10.1101/2020.02.18.954321},
+	publisher = {Cold Spring Harbor Laboratory},
+	abstract = {Single cell RNA sequencing (scRNA-seq) is a powerful tool for analyzing complex tissues with recent advances enabling the transcriptomic profiling of thousands to tens-of-thousands of individual cells. Although scRNA-seq provides unprecedented insights into the biology of heterogeneous cell populations, analyzing such data on a gene-by-gene basis is challenging due to the large number of tested hypotheses, high level of technical noise and inflated zero counts. One promising approach for addressing these challenges is gene set testing, or pathway analysis. By combining the expression data for all genes in a pathway, gene set testing can mitigate the impacts of sparsity and noise and improve interpretation, replication and statistical power. Unfortunately, statistical and biological differences between single cell and bulk expression measurements make it challenging to use gene set testing methods originally developed for bulk tissue on scRNA-seq data and progress on single cell-specific methods has been limited. To address this challenge, we have developed a new gene set testing method, variance-adjusted Mahalanobis (VAM), that seamlessly integrates with the Seurat framework and is designed to accommodate the technical noise, sparsity and large sample sizes characteristic of scRNA-seq data. The VAM method computes cell-specific pathway scores to transform a cell-by-gene matrix into a cell-by-pathway matrix that can be used for both exploratory data visualization and statistical gene set enrichment analysis. Because the distribution of these scores under the null of uncorrelated technical noise has an accurate gamma approximation, inference can be performed at both the population and single cell levels. As we demonstrate using both simulation studies and real data analyses, the VAM method provides superior classification accuracy at a lower computation cost relative to existing single sample gene set testing approaches.},
+	URL = {https://www.biorxiv.org/content/early/2020/02/19/2020.02.18.954321},
+	eprint = {https://www.biorxiv.org/content/early/2020/02/19/2020.02.18.954321.full.pdf},
+	journal = {bioRxiv}
+}
+
+
+
+@Article{pmid23323831,
+   Author="Hänzelmann, S.  and Castelo, R.  and Guinney, J. ",
+   Title="{{G}{S}{V}{A}: gene set variation analysis for microarray and {R}{N}{A}-seq data}",
+   Journal="BMC Bioinformatics",
+   Year="2013",
+   Volume="14",
+   Pages="7",
+   Month="Jan"
+}
