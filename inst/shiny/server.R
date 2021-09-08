@@ -2634,7 +2634,7 @@ shinyServer(function(input, output, session) {
                       ),
                   actionBttn(
                     inputId = "updateHeatmap_dimRed",
-                    label = "update",
+                    label = "Update", 
                     style = "bordered",
                     color = "primary",
                     size = "sm"
@@ -2766,7 +2766,7 @@ shinyServer(function(input, output, session) {
                                                                            numericInput(inputId = "plotDimRed_pca_dimY", label = "Select component for Y-axis:", value = 2),
                                                                            actionBttn(
                                                                              inputId = "updateRedDimPlot_pca",
-                                                                             label = "update",
+                                                                             label = "Update", 
                                                                              style = "bordered",
                                                                              color = "primary",
                                                                              size = "sm"
@@ -3064,7 +3064,6 @@ shinyServer(function(input, output, session) {
 
   observeEvent(input$updateRedDimPlot_tsneUmap,{
     req(vals$counts)
-    isolate
     output$plotDimRed_tsneUmap <- renderPlotly({
       isolate({
         plotly::ggplotly(plotDimRed(
