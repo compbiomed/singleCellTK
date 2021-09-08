@@ -64,3 +64,9 @@ jobs:
         with:
           name: ${{ runner.os }}-r${{ matrix.config.r }}-results
           path: check
+          
+      - name: Run BiocCheck
+        run: |
+          BiocManager::install("BiocCheck")
+          BiocCheck(".")
+          

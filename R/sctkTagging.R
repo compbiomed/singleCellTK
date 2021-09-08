@@ -71,6 +71,7 @@ expTaggedData <- function(inSCE, tags = NULL, redDims = FALSE){
       # If an assay has no tag, assign it "uncategorized".
       if(!all(expDataNames(inSCE) %in% taggedAssays)){
         untaggedAssays <- expDataNames(inSCE)[!expDataNames(inSCE) %in% taggedAssays]
+        untaggedAssays <- .filterRedDims(inSCE = inSCE, untaggedAssays = untaggedAssays)
         if(length(untaggedAssays) == 1){
           S4Vectors::metadata(inSCE)$assayType[["uncategorized"]] <- list(untaggedAssays)
           retList[["uncategorized"]] <- S4Vectors::metadata(inSCE)$assayType[["uncategorized"]]
@@ -251,3 +252,9 @@ setMethod(f = "expDataNames",
             return(result)
           }
 )
+
+# This utility function removes the redDims from untagged assays for use in expTaggedData function.
+.filterRedDims <- function(inSCE, untaggedAssays){
+  notRedDims <- untaggedAssays[!untaggedAssays %in% reducedDimNames(inSCE)]
+  return(notRedDims)
+}

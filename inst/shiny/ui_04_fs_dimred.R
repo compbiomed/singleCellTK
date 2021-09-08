@@ -60,7 +60,7 @@ shinyPanelFS_DimRed <- fluidPage(
                        ),
                        actionBttn(
                          inputId = "updatePlotFS",
-                         label = "update", 
+                         label = "Update", 
                          style = "bordered",
                          color = "primary",
                          size = "sm"
@@ -73,7 +73,7 @@ shinyPanelFS_DimRed <- fluidPage(
               circle = FALSE,
               inline = TRUE
             )),
-            column(6, fluidRow(h6("the plot highlights the top variable features (can be labeled from the button on the left) with respect to the metrics computed by the selected algorithm"), align="center"))
+            column(7, fluidRow(h6("the plot highlights the top variable features (can be labeled from the button on the left) with respect to the metrics computed by the selected algorithm"), align="center"))
           ),
           hr(),
           br(),
@@ -257,7 +257,7 @@ shinyPanelFS_DimRed <- fluidPage(
                                                       ),
                                                       actionBttn(
                                                         inputId = "updateRedDimPlot_tsneUmap",
-                                                        label = "update", 
+                                                        label = "Update", 
                                                         style = "bordered",
                                                         color = "primary",
                                                         size = "sm"
@@ -270,7 +270,7 @@ shinyPanelFS_DimRed <- fluidPage(
                                              circle = FALSE,
                                              inline = TRUE
                                            )),
-                                           column(6, fluidRow(h6("the plot highlights the top variable features (can be labeled from the button on the left) with respect to the metrics computed by the selected algorithm"), align="center"))
+                                           column(7, fluidRow(h6("the plot highlights the top variable features (can be labeled from the button on the left) with respect to the metrics computed by the selected algorithm"), align="center"))
                                          ),
                                          hr(),
                                          br(),
