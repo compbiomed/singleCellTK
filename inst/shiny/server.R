@@ -95,7 +95,7 @@ shinyServer(function(input, output, session) {
                       choices = c("None", pdataOptions))
     updateSelectInput(session, "clustVisCol", choices = pdataOptions)
     updateSelectInput(session, "deC1Class",
-                      choices = c('None', pdataOptions))
+                      choices = pdataOptions)
     updateSelectInput(session, "deC2G1Col",
                       choices = pdataOptions)
     updateSelectInput(session, "deC2G2Col",
@@ -3161,14 +3161,17 @@ shinyServer(function(input, output, session) {
             if (matType == "assay") {
               params$useAssay = input$clustScranSNNMat
               params$nComp = input$clustScranSNNd
+              plotReddim <- NULL
             } else if (matType == "reducedDim") {
               params$useReducedDim = input$clustScranSNNMat
               updateSelectInput(session, "clustVisReddim",
                                 selected = input$clustScranSNNMat)
+              plotReddim <- input$clustScranSNNMat
             } else if (matType == "altExp") {
               params$useAltExp = input$clustScranSNNMat
               params$altExpAssay = input$clustScranSNNMat
               params$nComp = input$clustScranSNNd
+              plotReddim <- NULL
             }
           } else if (length(matType) == 2 &&
                      matType[1] == "reducedDim") {
@@ -3205,6 +3208,7 @@ shinyServer(function(input, output, session) {
                                    clusterName = saveClusterName)
           updateSelectInput(session, "clustVisReddim",
                             selected = input$clustKMeansReddim)
+          plotReddim <- input$clustKMeansReddim
         } else if (input$clustAlgo %in% seq(10, 12)) {
           # Seurat
           if(input$clustSeuratReddim == ""){
@@ -3246,10 +3250,24 @@ shinyServer(function(input, output, session) {
                                             resolution = input$clustSeuratRes)
           updateSelectInput(session, "clustVisReddim",
                             selected = input$clustSeuratReddim)
+          plotReddim <- input$clustSeuratReddim
         }
         updateColDataNames()
         clustResults$names <- c(clustResults$names, saveClusterName)
         updateSelectInput(session, "clustVisRes", choices = clustResults$names)
+        if (!is.null(plotReddim)) {
+          output$clustVisPlot <- renderPlotly({
+            isolate({
+              plotSCEDimReduceColData(inSCE = vals$counts,
+                                      colorBy = saveClusterName,
+                                      conditionClass = "factor",
+                                      reducedDimName = plotReddim,
+                                      labelClusters = TRUE,
+                                      dim1 = 1, dim2 = 2,
+                                      legendTitle = saveClusterName)
+            })
+          })
+        }
         # Show downstream analysis options
         callModule(module = nonLinearWorkflow, id = "nlw-cl", parent = session, de = TRUE, pa = TRUE, cv = TRUE)
       })
@@ -5743,8 +5761,21 @@ shinyServer(function(input, output, session) {
         text = "Differential expression analysis completed.",
         type = "success"
       )
+      res <- names(metadata(vals$counts)$diffExp)
+      updateSelectInput(session, "deResSel", choices = res,
+                        selected = input$deAnalysisName)
       colSplitBy <- "condition"
       rowSplitBy <- "regulation"
+
+      x <- expData(vals$counts, input$deAssay)
+      if (!all(floor(x) == x, na.rm = TRUE) & max(x, na.rm = TRUE) <
+          100) {
+        isLogged <- TRUE
+      } else {
+        isLogged <- FALSE
+        updateCheckboxGroupInput(session, "deHMDoLog", selected = TRUE)
+      }
+
       output$deHeatmap <- renderPlot({
         isolate({
           plotDEGHeatmap(inSCE = vals$counts,
@@ -5753,9 +5784,31 @@ shinyServer(function(input, output, session) {
                          log2fcThreshold = input$deFCThresh,
                          fdrThreshold = input$deFDRThresh,
                          colSplitBy = colSplitBy,
-                         rowSplitBy = rowSplitBy)
+                         rowSplitBy = rowSplitBy,
+                         doLog = !isLogged)
         })
       })
+
+      output$deViolinPlot <- renderPlot({
+        isolate({
+          plotDEGViolin(inSCE = vals$counts, useResult = input$deAnalysisName,
+                        nrow = input$deVioNRow, ncol = input$deVioNCol, labelBy = NULL,
+                        check_sanity = FALSE, isLogged = isLogged)
+        })
+      })
+
+      output$deRegPlot <- renderPlot({
+        isolate({
+          plotDEGRegression(inSCE = vals$counts,
+                            useResult = input$deAnalysisName,
+                            nrow = input$deRegNRow,
+                            ncol = input$deRegNCol,
+                            labelBy = NULL,
+                            check_sanity = FALSE,
+                            isLogged = isLogged)
+        })
+      })
+
     })
   }
 
@@ -5786,12 +5839,6 @@ shinyServer(function(input, output, session) {
   })
 
   # DE: Result visualize ####
-  output$deResSelUI <- renderUI({
-    if(!is.null(vals$counts)){
-      res <- names(metadata(vals$counts)$diffExp)
-      selectInput("deResSel", "Select Differential Expression Analysis", res)
-    }
-  })
 
   # Data table
   output$deResult <- DT::renderDataTable({
