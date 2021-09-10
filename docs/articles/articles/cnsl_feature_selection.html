@@ -259,6 +259,12 @@
      
   </a>
 </li>
+<li>
+  <a href="https://twitter.com/camplab1">
+    <span class="fa fa-twitter"></span>
+     
+  </a>
+</li>
       </ul>
 </div>
 <!--/.nav-collapse -->
@@ -269,7 +275,7 @@
 
       
 
-      </header><script src="cnsl_feature_selection_files/header-attrs-2.5/header-attrs.js"></script><link href="cnsl_feature_selection_files/anchor-sections-1.0/anchor-sections.css" rel="stylesheet">
+      </header><link href="cnsl_feature_selection_files/anchor-sections-1.0/anchor-sections.css" rel="stylesheet">
 <script src="cnsl_feature_selection_files/anchor-sections-1.0/anchor-sections.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
@@ -348,12 +354,12 @@
 div.offset { background-color:inherit ; border-radius: 5px; margin-left: 15px;}
 </style>
 <div class="offset">
-<details><summary><code>vst</code>, <code>mean.var.plot</code> or <code>dispersion</code> from <strong>Seurat</strong> <span class="citation">[1]</span><span class="citation">[2]</span> package:
-</summary><div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<details><p><summary><code>vst</code>, <code>mean.var.plot</code> or <code>dispersion</code> from <strong>Seurat</strong> <span class="citation">[1]</span><span class="citation">[2]</span> package:</summary></p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R">  <span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/seuratFindHVG.html">seuratFindHVG</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"counts"</span>, hvgMethod <span class="op">=</span> <span class="st">"vst"</span>, hvgNumber <span class="op">=</span> <span class="fl">2000</span>, altExp <span class="op">=</span> <span class="cn">FALSE</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
-<p>The parameters to the above function include: <br><br><code>inSCE</code>: an input <code>SingleCellExperiment</code> object <br><code>useAssay</code>: specify the name of the assay to use for feature selection <br><code>hvgMethod</code>: one of the options from “vst,” “mean.var.plot” or “dispersion” <br><code>hvgNumber</code>: specify the number of variable genes to compute by default <br><code>altExp</code>: a logical value indicating if the input object is an altExperiment <br><code>verbose</code>: a logical value indicating if progress should be printed <br><br></p>
-</details><details><summary><code>modelGeneVar</code> from <strong>Scran</strong> package:
-</summary><div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<p>The parameters to the above function include: <br><br><code>inSCE</code>: an input <code>SingleCellExperiment</code> object <br><code>useAssay</code>: specify the name of the assay to use for feature selection <br><code>hvgMethod</code>: one of the options from “vst”, “mean.var.plot” or “dispersion” <br><code>hvgNumber</code>: specify the number of variable genes to compute by default <br><code>altExp</code>: a logical value indicating if the input object is an altExperiment <br><code>verbose</code>: a logical value indicating if progress should be printed <br><br></p>
+</details><details><p><summary><code>modelGeneVar</code> from <strong>Scran</strong> package:</summary></p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R">  <span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/scranModelGeneVar.html">scranModelGeneVar</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, assayName <span class="op">=</span> <span class="st">"counts"</span><span class="op">)</span></code></pre></div>
 <p>The parameters to the above function include: <br><br><code>inSCE</code>: an input <code>SingleCellExperiment</code> object <br><code>assayName</code>: selected assay to compute variable features from <br></p>
 </details>
@@ -367,26 +373,21 @@ document.getElementById("ia-button").click();
 <div id="references" class="section level2 unnumbered">
 <h2 class="hasAnchor">
 <a href="#references" class="anchor"></a>References</h2>
-<div id="refs" class="references csl-bib-body">
-<div id="ref-Butler2018" class="csl-entry">
-<div class="csl-left-margin">[1] </div>
-<div class="csl-right-inline">A. Butler, P. Hoffman, P. Smibert, E. Papalexi, and R. Satija, <span>“<span class="nocase">Integrating single-cell transcriptomic data across different conditions, technologies, and species</span>,”</span> <em>Nature Biotechnology</em>, vol. 36, no. 5, pp. 411–420, Jun. 2018, doi: <a href="https://doi.org/10.1038/nbt.4096">10.1038/nbt.4096</a>.</div>
+<div id="refs" class="references">
+<div id="ref-Butler2018">
+<p>[1] A. Butler, P. Hoffman, P. Smibert, E. Papalexi, and R. Satija, “Integrating single-cell transcriptomic data across different conditions, technologies, and species,” <em>Nature Biotechnology</em>, vol. 36, no. 5, pp. 411–420, Jun. 2018, doi: <a href="https://doi.org/10.1038/nbt.4096">10.1038/nbt.4096</a>.</p>
 </div>
-<div id="ref-Stuart2019" class="csl-entry">
-<div class="csl-left-margin">[2] </div>
-<div class="csl-right-inline">T. Stuart <em>et al.</em>, <span>“<span class="nocase">Comprehensive Integration of Single-Cell Data</span>,”</span> <em>Cell</em>, vol. 177, no. 7, pp. 1888–1902.e21, Jun. 2019, doi: <a href="https://doi.org/10.1016/j.cell.2019.05.031">10.1016/j.cell.2019.05.031</a>.</div>
+<div id="ref-Stuart2019">
+<p>[2] T. Stuart <em>et al.</em>, “Comprehensive Integration of Single-Cell Data,” <em>Cell</em>, vol. 177, no. 7, pp. 1888–1902.e21, Jun. 2019, doi: <a href="https://doi.org/10.1016/j.cell.2019.05.031">10.1016/j.cell.2019.05.031</a>.</p>
 </div>
-<div id="ref-Satija2017" class="csl-entry">
-<div class="csl-left-margin">[3] </div>
-<div class="csl-right-inline">R. Satija, J. A. Farrell, D. Gennert, A. F. Schier, and A. Regev, <span>“Spatial reconstruction of single-cell gene expression data,”</span> <em>Nature Biotechnology</em>, vol. 33, pp. 495–502, 2015, doi: <a href="https://doi.org/10.1038/nbt.3192">10.1038/nbt.3192</a>.</div>
+<div id="ref-Satija2017">
+<p>[3] R. Satija, J. A. Farrell, D. Gennert, A. F. Schier, and A. Regev, “Spatial reconstruction of single-cell gene expression data,” <em>Nature Biotechnology</em>, vol. 33, pp. 495–502, 2015, doi: <a href="https://doi.org/10.1038/nbt.3192">10.1038/nbt.3192</a>.</p>
 </div>
-<div id="ref-Hao2021" class="csl-entry">
-<div class="csl-left-margin">[4] </div>
-<div class="csl-right-inline">Y. Hao <em>et al.</em>, <span>“Integrated analysis of multimodal single-cell data,”</span> <em>Cell</em>, 2021, doi: <a href="https://doi.org/10.1016/j.cell.2021.04.048">10.1016/j.cell.2021.04.048</a>.</div>
+<div id="ref-Hao2021">
+<p>[4] Y. Hao <em>et al.</em>, “Integrated analysis of multimodal single-cell data,” <em>Cell</em>, 2021, doi: <a href="https://doi.org/10.1016/j.cell.2021.04.048">10.1016/j.cell.2021.04.048</a>.</p>
 </div>
-<div id="ref-Aaron2016" class="csl-entry">
-<div class="csl-left-margin">[5] </div>
-<div class="csl-right-inline">A. T. L. Lun, D. J. McCarthy, and J. C. Marioni, <span>“A step-by-step workflow for low-level analysis of single-cell RNA-seq data with bioconductor,”</span> <em>F1000Res.</em>, vol. 5, p. 2122, 2016, doi: <a href="https://doi.org/10.12688/f1000research.9501.2">10.12688/f1000research.9501.2</a>.</div>
+<div id="ref-Aaron2016">
+<p>[5] A. T. L. Lun, D. J. McCarthy, and J. C. Marioni, “A step-by-step workflow for low-level analysis of single-cell rna-seq data with bioconductor,” <em>F1000Res.</em>, vol. 5, p. 2122, 2016, doi: <a href="https://doi.org/10.12688/f1000research.9501.2">10.12688/f1000research.9501.2</a>.</p>
 </div>
 </div>
 </div>
