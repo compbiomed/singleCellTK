@@ -71,4 +71,6 @@ jobs:
           library(BiocCheck)
           BiocCheck(".")
         shell: Rscript {0}
-          
+        
+      - name: Codecov
+        uses: codecov/codecov-action@v2.1.0
