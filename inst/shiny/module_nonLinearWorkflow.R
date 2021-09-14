@@ -22,7 +22,7 @@ nonLinearWorkflow <- function(input, output, session, parent,
   ns <- session$ns
   
   output$ui <- renderUI({
-    bsCollapsePanel("Downstream Analysis", 
+    bsCollapsePanel(tagList(icon("chevron-circle-down"), "Downstream Analysis"), 
                     uiOutput(ns("de")),
                     uiOutput(ns("pa")),
                     uiOutput(ns("qcf")),

@@ -71,4 +71,13 @@ jobs:
           library(BiocCheck)
           BiocCheck(".")
         shell: Rscript {0}
-          
+        
+      - name: Run codecov
+        run: |
+          install.packages("covr")
+          library(covr)
+          codecov()
+        shell: Rscript {0}
+      
+      - name: Upload codecov
+        uses: codecov/codecov-action@v2.1.0
