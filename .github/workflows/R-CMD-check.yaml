@@ -74,6 +74,7 @@ jobs:
         
       - name: Run codecov
         run: |
+          install.packages("covr")
           library(covr)
           codecov()
         shell: Rscript {0}
