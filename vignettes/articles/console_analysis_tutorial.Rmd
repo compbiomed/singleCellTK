@@ -118,9 +118,8 @@ set.seed(12345)
 
 ```{R pca, message=FALSE, warning=FALSE, results="hold"}
 sce <- runDimReduce(inSCE = sce, method = "scaterPCA", 
-                    useAssay = "logcounts_scaled", useAltExp = "hvg", scale = FALSE)
-#sce <- scaterPCA(sce, useAltExp = "hvg",
-#                 useAssay = "logcounts_scaled", scale = FALSE)
+                    useAssay = "logcounts_scaled", useAltExp = "hvg",
+                    reducedDimName = "PCA")
 ```
 
 >Note: When using `useAltExp` argument in SCTK functions, users should also be aware of the `useAssay` argument. Usually when both are available, using only `useAssay` means using a full-sized feature expression matrix; using `useAssay` and `useAltExp` in the same call means using a subsetted expression matrix. In the latter scenario, `useAltExp` points to the alternative experiment stored in `altExp` slot of the SCE object, and `useAssay` points to the `assay` slot in the alternative experiment object.  
@@ -151,8 +150,6 @@ SCTK also has the function for t-distributed Stochastic Neighbor Embedding (tSNE
 
 ```{R umap, message=FALSE, warning=FALSE, results="hold"}
 sce <- runDimReduce(inSCE = sce, method = "uwotUMAP", useReducedDim = "PCA", reducedDimName = "UMAP")
-#sce <- getUMAP(sce, useReducedDim = "PCA", reducedDimName = "UMAP")
-#sce <- runDimReduce(inSCE = sce, method = "seuratUMAP", useReducedDim = "PCA", reducedDimName = "seuratUMAP")
 ```
 
 `plotSCEDimReduceColData()` is a generic plotting function that use the values stored in `reducedDim` slot as the axis to make 2-D scatter plots, and use the variables stored in `colData` slot to label each cell, by colors or shapes.  
@@ -161,7 +158,6 @@ Now, with the clustering result labeled for each cell and stored in the `colData
 
 ```{R cluster_umap, message=FALSE, warning=FALSE, results="hold"}
 plotSCEDimReduceColData(sce, colorBy = "cluster", reducedDimName = "UMAP", dotSize = 1)
-#plotSCEDimReduceColData(sce, colorBy = "cluster", reducedDimName = "seuratUMAP", dotSize = 1)
 ```
 
 ## Marker Detection And Differential Expression
@@ -197,21 +193,21 @@ plotMarkerDiffExp(sce, topN = 5, log2fcThreshold = 0, fdrThreshold = 0.05,
 
 ### Customized Differential Expression Analysis
 
-As we can easily tell from the heatmap above, "cluster 7" and "cluster 5" are having a very similar expression profile across the top markers detected. In order to further explore the difference between these two clusters, or any other two reasonable groups of cells, user can use the function `runDEAnalysis()`. 
+As we can easily tell from the heatmap above, "cluster 9" and "cluster 6" are having a very similar expression profile across the top markers detected. In order to further explore the difference between these two clusters, or any other two reasonable groups of cells, user can use the function `runDEAnalysis()`. 
 
 `runDEAnalysis()` is a generic function for performing differential expression (DE) analysis between two selected groups of cells. This is also used by `findMarkerDiffExp()`. By running DE analysis, the function will take the normalized read count data and perform statistical analysis to discover quantitative changes in expression levels between selected groups. See here for the detail of [running DE analysis with SCTK](differential_expression.html). 
 
 There are multiples ways to specify the groups of cells to be compared: by either directly specifying indices of cells, or selecting groups of cells with a categorical variable in `colData`. Additionally, `runDEAnalysis()` requires a relatively sophisticated inputs for naming the analyses, including the names of the two groups, and the name of one analysis, though these are not necessary for calling the algorithms alone. By requiring these, the results of the analyses can be stored with human readable identifiers and within one single SCE object, and can be more manageable. See the [DE documentation](differential_expression.html) for the detail. 
 
 ```{R de, message=FALSE, warning=FALSE, results="hold"}
-sce <- runDEAnalysis(inSCE = sce, method = "wilcox", class = "cluster", classGroup1 = c(5), classGroup2 = c(7),
-                 groupName1 = "cluster5", groupName2 = "cluster7", analysisName = "cluster5_VS_7")
+sce <- runDEAnalysis(inSCE = sce, method = "wilcox", class = "cluster", classGroup1 = c(9), classGroup2 = c(6),
+                 groupName1 = "cluster9", groupName2 = "cluster6", analysisName = "cluster9_VS_6")
 ```
 
 Similarly to the marker detection section, SCTK also has a DE anaysis specific heatmap plotting function, `plotDEGHeatmap()`. Here, users can just easily enter the `analysisName` specified for one run and the function will automatically arrange the output. The heatmap is also splitted into a "checker board", by the "conditions" (i.e. the groups selected when running `runDEAnalysis()`) and the "regulation" (i.e. whether the log2 fold change is positive in "group1" against "group2"). 
 
 ```{R deHeatmap, message=FALSE, warning=FALSE, results="hold"}
-plotDEGHeatmap(sce, useResult = "cluster5_VS_7", rowLabel = TRUE)
+plotDEGHeatmap(sce, useResult = "cluster9_VS_6", rowLabel = TRUE)
 ```
 
 ## Cell Type Labeling
@@ -232,3 +228,4 @@ We can also plot the labeling on to the UMAP we got previously.
 plotSCEDimReduceColData(sce, colorBy = "SingleR_hpca_fine_pruned.labels", 
                         reducedDimName = "UMAP", dotSize = 1, legendSize = 8)
 ```
+
