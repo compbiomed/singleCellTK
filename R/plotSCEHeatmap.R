@@ -502,15 +502,15 @@ plotSCEHeatmap <- function(inSCE, useAssay = 'logcounts', doLog = FALSE,
                                   row_split = rs, column_split = cs,
                                   row_title = rowTitle, column_title = colTitle,
                                   show_row_names = rowLabel,
-                                  row_names_gp = gpar(fontsize = rowLabelSize),
+                                  row_names_gp = grid::gpar(fontsize = rowLabelSize),
                                   show_row_dend = rowDend,
                                   show_column_names = colLabel,
-                                  column_names_gp = gpar(fontsize = colLabelSize),
+                                  column_names_gp = grid::gpar(fontsize = colLabelSize),
                                   show_column_dend = colDend,
                                   row_gap = rowGap, column_gap = colGap,
                                   border = border,
                                   ...)
     HM <- ComplexHeatmap::draw(hm, column_title = title,
-                               column_title_gp = gpar(fontsize = 16))
+                               column_title_gp = grid::gpar(fontsize = 16))
     return(HM)
 }

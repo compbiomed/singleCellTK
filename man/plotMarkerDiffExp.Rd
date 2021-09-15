@@ -24,6 +24,7 @@ plotMarkerDiffExp(
   rowSplitBy = "marker",
   rowDend = FALSE,
   colDend = FALSE,
+  title = "Top Marker Heatmap",
   ...
 )
 
@@ -47,6 +48,7 @@ plotMarkerDiffExp(
   rowSplitBy = "marker",
   rowDend = FALSE,
   colDend = FALSE,
+  title = "Top Marker Heatmap",
   ...
 )
 }
@@ -119,6 +121,9 @@ auto generated annotation for this plot.}
 \item{rowDend}{Whether to display row dendrogram. Default \code{FALSE}.}
 
 \item{colDend}{Whether to display column dendrogram. Default \code{FALSE}.}
+
+\item{title}{Text of the title, at the top of the heatmap. Default
+\code{"Top Marker Heatmap"}.}
 
 \item{...}{Other arguments passed to \code{\link{plotSCEHeatmap}}.}
 }

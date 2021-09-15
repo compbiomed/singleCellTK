@@ -61,6 +61,8 @@
 #' auto generated annotation for this plot.
 #' @param rowDend Whether to display row dendrogram. Default \code{FALSE}.
 #' @param colDend Whether to display column dendrogram. Default \code{FALSE}.
+#' @param title Text of the title, at the top of the heatmap. Default
+#' \code{"Top Marker Heatmap"}.
 #' @param ... Other arguments passed to \code{\link{plotSCEHeatmap}}.
 #' @return A \code{\link[ComplexHeatmap]{Heatmap}} object
 #' @author Yichen Wang
@@ -79,7 +81,8 @@ plotMarkerDiffExp <- function(inSCE, orderBy = 'size',
     cellAnnotationColor = NULL,
     colSplitBy = ifelse(is.null(orderBy), NULL,
                         colnames(inSCE@metadata$findMarker)[5]),
-    rowSplitBy = "marker", rowDend = FALSE, colDend = FALSE, ...){
+    rowSplitBy = "marker", rowDend = FALSE, colDend = FALSE,
+    title = "Top Marker Heatmap", ...){
     if(!inherits(inSCE, 'SingleCellExperiment')){
         stop('"inSCE" should be a SingleCellExperiment inherited Object.')
     }
@@ -202,6 +205,7 @@ plotMarkerDiffExp <- function(inSCE, orderBy = 'size',
                          cellAnnotationColor = cellAnnotationColor,
                          cluster_row_slices = FALSE,
                          cluster_column_slices = FALSE,
-                         rowDend = rowDend, colDend = colDend, ...)
+                         rowDend = rowDend, colDend = colDend, title = title,
+                         ...)
     return(hm)
 }
