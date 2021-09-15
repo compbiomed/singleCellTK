@@ -115,6 +115,21 @@ The names of the reducedDims of the `SingleCellExperiment` object are stored in 
 ```{r, reduceddimnames_cell}
 reducedDims(pbmc.combined)
 ```
+
+#### Generating a summary statistic table
+
+The function `sampleSummaryStats` may be used to generate a table containing the mean and median of the data per sample. 
+
+```{r sampleSummaryStats}
+sampleSummaryStats(pbmc.combined, sample = sample.vector)
+```
+
+If users choose to generate a table for all QC metrics generated through `runCellQC`, they may set the `simple` parameter to `FALSE`.
+
+```{r sampleSummaryStatsQC}
+sampleSummaryStats(pbmc.combined, sample = sample.vector, simple = FALSE)
+```
+
 <br />
 
 

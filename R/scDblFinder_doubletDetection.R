@@ -86,4 +86,3 @@ runScDblFinder <- function(inSCE,
 
   return(inSCE)
 }
-

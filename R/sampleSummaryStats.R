@@ -174,12 +174,9 @@ sampleSummaryStats <- function(inSCE,
     }
 
     dfTableRes <- as.data.frame(dfTableRes)
+
     dfTableRes <- apply(dfTableRes, seq(2), function(x){
-        if(grepl(as.character(x), "\\.0000")){
-            return(as.integer(x))
-        }else{
-            return(as.numeric(x))
-        }
+        return((signif(x,5)))
     })
 
     return(dfTableRes)
