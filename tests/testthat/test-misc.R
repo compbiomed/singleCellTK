@@ -34,16 +34,30 @@ test_that(desc = "Testing subsetSCERows", {
 
 test_that(desc = "Testing runVAM", {
   data(scExample)
+  sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
   sce <- scaterlogNormCounts(sce, assayName = "logcounts")
   sce <- importGeneSetsFromMSigDB(inSCE = sce,
                                   categoryIDs = "H",
                                   species = "Homo sapiens",
                                   mapping = "gene_symbol",
                                   by = "feature_name")
-  
+
   sce <- runVAM(inSCE = sce, geneSetCollectionName = "H", useAssay = "logcounts")
   expect_true(validObject(reducedDim(sce)))
 })
 
 
+test_that(desc = "Testing runGSVA", {
+  data(scExample)
+  sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
+  sce <- scaterlogNormCounts(sce, assayName = "logcounts")
+  sce <- importGeneSetsFromMSigDB(inSCE = sce,
+                                  categoryIDs = "H",
+                                  species = "Homo sapiens",
+                                  mapping = "gene_symbol",
+                                  by = "feature_name")
+
+  sce <- runGSVA(inSCE = sce, geneSetCollectionName = "H", useAssay = "logcounts")
+  expect_true(validObject(reducedDim(sce)))
+})
 

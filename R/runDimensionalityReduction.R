@@ -55,6 +55,14 @@ runDimensionalityReduction <- function(inSCE,
   )
 
   params <- c(params, args)
+  
+  externalReduction <- NULL
+  if(useAssay %in% reducedDimNames(inSCE)){
+    externalReduction <- reducedDim(inSCE, useAssay)
+    stdev <- as.numeric(attr(externalReduction, "percentVar"))
+    externalReduction <- Seurat::CreateDimReducObject(embeddings = externalReduction, assay = "RNA",
+                                              stdev = stdev, key = "PC_")
+  }
 
   if(useAssay %in% altExpNames(inSCE)){
     if(method %in% c("seuratPCA", "seuratICA", "seuratTSNE", "seuratUMAP")){
@@ -67,57 +75,72 @@ runDimensionalityReduction <- function(inSCE,
   }
 
   if(method %in% c("seuratPCA", "seuratICA", "seuratTSNE", "seuratUMAP")){
-    if(useAssay %in% altExpNames(inSCE)){
-      tempSCE <- seuratFindHVG(
-        inSCE = tempSCE,
-        useAssay = useAssay,
-        altExp = TRUE
-      )
-    }
-    else{
-      tempSCE <- seuratFindHVG(
-        inSCE = tempSCE,
-        useAssay = useAssay
-      )
+    if(is.null(externalReduction)){
+      if(useAssay %in% altExpNames(inSCE)){
+        tempSCE <- seuratFindHVG(
+          inSCE = tempSCE,
+          useAssay = useAssay,
+          altExp = TRUE
+        )
+      }
+      else{
+        tempSCE <- seuratFindHVG(
+          inSCE = tempSCE,
+          useAssay = useAssay
+        )
+      }
     }
     params$inSCE <- tempSCE
     if(method == "seuratPCA") params$nPCs <- nComponents
     if(method == "seuratICA") params$nics <- nComponents
   }
   if(method == "scaterPCA"){
-    params$ndim <- nComponents
+    params$nComponents <- nComponents
   }
   if(method == "rTSNE"){
     method <- "getTSNE"
   }
   if(method == "seuratTSNE"){
     method <- "seuratRunTSNE"
-    if(params$useReduction == "pca"){
-      params$inSCE <- seuratPCA(inSCE = params$inSCE,
-                               useAssay = params$useAssay,
-                               reducedDimName = paste0(params$reducedDimName, "_PCA"))
+    if(is.null(externalReduction)){
+      if(params$useReduction == "pca"){
+        params$inSCE <- seuratPCA(inSCE = params$inSCE,
+                                  useAssay = params$useAssay,
+                                  reducedDimName = paste0(params$reducedDimName, "_PCA"))
+      }
+      else{
+        params$inSCE <- seuratICA(inSCE = params$inSCE,
+                                  useAssay = params$useAssay,
+                                  reducedDimName = paste0(params$reducedDimName, "_ICA"))
+      }
     }
     else{
-      params$inSCE <- seuratICA(inSCE = params$inSCE,
-                               useAssay = params$useAssay,
-                               reducedDimName = paste0(params$reducedDimName, "_ICA"))
+      params$externalReduction <- externalReduction
     }
     params$useAssay <- NULL
   }
   if(method == "uwotUMAP"){
     method <- "getUMAP"
+    if(!is.null(externalReduction)){
+      params$pca <- FALSE
+    }
   }
   if(method == "seuratUMAP"){
     method <- "seuratRunUMAP"
-    if(params$useReduction == "pca"){
-      params$inSCE <- seuratPCA(inSCE = params$inSCE,
-                         useAssay = params$useAssay,
-                         reducedDimName = paste0(params$reducedDimName, "_PCA"))
+    if(is.null(externalReduction)){
+      if(params$useReduction == "pca"){
+        params$inSCE <- seuratPCA(inSCE = params$inSCE,
+                                  useAssay = params$useAssay,
+                                  reducedDimName = paste0(params$reducedDimName, "_PCA"))
+      }
+      else{
+        params$inSCE <- seuratICA(inSCE = params$inSCE,
+                                  useAssay = params$useAssay,
+                                  reducedDimName = paste0(params$reducedDimName, "_ICA"))
+      }
     }
     else{
-      params$inSCE <- seuratICA(inSCE = params$inSCE,
-                               useAssay = params$useAssay,
-                               reducedDimName = paste0(params$reducedDimName, "_ICA"))
+      params$externalReduction <- externalReduction
     }
     params$useAssay <- NULL
   }
