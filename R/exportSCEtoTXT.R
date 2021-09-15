@@ -24,8 +24,7 @@ exportSCEtoFlatFile <- function(sce,
                                 overwrite = TRUE,
                                 gzipped = TRUE,
                                 prefix = 'SCE') {
-  #path <- file.path(outputDir, prefix)
-  path <- outputDir
+  path <- file.path(outputDir, prefix)
   if (!file.exists(path)){
     dir.create(path, showWarnings = FALSE, recursive = TRUE)
   }

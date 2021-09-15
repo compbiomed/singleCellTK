@@ -149,7 +149,8 @@ The optional arguments are as follows. Their usage depend on type of data and us
 |-T, --parallelType|Type of parallel computing used for parallel computing. Parallel computing used in this pipeline depends on "BiocParallel" package. Default is 'MulticoreParam'. It can be 'MulticoreParam' or 'SnowParam'. This argument will be evaluated only when numCores > 1|
 |-i, --studyDesign|The txt file containing the desrciption of the study design. Default is NULL. This would be shown at the begining the html report of cell and droplet QC|
 |-L, --subTitle|The subtitle used in the cell and droplet QC HTML report. Default is None. The subtitle can contain information of the sample, like sample name, etc. If -S is set as TRUE, the length of subsitle should be the same as the length of samples. If -S is set as FALSE, the length of subtitle should be one or NULL|
-
+|-M, --detectMitoLevel|Detect mitochondrial gene expression level. If TRUE, the pipeline will examinate mito gene expression level automatically without the need of importing user defined gmt file. Default is TRUE|
+|-E, --mitoType|Type of mitochondrial gene set to be loaded when --detectMitoLevel is set to TRUE. Possible choices are: 'human-ensemble', 'human-symbol', 'human-entrez', 'human-ensemble_transcriptID', 'mouse-ensemble', 'mouse-symbol', 'mouse-entrez' and 'mouse-ensemble_transcriptID'. They consists of two parts: species and gene id type, which are connected by '-'|
 
 ## Specify parameters using yaml file
 

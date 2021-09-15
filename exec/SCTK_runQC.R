@@ -229,8 +229,18 @@ if (numCores > 1) {
 .importMito <- function(inSCE, geneSetCollection, MitoImport, MitoType) {
     if (isTRUE(MitoImport)) {
         mito_info <- strsplit(MitoType, split="-")
+        if (length(mito_info[[1]]) != 2) {
+            warning("The --MitoType ", MitoType, " is not correct or supported. Please double check the documentation. Ignore --MitoImport=TRUE now.")
+            return(geneSetCollection)
+        }
         reference <- mito_info[[1]][1]
         id <- mito_info[[1]][2]
+
+        if ((!reference %in% c("human", "mouse")) | (!id %in% c("symbol", "entrez", "ensemble", "ensemble_transcriptID"))) {
+            warning("The --MitoType ", MitoType, " is not correct or supported. Please double check the documentation. Ignore --MitoImport=TRUE now.")
+            return(geneSetCollection)            
+        }
+        
         inSCE <- importMitoGeneSet(inSCE = inSCE,
                      reference = reference,
                      id = id,
