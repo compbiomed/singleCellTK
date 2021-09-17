@@ -6239,9 +6239,13 @@ shinyServer(function(input, output, session) {
     })
   })
 
+  
+  
+
  #plot results
   observeEvent(input$Plot, {
     output$pathwayPlot <- renderPlot({
+      isolate({
       if (input$pathway == "VAM"){
         if (!(is.null(vals$vamRes))){
           plotSCEViolin(inSCE = vals$vamRes, slotName = "reducedDims", itemName = input$reducedDimNames, dimension = input$GeneSets, xlab = "sample", ylab = input$GeneSets, groupBy = input$pathwayPlotVar, violin = input$violinplot, boxplot = input$boxplot, summary = input$summary)
@@ -6258,7 +6262,13 @@ shinyServer(function(input, output, session) {
 
       }
 
-      })
+    })
+     })
+    session$sendCustomMessage("close_dropDownPathway", "")
+  })
+  
+  observeEvent(input$closeDropDownPathway,{
+    session$sendCustomMessage("close_dropDownPathway", "")
   })
 
   #disable downloadPathway button if the pathway data doesn't exist
