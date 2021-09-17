@@ -2647,7 +2647,7 @@ shinyServer(function(input, output, session) {
                 circle = FALSE,
                 inline = TRUE
               )),
-              column(6, fluidRow(h6("information"), align = "center"))
+              column(6, fluidRow(h6("Heatmaps of the top features correlated with each component"), align = "center"))
             ),
             hr(),
             br(),
@@ -2781,7 +2781,7 @@ shinyServer(function(input, output, session) {
                                                                   circle = FALSE,
                                                                   inline = TRUE
                                                                 )),
-                                                                column(6, fluidRow(h6("information"), align = "center"))
+                                                                column(6, fluidRow(h6("Scatterplot of cells on selected components from a dimensionality reduction"), align = "center"))
                                                               ),
                                                               hr(),
                                                               br(),
