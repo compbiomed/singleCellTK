@@ -11,8 +11,8 @@ scaterPCA(
   useAssay = "logcounts",
   useAltExp = NULL,
   reducedDimName = "PCA",
-  ndim = 50,
-  scale = TRUE,
+  nComponents = 50,
+  scale = FALSE,
   ntop = NULL
 )
 }
@@ -29,11 +29,11 @@ selected.variable features. Default \code{NULL}.}
 \item{reducedDimName}{Name to use for the reduced output assay. Default
 \code{"PCA"}.}
 
-\item{ndim}{Number of principal components to obtain from the PCA
+\item{nComponents}{Number of principal components to obtain from the PCA
 computation. Default \code{50}.}
 
 \item{scale}{Logical scalar, whether to standardize the expression values.
-Default \code{TRUE}.}
+Default \code{FALSE}.}
 
 \item{ntop}{Number of top features to use as a further variable feature
 selection. Default \code{NULL}.}
@@ -50,6 +50,6 @@ analysis (PCA) from a given \linkS4class{SingleCellExperiment} object.
 \examples{
 data(scExample, package = "singleCellTK")
 sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
-logcounts(sce) <- log(counts(sce) + 1)
-sce <- scaterPCA(sce, ntop = 500)
+sce <- scaterlogNormCounts(sce, "logcounts")
+sce <- scaterPCA(sce, "logcounts")
 }

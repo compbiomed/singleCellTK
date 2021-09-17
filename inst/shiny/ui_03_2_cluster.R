@@ -110,24 +110,59 @@ shinyPanelCluster <- fluidPage(
       withBusyIndicatorUI(actionButton("clustRun", "Run"))
     ),
     h3("Visualization"),
-    p("A cluster annotation needs to be specified, and a dimension reduction has to be provided.",
-      style = "color:grey;"),
     panel(
-      radioButtons("clustVisChoicesType", NULL,
-                   c("Select from Current Results:" = 1,
-                     "Select from All Present Annotation:" = 2),
-                   selected = 1, inline = TRUE, ),
-      conditionalPanel(
-        "input.clustVisChoicesType == 1",
-        selectInput("clustVisRes", NULL, "")
+
+      fluidRow(
+        column(
+          width = 3,
+          dropdown(
+            fluidRow(
+              column(
+                width = 12,
+                radioButtons("clustVisChoicesType", NULL,
+                             c("Select from Current Results:" = 1,
+                               "Select from All Present Annotation:" = 2),
+                             selected = 1, inline = TRUE, ),
+                conditionalPanel(
+                  "input.clustVisChoicesType == 1",
+                  selectInput("clustVisRes", NULL, "")
+                ),
+                conditionalPanel(
+                  "input.clustVisChoicesType == 2",
+                  selectInput("clustVisCol", NULL, clusterChoice)
+                ),
+                selectInput("clustVisReddim", "Use Reduction:", currreddim),
+                withBusyIndicatorUI(actionButton("clustPlot", "Plot")),
+              )
+            ),
+            inputId = "dropDownClust",
+            icon = icon("cog"),
+            status = "primary",
+            circle = FALSE,
+            inline = TRUE
+          )
+        ),
+        column(
+          width = 9,
+          fluidRow(
+            column(
+              width = 12,
+              h6(
+                "A scatter plot of the selected low-dimensionality representation of the dataset will be generated, with the selected cluster labeling colored on each dot (cell)."
+              ),
+              h6(
+                "If you are using an expression matrix or subset for calculation, please click on the cog icon on the left to specify the dimensions to plot."
+              )
+            ),
+            align="center"
+          )
+        )
       ),
-      conditionalPanel(
-        "input.clustVisChoicesType == 2",
-        selectInput("clustVisCol", NULL, clusterChoice)
-      ),
-      selectInput("clustVisReddim", "Use Reduction:", currreddim),
-      withBusyIndicatorUI(actionButton("clustPlot", "Plot")),
-      plotlyOutput("clustVisPlot")
+      hr(),
+      br(),
+      shinyjqui::jqui_resizable(
+        plotlyOutput("clustVisPlot")
+      )
     )
   ),
   nonLinearWorkflowUI(id = "nlw-cl")

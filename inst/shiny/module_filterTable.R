@@ -743,6 +743,6 @@ filterTableServer <- function(input, output, session, dataframe,
     }
   }
   filters <- paste(filters, collapse = ",")
-  parseString <- paste0("df %>% filter(", filters, ")")
+  parseString <- paste0("df %>% dplyr::filter(", filters, ")")
   eval(parse(text = parseString))
 }

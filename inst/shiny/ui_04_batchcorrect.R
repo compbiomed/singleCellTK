@@ -481,10 +481,54 @@ shinyPanelBatchcorrect <- fluidPage(
         uiOutput("batchCorrStatus")
       ),
       mainPanel(
-        fluidRow(class = "batchVarPlotRow",
-          panel(heading = "Visualization",
+        fluidRow(
+          class = "batchVarPlotRow",
+          panel(
+            heading = "Visualization",
+
+            fluidRow(
+              column(
+                width = 4,
+                dropdown(
+                  fluidRow(
+                    column(
+                      width = 12,
+                      h5(tags$a(href = "https://compbiomed.github.io/sctk_docs/articles/batch_correction.html#visualization",
+                                "(What are plotted?)", target = "_blank")),
+                      uiOutput("batchCheckOrigAssay"),
+                      #selectInput("batchCheckOrigAssay", "Original Assay:", currassays),
+                      selectInput("batchCheckVar", "Batch Annotation:", clusterChoice),
+                      selectInput("batchCheckCond", "Additional Condition (optional)",
+                                  clusterChoice),
+                      p("Only result generated in the current session will be presented. ",
+                        style = "color:grey;"),
+                      uiOutput("batchCheckResUI"),
+                      withBusyIndicatorUI(actionButton("plotBatchCheck", "Plot"))
+                    )
+                  ),
+                  inputId = "dropDownBC",
+                  icon = icon("cog"),
+                  status = "primary",
+                  circle = FALSE,
+                  inline = TRUE
+                )
+              ),
+              column(
+                width = 7,
+                fluidRow(
+                  h6(
+                    "the plot highlights the top variable features (can be labeled from the button on the left) with respect to the metrics computed by the selected algorithm"
+                  ),
+                  align="center"
+                )
+              )
+            ),
+            hr(),
+            br(),
+
+
             column(
-              width = 4,
+              width = 6,
               style='border-right: 1px solid #CCCCCC',
               h4('Original Status'),
               plotOutput('batchOriVars',
@@ -493,28 +537,13 @@ shinyPanelBatchcorrect <- fluidPage(
                 height = "300px", width = "300px")
             ),
             column(
-              width = 4,
+              width = 6,
               h4("Corrected Status"),
               plotOutput('batchCorrVars',
                 height = "300px", width = "300px"),
               plotOutput('batchCorrReddim',
                 height = "300px", width = "300px")
             ),
-            column(
-              width = 4,
-              h3("Visualization Setting"),
-              h5(tags$a(href = "https://compbiomed.github.io/sctk_docs/articles/batch_correction.html#visualization",
-                        "(What are plotted?)", target = "_blank")),
-              uiOutput("batchCheckOrigAssay"),
-              #selectInput("batchCheckOrigAssay", "Original Assay:", currassays),
-              selectInput("batchCheckVar", "Batch Annotation:", clusterChoice),
-              selectInput("batchCheckCond", "Additional Condition (optional)",
-                clusterChoice),
-              p("Only result generated in the current session will be presented. ",
-                style = "color:grey;"),
-              uiOutput("batchCheckResUI"),
-              withBusyIndicatorUI(actionButton("plotBatchCheck", "Plot"))
-            )
           )
         )
       )
