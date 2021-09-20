@@ -12,9 +12,9 @@ csl: ieee.csl
 doEval = TRUE
 ```
 ## Introduction
-Dimensionality reduction algorithms (PCA/ICA & tSNE/UMAP) can be run through the **singleCellTK** toolkit using both interactive shiny application and R console. For the interactive analysis, the toolkit offers a streamlined workflow to both compute metrics for dimensionality reduction and then visualize the results using any of the available interactive plots. For the console analysis, the toolkit offers a single wrapper function `runDimensionalityReduction` to compute metrics for any of the integrated algorithms and multiple methods to visualize the computed results. <br>
+Dimensionality reduction algorithms (PCA/ICA & tSNE/UMAP) can be run through the **singleCellTK** toolkit using both interactive shiny application and R console. For the interactive analysis, the toolkit offers a streamlined workflow to both compute metrics for dimensionality reduction and then visualize the results using any of the available interactive plots. For the console analysis, the toolkit offers a single wrapper function `runDimReduce` to compute metrics for any of the integrated algorithms and multiple methods to visualize the computed results. <br>
 
-Methods available with the toolkit include `PCA` from `Scater` [@McCarthy2017] package, `PCA`, `ICA`, `tSNE` & `UMAP` from `Seurat` [@Butler2018][@Stuart2019][@Satija2017][@Hao2021] package, `tSNE` from `Rtsne` [@Maaten2014][@Maaten2008] package and `UMAP` from `uwot` [@Melville2020] package. Visualization options available for users include `2D Component Plot`, `Elbow Plot`, `JackStraw Plot` and `Heatmap Plot`. A complete list of supported visualization options against each method are specified at the bottom of the tabs below. <br> 
+Methods available with the toolkit include `PCA` from `scater` [@McCarthy2017] package, `PCA`, `ICA`, `tSNE` & `UMAP` from `Seurat` [@Butler2018][@Stuart2019][@Satija2017][@Hao2021] package, `tSNE` from `Rtsne` [@Maaten2014][@Maaten2008] package and `UMAP` from `uwot` [@Melville2020] package. Visualization options available for users include `2D Component Plot`, `Elbow Plot`, `JackStraw Plot` and `Heatmap Plot`. A complete list of supported visualization options against each method are specified at the bottom of the tabs below. <br> 
 
 To view detailed instructions on how to use these methods, please select 'Interactive Analysis' for using normalization in shiny application or 'Console Analysis' for using these methods on R console from the tabs below: <br>
 
@@ -39,47 +39,37 @@ To view detailed instructions on how to use these methods, please select 'Intera
 
 In general, both sub-tabs offer options for selection of data items and choice of parameters on the left side, and a visualization panel on the right side of the interface. A detailed workflow guide to run and visualize dimensionality reduction (DR) algorithms is described below: <br><br>
 
-![](ui_screenshots/dimensionality_reduction/dr_1.png)<br><br>
 1. To begin the DR workflow, click on the "Feature Selection & Dimensionality Reduction" tab from the top menu. This workflow assumes that before proceeding towards computation of DR, data has been uploaded, filtered and normalized (and optionally variable features have been identified) through the preceding tabs.<br><br>
+
+![](ui_screenshots/dimensionality_reduction/dr_1.PNG)<br><br>
+
+2. Select "Dimensionality Reduction" tab:<br><br>
 
 ![](ui_screenshots/dimensionality_reduction/dr_2.png)<br><br>
 
-2. Select "Dimensionality Reduction" tab.<br><br>
-
-![](ui_screenshots/dimensionality_reduction/dr_3.png)<br><br>
-
-3. Select "PCA/ICA" or "tSNE/UMAP" appropriately. <br><br>
+3. Select a data item (assay or a feature subset) which should be used for computation. <br><br>
+4. Select an appropriate method for dimensionality reduction. Available choices are "PCA" from `scran` package and "PCA" & "ICA" from `seurat` package. <br><br>
+5. Specify a name for the new data (reducedDim). <br><br>
+6. Specify the number of dimensions to compute against the selected algorithm. Default value is `10`. <br><br>
+7. Check the boxes against the visualizations that should be plotted after computation of reducedDims. This visualizations become available after computation on the right panel. <br><br>
+8. If "Compute HeatmapPlot?" is selected in step 8, you can specify how many features should be plotted in the heatmap by default. This setting can be changed later as well from the visualization panel on the right. <br> <br>
+9. Press "Run" to start computation. <br><br>
 
 ![](ui_screenshots/dimensionality_reduction/dr_4.png)<br><br>
 
-4. Select a data item (assay or a feature subset) which should be used for computation. <br><br>
-5. Select an appropriate method for dimensionality reduction. Available choices are "PCA" from `scran` package and "PCA" & "ICA" from `seurat` package. <br><br>
-6. Specify a name for the new data (reducedDim). <br><br>
-7. Specify the number of dimensions to compute against the selected algorithm. Default value is `10`. <br><br>
-8. Check the boxes against the visualizations that should be plotted after computation of reducedDims. This visualizations become available after computation on the right panel. <br><br>
-9. If "Compute HeatmapPlot?" is selected in step 8, you can specify how many features should be plotted in the heatmap by default. This setting can be changed later as well from the visualization panel on the right. <br> <br>
-10. Press "Run" to start computation. <br><br>
-11. Once processing is complete, selected visualizations appear in this panel. <br><br>
-![](ui_screenshots/dimensionality_reduction/dr_5.png)<br><br>
-12. A 2D plot between the top two components is computed for all methods.<br><br>
-![](ui_screenshots/dimensionality_reduction/dr_6.png)<br><br>
-13. Elbow plot (optional) can be computed against PCA methods. It shows a relationship between the increasing number of components and the standard deviation, where components before an elbow break should be selected for downstream analysis. <br><br>
-![](ui_screenshots/dimensionality_reduction/dr_7.png)<br><br>
+10. Once processing is complete, selected visualizations appear in this panel. A 2D plot between the top two components is computed for all methods <br><br>
 
-14. Heatmap plot panel can be used to visualize the features against each of the computed component. <br><br>
-15. Customizations for the heatmap plot can be made by selecting the components that should be selected. Number of columns for visualization can be specified as well for better viewing experience.<br><br>
-![](ui_screenshots/dimensionality_reduction/dr_8.png)<br><br>
-16. Jackstraw plot can be computed with PCA methods.<br><br>
-![](ui_screenshots/dimensionality_reduction/dr_9.png)<br><br>
-17. To compute tSNE or UMAP, select the "tSNE/UMAP" sub-tab from the interface. The steps below are only concerned with the computation of tSNE or UMAP and may vary between both of these methods. <br><br>
-18. Select a data item (assay or feature subset) to use for tSNE/UMAP computation. <br><br>
-19. Select method for tSNE or UMAP computation. <br><br>
-20. Specify the name of the new reducedDim. <br><br>
-21. Specify the number of components to compute with the selected method. Default value is set to `10`. <br><br>
-22. Specify number of iterations. Default value is set to `1000`. <br><br>
-23. Set perplexity parameter for tSNE. Default value is set to `5`. <br><br>
-24. Start processing of the selected method. <br><br>
-25. Once computation is complete, a 2D plot between the components can be visualized in this panel.<br><br>
+![](ui_screenshots/dimensionality_reduction/dr_6.png)<br><br>
+
+11. Elbow plot (optional) can be computed against PCA methods. It shows a relationship between the increasing number of components and the standard deviation, where components before an elbow break should be selected for downstream analysis. <br><br>
+
+![](ui_screenshots/dimensionality_reduction/dr_7a.png)<br><br>
+
+12. Heatmap plot panel can be used to visualize the features against each of the computed component. <br><br>
+
+![](ui_screenshots/dimensionality_reduction/dr_7b.png)<br><br>
+
+13. Customizations for the heatmap plot can be made by selecting the components that should be selected. Number of columns for visualization can be specified as well for better viewing experience.<br><br>
 
 *Note: Some parameters may differ between different methods and may not have been shown here.*
 
@@ -92,8 +82,6 @@ In general, both sub-tabs offer options for selection of data items and choice o
 |---|---|---|---|---|
 |PCA| yes | yes | yes | yes |
 |ICA| yes | no | no |yes|
-|tSNE| yes | no | no | no |
-|UMAP| yes | no | no | no |
 
 ````{=html}
 </details>
@@ -105,9 +93,9 @@ In general, the first step is to compute a dimensionality reduction (e.g. PCA) a
 step is to visualize the computed results. The usage of functions to compute and visualize 
 results is described below.
 
-**1. Compute dimensionality reduction statistics using `runDimensionalityReduction` wrapper function:**
+**1. Compute dimensionality reduction statistics using `runDimReduce` wrapper function:**
 ```{r "dm_overview_1", eval = FALSE}
-sce <- runDimensionalityReduction(inSCE = sce, useAssay = "normalizedCounts", reducedDimName = "redDimPCA", method = "seuratPCA", nComponents = 20)
+sce <- runDimReduce(inSCE = sce, useAssay = "normalizedCounts", reducedDimName = "redDimPCA", method = "seuratPCA", nComponents = 20)
 ```
 
 To use the function, input a `SingleCellExperiment` object that contains the data assay and specify the required parameters (to see a complete list of supported parameters and to copy the function call against each method with the supported parameters, please view the 'Parameters' heading at the end of this page).
@@ -121,37 +109,17 @@ To use the function, input a `SingleCellExperiment` object that contains the dat
 
 ***scaterPCA***:
 ```{r "dm_scaterPCA_rn", eval = FALSE}
-sce <- runDimensionalityReduction(inSCE = sce, useAssay = "normalizedCounts", reducedDimName = "redDimPCA", method = "scaterPCA", nComponents = 10)
+sce <- runDimReduce(inSCE = sce, useAssay = "normalizedCounts", reducedDimName = "redDimPCA", method = "scaterPCA", nComponents = 10)
 ```
 
 ***seuratPCA***:
 ```{r "dm_seuratPCA_rn", eval = FALSE}
-sce <- runDimensionalityReduction(inSCE = sce, useAssay = "normalizedCounts", reducedDimName = "redDimPCA", method = "seuratPCA", nComponents = 10)
+sce <- runDimReduce(inSCE = sce, useAssay = "normalizedCounts", reducedDimName = "redDimPCA", method = "seuratPCA", nComponents = 10)
 ```
 
 ***seuratICA***:
 ```{r "dm_seuratICA_rn", eval = FALSE}
-sce <- runDimensionalityReduction(inSCE = sce, useAssay = "normalizedCounts", reducedDimName = "redDimICA", `method` = "seuratICA", nComponents = 10)
-```
-
-***rTSNE***:
-```{r "dm_rTSNE_rn", eval = FALSE}
-sce <- runDimensionalityReduction(inSCE = sce, useAssay = "normalizedCounts", reducedDimName = "redDimTSNE", method = "rTSNE", perplexity = 30, nIterations = 1000)
-```
-
-***seuratTSNE***:
-```{r "dm_seuratTSNE_rn", eval = FALSE}
-sce <- runDimensionalityReduction(inSCE = sce, useAssay = "normalizedCounts", reducedDimName = "redDimTSNE", method = "seuratTSNE", nComponents = 10, useReduction = "pca", perplexity = 30)
-```
-
-***uwotUMAP***:
-```{r "dm_uwotUMAP_rn", eval = FALSE}
-sce <- runDimensionalityReduction(inSCE = sce, useAssay = "normalizedCounts", reducedDimName = "redDimUMAP", method = "uwotUMAP", nNeighbors = 30, nIterations = 200, minDist = 0.01, alpha = 1)
-```
-
-***seuratUMAP***:
-```{r "dm_seuratUMAP_rn", eval = FALSE}
-sce <- runDimensionalityReduction(inSCE = sce, useAssay = "normalizedCounts", reducedDimName = "redDimUMAP", method = "seuratUMAP", nComponents = 10, useReduction = "pca", minDist = 0.3, nNeighbors = 30, spread = 1)
+sce <- runDimReduce(inSCE = sce, useAssay = "normalizedCounts", reducedDimName = "redDimICA", `method` = "seuratICA", nComponents = 10)
 ```
 
 ````{=html}
@@ -164,15 +132,15 @@ sce <- runDimensionalityReduction(inSCE = sce, useAssay = "normalizedCounts", re
 **2. Visualize the dimensionality reduction results using of the available visualization options.**
 ```{r "dm_overview_2", eval=FALSE}
 #To plot a simple 2D component plot for any of the 4 methods i.e. PCA, ICA, tSNE and UMAP
-seuratReductionPlot(inSCE = sce, useReduction = "pca")
+plotDimRed(inSCE = sce, useReduction = "redDimPCA", xAxisLabel = "PC_1", yAxisLabel = "PC2_2")
 
+#Or use specific functions available for other plots
+seuratReductionPlot(inSCE = sce, useReduction = "pca")
 #To visualize a JackStraw plot
 sce <- seuratComputeJackStraw(inSCE = sce, useAssay = "scaledCounts")
 seuratJackStrawPlot(inSCE = sce)
-
 #To visualize heatmap plot
 seuratComputeHeatmap(inSCE = sce, useAssay = "scaledCounts", useReduction = "pca", dims = 10, nfeatures = 10)
-
 #To visualize ElbowPlot
 seuratElbowPlot(inSCE = sce, reduction = "pca")
 ```
@@ -187,18 +155,22 @@ seuratElbowPlot(inSCE = sce, reduction = "pca")
   library(singleCellTK)
   sce <- importExampleData(dataset = "pbmc3k")
   # Perform Normalization
-  sce <- runNormalization(inSCE = sce, normalizationMethod = "RC", useAssay = "counts", outAssayName = "RCLogScaledCounts", scale = TRUE, transformation = "log2", pseudocountsBeforeTransform = 1, trim = c(10, -10))
+  sce <- runNormalization(inSCE = sce, normalizationMethod = "LogNormalize", useAssay = "counts", outAssayName = "LogNormalizedScaledCounts", scale = TRUE, trim = c(10, -10))
+    # Find Variable Features
+  sce <- runFeatureSelection(inSCE = sce, useAssay = "counts", hvgMethod = "vst")
+            HVGs <- getTopHVG(inSCE = sce,
+                            method = "vst",
+                            n = 2000)
+
+          #make sure no NA's are introduced in HVGs
+          HVGs <- stats::na.omit(HVGs)
+          #tempAssay <- expData(vals$counts, vals$hvgCalculated$assayName)[HVGs,]
+          tempAssay <- expData(inSCE = sce, assayName = "LogNormalizedScaledCounts")[HVGs,]
+          expData(inSCE = sce, assayName = "hvg2000", tag = "hvg", altExp = TRUE) <- tempAssay
   # Run PCA
-  sce <- runDimensionalityReduction(inSCE = sce, useAssay = "RCLogScaledCounts", reducedDimName = "pca", method = "seuratPCA", nComponents = 10)
+  sce <- runDimReduce(inSCE = sce, useAssay = "hvg2000", useAltExp = "hvg2000", reducedDimName = "redDimPCA", method = "seuratPCA", nComponents = 10)
   # Plot PCA
-  seuratReductionPlot(inSCE = sce, useReduction = "pca")
-  # Plot ElbowPlot
-  seuratElbowPlot(inSCE = sce, reduction = "pca")
-  # Compute & plot JackStrawPlot
-  sce <- seuratComputeJackStraw(inSCE = sce, useAssay = "RCLogScaledCounts")
-  seuratJackStrawPlot(inSCE = sce)
-  # Plot Heatmap
-  seuratComputeHeatmap(inSCE = sce, useAssay = "RCLogScaledCounts", useReduction = "pca", dims = 10, nfeatures = 10)
+  plotDimRed(inSCE = sce, useReduction = "redDimPCA", xAxisLabel = "PC_1", yAxisLabel = "PC_2")
 ```
 
 ````{=html}
@@ -207,17 +179,14 @@ seuratElbowPlot(inSCE = sce, reduction = "pca")
   <summary><b>Parameters</b></summary>
 ````
 
-The `runDimensionalityReduction` function takes in different parameters based on the specific method used for dimensionality reduction. See below for a complete description of parameters for each individual method in the `runDimensionalityReduction` function:
+The `runDimReduce` function takes in different parameters based on the specific method used for dimensionality reduction. See below for a complete description of parameters for each individual method in the `runDimReduce` function:
 
 | Method | Parameters |
 |---|---|
-|scaterPCA|`inSCE` (input `SingleCellExperiment` object), `useAssay` (name of the assay to use), `reducedDimName` (name of the computed reducedDim), `method` = "scaterPCA", `nComponents` (number of components to compute, default is 10)|
-|seuratPCA|`inSCE` (input `SingleCellExperiment` object), `useAssay` (name of the assay to use), `reducedDimName` (name of the computed reducedDim), `method` = "seuratPCA", `nComponents` (number of components to compute, default is 10)|
-|seuratICA|`inSCE` (input `SingleCellExperiment` object), `useAssay` (name of the assay to use), `reducedDimName` (name of the computed reducedDim), `method` = "seuratICA", `nComponents` (number of components to compute, default is 10)|
-|rTSNE|`inSCE` (input `SingleCellExperiment` object), `useAssay` (name of the assay to use), `reducedDimName` (name of the computed reducedDim), `method` = "rTSNE", `perplexity` (adjust the perplexity tuneable parameter for the underlying tSNE call, default is `30`), `nIterations` (maximum iterations, default is 1000)|
-|seuratTSNE|`inSCE` (input `SingleCellExperiment` object), `useAssay` (name of the assay to use), `reducedDimName` (name of the computed reducedDim), `method` = "seuratTSNE", `nComponents`(number of components to use from pca/ica, default is 10), `useReduction` (either `pca` or `ica`) and `perplexity` (adjust the perplexity tuneable parameter for the underlying tSNE call, default is 30)|
-|uwotUMAP|`inSCE` (input `SingleCellExperiment` object), `useAssay` (name of the assay to use), `reducedDimName` (name of the computed reducedDim), `method` = "uwotUMAP", `nNeighbors` (size of local neighborhood used for manifold approximation, default is 30), `nIterations` (number of iterations performed, default is 200), `minDist` (minimum distance between embedded points, default is 0.01) and `alpha` (initial value of learning rate, default is 1)|
-|seuratUMAP|`inSCE` (input `SingleCellExperiment` object), `useAssay` (name of the assay to use), `reducedDimName` (name of the computed reducedDim), `method` = "seuratUMAP", `nComponents` (number of components to use from pca/ica, default is 10), `useReduction` (either `pca` or `ica`), `minDist` (minimum distance between embedded points, default is 0.3), `nNeighbors` (size of local neighborhood, default is 30) and `spread` (effective scale of embedded points, default is 1)|
+|scaterPCA|`inSCE` (input `SingleCellExperiment` object), `useAssay` (name of the assay to use), `useAltExp` (name of the altExp slot if you want to compute on an altExp/subset/variable features instead of the main assay), `reducedDimName` (name of the computed reducedDim), `method` = "scaterPCA", `nComponents` (number of components to compute, default is 10)|
+|seuratPCA|`inSCE` (input `SingleCellExperiment` object), `useAssay` (name of the assay to use), `useAltExp` (name of the altExp slot if you want to compute on an altExp/subset/variable features instead of the main assay), `reducedDimName` (name of the computed reducedDim), `method` = "seuratPCA", `nComponents` (number of components to compute, default is 10)|
+|seuratICA|`inSCE` (input `SingleCellExperiment` object), `useAssay` (name of the assay to use), `useAltExp` (name of the altExp slot if you want to compute on an altExp/subset/variable features instead of the main assay), `reducedDimName` (name of the computed reducedDim), `method` = "seuratICA", `nComponents` (number of components to compute, default is 10)|
+
 
 ````{=html}
 </details>
@@ -225,7 +194,7 @@ The `runDimensionalityReduction` function takes in different parameters based on
   <summary><b>Individual Functions</b></summary>
 ````
 
-  While the `runDimensionalityReduction` wrapper function can be used for all dimensionality reduction algorithms including PCA/ICA   & additionally for tSNE/UMAP, separate functions are also available for all of the included methods. The following functions
+  While the `runDimReduce` wrapper function can be used for all dimensionality reduction algorithms including PCA/ICA   & additionally for tSNE/UMAP, separate functions are also available for all of the included methods. The following functions
   can be used for specific methods:
   
 ````{=html} 
@@ -291,94 +260,6 @@ The parameters to the above function include: <br><br>
 
 ````{=html}
 </details>
-<details>
-````
-    
-  <summary>`TSNE` from Rtsne package:</summary> 
-
-```{r "getTSNE", eval = FALSE}
-  sce <- getTSNE(inSCE = sce, useAssay = "logcounts", reducedDimName = "TSNE", nIterations = 1000, perplexity = 30, run_pca = TRUE, ntop = NULL)
-```
-
-The parameters to the above function include: <br><br>
-`inSCE`: an input `SingleCellExperiment` object <br>
-`useAssay`: name of the assay to use for normalization <br>
-`reducedDimName`: name of the computed PCA reducedDim <br>
-`nIterations`: maximum iterations <br>
-`perplexity`: perplexity parameter <br>
-`run_pca`: logical value indicating if tSNE should be run on PCA components <br>
-`ntop`: number of top features to use as a further variable feature selection <br><br>
-
-````{=html}
-</details>
-<details>
-````   
-    
-  <summary>`TSNE` from Seurat package:</summary> 
-
-```{r "seuratRunTSNE", eval = FALSE}
-  # Recommended to find variable features & compute PCA before running seuratRunTSNE
-  # sce <- seuratFindHVG(inSCE = sce, useAssay = "seuratScaledData")
-  # sce <- seuratPCA(inSCE = sce, useAssay = "seuratScaledData", reducedDimName = "pca", nPCs = 20, verbose = TRUE)
-  sce <- seuratRunTSNE(inSCE = sce, useReduction = "pca", reducedDimName = "seuratTSNE", dims = 10, perplexity = 30)
-```
-
-The parameters to the above function include: <br><br>
-`inSCE`: an input `SingleCellExperiment` object <br>
-`useReduction`: either "pca" or "ica" previously computed in the input object <br>
-`reducedDimName`: name of the computed tSNE reducedDim <br>
-`dims`: number of components to use from the `useReduction` parameter <br>
-`perplexity`: perplexity parameter <br><br>
-
-````{=html}
-</details>
-<details>
-````
-  
-  <summary>`UMAP` from uwot package:</summary> 
-
-```{r "getUMAP", eval = FALSE}
-  sce <- getUMAP(inSCE = sce, useAssay = "counts", reducedDimName = "UMAP", logNorm = TRUE, nNeighbors = 30, alpha = 1, nIterations = 200, minDist = 0.01, spread = 1, pca = TRUE, initialDims = 50)
-```
-
-The parameters to the above function include: <br><br>
-`inSCE`: an input `SingleCellExperiment` object <br>
-`useAssay`: assay to use for UMAP computation <br>
-`reducedDimName`: a name to store the results of the dimension reduction coordinates obtained from this method <br>
-`logNorm`: whether the counts will need to be log-normalized prior to generating the UMAP <br>
-`nNeighbors`: size of local neighborhood used for manifold approximation <br>
-`nIterations`: number of iterations performed during layout optimization <br>
-`alpha`: initial value of "learning rate" of layout optimization <br>
-`minDist`: effective minimum distance between embedded points <br>
-`spread`: effective scale of embedded points <br>
-`pca`: logical value indicating whether to perform dimension reduction with PCA before UMAP <br>
-`initialDims`:  number of dimensions from PCA to use as input in UMAP <br><br>
-
-````{=html}
-</details>
-<details>
-````
-
-  <summary>`UMAP` from Seurat package:</summary> 
-  
-```{r "seuratRunUMAP", eval = FALSE}
-  # Recommended to find variable features & compute PCA before running seuratRunUMAP
-  # sce <- seuratFindHVG(inSCE = sce, useAssay = "seuratScaledData")
-  # sce <- seuratPCA(inSCE = sce, useAssay = "seuratScaledData", reducedDimName = "pca", nPCs = 20, verbose = TRUE)
-  sce <- seuratRunUMAP(inSCE = sce, useReduction = "pca", reducedDimName = "seuratUMAP", dims = 10, minDist = 0.3, nNeighbors = 30, spread = 1)
-```
-
-The parameters to the above function include: <br><br>
-`inSCE`: an input `SingleCellExperiment` object <br>
-`useReduction`: either "pca" or "ica" previously stored in the input object <br>
-`reducedDimName`: a name to store the results of the dimension reduction coordinates obtained from this method <br>
-`dims`: number of dimensions to use from `useReduction` parameter <br>
-`minDist`: effective minimum distance between embedded points <br>
-`nNeighbors`: size of local neighborhood used for manifold approximation <br>
-`spread`: effective scale of embedded points <br>
-
-````{=html} 
-</details>
   </div>
     </details> 
 <details>
@@ -389,8 +270,6 @@ The parameters to the above function include: <br><br>
 |---|---|---|---|---|
 |PCA| yes | yes | yes | yes |
 |ICA| yes | no | no |yes|
-|tSNE| yes | no | no | no |
-|UMAP| yes | no | no | no |
 
 ````{=html}
 </details>
