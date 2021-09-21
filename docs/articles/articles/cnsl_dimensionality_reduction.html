@@ -401,20 +401,10 @@
 </details>
 </div>
 <p><br></p>
-<p><strong>2. Visualize the dimensionality reduction results using of the available visualization options.</strong></p>
+<p><strong>2. Visualize the dimensionality reduction results through a scatterplot:</strong></p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co">#To plot a simple 2D component plot for any of the 4 methods i.e. PCA, ICA, tSNE and UMAP</span>
-<span class="fu"><a href="../../reference/plotDimRed.html">plotDimRed</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useReduction <span class="op">=</span> <span class="st">"redDimPCA"</span>, xAxisLabel <span class="op">=</span> <span class="st">"PC_1"</span>, yAxisLabel <span class="op">=</span> <span class="st">"PC_2"</span><span class="op">)</span>
-
-<span class="co">#Or use specific functions available for other plots</span>
-<span class="fu"><a href="../../reference/seuratReductionPlot.html">seuratReductionPlot</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useReduction <span class="op">=</span> <span class="st">"pca"</span><span class="op">)</span>
-<span class="co">#To visualize a JackStraw plot</span>
-<span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/seuratComputeJackStraw.html">seuratComputeJackStraw</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"scaledCounts"</span><span class="op">)</span>
-<span class="fu"><a href="../../reference/seuratJackStrawPlot.html">seuratJackStrawPlot</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span><span class="op">)</span>
-<span class="co">#To visualize heatmap plot</span>
-<span class="fu"><a href="../../reference/seuratComputeHeatmap.html">seuratComputeHeatmap</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"scaledCounts"</span>, useReduction <span class="op">=</span> <span class="st">"pca"</span>, dims <span class="op">=</span> <span class="fl">10</span>, nfeatures <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>
-<span class="co">#To visualize ElbowPlot</span>
-<span class="fu"><a href="../../reference/seuratElbowPlot.html">seuratElbowPlot</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, reduction <span class="op">=</span> <span class="st">"pca"</span><span class="op">)</span></code></pre></div>
+<span class="fu"><a href="../../reference/plotDimRed.html">plotDimRed</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useReduction <span class="op">=</span> <span class="st">"redDimPCA"</span>, xAxisLabel <span class="op">=</span> <span class="st">"PC_1"</span>, yAxisLabel <span class="op">=</span> <span class="st">"PC_2"</span><span class="op">)</span></code></pre></div>
 <details><summary><b>Example</b></summary><div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R">  <span class="co"># Load singleCellTK &amp; pbmc3k example data</span>
   <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://compbiomed.github.io/sctk_docs/">singleCellTK</a></span><span class="op">)</span>

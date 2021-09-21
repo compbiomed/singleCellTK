@@ -129,20 +129,10 @@ sce <- runDimReduce(inSCE = sce, useAssay = "normalizedCounts", reducedDimName =
 
 <br>
 
-**2. Visualize the dimensionality reduction results using of the available visualization options.**
+**2. Visualize the dimensionality reduction results through a scatterplot:**
 ```{r "dm_overview_2", eval=FALSE}
 #To plot a simple 2D component plot for any of the 4 methods i.e. PCA, ICA, tSNE and UMAP
 plotDimRed(inSCE = sce, useReduction = "redDimPCA", xAxisLabel = "PC_1", yAxisLabel = "PC_2")
-
-#Or use specific functions available for other plots
-seuratReductionPlot(inSCE = sce, useReduction = "pca")
-#To visualize a JackStraw plot
-sce <- seuratComputeJackStraw(inSCE = sce, useAssay = "scaledCounts")
-seuratJackStrawPlot(inSCE = sce)
-#To visualize heatmap plot
-seuratComputeHeatmap(inSCE = sce, useAssay = "scaledCounts", useReduction = "pca", dims = 10, nfeatures = 10)
-#To visualize ElbowPlot
-seuratElbowPlot(inSCE = sce, reduction = "pca")
 ```
 
 ````{=html}
