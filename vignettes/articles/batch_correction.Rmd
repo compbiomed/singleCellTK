@@ -52,9 +52,9 @@ The UI is constructed in a sidebar style, where the left-sided sidebar works for
 
 For running any types of batch correction, there are always three essential inputs that users should be sure with:  
 
+- The batch correction method - selection input **"Select Batch Correction Method"**. All methods supported are listed as options, in the alphabetic order. 
 - The data matrix to correct - selection input **"Select Assay"**. In terms of batch correction, SCTK always requires a full-sized feature expression data (i.e. assay) as a valid input. 
 - The annotation for batches - selection input **"Select Batch Annotation"**. Users will choose from the cell annotation list. The chosen annotation class should be able to define from which batch each cell sampled. Usually, `"Sample"` or `"sample"`, as the preprocessing steps generate this annotation by default. 
-- The batch correction method - selection input **"Select Batch Correction Method"**. All methods supported are listed as options, in the alphabetic order. 
 
 After the batch correction method is confirmed, the lower part will dynamically switch to the method specific settings. Different types of method have various parameter requirements, and various forms of output. For the detailed help information of each method, users can go to [reference](../../reference/index.html#section-batch-effect-correction) page and click on the function that stands for the method chosen, or click on the "(help for {method})" link in the UI.  
 

@@ -12,7 +12,7 @@ Here SCTK provides generic QC metrics, as well as contamination estimation by [d
 
 ## Select which algorithms to run
 
-Users must check all algorithms which they would like to run at once. **Rerunning the QC procedure will overwrite previous QC results as well as all downstream analysis.** The parameters for the corresponding algorithms will show up as users check it. Users may adjust the parameters as needed. Detailed explanation for each parameter can be accessed via the **"Help"** button in the parameter region of each algorithm, as shown below.  
+Users must check all algorithms which they would like to run at once. **Rerunning the QC procedure will overwrite previous QC results.** The parameters for the corresponding algorithms will show up as users check it. Users may adjust the parameters as needed. Detailed explanation for each parameter can be accessed via the **"Help"** button in the parameter region of each algorithm, as shown below.  
 
 ![check algorithms](ui_screenshots/qc/qc_ui_checkAlgo.png)\
 

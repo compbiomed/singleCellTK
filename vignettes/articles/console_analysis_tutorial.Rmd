@@ -186,9 +186,9 @@ head(topMarkers, 10)
 For visualization, SCTK has a specific heatmap plotting function for detected markers. The heatmap will take the log-normalized feature expression matrix for the values, and subset the features to only the top markers of each cluster. For the organization of the heatmap, the function groups the markers by the belonging to the clusters, and groups the cells, obviously, by clusters. Inside the grouping, the function finally performs the default hierarchical clustering. 
 
 ```{R markerHeatmap, message=FALSE, warning=FALSE, results="hold", fig.height= 8, fig.width=9}
-plotMarkerDiffExp(sce, topN = 5, log2fcThreshold = 0, fdrThreshold = 0.05,
-                  minClustExprPerc = 0.5, maxCtrlExprPerc = 0.4,
-                  minMeanExpr = 0, rowLabel = TRUE)
+markerHm <- plotMarkerDiffExp(sce, topN = 5, log2fcThreshold = 0, fdrThreshold = 0.05,
+                              minClustExprPerc = 0.5, maxCtrlExprPerc = 0.4,
+                              minMeanExpr = 0, rowLabel = TRUE)
 ```
 
 ### Customized Differential Expression Analysis
@@ -207,7 +207,7 @@ sce <- runDEAnalysis(inSCE = sce, method = "wilcox", class = "cluster", classGro
 Similarly to the marker detection section, SCTK also has a DE anaysis specific heatmap plotting function, `plotDEGHeatmap()`. Here, users can just easily enter the `analysisName` specified for one run and the function will automatically arrange the output. The heatmap is also splitted into a "checker board", by the "conditions" (i.e. the groups selected when running `runDEAnalysis()`) and the "regulation" (i.e. whether the log2 fold change is positive in "group1" against "group2"). 
 
 ```{R deHeatmap, message=FALSE, warning=FALSE, results="hold"}
-plotDEGHeatmap(sce, useResult = "cluster9_VS_6", rowLabel = TRUE)
+deHm <- plotDEGHeatmap(sce, useResult = "cluster9_VS_6", rowLabel = TRUE)
 ```
 
 ## Cell Type Labeling

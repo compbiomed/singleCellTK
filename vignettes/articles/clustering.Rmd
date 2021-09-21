@@ -108,11 +108,11 @@ When the selected algorithm belongs to "Seurat" group, the parameter settings wi
 
 <img src="ui_screenshots/clustering/clst_ui_vis.png" style="border: 1px solid rgba(0,0,0,0.2)"></img>
 
-The visualization is implemented with a plotting of a chosen dimension reduction, colored with a chosen cluster assignment.  
+The visualization is implemented with a plotting of a chosen low-dimension embedding, colored with a chosen cluster assignment (the newly generated result by default). SCTK by default uses the matrix used for clustering calculation for the visualization. However, usually, users might use a PCA for clustering while needing a UMAP/t-SNE embedding for visualization. To change the embedding used, please click on the blue clog button on the left-top corner.  
 
 ````{=html}
 <details>
-  <summary><b>Detail</b></summary>
+  <summary><b>Settings</b></summary>
 ````
 
 - Cluster annotation selection. radio button selection **"Select from Current Results"** and **"Select from All Present Annotation"**. And a selection input follows. Only a successful run of clustering in the current SCTK session adds an option for the new result to "Select from Current Results", while all the cell annotation stored in background (i.e. `colData(sce)`) are accessible if "Select from All Present Annotation" is chosen. 

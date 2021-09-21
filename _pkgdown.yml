@@ -101,8 +101,6 @@ reference:
 navbar:
   title: "singleCellTK"
   left:
-    - text: "General Workflow"
-      href: articles/articles/introduction_to_SCTK.html
     - text: "Installation"
       href: articles/articles/installation.html
     - text: "Documentation"
