@@ -42,11 +42,11 @@ plotTopHVG <- function(inSCE,
   }
 
   if (method == "vst") {
-    x <- rowData(inSCE)$seurat_variableFeatures_vst_mean
+    x <- log(rowData(inSCE)$seurat_variableFeatures_vst_mean)
     y <- rowData(inSCE)$seurat_variableFeatures_vst_varianceStandardized
     labeling <- "Standardized Variance"
   } else if (method == "mean.var.plot") {
-    x <- rowData(inSCE)$seurat_variableFeatures_mvp_mean
+    x <- log(rowData(inSCE)$seurat_variableFeatures_mvp_mean)
     y <- rowData(inSCE)$seurat_variableFeatures_mvp_dispersionScaled
     labeling <- "Dispersion"
   } else if (method == "dispersion") {

@@ -292,8 +292,8 @@
 <div id="introduction" class="section level2">
 <h2 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h2>
-<p>Dimensionality reduction algorithms (PCA/ICA &amp; tSNE/UMAP) can be run through the <strong>singleCellTK</strong> toolkit using both interactive shiny application and R console. For the interactive analysis, the toolkit offers a streamlined workflow to both compute metrics for dimensionality reduction and then visualize the results using any of the available interactive plots. For the console analysis, the toolkit offers a single wrapper function <code>runDimReduce</code> to compute metrics for any of the integrated algorithms and multiple methods to visualize the computed results. <br></p>
-<p>Methods available with the toolkit include <code>PCA</code> from <code>scater</code> <span class="citation">[1]</span> package, <code>PCA</code>, <code>ICA</code>, <code>tSNE</code> &amp; <code>UMAP</code> from <code>Seurat</code> <span class="citation">[2]</span><span class="citation">[3]</span><span class="citation">[4]</span><span class="citation">[5]</span> package, <code>tSNE</code> from <code>Rtsne</code> <span class="citation">[6]</span><span class="citation">[7]</span> package and <code>UMAP</code> from <code>uwot</code> <span class="citation">[8]</span> package. Visualization options available for users include <code>2D Component Plot</code>, <code>Elbow Plot</code>, <code>JackStraw Plot</code> and <code>Heatmap Plot</code>. A complete list of supported visualization options against each method are specified at the bottom of the tabs below. <br></p>
+<p>Dimensionality reduction algorithms (PCA/ICA) can be run through the <strong>singleCellTK</strong> toolkit using both interactive shiny application and R console. For the interactive analysis, the toolkit offers a streamlined workflow to both compute metrics for dimensionality reduction and then visualize the results using any of the available interactive plots. For the console analysis, the toolkit offers a single wrapper function <code>runDimReduce</code> to compute metrics for any of the integrated algorithms and multiple methods to visualize the computed results. <br></p>
+<p>Methods available with the toolkit include <code>PCA</code> from <code>scater</code> <span class="citation">[1]</span> package and <code>PCA</code> &amp; <code>ICA</code> from <code>Seurat</code> <span class="citation">[2]</span><span class="citation">[3]</span><span class="citation">[4]</span><span class="citation">[5]</span> package. Visualization options available for users include <code>2D Component Plot</code>, <code>Elbow Plot</code>, <code>JackStraw Plot</code> and <code>Heatmap Plot</code>. A complete list of supported visualization options against each method are specified at the bottom of the tabs below. <br></p>
 <p>To view detailed instructions on how to use these methods, please select ‘Interactive Analysis’ for using normalization in shiny application or ‘Console Analysis’ for using these methods on R console from the tabs below: <br></p>
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -329,7 +329,7 @@
 </li>
 <li>Check the boxes against the visualizations that should be plotted after computation of reducedDims. This visualizations become available after computation on the right panel. <br><br>
 </li>
-<li>If “Compute HeatmapPlot?” is selected in step 8, you can specify how many features should be plotted in the heatmap by default. This setting can be changed later as well from the visualization panel on the right. <br><br>
+<li>If “Compute HeatmapPlot?” is selected in step 8, you can specify how many features should be plotted in the heatmap by default. These setting can be changed later as well from the visualization panel on the right. <br><br>
 </li>
 <li>Press “Run” to start computation. <br><br>
 </li>
@@ -404,7 +404,7 @@
 <p><strong>2. Visualize the dimensionality reduction results using of the available visualization options.</strong></p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co">#To plot a simple 2D component plot for any of the 4 methods i.e. PCA, ICA, tSNE and UMAP</span>
-<span class="fu"><a href="../../reference/plotDimRed.html">plotDimRed</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useReduction <span class="op">=</span> <span class="st">"redDimPCA"</span>, xAxisLabel <span class="op">=</span> <span class="st">"PC_1"</span>, yAxisLabel <span class="op">=</span> <span class="st">"PC2_2"</span><span class="op">)</span>
+<span class="fu"><a href="../../reference/plotDimRed.html">plotDimRed</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useReduction <span class="op">=</span> <span class="st">"redDimPCA"</span>, xAxisLabel <span class="op">=</span> <span class="st">"PC_1"</span>, yAxisLabel <span class="op">=</span> <span class="st">"PC_2"</span><span class="op">)</span>
 
 <span class="co">#Or use specific functions available for other plots</span>
 <span class="fu"><a href="../../reference/seuratReductionPlot.html">seuratReductionPlot</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useReduction <span class="op">=</span> <span class="st">"pca"</span><span class="op">)</span>
@@ -421,17 +421,12 @@
   <span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/importExampleData.html">importExampleData</a></span><span class="op">(</span>dataset <span class="op">=</span> <span class="st">"pbmc3k"</span><span class="op">)</span>
   <span class="co"># Perform Normalization</span>
   <span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/runNormalization.html">runNormalization</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, normalizationMethod <span class="op">=</span> <span class="st">"LogNormalize"</span>, useAssay <span class="op">=</span> <span class="st">"counts"</span>, outAssayName <span class="op">=</span> <span class="st">"LogNormalizedScaledCounts"</span>, scale <span class="op">=</span> <span class="cn">TRUE</span>, trim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="op">-</span><span class="fl">10</span><span class="op">)</span><span class="op">)</span>
-    <span class="co"># Find Variable Features</span>
+  <span class="co"># Find Variable Features</span>
   <span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/runFeatureSelection.html">runFeatureSelection</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"counts"</span>, hvgMethod <span class="op">=</span> <span class="st">"vst"</span><span class="op">)</span>
-            <span class="va">HVGs</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/getTopHVG.html">getTopHVG</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>,
-                            method <span class="op">=</span> <span class="st">"vst"</span>,
-                            n <span class="op">=</span> <span class="fl">2000</span><span class="op">)</span>
-
-          <span class="co">#make sure no NA's are introduced in HVGs</span>
-          <span class="va">HVGs</span> <span class="op">&lt;-</span> <span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/na.fail.html">na.omit</a></span><span class="op">(</span><span class="va">HVGs</span><span class="op">)</span>
-          <span class="co">#tempAssay &lt;- expData(vals$counts, vals$hvgCalculated$assayName)[HVGs,]</span>
-          <span class="va">tempAssay</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/expData.html">expData</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, assayName <span class="op">=</span> <span class="st">"LogNormalizedScaledCounts"</span><span class="op">)</span><span class="op">[</span><span class="va">HVGs</span>,<span class="op">]</span>
-          <span class="fu"><a href="../../reference/expData.html">expData</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, assayName <span class="op">=</span> <span class="st">"hvg2000"</span>, tag <span class="op">=</span> <span class="st">"hvg"</span>, altExp <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">tempAssay</span>
+  <span class="va">HVGs</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/getTopHVG.html">getTopHVG</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, method <span class="op">=</span> <span class="st">"vst"</span>, n <span class="op">=</span> <span class="fl">2000</span><span class="op">)</span>
+  <span class="va">HVGs</span> <span class="op">&lt;-</span> <span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/na.fail.html">na.omit</a></span><span class="op">(</span><span class="va">HVGs</span><span class="op">)</span>
+  <span class="va">tempAssay</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/expData.html">expData</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, assayName <span class="op">=</span> <span class="st">"LogNormalizedScaledCounts"</span><span class="op">)</span><span class="op">[</span><span class="va">HVGs</span>,<span class="op">]</span>
+  <span class="fu"><a href="../../reference/expData.html">expData</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, assayName <span class="op">=</span> <span class="st">"hvg2000"</span>, tag <span class="op">=</span> <span class="st">"hvg"</span>, altExp <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">tempAssay</span>
   <span class="co"># Run PCA</span>
   <span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/runDimReduce.html">runDimReduce</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"hvg2000"</span>, useAltExp <span class="op">=</span> <span class="st">"hvg2000"</span>, reducedDimName <span class="op">=</span> <span class="st">"redDimPCA"</span>, method <span class="op">=</span> <span class="st">"seuratPCA"</span>, nComponents <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>
   <span class="co"># Plot PCA</span>
@@ -540,19 +535,6 @@ document.getElementById("ia-button").click();
 <div id="ref-Hao2021" class="csl-entry">
 <div class="csl-left-margin">[5] </div>
 <div class="csl-right-inline">Y. Hao <em>et al.</em>, <span>“Integrated analysis of multimodal single-cell data,”</span> <em>Cell</em>, 2021, doi: <a href="https://doi.org/10.1016/j.cell.2021.04.048">10.1016/j.cell.2021.04.048</a>.</div>
-</div>
-<div id="ref-Maaten2014" class="csl-entry">
-<div class="csl-left-margin">[6] </div>
-<div class="csl-right-inline">L. J. P. van der Maaten, <span>“Accelerating t-SNE using tree-based algorithms,”</span> <em>Journal of Machine Learning Research</em>, vol. 15, pp. 3221–3245, 2014.</div>
-</div>
-<div id="ref-Maaten2008" class="csl-entry">
-<div class="csl-left-margin">[7] </div>
-<div class="csl-right-inline">L. J. P. van der Maaten and G. E. Hinton, <span>“Visualizing high-dimensional data using t-SNE,”</span> <em>Journal of Machine Learning Research</em>, vol. 9, pp. 2579–2605, 2008.</div>
-</div>
-<div id="ref-Melville2020" class="csl-entry">
-<div class="csl-left-margin">[8] </div>
-<div class="csl-right-inline">J. Melville, <em>Uwot: The uniform manifold approximation and projection (UMAP) method for dimensionality reduction</em>. 2020.Available: <a href="https://CRAN.R-project.org/package=uwot">https://CRAN.R-project.org/package=uwot</a>
-</div>
 </div>
 </div>
 </div>

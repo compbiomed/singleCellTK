@@ -12,9 +12,9 @@ csl: ieee.csl
 doEval = TRUE
 ```
 ## Introduction
-Dimensionality reduction algorithms (PCA/ICA & tSNE/UMAP) can be run through the **singleCellTK** toolkit using both interactive shiny application and R console. For the interactive analysis, the toolkit offers a streamlined workflow to both compute metrics for dimensionality reduction and then visualize the results using any of the available interactive plots. For the console analysis, the toolkit offers a single wrapper function `runDimReduce` to compute metrics for any of the integrated algorithms and multiple methods to visualize the computed results. <br>
+Dimensionality reduction algorithms (PCA/ICA) can be run through the **singleCellTK** toolkit using both interactive shiny application and R console. For the interactive analysis, the toolkit offers a streamlined workflow to both compute metrics for dimensionality reduction and then visualize the results using any of the available interactive plots. For the console analysis, the toolkit offers a single wrapper function `runDimReduce` to compute metrics for any of the integrated algorithms and multiple methods to visualize the computed results. <br>
 
-Methods available with the toolkit include `PCA` from `scater` [@McCarthy2017] package, `PCA`, `ICA`, `tSNE` & `UMAP` from `Seurat` [@Butler2018][@Stuart2019][@Satija2017][@Hao2021] package, `tSNE` from `Rtsne` [@Maaten2014][@Maaten2008] package and `UMAP` from `uwot` [@Melville2020] package. Visualization options available for users include `2D Component Plot`, `Elbow Plot`, `JackStraw Plot` and `Heatmap Plot`. A complete list of supported visualization options against each method are specified at the bottom of the tabs below. <br> 
+Methods available with the toolkit include `PCA` from `scater` [@McCarthy2017] package and `PCA` & `ICA` from `Seurat` [@Butler2018][@Stuart2019][@Satija2017][@Hao2021] package. Visualization options available for users include `2D Component Plot`, `Elbow Plot`, `JackStraw Plot` and `Heatmap Plot`. A complete list of supported visualization options against each method are specified at the bottom of the tabs below. <br> 
 
 To view detailed instructions on how to use these methods, please select 'Interactive Analysis' for using normalization in shiny application or 'Console Analysis' for using these methods on R console from the tabs below: <br>
 
@@ -52,7 +52,7 @@ In general, both sub-tabs offer options for selection of data items and choice o
 5. Specify a name for the new data (reducedDim). <br><br>
 6. Specify the number of dimensions to compute against the selected algorithm. Default value is `10`. <br><br>
 7. Check the boxes against the visualizations that should be plotted after computation of reducedDims. This visualizations become available after computation on the right panel. <br><br>
-8. If "Compute HeatmapPlot?" is selected in step 8, you can specify how many features should be plotted in the heatmap by default. This setting can be changed later as well from the visualization panel on the right. <br> <br>
+8. If "Compute HeatmapPlot?" is selected in step 8, you can specify how many features should be plotted in the heatmap by default. These setting can be changed later as well from the visualization panel on the right. <br> <br>
 9. Press "Run" to start computation. <br><br>
 
 ![](ui_screenshots/dimensionality_reduction/dr_4.png)<br><br>
@@ -132,7 +132,7 @@ sce <- runDimReduce(inSCE = sce, useAssay = "normalizedCounts", reducedDimName =
 **2. Visualize the dimensionality reduction results using of the available visualization options.**
 ```{r "dm_overview_2", eval=FALSE}
 #To plot a simple 2D component plot for any of the 4 methods i.e. PCA, ICA, tSNE and UMAP
-plotDimRed(inSCE = sce, useReduction = "redDimPCA", xAxisLabel = "PC_1", yAxisLabel = "PC2_2")
+plotDimRed(inSCE = sce, useReduction = "redDimPCA", xAxisLabel = "PC_1", yAxisLabel = "PC_2")
 
 #Or use specific functions available for other plots
 seuratReductionPlot(inSCE = sce, useReduction = "pca")
@@ -156,17 +156,12 @@ seuratElbowPlot(inSCE = sce, reduction = "pca")
   sce <- importExampleData(dataset = "pbmc3k")
   # Perform Normalization
   sce <- runNormalization(inSCE = sce, normalizationMethod = "LogNormalize", useAssay = "counts", outAssayName = "LogNormalizedScaledCounts", scale = TRUE, trim = c(10, -10))
-    # Find Variable Features
+  # Find Variable Features
   sce <- runFeatureSelection(inSCE = sce, useAssay = "counts", hvgMethod = "vst")
-            HVGs <- getTopHVG(inSCE = sce,
-                            method = "vst",
-                            n = 2000)
-
-          #make sure no NA's are introduced in HVGs
-          HVGs <- stats::na.omit(HVGs)
-          #tempAssay <- expData(vals$counts, vals$hvgCalculated$assayName)[HVGs,]
-          tempAssay <- expData(inSCE = sce, assayName = "LogNormalizedScaledCounts")[HVGs,]
-          expData(inSCE = sce, assayName = "hvg2000", tag = "hvg", altExp = TRUE) <- tempAssay
+  HVGs <- getTopHVG(inSCE = sce, method = "vst", n = 2000)
+  HVGs <- stats::na.omit(HVGs)
+  tempAssay <- expData(inSCE = sce, assayName = "LogNormalizedScaledCounts")[HVGs,]
+  expData(inSCE = sce, assayName = "hvg2000", tag = "hvg", altExp = TRUE) <- tempAssay
   # Run PCA
   sce <- runDimReduce(inSCE = sce, useAssay = "hvg2000", useAltExp = "hvg2000", reducedDimName = "redDimPCA", method = "seuratPCA", nComponents = 10)
   # Plot PCA
