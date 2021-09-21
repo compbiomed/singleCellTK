@@ -1,4 +1,11 @@
+
+
 shinyPanelvam <- fluidPage(
+  
+  tags$script("Shiny.addCustomMessageHandler('close_dropDownPathway', function(x){
+                  $('html').click();
+                });"),
+  
   tags$div(
     class = "container",
     h1("Pathway Analysis"),
@@ -45,9 +52,13 @@ shinyPanelvam <- fluidPage(
        #downloadButton("downloadPathway", "Download Results")
       
        ),
+      
       mainPanel(
         
         dropdown(
+          fluidRow(
+            column(12,
+                   fluidRow(actionBttn(inputId = "closeDropDownPathway", label = NULL, style = "simple", color = "danger", icon = icon("times"), size = "xs"), align = "right"),
           
           tags$h3("List of Input"),
           uiOutput("selectReduceDim"),
@@ -73,15 +84,25 @@ shinyPanelvam <- fluidPage(
               "Median" = "median"
             )),
           
-          withBusyIndicatorUI(actionButton("Plot", "Update Plot")),  
+          #withBusyIndicatorUI(actionButton("Plot", "Update Plot")), 
+          actionBttn(
+            inputId = "Plot",
+            label = "Update Plot",
+            style = "bordered",
+            color = "primary",
+            size = "sm"
+          ),
           
-          tags$style(".btn-custom {background-color: #e5e5e5; ;}"),
-          label = "Plot Options", 
-          status = "custom", width = "300px", 
-          animate = animateOptions(
-            enter = animations$fading_entrances$fadeInLeftBig,
-            exit = animations$fading_exits$fadeOutRightBig
-          )
+        )
+      ),
+          
+          #tags$style(".btn-custom {background-color: #e5e5e5; ;}"),
+          #label = "Plot Options", 
+          inputId = "dropDownPathway",
+          icon = icon("cog"),
+          status = "primary",
+          circle = FALSE,
+          inline = TRUE
         ),
         
         plotOutput("pathwayPlot", height = "600px") 
