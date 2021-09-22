@@ -96,7 +96,7 @@ getTopHVG <- function(inSCE, method, n = 2000, altExp = NULL) {
         tempDataFrame <- tempDataFrame[order(-tempDataFrame$disp),]
         
         tempDataFrame <- 
-            tempDataFrame[tempDataFrame[varianceColumnName] > 0, ]
+            tempDataFrame[tempDataFrame["disp"] > 0, ]
         
         if(nrow(tempDataFrame) < n){
             n <- nrow(tempDataFrame)
