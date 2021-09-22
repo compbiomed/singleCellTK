@@ -1,3 +1,9 @@
+.convert_hex_to_int <- function(hex) {
+  code = paste0("hash = str(int('", hex, "', base=16))[-10:]")
+  reticulate::py_run_string(code)
+  reticulate::py$hash
+}
+
 #' Export data in Seurat object
 #' @param inSCE A \link[SingleCellExperiment]{SingleCellExperiment} object
 #' that contains the data. QC metrics are stored in colData of the
@@ -240,12 +246,6 @@ generateMeta <- function(dropletSCE = NULL,
 #' @return A \link[SingleCellExperiment]{SingleCellExperiment} object which combines all
 #' objects in sceList. The colData is merged.
 #' @export
-
-.convert_hex_to_int <- function(hex) {
-  code = paste0("hash = str(int('", hex, "', base=16))[-10:]")
-  reticulate::py_run_string(code)
-  reticulate::py$hash
-}
 
 generateHTANMeta <- function(dropletSCE = NULL,
                          cellSCE = NULL,
