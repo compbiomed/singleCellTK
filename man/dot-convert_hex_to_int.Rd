@@ -28,7 +28,3 @@ objects in sceList. The colData is merged.
 \description{
 Generate HTAN manifest file for droplet and cell count data
 }
-\examples{
-data(scExample, package = "singleCellTK")
-generateHTANMeta(sce, dir = ".", samplename = "Sample")
-}

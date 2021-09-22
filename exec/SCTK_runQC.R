@@ -503,6 +503,10 @@ for(i in seq_along(process)) {
                     ix <- dropletSCE$dropletUtils_BarcodeRank_Inflection == 1
                 }
                 cellSCE <- dropletSCE[,ix]
+            } else {
+                ### add indicator which barcodes are in the user-provided cellSCE
+                cbInCellMat <- colnames(dropletSCE) %in% colnames(cellSCE)
+                SummarizedExperiment::colData(dropletSCE)$barcodeInCellMatrix <- cbInCellMat                
             }    
         }
 
@@ -510,9 +514,6 @@ for(i in seq_along(process)) {
             message(paste0(date(), " .. Running cell QC"))        
             cellSCE <- runCellQC(inSCE = cellSCE, geneSetCollection = geneSetCollection, paramsList=Params)
         }
-
-        cbInCellMat <- colnames(dropletSCE) %in% colnames(cellSCE)
-        SummarizedExperiment::colData(dropletSCE)$barcodeInCellMatrix <- cbInCellMat
     }
     
     ## merge colData of dropletSCE and FilteredSCE

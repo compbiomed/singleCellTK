@@ -24,6 +24,9 @@ cell count matrix data}
 
 \item{dir}{The output directory of the SCTK QC pipeline.}
 
+\item{HTAN}{Whether generates manifest file including HTAN specific ID (HTAN Biospecimen ID, 
+HTAN parent file ID and HTAN patient ID). Default is TRUE.}
+
 \item{dataType}{Type of the input data. It can be one of "Droplet", "Cell" or "Both".}
 }
 \value{
@@ -32,8 +35,4 @@ objects in sceList. The colData is merged.
 }
 \description{
 Generate HTAN manifest file for droplet and cell count data
-}
-\examples{
-data(scExample, package = "singleCellTK")
-generateHTANMeta(sce, dir = ".", samplename = "Sample")
 }

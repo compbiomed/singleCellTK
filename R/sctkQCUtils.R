@@ -120,13 +120,11 @@ exportSCE <- function(inSCE,
 #' @param samplename The sample name of the \link[SingleCellExperiment]{SingleCellExperiment} objects
 #' @param dir The output directory of the SCTK QC pipeline.
 #' @param dataType Type of the input data. It can be one of "Droplet", "Cell" or "Both".
+#' @param HTAN Whether generates manifest file including HTAN specific ID (HTAN Biospecimen ID, 
+#' HTAN parent file ID and HTAN patient ID). Default is TRUE. 
 #' @return A \link[SingleCellExperiment]{SingleCellExperiment} object which combines all
 #' objects in sceList. The colData is merged.
 #' @export
-#' @examples
-#' data(scExample, package = "singleCellTK")
-#' generateHTANMeta(sce, dir = ".", samplename = "Sample")
-#' @importFrom SummarizedExperiment assay colData
 
 generateMeta <- function(dropletSCE = NULL,
                           cellSCE = NULL,
@@ -242,11 +240,6 @@ generateMeta <- function(dropletSCE = NULL,
 #' @return A \link[SingleCellExperiment]{SingleCellExperiment} object which combines all
 #' objects in sceList. The colData is merged.
 #' @export
-#' @examples
-#' data(scExample, package = "singleCellTK")
-#' generateHTANMeta(sce, dir = ".", samplename = "Sample")
-#' @importFrom SummarizedExperiment assay colData
-
 
 .convert_hex_to_int <- function(hex) {
   code = paste0("hash = str(int('", hex, "', base=16))[-10:]")
@@ -334,7 +327,7 @@ generateHTANMeta <- function(dropletSCE = NULL,
       'Filename' = data[[type]]['FileName'],
       'FileLoc' = data[[type]]['AbsFileName'],
       'File Format' = 'mtx',
-      SAMPLE = samplename, #DATA_TYPE = data[[type]]['DataType'],
+      'SAMPLE' = samplename, #DATA_TYPE = data[[type]]['DataType'],
       'Data Category' = 'Gene Expression', 'Matrix Type' = 'Raw Counts',
       'Cell Median Number Reads' = data[[type]]['MedianReads'],
       'Cell Median Number Genes' = data[[type]]['MedianGenes'],
@@ -359,7 +352,7 @@ generateHTANMeta <- function(dropletSCE = NULL,
           'Component' = 'ScRNA-seqLevel4', "Filename" = data[[type]][metric],
           'FileLoc' = data[[type]][paste0('Abs', metric)],
           'File Format' = 'txt', 
-          SAMPLE = samplename, 
+          'SAMPLE' = samplename, 
           'scRNAseq Workflow Type' = WorkFlowData[metric],
           'scRNAseq Workflow Parameters Description' = file.path(directory, paste0(samplename, '_QCParameters.yaml')),
           'Workflow Version' = WorkFlowData['WorkFlowVer'],
@@ -385,7 +378,7 @@ generateHTANMeta <- function(dropletSCE = NULL,
   })
   
   level3Meta$`HTAN Data File ID` <- paste(level3Meta$`HTAN Patient ID`, level3Meta$checkSumInt, sep="_")
-  linkMat <- dplyr::group_by(level3Meta, SAMPLE) %>% summarise(LinkedMat = paste(`HTAN Data File ID`, collapse=","))
+  linkMat <- dplyr::group_by(level3Meta, SAMPLE) %>% dplyr::summarise(LinkedMat = paste(`HTAN Data File ID`, collapse=","))
   level3Meta$`Linked Matrices` <- unlist(linkMat[match(level3Meta$SAMPLE, linkMat$SAMPLE), 'LinkedMat'])
   
   ParentFile <- level3Meta[grep("_counts.mtx.gz", unlist(level3Meta['FileLoc'])), c('HTAN Patient ID', 'HTAN Data File ID')]
