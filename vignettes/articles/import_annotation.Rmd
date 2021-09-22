@@ -61,7 +61,9 @@ Here we will take the example PBMC3K dataset as an example. We imported this dat
   <summary><b>Import New Annotation from File</b></summary>
 ````
 
-TODO
+Users can upload a metadata table that annotates the cells in the dataset with multiple variables. The file has to be in Comma-Separated Values (CSV) format, and have the first header row for the variable names. All cells in the file have to match with the existing dataset in both order and amount, so that SCTK can correctly identify the information and merge it to the background data container.  
+
+Users can choose to replace all existing annotation with the new table, by selecting the radio button **"Replace Cell Annotations"**, or merge the new table into the existing table, by selecting **"Add to existing Cell Annotations"**. Note that by choosing to merge, SCTK will overwrite the the variables with the same name.  
 
 ````{=html}
 </details>
@@ -71,7 +73,9 @@ TODO
     <summary><b>Bins</b></summary>
 ````
 
-TODO
+Users can modify an existing column of annotation by changing all values that meet a criteria (alphabetically ordered comparison by "=", ">", "<", ">=" or "<=") to a new value. In the UI, users can choose the annotation at the selection input **"select attribute"**, and then set the binning point by selecting an existing value at the selection input **"select attribute value"** or entering the desired value at **"criteria parameter"**. The criteria type (comparison symbol) can be selected at **"select comparison"**. The new value to be filled in to the bin can be entered at **"bin name"**. Finally, press **"Confirm Bin"** button to temporarily save the result and preview it in the table at the bottom of the page.  
+
+>For example: There is an annotation named `"ann1"`, with values `"a", "b", "c", "d", "e", ...` in the dataset, and users want to change all the values in `"ann1"`, that come after `"d"`, to `"afterD"`. The steps would be: 1. Choose `"ann1"` at **"select attribute"**; 2. Select `"d"` at **"select attribute value"** or enter `"d"` at **"criteria parameter"**; 3. Select `>` at **"select comparison"**; 4. Enter `"afterD"` at **"bin name"**.  
 
 ````{=html}
 </details>
@@ -89,7 +93,7 @@ Users can merge any two columns that exist in the cell annotation table. SCTK me
   <summary><b>Magic Fill</b></summary>
 ````
 
-TODO
+Users can modify a column of annotation (column A) according to another column (column B). The rows that has a certain value in column B will be selected and these rows in column A will be modified to a user-entered value. Select column B at **"select attribute column"**, and column A at **"select column to fill"**. The value to be found in column B should be selected at **"select attribute value"**, and the new value to fill into column A should be entered at **"new value"**. 
 
 ````{=html}
 </details>
