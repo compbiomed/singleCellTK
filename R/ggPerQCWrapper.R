@@ -15,7 +15,7 @@
 #'  Default FALSE.
 #' @param dots Boolean. If TRUE, will plot dots for each violin plot.
 #'  Default TRUE.
-#' @param dotSize Size of dots. Default 1.
+#' @param dotSize Size of dots. Default 0.5.
 #' @param summary Adds a summary statistic, as well as a crossbar to the
 #'  violin plot. Options are "mean" or "median". Default "median".
 #' @param summaryTextSize The text size of the summary statistic displayed
@@ -57,7 +57,7 @@ plotRunPerCellQCResults <- function(inSCE,
                                     violin=TRUE,
                                     boxplot=FALSE,
                                     dots=TRUE,
-                                    dotSize=1,
+                                    dotSize=0.5,
                                     summary="median",
                                     summaryTextSize=3,
                                     baseSize=15,
@@ -398,7 +398,7 @@ plotRunPerCellQCResults <- function(inSCE,
 #'  runEmptyDrops as "Empty Droplet" or "Putative Cell". Default 0.01.
 #' @param defaultTheme Removes grid in plot and sets axis title size to 10
 #'  when TRUE. Default TRUE.
-#' @param dotSize Size of dots. Default 1.
+#' @param dotSize Size of dots. Default 0.5.
 #' @param titleSize Size of title of plot. Default 18.
 #' @param axisSize Size of x/y-axis ticks. Default 15.
 #' @param axisLabelSize Size of x/y-axis labels. Default 18.
@@ -425,7 +425,7 @@ plotEmptyDropsResults <- function(inSCE,
                                   combinePlot="all",
                                   fdrCutoff=0.01,
                                   defaultTheme=TRUE,
-                                  dotSize=1,
+                                  dotSize=0.5,
                                   titleSize=18,
                                   axisLabelSize=18,
                                   axisSize=15,
@@ -474,7 +474,7 @@ plotEmptyDropsResults <- function(inSCE,
 #'  Default NULL.
 #' @param defaultTheme Removes grid in plot and sets axis title size to 10
 #'  when TRUE. Default TRUE.
-#' @param dotSize Size of dots. Default 1.
+#' @param dotSize Size of dots. Default 0.5.
 #' @param titleSize Size of title of plot. Default 18.
 #' @param axisSize Size of x/y-axis ticks. Default 15.
 #' @param axisLabelSize Size of x/y-axis labels. Default 18.
@@ -488,7 +488,7 @@ plotEmptyDropsResults <- function(inSCE,
 plotBarcodeRankDropsResults <- function(inSCE,
                                   sample=NULL,
                                   defaultTheme=TRUE,
-                                  dotSize=1,
+                                  dotSize=0.5,
                                   titleSize=18,
                                   axisLabelSize=18,
                                   axisSize=15,
@@ -543,7 +543,7 @@ plotBarcodeRankDropsResults <- function(inSCE,
 #'  Default NULL.
 #' @param defaultTheme Removes grid in plot and sets axis title size to 10
 #'  when TRUE. Default TRUE.
-#' @param dotSize Size of dots. Default 1.
+#' @param dotSize Size of dots. Default 0.5.
 #' @param summary Adds a summary statistic, as well as a crossbar to the
 #'  violin plot. Options are "mean" or "median". Default NULL.
 #' @param summaryTextSize The text size of the summary statistic displayed
@@ -596,7 +596,7 @@ plotScrubletResults <- function(inSCE,
                                 bin=NULL,
                                 binLabel=NULL,
                                 defaultTheme=TRUE,
-                                dotSize=1,
+                                dotSize=0.5,
                                 summary="median",
                                 summaryTextSize=3,
                                 transparency=1,
@@ -842,7 +842,7 @@ plotScrubletResults <- function(inSCE,
 #'  Default NULL.
 #' @param defaultTheme Removes grid in plot and sets axis title size to 10
 #'  when TRUE. Default TRUE.
-#' @param dotSize Size of dots. Default 1.
+#' @param dotSize Size of dots. Default 0.5.
 #' @param summary Adds a summary statistic, as well as a crossbar to the
 #'  violin plot. Options are "mean" or "median". Default NULL.
 #' @param summaryTextSize The text size of the summary statistic displayed
@@ -893,7 +893,7 @@ plotDoubletFinderResults <- function(inSCE,
                                      bin=NULL,
                                      binLabel=NULL,
                                      defaultTheme=TRUE,
-                                     dotSize=1,
+                                     dotSize=0.5,
                                      summary="median",
                                      summaryTextSize=3,
                                      transparency=1,
@@ -1218,7 +1218,7 @@ plotDoubletFinderResults <- function(inSCE,
 #'  Default NULL.
 #' @param defaultTheme Removes grid in plot and sets axis title size to 10
 #'  when TRUE. Default TRUE.
-#' @param dotSize Size of dots. Default 1.
+#' @param dotSize Size of dots. Default 0.5.
 #' @param summary Adds a summary statistic, as well as a crossbar to the
 #'  violin plot. Options are "mean" or "median". Default NULL.
 #' @param summaryTextSize The text size of the summary statistic displayed
@@ -1269,7 +1269,7 @@ plotScDblFinderResults <- function(inSCE,
                                     bin=NULL,
                                     binLabel=NULL,
                                     defaultTheme=TRUE,
-                                    dotSize=1,
+                                    dotSize=0.5,
                                     summary="median",
                                     summaryTextSize=3,
                                     transparency=1,
@@ -1483,7 +1483,7 @@ plotScDblFinderResults <- function(inSCE,
 #'  Default NULL.
 #' @param defaultTheme Removes grid in plot and sets axis title size to 10
 #'  when TRUE. Default TRUE.
-#' @param dotSize Size of dots. Default 1.
+#' @param dotSize Size of dots. Default 0.5.
 #' @param summary Adds a summary statistic, as well as a crossbar to the
 #'  violin plot. Options are "mean" or "median". Default NULL.
 #' @param summaryTextSize The text size of the summary statistic displayed
@@ -1534,7 +1534,7 @@ plotCxdsResults <- function(inSCE,
                             bin=NULL,
                             binLabel=NULL,
                             defaultTheme=TRUE,
-                            dotSize=1,
+                            dotSize=0.5,
                             summary="median",
                             summaryTextSize=3,
                             transparency=1,
@@ -1780,7 +1780,7 @@ plotCxdsResults <- function(inSCE,
 #'  Default NULL.
 #' @param defaultTheme Removes grid in plot and sets axis title size to 10
 #'  when TRUE. Default TRUE.
-#' @param dotSize Size of dots. Default 1.
+#' @param dotSize Size of dots. Default 0.5.
 #' @param summary Adds a summary statistic, as well as a crossbar to the
 #'  violin plot. Options are "mean" or "median". Default NULL.
 #' @param summaryTextSize The text size of the summary statistic displayed
@@ -1831,7 +1831,7 @@ plotBcdsResults <- function(inSCE,
                             bin=NULL,
                             binLabel=NULL,
                             defaultTheme=TRUE,
-                            dotSize=1,
+                            dotSize=0.5,
                             summary="median",
                             summaryTextSize=3,
                             transparency=1,
@@ -2078,7 +2078,7 @@ plotBcdsResults <- function(inSCE,
 #'  Default NULL.
 #' @param defaultTheme Removes grid in plot and sets axis title size to 10
 #'  when TRUE. Default TRUE.
-#' @param dotSize Size of dots. Default 1.
+#' @param dotSize Size of dots. Default 0.5.
 #' @param summary Adds a summary statistic, as well as a crossbar to the
 #'  violin plot. Options are "mean" or "median". Default NULL.
 #' @param summaryTextSize The text size of the summary statistic displayed
@@ -2129,7 +2129,7 @@ plotScdsHybridResults <- function(inSCE,
                                   bin=NULL,
                                   binLabel=NULL,
                                   defaultTheme=TRUE,
-                                  dotSize=1,
+                                  dotSize=0.5,
                                   summary="median",
                                   summaryTextSize=3,
                                   transparency=1,
@@ -2374,7 +2374,7 @@ plotScdsHybridResults <- function(inSCE,
 #'  Default NULL.
 #' @param defaultTheme Removes grid in plot and sets axis title size to 10
 #'  when TRUE. Default TRUE.
-#' @param dotSize Size of dots. Default 1.
+#' @param dotSize Size of dots. Default 0.5.
 #' @param summary Adds a summary statistic, as well as a crossbar to the
 #'  violin plot. Options are "mean" or "median". Default NULL.
 #' @param summaryTextSize The text size of the summary statistic displayed
@@ -2429,7 +2429,7 @@ plotDecontXResults <- function(inSCE,
                                bin=NULL,
                                binLabel=NULL,
                                defaultTheme=TRUE,
-                               dotSize=1,
+                               dotSize=0.5,
                                summary="median",
                                summaryTextSize=3,
                                transparency=1,
