@@ -35,7 +35,7 @@ shinyPanelImport <- fluidPage(
   tags$div(
     class = "container",
     h1("Import"),
-    h5(tags$a(href = paste0(docs.artPath, "ui_import_data.html"),
+    h5(tags$a(href = paste0(docs.artPath, "import_data.html"),
               "(help)", target = "_blank")),
     tags$hr(),
     h3("1. Choose data source:"),
@@ -304,7 +304,7 @@ shinyPanelImport <- fluidPage(
       class = "container",
       p("")
     ),
-    
+
     nonLinearWorkflowUI(id = "nlw-import")
   )
   #includeHTML("www/footer.html")

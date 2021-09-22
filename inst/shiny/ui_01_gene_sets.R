@@ -3,7 +3,7 @@ shinyPanelGeneSets <- fluidPage(
     class = "container",
     style = "margin-bottom: 10px",
     h1("Import Gene Sets"),
-    h5(tags$a(href = paste0(docs.artPath, "ui_import_genesets.html"),
+    h5(tags$a(href = paste0(docs.artPath, "import_genesets.html"),
               "(help)", target = "_blank")),
     tags$hr(),
     tags$style(HTML("
