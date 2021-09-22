@@ -137,18 +137,18 @@ runDimReduce <- function(inSCE,
     # Seurat part
     if (!is.null(useAltExp)) {
       tempSCE <- SingleCellExperiment::altExp(inSCE, useAltExp)
-      tempSCE <- seuratFindHVG(inSCE = tempSCE, useAssay = useAssay,
-                               altExp = TRUE)
+      # tempSCE <- seuratFindHVG(inSCE = tempSCE, useAssay = useAssay,
+      #                          altExp = TRUE)
     } else if (!is.null(useAssay)) {
       tempSCE <- inSCE
-      tempSCE <- seuratFindHVG(inSCE = tempSCE, useAssay = useAssay)
+      #tempSCE <- seuratFindHVG(inSCE = tempSCE, useAssay = useAssay)
     }
     if (method %in% c("seuratPCA", "seuratICA")) {
       ## SeuratPCA/ICA
       if (method == "seuratPCA") {
         tempSCE <- seuratPCA(tempSCE, useAssay = useAssay,
                              reducedDimName = reducedDimName,
-                             nPCs = nComponents, ...)
+                             nPCs = nComponents, features = rownames(inSCE), ...)
       } else if (method == "seuratICA") {
         tempSCE <- seuratICA(tempSCE, useAssay = useAssay,
                              reducedDimName = reducedDimName,

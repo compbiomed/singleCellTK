@@ -11,6 +11,7 @@ seuratPCA(
   useAssay = "seuratScaledData",
   reducedDimName = "seuratPCA",
   nPCs = 20,
+  features = NULL,
   verbose = TRUE
 )
 }
@@ -24,6 +25,10 @@ Default \code{seuratPCA}.}
 
 \item{nPCs}{numeric value of how many components to compute. Default
 \code{20}.}
+
+\item{features}{Specify the feature names or rownames which should be used
+for computation of PCA. Default is \code{NULL} which will use the previously
+stored variable features.}
 
 \item{verbose}{Logical value indicating if informative messages should
 be displayed. Default is \code{TRUE}.}
