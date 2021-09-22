@@ -13,7 +13,7 @@ plotDecontXResults(
   violin = TRUE,
   boxplot = FALSE,
   dots = TRUE,
-  reducedDimName = NULL,
+  reducedDimName = "decontX_UMAP",
   xlab = NULL,
   ylab = NULL,
   dim1 = NULL,
@@ -21,7 +21,7 @@ plotDecontXResults(
   bin = NULL,
   binLabel = NULL,
   defaultTheme = TRUE,
-  dotSize = 1,
+  dotSize = 0.5,
   summary = "median",
   summaryTextSize = 3,
   transparency = 1,
@@ -69,7 +69,7 @@ Default TRUE.}
 Default TRUE.}
 
 \item{reducedDimName}{Saved dimension reduction name in the
-\linkS4class{SingleCellExperiment} object. Required.}
+\linkS4class{SingleCellExperiment} object. Required. Default = "decontX_UMAP"}
 
 \item{xlab}{Character vector. Label for x-axis. Default NULL.}
 
@@ -92,7 +92,7 @@ Default NULL.}
 \item{defaultTheme}{Removes grid in plot and sets axis title size to 10
 when TRUE. Default TRUE.}
 
-\item{dotSize}{Size of dots. Default 1.}
+\item{dotSize}{Size of dots. Default 0.5.}
 
 \item{summary}{Adds a summary statistic, as well as a crossbar to the
 violin plot. Options are "mean" or "median". Default NULL.}
@@ -152,7 +152,6 @@ A wrapper function which visualizes outputs from the
 \examples{
 data(scExample, package="singleCellTK")
 sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
-sce <- getUMAP(inSCE=sce, useAssay="counts", reducedDimName="UMAP")
 sce <- runDecontX(sce)
-plotDecontXResults(inSCE=sce, reducedDimName="UMAP")
+plotDecontXResults(inSCE=sce, reducedDimName="decontX_UMAP")
 }

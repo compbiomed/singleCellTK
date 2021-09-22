@@ -885,7 +885,7 @@ plotDoubletFinderResults <- function(inSCE,
                                      violin=TRUE,
                                      boxplot=FALSE,
                                      dots=TRUE,
-                                     reducedDimName=NULL,
+                                     reducedDimName="UMAP",
                                      xlab=NULL,
                                      ylab=NULL,
                                      dim1=NULL,
@@ -923,6 +923,13 @@ plotDoubletFinderResults <- function(inSCE,
   }
   sampleVector <- sample
   samples <- unique(sample)
+
+  if (!(reducedDimName %in% reducedDimNames(inSCE))){
+    stop("Specified `reducedDimName` is not found in input
+         SingleCellExperiment object. Please check for spelling errors
+         with reducedDimNames().")
+  }
+
   df.scores <- grep(
     pattern="doubletFinder_doublet_score_resolution_",
     names(colData(inSCE)), value=TRUE
@@ -1261,7 +1268,7 @@ plotScDblFinderResults <- function(inSCE,
                                     violin=TRUE,
                                     boxplot=FALSE,
                                     dots=TRUE,
-                                    reducedDimName=NULL,
+                                    reducedDimName="UMAP",
                                     xlab=NULL,
                                     ylab=NULL,
                                     dim1=NULL,
@@ -1299,6 +1306,11 @@ plotScDblFinderResults <- function(inSCE,
   }
   sampleVector <- sample
 
+  if (!(reducedDimName %in% reducedDimNames(inSCE))){
+    stop("Specified `reducedDimName` is not found in input
+         SingleCellExperiment object. Please check for spelling errors
+         with reducedDimNames().")
+  }
   coldata = "scDblFinder_doublet_score"
   titleScDblFinder <- "ScDblFinder Doublet Score"
 
@@ -1526,7 +1538,7 @@ plotCxdsResults <- function(inSCE,
                             violin=TRUE,
                             boxplot=FALSE,
                             dots=TRUE,
-                            reducedDimName=NULL,
+                            reducedDimName="UMAP",
                             xlab=NULL,
                             ylab=NULL,
                             dim1=NULL,
@@ -1563,6 +1575,11 @@ plotCxdsResults <- function(inSCE,
     sample <- rep(1, ncol(inSCE))
   }
 
+  if (!(reducedDimName %in% reducedDimNames(inSCE))){
+    stop("Specified `reducedDimName` is not found in input
+         SingleCellExperiment object. Please check for spelling errors
+         with reducedDimNames().")
+  }
   samples <- unique(sample)
   sampleVector <- sample
   if (length(samples) > 1) {
@@ -1823,7 +1840,7 @@ plotBcdsResults <- function(inSCE,
                             violin=TRUE,
                             boxplot=FALSE,
                             dots=TRUE,
-                            reducedDimName=NULL,
+                            reducedDimName="UMAP",
                             xlab=NULL,
                             ylab=NULL,
                             dim1=NULL,
@@ -1860,6 +1877,11 @@ plotBcdsResults <- function(inSCE,
     sample <- rep(1, ncol(inSCE))
   }
 
+  if (!(reducedDimName %in% reducedDimNames(inSCE))){
+    stop("Specified `reducedDimName` is not found in input
+         SingleCellExperiment object. Please check for spelling errors
+         with reducedDimNames().")
+  }
   samples <- unique(sample)
   sampleVector <- sample
   if (length(samples) > 1) {
@@ -2121,7 +2143,7 @@ plotScdsHybridResults <- function(inSCE,
                                   violin=TRUE,
                                   boxplot=FALSE,
                                   dots=TRUE,
-                                  reducedDimName=NULL,
+                                  reducedDimName="UMAP",
                                   xlab=NULL,
                                   ylab=NULL,
                                   dim1=NULL,
@@ -2158,6 +2180,11 @@ plotScdsHybridResults <- function(inSCE,
     sample <- rep(1, ncol(inSCE))
   }
 
+  if (!(reducedDimName %in% reducedDimNames(inSCE))){
+    stop("Specified `reducedDimName` is not found in input
+         SingleCellExperiment object. Please check for spelling errors
+         with reducedDimNames().")
+  }
   samples <- unique(sample)
   sampleVector <- sample
   if (length(samples) > 1) {
@@ -2359,7 +2386,7 @@ plotScdsHybridResults <- function(inSCE,
 #' @param dots Boolean. If TRUE, will plot dots for each violin plot.
 #'  Default TRUE.
 #' @param reducedDimName Saved dimension reduction name in the
-#' \linkS4class{SingleCellExperiment} object. Required.
+#' \linkS4class{SingleCellExperiment} object. Required. Default = "decontX_UMAP"
 #' @param xlab Character vector. Label for x-axis. Default NULL.
 #' @param ylab Character vector. Label for y-axis. Default NULL.
 #' @param dim1 1st dimension to be used for plotting. Can either be a string which specifies
@@ -2409,9 +2436,8 @@ plotScdsHybridResults <- function(inSCE,
 #' @examples
 #' data(scExample, package="singleCellTK")
 #' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
-#' sce <- getUMAP(inSCE=sce, useAssay="counts", reducedDimName="UMAP")
 #' sce <- runDecontX(sce)
-#' plotDecontXResults(inSCE=sce, reducedDimName="UMAP")
+#' plotDecontXResults(inSCE=sce, reducedDimName="decontX_UMAP")
 #' @export
 plotDecontXResults <- function(inSCE,
                                sample=NULL,
@@ -2421,7 +2447,7 @@ plotDecontXResults <- function(inSCE,
                                violin=TRUE,
                                boxplot=FALSE,
                                dots=TRUE,
-                               reducedDimName=NULL,
+                               reducedDimName="decontX_UMAP",
                                xlab=NULL,
                                ylab=NULL,
                                dim1=NULL,
@@ -2460,6 +2486,11 @@ plotDecontXResults <- function(inSCE,
     sample <- rep(1, ncol(inSCE))
   }
 
+  if (!(reducedDimName %in% reducedDimNames(inSCE))){
+    stop("Specified `reducedDimName` is not found in input
+         SingleCellExperiment object. Please check for spelling errors
+         with reducedDimNames().")
+  }
   samples <- unique(sample)
   sampleVector <- sample
   if (length(samples) > 1) {
