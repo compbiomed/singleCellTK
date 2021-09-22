@@ -38,11 +38,11 @@ To view detailed instructions on how to use these methods, please select 'Intera
 Normalization tab can be opened up by clicking on the **Normalization & Batch Correction** from the top menu and further selecting the **Normalization** sub-tab in the subsequent window as shown below.
 
 
-![](ui_screenshots/normalization/normalization_1_select_menu.png)
+![](ui_screenshots/normalization/normalization_1_select_menu.PNG)
 <br>
 **Normalization tab** is divided up into 4 sections as shown in the screenshot below: <br>
 
-![](ui_screenshots/normalization/normalization_1.png)
+![](ui_screenshots/normalization/normalization_1.PNG)
 <br>
 The section **a** lets you choose a normalization method, whereas the section **b** allows for various options to be modified and selected for a particular normalization method selected from section **a**. The section **c** displays the overall methods/options selected for this instance of normalization process. The section **d** displays the output data type once the normalization is run. This output data type represents the nature of the data that will be output based on the selected options. For example, output data type maybe **transformed** if transformation options are selected including normalization methods, or maybe **scaled** if the **scale** option is selected. The section **c** and **d** update automatically based on normalization method and options selected by the user. <br>
 
@@ -50,7 +50,7 @@ The section **a** lets you choose a normalization method, whereas the section **
 <br>
 **1.** Select a normalization method or select **Custom Normalization** to manually select the options for normalization including transformation, trimming & scaling.<br>
 
-![](ui_screenshots/normalization/normalization_3.png)
+![](ui_screenshots/normalization/normalization_3.PNG)
 <br>
 **2a.** Options when a normalization method from a particular package is selected: <br>
 i. Select the assay from the data to normalize. <br>
@@ -63,7 +63,7 @@ viii: The user-interface displays the selected options or methods based on the u
 ix. The output data type based on the selected user options is displayed. <br>
 x. Click the button to run the normalization process. <br>
 
-![](ui_screenshots/normalization/normalization_4.png)
+![](ui_screenshots/normalization/normalization_4.PNG)
 <br>
 **2b.** Options when a custom normalization is selected: <br>
 i. Select the input data assay to use as an input with selected normalization/transformation options. <br>
