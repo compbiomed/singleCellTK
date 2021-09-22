@@ -73,7 +73,7 @@ shinyPanelFS_DimRed <- fluidPage(
               circle = FALSE,
               inline = TRUE
             )),
-            column(7, fluidRow(h6("the plot highlights the top variable features (can be labeled from the button on the left) with respect to the metrics computed by the selected algorithm"), align="center"))
+            column(7, fluidRow(h6("Scatterplot of features showing the variability versus average expression"), align="center"))
           ),
           hr(),
           br(),
@@ -270,7 +270,7 @@ shinyPanelFS_DimRed <- fluidPage(
                                              circle = FALSE,
                                              inline = TRUE
                                            )),
-                                           column(7, fluidRow(h6("the plot highlights the top variable features (can be labeled from the button on the left) with respect to the metrics computed by the selected algorithm"), align="center"))
+                                           column(7, fluidRow(h6("Scatterplot of cells on a 2D embedding"), align="center"))
                                          ),
                                          hr(),
                                          br(),

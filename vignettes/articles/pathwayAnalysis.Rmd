@@ -53,7 +53,7 @@ The UI is constructed in a sidebar style, where the left-sided sidebar works for
 
 **1. Choose An Algorithm**
 
-![PathwayAlgo](ui_screenshots/pathwayAnalysis/path_ui_algo.PNG)\
+![PathwayAlgo](ui_screenshots/pathwayAnalysis/path_ui_algo.png)\
 
 For running any types of pathway analysis, there are always three essential inputs that users should be sure with.
 

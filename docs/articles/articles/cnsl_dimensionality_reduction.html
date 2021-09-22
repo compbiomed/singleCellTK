@@ -275,10 +275,7 @@
 
       
 
-      </header><link href="cnsl_dimensionality_reduction_files/anchor-sections-1.0/anchor-sections.css" rel="stylesheet">
-<script src="cnsl_dimensionality_reduction_files/anchor-sections-1.0/anchor-sections.js"></script><script src="cnsl_dimensionality_reduction_files/htmlwidgets-1.5.2/htmlwidgets.js"></script><script src="cnsl_dimensionality_reduction_files/plotly-binding-4.9.2.1/plotly.js"></script><script src="cnsl_dimensionality_reduction_files/typedarray-0.1/typedarray.min.js"></script><script src="cnsl_dimensionality_reduction_files/jquery-1.11.3/jquery.min.js"></script><link href="cnsl_dimensionality_reduction_files/crosstalk-1.1.0.1/css/crosstalk.css" rel="stylesheet">
-<script src="cnsl_dimensionality_reduction_files/crosstalk-1.1.0.1/js/crosstalk.min.js"></script><link href="cnsl_dimensionality_reduction_files/plotly-htmlwidgets-css-1.52.2/plotly-htmlwidgets.css" rel="stylesheet">
-<script src="cnsl_dimensionality_reduction_files/plotly-main-1.52.2/plotly-latest.min.js"></script><div class="row">
+      </header><script src="cnsl_dimensionality_reduction_files/header-attrs-2.9/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Dimensionality Reduction</h1>
@@ -295,8 +292,8 @@
 <div id="introduction" class="section level2">
 <h2 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h2>
-<p>Dimensionality reduction algorithms (PCA/ICA &amp; tSNE/UMAP) can be run through the <strong>singleCellTK</strong> toolkit using both interactive shiny application and R console. For the interactive analysis, the toolkit offers a streamlined workflow to both compute metrics for dimensionality reduction and then visualize the results using any of the available interactive plots. For the console analysis, the toolkit offers a single wrapper function <code>runDimensionalityReduction</code> to compute metrics for any of the integrated algorithms and multiple methods to visualize the computed results. <br></p>
-<p>Methods available with the toolkit include <code>PCA</code> from <code>Scater</code> <span class="citation">[1]</span> package, <code>PCA</code>, <code>ICA</code>, <code>tSNE</code> &amp; <code>UMAP</code> from <code>Seurat</code> <span class="citation">[2]</span><span class="citation">[3]</span><span class="citation">[4]</span><span class="citation">[5]</span> package, <code>tSNE</code> from <code>Rtsne</code> <span class="citation">[6]</span><span class="citation">[7]</span> package and <code>UMAP</code> from <code>uwot</code> <span class="citation">[8]</span> package. Visualization options available for users include <code>2D Component Plot</code>, <code>Elbow Plot</code>, <code>JackStraw Plot</code> and <code>Heatmap Plot</code>. A complete list of supported visualization options against each method are specified at the bottom of the tabs below. <br></p>
+<p>Dimensionality reduction algorithms (PCA/ICA) can be run through the <strong>singleCellTK</strong> toolkit using both interactive shiny application and R console. For the interactive analysis, the toolkit offers a streamlined workflow to both compute metrics for dimensionality reduction and then visualize the results using any of the available interactive plots. For the console analysis, the toolkit offers a single wrapper function <code>runDimReduce</code> to compute metrics for any of the integrated algorithms and multiple methods to visualize the computed results. <br></p>
+<p>Methods available with the toolkit include <code>PCA</code> from <code>scater</code> <span class="citation">[1]</span> package and <code>PCA</code> &amp; <code>ICA</code> from <code>Seurat</code> <span class="citation">[2]</span><span class="citation">[3]</span><span class="citation">[4]</span><span class="citation">[5]</span> package. Visualization options available for users include <code>2D Component Plot</code>, <code>Elbow Plot</code>, <code>JackStraw Plot</code> and <code>Heatmap Plot</code>. A complete list of supported visualization options against each method are specified at the bottom of the tabs below. <br></p>
 <p>To view detailed instructions on how to use these methods, please select ‘Interactive Analysis’ for using normalization in shiny application or ‘Console Analysis’ for using these methods on R console from the tabs below: <br></p>
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -311,19 +308,17 @@
 
 <div id="interactive" class="tabcontent">
 <p>In general, both sub-tabs offer options for selection of data items and choice of parameters on the left side, and a visualization panel on the right side of the interface. A detailed workflow guide to run and visualize dimensionality reduction (DR) algorithms is described below: <br><br></p>
-<p><img src="ui_screenshots/dimensionality_reduction/dr_1.png"><br><br> 1. To begin the DR workflow, click on the “Feature Selection &amp; Dimensionality Reduction” tab from the top menu. This workflow assumes that before proceeding towards computation of DR, data has been uploaded, filtered and normalized (and optionally variable features have been identified) through the preceding tabs.<br><br></p>
-<p><img src="ui_screenshots/dimensionality_reduction/dr_2.png"><br><br></p>
+<ol style="list-style-type: decimal">
+<li>To begin the DR workflow, click on the “Feature Selection &amp; Dimensionality Reduction” tab from the top menu. This workflow assumes that before proceeding towards computation of DR, data has been uploaded, filtered and normalized (and optionally variable features have been identified) through the preceding tabs.<br><br>
+</li>
+</ol>
+<p><img src="ui_screenshots/dimensionality_reduction/dr_1.PNG"><br><br></p>
 <ol start="2" style="list-style-type: decimal">
-<li>Select “Dimensionality Reduction” tab.<br><br>
+<li>Select “Dimensionality Reduction” tab:<br><br>
 </li>
 </ol>
-<p><img src="ui_screenshots/dimensionality_reduction/dr_3.png"><br><br></p>
+<p><img src="ui_screenshots/dimensionality_reduction/dr_2.png"><br><br></p>
 <ol start="3" style="list-style-type: decimal">
-<li>Select “PCA/ICA” or “tSNE/UMAP” appropriately. <br><br>
-</li>
-</ol>
-<p><img src="ui_screenshots/dimensionality_reduction/dr_4.png"><br><br></p>
-<ol start="4" style="list-style-type: decimal">
 <li>Select a data item (assay or a feature subset) which should be used for computation. <br><br>
 </li>
 <li>Select an appropriate method for dimensionality reduction. Available choices are “PCA” from <code>scran</code> package and “PCA” &amp; “ICA” from <code>seurat</code> package. <br><br>
@@ -334,38 +329,30 @@
 </li>
 <li>Check the boxes against the visualizations that should be plotted after computation of reducedDims. This visualizations become available after computation on the right panel. <br><br>
 </li>
-<li>If “Compute HeatmapPlot?” is selected in step 8, you can specify how many features should be plotted in the heatmap by default. This setting can be changed later as well from the visualization panel on the right. <br><br>
+<li>If “Compute HeatmapPlot?” is selected in step 8, you can specify how many features should be plotted in the heatmap by default. These setting can be changed later as well from the visualization panel on the right. <br><br>
 </li>
 <li>Press “Run” to start computation. <br><br>
 </li>
-<li>Once processing is complete, selected visualizations appear in this panel. <br><br><img src="ui_screenshots/dimensionality_reduction/dr_5.png"><br><br>
+</ol>
+<p><img src="ui_screenshots/dimensionality_reduction/dr_4.png"><br><br></p>
+<ol start="10" style="list-style-type: decimal">
+<li>Once processing is complete, selected visualizations appear in this panel. A 2D plot between the top two components is computed for all methods <br><br>
 </li>
-<li>A 2D plot between the top two components is computed for all methods.<br><br><img src="ui_screenshots/dimensionality_reduction/dr_6.png"><br><br>
+</ol>
+<p><img src="ui_screenshots/dimensionality_reduction/dr_6.png"><br><br></p>
+<ol start="11" style="list-style-type: decimal">
+<li>Elbow plot (optional) can be computed against PCA methods. It shows a relationship between the increasing number of components and the standard deviation, where components before an elbow break should be selected for downstream analysis. <br><br>
 </li>
-<li><p>Elbow plot (optional) can be computed against PCA methods. It shows a relationship between the increasing number of components and the standard deviation, where components before an elbow break should be selected for downstream analysis. <br><br><img src="ui_screenshots/dimensionality_reduction/dr_7.png"><br><br></p></li>
+</ol>
+<p><img src="ui_screenshots/dimensionality_reduction/dr_7a.png"><br><br></p>
+<ol start="12" style="list-style-type: decimal">
 <li>Heatmap plot panel can be used to visualize the features against each of the computed component. <br><br>
 </li>
-<li>Customizations for the heatmap plot can be made by selecting the components that should be selected. Number of columns for visualization can be specified as well for better viewing experience.<br><br><img src="ui_screenshots/dimensionality_reduction/dr_8.png"><br><br>
+</ol>
+<p><img src="ui_screenshots/dimensionality_reduction/dr_7b.png"><br><br></p>
+<ol start="13" style="list-style-type: decimal">
+<li>Customizations for the heatmap plot can be made by selecting the components that should be selected. Number of columns for visualization can be specified as well for better viewing experience.<br><br>
 </li>
-<li>Jackstraw plot can be computed with PCA methods.<br><br><img src="ui_screenshots/dimensionality_reduction/dr_9.png"><br><br>
-</li>
-<li>To compute tSNE or UMAP, select the “tSNE/UMAP” sub-tab from the interface. The steps below are only concerned with the computation of tSNE or UMAP and may vary between both of these methods. <br><br>
-</li>
-<li>Select a data item (assay or feature subset) to use for tSNE/UMAP computation. <br><br>
-</li>
-<li>Select method for tSNE or UMAP computation. <br><br>
-</li>
-<li>Specify the name of the new reducedDim. <br><br>
-</li>
-<li>Specify the number of components to compute with the selected method. Default value is set to <code>10</code>. <br><br>
-</li>
-<li>Specify number of iterations. Default value is set to <code>1000</code>. <br><br>
-</li>
-<li>Set perplexity parameter for tSNE. Default value is set to <code>5</code>. <br><br>
-</li>
-<li>Start processing of the selected method. <br><br>
-</li>
-<li><p>Once computation is complete, a 2D plot between the components can be visualized in this panel.<br><br></p></li>
 </ol>
 <p><em>Note: Some parameters may differ between different methods and may not have been shown here.</em></p>
 <details><summary><b>Visualizations Supported</b></summary><table class="table">
@@ -391,94 +378,51 @@
 <td>no</td>
 <td>yes</td>
 </tr>
-<tr class="odd">
-<td>tSNE</td>
-<td>yes</td>
-<td>no</td>
-<td>no</td>
-<td>no</td>
-</tr>
-<tr class="even">
-<td>UMAP</td>
-<td>yes</td>
-<td>no</td>
-<td>no</td>
-<td>no</td>
-</tr>
 </tbody>
 </table></details>
 </div>
 <div id="console" class="tabcontent">
 <p>In general, the first step is to compute a dimensionality reduction (e.g. PCA) and then the second step is to visualize the computed results. The usage of functions to compute and visualize results is described below.</p>
-<p><strong>1. Compute dimensionality reduction statistics using <code>runDimensionalityReduction</code> wrapper function:</strong></p>
+<p><strong>1. Compute dimensionality reduction statistics using <code>runDimReduce</code> wrapper function:</strong></p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/runDimensionalityReduction.html">runDimensionalityReduction</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"normalizedCounts"</span>, reducedDimName <span class="op">=</span> <span class="st">"redDimPCA"</span>, method <span class="op">=</span> <span class="st">"seuratPCA"</span>, nComponents <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/runDimReduce.html">runDimReduce</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"normalizedCounts"</span>, reducedDimName <span class="op">=</span> <span class="st">"redDimPCA"</span>, method <span class="op">=</span> <span class="st">"seuratPCA"</span>, nComponents <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></code></pre></div>
 <p>To use the function, input a <code>SingleCellExperiment</code> object that contains the data assay and specify the required parameters (to see a complete list of supported parameters and to copy the function call against each method with the supported parameters, please view the ‘Parameters’ heading at the end of this page).</p>
 <div class="offset">
-<details><p><summary><strong>Function Call for Each Method:</strong></summary></p>
-<p><strong><em>scaterPCA</em></strong>:</p>
+<details><summary><strong>Function Call for Each Method:</strong>
+</summary><p><strong><em>scaterPCA</em></strong>:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/runDimensionalityReduction.html">runDimensionalityReduction</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"normalizedCounts"</span>, reducedDimName <span class="op">=</span> <span class="st">"redDimPCA"</span>, method <span class="op">=</span> <span class="st">"scaterPCA"</span>, nComponents <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/runDimReduce.html">runDimReduce</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"normalizedCounts"</span>, reducedDimName <span class="op">=</span> <span class="st">"redDimPCA"</span>, method <span class="op">=</span> <span class="st">"scaterPCA"</span>, nComponents <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></code></pre></div>
 <p><strong><em>seuratPCA</em></strong>:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/runDimensionalityReduction.html">runDimensionalityReduction</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"normalizedCounts"</span>, reducedDimName <span class="op">=</span> <span class="st">"redDimPCA"</span>, method <span class="op">=</span> <span class="st">"seuratPCA"</span>, nComponents <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/runDimReduce.html">runDimReduce</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"normalizedCounts"</span>, reducedDimName <span class="op">=</span> <span class="st">"redDimPCA"</span>, method <span class="op">=</span> <span class="st">"seuratPCA"</span>, nComponents <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></code></pre></div>
 <p><strong><em>seuratICA</em></strong>:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/runDimensionalityReduction.html">runDimensionalityReduction</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"normalizedCounts"</span>, reducedDimName <span class="op">=</span> <span class="st">"redDimICA"</span>, `method` <span class="op">=</span> <span class="st">"seuratICA"</span>, nComponents <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></code></pre></div>
-<p><strong><em>rTSNE</em></strong>:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/runDimensionalityReduction.html">runDimensionalityReduction</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"normalizedCounts"</span>, reducedDimName <span class="op">=</span> <span class="st">"redDimTSNE"</span>, method <span class="op">=</span> <span class="st">"rTSNE"</span>, perplexity <span class="op">=</span> <span class="fl">30</span>, nIterations <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span></code></pre></div>
-<p><strong><em>seuratTSNE</em></strong>:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/runDimensionalityReduction.html">runDimensionalityReduction</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"normalizedCounts"</span>, reducedDimName <span class="op">=</span> <span class="st">"redDimTSNE"</span>, method <span class="op">=</span> <span class="st">"seuratTSNE"</span>, nComponents <span class="op">=</span> <span class="fl">10</span>, useReduction <span class="op">=</span> <span class="st">"pca"</span>, perplexity <span class="op">=</span> <span class="fl">30</span><span class="op">)</span></code></pre></div>
-<p><strong><em>uwotUMAP</em></strong>:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/runDimensionalityReduction.html">runDimensionalityReduction</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"normalizedCounts"</span>, reducedDimName <span class="op">=</span> <span class="st">"redDimUMAP"</span>, method <span class="op">=</span> <span class="st">"uwotUMAP"</span>, nNeighbors <span class="op">=</span> <span class="fl">30</span>, nIterations <span class="op">=</span> <span class="fl">200</span>, minDist <span class="op">=</span> <span class="fl">0.01</span>, alpha <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></code></pre></div>
-<p><strong><em>seuratUMAP</em></strong>:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/runDimensionalityReduction.html">runDimensionalityReduction</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"normalizedCounts"</span>, reducedDimName <span class="op">=</span> <span class="st">"redDimUMAP"</span>, method <span class="op">=</span> <span class="st">"seuratUMAP"</span>, nComponents <span class="op">=</span> <span class="fl">10</span>, useReduction <span class="op">=</span> <span class="st">"pca"</span>, minDist <span class="op">=</span> <span class="fl">0.3</span>, nNeighbors <span class="op">=</span> <span class="fl">30</span>, spread <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/runDimReduce.html">runDimReduce</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"normalizedCounts"</span>, reducedDimName <span class="op">=</span> <span class="st">"redDimICA"</span>, `method` <span class="op">=</span> <span class="st">"seuratICA"</span>, nComponents <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></code></pre></div>
 </details>
 </div>
 <p><br></p>
-<p><strong>2. Visualize the dimensionality reduction results using of the available visualization options.</strong></p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<p><strong>2. Visualize the dimensionality reduction results through a scatterplot:</strong></p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co">#To plot a simple 2D component plot for any of the 4 methods i.e. PCA, ICA, tSNE and UMAP</span>
-<span class="fu"><a href="../../reference/seuratReductionPlot.html">seuratReductionPlot</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useReduction <span class="op">=</span> <span class="st">"pca"</span><span class="op">)</span>
-
-<span class="co">#To visualize a JackStraw plot</span>
-<span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/seuratComputeJackStraw.html">seuratComputeJackStraw</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"scaledCounts"</span><span class="op">)</span>
-<span class="fu"><a href="../../reference/seuratJackStrawPlot.html">seuratJackStrawPlot</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span><span class="op">)</span>
-
-<span class="co">#To visualize heatmap plot</span>
-<span class="fu"><a href="../../reference/seuratComputeHeatmap.html">seuratComputeHeatmap</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"scaledCounts"</span>, useReduction <span class="op">=</span> <span class="st">"pca"</span>, dims <span class="op">=</span> <span class="fl">10</span>, nfeatures <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>
-
-<span class="co">#To visualize ElbowPlot</span>
-<span class="fu"><a href="../../reference/seuratElbowPlot.html">seuratElbowPlot</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, reduction <span class="op">=</span> <span class="st">"pca"</span><span class="op">)</span></code></pre></div>
-<details><summary><b>Example</b></summary><div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<span class="fu"><a href="../../reference/plotDimRed.html">plotDimRed</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useReduction <span class="op">=</span> <span class="st">"redDimPCA"</span>, xAxisLabel <span class="op">=</span> <span class="st">"PC_1"</span>, yAxisLabel <span class="op">=</span> <span class="st">"PC_2"</span><span class="op">)</span></code></pre></div>
+<details><summary><b>Example</b></summary><div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R">  <span class="co"># Load singleCellTK &amp; pbmc3k example data</span>
   <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://compbiomed.github.io/sctk_docs/">singleCellTK</a></span><span class="op">)</span>
   <span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/importExampleData.html">importExampleData</a></span><span class="op">(</span>dataset <span class="op">=</span> <span class="st">"pbmc3k"</span><span class="op">)</span>
   <span class="co"># Perform Normalization</span>
-  <span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/runNormalization.html">runNormalization</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, normalizationMethod <span class="op">=</span> <span class="st">"RC"</span>, useAssay <span class="op">=</span> <span class="st">"counts"</span>, outAssayName <span class="op">=</span> <span class="st">"RCLogScaledCounts"</span>, scale <span class="op">=</span> <span class="cn">TRUE</span>, transformation <span class="op">=</span> <span class="st">"log2"</span>, pseudocountsBeforeTransform <span class="op">=</span> <span class="fl">1</span>, trim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="op">-</span><span class="fl">10</span><span class="op">)</span><span class="op">)</span>
+  <span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/runNormalization.html">runNormalization</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, normalizationMethod <span class="op">=</span> <span class="st">"LogNormalize"</span>, useAssay <span class="op">=</span> <span class="st">"counts"</span>, outAssayName <span class="op">=</span> <span class="st">"LogNormalizedScaledCounts"</span>, scale <span class="op">=</span> <span class="cn">TRUE</span>, trim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="op">-</span><span class="fl">10</span><span class="op">)</span><span class="op">)</span>
+  <span class="co"># Find Variable Features</span>
+  <span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/runFeatureSelection.html">runFeatureSelection</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"counts"</span>, hvgMethod <span class="op">=</span> <span class="st">"vst"</span><span class="op">)</span>
+  <span class="va">HVGs</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/getTopHVG.html">getTopHVG</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, method <span class="op">=</span> <span class="st">"vst"</span>, n <span class="op">=</span> <span class="fl">2000</span><span class="op">)</span>
+  <span class="va">HVGs</span> <span class="op">&lt;-</span> <span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/na.fail.html">na.omit</a></span><span class="op">(</span><span class="va">HVGs</span><span class="op">)</span>
+  <span class="va">tempAssay</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/expData.html">expData</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, assayName <span class="op">=</span> <span class="st">"LogNormalizedScaledCounts"</span><span class="op">)</span><span class="op">[</span><span class="va">HVGs</span>,<span class="op">]</span>
+  <span class="fu"><a href="../../reference/expData.html">expData</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, assayName <span class="op">=</span> <span class="st">"hvg2000"</span>, tag <span class="op">=</span> <span class="st">"hvg"</span>, altExp <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">tempAssay</span>
   <span class="co"># Run PCA</span>
-  <span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/runDimensionalityReduction.html">runDimensionalityReduction</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"RCLogScaledCounts"</span>, reducedDimName <span class="op">=</span> <span class="st">"pca"</span>, method <span class="op">=</span> <span class="st">"seuratPCA"</span>, nComponents <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>
+  <span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/runDimReduce.html">runDimReduce</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"hvg2000"</span>, useAltExp <span class="op">=</span> <span class="st">"hvg2000"</span>, reducedDimName <span class="op">=</span> <span class="st">"redDimPCA"</span>, method <span class="op">=</span> <span class="st">"seuratPCA"</span>, nComponents <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>
   <span class="co"># Plot PCA</span>
-  <span class="fu"><a href="../../reference/seuratReductionPlot.html">seuratReductionPlot</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useReduction <span class="op">=</span> <span class="st">"pca"</span><span class="op">)</span></code></pre></div>
+  <span class="fu"><a href="../../reference/plotDimRed.html">plotDimRed</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useReduction <span class="op">=</span> <span class="st">"redDimPCA"</span>, xAxisLabel <span class="op">=</span> <span class="st">"PC_1"</span>, yAxisLabel <span class="op">=</span> <span class="st">"PC_2"</span><span class="op">)</span></code></pre></div>
 <p><img src="cnsl_dimensionality_reduction_files/figure-html/dm_console_example-1.png" width="700"></p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R">  <span class="co"># Plot ElbowPlot</span>
-  <span class="fu"><a href="../../reference/seuratElbowPlot.html">seuratElbowPlot</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, reduction <span class="op">=</span> <span class="st">"pca"</span><span class="op">)</span></code></pre></div>
-<div id="htmlwidget-d5d45d9a344f8d8bc8cf" style="width:700px;height:432.632880098888px;" class="plotly html-widget"></div>
-<script type="application/json" data-for="htmlwidget-d5d45d9a344f8d8bc8cf">{"x":{"data":[{"x":[1,2,3,4,5,6,7,8,9,10],"y":[5.66151281854267,4.09762511254774,3.11303311996484,2.97185001000318,2.29927422180085,1.92921246811054,1.88394777315483,1.87353015192741,1.84969265061424,1.84113872050835],"text":["Dimension: 1 <br />Standard Deviation: 5.7 <br />Is Significant? ","Dimension: 2 <br />Standard Deviation: 4.1 <br />Is Significant? ","Dimension: 3 <br />Standard Deviation: 3.1 <br />Is Significant? ","Dimension: 4 <br />Standard Deviation: 3 <br />Is Significant? ","Dimension: 5 <br />Standard Deviation: 2.3 <br />Is Significant? ","Dimension: 6 <br />Standard Deviation: 1.9 <br />Is Significant? ","Dimension: 7 <br />Standard Deviation: 1.9 <br />Is Significant? ","Dimension: 8 <br />Standard Deviation: 1.9 <br />Is Significant? ","Dimension: 9 <br />Standard Deviation: 1.8 <br />Is Significant? ","Dimension: 10 <br />Standard Deviation: 1.8 <br />Is Significant? "],"type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(0,0,0,1)","opacity":1,"size":5.66929133858268,"symbol":"circle","line":{"width":1.88976377952756,"color":"rgba(0,0,0,1)"}},"hoveron":"points","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null}],"layout":{"margin":{"t":31.049537260322,"r":9.29846409298464,"b":54.2359216521858,"l":40.5147364051474},"font":{"color":"rgba(0,0,0,1)","family":"","size":18.5969281859693},"xaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[0.55,10.45],"tickmode":"array","ticktext":["2.5","5.0","7.5","10.0"],"tickvals":[2.5,5,7.5,10],"categoryorder":"array","categoryarray":["2.5","5.0","7.5","10.0"],"nticks":null,"ticks":"outside","tickcolor":"rgba(0,0,0,1)","ticklen":4.64923204649232,"tickwidth":0.66417600664176,"showticklabels":true,"tickfont":{"color":"rgba(0,0,0,1)","family":"","size":15.9402241594022},"tickangle":-0,"showline":true,"linecolor":"rgba(0,0,0,1)","linewidth":0.66417600664176,"showgrid":false,"gridcolor":null,"gridwidth":0,"zeroline":false,"anchor":"y","title":{"text":"PC","font":{"color":"rgba(0,0,0,1)","family":"","size":18.5969281859693}},"hoverformat":".2f"},"yaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[1.65012001560664,5.85253152344439],"tickmode":"array","ticktext":["2","3","4","5"],"tickvals":[2,3,4,5],"categoryorder":"array","categoryarray":["2","3","4","5"],"nticks":null,"ticks":"outside","tickcolor":"rgba(0,0,0,1)","ticklen":4.64923204649232,"tickwidth":0.66417600664176,"showticklabels":true,"tickfont":{"color":"rgba(0,0,0,1)","family":"","size":15.9402241594022},"tickangle":-0,"showline":true,"linecolor":"rgba(0,0,0,1)","linewidth":0.66417600664176,"showgrid":false,"gridcolor":null,"gridwidth":0,"zeroline":false,"anchor":"x","title":{"text":"Standard Deviation","font":{"color":"rgba(0,0,0,1)","family":"","size":18.5969281859693}},"hoverformat":".2f"},"shapes":[{"type":"rect","fillcolor":null,"line":{"color":null,"width":0,"linetype":[]},"yref":"paper","xref":"paper","x0":0,"x1":1,"y0":0,"y1":1}],"showlegend":false,"legend":{"bgcolor":null,"bordercolor":null,"borderwidth":0,"font":{"color":"rgba(0,0,0,1)","family":"","size":15.9402241594022}},"hovermode":"closest","barmode":"relative"},"config":{"doubleClick":"reset","showSendToCloud":false},"source":"A","attrs":{"147648413a17":{"x":{},"y":{},"type":"scatter"}},"cur_data":"147648413a17","visdat":{"147648413a17":["function (y) ","x"]},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.2,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script><div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R">  <span class="co"># Compute &amp; plot JackStrawPlot</span>
-  <span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/seuratComputeJackStraw.html">seuratComputeJackStraw</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"RCLogScaledCounts"</span><span class="op">)</span>
-  <span class="fu"><a href="../../reference/seuratJackStrawPlot.html">seuratJackStrawPlot</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span><span class="op">)</span></code></pre></div>
-<p><img src="cnsl_dimensionality_reduction_files/figure-html/dm_console_example-3.png" width="700"></p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R">  <span class="co"># Plot Heatmap</span>
-  <span class="fu"><a href="../../reference/seuratComputeHeatmap.html">seuratComputeHeatmap</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"RCLogScaledCounts"</span>, useReduction <span class="op">=</span> <span class="st">"pca"</span>, dims <span class="op">=</span> <span class="fl">10</span>, nfeatures <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></code></pre></div>
-<p><img src="cnsl_dimensionality_reduction_files/figure-html/dm_console_example-4.png" width="700"></p>
-</details><details><summary><b>Parameters</b></summary><p>The <code>runDimensionalityReduction</code> function takes in different parameters based on the specific method used for dimensionality reduction. See below for a complete description of parameters for each individual method in the <code>runDimensionalityReduction</code> function:</p>
+</details><details><summary><b>Parameters</b></summary><p>The <code>runDimReduce</code> function takes in different parameters based on the specific method used for dimensionality reduction. See below for a complete description of parameters for each individual method in the <code>runDimReduce</code> function:</p>
 <table class="table">
 <colgroup>
 <col width="50%">
@@ -492,82 +436,40 @@
 <tr class="odd">
 <td>scaterPCA</td>
 <td>
-<code>inSCE</code> (input <code>SingleCellExperiment</code> object), <code>useAssay</code> (name of the assay to use), <code>reducedDimName</code> (name of the computed reducedDim), <code>method</code> = “scaterPCA”, <code>nComponents</code> (number of components to compute, default is 10)</td>
+<code>inSCE</code> (input <code>SingleCellExperiment</code> object), <code>useAssay</code> (name of the assay to use), <code>useAltExp</code> (name of the altExp slot if you want to compute on an altExp/subset/variable features instead of the main assay), <code>reducedDimName</code> (name of the computed reducedDim), <code>method</code> = “scaterPCA,” <code>nComponents</code> (number of components to compute, default is 10)</td>
 </tr>
 <tr class="even">
 <td>seuratPCA</td>
 <td>
-<code>inSCE</code> (input <code>SingleCellExperiment</code> object), <code>useAssay</code> (name of the assay to use), <code>reducedDimName</code> (name of the computed reducedDim), <code>method</code> = “seuratPCA”, <code>nComponents</code> (number of components to compute, default is 10)</td>
+<code>inSCE</code> (input <code>SingleCellExperiment</code> object), <code>useAssay</code> (name of the assay to use), <code>useAltExp</code> (name of the altExp slot if you want to compute on an altExp/subset/variable features instead of the main assay), <code>reducedDimName</code> (name of the computed reducedDim), <code>method</code> = “seuratPCA,” <code>nComponents</code> (number of components to compute, default is 10)</td>
 </tr>
 <tr class="odd">
 <td>seuratICA</td>
 <td>
-<code>inSCE</code> (input <code>SingleCellExperiment</code> object), <code>useAssay</code> (name of the assay to use), <code>reducedDimName</code> (name of the computed reducedDim), <code>method</code> = “seuratICA”, <code>nComponents</code> (number of components to compute, default is 10)</td>
-</tr>
-<tr class="even">
-<td>rTSNE</td>
-<td>
-<code>inSCE</code> (input <code>SingleCellExperiment</code> object), <code>useAssay</code> (name of the assay to use), <code>reducedDimName</code> (name of the computed reducedDim), <code>method</code> = “rTSNE”, <code>perplexity</code> (adjust the perplexity tuneable parameter for the underlying tSNE call, default is <code>30</code>), <code>nIterations</code> (maximum iterations, default is 1000)</td>
-</tr>
-<tr class="odd">
-<td>seuratTSNE</td>
-<td>
-<code>inSCE</code> (input <code>SingleCellExperiment</code> object), <code>useAssay</code> (name of the assay to use), <code>reducedDimName</code> (name of the computed reducedDim), <code>method</code> = “seuratTSNE”, <code>nComponents</code>(number of components to use from pca/ica, default is 10), <code>useReduction</code> (either <code>pca</code> or <code>ica</code>) and <code>perplexity</code> (adjust the perplexity tuneable parameter for the underlying tSNE call, default is 30)</td>
-</tr>
-<tr class="even">
-<td>uwotUMAP</td>
-<td>
-<code>inSCE</code> (input <code>SingleCellExperiment</code> object), <code>useAssay</code> (name of the assay to use), <code>reducedDimName</code> (name of the computed reducedDim), <code>method</code> = “uwotUMAP”, <code>nNeighbors</code> (size of local neighborhood used for manifold approximation, default is 30), <code>nIterations</code> (number of iterations performed, default is 200), <code>minDist</code> (minimum distance between embedded points, default is 0.01) and <code>alpha</code> (initial value of learning rate, default is 1)</td>
-</tr>
-<tr class="odd">
-<td>seuratUMAP</td>
-<td>
-<code>inSCE</code> (input <code>SingleCellExperiment</code> object), <code>useAssay</code> (name of the assay to use), <code>reducedDimName</code> (name of the computed reducedDim), <code>method</code> = “seuratUMAP”, <code>nComponents</code> (number of components to use from pca/ica, default is 10), <code>useReduction</code> (either <code>pca</code> or <code>ica</code>), <code>minDist</code> (minimum distance between embedded points, default is 0.3), <code>nNeighbors</code> (size of local neighborhood, default is 30) and <code>spread</code> (effective scale of embedded points, default is 1)</td>
+<code>inSCE</code> (input <code>SingleCellExperiment</code> object), <code>useAssay</code> (name of the assay to use), <code>useAltExp</code> (name of the altExp slot if you want to compute on an altExp/subset/variable features instead of the main assay), <code>reducedDimName</code> (name of the computed reducedDim), <code>method</code> = “seuratICA,” <code>nComponents</code> (number of components to compute, default is 10)</td>
 </tr>
 </tbody>
-</table></details><details><summary><b>Individual Functions</b></summary><p>While the <code>runDimensionalityReduction</code> wrapper function can be used for all dimensionality reduction algorithms including PCA/ICA &amp; additionally for tSNE/UMAP, separate functions are also available for all of the included methods. The following functions can be used for specific methods:</p>
+</table></details><details><summary><b>Individual Functions</b></summary><p>While the <code>runDimReduce</code> wrapper function can be used for all dimensionality reduction algorithms including PCA/ICA &amp; additionally for tSNE/UMAP, separate functions are also available for all of the included methods. The following functions can be used for specific methods:</p>
  <style>
 div.offset { background-color:inherit ; border-radius: 5px; margin-left: 15px;}
 </style>
 <div class="offset">
-<details><p><summary><code>PCA</code> from <strong>Seurat</strong> package:</summary></p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<details><summary><code>PCA</code> from <strong>Seurat</strong> package:
+</summary><div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R">  <span class="co"># Recommended to find variable features before running seuratPCA</span>
   <span class="co"># sce &lt;- seuratFindHVG(inSCE = sce, useAssay = "seuratScaledData")</span>
   <span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/seuratPCA.html">seuratPCA</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"seuratScaledData"</span>, reducedDimName <span class="op">=</span> <span class="st">"seuratPCA"</span>, nPCs <span class="op">=</span> <span class="fl">20</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 <p>The parameters to the above function include: <br><br><code>inSCE</code>: an input <code>SingleCellExperiment</code> object <br><code>useAssay</code>: name of the assay to use for PCA computation <br><code>reducedDimName</code>: name of the computed PCA reducedDim <br><code>nPCs</code>: a numeric value indicating the number of components to compute <br><code>verbose</code>: a logical value indicating if progress should be printed <br><br></p>
-</details><details><p><summary><code>ICA</code> from <strong>Seurat</strong> package:</summary></p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+</details><details><summary><code>ICA</code> from <strong>Seurat</strong> package:
+</summary><div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R">  <span class="co"># Recommended to find variable features before running seuratICA</span>
   <span class="co"># sce &lt;- seuratFindHVG(inSCE = sce, useAssay = "seuratScaledData")</span>
   <span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/seuratICA.html">seuratICA</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"seuratScaledData"</span>, reducedDimName <span class="op">=</span> <span class="st">"seuratICA"</span>, nics <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></code></pre></div>
 <p>The parameters to the above function include: <br><br><code>inSCE</code>: an input <code>SingleCellExperiment</code> object <br><code>useAssay</code>: name of the assay to use for ICA computation <br><code>reducedDimName</code>: name of the computed ICA reducedDim <br><code>nics</code>: a numeric value indicating the number of components to compute <br></p>
-</details><details><p><summary><code>PCA</code> from <strong>Scater</strong> package:</summary></p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+</details><details><summary><code>PCA</code> from <strong>Scater</strong> package:
+</summary><div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R">  <span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/scaterPCA.html">scaterPCA</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"logcounts"</span>, reducedDimName <span class="op">=</span> <span class="st">"PCA"</span>, ndim <span class="op">=</span> <span class="fl">50</span>, scale <span class="op">=</span> <span class="cn">TRUE</span>, ntop <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></code></pre></div>
 <p>The parameters to the above function include: <br><br><code>inSCE</code>: an input <code>SingleCellExperiment</code> object <br><code>useAssay</code>: name of the assay to use for PCA computation <br><code>reducedDimName</code>: name of the computed PCA reducedDim <br><code>ndim</code>: number of principal components to obtain from the PCA computation <br><code>scale</code>: logical value indicating whether to standardize the expression values <br><code>ntop</code>: number of top features to use as a further variable feature selection <br><br></p>
-</details><details><p><summary><code>TSNE</code> from Rtsne package:</summary></p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
-<code class="sourceCode R">  <span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/getTSNE.html">getTSNE</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"logcounts"</span>, reducedDimName <span class="op">=</span> <span class="st">"TSNE"</span>, nIterations <span class="op">=</span> <span class="fl">1000</span>, perplexity <span class="op">=</span> <span class="fl">30</span>, run_pca <span class="op">=</span> <span class="cn">TRUE</span>, ntop <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></code></pre></div>
-<p>The parameters to the above function include: <br><br><code>inSCE</code>: an input <code>SingleCellExperiment</code> object <br><code>useAssay</code>: name of the assay to use for normalization <br><code>reducedDimName</code>: name of the computed PCA reducedDim <br><code>nIterations</code>: maximum iterations <br><code>perplexity</code>: perplexity parameter <br><code>run_pca</code>: logical value indicating if tSNE should be run on PCA components <br><code>ntop</code>: number of top features to use as a further variable feature selection <br><br></p>
-</details><details><p><summary><code>TSNE</code> from Seurat package:</summary></p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
-<code class="sourceCode R">  <span class="co"># Recommended to find variable features &amp; compute PCA before running seuratRunTSNE</span>
-  <span class="co"># sce &lt;- seuratFindHVG(inSCE = sce, useAssay = "seuratScaledData")</span>
-  <span class="co"># sce &lt;- seuratPCA(inSCE = sce, useAssay = "seuratScaledData", reducedDimName = "pca", nPCs = 20, verbose = TRUE)</span>
-  <span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/seuratRunTSNE.html">seuratRunTSNE</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useReduction <span class="op">=</span> <span class="st">"pca"</span>, reducedDimName <span class="op">=</span> <span class="st">"seuratTSNE"</span>, dims <span class="op">=</span> <span class="fl">10</span>, perplexity <span class="op">=</span> <span class="fl">30</span><span class="op">)</span></code></pre></div>
-<p>The parameters to the above function include: <br><br><code>inSCE</code>: an input <code>SingleCellExperiment</code> object <br><code>useReduction</code>: either “pca” or “ica” previously computed in the input object <br><code>reducedDimName</code>: name of the computed tSNE reducedDim <br><code>dims</code>: number of components to use from the <code>useReduction</code> parameter <br><code>perplexity</code>: perplexity parameter <br><br></p>
-</details><details><p><summary><code>UMAP</code> from uwot package:</summary></p>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
-<code class="sourceCode R">  <span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/getUMAP.html">getUMAP</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"counts"</span>, reducedDimName <span class="op">=</span> <span class="st">"UMAP"</span>, logNorm <span class="op">=</span> <span class="cn">TRUE</span>, nNeighbors <span class="op">=</span> <span class="fl">30</span>, alpha <span class="op">=</span> <span class="fl">1</span>, nIterations <span class="op">=</span> <span class="fl">200</span>, minDist <span class="op">=</span> <span class="fl">0.01</span>, spread <span class="op">=</span> <span class="fl">1</span>, pca <span class="op">=</span> <span class="cn">TRUE</span>, initialDims <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></code></pre></div>
-<p>The parameters to the above function include: <br><br><code>inSCE</code>: an input <code>SingleCellExperiment</code> object <br><code>useAssay</code>: assay to use for UMAP computation <br><code>reducedDimName</code>: a name to store the results of the dimension reduction coordinates obtained from this method <br><code>logNorm</code>: whether the counts will need to be log-normalized prior to generating the UMAP <br><code>nNeighbors</code>: size of local neighborhood used for manifold approximation <br><code>nIterations</code>: number of iterations performed during layout optimization <br><code>alpha</code>: initial value of “learning rate” of layout optimization <br><code>minDist</code>: effective minimum distance between embedded points <br><code>spread</code>: effective scale of embedded points <br><code>pca</code>: logical value indicating whether to perform dimension reduction with PCA before UMAP <br><code>initialDims</code>: number of dimensions from PCA to use as input in UMAP <br><br></p>
-</details><details><p><summary><code>UMAP</code> from Seurat package:</summary></p>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
-<code class="sourceCode R">  <span class="co"># Recommended to find variable features &amp; compute PCA before running seuratRunUMAP</span>
-  <span class="co"># sce &lt;- seuratFindHVG(inSCE = sce, useAssay = "seuratScaledData")</span>
-  <span class="co"># sce &lt;- seuratPCA(inSCE = sce, useAssay = "seuratScaledData", reducedDimName = "pca", nPCs = 20, verbose = TRUE)</span>
-  <span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/seuratRunUMAP.html">seuratRunUMAP</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useReduction <span class="op">=</span> <span class="st">"pca"</span>, reducedDimName <span class="op">=</span> <span class="st">"seuratUMAP"</span>, dims <span class="op">=</span> <span class="fl">10</span>, minDist <span class="op">=</span> <span class="fl">0.3</span>, nNeighbors <span class="op">=</span> <span class="fl">30</span>, spread <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></code></pre></div>
-<p>The parameters to the above function include: <br><br><code>inSCE</code>: an input <code>SingleCellExperiment</code> object <br><code>useReduction</code>: either “pca” or “ica” previously stored in the input object <br><code>reducedDimName</code>: a name to store the results of the dimension reduction coordinates obtained from this method <br><code>dims</code>: number of dimensions to use from <code>useReduction</code> parameter <br><code>minDist</code>: effective minimum distance between embedded points <br><code>nNeighbors</code>: size of local neighborhood used for manifold approximation <br><code>spread</code>: effective scale of embedded points <br></p>
 </details>
 </div>
     </details><details><summary><b>Visualizations Supported</b></summary><table class="table">
@@ -593,20 +495,6 @@ div.offset { background-color:inherit ; border-radius: 5px; margin-left: 15px;}
 <td>no</td>
 <td>yes</td>
 </tr>
-<tr class="odd">
-<td>tSNE</td>
-<td>yes</td>
-<td>no</td>
-<td>no</td>
-<td>no</td>
-</tr>
-<tr class="even">
-<td>UMAP</td>
-<td>yes</td>
-<td>no</td>
-<td>no</td>
-<td>no</td>
-</tr>
 </tbody>
 </table></details>
 </div>
@@ -617,30 +505,26 @@ document.getElementById("ia-button").click();
 <div id="references" class="section level2 unnumbered">
 <h2 class="hasAnchor">
 <a href="#references" class="anchor"></a>References</h2>
-<div id="refs" class="references">
-<div id="ref-McCarthy2017">
-<p>[1] D. J. McCarthy, K. R. Campbell, A. T. Lun, and Q. F. Wills, “Scater: Pre-processing, quality control, normalization and visualization of single-cell RNA-seq data in R,” <em>Bioinformatics</em>, vol. 33, no. 8, pp. 1179–1186, Apr. 2017, doi: <a href="https://doi.org/10.1093/bioinformatics/btw777">10.1093/bioinformatics/btw777</a>.</p>
+<div id="refs" class="references csl-bib-body">
+<div id="ref-McCarthy2017" class="csl-entry">
+<div class="csl-left-margin">[1] </div>
+<div class="csl-right-inline">D. J. McCarthy, K. R. Campbell, A. T. L. Lun, and Q. F. Wills, <span>“<span class="nocase">Scater: Pre-processing, quality control, normalization and visualization of single-cell RNA-seq data in R</span>,”</span> <em>Bioinformatics</em>, vol. 33, no. 8, pp. 1179–1186, Apr. 2017, doi: <a href="https://doi.org/10.1093/bioinformatics/btw777">10.1093/bioinformatics/btw777</a>.</div>
 </div>
-<div id="ref-Butler2018">
-<p>[2] A. Butler, P. Hoffman, P. Smibert, E. Papalexi, and R. Satija, “Integrating single-cell transcriptomic data across different conditions, technologies, and species,” <em>Nature Biotechnology</em>, vol. 36, no. 5, pp. 411–420, Jun. 2018, doi: <a href="https://doi.org/10.1038/nbt.4096">10.1038/nbt.4096</a>.</p>
+<div id="ref-Butler2018" class="csl-entry">
+<div class="csl-left-margin">[2] </div>
+<div class="csl-right-inline">A. Butler, P. Hoffman, P. Smibert, E. Papalexi, and R. Satija, <span>“<span class="nocase">Integrating single-cell transcriptomic data across different conditions, technologies, and species</span>,”</span> <em>Nature Biotechnology</em>, vol. 36, no. 5, pp. 411–420, Jun. 2018, doi: <a href="https://doi.org/10.1038/nbt.4096">10.1038/nbt.4096</a>.</div>
 </div>
-<div id="ref-Stuart2019">
-<p>[3] T. Stuart <em>et al.</em>, “Comprehensive Integration of Single-Cell Data,” <em>Cell</em>, vol. 177, no. 7, pp. 1888–1902.e21, Jun. 2019, doi: <a href="https://doi.org/10.1016/j.cell.2019.05.031">10.1016/j.cell.2019.05.031</a>.</p>
+<div id="ref-Stuart2019" class="csl-entry">
+<div class="csl-left-margin">[3] </div>
+<div class="csl-right-inline">T. Stuart <em>et al.</em>, <span>“<span class="nocase">Comprehensive Integration of Single-Cell Data</span>,”</span> <em>Cell</em>, vol. 177, no. 7, pp. 1888–1902.e21, Jun. 2019, doi: <a href="https://doi.org/10.1016/j.cell.2019.05.031">10.1016/j.cell.2019.05.031</a>.</div>
 </div>
-<div id="ref-Satija2017">
-<p>[4] R. Satija, J. A. Farrell, D. Gennert, A. F. Schier, and A. Regev, “Spatial reconstruction of single-cell gene expression data,” <em>Nature Biotechnology</em>, vol. 33, pp. 495–502, 2015, doi: <a href="https://doi.org/10.1038/nbt.3192">10.1038/nbt.3192</a>.</p>
+<div id="ref-Satija2017" class="csl-entry">
+<div class="csl-left-margin">[4] </div>
+<div class="csl-right-inline">R. Satija, J. A. Farrell, D. Gennert, A. F. Schier, and A. Regev, <span>“Spatial reconstruction of single-cell gene expression data,”</span> <em>Nature Biotechnology</em>, vol. 33, pp. 495–502, 2015, doi: <a href="https://doi.org/10.1038/nbt.3192">10.1038/nbt.3192</a>.</div>
 </div>
-<div id="ref-Hao2021">
-<p>[5] Y. Hao <em>et al.</em>, “Integrated analysis of multimodal single-cell data,” <em>Cell</em>, 2021, doi: <a href="https://doi.org/10.1016/j.cell.2021.04.048">10.1016/j.cell.2021.04.048</a>.</p>
-</div>
-<div id="ref-Maaten2014">
-<p>[6] L. van der Maaten, “Accelerating t-sne using tree-based algorithms,” <em>Journal of Machine Learning Research</em>, vol. 15, pp. 3221–3245, 2014.</p>
-</div>
-<div id="ref-Maaten2008">
-<p>[7] L. van der Maaten and G. Hinton, “Visualizing high-dimensional data using t-sne,” <em>Journal of Machine Learning Research</em>, vol. 9, pp. 2579–2605, 2008.</p>
-</div>
-<div id="ref-Melville2020">
-<p>[8] J. Melville, <em>Uwot: The uniform manifold approximation and projection (umap) method for dimensionality reduction</em>. 2020.Available: <a href="https://CRAN.R-project.org/package=uwot">https://CRAN.R-project.org/package=uwot</a></p>
+<div id="ref-Hao2021" class="csl-entry">
+<div class="csl-left-margin">[5] </div>
+<div class="csl-right-inline">Y. Hao <em>et al.</em>, <span>“Integrated analysis of multimodal single-cell data,”</span> <em>Cell</em>, 2021, doi: <a href="https://doi.org/10.1016/j.cell.2021.04.048">10.1016/j.cell.2021.04.048</a>.</div>
 </div>
 </div>
 </div>

@@ -268,7 +268,7 @@ shinyServer(function(input, output, session) {
       updateSelectInputTag(session, "assaySelectFS_Norm", recommended = c("raw"))
     }
     else{
-      updateSelectInputTag(session, "assaySelectFS_Norm", recommended = c("transformed", "normalized", "scaled"))
+      updateSelectInputTag(session, "assaySelectFS_Norm", recommended = c("transformed", "normalized"))
     }
     updateSelectInputTag(session, "filterAssaySelect", choices = currassays)
     updateSelectInputTag(session, "qcAssaySelect", recommended = "raw")
@@ -2735,7 +2735,7 @@ shinyServer(function(input, output, session) {
                 circle = FALSE,
                 inline = TRUE
               )),
-              column(6, fluidRow(h6("information"), align = "center"))
+              column(6, fluidRow(h6("Heatmaps of the top features correlated with each component"), align = "center"))
             ),
             hr(),
             br(),
@@ -2869,7 +2869,7 @@ shinyServer(function(input, output, session) {
                                                                   circle = FALSE,
                                                                   inline = TRUE
                                                                 )),
-                                                                column(6, fluidRow(h6("information"), align = "center"))
+                                                                column(6, fluidRow(h6("Scatterplot of cells on selected components from a dimensionality reduction"), align = "center"))
                                                               ),
                                                               hr(),
                                                               br(),
