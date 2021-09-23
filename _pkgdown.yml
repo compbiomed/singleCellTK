@@ -83,18 +83,38 @@ reference:
 - title: "Find Marker"
 - contents:
   - findMarkerDiffExp
+  - findMarkerTopTable
   - plotMarkerDiffExp
+- title: "Enrichment & Pathway Analysis"
+- contents:
+  - getMSigDBTable
+  - enrichRSCE
+  - runGSVA
+  - runVAM
 - title: "Visualization"
 - contents:
   - starts_with("plot")
+- title: "Report Generation"
+- contents:
+  - starts_with("report")
 - title: "Exporting Results"
 - contents:
   - starts_with("export")
+- title: "Datasets"
+- contents:
+  - mouseBrainSubsetSCE
+  - sceBatches
+  - MitoGenes
+  - msigdb_table
+  - scExample
+  - SEG
 - title: "Other Data processing"
 - contents:
   - combineSCE
   - convertSCEToSeurat
   - convertSeuratToSCE
+  - convertGeneIDs
+  - detectCellOutlier
   - subsetSCECols
   - subsetSCERows
   - dedupRowNames
@@ -143,6 +163,8 @@ navbar:
             href: articles/articles/cnsl_feature_selection.html
           - text: "Dimensionality Reduction"
             href: articles/articles/cnsl_dimensionality_reduction.html
+          - text: "2D Embedding"
+            href: articles/articles/cnsl_2d_embedding.html
         - text: "Clustering"
           href: articles/articles/clustering.html
         - text: "Differential Expression & Cell Type Labeling"
@@ -155,10 +177,10 @@ navbar:
               href: articles/articles/cell_type_labeling.html
         - text: "Pathway & Enrichment Analysis"
           menu:
-            - text: "GSVA"
-              href: articles/articles/cnsl_gsva.html
             - text: "EnrichR"
               href: articles/articles/cnsl_enrichR.html
+            - text: "Pathway Analysis"
+              href: articles/articles/pathwayAnalysis.html
         - text: "Curated Workflows"
           menu:
             - text: "Seurat"
