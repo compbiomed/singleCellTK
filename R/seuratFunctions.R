@@ -213,6 +213,9 @@ seuratFindHVG <- function(inSCE, useAssay = "counts",
 #' Default \code{seuratPCA}.
 #' @param nPCs numeric value of how many components to compute. Default
 #' \code{20}.
+#' @param features Specify the feature names or rownames which should be used
+#'  for computation of PCA. Default is \code{NULL} which will use the previously
+#'  stored variable features.
 #' @param verbose Logical value indicating if informative messages should
 #'  be displayed. Default is \code{TRUE}.
 #' @examples
@@ -228,10 +231,10 @@ seuratFindHVG <- function(inSCE, useAssay = "counts",
 #' @export
 #' @importFrom SingleCellExperiment reducedDim<-
 seuratPCA <- function(inSCE, useAssay = "seuratScaledData",
-                      reducedDimName = "seuratPCA", nPCs = 20, verbose = TRUE) {
+                      reducedDimName = "seuratPCA", nPCs = 20, features = NULL,  verbose = TRUE) {
   seuratObject <- Seurat::RunPCA(convertSCEToSeurat(inSCE,
                                                     scaledAssay = useAssay),
-                                 npcs = as.double(nPCs), verbose = verbose)
+                                 npcs = as.double(nPCs), verbose = verbose, features = features)
   inSCE <- .addSeuratToMetaDataSCE(inSCE, seuratObject)
 
   temp <- seuratObject@reductions$pca@cell.embeddings

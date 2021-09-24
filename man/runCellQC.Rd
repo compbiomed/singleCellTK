@@ -7,7 +7,7 @@
 runCellQC(
   inSCE,
   algorithms = c("QCMetrics", "scDblFinder", "cxds", "bcds", "cxds_bcds_hybrid",
-    "scrublet", "doubletFinder", "decontX"),
+    "decontX"),
   sample = NULL,
   collectionName = NULL,
   geneSetList = NULL,

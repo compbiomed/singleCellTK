@@ -432,6 +432,14 @@ singularity run --home=/PathToSanitizedHome \ ### this also works for 'docker ru
 <td>-L, –subTitle</td>
 <td>The subtitle used in the cell and droplet QC HTML report. Default is None. The subtitle can contain information of the sample, like sample name, etc. If -S is set as TRUE, the length of subsitle should be the same as the length of samples. If -S is set as FALSE, the length of subtitle should be one or NULL</td>
 </tr>
+<tr class="even">
+<td>-M, –detectMitoLevel</td>
+<td>Detect mitochondrial gene expression level. If TRUE, the pipeline will examinate mito gene expression level automatically without the need of importing user defined gmt file. Default is TRUE</td>
+</tr>
+<tr class="odd">
+<td>-E, –mitoType</td>
+<td>Type of mitochondrial gene set to be loaded when –detectMitoLevel is set to TRUE. Possible choices are: ‘human-ensemble’, ‘human-symbol’, ‘human-entrez’, ‘human-ensemble_transcriptID’, ‘mouse-ensemble’, ‘mouse-symbol’, ‘mouse-entrez’ and ‘mouse-ensemble_transcriptID’. They consists of two parts: species and gene id type, which are connected by ‘-’</td>
+</tr>
 </tbody>
 </table>
 </div>
