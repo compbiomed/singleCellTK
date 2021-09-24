@@ -56,7 +56,7 @@ colData(pbmc4k.droplet)$sample <- rep("pbmc4k", ncol(colData(pbmc4k.droplet)))
 pbmc4k.droplet <- pbmc4k.droplet[, sample(colnames(pbmc4k.droplet), 60000)]
 ```
 
-singleCellTK also supports the importing of single-cell data from the following platforms: [10X CellRanger](https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/what-is-cell-ranger), [STARSolo](https://github.com/alexdobin/STAR/blob/master/docs/STARsolo.md), [BUSTools](https://www.kallistobus.tools/), [SEQC](https://github.com/ambrosejcarr/seqc), [DropEST](https://github.com/hms-dbmi/dropEst), and [AnnData](https://github.com/theislab/anndata). To load your own input data, please refer [Import data into SCTK](./cnsl_import_scRNAseq_data_as_SCE.html) for deailed instruction. 
+singleCellTK also supports the importing of single-cell data from the following platforms: [10X CellRanger](https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/what-is-cell-ranger), [STARSolo](https://github.com/alexdobin/STAR/blob/master/docs/STARsolo.md), [BUSTools](https://www.kallistobus.tools/), [SEQC](https://github.com/ambrosejcarr/seqc), [DropEST](https://github.com/hms-dbmi/dropEst), and [AnnData](https://github.com/theislab/anndata). To load your own input data, please refer [Import data into SCTK](import_data.html) for deailed instruction. 
 
 ### runDropletQC
 
