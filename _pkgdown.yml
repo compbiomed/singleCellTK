@@ -3,7 +3,10 @@ template:
     bootswatch: yeti
 
 reference:
-- title: "Importing scRNA-seq data"
+- title: "Start the Shiny APP"
+- contents:
+  - singleCellTK
+- title: "Importing scRNA-seq Data"
 - contents:
   - starts_with("import")
   - readSingleCellMatrix
@@ -11,6 +14,7 @@ reference:
 - contents:
   - runCellQC
   - runDropletQC
+  - runPerCellQC
 - title: "Decontamination"
 - contents:
   - runDecontX
@@ -47,12 +51,14 @@ reference:
   - plotBatchVariance
 - title: "Feature Selection"
 - contents:
+  - runFeatureSelection
   - scranModelGeneVar
   - seuratFindHVG
   - getTopHVG
   - seuratPlotHVG
-- title: "Dimensionality Reduction"
+- title: "Dimensionality Reduction & Embedding"
 - contents:
+  - runDimReduce
   - scaterPCA
   - getUMAP
   - getTSNE
@@ -60,7 +66,6 @@ reference:
   - seuratPCA
   - seuratRunUMAP
   - seuratRunTSNE
-  - runDimReduce
   - plotSCEDimReduceColData
   - plotSCEDimReduceFeatures
 - title: "Clustering"
@@ -80,17 +85,26 @@ reference:
   - plotDEGRegression
   - plotDEGHeatmap
   - plotMASTThresholdGenes
+  - diffAbundanceFET
 - title: "Find Marker"
 - contents:
   - findMarkerDiffExp
   - findMarkerTopTable
   - plotMarkerDiffExp
+- title: "Cell Type Labeling"
+- contents:
+  - runSingleR
 - title: "Enrichment & Pathway Analysis"
 - contents:
   - getMSigDBTable
   - enrichRSCE
   - runGSVA
   - runVAM
+- title: "Seurat Curated Workflow"
+- contents:
+  - starts_with("seurat")
+  - computeHeatmap
+  - runSeurat
 - title: "Visualization"
 - contents:
   - starts_with("plot")
@@ -106,18 +120,34 @@ reference:
   - sceBatches
   - MitoGenes
   - msigdb_table
-  - scExample
+  - sce
   - SEG
-- title: "Other Data processing"
+- title: "Other Data Processing"
 - contents:
+  - expData
+  - expData<-
+  - expDataNames
+  - expDeleteDataTag
+  - expSetDataTag
+  - expTaggedData
   - combineSCE
   - convertSCEToSeurat
   - convertSeuratToSCE
   - convertGeneIDs
+  - dedupRowNames
   - detectCellOutlier
+  - featureIndex
+  - retrieveSCEIndex
+  - sctkListGeneSetCollections
+  - setSCTKDisplayRow
   - subsetSCECols
   - subsetSCERows
-  - dedupRowNames
+- title: "Python Environment Setting"
+- contents:
+  - sctkPythonInstallConda
+  - selectSCTKConda
+  - sctkPythonInstallVirtualEnv
+  - selectSCTKVirtualEnvironment
 navbar:
   title: "singleCellTK"
   left:
