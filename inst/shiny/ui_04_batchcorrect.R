@@ -464,7 +464,7 @@ shinyPanelBatchcorrect <- fluidPage(
         # ZINBWaVE ####
         conditionalPanel(
           condition = "input.batchCorrMethods == 'ZINBWaVE'",
-          h5(tags$a(href = paste0(docs.base, "reference/runZINVWaVE.html"),
+          h5(tags$a(href = paste0(docs.base, "reference/runZINBWaVE.html"),
                     "(help for ZINBWaVE)", target = "_blank")),
           span("Test on small example not passed yet, don't run.",
                style = 'color:red;'),

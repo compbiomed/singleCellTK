@@ -165,7 +165,7 @@ shinyPanelFS_DimRed <- fluidPage(
     tabPanel(title = "Embedding",
              h5(
                tags$a(
-                 href = paste0(docs.artPath, "cnsl_dimensionality_reduction.html"),
+                 href = paste0(docs.artPath, "cnsl_2d_embedding.html"),
                  "(help)",
                  target = "_blank"
                )
