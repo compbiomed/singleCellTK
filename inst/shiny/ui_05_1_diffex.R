@@ -16,7 +16,14 @@ shinyPanelDiffex <- fluidPage(
           ),
           column(
             4,
-            uiOutput("deAssay")
+            selectizeInput(
+              inputId = "deAssay", 
+              label = "Select input matrix:", 
+              choices = NULL, 
+              selected = NULL, 
+              multiple = FALSE,
+              options = NULL)
+            #uiOutput("deAssay")
           )
         ),
         useShinyjs(),

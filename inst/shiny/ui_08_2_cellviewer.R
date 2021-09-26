@@ -46,7 +46,14 @@ shinyPanelCellViewer <- fluidPage(tags$div(
           #Expression Assays condition
           conditionalPanel(
             condition = sprintf("input['%s'] == 'Expression Assays'", "TypeSelect_Xaxis"),
-            uiOutput("AdvancedMethodSelect_Xaxis"),
+            selectizeInput(
+              inputId = "AdvancedMethodSelect_Xaxis", 
+              label = "Select input matrix:", 
+              choices = NULL, 
+              selected = NULL, 
+              multiple = FALSE,
+              options = NULL),
+            #uiOutput("AdvancedMethodSelect_Xaxis"),
             selectizeInput(
               "GeneSelect_Assays_Xaxis",
               label = h5("Feature"),
@@ -85,7 +92,14 @@ shinyPanelCellViewer <- fluidPage(tags$div(
           #Expression Assays condition
           conditionalPanel(
             condition = sprintf("input['%s'] == 'Expression Assays'", "TypeSelect_Yaxis"),
-            uiOutput("AdvancedMethodSelect_Yaxis"),
+            selectizeInput(
+              inputId = "AdvancedMethodSelect_Yaxis", 
+              label = "Select input matrix:", 
+              choices = NULL, 
+              selected = NULL, 
+              multiple = FALSE,
+              options = NULL),
+            #uiOutput("AdvancedMethodSelect_Yaxis"),
             selectizeInput(
               "GeneSelect_Assays_Yaxis",
               label = h5("Feature"),
@@ -142,7 +156,14 @@ shinyPanelCellViewer <- fluidPage(tags$div(
         #Expression Assays condition
         conditionalPanel(
           condition = sprintf("input['%s'] == 'Expression Assays'", "TypeSelect_Colorby"),
-          uiOutput("AdvancedMethodSelect_Colorby"),
+          selectizeInput(
+            inputId = "AdvancedMethodSelect_Colorby", 
+            label = "Select input matrix:", 
+            choices = NULL, 
+            selected = NULL, 
+            multiple = FALSE,
+            options = NULL),
+          #uiOutput("AdvancedMethodSelect_Colorby"),
           selectizeInput(
             "GeneSelect_Assays_Colorby",
             label = h5("Feature"),

@@ -11,7 +11,15 @@ shinyPanelHeatmap <- fluidPage(
         div(style="display:inline-block;vertical-align:top;width:120px;margin-left:20px;",
             h4("Assay to Plot")),
         div(style="display:inline-block;vertical-align:bottom;width:120px;margin-top:5px;",
-            uiOutput("hmAssay"))
+            selectizeInput(
+              inputId = "hmAssay", 
+              label = "Select input matrix:", 
+              choices = NULL, 
+              selected = NULL, 
+              multiple = FALSE,
+              options = NULL)
+            #uiOutput("hmAssay")
+            )
             #selectInput("hmAssay", NULL, currassays))
       ),
       fluidRow(

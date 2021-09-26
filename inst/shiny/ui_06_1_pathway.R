@@ -6,7 +6,14 @@ shinyPanelPathway <- fluidPage(
               "(help)", target = "_blank")),
     sidebarLayout(
       sidebarPanel(
-        uiOutput("pathwayAssay"),
+        selectizeInput(
+          inputId = "pathwayAssay", 
+          label = "Select input matrix:", 
+          choices = NULL, 
+          selected = NULL, 
+          multiple = FALSE,
+          options = NULL),
+        #uiOutput("pathwayAssay"),
         #selectInput("pathwayAssay", "Select Assay:", currassays),
         selectInput("pathwayMethod", "Select Method:", "GSVA"),
         uiOutput("selectPathwayGeneLists"),

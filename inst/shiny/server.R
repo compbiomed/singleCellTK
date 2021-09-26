@@ -172,53 +172,58 @@ shinyServer(function(input, output, session) {
                        max = numsamples)
   }
 
+  
   updateSelectInputTag <- function(session, inputId, choices = NULL, selected = NULL,
                                    label = "Select assay:", tags = NULL, recommended = NULL, showTags = TRUE,
                                    redDims = FALSE){
     if(!is.null(choices)
        && is.null(tags)){
-      choices <- expTaggedData(vals$counts, redDims = redDims)
+      choices <- expTaggedData(vals$counts, redDims = redDims, showTags = showTags, recommended = recommended)
     }
     else{
-      choices <- expTaggedData(vals$counts, tags, redDims = redDims)
+      choices <- expTaggedData(vals$counts, tags, redDims = redDims, showTags = showTags, recommended = recommended)
     }
-    if(!showTags){
-      allChoices <- NULL
-      for(i in seq(length(choices))){
-        allChoices <- c(allChoices, choices[[i]])
-      }
-      choices <- allChoices
-    }
-    else{
-      if(!is.null(recommended)){
-        namesChoices <- names(choices)
-        ix.recommend <- NULL
-          for(i in seq(length(namesChoices))){
-            for(j in seq(length(recommended))){
-              if(recommended[j] == namesChoices[i]){
-                ix.recommend <- c(ix.recommend, i)
-                recommendedName <- paste(namesChoices[i], "(recommended)")
-                namesChoices[i] <- recommendedName
-              }
-            }
-          }
-          # Reorder the list, recommended at top
-          if(any(recommended %in% names(choices))){
-            names(choices) <- namesChoices
-            choices <- c(choices[ix.recommend], choices[-ix.recommend])
-          }
-      }
-    }
-
-    output[[inputId]] <- renderUI({
-      selectInput(
-        inputId = inputId,
-        label = label,
-        choices = choices,
-        selected = selected
-      )
-    })
+    # if(!showTags){
+    #   allChoices <- NULL
+    #   for(i in seq(length(choices))){
+    #     allChoices <- c(allChoices, choices[[i]])
+    #   }
+    #   choices <- allChoices
+    # }
+    # else{
+    #   if(!is.null(recommended)){
+    #     namesChoices <- names(choices)
+    #     ix.recommend <- NULL
+    #       for(i in seq(length(namesChoices))){
+    #         for(j in seq(length(recommended))){
+    #           if(recommended[j] == namesChoices[i]){
+    #             ix.recommend <- c(ix.recommend, i)
+    #             recommendedName <- paste(namesChoices[i], "(recommended)")
+    #             namesChoices[i] <- recommendedName
+    #           }
+    #         }
+    #       }
+    #       # Reorder the list, recommended at top
+    #       if(any(recommended %in% names(choices))){
+    #         names(choices) <- namesChoices
+    #         choices <- c(choices[ix.recommend], choices[-ix.recommend])
+    #       }
+    #   }
+    # }
+    updateSelectizeInput(session = session, inputId = inputId, label = label, choices = choices)
+    #updateSelectizeInput(session = session, inputId = inputId, label = label, choices = choices, selected = selected, server = TRUE)
+    
+    # output[[inputId]] <- renderUI({
+    #   selectInput(
+    #     inputId = inputId,
+    #     label = label,
+    #     choices = choices,
+    #     selected = selected
+    #   )
+    # })
   }
+  
+  
 
   observeEvent(input$hvgMethodFS,{
     req(vals$counts)
@@ -310,7 +315,6 @@ shinyServer(function(input, output, session) {
     updateSelectInputTag(session, "AdvancedMethodSelect_Yaxis",
                          label = h5("Advanced Method"),
                          choices = currassays)
-
   }
 
 
@@ -2880,6 +2884,7 @@ shinyServer(function(input, output, session) {
   })
 
   observeEvent(input$dimRedAssaySelect_tsneUmap, {
+    req(vals$counts)
     if (!is.null(input$dimRedAssaySelect_tsneUmap)) {
       if (input$dimRedAssaySelect_tsneUmap %in% reducedDimNames(vals$counts)) {
         shinyjs::disable("reductionMethodUMAPTSNEDimRed")

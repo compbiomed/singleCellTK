@@ -27,7 +27,14 @@ shinyPanelCluster <- fluidPage(
           "input.clustAlgo >=1 && input.clustAlgo <= 6",
           column(
             6,
-            uiOutput('clustScranSNNMat'),
+            selectizeInput(
+              inputId = "clustScranSNNMat", 
+              label = "Select input matrix:", 
+              choices = NULL, 
+              selected = NULL, 
+              multiple = FALSE,
+              options = NULL),
+            #uiOutput('clustScranSNNMat'),
           ),
           column(
             4,

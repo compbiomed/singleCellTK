@@ -41,7 +41,14 @@ shinyPanelBatchcorrect <- fluidPage(
                               column(6, style='border-right:1px solid; border-color:#EDEDED;',
                                      conditionalPanel(
                                        condition = "input.normalizeAssayMethodSelect != 'custom'",
-                                       uiOutput("normalizeAssaySelect"),
+                                       selectizeInput(
+                                         inputId = "normalizeAssaySelect", 
+                                         label = "Select input matrix:", 
+                                         choices = NULL, 
+                                         selected = NULL, 
+                                         multiple = FALSE,
+                                         options = NULL),
+                                       #uiOutput("normalizeAssaySelect"),
                                        conditionalPanel(
                                          condition = "input.normalizeAssayMethodSelect == 'LogNormalize'
                               || input.normalizeAssayMethodSelect == 'CLR'
@@ -87,7 +94,14 @@ shinyPanelBatchcorrect <- fluidPage(
                                      conditionalPanel(
                                        condition = "input.normalizeAssayMethodSelect == 'custom'",
                                        h5("Assay Options:"),
-                                       uiOutput("modifyAssaySelect"),
+                                       selectizeInput(
+                                         inputId = "modifyAssaySelect", 
+                                         label = "Select input matrix:", 
+                                         choices = NULL, 
+                                         selected = NULL, 
+                                         multiple = FALSE,
+                                         options = NULL),
+                                       #uiOutput("modifyAssaySelect"),
                                        textInput("modifyAssayOutname", "Assay Name",
                                                  value = "customNormalizedAssay"),
                                        tags$hr(),
@@ -283,7 +297,14 @@ shinyPanelBatchcorrect <- fluidPage(
                     c("ComBatSeq", "BBKNN", "FastMNN", "Limma", #"Harmony", "LIGER",
                       "MNN", "scanorama", "scMerge", "Seurat3 Integration",
                       "ZINBWaVE")),
-        uiOutput("batchCorrAssay"),
+        selectizeInput(
+          inputId = "batchCorrAssay", 
+          label = "Select input matrix:", 
+          choices = NULL, 
+          selected = NULL, 
+          multiple = FALSE,
+          options = NULL),
+        #uiOutput("batchCorrAssay"),
         selectInput("batchCorrVar", "Select Batch Annotation:", clusterChoice),
         # BBKNN ####
         conditionalPanel(
@@ -495,7 +516,14 @@ shinyPanelBatchcorrect <- fluidPage(
                       width = 12,
                       h5(tags$a(href = "https://compbiomed.github.io/sctk_docs/articles/batch_correction.html#visualization",
                                 "(What are plotted?)", target = "_blank")),
-                      uiOutput("batchCheckOrigAssay"),
+                      selectizeInput(
+                        inputId = "batchCheckOrigAssay", 
+                        label = "Select input matrix:", 
+                        choices = NULL, 
+                        selected = NULL, 
+                        multiple = FALSE,
+                        options = NULL),
+                      #uiOutput("batchCheckOrigAssay"),
                       #selectInput("batchCheckOrigAssay", "Original Assay:", currassays),
                       selectInput("batchCheckVar", "Batch Annotation:", clusterChoice),
                       selectInput("batchCheckCond", "Additional Condition (optional)",

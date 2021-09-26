@@ -32,92 +32,70 @@ expDeleteDataTag <- function(inSCE, assay){
 #' @export
 #'
 expSetDataTag <- function(inSCE, assayType, assays, append = TRUE){
-  if(append){
-    if(!assays %in% S4Vectors::metadata(inSCE)$assayType[[assayType]]){
-      S4Vectors::metadata(inSCE)$assayType[[assayType]] <- base::append(S4Vectors::metadata(inSCE)$assayType[[assayType]], assays)
-    }
+  # if(append){
+  #   if(!assays %in% S4Vectors::metadata(inSCE)$assayType[[assayType]]){
+  #     S4Vectors::metadata(inSCE)$assayType[[assayType]] <- base::append(S4Vectors::metadata(inSCE)$assayType[[assayType]], assays)
+  #   }
+  # }
+  # else{
+  #   S4Vectors::metadata(inSCE)$assayType[[assayType]] <- assays
+  # }
+  if(is.null(S4Vectors::metadata(inSCE)$assayType)){
+    tbl <- tibble(assayTag = assayType, assayName = assays)
   }
   else{
-    S4Vectors::metadata(inSCE)$assayType[[assayType]] <- assays
+    tbl <- S4Vectors::metadata(inSCE)$assayType
+    tbl <- rbind(tbl, tibble(assayTag = assayType, assayName = assays))
   }
+  S4Vectors::metadata(inSCE)$assayType <- tbl
   return(inSCE)
 }
 
 #' expTaggedData
-#' Returns a list of names of data items from the input \code{SingleCellExperiment} object based upon the input parameters.
+#' Returns a list of names of data items from the 
+#' input \code{SingleCellExperiment} object based upon the input parameters.
 #' @param inSCE Input \code{SingleCellExperiment} object.
-#' @param tags A \code{character()} value indicating if the data items should be returned separated by the specified tags. Default is \code{NULL} indicating that returned names of the data items are simply returned as a list with default tag as "uncategorized".
-#' @param redDims A \code{logical} value indicating if \code{reducedDims} should be returned as well separated with 'redDims' tag.
-#' @return A \code{list} of names of data items specfied by the other parameters.
+#' @param tags A \code{character()} value indicating if the data items should 
+#' be returned separated by the specified tags. Default is \code{NULL} 
+#' indicating that returned names of the data items are simply returned as a 
+#' list with default tag as "uncategorized".
+#' @param redDims A \code{logical} value indicating if \code{reducedDims} 
+#' should be returned as well separated with 'redDims' tag.
+#' @param recommended A \code{character()} vector indicating the tags that 
+#' should be displayed as recommended. Default is \code{NULL}.
+#' @param showTags A \code{logical} value indicating if the tags should be 
+#' shown. If \code{FALSE}, output is just a simple list, not separated by tags.
+#' @return A \code{list} of names of data items specified by the other 
+#' parameters.
 #' @export
 #'
-expTaggedData <- function(inSCE, tags = NULL, redDims = FALSE){
-  retList <- list()
-  if(is.null(tags)){
-    if(!is.null(S4Vectors::metadata(inSCE)$assayType)){
-      taggedAssays <- NULL
-      for(i in seq(S4Vectors::metadata(inSCE)$assayType)){
-        if(!is.null(S4Vectors::metadata(inSCE)$assayType[[i]])){
-          if(length(S4Vectors::metadata(inSCE)$assayType[[i]]) == 1){
-            #doing this because of how selectInput named list works, otherwise not needed
-            retList[[names(S4Vectors::metadata(inSCE)$assayType)[i]]] <- list(S4Vectors::metadata(inSCE)$assayType[[i]])
-          }
-          else{
-            retList[[names(S4Vectors::metadata(inSCE)$assayType)[i]]] <- S4Vectors::metadata(inSCE)$assayType[[i]]
-          }
-          taggedAssays <- c(taggedAssays, S4Vectors::metadata(inSCE)$assayType[[i]])
-        }
-      }
-      # If an assay has no tag, assign it "uncategorized".
-      if(!all(expDataNames(inSCE) %in% taggedAssays)){
-        untaggedAssays <- expDataNames(inSCE)[!expDataNames(inSCE) %in% taggedAssays]
-        untaggedAssays <- .filterRedDims(inSCE = inSCE, untaggedAssays = untaggedAssays)
-        if(length(untaggedAssays) == 1){
-          S4Vectors::metadata(inSCE)$assayType[["uncategorized"]] <- list(untaggedAssays)
-          retList[["uncategorized"]] <- S4Vectors::metadata(inSCE)$assayType[["uncategorized"]]
-        }
-        else{
-          S4Vectors::metadata(inSCE)$assayType[["uncategorized"]] <- untaggedAssays
-          retList[["uncategorized"]] <- S4Vectors::metadata(inSCE)$assayType[["uncategorized"]]
-        }
-      }
-      # ====
-    }
-    else{
-      S4Vectors::metadata(inSCE)$assayType[["uncategorized"]] <- SummarizedExperiment::assayNames(inSCE)
-      retList[["uncategorized"]] <- S4Vectors::metadata(inSCE)$assayType[["uncategorized"]]
-    }
+expTaggedData <- function(inSCE, tags = NULL, redDims = FALSE, recommended = NULL, showTags = TRUE){
+  namedList <- NULL
+  tbl <- metadata(inSCE)$assayType 
+  
+  if(!is.null(tags)){
+    tbl %>% filter(assayTag %in% tags)
+  }
+  
+  if(redDims){
+    tbl <- rbind(tbl, tibble(assayTag = "reducedDims", assayName = reducedDimNames(inSCE)))
+  }
+  
+  if(!is.null(recommended)){
+    recIx <- which(tbl$assayTag %in% recommended)
+    tbl[recIx, ]$assayTag <- paste0(tbl$assayTag[recIx], " (recommended)")
+    #tbl <- rbind(tbl[recIx, ], tbl[-recIx, ])
+  }
+  
+  if(!showTags){
+    namedList <- as.character(tbl$assayName)
   }
   else{
-    if(!is.null(S4Vectors::metadata(inSCE)$assayType)){
-      for(i in seq(tags)){
-        if(!is.null(S4Vectors::metadata(inSCE)$assayType[[tags[i]]])){
-          if(length(S4Vectors::metadata(inSCE)$assayType[[tags[i]]]) == 1){
-            #doing this because of how selectInput named list works, otherwise not needed
-            retList[[tags[i]]] <- list(S4Vectors::metadata(inSCE)$assayType[[tags[i]]])
-          }
-          else{
-            retList[[tags[i]]] <- S4Vectors::metadata(inSCE)$assayType[[tags[i]]]
-          }
-        }
-      }
-    }
-    else{
-      S4Vectors::metadata(inSCE)$assayType[["uncategorized"]] <- SummarizedExperiment::assayNames(inSCE)
-      retList[["uncategorized"]] <- S4Vectors::metadata(inSCE)$assayType[["uncategorized"]]
-    }
+    namedList <- with(tbl, split(assayName, assayTag))
+    namedList <- lapply(namedList, sapply, list)
   }
-  if(redDims){
-    if(length(reducedDimNames(inSCE)) > 0){
-      if(length(reducedDimNames(inSCE)) == 1){
-        retList[["redDims"]] <- list(reducedDimNames(inSCE))
-      }
-      else{
-        retList[["redDims"]] <- reducedDimNames(inSCE)
-      }
-    }
-  }
-  return(retList)
+
+  return(namedList)
 }
 
 setClassUnion("CharacterOrNullOrMissing", c("character", "NULL", "missing"))

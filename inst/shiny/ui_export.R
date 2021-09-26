@@ -46,7 +46,14 @@ shinyPanelExport <- fluidPage(
       conditionalPanel(
         condition = "input.exportChoice == 'annData'",
         tags$h5(style = "font-weight: bold; margin-bottom: 15px", "Set export specifications"),
-        uiOutput("exportAssay"),
+        selectizeInput(
+          inputId = "exportAssay", 
+          label = "Select input matrix:", 
+          choices = NULL, 
+          selected = NULL, 
+          multiple = FALSE,
+          options = NULL),
+        #uiOutput("exportAssay"),
         # tags$label(id="compressionLabel", "Compression"),
         # selectInput("compression", label = NULL, c("None", "lzf", "gzip"), width='140px'),
         tags$label(id="compressionOptsLabel", "Compression Opts"),

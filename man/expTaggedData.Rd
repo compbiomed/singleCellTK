@@ -3,21 +3,40 @@
 \name{expTaggedData}
 \alias{expTaggedData}
 \title{expTaggedData
-Returns a list of names of data items from the input \code{SingleCellExperiment} object based upon the input parameters.}
+Returns a list of names of data items from the 
+input \code{SingleCellExperiment} object based upon the input parameters.}
 \usage{
-expTaggedData(inSCE, tags = NULL, redDims = FALSE)
+expTaggedData(
+  inSCE,
+  tags = NULL,
+  redDims = FALSE,
+  recommended = NULL,
+  showTags = TRUE
+)
 }
 \arguments{
 \item{inSCE}{Input \code{SingleCellExperiment} object.}
 
-\item{tags}{A \code{character()} value indicating if the data items should be returned separated by the specified tags. Default is \code{NULL} indicating that returned names of the data items are simply returned as a list with default tag as "uncategorized".}
+\item{tags}{A \code{character()} value indicating if the data items should 
+be returned separated by the specified tags. Default is \code{NULL} 
+indicating that returned names of the data items are simply returned as a 
+list with default tag as "uncategorized".}
 
-\item{redDims}{A \code{logical} value indicating if \code{reducedDims} should be returned as well separated with 'redDims' tag.}
+\item{redDims}{A \code{logical} value indicating if \code{reducedDims} 
+should be returned as well separated with 'redDims' tag.}
+
+\item{recommended}{A \code{character()} vector indicating the tags that 
+should be displayed as recommended. Default is \code{NULL}.}
+
+\item{showTags}{A \code{logical} value indicating if the tags should be 
+shown. If \code{FALSE}, output is just a simple list, not separated by tags.}
 }
 \value{
-A \code{list} of names of data items specfied by the other parameters.
+A \code{list} of names of data items specified by the other 
+parameters.
 }
 \description{
 expTaggedData
-Returns a list of names of data items from the input \code{SingleCellExperiment} object based upon the input parameters.
+Returns a list of names of data items from the 
+input \code{SingleCellExperiment} object based upon the input parameters.
 }

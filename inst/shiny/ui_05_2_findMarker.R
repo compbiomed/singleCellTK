@@ -8,7 +8,14 @@ shinyPanelfindMarker <- fluidPage(
       sidebarPanel(
         selectInput('fmMethod', "Select Differential Expression Method",
                     c("wilcox", "MAST", "DESeq2", "Limma", "ANOVA")),
-        uiOutput('fmAssay'),
+        selectizeInput(
+          inputId = "fmAssay", 
+          label = "Select input matrix:", 
+          choices = NULL, 
+          selected = NULL, 
+          multiple = FALSE,
+          options = NULL),
+        #uiOutput('fmAssay'),
         selectInput("fmCluster", "Cluster Annotation", clusterChoice),
         selectInput("fmCovar", "Covariate(s)", clusterChoice, multiple = TRUE),
         numericInput("fmLogFC", "Log2FC greater than",
