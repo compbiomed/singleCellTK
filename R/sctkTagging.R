@@ -41,11 +41,11 @@ expSetDataTag <- function(inSCE, assayType, assays, append = TRUE){
   #   S4Vectors::metadata(inSCE)$assayType[[assayType]] <- assays
   # }
   if(is.null(S4Vectors::metadata(inSCE)$assayType)){
-    tbl <- tibble(assayTag = assayType, assayName = assays)
+    tbl <- tibble::tibble(assayTag = assayType, assayName = assays)
   }
   else{
     tbl <- S4Vectors::metadata(inSCE)$assayType
-    tbl <- rbind(tbl, tibble(assayTag = assayType, assayName = assays))
+    tbl <- rbind(tbl, tibble::tibble(assayTag = assayType, assayName = assays))
   }
   S4Vectors::metadata(inSCE)$assayType <- tbl
   return(inSCE)
@@ -67,24 +67,29 @@ expSetDataTag <- function(inSCE, assayType, assays, append = TRUE){
 #' shown. If \code{FALSE}, output is just a simple list, not separated by tags.
 #' @return A \code{list} of names of data items specified by the other 
 #' parameters.
+#' @importFrom stats filter
+#' @importFrom tibble tibble
 #' @export
 #'
 expTaggedData <- function(inSCE, tags = NULL, redDims = FALSE, recommended = NULL, showTags = TRUE){
   namedList <- NULL
-  tbl <- metadata(inSCE)$assayType 
+  tbl <- S4Vectors::metadata(inSCE)$assayType 
   
   if(!is.null(tags)){
     tbl %>% filter(assayTag %in% tags)
   }
   
   if(redDims){
-    tbl <- rbind(tbl, tibble(assayTag = "reducedDims", assayName = reducedDimNames(inSCE)))
+    tbl <- rbind(tbl, tibble::tibble(assayTag = "redDims", assayName = reducedDimNames(inSCE)))
   }
   
   if(!is.null(recommended)){
     recIx <- which(tbl$assayTag %in% recommended)
-    tbl[recIx, ]$assayTag <- paste0(tbl$assayTag[recIx], " (recommended)")
-    #tbl <- rbind(tbl[recIx, ], tbl[-recIx, ])
+    if(length(recIx) > 0){
+      tbl[recIx, ]$assayTag <- paste0(tbl$assayTag[recIx], " (recommended)")
+      tbl <- rbind(tbl[recIx, ], tbl[-recIx, ])
+      tbl$assayTag <- factor(tbl$assayTag, levels=unique(tbl$assayTag))
+    }
   }
   
   if(!showTags){
