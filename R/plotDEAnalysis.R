@@ -297,7 +297,7 @@ plotDEGRegression <- function(inSCE, useResult, threshP = FALSE, labelBy = NULL,
 #' this(these) annotation(s). Should exist in either \code{colDataName} or
 #' \code{names(cellAnnotations)}. Default \code{"condition"}.
 #' @param title character. Main title of the heatmap. Default
-#' \code{"MAST Result: <useResult>"}.
+#' \code{"DE Analysis: <useResult>"}.
 #' @param ... Other arguments passed to \code{\link{plotSCEHeatmap}}
 #' @examples
 #' data("sceBatches")
@@ -318,7 +318,7 @@ plotDEGHeatmap <- function(inSCE, useResult, doLog = FALSE, onlyPos = FALSE,
                            cellAnnotationColor = NULL,
                            rowDataName = NULL, colDataName = NULL,
                            colSplitBy = 'condition', rowSplitBy = 'regulation',
-                           title = paste0("MAST Result: ", useResult), ...){
+                           title = paste0("DE Analysis: ", useResult), ...){
   # Check
   .checkDiffExpResultExists(inSCE, useResult)
   extraArgs <- list(...)

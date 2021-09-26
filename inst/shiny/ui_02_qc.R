@@ -19,7 +19,14 @@ shinyPanelQC <- fluidPage(
             tags$div(id = "QCMetricsParams",
                      actionLink("QCMhelp", "Help", icon = icon("info-circle")),
                      tags$hr(),
-                     selectInput("QCMgeneSets", "collectionName - Select a Gene Set for Quality Control", c("None")),
+                     selectInput("QCMgeneSets",
+                                 "collectionName - Select a Gene Set for Quality Control",
+                                 c("None" = "none",
+                                   "Human Mitochondrial Genes (Ensembl)" = "he",
+                                   "Human Mitochondrial Genes (Symbol)" = "hs",
+                                   "Mouse Mitochondrial Genes (Ensembl)" = "me",
+                                   "Mouse Mitochondrial Genes (Symbol)" = "ms")),
+                     actionLink("QCImportGS", "Import Gene Sets", icon = icon("upload"))
             )
           ),
           tags$hr(),

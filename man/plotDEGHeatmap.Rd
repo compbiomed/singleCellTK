@@ -20,7 +20,7 @@ plotDEGHeatmap(
   colDataName = NULL,
   colSplitBy = "condition",
   rowSplitBy = "regulation",
-  title = paste0("MAST Result: ", useResult),
+  title = paste0("DE Analysis: ", useResult),
   ...
 )
 }
@@ -80,7 +80,7 @@ this(these) annotation(s). Should exist in either \code{rowDataName} or
 \code{names(featureAnnotations)}. Default \code{"regulation"}.}
 
 \item{title}{character. Main title of the heatmap. Default
-\code{"MAST Result: <useResult>"}.}
+\code{"DE Analysis: <useResult>"}.}
 
 \item{...}{Other arguments passed to \code{\link{plotSCEHeatmap}}}
 }

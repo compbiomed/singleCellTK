@@ -2,7 +2,7 @@ shinyPanelCluster <- fluidPage(
   tags$div(
     class = "container",
     h1("Clustering"),
-    h5(tags$a(href = paste0(docs.artPath, "ui_clustering.html"),
+    h5(tags$a(href = paste0(docs.artPath, "clustering.html"),
               "(help)", target = "_blank")),
     wellPanel(
       # CLUSTERING --> VISUALIZATION

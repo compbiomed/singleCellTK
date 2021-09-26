@@ -77,24 +77,7 @@ and downstream analysis.
 # Vignettes
 
 Due to the range of features that are available in SCTK, we have prepared several 
-vignettes to help you get started, which are all available at https://www.sctk.science.
-
-* [Installation/Introduction](https://www.sctk.science/articles/v01-introduction_to_singlecelltk)
-
-## Interactive Analysis
-
-* [Uploading Data](https://www.sctk.science/articles/v03-tab01_upload)
-* [Data Summary and Filtering](https://www.sctk.science/articles/v04-tab02_data-summary-and-filtering)
-* [Visualization and Clustering](https://www.sctk.science/articles/v05-tab03_visualization-and-clustering)
-* [Batch Correction](https://www.sctk.science/articles/v06-tab04_batch-correction)
-* [Differential Expression](https://www.sctk.science/articles/v07-tab05_differential-expression)
-* [Pathway Activity Analysis](https://www.sctk.science/articles/v08-tab06_pathway-activity-analysis)
-* [Sample Size](https://www.sctk.science/articles/v09-tab07_sample-size)
-
-## R Console Analysis
-
-* [Processing and Visualizing Data in the Single Cell Toolkit](https://www.sctk.science/articles/v02-processing_and_visualizing_data_in_the_singlecelltk)
-* [Aligning and Quantifying scRNA-Seq Data](https://www.sctk.science/articles/v10-aligning_and_quantifying_scrna-seq_data)
+vignettes to help you get started, which are all available at [https://www.camplab.net/sctk/](https://www.camplab.net/sctk/)
 
 # Session info {.unnumbered}
 
