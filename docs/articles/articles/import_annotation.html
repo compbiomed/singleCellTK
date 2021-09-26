@@ -32,91 +32,115 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.2.1</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
 <li>
-  <a href="../../articles/articles/introduction_to_SCTK.html">General Workflow</a>
+  <a href="../../articles/articles/installation.html">Installation</a>
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Shell Command Line Analysis
+    Documentation
      
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
-<li>
-      <a href="../../articles/articles/cmd_import_scRNAseq_data_as_SCE.html">Import data into SCTK</a>
-    </li>
-    <li>
-      <a href="../../articles/articles/cmd_qc.html">Quality Control</a>
-    </li>
-  </ul>
-</li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    R Console Analysis
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
-<li>
-      <a href="../../articles/articles/cnsl_import_scRNAseq_data_as_SCE.html">Import data into SCTK</a>
-    </li>
-    <li>
-      <a href="../../articles/articles/cnsl_dropletqc.html">Quality Control of droplet data</a>
-    </li>
-    <li>
-      <a href="../../articles/articles/cnsl_cellqc.html">Quality Control of cell data</a>
-    </li>
-    <li>
-      <a href="../../articles/articles/cnsl_normalization.html">Normalization</a>
-    </li>
-    <li>
-      <a href="../../articles/articles/cnsl_batch_correction.html">Batch Correction</a>
-    </li>
-    <li>
-      <a href="../../articles/articles/cnsl_feature_selection.html">Feature Selection</a>
-    </li>
-    <li>
-      <a href="../../articles/articles/cnsl_dimensionality_reduction.html">Dimensionality Reduction</a>
-    </li>
-    <li>
-      <a href="../../articles/articles/cnsl_clustering.html">Clustering</a>
-    </li>
-    <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Differential Expression</a>
+<li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Data</a>
       <ul class="dropdown-menu" role="menu">
 <li>
-          <a href="../../articles/articles/cnsl_differential_expression.html">Differential Expression</a>
+          <a href="../../articles/articles/import_data.html">Import Data</a>
         </li>
         <li>
-          <a href="../../articles/articles/cnsl_find_marker.html">Find Marker via DE</a>
+          <a href="../../articles/articles/cmd_import_scRNAseq_data_as_SCE.html">Import Data in Commandline</a>
+        </li>
+        <li>
+          <a href="../../articles/articles/import_genesets.html">Import Gene Sets</a>
+        </li>
+        <li>
+          <a href="../../articles/articles/import_annotation.html">Annotation</a>
+        </li>
+        <li>
+          <a href="../../articles/articles/export_data.html">Export Data</a>
+        </li>
+        <li>
+          <a href="../../articles/articles/delete_data.html">Delete Data</a>
         </li>
       </ul>
 </li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Enrichment Analysis</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">QC &amp; Filtering</a>
       <ul class="dropdown-menu" role="menu">
 <li>
-          <a href="../../articles/articles/cnsl_gsva.html">GSVA</a>
+          <a href="../../articles/articles/cmd_qc.html">QC with commandline</a>
         </li>
         <li>
+          <a href="../../articles/articles/cnsl_cellqc.html">Cell QC in R console</a>
+        </li>
+        <li>
+          <a href="../../articles/articles/cnsl_dropletqc.html">Droplet QC in R console</a>
+        </li>
+        <li>
+          <a href="../../articles/articles/ui_qc.html">QC in the UI</a>
+        </li>
+        <li>
+          <a href="../../articles/articles/filtering.html">Filtering</a>
+        </li>
+      </ul>
+</li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Normalization &amp; Batch Correction</a>
+      <ul class="dropdown-menu" role="menu">
+<li>
+          <a href="../../articles/articles/cnsl_normalization.html">Normalization</a>
+        </li>
+        <li>
+          <a href="../../articles/articles/batch_correction.html">Batch Correction</a>
+        </li>
+      </ul>
+</li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Feature Selection &amp; Dimensionality Reduction</a>
+      <ul class="dropdown-menu" role="menu">
+<li>
+          <a href="../../articles/articles/cnsl_feature_selection.html">Feature Selection</a>
+        </li>
+        <li>
+          <a href="../../articles/articles/cnsl_dimensionality_reduction.html">Dimensionality Reduction</a>
+        </li>
+        <li>
+          <a href="../../articles/articles/cnsl_2d_embedding.html">2D Embedding</a>
+        </li>
+      </ul>
+</li>
+    <li>
+      <a href="../../articles/articles/clustering.html">Clustering</a>
+    </li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Differential Expression &amp; Cell Type Labeling</a>
+      <ul class="dropdown-menu" role="menu">
+<li>
+          <a href="../../articles/articles/differential_expression.html">Differential Expression</a>
+        </li>
+        <li>
+          <a href="../../articles/articles/find_marker.html">Find Marker</a>
+        </li>
+        <li>
+          <a href="../../articles/articles/cell_type_labeling.html">Cell Type Labeling</a>
+        </li>
+      </ul>
+</li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Pathway &amp; Enrichment Analysis</a>
+      <ul class="dropdown-menu" role="menu">
+<li>
           <a href="../../articles/articles/cnsl_enrichR.html">EnrichR</a>
         </li>
-      </ul>
-</li>
-    <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Visualization</a>
-      <ul class="dropdown-menu" role="menu">
-<li>
-          <a href="../../articles/articles/cnsl_visualization.html">General Visualization</a>
-        </li>
         <li>
-          <a href="../../articles/articles/cnsl_heatmap.html">Heatmap Visualization</a>
+          <a href="../../articles/articles/pathwayAnalysis.html">Pathway Analysis</a>
         </li>
       </ul>
 </li>
@@ -127,111 +151,7 @@
           <a href="../../articles/articles/cnsl_seurat_curated_workflow.html">Seurat</a>
         </li>
         <li>
-          <a href="../../articles/articles/cnsl_celda_curated_workflow.html">Celda</a>
-        </li>
-      </ul>
-</li>
-  </ul>
-</li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Shiny UI Analysis
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
-<li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Data</a>
-      <ul class="dropdown-menu" role="menu">
-<li>
-          <a href="../../articles/articles/ui_import_data.html">Import Data</a>
-        </li>
-        <li>
-          <a href="../../articles/articles/ui_import_genesets.html">Import Gene Sets</a>
-        </li>
-        <li>
-          <a href="../../articles/articles/ui_import_annotation.html">Annotation</a>
-        </li>
-        <li>
-          <a href="../../articles/articles/ui_export_data.html">Export Data</a>
-        </li>
-        <li>
-          <a href="../../articles/articles/ui_delete_data.html">Delete Data</a>
-        </li>
-      </ul>
-</li>
-    <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">QC &amp; Filtering</a>
-      <ul class="dropdown-menu" role="menu">
-<li>
-          <a href="../../articles/articles/ui_qc.html">Quality Control</a>
-        </li>
-        <li>
-          <a href="../../articles/articles/ui_filtering.html">Filtering</a>
-        </li>
-      </ul>
-</li>
-    <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Normalization &amp; Batch Correction</a>
-      <ul class="dropdown-menu" role="menu">
-<li>
-          <a href="../../articles/articles/ui_normalization.html">Normalization</a>
-        </li>
-        <li>
-          <a href="../../articles/articles/ui_batch_correction.html">Batch Correction</a>
-        </li>
-      </ul>
-</li>
-    <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Feature Selection &amp; Dimensionality Reduction</a>
-      <ul class="dropdown-menu" role="menu">
-<li>
-          <a href="../../articles/articles/ui_feature_selection.html">Feature Selection</a>
-        </li>
-        <li>
-          <a href="../../articles/articles/ui_dimensionality_reduction.html">Dimensionality Reduction</a>
-        </li>
-      </ul>
-</li>
-    <li>
-      <a href="../../articles/articles/ui_clustering.html">Clustering</a>
-    </li>
-    <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Differential Expression &amp; Cell Type Labeling</a>
-      <ul class="dropdown-menu" role="menu">
-<li>
-          <a href="../../articles/articles/ui_differential_expression.html">Differential Expression</a>
-        </li>
-        <li>
-          <a href="../../articles/articles/ui_find_marker.html">Find Marker</a>
-        </li>
-        <li>
-          <a href="../../articles/articles/ui_cell_type_labeling.html">Cell Type Labeling</a>
-        </li>
-      </ul>
-</li>
-    <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Pathway &amp; Enrichment Analysis</a>
-      <ul class="dropdown-menu" role="menu">
-<li>
-          <a href="../../articles/articles/ui_gsva.html">GSVA</a>
-        </li>
-        <li>
-          <a href="../../articles/articles/ui_enrichR.html">EnrichR</a>
-        </li>
-      </ul>
-</li>
-    <li>
-      <a href="../../articles/articles/ui_sample_size_calc.html">Sample Size Calculator</a>
-    </li>
-    <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Curated Workflows</a>
-      <ul class="dropdown-menu" role="menu">
-<li>
-          <a href="../../articles/articles/ui_seurat_curated_workflow.html">Seurat</a>
-        </li>
-        <li>
-          <a href="../../articles/articles/ui_celda_curated_workflow.html">Celda</a>
+          <a href="../../articles/articles/celda_curated_workflow.html">Celda</a>
         </li>
       </ul>
 </li>
@@ -239,13 +159,25 @@
       <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Visualization</a>
       <ul class="dropdown-menu" role="menu">
 <li>
-          <a href="../../articles/articles/ui_cellViewer.html">cellViewer</a>
+          <a href="../../articles/articles/visualization.html">General Visualization</a>
         </li>
         <li>
-          <a href="../../articles/articles/ui_heatmap.html">Generic Heatmap</a>
+          <a href="../../articles/articles/heatmap.html">Generic Heatmap</a>
         </li>
       </ul>
 </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Tutorial
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+<li>
+      <a href="../../articles/articles/console_analysis_tutorial.html">Console Analysis Tutorial</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -255,13 +187,13 @@
 <ul class="nav navbar-nav navbar-right">
 <li>
   <a href="https://github.com/compbiomed/singleCellTK">
-    <span class="fas fa-github"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
 <li>
   <a href="https://twitter.com/camplab1">
-    <span class="fas fa-twitter"></span>
+    <span class="fab fa-twitter fa-lg"></span>
      
   </a>
 </li>
@@ -323,11 +255,15 @@
 </li>
 </ol>
 <p><strong>Detailed Demonstration</strong></p>
-<details><summary><b>Import New Annotation from File</b></summary><p>TODO</p>
-</details><details><summary><b>Edit Existing Annotation</b></summary><details><summary><b>Bins</b></summary><p>TODO</p>
+<details><summary><b>Import New Annotation from File</b></summary><p>Users can upload a metadata table that annotates the cells in the dataset with multiple variables. The file has to be in Comma-Separated Values (CSV) format, and have the first header row for the variable names. All cells in the file have to match with the existing dataset in both order and amount, so that SCTK can correctly identify the information and merge it to the background data container.</p>
+<p>Users can choose to replace all existing annotation with the new table, by selecting the radio button <strong>“Replace Cell Annotations”</strong>, or merge the new table into the existing table, by selecting <strong>“Add to existing Cell Annotations”</strong>. Note that by choosing to merge, SCTK will overwrite the the variables with the same name.</p>
+</details><details><summary><b>Edit Existing Annotation</b></summary><details><summary><b>Bins</b></summary><p>Users can modify an existing column of annotation by changing all values that meet a criteria (alphabetically ordered comparison by “=,” “&gt;,” “&lt;,” “&gt;=” or “&lt;=”) to a new value. In the UI, users can choose the annotation at the selection input <strong>“select attribute”</strong>, and then set the binning point by selecting an existing value at the selection input <strong>“select attribute value”</strong> or entering the desired value at <strong>“criteria parameter”</strong>. The criteria type (comparison symbol) can be selected at <strong>“select comparison”</strong>. The new value to be filled in to the bin can be entered at <strong>“bin name”</strong>. Finally, press <strong>“Confirm Bin”</strong> button to temporarily save the result and preview it in the table at the bottom of the page.</p>
+<blockquote>
+<p>For example: There is an annotation named <code>"ann1"</code>, with values <code>"a", "b", "c", "d", "e", ...</code> in the dataset, and users want to change all the values in <code>"ann1"</code>, that come after <code>"d"</code>, to <code>"afterD"</code>. The steps would be: 1. Choose <code>"ann1"</code> at <strong>“select attribute”</strong>; 2. Select <code>"d"</code> at <strong>“select attribute value”</strong> or enter <code>"d"</code> at <strong>“criteria parameter”</strong>; 3. Select <code><a href="https://rdrr.io/r/base/Comparison.html">&gt;</a></code> at <strong>“select comparison”</strong>; 4. Enter <code>"afterD"</code> at <strong>“bin name”</strong>.</p>
+</blockquote>
 </details><details><summary><b>Merge columns</b></summary><p><img src="ui_screenshots/cell_annotation/cell_ann_ui_merge.png" alt="entry"><br></p>
 <p>Users can merge any two columns that exist in the cell annotation table. SCTK merges them in a direct concatenate manner, with allowing setting a customized separator. As shown in the screenshot above, user should enter the <strong>“Merge Columns” tab</strong> to access this functionality. Different values should be selected for the <strong>“Select first column”</strong> and <strong>Select second column"</strong> input. The order of these selections matters as it will determine how the values are ordered in the merged field. It is recommended that users set an <code>_</code> (underscore) or a <code><a href="https://rdrr.io/r/base/Arithmetic.html">-</a></code> (dash) as the input for <strong>“add separator between merged values”</strong>. Setting a <code></code> (space) here will not trigger any direct error but is not a best practice. After determining all the three inputs, users should click on <strong>“Confirm Merge”</strong> button to make the change. The effect can be immediately observed in the <strong>“Table of Cell Annotations”</strong> at the bottom, as shown in the lower part of the screenshot above.</p>
-</details><details><summary><b>Magic Fill</b></summary><p>TODO</p>
+</details><details><summary><b>Magic Fill</b></summary><p>Users can modify a column of annotation (column A) according to another column (column B). The rows that has a certain value in column B will be selected and these rows in column A will be modified to a user-entered value. Select column B at <strong>“select attribute column”</strong>, and column A at <strong>“select column to fill”</strong>. The value to be found in column B should be selected at <strong>“select attribute value”</strong>, and the new value to fill into column A should be entered at <strong>“new value”</strong>.</p>
 </details><details><summary><b>Clean</b></summary><p><img src="ui_screenshots/cell_annotation/cell_ann_ui_clean.png" alt="entry"><br></p>
 <p>Users can clean up a selected column by removing any “alphabets,” “digits,” “spaces,” or “symbols” from all the values in this column. First users will need to specify the column at <strong>“Select attribute column”</strong>, and choose what type of clean-up should be performed at <strong>“select removal criteria”</strong>. Then users must click on <strong>“Confirm Clean”</strong> to enable the change. The effect can be immediately observed in the <strong>“Table of Cell Annotations”</strong> at the bottom, as shown in the lower part of the screenshot above.</p>
 </details><details><summary><b>Add column</b></summary><p><img src="ui_screenshots/cell_annotation/cell_ann_ui_newCol.png" alt="entry"><br></p>

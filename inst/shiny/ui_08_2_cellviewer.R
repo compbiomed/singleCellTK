@@ -3,7 +3,7 @@ shinyPanelCellViewer <- fluidPage(tags$div(
   h1("Cell Viewer"),
   p("Plotting tools for data visualization.",
     style = "color:grey;"),
-  h5(tags$a(href = paste0(docs.artPath, "ui_cellViewer.html"),
+  h5(tags$a(href = paste0(docs.artPath, "visualization.html"),
             "(help)", target = "_blank")),
   radioGroupButtons(
     "viewertabs",

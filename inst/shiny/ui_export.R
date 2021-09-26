@@ -3,14 +3,12 @@ shinyPanelExport <- fluidPage(
   class = "container",
   style = "margin-bottom: 10px",
   h1("Export Data"),
-  h5(tags$a(href = paste0(docs.artPath, "ui_export_data.html"),
+  h5(tags$a(href = paste0(docs.artPath, "export_data.html"),
             "(help)", target = "_blank")),
   tags$hr(),
   fluidRow(
     column(
       6,
-      #shinyDirectoryInput::directoryInput('outputDirectory', label = 'Select directory', value = '~'),
-
       shinyDirButton("outputDirectory", label = "Select directory", title = "Download"),
       # A UI to display what users select
       verbatimTextOutput("outputDirectoryPath", placeholder = TRUE),

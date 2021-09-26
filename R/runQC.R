@@ -27,7 +27,7 @@
 #' @export
 runCellQC <- function(inSCE,
   algorithms = c("QCMetrics", "scDblFinder", "cxds", "bcds",
-    "cxds_bcds_hybrid", "scrublet", "doubletFinder", "decontX"),
+    "cxds_bcds_hybrid", "decontX"), #"scrublet", "doubletFinder",
   sample = NULL,
   collectionName = NULL,
   geneSetList = NULL,

@@ -12,7 +12,7 @@ Here SCTK provides generic QC metrics, as well as contamination estimation by [d
 
 ## Select which algorithms to run
 
-Users must check all algorithms which they would like to run at once. **Rerunning the QC procedure will overwrite previous QC results as well as all downstream analysis.** The parameters for the corresponding algorithms will show up as users check it. Users may adjust the parameters as needed. Detailed explanation for each parameter can be accessed via the **"Help"** button in the parameter region of each algorithm, as shown below.  
+Users must check all algorithms which they would like to run at once. **Rerunning the QC procedure will overwrite previous QC results.** The parameters for the corresponding algorithms will show up as users check it. Users may adjust the parameters as needed. Detailed explanation for each parameter can be accessed via the **"Help"** button in the parameter region of each algorithm, as shown below.  
 
 ![check algorithms](ui_screenshots/qc/qc_ui_checkAlgo.png)\
 
@@ -26,7 +26,7 @@ After checking off all the desired QC algorithms, users should also go through o
 
 ![umap](ui_screenshots/qc/qc_ui_umap.png)\
 
-A UMAP embedding will be calculated in the end when running SCTK QC workflow. It will be used across all QC algorithms for visualization of any scores or clusters. The parameters are already described in the UI. For more information, please refer to [`getUMAP()`](../reference/getUMAP.html)  
+A UMAP embedding will be calculated in the end when running SCTK QC workflow. It will be used across all QC algorithms for visualization of any scores or clusters. The parameters are already described in the UI. For more information, please refer to `getUMAP()` 
 
 Having everything checked and ready, users can then press **"Run"** to start the procedure.
 

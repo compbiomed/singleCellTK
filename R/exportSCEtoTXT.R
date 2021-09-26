@@ -24,7 +24,8 @@ exportSCEtoFlatFile <- function(sce,
                                 overwrite = TRUE,
                                 gzipped = TRUE,
                                 prefix = 'SCE') {
-  path <- file.path(outputDir, prefix)
+  #path <- file.path(outputDir, prefix)
+  path <- outputDir
   if (!file.exists(path)){
     dir.create(path, showWarnings = FALSE, recursive = TRUE)
   }
@@ -121,7 +122,7 @@ exportSCEtoFlatFile <- function(sce,
 .writeColData <- function(sce, path, overwrite, gzipped, sample) {
   if(ncol(colData(sce)) > 0) {
     data <- SummarizedExperiment::colData(sce)
-    colDataPath <- file.path(path, paste(sample, "colData", sep="_"))
+    colDataPath <- file.path(path, paste(sample, "cellData", sep="_"))
     .writeSCEFile(data, colDataPath, overwrite, gzipped)
   }
 }
@@ -131,7 +132,7 @@ exportSCEtoFlatFile <- function(sce,
 .writeRowData <- function(sce, path, overwrite, gzipped, sample) {
   if(ncol(rowData(sce)) > 0) {
     data <- SummarizedExperiment::rowData(sce)
-    rowDataPath <-  file.path(path, paste(sample, "rowData", sep="_"))
+    rowDataPath <-  file.path(path, paste(sample, "featureData", sep="_"))
     .writeSCEFile(data, rowDataPath, overwrite, gzipped)
   }
 }

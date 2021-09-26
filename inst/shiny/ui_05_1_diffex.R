@@ -2,7 +2,7 @@ shinyPanelDiffex <- fluidPage(
   tags$div(
     class = "container",
     h1("Differential Expression"),
-    h5(tags$a(href = paste0(docs.artPath, "ui_differential_expression.html"),
+    h5(tags$a(href = paste0(docs.artPath, "differential_expression.html"),
               "(help)", target = "_blank")),
     fluidRow(
       panel(

@@ -163,7 +163,7 @@ After going over all the settings shown in the screenshots of the previous secti
 
 **Additional Usage**
 
-The documentation above is for the general usage of SCTK Heatmap page. While heatmap is an important visualization method for many types of analysis, SCTK allows importing some types analysis results. Currently, DE analysis and marker detection results are supported. Here, we will present an example of importing the DE analysis result, which was produced in the [DE UI documentation](differential_expression.html).  
+The documentation above is for the general usage of SCTK Heatmap page. While heatmap is an important visualization method for many types of analysis, SCTK allows importing some types analysis results. Currently, DE analysis and marker detection results are supported. Here, we will present an example of importing the DE analysis result.  
 
 ````{=html}
 <details>

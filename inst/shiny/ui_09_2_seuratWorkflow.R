@@ -1,7 +1,7 @@
 # User Interface for Seurat Workflow ---
 shinyPanelSeurat <- fluidPage(
     h1("Seurat"),
-    h5(tags$a(href = paste0(docs.artPath, "ui_seurat_curated_workflow.html"),
+    h5(tags$a(href = paste0(docs.artPath, "cnsl_seurat_curated_workflow.html"),
               "(help)", target = "_blank")),
     inlineCSS(list(".panel-danger>.panel-heading" = "background-color:#dcdcdc; color:#000000", ".panel-primary>.panel-heading" = "background-color:#f5f5f5; color:#000000; border-color:#dddddd", ".panel-primary" = "border-color:#dddddd;", ".panel-primary>.panel-heading+.panel-collapse>.panel-body" = "border-color:#dddddd;")),
     conditionalPanel(
