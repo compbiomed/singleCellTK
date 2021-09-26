@@ -32,7 +32,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.2.1</span>
       </span>
     </div>
 
@@ -187,13 +187,13 @@
 <ul class="nav navbar-nav navbar-right">
 <li>
   <a href="https://github.com/compbiomed/singleCellTK">
-    <span class="fas fa-github"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
 <li>
   <a href="https://twitter.com/camplab1">
-    <span class="fas fa-twitter"></span>
+    <span class="fab fa-twitter fa-lg"></span>
      
   </a>
 </li>
@@ -223,7 +223,7 @@
 <div id="introduction" class="section level1">
 <h1 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h1>
-<p>This pipeline will import data from single-cell preprocessing algorithms (e.g. CellRanger, HCA Optimus, Alevin), generate various quality control metrics (e.g. general metrics, doublet scores, contamination estimates) using multiple tools, and output results in standard data containers (e.g. SingleCellExperiment, Seurat object, AnnData). For data generated with microfluidic devices, the first major step after UMI counting is to detect cell barcodes that represent droplets containing a true cell and exclude empty droplets that only contain ambient RNA. We use the terms “Droplet” matrix to denote a count matrix that still contains empty droplets, “Cell” matrix to denote a count matrix of cells where empty droplets have been excluded but no other filtering has been performed, and “FilteredCell” matrix to indicate a count matrix where poor quality cells have also been excluded. The Droplet and Cell matrices have also been called “raw” and “filtered” matrices, respectively, by tools such as CellRanger. However, using the term “filtered” can be ambiguous as other forms of cell filtering can be applied beyond empty droplets (e.g. excluding poor-quality cells based on low number of UMIs). Both the original droplet matrix and the filtered cell matrix can be QC’ed in this pipeline. However, QC of the droplex matrix is specific for single cell data generated from microfluidic devices (e.g. 10X). To run the pipeline, users can manually <a href="http://sctk.camplab.net/v2.2.0/index.html">install</a> the singleCellTK package along with Python dependencies that may be potentially used (mainly Scrublet and AnnData). Alternatively, users can run the Docker version of the pipeline which is described in detail further down in this page.</p>
+<p>This pipeline will import data from single-cell preprocessing algorithms (e.g. CellRanger, HCA Optimus, Alevin), generate various quality control metrics (e.g. general metrics, doublet scores, contamination estimates) using multiple tools, and output results in standard data containers (e.g. SingleCellExperiment, Seurat object, AnnData). For data generated with microfluidic devices, the first major step after UMI counting is to detect cell barcodes that represent droplets containing a true cell and exclude empty droplets that only contain ambient RNA. We use the terms “Droplet” matrix to denote a count matrix that still contains empty droplets, “Cell” matrix to denote a count matrix of cells where empty droplets have been excluded but no other filtering has been performed, and “FilteredCell” matrix to indicate a count matrix where poor quality cells have also been excluded. The Droplet and Cell matrices have also been called “raw” and “filtered” matrices, respectively, by tools such as CellRanger. However, using the term “filtered” can be ambiguous as other forms of cell filtering can be applied beyond empty droplets (e.g. excluding poor-quality cells based on low number of UMIs). Both the original droplet matrix and the filtered cell matrix can be QC’ed in this pipeline. However, QC of the droplex matrix is specific for single cell data generated from microfluidic devices (e.g. 10X). To run the pipeline, users can manually <a href="https://www.camplab.net/sctk/v2.2.1/articles/articles/installation.html">install</a> the singleCellTK package along with Python dependencies that may be potentially used (mainly Scrublet and AnnData). Alternatively, users can run the Docker version of the pipeline which is described in detail further down in this page.</p>
 </div>
 <div id="running-the-pipeline" class="section level1">
 <h1 class="hasAnchor">
@@ -231,7 +231,7 @@
 <div id="running-sctk-qc-after-manual-installation-of-singlecelltk" class="section level2">
 <h2 class="hasAnchor">
 <a href="#running-sctk-qc-after-manual-installation-of-singlecelltk" class="anchor"></a>Running SCTK-QC after manual installation of singleCellTK</h2>
-<p>To run the pipeline script, users will need to download the ‘SCTK_runQC.R’ <a href="https://github.com/compbiomed/singleCellTK/blob/master/exec/SCTK_runQC.R">here</a>.</p>
+<p>To run the pipeline script, users will need to download the ‘SCTK_runQC.R’ <a href="https://github.com/compbiomed/singleCellTK/blob/devel/exec/SCTK_runQC.R">here</a>.</p>
 <p>An simple example to run this pipeline on the Cellranger V3 dataset is shown below:</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>Rscript SCTK_runQC.R \</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="sc">-</span>b <span class="sc">/</span>base<span class="sc">/</span>path \</span>
@@ -240,7 +240,7 @@
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="sc">-</span>o Output_Directory \</span>
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="sc">-</span>S <span class="cn">TRUE</span> \</span>
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="sc">-</span>F R,Python,FlatFile,HTAN</span></code></pre></div>
-<p>This pipeline enables different ways to import CellrangerV2/CellrangerV3 data for flexibility. Also, the pipeline is compatible with datasets generated by other algorithms. Please refer to the section <strong>Inputs</strong> for more details.</p>
+<p>This pipeline enables different ways to import CellrangerV2/CellrangerV3 data for flexibility. Also, the pipeline is compatible with datasets generated by other algorithms. Please refer to the section <strong>Importing data from different preprocessing tools</strong> for more details.</p>
 <p>Besides, the pipeline contains various parameters to control the process of quality control. Please refer to the section <strong>Parameters</strong> for more details.</p>
 </div>
 <div id="running-sctk-qc-with-docker" class="section level2">
@@ -255,10 +255,10 @@
 <h3 class="hasAnchor">
 <a href="#running-sctk-qc-pipeline-using-docker-image" class="anchor"></a>Running SCTK-QC pipeline using docker image</h3>
 <p>The Docker image can be obtained by running:</p>
-<pre><code>docker pull campbio/sctk_qc:2.0.0</code></pre>
-<p>The usage of each argument is the same as running command line analysis. Here is an example code to perform quanlity control of CellRangerV3 data singleCellTK docker:</p>
+<pre><code>docker pull campbio/sctk_qc:2.2.1</code></pre>
+<p>The usage of each argument is the same as running command line analysis. Here is an example code to perform quality control of CellRangerV3 data with singleCellTK docker:</p>
 <pre><code>docker run --rm -v /path/to/data:/SCTK_docker \
--it campbio/sctk_qc:2.0.0 \
+-it campbio/sctk_qc:2.2.1 \
 -b /SCTK_docker/cellranger \
 -P CellRangerV3 \
 -s pbmc_100x100 \
@@ -273,11 +273,11 @@
 <h3 class="hasAnchor">
 <a href="#running-sctk-qc-pipeline-docker-image-with-singularity" class="anchor"></a>Running SCTK-QC pipeline docker image with singularity</h3>
 <p>The Singularity image can easily be built using Docker Hub as a source:</p>
-<pre><code>singularity pull docker://campbio/sctk_qc:2.0.0</code></pre>
+<pre><code>singularity pull docker://campbio/sctk_qc:2.2.1</code></pre>
 <p>The usage of singleCellTK Singularity image is very similar to that of Docker. In Singularity 3.0+, the mount volume is <a href="https://singularity.lbl.gov/docs-mount">automatically overlaid</a>.</p>
 <p>It’s recommended to re-set the home directory when you run singularity. Singularity will mount $HOME path on your machine by default, which might contain your personal R/Python library folder. If we don’t re-set the home to mount, singularity will try to use R/Python libraries which are not built within the singularity image and cause some conflicts. You can point to some “sanitized home”, which is different from $HOME path on your machine, using argument <a href="https://singularity.lbl.gov/faq#solution-1-specify-the-home-to-mount">-H/–home</a>. Besides, you can use argument –bind/-B to specify your own mount volume, which is the path that contains the dataset and will be used to store the output of QC pipeline. The example is shown as below:</p>
 <pre><code>singularity run --home=/PathToSanitizedHome \
---bind /PathToData:/data sctk_qc_2.0.0.sif \
+--bind /PathToData:/data sctk_qc_2.2.1.sif \
 -P CellRangerV3 \
 -s gencodev34_pbmc_1k_v3 \
 -b /data/gencodev34_pbmc_1k_v3
@@ -298,7 +298,7 @@
 #$ -l cpu_arch=broadwell|haswell|skylake|cascadelake
 
 singularity run --home=/PathToSanitizedHome \ ### this also works for 'docker run'
---bind /PathToData:/data sctk_qc_2.0.0.sif \
+--bind /PathToData:/data sctk_qc_2.2.1.sif \
 -P CellRangerV3 \
 -s gencodev34_pbmc_1k_v3 \
 -b /data/gencodev34_pbmc_1k_v3
@@ -473,7 +473,7 @@ Params:   ### should not be omitted
 
   barcodeRanks:
     lower: 50</code></pre>
-<p>The format of yaml file can be found <a href="https://docs.ansible.com/ansible/latest/reference_appendices/YAMLSyntax.html">here</a>. The parameters should be consistent with the parameters of each QC function in singleCellTK package. Parameters that are not defined in this yaml file will use the default value. Please refer <a href="../../reference/index.html">reference</a> for detailed information about arguments in each QC function.</p>
+<p>The format of yaml file can be found <a href="https://docs.ansible.com/ansible/latest/reference_appendices/YAMLSyntax.html">here</a>. The parameters should be consistent with the parameters of each QC function in singleCellTK package. Parameters that are not defined in this yaml file will use the default value. Please refer <a href="../../reference/index.html#section-quality-control-preprocessing">reference</a> for detailed information about arguments in each QC function.</p>
 </div>
 <div id="parallel-computing" class="section level2">
 <h2 class="hasAnchor">
@@ -533,7 +533,7 @@ Params:   ### should not be omitted
 <span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="sc">-</span>S <span class="cn">TRUE</span> \</span>
 <span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="sc">-</span>G hg19 \</span>
 <span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="sc">-</span>F R,Python,FlatFile,HTAN</span></code></pre></div>
-<p>As shown in the <strong>Import data into SCTK</strong> section, -b specify the base path and usually it’s the folder where you ran 10x cellranger count. -s specify the sample name, which has to be same as the name of the sample folder under the base folder. The folder layout would look like the following:</p>
+<p>As shown in the <strong>Import data into SCTK</strong> section, -b specify the base path and usually it’s the output folder of 10x cellranger-count. -s specify the sample name, which has to be same as the name of the sample folder under the base folder. The folder layout would look like the following:</p>
 <pre><code>├── BasePath
 └── SampleName 
     ├── outs
@@ -563,7 +563,7 @@ Params:   ### should not be omitted
 <h3 class="hasAnchor">
 <a href="#import-data-from-rds-or-matrix-stored-in-a-text-file" class="anchor"></a>Import data from RDS or matrix stored in a text file</h3>
 <ol style="list-style-type: decimal">
-<li>If your data in stored as a SingleCellExperiment in RDS file, singleCellTK also supports that type of input. To run quality control with RDS file as input, run the following code:</li>
+<li>If your data in stored as a SingleCellExperiment in RDS file, singleCellTK also supports this type of input. To run quality control with RDS file as input, run the following code:</li>
 </ol>
 <div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>Rscript SCTK_runQC.R \</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="sc">-</span>P SceRDS \</span>
@@ -614,6 +614,7 @@ Params:   ### should not be omitted
 ├── sample1_dropletQC.html
 ├── sample1_cellQC.html
 └── sample1 
+    ├──sample1_cellQC_summary.csv
     ├── R
     |   ├── sample1_Droplets.rds
     |   └── sample1_Cells.rds
@@ -663,7 +664,7 @@ Params:   ### should not be omitted
 <a href="#doublet-detection" class="anchor"></a>Doublet Detection</h4>
 <ul>
 <li>
-<a href="https://rdrr.io/github/MarioniLab/scran/man/doubletCells.html">doubletCells</a> from the package <a href="http://bioconductor.org/packages/release/bioc/html/scran.html">scran</a>
+<a href="https://bioconductor.org/packages/release/bioc/html/scDblFinder.html">scDblFinder</a> from the package <a href="https://bioconductor.org/packages/release/bioc/html/scDblFinder.html">scDblFinder</a>
 </li>
 <li>
 <a href="https://rdrr.io/bioc/scds/man/cxds.html">cxds</a>, <a href="https://rdrr.io/bioc/scds/man/bcds.html">bcds</a>, and <a href="https://rdrr.io/bioc/scds/man/cxds_bcds_hybrid.html">cxds_bcds_hybrid</a> from the package <a href="http://bioconductor.org/packages/release/bioc/html/scds.html">scds</a>

@@ -230,7 +230,7 @@ navbar:
     - text: "Reference"
       href: reference/index.html
   right:
-    - icon: fa-github
+    - icon: fab fa-github fa-lg
       href: https://github.com/compbiomed/singleCellTK
-    - icon: fa-twitter
+    - icon: fab fa-twitter fa-lg
       href: https://twitter.com/camplab1

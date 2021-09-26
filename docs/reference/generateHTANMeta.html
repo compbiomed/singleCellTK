@@ -6,9 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Wrapper function to run one of the available dimensionality
-reduction algorithms integrated within the toolkit from `scaterPCA`,
-`seuratPCA`, `seuratICA`, `rTSNE`, `seuratTSNE`, `uwotUMAP` and `seuratUMAP`. — runDimensionalityReduction • singleCellTK</title>
+<title>Generate HTAN manifest file for droplet and cell count data — generateHTANMeta • singleCellTK</title>
 
 
 <!-- jquery -->
@@ -43,12 +41,8 @@ reduction algorithms integrated within the toolkit from `scaterPCA`,
   <link href="../extra.css" rel="stylesheet">
   <script src="../extra.js"></script>
 
-<meta property="og:title" content="Wrapper function to run one of the available dimensionality
-reduction algorithms integrated within the toolkit from `scaterPCA`,
-`seuratPCA`, `seuratICA`, `rTSNE`, `seuratTSNE`, `uwotUMAP` and `seuratUMAP`. — runDimensionalityReduction" />
-<meta property="og:description" content="Wrapper function to run one of the available dimensionality
-reduction algorithms integrated within the toolkit from `scaterPCA`,
-`seuratPCA`, `seuratICA`, `rTSNE`, `seuratTSNE`, `uwotUMAP` and `seuratUMAP`." />
+<meta property="og:title" content="Generate HTAN manifest file for droplet and cell count data — generateHTANMeta" />
+<meta property="og:description" content="Generate HTAN manifest file for droplet and cell count data" />
 
 
 
@@ -80,7 +74,7 @@ reduction algorithms integrated within the toolkit from `scaterPCA`,
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.2.1</span>
       </span>
     </div>
 
@@ -235,13 +229,13 @@ reduction algorithms integrated within the toolkit from `scaterPCA`,
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/compbiomed/singleCellTK">
-    <span class="fas fa-github"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
 <li>
   <a href="https://twitter.com/camplab1">
-    <span class="fas fa-twitter"></span>
+    <span class="fab fa-twitter fa-lg"></span>
      
   </a>
 </li>
@@ -258,83 +252,60 @@ reduction algorithms integrated within the toolkit from `scaterPCA`,
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Wrapper function to run one of the available dimensionality
-reduction algorithms integrated within the toolkit from `scaterPCA`,
-`seuratPCA`, `seuratICA`, `rTSNE`, `seuratTSNE`, `uwotUMAP` and `seuratUMAP`.</h1>
-    <small class="dont-index">Source: <a href='https://github.com/compbiomed/singleCellTK/blob/master/R/runDimensionalityReduction.R'><code>R/runDimensionalityReduction.R</code></a></small>
-    <div class="hidden name"><code>runDimensionalityReduction.Rd</code></div>
+    <h1>Generate HTAN manifest file for droplet and cell count data</h1>
+    <small class="dont-index">Source: <a href='https://github.com/compbiomed/singleCellTK/blob/master/R/sctkQCUtils.R'><code>R/sctkQCUtils.R</code></a></small>
+    <div class="hidden name"><code>generateHTANMeta.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Wrapper function to run one of the available dimensionality
-reduction algorithms integrated within the toolkit from `scaterPCA`,
-`seuratPCA`, `seuratICA`, `rTSNE`, `seuratTSNE`, `uwotUMAP` and `seuratUMAP`.</p>
+    <p>Generate HTAN manifest file for droplet and cell count data</p>
     </div>
 
-    <pre class="usage"><span class='fu'>runDimensionalityReduction</span><span class='op'>(</span>
-  <span class='va'>inSCE</span>,
-  <span class='va'>useAssay</span>,
-  <span class='va'>reducedDimName</span>,
-  method <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"scaterPCA"</span>, <span class='st'>"seuratPCA"</span>, <span class='st'>"seuratICA"</span>, <span class='st'>"rTSNE"</span>, <span class='st'>"seuratTSNE"</span>, <span class='st'>"uwotUMAP"</span>,
-    <span class='st'>"seuratUMAP"</span><span class='op'>)</span>,
-  nComponents <span class='op'>=</span> <span class='fl'>10</span>,
-  <span class='va'>...</span>
+    <pre class="usage"><span class='fu'>generateHTANMeta</span><span class='op'>(</span>
+  dropletSCE <span class='op'>=</span> <span class='cn'>NULL</span>,
+  cellSCE <span class='op'>=</span> <span class='cn'>NULL</span>,
+  <span class='va'>samplename</span>,
+  <span class='va'>htan_patient_id</span>,
+  <span class='va'>dir</span>,
+  dataType <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"Droplet"</span>, <span class='st'>"Cell"</span>, <span class='st'>"Both"</span><span class='op'>)</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>inSCE</th>
-      <td><p>Input <code>SingleCellExperiment</code> object.</p></td>
+      <th>dropletSCE</th>
+      <td><p>A <a href='https://rdrr.io/pkg/SingleCellExperiment/man/SingleCellExperiment.html'>SingleCellExperiment</a> object containing
+droplet count matrix data</p></td>
     </tr>
     <tr>
-      <th>useAssay</th>
-      <td><p>Specify the name of the assay that should be used.</p></td>
+      <th>cellSCE</th>
+      <td><p>A <a href='https://rdrr.io/pkg/SingleCellExperiment/man/SingleCellExperiment.html'>SingleCellExperiment</a> object containing
+cell count matrix data</p></td>
     </tr>
     <tr>
-      <th>reducedDimName</th>
-      <td><p>Specify the name of the output reducedDim.</p></td>
+      <th>samplename</th>
+      <td><p>The sample name of the <a href='https://rdrr.io/pkg/SingleCellExperiment/man/SingleCellExperiment.html'>SingleCellExperiment</a> objects</p></td>
     </tr>
     <tr>
-      <th>method</th>
-      <td><p>Specify a method from `scaterPCA`, `seuratPCA`, `seuratICA`,
-`rTSNE`, `seuratTSNE`, `uwotUMAP` and `seuratUMAP`.</p></td>
+      <th>htan_patient_id</th>
+      <td><p>The HTAN patient id of the sample in <a href='https://rdrr.io/pkg/SingleCellExperiment/man/SingleCellExperiment.html'>SingleCellExperiment</a> object</p></td>
     </tr>
     <tr>
-      <th>nComponents</th>
-      <td><p>Specify the number of dimensions to compute with the
-selected method.
-Only applicable with `scaterPCA`, `seuratPCA`, `seuratICA`, `seuratTSNE`
-and `seuratUMAP` methods.</p></td>
+      <th>dir</th>
+      <td><p>The output directory of the SCTK QC pipeline.</p></td>
     </tr>
     <tr>
-      <th>...</th>
-      <td><p>Additional parameters for the selected method.
-For `rTSNE`, must specify `perplexity` (default <code>30</code>) and
-`nIterations` (default <code>1000</code>).
-For `seuratTSNE`, must specify `useReduction` (either `pca` or `ica`) and
-`perplexity` (default <code>30</code>).
-For `uwotUMAP`, must specify `nNeighbors` (default <code>30</code>),
-`nIterations` (default <code>200</code>), `minDist` (default <code>0.01</code>) and
-`alpha` (default <code>1</code>).
-For `seuratUMAP`, must specify `useReduction`
-(either `pca` or `ica`), `minDist` (default <code>0.3</code>), `nNeighbors`
-(default <code>30</code>) and `spread` (default <code>1</code>).</p></td>
+      <th>dataType</th>
+      <td><p>Type of the input data. It can be one of "Droplet", "Cell" or "Both".</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A SingleCellExperiment object with PCA computation
-updated in <code>reducedDim(inSCE, reducedDimName)</code>.</p>
+    <p>A <a href='https://rdrr.io/pkg/SingleCellExperiment/man/SingleCellExperiment.html'>SingleCellExperiment</a> object which combines all
+objects in sceList. The colData is merged.</p>
 
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='st'>"mouseBrainSubsetSCE"</span>, package <span class='op'>=</span> <span class='st'>"singleCellTK"</span><span class='op'>)</span>
-<span class='va'>mouseBrainSubsetSCE</span> <span class='op'>&lt;-</span> <span class='fu'>runDimensionalityReduction</span><span class='op'>(</span><span class='va'>mouseBrainSubsetSCE</span>,
-                                                  <span class='st'>"logcounts"</span>,
-                                                  reducedDimName <span class='op'>=</span> <span class='st'>"PCA"</span><span class='op'>)</span>
-</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

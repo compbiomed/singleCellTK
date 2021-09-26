@@ -32,7 +32,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.2.1</span>
       </span>
     </div>
 
@@ -187,13 +187,13 @@
 <ul class="nav navbar-nav navbar-right">
 <li>
   <a href="https://github.com/compbiomed/singleCellTK">
-    <span class="fas fa-github"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
 <li>
   <a href="https://twitter.com/camplab1">
-    <span class="fas fa-twitter"></span>
+    <span class="fab fa-twitter fa-lg"></span>
      
   </a>
 </li>
@@ -269,7 +269,7 @@
 </div>
 
 <div id="console" class="tabcontent">
-<p>SCTK provides plenty of methods to visualize users analysis, including the plotting for intermediate attribute for parameter decision, traditional scatter/box/violin plot for cells, and <a href="cnsl_heatmap.html">heatmap</a>. Additionally, there are also wrappers of the base functions that are used for analysis type specific visualization. (e.g. QC metric plotting, differential expression heatmap) A full list of visualization functions can be found in the <a href="../../reference/index.html#section-visualization">reference tab</a> of this documentation site.</p>
+<p>SCTK provides plenty of methods to visualize users analysis, including the plotting for intermediate attribute for parameter decision, traditional scatter/box/violin plot for cells, and <a href="heatmap.html">heatmap</a>. Additionally, there are also wrappers of the base functions that are used for analysis type specific visualization. (e.g. QC metric plotting, differential expression heatmap) A full list of visualization functions can be found in the <a href="../../reference/index.html#section-visualization">reference tab</a> of this documentation site.</p>
 <p>Workflow specific visualization should be introduced in the documentation of the related steps (e.g. QC metric plotting, HVG plotting, or differential expression plotting). Here, we would provide some examples for the most frequent use case.</p>
 <details><summary><b>Example 1: Scatter plot of cells</b></summary><p>Here we will take PBMC3k dataset, from “10X,” as an example. First we will do a quick clustering with the Seurat curated workflow implemented in SCTK. Then we will present the method to generate a scatter plot of the UMAP of this dataset, with clusters labeled by color.</p>
 <details><summary><b>Preprocessing Steps</b></summary><div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">

@@ -74,7 +74,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.2.1</span>
       </span>
     </div>
 
@@ -229,13 +229,13 @@
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/compbiomed/singleCellTK">
-    <span class="fas fa-github"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
 <li>
   <a href="https://twitter.com/camplab1">
-    <span class="fas fa-twitter"></span>
+    <span class="fab fa-twitter fa-lg"></span>
      
   </a>
 </li>
@@ -261,7 +261,7 @@
     <p>Combine a list of SingleCellExperiment objects as one SingleCellExperiment object</p>
     </div>
 
-    <pre class="usage"><span class='fu'>combineSCE</span><span class='op'>(</span><span class='va'>sceList</span>, <span class='va'>by.r</span>, <span class='va'>by.c</span>, <span class='va'>combined</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>combineSCE</span><span class='op'>(</span><span class='va'>sceList</span>, by.r <span class='op'>=</span> <span class='cn'>NULL</span>, by.c <span class='op'>=</span> <span class='cn'>NULL</span>, combined <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -274,15 +274,20 @@ It does not support combining SCE with assay in delayedArray format.</p></td>
     </tr>
     <tr>
       <th>by.r</th>
-      <td><p>Specifications of the columns used for merging rowData. See 'Details'.</p></td>
+      <td><p>Specifications of the columns used for merging rowData. If set as NULL, 
+the rownames of rowData tables will be used to merging rowData. Default is NULL.</p></td>
     </tr>
     <tr>
       <th>by.c</th>
-      <td><p>Specifications of the columns used for merging colData. See 'Details'.</p></td>
+      <td><p>Specifications of the columns used for merging colData. If set as NULL, 
+the rownames of colData tables will be used to merging colData. Default is NULL.</p></td>
     </tr>
     <tr>
       <th>combined</th>
-      <td><p>logical; if TRUE, it will combine the list of SingleCellExperiment objects. See 'Details'.</p></td>
+      <td><p>logical; if TRUE, it will combine the list of SingleCellExperiment objects 
+and return a SingleCellExperiment. If FALSE, it will return a list of SingleCellExperiment whose
+rowData, colData, assay and reducedDim data slot are compatible within SCE objects in the list. 
+Default is TRUE.</p></td>
     </tr>
     </table>
 

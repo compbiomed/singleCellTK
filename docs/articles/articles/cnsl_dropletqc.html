@@ -32,7 +32,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.2.1</span>
       </span>
     </div>
 
@@ -187,13 +187,13 @@
 <ul class="nav navbar-nav navbar-right">
 <li>
   <a href="https://github.com/compbiomed/singleCellTK">
-    <span class="fas fa-github"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
 <li>
   <a href="https://twitter.com/camplab1">
-    <span class="fas fa-twitter"></span>
+    <span class="fab fa-twitter fa-lg"></span>
      
   </a>
 </li>
@@ -264,7 +264,7 @@ text-align: justify}
 <span class="co">### change the sample column</span>
 <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="fu">colData</span><span class="op">(</span><span class="va">pbmc4k.droplet</span><span class="op">)</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"sample"</span>, <span class="st">"Barcode"</span><span class="op">)</span>
 <span class="fu">colData</span><span class="op">(</span><span class="va">pbmc4k.droplet</span><span class="op">)</span><span class="op">$</span><span class="va">sample</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="st">"pbmc4k"</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">ncol</a></span><span class="op">(</span><span class="fu">colData</span><span class="op">(</span><span class="va">pbmc4k.droplet</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<p>singleCellTK also supports the importing of single-cell data from the following platforms: <a href="https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/what-is-cell-ranger">10X CellRanger</a>, <a href="https://github.com/alexdobin/STAR/blob/master/docs/STARsolo.md">STARSolo</a>, <a href="https://www.kallistobus.tools/">BUSTools</a>, <a href="https://github.com/ambrosejcarr/seqc">SEQC</a>, <a href="https://github.com/hms-dbmi/dropEst">DropEST</a>, and <a href="https://github.com/theislab/anndata">AnnData</a>. To load your own input data, please refer <a href="./import_scRNAseq_data_as_SCE_Console.html">Import data into SCTK</a> for deailed instruction.</p>
+<p>singleCellTK also supports the importing of single-cell data from the following platforms: <a href="https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/what-is-cell-ranger">10X CellRanger</a>, <a href="https://github.com/alexdobin/STAR/blob/master/docs/STARsolo.md">STARSolo</a>, <a href="https://www.kallistobus.tools/">BUSTools</a>, <a href="https://github.com/ambrosejcarr/seqc">SEQC</a>, <a href="https://github.com/hms-dbmi/dropEst">DropEST</a>, and <a href="https://github.com/theislab/anndata">AnnData</a>. To load your own input data, please refer <a href="import_data.html">Import data into SCTK</a> for deailed instruction.</p>
 </div>
 <div id="rundropletqc" class="section level3">
 <h3 class="hasAnchor">
@@ -272,9 +272,9 @@ text-align: justify}
 <p>All droplet-based QC functions are able to be run under the wrapper function runDropletQC. By default all possible QC algorithms will be run.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">pbmc4k.droplet</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/runDropletQC.html">runDropletQC</a></span><span class="op">(</span><span class="va">pbmc4k.droplet</span><span class="op">)</span></code></pre></div>
-<pre><code>## Wed Sep 22 22:13:42 2021 ... Running 'perCellQCMetrics'</code></pre>
-<pre><code>## Wed Sep 22 22:13:43 2021 ... Running 'emptyDrops'</code></pre>
-<pre><code>## Wed Sep 22 22:14:10 2021 ... Running 'barcodeRanks'</code></pre>
+<pre><code>## Sun Sep 26 13:41:24 2021 ... Running 'perCellQCMetrics'</code></pre>
+<pre><code>## Sun Sep 26 13:41:24 2021 ... Running 'emptyDrops'</code></pre>
+<pre><code>## Sun Sep 26 13:41:55 2021 ... Running 'barcodeRanks'</code></pre>
 <p>If users choose to only run a specific set of algorithms, they can specify which to run with the <code>algorithms</code> parameter.</p>
 <p>When quality control functions are run in singleCellTK, the output of the function is stored in the colData slot of the SingleCellExperiment object.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
@@ -336,13 +336,13 @@ dropletUtils_BarcodeRank_Inflection
 <tbody>
 <tr>
 <td style="text-align:left;">
-GATCGCGCAGCCTTGG-1
+CTCTACGCATGAGCGA-1
 </td>
 <td style="text-align:left;">
 pbmc4k
 </td>
 <td style="text-align:left;">
-GATCGCGCAGCCTTGG-1
+CTCTACGCATGAGCGA-1
 </td>
 <td style="text-align:right;">
 0
@@ -389,13 +389,66 @@ NA
 </tr>
 <tr>
 <td style="text-align:left;">
-GCGCGATGTAGGCATG-1
+CCGTGGATCCCTCTTT-1
 </td>
 <td style="text-align:left;">
 pbmc4k
 </td>
 <td style="text-align:left;">
-GCGCGATGTAGGCATG-1
+CCGTGGATCCCTCTTT-1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+100.00000
+</td>
+<td style="text-align:right;">
+100
+</td>
+<td style="text-align:right;">
+100
+</td>
+<td style="text-align:right;">
+100
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+TGGTTAGAGCGATTCT-1
+</td>
+<td style="text-align:left;">
+pbmc4k
+</td>
+<td style="text-align:left;">
+TGGTTAGAGCGATTCT-1
 </td>
 <td style="text-align:right;">
 0
@@ -442,37 +495,37 @@ NA
 </tr>
 <tr>
 <td style="text-align:left;">
-TTGCGTCGTACCATCA-1
+AGAATAGCACCCATGG-1
 </td>
 <td style="text-align:left;">
 pbmc4k
 </td>
 <td style="text-align:left;">
-TTGCGTCGTACCATCA-1
+AGAATAGCACCCATGG-1
 </td>
 <td style="text-align:right;">
-0
+88
 </td>
 <td style="text-align:right;">
-0
+79
 </td>
 <td style="text-align:right;">
-NaN
+67.04545
 </td>
 <td style="text-align:right;">
-NaN
+100
 </td>
 <td style="text-align:right;">
-NaN
+100
 </td>
 <td style="text-align:right;">
-NaN
+100
 </td>
 <td style="text-align:right;">
-0
+88
 </td>
 <td style="text-align:right;">
-0
+88
 </td>
 <td style="text-align:right;">
 NA
@@ -495,66 +548,13 @@ NA
 </tr>
 <tr>
 <td style="text-align:left;">
-CTGGTCTGTAAAGGAG-1
+GACTGCGCATGTCCTC-1
 </td>
 <td style="text-align:left;">
 pbmc4k
 </td>
 <td style="text-align:left;">
-CTGGTCTGTAAAGGAG-1
-</td>
-<td style="text-align:right;">
-8
-</td>
-<td style="text-align:right;">
-8
-</td>
-<td style="text-align:right;">
-100
-</td>
-<td style="text-align:right;">
-100
-</td>
-<td style="text-align:right;">
-100
-</td>
-<td style="text-align:right;">
-100
-</td>
-<td style="text-align:right;">
-8
-</td>
-<td style="text-align:right;">
-8
-</td>
-<td style="text-align:right;">
-NA
-</td>
-<td style="text-align:right;">
-NA
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:right;">
-NA
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-GGACAGAGTACTCGCG-1
-</td>
-<td style="text-align:left;">
-pbmc4k
-</td>
-<td style="text-align:left;">
-GGACAGAGTACTCGCG-1
+GACTGCGCATGTCCTC-1
 </td>
 <td style="text-align:right;">
 0
@@ -714,7 +714,7 @@ NA
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co">#After filtering:</span>
 <span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span><span class="op">(</span><span class="va">pbmc4k.droplet</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1] 33694   337</code></pre>
+<pre><code>## [1] 33694   334</code></pre>
 <p>We can compare the average total UMI counts per cell before and after cell filtration:</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/plotSCEViolinColData.html">plotSCEViolinColData</a></span><span class="op">(</span><span class="va">pbmc4k.droplet.prefilt</span>, coldata <span class="op">=</span> <span class="st">"sum"</span>, summary <span class="op">=</span> <span class="st">"mean"</span>, title <span class="op">=</span> <span class="st">"Pre-filter"</span>, ylab <span class="op">=</span> <span class="st">"Total counts"</span><span class="op">)</span>
@@ -779,7 +779,7 @@ NA
 ## 
 ## other attached packages:
 ##  [1] BiocFileCache_1.14.0        dbplyr_2.1.0               
-##  [3] dplyr_1.0.5                 singleCellTK_2.2.0         
+##  [3] dplyr_1.0.5                 singleCellTK_2.2.1         
 ##  [5] DelayedArray_0.16.2         Matrix_1.3-3               
 ##  [7] SingleCellExperiment_1.12.0 SummarizedExperiment_1.20.0
 ##  [9] Biobase_2.50.0              GenomicRanges_1.42.0       

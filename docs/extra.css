@@ -28,7 +28,7 @@ body {font-family: Arial;}
 
 .tabcontent {
   display: none;
-  padding: 10px 16px;
+  padding: 6px 12px;
   border: 1px solid #ccc;
   border-top: none;
 }
@@ -44,13 +44,4 @@ img {
 
 img:hover {
   box-shadow: 0 0 2px 1px rgba(0, 140, 186, 0.5);
-}
-
-summary {
-  cursor: pointer;
-}
-
-details {
-  padding-inline-start: 1em;
-  margin-bottom: 10px;
 }
