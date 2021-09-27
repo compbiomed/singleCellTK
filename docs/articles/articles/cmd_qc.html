@@ -32,91 +32,115 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.2.1</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
 <li>
-  <a href="../../articles/articles/introduction_to_SCTK.html">General Workflow</a>
+  <a href="../../articles/articles/installation.html">Installation</a>
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Shell Command Line Analysis
+    Documentation
      
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
-<li>
-      <a href="../../articles/articles/cmd_import_scRNAseq_data_as_SCE.html">Import data into SCTK</a>
-    </li>
-    <li>
-      <a href="../../articles/articles/cmd_qc.html">Quality Control</a>
-    </li>
-  </ul>
-</li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    R Console Analysis
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
-<li>
-      <a href="../../articles/articles/cnsl_import_scRNAseq_data_as_SCE.html">Import data into SCTK</a>
-    </li>
-    <li>
-      <a href="../../articles/articles/cnsl_dropletqc.html">Quality Control of droplet data</a>
-    </li>
-    <li>
-      <a href="../../articles/articles/cnsl_cellqc.html">Quality Control of cell data</a>
-    </li>
-    <li>
-      <a href="../../articles/articles/cnsl_normalization.html">Normalization</a>
-    </li>
-    <li>
-      <a href="../../articles/articles/cnsl_batch_correction.html">Batch Correction</a>
-    </li>
-    <li>
-      <a href="../../articles/articles/cnsl_feature_selection.html">Feature Selection</a>
-    </li>
-    <li>
-      <a href="../../articles/articles/cnsl_dimensionality_reduction.html">Dimensionality Reduction</a>
-    </li>
-    <li>
-      <a href="../../articles/articles/cnsl_clustering.html">Clustering</a>
-    </li>
-    <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Differential Expression</a>
+<li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Data</a>
       <ul class="dropdown-menu" role="menu">
 <li>
-          <a href="../../articles/articles/cnsl_differential_expression.html">Differential Expression</a>
+          <a href="../../articles/articles/import_data.html">Import Data</a>
         </li>
         <li>
-          <a href="../../articles/articles/cnsl_find_marker.html">Find Marker via DE</a>
+          <a href="../../articles/articles/cmd_import_scRNAseq_data_as_SCE.html">Import Data in Commandline</a>
+        </li>
+        <li>
+          <a href="../../articles/articles/import_genesets.html">Import Gene Sets</a>
+        </li>
+        <li>
+          <a href="../../articles/articles/import_annotation.html">Annotation</a>
+        </li>
+        <li>
+          <a href="../../articles/articles/export_data.html">Export Data</a>
+        </li>
+        <li>
+          <a href="../../articles/articles/delete_data.html">Delete Data</a>
         </li>
       </ul>
 </li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Enrichment Analysis</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">QC &amp; Filtering</a>
       <ul class="dropdown-menu" role="menu">
 <li>
-          <a href="../../articles/articles/cnsl_gsva.html">GSVA</a>
+          <a href="../../articles/articles/cmd_qc.html">QC with commandline</a>
         </li>
         <li>
+          <a href="../../articles/articles/cnsl_cellqc.html">Cell QC in R console</a>
+        </li>
+        <li>
+          <a href="../../articles/articles/cnsl_dropletqc.html">Droplet QC in R console</a>
+        </li>
+        <li>
+          <a href="../../articles/articles/ui_qc.html">QC in the UI</a>
+        </li>
+        <li>
+          <a href="../../articles/articles/filtering.html">Filtering</a>
+        </li>
+      </ul>
+</li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Normalization &amp; Batch Correction</a>
+      <ul class="dropdown-menu" role="menu">
+<li>
+          <a href="../../articles/articles/cnsl_normalization.html">Normalization</a>
+        </li>
+        <li>
+          <a href="../../articles/articles/batch_correction.html">Batch Correction</a>
+        </li>
+      </ul>
+</li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Feature Selection &amp; Dimensionality Reduction</a>
+      <ul class="dropdown-menu" role="menu">
+<li>
+          <a href="../../articles/articles/cnsl_feature_selection.html">Feature Selection</a>
+        </li>
+        <li>
+          <a href="../../articles/articles/cnsl_dimensionality_reduction.html">Dimensionality Reduction</a>
+        </li>
+        <li>
+          <a href="../../articles/articles/cnsl_2d_embedding.html">2D Embedding</a>
+        </li>
+      </ul>
+</li>
+    <li>
+      <a href="../../articles/articles/clustering.html">Clustering</a>
+    </li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Differential Expression &amp; Cell Type Labeling</a>
+      <ul class="dropdown-menu" role="menu">
+<li>
+          <a href="../../articles/articles/differential_expression.html">Differential Expression</a>
+        </li>
+        <li>
+          <a href="../../articles/articles/find_marker.html">Find Marker</a>
+        </li>
+        <li>
+          <a href="../../articles/articles/cell_type_labeling.html">Cell Type Labeling</a>
+        </li>
+      </ul>
+</li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Pathway &amp; Enrichment Analysis</a>
+      <ul class="dropdown-menu" role="menu">
+<li>
           <a href="../../articles/articles/cnsl_enrichR.html">EnrichR</a>
         </li>
-      </ul>
-</li>
-    <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Visualization</a>
-      <ul class="dropdown-menu" role="menu">
-<li>
-          <a href="../../articles/articles/cnsl_visualization.html">General Visualization</a>
-        </li>
         <li>
-          <a href="../../articles/articles/cnsl_heatmap.html">Heatmap Visualization</a>
+          <a href="../../articles/articles/pathwayAnalysis.html">Pathway Analysis</a>
         </li>
       </ul>
 </li>
@@ -127,111 +151,7 @@
           <a href="../../articles/articles/cnsl_seurat_curated_workflow.html">Seurat</a>
         </li>
         <li>
-          <a href="../../articles/articles/cnsl_celda_curated_workflow.html">Celda</a>
-        </li>
-      </ul>
-</li>
-  </ul>
-</li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Shiny UI Analysis
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
-<li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Data</a>
-      <ul class="dropdown-menu" role="menu">
-<li>
-          <a href="../../articles/articles/ui_import_data.html">Import Data</a>
-        </li>
-        <li>
-          <a href="../../articles/articles/ui_import_genesets.html">Import Gene Sets</a>
-        </li>
-        <li>
-          <a href="../../articles/articles/ui_import_annotation.html">Annotation</a>
-        </li>
-        <li>
-          <a href="../../articles/articles/ui_export_data.html">Export Data</a>
-        </li>
-        <li>
-          <a href="../../articles/articles/ui_delete_data.html">Delete Data</a>
-        </li>
-      </ul>
-</li>
-    <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">QC &amp; Filtering</a>
-      <ul class="dropdown-menu" role="menu">
-<li>
-          <a href="../../articles/articles/ui_qc.html">Quality Control</a>
-        </li>
-        <li>
-          <a href="../../articles/articles/ui_filtering.html">Filtering</a>
-        </li>
-      </ul>
-</li>
-    <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Normalization &amp; Batch Correction</a>
-      <ul class="dropdown-menu" role="menu">
-<li>
-          <a href="../../articles/articles/ui_normalization.html">Normalization</a>
-        </li>
-        <li>
-          <a href="../../articles/articles/ui_batch_correction.html">Batch Correction</a>
-        </li>
-      </ul>
-</li>
-    <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Feature Selection &amp; Dimensionality Reduction</a>
-      <ul class="dropdown-menu" role="menu">
-<li>
-          <a href="../../articles/articles/ui_feature_selection.html">Feature Selection</a>
-        </li>
-        <li>
-          <a href="../../articles/articles/ui_dimensionality_reduction.html">Dimensionality Reduction</a>
-        </li>
-      </ul>
-</li>
-    <li>
-      <a href="../../articles/articles/ui_clustering.html">Clustering</a>
-    </li>
-    <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Differential Expression &amp; Cell Type Labeling</a>
-      <ul class="dropdown-menu" role="menu">
-<li>
-          <a href="../../articles/articles/ui_differential_expression.html">Differential Expression</a>
-        </li>
-        <li>
-          <a href="../../articles/articles/ui_find_marker.html">Find Marker</a>
-        </li>
-        <li>
-          <a href="../../articles/articles/ui_cell_type_labeling.html">Cell Type Labeling</a>
-        </li>
-      </ul>
-</li>
-    <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Pathway &amp; Enrichment Analysis</a>
-      <ul class="dropdown-menu" role="menu">
-<li>
-          <a href="../../articles/articles/ui_gsva.html">GSVA</a>
-        </li>
-        <li>
-          <a href="../../articles/articles/ui_enrichR.html">EnrichR</a>
-        </li>
-      </ul>
-</li>
-    <li>
-      <a href="../../articles/articles/ui_sample_size_calc.html">Sample Size Calculator</a>
-    </li>
-    <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Curated Workflows</a>
-      <ul class="dropdown-menu" role="menu">
-<li>
-          <a href="../../articles/articles/ui_seurat_curated_workflow.html">Seurat</a>
-        </li>
-        <li>
-          <a href="../../articles/articles/ui_celda_curated_workflow.html">Celda</a>
+          <a href="../../articles/articles/celda_curated_workflow.html">Celda</a>
         </li>
       </ul>
 </li>
@@ -239,13 +159,25 @@
       <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Visualization</a>
       <ul class="dropdown-menu" role="menu">
 <li>
-          <a href="../../articles/articles/ui_cellViewer.html">cellViewer</a>
+          <a href="../../articles/articles/visualization.html">General Visualization</a>
         </li>
         <li>
-          <a href="../../articles/articles/ui_heatmap.html">Generic Heatmap</a>
+          <a href="../../articles/articles/heatmap.html">Generic Heatmap</a>
         </li>
       </ul>
 </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Tutorial
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+<li>
+      <a href="../../articles/articles/console_analysis_tutorial.html">Console Analysis Tutorial</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -255,13 +187,13 @@
 <ul class="nav navbar-nav navbar-right">
 <li>
   <a href="https://github.com/compbiomed/singleCellTK">
-    <span class="fa fa-github"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
 <li>
   <a href="https://twitter.com/camplab1">
-    <span class="fa fa-twitter"></span>
+    <span class="fab fa-twitter fa-lg"></span>
      
   </a>
 </li>
@@ -275,8 +207,7 @@
 
       
 
-      </header><link href="cmd_qc_files/anchor-sections-1.0/anchor-sections.css" rel="stylesheet">
-<script src="cmd_qc_files/anchor-sections-1.0/anchor-sections.js"></script><div class="row">
+      </header><script src="cmd_qc_files/header-attrs-2.7/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Generation of comprehensive quality control metrics with SCTK</h1>
@@ -292,7 +223,7 @@
 <div id="introduction" class="section level1">
 <h1 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h1>
-<p>This pipeline will import data from single-cell preprocessing algorithms (e.g. CellRanger, HCA Optimus, Alevin), generate various quality control metrics (e.g. general metrics, doublet scores, contamination estimates) using multiple tools, and output results in standard data containers (e.g. SingleCellExperiment, Seurat object, AnnData). For data generated with microfluidic devices, the first major step after UMI counting is to detect cell barcodes that represent droplets containing a true cell and exclude empty droplets that only contain ambient RNA. We use the terms “Droplet” matrix to denote a count matrix that still contains empty droplets, “Cell” matrix to denote a count matrix of cells where empty droplets have been excluded but no other filtering has been performed, and “FilteredCell” matrix to indicate a count matrix where poor quality cells have also been excluded. The Droplet and Cell matrices have also been called “raw” and “filtered” matrices, respectively, by tools such as CellRanger. However, using the term “filtered” can be ambiguous as other forms of cell filtering can be applied beyond empty droplets (e.g. excluding poor-quality cells based on low number of UMIs). Both the original droplet matrix and the filtered cell matrix can be QC’ed in this pipeline. However, QC of the droplex matrix is specific for single cell data generated from microfluidic devices (e.g. 10X). To run the pipeline, users can manually <a href="http://sctk.camplab.net/v2.2.0/index.html">install</a> the singleCellTK package along with Python dependencies that may be potentially used (mainly Scrublet and AnnData). Alternatively, users can run the Docker version of the pipeline which is described in detail further down in this page.</p>
+<p>This pipeline will import data from single-cell preprocessing algorithms (e.g. CellRanger, HCA Optimus, Alevin), generate various quality control metrics (e.g. general metrics, doublet scores, contamination estimates) using multiple tools, and output results in standard data containers (e.g. SingleCellExperiment, Seurat object, AnnData). For data generated with microfluidic devices, the first major step after UMI counting is to detect cell barcodes that represent droplets containing a true cell and exclude empty droplets that only contain ambient RNA. We use the terms “Droplet” matrix to denote a count matrix that still contains empty droplets, “Cell” matrix to denote a count matrix of cells where empty droplets have been excluded but no other filtering has been performed, and “FilteredCell” matrix to indicate a count matrix where poor quality cells have also been excluded. The Droplet and Cell matrices have also been called “raw” and “filtered” matrices, respectively, by tools such as CellRanger. However, using the term “filtered” can be ambiguous as other forms of cell filtering can be applied beyond empty droplets (e.g. excluding poor-quality cells based on low number of UMIs). Both the original droplet matrix and the filtered cell matrix can be QC’ed in this pipeline. However, QC of the droplex matrix is specific for single cell data generated from microfluidic devices (e.g. 10X). To run the pipeline, users can manually <a href="https://www.camplab.net/sctk/v2.2.1/articles/articles/installation.html">install</a> the singleCellTK package along with Python dependencies that may be potentially used (mainly Scrublet and AnnData). Alternatively, users can run the Docker version of the pipeline which is described in detail further down in this page.</p>
 </div>
 <div id="running-the-pipeline" class="section level1">
 <h1 class="hasAnchor">
@@ -300,16 +231,16 @@
 <div id="running-sctk-qc-after-manual-installation-of-singlecelltk" class="section level2">
 <h2 class="hasAnchor">
 <a href="#running-sctk-qc-after-manual-installation-of-singlecelltk" class="anchor"></a>Running SCTK-QC after manual installation of singleCellTK</h2>
-<p>To run the pipeline script, users will need to download the ‘SCTK_runQC.R’ <a href="https://github.com/compbiomed/singleCellTK/blob/master/exec/SCTK_runQC.R">here</a>.</p>
+<p>To run the pipeline script, users will need to download the ‘SCTK_runQC.R’ <a href="https://github.com/compbiomed/singleCellTK/blob/devel/exec/SCTK_runQC.R">here</a>.</p>
 <p>An simple example to run this pipeline on the Cellranger V3 dataset is shown below:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1">Rscript SCTK_runQC.R \</a>
-<a class="sourceLine" id="cb1-2" title="2"><span class="op">-</span>b <span class="op">/</span>base<span class="op">/</span>path \</a>
-<a class="sourceLine" id="cb1-3" title="3"><span class="op">-</span>P CellRangerV3 \</a>
-<a class="sourceLine" id="cb1-4" title="4"><span class="op">-</span>s SampleName \</a>
-<a class="sourceLine" id="cb1-5" title="5"><span class="op">-</span>o Output_Directory \</a>
-<a class="sourceLine" id="cb1-6" title="6"><span class="op">-</span>S <span class="ot">TRUE</span> \</a>
-<a class="sourceLine" id="cb1-7" title="7"><span class="op">-</span>F R,Python,FlatFile,HTAN</a></code></pre></div>
-<p>This pipeline enables different ways to import CellrangerV2/CellrangerV3 data for flexibility. Also, the pipeline is compatible with datasets generated by other algorithms. Please refer to the section <strong>Inputs</strong> for more details.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>Rscript SCTK_runQC.R \</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="sc">-</span>b <span class="sc">/</span>base<span class="sc">/</span>path \</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="sc">-</span>P CellRangerV3 \</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="sc">-</span>s SampleName \</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="sc">-</span>o Output_Directory \</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="sc">-</span>S <span class="cn">TRUE</span> \</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="sc">-</span>F R,Python,FlatFile,HTAN</span></code></pre></div>
+<p>This pipeline enables different ways to import CellrangerV2/CellrangerV3 data for flexibility. Also, the pipeline is compatible with datasets generated by other algorithms. Please refer to the section <strong>Importing data from different preprocessing tools</strong> for more details.</p>
 <p>Besides, the pipeline contains various parameters to control the process of quality control. Please refer to the section <strong>Parameters</strong> for more details.</p>
 </div>
 <div id="running-sctk-qc-with-docker" class="section level2">
@@ -324,10 +255,10 @@
 <h3 class="hasAnchor">
 <a href="#running-sctk-qc-pipeline-using-docker-image" class="anchor"></a>Running SCTK-QC pipeline using docker image</h3>
 <p>The Docker image can be obtained by running:</p>
-<pre><code>docker pull campbio/sctk_qc:2.0.0</code></pre>
-<p>The usage of each argument is the same as running command line analysis. Here is an example code to perform quanlity control of CellRangerV3 data singleCellTK docker:</p>
+<pre><code>docker pull campbio/sctk_qc:2.2.1</code></pre>
+<p>The usage of each argument is the same as running command line analysis. Here is an example code to perform quality control of CellRangerV3 data with singleCellTK docker:</p>
 <pre><code>docker run --rm -v /path/to/data:/SCTK_docker \
--it campbio/sctk_qc:2.0.0 \
+-it campbio/sctk_qc:2.2.1 \
 -b /SCTK_docker/cellranger \
 -P CellRangerV3 \
 -s pbmc_100x100 \
@@ -342,11 +273,11 @@
 <h3 class="hasAnchor">
 <a href="#running-sctk-qc-pipeline-docker-image-with-singularity" class="anchor"></a>Running SCTK-QC pipeline docker image with singularity</h3>
 <p>The Singularity image can easily be built using Docker Hub as a source:</p>
-<pre><code>singularity pull docker://campbio/sctk_qc:2.0.0</code></pre>
+<pre><code>singularity pull docker://campbio/sctk_qc:2.2.1</code></pre>
 <p>The usage of singleCellTK Singularity image is very similar to that of Docker. In Singularity 3.0+, the mount volume is <a href="https://singularity.lbl.gov/docs-mount">automatically overlaid</a>.</p>
 <p>It’s recommended to re-set the home directory when you run singularity. Singularity will mount $HOME path on your machine by default, which might contain your personal R/Python library folder. If we don’t re-set the home to mount, singularity will try to use R/Python libraries which are not built within the singularity image and cause some conflicts. You can point to some “sanitized home”, which is different from $HOME path on your machine, using argument <a href="https://singularity.lbl.gov/faq#solution-1-specify-the-home-to-mount">-H/–home</a>. Besides, you can use argument –bind/-B to specify your own mount volume, which is the path that contains the dataset and will be used to store the output of QC pipeline. The example is shown as below:</p>
 <pre><code>singularity run --home=/PathToSanitizedHome \
---bind /PathToData:/data sctk_qc_2.0.0.sif \
+--bind /PathToData:/data sctk_qc_2.2.1.sif \
 -P CellRangerV3 \
 -s gencodev34_pbmc_1k_v3 \
 -b /data/gencodev34_pbmc_1k_v3
@@ -367,7 +298,7 @@
 #$ -l cpu_arch=broadwell|haswell|skylake|cascadelake
 
 singularity run --home=/PathToSanitizedHome \ ### this also works for 'docker run'
---bind /PathToData:/data sctk_qc_2.0.0.sif \
+--bind /PathToData:/data sctk_qc_2.2.1.sif \
 -P CellRangerV3 \
 -s gencodev34_pbmc_1k_v3 \
 -b /data/gencodev34_pbmc_1k_v3
@@ -518,7 +449,7 @@ singularity run --home=/PathToSanitizedHome \ ### this also works for 'docker ru
 <a href="#specify-parameters-using-yaml-file" class="anchor"></a>Specify parameters using yaml file</h2>
 <p>User can specify parameters for QC algorithms in this pipeline with a yaml file (supplied with -y/–yamlFile argument). The current supported QC algorithms including doublet dection (bcds, cxds, cxds_bcds_hybrid, doubletFinder, doubletCells and scrublet), decontamination (decontX), emptyDrop detection (emptyDrops) and barcodeRankDrops (barcodeRanks). A summary of each function is shown below:</p>
 <center>
-<img src="qc_yamlParameters.png" alt="QC yaml parameters">
+<img src="qc_yamlParameters.png" title="fig:" alt="QC yaml parameters">
 </center>
 <p>An example of QC parameters yaml file is shown below:</p>
 <pre><code>---
@@ -542,7 +473,7 @@ Params:   ### should not be omitted
 
   barcodeRanks:
     lower: 50</code></pre>
-<p>The format of yaml file can be found <a href="https://docs.ansible.com/ansible/latest/reference_appendices/YAMLSyntax.html">here</a>. The parameters should be consistent with the parameters of each QC function in singleCellTK package. Parameters that are not defined in this yaml file will use the default value. Please refer <a href="../../reference/index.html">reference</a> for detailed information about arguments in each QC function.</p>
+<p>The format of yaml file can be found <a href="https://docs.ansible.com/ansible/latest/reference_appendices/YAMLSyntax.html">here</a>. The parameters should be consistent with the parameters of each QC function in singleCellTK package. Parameters that are not defined in this yaml file will use the default value. Please refer <a href="../../reference/index.html#section-quality-control-preprocessing">reference</a> for detailed information about arguments in each QC function.</p>
 </div>
 <div id="parallel-computing" class="section level2">
 <h2 class="hasAnchor">
@@ -558,16 +489,16 @@ Params:   ### should not be omitted
 <h2 class="hasAnchor">
 <a href="#performing-qc-on-different-combinations-of-the-droplet-and-cell-matrix" class="anchor"></a>Performing QC on different combinations of the droplet and cell matrix</h2>
 <p>User can choose to run QC pipeline on only one of the droplet count or cell count matrix, instead of running on both. In this case, the pipeline will only take single input and perform quality control on it. One of the example is shown below:</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" title="1">Rscript SCTK_runQC.R \</a>
-<a class="sourceLine" id="cb8-2" title="2"><span class="op">-</span>b <span class="op">/</span>base<span class="op">/</span>path \</a>
-<a class="sourceLine" id="cb8-3" title="3"><span class="op">-</span>P Preprocessing_Algorithm \</a>
-<a class="sourceLine" id="cb8-4" title="4"><span class="op">-</span>s SampleName \</a>
-<a class="sourceLine" id="cb8-5" title="5"><span class="op">-</span>o Output_Directory \</a>
-<a class="sourceLine" id="cb8-6" title="6"><span class="op">-</span>S <span class="ot">TRUE</span> \</a>
-<a class="sourceLine" id="cb8-7" title="7"><span class="op">-</span>F R,Python,FlatFile,HTAN \</a>
-<a class="sourceLine" id="cb8-8" title="8"><span class="op">-</span>d Droplet \</a>
-<a class="sourceLine" id="cb8-9" title="9"><span class="op">-</span>D <span class="ot">TRUE</span> \</a>
-<a class="sourceLine" id="cb8-10" title="10"><span class="op">-</span>m EmptyDrops</a></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>Rscript SCTK_runQC.R \</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="sc">-</span>b <span class="sc">/</span>base<span class="sc">/</span>path \</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="sc">-</span>P Preprocessing_Algorithm \</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="sc">-</span>s SampleName \</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="sc">-</span>o Output_Directory \</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="sc">-</span>S <span class="cn">TRUE</span> \</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="sc">-</span>F R,Python,FlatFile,HTAN \</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="sc">-</span>d Droplet \</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="sc">-</span>D <span class="cn">TRUE</span> \</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="sc">-</span>m EmptyDrops</span></code></pre></div>
 <p>-d argument is used to specify which count matrix to used in the QC pipeline. Default is “Both”, which means take both droplet and cell count data as input.</p>
 <p>If -d argument is set as “Droplet”, the QC pipeline will only take droplet count matrix as input and perform quality control. You can choose whether to detect cells from the droplet matrix by setting -D as TRUE. If yes, cell count matrix will be detected and the pipeline will also perform quality control on this matrix and output the result. You could further define the method used to detect cells from droplet matrix by setting -m argument. -m could be one of “EmptyDrops”, “Knee” or “Inflection”. “EmptyDrops” will keep cells that pass the “runEmptyDrops” function test. “Knee” and “Inflection” will keep cells that pass the knee or inflection point returned from “runBarcodeRankDrops” function.</p>
 <p>If -d argument is set as “Cell”, the QC pipeline will only take cell count matrix as input and perform quality control. A figure showing the analysis steps and outputs of different inputs is shown below:</p>
@@ -586,23 +517,23 @@ Params:   ### should not be omitted
 <li>If the cellranger data set is saved in the default <a href="https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/output/overview">cellranger output directory</a>, you can load the data by running following code:</li>
 </ol>
 <p>For CellRangerV3:</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" title="1">Rscript SCTK_runQC.R \</a>
-<a class="sourceLine" id="cb9-2" title="2"><span class="op">-</span>b <span class="op">/</span>base<span class="op">/</span>path \</a>
-<a class="sourceLine" id="cb9-3" title="3"><span class="op">-</span>P CellRangerV3 \</a>
-<a class="sourceLine" id="cb9-4" title="4"><span class="op">-</span>s SampleName \</a>
-<a class="sourceLine" id="cb9-5" title="5"><span class="op">-</span>o Output_Directory \</a>
-<a class="sourceLine" id="cb9-6" title="6"><span class="op">-</span>S <span class="ot">TRUE</span> \</a>
-<a class="sourceLine" id="cb9-7" title="7"><span class="op">-</span>F R,Python,FlatFile,HTAN</a></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>Rscript SCTK_runQC.R \</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="sc">-</span>b <span class="sc">/</span>base<span class="sc">/</span>path \</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="sc">-</span>P CellRangerV3 \</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="sc">-</span>s SampleName \</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="sc">-</span>o Output_Directory \</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="sc">-</span>S <span class="cn">TRUE</span> \</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="sc">-</span>F R,Python,FlatFile,HTAN</span></code></pre></div>
 <p>For CellRangerV2, the reference used by cellranger needs to be specified by -G/–genome:</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" title="1">Rscript SCTK_runQC.R \</a>
-<a class="sourceLine" id="cb10-2" title="2"><span class="op">-</span>b <span class="op">/</span>base<span class="op">/</span>path \</a>
-<a class="sourceLine" id="cb10-3" title="3"><span class="op">-</span>P CellRangerV2 \</a>
-<a class="sourceLine" id="cb10-4" title="4"><span class="op">-</span>s SampleName \</a>
-<a class="sourceLine" id="cb10-5" title="5"><span class="op">-</span>o Output_Directory \</a>
-<a class="sourceLine" id="cb10-6" title="6"><span class="op">-</span>S <span class="ot">TRUE</span> \</a>
-<a class="sourceLine" id="cb10-7" title="7"><span class="op">-</span>G hg19 \</a>
-<a class="sourceLine" id="cb10-8" title="8"><span class="op">-</span>F R,Python,FlatFile,HTAN</a></code></pre></div>
-<p>As shown in the <strong>Import data into SCTK</strong> section, -b specify the base path and usually it’s the folder where you ran 10x cellranger count. -s specify the sample name, which has to be same as the name of the sample folder under the base folder. The folder layout would look like the following:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>Rscript SCTK_runQC.R \</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="sc">-</span>b <span class="sc">/</span>base<span class="sc">/</span>path \</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="sc">-</span>P CellRangerV2 \</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="sc">-</span>s SampleName \</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="sc">-</span>o Output_Directory \</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="sc">-</span>S <span class="cn">TRUE</span> \</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="sc">-</span>G hg19 \</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="sc">-</span>F R,Python,FlatFile,HTAN</span></code></pre></div>
+<p>As shown in the <strong>Import data into SCTK</strong> section, -b specify the base path and usually it’s the output folder of 10x cellranger-count. -s specify the sample name, which has to be same as the name of the sample folder under the base folder. The folder layout would look like the following:</p>
 <pre><code>├── BasePath
 └── SampleName 
     ├── outs
@@ -618,52 +549,52 @@ Params:   ### should not be omitted
 <ol start="2" style="list-style-type: decimal">
 <li>If the cellranger count output have been moved out of the default <a href="https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/output/overview">cellranger output directory</a>, you can specified the path to droplet and cell count matrix using arguments -R and -C:</li>
 </ol>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" title="1">Rscript SCTK_runQC.R \</a>
-<a class="sourceLine" id="cb12-2" title="2"><span class="op">-</span>P CellRangerV2 \</a>
-<a class="sourceLine" id="cb12-3" title="3"><span class="op">-</span>C <span class="op">/</span>path<span class="op">/</span>to<span class="op">/</span>cell<span class="op">/</span>matrix \</a>
-<a class="sourceLine" id="cb12-4" title="4"><span class="op">-</span>R <span class="op">/</span>path<span class="op">/</span>to<span class="op">/</span>droplet<span class="op">/</span>matrix \</a>
-<a class="sourceLine" id="cb12-5" title="5"><span class="op">-</span>s SampleName \</a>
-<a class="sourceLine" id="cb12-6" title="6"><span class="op">-</span>o Output_Directory \</a>
-<a class="sourceLine" id="cb12-7" title="7"><span class="op">-</span>S <span class="ot">TRUE</span> \</a>
-<a class="sourceLine" id="cb12-8" title="8"><span class="op">-</span>F R,Python,FlatFile,HTAN</a></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>Rscript SCTK_runQC.R \</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="sc">-</span>P CellRangerV2 \</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="sc">-</span>C <span class="sc">/</span>path<span class="sc">/</span>to<span class="sc">/</span>cell<span class="sc">/</span>matrix \</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="sc">-</span>R <span class="sc">/</span>path<span class="sc">/</span>to<span class="sc">/</span>droplet<span class="sc">/</span>matrix \</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="sc">-</span>s SampleName \</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="sc">-</span>o Output_Directory \</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="sc">-</span>S <span class="cn">TRUE</span> \</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a><span class="sc">-</span>F R,Python,FlatFile,HTAN</span></code></pre></div>
 <p>In this case, you <strong>must</strong> skip -b arguments and you can also skip -G argument for CellRangerV2 data.</p>
 </div>
 <div id="import-data-from-rds-or-matrix-stored-in-a-text-file" class="section level3">
 <h3 class="hasAnchor">
 <a href="#import-data-from-rds-or-matrix-stored-in-a-text-file" class="anchor"></a>Import data from RDS or matrix stored in a text file</h3>
 <ol style="list-style-type: decimal">
-<li>If your data in stored as a SingleCellExperiment in RDS file, singleCellTK also supports that type of input. To run quality control with RDS file as input, run the following code:</li>
+<li>If your data in stored as a SingleCellExperiment in RDS file, singleCellTK also supports this type of input. To run quality control with RDS file as input, run the following code:</li>
 </ol>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" title="1">Rscript SCTK_runQC.R \</a>
-<a class="sourceLine" id="cb13-2" title="2"><span class="op">-</span>P SceRDS \</a>
-<a class="sourceLine" id="cb13-3" title="3"><span class="op">-</span>s Samplename \</a>
-<a class="sourceLine" id="cb13-4" title="4"><span class="op">-</span>o Output_Directory \</a>
-<a class="sourceLine" id="cb13-5" title="5"><span class="op">-</span>S <span class="ot">TRUE</span> \</a>
-<a class="sourceLine" id="cb13-6" title="6"><span class="op">-</span>F R,Python,FlatFile,HTAN \</a>
-<a class="sourceLine" id="cb13-7" title="7"><span class="op">-</span>r <span class="op">/</span>path<span class="op">/</span>to<span class="op">/</span>rds<span class="op">/</span>file<span class="op">/</span>droplet.RDS \</a>
-<a class="sourceLine" id="cb13-8" title="8"><span class="op">-</span>c <span class="op">/</span>path<span class="op">/</span>to<span class="op">/</span>rds<span class="op">/</span>file<span class="op">/</span>cell.RDS</a></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>Rscript SCTK_runQC.R \</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="sc">-</span>P SceRDS \</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="sc">-</span>s Samplename \</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="sc">-</span>o Output_Directory \</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="sc">-</span>S <span class="cn">TRUE</span> \</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="sc">-</span>F R,Python,FlatFile,HTAN \</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="sc">-</span>r <span class="sc">/</span>path<span class="sc">/</span>to<span class="sc">/</span>rds<span class="sc">/</span>file<span class="sc">/</span>droplet.RDS \</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a><span class="sc">-</span>c <span class="sc">/</span>path<span class="sc">/</span>to<span class="sc">/</span>rds<span class="sc">/</span>file<span class="sc">/</span>cell.RDS</span></code></pre></div>
 <ol start="2" style="list-style-type: decimal">
 <li>If your input is stored in txt file as a matrix, which has barcodes as colnames and genes as rownames, run the following code to start the quality control pipeline:</li>
 </ol>
-<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb14-1" title="1">Rscript SCTK_runQC.R \</a>
-<a class="sourceLine" id="cb14-2" title="2"><span class="op">-</span>P CountMatrix \</a>
-<a class="sourceLine" id="cb14-3" title="3"><span class="op">-</span>s Samplename \</a>
-<a class="sourceLine" id="cb14-4" title="4"><span class="op">-</span>o Output_Directory \</a>
-<a class="sourceLine" id="cb14-5" title="5"><span class="op">-</span>S <span class="ot">TRUE</span> \</a>
-<a class="sourceLine" id="cb14-6" title="6"><span class="op">-</span>r <span class="op">/</span>path<span class="op">/</span>to<span class="op">/</span>matrix<span class="op">/</span>file<span class="op">/</span>droplet.txt \</a>
-<a class="sourceLine" id="cb14-7" title="7"><span class="op">-</span>c path<span class="op">/</span>to<span class="op">/</span>matrix<span class="op">/</span>file<span class="op">/</span>cell.txt</a></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>Rscript SCTK_runQC.R \</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="sc">-</span>P CountMatrix \</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="sc">-</span>s Samplename \</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="sc">-</span>o Output_Directory \</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="sc">-</span>S <span class="cn">TRUE</span> \</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="sc">-</span>r <span class="sc">/</span>path<span class="sc">/</span>to<span class="sc">/</span>matrix<span class="sc">/</span>file<span class="sc">/</span>droplet.txt \</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="sc">-</span>c path<span class="sc">/</span>to<span class="sc">/</span>matrix<span class="sc">/</span>file<span class="sc">/</span>cell.txt</span></code></pre></div>
 </div>
 <div id="methods-to-run-pipeline-on-data-set-generated-by-other-algorithms" class="section level3">
 <h3 class="hasAnchor">
 <a href="#methods-to-run-pipeline-on-data-set-generated-by-other-algorithms" class="anchor"></a>Methods to run pipeline on data set generated by other algorithms</h3>
 <p>If your data is preprocessed by other algorithms, you can load the data as shown in the figure above. Basically, the templated is shown below:</p>
-<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" title="1">Rscript SCTK_runQC.R \</a>
-<a class="sourceLine" id="cb15-2" title="2"><span class="op">-</span>b <span class="op">/</span>base<span class="op">/</span>path \</a>
-<a class="sourceLine" id="cb15-3" title="3"><span class="op">-</span>P Preprocessing_Algorithm \</a>
-<a class="sourceLine" id="cb15-4" title="4"><span class="op">-</span>s SampleName \</a>
-<a class="sourceLine" id="cb15-5" title="5"><span class="op">-</span>o Output_Directory \</a>
-<a class="sourceLine" id="cb15-6" title="6"><span class="op">-</span>S <span class="ot">TRUE</span> \</a>
-<a class="sourceLine" id="cb15-7" title="7"><span class="op">-</span>F R,Python,FlatFile,HTAN</a></code></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>Rscript SCTK_runQC.R \</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="sc">-</span>b <span class="sc">/</span>base<span class="sc">/</span>path \</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="sc">-</span>P Preprocessing_Algorithm \</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="sc">-</span>s SampleName \</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="sc">-</span>o Output_Directory \</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a><span class="sc">-</span>S <span class="cn">TRUE</span> \</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a><span class="sc">-</span>F R,Python,FlatFile,HTAN</span></code></pre></div>
 </div>
 </div>
 <div id="gene-sets" class="section level2">
@@ -683,6 +614,7 @@ Params:   ### should not be omitted
 ├── sample1_dropletQC.html
 ├── sample1_cellQC.html
 └── sample1 
+    ├──sample1_cellQC_summary.csv
     ├── R
     |   ├── sample1_Droplets.rds
     |   └── sample1_Cells.rds
@@ -732,7 +664,7 @@ Params:   ### should not be omitted
 <a href="#doublet-detection" class="anchor"></a>Doublet Detection</h4>
 <ul>
 <li>
-<a href="https://rdrr.io/github/MarioniLab/scran/man/doubletCells.html">doubletCells</a> from the package <a href="http://bioconductor.org/packages/release/bioc/html/scran.html">scran</a>
+<a href="https://bioconductor.org/packages/release/bioc/html/scDblFinder.html">scDblFinder</a> from the package <a href="https://bioconductor.org/packages/release/bioc/html/scDblFinder.html">scDblFinder</a>
 </li>
 <li>
 <a href="https://rdrr.io/bioc/scds/man/cxds.html">cxds</a>, <a href="https://rdrr.io/bioc/scds/man/bcds.html">bcds</a>, and <a href="https://rdrr.io/bioc/scds/man/cxds_bcds_hybrid.html">cxds_bcds_hybrid</a> from the package <a href="http://bioconductor.org/packages/release/bioc/html/scds.html">scds</a>

@@ -74,91 +74,115 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.2.1</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="../articles/articles/introduction_to_SCTK.html">General Workflow</a>
+  <a href="../articles/articles/installation.html">Installation</a>
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Shell Command Line Analysis
+    Documentation
      
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
-    <li>
-      <a href="../articles/articles/cmd_import_scRNAseq_data_as_SCE.html">Import data into SCTK</a>
-    </li>
-    <li>
-      <a href="../articles/articles/cmd_qc.html">Quality Control</a>
-    </li>
-  </ul>
-</li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    R Console Analysis
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
-    <li>
-      <a href="../articles/articles/cnsl_import_scRNAseq_data_as_SCE.html">Import data into SCTK</a>
-    </li>
-    <li>
-      <a href="../articles/articles/cnsl_dropletqc.html">Quality Control of droplet data</a>
-    </li>
-    <li>
-      <a href="../articles/articles/cnsl_cellqc.html">Quality Control of cell data</a>
-    </li>
-    <li>
-      <a href="../articles/articles/cnsl_normalization.html">Normalization</a>
-    </li>
-    <li>
-      <a href="../articles/articles/cnsl_batch_correction.html">Batch Correction</a>
-    </li>
-    <li>
-      <a href="../articles/articles/cnsl_feature_selection.html">Feature Selection</a>
-    </li>
-    <li>
-      <a href="../articles/articles/cnsl_dimensionality_reduction.html">Dimensionality Reduction</a>
-    </li>
-    <li>
-      <a href="../articles/articles/cnsl_clustering.html">Clustering</a>
-    </li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Differential Expression</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Data</a>
       <ul class="dropdown-menu" role="menu">
         <li>
-          <a href="../articles/articles/cnsl_differential_expression.html">Differential Expression</a>
+          <a href="../articles/articles/import_data.html">Import Data</a>
         </li>
         <li>
-          <a href="../articles/articles/cnsl_find_marker.html">Find Marker via DE</a>
+          <a href="../articles/articles/cmd_import_scRNAseq_data_as_SCE.html">Import Data in Commandline</a>
+        </li>
+        <li>
+          <a href="../articles/articles/import_genesets.html">Import Gene Sets</a>
+        </li>
+        <li>
+          <a href="../articles/articles/import_annotation.html">Annotation</a>
+        </li>
+        <li>
+          <a href="../articles/articles/export_data.html">Export Data</a>
+        </li>
+        <li>
+          <a href="../articles/articles/delete_data.html">Delete Data</a>
         </li>
       </ul>
     </li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Enrichment Analysis</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">QC &amp; Filtering</a>
       <ul class="dropdown-menu" role="menu">
         <li>
-          <a href="../articles/articles/cnsl_gsva.html">GSVA</a>
+          <a href="../articles/articles/cmd_qc.html">QC with commandline</a>
         </li>
+        <li>
+          <a href="../articles/articles/cnsl_cellqc.html">Cell QC in R console</a>
+        </li>
+        <li>
+          <a href="../articles/articles/cnsl_dropletqc.html">Droplet QC in R console</a>
+        </li>
+        <li>
+          <a href="../articles/articles/ui_qc.html">QC in the UI</a>
+        </li>
+        <li>
+          <a href="../articles/articles/filtering.html">Filtering</a>
+        </li>
+      </ul>
+    </li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Normalization &amp; Batch Correction</a>
+      <ul class="dropdown-menu" role="menu">
+        <li>
+          <a href="../articles/articles/cnsl_normalization.html">Normalization</a>
+        </li>
+        <li>
+          <a href="../articles/articles/batch_correction.html">Batch Correction</a>
+        </li>
+      </ul>
+    </li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Feature Selection &amp; Dimensionality Reduction</a>
+      <ul class="dropdown-menu" role="menu">
+        <li>
+          <a href="../articles/articles/cnsl_feature_selection.html">Feature Selection</a>
+        </li>
+        <li>
+          <a href="../articles/articles/cnsl_dimensionality_reduction.html">Dimensionality Reduction</a>
+        </li>
+        <li>
+          <a href="../articles/articles/cnsl_2d_embedding.html">2D Embedding</a>
+        </li>
+      </ul>
+    </li>
+    <li>
+      <a href="../articles/articles/clustering.html">Clustering</a>
+    </li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Differential Expression &amp; Cell Type Labeling</a>
+      <ul class="dropdown-menu" role="menu">
+        <li>
+          <a href="../articles/articles/differential_expression.html">Differential Expression</a>
+        </li>
+        <li>
+          <a href="../articles/articles/find_marker.html">Find Marker</a>
+        </li>
+        <li>
+          <a href="../articles/articles/cell_type_labeling.html">Cell Type Labeling</a>
+        </li>
+      </ul>
+    </li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Pathway &amp; Enrichment Analysis</a>
+      <ul class="dropdown-menu" role="menu">
         <li>
           <a href="../articles/articles/cnsl_enrichR.html">EnrichR</a>
         </li>
-      </ul>
-    </li>
-    <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Visualization</a>
-      <ul class="dropdown-menu" role="menu">
         <li>
-          <a href="../articles/articles/cnsl_visualization.html">General Visualization</a>
-        </li>
-        <li>
-          <a href="../articles/articles/cnsl_heatmap.html">Heatmap Visualization</a>
+          <a href="../articles/articles/pathwayAnalysis.html">Pathway Analysis</a>
         </li>
       </ul>
     </li>
@@ -169,111 +193,7 @@
           <a href="../articles/articles/cnsl_seurat_curated_workflow.html">Seurat</a>
         </li>
         <li>
-          <a href="../articles/articles/cnsl_celda_curated_workflow.html">Celda</a>
-        </li>
-      </ul>
-    </li>
-  </ul>
-</li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Shiny UI Analysis
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
-    <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Data</a>
-      <ul class="dropdown-menu" role="menu">
-        <li>
-          <a href="../articles/articles/ui_import_data.html">Import Data</a>
-        </li>
-        <li>
-          <a href="../articles/articles/ui_import_genesets.html">Import Gene Sets</a>
-        </li>
-        <li>
-          <a href="../articles/articles/ui_import_annotation.html">Annotation</a>
-        </li>
-        <li>
-          <a href="../articles/articles/ui_export_data.html">Export Data</a>
-        </li>
-        <li>
-          <a href="../articles/articles/ui_delete_data.html">Delete Data</a>
-        </li>
-      </ul>
-    </li>
-    <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">QC &amp; Filtering</a>
-      <ul class="dropdown-menu" role="menu">
-        <li>
-          <a href="../articles/articles/ui_qc.html">Quality Control</a>
-        </li>
-        <li>
-          <a href="../articles/articles/ui_filtering.html">Filtering</a>
-        </li>
-      </ul>
-    </li>
-    <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Normalization &amp; Batch Correction</a>
-      <ul class="dropdown-menu" role="menu">
-        <li>
-          <a href="../articles/articles/ui_normalization.html">Normalization</a>
-        </li>
-        <li>
-          <a href="../articles/articles/ui_batch_correction.html">Batch Correction</a>
-        </li>
-      </ul>
-    </li>
-    <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Feature Selection &amp; Dimensionality Reduction</a>
-      <ul class="dropdown-menu" role="menu">
-        <li>
-          <a href="../articles/articles/ui_feature_selection.html">Feature Selection</a>
-        </li>
-        <li>
-          <a href="../articles/articles/ui_dimensionality_reduction.html">Dimensionality Reduction</a>
-        </li>
-      </ul>
-    </li>
-    <li>
-      <a href="../articles/articles/ui_clustering.html">Clustering</a>
-    </li>
-    <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Differential Expression &amp; Cell Type Labeling</a>
-      <ul class="dropdown-menu" role="menu">
-        <li>
-          <a href="../articles/articles/ui_differential_expression.html">Differential Expression</a>
-        </li>
-        <li>
-          <a href="../articles/articles/ui_find_marker.html">Find Marker</a>
-        </li>
-        <li>
-          <a href="../articles/articles/ui_cell_type_labeling.html">Cell Type Labeling</a>
-        </li>
-      </ul>
-    </li>
-    <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Pathway &amp; Enrichment Analysis</a>
-      <ul class="dropdown-menu" role="menu">
-        <li>
-          <a href="../articles/articles/ui_gsva.html">GSVA</a>
-        </li>
-        <li>
-          <a href="../articles/articles/ui_enrichR.html">EnrichR</a>
-        </li>
-      </ul>
-    </li>
-    <li>
-      <a href="../articles/articles/ui_sample_size_calc.html">Sample Size Calculator</a>
-    </li>
-    <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Curated Workflows</a>
-      <ul class="dropdown-menu" role="menu">
-        <li>
-          <a href="../articles/articles/ui_seurat_curated_workflow.html">Seurat</a>
-        </li>
-        <li>
-          <a href="../articles/articles/ui_celda_curated_workflow.html">Celda</a>
+          <a href="../articles/articles/celda_curated_workflow.html">Celda</a>
         </li>
       </ul>
     </li>
@@ -281,12 +201,24 @@
       <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Visualization</a>
       <ul class="dropdown-menu" role="menu">
         <li>
-          <a href="../articles/articles/ui_cellViewer.html">cellViewer</a>
+          <a href="../articles/articles/visualization.html">General Visualization</a>
         </li>
         <li>
-          <a href="../articles/articles/ui_heatmap.html">Generic Heatmap</a>
+          <a href="../articles/articles/heatmap.html">Generic Heatmap</a>
         </li>
       </ul>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Tutorial
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/articles/console_analysis_tutorial.html">Console Analysis Tutorial</a>
     </li>
   </ul>
 </li>
@@ -297,7 +229,13 @@
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/compbiomed/singleCellTK">
-    <span class="fa fa-github"></span>
+    <span class="fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
+<li>
+  <a href="https://twitter.com/camplab1">
+    <span class="fab fa-twitter fa-lg"></span>
      
   </a>
 </li>
@@ -329,22 +267,24 @@
   doLog <span class='op'>=</span> <span class='cn'>FALSE</span>,
   featureIndex <span class='op'>=</span> <span class='cn'>NULL</span>,
   cellIndex <span class='op'>=</span> <span class='cn'>NULL</span>,
+  scale <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  trim <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='op'>-</span><span class='fl'>2</span>, <span class='fl'>2</span><span class='op'>)</span>,
   featureIndexBy <span class='op'>=</span> <span class='st'>"rownames"</span>,
   cellIndexBy <span class='op'>=</span> <span class='st'>"rownames"</span>,
+  rowDataName <span class='op'>=</span> <span class='cn'>NULL</span>,
+  colDataName <span class='op'>=</span> <span class='cn'>NULL</span>,
   featureAnnotations <span class='op'>=</span> <span class='cn'>NULL</span>,
   cellAnnotations <span class='op'>=</span> <span class='cn'>NULL</span>,
   featureAnnotationColor <span class='op'>=</span> <span class='cn'>NULL</span>,
   cellAnnotationColor <span class='op'>=</span> <span class='cn'>NULL</span>,
-  rowDataName <span class='op'>=</span> <span class='cn'>NULL</span>,
-  colDataName <span class='op'>=</span> <span class='cn'>NULL</span>,
   rowSplitBy <span class='op'>=</span> <span class='cn'>NULL</span>,
   colSplitBy <span class='op'>=</span> <span class='cn'>NULL</span>,
   rowLabel <span class='op'>=</span> <span class='cn'>FALSE</span>,
   colLabel <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  rowLabelSize <span class='op'>=</span> <span class='fl'>8</span>,
+  colLabelSize <span class='op'>=</span> <span class='fl'>8</span>,
   rowDend <span class='op'>=</span> <span class='cn'>TRUE</span>,
   colDend <span class='op'>=</span> <span class='cn'>TRUE</span>,
-  scale <span class='op'>=</span> <span class='cn'>TRUE</span>,
-  trim <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='op'>-</span><span class='fl'>2</span>, <span class='fl'>2</span><span class='op'>)</span>,
   title <span class='op'>=</span> <span class='st'>"SCE Heatmap"</span>,
   rowTitle <span class='op'>=</span> <span class='st'>"Genes"</span>,
   colTitle <span class='op'>=</span> <span class='st'>"Cells"</span>,
@@ -386,6 +326,16 @@ another feature list indicated by <code>featureIndexBy</code>. Default <code>NUL
 cell list indicated by <code>featureIndexBy</code>. Default <code>NULL</code>.</p></td>
     </tr>
     <tr>
+      <th>scale</th>
+      <td><p>Whether to perform z-score scaling on each row. Default
+<code>TRUE</code>.</p></td>
+    </tr>
+    <tr>
+      <th>trim</th>
+      <td><p>A 2-element numeric vector. Values outside of this range will be
+trimmed to their nearst bound. Default <code><a href='https://rdrr.io/r/base/c.html'>c(-2, 2)</a></code></p></td>
+    </tr>
+    <tr>
       <th>featureIndexBy</th>
       <td><p>A single character specifying a column name of
 <code>rowData(inSCE)</code>, or a vector of the same length as <code><a href='https://rdrr.io/r/base/nrow.html'>nrow(inSCE)</a></code>,
@@ -397,6 +347,16 @@ where we search for the non-rowname feature indices. Default
       <td><p>A single character specifying a column name of
 <code>colData(inSCE)</code>, or a vector of the same length as <code><a href='https://rdrr.io/r/base/nrow.html'>ncol(inSCE)</a></code>,
 where we search for the non-rowname cell indices. Default <code>"rownames"</code>.</p></td>
+    </tr>
+    <tr>
+      <th>rowDataName</th>
+      <td><p>character. The column name(s) in <code>rowData</code> that need
+to be added to the annotation. Default <code>NULL</code>.</p></td>
+    </tr>
+    <tr>
+      <th>colDataName</th>
+      <td><p>character. The column name(s) in <code>colData</code> that need
+to be added to the annotation. Default <code>NULL</code>.</p></td>
     </tr>
     <tr>
       <th>featureAnnotations</th>
@@ -425,16 +385,6 @@ cell labeling. Should match the entries in the <code>cellAnnotations</code> or
 named with categories. Default <code>NULL</code>.</p></td>
     </tr>
     <tr>
-      <th>rowDataName</th>
-      <td><p>character. The column name(s) in <code>rowData</code> that need
-to be added to the annotation. Default <code>NULL</code>.</p></td>
-    </tr>
-    <tr>
-      <th>colDataName</th>
-      <td><p>character. The column name(s) in <code>colData</code> that need
-to be added to the annotation. Default <code>NULL</code>.</p></td>
-    </tr>
-    <tr>
       <th>rowSplitBy</th>
       <td><p>character. Do semi-heatmap based on the grouping of
 this(these) annotation(s). Should exist in either <code>rowDataName</code> or
@@ -461,22 +411,22 @@ a vector of the same length as full/subset <code><a href='https://rdrr.io/r/base
 customized info. Default <code>FALSE</code>.</p></td>
     </tr>
     <tr>
+      <th>rowLabelSize</th>
+      <td><p>A number for the font size of feature names. Default
+<code>8</code></p></td>
+    </tr>
+    <tr>
+      <th>colLabelSize</th>
+      <td><p>A number for the font size of cell names. Default
+<code>8</code></p></td>
+    </tr>
+    <tr>
       <th>rowDend</th>
       <td><p>Whether to display row dendrogram. Default <code>TRUE</code>.</p></td>
     </tr>
     <tr>
       <th>colDend</th>
       <td><p>Whether to display column dendrogram. Default <code>TRUE</code>.</p></td>
-    </tr>
-    <tr>
-      <th>scale</th>
-      <td><p>Whether to perform z-score scaling on each row. Default
-<code>TRUE</code>.</p></td>
-    </tr>
-    <tr>
-      <th>trim</th>
-      <td><p>A 2-element numeric vector. Values outside of this range will be
-trimmed to their nearst bound. Default <code><a href='https://rdrr.io/r/base/c.html'>c(-2, 2)</a></code></p></td>
     </tr>
     <tr>
       <th>title</th>
@@ -529,7 +479,7 @@ Default <code>NULL</code>.</p></td>
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>scExample</span>, package <span class='op'>=</span> <span class='st'>"singleCellTK"</span><span class='op'>)</span>
 <span class='fu'>plotSCEHeatmap</span><span class='op'>(</span><span class='va'>sce</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>3</span>,<span class='fl'>1</span><span class='op'>:</span><span class='fl'>3</span><span class='op'>]</span>, useAssay <span class='op'>=</span> <span class='st'>"counts"</span><span class='op'>)</span>
-</div><div class='img'><img src='plotSCEHeatmap-1.png' alt='' width='700' height='433' /></div></pre>
+</div><div class='img'><img src='plotSCEHeatmap-1.png' alt='' width='700' height='433' /></div><div class='img'><img src='plotSCEHeatmap-2.png' alt='' width='700' height='433' /></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

@@ -142,6 +142,8 @@ shinyServer(function(input, output, session) {
 
   updateFeatureAnnots <- function(){
     selectRowData <- colnames(rowData(vals$counts))
+    updateSelectInput(session, "gsByParam",
+                      choices = c("rownames", selectRowData))
     updateSelectInput(session, "importFeatureDispOpt",
                       choices = c("Rownames (Default)", selectRowData))
     updateSelectInput(session, "filteredFeature",
@@ -266,7 +268,7 @@ shinyServer(function(input, output, session) {
       updateSelectInputTag(session, "assaySelectFS_Norm", recommended = c("raw"))
     }
     else{
-      updateSelectInputTag(session, "assaySelectFS_Norm", recommended = c("transformed", "normalized", "scaled"))
+      updateSelectInputTag(session, "assaySelectFS_Norm", recommended = c("transformed", "normalized"))
     }
     updateSelectInputTag(session, "filterAssaySelect", choices = currassays)
     updateSelectInputTag(session, "qcAssaySelect", recommended = "raw")
@@ -323,19 +325,19 @@ shinyServer(function(input, output, session) {
 
   observeEvent(vals$original, {
     if (!is.null(vals$original)) {
-      if (!is.null(metadata(vals$original)$sctk$genesets)) {
-        newGSchoices <- sctkListGeneSetCollections(vals$original)
-        updateSelectInput(session, "gsExisting", choices = c("None", newGSchoices))
-        updateSelectInput(session, "QCMgeneSets", choices =c("None", newGSchoices))
-        shinyjs::show(id = "gsAddToExisting", anim = FALSE)
-      } else {
-        shinyjs::hide(id = "gsAddToExisting", anim = FALSE)
-        updateSelectInput(session, "gsExisting", choices = c("None"), selected = "None")
-        updateSelectInput(session, "QCMgeneSets", choices =c("None"), selected = "None")
-      }
+      #if (!is.null(metadata(vals$original)$sctk$genesets)) {
+        #newGSchoices <- sctkListGeneSetCollections(vals$original)
+        #updateSelectInput(session, "gsExisting", choices = c("None", newGSchoices))
+        #updateSelectInput(session, "QCMgeneSets", choices =c("None", newGSchoices))
+        #shinyjs::show(id = "gsAddToExisting", anim = FALSE)
+      #} else {
+        #shinyjs::hide(id = "gsAddToExisting", anim = FALSE)
+        #updateSelectInput(session, "gsExisting", choices = c("None"), selected = "None")
+        #updateSelectInput(session, "QCMgeneSets", choices =c("None"), selected = "None")
+      #}
       shinyjs::show(id="combineOptions")
-      gsByChoices <- c("None", "rownames", names(rowData(vals$original)))
-      updateSelectInput(session, "gsByParam", choices = gsByChoices, selected = "rownames")
+      #gsByChoices <- c("None", "rownames", names(rowData(vals$original)))
+      #updateSelectInput(session, "gsByParam", choices = gsByChoices, selected = "rownames")
     } else {
       shinyjs::hide(id="combineOptions")
     }
@@ -948,6 +950,11 @@ shinyServer(function(input, output, session) {
       updateCheckboxGroupInput(session, 'geneSetDB', choices = geneSetDBChoices)
 
       updateSeuratUIFromRDS(vals$counts)
+      cleanGSTable()
+      # TODO: There are more things that need to be cleaned when uploading new
+      # dataset, including any plots, tables that are origined from the old
+      # datasets. Otherwise, errors may pop out when Shiny listens to the new
+      # object but cannot find the old result.
     })
     callModule(module = nonLinearWorkflow, id = "nlw-import", parent = session, qcf = TRUE)
   })
@@ -1262,11 +1269,12 @@ shinyServer(function(input, output, session) {
   })
 
   #-----------#
-  # Gene Sets #
+  # Gene Sets ####
   #-----------#
   numGS <- reactiveValues(id_count = 0)
 
   addToGSTable <- function(nameCol, locCol) {
+    numGS$id_count <- numGS$id_count + 1
     id <- paste0("geneSet", numGS$id_count)
     fluidRowStyle <- paste0(paste0("#", id), "{border-bottom: 1px solid #bababa; padding-top: .9%; padding-bottom: .5%}")
     insertUI(
@@ -1280,6 +1288,40 @@ shinyServer(function(input, output, session) {
     )
   }
 
+  vals$defaultQCGS <- c("None" = "none",
+                        "Human Mitochondrial Genes (Ensembl)" = "he",
+                        "Human Mitochondrial Genes (Symbol)" = "hs",
+                        "Mouse Mitochondrial Genes (Ensembl)" = "me",
+                        "Mouse Mitochondrial Genes (Symbol)" = "ms")
+  cleanGSTable <- function() {
+    for (i in seq(numGS$id_count)) {
+      removeUI(
+        selector = paste0("#geneSet", i)
+      )
+    }
+    numGS$id_count <- 0
+    if (!is.null(vals$counts)) {
+      existGS <- sctkListGeneSetCollections(vals$counts)
+      if (length(existGS) > 0) {
+        for (i in existGS) {
+          addToGSTable(i, "SCE Object")
+        }
+        updateSelectInput(session, "gsExisting", choices = c("None", existGS))
+        names(existGS) <- existGS
+        updateSelectInput(session, "QCMgeneSets", choices =c(vals$defaultQCGS, existGS),
+                          selected = "none")
+        shinyjs::show(id = "gsAddToExisting", anim = FALSE)
+      } else {
+        shinyjs::hide(id = "gsAddToExisting", anim = FALSE)
+      }
+    } else {
+      updateSelectInput(session, "gsExisting", choices = "None")
+      updateSelectInput(session, "QCMgeneSets", choices = vals$defaultQCGS,
+                        selected = "none")
+      shinyjs::hide(id = "gsAddToExisting", anim = FALSE)
+    }
+  }
+
   handleGSPasteOption <- function(byParam) {
     if (!nzchar(input$geneSetText)) {
       shinyjs::show(id = "gsUploadError", anim = FALSE)
@@ -1289,13 +1331,13 @@ shinyServer(function(input, output, session) {
       shinyjs::hide(id = "gsUploadError", anim = FALSE)
       setList <- formatGeneSetList(input$geneSetText)
       if (nzchar(input$gsCollectionNameText)) {
-        vals$original <- importGeneSetsFromList(vals$original,
+        vals$counts <- importGeneSetsFromList(vals$counts,
                                                 setList,
                                                 by = byParam,
                                                 collectionName = input$gsCollectionNameText)
         addToGSTable(input$gsCollectionNameText, "Paste-In")
       } else if (input$gsExisting != "None") {
-        vals$original <- importGeneSetsFromList(vals$original,
+        vals$counts <- importGeneSetsFromList(vals$counts,
                                                 setList,
                                                 by = byParam,
                                                 collectionName = input$gsExisting)
@@ -1317,7 +1359,7 @@ shinyServer(function(input, output, session) {
           shinyjs::show(id = "gsUploadError", anim = FALSE)
         } else {
           shinyjs::hide(id = "gsUploadError", anim = FALSE)
-          vals$original <- importGeneSetsFromGMT(vals$original,
+          vals$counts <- importGeneSetsFromGMT(vals$counts,
                                                  input$geneSetGMT$datapath,
                                                  by = byParam,
                                                  collectionName = input$gsCollectionNameGMT)
@@ -1329,7 +1371,7 @@ shinyServer(function(input, output, session) {
           shinyjs::show(id = "gsUploadError", anim = FALSE)
         } else {
           shinyjs::hide(id = "gsUploadError", anim = FALSE)
-          vals$original <- importGeneSetsFromMSigDB(vals$original,
+          vals$counts <- importGeneSetsFromMSigDB(vals$counts,
                                                     input$geneSetDB,
                                                     by = byParam)
           for(i in input$geneSetDB){
@@ -1338,10 +1380,23 @@ shinyServer(function(input, output, session) {
           }
         }
 
+      } else if (input$geneSetSourceChoice == "gsMito") {
+        vals$counts <- importMitoGeneSet(vals$counts,
+                                         reference = input$geneSetMitoSpecies,
+                                         id = input$geneSetMitoID,
+                                         by = byParam,
+                                         collectionName = input$geneSetMitoName)
+        addToGSTable(input$geneSetMitoName, "SCTK Curated Geneset")
       } else if (input$geneSetSourceChoice == "gsPasteUpload") {
         handleGSPasteOption(byParam)
       }
 
+      allGS <- sctkListGeneSetCollections(vals$counts)
+      updateSelectInput(session, "gsExisting", choices = c("None", allGS))
+      names(allGS) <- allGS
+      updateSelectInput(session, "QCMgeneSets", choices =c(vals$defaultQCGS, allGS),
+                        selected = "none")
+      shinyjs::show(id = "gsAddToExisting", anim = FALSE)
     })
   })
 
@@ -1459,6 +1514,12 @@ shinyServer(function(input, output, session) {
   observeEvent(input$QCMhelp, {
     showModal(QCMHelpModal())
   })
+  observeEvent(input$QCImportGS, {
+    showTab(inputId = "navbar",
+            target = "Import Gene Sets",
+            select = TRUE,
+            session = session)
+  })
 
 
   # format the parameters for decontX
@@ -1574,8 +1635,35 @@ shinyServer(function(input, output, session) {
           qcSample <- NULL
         }
         qcCollName <- NULL
-        if (input$QCMgeneSets != "None") {
-          qcCollName <- input$QCMgeneSets
+
+        if (input$QCMgeneSets != "none") {
+          if (input$QCMgeneSets %in% c("he", "hs", "me", "ms")) {
+            if (input$QCMgeneSets == "he") {
+              # Import Human Mito Ensembl
+              mgsRef <- "human"
+              mgsId <- "ensemble"
+            } else if (input$QCMgeneSets == "hs") {
+              # Import Human Mito Symbol
+              mgsRef <- "human"
+              mgsId <- "symbol"
+            } else if (input$QCMgeneSets == "me") {
+              # Import Mouse Mito Ensembl
+              mgsRef <- "mouse"
+              mgsId <- "ensemble"
+            } else if (input$QCMgeneSets == "ms") {
+              # Import Mouse Mito Symbol
+              mgsRef <- "mouse"
+              mgsId <- "symbol"
+            }
+            vals$counts <- importMitoGeneSet(inSCE = vals$counts,
+                                             reference = mgsRef,
+                                             id = mgsId,
+                                             by = "rownames",
+                                             collectionName = "Mito")
+            qcCollName <- "Mito"
+          } else {
+            qcCollName <- input$QCMgeneSets
+          }
         }
         algoList = list()
         paramsList <- list()
@@ -2647,7 +2735,7 @@ shinyServer(function(input, output, session) {
                 circle = FALSE,
                 inline = TRUE
               )),
-              column(6, fluidRow(h6("information"), align = "center"))
+              column(6, fluidRow(h6("Heatmaps of the top features correlated with each component"), align = "center"))
             ),
             hr(),
             br(),
@@ -2781,7 +2869,7 @@ shinyServer(function(input, output, session) {
                                                                   circle = FALSE,
                                                                   inline = TRUE
                                                                 )),
-                                                                column(6, fluidRow(h6("information"), align = "center"))
+                                                                column(6, fluidRow(h6("Scatterplot of cells on selected components from a dimensionality reduction"), align = "center"))
                                                               ),
                                                               hr(),
                                                               br(),
@@ -6111,7 +6199,8 @@ shinyServer(function(input, output, session) {
                                 colDataName = input$fmHMcolData,
                                 minClustExprPerc = input$fmHMMinClustExprPerc,
                                 maxCtrlExprPerc = input$fmHMMaxCtrlExprPerc,
-                                minMeanExpr = input$fmHMMinMeanExpr)
+                                minMeanExpr = input$fmHMMinMeanExpr,
+                                rowLabel = TRUE)
             })
           })
         })
@@ -6135,7 +6224,8 @@ shinyServer(function(input, output, session) {
   output$selectPathwayGeneLists <- renderUI({
     if (!is.null(vals$counts)){
       if (!is.null(metadata(vals$original)$sctk$genesets)) {
-        newGSchoices <- sctkListGeneSetCollections(vals$original)
+        #newGSchoices <- sctkListGeneSetCollections(vals$original)
+        newGSchoices <- sctkListGeneSetCollections(vals$counts)
         selectizeInput("PathwayGeneLists", "Select Geneset Collection(s):",
                        choices = newGSchoices, multiple = TRUE)
 
@@ -6157,7 +6247,7 @@ shinyServer(function(input, output, session) {
           stop("Must select atleast one Gene List! Gene Lists can be uploaded/selected from 'Import Gene Sets tab'")
         }
         #update metadata of vals$counts
-        metadata(vals$counts)$sctk <- metadata(vals$original)$sctk
+        #metadata(vals$counts)$sctk <- metadata(vals$original)$sctk
 
         if(input$pathway == "VAM"){
 
@@ -6239,9 +6329,13 @@ shinyServer(function(input, output, session) {
     })
   })
 
+  
+  
+
  #plot results
   observeEvent(input$Plot, {
     output$pathwayPlot <- renderPlot({
+      isolate({
       if (input$pathway == "VAM"){
         if (!(is.null(vals$vamRes))){
           plotSCEViolin(inSCE = vals$vamRes, slotName = "reducedDims", itemName = input$reducedDimNames, dimension = input$GeneSets, xlab = "sample", ylab = input$GeneSets, groupBy = input$pathwayPlotVar, violin = input$violinplot, boxplot = input$boxplot, summary = input$summary)
@@ -6258,7 +6352,13 @@ shinyServer(function(input, output, session) {
 
       }
 
-      })
+    })
+     })
+    session$sendCustomMessage("close_dropDownPathway", "")
+  })
+  
+  observeEvent(input$closeDropDownPathway,{
+    session$sendCustomMessage("close_dropDownPathway", "")
   })
 
   #disable downloadPathway button if the pathway data doesn't exist

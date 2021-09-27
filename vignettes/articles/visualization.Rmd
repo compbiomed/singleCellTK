@@ -110,7 +110,7 @@ Besides the informative settings, Cell Viewer gives users the control on title, 
 <div id="console" class="tabcontent">
 ````
 
-SCTK provides plenty of methods to visualize users analysis, including the plotting for intermediate attribute for parameter decision, traditional scatter/box/violin plot for cells, and [heatmap](cnsl_heatmap.html). Additionally, there are also wrappers of the base functions that are used for analysis type specific visualization. (e.g. QC metric plotting, differential expression heatmap) A full list of visualization functions can be found in the [reference tab](../../reference/index.html#section-visualization) of this documentation site.  
+SCTK provides plenty of methods to visualize users analysis, including the plotting for intermediate attribute for parameter decision, traditional scatter/box/violin plot for cells, and [heatmap](heatmap.html). Additionally, there are also wrappers of the base functions that are used for analysis type specific visualization. (e.g. QC metric plotting, differential expression heatmap) A full list of visualization functions can be found in the [reference tab](../../reference/index.html#section-visualization) of this documentation site.  
 
 Workflow specific visualization should be introduced in the documentation of the related steps (e.g. QC metric plotting, HVG plotting, or differential expression plotting). Here, we would provide some examples for the most frequent use case. 
 

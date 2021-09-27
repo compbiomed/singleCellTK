@@ -15,7 +15,7 @@ shinyPanelFS_DimRed <- fluidPage(
         panel(
           heading = "Compute HVG",
           h5(tags$a(
-            href = paste0(docs.artPath, "ui_feature_selection.html"),
+            href = paste0(docs.artPath, "cnsl_feature_selection.html"),
             "(help)",
             target = "_blank"
           )),
@@ -60,7 +60,7 @@ shinyPanelFS_DimRed <- fluidPage(
                        ),
                        actionBttn(
                          inputId = "updatePlotFS",
-                         label = "Update", 
+                         label = "Update",
                          style = "bordered",
                          color = "primary",
                          size = "sm"
@@ -73,7 +73,7 @@ shinyPanelFS_DimRed <- fluidPage(
               circle = FALSE,
               inline = TRUE
             )),
-            column(7, fluidRow(h6("the plot highlights the top variable features (can be labeled from the button on the left) with respect to the metrics computed by the selected algorithm"), align="center"))
+            column(7, fluidRow(h6("Scatterplot of features showing the variability versus average expression"), align="center"))
           ),
           hr(),
           br(),
@@ -91,7 +91,7 @@ shinyPanelFS_DimRed <- fluidPage(
     tabPanel(
       "Dimensionality Reduction",
       h5(tags$a(
-        href = paste0(docs.artPath, "ui_dimensionality_reduction.html"),
+        href = paste0(docs.artPath, "cnsl_dimensionality_reduction.html"),
         "(help)",
         target = "_blank"
       )),
@@ -161,11 +161,11 @@ shinyPanelFS_DimRed <- fluidPage(
                       )))),
       nonLinearWorkflowUI(id = "nlw-dr")
     ),
-    
+
     tabPanel(title = "Embedding",
              h5(
                tags$a(
-                 href = paste0(docs.artPath, "ui_dimensionality_reduction.html"),
+                 href = paste0(docs.artPath, "cnsl_2d_embedding.html"),
                  "(help)",
                  target = "_blank"
                )
@@ -257,7 +257,7 @@ shinyPanelFS_DimRed <- fluidPage(
                                                       ),
                                                       actionBttn(
                                                         inputId = "updateRedDimPlot_tsneUmap",
-                                                        label = "Update", 
+                                                        label = "Update",
                                                         style = "bordered",
                                                         color = "primary",
                                                         size = "sm"
@@ -270,7 +270,7 @@ shinyPanelFS_DimRed <- fluidPage(
                                              circle = FALSE,
                                              inline = TRUE
                                            )),
-                                           column(7, fluidRow(h6("the plot highlights the top variable features (can be labeled from the button on the left) with respect to the metrics computed by the selected algorithm"), align="center"))
+                                           column(7, fluidRow(h6("Scatterplot of cells on a 2D embedding"), align="center"))
                                          ),
                                          hr(),
                                          br(),
