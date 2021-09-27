@@ -1,4 +1,7 @@
 shinyPanelfindMarker <- fluidPage(
+  tags$script("Shiny.addCustomMessageHandler('close_dropDownFM', function(x){
+                  $('html').click();
+                });"),
   tags$div(
     class = "container",
     h1("Find Marker"),
@@ -47,6 +50,11 @@ shinyPanelfindMarker <- fluidPage(
               column(
                 width = 4,
                 dropdown(
+                  fluidRow(
+                    column(12,
+                           fluidRow(actionBttn(inputId = "closeDropDownFM", label = NULL, style = "simple", color = "danger", icon = icon("times"), size = "xs"), align = "right"),
+                    )
+                  ),
                   fluidRow(
                     column(
                       width = 6,
@@ -106,7 +114,15 @@ shinyPanelfindMarker <- fluidPage(
                       width = 6,
                       selectInput("fmHMrowData", "Additional feature annotation",
                                   featureChoice, multiple = TRUE),
-                      withBusyIndicatorUI(actionButton('plotFM', "Update"))
+                      withBusyIndicatorUI(
+                        actionBttn(
+                        inputId = "plotFM",
+                        label = "Update",
+                        style = "bordered",
+                        color = "primary",
+                        size = "sm"
+                      )
+                      )
                     ),
                     column(
                       width = 6,

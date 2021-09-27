@@ -2559,7 +2559,6 @@ shinyServer(function(input, output, session) {
   })
 
   observeEvent(input$closeDropDownDimRedHeatmap, {
-    req(vals$counts)
     session$sendCustomMessage("close_dropDownDimRedHeatmap", "")
   })
 
@@ -3323,6 +3322,10 @@ shinyServer(function(input, output, session) {
       })
     }
   })
+  
+  observeEvent(input$closeDropDownClust, {
+    session$sendCustomMessage("close_dropDownClust", "")
+  })
 
   observeEvent(input$clustPlot, {
     if (is.null(vals$counts)){
@@ -3365,6 +3368,7 @@ shinyServer(function(input, output, session) {
           })
         })
       }
+      session$sendCustomMessage("close_dropDownClust", "")
     }
   })
 
@@ -4841,6 +4845,10 @@ shinyServer(function(input, output, session) {
   # Page 4: Batch Correction ####
   #-----------------------------------------------------------------------------
 
+  observeEvent(input$closeDropDownBC, {
+    session$sendCustomMessage("close_dropDownBC", "")
+  })
+  
   observeEvent(input$batchCorrMethods, {
     if (!is.null(vals$counts) &&
         !is.null(input$batchCorrMethods)) {
@@ -4980,6 +4988,7 @@ shinyServer(function(input, output, session) {
         })
       })
     }
+    session$sendCustomMessage("close_dropDownBC", "")
   })
 
   observeEvent(input$BBKNNRun, {
@@ -5923,6 +5932,10 @@ shinyServer(function(input, output, session) {
     topN <- input$deVioNRow * input$deVioNCol
     p(as.character(topN))
   })
+  
+  observeEvent(input$closeDropDownDeViolin, {
+    session$sendCustomMessage("close_dropDownDeViolin", "")
+  })
 
   observeEvent(input$dePlotVio, {
     if(!is.null(input$deResSel) &&
@@ -5952,12 +5965,17 @@ shinyServer(function(input, output, session) {
                         check_sanity = FALSE, isLogged = isLogged)
         })
       })
+      session$sendCustomMessage("close_dropDownDeViolin", "")
     }
   })
   # Linear Regression Plot
   output$deRegTotalUI <- renderUI({
     topN <- input$deRegNRow * input$deRegNCol
     p(as.character(topN))
+  })
+  
+  observeEvent(input$closeDropDownDeReg, {
+    session$sendCustomMessage("close_dropDownDeReg", "")
   })
 
   observeEvent(input$dePlotReg, {
@@ -5992,6 +6010,7 @@ shinyServer(function(input, output, session) {
                             isLogged = isLogged)
         })
       })
+      session$sendCustomMessage("close_dropDownDeReg", "")
     }
   })
 
@@ -6009,6 +6028,10 @@ shinyServer(function(input, output, session) {
                 selected = 'regulation')
   })
 
+  observeEvent(input$closeDropDownDeHM, {
+    session$sendCustomMessage("close_dropDownDeHM", "")
+  })
+  
   observeEvent(input$dePlotHM, {
     if(!is.null(input$deResSel) &&
        !input$deResSel == ""){
@@ -6026,6 +6049,7 @@ shinyServer(function(input, output, session) {
                          rowSplitBy = input$deHMSplitRow)
         })
       })
+      session$sendCustomMessage("close_dropDownDeHM", "")
     }
   })
 
@@ -6122,9 +6146,14 @@ shinyServer(function(input, output, session) {
       shinyjs::enable("fmTopN")
     }
   })
+  
+  observeEvent(input$closeDropDownFM, {
+    session$sendCustomMessage("close_dropDownFM", "")
+  })
 
   observeEvent(input$plotFM, {
     updateFMPlot()
+    session$sendCustomMessage("close_dropDownFM", "")
   })
 
   updateFMPlot <- function() {

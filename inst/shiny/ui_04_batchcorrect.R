@@ -1,5 +1,8 @@
 shinyPanelBatchcorrect <- fluidPage(
   includeCSS('styles.CSS'),
+  tags$script("Shiny.addCustomMessageHandler('close_dropDownBC', function(x){
+                  $('html').click();
+                });"),
   h1("Normalization & Batch Correction"),
   tabsetPanel(
   tabPanel(
@@ -514,6 +517,7 @@ shinyPanelBatchcorrect <- fluidPage(
                   fluidRow(
                     column(
                       width = 12,
+                      fluidRow(actionBttn(inputId = "closeDropDownBC", label = NULL, style = "simple", color = "danger", icon = icon("times"), size = "xs"), align = "right"),
                       h5(tags$a(href = "https://compbiomed.github.io/sctk_docs/articles/batch_correction.html#visualization",
                                 "(What are plotted?)", target = "_blank")),
                       selectizeInput(
@@ -531,7 +535,15 @@ shinyPanelBatchcorrect <- fluidPage(
                       p("Only result generated in the current session will be presented. ",
                         style = "color:grey;"),
                       uiOutput("batchCheckResUI"),
-                      withBusyIndicatorUI(actionButton("plotBatchCheck", "Plot"))
+                      withBusyIndicatorUI(
+                        actionBttn(
+                        inputId = "plotBatchCheck",
+                        label = "Update",
+                        style = "bordered",
+                        color = "primary",
+                        size = "sm"
+                      )
+                      )
                     )
                   ),
                   inputId = "dropDownBC",
