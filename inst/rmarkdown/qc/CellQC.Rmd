@@ -92,19 +92,7 @@ samples <- unique(colData(sce.qc)$sample)
 ### when 'sample' doesnn't exists in colData
 if (is.null(samples)) { samples <- "sample" }
 
-# reduceDims<- grep('UMAP', reducedDimNames(sce.qc), value = TRUE)
-# if (length(reduceDims) != 0) {
-#   reduceDimUsed <- reduceDims[1]
-# } else {
-#   reduceDims<- grep('TSNE', reducedDimNames(sce.qc), value = TRUE)
-#   if (length(reduceDims) == 0) {
-#     stop("No reduced dimension are available for QC visualization!")
-#   } else {
-#     reduceDimUsed <- reduceDims[1]
-#   }
-# }
-
-sce.qc <- getUMAP(sce.qc, reducedDimName = "QC_UMAP")
+sce.qc <- getUMAP(sce.qc, useAssay = "counts", reducedDimName = "QC_UMAP")
 ```
 
 ---
@@ -125,16 +113,18 @@ description_runPerCellQC <- descriptionRunPerCellQC()
 
 ```{r, "General quality control metrics", results="asis", fig.align="center", warning=FALSE, message=FALSE, echo=FALSE}
 i="General quality control metrics"
-cat(paste0('# ', i, ' \n'))
-cat("\n")
+# cat(paste0('# ', i, ' \n'))
+# cat("\n")
 
 perCellData <- c("sum", "detected", "percent.top_50")
 skipCellData <- any(!perCellData %in% names(colData(sce.qc)))
 
 if (skipCellData) {
-  cat("runPerCellQC did not complete successfully. The section of General quality control metrics is skipped")
+  #cat("runPerCellQC did not complete successfully. The section of General quality control metrics is skipped")
   plotsQCMetrics <- NULL
 } else {
+  cat(paste0('# ', i, ' \n'))
+  cat("\n")
   plotsQCMetrics<- tryCatch(
     {plotRunPerCellQCResults(sce.qc, 
                              sample = colData(sce.qc)$sample,
@@ -185,8 +175,8 @@ cat("\n\n")
 cat(paste0('## Total Mitochondrial Features {.tabset .tabset-fade} \n\n'))
 plotsQCMetrics$Violin$Gene_Subset_Features
 cat("\n\n")
-cat(paste0('## % of Library Size Occupied by Top 50 Exp. Genes {.tabset .tabset-fade} \n\n'))
-plotsQCMetrics$Violin$TopPercent
+cat(paste0('## The percentage of Library Size Occupied by Top 50 Exp. Genes {.tabset .tabset-fade} \n\n'))
+plotsQCMetrics$Violin$Gene_Subset_Top50_Percent
 cat("\n\n")
 cat(paste0('## Parameters {.tabset .tabset-fade} \n\n'))
 
@@ -211,15 +201,16 @@ description_Scrublet <- descriptionScrublet()
 
 ```{r, "Scrublet", results="asis", fig.align="center", warning=FALSE, message=FALSE, echo = FALSE}
 i="Scrublet"
-cat(paste0('## ', i, ' \n'))
+# cat(paste0('## ', i, ' \n'))
 
 scrubletData <- c("scrublet_score", "scrublet_call")
 skipScrublet <- any(!scrubletData %in% names(colData(sce.qc)))
 
 if (skipScrublet) {
-  cat("runScrublet did not complete successfully. The section of Scrublet is skipped")
+  #cat("runScrublet did not complete successfully. The section of Scrublet is skipped")
   plotsScrublet <- NULL
 } else {
+  cat(paste0('## ', i, ' \n'))
     plotsScrublet<- tryCatch(
       {plotScrubletResults(sce.qc, 
                            reducedDimName="QC_UMAP",
@@ -297,16 +288,17 @@ description_DoubletFinder <- descriptionDoubletFinder()
 
 ```{r, "DoubletFinder-0", results="asis", fig.align="center", warning=FALSE, message=FALSE, echo=FALSE}
 i="DoubletFinder"
-cat(paste0('## ', i, ' \n'))
+# cat(paste0('## ', i, ' \n'))
 
 
 doubletFinderData <- grep("doubletFinder_doublet", names(colData(sce.qc)), value=TRUE)
 skipFinder <- length(doubletFinderData)==0  
 
 if (skipFinder) {
-  cat("runDoubletFinder did not complete successfully. The section of DoubletFinder is skipped")
+  #cat("runDoubletFinder did not complete successfully. The section of DoubletFinder is skipped")
   plotDoubletFinder <- NULL
 } else {
+  cat(paste0('## ', i, ' \n'))
   plotDoubletFinder<- tryCatch(
     {plotDoubletFinderResults(inSCE = sce.qc, 
                               reducedDimName = "QC_UMAP",
@@ -400,15 +392,16 @@ description_ScDblFinder<- descriptionScDblFinder()
 
 ```{r, "ScDblFinder", results="asis", fig.align="center", warning=FALSE, message=FALSE, echo=FALSE}
 i="ScDblFinder"
-cat(paste0('## ', i, ' \n'))
+#cat(paste0('## ', i, ' \n'))
 
 scDblFinderData <- c("scDblFinder_doublet_score")
 skipScDblFinder <- any(!scDblFinderData %in% names(colData(sce.qc)))
 
 if (skipScDblFinder) {
-  cat("runScDblFinder did not complete successfully. The section of ScDblFinder is skipped")
+  #cat("runScDblFinder did not complete successfully. The section of ScDblFinder is skipped")
   plotScDblFinder <- NULL
 } else {
+  cat(paste0('## ', i, ' \n'))
   plotScDblFinder<- tryCatch(
     {plotScDblFinderResults(inSCE = sce.qc, 
                             sample = colData(sce.qc)[['sample']],
@@ -483,15 +476,16 @@ descriprion_CxdsResults<- descriptionCXDS()
 
 ```{r, "Cxds", results="asis", fig.align="center", warning=FALSE, message=FALSE, echo=FALSE}
 i="Cxds"
-cat(paste0('## ', i, ' \n'))
+# cat(paste0('## ', i, ' \n'))
 
 cvdsData <- c("scds_cxds_score", "scds_cxds_call")
 skipCxds <- any(!cvdsData %in% names(colData(sce.qc)))
 
 if (skipCxds) {
-  cat("runCxds did not complete successfully. The section of Cxds is skipped")
+  #cat("runCxds did not complete successfully. The section of Cxds is skipped")
   plotCxds <- NULL
 } else {
+  cat(paste0('## ', i, ' \n'))
   plotCxds<- tryCatch(
     {plotCxdsResults(inSCE = sce.qc, 
                      sample = colData(sce.qc)[['sample']],
@@ -577,15 +571,16 @@ descriprion_BcdsResults<- descriptionBCDS()
 
 ```{r, "Bcds", results="asis", fig.align="center", warning=FALSE, message=FALSE, echo=FALSE}
 i="Bcds"
-cat(paste0('## ', i, ' \n'))
+# cat(paste0('## ', i, ' \n'))
 
 bcdsData <- c("scds_bcds_score", "scds_bcds_call")
 skipBcds <- any(!bcdsData %in% names(colData(sce.qc)))
 
 if (skipBcds) {
-  cat("runBcds did not complete successfully. The section of Bcds is skipped")
+  #cat("runBcds did not complete successfully. The section of Bcds is skipped")
   plotBcds <- NULL
 } else {
+  cat(paste0('## ', i, ' \n'))
   plotBcds<- tryCatch(
     {plotBcdsResults(inSCE = sce.qc, 
                      sample = colData(sce.qc)[['sample']],
@@ -671,15 +666,16 @@ description_ScdsHybrid<- descriptionScdsHybrid()
 
 ```{r, "ScdsHybrid", results="asis", fig.align="center", warning=FALSE, message=FALSE, echo=FALSE}
 i="ScdsHybrid"
-cat(paste0('## ', i, ' \n'))
+# cat(paste0('## ', i, ' \n'))
 
 hybridData <- c("scds_hybrid_score", "scds_hybrid_call")
 skipScdsHybrid <- any(!hybridData %in% names(colData(sce.qc)))
 
 if (skipScdsHybrid) {
-  cat("runCxdsBcdsHybrid did not complete successfully. The section of ScdsHybrid is skipped")
+  #cat("runCxdsBcdsHybrid did not complete successfully. The section of ScdsHybrid is skipped")
   plotScdsHybrid <- NULL
 } else {
+  cat(paste0('## ', i, ' \n'))
   plotScdsHybrid<- tryCatch(
     {plotScdsHybridResults(inSCE = sce.qc, 
                            sample = colData(sce.qc)[['sample']],
@@ -760,15 +756,16 @@ description_DecontX<- descriptionDecontX()
 
 ```{r, "DecontX", results="asis", fig.align="center", warning=FALSE, message=FALSE, echo=FALSE}
 i="DecontX"
-cat(paste0('## ', i, ' \n'))
+# cat(paste0('## ', i, ' \n'))
 
 decontXData <- c("decontX_contamination", "decontX_clusters")
 skipDecontX <- any(!decontXData %in% names(colData(sce.qc)))
 
 if (skipDecontX) {
-  cat("runDecontX did not complete successfully. The section of DecontX is skipped")
+  #cat("runDecontX did not complete successfully. The section of DecontX is skipped")
   plotDecontX <- NULL
 } else {
+  cat(paste0('## ', i, ' \n'))
   plotDecontX<- tryCatch(
     {plotDecontXResults(inSCE = sce.qc, 
                         sample = colData(sce.qc)[['sample']],

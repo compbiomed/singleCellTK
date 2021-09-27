@@ -22,6 +22,9 @@ plotMarkerDiffExp(
   cellAnnotationColor = NULL,
   colSplitBy = ifelse(is.null(orderBy), NULL, colnames(inSCE@metadata$findMarker)[5]),
   rowSplitBy = "marker",
+  rowDend = FALSE,
+  colDend = FALSE,
+  title = "Top Marker Heatmap",
   ...
 )
 
@@ -43,6 +46,9 @@ plotMarkerDiffExp(
   cellAnnotationColor = NULL,
   colSplitBy = ifelse(is.null(orderBy), NULL, colnames(inSCE@metadata$findMarker)[5]),
   rowSplitBy = "marker",
+  rowDend = FALSE,
+  colDend = FALSE,
+  title = "Top Marker Heatmap",
   ...
 )
 }
@@ -111,6 +117,13 @@ this(these) annotation(s). Should exist in either \code{colDataName} or
 this(these) annotation(s). Should exist in either \code{rowDataName} or
 \code{names(featureAnnotations)}. Default \code{"marker"}, which indicates an
 auto generated annotation for this plot.}
+
+\item{rowDend}{Whether to display row dendrogram. Default \code{FALSE}.}
+
+\item{colDend}{Whether to display column dendrogram. Default \code{FALSE}.}
+
+\item{title}{Text of the title, at the top of the heatmap. Default
+\code{"Top Marker Heatmap"}.}
 
 \item{...}{Other arguments passed to \code{\link{plotSCEHeatmap}}.}
 }

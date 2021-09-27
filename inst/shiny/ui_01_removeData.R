@@ -1,7 +1,7 @@
 shinyPanelRemove <- fluidPage(
   includeCSS('styles.CSS'),
   h1("Remove Data"),
-  h5(tags$a(href = paste0(docs.artPath, "ui_delete_data.html"),
+  h5(tags$a(href = paste0(docs.artPath, "delete_data.html"),
             "(help)", target = "_blank")),
   hr(),
   h5("Select data to remove:"),

@@ -2,7 +2,7 @@ shinyPanelfindMarker <- fluidPage(
   tags$div(
     class = "container",
     h1("Find Marker"),
-    h5(tags$a(href = paste0(docs.artPath, "ui_find_marker.html"),
+    h5(tags$a(href = paste0(docs.artPath, "find_marker.html"),
               "(help)", target = "_blank")),
     sidebarLayout(
       sidebarPanel(

@@ -41,8 +41,13 @@ QCMHelpModal <- function() {
       tags$hr(),
       fluidRow(
         column(4, "collectionName"),
-        column(8, "Character. Name of a GeneSetCollection obtained by using one of the importGeneSet* functions. Default NULL.")
+        column(8, "Character. Name of a GeneSetCollection obtained by using one of the importGeneSet* functions. Preset options for mitochondrial gene sets are provided, but users have to choose the one that matches to the dataset if needed. Default None.")
       ),
+      tags$hr(),
+      fluidRow(
+        column(4, "Import Gene Sets"),
+        column(8, "Redirect link to Import Gene Sets page, where users can upload GMT files, import gene set from curated database, or paste in a customized list.")
+      )
     )
   )
 }

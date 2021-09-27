@@ -12,7 +12,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Introduction
 
-Performing comprehensive quality control (QC) is necessary to remove poor quality cells for downstream analysis of single-cell RNA sequencing (scRNA-seq) data. Within droplet-based scRNA-seq data, droplets containing cells must be differentiated from empty droplets. Therefore, assessment of the data is required, for which various QC algorithms have been developed. In singleCellTK, we have written convenience functions for several of these tools. In this guide, we will demonstrate how to use these functions to perform quality control on unfiltered, droplet-level data.
+Performing comprehensive quality control (QC) is necessary to remove poor quality cells for downstream analysis of single-cell RNA sequencing (scRNA-seq) data. Therefore, assessment of the data is required, for which various QC algorithms have been developed. In singleCellTK, we have written convenience functions for several of these tools. In this guide, we will demonstrate how to use these functions to perform quality control on cell-filtered data.
 
 The package can be loaded using the `library` command.
 
@@ -35,7 +35,7 @@ pbmc.combined <- BiocGenerics::cbind(pbmc3k, pbmc6k)
 sample.vector = colData(pbmc.combined)$sample
 ```
 
-singleCellTK also supports the importing of single-cell data from the following platforms: [10X CellRanger](https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/what-is-cell-ranger), [STARSolo](https://github.com/alexdobin/STAR/blob/master/docs/STARsolo.md), [BUSTools](https://www.kallistobus.tools/), [SEQC](https://github.com/ambrosejcarr/seqc), [DropEST](https://github.com/hms-dbmi/dropEst), and [AnnData](https://github.com/theislab/anndata). To load your own input data, please refer [Import data into SCTK](./import_scRNAseq_data_as_SCE_Console.html) for deailed instruction. 
+singleCellTK also supports the importing of single-cell data from the following platforms: [10X CellRanger](https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/what-is-cell-ranger), [STARSolo](https://github.com/alexdobin/STAR/blob/master/docs/STARsolo.md), [BUSTools](https://www.kallistobus.tools/), [SEQC](https://github.com/ambrosejcarr/seqc), [DropEST](https://github.com/hms-dbmi/dropEst), and [AnnData](https://github.com/theislab/anndata). To load your own input data, please refer [Import data into SCTK](import_data.html) for detailed instruction. 
 
 ### Run Dimensionality Reduction
 
@@ -65,10 +65,10 @@ If the user wishes, a list of gene sets can be applied to the function to determ
 pbmc.combined <- importGeneSetsFromGMT(inSCE = pbmc.combined, collectionName = "mito", file = system.file("extdata/mito_subset.gmt", package = "singleCellTK"))
 
 set.seed(12345)
-pbmc.combined <- runCellQC(pbmc.combined, sample = sample.vector, collectionName = "mito")
+pbmc.combined <- runCellQC(pbmc.combined, algorithms = c("QCMetrics", "scrublet", "scDblFinder", "cxds", "bcds", "cxds_bcds_hybrid", "doubletFinder", "decontX"), sample = sample.vector, collectionName = "mito")
 ```
 <br />
-If users choose to only run a specific set of algorithms, they can specify which to run with the `algorithms` parameter.
+If users choose to only run a specific set of algorithms, they can specify which to run with the `algorithms` parameter. By default, the `runCellQC` will run "QCMetrics", "scDblFinder", "cxds", "bcds", "cxds_bcds_hybrid" and "decontX" algorithms by default. Besides, "scrublet" and "doubletFinder" is supported if our users want to run them. 
 
 When quality control functions are run in singleCellTK, the output of the function is stored in the `colData` slot of the `SingleCellExperiment` object.
 

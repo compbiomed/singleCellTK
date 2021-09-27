@@ -4,7 +4,12 @@
 \alias{importAlevin}
 \title{Construct SCE object from Salmon-Alevin output}
 \usage{
-importAlevin(alevinDir = NULL, sampleName = "sample", delayedArray = FALSE)
+importAlevin(
+  alevinDir = NULL,
+  sampleName = "sample",
+  delayedArray = FALSE,
+  class = c("Matrix", "matrix")
+)
 }
 \arguments{
 \item{alevinDir}{Character. The output directory of salmon-Alevin pipeline.
@@ -18,6 +23,11 @@ barcodes. Default is 'sample'.}
 
 \item{delayedArray}{Boolean. Whether to read the expression matrix as
 \link{DelayedArray} object or not. Default \code{FALSE}.}
+
+\item{class}{Character. The class of the expression matrix stored in the SCE
+object. Can be one of "Matrix" (as returned by
+\link{readMM} function), or "matrix" (as returned by
+\link[base]{matrix} function). Default "Matrix".}
 }
 \value{
 A \code{SingleCellExperiment} object containing the count

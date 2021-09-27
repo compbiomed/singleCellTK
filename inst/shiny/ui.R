@@ -59,7 +59,7 @@ data("c2BroadSets")
 source("module_nonLinearWorkflow.R")
 source("module_filterTable.R")
 
-docs.base <- paste0("https://sctk.camplab.net/v",
+docs.base <- paste0("https://www.camplab.net/sctk/v",
                     package.version("singleCellTK"), "/")
 docs.artPath <- paste0(docs.base, "articles/articles/")
 
@@ -157,7 +157,7 @@ source("ui_06_1_pathwayAnalysis.R", local = TRUE) #creates shinyPanelvam variabl
 source("ui_07_subsample.R", local = TRUE) #creates shinyPanelSubsample variable
 source("ui_08_2_cellviewer.R", local = TRUE) #creates shinyPanelCellViewer variable
 source("ui_08_3_heatmap.R", local = TRUE) #creates shinyPanelHeatmap variable
-source("ui_09_curatedworkflows.R", local = TRUE) #creates shinyPanelCuratedWorkflows variable
+#source("ui_09_curatedworkflows.R", local = TRUE) #creates shinyPanelCuratedWorkflows variable
 source("ui_09_2_seuratWorkflow.R", local = TRUE) #creates shinyPanelSeurat variable
 jsCode <- "
 
@@ -215,15 +215,15 @@ shinyUI(
         tabPanel("Differential Expression", shinyPanelDiffex),
         tabPanel("Find Marker", shinyPanelfindMarker),
         tabPanel("Cell Type Labeling", shinyPanelLabelCellType)
-       
+
       ),
       navbarMenu(
         "Cell Annotation & Pathway Analysis",
         #tabPanel("GSVA", value = "GSVA", shinyPanelPathway),
         tabPanel("EnrichR", shinyPanelEnrichR),
         tabPanel("Pathway Activity", shinyPanelvam)
-        
-        
+
+
       ),
       tabPanel("Sample Size Calculator", shinyPanelSubsample),
       navbarMenu(
@@ -251,8 +251,8 @@ shinyUI(
       #            id = "myPushbar",
       #            spsTimeline(
       #              "b",
-      #              up_labels = c("Data Import", 
-      #                            "Quality Control", 
+      #              up_labels = c("Data Import",
+      #                            "Quality Control",
       #                            "Normalization"),
       #              down_labels = c("step 1", "step 2", "step3"),
       #              icons = list(icon("dna"), icon("dna"), icon("dna")),
@@ -263,7 +263,7 @@ shinyUI(
       # ),
       useShinyjs(),
       extendShinyjs(text = jsCode, functions = c("enableTabs", "disableTabs")),
-      
+
       # Following lines of code add a loading spinner when toolkit launches and
       # loads several ui elements/plots etc.
       includeCSS("busy-load-piccard21.css"),

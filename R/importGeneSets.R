@@ -531,7 +531,7 @@ sctkListGeneSetCollections <- function(inSCE) {
   if(!is.null(S4Vectors::metadata(inSCE)$sctk$genesets)) {
     res <- names(S4Vectors::metadata(inSCE)$sctk$genesets)
   } else {
-    res <- "No GeneSetCollections have been imported."
+    res <- character()
   }
   return(res)
 }
