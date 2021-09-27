@@ -32,14 +32,7 @@ expDeleteDataTag <- function(inSCE, assay){
 #' @export
 #'
 expSetDataTag <- function(inSCE, assayType, assays, append = TRUE){
-  # if(append){
-  #   if(!assays %in% S4Vectors::metadata(inSCE)$assayType[[assayType]]){
-  #     S4Vectors::metadata(inSCE)$assayType[[assayType]] <- base::append(S4Vectors::metadata(inSCE)$assayType[[assayType]], assays)
-  #   }
-  # }
-  # else{
-  #   S4Vectors::metadata(inSCE)$assayType[[assayType]] <- assays
-  # }
+  tbl <- NULL
   if(is.null(S4Vectors::metadata(inSCE)$assayType)){
     tbl <- tibble::tibble(assayTag = assayType, assayName = assays)
   }

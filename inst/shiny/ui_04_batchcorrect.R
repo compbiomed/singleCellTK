@@ -514,7 +514,6 @@ shinyPanelBatchcorrect <- fluidPage(
                   fluidRow(
                     column(
                       width = 12,
-<<<<<<< HEAD
                       h5(tags$a(href = "https://compbiomed.github.io/sctk_docs/articles/batch_correction.html#visualization",
                                 "(What are plotted?)", target = "_blank")),
                       selectizeInput(
@@ -526,9 +525,6 @@ shinyPanelBatchcorrect <- fluidPage(
                         options = NULL),
                       #uiOutput("batchCheckOrigAssay"),
                       #selectInput("batchCheckOrigAssay", "Original Assay:", currassays),
-=======
-                      uiOutput("batchCheckOrigAssay"),
->>>>>>> upstream/devel
                       selectInput("batchCheckVar", "Batch Annotation:", clusterChoice),
                       selectInput("batchCheckCond", "Additional Condition (optional)",
                                   clusterChoice),
