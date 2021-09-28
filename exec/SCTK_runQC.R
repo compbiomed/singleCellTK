@@ -241,12 +241,14 @@ if (numCores > 1) {
             return(geneSetCollection)            
         }
         
+        #print(paste(MitoType, 'mito', sep='-'))
+        subset_name <- paste(MitoType, 'mito', sep='-')
         inSCE <- importMitoGeneSet(inSCE = inSCE,
                      reference = reference,
                      id = id,
-                     collectionName = MitoType,
+                     collectionName = subset_name,
                      by = "rownames")
-        mito_gs <- inSCE@metadata$sctk$genesets[[MitoType]]@.Data[[1]]
+        mito_gs <- inSCE@metadata$sctk$genesets[[subset_name]]@.Data[[1]]
         mito_gs@shortDescription <- "rownames"
 
         if (!is.null(geneSetCollection)) {
@@ -459,8 +461,12 @@ for(i in seq_along(process)) {
 
     dropletSCE <- INPUT[[1]]
     cellSCE <- INPUT[[2]]
-    geneSetCollection <- .importMito(inSCE = dropletSCE, geneSetCollection = geneSetCollection, MitoImport=MitoImport, MitoType=MitoType)
-    
+    if (!is.null(cellSCE)) {
+        geneSetCollection <- .importMito(inSCE = cellSCE, geneSetCollection = geneSetCollection, MitoImport=MitoImport, MitoType=MitoType)
+    } else if (!is.null(dropletSCE)) {
+        geneSetCollection <- .importMito(inSCE = dropletSCE, geneSetCollection = geneSetCollection, MitoImport=MitoImport, MitoType=MitoType)        
+    }
+
     if (dataType == "Cell") {
         if (is.null(cellSCE) && (preproc %in% c("BUStools", "SEQC"))) {
             dropletSCE <- runDropletQC(inSCE = dropletSCE, paramsList=Params)
