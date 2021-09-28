@@ -207,7 +207,7 @@
 
       
 
-      </header><script src="installation_files/header-attrs-2.7/header-attrs.js"></script><div class="row">
+      </header><script src="installation_files/header-attrs-2.9/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Installation</h1>
@@ -227,62 +227,63 @@
 <li>
 <strong>R (&gt;=4.0)</strong>.</li>
 </ol>
-<p>SingleCellTK is an R based package, allowing users to run analysis in system command-line, R console, and R Shiny user interface. To get your machine fully equipped with SCTK, you must have <strong>R (&gt;=4.0)</strong> pre-installed. <a href="#install-r-4-0-">Install R</a></p>
+<p>SingleCellTK is an R based package, allowing users to run analysis in system command-line, R console, and R Shiny user interface. To get your machine fully equipped with singleCellTK, you must have <strong>R (&gt;=4.0)</strong> pre-installed.</p>
+<p><a href="#install-r-4-0-">See more details on how to install R</a></p>
 <ol start="2" style="list-style-type: decimal">
 <li><strong>singleCellTK</strong></li>
 </ol>
-<p>With R successfully installed, users can now start to install SingleCellTK to your local. For quick start, BioConductor users can directly requisite our released version with the following command:</p>
+<p>With R successfully installed, users can now install singleCellTK to your local system. For quick start, Bioconductor users can directly install our released version with the following command:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html">requireNamespace</a></span><span class="op">(</span><span class="st">"BiocManager"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span>
     <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"BiocManager"</span><span class="op">)</span>
 
 <span class="fu">BiocManager</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocManager/man/install.html">install</a></span><span class="op">(</span><span class="st">"singleCellTK"</span><span class="op">)</span></code></pre></div>
-<p><a href="#install-sctk">See detail</a>.</p>
+<p><a href="#install-singleCellTK">See more details about custom installation of singleCellTK</a></p>
 <ol start="3" style="list-style-type: decimal">
 <li><strong>Python environment</strong></li>
 </ol>
-<p>Additionally, SCTK wraps a number of useful toolkits, where a part of them are Python based. To enable this part of functionality, users need to get Python (3.x) and a set of Python packages built. The fast <code>pip</code> command to install all necessary dependencies is here:</p>
+<p>Additionally, singleCellTK wraps a number of useful toolkits, where some of them are Python based. To enable this part of functionality, users need to get Python (v3.x) and a set of Python packages built. The fast <code>pip</code> command can be used to easily install all the required dependencies as shown below:</p>
 <pre class="shell"><code>pip install scipy numpy astroid six scrublet scanpy bbknn scanorama</code></pre>
-<p><a href="#install-python-dependencies">Detail for Python Environment establishing</a></p>
-<p>For users who would like to perform console interactive analysis, we strongly suggest that you have <a href="https://www.rstudio.com/products/rstudio/download/#download">RStudio</a> installed.</p>
+<p><a href="#install-python-dependencies">See more details for setting up Python Environment for singleCellTK</a></p>
+<p><strong>For users who would like to perform console interactive analysis, we strongly suggest that you have <a href="https://www.rstudio.com/products/rstudio/download/#download">RStudio</a> installed.</strong></p>
 </div>
-<div id="detail" class="section level2">
+<div id="details" class="section level2">
 <h2 class="hasAnchor">
-<a href="#detail" class="anchor"></a>Detail</h2>
+<a href="#details" class="anchor"></a>Details</h2>
 <div id="install-r-4-0" class="section level3">
 <h3 class="hasAnchor">
 <a href="#install-r-4-0" class="anchor"></a>Install R (&gt;=4.0)</h3>
 <p>Users can go to <a href="https://www.r-project.org/"><strong>R Official Site</strong></a> to choose the preferred installer.</p>
-<p>In the site, users will need to first <strong>specify a CRAN mirror</strong>. CRAN is a network of servers around the world that store approved R dependencies. Specifying a mirror that is the nearest to you helps minimize network load.</p>
+<p>On the site, users will need to first <strong>specify a CRAN mirror</strong>. CRAN is a network of servers around the world that store approved R dependencies. Specifying a mirror that is the nearest to you helps minimize network load.</p>
 <p><img src="ui_screenshots/installation/RChooseMirror.png" alt="chooseMirror"><br></p>
 <p>Linux, Windows and MacOS users will be able to find the corresponding installer at the top of the page after choosing a mirror.</p>
 <p><img src="ui_screenshots/installation/RSystem.png" alt="chooseMirror"><br></p>
 </div>
-<div id="install-sctk" class="section level3">
+<div id="install-singlecelltk" class="section level3">
 <h3 class="hasAnchor">
-<a href="#install-sctk" class="anchor"></a>Install SCTK</h3>
+<a href="#install-singlecelltk" class="anchor"></a>Install singleCellTK</h3>
 <div id="latest-release-bioconductor" class="section level4">
 <h4 class="hasAnchor">
-<a href="#latest-release-bioconductor" class="anchor"></a>Latest Release (BioConductor)</h4>
-<p>Our latest stable release is available on BioConductor. BioConductor is a distribution platform for biology-related packages. The page for SCTK can be found <a href="https://bioconductor.org/packages/release/bioc/html/singleCellTK.html">here</a></p>
-<p>Run the following command in <strong>R console</strong> to install SCTK from BioConductor:</p>
+<a href="#latest-release-bioconductor" class="anchor"></a>Latest Release (Bioconductor)</h4>
+<p>Our latest stable release is available on BioConductor. BioConductor is a distribution platform for biology-related packages. The page for singleCellTK can be found <a href="https://bioconductor.org/packages/release/bioc/html/singleCellTK.html">here</a>.</p>
+<p>Run the following command in <strong>R console</strong> to install singleCellTK from Bioconductor:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html">requireNamespace</a></span><span class="op">(</span><span class="st">"BiocManager"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span>
     <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"BiocManager"</span><span class="op">)</span>
 
 <span class="fu">BiocManager</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocManager/man/install.html">install</a></span><span class="op">(</span><span class="st">"singleCellTK"</span><span class="op">)</span></code></pre></div>
 </div>
-<div id="developing-version-github" class="section level4">
+<div id="development-version-github" class="section level4">
 <h4 class="hasAnchor">
-<a href="#developing-version-github" class="anchor"></a>Developing version (GitHub)</h4>
-<p>We occasionally push new developmental updates of our source code on GitHub.</p>
-<p>The simplest way to install the developing version is as followed:</p>
+<a href="#development-version-github" class="anchor"></a>Development version (GitHub)</h4>
+<p>We regularly push new updates to our source code on our <a href="https://github.com/compbiomed/singleCellTK/tree/devel">Github development branch</a>.</p>
+<p>The simplest way to install the development version is by running the following command:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html">requireNamespace</a></span><span class="op">(</span><span class="st">"devtools"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span>
     <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"devtools"</span><span class="op">)</span>
 <span class="op">}</span>
 <span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org//reference/remote-reexports.html">install_github</a></span><span class="op">(</span><span class="st">"compbiomed/singleCellTK@devel"</span><span class="op">)</span></code></pre></div>
-<p>Meanwhile, the source code can be downloaded <a href="https://github.com/compbiomed/singleCellTK/releases">Here</a></p>
+<p>Meanwhile, the source code for the stable releases can be downloaded from <a href="https://github.com/compbiomed/singleCellTK/releases">here</a>.</p>
 <p><img src="ui_screenshots/installation/sourceCodeAssets.png" alt="chooseMirror"><br></p>
 <p>To install from source code, you need to first <strong>download the tarball file (ending with <code>.tar.gz</code>)</strong>, which is a compressed file for the whole directory. Then <strong>in R console</strong>, run the following command:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
@@ -294,11 +295,11 @@
 <div id="install-python-dependencies" class="section level3">
 <h3 class="hasAnchor">
 <a href="#install-python-dependencies" class="anchor"></a>Install Python Dependencies</h3>
-<p>SCTK can be successfully loaded without a Python installation. While there are some parts of our analysis that support multiple methods, some options among them would require a live Python environment. For example, the quality control and batch correction sections.</p>
+<p>singleCellTK can successfully be loaded without a Python installation. However, some parts of the toolkit require a live Python environment. For example, the quality control and batch correction sections utilize Python packages, tools and dependencies.</p>
 <div id="non-python-users" class="section level4">
 <h4 class="hasAnchor">
 <a href="#non-python-users" class="anchor"></a>Non-Python users</h4>
-<p>If you have not had Python installed before, and do not have a plan to use Python. We have prepared a simple command to minimize the workload for you to clear the barrier. <strong>After installing SCTK</strong> in your R console:</p>
+<p>If you do not have Python installed previously and do not plan to use it later, we have prepared a simple command to minimize the workload for the ease of the users. <strong>After installing singleCellTK</strong> in your R console run the following command:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://compbiomed.github.io/sctk_docs/">singleCellTK</a></span><span class="op">)</span>
 <span class="fu"><a href="../../reference/sctkPythonInstallConda.html">sctkPythonInstallConda</a></span><span class="op">(</span><span class="op">)</span>
@@ -308,13 +309,13 @@
 <div id="work-with-python" class="section level4">
 <h4 class="hasAnchor">
 <a href="#work-with-python" class="anchor"></a>Work with Python</h4>
-<p>If you would like to start to work with Python or are already an experienced Python programmer, here we skip the approach to the Python installation. If you have a standalone Python installation, it is not necessary to run the command above because it is likely to create a redundant Miniconda copy in your machine. For the list of dependencies that are required, please refer to the <code>pip</code> command at the top of this page, and you can also replace <code>pip</code> with <code>conda</code>.</p>
-<p>If you would like to work in a Python virtual environment (“venv”) or a Conda environment, and have already created one, please run the environment selecting function in R console before starting to analyze your data. See the next paragraph.</p>
+<p>If you would like to start to work with Python or are already an experienced Python user, here we skip the approach to the Python installation. If you have a standalone Python installation, it is not necessary to run the command above because it is likely to create a redundant Miniconda copy in your machine. For the list of dependencies that are required, please refer to the <code>pip</code> command at the <a href="#quick-overview">top of this page</a>, and you can also replace <code>pip</code> with <code>conda</code>.</p>
+<p>If you would like to work in a Python virtual environment (“venv”) or a Conda environment, and have already created one, please run the environment selecting function in R console before starting to analyze your data. See the general Python environment instructions <a href="#for-all-users">below</a> to activate the Python environment to use with the toolkit.</p>
 </div>
 <div id="for-all-users" class="section level4">
 <h4 class="hasAnchor">
 <a href="#for-all-users" class="anchor"></a>For all users</h4>
-<p>If you ran <code><a href="../../reference/sctkPythonInstallConda.html">sctkPythonInstallConda()</a></code> (or <code><a href="../../reference/sctkPythonInstallVirtualEnv.html">sctkPythonInstallVirtualEnv()</a></code>) directly, or have created your own SCTK specifc environment (or venv), it is important that you <strong>activate the environment before starting</strong> to perform any analyze. Otherwise, it will be hard for R to locate the dependencies you have installed.</p>
+<p>If you ran <code><a href="../../reference/sctkPythonInstallConda.html">sctkPythonInstallConda()</a></code> (or <code><a href="../../reference/sctkPythonInstallVirtualEnv.html">sctkPythonInstallVirtualEnv()</a></code>) directly, or have created your own singleCellTK specific environment (or venv), it is important that you <strong>activate the environment before starting</strong> to perform any analysis in the toolkit. Otherwise, the toolkit may not be able to properly locate the required dependencies and may result in unexpected behavior or crashes.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co">### For Python venv user</span>
 <span class="fu"><a href="../../reference/selectSCTKVirtualEnvironment.html">selectSCTKVirtualEnvironment</a></span><span class="op">(</span><span class="st">"{NAME of your VENV}"</span><span class="op">)</span>
@@ -349,12 +350,12 @@
 <div id="python-and-reticulate" class="section level3">
 <h3 class="hasAnchor">
 <a href="#python-and-reticulate" class="anchor"></a>Python and Reticulate</h3>
-<p>SCTK adopts <a href="https://rstudio.github.io/reticulate/">reticulate</a> to connect R with Python. If the specific functions in SCTK, which requires Python dependencies, do not properly start to run after you have installed the dependencies or restart the R session, please try to specify the correct Python executable/binary file in a <strong>new R session</strong>. (here “new” means no Python or reticulate related operations have been performed)</p>
+<p>singleCellTK adopts <a href="https://rstudio.github.io/reticulate/">reticulate</a> to connect R with Python. If the specific functions in singleCellTK, which require Python dependencies, do not properly start to run after you have installed the dependencies or restart the R session, please try to specify the correct Python executable/binary file in a <strong>new R session</strong> <strong><em>(where “new” means no Python or reticulate related operations have been performed)</em></strong>.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/rstudio/reticulate">reticulate</a></span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/pkg/reticulate/man/use_python.html">use_python</a></span><span class="op">(</span><span class="st">"{PATH to the correct Python exexutable/binary file}"</span><span class="op">)</span></code></pre></div>
 <p>You can always use <code><a href="https://rdrr.io/pkg/reticulate/man/py_config.html">reticulate::py_config()</a></code> to check what specific Python version you are using and what other versions are available. <code><a href="https://rdrr.io/pkg/reticulate/man/py_config.html">py_config()</a></code> configures the R-to-Python connection at once, so you will have to restart the R session if you need to change the configuration with <code><a href="https://rdrr.io/pkg/reticulate/man/use_python.html">use_python()</a></code> after you have the check done.</p>
-<p>If you still encounter an error, please <a href="https://github.com/compbiomed/singleCellTK/issues">raise an Issue</a> at our GitHub repository and we’d be happy to help.</p>
+<p>If you still encounter an error, please <a href="https://github.com/compbiomed/singleCellTK/issues">open an issue</a> at our GitHub repository and we’d be happy to help.</p>
 </div>
 </div>
 <div id="develop-singlecelltk" class="section level2">
@@ -370,10 +371,11 @@
 <ol start="3" style="list-style-type: decimal">
 <li>Open Rstudio</li>
 <li>Go to “File” -&gt; “New Project” -&gt; “Existing Directory” and select your git repository directory</li>
+<li>In the top right panel, switch to “Git” tab and switch the current working branch to “devel” since all development updates are made to our “devel” branch.</li>
 </ol>
 <p>You can then make your changes and test your code using the Rstudio build tools. There is a lot of information about building packages available here: <a href="http://r-pkgs.had.co.nz/">http://r-pkgs.had.co.nz/</a>.</p>
 <p>Information about building shiny packages is available here: <a href="http://shiny.rstudio.com/tutorial/">http://shiny.rstudio.com/tutorial/</a>.</p>
-<p>When you are ready to upload your changes, commit them locally, push them to your forked repo, and make a pull request to the compbiomed repository.</p>
+<p>When you are ready to upload your changes, commit them locally, push them to your forked repo, and make a pull request to the compbiomed <a href="https://github.com/compbiomed/singleCellTK">singleCellTK</a> repository.</p>
 <p>Report bugs and request features on our <a href="https://github.com/compbiomed/singleCellTK/issues">GitHub issue tracker</a>.</p>
 <p>Join us on <a href="https://compbiomed.slack.com/">slack</a>!</p>
 </div>

@@ -24,7 +24,9 @@ doEval = FALSE
 
 SCTK allows users to do clustering on their data. The clustering methods that SCTK adopts are mainly graph based, such as an SNN graph, supported by Scran [@Aaron2016], or a KNN graph, supported by Seurat [@Stuart2019]. Meanwhile, we also support traditional method such as K-Means [@Forgy65].  
 
-SCTK allows different types data matrix as input. When using Scran's SNN graph based clustering algorithms, users can specify either a expression matrix or a low-dimension representation as the input, while for Seurat's KNN graph based algorithms and K-Means, users can only use the reduced dimensions.  
+SCTK allows different types data matrix as input. When using Scran's SNN graph based clustering algorithms, users can specify either a expression matrix or a low-dimension representation as the input, while for Seurat's KNN graph based algorithms and K-Means, users can only use the reduced dimensions.
+
+To view detailed instructions on how to use these methods, please select 'Interactive Analysis' for using clustering methods in shiny application or 'Console Analysis' for using these methods on R console from the tabs below: <br>
 
 ## Workflow Guide
 
@@ -55,7 +57,13 @@ User will choose an algorithm to run the clustering at the very first step. The 
 
 **2. Parameter Settings**
 
+Method specific parameter settings can be viewed below:
+
 ````{=html}
+ <style>
+div.offset { background-color:inherit ; border-radius: 5px; margin-left: 15px;}
+</style>
+<div class = "offset">
 <details>
   <summary><b>Scran SNNs</b></summary>
 ````  
@@ -64,10 +72,10 @@ User will choose an algorithm to run the clustering at the very first step. The 
 
 When the selected algorithm belongs to "Scran SNN" group, the parameter settings will look like the figure above. For the choices in the algorithm list, please refer to `igraph::cluster_walktrap()`, `igraph::cluster_louvain()`, `igraph::cluster_infomap()`, `igraph::cluster_fast_greedy()`, `igraph::cluster_label_prop()`, and `igraph::cluster_leading_eigen()`.  
 
-- Data matrix selection - selection input **"Select Input Matrix"**. Scran SNN method allows various type of data matrix. Either A full-sized or subsetted expression matrix, technically called `assay` or `altExp`, respectively, or a dimension reduction, technically `reducedDim`, is allowed. 
+- Data matrix selection - selection input **"Select Input Matrix"**. Scran SNN method allows various types of data matrices. Either a full-sized or a subsetted expression matrix, technically called `assay` or `altExp`, respectively, or a reduced dimension, technically `reducedDim`, is allowed. 
 - Resolution setting - numeric input **"K value"**. `K` is an integer scalar specifying the number of nearest neighbors to consider during graph construction. Considering more neighbors results in larger groups. (See parameter `k` of `scran::buildSNNGraph()`)
-- Algorithm detail setting - selection input **"Edge Weight Type"**. User can specify the type of weighting scheme to use for shared neighbors. (See parameter `type` of `scran::buildSNNGraph()`)
-- Component number setting (Only used when the chosen data matrix is an `assay` or `altExp`) - numeric input **"Number of Components"**. When an `assay` or `altExp` is chosen, the algorithm will perform a PCA on the matrix and obtain the top principal components (PCs) for downstream use. Thus users will specify the number of PCs here. 
+- Algorithm detail setting - selection input **"Edge Weight Type"**. Users can specify the type of weighting scheme to use for shared neighbors. (See parameter `type` of `scran::buildSNNGraph()`)
+- Component number setting (only used when the chosen data matrix is an `assay` or `altExp`) - numeric input **"Number of Components"**. When an `assay` or `altExp` is chosen, the algorithm will perform a PCA on the matrix and obtain the top principal components (PCs) for downstream use. Thus users will specify the number of PCs here. 
 
 ````{=html}
 </details>
@@ -79,7 +87,7 @@ When the selected algorithm belongs to "Scran SNN" group, the parameter settings
 
 When the selected algorithm belongs to "K-Means" group, the parameter settings will look like the figure above.  
 
-- Data matrix selection - selection input **"Select a ReducedDim"**. Here the data matrix allowed can only be a dimension reduction, technically called `reducedDim`. Should be obtained in advance from ["Feature Selection & Dimension Reduction" tab](#). 
+- Data matrix selection - selection input **"Select a ReducedDim"**. Here the data matrix allowed can only be a reduced dimension, technically called `reducedDim` and should be obtained in advance from ["Feature Selection & Dimensionality Reduction" tab](cnsl_dimensionality_reduction.html). 
 - Cluster number determining - numeric input **"Number of Centers (Clusters)"**. User will decide the exact number of clusters here. In term of K-means algorithm, the number of cluster centroids. 
 - Iteration limit setting - numeric input **"Max Number of Iterations"**. User will here decide the maximum number of iterations to run. 
 - Algorithm detail setting - numeric input **"Number of Random Sets"**. Kmeans attempts multiple initial configurations and reports on the best one. Here users will set the number of initial configurations to use. 
@@ -94,32 +102,35 @@ When the selected algorithm belongs to "K-Means" group, the parameter settings w
 
 When the selected algorithm belongs to "Seurat" group, the parameter settings will look like the figure above.  
 
-- Data matrix selection - selection input **"Select a ReducedDim"**. Here the data matrix allowed can only be a dimension reduction, technically called `reducedDim`. Should be obtained in advance from ["Feature Selection & Dimension Reduction" tab](#). 
+- Data matrix selection - selection input **"Select a ReducedDim"**. Here the data matrix allowed can only be a reduced dimension, technically called `reducedDim` and should be obtained in advance from ["Feature Selection & Dimension Reduction" tab](cnsl_dimensionality_reduction.html). 
 - Component number setting - numeric input **"How Many Dimensions to Use"**.
 - Algorithm detail setting - checkbox input **"Group Singletons"**.
 - Resolution setting - numeric input **"Resolution"**.
 
 ````{=html}
 </details>
-<br/>
+</div>
+<br>
 ````  
 
 **3. Visualization**
 
 <img src="ui_screenshots/clustering/clst_ui_vis.png" style="border: 1px solid rgba(0,0,0,0.2)"></img>
 
-The visualization is implemented with a plotting of a chosen low-dimension embedding, colored with a chosen cluster assignment (the newly generated result by default). SCTK by default uses the matrix used for clustering calculation for the visualization. However, usually, users might use a PCA for clustering while needing a UMAP/t-SNE embedding for visualization. To change the embedding used, please click on the blue clog button on the left-top corner.  
+The visualization is implemented with a plotting of a chosen low-dimension embedding, colored with a chosen cluster assignment (the newly generated result by default). SCTK by default uses the matrix used for clustering calculation for the visualization. However, usually, users might use a PCA for clustering while needing a UMAP/t-SNE embedding for visualization. To change the embedding used, please click on the blue settings (cog) button on the left-top corner.  
 
 ````{=html}
+<div class = "offset">
 <details>
   <summary><b>Settings</b></summary>
 ````
 
-- Cluster annotation selection. radio button selection **"Select from Current Results"** and **"Select from All Present Annotation"**. And a selection input follows. Only a successful run of clustering in the current SCTK session adds an option for the new result to "Select from Current Results", while all the cell annotation stored in background (i.e. `colData(sce)`) are accessible if "Select from All Present Annotation" is chosen. 
-- Dimension Reduction selection - selection input **"Use Reduction"**. User have to choose a reduction here for plotting. If there is not yet any option, user can obtain one from ["Feature Selection & Dimension Reduction" tab](#). 
+- Cluster annotation selection - radio button selection **"Select from Current Results"** and **"Select from All Present Annotation"**. This selection updates the dropdown menu with the available annotations. Only a successful run of clustering in the current SCTK session adds an option for the new result to "Select from Current Results", while all the cell annotation stored in background (i.e. `colData(sce)`) are accessible if "Select from All Present Annotation" is chosen. 
+- Dimension Reduction selection - selection input **"Use Reduction"**. User have to choose a reduction here for plotting. If there is not yet any option, user can obtain one from ["Feature Selection & Dimension Reduction" tab](cnsl_dimensionality_reduction.html). 
 
 ````{=html}
 </details>
+</div>
 </div>
 
 <div id="console" class="tabcontent">
@@ -143,7 +154,10 @@ As for another essential parameter, the data matrix used for running the algorit
 
 Other parameters are method specific, please refer to the function manual pages for the detail. 
 
-**Examples**
+````{=html}
+<details>
+  <summary><b>Example</b></summary>
+```` 
 
 To demonstrate simple and clear examples, here we use the "PBMC-3k" dataset from "10X" which can be easily imported with SCTK functions. 
 
@@ -155,6 +169,7 @@ sce <- importExampleData("pbmc3k")
 The preprocessing only includes necessary steps before getting cluster labels (i.e. QC and filtering are excluded). 
 
 ````{=html}
+<div class = "offset">
 <details>
   <summary><b>Preprocessing</b></summary>
 ````
@@ -306,6 +321,8 @@ plotSCEDimReduceColData(inSCE = sce,
 
 ````{=html}
 </details>
+</details>
+</div>
 </div>
 <script>
 document.getElementById("ia-button").click();

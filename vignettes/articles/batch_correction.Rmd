@@ -22,9 +22,9 @@ doEval = FALSE
 
 ## Introduction
 
-This guide helps users with performing batch correction when necessary. SingleCellTK provides 11 methods that are already published. They are: BBKNN, ComBatSeq, FastMNN, MNN, Harmony, LIGER, Limma, Scanorama, scMerge, Seurat Integration and ZINBWaVE. All of them will be available in a selection list in our UI, and each of them is wrapped in a function.  
+This guide helps users with performing batch correction when necessary. SingleCellTK provides 11 methods that are already published including `BBKNN`, `ComBatSeq`, `FastMNN`, `MNN`, `Harmony`, `LIGER`, `Limma`, `Scanorama`, `scMerge`, `Seurat` integration and `ZINBWaVE`. All of these methods are available to use through our shiny ui application as well as through the R console environment through our wrapper functions. 
 
-These methods accept various type of input expression matrices (e.g. raw counts or log-normalized counts), and generate either a new corrected expression matrix or a low-dimensional representation. Users should choose a function according to their needs. A more detailed description will be followed in the "Console" tab.
+These methods accept various type of input expression matrices (e.g. raw counts or log-normalized counts), and generate either a new corrected expression matrix or a low-dimensional representation. Users should choose a function according to their needs. More detailed instructions on how to use these methods either through the shiny ui application (select "Interactive Analysis") or through the R console (select "Console Analysis") are described below:
 
 ## Workflow Guide
 
@@ -62,11 +62,14 @@ After the batch correction method is confirmed, the lower part will dynamically 
 
 ![Visualization](ui_screenshots/batch_correction/bc_ui_vis.png)\
 
-SCTK adopts two approaches to demonstrate the effect of batch correction.  
-
-1. SCTK attempts to plot the variance explained by annotations calculated with the assay to correct and the output data matrix.  
+SCTK adopts two approaches to demonstrate the effect of batch correction:  
 
 ````{=html}
+ <style>
+div.offset { background-color:inherit ; border-radius: 5px; margin-left: 25px;}
+</style>
+<div class = "offset">
+1. SCTK attempts to plot the variance explained by annotations calculated with the assay to correct and the output data matrix. 
 <details>
   <summary><b>Explanation: Explained Variance Plot</b></summary>
 ```` 
@@ -75,11 +78,10 @@ There will be three columns in the plots for the variance explained. The third o
 
 ````{=html}
 </details>
-```` 
-
+</div>
+<br>
+<div class = "offset">
 2. SCTK plots the PCA projections of the assay selected for correction, and the output corrected data matrix. For both cases, user should use the same batch annotation as used when running the algorithm to see a plausible result.  
-
-````{=html}
 <details>
   <summary><b>Explanation: PCA plots</b></summary>
 ```` 
@@ -88,6 +90,8 @@ In the PCA plots, cells (i.e. dots) will be labeled with different colors to mar
 
 ````{=html}
 </details>
+</div>
+<br>
 <details>
   <summary><b>Visualization Parameters</b></summary>
 ````  
@@ -122,30 +126,8 @@ As mentioned in the introduction, our 11 methods vary in type of input and outpu
 
 ````{=html}
 <details>
-  <summary><b>Method Reference</b></summary>
+  <summary><b>Example</b></summary>
 ````  
-
-| Method |   Function   | Input Type | Output Type |
-| :----: |    :----:    |   :----:   |   :----:    |
-| BBKNN [@Polanski2020] | `runBBKNN()` | Scaled |`reducedDim` |
-| ComBatSeq [@ZhangY2020]  | `runComBatSeq()` | raw counts | `assay` |
-| FastMNN [@Haghverdi2018]  | `runFastMNN()` | log-normalized | `reducedDim` |
-| MNN [@Haghverdi2018] | `runMNNCorrect()` | log-normalized | `assay` |
-| Harmony [@Korsunsky2019]  | `runHarmony()` | log-normalized | `reducedDim` |
-| LIGER [@LiuL2020] | `runLIGER()` | raw counts | `reducedDim` |
-| Limma [@Ritchie2015] | `runLimmaBC()` | log-normalized | `assay` |
-| Scanorama [@Hie2019] | `runSCANORAMA()` | log-normalized | `assay` |
-| scMerge [@LinY2019] | `runSCMerge()` | log-normalized | `assay` |
-| Seurat Integration [@Butler2018a] | `seuratIntegration()` | raw counts | `altExp` |
-| ZINBWaVE [@Risso2018] | `runZINBWaVE()` | raw counts | `reducedDim` |
-
-````{=html}
-</details> 
-````
-
-<br />
-
-**Console Examples**
 
 **1. Prepare an SCE object with multiple batches**
 
@@ -245,7 +227,29 @@ plotSCEDimReduceColData(inSCE = sce.small,
 
 If the cell typing is already given, it is strongly recommended to specify `shape = {colData colname for cell typing}` in `plotSCEDimReduceColData()` to visualize the grouping simultaneously.  
 
+````{=html}
+</details> 
+
+<details>
+  <summary><b>Method Reference</b></summary>
+````
+
+| Method |   Function   | Input Type | Output Type |
+| :----: |    :----:    |   :----:   |   :----:    |
+| BBKNN [@Polanski2020] | `runBBKNN()` | Scaled |`reducedDim` |
+| ComBatSeq [@ZhangY2020]  | `runComBatSeq()` | raw counts | `assay` |
+| FastMNN [@Haghverdi2018]  | `runFastMNN()` | log-normalized | `reducedDim` |
+| MNN [@Haghverdi2018] | `runMNNCorrect()` | log-normalized | `assay` |
+| Harmony [@Korsunsky2019]  | `runHarmony()` | log-normalized | `reducedDim` |
+| LIGER [@LiuL2020] | `runLIGER()` | raw counts | `reducedDim` |
+| Limma [@Ritchie2015] | `runLimmaBC()` | log-normalized | `assay` |
+| Scanorama [@Hie2019] | `runSCANORAMA()` | log-normalized | `assay` |
+| scMerge [@LinY2019] | `runSCMerge()` | log-normalized | `assay` |
+| Seurat Integration [@Butler2018a] | `seuratIntegration()` | raw counts | `altExp` |
+| ZINBWaVE [@Risso2018] | `runZINBWaVE()` | raw counts | `reducedDim` |
+
 ````{=html} 
+  </details>
 </div>
 <script>
 document.getElementById("ia-button").click();
