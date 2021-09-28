@@ -235,7 +235,7 @@ shinyUI(
       navbarMenu("Viewers",
                  tabPanel("Cell Viewer", value="CellViewer", shinyPanelCellViewer),
                  tabPanel("Heatmap", shinyPanelHeatmap)),
-      footer = includeHTML("www/footer.html"),
+      footer = includeHTML("www/logo.html"),
       fluidRow(
         column(12, id = "consoleDiv",
                actionButton(inputId="consoleToggle", label = "Console Log"),
