@@ -242,7 +242,8 @@ if (numCores > 1) {
         }
         
         #print(paste(MitoType, 'mito', sep='-'))
-        subset_name <- paste(MitoType, 'mito', sep='-')
+        subset_name <- stringr::str_to_title(strsplit(MitoType, "-")[[1]])  
+        subset_name <- paste(c(subset_name, 'Mito'), collapse='')
         inSCE <- importMitoGeneSet(inSCE = inSCE,
                      reference = reference,
                      id = id,
@@ -467,6 +468,9 @@ for(i in seq_along(process)) {
         geneSetCollection <- .importMito(inSCE = dropletSCE, geneSetCollection = geneSetCollection, MitoImport=MitoImport, MitoType=MitoType)        
     }
 
+    cellQCAlgos <- c("QCMetrics", "scDblFinder", "cxds", "bcds", "scrublet", "doubletFinder",
+    "cxds_bcds_hybrid", "decontX")
+
     if (dataType == "Cell") {
         if (is.null(cellSCE) && (preproc %in% c("BUStools", "SEQC"))) {
             dropletSCE <- runDropletQC(inSCE = dropletSCE, paramsList=Params)
@@ -475,7 +479,7 @@ for(i in seq_along(process)) {
         }
 
         message(paste0(date(), " .. Running cell QC"))        
-        cellSCE <- runCellQC(inSCE = cellSCE, geneSetCollection = geneSetCollection, paramsList=Params)
+        cellSCE <- runCellQC(inSCE = cellSCE, geneSetCollection = geneSetCollection, paramsList=Params, algorithms = cellQCAlgos)
     }
 
     if (dataType == "Droplet") {
@@ -491,7 +495,7 @@ for(i in seq_along(process)) {
             }
             cellSCE <- dropletSCE[,ix]
             message(paste0(date(), " .. Running cell QC"))
-            cellSCE <- runCellQC(inSCE = cellSCE, geneSetCollection = geneSetCollection, paramsList=Params)
+            cellSCE <- runCellQC(inSCE = cellSCE, geneSetCollection = geneSetCollection, paramsList=Params, algorithms = cellQCAlgos)
         }
     }
 
@@ -518,7 +522,7 @@ for(i in seq_along(process)) {
 
         if (!is.null(cellSCE)) {
             message(paste0(date(), " .. Running cell QC"))        
-            cellSCE <- runCellQC(inSCE = cellSCE, geneSetCollection = geneSetCollection, paramsList=Params)
+            cellSCE <- runCellQC(inSCE = cellSCE, geneSetCollection = geneSetCollection, paramsList=Params, algorithms = cellQCAlgos)
         }
     }
     
@@ -667,7 +671,10 @@ if (!isTRUE(split)) {
         by.c <- Reduce(intersect, lapply(cellSCE_list, function(x) { colnames(colData(x))}))
         cellSCE <- combineSCE(cellSCE_list, by.r, by.c, combined = TRUE)
         for (name in names(metadata(cellSCE))) {
-            names(metadata(cellSCE)[[name]]) <- sample
+            if (name != "assayType") {
+                names(metadata(cellSCE)[[name]]) <- sample
+            }
+            
         }
 
         exportSCE(inSCE = dropletSCE, samplename = samplename, directory = directory, type = "Droplets", format=formats)
@@ -710,9 +717,10 @@ if (!isTRUE(split)) {
 
         cellSCE <- combineSCE(cellSCE_list, by.r, by.c, combined = TRUE)
         for (name in names(metadata(cellSCE))) {
-            names(metadata(cellSCE)[[name]]) <- sample
+            if (name != "assayType") { ### not important and hard to force name. Skipped
+                names(metadata(cellSCE)[[name]]) <- sample
+            }
         }
-
         exportSCE(inSCE = cellSCE, samplename = samplename, directory = directory, type = "Cells", format=formats)
         if ("FlatFile" %in% formats) {
             if ("HTAN" %in% formats) {
