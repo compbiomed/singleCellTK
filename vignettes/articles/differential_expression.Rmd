@@ -22,7 +22,7 @@ doEval = FALSE
 
 ## Introduction
 
-singleCellTK (SCTK) performs differential expression (DE) analysis in a group-VS-group way. The groups to be compared can be set by selecting the individual cells or by using existing categorical cell annotation. SCTK supports five methods, including wilcoxon test [@Aaron2016], MAST [@Finak2015], Limma [@Ritchie2015], DESeq2 [@Love2014], and ANOVA. Users can perform multiple sets of DE analysis with unique analysis name set each time.
+singleCellTK (SCTK) performs differential expression (DE) analysis in a group-VS-group way. The groups to be compared can be set by selecting the individual cells or by using existing categorical cell annotation. SCTK supports five methods, including wilcoxon test [@Aaron2016], MAST [@Finak2015], Limma [@Ritchie2015], DESeq2 [@Love2014], and ANOVA[@Kaufmann2014]. Users can perform multiple sets of DE analysis with unique analysis name set each time.
 
 To view detailed instructions on how to use these methods, please select 'Interactive Analysis' for using differential expression in shiny application or 'Console Analysis' for using these methods on R console from the tabs below: <br>
 
