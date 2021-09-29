@@ -207,7 +207,7 @@
 
       
 
-      </header><script src="import_genesets_files/header-attrs-2.7/header-attrs.js"></script><div class="row">
+      </header><script src="import_genesets_files/header-attrs-2.9/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Import Genesets</h1>
@@ -227,6 +227,7 @@
 <h2 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h2>
 <p>Users can import gene sets to use in later steps of the toolkit’s pipeline, including quality control (QC) and EnrichR analysis. SCTK mainly supports importing genesets from a GMT file, the MSigDB database <span class="citation">[1]</span>, or manually prepared list.</p>
+<p>To view detailed instructions on how to import genesets, please select ‘Interactive Analysis’ for importing through the shiny application or ‘Console Analysis’ for importing through the R console from the tabs below: <br></p>
 </div>
 <div id="workflow-guide" class="section level2">
 <h2 class="hasAnchor">
@@ -242,6 +243,10 @@
 <p>In the UI of SCTK, users can import gene sets to use in later steps. The UIs are implemented in the page that can be entered through the links, as shown in the screenshot above.</p>
 <p><strong>Import Genesets</strong></p>
 <p>There are three ways to import gene sets, as described below.</p>
+ <style>
+div.offset { background-color:inherit ; border-radius: 5px; margin-left: 15px;}
+</style>
+<div class="offset">
 <details><summary><b>1. Import Gene Sets from a GMT File</b></summary><p>The first option is to upload the GMT file detailing a gene set. For this option, users must provide a GMT file through the file input <strong>“Choose GMT File”</strong>; a text collection name at <strong>“Collection Name”</strong>. If the collection name entered already exists in current session, the gene set from the GMT file will be added to that collection. Otherwise, a new collection with the given name will be created. Finally, users must click <strong>“Upload”</strong> to finish the procedure.</p>
 <p><img src="ui_screenshots/import/import_ui_gs_gmt.png" alt="gmt"><br></p>
 </details><details><summary><b>2. Select from a Database</b></summary><p>SCTK also has a database of gene sets that users can choose from. For this option, the user must simply select the gene sets they would like to upload and click <strong>“Upload”</strong>. A brief description of each gene set is provided in the checklist.</p>
@@ -250,7 +255,9 @@
 <p><img src="ui_screenshots/import/import_ui_gs_mt.png" alt="mt"><br></p>
 </details><details><summary><b>4. Paste in Gene Sets</b></summary><p>Users also have the option to paste their gene set into a text box. In order to do so, the user must paste their gene set into the provided text box and then provide a collection name to create a new collection. If there are already gene sets imported, the user can choose an existing collection to add their pasted gene set into. Then the user must click “Upload.”</p>
 <p><img src="ui_screenshots/import/import_ui_gs_paste.png" alt="paste"><br></p>
-</details><p><strong>Map Gene Sets to Specific Feature IDs</strong></p>
+</details>
+</div>
+<br><p><strong>Map Gene Sets to Specific Feature IDs</strong></p>
 <p>There is an additional selection input labeled with <strong>“Location within SCE object where the gene identifiers in should be mapped”</strong>, placed above the <strong>“Upload”</strong> button as already shown in screenshots above. This specifies the feature IDs stored in the imported single-cell dataset, to which the gene identifiers in the uploaded gene sets will be mapped. For example, if the uploaded gene sets are presented by gene symbols, users must make sure the selection here is pointing to gene symbols instead of ENSEMBL IDs. Most of the time, “rownames” is the default feature ID of the imported single-cell dataset.</p>
 </div>
 

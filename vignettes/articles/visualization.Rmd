@@ -24,6 +24,8 @@ doEval = FALSE
 
 Single Cell Toolkit (singleCellTK, SCTK) allows users to create various types of plots, including scatter plot, bar plot, violin plot and heatmap. This documentation will focus on the first three types of plot. For heatmap generation, please refer to the [Heatmap Documentation](heatmap.html).  
 
+To view detailed instructions on how to generate these visualizations, please select 'Interactive Analysis' for  shiny application or 'Console Analysis' for using these visualizations on R console from the tabs below: <br>
+
 ## Workflow Guide
 
 ````{=html}
@@ -74,6 +76,10 @@ In Cell Viewer:
 The procedure of creating a single plot in Cell Viewer can be generalized as three steps: **axis selection**, **color specification**, and **peripheral setting**.  
 
 ````{=html}
+ <style>
+div.offset { background-color:inherit ; border-radius: 5px; margin-left: 15px;}
+</style>
+<div class = "offset">
 <details>
   <summary><b>Axis</b></summary>
 ````
@@ -105,6 +111,7 @@ Besides the informative settings, Cell Viewer gives users the control on title, 
 
 ````{=html}
 </details>
+</div>
 </div>
 
 <div id="console" class="tabcontent">
@@ -154,15 +161,10 @@ table(sce$Seurat_louvain_Resolution0.8)
 
 ```{r pbmc_cluster_plot, message=FALSE, warning=FALSE, results='hide'}
 sce <- seuratRunUMAP(sce)
-plotSCEDimReduceColData(inSCE = sce,                             # Specify the object first
-                        reducedDimName = "seuratUMAP",            # Specify the dimension/coordinate
-                        colorBy = "Seurat_louvain_Resolution0.8", # Specify colData (cell annotation)
-                        legendTitle = "Seurat Cluster",           # (Optional)
-                        title = "Clustering on UMAP"              # (Optional)       
-                        )
+plotSCEDimReduceColData(inSCE = sce, reducedDimName = "seuratUMAP", colorBy = "Seurat_louvain_Resolution0.8", legendTitle = "Seurat Cluster", title = "Clustering on UMAP")
 ```
 
-As users might have tried, the essential input are `inSCE`, `reducedDimName`, and `colorBy`. Other arguments are all optional, but users can explore them to best clarify their intension.  
+As users might have tried, the essential input are `inSCE`, `reducedDimName`, and `colorBy`. Other arguments are all optional, but users can explore them to best clarify their intention.  
 
 Additionally but occasionally, `shape` argument is also useful for double level annotating.   
 
@@ -182,30 +184,18 @@ pbmc3k <- importExampleData("pbmc3k")
 pbmc3k <- dedupRowNames(pbmc3k)
 pbmc4k <- importExampleData("pbmc4k")
 pbmc4k <- dedupRowNames(pbmc4k)
-sceList <- list(pbmc3k = pbmc3k, 
-                pbmc4k = pbmc4k)
+sceList <- list(pbmc3k = pbmc3k, pbmc4k = pbmc4k)
 # By combining, a "sample" colData annotation is set by default with the 
 # names of sceList.
-sce <- combineSCE(sceList = sceList, 
-                   by.r = colnames(rowData(pbmc3k)), 
-                   by.c = colnames(colData(pbmc3k)), 
-                   combined = TRUE)
+sce <- combineSCE(sceList = sceList, by.r = colnames(rowData(pbmc3k)), by.c = colnames(colData(pbmc3k)), combined = TRUE)
 sce <- runPerCellQC(sce)
-plotSCEViolinColData(inSCE = sce, 
-                     coldata = "total", 
-                     groupBy = "sample", 
-                     ylab = "Total counts"
-                     )
+plotSCEViolinColData(inSCE = sce, coldata = "total", groupBy = "sample", ylab = "Total counts")
 ```
 
 Otherwise, if users need individual plot for each of the sample, or indeed make individual plots by any categorical groupingon cells, use `sample` argument.  
 
 ```{r sample, message=FALSE, warning=FALSE, results='hide'}
-plotSCEViolinColData(inSCE = sce, 
-                     coldata = "total", 
-                     sample = sce$sample,
-                     ylab = "Total counts"
-                     )
+plotSCEViolinColData(inSCE = sce, coldata = "total", sample = sce$sample, ylab = "Total counts")
 ```
 
 ````{=html} 
