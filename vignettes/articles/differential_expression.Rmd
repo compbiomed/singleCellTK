@@ -213,7 +213,11 @@ In the linear modeling plot tab, an analysis of covariance (ANCOVA) is done, sho
 
 The differential expression analysis can be easily performed on any preprocessed SCE dataset. Here we introduce the workflow of using the generic wrapper `runDEAnalysis()`.  
 
-**Basic Parameters**
+**Basic Parameters:**
+
+````{=html}
+<div class = "offset">
+````
 
 The most basic parameters include:  
 
@@ -221,7 +225,15 @@ The most basic parameters include:
 - The method listed in the table above to use - `method`.
 - The assay to perform the analysis on - `useAssay`
 
-**Other required parameter**
+````{=html}
+</div>
+````
+
+**Additional Required Parameters:**
+
+````{=html}
+<div class = "offset">
+````
 
 **1. Conditions**
 
@@ -245,6 +257,7 @@ Something that might be special in our workflow is that, users will be required 
 The reason is we assume that users are likely to perform multiple batches of analysis for a single dataset (e.g. group1 Vs. group2 and then group1 Vs. group3), and we hope to have everything stored in one SCE without leaving users any confusion when they look back on it. Also, the namings are also used by DE analysis related plotting functions, so that legends can be well annotated.  
 
 ````{=html}
+</div>
 <details>
   <summary><b>Example</b></summary>
 ```` 
@@ -283,13 +296,7 @@ plotSCEDimReduceColData(inSCE = sce,
 
 ```{R runDE, eval=FALSE, message=FALSE, warning=FALSE, cache=TRUE}
 # Condition chosen basing on the UMAP
-sce <- runDEAnalysis(inSCE = sce, 
-                        method = "MAST", 
-                        useAssay = "logcounts",
-                        class = "Seurat_louvain_Resolution0.8", 
-                        classGroup1 = c(2), classGroup2 = c(4, 5),
-                        groupName1 = "c2", groupName2 = "c4_c5", 
-                        analysisName = "c2_VS_c4_c5")
+sce <- runDEAnalysis(inSCE = sce, method = "MAST", useAssay = "logcounts", class = "Seurat_louvain_Resolution0.8", classGroup1 = c(2), classGroup2 = c(4, 5), groupName1 = "c2", groupName2 = "c4_c5", analysisName = "c2_VS_c4_c5")
 ```
 
 ````{=html}
@@ -298,6 +305,10 @@ sce <- runDEAnalysis(inSCE = sce,
 ````
 
 **Results**
+
+````{=html}
+<div class = "offset">
+````
 
 The results are saved in the `metadata` slot of the returned SCE object
 
@@ -359,6 +370,7 @@ plotDEGHeatmap(sce, useResult = "c2_VS_c4_c5", log2fcThreshold = 1)
 For other approaches of visualizing top differential expressed genes, refer to `plotDEGRegression()` and `plotDEGViolin()`, which are borrowed from [MAST's tutorial](https://www.bioconductor.org/packages/release/bioc/vignettes/MAST/inst/doc/MAITAnalysis.html#401_visualization_of_50_most_differentially_expressed_genes).  
 
 ````{=html} 
+</div>
 </div>
 <script>
 document.getElementById("ia-button").click();

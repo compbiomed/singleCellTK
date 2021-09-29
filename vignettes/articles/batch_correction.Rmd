@@ -142,10 +142,7 @@ print(paste(dim(pbmc8k), c('genes', 'cells')))
 SCTK has a function called `combineSCE()`, which accepts a list of SCE objects as input and returns a combined SCE object. This function requires that the number of genes in each SCE object has to be the same, and the gene metadata (i.e. `rowData`) has to match with each other if the same fields exist. Therefore, we need some pre-process for the combination. Users do not necessarily have to follow the same way, depending on how the raw datasets are provided.
 ```{r combine, eval=doEval, message=FALSE, warning=FALSE}
 ## Combine the two SCE objects
-sce.combine <- combineSCE(sceList = list(pbmc6k = pbmc6k, pbmc8k = pbmc8k), 
-                          by.r = names(rowData(pbmc6k)), 
-                          by.c = names(colData(pbmc6k)), 
-                          combined = TRUE)
+sce.combine <- combineSCE(sceList = list(pbmc6k = pbmc6k, pbmc8k = pbmc8k), by.r = names(rowData(pbmc6k)), by.c = names(colData(pbmc6k)), combined = TRUE)
 table(sce.combine$sample)
 ```
 In this manual, we only present a toy example instead of a best practice for real data. Therefore, QC and filtering are skipped.  
@@ -154,12 +151,10 @@ Additionally, most of the batch correction methods provided **require a log-norm
 ## Simply filter out the genes that are expressed in less than 1% of all cells.
 rowData(sce.combine)$expPerc <- rowSums(assay(sce.combine) > 0) / ncol(sce.combine)
 sce.filter <- subsetSCERows(sce.combine, rowData = "expPerc >= 0.01", returnAsAltExp = FALSE)
-sce.filter
+print(sce.filter)
 sce.small <- sce.filter[sample(nrow(sce.filter), 800), sample(ncol(sce.filter), 800)]
-sce.small <- scaterlogNormCounts(inSCE = sce.small,
-                                 useAssay = 'counts',
-                                 assayName = 'logcounts')
-sce.small
+sce.small <- scaterlogNormCounts(inSCE = sce.small, useAssay = 'counts', assayName = 'logcounts')
+print(sce.small)
 ```
 
 **2. Run a batch correction method on the prepared SCE object**
@@ -168,11 +163,8 @@ The basic way to run a batch correction method from SingleCellTK is to select a 
 
 For example, here we will try the batch correction method provided by [Limma](https://rdrr.io/bioc/limma/man/removeBatchEffect.html), which fits a linear model to the data.
 ```{r limmaBC, message=FALSE, warning=FALSE, eval=doEval}
-sce.small <- runLimmaBC(inSCE = sce.small, 
-                        useAssay = 'logcounts', 
-                        batch = 'sample', 
-                        assayName = 'LIMMA')
-sce.small
+sce.small <- runLimmaBC(inSCE = sce.small, useAssay = 'logcounts', batch = 'sample', assayName = 'LIMMA')
+print(sce.small)
 ```
 
 **3. Visualization**
@@ -185,16 +177,10 @@ This functionality is implemented in `plotBatchVariance()`. It plots a violin pl
 This plot would be useful for examining whether the existing batch effect is different than another condition (e.g. subtype) or is confounded by that. However, the additional condition labels (e.g. cell types) do not necessarily exist when batch effect removal is wanted, so only plotting the variation explained by batches is also supported. 
 
 ```{r batchVarBefore, message=FALSE, warning=FALSE, eval=doEval}
-plotBatchVariance(inSCE = sce.small, 
-                  useAssay = 'logcounts', 
-                  batch = 'sample',
-                  title = 'Variation Before Correction')
+plotBatchVariance(inSCE = sce.small, useAssay = 'logcounts', batch = 'sample', title = 'Variation Before Correction')
 ```
 ```{r batchVarAfter, message=FALSE, warning=FALSE, eval=doEval}
-plotBatchVariance(inSCE = sce.small, 
-                  useAssay = 'LIMMA', 
-                  batch = 'sample',
-                  title = 'Variation After Correction')
+plotBatchVariance(inSCE = sce.small, useAssay = 'LIMMA', batch = 'sample', title = 'Variation After Correction')
 ```
 
 2. Plot the mean expression level of each gene separately for each batch.  
@@ -206,23 +192,13 @@ This functionality is implemented in `plotSCEBatchFeatureMean()`. The methodolog
 There is no function special for batch correction, but this can be achieved simply by using the dimension reduction calculation functions (e.g. `scaterPCA()`, `getUMAP()` and `getTSNE()`) and `plotSCEDimReduceColData()`.
 
 ```{r umapBefore, message=FALSE, warning=FALSE, eval=doEval}
-sce.small <- scaterPCA(inSCE = sce.small,
-                    useAssay = 'logcounts', 
-                    reducedDimName = 'PCA')
-plotSCEDimReduceColData(inSCE = sce.small,
-                        colorBy = 'sample',
-                        reducedDimName = 'PCA', 
-                        title = 'PCA Before Correction')
+sce.small <- scaterPCA(inSCE = sce.small, useAssay = 'logcounts', reducedDimName = 'PCA')
+plotSCEDimReduceColData(inSCE = sce.small, colorBy = 'sample', reducedDimName = 'PCA', title = 'PCA Before Correction')
 ```
 
 ```{r umapAfter, message=FALSE, warning=FALSE, eval=doEval}
-sce.small <- scaterPCA(inSCE = sce.small,
-                     useAssay = 'LIMMA', 
-                     reducedDimName = 'PCA_LIMMA')
-plotSCEDimReduceColData(inSCE = sce.small,
-                        colorBy = 'sample',
-                        reducedDimName = 'PCA_LIMMA',
-                        title = 'PCA After Correction')
+sce.small <- scaterPCA(inSCE = sce.small, useAssay = 'LIMMA', reducedDimName = 'PCA_LIMMA')
+plotSCEDimReduceColData(inSCE = sce.small, colorBy = 'sample', reducedDimName = 'PCA_LIMMA', title = 'PCA After Correction')
 ```
 
 If the cell typing is already given, it is strongly recommended to specify `shape = {colData colname for cell typing}` in `plotSCEDimReduceColData()` to visualize the grouping simultaneously.  

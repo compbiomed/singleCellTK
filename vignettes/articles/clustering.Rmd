@@ -184,9 +184,7 @@ sce <- seuratScaleData(inSCE = sce, useAssay = "seuratNormData")
 sce <- seuratPCA(inSCE = sce, useAssay = "seuratScaledData")
 # Optional visualization
 sce <- seuratRunUMAP(pbmc3k)
-plotSCEDimReduceColData(inSCE = sce, 
-                        colorBy = "Sample",
-                        reducedDimName = "seuratUMAP")
+plotSCEDimReduceColData(inSCE = sce,  colorBy = "Sample", reducedDimName = "seuratUMAP")
 ```
 
 ````{=html}
@@ -208,36 +206,17 @@ plotSCEDimReduceColData(inSCE = sce,
 
 ```{R clst_ScranSNN, eval=FALSE, message=FALSE, warning=FALSE, fig.align="center", cache=TRUE, results='hide'}
 # Directly use an assay
-sce <- runScranSNN(inSCE = sce, 
-                      useAssay = "logcounts",
-                      k = 10,
-                      clusterName = "scranSNN_logcounts")
-plotSCEDimReduceColData(inSCE = sce, 
-                        colorBy = "scranSNN_logcounts",
-                        conditionClass = "factor",
-                        reducedDimName = "seuratUMAP")
+sce <- runScranSNN(inSCE = sce, useAssay = "logcounts", k = 10, clusterName = "scranSNN_logcounts")
+plotSCEDimReduceColData(inSCE = sce, colorBy = "scranSNN_logcounts", conditionClass = "factor", reducedDimName = "seuratUMAP")
 # Directly use a dimension reduction
-sce <- runScranSNN(inSCE = sce, 
-                      useReducedDim =  "seuratUMAP",
-                      k = 25,
-                      clusterName = "scranSNN_seuratUMAP")
-plotSCEDimReduceColData(inSCE = sce, 
-                        colorBy = "scranSNN_seuratUMAP",
-                        conditionClass = "factor",
-                        reducedDimName = "seuratUMAP")
+sce <- runScranSNN(inSCE = sce, useReducedDim =  "seuratUMAP", k = 25, clusterName = "scranSNN_seuratUMAP")
+plotSCEDimReduceColData(inSCE = sce, colorBy = "scranSNN_seuratUMAP", conditionClass = "factor", reducedDimName = "seuratUMAP")
 # Use a subset of an assay
 hvg <- getTopHVG(sce, "vst", n = 500)
 ae <- SingleCellExperiment(assays = list(logcounts = logcounts(sce[hvg,])))
 altExp(sce, "subset") <- ae
-sce <- runScranSNN(inSCE = sce,
-                      useAltExp = "subset",
-                      altExpAssay = "logcounts", 
-                      k = 8,
-                      clusterName = "scranSNN_altExp")
-plotSCEDimReduceColData(inSCE = sce, 
-                        colorBy = "scranSNN_altExp",
-                        conditionClass = "factor",
-                        reducedDimName = "seuratUMAP")
+sce <- runScranSNN(inSCE = sce, useAltExp = "subset", altExpAssay = "logcounts", k = 8, clusterName = "scranSNN_altExp")
+plotSCEDimReduceColData(inSCE = sce, colorBy = "scranSNN_altExp", conditionClass = "factor", reducedDimName = "seuratUMAP")
 ```
 
 ````{=html}
@@ -262,14 +241,8 @@ plotSCEDimReduceColData(inSCE = sce,
 ````
 
 ```{R clst_kmeans, eval=FALSE, message=FALSE, warning=FALSE, fig.align="center", cache=TRUE, results='hide'}
-sce <- runKMeans(inSCE = sce, 
-                    useReducedDim = "seuratUMAP", 
-                    nCenters = 13, 
-                    clusterName = "kmeans_cluster")
-plotSCEDimReduceColData(inSCE = sce, 
-                        colorBy = "kmeans_cluster",
-                        conditionClass = "factor",
-                        reducedDimName = "seuratUMAP")
+sce <- runKMeans(inSCE = sce, useReducedDim = "seuratUMAP", nCenters = 13, clusterName = "kmeans_cluster")
+plotSCEDimReduceColData(inSCE = sce, colorBy = "kmeans_cluster", conditionClass = "factor", reducedDimName = "seuratUMAP")
 ```
 
 ````{=html}
@@ -281,12 +254,8 @@ plotSCEDimReduceColData(inSCE = sce,
 Here we will only present the examples of using `seuratFindClusters()`. 
 
 ```{R clst_seurat1, eval=FALSE, message=FALSE, warning=FALSE, fig.align="center", cache=TRUE, results='hide'}
-sce <- seuratFindClusters(inSCE = sce, 
-                          useAssay = "seuratScaledData")
-plotSCEDimReduceColData(inSCE = sce, 
-                        colorBy = "Seurat_louvain_Resolution0.8", 
-                        conditionClass = "factor", 
-                        reducedDimName = "seuratUMAP")
+sce <- seuratFindClusters(inSCE = sce, useAssay = "seuratScaledData")
+plotSCEDimReduceColData(inSCE = sce, colorBy = "Seurat_louvain_Resolution0.8", conditionClass = "factor", reducedDimName = "seuratUMAP")
 ```
 
 When users preprocessed the dataset with other approaches. The clustering with Seurat function can be complicated, since some sorts of Seurat specific metadata is always needed.  
@@ -298,25 +267,14 @@ pca <- reducedDim(sce, "PCA")
 rownames(pca) <- gsub("_", "-", rownames(pca))
 if ("percentVar" %in% names(attributes(pca))) {
     stdev <- as.numeric(attr(pca, "percentVar"))
-    new_pca <- Seurat::CreateDimReducObject(embeddings = sce, 
-                                            assay = "RNA",
-                                            stdev = stdev, 
-                                            key = "PC_")
+    new_pca <- Seurat::CreateDimReducObject(embeddings = sce, assay = "RNA", stdev = stdev, key = "PC_")
 } else {
-    new_pca <- Seurat::CreateDimReducObject(embeddings = sce, 
-                                            assay = "RNA",
-                                            key = "PC_")
+    new_pca <- Seurat::CreateDimReducObject(embeddings = sce, assay = "RNA", key = "PC_")
 }
 # Then we can take the Seurat Curated Workflow independent dimension 
 # reduction as an input. 
-pbmc3k <- seuratFindClusters(inSCE = sce, 
-                             useAssay = assayNames(sce)[1], # Need a placeholder
-                             externalReduction = new_pca,
-                             resolution = 0.8)
-plotSCEDimReduceColData(inSCE = sce, 
-                        colorBy = "Seurat_louvain_Resolution0.8",
-                        conditionClass = "factor",
-                        reducedDimName = "seuratUMAP")
+pbmc3k <- seuratFindClusters(inSCE = sce, useAssay = assayNames(sce)[1], externalReduction = new_pca, resolution = 0.8)
+plotSCEDimReduceColData(inSCE = sce, colorBy = "Seurat_louvain_Resolution0.8", conditionClass = "factor", reducedDimName = "seuratUMAP")
 ```
 
 ````{=html}

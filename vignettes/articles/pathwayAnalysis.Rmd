@@ -26,7 +26,9 @@ doEval = FALSE
 ## Introduction
 
 VAM [@Frost2020.02.18.954321] and GSVA [@pmid23323831] are popular methods for GSE (Gene Set Enrichment) and allows the identification of changes in pathway activity in RNA-Seq data. Overall, gene sets can be uploaded or selected from the available databases and the pathway analysis method can be run on the selected gene sets which can eventually be visualized using Violin plot.
-For this section, we provide wrappers of two methods, listed in the table below. All functions takes an input [`SingleCellExperiment`](https://rdrr.io/bioc/SingleCellExperiment/man/SingleCellExperiment.html) (SCE) object and other settings as arguments and returns the same SCE object with results updated in `reducedDim``.  
+For this section, we provide wrappers of two methods, listed in the table below. All functions takes an input [`SingleCellExperiment`](https://rdrr.io/bioc/SingleCellExperiment/man/SingleCellExperiment.html) (SCE) object and other settings as arguments and returns the same SCE object with results updated in `reducedDim` slot of the input object.  
+
+To view detailed instructions on how to use these methods, please select 'Interactive Analysis' for using pathway analysis in shiny application or 'Console Analysis' for using these methods on R console from the tabs below: <br>
 
 
 ## Workflow Guide
@@ -55,7 +57,7 @@ The UI is constructed in a sidebar style, where the left-sided sidebar works for
 
 ![PathwayAlgo](ui_screenshots/pathwayAnalysis/path_ui_algo.png)\
 
-For running any types of pathway analysis, there are always three essential inputs that users should be sure with.
+For running any types of pathway analysis, there are always three essential inputs that users should be sure with:
 
 - The data matrix to use - selection input **"Select Assay"**. In terms of pathway analysis, SCTK always requires a full-sized feature expression data (i.e. assay) as a valid input.
 - The pathway analysis method - selection input **"Select Method"**. All methods supported are listed as options.
@@ -66,6 +68,10 @@ After the pathway analysis method is confirmed, the lower part will dynamically 
 **2. Parameter Settings**
 
 ````{=html}
+ <style>
+div.offset { background-color:inherit ; border-radius: 5px; margin-left: 15px;}
+</style>
+<div class = "offset">
 <details>
   <summary><b>VAM</b></summary>
 ````  
@@ -93,6 +99,7 @@ When the selected algorithm is "GSVA", no additional parameter settings exist ot
 
 ````{=html}
 </details>
+</div>
 <br/>
 ````  
 
@@ -104,6 +111,7 @@ The visualization is implemented with a plotting of cell by geneset matrix score
 
 
 ````{=html}
+<div class = "offset">
 <details>
   <summary><b>Detail</b></summary>
 ````
@@ -123,6 +131,7 @@ The parameter panel for visualization comprises of:
 
 ````{=html}
 </details>
+</div>
 </div>
 
 <div id="console" class="tabcontent">
@@ -155,6 +164,7 @@ sce <- importExampleData("pbmc3k")
 The preprocessing only includes necessary steps before implementing pathway analysis 
 
 ````{=html}
+<div class = "offset">
 <details>
   <summary><b>Preprocessing</b></summary>
 ````
@@ -162,11 +172,7 @@ The preprocessing only includes necessary steps before implementing pathway anal
 ```{R clst_prep, eval=FALSE, message=FALSE, warning=FALSE, fig.align="center", cache=TRUE, results='hide'}
 
 sce <- scaterlogNormCounts(sce, assayName = "logcounts")
-sce <- importGeneSetsFromMSigDB(inSCE = sce, 
-                             categoryIDs = "H",
-                             species = "Homo sapiens",
-                             mapping = "gene_symbol",
-                             by = "rownames")
+sce <- importGeneSetsFromMSigDB(inSCE = sce, categoryIDs = "H", species = "Homo sapiens", mapping = "gene_symbol", by = "rownames")
 ```
 
 ````{=html}
@@ -189,7 +195,6 @@ sce <- importGeneSetsFromMSigDB(inSCE = sce,
 ```{R path_VAM, eval=FALSE, message=FALSE, warning=FALSE, fig.align="center", cache=TRUE, results='hide'}
 # Directly use an assay
 sce <- runVAM(inSCE = sce, geneSetCollectionName = "H", useAssay = "logcounts", center = TRUE, gamma = FALSE)
-
 ```
 
 ````{=html}
@@ -199,8 +204,6 @@ sce <- runVAM(inSCE = sce, geneSetCollectionName = "H", useAssay = "logcounts", 
 ````{=html}
 <details>
   <summary><b>Example with GSVA</b></summary>
-  
-    
 ````
 
 ```{R clst_kmeans, eval=FALSE, message=FALSE, warning=FALSE, fig.align="center", cache=TRUE, results='hide'}
@@ -218,6 +221,7 @@ sce <- runGSVA(inSCE = sce, geneSetCollectionName = "GeneSetCollection", useAssa
 
 ````{=html}
 </details>
+</div>
 </div>
 <script>
 document.getElementById("ia-button").click();

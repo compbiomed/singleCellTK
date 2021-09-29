@@ -317,7 +317,8 @@ div.offset { background-color:inherit ; border-radius: 5px; margin-left: 15px;}
 
 <div id="console" class="tabcontent">
 <p>The differential expression analysis can be easily performed on any preprocessed SCE dataset. Here we introduce the workflow of using the generic wrapper <code><a href="../../reference/runDEAnalysis.html">runDEAnalysis()</a></code>.</p>
-<p><strong>Basic Parameters</strong></p>
+<p><strong>Basic Parameters:</strong></p>
+<div class="offset">
 <p>The most basic parameters include:</p>
 <ul>
 <li>The input SCE object - <code>inSCE</code>.</li>
@@ -325,7 +326,9 @@ div.offset { background-color:inherit ; border-radius: 5px; margin-left: 15px;}
 <li>The assay to perform the analysis on - <code>useAssay</code>
 </li>
 </ul>
-<p><strong>Other required parameter</strong></p>
+</div>
+<p><strong>Additional Required Parameters:</strong></p>
+<div class="offset">
 <p><strong>1. Conditions</strong></p>
 <p>The R script functions we have allow users to perform differential expression analysis with relatively flexible condition setting. In terms of the condition of interests and the condition for control, comparison groups can be set by giving either one or more categories under a column in <code>colData</code>, or a prepared index vector as long as the indices are able to subset the input SCE object.</p>
 <p>Additionally, only specifying the condition of interests is allowed and the control will then be set to all the other cells, which turns to a biomarker finding analysis.</p>
@@ -342,6 +345,7 @@ div.offset { background-color:inherit ; border-radius: 5px; margin-left: 15px;}
 <li>The analysis run itself - <code>analysisName</code>.</li>
 </ul>
 <p>The reason is we assume that users are likely to perform multiple batches of analysis for a single dataset (e.g. group1 Vs. group2 and then group1 Vs. group3), and we hope to have everything stored in one SCE without leaving users any confusion when they look back on it. Also, the namings are also used by DE analysis related plotting functions, so that legends can be well annotated.</p>
+</div>
 <details><summary><b>Example</b></summary><p>To demonstrate a simple and clear example, here we use the “PBMC-3k” dataset from “10X” which can be easily imported with SCTK functions.</p>
 <details><summary><b>Preprocessing</b></summary><p>The preprocessing only includes necessary steps to get cluster labels (i.e. QC and filtering are excluded), via using SCTK’s Seurat Curated Workflow.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
@@ -362,14 +366,9 @@ div.offset { background-color:inherit ; border-radius: 5px; margin-left: 15px;}
                         reducedDimName <span class="op">=</span> <span class="st">"seuratUMAP"</span><span class="op">)</span></code></pre></div>
 </details><br><div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Condition chosen basing on the UMAP</span>
-<span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/runDEAnalysis.html">runDEAnalysis</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, 
-                        method <span class="op">=</span> <span class="st">"MAST"</span>, 
-                        useAssay <span class="op">=</span> <span class="st">"logcounts"</span>,
-                        class <span class="op">=</span> <span class="st">"Seurat_louvain_Resolution0.8"</span>, 
-                        classGroup1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span>, classGroup2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">5</span><span class="op">)</span>,
-                        groupName1 <span class="op">=</span> <span class="st">"c2"</span>, groupName2 <span class="op">=</span> <span class="st">"c4_c5"</span>, 
-                        analysisName <span class="op">=</span> <span class="st">"c2_VS_c4_c5"</span><span class="op">)</span></code></pre></div>
+<span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/runDEAnalysis.html">runDEAnalysis</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, method <span class="op">=</span> <span class="st">"MAST"</span>, useAssay <span class="op">=</span> <span class="st">"logcounts"</span>, class <span class="op">=</span> <span class="st">"Seurat_louvain_Resolution0.8"</span>, classGroup1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span>, classGroup2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">5</span><span class="op">)</span>, groupName1 <span class="op">=</span> <span class="st">"c2"</span>, groupName2 <span class="op">=</span> <span class="st">"c4_c5"</span>, analysisName <span class="op">=</span> <span class="st">"c2_VS_c4_c5"</span><span class="op">)</span></code></pre></div>
 </details><br><p><strong>Results</strong></p>
+<div class="offset">
 <p>The results are saved in the <code>metadata</code> slot of the returned SCE object</p>
 <details><summary><b>Result list structure</b></summary><pre><code>matadata(sce)
           |- $info1
@@ -400,6 +399,7 @@ div.offset { background-color:inherit ; border-radius: 5px; margin-left: 15px;}
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../../reference/plotDEGHeatmap.html">plotDEGHeatmap</a></span><span class="op">(</span><span class="va">sce</span>, useResult <span class="op">=</span> <span class="st">"c2_VS_c4_c5"</span>, log2fcThreshold <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></code></pre></div>
 <p>For other approaches of visualizing top differential expressed genes, refer to <code><a href="../../reference/plotDEGRegression.html">plotDEGRegression()</a></code> and <code><a href="../../reference/plotDEGViolin.html">plotDEGViolin()</a></code>, which are borrowed from <a href="https://www.bioconductor.org/packages/release/bioc/vignettes/MAST/inst/doc/MAITAnalysis.html#401_visualization_of_50_most_differentially_expressed_genes">MAST’s tutorial</a>.</p>
+</div>
 </div>
 <script>
 document.getElementById("ia-button").click();
