@@ -24,6 +24,8 @@ doEval = FALSE
 
 SingleCellTK (SCTK) is equipped with the generic heatmap plotting functionality, which helps visualizing the feature expression matrices, with flexible methods of annotation and grouping on either cells or features. Our base function is a wrapper of [`ComplexHeatmap`](https://rdrr.io/bioc/ComplexHeatmap/) [@Gu2016]. 
 
+To view detailed instructions on how to use heatmap, please select 'Interactive Analysis' for using heatmap in shiny application or 'Console Analysis' for using it on R console from the tabs below: <br>
+
 ## Workflow Guide
 
 ````{=html}
@@ -44,6 +46,10 @@ The UI for plotting a generic heatmap is constructed with 5 sections: data input
 **Basic Workflow**
 
 ````{=html}
+ <style>
+div.offset { background-color:inherit ; border-radius: 5px; margin-left: 15px;}
+</style>
+<div class = "offset">
 <details>
   <summary><b>1. Data Input</b></summary>
 ```` 
@@ -159,6 +165,8 @@ After going over all the settings shown in the screenshots of the previous secti
 
 ````{=html}
 </details>
+</div>
+<br>
 ```` 
 
 **Additional Usage**
@@ -166,6 +174,7 @@ After going over all the settings shown in the screenshots of the previous secti
 The documentation above is for the general usage of SCTK Heatmap page. While heatmap is an important visualization method for many types of analysis, SCTK allows importing some types analysis results. Currently, DE analysis and marker detection results are supported. Here, we will present an example of importing the DE analysis result.  
 
 ````{=html}
+<div class = "offset">
 <details>
   <summary><b>See Detail</b></summary>
 ```` 
@@ -192,6 +201,7 @@ Other heatmap settings will also be automatically filled for a DE specific heatm
 
 ````{=html}
 </details>
+</div>
 </div>
 
 <div id="console" class="tabcontent">
@@ -224,8 +234,7 @@ The basic way to subset the heatmap is to directly use an index vector that can 
 featureSubset <- sample(nrow(sce), 50)
 cellSubset <- sample(ncol(sce), 50)
 
-plotSCEHeatmap(inSCE = sce, useAssay = "counts", 
-               featureIndex = featureSubset, cellIndex = cellSubset)
+plotSCEHeatmap(inSCE = sce, useAssay = "counts", featureIndex = featureSubset, cellIndex = cellSubset)
 ```
 
 ````{=html}
@@ -234,14 +243,12 @@ plotSCEHeatmap(inSCE = sce, useAssay = "counts",
   <summary><b>Using Identifiers in <code>rowData</code>/<code>colData</code></b></summary>
 ```` 
 
-In a more complexed situation, where users might only have a set of identifiers which are not inside the row/col names (i.e. unable to directly subset the SCE object), we provide another approach. The subset, in this situation, can be accessed via specifying a vector that contains the identifiers users have, to `featureIndexBy` or `cellIndexBy`. This specification allows directly giving one column name of `rowData` or `colData`.  
+In a more complex situation, where users might only have a set of identifiers which are not inside the row/col names (i.e. unable to directly subset the SCE object), we provide another approach. The subset, in this situation, can be accessed via specifying a vector that contains the identifiers users have, to `featureIndexBy` or `cellIndexBy`. This specification allows directly giving one column name of `rowData` or `colData`.  
 
 ```{R indexBy, eval=TRUE, cache=TRUE}
 subsetFeatureName <- sample(rowData(sce)$feature_name, 50)
 subsetCellBarcode <- sample(sce$cell_barcode, 50)
-plotSCEHeatmap(inSCE = sce, useAssay = "counts", 
-               featureIndex = subsetFeatureName, featureIndexBy = "feature_name",
-               cellIndex = subsetCellBarcode, cellIndexBy = "cell_barcode")
+plotSCEHeatmap(inSCE = sce, useAssay = "counts", featureIndex = subsetFeatureName, featureIndexBy = "feature_name", cellIndex = subsetCellBarcode, cellIndexBy = "cell_barcode")
 ```
 
 ````{=html}
@@ -258,9 +265,7 @@ rowRandLabel <- c(rep('aa', 100), rep('bb', 100))
 rowData(sce)$randLabel <- rowRandLabel
 colRandLabel <- c(rep('cc', 195), rep('dd', 195))
 colData(sce)$randLabel <- colRandLabel
-plotSCEHeatmap(inSCE = sce, useAssay = "counts", 
-               featureIndex = featureSubset, cellIndex = cellSubset,
-               rowDataName = "randLabel", colDataName = c("type", "randLabel"))
+plotSCEHeatmap(inSCE = sce, useAssay = "counts", featureIndex = featureSubset, cellIndex = cellSubset, rowDataName = "randLabel", colDataName = c("type", "randLabel"))
 ```
 
 ````{=html}
@@ -286,10 +291,7 @@ singleCellTK:::dataAnnotationColor(sce, "col")
 **1. Grouping/Splitting** In some cases, it might be better to do a "semi-heatmap" (i.e. split the rows/columns first and cluster them within each group) to visualize some expression pattern, such as evaluating the differential expression. For this need, use `rowSplitBy` or `colSplitBy`, and the arguments must be a `character` vector that is a subset of the specified annotation.  
 
 ```{R split, eval=TRUE, cache=TRUE}
-plotSCEHeatmap(inSCE = sce, useAssay = "counts", 
-               featureIndex = featureSubset, cellIndex = cellSubset,
-               rowDataName = "randLabel", colDataName = c("type", "randLabel"),
-               rowSplitBy = "randLabel", colSplitBy = "type")
+plotSCEHeatmap(inSCE = sce, useAssay = "counts", featureIndex = featureSubset, cellIndex = cellSubset, rowDataName = "randLabel", colDataName = c("type", "randLabel"), rowSplitBy = "randLabel", colSplitBy = "type")
 ```
 
 **2. Cell/Feature Labeling** Text labels of features or cells can be added via `rowLabel` or `colLabel`. Use `TRUE` or `FALSE` to specify whether to show the `rownames` or `colnames` of the subsetted SCE object. Additionally, giving a single string of a column name of `rowData` or `colData` can enable the labeling of the annotation. Furthermore, users can directly throw a character vector to the parameter, with the same length of either the full SCE object or the subsetted.  
@@ -299,11 +301,7 @@ plotSCEHeatmap(inSCE = sce, useAssay = "counts",
 **4. Row/Column titles** The row title (`"Genes"`) and column title (`"Cells"`) can be changed or removed by passing a string or `NULL` to `rowTitle` or `colTitle`, respectively.  
 
 ```{R label, eval=TRUE, cache=TRUE}
-plotSCEHeatmap(inSCE = sce, useAssay = "counts", 
-               featureIndex = featureSubset, cellIndex = cellSubset,
-               rowLabel = "feature_name", colLabel = as.character(1:50),
-               colDend = FALSE,
-               rowTitle = "Downsampled features")
+plotSCEHeatmap(inSCE = sce, useAssay = "counts", featureIndex = featureSubset, cellIndex = cellSubset, rowLabel = "feature_name", colLabel = as.character(1:50), colDend = FALSE, rowTitle = "Downsampled features")
 ```
 
 There are still some parameters not mentioned here, but they are not frequently used. Please refer to `?plotSCEHeatmap` as well as `?ComplexHeatmap::Heatmap`. 

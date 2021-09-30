@@ -207,7 +207,7 @@
 
       
 
-      </header><script src="find_marker_files/header-attrs-2.7/header-attrs.js"></script><div class="row">
+      </header><script src="find_marker_files/header-attrs-2.9/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Find Marker</h1>
@@ -227,6 +227,7 @@
 <h2 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h2>
 <p>This section comes together with the previous section <a href="differential_expression.html">Differential Expression</a>. The basic strategy singleCellTK (SCTK) uses to find biomarkers is to iteratively identify the significantly up-regulated features of each group of cells against all the other cells. This means, the function we have (<code><a href="../../reference/findMarkerDiffExp.html">findMarkerDiffExp()</a></code>) is a wrapper of functions that do differential expression (DE) analysis, which would be invoked in a loop. For the detail of the DE functions and DE computation methods, please refer to the <a href="differential_expression.html">Differential Expression documentation</a>.</p>
+<p>To view detailed instructions on how to use these methods, please select ‘Interactive Analysis’ for shiny application or ‘Console Analysis’ for using these methods on R console from the tabs below: <br></p>
 </div>
 <div id="workflow-guide" class="section level2">
 <h2 class="hasAnchor">
@@ -253,7 +254,7 @@
 </li>
 <li>Mean expression level cutoff - numeric input <strong>“Minimum Mean Expression Level in Cluster”</strong>. Following the last bullet point, this parameter will keep only the marker genes with mean expression level in the cluster higher than higher than a value.</li>
 </ul></details><br><p><strong>Main Panel - Result Table</strong></p>
-<p>The table is shown in the figure above. In this tab, there will be a table for all the markers detected and passed the filters. It is constructed with 5 columns, including <strong>“Gene”</strong> - the default feature identifiers (not necessarily a gene ID or symbol, depending on the background SCE object); <strong>“Log2_FC”</strong>, <strong>“Pvalue”</strong> and <strong>“FDR”</strong> - the statistics that supports the detection; and the fifth one that labels which cluster the marker is for, and the column name is exactly the <strong>“cluster annotation”</strong> selected in the sidebar. Users can also download the table in comma-splitted value (CSV) format, by clicking <strong>“Download Result Table”</strong> button.</p>
+<p>The table is shown in the figure above. In this tab, there will be a table for all the markers detected and passed the filters. It is constructed with 5 columns, including <strong>“Gene”</strong> - the default feature identifiers (not necessarily a gene ID or symbol, depending on the background SCE object); <strong>“Log2_FC”</strong>, <strong>“Pvalue”</strong> and <strong>“FDR”</strong> - the statistics that supports the detection; and the fifth one that labels which cluster the marker is for, and the column name is exactly the <strong>“cluster annotation”</strong> selected in the sidebar. Users can also download the table in comma-separated value (CSV) format, by clicking <strong>“Download Result Table”</strong> button.</p>
 <p><strong>Main Panel - Heatmap</strong></p>
 <p><img src="ui_screenshots/find_marker/fm_ui_main2.png" alt="main2"><br></p>
 <p>A heatmap will be automatically generated after running the marker detection process. Users can tweak the options for plotting by clicking on the blue clog button on the top-left.</p>
@@ -273,12 +274,7 @@
 <p><strong>Parameters</strong></p>
 <p>As per SCTK’s strategy, the primary input is limited to an <a href="https://rdrr.io/bioc/SingleCellExperiment/man/SingleCellExperiment.html">SingleCellExperiment</a> (SCE) object, which has been through preprocessing steps with cluster labels annotated. While the iteration is a fixed pattern, the parameters needed are rather simple:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/findMarkerDiffExp.html">findMarkerDiffExp</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, 
-                         useAssay <span class="op">=</span> <span class="st">"logcounts"</span>,
-                         cluster <span class="op">=</span> <span class="st">"cluster"</span>,
-                         covariates <span class="op">=</span> <span class="cn">NULL</span>,
-                         log2fcThreshold <span class="op">=</span> <span class="fl">0.25</span>,
-                         fdrThreshold <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/findMarkerDiffExp.html">findMarkerDiffExp</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"logcounts"</span>, cluster <span class="op">=</span> <span class="st">"cluster"</span>, covariates <span class="op">=</span> <span class="cn">NULL</span>, log2fcThreshold <span class="op">=</span> <span class="fl">0.25</span>, fdrThreshold <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span></code></pre></div>
 <p>Here all arguments execpt the input SCE object (<code>inSCE</code>) are set by default. <code>method</code> can only be chosen from the table above. <code>cluster</code> and <code>covariates</code> should be given a single string which is present in <code><a href="https://rdrr.io/r/base/names.html">names(colData(inSCE))</a></code>. <code>cluster</code> is required for grouping cells, while <code>covariates</code> is optional for DE detection. <code>log2fcThreshold</code> and <code>fdrThreshold</code> are numeric and has to be set in plausible range. <code>log2fcThrshold</code> has to be positive and <code>fdrThreshold</code> has to be greater than zero and less than one.</p>
 <p>The returned SCE object will contain the updated information of the markers identified in its <code>metadata</code> slot.</p>
 <details><summary><b>Example</b></summary><p><strong>Preprocessing</strong></p>
@@ -295,16 +291,11 @@
 <span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/seuratRunUMAP.html">seuratRunUMAP</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span>
 <span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/seuratFindClusters.html">seuratFindClusters</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"seuratScaledData"</span><span class="op">)</span>
 <span class="co"># Optional visualization</span>
-<span class="fu"><a href="../../reference/plotSCEDimReduceColData.html">plotSCEDimReduceColData</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, 
-                        colorBy <span class="op">=</span> <span class="st">"Seurat_louvain_Resolution0.8"</span>, 
-                        conditionClass <span class="op">=</span> <span class="st">"factor"</span>, 
-                        reducedDimName <span class="op">=</span> <span class="st">"seuratUMAP"</span><span class="op">)</span></code></pre></div>
+<span class="fu"><a href="../../reference/plotSCEDimReduceColData.html">plotSCEDimReduceColData</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, colorBy <span class="op">=</span> <span class="st">"Seurat_louvain_Resolution0.8"</span>, conditionClass <span class="op">=</span> <span class="st">"factor"</span>, reducedDimName <span class="op">=</span> <span class="st">"seuratUMAP"</span><span class="op">)</span></code></pre></div>
 <p><strong>Get Markers</strong></p>
 <p>Then we call <code><a href="../../reference/findMarkerDiffExp.html">findMarkerDiffExp()</a></code> on the clustered data, with the cluster annotation just attached, which by default named with <code>"Seurat_louvain_Resolution0.8"</code>.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/findMarkerDiffExp.html">findMarkerDiffExp</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, 
-                         useAssay <span class="op">=</span> <span class="st">"logcounts"</span>, 
-                         cluster <span class="op">=</span> <span class="st">"Seurat_louvain_Resolution0.8"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/findMarkerDiffExp.html">findMarkerDiffExp</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"logcounts"</span>, cluster <span class="op">=</span> <span class="st">"Seurat_louvain_Resolution0.8"</span><span class="op">)</span></code></pre></div>
 </details><br><p><strong>Results</strong></p>
 <p>After successfully running <code><a href="../../reference/findMarkerDiffExp.html">findMarkerDiffExp()</a></code>, the result marker table would be stored in <code>metadata(sce)</code>. This table can be fetched by:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
