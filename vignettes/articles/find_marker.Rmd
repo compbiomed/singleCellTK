@@ -20,6 +20,8 @@ csl: ieee.csl
 
 This section comes together with the previous section [Differential Expression](differential_expression.html). The basic strategy singleCellTK (SCTK) uses to find biomarkers is to iteratively identify the significantly up-regulated features of each group of cells against all the other cells. This means, the function we have (`findMarkerDiffExp()`) is a wrapper of functions that do differential expression (DE) analysis, which would be invoked in a loop. For the detail of the DE functions and DE computation methods, please refer to the [Differential Expression documentation](differential_expression.html).  
 
+To view detailed instructions on how to use these methods, please select 'Interactive Analysis' for shiny application or 'Console Analysis' for using these methods on R console from the tabs below: <br>
+
 ## Workflow Guide
 
 ````{=html}
@@ -62,7 +64,7 @@ The UI is constructed in a sidebar pattern. The sidebar on the left is mainly fo
 
 **Main Panel - Result Table**
 
-The table is shown in the figure above. In this tab, there will be a table for all the markers detected and passed the filters. It is constructed with 5 columns, including **"Gene"** - the default feature identifiers (not necessarily a gene ID or symbol, depending on the background SCE object); **"Log2_FC"**, **"Pvalue"** and **"FDR"** - the statistics that supports the detection; and the fifth one that labels which cluster the marker is for, and the column name is exactly the **"cluster annotation"** selected in the sidebar. Users can also download the table in comma-splitted value (CSV) format, by clicking **"Download Result Table"** button.  
+The table is shown in the figure above. In this tab, there will be a table for all the markers detected and passed the filters. It is constructed with 5 columns, including **"Gene"** - the default feature identifiers (not necessarily a gene ID or symbol, depending on the background SCE object); **"Log2_FC"**, **"Pvalue"** and **"FDR"** - the statistics that supports the detection; and the fifth one that labels which cluster the marker is for, and the column name is exactly the **"cluster annotation"** selected in the sidebar. Users can also download the table in comma-separated value (CSV) format, by clicking **"Download Result Table"** button.  
 
 **Main Panel - Heatmap**
 
@@ -97,12 +99,7 @@ A heatmap will be automatically generated after running the marker detection pro
 As per SCTK's strategy, the primary input is limited to an [SingleCellExperiment](https://rdrr.io/bioc/SingleCellExperiment/man/SingleCellExperiment.html) (SCE) object, which has been through preprocessing steps with cluster labels annotated. While the iteration is a fixed pattern, the parameters needed are rather simple:  
 
 ```{R egCall, eval = FALSE}
-sce <- findMarkerDiffExp(inSCE = sce, 
-                         useAssay = "logcounts",
-                         cluster = "cluster",
-                         covariates = NULL,
-                         log2fcThreshold = 0.25,
-                         fdrThreshold = 0.05)
+sce <- findMarkerDiffExp(inSCE = sce, useAssay = "logcounts", cluster = "cluster", covariates = NULL, log2fcThreshold = 0.25, fdrThreshold = 0.05)
 ```
 
 Here all arguments execpt the input SCE object (`inSCE`) are set by default. `method` can only be chosen from the table above. `cluster` and `covariates` should be given a single string which is present in `names(colData(inSCE))`. `cluster` is required for grouping cells, while `covariates` is optional for DE detection. `log2fcThreshold` and `fdrThreshold` are numeric and has to be set in plausible range. `log2fcThrshold` has to be positive and `fdrThreshold` has to be greater than zero and less than one.  
@@ -130,10 +127,7 @@ sce <- seuratPCA(inSCE = sce, useAssay = "seuratScaledData")
 sce <- seuratRunUMAP(sce)
 sce <- seuratFindClusters(inSCE = sce, useAssay = "seuratScaledData")
 # Optional visualization
-plotSCEDimReduceColData(inSCE = sce, 
-                        colorBy = "Seurat_louvain_Resolution0.8", 
-                        conditionClass = "factor", 
-                        reducedDimName = "seuratUMAP")
+plotSCEDimReduceColData(inSCE = sce, colorBy = "Seurat_louvain_Resolution0.8", conditionClass = "factor", reducedDimName = "seuratUMAP")
 ```
 
 **Get Markers**
@@ -141,9 +135,7 @@ plotSCEDimReduceColData(inSCE = sce,
 Then we call `findMarkerDiffExp()` on the clustered data, with the cluster annotation just attached, which by default named with `"Seurat_louvain_Resolution0.8"`.  
 
 ```{R runFM, eval=FALSE, message=FALSE, warning=FALSE, cache=TRUE}
-sce <- findMarkerDiffExp(inSCE = sce, 
-                         useAssay = "logcounts", 
-                         cluster = "Seurat_louvain_Resolution0.8")
+sce <- findMarkerDiffExp(inSCE = sce, useAssay = "logcounts", cluster = "Seurat_louvain_Resolution0.8")
 ```
 
 ````{=html}

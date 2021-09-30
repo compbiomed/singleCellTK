@@ -207,7 +207,7 @@
 
       
 
-      </header><script src="import_annotation_files/header-attrs-2.7/header-attrs.js"></script><div class="row">
+      </header><script src="import_annotation_files/header-attrs-2.9/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Manage Annotation of Cell and Features</h1>
@@ -227,6 +227,7 @@
 <h2 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h2>
 <p>This documentation mainly focuses on the metadata variable that can be projected to each cell or feature, such as IDs and clinical conditions. Single Cell Toolkit (singleCellTK, SCTK) allows users to import and manage cell level and feature level annotations to help with analysis such as filtering the features for less noise, grouping the cells for differential expression analysis, and etc. Many of the analysis steps that SCTK does would also produce annotations, such as the QC metrics, clustering labels and etc.</p>
+<p>To view detailed instructions on how to manipulate the annotation, please select ‘Interactive Analysis’ for manipulation through shiny application or ‘Console Analysis’ for manipulation through the R console from the tabs below: <br></p>
 </div>
 <div id="workflow-guide" class="section level2">
 <h2 class="hasAnchor">
@@ -255,9 +256,14 @@
 </li>
 </ol>
 <p><strong>Detailed Demonstration</strong></p>
+ <style>
+div.offset { background-color:inherit ; border-radius: 5px; margin-left: 15px;}
+</style>
+<div class="offset">
 <details><summary><b>Import New Annotation from File</b></summary><p>Users can upload a metadata table that annotates the cells in the dataset with multiple variables. The file has to be in Comma-Separated Values (CSV) format, and have the first header row for the variable names. All cells in the file have to match with the existing dataset in both order and amount, so that SCTK can correctly identify the information and merge it to the background data container.</p>
 <p>Users can choose to replace all existing annotation with the new table, by selecting the radio button <strong>“Replace Cell Annotations”</strong>, or merge the new table into the existing table, by selecting <strong>“Add to existing Cell Annotations”</strong>. Note that by choosing to merge, SCTK will overwrite the the variables with the same name.</p>
-</details><details><summary><b>Edit Existing Annotation</b></summary><details><summary><b>Bins</b></summary><p>Users can modify an existing column of annotation by changing all values that meet a criteria (alphabetically ordered comparison by “=,” “&gt;,” “&lt;,” “&gt;=” or “&lt;=”) to a new value. In the UI, users can choose the annotation at the selection input <strong>“select attribute”</strong>, and then set the binning point by selecting an existing value at the selection input <strong>“select attribute value”</strong> or entering the desired value at <strong>“criteria parameter”</strong>. The criteria type (comparison symbol) can be selected at <strong>“select comparison”</strong>. The new value to be filled in to the bin can be entered at <strong>“bin name”</strong>. Finally, press <strong>“Confirm Bin”</strong> button to temporarily save the result and preview it in the table at the bottom of the page.</p>
+</details><details><summary><b>Edit Existing Annotation</b></summary><div class="offset">
+  <details><summary><b>Bins</b></summary><p>Users can modify an existing column of annotation by changing all values that meet a criteria (alphabetically ordered comparison by “=,” “&gt;,” “&lt;,” “&gt;=” or “&lt;=”) to a new value. In the UI, users can choose the annotation at the selection input <strong>“select attribute”</strong>, and then set the binning point by selecting an existing value at the selection input <strong>“select attribute value”</strong> or entering the desired value at <strong>“criteria parameter”</strong>. The criteria type (comparison symbol) can be selected at <strong>“select comparison”</strong>. The new value to be filled in to the bin can be entered at <strong>“bin name”</strong>. Finally, press <strong>“Confirm Bin”</strong> button to temporarily save the result and preview it in the table at the bottom of the page.</p>
 <blockquote>
 <p>For example: There is an annotation named <code>"ann1"</code>, with values <code>"a", "b", "c", "d", "e", ...</code> in the dataset, and users want to change all the values in <code>"ann1"</code>, that come after <code>"d"</code>, to <code>"afterD"</code>. The steps would be: 1. Choose <code>"ann1"</code> at <strong>“select attribute”</strong>; 2. Select <code>"d"</code> at <strong>“select attribute value”</strong> or enter <code>"d"</code> at <strong>“criteria parameter”</strong>; 3. Select <code><a href="https://rdrr.io/r/base/Comparison.html">&gt;</a></code> at <strong>“select comparison”</strong>; 4. Enter <code>"afterD"</code> at <strong>“bin name”</strong>.</p>
 </blockquote>
@@ -270,11 +276,14 @@
 <p>Users can add a new column where all values are the same. Users will need to define the name of the new column at <strong>“enter new empty column name”</strong>, and the value of this column at <strong>“default value to fill”</strong>. Then users need to click on <strong>“Create Column”</strong> make the change. The effect can be immediately observed in the <strong>“Table of Cell Annotations”</strong> at the bottom, as shown in the screenshot above.</p>
 </details><details><summary><b>Delete column</b></summary><p><img src="ui_screenshots/cell_annotation/cell_ann_ui_delete.png" alt="entry"><br></p>
 <p>User can remove an entire column. The unwanted column can be deleted by simply selecting the name of the column at <strong>“select attribute to delete”</strong> and click on the <strong>“Delete”</strong> button. The effect can be immediately observed in the <strong>“Table of Cell Annotations”</strong> at the bottom, as shown in the screenshot above.</p>
-  </details></details>
+  </details>
+</div>
+</details>
+</div>
 </div>
 
 <div id="console" class="tabcontent">
-<p>SCTK uses the <a href="https://rdrr.io/bioc/SingleCellExperiment/man/SingleCellExperiment.html">SingleCellExperiment</a> object as the container of users’ datasets. Basing on this, the cell level and feature level annotations are all stored in the <code>colData</code> slot and <code>rowData</code> slot, respectively.</p>
+<p>SCTK uses the <a href="https://rdrr.io/bioc/SingleCellExperiment/man/SingleCellExperiment.html">SingleCellExperiment</a> object as the container of users’ datasets. Based on this approach, the cell level and feature level annotations are all stored in the <code>colData</code> slot and <code>rowData</code> slot, respectively.</p>
 <p>Here, we present some of the most basic operations on cell annotations, with <code>colData()</code> method. For operations on feature annotations, replace <code>colData()</code> with <code>rowData()</code>.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Get a dataset</span>

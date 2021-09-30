@@ -22,7 +22,9 @@ doEval = FALSE
 
 ## Introduction
 
-While analyzing with SCTK, there might be exessive data that should be removed. Here we briefly talk about the way to clean up the unwanted information.  
+While analyzing with SCTK, there might be excessive data that should be removed. Here we briefly talk about the way to clean up the unwanted information.  
+
+To view detailed instructions on how to delete data, please select 'Interactive Analysis' for deletion through the shiny application or 'Console Analysis' for deletion through the R console from the tabs below: <br>
 
 ## Workflow Guide
 
@@ -37,7 +39,7 @@ While analyzing with SCTK, there might be exessive data that should be removed. 
 
 ![entry](ui_screenshots/delete_data/del_ui_entry.png)\
 
-SCTK provides a page that allows users to delete existing data, including count matrices (assays), cell (column) annotation, feature (row) annotation, dimension reduction and subsets. Users should enter this page through the way indicated by the screenshot above.
+SCTK provides a page that allows users to delete existing data, including count matrices (assays), cell (column) annotation, feature (row) annotation, dimension reduction and subsets. To delete data, open up the "Delete Single Cell Data" tab as shown above.
 
 ![panel](ui_screenshots/delete_data/del_ui_panel.png)\
 
@@ -51,6 +53,8 @@ The operation here is intuitive. As shown in the screenshot above, users can eas
 
 SCTK uses the [SingleCellExperiment](https://rdrr.io/bioc/SingleCellExperiment/man/SingleCellExperiment.html) object as the container of users' datasets.  
 
+For example, some data has been computed and stored in the object as below:
+
 ```{R removeData, eval=FALSE}
 # Get a SingleCellExperiment object
 library(singleCellTK)
@@ -58,6 +62,12 @@ sce <- importExampleData("pbmc3k")
 sce <- scaterlogNormCounts(sce, "logcounts")
 sce <- subsetSCERows(sce, index = seq(100), returnAsAltExp = TRUE, altExpName = "subset")
 sce <- scaterPCA(sce, reducedDimName = "PCA")
+
+```
+
+This data can be removed as below by simply setting the required slots to `NULL`:
+
+```{R removeDataNULL, eval = FALSE}
 ## Remove a certain cell annotation (colData)
 colData(sce)$Tissue_status <- NULL
 ## Remove a certain feature annotation (rowData)

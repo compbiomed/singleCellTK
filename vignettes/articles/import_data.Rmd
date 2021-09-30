@@ -39,6 +39,8 @@ Meanwhile, SCTK also supports importing raw count matrix, with metadata, stored 
 - [SingleCellExperiment](https://rdrr.io/bioc/SingleCellExperiment/man/SingleCellExperiment.html) object saved in RDS file
 - [AnnData](https://anndata.readthedocs.io/en/latest/) object saved in  hdf5 file
 
+To view detailed instructions on how to import data, please select 'Interactive Analysis' for importing data through the shiny application or 'Console Analysis' for importing through the R console from the tabs below: <br>
+
 ## Workflow Guide
 
 ````{=html}
@@ -63,6 +65,10 @@ The UI contains mainly three sections for importing and another section for data
 For a single source of data, users need to choose one option from the radio buttons listed in the screenshot. The next step will depend on the option chosen.  
 
 ````{=html}
+ <style>
+div.offset { background-color:inherit ; border-radius: 5px; margin-left: 15px;}
+</style>
+<div class = "offset">
 <details>
   <summary><b>Import from a preprocessing tool</b></summary>
 ```` 
@@ -162,6 +168,8 @@ Users can also opt to import and work with published example datasets. To do so,
 
 ````{=html}
 </details>
+</div>
+<br>
 ````
 
 **Complete Upload**
