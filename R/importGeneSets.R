@@ -443,8 +443,8 @@ importGeneSetsFromMSigDB <- function(inSCE, categoryIDs,
 #' gene identifies will be mapped to that column in the \code{rowData}
 #' of \code{inSCE}. See \link{featureIndex} for more information.
 #' Default \code{"rownames"}.
-#' @param id Types of gene id. Now it supports "symbol", "entrez", "ensemble"
-#' and "ensemble_transcriptID".
+#' @param id Types of gene id. Now it supports "symbol", "entrez", "ensembl"
+#' and "ensemblTranscriptID".
 #' @param collectionName Character. Name of collection to add gene sets to.
 #' If this collection already exists in \code{inSCE}, then these gene sets will
 #' be added to that collection. Any gene sets within the collection with the
@@ -469,14 +469,14 @@ importGeneSetsFromMSigDB <- function(inSCE, categoryIDs,
 #' data(scExample)
 #' sce <- importMitoGeneSet(inSCE = sce,
 #'                          reference = "human",
-#'                          id = "ensemble",
+#'                          id = "ensembl",
 #'                          collectionName = "human_mito",
 #'                          by = "rownames")
 #' @export
 importMitoGeneSet <- function(inSCE, reference, id, by, collectionName) {
-  #id <- tolower(id)
-  if (!id %in% c("symbol", "entrez", "ensemble", "ensemble_transcriptID")) {
-    stop("`id` should be one of 'symbol', 'entrez', 'ensemble' or 'ensemble_transcriptID'")
+
+  if (!id %in% c("symbol", "entrez", "ensembl", "ensemblTranscriptID")) {
+    stop("`id` should be one of 'symbol', 'entrez', 'ensembl' or 'ensemblTranscriptID'")
   }
 
   reference <- tolower(reference)

@@ -130,9 +130,9 @@ option_list <- list(optparse::make_option(c("-b", "--basePath"),
         help="Detect mitochondrial gene expression level. If TRUE, the pipeline will examinate mito gene expression level automatically without the need of importing user defined gmt file. Default is TRUE"),
     optparse::make_option(c("-E", "--mitoType"),
         type="character",
-        default="human-ensemble",
-        help="Type of mitochondrial gene set to be used when --detectMitoLevel is set to TRUE. Possible choices are: 'human-ensemble', 'human-symbol', 'human-entrez', 'human-ensemble_transcriptID', 
-        'mouse-ensemble', 'mouse-symbol', 'mouse-entrez', 'mouse-ensemble_transcriptID'. The first part defines the species and second part defines type of gene ID used as the rownames of the count matrix")  
+        default="human-ensembl",
+        help="Type of mitochondrial gene set to be used when --detectMitoLevel is set to TRUE. Possible choices are: 'human-ensembl', 'human-symbol', 'human-entrez', 'human_ensemblTranscriptID', 
+        'mouse-ensembl', 'mouse-symbol', 'mouse-entrez', 'mouse_ensemblTranscriptID'. The first part defines the species and second part defines type of gene ID used as the rownames of the count matrix")  
     )
 ## Define arguments
 arguments <- optparse::parse_args(optparse::OptionParser(option_list=option_list), positional_arguments=TRUE)
@@ -239,8 +239,8 @@ if (numCores > 1) {
         print(reference)
         print("the id is")
         print(id)
-        
-        if ((!reference %in% c("human", "mouse")) | (!id %in% c("symbol", "entrez", "ensemble", "ensemble_transcriptID"))) {
+
+        if ((!reference %in% c("human", "mouse")) | (!id %in% c("symbol", "entrez", "ensemble", "ensemblTranscriptID"))) {
             warning("The --MitoType ", MitoType, " is not correct or supported. Please double check the documentation. Ignore --MitoImport=TRUE now.")
             return(geneSetCollection)            
         }
