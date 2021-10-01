@@ -22,7 +22,7 @@ runCellQC(
 \item{inSCE}{A \link[SingleCellExperiment]{SingleCellExperiment} object.}
 
 \item{algorithms}{Character vector. Specify which QC algorithms to run.
-Available options are "QCMetrics", "scrublet", "scDblFinder", "cxds", "bcds", "cxds_bcds_hybrid", and "decontX".}
+Available options are "QCMetrics", "scrublet", "doubletFinder", "scDblFinder", "cxds", "bcds", "cxds_bcds_hybrid", and "decontX".}
 
 \item{sample}{Character vector. Indicates which sample each cell belongs to.
 Algorithms will be run on cells from each sample separately.}
