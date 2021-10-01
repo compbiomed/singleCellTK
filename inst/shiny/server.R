@@ -1641,7 +1641,7 @@ shinyServer(function(input, output, session) {
             if (input$QCMgeneSets == "he") {
               # Import Human Mito Ensembl
               mgsRef <- "human"
-              mgsId <- "ensemble"
+              mgsId <- "ensembl"
             } else if (input$QCMgeneSets == "hs") {
               # Import Human Mito Symbol
               mgsRef <- "human"
@@ -1649,7 +1649,7 @@ shinyServer(function(input, output, session) {
             } else if (input$QCMgeneSets == "me") {
               # Import Mouse Mito Ensembl
               mgsRef <- "mouse"
-              mgsId <- "ensemble"
+              mgsId <- "ensembl"
             } else if (input$QCMgeneSets == "ms") {
               # Import Mouse Mito Symbol
               mgsRef <- "mouse"
@@ -6329,8 +6329,8 @@ shinyServer(function(input, output, session) {
     })
   })
 
-  
-  
+
+
 
  #plot results
   observeEvent(input$Plot, {
@@ -6356,7 +6356,7 @@ shinyServer(function(input, output, session) {
      })
     session$sendCustomMessage("close_dropDownPathway", "")
   })
-  
+
   observeEvent(input$closeDropDownPathway,{
     session$sendCustomMessage("close_dropDownPathway", "")
   })
