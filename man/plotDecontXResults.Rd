@@ -13,7 +13,7 @@ plotDecontXResults(
   violin = TRUE,
   boxplot = FALSE,
   dots = TRUE,
-  reducedDimName = "decontX_UMAP",
+  reducedDimName = "UMAP",
   xlab = NULL,
   ylab = NULL,
   dim1 = NULL,
@@ -69,7 +69,7 @@ Default TRUE.}
 Default TRUE.}
 
 \item{reducedDimName}{Saved dimension reduction name in the
-\linkS4class{SingleCellExperiment} object. Required. Default = "decontX_UMAP"}
+\linkS4class{SingleCellExperiment} object. Required. Default = "UMAP"}
 
 \item{xlab}{Character vector. Label for x-axis. Default NULL.}
 
@@ -153,5 +153,5 @@ A wrapper function which visualizes outputs from the
 data(scExample, package="singleCellTK")
 sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 sce <- runDecontX(sce)
-plotDecontXResults(inSCE=sce, reducedDimName="decontX_UMAP")
+plotDecontXResults(inSCE=sce, reducedDimName="UMAP")
 }
