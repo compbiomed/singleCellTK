@@ -55,7 +55,7 @@
           <a href="../../articles/articles/import_data.html">Import Data</a>
         </li>
         <li>
-          <a href="../../articles/articles/cmd_import_scRNAseq_data_as_SCE.html">Import Data in Commandline</a>
+          <a href="../../articles/articles/cmd_import_scRNAseq_data_as_SCE.html">Import Data for Commandline QC</a>
         </li>
         <li>
           <a href="../../articles/articles/import_genesets.html">Import Gene Sets</a>
@@ -207,7 +207,7 @@
 
       
 
-      </header><script src="heatmap_files/header-attrs-2.9/header-attrs.js"></script><div class="row">
+      </header><script src="heatmap_files/header-attrs-2.7/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Heatmap Visualization</h1>
@@ -311,13 +311,12 @@ div.offset { background-color:inherit ; border-radius: 5px; margin-left: 15px;}
 ##   ... pbmc_4k_CTGAAGTTCCACTCCA-1 pbmc_4k_CATCGAACAGCCAGAA-1
 ## colData names(4): cell_barcode column_name sample type
 ## reducedDimNames(0):
-## mainExpName: NULL
 ## altExpNames(0):</code></pre>
 <p><strong>“Raw” plotting</strong></p>
 <p>The minimum setting for <code><a href="../../reference/plotSCEHeatmap.html">plotSCEHeatmap()</a></code> is the input SCE object and the data matrix to plot (default <code>"logcounts"</code>). In this way, all cells and features will be presented while no annotation or legend (except the main color scheme) will be shown.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../../reference/plotSCEHeatmap.html">plotSCEHeatmap</a></span><span class="op">(</span><span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"counts"</span><span class="op">)</span></code></pre></div>
-<p><img src="heatmap_files/figure-html/hmFull-1.png" width="700"><img src="heatmap_files/figure-html/hmFull-2.png" width="700"></p>
+<p><img src="heatmap_files/figure-html/hmFull-1.png" width="700"></p>
 <p><strong>Subsetting</strong></p>
 <p>SCTK allows relatively flexible approaches to select the cells/features to plot.</p>
 <p>The basic way to subset the heatmap is to directly use an index vector that can subset the input SCE object to <code>featureIndex</code> and <code>cellIndex</code>, including <code>numeric</code>, and <code>logical</code> vectors, which are widely used, and <code>character</code> vector containing the row/col names. Of course, user can directly use a subsetted SCE object as input.</p>
@@ -402,7 +401,7 @@ document.getElementById("ia-button").click();
 
 
       <footer><div class="copyright">
-  <p>Developed by David Jenkins, Vidya Akavoor, Salam Alabdullatif, Shruthi Bandyadka, Emma Briars, Xinyun Cao, Sebastian Carrasco Pro, Tyler Faits, Rui Hong, Mohammed Muzamil Khan, Yusuke Koga, Anastasia Leshchyk, Irzam Sarfraz, Yichen Wang, Zhe Wang, W. Evan Johnson, Joshua David Campbell.</p>
+  <p>Developed by Yichen Wang, Irzam Sarfraz, Rui Hong, Yusuke Koga, Salam Alabdullatif, David Jenkins, Vidya Akavoor, Xinyun Cao, Shruthi Bandyadka, Anastasia Leshchyk, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, W. Evan Johnson, Joshua David Campbell.</p>
 </div>
 
 <div class="pkgdown">

@@ -55,7 +55,7 @@
           <a href="../../articles/articles/import_data.html">Import Data</a>
         </li>
         <li>
-          <a href="../../articles/articles/cmd_import_scRNAseq_data_as_SCE.html">Import Data in Commandline</a>
+          <a href="../../articles/articles/cmd_import_scRNAseq_data_as_SCE.html">Import Data for Commandline QC</a>
         </li>
         <li>
           <a href="../../articles/articles/import_genesets.html">Import Gene Sets</a>
@@ -229,7 +229,7 @@ text-align: justify}
 <h2 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h2>
 <p>Performing comprehensive quality control (QC) is necessary to remove poor quality cells for downstream analysis of single-cell RNA sequencing (scRNA-seq) data. Within droplet-based scRNA-seq data, droplets containing cells must be differentiated from empty droplets. Therefore, assessment of the data is required, for which various QC algorithms have been developed. In singleCellTK, we have written convenience functions for several of these tools. In this guide, we will demonstrate how to use these functions to perform quality control on unfiltered, droplet-level data.</p>
-<p>The package can be loaded using the <code>library</code> command.</p>
+<p>The package can be loaded using the <code><a href="https://rdrr.io/r/base/library.html">library()</a></code> command.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://compbiomed.github.io/sctk_docs/">singleCellTK</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org">dplyr</a></span><span class="op">)</span></code></pre></div>
@@ -240,7 +240,7 @@ text-align: justify}
 <div id="load-pbmc4k-data-from-10x" class="section level3">
 <h3 class="hasAnchor">
 <a href="#load-pbmc4k-data-from-10x" class="anchor"></a>Load PBMC4k data from 10X</h3>
-<p>singleCellTK takes in a <code>SingleCellExperiment</code> object from the <a href="https://bioconductor.org/packages/release/bioc/html/SingleCellExperiment.html">SingleCellExperiment</a> package. We will utilize the 10X PBMC 4K dataset as an example. For the quality control of droplet-based counts data, we will install the dataset from the 10X Genomics website using the <code>BiocFileCache</code>(<a href="https://www.bioconductor.org/packages/release/bioc/html/BiocFileCache.html" class="uri">https://www.bioconductor.org/packages/release/bioc/html/BiocFileCache.html</a>) package.</p>
+<p>singleCellTK takes in a <code>SingleCellExperiment</code> object from the <a href="https://bioconductor.org/packages/release/bioc/html/SingleCellExperiment.html">SingleCellExperiment</a> package. We will utilize the 10X PBMC 4K dataset as an example. For the quality control of droplet-based counts data, we will install the dataset from the 10X Genomics website using the <a href="https://www.bioconductor.org/packages/release/bioc/html/BiocFileCache.html"><code>BiocFileCache</code></a> package.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Install BiocFileCache if is it not already</span>
 <span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html">requireNamespace</a></span><span class="op">(</span><span class="st">"BiocFileCache"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span>
@@ -264,19 +264,19 @@ text-align: justify}
 <span class="co">### change the sample column</span>
 <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="fu">colData</span><span class="op">(</span><span class="va">pbmc4k.droplet</span><span class="op">)</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"sample"</span>, <span class="st">"Barcode"</span><span class="op">)</span>
 <span class="fu">colData</span><span class="op">(</span><span class="va">pbmc4k.droplet</span><span class="op">)</span><span class="op">$</span><span class="va">sample</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="st">"pbmc4k"</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">ncol</a></span><span class="op">(</span><span class="fu">colData</span><span class="op">(</span><span class="va">pbmc4k.droplet</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<p>singleCellTK also supports the importing of single-cell data from the following platforms: <a href="https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/what-is-cell-ranger">10X CellRanger</a>, <a href="https://github.com/alexdobin/STAR/blob/master/docs/STARsolo.md">STARSolo</a>, <a href="https://www.kallistobus.tools/">BUSTools</a>, <a href="https://github.com/ambrosejcarr/seqc">SEQC</a>, <a href="https://github.com/hms-dbmi/dropEst">DropEST</a>, and <a href="https://github.com/theislab/anndata">AnnData</a>. To load your own input data, please refer <a href="import_data.html">Import data into SCTK</a> for deailed instruction.</p>
+<p>singleCellTK also supports the importing of single-cell data from the following platforms: <a href="https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/what-is-cell-ranger">10X CellRanger</a>, <a href="https://github.com/alexdobin/STAR/blob/master/docs/STARsolo.md">STARSolo</a>, <a href="https://www.kallistobus.tools/">BUSTools</a>, <a href="https://github.com/ambrosejcarr/seqc">SEQC</a>, <a href="https://github.com/hms-dbmi/dropEst">DropEST</a>, <a href="https://salmon.readthedocs.io/en/latest/alevin.html">Alevin</a>, as well as dataset already stored in <a href="https://rdrr.io/bioc/SingleCellExperiment/man/SingleCellExperiment.html">SingleCellExperiment</a> object and <a href="https://github.com/theislab/anndata">AnnData</a> object. To load your own input data, please refer <a href="import_data.html">Import data into SCTK</a> for detailed instruction.</p>
 </div>
 <div id="rundropletqc" class="section level3">
 <h3 class="hasAnchor">
 <a href="#rundropletqc" class="anchor"></a>runDropletQC</h3>
-<p>All droplet-based QC functions are able to be run under the wrapper function runDropletQC. By default all possible QC algorithms will be run.</p>
+<p>All droplet-based QC functions are able to be run under the wrapper function <code><a href="../../reference/runDropletQC.html">runDropletQC()</a></code>. By default all possible QC algorithms will be run.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">pbmc4k.droplet</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/runDropletQC.html">runDropletQC</a></span><span class="op">(</span><span class="va">pbmc4k.droplet</span><span class="op">)</span></code></pre></div>
-<pre><code>## Sun Sep 26 13:41:24 2021 ... Running 'perCellQCMetrics'</code></pre>
-<pre><code>## Sun Sep 26 13:41:24 2021 ... Running 'emptyDrops'</code></pre>
-<pre><code>## Sun Sep 26 13:41:55 2021 ... Running 'barcodeRanks'</code></pre>
+<pre><code>## Fri Oct 01 18:41:12 2021 ... Running 'perCellQCMetrics'</code></pre>
+<pre><code>## Fri Oct 01 18:41:12 2021 ... Running 'emptyDrops'</code></pre>
+<pre><code>## Fri Oct 01 18:41:38 2021 ... Running 'barcodeRanks'</code></pre>
 <p>If users choose to only run a specific set of algorithms, they can specify which to run with the <code>algorithms</code> parameter.</p>
-<p>When quality control functions are run in singleCellTK, the output of the function is stored in the colData slot of the SingleCellExperiment object.</p>
+<p>When quality control functions are run in singleCellTK, the output of the function is stored in the <code>colData</code> slot of the <code>SingleCellExperiment</code> object.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="fu">colData</span><span class="op">(</span><span class="va">pbmc4k.droplet</span><span class="op">)</span>, <span class="fl">5</span><span class="op">)</span></code></pre></div>
 <div style="border: 1px solid #ddd; padding: 5px; overflow-x: scroll; width:80%; ">
@@ -336,13 +336,119 @@ dropletUtils_BarcodeRank_Inflection
 <tbody>
 <tr>
 <td style="text-align:left;">
-CTCTACGCATGAGCGA-1
+GTAACTGTCCCTCTTT-1
 </td>
 <td style="text-align:left;">
 pbmc4k
 </td>
 <td style="text-align:left;">
-CTCTACGCATGAGCGA-1
+GTAACTGTCCCTCTTT-1
+</td>
+<td style="text-align:right;">
+29
+</td>
+<td style="text-align:right;">
+26
+</td>
+<td style="text-align:right;">
+100
+</td>
+<td style="text-align:right;">
+100
+</td>
+<td style="text-align:right;">
+100
+</td>
+<td style="text-align:right;">
+100
+</td>
+<td style="text-align:right;">
+29
+</td>
+<td style="text-align:right;">
+29
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+TTTGGTTTCAACCATG-1
+</td>
+<td style="text-align:left;">
+pbmc4k
+</td>
+<td style="text-align:left;">
+TTTGGTTTCAACCATG-1
+</td>
+<td style="text-align:right;">
+38
+</td>
+<td style="text-align:right;">
+36
+</td>
+<td style="text-align:right;">
+100
+</td>
+<td style="text-align:right;">
+100
+</td>
+<td style="text-align:right;">
+100
+</td>
+<td style="text-align:right;">
+100
+</td>
+<td style="text-align:right;">
+38
+</td>
+<td style="text-align:right;">
+38
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+TCTATTGGTTCTGGTA-1
+</td>
+<td style="text-align:left;">
+pbmc4k
+</td>
+<td style="text-align:left;">
+TCTATTGGTTCTGGTA-1
 </td>
 <td style="text-align:right;">
 0
@@ -389,13 +495,13 @@ NA
 </tr>
 <tr>
 <td style="text-align:left;">
-CCGTGGATCCCTCTTT-1
+TACTTACTCAAACCAC-1
 </td>
 <td style="text-align:left;">
 pbmc4k
 </td>
 <td style="text-align:left;">
-CCGTGGATCCCTCTTT-1
+TACTTACTCAAACCAC-1
 </td>
 <td style="text-align:right;">
 1
@@ -404,7 +510,7 @@ CCGTGGATCCCTCTTT-1
 1
 </td>
 <td style="text-align:right;">
-100.00000
+100
 </td>
 <td style="text-align:right;">
 100
@@ -442,119 +548,13 @@ NA
 </tr>
 <tr>
 <td style="text-align:left;">
-TGGTTAGAGCGATTCT-1
+GTGTGCGGTATAGGGC-1
 </td>
 <td style="text-align:left;">
 pbmc4k
 </td>
 <td style="text-align:left;">
-TGGTTAGAGCGATTCT-1
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-NaN
-</td>
-<td style="text-align:right;">
-NaN
-</td>
-<td style="text-align:right;">
-NaN
-</td>
-<td style="text-align:right;">
-NaN
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-NA
-</td>
-<td style="text-align:right;">
-NA
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:right;">
-NA
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-AGAATAGCACCCATGG-1
-</td>
-<td style="text-align:left;">
-pbmc4k
-</td>
-<td style="text-align:left;">
-AGAATAGCACCCATGG-1
-</td>
-<td style="text-align:right;">
-88
-</td>
-<td style="text-align:right;">
-79
-</td>
-<td style="text-align:right;">
-67.04545
-</td>
-<td style="text-align:right;">
-100
-</td>
-<td style="text-align:right;">
-100
-</td>
-<td style="text-align:right;">
-100
-</td>
-<td style="text-align:right;">
-88
-</td>
-<td style="text-align:right;">
-88
-</td>
-<td style="text-align:right;">
-NA
-</td>
-<td style="text-align:right;">
-NA
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:right;">
-NA
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-GACTGCGCATGTCCTC-1
-</td>
-<td style="text-align:left;">
-pbmc4k
-</td>
-<td style="text-align:left;">
-GACTGCGCATGTCCTC-1
+GTGTGCGGTATAGGGC-1
 </td>
 <td style="text-align:right;">
 0
@@ -603,8 +603,7 @@ NA
 </table>
 </div>
 <p><br></p>
-<p>A summary of all outputs is shown below:</p>
-<table class="table">
+<details><summary><b>A summary of all outputs</b></summary><table class="table">
 <colgroup>
 <col width="27%">
 <col width="46%">
@@ -661,17 +660,14 @@ NA
 <td align="left">DropletUtils</td>
 </tr>
 </tbody>
-</table>
+</table></details><p><br></p>
 </div>
 <div id="plotting-qc-metrics" class="section level3">
 <h3 class="hasAnchor">
 <a href="#plotting-qc-metrics" class="anchor"></a>Plotting QC metrics</h3>
-<p>Upon running runDropletQC, the QC outputs will need to be plotted. For each QC method, singleCellTK contains specialized plotting functions that may be used for the generation of QC plots.</p>
-<div id="emptydrops" class="section level4">
-<h4 class="hasAnchor">
-<a href="#emptydrops" class="anchor"></a>EmptyDrops</h4>
-<p>It is crucial to distinguish the data occurring from real cells and empty droplets containing ambient RNA. SCTK employs the <a href="https://rdrr.io/github/MarioniLab/DropletUtils/man/emptyDrops.html">EmptyDrops</a> algorithm from the <a href="https://bioconductor.org/packages/release/bioc/html/DropletUtils.html">DropletUtils</a> package to test for empty droplets.</p>
-<p>The wrapper function <code>plotEmptyDropsResults</code> can be used to plot the results from the EmptyDrops algorithm. This will visualize the empty droplets, by plotting the total UMI counts against the log probability for each barcode.</p>
+<p>Upon running <code><a href="../../reference/runDropletQC.html">runDropletQC()</a></code>, the QC outputs will need to be plotted. For each QC method, singleCellTK contains specialized plotting functions that may be used for the generation of QC plots.</p>
+<details><summary><b>EmptyDrops</b></summary><p>It is crucial to distinguish the data occurring from real cells and empty droplets containing ambient RNA. SCTK employs the <a href="https://rdrr.io/github/MarioniLab/DropletUtils/man/emptyDrops.html">EmptyDrops</a> algorithm from the <a href="https://bioconductor.org/packages/release/bioc/html/DropletUtils.html">DropletUtils</a> package to test for empty droplets.</p>
+<p>The wrapper function <code><a href="../../reference/plotEmptyDropsResults.html">plotEmptyDropsResults()</a></code> can be used to plot the results from the EmptyDrops algorithm. This will visualize the empty droplets, by plotting the total UMI counts against the log probability for each barcode.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">emptyDropsResults</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/plotEmptyDropsResults.html">plotEmptyDropsResults</a></span><span class="op">(</span>
   inSCE <span class="op">=</span> <span class="va">pbmc4k.droplet</span>,
@@ -684,11 +680,8 @@ NA
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">emptyDropsResults</span><span class="op">$</span><span class="va">scatterEmptyDrops</span></code></pre></div>
 <p><img src="cnsl_dropletqc_files/figure-html/scatter_emptydrops-1.png" width="768" style="display: block; margin: auto;"><br> Data points are colored by FDR values, where we see a small portion of the dataset contains barcodes that do not meet the threshold.</p>
-</div>
-<div id="barcoderanks" class="section level4">
-<h4 class="hasAnchor">
-<a href="#barcoderanks" class="anchor"></a>BarcodeRanks</h4>
-<p><a href="https://rdrr.io/bioc/DropletUtils/man/barcodeRanks.html">BarcodeRanks</a> from the <a href="https://bioconductor.org/packages/release/bioc/html/DropletUtils.html">DropletUtils</a> package computes barcode rank statistics and identifies the knee and inflection points on the total count curve. The knee and inflection points on the curve represent the difference between empty droplets and cell-containing droplets with much more RNA. The lower parameter is again the lower bound of the total UMI count, in which all barcodes below the lower bound are assumed to be empty droplets.</p>
+</details><details><summary><b>BarcodeRanks</b></summary><p><a href="https://rdrr.io/bioc/DropletUtils/man/barcodeRanks.html">BarcodeRanks</a> from the <a href="https://bioconductor.org/packages/release/bioc/html/DropletUtils.html">DropletUtils</a> package computes barcode rank statistics and identifies the knee and inflection points on the total count curve. The knee and inflection points on the curve represent the difference between empty droplets and cell-containing droplets with much more RNA.</p>
+<p>The wrapper function <code><a href="../../reference/plotBarcodeRankScatter.html">plotBarcodeRankScatter()</a></code> can be used to plot the results from the BarcodeRanks algorithm.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../../reference/plotBarcodeRankScatter.html">plotBarcodeRankScatter</a></span><span class="op">(</span>
   inSCE <span class="op">=</span> <span class="va">pbmc4k.droplet</span>,
@@ -696,13 +689,13 @@ NA
   legendSize <span class="op">=</span> <span class="fl">14</span>
 <span class="op">)</span></code></pre></div>
 <p><img src="cnsl_dropletqc_files/figure-html/run_kneeplot_barcoderank-1.png" width="768" style="display: block; margin: auto;"></p>
-<p>The total UMI count of each barcode is plotted against its rank, where we see a steep dropoff of UMI counts around the inflection point, where we see a separation between cell containing and empty droplets.</p>
-</div>
+<p>The total UMI count of each barcode is plotted against its rank. We can see a steep dropoff of UMI counts around the inflection point, where we see a presumed separation between cell-containing and empty droplets.</p>
+</details>
 </div>
 <div id="filtering-the-dataset" class="section level3">
 <h3 class="hasAnchor">
 <a href="#filtering-the-dataset" class="anchor"></a>Filtering the dataset</h3>
-<p>SingleCellExperiment objects can be subset by its colData using <code>subsetSCECols</code>. The <code>colData</code> parameter takes in an expression in character vector form which will be used to identify a subset of columns using variables found in the colData of the SingleCellExperiment object. For example, if x is a numeric vector in colData, then “x &lt; 5” will return all columns with x less than 5. The <code>index</code> parameter takes in a vector of indices which should be kept, while <code>bool</code> takes in a vector of TRUE or FALSE which should be the same length as the number of columns in the SingleCellExperiment object.</p>
+<p><code>SingleCellExperiment</code> objects can be subset by its <code>colData</code> using <code><a href="../../reference/subsetSCECols.html">subsetSCECols()</a></code>. The <code>colData</code> parameter takes in an expression in character vector form which will be used to identify a subset of columns using variables found in the <code>colData</code> of the <code>SingleCellExperiment</code> object. For example, if <code>x</code> is a numeric vector in <code>colData</code>, then <code>"x &lt; 5"</code> will return all columns (cells) with <code>x</code> less than 5. The <code>index</code> parameter takes in a numeric vector of indices which should be kept, while <code>bool</code> takes in a vector of <code>TRUE</code> or <code>FALSE</code> which should be of the same length as the number of columns in the <code>SingleCellExperiment</code> object. Please refer to our <a href="filtering.html"><em>Filtering</em> documentation</a> for detail.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co">#Before filtering:</span>
 <span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span><span class="op">(</span><span class="va">pbmc4k.droplet</span><span class="op">)</span></code></pre></div>
@@ -714,24 +707,28 @@ NA
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co">#After filtering:</span>
 <span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span><span class="op">(</span><span class="va">pbmc4k.droplet</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1] 33694   334</code></pre>
+<pre><code>## [1] 33694   344</code></pre>
 <p>We can compare the average total UMI counts per cell before and after cell filtration:</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/plotSCEViolinColData.html">plotSCEViolinColData</a></span><span class="op">(</span><span class="va">pbmc4k.droplet.prefilt</span>, coldata <span class="op">=</span> <span class="st">"sum"</span>, summary <span class="op">=</span> <span class="st">"mean"</span>, title <span class="op">=</span> <span class="st">"Pre-filter"</span>, ylab <span class="op">=</span> <span class="st">"Total counts"</span><span class="op">)</span>
 <span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/plotSCEViolinColData.html">plotSCEViolinColData</a></span><span class="op">(</span><span class="va">pbmc4k.droplet</span>, coldata <span class="op">=</span> <span class="st">"sum"</span>, summary <span class="op">=</span> <span class="st">"mean"</span>, title <span class="op">=</span> <span class="st">"Post-filter"</span>, ylab <span class="op">=</span> <span class="st">"Total counts"</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="fu">cowplot</span><span class="fu">::</span><span class="fu"><a href="https://wilkelab.org/cowplot/reference/plot_grid.html">plot_grid</a></span><span class="op">(</span><span class="va">p1</span>, <span class="va">p2</span>, ncol <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p><img src="cnsl_dropletqc_files/figure-html/Count%20Violin%20after%20filtering-1.png" width="576" style="display: block; margin: auto;"></p>
-<p>For additional cell-filtered quality control with singleCellTK, please refer to “Running quality control of cell-filtered single cell data with singleCellTK”.</p>
+<p>For additional cell-filtered quality control with singleCellTK, please refer to our <a href="cnsl_cellqc.html"><em>Cell QC</em> documentation</a>.</p>
 </div>
 <div id="running-individual-qc-methods" class="section level3">
 <h3 class="hasAnchor">
 <a href="#running-individual-qc-methods" class="anchor"></a>Running individual QC methods</h3>
 <p>Instead of running all quality control methods on the dataset at once, users may elect to execute QC methods individually. The parameters as well as the outputs to individual QC functions are described in detail as follows:</p>
-<div id="runemptydrops" class="section level4">
-<h4 class="hasAnchor">
-<a href="#runemptydrops" class="anchor"></a>runEmptyDrops</h4>
-<p>The wrapper function <code>runEmptyDrops</code> can be used to separately run the EmptyDrops algorithm on its own.</p>
-<p>In runEmptyDrops, the <code>lower</code> parameter is the lower bound of the total UMI count, in which all barcodes below the lower bound are assumed to be empty droplets. The <code>niters</code> parameter is the number of iterations the function will run for the calculation. <code>testAmbient</code> indicates whether results should be returned for barcodes that have a total UMI count below what is specified in <code>lower</code>.</p>
+<details><summary><b>runEmptyDrops</b></summary><p>The wrapper function <code><a href="../../reference/runEmptyDrops.html">runEmptyDrops()</a></code> can be used to separately run the EmptyDrops algorithm on its own.</p>
+<ul>
+<li>
+<code>lower</code> is the lower bound of the total UMI count, in which all barcodes below the lower bound are assumed to be empty droplets.</li>
+<li>
+<code>niters</code> is the number of iterations the function will run for the calculation.</li>
+<li>
+<code>testAmbient</code> indicates whether results should be returned for barcodes that have a total UMI count below what is specified in <code>lower</code>.</li>
+</ul>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">pbmc4k.droplet</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/runEmptyDrops.html">runEmptyDrops</a></span><span class="op">(</span>
   inSCE <span class="op">=</span> <span class="va">pbmc4k.droplet</span>,
@@ -739,20 +736,18 @@ NA
   lower <span class="op">=</span> <span class="fl">100</span>,
   niters <span class="op">=</span> <span class="fl">10000</span>
 <span class="op">)</span></code></pre></div>
-</div>
-<div id="runbarcoderankdrops" class="section level4">
-<h4 class="hasAnchor">
-<a href="#runbarcoderankdrops" class="anchor"></a>runBarcodeRankDrops</h4>
-<p>The wrapper function <code>runBarcodeRankDrops</code> can be used to separately run the BarcodeRanks algorithm on its own.</p>
-<p>The <code>lower</code> parameter is again the lower bound of the total UMI count, in which all barcodes below the lower bound are assumed to be empty droplets.</p>
+</details><details><summary><b>runBarcodeRankDrops</b></summary><p>The wrapper function <code><a href="../../reference/runBarcodeRankDrops.html">runBarcodeRankDrops()</a></code> can be used to separately run the BarcodeRanks algorithm on its own.</p>
+<ul>
+<li>
+<code>lower</code> is the lower bound of the total UMI count, in which all barcodes below the lower bound are assumed to be empty droplets.</li>
+</ul>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">pbmc4k.droplet</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/runBarcodeRankDrops.html">runBarcodeRankDrops</a></span><span class="op">(</span>
   inSCE <span class="op">=</span> <span class="va">pbmc4k.droplet</span>,
   useAssay <span class="op">=</span> <span class="st">"counts"</span>,
   fitBounds <span class="op">=</span> <span class="cn">NULL</span>, df <span class="op">=</span> <span class="fl">20</span>
 <span class="op">)</span></code></pre></div>
-<p><br><br></p>
-</div>
+</details><p><br></p>
 </div>
 </div>
 <div id="session-information" class="section level1">
@@ -855,7 +850,7 @@ NA
 
 
       <footer><div class="copyright">
-  <p>Developed by David Jenkins, Vidya Akavoor, Salam Alabdullatif, Shruthi Bandyadka, Emma Briars, Xinyun Cao, Sebastian Carrasco Pro, Tyler Faits, Rui Hong, Mohammed Muzamil Khan, Yusuke Koga, Anastasia Leshchyk, Irzam Sarfraz, Yichen Wang, Zhe Wang, W. Evan Johnson, Joshua David Campbell.</p>
+  <p>Developed by Yichen Wang, Irzam Sarfraz, Rui Hong, Yusuke Koga, Salam Alabdullatif, David Jenkins, Vidya Akavoor, Xinyun Cao, Shruthi Bandyadka, Anastasia Leshchyk, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, W. Evan Johnson, Joshua David Campbell.</p>
 </div>
 
 <div class="pkgdown">

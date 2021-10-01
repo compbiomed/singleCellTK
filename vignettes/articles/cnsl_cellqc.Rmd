@@ -35,7 +35,7 @@ pbmc.combined <- BiocGenerics::cbind(pbmc3k, pbmc6k)
 sample.vector = colData(pbmc.combined)$sample
 ```
 
-singleCellTK also supports the importing of single-cell data from the following platforms: [10X CellRanger](https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/what-is-cell-ranger), [STARSolo](https://github.com/alexdobin/STAR/blob/master/docs/STARsolo.md), [BUSTools](https://www.kallistobus.tools/), [SEQC](https://github.com/ambrosejcarr/seqc), [DropEST](https://github.com/hms-dbmi/dropEst), as well as dataset already stored in [SingleCellExperiment](https://rdrr.io/bioc/SingleCellExperiment/man/SingleCellExperiment.html) object and [AnnData](https://github.com/theislab/anndata) object. To load your own input data, please refer [Import data into SCTK](import_data.html) for detailed instruction. 
+singleCellTK also supports the importing of single-cell data from the following platforms: [10X CellRanger](https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/what-is-cell-ranger), [STARSolo](https://github.com/alexdobin/STAR/blob/master/docs/STARsolo.md), [BUSTools](https://www.kallistobus.tools/), [SEQC](https://github.com/ambrosejcarr/seqc), [DropEST](https://github.com/hms-dbmi/dropEst), [Alevin](https://salmon.readthedocs.io/en/latest/alevin.html), as well as dataset already stored in [SingleCellExperiment](https://rdrr.io/bioc/SingleCellExperiment/man/SingleCellExperiment.html) object and [AnnData](https://github.com/theislab/anndata) object. To load your own input data, please refer [Import data into SCTK](import_data.html) for detailed instruction. 
 
 ### Run Dimensionality Reduction
 
@@ -374,7 +374,7 @@ decontxResults
 
 ### Filtering the dataset
 
-SingleCellExperiment objects can be subset by its `colData` using `subsetSCECols()`. The `colData` parameter takes in an expression in character vector form which will be used to identify a subset of columns using variables found in the `colData` of the `SingleCellExperiment` object. For example, if `x` is a numeric vector in `colData`, then `"x < 5"` will return all columns (cells) with `x` less than 5. The `index` parameter takes in a numeric vector of indices which should be kept, while `bool` takes in a vector of `TRUE` or `FALSE` which should be of the same length as the number of columns in the `SingleCellExperiment` object.
+`SingleCellExperiment` objects can be subset by its `colData` using `subsetSCECols()`. The `colData` parameter takes in an expression in character vector form which will be used to identify a subset of columns using variables found in the `colData` of the `SingleCellExperiment` object. For example, if `x` is a numeric vector in `colData`, then `"x < 5"` will return all columns (cells) with `x` less than 5. The `index` parameter takes in a numeric vector of indices which should be kept, while `bool` takes in a vector of `TRUE` or `FALSE` which should be of the same length as the number of columns in the `SingleCellExperiment` object. Please refer to our [*Filtering* documentation](filtering.html) for detail.
 
 ```{r, eval=TRUE}
 #Before filtering:

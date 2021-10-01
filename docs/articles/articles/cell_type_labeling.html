@@ -55,7 +55,7 @@
           <a href="../../articles/articles/import_data.html">Import Data</a>
         </li>
         <li>
-          <a href="../../articles/articles/cmd_import_scRNAseq_data_as_SCE.html">Import Data in Commandline</a>
+          <a href="../../articles/articles/cmd_import_scRNAseq_data_as_SCE.html">Import Data for Commandline QC</a>
         </li>
         <li>
           <a href="../../articles/articles/import_genesets.html">Import Gene Sets</a>
@@ -207,7 +207,7 @@
 
       
 
-      </header><script src="cell_type_labeling_files/header-attrs-2.9/header-attrs.js"></script><div class="row">
+      </header><script src="cell_type_labeling_files/header-attrs-2.7/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Cell Type Labeling</h1>
@@ -244,7 +244,7 @@
 <p>Users should enter the page as instructed in the screenshot above, by clicking on “Differential Expression &amp; Cell Type Labeling” first and choosing “Cell Type Labeling” sub-option next.</p>
 <p><strong>Usage</strong></p>
 <p><img src="ui_screenshots/cell_type_labeling/panel.jpg" alt="panel"><br><img src="ui_screenshots/cell_type_labeling/panel2.jpg" alt="panel2"><br>
-There are 6 basic widgets that users need to work with before reaching to the result.</p>
+There are 6 basic widgets that users need to work with before reaching to the result:</p>
 <ol style="list-style-type: decimal">
 <li>
 <strong>Select assay</strong> - Select the feature expression matrix for the comparison against the reference dataset. This matrix has to be a log-normalized assay. <a href="cnsl_normalization.html">(How to normalize an assay with SCTK)</a>
@@ -268,7 +268,7 @@ There are 6 basic widgets that users need to work with before reaching to the re
 </ol>
 <p>The result will not be pop out directly, but three levels of cell annotation will be inserted to the background object. They will all have the same prefix as <code>"SingleR_{reference abbr}_{annotation level}_"</code>, then <code>"score"</code>, <code>"first.labels"</code>, <code>"labels"</code> and <code>"pruned.labels"</code>, respectively. <code>"first.labels"</code> refers to the labeling initially indicated by the scores, <code>"labels"</code> is fine-tuned, and <code>"pruned.labels"</code> is the pruned result.</p>
 <p><strong>Visualization</strong></p>
-<p>SCTK does not have a quick visualization at this point. But users can go to the <a href="visualization.html">CellViewer</a> to create a scatter plot using the pre-generated embedding and color it with the cell type labeling result.</p>
+<p>SCTK does not have a quick visualization at this point. But users can go to the <a href="visualization.html">CellViewer</a> tab to create a scatter plot using the pre-generated embedding and color it with the cell type labeling result.</p>
 </div>
 
 <div id="console" class="tabcontent">
@@ -327,7 +327,7 @@ document.getElementById("ia-button").click();
 
 
       <footer><div class="copyright">
-  <p>Developed by David Jenkins, Vidya Akavoor, Salam Alabdullatif, Shruthi Bandyadka, Emma Briars, Xinyun Cao, Sebastian Carrasco Pro, Tyler Faits, Rui Hong, Mohammed Muzamil Khan, Yusuke Koga, Anastasia Leshchyk, Irzam Sarfraz, Yichen Wang, Zhe Wang, W. Evan Johnson, Joshua David Campbell.</p>
+  <p>Developed by Yichen Wang, Irzam Sarfraz, Rui Hong, Yusuke Koga, Salam Alabdullatif, David Jenkins, Vidya Akavoor, Xinyun Cao, Shruthi Bandyadka, Anastasia Leshchyk, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, W. Evan Johnson, Joshua David Campbell.</p>
 </div>
 
 <div class="pkgdown">

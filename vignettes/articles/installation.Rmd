@@ -22,7 +22,7 @@ if (!requireNamespace("BiocManager", quietly = TRUE))
 BiocManager::install("singleCellTK")
 ```
 
-[See more details about custom installation of singleCellTK](#install-singleCellTK)
+[See more details about custom installation of singleCellTK](#install-singlecelltk-1)
 
 3. **Python environment**
 

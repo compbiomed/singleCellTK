@@ -159,7 +159,7 @@ navbar:
           menu:
             - text: "Import Data"
               href: articles/articles/import_data.html
-            - text: "Import Data in Commandline"
+            - text: "Import Data for Commandline QC"
               href: articles/articles/cmd_import_scRNAseq_data_as_SCE.html
             - text: "Import Gene Sets"
               href: articles/articles/import_genesets.html
