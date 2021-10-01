@@ -2386,7 +2386,7 @@ plotScdsHybridResults <- function(inSCE,
 #' @param dots Boolean. If TRUE, will plot dots for each violin plot.
 #'  Default TRUE.
 #' @param reducedDimName Saved dimension reduction name in the
-#' \linkS4class{SingleCellExperiment} object. Required. Default = "decontX_UMAP"
+#' \linkS4class{SingleCellExperiment} object. Required. Default = "UMAP"
 #' @param xlab Character vector. Label for x-axis. Default NULL.
 #' @param ylab Character vector. Label for y-axis. Default NULL.
 #' @param dim1 1st dimension to be used for plotting. Can either be a string which specifies
@@ -2437,7 +2437,7 @@ plotScdsHybridResults <- function(inSCE,
 #' data(scExample, package="singleCellTK")
 #' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 #' sce <- runDecontX(sce)
-#' plotDecontXResults(inSCE=sce, reducedDimName="decontX_UMAP")
+#' plotDecontXResults(inSCE=sce, reducedDimName="UMAP")
 #' @export
 plotDecontXResults <- function(inSCE,
                                sample=NULL,
@@ -2447,7 +2447,7 @@ plotDecontXResults <- function(inSCE,
                                violin=TRUE,
                                boxplot=FALSE,
                                dots=TRUE,
-                               reducedDimName="decontX_UMAP",
+                               reducedDimName="UMAP",
                                xlab=NULL,
                                ylab=NULL,
                                dim1=NULL,
