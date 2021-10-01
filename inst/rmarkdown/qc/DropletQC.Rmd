@@ -146,13 +146,13 @@ cat(paste0('## ', i, ' \n'))
 cat("\n")
 
 
-barcodeData <- c("dropletUtils_barcodeRank_rank", "dropletUtils_barcodeRank_total", "dropletUtils_barcodeRank_knee", "dropletUtils_barcodeRank_inflection", "sample", "dropletUtils_barcodeRank_fitted")
+barcodeData <- c("dropletUtils_barcodeRank_rank", "dropletUtils_barcodeRank_total", "dropletUtils_barcodeRank_knee", "dropletUtils_barcodeRank_inflection",  "dropletUtils_barcodeRank_fitted") #"sample",
 
 skipBarcode <- (!"runBarcodeRanksMetaOutput" %in% names(S4Vectors::metadata(sce))) || 
               (any(!barcodeData %in% names(S4Vectors::metadata(sce)$runBarcodeRanksMetaOutput[[1]])))
 
 if (skipBarcode) {
-  cat("runBarcodeRankDrops did not run successfully. The section of EmptyDrops is skipped")
+  cat("runBarcodeRankDrops did not run successfully. The section of BarcodeRanks is skipped")
   plotsBarcodeRank <- NA
 } else {
   plotsBarcodeRank <- tryCatch(
@@ -161,7 +161,7 @@ if (skipBarcode) {
                             title="BarcodeRanks Rank Plot",
                             combinePlot = "none")},
       error = function(e) {
-        cat("runBarcodeRankDrops did not run successfully. The section of EmptyDrops is skipped")
+        cat("runBarcodeRankDrops did not run successfully. The section of BarcodeRanks is skipped")
         skipBarcode <- TRUE
         return(NA)
       }
