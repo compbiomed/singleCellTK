@@ -153,5 +153,5 @@ A wrapper function which visualizes outputs from the
 data(scExample, package="singleCellTK")
 sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 sce <- runDecontX(sce)
-plotDecontXResults(inSCE=sce, reducedDimName="UMAP")
+plotDecontXResults(inSCE=sce, reducedDimName="decontX_UMAP")
 }

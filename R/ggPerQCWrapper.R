@@ -2437,7 +2437,7 @@ plotScdsHybridResults <- function(inSCE,
 #' data(scExample, package="singleCellTK")
 #' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 #' sce <- runDecontX(sce)
-#' plotDecontXResults(inSCE=sce, reducedDimName="UMAP")
+#' plotDecontXResults(inSCE=sce, reducedDimName="decontX_UMAP")
 #' @export
 plotDecontXResults <- function(inSCE,
                                sample=NULL,
