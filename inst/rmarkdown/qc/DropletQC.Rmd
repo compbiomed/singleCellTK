@@ -59,7 +59,7 @@ subtitle: "`r subTitle`"
 <br />
 
 # Introduction
-Comprehensive quality control (QC) of single-cell RNA-seq data was performed with the [**singleCellTK**](https://github.com/compbiomed/singleCellTK/tree/master) package. This report contains information about each QC tool and visualization of the QC metrics for each sample. For more information on running this pipeline and performing quality control, see the [**documentation**](http://sctk.camplab.net/articles/cmd_qc.html). If you use the singleCellTK package for quality control, please include a [**reference**](https://www.biorxiv.org/content/10.1101/329755v1.article-info) in your publication.
+Comprehensive quality control (QC) of single-cell RNA-seq data was performed with the [**singleCellTK**](https://github.com/compbiomed/singleCellTK/tree/devel) package. This report contains information about each QC tool and visualization of the QC metrics for each sample. For more information on running this pipeline and performing quality control, see the [**documentation**](http://sctk.camplab.net/articles/cmd_qc.html). If you use the singleCellTK package for quality control, please include a [**reference**](https://www.biorxiv.org/content/10.1101/329755v1.article-info) in your publication.
 <br />
 <br />
 
@@ -146,13 +146,13 @@ cat(paste0('## ', i, ' \n'))
 cat("\n")
 
 
-barcodeData <- c("dropletUtils_barcodeRank_rank", "dropletUtils_barcodeRank_total", "dropletUtils_barcodeRank_knee", "dropletUtils_barcodeRank_inflection", "sample", "dropletUtils_barcodeRank_fitted")
+barcodeData <- c("dropletUtils_barcodeRank_rank", "dropletUtils_barcodeRank_total", "dropletUtils_barcodeRank_knee", "dropletUtils_barcodeRank_inflection",  "dropletUtils_barcodeRank_fitted") #"sample",
 
 skipBarcode <- (!"runBarcodeRanksMetaOutput" %in% names(S4Vectors::metadata(sce))) || 
               (any(!barcodeData %in% names(S4Vectors::metadata(sce)$runBarcodeRanksMetaOutput[[1]])))
 
 if (skipBarcode) {
-  cat("runBarcodeRankDrops did not run successfully. The section of EmptyDrops is skipped")
+  cat("runBarcodeRankDrops did not run successfully. The section of BarcodeRanks is skipped")
   plotsBarcodeRank <- NA
 } else {
   plotsBarcodeRank <- tryCatch(
@@ -161,7 +161,7 @@ if (skipBarcode) {
                             title="BarcodeRanks Rank Plot",
                             combinePlot = "none")},
       error = function(e) {
-        cat("runBarcodeRankDrops did not run successfully. The section of EmptyDrops is skipped")
+        cat("runBarcodeRankDrops did not run successfully. The section of BarcodeRanks is skipped")
         skipBarcode <- TRUE
         return(NA)
       }

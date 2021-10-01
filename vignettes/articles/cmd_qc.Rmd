@@ -37,7 +37,7 @@ Besides, the pipeline contains various parameters to control the process of qual
 ## Running SCTK-QC with Docker
 
 ### Downloading docker
-If you have not used docker before, you can follow the instruction to install and set up docker in [Windows](https://docs.docker.com/docker-for-windows/), [Mac](https://docs.docker.com/docker-for-mac/) or [Linux](https://runnable.com/docker/install-docker-on-linux). 
+If you have not used docker before, you can follow the instruction to install and set up docker in [Windows](https://docs.docker.com/desktop/windows/install/), [Mac](https://docs.docker.com/desktop/mac/install/) or [Linux](https://runnable.com/docker/install-docker-on-linux). 
 
 
 ### Running SCTK-QC pipeline using docker image
@@ -72,9 +72,9 @@ The Singularity image can easily be built using Docker Hub as a source:
 singularity pull docker://campbio/sctk_qc:2.2.1
 ```
 
-The usage of singleCellTK Singularity image is very similar to that of Docker. In Singularity 3.0+, the mount volume is [automatically overlaid](https://singularity.lbl.gov/docs-mount). 
+The usage of singleCellTK Singularity image is very similar to that of Docker. In Singularity 3.0+, the mount volume is [automatically overlaid](https://sylabs.io/guides/3.0/user-guide/bind_paths_and_mounts.html#user-defined-bind-paths). 
 
-It's recommended to re-set the home directory when you run singularity. Singularity will mount \$HOME path on your machine by default, which might contain your personal R/Python library folder. If we don't re-set the home to mount, singularity will try to use R/Python libraries which are not built within the singularity image and cause some conflicts. You can point to some "sanitized home", which is different from \$HOME path on your machine, using argument [-H/--home](https://singularity.lbl.gov/faq#solution-1-specify-the-home-to-mount). Besides, you can use argument --bind/-B to specify your own mount volume, which is the path that contains the dataset and will be used to store the output of QC pipeline. The example is shown as below:
+It's recommended to re-set the home directory when you run singularity. Singularity will mount \$HOME path on your machine by default, which might contain your personal R/Python library folder. If we don't re-set the home to mount, singularity will try to use R/Python libraries which are not built within the singularity image and cause some conflicts. You can point to some "sanitized home", which is different from \$HOME path on your machine, using argument [-H/--home](https://sylabs.io/guides/3.1/user-guide/bind_paths_and_mounts.html). Besides, you can use argument --bind/-B to specify your own mount volume, which is the path that contains the dataset and will be used to store the output of QC pipeline. The example is shown as below:
 
 ```
 singularity run --home=/PathToSanitizedHome \
@@ -318,7 +318,7 @@ Rscript SCTK_runQC.R \
 Quantifying the level of gene sets can be useful quality control. For example, the percentage of counts from mitochondrial genes can be an indicator or cell stress or death. 
 
 Users can pass a [GMT](http://software.broadinstitute.org/cancer/software/gsea/wiki/index.php/Data_formats) file (with -g/--gmt argument) to the pipeline with one row for each gene set. The first column should be the name of the gene set (e.g. mito). 
-The second column for each gene set in the GMT file (i.e. the description) should contain the location of where to look for the matching IDs in the data. If set to 'rownames', then the gene set IDs will be matched with the row IDs of the data matrix. If a character string or an integer index is supplied, then gene set IDs will be matched to IDs the that column of feature table. Gene sets with mitochondrial genes can be found [here](https://github.com/compbiomed/singleCellTK/tree/master/exec). 
+The second column for each gene set in the GMT file (i.e. the description) should contain the location of where to look for the matching IDs in the data. If set to 'rownames', then the gene set IDs will be matched with the row IDs of the data matrix. If a character string or an integer index is supplied, then gene set IDs will be matched to IDs the that column of feature table. Gene sets with mitochondrial genes can be found [here](https://github.com/compbiomed/singleCellTK/tree/devel/exec). 
 
 # Outputs
 The output directory is created under the path specified by -o/--directory argument. Each sample is stored in the subdirectory (named by -s/--sample argument) within this output direcotry. Within each sample directory, the each output format will be separated into subdirectories. The output file hierarchy is shown below:
