@@ -235,7 +235,11 @@ if (numCores > 1) {
         }
         reference <- mito_info[[1]][1]
         id <- mito_info[[1]][2]
-
+        print("the reference is ")
+        print(reference)
+        print("the id is")
+        print(id)
+        
         if ((!reference %in% c("human", "mouse")) | (!id %in% c("symbol", "entrez", "ensemble", "ensemble_transcriptID"))) {
             warning("The --MitoType ", MitoType, " is not correct or supported. Please double check the documentation. Ignore --MitoImport=TRUE now.")
             return(geneSetCollection)            
