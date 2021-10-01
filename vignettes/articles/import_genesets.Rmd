@@ -22,7 +22,9 @@ doEval = FALSE
 
 ## Introduction
 
-Users can import gene sets to use in later steps of the toolkit's pipeline, including quality control (QC) and EnrichR analysis. SCTK mainly supports importing genesets from a GMT file, the MSigDB database [@Subramanian2005], or manually prepared list.  
+Users can import gene sets to use in later steps of the toolkit's pipeline, including quality control (QC) and EnrichR analysis. SCTK mainly supports importing genesets from a GMT file, the MSigDB database [@Subramanian2005], or manually prepared list. 
+
+To view detailed instructions on how to import genesets, please select 'Interactive Analysis' for importing through the shiny application or 'Console Analysis' for importing through the R console from the tabs below: <br>
 
 ## Workflow Guide
 
@@ -43,9 +45,13 @@ In the UI of SCTK, users can import gene sets to use in later steps. The UIs are
 
 **Import Genesets**
 
-There are three ways to import gene sets, as described below.  
+There are four ways to import gene sets, as described below:  
 
 ````{=html}
+ <style>
+div.offset { background-color:inherit ; border-radius: 5px; margin-left: 15px;}
+</style>
+<div class = "offset">
 <details>
   <summary><b>1. Import Gene Sets from a GMT File</b></summary>
 ````  
@@ -86,6 +92,8 @@ Users also have the option to paste their gene set into a text box. In order to 
 
 ````{=html}
 </details>
+</div>
+<br>
 ````
 
 **Map Gene Sets to Specific Feature IDs**
