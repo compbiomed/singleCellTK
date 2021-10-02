@@ -11,8 +11,8 @@ importMitoGeneSet(inSCE, reference, id, by, collectionName)
 
 \item{reference}{Character. Species available are "human" and "mouse".}
 
-\item{id}{Types of gene id. Now it supports "symbol", "entrez", "ensemble"
-and "ensemble_transcriptID".}
+\item{id}{Types of gene id. Now it supports "symbol", "entrez", "ensembl"
+and "ensemblTranscriptID".}
 
 \item{by}{Character. Describes the location within \code{inSCE} where the gene
 identifiers in the mitochondrial gene sets should be mapped.
@@ -52,7 +52,7 @@ analysis functions such as \link[singleCellTK]{runCellQC}.
 data(scExample)
 sce <- importMitoGeneSet(inSCE = sce,
                          reference = "human",
-                         id = "ensemble",
+                         id = "ensembl",
                          collectionName = "human_mito",
                          by = "rownames")
 }
