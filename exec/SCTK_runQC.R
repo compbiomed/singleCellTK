@@ -131,8 +131,8 @@ option_list <- list(optparse::make_option(c("-b", "--basePath"),
     optparse::make_option(c("-E", "--mitoType"),
         type="character",
         default="human-ensembl",
-        help="Type of mitochondrial gene set to be used when --detectMitoLevel is set to TRUE. Possible choices are: 'human-ensembl', 'human-symbol', 'human-entrez', 'human_ensemblTranscriptID', 
-        'mouse-ensembl', 'mouse-symbol', 'mouse-entrez', 'mouse_ensemblTranscriptID'. The first part defines the species and second part defines type of gene ID used as the rownames of the count matrix")  
+        help="Type of mitochondrial gene set to be used when --detectMitoLevel is set to TRUE. Possible choices are: 'human-ensembl', 'human-symbol', 'human-entrez', 'human-ensemblTranscriptID', 
+        'mouse-ensembl', 'mouse-symbol', 'mouse-entrez', 'mouse-ensemblTranscriptID'. The first part defines the species and second part defines type of gene ID used as the rownames of the count matrix")  
     )
 ## Define arguments
 arguments <- optparse::parse_args(optparse::OptionParser(option_list=option_list), positional_arguments=TRUE)
