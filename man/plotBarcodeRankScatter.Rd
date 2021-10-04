@@ -8,7 +8,7 @@ plotBarcodeRankScatter(
   inSCE,
   sample = NULL,
   defaultTheme = TRUE,
-  dotSize = 1,
+  dotSize = 0.5,
   title = NULL,
   titleSize = 18,
   xlab = NULL,
@@ -32,7 +32,7 @@ Default NULL.}
 \item{defaultTheme}{Removes grid in plot and sets axis title size to 10
 when TRUE. Default TRUE.}
 
-\item{dotSize}{Size of dots. Default 1.}
+\item{dotSize}{Size of dots. Default 0.5.}
 
 \item{title}{Title of plot. Default NULL.}
 

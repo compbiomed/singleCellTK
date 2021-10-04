@@ -130,9 +130,9 @@ option_list <- list(optparse::make_option(c("-b", "--basePath"),
         help="Detect mitochondrial gene expression level. If TRUE, the pipeline will examinate mito gene expression level automatically without the need of importing user defined gmt file. Default is TRUE"),
     optparse::make_option(c("-E", "--mitoType"),
         type="character",
-        default="human-ensemble",
-        help="Type of mitochondrial gene set to be used when --detectMitoLevel is set to TRUE. Possible choices are: 'human-ensemble', 'human-symbol', 'human-entrez', 'human-ensemble_transcriptID', 
-        'mouse-ensemble', 'mouse-symbol', 'mouse-entrez', 'mouse-ensemble_transcriptID'. The first part defines the species and second part defines type of gene ID used as the rownames of the count matrix")  
+        default="human-ensembl",
+        help="Type of mitochondrial gene set to be used when --detectMitoLevel is set to TRUE. Possible choices are: 'human-ensembl', 'human-symbol', 'human-entrez', 'human_ensemblTranscriptID', 
+        'mouse-ensembl', 'mouse-symbol', 'mouse-entrez', 'mouse_ensemblTranscriptID'. The first part defines the species and second part defines type of gene ID used as the rownames of the count matrix")  
     )
 ## Define arguments
 arguments <- optparse::parse_args(optparse::OptionParser(option_list=option_list), positional_arguments=TRUE)
@@ -235,18 +235,25 @@ if (numCores > 1) {
         }
         reference <- mito_info[[1]][1]
         id <- mito_info[[1]][2]
+        print("the reference is ")
+        print(reference)
+        print("the id is")
+        print(id)
 
-        if ((!reference %in% c("human", "mouse")) | (!id %in% c("symbol", "entrez", "ensemble", "ensemble_transcriptID"))) {
+        if ((!reference %in% c("human", "mouse")) | (!id %in% c("symbol", "entrez", "ensemble", "ensemblTranscriptID"))) {
             warning("The --MitoType ", MitoType, " is not correct or supported. Please double check the documentation. Ignore --MitoImport=TRUE now.")
             return(geneSetCollection)            
         }
         
+        #print(paste(MitoType, 'mito', sep='-'))
+        subset_name <- stringr::str_to_title(strsplit(MitoType, "-")[[1]])  
+        subset_name <- paste(c(subset_name, 'Mito'), collapse='')
         inSCE <- importMitoGeneSet(inSCE = inSCE,
                      reference = reference,
                      id = id,
-                     collectionName = MitoType,
+                     collectionName = subset_name,
                      by = "rownames")
-        mito_gs <- inSCE@metadata$sctk$genesets[[MitoType]]@.Data[[1]]
+        mito_gs <- inSCE@metadata$sctk$genesets[[subset_name]]@.Data[[1]]
         mito_gs@shortDescription <- "rownames"
 
         if (!is.null(geneSetCollection)) {
@@ -459,8 +466,15 @@ for(i in seq_along(process)) {
 
     dropletSCE <- INPUT[[1]]
     cellSCE <- INPUT[[2]]
-    geneSetCollection <- .importMito(inSCE = dropletSCE, geneSetCollection = geneSetCollection, MitoImport=MitoImport, MitoType=MitoType)
-    
+    if (!is.null(cellSCE)) {
+        geneSetCollection <- .importMito(inSCE = cellSCE, geneSetCollection = geneSetCollection, MitoImport=MitoImport, MitoType=MitoType)
+    } else if (!is.null(dropletSCE)) {
+        geneSetCollection <- .importMito(inSCE = dropletSCE, geneSetCollection = geneSetCollection, MitoImport=MitoImport, MitoType=MitoType)        
+    }
+
+    cellQCAlgos <- c("QCMetrics", "scDblFinder", "cxds", "bcds", "scrublet", "doubletFinder",
+    "cxds_bcds_hybrid", "decontX")
+
     if (dataType == "Cell") {
         if (is.null(cellSCE) && (preproc %in% c("BUStools", "SEQC"))) {
             dropletSCE <- runDropletQC(inSCE = dropletSCE, paramsList=Params)
@@ -469,7 +483,7 @@ for(i in seq_along(process)) {
         }
 
         message(paste0(date(), " .. Running cell QC"))        
-        cellSCE <- runCellQC(inSCE = cellSCE, geneSetCollection = geneSetCollection, paramsList=Params)
+        cellSCE <- runCellQC(inSCE = cellSCE, geneSetCollection = geneSetCollection, paramsList=Params, algorithms = cellQCAlgos)
     }
 
     if (dataType == "Droplet") {
@@ -485,7 +499,7 @@ for(i in seq_along(process)) {
             }
             cellSCE <- dropletSCE[,ix]
             message(paste0(date(), " .. Running cell QC"))
-            cellSCE <- runCellQC(inSCE = cellSCE, geneSetCollection = geneSetCollection, paramsList=Params)
+            cellSCE <- runCellQC(inSCE = cellSCE, geneSetCollection = geneSetCollection, paramsList=Params, algorithms = cellQCAlgos)
         }
     }
 
@@ -512,7 +526,7 @@ for(i in seq_along(process)) {
 
         if (!is.null(cellSCE)) {
             message(paste0(date(), " .. Running cell QC"))        
-            cellSCE <- runCellQC(inSCE = cellSCE, geneSetCollection = geneSetCollection, paramsList=Params)
+            cellSCE <- runCellQC(inSCE = cellSCE, geneSetCollection = geneSetCollection, paramsList=Params, algorithms = cellQCAlgos)
         }
     }
     
@@ -661,7 +675,10 @@ if (!isTRUE(split)) {
         by.c <- Reduce(intersect, lapply(cellSCE_list, function(x) { colnames(colData(x))}))
         cellSCE <- combineSCE(cellSCE_list, by.r, by.c, combined = TRUE)
         for (name in names(metadata(cellSCE))) {
-            names(metadata(cellSCE)[[name]]) <- sample
+            if (name != "assayType") {
+                names(metadata(cellSCE)[[name]]) <- sample
+            }
+            
         }
 
         exportSCE(inSCE = dropletSCE, samplename = samplename, directory = directory, type = "Droplets", format=formats)
@@ -704,9 +721,10 @@ if (!isTRUE(split)) {
 
         cellSCE <- combineSCE(cellSCE_list, by.r, by.c, combined = TRUE)
         for (name in names(metadata(cellSCE))) {
-            names(metadata(cellSCE)[[name]]) <- sample
+            if (name != "assayType") { ### not important and hard to force name. Skipped
+                names(metadata(cellSCE)[[name]]) <- sample
+            }
         }
-
         exportSCE(inSCE = cellSCE, samplename = samplename, directory = directory, type = "Cells", format=formats)
         if ("FlatFile" %in% formats) {
             if ("HTAN" %in% formats) {

@@ -22,7 +22,9 @@ doEval = FALSE
 
 ## Introduction
 
-Single Cell Toolkit (SCTK) performs differential expression (DE) analysis in a group-VS-group way. The groups to be compared can be set by selecting the individual cells or by using existing categorical cell annotation. SCTK supports five methods, including wilcoxon test [@Aaron2016], MAST [@Finak2015], Limma [@Ritchie2015], DESeq2 [@Love2014], and ANOVA. Users can perform multiple sets of DE analysis with unique analysis name set each time. 
+singleCellTK (SCTK) performs differential expression (DE) analysis in a group-VS-group way. The groups to be compared can be set by selecting the individual cells or by using existing categorical cell annotation. SCTK supports five methods, including wilcoxon test [@Aaron2016], MAST [@Finak2015], Limma [@Ritchie2015], DESeq2 [@Love2014], and ANOVA[@Kaufmann2014]. Users can perform multiple sets of DE analysis with unique analysis name set each time.
+
+To view detailed instructions on how to use these methods, please select 'Interactive Analysis' for using differential expression in shiny application or 'Console Analysis' for using these methods on R console from the tabs below: <br>
 
 ## Workflow Guide
 
@@ -37,29 +39,55 @@ Single Cell Toolkit (SCTK) performs differential expression (DE) analysis in a g
 
 **Entry of the Panel**  
 
-From anywhere of the UI, the panel for DE can be accessed from the top navigation panel at the circled tab shown below.  
+From anywhere of the UI, the panel for DE can be accessed from the top navigation panel shown below (highlighted in red):  
 
 ![Entry](ui_screenshots/differential_expression/de_ui_entry.png)\
 
-The UI is constructed with mainly four parts: **1. ** Method selection, **2.** Assay input, **3.** Condition setting, **4.** Parameter settings, **5.** Result and visualization.  
+The UI is constructed with mainly five parts: <br>
 
-**Method Selection**
+**1. ** Method Selection, **2.** Assay Input, **3.** Condition Selection, **4.** Parameter Settings **5.** Results & Visualization  
+
+**1. Method Selection**
+
+````{=html}
+<div class = "offset">
+````
 
 As mentioned in the Introduction section above, totally five methods are available from SCTK UI, including: Wilcoxon, MAST, Limma, DESeq2 and ANOVA. Users can choose the preferred one from the selection input **"Choose analysis method"**, as shown in the screenshot below.
 
 ![](ui_screenshots/differential_expression/de_ui_assay.png)\
 
-**Assay Input**
+````{=html}
+</div>
+````
+
+**2. Assay Input**
+
+````{=html}
+<div class = "offset">
+````
 
 Users need to choose a feature expression matrix for the differential expression analysis, and the selection should be made at the selection input **"Select assay"**. For most of the methods, a log-normalized assay would be recommended for the algorithm, though a "raw" counts would be recommended for "DESeq2". [(How to normalize an assay?)](cnsl_normalization.html)
 
-**Condition Selection**
+````{=html}
+</div>
+````
+
+**3. Condition Selection**
+
+````{=html}
+<div class = "offset">
+````
 
 Usually in terms of a DE analysis, we have two necessary conditions that have to be defined. One is the condition of interests and the other one is the condition of control. The condition of interests will then be compared to the condition of control via computational methods and statistical result will then be returned. The selection for a condition here means deciding which cells should be grouped together as one condition.  
 
 SCTK provides reasonably flexible approaches to setting the conditions: 
 
 ````{=html}
+ <style>
+div.offset { background-color:inherit ; border-radius: 5px; margin-left: 15px;}
+</style>
+<div class = "offset">
 <details>
   <summary><b>Categorical Selection</b></summary>
 ````  
@@ -75,7 +103,7 @@ In the example in the figure shown above, we intend to define the conditions bas
 ````{=html}
 </details> 
 <details>
-  <summary><b>Data Table Firtering Selection</b></summary>
+  <summary><b>Data Table Filtering Selection</b></summary>
 ````
 
 The second approach allows users to make the most use of all the cell annotations available. Meanwhile, single selection on each cell is also enabled to ensure the highest flexibility, though can be relatively ineffective.  
@@ -89,24 +117,32 @@ Similarly as the first approach, in the figure, we are making an equivalent cond
 ````{=html}
 </details> 
 <details>
-  <summary><b>Select by Pasting a list</b></summary>
+  <summary><b>Select by Pasting a List</b></summary>
 ````
 
-The final way allows users without any useful annotation but still know which cells are of interests. It is done by just simply pasting a list of cell identifiers into the text box for each condition. Note that the cell identifiers used must be the default cell IDs in the background SCE object (i.e. `colnames`). The input text should be formatted by one ID per line, splitted with no symbol. A summary text span below each text box will be dynamically updated after pasting, for the number of valid IDs found in the input.  
+The final way allows users without any useful annotation but still know which cells are of interests. It is done by just simply pasting a list of cell identifiers into the text box for each condition. Note that the cell identifiers used must be the default cell IDs in the background SCE object (i.e. `colnames`). The input text should be formatted by one ID per line, split with no symbol. A summary text span below each text box will be dynamically updated after pasting, for the number of valid IDs found in the input.  
 
 ![](ui_screenshots/differential_expression/de_ui_condMeth3.png)\
 
 ````{=html}
 </details> 
-<br/>
+</div>
 ````
 
-**NOTE** that the **"Name of Condition"** fields are always required. Iit is **highly recommanded** that users put easily understandable names there, in order to avoid the confusion when multiple sets of analyses are performed, and to keep the automatic legends on DE specific plots clean as well. 
+<br>
+
+**NOTE** that the **"Name of Condition"** fields are always required. It is **highly recommended** that users put easily understandable names there, in order to avoid the confusion when multiple sets of analyses are performed, and to keep the automatic legends on DE specific plots clean as well. 
 
 ````{=html}
-<details>
-  <summary><b>Other Parameters</b></summary>
+</div>
 ````
+
+**4. Parameter Settings**
+
+````{=html}
+<div class = "offset">
+````
+
 
 ![](ui_screenshots/differential_expression/de_ui_param.png)\
 
@@ -117,17 +153,20 @@ The final way allows users without any useful annotation but still know which ce
 - **Name of an analysis**. At the text input **"Name of Differential Expression Analysis:"**. This is a required field for all DE analysis. Similarly to the naming of each condition, when performing batches of analysis, users will need unique identifiers to recognize each set of result, and to avoid confusion in downstream analysis.  
 
 ````{=html}
-</details> 
-<br/>
+</div>
 ````
 
-**Result Visualization**
+**5. Results & Visualization**
+
+````{=html}
+<div class = "offset">
+````
 
 **Heatmap**
 
 ![](ui_screenshots/differential_expression/de_ui_res4.png)\
 
-This tab enables a heatmap visualization for the DE analysis selected. Here SCTK will automatically group the involved cells to the two conditions where they are assigned to, and group the genes by the log2FC values, which indicate whether a gene is up-regulated or down-regulated. Additional settings can be applied by clicking on the blue clog button.   
+This tab enables a heatmap visualization for the DE analysis selected. Here SCTK will automatically group the involved cells to the two conditions where they are assigned to, and group the genes by the log2FC values, which indicate whether a gene is up-regulated or down-regulated. Additional settings can be applied by clicking on the blue settings (cog) button.   
 
 ````{=html}
 <details>
@@ -138,7 +177,7 @@ This tab enables a heatmap visualization for the DE analysis selected. Here SCTK
 - Keep only the up-regulated genes (by excluding the DE genes with negative log2FC values) by selecting the check-box input **"Only up-regulated"**.
 - Further filtering by the statistics can be applied through numeric inputs **"Absolute log2FC value greater than"** and **"FDR value less than"**. 
 - Additional labeling can be added from background by multi-selection inputs **"Additional cell annotation"** and **"Additional feature annotation"**. 
-- The heatmap is by default splitted by the grouping "condition" and "regulation", mentioned above. And this can only be achieved by selecting these two option in the multi-selection inputs **"Split columns by"** and **"Split rows by"**, respectively. Technically, these options can be canceled while other options can also be added, as long as users wish. 
+- The heatmap is by default split by the grouping "condition" and "regulation", mentioned above. And this can only be achieved by selecting these two option in the multi-selection inputs **"Split columns by"** and **"Split rows by"**, respectively. Technically, these options can be canceled while other options can also be added, as long as users wish. 
 
 ````{=html}
 </details> 
@@ -151,21 +190,22 @@ Furthermore, if more sophisticated settings on the DE heatmap are needed, users 
 
 ![](ui_screenshots/differential_expression/de_ui_res1.png)\
 
-In this tab, there will be a table with all the genes that are thought to be differentially expressed in the condition of interest against the condition of control, with high significance and passed all filter parameters. The gene names (default identifier in the background object, not necessarily a gene symbol), p-values, log2FC values, and FDR values will be present. The table will be saved in background by the name of the analysis, entered before running. Users can also download the table in comma-splitted value (CSV) format, by clicking **"Download Result Table"** button. 
+In this tab, there will be a table with all the genes that are thought to be differentially expressed in the condition of interest against the condition of control, with high significance and passed all filter parameters. The gene names (default identifier in the background object, not necessarily a gene symbol), p-values, log2FC values, and FDR values will be present. The table will be saved in background by the name of the analysis, entered before running. Users can also download the table in comma separated value (CSV) format, by clicking **"Download Result Table"** button. 
 
 **Violin Plot**
 
 ![](ui_screenshots/differential_expression/de_ui_res2.png)\
 
-In the violin plot tab, the UI will present a standard violin plot showing how expression differs in the top N selected genes between cells in both conditions. Users can set the number of top DEG to plot and the feature identifier type to display, by clicking on the blue clog button.  
+In the violin plot tab, the UI will present a standard violin plot showing how expression differs in the top N selected genes between cells in both conditions. Users can set the number of top DEG to plot and the feature identifier type to display, by clicking on the blue settings (cog) button.  
 
 **Linear Modeling Plot**
 
 ![](ui_screenshots/differential_expression/de_ui_res3.png)\
 
-In the linear modeling plot tab, an analysis of covariance (ANCOVA) is done, showing how expression differs in the top N selected genes between cells in both conditions. Users can set the number of top DEG to plot and the feature identifier type to display, by clicking on the blue clog button.  
+In the linear modeling plot tab, an analysis of covariance (ANCOVA) is done, showing how expression differs in the top N selected genes between cells in both conditions. Users can set the number of top DEG to plot and the feature identifier type to display, by clicking on the blue settings (cog) button.  
 
 ````{=html}
+</div>
 </div>
 
 <div id="console" class="tabcontent">
@@ -173,7 +213,11 @@ In the linear modeling plot tab, an analysis of covariance (ANCOVA) is done, sho
 
 The differential expression analysis can be easily performed on any preprocessed SCE dataset. Here we introduce the workflow of using the generic wrapper `runDEAnalysis()`.  
 
-**Basic Parameters**
+**Basic Parameters:**
+
+````{=html}
+<div class = "offset">
+````
 
 The most basic parameters include:  
 
@@ -181,7 +225,15 @@ The most basic parameters include:
 - The method listed in the table above to use - `method`.
 - The assay to perform the analysis on - `useAssay`
 
-**Other required parameter**
+````{=html}
+</div>
+````
+
+**Additional Required Parameters:**
+
+````{=html}
+<div class = "offset">
+````
 
 **1. Conditions**
 
@@ -205,6 +257,7 @@ Something that might be special in our workflow is that, users will be required 
 The reason is we assume that users are likely to perform multiple batches of analysis for a single dataset (e.g. group1 Vs. group2 and then group1 Vs. group3), and we hope to have everything stored in one SCE without leaving users any confusion when they look back on it. Also, the namings are also used by DE analysis related plotting functions, so that legends can be well annotated.  
 
 ````{=html}
+</div>
 <details>
   <summary><b>Example</b></summary>
 ```` 
@@ -243,13 +296,7 @@ plotSCEDimReduceColData(inSCE = sce,
 
 ```{R runDE, eval=FALSE, message=FALSE, warning=FALSE, cache=TRUE}
 # Condition chosen basing on the UMAP
-sce <- runDEAnalysis(inSCE = sce, 
-                        method = "MAST", 
-                        useAssay = "logcounts",
-                        class = "Seurat_louvain_Resolution0.8", 
-                        classGroup1 = c(2), classGroup2 = c(4, 5),
-                        groupName1 = "c2", groupName2 = "c4_c5", 
-                        analysisName = "c2_VS_c4_c5")
+sce <- runDEAnalysis(inSCE = sce, method = "MAST", useAssay = "logcounts", class = "Seurat_louvain_Resolution0.8", classGroup1 = c(2), classGroup2 = c(4, 5), groupName1 = "c2", groupName2 = "c4_c5", analysisName = "c2_VS_c4_c5")
 ```
 
 ````{=html}
@@ -258,6 +305,10 @@ sce <- runDEAnalysis(inSCE = sce,
 ````
 
 **Results**
+
+````{=html}
+<div class = "offset">
+````
 
 The results are saved in the `metadata` slot of the returned SCE object
 
@@ -319,6 +370,7 @@ plotDEGHeatmap(sce, useResult = "c2_VS_c4_c5", log2fcThreshold = 1)
 For other approaches of visualizing top differential expressed genes, refer to `plotDEGRegression()` and `plotDEGViolin()`, which are borrowed from [MAST's tutorial](https://www.bioconductor.org/packages/release/bioc/vignettes/MAST/inst/doc/MAITAnalysis.html#401_visualization_of_50_most_differentially_expressed_genes).  
 
 ````{=html} 
+</div>
 </div>
 <script>
 document.getElementById("ia-button").click();

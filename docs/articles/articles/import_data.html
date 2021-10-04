@@ -207,7 +207,7 @@
 
       
 
-      </header><script src="import_data_files/header-attrs-2.7/header-attrs.js"></script><div class="row">
+      </header><script src="import_data_files/header-attrs-2.9/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Import Data</h1>
@@ -252,6 +252,7 @@
 <li>
 <a href="https://anndata.readthedocs.io/en/latest/">AnnData</a> object saved in hdf5 file</li>
 </ul>
+<p>To view detailed instructions on how to import data, please select ‘Interactive Analysis’ for importing data through the shiny application or ‘Console Analysis’ for importing through the R console from the tabs below: <br></p>
 </div>
 <div id="workflow-guide" class="section level2">
 <h2 class="hasAnchor">
@@ -268,6 +269,10 @@
 <p><strong>Importing Single-Cell Datasets</strong></p>
 <p><img src="ui_screenshots/import/import_ui_source.png"><br></p>
 <p>For a single source of data, users need to choose one option from the radio buttons listed in the screenshot. The next step will depend on the option chosen.</p>
+ <style>
+div.offset { background-color:inherit ; border-radius: 5px; margin-left: 15px;}
+</style>
+<div class="offset">
 <details><summary><b>Import from a preprocessing tool</b></summary><p><img src="ui_screenshots/import/import_ui_source1.png" alt="source1"><br></p>
 <p>SCTK supports importing data from the following pre-processing tools in our UI workflow:<br>
 - <a href="https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/what-is-cell-ranger">CellRanger</a> (versions 2 and 3)<br>
@@ -294,7 +299,9 @@ After choosing a single file for uploading, user must wait until the progress ba
 <p><img src="ui_screenshots/import/import_ui_source3.png"><br></p>
 </details><details><summary><b>Example Datasets</b></summary><p>Users can also opt to import and work with published example datasets. To do so, the user must select which dataset they would like to use from the dropdown menu and click <strong>“Add to Sample List”</strong>. For more information about the chosen dataset, users can click on the hyperlink of the title and open the reference website in a browser.</p>
 <p><img src="ui_screenshots/import/import_ui_source4.png"><br></p>
-</details><p><strong>Complete Upload</strong></p>
+</details>
+</div>
+<br><p><strong>Complete Upload</strong></p>
 <p>After successfully choosing each source of dataset, it will be inserted to a new line of the table at the buttom of this UI page, in “<strong>3. Import</strong>” section. This is a wait-list for all the samples of interests. To finally import all datasets of interests, users must click on <strong>“Import”</strong> button.</p>
 <p>Before importing, users can click on the “<code>[X]</code>” button on the right to remove the selection of the corresponding single dataset, or click on <strong>“Clear Samples”</strong> to reset all selections. This only clears this wait-list for importing, but will not work on any dataset already imported.</p>
 <p>Note that it is normal that in the “Location” field, some paths might happen to point to a temporary cache.</p>

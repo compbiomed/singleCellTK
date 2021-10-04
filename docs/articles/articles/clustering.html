@@ -207,7 +207,7 @@
 
       
 
-      </header><script src="clustering_files/header-attrs-2.7/header-attrs.js"></script><div class="row">
+      </header><script src="clustering_files/header-attrs-2.9/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Clustering</h1>
@@ -228,6 +228,7 @@
 <a href="#introduction" class="anchor"></a>Introduction</h2>
 <p>SCTK allows users to do clustering on their data. The clustering methods that SCTK adopts are mainly graph based, such as an SNN graph, supported by Scran <span class="citation">[1]</span>, or a KNN graph, supported by Seurat <span class="citation">[2]</span>. Meanwhile, we also support traditional method such as K-Means <span class="citation">[3]</span>.</p>
 <p>SCTK allows different types data matrix as input. When using Scran’s SNN graph based clustering algorithms, users can specify either a expression matrix or a low-dimension representation as the input, while for Seurat’s KNN graph based algorithms and K-Means, users can only use the reduced dimensions.</p>
+<p>To view detailed instructions on how to use these methods, please select ‘Interactive Analysis’ for using clustering methods in shiny application or ‘Console Analysis’ for using these methods on R console from the tabs below: <br></p>
 </div>
 <div id="workflow-guide" class="section level2">
 <h2 class="hasAnchor">
@@ -247,34 +248,43 @@
 <p><img src="ui_screenshots/clustering/clst_ui_algo.png" style="border: 1px solid rgba(0,0,0,0.2)"></p>
 <p>User will choose an algorithm to run the clustering at the very first step. The slide-down option list is constructed in a grouped style. Each group lists all the algorithm that a dependency (shown with grey text) supports. By selecting an algorithm that belongs to different groups, the parameter settings will change.</p>
 <p><strong>2. Parameter Settings</strong></p>
+<p>Method specific parameter settings can be viewed below:</p>
+ <style>
+div.offset { background-color:inherit ; border-radius: 5px; margin-left: 15px;}
+</style>
+<div class="offset">
 <details><summary><b>Scran SNNs</b></summary><p><img src="ui_screenshots/clustering/clst_ui_scran.png" alt="scran"><br></p>
 <p>When the selected algorithm belongs to “Scran SNN” group, the parameter settings will look like the figure above. For the choices in the algorithm list, please refer to <code><a href="https://rdrr.io/pkg/igraph/man/cluster_walktrap.html">igraph::cluster_walktrap()</a></code>, <code><a href="https://rdrr.io/pkg/igraph/man/cluster_louvain.html">igraph::cluster_louvain()</a></code>, <code><a href="https://rdrr.io/pkg/igraph/man/cluster_infomap.html">igraph::cluster_infomap()</a></code>, <code><a href="https://rdrr.io/pkg/igraph/man/cluster_fast_greedy.html">igraph::cluster_fast_greedy()</a></code>, <code><a href="https://rdrr.io/pkg/igraph/man/cluster_label_prop.html">igraph::cluster_label_prop()</a></code>, and <code><a href="https://rdrr.io/pkg/igraph/man/cluster_leading_eigen.html">igraph::cluster_leading_eigen()</a></code>.</p>
 <ul>
-<li>Data matrix selection - selection input <strong>“Select Input Matrix”</strong>. Scran SNN method allows various type of data matrix. Either A full-sized or subsetted expression matrix, technically called <code>assay</code> or <code>altExp</code>, respectively, or a dimension reduction, technically <code>reducedDim</code>, is allowed.</li>
+<li>Data matrix selection - selection input <strong>“Select Input Matrix”</strong>. Scran SNN method allows various types of data matrices. Either a full-sized or a subsetted expression matrix, technically called <code>assay</code> or <code>altExp</code>, respectively, or a reduced dimension, technically <code>reducedDim</code>, is allowed.</li>
 <li>Resolution setting - numeric input <strong>“K value”</strong>. <code>K</code> is an integer scalar specifying the number of nearest neighbors to consider during graph construction. Considering more neighbors results in larger groups. (See parameter <code>k</code> of <code><a href="https://rdrr.io/pkg/scran/man/buildSNNGraph.html">scran::buildSNNGraph()</a></code>)</li>
-<li>Algorithm detail setting - selection input <strong>“Edge Weight Type”</strong>. User can specify the type of weighting scheme to use for shared neighbors. (See parameter <code>type</code> of <code><a href="https://rdrr.io/pkg/scran/man/buildSNNGraph.html">scran::buildSNNGraph()</a></code>)</li>
-<li>Component number setting (Only used when the chosen data matrix is an <code>assay</code> or <code>altExp</code>) - numeric input <strong>“Number of Components”</strong>. When an <code>assay</code> or <code>altExp</code> is chosen, the algorithm will perform a PCA on the matrix and obtain the top principal components (PCs) for downstream use. Thus users will specify the number of PCs here.</li>
+<li>Algorithm detail setting - selection input <strong>“Edge Weight Type”</strong>. Users can specify the type of weighting scheme to use for shared neighbors. (See parameter <code>type</code> of <code><a href="https://rdrr.io/pkg/scran/man/buildSNNGraph.html">scran::buildSNNGraph()</a></code>)</li>
+<li>Component number setting (only used when the chosen data matrix is an <code>assay</code> or <code>altExp</code>) - numeric input <strong>“Number of Components”</strong>. When an <code>assay</code> or <code>altExp</code> is chosen, the algorithm will perform a PCA on the matrix and obtain the top principal components (PCs) for downstream use. Thus users will specify the number of PCs here.</li>
 </ul></details><details><summary><b>K-Means</b></summary><p><img src="ui_screenshots/clustering/clst_ui_kmeans.png" alt="kmeans"><br></p>
 <p>When the selected algorithm belongs to “K-Means” group, the parameter settings will look like the figure above.</p>
 <ul>
-<li>Data matrix selection - selection input <strong>“Select a ReducedDim”</strong>. Here the data matrix allowed can only be a dimension reduction, technically called <code>reducedDim</code>. Should be obtained in advance from <a href="#">“Feature Selection &amp; Dimension Reduction” tab</a>.</li>
+<li>Data matrix selection - selection input <strong>“Select a ReducedDim”</strong>. Here the data matrix allowed can only be a reduced dimension, technically called <code>reducedDim</code> and should be obtained in advance from <a href="cnsl_dimensionality_reduction.html">“Feature Selection &amp; Dimensionality Reduction” tab</a>.</li>
 <li>Cluster number determining - numeric input <strong>“Number of Centers (Clusters)”</strong>. User will decide the exact number of clusters here. In term of K-means algorithm, the number of cluster centroids.</li>
 <li>Iteration limit setting - numeric input <strong>“Max Number of Iterations”</strong>. User will here decide the maximum number of iterations to run.</li>
 <li>Algorithm detail setting - numeric input <strong>“Number of Random Sets”</strong>. Kmeans attempts multiple initial configurations and reports on the best one. Here users will set the number of initial configurations to use.</li>
 </ul></details><details><summary><b>Seurat</b></summary><p><img src="ui_screenshots/clustering/clst_ui_seurat.png" alt="seurat"><br></p>
 <p>When the selected algorithm belongs to “Seurat” group, the parameter settings will look like the figure above.</p>
 <ul>
-<li>Data matrix selection - selection input <strong>“Select a ReducedDim”</strong>. Here the data matrix allowed can only be a dimension reduction, technically called <code>reducedDim</code>. Should be obtained in advance from <a href="#">“Feature Selection &amp; Dimension Reduction” tab</a>.</li>
+<li>Data matrix selection - selection input <strong>“Select a ReducedDim”</strong>. Here the data matrix allowed can only be a reduced dimension, technically called <code>reducedDim</code> and should be obtained in advance from <a href="cnsl_dimensionality_reduction.html">“Feature Selection &amp; Dimension Reduction” tab</a>.</li>
 <li>Component number setting - numeric input <strong>“How Many Dimensions to Use”</strong>.</li>
 <li>Algorithm detail setting - checkbox input <strong>“Group Singletons”</strong>.</li>
 <li>Resolution setting - numeric input <strong>“Resolution”</strong>.</li>
-</ul></details><br><p><strong>3. Visualization</strong></p>
-<p><img src="ui_screenshots/clustering/clst_ui_vis.png" style="border: 1px solid rgba(0,0,0,0.2)"></p>
-<p>The visualization is implemented with a plotting of a chosen low-dimension embedding, colored with a chosen cluster assignment (the newly generated result by default). SCTK by default uses the matrix used for clustering calculation for the visualization. However, usually, users might use a PCA for clustering while needing a UMAP/t-SNE embedding for visualization. To change the embedding used, please click on the blue clog button on the left-top corner.</p>
-<details><summary><b>Settings</b></summary><ul>
-<li>Cluster annotation selection. radio button selection <strong>“Select from Current Results”</strong> and <strong>“Select from All Present Annotation”</strong>. And a selection input follows. Only a successful run of clustering in the current SCTK session adds an option for the new result to “Select from Current Results,” while all the cell annotation stored in background (i.e. <code>colData(sce)</code>) are accessible if “Select from All Present Annotation” is chosen.</li>
-<li>Dimension Reduction selection - selection input <strong>“Use Reduction”</strong>. User have to choose a reduction here for plotting. If there is not yet any option, user can obtain one from <a href="#">“Feature Selection &amp; Dimension Reduction” tab</a>.</li>
 </ul></details>
+</div>
+<br><p><strong>3. Visualization</strong></p>
+<p><img src="ui_screenshots/clustering/clst_ui_vis.png" style="border: 1px solid rgba(0,0,0,0.2)"></p>
+<p>The visualization is implemented with a plotting of a chosen low-dimension embedding, colored with a chosen cluster assignment (the newly generated result by default). SCTK by default uses the matrix used for clustering calculation for the visualization. However, usually, users might use a PCA for clustering while needing a UMAP/t-SNE embedding for visualization. To change the embedding used, please click on the blue settings (cog) button on the left-top corner.</p>
+<div class="offset">
+<details><summary><b>Settings</b></summary><ul>
+<li>Cluster annotation selection - radio button selection <strong>“Select from Current Results”</strong> and <strong>“Select from All Present Annotation”</strong>. This selection updates the dropdown menu with the available annotations. Only a successful run of clustering in the current SCTK session adds an option for the new result to “Select from Current Results,” while all the cell annotation stored in background (i.e. <code>colData(sce)</code>) are accessible if “Select from All Present Annotation” is chosen.</li>
+<li>Dimension Reduction selection - selection input <strong>“Use Reduction”</strong>. User have to choose a reduction here for plotting. If there is not yet any option, user can obtain one from <a href="cnsl_dimensionality_reduction.html">“Feature Selection &amp; Dimension Reduction” tab</a>.</li>
+</ul></details>
+</div>
 </div>
 
 <div id="console" class="tabcontent">
@@ -295,12 +305,12 @@
 <li>For <code><a href="../../reference/seuratFindClusters.html">seuratFindClusters()</a></code>, it is included within the Seurat Curated Workflow, yet usable as an independent function. However, it will be complicated to use this way. It is recommended to invoke the Seurat clustering functionality in the UI since it is automated there. We will still present the complicated workflow later.</li>
 </ul>
 <p>Other parameters are method specific, please refer to the function manual pages for the detail.</p>
-<p><strong>Examples</strong></p>
-<p>To demonstrate simple and clear examples, here we use the “PBMC-3k” dataset from “10X” which can be easily imported with SCTK functions.</p>
+<details><summary><b>Example</b></summary><p>To demonstrate simple and clear examples, here we use the “PBMC-3k” dataset from “10X” which can be easily imported with SCTK functions.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://compbiomed.github.io/sctk_docs/">singleCellTK</a></span><span class="op">)</span>
 <span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/importExampleData.html">importExampleData</a></span><span class="op">(</span><span class="st">"pbmc3k"</span><span class="op">)</span></code></pre></div>
 <p>The preprocessing only includes necessary steps before getting cluster labels (i.e. QC and filtering are excluded).</p>
+<div class="offset">
 <details><summary><b>Preprocessing</b></summary><div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/scaterlogNormCounts.html">scaterlogNormCounts</a></span><span class="op">(</span><span class="va">sce</span>, <span class="st">"logcounts"</span><span class="op">)</span>
 <span class="co"># Go through the Seurat curated workflow to get basic scaled assay and dimension reduction</span>
@@ -310,9 +320,7 @@
 <span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/seuratPCA.html">seuratPCA</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"seuratScaledData"</span><span class="op">)</span>
 <span class="co"># Optional visualization</span>
 <span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/seuratRunUMAP.html">seuratRunUMAP</a></span><span class="op">(</span><span class="va">pbmc3k</span><span class="op">)</span>
-<span class="fu"><a href="../../reference/plotSCEDimReduceColData.html">plotSCEDimReduceColData</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, 
-                        colorBy <span class="op">=</span> <span class="st">"Sample"</span>,
-                        reducedDimName <span class="op">=</span> <span class="st">"seuratUMAP"</span><span class="op">)</span></code></pre></div>
+<span class="fu"><a href="../../reference/plotSCEDimReduceColData.html">plotSCEDimReduceColData</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>,  colorBy <span class="op">=</span> <span class="st">"Sample"</span>, reducedDimName <span class="op">=</span> <span class="st">"seuratUMAP"</span><span class="op">)</span></code></pre></div>
 </details><details><summary><b>Example with Scran SNN</b></summary><details><summary><b>Method specific parameters</b></summary><ul>
 <li>
 <code>k</code>, the number of nearest neighbors used to construct the graph. Smaller value indicates higher resolution and larger number of clusters.</li>
@@ -321,36 +329,17 @@
 <li>For <code>weightType</code> and <code>algorithm</code>, users should choose from a given list of options, which can be found with <code><a href="../../reference/runScranSNN.html">?runScranSNN</a></code>. For the introduction of those options, please refer to <code><a href="https://rdrr.io/pkg/scran/man/buildSNNGraph.html">scran::buildSNNGraph()</a></code> and <a href="https://rdrr.io/cran/igraph/"><code>igraph</code></a>.</li>
 </ul></details><div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Directly use an assay</span>
-<span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/runScranSNN.html">runScranSNN</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, 
-                      useAssay <span class="op">=</span> <span class="st">"logcounts"</span>,
-                      k <span class="op">=</span> <span class="fl">10</span>,
-                      clusterName <span class="op">=</span> <span class="st">"scranSNN_logcounts"</span><span class="op">)</span>
-<span class="fu"><a href="../../reference/plotSCEDimReduceColData.html">plotSCEDimReduceColData</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, 
-                        colorBy <span class="op">=</span> <span class="st">"scranSNN_logcounts"</span>,
-                        conditionClass <span class="op">=</span> <span class="st">"factor"</span>,
-                        reducedDimName <span class="op">=</span> <span class="st">"seuratUMAP"</span><span class="op">)</span>
+<span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/runScranSNN.html">runScranSNN</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"logcounts"</span>, k <span class="op">=</span> <span class="fl">10</span>, clusterName <span class="op">=</span> <span class="st">"scranSNN_logcounts"</span><span class="op">)</span>
+<span class="fu"><a href="../../reference/plotSCEDimReduceColData.html">plotSCEDimReduceColData</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, colorBy <span class="op">=</span> <span class="st">"scranSNN_logcounts"</span>, conditionClass <span class="op">=</span> <span class="st">"factor"</span>, reducedDimName <span class="op">=</span> <span class="st">"seuratUMAP"</span><span class="op">)</span>
 <span class="co"># Directly use a dimension reduction</span>
-<span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/runScranSNN.html">runScranSNN</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, 
-                      useReducedDim <span class="op">=</span>  <span class="st">"seuratUMAP"</span>,
-                      k <span class="op">=</span> <span class="fl">25</span>,
-                      clusterName <span class="op">=</span> <span class="st">"scranSNN_seuratUMAP"</span><span class="op">)</span>
-<span class="fu"><a href="../../reference/plotSCEDimReduceColData.html">plotSCEDimReduceColData</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, 
-                        colorBy <span class="op">=</span> <span class="st">"scranSNN_seuratUMAP"</span>,
-                        conditionClass <span class="op">=</span> <span class="st">"factor"</span>,
-                        reducedDimName <span class="op">=</span> <span class="st">"seuratUMAP"</span><span class="op">)</span>
+<span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/runScranSNN.html">runScranSNN</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useReducedDim <span class="op">=</span>  <span class="st">"seuratUMAP"</span>, k <span class="op">=</span> <span class="fl">25</span>, clusterName <span class="op">=</span> <span class="st">"scranSNN_seuratUMAP"</span><span class="op">)</span>
+<span class="fu"><a href="../../reference/plotSCEDimReduceColData.html">plotSCEDimReduceColData</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, colorBy <span class="op">=</span> <span class="st">"scranSNN_seuratUMAP"</span>, conditionClass <span class="op">=</span> <span class="st">"factor"</span>, reducedDimName <span class="op">=</span> <span class="st">"seuratUMAP"</span><span class="op">)</span>
 <span class="co"># Use a subset of an assay</span>
 <span class="va">hvg</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/getTopHVG.html">getTopHVG</a></span><span class="op">(</span><span class="va">sce</span>, <span class="st">"vst"</span>, n <span class="op">=</span> <span class="fl">500</span><span class="op">)</span>
 <span class="va">ae</span> <span class="op">&lt;-</span> <span class="fu">SingleCellExperiment</span><span class="op">(</span>assays <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>logcounts <span class="op">=</span> <span class="fu">logcounts</span><span class="op">(</span><span class="va">sce</span><span class="op">[</span><span class="va">hvg</span>,<span class="op">]</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
 <span class="fu">altExp</span><span class="op">(</span><span class="va">sce</span>, <span class="st">"subset"</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">ae</span>
-<span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/runScranSNN.html">runScranSNN</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>,
-                      useAltExp <span class="op">=</span> <span class="st">"subset"</span>,
-                      altExpAssay <span class="op">=</span> <span class="st">"logcounts"</span>, 
-                      k <span class="op">=</span> <span class="fl">8</span>,
-                      clusterName <span class="op">=</span> <span class="st">"scranSNN_altExp"</span><span class="op">)</span>
-<span class="fu"><a href="../../reference/plotSCEDimReduceColData.html">plotSCEDimReduceColData</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, 
-                        colorBy <span class="op">=</span> <span class="st">"scranSNN_altExp"</span>,
-                        conditionClass <span class="op">=</span> <span class="st">"factor"</span>,
-                        reducedDimName <span class="op">=</span> <span class="st">"seuratUMAP"</span><span class="op">)</span></code></pre></div>
+<span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/runScranSNN.html">runScranSNN</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAltExp <span class="op">=</span> <span class="st">"subset"</span>, altExpAssay <span class="op">=</span> <span class="st">"logcounts"</span>, k <span class="op">=</span> <span class="fl">8</span>, clusterName <span class="op">=</span> <span class="st">"scranSNN_altExp"</span><span class="op">)</span>
+<span class="fu"><a href="../../reference/plotSCEDimReduceColData.html">plotSCEDimReduceColData</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, colorBy <span class="op">=</span> <span class="st">"scranSNN_altExp"</span>, conditionClass <span class="op">=</span> <span class="st">"factor"</span>, reducedDimName <span class="op">=</span> <span class="st">"seuratUMAP"</span><span class="op">)</span></code></pre></div>
 </details><details><summary><b>Example with K-Means</b></summary><details><summary><b>Method specific parameters</b></summary><ul>
 <li>
 <code>nCenters</code>, the number of final clusters. This is required.</li>
@@ -362,22 +351,12 @@
 <code>seed</code>, The seed for the random number generator.</li>
 <li>For <code>algorithm</code>, users should choose from a given list of options, which can be found with <code><a href="../../reference/runKMeans.html">?runKMeans</a></code>. For the introduction of those options, please refer to <code><a href="https://rdrr.io/r/stats/kmeans.html">?stats::kmeans</a></code>.</li>
 </ul></details><div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/runKMeans.html">runKMeans</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, 
-                    useReducedDim <span class="op">=</span> <span class="st">"seuratUMAP"</span>, 
-                    nCenters <span class="op">=</span> <span class="fl">13</span>, 
-                    clusterName <span class="op">=</span> <span class="st">"kmeans_cluster"</span><span class="op">)</span>
-<span class="fu"><a href="../../reference/plotSCEDimReduceColData.html">plotSCEDimReduceColData</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, 
-                        colorBy <span class="op">=</span> <span class="st">"kmeans_cluster"</span>,
-                        conditionClass <span class="op">=</span> <span class="st">"factor"</span>,
-                        reducedDimName <span class="op">=</span> <span class="st">"seuratUMAP"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/runKMeans.html">runKMeans</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useReducedDim <span class="op">=</span> <span class="st">"seuratUMAP"</span>, nCenters <span class="op">=</span> <span class="fl">13</span>, clusterName <span class="op">=</span> <span class="st">"kmeans_cluster"</span><span class="op">)</span>
+<span class="fu"><a href="../../reference/plotSCEDimReduceColData.html">plotSCEDimReduceColData</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, colorBy <span class="op">=</span> <span class="st">"kmeans_cluster"</span>, conditionClass <span class="op">=</span> <span class="st">"factor"</span>, reducedDimName <span class="op">=</span> <span class="st">"seuratUMAP"</span><span class="op">)</span></code></pre></div>
 </details><details><summary><b>Example with Seurat</b></summary><p>Here we will only present the examples of using <code><a href="../../reference/seuratFindClusters.html">seuratFindClusters()</a></code>.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/seuratFindClusters.html">seuratFindClusters</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, 
-                          useAssay <span class="op">=</span> <span class="st">"seuratScaledData"</span><span class="op">)</span>
-<span class="fu"><a href="../../reference/plotSCEDimReduceColData.html">plotSCEDimReduceColData</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, 
-                        colorBy <span class="op">=</span> <span class="st">"Seurat_louvain_Resolution0.8"</span>, 
-                        conditionClass <span class="op">=</span> <span class="st">"factor"</span>, 
-                        reducedDimName <span class="op">=</span> <span class="st">"seuratUMAP"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/seuratFindClusters.html">seuratFindClusters</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"seuratScaledData"</span><span class="op">)</span>
+<span class="fu"><a href="../../reference/plotSCEDimReduceColData.html">plotSCEDimReduceColData</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, colorBy <span class="op">=</span> <span class="st">"Seurat_louvain_Resolution0.8"</span>, conditionClass <span class="op">=</span> <span class="st">"factor"</span>, reducedDimName <span class="op">=</span> <span class="st">"seuratUMAP"</span><span class="op">)</span></code></pre></div>
 <p>When users preprocessed the dataset with other approaches. The clustering with Seurat function can be complicated, since some sorts of Seurat specific metadata is always needed.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Let's get another totally independent dimension reduction for demonstration. </span>
@@ -386,25 +365,16 @@
 <span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span><span class="op">(</span><span class="va">pca</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/grep.html">gsub</a></span><span class="op">(</span><span class="st">"_"</span>, <span class="st">"-"</span>, <span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span><span class="op">(</span><span class="va">pca</span><span class="op">)</span><span class="op">)</span>
 <span class="kw">if</span> <span class="op">(</span><span class="st">"percentVar"</span> <span class="op">%in%</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/attributes.html">attributes</a></span><span class="op">(</span><span class="va">pca</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span>
     <span class="va">stdev</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/attr.html">attr</a></span><span class="op">(</span><span class="va">pca</span>, <span class="st">"percentVar"</span><span class="op">)</span><span class="op">)</span>
-    <span class="va">new_pca</span> <span class="op">&lt;-</span> <span class="fu">Seurat</span><span class="fu">::</span><span class="fu"><a href="https://satijalab.org/seurat/reference/CreateDimReducObject.html">CreateDimReducObject</a></span><span class="op">(</span>embeddings <span class="op">=</span> <span class="va">sce</span>, 
-                                            assay <span class="op">=</span> <span class="st">"RNA"</span>,
-                                            stdev <span class="op">=</span> <span class="va">stdev</span>, 
-                                            key <span class="op">=</span> <span class="st">"PC_"</span><span class="op">)</span>
+    <span class="va">new_pca</span> <span class="op">&lt;-</span> <span class="fu">Seurat</span><span class="fu">::</span><span class="fu"><a href="https://satijalab.org/seurat/reference/CreateDimReducObject.html">CreateDimReducObject</a></span><span class="op">(</span>embeddings <span class="op">=</span> <span class="va">sce</span>, assay <span class="op">=</span> <span class="st">"RNA"</span>, stdev <span class="op">=</span> <span class="va">stdev</span>, key <span class="op">=</span> <span class="st">"PC_"</span><span class="op">)</span>
 <span class="op">}</span> <span class="kw">else</span> <span class="op">{</span>
-    <span class="va">new_pca</span> <span class="op">&lt;-</span> <span class="fu">Seurat</span><span class="fu">::</span><span class="fu"><a href="https://satijalab.org/seurat/reference/CreateDimReducObject.html">CreateDimReducObject</a></span><span class="op">(</span>embeddings <span class="op">=</span> <span class="va">sce</span>, 
-                                            assay <span class="op">=</span> <span class="st">"RNA"</span>,
-                                            key <span class="op">=</span> <span class="st">"PC_"</span><span class="op">)</span>
+    <span class="va">new_pca</span> <span class="op">&lt;-</span> <span class="fu">Seurat</span><span class="fu">::</span><span class="fu"><a href="https://satijalab.org/seurat/reference/CreateDimReducObject.html">CreateDimReducObject</a></span><span class="op">(</span>embeddings <span class="op">=</span> <span class="va">sce</span>, assay <span class="op">=</span> <span class="st">"RNA"</span>, key <span class="op">=</span> <span class="st">"PC_"</span><span class="op">)</span>
 <span class="op">}</span>
 <span class="co"># Then we can take the Seurat Curated Workflow independent dimension </span>
 <span class="co"># reduction as an input. </span>
-<span class="va">pbmc3k</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/seuratFindClusters.html">seuratFindClusters</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, 
-                             useAssay <span class="op">=</span> <span class="fu">assayNames</span><span class="op">(</span><span class="va">sce</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, <span class="co"># Need a placeholder</span>
-                             externalReduction <span class="op">=</span> <span class="va">new_pca</span>,
-                             resolution <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span>
-<span class="fu"><a href="../../reference/plotSCEDimReduceColData.html">plotSCEDimReduceColData</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, 
-                        colorBy <span class="op">=</span> <span class="st">"Seurat_louvain_Resolution0.8"</span>,
-                        conditionClass <span class="op">=</span> <span class="st">"factor"</span>,
-                        reducedDimName <span class="op">=</span> <span class="st">"seuratUMAP"</span><span class="op">)</span></code></pre></div>
+<span class="va">pbmc3k</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/seuratFindClusters.html">seuratFindClusters</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="fu">assayNames</span><span class="op">(</span><span class="va">sce</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, externalReduction <span class="op">=</span> <span class="va">new_pca</span>, resolution <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span>
+<span class="fu"><a href="../../reference/plotSCEDimReduceColData.html">plotSCEDimReduceColData</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, colorBy <span class="op">=</span> <span class="st">"Seurat_louvain_Resolution0.8"</span>, conditionClass <span class="op">=</span> <span class="st">"factor"</span>, reducedDimName <span class="op">=</span> <span class="st">"seuratUMAP"</span><span class="op">)</span></code></pre></div>
+</details>
+</div>
 </details>
 </div>
 <script>
