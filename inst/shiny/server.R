@@ -948,7 +948,9 @@ shinyServer(function(input, output, session) {
       #HVG
       hvgParams <- metadata(vals$counts)$seurat$sctk$report$hvgParams
       output$plot_hvg <- renderPlotly({
-        plotly::ggplotly(seuratPlotHVG(vals$counts, labelPoints = hvgParams$labelPoints))
+        isolate({
+          plotly::ggplotly(seuratPlotHVG(vals$counts, labelPoints = hvgParams$labelPoints))
+        })
       })
       shinyjs::enable(selector = "div[value='Highly Variable Genes']")
       updateCollapse(session = session, "SeuratUI", style = list("Highly Variable Genes" = "success"))
@@ -1008,7 +1010,9 @@ shinyServer(function(input, output, session) {
         # })
 
       output$plot_pca <- renderPlotly({
-        plotly::ggplotly(seuratReductionPlot(inSCE = vals$counts, useReduction = "pca"))
+        isolate({
+          plotly::ggplotly(seuratReductionPlot(inSCE = vals$counts, useReduction = "pca"))
+        })
       })
 
 
@@ -1019,11 +1023,15 @@ shinyServer(function(input, output, session) {
 
           #update parameters from seurat report
           output$plot_elbow_pca <- renderPlotly({
-            plotly::ggplotly(seuratElbowPlot(inSCE = vals$counts))
+            isolate({
+              plotly::ggplotly(seuratElbowPlot(inSCE = vals$counts))
+            })
           })
 
           output$pca_significant_pc_output <- renderText({
-            paste("<p>Number of significant components suggested by ElbowPlot: <span style='color:red'>", pcaParams$significant_PC," </span> </p> <hr>")
+            isolate({
+              paste("<p>Number of significant components suggested by ElbowPlot: <span style='color:red'>", pcaParams$significant_PC," </span> </p> <hr>")
+            })
           })
 
           # output$plot_jackstraw_pca <- renderPlotly({
@@ -1031,7 +1039,9 @@ shinyServer(function(input, output, session) {
           # })
 
           output$plot_jackstraw_pca <- renderPlotly({
-            plotly::ggplotly(seuratJackStrawPlot(vals$counts))
+            isolate({
+              plotly::ggplotly(seuratJackStrawPlot(vals$counts))
+            })
           })
 
 
@@ -1046,7 +1056,9 @@ shinyServer(function(input, output, session) {
           pcHeatmapParams <- metadata(inSCE)$seurat$plots$heatmap
           pcHeatmapParams$inSCE <- vals$counts
           output$plot_heatmap_pca <- renderPlot({
-            do.call("seuratComputeHeatmap", pcHeatmapParams)
+            isolate({
+              do.call("seuratComputeHeatmap", pcHeatmapParams)
+            })
           })
 
           updatePickerInput(session = session, inputId = "picker_dimheatmap_components_pca", choices = singleCellTK:::.getComponentNames(vals$counts@metadata$seurat$count_pc, "PC"))
@@ -1066,11 +1078,15 @@ shinyServer(function(input, output, session) {
           # })
 
           output$plot_tsne <- renderPlotly({
-            plotly::ggplotly(seuratReductionPlot(vals$counts, useReduction = "tsne"))
+            isolate({
+              plotly::ggplotly(seuratReductionPlot(vals$counts, useReduction = "tsne"))
+            })
           })
 
           output$plot_umap <- renderPlotly({
-            plotly::ggplotly(seuratReductionPlot(vals$counts, useReduction = "umap"))
+            isolate({
+              plotly::ggplotly(seuratReductionPlot(vals$counts, useReduction = "umap"))
+            })
           })
 
 
@@ -1190,7 +1206,9 @@ shinyServer(function(input, output, session) {
           groupHeatmapParams <- metadata(vals$counts)$seurat$plots$groupHeatmapParams
           groupHeatmapParams$inSCE <- vals$counts
           output$findMarkerHeatmapPlotFull <- renderPlot({
-            do.call("seuratGenePlot", groupHeatmapParams)
+            isolate({
+              do.call("seuratGenePlot", groupHeatmapParams)
+            })
           })
 
           output$findMarkerHeatmapPlotFullTopText <- renderUI({
@@ -6676,7 +6694,7 @@ shinyServer(function(input, output, session) {
       vals$counts <- seuratScaleData(inSCE = vals$counts,
                                      useAssay = "seuratNormData",
                                      scaledAssayName = "seuratScaledData",
-                                     model = input$model.use,
+                                     #model = input$model.use,
                                      scale = input$do.scale,
                                      center = input$do.center,
                                      scaleMax = input$scale.max)
@@ -6711,7 +6729,9 @@ shinyServer(function(input, output, session) {
     })
     withProgress(message = "Plotting HVG", max = 1, value = 1, {
       output$plot_hvg <- renderPlotly({
-        plotly::ggplotly(seuratPlotHVG(vals$counts, input$hvg_no_features_view))
+        isolate({
+          plotly::ggplotly(seuratPlotHVG(vals$counts, input$hvg_no_features_view))
+        })
       })
     })
     updateCollapse(session = session, "SeuratUI", style = list("Highly Variable Genes" = "success"))
@@ -6727,7 +6747,9 @@ shinyServer(function(input, output, session) {
     if (!is.null(vals$counts)) {
       if (!is.null(vals$counts@metadata$seurat$obj)) {
         if (length(slot(vals$counts@metadata$seurat$obj, "assays")[["RNA"]]@var.features) > 0) {
-          singleCellTK:::.seuratGetVariableFeatures(vals$counts, input$hvg_no_features_view)
+          isolate({
+            singleCellTK:::.seuratGetVariableFeatures(vals$counts, input$hvg_no_features_view)
+          })
         }
       }
     }
@@ -6761,9 +6783,11 @@ shinyServer(function(input, output, session) {
 
     withProgress(message = "Plotting PCA", max = 1, value = 1, {
       output$plot_pca <- renderPlotly({
-        plotly::ggplotly(seuratReductionPlot(inSCE = vals$counts,
-                                             useReduction = "pca",
-                                             showLegend = FALSE))
+        isolate({
+          plotly::ggplotly(seuratReductionPlot(inSCE = vals$counts,
+                                               useReduction = "pca",
+                                               showLegend = FALSE))
+        })
       })
     })
     if (input$pca_compute_elbow) {
@@ -6777,11 +6801,15 @@ shinyServer(function(input, output, session) {
       withProgress(message = "Generating Elbow Plot", max = 1, value = 1, {
         updateNumericInput(session = session, inputId = "pca_significant_pc_counter", value = singleCellTK:::.computeSignificantPC(vals$counts))
         output$plot_elbow_pca <- renderPlotly({
-          seuratElbowPlot(inSCE = vals$counts,
-                          significantPC = singleCellTK:::.computeSignificantPC(vals$counts))
+          isolate({
+            seuratElbowPlot(inSCE = vals$counts,
+                            significantPC = singleCellTK:::.computeSignificantPC(vals$counts))
+          })
         })
         output$pca_significant_pc_output <- renderText({
-          paste("<p>Number of significant components suggested by ElbowPlot: <span style='color:red'>", singleCellTK:::.computeSignificantPC(vals$counts)," </span> </p> <hr>")
+          isolate({
+            paste("<p>Number of significant components suggested by ElbowPlot: <span style='color:red'>", singleCellTK:::.computeSignificantPC(vals$counts)," </span> </p> <hr>")
+          })
         })
       })
     }
@@ -6797,8 +6825,10 @@ shinyServer(function(input, output, session) {
                                               useAssay = "seuratScaledData",
                                               dims = input$pca_no_components)
         output$plot_jackstraw_pca <- renderPlotly({
-          plotly::ggplotly(seuratJackStrawPlot(inSCE = vals$counts,
-                                               dims = input$pca_no_components))
+          isolate({
+            plotly::ggplotly(seuratJackStrawPlot(inSCE = vals$counts,
+                                                 dims = input$pca_no_components))
+          })
         })
       })
     }
@@ -6807,14 +6837,35 @@ shinyServer(function(input, output, session) {
                                                           panel(heading = "Heatmap Plot",
                                                                 panel(heading = "Plot Options",
                                                                       fluidRow(
-                                                                        column(6,
-                                                                               pickerInput(inputId = "picker_dimheatmap_components_pca", label = "Select principal components to plot:", choices = c(), options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3"), multiple = TRUE)
-                                                                        ),
-                                                                        column(6,
-                                                                               sliderInput(inputId = "slider_dimheatmap_pca", label = "Number of columns for the plot: ", min = 1, max = 4, value = 2)
-                                                                        )
-                                                                      ),
-                                                                      actionButton(inputId = "plot_heatmap_pca_button", "Plot")
+                                                                        column(4, dropdown(
+                                                                          fluidRow(
+                                                                            column(12,
+                                                                                   fluidRow(actionBttn(inputId = "closeDropDownSeuratHM", label = NULL, style = "simple", color = "danger", icon = icon("times"), size = "xs"), align = "right"),
+                                                                                   fluidRow(
+                                                                                     column(6,
+                                                                                            pickerInput(inputId = "picker_dimheatmap_components_pca", label = "Select principal components to plot:", choices = c(), options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3"), multiple = TRUE)
+                                                                                     ),
+                                                                                     column(6,
+                                                                                            sliderInput(inputId = "slider_dimheatmap_pca", label = "Number of columns for the plot: ", min = 1, max = 4, value = 2)
+                                                                                     )
+                                                                                   ),
+                                                                                   actionBttn(
+                                                                                     inputId = "plot_heatmap_pca_button",
+                                                                                     label = "Update",
+                                                                                     style = "bordered",
+                                                                                     color = "primary",
+                                                                                     size = "sm"
+                                                                                   )
+                                                                            )
+                                                                          ),
+                                                                          inputId = "dropDownSeuratHM",
+                                                                          icon = icon("cog"),
+                                                                          status = "primary",
+                                                                          circle = FALSE,
+                                                                          inline = TRUE
+                                                                        )),
+                                                                        column(7, fluidRow(h6("Heatmaps of the top features correlated with each component"), align="center"))
+                                                                      )
                                                                 ),
                                                                 panel(heading = "Plot",
                                                                       shinyjqui::jqui_resizable(plotOutput(outputId = "plot_heatmap_pca"), options = list(maxWidth = 700))
@@ -6831,10 +6882,12 @@ shinyServer(function(input, output, session) {
                                                                         combine = FALSE,
                                                                         fast = FALSE)
         output$plot_heatmap_pca <- renderPlot({
-          seuratHeatmapPlot(plotObject = vals$counts@metadata$seurat$heatmap_pca,
-                            dims = input$pca_no_components,
-                            ncol = 2,
-                            labels = c("PC1", "PC2", "PC3", "PC4"))
+          isolate({
+            seuratHeatmapPlot(plotObject = vals$counts@metadata$seurat$heatmap_pca,
+                              dims = input$pca_no_components,
+                              ncol = 2,
+                              labels = c("PC1", "PC2", "PC3", "PC4"))
+          })
         })
         updatePickerInput(session = session, inputId = "picker_dimheatmap_components_pca", choices = singleCellTK:::.getComponentNames(vals$counts@metadata$seurat$count_pc, "PC"))
       })
@@ -6868,6 +6921,10 @@ shinyServer(function(input, output, session) {
 
     showNotification("PCA Complete")
   })
+  
+  observeEvent(input$closeDropDownSeuratHM,{
+    session$sendCustomMessage("close_dropDownSeuratHM", "")
+  })
 
   #Run ICA
   observeEvent(input$run_ica_button, {
@@ -6894,9 +6951,11 @@ shinyServer(function(input, output, session) {
 
     withProgress(message = "Plotting ICA", max = 1, value = 1, {
       output$plot_ica <- renderPlotly({
-        plotly::ggplotly(seuratReductionPlot(inSCE = vals$counts,
-                                             useReduction = "ica",
-                                             showLegend = FALSE))
+        isolate({
+          plotly::ggplotly(seuratReductionPlot(inSCE = vals$counts,
+                                               useReduction = "ica",
+                                               showLegend = FALSE))
+        })
       })
     })
     if (input$ica_compute_heatmap) {
@@ -6928,10 +6987,12 @@ shinyServer(function(input, output, session) {
                                                                         combine = FALSE,
                                                                         fast = FALSE)
         output$plot_heatmap_ica <- renderPlot({
-          seuratHeatmapPlot(plotObject = vals$counts@metadata$seurat$heatmap_ica,
-                            dims = input$ica_no_components,
-                            ncol = 2,
-                            labels = c("IC1", "IC2", "IC3", "IC4"))
+          isolate({
+            seuratHeatmapPlot(plotObject = vals$counts@metadata$seurat$heatmap_ica,
+                              dims = input$ica_no_components,
+                              ncol = 2,
+                              labels = c("IC1", "IC2", "IC3", "IC4"))
+          })
         })
         updatePickerInput(session = session, inputId = "picker_dimheatmap_components_ica", choices = singleCellTK:::.getComponentNames(vals$counts@metadata$seurat$count_ic, "IC"))
       })
@@ -6992,9 +7053,11 @@ shinyServer(function(input, output, session) {
         )
         withProgress(message = "Re-generating PCA plot with cluster labels", max = 1, value = 1,{
           output$plot_pca_clustering <- renderPlotly({
-            plotly::ggplotly(seuratReductionPlot(inSCE = vals$counts,
-                                                 useReduction = "pca",
-                                                 showLegend = TRUE))
+            isolate({
+              plotly::ggplotly(seuratReductionPlot(inSCE = vals$counts,
+                                                   useReduction = "pca",
+                                                   showLegend = TRUE))
+            })
           })
         })
         shinyjs::toggleState(
@@ -7009,9 +7072,11 @@ shinyServer(function(input, output, session) {
         ), select = TRUE)
         withProgress(message = "Re-generating ICA plot with cluster labels", max = 1, value = 1,{
           output$plot_ica_clustering <- renderPlotly({
-            plotly::ggplotly(seuratReductionPlot(inSCE = vals$counts,
-                                                 useReduction = "ica",
-                                                 showLegend = TRUE))
+            isolate({
+              plotly::ggplotly(seuratReductionPlot(inSCE = vals$counts,
+                                                   useReduction = "ica",
+                                                   showLegend = TRUE))
+            })
           })
         })
         shinyjs::toggleState(
@@ -7029,9 +7094,11 @@ shinyServer(function(input, output, session) {
 
         withProgress(message = "Re-generating tSNE plot with cluster labels", max = 1, value = 1,{
           output$plot_tsne_clustering <- renderPlotly({
-            plotly::ggplotly(seuratReductionPlot(inSCE = vals$counts,
-                                                 useReduction = "tsne",
-                                                 showLegend = TRUE))
+            isolate({
+              plotly::ggplotly(seuratReductionPlot(inSCE = vals$counts,
+                                                   useReduction = "tsne",
+                                                   showLegend = TRUE))
+            })
           })
         })
         shinyjs::toggleState(
@@ -7048,9 +7115,11 @@ shinyServer(function(input, output, session) {
         )
         withProgress(message = "Re-generating UMAP plot with cluster labels", max = 1, value = 1,{
           output$plot_umap_clustering <- renderPlotly({
-            plotly::ggplotly(seuratReductionPlot(inSCE = vals$counts,
-                                                 useReduction = "umap",
-                                                 showLegend = TRUE))
+            isolate({
+              plotly::ggplotly(seuratReductionPlot(inSCE = vals$counts,
+                                                   useReduction = "umap",
+                                                   showLegend = TRUE))
+            })
           })
         })
         shinyjs::toggleState(
@@ -7251,7 +7320,9 @@ shinyServer(function(input, output, session) {
      colnames(df)[which(startsWith(colnames(df), "avg") == TRUE)] <- "avg_log2FC"
      top10markers <- df %>% group_by(cluster) %>% top_n(n = 10, wt = avg_log2FC)
      output$findMarkerHeatmapPlotFull <- renderPlot({
-       DoHeatmap(seuratObject, features = top10markers$gene.id)
+       isolate({
+         DoHeatmap(seuratObject, features = top10markers$gene.id)
+       })
      })
 
      # output$findMarkerHeatmapPlotFullTopText <- renderUI({
@@ -7363,7 +7434,9 @@ shinyServer(function(input, output, session) {
       topMarkers <- data.frame(topMarkers %>% group_by(cluster) %>% top_n(input$findMarkerHeatmapPlotFullNumeric, -p_val_adj))
     }
     output$findMarkerHeatmapPlotFull <- renderPlot({
-      DoHeatmap(seuratObject, features = topMarkers$gene.id)
+      isolate({
+        DoHeatmap(seuratObject, features = topMarkers$gene.id)
+      })
     })
   })
 
@@ -7464,9 +7537,11 @@ shinyServer(function(input, output, session) {
       })
       withProgress(message = "Plotting tSNE", max = 1, value = 1, {
         output$plot_tsne <- renderPlotly({
-          plotly::ggplotly(seuratReductionPlot(inSCE = vals$counts,
-                                               useReduction = "tsne",
-                                               showLegend = FALSE))
+          isolate({
+            plotly::ggplotly(seuratReductionPlot(inSCE = vals$counts,
+                                                 useReduction = "tsne",
+                                                 showLegend = FALSE))
+          })
         })
       })
       updateCollapse(session = session, "SeuratUI", style = list("tSNE/UMAP" = "success"))
@@ -7512,9 +7587,11 @@ shinyServer(function(input, output, session) {
       })
       withProgress(message = "Plotting UMAP", max = 1, value = 1, {
         output$plot_umap <- renderPlotly({
-          plotly::ggplotly(seuratReductionPlot(inSCE = vals$counts,
-                                               useReduction = "umap",
-                                               showLegend = FALSE))
+          isolate({
+            plotly::ggplotly(seuratReductionPlot(inSCE = vals$counts,
+                                                 useReduction = "umap",
+                                                 showLegend = FALSE))
+          })
         })
       })
       updateCollapse(session = session, "SeuratUI", style = list("tSNE/UMAP" = "success"))
@@ -7585,22 +7662,27 @@ shinyServer(function(input, output, session) {
   observeEvent(input$plot_heatmap_pca_button, {
     if (!is.null(input$picker_dimheatmap_components_pca)) {
       output$plot_heatmap_pca <- renderPlot({
-        seuratHeatmapPlot(plotObject = vals$counts@metadata$seurat$heatmap_pca,
-                          dims = length(input$picker_dimheatmap_components_pca),
-                          ncol = input$slider_dimheatmap_pca,
-                          labels = input$picker_dimheatmap_components_pca)
+        isolate({
+          seuratHeatmapPlot(plotObject = vals$counts@metadata$seurat$heatmap_pca,
+                            dims = length(input$picker_dimheatmap_components_pca),
+                            ncol = input$slider_dimheatmap_pca,
+                            labels = input$picker_dimheatmap_components_pca)
+        })
       })
     }
+    session$sendCustomMessage("close_dropDownSeuratHM", "")
   })
 
   #Customize heatmap (ica) with selected options
   observeEvent(input$plot_heatmap_ica_button, {
     if (!is.null(input$picker_dimheatmap_components_ica)) {
       output$plot_heatmap_ica <- renderPlot({
-        seuratHeatmapPlot(plotObject = vals$counts@metadata$seurat$heatmap_ica,
-                          dims = length(input$picker_dimheatmap_components_ica),
-                          ncol = input$slider_dimheatmap_ica,
-                          labels = input$picker_dimheatmap_components_ica)
+        isolate({
+          seuratHeatmapPlot(plotObject = vals$counts@metadata$seurat$heatmap_ica,
+                            dims = length(input$picker_dimheatmap_components_ica),
+                            ncol = input$slider_dimheatmap_ica,
+                            labels = input$picker_dimheatmap_components_ica)
+        })
       })
     }
   })
