@@ -2,7 +2,7 @@
 title: "Importing scRNA-seq Data for Commandline QC"
 ---
 
-Single Cell ToolKit (SingleCellTK) enables importing data from the following pre-processing tools-
+Single Cell ToolKit (SingleCellTK, SCTK) enables importing data from the following pre-processing tools-
 
 - [CellRanger](https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/what-is-cell-ranger)
 - [Optimus](https://data.humancellatlas.org/pipelines/optimus-workflow)
@@ -13,7 +13,7 @@ Single Cell ToolKit (SingleCellTK) enables importing data from the following pre
 - [SingleCellExperiment](https://bioconductor.org/packages/release/bioc/html/SingleCellExperiment.html) object saved in RDS file
 - [AnnData](https://github.com/theislab/anndata) object saved in  HDF5 file
 
-The following table describes how SingleCellTK expects the inputs to be structured and passed for each import function. In all cases, SingleCellTK retains the standard output directory structure for upstream tools. All the import functions return the imported counts matrix as an `assay` in a `SingleCellExperiment` object, with associated information in respective `colData`, `rowData`, `reducedDims`, and `metadata` fields. 
+The following table describes how SCTK expects the inputs to be structured and passed for each import function. In all cases, SCTK retains the standard output directory structure from upstream tools. All the import functions return the imported counts matrix as an `assay` in a `SingleCellExperiment` object, with associated information in respective `colData`, `rowData`, `reducedDims`, and `metadata` fields. 
 
 ![QC data format](qc_inputShell.png)\
 

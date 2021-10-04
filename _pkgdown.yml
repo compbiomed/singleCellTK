@@ -138,6 +138,7 @@ reference:
   - detectCellOutlier
   - featureIndex
   - retrieveSCEIndex
+  - sampleSummaryStats
   - sctkListGeneSetCollections
   - setSCTKDisplayRow
   - subsetSCECols
@@ -151,6 +152,8 @@ reference:
 navbar:
   title: "singleCellTK"
   left:
+    - icon: fas fa-home fa-lg
+      href: https://www.camplab.net/sctk
     - text: "Installation"
       href: articles/articles/installation.html
     - text: "Documentation"
@@ -173,10 +176,10 @@ navbar:
           menu:
             - text: "QC with commandline"
               href: articles/articles/cmd_qc.html
-            - text: "Cell QC in R console"
-              href: articles/articles/cnsl_cellqc.html
             - text: "Droplet QC in R console"
               href: articles/articles/cnsl_dropletqc.html
+            - text: "Cell QC in R console"
+              href: articles/articles/cnsl_cellqc.html
             - text: "QC in the UI"
               href: articles/articles/ui_qc.html
             - text: "Filtering"

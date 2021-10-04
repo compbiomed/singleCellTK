@@ -83,6 +83,12 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
+  <a href="https://www.camplab.net/sctk">
+    <span class="fas fa-home fa-lg"></span>
+     
+  </a>
+</li>
+<li>
   <a href="../articles/articles/installation.html">Installation</a>
 </li>
 <li class="dropdown">
@@ -122,10 +128,10 @@
           <a href="../articles/articles/cmd_qc.html">QC with commandline</a>
         </li>
         <li>
-          <a href="../articles/articles/cnsl_cellqc.html">Cell QC in R console</a>
+          <a href="../articles/articles/cnsl_dropletqc.html">Droplet QC in R console</a>
         </li>
         <li>
-          <a href="../articles/articles/cnsl_dropletqc.html">Droplet QC in R console</a>
+          <a href="../articles/articles/cnsl_cellqc.html">Cell QC in R console</a>
         </li>
         <li>
           <a href="../articles/articles/ui_qc.html">QC in the UI</a>
@@ -274,7 +280,7 @@
   violin <span class='op'>=</span> <span class='cn'>TRUE</span>,
   boxplot <span class='op'>=</span> <span class='cn'>FALSE</span>,
   dots <span class='op'>=</span> <span class='cn'>TRUE</span>,
-  reducedDimName <span class='op'>=</span> <span class='cn'>NULL</span>,
+  reducedDimName <span class='op'>=</span> <span class='st'>"UMAP"</span>,
   xlab <span class='op'>=</span> <span class='cn'>NULL</span>,
   ylab <span class='op'>=</span> <span class='cn'>NULL</span>,
   dim1 <span class='op'>=</span> <span class='cn'>NULL</span>,
@@ -282,7 +288,7 @@
   bin <span class='op'>=</span> <span class='cn'>NULL</span>,
   binLabel <span class='op'>=</span> <span class='cn'>NULL</span>,
   defaultTheme <span class='op'>=</span> <span class='cn'>TRUE</span>,
-  dotSize <span class='op'>=</span> <span class='fl'>1</span>,
+  dotSize <span class='op'>=</span> <span class='fl'>0.5</span>,
   summary <span class='op'>=</span> <span class='st'>"median"</span>,
   summaryTextSize <span class='op'>=</span> <span class='fl'>3</span>,
   transparency <span class='op'>=</span> <span class='fl'>1</span>,
@@ -387,7 +393,7 @@ when TRUE. Default TRUE.</p></td>
     </tr>
     <tr>
       <th>dotSize</th>
-      <td><p>Size of dots. Default 1.</p></td>
+      <td><p>Size of dots. Default 0.5.</p></td>
     </tr>
     <tr>
       <th>summary</th>
@@ -475,7 +481,7 @@ the relative widths for each plot.</p></td>
 <span class='va'>sce</span> <span class='op'>&lt;-</span> <span class='fu'><a href='subsetSCECols.html'>subsetSCECols</a></span><span class='op'>(</span><span class='va'>sce</span>, colData <span class='op'>=</span> <span class='st'>"type != 'EmptyDroplet'"</span><span class='op'>)</span>
 <span class='va'>sce</span> <span class='op'>&lt;-</span> <span class='fu'><a href='getUMAP.html'>getUMAP</a></span><span class='op'>(</span>inSCE<span class='op'>=</span><span class='va'>sce</span>, useAssay<span class='op'>=</span><span class='st'>"counts"</span>, reducedDimName<span class='op'>=</span><span class='st'>"UMAP"</span><span class='op'>)</span>
 <span class='va'>sce</span> <span class='op'>&lt;-</span> <span class='fu'><a href='runCxds.html'>runCxds</a></span><span class='op'>(</span><span class='va'>sce</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'>Fri Oct 01 18:21:08 2021 ... Running 'cxds'</span></div><div class='input'><span class='fu'>plotCxdsResults</span><span class='op'>(</span>inSCE<span class='op'>=</span><span class='va'>sce</span>, reducedDimName<span class='op'>=</span><span class='st'>"UMAP"</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'>Mon Oct 04 18:16:47 2021 ... Running 'cxds'</span></div><div class='input'><span class='fu'>plotCxdsResults</span><span class='op'>(</span>inSCE<span class='op'>=</span><span class='va'>sce</span>, reducedDimName<span class='op'>=</span><span class='st'>"UMAP"</span><span class='op'>)</span>
 </div><div class='img'><img src='plotCxdsResults-1.png' alt='' width='700' height='433' /></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

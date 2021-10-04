@@ -54,3 +54,14 @@ details {
   padding-inline-start: 1em;
   margin-bottom: 10px;
 }
+
+pre, code {
+    background-color: #f1f1f1;
+}
+
+.caption {
+  text-align: center;
+  color: #747474;
+  font-size: 12px;
+  margin-top: 0.3em;
+}

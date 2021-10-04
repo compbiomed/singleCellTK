@@ -39,6 +39,12 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
 <li>
+  <a href="https://www.camplab.net/sctk">
+    <span class="fas fa-home fa-lg"></span>
+     
+  </a>
+</li>
+<li>
   <a href="../../articles/articles/installation.html">Installation</a>
 </li>
 <li class="dropdown">
@@ -78,10 +84,10 @@
           <a href="../../articles/articles/cmd_qc.html">QC with commandline</a>
         </li>
         <li>
-          <a href="../../articles/articles/cnsl_cellqc.html">Cell QC in R console</a>
+          <a href="../../articles/articles/cnsl_dropletqc.html">Droplet QC in R console</a>
         </li>
         <li>
-          <a href="../../articles/articles/cnsl_dropletqc.html">Droplet QC in R console</a>
+          <a href="../../articles/articles/cnsl_cellqc.html">Cell QC in R console</a>
         </li>
         <li>
           <a href="../../articles/articles/ui_qc.html">QC in the UI</a>
@@ -220,7 +226,7 @@
 
     
     
-<p>Single Cell ToolKit (SingleCellTK) enables importing data from the following pre-processing tools-</p>
+<p>Single Cell ToolKit (SingleCellTK, SCTK) enables importing data from the following pre-processing tools-</p>
 <ul>
 <li><a href="https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/what-is-cell-ranger">CellRanger</a></li>
 <li><a href="https://data.humancellatlas.org/pipelines/optimus-workflow">Optimus</a></li>
@@ -233,7 +239,7 @@
 <li>
 <a href="https://github.com/theislab/anndata">AnnData</a> object saved in HDF5 file</li>
 </ul>
-<p>The following table describes how SingleCellTK expects the inputs to be structured and passed for each import function. In all cases, SingleCellTK retains the standard output directory structure for upstream tools. All the import functions return the imported counts matrix as an <code>assay</code> in a <code>SingleCellExperiment</code> object, with associated information in respective <code>colData</code>, <code>rowData</code>, <code>reducedDims</code>, and <code>metadata</code> fields.</p>
+<p>The following table describes how SCTK expects the inputs to be structured and passed for each import function. In all cases, SCTK retains the standard output directory structure from upstream tools. All the import functions return the imported counts matrix as an <code>assay</code> in a <code>SingleCellExperiment</code> object, with associated information in respective <code>colData</code>, <code>rowData</code>, <code>reducedDims</code>, and <code>metadata</code> fields.</p>
 <p><img src="qc_inputShell.png" alt="QC data format"><br></p>
 <p>Detailed information on function parameters and defaults are available in the <a href="../../reference/index.html"><em>Reference</em></a> section. Please also refer to <a href="cmd_qc.html#parameters-1"><em>Commandline Quality Control</em> documentation</a> for the detail of other commandline input arguments.</p>
   </div>
