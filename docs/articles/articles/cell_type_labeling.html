@@ -207,7 +207,7 @@
 
       
 
-      </header><script src="cell_type_labeling_files/header-attrs-2.7/header-attrs.js"></script><div class="row">
+      </header><script src="cell_type_labeling_files/header-attrs-2.9/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Cell Type Labeling</h1>
@@ -226,8 +226,9 @@
 <div id="introduction" class="section level2">
 <h2 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h2>
-<p>The methods for labeling the cell type for single-cell RNA-sequencing (scRNAseq) data varies a lot. Including using a labeled reference dataset as the training set and classifying the test data by cluster or individual cells, or using a prior knowledge of the projection between marker gene sets and specific cell types and labeling the cells basing on detected markers. Currently, SCTK only supports using SingleR<span class="citation">[1]</span> for cell type labeling, which works with the first approach as previously mentioned. We are planning to add more methods that annotate cells in various ways.</p>
-<p>SingleR is an automatic annotation method for scRNAseq data. Given a reference dataset of samples (single-cell or bulk) with known labels, it labels new cells from a test dataset based on similarity to the reference. The only prerequisite for using this method is a labeled reference dataset, and we have already enabled automated caching of online datasets, while users can always use their own data in the console analysis.</p>
+<p>The methods for labeling the cell type for single-cell RNA-sequencing (scRNAseq) data varies a lot. Including using a labeled reference dataset as the training set and classifying the test data by cluster or individual cells, or using a prior knowledge of the projection between marker gene sets and specific cell types and labeling the cells basing on detected markers. Currently, SCTK only supports using <code>SingleR</code><span class="citation">[1]</span> for cell type labeling, which works with the first approach as previously mentioned. We are planning to add more methods that annotate cells in various ways.</p>
+<p><code>SingleR</code> is an automatic annotation method for scRNAseq data. Given a reference dataset of samples (single-cell or bulk) with known labels, it labels new cells from a test dataset based on similarity to the reference. The only prerequisite for using this method is a labeled reference dataset, and we have already enabled automated caching of online datasets, while users can always use their own data in the console analysis.</p>
+<p>To view detailed instructions on how to use this method, please select ‘Interactive Analysis’ for using <code>SingleR</code> in shiny application or ‘Console Analysis’ for using this method on R console from the tabs below: <br></p>
 </div>
 <div id="workflow-guide" class="section level2">
 <h2 class="hasAnchor">

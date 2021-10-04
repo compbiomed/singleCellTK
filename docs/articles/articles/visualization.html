@@ -207,7 +207,7 @@
 
       
 
-      </header><script src="visualization_files/header-attrs-2.7/header-attrs.js"></script><div class="row">
+      </header><script src="visualization_files/header-attrs-2.9/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Visualization</h1>
@@ -227,6 +227,7 @@
 <h2 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h2>
 <p>Single Cell Toolkit (singleCellTK, SCTK) allows users to create various types of plots, including scatter plot, bar plot, violin plot and heatmap. This documentation will focus on the first three types of plot. For heatmap generation, please refer to the <a href="heatmap.html">Heatmap Documentation</a>.</p>
+<p>To view detailed instructions on how to generate these visualizations, please select ‘Interactive Analysis’ for shiny application or ‘Console Analysis’ for using these visualizations on R console from the tabs below: <br></p>
 </div>
 <div id="workflow-guide" class="section level2">
 <h2 class="hasAnchor">
@@ -259,6 +260,10 @@
 </ol>
 <p><strong>Step Specific Introduction</strong></p>
 <p>The procedure of creating a single plot in Cell Viewer can be generalized as three steps: <strong>axis selection</strong>, <strong>color specification</strong>, and <strong>peripheral setting</strong>.</p>
+ <style>
+div.offset { background-color:inherit ; border-radius: 5px; margin-left: 15px;}
+</style>
+<div class="offset">
 <details><summary><b>Axis</b></summary><p><img src="ui_screenshots/cellViewer/ui_cellViewer_coord.png" alt="axis"><br></p>
 <p>In <strong>“scatter plot”</strong> tab, the X-/Y-axis can be fully customized, while quick access for existing dimension reduction results will also be listed. “Fully customized” means an axis can be <strong>a dimension of a dimension reduction</strong>, <strong>the expression of a feature from an assay</strong>, or <strong>one of the cell annotations</strong>. In <strong>“bar plot”</strong> and <strong>“violin plot”</strong> tab, the X-axis is limited to cell annotation level, while the Y-axis can still be fully customized.</p>
 </details><details><summary><b>Color</b></summary><p><img src="ui_screenshots/cellViewer/ui_cellViewer_color.png" alt="color"><br></p>
@@ -266,6 +271,7 @@
 </details><details><summary><b>Other Settings</b></summary><p><img src="ui_screenshots/cellViewer/ui_cellViewer_other.png" alt="others"><br></p>
 <p>Besides the informative settings, Cell Viewer gives users the control on title, legend, axis labels, dots and etc., as shown in the screenshot above and can be freely explored.</p>
 </details>
+</div>
 </div>
 
 <div id="console" class="tabcontent">
@@ -292,17 +298,12 @@
 <span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span><span class="va">sce</span><span class="op">$</span><span class="va">Seurat_louvain_Resolution0.8</span><span class="op">)</span></code></pre></div>
 <pre><code>## 
 ##   0   1   2   3   4   5   6   7   8   9  10 
-## 550 486 349 303 257 236 162 158 149  36  14</code></pre>
+## 524 493 349 297 256 236 181 159 155  36  14</code></pre>
 </details><div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/seuratRunUMAP.html">seuratRunUMAP</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span>
-<span class="fu"><a href="../../reference/plotSCEDimReduceColData.html">plotSCEDimReduceColData</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>,                             <span class="co"># Specify the object first</span>
-                        reducedDimName <span class="op">=</span> <span class="st">"seuratUMAP"</span>,            <span class="co"># Specify the dimension/coordinate</span>
-                        colorBy <span class="op">=</span> <span class="st">"Seurat_louvain_Resolution0.8"</span>, <span class="co"># Specify colData (cell annotation)</span>
-                        legendTitle <span class="op">=</span> <span class="st">"Seurat Cluster"</span>,           <span class="co"># (Optional)</span>
-                        title <span class="op">=</span> <span class="st">"Clustering on UMAP"</span>              <span class="co"># (Optional)       </span>
-                        <span class="op">)</span></code></pre></div>
+<span class="fu"><a href="../../reference/plotSCEDimReduceColData.html">plotSCEDimReduceColData</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, reducedDimName <span class="op">=</span> <span class="st">"seuratUMAP"</span>, colorBy <span class="op">=</span> <span class="st">"Seurat_louvain_Resolution0.8"</span>, legendTitle <span class="op">=</span> <span class="st">"Seurat Cluster"</span>, title <span class="op">=</span> <span class="st">"Clustering on UMAP"</span><span class="op">)</span></code></pre></div>
 <p><img src="visualization_files/figure-html/pbmc_cluster_plot-1.png" width="700"></p>
-<p>As users might have tried, the essential input are <code>inSCE</code>, <code>reducedDimName</code>, and <code>colorBy</code>. Other arguments are all optional, but users can explore them to best clarify their intension.</p>
+<p>As users might have tried, the essential input are <code>inSCE</code>, <code>reducedDimName</code>, and <code>colorBy</code>. Other arguments are all optional, but users can explore them to best clarify their intention.</p>
 <p>Additionally but occasionally, <code>shape</code> argument is also useful for double level annotating.</p>
 <p>In SCTK, there are plotting functions that are aimed for other attributes other than <code>colData</code> and <code>reducedDim</code>. For example, <code><a href="../../reference/plotSCEDimReduceFeatures.html">plotSCEDimReduceFeatures()</a></code> focuses on <code>reducedDim</code> and feature expression, In most of base SCTK plotting functions, which starts with “plotSCE,” users can easily figure out the usage by checking the function manual and see which arguments are required.</p>
 </details><details><summary><b>Example 2: Plots with multiple samples</b></summary><p>When there are multiple samples in one dataset and it is necessary to have separation on them, users can invoke <code>sample</code> or <code>groupby</code> argument in most of base SCTK plotting functions.</p>
@@ -311,28 +312,16 @@
 <span class="va">pbmc3k</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/dedupRowNames.html">dedupRowNames</a></span><span class="op">(</span><span class="va">pbmc3k</span><span class="op">)</span>
 <span class="va">pbmc4k</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/importExampleData.html">importExampleData</a></span><span class="op">(</span><span class="st">"pbmc4k"</span><span class="op">)</span>
 <span class="va">pbmc4k</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/dedupRowNames.html">dedupRowNames</a></span><span class="op">(</span><span class="va">pbmc4k</span><span class="op">)</span>
-<span class="va">sceList</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>pbmc3k <span class="op">=</span> <span class="va">pbmc3k</span>, 
-                pbmc4k <span class="op">=</span> <span class="va">pbmc4k</span><span class="op">)</span>
+<span class="va">sceList</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>pbmc3k <span class="op">=</span> <span class="va">pbmc3k</span>, pbmc4k <span class="op">=</span> <span class="va">pbmc4k</span><span class="op">)</span>
 <span class="co"># By combining, a "sample" colData annotation is set by default with the </span>
 <span class="co"># names of sceList.</span>
-<span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/combineSCE.html">combineSCE</a></span><span class="op">(</span>sceList <span class="op">=</span> <span class="va">sceList</span>, 
-                   by.r <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="fu">rowData</span><span class="op">(</span><span class="va">pbmc3k</span><span class="op">)</span><span class="op">)</span>, 
-                   by.c <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="fu">colData</span><span class="op">(</span><span class="va">pbmc3k</span><span class="op">)</span><span class="op">)</span>, 
-                   combined <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
+<span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/combineSCE.html">combineSCE</a></span><span class="op">(</span>sceList <span class="op">=</span> <span class="va">sceList</span>, by.r <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="fu">rowData</span><span class="op">(</span><span class="va">pbmc3k</span><span class="op">)</span><span class="op">)</span>, by.c <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="fu">colData</span><span class="op">(</span><span class="va">pbmc3k</span><span class="op">)</span><span class="op">)</span>, combined <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
 <span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/runPerCellQC.html">runPerCellQC</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span>
-<span class="fu"><a href="../../reference/plotSCEViolinColData.html">plotSCEViolinColData</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, 
-                     coldata <span class="op">=</span> <span class="st">"total"</span>, 
-                     groupBy <span class="op">=</span> <span class="st">"sample"</span>, 
-                     ylab <span class="op">=</span> <span class="st">"Total counts"</span>
-                     <span class="op">)</span></code></pre></div>
+<span class="fu"><a href="../../reference/plotSCEViolinColData.html">plotSCEViolinColData</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, coldata <span class="op">=</span> <span class="st">"total"</span>, groupBy <span class="op">=</span> <span class="st">"sample"</span>, ylab <span class="op">=</span> <span class="st">"Total counts"</span><span class="op">)</span></code></pre></div>
 <p><img src="visualization_files/figure-html/groupby-1.png" width="700"></p>
 <p>Otherwise, if users need individual plot for each of the sample, or indeed make individual plots by any categorical groupingon cells, use <code>sample</code> argument.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../../reference/plotSCEViolinColData.html">plotSCEViolinColData</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, 
-                     coldata <span class="op">=</span> <span class="st">"total"</span>, 
-                     sample <span class="op">=</span> <span class="va">sce</span><span class="op">$</span><span class="va">sample</span>,
-                     ylab <span class="op">=</span> <span class="st">"Total counts"</span>
-                     <span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="../../reference/plotSCEViolinColData.html">plotSCEViolinColData</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, coldata <span class="op">=</span> <span class="st">"total"</span>, sample <span class="op">=</span> <span class="va">sce</span><span class="op">$</span><span class="va">sample</span>, ylab <span class="op">=</span> <span class="st">"Total counts"</span><span class="op">)</span></code></pre></div>
 <p><img src="visualization_files/figure-html/sample-1.png" width="700"><img src="visualization_files/figure-html/sample-2.png" width="700"></p>
 </details>
 </div>

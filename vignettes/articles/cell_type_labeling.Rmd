@@ -22,9 +22,12 @@ doEval = FALSE
 
 ## Introduction
 
-The methods for labeling the cell type for single-cell RNA-sequencing (scRNAseq) data varies a lot. Including using a labeled reference dataset as the training set and classifying the test data by cluster or individual cells, or using a prior knowledge of the projection between marker gene sets and specific cell types and labeling the cells basing on detected markers. Currently, SCTK only supports using SingleR[@Aran2019] for cell type labeling, which works with the first approach as previously mentioned. We are planning to add more methods that annotate cells in various ways.  
+The methods for labeling the cell type for single-cell RNA-sequencing (scRNAseq) data varies a lot. Including using a labeled reference dataset as the training set and classifying the test data by cluster or individual cells, or using a prior knowledge of the projection between marker gene sets and specific cell types and labeling the cells basing on detected markers. Currently, SCTK only supports using `SingleR`[@Aran2019] for cell type labeling, which works with the first approach as previously mentioned. We are planning to add more methods that annotate cells in various ways.  
 
-SingleR is an automatic annotation method for scRNAseq data. Given a reference dataset of samples (single-cell or bulk) with known labels, it labels new cells from a test dataset based on similarity to the reference. The only prerequisite for using this method is a labeled reference dataset, and we have already enabled automated caching of online datasets, while users can always use their own data in the console analysis.  
+`SingleR` is an automatic annotation method for scRNAseq data. Given a reference dataset of samples (single-cell or bulk) with known labels, it labels new cells from a test dataset based on similarity to the reference. The only prerequisite for using this method is a labeled reference dataset, and we have already enabled automated caching of online datasets, while users can always use their own data in the console analysis.  
+
+To view detailed instructions on how to use this method, please select 'Interactive Analysis' for using `SingleR` in shiny application or 'Console Analysis' for using this method on R console from the tabs below: <br>
+
 
 ## Workflow Guide
 
@@ -47,7 +50,7 @@ Users should enter the page as instructed in the screenshot above, by clicking o
 
 ![panel](ui_screenshots/cell_type_labeling/panel.jpg)\
 ![panel2](ui_screenshots/cell_type_labeling/panel2.jpg)\
-There are 6 basic widgets that users need to work with before reaching to the result. 
+There are 6 basic widgets that users need to work with before reaching to the result:
 
 1. **Select assay** - Select the feature expression matrix for the comparison against the reference dataset. This matrix has to be a log-normalized assay. [(How to normalize an assay with SCTK)](cnsl_normalization.html)
 2. **Choose a reference** - Select the curated online reference dataset. There are multiple options that cover the need of analyzing data from human and mouse and from different tissues. The link at the bottom will pop users to the detail of the reference, which is currently chosen. 
@@ -63,7 +66,7 @@ The result will not be pop out directly, but three levels of cell annotation wil
 
 **Visualization**
 
-SCTK does not have a quick visualization at this point. But users can go to the [CellViewer](visualization.html) to create a scatter plot using the pre-generated embedding and color it with the cell type labeling result.  
+SCTK does not have a quick visualization at this point. But users can go to the [CellViewer](visualization.html) tab to create a scatter plot using the pre-generated embedding and color it with the cell type labeling result.  
 
 ````{=html}
 </div>

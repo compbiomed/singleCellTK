@@ -12,7 +12,7 @@ plotRunPerCellQCResults(
   violin = TRUE,
   boxplot = FALSE,
   dots = TRUE,
-  dotSize = 1,
+  dotSize = 0.5,
   summary = "median",
   summaryTextSize = 3,
   baseSize = 15,
@@ -54,7 +54,7 @@ Default FALSE.}
 \item{dots}{Boolean. If TRUE, will plot dots for each violin plot.
 Default TRUE.}
 
-\item{dotSize}{Size of dots. Default 1.}
+\item{dotSize}{Size of dots. Default 0.5.}
 
 \item{summary}{Adds a summary statistic, as well as a crossbar to the
 violin plot. Options are "mean" or "median". Default "median".}
