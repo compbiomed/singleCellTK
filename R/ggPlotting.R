@@ -29,7 +29,7 @@
 #'  If more than one value, will bin numeric values using values as a cut point.
 #' @param binLabel Character vector. Labels for the bins created by the `bin` parameter.
 #'  Default NULL.
-#' @param dotSize Size of dots. Default 2.
+#' @param dotSize Size of dots. Default 0.5.
 #' @param transparency Transparency of the dots, values will be 0-1. Default 1.
 #' @param colorScale Vector. Needs to be same length as the
 #'  number of unique levels of `colorBy`. Will be used only if
@@ -77,7 +77,7 @@
                        dim2 = NULL,
                        bin = NULL,
                        binLabel = NULL,
-                       dotSize = 2,
+                       dotSize = 0.5,
                        transparency = 1,
                        colorScale = NULL,
                        colorLow = "white",
@@ -332,7 +332,7 @@
 #'  If more than one value, will bin numeric values using values as a cut point.
 #' @param binLabel Character vector. Labels for the bins created by the `bin` parameter.
 #'  Default NULL.
-#' @param dotSize Size of dots. Default 2.
+#' @param dotSize Size of dots. Default 0.5.
 #' @param transparency Transparency of the dots, values will be 0-1. Default 1.
 #' @param colorScale Vector. Needs to be same length as the
 #'  number of unique levels of colorBy. Will be used only if
@@ -392,7 +392,7 @@ plotSCEDimReduceColData <- function(inSCE,
                                     dim2 = NULL,
                                     bin = NULL,
                                     binLabel = NULL,
-                                    dotSize = 2,
+                                    dotSize = 0.5,
                                     transparency = 1,
                                     colorScale = NULL,
                                     colorLow = "white",
@@ -479,7 +479,7 @@ plotSCEDimReduceColData <- function(inSCE,
 #'  If more than one value, will bin numeric values using values as a cut point.
 #' @param binLabel Character vector. Labels for the bins created by the `bin` parameter.
 #'  Default NULL.
-#' @param dotSize Size of dots. Default 2.
+#' @param dotSize Size of dots. Default 0.5.
 #' @param transparency Transparency of the dots, values will be 0-1. Default 1.
 #' @param colorLow Character. A color available from `colors()`.
 #'  The color will be used to signify the lowest values on the scale.
@@ -526,7 +526,7 @@ plotSCEDimReduceFeatures <- function(inSCE,
                                      dim2 = NULL,
                                      bin = NULL,
                                      binLabel = NULL,
-                                     dotSize = 2,
+                                     dotSize = 0.5,
                                      transparency = 1,
                                      colorLow = "white",
                                      colorMid = "gray",
@@ -632,7 +632,7 @@ plotSCEDimReduceFeatures <- function(inSCE,
 #'  If more than one value, will bin numeric values using values as a cut point.
 #' @param binLabel Character vector. Labels for the bins created by the `bin` parameter.
 #'  Default NULL.
-#' @param dotSize Size of dots. Default 2.
+#' @param dotSize Size of dots. Default 0.5.
 #' @param transparency Transparency of the dots, values will be 0-1. Default 1.
 #' @param colorLow Character. A color available from `colors()`.
 #'  The color will be used to signify the lowest values on the scale.
@@ -680,7 +680,7 @@ plotSCEScatter <- function(inSCE,
                            dim2 = NULL,
                            bin = NULL,
                            binLabel = NULL,
-                           dotSize = 2,
+                           dotSize = 0.5,
                            transparency = 1,
                            colorLow = "white",
                            colorMid = "gray",
@@ -780,7 +780,7 @@ plotSCEScatter <- function(inSCE,
 #'  Can be overwritten by titleSize, axisSize, and axisLabelSize.
 #' @param axisSize Size of x/y-axis ticks. Default NULL.
 #' @param axisLabelSize Size of x/y-axis labels. Default NULL.
-#' @param dotSize Size of dots. Default 1.
+#' @param dotSize Size of dots. Default 0.5.
 #' @param transparency Transparency of the dots, values will be 0-1. Default 1.
 #' @param defaultTheme Removes grid in plot and sets axis title size to 10
 #'  when TRUE. Default TRUE.
@@ -808,7 +808,7 @@ plotSCEScatter <- function(inSCE,
                       baseSize = 12,
                       axisSize = NULL,
                       axisLabelSize = NULL,
-                      dotSize = 1,
+                      dotSize = 0.5,
                       transparency = 1,
                       defaultTheme = TRUE,
                       gridLine = FALSE,
@@ -954,7 +954,7 @@ plotSCEScatter <- function(inSCE,
 #'  Can be overwritten by titleSize, axisSize, and axisLabelSize.
 #' @param axisSize Size of x/y-axis ticks. Default NULL.
 #' @param axisLabelSize Size of x/y-axis labels. Default NULL.
-#' @param dotSize Size of dots. Default 1.
+#' @param dotSize Size of dots. Default 0.5.
 #' @param transparency Transparency of the dots, values will be 0-1. Default 1.
 #' @param defaultTheme Removes grid in plot and sets axis title size to 10
 #'  when TRUE. Default TRUE.
@@ -989,7 +989,7 @@ plotSCEViolinColData <- function(inSCE,
                                  baseSize = 12,
                                  axisSize = NULL,
                                  axisLabelSize = NULL,
-                                 dotSize = 1,
+                                 dotSize = 0.5,
                                  transparency = 1,
                                  defaultTheme = TRUE,
                                  gridLine = FALSE,
@@ -1116,7 +1116,7 @@ plotSCEViolinColData <- function(inSCE,
 #' @param ylab Character vector. Label for y-axis. Default NULL.
 #' @param axisSize Size of x/y-axis ticks. Default 10.
 #' @param axisLabelSize Size of x/y-axis labels. Default 10.
-#' @param dotSize Size of dots. Default 1.
+#' @param dotSize Size of dots. Default 0.5.
 #' @param transparency Transparency of the dots, values will be 0-1. Default 1.
 #' @param defaultTheme Removes grid in plot and sets axis title size to 10
 #'  when TRUE. Default TRUE.
@@ -1151,7 +1151,7 @@ plotSCEViolinAssayData <- function(inSCE,
                                    ylab = NULL,
                                    axisSize = 10,
                                    axisLabelSize = 10,
-                                   dotSize = 1,
+                                   dotSize = 0.5,
                                    transparency = 1,
                                    defaultTheme = TRUE,
                                    gridLine = FALSE,
@@ -1297,7 +1297,7 @@ plotSCEViolinAssayData <- function(inSCE,
 #' @param ylab Character vector. Label for y-axis. Default NULL.
 #' @param axisSize Size of x/y-axis ticks. Default 10.
 #' @param axisLabelSize Size of x/y-axis labels. Default 10.
-#' @param dotSize Size of dots. Default 1.
+#' @param dotSize Size of dots. Default 0.5.
 #' @param transparency Transparency of the dots, values will be 0-1. Default 1.
 #' @param defaultTheme Removes grid in plot and sets axis title size to 10
 #'  when TRUE. Default TRUE.
@@ -1332,7 +1332,7 @@ plotSCEViolin <- function(inSCE,
                           ylab = NULL,
                           axisSize = 10,
                           axisLabelSize = 10,
-                          dotSize = 1,
+                          dotSize = 0.5,
                           transparency = 1,
                           defaultTheme = TRUE,
                           gridLine = FALSE,
@@ -2010,7 +2010,7 @@ plotSCEDensity <- function(inSCE,
 #'  runEmptyDrops as "Empty Droplet" or "Putative Cell". Default 0.01.
 #' @param defaultTheme Removes grid in plot and sets axis title size to 10
 #'  when TRUE. Default TRUE.
-#' @param dotSize Size of dots. Default 1.
+#' @param dotSize Size of dots. Default 0.5.
 #' @param title Title of plot. Default NULL.
 #' @param titleSize Size of title of plot. Default 18.
 #' @param xlab Character vector. Label for x-axis. Default NULL.
@@ -2041,7 +2041,7 @@ plotEmptyDropsScatter <- function(inSCE,
                                   sample = NULL,
                                   fdrCutoff = 0.01,
                                   defaultTheme = TRUE,
-                                  dotSize = 1,
+                                  dotSize = 0.5,
                                   title = NULL,
                                   titleSize = 18,
                                   xlab = NULL,
@@ -2167,7 +2167,7 @@ plotEmptyDropsScatter <- function(inSCE,
 #'  Default NULL.
 #' @param defaultTheme Removes grid in plot and sets axis title size to 10
 #'  when TRUE. Default TRUE.
-#' @param dotSize Size of dots. Default 1.
+#' @param dotSize Size of dots. Default 0.5.
 #' @param title Title of plot. Default NULL.
 #' @param titleSize Size of title of plot. Default 18.
 #' @param xlab Character vector. Label for x-axis. Default NULL.
@@ -2191,7 +2191,7 @@ plotEmptyDropsScatter <- function(inSCE,
 plotBarcodeRankScatter <- function(inSCE,
                                    sample = NULL,
                                    defaultTheme = TRUE,
-                                   dotSize = 1,
+                                   dotSize = 0.5,
                                    title = NULL,
                                    titleSize = 18,
                                    xlab = NULL,
@@ -2300,7 +2300,7 @@ plotBarcodeRankScatter <- function(inSCE,
 #' @param ylab Character vector. Label for y-axis. Default NULL.
 #' @param axisSize Size of x/y-axis ticks. Default 10.
 #' @param axisLabelSize Size of x/y-axis labels. Default 10.
-#' @param dotSize Size of dots. Default 1.
+#' @param dotSize Size of dots. Default 0.5.
 #' @param transparency Transparency of the dots, values will be 0-1. Default 1.
 #' @param defaultTheme Removes grid in plot and sets axis title size to 10
 #'  when TRUE. Default TRUE.
@@ -2320,7 +2320,7 @@ plotBarcodeRankScatter <- function(inSCE,
                    ylab = NULL,
                    axisSize = 10,
                    axisLabelSize = 10,
-                   dotSize = 1,
+                   dotSize = 0.5,
                    transparency = 1,
                    defaultTheme = TRUE,
                    gridLine = FALSE,
@@ -2425,7 +2425,7 @@ plotBarcodeRankScatter <- function(inSCE,
 #' @param ylab Character vector. Label for y-axis. Default NULL.
 #' @param axisSize Size of x/y-axis ticks. Default 10.
 #' @param axisLabelSize Size of x/y-axis labels. Default 10.
-#' @param dotSize Size of dots. Default 1.
+#' @param dotSize Size of dots. Default 0.5.
 #' @param transparency Transparency of the dots, values will be 0-1. Default 1.
 #' @param defaultTheme Removes grid in plot and sets axis title size to 10
 #'  when TRUE. Default TRUE.
@@ -2454,7 +2454,7 @@ plotSCEBarColData <- function(inSCE,
                               ylab = NULL,
                               axisSize = 10,
                               axisLabelSize = 10,
-                              dotSize = 1,
+                              dotSize = 0.5,
                               transparency = 1,
                               defaultTheme = TRUE,
                               gridLine = FALSE,
@@ -2531,7 +2531,7 @@ plotSCEBarColData <- function(inSCE,
 #' @param ylab Character vector. Label for y-axis. Default NULL.
 #' @param axisSize Size of x/y-axis ticks. Default 10.
 #' @param axisLabelSize Size of x/y-axis labels. Default 10.
-#' @param dotSize Size of dots. Default 1.
+#' @param dotSize Size of dots. Default 0.5.
 #' @param transparency Transparency of the dots, values will be 0-1. Default 1.
 #' @param defaultTheme Removes grid in plot and sets axis title size to 10
 #'  when TRUE. Default TRUE.
@@ -2562,7 +2562,7 @@ plotSCEBarAssayData <- function(inSCE,
                                 ylab = NULL,
                                 axisSize = 10,
                                 axisLabelSize = 10,
-                                dotSize = 1,
+                                dotSize = 0.5,
                                 transparency = 1,
                                 defaultTheme = TRUE,
                                 gridLine = FALSE,
