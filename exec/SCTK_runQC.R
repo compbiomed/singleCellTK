@@ -235,10 +235,6 @@ if (numCores > 1) {
         }
         reference <- mito_info[[1]][1]
         id <- mito_info[[1]][2]
-        print("the reference is ")
-        print(reference)
-        print("the id is")
-        print(id)
 
         if ((!reference %in% c("human", "mouse")) | (!id %in% c("symbol", "entrez", "ensembl", "ensemblTranscriptID"))) {
             warning("The --MitoType ", MitoType, " is not correct or supported. Please double check the documentation. Ignore --MitoImport=TRUE now.")
@@ -661,24 +657,34 @@ for(i in seq_along(process)) {
 }
 
 if (!isTRUE(split)) {
+
     if (length(sample) > 1) {
         samplename <- CombinedSamplesName #paste(sample, collapse="-")
         subTitle <- paste("SCTK QC HTML report for sample", samplename)
     }
 
     if ((dataType == "Both") | (dataType == "Droplet" & isTRUE(detectCell))) {
+
         by.r <- NULL
         by.c <- Reduce(intersect, lapply(dropletSCE_list, function(x) { colnames(colData(x))}))
         dropletSCE <- combineSCE(dropletSCE_list, by.r, by.c, combined = TRUE)
         names(metadata(dropletSCE)$runBarcodeRanksMetaOutput) <- sample
 
-        by.c <- Reduce(intersect, lapply(cellSCE_list, function(x) { colnames(colData(x))}))
-        cellSCE <- combineSCE(cellSCE_list, by.r, by.c, combined = TRUE)
-        for (name in names(metadata(cellSCE))) {
-            if (name != "assayType") {
-                names(metadata(cellSCE)[[name]]) <- sample
+        if (length(sample) == 1) {
+            ### one sample. Treat it like split == TRUE
+            cellSCE <- cellSCE_list[[1]]
+            for (name in names(metadata(cellSCE))) {
+              metadata(cellSCE)[[name]] <- list(metadata(cellSCE)[[name]])
+              names(metadata(cellSCE)[[name]]) <- samplename
             }
-
+        } else {
+            by.c <- Reduce(intersect, lapply(cellSCE_list, function(x) { colnames(colData(x))}))
+            cellSCE <- combineSCE(cellSCE_list, by.r, by.c, combined = TRUE)
+            for (name in names(metadata(cellSCE))) {
+                if (name != "assayType") {
+                    names(metadata(cellSCE)[[name]]) <- sample
+                }
+            }            
         }
 
         exportSCE(inSCE = dropletSCE, samplename = samplename, directory = directory, type = "Droplets", format=formats)
@@ -716,15 +722,25 @@ if (!isTRUE(split)) {
     }
 
     if (dataType == "Cell") {
-        by.r <- NULL
-        by.c <- Reduce(intersect, lapply(cellSCE_list, function(x) { colnames(colData(x))}))
 
-        cellSCE <- combineSCE(cellSCE_list, by.r, by.c, combined = TRUE)
-        for (name in names(metadata(cellSCE))) {
-            if (name != "assayType") { ### not important and hard to force name. Skipped
-                names(metadata(cellSCE)[[name]]) <- sample
+        if (length(sample) == 1) {
+            ### one sample. Treat it like split == TRUE
+            cellSCE <- cellSCE_list[[1]]
+            for (name in names(metadata(cellSCE))) {
+              metadata(cellSCE)[[name]] <- list(metadata(cellSCE)[[name]])
+              names(metadata(cellSCE)[[name]]) <- samplename
             }
+        } else {
+            by.r <- NULL
+            by.c <- Reduce(intersect, lapply(cellSCE_list, function(x) { colnames(colData(x))}))
+            cellSCE <- combineSCE(cellSCE_list, by.r, by.c, combined = TRUE)
+            for (name in names(metadata(cellSCE))) {
+                if (name != "assayType") { ### not important and hard to force name. Skipped
+                    names(metadata(cellSCE)[[name]]) <- sample
+                }
+            }            
         }
+
         exportSCE(inSCE = cellSCE, samplename = samplename, directory = directory, type = "Cells", format=formats)
         if ("FlatFile" %in% formats) {
             if ("HTAN" %in% formats) {
