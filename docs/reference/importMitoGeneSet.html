@@ -83,6 +83,12 @@ downstream quality control and analysis functions in singleCellTK." />
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
+  <a href="https://www.camplab.net/sctk">
+    <span class="fas fa-home fa-lg"></span>
+     
+  </a>
+</li>
+<li>
   <a href="../articles/articles/installation.html">Installation</a>
 </li>
 <li class="dropdown">
@@ -99,7 +105,7 @@ downstream quality control and analysis functions in singleCellTK." />
           <a href="../articles/articles/import_data.html">Import Data</a>
         </li>
         <li>
-          <a href="../articles/articles/cmd_import_scRNAseq_data_as_SCE.html">Import Data in Commandline</a>
+          <a href="../articles/articles/cmd_import_scRNAseq_data_as_SCE.html">Import Data for Commandline QC</a>
         </li>
         <li>
           <a href="../articles/articles/import_genesets.html">Import Gene Sets</a>
@@ -122,10 +128,10 @@ downstream quality control and analysis functions in singleCellTK." />
           <a href="../articles/articles/cmd_qc.html">QC with commandline</a>
         </li>
         <li>
-          <a href="../articles/articles/cnsl_cellqc.html">Cell QC in R console</a>
+          <a href="../articles/articles/cnsl_dropletqc.html">Droplet QC in R console</a>
         </li>
         <li>
-          <a href="../articles/articles/cnsl_dropletqc.html">Droplet QC in R console</a>
+          <a href="../articles/articles/cnsl_cellqc.html">Cell QC in R console</a>
         </li>
         <li>
           <a href="../articles/articles/ui_qc.html">QC in the UI</a>
@@ -280,8 +286,8 @@ downstream quality control and analysis functions in <a href='singleCellTK.html'
     </tr>
     <tr>
       <th>id</th>
-      <td><p>Types of gene id. Now it supports "symbol", "entrez", "ensemble"
-and "ensemble_transcriptID".</p></td>
+      <td><p>Types of gene id. Now it supports "symbol", "entrez", "ensembl"
+and "ensemblTranscriptID".</p></td>
     </tr>
     <tr>
       <th>by</th>
@@ -331,7 +337,7 @@ analysis functions such as <a href='runCellQC.html'>runCellQC</a>.</p>
     <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>scExample</span><span class='op'>)</span>
 <span class='va'>sce</span> <span class='op'>&lt;-</span> <span class='fu'>importMitoGeneSet</span><span class='op'>(</span>inSCE <span class='op'>=</span> <span class='va'>sce</span>,
                          reference <span class='op'>=</span> <span class='st'>"human"</span>,
-                         id <span class='op'>=</span> <span class='st'>"ensemble"</span>,
+                         id <span class='op'>=</span> <span class='st'>"ensembl"</span>,
                          collectionName <span class='op'>=</span> <span class='st'>"human_mito"</span>,
                          by <span class='op'>=</span> <span class='st'>"rownames"</span><span class='op'>)</span>
 </div></pre>
@@ -346,7 +352,7 @@ analysis functions such as <a href='runCellQC.html'>runCellQC</a>.</p>
 
       <footer>
       <div class="copyright">
-  <p>Developed by David Jenkins, Vidya Akavoor, Salam Alabdullatif, Shruthi Bandyadka, Emma Briars, Xinyun Cao, Sebastian Carrasco Pro, Tyler Faits, Rui Hong, Mohammed Muzamil Khan, Yusuke Koga, Anastasia Leshchyk, Irzam Sarfraz, Yichen Wang, Zhe Wang, W. Evan Johnson, Joshua David Campbell.</p>
+  <p>Developed by Yichen Wang, Irzam Sarfraz, Rui Hong, Yusuke Koga, Salam Alabdullatif, David Jenkins, Vidya Akavoor, Xinyun Cao, Shruthi Bandyadka, Anastasia Leshchyk, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, W. Evan Johnson, Joshua David Campbell.</p>
 </div>
 
 <div class="pkgdown">

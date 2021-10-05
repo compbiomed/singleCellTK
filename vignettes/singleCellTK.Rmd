@@ -1,36 +1,34 @@
 ---
 title: "Introduction to singleCellTK"
 author:
-- name: David Jenkins
+- name: Yichen Wang
   affiliation: 
   - The Section of Computational Biomedicine, Boston University School of Medicine, Boston, MA
-  - Program in Bioinformatics, Boston University, Boston, MA
-- name: Tyler Faits
+- name: Irzam Sarfraz
   affiliation: 
-  - The Section of Computational Biomedicine, Boston University School of Medicine, Boston, MA
-  - Program in Bioinformatics, Boston University, Boston, MA
+  - The Section of Computational Biomedicine, Boston University School of Medicine, Boston, MA  
 - name: Rui Hong
   affiliation: 
   - The Section of Computational Biomedicine, Boston University School of Medicine, Boston, MA
   - Program in Bioinformatics, Boston University, Boston, MA
-- name: Zhe Wang
+- name: Yusuke Koga
   affiliation: 
   - The Section of Computational Biomedicine, Boston University School of Medicine, Boston, MA
   - Program in Bioinformatics, Boston University, Boston, MA
 - name: Salam Abdullatif
   affiliation: 
   - The Section of Computational Biomedicine, Boston University School of Medicine, Boston, MA
-- name: Vidya Akapoor
-  affiliation: 
-  - Rafik B. Hariri Institute for Computing and Computational Science and Engineering, Boston University, Boston, MA
-- name: Shruthi Bandyadka
+- name: David Jenkins
   affiliation: 
   - The Section of Computational Biomedicine, Boston University School of Medicine, Boston, MA
   - Program in Bioinformatics, Boston University, Boston, MA
+- name: Vidya Akavoor
+  affiliation: 
+  - Rafik B. Hariri Institute for Computing and Computational Science and Engineering, Boston University, Boston, MA
 - name: Xinyun Cao
   affiliation: 
   - Rafik B. Hariri Institute for Computing and Computational Science and Engineering, Boston University, Boston, MA
-- name: Yusuke Koga
+- name: Shruthi Bandyadka
   affiliation: 
   - The Section of Computational Biomedicine, Boston University School of Medicine, Boston, MA
   - Program in Bioinformatics, Boston University, Boston, MA
@@ -38,12 +36,18 @@ author:
   affiliation: 
   - The Section of Computational Biomedicine, Boston University School of Medicine, Boston, MA
   - Program in Bioinformatics, Boston University, Boston, MA
-- name: Irzam Sarfraz
+- name: Tyler Faits
   affiliation: 
   - The Section of Computational Biomedicine, Boston University School of Medicine, Boston, MA
-- name: Yichen Wang
+  - Program in Bioinformatics, Boston University, Boston, MA
+- name: Mohammed Muzamil Khan
+  affiliation:
+  - The Section of Computational Biomedicine, Boston University School of Medicine, Boston, MA
+  - Program in Bioinformatics, Boston University, Boston, MA
+- name: Zhe Wang
   affiliation: 
   - The Section of Computational Biomedicine, Boston University School of Medicine, Boston, MA
+  - Program in Bioinformatics, Boston University, Boston, MA
 - name: W. Evan Johnson
   affiliation: 
   - The Section of Computational Biomedicine, Boston University School of Medicine, Boston, MA
@@ -52,7 +56,12 @@ author:
   affiliation: 
   - The Section of Computational Biomedicine, Boston University School of Medicine, Boston, MA
   - Program in Bioinformatics, Boston University, Boston, MA
-  email: camp@bu.edu
+  email: camp@bu.edu  
+  
+  
+
+
+
 package: singleCellTK
 output: 
   BiocStyle::html_document:

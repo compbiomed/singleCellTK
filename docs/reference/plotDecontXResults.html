@@ -83,6 +83,12 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
+  <a href="https://www.camplab.net/sctk">
+    <span class="fas fa-home fa-lg"></span>
+     
+  </a>
+</li>
+<li>
   <a href="../articles/articles/installation.html">Installation</a>
 </li>
 <li class="dropdown">
@@ -99,7 +105,7 @@
           <a href="../articles/articles/import_data.html">Import Data</a>
         </li>
         <li>
-          <a href="../articles/articles/cmd_import_scRNAseq_data_as_SCE.html">Import Data in Commandline</a>
+          <a href="../articles/articles/cmd_import_scRNAseq_data_as_SCE.html">Import Data for Commandline QC</a>
         </li>
         <li>
           <a href="../articles/articles/import_genesets.html">Import Gene Sets</a>
@@ -122,10 +128,10 @@
           <a href="../articles/articles/cmd_qc.html">QC with commandline</a>
         </li>
         <li>
-          <a href="../articles/articles/cnsl_cellqc.html">Cell QC in R console</a>
+          <a href="../articles/articles/cnsl_dropletqc.html">Droplet QC in R console</a>
         </li>
         <li>
-          <a href="../articles/articles/cnsl_dropletqc.html">Droplet QC in R console</a>
+          <a href="../articles/articles/cnsl_cellqc.html">Cell QC in R console</a>
         </li>
         <li>
           <a href="../articles/articles/ui_qc.html">QC in the UI</a>
@@ -274,7 +280,7 @@
   violin <span class='op'>=</span> <span class='cn'>TRUE</span>,
   boxplot <span class='op'>=</span> <span class='cn'>FALSE</span>,
   dots <span class='op'>=</span> <span class='cn'>TRUE</span>,
-  reducedDimName <span class='op'>=</span> <span class='cn'>NULL</span>,
+  reducedDimName <span class='op'>=</span> <span class='st'>"UMAP"</span>,
   xlab <span class='op'>=</span> <span class='cn'>NULL</span>,
   ylab <span class='op'>=</span> <span class='cn'>NULL</span>,
   dim1 <span class='op'>=</span> <span class='cn'>NULL</span>,
@@ -282,7 +288,7 @@
   bin <span class='op'>=</span> <span class='cn'>NULL</span>,
   binLabel <span class='op'>=</span> <span class='cn'>NULL</span>,
   defaultTheme <span class='op'>=</span> <span class='cn'>TRUE</span>,
-  dotSize <span class='op'>=</span> <span class='fl'>1</span>,
+  dotSize <span class='op'>=</span> <span class='fl'>0.5</span>,
   summary <span class='op'>=</span> <span class='st'>"median"</span>,
   summaryTextSize <span class='op'>=</span> <span class='fl'>3</span>,
   transparency <span class='op'>=</span> <span class='fl'>1</span>,
@@ -350,7 +356,7 @@ Default TRUE.</p></td>
     <tr>
       <th>reducedDimName</th>
       <td><p>Saved dimension reduction name in the
-SingleCellExperiment object. Required.</p></td>
+SingleCellExperiment object. Required. Default = "UMAP"</p></td>
     </tr>
     <tr>
       <th>xlab</th>
@@ -389,7 +395,7 @@ when TRUE. Default TRUE.</p></td>
     </tr>
     <tr>
       <th>dotSize</th>
-      <td><p>Size of dots. Default 1.</p></td>
+      <td><p>Size of dots. Default 0.5.</p></td>
     </tr>
     <tr>
       <th>summary</th>
@@ -485,9 +491,8 @@ the relative widths for each plot.</p></td>
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>scExample</span>, package<span class='op'>=</span><span class='st'>"singleCellTK"</span><span class='op'>)</span>
 <span class='va'>sce</span> <span class='op'>&lt;-</span> <span class='fu'><a href='subsetSCECols.html'>subsetSCECols</a></span><span class='op'>(</span><span class='va'>sce</span>, colData <span class='op'>=</span> <span class='st'>"type != 'EmptyDroplet'"</span><span class='op'>)</span>
-<span class='va'>sce</span> <span class='op'>&lt;-</span> <span class='fu'><a href='getUMAP.html'>getUMAP</a></span><span class='op'>(</span>inSCE<span class='op'>=</span><span class='va'>sce</span>, useAssay<span class='op'>=</span><span class='st'>"counts"</span>, reducedDimName<span class='op'>=</span><span class='st'>"UMAP"</span><span class='op'>)</span>
 <span class='va'>sce</span> <span class='op'>&lt;-</span> <span class='fu'><a href='runDecontX.html'>runDecontX</a></span><span class='op'>(</span><span class='va'>sce</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'>Sun Sep 26 13:21:13 2021 ... Running 'DecontX'</span></div><div class='output co'>#&gt; <span class='message'>--------------------------------------------------</span></div><div class='output co'>#&gt; <span class='message'>Starting DecontX</span></div><div class='output co'>#&gt; <span class='message'>--------------------------------------------------</span></div><div class='output co'>#&gt; <span class='message'>Sun Sep 26 13:21:13 2021 .. Analyzing all cells</span></div><div class='output co'>#&gt; <span class='message'>Sun Sep 26 13:21:13 2021 .... Generating UMAP and estimating cell types</span></div><div class='output co'>#&gt; <span class='message'>Sun Sep 26 13:21:16 2021 .... Estimating contamination</span></div><div class='output co'>#&gt; <span class='message'>Sun Sep 26 13:21:16 2021 ...... Completed iteration: 10 | converge: 0.0278</span></div><div class='output co'>#&gt; <span class='message'>Sun Sep 26 13:21:16 2021 ...... Completed iteration: 20 | converge: 0.01058</span></div><div class='output co'>#&gt; <span class='message'>Sun Sep 26 13:21:16 2021 ...... Completed iteration: 30 | converge: 0.00584</span></div><div class='output co'>#&gt; <span class='message'>Sun Sep 26 13:21:16 2021 ...... Completed iteration: 40 | converge: 0.004697</span></div><div class='output co'>#&gt; <span class='message'>Sun Sep 26 13:21:16 2021 ...... Completed iteration: 50 | converge: 0.003356</span></div><div class='output co'>#&gt; <span class='message'>Sun Sep 26 13:21:16 2021 ...... Completed iteration: 60 | converge: 0.002634</span></div><div class='output co'>#&gt; <span class='message'>Sun Sep 26 13:21:16 2021 ...... Completed iteration: 70 | converge: 0.001941</span></div><div class='output co'>#&gt; <span class='message'>Sun Sep 26 13:21:16 2021 ...... Completed iteration: 80 | converge: 0.001413</span></div><div class='output co'>#&gt; <span class='message'>Sun Sep 26 13:21:16 2021 ...... Completed iteration: 90 | converge: 0.001284</span></div><div class='output co'>#&gt; <span class='message'>Sun Sep 26 13:21:16 2021 ...... Completed iteration: 100 | converge: 0.00111</span></div><div class='output co'>#&gt; <span class='message'>Sun Sep 26 13:21:16 2021 ...... Completed iteration: 104 | converge: 0.0009827</span></div><div class='output co'>#&gt; <span class='message'>Sun Sep 26 13:21:16 2021 .. Finalizing decontaminated matrix</span></div><div class='output co'>#&gt; <span class='message'>--------------------------------------------------</span></div><div class='output co'>#&gt; <span class='message'>Completed DecontX. Total time: 2.99232 secs</span></div><div class='output co'>#&gt; <span class='message'>--------------------------------------------------</span></div><div class='input'><span class='fu'>plotDecontXResults</span><span class='op'>(</span>inSCE<span class='op'>=</span><span class='va'>sce</span>, reducedDimName<span class='op'>=</span><span class='st'>"UMAP"</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'>Mon Oct 04 18:16:48 2021 ... Running 'DecontX'</span></div><div class='output co'>#&gt; <span class='message'>--------------------------------------------------</span></div><div class='output co'>#&gt; <span class='message'>Starting DecontX</span></div><div class='output co'>#&gt; <span class='message'>--------------------------------------------------</span></div><div class='output co'>#&gt; <span class='message'>Mon Oct 04 18:16:48 2021 .. Analyzing all cells</span></div><div class='output co'>#&gt; <span class='message'>Mon Oct 04 18:16:48 2021 .... Generating UMAP and estimating cell types</span></div><div class='output co'>#&gt; <span class='message'>Mon Oct 04 18:16:51 2021 .... Estimating contamination</span></div><div class='output co'>#&gt; <span class='message'>Mon Oct 04 18:16:51 2021 ...... Completed iteration: 10 | converge: 0.0278</span></div><div class='output co'>#&gt; <span class='message'>Mon Oct 04 18:16:51 2021 ...... Completed iteration: 20 | converge: 0.01058</span></div><div class='output co'>#&gt; <span class='message'>Mon Oct 04 18:16:51 2021 ...... Completed iteration: 30 | converge: 0.00584</span></div><div class='output co'>#&gt; <span class='message'>Mon Oct 04 18:16:51 2021 ...... Completed iteration: 40 | converge: 0.004697</span></div><div class='output co'>#&gt; <span class='message'>Mon Oct 04 18:16:51 2021 ...... Completed iteration: 50 | converge: 0.003356</span></div><div class='output co'>#&gt; <span class='message'>Mon Oct 04 18:16:51 2021 ...... Completed iteration: 60 | converge: 0.002634</span></div><div class='output co'>#&gt; <span class='message'>Mon Oct 04 18:16:51 2021 ...... Completed iteration: 70 | converge: 0.001941</span></div><div class='output co'>#&gt; <span class='message'>Mon Oct 04 18:16:51 2021 ...... Completed iteration: 80 | converge: 0.001413</span></div><div class='output co'>#&gt; <span class='message'>Mon Oct 04 18:16:51 2021 ...... Completed iteration: 90 | converge: 0.001284</span></div><div class='output co'>#&gt; <span class='message'>Mon Oct 04 18:16:51 2021 ...... Completed iteration: 100 | converge: 0.00111</span></div><div class='output co'>#&gt; <span class='message'>Mon Oct 04 18:16:51 2021 ...... Completed iteration: 104 | converge: 0.0009827</span></div><div class='output co'>#&gt; <span class='message'>Mon Oct 04 18:16:51 2021 .. Finalizing decontaminated matrix</span></div><div class='output co'>#&gt; <span class='message'>--------------------------------------------------</span></div><div class='output co'>#&gt; <span class='message'>Completed DecontX. Total time: 3.069724 secs</span></div><div class='output co'>#&gt; <span class='message'>--------------------------------------------------</span></div><div class='input'><span class='fu'>plotDecontXResults</span><span class='op'>(</span>inSCE<span class='op'>=</span><span class='va'>sce</span>, reducedDimName<span class='op'>=</span><span class='st'>"decontX_UMAP"</span><span class='op'>)</span>
 </div><div class='img'><img src='plotDecontXResults-1.png' alt='' width='700' height='433' /></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -500,7 +505,7 @@ the relative widths for each plot.</p></td>
 
       <footer>
       <div class="copyright">
-  <p>Developed by David Jenkins, Vidya Akavoor, Salam Alabdullatif, Shruthi Bandyadka, Emma Briars, Xinyun Cao, Sebastian Carrasco Pro, Tyler Faits, Rui Hong, Mohammed Muzamil Khan, Yusuke Koga, Anastasia Leshchyk, Irzam Sarfraz, Yichen Wang, Zhe Wang, W. Evan Johnson, Joshua David Campbell.</p>
+  <p>Developed by Yichen Wang, Irzam Sarfraz, Rui Hong, Yusuke Koga, Salam Alabdullatif, David Jenkins, Vidya Akavoor, Xinyun Cao, Shruthi Bandyadka, Anastasia Leshchyk, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, W. Evan Johnson, Joshua David Campbell.</p>
 </div>
 
 <div class="pkgdown">

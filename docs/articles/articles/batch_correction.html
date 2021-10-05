@@ -39,6 +39,12 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
 <li>
+  <a href="https://www.camplab.net/sctk">
+    <span class="fas fa-home fa-lg"></span>
+     
+  </a>
+</li>
+<li>
   <a href="../../articles/articles/installation.html">Installation</a>
 </li>
 <li class="dropdown">
@@ -55,7 +61,7 @@
           <a href="../../articles/articles/import_data.html">Import Data</a>
         </li>
         <li>
-          <a href="../../articles/articles/cmd_import_scRNAseq_data_as_SCE.html">Import Data in Commandline</a>
+          <a href="../../articles/articles/cmd_import_scRNAseq_data_as_SCE.html">Import Data for Commandline QC</a>
         </li>
         <li>
           <a href="../../articles/articles/import_genesets.html">Import Gene Sets</a>
@@ -78,10 +84,10 @@
           <a href="../../articles/articles/cmd_qc.html">QC with commandline</a>
         </li>
         <li>
-          <a href="../../articles/articles/cnsl_cellqc.html">Cell QC in R console</a>
+          <a href="../../articles/articles/cnsl_dropletqc.html">Droplet QC in R console</a>
         </li>
         <li>
-          <a href="../../articles/articles/cnsl_dropletqc.html">Droplet QC in R console</a>
+          <a href="../../articles/articles/cnsl_cellqc.html">Cell QC in R console</a>
         </li>
         <li>
           <a href="../../articles/articles/ui_qc.html">QC in the UI</a>
@@ -207,7 +213,7 @@
 
       
 
-      </header><script src="batch_correction_files/header-attrs-2.9/header-attrs.js"></script><div class="row">
+      </header><script src="batch_correction_files/header-attrs-2.7/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Batch Correction</h1>
@@ -289,7 +295,7 @@ div.offset { background-color:inherit ; border-radius: 5px; margin-left: 25px;}
 <p><strong>Choosing a Method</strong></p>
 <p>As mentioned in the introduction, our 11 methods vary in type of input and output. Input type for the expression matrix could be raw counts, log-transformed counts or scaled counts. Users need to make sure the assay being used is of the correct type. The output matrix can be an expression matrix (<code>assay</code>), a low-dimensional representation (<code>reducedDim</code>), or a subset features of expression matrix (<code>altExp</code>). Users need to choose a method that produce a matrix that fits in their analysis.</p>
 <details><summary><b>Example</b></summary><p><strong>1. Prepare an SCE object with multiple batches</strong></p>
-<p>Here we present an example dataset that is combined from “pbmc3k” and “pbmc4k” (Kasper D. Hansen <em>et al.</em>, 2017), which you can import by a function called <code><a href="../../reference/importExampleData.html">importExampleData()</a></code>.</p>
+<p>Here we present an example dataset that is combined from “pbmc3k” and “pbmc4k,” originally available from package <a href="https://bioconductor.org/packages/release/data/experiment/html/TENxPBMCData.html">TENxPBMCData</a>, which you can import by a function called <code><a href="../../reference/importExampleData.html">importExampleData()</a></code>.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://compbiomed.github.io/sctk_docs/">singleCellTK</a></span><span class="op">)</span>
 <span class="va">pbmc6k</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/importExampleData.html">importExampleData</a></span><span class="op">(</span><span class="st">'pbmc6k'</span><span class="op">)</span>
@@ -494,7 +500,7 @@ document.getElementById("ia-button").click();
 
 
       <footer><div class="copyright">
-  <p>Developed by David Jenkins, Vidya Akavoor, Salam Alabdullatif, Shruthi Bandyadka, Emma Briars, Xinyun Cao, Sebastian Carrasco Pro, Tyler Faits, Rui Hong, Mohammed Muzamil Khan, Yusuke Koga, Anastasia Leshchyk, Irzam Sarfraz, Yichen Wang, Zhe Wang, W. Evan Johnson, Joshua David Campbell.</p>
+  <p>Developed by Yichen Wang, Irzam Sarfraz, Rui Hong, Yusuke Koga, Salam Alabdullatif, David Jenkins, Vidya Akavoor, Xinyun Cao, Shruthi Bandyadka, Anastasia Leshchyk, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, W. Evan Johnson, Joshua David Campbell.</p>
 </div>
 
 <div class="pkgdown">
