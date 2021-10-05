@@ -39,6 +39,12 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
 <li>
+  <a href="https://www.camplab.net/sctk">
+    <span class="fas fa-home fa-lg"></span>
+     
+  </a>
+</li>
+<li>
   <a href="../../articles/articles/installation.html">Installation</a>
 </li>
 <li class="dropdown">
@@ -55,7 +61,7 @@
           <a href="../../articles/articles/import_data.html">Import Data</a>
         </li>
         <li>
-          <a href="../../articles/articles/cmd_import_scRNAseq_data_as_SCE.html">Import Data in Commandline</a>
+          <a href="../../articles/articles/cmd_import_scRNAseq_data_as_SCE.html">Import Data for Commandline QC</a>
         </li>
         <li>
           <a href="../../articles/articles/import_genesets.html">Import Gene Sets</a>
@@ -78,10 +84,10 @@
           <a href="../../articles/articles/cmd_qc.html">QC with commandline</a>
         </li>
         <li>
-          <a href="../../articles/articles/cnsl_cellqc.html">Cell QC in R console</a>
+          <a href="../../articles/articles/cnsl_dropletqc.html">Droplet QC in R console</a>
         </li>
         <li>
-          <a href="../../articles/articles/cnsl_dropletqc.html">Droplet QC in R console</a>
+          <a href="../../articles/articles/cnsl_cellqc.html">Cell QC in R console</a>
         </li>
         <li>
           <a href="../../articles/articles/ui_qc.html">QC in the UI</a>
@@ -228,32 +234,33 @@ text-align: justify}
 <div id="introduction" class="section level2">
 <h2 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h2>
-<p>Performing comprehensive quality control (QC) is necessary to remove poor quality cells for downstream analysis of single-cell RNA sequencing (scRNA-seq) data. Therefore, assessment of the data is required, for which various QC algorithms have been developed. In singleCellTK, we have written convenience functions for several of these tools. In this guide, we will demonstrate how to use these functions to perform quality control on cell-filtered data.</p>
+<p>Performing comprehensive quality control (QC) is necessary to remove poor quality cells for downstream analysis of single-cell RNA sequencing (scRNA-seq) data. Therefore, assessment of the data is required, for which various QC algorithms have been developed. In singleCellTK (SCTK), we have written convenience functions for several of these tools. In this guide, we will demonstrate how to use these functions to perform quality control on cell-filtered data. (For definition of cell-filtered data, please refer <a href="cmd_qc.html#introduction-1">this documentation</a>.)</p>
 <p>The package can be loaded using the <code>library</code> command.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://compbiomed.github.io/sctk_docs/">singleCellTK</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org">dplyr</a></span><span class="op">)</span></code></pre></div>
+<p><br></p>
 </div>
-<div id="running-quality-control-of-cell-filtered-single-cell-data-with-singlecelltk" class="section level2">
+<div id="running-qc-on-cell-filtered-data" class="section level2">
 <h2 class="hasAnchor">
-<a href="#running-quality-control-of-cell-filtered-single-cell-data-with-singlecelltk" class="anchor"></a>Running quality control of cell-filtered single cell data with singleCellTK</h2>
+<a href="#running-qc-on-cell-filtered-data" class="anchor"></a>Running QC on cell-filtered data</h2>
 <div id="load-pbmc-data-from-10x" class="section level3">
 <h3 class="hasAnchor">
 <a href="#load-pbmc-data-from-10x" class="anchor"></a>Load PBMC data from 10X</h3>
-<p>We will use a filtered form of the PBMC 3K and 6K dataset from the package <a href="http://bioconductor.org/packages/release/data/experiment/html/TENxPBMCData.html">TENxPBMCData</a>, which is available from the <code>importExampleData</code> function. We will combine these datasets together into a single SingleCellExperiment object.</p>
+<p>We will use a filtered form of the PBMC 3K and 6K dataset from the package <a href="http://bioconductor.org/packages/release/data/experiment/html/TENxPBMCData.html">TENxPBMCData</a>, which is available from the <code><a href="../../reference/importExampleData.html">importExampleData()</a></code> function. We will combine these datasets together into a single <a href="https://rdrr.io/bioc/SingleCellExperiment/man/SingleCellExperiment.html">SingleCellExperiment</a> object.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">pbmc3k</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/importExampleData.html">importExampleData</a></span><span class="op">(</span>dataset <span class="op">=</span> <span class="st">"pbmc3k"</span><span class="op">)</span>
 <span class="va">pbmc6k</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/importExampleData.html">importExampleData</a></span><span class="op">(</span>dataset <span class="op">=</span> <span class="st">"pbmc6k"</span><span class="op">)</span>
 
 <span class="va">pbmc.combined</span> <span class="op">&lt;-</span> <span class="fu">BiocGenerics</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/cbind.html">cbind</a></span><span class="op">(</span><span class="va">pbmc3k</span>, <span class="va">pbmc6k</span><span class="op">)</span>
 <span class="va">sample.vector</span> <span class="op">=</span> <span class="fu">colData</span><span class="op">(</span><span class="va">pbmc.combined</span><span class="op">)</span><span class="op">$</span><span class="va">sample</span></code></pre></div>
-<p>singleCellTK also supports the importing of single-cell data from the following platforms: <a href="https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/what-is-cell-ranger">10X CellRanger</a>, <a href="https://github.com/alexdobin/STAR/blob/master/docs/STARsolo.md">STARSolo</a>, <a href="https://www.kallistobus.tools/">BUSTools</a>, <a href="https://github.com/ambrosejcarr/seqc">SEQC</a>, <a href="https://github.com/hms-dbmi/dropEst">DropEST</a>, and <a href="https://github.com/theislab/anndata">AnnData</a>. To load your own input data, please refer <a href="import_data.html">Import data into SCTK</a> for detailed instruction.</p>
+<p>SCTK also supports the importing of single-cell data from the following platforms: <a href="https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/what-is-cell-ranger">10X CellRanger</a>, <a href="https://github.com/alexdobin/STAR/blob/master/docs/STARsolo.md">STARSolo</a>, <a href="https://www.kallistobus.tools/">BUSTools</a>, <a href="https://github.com/ambrosejcarr/seqc">SEQC</a>, <a href="https://github.com/hms-dbmi/dropEst">DropEST</a>, <a href="https://salmon.readthedocs.io/en/latest/alevin.html">Alevin</a>, as well as dataset already stored in <a href="https://rdrr.io/bioc/SingleCellExperiment/man/SingleCellExperiment.html">SingleCellExperiment</a> object and <a href="https://github.com/theislab/anndata">AnnData</a> object. To load your own input data, please refer <a href="import_data.html">Import data into SCTK</a> for detailed instruction.</p>
 </div>
-<div id="run-dimensionality-reduction" class="section level3">
+<div id="run-2d-embedding" class="section level3">
 <h3 class="hasAnchor">
-<a href="#run-dimensionality-reduction" class="anchor"></a>Run Dimensionality Reduction</h3>
-<p>SCTK utilizes dimensionality reduction techniques such as TSNE and UMAP for visualizing single-cell data. The user can modify the dimensions by adjusting the parameters within the function. The <code>logNorm</code> parameter should be set to TRUE for normalization prior to running dimensionality reduction.</p>
-<p>The <code>sample</code> parameter may be specified if multiple samples exist in the SingleCellExperiment object. Here, we will use the sample vector stored in the colData of the SingleCellExperiment object.</p>
+<a href="#run-2d-embedding" class="anchor"></a>Run 2D embedding</h3>
+<p>SCTK utilizes 2D embedding techniques such as TSNE and UMAP for visualizing single-cell data. Users can modify the dimensions by adjusting the parameters within the function. The <code>logNorm</code> parameter should be set to <code>TRUE</code> for normalization prior to generating the 2D embedding.</p>
+<p>The <code>sample</code> parameter may be specified if multiple samples exist in the <code>SingleCellExperiment</code> object. Here, we will use the sample vector stored in the <code>colData</code> slot of the <code>SingleCellExperiment</code> object.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># UMAP:</span>
 <span class="va">pbmc.combined</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/getUMAP.html">getUMAP</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">pbmc.combined</span>, useAssay <span class="op">=</span> <span class="st">"counts"</span>, logNorm <span class="op">=</span> <span class="cn">TRUE</span>, sample <span class="op">=</span> <span class="va">sample.vector</span><span class="op">)</span>
@@ -261,23 +268,23 @@ text-align: justify}
 <span class="co"># TSNE (not run):</span>
 <span class="co"># pbmc &lt;- getTSNE(inSCE=pbmc, useAssay="counts", logNorm = TRUE, sample = colData(pbmc)$sample)</span></code></pre></div>
 </div>
-<div id="runcellqc" class="section level3">
+<div id="run-cellqc" class="section level3">
 <h3 class="hasAnchor">
-<a href="#runcellqc" class="anchor"></a>runCellQC</h3>
-<p>All of the droplet-based QC algorithms are able to be run under the wrapper function <code>runCellQC</code>. By default all possible QC algorithms will be run.</p>
-<p>Users may set a <code>sample</code> parameter if you would like to compare between multiple samples. Here, we will use the sample vector stored in the SingleCellExperiment object.</p>
-<p>If the user wishes, a list of gene sets can be applied to the function to determine the expression of a set of specific genes. A gene list imported into the SingleCellExperiment object using <code>importGeneSets</code> functions can be set as <code>collectionName</code>. Additionally, a pre-made list of genes can be used to determine the level of gene expression per cell. A list containing gene symbols may be set as <code>geneSetList</code>, or the user may instead use the <code>geneSetCollection</code> parameter to supply a <code>GeneSetCollection</code> object from the <a href="https://bioconductor.org/packages/release/bioc/html/GSEABase.html">GSEABase</a> package.</p>
+<a href="#run-cellqc" class="anchor"></a>Run CellQC</h3>
+<p>All of the droplet-based QC algorithms are able to be run under the wrapper function <code><a href="../../reference/runCellQC.html">runCellQC()</a></code>. By default all possible QC algorithms will be run.</p>
+<p>Users may set a <code>sample</code> parameter if need to compare between multiple samples. Here, we will use the sample vector stored in the <code>SingleCellExperiment</code> object.</p>
+<p>If users wishes, a list of gene sets can be applied to the function to determine the expression of a set of specific genes. A gene list imported into the <code>SingleCellExperiment</code> object using <code>importGeneSets*</code> functions can be set as <code>collectionName</code>. Additionally, a pre-made list of genes can be used to determine the level of gene expression per cell. A list containing gene identifiers may be set as <code>geneSetList</code>, or the user may instead use the <code>geneSetCollection</code> parameter to supply a <code>GeneSetCollection</code> object from the <a href="https://bioconductor.org/packages/release/bioc/html/GSEABase.html">GSEABase</a> package. Please also refer to <a href="import_genesets.html"><em>Import Genesets</em> documentation</a>.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">pbmc.combined</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/importGeneSetsFromGMT.html">importGeneSetsFromGMT</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">pbmc.combined</span>, collectionName <span class="op">=</span> <span class="st">"mito"</span>, file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"extdata/mito_subset.gmt"</span>, package <span class="op">=</span> <span class="st">"singleCellTK"</span><span class="op">)</span><span class="op">)</span>
 
 <span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">12345</span><span class="op">)</span>
 <span class="va">pbmc.combined</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/runCellQC.html">runCellQC</a></span><span class="op">(</span><span class="va">pbmc.combined</span>, algorithms <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"QCMetrics"</span>, <span class="st">"scrublet"</span>, <span class="st">"scDblFinder"</span>, <span class="st">"cxds"</span>, <span class="st">"bcds"</span>, <span class="st">"cxds_bcds_hybrid"</span>, <span class="st">"doubletFinder"</span>, <span class="st">"decontX"</span><span class="op">)</span>, sample <span class="op">=</span> <span class="va">sample.vector</span>, collectionName <span class="op">=</span> <span class="st">"mito"</span><span class="op">)</span></code></pre></div>
-<pre><code>## [13:37:38] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-## [13:38:11] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-## [13:38:29] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-## [13:39:00] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.</code></pre>
-<p><br> If users choose to only run a specific set of algorithms, they can specify which to run with the <code>algorithms</code> parameter. By default, the <code>runCellQC</code> will run “QCMetrics”, “scDblFinder”, “cxds”, “bcds”, “cxds_bcds_hybrid” and “decontX” algorithms by default. Besides, “scrublet” and “doubletFinder” is supported if our users want to run them.</p>
-<p>When quality control functions are run in singleCellTK, the output of the function is stored in the <code>colData</code> slot of the <code>SingleCellExperiment</code> object.</p>
+<pre><code>## [18:32:48] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+## [18:33:21] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+## [18:33:39] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+## [18:34:10] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.</code></pre>
+<p><br> If users choose to only run a specific set of algorithms, they can specify which to run with the <code>algorithms</code> parameter. By default, the <code><a href="../../reference/runCellQC.html">runCellQC()</a></code> will run <code>"QCMetrics"</code>, <code>"scDblFinder"</code>, <code>"cxds"</code>, <code>"bcds"</code>, <code>"cxds_bcds_hybrid"</code> and <code>"decontX"</code> algorithms by default. Besides, <code>"scrublet"</code> and <code>"doubletFinder"</code> are supported if our users want to run them.</p>
+<p>After running QC functions with SCTK, the output will be stored in the <code>colData</code> slot of the <code>SingleCellExperiment</code> object.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="fu">colData</span><span class="op">(</span><span class="va">pbmc.combined</span><span class="op">)</span>, <span class="fl">5</span><span class="op">)</span></code></pre></div>
 <div style="border: 1px solid #ddd; padding: 5px; overflow-x: scroll; width:80%; ">
@@ -706,8 +713,7 @@ pbmc3k-2
 </table>
 </div>
 <p><br></p>
-<p>A summary of all outputs is shown below:</p>
-<table class="table">
+<details><summary><b>A summary of all outputs</b></summary><table class="table">
 <colgroup>
 <col width="29%">
 <col width="45%">
@@ -722,110 +728,110 @@ pbmc3k-2
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td>sum</td>
+<td><code>sum</code></td>
 <td align="left">Total counts</td>
-<td align="left">runPerCellQC</td>
-<td align="left">scater</td>
+<td align="left"><code><a href="../../reference/runPerCellQC.html">runPerCellQC()</a></code></td>
+<td align="left"><a href="https://bioconductor.org/packages/release/bioc/html/scater.html">scater</a></td>
 </tr>
 <tr class="even">
-<td>detected</td>
+<td><code>detected</code></td>
 <td align="left">Total features</td>
-<td align="left">runPerCellQC</td>
-<td align="left">scater</td>
+<td align="left"><code><a href="../../reference/runPerCellQC.html">runPerCellQC()</a></code></td>
+<td align="left"><a href="https://bioconductor.org/packages/release/bioc/html/scater.html">scater</a></td>
 </tr>
 <tr class="odd">
-<td>percent_top</td>
+<td><code>percent_top</code></td>
 <td align="left">% Expression coming from top features</td>
-<td align="left">runPerCellQC</td>
-<td align="left">scater</td>
+<td align="left"><code><a href="../../reference/runPerCellQC.html">runPerCellQC()</a></code></td>
+<td align="left"><a href="https://bioconductor.org/packages/release/bioc/html/scater.html">scater</a></td>
 </tr>
 <tr class="even">
-<td>subsets_</td>
+<td><code>subsets_*</code></td>
 <td align="left">sum, detected, percent_top calculated on specified gene list</td>
-<td align="left">runPerCellQC</td>
-<td align="left">scater</td>
+<td align="left"><code><a href="../../reference/runPerCellQC.html">runPerCellQC()</a></code></td>
+<td align="left"><a href="https://bioconductor.org/packages/release/bioc/html/scater.html">scater</a></td>
 </tr>
 <tr class="odd">
-<td>scrublet_score</td>
+<td><code>scrublet_score</code></td>
 <td align="left">Doublet score</td>
-<td align="left">runScrublet</td>
-<td align="left">scrublet</td>
+<td align="left"><code><a href="../../reference/runScrublet.html">runScrublet()</a></code></td>
+<td align="left"><a href="https://github.com/swolock/scrublet">scrublet</a></td>
 </tr>
 <tr class="even">
-<td>scrublet_call</td>
+<td><code>scrublet_call</code></td>
 <td align="left">Doublet classification based on threshold</td>
-<td align="left">runScrublet</td>
-<td align="left">scrublet</td>
+<td align="left"><code><a href="../../reference/runScrublet.html">runScrublet()</a></code></td>
+<td align="left"><a href="https://github.com/swolock/scrublet">scrublet</a></td>
 </tr>
 <tr class="odd">
-<td>scDblFinder_doublet_score</td>
+<td><code>scDblFinder_doublet_score</code></td>
 <td align="left">Doublet score</td>
-<td align="left">runScDblFinder</td>
-<td align="left">scran</td>
+<td align="left"><code><a href="../../reference/runScDblFinder.html">runScDblFinder()</a></code></td>
+<td align="left"><a href="https://bioconductor.org/packages/release/bioc/html/scran.html">scran</a></td>
 </tr>
 <tr class="even">
-<td>doubletFinder_doublet_score</td>
+<td><code>doubletFinder_doublet_score</code></td>
 <td align="left">Doublet score</td>
-<td align="left">runDoubletFinder</td>
-<td align="left">DoubletFinder</td>
+<td align="left"><code><a href="../../reference/runDoubletFinder.html">runDoubletFinder()</a></code></td>
+<td align="left"><a href="https://github.com/chris-mcginnis-ucsf/DoubletFinder">DoubletFinder</a></td>
 </tr>
 <tr class="odd">
-<td>doubletFinder_doublet_label_resolution</td>
+<td><code>doubletFinder_doublet_label_resolution</code></td>
 <td align="left">Doublet classification based on threshold</td>
-<td align="left">runDoubletFinder</td>
-<td align="left">DoubletFinder</td>
+<td align="left"><code><a href="../../reference/runDoubletFinder.html">runDoubletFinder()</a></code></td>
+<td align="left"><a href="https://github.com/chris-mcginnis-ucsf/DoubletFinder">DoubletFinder</a></td>
 </tr>
 <tr class="even">
-<td>scds_cxds_score</td>
+<td><code>scds_cxds_score</code></td>
 <td align="left">Doublet score</td>
-<td align="left">runCxds</td>
-<td align="left">SCDS</td>
+<td align="left"><code><a href="../../reference/runCxds.html">runCxds()</a></code></td>
+<td align="left"><a href="https://www.bioconductor.org/packages/release/bioc/html/scds.html">SCDS</a></td>
 </tr>
 <tr class="odd">
-<td>scds_cxds_call</td>
+<td><code>scds_cxds_call</code></td>
 <td align="left">Doublet classification based on threshold</td>
-<td align="left">runCxds</td>
-<td align="left">SCDS</td>
+<td align="left"><code><a href="../../reference/runCxds.html">runCxds()</a></code></td>
+<td align="left"><a href="https://www.bioconductor.org/packages/release/bioc/html/scds.html">SCDS</a></td>
 </tr>
 <tr class="even">
-<td>scds_bcds_score</td>
+<td><code>scds_bcds_score</code></td>
 <td align="left">Doublet score</td>
-<td align="left">runBcds</td>
-<td align="left">SCDS</td>
+<td align="left"><code><a href="../../reference/runBcds.html">runBcds()</a></code></td>
+<td align="left"><a href="https://www.bioconductor.org/packages/release/bioc/html/scds.html">SCDS</a></td>
 </tr>
 <tr class="odd">
-<td>scds_bcds_call</td>
+<td><code>scds_bcds_call</code></td>
 <td align="left">Doublet classification based on threshold</td>
-<td align="left">runBcds</td>
-<td align="left">SCDS</td>
+<td align="left"><code><a href="../../reference/runBcds.html">runBcds()</a></code></td>
+<td align="left"><a href="https://www.bioconductor.org/packages/release/bioc/html/scds.html">SCDS</a></td>
 </tr>
 <tr class="even">
-<td>scds_hybrid_score</td>
+<td><code>scds_hybrid_score</code></td>
 <td align="left">Doublet score</td>
-<td align="left">runCxdsBcdsHybrid</td>
-<td align="left">SCDS</td>
+<td align="left"><code><a href="../../reference/runCxdsBcdsHybrid.html">runCxdsBcdsHybrid()</a></code></td>
+<td align="left"><a href="https://www.bioconductor.org/packages/release/bioc/html/scds.html">SCDS</a></td>
 </tr>
 <tr class="odd">
-<td>scds_hybrid_call</td>
+<td><code>scds_hybrid_call</code></td>
 <td align="left">Doublet classification based on threshold</td>
-<td align="left">runCxdsBcdsHybrid</td>
-<td align="left">SCDS</td>
+<td align="left"><code><a href="../../reference/runCxdsBcdsHybrid.html">runCxdsBcdsHybrid()</a></code></td>
+<td align="left"><a href="https://www.bioconductor.org/packages/release/bioc/html/scds.html">SCDS</a></td>
 </tr>
 <tr class="even">
-<td>decontX_contamination</td>
+<td><code>decontX_contamination</code></td>
 <td align="left">Ambient RNA contamination</td>
-<td align="left">runDecontX</td>
-<td align="left">celda</td>
+<td align="left"><code><a href="../../reference/runDecontX.html">runDecontX()</a></code></td>
+<td align="left"><a href="https://www.bioconductor.org/packages/release/bioc/html/celda.html">celda</a></td>
 </tr>
 <tr class="odd">
-<td>decontX_clusters</td>
+<td><code>decontX_clusters</code></td>
 <td align="left">Clusters determined in dataset based on underlying algorithm</td>
-<td align="left">runDecontX</td>
-<td align="left">celda</td>
+<td align="left"><code><a href="../../reference/runDecontX.html">runDecontX()</a></code></td>
+<td align="left"><a href="https://www.bioconductor.org/packages/release/bioc/html/celda.html">celda</a></td>
 </tr>
 </tbody>
-</table>
-<p>The names of the reducedDims of the <code>SingleCellExperiment</code> object are stored in the <code>reducedDims</code> slot.</p>
+</table></details><p><br></p>
+<p>The names of the 2D embedding and dimension reduction matrices are stored in the <code>reducedDims</code> slot of the <code>SingleCellExperiment</code> object.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu">reducedDims</span><span class="op">(</span><span class="va">pbmc.combined</span><span class="op">)</span></code></pre></div>
 <pre><code>## List of length 6
@@ -833,7 +839,7 @@ pbmc3k-2
 <div id="generating-a-summary-statistic-table" class="section level4">
 <h4 class="hasAnchor">
 <a href="#generating-a-summary-statistic-table" class="anchor"></a>Generating a summary statistic table</h4>
-<p>The function <code>sampleSummaryStats</code> may be used to generate a table containing the mean and median of the data per sample.</p>
+<p>The function <code><a href="../../reference/sampleSummaryStats.html">sampleSummaryStats()</a></code> may be used to generate a table containing the mean and median of the data per sample.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../../reference/sampleSummaryStats.html">sampleSummaryStats</a></span><span class="op">(</span><span class="va">pbmc.combined</span>, sample <span class="op">=</span> <span class="va">sample.vector</span><span class="op">)</span></code></pre></div>
 <pre><code>##                           pbmc3k  pbmc6k   Total
@@ -842,7 +848,7 @@ pbmc3k-2
 ## Median counts            2197.00 1873.00 1988.00
 ## Mean features detected    846.99  748.06  780.96
 ## Median features detected  817.00  716.00  750.00</code></pre>
-<p>If users choose to generate a table for all QC metrics generated through <code>runCellQC</code>, they may set the <code>simple</code> parameter to <code>FALSE</code>.</p>
+<p>If users choose to generate a table for all QC metrics generated through <code><a href="../../reference/runCellQC.html">runCellQC()</a></code>, they may set the <code>simple</code> parameter to <code>FALSE</code>.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../../reference/sampleSummaryStats.html">sampleSummaryStats</a></span><span class="op">(</span><span class="va">pbmc.combined</span>, sample <span class="op">=</span> <span class="va">sample.vector</span>, simple <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
 <pre><code>##                                                           pbmc3k    pbmc6k
@@ -885,45 +891,166 @@ pbmc3k-2
 ## SCDS Hybrid - Percentage of doublets                      5.8400
 ## DecontX - Mean contamination                              0.0675
 ## DecontX - Median contamination                            0.0418</code></pre>
-<p><br></p>
 </div>
+</div>
+<div id="running-individual-qc-methods" class="section level3">
+<h3 class="hasAnchor">
+<a href="#running-individual-qc-methods" class="anchor"></a>Running individual QC methods</h3>
+<p>Instead of running all quality control methods on the dataset at once, users may elect to execute QC methods individually. The parameters as well as the outputs to individual QC functions are described in detail as follows:</p>
+<details><summary><b>General QC metrics</b></summary><details><summary><b>runPerCellQC</b></summary><p>SingleCellTK utilizes the <a href="https://bioconductor.org/packages/release/bioc/html/scater.html">scater</a> package to compute cell-level QC metrics. The wrapper function <code><a href="../../reference/runPerCellQC.html">runPerCellQC()</a></code> can be used to separately compute general QC metrics on its own.</p>
+<ul>
+<li>
+<code>inSCE</code> parameter is the input SingleCellExperiment object.</li>
+<li>
+<code>useAssay</code> is the assay object that in the SingleCellExperiment object the user wishes to use.</li>
+</ul>
+<p>A list of gene sets can be applied to the function to determine the expression of a set of specific genes, as mentioned before. Please also refer to <a href="import_genesets.html"><em>Import Genesets</em> documentation</a>.</p>
+<p>The QC outputs are <code>sum</code>, <code>detected</code>, and <code>percent_top_X</code>, stored as variables in <code>colData</code>.</p>
+<ul>
+<li>
+<code>sum</code> contains the total number of counts for each cell.</li>
+<li>
+<code>detected</code> contains the total number of features for each cell.</li>
+<li>
+<code>percent_top_X</code> contains the percentage of the total counts that is made up by the expression of the top X genes for each cell.</li>
+<li>The <code>subsets_</code> columns contain information for the specific gene list that was used. For instance, if a gene list containing mitochondrial genes named <code>"mito"</code> was used, <code>subsets_mito_sum</code> would contain the total number of mitochondrial counts for each cell.</li>
+</ul>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">pbmc.combined</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/runPerCellQC.html">runPerCellQC</a></span><span class="op">(</span>
+  inSCE <span class="op">=</span> <span class="va">pbmc.combined</span>,
+  useAssay <span class="op">=</span> <span class="st">"counts"</span>,
+  collectionName <span class="op">=</span> <span class="st">"mito"</span><span class="op">)</span></code></pre></div>
+  </details></details><details><summary><b>Doublet Detection</b></summary><p>Doublets hinder cell-type identification by appearing as a distinct transcriptomic state, and need to be removed for downstream analysis. SCTK contains various doublet detection tools that the user may choose from.</p>
+  <details><summary><b>runScrublet</b></summary><p><a href="https://github.com/swolock/scrublet">Scrublet</a> aims to detect doublets by creating simulated doublets from combining transcriptomic profiles of existing cells in the dataset. The wrapper function <code><a href="../../reference/runScrublet.html">runScrublet()</a></code> can be used to separately run the Scrublet algorithm on its own.</p>
+<ul>
+<li>
+<code>sample</code> indicates what sample each cell originates from. It can be set to <code>NULL</code> if all cells in the dataset came from the same sample.</li>
+</ul>
+<p>Scrublet also has a large set of parameters that the user can adjust, please see the function reference for detail, by clicking on the function name.</p>
+<p>The Scrublet outputs include the following <code>colData</code> variables:</p>
+<ul>
+<li>
+<code>scrublet_score</code>, which is a numeric variable of the likelihood that a cell is a doublet</li>
+<li>
+<code>scrublet_label</code>, which is the assignment of whether the cell is a doublet.</li>
+</ul>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">pbmc.combined</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/runScrublet.html">runScrublet</a></span><span class="op">(</span>
+  inSCE <span class="op">=</span> <span class="va">pbmc.combined</span>,
+  sample <span class="op">=</span> <span class="fu">colData</span><span class="op">(</span><span class="va">pbmc.combined</span><span class="op">)</span><span class="op">$</span><span class="va">sample</span>, 
+  useAssay <span class="op">=</span> <span class="st">"counts"</span>
+<span class="op">)</span></code></pre></div>
+</details><details><summary><b>runScDblFinder</b></summary><p><a href="https://rdrr.io/bioc/scDblFinder/">ScDblFinder</a> is a doublet detection algorithm. ScDblFinder aims to detect doublets by creating a simulated doublet from existing cells and projecting it to the same PCA space as the cells. The wrapper function <code><a href="../../reference/runScDblFinder.html">runScDblFinder()</a></code> can be used to separately run the ScDblFinder algorithm on its own.</p>
+<ul>
+<li>
+<code>nNeighbors</code> is the number of nearest neighbor used to calculate the density for doublet detection.</li>
+<li>
+<code>simDoublets</code> is used to determine the number of simulated doublets used for doublet detection.</li>
+</ul>
+<p>The output of ScDblFinder is a <code>scDblFinder_doublet_score</code>, which will be stored as a <code>colData</code> variable. The doublet score of a droplet will be higher if the it is deemed likely to be a doublet.</p>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">pbmc.combined</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/runScDblFinder.html">runScDblFinder</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">pbmc.combined</span>, sample <span class="op">=</span> <span class="fu">colData</span><span class="op">(</span><span class="va">pbmc.combined</span><span class="op">)</span><span class="op">$</span><span class="va">sample</span>, useAssay <span class="op">=</span> <span class="st">"counts"</span><span class="op">)</span></code></pre></div>
+</details><details><summary><b>runDoubletFinder</b></summary><p><a href="https://github.com/chris-mcginnis-ucsf/DoubletFinder">DoubletFinder</a> is a doublet detection algorithm which depends on the single cell analysis package <a href="https://satijalab.org/seurat/">Seurat</a>. The wrapper function <code><a href="../../reference/runDoubletFinder.html">runDoubletFinder()</a></code> can be used to separately run the DoubletFinder algorithm on its own.</p>
+<ul>
+<li>
+<code>seuratRes</code> - <code><a href="../../reference/runDoubletFinder.html">runDoubletFinder()</a></code> relies on a parameter (in Seurat) called “resolution” to determine cells that may be doublets. Users will be able to manipulate the resolution parameter through <code>seuratRes</code>. If multiple numeric vectors are stored in <code>seuratRes</code>, there will be multiple label/scores.</li>
+<li>
+<code>seuratNfeatures</code> determines the number of features that is used in the <a href="https://satijalab.org/seurat/reference/findvariablefeatures"><code>FindVariableFeatures</code></a> function in Seurat.</li>
+<li>
+<code>seuratPcs</code> determines the number of dimensions used in the <a href="https://satijalab.org/seurat/reference/findneighbors"><code>FindNeighbors</code></a> function in Seurat.</li>
+<li>
+<code>formationRate</code> is the estimated doublet detection rate in the dataset. It aims to detect doublets by creating simulated doublets from combining transcriptomic profiles of existing cells in the dataset.</li>
+</ul>
+<p>The DoubletFinder outputs include the following <code>colData</code> variable:</p>
+<ul>
+<li>
+<code>doubletFinder_doublet_score</code>, which is a numeric variable of the likelihood that a cell is a doublet</li>
+<li>
+<code>doubletFinder_doublet_label</code>, which is the assignment of whether the cell is a doublet.</li>
+</ul>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">pbmc.combined</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/runDoubletFinder.html">runDoubletFinder</a></span><span class="op">(</span>
+  inSCE <span class="op">=</span> <span class="va">pbmc.combined</span>, useAssay <span class="op">=</span> <span class="st">"counts"</span>,
+  sample <span class="op">=</span> <span class="fu">colData</span><span class="op">(</span><span class="va">pbmc.combined</span><span class="op">)</span><span class="op">$</span><span class="va">sample</span>, 
+  seuratRes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1.0</span><span class="op">)</span>, seuratPcs <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">15</span>,
+  seuratNfeatures <span class="op">=</span> <span class="fl">2000</span>,
+  formationRate <span class="op">=</span> <span class="fl">0.075</span>, seed <span class="op">=</span> <span class="fl">12345</span>
+<span class="op">)</span></code></pre></div>
+</details><details><summary><b>runCXDS</b></summary><p>CXDS, or co-expression based doublet scoring, is an algorithm in the <a href="https://www.bioconductor.org/packages/release/bioc/html/scds.html">SCDS</a> package which employs a binomial model for the co-expression of pairs of genes to determine doublets. The wrapper function <code><a href="../../reference/runCxds.html">runCxds()</a></code> can be used to separately run the CXDS algorithm on its own.</p>
+<ul>
+<li>
+<code>ntop</code> is the number of top variance genes to consider.</li>
+<li>
+<code>binThresh</code> is the minimum counts a gene needs to have to be included in the analysis.</li>
+<li>
+<code>verb</code> determines whether progress messages will be displayed or not.</li>
+<li>
+<code>retRes</code> will determine whether the gene pair results should be returned or not.</li>
+<li>
+<code>estNdbl</code> is the user estimated number of doublets.</li>
+</ul>
+<p>The output of <code><a href="../../reference/runCxds.html">runCxds()</a></code> is the doublet score, <code>scds_cxds_score</code>, which will be stored as a <code>colData</code> variable.</p>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">pbmc.combined</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/runCxds.html">runCxds</a></span><span class="op">(</span>
+  inSCE <span class="op">=</span> <span class="va">pbmc.combined</span>, sample <span class="op">=</span> <span class="fu">colData</span><span class="op">(</span><span class="va">pbmc.combined</span><span class="op">)</span><span class="op">$</span><span class="va">sample</span>, 
+  ntop <span class="op">=</span> <span class="fl">500</span>, binThresh <span class="op">=</span> <span class="fl">0</span>,
+  verb <span class="op">=</span> <span class="cn">FALSE</span>, retRes <span class="op">=</span> <span class="cn">FALSE</span>, estNdbl <span class="op">=</span> <span class="cn">FALSE</span>
+<span class="op">)</span></code></pre></div>
+</details><details><summary><b>runBCDS</b></summary><p>BCDS, or binary classification based doublet scoring, is an algorithm in the <a href="https://www.bioconductor.org/packages/release/bioc/html/scds.html">SCDS</a> package which uses a binary classification approach to determine doublets. The wrapper function <code><a href="../../reference/runBcds.html">runBcds()</a></code> can be used to separately run the BCDS algorithm on its own.</p>
+<ul>
+<li>
+<code>ntop</code> is the number of top variance genes to consider.</li>
+<li>
+<code>srat</code> is the ratio between original number of cells and simulated doublets.</li>
+<li>
+<code>nmax</code> is the maximum number of cycles that the algorithm should run through. If set to <code>"tune"</code>, this will be automatic.</li>
+<li>
+<code>varImp</code> determines if the variable importance should be returned or not.</li>
+</ul>
+<p>The output of <code><a href="../../reference/runBcds.html">runBcds()</a></code> is <code>scds_bcds_score</code>, which is the likelihood that a cell is a doublet and will be stored as a <code>colData</code> variable.</p>
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">pbmc.combined</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/runBcds.html">runBcds</a></span><span class="op">(</span>
+  inSCE <span class="op">=</span> <span class="va">pbmc.combined</span>, seed <span class="op">=</span> <span class="fl">12345</span>, sample <span class="op">=</span> <span class="fu">colData</span><span class="op">(</span><span class="va">pbmc.combined</span><span class="op">)</span><span class="op">$</span><span class="va">sample</span>, 
+  ntop <span class="op">=</span> <span class="fl">500</span>, srat <span class="op">=</span> <span class="fl">1</span>, nmax <span class="op">=</span> <span class="st">"tune"</span>, varImp <span class="op">=</span> <span class="cn">FALSE</span>
+<span class="op">)</span></code></pre></div>
+</details><details><summary><b>runCxdsBcdsHybrid</b></summary><p>The CXDS-BCDS hybrid algorithm, uses both CXDS and BCDS algorithms from the <a href="https://www.bioconductor.org/packages/release/bioc/html/scds.html">SCDS</a> package. The wrapper function <code><a href="../../reference/runCxdsBcdsHybrid.html">runCxdsBcdsHybrid()</a></code> can be used to separately run the CXDS-BCDS hybrid algorithm on its own.</p>
+<p>All parameters from the <code><a href="../../reference/runCxds.html">runCxds()</a></code> and <code><a href="../../reference/runBcds.html">runBcds()</a></code> functions may be applied to this function in the <code>cxdsArgs</code> and <code>bcdsArgs</code> parameters, respectively.</p>
+<p>The output of <code><a href="../../reference/runCxdsBcdsHybrid.html">runCxdsBcdsHybrid()</a></code> is the doublet score, <code>scds_hybrid_score</code>, which will be stored as a <code>colData</code> variable.</p>
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">pbmc.combined</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/runCxdsBcdsHybrid.html">runCxdsBcdsHybrid</a></span><span class="op">(</span>
+  inSCE <span class="op">=</span> <span class="va">pbmc.combined</span>, sample <span class="op">=</span> <span class="fu">colData</span><span class="op">(</span><span class="va">pbmc.combined</span><span class="op">)</span><span class="op">$</span><span class="va">sample</span>, 
+  seed <span class="op">=</span> <span class="fl">12345</span>, nTop <span class="op">=</span> <span class="fl">500</span>
+<span class="op">)</span></code></pre></div>
+  </details></details><details><summary><b>Ambient RNA Detection</b></summary><details><summary><b>runDecontX</b></summary><p>In droplet-based single cell technologies, ambient RNA that may have been released from apoptotic or damaged cells may get incorporated into another droplet, and can lead to contamination. <a href="https://rdrr.io/bioc/celda/man/decontX.html">decontX</a>, available from <a href="https://bioconductor.org/packages/release/bioc/html/celda.html">celda</a>, is a Bayesian method for the identification of the contamination level at a cellular level. The wrapper function <code><a href="../../reference/runDecontX.html">runDecontX()</a></code> can be used to separately run the DecontX algorithm on its own.</p>
+<p>The outputs of <code><a href="../../reference/runDecontX.html">runDecontX()</a></code> are <code>decontX_contamination</code> and <code>decontX_clusters</code>.</p>
+<ul>
+<li>
+<code>decontX_contamination</code> is a numeric vector which characterizes the level of contamination in each cell.</li>
+<li>Clustering is performed as part of the <code><a href="../../reference/runDecontX.html">runDecontX()</a></code> algorithm. <code>decontX_clusters</code> is the resulting cluster assignment, which can also be labeled on the plot. For performing fine-tuned clustering in SCTK, please refer to <a href="clustering.html"><em>Clustering</em> documentation</a>
+</li>
+</ul>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>pbmc.combined <span class="ot">&lt;-</span> <span class="fu">runDecontX</span>(</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">inSCE =</span> pbmc.combined, <span class="at">useAssay =</span> <span class="st">"counts"</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">sample =</span> <span class="fu">colData</span>(pbmc.combined)<span class="sc">$</span>sample</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+  </details></details>
 </div>
 <div id="plotting-qc-metrics" class="section level3">
 <h3 class="hasAnchor">
 <a href="#plotting-qc-metrics" class="anchor"></a>Plotting QC metrics</h3>
-<p>Upon running runCellQC, the QC outputs will need to be plotted. For each QC method, singleCellTK contains specialized plotting functions that may be used for the generation of QC plots.</p>
-<div id="general-qc-metrics" class="section level4">
-<h4 class="hasAnchor">
-<a href="#general-qc-metrics" class="anchor"></a>General QC metrics</h4>
-<div id="runpercellqc" class="section level5">
-<h5 class="hasAnchor">
-<a href="#runpercellqc" class="anchor"></a><strong>runPerCellQC</strong>
-</h5>
-<p>SingleCellTK utilizes the <a href="https://bioconductor.org/packages/release/bioc/html/scater.html">scater</a> package to compute cell-level QC metrics.</p>
-<p>The wrapper function plotRunPerCellQCResults can be used to plot the general QC outputs.</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<p>Upon running <code><a href="../../reference/runCellQC.html">runCellQC()</a></code> or any individual QC methods, the QC outputs will need to be plotted. For each QC method, SCTK provides a specialized plotting function.</p>
+<details><summary><b>General QC metrics</b></summary><details><summary><b>runPerCellQC</b></summary><p>The wrapper function <code><a href="../../reference/plotRunPerCellQCResults.html">plotRunPerCellQCResults()</a></code> can be used to plot the general QC outputs.</p>
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">runpercellqc.results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/plotRunPerCellQCResults.html">plotRunPerCellQCResults</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">pbmc.combined</span>, sample <span class="op">=</span> <span class="va">sample.vector</span>, combinePlot <span class="op">=</span> <span class="st">"all"</span>, axisSize <span class="op">=</span> <span class="fl">8</span>, axisLabelSize <span class="op">=</span> <span class="fl">9</span>, titleSize <span class="op">=</span> <span class="fl">20</span>, labelSamples<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">runpercellqc.results</span></code></pre></div>
-<p><img src="cnsl_cellqc_files/figure-html/unnamed-chunk-2-1.png" width="960"></p>
-</div>
-</div>
-<div id="doublet-detection" class="section level4">
-<h4 class="hasAnchor">
-<a href="#doublet-detection" class="anchor"></a>Doublet detection</h4>
-<p>Doublets hinder cell-type identification by appearing as a distinct transcriptomic state, and need to be removed for downstream analysis. singleCellTK contains various doublet detection tools that the user may choose from.</p>
-<div id="scrublet" class="section level5">
-<h5 class="hasAnchor">
-<a href="#scrublet" class="anchor"></a><strong>Scrublet</strong>
-</h5>
-<p><a href="https://github.com/swolock/scrublet/blob/master/examples/scrublet_basics.ipynb">Scrublet</a> aims to detect doublets by creating simulated doublets from combining transcriptomic profiles of existing cells in the dataset.</p>
-<p>The wrapper function <code>plotScrubletResults</code> can be used to plot the results from the Scrublet algorithm.</p>
-<p>The names of the reducedDims of the <code>SingleCellExperiment</code> object are stored in the <code>reducedDims</code> slot. Here, we will use the UMAP coordinates generated from <code>getUMAP</code> above.</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<p><img src="cnsl_cellqc_files/figure-html/unnamed-chunk-3-1.png" width="960"></p>
+  </details></details><details><summary><b>Doublet Detection</b></summary><details><summary><b>Scrublet</b></summary><p>The wrapper function <code><a href="../../reference/plotScrubletResults.html">plotScrubletResults()</a></code> can be used to plot the results from the Scrublet algorithm. Here, we will use the UMAP coordinates generated from <code><a href="../../reference/getUMAP.html">getUMAP()</a></code> in previous sections.</p>
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu">reducedDims</span><span class="op">(</span><span class="va">pbmc.combined</span><span class="op">)</span></code></pre></div>
 <pre><code>## List of length 6
 ## names(6): UMAP scrublet_TSNE ... decontX_pbmc3k_UMAP decontX_pbmc6k_UMAP</code></pre>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">scrublet.results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/plotScrubletResults.html">plotScrubletResults</a></span><span class="op">(</span>
   inSCE <span class="op">=</span> <span class="va">pbmc.combined</span>,
   reducedDimName <span class="op">=</span> <span class="st">"UMAP"</span>,
@@ -935,17 +1062,11 @@ pbmc3k-2
   legendSize <span class="op">=</span> <span class="fl">10</span>,
   legendTitleSize <span class="op">=</span> <span class="fl">10</span>
 <span class="op">)</span></code></pre></div>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">scrublet.results</span> </code></pre></div>
 <p><img src="cnsl_cellqc_files/figure-html/plot_umap_scrublet-1.png" width="960"></p>
-</div>
-<div id="scdblfinder" class="section level5">
-<h5 class="hasAnchor">
-<a href="#scdblfinder" class="anchor"></a><strong>ScDblFinder</strong>
-</h5>
-<p><a href="https://rdrr.io/bioc/scDblFinder/">ScDblFinder</a> is a doublet detection algorithm. ScDblFinder aims to detect doublets by creating a simulated doublet from existing cells and projecting it to the same PCA space as the cells.</p>
-<p>The wrapper function plotScDblFinderResults can be used to plot the QC outputs from the ScDblFinder algorithm.</p>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+</details><details><summary><b>ScDblFinder</b></summary><p>The wrapper function <code><a href="../../reference/plotScDblFinderResults.html">plotScDblFinderResults()</a></code> can be used to plot the QC outputs from the ScDblFinder algorithm.</p>
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">scDblFinder.results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/plotScDblFinderResults.html">plotScDblFinderResults</a></span><span class="op">(</span>
   inSCE <span class="op">=</span> <span class="va">pbmc.combined</span>, sample <span class="op">=</span> <span class="fu">colData</span><span class="op">(</span><span class="va">pbmc.combined</span><span class="op">)</span><span class="op">$</span><span class="va">sample</span>, 
   reducedDimName <span class="op">=</span> <span class="st">"UMAP"</span>, combinePlot <span class="op">=</span> <span class="st">"all"</span>,
@@ -956,14 +1077,8 @@ pbmc3k-2
   legendTitleSize <span class="op">=</span> <span class="fl">13</span>
 <span class="op">)</span></code></pre></div>
 <p><br></p>
-</div>
-<div id="doubletfinder" class="section level5">
-<h5 class="hasAnchor">
-<a href="#doubletfinder" class="anchor"></a><strong>DoubletFinder</strong>
-</h5>
-<p><a href="https://github.com/chris-mcginnis-ucsf/DoubletFinder">DoubletFinder</a> is a doublet detection algorithm which depends on the single cell analysis package Seurat.</p>
-<p>The wrapper function plotDoubletFinderResults can be used to plot the QC outputs from the DoubletFinder algorithm.</p>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+</details><details><summary><b>DoubletFinder</b></summary><p>The wrapper function <code><a href="../../reference/plotDoubletFinderResults.html">plotDoubletFinderResults()</a></code> can be used to plot the QC outputs from the DoubletFinder algorithm.</p>
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">doubletFinderResults</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/plotDoubletFinderResults.html">plotDoubletFinderResults</a></span><span class="op">(</span>
   inSCE <span class="op">=</span> <span class="va">pbmc.combined</span>,
   sample <span class="op">=</span> <span class="fu">colData</span><span class="op">(</span><span class="va">pbmc.combined</span><span class="op">)</span><span class="op">$</span><span class="va">sample</span>, 
@@ -976,14 +1091,8 @@ pbmc3k-2
   legendTitleSize <span class="op">=</span> <span class="fl">13</span>
 <span class="op">)</span></code></pre></div>
 <p><br></p>
-</div>
-<div id="scds-cxds" class="section level5">
-<h5 class="hasAnchor">
-<a href="#scds-cxds" class="anchor"></a><strong>SCDS, CXDS</strong>
-</h5>
-<p>CXDS, or co-expression based doublet scoring, is an algorithm in the <a href="https://www.bioconductor.org/packages/release/bioc/html/scds.html">SCDS</a> package which employs a binomial model for the co-expression of pairs of genes to determine doublets.</p>
-<p>The wrapper function <code>plotCxdsResults</code> can be used to plot the QC outputs from the CXDS algorithm.</p>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+</details><details><summary><b>SCDS, CXDS</b></summary><p>The wrapper function <code><a href="../../reference/plotCxdsResults.html">plotCxdsResults()</a></code> can be used to plot the QC outputs from the CXDS algorithm.</p>
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">cxdsResults</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/plotCxdsResults.html">plotCxdsResults</a></span><span class="op">(</span>
   inSCE <span class="op">=</span> <span class="va">pbmc.combined</span>,
   sample <span class="op">=</span> <span class="fu">colData</span><span class="op">(</span><span class="va">pbmc.combined</span><span class="op">)</span><span class="op">$</span><span class="va">sample</span>, 
@@ -995,14 +1104,8 @@ pbmc3k-2
   legendTitleSize <span class="op">=</span> <span class="fl">13</span>
 <span class="op">)</span></code></pre></div>
 <p><br></p>
-</div>
-<div id="scds-bcds" class="section level5">
-<h5 class="hasAnchor">
-<a href="#scds-bcds" class="anchor"></a><strong>SCDS, BCDS</strong>
-</h5>
-<p>BCDS, or binary classification based doublet scoring, is an algorithm in the <a href="https://www.bioconductor.org/packages/release/bioc/html/scds.html">SCDS</a> package which uses a binary classification approach to determine doublets.</p>
-<p>The wrapper function plotBCDSResults can be used to plot the QC outputs from the BCDS algorithm</p>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+</details><details><summary><b>SCDS, BCDS</b></summary><p>The wrapper function <code><a href="../../reference/plotBcdsResults.html">plotBcdsResults()</a></code> can be used to plot the QC outputs from the BCDS algorithm</p>
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">bcdsResults</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/plotBcdsResults.html">plotBcdsResults</a></span><span class="op">(</span>
   inSCE <span class="op">=</span> <span class="va">pbmc.combined</span>,
   sample <span class="op">=</span> <span class="fu">colData</span><span class="op">(</span><span class="va">pbmc.combined</span><span class="op">)</span><span class="op">$</span><span class="va">sample</span>, 
@@ -1014,14 +1117,8 @@ pbmc3k-2
   legendTitleSize <span class="op">=</span> <span class="fl">13</span>
 <span class="op">)</span></code></pre></div>
 <p><br></p>
-</div>
-<div id="scds-cxds-bcds-hybrid" class="section level5">
-<h5 class="hasAnchor">
-<a href="#scds-cxds-bcds-hybrid" class="anchor"></a><strong>SCDS, CXDS-BCDS hybrid</strong>
-</h5>
-<p>The CXDS-BCDS hybrid algorithm, uses both CXDS and BCDS algorithms from the <a href="https://www.bioconductor.org/packages/release/bioc/html/scds.html">SCDS</a> package.</p>
-<p>The wrapper function plotScdsHybridResults can be used to plot the QC outputs from the CXDS-BCDS hybrid algorithm.</p>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+</details><details><summary><b>SCDS, CXDS-BCDS hybrid</b></summary><p>The wrapper function <code><a href="../../reference/plotScdsHybridResults.html">plotScdsHybridResults()</a></code> can be used to plot the QC outputs from the CXDS-BCDS hybrid algorithm.</p>
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">bcdsCxdsHybridResults</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/plotScdsHybridResults.html">plotScdsHybridResults</a></span><span class="op">(</span>
   inSCE <span class="op">=</span> <span class="va">pbmc.combined</span>, sample <span class="op">=</span> <span class="fu">colData</span><span class="op">(</span><span class="va">pbmc.combined</span><span class="op">)</span><span class="op">$</span><span class="va">sample</span>, 
   reducedDimName <span class="op">=</span> <span class="st">"UMAP"</span>, combinePlot <span class="op">=</span> <span class="st">"all"</span>,
@@ -1032,18 +1129,8 @@ pbmc3k-2
   legendTitleSize <span class="op">=</span> <span class="fl">13</span>
 <span class="op">)</span></code></pre></div>
 <p><br></p>
-</div>
-</div>
-<div id="ambient-rna-detection" class="section level4">
-<h4 class="hasAnchor">
-<a href="#ambient-rna-detection" class="anchor"></a>Ambient RNA detection</h4>
-<div id="decontx" class="section level5">
-<h5 class="hasAnchor">
-<a href="#decontx" class="anchor"></a><strong>DecontX</strong>
-</h5>
-<p>In droplet-based single cell technologies, ambient RNA that may have been released from apoptotic or damaged cells may get incorporated into another droplet, and can lead to contamination. <a href="https://rdrr.io/bioc/celda/man/decontX.html">decontX</a>, available from the <a href="https://bioconductor.org/packages/release/bioc/html/celda.html">celda</a>, is a Bayesian method for the identification of the contamination level at a cellular level.</p>
-<p>The wrapper function plotDecontXResults can be used to plot the QC outputs from the DecontX algorithm.</p>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+</details></details><details><summary><b>Ambient RNA Detection</b></summary><details><summary><b>DecontX</b></summary><p>The wrapper function <code><a href="../../reference/plotDecontXResults.html">plotDecontXResults()</a></code> can be used to plot the QC outputs from the DecontX algorithm.</p>
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">decontxResults</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/plotDecontXResults.html">plotDecontXResults</a></span><span class="op">(</span>
   inSCE <span class="op">=</span> <span class="va">pbmc.combined</span>, sample <span class="op">=</span> <span class="fu">colData</span><span class="op">(</span><span class="va">pbmc.combined</span><span class="op">)</span><span class="op">$</span><span class="va">sample</span>, 
   reducedDimName <span class="op">=</span> <span class="st">"UMAP"</span>, combinePlot <span class="op">=</span> <span class="st">"all"</span>,
@@ -1057,133 +1144,36 @@ pbmc3k-2
   labelSamples <span class="op">=</span> <span class="cn">TRUE</span>,
   labelClusters <span class="op">=</span> <span class="cn">FALSE</span>
 <span class="op">)</span></code></pre></div>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">decontxResults</span></code></pre></div>
 <p><img src="cnsl_cellqc_files/figure-html/plots_umap_decontx-1.png" width="864"></p>
-</div>
-</div>
+  </details></details>
 </div>
 <div id="filtering-the-dataset" class="section level3">
 <h3 class="hasAnchor">
 <a href="#filtering-the-dataset" class="anchor"></a>Filtering the dataset</h3>
-<p>SingleCellExperiment objects can be subset by its colData using subsetSCECols. The colData parameter takes in an expression in character vector form which will be used to identify a subset of columns using variables found in the colData of the SingleCellExperiment object. For example, if x is a numeric vector in colData, then “x &lt; 5” will return all columns with x less than 5. The index parameter takes in a vector of indices which should be kept, while bool takes in a vector of TRUE or FALSE which should be the same length as the number of columns in the SingleCellExperiment object.</p>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<p><code>SingleCellExperiment</code> objects can be subset by its <code>colData</code> using <code><a href="../../reference/subsetSCECols.html">subsetSCECols()</a></code>. The <code>colData</code> parameter takes in a character vector of expression(s) which will be used to identify a subset of cells using variables found in the <code>colData</code> of the <code>SingleCellExperiment</code> object. For example, if <code>x</code> is a numeric vector in <code>colData</code>, then setting <code>colData = "x &lt; 5"</code> will return a <code>SingleCellExperiment</code> object where all columns (cells) meet the condition that <code>x</code> is less than 5. The <code>index</code> parameter takes in a numeric vector of indices which should be kept, while <code>bool</code> takes in a logical vector of <code>TRUE</code> or <code>FALSE</code> which should be of the same length as the number of columns (cells) in the <code>SingleCellExperiment</code> object. Please refer to our <a href="filtering.html"><em>Filtering</em> documentation</a> for detail.</p>
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co">#Before filtering:</span>
 <span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span><span class="op">(</span><span class="va">pbmc.combined</span><span class="op">)</span></code></pre></div>
 <pre><code>## [1] 32738  8119</code></pre>
 <p>Remove barcodes with high mitochondrial gene expression:</p>
-<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">pbmc.combined</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/subsetSCECols.html">subsetSCECols</a></span><span class="op">(</span><span class="va">pbmc.combined</span>, colData <span class="op">=</span> <span class="st">'subsets_mito_percent &lt; 20'</span><span class="op">)</span></code></pre></div>
 <p>Remove detected doublets from Scrublet:</p>
-<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">pbmc.combined</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/subsetSCECols.html">subsetSCECols</a></span><span class="op">(</span><span class="va">pbmc.combined</span>, colData <span class="op">=</span> <span class="st">'scrublet_call == FALSE'</span><span class="op">)</span></code></pre></div>
 <p>Remove cells with high levels of ambient RNA contamination:</p>
-<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">pbmc.combined</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/subsetSCECols.html">subsetSCECols</a></span><span class="op">(</span><span class="va">pbmc.combined</span>, colData <span class="op">=</span> <span class="st">'decontX_contamination &lt; 0.5'</span><span class="op">)</span></code></pre></div>
-<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co">#After filtering:</span>
 <span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span><span class="op">(</span><span class="va">pbmc.combined</span><span class="op">)</span></code></pre></div>
 <pre><code>## [1] 32738  7937</code></pre>
-</div>
-<div id="running-individual-qc-methods" class="section level3">
-<h3 class="hasAnchor">
-<a href="#running-individual-qc-methods" class="anchor"></a>Running individual QC methods</h3>
-<p>Instead of running all quality control methods on the dataset at once, users may elect to execute QC methods individually. The parameters as well as the outputs to individual QC functions are described in detail as follows:</p>
-<div id="runpercellqc-1" class="section level4">
-<h4 class="hasAnchor">
-<a href="#runpercellqc-1" class="anchor"></a>runPerCellQC</h4>
-<p>The wrapper function <code>runPerCellQC</code> can be used to separately compute QC metrics on its own.</p>
-<p>In this function, the <code>inSCE</code> parameter is the input SingleCellExperiment object, while the <code>useAssay</code> parameter is the assay object that in the SingleCellExperiment object the user wishes to use.</p>
-<p>If the user wishes, a list of gene sets can be applied to the function to determine the expression of a set of specific genes. A gene list imported into the SingleCellExperiment object using <code>importGeneSets</code> functions can be set as <code>collectionName</code>. Additionally, a pre-made list of genes can be used to determine the level of gene expression per cell. A list containing gene symbols may be set as <code>geneSetList</code>, or the user may instead use the <code>geneSetCollection</code> parameter to supply a <code>GeneSetCollection</code> object from the <a href="https://bioconductor.org/packages/release/bioc/html/GSEABase.html">GSEABase</a> package.</p>
-<p>The QC outputs are <code>sum</code>, <code>detected</code>, and <code>percent_top_X</code>.</p>
-<p><code>sum</code> contains the total number of counts for each cell.</p>
-<p><code>detected</code> contains the total number of features for each cell.</p>
-<p><code>percent_top_X</code> contains the percentage of the total counts that is made up by the expression of the top X genes for each cell.</p>
-<p>The <code>subsets_</code> columns contain information for the specific gene list that was used. For instance, if a gene list containing mitochondrial genes named <code>mito</code> was used, <code>subsets_mito_sum</code> would contains the total number of mitochondrial counts for each cell.</p>
-<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">pbmc.combined</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/runPerCellQC.html">runPerCellQC</a></span><span class="op">(</span>
-  inSCE <span class="op">=</span> <span class="va">pbmc.combined</span>,
-  useAssay <span class="op">=</span> <span class="st">"counts"</span>,
-  collectionName <span class="op">=</span> <span class="st">"mito"</span><span class="op">)</span></code></pre></div>
-</div>
-<div id="runscrublet" class="section level4">
-<h4 class="hasAnchor">
-<a href="#runscrublet" class="anchor"></a>runScrublet</h4>
-<p>The wrapper function <code>runScrublet</code> can be used to separately run the Scrublet algorithm on its own.</p>
-<p>The <code>sample</code> parameter indicates what sample each cell originated from. It can be set to <code>NULL</code> if all cells in the dataset came from the same sample.</p>
-<p>Scrublet also has a large set of parameters that the user can adjust; please refer to the Scrublet website for more details.</p>
-<p>The Scrublet outputs are <code>scrublet_score</code>, which is a numeric variable of the likelihood that a cell is a doublet, and the <code>scrublet_label</code>, which is the assignment of whether the cell is a doublet.</p>
-<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">pbmc.combined</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/runScrublet.html">runScrublet</a></span><span class="op">(</span>
-  inSCE <span class="op">=</span> <span class="va">pbmc.combined</span>,
-  sample <span class="op">=</span> <span class="fu">colData</span><span class="op">(</span><span class="va">pbmc.combined</span><span class="op">)</span><span class="op">$</span><span class="va">sample</span>, 
-  useAssay <span class="op">=</span> <span class="st">"counts"</span>
-<span class="op">)</span></code></pre></div>
-</div>
-<div id="runscdblfinder" class="section level4">
-<h4 class="hasAnchor">
-<a href="#runscdblfinder" class="anchor"></a>runScDblFinder</h4>
-<p>The wrapper function <code>runBarcodeRankDrops</code> can be used to separately run the ScDblFinder algorithm on its own. The <code>nNeighbors</code> parameter is the number of nearest neighbor used to calculate the density for doublet detection. <code>simDoublets</code> is used to determine the number of simulated doublets used for doublet detection.</p>
-<p>The output of ScDblFinder is a <code>scDblFinder_doublet_score</code>. The doublet score of a droplet will be higher if the it is deemed likely to be a doublet.</p>
-<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">pbmc.combined</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/runScDblFinder.html">runScDblFinder</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">pbmc.combined</span>, sample <span class="op">=</span> <span class="fu">colData</span><span class="op">(</span><span class="va">pbmc.combined</span><span class="op">)</span><span class="op">$</span><span class="va">sample</span>, useAssay <span class="op">=</span> <span class="st">"counts"</span><span class="op">)</span></code></pre></div>
-</div>
-<div id="rundoubletfinder" class="section level4">
-<h4 class="hasAnchor">
-<a href="#rundoubletfinder" class="anchor"></a>runDoubletFinder</h4>
-<p>The wrapper function <code>runDoubletFinder</code> can be used to separately run the DoubletFinder algorithm on its own. <code>runDoubletFinder</code> relies on a parameter (in Seurat) called resolution to determine cells that may be doublets. Users will be able to manipulate the resolution parameter through <code>seuratRes</code>. If multiple numeric vectors are stored in <code>seuratRes</code>, there will be multiple label/scores. The <code>seuratNfeatures</code> parameter determines the number of features that is used in the <code>FindVariableFeatures</code> function in Seurat. <code>seuratPcs</code> parameter determines the number of dimensions used in the <code>FindNeighbors</code> function in Seurat. The <code>formationRate</code> parameter is the estimated doublet detection rate in the dataset. aims to detect doublets by creating simulated doublets from combining transcriptomic profiles of existing cells in the dataset.</p>
-<p>The DoubletFinder outputs are <code>doubletFinder_doublet_score</code>, which is a numeric variable of the likelihood that a cell is a doublet, and the <code>doubletFinder_doublet_label</code>, which is the assignment of whether the cell is a doublet.</p>
-<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">pbmc.combined</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/runDoubletFinder.html">runDoubletFinder</a></span><span class="op">(</span>
-  inSCE <span class="op">=</span> <span class="va">pbmc.combined</span>, useAssay <span class="op">=</span> <span class="st">"counts"</span>,
-  sample <span class="op">=</span> <span class="fu">colData</span><span class="op">(</span><span class="va">pbmc.combined</span><span class="op">)</span><span class="op">$</span><span class="va">sample</span>, 
-  seuratRes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1.0</span><span class="op">)</span>, seuratPcs <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">15</span>,
-  seuratNfeatures <span class="op">=</span> <span class="fl">2000</span>,
-  formationRate <span class="op">=</span> <span class="fl">0.075</span>, seed <span class="op">=</span> <span class="fl">12345</span>
-<span class="op">)</span></code></pre></div>
-</div>
-<div id="runcxds" class="section level4">
-<h4 class="hasAnchor">
-<a href="#runcxds" class="anchor"></a>runCXDS</h4>
-<p>The wrapper function <code>runCxds</code> can be used to separately run the CXDS algorithm on its own. In <code>runCxds</code>, the <code>ntop</code> parameter is the number of top variance genes to consider. The <code>binThresh</code> parameter is the minimum counts a gene needs to have to be included in the analysis. <code>verb</code> determines whether progress messages will be displayed or not. <code>retRes</code> will determine whether the gene pair results should be returned or not. The user may set the estimated number of doublets with estNdbl.</p>
-<p>The output of <code>runCxds</code> is the doublet score, <code>scds_cxds_score</code>.</p>
-<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">pbmc.combined</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/runCxds.html">runCxds</a></span><span class="op">(</span>
-  inSCE <span class="op">=</span> <span class="va">pbmc.combined</span>, sample <span class="op">=</span> <span class="fu">colData</span><span class="op">(</span><span class="va">pbmc.combined</span><span class="op">)</span><span class="op">$</span><span class="va">sample</span>, 
-  ntop <span class="op">=</span> <span class="fl">500</span>, binThresh <span class="op">=</span> <span class="fl">0</span>,
-  verb <span class="op">=</span> <span class="cn">FALSE</span>, retRes <span class="op">=</span> <span class="cn">FALSE</span>, estNdbl <span class="op">=</span> <span class="cn">FALSE</span>
-<span class="op">)</span></code></pre></div>
-</div>
-<div id="runbcds" class="section level4">
-<h4 class="hasAnchor">
-<a href="#runbcds" class="anchor"></a>runBCDS</h4>
-<p>The wrapper function <code>runBcds</code> can be used to separately run the BCDS algorithm on its own. In <code>runBcds</code>, the <code>ntop</code> parameter is the number of top variance genes to consider. The <code>srat</code> parameter is the ratio between original number of cells and simulated doublets. The <code>nmax</code> parameter is the maximum number of cycles that the algorithm should run through. If set to <code>tune</code>, this will be automatic. The <code>varImp</code> parameter determines if the variable importance should be returned or not.</p>
-<p>The output of <code>runBcds</code> is scds_bcds_score, which is the likelihood that a cell is a doublet.</p>
-<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">pbmc.combined</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/runBcds.html">runBcds</a></span><span class="op">(</span>
-  inSCE <span class="op">=</span> <span class="va">pbmc.combined</span>, seed <span class="op">=</span> <span class="fl">12345</span>, sample <span class="op">=</span> <span class="fu">colData</span><span class="op">(</span><span class="va">pbmc.combined</span><span class="op">)</span><span class="op">$</span><span class="va">sample</span>, 
-  ntop <span class="op">=</span> <span class="fl">500</span>, srat <span class="op">=</span> <span class="fl">1</span>, nmax <span class="op">=</span> <span class="st">"tune"</span>, varImp <span class="op">=</span> <span class="cn">FALSE</span>
-<span class="op">)</span></code></pre></div>
-</div>
-<div id="runcxdsbcdshybrid" class="section level4">
-<h4 class="hasAnchor">
-<a href="#runcxdsbcdshybrid" class="anchor"></a>runCxdsBcdsHybrid</h4>
-<p>The wrapper function <code>runCxdsBcdsHybrid</code> can be used to separately run the CXDS-BCDS hybrid algorithm on its own.</p>
-<p>All parameters from the <code>runBCDS</code> and <code>runBCDS</code> functions may be applied to this function in the cxdsArgs and bcdsArgs parameters, respectively. The output of <code>runCxdsBcdsHybrid</code> is the doublet score, <code>scds_hybrid_score</code>.</p>
-<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">pbmc.combined</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/runCxdsBcdsHybrid.html">runCxdsBcdsHybrid</a></span><span class="op">(</span>
-  inSCE <span class="op">=</span> <span class="va">pbmc.combined</span>, sample <span class="op">=</span> <span class="fu">colData</span><span class="op">(</span><span class="va">pbmc.combined</span><span class="op">)</span><span class="op">$</span><span class="va">sample</span>, 
-  seed <span class="op">=</span> <span class="fl">12345</span>, nTop <span class="op">=</span> <span class="fl">500</span>
-<span class="op">)</span></code></pre></div>
-</div>
-<div id="rundecontx" class="section level4">
-<h4 class="hasAnchor">
-<a href="#rundecontx" class="anchor"></a>runDecontX</h4>
-<p>The outputs of <code>runDecontX</code> are <code>decontX_contamination</code> and <code>decontX_clusters</code>.</p>
-<p>The wrapper function <code>runDecontX</code> can be used to separately run the DecontX algorithm on its own. <code>decontX_contamination</code> is a numeric vector which characterizes the level of contamination in each cell. Clustering is performed as part of the <code>runDecontX</code> algorithm. <code>decontX_clusters</code> is the resulting cluster assignment, which can also be labeled on the plot.</p>
-<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">pbmc.combined</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/runDecontX.html">runDecontX</a></span><span class="op">(</span><span class="va">pbmc.combined</span>, sample <span class="op">=</span> <span class="fu">colData</span><span class="op">(</span><span class="va">pbmc.combined</span><span class="op">)</span><span class="op">$</span><span class="va">sample</span>, useAssay <span class="op">=</span> <span class="st">"counts"</span><span class="op">)</span></code></pre></div>
-</div>
+<p><br></p>
+<blockquote>
+<p>For performing QC on droplet-level raw count matrix with SCTK, please refer to our <a href="cnsl_dropletqc.html"><em>Droplet QC</em> documentation</a>.</p>
+</blockquote>
 </div>
 </div>
 <div id="session-information" class="section level1">
@@ -1337,7 +1327,7 @@ pbmc3k-2
 
 
       <footer><div class="copyright">
-  <p>Developed by David Jenkins, Vidya Akavoor, Salam Alabdullatif, Shruthi Bandyadka, Emma Briars, Xinyun Cao, Sebastian Carrasco Pro, Tyler Faits, Rui Hong, Mohammed Muzamil Khan, Yusuke Koga, Anastasia Leshchyk, Irzam Sarfraz, Yichen Wang, Zhe Wang, W. Evan Johnson, Joshua David Campbell.</p>
+  <p>Developed by Yichen Wang, Irzam Sarfraz, Rui Hong, Yusuke Koga, Salam Alabdullatif, David Jenkins, Vidya Akavoor, Xinyun Cao, Shruthi Bandyadka, Anastasia Leshchyk, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, W. Evan Johnson, Joshua David Campbell.</p>
 </div>
 
 <div class="pkgdown">
