@@ -44,7 +44,7 @@ To view detailed instructions on how to use these methods, please select 'Intera
 
 **Entry of The Panel**
 
-From anywhere of the UI, the panel for clustering can be accessed from the top navigation panel at the circled tab shown below.  
+From anywhere of the UI, the panel for pathway analysis can be accessed from the top navigation panel at the circled tab shown below.  
 
 ![PathwayEntry](ui_screenshots/pathwayAnalysis/path_ui_entry.PNG)\
 
