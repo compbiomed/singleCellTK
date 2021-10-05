@@ -514,7 +514,7 @@ shinyPanelBatchcorrect <- fluidPage(
                 width = 7,
                 fluidRow(
                   h6(
-                    "the plot highlights the top variable features (can be labeled from the button on the left) with respect to the metrics computed by the selected algorithm"
+                    "The top two plots shows the variance explained by the grouping of batches and user specified conditions, and the bottom two plots present the low dimension representation of the datasets. Please refer to our documentation for detatil."
                   ),
                   align="center"
                 )

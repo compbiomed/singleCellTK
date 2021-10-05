@@ -50,7 +50,7 @@ shinyPanelGeneSets <- fluidPage(
                    choices = c("human", "mouse"), selected = "human",
                    inline = TRUE),
       selectInput("geneSetMitoID", "ID Type",
-                  choices = c("symbol", "entrez", "ensemble", "ensemble_transcriptID"),
+                  choices = c("symbol", "entrez", "ensembl", "ensemblTranscriptID"),
                   selected = "symbol"),
       textInput("geneSetMitoName", "Collection Name", "Mito",
                 placeholder = "Required"),

@@ -87,12 +87,14 @@ formatPlotList <- function(plotlist, samples) {
 sce.qc <- params$object
 subTitle <- params$subTitle
 studyDesign <- params$studyDesign
-samples <- unique(colData(sce.qc)$sample)
+sceSample <- colData(sce.qc)$sample
+samples <- unique(sceSample)
+
+sce.qc <- getUMAP(sce.qc, useAssay = "counts", reducedDimName = "QC_UMAP", sample = sceSample)
 
 ### when 'sample' doesnn't exists in colData
 if (is.null(samples)) { samples <- "sample" }
 
-sce.qc <- getUMAP(sce.qc, useAssay = "counts", reducedDimName = "QC_UMAP")
 ```
 
 ---

@@ -84,6 +84,12 @@ construction by buildSNNGraph and graph clustering by
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
+  <a href="https://www.camplab.net/sctk">
+    <span class="fas fa-home fa-lg"></span>
+     
+  </a>
+</li>
+<li>
   <a href="../articles/articles/installation.html">Installation</a>
 </li>
 <li class="dropdown">
@@ -100,7 +106,7 @@ construction by buildSNNGraph and graph clustering by
           <a href="../articles/articles/import_data.html">Import Data</a>
         </li>
         <li>
-          <a href="../articles/articles/cmd_import_scRNAseq_data_as_SCE.html">Import Data in Commandline</a>
+          <a href="../articles/articles/cmd_import_scRNAseq_data_as_SCE.html">Import Data for Commandline QC</a>
         </li>
         <li>
           <a href="../articles/articles/import_genesets.html">Import Gene Sets</a>
@@ -123,10 +129,10 @@ construction by buildSNNGraph and graph clustering by
           <a href="../articles/articles/cmd_qc.html">QC with commandline</a>
         </li>
         <li>
-          <a href="../articles/articles/cnsl_cellqc.html">Cell QC in R console</a>
+          <a href="../articles/articles/cnsl_dropletqc.html">Droplet QC in R console</a>
         </li>
         <li>
-          <a href="../articles/articles/cnsl_dropletqc.html">Droplet QC in R console</a>
+          <a href="../articles/articles/cnsl_cellqc.html">Cell QC in R console</a>
         </li>
         <li>
           <a href="../articles/articles/ui_qc.html">QC in the UI</a>
@@ -368,7 +374,7 @@ object with <code>factor</code> cluster labeling updated in
     <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='st'>"mouseBrainSubsetSCE"</span><span class='op'>)</span>
 <span class='va'>mouseBrainSubsetSCE</span> <span class='op'>&lt;-</span> <span class='fu'>runScranSNN</span><span class='op'>(</span><span class='va'>mouseBrainSubsetSCE</span>,
                                    useReducedDim <span class='op'>=</span> <span class='st'>"PCA_logcounts"</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'>Sun Sep 26 13:23:30 2021 ... Running 'scran SNN clustering'</span></div></pre>
+</div><div class='output co'>#&gt; <span class='message'>Mon Oct 04 18:19:04 2021 ... Running 'scran SNN clustering'</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -380,7 +386,7 @@ object with <code>factor</code> cluster labeling updated in
 
       <footer>
       <div class="copyright">
-  <p>Developed by David Jenkins, Vidya Akavoor, Salam Alabdullatif, Shruthi Bandyadka, Emma Briars, Xinyun Cao, Sebastian Carrasco Pro, Tyler Faits, Rui Hong, Mohammed Muzamil Khan, Yusuke Koga, Anastasia Leshchyk, Irzam Sarfraz, Yichen Wang, Zhe Wang, W. Evan Johnson, Joshua David Campbell.</p>
+  <p>Developed by Yichen Wang, Irzam Sarfraz, Rui Hong, Yusuke Koga, Salam Alabdullatif, David Jenkins, Vidya Akavoor, Xinyun Cao, Shruthi Bandyadka, Anastasia Leshchyk, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, W. Evan Johnson, Joshua David Campbell.</p>
 </div>
 
 <div class="pkgdown">
