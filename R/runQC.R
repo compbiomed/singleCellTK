@@ -25,6 +25,7 @@
 #' sce <- runCellQC(sce)
 #' }
 #' @export
+
 runCellQC <- function(inSCE,
   algorithms = c("QCMetrics", "scDblFinder", "cxds", "bcds",
     "cxds_bcds_hybrid", "decontX"), #"scrublet", "doubletFinder",
