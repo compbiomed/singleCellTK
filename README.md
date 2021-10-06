@@ -8,17 +8,29 @@ The Single Cell ToolKit (SCTK) is an analysis platform that provides an **R inte
 
 A comprehensive list of available functions is listed in the Reference section.  (add link here)
 
+More information about the toolkit can be found at the toolkit [homepage](https://camplab.net/sctk/).
+
 ## Installation
 
-Detailed intstructions on how to install singleCellTK are available in the link below:
+Detailed intstructions on how to install singleCellTK are available at the link below:
 
 (add link here)
 
 ## Features
+The toolkit offers mulitple ways to analyze your single cell data both through the R console, commandline (QC) and graphical user interface with the ability to use a large number of algorithms from both R & Python integrated within the toolkit. 
+#### Console Analysis
+Traditional analysis of single-cell RNA-seq data can be performed in the R console using wrapper functions for a multitude of tools and algorithms.
+#### Interactive Analysis
+The shiny app allows users without programming experience to easily analyze their single cell RNA-seq data with a graphical user interface.
+#### Reports
+Comprehensive html reports developed with rmarkdown allows users to document, explore, and share their analyses.
+#### Interoperability
+Tools from both R and Python can be seamlessly integrated within the same analysis workflow.
 
+More information about the toolkit can be found at the toolkit [homepage](https://camplab.net/sctk/).
 
 ## Report Issues
 
-(add link here to issues)
+If you face any difficulty in installing or using the toolkit or have identified a bug in the toolkit, please feel free to open up a [GitHub issue](https://github.com/compbiomed/singleCellTK/issues).
 
 
