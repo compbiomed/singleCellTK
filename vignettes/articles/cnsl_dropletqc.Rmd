@@ -1,5 +1,5 @@
 ---
-title: "Quality Control in R console"
+title: "Quality Control for droplet data"
 ---
 <style>
 body {
@@ -12,7 +12,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Introduction
 
-Performing comprehensive quality control (QC) is necessary to remove poor quality cells for downstream analysis of single-cell RNA sequencing (scRNA-seq) data. Within droplet-based scRNA-seq data, droplets containing cells must be differentiated from empty droplets. Therefore, assessment of the data is required, for which various QC algorithms have been developed. In singleCellTK (SCTK), we have written convenience functions for several of these tools. In this guide, we will demonstrate how to use these functions to perform quality control on unfiltered, droplet-level data. (For definition of droplet-level data, please refer [this documentation](cmd_qc.html#introduction-1).)
+Performing comprehensive quality control (QC) is necessary to remove poor quality cells for downstream analysis of single-cell RNA sequencing (scRNA-seq) data. Within droplet-based scRNA-seq data, droplets containing cells must be differentiated from empty droplets. Therefore, assessment of the data is required, for which various QC algorithms have been developed. In singleCellTK (SCTK), we have written convenience functions for several of these tools. In this guide, we will demonstrate how to use these functions to perform quality control on unfiltered, droplet data. (For definition of droplet data, please refer [this documentation](cmd_qc.html#introduction-1).)
 
 The package can be loaded using the `library()` command.
 
@@ -58,7 +58,7 @@ colData(pbmc4k.droplet)$sample <- rep("pbmc4k", ncol(colData(pbmc4k.droplet)))
 pbmc4k.droplet <- pbmc4k.droplet[, sample(colnames(pbmc4k.droplet), 60000)]
 ```
 
-SCTK also supports the importing of single-cell data from the following platforms: [10X CellRanger](https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/what-is-cell-ranger), [STARSolo](https://github.com/alexdobin/STAR/blob/master/docs/STARsolo.md), [BUSTools](https://www.kallistobus.tools/), [SEQC](https://github.com/ambrosejcarr/seqc), [DropEST](https://github.com/hms-dbmi/dropEst), [Alevin](https://salmon.readthedocs.io/en/latest/alevin.html), as well as dataset already stored in [SingleCellExperiment](https://rdrr.io/bioc/SingleCellExperiment/man/SingleCellExperiment.html) object and [AnnData](https://github.com/theislab/anndata) object. To load your own input data, please refer [Import data into SCTK](import_data.html) for detailed instruction. 
+SCTK also supports the importing of single-cell data from the following platforms: [10X CellRanger](https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/what-is-cell-ranger), [STARSolo](https://github.com/alexdobin/STAR/blob/master/docs/STARsolo.md), [BUSTools](https://www.kallistobus.tools/), [SEQC](https://github.com/ambrosejcarr/seqc), [DropEST](https://github.com/hms-dbmi/dropEst), [Alevin](https://salmon.readthedocs.io/en/latest/alevin.html), as well as dataset already stored in [SingleCellExperiment](https://rdrr.io/bioc/SingleCellExperiment/man/SingleCellExperiment.html) object and [AnnData](https://github.com/theislab/anndata) object. To load your own input data, please refer `Function Reference for pre-processing tools` under `Console Analysis` section in [Import data into SCTK](import_data.html) for detailed instruction. 
 
 ### runDropletQC
 

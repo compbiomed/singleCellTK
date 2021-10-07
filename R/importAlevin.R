@@ -31,7 +31,7 @@ importAlevin <- function(
   matFile <- file.path(alevinDir, "alevin/quants_mat.gz")
   ### require package fishpond
   ma <- tximport::tximport(files = matFile, type = "alevin")
-  if ('counts' %in% names(ma)) {
+  if (!'counts' %in% names(ma)) {
     stop("RNA count matrix not found in the alevin output!")
   }
   mat <- ma$counts
