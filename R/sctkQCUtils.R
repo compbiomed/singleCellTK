@@ -642,6 +642,10 @@ qcInputProcess <- function(preproc,
         return(list(dropletSCE, cellSCE))
     }
 
+    if (preproc == "Alevin") {
+        cellSCE <- importAlevin(alevinDir = path, sampleName = samplename, class = "Matrix", delayedArray=FALSE)
+        return(list(dropletSCE, cellSCE))
+    }
     ## preproc is not one of the method above. Stop the pipeline.
     stop(paste0("'", preproc, "' not supported."))
 }
