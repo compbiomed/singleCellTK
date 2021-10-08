@@ -102,7 +102,7 @@ tabl <- "
 | `subsets_*`                               | sum, detected, percent_top calculated on specified gene list  | `runPerCellQC()`      | [scater](https://bioconductor.org/packages/release/bioc/html/scater.html)        |
 | `scrublet_score`                         | Doublet score                                                 | `runScrublet()`       | [scrublet](https://github.com/swolock/scrublet)      |
 | `scrublet_call`                          | Doublet classification based on threshold                     | `runScrublet()`       | [scrublet](https://github.com/swolock/scrublet)      |
-| `scDblFinder_doublet_score`              | Doublet score                                                 | `runScDblFinder()`   | [scran](https://bioconductor.org/packages/release/bioc/html/scran.html)         |
+| `scDblFinder_doublet_score`              | Doublet score                                                 | `runScDblFinder()`   | [scDblFinder](https://bioconductor.org/packages/release/bioc/html/scDblFinder.html)         |
 | `doubletFinder_doublet_score`            | Doublet score                                                 | `runDoubletFinder()`  | [DoubletFinder](https://github.com/chris-mcginnis-ucsf/DoubletFinder) |
 | `doubletFinder_doublet_label_resolution` | Doublet classification based on threshold                     | `runDoubletFinder()`  | [DoubletFinder](https://github.com/chris-mcginnis-ucsf/DoubletFinder) |
 | `scds_cxds_score`                        | Doublet score                                                 | `runCxds()`           | [SCDS](https://www.bioconductor.org/packages/release/bioc/html/scds.html)          |

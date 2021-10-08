@@ -94,6 +94,10 @@ df.matrix %>%
 tabl <- "
 | QC output                              | Description                                                       | Methods             | Package/Tool  |
 |:---------------------------------------|:------------------------------------------------------------------|:--------------------|:--------------|
+| `sum`                                    | Total counts                                                  | `runPerCellQC()`      | [scater](https://bioconductor.org/packages/release/bioc/html/scater.html)        |
+| `detected`                               | Total features                                                | `runPerCellQC()`      | [scater](https://bioconductor.org/packages/release/bioc/html/scater.html)        |
+| `percent_top`                            | % Expression coming from top features                         | `runPerCellQC()`      | [scater](https://bioconductor.org/packages/release/bioc/html/scater.html)        |
+| `subsets_*`                               | sum, detected, percent_top calculated on specified gene list  | `runPerCellQC()`      | [scater](https://bioconductor.org/packages/release/bioc/html/scater.html)        |
 | `dropletUtils_emptyDrops_total`          | Total counts                                                      | `runEmptyDrops()`       | [DropletUtils](https://bioconductor.org/packages/release/bioc/html/DropletUtils.html)  |
 | `dropletUtils_emptyDrops_logprob`        | The log-probability of droplet being empty                        | `runEmptyDrops()`       | [DropletUtils](https://bioconductor.org/packages/release/bioc/html/DropletUtils.html)  |
 | `dropletUtils_emptyDrops_pvalue`         | Monte Carlo p-value of droplet being empty                        | `runEmptyDrops()`       | [DropletUtils](https://bioconductor.org/packages/release/bioc/html/DropletUtils.html)  |

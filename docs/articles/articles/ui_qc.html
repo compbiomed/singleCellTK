@@ -213,7 +213,7 @@
 
       
 
-      </header><script src="ui_qc_files/header-attrs-2.7/header-attrs.js"></script><div class="row">
+      </header><script src="ui_qc_files/header-attrs-2.8/header-attrs.js"></script><script src="ui_qc_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Using the UI to generate QC metrics</h1>
@@ -230,8 +230,13 @@
 <h2 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h2>
 <p><img src="ui_screenshots/qc/qc_ui_entry.png" alt="entry"><br></p>
-<p>Single Cell Toolkit (SCTK) allows users to generate quality control (QC) metrics for the single-cell data that they have imported. Users should enter the page through the way as shown in the screenshot above.</p>
-<p>Here SCTK provides generic QC metrics, as well as contamination estimation by <a href="https://rdrr.io/bioc/celda/man/decontX.html">decontX</a>, and doublet detection algorithms including <a href="https://rdrr.io/bioc/scDblFinder/">scDblFinder</a>, <a href="https://rdrr.io/bioc/scds/man/cxds.html">cxds</a>, <a href="https://rdrr.io/bioc/scds/man/bcds.html">bcds</a>, <a href="https://rdrr.io/bioc/scds/man/cxds_bcds_hybrid.html">cxds_bcds_hybrid</a>, <a href="https://rdrr.io/github/chris-mcginnis-ucsf/DoubletFinder/man/doubletFinder.html">doubletFinder</a>, and <a href="https://github.com/swolock/scrublet">scrublet</a>. Note that “scrublet” is Python based. Users should have it configured before trying to apply it.</p>
+<p>Single Cell Toolkit (SCTK) provides Rshiny graphical user interface (UI) to perform quality control for the single-cell data that users have imported. User can open the SCTK Rshiny GUI by running <code><a href="../../reference/singleCellTK.html">singleCellTK()</a></code> in Rstudio console. Users can navigate to quality control page through the tab that is highlighted in the screenshot above.</p>
+<p>Here SCTK provides generic QC metrics, as well as contamination estimation by <a href="https://rdrr.io/bioc/celda/man/decontX.html">decontX</a>, and doublet detection algorithms including <a href="https://rdrr.io/bioc/scDblFinder/">scDblFinder</a>, <a href="https://rdrr.io/bioc/scds/man/cxds.html">cxds</a>, <a href="https://rdrr.io/bioc/scds/man/bcds.html">bcds</a>, <a href="https://rdrr.io/bioc/scds/man/cxds_bcds_hybrid.html">cxds_bcds_hybrid</a>, <a href="https://rdrr.io/github/chris-mcginnis-ucsf/DoubletFinder/man/doubletFinder.html">doubletFinder</a>, and <a href="https://github.com/swolock/scrublet">scrublet</a>. Note that “scrublet” is Python based. Users should have it configured before trying to apply it. User can refer to <code>Install Python Dependencies</code> section in the <a href="installation.html">Installation</a> page.</p>
+</div>
+<div id="import-dataset" class="section level2">
+<h2 class="hasAnchor">
+<a href="#import-dataset" class="anchor"></a>Import dataset</h2>
+<p>SCTK supports the importing of single-cell data from the following platforms: <a href="https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/what-is-cell-ranger">10X CellRanger</a>, <a href="https://github.com/alexdobin/STAR/blob/master/docs/STARsolo.md">STARSolo</a>, <a href="https://www.kallistobus.tools/">BUSTools</a>, <a href="https://github.com/ambrosejcarr/seqc">SEQC</a>, <a href="https://github.com/hms-dbmi/dropEst">DropEST</a>, <a href="https://salmon.readthedocs.io/en/latest/alevin.html">Alevin</a>, as well as dataset already stored in <a href="https://rdrr.io/bioc/SingleCellExperiment/man/SingleCellExperiment.html">SingleCellExperiment</a> object and <a href="https://github.com/theislab/anndata">AnnData</a> object. To load your own input data to SCTK UI, please refer <code>Importing Single-Cell Datasets</code> under <code>Interactive Analysis</code> section in <a href="import_data.html">Import data into SCTK</a> page for detailed instruction.</p>
 </div>
 <div id="select-which-algorithms-to-run" class="section level2">
 <h2 class="hasAnchor">
@@ -242,22 +247,26 @@
 <div id="other-settings-before-running" class="section level2">
 <h2 class="hasAnchor">
 <a href="#other-settings-before-running" class="anchor"></a>Other settings before running</h2>
-<p><img src="ui_screenshots/qc/qc_ui_general.png" alt="general"><br></p>
 <p>After checking off all the desired QC algorithms, users should also go through other settings including:<br>
-- <strong>Select assay</strong>: Choose the expression matrix that should be used for calculation.<br>
-- <strong>Select variable containing sample labels</strong>: The cell level annotation that labels the sample source of each cell.</p>
-<p><img src="ui_screenshots/qc/qc_ui_umap.png" alt="umap"><br></p>
-<p>A UMAP embedding will be calculated in the end when running SCTK QC workflow. It will be used across all QC algorithms for visualization of any scores or clusters. The parameters are already described in the UI. For more information, please refer to <code><a href="../../reference/getUMAP.html">getUMAP()</a></code></p>
+- <strong>Select assay</strong>: Choose the expression matrix that is used for quality control analysis. User needs to select the assay which stores the raw cell count matrix (unnormalized and unscaled).<br>
+- <strong>Select variable containing sample labels</strong>: QC steps will be performed for each sample separately. User needs to select the cell level annotation that labels the sample source of each cell.</p>
+<p><img src="ui_screenshots/qc/qc_ui_general.png" alt="general"><br></p>
+<p>A UMAP embedding will be calculated in the end when running SCTK QC workflow. It will be used across all QC algorithms for visualization of any scores or clusters. The parameters are already described in the UI. For more information, please refer to <code><a href="../../reference/getUMAP.html">getUMAP()</a></code> <img src="ui_screenshots/qc/qc_ui_umap.png" alt="umap"><br></p>
 <p>Having everything checked and ready, users can then press <strong>“Run”</strong> to start the procedure.</p>
 </div>
 <div id="plot-the-results" class="section level2">
 <h2 class="hasAnchor">
 <a href="#plot-the-results" class="anchor"></a>Plot the results</h2>
-<p>Once the QC algorithms have finished running, plots for the metrics from each algorithm will automatically appear to the right of the QC algorithms’ panel in a tab set manner.</p>
+<p>Once the QC analysis is finished, plots visualizing the QC metrics from each algorithm will automatically appear to the right of the QC algorithms’ panel in a tab set manner.</p>
+<p>The QC metrics are generated sample wise. For example, in the “counts per cell” violin plot below, the results for sample “pbmc3k” and “pbmc4k” are plotted separately.</p>
 <p><img src="ui_screenshots/qc/qc_ui_result1.png" alt="result1"><br></p>
-<p>The QC metrics are generated sample wise. For example, in the “counts per cell” violin plot above, the results for sample “pbmc3k” and “pbmc4k” are plotted separately.</p>
-<p><img src="ui_screenshots/qc/qc_ui_result2.png" alt="result1"><br></p>
-<p>While some types of plots are not able to be grouped, for certain algorithms, there will be sub-tabs for each sample if multiple samples are presented in users dataset.</p>
+<p>The visualization of certain algorithms (i.e density plot, UMAP plot) will be displayed in sub-tabs for each sample, if multiple sample are presented in users dataset and user specify correct sample labels when run QC step. The figure below demonstrates the visualization of doublet detection for “pbmc3k” and “pbmc4k” sample.</p>
+<p><img src="ui_screenshots/qc/qc_ui_result2.png" alt="result2"><br></p>
+</div>
+<div id="filtering-poor-quality-data" class="section level2">
+<h2 class="hasAnchor">
+<a href="#filtering-poor-quality-data" class="anchor"></a>Filtering poor quality data</h2>
+<p>Once the QC analysis is finished, user can filter poor quality cells based on different QC metrics. The filtering step can be performed using UI. Please refer <code>Interactive Analysis</code> section in the <a href="filtering.html">Filtering</a> page for more details.</p>
 </div>
   </div>
 
