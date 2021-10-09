@@ -81,16 +81,13 @@
       <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">QC &amp; Filtering</a>
       <ul class="dropdown-menu" role="menu">
 <li>
-          <a href="../../articles/articles/cmd_qc.html">QC with commandline</a>
+          <a href="../../articles/articles/cnsl_dropletqc.html">Droplet QC (R console)</a>
         </li>
         <li>
-          <a href="../../articles/articles/cnsl_dropletqc.html">Droplet QC in R console</a>
+          <a href="../../articles/articles/cnsl_cellqc.html">Cell QC (R console)</a>
         </li>
         <li>
-          <a href="../../articles/articles/cnsl_cellqc.html">Cell QC in R console</a>
-        </li>
-        <li>
-          <a href="../../articles/articles/ui_qc.html">QC in the UI</a>
+          <a href="../../articles/articles/ui_qc.html">Cell QC (Shiny UI)</a>
         </li>
         <li>
           <a href="../../articles/articles/filtering.html">Filtering</a>
@@ -187,6 +184,9 @@
   </ul>
 </li>
 <li>
+  <a href="../../articles/articles/cmd_qc.html">SCTK-QC Pipeline</a>
+</li>
+<li>
   <a href="../../reference/index.html">Reference</a>
 </li>
       </ul>
@@ -248,6 +248,9 @@
 <li>
 <a href="https://github.com/alexdobin/STAR/blob/master/docs/STARsolo.md">STARSolo</a> <span class="citation">[4]</span>
 </li>
+<li>
+<a href="https://salmon.readthedocs.io/en/latest/alevin.html">Alevin</a> <span class="citation">[5]</span>
+</li>
 </ul>
 <p>In all cases, SCTK retains the standard output directory structure from the upstream tools.</p>
 <p>Meanwhile, SCTK also supports importing raw count matrix, with metadata, stored in the following format</p>
@@ -258,7 +261,8 @@
 <li>
 <a href="https://anndata.readthedocs.io/en/latest/">AnnData</a> object saved in hdf5 file</li>
 </ul>
-<p>To view detailed instructions on how to import data, please select ‘Interactive Analysis’ for importing data through the shiny application or ‘Console Analysis’ for importing through the R console from the tabs below: <br></p>
+<p>A chart at the bottom of this documentation summarizes the <a href="#expected-directory-structure-for-all-data-source-1">expected directory structure</a> of the input data, for each type of data source.</p>
+<p>To view detailed instructions on how to import data, please select, from the tabs below, “Interactive Analysis” for importing data into the Shiny application, or “Console Analysis” for importing into R environment via R console.</p>
 </div>
 <div id="workflow-guide" class="section level2">
 <h2 class="hasAnchor">
@@ -395,25 +399,34 @@ After choosing a single file for uploading, user must wait until the progress ba
 document.getElementById("ia-button").click();
 </script>
 </div>
+<div id="expected-directory-structure-for-all-data-source" class="section level2">
+<h2 class="hasAnchor">
+<a href="#expected-directory-structure-for-all-data-source" class="anchor"></a>Expected Directory Structure for All Data Source</h2>
+<p><img src="ui_screenshots/import/directory_structure.png"></p>
+</div>
 <div id="references" class="section level2 unnumbered">
 <h2 class="hasAnchor">
 <a href="#references" class="anchor"></a>References</h2>
 <div id="refs" class="references csl-bib-body">
 <div id="ref-Zheng2017" class="csl-entry">
 <div class="csl-left-margin">[1] </div>
-<div class="csl-right-inline">P. B. Grace X. Y. Zheng Jessica M. Terry, <span>“<span class="nocase">Massively parallel digital transcriptional profiling of single cells</span>,”</span> <em>Nature Communications</em>, vol. 8, no. 14049, 2017, doi: <a href="https://doi.org/10.1038/ncomms14049">10.1038/ncomms14049</a>.</div>
+<div class="csl-right-inline">G. X. Y. Zheng <em>et al.</em>, <span>“<span class="nocase">Massively parallel digital transcriptional profiling of single cells</span>,”</span> <em>Nature Communications</em>, vol. 8, no. 14049, 2017, doi: <a href="https://doi.org/10.1038/ncomms14049">10.1038/ncomms14049</a>.</div>
 </div>
 <div id="ref-Petukhov2018" class="csl-entry">
 <div class="csl-left-margin">[2] </div>
-<div class="csl-right-inline">N. B. Viktor Petukhov Jimin Guo, <span>“<span class="nocase">dropEst: pipeline for accurate estimation of molecular counts in droplet-based single-cell RNA-seq experiments</span>,”</span> <em>Genome Biology</em>, vol. 19, no. 78, 2018, doi: <a href="https://doi.org/10.1186/s13059-018-1449-6">10.1186/s13059-018-1449-6</a>.</div>
+<div class="csl-right-inline">V. Petukhovm <em>et al.</em>, <span>“<span class="nocase">dropEst: pipeline for accurate estimation of molecular counts in droplet-based single-cell RNA-seq experiments</span>,”</span> <em>Genome Biology</em>, vol. 19, no. 78, 2018, doi: <a href="https://doi.org/10.1186/s13059-018-1449-6">10.1186/s13059-018-1449-6</a>.</div>
 </div>
 <div id="ref-Melsted2019" class="csl-entry">
 <div class="csl-left-margin">[3] </div>
-<div class="csl-right-inline">L. P. Páll Melsted Vasilis Ntranos, <span>“<span class="nocase">The barcode, UMI, set format and BUStools</span>,”</span> <em>Bioinformatics</em>, vol. 35, pp. 4472--4473, Nov. 2019, doi: <a href="https://doi.org/10.1093/bioinformatics/btz279">10.1093/bioinformatics/btz279</a>.</div>
+<div class="csl-right-inline">P. Melsted, V. Ntranos, and L. Pachter, <span>“<span class="nocase">The barcode, UMI, set format and BUStools</span>,”</span> <em>Bioinformatics</em>, vol. 35, pp. 4472--4473, Nov. 2019, doi: <a href="https://doi.org/10.1093/bioinformatics/btz279">10.1093/bioinformatics/btz279</a>.</div>
 </div>
 <div id="ref-Dobin2013" class="csl-entry">
 <div class="csl-left-margin">[4] </div>
-<div class="csl-right-inline">F. S. Alexander Dobin Carrie A. Davis, <span>“<span class="nocase">STAR: ultrafast universal RNA-seq aligner</span>,”</span> <em>Bioinformatics</em>, vol. 29, pp. 15--21, Jan. 2013, doi: <a href="https://doi.org/10.1093/bioinformatics/bts635">10.1093/bioinformatics/bts635</a>.</div>
+<div class="csl-right-inline">A. Dobin <em>et al.</em>, <span>“<span class="nocase">STAR: ultrafast universal RNA-seq aligner</span>,”</span> <em>Bioinformatics</em>, vol. 29, pp. 15--21, Jan. 2013, doi: <a href="https://doi.org/10.1093/bioinformatics/bts635">10.1093/bioinformatics/bts635</a>.</div>
+</div>
+<div id="ref-Srivastava2019" class="csl-entry">
+<div class="csl-left-margin">[5] </div>
+<div class="csl-right-inline">A. Srivastava, L. Malik, T. Smith, I. Sudbery, and R. Patro, <span>“Alevin efficiently estimates accurate gene abundances from dscRNA-seq data,”</span> <em>Genome biology</em>, vol. 20, no. 65, 2019.</div>
 </div>
 </div>
 </div>

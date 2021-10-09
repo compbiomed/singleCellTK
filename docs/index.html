@@ -81,16 +81,13 @@
       <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">QC &amp; Filtering</a>
       <ul class="dropdown-menu" role="menu">
 <li>
-          <a href="articles/articles/cmd_qc.html">QC with commandline</a>
+          <a href="articles/articles/cnsl_dropletqc.html">Droplet QC (R console)</a>
         </li>
         <li>
-          <a href="articles/articles/cnsl_dropletqc.html">Droplet QC in R console</a>
+          <a href="articles/articles/cnsl_cellqc.html">Cell QC (R console)</a>
         </li>
         <li>
-          <a href="articles/articles/cnsl_cellqc.html">Cell QC in R console</a>
-        </li>
-        <li>
-          <a href="articles/articles/ui_qc.html">QC in the UI</a>
+          <a href="articles/articles/ui_qc.html">Cell QC (Shiny UI)</a>
         </li>
         <li>
           <a href="articles/articles/filtering.html">Filtering</a>
@@ -187,6 +184,9 @@
   </ul>
 </li>
 <li>
+  <a href="articles/articles/cmd_qc.html">SCTK-QC Pipeline</a>
+</li>
+<li>
   <a href="reference/index.html">Reference</a>
 </li>
       </ul>
@@ -218,98 +218,43 @@
 <div id="single-cell-tk" class="section level1">
 <div class="page-header"><h1 class="hasAnchor">
 <a href="#single-cell-tk" class="anchor"></a>Single Cell TK</h1></div>
-<p><!-- badges: start --> <a href="https://github.com/compbiomed/singleCellTK/actions"><img src="https://github.com/compbiomed/singleCellTK/workflows/R-CMD-check/badge.svg" alt="R-CMD-check"></a> <a href="https://bioconductor.org/checkResults/release/bioc-LATEST/singleCellTK"><img src="https://www.bioconductor.org/shields/build/release/bioc/singleCellTK.svg" alt="BioC status"></a> <a href="https://codecov.io/gh/compbiomed/singleCellTK"><img src="https://codecov.io/gh/compbiomed/singleCellTK/branch/master/graph/badge.svg" alt="codecov"></a> <!-- badges: end --></p>
-<p>The Single Cell ToolKit (SCTK) is an analysis platform that provides an <strong>R interface to several popular scRNA-seq preprocessing, quality control, and visualization tools</strong>. SCTK imports raw or filtered counts from various single cell sequencing technologies and upstream tools such as 10x CellRanger, BUStools, Optimus, STARSolo, and more. By integrating several publicly available tools written in R as well as Python, SCTK performs extensive quality control measures including doublet detection and batch effect correction. Additionally, SCTK summarizes results and related visualizations in a comprehensive R markdown and/or HTML report. SCTK provides a standardized single cell analysis workflow by representing the counts data and the results using the <a href="https://www.bioconductor.org/packages/release/bioc/html/SingleCellExperiment.html">SingleCellExperiment</a> R object. Furthermore, SCTK enables seamless downstream analysis by exporting data and results in flat .txt and Python Anndata formats.</p>
-<p>A comprehensive list of available functions is listed in the Reference section.</p>
+<p><!-- badges: start --> <a href="https://github.com/compbiomed/singleCellTK/actions"><img src="https://github.com/compbiomed/singleCellTK/workflows/R-CMD-check/badge.svg" alt="R-CMD-check"></a> <a href="https://codecov.io/gh/compbiomed/singleCellTK"><img src="https://codecov.io/gh/compbiomed/singleCellTK/branch/master/graph/badge.svg" alt="codecov"></a> <!-- badges: end --></p>
+<p>The Single Cell ToolKit (SCTK) is an analysis platform that provides an <strong>R interface to several popular single-cell RNA-sequencing (scRNAseq) data preprocessing, quality control, and visualization tools</strong>. SCTK imports raw or filtered counts from various scRNAseq technologies and upstream tools such as 10x CellRanger, BUStools, Optimus, STARSolo, and more. By integrating several publicly available tools written in R as well as Python, SCTK performs extensive quality control measures including doublet detection and batch effect correction. Additionally, SCTK summarizes results and related visualizations in a comprehensive R markdown and/or HTML report. SCTK provides a standardized single cell analysis workflow by representing the counts data and the results using the <a href="https://www.bioconductor.org/packages/release/bioc/html/SingleCellExperiment.html">SingleCellExperiment</a> R object. Furthermore, SCTK enables seamless downstream analysis by exporting data and results in flat .txt and Python Anndata formats.</p>
+<p>A comprehensive list of available functions is listed in the Reference section. More information about the toolkit can be found at the toolkit <a href="https://camplab.net/sctk/">homepage</a>.</p>
 <div id="installation" class="section level2">
 <h2 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h2>
-<div id="system-setup" class="section level3">
-<h3 class="hasAnchor">
-<a href="#system-setup" class="anchor"></a>System setup</h3>
-<p>If you are the first time to install R, please don’t install 32 bit R. Make sure to uncheck the ‘32-bit Files’ box when you see the following window:</p>
-<p><img src="exec/png/32bit-R.png"></p>
-<div id="windows-user" class="section level4">
-<h4 class="hasAnchor">
-<a href="#windows-user" class="anchor"></a>Window’s user</h4>
-<p>For window’s users, please install <a href="https://cran.r-project.org/bin/windows/Rtools/history.html">rtools</a> based on your R version. Make sure to click ‘Edit the system PATH’ box when you see this window:</p>
-<p><img src="exec/png/rtools.png"></p>
-<p>After installing rtools, install ‘devtools’ package with the following command. If it asks whether install the package that requires compilation, type ‘y’.</p>
-<pre><code><a href="https://rdrr.io/r/utils/install.packages.html">install.packages('devtools')</a></code></pre>
+<p>Detailed instruction on how to install SCTK and additional dependencies are available at our homepage: <a href="https://camplab.net/sctk/" class="uri">https://camplab.net/sctk/</a></p>
 </div>
-<div id="macos-user" class="section level4">
-<h4 class="hasAnchor">
-<a href="#macos-user" class="anchor"></a>macOS user</h4>
-<p>For macbook’s users, please install gfortran with brew. If you have not installed brew, please check <a href="https://brew.sh/">this link</a> to set up brew on your machine.</p>
-<pre><code>brew install gcc</code></pre>
-<p>After that, install ‘devtools’ package with the following command.</p>
-<pre><code><a href="https://rdrr.io/r/utils/install.packages.html">install.packages('devtools')</a></code></pre>
-</div>
-</div>
-<div id="release-version" class="section level3">
-<h3 class="hasAnchor">
-<a href="#release-version" class="anchor"></a>Release Version</h3>
-<p>You can download the release version of the Single Cell Toolkit in <a href="https://bioconductor.org/packages/release/bioc/html/singleCellTK.html">Bioconductor v3.10</a>:</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html">requireNamespace</a></span><span class="op">(</span><span class="st">"BiocManager"</span>, quietly<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span>
-  <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"BiocManager"</span><span class="op">)</span>
-<span class="fu">BiocManager</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocManager/man/install.html">install</a></span><span class="op">(</span><span class="st">"singleCellTK"</span><span class="op">)</span></code></pre></div>
-</div>
-<div id="devel-version" class="section level3">
-<h3 class="hasAnchor">
-<a href="#devel-version" class="anchor"></a>Devel Version</h3>
-<p>You can download the development version of the Single Cell Toolkit in <a href="https://bioconductor.org/packages/devel/bioc/html/singleCellTK.html">Bioconductor v3.11</a> or from this repository:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># install.packages("devtools")</span>
-<span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org//reference/remote-reexports.html">install_github</a></span><span class="op">(</span><span class="st">"compbiomed/singleCellTK"</span><span class="op">)</span></code></pre></div>
-</div>
-<div id="r-34-version" class="section level3">
-<h3 class="hasAnchor">
-<a href="#r-34-version" class="anchor"></a>R 3.4 Version</h3>
-<p>If you are still running an earlier version of R than 3.5, you can install the following version from this repository:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># install.packages("devtools")</span>
-<span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org//reference/remote-reexports.html">install_github</a></span><span class="op">(</span><span class="st">"compbiomed/singleCellTK"</span>, ref<span class="op">=</span><span class="st">"r_3_4"</span><span class="op">)</span></code></pre></div>
-<div id="troubleshooting-installation" class="section level4">
-<h4 class="hasAnchor">
-<a href="#troubleshooting-installation" class="anchor"></a>Troubleshooting Installation</h4>
-<p>For the majority of users, the commands above will install the latest version of the singleCellTK without any errors. Rarely, you may encounter an error due to previously installed versions of some packages that are required for the singleCellTK. If you encounter an error during installation, use the commands below to check the version of Bioconductor that is installed:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html">requireNamespace</a></span><span class="op">(</span><span class="st">"BiocManager"</span>, quietly<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span>
-    <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"BiocManager"</span><span class="op">)</span>
-<span class="fu">BiocManager</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocManager/man/version.html">version</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
-<p>If the version number is not 3.6 or higher, you must upgrade Bioconductor to install the toolkit:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">BiocManager</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocManager/man/install.html">install</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
-<p>After you install Bioconductor 3.6 or higher, you should be able to install the toolkit using <code><a href="https://devtools.r-lib.org//reference/remote-reexports.html">devtools::install_github("compbiomed/singleCellTK")</a></code>. If you still encounter an error, ensure your Bioconductor packages are up to date by running the following command.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">BiocManager</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocManager/man/valid.html">valid</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
-<p>If the command above does not return <code>TRUE</code>, run the following command to update your R packages:</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">BiocManager</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocManager/man/install.html">install</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
-<p>Then, try to install the toolkit again:</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org//reference/remote-reexports.html">install_github</a></span><span class="op">(</span><span class="st">"compbiomed/singleCellTK"</span><span class="op">)</span></code></pre></div>
-<p>If you still encounter an error, please <a href="mailto:dfj@bu.edu">contact us</a> and we’d be happy to help.</p>
-</div>
-</div>
-</div>
-<div id="develop-singlecelltk" class="section level2">
+<div id="features" class="section level2">
 <h2 class="hasAnchor">
-<a href="#develop-singlecelltk" class="anchor"></a>Develop singleCellTK</h2>
-<p>To contribute to singleCellTK, follow these steps:</p>
-<p><strong>Note</strong>: Development of the singleCellTK is done using the latest version of R.</p>
-<ol>
-<li>Fork the repo using the “Fork” button above.</li>
-<li>Download a local copy of your forked repository “<code>git clone https://github.com/{username}/singleCellTK.git</code>”</li>
-<li>Open Rstudio</li>
-<li>Go to “File” -&gt; “New Project” -&gt; “Existing Directory” and select your git repository directory</li>
-</ol>
-<p>You can then make your changes and test your code using the Rstudio build tools. There is a lot of information about building packages available here: <a href="http://r-pkgs.had.co.nz/" class="uri">http://r-pkgs.had.co.nz/</a>.</p>
-<p>Information about building shiny packages is available here: <a href="http://shiny.rstudio.com/tutorial/" class="uri">http://shiny.rstudio.com/tutorial/</a>.</p>
-<p>When you are ready to upload your changes, commit them locally, push them to your forked repo, and make a pull request to the compbiomed repository.</p>
-<p>Report bugs and request features on our <a href="https://github.com/compbiomed/singleCellTK/issues">GitHub issue tracker</a>.</p>
-<p>Join us on <a href="https://compbiomed.slack.com/">slack</a>!</p>
+<a href="#features" class="anchor"></a>Features</h2>
+<p>SCTK offers multiple ways to analyze your scRNAseq data both through the R console, commandline (QC) and graphical user interface (GUI) with the ability to use a large number of algorithms from both R &amp; Python integrated within the toolkit.</p>
+<div id="console-analysis" class="section level4">
+<h4 class="hasAnchor">
+<a href="#console-analysis" class="anchor"></a>Console Analysis</h4>
+<p>Traditional analysis of scRNAseq data can be performed in the R console using wrapper functions for a multitude of tools and algorithms.</p>
+</div>
+<div id="interactive-analysis" class="section level4">
+<h4 class="hasAnchor">
+<a href="#interactive-analysis" class="anchor"></a>Interactive Analysis</h4>
+<p>The Shiny APP allows users without programming experience to easily analyze their scRNAseq data with a GUI.</p>
+</div>
+<div id="reports" class="section level4">
+<h4 class="hasAnchor">
+<a href="#reports" class="anchor"></a>Reports</h4>
+<p>Comprehensive HTML reports developed with RMarkdown allows users to document, explore, and share their analyses.</p>
+</div>
+<div id="interoperability" class="section level4">
+<h4 class="hasAnchor">
+<a href="#interoperability" class="anchor"></a>Interoperability</h4>
+<p>Tools from both R and Python can be seamlessly integrated within the same analysis workflow.</p>
+</div>
+</div>
+<div id="report-issues" class="section level2">
+<h2 class="hasAnchor">
+<a href="#report-issues" class="anchor"></a>Report Issues</h2>
+<p>If you face any difficulty in installing or using the toolkit or have identified a bug in the toolkit, please feel free to open up a <a href="https://github.com/compbiomed/singleCellTK/issues">GitHub Issue</a>.</p>
 </div>
 </div>
   </div>
@@ -337,10 +282,10 @@
 <div class="developers">
 <h2>Developers</h2>
 <ul class="list-unstyled">
-<li>Yichen Wang <br><small class="roles"> Author </small>  </li>
+<li>Yichen Wang <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0000-0003-4347-5199" target="orcid.widget" aria-label="ORCID"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
 <li>Irzam Sarfraz <br><small class="roles"> Author </small>  </li>
 <li>Rui Hong <br><small class="roles"> Author </small>  </li>
-<li>Yusuke Koga <br><small class="roles"> Author, maintainer </small>  </li>
+<li>Yusuke Koga <br><small class="roles"> Author </small>  </li>
 <li>Salam Alabdullatif <br><small class="roles"> Author </small>  </li>
 <li>David Jenkins <br><small class="roles"> Author </small> <a href="https://orcid.org/0000-0002-7451-4288" target="orcid.widget" aria-label="ORCID"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
 <li>Vidya Akavoor <br><small class="roles"> Author </small>  </li>

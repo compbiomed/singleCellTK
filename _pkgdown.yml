@@ -174,13 +174,11 @@ navbar:
               href: articles/articles/delete_data.html
         - text: "QC & Filtering"
           menu:
-            - text: "QC with commandline"
-              href: articles/articles/cmd_qc.html
-            - text: "Droplet QC in R console"
+            - text: "Droplet QC (R console)"
               href: articles/articles/cnsl_dropletqc.html
-            - text: "Cell QC in R console"
+            - text: "Cell QC (R console)"
               href: articles/articles/cnsl_cellqc.html
-            - text: "QC in the UI"
+            - text: "Cell QC (Shiny UI)"
               href: articles/articles/ui_qc.html
             - text: "Filtering"
               href: articles/articles/filtering.html
@@ -230,6 +228,8 @@ navbar:
       menu:
       - text: "Console Analysis Tutorial"
         href: articles/articles/console_analysis_tutorial.html
+    - text: "SCTK-QC Pipeline"
+      href: articles/articles/cmd_qc.html
     - text: "Reference"
       href: reference/index.html
   right:
