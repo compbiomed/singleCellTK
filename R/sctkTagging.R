@@ -27,11 +27,10 @@ expDeleteDataTag <- function(inSCE, assay){
 #' @param inSCE Input \code{SingleCellExperiment} object.
 #' @param assayType Specify a \code{character(1)} value as a tag that should be set against a data item.
 #' @param assays Specify name(s) \code{character()} of data item(s) against which the tag should be set.
-#' @param append A \code{logical} value indicating if this assay should be appended to the object or overridden. Default value is \code{TRUE} indicating that it should be appended.
 #' @return The input \code{SingleCellExperiment} object with tag information stored in the metadata slot.
 #' @export
 #'
-expSetDataTag <- function(inSCE, assayType, assays, append = TRUE){
+expSetDataTag <- function(inSCE, assayType, assays){
   tbl <- NULL
   if(is.null(S4Vectors::metadata(inSCE)$assayType)){
     tbl <- tibble::tibble(assayTag = assayType, assayName = assays)

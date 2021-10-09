@@ -865,13 +865,12 @@ shinyServer(function(input, output, session) {
       if (!is.null(vals$original)) {
         vals$counts <- vals$original
         #store assayType information in the metadata
-        if (!"assayType" %in% names(metadata(vals$counts))) {
-          vals$counts <- expSetDataTag(
-            inSCE = vals$counts,
-            assayType = "raw",
-            assays = assayNames(vals$counts),
-            append = FALSE)
-        }
+        # if (!"assayType" %in% names(metadata(vals$counts))) {
+        #   vals$counts <- expSetDataTag(
+        #     inSCE = vals$counts,
+        #     assayType = "raw",
+        #     assays = assayNames(vals$counts))
+        # }
         if (any(duplicated(rownames(vals$counts)))) {
           warning("Duplicated rownames detected, making them unique...")
           vals$counts <- dedupRowNames(vals$counts)
