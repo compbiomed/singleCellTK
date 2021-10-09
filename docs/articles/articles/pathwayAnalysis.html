@@ -81,16 +81,13 @@
       <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">QC &amp; Filtering</a>
       <ul class="dropdown-menu" role="menu">
 <li>
-          <a href="../../articles/articles/cmd_qc.html">QC with commandline</a>
+          <a href="../../articles/articles/cnsl_dropletqc.html">Droplet QC (R console)</a>
         </li>
         <li>
-          <a href="../../articles/articles/cnsl_dropletqc.html">Droplet QC in R console</a>
+          <a href="../../articles/articles/cnsl_cellqc.html">Cell QC (R console)</a>
         </li>
         <li>
-          <a href="../../articles/articles/cnsl_cellqc.html">Cell QC in R console</a>
-        </li>
-        <li>
-          <a href="../../articles/articles/ui_qc.html">QC in the UI</a>
+          <a href="../../articles/articles/ui_qc.html">Cell QC (Shiny UI)</a>
         </li>
         <li>
           <a href="../../articles/articles/filtering.html">Filtering</a>
@@ -187,6 +184,9 @@
   </ul>
 </li>
 <li>
+  <a href="../../articles/articles/cmd_qc.html">SCTK-QC Pipeline</a>
+</li>
+<li>
   <a href="../../reference/index.html">Reference</a>
 </li>
       </ul>
@@ -232,8 +232,8 @@
 <div id="introduction" class="section level2">
 <h2 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h2>
-<p>VAM <span class="citation">[1]</span> and GSVA <span class="citation">[2]</span> are popular methods for GSE (Gene Set Enrichment) and allows the identification of changes in pathway activity in RNA-Seq data. Overall, gene sets can be uploaded or selected from the available databases and the pathway analysis method can be run on the selected gene sets which can eventually be visualized using Violin plot. For this section, we provide wrappers of two methods, listed in the table below. All functions takes an input <a href="https://rdrr.io/bioc/SingleCellExperiment/man/SingleCellExperiment.html"><code>SingleCellExperiment</code></a> (SCE) object and other settings as arguments and returns the same SCE object with results updated in <code>reducedDim</code> slot of the input object.</p>
-<p>To view detailed instructions on how to use these methods, please select ‘Interactive Analysis’ for using pathway analysis in shiny application or ‘Console Analysis’ for using these methods on R console from the tabs below: <br></p>
+<p><strong>VAM</strong> <span class="citation">[1]</span> and <strong>GSVA</strong> <span class="citation">[2]</span> are popular methods for GSE (Gene Set Enrichment) and allows the identification of changes in pathway activity in RNA-Seq data. Overall, gene sets can be uploaded or selected from the available databases (<a href="import_genesets.html">How to <em>Import Genesets</em>?</a>), and the pathway analysis method can be run on the selected gene sets which can eventually be visualized using Violin plot.</p>
+<p>To view detailed instructions on how to use these methods, please select “Interactive Analysis” for using pathway analysis in Shiny application or “Console Analysis” for using these methods on R console from the tabs below:</p>
 </div>
 <div id="workflow-guide" class="section level2">
 <h2 class="hasAnchor">
@@ -245,7 +245,7 @@
 
 <div id="interactive" class="tabcontent">
 <p><strong>Entry of The Panel</strong></p>
-<p>From anywhere of the UI, the panel for clustering can be accessed from the top navigation panel at the circled tab shown below.</p>
+<p>From anywhere of the UI, the panel for pathway analysis can be accessed from the top navigation panel at the circled tab shown below.</p>
 <p><img src="ui_screenshots/pathwayAnalysis/path_ui_entry.PNG" alt="PathwayEntry"><br></p>
 <p>The UI is constructed in a sidebar style, where the left-sided sidebar works for setting the parameters and running the pathway analysis, and the right part main panel is for visualization checking.</p>
 <p><strong>Run Pathway Analysis</strong></p>
@@ -271,7 +271,7 @@ div.offset { background-color:inherit ; border-radius: 5px; margin-left: 15px;}
 <li>
 <code>gamma</code>, If True, a gamma distribution will be fit to the non-zero squared Mahalanobis distances computed from a row-permuted version of the gene expression matrix. The estimated gamma distribution will be used to compute a one-sided p-value for each cell. If False, the p-value will be computed using the standard chi-square approximation for the squared Mahalanobis distance (or non-central if center = FALSE).</li>
 </ul></details><details><summary><b>GSVA</b></summary><p><img src="ui_screenshots/pathwayAnalysis/path_ui_gsva.PNG" alt="GSVAParameter"><br></p>
-<p>When the selected algorithm is “GSVA,” no additional parameter settings exist other than the three essential inputs common for both; VAM and GSVA.</p>
+<p>When the selected algorithm is “GSVA,” no additional parameter settings exist other than the three essential inputs common for both VAM and GSVA.</p>
 </details>
 </div>
 <br><p><strong>3. Visualization</strong></p>
@@ -292,7 +292,7 @@ div.offset { background-color:inherit ; border-radius: 5px; margin-left: 15px;}
 </div>
 
 <div id="console" class="tabcontent">
-<p>The pathway analysis methods listed in the Introduction can be easily applied to an SCE object. Meanwhile, there are other algorithms too but based on performance and effectiveness we here present these two algorithms only.</p>
+<p>The pathway analysis methods can be easily applied to a <a href="https://rdrr.io/bioc/SingleCellExperiment/man/SingleCellExperiment.html"><code>SingleCellExperiment</code></a> (SCE) object. The methods return the same SCE object with results updated in <code>reducedDim</code> slot.</p>
 <p><strong>Basic Parameters</strong></p>
 <p>For each of the three functions, the common things are:</p>
 <ul>
@@ -340,9 +340,9 @@ document.getElementById("ia-button").click();
 <div class="csl-left-margin">[1] </div>
 <div class="csl-right-inline">H. R. Frost, <span>“Variance-adjusted mahalanobis (VAM): A fast and accurate method for cell-specific gene set scoring,”</span> <em>Nucleic Acids Research</em>, 2020, doi: <a href="https://doi.org/10.1093/nar/gkaa582">10.1093/nar/gkaa582</a>.</div>
 </div>
-<div id="ref-pmid23323831" class="csl-entry">
+<div id="ref-Hanzelmann2013" class="csl-entry">
 <div class="csl-left-margin">[2] </div>
-<div class="csl-right-inline">J. G. Sonja Hänzelmann Robert Castelo, <span>“<span>G</span><span>S</span><span>V</span><span>A</span>: Gene set variation analysis for microarray and <span>R</span><span>N</span><span>A</span>-seq data,”</span> <em>BMC Bioinformatics</em>, vol. 14, no. 7, Jan. 2013.</div>
+<div class="csl-right-inline">S. Hänzelmann, R. Castelo, and J. Guinney, <span>“<span class="nocase">GSVA: Gene set variation analysis for microarray and RNA-Seq data</span>,”</span> <em>BMC Bioinformatics</em>, vol. 14, no. 1, p. 7, Jan. 2013, doi: <a href="https://doi.org/10.1186/1471-2105-14-7">10.1186/1471-2105-14-7</a>.</div>
 </div>
 </div>
 </div>
