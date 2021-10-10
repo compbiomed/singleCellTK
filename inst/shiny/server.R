@@ -7313,12 +7313,19 @@ shinyServer(function(input, output, session) {
     }
 
     showTab(inputId = "seuratFindMarkerPlotTabset", target = "Joint Heatmap Plot")
-     updateTabsetPanel(session = session, inputId = "seuratFindMarkerPlotTabset", selected = "Ridge Plot")
-     shinyjs::show(selector = ".seurat_findmarker_plots")
+    updateTabsetPanel(session = session, inputId = "seuratFindMarkerPlotTabset", selected = "Ridge Plot")
+    shinyjs::show(selector = ".seurat_findmarker_plots")
 
-    #output the heatmap
+     # Output the heatmap
      colnames(df)[which(startsWith(colnames(df), "avg") == TRUE)] <- "avg_log2FC"
-     top10markers <- df %>% group_by(cluster1) %>% top_n(n = 10, wt = avg_log2FC)
+     top10markers <- df %>% group_by(cluster1) %>% arrange(desc(avg_log2FC)) %>% slice_head(n=10)
+     # Subset seuratObject to contain only cells available in selected clusters
+     if(input$seuratFindMarkerType != "markerAll"){
+       subsetIdents <- c(unique(top10markers$cluster1), unique(top10markers$cluster2))
+       subsetIdents <- subsetIdents[subsetIdents!="all"]
+       seuratObject <- subset(seuratObject, idents = subsetIdents) 
+     }
+     # Plot heatmap
      output$findMarkerHeatmapPlotFull <- renderPlot({
        isolate({
          DoHeatmap(seuratObject, features = top10markers$gene.id)
@@ -7431,10 +7438,11 @@ shinyServer(function(input, output, session) {
       Idents(seuratObject, cells = cells[[i]]) <- groups[i]
     }
     colnames(df)[which(startsWith(colnames(df), "avg") == TRUE)] <- "avg_log2FC"
-    topMarkers <- data.frame(df %>% group_by(cluster1) %>% top_n(input$findMarkerHeatmapPlotFullNumeric, avg_log2FC))
-    if(nrow(topMarkers) > (input$findMarkerHeatmapPlotFullNumeric * length(groups))){
-      topMarkers <- data.frame(topMarkers %>% group_by(cluster1) %>% top_n(input$findMarkerHeatmapPlotFullNumeric, -p_val_adj))
-    }
+    topMarkers <- df %>% group_by(cluster1) %>% arrange(desc(avg_log2FC)) %>% slice_head(n=input$findMarkerHeatmapPlotFullNumeric)
+    #topMarkers <- data.frame(df %>% group_by(cluster1) %>% top_n(input$findMarkerHeatmapPlotFullNumeric, avg_log2FC))
+    # if(nrow(topMarkers) > (input$findMarkerHeatmapPlotFullNumeric * length(groups))){
+    #   topMarkers <- data.frame(topMarkers %>% group_by(cluster1) %>% top_n(input$findMarkerHeatmapPlotFullNumeric, -p_val_adj))
+    # }
     # Subset seuratObject to contain only cells available in selected clusters
     if(input$seuratFindMarkerType != "markerAll"){
       subsetIdents <- c(unique(topMarkers$cluster1), unique(topMarkers$cluster2))
