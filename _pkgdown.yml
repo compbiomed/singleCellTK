@@ -224,11 +224,11 @@ navbar:
             href: articles/articles/visualization.html
           - text: "Generic Heatmap"
             href: articles/articles/heatmap.html
-    - text: "Tutorial"
+    - text: "Tutorials"
       menu:
-      - text: "Console Analysis Tutorial"
+      - text: "Analysis of PBMC3K (R Console)"
         href: articles/articles/console_analysis_tutorial.html
-    - text: "SCTK-QC Pipeline"
+    - text: "SCTK-QC"
       href: articles/articles/cmd_qc.html
     - text: "Reference"
       href: reference/index.html

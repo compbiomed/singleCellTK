@@ -4,9 +4,7 @@
 [![codecov](https://codecov.io/gh/compbiomed/singleCellTK/branch/master/graph/badge.svg)](https://codecov.io/gh/compbiomed/singleCellTK)
 <!-- badges: end -->
 
-The Single Cell ToolKit (SCTK) is an analysis platform that provides an **R interface to several popular single-cell RNA-sequencing (scRNAseq) data preprocessing, quality control, and visualization tools**. SCTK imports raw or filtered counts from various scRNAseq technologies and upstream tools such as 10x CellRanger, BUStools, Optimus, STARSolo, and more. By integrating several publicly available tools written in R as well as Python, SCTK performs extensive quality control measures including doublet detection and batch effect correction. Additionally, SCTK summarizes results and related visualizations in a comprehensive R markdown and/or HTML report. SCTK provides a standardized single cell analysis workflow by representing the counts data and the results using the [SingleCellExperiment](https://www.bioconductor.org/packages/release/bioc/html/SingleCellExperiment.html) R object. Furthermore, SCTK enables seamless downstream analysis by exporting data and results in flat .txt and Python Anndata formats.  
-
-A comprehensive list of available functions is listed in the Reference section. More information about the toolkit can be found at the toolkit [homepage](https://camplab.net/sctk/).
+The Single Cell ToolKit (SCTK) is an analysis platform that provides an **R interface to several popular single-cell RNA-sequencing (scRNAseq) data preprocessing, quality control, analysis, and visualization tools**. SCTK imports raw or filtered counts from various scRNAseq preprocessing tools such as 10x CellRanger, BUStools, Optimus, STARSolo, and more. By integrating several publicly available tools written in R or Python, SCTK can be used to perform extensive quality control including doublet detection, ambient RNA removal, and batch effect correction. SCTK integrates analysis workflows from popular tools such as Seurat and Bioconductor/OSCA into a single unified framework. Results from various workflows can be summarized and easily shared using comprehensive HTML reports. Lastly, data can be exported to Seurat or AnnData object to allow for seamless integration with other downstream analysis workflows. More information about the toolkit can be found at the toolkit [homepage](https://camplab.net/sctk/).
 
 ## Installation
 
@@ -26,4 +24,4 @@ Tools from both R and Python can be seamlessly integrated within the same analys
 
 ## Report Issues
 
-If you face any difficulty in installing or using the toolkit or have identified a bug in the toolkit, please feel free to open up a [GitHub Issue](https://github.com/compbiomed/singleCellTK/issues).
+If you face any difficulty in installing or have identified a bug in the toolkit, please feel free to open up an [Issue](https://github.com/compbiomed/singleCellTK/issues) on GitHub. Questions about how to best analyze your scRNA-seq data can be asked in the [Discussions](https://github.com/compbiomed/singleCellTK/discussions) page on GitHub. 
