@@ -7292,7 +7292,8 @@ shinyServer(function(input, output, session) {
     )
     )
 
-    df <- metadata(vals$counts)$seuratMarkers[which(metadata(vals$counts)$seuratMarkers$p_val_adj < 0.05, arr.ind = TRUE),]
+    #df <- metadata(vals$counts)$seuratMarkers[which(metadata(vals$counts)$seuratMarkers$p_val_adj < 0.05, arr.ind = TRUE),]
+    df <- metadata(vals$counts)$seuratMarkers
     seuratObject <- convertSCEToSeurat(vals$counts, scaledAssay = "seuratScaledData")
     indices <- list()
     cells <- list()
@@ -7317,7 +7318,7 @@ shinyServer(function(input, output, session) {
 
     #output the heatmap
      colnames(df)[which(startsWith(colnames(df), "avg") == TRUE)] <- "avg_log2FC"
-     top10markers <- df %>% group_by(cluster) %>% top_n(n = 10, wt = avg_log2FC)
+     top10markers <- df %>% group_by(cluster1) %>% top_n(n = 20, wt = avg_log2FC)
      output$findMarkerHeatmapPlotFull <- renderPlot({
        isolate({
          DoHeatmap(seuratObject, features = top10markers$gene.id)
@@ -7391,19 +7392,21 @@ shinyServer(function(input, output, session) {
 
     #singleCellTK:::.exportMetaSlot(vals$counts, "seuratMarkers")
 
-    vals$fts <- callModule(
-      module = filterTableServer,
-      id = "filterSeuratFindMarker",
-      dataframe = metadata(vals$counts)$seuratMarkers,
-      defaultFilterColumns = c("p_val_adj"),
-      defaultFilterOperators = c("<="),
-      defaultFilterValues = c("0.05")
-      )
+    orderByLFCMarkers <- metadata(vals$counts)$seuratMarkers
+    orderByLFCMarkers <- orderByLFCMarkers[order(-orderByLFCMarkers$avg_log2FC), ]
     # vals$fts <- callModule(
     #   module = filterTableServer,
     #   id = "filterSeuratFindMarker",
-    #   dataframe = metadata(vals$counts)$seuratMarkers
-    # )
+    #   dataframe = orderByLFCMarkers,
+    #   defaultFilterColumns = c("p_val_adj"),
+    #   defaultFilterOperators = c("<="),
+    #   defaultFilterValues = c("0.05")
+    #   )
+    vals$fts <- callModule(
+      module = filterTableServer,
+      id = "filterSeuratFindMarker",
+      dataframe = orderByLFCMarkers
+    )
 
   })
 
@@ -7428,9 +7431,9 @@ shinyServer(function(input, output, session) {
       Idents(seuratObject, cells = cells[[i]]) <- groups[i]
     }
     colnames(df)[which(startsWith(colnames(df), "avg") == TRUE)] <- "avg_log2FC"
-    topMarkers <- data.frame(df %>% group_by(cluster) %>% top_n(input$findMarkerHeatmapPlotFullNumeric, avg_log2FC))
+    topMarkers <- data.frame(df %>% group_by(cluster1) %>% top_n(input$findMarkerHeatmapPlotFullNumeric, avg_log2FC))
     if(nrow(topMarkers) > (input$findMarkerHeatmapPlotFullNumeric * length(groups))){
-      topMarkers <- data.frame(topMarkers %>% group_by(cluster) %>% top_n(input$findMarkerHeatmapPlotFullNumeric, -p_val_adj))
+      topMarkers <- data.frame(topMarkers %>% group_by(cluster1) %>% top_n(input$findMarkerHeatmapPlotFullNumeric, -p_val_adj))
     }
     output$findMarkerHeatmapPlotFull <- renderPlot({
       isolate({

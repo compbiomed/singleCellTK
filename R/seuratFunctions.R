@@ -1281,7 +1281,8 @@ seuratFindMarkers <- function(
         cells1 = cells1,
         cells2 = cells2)
     }
-    markerGenes$cluster <- paste0(group1, " vs ", group2)
+    markerGenes$cluster1 <- group1
+    markerGenes$cluster2 <- group2
     gene.id <- rownames(markerGenes)
     markerGenes <- cbind(gene.id, markerGenes)
   }
