@@ -138,6 +138,7 @@ reference:
   - detectCellOutlier
   - featureIndex
   - retrieveSCEIndex
+  - sampleSummaryStats
   - sctkListGeneSetCollections
   - setSCTKDisplayRow
   - subsetSCECols
@@ -151,6 +152,8 @@ reference:
 navbar:
   title: "singleCellTK"
   left:
+    - icon: fas fa-home fa-lg
+      href: https://www.camplab.net/sctk
     - text: "Installation"
       href: articles/articles/installation.html
     - text: "Documentation"
@@ -159,7 +162,7 @@ navbar:
           menu:
             - text: "Import Data"
               href: articles/articles/import_data.html
-            - text: "Import Data in Commandline"
+            - text: "Import Data for Commandline QC"
               href: articles/articles/cmd_import_scRNAseq_data_as_SCE.html
             - text: "Import Gene Sets"
               href: articles/articles/import_genesets.html
@@ -171,13 +174,11 @@ navbar:
               href: articles/articles/delete_data.html
         - text: "QC & Filtering"
           menu:
-            - text: "QC with commandline"
-              href: articles/articles/cmd_qc.html
-            - text: "Cell QC in R console"
-              href: articles/articles/cnsl_cellqc.html
-            - text: "Droplet QC in R console"
+            - text: "Droplet QC (R console)"
               href: articles/articles/cnsl_dropletqc.html
-            - text: "QC in the UI"
+            - text: "Cell QC (R console)"
+              href: articles/articles/cnsl_cellqc.html
+            - text: "Cell QC (Shiny UI)"
               href: articles/articles/ui_qc.html
             - text: "Filtering"
               href: articles/articles/filtering.html
@@ -223,10 +224,12 @@ navbar:
             href: articles/articles/visualization.html
           - text: "Generic Heatmap"
             href: articles/articles/heatmap.html
-    - text: "Tutorial"
+    - text: "Tutorials"
       menu:
-      - text: "Console Analysis Tutorial"
+      - text: "Analysis of PBMC3K (R Console)"
         href: articles/articles/console_analysis_tutorial.html
+    - text: "SCTK-QC"
+      href: articles/articles/cmd_qc.html
     - text: "Reference"
       href: reference/index.html
   right:

@@ -10,7 +10,7 @@ output:
     number_sections: yes
     toc: yes
     toc_float: true
-    collapsed: true
+    collapsed: false
     code_folding: hide
     html_notebook: default
 ---
@@ -87,12 +87,14 @@ formatPlotList <- function(plotlist, samples) {
 sce.qc <- params$object
 subTitle <- params$subTitle
 studyDesign <- params$studyDesign
-samples <- unique(colData(sce.qc)$sample)
+sceSample <- colData(sce.qc)$sample
+samples <- unique(sceSample)
+
+sce.qc <- getUMAP(sce.qc, useAssay = "counts", reducedDimName = "QC_UMAP", sample = sceSample)
 
 ### when 'sample' doesnn't exists in colData
 if (is.null(samples)) { samples <- "sample" }
 
-sce.qc <- getUMAP(sce.qc, useAssay = "counts", reducedDimName = "QC_UMAP")
 ```
 
 ---
@@ -103,7 +105,7 @@ subtitle: "`r subTitle`"
 
 
 # Introduction
-Comprehensive quality control (QC) of single-cell RNA-seq data was performed with the [**singleCellTK**](https://github.com/compbiomed/singleCellTK/tree/sctk_qc_1.7.6) package. This report contains information about each QC tool and visualization of the QC metrics for each sample. For more information on running this pipeline and performing quality control, see the [**documentation**](http://sctk.camplab.net/articles/cmd_qc.html). If you use the singleCellTK package for quality control, please include a [**reference**](https://www.biorxiv.org/content/10.1101/329755v1.article-info) in your publication.
+Comprehensive quality control (QC) of single-cell RNA-seq data was performed with the [**singleCellTK**](https://github.com/compbiomed/singleCellTK/tree/devel) package. This report contains information about each QC tool and visualization of the QC metrics for each sample. For more information on running this pipeline and performing quality control, see the [**documentation**](https://www.camplab.net/sctk/v2.2.1/articles/articles/cmd_qc.html). If you use the singleCellTK package for quality control, please include a [**reference**](https://www.biorxiv.org/content/10.1101/329755v1.article-info) in your publication.
 <br />
 <br />
 
@@ -174,6 +176,9 @@ plotsQCMetrics$Violin$Gene_Subset_Sum
 cat("\n\n")
 cat(paste0('## Total Mitochondrial Features {.tabset .tabset-fade} \n\n'))
 plotsQCMetrics$Violin$Gene_Subset_Features
+cat("\n\n")
+cat(paste0('## The percentage of Mitochondrial Counts {.tabset .tabset-fade} \n\n'))
+plotsQCMetrics$Violin$subsets_mito_percent
 cat("\n\n")
 cat(paste0('## The percentage of Library Size Occupied by Top 50 Exp. Genes {.tabset .tabset-fade} \n\n'))
 plotsQCMetrics$Violin$Gene_Subset_Top50_Percent

@@ -32,12 +32,18 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.2.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.2.2</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
+<li>
+  <a href="https://www.camplab.net/sctk">
+    <span class="fas fa-home fa-lg"></span>
+     
+  </a>
+</li>
 <li>
   <a href="../../articles/articles/installation.html">Installation</a>
 </li>
@@ -55,7 +61,7 @@
           <a href="../../articles/articles/import_data.html">Import Data</a>
         </li>
         <li>
-          <a href="../../articles/articles/cmd_import_scRNAseq_data_as_SCE.html">Import Data in Commandline</a>
+          <a href="../../articles/articles/cmd_import_scRNAseq_data_as_SCE.html">Import Data for Commandline QC</a>
         </li>
         <li>
           <a href="../../articles/articles/import_genesets.html">Import Gene Sets</a>
@@ -75,16 +81,13 @@
       <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">QC &amp; Filtering</a>
       <ul class="dropdown-menu" role="menu">
 <li>
-          <a href="../../articles/articles/cmd_qc.html">QC with commandline</a>
+          <a href="../../articles/articles/cnsl_dropletqc.html">Droplet QC (R console)</a>
         </li>
         <li>
-          <a href="../../articles/articles/cnsl_cellqc.html">Cell QC in R console</a>
+          <a href="../../articles/articles/cnsl_cellqc.html">Cell QC (R console)</a>
         </li>
         <li>
-          <a href="../../articles/articles/cnsl_dropletqc.html">Droplet QC in R console</a>
-        </li>
-        <li>
-          <a href="../../articles/articles/ui_qc.html">QC in the UI</a>
+          <a href="../../articles/articles/ui_qc.html">Cell QC (Shiny UI)</a>
         </li>
         <li>
           <a href="../../articles/articles/filtering.html">Filtering</a>
@@ -170,15 +173,18 @@
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Tutorial
+    Tutorials
      
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../../articles/articles/console_analysis_tutorial.html">Console Analysis Tutorial</a>
+      <a href="../../articles/articles/console_analysis_tutorial.html">Analysis of PBMC3K (R Console)</a>
     </li>
   </ul>
+</li>
+<li>
+  <a href="../../articles/articles/cmd_qc.html">SCTK-QC</a>
 </li>
 <li>
   <a href="../../reference/index.html">Reference</a>
@@ -227,6 +233,7 @@
 <h2 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h2>
 <p>Users can import gene sets to use in later steps of the toolkit’s pipeline, including quality control (QC) and EnrichR analysis. SCTK mainly supports importing genesets from a GMT file, the MSigDB database <span class="citation">[1]</span>, or manually prepared list.</p>
+<p>To view detailed instructions on how to import genesets, please select ‘Interactive Analysis’ for importing through the shiny application or ‘Console Analysis’ for importing through the R console from the tabs below: <br></p>
 </div>
 <div id="workflow-guide" class="section level2">
 <h2 class="hasAnchor">
@@ -241,7 +248,11 @@
 <p><img src="ui_screenshots/import/import_ui_gs_entry.png" alt="gs entry"><br></p>
 <p>In the UI of SCTK, users can import gene sets to use in later steps. The UIs are implemented in the page that can be entered through the links, as shown in the screenshot above.</p>
 <p><strong>Import Genesets</strong></p>
-<p>There are three ways to import gene sets, as described below.</p>
+<p>There are four ways to import gene sets, as described below:</p>
+ <style>
+div.offset { background-color:inherit ; border-radius: 5px; margin-left: 15px;}
+</style>
+<div class="offset">
 <details><summary><b>1. Import Gene Sets from a GMT File</b></summary><p>The first option is to upload the GMT file detailing a gene set. For this option, users must provide a GMT file through the file input <strong>“Choose GMT File”</strong>; a text collection name at <strong>“Collection Name”</strong>. If the collection name entered already exists in current session, the gene set from the GMT file will be added to that collection. Otherwise, a new collection with the given name will be created. Finally, users must click <strong>“Upload”</strong> to finish the procedure.</p>
 <p><img src="ui_screenshots/import/import_ui_gs_gmt.png" alt="gmt"><br></p>
 </details><details><summary><b>2. Select from a Database</b></summary><p>SCTK also has a database of gene sets that users can choose from. For this option, the user must simply select the gene sets they would like to upload and click <strong>“Upload”</strong>. A brief description of each gene set is provided in the checklist.</p>
@@ -250,7 +261,9 @@
 <p><img src="ui_screenshots/import/import_ui_gs_mt.png" alt="mt"><br></p>
 </details><details><summary><b>4. Paste in Gene Sets</b></summary><p>Users also have the option to paste their gene set into a text box. In order to do so, the user must paste their gene set into the provided text box and then provide a collection name to create a new collection. If there are already gene sets imported, the user can choose an existing collection to add their pasted gene set into. Then the user must click “Upload.”</p>
 <p><img src="ui_screenshots/import/import_ui_gs_paste.png" alt="paste"><br></p>
-</details><p><strong>Map Gene Sets to Specific Feature IDs</strong></p>
+</details>
+</div>
+<br><p><strong>Map Gene Sets to Specific Feature IDs</strong></p>
 <p>There is an additional selection input labeled with <strong>“Location within SCE object where the gene identifiers in should be mapped”</strong>, placed above the <strong>“Upload”</strong> button as already shown in screenshots above. This specifies the feature IDs stored in the imported single-cell dataset, to which the gene identifiers in the uploaded gene sets will be mapped. For example, if the uploaded gene sets are presented by gene symbols, users must make sure the selection here is pointing to gene symbols instead of ENSEMBL IDs. Most of the time, “rownames” is the default feature ID of the imported single-cell dataset.</p>
 </div>
 
@@ -275,11 +288,11 @@ document.getElementById("ia-button").click();
 <div id="refs" class="references csl-bib-body">
 <div id="ref-Subramanian2005" class="csl-entry">
 <div class="csl-left-margin">[1] </div>
-<div class="csl-right-inline">V. K. M. Aravind Subramanian Pablo Tamayo and J. P. Mesirov, <span>“<span class="nocase">Gene set enrichment analysis: A knowledge-based approach for interpreting genome-wide expression profiles</span>,”</span> <em>PNAS</em>, vol. 102, pp. 15545–15550, Sep. 2005, doi: <a href="https://doi.org/10.1073/pnas.0506580102">10.1073/pnas.0506580102</a>.</div>
+<div class="csl-right-inline">A. Subramanian <em>et al.</em>, <span>“<span class="nocase">Gene set enrichment analysis: A knowledge-based approach for interpreting genome-wide expression profiles</span>,”</span> <em>PNAS</em>, vol. 102, pp. 15545–15550, Sep. 2005, doi: <a href="https://doi.org/10.1073/pnas.0506580102">10.1073/pnas.0506580102</a>.</div>
 </div>
 <div id="ref-Morgan2021" class="csl-entry">
 <div class="csl-left-margin">[2] </div>
-<div class="csl-right-inline">R. G. Martin Morgan Seth Falcon, <em>GSEABase: Gene set enrichment data structures and methods</em>. 2021.Available: <a href="https://bioconductor.org/packages/release/bioc/html/GSEABase.html">https://bioconductor.org/packages/release/bioc/html/GSEABase.html</a>
+<div class="csl-right-inline">M. Morgan, S. Falcon, and R. Gentleman, <em>GSEABase: Gene set enrichment data structures and methods</em>. 2021.Available: <a href="https://bioconductor.org/packages/release/bioc/html/GSEABase.html">https://bioconductor.org/packages/release/bioc/html/GSEABase.html</a>
 </div>
 </div>
 </div>
@@ -297,7 +310,7 @@ document.getElementById("ia-button").click();
 
 
       <footer><div class="copyright">
-  <p>Developed by David Jenkins, Vidya Akavoor, Salam Alabdullatif, Shruthi Bandyadka, Emma Briars, Xinyun Cao, Sebastian Carrasco Pro, Tyler Faits, Rui Hong, Mohammed Muzamil Khan, Yusuke Koga, Anastasia Leshchyk, Irzam Sarfraz, Yichen Wang, Zhe Wang, W. Evan Johnson, Joshua David Campbell.</p>
+  <p>Developed by Yichen Wang, Irzam Sarfraz, Rui Hong, Yusuke Koga, Salam Alabdullatif, David Jenkins, Vidya Akavoor, Xinyun Cao, Shruthi Bandyadka, Anastasia Leshchyk, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, W. Evan Johnson, Joshua David Campbell.</p>
 </div>
 
 <div class="pkgdown">

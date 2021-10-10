@@ -9,7 +9,7 @@ plotEmptyDropsScatter(
   sample = NULL,
   fdrCutoff = 0.01,
   defaultTheme = TRUE,
-  dotSize = 1,
+  dotSize = 0.5,
   title = NULL,
   titleSize = 18,
   xlab = NULL,
@@ -41,7 +41,7 @@ runEmptyDrops as "Empty Droplet" or "Putative Cell". Default 0.01.}
 \item{defaultTheme}{Removes grid in plot and sets axis title size to 10
 when TRUE. Default TRUE.}
 
-\item{dotSize}{Size of dots. Default 1.}
+\item{dotSize}{Size of dots. Default 0.5.}
 
 \item{title}{Title of plot. Default NULL.}
 

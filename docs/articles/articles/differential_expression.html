@@ -32,12 +32,18 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.2.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.2.2</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
+<li>
+  <a href="https://www.camplab.net/sctk">
+    <span class="fas fa-home fa-lg"></span>
+     
+  </a>
+</li>
 <li>
   <a href="../../articles/articles/installation.html">Installation</a>
 </li>
@@ -55,7 +61,7 @@
           <a href="../../articles/articles/import_data.html">Import Data</a>
         </li>
         <li>
-          <a href="../../articles/articles/cmd_import_scRNAseq_data_as_SCE.html">Import Data in Commandline</a>
+          <a href="../../articles/articles/cmd_import_scRNAseq_data_as_SCE.html">Import Data for Commandline QC</a>
         </li>
         <li>
           <a href="../../articles/articles/import_genesets.html">Import Gene Sets</a>
@@ -75,16 +81,13 @@
       <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">QC &amp; Filtering</a>
       <ul class="dropdown-menu" role="menu">
 <li>
-          <a href="../../articles/articles/cmd_qc.html">QC with commandline</a>
+          <a href="../../articles/articles/cnsl_dropletqc.html">Droplet QC (R console)</a>
         </li>
         <li>
-          <a href="../../articles/articles/cnsl_cellqc.html">Cell QC in R console</a>
+          <a href="../../articles/articles/cnsl_cellqc.html">Cell QC (R console)</a>
         </li>
         <li>
-          <a href="../../articles/articles/cnsl_dropletqc.html">Droplet QC in R console</a>
-        </li>
-        <li>
-          <a href="../../articles/articles/ui_qc.html">QC in the UI</a>
+          <a href="../../articles/articles/ui_qc.html">Cell QC (Shiny UI)</a>
         </li>
         <li>
           <a href="../../articles/articles/filtering.html">Filtering</a>
@@ -170,15 +173,18 @@
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Tutorial
+    Tutorials
      
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../../articles/articles/console_analysis_tutorial.html">Console Analysis Tutorial</a>
+      <a href="../../articles/articles/console_analysis_tutorial.html">Analysis of PBMC3K (R Console)</a>
     </li>
   </ul>
+</li>
+<li>
+  <a href="../../articles/articles/cmd_qc.html">SCTK-QC</a>
 </li>
 <li>
   <a href="../../reference/index.html">Reference</a>
@@ -226,7 +232,8 @@
 <div id="introduction" class="section level2">
 <h2 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h2>
-<p>Single Cell Toolkit (SCTK) performs differential expression (DE) analysis in a group-VS-group way. The groups to be compared can be set by selecting the individual cells or by using existing categorical cell annotation. SCTK supports five methods, including wilcoxon test <span class="citation">[1]</span>, MAST <span class="citation">[2]</span>, Limma <span class="citation">[3]</span>, DESeq2 <span class="citation">[4]</span>, and ANOVA. Users can perform multiple sets of DE analysis with unique analysis name set each time.</p>
+<p>singleCellTK (SCTK) performs differential expression (DE) analysis in a group-VS-group way. The groups to be compared can be set by selecting the individual cells or by using existing categorical cell annotation. SCTK supports five methods, including wilcoxon test <span class="citation">[1]</span>, MAST <span class="citation">[2]</span>, Limma <span class="citation">[3]</span>, DESeq2 <span class="citation">[4]</span>, and ANOVA<span class="citation">[5]</span>. Users can perform multiple sets of DE analysis with unique analysis name set each time.</p>
+<p>To view detailed instructions on how to use these methods, please select ‘Interactive Analysis’ for using differential expression in shiny application or ‘Console Analysis’ for using these methods on R console from the tabs below: <br></p>
 </div>
 <div id="workflow-guide" class="section level2">
 <h2 class="hasAnchor">
@@ -238,29 +245,45 @@
 
 <div id="interactive" class="tabcontent">
 <p><strong>Entry of the Panel</strong></p>
-<p>From anywhere of the UI, the panel for DE can be accessed from the top navigation panel at the circled tab shown below.</p>
+<p>From anywhere of the UI, the panel for DE can be accessed from the top navigation panel shown below (highlighted in red):</p>
 <p><img src="ui_screenshots/differential_expression/de_ui_entry.png" alt="Entry"><br></p>
-<p>The UI is constructed with mainly four parts: <strong>1. </strong> Method selection, <strong>2.</strong> Assay input, <strong>3.</strong> Condition setting, <strong>4.</strong> Parameter settings, <strong>5.</strong> Result and visualization.</p>
-<p><strong>Method Selection</strong></p>
+<p>The UI is constructed with mainly five parts: <br></p>
+<p><strong>1. </strong> Method Selection, <strong>2.</strong> Assay Input, <strong>3.</strong> Condition Selection, <strong>4.</strong> Parameter Settings <strong>5.</strong> Results &amp; Visualization</p>
+<p><strong>1. Method Selection</strong></p>
+<div class="offset">
 <p>As mentioned in the Introduction section above, totally five methods are available from SCTK UI, including: Wilcoxon, MAST, Limma, DESeq2 and ANOVA. Users can choose the preferred one from the selection input <strong>“Choose analysis method”</strong>, as shown in the screenshot below.</p>
 <p><img src="ui_screenshots/differential_expression/de_ui_assay.png"><br></p>
-<p><strong>Assay Input</strong></p>
+</div>
+<p><strong>2. Assay Input</strong></p>
+<div class="offset">
 <p>Users need to choose a feature expression matrix for the differential expression analysis, and the selection should be made at the selection input <strong>“Select assay”</strong>. For most of the methods, a log-normalized assay would be recommended for the algorithm, though a “raw” counts would be recommended for “DESeq2.” <a href="cnsl_normalization.html">(How to normalize an assay?)</a></p>
-<p><strong>Condition Selection</strong></p>
+</div>
+<p><strong>3. Condition Selection</strong></p>
+<div class="offset">
 <p>Usually in terms of a DE analysis, we have two necessary conditions that have to be defined. One is the condition of interests and the other one is the condition of control. The condition of interests will then be compared to the condition of control via computational methods and statistical result will then be returned. The selection for a condition here means deciding which cells should be grouped together as one condition.</p>
 <p>SCTK provides reasonably flexible approaches to setting the conditions:</p>
+ <style>
+div.offset { background-color:inherit ; border-radius: 5px; margin-left: 15px;}
+</style>
+<div class="offset">
 <details><summary><b>Categorical Selection</b></summary><p>The first approach is designed for the fastest use, where conditions of interests and of control can be simply defined by categorical variables of the same class in the cell annotation (i.e. within one single column in <code>colData</code> of the background SCE object).</p>
 <p><img src="ui_screenshots/differential_expression/de_ui_condMeth1.png"><br></p>
 <p>First, users need to choose one single option from the selection list <strong>“Choose Annotation Class”</strong>. Then, in the UI, there will be two columns for each condition. For each of them, users can make selections for which categories should belong to the condition, at the selection input <strong>“Select Condition(s)”</strong>. One or more selections are acceptable. When selections are made for one condition while no selection for the other, all the categories but those already used for the former will go to the latter. The text boxes, <strong>“Cells selected”</strong>, are only for showing users what are selected. While the text span below the boxes summaries the total number of cells selected.</p>
 <p>In the example in the figure shown above, we intend to define the conditions based on the clustering result generated by louvain clustering on an SNN graph prepared by Scran, <code>"scran_snn_cluster"</code>. <a href="clustering.html">(How to cluster cells?)</a> Then we define that the cells assigned to “cluster 1” are of our interests, while the cells assigned to “cluster 7” should be a control against “cluster 1.”</p>
-</details><details><summary><b>Data Table Firtering Selection</b></summary><p>The second approach allows users to make the most use of all the cell annotations available. Meanwhile, single selection on each cell is also enabled to ensure the highest flexibility, though can be relatively ineffective.</p>
+</details><details><summary><b>Data Table Filtering Selection</b></summary><p>The second approach allows users to make the most use of all the cell annotations available. Meanwhile, single selection on each cell is also enabled to ensure the highest flexibility, though can be relatively ineffective.</p>
 <p><img src="ui_screenshots/differential_expression/de_ui_condMeth2.png"><br></p>
 <p>In this approach, we utilize a data table, where filters can be applied, for the flexible definition on each condition. By default, all classes of annotations are displayed. In the selection input <strong>“Columns to display”</strong>, users can select one or more variables of annotation, which should be displayed and used for filtering. The blank box under each column title is where the filters are applied. For categorical columns, one or more selections on available variables can be made; for numeric columns (with continuous values), value range can be set. All filters applied are not technically making any selection on cells, but adjusting which cells to display in the table. This can be inferred from the first text span summary below the table area. After users applied all necessary filters, click on <strong>“Add all filtered”</strong> button below the table area to technically make the selection. Meanwhile, each row in the table is clickable to make a single selection/cancellation on cells.</p>
 <p>Similarly as the first approach, in the figure, we are making an equivalent condition definition.</p>
-</details><details><summary><b>Select by Pasting a list</b></summary><p>The final way allows users without any useful annotation but still know which cells are of interests. It is done by just simply pasting a list of cell identifiers into the text box for each condition. Note that the cell identifiers used must be the default cell IDs in the background SCE object (i.e. <code>colnames</code>). The input text should be formatted by one ID per line, splitted with no symbol. A summary text span below each text box will be dynamically updated after pasting, for the number of valid IDs found in the input.</p>
+</details><details><summary><b>Select by Pasting a List</b></summary><p>The final way allows users without any useful annotation but still know which cells are of interests. It is done by just simply pasting a list of cell identifiers into the text box for each condition. Note that the cell identifiers used must be the default cell IDs in the background SCE object (i.e. <code>colnames</code>). The input text should be formatted by one ID per line, split with no symbol. A summary text span below each text box will be dynamically updated after pasting, for the number of valid IDs found in the input.</p>
 <p><img src="ui_screenshots/differential_expression/de_ui_condMeth3.png"><br></p>
-</details><br><p><strong>NOTE</strong> that the <strong>“Name of Condition”</strong> fields are always required. Iit is <strong>highly recommanded</strong> that users put easily understandable names there, in order to avoid the confusion when multiple sets of analyses are performed, and to keep the automatic legends on DE specific plots clean as well.</p>
-<details><summary><b>Other Parameters</b></summary><p><img src="ui_screenshots/differential_expression/de_ui_param.png"><br></p>
+</details>
+</div>
+<p><br></p>
+<p><strong>NOTE</strong> that the <strong>“Name of Condition”</strong> fields are always required. It is <strong>highly recommended</strong> that users put easily understandable names there, in order to avoid the confusion when multiple sets of analyses are performed, and to keep the automatic legends on DE specific plots clean as well.</p>
+</div>
+<p><strong>4. Parameter Settings</strong></p>
+<div class="offset">
+<p><img src="ui_screenshots/differential_expression/de_ui_param.png"><br></p>
 <ul>
 <li>
 <strong>FDR cutoff</strong>. At the numeric input <strong>“Output FDR less than”</strong>. As the label indicates, the cutoff set here will rule out DE genes with FDR (false discovery rate) value more than the cutoff from the result.</li>
@@ -272,31 +295,36 @@
 <strong>Covariate</strong>. At the selection input <strong>“Select Covariates”</strong>. A covariate is another set of categorization on the cells involved in the analysis, used for modeling. Multiple selections are acceptable.</li>
 <li>
 <strong>Name of an analysis</strong>. At the text input <strong>“Name of Differential Expression Analysis:”</strong>. This is a required field for all DE analysis. Similarly to the naming of each condition, when performing batches of analysis, users will need unique identifiers to recognize each set of result, and to avoid confusion in downstream analysis.</li>
-</ul></details><br><p><strong>Result Visualization</strong></p>
+</ul>
+</div>
+<p><strong>5. Results &amp; Visualization</strong></p>
+<div class="offset">
 <p><strong>Heatmap</strong></p>
 <p><img src="ui_screenshots/differential_expression/de_ui_res4.png"><br></p>
-<p>This tab enables a heatmap visualization for the DE analysis selected. Here SCTK will automatically group the involved cells to the two conditions where they are assigned to, and group the genes by the log2FC values, which indicate whether a gene is up-regulated or down-regulated. Additional settings can be applied by clicking on the blue clog button.</p>
+<p>This tab enables a heatmap visualization for the DE analysis selected. Here SCTK will automatically group the involved cells to the two conditions where they are assigned to, and group the genes by the log2FC values, which indicate whether a gene is up-regulated or down-regulated. Additional settings can be applied by clicking on the blue settings (cog) button.</p>
 <details><summary><b>DE Heatmap Additional Parameters</b></summary><ul>
 <li>Do log-normalization on the assay used for calculation (when “DESeq2” method is used) by selecting the check-box input <strong>“Do log transformation”</strong>.</li>
 <li>Keep only the up-regulated genes (by excluding the DE genes with negative log2FC values) by selecting the check-box input <strong>“Only up-regulated”</strong>.</li>
 <li>Further filtering by the statistics can be applied through numeric inputs <strong>“Absolute log2FC value greater than”</strong> and <strong>“FDR value less than”</strong>.</li>
 <li>Additional labeling can be added from background by multi-selection inputs <strong>“Additional cell annotation”</strong> and <strong>“Additional feature annotation”</strong>.</li>
-<li>The heatmap is by default splitted by the grouping “condition” and “regulation,” mentioned above. And this can only be achieved by selecting these two option in the multi-selection inputs <strong>“Split columns by”</strong> and <strong>“Split rows by”</strong>, respectively. Technically, these options can be canceled while other options can also be added, as long as users wish.</li>
+<li>The heatmap is by default split by the grouping “condition” and “regulation,” mentioned above. And this can only be achieved by selecting these two option in the multi-selection inputs <strong>“Split columns by”</strong> and <strong>“Split rows by”</strong>, respectively. Technically, these options can be canceled while other options can also be added, as long as users wish.</li>
 </ul></details><br><p>Furthermore, if more sophisticated settings on the DE heatmap are needed, users can move to the <a href="heatmap.html">generic heatmap viewer</a> and make use of the “import from analysis” functionality.</p>
 <p><strong>Gene Table</strong></p>
 <p><img src="ui_screenshots/differential_expression/de_ui_res1.png"><br></p>
-<p>In this tab, there will be a table with all the genes that are thought to be differentially expressed in the condition of interest against the condition of control, with high significance and passed all filter parameters. The gene names (default identifier in the background object, not necessarily a gene symbol), p-values, log2FC values, and FDR values will be present. The table will be saved in background by the name of the analysis, entered before running. Users can also download the table in comma-splitted value (CSV) format, by clicking <strong>“Download Result Table”</strong> button.</p>
+<p>In this tab, there will be a table with all the genes that are thought to be differentially expressed in the condition of interest against the condition of control, with high significance and passed all filter parameters. The gene names (default identifier in the background object, not necessarily a gene symbol), p-values, log2FC values, and FDR values will be present. The table will be saved in background by the name of the analysis, entered before running. Users can also download the table in comma separated value (CSV) format, by clicking <strong>“Download Result Table”</strong> button.</p>
 <p><strong>Violin Plot</strong></p>
 <p><img src="ui_screenshots/differential_expression/de_ui_res2.png"><br></p>
-<p>In the violin plot tab, the UI will present a standard violin plot showing how expression differs in the top N selected genes between cells in both conditions. Users can set the number of top DEG to plot and the feature identifier type to display, by clicking on the blue clog button.</p>
+<p>In the violin plot tab, the UI will present a standard violin plot showing how expression differs in the top N selected genes between cells in both conditions. Users can set the number of top DEG to plot and the feature identifier type to display, by clicking on the blue settings (cog) button.</p>
 <p><strong>Linear Modeling Plot</strong></p>
 <p><img src="ui_screenshots/differential_expression/de_ui_res3.png"><br></p>
-<p>In the linear modeling plot tab, an analysis of covariance (ANCOVA) is done, showing how expression differs in the top N selected genes between cells in both conditions. Users can set the number of top DEG to plot and the feature identifier type to display, by clicking on the blue clog button.</p>
+<p>In the linear modeling plot tab, an analysis of covariance (ANCOVA) is done, showing how expression differs in the top N selected genes between cells in both conditions. Users can set the number of top DEG to plot and the feature identifier type to display, by clicking on the blue settings (cog) button.</p>
+</div>
 </div>
 
 <div id="console" class="tabcontent">
 <p>The differential expression analysis can be easily performed on any preprocessed SCE dataset. Here we introduce the workflow of using the generic wrapper <code><a href="../../reference/runDEAnalysis.html">runDEAnalysis()</a></code>.</p>
-<p><strong>Basic Parameters</strong></p>
+<p><strong>Basic Parameters:</strong></p>
+<div class="offset">
 <p>The most basic parameters include:</p>
 <ul>
 <li>The input SCE object - <code>inSCE</code>.</li>
@@ -304,7 +332,9 @@
 <li>The assay to perform the analysis on - <code>useAssay</code>
 </li>
 </ul>
-<p><strong>Other required parameter</strong></p>
+</div>
+<p><strong>Additional Required Parameters:</strong></p>
+<div class="offset">
 <p><strong>1. Conditions</strong></p>
 <p>The R script functions we have allow users to perform differential expression analysis with relatively flexible condition setting. In terms of the condition of interests and the condition for control, comparison groups can be set by giving either one or more categories under a column in <code>colData</code>, or a prepared index vector as long as the indices are able to subset the input SCE object.</p>
 <p>Additionally, only specifying the condition of interests is allowed and the control will then be set to all the other cells, which turns to a biomarker finding analysis.</p>
@@ -321,6 +351,7 @@
 <li>The analysis run itself - <code>analysisName</code>.</li>
 </ul>
 <p>The reason is we assume that users are likely to perform multiple batches of analysis for a single dataset (e.g. group1 Vs. group2 and then group1 Vs. group3), and we hope to have everything stored in one SCE without leaving users any confusion when they look back on it. Also, the namings are also used by DE analysis related plotting functions, so that legends can be well annotated.</p>
+</div>
 <details><summary><b>Example</b></summary><p>To demonstrate a simple and clear example, here we use the “PBMC-3k” dataset from “10X” which can be easily imported with SCTK functions.</p>
 <details><summary><b>Preprocessing</b></summary><p>The preprocessing only includes necessary steps to get cluster labels (i.e. QC and filtering are excluded), via using SCTK’s Seurat Curated Workflow.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
@@ -341,14 +372,9 @@
                         reducedDimName <span class="op">=</span> <span class="st">"seuratUMAP"</span><span class="op">)</span></code></pre></div>
 </details><br><div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Condition chosen basing on the UMAP</span>
-<span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/runDEAnalysis.html">runDEAnalysis</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, 
-                        method <span class="op">=</span> <span class="st">"MAST"</span>, 
-                        useAssay <span class="op">=</span> <span class="st">"logcounts"</span>,
-                        class <span class="op">=</span> <span class="st">"Seurat_louvain_Resolution0.8"</span>, 
-                        classGroup1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span>, classGroup2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">5</span><span class="op">)</span>,
-                        groupName1 <span class="op">=</span> <span class="st">"c2"</span>, groupName2 <span class="op">=</span> <span class="st">"c4_c5"</span>, 
-                        analysisName <span class="op">=</span> <span class="st">"c2_VS_c4_c5"</span><span class="op">)</span></code></pre></div>
+<span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/runDEAnalysis.html">runDEAnalysis</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, method <span class="op">=</span> <span class="st">"MAST"</span>, useAssay <span class="op">=</span> <span class="st">"logcounts"</span>, class <span class="op">=</span> <span class="st">"Seurat_louvain_Resolution0.8"</span>, classGroup1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span>, classGroup2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">5</span><span class="op">)</span>, groupName1 <span class="op">=</span> <span class="st">"c2"</span>, groupName2 <span class="op">=</span> <span class="st">"c4_c5"</span>, analysisName <span class="op">=</span> <span class="st">"c2_VS_c4_c5"</span><span class="op">)</span></code></pre></div>
 </details><br><p><strong>Results</strong></p>
+<div class="offset">
 <p>The results are saved in the <code>metadata</code> slot of the returned SCE object</p>
 <details><summary><b>Result list structure</b></summary><pre><code>matadata(sce)
           |- $info1
@@ -380,6 +406,7 @@
 <code class="sourceCode R"><span class="fu"><a href="../../reference/plotDEGHeatmap.html">plotDEGHeatmap</a></span><span class="op">(</span><span class="va">sce</span>, useResult <span class="op">=</span> <span class="st">"c2_VS_c4_c5"</span>, log2fcThreshold <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></code></pre></div>
 <p>For other approaches of visualizing top differential expressed genes, refer to <code><a href="../../reference/plotDEGRegression.html">plotDEGRegression()</a></code> and <code><a href="../../reference/plotDEGViolin.html">plotDEGViolin()</a></code>, which are borrowed from <a href="https://www.bioconductor.org/packages/release/bioc/vignettes/MAST/inst/doc/MAITAnalysis.html#401_visualization_of_50_most_differentially_expressed_genes">MAST’s tutorial</a>.</p>
 </div>
+</div>
 <script>
 document.getElementById("ia-button").click();
 </script>
@@ -390,19 +417,23 @@ document.getElementById("ia-button").click();
 <div id="refs" class="references csl-bib-body">
 <div id="ref-Aaron2016" class="csl-entry">
 <div class="csl-left-margin">[1] </div>
-<div class="csl-right-inline">J. C. M. Aaron T. L. Lun Davis J. McCarthy, <span>“<span class="nocase">A step-by-step workflow for low-level analysis of single-cell RNA-seq data with Bioconductor</span>,”</span> <em>F1000Research</em>, 2016, doi: <a href="https://doi.org/10.12688/f1000research.9501.2">10.12688/f1000research.9501.2</a>.</div>
+<div class="csl-right-inline">A. T. L. Lun, D. J. McCarthy, and J. C. Marioni, <span>“A step-by-step workflow for low-level analysis of single-cell RNA-seq data with bioconductor,”</span> <em>F1000Research</em>, vol. 5, p. 2122, 2016, doi: <a href="https://doi.org/10.12688/f1000research.9501.2">10.12688/f1000research.9501.2</a>.</div>
 </div>
 <div id="ref-Finak2015" class="csl-entry">
 <div class="csl-left-margin">[2] </div>
-<div class="csl-right-inline">M. Y. Greg Finak Andrew McDavid, <span>“<span class="nocase">MAST: a flexible statistical framework for assessing transcriptional changes and characterizing heterogeneity in single-cell RNA sequencing data</span>,”</span> <em>Genome Biology</em>, vol. 16, no. 278, Dec. 2015, doi: <a href="https://doi.org/10.1186/s13059-015-0844-5">10.1186/s13059-015-0844-5</a>.</div>
+<div class="csl-right-inline">G. Finak <em>et al.</em>, <span>“<span class="nocase">MAST: a flexible statistical framework for assessing transcriptional changes and characterizing heterogeneity in single-cell RNA sequencing data</span>,”</span> <em>Genome Biology</em>, vol. 16, no. 278, Dec. 2015, doi: <a href="https://doi.org/10.1186/s13059-015-0844-5">10.1186/s13059-015-0844-5</a>.</div>
 </div>
 <div id="ref-Ritchie2015" class="csl-entry">
 <div class="csl-left-margin">[3] </div>
-<div class="csl-right-inline">D. W. Matthew E. Ritchie Belinda Phipson, <span>“<span class="nocase">limma powers differential expression analyses for RNA-sequencing and microarray studies</span>,”</span> <em>Nucleic Acids Research</em>, vol. 43, p. e47, Apr. 2015, doi: <a href="https://doi.org/10.1093/nar/gkv007">10.1093/nar/gkv007</a>.</div>
+<div class="csl-right-inline">M. E. Ritchie <em>et al.</em>, <span>“<span class="nocase">limma powers differential expression analyses for RNA-sequencing and microarray studies</span>,”</span> <em>Nucleic Acids Research</em>, vol. 43, p. e47, Apr. 2015, doi: <a href="https://doi.org/10.1093/nar/gkv007">10.1093/nar/gkv007</a>.</div>
 </div>
 <div id="ref-Love2014" class="csl-entry">
 <div class="csl-left-margin">[4] </div>
-<div class="csl-right-inline">S. A. Michael I Love Wolfgang Huber, <span>“<span class="nocase">Moderated estimation of fold change and dispersion for RNA-seq data with DESeq2</span>,”</span> <em>Genome Biology</em>, vol. 15, no. 550, Dec. 2014, doi: <a href="https://doi.org/10.1186/s13059-014-0550-8">10.1186/s13059-014-0550-8</a>.</div>
+<div class="csl-right-inline">M. I. Love, W. Huber, and S. Anders, <span>“<span class="nocase">Moderated estimation of fold change and dispersion for RNA-seq data with DESeq2</span>,”</span> <em>Genome Biology</em>, vol. 15, no. 550, Dec. 2014, doi: <a href="https://doi.org/10.1186/s13059-014-0550-8">10.1186/s13059-014-0550-8</a>.</div>
+</div>
+<div id="ref-Kaufmann2014" class="csl-entry">
+<div class="csl-left-margin">[5] </div>
+<div class="csl-right-inline">J. Kaufmann and A. G. Schering, <span>“<span class="nocase">Analysis of Variance ANOVA</span>,”</span> in <em>Wiley StatsRef: Statistics reference online</em>, American Cancer Society, 2014. doi: <a href="https://doi.org/10.1002/9781118445112.stat06938">https://doi.org/10.1002/9781118445112.stat06938</a>.</div>
 </div>
 </div>
 </div>
@@ -419,7 +450,7 @@ document.getElementById("ia-button").click();
 
 
       <footer><div class="copyright">
-  <p>Developed by David Jenkins, Vidya Akavoor, Salam Alabdullatif, Shruthi Bandyadka, Emma Briars, Xinyun Cao, Sebastian Carrasco Pro, Tyler Faits, Rui Hong, Mohammed Muzamil Khan, Yusuke Koga, Anastasia Leshchyk, Irzam Sarfraz, Yichen Wang, Zhe Wang, W. Evan Johnson, Joshua David Campbell.</p>
+  <p>Developed by Yichen Wang, Irzam Sarfraz, Rui Hong, Yusuke Koga, Salam Alabdullatif, David Jenkins, Vidya Akavoor, Xinyun Cao, Shruthi Bandyadka, Anastasia Leshchyk, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, W. Evan Johnson, Joshua David Campbell.</p>
 </div>
 
 <div class="pkgdown">

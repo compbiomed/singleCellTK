@@ -246,6 +246,7 @@ generateMeta <- function(dropletSCE = NULL,
 #' @return A \link[SingleCellExperiment]{SingleCellExperiment} object which combines all
 #' objects in sceList. The colData is merged.
 #' @export
+#' @importFrom rlang .data
 
 generateHTANMeta <- function(dropletSCE = NULL,
                          cellSCE = NULL,
@@ -378,7 +379,7 @@ generateHTANMeta <- function(dropletSCE = NULL,
   })
   
   level3Meta$`HTAN Data File ID` <- paste(level3Meta$`HTAN Patient ID`, level3Meta$checkSumInt, sep="_")
-  linkMat <- dplyr::group_by(level3Meta, SAMPLE) %>% dplyr::summarise(LinkedMat = paste(`HTAN Data File ID`, collapse=","))
+  linkMat <- dplyr::group_by(level3Meta, .data$SAMPLE) %>% dplyr::summarise(LinkedMat = paste(.data$`HTAN Data File ID`, collapse=","))
   level3Meta$`Linked Matrices` <- unlist(linkMat[match(level3Meta$SAMPLE, linkMat$SAMPLE), 'LinkedMat'])
   
   ParentFile <- level3Meta[grep("_counts.mtx.gz", unlist(level3Meta['FileLoc'])), c('HTAN Patient ID', 'HTAN Data File ID')]
@@ -641,6 +642,10 @@ qcInputProcess <- function(preproc,
         return(list(dropletSCE, cellSCE))
     }
 
+    if (preproc == "Alevin") {
+        cellSCE <- importAlevin(alevinDir = path, sampleName = samplename, class = "Matrix", delayedArray=FALSE)
+        return(list(dropletSCE, cellSCE))
+    }
     ## preproc is not one of the method above. Stop the pipeline.
     stop(paste0("'", preproc, "' not supported."))
 }

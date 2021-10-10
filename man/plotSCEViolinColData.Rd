@@ -17,7 +17,7 @@ plotSCEViolinColData(
   baseSize = 12,
   axisSize = NULL,
   axisLabelSize = NULL,
-  dotSize = 1,
+  dotSize = 0.5,
   transparency = 1,
   defaultTheme = TRUE,
   gridLine = FALSE,
@@ -60,7 +60,7 @@ Can be overwritten by titleSize, axisSize, and axisLabelSize.}
 
 \item{axisLabelSize}{Size of x/y-axis labels. Default NULL.}
 
-\item{dotSize}{Size of dots. Default 1.}
+\item{dotSize}{Size of dots. Default 0.5.}
 
 \item{transparency}{Transparency of the dots, values will be 0-1. Default 1.}
 

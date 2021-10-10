@@ -32,12 +32,18 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.2.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.2.2</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
+<li>
+  <a href="https://www.camplab.net/sctk">
+    <span class="fas fa-home fa-lg"></span>
+     
+  </a>
+</li>
 <li>
   <a href="../../articles/articles/installation.html">Installation</a>
 </li>
@@ -55,7 +61,7 @@
           <a href="../../articles/articles/import_data.html">Import Data</a>
         </li>
         <li>
-          <a href="../../articles/articles/cmd_import_scRNAseq_data_as_SCE.html">Import Data in Commandline</a>
+          <a href="../../articles/articles/cmd_import_scRNAseq_data_as_SCE.html">Import Data for Commandline QC</a>
         </li>
         <li>
           <a href="../../articles/articles/import_genesets.html">Import Gene Sets</a>
@@ -75,16 +81,13 @@
       <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">QC &amp; Filtering</a>
       <ul class="dropdown-menu" role="menu">
 <li>
-          <a href="../../articles/articles/cmd_qc.html">QC with commandline</a>
+          <a href="../../articles/articles/cnsl_dropletqc.html">Droplet QC (R console)</a>
         </li>
         <li>
-          <a href="../../articles/articles/cnsl_cellqc.html">Cell QC in R console</a>
+          <a href="../../articles/articles/cnsl_cellqc.html">Cell QC (R console)</a>
         </li>
         <li>
-          <a href="../../articles/articles/cnsl_dropletqc.html">Droplet QC in R console</a>
-        </li>
-        <li>
-          <a href="../../articles/articles/ui_qc.html">QC in the UI</a>
+          <a href="../../articles/articles/ui_qc.html">Cell QC (Shiny UI)</a>
         </li>
         <li>
           <a href="../../articles/articles/filtering.html">Filtering</a>
@@ -170,15 +173,18 @@
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Tutorial
+    Tutorials
      
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../../articles/articles/console_analysis_tutorial.html">Console Analysis Tutorial</a>
+      <a href="../../articles/articles/console_analysis_tutorial.html">Analysis of PBMC3K (R Console)</a>
     </li>
   </ul>
+</li>
+<li>
+  <a href="../../articles/articles/cmd_qc.html">SCTK-QC</a>
 </li>
 <li>
   <a href="../../reference/index.html">Reference</a>
@@ -242,6 +248,9 @@
 <li>
 <a href="https://github.com/alexdobin/STAR/blob/master/docs/STARsolo.md">STARSolo</a> <span class="citation">[4]</span>
 </li>
+<li>
+<a href="https://salmon.readthedocs.io/en/latest/alevin.html">Alevin</a> <span class="citation">[5]</span>
+</li>
 </ul>
 <p>In all cases, SCTK retains the standard output directory structure from the upstream tools.</p>
 <p>Meanwhile, SCTK also supports importing raw count matrix, with metadata, stored in the following format</p>
@@ -252,6 +261,8 @@
 <li>
 <a href="https://anndata.readthedocs.io/en/latest/">AnnData</a> object saved in hdf5 file</li>
 </ul>
+<p>A chart at the bottom of this documentation summarizes the <a href="#expected-directory-structure-for-all-data-source-1">expected directory structure</a> of the input data, for each type of data source.</p>
+<p>To view detailed instructions on how to import data, please select, from the tabs below, “Interactive Analysis” for importing data into the Shiny application, or “Console Analysis” for importing into R environment via R console.</p>
 </div>
 <div id="workflow-guide" class="section level2">
 <h2 class="hasAnchor">
@@ -268,6 +279,10 @@
 <p><strong>Importing Single-Cell Datasets</strong></p>
 <p><img src="ui_screenshots/import/import_ui_source.png"><br></p>
 <p>For a single source of data, users need to choose one option from the radio buttons listed in the screenshot. The next step will depend on the option chosen.</p>
+ <style>
+div.offset { background-color:inherit ; border-radius: 5px; margin-left: 15px;}
+</style>
+<div class="offset">
 <details><summary><b>Import from a preprocessing tool</b></summary><p><img src="ui_screenshots/import/import_ui_source1.png" alt="source1"><br></p>
 <p>SCTK supports importing data from the following pre-processing tools in our UI workflow:<br>
 - <a href="https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/what-is-cell-ranger">CellRanger</a> (versions 2 and 3)<br>
@@ -294,7 +309,9 @@ After choosing a single file for uploading, user must wait until the progress ba
 <p><img src="ui_screenshots/import/import_ui_source3.png"><br></p>
 </details><details><summary><b>Example Datasets</b></summary><p>Users can also opt to import and work with published example datasets. To do so, the user must select which dataset they would like to use from the dropdown menu and click <strong>“Add to Sample List”</strong>. For more information about the chosen dataset, users can click on the hyperlink of the title and open the reference website in a browser.</p>
 <p><img src="ui_screenshots/import/import_ui_source4.png"><br></p>
-</details><p><strong>Complete Upload</strong></p>
+</details>
+</div>
+<br><p><strong>Complete Upload</strong></p>
 <p>After successfully choosing each source of dataset, it will be inserted to a new line of the table at the buttom of this UI page, in “<strong>3. Import</strong>” section. This is a wait-list for all the samples of interests. To finally import all datasets of interests, users must click on <strong>“Import”</strong> button.</p>
 <p>Before importing, users can click on the “<code>[X]</code>” button on the right to remove the selection of the corresponding single dataset, or click on <strong>“Clear Samples”</strong> to reset all selections. This only clears this wait-list for importing, but will not work on any dataset already imported.</p>
 <p>Note that it is normal that in the “Location” field, some paths might happen to point to a temporary cache.</p>
@@ -382,25 +399,34 @@ After choosing a single file for uploading, user must wait until the progress ba
 document.getElementById("ia-button").click();
 </script>
 </div>
+<div id="expected-directory-structure-for-all-data-source" class="section level2">
+<h2 class="hasAnchor">
+<a href="#expected-directory-structure-for-all-data-source" class="anchor"></a>Expected Directory Structure for All Data Source</h2>
+<p><img src="ui_screenshots/import/directory_structure.png"></p>
+</div>
 <div id="references" class="section level2 unnumbered">
 <h2 class="hasAnchor">
 <a href="#references" class="anchor"></a>References</h2>
 <div id="refs" class="references csl-bib-body">
 <div id="ref-Zheng2017" class="csl-entry">
 <div class="csl-left-margin">[1] </div>
-<div class="csl-right-inline">P. B. Grace X. Y. Zheng Jessica M. Terry, <span>“<span class="nocase">Massively parallel digital transcriptional profiling of single cells</span>,”</span> <em>Nature Communications</em>, vol. 8, no. 14049, 2017, doi: <a href="https://doi.org/10.1038/ncomms14049">10.1038/ncomms14049</a>.</div>
+<div class="csl-right-inline">G. X. Y. Zheng <em>et al.</em>, <span>“<span class="nocase">Massively parallel digital transcriptional profiling of single cells</span>,”</span> <em>Nature Communications</em>, vol. 8, no. 14049, 2017, doi: <a href="https://doi.org/10.1038/ncomms14049">10.1038/ncomms14049</a>.</div>
 </div>
 <div id="ref-Petukhov2018" class="csl-entry">
 <div class="csl-left-margin">[2] </div>
-<div class="csl-right-inline">N. B. Viktor Petukhov Jimin Guo, <span>“<span class="nocase">dropEst: pipeline for accurate estimation of molecular counts in droplet-based single-cell RNA-seq experiments</span>,”</span> <em>Genome Biology</em>, vol. 19, no. 78, 2018, doi: <a href="https://doi.org/10.1186/s13059-018-1449-6">10.1186/s13059-018-1449-6</a>.</div>
+<div class="csl-right-inline">V. Petukhovm <em>et al.</em>, <span>“<span class="nocase">dropEst: pipeline for accurate estimation of molecular counts in droplet-based single-cell RNA-seq experiments</span>,”</span> <em>Genome Biology</em>, vol. 19, no. 78, 2018, doi: <a href="https://doi.org/10.1186/s13059-018-1449-6">10.1186/s13059-018-1449-6</a>.</div>
 </div>
 <div id="ref-Melsted2019" class="csl-entry">
 <div class="csl-left-margin">[3] </div>
-<div class="csl-right-inline">L. P. Páll Melsted Vasilis Ntranos, <span>“<span class="nocase">The barcode, UMI, set format and BUStools</span>,”</span> <em>Bioinformatics</em>, vol. 35, pp. 4472--4473, Nov. 2019, doi: <a href="https://doi.org/10.1093/bioinformatics/btz279">10.1093/bioinformatics/btz279</a>.</div>
+<div class="csl-right-inline">P. Melsted, V. Ntranos, and L. Pachter, <span>“<span class="nocase">The barcode, UMI, set format and BUStools</span>,”</span> <em>Bioinformatics</em>, vol. 35, pp. 4472--4473, Nov. 2019, doi: <a href="https://doi.org/10.1093/bioinformatics/btz279">10.1093/bioinformatics/btz279</a>.</div>
 </div>
 <div id="ref-Dobin2013" class="csl-entry">
 <div class="csl-left-margin">[4] </div>
-<div class="csl-right-inline">F. S. Alexander Dobin Carrie A. Davis, <span>“<span class="nocase">STAR: ultrafast universal RNA-seq aligner</span>,”</span> <em>Bioinformatics</em>, vol. 29, pp. 15--21, Jan. 2013, doi: <a href="https://doi.org/10.1093/bioinformatics/bts635">10.1093/bioinformatics/bts635</a>.</div>
+<div class="csl-right-inline">A. Dobin <em>et al.</em>, <span>“<span class="nocase">STAR: ultrafast universal RNA-seq aligner</span>,”</span> <em>Bioinformatics</em>, vol. 29, pp. 15--21, Jan. 2013, doi: <a href="https://doi.org/10.1093/bioinformatics/bts635">10.1093/bioinformatics/bts635</a>.</div>
+</div>
+<div id="ref-Srivastava2019" class="csl-entry">
+<div class="csl-left-margin">[5] </div>
+<div class="csl-right-inline">A. Srivastava, L. Malik, T. Smith, I. Sudbery, and R. Patro, <span>“Alevin efficiently estimates accurate gene abundances from dscRNA-seq data,”</span> <em>Genome biology</em>, vol. 20, no. 65, 2019.</div>
 </div>
 </div>
 </div>
@@ -417,7 +443,7 @@ document.getElementById("ia-button").click();
 
 
       <footer><div class="copyright">
-  <p>Developed by David Jenkins, Vidya Akavoor, Salam Alabdullatif, Shruthi Bandyadka, Emma Briars, Xinyun Cao, Sebastian Carrasco Pro, Tyler Faits, Rui Hong, Mohammed Muzamil Khan, Yusuke Koga, Anastasia Leshchyk, Irzam Sarfraz, Yichen Wang, Zhe Wang, W. Evan Johnson, Joshua David Campbell.</p>
+  <p>Developed by Yichen Wang, Irzam Sarfraz, Rui Hong, Yusuke Koga, Salam Alabdullatif, David Jenkins, Vidya Akavoor, Xinyun Cao, Shruthi Bandyadka, Anastasia Leshchyk, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, W. Evan Johnson, Joshua David Campbell.</p>
 </div>
 
 <div class="pkgdown">

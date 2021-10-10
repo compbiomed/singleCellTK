@@ -63,7 +63,7 @@ nonLinearWorkflow <- function(input, output, session, parent,
       panel(
         heading = "Pathway Analysis",
         h5("Explore biological activity or functions with pathway analysis using either 'GSVA' or 'EnrichR' statistical frameworks:"),
-        actionButton(inputId = ns("goGSVA"), label = "Go to GSVA!"),
+        actionButton(inputId = ns("goPathwayAnalysis"), label = "Go to Pathway Analysis!"),
         actionButton(inputId = ns("goEnrichR"), label = "Go to EnrichR!"),
       )
     })
@@ -152,9 +152,9 @@ nonLinearWorkflow <- function(input, output, session, parent,
               session = parent)
     })
     
-    observeEvent(input$goGSVA,{
+    observeEvent(input$goPathwayAnalysis,{
       showTab(inputId = "navbar",
-              target = "GSVA",
+              target = "Pathway Activity",
               select = TRUE,
               session = parent)
     })

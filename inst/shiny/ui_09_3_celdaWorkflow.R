@@ -15,7 +15,11 @@ shinyPanelCelda <- fluidPage(
                                    choices = c("Simple Filter", "SeuratFindHVG", "Scran_modelGeneVar")),
                        conditionalPanel("input.celdafeatureselect == 'SeuratFindHVG'",
                                         selectInput("celdaseurathvgmethod", "Select HVG method:",
-                                                    choices = c("vst", "dispersion", "mean.var.plot"))
+                                                    choices = c("vst", "dispersion", "mean.var.plot")),
+                                        numericInput("celdarowcountsmin",
+                                                     "Keep features with this many counts:", value = 3),
+                                        numericInput("celdacolcountsmin",
+                                                     "In at least this many cells:", value = 3)
                        ),
                        conditionalPanel("input.celdafeatureselect == 'Simple Filter'",
                                         numericInput("celdarowcountsmin",
@@ -25,7 +29,7 @@ shinyPanelCelda <- fluidPage(
                        ),
                        conditionalPanel("input.celdafeatureselect != 'Simple Filter'",
                                         numericInput("celdafeaturenum",
-                                                     "Select number of variable features:", min = 1, max = 5000, value = 2000)
+                                                     "Select number of variable features:", min = 1, max = 5000, value = 2500)
                        ),
                        numericInput("celdaLinit", "Select Number of Initial Feature Modules:", min = 1, max = 25, value = 10),
                        numericInput("celdaLmax", "Select Number of Maximum Feature Modules:", min = 15, max = 200, value = 100),
@@ -73,7 +77,7 @@ shinyPanelCelda <- fluidPage(
                                                  plotlyOutput(outputId = "plot_cellsplit_perp", height = "auto")
                                              )
                                     ),
-                                    tabPanel("Perplexity Diff Plot",
+                                    tabPanel("Rate of perplexity change",
                                              panel(
                                                  plotlyOutput(outputId = "plot_cellsplit_perpdiff", height = "auto")
                                              )
@@ -92,99 +96,115 @@ shinyPanelCelda <- fluidPage(
 
         bsCollapsePanel("Visualization",
             tabsetPanel(
-                tabPanel("UMAP",
+                tabPanel("Embeddings",
                     fluidRow(
                         column(4,
                             panel(
-                                numericInput("celdaUMAPmaxCells",
-                                             label =
-                                                 "Max.cells: Maximum number of cells to plot",
-                                             value = 25000,
-                                             min = 1,
-                                             step = 1),
-                                numericInput("celdaUMAPminClusterSize",
-                                             label =
-                                                 "Min.cluster.size: Do not subsample cell
+                                radioButtons("celdaPlot", "Plot Type:", c("UMAP", "TSNE")),
+                                conditionalPanel(
+                                    condition = "input.celdaPlot == 'UMAP'",
+                                    
+                                    numericInput("celdaUMAPmaxCells",
+                                                 label =
+                                                     "Max.cells: Maximum number of cells to plot",
+                                                 value = 25000,
+                                                 min = 1,
+                                                 step = 1),
+                                    numericInput("celdaUMAPminClusterSize",
+                                                 label =
+                                                     "Min.cluster.size: Do not subsample cell
                               clusters below this threshold",
-                                             value = 100,
-                                             min = 1,
-                                             step = 1),
-                                numericInput("celdaUMAPSeed",
-                                             label =
-                                                 "Seed: ",
-                                             value = 12345),
-                                numericInput("celdaUMAPmindist",
-                                             label =
-                                                 "Min.dist: Effective minimum distance
+                                                 value = 100,
+                                                 min = 1,
+                                                 step = 1),
+                                    numericInput("celdaUMAPSeed",
+                                                 label =
+                                                     "Seed: ",
+                                                 value = 12345),
+                                    numericInput("celdaUMAPmindist",
+                                                 label =
+                                                     "Min.dist: Effective minimum distance
                                 between embedded points",
-                                             value = 0.75),
-                                numericInput("celdaUMAPspread",
-                                             label =
-                                                 "Spread: ",
-                                             value = 1),
-                                numericInput("celdaUMAPnn",
-                                             label =
-                                                 "nNeighbors: ",
-                                             value = 30),
-                                actionButton("CeldaUmap", "Run UMAP")
-                            )
-                        ),
-                        column(8,
-                            panel(
-                                plotlyOutput("celdaumapplot", height = "auto")
-                            )
-                        )
-                    )
-                ),
-                tabPanel("TSNE",
-                    fluidRow(
-                        column(4,
-                            panel(
-                                numericInput("celdatSNEmaxCells",
-                                             label =
-                                                 "Max.cells: Maximum number of cells to
+                                                 value = 0.75),
+                                    numericInput("celdaUMAPspread",
+                                                 label =
+                                                     "Spread: ",
+                                                 value = 1),
+                                    numericInput("celdaUMAPnn",
+                                                 label =
+                                                     "nNeighbors: ",
+                                                 value = 30),
+                                    
+                                    actionButton("CeldaUmap", "Run UMAP")
+                                    
+                                    
+                                ),
+                                
+                                conditionalPanel(
+                                    condition = "input.celdaPlot == 'TSNE'",
+                                    numericInput("celdatSNEmaxCells",
+                                                 label =
+                                                     "Max.cells: Maximum number of cells to
                                 plot",
-                                             value = 25000,
-                                             min = 1,
-                                             step = 1),
-                                numericInput("celdatSNEminClusterSize",
-                                             label =
-                                                 "Min.cluster.size: Do not subsample cell
+                                                 value = 25000,
+                                                 min = 1,
+                                                 step = 1),
+                                    numericInput("celdatSNEminClusterSize",
+                                                 label =
+                                                     "Min.cluster.size: Do not subsample cell
                               clusters below this threshold",
-                                             value = 100,
-                                             min = 1,
-                                             step = 1),
-                                numericInput("celdatSNEPerplexity",
-                                             label =
-                                                 "Perplexity: ",
-                                             value = 20),
-                                numericInput("celdatSNEmaxIter",
-                                             label =
-                                                 "Max.iter: Maximum number of iterations in
+                                                 value = 100,
+                                                 min = 1,
+                                                 step = 1),
+                                    numericInput("celdatSNEPerplexity",
+                                                 label =
+                                                     "Perplexity: ",
+                                                 value = 20),
+                                    numericInput("celdatSNEmaxIter",
+                                                 label =
+                                                     "Max.iter: Maximum number of iterations in
                               tSNE generation",
-                                             value = 2500),
-                                numericInput("celdatSNESeed",
-                                             label =
-                                                 "Seed: ",
-                                             value = 12345),
-                                actionButton("CeldaTsne", "Run tSNE")
+                                                 value = 2500),
+                                    numericInput("celdatSNESeed",
+                                                 label =
+                                                     "Seed: ",
+                                                 value = 12345),
+                                    actionButton("CeldaTsne", "Run tSNE")
+                                    
+                                    
+                                ),
+                                
+                             
+                                
                             )
                         ),
                         column(8,
                             panel(
-                                plotlyOutput("celdatsneplot", height = "auto")
+                                conditionalPanel(
+                                    condition = "input.celdaPlot == 'UMAP'",
+                                    plotlyOutput("celdaumapplot", height = "auto")
+                                    
+                                ),
+                                
+                                conditionalPanel(
+                                    condition = "input.celdaPlot == 'TSNE'",
+                                    plotlyOutput("celdatsneplot", height = "auto")
+                                    
+                                ),
+                                
                             )
                         )
                     )
                 ),
-                tabPanel("Heatmap",
-                         fluidRow(
-                             panel(
-                                 plotOutput("celdaheatmapplt")
-                             )
-                         )
-                ),
-                tabPanel("Module Heatmap",
+             
+                #tabPanel("Heatmap",
+                 #        fluidRow(
+                  #           panel(
+                   #              plotOutput("celdaheatmapplt")
+                    #         )
+                    #     )
+                #),
+                tabPanel("Module Analysis",
                          fluidRow(
                              column(4,
                                     panel(
@@ -195,7 +215,9 @@ shinyPanelCelda <- fluidPage(
                              ),
                              column(8,
                                     panel(
-                                        plotOutput(outputId = "celdamodheatmapplt") %>% withSpinner(size = 3, color = "#0dc5c1", type = 8)
+                                        plotOutput(outputId = "celdamodheatmapplt") %>% withSpinner(size = 3, color = "#0dc5c1", type = 8),
+                                        plotOutput(outputId = "celdamodprobplt") %>% withSpinner(size = 3, color = "#0dc5c1", type = 8)
+                                        
                                     )
                              )
                          )
@@ -209,5 +231,6 @@ shinyPanelCelda <- fluidPage(
                 )
             ),
             style = "primary")
-    )
+    ),
+    nonLinearWorkflowUI(id = "nlw-celda")
 )

@@ -32,12 +32,18 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.2.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.2.2</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
+<li>
+  <a href="https://www.camplab.net/sctk">
+    <span class="fas fa-home fa-lg"></span>
+     
+  </a>
+</li>
 <li>
   <a href="../../articles/articles/installation.html">Installation</a>
 </li>
@@ -55,7 +61,7 @@
           <a href="../../articles/articles/import_data.html">Import Data</a>
         </li>
         <li>
-          <a href="../../articles/articles/cmd_import_scRNAseq_data_as_SCE.html">Import Data in Commandline</a>
+          <a href="../../articles/articles/cmd_import_scRNAseq_data_as_SCE.html">Import Data for Commandline QC</a>
         </li>
         <li>
           <a href="../../articles/articles/import_genesets.html">Import Gene Sets</a>
@@ -75,16 +81,13 @@
       <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">QC &amp; Filtering</a>
       <ul class="dropdown-menu" role="menu">
 <li>
-          <a href="../../articles/articles/cmd_qc.html">QC with commandline</a>
+          <a href="../../articles/articles/cnsl_dropletqc.html">Droplet QC (R console)</a>
         </li>
         <li>
-          <a href="../../articles/articles/cnsl_cellqc.html">Cell QC in R console</a>
+          <a href="../../articles/articles/cnsl_cellqc.html">Cell QC (R console)</a>
         </li>
         <li>
-          <a href="../../articles/articles/cnsl_dropletqc.html">Droplet QC in R console</a>
-        </li>
-        <li>
-          <a href="../../articles/articles/ui_qc.html">QC in the UI</a>
+          <a href="../../articles/articles/ui_qc.html">Cell QC (Shiny UI)</a>
         </li>
         <li>
           <a href="../../articles/articles/filtering.html">Filtering</a>
@@ -170,15 +173,18 @@
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Tutorial
+    Tutorials
      
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../../articles/articles/console_analysis_tutorial.html">Console Analysis Tutorial</a>
+      <a href="../../articles/articles/console_analysis_tutorial.html">Analysis of PBMC3K (R Console)</a>
     </li>
   </ul>
+</li>
+<li>
+  <a href="../../articles/articles/cmd_qc.html">SCTK-QC</a>
 </li>
 <li>
   <a href="../../reference/index.html">Reference</a>
@@ -226,8 +232,9 @@
 <div id="introduction" class="section level2">
 <h2 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h2>
-<p>The methods for labeling the cell type for single-cell RNA-sequencing (scRNAseq) data varies a lot. Including using a labeled reference dataset as the training set and classifying the test data by cluster or individual cells, or using a prior knowledge of the projection between marker gene sets and specific cell types and labeling the cells basing on detected markers. Currently, SCTK only supports using SingleR<span class="citation">[1]</span> for cell type labeling, which works with the first approach as previously mentioned. We are planning to add more methods that annotate cells in various ways.</p>
-<p>SingleR is an automatic annotation method for scRNAseq data. Given a reference dataset of samples (single-cell or bulk) with known labels, it labels new cells from a test dataset based on similarity to the reference. The only prerequisite for using this method is a labeled reference dataset, and we have already enabled automated caching of online datasets, while users can always use their own data in the console analysis.</p>
+<p>The methods for labeling the cell type for single-cell RNA-sequencing (scRNAseq) data varies a lot. Including using a labeled reference dataset as the training set and classifying the test data by cluster or individual cells, or using a prior knowledge of the projection between marker gene sets and specific cell types and labeling the cells basing on detected markers. Currently, SCTK only supports using <code>SingleR</code><span class="citation">[1]</span> for cell type labeling, which works with the first approach as previously mentioned. We are planning to add more methods that annotate cells in various ways.</p>
+<p><code>SingleR</code> is an automatic annotation method for scRNAseq data. Given a reference dataset of samples (single-cell or bulk) with known labels, it labels new cells from a test dataset based on similarity to the reference. The only prerequisite for using this method is a labeled reference dataset, and we have already enabled automated caching of online datasets, while users can always use their own data in the console analysis.</p>
+<p>To view detailed instructions on how to use this method, please select ‘Interactive Analysis’ for using <code>SingleR</code> in shiny application or ‘Console Analysis’ for using this method on R console from the tabs below: <br></p>
 </div>
 <div id="workflow-guide" class="section level2">
 <h2 class="hasAnchor">
@@ -243,7 +250,7 @@
 <p>Users should enter the page as instructed in the screenshot above, by clicking on “Differential Expression &amp; Cell Type Labeling” first and choosing “Cell Type Labeling” sub-option next.</p>
 <p><strong>Usage</strong></p>
 <p><img src="ui_screenshots/cell_type_labeling/panel.jpg" alt="panel"><br><img src="ui_screenshots/cell_type_labeling/panel2.jpg" alt="panel2"><br>
-There are 6 basic widgets that users need to work with before reaching to the result.</p>
+There are 6 basic widgets that users need to work with before reaching to the result:</p>
 <ol style="list-style-type: decimal">
 <li>
 <strong>Select assay</strong> - Select the feature expression matrix for the comparison against the reference dataset. This matrix has to be a log-normalized assay. <a href="cnsl_normalization.html">(How to normalize an assay with SCTK)</a>
@@ -267,7 +274,7 @@ There are 6 basic widgets that users need to work with before reaching to the re
 </ol>
 <p>The result will not be pop out directly, but three levels of cell annotation will be inserted to the background object. They will all have the same prefix as <code>"SingleR_{reference abbr}_{annotation level}_"</code>, then <code>"score"</code>, <code>"first.labels"</code>, <code>"labels"</code> and <code>"pruned.labels"</code>, respectively. <code>"first.labels"</code> refers to the labeling initially indicated by the scores, <code>"labels"</code> is fine-tuned, and <code>"pruned.labels"</code> is the pruned result.</p>
 <p><strong>Visualization</strong></p>
-<p>SCTK does not have a quick visualization at this point. But users can go to the <a href="visualization.html">CellViewer</a> to create a scatter plot using the pre-generated embedding and color it with the cell type labeling result.</p>
+<p>SCTK does not have a quick visualization at this point. But users can go to the <a href="visualization.html">CellViewer</a> tab to create a scatter plot using the pre-generated embedding and color it with the cell type labeling result.</p>
 </div>
 
 <div id="console" class="tabcontent">
@@ -305,11 +312,11 @@ document.getElementById("ia-button").click();
 <div id="refs" class="references csl-bib-body">
 <div id="ref-Aran2019" class="csl-entry">
 <div class="csl-left-margin">[1] </div>
-<div class="csl-right-inline">L. L. Dvir Aran Agnieszka P. Looney, <span>“Reference-based analysis of lung single-cell sequencing reveals a transitional profibrotic macrophage,”</span> <em>Nature Immunology</em>, vol. 20, pp. 163–172, 2019.</div>
+<div class="csl-right-inline">D. Aran <em>et al.</em>, <span>“Reference-based analysis of lung single-cell sequencing reveals a transitional profibrotic macrophage,”</span> <em>Nature Immunology</em>, vol. 20, pp. 163–172, 2019.</div>
 </div>
 <div id="ref-Mabbott2013" class="csl-entry">
 <div class="csl-left-margin">[2] </div>
-<div class="csl-right-inline">H. B. Neil A Mabbott J Kenneth Baillie, <span>“An expression atlas of human primary cells: Inference of gene function from coexpression networks,”</span> <em>BMC Genomics</em>, vol. 14, no. 632, 2013.</div>
+<div class="csl-right-inline">N. A. Mabbott, J. K. Baillie, H. Brown, T. C. Freeman, and D. A. Hume, <span>“An expression atlas of human primary cells: Inference of gene function from coexpression networks,”</span> <em>BMC Genomics</em>, vol. 14, no. 632, 2013.</div>
 </div>
 </div>
 </div>
@@ -326,7 +333,7 @@ document.getElementById("ia-button").click();
 
 
       <footer><div class="copyright">
-  <p>Developed by David Jenkins, Vidya Akavoor, Salam Alabdullatif, Shruthi Bandyadka, Emma Briars, Xinyun Cao, Sebastian Carrasco Pro, Tyler Faits, Rui Hong, Mohammed Muzamil Khan, Yusuke Koga, Anastasia Leshchyk, Irzam Sarfraz, Yichen Wang, Zhe Wang, W. Evan Johnson, Joshua David Campbell.</p>
+  <p>Developed by Yichen Wang, Irzam Sarfraz, Rui Hong, Yusuke Koga, Salam Alabdullatif, David Jenkins, Vidya Akavoor, Xinyun Cao, Shruthi Bandyadka, Anastasia Leshchyk, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, W. Evan Johnson, Joshua David Campbell.</p>
 </div>
 
 <div class="pkgdown">

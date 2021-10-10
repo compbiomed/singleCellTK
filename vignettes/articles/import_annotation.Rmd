@@ -24,6 +24,8 @@ doEval = FALSE
 
 This documentation mainly focuses on the metadata variable that can be projected to each cell or feature, such as IDs and clinical conditions. Single Cell Toolkit (singleCellTK, SCTK) allows users to import and manage cell level and feature level annotations to help with analysis such as filtering the features for less noise, grouping the cells for differential expression analysis, and etc. Many of the analysis steps that SCTK does would also produce annotations, such as the QC metrics, clustering labels and etc. 
 
+To view detailed instructions on how to manipulate the annotation, please select 'Interactive Analysis' for manipulation through shiny application or 'Console Analysis' for manipulation through the R console from the tabs below: <br>
+
 ## Workflow Guide
 
 ````{=html}
@@ -57,6 +59,10 @@ Here we will take the example PBMC3K dataset as an example. We imported this dat
 
 **Detailed Demonstration**
 ````{=html}
+ <style>
+div.offset { background-color:inherit ; border-radius: 5px; margin-left: 15px;}
+</style>
+<div class = "offset">
 <details>
   <summary><b>Import New Annotation from File</b></summary>
 ````
@@ -69,6 +75,7 @@ Users can choose to replace all existing annotation with the new table, by selec
 </details>
 <details>
   <summary><b>Edit Existing Annotation</b></summary>
+  <div class = "offset">
   <details>
     <summary><b>Bins</b></summary>
 ````
@@ -127,13 +134,15 @@ User can remove an entire column. The unwanted column can be deleted by simply s
 
 ````{=html}
   </details>
+  </div>
 </details>
+</div>
 </div>
 
 <div id="console" class="tabcontent">
 ````
 
-SCTK uses the [SingleCellExperiment](https://rdrr.io/bioc/SingleCellExperiment/man/SingleCellExperiment.html) object as the container of users' datasets. Basing on this, the cell level and feature level annotations are all stored in the `colData` slot and `rowData` slot, respectively. 
+SCTK uses the [SingleCellExperiment](https://rdrr.io/bioc/SingleCellExperiment/man/SingleCellExperiment.html) object as the container of users' datasets. Based on this approach, the cell level and feature level annotations are all stored in the `colData` slot and `rowData` slot, respectively. 
 
 Here, we present some of the most basic operations on cell annotations, with `colData()` method. For operations on feature annotations, replace `colData()` with `rowData()`.
 

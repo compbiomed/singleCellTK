@@ -32,12 +32,18 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.2.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.2.2</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
+<li>
+  <a href="https://www.camplab.net/sctk">
+    <span class="fas fa-home fa-lg"></span>
+     
+  </a>
+</li>
 <li>
   <a href="../../articles/articles/installation.html">Installation</a>
 </li>
@@ -55,7 +61,7 @@
           <a href="../../articles/articles/import_data.html">Import Data</a>
         </li>
         <li>
-          <a href="../../articles/articles/cmd_import_scRNAseq_data_as_SCE.html">Import Data in Commandline</a>
+          <a href="../../articles/articles/cmd_import_scRNAseq_data_as_SCE.html">Import Data for Commandline QC</a>
         </li>
         <li>
           <a href="../../articles/articles/import_genesets.html">Import Gene Sets</a>
@@ -75,16 +81,13 @@
       <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">QC &amp; Filtering</a>
       <ul class="dropdown-menu" role="menu">
 <li>
-          <a href="../../articles/articles/cmd_qc.html">QC with commandline</a>
+          <a href="../../articles/articles/cnsl_dropletqc.html">Droplet QC (R console)</a>
         </li>
         <li>
-          <a href="../../articles/articles/cnsl_cellqc.html">Cell QC in R console</a>
+          <a href="../../articles/articles/cnsl_cellqc.html">Cell QC (R console)</a>
         </li>
         <li>
-          <a href="../../articles/articles/cnsl_dropletqc.html">Droplet QC in R console</a>
-        </li>
-        <li>
-          <a href="../../articles/articles/ui_qc.html">QC in the UI</a>
+          <a href="../../articles/articles/ui_qc.html">Cell QC (Shiny UI)</a>
         </li>
         <li>
           <a href="../../articles/articles/filtering.html">Filtering</a>
@@ -170,15 +173,18 @@
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Tutorial
+    Tutorials
      
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../../articles/articles/console_analysis_tutorial.html">Console Analysis Tutorial</a>
+      <a href="../../articles/articles/console_analysis_tutorial.html">Analysis of PBMC3K (R Console)</a>
     </li>
   </ul>
+</li>
+<li>
+  <a href="../../articles/articles/cmd_qc.html">SCTK-QC</a>
 </li>
 <li>
   <a href="../../reference/index.html">Reference</a>
@@ -363,7 +369,7 @@
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../../reference/seuratElbowPlot.html">seuratElbowPlot</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span><span class="op">)</span></code></pre></div>
 <div id="htmlwidget-530cfa52d3babb35245b" style="width:700px;height:432.632880098888px;" class="plotly html-widget"></div>
-<script type="application/json" data-for="htmlwidget-530cfa52d3babb35245b">{"x":{"data":[{"x":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20],"y":[6.84331509490855,4.43266497066943,3.82578185893236,3.69748479873893,3.19756193915265,2.58392430187117,2.26480770931355,2.02961166116499,1.89546913976367,1.82208912025757,1.80293123317714,1.77708578524215,1.77026966721517,1.75990881185453,1.7352149251099,1.73199558067673,1.72031464668751,1.7159379460096,1.71286389434164,1.71160640658426],"text":["Dimension: 1 <br />Standard Deviation: 6.8 <br />Is Significant? ","Dimension: 2 <br />Standard Deviation: 4.4 <br />Is Significant? ","Dimension: 3 <br />Standard Deviation: 3.8 <br />Is Significant? ","Dimension: 4 <br />Standard Deviation: 3.7 <br />Is Significant? ","Dimension: 5 <br />Standard Deviation: 3.2 <br />Is Significant? ","Dimension: 6 <br />Standard Deviation: 2.6 <br />Is Significant? ","Dimension: 7 <br />Standard Deviation: 2.3 <br />Is Significant? ","Dimension: 8 <br />Standard Deviation: 2 <br />Is Significant? ","Dimension: 9 <br />Standard Deviation: 1.9 <br />Is Significant? ","Dimension: 10 <br />Standard Deviation: 1.8 <br />Is Significant? ","Dimension: 11 <br />Standard Deviation: 1.8 <br />Is Significant? ","Dimension: 12 <br />Standard Deviation: 1.8 <br />Is Significant? ","Dimension: 13 <br />Standard Deviation: 1.8 <br />Is Significant? ","Dimension: 14 <br />Standard Deviation: 1.8 <br />Is Significant? ","Dimension: 15 <br />Standard Deviation: 1.7 <br />Is Significant? ","Dimension: 16 <br />Standard Deviation: 1.7 <br />Is Significant? ","Dimension: 17 <br />Standard Deviation: 1.7 <br />Is Significant? ","Dimension: 18 <br />Standard Deviation: 1.7 <br />Is Significant? ","Dimension: 19 <br />Standard Deviation: 1.7 <br />Is Significant? ","Dimension: 20 <br />Standard Deviation: 1.7 <br />Is Significant? "],"type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(0,0,0,1)","opacity":1,"size":5.66929133858268,"symbol":"circle","line":{"width":1.88976377952756,"color":"rgba(0,0,0,1)"}},"hoveron":"points","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null}],"layout":{"margin":{"t":31.049537260322,"r":9.29846409298464,"b":54.2359216521858,"l":40.5147364051474},"font":{"color":"rgba(0,0,0,1)","family":"","size":18.5969281859693},"xaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[0.0499999999999999,20.95],"tickmode":"array","ticktext":["5","10","15","20"],"tickvals":[5,10,15,20],"categoryorder":"array","categoryarray":["5","10","15","20"],"nticks":null,"ticks":"outside","tickcolor":"rgba(0,0,0,1)","ticklen":4.64923204649232,"tickwidth":0.66417600664176,"showticklabels":true,"tickfont":{"color":"rgba(0,0,0,1)","family":"","size":15.9402241594022},"tickangle":-0,"showline":true,"linecolor":"rgba(0,0,0,1)","linewidth":0.66417600664176,"showgrid":false,"gridcolor":null,"gridwidth":0,"zeroline":false,"anchor":"y","title":{"text":"PC","font":{"color":"rgba(0,0,0,1)","family":"","size":18.5969281859693}},"hoverformat":".2f"},"yaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[1.45502097216804,7.09990052932476],"tickmode":"array","ticktext":["2","3","4","5","6","7"],"tickvals":[2,3,4,5,6,7],"categoryorder":"array","categoryarray":["2","3","4","5","6","7"],"nticks":null,"ticks":"outside","tickcolor":"rgba(0,0,0,1)","ticklen":4.64923204649232,"tickwidth":0.66417600664176,"showticklabels":true,"tickfont":{"color":"rgba(0,0,0,1)","family":"","size":15.9402241594022},"tickangle":-0,"showline":true,"linecolor":"rgba(0,0,0,1)","linewidth":0.66417600664176,"showgrid":false,"gridcolor":null,"gridwidth":0,"zeroline":false,"anchor":"x","title":{"text":"Standard Deviation","font":{"color":"rgba(0,0,0,1)","family":"","size":18.5969281859693}},"hoverformat":".2f"},"shapes":[{"type":"rect","fillcolor":null,"line":{"color":null,"width":0,"linetype":[]},"yref":"paper","xref":"paper","x0":0,"x1":1,"y0":0,"y1":1}],"showlegend":false,"legend":{"bgcolor":null,"bordercolor":null,"borderwidth":0,"font":{"color":"rgba(0,0,0,1)","family":"","size":15.9402241594022}},"hovermode":"closest","barmode":"relative"},"config":{"doubleClick":"reset","showSendToCloud":false},"source":"A","attrs":{"7a4c26074f08":{"x":{},"y":{},"type":"scatter"}},"cur_data":"7a4c26074f08","visdat":{"7a4c26074f08":["function (y) ","x"]},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.2,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script><div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<script type="application/json" data-for="htmlwidget-530cfa52d3babb35245b">{"x":{"data":[{"x":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20],"y":[6.84331509490855,4.43266497066943,3.82578185893236,3.69748479873892,3.19756193915266,2.58392430187118,2.26480770931356,2.029611661165,1.89546913976367,1.82208912025757,1.80293123317712,1.77708578524215,1.77026966721517,1.75990881185454,1.7352149251099,1.73199558067672,1.72031464668751,1.7159379460096,1.71286389434164,1.71160640658426],"text":["Dimension: 1 <br />Standard Deviation: 6.8 <br />Is Significant? ","Dimension: 2 <br />Standard Deviation: 4.4 <br />Is Significant? ","Dimension: 3 <br />Standard Deviation: 3.8 <br />Is Significant? ","Dimension: 4 <br />Standard Deviation: 3.7 <br />Is Significant? ","Dimension: 5 <br />Standard Deviation: 3.2 <br />Is Significant? ","Dimension: 6 <br />Standard Deviation: 2.6 <br />Is Significant? ","Dimension: 7 <br />Standard Deviation: 2.3 <br />Is Significant? ","Dimension: 8 <br />Standard Deviation: 2 <br />Is Significant? ","Dimension: 9 <br />Standard Deviation: 1.9 <br />Is Significant? ","Dimension: 10 <br />Standard Deviation: 1.8 <br />Is Significant? ","Dimension: 11 <br />Standard Deviation: 1.8 <br />Is Significant? ","Dimension: 12 <br />Standard Deviation: 1.8 <br />Is Significant? ","Dimension: 13 <br />Standard Deviation: 1.8 <br />Is Significant? ","Dimension: 14 <br />Standard Deviation: 1.8 <br />Is Significant? ","Dimension: 15 <br />Standard Deviation: 1.7 <br />Is Significant? ","Dimension: 16 <br />Standard Deviation: 1.7 <br />Is Significant? ","Dimension: 17 <br />Standard Deviation: 1.7 <br />Is Significant? ","Dimension: 18 <br />Standard Deviation: 1.7 <br />Is Significant? ","Dimension: 19 <br />Standard Deviation: 1.7 <br />Is Significant? ","Dimension: 20 <br />Standard Deviation: 1.7 <br />Is Significant? "],"type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(0,0,0,1)","opacity":1,"size":5.66929133858268,"symbol":"circle","line":{"width":1.88976377952756,"color":"rgba(0,0,0,1)"}},"hoveron":"points","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null}],"layout":{"margin":{"t":31.049537260322,"r":9.29846409298464,"b":54.2359216521858,"l":40.5147364051474},"font":{"color":"rgba(0,0,0,1)","family":"","size":18.5969281859693},"xaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[0.0499999999999999,20.95],"tickmode":"array","ticktext":["5","10","15","20"],"tickvals":[5,10,15,20],"categoryorder":"array","categoryarray":["5","10","15","20"],"nticks":null,"ticks":"outside","tickcolor":"rgba(0,0,0,1)","ticklen":4.64923204649232,"tickwidth":0.66417600664176,"showticklabels":true,"tickfont":{"color":"rgba(0,0,0,1)","family":"","size":15.9402241594022},"tickangle":-0,"showline":true,"linecolor":"rgba(0,0,0,1)","linewidth":0.66417600664176,"showgrid":false,"gridcolor":null,"gridwidth":0,"zeroline":false,"anchor":"y","title":{"text":"PC","font":{"color":"rgba(0,0,0,1)","family":"","size":18.5969281859693}},"hoverformat":".2f"},"yaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[1.45502097216805,7.09990052932476],"tickmode":"array","ticktext":["2","3","4","5","6","7"],"tickvals":[2,3,4,5,6,7],"categoryorder":"array","categoryarray":["2","3","4","5","6","7"],"nticks":null,"ticks":"outside","tickcolor":"rgba(0,0,0,1)","ticklen":4.64923204649232,"tickwidth":0.66417600664176,"showticklabels":true,"tickfont":{"color":"rgba(0,0,0,1)","family":"","size":15.9402241594022},"tickangle":-0,"showline":true,"linecolor":"rgba(0,0,0,1)","linewidth":0.66417600664176,"showgrid":false,"gridcolor":null,"gridwidth":0,"zeroline":false,"anchor":"x","title":{"text":"Standard Deviation","font":{"color":"rgba(0,0,0,1)","family":"","size":18.5969281859693}},"hoverformat":".2f"},"shapes":[{"type":"rect","fillcolor":null,"line":{"color":null,"width":0,"linetype":[]},"yref":"paper","xref":"paper","x0":0,"x1":1,"y0":0,"y1":1}],"showlegend":false,"legend":{"bgcolor":null,"bordercolor":null,"borderwidth":0,"font":{"color":"rgba(0,0,0,1)","family":"","size":15.9402241594022}},"hovermode":"closest","barmode":"relative"},"config":{"doubleClick":"reset","showSendToCloud":false},"source":"A","attrs":{"181d1719fcb7c":{"x":{},"y":{},"type":"scatter"}},"cur_data":"181d1719fcb7c","visdat":{"181d1719fcb7c":["function (y) ","x"]},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.2,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script><div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/seuratComputeJackStraw.html">seuratComputeJackStraw</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"seuratScaledData"</span>, dims <span class="op">=</span> <span class="fl">20</span><span class="op">)</span>
 <span class="fu"><a href="../../reference/seuratJackStrawPlot.html">seuratJackStrawPlot</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, dims <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></code></pre></div>
 <p><img src="cnsl_seurat_curated_workflow_files/figure-html/seurat_dm-3.png" width="700"></p>
@@ -461,7 +467,7 @@ document.getElementById("ia-button").click();
 
 
       <footer><div class="copyright">
-  <p>Developed by David Jenkins, Vidya Akavoor, Salam Alabdullatif, Shruthi Bandyadka, Emma Briars, Xinyun Cao, Sebastian Carrasco Pro, Tyler Faits, Rui Hong, Mohammed Muzamil Khan, Yusuke Koga, Anastasia Leshchyk, Irzam Sarfraz, Yichen Wang, Zhe Wang, W. Evan Johnson, Joshua David Campbell.</p>
+  <p>Developed by Yichen Wang, Irzam Sarfraz, Rui Hong, Yusuke Koga, Salam Alabdullatif, David Jenkins, Vidya Akavoor, Xinyun Cao, Shruthi Bandyadka, Anastasia Leshchyk, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, W. Evan Johnson, Joshua David Campbell.</p>
 </div>
 
 <div class="pkgdown">

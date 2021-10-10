@@ -1619,7 +1619,7 @@ shinyServer(function(input, output, session) {
             if (input$QCMgeneSets == "he") {
               # Import Human Mito Ensembl
               mgsRef <- "human"
-              mgsId <- "ensemble"
+              mgsId <- "ensembl"
             } else if (input$QCMgeneSets == "hs") {
               # Import Human Mito Symbol
               mgsRef <- "human"
@@ -1627,7 +1627,7 @@ shinyServer(function(input, output, session) {
             } else if (input$QCMgeneSets == "me") {
               # Import Mouse Mito Ensembl
               mgsRef <- "mouse"
-              mgsId <- "ensemble"
+              mgsId <- "ensembl"
             } else if (input$QCMgeneSets == "ms") {
               # Import Mouse Mito Symbol
               mgsRef <- "mouse"
@@ -3412,8 +3412,8 @@ shinyServer(function(input, output, session) {
         plotlyOutput(outputId = "plot_modsplit_perp", height = "auto")
       )
     ), select = TRUE)
-    appendTab(inputId = "celdaModsplitTabset", tabPanel(title = "Perplexity Difference Plot",
-      panel(heading = "Perplexity Diff Plot",
+    appendTab(inputId = "celdaModsplitTabset", tabPanel(title = "Rate of perplexity change",
+      panel(heading = "RPC Plot",
         plotlyOutput(outputId = "plot_modsplit_perpdiff", height = "auto")
       )
     ))
@@ -3425,8 +3425,12 @@ shinyServer(function(input, output, session) {
         vals$counts <- seuratNormalizeData(vals$counts, useAssay = input$celdaassayselect)
         vals$counts <- seuratFindHVG(vals$counts, useAssay = "seuratNormData",
                                      hvgMethod = input$celdaseurathvgmethod, hvgNumber = input$celdafeaturenum)
-        altExp(vals$counts, "featureSubset") <- vals$counts[getTopHVG(vals$counts,
-                                                                      method = input$celdaseurathvgmethod, n = input$celdafeaturenum)]
+        
+        g <- getTopHVG(vals$counts, method = input$celdaseurathvgmethod, n = input$celdafeaturenum)
+        altExp(vals$counts, "featureSubset") <- vals$counts[g, ]
+        
+        vals$counts <- selectFeatures(vals$counts[g, ], minCount = input$celdarowcountsmin,
+                                     minCell = input$celdacolcountsmin, useAssay = input$celdaassayselect, altExpName = "featureSubset")
       }else if(input$celdafeatureselect == "Scran_modelGeneVar"){
         if (!("ScaterLogNormCounts" %in% names(assays(vals$counts)))){
           vals$counts <- scater::logNormCounts(vals$counts, name = "ScaterLogNormCounts",
@@ -3438,9 +3442,9 @@ shinyServer(function(input, output, session) {
       }
       counts(altExp(vals$counts)) <- as.matrix(counts(altExp(vals$counts)))
       updateNumericInput(session, "celdaLselect", min = input$celdaLinit, max = input$celdaLmax, value = input$celdaLinit)
-      modsplit(recursiveSplitModule(vals$counts, initialL = input$celdaLinit, maxL = input$celdaLmax))
+      modsplit(recursiveSplitModule(vals$counts, useAssay = input$celdaassayselect, altExpName = "featureSubset",  initialL = input$celdaLinit, maxL = input$celdaLmax))
       output$plot_modsplit_perp <- renderPlotly({plotGridSearchPerplexity(modsplit())})
-      output$plot_modsplit_perpdiff <- renderPlotly({plotGridSearchPerplexityDiff(modsplit())})
+      output$plot_modsplit_perpdiff <- renderPlotly({plotRPC(modsplit())})
     })
 
     shinyjs::enable(
@@ -3480,11 +3484,11 @@ shinyServer(function(input, output, session) {
 
   observeEvent(input$celdacellsplit, {
     withBusyIndicatorServer("celdacellsplit", {
-      cellsplit(recursiveSplitCell(vals$counts, initialK = input$celdaKinit, maxK = input$celdaKmax,
+      cellsplit(recursiveSplitCell(vals$counts, useAssay = input$celdaassayselect, initialK = input$celdaKinit, maxK = input$celdaKmax,
                                         yInit = celdaModules(vals$counts)))
       temp_umap <- celdaUmap(vals$counts)
       output$plot_cellsplit_perp <- renderPlotly({plotGridSearchPerplexity(cellsplit())})
-      output$plot_cellsplit_perpdiff <- renderPlotly({plotGridSearchPerplexityDiff(cellsplit())})
+      output$plot_cellsplit_perpdiff <- renderPlotly({plotRPC(cellsplit())})
       for (i in runParams(cellsplit())$K){
         local({
           my_i <- i
@@ -3511,6 +3515,9 @@ shinyServer(function(input, output, session) {
     shinyjs::enable(
       selector = "div[value='Visualization']")
     updateNumericInput(session, "celdamodheatmapnum", min = 1, max = input$celdaLselect, value = 1)
+    # Show downstream analysis options
+    callModule(module = nonLinearWorkflow, id = "nlw-celda", parent = session, de = TRUE, pa = TRUE)
+    
   })
 
   output$celdaheatmapplt <- renderPlot({plot(celdaHeatmap(vals$counts))})
@@ -3528,8 +3535,11 @@ shinyServer(function(input, output, session) {
                                nNeighbors = input$celdaUMAPnn)
       output$celdaumapplot <- renderPlotly({plotDimReduceCluster(vals$counts, reducedDimName = "celda_UMAP", xlab = "UMAP_1",
                                                                  ylab = "UMAP_2", labelClusters = TRUE)})
+      
     })
     showNotification("Umap complete.")
+    colData(vals$counts)$celda_clusters <- celdaClusters(vals$counts)
+    updateColDataNames()
     shinyjs::enable("CeldaTsne")
   })
 
@@ -3549,7 +3559,8 @@ shinyServer(function(input, output, session) {
   })
 
   observeEvent(input$celdamodheatmapbtn,{
-    output$celdamodheatmapplt <- renderPlot({moduleHeatmap(vals$counts, featureModule = input$celdamodheatmapnum)})
+    output$celdamodheatmapplt <- renderPlot({moduleHeatmap(vals$counts, topCells= 100, featureModule = input$celdamodheatmapnum)})
+    output$celdamodprobplt <- renderPlot({plotDimReduceModule(vals$counts, modules =  input$celdamodheatmapnum, reducedDimName = "celda_UMAP")})
     showNotification("Module heatmap complete.")
   })
 
@@ -6337,8 +6348,8 @@ shinyServer(function(input, output, session) {
     })
   })
 
-  
-  
+
+
 
  #plot results
   observeEvent(input$Plot, {
@@ -6364,7 +6375,7 @@ shinyServer(function(input, output, session) {
      })
     session$sendCustomMessage("close_dropDownPathway", "")
   })
-  
+
   observeEvent(input$closeDropDownPathway,{
     session$sendCustomMessage("close_dropDownPathway", "")
   })
