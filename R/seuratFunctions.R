@@ -1305,6 +1305,8 @@ seuratFindMarkers <- function(
     for(i in seq(length(clust))){
       levels(markerGenes$cluster)[clust[i]] <- grp[i]
     }
+    colnames(markerGenes)[which(colnames(markerGenes) == "cluster")] <- "cluster1"
+    markerGenes$cluster2 <- rep("all", nrow(markerGenes))
   }
   else if(is.null(allGroup)
           && (is.null(group1) && is.null(group2))){

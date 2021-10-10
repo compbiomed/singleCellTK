@@ -7318,7 +7318,7 @@ shinyServer(function(input, output, session) {
 
     #output the heatmap
      colnames(df)[which(startsWith(colnames(df), "avg") == TRUE)] <- "avg_log2FC"
-     top10markers <- df %>% group_by(cluster1) %>% top_n(n = 20, wt = avg_log2FC)
+     top10markers <- df %>% group_by(cluster1) %>% top_n(n = 10, wt = avg_log2FC)
      output$findMarkerHeatmapPlotFull <- renderPlot({
        isolate({
          DoHeatmap(seuratObject, features = top10markers$gene.id)
@@ -7435,6 +7435,13 @@ shinyServer(function(input, output, session) {
     if(nrow(topMarkers) > (input$findMarkerHeatmapPlotFullNumeric * length(groups))){
       topMarkers <- data.frame(topMarkers %>% group_by(cluster1) %>% top_n(input$findMarkerHeatmapPlotFullNumeric, -p_val_adj))
     }
+    # Subset seuratObject to contain only cells available in selected clusters
+    if(input$seuratFindMarkerType != "markerAll"){
+      subsetIdents <- c(unique(topMarkers$cluster1), unique(topMarkers$cluster2))
+      subsetIdents <- subsetIdents[subsetIdents!="all"]
+      seuratObject <- subset(seuratObject, idents = subsetIdents) 
+    }
+    # Plot heatmap
     output$findMarkerHeatmapPlotFull <- renderPlot({
       isolate({
         DoHeatmap(seuratObject, features = topMarkers$gene.id)
