@@ -105,6 +105,7 @@ Imports:
     scDblFinder,
     metap,
     VAM (>= 0.5.3),
+    tibble,
     rlang
 RoxygenNote: 7.1.1
 Suggests:

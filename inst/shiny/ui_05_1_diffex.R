@@ -1,4 +1,13 @@
 shinyPanelDiffex <- fluidPage(
+  tags$script("Shiny.addCustomMessageHandler('close_dropDownDeHM', function(x){
+                  $('html').click();
+                });"),
+  tags$script("Shiny.addCustomMessageHandler('close_dropDownDeViolin', function(x){
+                  $('html').click();
+                });"),
+  tags$script("Shiny.addCustomMessageHandler('close_dropDownDeReg', function(x){
+                  $('html').click();
+                });"),
   tags$div(
     class = "container",
     h1("Differential Expression"),
@@ -16,7 +25,14 @@ shinyPanelDiffex <- fluidPage(
           ),
           column(
             4,
-            uiOutput("deAssay")
+            selectizeInput(
+              inputId = "deAssay", 
+              label = "Select input matrix:", 
+              choices = NULL, 
+              selected = NULL, 
+              multiple = FALSE,
+              options = NULL)
+            #uiOutput("deAssay")
           )
         ),
         useShinyjs(),
@@ -181,6 +197,11 @@ shinyPanelDiffex <- fluidPage(
                 width = 4,
                 dropdown(
                   fluidRow(
+                    column(12,
+                           fluidRow(actionBttn(inputId = "closeDropDownDeHM", label = NULL, style = "simple", color = "danger", icon = icon("times"), size = "xs"), align = "right"),
+                    )
+                  ),
+                  fluidRow(
                     column(
                       width = 6,
                       checkboxInput('deHMDoLog', "Do log transformation", FALSE),
@@ -228,7 +249,15 @@ shinyPanelDiffex <- fluidPage(
                   fluidRow(
                     column(
                       width = 4,
-                      withBusyIndicatorUI(actionButton('dePlotHM', 'Update Plot'))
+                      withBusyIndicatorUI(
+                        actionBttn(
+                          inputId = "dePlotHM",
+                          label = "Update",
+                          style = "bordered",
+                          color = "primary",
+                          size = "sm"
+                        )
+                      )
                     )
                   ),
                   inputId = "dropDownDeHM",
@@ -267,6 +296,11 @@ shinyPanelDiffex <- fluidPage(
                 width = 4,
                 dropdown(
                   fluidRow(
+                    column(12,
+                           fluidRow(actionBttn(inputId = "closeDropDownDeViolin", label = NULL, style = "simple", color = "danger", icon = icon("times"), size = "xs"), align = "right"),
+                    )
+                  ),
+                  fluidRow(
                     div(style="display: inline-block;vertical-align:center; width: 100px;margin-left:10px",
                         p('Plot the top')),
                     div(style="display: inline-block;vertical-align:center; width: 60px;",
@@ -291,7 +325,15 @@ shinyPanelDiffex <- fluidPage(
                     column(
                       width = 4,
                       style = 'margin-top: 23px;',
-                      withBusyIndicatorUI(actionButton('dePlotVio', 'Update Plot'))
+                      withBusyIndicatorUI(
+                        actionBttn(
+                          inputId = "dePlotVio",
+                          label = "Update",
+                          style = "bordered",
+                          color = "primary",
+                          size = "sm"
+                        )
+                      )
                     )
                   ),
                   inputId = "dropDownDeViolin",
@@ -327,6 +369,11 @@ shinyPanelDiffex <- fluidPage(
                 width = 4,
                 dropdown(
                   fluidRow(
+                    column(12,
+                           fluidRow(actionBttn(inputId = "closeDropDownDeReg", label = NULL, style = "simple", color = "danger", icon = icon("times"), size = "xs"), align = "right"),
+                    )
+                  ),
+                  fluidRow(
                     div(style="display: inline-block;vertical-align:center; width: 100px;margin-left:10px",
                         p('Plot the top')),
                     div(style="display: inline-block;vertical-align:center; width: 60px;",
@@ -351,7 +398,15 @@ shinyPanelDiffex <- fluidPage(
                     column(
                       width = 4,
                       style = 'margin-top: 23px;',
-                      withBusyIndicatorUI(actionButton('dePlotReg', 'Plot'))
+                      withBusyIndicatorUI(
+                        actionBttn(
+                          inputId = "dePlotReg",
+                          label = "Update",
+                          style = "bordered",
+                          color = "primary",
+                          size = "sm"
+                        )
+                      )
                     )
                   ),
                   inputId = "dropDownDeReg",

@@ -9,7 +9,14 @@ shinyPanelSubsample <- fluidPage(
         column(
           4,
           wellPanel(
-            uiOutput("depthAssay"),
+            selectizeInput(
+              inputId = "depthAssay", 
+              label = "Select input matrix:", 
+              choices = NULL, 
+              selected = NULL, 
+              multiple = FALSE,
+              options = NULL),
+            #uiOutput("depthAssay"),
             # selectInput("depthAssay", "Select Assay:", currassays),
             numericInput("minCount", "Minimum readcount to detect gene",
                          value = 10, min = 1, max = 10000),
@@ -40,7 +47,14 @@ shinyPanelSubsample <- fluidPage(
         column(
           4,
           wellPanel(
-            uiOutput("cellsAssay"),
+            selectizeInput(
+              inputId = "cellsAssay", 
+              label = "Select input matrix:", 
+              choices = NULL, 
+              selected = NULL, 
+              multiple = FALSE,
+              options = NULL),
+            #uiOutput("cellsAssay"),
             #selectInput("cellsAssay", "Select Assay:", currassays),
             numericInput("minCellNum", "Minimum number of cells to simulate",
                          value = 10, min = 1, max = 10000),
@@ -80,7 +94,14 @@ shinyPanelSubsample <- fluidPage(
         column(
           4,
           wellPanel(
-            uiOutput("snapshotAssay"),
+            selectizeInput(
+              inputId = "snapshotAssay", 
+              label = "Select input matrix:", 
+              choices = NULL, 
+              selected = NULL, 
+              multiple = FALSE,
+              options = NULL),
+            #uiOutput("snapshotAssay"),
             #selectInput("snapshotAssay", "Select Assay:", currassays),
             numericInput("numCellsSnap", "How many simulated cells?",
                          value = 100, min = 2, max = 10000),
