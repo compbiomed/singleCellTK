@@ -1281,7 +1281,8 @@ seuratFindMarkers <- function(
         cells1 = cells1,
         cells2 = cells2)
     }
-    markerGenes$cluster <- paste0(group1, " vs ", group2)
+    markerGenes$cluster1 <- group1
+    markerGenes$cluster2 <- group2
     gene.id <- rownames(markerGenes)
     markerGenes <- cbind(gene.id, markerGenes)
   }
@@ -1299,11 +1300,13 @@ seuratFindMarkers <- function(
     gene.id <- markerGenes$gene
     markerGenes <- cbind(gene.id, markerGenes)
     markerGenes$gene <- NULL
-    grp <- unique(colData(inSCE)[[allGroup]])
-    clust <- as.integer(unique(Seurat::Idents(seuratObject)))
-    for(i in seq(length(clust))){
-      levels(markerGenes$cluster)[clust[i]] <- grp[i]
-    }
+    # grp <- unique(colData(inSCE)[[allGroup]])
+    # clust <- as.integer(unique(Seurat::Idents(seuratObject)))
+    # for(i in seq(length(clust))){
+    #   levels(markerGenes$cluster)[clust[i]] <- grp[i]
+    # }
+    colnames(markerGenes)[which(colnames(markerGenes) == "cluster")] <- "cluster1"
+    markerGenes$cluster2 <- rep("all", nrow(markerGenes))
   }
   else if(is.null(allGroup)
           && (is.null(group1) && is.null(group2))){
@@ -1320,11 +1323,11 @@ seuratFindMarkers <- function(
     gene.id <- markerGenes$gene
     markerGenes <- cbind(gene.id, markerGenes)
     markerGenes$gene <- NULL
-    grp <- unique(colData(inSCE)[[S4Vectors::metadata(inSCE)$seurat$clusterName]])
-    clust <- as.integer(unique(Seurat::Idents(seuratObject)))
-    for(i in seq(length(clust))){
-      levels(markerGenes$cluster)[clust[i]] <- grp[i]
-    }
+    # grp <- unique(colData(inSCE)[[S4Vectors::metadata(inSCE)$seurat$clusterName]])
+    # clust <- as.integer(unique(Seurat::Idents(seuratObject)))
+    # for(i in seq(length(clust))){
+    #   levels(markerGenes$cluster)[clust[i]] <- grp[i]
+    # }
   }
   rownames(markerGenes) <- NULL
   S4Vectors::metadata(inSCE)$seuratMarkers <- markerGenes

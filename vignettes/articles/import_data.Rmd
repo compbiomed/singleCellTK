@@ -30,6 +30,7 @@ Single Cell ToolKit (singleCellTK, SCTK) enables importing data from the followi
 - [BUStools](https://github.com/BUStools/bustools) [@Melsted2019]
 - [Seqc](https://github.com/dpeerlab/seqc)
 - [STARSolo](https://github.com/alexdobin/STAR/blob/master/docs/STARsolo.md) [@Dobin2013]
+- [Alevin](https://salmon.readthedocs.io/en/latest/alevin.html) [@Srivastava2019]
 
 In all cases, SCTK retains the standard output directory structure from the upstream tools.  
 
@@ -39,7 +40,9 @@ Meanwhile, SCTK also supports importing raw count matrix, with metadata, stored 
 - [SingleCellExperiment](https://rdrr.io/bioc/SingleCellExperiment/man/SingleCellExperiment.html) object saved in RDS file
 - [AnnData](https://anndata.readthedocs.io/en/latest/) object saved in  hdf5 file
 
-To view detailed instructions on how to import data, please select 'Interactive Analysis' for importing data through the shiny application or 'Console Analysis' for importing through the R console from the tabs below: <br>
+A chart at the bottom of this documentation summarizes the [expected directory structure](#expected-directory-structure-for-all-data-source-1) of the input data, for each type of data source. 
+
+To view detailed instructions on how to import data, please select, from the tabs below, "Interactive Analysis" for importing data into the Shiny application, or "Console Analysis" for importing into R environment via R console.  
 
 ## Workflow Guide
 
@@ -280,5 +283,9 @@ document.getElementById("ia-button").click();
 </script>
 </body>
 ````
+
+## Expected Directory Structure for All Data Source
+
+![](ui_screenshots/import/directory_structure.png)
 
 ## References

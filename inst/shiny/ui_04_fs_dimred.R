@@ -29,7 +29,14 @@ shinyPanelFS_DimRed <- fluidPage(
               "Scran - modelGeneVar" = "modelGeneVar"
             )
           ),
-          uiOutput("assaySelectFS_Norm"),
+          selectizeInput(
+            inputId = "assaySelectFS_Norm", 
+            label = "Select input matrix:", 
+            choices = NULL, 
+            selected = NULL, 
+            multiple = FALSE,
+            options = NULL),
+          #uiOutput("assaySelectFS_Norm"),
           withBusyIndicatorUI(actionButton("findHvgButtonFS",
                                            "Compute Variability"))
         ),
@@ -38,7 +45,14 @@ shinyPanelFS_DimRed <- fluidPage(
           fluidRow(h6("selection of features will be based on the latest computation above"), align="center"),
           numericInput("hvgNumberSelect", "Number of HVG to select",
                        2000, step = 100),
-          uiOutput("hvgSubsetAssay"),
+          selectizeInput(
+            inputId = "hvgSubsetAssay", 
+            label = "Select input matrix:", 
+            choices = NULL, 
+            selected = NULL, 
+            multiple = FALSE,
+            options = NULL),
+          #uiOutput("hvgSubsetAssay"),
           textInput("hvgAltExpName", "Name for the subset",
                     "featureSubset"),
           withBusyIndicatorUI(actionButton("hvgSubsetRun", "Select"))
@@ -100,7 +114,14 @@ shinyPanelFS_DimRed <- fluidPage(
                         12,
                         panel(
                           heading = "Options",
-                          uiOutput("dimRedAssaySelect"),
+                          selectizeInput(
+                            inputId = "dimRedAssaySelect", 
+                            label = "Select input matrix:", 
+                            choices = NULL, 
+                            selected = NULL, 
+                            multiple = FALSE,
+                            options = NULL),
+                          #uiOutput("dimRedAssaySelect"),
                           selectInput(
                             "dimRedPlotMethod",
                             "Select method:",
@@ -176,7 +197,14 @@ shinyPanelFS_DimRed <- fluidPage(
                         12,
                         panel(
                           heading = "Options",
-                          uiOutput("dimRedAssaySelect_tsneUmap"),
+                          selectizeInput(
+                            inputId = "dimRedAssaySelect_tsneUmap", 
+                            label = "Select input matrix:", 
+                            choices = NULL, 
+                            selected = NULL, 
+                            multiple = FALSE,
+                            options = NULL),
+                          #uiOutput("dimRedAssaySelect_tsneUmap"),
                           selectInput("dimRedPlotMethod_tsneUmap", "Select method:",
                                       c("rtSNE" = "rTSNE",
                                         "uwotUMAP" = "uwotUMAP",

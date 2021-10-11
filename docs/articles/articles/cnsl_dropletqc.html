@@ -5,14 +5,14 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Quality Control in R console • singleCellTK</title>
+<title>Quality Control for droplet data • singleCellTK</title>
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/yeti/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="../../bootstrap-toc.css">
 <script src="../../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../../pkgdown.css" rel="stylesheet">
 <script src="../../pkgdown.js"></script><link href="../../extra.css" rel="stylesheet">
-<script src="../../extra.js"></script><meta property="og:title" content="Quality Control in R console">
+<script src="../../extra.js"></script><meta property="og:title" content="Quality Control for droplet data">
 <meta property="og:description" content="singleCellTK">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
@@ -32,7 +32,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.2.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.2.2</span>
       </span>
     </div>
 
@@ -81,16 +81,13 @@
       <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">QC &amp; Filtering</a>
       <ul class="dropdown-menu" role="menu">
 <li>
-          <a href="../../articles/articles/cmd_qc.html">QC with commandline</a>
+          <a href="../../articles/articles/cnsl_dropletqc.html">Droplet QC (R console)</a>
         </li>
         <li>
-          <a href="../../articles/articles/cnsl_dropletqc.html">Droplet QC in R console</a>
+          <a href="../../articles/articles/cnsl_cellqc.html">Cell QC (R console)</a>
         </li>
         <li>
-          <a href="../../articles/articles/cnsl_cellqc.html">Cell QC in R console</a>
-        </li>
-        <li>
-          <a href="../../articles/articles/ui_qc.html">QC in the UI</a>
+          <a href="../../articles/articles/ui_qc.html">Cell QC (Shiny UI)</a>
         </li>
         <li>
           <a href="../../articles/articles/filtering.html">Filtering</a>
@@ -176,15 +173,18 @@
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Tutorial
+    Tutorials
      
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../../articles/articles/console_analysis_tutorial.html">Console Analysis Tutorial</a>
+      <a href="../../articles/articles/console_analysis_tutorial.html">Analysis of PBMC3K (R Console)</a>
     </li>
   </ul>
+</li>
+<li>
+  <a href="../../articles/articles/cmd_qc.html">SCTK-QC</a>
 </li>
 <li>
   <a href="../../reference/index.html">Reference</a>
@@ -217,7 +217,7 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
-      <h1 data-toc-skip>Quality Control in R console</h1>
+      <h1 data-toc-skip>Quality Control for droplet data</h1>
             
       
       <small class="dont-index">Source: <a href="https://github.com/compbiomed/singleCellTK/blob/master/vignettes/articles/cnsl_dropletqc.Rmd"><code>vignettes/articles/cnsl_dropletqc.Rmd</code></a></small>
@@ -234,7 +234,7 @@ text-align: justify}
 <div id="introduction" class="section level2">
 <h2 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h2>
-<p>Performing comprehensive quality control (QC) is necessary to remove poor quality cells for downstream analysis of single-cell RNA sequencing (scRNA-seq) data. Within droplet-based scRNA-seq data, droplets containing cells must be differentiated from empty droplets. Therefore, assessment of the data is required, for which various QC algorithms have been developed. In singleCellTK (SCTK), we have written convenience functions for several of these tools. In this guide, we will demonstrate how to use these functions to perform quality control on unfiltered, droplet-level data. (For definition of droplet-level data, please refer <a href="cmd_qc.html#introduction-1">this documentation</a>.)</p>
+<p>Performing comprehensive quality control (QC) is necessary to remove poor quality cells for downstream analysis of single-cell RNA sequencing (scRNA-seq) data. Within droplet-based scRNA-seq data, droplets containing cells must be differentiated from empty droplets. Therefore, assessment of the data is required, for which various QC algorithms have been developed. In singleCellTK (SCTK), we have written convenience functions for several of these tools. In this guide, we will demonstrate how to use these functions to perform quality control on unfiltered, droplet data. (For definition of droplet data, please refer <a href="cmd_qc.html#introduction-1">this documentation</a>.)</p>
 <p>The package can be loaded using the <code><a href="https://rdrr.io/r/base/library.html">library()</a></code> command.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://compbiomed.github.io/sctk_docs/">singleCellTK</a></span><span class="op">)</span>
@@ -271,7 +271,7 @@ text-align: justify}
 <span class="co">### change the sample column</span>
 <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="fu">colData</span><span class="op">(</span><span class="va">pbmc4k.droplet</span><span class="op">)</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"sample"</span>, <span class="st">"Barcode"</span><span class="op">)</span>
 <span class="fu">colData</span><span class="op">(</span><span class="va">pbmc4k.droplet</span><span class="op">)</span><span class="op">$</span><span class="va">sample</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="st">"pbmc4k"</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">ncol</a></span><span class="op">(</span><span class="fu">colData</span><span class="op">(</span><span class="va">pbmc4k.droplet</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<p>SCTK also supports the importing of single-cell data from the following platforms: <a href="https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/what-is-cell-ranger">10X CellRanger</a>, <a href="https://github.com/alexdobin/STAR/blob/master/docs/STARsolo.md">STARSolo</a>, <a href="https://www.kallistobus.tools/">BUSTools</a>, <a href="https://github.com/ambrosejcarr/seqc">SEQC</a>, <a href="https://github.com/hms-dbmi/dropEst">DropEST</a>, <a href="https://salmon.readthedocs.io/en/latest/alevin.html">Alevin</a>, as well as dataset already stored in <a href="https://rdrr.io/bioc/SingleCellExperiment/man/SingleCellExperiment.html">SingleCellExperiment</a> object and <a href="https://github.com/theislab/anndata">AnnData</a> object. To load your own input data, please refer <a href="import_data.html">Import data into SCTK</a> for detailed instruction.</p>
+<p>SCTK also supports the importing of single-cell data from the following platforms: <a href="https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/what-is-cell-ranger">10X CellRanger</a>, <a href="https://github.com/alexdobin/STAR/blob/master/docs/STARsolo.md">STARSolo</a>, <a href="https://www.kallistobus.tools/">BUSTools</a>, <a href="https://github.com/ambrosejcarr/seqc">SEQC</a>, <a href="https://github.com/hms-dbmi/dropEst">DropEST</a>, <a href="https://salmon.readthedocs.io/en/latest/alevin.html">Alevin</a>, as well as dataset already stored in <a href="https://rdrr.io/bioc/SingleCellExperiment/man/SingleCellExperiment.html">SingleCellExperiment</a> object and <a href="https://github.com/theislab/anndata">AnnData</a> object. To load your own input data, please refer <code>Function Reference for pre-processing tools</code> under <code>Console Analysis</code> section in <a href="import_data.html">Import data into SCTK</a> for detailed instruction.</p>
 </div>
 <div id="rundropletqc" class="section level3">
 <h3 class="hasAnchor">
@@ -279,9 +279,9 @@ text-align: justify}
 <p>All droplet-based QC functions are able to be run under the wrapper function <code><a href="../../reference/runDropletQC.html">runDropletQC()</a></code>. By default all possible QC algorithms will be run.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">pbmc4k.droplet</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/runDropletQC.html">runDropletQC</a></span><span class="op">(</span><span class="va">pbmc4k.droplet</span><span class="op">)</span></code></pre></div>
-<pre><code>## Mon Oct 04 18:36:32 2021 ... Running 'perCellQCMetrics'</code></pre>
-<pre><code>## Mon Oct 04 18:36:32 2021 ... Running 'emptyDrops'</code></pre>
-<pre><code>## Mon Oct 04 18:36:58 2021 ... Running 'barcodeRanks'</code></pre>
+<pre><code>## Sun Oct 10 11:39:55 2021 ... Running 'perCellQCMetrics'</code></pre>
+<pre><code>## Sun Oct 10 11:39:55 2021 ... Running 'emptyDrops'</code></pre>
+<pre><code>## Sun Oct 10 11:40:13 2021 ... Running 'barcodeRanks'</code></pre>
 <p>If users choose to only run a specific set of algorithms, they can specify which to run with the <code>algorithms</code> parameter.</p>
 <p>After running QC functions with SCTK, the output will be stored in the <code>colData</code> slot of the <code>SingleCellExperiment</code> object.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
@@ -289,60 +289,60 @@ text-align: justify}
 <pre><code>## DataFrame with 5 rows and 16 columns
 ##                         sample            Barcode       sum  detected
 ##                    &lt;character&gt;        &lt;character&gt; &lt;numeric&gt; &lt;integer&gt;
-## AGCAGCCAGTGTACCT-1      pbmc4k AGCAGCCAGTGTACCT-1         0         0
-## CAGTAACCACTGAAGG-1      pbmc4k CAGTAACCACTGAAGG-1         0         0
-## AGGTCCGGTCATCGGC-1      pbmc4k AGGTCCGGTCATCGGC-1         0         0
-## ATTACTCTCTCTAGGA-1      pbmc4k ATTACTCTCTCTAGGA-1         0         0
-## GATCGATAGCATCATC-1      pbmc4k GATCGATAGCATCATC-1         1         1
+## CGCTATCAGCAGCCTC-1      pbmc4k CGCTATCAGCAGCCTC-1         8         7
+## TAAGAGAGTCAGAATA-1      pbmc4k TAAGAGAGTCAGAATA-1         2         2
+## CTTACCGCAGCTGCTG-1      pbmc4k CTTACCGCAGCTGCTG-1         0         0
+## TCATTACAGAATAGGG-1      pbmc4k TCATTACAGAATAGGG-1         0         0
+## CTTAGGATCCAAGCCG-1      pbmc4k CTTAGGATCCAAGCCG-1         0         0
 ##                    percent.top_50 percent.top_100 percent.top_200
 ##                         &lt;numeric&gt;       &lt;numeric&gt;       &lt;numeric&gt;
-## AGCAGCCAGTGTACCT-1            NaN             NaN             NaN
-## CAGTAACCACTGAAGG-1            NaN             NaN             NaN
-## AGGTCCGGTCATCGGC-1            NaN             NaN             NaN
-## ATTACTCTCTCTAGGA-1            NaN             NaN             NaN
-## GATCGATAGCATCATC-1            100             100             100
+## CGCTATCAGCAGCCTC-1            100             100             100
+## TAAGAGAGTCAGAATA-1            100             100             100
+## CTTACCGCAGCTGCTG-1            NaN             NaN             NaN
+## TCATTACAGAATAGGG-1            NaN             NaN             NaN
+## CTTAGGATCCAAGCCG-1            NaN             NaN             NaN
 ##                    percent.top_500     total dropletUtils_emptyDrops_total
 ##                          &lt;numeric&gt; &lt;numeric&gt;                     &lt;integer&gt;
-## AGCAGCCAGTGTACCT-1             NaN         0                             0
-## CAGTAACCACTGAAGG-1             NaN         0                             0
-## AGGTCCGGTCATCGGC-1             NaN         0                             0
-## ATTACTCTCTCTAGGA-1             NaN         0                             0
-## GATCGATAGCATCATC-1             100         1                             1
+## CGCTATCAGCAGCCTC-1             100         8                             8
+## TAAGAGAGTCAGAATA-1             100         2                             2
+## CTTACCGCAGCTGCTG-1             NaN         0                             0
+## TCATTACAGAATAGGG-1             NaN         0                             0
+## CTTAGGATCCAAGCCG-1             NaN         0                             0
 ##                    dropletUtils_emptyDrops_logprob
 ##                                          &lt;numeric&gt;
-## AGCAGCCAGTGTACCT-1                              NA
-## CAGTAACCACTGAAGG-1                              NA
-## AGGTCCGGTCATCGGC-1                              NA
-## ATTACTCTCTCTAGGA-1                              NA
-## GATCGATAGCATCATC-1                              NA
+## CGCTATCAGCAGCCTC-1                              NA
+## TAAGAGAGTCAGAATA-1                              NA
+## CTTACCGCAGCTGCTG-1                              NA
+## TCATTACAGAATAGGG-1                              NA
+## CTTAGGATCCAAGCCG-1                              NA
 ##                    dropletUtils_emptyDrops_pvalue
 ##                                         &lt;numeric&gt;
-## AGCAGCCAGTGTACCT-1                             NA
-## CAGTAACCACTGAAGG-1                             NA
-## AGGTCCGGTCATCGGC-1                             NA
-## ATTACTCTCTCTAGGA-1                             NA
-## GATCGATAGCATCATC-1                             NA
+## CGCTATCAGCAGCCTC-1                             NA
+## TAAGAGAGTCAGAATA-1                             NA
+## CTTACCGCAGCTGCTG-1                             NA
+## TCATTACAGAATAGGG-1                             NA
+## CTTAGGATCCAAGCCG-1                             NA
 ##                    dropletUtils_emptyDrops_limited dropletUtils_emptyDrops_fdr
 ##                                          &lt;logical&gt;                   &lt;numeric&gt;
-## AGCAGCCAGTGTACCT-1                              NA                          NA
-## CAGTAACCACTGAAGG-1                              NA                          NA
-## AGGTCCGGTCATCGGC-1                              NA                          NA
-## ATTACTCTCTCTAGGA-1                              NA                          NA
-## GATCGATAGCATCATC-1                              NA                          NA
+## CGCTATCAGCAGCCTC-1                              NA                          NA
+## TAAGAGAGTCAGAATA-1                              NA                          NA
+## CTTACCGCAGCTGCTG-1                              NA                          NA
+## TCATTACAGAATAGGG-1                              NA                          NA
+## CTTAGGATCCAAGCCG-1                              NA                          NA
 ##                    dropletUtils_BarcodeRank_Knee
 ##                                        &lt;integer&gt;
-## AGCAGCCAGTGTACCT-1                             0
-## CAGTAACCACTGAAGG-1                             0
-## AGGTCCGGTCATCGGC-1                             0
-## ATTACTCTCTCTAGGA-1                             0
-## GATCGATAGCATCATC-1                             0
+## CGCTATCAGCAGCCTC-1                             0
+## TAAGAGAGTCAGAATA-1                             0
+## CTTACCGCAGCTGCTG-1                             0
+## TCATTACAGAATAGGG-1                             0
+## CTTAGGATCCAAGCCG-1                             0
 ##                    dropletUtils_BarcodeRank_Inflection
 ##                                              &lt;integer&gt;
-## AGCAGCCAGTGTACCT-1                                   0
-## CAGTAACCACTGAAGG-1                                   0
-## AGGTCCGGTCATCGGC-1                                   0
-## ATTACTCTCTCTAGGA-1                                   0
-## GATCGATAGCATCATC-1                                   0</code></pre>
+## CGCTATCAGCAGCCTC-1                                   0
+## TAAGAGAGTCAGAATA-1                                   0
+## CTTACCGCAGCTGCTG-1                                   0
+## TCATTACAGAATAGGG-1                                   0
+## CTTAGGATCCAAGCCG-1                                   0</code></pre>
 <div style="border: 1px solid #ddd; padding: 5px; overflow-x: scroll; width:80%; ">
 <table class="table table">
 <thead><tr>
@@ -400,13 +400,119 @@ dropletUtils_BarcodeRank_Inflection
 <tbody>
 <tr>
 <td style="text-align:left;">
-AGCAGCCAGTGTACCT-1
+CGCTATCAGCAGCCTC-1
 </td>
 <td style="text-align:left;">
 pbmc4k
 </td>
 <td style="text-align:left;">
-AGCAGCCAGTGTACCT-1
+CGCTATCAGCAGCCTC-1
+</td>
+<td style="text-align:right;">
+8
+</td>
+<td style="text-align:right;">
+7
+</td>
+<td style="text-align:right;">
+100
+</td>
+<td style="text-align:right;">
+100
+</td>
+<td style="text-align:right;">
+100
+</td>
+<td style="text-align:right;">
+100
+</td>
+<td style="text-align:right;">
+8
+</td>
+<td style="text-align:right;">
+8
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+TAAGAGAGTCAGAATA-1
+</td>
+<td style="text-align:left;">
+pbmc4k
+</td>
+<td style="text-align:left;">
+TAAGAGAGTCAGAATA-1
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+100
+</td>
+<td style="text-align:right;">
+100
+</td>
+<td style="text-align:right;">
+100
+</td>
+<td style="text-align:right;">
+100
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+CTTACCGCAGCTGCTG-1
+</td>
+<td style="text-align:left;">
+pbmc4k
+</td>
+<td style="text-align:left;">
+CTTACCGCAGCTGCTG-1
 </td>
 <td style="text-align:right;">
 0
@@ -453,13 +559,13 @@ NA
 </tr>
 <tr>
 <td style="text-align:left;">
-CAGTAACCACTGAAGG-1
+TCATTACAGAATAGGG-1
 </td>
 <td style="text-align:left;">
 pbmc4k
 </td>
 <td style="text-align:left;">
-CAGTAACCACTGAAGG-1
+TCATTACAGAATAGGG-1
 </td>
 <td style="text-align:right;">
 0
@@ -506,13 +612,13 @@ NA
 </tr>
 <tr>
 <td style="text-align:left;">
-AGGTCCGGTCATCGGC-1
+CTTAGGATCCAAGCCG-1
 </td>
 <td style="text-align:left;">
 pbmc4k
 </td>
 <td style="text-align:left;">
-AGGTCCGGTCATCGGC-1
+CTTAGGATCCAAGCCG-1
 </td>
 <td style="text-align:right;">
 0
@@ -537,112 +643,6 @@ NaN
 </td>
 <td style="text-align:right;">
 0
-</td>
-<td style="text-align:right;">
-NA
-</td>
-<td style="text-align:right;">
-NA
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:right;">
-NA
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-ATTACTCTCTCTAGGA-1
-</td>
-<td style="text-align:left;">
-pbmc4k
-</td>
-<td style="text-align:left;">
-ATTACTCTCTCTAGGA-1
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-NaN
-</td>
-<td style="text-align:right;">
-NaN
-</td>
-<td style="text-align:right;">
-NaN
-</td>
-<td style="text-align:right;">
-NaN
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-NA
-</td>
-<td style="text-align:right;">
-NA
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:right;">
-NA
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-GATCGATAGCATCATC-1
-</td>
-<td style="text-align:left;">
-pbmc4k
-</td>
-<td style="text-align:left;">
-GATCGATAGCATCATC-1
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-100
-</td>
-<td style="text-align:right;">
-100
-</td>
-<td style="text-align:right;">
-100
-</td>
-<td style="text-align:right;">
-100
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-1
 </td>
 <td style="text-align:right;">
 NA
@@ -681,6 +681,30 @@ NA
 <th align="left">Package/Tool</th>
 </tr></thead>
 <tbody>
+<tr class="odd">
+<td align="left"><code>sum</code></td>
+<td align="left">Total counts</td>
+<td align="left"><code><a href="../../reference/runPerCellQC.html">runPerCellQC()</a></code></td>
+<td align="left"><a href="https://bioconductor.org/packages/release/bioc/html/scater.html">scater</a></td>
+</tr>
+<tr class="even">
+<td align="left"><code>detected</code></td>
+<td align="left">Total features</td>
+<td align="left"><code><a href="../../reference/runPerCellQC.html">runPerCellQC()</a></code></td>
+<td align="left"><a href="https://bioconductor.org/packages/release/bioc/html/scater.html">scater</a></td>
+</tr>
+<tr class="odd">
+<td align="left"><code>percent_top</code></td>
+<td align="left">% Expression coming from top features</td>
+<td align="left"><code><a href="../../reference/runPerCellQC.html">runPerCellQC()</a></code></td>
+<td align="left"><a href="https://bioconductor.org/packages/release/bioc/html/scater.html">scater</a></td>
+</tr>
+<tr class="even">
+<td align="left"><code>subsets_*</code></td>
+<td align="left">sum, detected, percent_top calculated on specified gene list</td>
+<td align="left"><code><a href="../../reference/runPerCellQC.html">runPerCellQC()</a></code></td>
+<td align="left"><a href="https://bioconductor.org/packages/release/bioc/html/scater.html">scater</a></td>
+</tr>
 <tr class="odd">
 <td align="left"><code>dropletUtils_emptyDrops_total</code></td>
 <td align="left">Total counts</td>
@@ -803,7 +827,7 @@ NA
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co">#After filtering:</span>
 <span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span><span class="op">(</span><span class="va">pbmc4k.droplet</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1] 33694   360</code></pre>
+<pre><code>## [1] 33694   347</code></pre>
 <p>We can compare the average total UMI counts per cell before and after cell filtration:</p>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/plotSCEViolinColData.html">plotSCEViolinColData</a></span><span class="op">(</span><span class="va">pbmc4k.droplet.prefilt</span>, coldata <span class="op">=</span> <span class="st">"sum"</span>, summary <span class="op">=</span> <span class="st">"mean"</span>, title <span class="op">=</span> <span class="st">"Pre-filter"</span>, ylab <span class="op">=</span> <span class="st">"Total counts"</span><span class="op">)</span>
@@ -823,17 +847,15 @@ NA
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
 <pre><code>## R version 4.0.4 (2021-02-15)
-## Platform: x86_64-w64-mingw32/x64 (64-bit)
-## Running under: Windows 10 x64 (build 19042)
+## Platform: x86_64-apple-darwin17.0 (64-bit)
+## Running under: macOS Big Sur 10.16
 ## 
 ## Matrix products: default
+## BLAS:   /Library/Frameworks/R.framework/Versions/4.0/Resources/lib/libRblas.dylib
+## LAPACK: /Library/Frameworks/R.framework/Versions/4.0/Resources/lib/libRlapack.dylib
 ## 
 ## locale:
-## [1] LC_COLLATE=Chinese (Simplified)_China.936 
-## [2] LC_CTYPE=Chinese (Simplified)_China.936   
-## [3] LC_MONETARY=Chinese (Simplified)_China.936
-## [4] LC_NUMERIC=C                              
-## [5] LC_TIME=Chinese (Simplified)_China.936    
+## [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
 ## 
 ## attached base packages:
 ## [1] parallel  stats4    stats     graphics  grDevices utils     datasets 
@@ -841,11 +863,11 @@ NA
 ## 
 ## other attached packages:
 ##  [1] BiocFileCache_1.14.0        dbplyr_2.1.0               
-##  [3] dplyr_1.0.5                 singleCellTK_2.2.1         
-##  [5] DelayedArray_0.16.2         Matrix_1.3-3               
+##  [3] dplyr_1.0.5                 singleCellTK_2.2.2         
+##  [5] DelayedArray_0.16.2         Matrix_1.3-2               
 ##  [7] SingleCellExperiment_1.12.0 SummarizedExperiment_1.20.0
 ##  [9] Biobase_2.50.0              GenomicRanges_1.42.0       
-## [11] GenomeInfoDb_1.26.2         IRanges_2.24.1             
+## [11] GenomeInfoDb_1.26.4         IRanges_2.24.1             
 ## [13] S4Vectors_0.28.1            BiocGenerics_0.36.0        
 ## [15] MatrixGenerics_1.2.1        matrixStats_0.58.0         
 ## 
@@ -871,17 +893,17 @@ NA
 ##  [37] Rcpp_1.0.6                jquerylib_0.1.3          
 ##  [39] pkgdown_1.6.1             vctrs_0.3.6              
 ##  [41] rhdf5filters_1.2.0        svglite_2.0.0            
-##  [43] DelayedMatrixStats_1.12.3 xfun_0.21                
+##  [43] DelayedMatrixStats_1.12.3 xfun_0.22                
 ##  [45] stringr_1.4.0             beachmat_2.6.4           
-##  [47] rvest_0.3.6               lifecycle_1.0.0          
+##  [47] rvest_1.0.0               lifecycle_1.0.0          
 ##  [49] irlba_2.3.3               gtools_3.8.2             
 ##  [51] edgeR_3.32.1              zlibbioc_1.36.0          
-##  [53] scales_1.1.1              ragg_1.1.1               
+##  [53] scales_1.1.1              ragg_1.1.3               
 ##  [55] rhdf5_2.34.0              yaml_2.2.1               
 ##  [57] curl_4.3                  memoise_2.0.0            
 ##  [59] reticulate_1.18           gridExtra_2.3            
-##  [61] ggplot2_3.3.3             sass_0.3.1               
-##  [63] stringi_1.5.3             RSQLite_2.2.3            
+##  [61] ggplot2_3.3.5             sass_0.3.1               
+##  [63] stringi_1.5.3             RSQLite_2.2.4            
 ##  [65] highr_0.8                 desc_1.3.0               
 ##  [67] BiocParallel_1.24.1       rlang_0.4.10             
 ##  [69] pkgconfig_2.0.3           systemfonts_1.0.1        
@@ -895,11 +917,11 @@ NA
 ##  [85] pillar_1.5.1              withr_2.4.1              
 ##  [87] RCurl_1.98-1.2            tibble_3.1.0             
 ##  [89] crayon_1.4.1              DropletUtils_1.10.3      
-##  [91] utf8_1.1.4                rmarkdown_2.7            
+##  [91] utf8_1.2.1                rmarkdown_2.7            
 ##  [93] viridis_0.5.1             locfit_1.5-9.4           
 ##  [95] grid_4.0.4                blob_1.2.1               
 ##  [97] webshot_0.5.2             digest_0.6.27            
-##  [99] R.utils_2.10.1            textshaping_0.3.1        
+##  [99] R.utils_2.10.1            textshaping_0.3.5        
 ## [101] munsell_0.5.0             beeswarm_0.3.1           
 ## [103] viridisLite_0.3.0         kableExtra_1.3.4         
 ## [105] vipor_0.4.5               bslib_0.2.4</code></pre>

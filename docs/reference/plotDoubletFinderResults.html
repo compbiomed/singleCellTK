@@ -76,7 +76,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.2.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.2.2</span>
       </span>
     </div>
 
@@ -125,16 +125,13 @@
       <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">QC &amp; Filtering</a>
       <ul class="dropdown-menu" role="menu">
         <li>
-          <a href="../articles/articles/cmd_qc.html">QC with commandline</a>
+          <a href="../articles/articles/cnsl_dropletqc.html">Droplet QC (R console)</a>
         </li>
         <li>
-          <a href="../articles/articles/cnsl_dropletqc.html">Droplet QC in R console</a>
+          <a href="../articles/articles/cnsl_cellqc.html">Cell QC (R console)</a>
         </li>
         <li>
-          <a href="../articles/articles/cnsl_cellqc.html">Cell QC in R console</a>
-        </li>
-        <li>
-          <a href="../articles/articles/ui_qc.html">QC in the UI</a>
+          <a href="../articles/articles/ui_qc.html">Cell QC (Shiny UI)</a>
         </li>
         <li>
           <a href="../articles/articles/filtering.html">Filtering</a>
@@ -220,15 +217,18 @@
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Tutorial
+    Tutorials
      
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/articles/console_analysis_tutorial.html">Console Analysis Tutorial</a>
+      <a href="../articles/articles/console_analysis_tutorial.html">Analysis of PBMC3K (R Console)</a>
     </li>
   </ul>
+</li>
+<li>
+  <a href="../articles/articles/cmd_qc.html">SCTK-QC</a>
 </li>
 <li>
   <a href="../reference/index.html">Reference</a>
@@ -481,7 +481,7 @@ the relative widths for each plot.</p></td>
 <span class='va'>sce</span> <span class='op'>&lt;-</span> <span class='fu'><a href='subsetSCECols.html'>subsetSCECols</a></span><span class='op'>(</span><span class='va'>sce</span>, colData <span class='op'>=</span> <span class='st'>"type != 'EmptyDroplet'"</span><span class='op'>)</span>
 <span class='va'>sce</span> <span class='op'>&lt;-</span> <span class='fu'><a href='getUMAP.html'>getUMAP</a></span><span class='op'>(</span>inSCE<span class='op'>=</span><span class='va'>sce</span>, useAssay<span class='op'>=</span><span class='st'>"counts"</span>, reducedDimName<span class='op'>=</span><span class='st'>"UMAP"</span><span class='op'>)</span>
 <span class='va'>sce</span> <span class='op'>&lt;-</span> <span class='fu'><a href='runDoubletFinder.html'>runDoubletFinder</a></span><span class='op'>(</span><span class='va'>sce</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'>Mon Oct 04 18:17:04 2021 ... Running 'doubletFinder'</span></div><div class='output co'>#&gt; <span class='warning'>Warning: The default method for RunUMAP has changed from calling Python UMAP via reticulate to the R-native UWOT using the cosine metric</span>
+</div><div class='output co'>#&gt; <span class='message'>Sun Oct 10 11:12:03 2021 ... Running 'doubletFinder'</span></div><div class='output co'>#&gt; <span class='warning'>Warning: The default method for RunUMAP has changed from calling Python UMAP via reticulate to the R-native UWOT using the cosine metric</span>
 #&gt; <span class='warning'>To use Python UMAP via reticulate, set umap.method to 'umap-learn' and metric to 'correlation'</span>
 #&gt; <span class='warning'>This message will be shown once per session</span></div><div class='input'><span class='fu'>plotDoubletFinderResults</span><span class='op'>(</span>inSCE<span class='op'>=</span><span class='va'>sce</span>, reducedDimName<span class='op'>=</span><span class='st'>"UMAP"</span><span class='op'>)</span>
 </div><div class='img'><img src='plotDoubletFinderResults-1.png' alt='' width='700' height='433' /></div></pre>
