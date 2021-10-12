@@ -10,6 +10,10 @@
 #'  barcodes. Default is 'sample'.
 #' @param delayedArray Boolean. Whether to read the expression matrix as
 #'  \link{DelayedArray} object or not. Default \code{FALSE}.
+#' @param class Character. The class of the expression matrix stored in the SCE
+#'  object. Can be one of "Matrix" (as returned by
+#'  \link{readMM} function), or "matrix" (as returned by
+#'  \link[base]{matrix} function). Default "Matrix".
 #' @return A \code{SingleCellExperiment} object containing the count
 #'  matrix, the feature annotations, and the cell annotation
 #'  (which includes QC metrics stored in 'featureDump.txt').
@@ -19,15 +23,25 @@
 importAlevin <- function(
   alevinDir = NULL,
   sampleName = 'sample',
-  delayedArray = FALSE) {
+  delayedArray = FALSE,
+  class = c("Matrix", "matrix")) {
+
+  class <- match.arg(class)
 
   matFile <- file.path(alevinDir, "alevin/quants_mat.gz")
   ### require package fishpond
   ma <- tximport::tximport(files = matFile, type = "alevin")
-  if ('counts' %in% names(ma)) {
+  if (!'counts' %in% names(ma)) {
     stop("RNA count matrix not found in the alevin output!")
   }
   mat <- ma$counts
+
+  if (class == "Matrix") {
+    mat <- .convertToMatrix(mat)
+  } else if (class == "matrix") {
+    mat <- base::as.matrix(mat)
+  }
+  
   if (delayedArray) {
     mat <- DelayedArray::DelayedArray(mat)
   }

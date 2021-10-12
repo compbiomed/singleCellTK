@@ -1,39 +1,88 @@
 ---
 title: "Normalization"
 author: "Irzam Sarfraz"
+output:
+  html_document:
+    toc: true
+    toc_depth: 2
+bibliography: references.bib
+csl: ieee.csl
 ---
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+```{r develSetting, include=FALSE}
+doEval = TRUE
 ```
-
 ## Introduction
-Data once uploaded and filtered through the preceding tabs can be normalized and
-corrected for batch-effect. This guide particularly focuses on normalization of 
-data for downstream analysis which can be achieved through a single
-`runNormalization` wrapper function. A detailed list of available normalization
-methods, transformation options and usage of this function is described below.
+**singleCellTK** offers a convenient way to normalize data for downstream analysis using a number of methods available through the toolkit. The integrated normalization methods and other transformation options can be used through both R console and interactive shiny application. Normalization methods available with the toolkit include `"LogNormalize"`, `"CLR"`, `"RC"` & `"SCTransform"` from `Seurat` [@Butler2018][@Stuart2019][@Satija2017][@Hao2021] package and `"logNormCounts"` or `"CPM"` from `Scater` [@McCarthy2017] package. Additional transformation options are available for users including 'log' & 'log1p', trimming of data assays and Z-Score scaling. <br> 
 
-### Available Normalization Methods
-|Method|Reference|
-|---|---|
-|Seurat - LogNormalize|[Butler et al., Nature Biotechnology 2018](https://www.nature.com/articles/nbt.4096) & [Stuart*, Butler*, et al., Cell 2019](https://www.cell.com/cell/fulltext/S0092-8674(19)30559-8)|
-|Seurat - CLR|[Butler et al., Nature Biotechnology 2018](https://www.nature.com/articles/nbt.4096) & [Stuart*, Butler*, et al., Cell 2019](https://www.cell.com/cell/fulltext/S0092-8674(19)30559-8)|
-|Seurat - RC|[Butler et al., Nature Biotechnology 2018](https://www.nature.com/articles/nbt.4096) & [Stuart*, Butler*, et al., Cell 2019](https://www.cell.com/cell/fulltext/S0092-8674(19)30559-8)|
-|Seurat - SCTransform|[Normalization and variance stabilization of single-cell RNA-seq data using regularized negative binomial regression](https://genomebiology.biomedcentral.com/articles/10.1186/s13059-019-1874-1), [Butler et al., Nature Biotechnology 2018](https://www.nature.com/articles/nbt.4096) & [Stuart*, Butler*, et al., Cell 2019](https://www.cell.com/cell/fulltext/S0092-8674(19)30559-8)|
-|Scater - LogNormCounts|[McCarthy DJ, Campbell KR, Lun ATL, Willis QF (2017). “Scater: pre-processing, quality control, normalisation and visualisation of single-cell RNA-seq data in R.” Bioinformatics, 33, 1179-1186.](https://doi.org/10.1093/bioinformatics/btw777)|
-|Scater - CPM|[McCarthy DJ, Campbell KR, Lun ATL, Willis QF (2017). “Scater: pre-processing, quality control, normalisation and visualisation of single-cell RNA-seq data in R.” Bioinformatics, 33, 1179-1186.](https://doi.org/10.1093/bioinformatics/btw777)|
+To view detailed instructions on how to use these methods, please select 'Interactive Analysis' for using normalization in shiny application or 'Console Analysis' for using these methods on R console from the tabs below:
 
-### Additional Options
-|Option|Description|
-|---|---|
-|Log2|Log base 2 transformation|
-|Log1p|Natural log + 1 transformation|
-|Z.Score|Standard z.score scaling|
-|Pseudocounts|Add a specified pseudo value to matrices before or after normalization/transformation|
-|Trim|Trim values based on an upper and lower limits (can be applied with all of the above methods)|
+````{=html}
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+````
+
 
 ## Workflow Guide
+
+````{=html}
+<div class="tab">
+  <button class="tablinks" onclick="openTab(event, 'interactive')" id="ia-button">Interactive Analysis</button>
+  <button class="tablinks" onclick="openTab(event, 'console')" id="console-button">Console Analysis</button>
+</div>
+
+<div id="interactive" class="tabcontent">
+````
+
+Normalization tab can be opened up by clicking on the **Normalization & Batch Correction** from the top menu and further selecting the **Normalization** sub-tab in the subsequent window as shown below.
+
+
+![](ui_screenshots/normalization/normalization_1_select_menu.PNG)
+<br>
+**Normalization tab** is divided up into 4 sections as shown in the screenshot below: <br>
+
+![](ui_screenshots/normalization/normalization_1.PNG)
+<br>
+The section **a** lets you choose a normalization method, whereas the section **b** allows for various options to be modified and selected for a particular normalization method selected from section **a**. The section **c** displays the overall methods/options selected for this instance of normalization process. The section **d** displays the output data type once the normalization is run. This output data type represents the nature of the data that will be output based on the selected options. For example, output data type maybe **transformed** if transformation options are selected including normalization methods, or maybe **scaled** if the **scale** option is selected. The section **c** and **d** update automatically based on normalization method and options selected by the user. <br>
+
+![](ui_screenshots/normalization/normalization_2.png)
+<br>
+**1.** Select a normalization method or select **Custom Normalization** to manually select the options for normalization including transformation, trimming & scaling.<br>
+
+![](ui_screenshots/normalization/normalization_3.PNG)
+<br>
+**2a.** Options when a normalization method from a particular package is selected: <br>
+i. Select the assay from the data to normalize. <br>
+ii. Set scaling factor for this particular method. These options may vary between different normalization methods. See method specific documentation for more information. <br>
+iii. Specify the name of the output data assay. <br>
+iv. Select if data should be scaled after running the normalization method. <br>
+v. Select if data should be trimmed between two values running the normalization method. <br>
+vi & vii. If trim data option is selected, specify the upper and lower trim values. The output data is then trimmed between these two values (inclusive). <br>
+viii: The user-interface displays the selected options or methods based on the user selected normalization method. <br>
+ix. The output data type based on the selected user options is displayed. <br>
+x. Click the button to run the normalization process. <br>
+
+![](ui_screenshots/normalization/normalization_4.PNG)
+<br>
+**2b.** Options when a custom normalization is selected: <br>
+i. Select the input data assay to use as an input with selected normalization/transformation options. <br>
+ii. Specify the name of the put data assay. <br>
+iii. Select if data should be normalized (multiple normalization methods will display once this option is selected). <br>
+iv. Select if a pseudo value should be added to the data. <br>
+v. Select if the data should be scaled. <br>
+vi. Select if the data should be trimmed between two values. <br>
+vii. The user-interface displays the selected options or methods based on the user selected normalization method. <br>
+viii. The output data type based on the selected user options is displayed. <br>
+ix. Click the button to run the normalization process. <br>
+
+
+
+````{=html}
+</div>
+<div id="console" class="tabcontent">
+````
+
 The `singleCellTK` allows the users to run all normalization and
 transformation methods on the input data by using a single `runNormalization`
 function. The `runNormalization` function takes in input a 
@@ -41,6 +90,32 @@ function. The `runNormalization` function takes in input a
 normalization/transformation options to run on the specified `assay`. The
 output of this function is a `SingleCellExperiment` object which now contains
 the normalized/transformed assay.
+
+To use the function, input a `SingleCellExperiment` object that contains the data assay and specify the required parameters:
+
+
+```{r "normalization_console_overview", eval=FALSE}
+sce <- runNormalization(inSCE = sce, normalizationMethod = "RC", useAssay = "counts", outAssayName = "RCLogScaledCounts", scale = TRUE, transformation = "log2", pseudocountsBeforeTransform = 1, trim = c(10, -10))
+```
+
+````{=html}
+<details>
+  <summary><b>Example</b></summary>
+````  
+  
+```{r "normalization_console_example", message = FALSE, warning = FALSE}
+  # Load singleCellTK & pbmc3k example data
+  library(singleCellTK)
+  sce <- importExampleData(dataset = "pbmc3k")
+  # Perform normalization
+  sce <- runNormalization(inSCE = sce, normalizationMethod = "RC", useAssay = "counts", outAssayName = "RCLogScaledCounts", scale = TRUE, transformation = "log2", pseudocountsBeforeTransform = 1, trim = c(10, -10))
+```
+
+````{=html}
+</details> 
+  <details>
+  <summary><b>Parameters</b></summary>
+````
 
 The `runNormalization` function specifies the following parameters:
 
@@ -51,23 +126,130 @@ The `runNormalization` function specifies the following parameters:
 |outAssayName|A `character` value indicating the name of the new output assay.|
 |normalizationMethod|Specify a normalization method from `"LogNormalize"`, `"CLR"`, `"RC"`, `"SCTransform"`, `"logNormCounts"` or `"CPM"`. If no method is specified, normalization will not be performed.|
 |scale|Logical value indicating if Z.Score scaling should be performed or not.|
-|seuratScaleFactor|Specify the `scaleFactor` parameter if any of the `seurat` normalization method is selected.|
+|seuratScaleFactor|Specify the `scaleFactor` parameter if any of the **seurat** normalization method is selected.|
 |transformation|Specify if a transformation should be applied to the input `assay` (if normalization is selected, this transformation is applied after normalization). Available transformation options include `"log2"`, `"log1p"`, `"sqrt"`.|
 |pseudocountsBeforeNorm|A `numeric` value to add to the input `assay`  before performing normalization.|
 |pseudocountsBeforeTransform|A `numeric` value to add to the input `assay` before performing a transformation.|
 |trim|A `numeric(2)` vector that specifies the upper and the lower trim values between (exclusive) which the input `assay` should be trimmed.|
 |verbose|A `logical` value indicating if informative/progress messages should be displayed on the console.|
 
-To use the function, input a `SingleCellExperiment` object that contains the data assay and specify the required parameters:
+````{=html}
+</details>
+<details>
+  <summary><b>Individual Functions</b></summary>
+````
 
-```{r, eval=FALSE}
-sce <- runNormalization(
-  inSCE = sce, 
-  normalizationMethod = "RC", 
-  useAssay = "counts", 
-  outAssayName = "RCLogScaledCounts", 
-  scale = TRUE, 
-  transformation = "log2", 
-  pseudocountsBeforeTransform = 1, 
-  trim = c(10, -10))
+  While the `runNormalization` wrapper function can be used to perform all
+  available normalization and transformation options, separate functions are also
+  available for all of the included normalization methods. The following functions
+  can be used for specific normalization methods:
+  
+````{=html} 
+ <style>
+div.offset { background-color:inherit ; border-radius: 5px; margin-left: 15px;}
+</style>
+<div class = "offset">
+<details>
+````
+    
+  <summary>`LogNormalize`, `CLR` or `RC` from **Seurat** [@Butler2018][@Stuart2019] package:</summary> 
+
+```{r "normalization_console_seurat", eval = FALSE}
+  sce <- seuratNormalizeData(inSCE = sce, normalizationMethod = "CLR", useAssay = "counts", normAssayName = "CLRCounts", scaleFactor = 10000, verbose = TRUE)
 ```
+The parameters to the above function include: <br><br>
+`inSCE`: an input `SingleCellExperiment` object <br>
+`normalizationMethod`: one of the options from "LogNormalize", "CLR" or "RC" <br>
+`useAssay`: name of the assay to use for normalization <br>
+`normAssayName`: name of the output normalized assay <br>
+`scaleFactor`: a numeric value that represents the scaling factor <br>
+`verbose`: a logical value indicating if progress should be printed <br><br>
+
+````{=html}
+</details>
+ <details>
+````
+    
+  <summary>`SCTransform` from **Seurat** [@Butler2018][@Stuart2019][@Hafemeister2019]  package:</summary> 
+
+```{r "normalization_console_sctransform", eval = FALSE}
+  sce <- seuratSCTransform(inSCE = sce, useAssay = "counts", normAssayName = "SCTCounts", verbose = TRUE)
+```
+
+The parameters to the above function include: <br><br>
+`inSCE`: an input `SingleCellExperiment` object <br>
+`useAssay`: name of the assay to use for normalization <br>
+`normAssayName`: name of the output normalized assay <br>
+`verbose`: a logical value indicating if progress should be printed <br><br>
+
+````{=html}
+</details>
+   <details>
+````
+
+  <summary>`logNormCounts` from **Scater** [@McCarthy2017] package:</summary> 
+
+```{r "normalization_console_logNormCounts", eval = FALSE}
+  sce <- scaterlogNormCounts(inSCE = sce, useAssay = "counts", assayName = "logcounts")
+```
+
+The parameters to the above function include: <br><br>
+`inSCE`: an input `SingleCellExperiment` object <br>
+`useAssay`: name of the assay to use for normalization <br>
+`assayName`: name of the output normalized assay <br><br>
+
+````{=html}
+</details>
+<details>
+````
+    
+  <summary>`CPM` from **Scater** [@McCarthy2017] package:</summary> 
+
+```{r "normalization_console_cpm", eval = FALSE}
+  sce <- scaterCPM(inSCE = sce, useAssay = "counts", assayName = "countsCPM")
+```
+
+The parameters to the above function include: <br><br>
+`inSCE`: an input `SingleCellExperiment` object <br>
+`useAssay`: name of the assay to use for normalization <br>
+`assayName`: name of the output normalized assay <br><br>
+
+````{=html}
+</details>
+  <details>
+    <summary>Compute <b>Z-Score</b>:</summary> 
+````   
+
+```{r "normalization_console_zscore", eval = FALSE}
+  assay(sce, "countsZScore") <- computeZScore(counts = assay(sce, "counts"))
+```
+
+The parameters to the above function include: <br><br>
+`counts`: input matrix to scale with Z-Score <br><br>
+
+````{=html}
+</details>
+  <details>
+  <summary>Matrix <b>trimming</b>:</summary> 
+````
+
+```{r "normalization_console_trim", eval = FALSE}
+  assay(sce, "countsTrimmed") <- trimCounts(counts = assay(sce, "counts"), trimValue = c(10, -10))
+```
+
+The parameters to the above function include: <br><br>
+`counts`: an input `SingleCellExperiment` object <br>
+`trimValue`: a `numeric(2)` vector with the first value indicating the upper trim value and the second value indicating the lower trim value <br><br>
+
+````{=html} 
+</details>
+  </div>
+    </details> 
+      </div>
+<script>
+document.getElementById("ia-button").click();
+</script>
+</body>
+````
+
+## References

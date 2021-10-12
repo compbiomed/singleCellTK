@@ -38,6 +38,8 @@
 
 
 
+  <link href="../extra.css" rel="stylesheet">
+  <script src="../extra.js"></script>
 
 <meta property="og:title" content="Detect doublet cells using scDblFinder. — runScDblFinder" />
 <meta property="og:description" content="A wrapper function for scDblFinder. Identify
@@ -74,88 +76,118 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.2.2</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="../articles/articles/introduction_to_SCTK.html">General Workflow</a>
+  <a href="https://www.camplab.net/sctk">
+    <span class="fas fa-home fa-lg"></span>
+     
+  </a>
+</li>
+<li>
+  <a href="../articles/articles/installation.html">Installation</a>
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Shell Command Line Analysis
+    Documentation
      
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
-    <li>
-      <a href="../articles/articles/cmd_import_scRNAseq_data_as_SCE.html">Import data into SCTK</a>
-    </li>
-    <li>
-      <a href="../articles/articles/cmd_qc.html">Quality Control</a>
-    </li>
-  </ul>
-</li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    R Console Analysis
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
-    <li>
-      <a href="../articles/articles/cnsl_import_scRNAseq_data_as_SCE.html">Import data into SCTK</a>
-    </li>
-    <li>
-      <a href="../articles/articles/cnsl_qc.html">Quality Control</a>
-    </li>
-    <li>
-      <a href="../articles/articles/cnsl_normalization.html">Normalization</a>
-    </li>
-    <li>
-      <a href="../articles/articles/cnsl_batch_correction.html">Batch Correction</a>
-    </li>
-    <li>
-      <a href="../articles/articles/cnsl_feature_selection.html">Feature Selection</a>
-    </li>
-    <li>
-      <a href="../articles/articles/cnsl_dimensionality_reduction.html">Dimensionality Reduction</a>
-    </li>
-    <li>
-      <a href="../articles/articles/cnsl_clustering.html">Clustering</a>
-    </li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Differential Expression</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Data</a>
       <ul class="dropdown-menu" role="menu">
         <li>
-          <a href="../articles/articles/cnsl_differential_expression.html">Differential Expression</a>
+          <a href="../articles/articles/import_data.html">Import Data</a>
         </li>
         <li>
-          <a href="../articles/articles/cnsl_find_marker.html">Find Marker via DE</a>
+          <a href="../articles/articles/cmd_import_scRNAseq_data_as_SCE.html">Import Data for Commandline QC</a>
+        </li>
+        <li>
+          <a href="../articles/articles/import_genesets.html">Import Gene Sets</a>
+        </li>
+        <li>
+          <a href="../articles/articles/import_annotation.html">Annotation</a>
+        </li>
+        <li>
+          <a href="../articles/articles/export_data.html">Export Data</a>
+        </li>
+        <li>
+          <a href="../articles/articles/delete_data.html">Delete Data</a>
         </li>
       </ul>
     </li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Enrichment Analysis</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">QC &amp; Filtering</a>
       <ul class="dropdown-menu" role="menu">
         <li>
-          <a href="../articles/articles/cnsl_gsva.html">GSVA</a>
+          <a href="../articles/articles/cnsl_dropletqc.html">Droplet QC (R console)</a>
         </li>
+        <li>
+          <a href="../articles/articles/cnsl_cellqc.html">Cell QC (R console)</a>
+        </li>
+        <li>
+          <a href="../articles/articles/ui_qc.html">Cell QC (Shiny UI)</a>
+        </li>
+        <li>
+          <a href="../articles/articles/filtering.html">Filtering</a>
+        </li>
+      </ul>
+    </li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Normalization &amp; Batch Correction</a>
+      <ul class="dropdown-menu" role="menu">
+        <li>
+          <a href="../articles/articles/cnsl_normalization.html">Normalization</a>
+        </li>
+        <li>
+          <a href="../articles/articles/batch_correction.html">Batch Correction</a>
+        </li>
+      </ul>
+    </li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Feature Selection &amp; Dimensionality Reduction</a>
+      <ul class="dropdown-menu" role="menu">
+        <li>
+          <a href="../articles/articles/cnsl_feature_selection.html">Feature Selection</a>
+        </li>
+        <li>
+          <a href="../articles/articles/cnsl_dimensionality_reduction.html">Dimensionality Reduction</a>
+        </li>
+        <li>
+          <a href="../articles/articles/cnsl_2d_embedding.html">2D Embedding</a>
+        </li>
+      </ul>
+    </li>
+    <li>
+      <a href="../articles/articles/clustering.html">Clustering</a>
+    </li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Differential Expression &amp; Cell Type Labeling</a>
+      <ul class="dropdown-menu" role="menu">
+        <li>
+          <a href="../articles/articles/differential_expression.html">Differential Expression</a>
+        </li>
+        <li>
+          <a href="../articles/articles/find_marker.html">Find Marker</a>
+        </li>
+        <li>
+          <a href="../articles/articles/cell_type_labeling.html">Cell Type Labeling</a>
+        </li>
+      </ul>
+    </li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Pathway &amp; Enrichment Analysis</a>
+      <ul class="dropdown-menu" role="menu">
         <li>
           <a href="../articles/articles/cnsl_enrichR.html">EnrichR</a>
         </li>
-      </ul>
-    </li>
-    <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Visualization</a>
-      <ul class="dropdown-menu" role="menu">
         <li>
-          <a href="../articles/articles/cnsl_visualization.html">General Visualization</a>
-        </li>
-        <li>
-          <a href="../articles/articles/cnsl_heatmap.html">Heatmap Visualization</a>
+          <a href="../articles/articles/pathwayAnalysis.html">Pathway Analysis</a>
         </li>
       </ul>
     </li>
@@ -166,91 +198,7 @@
           <a href="../articles/articles/cnsl_seurat_curated_workflow.html">Seurat</a>
         </li>
         <li>
-          <a href="../articles/articles/cnsl_celda_curated_workflow.html">Celda</a>
-        </li>
-      </ul>
-    </li>
-  </ul>
-</li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Shiny UI Analysis
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
-    <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Data</a>
-      <ul class="dropdown-menu" role="menu">
-        <li>
-          <a href="../articles/articles/ui_import_data.html">Import Data</a>
-        </li>
-        <li>
-          <a href="../articles/articles/ui_import_genesets.html">Import Gene Sets</a>
-        </li>
-        <li>
-          <a href="../articles/articles/ui_import_annotation.html">Annotation</a>
-        </li>
-        <li>
-          <a href="../articles/articles/ui_export_data.html">Export Data</a>
-        </li>
-        <li>
-          <a href="../articles/articles/ui_delete_data.html">Delete Data</a>
-        </li>
-      </ul>
-    </li>
-    <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">QC &amp; Filtering</a>
-      <ul class="dropdown-menu" role="menu">
-        <li>
-          <a href="../articles/articles/ui_qc.html">Quality Control</a>
-        </li>
-        <li>
-          <a href="../articles/articles/ui_filtering.html">Filtering</a>
-        </li>
-      </ul>
-    </li>
-    <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Normalization &amp; Batch Correction</a>
-      <ul class="dropdown-menu" role="menu">
-        <li>
-          <a href="../articles/articles/ui_normalization.html">Normalization</a>
-        </li>
-        <li>
-          <a href="../articles/articles/ui_batch_correction.html">Batch Correction</a>
-        </li>
-      </ul>
-    </li>
-    <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Feature Selection &amp; Dimensionality Reduction</a>
-      <ul class="dropdown-menu" role="menu">
-        <li>
-          <a href="../articles/articles/ui_feature_selection.html">Feature Selection</a>
-        </li>
-        <li>
-          <a href="../articles/articles/ui_dimemsionality_reduction.html">Dimensionality Reduction</a>
-        </li>
-      </ul>
-    </li>
-    <li>
-      <a href="../articles/articles/ui_clustering.html">Clustering</a>
-    </li>
-    <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Differential Expression &amp; Cell Type Labeling</a>
-      <ul class="dropdown-menu" role="menu">
-        <li>
-          <a href="../articles/articles/ui_differential_expression.html">Differential Expression</a>
-        </li>
-        <li>
-          <a href="../articles/articles/ui_find_marker.html">Find Marker</a>
-        </li>
-      </ul>
-    </li>
-    <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Curated Workflows</a>
-      <ul class="dropdown-menu" role="menu">
-        <li>
-          <a href="../articles/articles/ui_seurat_curated_workflow.html">Seurat</a>
+          <a href="../articles/articles/celda_curated_workflow.html">Celda</a>
         </li>
       </ul>
     </li>
@@ -258,14 +206,29 @@
       <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Visualization</a>
       <ul class="dropdown-menu" role="menu">
         <li>
-          <a href="../articles/articles/ui_cellViewer.html">cellViewer</a>
+          <a href="../articles/articles/visualization.html">General Visualization</a>
         </li>
         <li>
-          <a href="../articles/articles/ui_heatmap.html">Generic Heatmap</a>
+          <a href="../articles/articles/heatmap.html">Generic Heatmap</a>
         </li>
       </ul>
     </li>
   </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Tutorials
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/articles/console_analysis_tutorial.html">Analysis of PBMC3K (R Console)</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="../articles/articles/cmd_qc.html">SCTK-QC</a>
 </li>
 <li>
   <a href="../reference/index.html">Reference</a>
@@ -274,7 +237,13 @@
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/compbiomed/singleCellTK">
-    <span class="fas fa-github"></span>
+    <span class="fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
+<li>
+  <a href="https://twitter.com/camplab1">
+    <span class="fab fa-twitter fa-lg"></span>
      
   </a>
 </li>
@@ -373,7 +342,7 @@ neighbour searches should be parallelized.</p></td>
     <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>scExample</span>, package <span class='op'>=</span> <span class='st'>"singleCellTK"</span><span class='op'>)</span>
 <span class='va'>sce</span> <span class='op'>&lt;-</span> <span class='fu'><a href='subsetSCECols.html'>subsetSCECols</a></span><span class='op'>(</span><span class='va'>sce</span>, colData <span class='op'>=</span> <span class='st'>"type != 'EmptyDroplet'"</span><span class='op'>)</span>
 <span class='va'>sce</span> <span class='op'>&lt;-</span> <span class='fu'>runScDblFinder</span><span class='op'>(</span><span class='va'>sce</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'>Wed May 05 12:17:54 2021 ... Running 'scDblFinder'</span></div></pre>
+</div><div class='output co'>#&gt; <span class='message'>Sun Oct 10 11:13:52 2021 ... Running 'scDblFinder'</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -385,7 +354,7 @@ neighbour searches should be parallelized.</p></td>
 
       <footer>
       <div class="copyright">
-  <p>Developed by David Jenkins, Vidya Akavoor, Salam Alabdullatif, Shruthi Bandyadka, Emma Briars, Xinyun Cao, Sebastian Carrasco Pro, Tyler Faits, Rui Hong, Mohammed Muzamil Khan, Yusuke Koga, Anastasia Leshchyk, Irzam Sarfraz, Yichen Wang, Zhe Wang, W. Evan Johnson, Joshua David Campbell.</p>
+  <p>Developed by Yichen Wang, Irzam Sarfraz, Rui Hong, Yusuke Koga, Salam Alabdullatif, David Jenkins, Vidya Akavoor, Xinyun Cao, Shruthi Bandyadka, Anastasia Leshchyk, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, W. Evan Johnson, Joshua David Campbell.</p>
 </div>
 
 <div class="pkgdown">

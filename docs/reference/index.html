@@ -38,6 +38,8 @@
 
 
 
+  <link href="../extra.css" rel="stylesheet">
+  <script src="../extra.js"></script>
 
 <meta property="og:title" content="Function reference" />
 
@@ -71,88 +73,118 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.2.2</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="../articles/articles/introduction_to_SCTK.html">General Workflow</a>
+  <a href="https://www.camplab.net/sctk">
+    <span class="fas fa-home fa-lg"></span>
+     
+  </a>
+</li>
+<li>
+  <a href="../articles/articles/installation.html">Installation</a>
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Shell Command Line Analysis
+    Documentation
      
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
-    <li>
-      <a href="../articles/articles/cmd_import_scRNAseq_data_as_SCE.html">Import data into SCTK</a>
-    </li>
-    <li>
-      <a href="../articles/articles/cmd_qc.html">Quality Control</a>
-    </li>
-  </ul>
-</li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    R Console Analysis
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
-    <li>
-      <a href="../articles/articles/cnsl_import_scRNAseq_data_as_SCE.html">Import data into SCTK</a>
-    </li>
-    <li>
-      <a href="../articles/articles/cnsl_qc.html">Quality Control</a>
-    </li>
-    <li>
-      <a href="../articles/articles/cnsl_normalization.html">Normalization</a>
-    </li>
-    <li>
-      <a href="../articles/articles/cnsl_batch_correction.html">Batch Correction</a>
-    </li>
-    <li>
-      <a href="../articles/articles/cnsl_feature_selection.html">Feature Selection</a>
-    </li>
-    <li>
-      <a href="../articles/articles/cnsl_dimensionality_reduction.html">Dimensionality Reduction</a>
-    </li>
-    <li>
-      <a href="../articles/articles/cnsl_clustering.html">Clustering</a>
-    </li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Differential Expression</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Data</a>
       <ul class="dropdown-menu" role="menu">
         <li>
-          <a href="../articles/articles/cnsl_differential_expression.html">Differential Expression</a>
+          <a href="../articles/articles/import_data.html">Import Data</a>
         </li>
         <li>
-          <a href="../articles/articles/cnsl_find_marker.html">Find Marker via DE</a>
+          <a href="../articles/articles/cmd_import_scRNAseq_data_as_SCE.html">Import Data for Commandline QC</a>
+        </li>
+        <li>
+          <a href="../articles/articles/import_genesets.html">Import Gene Sets</a>
+        </li>
+        <li>
+          <a href="../articles/articles/import_annotation.html">Annotation</a>
+        </li>
+        <li>
+          <a href="../articles/articles/export_data.html">Export Data</a>
+        </li>
+        <li>
+          <a href="../articles/articles/delete_data.html">Delete Data</a>
         </li>
       </ul>
     </li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Enrichment Analysis</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">QC &amp; Filtering</a>
       <ul class="dropdown-menu" role="menu">
         <li>
-          <a href="../articles/articles/cnsl_gsva.html">GSVA</a>
+          <a href="../articles/articles/cnsl_dropletqc.html">Droplet QC (R console)</a>
         </li>
+        <li>
+          <a href="../articles/articles/cnsl_cellqc.html">Cell QC (R console)</a>
+        </li>
+        <li>
+          <a href="../articles/articles/ui_qc.html">Cell QC (Shiny UI)</a>
+        </li>
+        <li>
+          <a href="../articles/articles/filtering.html">Filtering</a>
+        </li>
+      </ul>
+    </li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Normalization &amp; Batch Correction</a>
+      <ul class="dropdown-menu" role="menu">
+        <li>
+          <a href="../articles/articles/cnsl_normalization.html">Normalization</a>
+        </li>
+        <li>
+          <a href="../articles/articles/batch_correction.html">Batch Correction</a>
+        </li>
+      </ul>
+    </li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Feature Selection &amp; Dimensionality Reduction</a>
+      <ul class="dropdown-menu" role="menu">
+        <li>
+          <a href="../articles/articles/cnsl_feature_selection.html">Feature Selection</a>
+        </li>
+        <li>
+          <a href="../articles/articles/cnsl_dimensionality_reduction.html">Dimensionality Reduction</a>
+        </li>
+        <li>
+          <a href="../articles/articles/cnsl_2d_embedding.html">2D Embedding</a>
+        </li>
+      </ul>
+    </li>
+    <li>
+      <a href="../articles/articles/clustering.html">Clustering</a>
+    </li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Differential Expression &amp; Cell Type Labeling</a>
+      <ul class="dropdown-menu" role="menu">
+        <li>
+          <a href="../articles/articles/differential_expression.html">Differential Expression</a>
+        </li>
+        <li>
+          <a href="../articles/articles/find_marker.html">Find Marker</a>
+        </li>
+        <li>
+          <a href="../articles/articles/cell_type_labeling.html">Cell Type Labeling</a>
+        </li>
+      </ul>
+    </li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Pathway &amp; Enrichment Analysis</a>
+      <ul class="dropdown-menu" role="menu">
         <li>
           <a href="../articles/articles/cnsl_enrichR.html">EnrichR</a>
         </li>
-      </ul>
-    </li>
-    <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Visualization</a>
-      <ul class="dropdown-menu" role="menu">
         <li>
-          <a href="../articles/articles/cnsl_visualization.html">General Visualization</a>
-        </li>
-        <li>
-          <a href="../articles/articles/cnsl_heatmap.html">Heatmap Visualization</a>
+          <a href="../articles/articles/pathwayAnalysis.html">Pathway Analysis</a>
         </li>
       </ul>
     </li>
@@ -163,91 +195,7 @@
           <a href="../articles/articles/cnsl_seurat_curated_workflow.html">Seurat</a>
         </li>
         <li>
-          <a href="../articles/articles/cnsl_celda_curated_workflow.html">Celda</a>
-        </li>
-      </ul>
-    </li>
-  </ul>
-</li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Shiny UI Analysis
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
-    <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Data</a>
-      <ul class="dropdown-menu" role="menu">
-        <li>
-          <a href="../articles/articles/ui_import_data.html">Import Data</a>
-        </li>
-        <li>
-          <a href="../articles/articles/ui_import_genesets.html">Import Gene Sets</a>
-        </li>
-        <li>
-          <a href="../articles/articles/ui_import_annotation.html">Annotation</a>
-        </li>
-        <li>
-          <a href="../articles/articles/ui_export_data.html">Export Data</a>
-        </li>
-        <li>
-          <a href="../articles/articles/ui_delete_data.html">Delete Data</a>
-        </li>
-      </ul>
-    </li>
-    <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">QC &amp; Filtering</a>
-      <ul class="dropdown-menu" role="menu">
-        <li>
-          <a href="../articles/articles/ui_qc.html">Quality Control</a>
-        </li>
-        <li>
-          <a href="../articles/articles/ui_filtering.html">Filtering</a>
-        </li>
-      </ul>
-    </li>
-    <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Normalization &amp; Batch Correction</a>
-      <ul class="dropdown-menu" role="menu">
-        <li>
-          <a href="../articles/articles/ui_normalization.html">Normalization</a>
-        </li>
-        <li>
-          <a href="../articles/articles/ui_batch_correction.html">Batch Correction</a>
-        </li>
-      </ul>
-    </li>
-    <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Feature Selection &amp; Dimensionality Reduction</a>
-      <ul class="dropdown-menu" role="menu">
-        <li>
-          <a href="../articles/articles/ui_feature_selection.html">Feature Selection</a>
-        </li>
-        <li>
-          <a href="../articles/articles/ui_dimemsionality_reduction.html">Dimensionality Reduction</a>
-        </li>
-      </ul>
-    </li>
-    <li>
-      <a href="../articles/articles/ui_clustering.html">Clustering</a>
-    </li>
-    <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Differential Expression &amp; Cell Type Labeling</a>
-      <ul class="dropdown-menu" role="menu">
-        <li>
-          <a href="../articles/articles/ui_differential_expression.html">Differential Expression</a>
-        </li>
-        <li>
-          <a href="../articles/articles/ui_find_marker.html">Find Marker</a>
-        </li>
-      </ul>
-    </li>
-    <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Curated Workflows</a>
-      <ul class="dropdown-menu" role="menu">
-        <li>
-          <a href="../articles/articles/ui_seurat_curated_workflow.html">Seurat</a>
+          <a href="../articles/articles/celda_curated_workflow.html">Celda</a>
         </li>
       </ul>
     </li>
@@ -255,14 +203,29 @@
       <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Visualization</a>
       <ul class="dropdown-menu" role="menu">
         <li>
-          <a href="../articles/articles/ui_cellViewer.html">cellViewer</a>
+          <a href="../articles/articles/visualization.html">General Visualization</a>
         </li>
         <li>
-          <a href="../articles/articles/ui_heatmap.html">Generic Heatmap</a>
+          <a href="../articles/articles/heatmap.html">Generic Heatmap</a>
         </li>
       </ul>
     </li>
   </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Tutorials
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/articles/console_analysis_tutorial.html">Analysis of PBMC3K (R Console)</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="../articles/articles/cmd_qc.html">SCTK-QC</a>
 </li>
 <li>
   <a href="../reference/index.html">Reference</a>
@@ -271,7 +234,13 @@
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/compbiomed/singleCellTK">
-    <span class="fas fa-github"></span>
+    <span class="fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
+<li>
+  <a href="https://twitter.com/camplab1">
+    <span class="fab fa-twitter fa-lg"></span>
      
   </a>
 </li>
@@ -302,7 +271,26 @@
     <tbody>
       <tr>
         <th colspan="2">
-          <h2 id="section-importing-scrna-seq-data" class="hasAnchor"><a href="#section-importing-scrna-seq-data" class="anchor"></a>Importing scRNA-seq data</h2>
+          <h2 id="section-start-the-shiny-app" class="hasAnchor"><a href="#section-start-the-shiny-app" class="anchor"></a>Start the Shiny APP</h2>
+          <p class="section-desc"></p>
+        </th>
+      </tr>
+      
+      
+    </tbody><tbody>
+      
+      
+      <tr>
+        
+        <td>
+          <p><code><a href="singleCellTK.html">singleCellTK()</a></code> </p>
+        </td>
+        <td><p>Run the single cell analysis app</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-importing-scrna-seq-data" class="hasAnchor"><a href="#section-importing-scrna-seq-data" class="anchor"></a>Importing scRNA-seq Data</h2>
           <p class="section-desc"></p>
         </th>
       </tr>
@@ -450,6 +438,12 @@
           <p><code><a href="runDropletQC.html">runDropletQC()</a></code> </p>
         </td>
         <td><p>Perform comprehensive droplet QC</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="runPerCellQC.html">runPerCellQC()</a></code> </p>
+        </td>
+        <td><p>Wrapper for calculating QC metrics with scater.</p></td>
       </tr>
     </tbody><tbody>
       <tr>
@@ -690,6 +684,15 @@ in the data</p></td>
       <tr>
         
         <td>
+          <p><code><a href="runFeatureSelection.html">runFeatureSelection()</a></code> </p>
+        </td>
+        <td><p>Wrapper function to run all of the feature selection methods integrated
+within the singleCellTK package including three methods from
+Seurat (`vst`, `mean.var.plot` or `dispersion`) and the Scran `modelGeneVar`
+method.</p></td>
+      </tr><tr>
+        
+        <td>
           <p><code><a href="scranModelGeneVar.html">scranModelGeneVar()</a></code> </p>
         </td>
         <td><p>scranModelGeneVar
@@ -707,19 +710,27 @@ Find highly variable genes and store in the input sce object</p></td>
           <p><code><a href="getTopHVG.html">getTopHVG()</a></code> </p>
         </td>
         <td><p>getTopHVG
-Extracts the top variable genes from an input singleCellExperiment object</p></td>
+Extracts the top variable genes from an input <code>SingleCellExperiment</code> object.
+Note that the variability metrics must be computed using the `runFeatureSelection`
+method before extracting the feature names of the top variable features. If
+`altExp` parameter is a <code>character</code> value, this function will return the
+input <code>SingleCellExperiment</code> object with the subset containing only the
+top variable features stored as an <code>altExp</code> slot in returned object.
+However, if this parameter is set to <code>NULL</code>, only the names of the top
+variable features will be returned as a <code>character</code> vector.</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="seuratPlotHVG.html">seuratPlotHVG()</a></code> </p>
         </td>
         <td><p>seuratPlotHVG
-Plot highly variable genes from input sce object (must have highly variable genes computations stored)</p></td>
+Plot highly variable genes from input sce object (must have highly variable
+genes computations stored)</p></td>
       </tr>
     </tbody><tbody>
       <tr>
         <th colspan="2">
-          <h2 id="section-dimensionality-reduction" class="hasAnchor"><a href="#section-dimensionality-reduction" class="anchor"></a>Dimensionality Reduction</h2>
+          <h2 id="section-dimensionality-reduction-embedding" class="hasAnchor"><a href="#section-dimensionality-reduction-embedding" class="anchor"></a>Dimensionality Reduction &amp; Embedding</h2>
           <p class="section-desc"></p>
         </th>
       </tr>
@@ -729,6 +740,12 @@ Plot highly variable genes from input sce object (must have highly variable gene
       
       
       <tr>
+        
+        <td>
+          <p><code><a href="runDimReduce.html">runDimReduce()</a></code> </p>
+        </td>
+        <td><p>Generic Wrapper function for running dimensionality reduction</p></td>
+      </tr><tr>
         
         <td>
           <p><code><a href="scaterPCA.html">scaterPCA()</a></code> </p>
@@ -755,28 +772,32 @@ dimension reduction.</p></td>
           <p><code><a href="seuratICA.html">seuratICA()</a></code> </p>
         </td>
         <td><p>seuratICA
-Computes ICA on the input sce object and stores the calculated independent components within the sce object</p></td>
+Computes ICA on the input sce object and stores the calculated independent
+components within the sce object</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="seuratPCA.html">seuratPCA()</a></code> </p>
         </td>
         <td><p>seuratPCA
-Computes PCA on the input sce object and stores the calculated principal components within the sce object</p></td>
+Computes PCA on the input sce object and stores the calculated principal
+components within the sce object</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="seuratRunUMAP.html">seuratRunUMAP()</a></code> </p>
         </td>
         <td><p>seuratRunUMAP
-Computes UMAP from the given sce object and stores the UMAP computations back into the sce object</p></td>
+Computes UMAP from the given sce object and stores the UMAP computations back
+into the sce object</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="seuratRunTSNE.html">seuratRunTSNE()</a></code> </p>
         </td>
         <td><p>seuratRunTSNE
-Computes tSNE from the given sce object and stores the tSNE computations back into the sce object</p></td>
+Computes tSNE from the given sce object and stores the tSNE computations back
+into the sce object</p></td>
       </tr><tr>
         
         <td>
@@ -814,7 +835,8 @@ Computes tSNE from the given sce object and stores the tSNE computations back in
           <p><code><a href="seuratFindClusters.html">seuratFindClusters()</a></code> </p>
         </td>
         <td><p>seuratFindClusters
-Computes the clusters from the input sce object and stores them back in sce object</p></td>
+Computes the clusters from the input sce object and stores them back in sce
+object</p></td>
       </tr><tr>
         
         <td>
@@ -897,6 +919,12 @@ identified by differential expression analysis</p></td>
           <p><code><a href="plotMASTThresholdGenes.html">plotMASTThresholdGenes()</a></code> </p>
         </td>
         <td><p>MAST Identify adaptive thresholds</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="diffAbundanceFET.html">diffAbundanceFET()</a></code> </p>
+        </td>
+        <td><p>Calculate Differential Abundance with FET</p></td>
       </tr>
     </tbody><tbody>
       <tr>
@@ -922,9 +950,257 @@ on each cluster against all the others.</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="plotMarkerDiffExp.html">plotMarkerDiffExp()</a></code> </p>
+          <p><code><a href="findMarkerTopTable.html">findMarkerTopTable()</a></code> </p>
         </td>
-        <td><p>Plot a heatmap to visualize the result of <code><a href='https://compbiomed.github.io/sctk_docs/reference/findMarkerDiffExp.html'>findMarkerDiffExp</a></code></p></td>
+        <td><p>Fetch the table of top markers that pass the filtering</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="plotMarkerDiffExp.html">plotMarkerDiffExp()</a></code> <code><a href="plotMarkerDiffExp.html">plotMarkerDiffExp()</a></code> </p>
+        </td>
+        <td><p>Plot a heatmap to visualize the result of <code>findMarkerDiffExp</code></p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-cell-type-labeling" class="hasAnchor"><a href="#section-cell-type-labeling" class="anchor"></a>Cell Type Labeling</h2>
+          <p class="section-desc"></p>
+        </th>
+      </tr>
+      
+      
+    </tbody><tbody>
+      
+      
+      <tr>
+        
+        <td>
+          <p><code><a href="runSingleR.html">runSingleR()</a></code> </p>
+        </td>
+        <td><p>Label cell types with SingleR</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-enrichment-pathway-analysis" class="hasAnchor"><a href="#section-enrichment-pathway-analysis" class="anchor"></a>Enrichment &amp; Pathway Analysis</h2>
+          <p class="section-desc"></p>
+        </th>
+      </tr>
+      
+      
+    </tbody><tbody>
+      
+      
+      <tr>
+        
+        <td>
+          <p><code><a href="getMSigDBTable.html">getMSigDBTable()</a></code> </p>
+        </td>
+        <td><p>Shows MSigDB categories</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="enrichRSCE.html">enrichRSCE()</a></code> </p>
+        </td>
+        <td><p>enrichR
+Given a list of genes this function runs the enrichR() to perform Gene
+enrichment</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="runGSVA.html">runGSVA()</a></code> </p>
+        </td>
+        <td><p>Run GSVA analysis on a SingleCellExperiment object</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="runVAM.html">runVAM()</a></code> </p>
+        </td>
+        <td><p>Run VAM to score gene sets in single cell data</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-seurat-curated-workflow" class="hasAnchor"><a href="#section-seurat-curated-workflow" class="anchor"></a>Seurat Curated Workflow</h2>
+          <p class="section-desc"></p>
+        </th>
+      </tr>
+      
+      
+    </tbody><tbody>
+      
+      
+      <tr>
+        
+        <td>
+          <p><code><a href="seuratComputeHeatmap.html">seuratComputeHeatmap()</a></code> </p>
+        </td>
+        <td><p>seuratComputeHeatmap
+Computes the heatmap plot object from the pca slot in the input sce object</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="seuratComputeJackStraw.html">seuratComputeJackStraw()</a></code> </p>
+        </td>
+        <td><p>seuratComputeJackStraw
+Compute jackstraw plot and store the computations in the input sce object</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="seuratElbowPlot.html">seuratElbowPlot()</a></code> </p>
+        </td>
+        <td><p>seuratElbowPlot
+Computes the plot object for elbow plot from the pca slot in the input sce
+object</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="seuratFindClusters.html">seuratFindClusters()</a></code> </p>
+        </td>
+        <td><p>seuratFindClusters
+Computes the clusters from the input sce object and stores them back in sce
+object</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="seuratFindHVG.html">seuratFindHVG()</a></code> </p>
+        </td>
+        <td><p>seuratFindHVG
+Find highly variable genes and store in the input sce object</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="seuratFindMarkers.html">seuratFindMarkers()</a></code> </p>
+        </td>
+        <td><p>seuratFindMarkers</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="seuratGenePlot.html">seuratGenePlot()</a></code> </p>
+        </td>
+        <td><p>Compute and plot visualizations for marker genes</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="seuratHeatmapPlot.html">seuratHeatmapPlot()</a></code> </p>
+        </td>
+        <td><p>seuratHeatmapPlot
+Modifies the heatmap plot object so it contains specified number of heatmaps
+in a single plot</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="seuratICA.html">seuratICA()</a></code> </p>
+        </td>
+        <td><p>seuratICA
+Computes ICA on the input sce object and stores the calculated independent
+components within the sce object</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="seuratIntegration.html">seuratIntegration()</a></code> </p>
+        </td>
+        <td><p>seuratIntegration
+A wrapper function to Seurat Batch-Correction/Integration workflow.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="seuratJackStrawPlot.html">seuratJackStrawPlot()</a></code> </p>
+        </td>
+        <td><p>seuratJackStrawPlot
+Computes the plot object for jackstraw plot from the pca slot in the input
+sce object</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="seuratNormalizeData.html">seuratNormalizeData()</a></code> </p>
+        </td>
+        <td><p>seuratNormalizeData
+Wrapper for NormalizeData() function from seurat library
+Normalizes the sce object according to the input parameters</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="seuratPCA.html">seuratPCA()</a></code> </p>
+        </td>
+        <td><p>seuratPCA
+Computes PCA on the input sce object and stores the calculated principal
+components within the sce object</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="seuratPlotHVG.html">seuratPlotHVG()</a></code> </p>
+        </td>
+        <td><p>seuratPlotHVG
+Plot highly variable genes from input sce object (must have highly variable
+genes computations stored)</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="seuratReductionPlot.html">seuratReductionPlot()</a></code> </p>
+        </td>
+        <td><p>seuratReductionPlot
+Plots the selected dimensionality reduction method</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="seuratReport.html">seuratReport()</a></code> </p>
+        </td>
+        <td><p>Computes an HTML report from the Seurat workflow and returns the output SCE
+ object with the computations stored in it.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="seuratRunTSNE.html">seuratRunTSNE()</a></code> </p>
+        </td>
+        <td><p>seuratRunTSNE
+Computes tSNE from the given sce object and stores the tSNE computations back
+into the sce object</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="seuratRunUMAP.html">seuratRunUMAP()</a></code> </p>
+        </td>
+        <td><p>seuratRunUMAP
+Computes UMAP from the given sce object and stores the UMAP computations back
+into the sce object</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="seuratSCTransform.html">seuratSCTransform()</a></code> </p>
+        </td>
+        <td><p>seuratSCTransform
+Runs the <a href='https://satijalab.org/seurat/reference/SCTransform.html'>SCTransform</a> function to transform/normalize the input
+data</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="seuratScaleData.html">seuratScaleData()</a></code> </p>
+        </td>
+        <td><p>seuratScaleData
+Scales the input sce object according to the input parameters</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="seuratVariableFeatures.html">seuratVariableFeatures()</a></code> </p>
+        </td>
+        <td><p>Get variable feature names after running seuratFindHVG function</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="computeHeatmap.html">computeHeatmap()</a></code> </p>
+        </td>
+        <td><p>computeHeatmap
+The computeHeatmap method computes the heatmap visualization for a set
+ of features against a set of dimensionality reduction components. This
+ method uses the heatmap computation algorithm code from <code>Seurat</code> but
+ plots the heatmap using <code>ComplexHeatmap</code> and <code>cowplot</code> libraries.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="runSeurat.html">runSeurat()</a></code> </p>
+        </td>
+        <td><p>A wrapper function run complete Seurat workflow.</p></td>
       </tr>
     </tbody><tbody>
       <tr>
@@ -973,15 +1249,15 @@ values.</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="plotCxdsResults.html">plotCxdsResults()</a></code> </p>
+          <p><code><a href="plotClusterAbundance.html">plotClusterAbundance()</a></code> </p>
         </td>
-        <td><p>Plots for runCxds outputs.</p></td>
+        <td><p>Plot the differential Abundance</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="plotDecontXResults.html">plotDecontXResults()</a></code> </p>
+          <p><code><a href="plotCxdsResults.html">plotCxdsResults()</a></code> </p>
         </td>
-        <td><p>Plots for runDecontX outputs.</p></td>
+        <td><p>Plots for runCxds outputs.</p></td>
       </tr><tr>
         
         <td>
@@ -1002,6 +1278,12 @@ identified by differential expression analysis</p></td>
         </td>
         <td><p>plot the violin plot to show visualize the expression distribution of DEGs
 identified by differential expression analysis</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="plotDecontXResults.html">plotDecontXResults()</a></code> </p>
+        </td>
+        <td><p>Plots for runDecontX outputs.</p></td>
       </tr><tr>
         
         <td>
@@ -1030,21 +1312,15 @@ and UMAP</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="plotHeatmapMulti.html">plotHeatmapMulti()</a></code> </p>
-        </td>
-        <td><p>plotHeatmapMulti</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="plotMarkerDiffExp.html">plotMarkerDiffExp()</a></code> </p>
-        </td>
-        <td><p>Plot a heatmap to visualize the result of <code><a href='https://compbiomed.github.io/sctk_docs/reference/findMarkerDiffExp.html'>findMarkerDiffExp</a></code></p></td>
-      </tr><tr>
-        
-        <td>
           <p><code><a href="plotMASTThresholdGenes.html">plotMASTThresholdGenes()</a></code> </p>
         </td>
         <td><p>MAST Identify adaptive thresholds</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="plotMarkerDiffExp.html">plotMarkerDiffExp()</a></code> <code><a href="plotMarkerDiffExp.html">plotMarkerDiffExp()</a></code> </p>
+        </td>
+        <td><p>Plot a heatmap to visualize the result of <code>findMarkerDiffExp</code></p></td>
       </tr><tr>
         
         <td>
@@ -1057,18 +1333,6 @@ and UMAP</p></td>
           <p><code><a href="plotRunPerCellQCResults.html">plotRunPerCellQCResults()</a></code> </p>
         </td>
         <td><p>Plots for runPerCellQC outputs.</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="plotScDblFinderResults.html">plotScDblFinderResults()</a></code> </p>
-        </td>
-        <td><p>Plots for runScDblFinder outputs.</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="plotScdsHybridResults.html">plotScdsHybridResults()</a></code> </p>
-        </td>
-        <td><p>Plots for runCxdsBcdsHybrid outputs.</p></td>
       </tr><tr>
         
         <td>
@@ -1150,15 +1414,21 @@ and UMAP</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="plotScrubletResults.html">plotScrubletResults()</a></code> </p>
+          <p><code><a href="plotScDblFinderResults.html">plotScDblFinderResults()</a></code> </p>
         </td>
-        <td><p>Plots for runScrublet outputs.</p></td>
+        <td><p>Plots for runScDblFinder outputs.</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="plotTopHVG.html">plotTopHVG()</a></code> </p>
+          <p><code><a href="plotScdsHybridResults.html">plotScdsHybridResults()</a></code> </p>
         </td>
-        <td><p>Plot highly variable genes</p></td>
+        <td><p>Plots for runCxdsBcdsHybrid outputs.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="plotScrubletResults.html">plotScrubletResults()</a></code> </p>
+        </td>
+        <td><p>Plots for runScrublet outputs.</p></td>
       </tr><tr>
         
         <td>
@@ -1168,9 +1438,58 @@ and UMAP</p></td>
       </tr><tr>
         
         <td>
+          <p><code><a href="plotTopHVG.html">plotTopHVG()</a></code> </p>
+        </td>
+        <td><p>Plot highly variable genes</p></td>
+      </tr><tr>
+        
+        <td>
           <p><code><a href="plotUMAP.html">plotUMAP()</a></code> </p>
         </td>
         <td><p>Plot UMAP results either on already run results or run first and then plot.</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-report-generation" class="hasAnchor"><a href="#section-report-generation" class="anchor"></a>Report Generation</h2>
+          <p class="section-desc"></p>
+        </th>
+      </tr>
+      
+      
+    </tbody><tbody>
+      
+      
+      <tr>
+        
+        <td>
+          <p><code><a href="reportCellQC.html">reportCellQC()</a></code> </p>
+        </td>
+        <td><p>Get runCellQC .html report</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="reportDiffExp.html">reportDiffExp()</a></code> </p>
+        </td>
+        <td><p>Get runDEAnalysis .html report</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="reportDropletQC.html">reportDropletQC()</a></code> </p>
+        </td>
+        <td><p>Get runDropletQC .html report</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="reportFindMarker.html">reportFindMarker()</a></code> </p>
+        </td>
+        <td><p>Get findMarkerDiffExp .html report</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="reportQCTool.html">reportQCTool()</a></code> </p>
+        </td>
+        <td><p>Get .html report of the output of the selected QC algorithm</p></td>
       </tr>
     </tbody><tbody>
       <tr>
@@ -1193,6 +1512,12 @@ and UMAP</p></td>
       </tr><tr>
         
         <td>
+          <p><code><a href="exportSCEToSeurat.html">exportSCEToSeurat()</a></code> </p>
+        </td>
+        <td><p>Export data in Seurat object</p></td>
+      </tr><tr>
+        
+        <td>
           <p><code><a href="exportSCEtoAnnData.html">exportSCEtoAnnData()</a></code> </p>
         </td>
         <td><p>Export a <a href='https://rdrr.io/pkg/SingleCellExperiment/man/SingleCellExperiment.html'>SingleCellExperiment</a> R object as
@@ -1203,17 +1528,11 @@ Python annData object</p></td>
           <p><code><a href="exportSCEtoFlatFile.html">exportSCEtoFlatFile()</a></code> </p>
         </td>
         <td><p>Export a <a href='https://rdrr.io/pkg/SingleCellExperiment/man/SingleCellExperiment.html'>SingleCellExperiment</a> object to flat text files</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="exportSCEToSeurat.html">exportSCEToSeurat()</a></code> </p>
-        </td>
-        <td><p>Export data in Seurat object</p></td>
       </tr>
     </tbody><tbody>
       <tr>
         <th colspan="2">
-          <h2 id="section-other-data-processing" class="hasAnchor"><a href="#section-other-data-processing" class="anchor"></a>Other Data processing</h2>
+          <h2 id="section-datasets" class="hasAnchor"><a href="#section-datasets" class="anchor"></a>Datasets</h2>
           <p class="section-desc"></p>
         </th>
       </tr>
@@ -1223,6 +1542,107 @@ Python annData object</p></td>
       
       
       <tr>
+        
+        <td>
+          <p><code><a href="mouseBrainSubsetSCE.html">mouseBrainSubsetSCE</a></code> </p>
+        </td>
+        <td><p>Example Single Cell RNA-Seq data in SingleCellExperiment Object, GSE60361
+subset</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="sceBatches.html">sceBatches</a></code> </p>
+        </td>
+        <td><p>Example Single Cell RNA-Seq data in SingleCellExperiment object, with
+different batches annotated</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="MitoGenes.html">MitoGenes</a></code> </p>
+        </td>
+        <td><p>List of mitochondrial genes of multiple reference</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="msigdb_table.html">msigdb_table</a></code> </p>
+        </td>
+        <td><p>MSigDB gene get Cctegory table</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="sce.html">sce</a></code> </p>
+        </td>
+        <td><p>Example Single Cell RNA-Seq data in SingleCellExperiment Object,
+subset of 10x public dataset
+https://support.10xgenomics.com/single-cell-gene-expression/datasets/2.1.0/pbmc4k
+A subset of 390 barcodes and top 200 genes were included in this example.
+Within 390 barcodes, 195 barcodes are empty droplet, 150 barcodes are cell
+barcode and 45 barcodes are doublets predicted by scrublet and doubletFinder
+package. This example only serves as a proof of concept and a tutoriol on how
+to run the functions in this package. The results should not be used for
+drawing scientific conclusions.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="SEG.html">SEG</a></code> </p>
+        </td>
+        <td><p>Stably Expressed Gene (SEG) list obect, with SEG sets for human and mouse.</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-other-data-processing" class="hasAnchor"><a href="#section-other-data-processing" class="anchor"></a>Other Data Processing</h2>
+          <p class="section-desc"></p>
+        </th>
+      </tr>
+      
+      
+    </tbody><tbody>
+      
+      
+      <tr>
+        
+        <td>
+          <p><code><a href="expData.html">expData()</a></code> </p>
+        </td>
+        <td><p>expData
+Get data item from an input <code>SingleCellExperiment</code> object. The data item can be an <code>assay</code>, <code>altExp</code> (subset) or a <code>reducedDim</code>, which is retrieved based on the name of the data item.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="expData-set.html">`expData&lt;-`()</a></code> </p>
+        </td>
+        <td><p>expData
+Store data items using tags to identify the type of data item stored. To be used as a replacement for assay&lt;- setter function but with additional parameter to set a tag to a data item.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="expDataNames.html">expDataNames()</a></code> </p>
+        </td>
+        <td><p>expDataNames
+Get names of all the data items in the input <code>SingleCellExperiment</code> object including assays, altExps and reducedDims.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="expDeleteDataTag.html">expDeleteDataTag()</a></code> </p>
+        </td>
+        <td><p>expDeleteDataTag
+Remove tag against an input data from the stored tag information in the metadata of the input object.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="expSetDataTag.html">expSetDataTag()</a></code> </p>
+        </td>
+        <td><p>expSetDataTag
+Set tag to an assay or a data item in the input SCE object.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="expTaggedData.html">expTaggedData()</a></code> </p>
+        </td>
+        <td><p>expTaggedData
+Returns a list of names of data items from the input <code>SingleCellExperiment</code> object based upon the input parameters.</p></td>
+      </tr><tr>
         
         <td>
           <p><code><a href="combineSCE.html">combineSCE()</a></code> </p>
@@ -1245,15 +1665,9 @@ Converts the input seurat object to a sce object</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="subsetSCECols.html">subsetSCECols()</a></code> </p>
+          <p><code><a href="convertGeneIDs.html">convertGeneIDs()</a></code> </p>
         </td>
-        <td><p>Subset a SingleCellExperiment object by columns</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="subsetSCERows.html">subsetSCERows()</a></code> </p>
-        </td>
-        <td><p>Subset a SingleCellExperiment object by rows</p></td>
+        <td><p>Convert Gene IDs</p></td>
       </tr><tr>
         
         <td>
@@ -1263,6 +1677,91 @@ Converts the input seurat object to a sce object</p></td>
 Adds '-1', '-2', ... '-i' to multiple duplicated rownames, and in place
 replace the unique rownames, store unique rownames in <code>rowData</code>, or
 return the unique rownames as character vecetor.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="detectCellOutlier.html">detectCellOutlier()</a></code> </p>
+        </td>
+        <td><p>Detecting outliers within the SingleCellExperiment object.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="featureIndex.html">featureIndex()</a></code> </p>
+        </td>
+        <td><p>Retrieve row index for a set of features</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="retrieveSCEIndex.html">retrieveSCEIndex()</a></code> </p>
+        </td>
+        <td><p>Retrieve cell/feature index by giving identifiers saved in col/rowData</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="sampleSummaryStats.html">sampleSummaryStats()</a></code> </p>
+        </td>
+        <td><p>Generate table of SCTK QC outputs.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="sctkListGeneSetCollections.html">sctkListGeneSetCollections()</a></code> </p>
+        </td>
+        <td><p>Lists imported GeneSetCollections</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="setSCTKDisplayRow.html">setSCTKDisplayRow()</a></code> </p>
+        </td>
+        <td><p>Indicates which rowData to use for visualization</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="subsetSCECols.html">subsetSCECols()</a></code> </p>
+        </td>
+        <td><p>Subset a SingleCellExperiment object by columns</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="subsetSCERows.html">subsetSCERows()</a></code> </p>
+        </td>
+        <td><p>Subset a SingleCellExperiment object by rows</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-python-environment-setting" class="hasAnchor"><a href="#section-python-environment-setting" class="anchor"></a>Python Environment Setting</h2>
+          <p class="section-desc"></p>
+        </th>
+      </tr>
+      
+      
+    </tbody><tbody>
+      
+      
+      <tr>
+        
+        <td>
+          <p><code><a href="sctkPythonInstallConda.html">sctkPythonInstallConda()</a></code> </p>
+        </td>
+        <td><p>Installs Python packages into a Conda environment</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="selectSCTKConda.html">selectSCTKConda()</a></code> </p>
+        </td>
+        <td><p>Selects a Conda environment</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="sctkPythonInstallVirtualEnv.html">sctkPythonInstallVirtualEnv()</a></code> </p>
+        </td>
+        <td><p>Installs Python packages into a virtual environment</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="selectSCTKVirtualEnvironment.html">selectSCTKVirtualEnvironment()</a></code> </p>
+        </td>
+        <td><p>Selects a virtual environment</p></td>
       </tr>
     </tbody>
     </table>
@@ -1278,7 +1777,7 @@ return the unique rownames as character vecetor.</p></td>
 
       <footer>
       <div class="copyright">
-  <p>Developed by David Jenkins, Vidya Akavoor, Salam Alabdullatif, Shruthi Bandyadka, Emma Briars, Xinyun Cao, Sebastian Carrasco Pro, Tyler Faits, Rui Hong, Mohammed Muzamil Khan, Yusuke Koga, Anastasia Leshchyk, Irzam Sarfraz, Yichen Wang, Zhe Wang, W. Evan Johnson, Joshua David Campbell.</p>
+  <p>Developed by Yichen Wang, Irzam Sarfraz, Rui Hong, Yusuke Koga, Salam Alabdullatif, David Jenkins, Vidya Akavoor, Xinyun Cao, Shruthi Bandyadka, Anastasia Leshchyk, Tyler Faits, Mohammed Muzamil Khan, Zhe Wang, W. Evan Johnson, Joshua David Campbell.</p>
 </div>
 
 <div class="pkgdown">

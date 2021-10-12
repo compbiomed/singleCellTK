@@ -11,7 +11,8 @@ seuratRunTSNE(
   useReduction = c("pca", "ica"),
   reducedDimName = "seuratTSNE",
   dims = 10,
-  perplexity = 30
+  perplexity = 30,
+  externalReduction = NULL
 )
 }
 \arguments{
@@ -26,8 +27,11 @@ Default \code{seuratTSNE}.}
 \item{dims}{Number of reduction components to use for tSNE computation.
 Default \code{10}.}
 
-\item{perplexity}{Adjust the preplexity tuneable parameter for the underlying
+\item{perplexity}{Adjust the perplexity tuneable parameter for the underlying
 tSNE call. Default \code{30}.}
+
+\item{externalReduction}{Pass DimReduc object if PCA/ICA computed through
+other libraries. Default \code{NULL}.}
 }
 \value{
 Updated sce object with tSNE computations stored

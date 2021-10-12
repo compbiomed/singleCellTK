@@ -4,7 +4,7 @@
 #'  object containing cells after empty droplets have been removed.
 #' @param inSCE A \link[SingleCellExperiment]{SingleCellExperiment} object.
 #' @param algorithms Character vector. Specify which QC algorithms to run.
-#'  Available options are "QCMetrics", "scrublet", "scDblFinder", "cxds", "bcds", "cxds_bcds_hybrid", and "decontX".
+#'  Available options are "QCMetrics", "scrublet", "doubletFinder", "scDblFinder", "cxds", "bcds", "cxds_bcds_hybrid", and "decontX".
 #' @param sample Character vector. Indicates which sample each cell belongs to.
 #'  Algorithms will be run on cells from each sample separately.
 #' @param collectionName Character. Name of a \code{GeneSetCollection} obtained by using one of the importGeneSet* functions. Default \code{NULL}.
@@ -25,9 +25,10 @@
 #' sce <- runCellQC(sce)
 #' }
 #' @export
+
 runCellQC <- function(inSCE,
   algorithms = c("QCMetrics", "scDblFinder", "cxds", "bcds",
-    "cxds_bcds_hybrid", "scrublet", "doubletFinder", "decontX"),
+    "cxds_bcds_hybrid", "decontX"), #"scrublet", "doubletFinder",
   sample = NULL,
   collectionName = NULL,
   geneSetList = NULL,

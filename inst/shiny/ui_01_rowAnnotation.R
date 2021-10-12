@@ -1,6 +1,6 @@
 shinyPanelRowAnnotation <- fluidPage(
   includeCSS('styles.CSS'),
-  h5(tags$a(href = paste0(docs.artPath, "ui_import_annotation.html"),
+  h5(tags$a(href = paste0(docs.artPath, "import_annotation.html"),
             "(help)", target = "_blank")),
   panel(
     heading = "Options for editing and importing Feature Annotation data",

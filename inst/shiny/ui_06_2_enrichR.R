@@ -2,7 +2,7 @@ shinyPanelEnrichR <- fluidPage(
   tags$div(
     class = "container",
     h1("Gene Set Enrichment Analysis using enrichR"),
-    h5(tags$a(href = paste0(docs.artPath, "ui_enrichR.html"),
+    h5(tags$a(href = paste0(docs.artPath, "cnsl_enrichR.html"),
               "(help)", target = "_blank")),
     sidebarLayout(
       sidebarPanel(

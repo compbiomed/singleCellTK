@@ -4,7 +4,7 @@ shinyPanelHeatmap <- fluidPage(
     h1("Heatmap"),
     p("Generic heatmap plotting panel for customized figure.",
       style = "color:grey;"),
-    h5(tags$a(href = paste0(docs.artPath, "ui_heatmap.html"),
+    h5(tags$a(href = paste0(docs.artPath, "heatmap.html"),
               "(help)", target = "_blank")),
     panel(
       fluidRow(

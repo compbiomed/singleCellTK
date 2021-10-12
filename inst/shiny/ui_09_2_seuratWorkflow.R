@@ -1,10 +1,27 @@
 # User Interface for Seurat Workflow ---
 shinyPanelSeurat <- fluidPage(
     h1("Seurat"),
-    h5(tags$a(href = paste0(docs.artPath, "ui_seurat_curated_workflow.html"),
+    h5(tags$a(href = paste0(docs.artPath, "cnsl_seurat_curated_workflow.html"),
               "(help)", target = "_blank")),
     inlineCSS(list(".panel-danger>.panel-heading" = "background-color:#dcdcdc; color:#000000", ".panel-primary>.panel-heading" = "background-color:#f5f5f5; color:#000000; border-color:#dddddd", ".panel-primary" = "border-color:#dddddd;", ".panel-primary>.panel-heading+.panel-collapse>.panel-body" = "border-color:#dddddd;")),
-        bsCollapse(id = "SeuratUI", open = "Data Input",
+    conditionalPanel(
+        condition = "false",
+        selectInput(
+            "activePanelSelectSeurat",
+            label = "Active Panel:",
+            choices = c("",
+                        "Normalize Data",
+                        "Scale Data",
+                        "Highly Variable Genes",
+                        "Dimensionality Reduction",
+                        "tSNE/UMAP",
+                        "Clustering",
+                        "Find Markers",
+                        "Heatmap Plot"),
+            selected = ""
+        )
+    ),
+    bsCollapse(id = "SeuratUI", open = "Data Input",
             bsCollapsePanel("Normalize Data",
                 fluidRow(
                     column(4,
@@ -50,7 +67,7 @@ shinyPanelSeurat <- fluidPage(
                         fluidRow(
                             column(12,
                                 panel(heading = "Display HVG",
-                                    textInput(inputId = "hvg_no_features_view", label = "Select number of features to display: ", value = "10"),
+                                    numericInput(inputId = "hvg_no_features_view", label = "Select number of features to display: ", value = 10, step = 1),
                                     verbatimTextOutput(outputId = "hvg_output", placeholder = TRUE)
                                      )
                                   )
@@ -77,7 +94,7 @@ shinyPanelSeurat <- fluidPage(
                                 fluidRow(
                                     column(12,
                                         panel(heading = "PCA",
-                                            textInput(inputId = "pca_no_components", label = "Select number of components to compute: ", value = "50"),
+                                            numericInput(inputId = "pca_no_components", label = "Select number of components to compute: ", value = 50),
                                             materialSwitch(inputId = "pca_compute_elbow", label = "Compute ElbowPlot?", value = TRUE),
                                             materialSwitch(inputId = "pca_compute_jackstraw", label = "Compute JackStrawPlot?", value = FALSE),
                                             materialSwitch(inputId = "pca_compute_heatmap", label = "Compute Heatmap?", value = TRUE),
@@ -152,7 +169,7 @@ shinyPanelSeurat <- fluidPage(
 
 
             bsCollapsePanel("tSNE/UMAP",
-                tabsetPanel(type = "tabs",
+                tabsetPanel(id = "tsneUmapTabsetSeurat", type = "tabs",
                     tabPanel("tSNE",
                         br(),
                         fluidRow(
@@ -341,14 +358,8 @@ shinyPanelSeurat <- fluidPage(
                                        )
                                 )
                             ),
-                            style = "primary"),
-            hidden(bsCollapsePanel("Downstream Analysis",
-                                   nonLinearWorkflowUI(
-                                       id = "id_1",
-                                       de = TRUE,
-                                       pa = TRUE),
                             style = "primary")
-        )
-       )
+       ),
+    nonLinearWorkflowUI(id = "nlw-seurat")
     )
 
