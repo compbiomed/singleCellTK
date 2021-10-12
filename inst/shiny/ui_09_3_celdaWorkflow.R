@@ -12,25 +12,22 @@ shinyPanelCelda <- fluidPage(
                        selectInput("celdaassayselect", "Choose an Assay:",
                                    choices = c()),
                        selectInput("celdafeatureselect", "Choose Feature Selection Method:",
-                                   choices = c("Simple Filter", "SeuratFindHVG", "Scran_modelGeneVar")),
+                                   choices = c("None", "SeuratFindHVG", "Scran_modelGeneVar")),
                        conditionalPanel("input.celdafeatureselect == 'SeuratFindHVG'",
                                         selectInput("celdaseurathvgmethod", "Select HVG method:",
                                                     choices = c("vst", "dispersion", "mean.var.plot")),
-                                        numericInput("celdarowcountsmin",
-                                                     "Keep features with this many counts:", value = 3),
-                                        numericInput("celdacolcountsmin",
-                                                     "In at least this many cells:", value = 3)
+                                       
                        ),
-                       conditionalPanel("input.celdafeatureselect == 'Simple Filter'",
-                                        numericInput("celdarowcountsmin",
-                                                     "Keep features with this many counts:", value = 3),
-                                        numericInput("celdacolcountsmin",
-                                                     "In at least this many cells:", value = 3)
-                       ),
-                       conditionalPanel("input.celdafeatureselect != 'Simple Filter'",
+                       
+                       conditionalPanel("input.celdafeatureselect != 'None'",
                                         numericInput("celdafeaturenum",
-                                                     "Select number of variable features:", min = 1, max = 5000, value = 2500)
+                                                     "Select number of variable features:", min = 1, max = 5000, value = 2500),
+                                        
                        ),
+                       numericInput("celdarowcountsmin",
+                                    "Keep features with this many counts:", value = 3),
+                       numericInput("celdacolcountsmin",
+                                    "In at least this many cells:", value = 3),
                        numericInput("celdaLinit", "Select Number of Initial Feature Modules:", min = 1, max = 25, value = 10),
                        numericInput("celdaLmax", "Select Number of Maximum Feature Modules:", min = 15, max = 200, value = 100),
                        actionButton("celdamodsplit", "Recursive Module Split"),
@@ -72,16 +69,17 @@ shinyPanelCelda <- fluidPage(
                             hidden(
                                 tags$div(class = "celda_cellsplit_plots",
                                     tabsetPanel(
+                                    tabPanel("Rate of perplexity change",
+                                                 panel(
+                                                     plotlyOutput(outputId = "plot_cellsplit_perpdiff", height = "auto")
+                                                 )
+                                    ),
                                     tabPanel("Perplexity Plot",
                                              panel(
                                                  plotlyOutput(outputId = "plot_cellsplit_perp", height = "auto")
                                              )
                                     ),
-                                    tabPanel("Rate of perplexity change",
-                                             panel(
-                                                 plotlyOutput(outputId = "plot_cellsplit_perpdiff", height = "auto")
-                                             )
-                                    ),
+                                    
                                     tabPanel("Preliminary UMAP Plots",
                                             uiOutput("celdaKplots")
                                     )
@@ -210,6 +208,9 @@ shinyPanelCelda <- fluidPage(
                                     panel(
                                         numericInput(inputId = "celdamodheatmapnum",
                                                      label = "Select module to display on heatmap:", value = 10, step = 1),
+                                        numericInput(inputId = "celdamodheatmaptopcells",
+                                                     label = "Select number of cells to display on heatmap:", value = 100),
+                                          
                                         actionButton("celdamodheatmapbtn", "Plot Module Heatmap")
                                     )
                              ),
