@@ -101,11 +101,11 @@ importMultipleSources <- function(allImportEntries, delayedArray = FALSE) {
       newSce <- expSetDataTag(
         inSCE = newSce,
         assayType = "raw",
-        assays = assayNames(newSce))
+        assays = SummarizedExperiment::assayNames(newSce))
     }
     else if(entry$type %in% c("rds", "files")){
       # Check if tags already stored in uploaded rds/files
-      if(is.null(metadata(newSce)$assayType)){
+      if(is.null(S4Vectors::metadata(newSce)$assayType)){
         try({
           counts(newSce)
           newSce <- expSetDataTag(
@@ -131,14 +131,14 @@ importMultipleSources <- function(allImportEntries, delayedArray = FALSE) {
         }, silent = TRUE)
         
         try({
-          decontXcounts(newSce)
+          celda::decontXcounts(newSce)
           newSce <- expSetDataTag(
             inSCE = newSce,
             assayType = "raw",
             assays = "decontXcounts")
         }, silent = TRUE)
         
-        untaggedAssays <- assayNames(newSce)
+        untaggedAssays <- SummarizedExperiment::assayNames(newSce)
         untaggedAssays <- untaggedAssays[! untaggedAssays %in% c('counts', 'logcounts', 'normcounts', 'decontX')]
         
         newSce <- expSetDataTag(
