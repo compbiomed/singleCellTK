@@ -248,7 +248,7 @@ sce <- selectFeatures(sce, minCount = 3, minCell = 3, useAssay = useAssay, altEx
 
 # See number of features after filtering
 nrow(altExp(sce, altExpName))
-
+counts(altExp(sce)) <- as.matrix(counts(altExp(sce)))
 moduleSplit <- recursiveSplitModule(sce, useAssay = useAssay, altExpName = altExpName, initialL = 10, maxL = 150)
 
 #plots to decide value of L
