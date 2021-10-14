@@ -19,8 +19,6 @@ jobs:
       matrix:
         config:
           - {os: macOS-latest,   r: 'release'}
-          - {os: windows-latest, r: 'release'}
-          - {os: ubuntu-latest,   r: 'release'}
 
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
@@ -46,11 +44,16 @@ jobs:
         run: brew install xquartz --cask
           
       - name: Run BiocCheck
+        env:
+          DISPLAY: 99.0
         run: |
           BiocManager::install("BiocCheck")
           library(BiocCheck)
-          BiocCheck(".")
+          BiocCheck::BiocCheck(
+              dir('check', 'tar.gz$', full.names = TRUE),
+              `quit-with-status` = TRUE,
+              `no-check-R-ver` = TRUE,
+              `no-check-bioc-help` = TRUE
+          )
         shell: Rscript {0}
-        env:
-          CI: true
         
