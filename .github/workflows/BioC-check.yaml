@@ -44,13 +44,10 @@ jobs:
         run: brew install xquartz --cask
           
       - name: Run BiocCheck
-        env:
-          DISPLAY: 99.0
         run: |
-          BiocManager::install("BiocCheck", force = TRUE)
+          BiocManager::install("BiocCheck")
           library(BiocCheck)
-          BiocCheck::BiocCheck(
-              dir('check', 'tar.gz$', full.names = TRUE),
+          BiocCheck::BiocCheck(".",
               `quit-with-status` = TRUE,
               `no-check-R-ver` = TRUE,
               `no-check-bioc-help` = TRUE
