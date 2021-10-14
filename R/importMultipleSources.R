@@ -105,7 +105,7 @@ importMultipleSources <- function(allImportEntries, delayedArray = FALSE) {
     }
     else if(entry$type %in% c("rds", "files")){
       # Check if tags already stored in uploaded rds/files
-      if(is.null(metadata(newSce)$assayType)){
+      if(is.null(S4Vectors::metadata(newSce)$assayType)){
         try({
           counts(newSce)
           newSce <- expSetDataTag(
