@@ -10,6 +10,7 @@ csl: ieee.csl
 ---
 ```{r develSetting, include=FALSE}
 doEval = TRUE
+knitr::opts_chunk$set(warning = FALSE)
 ```
 ## Introduction
 **singleCellTK** offers a convenient way to compute and select the most variable features 
