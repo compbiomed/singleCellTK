@@ -175,7 +175,7 @@ cat("\n\n")
 cat(paste0('## Total Features {.tabset .tabset-fade} \n\n'))
 plotsQCMetrics$Violin$Detected
 cat("\n\n")
-cat(paste0('## Percentage of Library Size Occupied by Top 50 Exp. Genes {.tabset .tabset-fade} \n\n'))
+cat(paste0('## Percentage of Library Size Occupied by Top 50 Expressed Features {.tabset .tabset-fade} \n\n'))
 plotsQCMetrics$Violin$TopPercent
 if(!is.null(plotsQCMetrics$Violin$Mito_Subset_Sum)){
   cat("\n\n")
@@ -197,13 +197,13 @@ if(!is.null(plotsQCMetrics$Violin$Mito_Subset_Top50_Percent)){
 if(length(geneSubsetName) > 0){
   for(ix in seq_along(geneSubsetName)){
     cat("\n\n")
-    cat(paste0('## Total Counts of Gene Subset "', geneSubsetName[ix], '"{.tabset .tabset-fade} \n\n'))
+    cat(paste0('## Total Counts of Feature Subset "', geneSubsetName[ix], '"{.tabset .tabset-fade} \n\n'))
     print(plotsQCMetrics$Violin[[paste0("subsets_",geneSubsetName[ix],"_sum")]])
     cat("\n\n")
-    cat(paste0('## Total Features within Gene Subset "', geneSubsetName[ix], '"{.tabset .tabset-fade} \n\n'))
+    cat(paste0('## Total Features within Feature Subset "', geneSubsetName[ix], '"{.tabset .tabset-fade} \n\n'))
     print(plotsQCMetrics$Violin[[paste0("subsets_",geneSubsetName[ix],"_detected")]])
     cat("\n\n")
-    cat(paste0('## Percentage of Gene Subset "', geneSubsetName[ix], '" Expression{.tabset .tabset-fade} \n\n'))
+    cat(paste0('## Percentage of Feature Subset "', geneSubsetName[ix], '" Expression{.tabset .tabset-fade} \n\n'))
     print(plotsQCMetrics$Violin[[paste0("subsets_",geneSubsetName[ix],"_percent")]])
   }
 }
