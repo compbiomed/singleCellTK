@@ -10,6 +10,7 @@ csl: ieee.csl
 ---
 ```{r develSetting, include=FALSE}
 doEval = TRUE
+knitr::opts_chunk$set(warning = FALSE)
 ```
 ## Introduction
 **singleCellTK** integrates functions from [**Seurat**](https://satijalab.org/seurat/) [@Butler2018][@Stuart2019][@Satija2017][@Hao2021] package in an easy to use streamlined workflow using both the shiny user interface as well as the R console. The shiny application contains a separate tab that lets the users run the steps of the workflow in a sequential manner with ability to visualize through interactive plots from within the application. On the R console, the toolkit offers wrapper functions that use the [SingleCellExperiment](https://bioconductor.org/packages/release/bioc/html/SingleCellExperiment.html) [@Amezquita2020] object as the input and the output. All computations from the wrapper functions are stored within this object for further manipulation.

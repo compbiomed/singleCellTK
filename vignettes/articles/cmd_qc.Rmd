@@ -3,6 +3,10 @@ title: "Generation of comprehensive quality control metrics with SCTK"
 output: html_document
 ---
 
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(warning = FALSE)
+```
+
 # Introduction
 
 This pipeline will import data from single-cell preprocessing algorithms (e.g. [CellRanger](https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/what-is-cell-ranger), [HCA Optimus](https://data.humancellatlas.org/pipelines/optimus-workflow), [Alevin](https://salmon.readthedocs.io/en/latest/alevin.html)), generate various quality control metrics (e.g. general metrics, doublet scores, contamination estimates) using multiple tools, and output results in standard data containers (e.g. [SingleCellExperiment](https://rdrr.io/bioc/SingleCellExperiment/man/SingleCellExperiment.html), [Seurat object](https://satijalab.org/seurat/index.html), [AnnData](https://github.com/theislab/anndata)). 

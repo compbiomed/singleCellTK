@@ -10,6 +10,7 @@ csl: ieee.csl
 ---
 ```{r develSetting, include=FALSE}
 doEval = TRUE
+knitr::opts_chunk$set(warning = FALSE)
 ```
 ## Introduction
 2D embedding algorithms (tSNE/UMAP) can be run through the **singleCellTK** toolkit using both interactive shiny application and R console. For the interactive analysis, the toolkit offers a streamlined workflow to both compute metrics for embedding and then visualize the results using interactive plots. For the console analysis, the toolkit offers a single wrapper function `runDimReduce` to compute metrics for any of the integrated algorithms. <br>

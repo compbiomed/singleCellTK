@@ -10,6 +10,7 @@ csl: ieee.csl
 ---
 ```{r develSetting, include=FALSE}
 doEval = TRUE
+knitr::opts_chunk$set(warning = FALSE)
 ```
 ## Introduction
 **singleCellTK** offers a convenient way to normalize data for downstream analysis using a number of methods available through the toolkit. The integrated normalization methods and other transformation options can be used through both R console and interactive shiny application. Normalization methods available with the toolkit include `"LogNormalize"`, `"CLR"`, `"RC"` & `"SCTransform"` from `Seurat` [@Butler2018][@Stuart2019][@Satija2017][@Hao2021] package and `"logNormCounts"` or `"CPM"` from `Scater` [@McCarthy2017] package. Additional transformation options are available for users including 'log' & 'log1p', trimming of data assays and Z-Score scaling. <br> 

@@ -4,6 +4,10 @@ author: "Yichen Wang"
 output: html_document
 ---
 
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(warning = FALSE)
+```
+
 ## Introduction
 
 Single Cell Toolkit (singleCellTK, SCTK) is a package that works on single-cell RNA-seq (scRNAseq) dataset. SCTK allows users to import multiple datasets, perform quality control and a series of preprocessing, get clustering on cells and markers of clusters, and run various downstream analysis. Meanwhile, SCTK also wraps curated workflows for [celda](https://celda.camplab.net/v1.9.2/index.html) and [Seurat](https://satijalab.org/seurat/). 
