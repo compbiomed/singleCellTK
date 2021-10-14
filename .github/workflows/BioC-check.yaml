@@ -51,4 +51,6 @@ jobs:
           library(BiocCheck)
           BiocCheck(".")
         shell: Rscript {0}
+        env:
+          CI: true
         
