@@ -215,7 +215,8 @@ cat("\n")
 for (i in seq_along(samples)) {
   cat(paste0("## ", samples[i], " {.tabset .tabset-fade} \n"))
   cat("\n\n")
-  sceColData <- colData(sce)%>% as.data.frame() %>% filter(sample == samples[i])
+  sceColData <- colData(sce) %>% as.data.frame()
+  sceColData <- sceColData[sceColData$sample == samples[i], ]
 
   idx <- list(
           'Knee'= sceColData$dropletUtils_BarcodeRank_Knee == 1,
