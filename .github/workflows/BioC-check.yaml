@@ -47,7 +47,7 @@ jobs:
         env:
           DISPLAY: 99.0
         run: |
-          BiocManager::install("BiocCheck")
+          BiocManager::install("BiocCheck", force = TRUE)
           library(BiocCheck)
           BiocCheck::BiocCheck(
               dir('check', 'tar.gz$', full.names = TRUE),
