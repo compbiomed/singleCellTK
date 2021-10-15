@@ -198,9 +198,7 @@ plotRunPerCellQCResults <- function(inSCE,
           plotLabels = "none"
         )
       })
-      names(combined.subset) <- c("Gene_Subset_Sum",
-                                  "Gene_Subset_Features",
-                                  "Gene_Subset_Top50_Percent")
+      names(combined.subset) <- subsets
       merged.plots <- c(merged.plots, combined.subset)
     } else {
       combined.subset <- NULL

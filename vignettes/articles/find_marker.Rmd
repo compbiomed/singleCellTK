@@ -9,6 +9,10 @@ bibliography: references.bib
 csl: ieee.csl
 ---
 
+```{r develSetting, include=FALSE}
+knitr::opts_chunk$set(warning = FALSE)
+```
+
 ````{=html}
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">

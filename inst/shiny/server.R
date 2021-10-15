@@ -1581,7 +1581,7 @@ shinyServer(function(input, output, session) {
   }
 
   observeEvent(input$runQC, withConsoleMsgRedirect({
-    withBusyIndicatorServer("runQC", {
+    #withBusyIndicatorServer("runQC", {
       if (!qcInputExists()) {
         insertUI(
           selector = "#qcPageErrors",
@@ -1709,7 +1709,7 @@ shinyServer(function(input, output, session) {
         # Show downstream analysis options
         callModule(module = nonLinearWorkflow, id = "nlw-qcf", parent = session, nbc = TRUE, cw = TRUE, cv = TRUE)
       }
-    })
+    #})
 
   }))
 
@@ -3407,18 +3407,19 @@ shinyServer(function(input, output, session) {
   observeEvent(input$celdamodsplit, {
     removeTab(inputId = "celdaModsplitTabset", target = "Perplexity Plot")
     removeTab(inputId = "celdaModsplitTabset", target = "Perplexity Difference Plot")
+    appendTab(inputId = "celdaModsplitTabset", tabPanel(title = "Rate of perplexity change",
+                                                        panel(heading = "RPC Plot",
+                                                              plotlyOutput(outputId = "plot_modsplit_perpdiff", height = "auto")
+                                                        )
+    ), select = TRUE)
     appendTab(inputId = "celdaModsplitTabset", tabPanel(title = "Perplexity Plot",
       panel(heading = "Perplexity Plot",
         plotlyOutput(outputId = "plot_modsplit_perp", height = "auto")
       )
-    ), select = TRUE)
-    appendTab(inputId = "celdaModsplitTabset", tabPanel(title = "Rate of perplexity change",
-      panel(heading = "RPC Plot",
-        plotlyOutput(outputId = "plot_modsplit_perpdiff", height = "auto")
-      )
     ))
+    
     withBusyIndicatorServer("celdamodsplit",{
-      if (input$celdafeatureselect == "Simple Filter"){
+      if (input$celdafeatureselect == "None"){
         vals$counts <- selectFeatures(vals$counts, minCount = input$celdarowcountsmin,
                                       minCell = input$celdacolcountsmin, useAssay = input$celdaassayselect)
       }else if(input$celdafeatureselect == "SeuratFindHVG"){
@@ -3437,14 +3438,18 @@ shinyServer(function(input, output, session) {
                                                exprs_values = input$celdaassayselect)
         }
         vals$counts <- scranModelGeneVar(vals$counts, assayName = "ScaterLogNormCounts")
-        altExp(vals$counts, "featureSubset") <- vals$counts[getTopHVG(vals$counts,
-                                                                      method = "modelGeneVar", n = input$celdafeaturenum)]
+        g <- getTopHVG(vals$counts, method = "modelGeneVar", n = input$celdafeaturenum)
+        altExp(vals$counts, "featureSubset") <- vals$counts[g, ]
+        
+        vals$counts <- selectFeatures(vals$counts[g, ], minCount = input$celdarowcountsmin,
+                                      minCell = input$celdacolcountsmin, useAssay = input$celdaassayselect, altExpName = "featureSubset")
       }
       counts(altExp(vals$counts)) <- as.matrix(counts(altExp(vals$counts)))
       updateNumericInput(session, "celdaLselect", min = input$celdaLinit, max = input$celdaLmax, value = input$celdaLinit)
       modsplit(recursiveSplitModule(vals$counts, useAssay = input$celdaassayselect, altExpName = "featureSubset",  initialL = input$celdaLinit, maxL = input$celdaLmax))
+      output$plot_modsplit_perpdiff <- renderPlotly({plotRPC(modsplit(), sep = 10)})
       output$plot_modsplit_perp <- renderPlotly({plotGridSearchPerplexity(modsplit())})
-      output$plot_modsplit_perpdiff <- renderPlotly({plotRPC(modsplit())})
+      
     })
 
     shinyjs::enable(
@@ -3487,8 +3492,9 @@ shinyServer(function(input, output, session) {
       cellsplit(recursiveSplitCell(vals$counts, useAssay = input$celdaassayselect, initialK = input$celdaKinit, maxK = input$celdaKmax,
                                         yInit = celdaModules(vals$counts)))
       temp_umap <- celdaUmap(vals$counts)
+      output$plot_cellsplit_perpdiff <- renderPlotly({plotRPC(cellsplit(), sep = 10)})
       output$plot_cellsplit_perp <- renderPlotly({plotGridSearchPerplexity(cellsplit())})
-      output$plot_cellsplit_perpdiff <- renderPlotly({plotRPC(cellsplit())})
+      
       for (i in runParams(cellsplit())$K){
         local({
           my_i <- i
@@ -3559,7 +3565,7 @@ shinyServer(function(input, output, session) {
   })
 
   observeEvent(input$celdamodheatmapbtn,{
-    output$celdamodheatmapplt <- renderPlot({moduleHeatmap(vals$counts, topCells= 100, featureModule = input$celdamodheatmapnum)})
+    output$celdamodheatmapplt <- renderPlot({moduleHeatmap(vals$counts, topCells= input$celdamodheatmaptopcells, featureModule = input$celdamodheatmapnum)})
     output$celdamodprobplt <- renderPlot({plotDimReduceModule(vals$counts, modules =  input$celdamodheatmapnum, reducedDimName = "celda_UMAP")})
     showNotification("Module heatmap complete.")
   })

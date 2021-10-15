@@ -10,6 +10,7 @@ csl: ieee.csl
 ---
 ```{r develSetting, include=FALSE}
 doEval = TRUE
+knitr::opts_chunk$set(warning = FALSE)
 ```
 ## Introduction
 **EnrichR** [@Kuleshov2016][@Chen2013] is a GSE (Gene Set Enrichment) method that infers biological knowledge by performing enrichment of input gene sets with curated biologically relevant prior databases that represent biological functions or functional pathways. The **singleCellTK** toolkit offers an easy to use interface to the EnrichR method and only requires the selection of input genes and the databases against which the genes should be tested. <br>

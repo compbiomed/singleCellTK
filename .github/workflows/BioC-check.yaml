@@ -6,7 +6,7 @@ on:
   pull_request:
     branches: [devel]
 
-name: R-CMD-check
+name: BioC-check
 
 jobs:
   R-CMD-check:
@@ -19,8 +19,6 @@ jobs:
       matrix:
         config:
           - {os: macOS-latest,   r: 'release'}
-          - {os: windows-latest, r: 'release'}
-          - {os: ubuntu-latest,   r: 'release'}
 
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
@@ -44,34 +42,15 @@ jobs:
       - name: Install XQuartz on macOS
         if: runner.os == 'macOS'
         run: brew install xquartz --cask
-        
-      - name: Check
-        env:
-          _R_CHECK_CRAN_INCOMING_: false
-        run: |
-          options(crayon.enabled = TRUE)
-          rcmdcheck::rcmdcheck(args = c("--no-manual", "--as-cran"), error_on = "warning", check_dir = "check")
-        shell: Rscript {0}
-
-      - name: Show testthat output
-        if: always()
-        run: find check -name 'testthat.Rout*' -exec cat '{}' \; || true
-        shell: bash
-
-      - name: Upload check results
-        if: failure()
-        uses: actions/upload-artifact@main
-        with:
-          name: ${{ runner.os }}-r${{ matrix.config.r }}-results
-          path: check
           
-        
-      - name: Run codecov
+      - name: Run BiocCheck
         run: |
-          install.packages("covr")
-          library(covr)
-          codecov()
+          BiocManager::install("BiocCheck")
+          library(BiocCheck)
+          BiocCheck::BiocCheck(".",
+              `quit-with-status` = TRUE,
+              `no-check-R-ver` = TRUE,
+              `no-check-bioc-help` = TRUE
+          )
         shell: Rscript {0}
-      
-      - name: Upload codecov
-        uses: codecov/codecov-action@v2.1.0
+        
