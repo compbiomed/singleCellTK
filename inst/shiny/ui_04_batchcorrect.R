@@ -1,5 +1,8 @@
 shinyPanelBatchcorrect <- fluidPage(
   includeCSS('styles.CSS'),
+  tags$script("Shiny.addCustomMessageHandler('close_dropDownBC', function(x){
+                  $('html').click();
+                });"),
   h1("Normalization & Batch Correction"),
   tabsetPanel(
   tabPanel(
@@ -41,7 +44,14 @@ shinyPanelBatchcorrect <- fluidPage(
                               column(6, style='border-right:1px solid; border-color:#EDEDED;',
                                      conditionalPanel(
                                        condition = "input.normalizeAssayMethodSelect != 'custom'",
-                                       uiOutput("normalizeAssaySelect"),
+                                       selectizeInput(
+                                         inputId = "normalizeAssaySelect", 
+                                         label = "Select input matrix:", 
+                                         choices = NULL, 
+                                         selected = NULL, 
+                                         multiple = FALSE,
+                                         options = NULL),
+                                       #uiOutput("normalizeAssaySelect"),
                                        conditionalPanel(
                                          condition = "input.normalizeAssayMethodSelect == 'LogNormalize'
                               || input.normalizeAssayMethodSelect == 'CLR'
@@ -87,7 +97,14 @@ shinyPanelBatchcorrect <- fluidPage(
                                      conditionalPanel(
                                        condition = "input.normalizeAssayMethodSelect == 'custom'",
                                        h5("Assay Options:"),
-                                       uiOutput("modifyAssaySelect"),
+                                       selectizeInput(
+                                         inputId = "modifyAssaySelect", 
+                                         label = "Select input matrix:", 
+                                         choices = NULL, 
+                                         selected = NULL, 
+                                         multiple = FALSE,
+                                         options = NULL),
+                                       #uiOutput("modifyAssaySelect"),
                                        textInput("modifyAssayOutname", "Assay Name",
                                                  value = "customNormalizedAssay"),
                                        tags$hr(),
@@ -283,7 +300,14 @@ shinyPanelBatchcorrect <- fluidPage(
                     c("ComBatSeq", "BBKNN", "FastMNN", "Limma", #"Harmony", "LIGER",
                       "MNN", "scanorama", "scMerge", "Seurat3 Integration",
                       "ZINBWaVE")),
-        uiOutput("batchCorrAssay"),
+        selectizeInput(
+          inputId = "batchCorrAssay", 
+          label = "Select input matrix:", 
+          choices = NULL, 
+          selected = NULL, 
+          multiple = FALSE,
+          options = NULL),
+        #uiOutput("batchCorrAssay"),
         selectInput("batchCorrVar", "Select Batch Annotation:", clusterChoice),
         # BBKNN ####
         conditionalPanel(
@@ -493,14 +517,33 @@ shinyPanelBatchcorrect <- fluidPage(
                   fluidRow(
                     column(
                       width = 12,
-                      uiOutput("batchCheckOrigAssay"),
+                      fluidRow(actionBttn(inputId = "closeDropDownBC", label = NULL, style = "simple", color = "danger", icon = icon("times"), size = "xs"), align = "right"),
+                      h5(tags$a(href = "https://compbiomed.github.io/sctk_docs/articles/batch_correction.html#visualization",
+                                "(What are plotted?)", target = "_blank")),
+                      selectizeInput(
+                        inputId = "batchCheckOrigAssay", 
+                        label = "Select input matrix:", 
+                        choices = NULL, 
+                        selected = NULL, 
+                        multiple = FALSE,
+                        options = NULL),
+                      #uiOutput("batchCheckOrigAssay"),
+                      #selectInput("batchCheckOrigAssay", "Original Assay:", currassays),
                       selectInput("batchCheckVar", "Batch Annotation:", clusterChoice),
                       selectInput("batchCheckCond", "Additional Condition (optional)",
                                   clusterChoice),
                       p("Only result generated in the current session will be presented. ",
                         style = "color:grey;"),
                       uiOutput("batchCheckResUI"),
-                      withBusyIndicatorUI(actionButton("plotBatchCheck", "Plot"))
+                      withBusyIndicatorUI(
+                        actionBttn(
+                        inputId = "plotBatchCheck",
+                        label = "Update",
+                        style = "bordered",
+                        color = "primary",
+                        size = "sm"
+                      )
+                      )
                     )
                   ),
                   inputId = "dropDownBC",

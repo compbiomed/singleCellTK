@@ -1,5 +1,8 @@
 # User Interface for Seurat Workflow ---
 shinyPanelSeurat <- fluidPage(
+    tags$script("Shiny.addCustomMessageHandler('close_dropDownSeuratHM', function(x){
+                  $('html').click();
+                });"),
     h1("Seurat"),
     h5(tags$a(href = paste0(docs.artPath, "cnsl_seurat_curated_workflow.html"),
               "(help)", target = "_blank")),
@@ -26,7 +29,14 @@ shinyPanelSeurat <- fluidPage(
                 fluidRow(
                     column(4,
                         panel(heading = "Options",
-                            uiOutput("seuratSelectNormalizationAssay"),
+                              selectizeInput(
+                                  inputId = "seuratSelectNormalizationAssay", 
+                                  label = "Select input matrix:", 
+                                  choices = NULL, 
+                                  selected = NULL, 
+                                  multiple = FALSE,
+                                  options = NULL),
+                            #uiOutput("seuratSelectNormalizationAssay"),
                             selectInput(inputId = "normalization_method", label = "Select normalization method: ", choices = c("LogNormalize", "CLR", "RC")),
                             textInput(inputId = "scale_factor", label = "Set scaling factor: ", value = "10000"),
                             actionButton(inputId = "normalize_button", "Normalize")
@@ -40,7 +50,7 @@ shinyPanelSeurat <- fluidPage(
                 fluidRow(
                     column(4,
                         panel(heading = "Options",
-                            selectInput(inputId = "model.use", label = "Select model for scaling: ", choices = c("linear", "poisson", "negbinom")),
+                            #selectInput(inputId = "model.use", label = "Select model for scaling: ", choices = c("linear", "poisson", "negbinom")),
                             materialSwitch(inputId = "do.scale", label = "Scale data?", value = TRUE),
                             materialSwitch(inputId = "do.center", label = "Center data?", value = TRUE),
                             textInput(inputId = "scale.max", label = "Max value for scaled data: ", value = "10"),
@@ -332,11 +342,11 @@ shinyPanelSeurat <- fluidPage(
                                                                          fluidRow(
                                                                            column(12, align = "center",
                                                                                                panel(
-                                                                                                   numericInput("findMarkerHeatmapPlotFullNumeric", value = 10, max = 100, min = 2, step = 1, label = "Select number of top genes from each cluster/group to visualize in the heatmap below based on highest average log fold change value:"),
+                                                                                                   numericInput("findMarkerHeatmapPlotFullNumeric", value = 10, max = 2000, min = 2, step = 1, label = "Select number of top genes from each cluster/group to visualize in the heatmap below based on highest average log fold change value:"),
                                                                                                    actionButton("findMarkerHeatmapPlotFullNumericRun", label = "Plot"),
                                                                                                    hr(),
                                                                                                    shinyjqui::jqui_resizable(
-                                                                                                       plotOutput(outputId = "findMarkerHeatmapPlotFull")
+                                                                                                       plotOutput(outputId = "findMarkerHeatmapPlotFull", height = "500px")
                                                                                                    )
                                                                                                )
                                                                            )

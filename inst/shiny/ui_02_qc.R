@@ -167,7 +167,14 @@ shinyPanelQC <- fluidPage(
           ),
           tags$hr(),
           h4("General Parameters"),
-          uiOutput("qcAssaySelect"),
+          selectizeInput(
+            inputId = "qcAssaySelect", 
+            label = "Select input matrix:", 
+            choices = NULL, 
+            selected = NULL, 
+            multiple = FALSE,
+            options = NULL),
+          #uiOutput("qcAssaySelect"),
           #selectInput("qcAssaySelect", "Select an Assay", list()),
           selectInput("qcSampleSelect", "Select variable containing sample labels", list()),
 

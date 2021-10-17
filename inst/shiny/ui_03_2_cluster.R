@@ -1,4 +1,7 @@
 shinyPanelCluster <- fluidPage(
+  tags$script("Shiny.addCustomMessageHandler('close_dropDownClust', function(x){
+                  $('html').click();
+                });"),
   tags$div(
     class = "container",
     h1("Clustering"),
@@ -27,7 +30,14 @@ shinyPanelCluster <- fluidPage(
           "input.clustAlgo >=1 && input.clustAlgo <= 6",
           column(
             6,
-            uiOutput('clustScranSNNMat'),
+            selectizeInput(
+              inputId = "clustScranSNNMat", 
+              label = "Select input matrix:", 
+              choices = NULL, 
+              selected = NULL, 
+              multiple = FALSE,
+              options = NULL),
+            #uiOutput('clustScranSNNMat'),
           ),
           column(
             4,
@@ -119,6 +129,7 @@ shinyPanelCluster <- fluidPage(
             fluidRow(
               column(
                 width = 12,
+                fluidRow(actionBttn(inputId = "closeDropDownClust", label = NULL, style = "simple", color = "danger", icon = icon("times"), size = "xs"), align = "right"),
                 radioButtons("clustVisChoicesType", NULL,
                              c("Select from Current Results:" = 1,
                                "Select from All Present Annotation:" = 2),
@@ -132,7 +143,15 @@ shinyPanelCluster <- fluidPage(
                   selectInput("clustVisCol", NULL, clusterChoice)
                 ),
                 selectInput("clustVisReddim", "Use Reduction:", currreddim),
-                withBusyIndicatorUI(actionButton("clustPlot", "Plot")),
+                withBusyIndicatorUI(
+                  actionBttn(
+                    inputId = "clustPlot",
+                    label = "Update",
+                    style = "bordered",
+                    color = "primary",
+                    size = "sm"
+                  )
+                  )
               )
             ),
             inputId = "dropDownClust",
