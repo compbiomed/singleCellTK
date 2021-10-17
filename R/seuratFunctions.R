@@ -593,7 +593,8 @@ seuratRunTSNE <- function(inSCE, useReduction = c("pca", "ica"),
   }
   
   seuratObject <- Seurat::RunTSNE(seuratObject, reduction = useReduction,
-                                  dims = seq(dims), perplexity = perplexity)
+                                  dims = seq(dims), perplexity = perplexity,
+                                  check_duplicates = FALSE)
   inSCE <- .addSeuratToMetaDataSCE(inSCE, seuratObject)
   temp <- seuratObject@reductions$tsne@cell.embeddings
   rownames(temp) <- colnames(inSCE)
@@ -1158,7 +1159,7 @@ seuratSCTransform <- function(inSCE, normAssayName = "SCTCounts",
 #' @param useAssay Assay to batch-correct.
 #' @param batch Batch variable from \code{colData} slot of
 #' \code{SingleCellExperiment} object.
-#' @param newAssayName Assay name for the batch-corrected ouput assay.
+#' @param newAssayName Assay name for the batch-corrected output assay.
 #' @param kAnchor Number of neighbours to use for finding the anchors in the
 #' \link[Seurat]{FindIntegrationAnchors} function.
 #' @param kFilter Number of neighbours to use for filtering the anchors in the
@@ -1500,9 +1501,10 @@ seuratGenePlot <- function(inSCE,
     markers.combined <- cbind(markers.combined, combined.pval)
     markers.combined <- markers.combined[order(markers.combined[, paste0(meta.method.name, "_p_val")]), ]
   }
+  lfcCol <- colnames(markers.combined)[grep(paste0(ident.1, "_avg"), colnames(markers.combined))]
   markers.combined <- markers.combined[, c(
     paste0(ident.1, "_p_val"),
-    paste0(ident.1, "_avg_logFC"),
+    lfcCol,
     paste0(ident.1, "_pct.1"),
     paste0(ident.1, "_pct.2"),
     paste0("_p_val"))]
