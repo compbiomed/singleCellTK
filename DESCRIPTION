@@ -126,6 +126,6 @@ Suggests:
     shinyFiles,
     BiocGenerics
 VignetteBuilder: knitr
-URL: https://compbiomed.github.io/sctk_docs/
+URL: https://www.camplab.net/sctk/
 BugReports: https://github.com/compbiomed/singleCellTK/issues
 Language: en-US

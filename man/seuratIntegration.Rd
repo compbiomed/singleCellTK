@@ -25,7 +25,7 @@ to batch-correct.}
 \item{batch}{Batch variable from \code{colData} slot of
 \code{SingleCellExperiment} object.}
 
-\item{newAssayName}{Assay name for the batch-corrected ouput assay.}
+\item{newAssayName}{Assay name for the batch-corrected output assay.}
 
 \item{kAnchor}{Number of neighbours to use for finding the anchors in the
 \link[Seurat]{FindIntegrationAnchors} function.}

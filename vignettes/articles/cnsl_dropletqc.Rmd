@@ -248,8 +248,15 @@ plot(cowplot::plot_grid(p1, p2, ncol = 2))
 
 <br />
 
-# Session Information
+````{=html}
+ <details>
+ <summary><b>Session Information</b></summary>
+````
 
 ```{r}
 sessionInfo()
 ```
+
+````{=html}
+</details>
+````

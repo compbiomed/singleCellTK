@@ -867,11 +867,17 @@ for (sample in samples){
 ```
 `r cat("\n")`
 
-# Session Info
+````{=html}
+ <details>
+ <summary><b>Session Information</b></summary>
+````
+
 ```{r "CellQC-session-info", echo=FALSE}
 sessionInfo()
 ```
 
-
+````{=html}
+</details>
+````
 
 
