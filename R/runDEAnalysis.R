@@ -835,7 +835,7 @@ runWilcox <- function(inSCE, useAssay = 'logcounts', index1 = NULL,
                     Log2_FC = table$Log2_FC,
                     Pvalue = table$p.value,
                     FDR = table$FDR)
-
+  rownames(deg) <- NULL
   # Result Filtration
   if(isTRUE(onlyPos)){
     deg <- deg[deg$Log2_FC > 0,]
