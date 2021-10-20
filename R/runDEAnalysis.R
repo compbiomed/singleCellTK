@@ -258,7 +258,8 @@ runDESeq2 <- function(inSCE, useAssay = 'counts', index1 = NULL,
     }
     res <- DESeq2::results(dds, pAdjustMethod = 'fdr')
     deg <- data.frame(res)[,c(-1, -3, -4)]
-    deg <- cbind(data.frame(Gene = rownames(deg), stringsAsFactors = FALSE),
+    deg <- cbind(data.frame(Gene = as.character(rownames(deg)), 
+                            stringsAsFactors = FALSE),
                  deg)
     rownames(deg) <- NULL
     colnames(deg) <- c('Gene', 'Log2_FC', 'Pvalue', 'FDR')
@@ -389,7 +390,8 @@ runLimmaDE <- function(inSCE, useAssay = 'logcounts', index1 = NULL,
     deg <- limma::topTable(ebayes, coef = coef, adjust = 'fdr',
                            number = nrow(inSCE))
     deg <- deg[,c(-2, -3, -6)]
-    deg <- cbind(data.frame(Gene = rownames(deg), stringsAsFactors = FALSE),
+    deg <- cbind(data.frame(Gene = as.character(rownames(deg)), 
+                            stringsAsFactors = FALSE),
                  deg)
     rownames(deg) <- NULL
     colnames(deg) <- c("Gene", "Log2_FC", "Pvalue", "FDR")
@@ -538,11 +540,11 @@ runANOVA <- function(inSCE, useAssay = 'logcounts', index1 = NULL,
     rss0 <- resid0 ^ 2 %*% rep(1, n)
     fstats <- ((rss0 - rss1) / (df1 - df0)) / (rss1 / (n - df1))
     p <- 1 - stats::pf(fstats, df1 = (df1 - df0), df2 = (n - df1))
-    deg <- data.frame(Gene = rownames(dat), Log2_FC =NA, p.value = p,
-                      padj = stats::p.adjust(p, method = 'fdr'),
+    deg <- data.frame(Gene = as.character(rownames(dat)), 
+                      Log2_FC =NA, Pvalue = p,
+                      FDR = stats::p.adjust(p, method = 'fdr'),
                       stringsAsFactors = FALSE)
     rownames(deg) <- NULL
-    colnames(deg) <- c("Gene", "Log2_FC", "Pvalue", "FDR")
     cond1.assay <- expData(inSCE[,ix1], useAssay)
     cond2.assay <- expData(inSCE[,ix2], useAssay)
     deg$Log2_FC <- rowMeans(cond1.assay) - rowMeans(cond2.assay)
@@ -721,6 +723,7 @@ runMAST <- function(inSCE, useAssay = 'logcounts', index1 = NULL,
     fcHurdleSig <- fcHurdleSig[, -c(4, 5)]
     names(fcHurdleSig)[c(1, 2, 3, 4)] <- c("Gene", "Pvalue",
                                            "Log2_FC", "FDR")
+    fcHurdleSig$Gene <- as.character(fcHurdleSig$Gene)
     fcHurdleSig <- fcHurdleSig[order(fcHurdleSig$FDR, na.last = TRUE),
     ]
     # Format output
@@ -828,7 +831,7 @@ runWilcox <- function(inSCE, useAssay = 'logcounts', index1 = NULL,
   cond2.assay <- expData(inSCE, useAssay)[rownames(table), ix2]
   table$Log2_FC <- rowMeans(cond1.assay) - rowMeans(cond2.assay)
 
-  deg <- data.frame(Gene = rownames(table),
+  deg <- data.frame(Gene = as.character(rownames(table)),
                     Log2_FC = table$Log2_FC,
                     Pvalue = table$p.value,
                     FDR = table$FDR)
