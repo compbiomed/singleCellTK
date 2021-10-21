@@ -28,7 +28,7 @@ test_that(desc = "Testing MAST DE", {
   testthat::expect_true("aVSbMAST" %in% names(metadata(sceBatches)$diffExp))
 })
 
-test_that(desc = "Testing MAST DE", {
+test_that(desc = "Testing DESeq2 DE", {
   sceBatches <- runDESeq2(inSCE = sceBatches,
                           class = "cell_type",
                           classGroup1 = "alpha", classGroup2 = "beta",
@@ -39,7 +39,7 @@ test_that(desc = "Testing MAST DE", {
   testthat::expect_true("aVSbDESeq2" %in% names(metadata(sceBatches)$diffExp))
 })
 
-test_that(desc = "Testing MAST DE", {
+test_that(desc = "Testing ANOVA DE", {
   sceBatches <- runANOVA(inSCE = sceBatches,
                          class = "cell_type",
                          classGroup1 = "alpha", classGroup2 = "beta",
@@ -50,7 +50,7 @@ test_that(desc = "Testing MAST DE", {
   testthat::expect_true("aVSbANOVA" %in% names(metadata(sceBatches)$diffExp))
 })
 
-test_that(desc = "Testing MAST DE", {
+test_that(desc = "Testing Wilcoxon DE", {
   sceBatches <- runWilcox(inSCE = sceBatches,
                           class = "cell_type",
                           classGroup1 = "alpha", classGroup2 = "beta",
@@ -59,6 +59,16 @@ test_that(desc = "Testing MAST DE", {
 
   testthat::expect_true("diffExp" %in% names(metadata(sceBatches)))
   testthat::expect_true("aVSbWilcox" %in% names(metadata(sceBatches)$diffExp))
+
+  # Also Plotting functions at this point
+  hm <- plotDEGHeatmap(sceBatches, "aVSbWilcox")
+  testthat::expect_is(hm, "HeatmapList")
+
+  pR <- plotDEGRegression(sceBatches, "aVSbWilcox")
+  testthat::expect_is(pR, "ggplot")
+
+  pV <- plotDEGViolin(sceBatches, "aVSbWilcox")
+  testthat::expect_is(pV, "ggplot")
 })
 
 test_that(desc = "Testing findMarker", {
@@ -66,5 +76,14 @@ test_that(desc = "Testing findMarker", {
                                   cluster = "cell_type")
 
   testthat::expect_true("findMarker" %in% names(metadata(sceBatches)))
-  testthat::expect_true(nrow(metadata(sceBatches)$findMarker) > 0)
+
+  topTable <- findMarkerTopTable(sceBatches)
+  testthat::expect_is(topTable, "data.frame")
+  testthat::expect_named(topTable, c("Gene", "Log2_FC", "Pvalue", "FDR",
+                                     "cell_type", "clusterExprPerc",
+                                     "ControlExprPerc", "clusterAveExpr"))
+  testthat::expect_gt(nrow(topTable), 0)
+
+  hmFM <- plotMarkerDiffExp(sceBatches)
+  testthat::expect_is(hmFM, "HeatmapList")
 })

@@ -228,7 +228,7 @@ runDESeq2 <- function(inSCE, useAssay = 'counts', index1 = NULL,
     conditions[ix1] <- 'cond1'
     conditions[ix2] <- 'cond2'
     conditions <- conditions[!is.na(conditions)]
-    annotData <- data.frame(condition = conditions,
+    annotData <- data.frame(condition = factor(conditions),
                             row.names = colnames(inSCE)[subsetIdx])
     cov <- SummarizedExperiment::colData(inSCE)[subsetIdx, covariates,
                                                 drop = FALSE]
@@ -258,7 +258,7 @@ runDESeq2 <- function(inSCE, useAssay = 'counts', index1 = NULL,
     }
     res <- DESeq2::results(dds, pAdjustMethod = 'fdr')
     deg <- data.frame(res)[,c(-1, -3, -4)]
-    deg <- cbind(data.frame(Gene = as.character(rownames(deg)), 
+    deg <- cbind(data.frame(Gene = as.character(rownames(deg)),
                             stringsAsFactors = FALSE),
                  deg)
     rownames(deg) <- NULL
@@ -390,7 +390,7 @@ runLimmaDE <- function(inSCE, useAssay = 'logcounts', index1 = NULL,
     deg <- limma::topTable(ebayes, coef = coef, adjust = 'fdr',
                            number = nrow(inSCE))
     deg <- deg[,c(-2, -3, -6)]
-    deg <- cbind(data.frame(Gene = as.character(rownames(deg)), 
+    deg <- cbind(data.frame(Gene = as.character(rownames(deg)),
                             stringsAsFactors = FALSE),
                  deg)
     rownames(deg) <- NULL
@@ -540,7 +540,7 @@ runANOVA <- function(inSCE, useAssay = 'logcounts', index1 = NULL,
     rss0 <- resid0 ^ 2 %*% rep(1, n)
     fstats <- ((rss0 - rss1) / (df1 - df0)) / (rss1 / (n - df1))
     p <- 1 - stats::pf(fstats, df1 = (df1 - df0), df2 = (n - df1))
-    deg <- data.frame(Gene = as.character(rownames(dat)), 
+    deg <- data.frame(Gene = as.character(rownames(dat)),
                       Log2_FC =NA, Pvalue = p,
                       FDR = stats::p.adjust(p, method = 'fdr'),
                       stringsAsFactors = FALSE)
