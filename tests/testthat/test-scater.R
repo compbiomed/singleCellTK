@@ -8,14 +8,14 @@ sce <- sce[, -zeroCols]
 
 test_that(desc = "Testing scaterCPM", {
   sce <- scaterCPM(sce)
-  
+
   testthat::expect_true("ScaterCPMCounts" %in% assayNames(sce))
 })
 
 test_that(desc = "Testing scaterLogNormCounts & scaterPCA", {
   sce <- scaterlogNormCounts(sce, useAssay = "counts", assayName = "logNormCounts")
   sce <- scaterPCA(sce, useAssay = "logNormCounts")
-  
+
   testthat::expect_true("logNormCounts" %in% assayNames(sce))
   testthat::expect_true("PCA" %in% reducedDimNames(sce))
 })
