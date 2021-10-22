@@ -70,6 +70,7 @@ jobs:
           options(crayon.enabled = TRUE)
           reticulate::use_python("/opt/hostedtoolcache/Python/3.8.12/x64/bin/python")
           reticulate::py_config()
+          reticulate::import("bbknn")
           rcmdcheck::rcmdcheck(args = c("--no-manual", "--as-cran"), error_on = "warning", check_dir = "check")
         shell: Rscript {0}
 
