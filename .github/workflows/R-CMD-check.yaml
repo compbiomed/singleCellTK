@@ -41,6 +41,7 @@ jobs:
         with:
           packages: |
             bbknn
+            pandas
             
       - name: isPythonInstalled
         if: always()
