@@ -16,7 +16,7 @@
 #' coordinates obtained from this method. Default \code{"UMAP"}.
 #' @param logNorm Whether the counts will need to be log-normalized prior to
 #' generating the UMAP via \code{\link{logNormCounts}}. Will not normalize when
-#' using \code{useReducedDim}. Default \code{FALSE}.
+#' using \code{useReducedDim}. Default \code{TRUE}.
 #' @param nNeighbors The size of local neighborhood used for manifold
 #' approximation. Larger values result in more global views of the manifold,
 #' while smaller values result in more local data being preserved. Default
@@ -37,6 +37,8 @@
 #' UMAP. Will not perform PCA if using \code{useReducedDim}. Default \code{TRUE}
 #' @param initialDims  Number of dimensions from PCA to use as input in UMAP.
 #' Default \code{50}.
+#' @param nTop Number of features with the highest variances to use for
+#' dimensionality reduction. Default \code{2000}.
 #' @return A \linkS4class{SingleCellExperiment} object with UMAP computation
 #' updated in \code{reducedDim(inSCE, reducedDimName)}.
 #' @export
@@ -46,9 +48,9 @@
 #' sce <- getUMAP(inSCE = sce, useAssay = "counts", reducedDimName = "UMAP")
 getUMAP <- function(inSCE, useAssay = "counts", useAltExp = NULL,
                     useReducedDim = NULL, sample = NULL,
-                    reducedDimName = "UMAP", logNorm = FALSE, nNeighbors = 30,
+                    reducedDimName = "UMAP", logNorm = TRUE, nNeighbors = 30,
                     nIterations = 200, alpha = 1, minDist = 0.5, spread = 5,
-                    pca = TRUE, initialDims = 50) {
+                    pca = TRUE, initialDims = 50, nTop = 2000) {
   if (!inherits(inSCE, "SingleCellExperiment")){
     stop("Please use a SingleCellExperiment object")
   }
@@ -135,7 +137,7 @@ getUMAP <- function(inSCE, useAssay = "counts", useAltExp = NULL,
                           learning_rate = alpha,
                           min_dist = minDist, spread = spread,
                           n_sgd_threads = 1, pca = doPCA,
-                          n_epochs = nIterations)
+                          n_epochs = nIterations, ntop = nTop)
     if (is.null(rownames(sceSample))) {
       rownames(umapRes) <- colnames(sceSample)
     }
