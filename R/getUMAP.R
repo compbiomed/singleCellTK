@@ -105,6 +105,7 @@ getUMAP <- function(inSCE, useAssay = "counts", useAltExp = NULL,
   for (i in seq_along(samples)){
     sceSampleInd <- sample == samples[i]
     sceSample <- sce[, sceSampleInd]
+
     if (!is.null(useAssay)) {
       useAssayTemp <- useAssay
       if(logNorm){
