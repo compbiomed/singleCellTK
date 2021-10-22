@@ -44,7 +44,9 @@ jobs:
             
       - name: isPythonInstalled
         if: always()
-        run: python3 --version
+        run: |
+          python3 --version
+          which python
         shell: bash
 
       - uses: r-lib/actions/setup-r@v1
