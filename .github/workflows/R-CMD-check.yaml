@@ -37,10 +37,10 @@ jobs:
           python-version: '3.x'
           
       - name: Pip Installer
-          uses: BSFishy/pip-action@v1
-          with:
-            packages: |
-              bbknn
+        uses: BSFishy/pip-action@v1
+        with:
+          packages: |
+            bbknn
 
       - uses: r-lib/actions/setup-r@v1
         with:
