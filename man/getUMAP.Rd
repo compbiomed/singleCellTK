@@ -12,14 +12,15 @@ getUMAP(
   useReducedDim = NULL,
   sample = NULL,
   reducedDimName = "UMAP",
-  logNorm = FALSE,
+  logNorm = TRUE,
   nNeighbors = 30,
   nIterations = 200,
   alpha = 1,
   minDist = 0.5,
   spread = 5,
   pca = TRUE,
-  initialDims = 50
+  initialDims = 50,
+  nTop = 2000
 )
 }
 \arguments{
@@ -44,7 +45,7 @@ coordinates obtained from this method. Default \code{"UMAP"}.}
 
 \item{logNorm}{Whether the counts will need to be log-normalized prior to
 generating the UMAP via \code{\link{logNormCounts}}. Will not normalize when
-using \code{useReducedDim}. Default \code{FALSE}.}
+using \code{useReducedDim}. Default \code{TRUE}.}
 
 \item{nNeighbors}{The size of local neighborhood used for manifold
 approximation. Larger values result in more global views of the manifold,
@@ -72,6 +73,9 @@ UMAP. Will not perform PCA if using \code{useReducedDim}. Default \code{TRUE}}
 
 \item{initialDims}{Number of dimensions from PCA to use as input in UMAP.
 Default \code{50}.}
+
+\item{nTop}{Number of features with the highest variances to use for
+dimensionality reduction. Default \code{2000}.}
 }
 \value{
 A \linkS4class{SingleCellExperiment} object with UMAP computation
