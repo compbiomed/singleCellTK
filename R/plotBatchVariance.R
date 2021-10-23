@@ -99,8 +99,8 @@
 #' @export
 #' @author Yichen Wang
 plotBatchCorrCompare <- function(inSCE, corrMat, batch = NULL, condition = NULL,
-                                 origAssay = NULL, origLogged = NULL, method = NULL,
-                                 matType = NULL) {
+                                 origAssay = NULL, origLogged = NULL,
+                                 method = NULL, matType = NULL) {
   if(!inherits(inSCE, "SingleCellExperiment")){
     stop("\"inSCE\" should be a SingleCellExperiment Object.")
   }
@@ -144,8 +144,12 @@ plotBatchCorrCompare <- function(inSCE, corrMat, batch = NULL, condition = NULL,
                                                  method)) +
       ggplot2::theme(text=ggplot2::element_text(size=10))
 
-
-    inSCE <- getUMAP(inSCE, useAssay = corrMat, reducedDimName = "umap.after")
+    if (method == "ComBatSeq") {
+      inSCE <- getUMAP(inSCE, useAssay = corrMat, reducedDimName = "umap.after")
+    } else {
+      inSCE <- getUMAP(inSCE, useAssay = corrMat, reducedDimName = "umap.after",
+                       logNorm = FALSE)
+    }
   } else if (matType == "altExp") {
     # Doing log, because only Seurat returns altExp,
     # and the assay inside is not logged
