@@ -212,7 +212,7 @@
   }
 
   if ("assayType" %in% metaNames) {
-    assayType <- lapply(SCE_list, function(x){metadata(x)$assayType})
+    assayType <- lapply(SCE_list, function(x){S4Vectors::metadata(x)$assayType})
     assayType <- Reduce(intersect, assayType)
     
     NewMeta[["assayType"]] <- assayType
