@@ -92,6 +92,7 @@ findMarkerDiffExp <- function(inSCE, useAssay = 'logcounts',
   for(c in uniqClust){
     degTable <-
       S4Vectors::metadata(inSCE)$diffExp[[paste0('findMarker', c)]]$result
+    degTable$Gene <- as.character(degTable$Gene)
     if (nrow(degTable) > 0) {
       degTable[[clusterName]] <- c
       if(is.null(degFull)){
@@ -201,6 +202,7 @@ findMarkerTopTable <- function(inSCE, log2fcThreshold = 1,
           colnames(degFull)[seq_len(4)])){
     stop('"findMarker" result cannot be interpreted properly')
   }
+  degFull$Gene <- as.character(degFull$Gene)
   if(length(which(!degFull$Gene %in% rownames(inSCE))) > 0){
     # Remove genes happen in deg table but not in sce. Weird.
     degFull <- degFull[-which(!degFull$Gene %in% rownames(inSCE)),]
