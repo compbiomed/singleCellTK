@@ -42,6 +42,13 @@ jobs:
           packages: |
             bbknn
             pandas
+            scanorama
+            scipy 
+            numpy 
+            astroid 
+            six 
+            scrublet 
+            scanpy
             
       - name: isPythonInstalled
         if: always()
