@@ -7,7 +7,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>expTaggedData
-Returns a list of names of data items from the input SingleCellExperiment object based upon the input parameters. — expTaggedData • singleCellTK</title>
+Returns a list of names of data items from the 
+input SingleCellExperiment object based upon the input parameters. — expTaggedData • singleCellTK</title>
 
 
 <!-- jquery -->
@@ -43,9 +44,11 @@ Returns a list of names of data items from the input SingleCellExperiment object
   <script src="../extra.js"></script>
 
 <meta property="og:title" content="expTaggedData
-Returns a list of names of data items from the input SingleCellExperiment object based upon the input parameters. — expTaggedData" />
+Returns a list of names of data items from the 
+input SingleCellExperiment object based upon the input parameters. — expTaggedData" />
 <meta property="og:description" content="expTaggedData
-Returns a list of names of data items from the input SingleCellExperiment object based upon the input parameters." />
+Returns a list of names of data items from the 
+input SingleCellExperiment object based upon the input parameters." />
 
 
 
@@ -77,7 +80,7 @@ Returns a list of names of data items from the input SingleCellExperiment object
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.2.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.3.2</span>
       </span>
     </div>
 
@@ -262,17 +265,25 @@ Returns a list of names of data items from the input SingleCellExperiment object
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>expTaggedData
-Returns a list of names of data items from the input <code>SingleCellExperiment</code> object based upon the input parameters.</h1>
+Returns a list of names of data items from the 
+input <code>SingleCellExperiment</code> object based upon the input parameters.</h1>
     <small class="dont-index">Source: <a href='https://github.com/compbiomed/singleCellTK/blob/master/R/sctkTagging.R'><code>R/sctkTagging.R</code></a></small>
     <div class="hidden name"><code>expTaggedData.Rd</code></div>
     </div>
 
     <div class="ref-description">
     <p>expTaggedData
-Returns a list of names of data items from the input <code>SingleCellExperiment</code> object based upon the input parameters.</p>
+Returns a list of names of data items from the 
+input <code>SingleCellExperiment</code> object based upon the input parameters.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>expTaggedData</span><span class='op'>(</span><span class='va'>inSCE</span>, tags <span class='op'>=</span> <span class='cn'>NULL</span>, redDims <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>expTaggedData</span><span class='op'>(</span>
+  <span class='va'>inSCE</span>,
+  tags <span class='op'>=</span> <span class='cn'>NULL</span>,
+  redDims <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  recommended <span class='op'>=</span> <span class='cn'>NULL</span>,
+  showTags <span class='op'>=</span> <span class='cn'>TRUE</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -283,17 +294,32 @@ Returns a list of names of data items from the input <code>SingleCellExperiment<
     </tr>
     <tr>
       <th>tags</th>
-      <td><p>A <code><a href='https://rdrr.io/r/base/character.html'>character()</a></code> value indicating if the data items should be returned separated by the specified tags. Default is <code>NULL</code> indicating that returned names of the data items are simply returned as a list with default tag as "uncategorized".</p></td>
+      <td><p>A <code><a href='https://rdrr.io/r/base/character.html'>character()</a></code> value indicating if the data items should 
+be returned separated by the specified tags. Default is <code>NULL</code> 
+indicating that returned names of the data items are simply returned as a 
+list with default tag as "uncategorized".</p></td>
     </tr>
     <tr>
       <th>redDims</th>
-      <td><p>A <code>logical</code> value indicating if <code>reducedDims</code> should be returned as well separated with 'redDims' tag.</p></td>
+      <td><p>A <code>logical</code> value indicating if <code>reducedDims</code> 
+should be returned as well separated with 'redDims' tag.</p></td>
+    </tr>
+    <tr>
+      <th>recommended</th>
+      <td><p>A <code><a href='https://rdrr.io/r/base/character.html'>character()</a></code> vector indicating the tags that 
+should be displayed as recommended. Default is <code>NULL</code>.</p></td>
+    </tr>
+    <tr>
+      <th>showTags</th>
+      <td><p>A <code>logical</code> value indicating if the tags should be 
+shown. If <code>FALSE</code>, output is just a simple list, not separated by tags.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A <code>list</code> of names of data items specfied by the other parameters.</p>
+    <p>A <code>list</code> of names of data items specified by the other 
+parameters.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

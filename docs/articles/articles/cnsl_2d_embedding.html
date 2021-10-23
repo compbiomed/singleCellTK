@@ -32,7 +32,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.2.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.3.2</span>
       </span>
     </div>
 
@@ -213,7 +213,7 @@
 
       
 
-      </header><script src="cnsl_2d_embedding_files/header-attrs-2.7/header-attrs.js"></script><div class="row">
+      </header><script src="cnsl_2d_embedding_files/header-attrs-2.9/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>2D Embedding</h1>
@@ -308,7 +308,7 @@
 <span class="fu"><a href="../../reference/plotDimRed.html">plotDimRed</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useReduction <span class="op">=</span> <span class="st">"redDimUMAP"</span>, xAxisLabel <span class="op">=</span> <span class="st">"UMAP_1"</span>, yAxisLabel <span class="op">=</span> <span class="st">"UMAP_2"</span><span class="op">)</span></code></pre></div>
 <details><summary><b>Example</b></summary><div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R">  <span class="co"># Load singleCellTK &amp; pbmc3k example data</span>
-  <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://compbiomed.github.io/sctk_docs/">singleCellTK</a></span><span class="op">)</span>
+  <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://www.camplab.net/sctk/">singleCellTK</a></span><span class="op">)</span>
   <span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/importExampleData.html">importExampleData</a></span><span class="op">(</span>dataset <span class="op">=</span> <span class="st">"pbmc3k"</span><span class="op">)</span>
   <span class="co"># Perform Normalization</span>
   <span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/runNormalization.html">runNormalization</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, normalizationMethod <span class="op">=</span> <span class="st">"LogNormalize"</span>, useAssay <span class="op">=</span> <span class="st">"counts"</span>, outAssayName <span class="op">=</span> <span class="st">"LogNormalizedScaledCounts"</span>, scale <span class="op">=</span> <span class="cn">TRUE</span>, trim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="op">-</span><span class="fl">10</span><span class="op">)</span><span class="op">)</span>

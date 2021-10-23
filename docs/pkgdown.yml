@@ -3,6 +3,7 @@ pkgdown: 1.6.1
 pkgdown_sha: ~
 articles:
   articles/batch_correction: batch_correction.html
+  articles/celdaAnalysis: celdaAnalysis.html
   articles/cell_type_labeling: cell_type_labeling.html
   articles/clustering: clustering.html
   articles/cmd_import_scRNAseq_data_as_SCE: cmd_import_scRNAseq_data_as_SCE.html
@@ -31,5 +32,5 @@ articles:
   articles/ui_qc: ui_qc.html
   articles/visualization: visualization.html
   singleCellTK: singleCellTK.html
-last_built: 2021-10-10T15:10Z
+last_built: 2021-10-23T21:13Z
 

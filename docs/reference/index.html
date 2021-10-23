@@ -73,7 +73,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.2.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.3.2</span>
       </span>
     </div>
 
@@ -1195,12 +1195,6 @@ The computeHeatmap method computes the heatmap visualization for a set
  of features against a set of dimensionality reduction components. This
  method uses the heatmap computation algorithm code from <code>Seurat</code> but
  plots the heatmap using <code>ComplexHeatmap</code> and <code>cowplot</code> libraries.</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="runSeurat.html">runSeurat()</a></code> </p>
-        </td>
-        <td><p>A wrapper function run complete Seurat workflow.</p></td>
       </tr>
     </tbody><tbody>
       <tr>
@@ -1229,6 +1223,12 @@ The computeHeatmap method computes the heatmap visualization for a set
       </tr><tr>
         
         <td>
+          <p><code><a href="plotBatchCorrCompare.html">plotBatchCorrCompare()</a></code> </p>
+        </td>
+        <td><p>Plot comparison of batch corrected result against original assay</p></td>
+      </tr><tr>
+        
+        <td>
           <p><code><a href="plotBatchVariance.html">plotBatchVariance()</a></code> </p>
         </td>
         <td><p>Plot the percent of the variation that is explained by batch and condition
@@ -1239,13 +1239,6 @@ in the data</p></td>
           <p><code><a href="plotBcdsResults.html">plotBcdsResults()</a></code> </p>
         </td>
         <td><p>Plots for runBcds outputs.</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="plotBiomarker.html">plotBiomarker()</a></code> </p>
-        </td>
-        <td><p>Given a set of genes, return a ggplot of expression
-values.</p></td>
       </tr><tr>
         
         <td>
@@ -1641,7 +1634,8 @@ Set tag to an assay or a data item in the input SCE object.</p></td>
           <p><code><a href="expTaggedData.html">expTaggedData()</a></code> </p>
         </td>
         <td><p>expTaggedData
-Returns a list of names of data items from the input <code>SingleCellExperiment</code> object based upon the input parameters.</p></td>
+Returns a list of names of data items from the 
+input <code>SingleCellExperiment</code> object based upon the input parameters.</p></td>
       </tr><tr>
         
         <td>
@@ -1662,12 +1656,6 @@ Converts sce object to seurat while retaining all assays and metadata</p></td>
         </td>
         <td><p>convertSeuratToSCE
 Converts the input seurat object to a sce object</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="convertGeneIDs.html">convertGeneIDs()</a></code> </p>
-        </td>
-        <td><p>Convert Gene IDs</p></td>
       </tr><tr>
         
         <td>

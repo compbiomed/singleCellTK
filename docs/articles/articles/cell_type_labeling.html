@@ -32,7 +32,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.2.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.3.2</span>
       </span>
     </div>
 
@@ -213,7 +213,7 @@
 
       
 
-      </header><script src="cell_type_labeling_files/header-attrs-2.7/header-attrs.js"></script><div class="row">
+      </header><script src="cell_type_labeling_files/header-attrs-2.9/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Cell Type Labeling</h1>
@@ -282,7 +282,7 @@ There are 6 basic widgets that users need to work with before reaching to the re
 <p>As mentioned previously in this article, performing cell type labeling with SingleR does not require sophisticated preprocessing, but only a reference dataset that covers the expected cell types. Now that we have already incorporated many curated online dataset that SingleR recommends, users only need to log-normalize the feature expression matrix to match what is in the reference.</p>
 <p>Here, we use “PBMC3k” dataset provided by CellRanger as an example.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://compbiomed.github.io/sctk_docs/">singleCellTK</a></span><span class="op">)</span>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://www.camplab.net/sctk/">singleCellTK</a></span><span class="op">)</span>
 <span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/importExampleData.html">importExampleData</a></span><span class="op">(</span><span class="st">"pbmc3k"</span><span class="op">)</span>
 <span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/runNormalization.html">runNormalization</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, normalizationMethod <span class="op">=</span> <span class="st">"logNormCounts"</span>, outAssayName <span class="op">=</span> <span class="st">"logcounts"</span>, useAssay <span class="op">=</span> <span class="st">"counts"</span><span class="op">)</span></code></pre></div>
 <p><strong>Running SingleR</strong></p>
