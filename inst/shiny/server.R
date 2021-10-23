@@ -205,11 +205,11 @@ shinyServer(function(input, output, session) {
                          choices = expDataNames(vals$counts),
                          recommended = "redDims", redDims = TRUE)
     if (is.null(input$deMethod)) {
-      updateSelectInputTag(session, "deAssay", recommended = c("transformed"))
+      updateSelectInputTag(session, "deAssay", tags = c("raw", "transformed", "uncategorized", "normalized", "scaled"), recommended = c("transformed"))
     } else if (input$deMethod == "DESeq2") {
-      updateSelectInputTag(session, "deAssay", recommended = c("raw"))
+      updateSelectInputTag(session, "deAssay", tags = c("raw", "transformed", "uncategorized", "normalized", "scaled"), recommended = c("raw"))
     } else {
-      updateSelectInputTag(session, "deAssay", recommended = c("transformed"))
+      updateSelectInputTag(session, "deAssay", tags = c("raw", "transformed", "uncategorized", "normalized", "scaled"), recommended = c("transformed"))
     }
     if (is.null(input$fmMethod)) {
       updateSelectInputTag(session, "fmAssay", recommended = c("transformed"))
@@ -5531,11 +5531,11 @@ shinyServer(function(input, output, session) {
   observeEvent(input$deMethod, {
     if (!is.null(vals$counts)) {
       if (is.null(input$deMethod)) {
-        updateSelectInputTag(session, "deAssay", recommended = c("transformed", "normalized"))
+        updateSelectInputTag(session, "deAssay", tags = c("raw", "transformed", "uncategorized", "normalized", "scaled"), recommended = c("transformed", "normalized"))
       } else if (input$deMethod == "DESeq2") {
-        updateSelectInputTag(session, "deAssay", recommended = c("raw"))
+        updateSelectInputTag(session, "deAssay", tags = c("raw", "transformed", "uncategorized", "normalized", "scaled"), recommended = c("raw"))
       } else {
-        updateSelectInputTag(session, "deAssay", recommended = c("transformed", "normalized"))
+        updateSelectInputTag(session, "deAssay", tags = c("raw", "transformed", "uncategorized", "normalized", "scaled"), recommended = c("transformed", "normalized"))
       }
     }
   })
@@ -6248,11 +6248,11 @@ shinyServer(function(input, output, session) {
   #select geneset collection name for pathway analysis
   output$selectPathwayGeneLists <- renderUI({
     if (!is.null(vals$counts)){
-      if (!is.null(metadata(vals$original)$sctk$genesets)) {
+      if (!is.null(metadata(vals$counts)$sctk$genesets)) {
         #newGSchoices <- sctkListGeneSetCollections(vals$original)
         newGSchoices <- sctkListGeneSetCollections(vals$counts)
         selectizeInput("PathwayGeneLists", "Select Geneset Collection(s):",
-                       choices = newGSchoices, multiple = TRUE)
+                       choices = newGSchoices, multiple = FALSE)
 
       }
     } else {
