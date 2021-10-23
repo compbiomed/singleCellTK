@@ -32,7 +32,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.2.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.3.2</span>
       </span>
     </div>
 
@@ -213,7 +213,7 @@
 
       
 
-      </header><script src="cnsl_feature_selection_files/header-attrs-2.7/header-attrs.js"></script><div class="row">
+      </header><script src="cnsl_feature_selection_files/header-attrs-2.9/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Feature Selection</h1>
@@ -275,7 +275,7 @@
 <code class="sourceCode R"><span class="fu"><a href="../../reference/plotTopHVG.html">plotTopHVG</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, method <span class="op">=</span> <span class="st">"vst"</span>, hvgList <span class="op">=</span> <span class="va">topGenes</span>, labelsCount <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></code></pre></div>
 <details><summary><b>Example</b></summary><div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R">  <span class="co"># Load singleCellTK &amp; pbmc3k example data</span>
-  <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://compbiomed.github.io/sctk_docs/">singleCellTK</a></span><span class="op">)</span>
+  <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://www.camplab.net/sctk/">singleCellTK</a></span><span class="op">)</span>
   <span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/importExampleData.html">importExampleData</a></span><span class="op">(</span>dataset <span class="op">=</span> <span class="st">"pbmc3k"</span><span class="op">)</span>
   <span class="co"># Compute metrics for 'vst' feature selection method</span>
   <span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/runFeatureSelection.html">runFeatureSelection</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"counts"</span>, hvgMethod <span class="op">=</span> <span class="st">"vst"</span><span class="op">)</span>

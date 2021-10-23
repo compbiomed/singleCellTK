@@ -1,4 +1,4 @@
-Changes in Version 2.3.1 (2021-10-24)
+Changes in Version 2.3.2 (2021-10-24)
 ================================================================================
 
 * Added summary table into the cellQC report
