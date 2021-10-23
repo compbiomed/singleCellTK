@@ -113,6 +113,29 @@ Comprehensive quality control (QC) of single-cell RNA-seq data was performed wit
 description_runPerCellQC <- descriptionRunPerCellQC()
 ```
 
+# Summary Statistics {.tabset .tabset-fade}
+# {.unlisted .unnumbered .toc-ignore .tabset .tabset-fade}
+```{r "SummaryStats", echo = FALSE, results="asis", fig.align="center", warning=FALSE, message=FALSE}
+cat("\n")
+
+summaryTable <- sampleSummaryStats(inSCE = sce.qc, 
+                                   sample = sceSample,
+                                   simple = FALSE)
+
+cat(apply(summaryTable, 1:2, as.character) %>% 
+    knitr::kable(format = "html") %>%
+      kableExtra::kable_styling() %>%
+      kableExtra::scroll_box(width = "80%"))
+    
+cat("\n")
+  summary <- "The summary statistics table summarizes QC metrics of the cell matrix. This table summarizes the mean and median of UMI counts and median of genes detected per cell, as well as the number and percentages of doublets and estimated ambient RNA scores per dataset."
+  cat(summary)
+  cat("\n\n") 
+#}
+cat("\n")
+```
+
+
 ```{r, "General quality control metrics", results="asis", fig.align="center", warning=FALSE, message=FALSE, echo=FALSE}
 i="General quality control metrics"
 # cat(paste0('# ', i, ' \n'))
@@ -264,13 +287,13 @@ if (!skipScrublet) {
   cat(description_Scrublet$runScrublet)
   cat(description_Scrublet$plotScrubletResults)
   cat(description_Scrublet$output)
+  cat("\n")
 }
 ```
-<br />
 
-## {.unlisted .unnumbered .toc-ignore .tabset .tabset-fade}
 
 ```{r "Scrublet-plot", echo=FALSE, eval=(!skipScrublet), results="asis", fig.align="center"}
+cat("## {.unlisted .unnumbered .toc-ignore .tabset .tabset-fade}")
 cat("\n")
 for (sample in samples) {
   cat(paste0("### ", sample, " {.tabset .tabset-fade} \n"))
@@ -307,10 +330,8 @@ for (sample in samples) {
   cat(description_Scrublet$additionalParam)
   cat("\n\n")
 }
+cat("\n")
 ```
-`r cat("\n")` 
-
-
 
 
 ```{r, "DoubletFinder-description", include=FALSE, warning=FALSE, message=FALSE}
@@ -355,13 +376,12 @@ if (!skipFinder) {
   cat(description_DoubletFinder$runDoubletFinder)
   cat(description_DoubletFinder$plotDoubletFinderResults)
   cat(description_DoubletFinder$output)
+  cat("\n")
 }
 ```
-<br />
 
-
-## {.unlisted .unnumbered .toc-ignore .tabset .tabset-fade}
 ```{r "DoubletFinder-plot", echo=FALSE, eval=!(skipFinder), results="asis", fig.align="center"}
+cat("## {.unlisted .unnumbered .toc-ignore .tabset .tabset-fade}")
 cat("\n")
 for (sample in samples) {
   cat(paste0("### ", sample, " {.tabset .tabset-fade} \n"))
@@ -407,14 +427,8 @@ for (sample in samples) {
     cat("\n\n")
   }
 }
+cat("\n")
 ```
-`r cat("\n")`
-
-
-
-
-
-
 
 
 ```{r, "ScDblFinder-description", include=FALSE, warning=FALSE, message=FALSE}
@@ -455,13 +469,12 @@ if(!skipScDblFinder) {
   cat(description_ScDblFinder$runScDblFinder)
   cat(description_ScDblFinder$plotScDblFinderResults)
   cat(description_ScDblFinder$output)
+  cat("\n")
 }
 ```
-<br />
 
-
-## {.unlisted .unnumbered .toc-ignore .tabset .tabset-fade}
 ```{r "ScDblFinder-plot", echo=FALSE, eval=!(skipScDblFinder), results="asis", fig.align="center"}
+cat("## {.unlisted .unnumbered .toc-ignore .tabset .tabset-fade}")
 cat("\n")
 for (sample in samples){
   cat(paste0("### ", sample, " {.tabset .tabset-fade} \n"))
@@ -495,10 +508,8 @@ for (sample in samples){
   cat(description_ScDblFinder$parameter)
   cat("\n\n")
 }
+cat("\n")
 ```
-`r cat("\n")`
-
-
 
 
 ```{r, "Cxds-description", include=FALSE, warning=FALSE, message=FALSE}
@@ -539,14 +550,12 @@ if (!skipCxds) {
   cat(descriprion_CxdsResults$runCxds)
   cat(descriprion_CxdsResults$plotCxdsResults)
   cat(descriprion_CxdsResults$output)
+  cat("\n")
 }
 ```
-<br />
 
-
-
-## {.unlisted .unnumbered .toc-ignore .tabset .tabset-fade}
 ```{r "Cxds-plot", echo=FALSE,eval=(!skipCxds), results="asis", fig.align="center"}
+cat("## {.unlisted .unnumbered .toc-ignore .tabset .tabset-fade}")
 cat("\n")
 for (sample in samples){
   cat(paste0("### ", sample, " {.tabset .tabset-fade} \n"))
@@ -588,12 +597,10 @@ for (sample in samples){
   cat(descriprion_CxdsResults$retRes)
   cat(descriprion_CxdsResults$estNdbl)
   cat("\n\n")
+  
 }
+cat("\n")
 ```
-`r cat("\n")`
-
-
-
 
 
 ```{r, "Bcds-description", include=FALSE, warning=FALSE, message=FALSE}
@@ -634,13 +641,12 @@ if (!skipBcds) {
   cat(descriprion_BcdsResults$runBcds)
   cat(descriprion_BcdsResults$plotBcdsResults)
   cat(descriprion_BcdsResults$output)
+  cat("\n")
 }
 ```
-<br />
 
-
-## {.unlisted .unnumbered .toc-ignore .tabset .tabset-fade}
 ```{r "Bcds-plot", echo=FALSE, eval=(!skipBcds), results="asis", fig.align="center"}
+cat("## {.unlisted .unnumbered .toc-ignore .tabset .tabset-fade}")
 cat("\n")
 for (sample in samples){
   cat(paste0("### ", sample, " {.tabset .tabset-fade} \n"))
@@ -681,12 +687,10 @@ for (sample in samples){
   cat(descriprion_BcdsResults$nmax)
   cat(descriprion_BcdsResults$varImp)
   cat("\n\n")
+  
 }
+cat("\n")
 ```
-`r cat("\n")`
-
-
-
 
 
 
@@ -729,13 +733,12 @@ if (!skipScdsHybrid) {
   cat(description_ScdsHybrid$runCxdsBcdsHybrid)
   cat(description_ScdsHybrid$plotScdsHybridResults)
   cat(description_ScdsHybrid$output)
+  cat("\n")
 }
 ```
-<br />
 
-
-## {.unlisted .unnumbered .toc-ignore .tabset .tabset-fade}
 ```{r "ScdsHybrid-plot", echo=FALSE, eval=(!skipScdsHybrid), results="asis", fig.align="center"}
+cat("## {.unlisted .unnumbered .toc-ignore .tabset .tabset-fade}")
 cat("\n")
 for (sample in samples){
   cat(paste0("### ", sample, " {.tabset .tabset-fade} \n"))
@@ -774,10 +777,9 @@ for (sample in samples){
   cat(description_ScdsHybrid$parameters)
   cat("\n\n")
 }
+cat("\n")
 ```
 `r cat("\n")`
-
-
 
 
 # Ambient RNA Detection
@@ -867,17 +869,12 @@ for (sample in samples){
 ```
 `r cat("\n")`
 
-````{=html}
- <details>
+# Session Information
+<details>
  <summary><b>Session Information</b></summary>
-````
-
 ```{r "CellQC-session-info", echo=FALSE}
 sessionInfo()
 ```
-
-````{=html}
 </details>
-````
 
 

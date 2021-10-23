@@ -61,6 +61,7 @@ expSetDataTag <- function(inSCE, assayType, assays){
 #' parameters.
 #' @importFrom stats filter
 #' @importFrom tibble tibble
+#' @importFrom rlang .data
 #' @export
 #'
 expTaggedData <- function(inSCE, tags = NULL, redDims = FALSE, recommended = NULL, showTags = TRUE){
@@ -68,7 +69,7 @@ expTaggedData <- function(inSCE, tags = NULL, redDims = FALSE, recommended = NUL
   tbl <- S4Vectors::metadata(inSCE)$assayType 
   
   if(!is.null(tags)){
-    tbl %>% filter(assayTag %in% tags)
+    tbl %>% filter(.data$assayTag %in% tags)
   }
   
   if(redDims){
