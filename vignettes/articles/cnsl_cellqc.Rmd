@@ -587,8 +587,15 @@ dim(pbmc.combined)
 
 >For performing QC on droplet-level raw count matrix with SCTK, please refer to our [*Droplet QC* documentation](cnsl_dropletqc.html).
 
-# Session Information
+````{=html}
+ <details>
+ <summary><b>Session Information</b></summary>
+````
 
 ```{r}
 sessionInfo()
 ```
+
+````{=html}
+</details>
+````

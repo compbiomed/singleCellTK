@@ -14,7 +14,14 @@ shinyPanelvam <- fluidPage(
 
     sidebarLayout(
       sidebarPanel(
-        uiOutput("vamAssay"),
+        selectizeInput(
+          inputId = "vamAssay", 
+          label = "Select input matrix:", 
+          choices = NULL, 
+          selected = NULL, 
+          multiple = FALSE,
+          options = NULL),
+        #uiOutput("vamAssay"),
 
         selectInput(
                     inputId = "pathway",

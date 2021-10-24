@@ -212,18 +212,9 @@
   }
 
   if ("assayType" %in% metaNames) {
-    tags <- unique(unlist(lapply(SCE_list,
-                                 function(x) {
-                                   names(S4Vectors::metadata(x)[["assayType"]])
-                                 })))
-    assayType <- list()
-    for (sample in SCE_list) {
-      assayType.each <- S4Vectors::metadata(sample)[["assayType"]]
-      for (t in tags) {
-        assayType[[t]] <- c(assayType[[t]], assayType.each[[t]])
-      }
-    }
-    assayType <- lapply(assayType, unique)
+    assayType <- lapply(SCE_list, function(x){S4Vectors::metadata(x)$assayType})
+    assayType <- BiocGenerics::Reduce(dplyr::union, assayType)
+    
     NewMeta[["assayType"]] <- assayType
   }
 

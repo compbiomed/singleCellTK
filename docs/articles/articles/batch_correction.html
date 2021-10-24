@@ -32,7 +32,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.2.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.3.2</span>
       </span>
     </div>
 
@@ -213,7 +213,7 @@
 
       
 
-      </header><script src="batch_correction_files/header-attrs-2.7/header-attrs.js"></script><div class="row">
+      </header><script src="batch_correction_files/header-attrs-2.9/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Batch Correction</h1>
@@ -297,7 +297,7 @@ div.offset { background-color:inherit ; border-radius: 5px; margin-left: 25px;}
 <details><summary><b>Example</b></summary><p><strong>1. Prepare an SCE object with multiple batches</strong></p>
 <p>Here we present an example dataset that is combined from “pbmc3k” and “pbmc4k,” originally available from package <a href="https://bioconductor.org/packages/release/data/experiment/html/TENxPBMCData.html">TENxPBMCData</a>, which you can import by a function called <code><a href="../../reference/importExampleData.html">importExampleData()</a></code>.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://compbiomed.github.io/sctk_docs/">singleCellTK</a></span><span class="op">)</span>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://www.camplab.net/sctk/">singleCellTK</a></span><span class="op">)</span>
 <span class="va">pbmc6k</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/importExampleData.html">importExampleData</a></span><span class="op">(</span><span class="st">'pbmc6k'</span><span class="op">)</span>
 <span class="va">pbmc8k</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/importExampleData.html">importExampleData</a></span><span class="op">(</span><span class="st">'pbmc8k'</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span><span class="op">(</span><span class="va">pbmc6k</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'genes'</span>, <span class="st">'cells'</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>

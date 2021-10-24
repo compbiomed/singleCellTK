@@ -71,8 +71,8 @@ description_runEmptyDrops <- descriptionEmptyDrops()
 
 ```{r, "EmptyDrops", results="asis", fig.align="center", warning=TRUE, message=FALSE, echo=FALSE}
 i="EmptyDrops"
-cat(paste0('## ', i, ' \n'))
-cat("\n")
+# cat(paste0('## ', i, ' \n'))
+# cat("\n")
 
 
 emptyData <- c("dropletUtils_emptyDrops_logprob", "dropletUtils_emptyDrops_total")
@@ -94,6 +94,8 @@ if (skipRunEmpty) {
 }
 
 if(!skipRunEmpty) {
+  cat(paste0('## ', i, ' \n'))
+  cat("\n")
   if(length(samples) == 1) {
     plotsEmptyDrops$scatterEmptyDrops <- list(Sample = list(plotsEmptyDrops$scatterEmptyDrops))
     names(plotsEmptyDrops$scatterEmptyDrops$Sample) <- samples
@@ -108,8 +110,8 @@ if(!skipRunEmpty) {
 ```
 
 
-## {.unlisted .unnumbered .toc-ignore .tabset .tabset-fade}
 ```{r "EmptyDrops-plot", results="asis", eval=(!skipRunEmpty), fig.align="center", warning=FALSE, message=FALSE, echo=FALSE}
+cat("## {.unlisted .unnumbered .toc-ignore .tabset .tabset-fade}")
 cat("\n")
 for (i in seq_along(samples)) {
   cat(paste0("### ", samples[i], " {.tabset .tabset-fade} \n"))
@@ -130,10 +132,8 @@ for (i in seq_along(samples)) {
   cat(description_runEmptyDrops$parameter)
   cat("\n\n")
 }
+cat("\n")
 ```
-`r cat("\n")`
-
-
 
 
 ```{r, "BarcodeRanks-description", include=FALSE, warning=FALSE, message=FALSE}
@@ -142,8 +142,8 @@ description_runBarcodeRank <- descriptionBarcodeRank()
 
 ```{r, "BarcodeRanks", results="asis", fig.align="center", warning=FALSE, message=FALSE, echo=FALSE}
 i="BarcodeRanks"
-cat(paste0('## ', i, ' \n'))
-cat("\n")
+# cat(paste0('## ', i, ' \n'))
+# cat("\n")
 
 
 barcodeData <- c("dropletUtils_barcodeRank_rank", "dropletUtils_barcodeRank_total", "dropletUtils_barcodeRank_knee", "dropletUtils_barcodeRank_inflection",  "dropletUtils_barcodeRank_fitted") #"sample",
@@ -169,6 +169,8 @@ if (skipBarcode) {
 }
 
 if(!skipBarcode) {
+  cat(paste0('## ', i, ' \n'))
+  cat("\n")
   if(length(samples) == 1) {
     plotsBarcodeRank <- list(Sample = list(plotsBarcodeRank))
     names(plotsBarcodeRank$Sample) <- samples
@@ -183,8 +185,8 @@ if(!skipBarcode) {
 ```
 
 
-## {.unlisted .unnumbered .toc-ignore .tabset .tabset-fade}
 ```{r "BarcodeRanks-plot", results="asis", eval=!(skipBarcode), fig.align="center", warning=FALSE, message=FALSE, echo=FALSE}
+cat("## {.unlisted .unnumbered .toc-ignore .tabset .tabset-fade}")
 cat("\n")
 for (i in seq_along(samples)) {
   cat(paste0("### ", samples[i], " {.tabset .tabset-fade} \n"))
@@ -204,8 +206,8 @@ for (i in seq_along(samples)) {
   cat(description_runBarcodeRank$parameter)
   cat("\n\n")  
 }
+cat("\n")
 ```
-`r cat("\n")`
 
 # Summary Statistics {.tabset .tabset-fade}
 # {.unlisted .unnumbered .toc-ignore .tabset .tabset-fade}
@@ -215,7 +217,8 @@ cat("\n")
 for (i in seq_along(samples)) {
   cat(paste0("## ", samples[i], " {.tabset .tabset-fade} \n"))
   cat("\n\n")
-  sceColData <- colData(sce)%>% as.data.frame() %>% filter(sample == samples[i])
+  sceColData <- colData(sce) %>% as.data.frame()
+  sceColData <- sceColData[sceColData$sample == samples[i], ]
 
   idx <- list(
           'Knee'= sceColData$dropletUtils_BarcodeRank_Knee == 1,

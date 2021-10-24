@@ -1,7 +1,7 @@
 # Single Cell TK
   <!-- badges: start -->
 [![R-CMD-check](https://github.com/compbiomed/singleCellTK/workflows/R-CMD-check/badge.svg)](https://github.com/compbiomed/singleCellTK/actions)
-[![codecov](https://codecov.io/gh/compbiomed/singleCellTK/branch/master/graph/badge.svg)](https://codecov.io/gh/compbiomed/singleCellTK)
+[![codecov](https://codecov.io/gh/compbiomed/singleCellTK/branch/devel/graph/badge.svg)](https://codecov.io/gh/compbiomed/singleCellTK)
 <!-- badges: end -->
 
 The Single Cell ToolKit (SCTK) is an analysis platform that provides an **R interface to several popular single-cell RNA-sequencing (scRNAseq) data preprocessing, quality control, analysis, and visualization tools**. SCTK imports raw or filtered counts from various scRNAseq preprocessing tools such as 10x CellRanger, BUStools, Optimus, STARSolo, and more. By integrating several publicly available tools written in R or Python, SCTK can be used to perform extensive quality control including doublet detection, ambient RNA removal, and batch effect correction. SCTK integrates analysis workflows from popular tools such as Seurat and Bioconductor/OSCA into a single unified framework. Results from various workflows can be summarized and easily shared using comprehensive HTML reports. Lastly, data can be exported to Seurat or AnnData object to allow for seamless integration with other downstream analysis workflows. More information about the toolkit can be found at the toolkit [homepage](https://camplab.net/sctk/).

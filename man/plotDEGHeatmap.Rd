@@ -38,7 +38,7 @@ transformation on the assay used for the analysis. Default \code{FALSE}.}
 value. Default \code{FALSE}.}
 
 \item{log2fcThreshold}{numeric. Only plot DEGs with the absolute values of
-log2FC larger than this value. Default \code{1}.}
+log2FC larger than this value. Default \code{0.25}.}
 
 \item{fdrThreshold}{numeric. Only plot DEGs with FDR value smaller than this
 value. Default \code{0.05}.}
