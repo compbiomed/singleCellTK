@@ -213,7 +213,7 @@
 
   if ("assayType" %in% metaNames) {
     assayType <- lapply(SCE_list, function(x){S4Vectors::metadata(x)$assayType})
-    assayType <- Reduce(intersect, assayType)
+    assayType <- BiocGenerics::Reduce(dplyr::union, assayType)
     
     NewMeta[["assayType"]] <- assayType
   }
