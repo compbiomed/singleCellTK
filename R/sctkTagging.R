@@ -69,7 +69,7 @@ expTaggedData <- function(inSCE, tags = NULL, redDims = FALSE, recommended = NUL
   tbl <- S4Vectors::metadata(inSCE)$assayType 
   
   if(!is.null(tags)){
-    tbl %>% filter(.data$assayTag %in% tags)
+    tbl <- tbl %>% dplyr::filter(.data$assayTag %in% tags)
   }
   
   if(redDims){

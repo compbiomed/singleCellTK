@@ -32,7 +32,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.2.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.3.2</span>
       </span>
     </div>
 
@@ -213,7 +213,7 @@
 
       
 
-      </header><script src="heatmap_files/header-attrs-2.7/header-attrs.js"></script><div class="row">
+      </header><script src="heatmap_files/header-attrs-2.9/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Heatmap Visualization</h1>
@@ -303,7 +303,7 @@ div.offset { background-color:inherit ; border-radius: 5px; margin-left: 15px;}
 <div id="console" class="tabcontent">
 <p>To present the usage of <code><a href="../../reference/plotSCEHeatmap.html">plotSCEHeatmap()</a></code>, we would like to use a small example provided with SCTK.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://compbiomed.github.io/sctk_docs/">singleCellTK</a></span><span class="op">)</span>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://www.camplab.net/sctk/">singleCellTK</a></span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="st">"scExample"</span><span class="op">)</span> <span class="co"># This imports SCE object "sce"</span>
 <span class="va">sce</span></code></pre></div>
 <pre><code>## class: SingleCellExperiment 
@@ -317,6 +317,7 @@ div.offset { background-color:inherit ; border-radius: 5px; margin-left: 15px;}
 ##   ... pbmc_4k_CTGAAGTTCCACTCCA-1 pbmc_4k_CATCGAACAGCCAGAA-1
 ## colData names(4): cell_barcode column_name sample type
 ## reducedDimNames(0):
+## mainExpName: NULL
 ## altExpNames(0):</code></pre>
 <p><strong>“Raw” plotting</strong></p>
 <p>The minimum setting for <code><a href="../../reference/plotSCEHeatmap.html">plotSCEHeatmap()</a></code> is the input SCE object and the data matrix to plot (default <code>"logcounts"</code>). In this way, all cells and features will be presented while no annotation or legend (except the main color scheme) will be shown.</p>
