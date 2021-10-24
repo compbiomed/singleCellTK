@@ -8,16 +8,10 @@
 #' @export
 #'
 expDeleteDataTag <- function(inSCE, assay){
-  for(i in seq(length(S4Vectors::metadata(inSCE)$assayType))){
-    matchedIndex <- match(assay, S4Vectors::metadata(inSCE)$assayType[[i]])
-    if(!is.na(matchedIndex)){
-      if(length(S4Vectors::metadata(inSCE)$assayType[[i]]) == 1){
-        S4Vectors::metadata(inSCE)$assayType[[i]] <- NULL
-      }
-      else{
-        S4Vectors::metadata(inSCE)$assayType[[i]] <- S4Vectors::metadata(inSCE)$assayType[[i]][-matchedIndex]
-      }
-    }
+  if(!is.null(S4Vectors::metadata(inSCE)$assayType)){
+    tbl <- S4Vectors::metadata(inSCE)$assayType
+    tbl <- tbl %>% dplyr::filter(!.data$assayName %in% assay)
+    S4Vectors::metadata(inSCE)$assayType <- tbl
   }
   return(inSCE)
 }
