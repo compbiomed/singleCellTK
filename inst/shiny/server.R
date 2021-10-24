@@ -2241,6 +2241,7 @@ shinyServer(function(input, output, session) {
     if(length(input$checkboxAssaysToRemove) > 0){
       for(i in seq(input$checkboxAssaysToRemove)){
         expData(vals$counts, input$checkboxAssaysToRemove[i]) <- NULL
+        vals$counts <- expDeleteDataTag(vals$counts, input$checkboxAssaysToRemove[i])
       }
     }
     if(length(input$checkboxRedDimToRemove) > 0){
