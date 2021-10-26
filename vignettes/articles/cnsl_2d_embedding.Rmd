@@ -78,7 +78,7 @@ results is described below.
 
 **1. Compute dimensionality reduction statistics using `runDimReduce` wrapper function:**
 ```{r "dm_overview_1", eval = FALSE}
-sce <- runDimReduce(inSCE = sce, useAssay = "normalizedCounts", reducedDimName = "redDimUMAP", method = "uwotUMAP", nNeighbors = 30, nIterations = 200, minDist = 0.01, alpha = 1)
+sce <- runDimReduce(inSCE = sce, useAssay = "normalizedCounts", reducedDimName = "redDimUMAP", method = "scaterUMAP", nNeighbors = 30, nIterations = 200, minDist = 0.01, alpha = 1)
 ```
 
 To use the function, input a `SingleCellExperiment` object that contains the data assay and specify the required parameters (to see a complete list of supported parameters and to copy the function call against each method with the supported parameters, please view the 'Parameters' heading at the end of this page).
@@ -100,9 +100,9 @@ sce <- runDimReduce(inSCE = sce, useAssay = "normalizedCounts", reducedDimName =
 sce <- runDimReduce(inSCE = sce, useAssay = "normalizedCounts", reducedDimName = "redDimTSNE", method = "seuratTSNE", nComponents = 10, useReduction = "pca", perplexity = 30)
 ```
 
-***uwotUMAP***:
-```{r "dm_uwotUMAP_rn", eval = FALSE}
-sce <- runDimReduce(inSCE = sce, useAssay = "normalizedCounts", reducedDimName = "redDimUMAP", method = "uwotUMAP", nNeighbors = 30, nIterations = 200, minDist = 0.01, alpha = 1)
+***scaterUMAP***:
+```{r "dm_scaterUMAP_rn", eval = FALSE}
+sce <- runDimReduce(inSCE = sce, useAssay = "normalizedCounts", reducedDimName = "redDimUMAP", method = "scaterUMAP", nNeighbors = 30, nIterations = 200, minDist = 0.01, alpha = 1)
 ```
 
 ***seuratUMAP***:
@@ -137,7 +137,7 @@ plotDimRed(inSCE = sce, useReduction = "redDimUMAP", xAxisLabel = "UMAP_1", yAxi
   # Run PCA
   sce <- runDimReduce(inSCE = sce, useAssay = "LogNormalizedScaledCounts", reducedDimName = "redDimPCA", method = "seuratPCA", nComponents = 10)
   # Run UMAP on the PCA reducedDim
-  sce <- runDimReduce(inSCE = sce, useReducedDim = "redDimPCA", reducedDimName = "redDimUMAP", method = "uwotUMAP", nNeighbors = 30, nIterations = 200, minDist = 0.5, alpha = 1, spread = 5)
+  sce <- runDimReduce(inSCE = sce, useReducedDim = "redDimPCA", reducedDimName = "redDimUMAP", method = "scaterUMAP", nNeighbors = 30, nIterations = 200, minDist = 0.5, alpha = 1, spread = 5)
   # Plot UMAP
   plotDimRed(inSCE = sce, useReduction = "redDimUMAP", xAxisLabel = "UMAP_1", yAxisLabel = "UMAP_2")
 ```
@@ -154,7 +154,7 @@ The `runDimReduce` function takes in different parameters based on the specific 
 |---|---|
 |rTSNE|`inSCE` (input `SingleCellExperiment` object), `useAssay` (name of the assay to use), `useReducedDim` (name of the reducedDim if you want to compute on the reducedDim instead of the main assay leaving `useAssay` as `NULL`), `useAltExp` (name of the altExp slot if you want to compute on an altExp/subset/variable features instead of the main assay), `reducedDimName` (name of the computed reducedDim), `method` = "rTSNE", `perplexity` (adjust the perplexity tuneable parameter for the underlying tSNE call, default is `30`), `nIterations` (maximum iterations, default is 1000)|
 |seuratTSNE|`inSCE` (input `SingleCellExperiment` object), `useAssay` (name of the assay to use), `useAssay` (name of the assay to use), `useReducedDim` (name of the reducedDim if you want to compute on the reducedDim instead of the main assay leaving `useAssay` as `NULL`), `useAltExp` (name of the altExp slot if you want to compute on an altExp/subset/variable features instead of the main assay), `reducedDimName` (name of the computed reducedDim), `method` = "seuratTSNE", `nComponents`(number of components to use from pca/ica, default is 10), `useReduction` (either `pca` or `ica`) and `perplexity` (adjust the perplexity tuneable parameter for the underlying tSNE call, default is 30)|
-|uwotUMAP|`inSCE` (input `SingleCellExperiment` object), `useAssay` (name of the assay to use), `useAssay` (name of the assay to use), `useReducedDim` (name of the reducedDim if you want to compute on the reducedDim instead of the main assay leaving `useAssay` as `NULL`), `useAltExp` (name of the altExp slot if you want to compute on an altExp/subset/variable features instead of the main assay), `reducedDimName` (name of the computed reducedDim), `method` = "uwotUMAP", `nNeighbors` (size of local neighborhood used for manifold approximation, default is 30), `nIterations` (number of iterations performed, default is 200), `minDist` (minimum distance between embedded points, default is 0.01) and `alpha` (initial value of learning rate, default is 1)|
+|scaterUMAP|`inSCE` (input `SingleCellExperiment` object), `useAssay` (name of the assay to use), `useAssay` (name of the assay to use), `useReducedDim` (name of the reducedDim if you want to compute on the reducedDim instead of the main assay leaving `useAssay` as `NULL`), `useAltExp` (name of the altExp slot if you want to compute on an altExp/subset/variable features instead of the main assay), `reducedDimName` (name of the computed reducedDim), `method` = "scaterUMAP", `nNeighbors` (size of local neighborhood used for manifold approximation, default is 30), `nIterations` (number of iterations performed, default is 200), `minDist` (minimum distance between embedded points, default is 0.01) and `alpha` (initial value of learning rate, default is 1)|
 |seuratUMAP|`inSCE` (input `SingleCellExperiment` object), `useAssay` (name of the assay to use), `useAssay` (name of the assay to use), `useReducedDim` (name of the reducedDim if you want to compute on the reducedDim instead of the main assay leaving `useAssay` as `NULL`), `useAltExp` (name of the altExp slot if you want to compute on an altExp/subset/variable features instead of the main assay), `reducedDimName` (name of the computed reducedDim), `method` = "seuratUMAP", `nComponents` (number of components to use from pca/ica, default is 10), `useReduction` (either `pca` or `ica`), `minDist` (minimum distance between embedded points, default is 0.3), `nNeighbors` (size of local neighborhood, default is 30) and `spread` (effective scale of embedded points, default is 1)|
 
 ````{=html}

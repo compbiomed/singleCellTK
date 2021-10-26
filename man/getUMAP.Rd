@@ -50,7 +50,7 @@ using \code{useReducedDim}. Default \code{TRUE}.}
 \item{nNeighbors}{The size of local neighborhood used for manifold
 approximation. Larger values result in more global views of the manifold,
 while smaller values result in more local data being preserved. Default
-\code{30}. See `?uwot::umap` for more information.}
+\code{30}. See `?scater::calculateUMAP` for more information.}
 
 \item{nIterations}{The number of iterations performed during layout
 optimization. Default is \code{200}.}
@@ -62,11 +62,11 @@ Default is \code{1}.}
 Smaller values will result in a more clustered/clumped embedding where nearby
 points on the manifold are drawn closer together, while larger values will
 result on a more even dispersal of points. Default \code{0.5}. See
-`?uwot::umap` for more information.}
+`?scater::calculateUMAP` for more information.}
 
 \item{spread}{The effective scale of embedded points. In combination with
 minDist, this determines how clustered/clumped the embedded points are.
-Default \code{5}. See `?uwot::umap` for more information.}
+Default \code{5}. See `?scater::calculateUMAP` for more information.}
 
 \item{pca}{Logical. Whether to perform dimension reduction with PCA before
 UMAP. Will not perform PCA if using \code{useReducedDim}. Default \code{TRUE}}
