@@ -277,7 +277,13 @@ Computes ICA on the input sce object and stores the calculated independent
 components within the sce object</p>
     </div>
 
-    <pre class="usage"><span class='fu'>seuratICA</span><span class='op'>(</span><span class='va'>inSCE</span>, <span class='va'>useAssay</span>, reducedDimName <span class='op'>=</span> <span class='st'>"seuratICA"</span>, nics <span class='op'>=</span> <span class='fl'>20</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>seuratICA</span><span class='op'>(</span>
+  <span class='va'>inSCE</span>,
+  <span class='va'>useAssay</span>,
+  reducedDimName <span class='op'>=</span> <span class='st'>"seuratICA"</span>,
+  features <span class='op'>=</span> <span class='cn'>NULL</span>,
+  nics <span class='op'>=</span> <span class='fl'>20</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -294,6 +300,12 @@ components within the sce object</p>
       <th>reducedDimName</th>
       <td><p>Name of new reducedDims object containing Seurat ICA
 Default <code>seuratICA</code>.</p></td>
+    </tr>
+    <tr>
+      <th>features</th>
+      <td><p>Specify the feature names or rownames which should be used
+for computation of ICA. Default is <code>NULL</code> which will use the previously
+stored variable features.</p></td>
     </tr>
     <tr>
       <th>nics</th>

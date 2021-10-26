@@ -3085,7 +3085,7 @@ shinyServer(function(input, output, session) {
                 useAssay = embedUseAssay,
                 useReducedDim = embedUseRedDim,
                 useAltExp = embedUseAltExp,
-                method = "uwotUMAP",
+                method = "scaterUMAP",
                 reducedDimName = dimrednamesave,
                 nNeighbors = input$neighborsUMAP,
                 nIterations = input$iterUMAP,
