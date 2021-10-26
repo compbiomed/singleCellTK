@@ -232,8 +232,14 @@ seuratFindHVG <- function(inSCE, useAssay = "counts",
 #' @importFrom SingleCellExperiment reducedDim<-
 seuratPCA <- function(inSCE, useAssay = "seuratScaledData",
                       reducedDimName = "seuratPCA", nPCs = 20, features = NULL,  verbose = TRUE) {
-  seuratObject <- Seurat::RunPCA(convertSCEToSeurat(inSCE,
-                                                    scaledAssay = useAssay),
+  seuratObject <- convertSCEToSeurat(inSCE, scaledAssay = useAssay)
+  
+  if(length(Seurat::VariableFeatures(seuratObject)) == 0
+     && is.null(features)){
+    features <- rownames(inSCE)
+  }
+  
+  seuratObject <- Seurat::RunPCA(seuratObject,
                                  npcs = as.double(nPCs), verbose = verbose, features = features)
   inSCE <- .addSeuratToMetaDataSCE(inSCE, seuratObject)
 
