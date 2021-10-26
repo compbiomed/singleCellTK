@@ -207,7 +207,7 @@ shinyPanelFS_DimRed <- fluidPage(
                           #uiOutput("dimRedAssaySelect_tsneUmap"),
                           selectInput("dimRedPlotMethod_tsneUmap", "Select method:",
                                       c("rtSNE" = "rTSNE",
-                                        "uwotUMAP" = "uwotUMAP",
+                                        "scaterUMAP" = "uwotUMAP",
                                         "seuratTSNE" = "seuratTSNE",
                                         "seuratUMAP" = "seuratUMAP")),
                           uiOutput("dimRedNameUI_tsneUmap"),
