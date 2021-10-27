@@ -33,7 +33,7 @@ test_that(desc = "Testing MNN", {
   testthat::expect_true("MNN" %in% assayNames(sceBatches))
 })
 
-if (isTRUE(py_available(initialize = FALSE))) {
+if (isTRUE(reticulate::py_available(initialize = FALSE))) {
   if(reticulate::py_module_available(module = "bbknn")){
     test_that(desc = "Testing BBKNN", {
       sceBatches <- runBBKNN(inSCE = sceBatches)
