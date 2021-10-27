@@ -6,8 +6,8 @@
 \usage{
 runDimReduce(
   inSCE,
-  method = c("scaterPCA", "seuratPCA", "seuratICA", "rTSNE", "seuratTSNE", "uwotUMAP",
-    "seuratUMAP"),
+  method = c("scaterPCA", "seuratPCA", "seuratICA", "rTSNE", "seuratTSNE",
+    "scaterUMAP", "seuratUMAP"),
   useAssay = NULL,
   useReducedDim = NULL,
   useAltExp = NULL,
@@ -20,7 +20,7 @@ runDimReduce(
 \item{inSCE}{Input \linkS4class{SingleCellExperiment} object.}
 
 \item{method}{One from \code{"scaterPCA"}, \code{"seuratPCA"},
-\code{"seuratICA"}, \code{"rTSNE"}, \code{"seuratTSNE"}, \code{"uwotUMAP"}
+\code{"seuratICA"}, \code{"rTSNE"}, \code{"seuratTSNE"}, \code{"scaterUMAP"}
 and \code{"seuratUMAP"}.}
 
 \item{useAssay}{Assay to use for computation. If \code{useAltExp} is

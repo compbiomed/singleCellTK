@@ -71,7 +71,7 @@
 #' representation by specifying \code{useReducedDim}.
 #' @param inSCE Input \linkS4class{SingleCellExperiment} object.
 #' @param method One from \code{"scaterPCA"}, \code{"seuratPCA"},
-#' \code{"seuratICA"}, \code{"rTSNE"}, \code{"seuratTSNE"}, \code{"uwotUMAP"}
+#' \code{"seuratICA"}, \code{"rTSNE"}, \code{"seuratTSNE"}, \code{"scaterUMAP"}
 #' and \code{"seuratUMAP"}.
 #' @param useAssay Assay to use for computation. If \code{useAltExp} is
 #' specified, \code{useAssay} has to exist in
@@ -105,7 +105,7 @@ runDimReduce <- function(inSCE,
                                     "seuratICA",
                                     "rTSNE",
                                     "seuratTSNE",
-                                    "uwotUMAP",
+                                    "scaterUMAP",
                                     "seuratUMAP"),
                          useAssay = NULL, useReducedDim = NULL,
                          useAltExp = NULL, reducedDimName, nComponents = 20, ...
@@ -125,7 +125,7 @@ runDimReduce <- function(inSCE,
   if (method == "scaterPCA") {
     inSCE <- scaterPCA(inSCE = inSCE, useAssay = useAssay, useAltExp = useAltExp,
                        reducedDimName = reducedDimName, nComponents = nComponents, ...)
-  } else if (method == "uwotUMAP") {
+  } else if (method == "scaterUMAP") {
     inSCE <- getUMAP(inSCE = inSCE, useAssay = useAssay, useAltExp = useAltExp,
                      useReducedDim = useReducedDim,
                      reducedDimName = reducedDimName, ...)
