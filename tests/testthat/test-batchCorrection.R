@@ -34,12 +34,16 @@ test_that(desc = "Testing MNN", {
 })
 
 if (isTRUE(py_available(initialize = FALSE))) {
-  test_that(desc = "Testing BBKNN", {
-    sceBatches <- runBBKNN(inSCE = sceBatches)
-    testthat::expect_true("BBKNN" %in% reducedDimNames(sceBatches))
-  })
-  test_that(desc = "Testing SCANORAMA", {
-    sceBatches <- runSCANORAMA(inSCE = sceBatches)
-    testthat::expect_true("SCANORAMA" %in% assayNames(sceBatches))
-  })
+  if(reticulate::py_module_available(module = "bbknn")){
+    test_that(desc = "Testing BBKNN", {
+      sceBatches <- runBBKNN(inSCE = sceBatches)
+      testthat::expect_true("BBKNN" %in% reducedDimNames(sceBatches))
+    })
+  }
+  if(reticulate::py_module_available(module = "scanorama")){
+    test_that(desc = "Testing SCANORAMA", {
+      sceBatches <- runSCANORAMA(inSCE = sceBatches)
+      testthat::expect_true("SCANORAMA" %in% assayNames(sceBatches))
+    })
+  }
 }
