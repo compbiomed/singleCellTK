@@ -1,3 +1,11 @@
+Changes in Version 2.3.2 (2021-10-24)
+================================================================================
+
+* Added summary table into the cellQC report
+* Improved formatting in QC report
+* Added functions getDEGTopTable() & plotBatchCorrCompare()
+* Other refactors and bug fixes
+
 Changes in Version 2.3.1 (2021-10-15)
 ================================================================================
 

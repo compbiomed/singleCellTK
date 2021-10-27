@@ -146,14 +146,14 @@ In the other curated workflow that SCTK wraps, Celda Curated Workflow, we use a 
 
 ### Visualization with UMAP
 
-Uniform Manifold Approximation and Projection (UMAP) is one of the most commonly used methods to visualize the relationships between the cells in a 2-D embedding. This can be done using the function `getUMAP()`, which is a wrapper of `uwot::umap()` method. The result will be saved in `reducedDim` slot.  
+Uniform Manifold Approximation and Projection (UMAP) is one of the most commonly used methods to visualize the relationships between the cells in a 2-D embedding. This can be done using the function `getUMAP()`, which is a wrapper of `scater::calculateUMAP()` method. The result will be saved in `reducedDim` slot.  
 
-Following the steps above, we will now use `useReducedDim` argument to pass the PCA embedding just generated to the function. This wrapper function also allows `useAssay` or `useAltExp` + `useAssay` method, while providing an option of running PCA dimension reduction on the expression matrix prior to the UMAP computation. In this way, however, the PCA will be done by `uwot`, thus cannot be customized.  
+Following the steps above, we will now use `useReducedDim` argument to pass the PCA embedding just generated to the function. This wrapper function also allows `useAssay` or `useAltExp` + `useAssay` method, while providing an option of running PCA dimension reduction on the expression matrix prior to the UMAP computation. In this way, however, the PCA will be done by `scater`, thus cannot be customized.  
 
 SCTK also has the function for t-distributed Stochastic Neighbor Embedding (tSNE) method to create 2-D embedding for visualization, `getTSNE()`, where the general arguments for inputting a matrix work in the similar way.  
 
 ```{R umap, message=FALSE, warning=FALSE, results="hold"}
-sce <- runDimReduce(inSCE = sce, method = "uwotUMAP", useReducedDim = "PCA", reducedDimName = "UMAP")
+sce <- runDimReduce(inSCE = sce, method = "scaterUMAP", useReducedDim = "PCA", reducedDimName = "UMAP")
 ```
 
 `plotSCEDimReduceColData()` is a generic plotting function that use the values stored in `reducedDim` slot as the axis to make 2-D scatter plots, and use the variables stored in `colData` slot to label each cell, by colors or shapes.  

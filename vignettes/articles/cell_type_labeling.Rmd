@@ -108,7 +108,7 @@ sce <- runNormalization(inSCE = sce, useAssay = "logcounts", scale = TRUE, outAs
 sce <- seuratFindHVG(inSCE = sce, useAssay = "counts", hvgMethod = "vst")
 sce <- getTopHVG(inSCE = sce, method = "vst", n = 2000, altExp = "hvg")
 sce <- runDimReduce(inSCE = sce, method = "scaterPCA", useAssay = "logcounts_scaled", useAltExp = "hvg", reducedDimName = "PCA")
-sce <- runDimReduce(inSCE = sce, method = "uwotUMAP", useReducedDim = "PCA", reducedDimName = "UMAP")
+sce <- runDimReduce(inSCE = sce, method = "scaterUMAP", useReducedDim = "PCA", reducedDimName = "UMAP")
 plotSCEDimReduceColData(inSCE = sce, colorBy = "SingleR_hpca_main_pruned.labels", reducedDimName = "UMAP")
 ```
 

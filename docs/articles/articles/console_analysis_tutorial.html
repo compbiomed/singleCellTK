@@ -32,7 +32,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.2.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.3.2</span>
       </span>
     </div>
 
@@ -213,7 +213,7 @@
 
       
 
-      </header><script src="console_analysis_tutorial_files/header-attrs-2.7/header-attrs.js"></script><div class="row">
+      </header><script src="console_analysis_tutorial_files/header-attrs-2.9/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>SingleCellTK - Console Analysis Tutorial</h1>
@@ -240,7 +240,7 @@
 <p>SCTK has wrapper functions for importing count matrix from the output of many types of processing tools. See the <a href="import_data.html">documentation for importing data</a> for more detail. Here we use <code><a href="../../reference/importExampleData.html">importExampleData()</a></code> to load PBMC3k data from the Bioconductor package <a href="https://bioconductor.org/packages/release/data/experiment/html/TENxPBMCData.html">TENxPBMCData</a>.</p>
 <p>Due to the nature of the algorithms of a part of the downstream analyses, it is <strong>highly recommended</strong> that users deduplicate the essential feature identifiers, which is stored as the <code>rownames</code> of the SCE object. An SCTK function, <code><a href="../../reference/dedupRowNames.html">dedupRowNames()</a></code> provides the functionality by adding <code>"-1", "-2", ..., -i"</code> suffix to the duplicated rownames.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://compbiomed.github.io/sctk_docs/">singleCellTK</a></span><span class="op">)</span>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://www.camplab.net/sctk/">singleCellTK</a></span><span class="op">)</span>
 <span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/importExampleData.html">importExampleData</a></span><span class="op">(</span><span class="st">"pbmc3k"</span><span class="op">)</span>
 <span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/dedupRowNames.html">dedupRowNames</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span></code></pre></div>
 </div>
@@ -293,7 +293,7 @@
 
 <span class="co"># See number of cells after filtering</span>
 <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">ncol</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1] 2545</code></pre>
+<pre><code>## [1] 2544</code></pre>
 </div>
 </div>
 <div id="normalization" class="section level2">
@@ -350,11 +350,11 @@
 <div id="visualization-with-umap" class="section level3">
 <h3 class="hasAnchor">
 <a href="#visualization-with-umap" class="anchor"></a>Visualization with UMAP</h3>
-<p>Uniform Manifold Approximation and Projection (UMAP) is one of the most commonly used methods to visualize the relationships between the cells in a 2-D embedding. This can be done using the function <code><a href="../../reference/getUMAP.html">getUMAP()</a></code>, which is a wrapper of <code><a href="https://rdrr.io/pkg/uwot/man/umap.html">uwot::umap()</a></code> method. The result will be saved in <code>reducedDim</code> slot.</p>
-<p>Following the steps above, we will now use <code>useReducedDim</code> argument to pass the PCA embedding just generated to the function. This wrapper function also allows <code>useAssay</code> or <code>useAltExp</code> + <code>useAssay</code> method, while providing an option of running PCA dimension reduction on the expression matrix prior to the UMAP computation. In this way, however, the PCA will be done by <code>uwot</code>, thus cannot be customized.</p>
+<p>Uniform Manifold Approximation and Projection (UMAP) is one of the most commonly used methods to visualize the relationships between the cells in a 2-D embedding. This can be done using the function <code><a href="../../reference/getUMAP.html">getUMAP()</a></code>, which is a wrapper of <code><a href="https://rdrr.io/pkg/scater/man/runUMAP.html">scater::calculateUMAP()</a></code> method. The result will be saved in <code>reducedDim</code> slot.</p>
+<p>Following the steps above, we will now use <code>useReducedDim</code> argument to pass the PCA embedding just generated to the function. This wrapper function also allows <code>useAssay</code> or <code>useAltExp</code> + <code>useAssay</code> method, while providing an option of running PCA dimension reduction on the expression matrix prior to the UMAP computation. In this way, however, the PCA will be done by <code>scater</code>, thus cannot be customized.</p>
 <p>SCTK also has the function for t-distributed Stochastic Neighbor Embedding (tSNE) method to create 2-D embedding for visualization, <code><a href="../../reference/getTSNE.html">getTSNE()</a></code>, where the general arguments for inputting a matrix work in the similar way.</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/runDimReduce.html">runDimReduce</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, method <span class="op">=</span> <span class="st">"uwotUMAP"</span>, useReducedDim <span class="op">=</span> <span class="st">"PCA"</span>, reducedDimName <span class="op">=</span> <span class="st">"UMAP"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/runDimReduce.html">runDimReduce</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, method <span class="op">=</span> <span class="st">"scaterUMAP"</span>, useReducedDim <span class="op">=</span> <span class="st">"PCA"</span>, reducedDimName <span class="op">=</span> <span class="st">"UMAP"</span><span class="op">)</span></code></pre></div>
 <p><code><a href="../../reference/plotSCEDimReduceColData.html">plotSCEDimReduceColData()</a></code> is a generic plotting function that use the values stored in <code>reducedDim</code> slot as the axis to make 2-D scatter plots, and use the variables stored in <code>colData</code> slot to label each cell, by colors or shapes.</p>
 <p>Now, with the clustering result labeled for each cell and stored in the <code>colData</code> slot. We can plot the UMAP generated previously, with the clustering result labeled.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
@@ -381,26 +381,28 @@
                                  minClustExprPerc <span class="op">=</span> <span class="fl">0.5</span>, maxCtrlExprPerc <span class="op">=</span> <span class="fl">0.4</span>,
                                  minMeanExpr <span class="op">=</span> <span class="fl">0</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">topMarkers</span>, <span class="fl">10</span><span class="op">)</span></code></pre></div>
-<pre><code>##           Gene   Log2_FC        Pvalue           FDR cluster clusterExprPerc
-## CST3      CST3 3.1226757  1.715335e-89  2.807832e-85       1       1.0000000
-## S100A91 S100A9 4.4606995 1.163272e-138 1.269440e-134       2       0.9931741
-## NKG7      NKG7 4.3346353  3.033295e-79  9.930400e-75       3       1.0000000
-## CD79A    CD79A 2.2750095 8.153307e-145 6.673074e-141       4       0.9335347
-## PPBP      PPBP 5.6252950  2.750979e-07  1.585936e-03       5       1.0000000
-## IL7R      IL7R 0.6596116  7.433999e-37  1.872110e-33       6       0.6972281
-## LST12     LST1 2.9220617  2.282925e-67  1.868460e-63       7       1.0000000
-## CCL52     CCL5 2.8645460 1.758310e-105 5.756355e-101       8       0.9492754
-## CD3D2     CD3D 0.8091627  2.801816e-73  1.994040e-70       9       0.8556231
-##         ControlExprPerc clusterAveExpr
-## CST3         0.33576642       3.952828
-## S100A91      0.27131439       5.009483
-## NKG7         0.24947851       4.861231
-## CD79A        0.04245709       2.319663
-## PPBP         0.02366864       5.651527
-## IL7R         0.33236994       1.153092
-## LST12        0.31524441       3.556905
-## CCL52        0.23182019       3.324227
-## CD3D2        0.39692634       1.535737</code></pre>
+<pre><code>##          Gene   Log2_FC        Pvalue           FDR cluster clusterExprPerc
+## 26825    CCL5 2.8999759 6.779881e-117 2.219598e-112       1       0.9503311
+## 30657   CD79A 2.2883344 3.742727e-146 3.063235e-142       2       0.9339339
+## 10609    LST1 2.9397557  2.206746e-76  2.408148e-72       3       1.0000000
+## 19561  S100A9 4.2438871 1.974645e-212 3.232296e-208       4       0.9956710
+## 7697     PPBP 5.6289542  2.756169e-07  1.584050e-03       5       1.0000000
+## 198021   CD3D 0.8464034  1.546235e-81  1.332122e-78       6       0.8592163
+## 87642    IL7R 0.6969555  1.665336e-38  4.956342e-35       7       0.7331731
+## 288182   CST3 3.2834760  3.008939e-15  1.407238e-11       8       1.0000000
+## 310761   NKG7 4.2787416  5.525022e-76  1.808782e-71       9       1.0000000
+## 83561   HMGB2 2.3275147  3.495531e-05  3.919157e-02      10       0.8888889
+##        ControlExprPerc clusterAveExpr
+## 26825       0.22524532       3.326855
+## 30657       0.04025328       2.329344
+## 10609       0.30952381       3.553182
+## 19561       0.21325648       4.537893
+## 7697        0.02328335       5.655017
+## 198021      0.38706199       1.555283
+## 87642       0.33317669       1.196185
+## 288182      0.38663484       4.344634
+## 310761      0.25239484       4.819407
+## 83561       0.31755424       2.709119</code></pre>
 <p>For visualization, SCTK has a specific heatmap plotting function for detected markers. The heatmap will take the log-normalized feature expression matrix for the values, and subset the features to only the top markers of each cluster. For the organization of the heatmap, the function groups the markers by the belonging to the clusters, and groups the cells, obviously, by clusters. Inside the grouping, the function finally performs the default hierarchical clustering.</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">markerHm</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/plotMarkerDiffExp.html">plotMarkerDiffExp</a></span><span class="op">(</span><span class="va">sce</span>, topN <span class="op">=</span> <span class="fl">5</span>, log2fcThreshold <span class="op">=</span> <span class="fl">0</span>, fdrThreshold <span class="op">=</span> <span class="fl">0.05</span>,

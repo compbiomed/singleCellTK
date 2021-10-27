@@ -6,7 +6,13 @@
 Computes ICA on the input sce object and stores the calculated independent
 components within the sce object}
 \usage{
-seuratICA(inSCE, useAssay, reducedDimName = "seuratICA", nics = 20)
+seuratICA(
+  inSCE,
+  useAssay,
+  reducedDimName = "seuratICA",
+  features = NULL,
+  nics = 20
+)
 }
 \arguments{
 \item{inSCE}{(sce) object on which to compute ICA}
@@ -15,6 +21,10 @@ seuratICA(inSCE, useAssay, reducedDimName = "seuratICA", nics = 20)
 
 \item{reducedDimName}{Name of new reducedDims object containing Seurat ICA
 Default \code{seuratICA}.}
+
+\item{features}{Specify the feature names or rownames which should be used
+for computation of ICA. Default is \code{NULL} which will use the previously
+stored variable features.}
 
 \item{nics}{Number of independent components to compute. Default \code{20}.}
 }

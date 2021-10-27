@@ -12,14 +12,15 @@ getUMAP(
   useReducedDim = NULL,
   sample = NULL,
   reducedDimName = "UMAP",
-  logNorm = FALSE,
+  logNorm = TRUE,
   nNeighbors = 30,
   nIterations = 200,
   alpha = 1,
   minDist = 0.5,
   spread = 5,
   pca = TRUE,
-  initialDims = 50
+  initialDims = 50,
+  nTop = 2000
 )
 }
 \arguments{
@@ -44,12 +45,12 @@ coordinates obtained from this method. Default \code{"UMAP"}.}
 
 \item{logNorm}{Whether the counts will need to be log-normalized prior to
 generating the UMAP via \code{\link{logNormCounts}}. Will not normalize when
-using \code{useReducedDim}. Default \code{FALSE}.}
+using \code{useReducedDim}. Default \code{TRUE}.}
 
 \item{nNeighbors}{The size of local neighborhood used for manifold
 approximation. Larger values result in more global views of the manifold,
 while smaller values result in more local data being preserved. Default
-\code{30}. See `?uwot::umap` for more information.}
+\code{30}. See `?scater::calculateUMAP` for more information.}
 
 \item{nIterations}{The number of iterations performed during layout
 optimization. Default is \code{200}.}
@@ -61,17 +62,20 @@ Default is \code{1}.}
 Smaller values will result in a more clustered/clumped embedding where nearby
 points on the manifold are drawn closer together, while larger values will
 result on a more even dispersal of points. Default \code{0.5}. See
-`?uwot::umap` for more information.}
+`?scater::calculateUMAP` for more information.}
 
 \item{spread}{The effective scale of embedded points. In combination with
 minDist, this determines how clustered/clumped the embedded points are.
-Default \code{5}. See `?uwot::umap` for more information.}
+Default \code{5}. See `?scater::calculateUMAP` for more information.}
 
 \item{pca}{Logical. Whether to perform dimension reduction with PCA before
 UMAP. Will not perform PCA if using \code{useReducedDim}. Default \code{TRUE}}
 
 \item{initialDims}{Number of dimensions from PCA to use as input in UMAP.
 Default \code{50}.}
+
+\item{nTop}{Number of features with the highest variances to use for
+dimensionality reduction. Default \code{2000}.}
 }
 \value{
 A \linkS4class{SingleCellExperiment} object with UMAP computation

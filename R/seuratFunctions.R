@@ -232,8 +232,14 @@ seuratFindHVG <- function(inSCE, useAssay = "counts",
 #' @importFrom SingleCellExperiment reducedDim<-
 seuratPCA <- function(inSCE, useAssay = "seuratScaledData",
                       reducedDimName = "seuratPCA", nPCs = 20, features = NULL,  verbose = TRUE) {
-  seuratObject <- Seurat::RunPCA(convertSCEToSeurat(inSCE,
-                                                    scaledAssay = useAssay),
+  seuratObject <- convertSCEToSeurat(inSCE, scaledAssay = useAssay)
+  
+  if(length(Seurat::VariableFeatures(seuratObject)) == 0
+     && is.null(features)){
+    features <- rownames(inSCE)
+  }
+  
+  seuratObject <- Seurat::RunPCA(seuratObject,
                                  npcs = as.double(nPCs), verbose = verbose, features = features)
   inSCE <- .addSeuratToMetaDataSCE(inSCE, seuratObject)
 
@@ -251,6 +257,9 @@ seuratPCA <- function(inSCE, useAssay = "seuratScaledData",
 #' @param useAssay Assay containing scaled counts to use in ICA.
 #' @param reducedDimName Name of new reducedDims object containing Seurat ICA
 #' Default \code{seuratICA}.
+#' @param features Specify the feature names or rownames which should be used
+#'  for computation of ICA. Default is \code{NULL} which will use the previously
+#'  stored variable features.
 #' @param nics Number of independent components to compute. Default \code{20}.
 #' @examples
 #' data(scExample, package = "singleCellTK")
@@ -265,10 +274,17 @@ seuratPCA <- function(inSCE, useAssay = "seuratScaledData",
 #' @export
 #' @importFrom SingleCellExperiment reducedDim<-
 seuratICA <- function(inSCE, useAssay,
-                      reducedDimName = "seuratICA", nics = 20) {
-  seuratObject <- Seurat::RunICA(convertSCEToSeurat(inSCE,
-                                                    scaledAssay = useAssay),
-                                 nics = as.double(nics), verbose = FALSE)
+                      reducedDimName = "seuratICA", features = NULL, nics = 20) {
+  
+  seuratObject <- convertSCEToSeurat(inSCE, scaledAssay = useAssay)
+  
+  if(length(Seurat::VariableFeatures(seuratObject)) == 0
+     && is.null(features)){
+    features <- rownames(inSCE)
+  }
+  
+  seuratObject <- Seurat::RunICA(seuratObject,
+                                 nics = as.double(nics), features = features, verbose = FALSE)
   inSCE <- .addSeuratToMetaDataSCE(inSCE, seuratObject)
 
   temp <- seuratObject@reductions$ica@cell.embeddings

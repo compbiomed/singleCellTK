@@ -8,16 +8,10 @@
 #' @export
 #'
 expDeleteDataTag <- function(inSCE, assay){
-  for(i in seq(length(S4Vectors::metadata(inSCE)$assayType))){
-    matchedIndex <- match(assay, S4Vectors::metadata(inSCE)$assayType[[i]])
-    if(!is.na(matchedIndex)){
-      if(length(S4Vectors::metadata(inSCE)$assayType[[i]]) == 1){
-        S4Vectors::metadata(inSCE)$assayType[[i]] <- NULL
-      }
-      else{
-        S4Vectors::metadata(inSCE)$assayType[[i]] <- S4Vectors::metadata(inSCE)$assayType[[i]][-matchedIndex]
-      }
-    }
+  if(!is.null(S4Vectors::metadata(inSCE)$assayType)){
+    tbl <- S4Vectors::metadata(inSCE)$assayType
+    tbl <- tbl %>% dplyr::filter(!.data$assayName %in% assay)
+    S4Vectors::metadata(inSCE)$assayType <- tbl
   }
   return(inSCE)
 }
@@ -61,6 +55,7 @@ expSetDataTag <- function(inSCE, assayType, assays){
 #' parameters.
 #' @importFrom stats filter
 #' @importFrom tibble tibble
+#' @importFrom rlang .data
 #' @export
 #'
 expTaggedData <- function(inSCE, tags = NULL, redDims = FALSE, recommended = NULL, showTags = TRUE){
@@ -68,7 +63,7 @@ expTaggedData <- function(inSCE, tags = NULL, redDims = FALSE, recommended = NUL
   tbl <- S4Vectors::metadata(inSCE)$assayType 
   
   if(!is.null(tags)){
-    tbl %>% filter(assayTag %in% tags)
+    tbl <- tbl %>% dplyr::filter(.data$assayTag %in% tags)
   }
   
   if(redDims){
