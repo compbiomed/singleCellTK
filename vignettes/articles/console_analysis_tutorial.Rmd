@@ -34,7 +34,7 @@ sce <- dedupRowNames(sce)
 
 Quality control and filtering of cells is often needed before down-stream analyses such as dimensionality reduction and clustering. Typical filtering procedures include exclusion of poor quality cells with low numbers of counts/UMIs, estimation and removal of ambient RNA, and identification of potential doublet/multiplets. Many tools and packages are available to perform these operations and users are free to apply their tool(s) of choice. 
 
-To perform QC, we suggest using the `runCellQC()` function. This is a wrapper for several methods for calculation of QC metrics, doublet detection, and estimation of ambient RNA. Below is a quick example of how to perform standard QC before heading to downstream analyses. If you have another preferred approach or your data has already been QC’ed, you can move to [Feature Selection section](#). For this tutorial, we will only run one doublet detection algorithm ([scDblFinder](https://bioconductor.org/packages/release/bioc/html/scDblFinder.html)) and one decontamination algorithm ([decontX](https://rdrr.io/bioc/celda/man/decontX.html)). For a full list of algorithms that this function runs by default, see ?runCellQC. We will also quantify the percentage of mitochondrial genes in each cell as this is often used as a measure of cell viability. 
+To perform QC, we suggest using the `runCellQC()` function. This is a wrapper for several methods for calculation of QC metrics, doublet detection, and estimation of ambient RNA. Below is a quick example of how to perform standard QC before heading to downstream analyses. If you have another preferred approach or your data has already been QC’ed, you can move to [Feature Selection section](#variable-feature-selection-1). For this tutorial, we will only run one doublet detection algorithm ([scDblFinder](https://bioconductor.org/packages/release/bioc/html/scDblFinder.html)) and one decontamination algorithm ([decontX](https://rdrr.io/bioc/celda/man/decontX.html)). For a full list of algorithms that this function runs by default, see ?runCellQC. We will also quantify the percentage of mitochondrial genes in each cell as this is often used as a measure of cell viability. 
 
 ```{R qc, message=FALSE, warning=FALSE, results='hold'}
 # Get list of mitochondrial genes
@@ -190,9 +190,10 @@ head(topMarkers, 10)
 For visualization, SCTK has a specific heatmap plotting function for detected markers. The heatmap will take the log-normalized feature expression matrix for the values, and subset the features to only the top markers of each cluster. For the organization of the heatmap, the function groups the markers by the belonging to the clusters, and groups the cells, obviously, by clusters. Inside the grouping, the function finally performs the default hierarchical clustering. 
 
 ```{R markerHeatmap, message=FALSE, warning=FALSE, results="hold", fig.height= 8, fig.width=9}
-markerHm <- plotMarkerDiffExp(sce, topN = 5, log2fcThreshold = 0, fdrThreshold = 0.05,
-                              minClustExprPerc = 0.5, maxCtrlExprPerc = 0.4,
-                              minMeanExpr = 0, rowLabel = TRUE)
+markerHm <- plotMarkerDiffExp(sce, topN = 5, log2fcThreshold = 0, 
+                              fdrThreshold = 0.05, minClustExprPerc = 0.5, 
+                              maxCtrlExprPerc = 0.4, minMeanExpr = 0, 
+                              rowLabel = TRUE)
 ```
 
 ### Customized Differential Expression Analysis
