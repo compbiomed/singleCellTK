@@ -14,12 +14,6 @@ test_that(desc = "Testing Limma Batch Correction", {
   testthat::expect_is(p, "gtable")
 })
 
-test_that(desc = "Testing BBKNN", {
-  sceBatches <- runBBKNN(inSCE = sceBatches)
-
-  testthat::expect_true("BBKNN" %in% reducedDimNames(sceBatches))
-})
-
 test_that(desc = "Testing ComBat_seq without covariate", {
   sceBatches <- runComBatSeq(inSCE = sceBatches, assayName = "CBS1")
 
@@ -39,8 +33,13 @@ test_that(desc = "Testing MNN", {
   testthat::expect_true("MNN" %in% assayNames(sceBatches))
 })
 
-test_that(desc = "Testing SCANORAMA", {
-  sceBatches <- runSCANORAMA(inSCE = sceBatches)
-
-  testthat::expect_true("SCANORAMA" %in% assayNames(sceBatches))
-})
+if (isTRUE(py_available(initialize = FALSE))) {
+  test_that(desc = "Testing BBKNN", {
+    sceBatches <- runBBKNN(inSCE = sceBatches)
+    testthat::expect_true("BBKNN" %in% reducedDimNames(sceBatches))
+  })
+  test_that(desc = "Testing SCANORAMA", {
+    sceBatches <- runSCANORAMA(inSCE = sceBatches)
+    testthat::expect_true("SCANORAMA" %in% assayNames(sceBatches))
+  })
+}
