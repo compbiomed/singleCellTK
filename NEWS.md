@@ -1,4 +1,4 @@
-Changes in Version 2.4.0 (2021-10-24)
+Changes in Version 2.4.0 (2021-10-27)
 ================================================================================
 * Updated version to match Bioconductor
 
