@@ -32,7 +32,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.3.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.4.0</span>
       </span>
     </div>
 
@@ -213,7 +213,7 @@
 
       
 
-      </header><script src="console_analysis_tutorial_files/header-attrs-2.9/header-attrs.js"></script><div class="row">
+      </header><script src="console_analysis_tutorial_files/header-attrs-2.7/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>SingleCellTK - Console Analysis Tutorial</h1>
@@ -251,7 +251,7 @@
 <h3 class="hasAnchor">
 <a href="#running-qc-methods" class="anchor"></a>Running QC methods</h3>
 <p>Quality control and filtering of cells is often needed before down-stream analyses such as dimensionality reduction and clustering. Typical filtering procedures include exclusion of poor quality cells with low numbers of counts/UMIs, estimation and removal of ambient RNA, and identification of potential doublet/multiplets. Many tools and packages are available to perform these operations and users are free to apply their tool(s) of choice.</p>
-<p>To perform QC, we suggest using the <code><a href="../../reference/runCellQC.html">runCellQC()</a></code> function. This is a wrapper for several methods for calculation of QC metrics, doublet detection, and estimation of ambient RNA. Below is a quick example of how to perform standard QC before heading to downstream analyses. If you have another preferred approach or your data has already been QC’ed, you can move to <a href="#">Feature Selection section</a>. For this tutorial, we will only run one doublet detection algorithm (<a href="https://bioconductor.org/packages/release/bioc/html/scDblFinder.html">scDblFinder</a>) and one decontamination algorithm (<a href="https://rdrr.io/bioc/celda/man/decontX.html">decontX</a>). For a full list of algorithms that this function runs by default, see ?runCellQC. We will also quantify the percentage of mitochondrial genes in each cell as this is often used as a measure of cell viability.</p>
+<p>To perform QC, we suggest using the <code><a href="../../reference/runCellQC.html">runCellQC()</a></code> function. This is a wrapper for several methods for calculation of QC metrics, doublet detection, and estimation of ambient RNA. Below is a quick example of how to perform standard QC before heading to downstream analyses. If you have another preferred approach or your data has already been QC’ed, you can move to <a href="#variable-feature-selection-1">Feature Selection section</a>. For this tutorial, we will only run one doublet detection algorithm (<a href="https://bioconductor.org/packages/release/bioc/html/scDblFinder.html">scDblFinder</a>) and one decontamination algorithm (<a href="https://rdrr.io/bioc/celda/man/decontX.html">decontX</a>). For a full list of algorithms that this function runs by default, see ?runCellQC. We will also quantify the percentage of mitochondrial genes in each cell as this is often used as a measure of cell viability.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Get list of mitochondrial genes</span>
 <span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/importMitoGeneSet.html">importMitoGeneSet</a></span><span class="op">(</span><span class="va">sce</span>, reference <span class="op">=</span> <span class="st">"human"</span>, id <span class="op">=</span> <span class="st">"symbol"</span>,
@@ -293,7 +293,7 @@
 
 <span class="co"># See number of cells after filtering</span>
 <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">ncol</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1] 2544</code></pre>
+<pre><code>## [1] 2545</code></pre>
 </div>
 </div>
 <div id="normalization" class="section level2">
@@ -382,32 +382,31 @@
                                  minMeanExpr <span class="op">=</span> <span class="fl">0</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">topMarkers</span>, <span class="fl">10</span><span class="op">)</span></code></pre></div>
 <pre><code>##          Gene   Log2_FC        Pvalue           FDR cluster clusterExprPerc
-## 26825    CCL5 2.8999759 6.779881e-117 2.219598e-112       1       0.9503311
-## 30657   CD79A 2.2883344 3.742727e-146 3.063235e-142       2       0.9339339
-## 10609    LST1 2.9397557  2.206746e-76  2.408148e-72       3       1.0000000
-## 19561  S100A9 4.2438871 1.974645e-212 3.232296e-208       4       0.9956710
-## 7697     PPBP 5.6289542  2.756169e-07  1.584050e-03       5       1.0000000
-## 198021   CD3D 0.8464034  1.546235e-81  1.332122e-78       6       0.8592163
-## 87642    IL7R 0.6969555  1.665336e-38  4.956342e-35       7       0.7331731
-## 288182   CST3 3.2834760  3.008939e-15  1.407238e-11       8       1.0000000
-## 310761   NKG7 4.2787416  5.525022e-76  1.808782e-71       9       1.0000000
-## 83561   HMGB2 2.3275147  3.495531e-05  3.919157e-02      10       0.8888889
+## 28818    CST3 3.1226757  1.715335e-89  2.807832e-85       1       1.0000000
+## 19561  S100A9 4.4606995 1.163272e-138 1.269440e-134       2       0.9931741
+## 31076    NKG7 4.3346353  3.033295e-79  9.930400e-75       3       1.0000000
+## 30657   CD79A 2.2750095 8.153307e-145 6.673074e-141       4       0.9335347
+## 7697     PPBP 5.6252950  2.750979e-07  1.585936e-03       5       1.0000000
+## 8764     IL7R 0.6596116  7.433999e-37  1.872110e-33       6       0.6972281
+## 106092   LST1 2.9220617  2.282925e-67  1.868460e-63       7       1.0000000
+## 268252   CCL5 2.8645460 1.758310e-105 5.756355e-101       8       0.9492754
+## 198022   CD3D 0.8091627  2.801816e-73  1.994040e-70       9       0.8556231
 ##        ControlExprPerc clusterAveExpr
-## 26825       0.22524532       3.326855
-## 30657       0.04025328       2.329344
-## 10609       0.30952381       3.553182
-## 19561       0.21325648       4.537893
-## 7697        0.02328335       5.655017
-## 198021      0.38706199       1.555283
-## 87642       0.33317669       1.196185
-## 288182      0.38663484       4.344634
-## 310761      0.25239484       4.819407
-## 83561       0.31755424       2.709119</code></pre>
+## 28818       0.33576642       3.952828
+## 19561       0.27131439       5.009483
+## 31076       0.24947851       4.861231
+## 30657       0.04245709       2.319663
+## 7697        0.02366864       5.651527
+## 8764        0.33236994       1.153092
+## 106092      0.31524441       3.556905
+## 268252      0.23182019       3.324227
+## 198022      0.39692634       1.535737</code></pre>
 <p>For visualization, SCTK has a specific heatmap plotting function for detected markers. The heatmap will take the log-normalized feature expression matrix for the values, and subset the features to only the top markers of each cluster. For the organization of the heatmap, the function groups the markers by the belonging to the clusters, and groups the cells, obviously, by clusters. Inside the grouping, the function finally performs the default hierarchical clustering.</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">markerHm</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/plotMarkerDiffExp.html">plotMarkerDiffExp</a></span><span class="op">(</span><span class="va">sce</span>, topN <span class="op">=</span> <span class="fl">5</span>, log2fcThreshold <span class="op">=</span> <span class="fl">0</span>, fdrThreshold <span class="op">=</span> <span class="fl">0.05</span>,
-                              minClustExprPerc <span class="op">=</span> <span class="fl">0.5</span>, maxCtrlExprPerc <span class="op">=</span> <span class="fl">0.4</span>,
-                              minMeanExpr <span class="op">=</span> <span class="fl">0</span>, rowLabel <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="va">markerHm</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/plotMarkerDiffExp.html">plotMarkerDiffExp</a></span><span class="op">(</span><span class="va">sce</span>, topN <span class="op">=</span> <span class="fl">5</span>, log2fcThreshold <span class="op">=</span> <span class="fl">0</span>, 
+                              fdrThreshold <span class="op">=</span> <span class="fl">0.05</span>, minClustExprPerc <span class="op">=</span> <span class="fl">0.5</span>, 
+                              maxCtrlExprPerc <span class="op">=</span> <span class="fl">0.4</span>, minMeanExpr <span class="op">=</span> <span class="fl">0</span>, 
+                              rowLabel <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 <p><img src="console_analysis_tutorial_files/figure-html/markerHeatmap-1.png" width="864"></p>
 </div>
 <div id="customized-differential-expression-analysis" class="section level3">

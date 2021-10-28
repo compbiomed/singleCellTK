@@ -32,7 +32,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.3.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.4.0</span>
       </span>
     </div>
 
@@ -213,7 +213,7 @@
 
       
 
-      </header><script src="visualization_files/header-attrs-2.9/header-attrs.js"></script><div class="row">
+      </header><script src="visualization_files/header-attrs-2.7/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Visualization</h1>
@@ -304,7 +304,7 @@ div.offset { background-color:inherit ; border-radius: 5px; margin-left: 15px;}
 <span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span><span class="va">sce</span><span class="op">$</span><span class="va">Seurat_louvain_Resolution0.8</span><span class="op">)</span></code></pre></div>
 <pre><code>## 
 ##   0   1   2   3   4   5   6   7   8   9  10 
-## 524 493 349 297 256 236 181 159 155  36  14</code></pre>
+## 550 486 349 303 257 236 162 158 149  36  14</code></pre>
 </details><div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/seuratRunUMAP.html">seuratRunUMAP</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span>
 <span class="fu"><a href="../../reference/plotSCEDimReduceColData.html">plotSCEDimReduceColData</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, reducedDimName <span class="op">=</span> <span class="st">"seuratUMAP"</span>, colorBy <span class="op">=</span> <span class="st">"Seurat_louvain_Resolution0.8"</span>, legendTitle <span class="op">=</span> <span class="st">"Seurat Cluster"</span>, title <span class="op">=</span> <span class="st">"Clustering on UMAP"</span><span class="op">)</span></code></pre></div>
