@@ -32,7 +32,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.3.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.4.0</span>
       </span>
     </div>
 
@@ -213,7 +213,7 @@
 
       
 
-      </header><script src="cnsl_cellqc_files/header-attrs-2.9/header-attrs.js"></script><script src="cnsl_cellqc_files/kePrint-0.0.1/kePrint.js"></script><link href="cnsl_cellqc_files/lightable-0.0.1/lightable.css" rel="stylesheet">
+      </header><script src="cnsl_cellqc_files/header-attrs-2.7/header-attrs.js"></script><script src="cnsl_cellqc_files/kePrint-0.0.1/kePrint.js"></script><link href="cnsl_cellqc_files/lightable-0.0.1/lightable.css" rel="stylesheet">
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
@@ -279,10 +279,10 @@ text-align: justify}
 
 <span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">12345</span><span class="op">)</span>
 <span class="va">pbmc.combined</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/runCellQC.html">runCellQC</a></span><span class="op">(</span><span class="va">pbmc.combined</span>, algorithms <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"QCMetrics"</span>, <span class="st">"scrublet"</span>, <span class="st">"scDblFinder"</span>, <span class="st">"cxds"</span>, <span class="st">"bcds"</span>, <span class="st">"cxds_bcds_hybrid"</span>, <span class="st">"doubletFinder"</span>, <span class="st">"decontX"</span><span class="op">)</span>, sample <span class="op">=</span> <span class="va">sample.vector</span>, collectionName <span class="op">=</span> <span class="st">"mito"</span><span class="op">)</span></code></pre></div>
-<pre><code>## [20:17:50] WARNING: amalgamation/../src/learner.cc:1095: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-## [20:18:20] WARNING: amalgamation/../src/learner.cc:1095: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-## [20:18:36] WARNING: amalgamation/../src/learner.cc:1095: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-## [20:19:04] WARNING: amalgamation/../src/learner.cc:1095: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.</code></pre>
+<pre><code>## [16:04:25] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+## [16:05:02] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+## [16:05:21] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+## [16:05:55] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.</code></pre>
 <p><br> If users choose to only run a specific set of algorithms, they can specify which to run with the <code>algorithms</code> parameter. By default, the <code><a href="../../reference/runCellQC.html">runCellQC()</a></code> will run <code>"QCMetrics"</code>, <code>"scDblFinder"</code>, <code>"cxds"</code>, <code>"bcds"</code>, <code>"cxds_bcds_hybrid"</code> and <code>"decontX"</code> algorithms by default. Besides, <code>"scrublet"</code> and <code>"doubletFinder"</code> are supported if our users want to run them.</p>
 <p>After running QC functions with SCTK, the output will be stored in the <code>colData</code> slot of the <code>SingleCellExperiment</code> object.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
@@ -367,7 +367,7 @@ scrublet_call
 <th style="text-align:left;">
 scDblFinder_sample
 </th>
-<th style="text-align:left;">
+<th style="text-align:right;">
 scDblFinder_cluster
 </th>
 <th style="text-align:left;">
@@ -377,7 +377,13 @@ scDblFinder_class
 scDblFinder_doublet_score
 </th>
 <th style="text-align:right;">
+scDblFinder_ratio
+</th>
+<th style="text-align:right;">
 scDblFinder_weighted
+</th>
+<th style="text-align:left;">
+scDblFinder_nearestClass
 </th>
 <th style="text-align:right;">
 scDblFinder_difficulty
@@ -494,7 +500,7 @@ pbmc3k
 2421
 </td>
 <td style="text-align:right;">
-0.1707317
+0.1606218
 </td>
 <td style="text-align:left;">
 FALSE
@@ -502,23 +508,29 @@ FALSE
 <td style="text-align:left;">
 pbmc3k
 </td>
-<td style="text-align:left;">
+<td style="text-align:right;">
 1
 </td>
 <td style="text-align:left;">
 singlet
 </td>
 <td style="text-align:right;">
-0.4827743
+0.5404512
 </td>
 <td style="text-align:right;">
-0.8104423
+0.82
 </td>
 <td style="text-align:right;">
-0.0510226
+0.8295422
+</td>
+<td style="text-align:left;">
+artificialDoublet
 </td>
 <td style="text-align:right;">
-0.0303611
+0.1078092
+</td>
+<td style="text-align:right;">
+0.0248409
 </td>
 <td style="text-align:left;">
 1+2
@@ -551,7 +563,7 @@ FALSE
 FALSE
 </td>
 <td style="text-align:right;">
-0.0330631
+0.0333002
 </td>
 <td style="text-align:left;">
 pbmc3k-1
@@ -628,7 +640,7 @@ pbmc3k
 4903
 </td>
 <td style="text-align:right;">
-0.1034483
+0.1147541
 </td>
 <td style="text-align:left;">
 FALSE
@@ -636,23 +648,29 @@ FALSE
 <td style="text-align:left;">
 pbmc3k
 </td>
-<td style="text-align:left;">
+<td style="text-align:right;">
 4
 </td>
 <td style="text-align:left;">
 singlet
 </td>
 <td style="text-align:right;">
-0.4283143
+0.2076700
 </td>
 <td style="text-align:right;">
-0.5054636
+0.48
 </td>
 <td style="text-align:right;">
-0.0114767
+0.5434718
+</td>
+<td style="text-align:left;">
+artificialDoublet
 </td>
 <td style="text-align:right;">
-0.1392021
+0.0333764
+</td>
+<td style="text-align:right;">
+0.1137545
 </td>
 <td style="text-align:left;">
 1+4
@@ -685,7 +703,7 @@ TRUE
 FALSE
 </td>
 <td style="text-align:right;">
-0.1377744
+0.1377323
 </td>
 <td style="text-align:left;">
 pbmc3k-2
@@ -839,10 +857,10 @@ pbmc3k-2
 ## Median counts                                          2197.0000 1873.0000
 ## Mean features detected                                  846.9900  748.0600
 ## Median features detected                                817.0000  716.0000
-## Scrublet - Number of doublets                            41.0000  132.0000
-## Scrublet - Percentage of doublets                         1.5200    2.4400
-## scDblFinder - Number of doublets                         83.0000  273.0000
-## scDblFinder - Percentage of doublets                      3.0700    5.0400
+## Scrublet - Number of doublets                            39.0000  130.0000
+## Scrublet - Percentage of doublets                         1.4400    2.4000
+## scDblFinder - Number of doublets                         55.0000  248.0000
+## scDblFinder - Percentage of doublets                      2.0400    4.5800
 ## DoubletFinder - Number of doublets, Resolution 1.5      202.0000  406.0000
 ## DoubletFinder - Percentage of doublets, Resolution 1.5    7.4800    7.4900
 ## CXDS - Number of doublets                               132.0000  294.0000
@@ -851,18 +869,18 @@ pbmc3k-2
 ## BCDS - Percentage of doublets                             5.5900    4.7400
 ## SCDS Hybrid - Number of doublets                        173.0000  301.0000
 ## SCDS Hybrid - Percentage of doublets                      6.4100    5.5500
-## DecontX - Mean contamination                              0.0808    0.0609
-## DecontX - Median contamination                            0.0550    0.0365
+## DecontX - Mean contamination                              0.0809    0.0609
+## DecontX - Median contamination                            0.0553    0.0365
 ##                                                            Total
 ## Number of Cells                                        8119.0000
 ## Mean counts                                            2140.5000
 ## Median counts                                          1988.0000
 ## Mean features detected                                  780.9600
 ## Median features detected                                750.0000
-## Scrublet - Number of doublets                           173.0000
-## Scrublet - Percentage of doublets                         2.1300
-## scDblFinder - Number of doublets                        356.0000
-## scDblFinder - Percentage of doublets                      4.3800
+## Scrublet - Number of doublets                           169.0000
+## Scrublet - Percentage of doublets                         2.0800
+## scDblFinder - Number of doublets                        303.0000
+## scDblFinder - Percentage of doublets                      3.7300
 ## DoubletFinder - Number of doublets, Resolution 1.5      608.0000
 ## DoubletFinder - Percentage of doublets, Resolution 1.5    7.4900
 ## CXDS - Number of doublets                               426.0000
@@ -872,7 +890,7 @@ pbmc3k-2
 ## SCDS Hybrid - Number of doublets                        474.0000
 ## SCDS Hybrid - Percentage of doublets                      5.8400
 ## DecontX - Mean contamination                              0.0675
-## DecontX - Median contamination                            0.0417</code></pre>
+## DecontX - Median contamination                            0.0418</code></pre>
 </div>
 </div>
 <div id="running-individual-qc-methods" class="section level3">
@@ -1151,151 +1169,145 @@ pbmc3k-2
 <div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co">#After filtering:</span>
 <span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span><span class="op">(</span><span class="va">pbmc.combined</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1] 32738  7933</code></pre>
+<pre><code>## [1] 32738  7937</code></pre>
 <p><br></p>
 <blockquote>
 <p>For performing QC on droplet-level raw count matrix with SCTK, please refer to our <a href="cnsl_dropletqc.html"><em>Droplet QC</em> documentation</a>.</p>
 </blockquote>
  <details><summary><b>Session Information</b></summary><div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
-<pre><code>## R version 4.1.1 (2021-08-10)
-## Platform: x86_64-pc-linux-gnu (64-bit)
-## Running under: Ubuntu 20.04.3 LTS
+<pre><code>## R version 4.0.4 (2021-02-15)
+## Platform: x86_64-w64-mingw32/x64 (64-bit)
+## Running under: Windows 10 x64 (build 19043)
 ## 
 ## Matrix products: default
-## BLAS:   /usr/lib/x86_64-linux-gnu/blas/libblas.so.3.9.0
-## LAPACK: /usr/lib/x86_64-linux-gnu/lapack/liblapack.so.3.9.0
 ## 
 ## locale:
-##  [1] LC_CTYPE=en_US.UTF-8          LC_NUMERIC=C                 
-##  [3] LC_TIME=en_US.UTF-8           LC_COLLATE=en_US.UTF-8       
-##  [5] LC_MONETARY=en_US.UTF-8       LC_MESSAGES=en_US.UTF-8      
-##  [7] LC_PAPER=en_US.UTF-8          LC_NAME=en_US.UTF-8          
-##  [9] LC_ADDRESS=en_US.UTF-8        LC_TELEPHONE=en_US.UTF-8     
-## [11] LC_MEASUREMENT=en_US.UTF-8    LC_IDENTIFICATION=en_US.UTF-8
+## [1] LC_COLLATE=Chinese (Simplified)_China.936 
+## [2] LC_CTYPE=Chinese (Simplified)_China.936   
+## [3] LC_MONETARY=Chinese (Simplified)_China.936
+## [4] LC_NUMERIC=C                              
+## [5] LC_TIME=Chinese (Simplified)_China.936    
 ## 
 ## attached base packages:
 ## [1] parallel  stats4    stats     graphics  grDevices utils     datasets 
 ## [8] methods   base     
 ## 
 ## other attached packages:
-##  [1] TENxPBMCData_1.10.0         HDF5Array_1.20.0           
-##  [3] rhdf5_2.36.0                dplyr_1.0.7                
-##  [5] singleCellTK_2.3.2          DelayedArray_0.18.0        
-##  [7] Matrix_1.3-4                SingleCellExperiment_1.14.1
-##  [9] SummarizedExperiment_1.22.0 Biobase_2.52.0             
-## [11] GenomicRanges_1.44.0        GenomeInfoDb_1.28.1        
-## [13] IRanges_2.26.0              S4Vectors_0.30.0           
-## [15] BiocGenerics_0.38.0         MatrixGenerics_1.4.0       
-## [17] matrixStats_0.59.0         
+##  [1] TENxPBMCData_1.8.0          HDF5Array_1.18.1           
+##  [3] rhdf5_2.34.0                dplyr_1.0.5                
+##  [5] singleCellTK_2.4.0          DelayedArray_0.16.2        
+##  [7] Matrix_1.3-3                SingleCellExperiment_1.12.0
+##  [9] SummarizedExperiment_1.20.0 Biobase_2.50.0             
+## [11] GenomicRanges_1.42.0        GenomeInfoDb_1.26.2        
+## [13] IRanges_2.24.1              S4Vectors_0.28.1           
+## [15] BiocGenerics_0.36.0         MatrixGenerics_1.2.1       
+## [17] matrixStats_0.58.0         
 ## 
 ## loaded via a namespace (and not attached):
 ##   [1] MCMCprecision_0.4.0           rappdirs_0.3.3               
-##   [3] scds_1.8.0                    scattermore_0.7              
-##   [5] R.methodsS3_1.8.1             SeuratObject_4.0.2           
-##   [7] ragg_1.1.3                    tidyr_1.1.3                  
+##   [3] scds_1.6.0                    scattermore_0.7              
+##   [5] R.methodsS3_1.8.1             SeuratObject_4.0.1           
+##   [7] ragg_1.1.1                    tidyr_1.1.3                  
 ##   [9] ggplot2_3.3.5                 bit64_4.0.5                  
-##  [11] knitr_1.33                    irlba_2.3.3                  
+##  [11] knitr_1.31                    irlba_2.3.3                  
 ##  [13] R.utils_2.10.1                data.table_1.14.0            
 ##  [15] rpart_4.1-15                  doParallel_1.0.16            
-##  [17] KEGGREST_1.32.0               RCurl_1.98-1.3               
-##  [19] generics_0.1.0                ScaledMatrix_1.0.0           
-##  [21] cowplot_1.1.1                 RSQLite_2.2.7                
-##  [23] combinat_0.0-8                RANN_2.6.1                   
-##  [25] future_1.21.0                 bit_4.0.4                    
-##  [27] webshot_0.5.2                 xml2_1.3.2                   
-##  [29] spatstat.data_2.1-0           httpuv_1.6.1                 
-##  [31] assertthat_0.2.1              viridis_0.6.1                
-##  [33] xfun_0.24                     jquerylib_0.1.4              
-##  [35] evaluate_0.14                 promises_1.2.0.1             
-##  [37] fansi_0.5.0                   assertive.files_0.0-2        
-##  [39] dbplyr_2.1.1                  igraph_1.2.6                 
-##  [41] DBI_1.1.1                     htmlwidgets_1.5.3            
-##  [43] spatstat.geom_2.2-2           purrr_0.3.4                  
-##  [45] ellipsis_0.3.2                RSpectra_0.16-0              
-##  [47] annotate_1.70.0               deldir_0.2-10                
-##  [49] sparseMatrixStats_1.4.0       vctrs_0.3.8                  
-##  [51] ROCR_1.0-11                   abind_1.4-5                  
-##  [53] RcppEigen_0.3.3.9.1           cachem_1.0.5                 
-##  [55] withr_2.4.2                   GSVAdata_1.28.0              
-##  [57] sctransform_0.3.2             scran_1.20.1                 
-##  [59] goftest_1.2-2                 svglite_2.0.0                
-##  [61] cluster_2.1.2                 ExperimentHub_2.0.0          
-##  [63] dotCall64_1.0-1               lazyeval_0.2.2               
-##  [65] crayon_1.4.1                  labeling_0.4.2               
-##  [67] edgeR_3.34.0                  pkgconfig_2.0.3              
-##  [69] nlme_3.1-152                  vipor_0.4.5                  
-##  [71] rlang_0.4.11                  globals_0.14.0               
-##  [73] lifecycle_1.0.0               miniUI_0.1.1.1               
-##  [75] filelock_1.0.2                dbscan_1.1-8                 
-##  [77] BiocFileCache_2.0.0           enrichR_3.0                  
-##  [79] rsvd_1.0.5                    AnnotationHub_3.0.1          
-##  [81] rprojroot_2.0.2               polyclip_1.10-0              
-##  [83] lmtest_0.9-38                 graph_1.70.0                 
-##  [85] Rhdf5lib_1.14.2               zoo_1.8-9                    
-##  [87] beeswarm_0.4.0                ggridges_0.5.3               
-##  [89] rjson_0.2.20                  png_0.1-7                    
-##  [91] viridisLite_0.4.0             bitops_1.0-7                 
-##  [93] R.oo_1.24.0                   KernSmooth_2.23-20           
-##  [95] spam_2.7-0                    rhdf5filters_1.4.0           
-##  [97] pROC_1.17.0.1                 Biostrings_2.60.1            
-##  [99] blob_1.2.1                    DelayedMatrixStats_1.14.0    
-## [101] stringr_1.4.0                 parallelly_1.26.1            
-## [103] gridGraphics_0.5-1            beachmat_2.8.0               
-## [105] scales_1.1.1                  memoise_2.0.0                
-## [107] GSEABase_1.54.0               magrittr_2.0.1               
-## [109] plyr_1.8.6                    ica_1.0-2                    
-## [111] zlibbioc_1.38.0               compiler_4.1.1               
-## [113] kableExtra_1.3.4              dqrng_0.3.0                  
-## [115] RColorBrewer_1.1-2            fitdistrplus_1.1-5           
-## [117] XVector_0.32.0                listenv_0.8.0                
-## [119] patchwork_1.1.1               pbapply_1.4-3                
-## [121] MASS_7.3-54                   mgcv_1.8-36                  
-## [123] tidyselect_1.1.1              stringi_1.7.2                
-## [125] textshaping_0.3.5             highr_0.9                    
-## [127] yaml_2.2.1                    assertive.numbers_0.0-2      
-## [129] BiocSingular_1.8.1            locfit_1.5-9.4               
-## [131] ggrepel_0.9.1                 grid_4.1.1                   
-## [133] sass_0.4.0                    tools_4.1.1                  
-## [135] future.apply_1.7.0            rstudioapi_0.13              
-## [137] foreach_1.5.1                 bluster_1.2.1                
-## [139] celda_1.8.1                   metapod_1.0.0                
-## [141] gridExtra_2.3                 farver_2.1.0                 
-## [143] assertive.types_0.0-3         Rtsne_0.15                   
-## [145] DropletUtils_1.12.1           digest_0.6.27                
-## [147] BiocManager_1.30.16           FNN_1.1.3                    
-## [149] shiny_1.6.0                   Rcpp_1.0.7                   
-## [151] scuttle_1.2.0                 BiocVersion_3.13.1           
-## [153] later_1.2.0                   RcppAnnoy_0.0.18             
-## [155] httr_1.4.2                    AnnotationDbi_1.54.1         
-## [157] assertive.properties_0.0-4    colorspace_2.0-2             
-## [159] rvest_1.0.0                   XML_3.99-0.6                 
-## [161] fs_1.5.0                      tensor_1.5                   
-## [163] reticulate_1.20               splines_4.1.1                
-## [165] fields_12.5                   uwot_0.1.10                  
-## [167] statmod_1.4.36                spatstat.utils_2.2-0         
-## [169] pkgdown_1.6.1                 scater_1.20.1                
-## [171] xgboost_1.4.1.1               plotly_4.9.4.1               
-## [173] systemfonts_1.0.2             xtable_1.8-4                 
-## [175] assertive.base_0.0-9          jsonlite_1.7.2               
-## [177] R6_2.5.0                      pillar_1.6.1                 
-## [179] htmltools_0.5.1.1             mime_0.11                    
-## [181] glue_1.4.2                    fastmap_1.1.0                
-## [183] BiocParallel_1.26.1           BiocNeighbors_1.10.0         
-## [185] interactiveDisplayBase_1.30.0 codetools_0.2-18             
-## [187] maps_3.3.0                    fishpond_1.8.0               
-## [189] utf8_1.2.1                    lattice_0.20-44              
-## [191] bslib_0.2.5.1                 spatstat.sparse_2.0-0        
-## [193] tibble_3.1.2                  multipanelfigure_2.1.2       
-## [195] curl_4.3.2                    ggbeeswarm_0.6.0             
-## [197] leiden_0.3.8                  scDblFinder_1.6.0            
-## [199] gtools_3.9.2                  magick_2.7.2                 
-## [201] survival_3.2-13               limma_3.48.1                 
-## [203] rmarkdown_2.9                 desc_1.3.0                   
-## [205] munsell_0.5.0                 GenomeInfoDbData_1.2.6       
-## [207] iterators_1.0.13              reshape2_1.4.4               
-## [209] gtable_0.3.0                  spatstat.core_2.2-0          
-## [211] Seurat_4.0.3</code></pre>
+##  [17] RCurl_1.98-1.2                generics_0.1.0               
+##  [19] cowplot_1.1.1                 RSQLite_2.2.3                
+##  [21] combinat_0.0-8                RANN_2.6.1                   
+##  [23] future_1.21.0                 bit_4.0.4                    
+##  [25] webshot_0.5.2                 xml2_1.3.2                   
+##  [27] spatstat.data_2.0-0           httpuv_1.5.5                 
+##  [29] assertthat_0.2.1              viridis_0.5.1                
+##  [31] xfun_0.21                     jquerylib_0.1.3              
+##  [33] evaluate_0.14                 promises_1.2.0.1             
+##  [35] fansi_0.4.2                   assertive.files_0.0-2        
+##  [37] dbplyr_2.1.0                  igraph_1.2.6                 
+##  [39] DBI_1.1.1                     htmlwidgets_1.5.3            
+##  [41] spatstat.geom_2.0-1           purrr_0.3.4                  
+##  [43] ellipsis_0.3.1                RSpectra_0.16-0              
+##  [45] annotate_1.68.0               deldir_0.2-10                
+##  [47] sparseMatrixStats_1.2.1       vctrs_0.3.6                  
+##  [49] ROCR_1.0-11                   abind_1.4-5                  
+##  [51] cachem_1.0.4                  RcppEigen_0.3.3.9.1          
+##  [53] withr_2.4.1                   GSVAdata_1.26.0              
+##  [55] sctransform_0.3.2             scran_1.18.5                 
+##  [57] goftest_1.2-2                 svglite_2.0.0                
+##  [59] cluster_2.1.0                 ExperimentHub_1.16.0         
+##  [61] dotCall64_1.0-1               lazyeval_0.2.2               
+##  [63] crayon_1.4.1                  labeling_0.4.2               
+##  [65] edgeR_3.32.1                  pkgconfig_2.0.3              
+##  [67] nlme_3.1-152                  vipor_0.4.5                  
+##  [69] rlang_0.4.10                  globals_0.14.0               
+##  [71] lifecycle_1.0.0               miniUI_0.1.1.1               
+##  [73] dbscan_1.1-6                  BiocFileCache_1.14.0         
+##  [75] enrichR_3.0                   rsvd_1.0.3                   
+##  [77] AnnotationHub_2.22.0          rprojroot_2.0.2              
+##  [79] polyclip_1.10-0               lmtest_0.9-38                
+##  [81] graph_1.68.0                  Rhdf5lib_1.12.1              
+##  [83] zoo_1.8-8                     beeswarm_0.3.1               
+##  [85] ggridges_0.5.3                rjson_0.2.20                 
+##  [87] png_0.1-7                     viridisLite_0.3.0            
+##  [89] bitops_1.0-6                  R.oo_1.24.0                  
+##  [91] KernSmooth_2.23-18            spam_2.6-0                   
+##  [93] rhdf5filters_1.2.0            pROC_1.17.0.1                
+##  [95] blob_1.2.1                    DelayedMatrixStats_1.12.3    
+##  [97] stringr_1.4.0                 parallelly_1.23.0            
+##  [99] gridGraphics_0.5-1            beachmat_2.6.4               
+## [101] scales_1.1.1                  memoise_2.0.0                
+## [103] GSEABase_1.52.1               magrittr_2.0.1               
+## [105] plyr_1.8.6                    ica_1.0-2                    
+## [107] zlibbioc_1.36.0               compiler_4.0.4               
+## [109] kableExtra_1.3.4              dqrng_0.2.1                  
+## [111] RColorBrewer_1.1-2            fitdistrplus_1.1-3           
+## [113] XVector_0.30.0                listenv_0.8.0                
+## [115] patchwork_1.1.1               pbapply_1.4-3                
+## [117] MASS_7.3-53                   mgcv_1.8-33                  
+## [119] tidyselect_1.1.0              stringi_1.5.3                
+## [121] textshaping_0.3.1             highr_0.8                    
+## [123] yaml_2.2.1                    assertive.numbers_0.0-2      
+## [125] BiocSingular_1.6.0            locfit_1.5-9.4               
+## [127] ggrepel_0.9.1                 grid_4.0.4                   
+## [129] sass_0.3.1                    tools_4.0.4                  
+## [131] future.apply_1.7.0            rstudioapi_0.13              
+## [133] bluster_1.0.0                 foreach_1.5.1                
+## [135] celda_1.9.1                   gridExtra_2.3                
+## [137] farver_2.1.0                  assertive.types_0.0-3        
+## [139] Rtsne_0.15                    DropletUtils_1.10.3          
+## [141] digest_0.6.27                 BiocManager_1.30.10          
+## [143] FNN_1.1.3                     shiny_1.6.0                  
+## [145] Rcpp_1.0.6                    scuttle_1.0.4                
+## [147] BiocVersion_3.12.0            later_1.1.0.1                
+## [149] RcppAnnoy_0.0.18              httr_1.4.2                   
+## [151] AnnotationDbi_1.52.0          assertive.properties_0.0-4   
+## [153] colorspace_2.0-0              rvest_0.3.6                  
+## [155] XML_3.99-0.5                  fs_1.5.0                     
+## [157] tensor_1.5                    reticulate_1.18              
+## [159] splines_4.0.4                 fields_11.6                  
+## [161] uwot_0.1.10                   statmod_1.4.35               
+## [163] spatstat.utils_2.1-0          pkgdown_1.6.1                
+## [165] scater_1.18.6                 xgboost_1.3.2.1              
+## [167] plotly_4.9.3                  systemfonts_1.0.1            
+## [169] xtable_1.8-4                  assertive.base_0.0-9         
+## [171] jsonlite_1.7.2                R6_2.5.0                     
+## [173] pillar_1.5.1                  htmltools_0.5.1.1            
+## [175] mime_0.10                     glue_1.4.2                   
+## [177] fastmap_1.1.0                 BiocParallel_1.24.1          
+## [179] BiocNeighbors_1.8.2           interactiveDisplayBase_1.28.0
+## [181] codetools_0.2-18              maps_3.3.0                   
+## [183] fishpond_1.6.0                utf8_1.1.4                   
+## [185] lattice_0.20-41               bslib_0.2.4                  
+## [187] spatstat.sparse_1.2-1         tibble_3.1.0                 
+## [189] multipanelfigure_2.1.2        curl_4.3                     
+## [191] ggbeeswarm_0.6.0              leiden_0.3.7                 
+## [193] scDblFinder_1.4.0             gtools_3.8.2                 
+## [195] magick_2.6.0                  survival_3.2-7               
+## [197] limma_3.46.0                  rmarkdown_2.7                
+## [199] desc_1.3.0                    munsell_0.5.0                
+## [201] GenomeInfoDbData_1.2.4        iterators_1.0.13             
+## [203] reshape2_1.4.4                gtable_0.3.0                 
+## [205] spatstat.core_1.65-5          Seurat_4.0.1</code></pre>
 </details>
 </div>
 </div>
