@@ -1,0 +1,262 @@
+---
+title: "Quality Control for droplet data"
+---
+<style>
+body {
+text-align: justify}
+</style>
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(warning = FALSE)
+```
+
+## Introduction
+
+Performing comprehensive quality control (QC) is necessary to remove poor quality cells for downstream analysis of single-cell RNA sequencing (scRNA-seq) data. Within droplet-based scRNA-seq data, droplets containing cells must be differentiated from empty droplets. Therefore, assessment of the data is required, for which various QC algorithms have been developed. In singleCellTK (SCTK), we have written convenience functions for several of these tools. In this guide, we will demonstrate how to use these functions to perform quality control on unfiltered, droplet data. (For definition of droplet data, please refer [this documentation](cmd_qc.html#introduction-1).)
+
+The package can be loaded using the `library()` command.
+
+```{r load_package, message=FALSE, warning=FALSE}
+library(singleCellTK)
+library(dplyr)
+```
+
+<br />
+
+## Running QC on droplet raw data
+
+### Load PBMC4k data from 10X
+
+SCTK takes in a `SingleCellExperiment` object from the [SingleCellExperiment](https://bioconductor.org/packages/release/bioc/html/SingleCellExperiment.html) package. We will utilize the 10X PBMC 4K dataset as an example. For the QC of droplet-based counts data, we will install the dataset from the 10X Genomics website using the [`BiocFileCache`](https://www.bioconductor.org/packages/release/bioc/html/BiocFileCache.html) package.
+
+```{r, message=FALSE, echo=TRUE, warning=FALSE}
+# Install BiocFileCache if is it not already
+if (!requireNamespace("BiocFileCache", quietly = TRUE)) {
+  if (!requireNamespace("BiocManager", quietly = TRUE)) {
+    install.packages("BiocManager")
+  }
+  BiocManager::install("BiocFileCache")
+}
+
+library("BiocFileCache")
+bfc <- BiocFileCache::BiocFileCache("raw_data", ask = FALSE)
+raw.path <- bfcrpath(bfc, file.path(
+  "http://cf.10xgenomics.com/samples",
+  "cell-exp/2.1.0/pbmc4k/pbmc4k_raw_gene_bc_matrices.tar.gz"
+))
+untar(raw.path, exdir = file.path(tempdir(), "pbmc4k"))
+
+fname <- file.path(tempdir(), "pbmc4k/raw_gene_bc_matrices/GRCh38")
+pbmc4k.droplet <- DropletUtils::read10xCounts(fname, col.names = TRUE)
+
+### change the sample column
+names(colData(pbmc4k.droplet)) <- c("sample", "Barcode")
+colData(pbmc4k.droplet)$sample <- rep("pbmc4k", ncol(colData(pbmc4k.droplet)))
+```
+
+```{r echo=FALSE}
+pbmc4k.droplet <- pbmc4k.droplet[, sample(colnames(pbmc4k.droplet), 60000)]
+```
+
+SCTK also supports the importing of single-cell data from the following platforms: [10X CellRanger](https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/what-is-cell-ranger), [STARSolo](https://github.com/alexdobin/STAR/blob/master/docs/STARsolo.md), [BUSTools](https://www.kallistobus.tools/), [SEQC](https://github.com/ambrosejcarr/seqc), [DropEST](https://github.com/hms-dbmi/dropEst), [Alevin](https://salmon.readthedocs.io/en/latest/alevin.html), as well as dataset already stored in [SingleCellExperiment](https://rdrr.io/bioc/SingleCellExperiment/man/SingleCellExperiment.html) object and [AnnData](https://github.com/theislab/anndata) object. To load your own input data, please refer `Function Reference for pre-processing tools` under `Console Analysis` section in [Import data into SCTK](import_data.html) for detailed instruction. 
+
+### runDropletQC
+
+All droplet-based QC functions are able to be run under the wrapper function `runDropletQC()`. By default all possible QC algorithms will be run.
+
+```{r rundropletqc, message = TRUE}
+pbmc4k.droplet <- runDropletQC(pbmc4k.droplet)
+```
+
+If users choose to only run a specific set of algorithms, they can specify which to run with the `algorithms` parameter.
+
+After running QC functions with SCTK, the output will be stored in the `colData` slot of the `SingleCellExperiment` object.
+
+```{r, coldata_drop, echo=TRUE}
+head(colData(pbmc4k.droplet), 5)
+```
+
+```{r, coldata_drop2, echo=FALSE}
+df.matrix <- head(colData(pbmc4k.droplet), 5)
+df.matrix %>%
+  knitr::kable(format = "html") %>% kableExtra::kable_styling() %>%
+  kableExtra::scroll_box(width = "80%")
+```
+
+<br />
+
+````{=html}
+<details>
+  <summary><b>A summary of all outputs</b></summary>
+```` 
+
+```{r table2, eval = TRUE, fig.wide = TRUE, echo=FALSE, message=FALSE, warnings=FALSE, results='asis', fig.align="center"}
+tabl <- "
+| QC output                              | Description                                                       | Methods             | Package/Tool  |
+|:---------------------------------------|:------------------------------------------------------------------|:--------------------|:--------------|
+| `sum`                                    | Total counts                                                  | `runPerCellQC()`      | [scater](https://bioconductor.org/packages/release/bioc/html/scater.html)        |
+| `detected`                               | Total features                                                | `runPerCellQC()`      | [scater](https://bioconductor.org/packages/release/bioc/html/scater.html)        |
+| `percent_top`                            | % Expression coming from top features                         | `runPerCellQC()`      | [scater](https://bioconductor.org/packages/release/bioc/html/scater.html)        |
+| `subsets_*`                               | sum, detected, percent_top calculated on specified gene list  | `runPerCellQC()`      | [scater](https://bioconductor.org/packages/release/bioc/html/scater.html)        |
+| `dropletUtils_emptyDrops_total`          | Total counts                                                      | `runEmptyDrops()`       | [DropletUtils](https://bioconductor.org/packages/release/bioc/html/DropletUtils.html)  |
+| `dropletUtils_emptyDrops_logprob`        | The log-probability of droplet being empty                        | `runEmptyDrops()`       | [DropletUtils](https://bioconductor.org/packages/release/bioc/html/DropletUtils.html)  |
+| `dropletUtils_emptyDrops_pvalue`         | Monte Carlo p-value of droplet being empty                        | `runEmptyDrops()`       | [DropletUtils](https://bioconductor.org/packages/release/bioc/html/DropletUtils.html)  |
+| `dropletUtils_emptyDrops_limited`        | Whether a lower p-value could be obtained by increasing niters    | `runEmptyDrops()`       | [DropletUtils](https://bioconductor.org/packages/release/bioc/html/DropletUtils.html)  |
+| `dropletUtils_emptyDrops_fdr`            | p-value of droplet being empty, corrected for false detection rate| `runEmptyDrops()`       | [DropletUtils](https://bioconductor.org/packages/release/bioc/html/DropletUtils.html)  |
+| `dropletUtils_BarcodeRank_Knee`          | Whether total UMI count value is higher than knee point           | `runBarcodeRankDrops()` | [DropletUtils](https://bioconductor.org/packages/release/bioc/html/DropletUtils.html)  |
+| `dropletUtils_BarcodeRank_Inflection`    | Whether total UMI count value is higher than inflection point     | `runBarcodeRankDrops()` | [DropletUtils](https://bioconductor.org/packages/release/bioc/html/DropletUtils.html)  |
+"
+cat(tabl)
+```
+
+````{=html}
+</details>
+```` 
+
+### Running individual QC methods
+
+Instead of running all quality control methods on the dataset at once, users may elect to execute QC methods individually. The parameters as well as the outputs to individual QC functions are described in detail as follows:
+
+````{=html}
+<details>
+  <summary><b>runEmptyDrops</b></summary>
+```` 
+
+It is crucial to distinguish the data occurring from real cells and empty droplets containing ambient RNA. SCTK employs the [EmptyDrops](https://rdrr.io/github/MarioniLab/DropletUtils/man/emptyDrops.html) algorithm from the [DropletUtils](https://bioconductor.org/packages/release/bioc/html/DropletUtils.html) package to test for empty droplets. The wrapper function `runEmptyDrops()` can be used to separately run the EmptyDrops algorithm on its own.
+
+- `lower` is the lower bound of the total UMI count, in which all barcodes below the lower bound are assumed to be empty droplets. 
+- `niters` is the number of iterations the function will run for the calculation. 
+- `testAmbient` indicates whether results should be returned for barcodes that have a total UMI count below what is specified in `lower`.
+
+```{r runemptydrops, eval = FALSE}
+pbmc4k.droplet <- runEmptyDrops(
+  inSCE = pbmc4k.droplet,
+  useAssay = "counts",
+  lower = 100,
+  niters = 10000
+)
+```
+
+````{=html}
+</details>
+<details>
+  <summary><b>runBarcodeRankDrops</b></summary>
+```` 
+
+[BarcodeRanks](https://rdrr.io/bioc/DropletUtils/man/barcodeRanks.html) from the [DropletUtils](https://bioconductor.org/packages/release/bioc/html/DropletUtils.html) package computes barcode rank statistics and identifies the knee and inflection points on the total count curve. The knee and inflection points on the curve represent the difference between empty droplets and cell-containing droplets with much more RNA. The wrapper function `runBarcodeRankDrops()` can be used to separately run the BarcodeRanks algorithm on its own.
+
+- `lower` is the lower bound of the total UMI count, in which all barcodes below the lower bound are assumed to be empty droplets.
+
+```{r run_barcoderanks, message=FALSE, eval=FALSE}
+pbmc4k.droplet <- runBarcodeRankDrops(
+  inSCE = pbmc4k.droplet,
+  useAssay = "counts",
+  fitBounds = NULL, df = 20
+)
+```
+
+````{=html}
+</details>
+````
+
+### Plotting QC metrics
+
+Upon running `runDropletQC()` or any of the individual droplet QC functions, the QC outputs will need to be plotted. For each QC method, SCTK provides a specialized plotting function.
+
+````{=html}
+<details>
+  <summary><b>EmptyDrops</b></summary>
+```` 
+
+The wrapper function `plotEmptyDropsResults()` can be used to plot the results from the EmptyDrops algorithm. This will visualize the empty droplets, by plotting the total UMI counts against the log probability for each barcode.
+
+```{r run_emptydrops, message=FALSE}
+emptyDropsResults <- plotEmptyDropsResults(
+  inSCE = pbmc4k.droplet,
+  axisLabelSize = 20,
+  sample = NULL,
+  fdrCutoff = 0.01,
+  dotSize = 0.5,
+  defaultTheme = TRUE
+)
+```
+
+```{r scatter_emptydrops, fig.height = 4, fig.width = 8, fig.align="center"}
+emptyDropsResults$scatterEmptyDrops
+```
+
+Data points are colored by FDR values, where we see a small portion of the dataset contains barcodes that do not meet the threshold.
+
+````{=html}
+</details>
+<details>
+  <summary><b>BarcodeRanks</b></summary>
+```` 
+
+The wrapper function `plotBarcodeRankScatter()` can be used to plot the results from the BarcodeRanks algorithm. 
+
+```{r run_kneeplot_barcoderank, message=FALSE, warning=FALSE, fig.align="center", fig.height = 4, fig.width = 8}
+plotBarcodeRankScatter(
+  inSCE = pbmc4k.droplet,
+  title = "BarcodeRanks Rank Plot",
+  legendSize = 14
+)
+```
+
+The total UMI count of each barcode is plotted against its rank. We can see a steep dropoff of UMI counts around the inflection point, where we see a presumed separation between cell-containing and empty droplets.
+
+````{=html}
+</details>
+````
+
+### Filtering the dataset
+
+`SingleCellExperiment` objects can be subset by its `colData` using `subsetSCECols()`. The `colData` parameter takes in a character vector of expression(s) which will be used to identify a subset of cells using variables found in the `colData` of the `SingleCellExperiment` object. For example, if `x` is a numeric vector in `colData`, then setting `colData = "x < 5"` will return a `SingleCellExperiment` object where all columns (cells) meet the condition that `x` is less than 5. The `index` parameter takes in a numeric vector of indices which should be kept, while `bool` takes in a logical vector of `TRUE` or `FALSE` which should be of the same length as the number of columns (cells) in the `SingleCellExperiment` object. Please refer to our [*Filtering* documentation](filtering.html) for detail.
+
+```{r, echo = FALSE}
+pbmc4k.droplet.prefilt <- pbmc4k.droplet
+```
+
+```{r}
+#Before filtering:
+dim(pbmc4k.droplet)
+```
+
+```{r, "filtering droplet QC", message=FALSE, warning=FALSE}
+pbmc4k.droplet <- subsetSCECols(pbmc4k.droplet, colData = 'dropletUtils_BarcodeRank_Inflection == 1')
+pbmc4k.droplet <- subsetSCECols(pbmc4k.droplet, colData = '!is.na(pbmc4k.droplet$dropletUtils_emptyDrops_fdr)')
+pbmc4k.droplet <- subsetSCECols(pbmc4k.droplet, colData = 'pbmc4k.droplet$dropletUtils_emptyDrops_fdr < 0.01')
+```
+
+```{r}
+#After filtering:
+dim(pbmc4k.droplet)
+```
+
+We can compare the average total UMI counts per cell before and after cell filtration:
+
+```{r, "Count Violin after filtering", echo = TRUE, warning=FALSE, message=FALSE, fig.height = 4, fig.width = 6, fig.align="center"}
+p1 <- plotSCEViolinColData(pbmc4k.droplet.prefilt, coldata = "sum", summary = "mean", title = "Pre-filter", ylab = "Total counts")
+p2 <- plotSCEViolinColData(pbmc4k.droplet, coldata = "sum", summary = "mean", title = "Post-filter", ylab = "Total counts")
+plot(cowplot::plot_grid(p1, p2, ncol = 2))
+```
+
+<br />
+
+>For performing QC on cell-filtered count matrix with SCTK, please refer to our [*Cell QC* documentation](cnsl_cellqc.html).
+
+<br />
+
+````{=html}
+ <details>
+ <summary><b>Session Information</b></summary>
+````
+
+```{r}
+sessionInfo()
+```
+
+````{=html}
+</details>
+````

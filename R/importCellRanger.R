@@ -23,7 +23,7 @@
     if (ncol(res) == 1) {
         colnames(res) <- colnames[1]
     } else if (ncol(res) == 2) {
-        colnames(res) <- colnames[1:2]
+        colnames(res) <- colnames[seq(2)]
     } else if (ncol(res) == 3) {
         colnames(res) <- colnames
     } else {
@@ -46,6 +46,7 @@
     }
 
     mat <- Matrix::readMM(path)
+    mat <- methods::as(mat, "dgCMatrix")
 
     if (class == "matrix") {
         mat <- as.matrix(mat)
@@ -414,8 +415,8 @@
         }
     }
 
-    cellRangerOutsV2 <- unlist(res)  
-    return(cellRangerOutsV2)  
+    cellRangerOutsV2 <- unlist(res)
+    return(cellRangerOutsV2)
 }
 
 #' @name importCellRanger
@@ -513,23 +514,23 @@
 #'  \link[base]{matrix} function). Default \code{"Matrix"}.
 #' @param delayedArray Boolean. Whether to read the expression matrix as
 #'  \link{DelayedArray} object or not. Default \code{FALSE}.
-#' @param reference Character vector. The reference genome names. 
-#'  Default \code{NULL}. If not \code{NULL}, it must gave the length and order as 
+#' @param reference Character vector. The reference genome names.
+#'  Default \code{NULL}. If not \code{NULL}, it must gave the length and order as
 #'  \code{length(unlist(sampleDirs))} if \code{sampleDirs} is not \code{NULL}.
 #'  Otherwise, make sure the length and order match the output of
-#'  \code{unlist(lapply(cellRangerDirs, list.dirs, recursive = FALSE))}. Only needed 
-#'  for Cellranger version below 3.0.0. 
+#'  \code{unlist(lapply(cellRangerDirs, list.dirs, recursive = FALSE))}. Only needed
+#'  for Cellranger version below 3.0.0.
 #' @param dataTypeV2 Character. The type of output to import for
-#'  Cellranger version below 3.0.0. Whether to import the filtered or the 
-#'  raw data. Can be one of 'filtered' or 'raw'. Default 'filtered'. When 
-#'  \code{cellRangerOuts} is specified, \code{dataTypeV2} and \code{reference} will 
+#'  Cellranger version below 3.0.0. Whether to import the filtered or the
+#'  raw data. Can be one of 'filtered' or 'raw'. Default 'filtered'. When
+#'  \code{cellRangerOuts} is specified, \code{dataTypeV2} and \code{reference} will
 #'  be ignored.
-#' @param cellRangerOutsV2 Character vector. The intermediate paths  
-#'  to filtered or raw cell barcode, feature, and matrix files for each 
-#'  sample for Cellranger version below 3.0.0. If \code{NULL}, \code{reference} and 
-#'  \code{dataTypeV2} will be used to determine Cell Ranger output directory. If it has 
-#'  length 1, it assumes that all samples use the same genome reference and 
-#'  the function will load only filtered or raw data. 
+#' @param cellRangerOutsV2 Character vector. The intermediate paths
+#'  to filtered or raw cell barcode, feature, and matrix files for each
+#'  sample for Cellranger version below 3.0.0. If \code{NULL}, \code{reference} and
+#'  \code{dataTypeV2} will be used to determine Cell Ranger output directory. If it has
+#'  length 1, it assumes that all samples use the same genome reference and
+#'  the function will load only filtered or raw data.
 #' @details
 #'  \code{importCellRangerV2} imports output from Cell Ranger V2.
 #'  \code{importCellRangerV2Sample} imports output from one sample from Cell
@@ -617,7 +618,7 @@ importCellRangerV2 <- function(
 
     if (is.null(cellRangerOutsV2)) {
         if (is.null(reference) | is.null(dataTypeV2)) {
-            stop("'reference' and 'dataTypeV2' are required ", 
+            stop("'reference' and 'dataTypeV2' are required ",
                  "when 'cellRangerOutsV2 is not specified!'")
         }
     }

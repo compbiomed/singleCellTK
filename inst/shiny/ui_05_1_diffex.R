@@ -1,9 +1,18 @@
 shinyPanelDiffex <- fluidPage(
+  tags$script("Shiny.addCustomMessageHandler('close_dropDownDeHM', function(x){
+                  $('html').click();
+                });"),
+  tags$script("Shiny.addCustomMessageHandler('close_dropDownDeViolin', function(x){
+                  $('html').click();
+                });"),
+  tags$script("Shiny.addCustomMessageHandler('close_dropDownDeReg', function(x){
+                  $('html').click();
+                });"),
   tags$div(
     class = "container",
     h1("Differential Expression"),
-    tags$a(href = "https://www.sctk.science/articles/tab05_differential-expression",
-           "(help)", target = "_blank"),
+    h5(tags$a(href = paste0(docs.artPath, "differential_expression.html"),
+              "(help)", target = "_blank")),
     fluidRow(
       panel(
         style = "margin:2px;",
@@ -16,7 +25,14 @@ shinyPanelDiffex <- fluidPage(
           ),
           column(
             4,
-            uiOutput("deAssay")
+            selectizeInput(
+              inputId = "deAssay", 
+              label = "Select input matrix:", 
+              choices = NULL, 
+              selected = NULL, 
+              multiple = FALSE,
+              options = NULL)
+            #uiOutput("deAssay")
           )
         ),
         useShinyjs(),
@@ -170,32 +186,101 @@ shinyPanelDiffex <- fluidPage(
     h3("Visualization"),
     p("For preview and result presentation.", style = "color:grey;"),
     fluidRow(
-      uiOutput("deResSelUI"),
+      selectInput("deResSel", "Select Differential Expression Analysis", choices = NULL),
       tabsetPanel(
         tabPanel(
           "Heatmap",
           panel(
-            sidebarLayout(
-              sidebarPanel(
-                checkboxInput('deHMDoLog', "Do log transformation", FALSE),
-                checkboxInput('deHMPosOnly', "Only up-regulated",
-                              value = FALSE),
-                numericInput("deHMFC", "Aboslute log2FC value greater than:",
-                             value = 1, min = 0, step = 0.05),
-                numericInput("deHMFDR", "FDR value less than", value = 0.05,
-                             max = 1, step = 0.01),
-                selectInput("deHMcolData", "Additional cell annotation",
-                            choices = clusterChoice, multiple = TRUE),
-                selectInput("deHMrowData", "Additional feature annotation",
-                            choices = featureChoice, multiple = TRUE),
-                uiOutput('deHMSplitColUI'),
-                uiOutput('deHMSplitRowUI'),
-                withBusyIndicatorUI(actionButton('dePlotHM', 'Plot'))
+
+            fluidRow(
+              column(
+                width = 4,
+                dropdown(
+                  fluidRow(
+                    column(12,
+                           fluidRow(actionBttn(inputId = "closeDropDownDeHM", label = NULL, style = "simple", color = "danger", icon = icon("times"), size = "xs"), align = "right"),
+                    )
+                  ),
+                  fluidRow(
+                    column(
+                      width = 6,
+                      checkboxInput('deHMDoLog', "Do log transformation", FALSE),
+                    ),
+                    column(
+                      width = 6,
+                      checkboxInput('deHMPosOnly', "Only up-regulated",
+                                    value = FALSE)
+                    )
+                  ),
+                  fluidRow(
+                    column(
+                      width = 6,
+                      numericInput("deHMFC", "Aboslute log2FC value greater than:",
+                                   value = 1, min = 0, step = 0.05),
+                    ),
+                    column(
+                      width = 6,
+                      numericInput("deHMFDR", "FDR value less than", value = 0.05,
+                                   max = 1, step = 0.01),
+                    )
+                  ),
+                  fluidRow(
+                    column(
+                      width = 6,
+                      selectInput("deHMcolData", "Additional cell annotation",
+                                  choices = clusterChoice, multiple = TRUE),
+                    ),
+                    column(
+                      width = 6,
+                      selectInput("deHMrowData", "Additional feature annotation",
+                                  choices = featureChoice, multiple = TRUE),
+                    )
+                  ),
+                  fluidRow(
+                    column(
+                      width = 6,
+                      uiOutput('deHMSplitColUI'),
+                    ),
+                    column(
+                      width = 6,
+                      uiOutput('deHMSplitRowUI'),
+                    )
+                  ),
+                  fluidRow(
+                    column(
+                      width = 4,
+                      withBusyIndicatorUI(
+                        actionBttn(
+                          inputId = "dePlotHM",
+                          label = "Update",
+                          style = "bordered",
+                          color = "primary",
+                          size = "sm"
+                        )
+                      )
+                    )
+                  ),
+                  inputId = "dropDownDeHM",
+                  icon = icon("cog"),
+                  status = "primary",
+                  circle = FALSE,
+                  inline = TRUE,
+                  width = "500px"
+                )
               ),
-              mainPanel(
-                plotOutput("deHeatmap", height = "600px")
+              column(
+                width = 7,
+                fluidRow(
+                  h6(
+                    "A heatmap of the expression of DEGs in the selected cells, columns splitted by condition setting, and rows splitted by up-/down-regulation (whether log2FC is positive or negative, respectively)"),
+                  align="center"
+                )
               )
-            )
+            ),
+            hr(),
+            br(),
+
+            shinyjqui::jqui_resizable(plotOutput("deHeatmap"))
           )
         ),
         tabPanel("Results Table",
@@ -204,75 +289,152 @@ shinyPanelDiffex <- fluidPage(
         tabPanel(
           "Violin Plot",
           panel(
-            fluidRow(
-              div(style="display: inline-block;vertical-align:center; width: 100px;margin-left:10px",
-                  p('Plot the top')),
-              div(style="display: inline-block;vertical-align:center; width: 60px;",
-                  numericInput('deVioNRow', label = NULL, value = 6, min = 1)),
-              div(style="display: inline-block;vertical-align:center; width: 12px;",
-                  p('x')),
-              div(style="display: inline-block;vertical-align:center; width: 60px;",
-                  numericInput('deVioNCol', label = NULL, value = 6, min = 1)),
-              div(style="display: inline-block;vertical-align:center; width: 10px;",
-                  p('=')),
-              div(style="display: inline-block;vertical-align:center; width: 30px;",
-                  uiOutput('deVioTotalUI')),
-              div(style="display: inline-block;vertical-align:center; width: 50px;",
-                  p('genes'))
-            ),
+
+
             fluidRow(
               column(
-                width = 3,
-                selectInput('deVioLabel', "Label features by",
-                            c("Default ID", featureChoice))
+                width = 4,
+                dropdown(
+                  fluidRow(
+                    column(12,
+                           fluidRow(actionBttn(inputId = "closeDropDownDeViolin", label = NULL, style = "simple", color = "danger", icon = icon("times"), size = "xs"), align = "right"),
+                    )
+                  ),
+                  fluidRow(
+                    div(style="display: inline-block;vertical-align:center; width: 100px;margin-left:10px",
+                        p('Plot the top')),
+                    div(style="display: inline-block;vertical-align:center; width: 60px;",
+                        numericInput('deVioNRow', label = NULL, value = 4, min = 1)),
+                    div(style="display: inline-block;vertical-align:center; width: 12px;",
+                        p('x')),
+                    div(style="display: inline-block;vertical-align:center; width: 60px;",
+                        numericInput('deVioNCol', label = NULL, value = 4, min = 1)),
+                    div(style="display: inline-block;vertical-align:center; width: 10px;",
+                        p('=')),
+                    div(style="display: inline-block;vertical-align:center; width: 30px;",
+                        uiOutput('deVioTotalUI')),
+                    div(style="display: inline-block;vertical-align:center; width: 50px;",
+                        p('genes'))
+                  ),
+                  fluidRow(
+                    column(
+                      width = 6,
+                      selectInput('deVioLabel', "Label features by",
+                                  c("Default ID", featureChoice))
+                    ),
+                    column(
+                      width = 4,
+                      style = 'margin-top: 23px;',
+                      withBusyIndicatorUI(
+                        actionBttn(
+                          inputId = "dePlotVio",
+                          label = "Update",
+                          style = "bordered",
+                          color = "primary",
+                          size = "sm"
+                        )
+                      )
+                    )
+                  ),
+                  inputId = "dropDownDeViolin",
+                  icon = icon("cog"),
+                  status = "primary",
+                  circle = FALSE,
+                  inline = TRUE,
+                  width = "500px"
+                )
               ),
               column(
-                width = 2,
-                style = 'margin-top: 23px;',
-                withBusyIndicatorUI(actionButton('dePlotVio', 'Plot'))
+                width = 7,
+                fluidRow(
+                  h6(
+                    "Violin plots of the expression of top DEGs in the selected analysis. The violin plot for each DEG will be grouped by the condition setting."),
+                  align="center"
+                )
               )
-            )
+            ),
+            hr(),
+            br(),
+            textOutput("deSanityWarnViolin"),
+            shinyjqui::jqui_resizable(plotOutput("deViolinPlot"))
           ),
-          textOutput("deSanityWarnViolin"),
-          plotOutput("deViolinPlot", height = "800px")
+
         ),
         tabPanel(
           "Linear Model",
           panel(
-            fluidRow(
-              div(style="display: inline-block;vertical-align:center; width: 100px;margin-left:10px",
-                  p('Plot the top')),
-              div(style="display: inline-block;vertical-align:center; width: 60px;",
-                  numericInput('deRegNRow', label = NULL, value = 6, min = 1)),
-              div(style="display: inline-block;vertical-align:center; width: 12px;",
-                  p('x')),
-              div(style="display: inline-block;vertical-align:center; width: 60px;",
-                  numericInput('deRegNCol', label = NULL, value = 6, min = 1)),
-              div(style="display: inline-block;vertical-align:center; width: 10px;",
-                  p('=')),
-              div(style="display: inline-block;vertical-align:center; width: 30px;",
-                  uiOutput('deRegTotalUI')),
-              div(style="display: inline-block;vertical-align:center; width: 50px;",
-                  p('genes'))
-            ),
+
             fluidRow(
               column(
-                width = 3,
-                selectInput('deRegLabel', "Label features by",
-                            c("Default ID", featureChoice))
+                width = 4,
+                dropdown(
+                  fluidRow(
+                    column(12,
+                           fluidRow(actionBttn(inputId = "closeDropDownDeReg", label = NULL, style = "simple", color = "danger", icon = icon("times"), size = "xs"), align = "right"),
+                    )
+                  ),
+                  fluidRow(
+                    div(style="display: inline-block;vertical-align:center; width: 100px;margin-left:10px",
+                        p('Plot the top')),
+                    div(style="display: inline-block;vertical-align:center; width: 60px;",
+                        numericInput('deRegNRow', label = NULL, value = 4, min = 1)),
+                    div(style="display: inline-block;vertical-align:center; width: 12px;",
+                        p('x')),
+                    div(style="display: inline-block;vertical-align:center; width: 60px;",
+                        numericInput('deRegNCol', label = NULL, value = 4, min = 1)),
+                    div(style="display: inline-block;vertical-align:center; width: 10px;",
+                        p('=')),
+                    div(style="display: inline-block;vertical-align:center; width: 30px;",
+                        uiOutput('deRegTotalUI')),
+                    div(style="display: inline-block;vertical-align:center; width: 50px;",
+                        p('genes'))
+                  ),
+                  fluidRow(
+                    column(
+                      width = 6,
+                      selectInput('deRegLabel', "Label features by",
+                                  c("Default ID", featureChoice))
+                    ),
+                    column(
+                      width = 4,
+                      style = 'margin-top: 23px;',
+                      withBusyIndicatorUI(
+                        actionBttn(
+                          inputId = "dePlotReg",
+                          label = "Update",
+                          style = "bordered",
+                          color = "primary",
+                          size = "sm"
+                        )
+                      )
+                    )
+                  ),
+                  inputId = "dropDownDeReg",
+                  icon = icon("cog"),
+                  status = "primary",
+                  circle = FALSE,
+                  inline = TRUE,
+                  width = "500px"
+                )
               ),
               column(
-                width = 2,
-                style = 'margin-top: 23px;',
-                withBusyIndicatorUI(actionButton('dePlotReg', 'Plot'))
+                width = 7,
+                fluidRow(
+                  h6(
+                    "Linear regression plots of the expression of top DEGs in the selected analysis. The regression plot for each DEG will be grouped by the condition setting."),
+                  align="center"
+                )
               )
             ),
-          ),
-          textOutput("deSanityWarnReg"),
-          plotOutput("deRegPlot", height = "800px")
+            hr(),
+            br(),
+            textOutput("deSanityWarnReg"),
+            shinyjqui::jqui_resizable(plotOutput("deRegPlot"))
+          )
         )
       )
     )
-  )
+  ),
+  nonLinearWorkflowUI(id = "nlw-de")
 )
 

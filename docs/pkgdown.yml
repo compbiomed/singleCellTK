@@ -1,0 +1,36 @@
+pandoc: '2.13'
+pkgdown: 1.6.1
+pkgdown_sha: ~
+articles:
+  articles/batch_correction: batch_correction.html
+  articles/celdaAnalysis: celdaAnalysis.html
+  articles/cell_type_labeling: cell_type_labeling.html
+  articles/clustering: clustering.html
+  articles/cmd_import_scRNAseq_data_as_SCE: cmd_import_scRNAseq_data_as_SCE.html
+  articles/cmd_qc: cmd_qc.html
+  articles/cnsl_2d_embedding: cnsl_2d_embedding.html
+  articles/cnsl_cellqc: cnsl_cellqc.html
+  articles/cnsl_dimensionality_reduction: cnsl_dimensionality_reduction.html
+  articles/cnsl_dropletqc: cnsl_dropletqc.html
+  articles/cnsl_enrichR: cnsl_enrichR.html
+  articles/cnsl_feature_selection: cnsl_feature_selection.html
+  articles/cnsl_normalization: cnsl_normalization.html
+  articles/cnsl_seurat_curated_workflow: cnsl_seurat_curated_workflow.html
+  articles/console_analysis_tutorial: console_analysis_tutorial.html
+  articles/delete_data: delete_data.html
+  articles/differential_expression: differential_expression.html
+  articles/export_data: export_data.html
+  articles/filtering: filtering.html
+  articles/find_marker: find_marker.html
+  articles/heatmap: heatmap.html
+  articles/import_annotation: import_annotation.html
+  articles/import_data: import_data.html
+  articles/import_genesets: import_genesets.html
+  articles/installation: installation.html
+  articles/pathwayAnalysis: pathwayAnalysis.html
+  articles/singleCellTK: singleCellTK.html
+  articles/ui_qc: ui_qc.html
+  articles/visualization: visualization.html
+  singleCellTK: singleCellTK.html
+last_built: 2021-10-28T19:43Z
+

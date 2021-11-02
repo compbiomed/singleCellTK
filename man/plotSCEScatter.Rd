@@ -22,7 +22,7 @@ plotSCEScatter(
   dim2 = NULL,
   bin = NULL,
   binLabel = NULL,
-  dotSize = 2,
+  dotSize = 0.5,
   transparency = 1,
   colorLow = "white",
   colorMid = "gray",
@@ -86,7 +86,7 @@ If more than one value, will bin numeric values using values as a cut point.}
 \item{binLabel}{Character vector. Labels for the bins created by the `bin` parameter.
 Default NULL.}
 
-\item{dotSize}{Size of dots. Default 2.}
+\item{dotSize}{Size of dots. Default 0.5.}
 
 \item{transparency}{Transparency of the dots, values will be 0-1. Default 1.}
 

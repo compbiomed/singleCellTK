@@ -5,7 +5,7 @@
 \title{expSetDataTag
 Set tag to an assay or a data item in the input SCE object.}
 \usage{
-expSetDataTag(inSCE, assayType, assays, append = TRUE)
+expSetDataTag(inSCE, assayType, assays)
 }
 \arguments{
 \item{inSCE}{Input \code{SingleCellExperiment} object.}
@@ -13,8 +13,6 @@ expSetDataTag(inSCE, assayType, assays, append = TRUE)
 \item{assayType}{Specify a \code{character(1)} value as a tag that should be set against a data item.}
 
 \item{assays}{Specify name(s) \code{character()} of data item(s) against which the tag should be set.}
-
-\item{append}{A \code{logical} value indicating if this assay should be appended to the object or overridden. Default value is \code{TRUE} indicating that it should be appended.}
 }
 \value{
 The input \code{SingleCellExperiment} object with tag information stored in the metadata slot.

@@ -136,7 +136,7 @@
 #' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 #' sce <- scaterlogNormCounts(sce, "logcounts")
 #' sce <- runDEAnalysis(inSCE = sce, groupName1 = "Sample1", method = "wilcox",
-#'  groupName2 = "Sample2", index1 = 1:20, index2 = 21:40,
+#'  groupName2 = "Sample2", index1 = seq(20), index2 = seq(21,40),
 #'  analysisName = "Limma")
 #' @return Input SCE object with \code{metadata(inSCE)} updated with name
 #' \code{"diffExp"} as a \code{list} object. Detail refers to the four child
@@ -201,7 +201,7 @@ runDEAnalysis <- function(method = c('MAST', 'DESeq2', 'Limma', 'ANOVA',
 #' data(scExample, package = "singleCellTK")
 #' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 #' sce <- runDESeq2(inSCE = sce, groupName1 = "Sample1",
-#'  groupName2 = "Sample2", index1 = 1:20, index2 = 21:40,
+#'  groupName2 = "Sample2", index1 = seq(5), index2 = seq(6,10),
 #'  analysisName = "DESeq2")
 #' @return The input \linkS4class{SingleCellExperiment} object with
 #' \code{metadata(inSCE)$DESeq2} updated with the results: a list named by
@@ -228,7 +228,7 @@ runDESeq2 <- function(inSCE, useAssay = 'counts', index1 = NULL,
     conditions[ix1] <- 'cond1'
     conditions[ix2] <- 'cond2'
     conditions <- conditions[!is.na(conditions)]
-    annotData <- data.frame(condition = conditions,
+    annotData <- data.frame(condition = factor(conditions),
                             row.names = colnames(inSCE)[subsetIdx])
     cov <- SummarizedExperiment::colData(inSCE)[subsetIdx, covariates,
                                                 drop = FALSE]
@@ -258,7 +258,8 @@ runDESeq2 <- function(inSCE, useAssay = 'counts', index1 = NULL,
     }
     res <- DESeq2::results(dds, pAdjustMethod = 'fdr')
     deg <- data.frame(res)[,c(-1, -3, -4)]
-    deg <- cbind(data.frame(Gene = rownames(deg), stringsAsFactors = FALSE),
+    deg <- cbind(data.frame(Gene = as.character(rownames(deg)),
+                            stringsAsFactors = FALSE),
                  deg)
     rownames(deg) <- NULL
     colnames(deg) <- c('Gene', 'Log2_FC', 'Pvalue', 'FDR')
@@ -337,7 +338,7 @@ runDESeq2 <- function(inSCE, useAssay = 'counts', index1 = NULL,
 #' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 #' sce <- scaterlogNormCounts(sce, assayName = "logcounts")
 #' sce <- runLimmaDE(inSCE = sce, groupName1 = "Sample1",
-#'  groupName2 = "Sample2", index1 = 1:20, index2 = 21:40,
+#'  groupName2 = "Sample2", index1 = seq(20), index2 = seq(21,40),
 #'  analysisName = "Limma")
 #'
 #' @return The input \linkS4class{SingleCellExperiment} object with
@@ -389,7 +390,8 @@ runLimmaDE <- function(inSCE, useAssay = 'logcounts', index1 = NULL,
     deg <- limma::topTable(ebayes, coef = coef, adjust = 'fdr',
                            number = nrow(inSCE))
     deg <- deg[,c(-2, -3, -6)]
-    deg <- cbind(data.frame(Gene = rownames(deg), stringsAsFactors = FALSE),
+    deg <- cbind(data.frame(Gene = as.character(rownames(deg)),
+                            stringsAsFactors = FALSE),
                  deg)
     rownames(deg) <- NULL
     colnames(deg) <- c("Gene", "Log2_FC", "Pvalue", "FDR")
@@ -469,7 +471,7 @@ runLimmaDE <- function(inSCE, useAssay = 'logcounts', index1 = NULL,
 #' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 #' sce <- scaterlogNormCounts(sce, assayName = "logcounts")
 #' sce <- runANOVA(inSCE = sce, groupName1 = "Sample1",
-#'  groupName2 = "Sample2", index1 = 1:20, index2 = 21:40,
+#'  groupName2 = "Sample2", index1 = seq(20), index2 = seq(21,40),
 #'  analysisName = "ANOVA", fdrThreshold = NULL)
 #' @return The input \linkS4class{SingleCellExperiment} object with
 #' \code{metadata(inSCE)$diffExp} updated with the results: a list named by
@@ -538,11 +540,11 @@ runANOVA <- function(inSCE, useAssay = 'logcounts', index1 = NULL,
     rss0 <- resid0 ^ 2 %*% rep(1, n)
     fstats <- ((rss0 - rss1) / (df1 - df0)) / (rss1 / (n - df1))
     p <- 1 - stats::pf(fstats, df1 = (df1 - df0), df2 = (n - df1))
-    deg <- data.frame(Gene = rownames(dat), Log2_FC =NA, p.value = p,
-                      padj = stats::p.adjust(p, method = 'fdr'),
+    deg <- data.frame(Gene = as.character(rownames(dat)),
+                      Log2_FC =NA, Pvalue = p,
+                      FDR = stats::p.adjust(p, method = 'fdr'),
                       stringsAsFactors = FALSE)
     rownames(deg) <- NULL
-    colnames(deg) <- c("Gene", "Log2_FC", "Pvalue", "FDR")
     cond1.assay <- expData(inSCE[,ix1], useAssay)
     cond2.assay <- expData(inSCE[,ix2], useAssay)
     deg$Log2_FC <- rowMeans(cond1.assay) - rowMeans(cond2.assay)
@@ -621,9 +623,9 @@ runANOVA <- function(inSCE, useAssay = 'logcounts', index1 = NULL,
 #' @examples
 #' data(scExample, package = "singleCellTK")
 #' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
-#' sce <- scaterlogNormCounts(sce, assayName = "logcounts")
+#' sce <- scaterlogNormCounts(sce[,seq(20)], assayName = "logcounts")
 #' sce <- runMAST(inSCE = sce, groupName1 = "Sample1",
-#'  groupName2 = "Sample2", index1 = 1:20, index2 = 21:40,
+#'  groupName2 = "Sample2", index1 = seq(10), index2 = seq(11,20),
 #'  analysisName = "MAST")
 #' @return The input \linkS4class{SingleCellExperiment} object with
 #' \code{metadata(inSCE)$diffExp} updated with the results: a list named by
@@ -721,6 +723,7 @@ runMAST <- function(inSCE, useAssay = 'logcounts', index1 = NULL,
     fcHurdleSig <- fcHurdleSig[, -c(4, 5)]
     names(fcHurdleSig)[c(1, 2, 3, 4)] <- c("Gene", "Pvalue",
                                            "Log2_FC", "FDR")
+    fcHurdleSig$Gene <- as.character(fcHurdleSig$Gene)
     fcHurdleSig <- fcHurdleSig[order(fcHurdleSig$FDR, na.last = TRUE),
     ]
     # Format output
@@ -787,7 +790,7 @@ runMAST <- function(inSCE, useAssay = 'logcounts', index1 = NULL,
 #' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 #' sce <- scaterlogNormCounts(sce, assayName = "logcounts")
 #' sce <- runWilcox(inSCE = sce, groupName1 = "Sample1",
-#'  groupName2 = "Sample2", index1 = 1:20, index2 = 21:40,
+#'  groupName2 = "Sample2", index1 = seq(20), index2 = seq(21,40),
 #'  analysisName = "wilcox")
 #' @return The input \linkS4class{SingleCellExperiment} object with
 #' \code{metadata(inSCE)$diffExp} updated with the results: a list named by
@@ -828,11 +831,11 @@ runWilcox <- function(inSCE, useAssay = 'logcounts', index1 = NULL,
   cond2.assay <- expData(inSCE, useAssay)[rownames(table), ix2]
   table$Log2_FC <- rowMeans(cond1.assay) - rowMeans(cond2.assay)
 
-  deg <- data.frame(Gene = rownames(table),
+  deg <- data.frame(Gene = as.character(rownames(table)),
                     Log2_FC = table$Log2_FC,
                     Pvalue = table$p.value,
                     FDR = table$FDR)
-
+  rownames(deg) <- NULL
   # Result Filtration
   if(isTRUE(onlyPos)){
     deg <- deg[deg$Log2_FC > 0,]

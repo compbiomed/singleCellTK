@@ -55,11 +55,9 @@ much less than batch variation, then the batches are likely to be confounded
 by the conditions.
 }
 \examples{
-\dontrun{
-  data('sceBatches', package = 'singleCellTK')
-  plotBatchVariance(sceBatches,
-                    useAssay="logcounts",
-                    batch="batch",
-                    condition = "cell_type")
-}
+data('sceBatches', package = 'singleCellTK')
+plotBatchVariance(sceBatches,
+                  useAssay="counts",
+                  batch="batch",
+                  condition = "cell_type")
 }

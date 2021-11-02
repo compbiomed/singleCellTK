@@ -1,0 +1,128 @@
+---
+title: "Import Genesets"
+author: "Yichen Wang"
+output:
+  html_document:
+    toc: true
+    toc_depth: 5
+bibliography: references.bib
+csl: ieee.csl
+---
+
+```{r develSetting, include=FALSE}
+doEval = FALSE
+knitr::opts_chunk$set(warning = FALSE)
+```
+
+````{=html}
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+````
+
+## Introduction
+
+Users can import gene sets to use in later steps of the toolkit's pipeline, including quality control (QC) and EnrichR analysis. SCTK mainly supports importing genesets from a GMT file, the MSigDB database [@Subramanian2005], or manually prepared list. 
+
+To view detailed instructions on how to import genesets, please select 'Interactive Analysis' for importing through the shiny application or 'Console Analysis' for importing through the R console from the tabs below: <br>
+
+## Workflow Guide
+
+````{=html}
+<div class="tab">
+  <button class="tablinks" onclick="openTab(event, 'interactive')" id="ia-button">Interactive Analysis</button>
+  <button class="tablinks" onclick="openTab(event, 'console')" id="console-button">Console Analysis</button>
+</div>
+
+<div id="interactive" class="tabcontent">
+````
+
+**Entry of the panel**
+
+![gs entry](ui_screenshots/import/import_ui_gs_entry.png)\
+
+In the UI of SCTK, users can import gene sets to use in later steps. The UIs are implemented in the page that can be entered through the links, as shown in the screenshot above.  
+
+**Import Genesets**
+
+There are four ways to import gene sets, as described below:  
+
+````{=html}
+ <style>
+div.offset { background-color:inherit ; border-radius: 5px; margin-left: 15px;}
+</style>
+<div class = "offset">
+<details>
+  <summary><b>1. Import Gene Sets from a GMT File</b></summary>
+````  
+
+The first option is to upload the GMT file detailing a gene set. For this option, users must provide a GMT file through the file input **"Choose GMT File"**; a text collection name at **"Collection Name"**. If the collection name entered already exists in current session, the gene set from the GMT file will be added to that collection. Otherwise, a new collection with the given name will be created. Finally, users must click **"Upload"** to finish the procedure.  
+
+![gmt](ui_screenshots/import/import_ui_gs_gmt.png)\
+
+````{=html}
+</details>
+<details>
+  <summary><b>2. Select from a Database</b></summary>
+````
+
+SCTK also has a database of gene sets that users can choose from. For this option, the user must simply select the gene sets they would like to upload and click **"Upload"**. A brief description of each gene set is provided in the checklist.  
+
+![db](ui_screenshots/import/import_ui_gs_db.png)\
+
+````{=html}
+</details>
+<details>
+  <summary><b>3. Import Mitochondrial Gene Set</b></summary>
+````
+
+SCTK has built-in curated mitochondrial gene sets for human and mouse, and these gene sets can be used in quality control (QC) to filter out the potentially apoptotic or lysing cells. Users have to choose the **Species** that matches to the uploaded dataset. Users also need to have the prior knowledge of the **ID Type** used to identify the features in the dataset. SCTK supports using gene symbols, Entrez IDs, Ensembl IDs and Ensembl transcript IDs. Users need to choose the one that matches to the dataset.  
+
+![mt](ui_screenshots/import/import_ui_gs_mt.png)\
+
+````{=html}
+</details>
+<details>
+  <summary><b>4. Paste in Gene Sets</b></summary>
+````
+
+Users also have the option to paste their gene set into a text box. In order to do so, the user must paste their gene set into the provided text box and then provide a collection name to create a new collection. If there are already gene sets imported, the user can choose an existing collection to add their pasted gene set into. Then the user must click "Upload."
+
+![paste](ui_screenshots/import/import_ui_gs_paste.png)\
+
+````{=html}
+</details>
+</div>
+<br>
+````
+
+**Map Gene Sets to Specific Feature IDs**
+
+There is an additional selection input labeled with **"Location within SCE object where the gene identifiers in should be mapped"**, placed above the **"Upload"** button as already shown in screenshots above. This specifies the feature IDs stored in the imported single-cell dataset, to which the gene identifiers in the uploaded gene sets will be mapped. For example, if the uploaded gene sets are presented by gene symbols, users must make sure the selection here is pointing to gene symbols instead of ENSEMBL IDs. Most of the time, "rownames" is the default feature ID of the imported single-cell dataset.  
+
+````{=html}
+</div>
+
+<div id="console" class="tabcontent">
+````
+
+SCTK handles genesets by using a [`GeneSetCollection`](https://rdrr.io/bioc/GSEABase/man/GeneSetCollection-class.html) object, supported by the GSEABase library. [@Morgan2021] We provide five functions that converts gene set/list from different sources into a `GeneSetCollection` object and store it in the `metadata` slot of an `SingleCellExperiment` object. Downstream analysis such as QC and pathway analysis will then be able to use the data.  
+
+- `importGeneSetsFromCollection()`
+- `importGeneSetsFromGMT()`
+- `importGeneSetsFromList()`
+- `importGeneSetsFromMSigDB()`
+- `importMitoGeneSet()`
+
+For the usage and detail of these functions, please click on the function name and there will be a reference page for each of them.  
+
+````{=html} 
+</div>
+<script>
+document.getElementById("ia-button").click();
+</script>
+</body>
+````
+
+## References

@@ -20,7 +20,7 @@ plotDEGHeatmap(
   colDataName = NULL,
   colSplitBy = "condition",
   rowSplitBy = "regulation",
-  title = paste0("MAST Result: ", useResult),
+  title = paste0("DE Analysis: ", useResult),
   ...
 )
 }
@@ -38,7 +38,7 @@ transformation on the assay used for the analysis. Default \code{FALSE}.}
 value. Default \code{FALSE}.}
 
 \item{log2fcThreshold}{numeric. Only plot DEGs with the absolute values of
-log2FC larger than this value. Default \code{1}.}
+log2FC larger than this value. Default \code{0.25}.}
 
 \item{fdrThreshold}{numeric. Only plot DEGs with FDR value smaller than this
 value. Default \code{0.05}.}
@@ -80,7 +80,7 @@ this(these) annotation(s). Should exist in either \code{rowDataName} or
 \code{names(featureAnnotations)}. Default \code{"regulation"}.}
 
 \item{title}{character. Main title of the heatmap. Default
-\code{"MAST Result: <useResult>"}.}
+\code{"DE Analysis: <useResult>"}.}
 
 \item{...}{Other arguments passed to \code{\link{plotSCEHeatmap}}}
 }
@@ -98,16 +98,13 @@ annotations used from \code{colData(inSCE)} while setting the condition and
 covariates will also be added.
 }
 \examples{
-data(scExample, package = "singleCellTK")
-\dontrun{
-sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
-sce <- runDEAnalysis(inSCE = sce, method = "DESeq2",
-                     groupName1 = "Sample1", groupName2 = "Sample2",
-                     index1 = 1:100, index2 = 101:190,
-                     analysisName = "DESeq2")
-plotDEGHeatmap(sce, useResult = "DESeq2", fdrThreshold = 1, doLog = TRUE)
-}
-
+data("sceBatches")
+logcounts(sceBatches) <- log(counts(sceBatches) + 1)
+sce.w <- subsetSCECols(sceBatches, colData = "batch == 'w'")
+sce.w <- runWilcox(sce.w, class = "cell_type", classGroup1 = "alpha",
+                   groupName1 = "w.alpha", groupName2 = "w.beta",
+                   analysisName = "w.aVSb")
+plotDEGHeatmap(sce.w, "w.aVSb")
 }
 \author{
 Yichen Wang

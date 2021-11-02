@@ -14,13 +14,15 @@ plotSCEViolinColData(
   dots = TRUE,
   xlab = NULL,
   ylab = NULL,
-  axisSize = 10,
-  axisLabelSize = 10,
-  dotSize = 1,
+  baseSize = 12,
+  axisSize = NULL,
+  axisLabelSize = NULL,
+  dotSize = 0.5,
   transparency = 1,
   defaultTheme = TRUE,
   gridLine = FALSE,
   summary = NULL,
+  summaryTextSize = 3,
   title = NULL,
   titleSize = NULL,
   combinePlot = "none",
@@ -51,11 +53,14 @@ Default TRUE.}
 
 \item{ylab}{Character vector. Label for y-axis. Default NULL.}
 
-\item{axisSize}{Size of x/y-axis ticks. Default 10.}
+\item{baseSize}{The base font size for all text. Default 12.
+Can be overwritten by titleSize, axisSize, and axisLabelSize.}
 
-\item{axisLabelSize}{Size of x/y-axis labels. Default 10.}
+\item{axisSize}{Size of x/y-axis ticks. Default NULL.}
 
-\item{dotSize}{Size of dots. Default 1.}
+\item{axisLabelSize}{Size of x/y-axis labels. Default NULL.}
+
+\item{dotSize}{Size of dots. Default 0.5.}
 
 \item{transparency}{Transparency of the dots, values will be 0-1. Default 1.}
 
@@ -67,6 +72,9 @@ drawn even if defaultTheme is TRUE. Default FALSE.}
 
 \item{summary}{Adds a summary statistic, as well as a crossbar to the
 violin plot. Options are "mean" or "median". Default NULL.}
+
+\item{summaryTextSize}{The text size of the summary statistic displayed
+above the violin plot. Default 3.}
 
 \item{title}{Title of plot. Default NULL.}
 

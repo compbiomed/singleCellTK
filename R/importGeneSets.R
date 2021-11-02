@@ -108,8 +108,8 @@ importGeneSetsFromGMT <- function(inSCE, file,
 #' data(scExample)
 #'
 #' # Generate gene sets from 'rownames'
-#' gs1 <- rownames(sce)[1:10]
-#' gs2 <- rownames(sce)[11:20]
+#' gs1 <- rownames(sce)[seq(10)]
+#' gs2 <- rownames(sce)[seq(11,20)]
 #' gs <- list("geneset1" = gs1, "geneset2" = gs2)
 #' sce <- importGeneSetsFromList(inSCE = sce,
 #'                               geneSetList = gs,
@@ -205,8 +205,8 @@ importGeneSetsFromList <- function(inSCE, geneSetList,
 #' @examples
 #' data(scExample)
 #' library(GSEABase)
-#' gs1 <- GeneSet(setName = "geneset1", geneIds = rownames(sce)[1:10])
-#' gs2 <- GeneSet(setName = "geneset2", geneIds = rownames(sce)[11:20])
+#' gs1 <- GeneSet(setName = "geneset1", geneIds = rownames(sce)[seq(10)])
+#' gs2 <- GeneSet(setName = "geneset2", geneIds = rownames(sce)[seq(11,20)])
 #' gsc <- GeneSetCollection(list(gs1, gs2))
 #' sce <- importGeneSetsFromCollection(inSCE = sce,
 #'                                     geneSetCollection = gsc,
@@ -218,7 +218,7 @@ importGeneSetsFromCollection <- function(inSCE, geneSetCollection,
 
   # If 'by' is NULL, then the location will be derived from the description
   if(is.null(by)) {
-    location <- unlist(lapply(1:length(geneSetCollection),
+    location <- unlist(lapply(seq_along(geneSetCollection),
                    function(i) GSEABase::description(geneSetCollection[[i]])))
   } else {
     if(length(by) != 1 & length(by) != length(geneSetCollection)) {
@@ -262,7 +262,7 @@ importGeneSetsFromCollection <- function(inSCE, geneSetCollection,
   }
 
   if(length(gs) == 0) {
-    stop("No gene sets were succesfully imported.")
+    stop("No gene sets could be imported. This is either because the no overlapping genes were identified between the gene sets and the input data or different types of identifiers are used between the two. Please check if the gene identifiers of both gene sets and input data belong to same type.")
   }
 
   # Add GeneSetCollection back to metadata
@@ -397,7 +397,7 @@ importGeneSetsFromMSigDB <- function(inSCE, categoryIDs,
     for(j in seq_along(gs.names)) {
       gs.sub <- gs[gs$gs_name == gs.names[j],mapping]
       gs.list[[j]] <- GSEABase::GeneSet(setName = gs.names[j],
-                        geneIds = gs.sub,
+                        geneIds = unique(gs.sub),
                         collectionType = GSEABase::BroadCollection(
                           category = tolower(category),
                           subCategory = subcat))
@@ -432,19 +432,19 @@ importGeneSetsFromMSigDB <- function(inSCE, categoryIDs,
 #' @title Import mitochondrial gene sets
 #' @description Imports mitochondrial gene sets and  stores it in the metadata of the
 #' \linkS4class{SingleCellExperiment} object. These gene sets can be used in
-#' downstream quality control and analysis functions in \link{singleCellTK}. 
+#' downstream quality control and analysis functions in \link{singleCellTK}.
 #' @param inSCE Input \linkS4class{SingleCellExperiment} object.
-#' @param reference Character. Species available are "human" and "mouse".  
-#' @param by Character. Describes the location within \code{inSCE} where the gene 
-#' identifiers in the mitochondrial gene sets should be mapped. 
+#' @param reference Character. Species available are "human" and "mouse".
+#' @param by Character. Describes the location within \code{inSCE} where the gene
+#' identifiers in the mitochondrial gene sets should be mapped.
 #' If set to \code{"rownames"} then the features will
 #' be searched for among \code{rownames(inSCE)}. This can also be
 #' set to one of the column names of \code{rowData(inSCE)} in which case the
 #' gene identifies will be mapped to that column in the \code{rowData}
 #' of \code{inSCE}. See \link{featureIndex} for more information.
 #' Default \code{"rownames"}.
-#' @param id Types of gene id. Now it supports "symbol", "entrez", "ensemble"
-#' and "ensemble_transcriptID". 
+#' @param id Types of gene id. Now it supports "symbol", "entrez", "ensembl"
+#' and "ensemblTranscriptID".
 #' @param collectionName Character. Name of collection to add gene sets to.
 #' If this collection already exists in \code{inSCE}, then these gene sets will
 #' be added to that collection. Any gene sets within the collection with the
@@ -452,9 +452,9 @@ importGeneSetsFromMSigDB <- function(inSCE, categoryIDs,
 #' @return A \link[SingleCellExperiment]{SingleCellExperiment} object
 #' with gene set from \code{collectionName} output stored to the
 #' \link{metadata} slot.
-#' @details The gene identifiers of mitochondrial genes will be loaded with 
-#' "data(AllMito)". Currently, it supports human and mouse reference. 
-#' Also, it supports entrez ID, gene symbol, ensemble ID and ensemble transcript ID. 
+#' @details The gene identifiers of mitochondrial genes will be loaded with
+#' "data(AllMito)". Currently, it supports human and mouse reference.
+#' Also, it supports entrez ID, gene symbol, ensemble ID and ensemble transcript ID.
 #' They will be mapped to the IDs in \code{inSCE} using the \code{by} parameter and
 #' stored in a \linkS4class{GeneSetCollection} object from package
 #' \link{GSEABase}. This object is stored in
@@ -469,31 +469,32 @@ importGeneSetsFromMSigDB <- function(inSCE, categoryIDs,
 #' data(scExample)
 #' sce <- importMitoGeneSet(inSCE = sce,
 #'                          reference = "human",
-#'                          id = "ensemble",
+#'                          id = "ensembl",
 #'                          collectionName = "human_mito",
 #'                          by = "rownames")
 #' @export
 importMitoGeneSet <- function(inSCE, reference, id, by, collectionName) {
-  id <- tolower(id)
-  if (!id %in% c("symbol", "entrez", "ensemble", "ensemble_transcriptID")) {
-    stop("id should be one of 'symbol', 'entrez', 'ensemble' or 'ensemble_transcriptID'")
+
+  if (!id %in% c("symbol", "entrez", "ensembl", "ensemblTranscriptID")) {
+    stop("`id` should be one of 'symbol', 'entrez', 'ensembl' or 'ensemblTranscriptID'")
   }
-  
+
   reference <- tolower(reference)
   if (!reference %in% c("human", "mouse")) {
-    stop("Now it only supports human and mouse reference.")
+    stop("Now it only supports 'human' and 'mouse' reference.")
   }
-  
+
   MitoGenes <- NULL
   utils::data(MitoGenes, envir = environment())
   target <- paste(reference, id, sep="_")
   if (!target %in% names(MitoGenes)) {
     stop(target, " is not supported now. Please use function 'importGeneSetsFromGMT' or 'importGeneSetsFromList' to load mitochondrial gene sets.")
   }
-  
+
   mitogenes <- MitoGenes[[target]]
+  names(mitogenes) <- collectionName
   inSCE <- importGeneSetsFromList(inSCE = inSCE, geneSetList = mitogenes,
-                                  collectionName = collectionName, 
+                                  collectionName = collectionName,
                                   by = by)
   return(inSCE)
 }
@@ -512,8 +513,8 @@ importMitoGeneSet <- function(inSCE, reference, id, by, collectionName) {
 #' @examples
 #' data(scExample)
 #' library(GSEABase)
-#' gs1 <- GeneSet(setName = "geneset1", geneIds = rownames(sce)[1:10])
-#' gs2 <- GeneSet(setName = "geneset2", geneIds = rownames(sce)[11:20])
+#' gs1 <- GeneSet(setName = "geneset1", geneIds = rownames(sce)[seq(10)])
+#' gs2 <- GeneSet(setName = "geneset2", geneIds = rownames(sce)[seq(11,20)])
 #' gsc1 <- GeneSetCollection(gs1)
 #' gsc2 <- GeneSetCollection(gs2)
 #' sce <- importGeneSetsFromCollection(inSCE = sce,
@@ -530,7 +531,7 @@ sctkListGeneSetCollections <- function(inSCE) {
   if(!is.null(S4Vectors::metadata(inSCE)$sctk$genesets)) {
     res <- names(S4Vectors::metadata(inSCE)$sctk$genesets)
   } else {
-    res <- "No GeneSetCollections have been imported."
+    res <- character()
   }
   return(res)
 }
@@ -543,6 +544,8 @@ sctkListGeneSetCollections <- function(inSCE) {
 #' @author Joshua D. Campbell
 #' @seealso \link{importGeneSetsFromMSigDB} for importing MSigDB gene sets.
 #' @export
+#' @examples
+#' getMSigDBTable()
 getMSigDBTable <- function() {
   # Issues for getting this to pass R CMD Check:
   # https://support.bioconductor.org/p/24756/#24768

@@ -1,0 +1,126 @@
+---
+title: "enrichR"
+author: "Irzam Sarfraz"
+output:
+  html_document:
+    toc: true
+    toc_depth: 2
+bibliography: references.bib
+csl: ieee.csl
+---
+```{r develSetting, include=FALSE}
+doEval = TRUE
+knitr::opts_chunk$set(warning = FALSE)
+```
+## Introduction
+**EnrichR** [@Kuleshov2016][@Chen2013] is a GSE (Gene Set Enrichment) method that infers biological knowledge by performing enrichment of input gene sets with curated biologically relevant prior databases that represent biological functions or functional pathways. The **singleCellTK** toolkit offers an easy to use interface to the EnrichR method and only requires the selection of input genes and the databases against which the genes should be tested. <br>
+
+To view detailed instructions on how to use the method from the toolkit, please select 'Interactive Analysis' for using enrichR in shiny application or 'Console Analysis' for using this method on R console from the tabs below:
+
+````{=html}
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+````
+
+
+## Workflow Guide
+
+````{=html}
+<div class="tab">
+  <button class="tablinks" onclick="openTab(event, 'interactive')" id="ia-button">Interactive Analysis</button>
+  <button class="tablinks" onclick="openTab(event, 'console')" id="console-button">Console Analysis</button>
+</div>
+
+<div id="interactive" class="tabcontent">
+````
+
+An overall workflow guide on how to use ***EnrichR*** sub-tab is described below. ***This workflow guide assumes that the Single Cell Data has already been uploaded through the [Import Single Cell Data](import_data.html) tab***. <br>
+
+![](ui_screenshots/pathway_analysis/enrichR_1.png)
+
+1. Select ***Cell Annotation & Pathway Analysis*** tab from the top menu. <br>
+2. Select ***EnrichR*** option from the drop-down menu. <br>
+
+![](ui_screenshots/pathway_analysis/enrichR_2.png)
+
+3. Select if you want to upload a gene symbol file using the option ***Upload file*** or choose the ***Select Gene(s)*** option if you want to select genes from the already uploaded data. <br>
+
+4. If ***Select Gene(s)*** option is selected, you can select the genes from the available data here. Alternatively, you can upload a gene file using the options specified in **(9)** and **(10)**. <br>
+
+5. Select ***databases*** to test the input genes against. Selecting ***ALL*** will test against all available ***databases*** and may take long time to compute. <br>
+
+6. Press ***Run*** to start computation of enrichment scores. <br>
+
+7. Once ***EnrichR*** computation is complete, results can be saved to local drive by pressing the ***Download Results*** button. <br>
+
+8. Results are displayed in the table for genes that are significant (adjusted p value < 0.05). <br>
+
+![](ui_screenshots/pathway_analysis/enrichR_3.png)
+
+9. If ***Upload file*** option is selected in **(3)**, additional options are displayed to upload the ***gene symbols*** file. The file path can be selected here. <br>
+
+10. Once filed is selected in **(9)**, options to select the parameters of the input file are displayed so the input file is correctly parsed.
+
+
+````{=html}
+</div>
+<div id="console" class="tabcontent">
+````
+
+**1. Select genes and databases:**
+```{r "enrichR_1", eval = FALSE}
+genes <- c("HES1", "PON2", "FBXO44", "DEK", "SOX4", "FBXL16")
+databases <- enrichR::listEnrichrDbs()$libraryName
+```
+
+**2. Run 'enrichR' using `enrichRSCE` function:**
+
+```{r "enrichR_2", eval = FALSE}
+enrichRes <- enrichRSCE(inSCE = sce, glist = genes, db = databases)
+```
+
+The `enrichRSCE` function above, takes the following parameters: <br>
+`inSCE`: input `SingleCellExperiment` object <br>
+`glist`: vector of input gene names <br>
+`db`: a list of databases to test <br>
+
+**3. Print results:**
+```{r "enrichR_3", eval = FALSE}
+print(enrichRes)
+```
+
+
+````{=html}
+<details>
+  <summary><b>Example</b></summary>
+````  
+  
+```{r "enrichR_example_1", results='hide', fig.keep='all', message = FALSE, warning = FALSE}
+  # Load singleCellTK & pbmc3k example data
+  library(singleCellTK)
+  sce <- importExampleData(dataset = "pbmc3k")
+  # Select genes
+  genes <- c("HES1", "PON2", "FBXO44", "DEK", "SOX4", "FBXL16")
+  # Fetch databases
+  databases <- enrichR::listEnrichrDbs()$libraryName
+  # Run enrichR
+  enrichRes <- enrichRSCE(inSCE = sce, glist = genes, db = databases)
+```
+
+```{r "enrichR_example_2", message = FALSE, warning = FALSE}
+  # Print the first five results
+  print(enrichRes[1:5, ])
+```
+
+````{=html}
+</details> 
+      </div>
+<script>
+document.getElementById("ia-button").click();
+</script>
+</body>
+````
+
+## References

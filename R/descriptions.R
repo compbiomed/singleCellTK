@@ -36,8 +36,7 @@ descriptionEmptyDrops <- function() {
     return(list(
         introduction = "It is crucial to distinguish the data occurring from real cells
              and empty droplets containing ambient RNA. SCTK employs the
-             [EmptyDrops](https://rdrr.io/github/MarioniLab/DropletUtils/man/emptyDrops.html)
-             algorithm from the
+             EmptyDrops algorithm from the
             [DropletUtils](https://bioconductor.org/packages/release/bioc/html/DropletUtils.html)
             package to test for empty droplets. ",
         runEmptyDrops = "The wrapper function `runEmptyDrops` can be used to separately run the
@@ -80,7 +79,7 @@ descriptionBarcodeRank <- function() {
 
 descriptionScrublet <- function() {
     return(list(
-        introduction = "[Scrublet](https://github.com/swolock/scrublet/blob/master/examples/scrublet_basics.ipynb) aims to detect doublets by
+        introduction = "Scrublet aims to detect doublets by
              creating simulated doublets from combining transcriptomic profiles of existing cells in the dataset. ",
         parameter = "The `sample` parameter indicates what sample each cell originated from.
              It can be set to `NULL` if all cells in the dataset came from the same sample. ",
@@ -99,7 +98,7 @@ descriptionScrublet <- function() {
 
 descriptionDoubletFinder <- function() {
     return(list(
-        introduction = "[DoubletFinder](https://github.com/chris-mcginnis-ucsf/DoubletFinder) is a doublet detection algorithm which depends on
+        introduction = "DoubletFinder is a doublet detection algorithm which depends on
             the single cell analysis package
             [Seurat](https://cran.r-project.org/web/packages/Seurat/index.html). ",
         runDoubletFinder = "The wrapper function `runDoubletFinder` can be used to separately run the
@@ -135,8 +134,8 @@ descriptionScDblFinder <- function() {
         runScDblFinder = "The wrapper function `runScDblFinder` can be used to separately run the
               scDblFinder algorithm on its own. ",
         parameter = "The `nNeighbors` parameter is the number of nearest neighbor
-	used to calculate the density for doublet detection. `simDoublets` is used
-	to determine the number of simulated doublets used for doublet detection. ",
+used to calculate the density for doublet detection. `simDoublets` is used
+to determine the number of simulated doublets used for doublet detection. ",
         output = "The output of scDblFinder is a `scDblFinder_doublet_score` and
              `scDblFinder_doublet_call`. The doublet score of a droplet will be higher if the
              it is deemed likely to be a doublet. ",

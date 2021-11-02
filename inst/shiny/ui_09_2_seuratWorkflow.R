@@ -1,16 +1,42 @@
 # User Interface for Seurat Workflow ---
 shinyPanelSeurat <- fluidPage(
+    tags$script("Shiny.addCustomMessageHandler('close_dropDownSeuratHM', function(x){
+                  $('html').click();
+                });"),
     h1("Seurat"),
-    h5(tags$a(href = "https://www.sctk.science/articles/tab09_seurat-workflow",
+    h5(tags$a(href = paste0(docs.artPath, "cnsl_seurat_curated_workflow.html"),
               "(help)", target = "_blank")),
     inlineCSS(list(".panel-danger>.panel-heading" = "background-color:#dcdcdc; color:#000000", ".panel-primary>.panel-heading" = "background-color:#f5f5f5; color:#000000; border-color:#dddddd", ".panel-primary" = "border-color:#dddddd;", ".panel-primary>.panel-heading+.panel-collapse>.panel-body" = "border-color:#dddddd;")),
-        bsCollapse(id = "SeuratUI", open = "Data Input",
+    conditionalPanel(
+        condition = "false",
+        selectInput(
+            "activePanelSelectSeurat",
+            label = "Active Panel:",
+            choices = c("",
+                        "Normalize Data",
+                        "Scale Data",
+                        "Highly Variable Genes",
+                        "Dimensionality Reduction",
+                        "tSNE/UMAP",
+                        "Clustering",
+                        "Find Markers",
+                        "Heatmap Plot"),
+            selected = ""
+        )
+    ),
+    bsCollapse(id = "SeuratUI", open = "Data Input",
             bsCollapsePanel("Normalize Data",
                 fluidRow(
                     column(4,
                         panel(heading = "Options",
-                            uiOutput("seuratSelectNormalizationAssay"),
-                            #selectInput(inputId = "seuratSelectNormalizationAssay", label = "Select assay: ", choices = c()),
+                              selectizeInput(
+                                  inputId = "seuratSelectNormalizationAssay", 
+                                  label = "Select input matrix:", 
+                                  choices = NULL, 
+                                  selected = NULL, 
+                                  multiple = FALSE,
+                                  options = NULL),
+                            #uiOutput("seuratSelectNormalizationAssay"),
                             selectInput(inputId = "normalization_method", label = "Select normalization method: ", choices = c("LogNormalize", "CLR", "RC")),
                             textInput(inputId = "scale_factor", label = "Set scaling factor: ", value = "10000"),
                             actionButton(inputId = "normalize_button", "Normalize")
@@ -24,7 +50,7 @@ shinyPanelSeurat <- fluidPage(
                 fluidRow(
                     column(4,
                         panel(heading = "Options",
-                            selectInput(inputId = "model.use", label = "Select model for scaling: ", choices = c("linear", "poisson", "negbinom")),
+                            #selectInput(inputId = "model.use", label = "Select model for scaling: ", choices = c("linear", "poisson", "negbinom")),
                             materialSwitch(inputId = "do.scale", label = "Scale data?", value = TRUE),
                             materialSwitch(inputId = "do.center", label = "Center data?", value = TRUE),
                             textInput(inputId = "scale.max", label = "Max value for scaled data: ", value = "10"),
@@ -51,7 +77,7 @@ shinyPanelSeurat <- fluidPage(
                         fluidRow(
                             column(12,
                                 panel(heading = "Display HVG",
-                                    textInput(inputId = "hvg_no_features_view", label = "Select number of features to display: ", value = "100"),
+                                    numericInput(inputId = "hvg_no_features_view", label = "Select number of features to display: ", value = 10, step = 1),
                                     verbatimTextOutput(outputId = "hvg_output", placeholder = TRUE)
                                      )
                                   )
@@ -78,7 +104,7 @@ shinyPanelSeurat <- fluidPage(
                                 fluidRow(
                                     column(12,
                                         panel(heading = "PCA",
-                                            textInput(inputId = "pca_no_components", label = "Select number of components to compute: ", value = "50"),
+                                            numericInput(inputId = "pca_no_components", label = "Select number of components to compute: ", value = 50),
                                             materialSwitch(inputId = "pca_compute_elbow", label = "Compute ElbowPlot?", value = TRUE),
                                             materialSwitch(inputId = "pca_compute_jackstraw", label = "Compute JackStrawPlot?", value = FALSE),
                                             materialSwitch(inputId = "pca_compute_heatmap", label = "Compute Heatmap?", value = TRUE),
@@ -153,7 +179,7 @@ shinyPanelSeurat <- fluidPage(
 
 
             bsCollapsePanel("tSNE/UMAP",
-                tabsetPanel(type = "tabs",
+                tabsetPanel(id = "tsneUmapTabsetSeurat", type = "tabs",
                     tabPanel("tSNE",
                         br(),
                         fluidRow(
@@ -284,7 +310,7 @@ shinyPanelSeurat <- fluidPage(
                                                               inputId = "seuratFindMarkerTest",
                                                               label = "Select test:",
                                                               choices = c("wilcox", "bimod",
-                                                                          "t", "negbinom", 
+                                                                          "t", "negbinom",
                                                                           "poisson", "LR",
                                                                           "DESeq2")
                                                           ),
@@ -315,11 +341,14 @@ shinyPanelSeurat <- fluidPage(
                                                                    title = "Heatmap Plot",
                                                                          fluidRow(
                                                                            column(12, align = "center",
-                                                                                  panel(
-                                                                                    jqui_resizable(
-                                                                                      plotOutput(outputId = "findMarkerHeatmapPlotFull")
-                                                                                    )
-                                                                                  )
+                                                                                               panel(
+                                                                                                   numericInput("findMarkerHeatmapPlotFullNumeric", value = 10, max = 2000, min = 2, step = 1, label = "Select number of top genes from each cluster/group to visualize in the heatmap below based on highest average log fold change value:"),
+                                                                                                   actionButton("findMarkerHeatmapPlotFullNumericRun", label = "Plot"),
+                                                                                                   hr(),
+                                                                                                   shinyjqui::jqui_resizable(
+                                                                                                       plotOutput(outputId = "findMarkerHeatmapPlotFull", height = "500px")
+                                                                                                   )
+                                                                                               )
                                                                            )
                                                                          )
                                                                  )
@@ -328,25 +357,19 @@ shinyPanelSeurat <- fluidPage(
                                                   ),
                                                   br(),
                                                   hidden(
-                                                      tags$div(class = "seurat_findmarker_plots", 
+                                                      tags$div(class = "seurat_findmarker_plots",
                                                                panel(heading = "Marker Gene Plots",
                                                                      HTML("<center><h5><span style='color:red; font-weight:bold; text-align:center;'>Click on the rows of the table above to plot the selected marker genes below!</span></h5></br></center>"),
                                                                      tabsetPanel(id = "seuratFindMarkerPlotTabset", type = "tabs"))
                                                       )
                                                   )
                                            )
-                                           
+
                                        )
                                 )
                             ),
-                            style = "primary"),
-            hidden(bsCollapsePanel("Downstream Analysis",
-                                   nonLinearWorkflowUI(
-                                       id = "id_1",
-                                       de = TRUE,
-                                       pa = TRUE),
                             style = "primary")
-        )
-       )
+       ),
+    nonLinearWorkflowUI(id = "nlw-seurat")
     )
 

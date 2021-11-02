@@ -10,7 +10,7 @@ output:
     number_sections: yes
     toc: yes
     toc_float: true
-    collapsed: true
+    collapsed: false
     code_folding: hide
     html_notebook: default
 ---
@@ -24,6 +24,29 @@ text-align: justify}
 require(singleCellTK)
 require(ggplot2)
 require(dplyr)
+
+metaChecking <- function(metainfo, sample){
+  if (any(!sample %in% names(metainfo))) {
+
+    ### if length of metainfo is 1, it indicates that the name is the sample name
+    ### This format is compatible with the QC report.
+    ### In this case, all samples are ran with single run. Return any sublist is fine. 
+    if (length(names(metainfo)) == 1) {
+      names(metainfo) <- sample
+      return(metainfo)
+    }
+
+    ### if QC is ran in R console instead of QC pipeline, we will add place holder.
+    ### In this case, different samples also share parameters. Return anny sublist is fine 
+    newMeta <- list() 
+    for (sample in samples) {
+      newMeta[[sample]] <- metainfo
+    }
+    metainfo <- newMeta
+  }
+
+  return(metainfo)
+}
 
 preprocessMeta <- function(meta, ignore=c("geneSetCollection", "sample")){
   meta <- meta[!names(meta) %in% ignore]
@@ -64,21 +87,14 @@ formatPlotList <- function(plotlist, samples) {
 sce.qc <- params$object
 subTitle <- params$subTitle
 studyDesign <- params$studyDesign
-samples <- unique(colData(sce.qc)$sample)
+sceSample <- colData(sce.qc)$sample
+samples <- unique(sceSample)
 
-# reduceDims<- grep('UMAP', reducedDimNames(sce.qc), value = TRUE)
-# if (length(reduceDims) != 0) {
-#   reduceDimUsed <- reduceDims[1]
-# } else {
-#   reduceDims<- grep('TSNE', reducedDimNames(sce.qc), value = TRUE)
-#   if (length(reduceDims) == 0) {
-#     stop("No reduced dimension are available for QC visualization!")
-#   } else {
-#     reduceDimUsed <- reduceDims[1]
-#   }
-# }
+sce.qc <- getUMAP(sce.qc, useAssay = "counts", reducedDimName = "QC_UMAP", sample = sceSample)
 
-sce.qc <- getUMAP(sce.qc, reducedDimName = "QC_UMAP")
+### when 'sample' doesnn't exists in colData
+if (is.null(samples)) { samples <- "sample" }
+
 ```
 
 ---
@@ -89,7 +105,7 @@ subtitle: "`r subTitle`"
 
 
 # Introduction
-Comprehensive quality control (QC) of single-cell RNA-seq data was performed with the [**singleCellTK**](https://github.com/compbiomed/singleCellTK/tree/sctk_qc_1.7.6) package. This report contains information about each QC tool and visualization of the QC metrics for each sample. For more information on running this pipeline and performing quality control, see the [**documentation**](https://github.com/compbiomed/singleCellTK/blob/devel/exec/SCTK_runQC_Documentation2.md). If you use the singleCellTK package for quality control, please include a [**reference**](https://www.biorxiv.org/content/10.1101/329755v1.article-info) in your publication.
+Comprehensive quality control (QC) of single-cell RNA-seq data was performed with the [**singleCellTK**](https://github.com/compbiomed/singleCellTK/tree/devel) package. This report contains information about each QC tool and visualization of the QC metrics for each sample. For more information on running this pipeline and performing quality control, see the [**documentation**](https://www.camplab.net/sctk/v2.2.1/articles/articles/cmd_qc.html). If you use the singleCellTK package for quality control, please include a [**reference**](https://www.biorxiv.org/content/10.1101/329755v1.article-info) in your publication.
 <br />
 <br />
 
@@ -97,22 +113,50 @@ Comprehensive quality control (QC) of single-cell RNA-seq data was performed wit
 description_runPerCellQC <- descriptionRunPerCellQC()
 ```
 
+# Summary Statistics {.tabset .tabset-fade}
+# {.unlisted .unnumbered .toc-ignore .tabset .tabset-fade}
+```{r "SummaryStats", echo = FALSE, results="asis", fig.align="center", warning=FALSE, message=FALSE}
+cat("\n")
+
+summaryTable <- sampleSummaryStats(inSCE = sce.qc, 
+                                   sample = sceSample,
+                                   simple = FALSE)
+
+cat(apply(summaryTable, 1:2, as.character) %>% 
+    knitr::kable(format = "html") %>%
+      kableExtra::kable_styling() %>%
+      kableExtra::scroll_box(width = "80%"))
+    
+cat("\n")
+  summary <- "The summary statistics table summarizes QC metrics of the cell matrix. This table summarizes the mean and median of UMI counts and median of genes detected per cell, as well as the number and percentages of doublets and estimated ambient RNA scores per dataset."
+  cat(summary)
+  cat("\n\n") 
+#}
+cat("\n")
+```
+
+
 ```{r, "General quality control metrics", results="asis", fig.align="center", warning=FALSE, message=FALSE, echo=FALSE}
 i="General quality control metrics"
-cat(paste0('# ', i, ' \n'))
-cat("\n")
+# cat(paste0('# ', i, ' \n'))
+# cat("\n")
 
 perCellData <- c("sum", "detected", "percent.top_50")
 skipCellData <- any(!perCellData %in% names(colData(sce.qc)))
 
 if (skipCellData) {
-  cat("runPerCellQC did not complete successfully. The section of General quality control metrics is skipped")
+  #cat("runPerCellQC did not complete successfully. The section of General quality control metrics is skipped")
   plotsQCMetrics <- NULL
 } else {
+  cat(paste0('# ', i, ' \n'))
+  cat("\n")
   plotsQCMetrics<- tryCatch(
     {plotRunPerCellQCResults(sce.qc, 
-                             sample = colData(sce.qc)$sample, 
-                             combinePlot="none")},
+                             sample = colData(sce.qc)$sample,
+                             combinePlot="none",
+                             axisSize = NULL,
+                             axisLabelSize = NULL,
+                             titleSize = NULL)},
     error = function(e) {
       cat("runPerCellQC did not complete successfully. The section of General quality control metrics is skipped")
       skipCellData <- TRUE
@@ -125,10 +169,14 @@ if (!skipCellData) {
   
   if (length(samples) == 1) {
     plotsQCMetrics <- list(Violin=plotsQCMetrics)
-    names(plotsQCMetrics$Violin)[names(plotsQCMetrics$Violin) == "TopPercent"] <- "Gene_Subset_Top50_Percent"
-    names(plotsQCMetrics$Violin)[names(plotsQCMetrics$Violin) == "subsets_mito_sum"] <- "Gene_Subset_Sum"
-    names(plotsQCMetrics$Violin)[names(plotsQCMetrics$Violin) == "subsets_mito_detected"] <- "Gene_Subset_Features"
   }
+  names(plotsQCMetrics$Violin)[names(plotsQCMetrics$Violin) == "subsets_mito_percent"] <- "Mito_Subset_Top50_Percent"
+  names(plotsQCMetrics$Violin)[names(plotsQCMetrics$Violin) == "subsets_mito_sum"] <- "Mito_Subset_Sum"
+  names(plotsQCMetrics$Violin)[names(plotsQCMetrics$Violin) == "subsets_mito_detected"] <- "Mito_Subset_Features"
+  geneSubsetData <- grep("subsets_.*", names(plotsQCMetrics$Violin), value = TRUE)
+  geneSubsetName <- unique(gsub("_sum|_detected|_percent","",
+                                gsub("subsets_","",geneSubsetData)))
+  
   cat(description_runPerCellQC$introduction)
   cat(description_runPerCellQC$runPerCellQC)
   cat(description_runPerCellQC$plotRunPerCellQCResults)
@@ -144,25 +192,51 @@ if (!skipCellData) {
 # {.unlisted .unnumbered .toc-ignore .tabset .tabset-fade}
 ```{r "plotsQCMetrics-plot", results="asis", eval=(!skipCellData), fig.align="center", warning=FALSE, message=FALSE, echo=FALSE}
 cat("\n")
-cat(paste0('## Sum {.tabset .tabset-fade} \n\n'))
+cat(paste0('## Total Counts {.tabset .tabset-fade} \n\n'))
 plotsQCMetrics$Violin$Sum
 cat("\n\n")
-cat(paste0('## Total {.tabset .tabset-fade} \n\n'))
+cat(paste0('## Total Features {.tabset .tabset-fade} \n\n'))
 plotsQCMetrics$Violin$Detected
 cat("\n\n")
-cat(paste0('## Subsets mito sum {.tabset .tabset-fade} \n\n'))
-plotsQCMetrics$Violin$Gene_Subset_Sum
-cat("\n\n")
-cat(paste0('## Subsets mito detected {.tabset .tabset-fade} \n\n'))
-plotsQCMetrics$Violin$Gene_Subset_Features
-cat("\n\n")
-cat(paste0('## Subsets mito percent {.tabset .tabset-fade} \n\n'))
-plotsQCMetrics$Violin$Gene_Subset_Top50_Percent
-cat("\n\n")
-cat(paste0('## Session info {.tabset .tabset-fade} \n\n'))
+cat(paste0('## Percentage of Library Size Occupied by Top 50 Expressed Features {.tabset .tabset-fade} \n\n'))
+plotsQCMetrics$Violin$TopPercent
+if(!is.null(plotsQCMetrics$Violin$Mito_Subset_Sum)){
+  cat("\n\n")
+  cat(paste0('## Total Mitochondrial Counts {.tabset .tabset-fade} \n\n'))
+  plotsQCMetrics$Violin$Mito_Subset_Sum
+}
+if(!is.null(plotsQCMetrics$Violin$Mito_Subset_Features)){
+  cat("\n\n")
+  cat(paste0('## Total Mitochondrial Features {.tabset .tabset-fade} \n\n'))
+  plotsQCMetrics$Violin$Mito_Subset_Features
+}
+if(!is.null(plotsQCMetrics$Violin$Mito_Subset_Top50_Percent)){
+  cat("\n\n")
+  cat(paste0('## Percentage of Mitochondrial Counts {.tabset .tabset-fade} \n\n'))
+  plotsQCMetrics$Violin$Mito_Subset_Top50_Percent
+}
 
-runPerCellMeta <- sce.qc@metadata$scater
-x <- preprocessMeta(runPerCellMeta[[samples]]$addPerCellQC)
+
+if(length(geneSubsetName) > 0){
+  for(ix in seq_along(geneSubsetName)){
+    cat("\n\n")
+    cat(paste0('## Total Counts of Feature Subset "', geneSubsetName[ix], '"{.tabset .tabset-fade} \n\n'))
+    print(plotsQCMetrics$Violin[[paste0("subsets_",geneSubsetName[ix],"_sum")]])
+    cat("\n\n")
+    cat(paste0('## Total Features within Feature Subset "', geneSubsetName[ix], '"{.tabset .tabset-fade} \n\n'))
+    print(plotsQCMetrics$Violin[[paste0("subsets_",geneSubsetName[ix],"_detected")]])
+    cat("\n\n")
+    cat(paste0('## Percentage of Feature Subset "', geneSubsetName[ix], '" Expression{.tabset .tabset-fade} \n\n'))
+    print(plotsQCMetrics$Violin[[paste0("subsets_",geneSubsetName[ix],"_percent")]])
+  }
+}
+
+cat("\n\n")
+cat(paste0('## Parameters {.tabset .tabset-fade} \n\n'))
+
+runPerCellMeta <- sce.qc@metadata$scater_addPerCellQC
+runPerCellMeta <- metaChecking(runPerCellMeta, samples[[1]])
+x <- preprocessMeta(runPerCellMeta[[ samples[[1]] ]])
 t(as.data.frame(x)) %>%
   knitr::kable(format = "html") %>% kableExtra::kable_styling() %>%
   kableExtra::scroll_box(width = "80%")
@@ -181,20 +255,24 @@ description_Scrublet <- descriptionScrublet()
 
 ```{r, "Scrublet", results="asis", fig.align="center", warning=FALSE, message=FALSE, echo = FALSE}
 i="Scrublet"
-cat(paste0('## ', i, ' \n'))
+# cat(paste0('## ', i, ' \n'))
 
 scrubletData <- c("scrublet_score", "scrublet_call")
 skipScrublet <- any(!scrubletData %in% names(colData(sce.qc)))
 
 if (skipScrublet) {
-  cat("runScrublet did not complete successfully. The section of Scrublet is skipped")
+  #cat("runScrublet did not complete successfully. The section of Scrublet is skipped")
   plotsScrublet <- NULL
 } else {
+  cat(paste0('## ', i, ' \n'))
     plotsScrublet<- tryCatch(
       {plotScrubletResults(sce.qc, 
                            reducedDimName="QC_UMAP",
                            sample = colData(sce.qc)$sample,
-                           combinePlot = "none")},
+                           combinePlot = "none",
+                           axisSize = NULL,
+                           axisLabelSize = NULL,
+                           titleSize = NULL)},
     error = function(e) {
       cat("runScrublet did not complete successfully. The section of Scrublet is skipped")
       skipScrublet <- TRUE
@@ -209,13 +287,13 @@ if (!skipScrublet) {
   cat(description_Scrublet$runScrublet)
   cat(description_Scrublet$plotScrubletResults)
   cat(description_Scrublet$output)
+  cat("\n")
 }
 ```
-<br />
 
-## {.unlisted .unnumbered .toc-ignore .tabset .tabset-fade}
 
 ```{r "Scrublet-plot", echo=FALSE, eval=(!skipScrublet), results="asis", fig.align="center"}
+cat("## {.unlisted .unnumbered .toc-ignore .tabset .tabset-fade}")
 cat("\n")
 for (sample in samples) {
   cat(paste0("### ", sample, " {.tabset .tabset-fade} \n"))
@@ -239,11 +317,12 @@ for (sample in samples) {
   
   cat("#### Parameters {.tabset .tabset-fade} \n\n")
   runScrubletMeta <- sce.qc@metadata$runScrublet
+  runScrubletMeta <- metaChecking(runScrubletMeta, sample)
   # if(length(samples) == 1) {
   #   runScrubletMeta <- list(runScrubletMeta)
   #   names(runScrubletMeta) <- sample
   # }
-    
+  
   x <- preprocessMeta(runScrubletMeta[[sample]])
   cat(t(as.data.frame(x)) %>%
     knitr::kable(format = "html") %>% kableExtra::kable_styling() %>%
@@ -251,10 +330,8 @@ for (sample in samples) {
   cat(description_Scrublet$additionalParam)
   cat("\n\n")
 }
+cat("\n")
 ```
-`r cat("\n")` 
-
-
 
 
 ```{r, "DoubletFinder-description", include=FALSE, warning=FALSE, message=FALSE}
@@ -263,21 +340,25 @@ description_DoubletFinder <- descriptionDoubletFinder()
 
 ```{r, "DoubletFinder-0", results="asis", fig.align="center", warning=FALSE, message=FALSE, echo=FALSE}
 i="DoubletFinder"
-cat(paste0('## ', i, ' \n'))
+# cat(paste0('## ', i, ' \n'))
 
 
 doubletFinderData <- grep("doubletFinder_doublet", names(colData(sce.qc)), value=TRUE)
 skipFinder <- length(doubletFinderData)==0  
 
 if (skipFinder) {
-  cat("runDoubletFinder did not complete successfully. The section of DoubletFinder is skipped")
+  #cat("runDoubletFinder did not complete successfully. The section of DoubletFinder is skipped")
   plotDoubletFinder <- NULL
 } else {
+  cat(paste0('## ', i, ' \n'))
   plotDoubletFinder<- tryCatch(
     {plotDoubletFinderResults(inSCE = sce.qc, 
                               reducedDimName = "QC_UMAP",
                               sample = colData(sce.qc)[['sample']],
-                              combinePlot = "none")},
+                              combinePlot = "none",
+                              axisSize = NULL,
+                              axisLabelSize = NULL,
+                              titleSize = NULL)},
     error = function(e) {
       cat("runDoubletFinder did not complete successfully. The section of DoubletFinder is skipped")
       skipFinder <- TRUE
@@ -295,13 +376,12 @@ if (!skipFinder) {
   cat(description_DoubletFinder$runDoubletFinder)
   cat(description_DoubletFinder$plotDoubletFinderResults)
   cat(description_DoubletFinder$output)
+  cat("\n")
 }
 ```
-<br />
 
-
-## {.unlisted .unnumbered .toc-ignore .tabset .tabset-fade}
 ```{r "DoubletFinder-plot", echo=FALSE, eval=!(skipFinder), results="asis", fig.align="center"}
+cat("## {.unlisted .unnumbered .toc-ignore .tabset .tabset-fade}")
 cat("\n")
 for (sample in samples) {
   cat(paste0("### ", sample, " {.tabset .tabset-fade} \n"))
@@ -328,6 +408,8 @@ for (sample in samples) {
     
     cat("##### Parameters {.tabset .tabset-fade} \n\n")
     DoubletFinderMeta <- sce.qc@metadata$runDoubletFinder
+    DoubletFinderMeta <- metaChecking(DoubletFinderMeta, sample)
+
     # if(length(samples) == 1) {
     #   DoubletFinderMeta <- list(DoubletFinderMeta)
     #   names(DoubletFinderMeta) <- sample
@@ -345,14 +427,8 @@ for (sample in samples) {
     cat("\n\n")
   }
 }
+cat("\n")
 ```
-`r cat("\n")`
-
-
-
-
-
-
 
 
 ```{r, "ScDblFinder-description", include=FALSE, warning=FALSE, message=FALSE}
@@ -361,20 +437,24 @@ description_ScDblFinder<- descriptionScDblFinder()
 
 ```{r, "ScDblFinder", results="asis", fig.align="center", warning=FALSE, message=FALSE, echo=FALSE}
 i="ScDblFinder"
-cat(paste0('## ', i, ' \n'))
+#cat(paste0('## ', i, ' \n'))
 
 scDblFinderData <- c("scDblFinder_doublet_score")
 skipScDblFinder <- any(!scDblFinderData %in% names(colData(sce.qc)))
 
 if (skipScDblFinder) {
-  cat("runScDblFinder did not complete successfully. The section of ScDblFinder is skipped")
+  #cat("runScDblFinder did not complete successfully. The section of ScDblFinder is skipped")
   plotScDblFinder <- NULL
 } else {
+  cat(paste0('## ', i, ' \n'))
   plotScDblFinder<- tryCatch(
     {plotScDblFinderResults(inSCE = sce.qc, 
-                             sample = colData(sce.qc)[['sample']],
-                             combinePlot = "none",
-                             reducedDimName = "QC_UMAP")},
+                            sample = colData(sce.qc)[['sample']],
+                            combinePlot = "none",
+                            reducedDimName = "QC_UMAP",
+                            axisSize = NULL,
+                            axisLabelSize = NULL,
+                            titleSize = NULL)},
     error = function(e) {
       cat("runScDblFinder did not complete successfully. The section of ScDblFinder is skipped")
       skipScDblFinder <- TRUE
@@ -389,13 +469,12 @@ if(!skipScDblFinder) {
   cat(description_ScDblFinder$runScDblFinder)
   cat(description_ScDblFinder$plotScDblFinderResults)
   cat(description_ScDblFinder$output)
+  cat("\n")
 }
 ```
-<br />
 
-
-## {.unlisted .unnumbered .toc-ignore .tabset .tabset-fade}
 ```{r "ScDblFinder-plot", echo=FALSE, eval=!(skipScDblFinder), results="asis", fig.align="center"}
+cat("## {.unlisted .unnumbered .toc-ignore .tabset .tabset-fade}")
 cat("\n")
 for (sample in samples){
   cat(paste0("### ", sample, " {.tabset .tabset-fade} \n"))
@@ -415,6 +494,8 @@ for (sample in samples){
   
   cat("#### Parameters {.tabset .tabset-fade} \n\n")
   ScDblFinderMeta <- sce.qc@metadata$runScDblFinder
+  ScDblFinderMeta <- metaChecking(ScDblFinderMeta, sample)
+
   # if(length(samples) == 1) {
   #   DoubletCellMeta <- list(DoubletCellMeta)
   #   names(DoubletCellMeta) <- sample
@@ -427,10 +508,8 @@ for (sample in samples){
   cat(description_ScDblFinder$parameter)
   cat("\n\n")
 }
+cat("\n")
 ```
-`r cat("\n")`
-
-
 
 
 ```{r, "Cxds-description", include=FALSE, warning=FALSE, message=FALSE}
@@ -439,20 +518,24 @@ descriprion_CxdsResults<- descriptionCXDS()
 
 ```{r, "Cxds", results="asis", fig.align="center", warning=FALSE, message=FALSE, echo=FALSE}
 i="Cxds"
-cat(paste0('## ', i, ' \n'))
+# cat(paste0('## ', i, ' \n'))
 
 cvdsData <- c("scds_cxds_score", "scds_cxds_call")
 skipCxds <- any(!cvdsData %in% names(colData(sce.qc)))
 
 if (skipCxds) {
-  cat("runCxds did not complete successfully. The section of Cxds is skipped")
+  #cat("runCxds did not complete successfully. The section of Cxds is skipped")
   plotCxds <- NULL
 } else {
+  cat(paste0('## ', i, ' \n'))
   plotCxds<- tryCatch(
     {plotCxdsResults(inSCE = sce.qc, 
-                              sample = colData(sce.qc)[['sample']],
-                              combinePlot = "none",
-                              reducedDimName = "QC_UMAP")},
+                     sample = colData(sce.qc)[['sample']],
+                     combinePlot = "none",
+                     reducedDimName = "QC_UMAP",
+                     axisSize = NULL,
+                     axisLabelSize = NULL,
+                     titleSize = NULL)},
     error = function(e) {
       cat("runCxds did not complete successfully. The section of Cxds is skipped")
       skipCxds <- TRUE
@@ -467,14 +550,12 @@ if (!skipCxds) {
   cat(descriprion_CxdsResults$runCxds)
   cat(descriprion_CxdsResults$plotCxdsResults)
   cat(descriprion_CxdsResults$output)
+  cat("\n")
 }
 ```
-<br />
 
-
-
-## {.unlisted .unnumbered .toc-ignore .tabset .tabset-fade}
 ```{r "Cxds-plot", echo=FALSE,eval=(!skipCxds), results="asis", fig.align="center"}
+cat("## {.unlisted .unnumbered .toc-ignore .tabset .tabset-fade}")
 cat("\n")
 for (sample in samples){
   cat(paste0("### ", sample, " {.tabset .tabset-fade} \n"))
@@ -498,6 +579,8 @@ for (sample in samples){
   
   cat("#### Parameters {.tabset .tabset-fade} \n\n")
   CxdsMeta <- sce.qc@metadata$runCxds
+  CxdsMeta <- metaChecking(CxdsMeta, sample)
+
   # if(length(samples) == 1) {
   #   CxdsMeta <- list(CxdsMeta)
   #   names(CxdsMeta) <- sample
@@ -514,12 +597,10 @@ for (sample in samples){
   cat(descriprion_CxdsResults$retRes)
   cat(descriprion_CxdsResults$estNdbl)
   cat("\n\n")
+  
 }
+cat("\n")
 ```
-`r cat("\n")`
-
-
-
 
 
 ```{r, "Bcds-description", include=FALSE, warning=FALSE, message=FALSE}
@@ -528,20 +609,24 @@ descriprion_BcdsResults<- descriptionBCDS()
 
 ```{r, "Bcds", results="asis", fig.align="center", warning=FALSE, message=FALSE, echo=FALSE}
 i="Bcds"
-cat(paste0('## ', i, ' \n'))
+# cat(paste0('## ', i, ' \n'))
 
 bcdsData <- c("scds_bcds_score", "scds_bcds_call")
 skipBcds <- any(!bcdsData %in% names(colData(sce.qc)))
 
 if (skipBcds) {
-  cat("runBcds did not complete successfully. The section of Bcds is skipped")
+  #cat("runBcds did not complete successfully. The section of Bcds is skipped")
   plotBcds <- NULL
 } else {
+  cat(paste0('## ', i, ' \n'))
   plotBcds<- tryCatch(
     {plotBcdsResults(inSCE = sce.qc, 
-                              sample = colData(sce.qc)[['sample']],
-                              combinePlot = "none",
-                              reducedDimName = "QC_UMAP")},
+                     sample = colData(sce.qc)[['sample']],
+                     combinePlot = "none",
+                     reducedDimName = "QC_UMAP",
+                     axisSize = NULL,
+                     axisLabelSize = NULL,
+                     titleSize = NULL)},
     error = function(e) {
       cat("runBcds did not complete successfully. The section of Bcds is skipped")
       skipBcds <- TRUE
@@ -556,13 +641,12 @@ if (!skipBcds) {
   cat(descriprion_BcdsResults$runBcds)
   cat(descriprion_BcdsResults$plotBcdsResults)
   cat(descriprion_BcdsResults$output)
+  cat("\n")
 }
 ```
-<br />
 
-
-## {.unlisted .unnumbered .toc-ignore .tabset .tabset-fade}
 ```{r "Bcds-plot", echo=FALSE, eval=(!skipBcds), results="asis", fig.align="center"}
+cat("## {.unlisted .unnumbered .toc-ignore .tabset .tabset-fade}")
 cat("\n")
 for (sample in samples){
   cat(paste0("### ", sample, " {.tabset .tabset-fade} \n"))
@@ -586,6 +670,8 @@ for (sample in samples){
   
   cat("#### Parameters {.tabset .tabset-fade} \n\n")
   BcdsMeta <- sce.qc@metadata$runBcds
+  BcdsMeta <- metaChecking(BcdsMeta, sample)
+
   # if(length(samples) == 1) {
   #   BcdsMeta <- list(BcdsMeta)
   #   names(BcdsMeta) <- sample
@@ -601,12 +687,10 @@ for (sample in samples){
   cat(descriprion_BcdsResults$nmax)
   cat(descriprion_BcdsResults$varImp)
   cat("\n\n")
+  
 }
+cat("\n")
 ```
-`r cat("\n")`
-
-
-
 
 
 
@@ -617,20 +701,24 @@ description_ScdsHybrid<- descriptionScdsHybrid()
 
 ```{r, "ScdsHybrid", results="asis", fig.align="center", warning=FALSE, message=FALSE, echo=FALSE}
 i="ScdsHybrid"
-cat(paste0('## ', i, ' \n'))
+# cat(paste0('## ', i, ' \n'))
 
 hybridData <- c("scds_hybrid_score", "scds_hybrid_call")
 skipScdsHybrid <- any(!hybridData %in% names(colData(sce.qc)))
 
 if (skipScdsHybrid) {
-  cat("runCxdsBcdsHybrid did not complete successfully. The section of ScdsHybrid is skipped")
+  #cat("runCxdsBcdsHybrid did not complete successfully. The section of ScdsHybrid is skipped")
   plotScdsHybrid <- NULL
 } else {
+  cat(paste0('## ', i, ' \n'))
   plotScdsHybrid<- tryCatch(
     {plotScdsHybridResults(inSCE = sce.qc, 
-                              sample = colData(sce.qc)[['sample']],
-                              combinePlot = "none",
-                              reducedDimName = "QC_UMAP")},
+                           sample = colData(sce.qc)[['sample']],
+                           combinePlot = "none",
+                           reducedDimName = "QC_UMAP",
+                           axisSize = NULL,
+                           axisLabelSize = NULL,
+                           titleSize = NULL)},
     error = function(e) {
       cat("runCxdsBcdsHybrid did not complete successfully. The section of ScdsHybrid is skipped")
       skipScdsHybrid <- TRUE
@@ -645,13 +733,12 @@ if (!skipScdsHybrid) {
   cat(description_ScdsHybrid$runCxdsBcdsHybrid)
   cat(description_ScdsHybrid$plotScdsHybridResults)
   cat(description_ScdsHybrid$output)
+  cat("\n")
 }
 ```
-<br />
 
-
-## {.unlisted .unnumbered .toc-ignore .tabset .tabset-fade}
 ```{r "ScdsHybrid-plot", echo=FALSE, eval=(!skipScdsHybrid), results="asis", fig.align="center"}
+cat("## {.unlisted .unnumbered .toc-ignore .tabset .tabset-fade}")
 cat("\n")
 for (sample in samples){
   cat(paste0("### ", sample, " {.tabset .tabset-fade} \n"))
@@ -675,6 +762,8 @@ for (sample in samples){
   
   cat("#### Parameters {.tabset .tabset-fade} \n\n")
   HybridMeta <- sce.qc@metadata$runCxdsBcdsHybrid
+  HybridMeta <- metaChecking(HybridMeta, sample)
+
   # if(length(samples) == 1) {
   #   HybridMeta <- list(HybridMeta)
   #   names(HybridMeta) <- sample
@@ -688,10 +777,9 @@ for (sample in samples){
   cat(description_ScdsHybrid$parameters)
   cat("\n\n")
 }
+cat("\n")
 ```
 `r cat("\n")`
-
-
 
 
 # Ambient RNA Detection
@@ -701,20 +789,24 @@ description_DecontX<- descriptionDecontX()
 
 ```{r, "DecontX", results="asis", fig.align="center", warning=FALSE, message=FALSE, echo=FALSE}
 i="DecontX"
-cat(paste0('## ', i, ' \n'))
+# cat(paste0('## ', i, ' \n'))
 
 decontXData <- c("decontX_contamination", "decontX_clusters")
 skipDecontX <- any(!decontXData %in% names(colData(sce.qc)))
 
 if (skipDecontX) {
-  cat("runDecontX did not complete successfully. The section of DecontX is skipped")
+  #cat("runDecontX did not complete successfully. The section of DecontX is skipped")
   plotDecontX <- NULL
 } else {
+  cat(paste0('## ', i, ' \n'))
   plotDecontX<- tryCatch(
     {plotDecontXResults(inSCE = sce.qc, 
-                              sample = colData(sce.qc)[['sample']],
-                              combinePlot = "none",
-                              reducedDimName = "QC_UMAP")},
+                        sample = colData(sce.qc)[['sample']],
+                        combinePlot = "none",
+                        reducedDimName = "QC_UMAP",
+                        axisSize = NULL,
+                        axisLabelSize = NULL,
+                        titleSize = NULL)},
     error = function(e) {
       cat("runDecontX did not complete successfully. The section of DecontX is skipped")
       skipDecontX <- TRUE
@@ -761,6 +853,8 @@ for (sample in samples){
   
   cat("#### Parameters {.tabset .tabset-fade} \n\n")
   DecontXMeta <- sce.qc@metadata$runDecontX
+  DecontXMeta <- metaChecking(DecontXMeta, sample)
+
   # if(length(samples) == 1) {
   #   DecontXMeta <- list(DecontXMeta)
   #   names(DecontXMeta) <- sample
@@ -775,11 +869,12 @@ for (sample in samples){
 ```
 `r cat("\n")`
 
-# Session Info
+# Session Information
+<details>
+ <summary><b>Session Information</b></summary>
 ```{r "CellQC-session-info", echo=FALSE}
 sessionInfo()
 ```
-
-
+</details>
 
 

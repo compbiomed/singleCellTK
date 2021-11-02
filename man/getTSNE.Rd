@@ -8,9 +8,10 @@ getTSNE(
   inSCE,
   useAssay = "logcounts",
   useAltExp = NULL,
+  useReducedDim = NULL,
   reducedDimName = "TSNE",
-  n_iterations = 1000,
-  perplexity = NULL,
+  nIterations = 1000,
+  perplexity = 30,
   run_pca = TRUE,
   ntop = NULL
 )
@@ -25,12 +26,15 @@ specified, \code{useAssay} has to exist in
 \item{useAltExp}{The subset to use for tSNE computation, usually for the
 selected.variable features. Default \code{NULL}.}
 
+\item{useReducedDim}{The low dimension representation to use for UMAP
+computation. Default \code{NULL}.}
+
 \item{reducedDimName}{a name to store the results of the dimension
 reductions. Default \code{"TSNE"}.}
 
-\item{n_iterations}{maximum iterations. Default \code{1000}.}
+\item{nIterations}{maximum iterations. Default \code{1000}.}
 
-\item{perplexity}{perplexity parameter. Default \code{NULL}.}
+\item{perplexity}{perplexity parameter. Default \code{30}.}
 
 \item{run_pca}{run tSNE on PCA components? Default \code{TRUE}.}
 
@@ -52,6 +56,6 @@ assay(mouseBrainSubsetSCE, "cpm") <- apply(
     x / (sum(x) / 1000000)
   })
 mouseBrainSubsetSCE <- getTSNE(mouseBrainSubsetSCE, useAssay = "cpm",
-                               reducedDimName = "TSNE_cpm")
-reducedDims(mouseBrainSubsetSCE)
+                               reducedDimName = "TSNE_cpm",
+                               perplexity = NULL)
 }

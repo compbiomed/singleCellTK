@@ -52,6 +52,14 @@
 #' to see if the counts are logged. Default \code{TRUE}
 #' @return A ggplot object of violin plot
 #' @export
+#' @examples
+#' data("sceBatches")
+#' logcounts(sceBatches) <- log(counts(sceBatches) + 1)
+#' sce.w <- subsetSCECols(sceBatches, colData = "batch == 'w'")
+#' sce.w <- runWilcox(sce.w, class = "cell_type", classGroup1 = "alpha",
+#'                    groupName1 = "w.alpha", groupName2 = "w.beta",
+#'                    analysisName = "w.aVSb")
+#' plotDEGViolin(sce.w, "w.aVSb")
 plotDEGViolin <- function(inSCE, useResult, threshP = FALSE, labelBy = NULL,
                           nrow = 6, ncol = 6, defaultTheme = TRUE,
                           isLogged = TRUE, check_sanity = TRUE){
@@ -141,6 +149,14 @@ plotDEGViolin <- function(inSCE, useResult, threshP = FALSE, labelBy = NULL,
 #' to see if the counts are logged. Default \code{TRUE}
 #' @return A ggplot object of linear regression
 #' @export
+#' @examples
+#' data("sceBatches")
+#' logcounts(sceBatches) <- log(counts(sceBatches) + 1)
+#' sce.w <- subsetSCECols(sceBatches, colData = "batch == 'w'")
+#' sce.w <- runWilcox(sce.w, class = "cell_type", classGroup1 = "alpha",
+#'                    groupName1 = "w.alpha", groupName2 = "w.beta",
+#'                    analysisName = "w.aVSb")
+#' plotDEGRegression(sce.w, "w.aVSb")
 plotDEGRegression <- function(inSCE, useResult, threshP = FALSE, labelBy = NULL,
                               nrow = 6, ncol = 6, defaultTheme = TRUE,
                               isLogged = TRUE, check_sanity = TRUE){
@@ -231,6 +247,58 @@ plotDEGRegression <- function(inSCE, useResult, threshP = FALSE, labelBy = NULL,
   return(regressionplot)
 }
 
+#' Get Top Table of a DEG analysis
+#' @description Users have to run \code{runDEAnalysis()} first, any of the 
+#' wrapped functions of this generic function. Users can set further filters on
+#' the result. A \code{data.frame} object, with variables of \code{Gene}, 
+#' \code{Log2_FC}, \code{Pvalue}, and \code{FDR}, will be returned. 
+#' @param inSCE \linkS4class{SingleCellExperiment} inherited object, with of the
+#' singleCellTK DEG method performed in advance. 
+#' @param useResult character. A string specifying the \code{analysisName}
+#' used when running a differential expression analysis function.
+#' @param labelBy A single character for a column of \code{rowData(inSCE)} as
+#' where to search for the labeling text. Default \code{NULL} for the 
+#' "rownames".
+#' @param onlyPos logical. Whether to only fetch DEG with positive log2_FC
+#' value. Default \code{FALSE}.
+#' @param log2fcThreshold numeric. Only fetch DEGs with the absolute values of
+#' log2FC larger than this value. Default \code{0.25}.
+#' @param fdrThreshold numeric. Only fetch DEGs with FDR value smaller than this
+#' value. Default \code{0.05}.
+#' @return A \code{data.frame} object of the top DEGs, with variables of 
+#' \code{Gene}, \code{Log2_FC}, \code{Pvalue}, and \code{FDR}.
+#' @export
+#' @examples
+#' data("sceBatches")
+#' sceBatches <- scaterlogNormCounts(sceBatches, "logcounts")
+#' sce.w <- subsetSCECols(sceBatches, colData = "batch == 'w'")
+#' sce.w <- runWilcox(sce.w, class = "cell_type", classGroup1 = "alpha",
+#'                    groupName1 = "w.alpha", groupName2 = "w.beta",
+#'                    analysisName = "w.aVSb")
+#' getDEGTopTable(sce.w, "w.aVSb")
+getDEGTopTable <- function(inSCE, useResult, labelBy = NULL, onlyPos = FALSE,
+                        log2fcThreshold = 0.25, fdrThreshold = 0.05){
+  # Check
+  .checkDiffExpResultExists(inSCE, useResult, labelBy)
+  # Extract
+  result <- S4Vectors::metadata(inSCE)$diffExp[[useResult]]$result
+  if (!is.null(labelBy)) {
+    genes <- result$Gene
+    result$Gene <- SummarizedExperiment::rowData(inSCE[genes,])[[labelBy]]
+  }
+  # Filter
+  if (isTRUE(onlyPos)) {
+    result <- result[result$Log2_FC > 0,]
+  }
+  if (!is.null(log2fcThreshold)) {
+    result <- result[abs(result$Log2_FC) > log2fcThreshold,]
+  }
+  if (!is.null(fdrThreshold)) {
+    result <- result[result$FDR < fdrThreshold,]
+  }
+  return(result)
+}
+
 #' Heatmap visualization of DEG result
 #'
 #' A differential expression analysis function has to be run in advance so that
@@ -250,7 +318,7 @@ plotDEGRegression <- function(inSCE, useResult, threshP = FALSE, labelBy = NULL,
 #' @param onlyPos logical. Whether to only plot DEG with positive log2_FC
 #' value. Default \code{FALSE}.
 #' @param log2fcThreshold numeric. Only plot DEGs with the absolute values of
-#' log2FC larger than this value. Default \code{1}.
+#' log2FC larger than this value. Default \code{0.25}.
 #' @param fdrThreshold numeric. Only plot DEGs with FDR value smaller than this
 #' value. Default \code{0.05}.
 #' @param useAssay character. A string specifying an assay of expression value
@@ -281,19 +349,16 @@ plotDEGRegression <- function(inSCE, useResult, threshP = FALSE, labelBy = NULL,
 #' this(these) annotation(s). Should exist in either \code{colDataName} or
 #' \code{names(cellAnnotations)}. Default \code{"condition"}.
 #' @param title character. Main title of the heatmap. Default
-#' \code{"MAST Result: <useResult>"}.
+#' \code{"DE Analysis: <useResult>"}.
 #' @param ... Other arguments passed to \code{\link{plotSCEHeatmap}}
 #' @examples
-#' data(scExample, package = "singleCellTK")
-#' \dontrun{
-#' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
-#' sce <- runDEAnalysis(inSCE = sce, method = "DESeq2",
-#'                      groupName1 = "Sample1", groupName2 = "Sample2",
-#'                      index1 = 1:100, index2 = 101:190,
-#'                      analysisName = "DESeq2")
-#' plotDEGHeatmap(sce, useResult = "DESeq2", fdrThreshold = 1, doLog = TRUE)
-#' }
-#'
+#' data("sceBatches")
+#' logcounts(sceBatches) <- log(counts(sceBatches) + 1)
+#' sce.w <- subsetSCECols(sceBatches, colData = "batch == 'w'")
+#' sce.w <- runWilcox(sce.w, class = "cell_type", classGroup1 = "alpha",
+#'                    groupName1 = "w.alpha", groupName2 = "w.beta",
+#'                    analysisName = "w.aVSb")
+#' plotDEGHeatmap(sce.w, "w.aVSb")
 #' @return A \code{ComplexHeatmap::Heatmap} object
 #' @export
 #' @author Yichen Wang
@@ -305,7 +370,7 @@ plotDEGHeatmap <- function(inSCE, useResult, doLog = FALSE, onlyPos = FALSE,
                            cellAnnotationColor = NULL,
                            rowDataName = NULL, colDataName = NULL,
                            colSplitBy = 'condition', rowSplitBy = 'regulation',
-                           title = paste0("MAST Result: ", useResult), ...){
+                           title = paste0("DE Analysis: ", useResult), ...){
   # Check
   .checkDiffExpResultExists(inSCE, useResult)
   extraArgs <- list(...)
@@ -317,7 +382,6 @@ plotDEGHeatmap <- function(inSCE, useResult, doLog = FALSE, onlyPos = FALSE,
   }
   # Extract
   result <- S4Vectors::metadata(inSCE)$diffExp[[useResult]]
-  deg <- result$result
   if(is.null(useAssay)){
     useAssay <- result$useAssay
   } else {
@@ -327,11 +391,10 @@ plotDEGHeatmap <- function(inSCE, useResult, doLog = FALSE, onlyPos = FALSE,
   }
   ix1 <- result$select$ix1
   ix2 <- result$select$ix2
-  filter <- which(deg$FDR < fdrThreshold & abs(deg$Log2_FC) > log2fcThreshold)
-  deg.filtered <- deg[filter,]
-  if(onlyPos){
-    deg.filtered <- deg.filtered[which(deg.filtered$Log2_FC > 0),]
-  }
+  deg.filtered <- getDEGTopTable(inSCE, useResult = useResult, labelBy = NULL, 
+                                 onlyPos = onlyPos, 
+                                 log2fcThreshold = log2fcThreshold, 
+                                 fdrThreshold = fdrThreshold)
   if(dim(deg.filtered)[1] <= 1){
     stop('Too few genes that pass filtration, unable to plot')
   }

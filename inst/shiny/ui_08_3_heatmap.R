@@ -4,14 +4,22 @@ shinyPanelHeatmap <- fluidPage(
     h1("Heatmap"),
     p("Generic heatmap plotting panel for customized figure.",
       style = "color:grey;"),
-    tags$a(href = "https://www.sctk.science/articles/tab08_heatmap",
-           "(help)", target = "_blank"),
+    h5(tags$a(href = paste0(docs.artPath, "heatmap.html"),
+              "(help)", target = "_blank")),
     panel(
       fluidRow(
         div(style="display:inline-block;vertical-align:top;width:120px;margin-left:20px;",
             h4("Assay to Plot")),
         div(style="display:inline-block;vertical-align:bottom;width:120px;margin-top:5px;",
-            uiOutput("hmAssay"))
+            selectizeInput(
+              inputId = "hmAssay", 
+              label = "Select input matrix:", 
+              choices = NULL, 
+              selected = NULL, 
+              multiple = FALSE,
+              options = NULL)
+            #uiOutput("hmAssay")
+            )
             #selectInput("hmAssay", NULL, currassays))
       ),
       fluidRow(

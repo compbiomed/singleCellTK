@@ -1,0 +1,155 @@
+---
+title: "Export Data"
+author: "Yichen Wang"
+output:
+  html_document:
+    toc: true
+    toc_depth: 5
+bibliography: references.bib
+csl: ieee.csl
+---
+
+```{r develSetting, include=FALSE}
+doEval = FALSE
+knitr::opts_chunk$set(warning = FALSE)
+```
+
+````{=html}
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+````
+
+## Introduction
+
+Users can export/save their dataset after analyzing with SCTK, in three different formats:
+
+1. Save as [SingleCellExperiment](https://rdrr.io/bioc/SingleCellExperiment/man/SingleCellExperiment.html) object, which can be used in R and analyzed with SCTK and many other choices of tools.  
+2. Save as [AnnData](https://anndata.readthedocs.io/en/latest/anndata.AnnData.html) object, which is Python based, and can be analyzed with [scanpy](https://scanpy.readthedocs.io/en/stable/) and many other choices of tools.  
+3. Save as text files. The count matrices (assays), cell/feature annotation tables, dimension reduction matrices, feature subsets and metadata will be saved separately within a folder.  
+
+To view detailed instructions on how to export data, please select 'Interactive Analysis' for exporting through the shiny application or 'Console Analysis' for exporting through the R console from the tabs below: <br>
+
+## Workflow Guide
+
+````{=html}
+<div class="tab">
+  <button class="tablinks" onclick="openTab(event, 'interactive')" id="ia-button">Interactive Analysis</button>
+  <button class="tablinks" onclick="openTab(event, 'console')" id="console-button">Console Analysis</button>
+</div>
+
+<div id="interactive" class="tabcontent">
+````
+
+![entry](ui_screenshots/export/export_ui_entry.png)\
+
+To export data through the user-interface, users should open up the "Export Single Cell Data" tab as shown above.  
+
+````{=html}
+ <style>
+div.offset { background-color:inherit ; border-radius: 5px; margin-left: 15px;}
+</style>
+<div class = "offset">
+<details>
+  <summary><b>Save as SingleCellExperiment (RDS file)</b></summary>
+````
+
+![RDS](ui_screenshots/export/export_ui_rds.png)\
+
+To save the analysis to RDS file, users need to:  
+
+1. Select the path at **"Select directory"**  
+2. Choose the option **"Download as RDS file"** from the radiobuttons  
+3. Specify the file name at the text input **"File Name"**  
+4. Click on **"Download"** button  
+
+````{=html}
+</details>
+<details>
+  <summary><b>Save as AnnData (H5AD file)</b></summary>
+````
+
+![anndata](ui_screenshots/export/export_ui_anndata.png)\
+
+The simplest steps to save the analysis to AnnData format is similar as how users save an RDS file.
+To save the analysis to RDS file, users need to:  
+
+1. Select the path at **"Select directory"**  
+2. Choose the option **"Python annData object"** from the radiobuttons  
+3. Specify the file name at the text input **"File Name"**  
+4. Click on **"Download"** button  
+
+For Python's AnnData object, there are a few more specifications.  
+
+- Unlike the data structure (SingleCellExperiment) that SCTK adopts, AnnData does not hold multiple assays at the same time. Users will need to make sure which assay should be the main count matrix to use, at the selection input "**select assays**".  
+- Anndata offers the functionality to compress the saved file, so users can also choose to increase the compression level at the numeric input **"Compression Opts"**.  
+- Usually the specified main matrix will be saved as a sparse matrix, which saves a lot of computation memory. Users can also choose to save it as dense matrix by checking the option **"Force Dense"**.  
+- If **"Overwrite"** is checked, the exported file will be directly written to the specified path. If it is unchecked, the data will not be exported if a file with the same name and path already exists.  
+
+````{=html}
+</details>
+<details>
+  <summary><b>Save to flat files</b></summary>
+````
+
+![flat](ui_screenshots/export/export_ui_flat.png)\
+
+Similarly,  
+
+1. Select the path at **"Select directory"**  
+2. Choose the option **"Flat text files"** from the radiobuttons  
+3. Specify the file name at the text input **"File prefix"**  
+4. Click on **"Download"** button  
+
+As mentioned at the beginning of the documentation, there will be several files for different information being saved. SCTK will create a directory under the path that users select at the first step, named by "File prefix", all text files will be stored in this folder.  
+
+For additional specifications:  
+
+- If **"Gzip Compress"** is checked, each of the file will be compressed within the output folder.  
+- If **"Overwrite"** is checked, the exported file will be directly written to the specified path. If it is unchecked, the data will not be exported if a file with the same name and path already exists.  
+
+````{=html}
+</details>
+</div>
+</div>
+
+<div id="console" class="tabcontent">
+````
+
+As how SCTK is designed, we assume users are attempting to save their data already in a SingleCellExperiment object: 
+
+**Directly saving the object to RDS file**
+
+```{R saveRDS, eval=FALSE}
+saveRDS(sce, "sce_exported.rds")
+```
+
+**Exporting to AnnData (H5AD file)**
+
+```{R saveAnnData, eval=FALSE}
+exportSCEtoAnnData(sce)
+```
+
+
+**Exporting to flat files**
+
+```{R saveFlatFile, eval=FALSE}
+exportSCEtoFlatFile(sce)
+```
+
+**Exporting as Seurat object**
+
+```{R saveSeurat, eval=FALSE}
+exportSCEToSeurat(sce)
+```
+
+For detailed specifications, please click on the function name and look at the reference page.
+
+````{=html} 
+</div>
+<script>
+document.getElementById("ia-button").click();
+</script>
+</body>
+````

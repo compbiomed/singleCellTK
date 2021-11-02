@@ -17,24 +17,30 @@ seuratIntegration(
 )
 }
 \arguments{
-\item{inSCE}{Input \code{SingleCellExperiment} object that contains the assay to batch-correct.}
+\item{inSCE}{Input \code{SingleCellExperiment} object that contains the assay
+to batch-correct.}
 
 \item{useAssay}{Assay to batch-correct.}
 
-\item{batch}{Batch variable from \code{colData} slot of \code{SingleCellExperiment} object.}
+\item{batch}{Batch variable from \code{colData} slot of
+\code{SingleCellExperiment} object.}
 
-\item{newAssayName}{Assay name for the batch-corrected ouput assay.}
+\item{newAssayName}{Assay name for the batch-corrected output assay.}
 
-\item{kAnchor}{Number of neighbours to use for finding the anchors in the \link[Seurat]{FindIntegrationAnchors} function.}
+\item{kAnchor}{Number of neighbours to use for finding the anchors in the
+\link[Seurat]{FindIntegrationAnchors} function.}
 
-\item{kFilter}{Number of neighbours to use for filtering the anchors in the \link[Seurat]{FindIntegrationAnchors} function.}
+\item{kFilter}{Number of neighbours to use for filtering the anchors in the
+\link[Seurat]{FindIntegrationAnchors} function.}
 
-\item{kWeight}{Number of neighbours to use when weigthing the anchors in the \link[Seurat]{IntegrateData} function.}
+\item{kWeight}{Number of neighbours to use when weigthing the anchors in the
+\link[Seurat]{IntegrateData} function.}
 
 \item{ndims}{Number of dimensions to use. Default \code{10}.}
 }
 \value{
-A \code{SingleCellExperiment} object that contains the batch-corrected assay inside the \code{altExp} slot of the object
+A \code{SingleCellExperiment} object that contains the
+batch-corrected assay inside the \code{altExp} slot of the object
 }
 \description{
 seuratIntegration

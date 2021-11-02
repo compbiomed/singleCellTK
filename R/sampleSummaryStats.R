@@ -6,8 +6,8 @@
 
     if ("sum" %in% colnames(SummarizedExperiment::colData(inSCE))) {
         metrics <- c(metrics, "Mean counts", "Median counts")
-        values <- c(values, signif(mean(inSCE$sum), 3),
-                    signif(stats::median(inSCE$sum), 3))
+        values <- c(values, mean(inSCE$sum),
+                    stats::median(inSCE$sum))
     }
 
     if ("detected" %in% colnames(SummarizedExperiment::colData(inSCE))) {
@@ -15,8 +15,8 @@
             metrics, "Mean features detected",
             "Median features detected"
         )
-        values <- c(values, signif(mean(inSCE$detected), 3),
-                    signif(stats::median(inSCE$detected), 3))
+        values <- c(values, mean(inSCE$detected),
+                    stats::median(inSCE$detected))
     }
 
     if(simple != TRUE){
@@ -174,12 +174,9 @@ sampleSummaryStats <- function(inSCE,
     }
 
     dfTableRes <- as.data.frame(dfTableRes)
-    dfTableRes <- apply(dfTableRes, 1:2, function(x){
-        if(grepl(as.character(x), "\\.0000")){
-            return(as.integer(x))
-        }else{
-            return(as.numeric(x))
-        }
+
+    dfTableRes <- apply(dfTableRes, seq(2), function(x){
+        return((signif(x,5)))
     })
 
     return(dfTableRes)

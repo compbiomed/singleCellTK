@@ -1,3 +1,197 @@
+.searchBCDefaultInfo <- function(inSCE, corrMat, origAssay, matType) {
+  if (is.null(origAssay)) {
+    if ("counts" %in% expDataNames(inSCE)) {
+      origAssay <- "counts"
+    } else {
+      origAssay <- expDataNames(inSCE)[1]
+    }
+    warning("using '", origAssay, "' for comparison.")
+  }
+
+  if (is.null(matType)) {
+    if (corrMat %in% SummarizedExperiment::assayNames(inSCE)) {
+      matType <- "assay"
+    } else if (corrMat %in% SingleCellExperiment::altExpNames(inSCE)) {
+      matType <- "altExp"
+    } else if (corrMat %in% SingleCellExperiment::reducedDimNames(inSCE)) {
+      matType <- "reducedDim"
+    } else {
+      stop("Corrected Matrix name '", corrMat, "' not found in inSCE")
+    }
+  }
+
+  return(c(origAssay, matType))
+}
+
+.checkBCMeta <- function(inSCE, corrMat, origAssay, origLogged, method, matType,
+                         batch, condition) {
+  if (!is.null(matType)) {
+    if (!matType %in% c("assay", "altExp", "reducedDim")) {
+      stop("Wrong matrix type '", matType, "'. Choose from 'assay', 'altExp', ",
+           "'reducedDim'.")
+    }
+  }
+  if (!"batchCorr" %in% names(S4Vectors::metadata(inSCE))) {
+    warning("Batch correction result from SCTK not found.")
+    s <- .searchBCDefaultInfo(inSCE, corrMat, origAssay, matType)
+    origAssay <- ifelse(is.null(origAssay), s[1], origAssay)
+    method <- ifelse(is.null(method), "Unidentified Method", method)
+    matType <- ifelse(is.null(matType), s[2], matType)
+  } else {
+    if (!corrMat %in% names(S4Vectors::metadata(inSCE)$batchCorr)) {
+      warning("'", corrMat, "' not identified as a Batch correction result ",
+              "from SCTK")
+      s <- .searchBCDefaultInfo(inSCE, corrMat, origAssay, matType)
+      origAssay <- ifelse(is.null(origAssay), s[1], origAssay)
+      method <- ifelse(is.null(method), "Unidentified Method", method)
+      matType <- ifelse(is.null(matType), s[2], matType)
+    } else {
+      bcInfo <- S4Vectors::metadata(inSCE)$batchCorr[[corrMat]]
+      origAssay <- ifelse(is.null(origAssay), bcInfo$useAssay, origAssay)
+      origLogged <- ifelse(is.null(origLogged), bcInfo$origLogged, origLogged)
+      method <- ifelse(is.null(method), bcInfo$method, method)
+      if (!is.null(matType) && matType != bcInfo$matType) {
+        warning("User specified matType different from SCTK identified ",
+                "matType. Force using user specification.")
+      }
+      matType <- ifelse(is.null(matType), bcInfo$matType, matType)
+      batch <- ifelse(is.null(batch), bcInfo$batch, batch)
+      if (is.null(condition)) condition <- bcInfo$condition
+      #condition <- ifelse(is.null(condition), bcInfo$condition, condition)
+    }
+  }
+  return(list(origAssay = origAssay,
+              origLogged = origLogged,
+              method = method,
+              matType = matType,
+              batch = batch,
+              condition = condition))
+}
+
+#' Plot comparison of batch corrected result against original assay
+#' @details Four plots will be combined. Two of them are violin/box-plots for
+#' percent variance explained by the batch variation, and optionally the
+#' covariate, for original and corrected. The other two are UMAPs of the
+#' original assay and the correction result matrix. If SCTK batch correction
+#' methods are performed in advance, this function will automatically detect
+#' necessary input. Otherwise, users can also customize the input. Future
+#' improvement might include solution to reduce redundant UMAP calculation.
+#' @param inSCE \linkS4class{SingleCellExperiment} inherited object.
+#' @param corrMat A single character indicating the name of the corrected matrix.
+#' @param batch A single character. The name of batch annotation column in
+#' \code{colData(inSCE)}.
+#' @param condition A single character. The name of an additional covariate
+#' annotation column in \code{colData(inSCE)}.
+#' @param origAssay A single character indicating what the original assay used
+#' for batch correction is.
+#' @param origLogged Logical scalar indicating whether \code{origAssay} is
+#' log-normalized.
+#' @param method A single character indicating the name of the batch correction
+#' method. Only used for the titles of plots.
+#' @param matType A single character indicating the type of the batch correction
+#' result matrix, choose from \code{"assay"}, \code{"altExp"},
+#' \code{"reducedDim"}.
+#' @return An object of class \code{"gtable"}, combining four \code{ggplot}s.
+#' @examples
+#' sceBatches <- scaterlogNormCounts(sceBatches, "logcounts")
+#' sceBatches <- runLimmaBC(sceBatches)
+#' plotBatchCorrCompare(sceBatches, "LIMMA", condition = "cell_type")
+#' @export
+#' @author Yichen Wang
+plotBatchCorrCompare <- function(inSCE, corrMat, batch = NULL, condition = NULL,
+                                 origAssay = NULL, origLogged = NULL,
+                                 method = NULL, matType = NULL) {
+  if(!inherits(inSCE, "SingleCellExperiment")){
+    stop("\"inSCE\" should be a SingleCellExperiment Object.")
+  }
+  m <- .checkBCMeta(inSCE, corrMat, origAssay, origLogged, method, matType,
+                    batch, condition)
+  origAssay <- m$origAssay
+  origLogged <- m$origLogged
+  method <- m$method
+  matType <- m$matType
+  batch <- m$batch
+  condition <- m$condition
+
+  if (isFALSE(origLogged)) {
+    inSCE <- scaterlogNormCounts(inSCE, origAssay, origAssay)
+  }
+
+  # Batch Variance Plot for origAssay
+  bv.before <- plotBatchVariance(inSCE, useAssay = origAssay, useReddim = NULL,
+                                 useAltExp = NULL, batch = batch,
+                                 condition = condition,
+                                 title = "Batch Variance before correction") +
+    ggplot2::theme(text=ggplot2::element_text(size=10))
+
+  inSCE <- getUMAP(inSCE, useAssay = origAssay, reducedDimName = "umap.before")
+  umap.before <- plotSCEDimReduceColData(inSCE, batch, "umap.before",
+                                         shape = condition, axisLabelSize = 9,
+                                         axisSize = 8, dotSize = 1,
+                                         titleSize = 12, labelClusters = FALSE,
+                                         legendSize = 10, legendTitle = "batch",
+                                         legendTitleSize = 10,
+                                         title = "UMAP before correction")
+
+  if (matType == "assay") {
+    if (isFALSE(origLogged)) {
+      inSCE <- scaterlogNormCounts(inSCE, corrMat, corrMat)
+    }
+    # Batch Variance Plot for CorrMat
+    bv.after <- plotBatchVariance(inSCE, useAssay = corrMat, batch = batch,
+                                  condition = condition,
+                                  title = paste0("Batch Variance corrected with ",
+                                                 method)) +
+      ggplot2::theme(text=ggplot2::element_text(size=10))
+
+    if (method == "ComBatSeq") {
+      inSCE <- getUMAP(inSCE, useAssay = corrMat, reducedDimName = "umap.after")
+    } else {
+      inSCE <- getUMAP(inSCE, useAssay = corrMat, reducedDimName = "umap.after",
+                       logNorm = FALSE)
+    }
+  } else if (matType == "altExp") {
+    # Doing log, because only Seurat returns altExp,
+    # and the assay inside is not logged
+    ae <- SingleCellExperiment::altExp(inSCE, corrMat)
+    ae <- scaterlogNormCounts(ae, corrMat, corrMat)
+    SingleCellExperiment::altExp(inSCE, corrMat) <- ae
+    bv.after <- plotBatchVariance(inSCE, useAltExp = corrMat, batch = batch,
+                                  condition = condition,
+                                  title = paste0("Batch Variance corrected with ",
+                                                 method)) +
+      ggplot2::theme(text=ggplot2::element_text(size=10))
+    inSCE <- getUMAP(inSCE, useAltExp = corrMat, useAssay = corrMat,
+                     reducedDimName = "umap.after")
+  } else if (matType == "reducedDim") {
+    bv.after <- plotBatchVariance(inSCE, useReddim = corrMat, batch = batch,
+                                  condition = condition,
+                                  title = paste0("Batch Variance corrected with ",
+                                                 method)) +
+      ggplot2::theme(text=ggplot2::element_text(size=10))
+    if (method == "BBKNN") {
+      SingleCellExperiment::reducedDim(inSCE, "umap.after") <-
+        SingleCellExperiment::reducedDim(inSCE, corrMat)
+    } else {
+      inSCE <- getUMAP(inSCE, useAssay = NULL, useReducedDim = corrMat,
+                       reducedDimName = "umap.after")
+    }
+  } else {
+    stop("Cannot identify result matrix type")
+  }
+  umap.after <- plotSCEDimReduceColData(inSCE, batch, "umap.after", dim1 = 1,
+                                        dim2 = 2,
+                                        shape = condition, axisLabelSize = 9,
+                                        axisSize = 8, dotSize = 1,
+                                        titleSize = 12, labelClusters = FALSE,
+                                        legendSize = 10, legendTitle = "batch",
+                                        legendTitleSize = 10,
+                                        title = "UMAP after correction") +
+    ggplot2::theme(text=ggplot2::element_text(size=8))
+  return(gridExtra::grid.arrange(bv.before, bv.after,
+                                 umap.before, umap.after, nrow = 2))
+}
+
 #' Plot the percent of the variation that is explained by batch and condition
 #' in the data
 #'
@@ -30,13 +224,11 @@
 #' condition, and batch+condition.
 #' @export
 #' @examples
-#' \dontrun{
-#'   data('sceBatches', package = 'singleCellTK')
-#'   plotBatchVariance(sceBatches,
-#'                     useAssay="logcounts",
-#'                     batch="batch",
-#'                     condition = "cell_type")
-#' }
+#' data('sceBatches', package = 'singleCellTK')
+#' plotBatchVariance(sceBatches,
+#'                   useAssay="counts",
+#'                   batch="batch",
+#'                   condition = "cell_type")
 plotBatchVariance <- function(inSCE, useAssay = NULL, useReddim = NULL,
                               useAltExp = NULL, batch = 'batch',
                               condition=NULL, title = NULL) {
@@ -103,23 +295,27 @@ plotBatchVariance <- function(inSCE, useAssay = NULL, useReddim = NULL,
   explainedVariation <- round(cbind(`Full (Condition+Batch)` = r2Full,
                                      Condition = condR2,
                                      Batch = batchR2), 5) * 100
-  colnames(explainedVariation) <- c('Full (Condition+Batch)',
-                                    paste("Condition:", condition),
-                                    paste("Batch:", batch))
+  colnames(explainedVariation) <- c("Full",
+                                    ifelse(is.null(condition), "No Condition", condition),
+                                    batch)
   exVarM <- reshape2::melt(explainedVariation)
   colnames(exVarM) <- c("Gene", "Model", "Percent.Explained.Variation")
   exVarM$Model <- factor(exVarM$Model)
   a <- ggplot2::ggplot(exVarM,
                        ggplot2::aes_string("Model",
                                            "Percent.Explained.Variation")) +
-       ggplot2::geom_violin(ggplot2::aes_string(fill = "Model")) +
-       ggplot2::geom_boxplot(width = .1) +
-       ggplot2::xlab("Model") +
-       ggplot2::ylab("Percent Explained Variation") +
-       ggplot2::scale_fill_manual(values = RColorBrewer::brewer.pal(9, "Set1"),
-                                  guide = FALSE) +
-       ggplot2::ggtitle(title)
-  a <- .ggSCTKTheme(a)
+    ggplot2::geom_point(position = ggplot2::position_jitter(width = 0.2),
+                        size = 1, alpha = 0.9) +
+    ggplot2::geom_violin(ggplot2::aes_string(fill = "Model"), alpha = 0.7, ) +
+    ggplot2::geom_boxplot(alpha = 0.4, width = 0.2) +
+    ggplot2::ylim(0, 100) +
+    ggplot2::xlab("Model") +
+    ggplot2::ylab("Explained Variation %") +
+    ggplot2::ggtitle(title) +
+    ggplot2::theme_bw() +
+    ggplot2::theme(legend.position = "none",
+                   panel.grid.major = ggplot2::element_blank(),
+                   panel.grid.minor = ggplot2::element_blank())
   return(a)
 }
 
@@ -171,10 +367,8 @@ plotBatchVariance <- function(inSCE, useAssay = NULL, useReddim = NULL,
 #' @param ylab label for y-axis. Default \code{"Feature Mean"}.
 #' @param ... Additional arguments passed to \code{\link{.ggViolin}}.
 #' @examples
-#' \dontrun{
-#'   data('sceBatches', package = 'singleCellTK')
-#'   plotSCEBatchFeatureMean(sceBatches, useAssay = "counts")
-#' }
+#' data('sceBatches', package = 'singleCellTK')
+#' plotSCEBatchFeatureMean(sceBatches, useAssay = "counts")
 #' @return ggplot
 #' @export
 plotSCEBatchFeatureMean <- function(inSCE, useAssay = NULL, useReddim = NULL,
