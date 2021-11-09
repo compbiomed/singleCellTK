@@ -28,6 +28,43 @@ sce <- importExampleData("pbmc3k")
 sce <- dedupRowNames(sce)
 ```
 
+### Importing CellRanger Output Data
+
+Here, we briefly introduce the approach to importing the output of the widely used preprocessing tool, `cellranger`. SCTK has a generic function `importCellRanger()` for this purpose, and, explicitly, `importCellRangerV2()` and `importCellRangerV3()` for different versions of `cellranger`. For the detail of these functions, please click on the function names to be redirected to the reference page. 
+
+The input arguments basically asks users what the exact paths of the input data files are (i.e. `"matrix.mtx"`, `"features.tsv"`, and `"barcodes.tsv"`). They are `cellRangerDirs`, `sampleDirs`, `cellRangerOuts`, `matrixFileNames`, `featuresFileNames` and `barcodesFileNames`. And the function will identify the specified path, for example, of the barcode file, as a combination of: `{cellRangerDirs}/{sampleDirs}/{cellRangerOuts}/{barcodesFileNames}`. Theses functions automatically try to recognize a preset substucture of `cellRangerDirs`, so that in most of the cases, users only need to specify `cellRangerDirs` to tell where the top level directory of the output is. However, sometimes the three essential files may be placed or named in a different way and the default detection method won't find them. In this case, users will need to check the exact paths and manually specify the correct input according to the combination rule above and the error messages. 
+
+An example folder structure:
+
+```
+./datasets/
+    sample1/
+        outs/filtered_feature_bc_matrix/
+            barcodes.tsv.gz
+            features.tsv.gz
+            matrix.mtx.gz
+    sample2/
+        outs/filtered_feature_bc_matrix/
+            barcodes.tsv.gz
+            features.tsv.gz
+            matrix.mtx.gz
+./otherCellRangerData/
+    barcodes.tsv
+    genes.tsv
+    matrix.mtx
+```
+
+```{R, eval=FALSE}
+# Default use case
+sce <- importCellRanger(cellRangerDirs = "dataset")
+# In case the three files are placed in a different way
+sce <- importCellRanger(sampleDirs = "otherCellRangerData",
+                        cellRangerOuts = "",
+                        barcodesFileNames = "barcodes.tsv",
+                        featuresFileNames = "genes.tsv",
+                        matrixFileNames = "matrix.mtx")
+```
+
 ## Quality Control (QC)
 
 ### Running QC methods
