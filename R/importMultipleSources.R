@@ -21,7 +21,8 @@ importMultipleSources <- function(allImportEntries, delayedArray = FALSE) {
           cellRangerDirs = entry$params$cellRangerDirs,
           sampleDirs = entry$params$sampleDirs,
           sampleNames = entry$params$sampleNames,
-          delayedArray = delayedArray
+          delayedArray = delayedArray,
+          reference = entry$params$reference
         )
       }
 

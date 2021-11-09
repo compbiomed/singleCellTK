@@ -619,7 +619,7 @@ importCellRangerV2 <- function(
     if (is.null(cellRangerOutsV2)) {
         if (is.null(reference) | is.null(dataTypeV2)) {
             stop("'reference' and 'dataTypeV2' are required ",
-                 "when 'cellRangerOutsV2 is not specified!'")
+                 "when 'cellRangerOutsV2' is not specified!")
         }
     }
 
