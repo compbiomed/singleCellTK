@@ -238,6 +238,50 @@ dedupRowNames <- function(x, as.rowData = FALSE, return.list = FALSE){
   }
 }
 
+#' Set rownames of SCE with a character vector or a rowData column
+#' @description Users can set rownames of an SCE object with either a character
+#' vector where the length equals to \code{nrow(inSCE)}, or a single character 
+#' specifying a column in \code{rowData(inSCE)}. Users can set 
+#' \code{dedup = TRUE} to remove duplicated entries in the specification, by 
+#' adding \code{-1, -2, ..., -i} suffix to the duplication of the same 
+#' identifier. 
+#' @param inSCE Input \linkS4class{SingleCellExperiment} object
+#' @param rowNames Character. Either of length equal to \code{nrow(inSCE)}, or
+#' a single character specifying a column in \code{rowData(inSCE)}. 
+#' @param dedup Logical. Whether to deduplicate the specified rowNames. Default
+#' \code{TRUE}
+#' @return The input SCE object with rownames updated.
+#' @export
+#' @examples 
+#' data("scExample", package = "singleCellTK")
+#' head(rownames(sce))
+#' sce <- setSCERowNames(sce, "feature_name")
+#' head(rownames(sce))
+setSCERowNames <- function(inSCE, rowNames, dedup = TRUE) {
+  if (!inherits(inSCE, "SingleCellExperiment")) {
+    stop("inSCE should be a SingleCellExperiment object")
+  }
+  if (!inherits(rowNames, "character")) {
+    stop("rowNames should be of character class")
+  }
+  if (length(rowNames) == 1) {
+    if (rowNames %in% names(SummarizedExperiment::rowData(inSCE))) {
+      rows <- SummarizedExperiment::rowData(inSCE)[[rowNames]]
+    } else {
+      stop("Single rowNames specification not found in rowData(inSCE)")
+    }
+  } else if (length(rowNames) == nrow(inSCE)) {
+    rows <- rowNames
+  } else {
+    stop("Length of rowNames does not match nrow(inSCE)")
+  }
+  rownames(inSCE) <- rows
+  if (isTRUE(dedup)) {
+    inSCE <- dedupRowNames(inSCE)
+  }
+  return(inSCE)
+}
+
 #' Retrieve cell/feature index by giving identifiers saved in col/rowData
 #'
 #' @description Originally written in \code{\link[celda]{retrieveFeatureIndex}}.
