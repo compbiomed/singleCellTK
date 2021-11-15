@@ -68,6 +68,12 @@ runScDblFinder <- function(inSCE,
   if(length(rm.ix) > 0){
     inSCE <- mergeSCEColData(inSCE1 = inSCEOrig, inSCE2 = inSCE)
   }
+  
+  SummarizedExperiment::colData(inSCE)[, grep(
+    pattern = "scDblFinder_", 
+    x = names(SummarizedExperiment::colData(inSCE)), 
+    value = TRUE)] <- NULL
+  
   names(SummarizedExperiment::colData(inSCE)) <- gsub(pattern = "scDblFinder\\.",
                                                       "scDblFinder_",
                                                       names(SummarizedExperiment::colData(inSCE)))
