@@ -98,6 +98,11 @@ runCxds <- function(inSCE,
         }
     }
 
+    SummarizedExperiment::colData(inSCE)[, grep(
+        pattern = "scds_cxds_", 
+        x = names(SummarizedExperiment::colData(inSCE)), 
+        value = TRUE)] <- NULL
+    
     colnames(output) <- paste0("scds_", colnames(output))
     colData(inSCE) = cbind(colData(inSCE), output)
 
@@ -217,6 +222,11 @@ runBcds <- function(inSCE,
         }
 
     }
+    
+    SummarizedExperiment::colData(inSCE)[, grep(
+        pattern = "scds_bcds_", 
+        x = names(SummarizedExperiment::colData(inSCE)), 
+        value = TRUE)] <- NULL
 
     colnames(output) <- paste0("scds_", colnames(output))
     colData(inSCE) = cbind(colData(inSCE), output)
@@ -347,6 +357,11 @@ runCxdsBcdsHybrid <- function(inSCE,
         }
     }
 
+    SummarizedExperiment::colData(inSCE)[, grep(
+        pattern = "scds_hybrid_", 
+        x = names(SummarizedExperiment::colData(inSCE)), 
+        value = TRUE)] <- NULL
+    
     colnames(output) <- paste0("scds_", colnames(output))
     colData(inSCE) = cbind(colData(inSCE), output)
 
