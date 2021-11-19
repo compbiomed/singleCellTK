@@ -410,11 +410,8 @@ runDoubletFinder <- function(inSCE,
       output[sceSampleInd, 1] <- result@meta.data$doubletFinderAnnScore
       output[sceSampleInd, 2] <- result@meta.data$doubletFinderLabel
     }
-
-    SummarizedExperiment::colData(inSCE)[, grep(
-      pattern = "doubletFinder_", 
-      x = names(SummarizedExperiment::colData(inSCE)), 
-      value = TRUE)] <- NULL
+    
+    colData(inSCE)[, paste0(colnames(output), "_resolution_", res)] <- NULL
     
     colnames(output) <- paste0(colnames(output), "_resolution_", res)
 

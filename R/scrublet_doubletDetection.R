@@ -212,6 +212,9 @@ runScrublet <- function(inSCE,
 
   }
 
+    colData(inSCE)$scrublet_score <- NULL
+    colData(inSCE)$scrublet_call <- NULL
+  
     colData(inSCE) = cbind(colData(inSCE), output)
   }, silent = TRUE)
 
