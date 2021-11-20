@@ -40,7 +40,7 @@ runScDblFinder <- function(inSCE,
 ) {
   
   tempSCE <- inSCE
-  assayNames(inSCE)[which(useAssay %in% assayNames(inSCE))] <- "counts"
+  SummarizedExperiment::assayNames(inSCE)[which(useAssay %in% SummarizedExperiment::assayNames(inSCE))] <- "counts"
   useAssay <- "counts"
   
   argsList <- mget(names(formals()),sys.frame(sys.nframe()))
