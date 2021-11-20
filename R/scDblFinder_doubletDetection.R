@@ -38,6 +38,11 @@ runScDblFinder <- function(inSCE,
     seed = 12345,
     BPPARAM=BiocParallel::SerialParam()
 ) {
+  
+  tempSCE <- inSCE
+  assayNames(inSCE)[which(useAssay %in% assayNames(inSCE))] <- "counts"
+  useAssay <- "counts"
+  
   argsList <- mget(names(formals()),sys.frame(sys.nframe()))
 
   if(!is.null(sample)) {
@@ -84,6 +89,9 @@ runScDblFinder <- function(inSCE,
 
   inSCE@metadata$runScDblFinder <- argsList[-1]
   inSCE@metadata$runScDblFinder$packageVersion <- utils::packageDescription("scDblFinder")$Version
+  
+  tempSCE@colData <- inSCE@colData
+  tempSCE@metadata <- inSCE@metadata
 
-  return(inSCE)
+  return(tempSCE)
 }

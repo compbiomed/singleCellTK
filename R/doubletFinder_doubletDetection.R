@@ -350,6 +350,10 @@ runDoubletFinder <- function(inSCE,
   # argsList <- as.list(formals(fun = sys.function(sys.parent()), envir = parent.frame()))
   argsList <- mget(names(formals()), sys.frame(sys.nframe()))
 
+  tempSCE <- inSCE
+  assayNames(inSCE)[which(useAssay %in% assayNames(inSCE))] <- "counts"
+  useAssay <- "counts"
+  
   if (!is.null(sample)) {
     if (length(sample) != ncol(inSCE)) {
       stop("'sample' must be the same length as the number of columns in 'inSCE'")
@@ -421,7 +425,12 @@ runDoubletFinder <- function(inSCE,
     colData(inSCE) <- cbind(colData(inSCE), output)
     reducedDim(inSCE,'doubletFinder_UMAP') <- umapDims
   }
-  return(inSCE)
+  
+  tempSCE@colData <- inSCE@colData
+  tempSCE@metadata <- inSCE@metadata
+  reducedDims(tempSCE) <- reducedDims(inSCE)
+  
+  return(tempSCE)
 }
 
 

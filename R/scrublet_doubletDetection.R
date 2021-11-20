@@ -127,6 +127,10 @@ runScrublet <- function(inSCE,
   if (!is.null(seed)) {
     reticulate::py_set_seed(seed = seed)
   }
+  
+  tempSCE <- inSCE
+  assayNames(inSCE)[which(useAssay %in% assayNames(inSCE))] <- "counts"
+  useAssay <- "counts"
 
   if (!is.null(sample)) {
     if (length(sample) != ncol(inSCE)) {
@@ -231,6 +235,10 @@ runScrublet <- function(inSCE,
   reducedDim(inSCE,'scrublet_TSNE') <- tsneDims
   reducedDim(inSCE,'scrublet_UMAP') <- umapDims
 
-  return(inSCE)
+  tempSCE@colData <- inSCE@colData
+  tempSCE@metadata <- inSCE@metadata
+  reducedDims(tempSCE) <- reducedDims(inSCE)
+  
+  return(tempSCE)
 }
 
