@@ -174,6 +174,15 @@ runPerCellQC <- function(inSCE,
   if(length(geneSets) == 0) {
     geneSets <- NULL
   }
+  
+  colData(inSCE)$sum <- NULL
+  colData(inSCE)$detected <- NULL
+  colData(inSCE)$percent.top_50 <- NULL
+  colData(inSCE)$percent.top_100 <- NULL
+  colData(inSCE)$percent.top_200 <- NULL
+  colData(inSCE)$percent.top_500 <- NULL
+  colData(inSCE)$total <- NULL
+    
   inSCE <- scater::addPerCellQC(x = inSCE,
                                 exprs_values = useAssay,
                                 subsets = geneSets,

@@ -2443,7 +2443,7 @@ shinyServer(function(input, output, session) {
     })
   })
 
-  observeEvent(input$normalizeAssay, {
+  observeEvent(input$normalizeAssay, withConsoleMsgRedirect({
     req(vals$counts)
     withBusyIndicatorServer("normalizeAssay", {
       if(!(input$normalizeAssaySelect %in% expDataNames(vals$counts))){
@@ -2484,13 +2484,13 @@ shinyServer(function(input, output, session) {
           trim = trimOptions
         )
 
-        vals$counts <- do.call("runNormalization", args)
-
+        vals$counts <- do.call("runNormalization", args) 
+        
         # Show downstream analysis options
         callModule(module = nonLinearWorkflow, id = "nlw-nbc", parent = session, dr = TRUE, fs = TRUE)
       }
     })
-  })
+  }))
 
   observeEvent(input$normalizeAssayMethodSelect, {
     if(input$normalizeAssayMethodSelect == "LogNormalize") {
