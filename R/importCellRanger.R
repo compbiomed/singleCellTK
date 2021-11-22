@@ -347,7 +347,8 @@
     barcodesFileNames,
     gzipped,
     class,
-    delayedArray) {
+    delayedArray,
+    rowNamesDedup) {
 
     .checkArgsImportCellRanger(cellRangerDirs,
         sampleDirs,
@@ -400,6 +401,14 @@
     }
 
     sce <- do.call(SingleCellExperiment::cbind, res)
+    
+    if (isTRUE(rowNamesDedup)) {
+        if (any(duplicated(rownames(sce)))) {
+            message("Duplicated gene names found, adding '-1', '-2', ",
+                    "... suffix to them.")
+        }
+        sce <- dedupRowNames(sce)
+    }
     return(sce)
 }
 
@@ -531,6 +540,8 @@
 #'  \code{dataTypeV2} will be used to determine Cell Ranger output directory. If it has
 #'  length 1, it assumes that all samples use the same genome reference and
 #'  the function will load only filtered or raw data.
+#' @param rowNamesDedup Boolean. Whether to deduplicate rownames. Default 
+#'  \code{TRUE}.
 #' @details
 #'  \code{importCellRangerV2} imports output from Cell Ranger V2.
 #'  \code{importCellRangerV2Sample} imports output from one sample from Cell
@@ -571,7 +582,8 @@ importCellRanger <- function(
     barcodesFileNames = "barcodes.tsv.gz",
     gzipped = "auto",
     class = c("Matrix", "matrix"),
-    delayedArray = FALSE) {
+    delayedArray = FALSE,
+    rowNamesDedup = TRUE) {
 
     class <- match.arg(class)
     dataType <- match.arg(dataType)
@@ -586,7 +598,8 @@ importCellRanger <- function(
         barcodesFileNames = barcodesFileNames,
         gzipped = gzipped,
         class = class,
-        delayedArray = delayedArray)
+        delayedArray = delayedArray,
+        rowNamesDedup = rowNamesDedup)
 }
 
 
@@ -611,7 +624,8 @@ importCellRangerV2 <- function(
     class = c("Matrix", "matrix"),
     delayedArray = FALSE,
     reference = NULL,
-    cellRangerOutsV2 = NULL) {
+    cellRangerOutsV2 = NULL,
+    rowNamesDedup = TRUE) {
 
     class <- match.arg(class)
     dataTypeV2 <- match.arg(dataTypeV2)
@@ -628,7 +642,6 @@ importCellRangerV2 <- function(
         cellRangerOutsV2 <- .getCellRangerOutV2(dataTypeV2, reference)
     }
 
-
     .importCellRanger(cellRangerDirs = cellRangerDirs,
         sampleDirs = sampleDirs,
         sampleNames = sampleNames,
@@ -639,8 +652,8 @@ importCellRangerV2 <- function(
         barcodesFileNames = "barcodes.tsv",
         gzipped = FALSE,
         class = class,
-        delayedArray = delayedArray)
-
+        delayedArray = delayedArray,
+        rowNamesDedup = rowNamesDedup)
 }
 
 
@@ -658,6 +671,8 @@ importCellRangerV2 <- function(
 #'  \link[base]{matrix} function). Default "Matrix".
 #' @param delayedArray Boolean. Whether to read the expression matrix as
 #'  \link{DelayedArray} object or not. Default \code{FALSE}.
+#' @param rowNamesDedup Boolean. Whether to deduplicate rownames. Default 
+#'  \code{TRUE}.
 #' @return A \code{SingleCellExperiment} object containing the count
 #'  matrix, the feature annotations, and the cell annotation for the sample.
 #' @examples
@@ -670,7 +685,8 @@ importCellRangerV2Sample <- function(
     dataDir = NULL,
     sampleName = NULL,
     class = c("Matrix", "matrix"),
-    delayedArray = FALSE) {
+    delayedArray = FALSE,
+    rowNamesDedup = TRUE) {
 
     class <- match.arg(class)
 
@@ -684,7 +700,8 @@ importCellRangerV2Sample <- function(
         barcodesFileNames = "barcodes.tsv",
         gzipped = FALSE,
         class = class,
-        delayedArray = delayedArray)
+        delayedArray = delayedArray,
+        rowNamesDedup = rowNamesDedup)
 }
 
 
@@ -702,7 +719,8 @@ importCellRangerV3 <- function(
     sampleNames = NULL,
     dataType = c("filtered", "raw"),
     class = c("Matrix", "matrix"),
-    delayedArray = FALSE) {
+    delayedArray = FALSE,
+    rowNamesDedup = TRUE) {
 
     class <- match.arg(class)
     dataType <- match.arg(dataType)
@@ -723,7 +741,8 @@ importCellRangerV3 <- function(
         barcodesFileNames = "barcodes.tsv.gz",
         gzipped = TRUE,
         class = class,
-        delayedArray = delayedArray)
+        delayedArray = delayedArray,
+        rowNamesDedup = rowNamesDedup)
 
 }
 
@@ -742,6 +761,8 @@ importCellRangerV3 <- function(
 #'  \link[base]{matrix} function). Default "Matrix".
 #' @param delayedArray Boolean. Whether to read the expression matrix as
 #'  \link{DelayedArray} object or not. Default \code{FALSE}.
+#' @param rowNamesDedup Boolean. Whether to deduplicate rownames. Default 
+#'  \code{TRUE}.
 #' @return A \code{SingleCellExperiment} object containing the count
 #'  matrix, the feature annotations, and the cell annotation for the sample.
 #' @examples
@@ -754,7 +775,8 @@ importCellRangerV3Sample <- function(
     dataDir = "./",
     sampleName = "sample",
     class = c("Matrix", "matrix"),
-    delayedArray = FALSE) {
+    delayedArray = FALSE,
+    rowNamesDedup = TRUE) {
 
     class <- match.arg(class)
 
@@ -768,5 +790,6 @@ importCellRangerV3Sample <- function(
         barcodesFileNames = "barcodes.tsv.gz",
         gzipped = TRUE,
         class = class,
-        delayedArray = delayedArray)
+        delayedArray = delayedArray,
+        rowNamesDedup = rowNamesDedup)
 }

@@ -8,7 +8,8 @@ importAnnData(
   sampleDirs = NULL,
   sampleNames = NULL,
   delayedArray = FALSE,
-  class = c("Matrix", "matrix")
+  class = c("Matrix", "matrix"),
+  rowNamesDedup = TRUE
 )
 }
 \arguments{

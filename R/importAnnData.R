@@ -120,7 +120,8 @@
 importAnnData <- function(sampleDirs = NULL,
                           sampleNames = NULL,
                           delayedArray = FALSE,
-                          class = c("Matrix", "matrix")) {
+                          class = c("Matrix", "matrix"),
+                          rowNamesDedup = TRUE) {
 
   if (length(sampleDirs)!=length(sampleNames)){
     stop("Number of sampleDirs must be equal to number of SampleNames. Please provide sample names for all input directories")
@@ -138,6 +139,15 @@ importAnnData <- function(sampleDirs = NULL,
     res[[i]] <- scei
   }
   sce <- do.call(SingleCellExperiment::cbind, res)
+  
+  if (isTRUE(rowNamesDedup)) {
+    if (any(duplicated(rownames(sce)))) {
+      message("Duplicated gene names found, adding '-1', '-2', ",
+              "... suffix to them.")
+    }
+    sce <- dedupRowNames(sce)
+  }
+  
   return(sce)
 }
 

@@ -102,7 +102,8 @@
 #'  object. Can be one of "Matrix" (as returned by
 #'  \link{readMM} function), or "matrix" (as returned by
 #'  \link[base]{matrix} function). Default \code{"Matrix"}.
-
+#' @param rowNamesDedup Boolean. Whether to deduplicate rownames. Default 
+#'  \code{TRUE}.
 #' @details
 #' \code{importDropEst} expects either raw counts matrix stored as "cm_raw" or filtered
 #' counts matrix stored as "cm" in the DropEst rds output.
@@ -125,7 +126,8 @@ importDropEst <- function(sampleDirs = NULL,
                           rdsFileName = 'cell.counts',
                           sampleNames = NULL,
                           delayedArray = FALSE,
-                          class = c("Matrix", "matrix")) {
+                          class = c("Matrix", "matrix"),
+                          rowNamesDedup = TRUE) {
   dataType <- match.arg(dataType)
   class <- match.arg(class)
 
@@ -145,6 +147,15 @@ importDropEst <- function(sampleDirs = NULL,
     res[[i]] <- scei
   }
   sce <- do.call(SingleCellExperiment::cbind, res)
+  
+  if (isTRUE(rowNamesDedup)) {
+    if (any(duplicated(rownames(sce)))) {
+      message("Duplicated gene names found, adding '-1', '-2', ",
+              "... suffix to them.")
+    }
+    sce <- dedupRowNames(sce)
+  }
+  
   return(sce)
 }
 

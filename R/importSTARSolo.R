@@ -40,7 +40,8 @@
     barcodesFileNames,
     gzipped,
     class,
-    delayedArray) {
+    delayedArray,
+    rowNamesDedup) {
 
     if (length(STARsoloDirs) != length(samples)) {
         stop("'STARsoloDirs' and 'samples' have unequal lengths!")
@@ -68,6 +69,14 @@
     }
 
     sce <- do.call(SingleCellExperiment::cbind, res)
+    
+    if (isTRUE(rowNamesDedup)) {
+        if (any(duplicated(rownames(sce)))) {
+            message("Duplicated gene names found, adding '-1', '-2', ",
+                    "... suffix to them.")
+        }
+        sce <- dedupRowNames(sce)
+    }
     return(sce)
 }
 
@@ -111,6 +120,8 @@
 #'  \link[base]{matrix} function). Default "Matrix".
 #' @param delayedArray Boolean. Whether to read the expression matrix as
 #'  \link{DelayedArray} object or not. Default \code{FALSE}.
+#' @param rowNamesDedup Boolean. Whether to deduplicate rownames. Default 
+#'  \code{TRUE}.
 #' @return A \code{SingleCellExperiment} object containing the count
 #'  matrix, the gene annotation, and the cell annotation.
 #' @examples
@@ -151,7 +162,8 @@ importSTARsolo <- function(
     barcodesFileNames = "barcodes.tsv",
     gzipped = "auto",
     class = c("Matrix", "matrix"),
-    delayedArray = FALSE) {
+    delayedArray = FALSE,
+    rowNamesDedup = TRUE) {
 
     class <- match.arg(class)
 
@@ -164,5 +176,6 @@ importSTARsolo <- function(
         barcodesFileNames = barcodesFileNames,
         gzipped = gzipped,
         class = class,
-        delayedArray = delayedArray)
+        delayedArray = delayedArray,
+        rowNamesDedup = rowNamesDedup)
 }

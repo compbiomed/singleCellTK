@@ -204,7 +204,7 @@ discreteColorPalette <- function(n, palette = c("random", "ggplot", "celda"),
 #' insert a new column called \code{"rownames.uniq"} to \code{rowData(x)}, with
 #' the deduplicated rownames.
 #' @param return.list When set to \code{TRUE}, will return a character vector
-#' with deduplicated rownames.
+#' of the deduplicated rownames.
 #' @export
 #' @return By default, a matrix or /linkS4class{SingleCellExperiment} object
 #' with rownames deduplicated.
@@ -240,14 +240,16 @@ dedupRowNames <- function(x, as.rowData = FALSE, return.list = FALSE){
 
 #' Set rownames of SCE with a character vector or a rowData column
 #' @description Users can set rownames of an SCE object with either a character
-#' vector where the length equals to \code{nrow(inSCE)}, or a single character 
-#' specifying a column in \code{rowData(inSCE)}. Users can set 
-#' \code{dedup = TRUE} to remove duplicated entries in the specification, by 
-#' adding \code{-1, -2, ..., -i} suffix to the duplication of the same 
-#' identifier. 
-#' @param inSCE Input \linkS4class{SingleCellExperiment} object
-#' @param rowNames Character. Either of length equal to \code{nrow(inSCE)}, or
-#' a single character specifying a column in \code{rowData(inSCE)}. 
+#' vector where the length equals to \code{nrow(x)}, or a single character 
+#' specifying a column in \code{rowData(x)}. Also applicable to matrix like 
+#' object where \code{rownames<-} method works, but only allows full size name 
+#' vector. Users can set \code{dedup = TRUE} to remove duplicated entries in the
+#' specification, by adding \code{-1, -2, ..., -i} suffix to the duplication of 
+#' the same identifier. 
+#' @param x Input object where the rownames will be modified. 
+#' @param rowNames Character vector of the rownames. If \code{x} is an 
+#' \linkS4class{SingleCellExperiment} object, a single character specifying a 
+#' column in \code{rowData(x)}. 
 #' @param dedup Logical. Whether to deduplicate the specified rowNames. Default
 #' \code{TRUE}
 #' @return The input SCE object with rownames updated.
@@ -255,31 +257,33 @@ dedupRowNames <- function(x, as.rowData = FALSE, return.list = FALSE){
 #' @examples 
 #' data("scExample", package = "singleCellTK")
 #' head(rownames(sce))
-#' sce <- setSCERowNames(sce, "feature_name")
+#' sce <- setRowNames(sce, "feature_name")
 #' head(rownames(sce))
-setSCERowNames <- function(inSCE, rowNames, dedup = TRUE) {
-  if (!inherits(inSCE, "SingleCellExperiment")) {
-    stop("inSCE should be a SingleCellExperiment object")
-  }
+setRowNames <- function(x, rowNames, dedup = TRUE) {
   if (!inherits(rowNames, "character")) {
     stop("rowNames should be of character class")
   }
-  if (length(rowNames) == 1) {
-    if (rowNames %in% names(SummarizedExperiment::rowData(inSCE))) {
-      rows <- SummarizedExperiment::rowData(inSCE)[[rowNames]]
+  if (inherits(x, "SingleCellExperiment")) {
+    if (length(rowNames) == 1) {
+      if (rowNames %in% names(SummarizedExperiment::rowData(x))) {
+        rows <- SummarizedExperiment::rowData(x)[[rowNames]]
+      } else {
+        stop("Single rowNames specification not found in rowData(x)")
+      }
+    } else if (length(rowNames) == nrow(x)) {
+      rows <- rowNames
     } else {
-      stop("Single rowNames specification not found in rowData(inSCE)")
+      stop("Length of rowNames does not match nrow(x)")
     }
-  } else if (length(rowNames) == nrow(inSCE)) {
-    rows <- rowNames
+    rownames(x) <- rows
   } else {
-    stop("Length of rowNames does not match nrow(inSCE)")
+    rownames(x) <- rowNames
   }
-  rownames(inSCE) <- rows
+  
   if (isTRUE(dedup)) {
-    inSCE <- dedupRowNames(inSCE)
+    x <- dedupRowNames(x)
   }
-  return(inSCE)
+  return(x)
 }
 
 #' Retrieve cell/feature index by giving identifiers saved in col/rowData

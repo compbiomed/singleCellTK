@@ -20,12 +20,9 @@ SCTK uses the [SingleCellExperiment](https://bioconductor.org/packages/release/b
 
 SCTK has wrapper functions for importing count matrix from the output of many types of processing tools. See the [documentation for importing data](import_data.html) for more detail. Here we use `importExampleData()` to load PBMC3k data from the Bioconductor package [TENxPBMCData](https://bioconductor.org/packages/release/data/experiment/html/TENxPBMCData.html).  
 
-Due to the nature of the algorithms of a part of the downstream analyses, it is **highly recommended** that users deduplicate the essential feature identifiers, which is stored as the `rownames` of the SCE object. An SCTK function, `dedupRowNames()` provides the functionality by adding `"-1", "-2", ..., -i"` suffix to the duplicated rownames.  
-
 ```{R import, message=FALSE, warning=FALSE, results='hold'}
 library(singleCellTK)
 sce <- importExampleData("pbmc3k")
-sce <- dedupRowNames(sce)
 ```
 
 ### Importing CellRanger Output Data
@@ -198,7 +195,7 @@ sce <- runDimReduce(inSCE = sce, method = "scaterUMAP", useReducedDim = "PCA", r
 Now, with the clustering result labeled for each cell and stored in the `colData` slot. We can plot the UMAP generated previously, with the clustering result labeled.  
 
 ```{R cluster_umap, message=FALSE, warning=FALSE, results="hold"}
-plotSCEDimReduceColData(sce, colorBy = "cluster", reducedDimName = "UMAP", dotSize = 1)
+plotSCEDimReduceColData(sce, colorBy = "cluster", reducedDimName = "UMAP")
 ```
 
 ## Marker Detection And Differential Expression
@@ -235,21 +232,23 @@ markerHm <- plotMarkerDiffExp(sce, topN = 5, log2fcThreshold = 0,
 
 ### Customized Differential Expression Analysis
 
-As we can easily tell from the heatmap above, "cluster 9" and "cluster 6" are having a very similar expression profile across the top markers detected. In order to further explore the difference between these two clusters, or any other two reasonable groups of cells, user can use the function `runDEAnalysis()`. 
+As we can easily tell from the heatmap above, "cluster 1" and "cluster 5" are having a very similar expression profile across the top markers detected. In order to further explore the difference between these two clusters, or any other two reasonable groups of cells, user can use the function `runDEAnalysis()`. 
 
 `runDEAnalysis()` is a generic function for performing differential expression (DE) analysis between two selected groups of cells. This is also used by `findMarkerDiffExp()`. By running DE analysis, the function will take the normalized read count data and perform statistical analysis to discover quantitative changes in expression levels between selected groups. See here for the detail of [running DE analysis with SCTK](differential_expression.html). 
 
-There are multiples ways to specify the groups of cells to be compared: by either directly specifying indices of cells, or selecting groups of cells with a categorical variable in `colData`. Additionally, `runDEAnalysis()` requires a relatively sophisticated inputs for naming the analyses, including the names of the two groups, and the name of one analysis, though these are not necessary for calling the algorithms alone. By requiring these, the results of the analyses can be stored with human readable identifiers and within one single SCE object, and can be more manageable. See the [DE documentation](differential_expression.html) for the detail. 
+There are multiple ways to specify the groups of cells to be compared: by either directly specifying indices of cells, or selecting groups of cells with a categorical variable in `colData`. Additionally, `runDEAnalysis()` requires a relatively sophisticated inputs for naming the analyses, including the names of the two groups, and the name of one analysis, though these are not necessary for calling the algorithms alone. By requiring these, the results of the analyses can be stored with human readable identifiers and within one single SCE object, and can be more manageable. See the [DE documentation](differential_expression.html) for the detail. 
 
 ```{R de, message=FALSE, warning=FALSE, results="hold"}
-sce <- runDEAnalysis(inSCE = sce, method = "wilcox", class = "cluster", classGroup1 = c(9), classGroup2 = c(6),
-                 groupName1 = "cluster9", groupName2 = "cluster6", analysisName = "cluster9_VS_6")
+sce <- runDEAnalysis(inSCE = sce, method = "wilcox", 
+                     class = "cluster", classGroup1 = c(1), classGroup2 = c(5),
+                     groupName1 = "cluster1", groupName2 = "cluster5", 
+                     analysisName = "cluster1_VS_5")
 ```
 
-Similarly to the marker detection section, SCTK also has a DE anaysis specific heatmap plotting function, `plotDEGHeatmap()`. Here, users can just easily enter the `analysisName` specified for one run and the function will automatically arrange the output. The heatmap is also splitted into a "checker board", by the "conditions" (i.e. the groups selected when running `runDEAnalysis()`) and the "regulation" (i.e. whether the log2 fold change is positive in "group1" against "group2"). 
+Similarly to the marker detection section, SCTK also has a DE analysis specific heatmap plotting function, `plotDEGHeatmap()`. Here, users can just easily enter the `analysisName` specified for one run and the function will automatically arrange the output. The heatmap is also splitted into a "checker board", by the "conditions" (i.e. the groups selected when running `runDEAnalysis()`) and the "regulation" (i.e. "up" if the log2 fold change is positive in "group1" against "group2"). 
 
 ```{R deHeatmap, message=FALSE, warning=FALSE, results="hold"}
-deHm <- plotDEGHeatmap(sce, useResult = "cluster9_VS_6", rowLabel = TRUE)
+deHm <- plotDEGHeatmap(sce, useResult = "cluster1_VS_5", rowLabel = TRUE)
 ```
 
 ## Cell Type Labeling
@@ -268,6 +267,28 @@ We can also plot the labeling on to the UMAP we got previously.
 
 ```{R singleRUMAP, message=FALSE, warning=FALSE, fig.width=9}
 plotSCEDimReduceColData(sce, colorBy = "SingleR_hpca_fine_pruned.labels", 
-                        reducedDimName = "UMAP", dotSize = 1, legendSize = 8)
+                        reducedDimName = "UMAP", legendSize = 8)
 ```
+
+## Pathway Analysis
+
+For the purpose of gene set enrichment (GSE) analysis, SCTK imports VAM and GSVA as options. Both of them work by loading some user-defined gene sets ([more about loading gene sets](import_genesets.html)), and calculating the enrichment score of each gene set in each cell. Here we will go through calling VAM to inspect the enrichment of the hallmark gene sets available in [MSigDB database](https://www.gsea-msigdb.org/gsea/msigdb/).  
+
+```{R VAM, message=FALSE, warning=FALSE}
+sce <- importGeneSetsFromMSigDB(sce, categoryIDs = "H", species = "Homo sapiens")
+sce <- runVAM(sce, geneSetCollectionName = "H", useAssay = "logcounts")
+```
+
+To visualize the result, we simply adopt a violin plot to show the distribution of the CDF scores of the cells, which can be, optionally, grouped by the cluster labels. 
+
+```{R visVAM}
+# VAM specific wrapper function will be added in the future
+hallmark <- "HALLMARK_INFLAMMATORY_RESPONSE"
+plotSCEViolin(sce, slotName = "reducedDims", itemName = "VAM_H_CDF", 
+              dimension = hallmark, boxplot = FALSE,
+              xlab = "cluster", groupBy = sce$cluster, 
+              ylab = hallmark)
+```
+
+>Note: In the current version of SCTK, the returned score matrices from either VAM or GSVA are stored in the `reducedDim` slot, since the feature dimensions are for the gene sets instead of the genes or subsets of genes. In the future, SCTK will adopt other types of data container for simpler operation on different types of feature sets. 
 
