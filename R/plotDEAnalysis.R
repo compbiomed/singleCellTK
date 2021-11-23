@@ -30,10 +30,10 @@
   }
 }
 
-#' plot the violin plot to show visualize the expression distribution of DEGs
-#' identified by differential expression analysis
+#' Generate violin plot to show the expression of top DEGs
+#' @details Any of the differential expression analysis method from SCTK should 
+#' be performed prior to using this function
 #' @param inSCE \linkS4class{SingleCellExperiment} inherited object.
-#' \code{runMAST()} has to be run in advance.
 #' @param useResult character. A string specifying the \code{analysisName}
 #' used when running a differential expression analysis function.
 #' @param threshP logical. Whether to plot threshold values from adaptive
@@ -127,15 +127,15 @@ plotDEGViolin <- function(inSCE, useResult, threshP = FALSE, labelBy = NULL,
   return(violinplot)
 }
 
-#' plot the linear regression to show visualize the expression the of DEGs
-#' identified by differential expression analysis
+#' Create linear regression plot to show the expression the of top DEGs
+#' @details Any of the differential expression analysis method from SCTK should 
+#' be performed prior to using this function
 #' @param inSCE \linkS4class{SingleCellExperiment} inherited object.
-#' \code{runMAST()} has to be run in advance.
 #' @param useResult character. A string specifying the \code{analysisName}
 #' used when running a differential expression analysis function.
 #' @param threshP logical. Whether to plot threshold values from adaptive
-#' thresholding, instead of using the assay used by \code{runMAST()}. Default
-#' \code{FALSE}.
+#' thresholding, instead of using the assay used by when performing DE analysis.
+#' Default \code{FALSE}.
 #' @param labelBy A single character for a column of \code{rowData(inSCE)} as
 #' where to search for the labeling text. Default \code{NULL}.
 #' @param nrow Integer. Number of rows in the plot grid. Default \code{6}.
@@ -301,16 +301,15 @@ getDEGTopTable <- function(inSCE, useResult, labelBy = NULL, onlyPos = FALSE,
 
 #' Heatmap visualization of DEG result
 #'
-#' A differential expression analysis function has to be run in advance so that
-#' information is stored in the metadata of the input SCE object. This function
-#' wraps plotSCEHeatmap.
+#' @details A differential expression analysis function has to be run in advance 
+#' so that information is stored in the metadata of the input SCE object. This 
+#' function wraps \code{\link{plotSCEHeatmap}}.
 #' A feature annotation basing on the log2FC level called \code{"regulation"}
 #' will be automatically added. A cell annotation basing on the condition
 #' selection while running the analysis called \code{"condition"}, and the
 #' annotations used from \code{colData(inSCE)} while setting the condition and
 #' covariates will also be added.
 #' @param inSCE \linkS4class{SingleCellExperiment} inherited object.
-#' \code{runMAST()} has to be run in advance.
 #' @param useResult character. A string specifying the \code{analysisName}
 #' used when running a differential expression analysis function.
 #' @param doLog Logical scalar. Whether to do \code{log(assay + 1)}
@@ -479,6 +478,100 @@ plotDEGHeatmap <- function(inSCE, useResult, doLog = FALSE, onlyPos = FALSE,
                        rowSplitBy = rowSplitBy, colSplitBy = colSplitBy,
                        title = title)
   return(hm)
+}
+
+#' Generate volcano plot for DEGs
+#' @details Any of the differential expression analysis method from SCTK should 
+#' be performed prior to using this function to generate volcano plots. 
+#' @param inSCE \linkS4class{SingleCellExperiment} inherited object.
+#' @param useResult character. A string specifying the \code{analysisName}
+#' used when running a differential expression analysis function.
+#' @param labelTopN Integer, label this number of top DEGs that pass the 
+#' filters.
+#' @param log2fcThreshold numeric. Label genes with the absolute values of
+#' log2FC greater than this value as regulated. Default \code{0.25}.
+#' @param fdrThreshold numeric. Label genes with FDR value less than this
+#' value as regulated. Default \code{0.05}.
+#' @return A \code{ggplot} object of volcano plot
+#' @export
+#' @examples 
+#' data("sceBatches")
+#' sceBatches <- scaterlogNormCounts(sceBatches, "logcounts")
+#' sce.w <- subsetSCECols(sceBatches, colData = "batch == 'w'")
+#' sce.w <- runWilcox(sce.w, class = "cell_type", classGroup1 = "alpha",
+#'                    groupName1 = "w.alpha", groupName2 = "w.beta",
+#'                    analysisName = "w.aVSb")
+#' plotDEGVolcano(sce.w, "w.aVSb")
+plotDEGVolcano <- function(inSCE,
+                           useResult,
+                           labelTopN = 10,
+                           log2fcThreshold = 0.25, 
+                           fdrThreshold = 0.05) {
+  .checkDiffExpResultExists(inSCE, useResult)
+  deg <- S4Vectors::metadata(inSCE)$diffExp[[useResult]]$result
+  deg <- deg[order(deg$FDR),]
+  rownames(deg) <- deg$Gene
+  groupNames <- S4Vectors::metadata(inSCE)$diffExp[[useResult]]$groupNames
+  # Prepare for coloring that shows the filtering
+  deg$Regulation <- NA
+  deg$Regulation[deg$Log2_FC > 0] <- "Up"
+  deg$Regulation[deg$Log2_FC < 0] <- "Down"
+  if (!is.null(log2fcThreshold)) {
+    deg$Regulation[abs(deg$Log2_FC) < log2fcThreshold] <- "No"
+  }
+  if (!is.null(fdrThreshold)) {
+    deg$Regulation[deg$FDR > fdrThreshold] <- "No"
+  }
+  # Prepare for Top DEG text labeling
+  passIdx <- deg$Regulation != "No"
+  deg$label <- NA
+  labelTopN <- min(labelTopN, length(which(passIdx)))
+  deg.pass <- deg[passIdx,]
+  label.origTable.idx <- deg$Gene %in% deg.pass$Gene[seq(labelTopN)]
+  deg$label[label.origTable.idx] <- deg$Gene[label.origTable.idx]
+  # Prepare for lines that mark the cutoffs
+  vlineLab <- data.frame(
+    X = c(-log2fcThreshold, log2fcThreshold),
+    text = c(paste("lower log2FC cutoff:", -log2fcThreshold),
+             paste("upper log2FC cutoff:", log2fcThreshold)),
+    h = c(1.01, -0.01)
+  )
+  hlineLab <- data.frame(
+    Y = c(-log10(fdrThreshold)),
+    text = paste("FDR cutoff:", fdrThreshold)
+  )
+  # Plot
+  ggplot2::ggplot() +
+    ggplot2::geom_point(data = deg, 
+                        ggplot2::aes_string(x = "Log2_FC", y = "-log10(FDR)", 
+                                            col = "Regulation")) +
+    ggplot2::scale_color_manual(values = c("Down" = "#619cff", 
+                                           "No" = "light grey", 
+                                           "Up" = "#f8766d")) +
+    ggrepel::geom_text_repel(data = deg,
+                             ggplot2::aes_string(x = "Log2_FC", 
+                                                 y = "-log10(FDR)",
+                                                 label = "label"),
+                             colour = "black", na.rm = TRUE) +
+    ggplot2::geom_vline(data = vlineLab,
+                        ggplot2::aes_string(xintercept = "X"),
+                        linetype = "longdash") +
+    ggplot2::geom_text(data = vlineLab, 
+                       ggplot2::aes_string(x = "X", y = 0, label = "text", 
+                                           hjust = "h"),
+                       size = 3, vjust = 1) +
+    ggplot2::geom_hline(data = hlineLab,
+                        ggplot2::aes_string(yintercept = "Y"),
+                        linetype = "longdash") +
+    ggplot2::geom_text(data = hlineLab,
+                       ggplot2::aes_string(x = -Inf, y = "Y", label = "text"),
+                       size = 3, vjust = -0.5, hjust = -.03) +
+    ggplot2::theme(panel.grid.major = ggplot2::element_blank(), 
+                   panel.grid.minor = ggplot2::element_blank(),
+                   panel.background = ggplot2::element_blank(),
+                   axis.line = ggplot2::element_line(colour = "black")) +
+    ggplot2::ggtitle(paste("DEG between", groupNames[1], 
+                           "and", groupNames[2]))
 }
 
 #' MAST Identify adaptive thresholds

@@ -96,6 +96,8 @@
 #'  object. Can be one of "Matrix" (as returned by
 #'  \link{readMM} function), or "matrix" (as returned by
 #'  \link[base]{matrix} function). Default \code{"Matrix"}.
+#' @param rowNamesDedup Boolean. Whether to deduplicate rownames. Default 
+#'  \code{TRUE}.
 #' @details
 #' \code{importAnnData} converts scRNA-seq data in the AnnData format to the
 #' \code{SingleCellExperiment} object. The .X slot in AnnData is transposed to the features x cells

@@ -192,9 +192,9 @@ runDEAnalysis <- function(method = c('MAST', 'DESeq2', 'Limma', 'ANOVA',
 #' @param onlyPos Whether to only output DEG with positive log2_FC value.
 #' Default \code{FALSE}.
 #' @param log2fcThreshold Only out put DEGs with the absolute values of log2FC
-#' greater than this value. Default \code{0.25}
+#' greater than this value. Default \code{NULL}
 #' @param fdrThreshold Only out put DEGs with FDR value less than this
-#' value. Default \code{0.05}
+#' value. Default \code{NULL}
 #' @param overwrite A logical scalar. Whether to overwrite result if exists.
 #' Default \code{FALSE}.
 #' @examples
@@ -216,7 +216,7 @@ runDESeq2 <- function(inSCE, useAssay = 'counts', index1 = NULL,
                       classGroup2 = NULL, analysisName, groupName1,
                       groupName2, covariates = NULL, fullReduced = TRUE,
                       onlyPos = FALSE, log2fcThreshold = NULL,
-                      fdrThreshold = 1, overwrite = FALSE){
+                      fdrThreshold = NULL, overwrite = FALSE){
     resultList <- .formatDEAList(inSCE, useAssay, index1, index2, class,
                                  classGroup1, classGroup2, groupName1,
                                  groupName2, analysisName, covariates,
@@ -328,9 +328,9 @@ runDESeq2 <- function(inSCE, useAssay = 'counts', index1 = NULL,
 #' @param onlyPos Whether to only output DEG with positive log2_FC value.
 #' Default \code{FALSE}.
 #' @param log2fcThreshold Only out put DEGs with the absolute values of log2FC
-#' greater than this value. Default \code{0.25}
+#' greater than this value. Default \code{NULL}
 #' @param fdrThreshold Only out put DEGs with FDR value less than this
-#' value. Default \code{0.05}
+#' value. Default \code{NULL}
 #' @param overwrite A logical scalar. Whether to overwrite result if exists.
 #' Default \code{FALSE}.
 #' @examples
@@ -353,7 +353,7 @@ runLimmaDE <- function(inSCE, useAssay = 'logcounts', index1 = NULL,
                        index2 = NULL, class = NULL, classGroup1 = NULL,
                        classGroup2 = NULL, analysisName, groupName1,
                        groupName2, covariates = NULL, onlyPos = FALSE,
-                       log2fcThreshold = 0.25, fdrThreshold = 0.05,
+                       log2fcThreshold = NULL, fdrThreshold = NULL,
                        overwrite = FALSE){
     resultList <- .formatDEAList(inSCE, useAssay, index1, index2, class,
                                  classGroup1, classGroup2, groupName1,
@@ -461,9 +461,9 @@ runLimmaDE <- function(inSCE, useAssay = 'logcounts', index1 = NULL,
 #' @param onlyPos Whether to only output DEG with positive log2_FC value.
 #' Default \code{FALSE}.
 #' @param log2fcThreshold Only out put DEGs with the absolute values of log2FC
-#' greater than this value. Default \code{0.25}
+#' greater than this value. Default \code{NULL}
 #' @param fdrThreshold Only out put DEGs with FDR value less than this
-#' value. Default \code{0.05}
+#' value. Default \code{NULL}
 #' @param overwrite A logical scalar. Whether to overwrite result if exists.
 #' Default \code{FALSE}.
 #' @examples
@@ -485,7 +485,7 @@ runANOVA <- function(inSCE, useAssay = 'logcounts', index1 = NULL,
                      index2 = NULL, class = NULL, classGroup1 = NULL,
                      classGroup2 = NULL, analysisName, groupName1,
                      groupName2, covariates = NULL, onlyPos = FALSE,
-                     log2fcThreshold = 0.25, fdrThreshold = 0.05,
+                     log2fcThreshold = NULL, fdrThreshold = NULL,
                      overwrite = FALSE){
     resultList <- .formatDEAList(inSCE, useAssay, index1, index2, class,
                                  classGroup1, classGroup2, groupName1,
@@ -613,9 +613,9 @@ runANOVA <- function(inSCE, useAssay = 'logcounts', index1 = NULL,
 #' @param onlyPos Whether to only output DEG with positive log2_FC value.
 #' Default \code{FALSE}.
 #' @param log2fcThreshold Only out put DEGs with the absolute values of log2FC
-#' greater than this value. Default \code{0.25}
+#' greater than this value. Default \code{NULL}
 #' @param fdrThreshold Only out put DEGs with FDR value less than this
-#' value. Default \code{0.05}
+#' value. Default \code{NULL}
 #' @param overwrite A logical scalar. Whether to overwrite result if exists.
 #' Default \code{FALSE}.
 #' @param check_sanity Logical scalar. Whether to perform MAST's sanity check
@@ -639,7 +639,7 @@ runMAST <- function(inSCE, useAssay = 'logcounts', index1 = NULL,
                     index2 = NULL, class = NULL, classGroup1 = NULL,
                     classGroup2 = NULL, analysisName, groupName1,
                     groupName2, covariates = NULL, onlyPos = FALSE,
-                    log2fcThreshold = NULL, fdrThreshold = 0.05,
+                    log2fcThreshold = NULL, fdrThreshold = NULL,
                     overwrite = FALSE, check_sanity = TRUE){
     resultList <- .formatDEAList(inSCE, useAssay, index1, index2, class,
                                  classGroup1, classGroup2, groupName1,
@@ -780,9 +780,9 @@ runMAST <- function(inSCE, useAssay = 'logcounts', index1 = NULL,
 #' @param onlyPos Whether to only output DEG with positive log2_FC value.
 #' Default \code{FALSE}.
 #' @param log2fcThreshold Only out put DEGs with the absolute values of log2FC
-#' greater than this value. Default \code{0.25}
+#' greater than this value. Default \code{NULL}
 #' @param fdrThreshold Only out put DEGs with FDR value less than this
-#' value. Default \code{0.05}
+#' value. Default \code{NULL}
 #' @param overwrite A logical scalar. Whether to overwrite result if exists.
 #' Default \code{FALSE}.
 #' @examples
@@ -804,7 +804,7 @@ runWilcox <- function(inSCE, useAssay = 'logcounts', index1 = NULL,
                       index2 = NULL, class = NULL, classGroup1 = NULL,
                       classGroup2 = NULL, analysisName, groupName1,
                       groupName2, covariates = NULL, onlyPos = FALSE,
-                      log2fcThreshold = 0.25, fdrThreshold = 0.05,
+                      log2fcThreshold = NULL, fdrThreshold = NULL,
                       overwrite = FALSE){
   resultList <- .formatDEAList(inSCE, useAssay, index1, index2, class,
                                classGroup1, classGroup2, groupName1,
