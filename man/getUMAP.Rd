@@ -16,10 +16,10 @@ getUMAP(
   nNeighbors = 30,
   nIterations = 200,
   alpha = 1,
-  minDist = 0.5,
-  spread = 5,
+  minDist = 0.01,
+  spread = 1,
   pca = TRUE,
-  initialDims = 50,
+  initialDims = 25,
   nTop = 2000
 )
 }
@@ -61,18 +61,18 @@ Default is \code{1}.}
 \item{minDist}{The effective minimum distance between embedded points.
 Smaller values will result in a more clustered/clumped embedding where nearby
 points on the manifold are drawn closer together, while larger values will
-result on a more even dispersal of points. Default \code{0.5}. See
+result on a more even dispersal of points. Default \code{0.01}. See
 `?scater::calculateUMAP` for more information.}
 
 \item{spread}{The effective scale of embedded points. In combination with
 minDist, this determines how clustered/clumped the embedded points are.
-Default \code{5}. See `?scater::calculateUMAP` for more information.}
+Default \code{1}. See `?scater::calculateUMAP` for more information.}
 
 \item{pca}{Logical. Whether to perform dimension reduction with PCA before
 UMAP. Will not perform PCA if using \code{useReducedDim}. Default \code{TRUE}}
 
 \item{initialDims}{Number of dimensions from PCA to use as input in UMAP.
-Default \code{50}.}
+Default \code{25}.}
 
 \item{nTop}{Number of features with the highest variances to use for
 dimensionality reduction. Default \code{2000}.}

@@ -45,6 +45,9 @@ sce <- runCellQC(sce, sample = NULL,
                  algorithms = c("QCMetrics", "scDblFinder", "decontX"),
                  collectionName = "mito",
                  geneSetListLocation = "rownames")
+
+sce <- getUMAP(inSCE = sce, reducedDimName = "decontX_UMAP")
+print(ncol(sce))
 ```
 
 >**Note:** If you have cells from multiple samples stored in the SCE object, make sure to supply the sample parameter as the QC tools need to be applied to cells from each sample individually.
@@ -222,7 +225,7 @@ SCTK adopts [SingleR](https://bioconductor.org/packages/release/bioc/html/Single
 >Note: Choosing a reference from the recommended builtin references would also require some prior knowledge of user data. **Users should choose a reference that covers the cell types possibly exist in user dataset.** SingleR works by scoring the similarity to each cell type and assigning a cell type by the highest score, regardless of how low the score is. Thus a beta cell from pancrea data cound even be wrongly labeled as a platelet if using a blood cell reference. 
 
 ```{R singleR, message=FALSE, warning=FALSE, results="hold"}
-sce <- runSingleR(sce, useAssay = "logcounts", level = "fine")
+# sce <- runSingleR(sce, useAssay = "logcounts", level = "fine")
 ```
 
 The result of labeling will again be saved to `colData` slot of the SCE object. There will be multiple types of information being stored, including a scoring matrix named by `"SingleR_{ref}_{level}_scores"`, where `{ref}` refers to the reference selected, `{level}` refers to the `level` argument being passed to the function. And three `"SingleR_{ref}_{level}_{typeOfLabels}"` columns, where `{typeOfLabels}` includes `first.labels`, `labels`, `pruned.labels`. For the difference, please refer to `?SingleR::classifySingleR`.  
@@ -230,7 +233,7 @@ The result of labeling will again be saved to `colData` slot of the SCE object. 
 We can also plot the labeling on to the UMAP we got previously.  
 
 ```{R singleRUMAP, message=FALSE, warning=FALSE, fig.width=9}
-plotSCEDimReduceColData(sce, colorBy = "SingleR_hpca_fine_pruned.labels", 
-                        reducedDimName = "UMAP", dotSize = 1, legendSize = 8)
+# plotSCEDimReduceColData(sce, colorBy = "SingleR_hpca_fine_pruned.labels", 
+#                         reducedDimName = "UMAP", dotSize = 1, legendSize = 8)
 ```
 

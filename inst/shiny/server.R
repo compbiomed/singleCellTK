@@ -1581,7 +1581,7 @@ shinyServer(function(input, output, session) {
   }
 
   observeEvent(input$runQC, withConsoleMsgRedirect({
-    #withBusyIndicatorServer("runQC", {
+    withBusyIndicatorServer("runQC", {
       if (!qcInputExists()) {
         insertUI(
           selector = "#qcPageErrors",
@@ -1709,7 +1709,7 @@ shinyServer(function(input, output, session) {
         # Show downstream analysis options
         callModule(module = nonLinearWorkflow, id = "nlw-qcf", parent = session, nbc = TRUE, cw = TRUE, cv = TRUE)
       }
-    #})
+    })
 
   }))
 
