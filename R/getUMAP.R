@@ -39,6 +39,8 @@
 #' Default \code{25}.
 #' @param nTop Number of features with the highest variances to use for
 #' dimensionality reduction. Default \code{2000}.
+#' @param seed Random seed for reproducibility of UMAP results. 
+#' Default \code{12345}.
 #' @return A \linkS4class{SingleCellExperiment} object with UMAP computation
 #' updated in \code{reducedDim(inSCE, reducedDimName)}.
 #' @export
@@ -50,9 +52,9 @@ getUMAP <- function(inSCE, useAssay = "counts", useAltExp = NULL,
                     useReducedDim = NULL, sample = NULL,
                     reducedDimName = "UMAP", logNorm = TRUE, nNeighbors = 30,
                     nIterations = 200, alpha = 1, minDist = 0.01, spread = 1,
-                    pca = TRUE, initialDims = 25, nTop = 2000) {
+                    pca = TRUE, initialDims = 25, nTop = 2000, seed = 12345) {
   
-  set.seed(12345)
+  set.seed(seed)
   
   if (!inherits(inSCE, "SingleCellExperiment")){
     stop("Please use a SingleCellExperiment object")

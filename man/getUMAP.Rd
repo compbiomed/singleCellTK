@@ -20,7 +20,8 @@ getUMAP(
   spread = 1,
   pca = TRUE,
   initialDims = 25,
-  nTop = 2000
+  nTop = 2000,
+  seed = 12345
 )
 }
 \arguments{
@@ -76,6 +77,9 @@ Default \code{25}.}
 
 \item{nTop}{Number of features with the highest variances to use for
 dimensionality reduction. Default \code{2000}.}
+
+\item{seed}{Random seed for reproducibility of UMAP results. 
+Default \code{12345}.}
 }
 \value{
 A \linkS4class{SingleCellExperiment} object with UMAP computation

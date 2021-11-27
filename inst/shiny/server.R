@@ -1701,7 +1701,8 @@ shinyServer(function(input, output, session) {
                                  minDist = input$UminDist,
                                  spread = input$Uspread,
                                  initialDims = input$UinitialDims,
-                                 reducedDimName = input$QCUMAPName
+                                 reducedDimName = input$QCUMAPName,
+                                 seed = 12345
                                  )
         }
         updateQCPlots()
