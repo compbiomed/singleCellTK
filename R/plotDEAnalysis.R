@@ -566,10 +566,13 @@ plotDEGVolcano <- function(inSCE,
     ggplot2::geom_text(data = hlineLab,
                        ggplot2::aes_string(x = -Inf, y = "Y", label = "text"),
                        size = 3, vjust = -0.5, hjust = -.03) +
+    ggplot2::xlab("Fold Change (log2)") +
+    ggplot2::ylab("FDR (-Log10 q-value)") +
     ggplot2::theme(panel.grid.major = ggplot2::element_blank(), 
                    panel.grid.minor = ggplot2::element_blank(),
                    panel.background = ggplot2::element_blank(),
                    axis.line = ggplot2::element_line(colour = "black")) +
+    ggplot2::xlim(-max(abs(deg$Log2_FC)), max(abs(deg$Log2_FC))) +
     ggplot2::ggtitle(paste("DEG between", groupNames[1], 
                            "and", groupNames[2]))
 }
