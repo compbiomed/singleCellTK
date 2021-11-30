@@ -24,7 +24,7 @@ shinyServer(function(input, output, session) {
 
   # library(fs)
   # library(shinyFiles)
-
+  
   #-----------------------------------------------------------------------------
   # MISC - Used throughout app
   #-----------------------------------------------------------------------------
@@ -1580,8 +1580,11 @@ shinyServer(function(input, output, session) {
     }
   }
 
+  
   observeEvent(input$runQC, withConsoleMsgRedirect({
     withBusyIndicatorServer("runQC", {
+      showNotification("", action = textOutput("qcNotificationUI"),
+                       type = "message", duration = NULL, id = "qcNotification")
       if (!qcInputExists()) {
         insertUI(
           selector = "#qcPageErrors",
@@ -1704,12 +1707,14 @@ shinyServer(function(input, output, session) {
                                  reducedDimName = input$QCUMAPName,
                                  seed = 12345
                                  )
+          message(paste0(date(), " ... QC Complete"))
         }
         updateQCPlots()
 
         # Show downstream analysis options
         callModule(module = nonLinearWorkflow, id = "nlw-qcf", parent = session, nbc = TRUE, cw = TRUE, cv = TRUE)
       }
+      delay(500, removeNotification(id = "qcNotification"))
     })
 
   }))

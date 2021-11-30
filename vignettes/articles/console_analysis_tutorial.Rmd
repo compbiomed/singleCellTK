@@ -47,7 +47,6 @@ sce <- runCellQC(sce, sample = NULL,
                  geneSetListLocation = "rownames")
 
 sce <- getUMAP(inSCE = sce, reducedDimName = "decontX_UMAP")
-print(ncol(sce))
 ```
 
 >**Note:** If you have cells from multiple samples stored in the SCE object, make sure to supply the sample parameter as the QC tools need to be applied to cells from each sample individually.

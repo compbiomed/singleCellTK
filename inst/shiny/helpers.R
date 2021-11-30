@@ -174,6 +174,7 @@ withConsoleMsgRedirect <- function(expr) {
   },
   message = function(m) {
     shinyjs::html(id = "console", html = m$message, add = TRUE)
+    shinyjs::html(id = "qcNotificationUI", html = m$message, add = FALSE)
   })
   result
 }
