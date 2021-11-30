@@ -21,7 +21,7 @@ getUMAP(
   pca = TRUE,
   initialDims = 25,
   nTop = 2000,
-  seed = 12345
+  seed = NULL
 )
 }
 \arguments{
@@ -79,7 +79,7 @@ Default \code{25}.}
 dimensionality reduction. Default \code{2000}.}
 
 \item{seed}{Random seed for reproducibility of UMAP results. 
-Default \code{12345}.}
+Default \code{NULL} will use global seed in use by the R environment.}
 }
 \value{
 A \linkS4class{SingleCellExperiment} object with UMAP computation

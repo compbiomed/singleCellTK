@@ -40,7 +40,7 @@
 #' @param nTop Number of features with the highest variances to use for
 #' dimensionality reduction. Default \code{2000}.
 #' @param seed Random seed for reproducibility of UMAP results. 
-#' Default \code{12345}.
+#' Default \code{NULL} will use global seed in use by the R environment.
 #' @return A \linkS4class{SingleCellExperiment} object with UMAP computation
 #' updated in \code{reducedDim(inSCE, reducedDimName)}.
 #' @export
@@ -52,9 +52,7 @@ getUMAP <- function(inSCE, useAssay = "counts", useAltExp = NULL,
                     useReducedDim = NULL, sample = NULL,
                     reducedDimName = "UMAP", logNorm = TRUE, nNeighbors = 30,
                     nIterations = 200, alpha = 1, minDist = 0.01, spread = 1,
-                    pca = TRUE, initialDims = 25, nTop = 2000, seed = 12345) {
-  
-  set.seed(seed)
+                    pca = TRUE, initialDims = 25, nTop = 2000, seed = NULL) {
   
   if (!inherits(inSCE, "SingleCellExperiment")){
     stop("Please use a SingleCellExperiment object")
@@ -139,11 +137,22 @@ getUMAP <- function(inSCE, useAssay = "counts", useAltExp = NULL,
       nNeighbors <- ncol(matColData)
     }
 
-    umapRes <- scater::calculateUMAP(matColData, n_neighbors = nNeighbors,
-                          learning_rate = alpha,
-                          min_dist = minDist, spread = spread,
-                          n_sgd_threads = 1, pca = doPCA,
-                          n_epochs = nIterations, ntop = nTop)
+    if(!is.null(seed)){
+      withr::with_seed(seed = seed,
+                       code = umapRes <- scater::calculateUMAP(matColData, n_neighbors = nNeighbors,
+                                                        learning_rate = alpha,
+                                                        min_dist = minDist, spread = spread,
+                                                        n_sgd_threads = 1, pca = doPCA,
+                                                        n_epochs = nIterations, ntop = nTop)
+      ) 
+    }
+    else{
+      umapRes <- scater::calculateUMAP(matColData, n_neighbors = nNeighbors,
+                                       learning_rate = alpha,
+                                       min_dist = minDist, spread = spread,
+                                       n_sgd_threads = 1, pca = doPCA,
+                                       n_epochs = nIterations, ntop = nTop)
+    }
     
     if (is.null(rownames(sceSample))) {
       rownames(umapRes) <- colnames(sceSample)

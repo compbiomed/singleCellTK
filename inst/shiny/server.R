@@ -1681,6 +1681,8 @@ shinyServer(function(input, output, session) {
             paramsList[[algo]] = algoParams
           }
         }
+        # open console
+        toggle(id = "console")
         # run selected cell QC algorithms
         vals$counts <- runCellQC(inSCE = vals$counts,
                                  algorithms = algoList,
@@ -1705,12 +1707,13 @@ shinyServer(function(input, output, session) {
                                  spread = input$Uspread,
                                  initialDims = input$UinitialDims,
                                  reducedDimName = input$QCUMAPName,
-                                 seed = 12345
+                                 seed = input$Useed
                                  )
           message(paste0(date(), " ... QC Complete"))
+          # close console
+          toggle(id = "console")
         }
         updateQCPlots()
-
         # Show downstream analysis options
         callModule(module = nonLinearWorkflow, id = "nlw-qcf", parent = session, nbc = TRUE, cw = TRUE, cv = TRUE)
       }
@@ -2997,7 +3000,8 @@ shinyServer(function(input, output, session) {
                 method = "rTSNE",
                 reducedDimName = dimrednamesave,
                 perplexity = input$perplexityTSNE,
-                nIterations = input$iterTSNE
+                nIterations = input$iterTSNE,
+                seed = input$seed__tsneUmap
               )
               #vals$counts <- runDimensionalityReduction(
               #  inSCE = vals$counts,
@@ -3017,7 +3021,8 @@ shinyServer(function(input, output, session) {
                   method = "seuratTSNE",
                   reducedDimName = dimrednamesave,
                   dims = input$dimRedNumberDims_tsneUmap,
-                  perplexity = input$perplexityTSNE
+                  perplexity = input$perplexityTSNE,
+                  seed = input$seed__tsneUmap
                 )
               } else {
                 vals$counts <- runDimReduce(
@@ -3029,7 +3034,8 @@ shinyServer(function(input, output, session) {
                   reducedDimName = dimrednamesave,
                   dims = input$dimRedNumberDims_tsneUmap,
                   perplexity = input$perplexityTSNE,
-                  useReduction = input$reductionMethodUMAPTSNEDimRed
+                  useReduction = input$reductionMethodUMAPTSNEDimRed,
+                  seed = input$seed__tsneUmap
                 )
               }
               #vals$counts <- runDimensionalityReduction(
@@ -3053,7 +3059,8 @@ shinyServer(function(input, output, session) {
                   dims = input$dimRedNumberDims_tsneUmap,
                   minDist = input$minDistUMAPDimRed,
                   nNeighbors = input$nNeighboursUMAPDimRed,
-                  spread = input$spreadUMAPDimRed
+                  spread = input$spreadUMAPDimRed,
+                  seed = input$seed__tsneUmap
                 )
               } else {
                 vals$counts <- runDimReduce(
@@ -3067,7 +3074,8 @@ shinyServer(function(input, output, session) {
                   minDist = input$minDistUMAPDimRed,
                   nNeighbors = input$nNeighboursUMAPDimRed,
                   spread = input$spreadUMAPDimRed,
-                  useReduction = input$reductionMethodUMAPTSNEDimRed
+                  useReduction = input$reductionMethodUMAPTSNEDimRed,
+                  seed = input$seed__tsneUmap
                 )
               }
               #vals$counts <- runDimensionalityReduction(
@@ -3097,7 +3105,8 @@ shinyServer(function(input, output, session) {
                 nIterations = input$iterUMAP,
                 minDist = input$mindistUMAP,
                 alpha = input$alphaUMAP,
-                spread = input$spreadUMAP
+                spread = input$spreadUMAP,
+                seed = input$seed__tsneUmap
               )
               #vals$counts <- runDimensionalityReduction(
               #  inSCE = vals$counts,

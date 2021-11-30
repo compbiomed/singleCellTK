@@ -14,6 +14,8 @@
 #' @param run_pca run tSNE on PCA components? Default \code{TRUE}.
 #' @param ntop Number of top features to use as a further variable feature
 #' selection. Default \code{NULL}.
+#' @param seed Random seed for reproducibility of tSNE results. 
+#' Default \code{NULL} will use global seed in use by the R environment.
 #' @return A \linkS4class{SingleCellExperiment} object with tSNE computation
 #' updated in \code{reducedDim(inSCE, reducedDimName)}.
 #' @export
@@ -30,7 +32,7 @@
 getTSNE <- function(inSCE, useAssay = "logcounts", useAltExp = NULL,
                     useReducedDim = NULL, reducedDimName = "TSNE",
                     nIterations = 1000, perplexity = 30, run_pca = TRUE,
-                    ntop = NULL){
+                    ntop = NULL, seed = NULL){
   
   if (!inherits(inSCE, "SingleCellExperiment")){
     stop("Please use a SingleCellExperiment object")
@@ -92,9 +94,20 @@ getTSNE <- function(inSCE, useAssay = "logcounts", useAltExp = NULL,
   if (is.null(perplexity)){
     perplexity <- floor(ncol(inSCE) / 5)
   }
-  tsneOut <- Rtsne::Rtsne(exprsToPlot, perplexity = perplexity,
-                          initial_dims = max(50, ncol(inSCE)),
-                          max_iter = nIterations, pca = run_pca)
+  
+  if(!is.null(seed)){
+    withr::with_seed(seed = seed,
+                     code = tsneOut <- Rtsne::Rtsne(exprsToPlot, perplexity = perplexity,
+                                                    initial_dims = max(50, ncol(inSCE)),
+                                                    max_iter = nIterations, pca = run_pca)
+                     )
+  }
+  else{
+    tsneOut <- Rtsne::Rtsne(exprsToPlot, perplexity = perplexity,
+                            initial_dims = max(50, ncol(inSCE)),
+                            max_iter = nIterations, pca = run_pca) 
+  }
+  
   tsneOut <- tsneOut$Y[, c(1, 2)]
   rownames(tsneOut) <- colnames(inSCE)
   colnames(tsneOut) <- c("tSNE1", "tSNE2")

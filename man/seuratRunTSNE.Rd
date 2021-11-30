@@ -12,7 +12,8 @@ seuratRunTSNE(
   reducedDimName = "seuratTSNE",
   dims = 10,
   perplexity = 30,
-  externalReduction = NULL
+  externalReduction = NULL,
+  seed = 1
 )
 }
 \arguments{
@@ -32,6 +33,9 @@ tSNE call. Default \code{30}.}
 
 \item{externalReduction}{Pass DimReduc object if PCA/ICA computed through
 other libraries. Default \code{NULL}.}
+
+\item{seed}{Random seed for reproducibility of results. 
+Default \code{1}.}
 }
 \value{
 Updated sce object with tSNE computations stored
