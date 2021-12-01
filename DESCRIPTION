@@ -50,6 +50,7 @@ Imports:
     DT,
     ExperimentHub,
     fields,
+    fastmap (>= 1.1.0),
     ggplot2,
     ggplotify,
     ggrepel,
