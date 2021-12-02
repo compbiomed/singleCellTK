@@ -328,7 +328,7 @@ shinyServer(function(input, output, session) {
   }
 
   observeEvent(input$consoleToggle, {
-    toggle(id = "console")
+    shinyjs::toggle(id = "consolePanel")
   })
 
 
@@ -826,7 +826,7 @@ shinyServer(function(input, output, session) {
   })
 
   # Event handler for "Upload" button on import page
-  observeEvent(input$uploadData, {
+  observeEvent(input$uploadData, withConsoleMsgRedirect({
     withBusyIndicatorServer("uploadData", {
       if (length(allImportEntries$samples) == 0) {
         stop("You have not selected any samples to import.")
@@ -917,7 +917,7 @@ shinyServer(function(input, output, session) {
       # object but cannot find the old result.
     })
     callModule(module = nonLinearWorkflow, id = "nlw-import", parent = session, qcf = TRUE)
-  })
+  }))
 
   updateSeuratUIFromRDS <- function(inSCE){
     if(!is.null(metadata(inSCE)$seurat$plots)){
@@ -1583,8 +1583,6 @@ shinyServer(function(input, output, session) {
   
   observeEvent(input$runQC, withConsoleMsgRedirect({
     withBusyIndicatorServer("runQC", {
-      showNotification("", action = textOutput("qcNotificationUI"),
-                       type = "message", duration = NULL, id = "qcNotification")
       if (!qcInputExists()) {
         insertUI(
           selector = "#qcPageErrors",
@@ -1682,7 +1680,7 @@ shinyServer(function(input, output, session) {
           }
         }
         # open console
-        toggle(id = "console")
+        shinyjs::show(id = "consolePanel")
         # run selected cell QC algorithms
         vals$counts <- runCellQC(inSCE = vals$counts,
                                  algorithms = algoList,
@@ -1711,7 +1709,7 @@ shinyServer(function(input, output, session) {
                                  )
           message(paste0(date(), " ... QC Complete"))
           # close console
-          toggle(id = "console")
+          shinyjs::hide(id = "consolePanel")
         }
         updateQCPlots()
         # Show downstream analysis options
@@ -8725,5 +8723,6 @@ shinyServer(function(input, output, session) {
   # observeEvent(input$interpretToggle, {
   #   pushbar_open(id = "myPushbar")
   # })
+  
 })
 

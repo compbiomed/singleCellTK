@@ -46,7 +46,7 @@ sce <- runCellQC(sce, sample = NULL,
                  collectionName = "mito",
                  geneSetListLocation = "rownames")
 
-sce <- getUMAP(inSCE = sce, reducedDimName = "decontX_UMAP", seed = 12345)
+sce <- getUMAP(inSCE = sce, reducedDimName = "QC_UMAP", seed = 12345)
 ```
 
 >**Note:** If you have cells from multiple samples stored in the SCE object, make sure to supply the sample parameter as the QC tools need to be applied to cells from each sample individually.
@@ -60,11 +60,11 @@ plotRunPerCellQCResults(sce)
 ```
 
 ```{R plotScDblFinder, message=FALSE, warning=FALSE, fig.height=7, fig.width=8}
-plotScDblFinderResults(sce, reducedDimName = "decontX_UMAP")
+plotScDblFinderResults(sce, reducedDimName = "QC_UMAP")
 ```
 
 ```{R plottDecontX, message=FALSE, warning=FALSE, fig.height=7, fig.width=8}
-plotDecontXResults(sce, reducedDimName = "decontX_UMAP")
+plotDecontXResults(sce, reducedDimName = "QC_UMAP")
 ```
 
 A comprehensive HTML report can be generated to visualize and explore the QC metrics in greater detail:
