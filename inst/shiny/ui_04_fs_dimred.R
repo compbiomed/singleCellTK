@@ -263,6 +263,10 @@ shinyPanelFS_DimRed <- fluidPage(
                                          label = "Set spread:",
                                          value = 1),
                           ),
+                          numericInput(inputId = "seed__tsneUmap",
+                                       label = "Seed value for reproducibility of result:",
+                                       value = 12345,
+                                       step = 1),
                           withBusyIndicatorUI(actionButton("runDimred_tsneUmap", "Run"))
                         )
                       ))),

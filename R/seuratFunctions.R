@@ -594,12 +594,14 @@ seuratFindClusters <- function(
 #' tSNE call. Default \code{30}.
 #' @param externalReduction Pass DimReduc object if PCA/ICA computed through
 #' other libraries. Default \code{NULL}.
+#' @param seed Random seed for reproducibility of results. 
+#' Default \code{1}.
 #' @return Updated sce object with tSNE computations stored
 #' @export
 #' @importFrom SingleCellExperiment reducedDim<-
 seuratRunTSNE <- function(inSCE, useReduction = c("pca", "ica"),
                           reducedDimName = "seuratTSNE", dims = 10,
-                          perplexity = 30, externalReduction = NULL) {
+                          perplexity = 30, externalReduction = NULL, seed = 1) {
   useReduction <- match.arg(useReduction)
   seuratObject <- convertSCEToSeurat(inSCE)
   
@@ -610,7 +612,7 @@ seuratRunTSNE <- function(inSCE, useReduction = c("pca", "ica"),
   
   seuratObject <- Seurat::RunTSNE(seuratObject, reduction = useReduction,
                                   dims = seq(dims), perplexity = perplexity,
-                                  check_duplicates = FALSE)
+                                  check_duplicates = FALSE, seed.use = seed)
   inSCE <- .addSeuratToMetaDataSCE(inSCE, seuratObject)
   temp <- seuratObject@reductions$tsne@cell.embeddings
   rownames(temp) <- colnames(inSCE)
@@ -638,6 +640,8 @@ seuratRunTSNE <- function(inSCE, useReduction = c("pca", "ica"),
 #' See \link[Seurat]{RunUMAP} for more information. Default \code{1}.
 #' @param externalReduction Pass DimReduc object if PCA/ICA computed through
 #' other libraries. Default \code{NULL}.
+#' @param seed Random seed for reproducibility of results. 
+#' Default \code{42}.
 #' @param verbose Logical value indicating if informative messages should
 #'  be displayed. Default is \code{TRUE}.
 #' @examples
@@ -656,7 +660,7 @@ seuratRunTSNE <- function(inSCE, useReduction = c("pca", "ica"),
 seuratRunUMAP <- function(inSCE, useReduction = c("pca", "ica"),
                           reducedDimName = "seuratUMAP", dims = 10,
                           minDist = 0.3, nNeighbors = 30L, spread = 1,
-                          externalReduction = NULL,
+                          externalReduction = NULL, seed = 42,
                           verbose = TRUE) {
   useReduction <- match.arg(useReduction)
   seuratObject <- convertSCEToSeurat(inSCE)
@@ -672,7 +676,8 @@ seuratRunUMAP <- function(inSCE, useReduction = c("pca", "ica"),
                                   min.dist = minDist,
                                   n.neighbors = nNeighbors,
                                   spread = spread,
-                                  verbose = verbose)
+                                  verbose = verbose,
+                                  seed.use = seed)
   inSCE <- .addSeuratToMetaDataSCE(inSCE, seuratObject)
 
   temp <- seuratObject@reductions$umap@cell.embeddings
