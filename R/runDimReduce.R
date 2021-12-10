@@ -126,13 +126,16 @@ runDimReduce <- function(inSCE,
   }
 
   if (method == "scaterPCA") {
+    message(paste0(date(), " ... Computing Scater PCA."))
     inSCE <- scaterPCA(inSCE = inSCE, useAssay = useAssay, useAltExp = useAltExp,
                        reducedDimName = reducedDimName, nComponents = nComponents, ...)
   } else if (method == "scaterUMAP") {
+    message(paste0(date(), " ... Computing Scater UMAP."))
     inSCE <- getUMAP(inSCE = inSCE, useAssay = useAssay, useAltExp = useAltExp,
                      useReducedDim = useReducedDim,
                      reducedDimName = reducedDimName, seed = seed, ...)
   } else if (method == "rTSNE") {
+    message(paste0(date(), " ... Computing RtSNE."))
     inSCE <- getTSNE(inSCE = inSCE, useAssay = useAssay, useAltExp = useAltExp,
                      useReducedDim = useReducedDim,
                      reducedDimName = reducedDimName, seed = seed, ...)
@@ -149,10 +152,12 @@ runDimReduce <- function(inSCE,
     if (method %in% c("seuratPCA", "seuratICA")) {
       ## SeuratPCA/ICA
       if (method == "seuratPCA") {
+        message(paste0(date(), " ... Computing Seurat PCA."))
         tempSCE <- seuratPCA(tempSCE, useAssay = useAssay,
                              reducedDimName = reducedDimName,
                              nPCs = nComponents, features = rownames(inSCE), ...)
       } else if (method == "seuratICA") {
+        message(paste0(date(), " ... Computing Seurat ICA."))
         tempSCE <- seuratICA(tempSCE, useAssay = useAssay,
                              reducedDimName = reducedDimName,
                              nics = nComponents, ...)
@@ -171,18 +176,22 @@ runDimReduce <- function(inSCE,
           stop("Must specify `useReduction` when using `useAssay` in seuratUMAP/TSNE")
         }
         if (args$useReduction == "pca") {
+          message(paste0(date(), " ... Computing Seurat PCA."))
           tempSCE <- seuratPCA(inSCE = tempSCE,
                                useAssay = useAssay,
                                reducedDimName = paste0(useAssay, "_seuratPCA"))
         } else if (args$useReduction == "ica") {
+          message(paste0(date(), " ... Computing Seurat ICA."))
           tempSCE <- seuratICA(inSCE = tempSCE,
                                useAssay = useAssay,
                                reducedDimName = paste0(useAssay, "_seuratICA"))
         }
         if (method == "seuratUMAP") {
+          message(paste0(date(), " ... Computing Seurat UMAP."))
           tempSCE <- seuratRunUMAP(inSCE = tempSCE,
                                    reducedDimName = reducedDimName, ...)
         } else {
+          message(paste0(date(), " ... Computing Seurat tSNE."))
           tempSCE <- seuratRunTSNE(inSCE = tempSCE,
                                    reducedDimName = reducedDimName, ...)
         }
@@ -204,10 +213,12 @@ runDimReduce <- function(inSCE,
                                        key = paste0(key, "_"), assay = "RNA")
         if (method == "seuratUMAP") {
           # hard-code useReduction="pca"
+          message(paste0(date(), " ... Computing Seurat UMAP."))
           tempSCE <- seuratRunUMAP(inSCE = tempSCE, useReduction = "pca",
                                    reducedDimName = reducedDimName, ...)
         } else {
           # hard-code useReduction="pca"
+          message(paste0(date(), " ... Computing Seurat tSNE."))
           tempSCE <- seuratRunTSNE(inSCE = tempSCE, useReduction = "pca",
                                    reducedDimName = reducedDimName, ...)
         }
