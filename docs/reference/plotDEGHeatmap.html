@@ -42,14 +42,7 @@
   <script src="../extra.js"></script>
 
 <meta property="og:title" content="Heatmap visualization of DEG result — plotDEGHeatmap" />
-<meta property="og:description" content="A differential expression analysis function has to be run in advance so that
-information is stored in the metadata of the input SCE object. This function
-wraps plotSCEHeatmap.
-A feature annotation basing on the log2FC level called &quot;regulation&quot;
-will be automatically added. A cell annotation basing on the condition
-selection while running the analysis called &quot;condition&quot;, and the
-annotations used from colData(inSCE) while setting the condition and
-covariates will also be added." />
+<meta property="og:description" content="Heatmap visualization of DEG result" />
 
 
 
@@ -271,14 +264,7 @@ covariates will also be added." />
     </div>
 
     <div class="ref-description">
-    <p>A differential expression analysis function has to be run in advance so that
-information is stored in the metadata of the input SCE object. This function
-wraps plotSCEHeatmap.
-A feature annotation basing on the log2FC level called <code>"regulation"</code>
-will be automatically added. A cell annotation basing on the condition
-selection while running the analysis called <code>"condition"</code>, and the
-annotations used from <code>colData(inSCE)</code> while setting the condition and
-covariates will also be added.</p>
+    <p>Heatmap visualization of DEG result</p>
     </div>
 
     <pre class="usage"><span class='fu'>plotDEGHeatmap</span><span class='op'>(</span>
@@ -306,8 +292,7 @@ covariates will also be added.</p>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>inSCE</th>
-      <td><p>SingleCellExperiment inherited object.
-<code><a href='runMAST.html'>runMAST()</a></code> has to be run in advance.</p></td>
+      <td><p><a href='https://rdrr.io/pkg/SingleCellExperiment/man/SingleCellExperiment.html'>SingleCellExperiment</a> inherited object.</p></td>
     </tr>
     <tr>
       <th>useResult</th>
@@ -316,7 +301,7 @@ used when running a differential expression analysis function.</p></td>
     </tr>
     <tr>
       <th>doLog</th>
-      <td><p>Logical scalar. Whether to do <code><a href='https://rdrr.io/r/base/Log.html'>log(assay + 1)</a></code>
+      <td><p>Logical scalar. Whether to do <code>log(assay + 1)</code>
 transformation on the assay used for the analysis. Default <code>FALSE</code>.</p></td>
     </tr>
     <tr>
@@ -380,13 +365,13 @@ to be added to the annotation. Default <code>NULL</code>.</p></td>
       <th>colSplitBy</th>
       <td><p>character. Do semi-heatmap based on the grouping of
 this(these) annotation(s). Should exist in either <code>colDataName</code> or
-<code><a href='https://rdrr.io/r/base/names.html'>names(cellAnnotations)</a></code>. Default <code>"condition"</code>.</p></td>
+<code>names(cellAnnotations)</code>. Default <code>"condition"</code>.</p></td>
     </tr>
     <tr>
       <th>rowSplitBy</th>
       <td><p>character. Do semi-heatmap based on the grouping of
 this(these) annotation(s). Should exist in either <code>rowDataName</code> or
-<code><a href='https://rdrr.io/r/base/names.html'>names(featureAnnotations)</a></code>. Default <code>"regulation"</code>.</p></td>
+<code>names(featureAnnotations)</code>. Default <code>"regulation"</code>.</p></td>
     </tr>
     <tr>
       <th>title</th>
@@ -402,19 +387,31 @@ this(these) annotation(s). Should exist in either <code>rowDataName</code> or
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>A <code><a href='https://rdrr.io/pkg/ComplexHeatmap/man/Heatmap.html'>ComplexHeatmap::Heatmap</a></code> object</p>
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>A differential expression analysis function has to be run in advance 
+so that information is stored in the metadata of the input SCE object. This 
+function wraps <code><a href='plotSCEHeatmap.html'>plotSCEHeatmap</a></code>.
+A feature annotation basing on the log2FC level called <code>"regulation"</code>
+will be automatically added. A cell annotation basing on the condition
+selection while running the analysis called <code>"condition"</code>, and the
+annotations used from <code>colData(inSCE)</code> while setting the condition and
+covariates will also be added.</p>
     <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
 
     <p>Yichen Wang</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='st'>"sceBatches"</span><span class='op'>)</span>
-<span class='fu'>logcounts</span><span class='op'>(</span><span class='va'>sceBatches</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span><span class='op'>(</span><span class='fu'>counts</span><span class='op'>(</span><span class='va'>sceBatches</span><span class='op'>)</span> <span class='op'>+</span> <span class='fl'>1</span><span class='op'>)</span>
-<span class='va'>sce.w</span> <span class='op'>&lt;-</span> <span class='fu'><a href='subsetSCECols.html'>subsetSCECols</a></span><span class='op'>(</span><span class='va'>sceBatches</span>, colData <span class='op'>=</span> <span class='st'>"batch == 'w'"</span><span class='op'>)</span>
-<span class='va'>sce.w</span> <span class='op'>&lt;-</span> <span class='fu'><a href='runWilcox.html'>runWilcox</a></span><span class='op'>(</span><span class='va'>sce.w</span>, class <span class='op'>=</span> <span class='st'>"cell_type"</span>, classGroup1 <span class='op'>=</span> <span class='st'>"alpha"</span>,
-                   groupName1 <span class='op'>=</span> <span class='st'>"w.alpha"</span>, groupName2 <span class='op'>=</span> <span class='st'>"w.beta"</span>,
-                   analysisName <span class='op'>=</span> <span class='st'>"w.aVSb"</span><span class='op'>)</span>
-<span class='fu'>plotDEGHeatmap</span><span class='op'>(</span><span class='va'>sce.w</span>, <span class='st'>"w.aVSb"</span><span class='op'>)</span>
-</div><div class='img'><img src='plotDEGHeatmap-1.png' alt='' width='700' height='433' /></div><div class='img'><img src='plotDEGHeatmap-2.png' alt='' width='700' height='433' /></div></pre>
+    <pre class="examples"><span class='r-in'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='st'>"sceBatches"</span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/pkg/SingleCellExperiment/man/assays.html'>logcounts</a></span><span class='op'>(</span><span class='va'>sceBatches</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/pkg/SingleCellExperiment/man/assays.html'>counts</a></span><span class='op'>(</span><span class='va'>sceBatches</span><span class='op'>)</span> <span class='op'>+</span> <span class='fl'>1</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>sce.w</span> <span class='op'>&lt;-</span> <span class='fu'><a href='subsetSCECols.html'>subsetSCECols</a></span><span class='op'>(</span><span class='va'>sceBatches</span>, colData <span class='op'>=</span> <span class='st'>"batch == 'w'"</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>sce.w</span> <span class='op'>&lt;-</span> <span class='fu'><a href='runWilcox.html'>runWilcox</a></span><span class='op'>(</span><span class='va'>sce.w</span>, class <span class='op'>=</span> <span class='st'>"cell_type"</span>, classGroup1 <span class='op'>=</span> <span class='st'>"alpha"</span>,</span>
+<span class='r-in'>                   groupName1 <span class='op'>=</span> <span class='st'>"w.alpha"</span>, groupName2 <span class='op'>=</span> <span class='st'>"w.beta"</span>,</span>
+<span class='r-in'>                   analysisName <span class='op'>=</span> <span class='st'>"w.aVSb"</span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'>plotDEGHeatmap</span><span class='op'>(</span><span class='va'>sce.w</span>, <span class='st'>"w.aVSb"</span><span class='op'>)</span></span>
+<span class='r-plt img'><img src='plotDEGHeatmap-1.png' alt='' width='700' height='433' /></span>
+<span class='r-plt img'><img src='plotDEGHeatmap-2.png' alt='' width='700' height='433' /></span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

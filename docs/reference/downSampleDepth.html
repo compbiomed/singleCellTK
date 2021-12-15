@@ -6,7 +6,8 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Construct SCE object from Cell Ranger V3 output for a single sample — importCellRangerV3Sample • singleCellTK</title>
+<title>Estimate numbers of detected genes, significantly differentially expressed
+genes, and median significant effect size — downSampleDepth • singleCellTK</title>
 
 
 <!-- jquery -->
@@ -41,10 +42,10 @@
   <link href="../extra.css" rel="stylesheet">
   <script src="../extra.js"></script>
 
-<meta property="og:title" content="Construct SCE object from Cell Ranger V3 output for a single sample — importCellRangerV3Sample" />
-<meta property="og:description" content="Read the filtered barcodes, features, and matrices for all
- samples from Cell Ranger V3 output. Files are assumed to be named
- &quot;matrix.mtx.gz&quot;, &quot;features.tsv.gz&quot;, and &quot;barcodes.tsv.gz&quot;." />
+<meta property="og:title" content="Estimate numbers of detected genes, significantly differentially expressed
+genes, and median significant effect size — downSampleDepth" />
+<meta property="og:description" content="Estimate numbers of detected genes, significantly differentially expressed
+genes, and median significant effect size" />
 
 
 
@@ -260,66 +261,96 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Construct SCE object from Cell Ranger V3 output for a single sample</h1>
-    <small class="dont-index">Source: <a href='https://github.com/compbiomed/singleCellTK/blob/master/R/importCellRanger.R'><code>R/importCellRanger.R</code></a></small>
-    <div class="hidden name"><code>importCellRangerV3Sample.Rd</code></div>
+    <h1>Estimate numbers of detected genes, significantly differentially expressed
+genes, and median significant effect size</h1>
+    <small class="dont-index">Source: <a href='https://github.com/compbiomed/singleCellTK/blob/master/R/DownsampleMatrix.R'><code>R/DownsampleMatrix.R</code></a></small>
+    <div class="hidden name"><code>downSampleDepth.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Read the filtered barcodes, features, and matrices for all
- samples from Cell Ranger V3 output. Files are assumed to be named
- "matrix.mtx.gz", "features.tsv.gz", and "barcodes.tsv.gz".</p>
+    <p>Estimate numbers of detected genes, significantly differentially expressed
+genes, and median significant effect size</p>
     </div>
 
-    <pre class="usage"><span class='fu'>importCellRangerV3Sample</span><span class='op'>(</span>
-  dataDir <span class='op'>=</span> <span class='st'>"./"</span>,
-  sampleName <span class='op'>=</span> <span class='st'>"sample"</span>,
-  class <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"Matrix"</span>, <span class='st'>"matrix"</span><span class='op'>)</span>,
-  delayedArray <span class='op'>=</span> <span class='cn'>FALSE</span>,
-  rowNamesDedup <span class='op'>=</span> <span class='cn'>TRUE</span>
+    <pre class="usage"><span class='fu'>downSampleDepth</span><span class='op'>(</span>
+  <span class='va'>originalData</span>,
+  useAssay <span class='op'>=</span> <span class='st'>"counts"</span>,
+  minCount <span class='op'>=</span> <span class='fl'>10</span>,
+  minCells <span class='op'>=</span> <span class='fl'>3</span>,
+  maxDepth <span class='op'>=</span> <span class='fl'>1e+07</span>,
+  <span class='va'>realLabels</span>,
+  depthResolution <span class='op'>=</span> <span class='fl'>10</span>,
+  iterations <span class='op'>=</span> <span class='fl'>10</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>dataDir</th>
-      <td><p>A path to the directory containing the data files. Default "./".</p></td>
+      <th>originalData</th>
+      <td><p><a href='https://rdrr.io/pkg/SingleCellExperiment/man/SingleCellExperiment.html'>SingleCellExperiment</a> object storing all
+assay data from the shiny app.</p></td>
     </tr>
     <tr>
-      <th>sampleName</th>
-      <td><p>A User-defined sample name. This will be prepended to all cell barcode IDs.
-Default "sample".</p></td>
+      <th>useAssay</th>
+      <td><p>Character. The name of the assay to be used for subsampling.</p></td>
     </tr>
     <tr>
-      <th>class</th>
-      <td><p>Character. The class of the expression matrix stored in the SCE
-object. Can be one of "Matrix" (as returned by
-readMM function), or "matrix" (as returned by
-<a href='https://rdrr.io/r/base/matrix.html'>matrix</a> function). Default "Matrix".</p></td>
+      <th>minCount</th>
+      <td><p>Numeric. The minimum number of reads found for a gene to be
+considered detected.</p></td>
     </tr>
     <tr>
-      <th>delayedArray</th>
-      <td><p>Boolean. Whether to read the expression matrix as
-<a href='https://rdrr.io/pkg/DelayedArray/man/DelayedArray-class.html'>DelayedArray</a> object or not. Default <code>FALSE</code>.</p></td>
+      <th>minCells</th>
+      <td><p>Numeric. The minimum number of cells a gene must have at
+least 1 read in for it to be considered detected.</p></td>
     </tr>
     <tr>
-      <th>rowNamesDedup</th>
-      <td><p>Boolean. Whether to deduplicate rownames. Default 
-<code>TRUE</code>.</p></td>
+      <th>maxDepth</th>
+      <td><p>Numeric. The highest number of total reads to be simulated.</p></td>
+    </tr>
+    <tr>
+      <th>realLabels</th>
+      <td><p>Character. The name of the condition of interest. Must match
+a name from sample data.</p></td>
+    </tr>
+    <tr>
+      <th>depthResolution</th>
+      <td><p>Numeric. How many different read depth should the
+script simulate? Will simulate a number of experimental designs ranging from
+10 reads to maxReadDepth, with logarithmic spacing.</p></td>
+    </tr>
+    <tr>
+      <th>iterations</th>
+      <td><p>Numeric. How many times should each experimental design be
+simulated?</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A <code>SingleCellExperiment</code> object containing the count
- matrix, the feature annotations, and the cell annotation for the sample.</p>
+    <p>A 3-dimensional array, with dimensions = c(iterations,
+depthResolution, 3). [,,1] contains the number of detected genes in each
+simulated dataset, [,,2] contains the number of significantly differentially
+expressed genes in each simulation, and [,,3] contains the mediansignificant
+effect size in each simulation. If no genes are significantly differentially
+expressed, the median effect size defaults to infinity.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><span class='r-in'><span class='va'>sce</span> <span class='op'>&lt;-</span> <span class='fu'>importCellRangerV3Sample</span><span class='op'>(</span></span>
-<span class='r-in'>    dataDir <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata/hgmm_1k_v3_20x20/outs/"</span>,</span>
-<span class='r-in'>        <span class='st'>"filtered_feature_bc_matrix"</span>, package <span class='op'>=</span> <span class='st'>"singleCellTK"</span><span class='op'>)</span>,</span>
-<span class='r-in'>    sampleName <span class='op'>=</span> <span class='st'>"hgmm1kv3"</span><span class='op'>)</span></span>
+    <pre class="examples"><span class='r-in'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='st'>"mouseBrainSubsetSCE"</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>subset</span> <span class='op'>&lt;-</span> <span class='va'>mouseBrainSubsetSCE</span><span class='op'>[</span><span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>1000</span><span class='op'>)</span>,<span class='op'>]</span></span>
+<span class='r-in'><span class='va'>res</span> <span class='op'>&lt;-</span> <span class='fu'>downSampleDepth</span><span class='op'>(</span><span class='va'>subset</span>,</span>
+<span class='r-in'>                       realLabels <span class='op'>=</span> <span class='st'>"level1class"</span>,</span>
+<span class='r-in'>                       iterations<span class='op'>=</span><span class='fl'>2</span><span class='op'>)</span></span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>no non-missing arguments to min; returning Inf</span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>no non-missing arguments to min; returning Inf</span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>no non-missing arguments to min; returning Inf</span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>no non-missing arguments to min; returning Inf</span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>no non-missing arguments to min; returning Inf</span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>no non-missing arguments to min; returning Inf</span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>no non-missing arguments to min; returning Inf</span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>no non-missing arguments to min; returning Inf</span>
+<span class='r-in'></span>
 </pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

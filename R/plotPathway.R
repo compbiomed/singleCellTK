@@ -73,8 +73,8 @@ plotPathway <- function(inSCE,
              genesetCollectionName, '". Try `getGenesetNamesFromCollection(inSCE, "',
              genesetCollectionName, '")` for available options.')
     }
-    
+    xlab <- ifelse(is.null(groupby), "Sample", groupby)
     plotSCEViolin(inSCE, slotName = "reducedDims", itemName = resultName, 
-                  dimension = geneset , xlab = "sample", ylab = geneset, 
+                  dimension = geneset , xlab = xlab, ylab = geneset, 
                   sample = NULL, groupBy = groupby, boxplot = boxplot)
 }

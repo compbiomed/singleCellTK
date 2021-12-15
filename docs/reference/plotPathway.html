@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Construct SCE object from Cell Ranger V3 output for a single sample — importCellRangerV3Sample • singleCellTK</title>
+<title>Generate violin plots for pathway analysis results — plotPathway • singleCellTK</title>
 
 
 <!-- jquery -->
@@ -41,10 +41,8 @@
   <link href="../extra.css" rel="stylesheet">
   <script src="../extra.js"></script>
 
-<meta property="og:title" content="Construct SCE object from Cell Ranger V3 output for a single sample — importCellRangerV3Sample" />
-<meta property="og:description" content="Read the filtered barcodes, features, and matrices for all
- samples from Cell Ranger V3 output. Files are assumed to be named
- &quot;matrix.mtx.gz&quot;, &quot;features.tsv.gz&quot;, and &quot;barcodes.tsv.gz&quot;." />
+<meta property="og:title" content="Generate violin plots for pathway analysis results — plotPathway" />
+<meta property="og:description" content="Generate violin plots for pathway analysis results" />
 
 
 
@@ -260,66 +258,71 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Construct SCE object from Cell Ranger V3 output for a single sample</h1>
-    <small class="dont-index">Source: <a href='https://github.com/compbiomed/singleCellTK/blob/master/R/importCellRanger.R'><code>R/importCellRanger.R</code></a></small>
-    <div class="hidden name"><code>importCellRangerV3Sample.Rd</code></div>
+    <h1>Generate violin plots for pathway analysis results</h1>
+    <small class="dont-index">Source: <a href='https://github.com/compbiomed/singleCellTK/blob/master/R/plotPathway.R'><code>R/plotPathway.R</code></a></small>
+    <div class="hidden name"><code>plotPathway.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Read the filtered barcodes, features, and matrices for all
- samples from Cell Ranger V3 output. Files are assumed to be named
- "matrix.mtx.gz", "features.tsv.gz", and "barcodes.tsv.gz".</p>
+    <p>Generate violin plots for pathway analysis results</p>
     </div>
 
-    <pre class="usage"><span class='fu'>importCellRangerV3Sample</span><span class='op'>(</span>
-  dataDir <span class='op'>=</span> <span class='st'>"./"</span>,
-  sampleName <span class='op'>=</span> <span class='st'>"sample"</span>,
-  class <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"Matrix"</span>, <span class='st'>"matrix"</span><span class='op'>)</span>,
-  delayedArray <span class='op'>=</span> <span class='cn'>FALSE</span>,
-  rowNamesDedup <span class='op'>=</span> <span class='cn'>TRUE</span>
-<span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>plotPathway</span><span class='op'>(</span><span class='va'>inSCE</span>, <span class='va'>resultName</span>, <span class='va'>geneset</span>, groupby <span class='op'>=</span> <span class='cn'>NULL</span>, boxplot <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>dataDir</th>
-      <td><p>A path to the directory containing the data files. Default "./".</p></td>
+      <th>inSCE</th>
+      <td><p>Input <a href='https://rdrr.io/pkg/SingleCellExperiment/man/SingleCellExperiment.html'>SingleCellExperiment</a> object. With 
+<code><a href='runGSVA.html'>runGSVA()</a></code> or <code><a href='runVAM.html'>runVAM()</a></code> applied in advance.</p></td>
     </tr>
     <tr>
-      <th>sampleName</th>
-      <td><p>A User-defined sample name. This will be prepended to all cell barcode IDs.
-Default "sample".</p></td>
+      <th>resultName</th>
+      <td><p>A single character of the name of a score matrix, which 
+should be found in <code>getPathwayResultNames(inSCE)</code>.</p></td>
     </tr>
     <tr>
-      <th>class</th>
-      <td><p>Character. The class of the expression matrix stored in the SCE
-object. Can be one of "Matrix" (as returned by
-readMM function), or "matrix" (as returned by
-<a href='https://rdrr.io/r/base/matrix.html'>matrix</a> function). Default "Matrix".</p></td>
+      <th>geneset</th>
+      <td><p>A single character specifying the geneset of interest. Should
+be found in the geneSetCollection used for performing the analysis.</p></td>
     </tr>
     <tr>
-      <th>delayedArray</th>
-      <td><p>Boolean. Whether to read the expression matrix as
-<a href='https://rdrr.io/pkg/DelayedArray/man/DelayedArray-class.html'>DelayedArray</a> object or not. Default <code>FALSE</code>.</p></td>
+      <th>groupby</th>
+      <td><p>Either a single character specifying a column of 
+<code>colData(inSCE)</code> or a vector of equal length as the number of cells. 
+Default <code>NULL</code>.</p></td>
     </tr>
     <tr>
-      <th>rowNamesDedup</th>
-      <td><p>Boolean. Whether to deduplicate rownames. Default 
-<code>TRUE</code>.</p></td>
+      <th>boxplot</th>
+      <td><p>Whether to add a boxplot. Default <code>FALSE</code>.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A <code>SingleCellExperiment</code> object containing the count
- matrix, the feature annotations, and the cell annotation for the sample.</p>
+    <p>A <code>ggplot</code> object for the violin plot</p>
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p><code><a href='runGSVA.html'>runGSVA()</a></code> or <code><a href='runVAM.html'>runVAM()</a></code> should be applied in advance of 
+using this function. Users can group the data by specifying <code>groupby</code>.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><span class='r-in'><span class='va'>sce</span> <span class='op'>&lt;-</span> <span class='fu'>importCellRangerV3Sample</span><span class='op'>(</span></span>
-<span class='r-in'>    dataDir <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata/hgmm_1k_v3_20x20/outs/"</span>,</span>
-<span class='r-in'>        <span class='st'>"filtered_feature_bc_matrix"</span>, package <span class='op'>=</span> <span class='st'>"singleCellTK"</span><span class='op'>)</span>,</span>
-<span class='r-in'>    sampleName <span class='op'>=</span> <span class='st'>"hgmm1kv3"</span><span class='op'>)</span></span>
+    <pre class="examples"><span class='r-in'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='st'>"scExample"</span>, package <span class='op'>=</span> <span class='st'>"singleCellTK"</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>sce</span> <span class='op'>&lt;-</span> <span class='fu'><a href='subsetSCECols.html'>subsetSCECols</a></span><span class='op'>(</span><span class='va'>sce</span>, colData <span class='op'>=</span> <span class='st'>"type != 'EmptyDroplet'"</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>sce</span> <span class='op'>&lt;-</span> <span class='fu'><a href='scaterlogNormCounts.html'>scaterlogNormCounts</a></span><span class='op'>(</span><span class='va'>sce</span>, assayName <span class='op'>=</span> <span class='st'>"logcounts"</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>gs1</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>rownames</a></span><span class='op'>(</span><span class='va'>sce</span><span class='op'>)</span><span class='op'>[</span><span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>10</span><span class='op'>)</span><span class='op'>]</span></span>
+<span class='r-in'><span class='va'>gs2</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>rownames</a></span><span class='op'>(</span><span class='va'>sce</span><span class='op'>)</span><span class='op'>[</span><span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>11</span>,<span class='fl'>20</span><span class='op'>)</span><span class='op'>]</span></span>
+<span class='r-in'><span class='va'>gs</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='st'>"geneset1"</span> <span class='op'>=</span> <span class='va'>gs1</span>, <span class='st'>"geneset2"</span> <span class='op'>=</span> <span class='va'>gs2</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>sce</span> <span class='op'>&lt;-</span> <span class='fu'><a href='importGeneSetsFromList.html'>importGeneSetsFromList</a></span><span class='op'>(</span>inSCE <span class='op'>=</span> <span class='va'>sce</span>, geneSetList <span class='op'>=</span> <span class='va'>gs</span>,</span>
+<span class='r-in'>                              by <span class='op'>=</span> <span class='st'>"rownames"</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>sce</span> <span class='op'>&lt;-</span> <span class='fu'><a href='runVAM.html'>runVAM</a></span><span class='op'>(</span>inSCE <span class='op'>=</span> <span class='va'>sce</span>, geneSetCollectionName <span class='op'>=</span> <span class='st'>"GeneSetCollection"</span>,</span>
+<span class='r-in'>              useAssay <span class='op'>=</span> <span class='st'>"logcounts"</span><span class='op'>)</span></span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> gene.weights not specified, defaulting all weights to 1</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Computing VAM distances for 2 gene sets, 195 cells and 200 genes.</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Min set size: 10, median size: 10</span>
+<span class='r-in'><span class='fu'>plotPathway</span><span class='op'>(</span><span class='va'>sce</span>, <span class='st'>"VAM_GeneSetCollection_CDF"</span>, <span class='st'>"geneset1"</span><span class='op'>)</span></span>
+<span class='r-plt img'><img src='plotPathway-1.png' alt='' width='700' height='433' /></span>
 </pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

@@ -282,13 +282,16 @@ sce <- runVAM(sce, geneSetCollectionName = "H", useAssay = "logcounts")
 To visualize the result, we simply adopt a violin plot to show the distribution of the CDF scores of the cells, which can be, optionally, grouped by the cluster labels. 
 
 ```{R visVAM}
-# VAM specific wrapper function will be added in the future
 hallmark <- "HALLMARK_INFLAMMATORY_RESPONSE"
-plotSCEViolin(sce, slotName = "reducedDims", itemName = "VAM_H_CDF", 
-              dimension = hallmark, boxplot = FALSE,
-              xlab = "cluster", groupBy = sce$cluster, 
-              ylab = hallmark)
+plotPathway(sce, resultName = "VAM_H_CDF", geneset = hallmark, groupby = "cluster")
 ```
 
->Note: In the current version of SCTK, the returned score matrices from either VAM or GSVA are stored in the `reducedDim` slot, since the feature dimensions are for the gene sets instead of the genes or subsets of genes. In the future, SCTK will adopt other types of data container for simpler operation on different types of feature sets. 
+Note that available options for argument `resultName` and `geneset` can be printed with getter functions below.
+
+```{R pathwayGetter, eval=FALSE}
+getPathwayResultNames(inSCE = sce)
+getGenesetNamesFromCollection(inSCE = sce, geneSetCollectionName = "H")
+```
+
+>Note: In the current version of SCTK, the returned score matrices from either VAM or GSVA are stored in the `reducedDims` slot, since the feature dimensions are for the gene sets instead of the genes or subsets of genes. In the future, SCTK will adopt other types of data container for simpler operation on different types of feature sets. 
 
