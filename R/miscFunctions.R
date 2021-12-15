@@ -454,3 +454,13 @@ retrieveSCEIndex <- function(inSCE, IDs, axis, by = NULL,
   
   return(gs[[geneSetCollectionName]]) 
 }
+
+#' List geneset names from geneSetCollection
+#' @param inSCE Input \linkS4class{SingleCellExperiment} object.
+#' @param geneSetCollectionName The name of an imported geneSetCollection.
+#' @return A character vector of available genesets from the collection.
+#' @export
+getGenesetNamesFromCollection <- function(inSCE, geneSetCollectionName) {
+  geneSet <- .getGeneSetCollection(inSCE, geneSetCollectionName)
+  return(names(geneSet))
+}

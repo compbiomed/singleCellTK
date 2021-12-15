@@ -42,7 +42,15 @@ runGSVA <- function(inSCE, useAssay = "logcounts",
    }
     
    SingleCellExperiment::reducedDim(inSCE, paste0(resultNamePrefix, "Scores")) <- gsvaRes 
-    
+   
+   if ("pathwayAnalysisResultNames" %in% names(S4Vectors::metadata(inSCE))) {
+     S4Vectors::metadata(inSCE)[["pathwayAnalysisResultNames"]] <- 
+       c(S4Vectors::metadata(inSCE)[["pathwayAnalysisResultNames"]],
+         paste0(resultNamePrefix, "Scores"))
+   } else {
+     S4Vectors::metadata(inSCE)[["pathwayAnalysisResultNames"]] <- 
+       c(paste0(resultNamePrefix, "Scores"))
+   }
   
   
   return(inSCE)
