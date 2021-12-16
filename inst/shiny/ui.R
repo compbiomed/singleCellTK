@@ -179,6 +179,25 @@ shinyjs.enableTabs = function() {
 }
 "
 
+jsScriptAutoScrollConsole <- "
+function mutate(mutations) {
+  mutations.forEach(function(mutation) {
+    alert(mutation.type);
+  });
+}
+
+  setInterval(function() {
+            var $panel = $('#consolePanel');
+    $panel.animate({scrollTop: $panel.prop('scrollHeight')});
+}, 1000);
+
+var target = document.querySelector('#consoleText')
+var observer = new MutationObserver( mutate );
+var config = { characterData: false, attributes: false, childList: true, subtree: false };
+
+observer.observe(target, config);
+"
+
 if (is.null(getShinyOption("includeVersion"))){
   tooltitle <- paste("Single Cell Toolkit v",
                      packageVersion("singleCellTK"), sep = "")
@@ -240,7 +259,14 @@ shinyUI(
       fluidRow(
         column(12, id = "consoleDiv",
                actionButton(inputId="consoleToggle", label = "Console Log"),
-               hidden(verbatimTextOutput(outputId="console")),
+               tags$head(
+                 tags$script(HTML(jsScriptAutoScrollConsole))
+               ),
+               hidden(div(id = "consolePanel", style = "overflow-y:scroll; 
+                          max-height: 120px; width: 100%; background-color: white; 
+                          position: relative; bottom: 0; align: centre; padding: 0px;",
+                       verbatimTextOutput(outputId="consoleText", placeholder = TRUE) 
+               ))
         )
       ),
       # fluidRow(
@@ -272,4 +298,3 @@ shinyUI(
       tags$script(src = "busy-load-piccard21.js")
     )
 )
-

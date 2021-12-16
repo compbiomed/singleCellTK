@@ -84,6 +84,9 @@
 #' @param nComponents Specify the number of dimensions to compute with the
 #'  selected method in case of PCA/ICA and the number of components to
 #'  use in the case of TSNE/UMAP methods.
+#' @param seed Random seed for reproducibility of results. Only used with UMAP
+#' and tSNE methods. Default \code{NULL} will use global seed in use by the 
+#' R environment.
 #' @param ... The other arguments for running a specific algorithm. Please refer
 #' to the one you use.
 #' @return The input \linkS4class{SingleCellExperiment} object with
@@ -108,7 +111,7 @@ runDimReduce <- function(inSCE,
                                     "scaterUMAP",
                                     "seuratUMAP"),
                          useAssay = NULL, useReducedDim = NULL,
-                         useAltExp = NULL, reducedDimName, nComponents = 20, ...
+                         useAltExp = NULL, reducedDimName, nComponents = 20, seed = NULL, ...
 ) {
 
   method <- match.arg(method)
@@ -128,11 +131,11 @@ runDimReduce <- function(inSCE,
   } else if (method == "scaterUMAP") {
     inSCE <- getUMAP(inSCE = inSCE, useAssay = useAssay, useAltExp = useAltExp,
                      useReducedDim = useReducedDim,
-                     reducedDimName = reducedDimName, ...)
+                     reducedDimName = reducedDimName, seed = seed, ...)
   } else if (method == "rTSNE") {
     inSCE <- getTSNE(inSCE = inSCE, useAssay = useAssay, useAltExp = useAltExp,
                      useReducedDim = useReducedDim,
-                     reducedDimName = reducedDimName, ...)
+                     reducedDimName = reducedDimName, seed = seed, ...)
   } else {
     # Seurat part
     if (!is.null(useAltExp)) {

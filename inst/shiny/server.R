@@ -24,7 +24,7 @@ shinyServer(function(input, output, session) {
 
   # library(fs)
   # library(shinyFiles)
-
+  
   #-----------------------------------------------------------------------------
   # MISC - Used throughout app
   #-----------------------------------------------------------------------------
@@ -328,7 +328,7 @@ shinyServer(function(input, output, session) {
   }
 
   observeEvent(input$consoleToggle, {
-    toggle(id = "console")
+    shinyjs::toggle(id = "consolePanel")
   })
 
 
@@ -873,7 +873,7 @@ shinyServer(function(input, output, session) {
   })
 
   # Event handler for "Upload" button on import page
-  observeEvent(input$uploadData, {
+  observeEvent(input$uploadData, withConsoleMsgRedirect({
     withBusyIndicatorServer("uploadData", {
       if (length(allImportEntries$samples) == 0) {
         stop("You have not selected any samples to import.")
@@ -964,7 +964,7 @@ shinyServer(function(input, output, session) {
       # object but cannot find the old result.
     })
     callModule(module = nonLinearWorkflow, id = "nlw-import", parent = session, qcf = TRUE)
-  })
+  }))
 
   updateSeuratUIFromRDS <- function(inSCE){
     if(!is.null(metadata(inSCE)$seurat$plots)){
@@ -1627,8 +1627,9 @@ shinyServer(function(input, output, session) {
     }
   }
 
+  
   observeEvent(input$runQC, withConsoleMsgRedirect({
-    #withBusyIndicatorServer("runQC", {
+    withBusyIndicatorServer("runQC", {
       if (!qcInputExists()) {
         insertUI(
           selector = "#qcPageErrors",
@@ -1725,6 +1726,8 @@ shinyServer(function(input, output, session) {
             paramsList[[algo]] = algoParams
           }
         }
+        # open console
+        shinyjs::show(id = "consolePanel")
         # run selected cell QC algorithms
         vals$counts <- runCellQC(inSCE = vals$counts,
                                  algorithms = algoList,
@@ -1748,15 +1751,19 @@ shinyServer(function(input, output, session) {
                                  minDist = input$UminDist,
                                  spread = input$Uspread,
                                  initialDims = input$UinitialDims,
-                                 reducedDimName = input$QCUMAPName
+                                 reducedDimName = input$QCUMAPName,
+                                 seed = input$Useed
                                  )
+          message(paste0(date(), " ... QC Complete"))
+          # close console
+          shinyjs::hide(id = "consolePanel")
         }
         updateQCPlots()
-
         # Show downstream analysis options
         callModule(module = nonLinearWorkflow, id = "nlw-qcf", parent = session, nbc = TRUE, cw = TRUE, cv = TRUE)
       }
-    #})
+      delay(500, removeNotification(id = "qcNotification"))
+    })
 
   }))
 
@@ -3038,7 +3045,8 @@ shinyServer(function(input, output, session) {
                 method = "rTSNE",
                 reducedDimName = dimrednamesave,
                 perplexity = input$perplexityTSNE,
-                nIterations = input$iterTSNE
+                nIterations = input$iterTSNE,
+                seed = input$seed__tsneUmap
               )
               #vals$counts <- runDimensionalityReduction(
               #  inSCE = vals$counts,
@@ -3058,7 +3066,8 @@ shinyServer(function(input, output, session) {
                   method = "seuratTSNE",
                   reducedDimName = dimrednamesave,
                   dims = input$dimRedNumberDims_tsneUmap,
-                  perplexity = input$perplexityTSNE
+                  perplexity = input$perplexityTSNE,
+                  seed = input$seed__tsneUmap
                 )
               } else {
                 vals$counts <- runDimReduce(
@@ -3070,7 +3079,8 @@ shinyServer(function(input, output, session) {
                   reducedDimName = dimrednamesave,
                   dims = input$dimRedNumberDims_tsneUmap,
                   perplexity = input$perplexityTSNE,
-                  useReduction = input$reductionMethodUMAPTSNEDimRed
+                  useReduction = input$reductionMethodUMAPTSNEDimRed,
+                  seed = input$seed__tsneUmap
                 )
               }
               #vals$counts <- runDimensionalityReduction(
@@ -3094,7 +3104,8 @@ shinyServer(function(input, output, session) {
                   dims = input$dimRedNumberDims_tsneUmap,
                   minDist = input$minDistUMAPDimRed,
                   nNeighbors = input$nNeighboursUMAPDimRed,
-                  spread = input$spreadUMAPDimRed
+                  spread = input$spreadUMAPDimRed,
+                  seed = input$seed__tsneUmap
                 )
               } else {
                 vals$counts <- runDimReduce(
@@ -3108,7 +3119,8 @@ shinyServer(function(input, output, session) {
                   minDist = input$minDistUMAPDimRed,
                   nNeighbors = input$nNeighboursUMAPDimRed,
                   spread = input$spreadUMAPDimRed,
-                  useReduction = input$reductionMethodUMAPTSNEDimRed
+                  useReduction = input$reductionMethodUMAPTSNEDimRed,
+                  seed = input$seed__tsneUmap
                 )
               }
               #vals$counts <- runDimensionalityReduction(
@@ -3138,7 +3150,8 @@ shinyServer(function(input, output, session) {
                 nIterations = input$iterUMAP,
                 minDist = input$mindistUMAP,
                 alpha = input$alphaUMAP,
-                spread = input$spreadUMAP
+                spread = input$spreadUMAP,
+                seed = input$seed__tsneUmap
               )
               #vals$counts <- runDimensionalityReduction(
               #  inSCE = vals$counts,
@@ -8757,5 +8770,6 @@ shinyServer(function(input, output, session) {
   # observeEvent(input$interpretToggle, {
   #   pushbar_open(id = "myPushbar")
   # })
+  
 })
 

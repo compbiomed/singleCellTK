@@ -289,7 +289,9 @@
 <span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/runCellQC.html">runCellQC</a></span><span class="op">(</span><span class="va">sce</span>, sample <span class="op">=</span> <span class="cn">NULL</span>,
                  algorithms <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"QCMetrics"</span>, <span class="st">"scDblFinder"</span>, <span class="st">"decontX"</span><span class="op">)</span>,
                  collectionName <span class="op">=</span> <span class="st">"mito"</span>,
-                 geneSetListLocation <span class="op">=</span> <span class="st">"rownames"</span><span class="op">)</span></code></pre></div>
+                 geneSetListLocation <span class="op">=</span> <span class="st">"rownames"</span><span class="op">)</span>
+
+<span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/getUMAP.html">getUMAP</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, reducedDimName <span class="op">=</span> <span class="st">"QC_UMAP"</span>, seed <span class="op">=</span> <span class="fl">12345</span><span class="op">)</span></code></pre></div>
 <blockquote>
 <p><strong>Note:</strong> If you have cells from multiple samples stored in the SCE object, make sure to supply the sample parameter as the QC tools need to be applied to cells from each sample individually.</p>
 </blockquote>
@@ -302,10 +304,10 @@
 <code class="sourceCode R"><span class="fu"><a href="../../reference/plotRunPerCellQCResults.html">plotRunPerCellQCResults</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span></code></pre></div>
 <p><img src="console_analysis_tutorial_files/figure-html/plotPerCellQC-1.png" width="768"></p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../../reference/plotScDblFinderResults.html">plotScDblFinderResults</a></span><span class="op">(</span><span class="va">sce</span>, reducedDimName <span class="op">=</span> <span class="st">"decontX_UMAP"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="../../reference/plotScDblFinderResults.html">plotScDblFinderResults</a></span><span class="op">(</span><span class="va">sce</span>, reducedDimName <span class="op">=</span> <span class="st">"QC_UMAP"</span><span class="op">)</span></code></pre></div>
 <p><img src="console_analysis_tutorial_files/figure-html/plotScDblFinder-1.png" width="768"></p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../../reference/plotDecontXResults.html">plotDecontXResults</a></span><span class="op">(</span><span class="va">sce</span>, reducedDimName <span class="op">=</span> <span class="st">"decontX_UMAP"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="../../reference/plotDecontXResults.html">plotDecontXResults</a></span><span class="op">(</span><span class="va">sce</span>, reducedDimName <span class="op">=</span> <span class="st">"QC_UMAP"</span><span class="op">)</span></code></pre></div>
 <p><img src="console_analysis_tutorial_files/figure-html/plottDecontX-1.png" width="768"></p>
 <p>A comprehensive HTML report can be generated to visualize and explore the QC metrics in greater detail:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
@@ -467,8 +469,8 @@
 <p>The result of labeling will again be saved to <code>colData</code> slot of the SCE object. There will be multiple types of information being stored, including a scoring matrix named by <code>"SingleR_{ref}_{level}_scores"</code>, where <code>{ref}</code> refers to the reference selected, <code>{level}</code> refers to the <code>level</code> argument being passed to the function. And three <code>"SingleR_{ref}_{level}_{typeOfLabels}"</code> columns, where <code>{typeOfLabels}</code> includes <code>first.labels</code>, <code>labels</code>, <code>pruned.labels</code>. For the difference, please refer to <code><a href="https://rdrr.io/pkg/SingleR/man/classifySingleR.html">?SingleR::classifySingleR</a></code>.</p>
 <p>We can also plot the labeling on to the UMAP we got previously.</p>
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../../reference/plotSCEDimReduceColData.html">plotSCEDimReduceColData</a></span><span class="op">(</span><span class="va">sce</span>, colorBy <span class="op">=</span> <span class="st">"SingleR_hpca_fine_pruned.labels"</span>, 
-                        reducedDimName <span class="op">=</span> <span class="st">"UMAP"</span>, legendSize <span class="op">=</span> <span class="fl">8</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="../../reference/plotSCEDimReduceColData.html">plotSCEDimReduceColData</a></span><span class="op">(</span><span class="va">sce</span>, colorBy <span class="op">=</span> <span class="st">"SingleR_hpca_fine_pruned.labels"</span>,
+                        reducedDimName <span class="op">=</span> <span class="st">"UMAP"</span>, dotSize <span class="op">=</span> <span class="fl">1</span>, legendSize <span class="op">=</span> <span class="fl">8</span><span class="op">)</span></code></pre></div>
 <p><img src="console_analysis_tutorial_files/figure-html/singleRUMAP-1.png" width="864"></p>
 </div>
 <div id="pathway-analysis" class="section level2">
