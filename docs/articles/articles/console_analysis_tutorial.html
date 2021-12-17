@@ -317,7 +317,9 @@
 <p>Selecting highly variable genes (HVG) for downstream analyses is recommended, since a subset of variable features can speed up the computation and reduce the noise being introduced. SCTK wraps the methods used in <a href="https://satijalab.org/seurat/">Seurat</a> and <a href="https://bioconductor.org/packages/release/bioc/html/scran.html">Scran</a>. We recommend keeping at least 2,000-5,000 HVGs. In the example code, we use the “VST” method from Seurat, and select the top 2,000 genes.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/seuratFindHVG.html">seuratFindHVG</a></span><span class="op">(</span><span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"counts"</span>, hvgMethod <span class="op">=</span> <span class="st">"vst"</span><span class="op">)</span>
-<span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/getTopHVG.html">getTopHVG</a></span><span class="op">(</span><span class="va">sce</span>, method <span class="op">=</span> <span class="st">"vst"</span>, n <span class="op">=</span> <span class="fl">2000</span>, altExp <span class="op">=</span> <span class="st">"hvg"</span><span class="op">)</span></code></pre></div>
+<span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/getTopHVG.html">getTopHVG</a></span><span class="op">(</span><span class="va">sce</span>, method <span class="op">=</span> <span class="st">"vst"</span>, n <span class="op">=</span> <span class="fl">2000</span>, altExp <span class="op">=</span> <span class="st">"hvg"</span><span class="op">)</span>
+<span class="fu"><a href="../../reference/plotTopHVG.html">plotTopHVG</a></span><span class="op">(</span><span class="va">sce</span>, method <span class="op">=</span> <span class="st">"vst"</span><span class="op">)</span></code></pre></div>
+<p><img src="console_analysis_tutorial_files/figure-html/hvg-1.png" width="700"></p>
 <blockquote>
 <p><strong>Note:</strong> The row-subsetted matrix is stored in the “alternative experiment” slot (<code>altExp</code>) within the SCE object. This allows for a matrix with a different number of rows to be stored within the same SCE object (rather than creating two SCE objects). Some of the SCTK functions described in the next several sections will operate on a matrix stored in the <code>altExp</code> slot. The list of alternative experiments in an SCE can be view with <code>altExpNames(sce)</code>. In the future, there will be update to utilize the <a href="https://bioconductor.org/packages/release/bioc/html/ExperimentSubset.html">ExperimentSubset</a> package for simpler operation on the subsets.</p>
 </blockquote>
@@ -331,7 +333,9 @@
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/runDimReduce.html">runDimReduce</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, method <span class="op">=</span> <span class="st">"scaterPCA"</span>, 
                     useAssay <span class="op">=</span> <span class="st">"logcounts_scaled"</span>, useAltExp <span class="op">=</span> <span class="st">"hvg"</span>,
-                    reducedDimName <span class="op">=</span> <span class="st">"PCA"</span><span class="op">)</span></code></pre></div>
+                    reducedDimName <span class="op">=</span> <span class="st">"PCA"</span><span class="op">)</span>
+<span class="fu"><a href="../../reference/plotDimRed.html">plotDimRed</a></span><span class="op">(</span><span class="va">sce</span>, useReduction <span class="op">=</span> <span class="st">"PCA"</span><span class="op">)</span></code></pre></div>
+<p><img src="console_analysis_tutorial_files/figure-html/pca-1.png" width="700"></p>
 <blockquote>
 <p>Note: When using <code>useAltExp</code> argument in SCTK functions, users should also be aware of the <code>useAssay</code> argument. Usually when both are available, using only <code>useAssay</code> means using a full-sized feature expression matrix; using <code>useAssay</code> and <code>useAltExp</code> in the same call means using a subsetted expression matrix. In the latter scenario, <code>useAltExp</code> points to the alternative experiment stored in <code>altExp</code> slot of the SCE object, and <code>useAssay</code> points to the <code>assay</code> slot in the alternative experiment object.</p>
 </blockquote>
@@ -436,13 +440,12 @@
 <p>Note: Choosing a reference from the recommended builtin references would also require some prior knowledge of user data. <strong>Users should choose a reference that covers the cell types possibly exist in user dataset.</strong> SingleR works by scoring the similarity to each cell type and assigning a cell type by the highest score, regardless of how low the score is. Thus a beta cell from pancrea data cound even be wrongly labeled as a platelet if using a blood cell reference.</p>
 </blockquote>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/runSingleR.html">runSingleR</a></span><span class="op">(</span><span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"logcounts"</span>, level <span class="op">=</span> <span class="st">"fine"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="co">#sce &lt;- runSingleR(sce, useAssay = "logcounts", level = "fine")</span></code></pre></div>
 <p>The result of labeling will again be saved to <code>colData</code> slot of the SCE object. There will be multiple types of information being stored, including a scoring matrix named by <code>"SingleR_{ref}_{level}_scores"</code>, where <code>{ref}</code> refers to the reference selected, <code>{level}</code> refers to the <code>level</code> argument being passed to the function. And three <code>"SingleR_{ref}_{level}_{typeOfLabels}"</code> columns, where <code>{typeOfLabels}</code> includes <code>first.labels</code>, <code>labels</code>, <code>pruned.labels</code>. For the difference, please refer to <code><a href="https://rdrr.io/pkg/SingleR/man/classifySingleR.html">?SingleR::classifySingleR</a></code>.</p>
 <p>We can also plot the labeling on to the UMAP we got previously.</p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../../reference/plotSCEDimReduceColData.html">plotSCEDimReduceColData</a></span><span class="op">(</span><span class="va">sce</span>, colorBy <span class="op">=</span> <span class="st">"SingleR_hpca_fine_pruned.labels"</span>,
-                        reducedDimName <span class="op">=</span> <span class="st">"UMAP"</span>, dotSize <span class="op">=</span> <span class="fl">1</span>, legendSize <span class="op">=</span> <span class="fl">8</span><span class="op">)</span></code></pre></div>
-<p><img src="console_analysis_tutorial_files/figure-html/singleRUMAP-1.png" width="864"></p>
+<code class="sourceCode R"><span class="co">#plotSCEDimReduceColData(sce, colorBy = "SingleR_hpca_fine_pruned.labels",</span>
+<span class="co">#                        reducedDimName = "UMAP", dotSize = 1, legendSize = 8)</span></code></pre></div>
 </div>
   </div>
 
