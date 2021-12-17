@@ -126,7 +126,7 @@ set.seed(12345)
 ```{R pca, message=FALSE, warning=FALSE, results="hold"}
 sce <- runDimReduce(inSCE = sce, method = "scaterPCA", 
                     useAssay = "logcounts_scaled", useAltExp = "hvg",
-                    reducedDimName = "PCA")
+                    reducedDimName = "PCA", seed = 12345)
 plotDimRed(sce, useReduction = "PCA")
 ```
 

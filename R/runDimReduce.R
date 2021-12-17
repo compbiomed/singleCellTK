@@ -128,7 +128,7 @@ runDimReduce <- function(inSCE,
   if (method == "scaterPCA") {
     message(paste0(date(), " ... Computing Scater PCA."))
     inSCE <- scaterPCA(inSCE = inSCE, useAssay = useAssay, useAltExp = useAltExp,
-                       reducedDimName = reducedDimName, nComponents = nComponents, ...)
+                       reducedDimName = reducedDimName, nComponents = nComponents, seed = seed, ...)
   } else if (method == "scaterUMAP") {
     message(paste0(date(), " ... Computing Scater UMAP."))
     inSCE <- getUMAP(inSCE = inSCE, useAssay = useAssay, useAltExp = useAltExp,

@@ -2627,7 +2627,8 @@ shinyServer(function(input, output, session) {
               useAltExp = dimRedUseAltExp,
               method = input$dimRedPlotMethod,
               nComponents = input$dimRedNumberDims,
-              reducedDimName = dimrednamesave)
+              reducedDimName = dimrednamesave,
+              seed = input$seed_dimRed)
             #vals$counts <- runDimensionalityReduction(
             #  inSCE = vals$counts,
             #  useAssay = vals$runDimred$dimRedAssaySelect,

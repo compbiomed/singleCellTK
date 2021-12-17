@@ -166,6 +166,10 @@ shinyPanelFS_DimRed <- fluidPage(
                               step = 1
                             )
                           ),
+                          numericInput(inputId = "seed_dimRed",
+                                       label = "Seed value for reproducibility of result:",
+                                       value = 12345,
+                                       step = 1),
                           withBusyIndicatorUI(actionButton("runDimred", "Run"))
                         )
                       ))),
