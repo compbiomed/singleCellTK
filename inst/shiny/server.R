@@ -400,6 +400,24 @@ shinyServer(function(input, output, session) {
         # create a new table for the selected directory
         count <- 0
         if (!is.na(path)) {
+          # Add Reference selection for cellRangerV2
+          if (input$algoChoice == "cellRanger2") {
+            ## Identify available reference
+            firstSampleDir <- list.dirs(path, recursive = FALSE)[1]
+            refPath <- file.path(firstSampleDir, "outs/filtered_gene_bc_matrices")
+            refList <- basename(list.dirs(refPath, recursive = FALSE))
+            ## Add UI
+            insertUI(
+              selector = "#bDirTable",
+              ui = fluidRow(
+                column(
+                  6,
+                  selectInput("cr2_b_Ref", "Reference:", refList)
+                )
+              )
+            )
+          }
+          # Add Sample Rename rows
           counts <- vector()
           for (sample in list.dirs(path, recursive = FALSE)) {
             count <- count+1
@@ -438,6 +456,25 @@ shinyServer(function(input, output, session) {
         vol <- roots[[input$sDirectory$root]]
         dirPaths$sDirectory <- paste0(vol, paste(unlist(input$sDirectory$path[-1]),
                                                  collapse = .Platform$file.sep))
+        path <- dirPaths$sDirectory
+        if (!is.na(path)) {
+          if (input$algoChoice == "cellRanger2") {
+            ## Identify available reference
+            refPath <- file.path(path, "outs/filtered_gene_bc_matrices")
+            refList <- basename(list.dirs(refPath, recursive = FALSE))
+            ## Add UI
+            insertUI(
+              selector = "#sDirTable",
+              ui = fluidRow(
+                column(
+                  6,
+                  selectInput("cr2_s_Ref", "Reference:", refList)
+                )
+              )
+            )
+          }
+          updateTextInput(session, "sSampleID", value = basename(path))
+        }
       }
     }
   )
@@ -522,7 +559,11 @@ shinyServer(function(input, output, session) {
             name <- basename(sample)
           }
           id <- paste0("bnewSampleCR2", allImportEntries$id_count)
-          entry <- list(type="cellRanger2", id=id, params=list(cellRangerDirs = basePath, sampleDirs = basename(sample), sampleNames = name))
+          entry <- list(type="cellRanger2", id=id, 
+                        params=list(cellRangerDirs = basePath, 
+                                    sampleDirs = basename(sample), 
+                                    sampleNames = name,
+                                    reference = input$cr2_b_Ref))
           allImportEntries$samples <- c(allImportEntries$samples, list(entry))
           fluidRowStyle <- paste0(paste0("#", id), "{border-bottom: 1px solid #bababa; padding-top: .9%; padding-bottom: .5%}")
           removeBtnStyle <- paste0(paste0("#remove", id), "{padding-top: 0; padding-bottom: 0;}")
@@ -609,7 +650,11 @@ shinyServer(function(input, output, session) {
       # add the files to the appropriate reactiveValues
       if (input$algoChoice == "cellRanger2") {
         id <- paste0("snewSampleCR2", allImportEntries$id_count)
-        entry <- list(type="cellRanger2", id=id, params=list(cellRangerDirs = dirname(samplePath), sampleDirs = basename(samplePath), sampleNames = input$sSampleID))
+        entry <- list(type="cellRanger2", id=id, 
+                      params=list(cellRangerDirs = dirname(samplePath), 
+                                  sampleDirs = basename(samplePath), 
+                                  sampleNames = input$sSampleID,
+                                  reference = input$cr2_s_Ref))
         allImportEntries$samples <- c(allImportEntries$samples, list(entry))
         allImportEntries$id_count <- allImportEntries$id_count + 1
       } else {
@@ -647,7 +692,9 @@ shinyServer(function(input, output, session) {
     } else {
       if (input$algoChoice == "cellRanger2") {
         id <- paste0("dnewSampleCR2", allImportEntries$id_count)
-        entry <- list(type="cellRanger2", id=id, params=list(dataDir = dataPath, sampleName = input$dSampleID))
+        entry <- list(type="cellRanger2", id=id, 
+                      params=list(dataDir = dataPath, 
+                                  sampleName = input$dSampleID))
         allImportEntries$samples <- c(allImportEntries$samples, list(entry))
         allImportEntries$id_count <- allImportEntries$id_count + 1
       } else {

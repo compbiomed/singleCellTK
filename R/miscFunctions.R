@@ -204,7 +204,7 @@ discreteColorPalette <- function(n, palette = c("random", "ggplot", "celda"),
 #' insert a new column called \code{"rownames.uniq"} to \code{rowData(x)}, with
 #' the deduplicated rownames.
 #' @param return.list When set to \code{TRUE}, will return a character vector
-#' with deduplicated rownames.
+#' of the deduplicated rownames.
 #' @export
 #' @return By default, a matrix or /linkS4class{SingleCellExperiment} object
 #' with rownames deduplicated.
@@ -236,6 +236,54 @@ dedupRowNames <- function(x, as.rowData = FALSE, return.list = FALSE){
     }
     return(x)
   }
+}
+
+#' Set rownames of SCE with a character vector or a rowData column
+#' @description Users can set rownames of an SCE object with either a character
+#' vector where the length equals to \code{nrow(x)}, or a single character 
+#' specifying a column in \code{rowData(x)}. Also applicable to matrix like 
+#' object where \code{rownames<-} method works, but only allows full size name 
+#' vector. Users can set \code{dedup = TRUE} to remove duplicated entries in the
+#' specification, by adding \code{-1, -2, ..., -i} suffix to the duplication of 
+#' the same identifier. 
+#' @param x Input object where the rownames will be modified. 
+#' @param rowNames Character vector of the rownames. If \code{x} is an 
+#' \linkS4class{SingleCellExperiment} object, a single character specifying a 
+#' column in \code{rowData(x)}. 
+#' @param dedup Logical. Whether to deduplicate the specified rowNames. Default
+#' \code{TRUE}
+#' @return The input SCE object with rownames updated.
+#' @export
+#' @examples 
+#' data("scExample", package = "singleCellTK")
+#' head(rownames(sce))
+#' sce <- setRowNames(sce, "feature_name")
+#' head(rownames(sce))
+setRowNames <- function(x, rowNames, dedup = TRUE) {
+  if (!inherits(rowNames, "character")) {
+    stop("rowNames should be of character class")
+  }
+  if (inherits(x, "SingleCellExperiment")) {
+    if (length(rowNames) == 1) {
+      if (rowNames %in% names(SummarizedExperiment::rowData(x))) {
+        rows <- SummarizedExperiment::rowData(x)[[rowNames]]
+      } else {
+        stop("Single rowNames specification not found in rowData(x)")
+      }
+    } else if (length(rowNames) == nrow(x)) {
+      rows <- rowNames
+    } else {
+      stop("Length of rowNames does not match nrow(x)")
+    }
+    rownames(x) <- rows
+  } else {
+    rownames(x) <- rowNames
+  }
+  
+  if (isTRUE(dedup)) {
+    x <- dedupRowNames(x)
+  }
+  return(x)
 }
 
 #' Retrieve cell/feature index by giving identifiers saved in col/rowData
@@ -405,4 +453,14 @@ retrieveSCEIndex <- function(inSCE, IDs, axis, by = NULL,
   }
   
   return(gs[[geneSetCollectionName]]) 
+}
+
+#' List geneset names from geneSetCollection
+#' @param inSCE Input \linkS4class{SingleCellExperiment} object.
+#' @param geneSetCollectionName The name of an imported geneSetCollection.
+#' @return A character vector of available genesets from the collection.
+#' @export
+getGenesetNamesFromCollection <- function(inSCE, geneSetCollectionName) {
+  geneSet <- .getGeneSetCollection(inSCE, geneSetCollectionName)
+  return(names(geneSet))
 }

@@ -1,3 +1,8 @@
+Latest Developmental Changes
+================================================================================
+* Added functions plotDEGVolcano() & plotPathway()
+* Added Pathway Analysis section to tutorial
+
 Changes in Version 2.4.0 (2021-10-27)
 ================================================================================
 * Updated version to match Bioconductor

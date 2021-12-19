@@ -289,7 +289,7 @@ used.
   covariates <span class='op'>=</span> <span class='cn'>NULL</span>,
   onlyPos <span class='op'>=</span> <span class='cn'>FALSE</span>,
   log2fcThreshold <span class='op'>=</span> <span class='cn'>NULL</span>,
-  fdrThreshold <span class='op'>=</span> <span class='fl'>0.05</span>,
+  fdrThreshold <span class='op'>=</span> <span class='cn'>NULL</span>,
   overwrite <span class='op'>=</span> <span class='cn'>FALSE</span>,
   check_sanity <span class='op'>=</span> <span class='cn'>TRUE</span>
 <span class='op'>)</span></pre>
@@ -299,7 +299,7 @@ used.
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>inSCE</th>
-      <td><p>SingleCellExperiment inherited object.</p></td>
+      <td><p><a href='https://rdrr.io/pkg/SingleCellExperiment/man/SingleCellExperiment.html'>SingleCellExperiment</a> inherited object.</p></td>
     </tr>
     <tr>
       <th>useAssay</th>
@@ -310,20 +310,20 @@ The assay should be a log-transformed normalized assay. Default
     <tr>
       <th>index1</th>
       <td><p>Any type of indices that can subset a
-SingleCellExperiment inherited object by cells. Specifies
+<a href='https://rdrr.io/pkg/SingleCellExperiment/man/SingleCellExperiment.html'>SingleCellExperiment</a> inherited object by cells. Specifies
 which cells are of interests. Default <code>NULL</code>.</p></td>
     </tr>
     <tr>
       <th>index2</th>
       <td><p>Any type of indices that can subset a
-SingleCellExperiment inherited object by cells. specifies
+<a href='https://rdrr.io/pkg/SingleCellExperiment/man/SingleCellExperiment.html'>SingleCellExperiment</a> inherited object by cells. specifies
 the control group against those specified by <code>index1</code>. If
 <code>NULL</code> when using index specification, <code>index1</code> cells will be
 compared with all other cells. Default <code>NULL</code>.</p></td>
     </tr>
     <tr>
       <th>class</th>
-      <td><p>A vector/factor with <code><a href='https://rdrr.io/r/base/nrow.html'>ncol(inSCE)</a></code> elements, or a character
+      <td><p>A vector/factor with <code>ncol(inSCE)</code> elements, or a character
 scalar that specifies a column name of <code>colData(inSCE)</code>. Default
 <code>NULL</code>.</p></td>
     </tr>
@@ -355,7 +355,7 @@ will be compared with all other cells.</p></td>
       <th>covariates</th>
       <td><p>A character vector of additional covariates to use when
 building the model. All covariates must exist in
-<code><a href='https://rdrr.io/r/base/names.html'>names(colData(inSCE))</a></code>. Default <code>NULL</code>.</p></td>
+<code>names(colData(inSCE))</code>. Default <code>NULL</code>.</p></td>
     </tr>
     <tr>
       <th>onlyPos</th>
@@ -365,12 +365,12 @@ Default <code>FALSE</code>.</p></td>
     <tr>
       <th>log2fcThreshold</th>
       <td><p>Only out put DEGs with the absolute values of log2FC
-greater than this value. Default <code>0.25</code></p></td>
+greater than this value. Default <code>NULL</code></p></td>
     </tr>
     <tr>
       <th>fdrThreshold</th>
       <td><p>Only out put DEGs with FDR value less than this
-value. Default <code>0.05</code></p></td>
+value. Default <code>NULL</code></p></td>
     </tr>
     <tr>
       <th>overwrite</th>
@@ -386,7 +386,7 @@ to see if the counts are logged. Default <code>TRUE</code>.</p></td>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>The input SingleCellExperiment object with
+    <p>The input <a href='https://rdrr.io/pkg/SingleCellExperiment/man/SingleCellExperiment.html'>SingleCellExperiment</a> object with
 <code>metadata(inSCE)$diffExp</code> updated with the results: a list named by
 <code>analysisName</code>, with <code>$groupNames</code> containing the naming of the
 two conditions, <code>$useAssay</code> storing the assay name that was used for
@@ -395,15 +395,392 @@ each condition, <code>$result</code> storing a <code><a href='https://rdrr.io/r/
 the DEGs summary, and <code>$method</code> storing <code>"MAST"</code>.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>scExample</span>, package <span class='op'>=</span> <span class='st'>"singleCellTK"</span><span class='op'>)</span>
-<span class='va'>sce</span> <span class='op'>&lt;-</span> <span class='fu'><a href='subsetSCECols.html'>subsetSCECols</a></span><span class='op'>(</span><span class='va'>sce</span>, colData <span class='op'>=</span> <span class='st'>"type != 'EmptyDroplet'"</span><span class='op'>)</span>
-<span class='va'>sce</span> <span class='op'>&lt;-</span> <span class='fu'><a href='scaterlogNormCounts.html'>scaterlogNormCounts</a></span><span class='op'>(</span><span class='va'>sce</span><span class='op'>[</span>,<span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>20</span><span class='op'>)</span><span class='op'>]</span>, assayName <span class='op'>=</span> <span class='st'>"logcounts"</span><span class='op'>)</span>
-<span class='va'>sce</span> <span class='op'>&lt;-</span> <span class='fu'>runMAST</span><span class='op'>(</span>inSCE <span class='op'>=</span> <span class='va'>sce</span>, groupName1 <span class='op'>=</span> <span class='st'>"Sample1"</span>,
- groupName2 <span class='op'>=</span> <span class='st'>"Sample2"</span>, index1 <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>10</span><span class='op'>)</span>, index2 <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>11</span>,<span class='fl'>20</span><span class='op'>)</span>,
- analysisName <span class='op'>=</span> <span class='st'>"MAST"</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'>Assuming data assay in position 1, with name et is log-transformed.</span></div><div class='output co'>#&gt; <span class='message'></span>
-#&gt; <span class='message'>Done!</span></div><div class='output co'>#&gt; <span class='message'>Combining coefficients and standard errors</span></div><div class='output co'>#&gt; <span class='message'>Calculating log-fold changes</span></div><div class='output co'>#&gt; <span class='message'>Calculating likelihood ratio tests</span></div><div class='output co'>#&gt; <span class='message'>Refitting on reduced model...</span></div><div class='output co'>#&gt; <span class='message'></span>
-#&gt; <span class='message'>Done!</span></div></pre>
+    <pre class="examples"><span class='r-in'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>scExample</span>, package <span class='op'>=</span> <span class='st'>"singleCellTK"</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>sce</span> <span class='op'>&lt;-</span> <span class='fu'><a href='subsetSCECols.html'>subsetSCECols</a></span><span class='op'>(</span><span class='va'>sce</span>, colData <span class='op'>=</span> <span class='st'>"type != 'EmptyDroplet'"</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>sce</span> <span class='op'>&lt;-</span> <span class='fu'><a href='scaterlogNormCounts.html'>scaterlogNormCounts</a></span><span class='op'>(</span><span class='va'>sce</span><span class='op'>[</span>,<span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>20</span><span class='op'>)</span><span class='op'>]</span>, assayName <span class='op'>=</span> <span class='st'>"logcounts"</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>sce</span> <span class='op'>&lt;-</span> <span class='fu'>runMAST</span><span class='op'>(</span>inSCE <span class='op'>=</span> <span class='va'>sce</span>, groupName1 <span class='op'>=</span> <span class='st'>"Sample1"</span>,</span>
+<span class='r-in'> groupName2 <span class='op'>=</span> <span class='st'>"Sample2"</span>, index1 <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>10</span><span class='op'>)</span>, index2 <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>11</span>,<span class='fl'>20</span><span class='op'>)</span>,</span>
+<span class='r-in'> analysisName <span class='op'>=</span> <span class='st'>"MAST"</span><span class='op'>)</span></span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Assuming data assay in position 1, with name et is log-transformed.</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [=========&gt;----------------------------------]  23% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [=========&gt;----------------------------------]  24% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [==========&gt;---------------------------------]  24% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [==========&gt;---------------------------------]  25% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [==========&gt;---------------------------------]  26% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [===========&gt;--------------------------------]  26% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [===========&gt;--------------------------------]  27% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [===========&gt;--------------------------------]  28% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [============&gt;-------------------------------]  28% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [============&gt;-------------------------------]  29% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [============&gt;-------------------------------]  30% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [=============&gt;------------------------------]  31% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [=============&gt;------------------------------]  32% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [==============&gt;-----------------------------]  33% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [==============&gt;-----------------------------]  34% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [==============&gt;-----------------------------]  35% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [===============&gt;----------------------------]  36% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [===============&gt;----------------------------]  37% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [===============&gt;----------------------------]  38% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [================&gt;---------------------------]  38% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [================&gt;---------------------------]  39% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [================&gt;---------------------------]  40% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [=================&gt;--------------------------]  40% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [=================&gt;--------------------------]  41% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [=================&gt;--------------------------]  42% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [==================&gt;-------------------------]  42% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [==================&gt;-------------------------]  43% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [==================&gt;-------------------------]  44% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [===================&gt;------------------------]  44% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [===================&gt;------------------------]  45% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [===================&gt;------------------------]  46% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [====================&gt;-----------------------]  47% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [====================&gt;-----------------------]  48% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [=====================&gt;----------------------]  49% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [=====================&gt;----------------------]  50% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [=====================&gt;----------------------]  51% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [======================&gt;---------------------]  52% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [======================&gt;---------------------]  53% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [=======================&gt;--------------------]  54% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [=======================&gt;--------------------]  55% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [=======================&gt;--------------------]  56% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [========================&gt;-------------------]  56% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [========================&gt;-------------------]  57% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [=========================&gt;------------------]  58% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [=========================&gt;------------------]  59% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [=========================&gt;------------------]  60% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [==========================&gt;-----------------]  60% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [==========================&gt;-----------------]  61% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [==========================&gt;-----------------]  62% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [===========================&gt;----------------]  62% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [===========================&gt;----------------]  63% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [===========================&gt;----------------]  64% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [============================&gt;---------------]  65% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [============================&gt;---------------]  66% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [============================&gt;---------------]  67% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [=============================&gt;--------------]  68% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [=============================&gt;--------------]  69% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [==============================&gt;-------------]  70% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [==============================&gt;-------------]  71% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [==============================&gt;-------------]  72% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [===============================&gt;------------]  72% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [===============================&gt;------------]  73% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [===============================&gt;------------]  74% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [================================&gt;-----------]  74% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [================================&gt;-----------]  75% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [================================&gt;-----------]  76% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [=================================&gt;----------]  76% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [=================================&gt;----------]  77% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [=================================&gt;----------]  78% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [==================================&gt;---------]  78% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [==================================&gt;---------]  79% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [==================================&gt;---------]  80% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [===================================&gt;--------]  81% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [===================================&gt;--------]  82% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [====================================&gt;-------]  83% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [====================================&gt;-------]  84% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [====================================&gt;-------]  85% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [=====================================&gt;------]  86% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [=====================================&gt;------]  87% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [=====================================&gt;------]  88% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [======================================&gt;-----]  88% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [======================================&gt;-----]  89% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [======================================&gt;-----]  90% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [=======================================&gt;----]  90% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [=======================================&gt;----]  91% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [=======================================&gt;----]  92% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [========================================&gt;---]  92% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [========================================&gt;---]  93% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [========================================&gt;---]  94% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [=========================================&gt;--]  94% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [=========================================&gt;--]  95% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [=========================================&gt;--]  96% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [==========================================&gt;-]  97% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [==========================================&gt;-]  98% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [===========================================&gt;]  99% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [===========================================&gt;] 100% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [============================================] 100% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>                                                                               </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Done!</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Combining coefficients and standard errors</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Calculating log-fold changes</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Calculating likelihood ratio tests</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Refitting on reduced model...</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [=============&gt;------------------------------]  31% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [=============&gt;------------------------------]  32% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [==============&gt;-----------------------------]  33% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [==============&gt;-----------------------------]  34% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [==============&gt;-----------------------------]  35% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [===============&gt;----------------------------]  36% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [===============&gt;----------------------------]  37% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [===============&gt;----------------------------]  38% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [================&gt;---------------------------]  38% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [================&gt;---------------------------]  39% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [================&gt;---------------------------]  40% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [=================&gt;--------------------------]  40% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [=================&gt;--------------------------]  41% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [=================&gt;--------------------------]  42% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [==================&gt;-------------------------]  42% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [==================&gt;-------------------------]  43% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [==================&gt;-------------------------]  44% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [===================&gt;------------------------]  44% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [===================&gt;------------------------]  45% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [===================&gt;------------------------]  46% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [====================&gt;-----------------------]  47% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [====================&gt;-----------------------]  48% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [=====================&gt;----------------------]  49% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [=====================&gt;----------------------]  50% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [=====================&gt;----------------------]  51% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [======================&gt;---------------------]  52% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [======================&gt;---------------------]  53% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [=======================&gt;--------------------]  54% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [=======================&gt;--------------------]  55% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [=======================&gt;--------------------]  56% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [========================&gt;-------------------]  56% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [========================&gt;-------------------]  57% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [=========================&gt;------------------]  58% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [=========================&gt;------------------]  59% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [=========================&gt;------------------]  60% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [==========================&gt;-----------------]  60% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [==========================&gt;-----------------]  61% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [==========================&gt;-----------------]  62% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [===========================&gt;----------------]  62% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [===========================&gt;----------------]  63% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [===========================&gt;----------------]  64% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [============================&gt;---------------]  65% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [============================&gt;---------------]  66% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [============================&gt;---------------]  67% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [=============================&gt;--------------]  68% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [=============================&gt;--------------]  69% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [==============================&gt;-------------]  70% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [==============================&gt;-------------]  71% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [==============================&gt;-------------]  72% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [===============================&gt;------------]  72% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [===============================&gt;------------]  73% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [===============================&gt;------------]  74% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [================================&gt;-----------]  74% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [================================&gt;-----------]  75% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [================================&gt;-----------]  76% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [=================================&gt;----------]  76% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [=================================&gt;----------]  77% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [=================================&gt;----------]  78% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [==================================&gt;---------]  78% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [==================================&gt;---------]  79% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [==================================&gt;---------]  80% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [===================================&gt;--------]  81% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [===================================&gt;--------]  82% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [====================================&gt;-------]  83% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [====================================&gt;-------]  84% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [====================================&gt;-------]  85% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [=====================================&gt;------]  86% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [=====================================&gt;------]  87% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [=====================================&gt;------]  88% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [======================================&gt;-----]  88% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [======================================&gt;-----]  89% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [======================================&gt;-----]  90% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [=======================================&gt;----]  90% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [=======================================&gt;----]  91% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [=======================================&gt;----]  92% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [========================================&gt;---]  92% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [========================================&gt;---]  93% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [========================================&gt;---]  94% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [=========================================&gt;--]  94% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [=========================================&gt;--]  95% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [=========================================&gt;--]  96% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [==========================================&gt;-]  97% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [==========================================&gt;-]  98% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [===========================================&gt;]  99% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [===========================================&gt;] 100% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  Completed [============================================] 100% with 0 failures</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>                                                                               </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Done!</span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

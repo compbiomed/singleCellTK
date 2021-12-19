@@ -4,7 +4,12 @@
 \alias{importExampleData}
 \title{Retrieve example datasets}
 \usage{
-importExampleData(dataset, class = c("Matrix", "matrix"), delayedArray = FALSE)
+importExampleData(
+  dataset,
+  class = c("Matrix", "matrix"),
+  delayedArray = FALSE,
+  rowNamesDedup = TRUE
+)
 }
 \arguments{
 \item{dataset}{Character. Name of the dataset to retrieve.}
@@ -17,6 +22,9 @@ will store the data as a sparse matrix from package \link{Matrix} while
 
 \item{delayedArray}{Boolean. Whether to read the expression matrix as
 \link{DelayedArray} object or not. Default \code{FALSE}.}
+
+\item{rowNamesDedup}{Boolean. Whether to deduplicate rownames. Default 
+\code{TRUE}.}
 }
 \value{
 The specified \link[SingleCellExperiment]{SingleCellExperiment} object.

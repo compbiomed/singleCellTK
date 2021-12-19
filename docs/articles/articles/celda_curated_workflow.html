@@ -213,15 +213,15 @@
 
       
 
-      </header><script src="celdaAnalysis_files/header-attrs-2.7/header-attrs.js"></script><div class="row">
+      </header><script src="celda_curated_workflow_files/header-attrs-2.11/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Celda Curated Workflow</h1>
                         <h4 class="author">Nida Pervaiz</h4>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/compbiomed/singleCellTK/blob/master/vignettes/articles/celdaAnalysis.Rmd"><code>vignettes/articles/celdaAnalysis.Rmd</code></a></small>
-      <div class="hidden name"><code>celdaAnalysis.Rmd</code></div>
+      <small class="dont-index">Source: <a href="https://github.com/compbiomed/singleCellTK/blob/master/vignettes/articles/celda_curated_workflow.Rmd"><code>vignettes/articles/celda_curated_workflow.Rmd</code></a></small>
+      <div class="hidden name"><code>celda_curated_workflow.Rmd</code></div>
 
     </div>
 
@@ -338,8 +338,8 @@ div.offset { background-color:inherit ; border-radius: 5px; margin-left: 15px;}
 <span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/celda/man/selectFeatures.html">selectFeatures</a></span><span class="op">(</span><span class="va">sce</span>, minCount <span class="op">=</span> <span class="fl">3</span>, minCell <span class="op">=</span> <span class="fl">3</span>, useAssay <span class="op">=</span> <span class="va">useAssay</span>, altExpName <span class="op">=</span> <span class="va">altExpName</span><span class="op">)</span>
 
 <span class="co"># See number of features after filtering</span>
-<span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="fu">altExp</span><span class="op">(</span><span class="va">sce</span>, <span class="va">altExpName</span><span class="op">)</span><span class="op">)</span>
-<span class="fu">counts</span><span class="op">(</span><span class="fu">altExp</span><span class="op">(</span><span class="va">sce</span><span class="op">)</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">as.matrix</a></span><span class="op">(</span><span class="fu">counts</span><span class="op">(</span><span class="fu">altExp</span><span class="op">(</span><span class="va">sce</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/SingleCellExperiment/man/altExps.html">altExp</a></span><span class="op">(</span><span class="va">sce</span>, <span class="va">altExpName</span><span class="op">)</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/pkg/SingleCellExperiment/man/assays.html">counts</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/SingleCellExperiment/man/altExps.html">altExp</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">as.matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/SingleCellExperiment/man/assays.html">counts</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/SingleCellExperiment/man/altExps.html">altExp</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
 <span class="va">moduleSplit</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/celda/man/recursiveSplitModule.html">recursiveSplitModule</a></span><span class="op">(</span><span class="va">sce</span>, useAssay <span class="op">=</span> <span class="va">useAssay</span>, altExpName <span class="op">=</span> <span class="va">altExpName</span>, initialL <span class="op">=</span> <span class="fl">10</span>, maxL <span class="op">=</span> <span class="fl">150</span><span class="op">)</span>
 
 <span class="co">#plots to decide value of L</span>

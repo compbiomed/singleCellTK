@@ -8,7 +8,8 @@ importAnnData(
   sampleDirs = NULL,
   sampleNames = NULL,
   delayedArray = FALSE,
-  class = c("Matrix", "matrix")
+  class = c("Matrix", "matrix"),
+  rowNamesDedup = TRUE
 )
 }
 \arguments{
@@ -41,6 +42,9 @@ Can be one of -
 object. Can be one of "Matrix" (as returned by
 \link{readMM} function), or "matrix" (as returned by
 \link[base]{matrix} function). Default \code{"Matrix"}.}
+
+\item{rowNamesDedup}{Boolean. Whether to deduplicate rownames. Default 
+\code{TRUE}.}
 }
 \value{
 A \code{SingleCellExperiment} object.

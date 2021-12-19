@@ -42,8 +42,7 @@
   <script src="../extra.js"></script>
 
 <meta property="og:title" content="Create a SingleCellExperiment object from files — importFromFiles" />
-<meta property="og:description" content="Creates a SingleCellExperiment object from a counts file in various formats.
-and a file of annotation information, ." />
+<meta property="og:description" content="Create a SingleCellExperiment object from files" />
 
 
 
@@ -265,8 +264,7 @@ and a file of annotation information, ." />
     </div>
 
     <div class="ref-description">
-    <p>Creates a SingleCellExperiment object from a counts file in various formats.
-and a file of annotation information, .</p>
+    <p>Create a SingleCellExperiment object from files</p>
     </div>
 
     <pre class="usage"><span class='fu'>importFromFiles</span><span class='op'>(</span>
@@ -283,7 +281,8 @@ and a file of annotation information, .</p>
   featureHeader <span class='op'>=</span> <span class='cn'>FALSE</span>,
   featureRowName <span class='op'>=</span> <span class='fl'>1</span>,
   featureSep <span class='op'>=</span> <span class='st'>"\t"</span>,
-  gzipped <span class='op'>=</span> <span class='st'>"auto"</span>
+  gzipped <span class='op'>=</span> <span class='st'>"auto"</span>,
+  rowNamesDedup <span class='op'>=</span> <span class='cn'>TRUE</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -291,77 +290,98 @@ and a file of annotation information, .</p>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>assayFile</th>
-      <td><p>The path to a  file in .mtx, .txt, .csv, .tab, or .tsv format.</p></td>
+      <td><p>The path to a file in .mtx, .txt, .csv, .tab, or .tsv 
+format.</p></td>
     </tr>
     <tr>
       <th>annotFile</th>
       <td><p>The path to a text file that contains columns of annotation
-information for each sample in the assayFile. This file should have the same
-number of rows as there are columns in the assayFile. If multiple samples are
-represented in these files, this should be denoted by a column called <code>'sample'</code>
-within the <code>annotFile</code>.</p></td>
+information for each cell in the <code>assayFile</code>. This file should have the 
+same number of rows as there are columns in the <code>assayFile</code>. If multiple
+samples are represented in the dataset, this should be denoted by a column 
+called <code>'sample'</code> within the <code>annotFile</code>.</p></td>
     </tr>
     <tr>
       <th>featureFile</th>
       <td><p>The path to a text file that contains columns of
 annotation information for each gene in the count matrix. This file should
-have the same genes in the same order as assayFile. This is optional.</p></td>
+have the same genes in the same order as <code>assayFile</code>. This is optional.</p></td>
     </tr>
     <tr>
       <th>assayName</th>
       <td><p>The name of the assay that you are uploading. The default
-is "counts".</p></td>
+is <code>"counts"</code>.</p></td>
     </tr>
     <tr>
       <th>inputDataFrames</th>
-      <td><p>If TRUE, assayFile and annotFile are read as data
-frames instead of file paths. The default is FALSE.</p></td>
+      <td><p>If <code>TRUE</code>, <code>assayFile</code>, <code>annotFile</code> and
+<code>featureFile</code> should be <code>data.frames</code> object (or its inheritance) 
+instead of file paths. The default is <code>FALSE</code>.</p></td>
     </tr>
     <tr>
       <th>class</th>
       <td><p>Character. The class of the expression matrix stored in the SCE
-object. Can be one of "Matrix" (as returned by
-readMM function), or "matrix" (as returned by
-<a href='https://rdrr.io/r/base/matrix.html'>matrix</a> function). Default "Matrix".</p></td>
+object. Can be one of <code>"Matrix"</code> (as returned by
+readMM function), or <code>"matrix"</code> (as returned by
+<a href='https://rdrr.io/r/base/matrix.html'>matrix</a> function). Default <code>"Matrix"</code>.</p></td>
     </tr>
     <tr>
       <th>delayedArray</th>
       <td><p>Boolean. Whether to read the expression matrix as
-DelayedArray object or not. Default <code>FALSE</code>.</p></td>
+<a href='https://rdrr.io/pkg/DelayedArray/man/DelayedArray-class.html'>DelayedArray</a> object or not. Default <code>FALSE</code>.</p></td>
     </tr>
     <tr>
       <th>annotFileHeader</th>
-      <td><p>Whether there's a header (colnames) in the cell annotation file. Default is FALSE</p></td>
+      <td><p>Whether there's a header (colnames) in the cell 
+annotation file. Default is <code>FALSE</code>.</p></td>
     </tr>
     <tr>
       <th>annotFileRowName</th>
-      <td><p>Which column is used as the rownames for the cell annotation file. Default is 1 (first column).</p></td>
+      <td><p>Which column is used as the rownames for the cell 
+annotation file. This should match to the colnames of the <code>assayFile</code>. 
+Default is <code>1</code> (first column).</p></td>
     </tr>
     <tr>
       <th>annotFileSep</th>
-      <td><p>Separater used for the cell annotation file. Default is "\t".</p></td>
+      <td><p>Separater used for the cell annotation file. Default is 
+<code>"\t"</code>.</p></td>
     </tr>
     <tr>
       <th>featureHeader</th>
-      <td><p>Whether there's a header (colnames) in the feature annotation file. Default is FALSE</p></td>
+      <td><p>Whether there's a header (colnames) in the feature 
+annotation file. Default is <code>FALSE</code>.</p></td>
     </tr>
     <tr>
       <th>featureRowName</th>
-      <td><p>Which column is used as the rownames for the feature annotation file. Default is 1 (first column).</p></td>
+      <td><p>Which column is used as the rownames for the feature 
+annotation file. This should match to the rownames of the <code>assayFile</code>. 
+Default is <code>1</code>. (first column).</p></td>
     </tr>
     <tr>
       <th>featureSep</th>
-      <td><p>Separater used for the feature annotation file. Default is "\t".</p></td>
+      <td><p>Separater used for the feature annotation file. Default is 
+<code>"\t"</code>.</p></td>
     </tr>
     <tr>
       <th>gzipped</th>
-      <td><p>Whether the input file is gzipped. Default is "auto" and it will automatically detect whether the file is gzipped. Other options is TRUE or FALSE.</p></td>
+      <td><p>Whether the input file is gzipped. Default is <code>"auto"</code> 
+and it will automatically detect whether the file is gzipped. Other options 
+are <code>TRUE</code> or <code>FALSE</code>.</p></td>
+    </tr>
+    <tr>
+      <th>rowNamesDedup</th>
+      <td><p>Boolean. Whether to deduplicate rownames. Default 
+<code>TRUE</code>.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>a SingleCellExperiment object</p>
+    <p>a <a href='https://rdrr.io/pkg/SingleCellExperiment/man/SingleCellExperiment.html'>SingleCellExperiment</a> object</p>
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>Creates a <a href='https://rdrr.io/pkg/SingleCellExperiment/man/SingleCellExperiment.html'>SingleCellExperiment</a> object from a counts 
+file in various formats, and files of cell and feature annotation.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
