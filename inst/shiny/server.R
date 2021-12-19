@@ -6829,7 +6829,8 @@ shinyServer(function(input, output, session) {
       vals$counts <- seuratPCA(inSCE = vals$counts,
                                useAssay = "seuratScaledData",
                                reducedDimName = "seuratPCA",
-                               nPCs = input$pca_no_components)
+                               nPCs = input$pca_no_components,
+                               seed = input$seed_PCA)
 
       vals$counts@metadata$seurat$count_pc <- dim(convertSCEToSeurat(vals$counts)[["pca"]])[2]
       vals$counts <- singleCellTK:::.seuratInvalidate(inSCE = vals$counts, scaleData = FALSE, varFeatures = FALSE, PCA = FALSE, ICA = FALSE)
@@ -6997,7 +6998,8 @@ shinyServer(function(input, output, session) {
     withProgress(message = "Running ICA", max = 1, value = 1, {
       vals$counts <- seuratICA(inSCE = vals$counts,
                                useAssay = "seuratScaledData",
-                               nics = input$ica_no_components)
+                               nics = input$ica_no_components,
+                               seed = input$seed_ICA)
 
       vals$counts@metadata$seurat$count_ic <- dim(convertSCEToSeurat(vals$counts)[["ica"]])[2]
       vals$counts <- singleCellTK:::.seuratInvalidate(inSCE = vals$counts, scaleData = FALSE, varFeatures = FALSE, PCA = FALSE, ICA = FALSE)
@@ -7610,7 +7612,8 @@ shinyServer(function(input, output, session) {
                                      useReduction = input$reduction_tsne_method,
                                      reducedDimName = "seuratTSNE",
                                      dims = input$pca_significant_pc_counter,
-                                     perplexity = input$perplexity_tsne)
+                                     perplexity = input$perplexity_tsne,
+                                     seed = input$seed_TSNE)
         vals$counts <- singleCellTK:::.seuratInvalidate(inSCE = vals$counts, scaleData = FALSE, varFeatures = FALSE, PCA = FALSE, ICA = FALSE, tSNE = FALSE, UMAP = FALSE)
       })
       withProgress(message = "Plotting tSNE", max = 1, value = 1, {
@@ -7660,7 +7663,8 @@ shinyServer(function(input, output, session) {
                                      dims = input$pca_significant_pc_counter,
                                      minDist = input$min_dist_umap,
                                      nNeighbors = input$n_neighbors_umap,
-                                     spread = input$spread_umap)
+                                     spread = input$spread_umap,
+                                     seed = input$seed_UMAP)
         vals$counts <- singleCellTK:::.seuratInvalidate(inSCE = vals$counts, scaleData = FALSE, varFeatures = FALSE, PCA = FALSE, ICA = FALSE, tSNE = FALSE, UMAP = FALSE)
       })
       withProgress(message = "Plotting UMAP", max = 1, value = 1, {
