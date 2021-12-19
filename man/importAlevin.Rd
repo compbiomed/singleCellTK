@@ -8,7 +8,8 @@ importAlevin(
   alevinDir = NULL,
   sampleName = "sample",
   delayedArray = FALSE,
-  class = c("Matrix", "matrix")
+  class = c("Matrix", "matrix"),
+  rowNamesDedup = TRUE
 )
 }
 \arguments{
@@ -28,6 +29,9 @@ barcodes. Default is 'sample'.}
 object. Can be one of "Matrix" (as returned by
 \link{readMM} function), or "matrix" (as returned by
 \link[base]{matrix} function). Default "Matrix".}
+
+\item{rowNamesDedup}{Boolean. Whether to deduplicate rownames. Default 
+\code{TRUE}.}
 }
 \value{
 A \code{SingleCellExperiment} object containing the count

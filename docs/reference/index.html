@@ -752,7 +752,7 @@ genes computations stored)</p></td>
         </td>
         <td><p>Perform PCA on a SingleCellExperiment Object
 A wrapper to <a href='https://rdrr.io/pkg/scater/man/runPCA.html'>runPCA</a> function to compute principal component
-analysis (PCA) from a given SingleCellExperiment object.</p></td>
+analysis (PCA) from a given <a href='https://rdrr.io/pkg/SingleCellExperiment/man/SingleCellExperiment.html'>SingleCellExperiment</a> object.</p></td>
       </tr><tr>
         
         <td>
@@ -896,17 +896,21 @@ Method supported: 'MAST', 'DESeq2', 'Limma', 'ANOVA'</p></td>
       </tr><tr>
         
         <td>
+          <p><code><a href="plotDEGVolcano.html">plotDEGVolcano()</a></code> </p>
+        </td>
+        <td><p>Generate volcano plot for DEGs</p></td>
+      </tr><tr>
+        
+        <td>
           <p><code><a href="plotDEGViolin.html">plotDEGViolin()</a></code> </p>
         </td>
-        <td><p>plot the violin plot to show visualize the expression distribution of DEGs
-identified by differential expression analysis</p></td>
+        <td><p>Generate violin plot to show the expression of top DEGs</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="plotDEGRegression.html">plotDEGRegression()</a></code> </p>
         </td>
-        <td><p>plot the linear regression to show visualize the expression the of DEGs
-identified by differential expression analysis</p></td>
+        <td><p>Create linear regression plot to show the expression the of top DEGs</p></td>
       </tr><tr>
         
         <td>
@@ -958,7 +962,7 @@ on each cluster against all the others.</p></td>
         <td>
           <p><code><a href="plotMarkerDiffExp.html">plotMarkerDiffExp()</a></code> <code><a href="plotMarkerDiffExp.html">plotMarkerDiffExp()</a></code> </p>
         </td>
-        <td><p>Plot a heatmap to visualize the result of <code>findMarkerDiffExp</code></p></td>
+        <td><p>Plot a heatmap to visualize the result of <code><a href='https://rdrr.io/pkg/singleCellTK/man/findMarkerDiffExp.html'>findMarkerDiffExp</a></code></p></td>
       </tr>
     </tbody><tbody>
       <tr>
@@ -1010,13 +1014,25 @@ enrichment</p></td>
         <td>
           <p><code><a href="runGSVA.html">runGSVA()</a></code> </p>
         </td>
-        <td><p>Run GSVA analysis on a SingleCellExperiment object</p></td>
+        <td><p>Run GSVA analysis on a <a href='https://rdrr.io/pkg/SingleCellExperiment/man/SingleCellExperiment.html'>SingleCellExperiment</a> object</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="runVAM.html">runVAM()</a></code> </p>
         </td>
         <td><p>Run VAM to score gene sets in single cell data</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="getPathwayResultNames.html">getPathwayResultNames()</a></code> </p>
+        </td>
+        <td><p>List pathway analysis result names</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="plotPathway.html">plotPathway()</a></code> </p>
+        </td>
+        <td><p>Generate violin plots for pathway analysis results</p></td>
       </tr>
     </tbody><tbody>
       <tr>
@@ -1268,15 +1284,19 @@ in the data</p></td>
         <td>
           <p><code><a href="plotDEGRegression.html">plotDEGRegression()</a></code> </p>
         </td>
-        <td><p>plot the linear regression to show visualize the expression the of DEGs
-identified by differential expression analysis</p></td>
+        <td><p>Create linear regression plot to show the expression the of top DEGs</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="plotDEGViolin.html">plotDEGViolin()</a></code> </p>
         </td>
-        <td><p>plot the violin plot to show visualize the expression distribution of DEGs
-identified by differential expression analysis</p></td>
+        <td><p>Generate violin plot to show the expression of top DEGs</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="plotDEGVolcano.html">plotDEGVolcano()</a></code> </p>
+        </td>
+        <td><p>Generate volcano plot for DEGs</p></td>
       </tr><tr>
         
         <td>
@@ -1307,13 +1327,19 @@ and UMAP</p></td>
         <td>
           <p><code><a href="plotMarkerDiffExp.html">plotMarkerDiffExp()</a></code> <code><a href="plotMarkerDiffExp.html">plotMarkerDiffExp()</a></code> </p>
         </td>
-        <td><p>Plot a heatmap to visualize the result of <code>findMarkerDiffExp</code></p></td>
+        <td><p>Plot a heatmap to visualize the result of <code><a href='https://rdrr.io/pkg/singleCellTK/man/findMarkerDiffExp.html'>findMarkerDiffExp</a></code></p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="plotMASTThresholdGenes.html">plotMASTThresholdGenes()</a></code> </p>
         </td>
         <td><p>MAST Identify adaptive thresholds</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="plotPathway.html">plotPathway()</a></code> </p>
+        </td>
+        <td><p>Generate violin plots for pathway analysis results</p></td>
       </tr><tr>
         
         <td>
@@ -1677,6 +1703,12 @@ return the unique rownames as character vecetor.</p></td>
           <p><code><a href="featureIndex.html">featureIndex()</a></code> </p>
         </td>
         <td><p>Retrieve row index for a set of features</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="getGenesetNamesFromCollection.html">getGenesetNamesFromCollection()</a></code> </p>
+        </td>
+        <td><p>List geneset names from geneSetCollection</p></td>
       </tr><tr>
         
         <td>

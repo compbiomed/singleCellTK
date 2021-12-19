@@ -281,7 +281,8 @@
   barcodesFileNames <span class='op'>=</span> <span class='st'>"genes.barcodes.txt"</span>,
   gzipped <span class='op'>=</span> <span class='st'>"auto"</span>,
   class <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"Matrix"</span>, <span class='st'>"matrix"</span><span class='op'>)</span>,
-  delayedArray <span class='op'>=</span> <span class='cn'>FALSE</span>
+  delayedArray <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  rowNamesDedup <span class='op'>=</span> <span class='cn'>TRUE</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -335,6 +336,11 @@ readMM function), or "matrix" (as returned by
       <td><p>Boolean. Whether to read the expression matrix as
 <a href='https://rdrr.io/pkg/DelayedArray/man/DelayedArray-class.html'>DelayedArray-class</a> object or not. Default <code>FALSE</code>.</p></td>
     </tr>
+    <tr>
+      <th>rowNamesDedup</th>
+      <td><p>Boolean. Whether to deduplicate rownames. Default 
+<code>TRUE</code>.</p></td>
+    </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
@@ -343,32 +349,32 @@ readMM function), or "matrix" (as returned by
  matrix, the gene annotation, and the cell annotation.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'># Example #1</span>
-<span class='co'># FASTQ files were downloaded from</span>
-<span class='co'># https://support.10xgenomics.com/single-cell-gene-expression/datasets/3.0.0</span>
-<span class='co'># /pbmc_1k_v3</span>
-<span class='co'># They were concatenated as follows:</span>
-<span class='co'># cat pbmc_1k_v3_S1_L001_R1_001.fastq.gz pbmc_1k_v3_S1_L002_R1_001.fastq.gz &gt;</span>
-<span class='co'># pbmc_1k_v3_R1.fastq.gz</span>
-<span class='co'># cat pbmc_1k_v3_S1_L001_R2_001.fastq.gz pbmc_1k_v3_S1_L002_R2_001.fastq.gz &gt;</span>
-<span class='co'># pbmc_1k_v3_R2.fastq.gz</span>
-<span class='co'># The following BUStools command generates the gene, cell, and</span>
-<span class='co'># matrix files</span>
-
-<span class='co'># bustools correct -w ./3M-february-2018.txt -p output.bus | \</span>
-<span class='co'>#   bustools sort -T tmp/ -t 4 -p - | \</span>
-<span class='co'>#   bustools count -o genecount/genes \</span>
-<span class='co'>#     -g ./transcripts_to_genes.txt \</span>
-<span class='co'>#     -e matrix.ec \</span>
-<span class='co'>#     -t transcripts.txt \</span>
-<span class='co'>#     --genecounts -</span>
-
-<span class='co'># The top 20 genes and the first 20 cells are included in this example.</span>
-<span class='va'>sce</span> <span class='op'>&lt;-</span> <span class='fu'>importBUStools</span><span class='op'>(</span>
-  BUStoolsDirs <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata/BUStools_PBMC_1k_v3_20x20/genecount/"</span>,
-    package <span class='op'>=</span> <span class='st'>"singleCellTK"</span><span class='op'>)</span>,
-  samples <span class='op'>=</span> <span class='st'>"PBMC_1k_v3_20x20"</span><span class='op'>)</span>
-</div></pre>
+    <pre class="examples"><span class='r-in'><span class='co'># Example #1</span></span>
+<span class='r-in'><span class='co'># FASTQ files were downloaded from</span></span>
+<span class='r-in'><span class='co'># https://support.10xgenomics.com/single-cell-gene-expression/datasets/3.0.0</span></span>
+<span class='r-in'><span class='co'># /pbmc_1k_v3</span></span>
+<span class='r-in'><span class='co'># They were concatenated as follows:</span></span>
+<span class='r-in'><span class='co'># cat pbmc_1k_v3_S1_L001_R1_001.fastq.gz pbmc_1k_v3_S1_L002_R1_001.fastq.gz &gt;</span></span>
+<span class='r-in'><span class='co'># pbmc_1k_v3_R1.fastq.gz</span></span>
+<span class='r-in'><span class='co'># cat pbmc_1k_v3_S1_L001_R2_001.fastq.gz pbmc_1k_v3_S1_L002_R2_001.fastq.gz &gt;</span></span>
+<span class='r-in'><span class='co'># pbmc_1k_v3_R2.fastq.gz</span></span>
+<span class='r-in'><span class='co'># The following BUStools command generates the gene, cell, and</span></span>
+<span class='r-in'><span class='co'># matrix files</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># bustools correct -w ./3M-february-2018.txt -p output.bus | \</span></span>
+<span class='r-in'><span class='co'>#   bustools sort -T tmp/ -t 4 -p - | \</span></span>
+<span class='r-in'><span class='co'>#   bustools count -o genecount/genes \</span></span>
+<span class='r-in'><span class='co'>#     -g ./transcripts_to_genes.txt \</span></span>
+<span class='r-in'><span class='co'>#     -e matrix.ec \</span></span>
+<span class='r-in'><span class='co'>#     -t transcripts.txt \</span></span>
+<span class='r-in'><span class='co'>#     --genecounts -</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># The top 20 genes and the first 20 cells are included in this example.</span></span>
+<span class='r-in'><span class='va'>sce</span> <span class='op'>&lt;-</span> <span class='fu'>importBUStools</span><span class='op'>(</span></span>
+<span class='r-in'>  BUStoolsDirs <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata/BUStools_PBMC_1k_v3_20x20/genecount/"</span>,</span>
+<span class='r-in'>    package <span class='op'>=</span> <span class='st'>"singleCellTK"</span><span class='op'>)</span>,</span>
+<span class='r-in'>  samples <span class='op'>=</span> <span class='st'>"PBMC_1k_v3_20x20"</span><span class='op'>)</span></span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

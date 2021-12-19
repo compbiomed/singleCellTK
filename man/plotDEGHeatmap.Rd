@@ -25,8 +25,7 @@ plotDEGHeatmap(
 )
 }
 \arguments{
-\item{inSCE}{\linkS4class{SingleCellExperiment} inherited object.
-\code{runMAST()} has to be run in advance.}
+\item{inSCE}{\linkS4class{SingleCellExperiment} inherited object.}
 
 \item{useResult}{character. A string specifying the \code{analysisName}
 used when running a differential expression analysis function.}
@@ -88,9 +87,12 @@ this(these) annotation(s). Should exist in either \code{rowDataName} or
 A \code{ComplexHeatmap::Heatmap} object
 }
 \description{
-A differential expression analysis function has to be run in advance so that
-information is stored in the metadata of the input SCE object. This function
-wraps plotSCEHeatmap.
+Heatmap visualization of DEG result
+}
+\details{
+A differential expression analysis function has to be run in advance 
+so that information is stored in the metadata of the input SCE object. This 
+function wraps \code{\link{plotSCEHeatmap}}.
 A feature annotation basing on the log2FC level called \code{"regulation"}
 will be automatically added. A cell annotation basing on the condition
 selection while running the analysis called \code{"condition"}, and the

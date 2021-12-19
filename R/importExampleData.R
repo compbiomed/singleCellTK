@@ -13,6 +13,8 @@
 #'   \code{"Matrix"}.
 #' @param delayedArray Boolean. Whether to read the expression matrix as
 #'   \link{DelayedArray} object or not. Default \code{FALSE}.
+#' @param rowNamesDedup Boolean. Whether to deduplicate rownames. Default 
+#' \code{TRUE}.
 #' @details See the list below for the available datasets and their
 #' descriptions.
 #' \describe{
@@ -43,7 +45,7 @@
 #' @export
 #' @importFrom SummarizedExperiment colData rowData colData<- assay assays
 importExampleData <- function(dataset, class = c("Matrix", "matrix"),
-                              delayedArray = FALSE) {
+                              delayedArray = FALSE, rowNamesDedup = TRUE) {
   class <- match.arg(class)
 
   scRNAseqDatasets <- c("fluidigm_pollen", "allen_tasic")
@@ -62,13 +64,16 @@ importExampleData <- function(dataset, class = c("Matrix", "matrix"),
       temp <- scRNAseq::ReprocessedAllenData()
       temp$sample <- paste0(colData(temp)$driver_1_s, "_", colData(temp)$dissection_s)
     }
+    if (isTRUE(rowNamesDedup)) {
+      temp <- dedupRowNames(temp)
+    }
   } else if (dataset %in% tenxPbmcDatasets) {
     if(!("TENxPBMCData" %in% rownames(utils::installed.packages()))) {
       stop(paste0("Package 'TENxPBMCData' is not installed. Please install to load dataset '", dataset, "'."))
     }
     temp <- TENxPBMCData::TENxPBMCData(dataset = dataset)
     colnames(temp) <- paste(temp$Sample, temp$Barcode, sep="_")
-    rownames(temp) <- rowData(temp)$Symbol_TENx
+    temp <- setRowNames(temp, "Symbol_TENx", dedup = rowNamesDedup)
     colData(temp)$sample <- colData(temp)$Sample
   } else {
     stop("'dataset' must be one of: ", paste(c(scRNAseqDatasets, tenxPbmcDatasets), collapse = ","))

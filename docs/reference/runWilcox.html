@@ -288,8 +288,8 @@ used.
   <span class='va'>groupName2</span>,
   covariates <span class='op'>=</span> <span class='cn'>NULL</span>,
   onlyPos <span class='op'>=</span> <span class='cn'>FALSE</span>,
-  log2fcThreshold <span class='op'>=</span> <span class='fl'>0.25</span>,
-  fdrThreshold <span class='op'>=</span> <span class='fl'>0.05</span>,
+  log2fcThreshold <span class='op'>=</span> <span class='cn'>NULL</span>,
+  fdrThreshold <span class='op'>=</span> <span class='cn'>NULL</span>,
   overwrite <span class='op'>=</span> <span class='cn'>FALSE</span>
 <span class='op'>)</span></pre>
 
@@ -298,7 +298,7 @@ used.
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>inSCE</th>
-      <td><p>SingleCellExperiment inherited object.</p></td>
+      <td><p><a href='https://rdrr.io/pkg/SingleCellExperiment/man/SingleCellExperiment.html'>SingleCellExperiment</a> inherited object.</p></td>
     </tr>
     <tr>
       <th>useAssay</th>
@@ -309,20 +309,20 @@ Default <code>"logcounts"</code>.</p></td>
     <tr>
       <th>index1</th>
       <td><p>Any type of indices that can subset a
-SingleCellExperiment inherited object by cells. Specifies
+<a href='https://rdrr.io/pkg/SingleCellExperiment/man/SingleCellExperiment.html'>SingleCellExperiment</a> inherited object by cells. Specifies
 which cells are of interests. Default <code>NULL</code>.</p></td>
     </tr>
     <tr>
       <th>index2</th>
       <td><p>Any type of indices that can subset a
-SingleCellExperiment inherited object by cells. specifies
+<a href='https://rdrr.io/pkg/SingleCellExperiment/man/SingleCellExperiment.html'>SingleCellExperiment</a> inherited object by cells. specifies
 the control group against those specified by <code>index1</code>. If
 <code>NULL</code> when using index specification, <code>index1</code> cells will be
 compared with all other cells. Default <code>NULL</code>.</p></td>
     </tr>
     <tr>
       <th>class</th>
-      <td><p>A vector/factor with <code><a href='https://rdrr.io/r/base/nrow.html'>ncol(inSCE)</a></code> elements, or a character
+      <td><p>A vector/factor with <code>ncol(inSCE)</code> elements, or a character
 scalar that specifies a column name of <code>colData(inSCE)</code>. Default
 <code>NULL</code>.</p></td>
     </tr>
@@ -364,12 +364,12 @@ Default <code>FALSE</code>.</p></td>
     <tr>
       <th>log2fcThreshold</th>
       <td><p>Only out put DEGs with the absolute values of log2FC
-greater than this value. Default <code>0.25</code></p></td>
+greater than this value. Default <code>NULL</code></p></td>
     </tr>
     <tr>
       <th>fdrThreshold</th>
       <td><p>Only out put DEGs with FDR value less than this
-value. Default <code>0.05</code></p></td>
+value. Default <code>NULL</code></p></td>
     </tr>
     <tr>
       <th>overwrite</th>
@@ -380,7 +380,7 @@ Default <code>FALSE</code>.</p></td>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>The input SingleCellExperiment object with
+    <p>The input <a href='https://rdrr.io/pkg/SingleCellExperiment/man/SingleCellExperiment.html'>SingleCellExperiment</a> object with
 <code>metadata(inSCE)$diffExp</code> updated with the results: a list named by
 <code>analysisName</code>, with <code>$groupNames</code> containing the naming of the
 two conditions, <code>$useAssay</code> storing the assay name that was used for
@@ -389,13 +389,13 @@ each condition, <code>$result</code> storing a <code><a href='https://rdrr.io/r/
 the DEGs summary, and <code>$method</code> storing <code>"wilcox"</code>.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>scExample</span>, package <span class='op'>=</span> <span class='st'>"singleCellTK"</span><span class='op'>)</span>
-<span class='va'>sce</span> <span class='op'>&lt;-</span> <span class='fu'><a href='subsetSCECols.html'>subsetSCECols</a></span><span class='op'>(</span><span class='va'>sce</span>, colData <span class='op'>=</span> <span class='st'>"type != 'EmptyDroplet'"</span><span class='op'>)</span>
-<span class='va'>sce</span> <span class='op'>&lt;-</span> <span class='fu'><a href='scaterlogNormCounts.html'>scaterlogNormCounts</a></span><span class='op'>(</span><span class='va'>sce</span>, assayName <span class='op'>=</span> <span class='st'>"logcounts"</span><span class='op'>)</span>
-<span class='va'>sce</span> <span class='op'>&lt;-</span> <span class='fu'>runWilcox</span><span class='op'>(</span>inSCE <span class='op'>=</span> <span class='va'>sce</span>, groupName1 <span class='op'>=</span> <span class='st'>"Sample1"</span>,
- groupName2 <span class='op'>=</span> <span class='st'>"Sample2"</span>, index1 <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>20</span><span class='op'>)</span>, index2 <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>21</span>,<span class='fl'>40</span><span class='op'>)</span>,
- analysisName <span class='op'>=</span> <span class='st'>"wilcox"</span><span class='op'>)</span>
-</div></pre>
+    <pre class="examples"><span class='r-in'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>scExample</span>, package <span class='op'>=</span> <span class='st'>"singleCellTK"</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>sce</span> <span class='op'>&lt;-</span> <span class='fu'><a href='subsetSCECols.html'>subsetSCECols</a></span><span class='op'>(</span><span class='va'>sce</span>, colData <span class='op'>=</span> <span class='st'>"type != 'EmptyDroplet'"</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>sce</span> <span class='op'>&lt;-</span> <span class='fu'><a href='scaterlogNormCounts.html'>scaterlogNormCounts</a></span><span class='op'>(</span><span class='va'>sce</span>, assayName <span class='op'>=</span> <span class='st'>"logcounts"</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>sce</span> <span class='op'>&lt;-</span> <span class='fu'>runWilcox</span><span class='op'>(</span>inSCE <span class='op'>=</span> <span class='va'>sce</span>, groupName1 <span class='op'>=</span> <span class='st'>"Sample1"</span>,</span>
+<span class='r-in'> groupName2 <span class='op'>=</span> <span class='st'>"Sample2"</span>, index1 <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>20</span><span class='op'>)</span>, index2 <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>21</span>,<span class='fl'>40</span><span class='op'>)</span>,</span>
+<span class='r-in'> analysisName <span class='op'>=</span> <span class='st'>"wilcox"</span><span class='op'>)</span></span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

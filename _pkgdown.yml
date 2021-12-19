@@ -81,6 +81,7 @@ reference:
   - runDESeq2
   - runLimmaDE
   - runANOVA
+  - plotDEGVolcano
   - plotDEGViolin
   - plotDEGRegression
   - plotDEGHeatmap
@@ -100,6 +101,8 @@ reference:
   - enrichRSCE
   - runGSVA
   - runVAM
+  - getPathwayResultNames
+  - plotPathway
 - title: "Seurat Curated Workflow"
 - contents:
   - starts_with("seurat")
@@ -137,6 +140,7 @@ reference:
   - dedupRowNames
   - detectCellOutlier
   - featureIndex
+  - getGenesetNamesFromCollection
   - retrieveSCEIndex
   - sampleSummaryStats
   - sctkListGeneSetCollections

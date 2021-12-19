@@ -70,6 +70,16 @@ runVAM <- function(inSCE, geneSetCollectionName, useAssay, resultNamePrefix = NU
   }
   SingleCellExperiment::reducedDim(inSCE, paste0(resultNamePrefix, "Distance")) <- resultsexp$distance.sq    
   SingleCellExperiment::reducedDim(inSCE, paste0(resultNamePrefix, "CDF")) <- resultsexp$cdf.value
+  if ("pathwayAnalysisResultNames" %in% names(S4Vectors::metadata(inSCE))) {
+    S4Vectors::metadata(inSCE)[["pathwayAnalysisResultNames"]] <- 
+      c(S4Vectors::metadata(inSCE)[["pathwayAnalysisResultNames"]],
+        paste0(resultNamePrefix, "Distance"),
+        paste0(resultNamePrefix, "CDF"))
+  } else {
+    S4Vectors::metadata(inSCE)[["pathwayAnalysisResultNames"]] <- 
+      c(paste0(resultNamePrefix, "Distance"),
+        paste0(resultNamePrefix, "CDF"))
+  }
   
   return (inSCE)
   

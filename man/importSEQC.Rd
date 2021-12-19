@@ -13,13 +13,14 @@ importSEQC(
   delayedArray = FALSE,
   cbNotFirstCol = TRUE,
   feNotFirstCol = TRUE,
-  combinedSample = TRUE
+  combinedSample = TRUE,
+  rowNamesDedup = TRUE
 )
 }
 \arguments{
 \item{seqcDirs}{A vector of paths to seqc output files. Each sample
-should have its own path. For example: \code{./pbmc_1k_50x50}.
-Must have the same length as \code{samples}.}
+should have its own path. For example: \code{"./pbmc_1k_50x50"}. Must have 
+the same length as \code{samples}.}
 
 \item{samples}{A vector of user-defined sample names for the samples to be
 imported. Must have the same length as \code{seqcDirs}.}
@@ -29,38 +30,37 @@ sample directory. It cannot be null and the vector should have the same
 length as \emph{samples}.}
 
 \item{gzipped}{Boolean. \code{TRUE} if the seqc output files
- (sparse_counts_barcode.csv, sparse_counts_genes.csv, and
- sparse_molecule_counts.mtx)
- were gzip compressed. \code{FALSE} otherwise. Default seqc outputs are
- not gzipped.
-Default \code{FALSE}.}
+(sparse_counts_barcode.csv, sparse_counts_genes.csv, and
+sparse_molecule_counts.mtx) were gzip compressed. \code{FALSE} otherwise. 
+Default seqc outputs are not gzipped. Default \code{FALSE}.}
 
 \item{class}{Character. The class of the expression matrix stored in the SCE
-object. Can be one of "Matrix" (as returned by
-\link{readMM} function), or "matrix" (as returned by
-\link[base]{matrix} function). Default "Matrix".}
+object. Can be one of \code{"Matrix"} (as returned by \link{readMM} 
+function), or \code{"matrix"} (as returned by \link[base]{matrix} function).
+Default \code{"Matrix"}.}
 
 \item{delayedArray}{Boolean. Whether to read the expression matrix as
 \link{DelayedArray} object or not. Default \code{FALSE}.}
 
 \item{cbNotFirstCol}{Boolean. \code{TRUE} if first column of
- sparse_counts_barcode.csv
-is row index and it will be removed. \code{FALSE} the first column will
- be kept.}
+sparse_counts_barcode.csv is row index and it will be removed. \code{FALSE} 
+the first column will be kept.}
 
 \item{feNotFirstCol}{Boolean. \code{TRUE} if first column of
- sparse_counts_genes.csv
-is row index and it will be removed. \code{FALSE} the first column will
- be kept.}
+sparse_counts_genes.csv is row index and it will be removed. \code{FALSE} 
+the first column will be kept.}
 
 \item{combinedSample}{Boolean. If \code{TRUE}, \code{importSEQC} returns a
 \code{SingleCellExperiment} object containing the combined count matrix,
- feature annotations
- and the cell annotations. If \code{FALSE}, \code{importSEQC} returns a
- list containing multiple
+ feature annotations and the cell annotations. If \code{FALSE}, 
+ \code{importSEQC} returns a list containing multiple
  \code{SingleCellExperiment} objects. Each \code{SingleCellExperiment}
  contains count matrix, feature annotations and cell annotations for
  each sample.}
+
+\item{rowNamesDedup}{Boolean. Whether to deduplicate rownames. Only applied 
+if \code{combinedSample} is \code{TRUE} or only one \code{seqcDirs} 
+specified. Default \code{TRUE}.}
 }
 \value{
 A \code{SingleCellExperiment} object containing the combined count
@@ -68,22 +68,18 @@ A \code{SingleCellExperiment} object containing the combined count
 }
 \description{
 Read the filtered barcodes, features, and matrices for all
- samples from (preferably a single run of) seqc output. Import and
- combine them as one big \link[SingleCellExperiment]{SingleCellExperiment}
- object.
+ samples from (preferably a single run of) seqc output. Import and combine
+ them as one big \link[SingleCellExperiment]{SingleCellExperiment} object.
 }
 \details{
-\code{importSEQC} imports output from seqc.
- The default sparse_counts_barcode.csv or sparse_counts_genes.csv from
- seqc output
+\code{importSEQC} imports output from seqc. The default 
+ sparse_counts_barcode.csv or sparse_counts_genes.csv from seqc output
  contains two columns. The first column is row index and the second column
- is cell-barcode
- or gene symbol. \code{importSEQC} will remove first column. Alternatively,
- user can call
+ is cell-barcode or gene symbol. \code{importSEQC} will remove first column. 
+ Alternatively, user can call
  \code{cbNotFirstCol} or \code{feNotFirstCol} as FALSE to keep the first
- column of these files.
- When \code{combinedSample} is TRUE, \code{importSEQC} will combined count
- matrix with genes detected in at least one sample.
+ column of these files. When \code{combinedSample} is TRUE, \code{importSEQC}
+ will combined count matrix with genes detected in at least one sample.
 }
 \examples{
 # Example #1
