@@ -11,7 +11,8 @@ seuratICA(
   useAssay,
   reducedDimName = "seuratICA",
   features = NULL,
-  nics = 20
+  nics = 20,
+  seed = NULL
 )
 }
 \arguments{
@@ -27,6 +28,9 @@ for computation of ICA. Default is \code{NULL} which will use the previously
 stored variable features.}
 
 \item{nics}{Number of independent components to compute. Default \code{20}.}
+
+\item{seed}{Random seed for reproducibility of results.
+Default \code{NULL} will use global seed in use by the R environment.}
 }
 \value{
 Updated \code{SingleCellExperiment} object which now contains the

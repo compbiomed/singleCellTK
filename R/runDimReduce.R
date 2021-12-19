@@ -84,9 +84,8 @@
 #' @param nComponents Specify the number of dimensions to compute with the
 #'  selected method in case of PCA/ICA and the number of components to
 #'  use in the case of TSNE/UMAP methods.
-#' @param seed Random seed for reproducibility of results. Only used with UMAP
-#' and tSNE methods. Default \code{NULL} will use global seed in use by the 
-#' R environment.
+#' @param seed Random seed for reproducibility of results.
+#' Default \code{NULL} will use global seed in use by the R environment.
 #' @param ... The other arguments for running a specific algorithm. Please refer
 #' to the one you use.
 #' @return The input \linkS4class{SingleCellExperiment} object with
@@ -155,12 +154,12 @@ runDimReduce <- function(inSCE,
         message(paste0(date(), " ... Computing Seurat PCA."))
         tempSCE <- seuratPCA(tempSCE, useAssay = useAssay,
                              reducedDimName = reducedDimName,
-                             nPCs = nComponents, features = rownames(inSCE), ...)
+                             nPCs = nComponents, features = rownames(inSCE), seed = seed, ...)
       } else if (method == "seuratICA") {
         message(paste0(date(), " ... Computing Seurat ICA."))
         tempSCE <- seuratICA(tempSCE, useAssay = useAssay,
                              reducedDimName = reducedDimName,
-                             nics = nComponents, ...)
+                             nics = nComponents, seed = seed, ...)
       }
       seuratObj <- tempSCE@metadata$seurat
       if (!is.null(useAltExp)) {
@@ -179,21 +178,21 @@ runDimReduce <- function(inSCE,
           message(paste0(date(), " ... Computing Seurat PCA."))
           tempSCE <- seuratPCA(inSCE = tempSCE,
                                useAssay = useAssay,
-                               reducedDimName = paste0(useAssay, "_seuratPCA"))
+                               reducedDimName = paste0(useAssay, "_seuratPCA"), seed = seed)
         } else if (args$useReduction == "ica") {
           message(paste0(date(), " ... Computing Seurat ICA."))
           tempSCE <- seuratICA(inSCE = tempSCE,
                                useAssay = useAssay,
-                               reducedDimName = paste0(useAssay, "_seuratICA"))
+                               reducedDimName = paste0(useAssay, "_seuratICA"), seed = seed)
         }
         if (method == "seuratUMAP") {
           message(paste0(date(), " ... Computing Seurat UMAP."))
           tempSCE <- seuratRunUMAP(inSCE = tempSCE,
-                                   reducedDimName = reducedDimName, ...)
+                                   reducedDimName = reducedDimName, seed = seed, ...)
         } else {
           message(paste0(date(), " ... Computing Seurat tSNE."))
           tempSCE <- seuratRunTSNE(inSCE = tempSCE,
-                                   reducedDimName = reducedDimName, ...)
+                                   reducedDimName = reducedDimName, seed = seed, ...)
         }
       } else {
         ### using external reducedDim
@@ -215,12 +214,12 @@ runDimReduce <- function(inSCE,
           # hard-code useReduction="pca"
           message(paste0(date(), " ... Computing Seurat UMAP."))
           tempSCE <- seuratRunUMAP(inSCE = tempSCE, useReduction = "pca",
-                                   reducedDimName = reducedDimName, ...)
+                                   reducedDimName = reducedDimName, seed = seed, ...)
         } else {
           # hard-code useReduction="pca"
           message(paste0(date(), " ... Computing Seurat tSNE."))
           tempSCE <- seuratRunTSNE(inSCE = tempSCE, useReduction = "pca",
-                                   reducedDimName = reducedDimName, ...)
+                                   reducedDimName = reducedDimName, seed = seed, ...)
         }
       }
     }
