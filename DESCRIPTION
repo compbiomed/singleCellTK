@@ -22,7 +22,7 @@ Authors@R: c(person(given="Yichen", family="Wang", email="wangych@bu.edu", role=
              person(given=c("Joshua", "David"), family="Campbell", email="camp@bu.edu", role=c("aut"))
              )
 Depends:
-    R (>= 4.0),
+    R (>= 4.1),
     SummarizedExperiment,
     SingleCellExperiment,
     DelayedArray,
@@ -31,8 +31,8 @@ Description: Run common single cell analysis in the R console or directly throug
 License: MIT + file LICENSE
 Encoding: UTF-8
 biocViews: SingleCell, GeneExpression, DifferentialExpression, Alignment,
-    Clustering, ImmunoOncology
-LazyData: TRUE
+    Clustering, ImmunoOncology, BatchEffect, Normalization, QualityControl, DataImport
+LazyData: FALSE
 Imports:
     ape,
     batchelor,
@@ -50,7 +50,6 @@ Imports:
     DT,
     ExperimentHub,
     fields,
-    fastmap (>= 1.1.0),
     ggplot2,
     ggplotify,
     ggrepel,
@@ -68,7 +67,6 @@ Imports:
     msigdbr,
     multtest,
     plotly,
-    RColorBrewer,
     ROCR,
     Rtsne,
     S4Vectors,
@@ -81,7 +79,6 @@ Imports:
     SingleR,
     sva,
     reshape2,
-    AnnotationDbi,
     shinyalert,
     circlize,
     enrichR,
@@ -125,7 +122,10 @@ Suggests:
     shinyjqui,
     shinyWidgets,
     shinyFiles,
-    BiocGenerics
+    BiocGenerics,
+    RColorBrewer,
+    AnnotationDbi,
+    fastmap (>= 1.1.0)
 VignetteBuilder: knitr
 URL: https://www.camplab.net/sctk/
 BugReports: https://github.com/compbiomed/singleCellTK/issues
