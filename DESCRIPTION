@@ -27,11 +27,11 @@ Depends:
     SingleCellExperiment,
     DelayedArray,
     Biobase
-Description: Run common single cell analysis in the R console or directly through your browser. Includes many functions for import, quality control, normalization, batch correction, clustering, differential expression, and visualization..
+Description: singleCellTK is a comprehensive platform that provides an interface to popular scRNA-seq data QC, processing, and visualization tools. By integrating functions and methods from various publically available dependencies, SCTK allows users to perform different types of analyses seamlessly. SCTK can be installed locally on popular operating systems such as Windows, Linux and MacOS. The architecture of the toolkit includes basically the R console based function sets, as well as a GUI, powered by R Shiny. Besides, Docker images of SCTK Apps and web-server based access are also supported. For specific analyses in SCTK, the results can be summarized and easily shared using comprehensive HTML reports, templated with Rmarkdown. 
 License: MIT + file LICENSE
 Encoding: UTF-8
 biocViews: SingleCell, GeneExpression, DifferentialExpression, Alignment,
-    Clustering, ImmunoOncology, BatchEffect, Normalization, QualityControl, DataImport
+    Clustering, ImmunoOncology, BatchEffect, Normalization, QualityControl, DataImport, GUI
 LazyData: FALSE
 Imports:
     ape,

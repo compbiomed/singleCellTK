@@ -10,7 +10,7 @@
 
 
 
-<meta name="date" content="2021-10-11" />
+<meta name="date" content="2021-12-20" />
 
 <title>Introduction to singleCellTK</title>
 
@@ -173,9 +173,9 @@ function toggle_visibility(id1) {
 <p class="author-name">Yichen Wang<span class="affil-mark">1</span>, Irzam Sarfraz<span class="affil-mark">1</span>, Rui Hong<span class="affil-mark">1,2</span>, Yusuke Koga<span class="affil-mark">1,2</span>, Salam Abdullatif<span class="affil-mark">1</span>, David Jenkins<span class="affil-mark">1,2</span>, Vidya Akavoor<span class="affil-mark">3</span>, Xinyun Cao<span class="affil-mark">3</span>, Shruthi Bandyadka<span class="affil-mark">1,2</span>, Anastasia Leshchyk<span class="affil-mark">1,2</span>, Tyler Faits<span class="affil-mark">1,2</span>, Mohammed Muzamil Khan<span class="affil-mark">1,2</span>, Zhe Wang<span class="affil-mark">1,2</span>, W. Evan Johnson<span class="affil-mark">1,2</span> and Joshua D. Campbell<span class="affil-mark">1,2*</span></p>
 <p class="author-affiliation"><span class="affil-mark">1</span>The Section of Computational Biomedicine, Boston University School of Medicine, Boston, MA<br><span class="affil-mark">2</span>Program in Bioinformatics, Boston University, Boston, MA<br><span class="affil-mark">3</span>Rafik B. Hariri Institute for Computing and Computational Science and Engineering, Boston University, Boston, MA</p>
 <p class="author-email"><span class="affil-mark">*</span><a href="mailto:camp@bu.edu">camp@bu.edu</a></p>
-<h4 class="date">11 October 2021</h4>
+<h4 class="date">20 December 2021</h4>
 <h4 class="package">Package</h4>
-<p>singleCellTK 2.2.2</p>
+<p>singleCellTK 2.4.0</p>
 
 </div>
 
@@ -204,7 +204,7 @@ vignettes to help you get started, which are all available at <a href="https://w
 </div>
 <div id="session-info" class="section level1 unnumbered">
 <h1>Session info</h1>
-<pre><code>## R version 4.1.1 (2021-08-10)
+<pre><code>## R version 4.1.2 (2021-11-01)
 ## Platform: x86_64-pc-linux-gnu (64-bit)
 ## Running under: Ubuntu 20.04.3 LTS
 ## 
@@ -225,8 +225,8 @@ vignettes to help you get started, which are all available at <a href="https://w
 ## [8] methods   base     
 ## 
 ## other attached packages:
-##  [1] BiocStyle_2.20.2            singleCellTK_2.2.2         
-##  [3] DelayedArray_0.18.0         Matrix_1.3-4               
+##  [1] BiocStyle_2.20.2            singleCellTK_2.4.0         
+##  [3] DelayedArray_0.18.0         Matrix_1.4-0               
 ##  [5] SingleCellExperiment_1.14.1 SummarizedExperiment_1.22.0
 ##  [7] Biobase_2.52.0              GenomicRanges_1.44.0       
 ##  [9] GenomeInfoDb_1.28.1         IRanges_2.26.0             
@@ -235,9 +235,9 @@ vignettes to help you get started, which are all available at <a href="https://w
 ## 
 ## loaded via a namespace (and not attached):
 ##   [1] softImpute_1.4-1              pbapply_1.4-3                
-##   [3] lattice_0.20-44               GSVA_1.40.1                  
+##   [3] lattice_0.20-45               GSVA_1.40.1                  
 ##   [5] vctrs_0.3.8                   usethis_2.0.1                
-##   [7] mgcv_1.8-36                   GSVAdata_1.28.0              
+##   [7] mgcv_1.8-38                   GSVAdata_1.28.0              
 ##   [9] blob_1.2.1                    survival_3.2-13              
 ##  [11] spatstat.data_2.1-0           later_1.2.0                  
 ##  [13] DBI_1.1.1                     R.utils_2.10.1               
@@ -343,7 +343,7 @@ vignettes to help you get started, which are all available at <a href="https://w
 ## [213] metapod_1.0.0                 ggplot2_3.3.5                
 ## [215] rjson_0.2.20                  ggrepel_0.9.1                
 ## [217] shinycssloaders_1.0.0         clue_0.3-59                  
-## [219] rprojroot_2.0.2               tools_4.1.1                  
+## [219] rprojroot_2.0.2               tools_4.1.2                  
 ## [221] sass_0.4.0                    sandwich_3.0-1               
 ## [223] magrittr_2.0.1                RCurl_1.98-1.3               
 ## [225] proxy_0.4-26                  ape_5.5                      
@@ -358,7 +358,7 @@ vignettes to help you get started, which are all available at <a href="https://w
 ## [243] shape_1.4.6                   statmod_1.4.36               
 ## [245] beachmat_2.8.0                BiocVersion_3.13.1           
 ## [247] HDF5Array_1.20.0              BiocSingular_1.8.1           
-## [249] rhdf5_2.36.0                  splines_4.1.1                
+## [249] rhdf5_2.36.0                  splines_4.1.2                
 ## [251] colorspace_2.0-2              generics_0.1.0               
 ## [253] base64enc_0.1-3               pillar_1.6.1                 
 ## [255] sn_2.0.0                      TENxPBMCData_1.10.0          
@@ -376,14 +376,14 @@ vignettes to help you get started, which are all available at <a href="https://w
 ## [279] hms_1.1.0                     Rtsne_0.15                   
 ## [281] dplyr_1.0.7                   shiny_1.6.0                  
 ## [283] mathjaxr_1.4-0                polyclip_1.10-0              
-## [285] grid_4.1.1                    numDeriv_2016.8-1.1          
+## [285] grid_4.1.2                    numDeriv_2016.8-1.1          
 ## [287] bbmle_1.0.23.1                assertive.numbers_0.0-2      
 ## [289] lazyeval_0.2.2                Formula_1.2-4                
 ## [291] crayon_1.4.1                  MASS_7.3-54                  
 ## [293] MAST_1.18.0                   pROC_1.17.0.1                
 ## [295] sparseMatrixStats_1.4.0       viridis_0.6.1                
 ## [297] roxygen2_7.1.1                rpart_4.1-15                 
-## [299] compiler_4.1.1                spatstat.geom_2.2-2          
+## [299] compiler_4.1.2                spatstat.geom_2.2-2          
 ## [301] zinbwave_1.14.1</code></pre>
 </div>
 
