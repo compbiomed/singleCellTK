@@ -16,7 +16,7 @@ drawing scientific conclusions.}
 A \link[SingleCellExperiment]{SingleCellExperiment} object.
 }
 \usage{
-sce
+data("scExample")
 }
 \description{
 Example Single Cell RNA-Seq data in SingleCellExperiment Object,

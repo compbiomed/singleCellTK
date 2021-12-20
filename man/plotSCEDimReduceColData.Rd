@@ -138,6 +138,7 @@ Plot results of reduced dimensions data and
  colors by annotation data stored in the colData slot.
 }
 \examples{
+data("mouseBrainSubsetSCE")
 plotSCEDimReduceColData(
   inSCE = mouseBrainSubsetSCE, colorBy = "tissue",
   shape = NULL, conditionClass = "factor",

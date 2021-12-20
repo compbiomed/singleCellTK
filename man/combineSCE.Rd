@@ -30,5 +30,6 @@ objects in sceList. The colData is merged.
 Combine a list of SingleCellExperiment objects as one SingleCellExperiment object
 }
 \examples{
+data(scExample, package = "singleCellTK")
 combinedsce <- combineSCE(list(sce,sce), by.r = NULL, by.c = NULL, combined = TRUE)
 }

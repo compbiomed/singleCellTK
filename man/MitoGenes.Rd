@@ -8,7 +8,7 @@
 A list
 }
 \usage{
-MitoGenes
+data("MitoGenes")
 }
 \description{
 A list of gene set that contains mitochondrial genes of multiple reference
