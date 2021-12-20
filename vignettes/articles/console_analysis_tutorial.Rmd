@@ -298,4 +298,3 @@ getGenesetNamesFromCollection(inSCE = sce, geneSetCollectionName = "H")
 ```
 
 >Note: In the current version of SCTK, the returned score matrices from either VAM or GSVA are stored in the `reducedDims` slot, since the feature dimensions are for the gene sets instead of the genes or subsets of genes. In the future, SCTK will adopt other types of data container for simpler operation on different types of feature sets. 
-
