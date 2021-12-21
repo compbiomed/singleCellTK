@@ -112,7 +112,6 @@ Suggests:
     BiocStyle,
     knitr,
     lintr,
-    xtable,
     spelling,
     org.Mm.eg.db,
     stringr,
