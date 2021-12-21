@@ -124,7 +124,6 @@ Suggests:
     shinyFiles,
     BiocGenerics,
     RColorBrewer,
-    AnnotationDbi,
     fastmap (>= 1.1.0)
 VignetteBuilder: knitr
 URL: https://www.camplab.net/sctk/
