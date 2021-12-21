@@ -94,6 +94,7 @@ Visualizes values stored in the colData slot of a
  SingleCellExperiment object via a violin plot.
 }
 \examples{
+data("mouseBrainSubsetSCE")
 plotSCEViolinColData(
   inSCE = mouseBrainSubsetSCE,
   coldata = "age", groupBy = "sex"

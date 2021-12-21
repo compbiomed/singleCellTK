@@ -236,6 +236,7 @@
 #' @return A \link[SingleCellExperiment]{SingleCellExperiment} object which combines all
 #' objects in sceList. The colData is merged.
 #' @examples
+#' data(scExample, package = "singleCellTK")
 #' combinedsce <- combineSCE(list(sce,sce), by.r = NULL, by.c = NULL, combined = TRUE)
 #' @export
 

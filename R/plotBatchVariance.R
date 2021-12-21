@@ -93,6 +93,7 @@
 #' \code{"reducedDim"}.
 #' @return An object of class \code{"gtable"}, combining four \code{ggplot}s.
 #' @examples
+#' data("sceBatches")
 #' sceBatches <- scaterlogNormCounts(sceBatches, "logcounts")
 #' sceBatches <- runLimmaBC(sceBatches)
 #' plotBatchCorrCompare(sceBatches, "LIMMA", condition = "cell_type")

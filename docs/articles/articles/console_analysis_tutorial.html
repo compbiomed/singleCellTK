@@ -213,7 +213,7 @@
 
       
 
-      </header><script src="console_analysis_tutorial_files/header-attrs-2.11/header-attrs.js"></script><div class="row">
+      </header><script src="console_analysis_tutorial_files/header-attrs-2.9/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>SingleCellTK - Console Analysis Tutorial</h1>
@@ -324,7 +324,7 @@
 
 <span class="co"># See number of cells after filtering</span>
 <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">ncol</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1] 2533</code></pre>
+<pre><code>## [1] 2544</code></pre>
 </div>
 </div>
 <div id="normalization" class="section level2">
@@ -346,7 +346,9 @@
 <p>Selecting highly variable genes (HVG) for downstream analyses is recommended, since a subset of variable features can speed up the computation and reduce the noise being introduced. SCTK wraps the methods used in <a href="https://satijalab.org/seurat/">Seurat</a> and <a href="https://bioconductor.org/packages/release/bioc/html/scran.html">Scran</a>. We recommend keeping at least 2,000-5,000 HVGs. In the example code, we use the “VST” method from Seurat, and select the top 2,000 genes.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/seuratFindHVG.html">seuratFindHVG</a></span><span class="op">(</span><span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"counts"</span>, hvgMethod <span class="op">=</span> <span class="st">"vst"</span><span class="op">)</span>
-<span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/getTopHVG.html">getTopHVG</a></span><span class="op">(</span><span class="va">sce</span>, method <span class="op">=</span> <span class="st">"vst"</span>, n <span class="op">=</span> <span class="fl">2000</span>, altExp <span class="op">=</span> <span class="st">"hvg"</span><span class="op">)</span></code></pre></div>
+<span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/getTopHVG.html">getTopHVG</a></span><span class="op">(</span><span class="va">sce</span>, method <span class="op">=</span> <span class="st">"vst"</span>, n <span class="op">=</span> <span class="fl">2000</span>, altExp <span class="op">=</span> <span class="st">"hvg"</span><span class="op">)</span>
+<span class="fu"><a href="../../reference/plotTopHVG.html">plotTopHVG</a></span><span class="op">(</span><span class="va">sce</span>, method <span class="op">=</span> <span class="st">"vst"</span><span class="op">)</span></code></pre></div>
+<p><img src="console_analysis_tutorial_files/figure-html/hvg-1.png" width="700"></p>
 <blockquote>
 <p><strong>Note:</strong> The row-subsetted matrix is stored in the “alternative experiment” slot (<code>altExp</code>) within the SCE object. This allows for a matrix with a different number of rows to be stored within the same SCE object (rather than creating two SCE objects). Some of the SCTK functions described in the next several sections will operate on a matrix stored in the <code>altExp</code> slot. The list of alternative experiments in an SCE can be view with <code>altExpNames(sce)</code>. In the future, there will be update to utilize the <a href="https://bioconductor.org/packages/release/bioc/html/ExperimentSubset.html">ExperimentSubset</a> package for simpler operation on the subsets.</p>
 </blockquote>
@@ -360,7 +362,9 @@
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/runDimReduce.html">runDimReduce</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, method <span class="op">=</span> <span class="st">"scaterPCA"</span>, 
                     useAssay <span class="op">=</span> <span class="st">"logcounts_scaled"</span>, useAltExp <span class="op">=</span> <span class="st">"hvg"</span>,
-                    reducedDimName <span class="op">=</span> <span class="st">"PCA"</span><span class="op">)</span></code></pre></div>
+                    reducedDimName <span class="op">=</span> <span class="st">"PCA"</span>, seed <span class="op">=</span> <span class="fl">12345</span><span class="op">)</span>
+<span class="fu"><a href="../../reference/plotDimRed.html">plotDimRed</a></span><span class="op">(</span><span class="va">sce</span>, useReduction <span class="op">=</span> <span class="st">"PCA"</span><span class="op">)</span></code></pre></div>
+<p><img src="console_analysis_tutorial_files/figure-html/pca-1.png" width="700"></p>
 <blockquote>
 <p>Note: When using <code>useAltExp</code> argument in SCTK functions, users should also be aware of the <code>useAssay</code> argument. Usually when both are available, using only <code>useAssay</code> means using a full-sized feature expression matrix; using <code>useAssay</code> and <code>useAltExp</code> in the same call means using a subsetted expression matrix. In the latter scenario, <code>useAltExp</code> points to the alternative experiment stored in <code>altExp</code> slot of the SCE object, and <code>useAssay</code> points to the <code>assay</code> slot in the alternative experiment object.</p>
 </blockquote>
@@ -385,7 +389,7 @@
 <p>Following the steps above, we will now use <code>useReducedDim</code> argument to pass the PCA embedding just generated to the function. This wrapper function also allows <code>useAssay</code> or <code>useAltExp</code> + <code>useAssay</code> method, while providing an option of running PCA dimension reduction on the expression matrix prior to the UMAP computation. In this way, however, the PCA will be done by <code>scater</code>, thus cannot be customized.</p>
 <p>SCTK also has the function for t-distributed Stochastic Neighbor Embedding (tSNE) method to create 2-D embedding for visualization, <code><a href="../../reference/getTSNE.html">getTSNE()</a></code>, where the general arguments for inputting a matrix work in the similar way.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/runDimReduce.html">runDimReduce</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, method <span class="op">=</span> <span class="st">"scaterUMAP"</span>, useReducedDim <span class="op">=</span> <span class="st">"PCA"</span>, reducedDimName <span class="op">=</span> <span class="st">"UMAP"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/runDimReduce.html">runDimReduce</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, method <span class="op">=</span> <span class="st">"scaterUMAP"</span>, useReducedDim <span class="op">=</span> <span class="st">"PCA"</span>, reducedDimName <span class="op">=</span> <span class="st">"UMAP"</span>, seed <span class="op">=</span> <span class="fl">12345</span><span class="op">)</span></code></pre></div>
 <p><code><a href="../../reference/plotSCEDimReduceColData.html">plotSCEDimReduceColData()</a></code> is a generic plotting function that use the values stored in <code>reducedDim</code> slot as the axis to make 2-D scatter plots, and use the variables stored in <code>colData</code> slot to label each cell, by colors or shapes.</p>
 <p>Now, with the clustering result labeled for each cell and stored in the <code>colData</code> slot. We can plot the UMAP generated previously, with the clustering result labeled.</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
@@ -413,25 +417,27 @@
                                  minMeanExpr <span class="op">=</span> <span class="fl">0</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">topMarkers</span>, <span class="fl">10</span><span class="op">)</span></code></pre></div>
 <pre><code>##          Gene   Log2_FC        Pvalue           FDR cluster clusterExprPerc
-## 8764     IL7R 0.6670892  2.569095e-38  7.008919e-35       1       0.7210884
-## 30657   CD79A 2.2814255 5.960280e-145 4.878191e-141       2       0.9335347
-## 10609    LST1 2.9326527  3.900102e-81  4.256051e-77       3       1.0000000
-## 31076    NKG7 4.2272347 2.841577e-114 9.302753e-110       4       1.0000000
-## 198021   CD3D 0.8370880  2.454056e-79  2.171375e-76       5       0.8571429
-## 268251   CCL5 2.7611660  2.057587e-75  6.736129e-71       6       0.9552239
-## 19561  S100A9 4.2683544 3.937541e-208 6.445361e-204       7       0.9955654
-## 288182   CST3 3.2283692  3.284585e-15  1.536153e-11       8       1.0000000
-## 7697     PPBP 2.9644228  6.236281e-05  2.430516e-02       9       0.5789474
+## 26825    CCL5 2.8999759 6.779881e-117 2.219598e-112       1       0.9503311
+## 30657   CD79A 2.2883344 3.742727e-146 3.063235e-142       2       0.9339339
+## 10609    LST1 2.9397557  2.206746e-76  2.408148e-72       3       1.0000000
+## 19561  S100A9 4.2438871 1.974645e-212 3.232296e-208       4       0.9956710
+## 7697     PPBP 5.6289542  2.756169e-07  1.584050e-03       5       1.0000000
+## 198021   CD3D 0.8464034  1.546235e-81  1.332122e-78       6       0.8592163
+## 87642    IL7R 0.6969555  1.665336e-38  4.956342e-35       7       0.7331731
+## 288182   CST3 3.2834760  3.008939e-15  1.407238e-11       8       1.0000000
+## 310761   NKG7 4.2787416  5.525022e-76  1.808782e-71       9       1.0000000
+## 83561   HMGB2 2.3275147  3.495531e-05  3.919157e-02      10       0.8888889
 ##        ControlExprPerc clusterAveExpr
-## 8764        0.32887189       1.162084
-## 30657       0.04132607       2.323132
-## 10609       0.30847029       3.539560
-## 31076       0.22654561       4.638970
-## 198021      0.38888889       1.549725
-## 268251      0.25214408       3.308372
-## 19561       0.21805956       4.575343
-## 288182      0.38768985       4.292814
-## 7697        0.02346858       2.990777</code></pre>
+## 26825       0.22524532       3.326855
+## 30657       0.04025328       2.329344
+## 10609       0.30952381       3.553182
+## 19561       0.21325648       4.537893
+## 7697        0.02328335       5.655017
+## 198021      0.38706199       1.555283
+## 87642       0.33317669       1.196185
+## 288182      0.38663484       4.344634
+## 310761      0.25239484       4.819407
+## 83561       0.31755424       2.709119</code></pre>
 <p>For visualization, SCTK has a specific heatmap plotting function for detected markers. The heatmap will take the log-normalized feature expression matrix for the values, and subset the features to only the top markers of each cluster. For the organization of the heatmap, the function groups the markers by the belonging to the clusters, and groups the cells, obviously, by clusters. Inside the grouping, the function finally performs the default hierarchical clustering.</p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">markerHm</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/plotMarkerDiffExp.html">plotMarkerDiffExp</a></span><span class="op">(</span><span class="va">sce</span>, topN <span class="op">=</span> <span class="fl">5</span>, log2fcThreshold <span class="op">=</span> <span class="fl">0</span>, 

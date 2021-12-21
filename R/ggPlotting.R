@@ -362,6 +362,7 @@
 #'  as the labels. If set to "none", no label will be plotted.
 #' @return a ggplot of the reduced dimension plot of coldata.
 #' @examples
+#' data("mouseBrainSubsetSCE")
 #' plotSCEDimReduceColData(
 #'   inSCE = mouseBrainSubsetSCE, colorBy = "tissue",
 #'   shape = NULL, conditionClass = "factor",
@@ -504,6 +505,7 @@ plotSCEDimReduceColData <- function(inSCE,
 #'  as the labels. If set to "none", no label will be plotted.
 #' @return a ggplot of the reduced dimension plot of feature data.
 #' @examples
+#' data("mouseBrainSubsetSCE")
 #' plotSCEDimReduceFeatures(
 #'   inSCE = mouseBrainSubsetSCE, feature = "Apoe",
 #'   shape = NULL, reducedDimName = "TSNE_counts",
@@ -656,6 +658,7 @@ plotSCEDimReduceFeatures <- function(inSCE,
 #'  as the labels. If set to "none", no label will be plotted.
 #' @return a ggplot of the reduced dimensions.
 #' @examples
+#' data("mouseBrainSubsetSCE")
 #' plotSCEScatter(
 #'   inSCE = mouseBrainSubsetSCE, legendTitle = NULL,
 #'   slot = "assays", annotation = "counts", feature = "Apoe",
@@ -972,6 +975,7 @@ plotSCEScatter <- function(inSCE,
 #'  as the labels. If set to "none", no label will be plotted.
 #' @return a ggplot of the violin plot of coldata.
 #' @examples
+#' data("mouseBrainSubsetSCE")
 #' plotSCEViolinColData(
 #'   inSCE = mouseBrainSubsetSCE,
 #'   coldata = "age", groupBy = "sex"
@@ -1132,6 +1136,7 @@ plotSCEViolinColData <- function(inSCE,
 #'  as the labels. If set to "none", no label will be plotted.
 #' @return a ggplot of the violin plot of assay data.
 #' @examples
+#' data("mouseBrainSubsetSCE")
 #' plotSCEViolinAssayData(
 #'   inSCE = mouseBrainSubsetSCE,
 #'   feature = "Apoe", groupBy = "sex"
@@ -1313,6 +1318,7 @@ plotSCEViolinAssayData <- function(inSCE,
 #'  as the labels. If set to "none", no label will be plotted.
 #' @return a ggplot of the violin plot.
 #' @examples
+#' data("mouseBrainSubsetSCE")
 #' plotSCEViolin(
 #'   inSCE = mouseBrainSubsetSCE, slotName = "assays",
 #'   itemName = "counts", feature = "Apoe", groupBy = "sex"
@@ -1572,6 +1578,7 @@ plotSCEViolin <- function(inSCE,
 #'  as the labels. If set to "none", no label will be plotted.
 #' @return a ggplot of the density plot of colData.
 #' @examples
+#' data("mouseBrainSubsetSCE")
 #' plotSCEDensityColData(
 #'   inSCE = mouseBrainSubsetSCE,
 #'   coldata = "age", groupBy = "sex"
@@ -1707,6 +1714,7 @@ plotSCEDensityColData <- function(inSCE,
 #'  as the labels. If set to "none", no label will be plotted.
 #' @return a ggplot of the density plot of assay data.
 #' @examples
+#' data("mouseBrainSubsetSCE")
 #' plotSCEDensityAssayData(
 #'   inSCE = mouseBrainSubsetSCE,
 #'   feature = "Apoe"
@@ -1863,6 +1871,7 @@ plotSCEDensityAssayData <- function(inSCE,
 #'  as the labels. If set to "none", no label will be plotted.
 #' @return a ggplot object of the density plot.
 #' @examples
+#' data("mouseBrainSubsetSCE")
 #' plotSCEDensity(
 #'   inSCE = mouseBrainSubsetSCE, slotName = "assays",
 #'   itemName = "counts", feature = "Apoe", groupBy = "sex"
@@ -2440,6 +2449,7 @@ plotBarcodeRankScatter <- function(inSCE,
 #'  Default TRUE.
 #' @return a ggplot of the barplot of coldata.
 #' @examples
+#' data("mouseBrainSubsetSCE")
 #' plotSCEBarColData(
 #'   inSCE = mouseBrainSubsetSCE,
 #'   coldata = "age", groupBy = "sex"
@@ -2546,6 +2556,7 @@ plotSCEBarColData <- function(inSCE,
 #'  Default TRUE.
 #' @return a ggplot of the barplot of assay data.
 #' @examples
+#' data("mouseBrainSubsetSCE")
 #' plotSCEBarAssayData(
 #'   inSCE = mouseBrainSubsetSCE,
 #'   feature = "Apoe", groupBy = "sex"

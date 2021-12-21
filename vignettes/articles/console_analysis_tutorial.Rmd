@@ -140,6 +140,7 @@ Selecting highly variable genes (HVG) for downstream analyses is recommended, si
 ```{R hvg, message=FALSE, warning=FALSE}
 sce <- seuratFindHVG(sce, useAssay = "counts", hvgMethod = "vst")
 sce <- getTopHVG(sce, method = "vst", n = 2000, altExp = "hvg")
+plotTopHVG(sce, method = "vst")
 ```
 
 >**Note:** The row-subsetted matrix is stored in the “alternative experiment” slot (`altExp`) within the SCE object. This allows for a matrix with a different number of rows to be stored within the same SCE object (rather than creating two SCE objects). Some of the SCTK functions described in the next several sections will operate on a matrix stored in the `altExp` slot. The list of alternative experiments in an SCE can be view with `altExpNames(sce)`. In the future, there will be update to utilize the [ExperimentSubset](https://bioconductor.org/packages/release/bioc/html/ExperimentSubset.html) package for simpler operation on the subsets.  
@@ -159,7 +160,8 @@ set.seed(12345)
 ```{R pca, message=FALSE, warning=FALSE, results="hold"}
 sce <- runDimReduce(inSCE = sce, method = "scaterPCA", 
                     useAssay = "logcounts_scaled", useAltExp = "hvg",
-                    reducedDimName = "PCA")
+                    reducedDimName = "PCA", seed = 12345)
+plotDimRed(sce, useReduction = "PCA")
 ```
 
 >Note: When using `useAltExp` argument in SCTK functions, users should also be aware of the `useAssay` argument. Usually when both are available, using only `useAssay` means using a full-sized feature expression matrix; using `useAssay` and `useAltExp` in the same call means using a subsetted expression matrix. In the latter scenario, `useAltExp` points to the alternative experiment stored in `altExp` slot of the SCE object, and `useAssay` points to the `assay` slot in the alternative experiment object.  
@@ -189,7 +191,7 @@ Following the steps above, we will now use `useReducedDim` argument to pass the 
 SCTK also has the function for t-distributed Stochastic Neighbor Embedding (tSNE) method to create 2-D embedding for visualization, `getTSNE()`, where the general arguments for inputting a matrix work in the similar way.  
 
 ```{R umap, message=FALSE, warning=FALSE, results="hold"}
-sce <- runDimReduce(inSCE = sce, method = "scaterUMAP", useReducedDim = "PCA", reducedDimName = "UMAP")
+sce <- runDimReduce(inSCE = sce, method = "scaterUMAP", useReducedDim = "PCA", reducedDimName = "UMAP", seed = 12345)
 ```
 
 `plotSCEDimReduceColData()` is a generic plotting function that use the values stored in `reducedDim` slot as the axis to make 2-D scatter plots, and use the variables stored in `colData` slot to label each cell, by colors or shapes.  
@@ -296,4 +298,3 @@ getGenesetNamesFromCollection(inSCE = sce, geneSetCollectionName = "H")
 ```
 
 >Note: In the current version of SCTK, the returned score matrices from either VAM or GSVA are stored in the `reducedDims` slot, since the feature dimensions are for the gene sets instead of the genes or subsets of genes. In the future, SCTK will adopt other types of data container for simpler operation on different types of feature sets. 
-

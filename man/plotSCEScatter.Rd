@@ -130,6 +130,7 @@ Plot results of reduced dimensions data of counts stored in any
 slot in the SingleCellExperiment object.
 }
 \examples{
+data("mouseBrainSubsetSCE")
 plotSCEScatter(
   inSCE = mouseBrainSubsetSCE, legendTitle = NULL,
   slot = "assays", annotation = "counts", feature = "Apoe",

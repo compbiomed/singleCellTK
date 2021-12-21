@@ -12,6 +12,7 @@
 #' @format SingleCellExperiment
 #' @source DOI: 10.1126/science.aaa1934
 #' @keywords datasets
+#' @usage data("mouseBrainSubsetSCE")
 #' @examples
 #' data("mouseBrainSubsetSCE")
 "mouseBrainSubsetSCE"
@@ -30,6 +31,7 @@
 #' @docType data
 #' @format A \link[SingleCellExperiment]{SingleCellExperiment} object.
 #' @keywords datasets
+#' @usage data("scExample")
 #' @examples
 #' data("scExample")
 "sce"
@@ -43,7 +45,7 @@
 #' al., 2016, annotated as `'x'`. Two common cell types, `'alpha'` and
 #' `'beta'`, that could be found in both original studies with relatively
 #' large population were kept for cleaner demonstration.
-#' data('sceBatches')
+#' @usage data('sceBatches')
 "sceBatches"
 
 #' Stably Expressed Gene (SEG) list obect, with SEG sets for human and mouse.
@@ -55,12 +57,13 @@
 #' charactor vector.
 #' @source \code{data('segList', package='scMerge')}
 #' @keywords datasets
+#' @usage data('SEG')
 #' @examples
 #' data('SEG')
 #' humanSEG <- SEG$human
 "SEG"
 
-#' MSigDB gene get Cctegory table
+#' MSigDB gene get Category table
 #'
 #' A table of gene set categories that can be download from MSigDB. The
 #' categories and descriptions can be found here:
@@ -72,6 +75,7 @@
 #' @docType data
 #' @format A data.frame.
 #' @keywords datasets
+#' @usage data("msigdb_table")
 #' @examples
 #' data("msigdb_table")
 "msigdb_table"
@@ -87,6 +91,7 @@
 #' @docType data
 #' @format A list
 #' @keywords datasets
+#' @usage data("MitoGenes")
 #' @examples
 #' data("MitoGenes")
 "MitoGenes"

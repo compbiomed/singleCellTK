@@ -55,6 +55,7 @@ necessary input. Otherwise, users can also customize the input. Future
 improvement might include solution to reduce redundant UMAP calculation.
 }
 \examples{
+data("sceBatches")
 sceBatches <- scaterlogNormCounts(sceBatches, "logcounts")
 sceBatches <- runLimmaBC(sceBatches)
 plotBatchCorrCompare(sceBatches, "LIMMA", condition = "cell_type")
