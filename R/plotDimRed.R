@@ -35,9 +35,15 @@ plotDimRed <- function(inSCE, useReduction,
   if(!is.null(xAxisLabel)){
     dimRedPlot <- dimRedPlot + ggplot2::xlab(xAxisLabel)
   }
+  else{
+    dimRedPlot <- dimRedPlot + ggplot2::xlab(colnames(dimRed)[xDim])
+  }
 
   if(!is.null(yAxisLabel)){
     dimRedPlot <- dimRedPlot + ggplot2::ylab(yAxisLabel)
+  }
+  else{
+    dimRedPlot <- dimRedPlot + ggplot2::ylab(colnames(dimRed)[yDim])
   }
 
   return(dimRedPlot)
