@@ -236,7 +236,7 @@ markerHm <- plotMarkerDiffExp(sce, topN = 5, log2fcThreshold = 0,
 
 ### Customized Differential Expression Analysis
 
-As we can easily tell from the heatmap above, "cluster 1" and "cluster 5" are having a very similar expression profile across the top markers detected. In order to further explore the difference between these two clusters, or any other two reasonable groups of cells, user can use the function `runDEAnalysis()`. 
+As we can easily tell from the heatmap above, "cluster 6" and "cluster 7" are having a very similar expression profile across the top markers detected. In order to further explore the difference between these two clusters, or any other two reasonable groups of cells, user can use the function `runDEAnalysis()`. 
 
 `runDEAnalysis()` is a generic function for performing differential expression (DE) analysis between two selected groups of cells. This is also used by `findMarkerDiffExp()`. By running DE analysis, the function will take the normalized read count data and perform statistical analysis to discover quantitative changes in expression levels between selected groups. See here for the detail of [running DE analysis with SCTK](differential_expression.html). 
 
@@ -244,15 +244,15 @@ There are multiple ways to specify the groups of cells to be compared: by either
 
 ```{R de, message=FALSE, warning=FALSE, results="hold"}
 sce <- runDEAnalysis(inSCE = sce, method = "wilcox", 
-                     class = "cluster", classGroup1 = c(1), classGroup2 = c(5),
-                     groupName1 = "cluster1", groupName2 = "cluster5", 
-                     analysisName = "cluster1_VS_5")
+                     class = "cluster", classGroup1 = c(6), classGroup2 = c(7),
+                     groupName1 = "cluster6", groupName2 = "cluster7", 
+                     analysisName = "cluster6_VS_7")
 ```
 
 Similarly to the marker detection section, SCTK also has a DE analysis specific heatmap plotting function, `plotDEGHeatmap()`. Here, users can just easily enter the `analysisName` specified for one run and the function will automatically arrange the output. The heatmap is also splitted into a "checker board", by the "conditions" (i.e. the groups selected when running `runDEAnalysis()`) and the "regulation" (i.e. "up" if the log2 fold change is positive in "group1" against "group2"). 
 
 ```{R deHeatmap, message=FALSE, warning=FALSE, results="hold"}
-deHm <- plotDEGHeatmap(sce, useResult = "cluster1_VS_5", rowLabel = TRUE)
+deHm <- plotDEGHeatmap(sce, useResult = "cluster6_VS_7", rowLabel = TRUE)
 ```
 
 ## Cell Type Labeling
