@@ -74,7 +74,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.4.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.4.1</span>
       </span>
     </div>
 
@@ -292,7 +292,7 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>inSCE</th>
-      <td><p><a href='https://rdrr.io/pkg/SingleCellExperiment/man/SingleCellExperiment.html'>SingleCellExperiment</a> inherited object.</p></td>
+      <td><p>SingleCellExperiment inherited object.</p></td>
     </tr>
     <tr>
       <th>useResult</th>
@@ -301,7 +301,7 @@ used when running a differential expression analysis function.</p></td>
     </tr>
     <tr>
       <th>doLog</th>
-      <td><p>Logical scalar. Whether to do <code>log(assay + 1)</code>
+      <td><p>Logical scalar. Whether to do <code><a href='https://rdrr.io/r/base/Log.html'>log(assay + 1)</a></code>
 transformation on the assay used for the analysis. Default <code>FALSE</code>.</p></td>
     </tr>
     <tr>
@@ -365,13 +365,13 @@ to be added to the annotation. Default <code>NULL</code>.</p></td>
       <th>colSplitBy</th>
       <td><p>character. Do semi-heatmap based on the grouping of
 this(these) annotation(s). Should exist in either <code>colDataName</code> or
-<code>names(cellAnnotations)</code>. Default <code>"condition"</code>.</p></td>
+<code><a href='https://rdrr.io/r/base/names.html'>names(cellAnnotations)</a></code>. Default <code>"condition"</code>.</p></td>
     </tr>
     <tr>
       <th>rowSplitBy</th>
       <td><p>character. Do semi-heatmap based on the grouping of
 this(these) annotation(s). Should exist in either <code>rowDataName</code> or
-<code>names(featureAnnotations)</code>. Default <code>"regulation"</code>.</p></td>
+<code><a href='https://rdrr.io/r/base/names.html'>names(featureAnnotations)</a></code>. Default <code>"regulation"</code>.</p></td>
     </tr>
     <tr>
       <th>title</th>
@@ -402,16 +402,14 @@ covariates will also be added.</p>
     <p>Yichen Wang</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><span class='r-in'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='st'>"sceBatches"</span><span class='op'>)</span></span>
-<span class='r-in'><span class='fu'><a href='https://rdrr.io/pkg/SingleCellExperiment/man/assays.html'>logcounts</a></span><span class='op'>(</span><span class='va'>sceBatches</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/pkg/SingleCellExperiment/man/assays.html'>counts</a></span><span class='op'>(</span><span class='va'>sceBatches</span><span class='op'>)</span> <span class='op'>+</span> <span class='fl'>1</span><span class='op'>)</span></span>
-<span class='r-in'><span class='va'>sce.w</span> <span class='op'>&lt;-</span> <span class='fu'><a href='subsetSCECols.html'>subsetSCECols</a></span><span class='op'>(</span><span class='va'>sceBatches</span>, colData <span class='op'>=</span> <span class='st'>"batch == 'w'"</span><span class='op'>)</span></span>
-<span class='r-in'><span class='va'>sce.w</span> <span class='op'>&lt;-</span> <span class='fu'><a href='runWilcox.html'>runWilcox</a></span><span class='op'>(</span><span class='va'>sce.w</span>, class <span class='op'>=</span> <span class='st'>"cell_type"</span>, classGroup1 <span class='op'>=</span> <span class='st'>"alpha"</span>,</span>
-<span class='r-in'>                   groupName1 <span class='op'>=</span> <span class='st'>"w.alpha"</span>, groupName2 <span class='op'>=</span> <span class='st'>"w.beta"</span>,</span>
-<span class='r-in'>                   analysisName <span class='op'>=</span> <span class='st'>"w.aVSb"</span><span class='op'>)</span></span>
-<span class='r-in'><span class='fu'>plotDEGHeatmap</span><span class='op'>(</span><span class='va'>sce.w</span>, <span class='st'>"w.aVSb"</span><span class='op'>)</span></span>
-<span class='r-plt img'><img src='plotDEGHeatmap-1.png' alt='' width='700' height='433' /></span>
-<span class='r-plt img'><img src='plotDEGHeatmap-2.png' alt='' width='700' height='433' /></span>
-</pre>
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='st'>"sceBatches"</span><span class='op'>)</span>
+<span class='fu'>logcounts</span><span class='op'>(</span><span class='va'>sceBatches</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span><span class='op'>(</span><span class='fu'>counts</span><span class='op'>(</span><span class='va'>sceBatches</span><span class='op'>)</span> <span class='op'>+</span> <span class='fl'>1</span><span class='op'>)</span>
+<span class='va'>sce.w</span> <span class='op'>&lt;-</span> <span class='fu'><a href='subsetSCECols.html'>subsetSCECols</a></span><span class='op'>(</span><span class='va'>sceBatches</span>, colData <span class='op'>=</span> <span class='st'>"batch == 'w'"</span><span class='op'>)</span>
+<span class='va'>sce.w</span> <span class='op'>&lt;-</span> <span class='fu'><a href='runWilcox.html'>runWilcox</a></span><span class='op'>(</span><span class='va'>sce.w</span>, class <span class='op'>=</span> <span class='st'>"cell_type"</span>, classGroup1 <span class='op'>=</span> <span class='st'>"alpha"</span>,
+                   groupName1 <span class='op'>=</span> <span class='st'>"w.alpha"</span>, groupName2 <span class='op'>=</span> <span class='st'>"w.beta"</span>,
+                   analysisName <span class='op'>=</span> <span class='st'>"w.aVSb"</span><span class='op'>)</span>
+<span class='fu'>plotDEGHeatmap</span><span class='op'>(</span><span class='va'>sce.w</span>, <span class='st'>"w.aVSb"</span><span class='op'>)</span>
+</div><div class='img'><img src='plotDEGHeatmap-1.png' alt='' width='700' height='433' /></div><div class='img'><img src='plotDEGHeatmap-2.png' alt='' width='700' height='433' /></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

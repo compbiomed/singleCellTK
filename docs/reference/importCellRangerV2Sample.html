@@ -76,7 +76,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.4.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.4.1</span>
       </span>
     </div>
 
@@ -301,7 +301,7 @@ readMM function), or "matrix" (as returned by
     <tr>
       <th>delayedArray</th>
       <td><p>Boolean. Whether to read the expression matrix as
-<a href='https://rdrr.io/pkg/DelayedArray/man/DelayedArray-class.html'>DelayedArray</a> object or not. Default <code>FALSE</code>.</p></td>
+DelayedArray object or not. Default <code>FALSE</code>.</p></td>
     </tr>
     <tr>
       <th>rowNamesDedup</th>
@@ -316,11 +316,11 @@ readMM function), or "matrix" (as returned by
  matrix, the feature annotations, and the cell annotation for the sample.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><span class='r-in'><span class='va'>sce</span> <span class='op'>&lt;-</span> <span class='fu'>importCellRangerV2Sample</span><span class='op'>(</span></span>
-<span class='r-in'>    dataDir <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata/pbmc_4k_v2_20x20/outs/"</span>,</span>
-<span class='r-in'>        <span class='st'>"filtered_gene_bc_matrices/GRCh38"</span>, package <span class='op'>=</span> <span class='st'>"singleCellTK"</span><span class='op'>)</span>,</span>
-<span class='r-in'>    sampleName <span class='op'>=</span> <span class='st'>"pbmc4k_20"</span><span class='op'>)</span></span>
-</pre>
+    <pre class="examples"><div class='input'><span class='va'>sce</span> <span class='op'>&lt;-</span> <span class='fu'>importCellRangerV2Sample</span><span class='op'>(</span>
+    dataDir <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata/pbmc_4k_v2_20x20/outs/"</span>,
+        <span class='st'>"filtered_gene_bc_matrices/GRCh38"</span>, package <span class='op'>=</span> <span class='st'>"singleCellTK"</span><span class='op'>)</span>,
+    sampleName <span class='op'>=</span> <span class='st'>"pbmc4k_20"</span><span class='op'>)</span>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

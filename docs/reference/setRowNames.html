@@ -80,7 +80,7 @@ the same identifier." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.4.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.4.1</span>
       </span>
     </div>
 
@@ -271,7 +271,7 @@ the same identifier." />
 
     <div class="ref-description">
     <p>Users can set rownames of an SCE object with either a character
-vector where the length equals to <code>nrow(x)</code>, or a single character 
+vector where the length equals to <code><a href='https://rdrr.io/r/base/nrow.html'>nrow(x)</a></code>, or a single character 
 specifying a column in <code>rowData(x)</code>. Also applicable to matrix like 
 object where <code>rownames&lt;-</code> method works, but only allows full size name 
 vector. Users can set <code>dedup = TRUE</code> to remove duplicated entries in the
@@ -291,7 +291,7 @@ the same identifier.</p>
     <tr>
       <th>rowNames</th>
       <td><p>Character vector of the rownames. If <code>x</code> is an 
-<a href='https://rdrr.io/pkg/SingleCellExperiment/man/SingleCellExperiment.html'>SingleCellExperiment</a> object, a single character specifying a 
+SingleCellExperiment object, a single character specifying a 
 column in <code>rowData(x)</code>.</p></td>
     </tr>
     <tr>
@@ -306,14 +306,12 @@ column in <code>rowData(x)</code>.</p></td>
     <p>The input SCE object with rownames updated.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><span class='r-in'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='st'>"scExample"</span>, package <span class='op'>=</span> <span class='st'>"singleCellTK"</span><span class='op'>)</span></span>
-<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>rownames</a></span><span class='op'>(</span><span class='va'>sce</span><span class='op'>)</span><span class='op'>)</span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "ENSG00000251562" "ENSG00000205542" "ENSG00000177954" "ENSG00000166710"</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> [5] "ENSG00000156508" "ENSG00000147403"</span>
-<span class='r-in'><span class='va'>sce</span> <span class='op'>&lt;-</span> <span class='fu'>setRowNames</span><span class='op'>(</span><span class='va'>sce</span>, <span class='st'>"feature_name"</span><span class='op'>)</span></span>
-<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>rownames</a></span><span class='op'>(</span><span class='va'>sce</span><span class='op'>)</span><span class='op'>)</span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "MALAT1" "TMSB4X" "RPS27"  "B2M"    "EEF1A1" "RPL10" </span>
-</pre>
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='st'>"scExample"</span>, package <span class='op'>=</span> <span class='st'>"singleCellTK"</span><span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>rownames</a></span><span class='op'>(</span><span class='va'>sce</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [1] "ENSG00000251562" "ENSG00000205542" "ENSG00000177954" "ENSG00000166710"
+#&gt; [5] "ENSG00000156508" "ENSG00000147403"</div><div class='input'><span class='va'>sce</span> <span class='op'>&lt;-</span> <span class='fu'>setRowNames</span><span class='op'>(</span><span class='va'>sce</span>, <span class='st'>"feature_name"</span><span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>rownames</a></span><span class='op'>(</span><span class='va'>sce</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [1] "MALAT1" "TMSB4X" "RPS27"  "B2M"    "EEF1A1" "RPL10" </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

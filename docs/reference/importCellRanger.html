@@ -77,7 +77,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.4.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.4.1</span>
       </span>
     </div>
 
@@ -341,10 +341,10 @@ argument.</p></td>
       <th>sampleNames</th>
       <td><p>A vector of user-defined sample names for the samples
 to be
-imported. Must have the same length as <code>length(unlist(sampleDirs))</code> if
+imported. Must have the same length as <code><a href='https://rdrr.io/r/base/length.html'>length(unlist(sampleDirs))</a></code> if
 <code>sampleDirs</code> is not <code>NULL</code>. Otherwise, make sure the length and
 order match the output of
-<code>unlist(lapply(cellRangerDirs, list.dirs, recursive = FALSE))</code>. Default
+<code><a href='https://rdrr.io/r/base/unlist.html'>unlist(lapply(cellRangerDirs, list.dirs, recursive = FALSE))</a></code>. Default
 <code>NULL</code>, in which case the folder names will be used as sample names.</p></td>
     </tr>
     <tr>
@@ -356,10 +356,10 @@ for each sample. <strong>Supercedes <code>dayaType</code></strong>. If <code>NUL
 will be used to determine Cell Ranger output directory. If not <code>NULL</code>,
 <code>dataType</code> will be ingored and <code>cellRangerOuts</code> specifies the
 paths. Must have length 1 or the same length as
-<code>length(unlist(sampleDirs))</code> if
+<code><a href='https://rdrr.io/r/base/length.html'>length(unlist(sampleDirs))</a></code> if
 <code>sampleDirs</code> is not <code>NULL</code>. Otherwise, make sure the length and
 order match the output of
-<code>unlist(lapply(cellRangerDirs, list.dirs, recursive = FALSE))</code>.
+<code><a href='https://rdrr.io/r/base/unlist.html'>unlist(lapply(cellRangerDirs, list.dirs, recursive = FALSE))</a></code>.
 Reference genome names might need to be
 appended for CellRanger version below 3.0.0 if reads were mapped to
 multiple genomes when running Cell Ranger pipeline. Probable options
@@ -382,30 +382,30 @@ is equivalent to
       <td><p>Character vector. Filenames for the Market Exchange
 Format (MEX) sparse matrix files (matrix.mtx or matrix.mtx.gz files).
 Must have length 1 or the same
-length as <code>length(unlist(sampleDirs))</code> if
+length as <code><a href='https://rdrr.io/r/base/length.html'>length(unlist(sampleDirs))</a></code> if
 <code>sampleDirs</code> is not <code>NULL</code>. Otherwise, make sure the length and
 order match the output of
-<code>unlist(lapply(cellRangerDirs, list.dirs, recursive = FALSE))</code>.</p></td>
+<code><a href='https://rdrr.io/r/base/unlist.html'>unlist(lapply(cellRangerDirs, list.dirs, recursive = FALSE))</a></code>.</p></td>
     </tr>
     <tr>
       <th>featuresFileNames</th>
       <td><p>Character vector. Filenames for the feature
 annotation files. They are usually named <em>features.tsv.gz</em> or
 <em>genes.tsv</em>. Must have length 1 or the same
-length as <code>length(unlist(sampleDirs))</code> if
+length as <code><a href='https://rdrr.io/r/base/length.html'>length(unlist(sampleDirs))</a></code> if
 <code>sampleDirs</code> is not <code>NULL</code>. Otherwise, make sure the length and
 order match the output of
-<code>unlist(lapply(cellRangerDirs, list.dirs, recursive = FALSE))</code>.</p></td>
+<code><a href='https://rdrr.io/r/base/unlist.html'>unlist(lapply(cellRangerDirs, list.dirs, recursive = FALSE))</a></code>.</p></td>
     </tr>
     <tr>
       <th>barcodesFileNames</th>
       <td><p>Character vector. Filename for the cell barcode
 list files. They are usually named <em>barcodes.tsv.gz</em> or
 <em>barcodes.tsv</em>. Must have length 1 or the same
-length as <code>length(unlist(sampleDirs))</code> if
+length as <code><a href='https://rdrr.io/r/base/length.html'>length(unlist(sampleDirs))</a></code> if
 <code>sampleDirs</code> is not <code>NULL</code>. Otherwise, make sure the length and
 order match the output of
-<code>unlist(lapply(cellRangerDirs, list.dirs, recursive = FALSE))</code>.</p></td>
+<code><a href='https://rdrr.io/r/base/unlist.html'>unlist(lapply(cellRangerDirs, list.dirs, recursive = FALSE))</a></code>.</p></td>
     </tr>
     <tr>
       <th>gzipped</th>
@@ -415,10 +415,10 @@ gzip compressed. <code>FALSE</code> otherwise. This is true after Cell Ranger
 3.0.0 update. Default <code>"auto"</code> which automatically detects if the
 files are gzip compressed. If not <code>"auto"</code>, <code>gzipped</code> must have
 length 1 or the same
-length as <code>length(unlist(sampleDirs))</code> if
+length as <code><a href='https://rdrr.io/r/base/length.html'>length(unlist(sampleDirs))</a></code> if
 <code>sampleDirs</code> is not <code>NULL</code>. Otherwise, make sure the length and
 order match the output of
-<code>unlist(lapply(cellRangerDirs, list.dirs, recursive = FALSE))</code>.</p></td>
+<code><a href='https://rdrr.io/r/base/unlist.html'>unlist(lapply(cellRangerDirs, list.dirs, recursive = FALSE))</a></code>.</p></td>
     </tr>
     <tr>
       <th>class</th>
@@ -430,7 +430,7 @@ readMM function), or "matrix" (as returned by
     <tr>
       <th>delayedArray</th>
       <td><p>Boolean. Whether to read the expression matrix as
-<a href='https://rdrr.io/pkg/DelayedArray/man/DelayedArray-class.html'>DelayedArray</a> object or not. Default <code>FALSE</code>.</p></td>
+DelayedArray object or not. Default <code>FALSE</code>.</p></td>
     </tr>
     <tr>
       <th>rowNamesDedup</th>
@@ -449,9 +449,9 @@ be ignored.</p></td>
       <th>reference</th>
       <td><p>Character vector. The reference genome names.
 Default <code>NULL</code>. If not <code>NULL</code>, it must gave the length and order as
-<code>length(unlist(sampleDirs))</code> if <code>sampleDirs</code> is not <code>NULL</code>.
+<code><a href='https://rdrr.io/r/base/length.html'>length(unlist(sampleDirs))</a></code> if <code>sampleDirs</code> is not <code>NULL</code>.
 Otherwise, make sure the length and order match the output of
-<code>unlist(lapply(cellRangerDirs, list.dirs, recursive = FALSE))</code>. Only needed
+<code><a href='https://rdrr.io/r/base/unlist.html'>unlist(lapply(cellRangerDirs, list.dirs, recursive = FALSE))</a></code>. Only needed
 for Cellranger version below 3.0.0.</p></td>
     </tr>
     <tr>
@@ -486,33 +486,33 @@ the function will load only filtered or raw data.</p></td>
  specify these arguments.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><span class='r-in'><span class='co'># Example #1</span></span>
-<span class='r-in'><span class='co'># The following filtered feature, cell, and matrix files were downloaded from</span></span>
-<span class='r-in'><span class='co'># https://support.10xgenomics.com/single-cell-gene-expression/datasets/</span></span>
-<span class='r-in'><span class='co'># 3.0.0/hgmm_1k_v3</span></span>
-<span class='r-in'><span class='co'># The top 10 hg19 &amp; mm10 genes are included in this example.</span></span>
-<span class='r-in'><span class='co'># Only the first 20 cells are included.</span></span>
-<span class='r-in'><span class='va'>sce</span> <span class='op'>&lt;-</span> <span class='fu'>importCellRanger</span><span class='op'>(</span></span>
-<span class='r-in'>    cellRangerDirs <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata/"</span>, package <span class='op'>=</span> <span class='st'>"singleCellTK"</span><span class='op'>)</span>,</span>
-<span class='r-in'>    sampleDirs <span class='op'>=</span> <span class='st'>"hgmm_1k_v3_20x20"</span>,</span>
-<span class='r-in'>    sampleNames <span class='op'>=</span> <span class='st'>"hgmm1kv3"</span>,</span>
-<span class='r-in'>    dataType <span class='op'>=</span> <span class='st'>"filtered"</span><span class='op'>)</span></span>
-<span class='r-in'><span class='co'># The following filtered feature, cell, and matrix files were downloaded from</span></span>
-<span class='r-in'><span class='co'># https://support.10xgenomics.com/single-cell-gene-expression/datasets/</span></span>
-<span class='r-in'><span class='co'># 2.1.0/pbmc4k</span></span>
-<span class='r-in'><span class='co'># Top 20 genes are kept. 20 cell barcodes are extracted.</span></span>
-<span class='r-in'><span class='va'>sce</span> <span class='op'>&lt;-</span> <span class='fu'>importCellRangerV2</span><span class='op'>(</span></span>
-<span class='r-in'>    cellRangerDirs <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata/"</span>, package <span class='op'>=</span> <span class='st'>"singleCellTK"</span><span class='op'>)</span>,</span>
-<span class='r-in'>    sampleDirs <span class='op'>=</span> <span class='st'>"pbmc_4k_v2_20x20"</span>,</span>
-<span class='r-in'>    sampleNames <span class='op'>=</span> <span class='st'>"pbmc4k_20"</span>,</span>
-<span class='r-in'>    reference <span class='op'>=</span> <span class='st'>'GRCh38'</span>,</span>
-<span class='r-in'>    dataTypeV2 <span class='op'>=</span> <span class='st'>"filtered"</span><span class='op'>)</span></span>
-<span class='r-in'><span class='va'>sce</span> <span class='op'>&lt;-</span> <span class='fu'>importCellRangerV3</span><span class='op'>(</span></span>
-<span class='r-in'>    cellRangerDirs <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata/"</span>, package <span class='op'>=</span> <span class='st'>"singleCellTK"</span><span class='op'>)</span>,</span>
-<span class='r-in'>    sampleDirs <span class='op'>=</span> <span class='st'>"hgmm_1k_v3_20x20"</span>,</span>
-<span class='r-in'>    sampleNames <span class='op'>=</span> <span class='st'>"hgmm1kv3"</span>,</span>
-<span class='r-in'>    dataType <span class='op'>=</span> <span class='st'>"filtered"</span><span class='op'>)</span></span>
-</pre>
+    <pre class="examples"><div class='input'><span class='co'># Example #1</span>
+<span class='co'># The following filtered feature, cell, and matrix files were downloaded from</span>
+<span class='co'># https://support.10xgenomics.com/single-cell-gene-expression/datasets/</span>
+<span class='co'># 3.0.0/hgmm_1k_v3</span>
+<span class='co'># The top 10 hg19 &amp; mm10 genes are included in this example.</span>
+<span class='co'># Only the first 20 cells are included.</span>
+<span class='va'>sce</span> <span class='op'>&lt;-</span> <span class='fu'>importCellRanger</span><span class='op'>(</span>
+    cellRangerDirs <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata/"</span>, package <span class='op'>=</span> <span class='st'>"singleCellTK"</span><span class='op'>)</span>,
+    sampleDirs <span class='op'>=</span> <span class='st'>"hgmm_1k_v3_20x20"</span>,
+    sampleNames <span class='op'>=</span> <span class='st'>"hgmm1kv3"</span>,
+    dataType <span class='op'>=</span> <span class='st'>"filtered"</span><span class='op'>)</span>
+<span class='co'># The following filtered feature, cell, and matrix files were downloaded from</span>
+<span class='co'># https://support.10xgenomics.com/single-cell-gene-expression/datasets/</span>
+<span class='co'># 2.1.0/pbmc4k</span>
+<span class='co'># Top 20 genes are kept. 20 cell barcodes are extracted.</span>
+<span class='va'>sce</span> <span class='op'>&lt;-</span> <span class='fu'>importCellRangerV2</span><span class='op'>(</span>
+    cellRangerDirs <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata/"</span>, package <span class='op'>=</span> <span class='st'>"singleCellTK"</span><span class='op'>)</span>,
+    sampleDirs <span class='op'>=</span> <span class='st'>"pbmc_4k_v2_20x20"</span>,
+    sampleNames <span class='op'>=</span> <span class='st'>"pbmc4k_20"</span>,
+    reference <span class='op'>=</span> <span class='st'>'GRCh38'</span>,
+    dataTypeV2 <span class='op'>=</span> <span class='st'>"filtered"</span><span class='op'>)</span>
+<span class='va'>sce</span> <span class='op'>&lt;-</span> <span class='fu'>importCellRangerV3</span><span class='op'>(</span>
+    cellRangerDirs <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata/"</span>, package <span class='op'>=</span> <span class='st'>"singleCellTK"</span><span class='op'>)</span>,
+    sampleDirs <span class='op'>=</span> <span class='st'>"hgmm_1k_v3_20x20"</span>,
+    sampleNames <span class='op'>=</span> <span class='st'>"hgmm1kv3"</span>,
+    dataType <span class='op'>=</span> <span class='st'>"filtered"</span><span class='op'>)</span>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

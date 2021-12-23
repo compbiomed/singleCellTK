@@ -81,7 +81,7 @@ As mentioned previously in this article, performing cell type labeling with Sing
 
 Here, we use "PBMC3k" dataset provided by CellRanger as an example.  
 
-```{R preprocess, message=FALSE, warning=FALSE, fig.align="center", cache=TRUE, results='hide'}
+```{R preprocess, message=FALSE, warning=FALSE, fig.align="center", results='hide'}
 library(singleCellTK)
 sce <- importExampleData("pbmc3k")
 sce <- runNormalization(inSCE = sce, normalizationMethod = "logNormCounts", outAssayName = "logcounts", useAssay = "counts")
@@ -91,7 +91,7 @@ sce <- runNormalization(inSCE = sce, normalizationMethod = "logNormCounts", outA
 
 Then users can use `runSingleR()` to invoke the algorithm. Here we choose to use `useBltinRef = "hpca"` to set the reference, which refers to Human Primary Cell Atlas Data [@Mabbott2013] and this will be automatically cached to users' local. We set `level = "main"` to label the PBMC3k dataset with general cell types. Users can also set it to `"fine"` for more subtypes, and `"ont"` for Gene Ontology information. For more information, please click on the function name and see the reference page of this function.  
 
-```{R singleR, message=FALSE, warning=FALSE, fig.align="center", cache=TRUE, results='hide'}
+```{R singleR, message=FALSE, warning=FALSE, fig.align="center", results='hide'}
 sce <- runSingleR(inSCE = sce, useAssay = "logcounts", useBltinRef = "hpca", level = "main", featureType = "symbol")
 ```
 
@@ -103,7 +103,7 @@ Besides, users can also use their own labeled reference datasets wrapped in a [S
 
 Users can choose to visualize the labeling result on a scatter plot. Here, we provide an example to create a UMAP embedding that can clearly reflect the relationship between cells in 2D, and then color the cells by the labels.  
 
-```{R visualization, message=FALSE, warning=FALSE, fig.align="center", cache=TRUE, results='hide'}
+```{R visualization, message=FALSE, warning=FALSE, fig.align="center", results='hide'}
 sce <- runNormalization(inSCE = sce, useAssay = "logcounts", scale = TRUE, outAssayName = "logcounts_scaled")
 sce <- seuratFindHVG(inSCE = sce, useAssay = "counts", hvgMethod = "vst")
 sce <- getTopHVG(inSCE = sce, method = "vst", n = 2000, altExp = "hvg")
