@@ -1626,9 +1626,16 @@ shinyServer(function(input, output, session) {
       }
     }
   }
+  
+  # Stop auto-scroll console tabe
+  observeEvent(input$qcAutoScrollStatus, {
+    stopAutoScroll <- paste0("clearInterval(", input$qcAutoScrollStatus, ");")
+    shinyjs::runjs(stopAutoScroll)
+  })
 
   
   observeEvent(input$runQC, withConsoleMsgRedirect({
+    shinyjs::runjs("var intervalVarAutoScrollConsole =  setInterval(startAutoScroll, 1000); Shiny.onInputChange('qcAutoScrollStatus', intervalVarAutoScrollConsole);")
     withBusyIndicatorServer("runQC", {
       if (!qcInputExists()) {
         insertUI(
@@ -1764,7 +1771,7 @@ shinyServer(function(input, output, session) {
       }
       delay(500, removeNotification(id = "qcNotification"))
     })
-
+    
   }))
 
   #-----------#

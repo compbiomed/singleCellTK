@@ -161,17 +161,14 @@ source("ui_08_3_heatmap.R", local = TRUE) #creates shinyPanelHeatmap variable
 #source("ui_09_curatedworkflows.R", local = TRUE) #creates shinyPanelCuratedWorkflows variable
 source("ui_09_2_seuratWorkflow.R", local = TRUE) #creates shinyPanelSeurat variable
 jsCode <- "
-
 shinyjs.disableTabs = function() {
   let tabs = $('.nav li a').not('a[data-value=\"Data\"], a[data-value=\"Import\"]');
   tabs.bind('click', function(e) {
     e.preventDefault();
     return false;
   });
-
   tabs.addClass('disabled');
 }
-
 shinyjs.enableTabs = function() {
   let tabs = $('.nav li a');
   tabs.unbind('click');
@@ -186,17 +183,17 @@ function mutate(mutations) {
   });
 }
 
-  setInterval(function() {
-            var $panel = $('#consolePanel');
+function startAutoScroll() {
+                var $panel = $('#consolePanel');
     $panel.animate({scrollTop: $panel.prop('scrollHeight')});
-}, 1000);
+}
 
 var target = document.querySelector('#consoleText')
 var observer = new MutationObserver( mutate );
 var config = { characterData: false, attributes: false, childList: true, subtree: false };
-
 observer.observe(target, config);
 "
+
 
 if (is.null(getShinyOption("includeVersion"))){
   tooltitle <- paste("Single Cell Toolkit v",
