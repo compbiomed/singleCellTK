@@ -373,10 +373,10 @@ generateHTANMeta <- function(dropletSCE = NULL,
   level3Meta <- do.call(base::rbind, level3List)
   level4Meta <- do.call(base::rbind, level4List)
 
-  level3Meta$checkSumInt <- sapply(level3Meta$FileLoc, function(f) {
+  level3Meta$checkSumInt <- vapply(level3Meta$FileLoc, function(f) {
     hash <- tools::md5sum(f)
     .convert_hex_to_int(hash)
-  })
+  }, character(1))
   
   level3Meta$`HTAN Data File ID` <- paste(level3Meta$`HTAN Patient ID`, level3Meta$checkSumInt, sep="_")
   linkMat <- dplyr::group_by(level3Meta, .data$SAMPLE) %>% dplyr::summarise(LinkedMat = paste(.data$`HTAN Data File ID`, collapse=","))
@@ -386,10 +386,10 @@ generateHTANMeta <- function(dropletSCE = NULL,
   level4Meta$`HTAN Parent Data File ID` <- unlist(ParentFile[match(level4Meta$`HTAN Patient ID`, ParentFile$`HTAN Patient ID`), 
                                                              'HTAN Data File ID'])
   
-  level4Meta$checkSumInt <- sapply(level4Meta$FileLoc, function(f) {
+  level4Meta$checkSumInt <- vapply(level4Meta$FileLoc, function(f) {
     hash <- tools::md5sum(f)
     .convert_hex_to_int(hash)
-  })
+  }, character(1))
   level4Meta$`HTAN Data File ID` <- paste(level4Meta$`HTAN Patient ID`, level4Meta$checkSumInt, sep="_")
   
   
