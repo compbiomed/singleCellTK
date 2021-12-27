@@ -76,6 +76,7 @@ Visualizes values stored in the assay slot of a
  SingleCellExperiment object via a density plot.
 }
 \examples{
+data("mouseBrainSubsetSCE")
 plotSCEDensityAssayData(
   inSCE = mouseBrainSubsetSCE,
   feature = "Apoe"

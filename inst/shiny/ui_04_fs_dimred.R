@@ -166,6 +166,10 @@ shinyPanelFS_DimRed <- fluidPage(
                               step = 1
                             )
                           ),
+                          numericInput(inputId = "seed_dimRed",
+                                       label = "Seed value for reproducibility of result:",
+                                       value = 12345,
+                                       step = 1),
                           withBusyIndicatorUI(actionButton("runDimred", "Run"))
                         )
                       ))),
@@ -221,10 +225,10 @@ shinyPanelFS_DimRed <- fluidPage(
                                          min = 2, max = 100, value = 30),
                             numericInput("mindistUMAP",
                                          "minimum distance between points",
-                                         min = 0.001, max = 0.1, value = 0.5),
+                                         min = 0.001, max = 0.1, value = 0.01),
                             numericInput("alphaUMAP", "learning rate(alpha)",
                                          value = 1),
-                            numericInput("spreadUMAP", "spread", min = 0.001, value = 5)
+                            numericInput("spreadUMAP", "spread", min = 0.001, value = 1)
                           ),
                           conditionalPanel(
                             condition = "input.dimRedPlotMethod_tsneUmap == 'rTSNE'",
@@ -263,6 +267,10 @@ shinyPanelFS_DimRed <- fluidPage(
                                          label = "Set spread:",
                                          value = 1),
                           ),
+                          numericInput(inputId = "seed__tsneUmap",
+                                       label = "Seed value for reproducibility of result:",
+                                       value = 12345,
+                                       step = 1),
                           withBusyIndicatorUI(actionButton("runDimred_tsneUmap", "Run"))
                         )
                       ))),

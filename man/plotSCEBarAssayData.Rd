@@ -83,6 +83,7 @@ Visualizes values stored in the assay slot of a
  SingleCellExperiment object via a bar plot.
 }
 \examples{
+data("mouseBrainSubsetSCE")
 plotSCEBarAssayData(
   inSCE = mouseBrainSubsetSCE,
   feature = "Apoe", groupBy = "sex"

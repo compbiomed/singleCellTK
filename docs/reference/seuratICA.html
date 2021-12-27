@@ -80,7 +80,7 @@ components within the sce object" />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.4.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.4.1</span>
       </span>
     </div>
 
@@ -282,7 +282,8 @@ components within the sce object</p>
   <span class='va'>useAssay</span>,
   reducedDimName <span class='op'>=</span> <span class='st'>"seuratICA"</span>,
   features <span class='op'>=</span> <span class='cn'>NULL</span>,
-  nics <span class='op'>=</span> <span class='fl'>20</span>
+  nics <span class='op'>=</span> <span class='fl'>20</span>,
+  seed <span class='op'>=</span> <span class='cn'>NULL</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -310,6 +311,11 @@ stored variable features.</p></td>
     <tr>
       <th>nics</th>
       <td><p>Number of independent components to compute. Default <code>20</code>.</p></td>
+    </tr>
+    <tr>
+      <th>seed</th>
+      <td><p>Random seed for reproducibility of results.
+Default <code>NULL</code> will use global seed in use by the R environment.</p></td>
     </tr>
     </table>
 

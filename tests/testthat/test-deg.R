@@ -61,6 +61,9 @@ test_that(desc = "Testing Wilcoxon DE", {
   testthat::expect_true("aVSbWilcox" %in% names(metadata(sceBatches)$diffExp))
 
   # Also Plotting functions at this point
+  vlcn <- plotDEGVolcano(sceBatches, "aVSbWilcox")
+  testthat::expect_is(vlcn, "ggplot")
+  
   hm <- plotDEGHeatmap(sceBatches, "aVSbWilcox")
   testthat::expect_is(hm, "HeatmapList")
 

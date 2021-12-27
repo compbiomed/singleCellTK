@@ -113,6 +113,10 @@ shinyPanelSeurat <- fluidPage(
                                               numericInput(inputId = "pca_compute_heatmap_nfeatures",
                                                            label = "Set number of features for heatmap:", value = 30, step = 1),
                                             ),
+                                            numericInput(inputId = "seed_PCA",
+                                                         label = "Seed value for reproducibility of result:",
+                                                         value = 42,
+                                                         step = 1),
                                             actionButton(inputId = "run_pca_button", "Run PCA")
                                              ),
                                         panel(heading = "Select No. of Components",
@@ -150,6 +154,10 @@ shinyPanelSeurat <- fluidPage(
                                                        numericInput(inputId = "ica_compute_heatmap_nfeatures",
                                                                     label = "Set number of features for heatmap:", value = 30, step = 1),
                                                      ),
+                                                     numericInput(inputId = "seed_ICA",
+                                                                  label = "Seed value for reproducibility of result:",
+                                                                  value = 42,
+                                                                  step = 1),
                                                      actionButton(inputId = "run_ica_button", "Run ICA")
                                                ),
                                                panel(heading = "Select No. of Components",
@@ -190,6 +198,10 @@ shinyPanelSeurat <- fluidPage(
                                             selectInput(inputId = "reduction_tsne_method", label = "Select reduction method: ", choices = c("pca", "ica")),
                                             #textInput(inputId = "reduction_tsne_count", label = "Select number of reduction components: ", value = "20"),
                                             numericInput(inputId = "perplexity_tsne", label = "Set perplexity:", value = 30),
+                                            numericInput(inputId = "seed_TSNE",
+                                                         label = "Seed value for reproducibility of result:",
+                                                         value = 1,
+                                                         step = 1),
                                             htmlOutput(outputId = "display_message_tsne", inline = FALSE),
                                             actionButton(inputId = "run_tsne_button", "Run tSNE")
                                              )
@@ -219,6 +231,10 @@ shinyPanelSeurat <- fluidPage(
                                             numericInput(inputId = "min_dist_umap", label = "Set min.dist:", value = 0.3),
                                             numericInput(inputId = "n_neighbors_umap", label = "Set n.neighbors:", value = 30, step = 1),
                                             numericInput(inputId = "spread_umap", label = "Set spread:", value = 1),
+                                            numericInput(inputId = "seed_UMAP",
+                                                         label = "Seed value for reproducibility of result:",
+                                                         value = 42,
+                                                         step = 1),
                                             htmlOutput(outputId = "display_message_umap", inline = FALSE),
                                             actionButton(inputId = "run_umap_button", "Run UMAP")
                                             )

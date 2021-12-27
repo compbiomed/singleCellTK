@@ -14,6 +14,8 @@
 #'  object. Can be one of "Matrix" (as returned by
 #'  \link{readMM} function), or "matrix" (as returned by
 #'  \link[base]{matrix} function). Default "Matrix".
+#' @param rowNamesDedup Boolean. Whether to deduplicate rownames. Default 
+#'  \code{TRUE}.
 #' @return A \code{SingleCellExperiment} object containing the count
 #'  matrix, the feature annotations, and the cell annotation
 #'  (which includes QC metrics stored in 'featureDump.txt').
@@ -24,7 +26,8 @@ importAlevin <- function(
   alevinDir = NULL,
   sampleName = 'sample',
   delayedArray = FALSE,
-  class = c("Matrix", "matrix")) {
+  class = c("Matrix", "matrix"),
+  rowNamesDedup = TRUE) {
 
   class <- match.arg(class)
 
@@ -45,6 +48,15 @@ importAlevin <- function(
   if (delayedArray) {
     mat <- DelayedArray::DelayedArray(mat)
   }
+  
+  if (isTRUE(rowNamesDedup)) {
+    if (any(duplicated(rownames(mat)))) {
+      message("Duplicated gene names found, adding '-1', '-2', ",
+              "... suffix to them.")
+    }
+    mat <- dedupRowNames(mat)
+  }
+  
   genes <- rownames(mat)
   cb <- .readBarcodes(file.path(alevinDir, 'alevin/featureDump.txt'),
                       header = 'auto',
@@ -62,6 +74,6 @@ importAlevin <- function(
     column_name = coln,
     sample = sampleName,
     row.names = coln)
-
+  
   return(sce)
 }

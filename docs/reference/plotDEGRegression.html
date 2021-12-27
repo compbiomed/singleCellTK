@@ -6,8 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>plot the linear regression to show visualize the expression the of DEGs
-identified by differential expression analysis — plotDEGRegression • singleCellTK</title>
+<title>Create linear regression plot to show the expression the of top DEGs — plotDEGRegression • singleCellTK</title>
 
 
 <!-- jquery -->
@@ -42,10 +41,8 @@ identified by differential expression analysis — plotDEGRegression • singleC
   <link href="../extra.css" rel="stylesheet">
   <script src="../extra.js"></script>
 
-<meta property="og:title" content="plot the linear regression to show visualize the expression the of DEGs
-identified by differential expression analysis — plotDEGRegression" />
-<meta property="og:description" content="plot the linear regression to show visualize the expression the of DEGs
-identified by differential expression analysis" />
+<meta property="og:title" content="Create linear regression plot to show the expression the of top DEGs — plotDEGRegression" />
+<meta property="og:description" content="Create linear regression plot to show the expression the of top DEGs" />
 
 
 
@@ -77,7 +74,7 @@ identified by differential expression analysis" />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.4.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.4.1</span>
       </span>
     </div>
 
@@ -261,15 +258,13 @@ identified by differential expression analysis" />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>plot the linear regression to show visualize the expression the of DEGs
-identified by differential expression analysis</h1>
+    <h1>Create linear regression plot to show the expression the of top DEGs</h1>
     <small class="dont-index">Source: <a href='https://github.com/compbiomed/singleCellTK/blob/master/R/plotDEAnalysis.R'><code>R/plotDEAnalysis.R</code></a></small>
     <div class="hidden name"><code>plotDEGRegression.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>plot the linear regression to show visualize the expression the of DEGs
-identified by differential expression analysis</p>
+    <p>Create linear regression plot to show the expression the of top DEGs</p>
     </div>
 
     <pre class="usage"><span class='fu'>plotDEGRegression</span><span class='op'>(</span>
@@ -289,8 +284,7 @@ identified by differential expression analysis</p>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>inSCE</th>
-      <td><p>SingleCellExperiment inherited object.
-<code><a href='runMAST.html'>runMAST()</a></code> has to be run in advance.</p></td>
+      <td><p>SingleCellExperiment inherited object.</p></td>
     </tr>
     <tr>
       <th>useResult</th>
@@ -300,8 +294,8 @@ used when running a differential expression analysis function.</p></td>
     <tr>
       <th>threshP</th>
       <td><p>logical. Whether to plot threshold values from adaptive
-thresholding, instead of using the assay used by <code><a href='runMAST.html'>runMAST()</a></code>. Default
-<code>FALSE</code>.</p></td>
+thresholding, instead of using the assay used by when performing DE analysis.
+Default <code>FALSE</code>.</p></td>
     </tr>
     <tr>
       <th>labelBy</th>
@@ -337,6 +331,10 @@ to see if the counts are logged. Default <code>TRUE</code></p></td>
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>A ggplot object of linear regression</p>
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>Any of the differential expression analysis method from SCTK should 
+be performed prior to using this function</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='st'>"sceBatches"</span><span class='op'>)</span>

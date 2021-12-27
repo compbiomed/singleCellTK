@@ -100,6 +100,7 @@ Visualizes values stored in any slot of a
  SingleCellExperiment object via a violin plot.
 }
 \examples{
+data("mouseBrainSubsetSCE")
 plotSCEViolin(
   inSCE = mouseBrainSubsetSCE, slotName = "assays",
   itemName = "counts", feature = "Apoe", groupBy = "sex"

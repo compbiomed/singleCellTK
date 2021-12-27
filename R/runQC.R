@@ -78,6 +78,7 @@ runCellQC <- function(inSCE,
     inSCE <- do.call(runDoubletFinder,
       c(list(inSCE = quote(inSCE),
       sample = sample,
+      useAssay = useAssay,
       seed = seed),
       paramsList[["doubletFinder"]]))
   }

@@ -37,6 +37,7 @@ Given a list of genes and a SingleCellExperiment object, return
 the binary or continuous expression of the genes.
 }
 \examples{
+data("mouseBrainSubsetSCE")
 getBiomarker(mouseBrainSubsetSCE, gene="C1qa")
 
 }

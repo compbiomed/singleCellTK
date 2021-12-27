@@ -98,6 +98,8 @@ runCxds <- function(inSCE,
         }
     }
 
+    colData(inSCE)[, paste0("scds_", colnames(output))] <- NULL
+    
     colnames(output) <- paste0("scds_", colnames(output))
     colData(inSCE) = cbind(colData(inSCE), output)
 
@@ -217,6 +219,8 @@ runBcds <- function(inSCE,
         }
 
     }
+    
+    colData(inSCE)[, paste0("scds_", colnames(output))] <- NULL
 
     colnames(output) <- paste0("scds_", colnames(output))
     colData(inSCE) = cbind(colData(inSCE), output)
@@ -347,6 +351,8 @@ runCxdsBcdsHybrid <- function(inSCE,
         }
     }
 
+    colData(inSCE)[, paste0("scds_", colnames(output))] <- NULL
+    
     colnames(output) <- paste0("scds_", colnames(output))
     colData(inSCE) = cbind(colData(inSCE), output)
 

@@ -12,7 +12,8 @@ importBUStools(
   barcodesFileNames = "genes.barcodes.txt",
   gzipped = "auto",
   class = c("Matrix", "matrix"),
-  delayedArray = FALSE
+  delayedArray = FALSE,
+  rowNamesDedup = TRUE
 )
 }
 \arguments{
@@ -47,6 +48,9 @@ object. Can be one of "Matrix" (as returned by
 
 \item{delayedArray}{Boolean. Whether to read the expression matrix as
 \link[DelayedArray]{DelayedArray-class} object or not. Default \code{FALSE}.}
+
+\item{rowNamesDedup}{Boolean. Whether to deduplicate rownames. Default 
+\code{TRUE}.}
 }
 \value{
 A \code{SingleCellExperiment} object containing the count

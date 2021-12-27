@@ -13,7 +13,8 @@ scaterPCA(
   reducedDimName = "PCA",
   nComponents = 50,
   scale = FALSE,
-  ntop = NULL
+  ntop = NULL,
+  seed = NULL
 )
 }
 \arguments{
@@ -37,6 +38,8 @@ Default \code{FALSE}.}
 
 \item{ntop}{Number of top features to use as a further variable feature
 selection. Default \code{NULL}.}
+
+\item{seed}{Random seed for reproducibility of PCA results.}
 }
 \value{
 A \linkS4class{SingleCellExperiment} object with PCA computation

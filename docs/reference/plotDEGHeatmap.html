@@ -42,14 +42,7 @@
   <script src="../extra.js"></script>
 
 <meta property="og:title" content="Heatmap visualization of DEG result — plotDEGHeatmap" />
-<meta property="og:description" content="A differential expression analysis function has to be run in advance so that
-information is stored in the metadata of the input SCE object. This function
-wraps plotSCEHeatmap.
-A feature annotation basing on the log2FC level called &quot;regulation&quot;
-will be automatically added. A cell annotation basing on the condition
-selection while running the analysis called &quot;condition&quot;, and the
-annotations used from colData(inSCE) while setting the condition and
-covariates will also be added." />
+<meta property="og:description" content="Heatmap visualization of DEG result" />
 
 
 
@@ -81,7 +74,7 @@ covariates will also be added." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.4.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.4.1</span>
       </span>
     </div>
 
@@ -271,14 +264,7 @@ covariates will also be added." />
     </div>
 
     <div class="ref-description">
-    <p>A differential expression analysis function has to be run in advance so that
-information is stored in the metadata of the input SCE object. This function
-wraps plotSCEHeatmap.
-A feature annotation basing on the log2FC level called <code>"regulation"</code>
-will be automatically added. A cell annotation basing on the condition
-selection while running the analysis called <code>"condition"</code>, and the
-annotations used from <code>colData(inSCE)</code> while setting the condition and
-covariates will also be added.</p>
+    <p>Heatmap visualization of DEG result</p>
     </div>
 
     <pre class="usage"><span class='fu'>plotDEGHeatmap</span><span class='op'>(</span>
@@ -306,8 +292,7 @@ covariates will also be added.</p>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>inSCE</th>
-      <td><p>SingleCellExperiment inherited object.
-<code><a href='runMAST.html'>runMAST()</a></code> has to be run in advance.</p></td>
+      <td><p>SingleCellExperiment inherited object.</p></td>
     </tr>
     <tr>
       <th>useResult</th>
@@ -402,6 +387,16 @@ this(these) annotation(s). Should exist in either <code>rowDataName</code> or
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>A <code><a href='https://rdrr.io/pkg/ComplexHeatmap/man/Heatmap.html'>ComplexHeatmap::Heatmap</a></code> object</p>
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>A differential expression analysis function has to be run in advance 
+so that information is stored in the metadata of the input SCE object. This 
+function wraps <code><a href='plotSCEHeatmap.html'>plotSCEHeatmap</a></code>.
+A feature annotation basing on the log2FC level called <code>"regulation"</code>
+will be automatically added. A cell annotation basing on the condition
+selection while running the analysis called <code>"condition"</code>, and the
+annotations used from <code>colData(inSCE)</code> while setting the condition and
+covariates will also be added.</p>
     <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
 
     <p>Yichen Wang</p>

@@ -125,6 +125,7 @@ Plot results of reduced dimensions data and
  colors by feature data stored in the assays slot.
 }
 \examples{
+data("mouseBrainSubsetSCE")
 plotSCEDimReduceFeatures(
   inSCE = mouseBrainSubsetSCE, feature = "Apoe",
   shape = NULL, reducedDimName = "TSNE_counts",

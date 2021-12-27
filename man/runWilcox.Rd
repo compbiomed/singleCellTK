@@ -17,8 +17,8 @@ runWilcox(
   groupName2,
   covariates = NULL,
   onlyPos = FALSE,
-  log2fcThreshold = 0.25,
-  fdrThreshold = 0.05,
+  log2fcThreshold = NULL,
+  fdrThreshold = NULL,
   overwrite = FALSE
 )
 }
@@ -65,10 +65,10 @@ will be ignored if any, but included in metadata for plotting. Default
 Default \code{FALSE}.}
 
 \item{log2fcThreshold}{Only out put DEGs with the absolute values of log2FC
-greater than this value. Default \code{0.25}}
+greater than this value. Default \code{NULL}}
 
 \item{fdrThreshold}{Only out put DEGs with FDR value less than this
-value. Default \code{0.05}}
+value. Default \code{NULL}}
 
 \item{overwrite}{A logical scalar. Whether to overwrite result if exists.
 Default \code{FALSE}.}
