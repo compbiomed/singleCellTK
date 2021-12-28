@@ -1,3 +1,12 @@
+Changes in Version 2.4.1 (2021-12-22)
+================================================================================
+* Added new function fora DEG volcano plot (plotDEGVolcano)
+* Added new function for plotting pathway scores (plotPathway)
+* Added Pathway Analysis section to the tutorials
+* Added seed parameter to several functions and UI for reproducibility
+* Updated R console and GUI tutorials to match each other
+* Fixed console logging in the GUI
+
 Changes in Version 2.4.0 (2021-10-27)
 ================================================================================
 * Updated version to match Bioconductor

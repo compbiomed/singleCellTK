@@ -13,7 +13,8 @@ getTSNE(
   nIterations = 1000,
   perplexity = 30,
   run_pca = TRUE,
-  ntop = NULL
+  ntop = NULL,
+  seed = NULL
 )
 }
 \arguments{
@@ -40,6 +41,9 @@ reductions. Default \code{"TSNE"}.}
 
 \item{ntop}{Number of top features to use as a further variable feature
 selection. Default \code{NULL}.}
+
+\item{seed}{Random seed for reproducibility of tSNE results. 
+Default \code{NULL} will use global seed in use by the R environment.}
 }
 \value{
 A \linkS4class{SingleCellExperiment} object with tSNE computation

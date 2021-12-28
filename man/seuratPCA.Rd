@@ -12,6 +12,7 @@ seuratPCA(
   reducedDimName = "seuratPCA",
   nPCs = 20,
   features = NULL,
+  seed = NULL,
   verbose = TRUE
 )
 }
@@ -29,6 +30,9 @@ Default \code{seuratPCA}.}
 \item{features}{Specify the feature names or rownames which should be used
 for computation of PCA. Default is \code{NULL} which will use the previously
 stored variable features.}
+
+\item{seed}{Random seed for reproducibility of results.
+Default \code{NULL} will use global seed in use by the R environment.}
 
 \item{verbose}{Logical value indicating if informative messages should
 be displayed. Default is \code{TRUE}.}

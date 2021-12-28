@@ -9,7 +9,7 @@ different batches annotated}
 An object of class \code{SingleCellExperiment} with 100 rows and 250 columns.
 }
 \usage{
-sceBatches
+data('sceBatches')
 }
 \description{
 Two batches of pancreas scRNAseq dataset are combined with their original
@@ -18,6 +18,5 @@ Two batches came from Wang, et al., 2016, annotated as `'w'`; and Xin, et
 al., 2016, annotated as `'x'`. Two common cell types, `'alpha'` and
 `'beta'`, that could be found in both original studies with relatively
 large population were kept for cleaner demonstration.
-data('sceBatches')
 }
 \keyword{datasets}

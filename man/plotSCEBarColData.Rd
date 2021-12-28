@@ -76,6 +76,7 @@ Visualizes values stored in the colData slot of a
  SingleCellExperiment object via a bar plot.
 }
 \examples{
+data("mouseBrainSubsetSCE")
 plotSCEBarColData(
   inSCE = mouseBrainSubsetSCE,
   coldata = "age", groupBy = "sex"

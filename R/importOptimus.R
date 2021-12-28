@@ -10,20 +10,26 @@
   #  sparse <- reticulate::import("scipy.sparse")
   #  numpy <- reticulate::import("numpy")
   if (!reticulate::py_module_available(module = "scipy.sparse")) {
-    stop("Error!", "Cannot find python module 'scipy.sparse', please install Conda and run sctkPythonInstallConda()
-         or run sctkPythonInstallVirtualEnv(). If one of these have been previously run to install the modules,
-         make sure to run selectSCTKConda() or selectSCTKVirtualEnvironment(), respectively, if R has been
-         restarted since the module installation. Alternatively, scipy can be installed on the local machine
-         with pip (e.g. pip install scipy) and then the 'use_python()' function from the 'reticulate' package
-         can be used to select the correct Python environment.")
+    stop("Error!", "Cannot find python module 'scipy.sparse', please install 
+          Conda and run sctkPythonInstallConda() or run 
+          sctkPythonInstallVirtualEnv(). If one of these have been previously 
+          run to install the modules, make sure to run selectSCTKConda() or 
+          selectSCTKVirtualEnvironment(), respectively, if R has been restarted 
+          since the module installation. Alternatively, scipy can be installed 
+          on the local machine with pip (e.g. pip install scipy) and then the 
+          'use_python()' function from the 'reticulate' package can be used to 
+         select the correct Python environment.")
   }
   if (!reticulate::py_module_available(module = "numpy")) {
-    stop("Error!", "Cannot find python module 'numpy', please install Conda and run sctkPythonInstallConda()
-         or run sctkPythonInstallVirtualEnv(). If one of these have been previously run to install the modules,
-         make sure to run selectSCTKConda() or selectSCTKVirtualEnvironment(), respectively, if R has been
-         restarted since the module installation. Alternatively, numpy can be installed on the local machine
-         with pip (e.g. pip install numpy) and then the 'use_python()' function from the 'reticulate' package
-         can be used to select the correct Python environment.")
+    stop("Error!", "Cannot find python module 'numpy', please install Conda and 
+          run sctkPythonInstallConda() or run sctkPythonInstallVirtualEnv(). If 
+          one of these have been previously run to install the modules, make 
+          sure to run selectSCTKConda() or selectSCTKVirtualEnvironment(), 
+          respectively, if R has been restarted since the module installation. 
+          Alternatively, numpy can be installed on the local machine with pip 
+          (e.g. pip install numpy) and then the 'use_python()' function from the
+          'reticulate' package can be used to select the correct Python 
+          environment.")
   }
 
   error <- try({
@@ -56,7 +62,9 @@
   }, silent = TRUE)
 
   if(inherits(error, "try-error")) {
-    stop(paste0("importOptimus did not complete successfully. SCE could not be generated. Error given during the import process: \n\n", error))
+    stop(paste0("importOptimus did not complete successfully. SCE could not be",
+                "generated. Error given during the import process: \n\n", 
+                error))
   }
 
   if (class == "matrix") {
@@ -180,7 +188,8 @@
   geneMetricsLocation,
   emptyDropsLocation,
   class,
-  delayedArray) {
+  delayedArray,
+  rowNamesDedup) {
 
   .checkArgsImportOptimus(OptimusDirs, samples)
 
@@ -201,6 +210,15 @@
   }
 
   sce <- do.call(SingleCellExperiment::cbind, res)
+  
+  if (isTRUE(rowNamesDedup)) {
+    if (any(duplicated(rownames(sce)))) {
+      message("Duplicated gene names found, adding '-1', '-2', ",
+              "... suffix to them.")
+    }
+    sce <- dedupRowNames(sce)
+  }
+  
   return(sce)
 }
 
@@ -247,6 +265,8 @@
 #'  \link[base]{matrix} function). Default "Matrix".
 #' @param delayedArray Boolean. Whether to read the expression matrix as
 #'  \link{DelayedArray} object or not. Default \code{FALSE}.
+#' @param rowNamesDedup Boolean. Whether to deduplicate rownames. Default 
+#'  \code{TRUE}.
 #' @return A \link[SingleCellExperiment]{SingleCellExperiment} object
 #'  containing the count
 #'  matrix, the gene annotation, and the cell annotation.
@@ -267,7 +287,8 @@ importOptimus <- function(OptimusDirs,
   geneMetricsLocation = "call-MergeGeneMetrics/merged-gene-metrics.csv.gz",
   emptyDropsLocation = "call-RunEmptyDrops/empty_drops_result.csv",
   class = c("Matrix", "matrix"),
-  delayedArray = FALSE) {
+  delayedArray = FALSE,
+  rowNamesDedup = TRUE) {
 
   class <- match.arg(class)
 
@@ -280,6 +301,7 @@ importOptimus <- function(OptimusDirs,
     geneMetricsLocation = geneMetricsLocation,
     emptyDropsLocation = emptyDropsLocation,
     class = class,
-    delayedArray = delayedArray)
+    delayedArray = delayedArray,
+    rowNamesDedup = rowNamesDedup)
 
 }

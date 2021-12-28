@@ -13,6 +13,7 @@ runDimReduce(
   useAltExp = NULL,
   reducedDimName,
   nComponents = 20,
+  seed = NULL,
   ...
 )
 }
@@ -38,6 +39,9 @@ selected variable features. Default \code{NULL}.}
 \item{nComponents}{Specify the number of dimensions to compute with the
 selected method in case of PCA/ICA and the number of components to
 use in the case of TSNE/UMAP methods.}
+
+\item{seed}{Random seed for reproducibility of results.
+Default \code{NULL} will use global seed in use by the R environment.}
 
 \item{...}{The other arguments for running a specific algorithm. Please refer
 to the one you use.}

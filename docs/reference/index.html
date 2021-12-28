@@ -73,7 +73,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.4.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.4.1</span>
       </span>
     </div>
 
@@ -896,17 +896,21 @@ Method supported: 'MAST', 'DESeq2', 'Limma', 'ANOVA'</p></td>
       </tr><tr>
         
         <td>
+          <p><code><a href="plotDEGVolcano.html">plotDEGVolcano()</a></code> </p>
+        </td>
+        <td><p>Generate volcano plot for DEGs</p></td>
+      </tr><tr>
+        
+        <td>
           <p><code><a href="plotDEGViolin.html">plotDEGViolin()</a></code> </p>
         </td>
-        <td><p>plot the violin plot to show visualize the expression distribution of DEGs
-identified by differential expression analysis</p></td>
+        <td><p>Generate violin plot to show the expression of top DEGs</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="plotDEGRegression.html">plotDEGRegression()</a></code> </p>
         </td>
-        <td><p>plot the linear regression to show visualize the expression the of DEGs
-identified by differential expression analysis</p></td>
+        <td><p>Create linear regression plot to show the expression the of top DEGs</p></td>
       </tr><tr>
         
         <td>
@@ -958,7 +962,7 @@ on each cluster against all the others.</p></td>
         <td>
           <p><code><a href="plotMarkerDiffExp.html">plotMarkerDiffExp()</a></code> <code><a href="plotMarkerDiffExp.html">plotMarkerDiffExp()</a></code> </p>
         </td>
-        <td><p>Plot a heatmap to visualize the result of <code>findMarkerDiffExp</code></p></td>
+        <td><p>Plot a heatmap to visualize the result of <code><a href='https://rdrr.io/pkg/singleCellTK/man/findMarkerDiffExp.html'>findMarkerDiffExp</a></code></p></td>
       </tr>
     </tbody><tbody>
       <tr>
@@ -1017,6 +1021,18 @@ enrichment</p></td>
           <p><code><a href="runVAM.html">runVAM()</a></code> </p>
         </td>
         <td><p>Run VAM to score gene sets in single cell data</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="getPathwayResultNames.html">getPathwayResultNames()</a></code> </p>
+        </td>
+        <td><p>List pathway analysis result names</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="plotPathway.html">plotPathway()</a></code> </p>
+        </td>
+        <td><p>Generate violin plots for pathway analysis results</p></td>
       </tr>
     </tbody><tbody>
       <tr>
@@ -1167,18 +1183,18 @@ into the sce object</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="seuratScaleData.html">seuratScaleData()</a></code> </p>
-        </td>
-        <td><p>seuratScaleData
-Scales the input sce object according to the input parameters</p></td>
-      </tr><tr>
-        
-        <td>
           <p><code><a href="seuratSCTransform.html">seuratSCTransform()</a></code> </p>
         </td>
         <td><p>seuratSCTransform
 Runs the <a href='https://satijalab.org/seurat/reference/SCTransform.html'>SCTransform</a> function to transform/normalize the input
 data</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="seuratScaleData.html">seuratScaleData()</a></code> </p>
+        </td>
+        <td><p>seuratScaleData
+Scales the input sce object according to the input parameters</p></td>
       </tr><tr>
         
         <td>
@@ -1254,12 +1270,6 @@ in the data</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="plotDecontXResults.html">plotDecontXResults()</a></code> </p>
-        </td>
-        <td><p>Plots for runDecontX outputs.</p></td>
-      </tr><tr>
-        
-        <td>
           <p><code><a href="plotDEGHeatmap.html">plotDEGHeatmap()</a></code> </p>
         </td>
         <td><p>Heatmap visualization of DEG result</p></td>
@@ -1268,15 +1278,25 @@ in the data</p></td>
         <td>
           <p><code><a href="plotDEGRegression.html">plotDEGRegression()</a></code> </p>
         </td>
-        <td><p>plot the linear regression to show visualize the expression the of DEGs
-identified by differential expression analysis</p></td>
+        <td><p>Create linear regression plot to show the expression the of top DEGs</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="plotDEGViolin.html">plotDEGViolin()</a></code> </p>
         </td>
-        <td><p>plot the violin plot to show visualize the expression distribution of DEGs
-identified by differential expression analysis</p></td>
+        <td><p>Generate violin plot to show the expression of top DEGs</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="plotDEGVolcano.html">plotDEGVolcano()</a></code> </p>
+        </td>
+        <td><p>Generate volcano plot for DEGs</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="plotDecontXResults.html">plotDecontXResults()</a></code> </p>
+        </td>
+        <td><p>Plots for runDecontX outputs.</p></td>
       </tr><tr>
         
         <td>
@@ -1305,15 +1325,15 @@ and UMAP</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="plotMarkerDiffExp.html">plotMarkerDiffExp()</a></code> <code><a href="plotMarkerDiffExp.html">plotMarkerDiffExp()</a></code> </p>
-        </td>
-        <td><p>Plot a heatmap to visualize the result of <code>findMarkerDiffExp</code></p></td>
-      </tr><tr>
-        
-        <td>
           <p><code><a href="plotMASTThresholdGenes.html">plotMASTThresholdGenes()</a></code> </p>
         </td>
         <td><p>MAST Identify adaptive thresholds</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="plotMarkerDiffExp.html">plotMarkerDiffExp()</a></code> <code><a href="plotMarkerDiffExp.html">plotMarkerDiffExp()</a></code> </p>
+        </td>
+        <td><p>Plot a heatmap to visualize the result of <code><a href='https://rdrr.io/pkg/singleCellTK/man/findMarkerDiffExp.html'>findMarkerDiffExp</a></code></p></td>
       </tr><tr>
         
         <td>
@@ -1323,21 +1343,15 @@ and UMAP</p></td>
       </tr><tr>
         
         <td>
+          <p><code><a href="plotPathway.html">plotPathway()</a></code> </p>
+        </td>
+        <td><p>Generate violin plots for pathway analysis results</p></td>
+      </tr><tr>
+        
+        <td>
           <p><code><a href="plotRunPerCellQCResults.html">plotRunPerCellQCResults()</a></code> </p>
         </td>
         <td><p>Plots for runPerCellQC outputs.</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="plotScDblFinderResults.html">plotScDblFinderResults()</a></code> </p>
-        </td>
-        <td><p>Plots for runScDblFinder outputs.</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="plotScdsHybridResults.html">plotScdsHybridResults()</a></code> </p>
-        </td>
-        <td><p>Plots for runCxdsBcdsHybrid outputs.</p></td>
       </tr><tr>
         
         <td>
@@ -1419,21 +1433,33 @@ and UMAP</p></td>
       </tr><tr>
         
         <td>
+          <p><code><a href="plotScDblFinderResults.html">plotScDblFinderResults()</a></code> </p>
+        </td>
+        <td><p>Plots for runScDblFinder outputs.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="plotScdsHybridResults.html">plotScdsHybridResults()</a></code> </p>
+        </td>
+        <td><p>Plots for runCxdsBcdsHybrid outputs.</p></td>
+      </tr><tr>
+        
+        <td>
           <p><code><a href="plotScrubletResults.html">plotScrubletResults()</a></code> </p>
         </td>
         <td><p>Plots for runScrublet outputs.</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="plotTopHVG.html">plotTopHVG()</a></code> </p>
-        </td>
-        <td><p>Plot highly variable genes</p></td>
-      </tr><tr>
-        
-        <td>
           <p><code><a href="plotTSNE.html">plotTSNE()</a></code> </p>
         </td>
         <td><p>Plot t-SNE plot on dimensionality reduction data run from t-SNE method.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="plotTopHVG.html">plotTopHVG()</a></code> </p>
+        </td>
+        <td><p>Plot highly variable genes</p></td>
       </tr><tr>
         
         <td>
@@ -1505,6 +1531,12 @@ and UMAP</p></td>
       </tr><tr>
         
         <td>
+          <p><code><a href="exportSCEToSeurat.html">exportSCEToSeurat()</a></code> </p>
+        </td>
+        <td><p>Export data in Seurat object</p></td>
+      </tr><tr>
+        
+        <td>
           <p><code><a href="exportSCEtoAnnData.html">exportSCEtoAnnData()</a></code> </p>
         </td>
         <td><p>Export a <a href='https://rdrr.io/pkg/SingleCellExperiment/man/SingleCellExperiment.html'>SingleCellExperiment</a> R object as
@@ -1515,12 +1547,6 @@ Python annData object</p></td>
           <p><code><a href="exportSCEtoFlatFile.html">exportSCEtoFlatFile()</a></code> </p>
         </td>
         <td><p>Export a <a href='https://rdrr.io/pkg/SingleCellExperiment/man/SingleCellExperiment.html'>SingleCellExperiment</a> object to flat text files</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="exportSCEToSeurat.html">exportSCEToSeurat()</a></code> </p>
-        </td>
-        <td><p>Export data in Seurat object</p></td>
       </tr>
     </tbody><tbody>
       <tr>
@@ -1559,11 +1585,11 @@ different batches annotated</p></td>
         <td>
           <p><code><a href="msigdb_table.html">msigdb_table</a></code> </p>
         </td>
-        <td><p>MSigDB gene get Cctegory table</p></td>
+        <td><p>MSigDB gene get Category table</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="sce.html">sce</a></code> </p>
+          <p><code><a href="sce.html">scExample</a></code> </p>
         </td>
         <td><p>Example Single Cell RNA-Seq data in SingleCellExperiment Object,
 subset of 10x public dataset
@@ -1677,6 +1703,12 @@ return the unique rownames as character vecetor.</p></td>
           <p><code><a href="featureIndex.html">featureIndex()</a></code> </p>
         </td>
         <td><p>Retrieve row index for a set of features</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="getGenesetNamesFromCollection.html">getGenesetNamesFromCollection()</a></code> </p>
+        </td>
+        <td><p>List geneset names from geneSetCollection</p></td>
       </tr><tr>
         
         <td>

@@ -24,7 +24,7 @@ shinyServer(function(input, output, session) {
 
   # library(fs)
   # library(shinyFiles)
-
+  
   #-----------------------------------------------------------------------------
   # MISC - Used throughout app
   #-----------------------------------------------------------------------------
@@ -328,7 +328,7 @@ shinyServer(function(input, output, session) {
   }
 
   observeEvent(input$consoleToggle, {
-    toggle(id = "console")
+    shinyjs::toggle(id = "consolePanel")
   })
 
 
@@ -400,6 +400,24 @@ shinyServer(function(input, output, session) {
         # create a new table for the selected directory
         count <- 0
         if (!is.na(path)) {
+          # Add Reference selection for cellRangerV2
+          if (input$algoChoice == "cellRanger2") {
+            ## Identify available reference
+            firstSampleDir <- list.dirs(path, recursive = FALSE)[1]
+            refPath <- file.path(firstSampleDir, "outs/filtered_gene_bc_matrices")
+            refList <- basename(list.dirs(refPath, recursive = FALSE))
+            ## Add UI
+            insertUI(
+              selector = "#bDirTable",
+              ui = fluidRow(
+                column(
+                  6,
+                  selectInput("cr2_b_Ref", "Reference:", refList)
+                )
+              )
+            )
+          }
+          # Add Sample Rename rows
           counts <- vector()
           for (sample in list.dirs(path, recursive = FALSE)) {
             count <- count+1
@@ -438,6 +456,25 @@ shinyServer(function(input, output, session) {
         vol <- roots[[input$sDirectory$root]]
         dirPaths$sDirectory <- paste0(vol, paste(unlist(input$sDirectory$path[-1]),
                                                  collapse = .Platform$file.sep))
+        path <- dirPaths$sDirectory
+        if (!is.na(path)) {
+          if (input$algoChoice == "cellRanger2") {
+            ## Identify available reference
+            refPath <- file.path(path, "outs/filtered_gene_bc_matrices")
+            refList <- basename(list.dirs(refPath, recursive = FALSE))
+            ## Add UI
+            insertUI(
+              selector = "#sDirTable",
+              ui = fluidRow(
+                column(
+                  6,
+                  selectInput("cr2_s_Ref", "Reference:", refList)
+                )
+              )
+            )
+          }
+          updateTextInput(session, "sSampleID", value = basename(path))
+        }
       }
     }
   )
@@ -522,7 +559,11 @@ shinyServer(function(input, output, session) {
             name <- basename(sample)
           }
           id <- paste0("bnewSampleCR2", allImportEntries$id_count)
-          entry <- list(type="cellRanger2", id=id, params=list(cellRangerDirs = basePath, sampleDirs = basename(sample), sampleNames = name))
+          entry <- list(type="cellRanger2", id=id, 
+                        params=list(cellRangerDirs = basePath, 
+                                    sampleDirs = basename(sample), 
+                                    sampleNames = name,
+                                    reference = input$cr2_b_Ref))
           allImportEntries$samples <- c(allImportEntries$samples, list(entry))
           fluidRowStyle <- paste0(paste0("#", id), "{border-bottom: 1px solid #bababa; padding-top: .9%; padding-bottom: .5%}")
           removeBtnStyle <- paste0(paste0("#remove", id), "{padding-top: 0; padding-bottom: 0;}")
@@ -609,7 +650,11 @@ shinyServer(function(input, output, session) {
       # add the files to the appropriate reactiveValues
       if (input$algoChoice == "cellRanger2") {
         id <- paste0("snewSampleCR2", allImportEntries$id_count)
-        entry <- list(type="cellRanger2", id=id, params=list(cellRangerDirs = dirname(samplePath), sampleDirs = basename(samplePath), sampleNames = input$sSampleID))
+        entry <- list(type="cellRanger2", id=id, 
+                      params=list(cellRangerDirs = dirname(samplePath), 
+                                  sampleDirs = basename(samplePath), 
+                                  sampleNames = input$sSampleID,
+                                  reference = input$cr2_s_Ref))
         allImportEntries$samples <- c(allImportEntries$samples, list(entry))
         allImportEntries$id_count <- allImportEntries$id_count + 1
       } else {
@@ -647,7 +692,9 @@ shinyServer(function(input, output, session) {
     } else {
       if (input$algoChoice == "cellRanger2") {
         id <- paste0("dnewSampleCR2", allImportEntries$id_count)
-        entry <- list(type="cellRanger2", id=id, params=list(dataDir = dataPath, sampleName = input$dSampleID))
+        entry <- list(type="cellRanger2", id=id, 
+                      params=list(dataDir = dataPath, 
+                                  sampleName = input$dSampleID))
         allImportEntries$samples <- c(allImportEntries$samples, list(entry))
         allImportEntries$id_count <- allImportEntries$id_count + 1
       } else {
@@ -826,7 +873,7 @@ shinyServer(function(input, output, session) {
   })
 
   # Event handler for "Upload" button on import page
-  observeEvent(input$uploadData, {
+  observeEvent(input$uploadData, withConsoleMsgRedirect({
     withBusyIndicatorServer("uploadData", {
       if (length(allImportEntries$samples) == 0) {
         stop("You have not selected any samples to import.")
@@ -917,7 +964,7 @@ shinyServer(function(input, output, session) {
       # object but cannot find the old result.
     })
     callModule(module = nonLinearWorkflow, id = "nlw-import", parent = session, qcf = TRUE)
-  })
+  }))
 
   updateSeuratUIFromRDS <- function(inSCE){
     if(!is.null(metadata(inSCE)$seurat$plots)){
@@ -1324,7 +1371,7 @@ shinyServer(function(input, output, session) {
     }
   }
 
-  observeEvent(input$uploadGS, {
+  observeEvent(input$uploadGS, withConsoleMsgRedirect({
     withBusyIndicatorServer("uploadGS", {
       byParam = NULL
       if (input$gsByParam != "None") {
@@ -1376,7 +1423,7 @@ shinyServer(function(input, output, session) {
                         selected = "none")
       shinyjs::show(id = "gsAddToExisting", anim = FALSE)
     })
-  })
+  }))
 
   #-----------------------------------------------------------------------------
   # Page 2: Data Summary and Filtering ####
@@ -1580,8 +1627,9 @@ shinyServer(function(input, output, session) {
     }
   }
 
+  
   observeEvent(input$runQC, withConsoleMsgRedirect({
-    #withBusyIndicatorServer("runQC", {
+    withBusyIndicatorServer("runQC", {
       if (!qcInputExists()) {
         insertUI(
           selector = "#qcPageErrors",
@@ -1678,6 +1726,8 @@ shinyServer(function(input, output, session) {
             paramsList[[algo]] = algoParams
           }
         }
+        # open console
+        shinyjs::show(id = "consolePanel")
         # run selected cell QC algorithms
         vals$counts <- runCellQC(inSCE = vals$counts,
                                  algorithms = algoList,
@@ -1701,15 +1751,19 @@ shinyServer(function(input, output, session) {
                                  minDist = input$UminDist,
                                  spread = input$Uspread,
                                  initialDims = input$UinitialDims,
-                                 reducedDimName = input$QCUMAPName
+                                 reducedDimName = input$QCUMAPName,
+                                 seed = input$Useed
                                  )
+          message(paste0(date(), " ... QC Complete"))
+          # close console
+          shinyjs::hide(id = "consolePanel")
         }
         updateQCPlots()
-
         # Show downstream analysis options
         callModule(module = nonLinearWorkflow, id = "nlw-qcf", parent = session, nbc = TRUE, cw = TRUE, cv = TRUE)
       }
-    #})
+      delay(500, removeNotification(id = "qcNotification"))
+    })
 
   }))
 
@@ -1917,7 +1971,7 @@ shinyServer(function(input, output, session) {
     rowFilteringParams$params <- list()
   })
 
-  observeEvent(input$filterSCE, {
+  observeEvent(input$filterSCE, withConsoleMsgRedirect({
     withBusyIndicatorServer("filterSCE", {
       # handle column filtering (pull out the criteria strings first)
       colInput <- formatFilteringCriteria(filteringParams$params)
@@ -1941,7 +1995,7 @@ shinyServer(function(input, output, session) {
       # Show downstream analysis options
       shinyjs::show(selector = ".nlw-qcf")
     })
-  })
+  }))
 
   #Render summary table
   output$beforeFiltering <- renderTable({
@@ -1992,7 +2046,7 @@ shinyServer(function(input, output, session) {
 
 
   #Reset the data to the original uploaded dataset
-  observeEvent(input$resetData, {
+  observeEvent(input$resetData, withConsoleMsgRedirect({
     if (is.null(vals$original)){
       shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
     }
@@ -2022,19 +2076,22 @@ shinyServer(function(input, output, session) {
       updateAssayInputs()
       updateGeneNames()
       updateEnrichDB()
+      
+      message(paste0(date(), " ... All data reset!"))
     }
-  })
+  }))
 
   #Delete a column from the colData annotations
-  observeEvent(input$deleterowDatabutton, {
+  observeEvent(input$deleterowDatabutton, withConsoleMsgRedirect({
     if (is.null(vals$original)){
       shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
     }
     else{
       colData(vals$counts) <- colData(vals$counts)[, !(colnames(colData(vals$counts)) %in% input$deleterowdatacolumn), drop = FALSE]
       updateColDataNames()
+      message(paste0(date(), " ... ", input$deleterowdatacolumn, " column removed from colData annotation."))
     }
-  })
+  }))
 
   observeEvent(input$filteredSample, {
     output$filterSampleOptions <- renderUI({
@@ -2236,39 +2293,44 @@ shinyServer(function(input, output, session) {
     }
   })
 
-  observeEvent(input$delRedDim, {
+  observeEvent(input$delRedDim, withConsoleMsgRedirect({
     req(vals$counts)
     if(length(input$checkboxAssaysToRemove) > 0){
       for(i in seq(input$checkboxAssaysToRemove)){
         expData(vals$counts, input$checkboxAssaysToRemove[i]) <- NULL
         vals$counts <- expDeleteDataTag(vals$counts, input$checkboxAssaysToRemove[i])
+        message(paste0(date(), " ... Removed '", input$checkboxAssaysToRemove[i], "' assay."))
       }
     }
     if(length(input$checkboxRedDimToRemove) > 0){
       for(i in seq(input$checkboxRedDimToRemove)){
         reducedDim(vals$counts, input$checkboxRedDimToRemove[i]) <- NULL
+        message(paste0(date(), " ... Removed '", input$checkboxRedDimToRemove[i], "' redDim."))
       }
     }
     if(length(input$checkboxRowDataToRemove) > 0){
       for(i in seq(input$checkboxRowDataToRemove)){
         rowData(vals$counts)[[input$checkboxRowDataToRemove[i]]] <- NULL
+        message(paste0(date(), " ... Removed '", input$checkboxRowDataToRemove[i], "' feature annotation."))
       }
     }
     if(length(input$checkboxColDataToRemove) > 0){
       for(i in seq(input$checkboxColDataToRemove)){
         colData(vals$counts)[[input$checkboxColDataToRemove[i]]] <- NULL
+        message(paste0(date(), " ... Removed '", input$checkboxColDataToRemove[i], "' sample annotation."))
       }
     }
     if(length(input$checkboxAltExpToRemove) > 0){
       for(i in seq(input$checkboxAltExpToRemove)){
         altExps(vals$counts)[[input$checkboxAltExpToRemove[i]]] <- NULL
+        message(paste0(date(), " ... Removed '", input$checkboxAltExpToRemove[i], "' subset."))
       }
     }
     updateAssayInputs()
     updateReddimInputs()
     updateFeatureAnnots()
     updateColDataNames()
-  })
+  }))
 
   # Normalization ####
 
@@ -2331,7 +2393,7 @@ shinyServer(function(input, output, session) {
 
   })
 
-  observeEvent(input$modifyAssay, {
+  observeEvent(input$modifyAssay, withConsoleMsgRedirect({
     req(vals$counts)
     withBusyIndicatorServer("modifyAssay", {
       if (!(input$modifyAssaySelect %in% names(assays(vals$counts)))) {
@@ -2387,14 +2449,18 @@ shinyServer(function(input, output, session) {
           pseudocountsBeforeTransform = pseudocountsAfter,
           trim = trimOptions
         )
+        
+        message(paste0(date(), " ... Starting normalization/transformation with selected assay: '", useAssay, "'."))
 
         vals$counts <- do.call("runNormalization", args)
-
+        
+        message(paste0(date(), " ... Ended normalization/transformation."))
+        
         # Show downstream analysis options
         callModule(module = nonLinearWorkflow, id = "nlw-nbc", parent = session, dr = TRUE, fs = TRUE)
       }
     })
-  })
+  }))
 
   observeEvent(input$normalizeAssay, withConsoleMsgRedirect({
     req(vals$counts)
@@ -2437,7 +2503,11 @@ shinyServer(function(input, output, session) {
           trim = trimOptions
         )
 
+        message(paste0(date(), " ... Starting normalization with selected assay: '", useAssay, "'."))
+        
         vals$counts <- do.call("runNormalization", args) 
+        
+        message(paste0(date(), " ... Ended normalization."))
         
         # Show downstream analysis options
         callModule(module = nonLinearWorkflow, id = "nlw-nbc", parent = session, dr = TRUE, fs = TRUE)
@@ -2580,9 +2650,10 @@ shinyServer(function(input, output, session) {
     session$sendCustomMessage("close_dropDownDimRedHeatmap", "")
   })
 
-  observeEvent(input$runDimred, {
+  observeEvent(input$runDimred, withConsoleMsgRedirect({
     if (!is.null(vals$counts)){
       withBusyIndicatorServer("runDimred", {
+        message(paste0(date(), " ... Starting Dimensionality Reduction: '", input$dimRedPlotMethod, "'."))
         vals$runDimred$dimRedAssaySelect <- input$dimRedAssaySelect
         if (vals$runDimred$dimRedAssaySelect %in% altExpNames(vals$counts)) {
           dimRedUseAltExp <- vals$runDimred$dimRedAssaySelect
@@ -2603,7 +2674,8 @@ shinyServer(function(input, output, session) {
               useAltExp = dimRedUseAltExp,
               method = input$dimRedPlotMethod,
               nComponents = input$dimRedNumberDims,
-              reducedDimName = dimrednamesave)
+              reducedDimName = dimrednamesave,
+              seed = input$seed_dimRed)
             #vals$counts <- runDimensionalityReduction(
             #  inSCE = vals$counts,
             #  useAssay = vals$runDimred$dimRedAssaySelect,
@@ -2616,6 +2688,7 @@ shinyServer(function(input, output, session) {
             callModule(module = nonLinearWorkflow, id = "nlw-dr", parent = session, cl = TRUE, cv = TRUE)
           }
         }
+        message(paste0(date(), " ... Ending Dimensionality Reduction."))
       })
     }
     dimrednamesave <- gsub(" ", "_", input$dimRedNameInput)
@@ -2650,6 +2723,7 @@ shinyServer(function(input, output, session) {
       )
       if (input$dimRedPlotMethod == "seuratPCA"){
         withProgress(message = "Generating Elbow Plot", max = 1, value = 1, {
+          message(paste0(date(), " ... Generating Elbow Plot."))
           if(vals$runDimred$dimRedAssaySelect %in% assayNames(vals$counts)){
             output$plotDimRed_elbow <- renderPlotly({
               seuratElbowPlot(inSCE = vals$counts, )
@@ -2662,6 +2736,7 @@ shinyServer(function(input, output, session) {
         })
       } else {
         withProgress(message = "Generating Elbow Plot", max = 1, value = 1, {
+          message(paste0(date(), " ... Generating Elbow Plot."))
           if(input$dimRedAssaySelect %in% assayNames(vals$counts)){
             output$plotDimRed_elbow <- renderPlotly({
               seuratElbowPlot(inSCE = vals$counts,
@@ -2726,6 +2801,7 @@ shinyServer(function(input, output, session) {
       )
       if (input$dimRedPlotMethod == "seuratPCA") {
         withProgress(message = "Generating Heatmaps", max = 1, value = 1, {
+          message(paste0(date(), " ... Generating Heatmaps."))
           if(input$dimRedAssaySelect %in% assayNames(vals$counts)){
             vals$counts@metadata$seurat$heatmap_dimRed <- singleCellTK::computeHeatmap(
               inSCE = vals$counts,
@@ -2754,6 +2830,7 @@ shinyServer(function(input, output, session) {
       }
       else if(input$dimRedPlotMethod == "seuratICA"){
         withProgress(message = "Generating Heatmaps", max = 1, value = 1, {
+          message(paste0(date(), " ... Generating Heatmaps."))
           if(vals$runDimred$dimRedAssaySelect %in% assayNames(vals$counts)){
             vals$counts@metadata$seurat$heatmap_dimRed <- singleCellTK::computeHeatmap(
               inSCE = vals$counts,
@@ -2782,6 +2859,7 @@ shinyServer(function(input, output, session) {
       }
       else{
         withProgress(message = "Generating Heatmaps", max = 1, value = 1, {
+          message(paste0(date(), " ... Generating Heatmaps."))
           if(input$dimRedAssaySelect %in% assayNames(vals$counts)){
             vals$counts@metadata$seurat$heatmap_dimRed <- singleCellTK::computeHeatmap(
               inSCE = vals$counts,
@@ -2856,6 +2934,7 @@ shinyServer(function(input, output, session) {
     ))
 
     withProgress(message = "Plotting PCA/ICA", max = 1, value = 1, {
+      message(paste0(date(), " ... Plotting PCA/ICA."))
         output$plotDimRed_pca <- renderPlotly({
           plotly::ggplotly(
             plotDimRed(
@@ -2877,6 +2956,7 @@ shinyServer(function(input, output, session) {
 
           if (input$dimRedPlotMethod == "seuratPCA"){
             withProgress(message = "Generating JackStraw Plot", max = 1, value = 1, {
+              message(paste0(date(), " ... Generating JackStraw Plot."))
               if(vals$runDimred$dimRedAssaySelect %in% assayNames(vals$counts)){
                 vals$counts <- seuratComputeJackStraw(inSCE = vals$counts,
                                                       useAssay = input$dimRedAssaySelect,
@@ -2897,6 +2977,7 @@ shinyServer(function(input, output, session) {
           }
           else{
             withProgress(message = "Generating JackStraw Plot", max = 1, value = 1, {
+              message(paste0(date(), " ... Generating JackStraw Plot."))
               if(input$dimRedAssaySelect %in% assayNames(vals$counts)){
                 vals$counts <- seuratComputeJackStraw(inSCE = vals$counts,
                                                       useAssay = input$dimRedAssaySelect,
@@ -2920,7 +3001,7 @@ shinyServer(function(input, output, session) {
             })
           }
         }
-  })
+  }))
 
   observeEvent(input$updateRedDimPlot_pca,{
     req(vals$counts)
@@ -2960,6 +3041,7 @@ shinyServer(function(input, output, session) {
   observeEvent(input$runDimred_tsneUmap, {
     if (!is.null(vals$counts)){
       withBusyIndicatorServer("runDimred_tsneUmap", {
+        message(paste0(date(), " ... Starting Dimensionality Reduction: '", input$dimRedPlotMethod_tsneUmap , "'."))
         vals$runDimred$dimRedAssaySelect_tsneUmap <- input$dimRedAssaySelect_tsneUmap
         if (vals$runDimred$dimRedAssaySelect_tsneUmap %in% reducedDimNames(vals$counts)) {
           embedUseAssay <- NULL
@@ -2991,7 +3073,8 @@ shinyServer(function(input, output, session) {
                 method = "rTSNE",
                 reducedDimName = dimrednamesave,
                 perplexity = input$perplexityTSNE,
-                nIterations = input$iterTSNE
+                nIterations = input$iterTSNE,
+                seed = input$seed__tsneUmap
               )
               #vals$counts <- runDimensionalityReduction(
               #  inSCE = vals$counts,
@@ -3011,7 +3094,8 @@ shinyServer(function(input, output, session) {
                   method = "seuratTSNE",
                   reducedDimName = dimrednamesave,
                   dims = input$dimRedNumberDims_tsneUmap,
-                  perplexity = input$perplexityTSNE
+                  perplexity = input$perplexityTSNE,
+                  seed = input$seed__tsneUmap
                 )
               } else {
                 vals$counts <- runDimReduce(
@@ -3023,7 +3107,8 @@ shinyServer(function(input, output, session) {
                   reducedDimName = dimrednamesave,
                   dims = input$dimRedNumberDims_tsneUmap,
                   perplexity = input$perplexityTSNE,
-                  useReduction = input$reductionMethodUMAPTSNEDimRed
+                  useReduction = input$reductionMethodUMAPTSNEDimRed,
+                  seed = input$seed__tsneUmap
                 )
               }
               #vals$counts <- runDimensionalityReduction(
@@ -3047,7 +3132,8 @@ shinyServer(function(input, output, session) {
                   dims = input$dimRedNumberDims_tsneUmap,
                   minDist = input$minDistUMAPDimRed,
                   nNeighbors = input$nNeighboursUMAPDimRed,
-                  spread = input$spreadUMAPDimRed
+                  spread = input$spreadUMAPDimRed,
+                  seed = input$seed__tsneUmap
                 )
               } else {
                 vals$counts <- runDimReduce(
@@ -3061,7 +3147,8 @@ shinyServer(function(input, output, session) {
                   minDist = input$minDistUMAPDimRed,
                   nNeighbors = input$nNeighboursUMAPDimRed,
                   spread = input$spreadUMAPDimRed,
-                  useReduction = input$reductionMethodUMAPTSNEDimRed
+                  useReduction = input$reductionMethodUMAPTSNEDimRed,
+                  seed = input$seed__tsneUmap
                 )
               }
               #vals$counts <- runDimensionalityReduction(
@@ -3091,7 +3178,8 @@ shinyServer(function(input, output, session) {
                 nIterations = input$iterUMAP,
                 minDist = input$mindistUMAP,
                 alpha = input$alphaUMAP,
-                spread = input$spreadUMAP
+                spread = input$spreadUMAP,
+                seed = input$seed__tsneUmap
               )
               #vals$counts <- runDimensionalityReduction(
               #  inSCE = vals$counts,
@@ -3109,6 +3197,7 @@ shinyServer(function(input, output, session) {
             callModule(module = nonLinearWorkflow, id = "nlw-dr", parent = session, cl = TRUE, cv = TRUE)
           }
         }
+        message(paste0(date(), " ... Ending Dimensionality Reduction."))
       })
     }
 
@@ -3120,6 +3209,7 @@ shinyServer(function(input, output, session) {
                          server = TRUE)
 
     withProgress(message = "Plotting tSNE/UMAP", max = 1, value = 1, {
+      message(paste0(date(), " ... Plotting tSNE/UMAP."))
         output$plotDimRed_tsneUmap <- renderPlotly({
           plotly::ggplotly(plotDimRed(
             inSCE = vals$counts,
@@ -6786,7 +6876,8 @@ shinyServer(function(input, output, session) {
       vals$counts <- seuratPCA(inSCE = vals$counts,
                                useAssay = "seuratScaledData",
                                reducedDimName = "seuratPCA",
-                               nPCs = input$pca_no_components)
+                               nPCs = input$pca_no_components,
+                               seed = input$seed_PCA)
 
       vals$counts@metadata$seurat$count_pc <- dim(convertSCEToSeurat(vals$counts)[["pca"]])[2]
       vals$counts <- singleCellTK:::.seuratInvalidate(inSCE = vals$counts, scaleData = FALSE, varFeatures = FALSE, PCA = FALSE, ICA = FALSE)
@@ -6954,7 +7045,8 @@ shinyServer(function(input, output, session) {
     withProgress(message = "Running ICA", max = 1, value = 1, {
       vals$counts <- seuratICA(inSCE = vals$counts,
                                useAssay = "seuratScaledData",
-                               nics = input$ica_no_components)
+                               nics = input$ica_no_components,
+                               seed = input$seed_ICA)
 
       vals$counts@metadata$seurat$count_ic <- dim(convertSCEToSeurat(vals$counts)[["ica"]])[2]
       vals$counts <- singleCellTK:::.seuratInvalidate(inSCE = vals$counts, scaleData = FALSE, varFeatures = FALSE, PCA = FALSE, ICA = FALSE)
@@ -7567,7 +7659,8 @@ shinyServer(function(input, output, session) {
                                      useReduction = input$reduction_tsne_method,
                                      reducedDimName = "seuratTSNE",
                                      dims = input$pca_significant_pc_counter,
-                                     perplexity = input$perplexity_tsne)
+                                     perplexity = input$perplexity_tsne,
+                                     seed = input$seed_TSNE)
         vals$counts <- singleCellTK:::.seuratInvalidate(inSCE = vals$counts, scaleData = FALSE, varFeatures = FALSE, PCA = FALSE, ICA = FALSE, tSNE = FALSE, UMAP = FALSE)
       })
       withProgress(message = "Plotting tSNE", max = 1, value = 1, {
@@ -7617,7 +7710,8 @@ shinyServer(function(input, output, session) {
                                      dims = input$pca_significant_pc_counter,
                                      minDist = input$min_dist_umap,
                                      nNeighbors = input$n_neighbors_umap,
-                                     spread = input$spread_umap)
+                                     spread = input$spread_umap,
+                                     seed = input$seed_UMAP)
         vals$counts <- singleCellTK:::.seuratInvalidate(inSCE = vals$counts, scaleData = FALSE, varFeatures = FALSE, PCA = FALSE, ICA = FALSE, tSNE = FALSE, UMAP = FALSE)
       })
       withProgress(message = "Plotting UMAP", max = 1, value = 1, {
@@ -8710,5 +8804,6 @@ shinyServer(function(input, output, session) {
   # observeEvent(input$interpretToggle, {
   #   pushbar_open(id = "myPushbar")
   # })
+  
 })
 

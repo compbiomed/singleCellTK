@@ -79,6 +79,7 @@ Visualizes values stored in any slot of a
  SingleCellExperiment object via a densityn plot.
 }
 \examples{
+data("mouseBrainSubsetSCE")
 plotSCEDensity(
   inSCE = mouseBrainSubsetSCE, slotName = "assays",
   itemName = "counts", feature = "Apoe", groupBy = "sex"

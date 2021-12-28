@@ -83,8 +83,8 @@ expTaggedData <- function(inSCE, tags = NULL, redDims = FALSE, recommended = NUL
     namedList <- as.character(tbl$assayName)
   }
   else{
-    namedList <- with(tbl, split(assayName, assayTag))
-    namedList <- lapply(namedList, sapply, list)
+    namedList <- with(tbl, split(tbl$assayName, tbl$assayTag))
+    namedList <- lapply(namedList, vapply, list, list(length(namedList)))
   }
 
   return(namedList)

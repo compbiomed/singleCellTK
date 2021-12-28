@@ -74,7 +74,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.4.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.4.1</span>
       </span>
     </div>
 
@@ -276,6 +276,7 @@
   useAltExp <span class='op'>=</span> <span class='cn'>NULL</span>,
   <span class='va'>reducedDimName</span>,
   nComponents <span class='op'>=</span> <span class='fl'>20</span>,
+  seed <span class='op'>=</span> <span class='cn'>NULL</span>,
   <span class='va'>...</span>
 <span class='op'>)</span></pre>
 
@@ -319,6 +320,11 @@ selected method in case of PCA/ICA and the number of components to
 use in the case of TSNE/UMAP methods.</p></td>
     </tr>
     <tr>
+      <th>seed</th>
+      <td><p>Random seed for reproducibility of results.
+Default <code>NULL</code> will use global seed in use by the R environment.</p></td>
+    </tr>
+    <tr>
       <th>...</th>
       <td><p>The other arguments for running a specific algorithm. Please refer
 to the one you use.</p></td>
@@ -350,7 +356,7 @@ representation by specifying <code>useReducedDim</code>.</p>
 </div><div class='output co'>#&gt; <span class='message'>Normalization performed using logNormCounts method.</span></div><div class='output co'>#&gt; <span class='message'>Z.Score scaling performed on the input data.</span></div><div class='input'><span class='va'>sce</span> <span class='op'>&lt;-</span> <span class='fu'>runDimReduce</span><span class='op'>(</span>inSCE <span class='op'>=</span> <span class='va'>sce</span>, method <span class='op'>=</span> <span class='st'>"scaterPCA"</span>,
                     useAssay <span class='op'>=</span> <span class='st'>"logcounts_scaled"</span>,
                     reducedDimName <span class='op'>=</span> <span class='st'>"PCA"</span><span class='op'>)</span>
-</div></pre>
+</div><div class='output co'>#&gt; <span class='message'>Thu Dec 23 11:36:13 2021 ... Computing Scater PCA.</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

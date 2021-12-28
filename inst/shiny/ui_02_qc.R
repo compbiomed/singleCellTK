@@ -187,6 +187,7 @@ shinyPanelQC <- fluidPage(
           numericInput("UminDist", "Effective minimum distance between embedded points (default 0.01)", 0.01),
           numericInput("Uspread", "Effective scale of embedded points (default 1)", 1),
           numericInput("UinitialDims", "Number of dimensions from PCA to use as input (default 25)", 25),
+          numericInput("Useed", "Seed value for reproducibility of UMAP result (default 12345)", 12345),
 
 
           withBusyIndicatorUI(actionButton("runQC", "Run")),

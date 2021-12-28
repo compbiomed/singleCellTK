@@ -74,7 +74,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.4.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.4.1</span>
       </span>
     </div>
 
@@ -276,7 +276,8 @@
   nIterations <span class='op'>=</span> <span class='fl'>1000</span>,
   perplexity <span class='op'>=</span> <span class='fl'>30</span>,
   run_pca <span class='op'>=</span> <span class='cn'>TRUE</span>,
-  ntop <span class='op'>=</span> <span class='cn'>NULL</span>
+  ntop <span class='op'>=</span> <span class='cn'>NULL</span>,
+  seed <span class='op'>=</span> <span class='cn'>NULL</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -323,6 +324,11 @@ reductions. Default <code>"TSNE"</code>.</p></td>
       <th>ntop</th>
       <td><p>Number of top features to use as a further variable feature
 selection. Default <code>NULL</code>.</p></td>
+    </tr>
+    <tr>
+      <th>seed</th>
+      <td><p>Random seed for reproducibility of tSNE results. 
+Default <code>NULL</code> will use global seed in use by the R environment.</p></td>
     </tr>
     </table>
 

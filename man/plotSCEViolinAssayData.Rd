@@ -97,6 +97,7 @@ Visualizes values stored in the assay slot of a
  SingleCellExperiment object via a violin plot.
 }
 \examples{
+data("mouseBrainSubsetSCE")
 plotSCEViolinAssayData(
   inSCE = mouseBrainSubsetSCE,
   feature = "Apoe", groupBy = "sex"

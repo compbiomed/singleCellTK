@@ -15,6 +15,7 @@
 #' Default \code{FALSE}.
 #' @param ntop Number of top features to use as a further variable feature
 #' selection. Default \code{NULL}.
+#' @param seed Random seed for reproducibility of PCA results.
 #' @return A \linkS4class{SingleCellExperiment} object with PCA computation
 #' updated in \code{reducedDim(inSCE, reducedDimName)}.
 #' @export
@@ -25,7 +26,7 @@
 #' sce <- scaterPCA(sce, "logcounts")
 scaterPCA <- function(inSCE, useAssay = "logcounts", useAltExp = NULL,
                    reducedDimName = "PCA", nComponents = 50, scale = FALSE,
-                   ntop = NULL){
+                   ntop = NULL, seed = NULL){
   if (!is.null(useAltExp)) {
     if (!(useAltExp %in% SingleCellExperiment::altExpNames(inSCE))) {
       stop("Specified altExp '", useAltExp, "' not found. ")
@@ -46,8 +47,17 @@ scaterPCA <- function(inSCE, useAssay = "logcounts", useAltExp = NULL,
   } else {
     ntop <- min(ntop, nrow(inSCE))
   }
-  sce <- scater::runPCA(sce, name = reducedDimName, exprs_values = useAssay,
-                        ncomponents = nComponents,  ntop = ntop, scale = scale)
+  
+  if(!is.null(seed)){
+    withr::with_seed(seed = seed,
+                     code = sce <- scater::runPCA(sce, name = reducedDimName, exprs_values = useAssay,
+                                                  ncomponents = nComponents,  ntop = ntop, scale = scale))
+  }
+  else{
+    sce <- scater::runPCA(sce, name = reducedDimName, exprs_values = useAssay,
+                          ncomponents = nComponents,  ntop = ntop, scale = scale)
+  }
+
   SingleCellExperiment::reducedDim(inSCE, reducedDimName) <-
     SingleCellExperiment::reducedDim(sce, reducedDimName)
   return(inSCE)
