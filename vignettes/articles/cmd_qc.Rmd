@@ -4,7 +4,10 @@ output: html_document
 ---
 
 ```{r setup, include=FALSE}
+require(Biobase)
+
 knitr::opts_chunk$set(warning = FALSE)
+pkgVersion <- package.version("singleCellTK")
 ```
 
 # Introduction
@@ -52,23 +55,25 @@ If you have not used docker before, you can follow the instruction to install an
 ### Running SCTK-QC pipeline using docker image
 
 The Docker image can be obtained by running: 
-
-```{bash, eval=FALSE}
-docker pull campbio/sctk_qc:2.2.1
+```{r, echo=F, eval=T, include=T, comment=NA}
+code <- paste0('docker pull campbio/sctk_qc:', pkgVersion)
+cat(code)
 ```
 
 The usage of each argument is the same as running command line analysis. Here is an example code to perform QC on CellRangerV3 data with SCTK docker:
 
-```{bash, eval=FALSE}
-docker run --rm -v /path/to/data:/SCTK_docker \
--it campbio/sctk_qc:2.2.1 \
--b /SCTK_docker/cellranger \
--P CellRangerV3 \
--s pbmc_100x100 \
--o /SCTK_docker/result/tenx_v3_pbmc \
--g /SCTK_docker/mitochondrial_human_symbol.gmt \
--S TRUE \
--F R,Python,Flatfile,HTAN
+```{r, echo=F, eval=T, include=T, comment=NA}
+code <- paste("docker run --rm -v /path/to/data:/SCTK_docker \\",
+  paste0('  -it campbio/sctk_qc:', pkgVersion, " \\"),
+  "  -b /SCTK_docker/cellranger \\
+  -P CellRangerV3 \\
+  -s pbmc_100x100 \\
+  -o /SCTK_docker/result/tenx_v3_pbmc \\
+  -g /SCTK_docker/mitochondrial_human_symbol.gmt \\
+  -S TRUE \\
+  -F R,Python,Flatfile,HTAN", sep='\n'
+)
+cat(code)
 ```
 
 The docker image will not access files in your host file system by default. To get access to the files on your machine, you can properly set up a mount volume. Noted that the transcriptome data and GMT file needed to be accessible to the container via mounted volume. In the above example, mount volume is enabled for accessing input and output directory using argument `-v`. The transcriptome and GMT files inside `/path/to/data` is now available in `/SCTK_docker` folder inside the docker. To learn more about mounted volumes, please check out [this post](https://docs.docker.com/storage/volumes/). 
@@ -79,48 +84,51 @@ Please refer to the section [*Parameters*](#parameters-1) for more details about
 
 Users who have not used [Singularity](https://singularity.hpcng.org/user-docs/master/) before can install it following the instruction [here](https://sylabs.io/guides/2.6/user-guide/installation.html). The Singularity image for SCTK-QC can be easily built using Docker Hub as a source:
 
-```{bash, eval=FALSE}
-singularity pull docker://campbio/sctk_qc:2.2.1
+```{r, echo=F, eval=T, include=T, comment=NA}
+code <- paste0('singularity pull campbio/sctk_qc:', pkgVersion)
+cat(code)
 ```
 
 The usage of singleCellTK Singularity image is very similar to that of Docker. In Singularity 3.0+, the mount volume is [automatically overlaid](https://sylabs.io/guides/3.0/user-guide/bind_paths_and_mounts.html#user-defined-bind-paths). 
 
 It's recommended to re-set the home directory when you run singularity. Singularity will mount `\$HOME` path on your machine by default, which might contain your personal R/Python library folder. If we don't re-set the home to mount, singularity will try to use R/Python libraries which are not built within the singularity image and cause some conflicts. You can point to some "sanitized home", which is different from `\$HOME` path on your machine, using argument `-H`/`--home` [(see more information)](https://sylabs.io/guides/3.1/user-guide/bind_paths_and_mounts.html). Besides, you can use argument `--bind`/`-B` to specify your own mount volume, which is the path that contains the dataset and will be used to store the output of QC pipeline. The example is shown as below:
 
-```{bash, eval=FALSE}
-singularity run --home=/PathToSanitizedHome \
---bind /PathToData:/data sctk_qc_2.2.1.sif \
--P CellRangerV3 \
--s gencodev34_pbmc_1k_v3 \
--b /data/gencodev34_pbmc_1k_v3
--o /data/result/gencodev34_pbmc_1k_v3 \
--S TRUE \
--F R,Python,FlatFile,HTAN \
--n 15 \
--T MulticoreParam
+```{r, echo=F, eval=T, include=T, comment=NA}
+code <- paste("singularity run --home=/PathToSanitizedHome \\",
+  paste0('  --bind /PathToData:/data sctk_qc_', pkgVersion, ".sif \\"),
+  "  -b /SCTK_docker/cellranger \\
+  -P CellRangerV3 \\
+  -s pbmc_100x100 \\
+  -o /SCTK_docker/result/tenx_v3_pbmc \\
+  -g /SCTK_docker/mitochondrial_human_symbol.gmt \\
+  -S TRUE \\
+  -F R,Python,Flatfile,HTAN", sep='\n'
+)
+cat(code)
 ```
 
 ### Important note about docker image
 
 One important note about this docker image: please run the docker image on a machine / node which has a **CPU** with the following architecture: **broadwell, haswell, skylake, cascadelake or the latest architecture**. This can avoid having the "illegal operation" issue from Scrublet package, because this Python package are compiled by SIMD instructions that are compatible with these CPU architectures. Please specify the CPU architecture, at the script header after `#$ -l cpu_arch=`, as one of the following: `broadwell`, `haswell`, `skylake`, `cascadelake` or latest architecture. One of the example is shown below: 
 
-```{bash, eval=FALSE}
-#!/bin/bash
+```{r, echo=F, eval=T, include=T, comment=NA}
+code <- paste("#!/bin/bash
 #$ -cwd
 #$ -j y
 #$ -pe omp 16
 #$ -l cpu_arch=broadwell|haswell|skylake|cascadelake
 
-singularity run --home=/PathToSanitizedHome \ ### this also works for 'docker run'
---bind /PathToData:/data sctk_qc_2.2.1.sif \
--P CellRangerV3 \
--s gencodev34_pbmc_1k_v3 \
--b /data/gencodev34_pbmc_1k_v3
--o /data/result/gencodev34_pbmc_1k_v3 \
--S TRUE \
--F R,Python,FlatFile,HTAN \
--n 15 \
--T MulticoreParam
+singularity run --home=/PathToSanitizedHome \ ### this also works for 'docker run'",
+  paste0('  --bind /PathToData:/data sctk_qc_', pkgVersion, ".sif \\"),
+  "  -b /SCTK_docker/cellranger \\
+  -P CellRangerV3 \\
+  -s pbmc_100x100 \\
+  -o /SCTK_docker/result/tenx_v3_pbmc \\
+  -g /SCTK_docker/mitochondrial_human_symbol.gmt \\
+  -S TRUE \\
+  -F R,Python,Flatfile,HTAN", sep='\n'
+)
+cat(code)
 ```
 
 # Parameters
