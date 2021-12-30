@@ -28,7 +28,7 @@ To run the pipeline, users can [install the singleCellTK (SCTK) package](install
 
 ## Running SCTK-QC with SCTK local installation
 
-To run the pipeline script, users will need to download the `SCTK_runQC.R` script file [here](https://github.com/compbiomed/singleCellTK/blob/devel/exec/SCTK_runQC.R). Also, the tutorial of installing singleCellTK package can found in [Installation](installation.html) page.
+To run the pipeline script, users will need to download the `SCTK_runQC.R` script file [here](https://github.com/compbiomed/singleCellTK/blob/master/exec/SCTK_runQC.R). Also, the tutorial of installing singleCellTK package can found in [Installation](installation.html) page.
 
 A simple example to run this pipeline on the Cellranger V3 dataset is shown below:
 
