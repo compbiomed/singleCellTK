@@ -6,10 +6,10 @@
 #' @param useAssay Indicate which assay to use. The default is "logcounts"
 #' @param geneSetCollectionName Character. The name of the gene set collection to use.
 #' parameter.
-#' @param resultNamePrefix  Character. Prefix to the name the VAM results which will be stored in the reducedDim slot of \code{inSCE}. The names of the output matrices will be \code{resultNamePrefix_Distance} and \code{resultNamePrefix_CDF}. If this parameter is set to \code{NULL}, then "VAM_geneSetCollectionName_" will be used. Default \code{NULL}.
+#' @param resultNamePrefix  Character. Prefix to the name the GSVA results which will be stored in the reducedDim slot of \code{inSCE}. The names of the output matrix will be \code{resultNamePrefix_Scores}. If this parameter is set to \code{NULL}, then "GSVA_geneSetCollectionName_" will be used. Default \code{NULL}.
 #' @param ... Parameters to pass to gsva()
 #'
-#' @return   A \link[SingleCellExperiment]{SingleCellExperiment} object with pathway activity scores from GSVA stored in \code{reducedDim} as \code{GSVA__NameOfTheGeneset_Scores}.
+#' @return   A \link[SingleCellExperiment]{SingleCellExperiment} object with pathway activity scores from GSVA stored in \code{reducedDim} as \code{GSVA_geneSetCollectionName_Scores}.
 
 #' @export
 #' 

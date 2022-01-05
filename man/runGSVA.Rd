@@ -17,7 +17,7 @@ runGSVA(
 
 \item{useAssay}{Indicate which assay to use. The default is "logcounts"}
 
-\item{resultNamePrefix}{Character. Prefix to the name the VAM results which will be stored in the reducedDim slot of \code{inSCE}. The names of the output matrices will be \code{resultNamePrefix_Distance} and \code{resultNamePrefix_CDF}. If this parameter is set to \code{NULL}, then "VAM_geneSetCollectionName_" will be used. Default \code{NULL}.}
+\item{resultNamePrefix}{Character. Prefix to the name the GSVA results which will be stored in the reducedDim slot of \code{inSCE}. The names of the output matrix will be \code{resultNamePrefix_Scores}. If this parameter is set to \code{NULL}, then "GSVA_geneSetCollectionName_" will be used. Default \code{NULL}.}
 
 \item{geneSetCollectionName}{Character. The name of the gene set collection to use.
 parameter.}
@@ -25,7 +25,7 @@ parameter.}
 \item{...}{Parameters to pass to gsva()}
 }
 \value{
-A \link[SingleCellExperiment]{SingleCellExperiment} object with pathway activity scores from GSVA stored in \code{reducedDim} as \code{GSVA__NameOfTheGeneset_Scores}.
+A \link[SingleCellExperiment]{SingleCellExperiment} object with pathway activity scores from GSVA stored in \code{reducedDim} as \code{GSVA_geneSetCollectionName_Scores}.
 }
 \description{
 Run GSVA analysis on a \linkS4class{SingleCellExperiment} object

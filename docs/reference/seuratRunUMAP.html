@@ -80,7 +80,7 @@ into the sce object" />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.4.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.4.1</span>
       </span>
     </div>
 
@@ -286,6 +286,7 @@ into the sce object</p>
   nNeighbors <span class='op'>=</span> <span class='fl'>30L</span>,
   spread <span class='op'>=</span> <span class='fl'>1</span>,
   externalReduction <span class='op'>=</span> <span class='cn'>NULL</span>,
+  seed <span class='op'>=</span> <span class='fl'>42</span>,
   verbose <span class='op'>=</span> <span class='cn'>TRUE</span>
 <span class='op'>)</span></pre>
 
@@ -331,6 +332,11 @@ See <a href='https://satijalab.org/seurat/reference/RunUMAP.html'>RunUMAP</a> fo
       <th>externalReduction</th>
       <td><p>Pass DimReduc object if PCA/ICA computed through
 other libraries. Default <code>NULL</code>.</p></td>
+    </tr>
+    <tr>
+      <th>seed</th>
+      <td><p>Random seed for reproducibility of results. 
+Default <code>42</code>.</p></td>
     </tr>
     <tr>
       <th>verbose</th>
