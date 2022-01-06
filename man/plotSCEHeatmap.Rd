@@ -10,22 +10,24 @@ plotSCEHeatmap(
   doLog = FALSE,
   featureIndex = NULL,
   cellIndex = NULL,
+  scale = TRUE,
+  trim = c(-2, 2),
   featureIndexBy = "rownames",
   cellIndexBy = "rownames",
+  rowDataName = NULL,
+  colDataName = NULL,
   featureAnnotations = NULL,
   cellAnnotations = NULL,
   featureAnnotationColor = NULL,
   cellAnnotationColor = NULL,
-  rowDataName = NULL,
-  colDataName = NULL,
   rowSplitBy = NULL,
   colSplitBy = NULL,
   rowLabel = FALSE,
   colLabel = FALSE,
+  rowLabelSize = 8,
+  colLabelSize = 8,
   rowDend = TRUE,
   colDend = TRUE,
-  scale = TRUE,
-  trim = c(-2, 2),
   title = "SCE Heatmap",
   rowTitle = "Genes",
   colTitle = "Cells",
@@ -54,6 +56,12 @@ another feature list indicated by \code{featureIndexBy}. Default \code{NULL}.}
 (cells). Alternatively, it can be a vector identifying cells in another
 cell list indicated by \code{featureIndexBy}. Default \code{NULL}.}
 
+\item{scale}{Whether to perform z-score scaling on each row. Default
+\code{TRUE}.}
+
+\item{trim}{A 2-element numeric vector. Values outside of this range will be
+trimmed to their nearst bound. Default \code{c(-2, 2)}}
+
 \item{featureIndexBy}{A single character specifying a column name of
 \code{rowData(inSCE)}, or a vector of the same length as \code{nrow(inSCE)},
 where we search for the non-rowname feature indices. Default
@@ -62,6 +70,12 @@ where we search for the non-rowname feature indices. Default
 \item{cellIndexBy}{A single character specifying a column name of
 \code{colData(inSCE)}, or a vector of the same length as \code{ncol(inSCE)},
 where we search for the non-rowname cell indices. Default \code{"rownames"}.}
+
+\item{rowDataName}{character. The column name(s) in \code{rowData} that need
+to be added to the annotation. Default \code{NULL}.}
+
+\item{colDataName}{character. The column name(s) in \code{colData} that need
+to be added to the annotation. Default \code{NULL}.}
 
 \item{featureAnnotations}{\code{data.frame}, with \code{rownames} containing
 all the features going to be plotted. Character columns should be factors.
@@ -81,12 +95,6 @@ cell labeling. Should match the entries in the \code{cellAnnotations} or
 \code{colDataName}. For each entry, there should be a list/vector of colors
 named with categories. Default \code{NULL}.}
 
-\item{rowDataName}{character. The column name(s) in \code{rowData} that need
-to be added to the annotation. Default \code{NULL}.}
-
-\item{colDataName}{character. The column name(s) in \code{colData} that need
-to be added to the annotation. Default \code{NULL}.}
-
 \item{rowSplitBy}{character. Do semi-heatmap based on the grouping of
 this(these) annotation(s). Should exist in either \code{rowDataName} or
 \code{names(featureAnnotations)}. Default \code{NULL}.}
@@ -105,15 +113,15 @@ single character to display a column of \code{colData(inSCE)} annotation,
 a vector of the same length as full/subset \code{ncol(inSCE)} to display
 customized info. Default \code{FALSE}.}
 
+\item{rowLabelSize}{A number for the font size of feature names. Default
+\code{8}}
+
+\item{colLabelSize}{A number for the font size of cell names. Default
+\code{8}}
+
 \item{rowDend}{Whether to display row dendrogram. Default \code{TRUE}.}
 
 \item{colDend}{Whether to display column dendrogram. Default \code{TRUE}.}
-
-\item{scale}{Whether to perform z-score scaling on each row. Default
-\code{TRUE}.}
-
-\item{trim}{A 2-element numeric vector. Values outside of this range will be
-trimmed to their nearst bound. Default \code{c(-2, 2)}}
 
 \item{title}{The main title of the whole plot. Default \code{"SCE Heatmap"}}
 

@@ -173,7 +173,7 @@ withConsoleMsgRedirect <- function(expr) {
     result <- expr
   },
   message = function(m) {
-    shinyjs::html(id = "console", html = m$message, add = TRUE)
+    shinyjs::html(id = "consoleText", html = m$message, add = TRUE)
   })
   result
 }

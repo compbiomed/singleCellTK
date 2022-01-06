@@ -21,7 +21,7 @@ plotSCEDimReduceColData(
   dim2 = NULL,
   bin = NULL,
   binLabel = NULL,
-  dotSize = 2,
+  dotSize = 0.5,
   transparency = 1,
   colorScale = NULL,
   colorLow = "white",
@@ -86,7 +86,7 @@ If more than one value, will bin numeric values using values as a cut point.}
 \item{binLabel}{Character vector. Labels for the bins created by the `bin` parameter.
 Default NULL.}
 
-\item{dotSize}{Size of dots. Default 2.}
+\item{dotSize}{Size of dots. Default 0.5.}
 
 \item{transparency}{Transparency of the dots, values will be 0-1. Default 1.}
 
@@ -138,6 +138,7 @@ Plot results of reduced dimensions data and
  colors by annotation data stored in the colData slot.
 }
 \examples{
+data("mouseBrainSubsetSCE")
 plotSCEDimReduceColData(
   inSCE = mouseBrainSubsetSCE, colorBy = "tissue",
   shape = NULL, conditionClass = "factor",

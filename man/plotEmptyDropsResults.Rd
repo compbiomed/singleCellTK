@@ -10,7 +10,7 @@ plotEmptyDropsResults(
   combinePlot = "all",
   fdrCutoff = 0.01,
   defaultTheme = TRUE,
-  dotSize = 1,
+  dotSize = 0.5,
   titleSize = 18,
   axisLabelSize = 18,
   axisSize = 15,
@@ -40,7 +40,7 @@ runEmptyDrops as "Empty Droplet" or "Putative Cell". Default 0.01.}
 \item{defaultTheme}{Removes grid in plot and sets axis title size to 10
 when TRUE. Default TRUE.}
 
-\item{dotSize}{Size of dots. Default 1.}
+\item{dotSize}{Size of dots. Default 0.5.}
 
 \item{titleSize}{Size of title of plot. Default 18.}
 

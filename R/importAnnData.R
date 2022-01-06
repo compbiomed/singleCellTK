@@ -1,6 +1,7 @@
 .importAnnDataSample <- function(sampleDir = './',
                                  sampleName = 'sample',
-                                 delayedArray = FALSE){
+                                 delayedArray = FALSE,
+                                 class){
 
   anndata_file <- file.path(sampleDir, paste0(sampleName,'.h5ad',sep=''))
   if (!file.exists(anndata_file)){
@@ -9,6 +10,13 @@
   anndata <- ad$read_h5ad(anndata_file)
 
   counts_matrix <- t((reticulate::py_to_r(anndata$X)))
+
+  if (class == "Matrix") {
+    counts_matrix <- .convertToMatrix(counts_matrix)
+  } else if (class == "matrix") {
+    counts_matrix <- base::as.matrix(counts_matrix)
+  }
+
   if (isTRUE(delayedArray)) {
     counts_matrix <- DelayedArray::DelayedArray(counts_matrix)
   }
@@ -84,6 +92,12 @@
 #' }
 #' @param delayedArray Boolean. Whether to read the expression matrix as
 #'  \link{DelayedArray} object. Default \code{FALSE}.
+#' @param class Character. The class of the expression matrix stored in the SCE
+#'  object. Can be one of "Matrix" (as returned by
+#'  \link{readMM} function), or "matrix" (as returned by
+#'  \link[base]{matrix} function). Default \code{"Matrix"}.
+#' @param rowNamesDedup Boolean. Whether to deduplicate rownames. Default 
+#'  \code{TRUE}.
 #' @details
 #' \code{importAnnData} converts scRNA-seq data in the AnnData format to the
 #' \code{SingleCellExperiment} object. The .X slot in AnnData is transposed to the features x cells
@@ -107,21 +121,35 @@
 #' @export
 importAnnData <- function(sampleDirs = NULL,
                           sampleNames = NULL,
-                          delayedArray = FALSE) {
+                          delayedArray = FALSE,
+                          class = c("Matrix", "matrix"),
+                          rowNamesDedup = TRUE) {
 
   if (length(sampleDirs)!=length(sampleNames)){
     stop("Number of sampleDirs must be equal to number of SampleNames. Please provide sample names for all input directories")
   }
+
+  class <- match.arg(class)
 
   res <- vector("list", length = length(sampleDirs))
 
   for (i in seq_along(sampleDirs)){
     scei <- .importAnnDataSample(sampleDir = sampleDirs[[i]],
                                  sampleName = sampleNames[[i]],
-                                 delayedArray = delayedArray)
+                                 delayedArray = delayedArray,
+                                 class = class)
     res[[i]] <- scei
   }
   sce <- do.call(SingleCellExperiment::cbind, res)
+  
+  if (isTRUE(rowNamesDedup)) {
+    if (any(duplicated(rownames(sce)))) {
+      message("Duplicated gene names found, adding '-1', '-2', ",
+              "... suffix to them.")
+    }
+    sce <- dedupRowNames(sce)
+  }
+  
   return(sce)
 }
 

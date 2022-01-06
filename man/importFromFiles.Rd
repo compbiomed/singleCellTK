@@ -18,54 +18,73 @@ importFromFiles(
   featureHeader = FALSE,
   featureRowName = 1,
   featureSep = "\\t",
-  gzipped = "auto"
+  gzipped = "auto",
+  rowNamesDedup = TRUE
 )
 }
 \arguments{
-\item{assayFile}{The path to a  file in .mtx, .txt, .csv, .tab, or .tsv format.}
+\item{assayFile}{The path to a file in .mtx, .txt, .csv, .tab, or .tsv 
+format.}
 
 \item{annotFile}{The path to a text file that contains columns of annotation
-information for each sample in the assayFile. This file should have the same
-number of rows as there are columns in the assayFile. If multiple samples are
-represented in these files, this should be denoted by a column called \code{'sample'}
-within the \code{annotFile}.}
+information for each cell in the \code{assayFile}. This file should have the 
+same number of rows as there are columns in the \code{assayFile}. If multiple
+samples are represented in the dataset, this should be denoted by a column 
+called \code{'sample'} within the \code{annotFile}.}
 
 \item{featureFile}{The path to a text file that contains columns of
 annotation information for each gene in the count matrix. This file should
-have the same genes in the same order as assayFile. This is optional.}
+have the same genes in the same order as \code{assayFile}. This is optional.}
 
 \item{assayName}{The name of the assay that you are uploading. The default
-is "counts".}
+is \code{"counts"}.}
 
-\item{inputDataFrames}{If TRUE, assayFile and annotFile are read as data
-frames instead of file paths. The default is FALSE.}
+\item{inputDataFrames}{If \code{TRUE}, \code{assayFile}, \code{annotFile} and
+\code{featureFile} should be \code{data.frames} object (or its inheritance) 
+instead of file paths. The default is \code{FALSE}.}
 
 \item{class}{Character. The class of the expression matrix stored in the SCE
-object. Can be one of "Matrix" (as returned by
-\link{readMM} function), or "matrix" (as returned by
-\link[base]{matrix} function). Default "Matrix".}
+object. Can be one of \code{"Matrix"} (as returned by
+\link{readMM} function), or \code{"matrix"} (as returned by
+\link[base]{matrix} function). Default \code{"Matrix"}.}
 
 \item{delayedArray}{Boolean. Whether to read the expression matrix as
 \link{DelayedArray} object or not. Default \code{FALSE}.}
 
-\item{annotFileHeader}{Whether there's a header (colnames) in the cell annotation file. Default is FALSE}
+\item{annotFileHeader}{Whether there's a header (colnames) in the cell 
+annotation file. Default is \code{FALSE}.}
 
-\item{annotFileRowName}{Which column is used as the rownames for the cell annotation file. Default is 1 (first column).}
+\item{annotFileRowName}{Which column is used as the rownames for the cell 
+annotation file. This should match to the colnames of the \code{assayFile}. 
+Default is \code{1} (first column).}
 
-\item{annotFileSep}{Separater used for the cell annotation file. Default is "\\t".}
+\item{annotFileSep}{Separater used for the cell annotation file. Default is 
+\code{"\\t"}.}
 
-\item{featureHeader}{Whether there's a header (colnames) in the feature annotation file. Default is FALSE}
+\item{featureHeader}{Whether there's a header (colnames) in the feature 
+annotation file. Default is \code{FALSE}.}
 
-\item{featureRowName}{Which column is used as the rownames for the feature annotation file. Default is 1 (first column).}
+\item{featureRowName}{Which column is used as the rownames for the feature 
+annotation file. This should match to the rownames of the \code{assayFile}. 
+Default is \code{1}. (first column).}
 
-\item{featureSep}{Separater used for the feature annotation file. Default is "\\t".}
+\item{featureSep}{Separater used for the feature annotation file. Default is 
+\code{"\\t"}.}
 
-\item{gzipped}{Whether the input file is gzipped. Default is "auto" and it will automatically detect whether the file is gzipped. Other options is TRUE or FALSE.}
+\item{gzipped}{Whether the input file is gzipped. Default is \code{"auto"} 
+and it will automatically detect whether the file is gzipped. Other options 
+are \code{TRUE} or \code{FALSE}.}
+
+\item{rowNamesDedup}{Boolean. Whether to deduplicate rownames. Default 
+\code{TRUE}.}
 }
 \value{
-a SingleCellExperiment object
+a \linkS4class{SingleCellExperiment} object
 }
 \description{
-Creates a SingleCellExperiment object from a counts file in various formats.
-and a file of annotation information, .
+Create a SingleCellExperiment object from files
+}
+\details{
+Creates a \linkS4class{SingleCellExperiment} object from a counts 
+file in various formats, and files of cell and feature annotation.
 }

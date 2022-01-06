@@ -111,3 +111,6 @@ test_that(desc = "Testing importGeneSetFromMSigDB", {
                                   by = "feature_name")
   expect_true(inherits(sce@metadata$sctk$genesets$"C2-CP"[[1]], "GeneSet"))
 }) 
+
+
+

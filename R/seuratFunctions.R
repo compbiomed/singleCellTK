@@ -140,10 +140,13 @@ seuratScaleData <- function(inSCE, useAssay = "seuratNormData",
 #' Find highly variable genes and store in the input sce object
 #' @param inSCE (sce) object to compute highly variable genes from and to store
 #' back to it
-#' @param useAssay Normalized assay inside the SCE object to use for hvg
-#' computation.
+#' @param useAssay Specify the name of the assay to use for computation
+#'  of variable genes. It is recommended to use a raw counts assay with the 
+#'  `vst` method and normalized assay with all other methods. Default
+#'  is \code{"counts"}. 
 #' @param hvgMethod selected method to use for computation of highly variable
-#' genes. One of 'vst', 'dispersion', or 'mean.var.plot'. Default \code{"vst"}.
+#'  genes. One of 'vst', 'dispersion', or 'mean.var.plot'. Default method 
+#'  is `vst` which uses the raw counts. All other methods use normalized counts.
 #' @param hvgNumber numeric value of how many genes to select as highly
 #' variable. Default \code{2000}
 #' @param altExp Logical value indicating if the input object is an
@@ -160,10 +163,17 @@ seuratScaleData <- function(inSCE, useAssay = "seuratNormData",
 #' computation stored
 #' @export
 #' @importFrom SummarizedExperiment rowData rowData<-
-seuratFindHVG <- function(inSCE, useAssay = "seuratNormData",
+seuratFindHVG <- function(inSCE, useAssay = "counts",
                           hvgMethod = "vst", hvgNumber = 2000, altExp = FALSE,
                           verbose = TRUE) {
-  seuratObject <- convertSCEToSeurat(inSCE, normAssay = useAssay)
+  
+  if(hvgMethod == "vst"){
+    seuratObject <- convertSCEToSeurat(inSCE, countsAssay = useAssay)
+  }
+  else{
+    seuratObject <- convertSCEToSeurat(inSCE, normAssay = useAssay)
+  }
+  
   seuratObject <- Seurat::FindVariableFeatures(seuratObject,
                                                selection.method = hvgMethod,
                                                nfeatures = hvgNumber,
@@ -203,6 +213,11 @@ seuratFindHVG <- function(inSCE, useAssay = "seuratNormData",
 #' Default \code{seuratPCA}.
 #' @param nPCs numeric value of how many components to compute. Default
 #' \code{20}.
+#' @param features Specify the feature names or rownames which should be used
+#'  for computation of PCA. Default is \code{NULL} which will use the previously
+#'  stored variable features.
+#' @param seed Random seed for reproducibility of results.
+#' Default \code{NULL} will use global seed in use by the R environment.
 #' @param verbose Logical value indicating if informative messages should
 #'  be displayed. Default is \code{TRUE}.
 #' @examples
@@ -218,10 +233,16 @@ seuratFindHVG <- function(inSCE, useAssay = "seuratNormData",
 #' @export
 #' @importFrom SingleCellExperiment reducedDim<-
 seuratPCA <- function(inSCE, useAssay = "seuratScaledData",
-                      reducedDimName = "seuratPCA", nPCs = 20, verbose = TRUE) {
-  seuratObject <- Seurat::RunPCA(convertSCEToSeurat(inSCE,
-                                                    scaledAssay = useAssay),
-                                 npcs = as.double(nPCs), verbose = verbose)
+                      reducedDimName = "seuratPCA", nPCs = 20, features = NULL, seed = NULL, verbose = TRUE) {
+  seuratObject <- convertSCEToSeurat(inSCE, scaledAssay = useAssay)
+  
+  if(length(Seurat::VariableFeatures(seuratObject)) == 0
+     && is.null(features)){
+    features <- rownames(inSCE)
+  }
+  
+  seuratObject <- Seurat::RunPCA(seuratObject,
+                                 npcs = as.double(nPCs), verbose = verbose, features = features, seed.use = seed)
   inSCE <- .addSeuratToMetaDataSCE(inSCE, seuratObject)
 
   temp <- seuratObject@reductions$pca@cell.embeddings
@@ -238,7 +259,12 @@ seuratPCA <- function(inSCE, useAssay = "seuratScaledData",
 #' @param useAssay Assay containing scaled counts to use in ICA.
 #' @param reducedDimName Name of new reducedDims object containing Seurat ICA
 #' Default \code{seuratICA}.
+#' @param features Specify the feature names or rownames which should be used
+#'  for computation of ICA. Default is \code{NULL} which will use the previously
+#'  stored variable features.
 #' @param nics Number of independent components to compute. Default \code{20}.
+#' @param seed Random seed for reproducibility of results.
+#' Default \code{NULL} will use global seed in use by the R environment.
 #' @examples
 #' data(scExample, package = "singleCellTK")
 #' \dontrun{
@@ -252,10 +278,17 @@ seuratPCA <- function(inSCE, useAssay = "seuratScaledData",
 #' @export
 #' @importFrom SingleCellExperiment reducedDim<-
 seuratICA <- function(inSCE, useAssay,
-                      reducedDimName = "seuratICA", nics = 20) {
-  seuratObject <- Seurat::RunICA(convertSCEToSeurat(inSCE,
-                                                    scaledAssay = useAssay),
-                                 nics = as.double(nics), verbose = FALSE)
+                      reducedDimName = "seuratICA", features = NULL, nics = 20, seed = NULL) {
+  
+  seuratObject <- convertSCEToSeurat(inSCE, scaledAssay = useAssay)
+  
+  if(length(Seurat::VariableFeatures(seuratObject)) == 0
+     && is.null(features)){
+    features <- rownames(inSCE)
+  }
+  
+  seuratObject <- Seurat::RunICA(seuratObject,
+                                 nics = as.double(nics), features = features, verbose = FALSE, seed.use = seed)
   inSCE <- .addSeuratToMetaDataSCE(inSCE, seuratObject)
 
   temp <- seuratObject@reductions$ica@cell.embeddings
@@ -521,6 +554,7 @@ seuratFindClusters <- function(
 
   if(!is.null(externalReduction)){
     seuratObject@reductions <- list(pca = externalReduction)
+    useReduction <- "pca"
   }
 
   seuratObject <- Seurat::FindNeighbors(seuratObject, reduction = useReduction,
@@ -560,18 +594,29 @@ seuratFindClusters <- function(
 #' Default \code{seuratTSNE}.
 #' @param dims Number of reduction components to use for tSNE computation.
 #' Default \code{10}.
-#' @param perplexity Adjust the preplexity tuneable parameter for the underlying
+#' @param perplexity Adjust the perplexity tuneable parameter for the underlying
 #' tSNE call. Default \code{30}.
+#' @param externalReduction Pass DimReduc object if PCA/ICA computed through
+#' other libraries. Default \code{NULL}.
+#' @param seed Random seed for reproducibility of results. 
+#' Default \code{1}.
 #' @return Updated sce object with tSNE computations stored
 #' @export
 #' @importFrom SingleCellExperiment reducedDim<-
 seuratRunTSNE <- function(inSCE, useReduction = c("pca", "ica"),
                           reducedDimName = "seuratTSNE", dims = 10,
-                          perplexity = 30) {
+                          perplexity = 30, externalReduction = NULL, seed = 1) {
   useReduction <- match.arg(useReduction)
   seuratObject <- convertSCEToSeurat(inSCE)
+  
+  if(!is.null(externalReduction)){
+    seuratObject@reductions <- list(pca = externalReduction)
+    useReduction <- "pca"
+  }
+  
   seuratObject <- Seurat::RunTSNE(seuratObject, reduction = useReduction,
-                                  dims = seq(dims), perplexity = perplexity)
+                                  dims = seq(dims), perplexity = perplexity,
+                                  check_duplicates = FALSE, seed.use = seed)
   inSCE <- .addSeuratToMetaDataSCE(inSCE, seuratObject)
   temp <- seuratObject@reductions$tsne@cell.embeddings
   rownames(temp) <- colnames(inSCE)
@@ -597,6 +642,10 @@ seuratRunTSNE <- function(inSCE, useReduction = c("pca", "ica"),
 #' \code{30L}.
 #' @param spread Sets the \code{"spread"} parameter to the underlying UMAP call.
 #' See \link[Seurat]{RunUMAP} for more information. Default \code{1}.
+#' @param externalReduction Pass DimReduc object if PCA/ICA computed through
+#' other libraries. Default \code{NULL}.
+#' @param seed Random seed for reproducibility of results. 
+#' Default \code{42}.
 #' @param verbose Logical value indicating if informative messages should
 #'  be displayed. Default is \code{TRUE}.
 #' @examples
@@ -615,16 +664,24 @@ seuratRunTSNE <- function(inSCE, useReduction = c("pca", "ica"),
 seuratRunUMAP <- function(inSCE, useReduction = c("pca", "ica"),
                           reducedDimName = "seuratUMAP", dims = 10,
                           minDist = 0.3, nNeighbors = 30L, spread = 1,
+                          externalReduction = NULL, seed = 42,
                           verbose = TRUE) {
   useReduction <- match.arg(useReduction)
   seuratObject <- convertSCEToSeurat(inSCE)
+  
+  if(!is.null(externalReduction)){
+    seuratObject@reductions <- list(pca = externalReduction)
+    useReduction <- "pca"
+  }
+  
   seuratObject <- Seurat::RunUMAP(seuratObject,
                                   reduction = useReduction,
                                   dims = seq(dims),
                                   min.dist = minDist,
                                   n.neighbors = nNeighbors,
                                   spread = spread,
-                                  verbose = verbose)
+                                  verbose = verbose,
+                                  seed.use = seed)
   inSCE <- .addSeuratToMetaDataSCE(inSCE, seuratObject)
 
   temp <- seuratObject@reductions$umap@cell.embeddings
@@ -683,6 +740,7 @@ seuratElbowPlot <- function(inSCE,
   seuratObject <- convertSCEToSeurat(inSCE)
   if(!is.null(externalReduction)){
     seuratObject@reductions <- list(pca = externalReduction)
+    reduction <- "pca"
   }
   plot <- Seurat::ElbowPlot(seuratObject, reduction = reduction, ndims = ndims)
   if(!is.null(significantPC)){
@@ -772,6 +830,7 @@ seuratComputeHeatmap <- function(inSCE,
   seuratObject <- convertSCEToSeurat(inSCE, scaledAssay = useAssay)
   if(!is.null(externalReduction)){
     seuratObject@reductions <- list(pca = externalReduction)
+    useReduction <- "pca"
   }
   if(is.null(dims)) {
     dims <- ncol(seuratObject@reductions[[useReduction]])
@@ -845,7 +904,10 @@ seuratHeatmapPlot <- function(plotObject, dims, ncol, labels) {
 #' @export
 convertSeuratToSCE <- function(seuratObject, normAssayName = "seuratNormData",
                                scaledAssayName = "seuratScaledData") {
-  inSCE <- Seurat::as.SingleCellExperiment(seuratObject)
+  inSCE <- SingleCellExperiment(
+    assays = list(counts = seuratObject@assays[[1]]@counts),
+    colData = seuratObject@meta.data)
+  
   assay(inSCE, normAssayName) <- methods::slot(seuratObject@assays$RNA, "data")
   if (length(methods::slot(seuratObject, "assays")[["RNA"]]@scale.data) > 0) {
     assay(inSCE, scaledAssayName) <- methods::slot(seuratObject@assays$RNA,
@@ -1031,6 +1093,9 @@ convertSCEToSeurat <- function(inSCE, countsAssay = NULL, normAssay = NULL,
     rownames(decontM) <- gsub('_', '-', rownames(decontM))
     seuratObject[["decontXcounts"]] <- Seurat::CreateAssayObject(counts = .convertToMatrix(decontM))
   }
+  
+  # Ensuring that colnames from input SCE converted to Seurat object are same in the Seurat metadata slot
+  rownames(seuratObject@meta.data) <- colnames(seuratObject)
 
   return(seuratObject)
 }
@@ -1119,7 +1184,7 @@ seuratSCTransform <- function(inSCE, normAssayName = "SCTCounts",
 #' @param useAssay Assay to batch-correct.
 #' @param batch Batch variable from \code{colData} slot of
 #' \code{SingleCellExperiment} object.
-#' @param newAssayName Assay name for the batch-corrected ouput assay.
+#' @param newAssayName Assay name for the batch-corrected output assay.
 #' @param kAnchor Number of neighbours to use for finding the anchors in the
 #' \link[Seurat]{FindIntegrationAnchors} function.
 #' @param kFilter Number of neighbours to use for filtering the anchors in the
@@ -1242,7 +1307,8 @@ seuratFindMarkers <- function(
         cells1 = cells1,
         cells2 = cells2)
     }
-    markerGenes$cluster <- paste0(group1, " vs ", group2)
+    markerGenes$cluster1 <- group1
+    markerGenes$cluster2 <- group2
     gene.id <- rownames(markerGenes)
     markerGenes <- cbind(gene.id, markerGenes)
   }
@@ -1260,11 +1326,13 @@ seuratFindMarkers <- function(
     gene.id <- markerGenes$gene
     markerGenes <- cbind(gene.id, markerGenes)
     markerGenes$gene <- NULL
-    grp <- unique(colData(inSCE)[[allGroup]])
-    clust <- as.integer(unique(Seurat::Idents(seuratObject)))
-    for(i in seq(length(clust))){
-      levels(markerGenes$cluster)[clust[i]] <- grp[i]
-    }
+    # grp <- unique(colData(inSCE)[[allGroup]])
+    # clust <- as.integer(unique(Seurat::Idents(seuratObject)))
+    # for(i in seq(length(clust))){
+    #   levels(markerGenes$cluster)[clust[i]] <- grp[i]
+    # }
+    colnames(markerGenes)[which(colnames(markerGenes) == "cluster")] <- "cluster1"
+    markerGenes$cluster2 <- rep("all", nrow(markerGenes))
   }
   else if(is.null(allGroup)
           && (is.null(group1) && is.null(group2))){
@@ -1281,11 +1349,11 @@ seuratFindMarkers <- function(
     gene.id <- markerGenes$gene
     markerGenes <- cbind(gene.id, markerGenes)
     markerGenes$gene <- NULL
-    grp <- unique(colData(inSCE)[[S4Vectors::metadata(inSCE)$seurat$clusterName]])
-    clust <- as.integer(unique(Seurat::Idents(seuratObject)))
-    for(i in seq(length(clust))){
-      levels(markerGenes$cluster)[clust[i]] <- grp[i]
-    }
+    # grp <- unique(colData(inSCE)[[S4Vectors::metadata(inSCE)$seurat$clusterName]])
+    # clust <- as.integer(unique(Seurat::Idents(seuratObject)))
+    # for(i in seq(length(clust))){
+    #   levels(markerGenes$cluster)[clust[i]] <- grp[i]
+    # }
   }
   rownames(markerGenes) <- NULL
   S4Vectors::metadata(inSCE)$seuratMarkers <- markerGenes
@@ -1458,9 +1526,10 @@ seuratGenePlot <- function(inSCE,
     markers.combined <- cbind(markers.combined, combined.pval)
     markers.combined <- markers.combined[order(markers.combined[, paste0(meta.method.name, "_p_val")]), ]
   }
+  lfcCol <- colnames(markers.combined)[grep(paste0(ident.1, "_avg"), colnames(markers.combined))]
   markers.combined <- markers.combined[, c(
     paste0(ident.1, "_p_val"),
-    paste0(ident.1, "_avg_logFC"),
+    lfcCol,
     paste0(ident.1, "_pct.1"),
     paste0(ident.1, "_pct.2"),
     paste0("_p_val"))]

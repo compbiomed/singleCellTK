@@ -6,11 +6,11 @@
 \usage{
 plotSCEDensity(
   inSCE,
-  slot,
-  annotation,
+  slotName,
+  itemName,
   sample = NULL,
-  useAssay = "counts",
   feature = NULL,
+  dimension = NULL,
   groupBy = NULL,
   xlab = NULL,
   ylab = NULL,
@@ -26,19 +26,22 @@ plotSCEDensity(
 }
 \arguments{
 \item{inSCE}{Input \linkS4class{SingleCellExperiment} object with saved
-dimension reduction components or a variable with saved results. Required}
+dimension reduction components or a variable with saved results. Required.}
 
-\item{slot}{Desired slot of SingleCellExperiment used for plotting. Possible
-options: "assays", "colData", "metadata"}
+\item{slotName}{Desired slot of SingleCellExperiment used for plotting. Possible
+options: "assays", "colData", "metadata", "reducedDims". Required.}
 
-\item{annotation}{Desired vector within the slot used for plotting.}
+\item{itemName}{Desired vector within the slot used for plotting. Required.}
 
 \item{sample}{Character vector. Indicates which sample each cell belongs to.}
 
-\item{useAssay}{Indicate which assay to use. Default "counts".}
+\item{feature}{Desired name of feature stored in assay of SingleCellExperiment
+object. Only used when "assays" slotName is selected. Default NULL.}
 
-\item{feature}{name of feature stored in assay of SingleCellExperiment
-object. Will be used only if "assays" slot is chosen. Default NULL.}
+\item{dimension}{Desired dimension stored in the specified reducedDims.
+Either an integer which indicates the column or a character vector specifies
+column name. By default, the 1st dimension/column will be used.
+Only used when "reducedDims" slotName is selected. Default NULL.}
 
 \item{groupBy}{Groupings for each numeric value. A user may input a vector
 equal length to the number of the samples in the SingleCellExperiment
@@ -76,8 +79,9 @@ Visualizes values stored in any slot of a
  SingleCellExperiment object via a densityn plot.
 }
 \examples{
+data("mouseBrainSubsetSCE")
 plotSCEDensity(
-  inSCE = mouseBrainSubsetSCE, slot = "assays",
-  annotation = "counts", feature = "Apoe", groupBy = "sex"
+  inSCE = mouseBrainSubsetSCE, slotName = "assays",
+  itemName = "counts", feature = "Apoe", groupBy = "sex"
 )
 }

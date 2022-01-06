@@ -212,18 +212,9 @@
   }
 
   if ("assayType" %in% metaNames) {
-    tags <- unique(unlist(lapply(SCE_list,
-                                 function(x) {
-                                   names(S4Vectors::metadata(x)[["assayType"]])
-                                 })))
-    assayType <- list()
-    for (sample in SCE_list) {
-      assayType.each <- S4Vectors::metadata(sample)[["assayType"]]
-      for (t in tags) {
-        assayType[[t]] <- c(assayType[[t]], assayType.each[[t]])
-      }
-    }
-    assayType <- lapply(assayType, unique)
+    assayType <- lapply(SCE_list, function(x){S4Vectors::metadata(x)$assayType})
+    assayType <- BiocGenerics::Reduce(dplyr::union, assayType)
+    
     NewMeta[["assayType"]] <- assayType
   }
 
@@ -234,16 +225,22 @@
 #' @param sceList A list contains \link[SingleCellExperiment]{SingleCellExperiment} objects.
 #' Currently, combineSCE function only support combining SCE objects with assay in dgCMatrix format.
 #' It does not support combining SCE with assay in delayedArray format.
-#' @param by.r Specifications of the columns used for merging rowData. See 'Details'.
-#' @param by.c Specifications of the columns used for merging colData. See 'Details'.
-#' @param combined logical; if TRUE, it will combine the list of SingleCellExperiment objects. See 'Details'.
+#' @param by.r Specifications of the columns used for merging rowData. If set as NULL, 
+#' the rownames of rowData tables will be used to merging rowData. Default is NULL. 
+#' @param by.c Specifications of the columns used for merging colData. If set as NULL, 
+#' the rownames of colData tables will be used to merging colData. Default is NULL.
+#' @param combined logical; if TRUE, it will combine the list of SingleCellExperiment objects 
+#' and return a SingleCellExperiment. If FALSE, it will return a list of SingleCellExperiment whose
+#' rowData, colData, assay and reducedDim data slot are compatible within SCE objects in the list. 
+#' Default is TRUE.
 #' @return A \link[SingleCellExperiment]{SingleCellExperiment} object which combines all
 #' objects in sceList. The colData is merged.
 #' @examples
+#' data(scExample, package = "singleCellTK")
 #' combinedsce <- combineSCE(list(sce,sce), by.r = NULL, by.c = NULL, combined = TRUE)
 #' @export
 
-combineSCE <- function(sceList, by.r, by.c, combined){
+combineSCE <- function(sceList, by.r = NULL, by.c = NULL, combined = TRUE){
   if(length(sceList) == 1){
     return(sceList[[1]])
   }

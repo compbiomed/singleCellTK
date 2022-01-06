@@ -1,3 +1,9 @@
+.convert_hex_to_int <- function(hex) {
+  code = paste0("hash = str(int('", hex, "', base=16))[-10:]")
+  reticulate::py_run_string(code)
+  reticulate::py$hash
+}
+
 #' Export data in Seurat object
 #' @param inSCE A \link[SingleCellExperiment]{SingleCellExperiment} object
 #' that contains the data. QC metrics are stored in colData of the
@@ -112,23 +118,20 @@ exportSCE <- function(inSCE,
 }
 
 
-#' Generate manifest file for droplet and cell count data
+#' Generate HTAN manifest file for droplet and cell count data
 #' @param dropletSCE A \link[SingleCellExperiment]{SingleCellExperiment} object containing
 #' droplet count matrix data
 #' @param cellSCE A \link[SingleCellExperiment]{SingleCellExperiment} object containing
 #' cell count matrix data
 #' @param samplename The sample name of the \link[SingleCellExperiment]{SingleCellExperiment} objects
 #' @param dir The output directory of the SCTK QC pipeline.
-#' @param HTAN Whether generate manifest file with the format required by HTAN. Default is TRUE.
 #' @param dataType Type of the input data. It can be one of "Droplet", "Cell" or "Both".
+#' @param HTAN Whether generates manifest file including HTAN specific ID (HTAN Biospecimen ID, 
+#' HTAN parent file ID and HTAN patient ID). Default is TRUE. 
 #' @return A \link[SingleCellExperiment]{SingleCellExperiment} object which combines all
 #' objects in sceList. The colData is merged.
 #' @export
-#' @examples
-#' data(scExample, package = "singleCellTK")
-#' generateMeta(sce, dir = ".", samplename = "Sample",
-#'  HTAN = TRUE)
-#' @importFrom SummarizedExperiment assay colData
+
 generateMeta <- function(dropletSCE = NULL,
                           cellSCE = NULL,
                           samplename,
@@ -178,10 +181,10 @@ generateMeta <- function(dropletSCE = NULL,
                    MedianGenes = stats::median(colData(cellSCE)$detected),
                    DataType = 'Cell Matrix',
                    FileName = file.path(filterDir, 'assays', paste0(samplename,'_counts.mtx.gz')),
-                   ColData = file.path(filterDir, paste0(samplename,'_colData.txt.gz')),
+                   ColData = file.path(filterDir, paste0(samplename,'_cellData.txt.gz')),
                    DecontXUMAP = file.path(filterDir, 'reducedDims', paste0(samplename,'_decontX_UMAP.txt.gz')),
                    ScrubletTSNE = file.path(filterDir, 'reducedDims', paste0(samplename,'_scrublet_TSNE.txt.gz')),
-                   ScrubletUMAP = file.path(filterDir, 'reducedDims', paste0(samplename,'_scrublet_TSNE.txt.gz')))
+                   ScrubletUMAP = file.path(filterDir, 'reducedDims', paste0(samplename,'_scrublet_UMAP.txt.gz')))
   }
 
   data <- list("Raw" = if (exists("droplet_stat")) {droplet_stat} else {NULL},
@@ -228,6 +231,200 @@ generateMeta <- function(dropletSCE = NULL,
 
   level3Meta <- do.call(base::rbind, level3List)
   level4Meta <- do.call(base::rbind, level4List)
+  return(list(level3Meta, level4Meta))
+}
+
+#' Generate HTAN manifest file for droplet and cell count data
+#' @param dropletSCE A \link[SingleCellExperiment]{SingleCellExperiment} object containing
+#' droplet count matrix data
+#' @param cellSCE A \link[SingleCellExperiment]{SingleCellExperiment} object containing
+#' cell count matrix data
+#' @param samplename The sample name of the \link[SingleCellExperiment]{SingleCellExperiment} objects
+#' @param htan_patient_id The HTAN patient id of the sample in \link[SingleCellExperiment]{SingleCellExperiment} object
+#' @param dir The output directory of the SCTK QC pipeline.
+#' @param dataType Type of the input data. It can be one of "Droplet", "Cell" or "Both".
+#' @return A \link[SingleCellExperiment]{SingleCellExperiment} object which combines all
+#' objects in sceList. The colData is merged.
+#' @export
+#' @importFrom rlang .data
+
+generateHTANMeta <- function(dropletSCE = NULL,
+                         cellSCE = NULL,
+                         samplename,
+                         htan_patient_id,
+                         dir,
+                         dataType = c("Droplet", "Cell", "Both")) {
+  level3List <- list()
+  level4List <- list()
+  dataType = match.arg(dataType)
+  
+  directory <- file.path(basename(dir), samplename)
+  filterDir <- file.path(directory, 'FlatFile', 'Cells')
+  rawDir <- file.path(directory, 'FlatFile', 'Droplets')
+  
+  absFilterDir <- file.path(dir, samplename, 'FlatFile', 'Cells')
+  absRawDir <- file.path(dir, samplename, 'FlatFile', 'Droplets')
+  
+  
+  WorkFlowData = c(
+    WorkFlow = 'singleCellTK QC pipeline',
+    WorkFlowVer = paste('singleCellTK', utils::sessionInfo()$otherPkgs$singleCellTK$Version, sep=':'),
+    ParRaw = 'Ran perCellQC, EmptyDrops and barcodeRankDrops using singleCellTK',
+    ParFiltered = 'Ran perCellQC, doublet detection and decontX using singleCellTK',
+    PardecontX = 'Ran perCellQC, doublet detection and decontX using singleCellTK',
+    ColData = 'Ran perCellQC, doublet detection and decontX using singleCellTK',
+    DecontXUMAP = 'UMAP dimension reduction generated by decontX',
+    ScrubletTSNE = 'tSNE dimension reduction generated by Scrublet',
+    ScrubletUMAP = 'UMAP dimension reduction generated by Scrublet'
+  )
+  
+  
+  ### calculate summary stats
+  if (dataType == "Droplet" | dataType == "Both") {
+    droplet_stat = c(CellNum = ncol(dropletSCE),
+                     MedianReads = stats::median(colData(dropletSCE)$sum),
+                     MedianGenes = stats::median(colData(dropletSCE)$detected),
+                     DataType = 'Droplet Matrix',
+                     FileName = file.path(rawDir, 'assays', paste0(samplename,'_counts.mtx.gz')),
+                     AbsFileName = file.path(absRawDir, 'assays', paste0(samplename,'_counts.mtx.gz')))
+  }
+  
+  if (dataType == "Cell" | dataType == "Both") {
+    decontX_stat = c(CellNum = ncol(cellSCE),
+                     MedianReads = stats::median(Matrix::colSums(assay(cellSCE, 'decontXcounts'))),
+                     MedianGenes = stats::median(Matrix::colSums(assay(cellSCE, 'decontXcounts') > 0)),
+                     DataType = 'Decontaminated cell matrix return returned by runDecontX',
+                     FileName = file.path(filterDir, 'assays', paste0(samplename,'_decontXcounts.mtx.gz')),
+                     AbsFileName = file.path(absFilterDir, 'assays', paste0(samplename,'_decontXcounts.mtx.gz')))
+    
+    cell_stat = c(CellNum = ncol(cellSCE),
+                  MedianReads = stats::median(colData(cellSCE)$sum),
+                  MedianGenes = stats::median(colData(cellSCE)$detected),
+                  DataType = 'Cell Matrix',
+                  FileName = file.path(filterDir, 'assays', paste0(samplename,'_counts.mtx.gz')),
+                  AbsFileName = file.path(absFilterDir, 'assays', paste0(samplename,'_counts.mtx.gz')),
+                  ColData = file.path(filterDir, paste0(samplename,'_colData.txt.gz')),
+                  AbsColData = file.path(absFilterDir, paste0(samplename,'_colData.txt.gz')),
+                  DecontXUMAP = file.path(filterDir, 'reducedDims', paste0(samplename,'_decontX_UMAP.txt.gz')),
+                  AbsDecontXUMAP = file.path(absFilterDir, 'reducedDims', paste0(samplename,'_decontX_UMAP.txt.gz')),
+                  ScrubletTSNE = file.path(filterDir, 'reducedDims', paste0(samplename,'_scrublet_TSNE.txt.gz')),
+                  AbsScrubletTSNE = file.path(absFilterDir, 'reducedDims', paste0(samplename,'_scrublet_TSNE.txt.gz')),
+                  ScrubletUMAP = file.path(filterDir, 'reducedDims', paste0(samplename,'_scrublet_UMAP.txt.gz')),
+                  AbsScrubletUMAP = file.path(absFilterDir, 'reducedDims', paste0(samplename,'_scrublet_UMAP.txt.gz')))
+  }
+  
+  data <- list("Raw" = if (exists("droplet_stat")) {droplet_stat} else {NULL},
+               "Filtered" = if (exists("cell_stat")) {cell_stat} else {NULL},
+               "decontX" =  if (exists("decontX_stat")) {decontX_stat} else {NULL})
+  
+  
+  if (dataType == "Cell") { types <- c("Filtered", "decontX") }
+  if (dataType == "Droplet") { types <- c("Raw") }
+  if (dataType == "Both") { types <- c("Filtered", "decontX", "Raw")}
+  
+  for (type in types) {
+    level3List[[type]] <- data.frame(
+      'Component' = 'ScRNA-seqLevel3',
+      'Filename' = data[[type]]['FileName'],
+      'FileLoc' = data[[type]]['AbsFileName'],
+      'File Format' = 'mtx',
+      'SAMPLE' = samplename, #DATA_TYPE = data[[type]]['DataType'],
+      'Data Category' = 'Gene Expression', 'Matrix Type' = 'Raw Counts',
+      'Cell Median Number Reads' = data[[type]]['MedianReads'],
+      'Cell Median Number Genes' = data[[type]]['MedianGenes'],
+      'Cell Total' = data[[type]]['CellNum'],
+      'scRNAseq Workflow Type' = WorkFlowData['WorkFlow'],
+      'scRNAseq Workflow Parameters Description' = WorkFlowData[paste0('Par', type)],
+      'Workflow Link' = 'http://sctk.camplab.net/v2.2.0/index.html',
+      'Workflow Version' = WorkFlowData['WorkFlowVer'],
+      'Workflow Start Datetime' = '',
+      'Workflow End Datetime' = '',
+      stringsAsFactors = FALSE, check.names=FALSE)
+    
+    
+    level3List[[type]] <- cbind(level3List[[type]],
+                                'HTAN Patient ID' = htan_patient_id, 'HTAN Parent Data File ID' = '',
+                                'HTAN Data File ID' = '', 'Linked Matrices' = '')
+  
+    
+    if (type == 'Filtered') {
+      for (metric in c('ColData', 'DecontXUMAP', 'ScrubletTSNE', 'ScrubletUMAP')) {
+        level4List[[metric]] <- data.frame(
+          'Component' = 'ScRNA-seqLevel4', "Filename" = data[[type]][metric],
+          'FileLoc' = data[[type]][paste0('Abs', metric)],
+          'File Format' = 'txt', 
+          'SAMPLE' = samplename, 
+          'scRNAseq Workflow Type' = WorkFlowData[metric],
+          'scRNAseq Workflow Parameters Description' = file.path(directory, paste0(samplename, '_QCParameters.yaml')),
+          'Workflow Version' = WorkFlowData['WorkFlowVer'],
+          'Workflow Link' = 'http://sctk.camplab.net/v2.2.0/index.html',
+          'Workflow Start Datetime' = '',
+          'Workflow End Datetime' = '',
+          stringsAsFactors = FALSE, check.names=FALSE)
+
+        level4List[[metric]] <- cbind(level4List[[metric]], 'HTAN Patient ID' = htan_patient_id,
+                                      'HTAN Data File ID' = '','HTAN Parent Data File ID' = '')
+      
+      }
+    }
+  }
+  
+
+  level3Meta <- do.call(base::rbind, level3List)
+  level4Meta <- do.call(base::rbind, level4List)
+
+  level3Meta$checkSumInt <- vapply(level3Meta$FileLoc, function(f) {
+    hash <- tools::md5sum(f)
+    .convert_hex_to_int(hash)
+  }, character(1))
+  
+  level3Meta$`HTAN Data File ID` <- paste(level3Meta$`HTAN Patient ID`, level3Meta$checkSumInt, sep="_")
+  linkMat <- dplyr::group_by(level3Meta, .data$SAMPLE) %>% dplyr::summarise(LinkedMat = paste(.data$`HTAN Data File ID`, collapse=","))
+  level3Meta$`Linked Matrices` <- unlist(linkMat[match(level3Meta$SAMPLE, linkMat$SAMPLE), 'LinkedMat'])
+  
+  ParentFile <- level3Meta[grep("_counts.mtx.gz", unlist(level3Meta['FileLoc'])), c('HTAN Patient ID', 'HTAN Data File ID')]
+  level4Meta$`HTAN Parent Data File ID` <- unlist(ParentFile[match(level4Meta$`HTAN Patient ID`, ParentFile$`HTAN Patient ID`), 
+                                                             'HTAN Data File ID'])
+  
+  level4Meta$checkSumInt <- vapply(level4Meta$FileLoc, function(f) {
+    hash <- tools::md5sum(f)
+    .convert_hex_to_int(hash)
+  }, character(1))
+  level4Meta$`HTAN Data File ID` <- paste(level4Meta$`HTAN Patient ID`, level4Meta$checkSumInt, sep="_")
+  
+  
+  
+  level3Meta <- level3Meta[,c("Component",
+                              "Filename",
+                              "File Format",
+                              "HTAN Parent Data File ID",
+                              "HTAN Data File ID",
+                              "Data Category",
+                              "Matrix Type",
+                              "Linked Matrices",
+                              "Cell Median Number Reads",
+                              "Cell Median Number Genes",
+                              "Cell Total",
+                              "scRNAseq Workflow Type",
+                              "scRNAseq Workflow Parameters Description",
+                              "Workflow Link",
+                              "Workflow Version",
+                              "Workflow Start Datetime",
+                              "Workflow End Datetime")]
+  
+  level4Meta <- level4Meta[,c("Component",
+                              "Filename",
+                              "File Format",
+                              "HTAN Parent Data File ID",
+                              "HTAN Data File ID",
+                              "scRNAseq Workflow Type",
+                              "scRNAseq Workflow Parameters Description",
+                              "Workflow Version",
+                              "Workflow Link",
+                              "Workflow Start Datetime",
+                              "Workflow End Datetime")]
+  
+
   return(list(level3Meta, level4Meta))
 }
 
@@ -445,6 +642,10 @@ qcInputProcess <- function(preproc,
         return(list(dropletSCE, cellSCE))
     }
 
+    if (preproc == "Alevin") {
+        cellSCE <- importAlevin(alevinDir = path, sampleName = samplename, class = "Matrix", delayedArray=FALSE)
+        return(list(dropletSCE, cellSCE))
+    }
     ## preproc is not one of the method above. Stop the pipeline.
     stop(paste0("'", preproc, "' not supported."))
 }

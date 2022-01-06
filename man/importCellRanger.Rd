@@ -17,7 +17,8 @@ importCellRanger(
   barcodesFileNames = "barcodes.tsv.gz",
   gzipped = "auto",
   class = c("Matrix", "matrix"),
-  delayedArray = FALSE
+  delayedArray = FALSE,
+  rowNamesDedup = TRUE
 )
 
 importCellRangerV2(
@@ -28,7 +29,8 @@ importCellRangerV2(
   class = c("Matrix", "matrix"),
   delayedArray = FALSE,
   reference = NULL,
-  cellRangerOutsV2 = NULL
+  cellRangerOutsV2 = NULL,
+  rowNamesDedup = TRUE
 )
 
 importCellRangerV3(
@@ -37,7 +39,8 @@ importCellRangerV3(
   sampleNames = NULL,
   dataType = c("filtered", "raw"),
   class = c("Matrix", "matrix"),
-  delayedArray = FALSE
+  delayedArray = FALSE,
+  rowNamesDedup = TRUE
 )
 }
 \arguments{
@@ -139,6 +142,9 @@ object. Can be one of "Matrix" (as returned by
 
 \item{delayedArray}{Boolean. Whether to read the expression matrix as
 \link{DelayedArray} object or not. Default \code{FALSE}.}
+
+\item{rowNamesDedup}{Boolean. Whether to deduplicate rownames. Default 
+\code{TRUE}.}
 
 \item{dataTypeV2}{Character. The type of output to import for
 Cellranger version below 3.0.0. Whether to import the filtered or the

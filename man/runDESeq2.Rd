@@ -19,7 +19,7 @@ runDESeq2(
   fullReduced = TRUE,
   onlyPos = FALSE,
   log2fcThreshold = NULL,
-  fdrThreshold = 1,
+  fdrThreshold = NULL,
   overwrite = FALSE
 )
 }
@@ -69,10 +69,10 @@ model. Default \code{TRUE}.}
 Default \code{FALSE}.}
 
 \item{log2fcThreshold}{Only out put DEGs with the absolute values of log2FC
-greater than this value. Default \code{0.25}}
+greater than this value. Default \code{NULL}}
 
 \item{fdrThreshold}{Only out put DEGs with FDR value less than this
-value. Default \code{0.05}}
+value. Default \code{NULL}}
 
 \item{overwrite}{A logical scalar. Whether to overwrite result if exists.
 Default \code{FALSE}.}

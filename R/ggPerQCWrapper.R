@@ -15,7 +15,7 @@
 #'  Default FALSE.
 #' @param dots Boolean. If TRUE, will plot dots for each violin plot.
 #'  Default TRUE.
-#' @param dotSize Size of dots. Default 1.
+#' @param dotSize Size of dots. Default 0.5.
 #' @param summary Adds a summary statistic, as well as a crossbar to the
 #'  violin plot. Options are "mean" or "median". Default "median".
 #' @param summaryTextSize The text size of the summary statistic displayed
@@ -57,7 +57,7 @@ plotRunPerCellQCResults <- function(inSCE,
                                     violin=TRUE,
                                     boxplot=FALSE,
                                     dots=TRUE,
-                                    dotSize=1,
+                                    dotSize=0.5,
                                     summary="median",
                                     summaryTextSize=3,
                                     baseSize=15,
@@ -198,9 +198,7 @@ plotRunPerCellQCResults <- function(inSCE,
           plotLabels = "none"
         )
       })
-      names(combined.subset) <- c("Gene_Subset_Sum",
-                                  "Gene_Subset_Features",
-                                  "Gene_Subset_Top50_Percent")
+      names(combined.subset) <- subsets
       merged.plots <- c(merged.plots, combined.subset)
     } else {
       combined.subset <- NULL
@@ -398,7 +396,7 @@ plotRunPerCellQCResults <- function(inSCE,
 #'  runEmptyDrops as "Empty Droplet" or "Putative Cell". Default 0.01.
 #' @param defaultTheme Removes grid in plot and sets axis title size to 10
 #'  when TRUE. Default TRUE.
-#' @param dotSize Size of dots. Default 1.
+#' @param dotSize Size of dots. Default 0.5.
 #' @param titleSize Size of title of plot. Default 18.
 #' @param axisSize Size of x/y-axis ticks. Default 15.
 #' @param axisLabelSize Size of x/y-axis labels. Default 18.
@@ -425,7 +423,7 @@ plotEmptyDropsResults <- function(inSCE,
                                   combinePlot="all",
                                   fdrCutoff=0.01,
                                   defaultTheme=TRUE,
-                                  dotSize=1,
+                                  dotSize=0.5,
                                   titleSize=18,
                                   axisLabelSize=18,
                                   axisSize=15,
@@ -474,7 +472,7 @@ plotEmptyDropsResults <- function(inSCE,
 #'  Default NULL.
 #' @param defaultTheme Removes grid in plot and sets axis title size to 10
 #'  when TRUE. Default TRUE.
-#' @param dotSize Size of dots. Default 1.
+#' @param dotSize Size of dots. Default 0.5.
 #' @param titleSize Size of title of plot. Default 18.
 #' @param axisSize Size of x/y-axis ticks. Default 15.
 #' @param axisLabelSize Size of x/y-axis labels. Default 18.
@@ -488,7 +486,7 @@ plotEmptyDropsResults <- function(inSCE,
 plotBarcodeRankDropsResults <- function(inSCE,
                                   sample=NULL,
                                   defaultTheme=TRUE,
-                                  dotSize=1,
+                                  dotSize=0.5,
                                   titleSize=18,
                                   axisLabelSize=18,
                                   axisSize=15,
@@ -543,7 +541,7 @@ plotBarcodeRankDropsResults <- function(inSCE,
 #'  Default NULL.
 #' @param defaultTheme Removes grid in plot and sets axis title size to 10
 #'  when TRUE. Default TRUE.
-#' @param dotSize Size of dots. Default 1.
+#' @param dotSize Size of dots. Default 0.5.
 #' @param summary Adds a summary statistic, as well as a crossbar to the
 #'  violin plot. Options are "mean" or "median". Default NULL.
 #' @param summaryTextSize The text size of the summary statistic displayed
@@ -596,7 +594,7 @@ plotScrubletResults <- function(inSCE,
                                 bin=NULL,
                                 binLabel=NULL,
                                 defaultTheme=TRUE,
-                                dotSize=1,
+                                dotSize=0.5,
                                 summary="median",
                                 summaryTextSize=3,
                                 transparency=1,
@@ -842,7 +840,7 @@ plotScrubletResults <- function(inSCE,
 #'  Default NULL.
 #' @param defaultTheme Removes grid in plot and sets axis title size to 10
 #'  when TRUE. Default TRUE.
-#' @param dotSize Size of dots. Default 1.
+#' @param dotSize Size of dots. Default 0.5.
 #' @param summary Adds a summary statistic, as well as a crossbar to the
 #'  violin plot. Options are "mean" or "median". Default NULL.
 #' @param summaryTextSize The text size of the summary statistic displayed
@@ -885,7 +883,7 @@ plotDoubletFinderResults <- function(inSCE,
                                      violin=TRUE,
                                      boxplot=FALSE,
                                      dots=TRUE,
-                                     reducedDimName=NULL,
+                                     reducedDimName="UMAP",
                                      xlab=NULL,
                                      ylab=NULL,
                                      dim1=NULL,
@@ -893,7 +891,7 @@ plotDoubletFinderResults <- function(inSCE,
                                      bin=NULL,
                                      binLabel=NULL,
                                      defaultTheme=TRUE,
-                                     dotSize=1,
+                                     dotSize=0.5,
                                      summary="median",
                                      summaryTextSize=3,
                                      transparency=1,
@@ -923,6 +921,13 @@ plotDoubletFinderResults <- function(inSCE,
   }
   sampleVector <- sample
   samples <- unique(sample)
+
+  if (!(reducedDimName %in% reducedDimNames(inSCE))){
+    stop("Specified `reducedDimName` is not found in input
+         SingleCellExperiment object. Please check for spelling errors
+         with reducedDimNames().")
+  }
+
   df.scores <- grep(
     pattern="doubletFinder_doublet_score_resolution_",
     names(colData(inSCE)), value=TRUE
@@ -1218,7 +1223,7 @@ plotDoubletFinderResults <- function(inSCE,
 #'  Default NULL.
 #' @param defaultTheme Removes grid in plot and sets axis title size to 10
 #'  when TRUE. Default TRUE.
-#' @param dotSize Size of dots. Default 1.
+#' @param dotSize Size of dots. Default 0.5.
 #' @param summary Adds a summary statistic, as well as a crossbar to the
 #'  violin plot. Options are "mean" or "median". Default NULL.
 #' @param summaryTextSize The text size of the summary statistic displayed
@@ -1261,7 +1266,7 @@ plotScDblFinderResults <- function(inSCE,
                                     violin=TRUE,
                                     boxplot=FALSE,
                                     dots=TRUE,
-                                    reducedDimName=NULL,
+                                    reducedDimName="UMAP",
                                     xlab=NULL,
                                     ylab=NULL,
                                     dim1=NULL,
@@ -1269,7 +1274,7 @@ plotScDblFinderResults <- function(inSCE,
                                     bin=NULL,
                                     binLabel=NULL,
                                     defaultTheme=TRUE,
-                                    dotSize=1,
+                                    dotSize=0.5,
                                     summary="median",
                                     summaryTextSize=3,
                                     transparency=1,
@@ -1299,6 +1304,11 @@ plotScDblFinderResults <- function(inSCE,
   }
   sampleVector <- sample
 
+  if (!(reducedDimName %in% reducedDimNames(inSCE))){
+    stop("Specified `reducedDimName` is not found in input
+         SingleCellExperiment object. Please check for spelling errors
+         with reducedDimNames().")
+  }
   coldata = "scDblFinder_doublet_score"
   titleScDblFinder <- "ScDblFinder Doublet Score"
 
@@ -1483,7 +1493,7 @@ plotScDblFinderResults <- function(inSCE,
 #'  Default NULL.
 #' @param defaultTheme Removes grid in plot and sets axis title size to 10
 #'  when TRUE. Default TRUE.
-#' @param dotSize Size of dots. Default 1.
+#' @param dotSize Size of dots. Default 0.5.
 #' @param summary Adds a summary statistic, as well as a crossbar to the
 #'  violin plot. Options are "mean" or "median". Default NULL.
 #' @param summaryTextSize The text size of the summary statistic displayed
@@ -1526,7 +1536,7 @@ plotCxdsResults <- function(inSCE,
                             violin=TRUE,
                             boxplot=FALSE,
                             dots=TRUE,
-                            reducedDimName=NULL,
+                            reducedDimName="UMAP",
                             xlab=NULL,
                             ylab=NULL,
                             dim1=NULL,
@@ -1534,7 +1544,7 @@ plotCxdsResults <- function(inSCE,
                             bin=NULL,
                             binLabel=NULL,
                             defaultTheme=TRUE,
-                            dotSize=1,
+                            dotSize=0.5,
                             summary="median",
                             summaryTextSize=3,
                             transparency=1,
@@ -1563,6 +1573,11 @@ plotCxdsResults <- function(inSCE,
     sample <- rep(1, ncol(inSCE))
   }
 
+  if (!(reducedDimName %in% reducedDimNames(inSCE))){
+    stop("Specified `reducedDimName` is not found in input
+         SingleCellExperiment object. Please check for spelling errors
+         with reducedDimNames().")
+  }
   samples <- unique(sample)
   sampleVector <- sample
   if (length(samples) > 1) {
@@ -1780,13 +1795,13 @@ plotCxdsResults <- function(inSCE,
 #'  Default NULL.
 #' @param defaultTheme Removes grid in plot and sets axis title size to 10
 #'  when TRUE. Default TRUE.
-#' @param dotSize Size of dots. Default 1.
+#' @param dotSize Size of dots. Default 0.5.
 #' @param summary Adds a summary statistic, as well as a crossbar to the
 #'  violin plot. Options are "mean" or "median". Default NULL.
 #' @param summaryTextSize The text size of the summary statistic displayed
 #'  above the violin plot. Default 3.
 #' @param transparency Transparency of the dots, values will be 0-1. Default 1.
-#' @param baseSize The base font size for all text. Default 12.
+#' @param baseSize The base font size for all text. Default 15.
 #'  Can be overwritten by titleSize, axisSize, and axisLabelSize,
 #'  legendSize, legendTitleSize.
 #' @param titleSize Size of title of plot. Default NULL.
@@ -1823,7 +1838,7 @@ plotBcdsResults <- function(inSCE,
                             violin=TRUE,
                             boxplot=FALSE,
                             dots=TRUE,
-                            reducedDimName=NULL,
+                            reducedDimName="UMAP",
                             xlab=NULL,
                             ylab=NULL,
                             dim1=NULL,
@@ -1831,7 +1846,7 @@ plotBcdsResults <- function(inSCE,
                             bin=NULL,
                             binLabel=NULL,
                             defaultTheme=TRUE,
-                            dotSize=1,
+                            dotSize=0.5,
                             summary="median",
                             summaryTextSize=3,
                             transparency=1,
@@ -1860,6 +1875,11 @@ plotBcdsResults <- function(inSCE,
     sample <- rep(1, ncol(inSCE))
   }
 
+  if (!(reducedDimName %in% reducedDimNames(inSCE))){
+    stop("Specified `reducedDimName` is not found in input
+         SingleCellExperiment object. Please check for spelling errors
+         with reducedDimNames().")
+  }
   samples <- unique(sample)
   sampleVector <- sample
   if (length(samples) > 1) {
@@ -2078,7 +2098,7 @@ plotBcdsResults <- function(inSCE,
 #'  Default NULL.
 #' @param defaultTheme Removes grid in plot and sets axis title size to 10
 #'  when TRUE. Default TRUE.
-#' @param dotSize Size of dots. Default 1.
+#' @param dotSize Size of dots. Default 0.5.
 #' @param summary Adds a summary statistic, as well as a crossbar to the
 #'  violin plot. Options are "mean" or "median". Default NULL.
 #' @param summaryTextSize The text size of the summary statistic displayed
@@ -2121,7 +2141,7 @@ plotScdsHybridResults <- function(inSCE,
                                   violin=TRUE,
                                   boxplot=FALSE,
                                   dots=TRUE,
-                                  reducedDimName=NULL,
+                                  reducedDimName="UMAP",
                                   xlab=NULL,
                                   ylab=NULL,
                                   dim1=NULL,
@@ -2129,7 +2149,7 @@ plotScdsHybridResults <- function(inSCE,
                                   bin=NULL,
                                   binLabel=NULL,
                                   defaultTheme=TRUE,
-                                  dotSize=1,
+                                  dotSize=0.5,
                                   summary="median",
                                   summaryTextSize=3,
                                   transparency=1,
@@ -2158,6 +2178,11 @@ plotScdsHybridResults <- function(inSCE,
     sample <- rep(1, ncol(inSCE))
   }
 
+  if (!(reducedDimName %in% reducedDimNames(inSCE))){
+    stop("Specified `reducedDimName` is not found in input
+         SingleCellExperiment object. Please check for spelling errors
+         with reducedDimNames().")
+  }
   samples <- unique(sample)
   sampleVector <- sample
   if (length(samples) > 1) {
@@ -2359,7 +2384,7 @@ plotScdsHybridResults <- function(inSCE,
 #' @param dots Boolean. If TRUE, will plot dots for each violin plot.
 #'  Default TRUE.
 #' @param reducedDimName Saved dimension reduction name in the
-#' \linkS4class{SingleCellExperiment} object. Required.
+#' \linkS4class{SingleCellExperiment} object. Required. Default = "UMAP"
 #' @param xlab Character vector. Label for x-axis. Default NULL.
 #' @param ylab Character vector. Label for y-axis. Default NULL.
 #' @param dim1 1st dimension to be used for plotting. Can either be a string which specifies
@@ -2374,7 +2399,7 @@ plotScdsHybridResults <- function(inSCE,
 #'  Default NULL.
 #' @param defaultTheme Removes grid in plot and sets axis title size to 10
 #'  when TRUE. Default TRUE.
-#' @param dotSize Size of dots. Default 1.
+#' @param dotSize Size of dots. Default 0.5.
 #' @param summary Adds a summary statistic, as well as a crossbar to the
 #'  violin plot. Options are "mean" or "median". Default NULL.
 #' @param summaryTextSize The text size of the summary statistic displayed
@@ -2395,7 +2420,7 @@ plotScdsHybridResults <- function(inSCE,
 #' @param combinePlot Must be either "all", "sample", or "none". "all" will combine all plots into a single .ggplot object,
 #' while "sample" will output a list of plots separated by sample. Default "all".
 #' @param relHeights Relative heights of plots when combine is set.
-#' @param relWidths Relative widths of plots#' @param labelSamples Will label sample name in title of plot if TRUE. Default TRUE. when combine is set.
+#' @param relWidths Relative widths of plots when combine is set.
 #' @param plotNCols Number of columns when plots are combined in a grid.
 #' @param plotNRows Number of rows when plots are combined in a grid.
 #' @param labelSamples Will label sample name in title of plot if TRUE. Default TRUE.
@@ -2409,9 +2434,8 @@ plotScdsHybridResults <- function(inSCE,
 #' @examples
 #' data(scExample, package="singleCellTK")
 #' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
-#' sce <- getUMAP(inSCE=sce, useAssay="counts", reducedDimName="UMAP")
 #' sce <- runDecontX(sce)
-#' plotDecontXResults(inSCE=sce, reducedDimName="UMAP")
+#' plotDecontXResults(inSCE=sce, reducedDimName="decontX_UMAP")
 #' @export
 plotDecontXResults <- function(inSCE,
                                sample=NULL,
@@ -2421,7 +2445,7 @@ plotDecontXResults <- function(inSCE,
                                violin=TRUE,
                                boxplot=FALSE,
                                dots=TRUE,
-                               reducedDimName=NULL,
+                               reducedDimName="UMAP",
                                xlab=NULL,
                                ylab=NULL,
                                dim1=NULL,
@@ -2429,7 +2453,7 @@ plotDecontXResults <- function(inSCE,
                                bin=NULL,
                                binLabel=NULL,
                                defaultTheme=TRUE,
-                               dotSize=1,
+                               dotSize=0.5,
                                summary="median",
                                summaryTextSize=3,
                                transparency=1,
@@ -2460,6 +2484,11 @@ plotDecontXResults <- function(inSCE,
     sample <- rep(1, ncol(inSCE))
   }
 
+  if (!(reducedDimName %in% reducedDimNames(inSCE))){
+    stop("Specified `reducedDimName` is not found in input
+         SingleCellExperiment object. Please check for spelling errors
+         with reducedDimNames().")
+  }
   samples <- unique(sample)
   sampleVector <- sample
   if (length(samples) > 1) {

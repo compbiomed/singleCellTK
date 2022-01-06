@@ -21,7 +21,8 @@ importMultipleSources <- function(allImportEntries, delayedArray = FALSE) {
           cellRangerDirs = entry$params$cellRangerDirs,
           sampleDirs = entry$params$sampleDirs,
           sampleNames = entry$params$sampleNames,
-          delayedArray = delayedArray
+          delayedArray = delayedArray,
+          reference = entry$params$reference
         )
       }
 
@@ -95,8 +96,63 @@ importMultipleSources <- function(allImportEntries, delayedArray = FALSE) {
       }
 
     }
+    
+    # Begin Set Tags
+    if(entry$type %in% c("cellRanger2", "cellRanger3", "starSolo", "busTools", "seqc", "optimus", "example")){
+      newSce <- expSetDataTag(
+        inSCE = newSce,
+        assayType = "raw",
+        assays = SummarizedExperiment::assayNames(newSce))
+    }
+    else if(entry$type %in% c("rds", "files")){
+      # Check if tags already stored in uploaded rds/files
+      if(is.null(S4Vectors::metadata(newSce)$assayType)){
+        try({
+          counts(newSce)
+          newSce <- expSetDataTag(
+            inSCE = newSce,
+            assayType = "raw",
+            assays = "counts")
+        }, silent = TRUE)
+        
+        try({
+          logcounts(newSce)
+          newSce <- expSetDataTag(
+            inSCE = newSce,
+            assayType = "transformed",
+            assays = "logcounts")
+        }, silent = TRUE)
+        
+        try({
+          normcounts(newSce)
+          newSce <- expSetDataTag(
+            inSCE = newSce,
+            assayType = "transformed",
+            assays = "normcounts")
+        }, silent = TRUE)
+        
+        try({
+          celda::decontXcounts(newSce)
+          newSce <- expSetDataTag(
+            inSCE = newSce,
+            assayType = "raw",
+            assays = "decontXcounts")
+        }, silent = TRUE)
+        
+        untaggedAssays <- SummarizedExperiment::assayNames(newSce)
+        untaggedAssays <- untaggedAssays[! untaggedAssays %in% c('counts', 'logcounts', 'normcounts', 'decontX')]
+        
+        newSce <- expSetDataTag(
+          inSCE = newSce,
+          assayType = "uncategorized",
+          assays = untaggedAssays) 
+      }
+      # End Set Tags
+    }
+    
     sceObjs = c(sceObjs, list(newSce))
   }
+  
   return(combineSCE(sceList = sceObjs,
                     by.r = Reduce(base::intersect, lapply(sceObjs, function(x) { colnames(rowData(x))})),
                     by.c = Reduce(base::intersect, lapply(sceObjs, function(x) { colnames(colData(x))})),

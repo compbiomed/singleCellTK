@@ -1,3 +1,12 @@
+# Check if CRAN packages are installed, otherwise prompt user to install them.
+requiredPackages <- c("shinyjqui", "shinyWidgets", "shinythemes", "shinyFiles")
+if(!all(requiredPackages %in% installed.packages())){
+  missingPackages <- requiredPackages[which(requiredPackages %in% installed.packages() == FALSE)]
+  message("Installing missing packages: ")
+  message(paste0(missingPackages, collapse = " "))
+  install.packages(missingPackages)
+}
+
 library(shiny)
 library(shinyjs)
 library(shinyFiles)
@@ -38,6 +47,9 @@ library(grDevices)
 library(shinyWidgets)
 library(stringr)
 library(Hmisc)
+library(tibble)
+# library(pushbar)
+# library(spsComps)
 
 
 source("helpers.R")
@@ -47,6 +59,10 @@ data("c2BroadSets")
 #source modules
 source("module_nonLinearWorkflow.R")
 source("module_filterTable.R")
+
+docs.base <- paste0("https://www.camplab.net/sctk/v",
+                    package.version("singleCellTK"), "/")
+docs.artPath <- paste0(docs.base, "articles/articles/")
 
 #test internet connection for enrichR connectivity
 internetConnection <- suppressWarnings(Biobase::testBioCConnection())
@@ -136,12 +152,13 @@ source("ui_04_fs_dimred.R", local = TRUE) #creates shinyPanelFS_DimRed variable
 source("ui_05_1_diffex.R", local = TRUE) #creates shinyPanelDiffex variable
 source("ui_05_2_findMarker.R", local = TRUE) #creates shinyPanelfindMarker variable
 source("ui_05_3_cellTypeLabel.R", local = TRUE) # creates shinyPanelLabelCellType variable
-source("ui_06_1_pathway.R", local = TRUE) #creates shinyPanelPathway variable
+#source("ui_06_1_pathway.R", local = TRUE) #creates shinyPanelPathway variable
 source("ui_06_2_enrichR.R", local = TRUE) #creates shinyPanelEnrichR variable
+source("ui_06_1_pathwayAnalysis.R", local = TRUE) #creates shinyPanelvam variable
 source("ui_07_subsample.R", local = TRUE) #creates shinyPanelSubsample variable
 source("ui_08_2_cellviewer.R", local = TRUE) #creates shinyPanelCellViewer variable
 source("ui_08_3_heatmap.R", local = TRUE) #creates shinyPanelHeatmap variable
-source("ui_09_curatedworkflows.R", local = TRUE) #creates shinyPanelCuratedWorkflows variable
+#source("ui_09_curatedworkflows.R", local = TRUE) #creates shinyPanelCuratedWorkflows variable
 source("ui_09_2_seuratWorkflow.R", local = TRUE) #creates shinyPanelSeurat variable
 jsCode <- "
 
@@ -160,6 +177,25 @@ shinyjs.enableTabs = function() {
   tabs.unbind('click');
   tabs.removeClass('disabled');
 }
+"
+
+jsScriptAutoScrollConsole <- "
+function mutate(mutations) {
+  mutations.forEach(function(mutation) {
+    alert(mutation.type);
+  });
+}
+
+  setInterval(function() {
+            var $panel = $('#consolePanel');
+    $panel.animate({scrollTop: $panel.prop('scrollHeight')});
+}, 1000);
+
+var target = document.querySelector('#consoleText')
+var observer = new MutationObserver( mutate );
+var config = { characterData: false, attributes: false, childList: true, subtree: false };
+
+observer.observe(target, config);
 "
 
 if (is.null(getShinyOption("includeVersion"))){
@@ -199,11 +235,15 @@ shinyUI(
         tabPanel("Differential Expression", shinyPanelDiffex),
         tabPanel("Find Marker", shinyPanelfindMarker),
         tabPanel("Cell Type Labeling", shinyPanelLabelCellType)
+
       ),
       navbarMenu(
         "Cell Annotation & Pathway Analysis",
-        tabPanel("GSVA", value = "GSVA", shinyPanelPathway),
-        tabPanel("EnrichR", shinyPanelEnrichR)
+        #tabPanel("GSVA", value = "GSVA", shinyPanelPathway),
+        tabPanel("EnrichR", shinyPanelEnrichR),
+        tabPanel("Pathway Activity", shinyPanelvam)
+
+
       ),
       tabPanel("Sample Size Calculator", shinyPanelSubsample),
       navbarMenu(
@@ -215,15 +255,46 @@ shinyUI(
       navbarMenu("Viewers",
                  tabPanel("Cell Viewer", value="CellViewer", shinyPanelCellViewer),
                  tabPanel("Heatmap", shinyPanelHeatmap)),
-      footer = includeHTML("www/footer.html"),
+      footer = includeHTML("www/logo.html"),
       fluidRow(
         column(12, id = "consoleDiv",
                actionButton(inputId="consoleToggle", label = "Console Log"),
-               hidden(verbatimTextOutput(outputId="console")),
+               tags$head(
+                 tags$script(HTML(jsScriptAutoScrollConsole))
+               ),
+               hidden(div(id = "consolePanel", style = "overflow-y:scroll; 
+                          max-height: 120px; width: 100%; background-color: white; 
+                          position: relative; bottom: 0; align: centre; padding: 0px;",
+                       verbatimTextOutput(outputId="consoleText", placeholder = TRUE) 
+               ))
         )
       ),
+      # fluidRow(
+      #   column(12, id = "consoleDiv", align = "right",
+      #          actionButton(inputId="interpretToggle", label = "Interpret"),
+      #          pushbar_deps(),
+      #          pushbar(
+      #            from = "bottom",
+      #            id = "myPushbar",
+      #            spsTimeline(
+      #              "b",
+      #              up_labels = c("Data Import",
+      #                            "Quality Control",
+      #                            "Normalization"),
+      #              down_labels = c("step 1", "step 2", "step3"),
+      #              icons = list(icon("dna"), icon("dna"), icon("dna")),
+      #              completes = c(TRUE, TRUE, FALSE)
+      #            )
+      #          )
+      #   )
+      # ),
       useShinyjs(),
-      extendShinyjs(text = jsCode, functions = c("enableTabs", "disableTabs"))
+      extendShinyjs(text = jsCode, functions = c("enableTabs", "disableTabs")),
+
+      # Following lines of code add a loading spinner when toolkit launches and
+      # loads several ui elements/plots etc.
+      includeCSS("busy-load-piccard21.css"),
+      tags$script(src = "initialLoading.js"),
+      tags$script(src = "busy-load-piccard21.js")
     )
 )
-

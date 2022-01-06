@@ -14,3 +14,4 @@ Dockerfile
 exec/png
 
 ^pkgdown$
+^\.github$

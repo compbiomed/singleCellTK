@@ -12,7 +12,7 @@ SingleCellExperiment
 DOI: 10.1126/science.aaa1934
 }
 \usage{
-mouseBrainSubsetSCE
+data("mouseBrainSubsetSCE")
 }
 \description{
 A subset of 30 cells from a single cell RNA-Seq experiment from Zeisel, et

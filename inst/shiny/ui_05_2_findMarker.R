@@ -1,19 +1,39 @@
 shinyPanelfindMarker <- fluidPage(
+  tags$script("Shiny.addCustomMessageHandler('close_dropDownFM', function(x){
+                  $('html').click();
+                });"),
   tags$div(
     class = "container",
     h1("Find Marker"),
-    tags$a(href = "https://www.sctk.science/articles/tab05_find-marker",
-           "(help)", target = "_blank"),
+    h5(tags$a(href = paste0(docs.artPath, "find_marker.html"),
+              "(help)", target = "_blank")),
     sidebarLayout(
       sidebarPanel(
         selectInput('fmMethod', "Select Differential Expression Method",
                     c("wilcox", "MAST", "DESeq2", "Limma", "ANOVA")),
-        uiOutput('fmAssay'),
+        selectizeInput(
+          inputId = "fmAssay", 
+          label = "Select input matrix:", 
+          choices = NULL, 
+          selected = NULL, 
+          multiple = FALSE,
+          options = NULL),
+        #uiOutput('fmAssay'),
         selectInput("fmCluster", "Cluster Annotation", clusterChoice),
+        selectInput("fmCovar", "Covariate(s)", clusterChoice, multiple = TRUE),
         numericInput("fmLogFC", "Log2FC greater than",
-                     value = 0.25, min = 0, step = 0.05),
+                     value = 0, min = 0, step = 0.05),
         numericInput("fmFDR", "FDR less than", value = 0.05,
                      max = 1, min = 0.01, step = 0.01),
+        numericInput("fmMinClustExprPerc",
+                     "Minimum Expressed Percentage in Cluster",
+                     value = 0, min = 0, max = 1),
+        numericInput("fmMaxCtrlExprPerc",
+                     "Maximum Expressed Percentage in Control",
+                     value = 1, min = 0, max = 1),
+        numericInput("fmMinMeanExpr",
+                     "Minimum Mean Expression Level in Cluster",
+                     value = 0, min = 0),
         withBusyIndicatorUI(actionButton("runFM", "Find Marker"))
       ),
       mainPanel(
@@ -26,11 +46,15 @@ shinyPanelfindMarker <- fluidPage(
           tabPanel(
             "Heatmap",
             shinyjs::useShinyjs(),
-            wellPanel(
-              actionButton(inputId = "fmShowHMSetting", "Show Settings"),
-              shinyjs::hidden(
-                tags$div(
-                  id = "fmHMsettings",
+            fluidRow(
+              column(
+                width = 4,
+                dropdown(
+                  fluidRow(
+                    column(12,
+                           fluidRow(actionBttn(inputId = "closeDropDownFM", label = NULL, style = "simple", color = "danger", icon = icon("times"), size = "xs"), align = "right"),
+                    )
+                  ),
                   fluidRow(
                     column(
                       width = 6,
@@ -50,14 +74,14 @@ shinyPanelfindMarker <- fluidPage(
                     ),
                     column(
                       width = 6,
-                      numericInput("fmTopN", NULL, 10, min = 1, step = 1)
+                      numericInput("fmTopN", NULL, 5, min = 1, step = 1)
                     )
                   ),
                   fluidRow(
                     column(
                       width = 6,
                       numericInput("fmHMFC", "Plot Log2FC greater than",
-                                   value = 0.25, min = 0, step = 0.05),
+                                   value = 0, min = 0, step = 0.05),
                     ),
                     column(
                       width = 6,
@@ -67,21 +91,66 @@ shinyPanelfindMarker <- fluidPage(
                   ),
                   fluidRow(
                     column(
+                      width = 4,
+                      numericInput("fmHMMinClustExprPerc",
+                                   "Plot Cluster Expression Percentage More Than",
+                                   value = 0.5, min = 0, max = 1)
+                    ),
+                    column(
+                      width = 4,
+                      numericInput("fmHMMaxCtrlExprPerc",
+                                   "Plot Control Expression Percentage Less Than",
+                                   value = 0.4, min = 0, max = 1)
+                    ),
+                    column(
+                      width = 4,
+                      numericInput("fmHMMinMeanExpr",
+                                   "Plot Mean Cluster Expression Level More Than",
+                                   value = 0, min = 0)
+                    )
+                  ),
+                  fluidRow(
+                    column(
                       width = 6,
                       selectInput("fmHMrowData", "Additional feature annotation",
                                   featureChoice, multiple = TRUE),
-                      withBusyIndicatorUI(actionButton('plotFM', "Plot"))
+                      withBusyIndicatorUI(
+                        actionBttn(
+                        inputId = "plotFM",
+                        label = "Update",
+                        style = "bordered",
+                        color = "primary",
+                        size = "sm"
+                      )
+                      )
                     ),
                     column(
                       width = 6,
                       selectInput("fmHMcolData", "Additional cell annotation",
                                   clusterChoice, multiple = TRUE)
                     )
-                  )
+                  ),
+                  inputId = "dropDownFM",
+                  icon = icon("cog"),
+                  status = "primary",
+                  circle = FALSE,
+                  inline = FALSE,
+                  width = "500px"
+                )
+              ),
+              column(
+                width = 7,
+                fluidRow(
+                  h6(
+                    "The heatmap plots the expression level of top markers found for each cluster"
+                  ),
+                  align="center"
                 )
               )
             ),
-            plotOutput('fmHeatmap')
+            hr(),
+            br(),
+            shinyjqui::jqui_resizable(plotOutput('fmHeatmap'))
           )
         )
       )

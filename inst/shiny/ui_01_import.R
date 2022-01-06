@@ -26,7 +26,7 @@ shinyPanelImport <- fluidPage(
       p("Filter, cluster, and analyze single cell RNA-Seq data"),
       p(
         "Need help?",
-        tags$a(href = "https://www.sctk.science/index.html",
+        tags$a(href = paste0(docs.base, "index.html"),
                "Read the docs.", target = "_blank")
       )
     )
@@ -35,7 +35,7 @@ shinyPanelImport <- fluidPage(
   tags$div(
     class = "container",
     h1("Import"),
-    h5(tags$a(href = "https://www.sctk.science/articles/tab01_upload",
+    h5(tags$a(href = paste0(docs.artPath, "import_data.html"),
               "(help)", target = "_blank")),
     tags$hr(),
     h3("1. Choose data source:"),
@@ -199,7 +199,7 @@ shinyPanelImport <- fluidPage(
       condition = sprintf("input['%s'] == 'rds'", "uploadChoice"),
       h3("2. Choose an RDS file that contains a SingleCellExperiment or Seurat object:"),
       fileInput(
-        "rdsFile", "SingleCellExperiment RDS file:", accept = c(".rds", ".RDS")
+        "rdsFile", "SingleCellExperiment or Seurat RDS file:", accept = c(".rds", ".RDS")
       ),
       actionButton("addRDSImport", "Add To Sample List")
     ),
@@ -292,7 +292,7 @@ shinyPanelImport <- fluidPage(
 
         tags$hr(),
 
-        h3("(Optional) Set Feature for Display:"),
+        h3("Set Feature for Display:"),
         selectInput("importFeatureDispOpt",
                     "Select the feature ID type that should be displayed in downstream visualization",
                     c("Rownames (Default)", featureChoice)),
@@ -304,6 +304,8 @@ shinyPanelImport <- fluidPage(
       class = "container",
       p("")
     ),
+
+    nonLinearWorkflowUI(id = "nlw-import")
   )
   #includeHTML("www/footer.html")
 )

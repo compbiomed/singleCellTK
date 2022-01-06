@@ -1,36 +1,34 @@
 ---
 title: "Introduction to singleCellTK"
 author:
-- name: David Jenkins
+- name: Yichen Wang
   affiliation: 
   - The Section of Computational Biomedicine, Boston University School of Medicine, Boston, MA
-  - Program in Bioinformatics, Boston University, Boston, MA
-- name: Tyler Faits
+- name: Irzam Sarfraz
   affiliation: 
-  - The Section of Computational Biomedicine, Boston University School of Medicine, Boston, MA
-  - Program in Bioinformatics, Boston University, Boston, MA
+  - The Section of Computational Biomedicine, Boston University School of Medicine, Boston, MA  
 - name: Rui Hong
   affiliation: 
   - The Section of Computational Biomedicine, Boston University School of Medicine, Boston, MA
   - Program in Bioinformatics, Boston University, Boston, MA
-- name: Zhe Wang
+- name: Yusuke Koga
   affiliation: 
   - The Section of Computational Biomedicine, Boston University School of Medicine, Boston, MA
   - Program in Bioinformatics, Boston University, Boston, MA
 - name: Salam Abdullatif
   affiliation: 
   - The Section of Computational Biomedicine, Boston University School of Medicine, Boston, MA
-- name: Vidya Akapoor
-  affiliation: 
-  - Rafik B. Hariri Institute for Computing and Computational Science and Engineering, Boston University, Boston, MA
-- name: Shruthi Bandyadka
+- name: David Jenkins
   affiliation: 
   - The Section of Computational Biomedicine, Boston University School of Medicine, Boston, MA
   - Program in Bioinformatics, Boston University, Boston, MA
+- name: Vidya Akavoor
+  affiliation: 
+  - Rafik B. Hariri Institute for Computing and Computational Science and Engineering, Boston University, Boston, MA
 - name: Xinyun Cao
   affiliation: 
   - Rafik B. Hariri Institute for Computing and Computational Science and Engineering, Boston University, Boston, MA
-- name: Yusuke Koga
+- name: Shruthi Bandyadka
   affiliation: 
   - The Section of Computational Biomedicine, Boston University School of Medicine, Boston, MA
   - Program in Bioinformatics, Boston University, Boston, MA
@@ -38,12 +36,18 @@ author:
   affiliation: 
   - The Section of Computational Biomedicine, Boston University School of Medicine, Boston, MA
   - Program in Bioinformatics, Boston University, Boston, MA
-- name: Irzam Sarfraz
+- name: Tyler Faits
   affiliation: 
   - The Section of Computational Biomedicine, Boston University School of Medicine, Boston, MA
-- name: Yichen Wang
+  - Program in Bioinformatics, Boston University, Boston, MA
+- name: Mohammed Muzamil Khan
+  affiliation:
+  - The Section of Computational Biomedicine, Boston University School of Medicine, Boston, MA
+  - Program in Bioinformatics, Boston University, Boston, MA
+- name: Zhe Wang
   affiliation: 
   - The Section of Computational Biomedicine, Boston University School of Medicine, Boston, MA
+  - Program in Bioinformatics, Boston University, Boston, MA
 - name: W. Evan Johnson
   affiliation: 
   - The Section of Computational Biomedicine, Boston University School of Medicine, Boston, MA
@@ -52,7 +56,12 @@ author:
   affiliation: 
   - The Section of Computational Biomedicine, Boston University School of Medicine, Boston, MA
   - Program in Bioinformatics, Boston University, Boston, MA
-  email: camp@bu.edu
+  email: camp@bu.edu  
+  
+  
+
+
+
 package: singleCellTK
 output: 
   BiocStyle::html_document:
@@ -77,24 +86,7 @@ and downstream analysis.
 # Vignettes
 
 Due to the range of features that are available in SCTK, we have prepared several 
-vignettes to help you get started, which are all available at https://www.sctk.science.
-
-* [Installation/Introduction](https://www.sctk.science/articles/v01-introduction_to_singlecelltk)
-
-## Interactive Analysis
-
-* [Uploading Data](https://www.sctk.science/articles/v03-tab01_upload)
-* [Data Summary and Filtering](https://www.sctk.science/articles/v04-tab02_data-summary-and-filtering)
-* [Visualization and Clustering](https://www.sctk.science/articles/v05-tab03_visualization-and-clustering)
-* [Batch Correction](https://www.sctk.science/articles/v06-tab04_batch-correction)
-* [Differential Expression](https://www.sctk.science/articles/v07-tab05_differential-expression)
-* [Pathway Activity Analysis](https://www.sctk.science/articles/v08-tab06_pathway-activity-analysis)
-* [Sample Size](https://www.sctk.science/articles/v09-tab07_sample-size)
-
-## R Console Analysis
-
-* [Processing and Visualizing Data in the Single Cell Toolkit](https://www.sctk.science/articles/v02-processing_and_visualizing_data_in_the_singlecelltk)
-* [Aligning and Quantifying scRNA-Seq Data](https://www.sctk.science/articles/v10-aligning_and_quantifying_scrna-seq_data)
+vignettes to help you get started, which are all available at [https://www.camplab.net/sctk/](https://www.camplab.net/sctk/)
 
 # Session info {.unnumbered}
 

@@ -300,7 +300,8 @@
     pK = pkOptimal,
     nExp = nExpPoi,
     reuse.pANN = FALSE,
-    sct = FALSE
+    sct = FALSE,
+    verbose = FALSE
   )
   names(seurat@meta.data)[6] <- "doubletFinderAnnScore"
   names(seurat@meta.data)[7] <- "doubletFinderLabel"
@@ -349,6 +350,10 @@ runDoubletFinder <- function(inSCE,
   # argsList <- as.list(formals(fun = sys.function(sys.parent()), envir = parent.frame()))
   argsList <- mget(names(formals()), sys.frame(sys.nframe()))
 
+  tempSCE <- inSCE
+  SummarizedExperiment::assayNames(inSCE)[which(useAssay %in% SummarizedExperiment::assayNames(inSCE))] <- "counts"
+  useAssay <- "counts"
+  
   if (!is.null(sample)) {
     if (length(sample) != ncol(inSCE)) {
       stop("'sample' must be the same length as the number of columns in 'inSCE'")
@@ -409,7 +414,9 @@ runDoubletFinder <- function(inSCE,
       output[sceSampleInd, 1] <- result@meta.data$doubletFinderAnnScore
       output[sceSampleInd, 2] <- result@meta.data$doubletFinderLabel
     }
-
+    
+    colData(inSCE)[, paste0(colnames(output), "_resolution_", res)] <- NULL
+    
     colnames(output) <- paste0(colnames(output), "_resolution_", res)
 
     argsList <- argsList[!names(argsList) %in% ("...")]
@@ -418,7 +425,12 @@ runDoubletFinder <- function(inSCE,
     colData(inSCE) <- cbind(colData(inSCE), output)
     reducedDim(inSCE,'doubletFinder_UMAP') <- umapDims
   }
-  return(inSCE)
+  
+  tempSCE@colData <- inSCE@colData
+  tempSCE@metadata <- inSCE@metadata
+  reducedDims(tempSCE) <- reducedDims(inSCE)
+  
+  return(tempSCE)
 }
 
 
@@ -554,7 +566,7 @@ runDoubletFinder <- function(inSCE,
   }
 }
 
-.doubletFinder_v3 <- function(seu, PCs, pN = 0.25, pK, nExp, reuse.pANN = FALSE, sct = FALSE) {
+.doubletFinder_v3 <- function(seu, PCs, pN = 0.25, pK, nExp, reuse.pANN = FALSE, sct = FALSE, verbose = FALSE) {
 
   ## Generate new list of doublet classificatons from existing pANN vector to save time
   if (reuse.pANN != FALSE ) {
@@ -571,7 +583,9 @@ runDoubletFinder <- function(inSCE,
     data <- seu@assays$RNA@counts[, real.cells]
     n_real.cells <- length(real.cells)
     n_doublets <- round(n_real.cells/(1 - pN) - n_real.cells)
-    print(paste("Creating",n_doublets,"artificial doublets...",sep=" "))
+    if (verbose) {
+      print(paste("Creating",n_doublets,"artificial doublets...",sep=" "))
+    }
     real.cells1 <- sample(real.cells, n_doublets, replace = TRUE)
     real.cells2 <- sample(real.cells, n_doublets, replace = TRUE)
     doublets <- (data[, real.cells1] + data[, real.cells2])/2

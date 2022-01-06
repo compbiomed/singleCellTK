@@ -11,16 +11,16 @@
 #' the respective databases along with p-values, z-scores etc.,
 #' @export
 #' @examples
-#' \dontrun{
+#' data("mouseBrainSubsetSCE")
 #' enrichRSCE(mouseBrainSubsetSCE, "Cmtm5", "GO_Cellular_Component_2017")
-#' }
 enrichRSCE <- function(inSCE, glist, db = NULL){
   internetConnection <- suppressWarnings(Biobase::testBioCConnection())
   #check for internet connection
   if (!internetConnection){
     stop("Please connect to the Internet and continue..")
   }
-
+  options(enrichR.base.address = "https://maayanlab.cloud/Enrichr/")
+  options(enrichR.live = TRUE)
   enrdb <- enrichR::listEnrichrDbs()$libraryName
 
   if (!inherits(inSCE, "SingleCellExperiment")){

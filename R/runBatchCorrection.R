@@ -60,6 +60,11 @@ runBBKNN <-function(inSCE, useAssay = 'logcounts', batch = 'batch',
   sc$tl$umap(adata, n_components = nComponents)
   bbknnUmap <- adata$obsm[["X_umap"]]
   SingleCellExperiment::reducedDim(inSCE, reducedDimName) <- bbknnUmap
+  S4Vectors::metadata(inSCE)$batchCorr[[reducedDimName]] <- list(useAssay = useAssay,
+                                                            origLogged = TRUE,
+                                                            method = "BBKNN",
+                                                            matType = "reducedDim",
+                                                            batch = batch)
   return(inSCE)
 }
 
@@ -179,6 +184,12 @@ runComBatSeq <- function(inSCE, useAssay = "counts", batch = 'batch',
                                covar_mod = mod, shrink = shrink,
                                shrink.disp = shrinkDisp, gene.subset.n = nGene)
   expData(inSCE, assayName, tag = "batchCorrected", altExp = FALSE) <- mat.corr
+  S4Vectors::metadata(inSCE)$batchCorr[[assayName]] <- list(useAssay = useAssay,
+                                                            origLogged = FALSE,
+                                                            method = "ComBatSeq",
+                                                            matType = "assay",
+                                                            batch = batch,
+                                                            condition = covariates)
   return(inSCE)
 }
 
@@ -245,6 +256,11 @@ runFastMNN <- function(inSCE, useAssay = "logcounts",
     newRedDim <- SingleCellExperiment::reducedDim(mnnSCE, 'corrected')
   }
   SingleCellExperiment::reducedDim(inSCE, reducedDimName) <- newRedDim
+  S4Vectors::metadata(inSCE)$batchCorr[[reducedDimName]] <- list(useAssay = useAssay,
+                                                            origLogged = TRUE,
+                                                            method = "fastMNN",
+                                                            matType = "reducedDim",
+                                                            batch = batch)
   return(inSCE)
 }
 
@@ -443,6 +459,11 @@ runLimmaBC <- function(inSCE, useAssay = "logcounts", assayName = "LIMMA",
   newMat <- limma::removeBatchEffect(mat, batch = batchCol)
   expData(inSCE, assayName, tag = "batchCorrected", altExp = FALSE) <- newMat
   #SummarizedExperiment::assay(inSCE, assayName) <- newMat
+  S4Vectors::metadata(inSCE)$batchCorr[[assayName]] <- list(useAssay = useAssay,
+                                                            origLogged = TRUE,
+                                                            method = "Limma",
+                                                            matType = "assay",
+                                                            batch = batch)
   return(inSCE)
 }
 
@@ -505,6 +526,11 @@ runMNNCorrect <- function(inSCE, useAssay = 'logcounts', batch = 'batch',
                                   batch = batchFactor, k = k, sigma = sigma)
   corrected <- SummarizedExperiment::assay(mnnSCE, 'corrected')
   expData(inSCE, assayName, tag = "batchCorrected", altExp = FALSE) <- corrected
+  S4Vectors::metadata(inSCE)$batchCorr[[assayName]] <- list(useAssay = useAssay,
+                                                            origLogged = TRUE,
+                                                            method = "MNN",
+                                                            matType = "assay",
+                                                            batch = batch)
   return(inSCE)
 }
 
@@ -658,7 +684,8 @@ runSCMerge <- function(inSCE, useAssay = "logcounts", batch = 'batch',
   if(is.null(cellType) & is.null(kmeansK)){
     stop("\"cellType\" and \"kmeansK\" cannot be NULL at the same time")
   }
-  if(!cellType %in% names(SummarizedExperiment::colData(inSCE))){
+  if(!is.null(cellType) &&
+     !cellType %in% names(SummarizedExperiment::colData(inSCE))){
     # If NULL, scMerge still works
     stop(paste("\"cellType\" name:", cellType, "not found"))
   }
@@ -716,6 +743,12 @@ runSCMerge <- function(inSCE, useAssay = "logcounts", batch = 'batch',
   # scMerge's function automatically returns the SCE object with information
   # completed, thus using this helper function to simply add the tag.
   inSCE <- expSetDataTag(inSCE, "batchCorrected", assayName)
+  S4Vectors::metadata(inSCE)$batchCorr[[assayName]] <- list(useAssay = useAssay,
+                                                            origLogged = TRUE,
+                                                            method = "scMerge",
+                                                            matType = "assay",
+                                                            batch = batch,
+                                                            condition = cellType)
   return(inSCE)
 }
 

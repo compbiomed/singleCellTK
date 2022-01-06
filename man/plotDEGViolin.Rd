@@ -2,8 +2,7 @@
 % Please edit documentation in R/plotDEAnalysis.R
 \name{plotDEGViolin}
 \alias{plotDEGViolin}
-\title{plot the violin plot to show visualize the expression distribution of DEGs
-identified by differential expression analysis}
+\title{Generate violin plot to show the expression of top DEGs}
 \usage{
 plotDEGViolin(
   inSCE,
@@ -18,8 +17,7 @@ plotDEGViolin(
 )
 }
 \arguments{
-\item{inSCE}{\linkS4class{SingleCellExperiment} inherited object.
-\code{runMAST()} has to be run in advance.}
+\item{inSCE}{\linkS4class{SingleCellExperiment} inherited object.}
 
 \item{useResult}{character. A string specifying the \code{analysisName}
 used when running a differential expression analysis function.}
@@ -49,8 +47,11 @@ to see if the counts are logged. Default \code{TRUE}}
 A ggplot object of violin plot
 }
 \description{
-plot the violin plot to show visualize the expression distribution of DEGs
-identified by differential expression analysis
+Generate violin plot to show the expression of top DEGs
+}
+\details{
+Any of the differential expression analysis method from SCTK should 
+be performed prior to using this function
 }
 \examples{
 data("sceBatches")
