@@ -9,12 +9,8 @@ export(constructSCE)
 export(convertSCEToSeurat)
 export(convertSeuratToSCE)
 export(dedupRowNames)
-<<<<<<< HEAD
-export(differentialAbundanceFET)
-=======
 export(detectCellOutlier)
 export(diffAbundanceFET)
->>>>>>> b2e61110022fd8ac67607d35c6f7dc9eb1a44b7e
 export(discreteColorPalette)
 export(distinctColors)
 export(downSampleCells)
