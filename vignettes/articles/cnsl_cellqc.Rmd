@@ -1,5 +1,5 @@
 ---
-title: "Quality Control for droplet-level data"
+title: "Quality Control for cell-level data"
 ---
 <style>
 body {

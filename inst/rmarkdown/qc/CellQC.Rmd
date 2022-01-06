@@ -24,6 +24,11 @@ text-align: justify}
 require(singleCellTK)
 require(ggplot2)
 require(dplyr)
+require(Biobase)
+
+docs.base <- paste0("https://www.camplab.net/sctk/v",
+                    package.version("singleCellTK"), "/")
+docs.qc.Path <- paste0(docs.base, "articles/articles/cmd_qc.html")
 
 metaChecking <- function(metainfo, sample){
   if (any(!sample %in% names(metainfo))) {
@@ -111,7 +116,17 @@ subtitle: "`r subTitle`"
 
 
 # Introduction
-Comprehensive quality control (QC) of single-cell RNA-seq data was performed with the [**singleCellTK**](https://github.com/compbiomed/singleCellTK/tree/devel) package. This report contains information about each QC tool and visualization of the QC metrics for each sample. For more information on running this pipeline and performing quality control, see the [**documentation**](https://www.camplab.net/sctk/v2.2.1/articles/articles/cmd_qc.html). If you use the singleCellTK package for quality control, please include a [**reference**](https://www.biorxiv.org/content/10.1101/329755v1.article-info) in your publication.
+```{r, "Introduction", echo = FALSE, results="asis", fig.align="center", warning=FALSE, message=FALSE}
+cat("\n")
+
+intro <- paste0(
+  "Comprehensive quality control (QC) of single-cell RNA-seq data was performed with the [**singleCellTK**](https://github.com/compbiomed/singleCellTK) package. This report contains information about each QC tool and visualization of the QC metrics for each sample. For more information on running this pipeline and performing quality control, see the [**documentation**](",
+  docs.qc.Path,
+  "). If you use the singleCellTK package for quality control, please include a [**reference**](https://www.biorxiv.org/content/10.1101/329755v1.article-info) in your publication."
+)
+
+cat(intro)
+```
 <br />
 <br />
 
