@@ -5,6 +5,8 @@ shinyPanelQC <- fluidPage(
     wellPanel(
       sidebarLayout(
         sidebarPanel(
+          h5(tags$a(href = paste0(docs.artPath, "ui_qc.html"),
+                    "(help)", target = "_blank")),
           fluidRow(
             column(12, h3("Choose which algorithms to run:"))
           ),
@@ -17,7 +19,14 @@ shinyPanelQC <- fluidPage(
             tags$div(id = "QCMetricsParams",
                      actionLink("QCMhelp", "Help", icon = icon("info-circle")),
                      tags$hr(),
-                     selectInput("QCMgeneSets", "collectionName - Select a Gene Set for Quality Control", c("None")),
+                     selectInput("QCMgeneSets",
+                                 "collectionName - Select a Gene Set for Quality Control",
+                                 c("None" = "none",
+                                   "Human Mitochondrial Genes (Ensembl)" = "he",
+                                   "Human Mitochondrial Genes (Symbol)" = "hs",
+                                   "Mouse Mitochondrial Genes (Ensembl)" = "me",
+                                   "Mouse Mitochondrial Genes (Symbol)" = "ms")),
+                     actionLink("QCImportGS", "Import Gene Sets", icon = icon("upload"))
             )
           ),
           tags$hr(),
@@ -158,7 +167,14 @@ shinyPanelQC <- fluidPage(
           ),
           tags$hr(),
           h4("General Parameters"),
-          uiOutput("qcAssaySelect"),
+          selectizeInput(
+            inputId = "qcAssaySelect", 
+            label = "Select input matrix:", 
+            choices = NULL, 
+            selected = NULL, 
+            multiple = FALSE,
+            options = NULL),
+          #uiOutput("qcAssaySelect"),
           #selectInput("qcAssaySelect", "Select an Assay", list()),
           selectInput("qcSampleSelect", "Select variable containing sample labels", list()),
 
@@ -171,6 +187,7 @@ shinyPanelQC <- fluidPage(
           numericInput("UminDist", "Effective minimum distance between embedded points (default 0.01)", 0.01),
           numericInput("Uspread", "Effective scale of embedded points (default 1)", 1),
           numericInput("UinitialDims", "Number of dimensions from PCA to use as input (default 25)", 25),
+          numericInput("Useed", "Seed value for reproducibility of UMAP result (default 12345)", 12345),
 
 
           withBusyIndicatorUI(actionButton("runQC", "Run")),

@@ -13,7 +13,7 @@ plotCxdsResults(
   violin = TRUE,
   boxplot = FALSE,
   dots = TRUE,
-  reducedDimName = NULL,
+  reducedDimName = "UMAP",
   xlab = NULL,
   ylab = NULL,
   dim1 = NULL,
@@ -21,7 +21,7 @@ plotCxdsResults(
   bin = NULL,
   binLabel = NULL,
   defaultTheme = TRUE,
-  dotSize = 1,
+  dotSize = 0.5,
   summary = "median",
   summaryTextSize = 3,
   transparency = 1,
@@ -90,7 +90,7 @@ Default NULL.}
 \item{defaultTheme}{Removes grid in plot and sets axis title size to 10
 when TRUE. Default TRUE.}
 
-\item{dotSize}{Size of dots. Default 1.}
+\item{dotSize}{Size of dots. Default 0.5.}
 
 \item{summary}{Adds a summary statistic, as well as a crossbar to the
 violin plot. Options are "mean" or "median". Default NULL.}

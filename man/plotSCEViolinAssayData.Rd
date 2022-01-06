@@ -19,7 +19,7 @@ plotSCEViolinAssayData(
   ylab = NULL,
   axisSize = 10,
   axisLabelSize = 10,
-  dotSize = 1,
+  dotSize = 0.5,
   transparency = 1,
   defaultTheme = TRUE,
   gridLine = FALSE,
@@ -66,7 +66,7 @@ Default TRUE.}
 
 \item{axisLabelSize}{Size of x/y-axis labels. Default 10.}
 
-\item{dotSize}{Size of dots. Default 1.}
+\item{dotSize}{Size of dots. Default 0.5.}
 
 \item{transparency}{Transparency of the dots, values will be 0-1. Default 1.}
 
@@ -97,6 +97,7 @@ Visualizes values stored in the assay slot of a
  SingleCellExperiment object via a violin plot.
 }
 \examples{
+data("mouseBrainSubsetSCE")
 plotSCEViolinAssayData(
   inSCE = mouseBrainSubsetSCE,
   feature = "Apoe", groupBy = "sex"

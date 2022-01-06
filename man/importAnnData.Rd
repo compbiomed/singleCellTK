@@ -4,7 +4,13 @@
 \alias{importAnnData}
 \title{Create a SingleCellExperiment Object from Python AnnData .h5ad files}
 \usage{
-importAnnData(sampleDirs = NULL, sampleNames = NULL, delayedArray = FALSE)
+importAnnData(
+  sampleDirs = NULL,
+  sampleNames = NULL,
+  delayedArray = FALSE,
+  class = c("Matrix", "matrix"),
+  rowNamesDedup = TRUE
+)
 }
 \arguments{
 \item{sampleDirs}{Folder containing the .h5ad file. Can be one of -
@@ -31,6 +37,14 @@ Can be one of -
 
 \item{delayedArray}{Boolean. Whether to read the expression matrix as
 \link{DelayedArray} object. Default \code{FALSE}.}
+
+\item{class}{Character. The class of the expression matrix stored in the SCE
+object. Can be one of "Matrix" (as returned by
+\link{readMM} function), or "matrix" (as returned by
+\link[base]{matrix} function). Default \code{"Matrix"}.}
+
+\item{rowNamesDedup}{Boolean. Whether to deduplicate rownames. Default 
+\code{TRUE}.}
 }
 \value{
 A \code{SingleCellExperiment} object.

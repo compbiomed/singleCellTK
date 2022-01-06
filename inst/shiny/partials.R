@@ -131,7 +131,7 @@ importCRSDir <- function(failed = FALSE) {
     shinyFiles::shinyDirButton("sDirectory", label = "Choose Directory", title = "Upload"),
     # A UI to display what users select
     verbatimTextOutput("sDirectoryPath", placeholder = TRUE),
-
+    tags$div(id = "sDirTable"),
     h3("Sample Name"),
     h5("If you do not provide an alternate sample name, the sample name will be set to the sample directory name."),
     textInput("sSampleID", ""),

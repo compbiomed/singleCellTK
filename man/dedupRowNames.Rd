@@ -19,7 +19,7 @@ insert a new column called \code{"rownames.uniq"} to \code{rowData(x)}, with
 the deduplicated rownames.}
 
 \item{return.list}{When set to \code{TRUE}, will return a character vector
-with deduplicated rownames.}
+of the deduplicated rownames.}
 }
 \value{
 By default, a matrix or /linkS4class{SingleCellExperiment} object

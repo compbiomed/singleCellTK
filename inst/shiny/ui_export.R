@@ -3,12 +3,12 @@ shinyPanelExport <- fluidPage(
   class = "container",
   style = "margin-bottom: 10px",
   h1("Export Data"),
+  h5(tags$a(href = paste0(docs.artPath, "export_data.html"),
+            "(help)", target = "_blank")),
   tags$hr(),
   fluidRow(
     column(
       6,
-      #shinyDirectoryInput::directoryInput('outputDirectory', label = 'Select directory', value = '~'),
-
       shinyDirButton("outputDirectory", label = "Select directory", title = "Download"),
       # A UI to display what users select
       verbatimTextOutput("outputDirectoryPath", placeholder = TRUE),
@@ -44,7 +44,14 @@ shinyPanelExport <- fluidPage(
       conditionalPanel(
         condition = "input.exportChoice == 'annData'",
         tags$h5(style = "font-weight: bold; margin-bottom: 15px", "Set export specifications"),
-        uiOutput("exportAssay"),
+        selectizeInput(
+          inputId = "exportAssay", 
+          label = "Select input matrix:", 
+          choices = NULL, 
+          selected = NULL, 
+          multiple = FALSE,
+          options = NULL),
+        #uiOutput("exportAssay"),
         # tags$label(id="compressionLabel", "Compression"),
         # selectInput("compression", label = NULL, c("None", "lzf", "gzip"), width='140px'),
         tags$label(id="compressionOptsLabel", "Compression Opts"),

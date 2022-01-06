@@ -18,7 +18,7 @@ runMAST(
   covariates = NULL,
   onlyPos = FALSE,
   log2fcThreshold = NULL,
-  fdrThreshold = 0.05,
+  fdrThreshold = NULL,
   overwrite = FALSE,
   check_sanity = TRUE
 )
@@ -66,10 +66,10 @@ building the model. All covariates must exist in
 Default \code{FALSE}.}
 
 \item{log2fcThreshold}{Only out put DEGs with the absolute values of log2FC
-greater than this value. Default \code{0.25}}
+greater than this value. Default \code{NULL}}
 
 \item{fdrThreshold}{Only out put DEGs with FDR value less than this
-value. Default \code{0.05}}
+value. Default \code{NULL}}
 
 \item{overwrite}{A logical scalar. Whether to overwrite result if exists.
 Default \code{FALSE}.}

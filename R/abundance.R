@@ -1,69 +1,173 @@
+#' Calculate Differential Abundance with FET
+#' @details This function will calculate the cell counting and fraction by
+#' dividing all cells to groups specified by the arguments, together with
+#' statistical summary by performing Fisher Exact Tests (FET).
+#' @param inSCE A \code{\link[SingleCellExperiment]{SingleCellExperiment}}
+#' object.
+#' @param cluster A single \code{character}, specifying the name to store the
+#' cluster label in \code{\link{colData}}.
+#' @param variable A single \code{character}, specifying the name to store the
+#' phenotype labels in \code{\link{colData}}.
+#' @param control \code{character}. Specifying one or more categories that can
+#' be found in the vector specified by \code{variable}.
+#' @param case \code{character}. Specifying one or more categories that can
+#' be found in the vector specified by \code{variable}.
+#' @param analysisName A single \code{character}. Will be used for naming the
+#' result table, which will be saved in metadata slot.
+#' @return The original \code{\link[SingleCellExperiment]{SingleCellExperiment}}
+#' object with \code{metadata(inSCE)} updated with a list
+#' \code{diffAbundanceFET}, containing a new \code{data.frame} for the analysis
+#' result, named by \code{analysisName}. The \code{data.frame} contains columns
+#' for number and fraction of cells that belong to different cases, as well as
+#' "Odds_Ratio", "PValue" and "FDR".
 #' @export
-differentialAbundanceFET <- function(inSCE, variable, phenotype, control, case) {
-    cluster <- colData(inSCE)[, variable]
-    variable <- colData(inSCE)[, phenotype]
+#' @examples
+#' data("mouseBrainSubsetSCE", package = "singleCellTK")
+#' mouseBrainSubsetSCE <- diffAbundanceFET(inSCE = mouseBrainSubsetSCE,
+#'                                                 cluster = "tissue",
+#'                                                 variable = "level1class",
+#'                                                 case = "oligodendrocytes",
+#'                                                 control = "microglia",
+#'                                                 analysisName = "diffAbundFET")
+diffAbundanceFET <- function(inSCE, cluster, variable, control, case,
+                             analysisName) {
+  if (!inherits(inSCE, "SingleCellExperiment")) {
+    stop("'inSCE' should be a SingleCellExperiment object.")
+  }
+  if (is.null(cluster) ||
+      !cluster %in% names(SummarizedExperiment::colData(inSCE))) {
+    stop("Argument 'cluster' should be a column name in colData(inSCE).")
+  }
+  if (is.null(variable) ||
+      !variable %in% names(SummarizedExperiment::colData(inSCE))) {
+    stop("Argument 'variable' should be a column name in colData(inSCE).")
+  }
 
-    control.lab <- paste(control, collapse=",")
-    case.lab <- paste(case, collapse=",")
-    label <- rep(NA, length(variable))
-    label[variable %in% case] <- case.lab
-    label[variable %in% control] <- control.lab
-    label <- factor(label, levels=c(control.lab, case.lab))
+  cluster <- SummarizedExperiment::colData(inSCE)[, cluster]
+  variable <- SummarizedExperiment::colData(inSCE)[, variable]
+  if (!all(control %in% variable)) {
+    nf1 <- control[which(!control %in% variable)]
+    stop("Given 'control' not all found in 'variable': ",
+         paste(nf1, collapse = ", "))
+  }
+  if (!all(case %in% variable)) {
+    nf2 <- case[which(!case %in% variable)]
+    stop("Given 'case' not all found in 'variable': ",
+         paste(nf2, collapse = ", "))
+  }
+  if (any(control %in% case)) {
+    warning("Overlapping variables found in 'control' and 'case'")
+  }
 
-    res <- matrix(NA, nrow=length(unique(cluster)), ncol=10)
-    cluster.label <- sort(unique(cluster))
-    for(i in seq_along(cluster.label)) {
-        cluster.factor <- factor(ifelse(cluster %in% cluster.label[i], cluster.label[i], "Other"), levels=c(i, "Other"))
+  control.lab <- paste(control, collapse=",")
+  case.lab <- paste(case, collapse=",")
+  label <- rep(NA, length(variable))
+  label[variable %in% case] <- case.lab
+  label[variable %in% control] <- control.lab
+  label <- factor(label, levels=c(control.lab, case.lab))
 
-        ta <- table(cluster.factor, label)
-        ta.p <- prop.table(ta, 2)
-        fet <- fisher.test(ta)
-        res[i,] <- c(ta, ta.p, fet$estimate, fet$p.value)
-    }
-    colnames(res) <- c(paste0("Number of cells in cluster and in ", control.lab),
-                       paste0("Number of cells NOT in cluster and in ", control.lab),
-                       paste0("Number of cells in cluster and in ", case.lab),
-                       paste0("Number of cells NOT in cluster and in ", case.lab),
-                       paste0("Fraction of cells in cluster and in ", control.lab),
-                       paste0("Fraction of cells NOT in cluster and in ", control.lab),
-                       paste0("Fraction of cells in cluster and in ", case.lab),
-                       paste0("Fraction of cells NOT in cluster and in ", case.lab),
-                       "Odds_Ratio", "Pvalue")
-    res <- data.frame(Cluster=cluster.label, res, FDR=p.adjust(res[,"Pvalue"], 'fdr'), check.names=FALSE)
-    return(res)
+  res <- matrix(NA, nrow=length(unique(cluster)), ncol=10)
+  cluster.label <- sort(unique(cluster))
+  for(i in seq_along(cluster.label)) {
+    cluster.factor <- factor(ifelse(cluster %in% cluster.label[i],
+                                    cluster.label[i], "Other"),
+                             levels=c(i, "Other"))
+
+    ta <- table(cluster.factor, label)
+    ta.p <- prop.table(ta, 2)
+    fet <- stats::fisher.test(ta)
+    res[i,] <- c(ta, ta.p, fet$estimate, fet$p.value)
+  }
+  colnames(res) <- c(paste0("Number of cells in cluster and in ",
+                            control.lab),
+                     paste0("Number of cells NOT in cluster and in ",
+                            control.lab),
+                     paste0("Number of cells in cluster and in ",
+                            case.lab),
+                     paste0("Number of cells NOT in cluster and in ",
+                            case.lab),
+                     paste0("Fraction of cells in cluster and in ",
+                            control.lab),
+                     paste0("Fraction of cells NOT in cluster and in ",
+                            control.lab),
+                     paste0("Fraction of cells in cluster and in ",
+                            case.lab),
+                     paste0("Fraction of cells NOT in cluster and in ",
+                            case.lab),
+                     "Odds_Ratio", "Pvalue")
+  res <- data.frame(Cluster=cluster.label, res,
+                    FDR=stats::p.adjust(res[,"Pvalue"], 'fdr'),
+                    check.names=FALSE)
+  if (!"diffAbundanceFET" %in% names(S4Vectors::metadata(inSCE))) {
+    S4Vectors::metadata(inSCE)$diffAbundanceFET <- list()
+  }
+  S4Vectors::metadata(inSCE)$diffAbundanceFET[[analysisName]] <- res
+
+  return(inSCE)
 }
 
+#' Plot the differential Abundance
+#' @details This function will visualize the differential abundance in two given
+#' variables, by making bar plots that presents the cell counting and fraction
+#' in different cases.
+#' @param inSCE A \code{\link[SingleCellExperiment]{SingleCellExperiment}}
+#' object.
+#' @param cluster A single \code{character}, specifying the name to store the
+#' cluster label in \code{\link{colData}}.
+#' @param variable A single \code{character}, specifying the name to store the
+#' phenotype labels in \code{\link{colData}}.
+#' @return A \code{list} with 4 \code{ggplot} objects.
 #' @export
-plotClusterAbundance <- function(inSCE, variable, phenotype) {
-    cluster <- colData(inSCE)[, variable]
-    color_palette <- celda::distinctColors(length(unique(cluster)))
+#' @examples
+#' data("mouseBrainSubsetSCE", package = "singleCellTK")
+#' plotClusterAbundance(inSCE = mouseBrainSubsetSCE,
+#'                      cluster = "tissue",
+#'                      variable = "level1class")
+plotClusterAbundance <- function(inSCE, cluster, variable) {
+  if (!inherits(inSCE, "SingleCellExperiment")) {
+    stop("'inSCE' should be a SingleCellExperiment object.")
+  }
+  if (is.null(cluster) ||
+      !cluster %in% names(SummarizedExperiment::colData(inSCE))) {
+    stop("Argument 'cluster' should be a column name in colData(inSCE).")
+  }
+  if (is.null(variable) ||
+      !variable %in% names(SummarizedExperiment::colData(inSCE))) {
+    stop("Argument 'variable' should be a column name in colData(inSCE).")
+  }
+  cluster <- SummarizedExperiment::colData(inSCE)[, cluster]
+  color_palette <- distinctColors(length(unique(cluster)))
 
-    label <- colData(inSCE)[, phenotype]
+  label <- SummarizedExperiment::colData(inSCE)[, variable]
 
-    cluster.color <- color_palette
-    df <- data.frame(Cluster=as.factor(cluster), Sample=as.factor(label))
+  cluster.color <- color_palette
+  df <- data.frame(Cluster=as.factor(cluster), Sample=as.factor(label))
 
-    g1 <- ggplot(df, aes(Cluster)) + geom_bar(aes(fill=Sample)) +
-        theme_classic() +
-        scale_y_continuous(expand = c(0, 0))
+  g1 <- ggplot2::ggplot(df, ggplot2::aes_string("Cluster")) +
+    ggplot2::geom_bar(ggplot2::aes_string(fill="Sample")) +
+    ggplot2::theme_classic() +
+    ggplot2::scale_y_continuous(expand = c(0, 0))
 
-    g2 <- ggplot(df, aes(Cluster)) + geom_bar(aes(fill=Sample), position="fill") +
-        theme_classic() +
-        scale_y_continuous(expand = c(0, 0)) +
-        ylab("Fraction")
+  g2 <- ggplot2::ggplot(df, ggplot2::aes_string("Cluster")) +
+    ggplot2::geom_bar(ggplot2::aes_string(fill="Sample"), position="fill") +
+    ggplot2::theme_classic() +
+    ggplot2::scale_y_continuous(expand = c(0, 0)) +
+    ggplot2:: ylab("Fraction")
 
-    g3 <- ggplot(df, aes(Sample)) + geom_bar(aes(fill=Cluster)) +
-        theme_classic() +
-        scale_y_continuous(expand = c(0, 0)) +
-        theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-        scale_fill_manual(values=cluster.color)
+  g3 <- ggplot2::ggplot(df, ggplot2::aes_string("Sample")) +
+    ggplot2::geom_bar(ggplot2::aes_string(fill="Cluster")) +
+    ggplot2::theme_classic() +
+    ggplot2::scale_y_continuous(expand = c(0, 0)) +
+    ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45, hjust = 1)) +
+    ggplot2::scale_fill_manual(values=cluster.color)
 
-    g4 <- ggplot(df, aes(Sample)) + geom_bar(aes(fill=Cluster), position="fill") +
-        theme_classic() +
-        scale_y_continuous(expand = c(0, 0)) +
-        theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-        scale_fill_manual(values=cluster.color) +
-        ylab("Fraction")
-    g <- list(g1, g2, g3, g4)
-    return(g)
+  g4 <- ggplot2::ggplot(df, ggplot2::aes_string("Sample")) +
+    ggplot2::geom_bar(ggplot2::aes_string(fill="Cluster"), position="fill") +
+    ggplot2::theme_classic() +
+    ggplot2::scale_y_continuous(expand = c(0, 0)) +
+    ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45, hjust = 1)) +
+    ggplot2::scale_fill_manual(values=cluster.color) +
+    ggplot2::ylab("Fraction")
+  g <- list(g1, g2, g3, g4)
+  return(g)
 }
