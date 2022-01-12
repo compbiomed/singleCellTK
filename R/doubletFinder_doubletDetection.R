@@ -353,7 +353,7 @@ runDoubletFinder <- function(inSCE,
   tempSCE <- inSCE
   SummarizedExperiment::assayNames(inSCE)[which(useAssay %in% SummarizedExperiment::assayNames(inSCE))] <- "counts"
   useAssay <- "counts"
-  
+
   if (!is.null(sample)) {
     if (length(sample) != ncol(inSCE)) {
       stop("'sample' must be the same length as the number of columns in 'inSCE'")
@@ -414,9 +414,9 @@ runDoubletFinder <- function(inSCE,
       output[sceSampleInd, 1] <- result@meta.data$doubletFinderAnnScore
       output[sceSampleInd, 2] <- result@meta.data$doubletFinderLabel
     }
-    
+
     colData(inSCE)[, paste0(colnames(output), "_resolution_", res)] <- NULL
-    
+
     colnames(output) <- paste0(colnames(output), "_resolution_", res)
 
     argsList <- argsList[!names(argsList) %in% ("...")]
@@ -425,11 +425,11 @@ runDoubletFinder <- function(inSCE,
     colData(inSCE) <- cbind(colData(inSCE), output)
     reducedDim(inSCE,'doubletFinder_UMAP') <- umapDims
   }
-  
+
   tempSCE@colData <- inSCE@colData
   tempSCE@metadata <- inSCE@metadata
   reducedDims(tempSCE) <- reducedDims(inSCE)
-  
+
   return(tempSCE)
 }
 
@@ -478,7 +478,7 @@ runDoubletFinder <- function(inSCE,
     train.ind <- sample(seq(nrow(meta)), round(nrow(meta)/2), replace=FALSE)
     test.ind <- seq(nrow(meta))[-train.ind]
     colnames(meta) <- c("SinDub","pANN")
-    meta$SinDub <- factor(meta$SinDub, levels = c("Doublet","Singlet"))
+    meta$SinDub <- factor(meta$SinDub, levels = c("Singlet","Doublet"))
     model.lm <- stats::glm(SinDub ~ pANN, family=stats::binomial(link='logit'), data=meta, subset=train.ind)
     prob <- stats::predict(model.lm, newdata=meta[test.ind, ], type="response")
     ROCpred <- ROCR::prediction(predictions=prob, labels=meta$SinDub[test.ind])

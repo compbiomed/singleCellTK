@@ -44,11 +44,11 @@
             )
         }
 
-        if ("scDblFinder_class" %in% colnames(SummarizedExperiment::colData(inSCE))) {
+        if ("scDblFinder_doublet_call" %in% colnames(SummarizedExperiment::colData(inSCE))) {
             metrics <- c(metrics, "scDblFinder - Number of doublets",
                          "scDblFinder - Percentage of doublets")
-            values <- c(values, sum(inSCE$scDblFinder_class == "doublet"),
-                        signif(sum(inSCE$scDblFinder_class == "doublet")/length(inSCE$scDblFinder_class) * 100, 3))
+            values <- c(values, sum(inSCE$scDblFinder_doublet_call == "Doublet"),
+                        signif(sum(inSCE$scDblFinder_doublet_call == "Doublet")/length(inSCE$scDblFinder_doublet_call) * 100, 3))
         }
 
         if (any(grepl("doubletFinder_doublet_label_resolution",

@@ -1150,7 +1150,7 @@ plotDoubletFinderResults <- function(inSCE,
         axisSize=axisSize,
         axisLabelSize=axisLabelSize,
         labelClusters=FALSE,
-        legendTitle="Doublet Score",
+        legendTitle="Doublet \nAssignment",
         legendSize=legendSize,
         legendTitleSize=legendTitleSize,
         combinePlot="all"
@@ -1404,6 +1404,41 @@ plotScDblFinderResults <- function(inSCE,
       combinePlot="all"
     ))
     res.list = c(res.list, scatterScore)
+
+    if("scDblFinder_doublet_call" %in% names(SingleCellExperiment::colData(inSCE))){
+      title = "scDblFinder Doublet Assignment"
+      if(labelSamples && length(samples) > 1){
+        title = paste0(title, ", ", x)
+      }
+      scatterCall <- list(scatter_doubletCall = plotSCEDimReduceColData(
+        inSCE=inSCESub,
+        sample=sampleSub,
+        colorBy="scDblFinder_doublet_call",
+        conditionClass="factor",
+        shape=shape,
+        reducedDimName=reducedDimName,
+        xlab=xlab,
+        ylab=ylab,
+        dim1=dim1,
+        dim2=dim2,
+        bin=bin,
+        binLabel=binLabel,
+        dotSize=dotSize,
+        transparency=transparency,
+        baseSize=baseSize,
+        colorScale = c("lightgray","red"),
+        defaultTheme=defaultTheme,
+        title=title,
+        titleSize=titleSize,
+        axisSize=axisSize, axisLabelSize=axisLabelSize,
+        labelClusters=FALSE,
+        legendTitle="Doublet \nAssignment",
+        legendTitleSize=legendTitleSize,
+        legendSize=legendSize,
+        combinePlot="all"
+      ))
+      res.list <- c(res.list, scatterCall)
+    }
 
     if(combinePlot != "all" | length(samples) == 1){
       if(labelSamples && length(samples) > 1){
