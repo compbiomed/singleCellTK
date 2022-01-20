@@ -372,7 +372,7 @@ runDoubletFinder <- function(inSCE,
     output <- S4Vectors::DataFrame(
       row.names = colnames(inSCE),
       doubletFinder_doublet_score = numeric(ncol(inSCE)),
-      doubletFinder_doublet_label = numeric(ncol(inSCE))
+      doubletFinder_doublet_label = character(ncol(inSCE))
     )
     umapDims <- matrix(ncol = 2,
                        nrow = ncol(inSCE))
@@ -418,7 +418,7 @@ runDoubletFinder <- function(inSCE,
     colData(inSCE)[, paste0(colnames(output), "_resolution_", res)] <- NULL
 
     colnames(output) <- paste0(colnames(output), "_resolution_", res)
-
+    output[,2] <- factor(output[,2], levels = c("Singlet", "Doublet"))
     argsList <- argsList[!names(argsList) %in% ("...")]
     inSCE@metadata$runDoubletFinder <- argsList[-1]
     inSCE@metadata$runDoubletFinder$packageVersion <- "2.0.2"
