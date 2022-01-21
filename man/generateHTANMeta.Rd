@@ -8,7 +8,7 @@ generateHTANMeta(
   dropletSCE = NULL,
   cellSCE = NULL,
   samplename,
-  htan_patient_id,
+  htan_biospecimen_id,
   dir,
   dataType = c("Droplet", "Cell", "Both")
 )
@@ -22,7 +22,7 @@ cell count matrix data}
 
 \item{samplename}{The sample name of the \link[SingleCellExperiment]{SingleCellExperiment} objects}
 
-\item{htan_patient_id}{The HTAN patient id of the sample in \link[SingleCellExperiment]{SingleCellExperiment} object}
+\item{htan_biospecimen_id}{The HTAN biospecimen id of the sample in \link[SingleCellExperiment]{SingleCellExperiment} object}
 
 \item{dir}{The output directory of the SCTK QC pipeline.}
 
