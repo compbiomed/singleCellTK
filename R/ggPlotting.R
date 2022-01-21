@@ -797,6 +797,22 @@ plotSCEScatter <- function(inSCE,
 #' .ggplot object, while "sample" will output a list of plots separated by sample. Default "none".
 #' @param title Title of plot. Default NULL.
 #' @param titleSize Size of title of plot. Default 15.
+#' @param hcutoff Adds a horizontal line with the y-intercept at given value. Default NULL.
+#' @param hcolor Character. A color available from `colors()`.
+#'  Controls the color of the horizontal cutoff line, if drawn.
+#'  Default 'black'.
+#' @param hsize Size of horizontal line, if drawn. Default 0.5.
+#' @param hlinetype Type of horizontal line, if drawn. can be specified with either an integer or
+#'  a name (0 = blank, 1 = solid, 2 = dashed, 3 = dotted, 4 = dotdash, 5 = longdash, 6 = twodash).
+#'  Default 1. 
+#' @param vcutoff Adds a vertical line with the x-intercept at given value. Default NULL.
+#' @param vcolor Character. A color available from `colors()`.
+#'  Controls the color of the vertical cutoff line, if drawn.
+#'  Default 'black'.
+#' @param vsize Size of vertical line, if drawn. Default 0.5.
+#' @param vlinetype Type of vertical line, if drawn. can be specified with either an integer or
+#'  a name (0 = blank, 1 = solid, 2 = dashed, 3 = dotted, 4 = dotdash, 5 = longdash, 6 = twodash).
+#'  Default 1. 
 #' @return a ggplot of the reduced dimensions.
 #' @importFrom dplyr group_by
 #' @importFrom dplyr summarize
@@ -819,7 +835,15 @@ plotSCEScatter <- function(inSCE,
                       summaryTextSize = 3,
                       combinePlot = "none",
                       title = NULL,
-                      titleSize = NULL) {
+                      titleSize = NULL,
+                      hcutoff = NULL,
+                      hcolor = "red",
+                      hsize = 1,
+                      hlinetype = 1,
+                      vcutoff = NULL,
+                      vcolor = "red",
+                      vsize = 1,
+                      vlinetype = 1) {
   if (is.null(groupBy)) {
     groupBy <- rep("Sample", length(y))
   }
@@ -931,6 +955,14 @@ plotSCEScatter <- function(inSCE,
                                    color = "red",
                                    linetype = "dashed")
   }
+  if(!is.null(hcutoff)){
+    p <- .ggAddLine(p, hcutoff = hcutoff, hcolor = hcolor,
+                    hsize = hsize, hlinetype = hlinetype)
+  }
+  if(!is.null(vcutoff)){
+    p <- .ggAddLine(p, vcutoff = vcutoff, vcolor = vcolor,
+                    vsize = vsize, vlinetype = vlinetype)
+  }
 
   return(p)
 }
@@ -969,6 +1001,22 @@ plotSCEScatter <- function(inSCE,
 #'  above the violin plot. Default 3.
 #' @param title Title of plot. Default NULL.
 #' @param titleSize Size of title of plot. Default 15.
+#' @param hcutoff Adds a horizontal line with the y-intercept at given value. Default NULL.
+#' @param hcolor Character. A color available from `colors()`.
+#'  Controls the color of the horizontal cutoff line, if drawn.
+#'  Default 'black'.
+#' @param hsize Size of horizontal line, if drawn. Default 0.5.
+#' @param hlinetype Type of horizontal line, if drawn. can be specified with either an integer or
+#'  a name (0 = blank, 1 = solid, 2 = dashed, 3 = dotted, 4 = dotdash, 5 = longdash, 6 = twodash).
+#'  Default 1. 
+#' @param vcutoff Adds a vertical line with the x-intercept at given value. Default NULL.
+#' @param vcolor Character. A color available from `colors()`.
+#'  Controls the color of the vertical cutoff line, if drawn.
+#'  Default 'black'.
+#' @param vsize Size of vertical line, if drawn. Default 0.5.
+#' @param vlinetype Type of vertical line, if drawn. can be specified with either an integer or
+#'  a name (0 = blank, 1 = solid, 2 = dashed, 3 = dotted, 4 = dotdash, 5 = longdash, 6 = twodash).
+#'  Default 1. 
 #' @param combinePlot Must be either "all", "sample", or "none". "all" will combine all plots into a single
 #' .ggplot object, while "sample" will output a list of plots separated by sample. Default "none".
 #' @param plotLabels labels to each plot. If set to "default", will use the name of the samples
@@ -1001,6 +1049,14 @@ plotSCEViolinColData <- function(inSCE,
                                  summaryTextSize = 3,
                                  title = NULL,
                                  titleSize = NULL,
+                                 hcutoff = NULL,
+                                 hcolor = "red",
+                                 hsize = 1,
+                                 hlinetype = 1,
+                                 vcutoff = NULL,
+                                 vcolor = "red",
+                                 vsize = 1,
+                                 vlinetype = 1,
                                  combinePlot = "none",
                                  plotLabels = NULL) {
   combinePlot <- match.arg(combinePlot,c("all", "sample", "none"))
@@ -1073,6 +1129,14 @@ plotSCEViolinColData <- function(inSCE,
       title = title,
       titleSize = titleSize
     )
+    if(!is.null(hcutoff)){
+      p <- .ggAddLine(p, hcutoff = hcutoff, hcolor = hcolor,
+                      hsize = hsize, hlinetype = hlinetype)
+    }
+    if(!is.null(vcutoff)){
+      p <- .ggAddLine(p, vcutoff = vcutoff, vcolor = vcolor,
+                      vsize = vsize, vlinetype = vlinetype)
+    }
     return(p)
   })
 
@@ -1130,6 +1194,22 @@ plotSCEViolinColData <- function(inSCE,
 #'  violin plot. Options are "mean" or "median". Default NULL.
 #' @param title Title of plot. Default NULL.
 #' @param titleSize Size of title of plot. Default 15.
+#' @param hcutoff Adds a horizontal line with the y-intercept at given value. Default NULL.
+#' @param hcolor Character. A color available from `colors()`.
+#'  Controls the color of the horizontal cutoff line, if drawn.
+#'  Default 'black'.
+#' @param hsize Size of horizontal line, if drawn. Default 0.5.
+#' @param hlinetype Type of horizontal line, if drawn. can be specified with either an integer or
+#'  a name (0 = blank, 1 = solid, 2 = dashed, 3 = dotted, 4 = dotdash, 5 = longdash, 6 = twodash).
+#'  Default 1. 
+#' @param vcutoff Adds a vertical line with the x-intercept at given value. Default NULL.
+#' @param vcolor Character. A color available from `colors()`.
+#'  Controls the color of the vertical cutoff line, if drawn.
+#'  Default 'black'.
+#' @param vsize Size of vertical line, if drawn. Default 0.5.
+#' @param vlinetype Type of vertical line, if drawn. can be specified with either an integer or
+#'  a name (0 = blank, 1 = solid, 2 = dashed, 3 = dotted, 4 = dotdash, 5 = longdash, 6 = twodash).
+#'  Default 1. 
 #' @param combinePlot Must be either "all", "sample", or "none". "all" will combine all plots into a single
 #' .ggplot object, while "sample" will output a list of plots separated by sample. Default "none".
 #' @param plotLabels labels to each plot. If set to "default", will use the name of the samples
@@ -1163,6 +1243,14 @@ plotSCEViolinAssayData <- function(inSCE,
                                    summary = NULL,
                                    title = NULL,
                                    titleSize = NULL,
+                                   hcutoff = NULL,
+                                   hcolor = "red",
+                                   hsize = 1,
+                                   hlinetype = 1,
+                                   vcutoff = NULL,
+                                   vcolor = "red",
+                                   vsize = 1,
+                                   vlinetype = 1,
                                    combinePlot = "none",
                                    plotLabels = NULL) {
   combinePlot <- match.arg(combinePlot,c("all", "sample", "none"))
@@ -1245,6 +1333,14 @@ plotSCEViolinAssayData <- function(inSCE,
       title = title,
       titleSize = titleSize
     )
+    if(!is.null(hcutoff)){
+      p <- .ggAddLine(p, hcutoff = hcutoff, hcolor = hcolor,
+                      hsize = hsize, hlinetype = hlinetype)
+    }
+    if(!is.null(vcutoff)){
+      p <- .ggAddLine(p, vcutoff = vcutoff, vcolor = vcolor,
+                      vsize = vsize, vlinetype = vlinetype)
+    }
     return(p)
   })
 
@@ -1312,6 +1408,22 @@ plotSCEViolinAssayData <- function(inSCE,
 #'  violin plot. Options are "mean" or "median". Default NULL.
 #' @param title Title of plot. Default NULL.
 #' @param titleSize Size of title of plot. Default 15.
+#' @param hcutoff Adds a horizontal line with the y-intercept at given value. Default NULL.
+#' @param hcolor Character. A color available from `colors()`.
+#'  Controls the color of the horizontal cutoff line, if drawn.
+#'  Default 'black'.
+#' @param hsize Size of horizontal line, if drawn. Default 0.5.
+#' @param hlinetype Type of horizontal line, if drawn. can be specified with either an integer or
+#'  a name (0 = blank, 1 = solid, 2 = dashed, 3 = dotted, 4 = dotdash, 5 = longdash, 6 = twodash).
+#'  Default 1. 
+#' @param vcutoff Adds a vertical line with the x-intercept at given value. Default NULL.
+#' @param vcolor Character. A color available from `colors()`.
+#'  Controls the color of the vertical cutoff line, if drawn.
+#'  Default 'black'.
+#' @param vsize Size of vertical line, if drawn. Default 0.5.
+#' @param vlinetype Type of vertical line, if drawn. can be specified with either an integer or
+#'  a name (0 = blank, 1 = solid, 2 = dashed, 3 = dotted, 4 = dotdash, 5 = longdash, 6 = twodash).
+#'  Default 1. 
 #' @param combinePlot Must be either "all", "sample", or "none". "all" will combine all plots into a single
 #' .ggplot object, while "sample" will output a list of plots separated by sample. Default "none".
 #' @param plotLabels labels to each plot. If set to "default", will use the name of the samples
@@ -1345,6 +1457,14 @@ plotSCEViolin <- function(inSCE,
                           summary = NULL,
                           title = NULL,
                           titleSize = NULL,
+                          hcutoff = NULL,
+                          hcolor = "red",
+                          hsize = 1,
+                          hlinetype = 1,
+                          vcutoff = NULL,
+                          vcolor = "red",
+                          vsize = 1,
+                          vlinetype = 1,
                           combinePlot = "none",
                           plotLabels = NULL) {
     combinePlot <- match.arg(combinePlot,c("all", "sample", "none"))
@@ -1433,7 +1553,14 @@ plotSCEViolin <- function(inSCE,
             title = title,
             titleSize = titleSize
         )
-
+        if(!is.null(hcutoff)){
+          p <- .ggAddLine(p, hcutoff = hcutoff, hcolor = hcolor,
+                          hsize = hsize, hlinetype = hlinetype)
+        }
+        if(!is.null(vcutoff)){
+          p <- .ggAddLine(p, vcutoff = vcutoff, vcolor = vcolor,
+                          vsize = vsize, vlinetype = vlinetype)
+        }
         return(p)
     })
 
@@ -2782,4 +2909,24 @@ setSCTKDisplayRow <- function(inSCE,
     scaleFactor = scaleFactor * 0.75
   }
   return(scaleFactor)
+}
+
+.ggAddLine <- function(plot, 
+                       hcutoff = NULL,
+                       vcutoff = NULL,
+                       hcolor = "red",
+                       hsize = 1,
+                       hlinetype = 1,
+                       vcolor = "red",
+                       vsize = 1,
+                       vlinetype = 1){
+  if(!is.null(hcutoff)){
+    plot <- plot + ggplot2::geom_hline(yintercept = hcutoff, colour = hcolor,
+                                       size = hsize, linetype = hlinetype)
+  }
+  if(!is.null(vcutoff)){
+    plot <- plot + ggplot2::geom_vline(xintercept = vcutoff, colour = vcolor,
+                                       size = vsize, linetype = vlinetype)
+  }
+  return(plot)
 }

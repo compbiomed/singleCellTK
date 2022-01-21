@@ -321,3 +321,96 @@ seuratReport <- function(inSCE,
   return(outSCE)
 }
 
+#' @title Get diffAbundanceFET .html report
+#' @description A function to generate .html Rmarkdown report containing the visualizations of the diffAbundanceFET function output
+#' @param inSCE A \code{\link[SingleCellExperiment]{SingleCellExperiment}}
+#' object.
+#' @param cluster A single \code{character}, specifying the name to store the
+#' cluster label in \code{\link{colData}}.
+#' @param variable A single \code{character}, specifying the name to store the
+#' phenotype labels in \code{\link{colData}}.
+#' @param control \code{character}. Specifying one or more categories that can
+#' be found in the vector specified by \code{variable}.
+#' @param case \code{character}. Specifying one or more categories that can
+#' be found in the vector specified by \code{variable}.
+#' @param analysisName A single \code{character}. Will be used for naming the
+#' result table, which will be saved in metadata slot.
+#' @param output_dir name of the output directory to save the rendered file. If
+#' \code{NULL} the file is stored to the current working directory.
+#' Default \code{NULL}.
+#' @param output_file name of the generated file. If \code{NULL} then the output
+#' file name will be based on the name of the Rmarkdown template. Default
+#' \code{NULL}.
+#' @param pdf A \code{logical} value indicating if a pdf should also be
+#'  generated for each figure in the report. Default is \code{TRUE}.
+#' @param showSession A \code{logical} value indicating if session information
+#'  should be displayed or not. Default is \code{TRUE}.
+#' @export
+reportDiffAbundanceFET <-
+    function(inSCE,
+             cluster,
+             variable,
+             control,
+             case,
+             analysisName,
+             output_dir = ".",
+             output_file = "DifferentialAbundanceFET_Report",
+             pdf = FALSE,
+             showSession = TRUE
+    ){
+        inSCE <- diffAbundanceFET(inSCE, cluster, variable, control, case, analysisName)
+        rmarkdown::render(
+            system.file("rmarkdown/DifferentialAbundanceFET_Report.Rmd",
+                        package="singleCellTK"),
+            params = list(
+               sce = inSCE,
+                analysisName = analysisName,
+                pdf = isTRUE(pdf),
+                showSession = isTRUE(showSession)
+            ),
+           output_file = output_file,
+           output_dir = output_dir
+        )
+    }
+
+#' @title Get plotClusterAbundance .html report
+#' @description A function to generate .html Rmarkdown report containing the visualizations of the plotClusterAbundance function output
+#' @param inSCE A \code{\link[SingleCellExperiment]{SingleCellExperiment}}
+#' object.
+#' @param cluster A single \code{character}, specifying the name to store the
+#' cluster label in \code{\link{colData}}.
+#' @param variable A single \code{character}, specifying the name to store the
+#' phenotype labels in \code{\link{colData}}.
+#' @param output_dir name of the output directory to save the rendered file. If
+#' \code{NULL} the file is stored to the current working directory.
+#' Default \code{NULL}.
+#' @param output_file name of the generated file. If \code{NULL} then the output
+#' file name will be based on the name of the Rmarkdown template. Default
+#' \code{NULL}.
+#' @param pdf A \code{logical} value indicating if a pdf should also be
+#'  generated for each figure in the report. Default is \code{TRUE}.
+#' @param showSession A \code{logical} value indicating if session information
+#'  should be displayed or not. Default is \code{TRUE}.
+#' @export
+reportClusterAbundance <- function(inSCE,
+                                   cluster,
+                                   variable,
+                                   output_dir = ".",
+                                   output_file = "plotClusterAbundance_Report",
+                                   pdf = FALSE,
+                                   showSession = TRUE
+){
+    rmarkdown::render(
+        system.file("rmarkdown/PlotClusterAbundance_Report.Rmd",
+        package="singleCellTK"),
+        params = list(
+            sce = inSCE,
+            cluster = cluster,
+            variable = variable,
+            pdf = isTRUE(pdf),
+            showSession = isTRUE(showSession)
+        ),
+        output_file = output_file,
+        output_dir = output_dir
+    )
+}
