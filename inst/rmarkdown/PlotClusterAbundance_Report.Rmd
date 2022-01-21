@@ -3,7 +3,8 @@ title: "plotClusterAbundance Results"
 date: "`r format(Sys.time(), '%B %d, %Y')`"
 params:
   sce: sce
-  plot: plot
+  cluster: cluster
+  variable: variable
   pdf: pdf
   showSession: showSession
 output: 
@@ -24,7 +25,8 @@ require(gridExtra)
 require(ggplot2)
 
 sce <- params$sce
-plot <- params$plot
+cluster <- params$cluster
+variable <- params$variable
 pdf <- params$pdf
 showSession <- params$showSession
 
@@ -44,13 +46,14 @@ knitr::opts_chunk$set(
 
 ```
 
-## Differential Abundance FET
+# Differential Abundance FET
+This report will visualize results from the `plotClusterAbundance` function will visualize the differential abundance in two given variables, by making bar plots that presents the cell counting and fraction in different cases. The analysis presented here shows 
 
-```{r }
-
+```{r plotting, echo = FALSE, message = FALSE}
+plotClusterAbundance(inSCE, cluster, variable)
 ```
 
-## Session Information
+# Session Information
 ```{r session, eval = showSession, echo = showSession}
 sessionInfo()
 ```
