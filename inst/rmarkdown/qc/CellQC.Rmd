@@ -513,6 +513,10 @@ for (sample in samples){
   print(plotScDblFinder$Sample[[sample]][["violin_doubletScore"]])
   cat("\n\n")
   
+  cat("#### ScDblFinder Doublet Assignment {.tabset .tabset-fade} \n\n ")
+  print(plotScDblFinder$Sample[[sample]][["scatter_doubletCall"]])
+  cat("\n\n")
+  
   cat("#### Parameters {.tabset .tabset-fade} \n\n")
   ScDblFinderMeta <- sce.qc@metadata$runScDblFinder
   ScDblFinderMeta <- metaChecking(ScDblFinderMeta, sample)

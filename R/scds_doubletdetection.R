@@ -99,7 +99,9 @@ runCxds <- function(inSCE,
     }
 
     colData(inSCE)[, paste0("scds_", colnames(output))] <- NULL
-    
+
+    output$cxds_call <- as.factor(output$cxds_call)
+    levels(output$cxds_call) <- list(Singlet = "FALSE", Doublet = "TRUE")
     colnames(output) <- paste0("scds_", colnames(output))
     colData(inSCE) = cbind(colData(inSCE), output)
 
@@ -219,9 +221,11 @@ runBcds <- function(inSCE,
         }
 
     }
-    
+
     colData(inSCE)[, paste0("scds_", colnames(output))] <- NULL
 
+    output$bcds_call <- as.factor(output$bcds_call)
+    levels(output$bcds_call) <- list(Singlet = "FALSE", Doublet = "TRUE")
     colnames(output) <- paste0("scds_", colnames(output))
     colData(inSCE) = cbind(colData(inSCE), output)
 
@@ -310,20 +314,20 @@ runCxdsBcdsHybrid <- function(inSCE,
         mat <- SummarizedExperiment::assay(sceSample, i = useAssay)
         counts(sceSample) <- .convertToMatrix(mat)
 
-        # Get ntop from Args list if they are available, otherwise use 
+        # Get ntop from Args list if they are available, otherwise use
         # the 'ntop' parameter
         result <- NULL
         nGene.cxds <- nTop
         if(!is.null(cxdsArgs[["ntop"]])) {
             nGene.cxds <- cxdsArgs[["ntop"]]
             cxdsArgs[["ntop"]] <- NULL
-        } 
+        }
         nGene.bcds <- nTop
         if(!is.null(bcdsArgs[["ntop"]])) {
             nGene.bcds <- bcdsArgs[["ntop"]]
             bcdsArgs[["ntop"]] <- NULL
         }
-        
+
         nGene <- min(nGene.cxds, nGene.bcds)
         while(!inherits(result, "SingleCellExperiment") & nGene > 0) {
           try({result <- withr::with_seed(seed, scds::cxds_bcds_hybrid(sce = sceSample,
@@ -352,7 +356,9 @@ runCxdsBcdsHybrid <- function(inSCE,
     }
 
     colData(inSCE)[, paste0("scds_", colnames(output))] <- NULL
-    
+    output$hybrid_call <- as.factor(output$hybrid_call)
+    levels(output$hybrid_call) <- list(Singlet = "FALSE", Doublet = "TRUE")
+
     colnames(output) <- paste0("scds_", colnames(output))
     colData(inSCE) = cbind(colData(inSCE), output)
 
