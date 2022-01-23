@@ -4,13 +4,13 @@
 \alias{getSampleSummaryStats}
 \title{Store table of SCTK QC outputs to metadata.}
 \usage{
-getSampleSummaryStats(inSCE, slot)
+getSampleSummaryStats(inSCE, statsName)
 }
 \arguments{
 \item{inSCE}{Input \linkS4class{SingleCellExperiment} object with saved
 \link{assay} data and/or \link{colData} data. Required.}
 
-\item{slot}{A \code{character} value indicating the slot
+\item{statsName}{A \code{character} value indicating the slot
 that stores the stats table within the metadata of the
 SingleCellExperiment object. Required.}
 }
@@ -27,5 +27,5 @@ data(scExample, package = "singleCellTK")
 sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 sce <- runCellQC(sce)
 sce <- sampleSummaryStats(sce, simple = FALSE)
-getSampleSummaryStats(sce, slot = "sctk_qc")
+getSampleSummaryStats(sce, statsName = "sctk_qc")
 }

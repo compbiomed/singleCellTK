@@ -182,7 +182,7 @@ sampleSummaryStats <- function(inSCE,
         return((signif(x,5)))
     })
 
-    inSCE <- setSampleSummaryStats(inSCE, slot = "sctk_qc",
+    inSCE <- setSampleSummaryStats(inSCE, statsName = "sctk_qc",
                                    stats = dfTableRes)
     return(inSCE)
 }
@@ -194,7 +194,7 @@ sampleSummaryStats <- function(inSCE,
 #'  QC algorithms within the metadata slot of the SingleCellExperiment object.
 #' @param inSCE Input \linkS4class{SingleCellExperiment} object with saved
 #' \link{assay} data and/or \link{colData} data. Required.
-#' @param slot A \code{character} value which specifies the
+#' @param statsName A \code{character} value which specifies the
 #' desired slot to store the stats table within the metadata of
 #' the SingleCellExperiment object. Required.
 #' @param stats Input stats table that will be stored within the
@@ -202,9 +202,9 @@ sampleSummaryStats <- function(inSCE,
 #' @return A SingleCellExperiment object with a summary table for QC statistics
 #' in the `sampleSummary` slot of metadata.
 setSampleSummaryStats <- function(inSCE,
-                                  slot,
+                                  statsName,
                                   stats){
-    inSCE@metadata$sctk$sampleSummary[[slot]] <- stats
+    inSCE@metadata$sctk$sampleSummary[[statsName]] <- stats
     return(inSCE)
 }
 
@@ -213,7 +213,7 @@ setSampleSummaryStats <- function(inSCE,
 #'  QC algorithms within the metadata slot of the SingleCellExperiment object.
 #' @param inSCE Input \linkS4class{SingleCellExperiment} object with saved
 #' \link{assay} data and/or \link{colData} data. Required.
-#' @param slot A \code{character} value indicating the slot
+#' @param statsName A \code{character} value indicating the slot
 #' that stores the stats table within the metadata of the
 #' SingleCellExperiment object. Required.
 #' @return A matrix/array object. Contains a summary table for QC statistics
@@ -224,14 +224,14 @@ setSampleSummaryStats <- function(inSCE,
 #' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 #' sce <- runCellQC(sce)
 #' sce <- sampleSummaryStats(sce, simple = FALSE)
-#' getSampleSummaryStats(sce, slot = "sctk_qc")
-getSampleSummaryStats <- function(inSCE, slot){
-    if(missing(slot)){ # If slot parameter is missing, then return first element.
+#' getSampleSummaryStats(sce, statsName = "sctk_qc")
+getSampleSummaryStats <- function(inSCE, statsName){
+    if(missing(statsName)){ # If statsName parameter is missing, then return first element.
         return(inSCE@metadata$sctk$sampleSummary[[1]])
     }
 
-    if(!is.null(inSCE@metadata$sctk$sampleSummary[[slot]])){
-        return(inSCE@metadata$sctk$sampleSummary[[slot]])
+    if(!is.null(inSCE@metadata$sctk$sampleSummary[[statsName]])){
+        return(inSCE@metadata$sctk$sampleSummary[[statsName]])
     }
     else{
         #Return error with message

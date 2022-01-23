@@ -5,13 +5,13 @@
 \title{Store table of SCTK QC outputs to metadata. Executed within
 `sampleSummaryStats` function.}
 \usage{
-setSampleSummaryStats(inSCE, slot, stats)
+setSampleSummaryStats(inSCE, statsName, stats)
 }
 \arguments{
 \item{inSCE}{Input \linkS4class{SingleCellExperiment} object with saved
 \link{assay} data and/or \link{colData} data. Required.}
 
-\item{slot}{A \code{character} value which specifies the
+\item{statsName}{A \code{character} value which specifies the
 desired slot to store the stats table within the metadata of
 the SingleCellExperiment object. Required.}
 

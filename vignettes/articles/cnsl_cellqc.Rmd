@@ -135,14 +135,14 @@ The function `sampleSummaryStats()` may be used to generate a table containing t
 
 ```{r sampleSummaryStats}
 pbmc.combined <- sampleSummaryStats(pbmc.combined, sample = sample.vector)
-getSampleSummaryStats(pbmc.combined, slot = "sctk_qc")
+getSampleSummaryStats(pbmc.combined, statsName = "sctk_qc")
 ```
 
 If users choose to generate a table for all QC metrics generated through `runCellQC()`, they may set the `simple` parameter to `FALSE`.
 
 ```{r sampleSummaryStatsQC}
 pbmc.combined <- sampleSummaryStats(pbmc.combined, sample = sample.vector, simple = FALSE)
-getSampleSummaryStats(pbmc.combined, slot = "sctk_qc")
+getSampleSummaryStats(pbmc.combined, statsName = "sctk_qc")
 ```
 
 ### Running individual QC methods

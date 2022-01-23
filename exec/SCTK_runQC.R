@@ -597,7 +597,7 @@ for(i in seq_along(process)) {
 
             ## generate QC metrics table for mergedFilteredSCE
             mergedFilteredSCE <- sampleSummaryStats(mergedFilteredSCE, simple=FALSE, sample = colData(mergedFilteredSCE)$sample) #colData(cellSCE)$Study_ID
-            QCsummary <- getSampleSummaryStats(mergedFilteredSCE, slot = "sctk_qc")
+            QCsummary <- getSampleSummaryStats(mergedFilteredSCE, statsName = "sctk_qc")
             write.csv(QCsummary, file.path(directory,
                                            samplename,
                                            paste0("SCTK_", samplename,'_cellQC_summary.csv')))
@@ -649,7 +649,7 @@ for(i in seq_along(process)) {
                          skip = c("scrublet", "runDecontX", "runBarcodeRanksMetaOutput"))
 
             mergedFilteredSCE <- sampleSummaryStats(mergedFilteredSCE, simple=FALSE, sample = colData(mergedFilteredSCE)$sample) #colData(cellSCE)$Study_ID
-            QCsummary <- getSampleSummaryStats(mergedFilteredSCE, slot = "sctk_qc")
+            QCsummary <- getSampleSummaryStats(mergedFilteredSCE, statsName = "sctk_qc")
             write.csv(QCsummary, file.path(directory,
                                            samplename,
                                            paste0("SCTK_", samplename,'_cellQC_summary.csv')))
@@ -722,7 +722,7 @@ if (!isTRUE(split)) {
 
         ## generate QC summary
         cellSCE <- sampleSummaryStats(cellSCE, simple=FALSE, sample = colData(cellSCE)$sample)
-        QCsummary <- getSampleSummaryStats(cellSCE, slot = "sctk_qc")
+        QCsummary <- getSampleSummaryStats(cellSCE, statsName = "sctk_qc")
         write.csv(QCsummary, file.path(directory,
                                        samplename,
                                        paste0("SCTK_", samplename,'_cellQC_summary.csv')))
@@ -771,7 +771,7 @@ if (!isTRUE(split)) {
         getSceParams(inSCE = cellSCE, directory = directory, samplename = samplename, writeYAML = TRUE)
 
         cellSCE <- sampleSummaryStats(cellSCE, simple=FALSE, sample = colData(cellSCE)$sample)
-        QCsummary <- getSampleSummaryStats(cellSCE, slot = "sctk_qc")
+        QCsummary <- getSampleSummaryStats(cellSCE, statsName = "sctk_qc")
         write.csv(QCsummary, file.path(directory,
                                        samplename,
                                        paste0("SCTK_", samplename,'_cellQC_summary.csv')))
