@@ -1430,7 +1430,7 @@ seuratGenePlot <- function(inSCE,
   else if(plotType == "dot"){
     return(Seurat::DotPlot(
       seuratObject,
-      features = features,
+      features = unique(features),
       split.by = splitBy))
   }
   else if(plotType == "heatmap"){

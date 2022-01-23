@@ -28,17 +28,9 @@ output:
 subtitle: "`r params$subtitle`"
 editor_options:
   chunk_output_type: console
-bibliography: references.bib
-csl: ieee.csl
 ---
-# Seurat Run
 
-## Introduction
-[**Seurat**](https://satijalab.org/seurat/) [@Butler2018][@Stuart2019][@Satija2017][@Hao2021] is an R package that offers a streamlined workflow to analyze single cell genomics data including quality control, normalization, exploration of data and differential expression (marker selection), all integrated within the same package and can be run through separate functions provided for each step of the workflow which offers multiple algorithms/methods for each of the task in the workflow. The **singleCellTK** offers use of this workflow with [SingleCellExperiment](https://bioconductor.org/packages/release/bioc/html/SingleCellExperiment.html) [@Amezquita2020] objects by providing wrapper functions to the methods available from Seurat. 
-
-## Setup
-We load the required libraries, read in the parameters and setup the variables to use with this analysis.
-```{r parameters, include = TRUE, message=FALSE, warning=FALSE}
+```{r parameters_setup, include = TRUE, message=FALSE, warning=FALSE, echo=FALSE}
 #Loading required libraries
 library(Seurat)
 library(dplyr)
@@ -68,9 +60,7 @@ sampleNames <- unique(colData(data)[[group]])
 outputPath <- params$outputPath
 showSession <- params$showSession
 pdf <- params$pdf
-```
 
-```{r Seurat setup, include=FALSE}
 # Knitr Global Options
 dev <- ifelse(isTRUE(pdf), c("png"), c("png", "pdf"))
 opts_chunk$set(
@@ -80,7 +70,8 @@ opts_chunk$set(
   cache.comments = FALSE,
   fig.align = "center",
   fig.keep = "all",
-  dev = dev
+  dev = dev,
+  warning = FALSE
 )
 
  Numofbarbodes <- ncol(data)
@@ -97,6 +88,11 @@ opts_chunk$set(
  sample_coord_ratio = h.w.mtx[,Numofsamples][1]/h.w.mtx[,Numofsamples][2]
 ```
 
+# Seurat Run
+
+## Introduction
+[Seurat](https://satijalab.org/seurat/) is an R package that offers a streamlined workflow for clustering single-cell genomic data an includes steps for normalization, dimensionality reduction, clustering, and marker selection. The singleCellTK package offers integration of Seurat functions with other single-cell packages and comprehensive reporting of the standard Seurat clustering workflow. The input data included **`r Numofmarkers`** features and **`r Numofbarbodes`** cells from **`r length(sampleNames)`** <br> sample(s). The parameters used in the workflow are summarized below:
+
 Number of Features/Genes/Markers: **`r Numofmarkers`** <br>
 Number of Samples/Cells: **`r Numofbarbodes`** <br>
 Selected Main Biological Group: **`r group`** <br>
@@ -105,10 +101,14 @@ Specified Custom Markers: **`r Pre_selected_markers`** <br>
 Selected # of Variable Features to detect: **`r seurat.selected.features.numbers`** <br>
 Selected # of PC: **`r initial.PC.numbers`** <br>
 Selected Resolution for Clustering: **`r seurat.selected.resolution`** <br>
+Sample Names: **`r sampleNames`** <br>
+
+The input data included XX features and XX cells from XX samples. The XX feature count matrix from the data was normalized using XX method which normalized as well as log-transformed the data. From XX total features, a subset of XX features that exhibited high cell-to-cell variation were selected for the downstream analysis to better capture the biological variation using XX feature selection method. This subset of features was then scaled using XX method and trimmed to a maximum value of 10. PCA was run on this scaled subset of features and XX components were selected for clustering. Using the XX algorithm with resolution set to XX, clustering was performed on the subset scaled features that identified XX clusters in the data, which were then used to run differential expression and identified XX genes differentially expressed between clusters. The gene markers that defined the main biological group XX were identified using XX test that highlighted XX marker genes at XX criteria.
 
 ## Normalization
-The global-scaling normalization method, "LogNormalize" was used to normalize the gene expression measurements for each cell by the total expression, multiplied by a scale factor of 10,000 (default), and log-transform the results.
-```{r Seurat Normalization, message=FALSE}
+The global-scaling normalization method, **LogNormalize** was applied to normalize the input raw data matrix **`r assayNames(data)[1]`**. This method normalizes the gene expression measurements for each cell by dividing the counts by the total expression, multiplies the result by a scaling factor of 10,000 (default), and finally applies the log-transformation to bring the data into log-scale.
+
+```{r Seurat Normalization, message=FALSE, warning=FALSE}
 normalizeParams <- list(
   inSCE = data,
   normalizationMethod = "LogNormalize",
@@ -122,14 +122,12 @@ normalizeParams$inSCE <- NULL
 metadata(data)$seurat$sctk$report$normalizeParams <- normalizeParams
 ```
 
-The selected assay **`r assayNames(data)[1]`** was normalized using **LogNormalize** method and the output normalized assay was stored back into the input object to be used in the downstream analysis.
-
 ## Feature Selection
-A subset of features that exhibit high cell-to-cell variation in the dataset is calculated. By focusing on highly variable genes, we are able to better capture biological signal in single cell datasets.
-
-Highly variables genes for downstream analysis were found by calculating the average expression and dispersion for each gene, and group them together, to calculate z-scores for dispersion within each grouping in order to control for the relationship between variability and average expression ([Macosko et al.](http://www.cell.com/abstract/S0092-8674(15)00549-8)).
+To better capture the true biological signal in the data, a subset of XX number of features that exhibit high cell-to-cell variation are computed from the overall data using XX method. This method models the mean-to-variance relationship of the expression data by first computing log of mean and log of variance using loess and then standardizes the values using observed mean and expected variance. Finally, the overall variance of each feature is computed from the standardized values by clipping to a maximum value and ordering the features in the order of their variance.
 
 A scatter plot of standardized variance (y-axis) versus average expression (x-axis) for each of the gene is visualized below. Top 10 most variable genes are labeled with their gene symbols and the points (genes) highlighted in red are considered as highly variable genes.
+
+A total of **`r formatC(seurat.selected.features.numbers, format="d", big.mark=",")`** top variable genes were selected for downstream analysis using the **vst** method. The **standardized variance** to **average expression** plot is visualized above where the **top `r formatC(seurat.selected.features.numbers, format="d", big.mark=",")`** selected genes are highlighted in red and the **top 10** genes are labeled with their gene symbols. 
 
 ```{r Seurat Variable Genes, warning=FALSE}
 hvgParams <- list(
@@ -140,6 +138,9 @@ data <- do.call("seuratFindHVG", hvgParams)
 
 num.variable.genes <- length(seuratVariableFeatures(data))
 
+#remove this and test inside seuratFunction itself
+#names(data@metadata$seurat$obj@commands) <- c("seuratNormalizeData.RNA", "FindVariableFeatures.RNA")
+
 Labeled_Variable_data <- seuratPlotHVG(inSCE = data, labelPoints = 10)
 Labeled_Variable_data
 ```
@@ -149,11 +150,10 @@ hvgParams$labelPoints <- 10
 metadata(data)$seurat$sctk$report$hvgParams <- hvgParams
 ```
 
-A total of **`r formatC(num.variable.genes, format="d", big.mark=",")`** top variable genes were selected for downstream analysis using the **vst** method. The **standardized variance** to **average expression** plot is visualized above where the **top `r formatC(num.variable.genes, format="d", big.mark=",")`** selected genes are highlighted in red and the **top 10** genes are labeled with their gene symbols. 
-
 ## Scaling
-The previous step identifies and selects the top highly variable genes that represent the majority of the total variation (both biological and unwanted sources) in the dataset. As we intend to regress out the unwanted sources of the variation in the data and focus on the variation that most reflects the biological variability, we scale this variation with the expression level of the data. This approach shifts the mean expression for each gene across cells to 0, and scales the variance for expression of each gene across cells to 1.
-```{r Seurat Scaling Data}
+The data was scaled using **linear** transformation method. It was further **centered** and **trimmed** to a maximum value of **10** and stored back into the input data for downstream analysis.
+
+```{r Seurat Scaling Data, warning=FALSE}
 data <- seuratScaleData(inSCE = data, model = "linear", verbose = FALSE)
 ```
 ```{r, include=FALSE}
@@ -163,10 +163,10 @@ scaleParams <- list(
 metadata(data)$seurat$sctk$report$scaleParams <- scaleParams
 ```
 
-The data was scaled using **linear** transformation method. It was further **centered** and **trimmed** to a maximum value of **10** and stored back into the input data for downstream analysis.
-
 ## PCA {.tabset .tabset-fade}
-Now we perform **principal component analysis** on the scaled data using the variable genes as input. However, **determining how many components to include in the downstream analysis is an important step**. A resampling **JackStraw** procedure ([Macosko et al.](http://www.cell.com/abstract/S0092-8674(15)00549-8)) is implemented to randomly permute (100 times) PCA reruns on a subset of the data (1% by default) to construct a 'null distribution' of gene scores. To overcome the extensive technical noise in any single feature of the scRNA-seq data, Seurat clusters cells based on their PCA scores, with each principal component essentially representing a 'metafeature' that combines information across a correlated feature set. Another heuristic method of determining how many components to use is to look at the plot of the standard deviations of the principal components known as the **Elbow Plot**.
+PCA was applied to the scaled subset matrix that contained the XX top variable genes to transform the data into reduced dimensions for clustering in the downstream analysis. For this report, XX components were selected based on criteria described below.
+
+To select the number of principal components that should be used in the downstream analysis, JackStraw plot and Elbow plot are visualized below that can help in selection of the significant components that contain most of the variability. 
 
 ```{r Seurat PCAs, JackStraw and Elbow plot, warning=FALSE}
 pcaParams <- list(
@@ -185,11 +185,8 @@ jackStrawParams <- list(
 data <- do.call("seuratComputeJackStraw", jackStrawParams)
 ```
 
-
-Below we visualize the principal components from the PCA computation and see how much of heterogeneity is captured by each of the principal component and try to compute that how many of these components can be considered significant for downstream analysis.
-
 ### Elbow Plot {-}
-An Elbow Plot is plotted between the number of principal components (x-axis) and their standard deviation (y-axis), where a clear elbow between the components shows the cut-off for the components that should be selected as significant.
+An Elbow Plot is plotted between the principal components (x-axis) and their standard deviation (y-axis), where a clear elbow between the components highlights the cut-off for the no. of components that should be selected as significant for downstream analysis.
 ```{r Seurat PCAs, Elbow Plot, warning=FALSE}
 ElbowPlot <- seuratElbowPlot(
   inSCE = data,
@@ -201,6 +198,7 @@ ElbowPlot
 
 
 ### JackStraw Plot {-}
+JackStraw computes significance values for all genes in a all principal components and plots these genes as a QQ-plot for each PC and compares them with the uniform distribution (shown in dotted line). Overall p-values are also computed for each PC, where statistically significant principal components can be selected for downstream analysis. Visually, components that lie above the dotted uniform distribution line should be selected. 
 ```{r Seurat PCAs, JackStraw Plot, warning=FALSE}
 JackStrawPlot <- seuratJackStrawPlot(
   inSCE = data,
@@ -228,7 +226,7 @@ metadata(data)$seurat$sctk$report$pcaParams <- pcaParams
 
 
 ### PC Heatmap {-}
-The heatmap allows for easy exploration of the primary sources of heterogeneity. Both cells and features are ordered according to their PCA scores. This supervised analysis is still a valuable tool for exploring correlated feature sets.
+Heatmaps are plotted for each PC that highlight the primary sources of heterogeneity in terms of features/genes in the data. Both cells and features are ordered according to their PCA scores. The heatmap can be utilized to explore highly correlated feature sets in the data.
 
 ```{r Seurat PC Heatmap, fig.height = PC.separated.height, fig.width = 15, warning=FALSE}
 pcHeatmapParams <- list(
@@ -250,7 +248,6 @@ metadata(data)$seurat$plots$heatmap <- pcHeatmapParams
 
 ## {-}
 
-
 **Significant principal components will show a strong enrichment of genes with low p-values**, which can also be visualized as solid curve above the dashed line on the **Jackstraw plot** above. The PC cutoff could also be determined roughly by looking at where a clear elbow is depicted in the elbow plot. We use Jackstraw **P-value > 0.01** is used as the cutoff. The first **`r significant_PC`** principal components shown above appear to be significant, all well above the uniform distribution of p-values (dashed line) for each principal component. These **`r significant_PC`** principal components were determined to hold the true dimensionality of the dataset and will be used in the subsequent clustering analysis.
 
 ## Clustering
@@ -263,7 +260,7 @@ Seurat offers different non-linear dimensional reduction techniques including tS
 A **resolution parameter** is used for clustering in Seurat. This resolution sets the granularity of the clustering, with increased values leading to a greater number of clusters. The choice of resolution is slightly subjective and varies on the size of the dataset. Typically for larger datasets the optimal resolution often increases. The different clustering results are provided below using a set of different resolutions (ranging from 0.3 to 1.5) which can be visualized using tSNE and UMAP plots.
 
 #### tSNE {.tabset .tabset-fade -}
-We visualize the input dataset highlighted with cluster labels computed using multiple resolutions with tSNE that is considerably effective when data is high-dimensional and non-linear. More information on tSNE is provided in a separate section below.
+The input dataset is highlighted with cluster labels computed using multiple resolutions with tSNE that is considerably effective when data is high-dimensional and non-linear. More information on tSNE is provided in a separate section below.
 
 ##### RES 0.3 {-}
 ```{r Seurat tSNE resolution as 0.3, eval = TRUE, warning = FALSE, message=FALSE}
@@ -558,7 +555,7 @@ p2
 # Seurat Results
 
 ## Selected Resolution {.tabset .tabset-fade}
-Among different options of resolution above, a final resolution of **`r seurat.selected.resolution`** was chosen for downstream clustering to better reflect the data.
+From resolution options above, a final resolution of **`r seurat.selected.resolution`** was selected for downstream clustering to better reflect the data.
 
 ```{r Seurat Clustering, echo = TRUE, warning = FALSE}
 data <- seuratFindClusters(data, useReduction = "pca", resolution = seurat.selected.resolution, verbose = FALSE)
@@ -571,7 +568,7 @@ clusterParams <- list(
 metadata(data)$seurat$sctk$report$clusterParams <- clusterParams
 ```
 ### tSNE {.tabset .tabset-fade -}
-tSNE (Non-linear Dimensional Reduction) is a dimension reduction technique that places cells with similar local neighborhoods in high-dimensional space together in low-dimensional space. tSNE has been the default method for such task in the past years. Using default parameters, a final resolution of **`r seurat.selected.resolution`** and **`r significant_PC`** PCs was chosen to better reflect the data, visualized in the following tSNE.
+tSNE (Non-linear Dimensional Reduction) is a dimension reduction technique that places cells with similar local neighborhoods in high-dimensional space together in low-dimensional space. Using default parameters, a final resolution of **`r seurat.selected.resolution`** and **`r significant_PC`** PCs was chosen to better reflect the data, visualized in the following tSNE.
 
 ```{r Seurat selected tsne}
 data <- seuratRunTSNE(data, useReduction = "pca", dims = significant_PC)
@@ -621,7 +618,7 @@ for (i in 1:length(selected_phenotypes)){
 
 
 ### UMAP {.tabset .tabset-fade -}
-The uniform manifold approximation and projection(UMAP) are another dimension reduction techniques to visualize the cell clusters in a low-dimensional space. Comparing to formal tSNE techniques, UMAP was considered to provide faster run times, better reproducibility and more meaningful inter-clustering distances and relationships. Using default parameters, a final resolution of **`r seurat.selected.resolution`** and **`r significant_PC`** PCs was chosen to better reflect the data, visualized in the following UMAP.
+The uniform manifold approximation and projection(UMAP) is another dimension reduction techniques to visualize the cell clusters in a low-dimensional space. Using default parameters, a final resolution of **`r seurat.selected.resolution`** and **`r significant_PC`** PCs was chosen to better reflect the data, visualized in the following UMAP.
 
 ```{r Seurat UMAP selected resolution}
 data <- seuratRunUMAP(data, useReduction = "pca", dims = significant_PC, verbose = FALSE)
@@ -670,7 +667,7 @@ for (i in 1:length(selected_phenotypes)){
 Gene markers defining **`r group`** were identified via differential expression using the **Wilcoxon rank sum test**. **Differentially expressed genes** were determined by genes detected at a **minimum percentage of 25% in either of the two groups of cells** (clusters being compared), and requiring **a gene to be differentially expressed (on average) at a 25% threshold between the two groups**.
 
 ```{r DEG, message=FALSE}
-data <- seuratFindMarkers(data, allGroup = group, minPCT = 0.25, threshUse = 0.25,)
+data <- seuratFindMarkers(data, allGroup = group, minPCT = 0.25, threshUse = 0.25)
 data.markers <- metadata(data)$seuratMarkers
 
 write.csv(data.markers, file = paste0(outputPath, "DEGTableGroup", "-", gsub(" ", "_", Sys.Date()), ".csv"), row.names = FALSE)
@@ -692,14 +689,16 @@ template_inside <- "###### %s {-}
 space <- " 
 
 "
-top9 <- data.frame(data.markers %>% group_by(cluster) %>% top_n(9, avg_logFC))
-numClusters <- length(unique(data.markers$cluster))
+top9 <- data.frame(data.markers %>% group_by(cluster1) %>% top_n(9, avg_log2FC))
+numClusters <- length(unique(data.markers$cluster1))
 for (currentCluster in 1:(numClusters)) {
-  cat(sprintf(template, paste0("Cluster ", as.character(unique(data.markers$cluster))[currentCluster])))
+  cat(sprintf(template, paste0("Cluster ", as.character(unique(data.markers$cluster1))[currentCluster])))
   for (inside_count in 1:9){
     current_feature <- top9$gene.id[(9*currentCluster+inside_count)]
     cat(sprintf(template_inside, paste0(current_feature)))
-    print(seuratGenePlot(data, plotType = "feature", features = current_feature, groupVariable = group, ncol = 1, cols = c("grey", "blue")))
+    if(!is.na(current_feature)){
+      print(seuratGenePlot(data, plotType = "feature", features = current_feature, groupVariable = group, ncol = 1, cols = c("grey", "blue")))
+    }
     cat(space)
     }
   cat(space)
@@ -718,14 +717,16 @@ template_inside <- "###### %s {-}
 space <- " 
 
 "
-top9 <- data.frame(data.markers %>% group_by(cluster) %>% top_n(9, avg_logFC))
-numClusters <- length(unique(data.markers$cluster))
+top9 <- data.frame(data.markers %>% group_by(cluster1) %>% top_n(9, avg_log2FC))
+numClusters <- length(unique(data.markers$cluster1))
 for (currentCluster in 1:(numClusters)) {
-  cat(sprintf(template, paste0("Cluster ", as.character(unique(data.markers$cluster))[currentCluster])))
+  cat(sprintf(template, paste0("Cluster ", as.character(unique(data.markers$cluster1))[currentCluster])))
   for (inside_count in 1:9){
     current_feature <- top9$gene.id[(9*currentCluster+inside_count)]
     cat(sprintf(template_inside, paste0(current_feature)))
-    print(seuratGenePlot(data, plotType = "ridge", features = current_feature, groupVariable = group, ncol = 1, cols = c("grey", "blue")))
+    if(!is.na(current_feature)){
+          print(seuratGenePlot(data, plotType = "ridge", features = current_feature, groupVariable = group, ncol = 1, cols = c("grey", "blue")))
+    }
     cat(space)
     }
   cat(space)
@@ -743,14 +744,16 @@ template_inside <- "###### %s {-}
 space <- " 
 
 "
-top9 <- data.frame(data.markers %>% group_by(cluster) %>% top_n(9, avg_logFC))
-numClusters <- length(unique(data.markers$cluster))
+top9 <- data.frame(data.markers %>% group_by(cluster1) %>% top_n(9, avg_log2FC))
+numClusters <- length(unique(data.markers$cluster1))
 for (currentCluster in 1:(numClusters)) {
-  cat(sprintf(template, paste0("Cluster ", as.character(unique(data.markers$cluster))[currentCluster])))
+  cat(sprintf(template, paste0("Cluster ", as.character(unique(data.markers$cluster1))[currentCluster])))
   for (inside_count in 1:9){
     current_feature <- top9$gene.id[(9*currentCluster+inside_count)]
     cat(sprintf(template_inside, paste0(current_feature)))
-    print(seuratGenePlot(data, plotType = "violin", features = current_feature, groupVariable = group, ncol = 1, cols = c("grey", "blue")))
+    if(!is.na(current_feature)){
+          print(seuratGenePlot(data, plotType = "violin", features = current_feature, groupVariable = group, ncol = 1, cols = c("grey", "blue")))
+    }
     cat(space)
     }
   cat(space)
@@ -761,7 +764,7 @@ for (currentCluster in 1:(numClusters)) {
 #### Dot Plot {-}
 A **dot plot** visualizes the **change in the expression levels** of a particular **gene marker in all cells of the data** separated by **group** in the form of dots where the color of the dots indicate the expression level of that gene in a class and the size of the dot indicates the total percentage of the cells in that class.
 ```{r DEG DotPlot, fig.width=15, fig.height=8}
-top9 <- data.frame(data.markers %>% group_by(cluster) %>% top_n(9, avg_logFC))
+top9 <- data.frame(data.markers %>% group_by(cluster1) %>% top_n(9, avg_log2FC))
 top9 <- top9$gene.id
 seuratGenePlot(data, plotType = "dot", features = top9, groupVariable = group, ncol = 1, cols = c("grey", "blue")) + theme(axis.text.x = element_text(angle = 90, size = 7), legend.text = element_text(size = 8), legend.key.size = unit(0.4, "cm"), legend.position = "top")
 ```
@@ -769,7 +772,7 @@ seuratGenePlot(data, plotType = "dot", features = top9, groupVariable = group, n
 #### Heatmap Plot {-}
 
 ```{r DEG HeatmapPlot, fig.width=15, fig.height=15}
-top9DF <- data.frame(data.markers %>% group_by(cluster) %>% top_n(9, avg_logFC))
+top9DF <- data.frame(data.markers %>% group_by(cluster1) %>% top_n(9, avg_log2FC))
 top9 <- top9DF$gene.id
 groupHeatmapParams <- list(inSCE = data,
                            plotType = "heatmap", 
@@ -796,9 +799,9 @@ List of top **10** genes for each group are listed below.
 
 ```{r Seurat Top Markers by group Table, echo = FALSE, results='asis'}
 # Top genes table
-top5 <- data.frame(data.markers %>% group_by(cluster) %>% top_n(5, avg_logFC))
-top10 <- data.frame(data.markers %>% group_by(cluster) %>% top_n(10, avg_logFC))
-top_all <- data.frame(data.markers %>% group_by(cluster))
+top5 <- data.frame(data.markers %>% group_by(cluster1) %>% top_n(5, avg_log2FC))
+top10 <- data.frame(data.markers %>% group_by(cluster1) %>% top_n(10, avg_log2FC))
+top_all <- data.frame(data.markers %>% group_by(cluster1))
 
 write.csv(top10, file = paste0(outputPath, "DEGTableGroupTop10", "-", gsub(" ", "_", Sys.Date()), ".csv"), row.names = FALSE)
 
@@ -833,14 +836,16 @@ template_inside <- "###### %s {-}
 space <- " 
 
 "
-top9 <- data.frame(data.markers %>% group_by(cluster) %>% top_n(9, avg_logFC))
+top9 <- data.frame(data.markers %>% group_by(cluster) %>% top_n(9, avg_log2FC))
 numClusters <- length(unique(data.markers$cluster))
 for (currentCluster in 1:(numClusters)) {
   cat(sprintf(template, paste0("Cluster ", as.character(unique(data.markers$cluster))[currentCluster])))
   for (inside_count in 1:9){
     current_feature <- top9$gene.id[(9*currentCluster+inside_count)]
     cat(sprintf(template_inside, paste0(current_feature)))
-    print(seuratGenePlot(data, plotType = "feature", features = current_feature, groupVariable = paste0("Seurat_louvain_Resolution", seurat.selected.resolution), ncol = 1, cols = c("grey", "blue")))
+        if(!is.na(current_feature)){
+              print(seuratGenePlot(data, plotType = "feature", features = current_feature, groupVariable = paste0("Seurat_louvain_Resolution", seurat.selected.resolution), ncol = 1, cols = c("grey", "blue")))
+        }
     cat(space)
     }
   cat(space)
@@ -859,14 +864,16 @@ template_inside <- "###### %s {-}
 space <- " 
 
 "
-top9 <- data.frame(data.markers %>% group_by(cluster) %>% top_n(9, avg_logFC))
+top9 <- data.frame(data.markers %>% group_by(cluster) %>% top_n(9, avg_log2FC))
 numClusters <- length(unique(data.markers$cluster))
 for (currentCluster in 1:(numClusters)) {
   cat(sprintf(template, paste0("Cluster ", as.character(unique(data.markers$cluster))[currentCluster])))
   for (inside_count in 1:9){
     current_feature <- top9$gene.id[(9*currentCluster+inside_count)]
     cat(sprintf(template_inside, paste0(current_feature)))
-    print(seuratGenePlot(data, plotType = "ridge", features = current_feature, groupVariable = paste0("Seurat_louvain_Resolution", seurat.selected.resolution), ncol = 1, cols = c("grey", "blue")))
+            if(!is.na(current_feature)){
+                  print(seuratGenePlot(data, plotType = "ridge", features = current_feature, groupVariable = paste0("Seurat_louvain_Resolution", seurat.selected.resolution), ncol = 1, cols = c("grey", "blue")))
+            }
     cat(space)
     }
   cat(space)
@@ -884,14 +891,16 @@ template_inside <- "###### %s {-}
 space <- " 
 
 "
-top9 <- data.frame(data.markers %>% group_by(cluster) %>% top_n(9, avg_logFC))
+top9 <- data.frame(data.markers %>% group_by(cluster) %>% top_n(9, avg_log2FC))
 numClusters <- length(unique(data.markers$cluster))
 for (currentCluster in 1:(numClusters)) {
   cat(sprintf(template, paste0("Cluster ", as.character(unique(data.markers$cluster))[currentCluster])))
   for (inside_count in 1:9){
     current_feature <- top9$gene.id[(9*currentCluster+inside_count)]
     cat(sprintf(template_inside, paste0(current_feature)))
-    print(seuratGenePlot(data, plotType = "violin", features = current_feature, groupVariable = paste0("Seurat_louvain_Resolution", seurat.selected.resolution), ncol = 1, cols = c("grey", "blue")))
+                if(!is.na(current_feature)){
+                      print(seuratGenePlot(data, plotType = "violin", features = current_feature, groupVariable = paste0("Seurat_louvain_Resolution", seurat.selected.resolution), ncol = 1, cols = c("grey", "blue")))
+                }
     cat(space)
     }
   cat(space)
@@ -902,7 +911,7 @@ for (currentCluster in 1:(numClusters)) {
 #### Dot Plot {-}
 A **dot plot** visualizes the **change in the expression levels** of a particular **gene marker in all cells of the data** separated by **clusters** in the form of dots where the color of the dots indicate the expression level of that gene in a cluster and the size of the dot indicates the total percentage of the cells in that cluster.
 ```{r DEG Clusters Dotplot, fig.width=15, fig.height=8}
-top9 <- data.frame(data.markers %>% group_by(cluster) %>% top_n(9, avg_logFC))
+top9 <- data.frame(data.markers %>% group_by(cluster) %>% top_n(9, avg_log2FC))
 top9 <- top9$gene.id
 seuratGenePlot(data, plotType = "dot", features = top9, groupVariable = paste0("Seurat_louvain_Resolution", seurat.selected.resolution), ncol = 1, cols = c("grey", "blue")) + theme(axis.text.x = element_text(angle = 90, size = 7), legend.text = element_text(size = 8), legend.key.size = unit(0.4, "cm"), legend.position = "top")
 ```
@@ -910,7 +919,7 @@ seuratGenePlot(data, plotType = "dot", features = top9, groupVariable = paste0("
 #### Heatmap Plot {-}
 
 ```{r DEG Clusters HeatmapPlot, fig.width=15, fig.height=15}
-top9 <- data.frame(data.markers %>% group_by(cluster) %>% top_n(9, avg_logFC))
+top9 <- data.frame(data.markers %>% group_by(cluster) %>% top_n(9, avg_log2FC))
 top9 <- top9$gene.id
 seuratGenePlot(data, plotType = "heatmap", features = top9, groupVariable = paste0("Seurat_louvain_Resolution", seurat.selected.resolution), ncol = 1, cols = c("grey", "blue")) + theme(axis.text.y = element_text(size = 8), legend.text = element_text(size = 8), legend.key.size = unit(0.5, "cm"), legend.position = "top")
 ```
@@ -922,8 +931,8 @@ List of top **10** genes for each clusters are listed below.
 
 ```{r Seurat Top Markers by cluster Table, echo = FALSE, results='asis'}
 # Top genes table
-top5 <- data.frame(data.markers %>% group_by(cluster) %>% top_n(5, avg_logFC))
-top10 <- data.frame(data.markers %>% group_by(cluster) %>% top_n(10, avg_logFC))
+top5 <- data.frame(data.markers %>% group_by(cluster) %>% top_n(5, avg_log2FC))
+top10 <- data.frame(data.markers %>% group_by(cluster) %>% top_n(10, avg_log2FC))
 top_all <- data.frame(data.markers %>% group_by(cluster))
 
 write.csv(top10, file = paste0(outputPath, "DEGTableClustersTop10", "-", gsub(" ", "_", Sys.Date()), ".csv"), row.names = FALSE)
@@ -1003,7 +1012,7 @@ saveRDS(data, paste0(outputPath, "SCE_SeuratReport", "-", gsub(" ", "_", Sys.Dat
 ## Summary
 The analysis of single cell data was performed by Seurat package. Firstly the data was normalized using LogNormalize method, variable features were identified using vst method and the data was then scaled using linear transformation method. PCA analysis was performed on the data and clustering was performed using multiple resolutions. The clusters were visualized using tSNE/UMAP methods and differential expression (marker selection) was run on the data. Gene marker plots were used to visualize the top genes sorted by adjusted p values. The figures, tables and the output SCE object were stored in the working directory which can be further visualized. The output object can be imported into the sctk shiny application to visualize and modify the workflow using the user interface.
 
-# Session Information {-}
+# Session Information
 ```{r session, eval = showSession, echo = showSession}
 sessionInfo()
 ```

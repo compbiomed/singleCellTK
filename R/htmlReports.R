@@ -229,9 +229,9 @@ reportFindMarker <- function(inSCE, output_file = NULL, output_dir = NULL) {
 #'  rendered HTML file. If \code{NULL} the file is stored to the current
 #'  working directory.
 #' @param subtitle A \code{character} value specifying the subtitle to use in the
-#'  Seurat report.
+#'  Seurat report. Default \code{NULL}.
 #' @param authors A \code{character} value specifying the names of the authors
-#'  to use in the Seurat report.
+#'  to use in the Seurat report. Default \code{NULL}.
 #' @param sce A \code{character} value specifying the path of the input
 #'  \code{SingleCellExperiment} object.
 #' @param biological.group A character value that specifies the name of the
@@ -260,8 +260,8 @@ reportFindMarker <- function(inSCE, output_file = NULL, output_dir = NULL) {
 seuratReport <- function(inSCE,
                          outputFile = NULL,
                          outputDir = NULL,
-                         subtitle = "BUMC Single Cell Sequencing Core",
-                         authors = "Tianmu (Timo) Hu, Irzam Sarfraz",
+                         subtitle = NULL,
+                         authors =  NULL,
                          sce = NULL,
                          biological.group = NULL,
                          phenotype.groups = NULL,

@@ -398,6 +398,15 @@
             class = class,
             delayedArray = delayedArray)
         res[[i]] <- scei
+        
+        # Load Cell Ranger Summary from CSV
+        metrics_summary <- list.files(pattern="*metrics_summary.csv$", path = paste0(samplePaths[i], "/outs"), full.names = TRUE)
+        if(length(metrics_summary) > 0){
+          metrics_summary <- lapply(metrics_summary, read.csv)
+        }
+        
+        # Store Cell Ranger Summary into SCE
+        res[[i]] <- setSampleSummaryStats(res[[i]], "cellranger", metrics_summary)
     }
 
     sce <- do.call(SingleCellExperiment::cbind, res)
@@ -409,6 +418,7 @@
         }
         sce <- dedupRowNames(sce)
     }
+    
     return(sce)
 }
 
