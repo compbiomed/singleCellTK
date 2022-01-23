@@ -20,14 +20,17 @@ basic QC stats (ex. library size), or to generate a summary table of all
 QC stats stored in the inSCE.}
 }
 \value{
-A matrix/array object.
+A SingleCellExperiment object with a summary table for QC statistics
+in the `sampleSummary` slot of metadata.
 }
 \description{
 Creates a table of QC metrics generated from
- QC algorithms via either kable or csv file.
+ QC algorithms, which is stored within the metadata slot of the
+ input SingleCellExperiment object.
 }
 \examples{
 data(scExample, package = "singleCellTK")
 sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
-sampleSummaryStats(sce, simple = TRUE)
+sce <- sampleSummaryStats(sce, simple = TRUE)
+getSampleSummaryStats(sce)
 }

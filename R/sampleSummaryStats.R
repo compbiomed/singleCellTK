@@ -2,7 +2,7 @@
                                 simple = TRUE){
 
     metrics <- c("Number of Cells")
-    values <- c(ncol(inSCE))
+    values <- c(as.integer(ncol(inSCE)))
 
     if ("sum" %in% colnames(SummarizedExperiment::colData(inSCE))) {
         metrics <- c(metrics, "Mean counts", "Median counts")
@@ -107,7 +107,8 @@
 
 #' @title Generate table of SCTK QC outputs.
 #' @description  Creates a table of QC metrics generated from
-#'  QC algorithms via either kable or csv file.
+#'  QC algorithms, which is stored within the metadata slot of the
+#'  input SingleCellExperiment object.
 #' @param inSCE Input \linkS4class{SingleCellExperiment} object with saved
 #' \link{assay} data and/or \link{colData} data. Required.
 #' @param sample Character vector. Indicates which sample each cell belongs to.
@@ -116,11 +117,13 @@
 #' @param simple Boolean. Indicates whether to generate a table of only
 #' basic QC stats (ex. library size), or to generate a summary table of all
 #' QC stats stored in the inSCE.
-#' @return A matrix/array object.
+#' @return A SingleCellExperiment object with a summary table for QC statistics
+#' in the `sampleSummary` slot of metadata.
 #' @examples
 #' data(scExample, package = "singleCellTK")
 #' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
-#' sampleSummaryStats(sce, simple = TRUE)
+#' sce <- sampleSummaryStats(sce, simple = TRUE)
+#' getSampleSummaryStats(sce)
 #' @importFrom magrittr %>%
 #' @export
 sampleSummaryStats <- function(inSCE,
@@ -179,5 +182,60 @@ sampleSummaryStats <- function(inSCE,
         return((signif(x,5)))
     })
 
-    return(dfTableRes)
+    inSCE <- setSampleSummaryStats(inSCE, slot = "sctk_qc",
+                                   stats = dfTableRes)
+    return(inSCE)
+}
+
+
+#' @title Store table of SCTK QC outputs to metadata. Executed within
+#' `sampleSummaryStats` function.
+#' @description  Stores a table of QC metrics generated from
+#'  QC algorithms within the metadata slot of the SingleCellExperiment object.
+#' @param inSCE Input \linkS4class{SingleCellExperiment} object with saved
+#' \link{assay} data and/or \link{colData} data. Required.
+#' @param slot A \code{character} value which specifies the
+#' desired slot to store the stats table within the metadata of
+#' the SingleCellExperiment object. Required.
+#' @param stats Input stats table that will be stored within the
+#' SingleCellExperiment object. Required.
+#' @return A SingleCellExperiment object with a summary table for QC statistics
+#' in the `sampleSummary` slot of metadata.
+setSampleSummaryStats <- function(inSCE,
+                                  slot,
+                                  stats){
+    inSCE@metadata$sctk$sampleSummary[[slot]] <- stats
+    return(inSCE)
+}
+
+#' @title Store table of SCTK QC outputs to metadata.
+#' @description  Stores a table of QC metrics generated from
+#'  QC algorithms within the metadata slot of the SingleCellExperiment object.
+#' @param inSCE Input \linkS4class{SingleCellExperiment} object with saved
+#' \link{assay} data and/or \link{colData} data. Required.
+#' @param slot A \code{character} value indicating the slot
+#' that stores the stats table within the metadata of the
+#' SingleCellExperiment object. Required.
+#' @return A matrix/array object. Contains a summary table for QC statistics
+#' generated from SingleCellTK.
+#' @export
+#' @examples
+#' data(scExample, package = "singleCellTK")
+#' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
+#' sce <- runCellQC(sce)
+#' sce <- sampleSummaryStats(sce, simple = FALSE)
+#' getSampleSummaryStats(sce, slot = "sctk_qc")
+getSampleSummaryStats <- function(inSCE, slot){
+    if(missing(slot)){ # If slot parameter is missing, then return first element.
+        return(inSCE@metadata$sctk$sampleSummary[[1]])
+    }
+
+    if(!is.null(inSCE@metadata$sctk$sampleSummary[[slot]])){
+        return(inSCE@metadata$sctk$sampleSummary[[slot]])
+    }
+    else{
+        #Return error with message
+        stop("Please run the `sampleSummaryStats` function first to generate
+             the QC statistics summary table.")
+    }
 }

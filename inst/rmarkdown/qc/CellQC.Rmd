@@ -139,10 +139,11 @@ description_runPerCellQC <- descriptionRunPerCellQC()
 ```{r "SummaryStats", echo = FALSE, results="asis", fig.align="center", warning=FALSE, message=FALSE}
 cat("\n")
 
-summaryTable <- sampleSummaryStats(inSCE = sce.qc, 
+sce.qc <- sampleSummaryStats(inSCE = sce.qc, 
                                    sample = sceSample,
                                    simple = FALSE)
 
+summaryTable <- getSampleSummaryStats(sce.qc, slot = "sctk_qc")
 cat(apply(summaryTable, 1:2, as.character) %>% 
     knitr::kable(format = "html") %>%
       kableExtra::kable_styling() %>%
