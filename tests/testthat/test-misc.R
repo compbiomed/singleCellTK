@@ -15,7 +15,7 @@ test_that(desc = "Testing sampleSummaryStats", {
   data(scExample)
   sce <- sampleSummaryStats(sce, simple = FALSE)
   expect_true("sctk" %in% names(metadata(sce)))
-  expect_is(metadata(sce)$sctk$sample_summary$sctk_qc,
+  expect_is(metadata(sce)$sctk$sampleSummary$sctk_qc,
             "matrix")
   expect_is(getSampleSummaryStats(sce, slot = "sctk_qc"),
             "matrix")
