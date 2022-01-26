@@ -1,3 +1,36 @@
+#' @export
+setGeneric("sampleSummaryStatsTable", function(inSCE, ...) standardGeneric("sampleSummaryStatsTable"))
+
+#' @export
+setGeneric("sampleSummaryStatsTable<-", function(inSCE, ..., value) standardGeneric("sampleSummaryStatsTable<-"))
+
+#' @export
+setMethod("sampleSummaryStatsTable", "SingleCellExperiment", function(inSCE, statsName, ...){
+    return(inSCE@metadata$sctk$sampleSummary[[statsName]])
+})
+
+#' @rdname sampleSummaryStatsTable
+#' @title Stores and returns table of SCTK QC outputs to metadata.
+#' @description  Stores and returns table of QC metrics generated from
+#'  QC algorithms within the metadata slot of the SingleCellExperiment object.
+#' @param inSCE Input \linkS4class{SingleCellExperiment} object with saved
+#' \link{assay} data and/or \link{colData} data. Required.
+#' @param statsName A \code{character} value indicating the slot
+#' that stores the stats table within the metadata of the
+#' SingleCellExperiment object. Required.
+#' @return A matrix/array object. Contains a summary table for QC statistics
+#' generated from SingleCellTK.
+#' @examples
+#' data(scExample, package = "singleCellTK")
+#' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
+#' sce <- sampleSummaryStats(sce, simple = TRUE)
+#' sampleSummaryStatsTable(sce, statsName = "sctk_qc")
+#' @export
+setReplaceMethod("sampleSummaryStatsTable", c("SingleCellExperiment", "ANY"), function(inSCE, statsName, ..., value) {
+    inSCE@metadata$sctk$sampleSummary[[statsName]] <- value
+    return(inSCE)
+})
+
 .sampleSummaryStats <- function(inSCE, colName = "Total",
                                 simple = TRUE){
 
@@ -123,7 +156,7 @@
 #' data(scExample, package = "singleCellTK")
 #' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 #' sce <- sampleSummaryStats(sce, simple = TRUE)
-#' getSampleSummaryStats(sce)
+#' sampleSummaryStatsTable(sce)
 #' @importFrom magrittr %>%
 #' @export
 sampleSummaryStats <- function(inSCE,
@@ -182,60 +215,6 @@ sampleSummaryStats <- function(inSCE,
         return((signif(x,5)))
     })
 
-    inSCE <- setSampleSummaryStats(inSCE, statsName = "sctk_qc",
-                                   stats = dfTableRes)
+    sampleSummaryStatsTable(inSCE, statsName = "sctk_qc") <- dfTableRes
     return(inSCE)
-}
-
-
-#' @title Store table of SCTK QC outputs to metadata. Executed within
-#' `sampleSummaryStats` function.
-#' @description  Stores a table of QC metrics generated from
-#'  QC algorithms within the metadata slot of the SingleCellExperiment object.
-#' @param inSCE Input \linkS4class{SingleCellExperiment} object with saved
-#' \link{assay} data and/or \link{colData} data. Required.
-#' @param statsName A \code{character} value which specifies the
-#' desired slot to store the stats table within the metadata of
-#' the SingleCellExperiment object. Required.
-#' @param stats Input stats table that will be stored within the
-#' SingleCellExperiment object. Required.
-#' @return A SingleCellExperiment object with a summary table for QC statistics
-#' in the `sampleSummary` slot of metadata.
-setSampleSummaryStats <- function(inSCE,
-                                  statsName,
-                                  stats){
-    inSCE@metadata$sctk$sampleSummary[[statsName]] <- stats
-    return(inSCE)
-}
-
-#' @title Store table of SCTK QC outputs to metadata.
-#' @description  Stores a table of QC metrics generated from
-#'  QC algorithms within the metadata slot of the SingleCellExperiment object.
-#' @param inSCE Input \linkS4class{SingleCellExperiment} object with saved
-#' \link{assay} data and/or \link{colData} data. Required.
-#' @param statsName A \code{character} value indicating the slot
-#' that stores the stats table within the metadata of the
-#' SingleCellExperiment object. Required.
-#' @return A matrix/array object. Contains a summary table for QC statistics
-#' generated from SingleCellTK.
-#' @export
-#' @examples
-#' data(scExample, package = "singleCellTK")
-#' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
-#' sce <- runCellQC(sce)
-#' sce <- sampleSummaryStats(sce, simple = FALSE)
-#' getSampleSummaryStats(sce, statsName = "sctk_qc")
-getSampleSummaryStats <- function(inSCE, statsName){
-    if(missing(statsName)){ # If statsName parameter is missing, then return first element.
-        return(inSCE@metadata$sctk$sampleSummary[[1]])
-    }
-
-    if(!is.null(inSCE@metadata$sctk$sampleSummary[[statsName]])){
-        return(inSCE@metadata$sctk$sampleSummary[[statsName]])
-    }
-    else{
-        #Return error with message
-        stop("Please run the `sampleSummaryStats` function first to generate
-             the QC statistics summary table.")
-    }
 }

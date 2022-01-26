@@ -32,5 +32,5 @@ Creates a table of QC metrics generated from
 data(scExample, package = "singleCellTK")
 sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 sce <- sampleSummaryStats(sce, simple = TRUE)
-getSampleSummaryStats(sce)
+sampleSummaryStatsTable(sce)
 }
