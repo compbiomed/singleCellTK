@@ -4,7 +4,13 @@
 \alias{sampleSummaryStats}
 \title{Generate table of SCTK QC outputs.}
 \usage{
-sampleSummaryStats(inSCE, sample = NULL, useAssay = "counts", simple = TRUE)
+sampleSummaryStats(
+  inSCE,
+  sample = NULL,
+  useAssay = "counts",
+  simple = TRUE,
+  statsName = "qc_table"
+)
 }
 \arguments{
 \item{inSCE}{Input \linkS4class{SingleCellExperiment} object with saved
@@ -18,6 +24,9 @@ sampleSummaryStats(inSCE, sample = NULL, useAssay = "counts", simple = TRUE)
 \item{simple}{Boolean. Indicates whether to generate a table of only
 basic QC stats (ex. library size), or to generate a summary table of all
 QC stats stored in the inSCE.}
+
+\item{statsName}{Character. The name of the slot that will store the
+QC stat table. Default "qc_table".}
 }
 \value{
 A SingleCellExperiment object with a summary table for QC statistics
