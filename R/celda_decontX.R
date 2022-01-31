@@ -9,6 +9,22 @@
 #' each sample separately.
 #' @param useAssay  A string specifying which assay in the SCE to use. Default
 #' 'counts'.
+#' @param background A \link[SingleCellExperiment]{SingleCellExperiment}
+#' with the matrix ocated in the assay slot under \code{assayName}. It should have 
+#' the same structure as x except it contains the matrix of empty droplets instead 
+#' of cells. When supplied, empirical distribution of transcripts from these 
+#' empty droplets will be used as the contamination distribution. Default NULL.
+#' @param bgAssayName Character. Name of the assay to use if background is a 
+#' \link[SingleCellExperiment]{SingleCellExperiment}. If NULL, the function
+#' will use the same value as \code{useAssay}. Default is NULL. 
+#' @param bgBatch Batch labels for \code{background}. If \code{background} is a 
+#' \link[SingleCellExperiment]{SingleCellExperiment} object, this can be a single 
+#' character specifying a name that can be found in \code{colData(background)} 
+#' to directly use the barcode annotation; or a numeric / character vector that has  
+#' as many elements as barcodes to indicate which sample each barcode belongs to. Its 
+#' unique values should be the same as those in \code{sample}, such that each 
+#' batch of cells have their corresponding batch of empty droplets as background, 
+#' pointed by this parameter. Default to NULL.
 #' @param z Numeric or character vector. Cell cluster labels. If NULL,
 #' PCA will be used to reduce the dimensionality of the dataset initially,
 #' '\link[uwot]{umap}' from the 'uwot' package
@@ -64,6 +80,9 @@
 runDecontX <- function(inSCE,
     sample = NULL,
     useAssay = "counts",
+    background = NULL,
+    bgAssayName = NULL,
+    bgBatch = NULL,
     z = NULL,
     maxIter = 500,
     delta = c(10, 10),
@@ -81,7 +100,7 @@ runDecontX <- function(inSCE,
   if(!is.null(sample)) {
     if (length(sample) == 1) {
       if (!sample %in% names(SummarizedExperiment::colData(inSCE))) {
-        stop("Specified Sample variable not found in colData.")
+        stop("Specified Sample variable not found in colData")
       }
       sample <- SummarizedExperiment::colData(inSCE)[[sample]]
     } else if(length(sample) != ncol(inSCE)) {
@@ -91,6 +110,27 @@ runDecontX <- function(inSCE,
       sample <- as.character(sample)
     }
   }
+
+
+
+  if(!is.null(bgBatch)) {
+    ### Background must be a SCE object if the input of count is in SCE object. Required by celda::decontX. 
+    if (!is(background, 'SingleCellExperiment')) {
+      stop("'background' is not a SingleCellExperiment object")
+    }
+
+    ### check whether variable can be found in colData.
+    if (length(bgBatch) == 1) { # & is(background, 'SingleCellExperiment')
+      if (!bgBatch %in% names(SummarizedExperiment::colData(background))) {
+        stop("Specified bgBatch variable not found in colData")
+      }
+      bgBatch <- SummarizedExperiment::colData(background)[[bgBatch]]
+    } else if (length(bgBatch) != ncol(background)) {
+      stop("'bgBatch' must be the same length as the number of columns in 'background'")      
+    }
+  }
+
+
 
   message(paste0(date(), " ... Running 'DecontX'"))
 
@@ -104,6 +144,9 @@ runDecontX <- function(inSCE,
   inSCE <- celda::decontX(x = inSCE,
                           batch = sample,
                           assayName = useAssay,
+                          background = background,
+                          bgAssayName = bgAssayName,
+                          bgBatch = bgBatch,
                           z = z,
                           maxIter = maxIter,
                           delta = delta,
