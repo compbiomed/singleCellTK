@@ -3508,7 +3508,6 @@ shinyServer(function(input, output, session) {
         plotlyOutput(outputId = "plot_modsplit_perp", height = "auto")
       )
     ))
-    
     withBusyIndicatorServer("celdamodsplit",{
       if (input$celdafeatureselect == "None"){
         vals$counts <- selectFeatures(vals$counts, minCount = input$celdarowcountsmin,
@@ -3535,12 +3534,11 @@ shinyServer(function(input, output, session) {
         vals$counts <- selectFeatures(vals$counts[g, ], minCount = input$celdarowcountsmin,
                                       minCell = input$celdacolcountsmin, useAssay = input$celdaassayselect, altExpName = "featureSubset")
       }
-      counts(altExp(vals$counts)) <- as.matrix(counts(altExp(vals$counts)))
+      #counts(altExp(vals$counts)) <- as.matrix(counts(altExp(vals$counts)))
       updateNumericInput(session, "celdaLselect", min = input$celdaLinit, max = input$celdaLmax, value = input$celdaLinit)
       modsplit(recursiveSplitModule(vals$counts, useAssay = input$celdaassayselect, altExpName = "featureSubset",  initialL = input$celdaLinit, maxL = input$celdaLmax))
       output$plot_modsplit_perpdiff <- renderPlotly({plotRPC(modsplit(), sep = 10)})
       output$plot_modsplit_perp <- renderPlotly({plotGridSearchPerplexity(modsplit())})
-      
     })
 
     shinyjs::enable(
@@ -3981,6 +3979,51 @@ shinyServer(function(input, output, session) {
       shinyjs::show("continuousColorConditional")
     }
   })
+
+  testvar <- reactive({
+    event.data <- event_data("plotly_selected")
+    #curveNumber pointNumber x y
+    #pointnumbers <- event.data[["pointNumber"]]
+  })
+
+  observeEvent(input$subsetCelda, {
+    if(!is.null(vals$counts)){
+      copy <- vals$counts
+      if(!("featureSubset" %in% altExpNames(copy))){
+        copy <- selectFeatures(copy)
+      }
+      selection <- event_data("plotly_selected")
+      copy2 <- subsetSCECols(copy, index = testvar()$pointNumber)
+      clustersog <- celdaClusters(copy)[testvar()$pointNumber]
+      #copy2 <- subsetSCECols(copy, index = testvar())
+      maxclust <- max(celdaClusters(copy))
+      #celdaClusters(copy) <- 0
+      #celdaClusters(copy) <- celdaClusters(copy2)
+      #celdaClusters(copy)[testvar()$pointNumber] <- maxclust + 1
+      #celdaClusters(copy)[colnames(copy) %in% colnames(copy2)] <- clustersog
+      #celdaClusters(copy)[testvar()] <- 2
+      saveRDS(copy, "celdasubsettest.RDS")
+    }
+    #subset <- testvar()
+  })
+
+  observeEvent(input$subsetCelda2, {
+    if(!is.null(vals$counts)){
+      copy <- vals$counts
+      if(!("featureSubset" %in% altExpNames(copy))){
+        copy <- selectFeatures(copy)
+      }
+      selection <- event_data("plotly_selected")
+      #copy2 <- subsetSCECols(copy, index = testvar())
+      #maxclust <- max(celdaClusters(copy))
+      celdaClusters(copy) <- 1
+      celdaClusters(copy)[testvar()$pointNumber] <- 2
+      saveRDS(copy, "celdasubsettest2.RDS")
+    }
+    #subset <- testvar()
+  })
+
+  output$testprint <- renderText({as.character(testvar())})
 
   #-+-+-+-+-+-cellviewer prepare step1: choose data. (next steps included)###########################################################
   #cellviewer <- eventReactive(input$runCellViewer,{

@@ -127,7 +127,7 @@ runScrublet <- function(inSCE,
   if (!is.null(seed)) {
     reticulate::py_set_seed(seed = seed)
   }
-  
+
   tempSCE <- inSCE
   SummarizedExperiment::assayNames(inSCE)[which(useAssay %in% SummarizedExperiment::assayNames(inSCE))] <- "counts"
   useAssay <- "counts"
@@ -218,7 +218,7 @@ runScrublet <- function(inSCE,
 
     colData(inSCE)$scrublet_score <- NULL
     colData(inSCE)$scrublet_call <- NULL
-  
+
     colData(inSCE) = cbind(colData(inSCE), output)
   }, silent = TRUE)
 
@@ -229,6 +229,10 @@ runScrublet <- function(inSCE,
 
   inSCE@metadata$runScrublet <- argsList[-1]
 
+  ## convert doublet call from TRUE/FALSE to Singlet/Doublet
+  inSCE$scrublet_call <- as.factor(inSCE$scrublet_call)
+  levels(inSCE$scrublet_call) <- list(Singlet = "FALSE", Doublet = "TRUE")
+
   ## add scrublet version to metadata
   version <- pkg_resources$require("scrublet")[[1]]
   inSCE@metadata$scrublet$packageVersion <- version
@@ -238,7 +242,7 @@ runScrublet <- function(inSCE,
   tempSCE@colData <- inSCE@colData
   tempSCE@metadata <- inSCE@metadata
   reducedDims(tempSCE) <- reducedDims(inSCE)
-  
+
   return(tempSCE)
 }
 
