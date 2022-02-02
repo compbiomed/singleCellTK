@@ -290,7 +290,6 @@ shinyPanelCellViewer <- fluidPage(tags$div(
     wellPanel(
       h5(strong("Plotting Region")),
       plotlyOutput("scatter", height = "600px"),# %>% withSpinner(size = 3, color = "#0dc5c1", type = 8),
-
       tags$br(),
       # conditionalPanel("$('#scatter').hasClass('recalculating')",
       #                  tags$div('Your plot is loading, due to large manipulation.

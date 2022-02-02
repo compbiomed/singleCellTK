@@ -68,6 +68,7 @@ shinyPanelCelda <- fluidPage(
                         column(12,
                             hidden(
                                 tags$div(class = "celda_cellsplit_plots",
+                                    fluidRow(
                                     tabsetPanel(
                                     tabPanel("Rate of perplexity change",
                                                  panel(
@@ -79,11 +80,9 @@ shinyPanelCelda <- fluidPage(
                                                  plotlyOutput(outputId = "plot_cellsplit_perp", height = "auto")
                                              )
                                     ),
-                                    
                                     tabPanel("Preliminary UMAP Plots",
                                             uiOutput("celdaKplots")
                                     )
-                                )
                                 )
                             )
                         )
