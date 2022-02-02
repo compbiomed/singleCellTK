@@ -260,8 +260,8 @@ runSoupX <- function(inSCE,
                                  clusterName = "SoupX_cluster")
         })
         
-        sc = SoupX::setClusters(sc, setNames(inSCE$SoupX_cluster, 
-                                             colnames(inSCE)))
+        sc = SoupX::setClusters(sc, stats::setNames(inSCE$SoupX_cluster, 
+                                                    colnames(inSCE)))
     }
     
     sc <- SoupX::autoEstCont(sc, doPlot = FALSE, tfidfMin = tfidfMin, 
