@@ -77,6 +77,7 @@ Imports:
     shiny,
     shinyjs,
     SingleR,
+    SoupX,
     sva,
     reshape2,
     shinyalert,
