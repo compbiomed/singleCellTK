@@ -10,8 +10,8 @@
 #' @param useAssay  A string specifying which assay in the SCE to use. Default
 #' 'counts'.
 #' @param background A \link[SingleCellExperiment]{SingleCellExperiment}
-#' with the matrix ocated in the assay slot under \code{assayName}. It should have 
-#' the same structure as x except it contains the matrix of empty droplets instead 
+#' with the matrix located in the assay slot under \code{bgAssayName}. It should have 
+#' the same structure as inSCE except it contains the matrix of empty droplets instead 
 #' of cells. When supplied, empirical distribution of transcripts from these 
 #' empty droplets will be used as the contamination distribution. Default NULL.
 #' @param bgAssayName Character. Name of the assay to use if background is a 
@@ -111,8 +111,6 @@ runDecontX <- function(inSCE,
     }
   }
 
-
-
   if(!is.null(bgBatch)) {
     ### Background must be a SCE object if the input of count is in SCE object. Required by celda::decontX. 
     if (!is(background, 'SingleCellExperiment')) {
@@ -120,19 +118,39 @@ runDecontX <- function(inSCE,
     }
 
     ### check whether variable can be found in colData.
-    if (length(bgBatch) == 1) { # & is(background, 'SingleCellExperiment')
-      if (!bgBatch %in% names(SummarizedExperiment::colData(background))) {
+    if(length(bgBatch) == 1) { # & is(background, 'SingleCellExperiment')
+      if(!bgBatch %in% names(SummarizedExperiment::colData(background))) {
         stop("Specified bgBatch variable not found in colData")
       }
       bgBatch <- SummarizedExperiment::colData(background)[[bgBatch]]
-    } else if (length(bgBatch) != ncol(background)) {
+    } else if(length(bgBatch) != ncol(background)) {
       stop("'bgBatch' must be the same length as the number of columns in 'background'")      
     }
   }
 
-
-
   message(paste0(date(), " ... Running 'DecontX'"))
+
+  ## keep a copy of original decontX result, if there's any
+  oldColData <- NULL
+  oldColId <- grep('decontX_', colnames(SummarizedExperiment::colData(inSCE)))
+  if(length(oldColId) != 0) {
+    oldColData <- SummarizedExperiment::colData(inSCE)[, oldColId]
+    SummarizedExperiment::colData(inSCE)[oldColId] <- NULL
+  }
+
+  oldAssay <- NULL
+  oldAssayId <- grep('decontXcounts', SummarizedExperiment::assayNames(inSCE))
+  if(length(oldAssayId) != 0) {
+    oldAssay <- SummarizedExperiment::assays(inSCE)[oldAssayId]
+    SummarizedExperiment::assays(inSCE)[oldAssayId] <- NULL
+  }
+
+  oldDim<- NULL
+  oldDimId <- grep('decontX_', SingleCellExperiment::reducedDimNames(inSCE))
+  if(length(oldAssayId) != 0) {
+    oldDim <- SingleCellExperiment::reducedDims(inSCE)[oldDimId]
+    SingleCellExperiment::reducedDims(inSCE)[oldDimId] <- NULL
+  }
 
   rm.ix <- which(colSums(assay(inSCE, useAssay)) == 0)
   if(length(rm.ix) > 0){
@@ -160,10 +178,64 @@ runDecontX <- function(inSCE,
                           verbose = verbose)
 
   #argsList <- argsList[!names(argsList) %in% ("...")]
+  colId <- colnames(SummarizedExperiment::colData(inSCE)) %in% c('decontX_contamination', 'decontX_clusters')
+  newCol <- SummarizedExperiment::colData(inSCE)[colId]
+  SummarizedExperiment::colData(inSCE)[colId] <- NULL
 
+
+  assayId <- SummarizedExperiment::assayNames(inSCE) == "decontXcounts"
+  newAssay <- SummarizedExperiment::assays(inSCE)[assayId]
+  SummarizedExperiment::assays(inSCE)[assayId] <- NULL
+
+  DimId <- SingleCellExperiment::reducedDimNames(inSCE) == "decontX_UMAP"
+  newDim <- SingleCellExperiment::reducedDims(inSCE)[DimId]
+  SingleCellExperiment::reducedDims(inSCE)[DimId] <- NULL
+
+  ### merge inSCE to restore some cells that are removed by rm.ix
   if(length(rm.ix) > 0){
     inSCE <- mergeSCEColData(inSCE1 = inSCEOrig, inSCE2 = inSCE)
   }
+
+  ### update the decontX result, if there's any
+  
+  if(!is.null(background)) {
+    ## need to rename the colData if backgroud is supplied
+    colnames(newCol) <- paste(colnames(newCol), 'bg', sep = '_')
+    ## need to rename the assay name
+    names(newAssay) <- "decontXcounts_bg"
+    ## need to rename reducedDim
+    names(newDim) <- "decontX_UMAP_bg"
+  }
+
+  # update Assay
+  if(!is.null(oldAssay)) {
+    oldAssay[names(newAssay)] <- newAssay
+    finalAssay <- oldAssay
+  } else {
+    finalAssay <- newAssay
+  }
+
+  # update reducedDim
+  if(!is.null(oldDim)) {
+    oldDim[names(newDim)] <- newDim
+    finalDim <- oldDim
+  } else {
+    finalDim <- newDim
+  }
+
+  # update colData
+  if(!is.null(oldColData)) {
+    oldColData[, colnames(newCol)] <- newCol[rownames(oldColData), ]
+    finalCol <- oldColData    
+  } else {
+    finalCol <- newCol[colnames(inSCE), ]
+  }
+  
+  # store new result back to inSCE object
+  SummarizedExperiment::colData(inSCE)[colnames(finalCol)] <- finalCol
+  SummarizedExperiment::assays(inSCE)[names(finalAssay)] <- finalAssay
+  SingleCellExperiment::reducedDims(inSCE)[names(finalDim)] <- finalDim
+
   inSCE@metadata$runDecontX <- argsList[-1]
   inSCE@metadata$runDecontX$packageVersion <- utils::packageDescription("celda")$Version
   inSCE <- expSetDataTag(inSCE, "raw", "decontXcounts")

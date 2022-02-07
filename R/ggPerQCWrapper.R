@@ -2409,6 +2409,8 @@ plotScdsHybridResults <- function(inSCE,
 #' \link{runDecontX}. Required.
 #' @param sample Character vector. Indicates which sample each cell belongs to.
 #'  Default NULL.
+#' @param bgResult Boolean. If TRUE, will plot decontX results generated with
+#' raw/droplet matrix Default FALSE. 
 #' @param shape If provided, add shapes based on the value.
 #' @param groupBy Groupings for each numeric value. A user may input a vector
 #'  equal length to the number of the samples in the SingleCellExperiment
@@ -2474,6 +2476,7 @@ plotScdsHybridResults <- function(inSCE,
 #' @export
 plotDecontXResults <- function(inSCE,
                                sample=NULL,
+                               bgResult = FALSE,
                                shape=NULL,
                                groupBy=NULL,
                                combinePlot="all",
@@ -2524,12 +2527,37 @@ plotDecontXResults <- function(inSCE,
          SingleCellExperiment object. Please check for spelling errors
          with reducedDimNames().")
   }
+
+  scoreCol <- "decontX_contamination"
+  clusterCol <- "decontX_clusters"
+
+  if (!scoreCol %in% colnames(SummarizedExperiment::colData(inSCE))) {
+      stop("The result of running decontX without raw/droplet matrix 
+           is not found in the input SingleCellExperiment object. 
+           Please check whether runDecontX has been run without
+           'background' parameter. ")    
+  }
+
+  if (isTRUE(bgResult)) {
+    bgColId <- grep('decontX_contamination_bg', colnames(SummarizedExperiment::colData(inSCE)))
+
+    if (length(bgColId) == 0) {
+      stop("The result of running decontX with raw/droplet matrix 
+           is not found in the input SingleCellExperiment object. 
+           Please check whether runDecontX has been run with
+           'background' parameter. ")
+    } else {
+      scoreCol <- "decontX_contamination_bg"
+      clusterCol <- "decontX_clusters_bg"
+    }
+  }
+
   samples <- unique(sample)
   sampleVector <- sample
   if (length(samples) > 1) {
     merged.plots <- list(Score = plotSCEViolinColData(
       inSCE=inSCE,
-      coldata="decontX_contamination",
+      coldata=scoreCol,
       groupBy=sampleVector,
       xlab="",
       ylab="DecontX Contamination",
@@ -2569,7 +2597,7 @@ plotDecontXResults <- function(inSCE,
     densityContamination <- list(density_decontXContamination = plotSCEDensityColData(
         inSCE=inSCESub,
         sample=sampleSub,
-        coldata="decontX_contamination",
+        coldata=scoreCol,
         groupBy=groupBy,
         xlab="Score",
         ylab="Density",
@@ -2586,7 +2614,7 @@ plotDecontXResults <- function(inSCE,
     scatterContamination <- list(scatter_decontXContamination = plotSCEDimReduceColData(
       inSCE=inSCESub,
       sample=sampleSub,
-      colorBy="decontX_contamination",
+      colorBy=scoreCol,
       conditionClass="numeric",
       shape=shape,
       reducedDimName=reducedDimName,
@@ -2619,7 +2647,7 @@ plotDecontXResults <- function(inSCE,
       }
     violinContamination <- list(violin_decontXContamination = plotSCEViolinColData(
         inSCE=inSCESub,
-        coldata="decontX_contamination",
+        coldata=scoreCol,
         sample=sampleSub,
         xlab="", ylab="DecontX Contamination",
         groupBy=groupBy,
@@ -2654,7 +2682,7 @@ plotDecontXResults <- function(inSCE,
     scatterCluster <- list(scatter_decontXClusters = plotSCEDimReduceColData(
         inSCE=inSCESub,
         sample=sampleSub,
-        colorBy="decontX_clusters",
+        colorBy=clusterCol,
         conditionClass="factor",
         shape=shape,
         reducedDimName=reducedDimName,

@@ -37,8 +37,8 @@ each sample separately.}
 'counts'.}
 
 \item{background}{A \link[SingleCellExperiment]{SingleCellExperiment}
-with the matrix ocated in the assay slot under \code{assayName}. It should have 
-the same structure as x except it contains the matrix of empty droplets instead 
+with the matrix located in the assay slot under \code{bgAssayName}. It should have 
+the same structure as inSCE except it contains the matrix of empty droplets instead 
 of cells. When supplied, empirical distribution of transcripts from these 
 empty droplets will be used as the contamination distribution. Default NULL.}
 

@@ -894,6 +894,89 @@ for (sample in samples){
 ```
 `r cat("\n")`
 
+```{r, "DecontX_bg", results="asis", fig.align="center", warning=FALSE, message=FALSE, echo=FALSE}
+i="DecontX with raw/droplet matrix"
+# cat(paste0('## ', i, ' \n'))
+
+decontXData <- c("decontX_contamination_bg", "decontX_clusters_bg")
+skipDecontX <- any(!decontXData %in% names(colData(sce.qc)))
+
+if (skipDecontX) {
+  #cat("runDecontX did not complete successfully. The section of DecontX is skipped")
+  plotDecontX <- NULL
+} else {
+  cat(paste0('## ', i, ' \n'))
+  plotDecontX<- tryCatch(
+    {plotDecontXResults(inSCE = sce.qc, 
+                        sample = colData(sce.qc)[['sample']],
+                        bgResult = TRUE,
+                        combinePlot = "none",
+                        reducedDimName = "QC_UMAP",
+                        axisSize = NULL,
+                        axisLabelSize = NULL,
+                        titleSize = NULL)},
+    error = function(e) {
+      cat("runDecontX did not complete successfully. The section of DecontX is skipped")
+      skipDecontX <- TRUE
+      return(NA)
+    }
+  )
+}
+
+if (!skipDecontX) {
+  plotDecontX <- formatPlotList(plotDecontX, samples)
+  cat(description_DecontX$introduction)
+  cat(description_DecontX$runDecontX)
+  cat(description_DecontX$plotDecontXResults)
+  cat(description_DecontX$output)
+  cat(description_DecontX$contamination)
+  cat(description_DecontX$clustering)
+}
+```
+<br />
+
+
+## {.unlisted .unnumbered .toc-ignore .tabset .tabset-fade}
+```{r "DecontX_bg-plot", echo=FALSE, eval=(!skipDecontX), results="asis", fig.align="center"}
+cat("\n")
+for (sample in samples){
+  cat(paste0("### ", sample, " {.tabset .tabset-fade} \n"))
+  cat("\n\n")
+  
+  cat("#### DecontX Contamination Score {.tabset .tabset-fade} \n\n")
+  plot(plotDecontX$Sample[[sample]][["scatter_decontXContamination"]])
+  cat("\n\n")
+  
+  cat("#### Density Score {.tabset .tabset-fade} \n\n")
+  plot(plotDecontX$Sample[[sample]][["density_decontXContamination"]])
+  cat("\n\n")
+  
+  cat("#### Violin Score {.tabset .tabset-fade} \n\n")
+  plot(plotDecontX$Sample[[sample]][["violin_decontXContamination"]])
+  cat("\n\n")
+  
+  cat("#### DecontX Clusters {.tabset .tabset-fade} \n\n")
+  plot(plotDecontX$Sample[[sample]][["scatter_decontXClusters"]])
+  cat("\n\n")
+  
+  cat("#### Parameters {.tabset .tabset-fade} \n\n")
+  DecontXMeta <- sce.qc@metadata$runDecontX
+  DecontXMeta <- metaChecking(DecontXMeta, sample)
+
+  # if(length(samples) == 1) {
+  #   DecontXMeta <- list(DecontXMeta)
+  #   names(DecontXMeta) <- sample
+  # }
+  
+  x <- preprocessMeta(DecontXMeta[[sample]])
+  cat(t(as.data.frame(x)) %>%
+    knitr::kable(format = "html") %>% kableExtra::kable_styling() %>%
+    kableExtra::scroll_box(width = "80%"))
+  cat("\n\n")
+}
+```
+`r cat("\n")`
+
 # Session Information
 <details>
  <summary><b>Session Information</b></summary>
