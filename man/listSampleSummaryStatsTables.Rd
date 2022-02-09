@@ -7,7 +7,7 @@
 \usage{
 listSampleSummaryStatsTables(inSCE, ...)
 
-\S4method{listSampleSummaryStatsTables}{SingleCellExperiment}(inSCE, statsName, ...)
+\S4method{listSampleSummaryStatsTables}{SingleCellExperiment}(inSCE, ...)
 }
 \arguments{
 \item{inSCE}{Input \linkS4class{SingleCellExperiment} object with saved

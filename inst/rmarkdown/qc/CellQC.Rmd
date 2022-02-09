@@ -143,7 +143,7 @@ sce.qc <- sampleSummaryStats(inSCE = sce.qc,
                                    sample = sceSample,
                                    simple = FALSE)
 
-summaryTable <- sampleSummaryStatsTable(sce.qc, statsName = "qc_table")
+summaryTable <- getSampleSummaryStatsTable(sce.qc, statsName = "qc_table")
 cat(apply(summaryTable, 1:2, as.character) %>% 
     knitr::kable(format = "html") %>%
       kableExtra::kable_styling() %>%

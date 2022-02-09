@@ -1,38 +1,33 @@
-#' @rdname sampleSummaryStatsTable
-setMethod("sampleSummaryStatsTable", "SingleCellExperiment", function(inSCE, statsName, ...){
+#' @rdname getSampleSummaryStatsTable
+setMethod("getSampleSummaryStatsTable", "SingleCellExperiment", function(inSCE, statsName, ...){
     allStatsNames <- listSampleSummaryStatsTables(inSCE)
-    if(length(allStatsNames) == 0){
-        stop(paste("No tables are stored within the SingleCellExperiment object."),
-             "Please execute the sampleSummaryStats function first.")
-    }
     if(!statsName %in% allStatsNames){
-        stop(paste(statsName,
-                   "is not a table within the SingleCellExperiment object.",
+        stop(paste(statsName, "is not a table within the SingleCellExperiment object.",
                    "The following are the names of the tables stored:",
-                   allStatsNames))
+                   paste(allStatsNames, collapse = ",")))
     }else{
-        return(inSCE@metadata$sctk$sampleSummary[[statsName]])
+        return(inSCE@metadata$sctk$sample_summary[[statsName]])
     }
 })
 
-#' @rdname sampleSummaryStatsTable<-
-setReplaceMethod("sampleSummaryStatsTable", c("SingleCellExperiment", "ANY"), function(inSCE, statsName, ..., value) {
-    inSCE@metadata$sctk$sampleSummary[[statsName]] <- value
+#' @rdname setSampleSummaryStatsTable<-
+setReplaceMethod("setSampleSummaryStatsTable", c("SingleCellExperiment", "ANY"), function(inSCE, statsName, ..., value) {
+    inSCE@metadata$sctk$sample_summary[[statsName]] <- value
     return(inSCE)
 })
 
 #' @rdname listSampleSummaryStatsTables
-setMethod("listSampleSummaryStatsTables", "SingleCellExperiment", function(inSCE, statsName, ...){
-    if(is.null(inSCE@metadata$sctk$sampleSummary)){
-        return(paste("No tables found in the SingleCellExperiment object.",
-                     "Please execute the sampleSummaryStats function first."))
+setMethod("listSampleSummaryStatsTables", "SingleCellExperiment", function(inSCE, ...){
+    if(is.null(inSCE@metadata$sctk$sample_summary)){
+        stop(paste("No sample-level QC tables are available.",
+                     "Please try executing functions such as sampleSummaryStats first."))
     }else{
-        allStatsNames <- names(inSCE@metadata$sctk$sampleSummary)
-        if(length(allStatsNames) == 0){
-            return(paste("No tables found in the SingleCellExperiment object.",
-                         "Please execute the sampleSummaryStats function first."))
+        allStatsNames <- names(inSCE@metadata$sctk$sample_summary)
+        if(is.null(allStatsNames) || length(allStatsNames) == 0){
+            stop(paste("No sample-level QC tables are available.",
+                         "Please try executing functions such as sampleSummaryStats first."))
         }else{
-            return(names(inSCE@metadata$sctk$sampleSummary))
+            return(names(inSCE@metadata$sctk$sample_summary))
         }
     }
 })
@@ -41,7 +36,7 @@ setMethod("listSampleSummaryStatsTables", "SingleCellExperiment", function(inSCE
                                 simple = TRUE){
 
     metrics <- c("Number of Cells")
-    values <- c(as.integer(ncol(dataFrame)))
+    values <- c(as.integer(nrow(dataFrame)))
 
     if ("sum" %in% colnames(dataFrame)) {
         metrics <- c(metrics, "Mean counts", "Median counts")
@@ -112,22 +107,22 @@ setMethod("listSampleSummaryStatsTables", "SingleCellExperiment", function(inSCE
         if("scds_cxds_call" %in% colnames(dataFrame)){
             metrics <- c(metrics, "CXDS - Number of doublets",
                          "CXDS - Percentage of doublets")
-            values <- c(values, sum(dataFrame$scds_cxds_call == TRUE),
-                        signif(sum(dataFrame$scds_cxds_call == TRUE)/length(dataFrame$scds_cxds_call) * 100, 3))
+            values <- c(values, sum(dataFrame$scds_cxds_call == "Doublet"),
+                        signif(sum(dataFrame$scds_cxds_call == "Doublet")/length(dataFrame$scds_cxds_call) * 100, 3))
         }
 
         if("scds_bcds_call" %in% colnames(dataFrame)){
             metrics <- c(metrics, "BCDS - Number of doublets",
                          "BCDS - Percentage of doublets")
-            values <- c(values, sum(dataFrame$scds_bcds_call == TRUE),
-                        signif(sum(dataFrame$scds_bcds_call == TRUE)/length(dataFrame$scds_bcds_call) * 100, 3))
+            values <- c(values, sum(dataFrame$scds_bcds_call == "Doublet"),
+                        signif(sum(dataFrame$scds_bcds_call == "Doublet")/length(dataFrame$scds_bcds_call) * 100, 3))
         }
 
         if("scds_hybrid_call" %in% colnames(dataFrame)){
             metrics <- c(metrics, "SCDS Hybrid - Number of doublets",
                          "SCDS Hybrid - Percentage of doublets")
-            values <- c(values, sum(dataFrame$scds_hybrid_call == TRUE),
-                        signif(sum(dataFrame$scds_hybrid_call == TRUE)/length(dataFrame$scds_hybrid_call) * 100, 3))
+            values <- c(values, sum(dataFrame$scds_hybrid_call == "Doublet"),
+                        signif(sum(dataFrame$scds_hybrid_call == "Doublet")/length(dataFrame$scds_hybrid_call) * 100, 3))
         }
 
         if("decontX_clusters" %in% colnames(dataFrame)){
@@ -159,12 +154,12 @@ setMethod("listSampleSummaryStatsTables", "SingleCellExperiment", function(inSCE
 #' @param statsName Character. The name of the slot that will store the
 #' QC stat table. Default "qc_table".
 #' @return A SingleCellExperiment object with a summary table for QC statistics
-#' in the `sampleSummary` slot of metadata.
+#' in the `sample_summary` slot of metadata.
 #' @examples
 #' data(scExample, package = "singleCellTK")
 #' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 #' sce <- sampleSummaryStats(sce, simple = TRUE)
-#' sampleSummaryStatsTable(sce)
+#' getSampleSummaryStatsTable(sce, statsName = "qc_table")
 #' @importFrom magrittr %>%
 #' @export
 sampleSummaryStats <- function(inSCE,
@@ -226,6 +221,6 @@ sampleSummaryStats <- function(inSCE,
         return((signif(x,5)))
     })
 
-    sampleSummaryStatsTable(inSCE, statsName = statsName) <- dfTableRes
+    setSampleSummaryStatsTable(inSCE, statsName = statsName) <- dfTableRes
     return(inSCE)
 }

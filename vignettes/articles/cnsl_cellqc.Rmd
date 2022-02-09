@@ -131,18 +131,18 @@ reducedDims(pbmc.combined)
 
 #### Generating a summary statistic table
 
-The function `sampleSummaryStats()` may be used to generate a table containing the mean and median of the data per sample, which is stored within the `qc_table` table under `metadata`. The table can then be returned using `sampleSummaryStatsTable`.
+The function `sampleSummaryStats()` may be used to generate a table containing the mean and median of the data per sample, which is stored within the `qc_table` table under `metadata`. The table can then be returned using `getSampleSummaryStatsTable`.
 
 ```{r sampleSummaryStats}
 pbmc.combined <- sampleSummaryStats(pbmc.combined, sample = sample.vector)
-sampleSummaryStatsTable(pbmc.combined, statsName = "qc_table")
+getSampleSummaryStatsTable(pbmc.combined, statsName = "qc_table")
 ```
 
 If users choose to generate a table for all QC metrics generated through `runCellQC()`, they may set the `simple` parameter to `FALSE`.
 
 ```{r sampleSummaryStatsQC}
 pbmc.combined <- sampleSummaryStats(pbmc.combined, sample = sample.vector, simple = FALSE)
-sampleSummaryStatsTable(pbmc.combined, statsName = "qc_table")
+getSampleSummaryStatsTable(pbmc.combined, statsName = "qc_table")
 ```
 
 ### Running individual QC methods

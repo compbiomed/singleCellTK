@@ -30,7 +30,7 @@ QC stat table. Default "qc_table".}
 }
 \value{
 A SingleCellExperiment object with a summary table for QC statistics
-in the `sampleSummary` slot of metadata.
+in the `sample_summary` slot of metadata.
 }
 \description{
 Creates a table of QC metrics generated from
@@ -41,5 +41,5 @@ Creates a table of QC metrics generated from
 data(scExample, package = "singleCellTK")
 sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 sce <- sampleSummaryStats(sce, simple = TRUE)
-sampleSummaryStatsTable(sce)
+getSampleSummaryStatsTable(sce, statsName = "qc_table")
 }
