@@ -13,8 +13,12 @@ test_that("summarizeSCE", {
 
 test_that(desc = "Testing sampleSummaryStats", {
   data(scExample)
-  stats <- sampleSummaryStats(sce, simple = FALSE)
-  expect_true("matrix" %in% class(stats))
+  sce <- sampleSummaryStats(sce, simple = FALSE)
+  expect_true("sctk" %in% names(metadata(sce)))
+  expect_is(metadata(sce)$sctk$sample_summary$qc_table,
+            "matrix")
+  expect_is(getSampleSummaryStatsTable(sce, statsName = "qc_table"),
+            "matrix")
 })
 
 
