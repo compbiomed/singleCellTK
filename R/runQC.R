@@ -4,7 +4,7 @@
 #'  object containing cells after empty droplets have been removed.
 #' @param inSCE A \link[SingleCellExperiment]{SingleCellExperiment} object.
 #' @param algorithms Character vector. Specify which QC algorithms to run.
-#'  Available options are "QCMetrics", "scrublet", "doubletFinder", "scDblFinder", "cxds", "bcds", "cxds_bcds_hybrid", and "decontX".
+#'  Available options are "QCMetrics", "scrublet", "doubletFinder", "scDblFinder", "cxds", "bcds", "cxds_bcds_hybrid", "decontX" and "soupX".
 #' @param sample Character vector. Indicates which sample each cell belongs to.
 #'  Algorithms will be run on cells from each sample separately.
 #' @param collectionName Character. Name of a \code{GeneSetCollection} obtained by using one of the importGeneSet* functions. Default \code{NULL}.
@@ -13,6 +13,23 @@
 #' @param geneSetCollection See \code{runPerCellQC}. Default NULL.
 #' @param useAssay  A string specifying which assay contains the count
 #'  matrix for cells.
+#' @param background A \link[SingleCellExperiment]{SingleCellExperiment}
+#' with the matrix located in the assay slot under \code{bgAssayName}. It should have 
+#' the same structure as inSCE except it contains the matrix of empty droplets instead 
+#' of cells. When supplied, empirical distribution of transcripts from these 
+#' empty droplets will be used as the contamination distribution. It is only used in 
+#' algorithms "decontX" and "soupX". Default NULL.
+#' @param bgAssayName Character. Name of the assay to use if background is a 
+#' \link[SingleCellExperiment]{SingleCellExperiment}. If NULL, the function
+#' will use the same value as \code{useAssay}. It is only used in algorithms 
+#' "decontX" and "soupX". Default is NULL. 
+#' @param bgBatch Batch labels for \code{background}. If \code{background} is a 
+#' \link[SingleCellExperiment]{SingleCellExperiment} object, this can be a single 
+#' character specifying a name that can be found in \code{colData(background)} 
+#' to directly use the barcode annotation Its unique values should be the same
+#' as those in \code{sample}, such that each batch of cells have their corresponding 
+#' batch of empty droplets as background, pointed by this parameter. It is only used in
+#' algorithms "decontX" and "soupX". Default to NULL.
 #' @param seed Seed for the random number generator. Default 12345.
 #' @param paramsList A list containing parameters for QC functions. Default NULL.
 #' @return SingleCellExperiment object containing the outputs of the
@@ -28,18 +45,21 @@
 
 runCellQC <- function(inSCE,
   algorithms = c("QCMetrics", "scDblFinder", "cxds", "bcds",
-    "cxds_bcds_hybrid", "decontX"), #"scrublet", "doubletFinder",
+    "cxds_bcds_hybrid", "decontX", "soupX"), #"scrublet", "doubletFinder",
   sample = NULL,
   collectionName = NULL,
   geneSetList = NULL,
   geneSetListLocation = "rownames",
   geneSetCollection = NULL,
   useAssay = "counts",
+  background = NULL,
+  bgAssayName= NULL,
+  bgBatch = NULL,
   seed = 12345,
   paramsList = NULL) {
 
   nonmatch <- setdiff(algorithms, c("scDblFinder", "cxds", "bcds",
-    "cxds_bcds_hybrid", "decontX", "QCMetrics", "scrublet", "doubletFinder"))
+    "cxds_bcds_hybrid", "decontX", "QCMetrics", "scrublet", "doubletFinder", "soupX"))
   if (length(nonmatch) > 0) {
     stop("'", paste(nonmatch, collapse=","), "' are not supported algorithms.")
   }
@@ -118,8 +138,22 @@ runCellQC <- function(inSCE,
       c(list(inSCE = quote(inSCE),
       sample = sample,
       useAssay = useAssay,
-      seed = seed),
+      seed = seed, 
+      background = background,
+      bgAssayName = bgAssayName,
+      bgBatch = bgBatch),
       paramsList[["decontX"]]))
+  }
+
+  if ("soupX" %in% algorithms) {
+    inSCE <- do.call(runSoupX,
+      c(list(inSCE = quote(inSCE),
+      sample = sample,
+      useAssay = useAssay,
+      background = background,
+      bgAssayName = bgAssayName,
+      bgBatch = bgBatch),
+      paramsList[["soupX"]]))
   }
 
   return(inSCE)
