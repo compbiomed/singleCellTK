@@ -53,7 +53,7 @@ metaChecking <- function(metainfo, sample){
   return(metainfo)
 }
 
-preprocessMeta <- function(meta, ignore=c("geneSetCollection", "sample")){
+preprocessMeta <- function(meta, ignore=c("geneSetCollection", "sample", "batch", "batchBackground")){
   meta <- meta[!names(meta) %in% ignore]
   lapply(meta, function(y){
     while(is.list(y)) {
@@ -71,7 +71,7 @@ preprocessMeta <- function(meta, ignore=c("geneSetCollection", "sample")){
     if(is.null(y)) {
       y <- "NULL"
     }
-      
+    
     return(y)
   })
 }
@@ -877,7 +877,7 @@ for (sample in samples){
   cat("\n\n")
   
   cat("#### Parameters {.tabset .tabset-fade} \n\n")
-  DecontXMeta <- sce.qc@metadata$runDecontX
+  DecontXMeta <- sce.qc@metadata$sctk$runDecontX
   DecontXMeta <- metaChecking(DecontXMeta, sample)
 
   # if(length(samples) == 1) {
@@ -960,7 +960,7 @@ for (sample in samples){
   cat("\n\n")
   
   cat("#### Parameters {.tabset .tabset-fade} \n\n")
-  DecontXMeta <- sce.qc@metadata$runDecontX
+  DecontXMeta <- sce.qc@metadata$sctk$runDecontX_bg
   DecontXMeta <- metaChecking(DecontXMeta, sample)
 
   # if(length(samples) == 1) {

@@ -98,6 +98,7 @@ runDecontX <- function(inSCE,
   #argsList <- as.list(formals(fun = sys.function(sys.parent()), envir = parent.frame()))
   argsList <- mget(names(formals()),sys.frame(sys.nframe()))
   if(!is.null(sample)) {
+    # get sample from colData(inSCE)
     if (length(sample) == 1) {
       if (!sample %in% names(SummarizedExperiment::colData(inSCE))) {
         stop("Specified Sample variable not found in colData")
@@ -109,24 +110,47 @@ runDecontX <- function(inSCE,
     if (is.factor(sample)) {
       sample <- as.character(sample)
     }
-  }
+    uniqueSample <- unique(sample)
 
-  if(!is.null(bgBatch)) {
-    ### Background must be a SCE object if the input of count is in SCE object. Required by celda::decontX. 
-    if (!is(background, 'SingleCellExperiment')) {
-      stop("'background' is not a SingleCellExperiment object")
-    }
-
-    ### check whether variable can be found in colData.
-    if(length(bgBatch) == 1) { # & is(background, 'SingleCellExperiment')
-      if(!bgBatch %in% names(SummarizedExperiment::colData(background))) {
-        stop("Specified bgBatch variable not found in colData")
+    if (!is.null(background)) {
+      ### Background must be a SCE object if the input of count is in SCE object. Required by celda::decontX. 
+      if (!inherits(background, 'SingleCellExperiment')) {
+        stop("'background' is not a SingleCellExperiment object")
       }
-      bgBatch <- SummarizedExperiment::colData(background)[[bgBatch]]
-    } else if(length(bgBatch) != ncol(background)) {
-      stop("'bgBatch' must be the same length as the number of columns in 'background'")      
+
+      if (!is.null(bgBatch)) {
+        ### check whether variable can be found in colData.
+        if(length(bgBatch) == 1) { # & is(background, 'SingleCellExperiment')
+          if(!bgBatch %in% names(SummarizedExperiment::colData(background))) {
+            stop("Specified bgBatch variable not found in colData")
+          }
+          bgBatch <- SummarizedExperiment::colData(background)[[bgBatch]]
+        } else if(length(bgBatch) != ncol(background)) {
+          stop("'bgBatch' must be the same length as the number of columns in 'background'")      
+        }
+
+        if (!all(unique(bgBatch) %in% uniqueSample)) {
+            stop("Not all bgBatch can be found in 'samples'.")
+        }
+
+        if (is.factor(bgBatch)) {
+          bgBatch <- as.character(bgBatch)
+        }
+      }      
     }
+  } else {
+    # When sample not specified, labeled as "all_cells" 
+    sample <- rep("all_cells", ncol(inSCE))
+    if (!is.null(background)) {
+        if (!is.null(bgBatch)) {
+            warning("Using all background because 'sample' not specified.")
+        }
+        bgBatch <- rep("all_cells", ncol(background))
+    }
+    uniqSample <- "all_cells"    
   }
+
+
 
   message(paste0(date(), " ... Running 'DecontX'"))
 
@@ -150,6 +174,13 @@ runDecontX <- function(inSCE,
   if(length(oldAssayId) != 0) {
     oldDim <- SingleCellExperiment::reducedDims(inSCE)[oldDimId]
     SingleCellExperiment::reducedDims(inSCE)[oldDimId] <- NULL
+  }
+
+  oldMeta <- NULL
+  oldMetaId <- grep('runDecontX', names(S4Vectors::metadata(inSCE)$sctk))
+  if(length(oldMetaId) != 0) {
+    oldMeta <- S4Vectors::metadata(inSCE)$sctk[oldMetaId]
+    S4Vectors::metadata(inSCE)$sctk[oldMetaId] <- NULL
   }
 
   rm.ix <- which(colSums(assay(inSCE, useAssay)) == 0)
@@ -182,14 +213,33 @@ runDecontX <- function(inSCE,
   newCol <- SummarizedExperiment::colData(inSCE)[colId]
   SummarizedExperiment::colData(inSCE)[colId] <- NULL
 
-
   assayId <- SummarizedExperiment::assayNames(inSCE) == "decontXcounts"
   newAssay <- SummarizedExperiment::assays(inSCE)[assayId]
   SummarizedExperiment::assays(inSCE)[assayId] <- NULL
 
-  DimId <- SingleCellExperiment::reducedDimNames(inSCE) == "decontX_UMAP"
+  DimId <- grep("decontX", SingleCellExperiment::reducedDimNames(inSCE), value=T)#SingleCellExperiment::reducedDimNames(inSCE) == "decontX_UMAP"
   newDim <- SingleCellExperiment::reducedDims(inSCE)[DimId]
   SingleCellExperiment::reducedDims(inSCE)[DimId] <- NULL
+
+  metaId <- names(S4Vectors::metadata(inSCE)) == "decontX"
+  newMeta <- S4Vectors::metadata(inSCE)[metaId]
+  newMeta$decontX <- S4Vectors::metadata(inSCE)$decontX$runParams #only keep runParams in metadata
+  newMeta$decontX$packageVersion <- utils::packageDescription("celda")$Version
+  names(newMeta) <- "runDecontX"
+  S4Vectors::metadata(inSCE)[metaId] <- NULL
+
+  ### further process the metadata for each sample
+  newMeta_bc <- newMeta
+  newMeta <- NULL
+  batchMeta <- newMeta_bc$runDecontX$batch
+  bgBatchMeta <- newMeta_bc$runDecontX$batchBackground
+  newMeta_bc$runDecontX[c("batch", "batchBackground")] <- NULL
+
+  for (s in unique(sample)) {
+    newMeta$runDecontX[[s]] <- newMeta_bc$runDecontX
+    newMeta$runDecontX[[s]]$batch <- batchMeta[batchMeta == s]
+    newMeta$runDecontX[[s]]$batchBackground <- bgBatchMeta[bgBatchMeta == s]
+  }
 
   ### merge inSCE to restore some cells that are removed by rm.ix
   if(length(rm.ix) > 0){
@@ -204,7 +254,9 @@ runDecontX <- function(inSCE,
     ## need to rename the assay name
     names(newAssay) <- "decontXcounts_bg"
     ## need to rename reducedDim
-    names(newDim) <- "decontX_UMAP_bg"
+    names(newDim) <- paste(names(newDim), "bg", sep = "_")
+    ## need to rename metadata
+    names(newMeta) <- "runDecontX_bg"
   }
 
   # update Assay
@@ -230,14 +282,22 @@ runDecontX <- function(inSCE,
   } else {
     finalCol <- newCol[colnames(inSCE), ]
   }
+
+  # update metadata
+  if(!is.null(oldMeta)) {
+    oldMeta[names(newMeta)] <- newMeta
+    finalMeta <- oldMeta
+  } else {
+    finalMeta <- newMeta
+  }
   
   # store new result back to inSCE object
   SummarizedExperiment::colData(inSCE)[colnames(finalCol)] <- finalCol
   SummarizedExperiment::assays(inSCE)[names(finalAssay)] <- finalAssay
   SingleCellExperiment::reducedDims(inSCE)[names(finalDim)] <- finalDim
-
-  inSCE@metadata$runDecontX <- argsList[-1]
-  inSCE@metadata$runDecontX$packageVersion <- utils::packageDescription("celda")$Version
+  S4Vectors::metadata(inSCE)$sctk[names(finalMeta)] <- finalMeta
+  # inSCE@metadata$sctk$runDecontX <- argsList[-1]
+  # inSCE@metadata$sctk$runDecontX$packageVersion <- utils::packageDescription("celda")$Version
   inSCE <- expSetDataTag(inSCE, "raw", "decontXcounts")
   return(inSCE)
 }
