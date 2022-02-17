@@ -61,7 +61,7 @@ jobs:
         with:
           r-version: ${{ matrix.config.r }}
           http-user-agent: ${{ matrix.config.http-user-agent }}
-          use-public-rspm: true
+          use-public-rspm: false
 
       - uses: r-lib/actions/setup-r-dependencies@v1
         with:
@@ -76,7 +76,7 @@ jobs:
           _R_CHECK_CRAN_INCOMING_: false
         run: |
           options(crayon.enabled = TRUE)
-          reticulate::use_python("/opt/hostedtoolcache/Python/3.8.12/x64/bin/python")
+          reticulate::use_python("/opt/hostedtoolcache/Python/3.8.10/x64/bin/python")
           reticulate::py_config()
           rcmdcheck::rcmdcheck(args = c("--no-manual", "--as-cran"), error_on = "warning", check_dir = "check")
         shell: Rscript {0}
