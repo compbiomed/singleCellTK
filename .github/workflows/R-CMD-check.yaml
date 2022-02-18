@@ -61,7 +61,7 @@ jobs:
         with:
           r-version: ${{ matrix.config.r }}
           http-user-agent: ${{ matrix.config.http-user-agent }}
-          use-public-rspm: false
+          use-public-rspm: true
 
       - uses: r-lib/actions/setup-r-dependencies@v1
         with:
@@ -70,7 +70,7 @@ jobs:
       - name: Install Celda devel
         run: |
           devtools::install_github("campbio/celda@devel")
-        shell: Rscript{0} 
+        shell: Rscript {0} 
 
       - name: Install XQuartz on macOS
         if: runner.os == 'macOS'

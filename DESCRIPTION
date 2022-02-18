@@ -67,6 +67,7 @@ Imports:
     msigdbr,
     multtest,
     plotly,
+    rstantools,
     ROCR,
     Rtsne,
     S4Vectors,
