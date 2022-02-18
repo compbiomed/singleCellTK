@@ -69,6 +69,7 @@ jobs:
 
       - name: Install Celda devel
         run: |
+          install.packages("devtools")
           devtools::install_github("campbio/celda@devel")
         shell: Rscript {0} 
 
