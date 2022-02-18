@@ -67,6 +67,11 @@ jobs:
         with:
           extra-packages: rcmdcheck
 
+      - name: Install Celda devel
+        run: |
+          devtools::install_github("campbio/celda@devel")
+        shell: Rscript{0} 
+
       - name: Install XQuartz on macOS
         if: runner.os == 'macOS'
         run: brew install xquartz --cask
