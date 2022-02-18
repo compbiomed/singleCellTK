@@ -385,7 +385,7 @@
     if (is.null(sampleNames)) {
         sampleNames <- .getSampleNames(samplePaths)
     }
-
+    
     for (i in seq_along(samplePaths)) {
         dir <- .getOutputFolderPath(samplePaths[i], cellRangerOuts[i],
             cellRangerOuts2[i])
@@ -399,17 +399,15 @@
             delayedArray = delayedArray)
         res[[i]] <- scei
         
-        # Load Cell Ranger Summary from CSV
-        metrics_summary <- list.files(pattern="*metrics_summary.csv$", path = paste0(samplePaths[i], "/outs"), full.names = TRUE)
-        if(length(metrics_summary) > 0){
-          metrics_summary <- lapply(metrics_summary, read.csv)
-        }
         
-        # Store Cell Ranger Summary into SCE
-        res[[i]] <- setSampleSummaryStats(res[[i]], "cellranger", metrics_summary)
+
     }
 
     sce <- do.call(SingleCellExperiment::cbind, res)
+    
+    # Load & Store Cell Ranger Summary into SCE
+    metrics_summary <- .importMetrics(samplePaths, sampleNames)
+    sce <- setSampleSummaryStats(sce, "cellranger", metrics_summary)
     
     if (isTRUE(rowNamesDedup)) {
         if (any(duplicated(rownames(sce)))) {
@@ -802,4 +800,28 @@ importCellRangerV3Sample <- function(
         class = class,
         delayedArray = delayedArray,
         rowNamesDedup = rowNamesDedup)
+}
+
+# Find metrics_summary.csv file in each sample and merge them into a single dataframe
+# Additionally, if file not available for a sample, fill that sample with NA
+.importMetrics <- function(samplePaths, sampleNames){
+  metrics_summary <- list()
+  for(i in seq(samplePaths)){
+    metrics_summary[[i]] <- list.files(pattern="*metrics_summary.csv$", path = paste0(samplePaths[i], "/outs"), full.names = TRUE)
+    if(length(metrics_summary[[i]]) > 0){
+      metrics_summary[[i]] <- lapply(metrics_summary[[i]], read.csv, header = TRUE, check.names = FALSE)[[1]]
+    }
+    else{
+      message("Metrics summary file (metrics_summary.csv) not found for sample: ", sampleNames[i])
+      ms_colnames_union <- Reduce(union, lapply(metrics_summary, colnames))
+      metrics_summary[[i]] <- data.frame(matrix(data = NA, nrow = 1, ncol = length(ms_colnames_union)))
+      colnames(metrics_summary[[i]]) <- ms_colnames_union
+    }
+  }
+  
+  # Merge cell ranger metrics_summary csv files from all/multiple samples into a single data.frame
+  metrics_summary <- t(plyr::rbind.fill(metrics_summary))
+  colnames(metrics_summary) <- sampleNames
+  
+  return(metrics_summary)
 }

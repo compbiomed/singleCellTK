@@ -1425,7 +1425,7 @@ seuratGenePlot <- function(inSCE,
       features = features,
       cols = cols,
       ncol = ncol,
-      split.by = splitBy))
+      split.by = splitBy, combine = FALSE))
   }
   else if(plotType == "dot"){
     return(Seurat::DotPlot(
