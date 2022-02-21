@@ -12,6 +12,8 @@ listSampleSummaryStatsTables(inSCE, ...)
 \arguments{
 \item{inSCE}{Input \linkS4class{SingleCellExperiment} object with saved
 table within the \link{metadata} data. Required.}
+
+\item{...}{Other arguments passed to the function.}
 }
 \value{
 A character vector. Contains a list of summary tables

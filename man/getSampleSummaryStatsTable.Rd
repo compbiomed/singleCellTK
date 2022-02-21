@@ -16,6 +16,8 @@ getSampleSummaryStatsTable(inSCE, statsName, ...)
 \item{statsName}{A \code{character} value indicating the slot
 that stores the stats table within the metadata of the
 SingleCellExperiment object. Required.}
+
+\item{...}{Other arguments passed to the function.}
 }
 \value{
 A matrix/array object. Contains a summary table for QC statistics
