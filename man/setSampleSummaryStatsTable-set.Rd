@@ -9,6 +9,10 @@ setSampleSummaryStatsTable(inSCE, ...) <- value
 \arguments{
 \item{inSCE}{Input \linkS4class{SingleCellExperiment} object with saved
 \link{assay} data and/or \link{colData} data. Required.}
+
+\item{...}{Other arguments passed to the function.}
+
+\item{value}{The sample summary table of SCTK QC outputs}
 }
 \value{
 A SingleCellExperiment object which contains a summary table for QC statistics

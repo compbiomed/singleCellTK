@@ -102,9 +102,9 @@ runCxds <- function(inSCE,
 
     if (estNdbl) {
         output$cxds_call <- as.factor(output$cxds_call)
+        levels(output$cxds_call) <- list(Singlet = "FALSE", Doublet = "TRUE")
     }
-
-    levels(output$cxds_call) <- list(Singlet = "FALSE", Doublet = "TRUE")
+    
     colnames(output) <- paste0("scds_", colnames(output))
     colData(inSCE) = cbind(colData(inSCE), output)
 
@@ -230,8 +230,9 @@ runBcds <- function(inSCE,
 
     if (estNdbl) {
         output$bcds_call <- as.factor(output$bcds_call)
+        levels(output$bcds_call) <- list(Singlet = "FALSE", Doublet = "TRUE")
     }
-    levels(output$bcds_call) <- list(Singlet = "FALSE", Doublet = "TRUE")
+    
     colnames(output) <- paste0("scds_", colnames(output))
     colData(inSCE) = cbind(colData(inSCE), output)
 
@@ -364,9 +365,8 @@ runCxdsBcdsHybrid <- function(inSCE,
     colData(inSCE)[, paste0("scds_", colnames(output))] <- NULL
     if (estNdbl) {
         output$hybrid_call <- as.factor(output$hybrid_call)
+        levels(output$hybrid_call) <- list(Singlet = "FALSE", Doublet = "TRUE")
     }
-
-    levels(output$hybrid_call) <- list(Singlet = "FALSE", Doublet = "TRUE")
 
     colnames(output) <- paste0("scds_", colnames(output))
     colData(inSCE) = cbind(colData(inSCE), output)

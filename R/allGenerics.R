@@ -6,6 +6,7 @@
 #' @param statsName A \code{character} value indicating the slot
 #' that stores the stats table within the metadata of the
 #' SingleCellExperiment object. Required.
+#' @param ... Other arguments passed to the function. 
 #' @return A matrix/array object. Contains a summary table for QC statistics
 #' generated from SingleCellTK.
 #' @examples
@@ -21,6 +22,8 @@ setGeneric("getSampleSummaryStatsTable", function(inSCE, statsName, ...) standar
 #'  QC algorithms within the metadata slot of the SingleCellExperiment object.
 #' @param inSCE Input \linkS4class{SingleCellExperiment} object with saved
 #' \link{assay} data and/or \link{colData} data. Required.
+#' @param value The sample summary table of SCTK QC outputs 
+#' @param ... Other arguments passed to the function. 
 #' @return A SingleCellExperiment object which contains a summary table for QC statistics
 #' generated from SingleCellTK.
 setGeneric("setSampleSummaryStatsTable<-", function(inSCE, ..., value) standardGeneric("setSampleSummaryStatsTable<-"))
@@ -30,6 +33,7 @@ setGeneric("setSampleSummaryStatsTable<-", function(inSCE, ..., value) standardG
 #' within the metadata slot of the SingleCellExperiment object.
 #' @param inSCE Input \linkS4class{SingleCellExperiment} object with saved
 #' table within the \link{metadata} data. Required.
+#' @param ... Other arguments passed to the function. 
 #' @return A character vector. Contains a list of summary tables
 #' within the SingleCellExperiment object.
 #' @examples
