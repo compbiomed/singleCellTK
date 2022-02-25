@@ -4,7 +4,13 @@
 \alias{importMitoGeneSet}
 \title{Import mitochondrial gene sets}
 \usage{
-importMitoGeneSet(inSCE, reference, id, by, collectionName)
+importMitoGeneSet(
+  inSCE,
+  reference = "human",
+  id = "ensembl",
+  by = "rownames",
+  collectionName = "human_mito"
+)
 }
 \arguments{
 \item{inSCE}{Input \linkS4class{SingleCellExperiment} object.}

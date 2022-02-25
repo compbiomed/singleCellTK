@@ -8,6 +8,9 @@ runDecontX(
   inSCE,
   sample = NULL,
   useAssay = "counts",
+  background = NULL,
+  bgAssayName = NULL,
+  bgBatch = NULL,
   z = NULL,
   maxIter = 500,
   delta = c(10, 10),
@@ -32,6 +35,25 @@ each sample separately.}
 
 \item{useAssay}{A string specifying which assay in the SCE to use. Default
 'counts'.}
+
+\item{background}{A \link[SingleCellExperiment]{SingleCellExperiment}
+with the matrix located in the assay slot under \code{bgAssayName}. It should have 
+the same structure as inSCE except it contains the matrix of empty droplets instead 
+of cells. When supplied, empirical distribution of transcripts from these 
+empty droplets will be used as the contamination distribution. Default NULL.}
+
+\item{bgAssayName}{Character. Name of the assay to use if background is a 
+\link[SingleCellExperiment]{SingleCellExperiment}. If NULL, the function
+will use the same value as \code{useAssay}. Default is NULL.}
+
+\item{bgBatch}{Batch labels for \code{background}. If \code{background} is a 
+\link[SingleCellExperiment]{SingleCellExperiment} object, this can be a single 
+character specifying a name that can be found in \code{colData(background)} 
+to directly use the barcode annotation; or a numeric / character vector that has  
+as many elements as barcodes to indicate which sample each barcode belongs to. Its 
+unique values should be the same as those in \code{sample}, such that each 
+batch of cells have their corresponding batch of empty droplets as background, 
+pointed by this parameter. Default to NULL.}
 
 \item{z}{Numeric or character vector. Cell cluster labels. If NULL,
 PCA will be used to reduce the dimensionality of the dataset initially,

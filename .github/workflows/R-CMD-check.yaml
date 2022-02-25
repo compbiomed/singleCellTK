@@ -67,6 +67,12 @@ jobs:
         with:
           extra-packages: rcmdcheck
 
+      - name: Install Celda devel
+        run: |
+          install.packages("devtools")
+          devtools::install_github("campbio/celda@devel")
+        shell: Rscript {0} 
+
       - name: Install XQuartz on macOS
         if: runner.os == 'macOS'
         run: brew install xquartz --cask
@@ -76,7 +82,7 @@ jobs:
           _R_CHECK_CRAN_INCOMING_: false
         run: |
           options(crayon.enabled = TRUE)
-          reticulate::use_python("/opt/hostedtoolcache/Python/3.8.12/x64/bin/python")
+          reticulate::use_python(system('which python', intern=TRUE)) 
           reticulate::py_config()
           rcmdcheck::rcmdcheck(args = c("--no-manual", "--as-cran"), error_on = "warning", check_dir = "check")
         shell: Rscript {0}
