@@ -2,7 +2,7 @@
 % Please edit documentation in R/runSoupX.R
 \name{runSoupX}
 \alias{runSoupX}
-\title{Detecting contamination with SoupX}
+\title{Detecting and correct contamination with SoupX}
 \usage{
 runSoupX(
   inSCE,
@@ -13,10 +13,18 @@ runSoupX(
   bgBatch = NULL,
   assayName = ifelse(is.null(background), "SoupX", "SoupX_bg"),
   cluster = NULL,
+  reducedDimName = ifelse(is.null(background), "SoupX_UMAP_", "SoupX_bg_UMAP_"),
   tfidfMin = 1,
   soupQuantile = 0.9,
+  maxMarkers = 100,
+  contaminationRange = c(0.01, 0.8),
+  rhoMaxFDR = 0.2,
+  priorRho = 0.05,
+  priorRhoStdDev = 0.1,
+  forceAccept = FALSE,
   adjustMethod = c("subtraction", "soupOnly", "multinomial"),
   roundToInt = FALSE,
+  tol = 0.001,
   pCut = 0.01
 )
 }
@@ -56,39 +64,70 @@ character string for specifying clustering label stored in
 When not supplied, SCTK default clustering method will be applied (see 
 \href{https://camplab.net/sctk/v2.4.1/articles/articles/console_analysis_tutorial.html#normalization}{detail}).}
 
-\item{tfidfMin}{SoupX parameter for \link[SoupX]{autoEstCont}. Minimum value 
-of tfidf to accept for a marker gene. Default \code{1}. See 
+\item{reducedDimName}{A single character string of the prefix of output 
+corrected embedding matrix for each sample. Default \code{"SoupX_UMAP_"} when 
+not using a background, otherwise, \code{"SoupX_bg_UMAP_"}.}
+
+\item{tfidfMin}{Numeric. Minimum value of tfidf to accept for a marker gene. 
+Default \code{1}. See \code{?SoupX::autoEstCont}.}
+
+\item{soupQuantile}{Numeric. Only use genes that are at or above this 
+expression quantile in the soup. This prevents inaccurate estimates due to 
+using genes with poorly constrained contribution to the background. Default 
+\code{0.9}. See \code{?SoupX::autoEstCont}.}
+
+\item{maxMarkers}{Integer. If we have heaps of good markers, keep only the 
+best maxMarkers of them. Default \code{100}. See \code{?SoupX::autoEstCont}.}
+
+\item{contaminationRange}{Numeric vector of two elements. This constrains 
+the contamination fraction to lie within this range. Must be between 0 and 1.
+The high end of this range is passed to 
+\code{\link[SoupX]{estimateNonExpressingCells}} as 
+\code{maximumContamination}. Default \code{c(0.01, 0.8)}. See 
 \code{?SoupX::autoEstCont}.}
 
-\item{soupQuantile}{SoupX parameter for \link[SoupX]{autoEstCont}. Only use 
-genes that are at or above this expression quantile in the soup. This 
-prevents inaccurate estimates due to using genes with poorly constrained 
-contribution to the background. Default \code{0.9}. See 
+\item{rhoMaxFDR}{Numeric. False discovery rate passed to 
+\code{\link[SoupX]{estimateNonExpressingCells}}, to test if rho is less than 
+\code{maximumContamination}. Default \code{0.2}. See 
 \code{?SoupX::autoEstCont}.}
 
-\item{adjustMethod}{SoupX parameter for \link[SoupX]{adjustCounts}. Method to
-use for correction. One of \code{'multinomial'}, \code{'soupOnly'}, or 
+\item{priorRho}{Numeric. Mode of gamma distribution prior on contamination 
+fraction. Default \code{0.05}. See \code{?SoupX::autoEstCont}.}
+
+\item{priorRhoStdDev}{Numeric. Standard deviation of gamma distribution prior 
+on contamination fraction. Default \code{0.1}. See 
+\code{?SoupX::autoEstCont}.}
+
+\item{forceAccept}{Logical. Should we allow very high contamination fractions
+to be used. Passed to \code{\link[SoupX]{setContaminationFraction}}. Default 
+\code{FALSE}. See \code{?SoupX::autoEstCont}.}
+
+\item{adjustMethod}{Character. Method to use for correction. One of 
+\code{'subtraction'}, \code{'soupOnly'}, or \code{'multinomial'}. Default 
 \code{'subtraction'}. See \code{?SoupX::adjustCounts}.}
 
-\item{roundToInt}{SoupX parameter for \link[SoupX]{adjustCounts}. Should the 
-resulting matrix be rounded to integers? Default \code{FALSE}. See 
-\code{?SoupX::adjustCounts}.}
+\item{roundToInt}{Logical. Should the resulting matrix be rounded to 
+integers? Default \code{FALSE}. See \code{?SoupX::adjustCounts}.}
 
-\item{pCut}{SoupX parameter for \link[SoupX]{adjustCounts}. The p-value 
-cut-off used when \code{method = 'soupOnly'}. Default \code{0.01}. See 
+\item{tol}{Numeric. Allowed deviation from expected number of soup counts. 
+Don't change this. Default \code{0.001}. See \code{?SoupX::adjustCounts}.}
+
+\item{pCut}{Numeric. The p-value cut-off used when 
+\code{method = 'soupOnly'}. Default \code{0.01}. See 
 \code{?SoupX::adjustCounts}.}
 }
 \value{
 The input \code{inSCE} object with \code{soupX_nUMIs}, 
-\code{soupX_clustrers}, \code{soupX_contamination} added to \code{colData} 
+\code{soupX_clustrers}, \code{soupX_contamination} appended to \code{colData} 
 slot; \code{soupX_{sample}_est} and \code{soupX_{sample}_counts} for each 
-sample added in \code{rowData} slot; and other computation metrics at 
+sample appended to \code{rowData} slot; and other computational metrics at 
 \code{getSoupX(inSCE)}. Replace "soupX" to "soupX_bg" when \code{background}
 is used.
 }
 \description{
-A wrapper function for \link[SoupX]{adjustCounts}. Identify
-potential contamination from experimental factors such as ambient RNA. Visit
+A wrapper function for \link[SoupX]{autoEstCont} and 
+\link[SoupX]{adjustCounts}. Identify potential contamination from 
+experimental factors such as ambient RNA. Visit
 \href{https://rawcdn.githack.com/constantAmateur/SoupX/204b602418df12e9fdb4b68775a8b486c6504fe4/inst/doc/pbmcTutorial.html}{their vignette}
 for better understanding.
 }
