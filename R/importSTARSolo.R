@@ -77,6 +77,10 @@
         }
         sce <- dedupRowNames(sce)
     }
+    
+    # Load metrics summary and store in sce
+    sce <- singleCellTK:::.importMetricsStarSolo(STARsoloDirs, samples, "Gene", "Summary.csv")
+    
     return(sce)
 }
 
@@ -178,4 +182,34 @@ importSTARsolo <- function(
         class = class,
         delayedArray = delayedArray,
         rowNamesDedup = rowNamesDedup)
+}
+
+# Find metrics_summary.csv file in each sample and merge them into a single dataframe
+# Additionally, if file not available for a sample, fill that sample with NA
+.importMetricsStarSolo <- function(samplePaths, sampleNames, metricsPath, metricsFile){
+  # Check if samplePaths and sampleNames are equal in length
+  if(!identical(length(samplePaths), length(sampleNames))){
+    stop("Vectors samplePaths and sampleNames must be equal in length.")
+  }
+  
+  # Processing
+  metrics_summary <- list()
+  for(i in seq(samplePaths)){
+    metrics_summary[[i]] <- list.files(pattern= paste0("*", metricsFile, "$"), path = paste0(samplePaths[i], "/", metricsPath), full.names = TRUE)
+    if(length(metrics_summary[[i]]) > 0){
+      metrics_summary[[i]] <- lapply(metrics_summary[[i]], read.csv, header = FALSE, check.names = FALSE, row.names = 1)[[1]]
+    }
+    else{
+      message("Metrics summary file (", metricsFile, ") not found for sample: ", sampleNames[i])
+      ms_colnames_union <- Reduce(union, lapply(metrics_summary, colnames))
+      metrics_summary[[i]] <- data.frame(matrix(data = NA, nrow = 1, ncol = length(ms_colnames_union)))
+      colnames(metrics_summary[[i]]) <- ms_colnames_union
+    }
+  }
+  
+  # Merge cell ranger metrics_summary csv files from all/multiple samples into a single data.frame
+  metrics_summary <- rlist::list.cbind(metrics_summary)
+  colnames(metrics_summary) <- sampleNames
+  
+  return(metrics_summary)
 }

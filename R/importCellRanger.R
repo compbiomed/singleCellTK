@@ -406,7 +406,7 @@
     sce <- do.call(SingleCellExperiment::cbind, res)
     
     # Load & Store Cell Ranger Summary into SCE
-    metrics_summary <- .importMetrics(samplePaths, sampleNames)
+    metrics_summary <- .importMetricsCellRanger(samplePaths, sampleNames, "outs", "metrics_summary.csv")
     sce <- setSampleSummaryStats(sce, "cellranger", metrics_summary)
     
     if (isTRUE(rowNamesDedup)) {
@@ -804,15 +804,21 @@ importCellRangerV3Sample <- function(
 
 # Find metrics_summary.csv file in each sample and merge them into a single dataframe
 # Additionally, if file not available for a sample, fill that sample with NA
-.importMetrics <- function(samplePaths, sampleNames){
+.importMetricsCellRanger <- function(samplePaths, sampleNames, metricsPath, metricsFile){
+  # Check if samplePaths and sampleNames are equal in length
+  if(!identical(length(samplePaths), length(sampleNames))){
+    stop("Vectors samplePaths and sampleNames must be equal in length.")
+  }
+  
+  # Processing
   metrics_summary <- list()
   for(i in seq(samplePaths)){
-    metrics_summary[[i]] <- list.files(pattern="*metrics_summary.csv$", path = paste0(samplePaths[i], "/outs"), full.names = TRUE)
+    metrics_summary[[i]] <- list.files(pattern= paste0("*", metricsFile, "$"), path = paste0(samplePaths[i], "/", metricsPath), full.names = TRUE)
     if(length(metrics_summary[[i]]) > 0){
       metrics_summary[[i]] <- lapply(metrics_summary[[i]], read.csv, header = TRUE, check.names = FALSE)[[1]]
     }
     else{
-      message("Metrics summary file (metrics_summary.csv) not found for sample: ", sampleNames[i])
+      message("Metrics summary file (", metricsFile, ") not found for sample: ", sampleNames[i])
       ms_colnames_union <- Reduce(union, lapply(metrics_summary, colnames))
       metrics_summary[[i]] <- data.frame(matrix(data = NA, nrow = 1, ncol = length(ms_colnames_union)))
       colnames(metrics_summary[[i]]) <- ms_colnames_union
@@ -820,7 +826,8 @@ importCellRangerV3Sample <- function(
   }
   
   # Merge cell ranger metrics_summary csv files from all/multiple samples into a single data.frame
-  metrics_summary <- t(plyr::rbind.fill(metrics_summary))
+  metrics_summary <- plyr::rbind.fill(metrics_summary)
+  metrics_summary <- t(metrics_summary)
   colnames(metrics_summary) <- sampleNames
   
   return(metrics_summary)
