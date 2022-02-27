@@ -1,6 +1,7 @@
-#' @title Detecting contamination with SoupX
-#' @description A wrapper function for \link[SoupX]{adjustCounts}. Identify
-#' potential contamination from experimental factors such as ambient RNA. Visit
+#' @title Detecting and correct contamination with SoupX
+#' @description A wrapper function for \link[SoupX]{autoEstCont} and 
+#' \link[SoupX]{adjustCounts}. Identify potential contamination from 
+#' experimental factors such as ambient RNA. Visit
 #' \href{https://rawcdn.githack.com/constantAmateur/SoupX/204b602418df12e9fdb4b68775a8b486c6504fe4/inst/doc/pbmcTutorial.html}{their vignette}
 #' for better understanding. 
 #' @param inSCE A \linkS4class{SingleCellExperiment} object.
@@ -30,27 +31,49 @@
 #' \code{colData(inSCE)}, or a character vector with as many elements as cells.
 #' When not supplied, SCTK default clustering method will be applied (see 
 #' \href{https://camplab.net/sctk/v2.4.1/articles/articles/console_analysis_tutorial.html#normalization}{detail}). 
-#' @param tfidfMin SoupX parameter for \link[SoupX]{autoEstCont}. Minimum value 
-#' of tfidf to accept for a marker gene. Default \code{1}. See 
+#' @param reducedDimName A single character string of the prefix of output 
+#' corrected embedding matrix for each sample. Default \code{"SoupX_UMAP_"} when 
+#' not using a background, otherwise, \code{"SoupX_bg_UMAP_"}.
+#' @param tfidfMin Numeric. Minimum value of tfidf to accept for a marker gene. 
+#' Default \code{1}. See \code{?SoupX::autoEstCont}. 
+#' @param soupQuantile Numeric. Only use genes that are at or above this 
+#' expression quantile in the soup. This prevents inaccurate estimates due to 
+#' using genes with poorly constrained contribution to the background. Default 
+#' \code{0.9}. See \code{?SoupX::autoEstCont}. 
+#' @param maxMarkers Integer. If we have heaps of good markers, keep only the 
+#' best maxMarkers of them. Default \code{100}. See \code{?SoupX::autoEstCont}. 
+#' @param contaminationRange Numeric vector of two elements. This constrains 
+#' the contamination fraction to lie within this range. Must be between 0 and 1.
+#' The high end of this range is passed to 
+#' \code{\link[SoupX]{estimateNonExpressingCells}} as 
+#' \code{maximumContamination}. Default \code{c(0.01, 0.8)}. See 
 #' \code{?SoupX::autoEstCont}. 
-#' @param soupQuantile SoupX parameter for \link[SoupX]{autoEstCont}. Only use 
-#' genes that are at or above this expression quantile in the soup. This 
-#' prevents inaccurate estimates due to using genes with poorly constrained 
-#' contribution to the background. Default \code{0.9}. See 
+#' @param rhoMaxFDR Numeric. False discovery rate passed to 
+#' \code{\link[SoupX]{estimateNonExpressingCells}}, to test if rho is less than 
+#' \code{maximumContamination}. Default \code{0.2}. See 
 #' \code{?SoupX::autoEstCont}. 
-#' @param adjustMethod SoupX parameter for \link[SoupX]{adjustCounts}. Method to
-#' use for correction. One of \code{'multinomial'}, \code{'soupOnly'}, or 
+#' @param priorRho Numeric. Mode of gamma distribution prior on contamination 
+#' fraction. Default \code{0.05}. See \code{?SoupX::autoEstCont}. 
+#' @param priorRhoStdDev Numeric. Standard deviation of gamma distribution prior 
+#' on contamination fraction. Default \code{0.1}. See 
+#' \code{?SoupX::autoEstCont}. 
+#' @param forceAccept Logical. Should we allow very high contamination fractions
+#' to be used. Passed to \code{\link[SoupX]{setContaminationFraction}}. Default 
+#' \code{FALSE}. See \code{?SoupX::autoEstCont}. 
+#' @param adjustMethod Character. Method to use for correction. One of 
+#' \code{'subtraction'}, \code{'soupOnly'}, or \code{'multinomial'}. Default 
 #' \code{'subtraction'}. See \code{?SoupX::adjustCounts}. 
-#' @param roundToInt SoupX parameter for \link[SoupX]{adjustCounts}. Should the 
-#' resulting matrix be rounded to integers? Default \code{FALSE}. See 
-#' \code{?SoupX::adjustCounts}. 
-#' @param pCut SoupX parameter for \link[SoupX]{adjustCounts}. The p-value 
-#' cut-off used when \code{method = 'soupOnly'}. Default \code{0.01}. See 
+#' @param roundToInt Logical. Should the resulting matrix be rounded to 
+#' integers? Default \code{FALSE}. See \code{?SoupX::adjustCounts}. 
+#' @param tol Numeric. Allowed deviation from expected number of soup counts. 
+#' Don't change this. Default \code{0.001}. See \code{?SoupX::adjustCounts}. 
+#' @param pCut Numeric. The p-value cut-off used when 
+#' \code{method = 'soupOnly'}. Default \code{0.01}. See 
 #' \code{?SoupX::adjustCounts}. 
 #' @return The input \code{inSCE} object with \code{soupX_nUMIs}, 
-#' \code{soupX_clustrers}, \code{soupX_contamination} added to \code{colData} 
+#' \code{soupX_clustrers}, \code{soupX_contamination} appended to \code{colData} 
 #' slot; \code{soupX_{sample}_est} and \code{soupX_{sample}_counts} for each 
-#' sample added in \code{rowData} slot; and other computation metrics at 
+#' sample appended to \code{rowData} slot; and other computational metrics at 
 #' \code{getSoupX(inSCE)}. Replace "soupX" to "soupX_bg" when \code{background}
 #' is used. 
 #' @export
@@ -64,10 +87,19 @@ runSoupX <- function(inSCE,
                      assayName = ifelse(is.null(background), 
                                         "SoupX", "SoupX_bg"), 
                      cluster = NULL, 
+                     reducedDimName = ifelse(is.null(background), 
+                                        "SoupX_UMAP_", "SoupX_bg_UMAP_"), 
                      tfidfMin = 1, 
                      soupQuantile = 0.9,
+                     maxMarkers = 100,
+                     contaminationRange = c(0.01, 0.8),
+                     rhoMaxFDR = 0.2,
+                     priorRho = 0.05,
+                     priorRhoStdDev = 0.1,
+                     forceAccept = FALSE,
                      adjustMethod = c("subtraction", "soupOnly", "multinomial"),
                      roundToInt = FALSE,
+                     tol = 0.001,
                      pCut = 0.01) {
     SingleBGBatchForAllBatch <- FALSE
     adjustMethod <- match.arg(adjustMethod)
@@ -138,10 +170,18 @@ runSoupX <- function(inSCE,
                                   background = background,
                                   bgAssayName = bgAssayName,
                                   cluster = cluster,
+                                  reducedDimName = reducedDimName,
                                   tfidfMin = tfidfMin,
                                   soupQuantile = soupQuantile,
+                                  maxMarkers = maxMarkers,
+                                  contaminationRange = contaminationRange,
+                                  rhoMaxFDR = rhoMaxFDR,
+                                  priorRho = priorRho,
+                                  priorRhoStdDev = priorRhoStdDev,
+                                  forceAccept = forceAccept,
                                   adjustMethod = adjustMethod,
                                   roundToInt = roundToInt,
+                                  tol = tol,
                                   pCut = pCut)
         } else {
             if (!is.null(background)) {
@@ -155,10 +195,18 @@ runSoupX <- function(inSCE,
                                   background = tempBG,
                                   bgAssayName = bgAssayName,
                                   cluster = cluster,
+                                  reducedDimName = reducedDimName,
                                   tfidfMin = tfidfMin,
                                   soupQuantile = soupQuantile,
+                                  maxMarkers = maxMarkers,
+                                  contaminationRange = contaminationRange,
+                                  rhoMaxFDR = rhoMaxFDR,
+                                  priorRho = priorRho,
+                                  priorRhoStdDev = priorRhoStdDev,
+                                  forceAccept = forceAccept,
                                   adjustMethod = adjustMethod,
                                   roundToInt = roundToInt,
+                                  tol = tol,
                                   pCut = pCut)
         }
         results[[s]] <- res
@@ -178,30 +226,63 @@ runSoupX <- function(inSCE,
         newColData$soupX_contamination <- NA
     }
     newRowData <- SummarizedExperiment::rowData(inSCE)
+    
+    
     for (s in names(results)) {
         corrAssay[,sampleIdx[[s]]] <- results[[s]]$out
+        meta <- results[[s]]$sc$fit
+        meta$nDropUMIs <- results[[s]]$sc$nDropUMIs
+        meta$param <- list(sample = sample, useAssay = useAssay, 
+                           bgAssayName = bgAssayName, bgBatch = bgBatch,
+                           assayName = assayName, 
+                           tfidfMin = tfidfMin,
+                           soupQuantile = soupQuantile,
+                           maxMarkers = maxMarkers,
+                           contaminationRange = contaminationRange,
+                           rhoMaxFDR = rhoMaxFDR,
+                           priorRho = priorRho,
+                           priorRhoStdDev = priorRhoStdDev,
+                           forceAccept = forceAccept,
+                           adjustMethod = adjustMethod,
+                           roundToInt = roundToInt,
+                           tol = tol,
+                           pCut = pCut,
+                           reducedDimName = paste0(reducedDimName, s))
+        # Output inSCE need to have separated UMAP calculated for each sample
+        sampleUMAP <- matrix(nrow = ncol(inSCE), ncol = 2)
+        rownames(sampleUMAP) <- colnames(inSCE)
+        sampleUMAP[sampleIdx[[s]]] <- results[[s]]$umap
+        if (!is.null(cluster)) {
+            meta$param$cluster <- cluster
+        } else {
+            if (!is.null(background)) {
+                meta$param$cluster <- "soupX_bg_clusters"
+            } else {
+                meta$param$cluster <- "soupX_clusters"
+            }
+        }
         if (!is.null(background)) {
             newColData$soupX_bg_nUMIs[sampleIdx[[s]]] <- results[[s]]$sc$metaData$nUMIs
-            newColData$soupX_bg_clusters[sampleIdx[[s]]] <- results[[s]]$sc$metaData$clusters
+            newColData$soupX_bg_clusters[sampleIdx[[s]]] <- paste0(s, "-", results[[s]]$sc$metaData$clusters)
             newColData$soupX_bg_contamination[sampleIdx[[s]]] <- results[[s]]$sc$metaData$rho
             newRowData[[paste0("soupX_bg_",s,"_est")]] <- results[[s]]$sc$soupProfile$est
             newRowData[[paste0("soupX_bg_",s,"_counts")]] <- results[[s]]$sc$soupProfile$counts
-            S4Vectors::metadata(inSCE)$sctk$SoupX_bg[[s]] <- results[[s]]$sc$fit
-            S4Vectors::metadata(inSCE)$sctk$SoupX_bg[[s]]$nDropUMIs <- results[[s]]$sc$nDropUMIs
+            getSoupX(inSCE, sampleID = s, background = TRUE) <- meta
         } else {
             newColData$soupX_nUMIs[sampleIdx[[s]]] <- results[[s]]$sc$metaData$nUMIs
-            newColData$soupX_clusters[sampleIdx[[s]]] <- results[[s]]$sc$metaData$clusters
+            newColData$soupX_clusters[sampleIdx[[s]]] <- paste0(s, "-", results[[s]]$sc$metaData$clusters)
             newColData$soupX_contamination[sampleIdx[[s]]] <- results[[s]]$sc$metaData$rho
             newRowData[[paste0("soupX_",s,"_est")]] <- results[[s]]$sc$soupProfile$est
             newRowData[[paste0("soupX_",s,"_counts")]] <- results[[s]]$sc$soupProfile$counts
-            S4Vectors::metadata(inSCE)$sctk$SoupX[[s]] <- results[[s]]$sc$fit
-            S4Vectors::metadata(inSCE)$sctk$SoupX[[s]]$nDropUMIs <- results[[s]]$sc$nDropUMIs
+            getSoupX(inSCE, sampleID = s) <- meta
         }
+        SingleCellExperiment::reducedDim(inSCE, 
+                                         paste0(reducedDimName, 
+                                                s)) <- sampleUMAP
     }
     expData(inSCE, assayName, tag = "raw") <- corrAssay
     SummarizedExperiment::colData(inSCE) <- newColData
     SummarizedExperiment::rowData(inSCE) <- newRowData
-    
     return(inSCE)
 }
 
@@ -209,11 +290,19 @@ runSoupX <- function(inSCE,
                            useAssay, 
                            background, 
                            bgAssayName,
-                           cluster, 
+                           cluster,
+                           reducedDimName,
                            tfidfMin, 
                            soupQuantile,
+                           maxMarkers,
+                           contaminationRange,
+                           rhoMaxFDR,
+                           priorRho,
+                           priorRhoStdDev,
+                           forceAccept,
                            adjustMethod,
                            roundToInt,
+                           tol,
                            pCut) {
     # Building SoupX's SoupChannel object
     toc <- expData(inSCE, useAssay)
@@ -240,10 +329,10 @@ runSoupX <- function(inSCE,
         if (is.character(cluster) & length(cluster) == 1) {
             cluster <- SummarizedExperiment::colData(inSCE)[[cluster]]
             names(cluster) <- colnames(inSCE)
-            sc = SoupX::setClusters(sc, cluster)
+            sc <- SoupX::setClusters(sc, cluster)
         } else if (length(cluster) == ncol(inSCE)) {
             names(cluster) <- colnames(inSCE)
-            sc = SoupX::setClusters(sc, cluster)
+            sc <- SoupX::setClusters(sc, cluster)
         } else {
             stop("Invalid cluster specification")
         }
@@ -251,29 +340,285 @@ runSoupX <- function(inSCE,
         message(paste0(date(), " ... Cluster info not given, "))
         message(paste0(date(), " ...   generating with Scran SNN method."))
         suppressMessages({
-            inSCE <- scaterlogNormCounts(inSCE, "logcounts", useAssay)
-            inSCE <- runNormalization(inSCE, "logcounts", "scaled", scale = TRUE)
-            inSCE <- seuratFindHVG(inSCE, verbose = FALSE)
-            inSCE <- getTopHVG(inSCE, "vst", altExp = "hvg")
-            inSCE <- scaterPCA(inSCE, "scaled", "hvg")
-            inSCE <- runScranSNN(inSCE, useReducedDim = "PCA", 
-                                 clusterName = "SoupX_cluster")
+            c <- scran::quickCluster(inSCE, assay.type = useAssay, 
+                                     method = "igraph")
+            inSCE$SoupX_cluster <- c
         })
-        
-        sc = SoupX::setClusters(sc, stats::setNames(inSCE$SoupX_cluster, 
+        sc <- SoupX::setClusters(sc, stats::setNames(inSCE$SoupX_cluster, 
                                                     colnames(inSCE)))
     }
     
     sc <- SoupX::autoEstCont(sc, doPlot = FALSE, tfidfMin = tfidfMin, 
-                             soupQuantile = soupQuantile)
+                             soupQuantile = soupQuantile, 
+                             maxMarkers = maxMarkers,
+                             contaminationRange = contaminationRange,
+                             rhoMaxFDR = rhoMaxFDR, priorRho = priorRho,
+                             priorRhoStdDev = priorRhoStdDev,
+                             forceAccept = forceAccept)
+    
     out <- SoupX::adjustCounts(sc, method = adjustMethod, 
-                               roundToInt = roundToInt, pCut = pCut)
-    return(list(sc = sc, out = out))
+                               roundToInt = roundToInt, tol = tol, pCut = pCut)
+    message(paste0(date(), " ... Generating UMAP"))
+    inSCE <- getUMAP(inSCE, useAssay = useAssay, reducedDimName = "sampleUMAP")
+    return(list(sc = sc, out = out, 
+                umap = SingleCellExperiment::reducedDim(inSCE, "sampleUMAP")))
 }
 
-# TODO
-# S4 method soupXResults(sce, “sample”) <- fit
+#' @title Get or Set SoupX Result
+#' @rdname getSoupX
+#' @description S4 method for getting and setting SoupX results that cannot be
+#' appended to either \code{rowData(inSCE)} or \code{colData(inSCE)}. 
+#' @param inSCE A \linkS4class{SingleCellExperiment} object. For getter method,
+#' \code{\link{runSoupX}} must have been already applied. 
+#' @param sampleID Character vector. For getter method, the samples that should 
+#' be included in the returned list. Leave this \code{NULL} for all samples. 
+#' Default \code{NULL}. For setter method, only one sample allowed. 
+#' @param background Logical. Whether \code{background} was applied when 
+#' running \code{\link{runSoupX}}. Default \code{FALSE}.
+#' @param value Dedicated list object of SoupX results. 
+#' @return For getter method, a list with SoupX results for specified samples. 
+#' For setter method, \code{inSCE} with SoupX results updated.
+#' @export
+setGeneric("getSoupX<-", function(inSCE, sampleID, background = FALSE, value) 
+    standardGeneric("getSoupX<-") )
 
-# plotSoupXResults
-# plotSoupXBGResults
+#' @title Insert SoupX result to SCE object
+#' @rdname getSoupX
+#' @export
+setGeneric("getSoupX", function(inSCE, sampleID = NULL, background = FALSE) 
+    standardGeneric("getSoupX") )
 
+#' @title Get or Set SoupX Result
+#' @rdname getSoupX
+#' @description S4 method for getting and setting SoupX results that cannot be
+#' appended to either \code{rowData(inSCE)} or \code{colData(inSCE)}. 
+#' @param inSCE A \linkS4class{SingleCellExperiment} object. For getter method,
+#' \code{\link{runSoupX}} must have been already applied. 
+#' @param sampleID Character vector. For getter method, the samples that should 
+#' be included in the returned list. Leave this \code{NULL} for all samples. 
+#' Default \code{NULL}. For setter method, only one sample allowed. 
+#' @param background Logical. Whether \code{background} was applied when 
+#' running \code{\link{runSoupX}}. Default \code{FALSE}.
+#' @param value Dedicated list object of SoupX results. 
+#' @return For getter method, a list with SoupX results for specified samples. 
+#' For setter method, \code{inSCE} with SoupX results updated.
+#' @export
+setMethod("getSoupX", 
+          "SingleCellExperiment", 
+          function(inSCE, 
+                   sampleID = NULL,
+                   background = FALSE){
+    if (isTRUE(background)) {
+        all.results <- S4Vectors::metadata(inSCE)$sctk$SoupX_bg
+    } else {
+        all.results <- S4Vectors::metadata(inSCE)$sctk$SoupX
+    }
+    if(is.null(all.results)) {
+        stop("No result from 'SoupX' is found. Please run `runSoupX()` first, ",
+             "or check the setting of `background`.") 
+    }
+    results <- all.results
+    if (!is.null(sampleID)) {
+        if (!all(sampleID  %in% names(all.results))) {
+            stop("Sample(s) not found in the results for tool 'SoupX': ",
+                 paste(sampleID[!sampleID %in% names(all.results)], collapse = ", "))
+        }
+        results <- all.results[sampleID]
+    }
+    return(results)
+})
+
+#' @title Insert SoupX result to SCE object
+#' @rdname getSoupX
+#' @export
+setReplaceMethod("getSoupX", 
+                 c("SingleCellExperiment"), 
+                 function(inSCE, 
+                          sampleID, 
+                          background = FALSE, 
+                          value) {
+                     if (isTRUE(background)) {
+                         inSCE@metadata$sctk$SoupX_bg[[sampleID]] <- value
+                     } else {
+                         inSCE@metadata$sctk$SoupX[[sampleID]] <- value
+                     }
+                     return(inSCE)
+                 })
+
+#' Plot SoupX Result
+#' @description This function will generate a combination of plots basing on the 
+#' correction done by SoupX. For each sample, there will be a UMAP with cluster 
+#' labeling, followed by a number of UMAPs showing the change in selected top 
+#' markers. The cluster labeling is what should be used for SoupX to estimate 
+#' the contamination. The Soup Fraction is calculated by subtracting the gene 
+#' expression value of the output corrected matrix from that of the original 
+#' input matrix, and then devided by the input. 
+#' @param inSCE A \linkS4class{SingleCellExperiment} object. With 
+#' \code{\link{runSoupX}} already applied. 
+#' @param sampleID Character vector. The samples that should be included in the
+#' figure. Leave this \code{NULL} for all samples. Default \code{NULL}. 
+#' @param background Logical. Whether \code{background} was applied when 
+#' running \code{\link{runSoupX}}. Default \code{FALSE}.
+#' @param reducedDimName Character. The embedding to use for plotting. Leave it
+#' \code{NULL} for using the sample-specific UMAPs generated when running 
+#' \code{\link{runSoupX}}. Default \code{NULL}. 
+#' @param plotNCols Integer. Number of columns for the plot grid per sample. 
+#' Will determine the number of top markers to show together with 
+#' \code{plotNRows}. Default \code{3}.
+#' @param plotNRows Integer. Number of rows for the plot grid per sample. Will
+#' determine the number of top markers to show together with \code{plotNCols}.
+#' Default \code{2}.
+#' @param baseSize Numeric. The base font size for all text. Default 12. Can be 
+#' overwritten by titleSize, axisSize, and axisLabelSize, legendSize, 
+#' legendTitleSize. Default \code{8}.
+#' @param xlab Character vector. Label for x-axis. Default \code{NULL}.
+#' @param ylab Character vector. Label for y-axis. Default \code{NULL}.
+#' @param dim1 See \code{\link{plotSCEDimReduceColData}}. Default \code{NULL}.
+#' @param dim2 See \code{\link{plotSCEDimReduceColData}}. Default \code{NULL}.
+#' @param labelClusters Logical. Whether the cluster labels are plotted. Default
+#' \code{FALSE}.
+#' @param clusterLabelSize Numeric. Determines the size of cluster label when 
+#' \code{labelClusters} is set to \code{TRUE}. Default \code{3.5}.
+#' @param defaultTheme Logical. Adds grid to plot when \code{TRUE}. Default 
+#' \code{TRUE}.
+#' @param dotSize Numeric. Size of dots. Default \code{0.5}.
+#' @param transparency Numeric. Transparency of the dots, values will be from 0
+#' to 1. Default \code{1}.
+#' @param titleSize Numeric. Size of title of plot. Default \code{15}.
+#' @param axisLabelSize Numeric. Size of x/y-axis labels. Default \code{NULL}.
+#' @param axisSize Numeric. Size of x/y-axis ticks. Default \code{NULL}.
+#' @param legendSize Numeric. Size of legend. Default \code{NULL}.
+#' @param legendTitleSize Numeric. Size of legend title. Default \code{NULL}.
+#' @return ggplot object of the combination of UMAPs. See description.
+#' @export
+plotSoupXResult <- function(inSCE, 
+                            sampleID = NULL, 
+                            background = FALSE, 
+                            reducedDimName=NULL,
+                            plotNCols = 3,
+                            plotNRows = 2,
+                            baseSize=8,
+                            xlab=NULL,
+                            ylab=NULL,
+                            dim1=NULL,
+                            dim2=NULL,
+                            labelClusters = FALSE,
+                            clusterLabelSize = 3.5,
+                            defaultTheme=TRUE,
+                            dotSize=0.5,
+                            transparency=1,
+                            titleSize=NULL,
+                            axisLabelSize=NULL,
+                            axisSize=NULL,
+                            legendSize=NULL,
+                            legendTitleSize=NULL
+                            )
+{
+    results <- getSoupX(inSCE, sampleID = sampleID, background = background)
+    samples <- names(results)
+    samplePlots <- list()
+    for (s in samples) {
+        sampleRes <- results[[s]]
+        param <- sampleRes$param
+        sampleIdx <- param$sample == s
+        tmpSCE <- inSCE[,sampleIdx]
+        markerTable <- results[[s]]$markersUsed
+        markerTable <- markerTable[order(markerTable$qval),]
+        # Iteratively pop out the top significant marker from each cluster.
+        # i.e. Get top marker from c1 to cn, then the second top marker again
+        # from c1 to cn, as long as there is still a marker for cn. 
+        uniqCluster <- unique(markerTable$cluster)
+        markerToUse <- character()
+        markerClusterMap <- character()
+        nMarkerToUse <- plotNCols * plotNRows - 1
+        nIter <- 0
+        while (length(markerToUse) < nMarkerToUse) {
+            nIter <- nIter + 1
+            # c is the cluster to look at in this iteration
+            c <- uniqCluster[(nIter-1)%%length(uniqCluster) + 1]
+            markerPerCluster <- markerTable[markerTable$cluster == c,]
+            topMarker <- markerPerCluster[1, "gene"]
+            markerToUse <- c(markerToUse, topMarker)
+            markerClusterMap <- c(markerClusterMap, c)
+            markerTable <- markerTable[-which(markerTable$gene == topMarker),]
+        }
+        names(markerClusterMap) <- markerToUse
+        # Get the per-sample UMAP if not specifying one
+        useRedDim <- reducedDimName
+        if (is.null(reducedDimName)) {
+            useRedDim <- param$reducedDimName
+        }
+        plotList <- list(
+            cluster = plotSCEDimReduceColData(tmpSCE, 
+                                              param$cluster, 
+                                              useRedDim,
+                                              title = "Cluster",
+                                              labelClusters = labelClusters,
+                                              clusterLabelSize = clusterLabelSize,
+                                              xlab=xlab, 
+                                              ylab=ylab,
+                                              dim1=dim1,
+                                              dim2=dim2,
+                                              defaultTheme=defaultTheme,
+                                              dotSize=dotSize,
+                                              transparency=transparency,
+                                              baseSize=baseSize,
+                                              titleSize=titleSize,
+                                              axisLabelSize=axisLabelSize,
+                                              axisSize=axisSize,
+                                              legendSize=legendSize,
+                                              legendTitleSize=legendTitleSize)
+            )
+        for (g in markerToUse) {
+            # Soup fraction was calculated basing on SoupX's original method.
+            # Credit to SoupX::plotChangeMap
+            oldName <- param$useAssay
+            newName <- param$assayName
+            old <- colSums(assay(tmpSCE, oldName)[g, , drop = FALSE])
+            new <- colSums(assay(tmpSCE, newName)[g, , drop = FALSE])
+            relChange = (old - new)/old
+            zLims = c(0, 1)
+            relChange[which(relChange < zLims[1])] = zLims[1]
+            relChange[which(relChange > zLims[2])] = zLims[2]
+            relChange[which(is.na(relChange))] = 0
+            # Start to generate the plot
+            tmpSCE$Soup_Frac <- relChange
+            legendTitle <- paste0("cluster", markerClusterMap[g], ":", g)
+            plotList[[g]] <- plotSCEDimReduceColData(tmpSCE, 
+                                                     "Soup_Frac", 
+                                                     useRedDim,
+                                                     legendTitle = "Soup_Frac",
+                                                     title = legendTitle,
+                                                     xlab=xlab, 
+                                                     ylab=ylab,
+                                                     dim1=dim1,
+                                                     dim2=dim2,
+                                                     defaultTheme=defaultTheme,
+                                                     dotSize=dotSize,
+                                                     transparency=transparency,
+                                                     baseSize=baseSize,
+                                                     titleSize=titleSize,
+                                                     axisLabelSize=axisLabelSize,
+                                                     axisSize=axisSize,
+                                                     legendSize=legendSize,
+                                                     legendTitleSize=legendTitleSize
+                                                     )
+        }
+        # For each sample, the figure consists of a cowplot draw for a title,
+        # which takes a row, and then the grid arrangement of a UMAP for cluster
+        # labeling followed by the ChangeMap of selected top markers. 
+        samplePlots[[paste0(s, "Title")]] <- cowplot::ggdraw() + 
+            cowplot::draw_label(s, fontface='bold')
+        samplePlots[[s]] <- .ggSCTKCombinePlots(plotList,
+                                                plotNCols)
+    }
+    # relHeights should be like c(0.1, nrows[1], 0.1, nrows[2], 0.1, ....),
+    # which counts for title, grid, title, grid, ...
+    relHeights <- rep(0.1, 2 * length(samples))
+    relHeights[2 * seq_along(samples)] <- plotNRows
+    finalPlot <- cowplot::plot_grid(plotlist = samplePlots,
+                                    ncol = 1,
+                                    rel_heights = relHeights)
+
+    return(finalPlot)
+}
