@@ -25,6 +25,18 @@
 #' second column for each gene set should be the description denoting the
 #' location of the gene IDs in \code{inSCE}. These gene sets will be included
 #' with those from \code{geneSetList} if both parameters are provided.
+#' @param mitoRef Character. Available options are "human" and "mouse". Default is 
+#' \code{"human"}. 
+#' @param mitoIDType Character. Types of mitochondrial gene id. Now it supports "symbol", 
+#' "entrez", "ensembl" and "ensemblTranscriptID". Default \code{"ensembl"}. 
+#' @param mitoGeneLocation Character. Describes the location within \code{inSCE} where
+#' the gene identifiers in the mitochondrial gene sets should be mapped.
+#' If set to \code{"rownames"} then the features will
+#' be searched for among \code{rownames(inSCE)}. This can also be
+#' set to one of the column names of \code{rowData(inSCE)} in which case the
+#' gene identifies will be mapped to that column in the \code{rowData}
+#' of \code{inSCE}. See \link{featureIndex} for more information.
+#' Default \code{"rownames"}.
 #' @param percent_top An integer vector. Each element is treated as a
 #' number of top genes to compute the percentage of library size occupied by
 #' the most highly expressed genes in each cell.
@@ -59,6 +71,9 @@ runPerCellQC <- function(inSCE,
                          geneSetList = NULL,
                          geneSetListLocation = "rownames",
                          geneSetCollection = NULL,
+                         mitoRef = "human",
+                         mitoIDType = "ensembl",
+                         mitoGeneLocation = "rownames",
                          percent_top = c(50, 100, 200, 500),
                          use_altexps = FALSE,
                          flatten = TRUE,
@@ -70,6 +85,19 @@ runPerCellQC <- function(inSCE,
   #argsList <- as.list(formals(fun = sys.function(sys.parent()),
   #                            envir = parent.frame()))
   argsList <- mget(names(formals()),sys.frame(sys.nframe()))
+
+  ## Add mito gene collection 
+  if (!is.null(mitoRef) & !is.null(mitoIDType)) {
+    inSCE <- importMitoGeneSet(inSCE, reference = mitoRef, id = mitoIDType, 
+                               by = mitoGeneLocation, collectionName = "mito")
+    mitoGS <- metadata(inSCE)$sctk$genesets$mito[[1]]
+  }
+
+  if (!is.null(geneSetCollection)) {
+    geneSetCollection <- GSEABase::GeneSetCollection(list(mitoGS, unlist(geneSetCollection)))
+  } else {
+    geneSetCollection <- GSEABase::GeneSetCollection(mitoGS)
+  }
 
   ## Add GeneSetColletion that has been previously imported
   if(!is.null(collectionName)) {
