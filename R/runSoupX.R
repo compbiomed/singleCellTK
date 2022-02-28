@@ -29,8 +29,7 @@
 #' @param cluster Prior knowledge of clustering labels on cells. A single 
 #' character string for specifying clustering label stored in 
 #' \code{colData(inSCE)}, or a character vector with as many elements as cells.
-#' When not supplied, SCTK default clustering method will be applied (see 
-#' \href{https://camplab.net/sctk/v2.4.1/articles/articles/console_analysis_tutorial.html#normalization}{detail}). 
+#' When not supplied, \code{\link[scran]{quickCluster}} method will be applied.
 #' @param reducedDimName A single character string of the prefix of output 
 #' corrected embedding matrix for each sample. Default \code{"SoupX_UMAP_"} when 
 #' not using a background, otherwise, \code{"SoupX_bg_UMAP_"}.
@@ -281,6 +280,7 @@ runSoupX <- function(inSCE,
                                                 s)) <- sampleUMAP
     }
     expData(inSCE, assayName, tag = "raw") <- corrAssay
+    inSCE <- expSetDataTag(inSCE, "raw", assayName)
     SummarizedExperiment::colData(inSCE) <- newColData
     SummarizedExperiment::rowData(inSCE) <- newRowData
     return(inSCE)
@@ -455,8 +455,8 @@ setReplaceMethod("getSoupX",
 #' input matrix, and then devided by the input. 
 #' @param inSCE A \linkS4class{SingleCellExperiment} object. With 
 #' \code{\link{runSoupX}} already applied. 
-#' @param sampleID Character vector. The samples that should be included in the
-#' figure. Leave this \code{NULL} for all samples. Default \code{NULL}. 
+#' @param sample Character vector. Indicates which sample each cell belongs to. 
+#' Default \code{NULL}.
 #' @param background Logical. Whether \code{background} was applied when 
 #' running \code{\link{runSoupX}}. Default \code{FALSE}.
 #' @param reducedDimName Character. The embedding to use for plotting. Leave it
@@ -471,6 +471,10 @@ setReplaceMethod("getSoupX",
 #' @param baseSize Numeric. The base font size for all text. Default 12. Can be 
 #' overwritten by titleSize, axisSize, and axisLabelSize, legendSize, 
 #' legendTitleSize. Default \code{8}.
+#' @param combinePlot Must be either \code{"all"}, \code{"sample"}, or 
+#' \code{"none"}. \code{"all"} will combine all plots into a single 
+#' \code{.ggplot} object, while \code{"sample"} will output a list of plots 
+#' separated by sample. Default \code{"all"}.
 #' @param xlab Character vector. Label for x-axis. Default \code{NULL}.
 #' @param ylab Character vector. Label for y-axis. Default \code{NULL}.
 #' @param dim1 See \code{\link{plotSCEDimReduceColData}}. Default \code{NULL}.
@@ -492,12 +496,13 @@ setReplaceMethod("getSoupX",
 #' @return ggplot object of the combination of UMAPs. See description.
 #' @export
 plotSoupXResult <- function(inSCE, 
-                            sampleID = NULL, 
+                            sample = NULL, 
                             background = FALSE, 
                             reducedDimName=NULL,
                             plotNCols = 3,
                             plotNRows = 2,
                             baseSize=8,
+                            combinePlot = c("all", "sample", "none"),
                             xlab=NULL,
                             ylab=NULL,
                             dim1=NULL,
@@ -514,7 +519,12 @@ plotSoupXResult <- function(inSCE,
                             legendTitleSize=NULL
                             )
 {
+    combinePlot <- match.arg(combinePlot)
+    sampleID <- unique(sample)
     results <- getSoupX(inSCE, sampleID = sampleID, background = background)
+    # Doing this redundancy-like step because: If sample given NULL when running
+    # runSoupX(), the actual sample label saved will be "all_cells", which users
+    # won't know. 
     samples <- names(results)
     samplePlots <- list()
     for (s in samples) {
@@ -583,7 +593,7 @@ plotSoupXResult <- function(inSCE,
             relChange[which(is.na(relChange))] = 0
             # Start to generate the plot
             tmpSCE$Soup_Frac <- relChange
-            legendTitle <- paste0("cluster", markerClusterMap[g], ":", g)
+            legendTitle <- paste0(markerClusterMap[g], ":", g, ", ", s)
             plotList[[g]] <- plotSCEDimReduceColData(tmpSCE, 
                                                      "Soup_Frac", 
                                                      useRedDim,
@@ -604,21 +614,21 @@ plotSoupXResult <- function(inSCE,
                                                      legendTitleSize=legendTitleSize
                                                      )
         }
-        # For each sample, the figure consists of a cowplot draw for a title,
-        # which takes a row, and then the grid arrangement of a UMAP for cluster
-        # labeling followed by the ChangeMap of selected top markers. 
-        samplePlots[[paste0(s, "Title")]] <- cowplot::ggdraw() + 
-            cowplot::draw_label(s, fontface='bold')
-        samplePlots[[s]] <- .ggSCTKCombinePlots(plotList,
-                                                plotNCols)
+        if (combinePlot %in% c("sample", "all")) {
+            samplePlots[[s]] <- .ggSCTKCombinePlots(plotList,
+                                                    plotNCols)
+        } else if (combinePlot == "none") {
+            samplePlots[[s]] <- plotList
+        }
     }
-    # relHeights should be like c(0.1, nrows[1], 0.1, nrows[2], 0.1, ....),
-    # which counts for title, grid, title, grid, ...
-    relHeights <- rep(0.1, 2 * length(samples))
-    relHeights[2 * seq_along(samples)] <- plotNRows
-    finalPlot <- cowplot::plot_grid(plotlist = samplePlots,
-                                    ncol = 1,
-                                    rel_heights = relHeights)
-
-    return(finalPlot)
+    finalPlotList <- list(Sample = samplePlots)
+    if (combinePlot == "all") {
+        finalPlotList <- .ggSCTKCombinePlots(finalPlotList$Sample, ncols = 1)
+    }
+    if (length(samples) == 1) {
+        if (combinePlot %in% c("none", "sample")) {
+            finalPlotList <- finalPlotList$Sample[[1]]
+        } 
+    }
+    return(finalPlotList)
 }

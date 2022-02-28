@@ -61,8 +61,7 @@ Default \code{"SoupX"} when not using a background, otherwise,
 \item{cluster}{Prior knowledge of clustering labels on cells. A single 
 character string for specifying clustering label stored in 
 \code{colData(inSCE)}, or a character vector with as many elements as cells.
-When not supplied, SCTK default clustering method will be applied (see 
-\href{https://camplab.net/sctk/v2.4.1/articles/articles/console_analysis_tutorial.html#normalization}{detail}).}
+When not supplied, \code{\link[scran]{quickCluster}} method will be applied.}
 
 \item{reducedDimName}{A single character string of the prefix of output 
 corrected embedding matrix for each sample. Default \code{"SoupX_UMAP_"} when 

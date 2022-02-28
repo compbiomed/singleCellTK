@@ -6,12 +6,13 @@
 \usage{
 plotSoupXResult(
   inSCE,
-  sampleID = NULL,
+  sample = NULL,
   background = FALSE,
   reducedDimName = NULL,
   plotNCols = 3,
   plotNRows = 2,
   baseSize = 8,
+  combinePlot = c("all", "sample", "none"),
   xlab = NULL,
   ylab = NULL,
   dim1 = NULL,
@@ -32,8 +33,8 @@ plotSoupXResult(
 \item{inSCE}{A \linkS4class{SingleCellExperiment} object. With 
 \code{\link{runSoupX}} already applied.}
 
-\item{sampleID}{Character vector. The samples that should be included in the
-figure. Leave this \code{NULL} for all samples. Default \code{NULL}.}
+\item{sample}{Character vector. Indicates which sample each cell belongs to. 
+Default \code{NULL}.}
 
 \item{background}{Logical. Whether \code{background} was applied when 
 running \code{\link{runSoupX}}. Default \code{FALSE}.}
@@ -53,6 +54,11 @@ Default \code{2}.}
 \item{baseSize}{Numeric. The base font size for all text. Default 12. Can be 
 overwritten by titleSize, axisSize, and axisLabelSize, legendSize, 
 legendTitleSize. Default \code{8}.}
+
+\item{combinePlot}{Must be either \code{"all"}, \code{"sample"}, or 
+\code{"none"}. \code{"all"} will combine all plots into a single 
+\code{.ggplot} object, while \code{"sample"} will output a list of plots 
+separated by sample. Default \code{"all"}.}
 
 \item{xlab}{Character vector. Label for x-axis. Default \code{NULL}.}
 
