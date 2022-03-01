@@ -11,9 +11,9 @@ runPerCellQC(
   geneSetList = NULL,
   geneSetListLocation = "rownames",
   geneSetCollection = NULL,
-  mitoRef = "human",
-  mitoIDType = "ensembl",
-  mitoGeneLocation = "rownames",
+  mitoRef = NULL,
+  mitoIDType = NULL,
+  mitoGeneLocation = NULL,
   percent_top = c(50, 100, 200, 500),
   use_altexps = FALSE,
   flatten = TRUE,
@@ -53,10 +53,10 @@ location of the gene IDs in \code{inSCE}. These gene sets will be included
 with those from \code{geneSetList} if both parameters are provided.}
 
 \item{mitoRef}{Character. Available options are "human" and "mouse". Default is 
-\code{"human"}.}
+\code{NULL}.}
 
 \item{mitoIDType}{Character. Types of mitochondrial gene id. Now it supports "symbol", 
-"entrez", "ensembl" and "ensemblTranscriptID". Default \code{"ensembl"}.}
+"entrez", "ensembl" and "ensemblTranscriptID". Default \code{NULL}.}
 
 \item{mitoGeneLocation}{Character. Describes the location within \code{inSCE} where
 the gene identifiers in the mitochondrial gene sets should be mapped.
@@ -65,7 +65,7 @@ be searched for among \code{rownames(inSCE)}. This can also be
 set to one of the column names of \code{rowData(inSCE)} in which case the
 gene identifies will be mapped to that column in the \code{rowData}
 of \code{inSCE}. See \link{featureIndex} for more information.
-Default \code{"rownames"}.}
+Default \code{NULL}.}
 
 \item{percent_top}{An integer vector. Each element is treated as a
 number of top genes to compute the percentage of library size occupied by
