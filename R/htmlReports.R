@@ -78,7 +78,7 @@ reportCellQC <- function(inSCE, output_file = NULL,
 #' the count matrix (full droplets or filtered matrix, depends on the selected QC algorithm) with the output from at least one of these functions:
 #' runQCMetrics, runScrublet, runScDblFinder, runCxds, runBcds, runCxdsBcdsHybrid, runDecontX, runBarcodeRankDrops, runEmptyDrops
 #' @param algorithm Character. Specifies which QC algorithm report to generate.
-#'  Available options are "BarcodeRankDrops", "EmptyDrops", "QCMetrics", "Scrublet", "ScDblFinder", "Cxds", "Bcds", "CxdsBcdsHybrid", "DoubletFinder"  and "DecontX".
+#'  Available options are "BarcodeRankDrops", "EmptyDrops", "QCMetrics", "Scrublet", "ScDblFinder", "Cxds", "Bcds", "CxdsBcdsHybrid", "DoubletFinder", "DecontX" and "SoupX".
 #' @param output_file name of the generated file. If NULL/default then the output file name will be based on the name of the selected QC algorithm name .
 #' @param output_dir name of the output directory to save the rendered file. If NULL/default the file is stored to the current working directory
 #' @return .html file
