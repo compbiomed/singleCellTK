@@ -63,6 +63,10 @@ jobs:
           http-user-agent: ${{ matrix.config.http-user-agent }}
           use-public-rspm: true
 
+      - name: Install fftw3 on Linux
+        if: runner.os == 'Linux'
+        run: sudo apt-get install libfftw3-dev
+
       - uses: r-lib/actions/setup-r-dependencies@v1
         with:
           extra-packages: rcmdcheck
@@ -83,7 +87,7 @@ jobs:
         run: |
           options(crayon.enabled = TRUE)
           if (Sys.info()[1] == "Windows") {
-            reticulate::use_python(system('where python', intern=TRUE))
+            reticulate::use_python(system('where python', intern=TRUE)[1])
           } else {
             reticulate::use_python(system('which python', intern=TRUE))
           }
