@@ -42,7 +42,7 @@ metaChecking <- function(metainfo, sample){
     }
 
     ### if QC is ran in R console instead of QC pipeline, we will add place holder.
-    ### In this case, different samples also share parameters. Return anny sublist is fine 
+    ### In this case, different samples also share parameters. Return any sublist is fine 
     newMeta <- list() 
     for (sample in samples) {
       newMeta[[sample]] <- metainfo
@@ -53,12 +53,12 @@ metaChecking <- function(metainfo, sample){
   return(metainfo)
 }
 
-preprocessMeta <- function(meta, ignore=c("geneSetCollection", "sample", "batch", "batchBackground")){
+preprocessMeta <- function(meta, ignore=c("geneSetCollection", "sample", "batch", "batchBackground", "bgBatch")){
   meta <- meta[!names(meta) %in% ignore]
   lapply(meta, function(y){
     while(is.list(y)) {
       if (length(y) != 0){
-       y <- y[[1]]  
+       y <- y[[1]]
       } else {
        y <- "NULL"
       }
@@ -970,6 +970,144 @@ for (sample in samples){
   # }
   
   x <- preprocessMeta(DecontXMeta[[sample]])
+  cat(t(as.data.frame(x)) %>%
+    knitr::kable(format = "html") %>% kableExtra::kable_styling() %>%
+    kableExtra::scroll_box(width = "80%"))
+  cat("\n\n")
+}
+```
+`r cat("\n")`
+
+
+```{r, "SoupX-description", include=FALSE, warning=FALSE, message=FALSE}
+description_SoupX<- descriptionSoupX()
+```
+
+```{r, "SoupX", results="asis", fig.align="center", warning=FALSE, message=FALSE, echo=FALSE}
+i="SoupX"
+# cat(paste0('## ', i, ' \n'))
+
+soupXData <- c("soupX_nUMIs", "soupX_contamination")
+# soupX cluster label might be supplied by users, thus not checking it.
+skipSoupX <- any(!soupXData %in% names(colData(sce.qc)))
+
+if (skipSoupX) {
+  #cat("runDecontX did not complete successfully. The section of DecontX is skipped")
+  plotSoupX <- NULL
+} else {
+  cat(paste0('## ', i, ' \n'))
+  plotSoupX<- tryCatch(
+    {plotSoupXResult(inSCE = sce.qc, 
+                     colData(sce.qc)[['sample']], # Why not use the variable predefined at the beginning of this document?????
+                     combinePlot = "none")},
+    error = function(e) {
+      cat("runSoupX did not complete successfully. The section of SoupX is skipped\n\n")
+      skipSoupX <- TRUE
+      return(NA)
+    }
+  )
+}
+
+if (!skipSoupX) {
+  plotSoupX <- formatPlotList(plotSoupX, samples)
+  cat(description_SoupX$introduction)
+  cat(description_SoupX$runSoupX)
+  cat(description_SoupX$output)
+  cat(description_SoupX$contamination)
+  cat(description_SoupX$clustering)
+  cat(description_SoupX$plotSoupXResult)
+}
+```
+<br />
+
+
+## {.unlisted .unnumbered .toc-ignore .tabset .tabset-fade}
+```{r "SoupX-plot", echo=FALSE, eval=(!skipSoupX), results="asis", fig.align="center"}
+cat("\n\n")
+for (sample in samples){
+  cat(paste0("### ", sample, " {.tabset .tabset-fade} \n\n"))
+  
+  cat("#### SoupX Clustering {.tabset .tabset-fade} \n\n")
+  plot(plotSoupX$Sample[[sample]][["scatter_soupXClusters"]])
+  cat("\n\n")
+  
+  for (marker in names(plotSoupX$Sample[[sample]])[-1]) {
+    cat(paste0("#### Soup Fraction: ", marker, " {.tabset .tabset-fade} \n\n"))
+    plot(plotSoupX$Sample[[sample]][[marker]])
+    cat("\n\n")
+  }
+  
+  cat("#### Parameters {.tabset .tabset-fade} \n\n")
+  SoupXMeta <- getSoupX(sce.qc, sample)[[1]]$param
+  SoupXMeta <- metaChecking(SoupXMeta, sample)
+
+  x <- preprocessMeta(SoupXMeta[[sample]])
+  cat(t(as.data.frame(x)) %>%
+    knitr::kable(format = "html") %>% kableExtra::kable_styling() %>%
+    kableExtra::scroll_box(width = "80%"))
+  cat("\n\n")
+}
+```
+`r cat("\n")`
+
+```{r, "SoupX_bg", results="asis", fig.align="center", warning=FALSE, message=FALSE, echo=FALSE}
+i="SoupX with raw/droplet matrix"
+# cat(paste0('## ', i, ' \n'))
+
+soupXData <- c("soupX_bg_nUMIs", "soupX_bg_contamination")
+skipSoupX <- any(!soupXData %in% names(colData(sce.qc)))
+
+if (skipSoupX) {
+  plotSoupX <- NULL
+} else {
+  cat(paste0('## ', i, ' \n'))
+  plotSoupX<- tryCatch(
+    {plotSoupXResult(inSCE = sce.qc, 
+                     colData(sce.qc)[['sample']], 
+                     combinePlot = "none",
+                     background = TRUE)},
+    error = function(e) {
+      cat("runSoupX with background did not complete successfully. The section of SoupX with background is skipped")
+      skipSoupX <- TRUE
+      return(NA)
+    }
+  )
+}
+
+if (!skipSoupX) {
+  plotSoupX <- formatPlotList(plotSoupX, samples)
+  cat(description_SoupX$introduction)
+  cat(description_SoupX$runSoupX)
+  cat(description_SoupX$output)
+  cat(description_SoupX$contamination)
+  cat(description_SoupX$clustering)
+  cat(description_SoupX$plotSoupXResult)
+}
+```
+<br />
+
+
+## {.unlisted .unnumbered .toc-ignore .tabset .tabset-fade}
+```{r "SoupX_bg-plot", echo=FALSE, eval=(!skipSoupX), results="asis", fig.align="center"}
+cat("\n\n")
+for (sample in samples){
+  cat(paste0("### ", sample, " {.tabset .tabset-fade} \n\n"))
+  
+  cat("#### SoupX Clustering {.tabset .tabset-fade} \n\n")
+  plot(plotSoupX$Sample[[sample]][["scatter_soupXClusters"]])
+  cat("\n\n")
+  
+  for (marker in names(plotSoupX$Sample[[sample]])[-1]) {
+    cat(paste0("#### Soup Fraction: ", marker, " {.tabset .tabset-fade} \n\n"))
+    plot(plotSoupX$Sample[[sample]][[marker]])
+    cat("\n\n")
+  }
+  
+  cat("#### Parameters {.tabset .tabset-fade} \n\n")
+  SoupXMeta <- getSoupX(sce.qc, sample, background = TRUE)[[1]]$param
+  SoupXMeta <- metaChecking(SoupXMeta, sample)
+
+  x <- preprocessMeta(SoupXMeta[[sample]])
   cat(t(as.data.frame(x)) %>%
     knitr::kable(format = "html") %>% kableExtra::kable_styling() %>%
     kableExtra::scroll_box(width = "80%"))

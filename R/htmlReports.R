@@ -100,7 +100,8 @@ reportQCTool <- function(inSCE, algorithm=c("BarcodeRankDrops",
                                             "Bcds",
                                             "CxdsBcdsHybrid",
                                             "DoubletFinder",
-                                            "DecontX"),
+                                            "DecontX",
+                                            "SoupX"),
                          output_file = NULL,
                             output_dir = NULL) {
 
@@ -132,6 +133,10 @@ reportQCTool <- function(inSCE, algorithm=c("BarcodeRankDrops",
   }
   if (algorithm =="DecontX"){
     rmarkdown::render(system.file("rmarkdown/qc/DecontX.Rmd", package="singleCellTK"), params = list(
+      object=inSCE), output_file = output_file, output_dir = output_dir)
+  }
+  if (algorithm =="SoupX"){
+    rmarkdown::render(system.file("rmarkdown/qc/SoupX.Rmd", package="singleCellTK"), params = list(
       object=inSCE), output_file = output_file, output_dir = output_dir)
   }
   if (algorithm =="ScDblFinder"){

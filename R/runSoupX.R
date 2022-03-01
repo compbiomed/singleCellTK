@@ -137,7 +137,7 @@ runSoupX <- function(inSCE,
                     bgBatch <- as.character(bgBatch)
                 }
                 # Check 'sample's in cell matrix can all be found in bgBatch
-                if (!all(sample) %in% bgBatch) {
+                if (!all(sample %in% bgBatch)) {
                     stop("Not all samples can be found in 'bgBatch'.")
                 }
             }
@@ -246,7 +246,8 @@ runSoupX <- function(inSCE,
                            roundToInt = roundToInt,
                            tol = tol,
                            pCut = pCut,
-                           reducedDimName = paste0(reducedDimName, s))
+                           reducedDimName = paste0(reducedDimName, s),
+                           sessionInfo = sessionInfo())
         # Output inSCE need to have separated UMAP calculated for each sample
         sampleUMAP <- matrix(nrow = ncol(inSCE), ncol = 2)
         rownames(sampleUMAP) <- colnames(inSCE)
@@ -559,25 +560,26 @@ plotSoupXResult <- function(inSCE,
             useRedDim <- param$reducedDimName
         }
         plotList <- list(
-            cluster = plotSCEDimReduceColData(tmpSCE, 
-                                              param$cluster, 
-                                              useRedDim,
-                                              title = "Cluster",
-                                              labelClusters = labelClusters,
-                                              clusterLabelSize = clusterLabelSize,
-                                              xlab=xlab, 
-                                              ylab=ylab,
-                                              dim1=dim1,
-                                              dim2=dim2,
-                                              defaultTheme=defaultTheme,
-                                              dotSize=dotSize,
-                                              transparency=transparency,
-                                              baseSize=baseSize,
-                                              titleSize=titleSize,
-                                              axisLabelSize=axisLabelSize,
-                                              axisSize=axisSize,
-                                              legendSize=legendSize,
-                                              legendTitleSize=legendTitleSize)
+            scatter_soupXClusters = 
+                plotSCEDimReduceColData(tmpSCE, 
+                                        param$cluster, 
+                                        useRedDim,
+                                        title = "Cluster",
+                                        labelClusters = labelClusters,
+                                        clusterLabelSize = clusterLabelSize,
+                                        xlab=xlab, 
+                                        ylab=ylab,
+                                        dim1=dim1,
+                                        dim2=dim2,
+                                        defaultTheme=defaultTheme,
+                                        dotSize=dotSize,
+                                        transparency=transparency,
+                                        baseSize=baseSize,
+                                        titleSize=titleSize,
+                                        axisLabelSize=axisLabelSize,
+                                        axisSize=axisSize,
+                                        legendSize=legendSize,
+                                        legendTitleSize=legendTitleSize)
             )
         for (g in markerToUse) {
             # Soup fraction was calculated basing on SoupX's original method.
