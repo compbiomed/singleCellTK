@@ -286,8 +286,11 @@ combineQCSubPlots <- function(output, combineP, algo, sampleList, plots, plotIds
   } else {
     tabsetID <- paste0(algo, "Tabs") # for the tabsetPanel within a tab
     mainPlotID <- paste0(plotIds[[algo]], "Main")
-    output[[plotIds[[algo]]]] <- renderUI(plotOutput(mainPlotID))
-    output[[mainPlotID]] <- renderPlot(plots$Violin)
+    if (!is.null(plots$Violin)) {
+      output[[plotIds[[algo]]]] <- renderUI(plotOutput(mainPlotID))
+      output[[mainPlotID]] <- renderPlot(plots$Violin)
+    }
+    
 
     for (i in seq_along(sampleList)) {
       local({
@@ -354,6 +357,9 @@ arrangeQCPlots <- function(inSCE, input, output, algoList, sampleList, plotIDs, 
       dxPlots <- plotDecontXResults(inSCE, combinePlot = combineP, sample = sampleList,
                                     reducedDimName = redDimName)
       combineQCSubPlots(output, combineP, a, uniqueSampleNames, dxPlots, plotIDs, statuses)
+    } else if (a == "soupX") {
+      soupXPlots <- plotSoupXResult(inSCE, combinePlot = combineP)
+      combineQCSubPlots(output, combineP, a, uniqueSampleNames, soupXPlots, plotIDs, statuses)
     } else if (a == "QCMetrics") {
       qcmPlots <- plotRunPerCellQCResults(inSCE, sample = sampleList, combinePlot = combineP)
       combineQCMPlots(input, output, combineP, uniqueSampleNames, qcmPlots, plotIDs, statuses)

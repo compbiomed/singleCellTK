@@ -7,6 +7,7 @@ internetConnection <- suppressWarnings(Biobase::testBioCConnection())
 source("partials.R", local = TRUE) # creates several smaller UI components
 # R.utils::sourceDirectory("qc_help_pages")
 source("qc_help_pages/ui_decontX_help.R", local = TRUE) # creates several smaller UI components
+source("qc_help_pages/ui_soupX_help.R", local = TRUE) # creates several smaller UI components
 source("qc_help_pages/ui_cxds_help.R", local = TRUE) # creates several smaller UI components
 source("qc_help_pages/ui_bcds_help.R", local = TRUE) # creates several smaller UI components
 source("qc_help_pages/ui_cxds_bcds_hybrid_help.R", local = TRUE) # creates several smaller UI components
@@ -71,7 +72,7 @@ shinyServer(function(input, output, session) {
   #Update all of the columns that depend on pvals columns
   updateColDataNames <- function(){
     pdataOptions <- colnames(colData(vals$counts))
-
+    updateSelectInput(session, "soupXCluster", choices = c("None", pdataOptions))
     updateSelectInput(session, "qcSampleSelect", choices = pdataOptions)
     updateSelectInput(session, "filteredSample",
                       choices = c("none", pdataOptions))
@@ -1470,6 +1471,8 @@ shinyServer(function(input, output, session) {
                                                 anim = FALSE), add = TRUE)
   shinyjs::onclick("decontX", shinyjs::toggle(id = "decontXParams",
                                               anim = FALSE), add = TRUE)
+  shinyjs::onclick("soupX", shinyjs::toggle(id = "soupXParams",
+                                              anim = FALSE), add = TRUE)
   shinyjs::onclick("scDblFinder", shinyjs::toggle(id = "scDblFinderParams",
                                                    anim = FALSE), add = TRUE)
   shinyjs::onclick("cxds", shinyjs::toggle(id = "cxdsParams",
@@ -1484,7 +1487,7 @@ shinyServer(function(input, output, session) {
                                                     anim = FALSE), add = TRUE)
 
   qc_choice_list <- list("scDblFinder", "cxds", "bcds",
-                         "cxds_bcds_hybrid", "decontX", "QCMetrics", "scrublet", "doubletFinder")
+                         "cxds_bcds_hybrid", "decontX", "soupX", "QCMetrics", "scrublet", "doubletFinder")
   # holds all the input ids for the QC algorithm parameters by algorithm name
   qc_input_ids <- list(scDblFinder = list(nNeighbors="DCnNeighbors", simDoublets="DCsimDoublets"),
 
@@ -1498,7 +1501,9 @@ shinyServer(function(input, output, session) {
 
                        decontX = list(maxIter="DXmaxIter", estimateDelta="DXestimateDelta", convergence="DXconvergence",
                                       iterLogLik="DXiterLogLik", varGenes="DXvarGenes", dbscanEps="DXdbscanEps", verbose="DXverbose"),
-
+                       soupX = list(cluster="soupXCluster", tfidfMin="soupXTfidfMin", soupQuantile="soupXQuantile", maxMarkers="soupXMaxMarkers", rhoMaxFDR="soupXRhoMaxFDR",
+                                    priorRho="soupXPriorRho", priorRhoStdDev="soupXPriorRhoStdDev", forceAccept="soupXForceAccept", adjustMethod="soupXAdjustMethod", 
+                                    roundToInt="soupXRoundToInt", tol="soupXTol", pCut="soupXPCut"),
                        doubletFinder = list(seuratNfeatures="DFseuratNfeatures", seuratRes="DFseuratRes", formationRate="DFformationRate", verbose="DFverbose"),
                        scrublet = list(simDoubletRatio="SsimDoubletRatio", nNeighbors="SnNeighbors", minDist="SminDist", expectedDoubletRate="SexpectedDoubletRate",
                                        stdevDoubletRate='SstdevDoubletRate', syntheticDoubletUmiSubsampling="SsyntheticDoubletUmiSubsampling",
@@ -1507,16 +1512,19 @@ shinyServer(function(input, output, session) {
                                        normalizeVariance="SnormalizeVariance", nPrinComps="SnPrinComps", tsneAngle="StsneAngle", tsnePerplexity="StsnePerplexity", verbose="Sverbose")
   )
   # to keep track of whether an algo has already been run
-  qc_algo_status = reactiveValues(scDblFinder=NULL, cxds=NULL, bcds=NULL, cxds_bcds_hybrid=NULL, decontX=NULL,
+  qc_algo_status = reactiveValues(scDblFinder=NULL, cxds=NULL, bcds=NULL, cxds_bcds_hybrid=NULL, decontX=NULL, soupX=NULL,
                                   QCMetrics=NULL, scrublet=NULL, doubletFinder=NULL)
 
   qc_plot_ids = reactiveValues(scDblFinder="DCplots", cxds="CXplots", bcds="BCplots", cxds_bcds_hybrid="CXBCplots", decontX="DXplots",
-                               QCMetrics="QCMplots", scrublet="Splots", doubletFinder="DFplots")
+                               soupX="SoupXPlots", QCMetrics="QCMplots", scrublet="Splots", doubletFinder="DFplots")
 
 
   # event handlers to open help pages for each qc algorithm
   observeEvent(input$DXhelp, {
     showModal(decontXHelpModal())
+  })
+  observeEvent(input$SoupXhelp, {
+    showModal(soupXHelpModal())
   })
   observeEvent(input$CXhelp, {
     showModal(cxdsHelpModal())
@@ -1561,6 +1569,25 @@ shinyServer(function(input, output, session) {
 
     # add to master params list
     paramsList[["decontX"]] = dxParams
+    return(paramsList)
+  }
+  
+  # format the parameters for SoupX
+  prepSoupXParams <- function(paramsList) {
+    inputIds <- qc_input_ids[["soupX"]]
+    soupXParams <- list()
+    # put in all the params from the list (the straightforward ones)
+    for (key in names(inputIds)) {
+      soupXParams[[key]] = input[[inputIds[[key]]]]
+    }
+    
+    soupXParams[["contaminationRange"]] <- c(input$soupXContRangeLow, 
+                                             input$soupXContRangeHigh)
+    if (soupXParams[["cluster"]] == "None") {
+      soupXParams[["cluster"]] <- NULL
+    }
+    # add to master params list
+    paramsList[["decontX"]] = soupXParams
     return(paramsList)
   }
 
@@ -1696,9 +1723,13 @@ shinyServer(function(input, output, session) {
         for (algo in qc_choice_list) {
           if (isTRUE(input[[algo]])) {
             algoList <- c(algoList, algo)
-            # use the specific prep functions for decontX and doubletFinder
+            # use the specific prep functions for decontX, SoupX and doubletFinder
             if (algo == "decontX") {
               paramsList <- prepDecontXParams(paramsList)
+              next
+            }
+            if (algo == "soupX") {
+              paramsList <- prepSoupXParams(paramsList)
               next
             }
             if (algo == "doubletFinder") {
@@ -1736,10 +1767,12 @@ shinyServer(function(input, output, session) {
                                  useAssay = input$qcAssaySelect,
                                  paramsList = paramsList)
         updateColDataNames()
+        updateAssayInputs()
         # redDimList <- strsplit(reducedDimNames(vals$counts), " ")
         # run getUMAP if doublet/ambient RNA detection conducted
+        #umap generated during soupX, skip for now
         if(length(intersect(c("scDblFinder", "cxds", "bcds",
-             "cxds_bcds_hybrid", "decontX",
+             "cxds_bcds_hybrid", "decontX", #"soupX", 
              "scrublet", "doubletFinder"), algoList))){
           message(paste0(date(), " ... Running 'UMAP'"))
           vals$counts <- getUMAP(inSCE = vals$counts,
@@ -1754,10 +1787,10 @@ shinyServer(function(input, output, session) {
                                  reducedDimName = input$QCUMAPName,
                                  seed = input$Useed
                                  )
-          message(paste0(date(), " ... QC Complete"))
           # close console
           shinyjs::hide(id = "consolePanel")
         }
+        message(paste0(date(), " ... QC Complete"))
         updateQCPlots()
         # Show downstream analysis options
         callModule(module = nonLinearWorkflow, id = "nlw-qcf", parent = session, nbc = TRUE, cw = TRUE, cv = TRUE)
