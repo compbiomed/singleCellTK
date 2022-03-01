@@ -50,6 +50,30 @@ shinyPanelQC <- fluidPage(
                      checkboxInput("DXverbose", "verbose - Print log messages?", value = TRUE), # T/F input
             )
           ),
+          checkboxInput("soupX", "SoupX"),
+          shinyjs::hidden(
+            tags$style(HTML("#soupXParams {margin-left:40px}")),
+            tags$div(id = "soupXParams",
+                     actionLink("SoupXhelp", "Help", icon = icon("info-circle")),
+                     tags$hr(),
+                     selectInput("soupXCluster", "cluster - Prior knowledge of clustering labels on cells (default None)", list()),
+                     numericInput("soupXTfidfMin", "tfidfMin - Minimum value of tfidf to accept for a marker gene (default 1)", 1),
+                     numericInput("soupXQuantile", "soupQuantile - Only use genes that are at or above this expression quantile in the soup (default 0.9)", 0.9, min = 0, max = 1),
+                     numericInput("soupXMaxMarkers", "maxMarkers - If we have heaps of good markers, keep only the best maxMarkers of them. (Default 100)", 100, min = 1),
+                     p("contaminationRange - This constrains the contamination fraction to lie within this range. (default 0.01 - 0.8)"),
+                     numericInput("soupXContRangeLow", "Lower range:", 0.01, min = 0, max = 1),
+                     numericInput("soupXContRangeHigh", "Higher range:", 0.8, min = 0, max = 1),
+                     numericInput("soupXRhoMaxFDR", "rhoMaxFDR - FDR passed to SoupX::estimateNonExpressingCells, to test if rho is less than maximumContamination (default 0.2)", 0.2, min = 0, max = 1),
+                     numericInput("soupXPriorRho", "priorRho - Mode of gamma distribution prior on contamination fraction (default 0.05)", 0.05, 0, 1),
+                     numericInput("soupXPriorRhoStdDev", "priorRhoStdDev - Standard deviation of gamma distribution prior on contamination fraction (default 0.1)", 0.1),
+                     checkboxInput("soupXForceAccept", "forceAccept - Should we allow very high contamination fractions to be used?", FALSE),
+                     selectInput("soupXAdjustMethod", "AdjustMethod - Method to use for correction (default 'subtraction')",
+                                 choices = c('subtraction', 'soupOnly', 'multinomial'), selected = "subtraction"),
+                     checkboxInput("soupXRoundToInt", "roundToInt - Should the resulting matrix be rounded to integers?", FALSE),
+                     numericInput("soupXTol", "tol - Allowed deviation from expected number of soup counts (default 0.001)", 0.001),
+                     numericInput("soupXPCut", "pCut - The p-value cut-off used when method = 'soupOnly' (default 0.01)", 0.01, 0, 1)
+            )
+          ),
           tags$hr(),
           h4("Doublet Detection"),
           # scDblFinder
