@@ -1031,8 +1031,10 @@ for (sample in samples){
   plot(plotSoupX$Sample[[sample]][["scatter_soupXClusters"]])
   cat("\n\n")
   
+  cat("#### Soup Fractions {.tabset .tabset-fade} \n\n")
+  
   for (marker in names(plotSoupX$Sample[[sample]])[-1]) {
-    cat(paste0("#### Soup Fraction: ", marker, " {.tabset .tabset-fade} \n\n"))
+    cat(paste0("##### ", marker, " {.tabset .tabset-fade} \n\n"))
     plot(plotSoupX$Sample[[sample]][[marker]])
     cat("\n\n")
   }
@@ -1097,8 +1099,10 @@ for (sample in samples){
   plot(plotSoupX$Sample[[sample]][["scatter_soupXClusters"]])
   cat("\n\n")
   
+  cat("#### Soup Fractions {.tabset .tabset-fade} \n\n")
+  
   for (marker in names(plotSoupX$Sample[[sample]])[-1]) {
-    cat(paste0("#### Soup Fraction: ", marker, " {.tabset .tabset-fade} \n\n"))
+    cat(paste0("##### ", marker, " {.tabset .tabset-fade} \n\n"))
     plot(plotSoupX$Sample[[sample]][[marker]])
     cat("\n\n")
   }
