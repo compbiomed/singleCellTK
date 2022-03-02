@@ -77,6 +77,14 @@
 #' is used. 
 #' @export
 #' @author Yichen Wang
+#' @examples 
+#' data(scExample, package = "singleCellTK")
+#' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
+#' \dontrun{
+#' # SoupX does not work for toy example, 
+#' # can be tested with `sce <- importExampleData("pbmc3k")`
+#' sce <- runSoupX(sce, sample = "sample")
+#' }
 runSoupX <- function(inSCE, 
                      sample = NULL,
                      useAssay = "counts", 
@@ -247,7 +255,7 @@ runSoupX <- function(inSCE,
                            tol = tol,
                            pCut = pCut,
                            reducedDimName = paste0(reducedDimName, s),
-                           sessionInfo = sessionInfo())
+                           sessionInfo = utils::sessionInfo())
         # Output inSCE need to have separated UMAP calculated for each sample
         sampleUMAP <- matrix(nrow = ncol(inSCE), ncol = 2)
         rownames(sampleUMAP) <- colnames(inSCE)
@@ -380,6 +388,15 @@ runSoupX <- function(inSCE,
 #' @return For getter method, a list with SoupX results for specified samples. 
 #' For setter method, \code{inSCE} with SoupX results updated.
 #' @export
+#' @examples 
+#' data(scExample, package = "singleCellTK")
+#' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
+#' \dontrun{
+#' # SoupX does not work for toy example, 
+#' # can be tested with `sce <- importExampleData("pbmc3k")`
+#' sce <- runSoupX(sce, sample = "sample")
+#' soupXResults <- getSoupX(sce)
+#' }
 setGeneric("getSoupX<-", function(inSCE, sampleID, background = FALSE, value) 
     standardGeneric("getSoupX<-") )
 
@@ -404,6 +421,15 @@ setGeneric("getSoupX", function(inSCE, sampleID = NULL, background = FALSE)
 #' @return For getter method, a list with SoupX results for specified samples. 
 #' For setter method, \code{inSCE} with SoupX results updated.
 #' @export
+#' @examples 
+#' data(scExample, package = "singleCellTK")
+#' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
+#' \dontrun{
+#' # SoupX does not work for toy example, 
+#' # can be tested with `sce <- importExampleData("pbmc3k")`
+#' sce <- runSoupX(sce, sample = "sample")
+#' soupXResults <- getSoupX(sce)
+#' }
 setMethod("getSoupX", 
           "SingleCellExperiment", 
           function(inSCE, 
@@ -496,6 +522,15 @@ setReplaceMethod("getSoupX",
 #' @param legendTitleSize Numeric. Size of legend title. Default \code{NULL}.
 #' @return ggplot object of the combination of UMAPs. See description.
 #' @export
+#' @examples 
+#' data(scExample, package = "singleCellTK")
+#' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
+#' \dontrun{
+#' # SoupX does not work for toy example, 
+#' # can be tested with `sce <- importExampleData("pbmc3k")`
+#' sce <- runSoupX(sce, sample = "sample")
+#' plotSoupXResult(sce)
+#' }
 plotSoupXResult <- function(inSCE, 
                             sample = NULL, 
                             background = FALSE, 

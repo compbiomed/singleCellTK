@@ -21,3 +21,7 @@ The input \code{SingleCellExperiment} object with tag information stored in the 
 expSetDataTag
 Set tag to an assay or a data item in the input SCE object.
 }
+\examples{
+data(scExample, package = "singleCellTK")
+sce <- expSetDataTag(sce, "raw", "counts")
+}
