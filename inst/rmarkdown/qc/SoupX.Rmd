@@ -20,7 +20,7 @@ sce.qc <- params$object
 ```
 
 ```{r, "SoupX", results="asis", fig.align="center", warning=FALSE, message=FALSE}
-    plotSoupX <- plotSoupXResult(sce.qc, combinePlot = "none")
+    plotSoupX <- plotSoupXResults(sce.qc, combinePlot = "none")
     i <- "SoupX"
     cat(paste0('# ', i, ' {.tabset} \n\n'))
     

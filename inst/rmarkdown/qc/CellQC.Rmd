@@ -997,7 +997,7 @@ if (skipSoupX) {
 } else {
   cat(paste0('## ', i, ' \n'))
   plotSoupX<- tryCatch(
-    {plotSoupXResult(inSCE = sce.qc, 
+    {plotSoupXResults(inSCE = sce.qc, 
                      colData(sce.qc)[['sample']], # Why not use the variable predefined at the beginning of this document?????
                      combinePlot = "none")},
     error = function(e) {
@@ -1015,7 +1015,7 @@ if (!skipSoupX) {
   cat(description_SoupX$output)
   cat(description_SoupX$contamination)
   cat(description_SoupX$clustering)
-  cat(description_SoupX$plotSoupXResult)
+  cat(description_SoupX$plotSoupXResults)
 }
 ```
 <br />
@@ -1064,7 +1064,7 @@ if (skipSoupX) {
 } else {
   cat(paste0('## ', i, ' \n'))
   plotSoupX<- tryCatch(
-    {plotSoupXResult(inSCE = sce.qc, 
+    {plotSoupXResults(inSCE = sce.qc, 
                      colData(sce.qc)[['sample']], 
                      combinePlot = "none",
                      background = TRUE)},
@@ -1083,7 +1083,7 @@ if (!skipSoupX) {
   cat(description_SoupX$output)
   cat(description_SoupX$contamination)
   cat(description_SoupX$clustering)
-  cat(description_SoupX$plotSoupXResult)
+  cat(description_SoupX$plotSoupXResults)
 }
 ```
 <br />

@@ -529,9 +529,9 @@ setReplaceMethod("getSoupX",
 #' # SoupX does not work for toy example, 
 #' # can be tested with `sce <- importExampleData("pbmc3k")`
 #' sce <- runSoupX(sce, sample = "sample")
-#' plotSoupXResult(sce)
+#' plotSoupXResults(sce)
 #' }
-plotSoupXResult <- function(inSCE, 
+plotSoupXResults <- function(inSCE, 
                             sample = NULL, 
                             background = FALSE, 
                             reducedDimName=NULL,

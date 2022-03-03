@@ -241,18 +241,19 @@ descriptionSoupX <- function() {
         runSoupX = "The wrapper function `runSoupX` can be used to separately 
             run the SoupX algorithm on its own. ",
         output = "The main outputs of `runSoupX` are `soupX_contamination`, 
-            `soupX_clusters`, and the corrected assay `SoupX`, together with other 
-            intermediate metrics that SoupX generates.",
+            `soupX_clusters`, and the corrected assay `SoupX`, together with 
+            other intermediate metrics that SoupX generates.",
         contamination = "`soupX_contamination` is a numeric vector which 
             characterizes the level of contamination in each cell. SoupX 
             generates one global contamination estimate per sample, instead of
             returning cell-specific estimation.",
         clustering = "Clustering is required for SoupX algorithm. It will be 
             performed if users do not provide the label as input. 
-            `scran::quickCluster()` is adopted for this purpose. 
-            `soupX_clusters` is the resulting cluster assignment, which can 
-            also be labeled on the plot. ",
-        plotSoupXResult = "The wrapper function `plotSoupXResult` can be 
+            `quickCluster()` method from package 
+            [scran](https://rdrr.io/bioc/scran/man/quickCluster.html) is adopted
+            for this purpose. `soupX_clusters` is the resulting cluster 
+            assignment, which can also be labeled on the plot. ",
+        plotSoupXResults = "The wrapper function `plotSoupXResult` can be 
             used to plot the QC outputs from the SoupX algorithm. Plots includes
             a UMAP with clustering labels and a number of UMAPs colored with 
             the soup fraction of top marker genes which are identified for 
