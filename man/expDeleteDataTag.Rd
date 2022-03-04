@@ -19,3 +19,8 @@ The input \code{SingleCellExperiment} object with tag information removed from t
 expDeleteDataTag
 Remove tag against an input data from the stored tag information in the metadata of the input object.
 }
+\examples{
+data(scExample, package = "singleCellTK")
+sce <- expSetDataTag(sce, "raw", "counts")
+sce <- expDeleteDataTag(sce, "counts")
+}

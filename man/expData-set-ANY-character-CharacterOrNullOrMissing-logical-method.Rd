@@ -25,3 +25,8 @@ A \code{SingleCellExperiment} object containing the newly stored data.
 expData
 Store data items using tags to identify the type of data item stored. To be used as a replacement for assay<- setter function but with additional parameter to set a tag to a data item.
 }
+\examples{
+data(scExample, package = "singleCellTK")
+mat <- expData(sce, "counts")
+expData(sce, "counts", tag = "raw") <- mat
+}

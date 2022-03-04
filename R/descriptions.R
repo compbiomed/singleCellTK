@@ -214,18 +214,50 @@ descriptionDecontX <- function() {
             damaged cells may get incorporated into another droplet, and can
             lead to contamination. [decontX](https://rdrr.io/bioc/celda/man/decontX.html),
             available from the [celda](https://bioconductor.org/packages/release/bioc/html/celda.html),
-            is a Bayesian method for the identification of the contamination level at a cellular level. ",
-        runDecontX = "The wrapper function `runDecontX` can be used to separately run the
-            DecontX algorithm on its own. ",
+            is a Bayesian method for the identification of the contamination 
+            level at a cellular level. ",
+        runDecontX = "The wrapper function `runDecontX` can be used to 
+            separately run the DecontX algorithm on its own. ",
         output = "The outputs of `runDecontX` are `decontX_contamination` and
              `decontX_clusters`. ",
-        contamination = "`decontX_contamination` is a numeric vector which characterizes
-             the level of contamination in each cell. ",
-        clustering = "Clustering is performed as part of the `runDecontX` algorithm.
-             `decontX_clusters` is the resulting cluster assignment,
-             which can also be labeled on the plot. ",
-        plotDecontXResults = "The wrapper function `plotDecontXResults` can be used to plot the
-              QC outputs from the DecontX algorithm. "
+        contamination = "`decontX_contamination` is a numeric vector which 
+            characterizes the level of contamination in each cell. ",
+        clustering = "Clustering is performed as part of the `runDecontX` 
+            algorithm. `decontX_clusters` is the resulting cluster assignment,
+            which can also be labeled on the plot. ",
+        plotDecontXResults = "The wrapper function `plotDecontXResults` can be 
+            used to plot the QC outputs from the DecontX algorithm. "
+    ))
+}
+
+descriptionSoupX <- function() {
+    return(list(
+        introduction = "In droplet-based single cell technologies,
+            ambient RNA that may have been released from apoptotic or
+            damaged cells may get incorporated into another droplet, and can
+            lead to contamination. [SoupX](https://github.com/constantAmateur/SoupX)
+            uses non-expressed genes to estimates a global contamination 
+            fraction.",
+        runSoupX = "The wrapper function `runSoupX` can be used to separately 
+            run the SoupX algorithm on its own. ",
+        output = "The main outputs of `runSoupX` are `soupX_contamination`, 
+            `soupX_clusters`, and the corrected assay `SoupX`, together with 
+            other intermediate metrics that SoupX generates.",
+        contamination = "`soupX_contamination` is a numeric vector which 
+            characterizes the level of contamination in each cell. SoupX 
+            generates one global contamination estimate per sample, instead of
+            returning cell-specific estimation.",
+        clustering = "Clustering is required for SoupX algorithm. It will be 
+            performed if users do not provide the label as input. 
+            `quickCluster()` method from package 
+            [scran](https://rdrr.io/bioc/scran/man/quickCluster.html) is adopted
+            for this purpose. `soupX_clusters` is the resulting cluster 
+            assignment, which can also be labeled on the plot. ",
+        plotSoupXResults = "The wrapper function `plotSoupXResult` can be 
+            used to plot the QC outputs from the SoupX algorithm. Plots includes
+            a UMAP with clustering labels and a number of UMAPs colored with 
+            the soup fraction of top marker genes which are identified for 
+            contamination estimation. "
     ))
 }
 
