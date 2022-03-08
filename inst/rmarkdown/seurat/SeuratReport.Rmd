@@ -11,10 +11,11 @@ params:
   selected.markers: !r NULL
   clustering.resolution: 0.8
   variable.features: 2000
-  pc.count: 10
+  pc.count: 50
   outputPath: !r NULL
   showSession: TRUE
   pdf: TRUE
+  jackStraw: FALSE
 output:
   html_document:
     toc: yes
@@ -203,7 +204,7 @@ ElbowPlot
 
 ### JackStraw Plot {-}
 JackStraw computes significance values for all genes in a all principal components and plots these genes as a QQ-plot for each PC and compares them with the uniform distribution (shown in dotted line). Overall p-values are also computed for each PC, where statistically significant principal components can be selected for downstream analysis. Visually, components that lie above the dotted uniform distribution line should be selected. 
-```{r Seurat PCAs, JackStraw Plot, warning=FALSE}
+```{r Seurat PCAs, JackStraw Plot, warning=FALSE, eval=jackStraw}
 JackStrawPlot <- seuratJackStrawPlot(
   inSCE = data,
   dims = initial.PC.numbers,
@@ -213,10 +214,14 @@ JackStrawPlot
 ```
 
 ```{r Seurat Post PCA calculation, warning=FALSE}
-PC_Matrix <- metadata(data)$seurat$obj@reductions$pca@jackstraw@overall.p.values
-
-significant_PC <- which.min(PC_Matrix[,2] < 0.01) - 1
+if(!is.null(metadata(data)$seurat$obj@reductions$pca@jackstraw)){
+  PC_Matrix <- metadata(data)$seurat$obj@reductions$pca@jackstraw@overall.p.values
+  
+  significant_PC <- which.min(PC_Matrix[,2] < 0.01) - 1
 if (!exists("significant_PC") || significant_PC == 0){
+  significant_PC <- initial.PC.numbers
+  }
+}else{
   significant_PC <- initial.PC.numbers
 }
 
@@ -557,6 +562,7 @@ p2 <- seuratReductionPlot(data, useReduction = "umap", showLegend = TRUE)
 p2
 ```
 
+
 # Seurat Results
 
 ## Selected Resolution {.tabset .tabset-fade}
@@ -667,6 +673,166 @@ for (i in 1:length(selected_phenotypes)){
 
 ```
 
+## Pre-Selected Markers {.tabset .tabset-fade}
+Relevant gene marker expressions were overlaid on top of the **`r numClusters`** clusters identified below. The following (*`r Custom_Markers`*) are genes from the list provided. If a pre-selected gene is not showing up below, it is considered not identified by seurat comparing to the list of genes differentially expressed. Regular expression was used to include similar markers that may contain selected marker names as partial of its name, but gene nomenclature issues may still cause some of pre-selected markers to fail to display.
+
+```{r Seurat Custom markers, echo=TRUE, results = "asis", fig.height = 10, fig.width = 10}
+markerGenes <- Custom_Markers
+numMarkerGenes <- length(markerGenes)
+
+template <- "### %s {.tabset .tabset-pills -}
+"
+template_inside <- "#### %s {-}
+"
+space <- " 
+
+"
+if (numMarkerGenes > 0){
+  cat(sprintf(template, paste0("All sample")))
+  plots <- seuratGenePlot(data, features = markerGenes, cols = c("grey", "blue"), plotType = "feature", groupVariable = group, ncol = 1)
+  plots <- patchwork::wrap_plots(plots, ncol = 2) & theme_minimal()
+  print(plots)
+  cat(space)
+  cat(sprintf(template, paste0("Split by sample")))
+    plots <- seuratGenePlot(data, features = markerGenes, plotType = "feature", cols = c("grey", "blue"), groupVariable = group, splitBy = group, ncol = 1)
+
+    start <- 1
+    end <- numMarkerGenes
+    for(i in 1:length(unique(colData(data)[[group]]))){
+      cat(sprintf(paste0(unique(colData(data)[[group]][i]))))
+      print(patchwork::wrap_plots(plots[start:end], ncol = 2) & theme_minimal())
+      start <- start + numMarkerGenes
+      end <- end + numMarkerGenes
+    }
+      
+  cat(space)
+  cat(space)
+}
+cat(space)
+cat(space)
+```
+
+## Differential Expression (Clusters)
+Gene markers defining clusters via differential expression using the Wilcoxon rank sum test. Differentially expressed genes were determined by genes detected at a minimum percentage of 25% in either of the two groups of cells (clusters being compared), and requiring a gene to be differentially expressed (on average) at a 25% threshold between the two groups.
+
+```{r DEG Clusters, echo = TRUE}
+data <- seuratFindMarkers(data, minPCT = 0.25, threshUse = 0.25, verbose = FALSE)
+data.markers <- metadata(data)$seuratMarkers
+
+write.csv(data.markers, file = paste0(outputPath, "DEGTableClusters", "-", gsub(" ", "_", Sys.Date()), ".csv"), row.names = FALSE)
+```
+
+### Gene Plots of Top Markers by Clusters {.tabset .tabset-fade}
+Gene plot for the top marker genes in each of the identified clusters are visualized below through a feature plot, ridge plot, violin plot, dot plot or a heatmap plot.
+
+#### Feature Plot {.tabset .tabset-fade .tabset-pills -}
+A **feature plot** visualizes the **expression level** of a particular **gene marker in all cells of the data** on a **UMAP** plot. Here we visualize the **feature plots** of the **top 9 marker genes** across all **clusters**. Use the drop-down box to view top 10 markers from each of the cluster.
+
+```{r}
+figHeight <- 10 * 1.5
+```
+
+```{r Seurat Top Markers by cluster feature, echo = TRUE, results = "asis", fig.height = figHeight, fig.width = 9}
+template <- "##### %s {.tabset .tabset-fade -}
+"
+template_inside <- "###### %s {-}
+"
+space <- "
+
+"
+
+top10 <- data.frame(data.markers %>% group_by(cluster) %>% top_n(10, avg_log2FC))
+numClusters <- length(unique(data.markers$cluster))
+for (currentCluster in 0:(numClusters-1)) {
+  cat(sprintf(template, paste0("Cluster ", currentCluster)))
+  selectedFeatures <- top10[top10$cluster == currentCluster, ]$gene.id
+  plots <- seuratGenePlot(data, plotType = "feature", features = selectedFeatures, groupVariable = paste0("Seurat_louvain_Resolution", seurat.selected.resolution), ncol = 1, cols = c("grey", "blue"))
+  print(patchwork::wrap_plots(plots, ncol = 2) & theme_minimal())
+  cat(space)
+}
+```
+
+
+#### Ridge Plot {.tabset .tabset-fade .tabset-pills -}
+A **ridge plot** visualizes the **expression level** of a particular **gene marker in all cells of the data** separated by **clusters** in the form of ridges. Here we visualize the **ridge plots** of the **top 9 marker genes** across all **clusters**. Use the drop-down box to view top 9 markers from each of the cluster.
+```{r Seurat Top Markers by cluster ridge, echo = TRUE, results = "asis", fig.height =figHeight, fig.width = 9, message=FALSE}
+template <- "##### %s {.tabset .tabset-fade -}
+"
+template_inside <- "###### %s {-}
+"
+space <- "
+
+"
+
+top10 <- data.frame(data.markers %>% group_by(cluster) %>% top_n(10, avg_log2FC))
+numClusters <- length(unique(data.markers$cluster))
+for (currentCluster in 0:(numClusters-1)) {
+  cat(sprintf(template, paste0("Cluster ", currentCluster)))
+  selectedFeatures <- top10[top10$cluster == currentCluster, ]$gene.id
+  plots <- seuratGenePlot(data, plotType = "ridge", features = selectedFeatures, groupVariable = paste0("Seurat_louvain_Resolution", seurat.selected.resolution), ncol = 1, cols = c("grey", "blue"))
+  print(patchwork::wrap_plots(plots, ncol = 2) & theme_minimal())
+  cat(space)
+}
+```
+
+#### Violin Plot {.tabset .tabset-fade .tabset-pills -}
+A **violin plot** visualizes the **expression level** of a particular **gene marker in all cells of the data** separated by **clusters**. Here we visualize the **violin plots** of the **top 9 marker genes** separated across all **clusters**. Use the drop-down box to view top 9 markers from each of the group.
+```{r Seurat Top Markers by cluster violin, echo = TRUE, results = "asis", fig.height =figHeight, fig.width = 9, message=FALSE}
+template <- "##### %s {.tabset .tabset-fade -}
+"
+template_inside <- "###### %s {-}
+"
+space <- "
+
+"
+
+top10 <- data.frame(data.markers %>% group_by(cluster) %>% top_n(10, avg_log2FC))
+numClusters <- length(unique(data.markers$cluster))
+for (currentCluster in 0:(numClusters-1)) {
+  cat(sprintf(template, paste0("Cluster ", currentCluster)))
+  selectedFeatures <- top10[top10$cluster == currentCluster, ]$gene.id
+  plots <- seuratGenePlot(data, plotType = "violin", features = selectedFeatures, groupVariable = paste0("Seurat_louvain_Resolution", seurat.selected.resolution), ncol = 1, cols = c("grey", "blue"))
+  print(patchwork::wrap_plots(plots, ncol = 2) & theme_minimal())
+  cat(space)
+}
+```
+
+
+#### Dot Plot {-}
+A **dot plot** visualizes the **change in the expression levels** of a particular **gene marker in all cells of the data** separated by **clusters** in the form of dots where the color of the dots indicate the expression level of that gene in a cluster and the size of the dot indicates the total percentage of the cells in that cluster.
+```{r DEG Clusters Dotplot, fig.width=15, fig.height=8}
+top9 <- data.frame(data.markers %>% group_by(cluster) %>% top_n(9, avg_log2FC))
+top9 <- top9$gene.id
+seuratGenePlot(data, plotType = "dot", features = top9, groupVariable = paste0("Seurat_louvain_Resolution", seurat.selected.resolution), ncol = 1, cols = c("grey", "blue")) + theme(axis.text.x = element_text(angle = 90, size = 7), legend.text = element_text(size = 8), legend.key.size = unit(0.4, "cm"), legend.position = "top")
+```
+
+#### Heatmap Plot {-}
+
+```{r DEG Clusters HeatmapPlot, fig.width=15, fig.height=15}
+top9 <- data.frame(data.markers %>% group_by(cluster) %>% top_n(9, avg_log2FC))
+top9 <- top9$gene.id
+seuratGenePlot(data, plotType = "heatmap", features = top9, groupVariable = paste0("Seurat_louvain_Resolution", seurat.selected.resolution), ncol = 1, cols = c("grey", "blue")) + theme(axis.text.y = element_text(size = 8), legend.text = element_text(size = 8), legend.key.size = unit(0.5, "cm"), legend.position = "top")
+```
+
+### Table of Top Markers by Cluster
+List of top genes for each clusters are saved as **top_genes_cluster.csv** which is available within the working directory.
+
+List of top **10** genes for each clusters are listed below.
+
+```{r Seurat Top Markers by cluster Table, echo = FALSE, results='asis'}
+# Top genes table
+top5 <- data.frame(data.markers %>% group_by(cluster) %>% top_n(5, avg_log2FC))
+top10 <- data.frame(data.markers %>% group_by(cluster) %>% top_n(10, avg_log2FC))
+top_all <- data.frame(data.markers %>% group_by(cluster))
+
+write.csv(top10, file = paste0(outputPath, "DEGTableClustersTop10", "-", gsub(" ", "_", Sys.Date()), ".csv"), row.names = FALSE)
+
+colNames<-colnames(top10)
+kable(top10, style = 'html', row.names = FALSE) %>%
+  kable_styling(bootstrap_options = "striped") %>%
+  scroll_box(width = "100%", height = "500px")
+```
+
 
 ## Differential Expression Custom Group: **(`r group`)**
 Gene markers defining **`r group`** were identified via differential expression using the **Wilcoxon rank sum test**. **Differentially expressed genes** were determined by genes detected at a **minimum percentage of 25% in either of the two groups of cells** (clusters being compared), and requiring **a gene to be differentially expressed (on average) at a 25% threshold between the two groups**.
@@ -683,29 +849,25 @@ Gene plot for the top marker genes in each of the identified clusters are visual
 
 #### Feature Plot {.tabset .tabset-fade .tabset-pills -}
 A **feature plot** visualizes the **expression level** of a particular **gene marker in all cells of the data** on a **UMAP** plot. Here we visualize the **feature plots** of the **top 9 marker genes** in each unique **group** separately. Use the drop-down box to view top 9 markers from each of the group.
-```{r DEG FeaturePlot, echo = TRUE, results = "asis", fig.height =9, fig.width = 9}
-
+```{r DEG FeaturePlot, echo = TRUE, results = "asis", fig.height =figHeight, fig.width = 9}
 template <- "##### %s {.tabset .tabset-fade -}
-
 "
 template_inside <- "###### %s {-}
-
 "
 space <- "
 
 "
-top9 <- data.frame(data.markers %>% group_by(cluster1) %>% top_n(9, avg_log2FC))
+
+top10 <- data.frame(data.markers %>% group_by(cluster1) %>% top_n(10, avg_log2FC))
 numClusters <- length(unique(data.markers$cluster1))
-for (currentCluster in 0:(numClusters)-1) {
-  cat(sprintf(template, paste0("Cluster ", as.character(unique(data.markers$cluster1))[currentCluster])))
-  for (inside_count in 1:9){
-    current_feature <- top9$gene.id[(9*currentCluster+inside_count)]
-    cat(sprintf(template_inside, paste0(current_feature)))
-  #  if(!is.na(current_feature)){
-      print(seuratGenePlot(data, plotType = "feature", features = current_feature, groupVariable = group, ncol = 1, cols = c("grey", "blue")))
-  #  }
-    cat(space)
-    }
+saveRDS(top10, "top10.rds")
+saveRDS(data.markers, "dataM.rds")
+for (currentCluster in 0:(numClusters-1)) {
+  clusterGroup <- unique(colData(data)[[group]])[currentCluster+1]
+  cat(sprintf(template, paste0("Cluster ", clusterGroup)))
+  selectedFeatures <- top10[top10$cluster1 == clusterGroup, ]$gene.id
+  plots <- seuratGenePlot(data, plotType = "feature", features = selectedFeatures, groupVariable = group, ncol = 1, cols = c("grey", "blue"))
+  print(patchwork::wrap_plots(plots, ncol = 2) & theme_minimal())
   cat(space)
 }
 ```
@@ -713,8 +875,7 @@ for (currentCluster in 0:(numClusters)-1) {
 
 #### Ridge Plot {.tabset .tabset-fade .tabset-pills -}
 A **ridge plot** visualizes the **expression level** of a particular **gene marker in all cells of the data** separated by **group** in the form of ridges. Here we visualize the **ridge plots** of the **top 9 marker genes** separated by **group**. Use the drop-down box to view top 9 markers from each of the group.
-```{r DEG RidgePlot, echo = TRUE, results = "asis", fig.height =9, fig.width = 9}
-
+```{r DEG RidgePlot, echo = TRUE, results = "asis", fig.height =figHeight, fig.width = 9, message=FALSE}
 template <- "##### %s {.tabset .tabset-fade -}
 "
 template_inside <- "###### %s {-}
@@ -722,26 +883,24 @@ template_inside <- "###### %s {-}
 space <- "
 
 "
-top9 <- data.frame(data.markers %>% group_by(cluster1) %>% top_n(9, avg_log2FC))
+
+top10 <- data.frame(data.markers %>% group_by(cluster1) %>% top_n(10, avg_log2FC))
 numClusters <- length(unique(data.markers$cluster1))
-for (currentCluster in 1:(numClusters)) {
-  cat(sprintf(template, paste0("Cluster ", as.character(unique(data.markers$cluster1))[currentCluster])))
-  for (inside_count in 1:9){
-    current_feature <- top9$gene.id[(9*currentCluster+inside_count)]
-    cat(sprintf(template_inside, paste0(current_feature)))
-    if(!is.na(current_feature)){
-          print(seuratGenePlot(data, plotType = "ridge", features = current_feature, groupVariable = group, ncol = 1, cols = c("grey", "blue")))
-    }
-    cat(space)
-    }
+saveRDS(top10, "top10.rds")
+saveRDS(data.markers, "dataM.rds")
+for (currentCluster in 0:(numClusters-1)) {
+  clusterGroup <- unique(colData(data)[[group]])[currentCluster+1]
+  cat(sprintf(template, paste0("Cluster ", clusterGroup)))
+  selectedFeatures <- top10[top10$cluster1 == clusterGroup, ]$gene.id
+  plots <- seuratGenePlot(data, plotType = "ridge", features = selectedFeatures, groupVariable = group, ncol = 1, cols = c("grey", "blue"))
+  print(patchwork::wrap_plots(plots, ncol = 2) & theme_minimal())
   cat(space)
 }
 ```
 
 #### Violin Plot {.tabset .tabset-fade .tabset-pills -}
 A **violin plot** visualizes the **expression level** of a particular **gene marker in all cells of the data** separated by **group**. Here we visualize the **violin plots** of the **top 9 marker genes** separated by **group**. Use the drop-down box to view top 9 markers from each of the group.
-```{r DEG ViolinPlot, echo = TRUE, results = "asis", fig.height =9, fig.width = 9}
-
+```{r DEG ViolinPlot, echo = TRUE, results = "asis", fig.height =figHeight, fig.width = 9, message=FALSE}
 template <- "##### %s {.tabset .tabset-fade -}
 "
 template_inside <- "###### %s {-}
@@ -749,18 +908,17 @@ template_inside <- "###### %s {-}
 space <- "
 
 "
-top9 <- data.frame(data.markers %>% group_by(cluster1) %>% top_n(9, avg_log2FC))
+
+top10 <- data.frame(data.markers %>% group_by(cluster1) %>% top_n(10, avg_log2FC))
 numClusters <- length(unique(data.markers$cluster1))
-for (currentCluster in 1:(numClusters)) {
-  cat(sprintf(template, paste0("Cluster ", as.character(unique(data.markers$cluster1))[currentCluster])))
-  for (inside_count in 1:9){
-    current_feature <- top9$gene.id[(9*currentCluster+inside_count)]
-    cat(sprintf(template_inside, paste0(current_feature)))
-    if(!is.na(current_feature)){
-          print(seuratGenePlot(data, plotType = "violin", features = current_feature, groupVariable = group, ncol = 1, cols = c("grey", "blue")))
-    }
-    cat(space)
-    }
+saveRDS(top10, "top10.rds")
+saveRDS(data.markers, "dataM.rds")
+for (currentCluster in 0:(numClusters-1)) {
+  clusterGroup <- unique(colData(data)[[group]])[currentCluster+1]
+  cat(sprintf(template, paste0("Cluster ", clusterGroup)))
+  selectedFeatures <- top10[top10$cluster1 == clusterGroup, ]$gene.id
+  plots <- seuratGenePlot(data, plotType = "violin", features = selectedFeatures, groupVariable = group, ncol = 1, cols = c("grey", "blue"))
+  print(patchwork::wrap_plots(plots, ncol = 2) & theme_minimal())
   cat(space)
 }
 ```
@@ -816,205 +974,8 @@ kable(top10, style = 'html', row.names = FALSE) %>%
   scroll_box(width = "100%", height = "500px")
 ```
 
-
-## Differential Expression (Clusters)
-Gene markers defining clusters via differential expression using the Wilcoxon rank sum test. Differentially expressed genes were determined by genes detected at a minimum percentage of 25% in either of the two groups of cells (clusters being compared), and requiring a gene to be differentially expressed (on average) at a 25% threshold between the two groups.
-
-```{r DEG Clusters, echo = TRUE}
-data <- seuratFindMarkers(data, minPCT = 0.25, threshUse = 0.25, verbose = FALSE)
-data.markers <- metadata(data)$seuratMarkers
-
-write.csv(data.markers, file = paste0(outputPath, "DEGTableClusters", "-", gsub(" ", "_", Sys.Date()), ".csv"), row.names = FALSE)
-```
-
-### Gene Plots of Top Markers by Clusters {.tabset .tabset-fade}
-Gene plot for the top marker genes in each of the identified clusters are visualized below through a feature plot, ridge plot, violin plot, dot plot or a heatmap plot.
-
-#### Feature Plot {.tabset .tabset-fade .tabset-pills -}
-A **feature plot** visualizes the **expression level** of a particular **gene marker in all cells of the data** on a **UMAP** plot. Here we visualize the **feature plots** of the **top 9 marker genes** across all **clusters**. Use the drop-down box to view top 9 markers from each of the cluster.
-```{r Seurat Top Markers by cluster feature, echo = TRUE, results = "asis", fig.height =9, fig.width = 9}
-template <- "##### %s {.tabset .tabset-fade -}
-"
-template_inside <- "###### %s {-}
-"
-space <- "
-
-"
-top9 <- data.frame(data.markers %>% group_by(cluster) %>% top_n(9, avg_log2FC))
-numClusters <- length(unique(data.markers$cluster))
-for (currentCluster in 1:(numClusters)) {
-  cat(sprintf(template, paste0("Cluster ", as.character(unique(data.markers$cluster))[currentCluster])))
-  for (inside_count in 1:9){
-    current_feature <- top9$gene.id[(9*currentCluster+inside_count)]
-    cat(sprintf(template_inside, paste0(current_feature)))
-        if(!is.na(current_feature)){
-              print(seuratGenePlot(data, plotType = "feature", features = current_feature, groupVariable = paste0("Seurat_louvain_Resolution", seurat.selected.resolution), ncol = 1, cols = c("grey", "blue")))
-        }
-    cat(space)
-    }
-  cat(space)
-}
-```
-
-
-#### Ridge Plot {.tabset .tabset-fade .tabset-dropdown -}
-A **ridge plot** visualizes the **expression level** of a particular **gene marker in all cells of the data** separated by **clusters** in the form of ridges. Here we visualize the **ridge plots** of the **top 9 marker genes** across all **clusters**. Use the drop-down box to view top 9 markers from each of the cluster.
-```{r Seurat Top Markers by cluster ridge, echo = TRUE, results = "asis", fig.height =9, fig.width = 9}
-template <- "##### %s {.tabset .tabset-fade -}
-"
-template_inside <- "###### %s {-}
-"
-space <- "
-
-"
-top9 <- data.frame(data.markers %>% group_by(cluster) %>% top_n(9, avg_log2FC))
-numClusters <- length(unique(data.markers$cluster))
-for (currentCluster in 1:(numClusters)) {
-  cat(sprintf(template, paste0("Cluster ", as.character(unique(data.markers$cluster))[currentCluster])))
-  for (inside_count in 1:9){
-    current_feature <- top9$gene.id[(9*currentCluster+inside_count)]
-    cat(sprintf(template_inside, paste0(current_feature)))
-            if(!is.na(current_feature)){
-                  print(seuratGenePlot(data, plotType = "ridge", features = current_feature, groupVariable = paste0("Seurat_louvain_Resolution", seurat.selected.resolution), ncol = 1, cols = c("grey", "blue")))
-            }
-    cat(space)
-    }
-  cat(space)
-}
-```
-
-#### Violin Plot {.tabset .tabset-fade .tabset-dropdown -}
-A **violin plot** visualizes the **expression level** of a particular **gene marker in all cells of the data** separated by **clusters**. Here we visualize the **violin plots** of the **top 9 marker genes** separated across all **clusters**. Use the drop-down box to view top 9 markers from each of the group.
-```{r Seurat Top Markers by cluster violin, echo = TRUE, results = "asis", fig.height =9, fig.width = 9}
-template <- "##### %s {.tabset .tabset-fade -}
-"
-template_inside <- "###### %s {-}
-"
-space <- "
-
-"
-top9 <- data.frame(data.markers %>% group_by(cluster) %>% top_n(9, avg_log2FC))
-numClusters <- length(unique(data.markers$cluster))
-for (currentCluster in 1:(numClusters)) {
-  cat(sprintf(template, paste0("Cluster ", as.character(unique(data.markers$cluster))[currentCluster])))
-  for (inside_count in 1:9){
-    current_feature <- top9$gene.id[(9*currentCluster+inside_count)]
-    cat(sprintf(template_inside, paste0(current_feature)))
-                if(!is.na(current_feature)){
-                      print(seuratGenePlot(data, plotType = "violin", features = current_feature, groupVariable = paste0("Seurat_louvain_Resolution", seurat.selected.resolution), ncol = 1, cols = c("grey", "blue")))
-                }
-    cat(space)
-    }
-  cat(space)
-}
-```
-
-
-#### Dot Plot {-}
-A **dot plot** visualizes the **change in the expression levels** of a particular **gene marker in all cells of the data** separated by **clusters** in the form of dots where the color of the dots indicate the expression level of that gene in a cluster and the size of the dot indicates the total percentage of the cells in that cluster.
-```{r DEG Clusters Dotplot, fig.width=15, fig.height=8}
-top9 <- data.frame(data.markers %>% group_by(cluster) %>% top_n(9, avg_log2FC))
-top9 <- top9$gene.id
-seuratGenePlot(data, plotType = "dot", features = top9, groupVariable = paste0("Seurat_louvain_Resolution", seurat.selected.resolution), ncol = 1, cols = c("grey", "blue")) + theme(axis.text.x = element_text(angle = 90, size = 7), legend.text = element_text(size = 8), legend.key.size = unit(0.4, "cm"), legend.position = "top")
-```
-
-#### Heatmap Plot {-}
-
-```{r DEG Clusters HeatmapPlot, fig.width=15, fig.height=15}
-top9 <- data.frame(data.markers %>% group_by(cluster) %>% top_n(9, avg_log2FC))
-top9 <- top9$gene.id
-seuratGenePlot(data, plotType = "heatmap", features = top9, groupVariable = paste0("Seurat_louvain_Resolution", seurat.selected.resolution), ncol = 1, cols = c("grey", "blue")) + theme(axis.text.y = element_text(size = 8), legend.text = element_text(size = 8), legend.key.size = unit(0.5, "cm"), legend.position = "top")
-```
-
-### Table of Top Markers by Cluster
-List of top genes for each clusters are saved as **top_genes_cluster.csv** which is available within the working directory.
-
-List of top **10** genes for each clusters are listed below.
-
-```{r Seurat Top Markers by cluster Table, echo = FALSE, results='asis'}
-# Top genes table
-top5 <- data.frame(data.markers %>% group_by(cluster) %>% top_n(5, avg_log2FC))
-top10 <- data.frame(data.markers %>% group_by(cluster) %>% top_n(10, avg_log2FC))
-top_all <- data.frame(data.markers %>% group_by(cluster))
-
-write.csv(top10, file = paste0(outputPath, "DEGTableClustersTop10", "-", gsub(" ", "_", Sys.Date()), ".csv"), row.names = FALSE)
-
-colNames<-colnames(top10)
-kable(top10, style = 'html', row.names = FALSE) %>%
-  kable_styling(bootstrap_options = "striped") %>%
-  scroll_box(width = "100%", height = "500px")
-```
-
-## Pre-Selected Markers {.tabset .tabset-fade}
-Relevant gene marker expressions were overlaid on top of the **`r numClusters`** clusters identified below. The following (*`r Custom_Markers`*) are genes from the list provided. If a pre-selected gene is not showing up below, it is considered not identified by seurat comparing to the list of genes differentially expressed. Regular expression was used to include similar markers that may contain selected marker names as partial of its name, but gene nomenclature issues may still cause some of pre-selected markers to fail to display.
-
-```{r Seurat Custom markers backstage, include = FALSE, eval = TRUE}
-markerGenes <- c()
-for (marker in Custom_Markers){
-    if (TRUE %in% grepl(marker, data.markers$gene.id, ignore.case = TRUE)){
-        added_marker <- grep(marker, data.markers$gene.id, ignore.case = TRUE, value = TRUE)
-        markerGenes <- append(markerGenes, added_marker)
-    }
-}
-markerGenes <- unique(markerGenes)
-numMarkerGenes <- length(markerGenes)
-if (numMarkerGenes == 0){
-  custom_eval = FALSE
-} else {
-  custom_eval = TRUE
-}
-```
-
-
-```{r Seurat Custom markers, echo=TRUE, results = "asis", fig.height = 10, fig.width = 10, eval = custom_eval, echo = custom_eval}
-
-template <- "### %s {.tabset .tabset-pills -}
-"
-template_inside <- "#### %s {-}
-"
-space <- " 
-
-"
-if (numMarkerGenes > 0){
-  for (currentMarker in 1:numMarkerGenes) {
-  cat(sprintf(template, paste0(markerGenes[currentMarker])))
-  cat(sprintf(template_inside, paste0("All sample")))
-  print(seuratGenePlot(data, features = markerGenes[currentMarker], cols = c("grey", "blue"), plotType = "feature", groupVariable = group, ncol = 1))
-  cat(space)
-  cat(sprintf(template_inside, paste0("Split by sample")))
-    plots <- seuratGenePlot(data, features = markerGenes[currentMarker], plotType = "feature", cols = c("grey", "blue"), groupVariable = group, splitBy = group, ncol = 2)
-    plots <- ggarrange(plotlist = plots, ncol = 2, nrow = 2)
-    print(plots)
-  cat(space)
-  cat(space)
-  }
-}
-cat(space)
-cat(space)
-```
-
-<br><br>
-
-Plots for each of the pre-selected markers are saved in both .png and .pdf format. 
-
-```{r Seurat Custom markers saving plots, echo=FALSE, dependson="Feature Plots", results='asis', eval = custom_eval, echo = custom_eval}
-for(i in 1:numMarkerGenes) {
-    # Create marker gene feature plot as PNG and PDF files
-    custom_featureplot <- seuratGenePlot(data, plotType = "feature", features = markerGenes[i], cols = c("grey", "blue"), groupVariable = "Seurat_louvain_Resolution0.6")
-}
-```
-
-
-## Output Data
-The output SingleCellExperiment object **`r paste0(outputPath, "SCE_SeuratReport", "-", gsub(" ", "_", Sys.Date()), ".rds")`** is saved in the output directory which contains all of the stored computations and plots. This object can be loaded into the singleCellTK R toolkit to further inspect and visualize the data and plots through a interactive user interface. Additionally, all figures and tables have been stored to the output directory as well.
-
-```{r Saving RDS Object, echo = TRUE}
-saveRDS(data, paste0(outputPath, "SCE_SeuratReport", "-", gsub(" ", "_", Sys.Date()), ".rds"))
-```
-
 # Session Information
 ```{r session, eval = showSession, echo = showSession}
 sessionInfo()
 ```
 
-# References {-}

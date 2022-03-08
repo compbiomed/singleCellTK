@@ -19,7 +19,8 @@ seuratReport(
   variable.features = 2000,
   pc.count = 10,
   showSession = TRUE,
-  pdf = TRUE
+  pdf = TRUE,
+  jackStraw = FALSE
 )
 }
 \arguments{
@@ -68,6 +69,8 @@ should be displayed or not. Default is \code{TRUE}.}
 
 \item{pdf}{A \code{logical} value indicating if a pdf should also be
 generated for each figure in the report. Default is \code{TRUE}.}
+
+\item{jackStraw}{logical value}
 }
 \value{
 A \code{SingleCellExperiment} object that has the seurat computations

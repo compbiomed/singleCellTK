@@ -253,6 +253,7 @@ reportFindMarker <- function(inSCE, output_file = NULL, output_dir = NULL) {
 #'  should be displayed or not. Default is \code{TRUE}.
 #' @param pdf A \code{logical} value indicating if a pdf should also be
 #'  generated for each figure in the report. Default is \code{TRUE}.
+#' @param jackStraw logical value
 #' @return A \code{SingleCellExperiment} object that has the seurat computations
 #'  stored and can be used to interactively visualize the plots by importing
 #'  in the \code{singleCellTK} user interface.
@@ -270,7 +271,8 @@ seuratReport <- function(inSCE,
                          variable.features = 2000,
                          pc.count = 10,
                          showSession = TRUE,
-                         pdf = TRUE){
+                         pdf = TRUE,
+                         jackStraw = FALSE){
 
   if(is.null(biological.group)){
     stop("Must specify atleast one biological.group that is present in the colData of input object.")
@@ -305,7 +307,8 @@ seuratReport <- function(inSCE,
                       pc.count = pc.count,
                       outputPath = outputDir,
                       showSession = showSession,
-                      pdf = pdf
+                      pdf = pdf,
+                      jackStraw = jackStraw
                     ),
                     output_file = outputFile,
                     output_dir = outputDir,

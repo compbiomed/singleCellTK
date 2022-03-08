@@ -1385,6 +1385,7 @@ seuratGenePlot <- function(inSCE,
                            plotType,
                            features,
                            groupVariable,
+                           
                            splitBy = NULL,
                            cols = c("lightgrey", "blue"),
                            ncol = 1){
@@ -1410,14 +1411,14 @@ seuratGenePlot <- function(inSCE,
     return(Seurat::RidgePlot(
       seuratObject,
       features = features,
-      ncol = ncol))
+      ncol = ncol, combine = FALSE))
   }
   else if(plotType == "violin"){
     return(Seurat::VlnPlot(
       seuratObject,
       features = features,
       ncol = ncol,
-      split.by = splitBy))
+      split.by = splitBy, combine = FALSE))
   }
   else if(plotType == "feature"){
     return(Seurat::FeaturePlot(
