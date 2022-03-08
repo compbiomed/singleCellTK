@@ -172,17 +172,23 @@ generateMeta <- function(dropletSCE = NULL,
   }
 
   if (dataType == "Cell" | dataType == "Both") {
-    decontX_stat = c(CellNum = ncol(cellSCE),
-              MedianReads = stats::median(Matrix::colSums(assay(cellSCE, 'decontXcounts'))),
-              MedianGenes = stats::median(Matrix::colSums(assay(cellSCE, 'decontXcounts') > 0)),
-              DataType = 'Decontaminated cell matrix returned by runDecontX',
-              FileName = file.path(filterDir, 'assays', paste0(samplename,'_decontXcounts.mtx.gz')))
+    if ("decontXcounts" %in% SummarizedExperiment::assayNames(cellSCE)) { 
+      decontX_stat = c(CellNum = ncol(cellSCE),
+                MedianReads = stats::median(Matrix::colSums(assay(cellSCE, 'decontXcounts'))),
+                MedianGenes = stats::median(Matrix::colSums(assay(cellSCE, 'decontXcounts') > 0)),
+                DataType = 'Decontaminated cell matrix returned by runDecontX',
+                FileName = file.path(filterDir, 'assays', paste0(samplename,'_decontXcounts.mtx.gz')))
+    }
 
-    decontX_bg_stat = c(CellNum = ncol(cellSCE),
-              MedianReads = stats::median(Matrix::colSums(assay(cellSCE, 'decontXcounts_bg'))),
-              MedianGenes = stats::median(Matrix::colSums(assay(cellSCE, 'decontXcounts_bg') > 0)),
-              DataType = 'Decontaminated cell matrix returned by runDecontX , which is run with background count matrix',
-              FileName = file.path(filterDir, 'assays', paste0(samplename,'_decontXcounts_bg.mtx.gz')))
+    if ("decontXcounts_bg" %in% SummarizedExperiment::assayNames(cellSCE)) { 
+      decontX_bg_stat = c(CellNum = ncol(cellSCE),
+                MedianReads = stats::median(Matrix::colSums(assay(cellSCE, 'decontXcounts_bg'))),
+                MedianGenes = stats::median(Matrix::colSums(assay(cellSCE, 'decontXcounts_bg') > 0)),
+                DataType = 'Decontaminated cell matrix returned by runDecontX , which is run with background count matrix',
+                FileName = file.path(filterDir, 'assays', paste0(samplename,'_decontXcounts_bg.mtx.gz')))
+    }
+
+
 
     cell_stat = c(CellNum = ncol(cellSCE),
                    MedianReads = stats::median(colData(cellSCE)$sum),
@@ -331,19 +337,23 @@ generateHTANMeta <- function(dropletSCE = NULL,
   }
   
   if (dataType == "Cell" | dataType == "Both") {
-    decontX_stat = c(CellNum = ncol(cellSCE),
-                     MedianReads = stats::median(Matrix::colSums(assay(cellSCE, 'decontXcounts'))),
-                     MedianGenes = stats::median(Matrix::colSums(assay(cellSCE, 'decontXcounts') > 0)),
-                     DataType = 'Decontaminated cell matrix return returned by runDecontX',
-                     FileName = file.path(filterDir, 'assays', paste0(samplename,'_decontXcounts.mtx.gz')),
-                     AbsFileName = file.path(absFilterDir, 'assays', paste0(samplename,'_decontXcounts.mtx.gz')))
+    if ("decontXcounts" %in% SummarizedExperiment::assayNames(cellSCE)) {
+      decontX_stat = c(CellNum = ncol(cellSCE),
+                       MedianReads = stats::median(Matrix::colSums(assay(cellSCE, 'decontXcounts'))),
+                       MedianGenes = stats::median(Matrix::colSums(assay(cellSCE, 'decontXcounts') > 0)),
+                       DataType = 'Decontaminated cell matrix return returned by runDecontX',
+                       FileName = file.path(filterDir, 'assays', paste0(samplename,'_decontXcounts.mtx.gz')),
+                       AbsFileName = file.path(absFilterDir, 'assays', paste0(samplename,'_decontXcounts.mtx.gz')))      
+    }
 
-    decontX_bg_stat = c(CellNum = ncol(cellSCE),
-              MedianReads = stats::median(Matrix::colSums(assay(cellSCE, 'decontXcounts_bg'))),
-              MedianGenes = stats::median(Matrix::colSums(assay(cellSCE, 'decontXcounts_bg') > 0)),
-              DataType = 'Decontaminated cell matrix returned by runDecontX , which is run with background count matrix',
-              FileName = file.path(filterDir, 'assays', paste0(samplename,'_decontXcounts_bg.mtx.gz')),
-              AbsFileName = file.path(absFilterDir, 'assays', paste0(samplename,'_decontXcounts_bg.mtx.gz')))
+    if ("decontXcounts_bg" %in% SummarizedExperiment::assayNames(cellSCE)) {
+      decontX_bg_stat = c(CellNum = ncol(cellSCE),
+                MedianReads = stats::median(Matrix::colSums(assay(cellSCE, 'decontXcounts_bg'))),
+                MedianGenes = stats::median(Matrix::colSums(assay(cellSCE, 'decontXcounts_bg') > 0)),
+                DataType = 'Decontaminated cell matrix returned by runDecontX , which is run with background count matrix',
+                FileName = file.path(filterDir, 'assays', paste0(samplename,'_decontXcounts_bg.mtx.gz')),
+                AbsFileName = file.path(absFilterDir, 'assays', paste0(samplename,'_decontXcounts_bg.mtx.gz')))      
+    }
 
     cell_stat = c(CellNum = ncol(cellSCE),
                   MedianReads = stats::median(colData(cellSCE)$sum),

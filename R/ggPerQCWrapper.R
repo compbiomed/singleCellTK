@@ -166,14 +166,17 @@ plotRunPerCellQCResults <- function(inSCE,
     merged.plots <- list(combined.sum, combined.detected, combined.toppercent)
     names(merged.plots) <- c("Sum", "Detected", "TopPercent")
 
-    if (any(grepl(
-      pattern="subsets_",
-      names(colData(inSCE))
-    ))) {
+    if (any(grepl(pattern="subsets_",names(colData(inSCE))
+    ) | grepl(pattern="Mito_", names(colData(inSCE))))) { 
       subsets <- grep(
         pattern="subsets_",
         names(colData(inSCE)), value=TRUE
       )
+      mitos <- grep(
+        pattern="Mito_",
+        names(colData(inSCE)), value=TRUE
+      )
+      subsets <- c(subsets, mitos)
 
       combined.subset <- lapply(subsets, function(x) {
         plotSCEViolinColData(
@@ -304,14 +307,17 @@ plotRunPerCellQCResults <- function(inSCE,
       res.list <- c(res.list, violin.toppercent)
       names(res.list) <- c("Sum", "Detected", "TopPercent")
 
-      if (any(grepl(
-        pattern="subsets_",
-        names(colData(inSCESub))
-      ))) {
+      if (any(grepl(pattern="subsets_", names(colData(inSCESub))) |
+              grepl(pattern="Mito_", names(colData(inSCESub))))) {
         subsets <- grep(
           pattern="subsets_",
           names(colData(inSCESub)), value=TRUE
         )
+        mitos <- grep(
+          pattern="Mito_",
+          names(colData(inSCESub)), value=TRUE
+        )
+        subsets <- c(subsets, mitos)
 
         violin.subset <- lapply(subsets, function(y) {
           title = paste0(y, " per cell")

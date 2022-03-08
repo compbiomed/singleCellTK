@@ -192,9 +192,9 @@ if (!skipCellData) {
   if (length(samples) == 1) {
     plotsQCMetrics <- list(Violin=plotsQCMetrics)
   }
-  names(plotsQCMetrics$Violin)[names(plotsQCMetrics$Violin) == "subsets_mito_percent"] <- "Mito_Subset_Top50_Percent"
-  names(plotsQCMetrics$Violin)[names(plotsQCMetrics$Violin) == "subsets_mito_sum"] <- "Mito_Subset_Sum"
-  names(plotsQCMetrics$Violin)[names(plotsQCMetrics$Violin) == "subsets_mito_detected"] <- "Mito_Subset_Features"
+  # names(plotsQCMetrics$Violin)[names(plotsQCMetrics$Violin) == "subsets_mito_percent"] <- "Mito_Subset_Top50_Percent"
+  # names(plotsQCMetrics$Violin)[names(plotsQCMetrics$Violin) == "subsets_mito_sum"] <- "Mito_Subset_Sum"
+  # names(plotsQCMetrics$Violin)[names(plotsQCMetrics$Violin) == "subsets_mito_detected"] <- "Mito_Subset_Features"
   geneSubsetData <- grep("subsets_.*", names(plotsQCMetrics$Violin), value = TRUE)
   geneSubsetName <- unique(gsub("_sum|_detected|_percent","",
                                 gsub("subsets_","",geneSubsetData)))
@@ -222,20 +222,20 @@ plotsQCMetrics$Violin$Detected
 cat("\n\n")
 cat(paste0('## Percentage of Library Size Occupied by Top 50 Expressed Features {.tabset .tabset-fade} \n\n'))
 plotsQCMetrics$Violin$TopPercent
-if(!is.null(plotsQCMetrics$Violin$Mito_Subset_Sum)){
+if(!is.null(plotsQCMetrics$Violin$Mito_sum)){
   cat("\n\n")
   cat(paste0('## Total Mitochondrial Counts {.tabset .tabset-fade} \n\n'))
-  plotsQCMetrics$Violin$Mito_Subset_Sum
+  plotsQCMetrics$Violin$Mito_sum
 }
-if(!is.null(plotsQCMetrics$Violin$Mito_Subset_Features)){
+if(!is.null(plotsQCMetrics$Violin$Mito_detected)){
   cat("\n\n")
   cat(paste0('## Total Mitochondrial Features {.tabset .tabset-fade} \n\n'))
-  plotsQCMetrics$Violin$Mito_Subset_Features
+  plotsQCMetrics$Violin$Mito_detected
 }
-if(!is.null(plotsQCMetrics$Violin$Mito_Subset_Top50_Percent)){
+if(!is.null(plotsQCMetrics$Violin$Mito_percent)){
   cat("\n\n")
   cat(paste0('## Percentage of Mitochondrial Counts {.tabset .tabset-fade} \n\n'))
-  plotsQCMetrics$Violin$Mito_Subset_Top50_Percent
+  plotsQCMetrics$Violin$Mito_percent
 }
 
 

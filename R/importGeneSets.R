@@ -151,8 +151,7 @@ importGeneSetsFromList <- function(inSCE, geneSetList,
   gs <- list()
   for(i in seq_along(geneSetList)) {
     gs[[i]] <- GSEABase::GeneSet(setName = names(geneSetList)[i],
-                                 geneIds = geneSetList[[i]],
-                                 shortDescription = by)
+                                 geneIds = geneSetList[[i]])
   }
   gsc <- GSEABase::GeneSetCollection(gs)
 

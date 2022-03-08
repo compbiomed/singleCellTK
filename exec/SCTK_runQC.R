@@ -496,7 +496,7 @@ for(i in seq_along(process)) {
     }
 
     cellQCAlgos <- c("QCMetrics", "scDblFinder", "cxds", "bcds", "scrublet", "doubletFinder",
-    "cxds_bcds_hybrid", "decontX", "soupX")
+    "cxds_bcds_hybrid", "decontX", "decontX_bg", "soupX", "soupX_bg")
 
     if (dataType == "Cell") {
         if (is.null(cellSCE) && (preproc %in% c("BUStools", "SEQC"))) {
