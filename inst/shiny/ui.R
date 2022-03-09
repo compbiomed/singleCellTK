@@ -77,6 +77,7 @@ numClusters <- ""
 currassays <- ""
 currreddim <- ""
 curraltExps <- ""
+currGS <- ""
 #from SCE
 cell_list <- ""
 gene_list <- ""
@@ -110,6 +111,7 @@ if (!is.null(getShinyOption("inputSCEset"))){
   currassays <- names(assays(getShinyOption("inputSCEset")))
   currreddim <- names(reducedDims(getShinyOption("inputSCEset")))
   curraltExps <- names(altExp(getShinyOption("inputSCEset")))
+  currGS <- sctkListGeneSetCollections(getShinyOption("inputSCEset"))
   ###############################################################
   #from sce
   cell_list <- colnames(getShinyOption("inputSCEset"))

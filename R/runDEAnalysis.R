@@ -146,14 +146,13 @@
 #' used.
 #' 2. Annotation level selection. Arguments \code{class}, \code{classGroup1} and
 #' \code{classGroup2} will be used.
-#' 
-#' See \code{\link{plotDEGHeatmap}}, \code{\link{plotDEGRegression}}, 
+#' @seealso See \code{\link{plotDEGHeatmap}}, \code{\link{plotDEGRegression}}, 
 #' \code{\link{plotDEGViolin}} and \code{\link{plotDEGVolcano}} for 
 #' visualization method after running DE analysis. 
 #' @param inSCE \linkS4class{SingleCellExperiment} inherited object.
 #' @param method Character. Specify which method to use when using 
-#' \code{runDEAnalysis()}. Choose from \code{"wilcox"}, \code{"MAST"}, \code{"DESeq2"}, 
-#' \code{"Limma"}, \code{"ANOVA"}. Default \code{"wilcox"}.
+#' \code{runDEAnalysis()}. Choose from \code{"wilcox"}, \code{"MAST"}, 
+#' \code{"DESeq2"}, \code{"Limma"}, \code{"ANOVA"}. Default \code{"wilcox"}.
 #' @param useAssay character. A string specifying which assay to use for the
 #' DE regression. Default \code{"counts"} for DESeq2, \code{"logcounts"} for 
 #' other methods. 
@@ -648,18 +647,10 @@ runWilcox <- function(inSCE, useAssay = 'logcounts', useReducedDim = NULL,
     table <- result$statistics[[2]]
   }
   # Generate LogFC value
-  if (!is.null(useAssay)) {
-    cond1.assay <- expData(inSCE, useAssay)[rownames(table), ix1]
-    cond2.assay <- expData(inSCE, useAssay)[rownames(table), ix2]
-    # Assuming that useAssay is log-normalized counts
-    table$Log2_FC <- rowMeans(cond1.assay) - rowMeans(cond2.assay)
-  } else {
-    cond1.assay <- t(expData(inSCE, useReducedDim))[rownames(table), ix1]
-    cond2.assay <- t(expData(inSCE, useReducedDim))[rownames(table), ix2]
-    table$Log2_FC <- log2(rowMeans(cond1.assay) / rowMeans(cond2.assay))
-    #table$Log2_FC <- rowMeans(cond1.assay) - rowMeans(cond2.assay)
-  }
-  
+  cond1.assay <- expData(inSCE, useAssay)[rownames(table), ix1]
+  cond2.assay <- expData(inSCE, useAssay)[rownames(table), ix2]
+  # Assuming that useAssay is log-normalized counts
+  table$Log2_FC <- rowMeans(cond1.assay) - rowMeans(cond2.assay)
 
   deg <- data.frame(Gene = as.character(rownames(table)),
                     Log2_FC = table$Log2_FC,

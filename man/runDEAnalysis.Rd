@@ -110,8 +110,8 @@ runWilcox(
 }
 \arguments{
 \item{method}{Character. Specify which method to use when using 
-\code{runDEAnalysis()}. Choose from \code{"wilcox"}, \code{"MAST"}, \code{"DESeq2"}, 
-\code{"Limma"}, \code{"ANOVA"}. Default \code{"wilcox"}.}
+\code{runDEAnalysis()}. Choose from \code{"wilcox"}, \code{"MAST"}, 
+\code{"DESeq2"}, \code{"Limma"}, \code{"ANOVA"}. Default \code{"wilcox"}.}
 
 \item{inSCE}{\linkS4class{SingleCellExperiment} inherited object.}
 
@@ -196,10 +196,6 @@ Condition specification allows two methods:
 used.
 2. Annotation level selection. Arguments \code{class}, \code{classGroup1} and
 \code{classGroup2} will be used.
-
-See \code{\link{plotDEGHeatmap}}, \code{\link{plotDEGRegression}}, 
-\code{\link{plotDEGViolin}} and \code{\link{plotDEGVolcano}} for 
-visualization method after running DE analysis.
 }
 \examples{
 data(scExample, package = "singleCellTK")
@@ -209,4 +205,9 @@ sce <- runDEAnalysis(method = "Limma", inSCE = sce, groupName1 = "group1",
  groupName2 = "group2", index1 = seq(20), index2 = seq(21,40),
  analysisName = "Limma")
 
+}
+\seealso{
+See \code{\link{plotDEGHeatmap}}, \code{\link{plotDEGRegression}}, 
+\code{\link{plotDEGViolin}} and \code{\link{plotDEGVolcano}} for 
+visualization method after running DE analysis.
 }

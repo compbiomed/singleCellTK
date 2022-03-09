@@ -287,7 +287,7 @@ To visualize the result, we simply adopt a violin plot to show the distribution 
 
 ```{R visVAM}
 hallmark <- "HALLMARK_INFLAMMATORY_RESPONSE"
-plotPathway(sce, resultName = "VAM_H_CDF", geneset = hallmark, groupby = "cluster")
+plotPathway(sce, resultName = "VAM_H_CDF", geneset = hallmark, groupBy = "cluster")
 ```
 
 Note that available options for argument `resultName` and `geneset` can be printed with getter functions below.

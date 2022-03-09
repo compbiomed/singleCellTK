@@ -31,10 +31,14 @@ getPathwayResultNames <- function(inSCE, stopIfNone = FALSE){
 #' should be found in \code{getPathwayResultNames(inSCE)}. 
 #' @param geneset A single character specifying the geneset of interest. Should
 #' be found in the geneSetCollection used for performing the analysis.
-#' @param groupby Either a single character specifying a column of 
+#' @param groupBy Either a single character specifying a column of 
 #' \code{colData(inSCE)} or a vector of equal length as the number of cells. 
 #' Default \code{NULL}.
-#' @param boxplot Whether to add a boxplot. Default \code{FALSE}.
+#' @param boxplot Boolean, Whether to add a boxplot. Default \code{FALSE}.
+#' @param violin Boolean, Whether to add a violin plot. Default \code{TRUE}.
+#' @param summary Adds a summary statistic, as well as a crossbar to the violin 
+#' plot. Options are \code{"mean"} or \code{"median"}, and \code{NULL} for not 
+#' adding. Default \code{"median"}.
 #' @return A \code{ggplot} object for the violin plot
 #' @export
 #' @examples 
@@ -52,8 +56,10 @@ getPathwayResultNames <- function(inSCE, stopIfNone = FALSE){
 plotPathway <- function(inSCE, 
                         resultName, 
                         geneset,
-                        groupby = NULL,
-                        boxplot = FALSE
+                        groupBy = NULL,
+                        boxplot = FALSE,
+                        violin = TRUE,
+                        summary = "median"
 ){ 
     availResults <- getPathwayResultNames(inSCE, stopIfNone = TRUE)
     if (!resultName %in% availResults) {
@@ -73,8 +79,9 @@ plotPathway <- function(inSCE,
              genesetCollectionName, '". Try `getGenesetNamesFromCollection(inSCE, "',
              genesetCollectionName, '")` for available options.')
     }
-    xlab <- ifelse(is.null(groupby), "Sample", groupby)
+    xlab <- ifelse(is.null(groupBy), "Sample", groupBy)
     plotSCEViolin(inSCE, slotName = "reducedDims", itemName = resultName, 
                   dimension = geneset , xlab = xlab, ylab = geneset, 
-                  sample = NULL, groupBy = groupby, boxplot = boxplot)
+                  sample = NULL, groupBy = groupBy, boxplot = boxplot,
+                  violin = violin, summary = summary)
 }
