@@ -458,17 +458,17 @@ runANOVA <- function(inSCE, useAssay = 'logcounts', useReducedDim = NULL,
                       FDR = stats::p.adjust(p, method = 'fdr'),
                       stringsAsFactors = FALSE)
     rownames(deg) <- NULL
-    if (!is.null(useAssay)) {
-      cond1.assay <- expData(inSCE[,ix1], useAssay)
-      cond2.assay <- expData(inSCE[,ix2], useAssay)
-      deg$Log2_FC <- rowMeans(cond1.assay) - rowMeans(cond2.assay)
-    } else {
-      cond1.assay <- t(expData(inSCE[,ix1], useReducedDim))
-      cond2.assay <- t(expData(inSCE[,ix2], useReducedDim))
-      deg$Log2_FC <- log2(rowMeans(cond1.assay) / rowMeans(cond2.assay))
-    }
     
-
+    if (!is.null(useAssay)) {
+      cond1.assay <- expData(inSCE, useAssay)[, ix1]
+      cond2.assay <- expData(inSCE, useAssay)[, ix2]
+    } else {
+      cond1.assay <- t(expData(inSCE, useReducedDim))[, ix1]
+      cond2.assay <- t(expData(inSCE, useReducedDim))[, ix2]
+    }
+    # Assuming that useAssay is log-normalized counts
+    deg$Log2_FC <- rowMeans(cond1.assay) - rowMeans(cond2.assay)
+    
     # Result Filtration
     if(isTRUE(onlyPos)){
       deg <- deg[deg$Log2_FC > 0,]
@@ -647,11 +647,17 @@ runWilcox <- function(inSCE, useAssay = 'logcounts', useReducedDim = NULL,
     table <- result$statistics[[2]]
   }
   # Generate LogFC value
-  cond1.assay <- expData(inSCE, useAssay)[rownames(table), ix1]
-  cond2.assay <- expData(inSCE, useAssay)[rownames(table), ix2]
+  
+  if (!is.null(useAssay)) {
+    cond1.assay <- expData(inSCE, useAssay)[rownames(table), ix1]
+    cond2.assay <- expData(inSCE, useAssay)[rownames(table), ix2]
+  } else {
+    cond1.assay <- t(expData(inSCE, useReducedDim))[rownames(table), ix1]
+    cond2.assay <- t(expData(inSCE, useReducedDim))[rownames(table), ix2]
+  }
   # Assuming that useAssay is log-normalized counts
   table$Log2_FC <- rowMeans(cond1.assay) - rowMeans(cond2.assay)
-
+  
   deg <- data.frame(Gene = as.character(rownames(table)),
                     Log2_FC = table$Log2_FC,
                     Pvalue = table$p.value,
