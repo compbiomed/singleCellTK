@@ -46,6 +46,27 @@ bioc.package.check <- lapply(bioc.packages, FUN = function(x) {
     }
 }
 
+### helper function for importing Mito gene set
+.importMito <- function(MitoImport, MitoType) {
+    reference <- NULL
+    id <- NULL
+
+    if (isTRUE(MitoImport)) {
+        mito_info <- strsplit(MitoType, split="-")
+        if (length(mito_info[[1]]) != 2) {
+            stop("The --MitoType ", MitoType, " is not correct or supported. Please double check the documentation.")
+        }
+
+        reference <- mito_info[[1]][1]
+        id <- mito_info[[1]][2]
+
+        if ((!reference %in% c("human", "mouse")) | (!id %in% c("symbol", "entrez", "ensembl", "ensemblTranscriptID"))) {
+            stop("The --MitoType ", MitoType, " is not correct or supported. Please double check the documentation.")
+        }
+    }
+    return(list('reference' = reference, 'id' = id))
+}
+
 ## Check whether python module is available
 if (!reticulate::py_module_available(module = "scrublet")) {
     stop("Cannot find python module 'scrublet'. ",
@@ -252,47 +273,6 @@ if (numCores > 1) {
 }
 
 
-### helper function for importing Mito gene set
-.importMito <- function(inSCE, geneSetCollection, MitoImport, MitoType) {
-    if (isTRUE(MitoImport)) {
-        mito_info <- strsplit(MitoType, split="-")
-        if (length(mito_info[[1]]) != 2) {
-            warning("The --MitoType ", MitoType, " is not correct or supported. Please double check the documentation. Ignore --MitoImport=TRUE now.")
-            return(geneSetCollection)
-        }
-        reference <- mito_info[[1]][1]
-        id <- mito_info[[1]][2]
-
-        if ((!reference %in% c("human", "mouse")) | (!id %in% c("symbol", "entrez", "ensembl", "ensemblTranscriptID"))) {
-            warning("The --MitoType ", MitoType, " is not correct or supported. Please double check the documentation. Ignore --MitoImport=TRUE now.")
-            return(geneSetCollection)
-        }
-
-        #print(paste(MitoType, 'mito', sep='-'))
-        subset_name <- stringr::str_to_title(strsplit(MitoType, "-")[[1]])
-        subset_name <- paste(c(subset_name, 'Mito'), collapse='')
-        inSCE <- importMitoGeneSet(inSCE = inSCE,
-                     reference = reference,
-                     id = id,
-                     collectionName = subset_name,
-                     by = "rownames")
-        mito_gs <- inSCE@metadata$sctk$genesets[[subset_name]]@.Data[[1]]
-        mito_gs@shortDescription <- "rownames"
-
-        if (!is.null(geneSetCollection)) {
-          geneSetCollection@.Data <- c(geneSetCollection@.Data, mito_gs)
-        } else {
-          geneSetCollection <- GSEABase::GeneSetCollection(mito_gs)
-        }
-    }
-
-    return(geneSetCollection)
-}
-
-
-
-
-
 ### checking output formats
 if (!all(formats %in% c("SCE", "AnnData", "FlatFile", "HTAN", "Seurat"))) {
     warning("Output format must be 'SCE', 'AnnData', 'HTAN', 'Seurat' or 'FlatFile'. Format ",
@@ -489,11 +469,8 @@ for(i in seq_along(process)) {
 
     dropletSCE <- INPUT[[1]]
     cellSCE <- INPUT[[2]]
-    if (!is.null(cellSCE)) {
-        geneSetCollection <- .importMito(inSCE = cellSCE, geneSetCollection = geneSetCollection, MitoImport=MitoImport, MitoType=MitoType)
-    } else if (!is.null(dropletSCE)) {
-        geneSetCollection <- .importMito(inSCE = dropletSCE, geneSetCollection = geneSetCollection, MitoImport=MitoImport, MitoType=MitoType)
-    }
+
+    mitoInfo <- .importMito(MitoImport=MitoImport, MitoType=MitoType)
 
     cellQCAlgos <- c("QCMetrics", "scDblFinder", "cxds", "bcds", "scrublet", "doubletFinder",
     "cxds_bcds_hybrid", "decontX", "decontX_bg", "soupX", "soupX_bg")
@@ -506,7 +483,10 @@ for(i in seq_along(process)) {
         }
 
         message(paste0(date(), " .. Running cell QC"))
-        cellSCE <- runCellQC(inSCE = cellSCE, geneSetCollection = geneSetCollection, paramsList=Params, algorithms = cellQCAlgos)
+        cellSCE <- runCellQC(inSCE = cellSCE, geneSetCollection = geneSetCollection, 
+            paramsList=Params, algorithms = cellQCAlgos, background = dropletSCE,
+            mitoRef = mitoInfo[['reference']], mitoIDType = mitoInfo[['id']],
+            mitoGeneLocation = "rownames")
     }
 
     if (dataType == "Droplet") {
@@ -522,7 +502,10 @@ for(i in seq_along(process)) {
             }
             cellSCE <- dropletSCE[,ix]
             message(paste0(date(), " .. Running cell QC"))
-            cellSCE <- runCellQC(inSCE = cellSCE, geneSetCollection = geneSetCollection, paramsList=Params, algorithms = cellQCAlgos)
+            cellSCE <- runCellQC(inSCE = cellSCE, geneSetCollection = geneSetCollection, 
+                paramsList=Params, algorithms = cellQCAlgos, background = dropletSCE,
+                mitoRef = mitoInfo[['reference']], mitoIDType = mitoInfo[['id']],
+                mitoGeneLocation = "rownames")
         }
     }
 
@@ -549,7 +532,10 @@ for(i in seq_along(process)) {
 
         if (!is.null(cellSCE)) {
             message(paste0(date(), " .. Running cell QC"))
-            cellSCE <- runCellQC(inSCE = cellSCE, geneSetCollection = geneSetCollection, paramsList=Params, algorithms = cellQCAlgos)
+            cellSCE <- runCellQC(inSCE = cellSCE, geneSetCollection = geneSetCollection, 
+                paramsList=Params, algorithms = cellQCAlgos, background = dropletSCE,
+                mitoRef = mitoInfo[['reference']], mitoIDType = mitoInfo[['id']],
+                mitoGeneLocation = "rownames")
         }
     }
 

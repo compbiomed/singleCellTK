@@ -47,7 +47,7 @@ using one of the importGeneSet* functions. Default \code{NULL}.}
 
 \item{mitoRef, mitoIDType, mitoPrefix, mitoID, mitoGeneLocation}{Arguments used to 
 import mitochondrial genes and quantify their expression. Please see 
-\link[runPerCellQC]{runPerCellQC} for detailed information.}
+\link[singleCellTK]{runPerCellQC} for detailed information.}
 
 \item{useAssay}{A string specifying which assay contains the count
 matrix for cells.}

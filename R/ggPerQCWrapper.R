@@ -2537,7 +2537,7 @@ plotDecontXResults <- function(inSCE,
   scoreCol <- "decontX_contamination"
   clusterCol <- "decontX_clusters"
 
-  if (!scoreCol %in% colnames(SummarizedExperiment::colData(inSCE))) {
+  if (!isTRUE(bgResult) & !scoreCol %in% colnames(SummarizedExperiment::colData(inSCE))) {
       stop("The result of running decontX without raw/droplet matrix 
            is not found in the input SingleCellExperiment object. 
            Please check whether runDecontX has been run without

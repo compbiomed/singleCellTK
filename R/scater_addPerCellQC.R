@@ -292,7 +292,7 @@ runPerCellQC <- function(inSCE,
 
   ## rename mito gene columns in colData(inSCE)
   mitoCols <- grep("subsets_mito", names(SummarizedExperiment::colData(inSCE)))
-  newMitoCols <- gsub('subsets_mito', 'Mito', names(SummarizedExperiment::colData(inSCE))[mitoCols])
+  newMitoCols <- gsub('subsets_mito', 'mito', names(SummarizedExperiment::colData(inSCE))[mitoCols])
   names(SummarizedExperiment::colData(inSCE))[mitoCols] <- newMitoCols
 
   argsList <- argsList[!names(argsList) %in% ("BPPARAM")]
