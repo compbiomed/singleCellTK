@@ -110,7 +110,7 @@ shinyPanelRowAnnotation <- fluidPage(
         panel(
           "Reset",
           h6("Reset annotation to point after changes were last saved:"),
-          actionButton("buttonRestore_rowData","Reset",icon = icon("refresh"))
+          actionButton("buttonRestore_rowData","Reset",icon = icon("sync"))
         )
       )
     )

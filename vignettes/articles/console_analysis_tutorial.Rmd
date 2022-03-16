@@ -68,7 +68,7 @@ sce <- importCellRanger(sampleDirs = "otherCellRangerData",
 
 Quality control and filtering of cells is often needed before down-stream analyses such as dimensionality reduction and clustering. Typical filtering procedures include exclusion of poor quality cells with low numbers of counts/UMIs, estimation and removal of ambient RNA, and identification of potential doublet/multiplets. Many tools and packages are available to perform these operations and users are free to apply their tool(s) of choice. 
 
-To perform QC, we suggest using the `runCellQC()` function. This is a wrapper for several methods for calculation of QC metrics, doublet detection, and estimation of ambient RNA. Below is a quick example of how to perform standard QC before heading to downstream analyses. If you have another preferred approach or your data has already been QC’ed, you can move to [Feature Selection section](#variable-feature-selection-1). For this tutorial, we will only run one doublet detection algorithm ([scDblFinder](https://bioconductor.org/packages/release/bioc/html/scDblFinder.html)) and one decontamination algorithm ([decontX](https://rdrr.io/bioc/celda/man/decontX.html)). For a full list of algorithms that this function runs by default, see ?runCellQC. We will also quantify the percentage of mitochondrial genes in each cell as this is often used as a measure of cell viability. 
+To perform QC, we suggest using the `runCellQC()` function. This is a wrapper for several methods for calculation of QC metrics, doublet detection, and estimation of ambient RNA. Below is a quick example of how to perform standard QC before heading to downstream analyses. If you have another preferred approach or your data has already been QC’ed, you can move to [Feature Selection section](#variable-feature-selection). For this tutorial, we will only run one doublet detection algorithm ([scDblFinder](https://bioconductor.org/packages/release/bioc/html/scDblFinder.html)) and one decontamination algorithm ([decontX](https://rdrr.io/bioc/celda/man/decontX.html)). For a full list of algorithms that this function runs by default, see `?runCellQC`. We will also quantify the percentage of mitochondrial genes in each cell as this is often used as a measure of cell viability. 
 
 ```{R qc, message=FALSE, warning=FALSE, results='hold'}
 # Get list of mitochondrial genes
@@ -236,7 +236,7 @@ markerHm <- plotMarkerDiffExp(sce, topN = 5, log2fcThreshold = 0,
 
 ### Customized Differential Expression Analysis
 
-As we can easily tell from the heatmap above, "cluster 6" and "cluster 7" are having a very similar expression profile across the top markers detected. In order to further explore the difference between these two clusters, or any other two reasonable groups of cells, user can use the function `runDEAnalysis()`. 
+As we can easily tell from the heatmap above, "cluster 1" and "cluster 3" are having a very similar expression profile across the top markers detected. In order to further explore the difference between these two clusters, or any other two reasonable groups of cells, user can use the function `runDEAnalysis()`. 
 
 `runDEAnalysis()` is a generic function for performing differential expression (DE) analysis between two selected groups of cells. This is also used by `findMarkerDiffExp()`. By running DE analysis, the function will take the normalized read count data and perform statistical analysis to discover quantitative changes in expression levels between selected groups. See here for the detail of [running DE analysis with SCTK](differential_expression.html). 
 
@@ -244,15 +244,15 @@ There are multiple ways to specify the groups of cells to be compared: by either
 
 ```{R de, message=FALSE, warning=FALSE, results="hold"}
 sce <- runDEAnalysis(inSCE = sce, method = "wilcox", 
-                     class = "cluster", classGroup1 = c(6), classGroup2 = c(7),
-                     groupName1 = "cluster6", groupName2 = "cluster7", 
-                     analysisName = "cluster6_VS_7")
+                     class = "cluster", classGroup1 = c(1), classGroup2 = c(3),
+                     groupName1 = "cluster1", groupName2 = "cluster3", 
+                     analysisName = "cluster1_VS_3")
 ```
 
 Similarly to the marker detection section, SCTK also has a DE analysis specific heatmap plotting function, `plotDEGHeatmap()`. Here, users can just easily enter the `analysisName` specified for one run and the function will automatically arrange the output. The heatmap is also splitted into a "checker board", by the "conditions" (i.e. the groups selected when running `runDEAnalysis()`) and the "regulation" (i.e. "up" if the log2 fold change is positive in "group1" against "group2"). 
 
 ```{R deHeatmap, message=FALSE, warning=FALSE, results="hold"}
-deHm <- plotDEGHeatmap(sce, useResult = "cluster6_VS_7", rowLabel = TRUE)
+deHm <- plotDEGHeatmap(sce, useResult = "cluster1_VS_3", rowLabel = TRUE)
 ```
 
 ## Cell Type Labeling
@@ -298,3 +298,5 @@ getGenesetNamesFromCollection(inSCE = sce, geneSetCollectionName = "H")
 ```
 
 >Note: In the current version of SCTK, the returned score matrices from either VAM or GSVA are stored in the `reducedDims` slot, since the feature dimensions are for the gene sets instead of the genes or subsets of genes. In the future, SCTK will adopt other types of data container for simpler operation on different types of feature sets. 
+
+## Differential Abundance

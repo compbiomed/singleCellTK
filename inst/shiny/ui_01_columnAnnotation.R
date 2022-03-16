@@ -106,7 +106,7 @@ shinyPanelColumnAnnotation <- fluidPage(
           "Reset",
           h6("Reset annotation to point after changes were last saved:"),
           actionButton("buttonRestore_colData",
-                       "Reset", icon = icon("refresh"))
+                       "Reset", icon = icon("sync"))
         )
       )
     )

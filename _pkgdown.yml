@@ -18,6 +18,7 @@ reference:
 - title: "Decontamination"
 - contents:
   - runDecontX
+  - runSoupX
 - title: "Doublet/Empty Droplet Detection"
 - contents:
   - runBarcodeRankDrops
@@ -159,81 +160,79 @@ navbar:
     - icon: fas fa-home fa-lg
       href: https://www.camplab.net/sctk
     - text: "Installation"
-      href: articles/articles/installation.html
+      href: articles/installation.html
     - text: "Documentation"
       menu:
         - text: "Data"
           menu:
             - text: "Import Data"
-              href: articles/articles/import_data.html
-            - text: "Import Data for Commandline QC"
-              href: articles/articles/cmd_import_scRNAseq_data_as_SCE.html
+              href: articles/import_data.html
             - text: "Import Gene Sets"
-              href: articles/articles/import_genesets.html
+              href: articles/import_genesets.html
             - text: "Annotation"
-              href: articles/articles/import_annotation.html
+              href: articles/import_annotation.html
             - text: "Export Data"
-              href: articles/articles/export_data.html
+              href: articles/export_data.html
             - text: "Delete Data"
-              href: articles/articles/delete_data.html
+              href: articles/delete_data.html
         - text: "QC & Filtering"
           menu:
             - text: "Droplet QC (R console)"
-              href: articles/articles/cnsl_dropletqc.html
+              href: articles/cnsl_dropletqc.html
             - text: "Cell QC (R console)"
-              href: articles/articles/cnsl_cellqc.html
+              href: articles/cnsl_cellqc.html
             - text: "Cell QC (Shiny UI)"
-              href: articles/articles/ui_qc.html
+              href: articles/ui_qc.html
             - text: "Filtering"
-              href: articles/articles/filtering.html
+              href: articles/filtering.html
         - text: "Normalization & Batch Correction"
           menu:
           - text: "Normalization"
-            href: articles/articles/cnsl_normalization.html
+            href: articles/cnsl_normalization.html
           - text: "Batch Correction"
-            href: articles/articles/batch_correction.html
+            href: articles/batch_correction.html
         - text: "Feature Selection & Dimensionality Reduction"
           menu:
           - text: "Feature Selection"
-            href: articles/articles/cnsl_feature_selection.html
+            href: articles/cnsl_feature_selection.html
           - text: "Dimensionality Reduction"
-            href: articles/articles/cnsl_dimensionality_reduction.html
+            href: articles/cnsl_dimensionality_reduction.html
           - text: "2D Embedding"
-            href: articles/articles/cnsl_2d_embedding.html
+            href: articles/cnsl_2d_embedding.html
         - text: "Clustering"
-          href: articles/articles/clustering.html
+          href: articles/clustering.html
         - text: "Differential Expression & Cell Type Labeling"
           menu:
             - text: "Differential Expression"
-              href: articles/articles/differential_expression.html
+              href: articles/differential_expression.html
             - text: "Find Marker"
-              href: articles/articles/find_marker.html
+              href: articles/find_marker.html
             - text: "Cell Type Labeling"
-              href: articles/articles/cell_type_labeling.html
+              href: articles/cell_type_labeling.html
         - text: "Pathway & Enrichment Analysis"
           menu:
             - text: "EnrichR"
-              href: articles/articles/cnsl_enrichR.html
+              href: articles/cnsl_enrichR.html
             - text: "Pathway Analysis"
-              href: articles/articles/pathwayAnalysis.html
+              href: articles/pathwayAnalysis.html
         - text: "Curated Workflows"
           menu:
             - text: "Seurat"
-              href: articles/articles/cnsl_seurat_curated_workflow.html
+              href: articles/cnsl_seurat_curated_workflow.html
             - text: "Celda"
-              href: articles/articles/celda_curated_workflow.html
+              href: articles/celda_curated_workflow.html
         - text: "Visualization"
           menu:
           - text: "General Visualization"
-            href: articles/articles/visualization.html
+            href: articles/visualization.html
           - text: "Generic Heatmap"
-            href: articles/articles/heatmap.html
+            href: articles/heatmap.html
     - text: "Tutorials"
       menu:
       - text: "Analysis of PBMC3K (R Console)"
-        href: articles/articles/console_analysis_tutorial.html
+        href: articles/console_analysis_tutorial.html
     - text: "SCTK-QC"
-      href: articles/articles/cmd_qc.html
+      href: articles/cmd_qc.html
     - text: "Reference"
       href: reference/index.html
   right:
