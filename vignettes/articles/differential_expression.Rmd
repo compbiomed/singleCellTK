@@ -68,7 +68,9 @@ As mentioned in the Introduction section above, totally five methods are availab
 <div class = "offset">
 ````
 
-Users need to choose a feature expression matrix for the differential expression analysis, and the selection should be made at the selection input **"Select assay"**. For most of the methods, a log-normalized assay would be recommended for the algorithm, though a "raw" counts would be recommended for "DESeq2". [(How to normalize an assay?)](cnsl_normalization.html)
+Users need to choose a feature expression matrix for the differential expression analysis, and the selection should be made at the selection input **"Select assay"**. For most of the methods, a log-normalized assay would be recommended for the algorithm, though a "raw" counts would be recommended for "DESeq2". [(How to normalize an assay?)](cnsl_normalization.html)  
+
+Alternatively, user can choose to use the [Pathway Analysis](pathwayAnalysis.html) scores to perform the statistic tests. The matrix names for these scores will lie within the **"redDims" section** in the drop-down list of **"Select assay"**. When using the pathway analysis scores, DESeq2 method is not available since it expects non-negative integer value in the input matrix. 
 
 ````{=html}
 </div>
@@ -225,6 +227,7 @@ The most basic parameters include:
 - The input SCE object - `inSCE`.
 - The method listed in the table above to use - `method`.
 - The assay to perform the analysis on - `useAssay`
+  - Alternatively, set `useAssay` to `NULL` and use `useReducedDim` for specifying a matrix in `reducedDims`, such as the [Pathway Analysis](pathwayAnalysis.html) scores. When using the pathway analysis scores, `"DESeq2"` method is not available since it expects non-negative integer value in the input matrix.
 
 ````{=html}
 </div>
@@ -278,10 +281,10 @@ sce <- importExampleData("pbmc3k")
 sce <- scaterlogNormCounts(sce, "logcounts")
 # Go through the Seurat curated workflow to get basic clusters
 sce <- seuratNormalizeData(inSCE = sce, useAssay = "counts")
-sce <- seuratFindHVG(inSCE = sce, useAssay = "seuratNormData")
+sce <- seuratFindHVG(inSCE = sce, useAssay = "counts", hvgMethod = "vst")
 sce <- seuratScaleData(inSCE = sce, useAssay = "seuratNormData")
 sce <- seuratPCA(inSCE = sce, useAssay = "seuratScaledData")
-sce <- seuratFindClusters(inSCE = sce, useAssay = "seuratScaledData")
+sce <- seuratFindClusters(inSCE = sce, useAssay = "seuratScaledData", useReduction = "pca")
 # Optional visualization
 sce <- seuratRunUMAP(sce)
 plotSCEDimReduceColData(inSCE = sce, 

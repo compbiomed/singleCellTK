@@ -4,7 +4,15 @@
 \alias{plotPathway}
 \title{Generate violin plots for pathway analysis results}
 \usage{
-plotPathway(inSCE, resultName, geneset, groupby = NULL, boxplot = FALSE)
+plotPathway(
+  inSCE,
+  resultName,
+  geneset,
+  groupBy = NULL,
+  boxplot = FALSE,
+  violin = TRUE,
+  summary = "median"
+)
 }
 \arguments{
 \item{inSCE}{Input \linkS4class{SingleCellExperiment} object. With 
@@ -16,11 +24,17 @@ should be found in \code{getPathwayResultNames(inSCE)}.}
 \item{geneset}{A single character specifying the geneset of interest. Should
 be found in the geneSetCollection used for performing the analysis.}
 
-\item{groupby}{Either a single character specifying a column of 
+\item{groupBy}{Either a single character specifying a column of 
 \code{colData(inSCE)} or a vector of equal length as the number of cells. 
 Default \code{NULL}.}
 
-\item{boxplot}{Whether to add a boxplot. Default \code{FALSE}.}
+\item{boxplot}{Boolean, Whether to add a boxplot. Default \code{FALSE}.}
+
+\item{violin}{Boolean, Whether to add a violin plot. Default \code{TRUE}.}
+
+\item{summary}{Adds a summary statistic, as well as a crossbar to the violin 
+plot. Options are \code{"mean"} or \code{"median"}, and \code{NULL} for not 
+adding. Default \code{"median"}.}
 }
 \value{
 A \code{ggplot} object for the violin plot

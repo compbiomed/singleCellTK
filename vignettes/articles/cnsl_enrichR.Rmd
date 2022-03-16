@@ -36,7 +36,7 @@ To view detailed instructions on how to use the method from the toolkit, please 
 <div id="interactive" class="tabcontent">
 ````
 
-An overall workflow guide on how to use ***EnrichR*** sub-tab is described below. ***This workflow guide assumes that the Single Cell Data has already been uploaded through the [Import Single Cell Data](import_data.html) tab***. <br>
+An overall workflow guide on how to use ***EnrichR*** sub-tab is described below. <br>
 
 ![](ui_screenshots/pathway_analysis/enrichR_1.png)
 

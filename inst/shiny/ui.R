@@ -77,6 +77,7 @@ numClusters <- ""
 currassays <- ""
 currreddim <- ""
 curraltExps <- ""
+currGS <- ""
 #from SCE
 cell_list <- ""
 gene_list <- ""
@@ -110,6 +111,7 @@ if (!is.null(getShinyOption("inputSCEset"))){
   currassays <- names(assays(getShinyOption("inputSCEset")))
   currreddim <- names(reducedDims(getShinyOption("inputSCEset")))
   curraltExps <- names(altExp(getShinyOption("inputSCEset")))
+  currGS <- sctkListGeneSetCollections(getShinyOption("inputSCEset"))
   ###############################################################
   #from sce
   cell_list <- colnames(getShinyOption("inputSCEset"))
@@ -265,10 +267,11 @@ shinyUI(
                hidden(div(id = "consolePanel", style = "overflow-y:scroll; 
                           max-height: 120px; width: 100%; background-color: white; 
                           position: relative; bottom: 0; align: centre; padding: 0px;",
-                       verbatimTextOutput(outputId="consoleText", placeholder = TRUE) 
+                          verbatimTextOutput(outputId="consoleText", placeholder = TRUE) 
                ))
         )
       ),
+      
       # fluidRow(
       #   column(12, id = "consoleDiv", align = "right",
       #          actionButton(inputId="interpretToggle", label = "Interpret"),

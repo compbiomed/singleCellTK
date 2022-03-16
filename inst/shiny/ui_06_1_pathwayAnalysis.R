@@ -32,7 +32,9 @@ shinyPanelvam <- fluidPage(
                     )
         ),
 
-       uiOutput("selectPathwayGeneLists"),
+       #uiOutput("selectPathwayGeneLists"),
+       selectizeInput("PathwayGeneLists", "Select Geneset Collection(s):",
+                      choices = "Import geneset before using", multiple = FALSE),
 
        conditionalPanel(
          condition = "input.pathway == 'VAM'",
@@ -64,45 +66,52 @@ shinyPanelvam <- fluidPage(
 
         dropdown(
           fluidRow(
-            column(12,
-                   fluidRow(actionBttn(inputId = "closeDropDownPathway", label = NULL, style = "simple", color = "danger", icon = icon("times"), size = "xs"), align = "right"),
-
-          tags$h3("List of Input"),
-          uiOutput("selectReduceDim"),
-          uiOutput("selectGeneSets"),
-          selectInput(inputId = 'pathwayPlotVar',
-                      label = 'Select Condition(s) of interest to group data (OPTIONAL) : ',
-                      choices = clusterChoice,
-                      multiple = FALSE),
-
-          radioButtons("boxplot", "Box Plot:",
-                       c("TRUE" = "TRUE",
-                         "FALSE" = "FALSE"), inline = TRUE),
-
-          radioButtons("violinplot", "Violin Plot:",
-                       c("TRUE" = "TRUE",
-                         "FALSE" = "FALSE"), inline = TRUE),
-
-          pickerInput(
-            inputId = "summary",
-            label = "Select Summary parameter: ",
-            choices = c(
-              "Mean" = "mean",
-              "Median" = "median"
-            )),
-
-          #withBusyIndicatorUI(actionButton("Plot", "Update Plot")),
-          actionBttn(
-            inputId = "Plot",
-            label = "Update Plot",
-            style = "bordered",
-            color = "primary",
-            size = "sm"
+            column(
+              12,
+              fluidRow(actionBttn(inputId = "closeDropDownPathway", 
+                                  label = NULL, style = "simple", 
+                                  color = "danger", icon = icon("times"), 
+                                  size = "xs"), 
+                       align = "right"),
+              
+              tags$h3("List of Input"),
+              selectizeInput("pathwayRedDimNames", 
+                             "Select Score matrix which you want to plot:", 
+                             choices = NULL, 
+                             multiple = FALSE),
+              selectizeInput("pathwayPlotGS", "Select Geneset:",
+                             choices = "", multiple = FALSE),
+              selectInput(inputId = 'pathwayPlotVar',
+                          label = 'Select Condition(s) of interest to group data (OPTIONAL) : ',
+                          choices = clusterChoice,
+                          multiple = FALSE),
+              
+              radioButtons("boxplot", "Box Plot:",
+                           c("TRUE" = "TRUE",
+                             "FALSE" = "FALSE"), inline = TRUE),
+              
+              radioButtons("violinplot", "Violin Plot:",
+                           c("TRUE" = "TRUE",
+                             "FALSE" = "FALSE"), inline = TRUE),
+              
+              pickerInput(
+                inputId = "summary",
+                label = "Select Summary parameter: ",
+                choices = c("mean", "median"), 
+                selected = "median"),
+              
+              #withBusyIndicatorUI(actionButton("Plot", "Update Plot")),
+              actionBttn(
+                inputId = "Plot",
+                label = "Update Plot",
+                style = "bordered",
+                color = "primary",
+                size = "sm"
+              ),
+              
+            )
           ),
-
-        )
-      ),
-
+          
           #tags$style(".btn-custom {background-color: #e5e5e5; ;}"),
           #label = "Plot Options",
           inputId = "dropDownPathway",
@@ -111,10 +120,7 @@ shinyPanelvam <- fluidPage(
           circle = FALSE,
           inline = TRUE
         ),
-
-        plotOutput("pathwayPlot", height = "600px")
-
-
+        shinyjqui::jqui_resizable(plotOutput("pathwayPlot"))
       )
     )
   )
