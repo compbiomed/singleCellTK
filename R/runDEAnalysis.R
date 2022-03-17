@@ -3,6 +3,9 @@
 #' Meanwhile it does all the input checkings.
 #' @param inSCE \linkS4class{SingleCellExperiment} inherited object. Required.
 #' @param useAssay character. A string specifying which assay to use. Required.
+#' @param useReducedDim character. A string specifying which reducedDim to use
+#' for DE analysis. Usually a pathway analysis result matrix. Set 
+#' \code{useAssay} to \code{NULL} when using. Required. 
 #' @param index1 Any type of indices that can subset a
 #' \linkS4class{SingleCellExperiment} inherited object by cells. Specifies
 #' which cells are of interests. Default \code{NULL}.
@@ -194,6 +197,8 @@
 #' (Likelihood ratio test) with a 'full' model. Default \code{TRUE}.
 #' @param check_sanity Logical, MAST only argument. Whether to perform MAST's 
 #' sanity check to see if the counts are logged. Default \code{TRUE}.
+#' @param ... Arguments to pass to specific methods when using the generic 
+#' \code{runDEAnalysis()}.
 #' @examples
 #' data(scExample, package = "singleCellTK")
 #' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")

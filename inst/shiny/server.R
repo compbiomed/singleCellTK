@@ -976,6 +976,11 @@ shinyServer(function(input, output, session) {
 
       updateSeuratUIFromRDS(vals$counts)
       cleanGSTable()
+      deResNames <- names(metadata(vals$counts)$diffExp)
+      if (!is.null(deResNames)) {
+        updateSelectInput(session, "deResSel", choices = deResNames,
+                          selected = deResNames[1])
+      }
       # TODO: There are more things that need to be cleaned when uploading new
       # dataset, including any plots, tables that are origined from the old
       # datasets. Otherwise, errors may pop out when Shiny listens to the new
@@ -6089,7 +6094,8 @@ shinyServer(function(input, output, session) {
                          fdrThreshold = input$deFDRThresh,
                          colSplitBy = colSplitBy,
                          rowSplitBy = rowSplitBy,
-                         doLog = !isLogged)
+                         doLog = !isLogged,
+                         rowLabel = input$deHMrowLabel)
         })
       })
 
@@ -6193,14 +6199,18 @@ shinyServer(function(input, output, session) {
         labelBy = input$deVioLabel
       }
       # MAST style sanity check for whether logged or not
-      x <- expData(vals$counts, useAssay)
-      if (!all(floor(x) == x, na.rm = TRUE) & max(x, na.rm = TRUE) <
-          100) {
-        output$deSanityWarnViolin <- renderText("")
-        isLogged <- TRUE
+      if (!is.null(useAssay)) {
+        x <- expData(vals$counts, useAssay)
+        if (!all(floor(x) == x, na.rm = TRUE) & max(x, na.rm = TRUE) <
+            100) {
+          output$deSanityWarnViolin <- renderText("")
+          isLogged <- TRUE
+        } else {
+          output$deSanityWarnViolin <- renderText("Selected assay seems not logged (MAST style sanity check). Forcing to plot by automatically applying log-transformation. ")
+          isLogged <- FALSE
+        }
       } else {
-        output$deSanityWarnViolin <- renderText("Selected assay seems not logged (MAST style sanity check). Forcing to plot by automatically applying log-transformation. ")
-        isLogged <- FALSE
+        isLogged <- TRUE
       }
       output$deViolinPlot <- renderPlot({
         isolate({
@@ -6234,14 +6244,18 @@ shinyServer(function(input, output, session) {
         labelBy = input$deRegLabel
       }
       # MAST style sanity check for whether logged or not
-      x <- expData(vals$counts, useAssay)
-      if (!all(floor(x) == x, na.rm = TRUE) & max(x, na.rm = TRUE) <
-          100) {
-        output$deSanityWarnReg <- renderText("")
-        isLogged <- TRUE
+      if (!is.null(useAssay)) {
+        x <- expData(vals$counts, useAssay)
+        if (!all(floor(x) == x, na.rm = TRUE) & max(x, na.rm = TRUE) <
+            100) {
+          output$deSanityWarnReg <- renderText("")
+          isLogged <- TRUE
+        } else {
+          output$deSanityWarnReg <- renderText("Selected assay seems not logged (MAST style sanity check). Forcing to plot by automatically applying log-transformation. ")
+          isLogged <- FALSE
+        }
       } else {
-        output$deSanityWarnReg <- renderText("Selected assay seems not logged (MAST style sanity check). Forcing to plot by automatically applying log-transformation. ")
-        isLogged <- FALSE
+        isLogged <- TRUE
       }
       output$deRegPlot <- renderPlot({
         isolate({
@@ -6291,7 +6305,8 @@ shinyServer(function(input, output, session) {
                          rowDataName = input$deHMrowData,
                          colDataName = input$deHMcolData,
                          colSplitBy = input$deHMSplitCol,
-                         rowSplitBy = input$deHMSplitRow)
+                         rowSplitBy = input$deHMSplitRow,
+                         rowLabel = input$deHMrowLabel)
         })
       })
       session$sendCustomMessage("close_dropDownDeHM", "")
