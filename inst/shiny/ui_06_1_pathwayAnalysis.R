@@ -38,21 +38,10 @@ shinyPanelvam <- fluidPage(
 
        conditionalPanel(
          condition = "input.pathway == 'VAM'",
-         selectInput(
-           inputId = "vamCenterParameter",
-           label = "Select Center Value: ",
-           choices = c(
-             "TRUE" = "TRUE",
-             "FALSE" = "FALSE"
-           )),
-
-         selectInput(
-           inputId = "vamGammaParameter",
-           label = "Select Gamma Value: ",
-           choices = c(
-             "TRUE" = "TRUE",
-             "FALSE" = "FALSE"
-           )),
+         checkboxInput("vamCenterParameter", "Select center value",
+                       value = TRUE),
+         checkboxInput("vamGammaParameter", "Select gamma value", 
+                       value = TRUE),
        ),
 
        withBusyIndicatorUI(actionButton("pathwayRun", "Run")),
@@ -85,24 +74,21 @@ shinyPanelvam <- fluidPage(
                           label = 'Select Condition(s) of interest to group data (OPTIONAL) : ',
                           choices = clusterChoice,
                           multiple = FALSE),
-              
-              radioButtons("boxplot", "Box Plot:",
-                           c("TRUE" = "TRUE",
-                             "FALSE" = "FALSE"), inline = TRUE),
-              
-              radioButtons("violinplot", "Violin Plot:",
-                           c("TRUE" = "TRUE",
-                             "FALSE" = "FALSE"), inline = TRUE),
-              
+              checkboxInput("pathwayPlotBoxplot", "Add box plot", 
+                            value = FALSE),
+              checkboxInput("pathwayPlotViolinplot", "Add violin plot", 
+                            value = TRUE),
+              checkboxInput("pathwayPlotDots", "Add dots", 
+                            value = TRUE),
               pickerInput(
-                inputId = "summary",
+                inputId = "pathwayPlotSummary",
                 label = "Select Summary parameter: ",
                 choices = c("mean", "median"), 
                 selected = "median"),
               
               #withBusyIndicatorUI(actionButton("Plot", "Update Plot")),
               actionBttn(
-                inputId = "Plot",
+                inputId = "pathwayPlot",
                 label = "Update Plot",
                 style = "bordered",
                 color = "primary",

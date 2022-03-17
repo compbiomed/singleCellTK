@@ -6532,9 +6532,10 @@ shinyServer(function(input, output, session) {
                         resultName = scoreSelect,
                         geneset = firstGS, 
                         groupBy = input$pathwayPlotVar, 
-                        boxplot = input$boxplot, 
-                        violin = input$violinplot,
-                        summary = input$summary)
+                        boxplot = input$pathwayPlotBoxplot, 
+                        violin = input$pathwayPlotViolinplot,
+                        dots = input$pathwayPlotDots,  
+                        summary = input$pathwayPlotSummary)
           })
         })
       })
@@ -6549,16 +6550,17 @@ shinyServer(function(input, output, session) {
   })
 
  #plot results
-  observeEvent(input$Plot, {
+  observeEvent(input$pathwayPlot, {
     output$pathwayPlot <- renderPlot({
       isolate({
         plotPathway(inSCE = vals$counts, 
                     resultName = input$pathwayRedDimNames,
                     geneset = input$pathwayPlotGS, 
                     groupBy = input$pathwayPlotVar, 
-                    boxplot = input$boxplot, 
-                    violin = input$violinplot,
-                    summary = input$summary)
+                    boxplot = input$pathwayPlotBoxplot, 
+                    violin = input$pathwayPlotViolinplot,
+                    dots = input$pathwayPlotDots,
+                    summary = input$pathwayPlotSummary)
       })
     })
     session$sendCustomMessage("close_dropDownPathway", "")
