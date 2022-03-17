@@ -63,15 +63,26 @@ Users may set a `sample` parameter if need to compare between multiple samples. 
 
 If users wishes, a list of gene sets can be applied to the function to determine the expression of a set of specific genes. A gene list imported into the `SingleCellExperiment` object using `importGeneSets*` functions can be set as `collectionName`. Additionally, a pre-made list of genes can be used to determine the level of gene expression per cell. A list containing gene identifiers may be set as `geneSetList`, or the user may instead use the `geneSetCollection` parameter to supply a `GeneSetCollection` object from the [GSEABase](https://bioconductor.org/packages/release/bioc/html/GSEABase.html) package. Please also refer to [*Import Genesets* documentation](import_genesets.html).
 
-
-```{r load_geneset,  message = FALSE, warning = FALSE}
+```{r load_geneset, message = FALSE, warning = FALSE, eval = FALSE}
 pbmc.combined <- importGeneSetsFromGMT(inSCE = pbmc.combined, collectionName = "mito", file = system.file("extdata/mito_subset.gmt", package = "singleCellTK"))
 
 set.seed(12345)
-pbmc.combined <- runCellQC(pbmc.combined, algorithms = c("QCMetrics", "scrublet", "scDblFinder", "cxds", "bcds", "cxds_bcds_hybrid", "doubletFinder", "decontX"), sample = sample.vector, collectionName = "mito")
+pbmc.combined <- runCellQC(pbmc.combined, 
+                           algorithms = c("QCMetrics", "scrublet", "scDblFinder", "cxds", "bcds", "cxds_bcds_hybrid", "doubletFinder", "decontX", "soupX"), 
+                           sample = sample.vector, 
+                           collectionName = "mito")
+```
+
+Users can also specify `mitoRef`, `mitoIDType` and `mitoGeneLocation` arguments in `runCellQC` function to quantify mitochondrial gene expression without the need to import gene sets. For the details about these arguments, please refer to `runCellQC` and `runPerCellQC()` . 
+
+```{r mitoGene_quanfity,  message = FALSE, warning = FALSE}
+pbmc.combined <- runCellQC(pbmc.combined,
+                           algorithms = c("QCMetrics", "scrublet", "scDblFinder", "cxds", "bcds", "cxds_bcds_hybrid", "doubletFinder", "decontX", "soupX"),
+                           sample = sample.vector,
+                           mitoRef = "human", mitoIDType = "symbol", mitoGeneLocation = "rownames")
 ```
 <br />
-If users choose to only run a specific set of algorithms, they can specify which to run with the `algorithms` parameter. By default, the `runCellQC()` will run `"QCMetrics"`, `"scDblFinder"`, `"cxds"`, `"bcds"`, `"cxds_bcds_hybrid"` and `"decontX"` algorithms by default. Besides, `"scrublet"` and `"doubletFinder"` are supported if our users want to run them. 
+If users choose to only run a specific set of algorithms, they can specify which to run with the `algorithms` parameter. By default, the `runCellQC()` will run `"QCMetrics"`, `"scDblFinder"`, `"cxds"`, `"bcds"`, `"cxds_bcds_hybrid"`, `"decontX"` and `"soupX"` algorithms by default. Besides, `"scrublet"` and `"doubletFinder"` are supported if our users want to run them. 
 
 After running QC functions with SCTK, the output will be stored in the `colData` slot of the `SingleCellExperiment` object.
 
@@ -113,6 +124,9 @@ tabl <- "
 | `scds_hybrid_call`                       | Doublet classification based on threshold                     | `runCxdsBcdsHybrid()` | [SCDS](https://www.bioconductor.org/packages/release/bioc/html/scds.html)          |
 | `decontX_contamination`                  | Ambient RNA contamination                                     | `runDecontX()`        | [celda](https://www.bioconductor.org/packages/release/bioc/html/celda.html)         |
 | `decontX_clusters`                       | Clusters determined in dataset based on underlying algorithm  | `runDecontX()`        | [celda](https://www.bioconductor.org/packages/release/bioc/html/celda.html)         |
+| `soupX_nUMIs` | Total number of UMI per cell  | `runSoupX()`        | [SoupX](https://github.com/constantAmateur/SoupX)      |
+| `soupX_clusters` | Quick clustering label if clustering not provided by users | `runSoupX()` | [scran](https://rdrr.io/bioc/scran/man/quickCluster.html)    |
+| `soupX_contamination` | Ambient RNA contamination   | `runSoupX()`        |   [SoupX](https://github.com/constantAmateur/SoupX)     |
 "
 cat(tabl)
 ```
@@ -168,13 +182,15 @@ The QC outputs are `sum`, `detected`, and `percent_top_X`, stored as variables i
 - `sum` contains the total number of counts for each cell.
 - `detected` contains the total number of features for each cell.
 - `percent_top_X` contains the percentage of the total counts that is made up by the expression of the top X genes for each cell.
-- The `subsets_` columns contain information for the specific gene list that was used. For instance, if a gene list containing mitochondrial genes named `"mito"` was used, `subsets_mito_sum` would contain the total number of mitochondrial counts for each cell.
+- The `subsets_` columns contain information for the specific gene list that was used. For instance, if a gene list containing ribosome genes named `"ribosome"` was used, `subsets_ribosome_sum` would contain the total number of ribosome gene counts for each cell.
+- `mito_sum`, `mito_detected` and `mito_percent` contains number of counts, number of mito features and percentage of mito gene expression of each cells. These columns will show up only if you specify arguments related to mito genes quantification in `runCellQC` function. Please refer to `runCellQC` and `runPerCellQC` documentation for more details. 
 
 ```{r, eval=FALSE, message=FALSE}
 pbmc.combined <- runPerCellQC(
   inSCE = pbmc.combined,
   useAssay = "counts",
-  collectionName = "mito")
+  collectionName = "ribosome",
+  mitoRef = "human", mitoIDType = "symbol", mitoGeneLocation = "rownames")
 ```
 
 ````{=html}
@@ -200,7 +216,7 @@ Scrublet also has a large set of parameters that the user can adjust, please see
 The Scrublet outputs include the following `colData` variables: 
 
 - `scrublet_score`, which is a numeric variable of the likelihood that a cell is a doublet
-- `scrublet_label`, which is the assignment of whether the cell is a doublet.
+- `scrublet_call`, which is the assignment of whether the cell is a doublet.
 
 ```{r run_scrublet, eval = FALSE, message=FALSE}
 pbmc.combined <- runScrublet(
@@ -338,6 +354,26 @@ The outputs of `runDecontX()` are `decontX_contamination` and `decontX_clusters`
 
 ```{r run_decontx, eval = FALSE, message=FALSE}
 pbmc.combined <- runDecontX(
+  inSCE = pbmc.combined, useAssay = "counts"
+  sample = colData(pbmc.combined)$sample
+)
+```
+
+````{=html}
+  </details>
+  <details>
+    <summary><b>runSoupX</b></summary>
+````
+
+In droplet-based single cell technologies, ambient RNA that may have been released from apoptotic or damaged cells may get incorporated into another droplet, and can lead to contamination. [SoupX](https://github.com/constantAmateur/SoupX) uses non-expressed genes to estimates a global contamination fraction. The wrapper function `runSoupX()` can be used to separately run the SoupX algorithm on its own. 
+
+he main outputs of `runSoupX` are `soupX_contamination`, `soupX_clusters`, and the corrected assay `SoupX`, together with other intermediate metrics that SoupX generates.
+
+- `soupX_contamination` is a numeric vector which characterizes the level of contamination in each cell. SoupX generates one global contamination estimate per sample, instead of returning cell-specific estimation.
+- Clustering is required for SoupX algorithm. It will be performed if users do not provide the label as input. `quickCluster()` method from package [scran](https://rdrr.io/bioc/scran/man/quickCluster.html) is adopted for this purpose. `soupX_clusters` is the resulting cluster assignment, which can also be labeled on the plot. For performing fine-tuned clustering in SCTK, please refer to [*Clustering* documentation](clustering.html)
+
+```{r run_soupx, eval = FALSE, message=FALSE}
+pbmc.combined <- runSoupX(
   inSCE = pbmc.combined, useAssay = "counts"
   sample = colData(pbmc.combined)$sample
 )
@@ -553,6 +589,31 @@ decontxResults
 
 ````{=html}
   </details>
+  <details>
+    <summary><b>SoupX</b></summary>
+````
+
+The wrapper function `plotSoupXResults()` can be used to plot the QC outputs from the SoupX algorithm.
+
+```{r umap_soupx_plots, warning=FALSE, message=FALSE, fig.wide = TRUE, fig.height = 10, fig.width = 14}
+soupxResults <- plotSoupXResults(
+  inSCE = pbmc.combined, sample = colData(pbmc.combined)$sample, 
+  reducedDimName = "UMAP", combinePlot = "all",
+  titleSize = 8,
+  axisLabelSize = 8,
+  axisSize = 10,
+  legendSize = 5,
+  legendTitleSize = 7,
+  labelClusters = FALSE
+)
+```
+
+```{r plots_umap_soupx, fig.wide = TRUE, fig.height = 8, fig.width = 9}
+soupxResults
+```
+
+````{=html}
+  </details
 </details>
 ```` 
 
@@ -567,12 +628,12 @@ dim(pbmc.combined)
 
 Remove barcodes with high mitochondrial gene expression:
 ```{r}
-pbmc.combined <- subsetSCECols(pbmc.combined, colData = 'subsets_mito_percent < 20')
+pbmc.combined <- subsetSCECols(pbmc.combined, colData = 'mito_percent < 20')
 ```
 
 Remove detected doublets from Scrublet:
 ```{r}
-pbmc.combined <- subsetSCECols(pbmc.combined, colData = 'scrublet_call == FALSE')
+pbmc.combined <- subsetSCECols(pbmc.combined, colData = 'scrublet_call == "Singlet"')
 ```
 
 Remove cells with high levels of ambient RNA contamination:

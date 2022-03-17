@@ -167,13 +167,13 @@ plotRunPerCellQCResults <- function(inSCE,
     names(merged.plots) <- c("Sum", "Detected", "TopPercent")
 
     if (any(grepl(pattern="subsets_",names(colData(inSCE))
-    ) | grepl(pattern="Mito_", names(colData(inSCE))))) { 
+    ) | grepl(pattern="mito_", names(colData(inSCE))))) { 
       subsets <- grep(
         pattern="subsets_",
         names(colData(inSCE)), value=TRUE
       )
       mitos <- grep(
-        pattern="Mito_",
+        pattern="mito_",
         names(colData(inSCE)), value=TRUE
       )
       subsets <- c(subsets, mitos)
@@ -308,13 +308,13 @@ plotRunPerCellQCResults <- function(inSCE,
       names(res.list) <- c("Sum", "Detected", "TopPercent")
 
       if (any(grepl(pattern="subsets_", names(colData(inSCESub))) |
-              grepl(pattern="Mito_", names(colData(inSCESub))))) {
+              grepl(pattern="mito_", names(colData(inSCESub))))) {
         subsets <- grep(
           pattern="subsets_",
           names(colData(inSCESub)), value=TRUE
         )
         mitos <- grep(
-          pattern="Mito_",
+          pattern="mito_",
           names(colData(inSCESub)), value=TRUE
         )
         subsets <- c(subsets, mitos)

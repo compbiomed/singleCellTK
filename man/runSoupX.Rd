@@ -130,6 +130,15 @@ experimental factors such as ambient RNA. Visit
 \href{https://rawcdn.githack.com/constantAmateur/SoupX/204b602418df12e9fdb4b68775a8b486c6504fe4/inst/doc/pbmcTutorial.html}{their vignette}
 for better understanding.
 }
+\examples{
+data(scExample, package = "singleCellTK")
+sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
+\dontrun{
+# SoupX does not work for toy example, 
+# can be tested with `sce <- importExampleData("pbmc3k")`
+sce <- runSoupX(sce, sample = "sample")
+}
+}
 \author{
 Yichen Wang
 }

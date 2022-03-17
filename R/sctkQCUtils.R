@@ -310,7 +310,7 @@ generateHTANMeta <- function(dropletSCE = NULL,
   absRawDir <- file.path(dir, samplename, 'FlatFile', 'Droplets')
   
   pkgVersion <- Biobase::package.version("singleCellTK")
-  htan_patient_id <- paste(stringr::str_split(htan_biospecimen_id, '_', simplify=TRUE)[1:2], collapse='_')
+  htan_patient_id <- paste(stringr::str_split(htan_biospecimen_id, '_', simplify=TRUE)[seq(2)], collapse='_')
   
   WorkFlowData = c(
     WorkFlow = 'Other',

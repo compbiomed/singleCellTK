@@ -358,7 +358,7 @@ arrangeQCPlots <- function(inSCE, input, output, algoList, sampleList, plotIDs, 
                                     reducedDimName = redDimName)
       combineQCSubPlots(output, combineP, a, uniqueSampleNames, dxPlots, plotIDs, statuses)
     } else if (a == "soupX") {
-      soupXPlots <- plotSoupXResult(inSCE, combinePlot = combineP)
+      soupXPlots <- plotSoupXResults(inSCE, combinePlot = combineP)
       combineQCSubPlots(output, combineP, a, uniqueSampleNames, soupXPlots, plotIDs, statuses)
     } else if (a == "QCMetrics") {
       qcmPlots <- plotRunPerCellQCResults(inSCE, sample = sampleList, combinePlot = combineP)
