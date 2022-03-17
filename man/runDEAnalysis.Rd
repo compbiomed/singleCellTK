@@ -2,34 +2,212 @@
 % Please edit documentation in R/runDEAnalysis.R
 \name{runDEAnalysis}
 \alias{runDEAnalysis}
-\title{Perform differential expression analysis on SCE with specified method
-Method supported: 'MAST', 'DESeq2', 'Limma', 'ANOVA'}
+\alias{runDESeq2}
+\alias{runLimmaDE}
+\alias{runANOVA}
+\alias{runMAST}
+\alias{runWilcox}
+\title{Perform differential expression analysis on SCE object}
 \usage{
-runDEAnalysis(method = c("MAST", "DESeq2", "Limma", "ANOVA", "wilcox"), ...)
+runDEAnalysis(method = c("wilcox", "MAST", "DESeq2", "Limma", "ANOVA"), ...)
+
+runDESeq2(
+  inSCE,
+  useAssay = "counts",
+  useReducedDim = NULL,
+  index1 = NULL,
+  index2 = NULL,
+  class = NULL,
+  classGroup1 = NULL,
+  classGroup2 = NULL,
+  analysisName,
+  groupName1,
+  groupName2,
+  covariates = NULL,
+  fullReduced = TRUE,
+  onlyPos = FALSE,
+  log2fcThreshold = NULL,
+  fdrThreshold = NULL,
+  overwrite = FALSE
+)
+
+runLimmaDE(
+  inSCE,
+  useAssay = "logcounts",
+  useReducedDim = NULL,
+  index1 = NULL,
+  index2 = NULL,
+  class = NULL,
+  classGroup1 = NULL,
+  classGroup2 = NULL,
+  analysisName,
+  groupName1,
+  groupName2,
+  covariates = NULL,
+  onlyPos = FALSE,
+  log2fcThreshold = NULL,
+  fdrThreshold = NULL,
+  overwrite = FALSE
+)
+
+runANOVA(
+  inSCE,
+  useAssay = "logcounts",
+  useReducedDim = NULL,
+  index1 = NULL,
+  index2 = NULL,
+  class = NULL,
+  classGroup1 = NULL,
+  classGroup2 = NULL,
+  analysisName,
+  groupName1,
+  groupName2,
+  covariates = NULL,
+  onlyPos = FALSE,
+  log2fcThreshold = NULL,
+  fdrThreshold = NULL,
+  overwrite = FALSE
+)
+
+runMAST(
+  inSCE,
+  useAssay = "logcounts",
+  useReducedDim = NULL,
+  index1 = NULL,
+  index2 = NULL,
+  class = NULL,
+  classGroup1 = NULL,
+  classGroup2 = NULL,
+  analysisName,
+  groupName1,
+  groupName2,
+  covariates = NULL,
+  onlyPos = FALSE,
+  log2fcThreshold = NULL,
+  fdrThreshold = NULL,
+  overwrite = FALSE,
+  check_sanity = TRUE
+)
+
+runWilcox(
+  inSCE,
+  useAssay = "logcounts",
+  useReducedDim = NULL,
+  index1 = NULL,
+  index2 = NULL,
+  class = NULL,
+  classGroup1 = NULL,
+  classGroup2 = NULL,
+  analysisName,
+  groupName1,
+  groupName2,
+  covariates = NULL,
+  onlyPos = FALSE,
+  log2fcThreshold = NULL,
+  fdrThreshold = NULL,
+  overwrite = FALSE
+)
 }
 \arguments{
-\item{method}{A single character for specific method. Choose from
-\code{"MAST"}, \code{"DESeq2"}, \code{"Limma"}, \code{"ANOVA"}. Default
-\code{"MAST"}.}
+\item{method}{Character. Specify which method to use when using 
+\code{runDEAnalysis()}. Choose from \code{"wilcox"}, \code{"MAST"}, 
+\code{"DESeq2"}, \code{"Limma"}, \code{"ANOVA"}. Default \code{"wilcox"}.}
 
-\item{...}{Other arguments passed to specific functions. Refer to
-\code{\link{runMAST}}, \code{\link{runDESeq2}}, \code{\link{runLimmaDE}},
-\code{\link{runANOVA}}}
+\item{inSCE}{\linkS4class{SingleCellExperiment} inherited object.}
+
+\item{useAssay}{character. A string specifying which assay to use for the
+DE regression. Default \code{"counts"} for DESeq2, \code{"logcounts"} for 
+other methods.}
+
+\item{useReducedDim}{character. A string specifying which reducedDim to use
+for DE analysis. Usually a pathway analysis result matrix. Set 
+\code{useAssay} to \code{NULL} when using. Default \code{NULL}.}
+
+\item{index1}{Any type of indices that can subset a
+\linkS4class{SingleCellExperiment} inherited object by cells. Specifies
+which cells are of interests. Default \code{NULL}.}
+
+\item{index2}{Any type of indices that can subset a
+\linkS4class{SingleCellExperiment} inherited object by cells. specifies
+the control group against those specified by \code{index1}. If
+\code{NULL} when using index specification, \code{index1} cells will be
+compared with all other cells. Default \code{NULL}.}
+
+\item{class}{A vector/factor with \code{ncol(inSCE)} elements, or a character
+scalar that specifies a column name of \code{colData(inSCE)}. Default
+\code{NULL}.}
+
+\item{classGroup1}{a vector specifying which "levels" given in \code{class}
+are of interests. Default \code{NULL}.}
+
+\item{classGroup2}{a vector specifying which "levels" given in \code{class}
+is the control group against those specified by \code{classGroup1}. If
+\code{NULL} when using annotation specification, \code{classGroup1} cells
+will be compared with all other cells.}
+
+\item{analysisName}{A character scalar naming the DEG analysis. Required}
+
+\item{groupName1}{A character scalar naming the group of interests. Required.}
+
+\item{groupName2}{A character scalar naming the control group. Required.}
+
+\item{covariates}{A character vector of additional covariates to use when
+building the model. All covariates must exist in
+\code{names(colData(inSCE))}. Default \code{NULL}.}
+
+\item{fullReduced}{Logical, DESeq2 only argument. Whether to apply LRT 
+(Likelihood ratio test) with a 'full' model. Default \code{TRUE}.}
+
+\item{onlyPos}{Whether to only output DEG with positive log2_FC value.
+Default \code{FALSE}.}
+
+\item{log2fcThreshold}{Only out put DEGs with the absolute values of log2FC
+greater than this value. Default \code{NULL}}
+
+\item{fdrThreshold}{Only out put DEGs with FDR value less than this
+value. Default \code{NULL}}
+
+\item{overwrite}{A logical scalar. Whether to overwrite result if exists.
+Default \code{FALSE}.}
+
+\item{check_sanity}{Logical, MAST only argument. Whether to perform MAST's 
+sanity check to see if the counts are logged. Default \code{TRUE}.}
 }
 \value{
-Input SCE object with \code{metadata(inSCE)} updated with name
-\code{"diffExp"} as a \code{list} object. Detail refers to the four child
-functions.
+The input \linkS4class{SingleCellExperiment} object with
+\code{metadata(inSCE)$diffExp} updated with the results: a list named by
+\code{analysisName}, with \code{$groupNames} containing the naming of the
+two conditions, \code{$useAssay} and \code{$useReducedDim} storing the matrix
+name that was used for calculation, \code{$select} storing the cell selection
+indices (logical) for each condition, \code{$result} storing a 
+\code{\link{data.frame}} of the DEGs summary, and \code{$method} storing the 
+character method name used.
 }
 \description{
-Perform differential expression analysis on SCE with specified method
-Method supported: 'MAST', 'DESeq2', 'Limma', 'ANOVA'
+Perform differential expression analysis on SCE object
+}
+\details{
+SCTK provides Limma, MAST, DESeq2, ANOVA and Wilcoxon test for differential
+expression analysis, where DESeq2 expects non-negtive integer assay input 
+while others expect logcounts. 
+
+Condition specification allows two methods:
+1. Index level selection. Arguments \code{index1} and \code{index2} will be
+used.
+2. Annotation level selection. Arguments \code{class}, \code{classGroup1} and
+\code{classGroup2} will be used.
 }
 \examples{
 data(scExample, package = "singleCellTK")
 sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
-sce <- scaterlogNormCounts(sce, "logcounts")
-sce <- runDEAnalysis(inSCE = sce, groupName1 = "Sample1", method = "wilcox",
- groupName2 = "Sample2", index1 = seq(20), index2 = seq(21,40),
+sce <- scaterlogNormCounts(sce, assayName = "logcounts")
+sce <- runDEAnalysis(method = "Limma", inSCE = sce, groupName1 = "group1",
+ groupName2 = "group2", index1 = seq(20), index2 = seq(21,40),
  analysisName = "Limma")
+
+}
+\seealso{
+See \code{\link{plotDEGHeatmap}}, \code{\link{plotDEGRegression}}, 
+\code{\link{plotDEGViolin}} and \code{\link{plotDEGVolcano}} for 
+visualization method after running DE analysis.
 }

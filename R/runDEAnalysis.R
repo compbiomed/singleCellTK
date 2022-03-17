@@ -29,7 +29,7 @@
 #' Default \code{FALSE}.
 #' @return A list object with part of formatted DE analysis information
 #' @author Yichen Wang
-.formatDEAList <- function(inSCE, useAssay, index1 = NULL, index2 = NULL,
+.formatDEAList <- function(inSCE, useAssay, useReducedDim, index1 = NULL, index2 = NULL,
                            class = NULL, classGroup1 = NULL,
                            classGroup2 = NULL, groupName1, groupName2,
                            analysisName, covariates = NULL, overwrite = FALSE){
@@ -37,9 +37,22 @@
     if(!inherits(inSCE, "SingleCellExperiment")){
         stop('"inSCE" should be a SingleCellExperiment inherited Object.')
     }
-    if(!useAssay %in% expDataNames(inSCE)){
-        stop(paste('"useAssay" name: ', useAssay, ' not found.'))
+    if (is.null(useAssay) & is.null(useReducedDim)) {
+      stop("`useAssay` or `useReducedDim` must be specified.")
+    } else if (!is.null(useAssay) & !is.null(useReducedDim)) {
+      stop("Only one of `useAssay` or `useReducedDim` can be specified.")
+    } else {
+      if (!is.null(useAssay)) {
+        if(!useAssay %in% SummarizedExperiment::assayNames(inSCE)){
+          stop(paste('"useAssay" name: ', useAssay, ' not found.'))
+        }
+      } else {
+        if(!useReducedDim %in% SingleCellExperiment::reducedDimNames(inSCE)){
+          stop(paste('"useReducedDim" name: ', useReducedDim, ' not found.'))
+        }
+      }
     }
+  
     if(is.null(index1) && (is.null(classGroup1) || is.null(class))){
         stop('At least "index1" or "classGroup1" should be specified.')
     } else if(!is.null(index1) && (!is.null(classGroup1) || !is.null(class))){
@@ -52,10 +65,7 @@
     }
     if ("diffExp" %in% names(S4Vectors::metadata(inSCE))){
         if(analysisName %in% names(S4Vectors::metadata(inSCE)$diffExp)){
-            if(isTRUE(overwrite)){
-                warning("analysisName '", analysisName, "' already exists, ",
-                        "will be overwritten.")
-            } else {
+            if(!isTRUE(overwrite)){
                 stop("analysisName '", analysisName, "' already exists. ",
                      "Set `overwrite` to `TRUE` to overwrite.")
             }
@@ -117,53 +127,38 @@
     }
     return(
         list(useAssay = useAssay,
+             useReducedDim = useReducedDim,
              groupNames = groupNames,
              select = select,
              annotation = annotation)
     )
 }
 
-#' Perform differential expression analysis on SCE with specified method
-#' Method supported: 'MAST', 'DESeq2', 'Limma', 'ANOVA'
-#' @param method A single character for specific method. Choose from
-#' \code{"MAST"}, \code{"DESeq2"}, \code{"Limma"}, \code{"ANOVA"}. Default
-#' \code{"MAST"}.
-#' @param ... Other arguments passed to specific functions. Refer to
-#' \code{\link{runMAST}}, \code{\link{runDESeq2}}, \code{\link{runLimmaDE}},
-#' \code{\link{runANOVA}}
-#' @examples
-#' data(scExample, package = "singleCellTK")
-#' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
-#' sce <- scaterlogNormCounts(sce, "logcounts")
-#' sce <- runDEAnalysis(inSCE = sce, groupName1 = "Sample1", method = "wilcox",
-#'  groupName2 = "Sample2", index1 = seq(20), index2 = seq(21,40),
-#'  analysisName = "Limma")
-#' @return Input SCE object with \code{metadata(inSCE)} updated with name
-#' \code{"diffExp"} as a \code{list} object. Detail refers to the four child
-#' functions.
-#' @export
-runDEAnalysis <- function(method = c('MAST', 'DESeq2', 'Limma', 'ANOVA',
-                                     'wilcox'), ...){
-    method <- match.arg(method)
-    funcList <- list(MAST = runMAST,
-                     DESeq2 = runDESeq2,
-                     Limma = runLimmaDE,
-                     ANOVA = runANOVA,
-                     wilcox = runWilcox)
-    funcList[[method]](...)
-}
-
-#' Perform differential expression analysis on SCE with DESeq2.
-#'
+#' Perform differential expression analysis on SCE object
+#' @rdname runDEAnalysis
+#' @details 
+#' SCTK provides Limma, MAST, DESeq2, ANOVA and Wilcoxon test for differential
+#' expression analysis, where DESeq2 expects non-negtive integer assay input 
+#' while others expect logcounts. 
+#' 
 #' Condition specification allows two methods:
 #' 1. Index level selection. Arguments \code{index1} and \code{index2} will be
 #' used.
 #' 2. Annotation level selection. Arguments \code{class}, \code{classGroup1} and
 #' \code{classGroup2} will be used.
+#' @seealso See \code{\link{plotDEGHeatmap}}, \code{\link{plotDEGRegression}}, 
+#' \code{\link{plotDEGViolin}} and \code{\link{plotDEGVolcano}} for 
+#' visualization method after running DE analysis. 
 #' @param inSCE \linkS4class{SingleCellExperiment} inherited object.
+#' @param method Character. Specify which method to use when using 
+#' \code{runDEAnalysis()}. Choose from \code{"wilcox"}, \code{"MAST"}, 
+#' \code{"DESeq2"}, \code{"Limma"}, \code{"ANOVA"}. Default \code{"wilcox"}.
 #' @param useAssay character. A string specifying which assay to use for the
-#' DESeq2 regression. The assay should be a raw count assay. Default
-#' \code{"counts"}.
+#' DE regression. Default \code{"counts"} for DESeq2, \code{"logcounts"} for 
+#' other methods. 
+#' @param useReducedDim character. A string specifying which reducedDim to use
+#' for DE analysis. Usually a pathway analysis result matrix. Set 
+#' \code{useAssay} to \code{NULL} when using. Default \code{NULL}. 
 #' @param index1 Any type of indices that can subset a
 #' \linkS4class{SingleCellExperiment} inherited object by cells. Specifies
 #' which cells are of interests. Default \code{NULL}.
@@ -187,8 +182,6 @@ runDEAnalysis <- function(method = c('MAST', 'DESeq2', 'Limma', 'ANOVA',
 #' @param covariates A character vector of additional covariates to use when
 #' building the model. All covariates must exist in
 #' \code{names(colData(inSCE))}. Default \code{NULL}.
-#' @param fullReduced Whether to apply LRT (Likelihood ratio test) with a 'full'
-#' model. Default \code{TRUE}.
 #' @param onlyPos Whether to only output DEG with positive log2_FC value.
 #' Default \code{FALSE}.
 #' @param log2fcThreshold Only out put DEGs with the absolute values of log2FC
@@ -197,28 +190,48 @@ runDEAnalysis <- function(method = c('MAST', 'DESeq2', 'Limma', 'ANOVA',
 #' value. Default \code{NULL}
 #' @param overwrite A logical scalar. Whether to overwrite result if exists.
 #' Default \code{FALSE}.
+#' @param fullReduced Logical, DESeq2 only argument. Whether to apply LRT 
+#' (Likelihood ratio test) with a 'full' model. Default \code{TRUE}.
+#' @param check_sanity Logical, MAST only argument. Whether to perform MAST's 
+#' sanity check to see if the counts are logged. Default \code{TRUE}.
 #' @examples
 #' data(scExample, package = "singleCellTK")
 #' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
-#' sce <- runDESeq2(inSCE = sce, groupName1 = "Sample1",
-#'  groupName2 = "Sample2", index1 = seq(5), index2 = seq(6,10),
-#'  analysisName = "DESeq2")
+#' sce <- scaterlogNormCounts(sce, assayName = "logcounts")
+#' sce <- runDEAnalysis(method = "Limma", inSCE = sce, groupName1 = "group1",
+#'  groupName2 = "group2", index1 = seq(20), index2 = seq(21,40),
+#'  analysisName = "Limma")
+#'
 #' @return The input \linkS4class{SingleCellExperiment} object with
-#' \code{metadata(inSCE)$DESeq2} updated with the results: a list named by
+#' \code{metadata(inSCE)$diffExp} updated with the results: a list named by
 #' \code{analysisName}, with \code{$groupNames} containing the naming of the
-#' two conditions, \code{$useAssay} storing the assay name that was used for
-#' calculation, \code{$select} storing the cell selection indices (logical) for
-#' each condition, \code{$result} storing a \code{\link{data.frame}} of
-#' the DEGs summary, and \code{$method} storing \code{"DESeq2"}.
+#' two conditions, \code{$useAssay} and \code{$useReducedDim} storing the matrix
+#' name that was used for calculation, \code{$select} storing the cell selection
+#' indices (logical) for each condition, \code{$result} storing a 
+#' \code{\link{data.frame}} of the DEGs summary, and \code{$method} storing the 
+#' character method name used.
 #' @export
-runDESeq2 <- function(inSCE, useAssay = 'counts', index1 = NULL,
-                      index2 = NULL, class = NULL, classGroup1 = NULL,
-                      classGroup2 = NULL, analysisName, groupName1,
-                      groupName2, covariates = NULL, fullReduced = TRUE,
-                      onlyPos = FALSE, log2fcThreshold = NULL,
-                      fdrThreshold = NULL, overwrite = FALSE){
-    resultList <- .formatDEAList(inSCE, useAssay, index1, index2, class,
-                                 classGroup1, classGroup2, groupName1,
+runDEAnalysis <- function(method = c('wilcox', 'MAST', 'DESeq2', 'Limma', 
+                                     'ANOVA'), ...){
+    method <- match.arg(method)
+    funcList <- list(MAST = runMAST,
+                     DESeq2 = runDESeq2,
+                     Limma = runLimmaDE,
+                     ANOVA = runANOVA,
+                     wilcox = runWilcox)
+    funcList[[method]](...)
+}
+
+#' @rdname runDEAnalysis
+#' @export
+runDESeq2 <- function(inSCE, useAssay = 'counts', useReducedDim = NULL, 
+                      index1 = NULL, index2 = NULL, class = NULL, 
+                      classGroup1 = NULL, classGroup2 = NULL, analysisName, 
+                      groupName1, groupName2, covariates = NULL, 
+                      fullReduced = TRUE, onlyPos = FALSE, 
+                      log2fcThreshold = NULL, fdrThreshold = NULL, overwrite = FALSE){
+    resultList <- .formatDEAList(inSCE, useAssay, useReducedDim, index1, index2, 
+                                 class, classGroup1, classGroup2, groupName1,
                                  groupName2, analysisName, covariates,
                                  overwrite)
     ix1 <- resultList$select$ix1
@@ -233,7 +246,12 @@ runDESeq2 <- function(inSCE, useAssay = 'counts', index1 = NULL,
     cov <- SummarizedExperiment::colData(inSCE)[subsetIdx, covariates,
                                                 drop = FALSE]
     annotData <- cbind(annotData, cov)
-    mat <- expData(inSCE[,subsetIdx], useAssay)
+    if (!is.null(useAssay)) {
+      mat <- expData(inSCE[,subsetIdx], useAssay)
+    } else {
+      mat <- t(expData(inSCE[,subsetIdx], useReducedDim))
+    }
+    
     if(!inherits(mat, 'matrix')){
         mat <- as.matrix(mat)
     }
@@ -290,73 +308,16 @@ runDESeq2 <- function(inSCE, useAssay = 'counts', index1 = NULL,
     return(inSCE)
 }
 
-
-#' Perform differential expression analysis on SCE with Limma.
-#'
-#' Condition specification allows two methods:
-#' 1. Index level selection. Arguments \code{index1} and \code{index2} will be
-#' used.
-#' 2. Annotation level selection. Arguments \code{class}, \code{classGroup1} and
-#' \code{classGroup2} will be used.
-#' @param inSCE \linkS4class{SingleCellExperiment} inherited object.
-#' @param useAssay character. A string specifying which assay to use for the
-#' Limma regression. The assay should be a log-transformed normalized assay.
-#' Default \code{"logcounts"}.
-#' @param index1 Any type of indices that can subset a
-#' \linkS4class{SingleCellExperiment} inherited object by cells. Specifies
-#' which cells are of interests. Default \code{NULL}.
-#' @param index2 Any type of indices that can subset a
-#' \linkS4class{SingleCellExperiment} inherited object by cells. specifies
-#' the control group against those specified by \code{index1}. If
-#' \code{NULL} when using index specification, \code{index1} cells will be
-#' compared with all other cells. Default \code{NULL}.
-#' @param class A vector/factor with \code{ncol(inSCE)} elements, or a character
-#' scalar that specifies a column name of \code{colData(inSCE)}. Default
-#' \code{NULL}.
-#' @param classGroup1 a vector specifying which "levels" given in \code{class}
-#' are of interests. Default \code{NULL}.
-#' @param classGroup2 a vector specifying which "levels" given in \code{class}
-#' is the control group against those specified by \code{classGroup1}. If
-#' \code{NULL} when using annotation specification, \code{classGroup1} cells
-#' will be compared with all other cells.
-#' @param analysisName A character scalar naming the DEG analysis. Required
-#' @param groupName1 A character scalar naming the group of interests. Required.
-#' @param groupName2 A character scalar naming the control group. Required.
-#' @param covariates A character vector of additional covariates to use when
-#' building the model. All covariates must exist in
-#' \code{names(colData(inSCE))}. Default \code{NULL}.
-#' @param onlyPos Whether to only output DEG with positive log2_FC value.
-#' Default \code{FALSE}.
-#' @param log2fcThreshold Only out put DEGs with the absolute values of log2FC
-#' greater than this value. Default \code{NULL}
-#' @param fdrThreshold Only out put DEGs with FDR value less than this
-#' value. Default \code{NULL}
-#' @param overwrite A logical scalar. Whether to overwrite result if exists.
-#' Default \code{FALSE}.
-#' @examples
-#' data(scExample, package = "singleCellTK")
-#' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
-#' sce <- scaterlogNormCounts(sce, assayName = "logcounts")
-#' sce <- runLimmaDE(inSCE = sce, groupName1 = "Sample1",
-#'  groupName2 = "Sample2", index1 = seq(20), index2 = seq(21,40),
-#'  analysisName = "Limma")
-#'
-#' @return The input \linkS4class{SingleCellExperiment} object with
-#' \code{metadata(inSCE)$diffExp} updated with the results: a list named by
-#' \code{analysisName}, with \code{$groupNames} containing the naming of the
-#' two conditions, \code{$useAssay} storing the assay name that was used for
-#' calculation, \code{$select} storing the cell selection indices (logical) for
-#' each condition, \code{$result} storing a \code{\link{data.frame}} of
-#' the DEGs summary, and \code{$method} storing \code{"Limma"}.
+#' @rdname runDEAnalysis
 #' @export
-runLimmaDE <- function(inSCE, useAssay = 'logcounts', index1 = NULL,
-                       index2 = NULL, class = NULL, classGroup1 = NULL,
-                       classGroup2 = NULL, analysisName, groupName1,
-                       groupName2, covariates = NULL, onlyPos = FALSE,
-                       log2fcThreshold = NULL, fdrThreshold = NULL,
-                       overwrite = FALSE){
-    resultList <- .formatDEAList(inSCE, useAssay, index1, index2, class,
-                                 classGroup1, classGroup2, groupName1,
+runLimmaDE <- function(inSCE, useAssay = 'logcounts', useReducedDim = NULL, 
+                       index1 = NULL, index2 = NULL, class = NULL, 
+                       classGroup1 = NULL, classGroup2 = NULL, analysisName, 
+                       groupName1, groupName2, covariates = NULL, 
+                       onlyPos = FALSE, log2fcThreshold = NULL, 
+                       fdrThreshold = NULL, overwrite = FALSE){
+    resultList <- .formatDEAList(inSCE, useAssay, useReducedDim, index1, index2,
+                                 class, classGroup1, classGroup2, groupName1,
                                  groupName2, analysisName, covariates,
                                  overwrite)
     ix1 <- resultList$select$ix1
@@ -371,7 +332,12 @@ runLimmaDE <- function(inSCE, useAssay = 'logcounts', index1 = NULL,
     cov <- SummarizedExperiment::colData(inSCE)[subsetIdx, covariates,
                                                 drop = FALSE]
     annotData <- cbind(annotData, cov)
-    mat <- expData(inSCE[,subsetIdx], useAssay)
+    if (!is.null(useAssay)) {
+      mat <- expData(inSCE[,subsetIdx], useAssay)
+    } else {
+      mat <- t(expData(inSCE[,subsetIdx], useReducedDim))
+    }
+    
     if(!inherits(mat, 'matrix')){
         mat <- as.matrix(mat)
     }
@@ -422,73 +388,16 @@ runLimmaDE <- function(inSCE, useAssay = 'logcounts', index1 = NULL,
     return(inSCE)
 }
 
-#' Perform differential expression analysis on SCE with ANOVA
-#'
-#' Condition specification allows two methods:
-#' 1. Index level selection. Arguments \code{index1} and \code{index2} will be
-#' used.
-#' 2. Annotation level selection. Arguments \code{class}, \code{classGroup1} and
-#' \code{classGroup2} will be used.
-#'
-#' NOTE that ANOVA method does not produce Log2FC value, but P-value and FDR
-#' only.
-#' @param inSCE \linkS4class{SingleCellExperiment} inherited object.
-#' @param useAssay character. A string specifying which assay to use for ANOVA.
-#' Default \code{"logcounts"}.
-#' @param index1 Any type of indices that can subset a
-#' \linkS4class{SingleCellExperiment} inherited object by cells. Specifies
-#' which cells are of interests. Default \code{NULL}.
-#' @param index2 Any type of indices that can subset a
-#' \linkS4class{SingleCellExperiment} inherited object by cells. specifies
-#' the control group against those specified by \code{index1}. If
-#' \code{NULL} when using index specification, \code{index1} cells will be
-#' compared with all other cells. Default \code{NULL}.
-#' @param class A vector/factor with \code{ncol(inSCE)} elements, or a character
-#' scalar that specifies a column name of \code{colData(inSCE)}. Default
-#' \code{NULL}.
-#' @param classGroup1 a vector specifying which "levels" given in \code{class}
-#' are of interests. Default \code{NULL}.
-#' @param classGroup2 a vector specifying which "levels" given in \code{class}
-#' is the control group against those specified by \code{classGroup1}. If
-#' \code{NULL} when using annotation specification, \code{classGroup1} cells
-#' will be compared with all other cells.
-#' @param analysisName A character scalar naming the DEG analysis. Required
-#' @param groupName1 A character scalar naming the group of interests. Required.
-#' @param groupName2 A character scalar naming the control group. Required.
-#' @param covariates A character vector of additional covariates to use when
-#' building the model. All covariates must exist in
-#' \code{names(colData(inSCE))}. Default \code{NULL}.
-#' @param onlyPos Whether to only output DEG with positive log2_FC value.
-#' Default \code{FALSE}.
-#' @param log2fcThreshold Only out put DEGs with the absolute values of log2FC
-#' greater than this value. Default \code{NULL}
-#' @param fdrThreshold Only out put DEGs with FDR value less than this
-#' value. Default \code{NULL}
-#' @param overwrite A logical scalar. Whether to overwrite result if exists.
-#' Default \code{FALSE}.
-#' @examples
-#' data(scExample, package = "singleCellTK")
-#' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
-#' sce <- scaterlogNormCounts(sce, assayName = "logcounts")
-#' sce <- runANOVA(inSCE = sce, groupName1 = "Sample1",
-#'  groupName2 = "Sample2", index1 = seq(20), index2 = seq(21,40),
-#'  analysisName = "ANOVA", fdrThreshold = NULL)
-#' @return The input \linkS4class{SingleCellExperiment} object with
-#' \code{metadata(inSCE)$diffExp} updated with the results: a list named by
-#' \code{analysisName}, with \code{$groupNames} containing the naming of the
-#' two conditions, \code{$useAssay} storing the assay name that was used for
-#' calculation, \code{$select} storing the cell selection indices (logical) for
-#' each condition, \code{$result} storing a \code{\link{data.frame}} of
-#' the DEGs summary, and \code{$method} storing \code{"ANOVA"}.
+#' @rdname runDEAnalysis
 #' @export
-runANOVA <- function(inSCE, useAssay = 'logcounts', index1 = NULL,
-                     index2 = NULL, class = NULL, classGroup1 = NULL,
-                     classGroup2 = NULL, analysisName, groupName1,
-                     groupName2, covariates = NULL, onlyPos = FALSE,
+runANOVA <- function(inSCE, useAssay = 'logcounts', useReducedDim = NULL, 
+                     index1 = NULL, index2 = NULL, class = NULL, 
+                     classGroup1 = NULL, classGroup2 = NULL, analysisName, 
+                     groupName1, groupName2, covariates = NULL, onlyPos = FALSE,
                      log2fcThreshold = NULL, fdrThreshold = NULL,
                      overwrite = FALSE){
-    resultList <- .formatDEAList(inSCE, useAssay, index1, index2, class,
-                                 classGroup1, classGroup2, groupName1,
+    resultList <- .formatDEAList(inSCE, useAssay, useReducedDim, index1, index2,
+                                 class, classGroup1, classGroup2, groupName1,
                                  groupName2, analysisName, covariates,
                                  overwrite)
 
@@ -516,7 +425,11 @@ runANOVA <- function(inSCE, useAssay = 'logcounts', index1 = NULL,
         stats::as.formula(paste0("~", paste0(covariates, collapse = "+"))),
         data = annotData)
     }
-    dat <- as.matrix(expData(inSCE[,subsetIdx], useAssay))
+    if (!is.null(useAssay)) {
+      dat <- expData(inSCE[,subsetIdx], useAssay)
+    } else {
+      dat <- t(expData(inSCE[,subsetIdx], useReducedDim))
+    }
     if(!inherits(dat, 'matrix')){
         dat <- as.matrix(dat)
     }
@@ -545,10 +458,17 @@ runANOVA <- function(inSCE, useAssay = 'logcounts', index1 = NULL,
                       FDR = stats::p.adjust(p, method = 'fdr'),
                       stringsAsFactors = FALSE)
     rownames(deg) <- NULL
-    cond1.assay <- expData(inSCE[,ix1], useAssay)
-    cond2.assay <- expData(inSCE[,ix2], useAssay)
+    
+    if (!is.null(useAssay)) {
+      cond1.assay <- expData(inSCE, useAssay)[, ix1]
+      cond2.assay <- expData(inSCE, useAssay)[, ix2]
+    } else {
+      cond1.assay <- t(expData(inSCE, useReducedDim))[, ix1]
+      cond2.assay <- t(expData(inSCE, useReducedDim))[, ix2]
+    }
+    # Assuming that useAssay is log-normalized counts
     deg$Log2_FC <- rowMeans(cond1.assay) - rowMeans(cond2.assay)
-
+    
     # Result Filtration
     if(isTRUE(onlyPos)){
       deg <- deg[deg$Log2_FC > 0,]
@@ -576,73 +496,16 @@ runANOVA <- function(inSCE, useAssay = 'logcounts', index1 = NULL,
     return(inSCE)
 }
 
-#' Perform differential expression analysis on SCE with MAST
-#'
-#' Condition specification allows two methods:
-#' 1. Index level selection. Arguments \code{index1} and \code{index2} will be
-#' used.
-#' 2. Annotation level selection. Arguments \code{class}, \code{classGroup1} and
-#' \code{classGroup2} will be used.
-#' @param inSCE \linkS4class{SingleCellExperiment} inherited object.
-#' @param useAssay character. A string specifying which assay to use for MAST.
-#' The assay should be a log-transformed normalized assay. Default
-#' \code{"logcounts"}.
-#' @param index1 Any type of indices that can subset a
-#' \linkS4class{SingleCellExperiment} inherited object by cells. Specifies
-#' which cells are of interests. Default \code{NULL}.
-#' @param index2 Any type of indices that can subset a
-#' \linkS4class{SingleCellExperiment} inherited object by cells. specifies
-#' the control group against those specified by \code{index1}. If
-#' \code{NULL} when using index specification, \code{index1} cells will be
-#' compared with all other cells. Default \code{NULL}.
-#' @param class A vector/factor with \code{ncol(inSCE)} elements, or a character
-#' scalar that specifies a column name of \code{colData(inSCE)}. Default
-#' \code{NULL}.
-#' @param classGroup1 a vector specifying which "levels" given in \code{class}
-#' are of interests. Default \code{NULL}.
-#' @param classGroup2 a vector specifying which "levels" given in \code{class}
-#' is the control group against those specified by \code{classGroup1}. If
-#' \code{NULL} when using annotation specification, \code{classGroup1} cells
-#' will be compared with all other cells.
-#' @param analysisName A character scalar naming the DEG analysis. Required
-#' @param groupName1 A character scalar naming the group of interests. Required.
-#' @param groupName2 A character scalar naming the control group. Required.
-#' @param covariates A character vector of additional covariates to use when
-#' building the model. All covariates must exist in
-#' \code{names(colData(inSCE))}. Default \code{NULL}.
-#' @param onlyPos Whether to only output DEG with positive log2_FC value.
-#' Default \code{FALSE}.
-#' @param log2fcThreshold Only out put DEGs with the absolute values of log2FC
-#' greater than this value. Default \code{NULL}
-#' @param fdrThreshold Only out put DEGs with FDR value less than this
-#' value. Default \code{NULL}
-#' @param overwrite A logical scalar. Whether to overwrite result if exists.
-#' Default \code{FALSE}.
-#' @param check_sanity Logical scalar. Whether to perform MAST's sanity check
-#' to see if the counts are logged. Default \code{TRUE}.
-#' @examples
-#' data(scExample, package = "singleCellTK")
-#' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
-#' sce <- scaterlogNormCounts(sce[,seq(20)], assayName = "logcounts")
-#' sce <- runMAST(inSCE = sce, groupName1 = "Sample1",
-#'  groupName2 = "Sample2", index1 = seq(10), index2 = seq(11,20),
-#'  analysisName = "MAST")
-#' @return The input \linkS4class{SingleCellExperiment} object with
-#' \code{metadata(inSCE)$diffExp} updated with the results: a list named by
-#' \code{analysisName}, with \code{$groupNames} containing the naming of the
-#' two conditions, \code{$useAssay} storing the assay name that was used for
-#' calculation, \code{$select} storing the cell selection indices (logical) for
-#' each condition, \code{$result} storing a \code{\link{data.frame}} of
-#' the DEGs summary, and \code{$method} storing \code{"MAST"}.
+#' @rdname runDEAnalysis
 #' @export
-runMAST <- function(inSCE, useAssay = 'logcounts', index1 = NULL,
-                    index2 = NULL, class = NULL, classGroup1 = NULL,
-                    classGroup2 = NULL, analysisName, groupName1,
-                    groupName2, covariates = NULL, onlyPos = FALSE,
+runMAST <- function(inSCE, useAssay = 'logcounts', useReducedDim = NULL,
+                    index1 = NULL, index2 = NULL, class = NULL, 
+                    classGroup1 = NULL, classGroup2 = NULL, analysisName, 
+                    groupName1, groupName2, covariates = NULL, onlyPos = FALSE,
                     log2fcThreshold = NULL, fdrThreshold = NULL,
                     overwrite = FALSE, check_sanity = TRUE){
-    resultList <- .formatDEAList(inSCE, useAssay, index1, index2, class,
-                                 classGroup1, classGroup2, groupName1,
+    resultList <- .formatDEAList(inSCE, useAssay, useReducedDim, index1, index2, 
+                                 class, classGroup1, classGroup2, groupName1,
                                  groupName2, analysisName, covariates,
                                  overwrite)
 
@@ -652,7 +515,12 @@ runMAST <- function(inSCE, useAssay = 'logcounts', index1 = NULL,
     cells2 <- which(ix2)
     subsetIdx <- (ix1 | ix2)
     ## Extract
-    mat <- expData(inSCE[,subsetIdx], useAssay)
+    if (!is.null(useAssay)) {
+      mat <- expData(inSCE[,subsetIdx], useAssay)
+    } else {
+      mat <- t(expData(inSCE[,subsetIdx], useReducedDim))
+    }
+    
     if(!inherits(mat, 'matrix')){
       mat <- as.matrix(mat)
     }
@@ -743,71 +611,16 @@ runMAST <- function(inSCE, useAssay = 'logcounts', index1 = NULL,
     return(inSCE)
 }
 
-#' Perform differential expression analysis on SCE with Wilcoxon test
-#'
-#' Condition specification allows two methods:
-#' 1. Index level selection. Arguments \code{index1} and \code{index2} will be
-#' used.
-#' 2. Annotation level selection. Arguments \code{class}, \code{classGroup1} and
-#' \code{classGroup2} will be used.
-#' @param inSCE \linkS4class{SingleCellExperiment} inherited object.
-#' @param useAssay character. A string specifying which assay to use for the
-#' Wilcoxon test. The assay should be a log-transformed normalized assay.
-#' Default \code{"logcounts"}.
-#' @param index1 Any type of indices that can subset a
-#' \linkS4class{SingleCellExperiment} inherited object by cells. Specifies
-#' which cells are of interests. Default \code{NULL}.
-#' @param index2 Any type of indices that can subset a
-#' \linkS4class{SingleCellExperiment} inherited object by cells. specifies
-#' the control group against those specified by \code{index1}. If
-#' \code{NULL} when using index specification, \code{index1} cells will be
-#' compared with all other cells. Default \code{NULL}.
-#' @param class A vector/factor with \code{ncol(inSCE)} elements, or a character
-#' scalar that specifies a column name of \code{colData(inSCE)}. Default
-#' \code{NULL}.
-#' @param classGroup1 a vector specifying which "levels" given in \code{class}
-#' are of interests. Default \code{NULL}.
-#' @param classGroup2 a vector specifying which "levels" given in \code{class}
-#' is the control group against those specified by \code{classGroup1}. If
-#' \code{NULL} when using annotation specification, \code{classGroup1} cells
-#' will be compared with all other cells.
-#' @param analysisName A character scalar naming the DEG analysis. Required
-#' @param groupName1 A character scalar naming the group of interests. Required.
-#' @param groupName2 A character scalar naming the control group. Required.
-#' @param covariates Not supported by \code{\link[scran]{pairwiseWilcox}},
-#' will be ignored if any, but included in metadata for plotting. Default
-#' \code{NULL}.
-#' @param onlyPos Whether to only output DEG with positive log2_FC value.
-#' Default \code{FALSE}.
-#' @param log2fcThreshold Only out put DEGs with the absolute values of log2FC
-#' greater than this value. Default \code{NULL}
-#' @param fdrThreshold Only out put DEGs with FDR value less than this
-#' value. Default \code{NULL}
-#' @param overwrite A logical scalar. Whether to overwrite result if exists.
-#' Default \code{FALSE}.
-#' @examples
-#' data(scExample, package = "singleCellTK")
-#' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
-#' sce <- scaterlogNormCounts(sce, assayName = "logcounts")
-#' sce <- runWilcox(inSCE = sce, groupName1 = "Sample1",
-#'  groupName2 = "Sample2", index1 = seq(20), index2 = seq(21,40),
-#'  analysisName = "wilcox")
-#' @return The input \linkS4class{SingleCellExperiment} object with
-#' \code{metadata(inSCE)$diffExp} updated with the results: a list named by
-#' \code{analysisName}, with \code{$groupNames} containing the naming of the
-#' two conditions, \code{$useAssay} storing the assay name that was used for
-#' calculation, \code{$select} storing the cell selection indices (logical) for
-#' each condition, \code{$result} storing a \code{\link{data.frame}} of
-#' the DEGs summary, and \code{$method} storing \code{"wilcox"}.
+#' @rdname runDEAnalysis
 #' @export
-runWilcox <- function(inSCE, useAssay = 'logcounts', index1 = NULL,
-                      index2 = NULL, class = NULL, classGroup1 = NULL,
-                      classGroup2 = NULL, analysisName, groupName1,
-                      groupName2, covariates = NULL, onlyPos = FALSE,
-                      log2fcThreshold = NULL, fdrThreshold = NULL,
-                      overwrite = FALSE){
-  resultList <- .formatDEAList(inSCE, useAssay, index1, index2, class,
-                               classGroup1, classGroup2, groupName1,
+runWilcox <- function(inSCE, useAssay = 'logcounts', useReducedDim = NULL, 
+                      index1 = NULL, index2 = NULL, class = NULL, 
+                      classGroup1 = NULL, classGroup2 = NULL, analysisName, 
+                      groupName1, groupName2, covariates = NULL, 
+                      onlyPos = FALSE, log2fcThreshold = NULL, 
+                      fdrThreshold = NULL, overwrite = FALSE){
+  resultList <- .formatDEAList(inSCE, useAssay, useReducedDim, index1, index2, 
+                               class, classGroup1, classGroup2, groupName1,
                                groupName2, analysisName, covariates,
                                overwrite)
   if (!is.null(covariates)) {
@@ -820,17 +633,31 @@ runWilcox <- function(inSCE, useAssay = 'logcounts', index1 = NULL,
   conditions <- rep(NA, ncol(inSCE))
   conditions[ix1] <- 'cond1'
   conditions[ix2] <- 'cond2'
-  result <- scran::pairwiseWilcox(inSCE, groups = conditions,
-                                  assay.type = useAssay)
+  if (!is.null(useAssay)) {
+    mat <- expData(inSCE, useAssay)
+  } else {
+    mat <- t(expData(inSCE, useReducedDim))
+  }
+  result <- scran::pairwiseWilcox(mat, groups = conditions)
+  # result <- scran::pairwiseWilcox(inSCE, groups = conditions,
+  #                                 assay.type = useAssay)
   if (result$pairs$first[1] == "cond1") {
     table <- result$statistics[[1]]
   } else {
     table <- result$statistics[[2]]
   }
-  cond1.assay <- expData(inSCE, useAssay)[rownames(table), ix1]
-  cond2.assay <- expData(inSCE, useAssay)[rownames(table), ix2]
+  # Generate LogFC value
+  
+  if (!is.null(useAssay)) {
+    cond1.assay <- expData(inSCE, useAssay)[rownames(table), ix1]
+    cond2.assay <- expData(inSCE, useAssay)[rownames(table), ix2]
+  } else {
+    cond1.assay <- t(expData(inSCE, useReducedDim))[rownames(table), ix1]
+    cond2.assay <- t(expData(inSCE, useReducedDim))[rownames(table), ix2]
+  }
+  # Assuming that useAssay is log-normalized counts
   table$Log2_FC <- rowMeans(cond1.assay) - rowMeans(cond2.assay)
-
+  
   deg <- data.frame(Gene = as.character(rownames(table)),
                     Log2_FC = table$Log2_FC,
                     Pvalue = table$p.value,

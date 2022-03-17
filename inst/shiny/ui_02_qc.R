@@ -1,5 +1,5 @@
 shinyPanelQC <- fluidPage(
-  useShinyalert(),
+  #useShinyalert(),
   tags$div(
     class = "container",
     wellPanel(

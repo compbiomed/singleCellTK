@@ -9,6 +9,7 @@ Meanwhile it does all the input checkings.}
 .formatDEAList(
   inSCE,
   useAssay,
+  useReducedDim,
   index1 = NULL,
   index2 = NULL,
   class = NULL,
