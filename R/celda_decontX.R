@@ -217,7 +217,8 @@ runDecontX <- function(inSCE,
   newAssay <- SummarizedExperiment::assays(inSCE)[assayId]
   SummarizedExperiment::assays(inSCE)[assayId] <- NULL
 
-  DimId <- grep("decontX", SingleCellExperiment::reducedDimNames(inSCE), value=T)#SingleCellExperiment::reducedDimNames(inSCE) == "decontX_UMAP"
+  DimId <- grep("decontX", SingleCellExperiment::reducedDimNames(inSCE), 
+                value=TRUE)#SingleCellExperiment::reducedDimNames(inSCE) == "decontX_UMAP"
   newDim <- SingleCellExperiment::reducedDims(inSCE)[DimId]
   SingleCellExperiment::reducedDims(inSCE)[DimId] <- NULL
 
