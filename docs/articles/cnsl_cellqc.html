@@ -50,14 +50,14 @@
   <a href="../articles/installation.html">Installation</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Documentation
      
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
 <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Data</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Data</a>
       <ul class="dropdown-menu" role="menu">
 <li>
           <a href="../articles/import_data.html">Import Data</a>
@@ -77,7 +77,7 @@
       </ul>
 </li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">QC &amp; Filtering</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">QC &amp; Filtering</a>
       <ul class="dropdown-menu" role="menu">
 <li>
           <a href="../articles/cnsl_dropletqc.html">Droplet QC (R console)</a>
@@ -94,7 +94,7 @@
       </ul>
 </li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Normalization &amp; Batch Correction</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Normalization &amp; Batch Correction</a>
       <ul class="dropdown-menu" role="menu">
 <li>
           <a href="../articles/cnsl_normalization.html">Normalization</a>
@@ -105,7 +105,7 @@
       </ul>
 </li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Feature Selection &amp; Dimensionality Reduction</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Feature Selection &amp; Dimensionality Reduction</a>
       <ul class="dropdown-menu" role="menu">
 <li>
           <a href="../articles/cnsl_feature_selection.html">Feature Selection</a>
@@ -122,7 +122,7 @@
       <a href="../articles/clustering.html">Clustering</a>
     </li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Differential Expression &amp; Cell Type Labeling</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Differential Expression &amp; Cell Type Labeling</a>
       <ul class="dropdown-menu" role="menu">
 <li>
           <a href="../articles/differential_expression.html">Differential Expression</a>
@@ -136,7 +136,7 @@
       </ul>
 </li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Pathway &amp; Enrichment Analysis</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Pathway &amp; Enrichment Analysis</a>
       <ul class="dropdown-menu" role="menu">
 <li>
           <a href="../articles/cnsl_enrichR.html">EnrichR</a>
@@ -147,7 +147,7 @@
       </ul>
 </li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Curated Workflows</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Curated Workflows</a>
       <ul class="dropdown-menu" role="menu">
 <li>
           <a href="../articles/cnsl_seurat_curated_workflow.html">Seurat</a>
@@ -158,7 +158,7 @@
       </ul>
 </li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Visualization</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Visualization</a>
       <ul class="dropdown-menu" role="menu">
 <li>
           <a href="../articles/visualization.html">General Visualization</a>
@@ -171,7 +171,7 @@
   </ul>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Tutorials
      
     <span class="caret"></span>
@@ -277,11 +277,16 @@ text-align: justify}
 <code class="sourceCode R"><span class="va">pbmc.combined</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/importGeneSetsFromGMT.html">importGeneSetsFromGMT</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">pbmc.combined</span>, collectionName <span class="op">=</span> <span class="st">"mito"</span>, file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/mito_subset.gmt"</span>, package <span class="op">=</span> <span class="st">"singleCellTK"</span><span class="op">)</span><span class="op">)</span>
 
 <span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">12345</span><span class="op">)</span>
-<span class="va">pbmc.combined</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runCellQC.html">runCellQC</a></span><span class="op">(</span><span class="va">pbmc.combined</span>, algorithms <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"QCMetrics"</span>, <span class="st">"scrublet"</span>, <span class="st">"scDblFinder"</span>, <span class="st">"cxds"</span>, <span class="st">"bcds"</span>, <span class="st">"cxds_bcds_hybrid"</span>, <span class="st">"doubletFinder"</span>, <span class="st">"decontX"</span>, <span class="st">"soupX"</span><span class="op">)</span>, sample <span class="op">=</span> <span class="va">sample.vector</span>, collectionName <span class="op">=</span> <span class="st">"mito"</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## [19:22:54] WARNING: amalgamation/../src/learner.cc:1115: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.</span>
-<span class="co">## [19:23:25] WARNING: amalgamation/../src/learner.cc:1115: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.</span>
-<span class="co">## [19:23:43] WARNING: amalgamation/../src/learner.cc:1115: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.</span>
-<span class="co">## [19:24:12] WARNING: amalgamation/../src/learner.cc:1115: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.</span></code></pre>
+<span class="va">pbmc.combined</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runCellQC.html">runCellQC</a></span><span class="op">(</span><span class="va">pbmc.combined</span>, 
+                           algorithms <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"QCMetrics"</span>, <span class="st">"scrublet"</span>, <span class="st">"scDblFinder"</span>, <span class="st">"cxds"</span>, <span class="st">"bcds"</span>, <span class="st">"cxds_bcds_hybrid"</span>, <span class="st">"doubletFinder"</span>, <span class="st">"decontX"</span>, <span class="st">"soupX"</span><span class="op">)</span>, 
+                           sample <span class="op">=</span> <span class="va">sample.vector</span>, 
+                           collectionName <span class="op">=</span> <span class="st">"mito"</span><span class="op">)</span></code></pre></div>
+<p>Users can also specify <code>mitoRef</code>, <code>mitoIDType</code> and <code>mitoGeneLocation</code> arguments in <code>runCellQC</code> function to quantify mitochondrial gene expression without the need to import gene sets. For the details about these arguments, please refer to <code>runCellQC</code> and <code><a href="../reference/runPerCellQC.html">runPerCellQC()</a></code> .</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">pbmc.combined</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runCellQC.html">runCellQC</a></span><span class="op">(</span><span class="va">pbmc.combined</span>,
+                           algorithms <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"QCMetrics"</span>, <span class="st">"scrublet"</span>, <span class="st">"scDblFinder"</span>, <span class="st">"cxds"</span>, <span class="st">"bcds"</span>, <span class="st">"cxds_bcds_hybrid"</span>, <span class="st">"doubletFinder"</span>, <span class="st">"decontX"</span>, <span class="st">"soupX"</span><span class="op">)</span>,
+                           sample <span class="op">=</span> <span class="va">sample.vector</span>,
+                           mitoRef <span class="op">=</span> <span class="st">"human"</span>, mitoIDType <span class="op">=</span> <span class="st">"symbol"</span>, mitoGeneLocation <span class="op">=</span> <span class="st">"rownames"</span><span class="op">)</span></code></pre></div>
 <p><br> If users choose to only run a specific set of algorithms, they can specify which to run with the <code>algorithms</code> parameter. By default, the <code><a href="../reference/runCellQC.html">runCellQC()</a></code> will run <code>"QCMetrics"</code>, <code>"scDblFinder"</code>, <code>"cxds"</code>, <code>"bcds"</code>, <code>"cxds_bcds_hybrid"</code>, <code>"decontX"</code> and <code>"soupX"</code> algorithms by default. Besides, <code>"scrublet"</code> and <code>"doubletFinder"</code> are supported if our users want to run them.</p>
 <p>After running QC functions with SCTK, the output will be stored in the <code>colData</code> slot of the <code>SingleCellExperiment</code> object.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
@@ -346,13 +351,13 @@ percent.top_200
 percent.top_500
 </th>
 <th style="text-align:right;">
-subsets_mito_sum
+mito_sum
 </th>
 <th style="text-align:right;">
-subsets_mito_detected
+mito_detected
 </th>
 <th style="text-align:right;">
-subsets_mito_percent
+mito_percent
 </th>
 <th style="text-align:right;">
 total
@@ -366,6 +371,9 @@ scrublet_call
 <th style="text-align:left;">
 scDblFinder_sample
 </th>
+<th style="text-align:right;">
+scDblFinder_cluster
+</th>
 <th style="text-align:left;">
 scDblFinder_doublet_call
 </th>
@@ -373,10 +381,25 @@ scDblFinder_doublet_call
 scDblFinder_doublet_score
 </th>
 <th style="text-align:right;">
+scDblFinder_ratio
+</th>
+<th style="text-align:right;">
 scDblFinder_weighted
+</th>
+<th style="text-align:left;">
+scDblFinder_nearestClass
+</th>
+<th style="text-align:right;">
+scDblFinder_difficulty
 </th>
 <th style="text-align:right;">
 scDblFinder_cxds_score
+</th>
+<th style="text-align:left;">
+scDblFinder_mostLikelyOrigin
+</th>
+<th style="text-align:left;">
+scDblFinder_originAmbiguous
 </th>
 <th style="text-align:right;">
 doubletFinder_doublet_score_resolution_1.5
@@ -490,7 +513,7 @@ pbmc3k
 2421
 </td>
 <td style="text-align:right;">
-0.1606218
+0.2394366
 </td>
 <td style="text-align:left;">
 Singlet
@@ -498,17 +521,35 @@ Singlet
 <td style="text-align:left;">
 pbmc3k
 </td>
+<td style="text-align:right;">
+4
+</td>
 <td style="text-align:left;">
 Singlet
 </td>
 <td style="text-align:right;">
-0.2706641
+0.2846919
 </td>
 <td style="text-align:right;">
-0.7151944
+0.76
 </td>
 <td style="text-align:right;">
-0.0377920
+0.7566332
+</td>
+<td style="text-align:left;">
+artificialDoublet
+</td>
+<td style="text-align:right;">
+0.1629978
+</td>
+<td style="text-align:right;">
+0.0253556
+</td>
+<td style="text-align:left;">
+2+4
+</td>
+<td style="text-align:left;">
+FALSE
 </td>
 <td style="text-align:right;">
 0.0138889
@@ -523,19 +564,19 @@ Singlet
 Singlet
 </td>
 <td style="text-align:right;">
-0.0149839
+0.0023788
 </td>
 <td style="text-align:left;">
 Singlet
 </td>
 <td style="text-align:right;">
-0.2109824
+0.208113
 </td>
 <td style="text-align:left;">
 Singlet
 </td>
 <td style="text-align:right;">
-0.0320272
+0.0319956
 </td>
 <td style="text-align:left;">
 pbmc3k-1
@@ -621,7 +662,7 @@ pbmc3k
 4903
 </td>
 <td style="text-align:right;">
-0.1147541
+0.0935252
 </td>
 <td style="text-align:left;">
 Singlet
@@ -629,17 +670,35 @@ Singlet
 <td style="text-align:left;">
 pbmc3k
 </td>
+<td style="text-align:right;">
+1
+</td>
 <td style="text-align:left;">
 Singlet
 </td>
 <td style="text-align:right;">
-0.1667544
+0.1630681
 </td>
 <td style="text-align:right;">
-0.5509301
+0.42
 </td>
 <td style="text-align:right;">
-0.1550617
+0.4622587
+</td>
+<td style="text-align:left;">
+artificialDoublet
+</td>
+<td style="text-align:right;">
+0.0469763
+</td>
+<td style="text-align:right;">
+0.1334808
+</td>
+<td style="text-align:left;">
+1+3
+</td>
+<td style="text-align:left;">
+FALSE
 </td>
 <td style="text-align:right;">
 0.1527778
@@ -654,19 +713,19 @@ Singlet
 Singlet
 </td>
 <td style="text-align:right;">
-0.9710556
+0.8127224
 </td>
 <td style="text-align:left;">
 Doublet
 </td>
 <td style="text-align:right;">
-0.8471188
+1.110518
 </td>
 <td style="text-align:left;">
-Singlet
+Doublet
 </td>
 <td style="text-align:right;">
-0.1196156
+0.1196180
 </td>
 <td style="text-align:left;">
 pbmc3k-2
@@ -851,18 +910,18 @@ pbmc3k-9
 <span class="co">## Median features detected                                817.0000  716.0000</span>
 <span class="co">## Scrublet - Number of doublets                             0.0000    0.0000</span>
 <span class="co">## Scrublet - Percentage of doublets                         0.0000    0.0000</span>
-<span class="co">## scDblFinder - Number of doublets                        104.0000  298.0000</span>
-<span class="co">## scDblFinder - Percentage of doublets                      3.8500    5.5000</span>
+<span class="co">## scDblFinder - Number of doublets                         60.0000  244.0000</span>
+<span class="co">## scDblFinder - Percentage of doublets                      2.2200    4.5000</span>
 <span class="co">## DoubletFinder - Number of doublets, Resolution 1.5      202.0000  406.0000</span>
 <span class="co">## DoubletFinder - Percentage of doublets, Resolution 1.5    7.4800    7.4900</span>
 <span class="co">## CXDS - Number of doublets                               132.0000  294.0000</span>
 <span class="co">## CXDS - Percentage of doublets                             4.8900    5.4300</span>
-<span class="co">## BCDS - Number of doublets                               151.0000  257.0000</span>
-<span class="co">## BCDS - Percentage of doublets                             5.5900    4.7400</span>
-<span class="co">## SCDS Hybrid - Number of doublets                        173.0000  301.0000</span>
-<span class="co">## SCDS Hybrid - Percentage of doublets                      6.4100    5.5500</span>
-<span class="co">## DecontX - Mean contamination                              0.0811    0.0603</span>
-<span class="co">## DecontX - Median contamination                            0.0535    0.0364</span>
+<span class="co">## BCDS - Number of doublets                               160.0000  278.0000</span>
+<span class="co">## BCDS - Percentage of doublets                             5.9300    5.1300</span>
+<span class="co">## SCDS Hybrid - Number of doublets                        180.0000  309.0000</span>
+<span class="co">## SCDS Hybrid - Percentage of doublets                      6.6700    5.7000</span>
+<span class="co">## DecontX - Mean contamination                              0.0810    0.0613</span>
+<span class="co">## DecontX - Median contamination                            0.0535    0.0365</span>
 <span class="co">##                                                        All Samples</span>
 <span class="co">## Number of Cells                                          8119.0000</span>
 <span class="co">## Mean counts                                              2140.5000</span>
@@ -871,18 +930,18 @@ pbmc3k-9
 <span class="co">## Median features detected                                  750.0000</span>
 <span class="co">## Scrublet - Number of doublets                               0.0000</span>
 <span class="co">## Scrublet - Percentage of doublets                           0.0000</span>
-<span class="co">## scDblFinder - Number of doublets                          402.0000</span>
-<span class="co">## scDblFinder - Percentage of doublets                        4.9500</span>
+<span class="co">## scDblFinder - Number of doublets                          304.0000</span>
+<span class="co">## scDblFinder - Percentage of doublets                        3.7400</span>
 <span class="co">## DoubletFinder - Number of doublets, Resolution 1.5        608.0000</span>
 <span class="co">## DoubletFinder - Percentage of doublets, Resolution 1.5      7.4900</span>
 <span class="co">## CXDS - Number of doublets                                 426.0000</span>
 <span class="co">## CXDS - Percentage of doublets                               5.2500</span>
-<span class="co">## BCDS - Number of doublets                                 408.0000</span>
-<span class="co">## BCDS - Percentage of doublets                               5.0300</span>
-<span class="co">## SCDS Hybrid - Number of doublets                          474.0000</span>
-<span class="co">## SCDS Hybrid - Percentage of doublets                        5.8400</span>
-<span class="co">## DecontX - Mean contamination                                0.0673</span>
-<span class="co">## DecontX - Median contamination                              0.0412</span></code></pre>
+<span class="co">## BCDS - Number of doublets                                 438.0000</span>
+<span class="co">## BCDS - Percentage of doublets                               5.3900</span>
+<span class="co">## SCDS Hybrid - Number of doublets                          489.0000</span>
+<span class="co">## SCDS Hybrid - Percentage of doublets                        6.0200</span>
+<span class="co">## DecontX - Mean contamination                                0.0679</span>
+<span class="co">## DecontX - Median contamination                              0.0413</span></code></pre>
 </div>
 </div>
 <div class="section level3">
@@ -905,13 +964,16 @@ pbmc3k-9
 <code>detected</code> contains the total number of features for each cell.</li>
 <li>
 <code>percent_top_X</code> contains the percentage of the total counts that is made up by the expression of the top X genes for each cell.</li>
-<li>The <code>subsets_</code> columns contain information for the specific gene list that was used. For instance, if a gene list containing mitochondrial genes named <code>"mito"</code> was used, <code>subsets_mito_sum</code> would contain the total number of mitochondrial counts for each cell.</li>
+<li>The <code>subsets_</code> columns contain information for the specific gene list that was used. For instance, if a gene list containing ribosome genes named <code>"ribosome"</code> was used, <code>subsets_ribosome_sum</code> would contain the total number of ribosome gene counts for each cell.</li>
+<li>
+<code>mito_sum</code>, <code>mito_detected</code> and <code>mito_percent</code> contains number of counts, number of mito features and percentage of mito gene expression of each cells. These columns will show up only if you specify arguments related to mito genes quantification in <code>runCellQC</code> function. Please refer to <code>runCellQC</code> and <code>runPerCellQC</code> documentation for more details.</li>
 </ul>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">pbmc.combined</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runPerCellQC.html">runPerCellQC</a></span><span class="op">(</span>
   inSCE <span class="op">=</span> <span class="va">pbmc.combined</span>,
   useAssay <span class="op">=</span> <span class="st">"counts"</span>,
-  collectionName <span class="op">=</span> <span class="st">"mito"</span><span class="op">)</span></code></pre></div>
+  collectionName <span class="op">=</span> <span class="st">"ribosome"</span>,
+  mitoRef <span class="op">=</span> <span class="st">"human"</span>, mitoIDType <span class="op">=</span> <span class="st">"symbol"</span>, mitoGeneLocation <span class="op">=</span> <span class="st">"rownames"</span><span class="op">)</span></code></pre></div>
   </details></details><details><summary><b>Doublet Detection</b></summary><p>Doublets hinder cell-type identification by appearing as a distinct transcriptomic state, and need to be removed for downstream analysis. SCTK contains various doublet detection tools that the user may choose from.</p>
   <details><summary><b>runScrublet</b></summary><p><a href="https://github.com/swolock/scrublet" class="external-link">Scrublet</a> aims to detect doublets by creating simulated doublets from combining transcriptomic profiles of existing cells in the dataset. The wrapper function <code><a href="../reference/runScrublet.html">runScrublet()</a></code> can be used to separately run the Scrublet algorithm on its own.</p>
 <ul>
@@ -1021,10 +1083,10 @@ pbmc3k-9
 <li>Clustering is performed as part of the <code><a href="../reference/runDecontX.html">runDecontX()</a></code> algorithm. <code>decontX_clusters</code> is the resulting cluster assignment, which can also be labeled on the plot. For performing fine-tuned clustering in SCTK, please refer to <a href="clustering.html"><em>Clustering</em> documentation</a>
 </li>
 </ul>
-<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>pbmc.combined <span class="ot">&lt;-</span> <span class="fu">runDecontX</span>(</span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">inSCE =</span> pbmc.combined, <span class="at">useAssay =</span> <span class="st">"counts"</span></span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">sample =</span> <span class="fu">colData</span>(pbmc.combined)<span class="sc">$</span>sample</span>
-<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true"></a>pbmc.combined &lt;-<span class="st"> </span><span class="kw">runDecontX</span>(</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true"></a>  <span class="dt">inSCE =</span> pbmc.combined, <span class="dt">useAssay =</span> <span class="st">"counts"</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true"></a>  <span class="dt">sample =</span> <span class="kw">colData</span>(pbmc.combined)<span class="op">$</span>sample</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true"></a>)</span></code></pre></div>
   </details><details><summary><b>runSoupX</b></summary><p>In droplet-based single cell technologies, ambient RNA that may have been released from apoptotic or damaged cells may get incorporated into another droplet, and can lead to contamination. <a href="https://github.com/constantAmateur/SoupX" class="external-link">SoupX</a> uses non-expressed genes to estimates a global contamination fraction. The wrapper function <code><a href="../reference/runSoupX.html">runSoupX()</a></code> can be used to separately run the SoupX algorithm on its own.</p>
 <p>he main outputs of <code>runSoupX</code> are <code>soupX_contamination</code>, <code>soupX_clusters</code>, and the corrected assay <code>SoupX</code>, together with other intermediate metrics that SoupX generates.</p>
 <ul>
@@ -1033,10 +1095,10 @@ pbmc3k-9
 <li>Clustering is required for SoupX algorithm. It will be performed if users do not provide the label as input. <code>quickCluster()</code> method from package <a href="https://rdrr.io/bioc/scran/man/quickCluster.html" class="external-link">scran</a> is adopted for this purpose. <code>soupX_clusters</code> is the resulting cluster assignment, which can also be labeled on the plot. For performing fine-tuned clustering in SCTK, please refer to <a href="clustering.html"><em>Clustering</em> documentation</a>
 </li>
 </ul>
-<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>pbmc.combined <span class="ot">&lt;-</span> <span class="fu">runSoupX</span>(</span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">inSCE =</span> pbmc.combined, <span class="at">useAssay =</span> <span class="st">"counts"</span></span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">sample =</span> <span class="fu">colData</span>(pbmc.combined)<span class="sc">$</span>sample</span>
-<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true"></a>pbmc.combined &lt;-<span class="st"> </span><span class="kw">runSoupX</span>(</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true"></a>  <span class="dt">inSCE =</span> pbmc.combined, <span class="dt">useAssay =</span> <span class="st">"counts"</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true"></a>  <span class="dt">sample =</span> <span class="kw">colData</span>(pbmc.combined)<span class="op">$</span>sample</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true"></a>)</span></code></pre></div>
   </details></details>
 </div>
 <div class="section level3">
@@ -1178,7 +1240,7 @@ pbmc3k-9
 <pre><code><span class="co">## [1] 32738  8119</span></code></pre>
 <p>Remove barcodes with high mitochondrial gene expression:</p>
 <div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">pbmc.combined</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/subsetSCECols.html">subsetSCECols</a></span><span class="op">(</span><span class="va">pbmc.combined</span>, colData <span class="op">=</span> <span class="st">'subsets_mito_percent &lt; 20'</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="va">pbmc.combined</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/subsetSCECols.html">subsetSCECols</a></span><span class="op">(</span><span class="va">pbmc.combined</span>, colData <span class="op">=</span> <span class="st">'mito_percent &lt; 20'</span><span class="op">)</span></code></pre></div>
 <p>Remove detected doublets from Scrublet:</p>
 <div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">pbmc.combined</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/subsetSCECols.html">subsetSCECols</a></span><span class="op">(</span><span class="va">pbmc.combined</span>, colData <span class="op">=</span> <span class="st">'scrublet_call == "Singlet"'</span><span class="op">)</span></code></pre></div>
@@ -1188,149 +1250,142 @@ pbmc3k-9
 <div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co">#After filtering:</span>
 <span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">pbmc.combined</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## [1] 32738  7931</span></code></pre>
+<pre><code><span class="co">## [1] 32738  7922</span></code></pre>
 <p><br></p>
 <blockquote>
 <p>For performing QC on droplet-level raw count matrix with SCTK, please refer to our <a href="cnsl_dropletqc.html"><em>Droplet QC</em> documentation</a>.</p>
 </blockquote>
  <details><summary><b>Session Information</b></summary><div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## R version 4.1.2 (2021-11-01)</span>
-<span class="co">## Platform: x86_64-w64-mingw32/x64 (64-bit)</span>
-<span class="co">## Running under: Windows 10 x64 (build 19043)</span>
+<pre><code><span class="co">## R version 4.0.3 (2020-10-10)</span>
+<span class="co">## Platform: x86_64-apple-darwin17.0 (64-bit)</span>
+<span class="co">## Running under: macOS Catalina 10.15.7</span>
 <span class="co">## </span>
 <span class="co">## Matrix products: default</span>
+<span class="co">## BLAS:   /Library/Frameworks/R.framework/Versions/4.0/Resources/lib/libRblas.dylib</span>
+<span class="co">## LAPACK: /Library/Frameworks/R.framework/Versions/4.0/Resources/lib/libRlapack.dylib</span>
 <span class="co">## </span>
 <span class="co">## locale:</span>
-<span class="co">## [1] LC_COLLATE=Chinese (Simplified)_China.936 </span>
-<span class="co">## [2] LC_CTYPE=Chinese (Simplified)_China.936   </span>
-<span class="co">## [3] LC_MONETARY=Chinese (Simplified)_China.936</span>
-<span class="co">## [4] LC_NUMERIC=C                              </span>
-<span class="co">## [5] LC_TIME=Chinese (Simplified)_China.936    </span>
+<span class="co">## [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8</span>
 <span class="co">## </span>
 <span class="co">## attached base packages:</span>
-<span class="co">## [1] stats4    stats     graphics  grDevices utils     datasets  methods  </span>
-<span class="co">## [8] base     </span>
+<span class="co">## [1] parallel  stats4    stats     graphics  grDevices utils     datasets </span>
+<span class="co">## [8] methods   base     </span>
 <span class="co">## </span>
 <span class="co">## other attached packages:</span>
-<span class="co">##  [1] TENxPBMCData_1.12.0         HDF5Array_1.22.1           </span>
-<span class="co">##  [3] rhdf5_2.38.0                dplyr_1.0.7                </span>
-<span class="co">##  [5] singleCellTK_2.4.1          DelayedArray_0.20.0        </span>
-<span class="co">##  [7] Matrix_1.3-4                SingleCellExperiment_1.16.0</span>
-<span class="co">##  [9] SummarizedExperiment_1.24.0 Biobase_2.54.0             </span>
-<span class="co">## [11] GenomicRanges_1.46.1        GenomeInfoDb_1.30.0        </span>
-<span class="co">## [13] IRanges_2.28.0              S4Vectors_0.32.3           </span>
-<span class="co">## [15] BiocGenerics_0.40.0         MatrixGenerics_1.6.0       </span>
-<span class="co">## [17] matrixStats_0.61.0         </span>
+<span class="co">##  [1] TENxPBMCData_1.8.0          HDF5Array_1.18.0           </span>
+<span class="co">##  [3] rhdf5_2.34.0                dplyr_1.0.2                </span>
+<span class="co">##  [5] singleCellTK_2.4.1          DelayedArray_0.16.0        </span>
+<span class="co">##  [7] Matrix_1.3-4                SingleCellExperiment_1.12.0</span>
+<span class="co">##  [9] SummarizedExperiment_1.20.0 Biobase_2.50.0             </span>
+<span class="co">## [11] GenomicRanges_1.42.0        GenomeInfoDb_1.26.0        </span>
+<span class="co">## [13] IRanges_2.24.0              S4Vectors_0.28.0           </span>
+<span class="co">## [15] BiocGenerics_0.36.0         MatrixGenerics_1.2.0       </span>
+<span class="co">## [17] matrixStats_0.57.0         </span>
 <span class="co">## </span>
 <span class="co">## loaded via a namespace (and not attached):</span>
-<span class="co">##   [1] MCMCprecision_0.4.0           rappdirs_0.3.3               </span>
-<span class="co">##   [3] scds_1.10.0                   scattermore_0.7              </span>
+<span class="co">##   [1] rappdirs_0.3.1                MCMCprecision_0.4.0          </span>
+<span class="co">##   [3] scds_1.6.0                    scattermore_0.7              </span>
 <span class="co">##   [5] R.methodsS3_1.8.1             SeuratObject_4.0.4           </span>
-<span class="co">##   [7] ragg_1.2.1                    tidyr_1.1.4                  </span>
-<span class="co">##   [9] ggplot2_3.3.5                 bit64_4.0.5                  </span>
-<span class="co">##  [11] knitr_1.37                    irlba_2.3.5                  </span>
-<span class="co">##  [13] R.utils_2.11.0                data.table_1.14.2            </span>
-<span class="co">##  [15] rpart_4.1-15                  doParallel_1.0.16            </span>
-<span class="co">##  [17] KEGGREST_1.34.0               RCurl_1.98-1.5               </span>
-<span class="co">##  [19] generics_0.1.1                ScaledMatrix_1.2.0           </span>
-<span class="co">##  [21] cowplot_1.1.1                 RSQLite_2.2.9                </span>
-<span class="co">##  [23] combinat_0.0-8                RANN_2.6.1                   </span>
-<span class="co">##  [25] future_1.23.0                 bit_4.0.4                    </span>
-<span class="co">##  [27] webshot_0.5.2                 xml2_1.3.3                   </span>
-<span class="co">##  [29] spatstat.data_2.1-2           httpuv_1.6.4                 </span>
-<span class="co">##  [31] assertthat_0.2.1              viridis_0.6.2                </span>
-<span class="co">##  [33] xfun_0.29                     jquerylib_0.1.4              </span>
-<span class="co">##  [35] evaluate_0.14                 promises_1.2.0.1             </span>
-<span class="co">##  [37] fansi_0.5.0                   assertive.files_0.0-2        </span>
-<span class="co">##  [39] dbplyr_2.1.1                  igraph_1.2.10                </span>
-<span class="co">##  [41] DBI_1.1.2                     htmlwidgets_1.5.4            </span>
-<span class="co">##  [43] spatstat.geom_2.3-1           purrr_0.3.4                  </span>
-<span class="co">##  [45] ellipsis_0.3.2                RSpectra_0.16-0              </span>
-<span class="co">##  [47] annotate_1.72.0               deldir_1.0-6                 </span>
-<span class="co">##  [49] sparseMatrixStats_1.6.0       vctrs_0.3.8                  </span>
-<span class="co">##  [51] ROCR_1.0-11                   abind_1.4-5                  </span>
-<span class="co">##  [53] RcppEigen_0.3.3.9.1           cachem_1.0.6                 </span>
-<span class="co">##  [55] withr_2.4.3                   GSVAdata_1.30.0              </span>
-<span class="co">##  [57] sctransform_0.3.2             scran_1.22.1                 </span>
-<span class="co">##  [59] goftest_1.2-3                 svglite_2.0.0                </span>
-<span class="co">##  [61] cluster_2.1.2                 ExperimentHub_2.2.0          </span>
-<span class="co">##  [63] dotCall64_1.0-1               lazyeval_0.2.2               </span>
-<span class="co">##  [65] crayon_1.4.2                  labeling_0.4.2               </span>
-<span class="co">##  [67] edgeR_3.36.0                  pkgconfig_2.0.3              </span>
-<span class="co">##  [69] nlme_3.1-153                  vipor_0.4.5                  </span>
-<span class="co">##  [71] rlang_0.4.12                  globals_0.14.0               </span>
-<span class="co">##  [73] lifecycle_1.0.1               miniUI_0.1.1.1               </span>
-<span class="co">##  [75] filelock_1.0.2                dbscan_1.1-8                 </span>
-<span class="co">##  [77] BiocFileCache_2.2.0           enrichR_3.0                  </span>
-<span class="co">##  [79] rsvd_1.0.5                    AnnotationHub_3.2.0          </span>
-<span class="co">##  [81] rprojroot_2.0.2               polyclip_1.10-0              </span>
-<span class="co">##  [83] lmtest_0.9-39                 graph_1.72.0                 </span>
-<span class="co">##  [85] Rhdf5lib_1.16.0               zoo_1.8-9                    </span>
-<span class="co">##  [87] beeswarm_0.4.0                ggridges_0.5.3               </span>
-<span class="co">##  [89] rjson_0.2.20                  png_0.1-7                    </span>
-<span class="co">##  [91] viridisLite_0.4.0             bitops_1.0-7                 </span>
-<span class="co">##  [93] R.oo_1.24.0                   KernSmooth_2.23-20           </span>
-<span class="co">##  [95] spam_2.7-0                    rhdf5filters_1.6.0           </span>
-<span class="co">##  [97] pROC_1.18.0                   Biostrings_2.62.0            </span>
-<span class="co">##  [99] blob_1.2.2                    DelayedMatrixStats_1.16.0    </span>
-<span class="co">## [101] stringr_1.4.0                 parallelly_1.30.0            </span>
-<span class="co">## [103] gridGraphics_0.5-1            beachmat_2.10.0              </span>
-<span class="co">## [105] scales_1.1.1                  memoise_2.0.1                </span>
-<span class="co">## [107] GSEABase_1.56.0               magrittr_2.0.1               </span>
-<span class="co">## [109] plyr_1.8.6                    ica_1.0-2                    </span>
-<span class="co">## [111] zlibbioc_1.40.0               compiler_4.1.2               </span>
-<span class="co">## [113] kableExtra_1.3.4              dqrng_0.3.0                  </span>
-<span class="co">## [115] RColorBrewer_1.1-2            fitdistrplus_1.1-6           </span>
-<span class="co">## [117] XVector_0.34.0                listenv_0.8.0                </span>
-<span class="co">## [119] patchwork_1.1.1               pbapply_1.5-0                </span>
-<span class="co">## [121] MASS_7.3-54                   mgcv_1.8-38                  </span>
-<span class="co">## [123] tidyselect_1.1.1              stringi_1.7.6                </span>
-<span class="co">## [125] textshaping_0.3.6             highr_0.9                    </span>
-<span class="co">## [127] yaml_2.2.1                    assertive.numbers_0.0-2      </span>
-<span class="co">## [129] BiocSingular_1.10.0           locfit_1.5-9.4               </span>
-<span class="co">## [131] ggrepel_0.9.1                 grid_4.1.2                   </span>
-<span class="co">## [133] sass_0.4.0                    tools_4.1.2                  </span>
-<span class="co">## [135] future.apply_1.8.1            parallel_4.1.2               </span>
-<span class="co">## [137] rstudioapi_0.13               foreach_1.5.1                </span>
-<span class="co">## [139] bluster_1.4.0                 celda_1.9.3                  </span>
-<span class="co">## [141] metapod_1.2.0                 gridExtra_2.3                </span>
-<span class="co">## [143] farver_2.1.0                  assertive.types_0.0-3        </span>
-<span class="co">## [145] Rtsne_0.15                    DropletUtils_1.14.1          </span>
-<span class="co">## [147] digest_0.6.29                 BiocManager_1.30.16          </span>
-<span class="co">## [149] FNN_1.1.3                     shiny_1.7.1                  </span>
-<span class="co">## [151] Rcpp_1.0.7                    scuttle_1.4.0                </span>
-<span class="co">## [153] BiocVersion_3.14.0            later_1.3.0                  </span>
-<span class="co">## [155] RcppAnnoy_0.0.19              httr_1.4.2                   </span>
-<span class="co">## [157] AnnotationDbi_1.56.2          assertive.properties_0.0-4   </span>
-<span class="co">## [159] SoupX_1.5.2                   colorspace_2.0-2             </span>
-<span class="co">## [161] rvest_1.0.2                   XML_3.99-0.8                 </span>
-<span class="co">## [163] fs_1.5.2                      tensor_1.5                   </span>
-<span class="co">## [165] reticulate_1.22               splines_4.1.2                </span>
-<span class="co">## [167] fields_13.3                   uwot_0.1.11                  </span>
-<span class="co">## [169] statmod_1.4.36                spatstat.utils_2.3-0         </span>
-<span class="co">## [171] pkgdown_2.0.1                 scater_1.22.0                </span>
-<span class="co">## [173] xgboost_1.5.2.1               plotly_4.10.0                </span>
-<span class="co">## [175] systemfonts_1.0.3             xtable_1.8-4                 </span>
-<span class="co">## [177] assertive.base_0.0-9          jsonlite_1.7.2               </span>
-<span class="co">## [179] R6_2.5.1                      pillar_1.6.4                 </span>
-<span class="co">## [181] htmltools_0.5.2               mime_0.12                    </span>
-<span class="co">## [183] glue_1.6.0                    fastmap_1.1.0                </span>
-<span class="co">## [185] BiocParallel_1.28.3           BiocNeighbors_1.12.0         </span>
-<span class="co">## [187] interactiveDisplayBase_1.32.0 codetools_0.2-18             </span>
-<span class="co">## [189] maps_3.4.0                    fishpond_2.0.1               </span>
-<span class="co">## [191] utf8_1.2.2                    lattice_0.20-45              </span>
-<span class="co">## [193] bslib_0.3.1                   spatstat.sparse_2.1-0        </span>
-<span class="co">## [195] tibble_3.1.6                  multipanelfigure_2.1.2       </span>
-<span class="co">## [197] curl_4.3.2                    ggbeeswarm_0.6.0             </span>
-<span class="co">## [199] leiden_0.3.9                  scDblFinder_1.8.0            </span>
-<span class="co">## [201] gtools_3.9.2                  magick_2.7.3                 </span>
-<span class="co">## [203] survival_3.2-13               limma_3.50.0                 </span>
-<span class="co">## [205] rmarkdown_2.11                desc_1.4.0                   </span>
-<span class="co">## [207] munsell_0.5.0                 GenomeInfoDbData_1.2.7       </span>
-<span class="co">## [209] iterators_1.0.13              reshape2_1.4.4               </span>
-<span class="co">## [211] gtable_0.3.0                  spatstat.core_2.3-2          </span>
-<span class="co">## [213] Seurat_4.0.6</span></code></pre>
+<span class="co">##   [7] ragg_0.4.0                    tidyr_1.1.2                  </span>
+<span class="co">##   [9] ggplot2_3.3.3                 bit64_4.0.5                  </span>
+<span class="co">##  [11] knitr_1.30                    irlba_2.3.3                  </span>
+<span class="co">##  [13] R.utils_2.10.1                data.table_1.13.4            </span>
+<span class="co">##  [15] rpart_4.1-15                  RCurl_1.98-1.2               </span>
+<span class="co">##  [17] doParallel_1.0.16             generics_0.1.0               </span>
+<span class="co">##  [19] cowplot_1.1.0                 RSQLite_2.2.1                </span>
+<span class="co">##  [21] RANN_2.6.1                    combinat_0.0-8               </span>
+<span class="co">##  [23] future_1.20.1                 bit_4.0.4                    </span>
+<span class="co">##  [25] webshot_0.5.2                 xml2_1.3.2                   </span>
+<span class="co">##  [27] spatstat.data_2.1-0           httpuv_1.5.4                 </span>
+<span class="co">##  [29] assertthat_0.2.1              viridis_0.5.1                </span>
+<span class="co">##  [31] xfun_0.30                     jquerylib_0.1.4              </span>
+<span class="co">##  [33] evaluate_0.14                 promises_1.1.1               </span>
+<span class="co">##  [35] assertive.files_0.0-2         dbplyr_2.0.0                 </span>
+<span class="co">##  [37] igraph_1.2.6                  DBI_1.1.0                    </span>
+<span class="co">##  [39] htmlwidgets_1.5.2             spatstat.geom_2.3-0          </span>
+<span class="co">##  [41] purrr_0.3.4                   ellipsis_0.3.1               </span>
+<span class="co">##  [43] RSpectra_0.16-0               annotate_1.68.0              </span>
+<span class="co">##  [45] deldir_1.0-6                  sparseMatrixStats_1.2.0      </span>
+<span class="co">##  [47] vctrs_0.3.4                   ROCR_1.0-11                  </span>
+<span class="co">##  [49] abind_1.4-5                   RcppEigen_0.3.3.7.0          </span>
+<span class="co">##  [51] withr_2.5.0                   GSVAdata_1.26.0              </span>
+<span class="co">##  [53] sctransform_0.3.2             scran_1.18.1                 </span>
+<span class="co">##  [55] goftest_1.2-2                 cluster_2.1.0                </span>
+<span class="co">##  [57] ExperimentHub_1.16.0          dotCall64_1.0-0              </span>
+<span class="co">##  [59] lazyeval_0.2.2                crayon_1.3.4                 </span>
+<span class="co">##  [61] labeling_0.4.2                edgeR_3.32.0                 </span>
+<span class="co">##  [63] pkgconfig_2.0.3               nlme_3.1-150                 </span>
+<span class="co">##  [65] vipor_0.4.5                   rlang_0.4.12                 </span>
+<span class="co">##  [67] globals_0.13.1                lifecycle_0.2.0              </span>
+<span class="co">##  [69] miniUI_0.1.1.1                dbscan_1.1-5                 </span>
+<span class="co">##  [71] BiocFileCache_1.14.0          enrichR_2.1                  </span>
+<span class="co">##  [73] rsvd_1.0.3                    AnnotationHub_2.22.0         </span>
+<span class="co">##  [75] rprojroot_2.0.2               polyclip_1.10-0              </span>
+<span class="co">##  [77] lmtest_0.9-38                 graph_1.68.0                 </span>
+<span class="co">##  [79] Rhdf5lib_1.12.0               zoo_1.8-8                    </span>
+<span class="co">##  [81] beeswarm_0.2.3                ggridges_0.5.2               </span>
+<span class="co">##  [83] rjson_0.2.20                  png_0.1-7                    </span>
+<span class="co">##  [85] viridisLite_0.3.0             bitops_1.0-6                 </span>
+<span class="co">##  [87] R.oo_1.24.0                   KernSmooth_2.23-18           </span>
+<span class="co">##  [89] spam_2.5-1                    rhdf5filters_1.2.0           </span>
+<span class="co">##  [91] pROC_1.17.0.1                 blob_1.2.1                   </span>
+<span class="co">##  [93] DelayedMatrixStats_1.12.0     stringr_1.4.0                </span>
+<span class="co">##  [95] parallelly_1.21.0             gridGraphics_0.5-0           </span>
+<span class="co">##  [97] beachmat_2.6.1                scales_1.1.1                 </span>
+<span class="co">##  [99] memoise_1.1.0                 GSEABase_1.52.0              </span>
+<span class="co">## [101] magrittr_1.5                  plyr_1.8.6                   </span>
+<span class="co">## [103] ica_1.0-2                     zlibbioc_1.36.0              </span>
+<span class="co">## [105] compiler_4.0.3                kableExtra_1.3.1             </span>
+<span class="co">## [107] dqrng_0.2.1                   RColorBrewer_1.1-2           </span>
+<span class="co">## [109] fitdistrplus_1.1-1            XVector_0.30.0               </span>
+<span class="co">## [111] listenv_0.8.0                 patchwork_1.1.0              </span>
+<span class="co">## [113] pbapply_1.4-3                 MASS_7.3-53                  </span>
+<span class="co">## [115] mgcv_1.8-33                   tidyselect_1.1.0             </span>
+<span class="co">## [117] stringi_1.5.3                 textshaping_0.1.2            </span>
+<span class="co">## [119] highr_0.8                     yaml_2.2.1                   </span>
+<span class="co">## [121] assertive.numbers_0.0-2       BiocSingular_1.6.0           </span>
+<span class="co">## [123] locfit_1.5-9.4                ggrepel_0.8.2                </span>
+<span class="co">## [125] grid_4.0.3                    sass_0.4.0                   </span>
+<span class="co">## [127] tools_4.0.3                   future.apply_1.6.0           </span>
+<span class="co">## [129] rstudioapi_0.11               bluster_1.0.0                </span>
+<span class="co">## [131] foreach_1.5.1                 celda_1.9.3                  </span>
+<span class="co">## [133] gridExtra_2.3                 farver_2.0.3                 </span>
+<span class="co">## [135] assertive.types_0.0-3         Rtsne_0.15                   </span>
+<span class="co">## [137] DropletUtils_1.10.0           digest_0.6.27                </span>
+<span class="co">## [139] BiocManager_1.30.10           FNN_1.1.3                    </span>
+<span class="co">## [141] shiny_1.7.1                   Rcpp_1.0.7                   </span>
+<span class="co">## [143] scuttle_1.0.0                 BiocVersion_3.12.0           </span>
+<span class="co">## [145] later_1.1.0.1                 RcppAnnoy_0.0.19             </span>
+<span class="co">## [147] httr_1.4.2                    AnnotationDbi_1.52.0         </span>
+<span class="co">## [149] assertive.properties_0.0-4    SoupX_1.5.2                  </span>
+<span class="co">## [151] colorspace_1.4-1              rvest_0.3.6                  </span>
+<span class="co">## [153] XML_3.99-0.5                  fs_1.5.0                     </span>
+<span class="co">## [155] tensor_1.5                    reticulate_1.18              </span>
+<span class="co">## [157] splines_4.0.3                 fields_11.6                  </span>
+<span class="co">## [159] uwot_0.1.9                    statmod_1.4.35               </span>
+<span class="co">## [161] spatstat.utils_2.2-0          pkgdown_2.0.2                </span>
+<span class="co">## [163] scater_1.18.6                 xgboost_1.2.0.1              </span>
+<span class="co">## [165] plotly_4.9.2.1                systemfonts_0.3.2            </span>
+<span class="co">## [167] xtable_1.8-4                  assertive.base_0.0-7         </span>
+<span class="co">## [169] jsonlite_1.7.1                R6_2.5.0                     </span>
+<span class="co">## [171] pillar_1.4.6                  htmltools_0.5.2              </span>
+<span class="co">## [173] mime_0.9                      glue_1.4.2                   </span>
+<span class="co">## [175] fastmap_1.1.0                 BiocParallel_1.24.1          </span>
+<span class="co">## [177] BiocNeighbors_1.8.1           interactiveDisplayBase_1.28.0</span>
+<span class="co">## [179] codetools_0.2-18              maps_3.3.0                   </span>
+<span class="co">## [181] fishpond_1.6.0                lattice_0.20-41              </span>
+<span class="co">## [183] bslib_0.3.1                   spatstat.sparse_2.0-0        </span>
+<span class="co">## [185] tibble_3.0.4                  multipanelfigure_2.1.2       </span>
+<span class="co">## [187] curl_4.3                      ggbeeswarm_0.6.0             </span>
+<span class="co">## [189] leiden_0.3.5                  scDblFinder_1.4.0            </span>
+<span class="co">## [191] gtools_3.8.2                  magick_2.5.1                 </span>
+<span class="co">## [193] survival_3.2-7                limma_3.46.0                 </span>
+<span class="co">## [195] rmarkdown_2.13                desc_1.2.0                   </span>
+<span class="co">## [197] munsell_0.5.0                 GenomeInfoDbData_1.2.4       </span>
+<span class="co">## [199] iterators_1.0.13              reshape2_1.4.4               </span>
+<span class="co">## [201] gtable_0.3.0                  spatstat.core_2.3-1          </span>
+<span class="co">## [203] Seurat_4.0.6</span></code></pre>
 </details>
 </div>
 </div>
@@ -1353,7 +1408,7 @@ pbmc3k-9
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
 </div>
 
       </footer>

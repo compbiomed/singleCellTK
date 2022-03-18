@@ -149,14 +149,16 @@ cat(intro)
 <br />
 
 ```{r, "runPerCellQC-description", include=FALSE, warning=FALSE, message=FALSE}
-description_runPerCellQC <- descriptionRunPerCellQC()
+description_runPerCellQC <- singleCellTK:::descriptionRunPerCellQC()
 ```
 
 # Summary Statistics {.tabset .tabset-fade}
-# {.unlisted .unnumbered .toc-ignore .tabset .tabset-fade}
 ```{r "SummaryStats", echo = FALSE, results="asis", fig.align="center", warning=FALSE, message=FALSE}
 cat("\n")
+cat("# {.unlisted .unnumbered .toc-ignore .tabset .tabset-fade}")
+cat("\n")
 
+cat(paste0('## SCTK-QC {.tabset .tabset-fade} \n\n'))
 sce.qc <- sampleSummaryStats(inSCE = sce.qc, 
                                    sample = sceSample,
                                    simple = FALSE)
@@ -168,18 +170,43 @@ cat(apply(summaryTable, 1:2, as.character) %>%
       kableExtra::scroll_box(width = "80%"))
     
 cat("\n")
-  summary <- "The summary statistics table summarizes QC metrics of the cell matrix. This table summarizes the mean and median of UMI counts and median of genes detected per cell, as well as the number and percentages of doublets and estimated ambient RNA scores per dataset."
+summary <- "The summary statistics table summarizes QC metrics of the cell matrix. This table summarizes the mean and median of UMI counts and median of genes detected per cell, as well as the number and percentages of doublets and estimated ambient RNA scores per dataset."
+cat(summary)
+cat("\n\n") 
+
+# cellranger
+if ("cellranger" %in% listSampleSummaryStatsTables(sce.qc)) {
+  cat(paste0('## cellranger {.tabset .tabset-fade} \n\n'))
+  crSummaryTable <- getSampleSummaryStatsTable(sce.qc, 'cellranger')
+  cat(apply(crSummaryTable, 1:2, as.character) %>% 
+    knitr::kable(format = "html") %>%
+      kableExtra::kable_styling() %>%
+      kableExtra::scroll_box(width = "80%"))
+  cat("\n")
+  summary <- "The summary statistics table summarizes QC metrics parsed from 'metrics_summary.csv' file if that's available within the cellranger count output folder. This table summarizes the number of cells detected, mean reads / genes per cell, total number of reads, sequencing saturation and other QC metrics of reads alignment"
   cat(summary)
   cat("\n\n") 
-#}
+}
+
+# starsolo
+if ("starsolo" %in% listSampleSummaryStatsTables(sce.qc)) {
+  cat(paste0('## starsolo {.tabset .tabset-fade} \n\n'))
+  strSummaryTable <- getSampleSummaryStatsTable(sce.qc, 'starsolo')
+  cat(apply(strSummaryTable, 1:2, as.character) %>% 
+    knitr::kable(format = "html") %>%
+      kableExtra::kable_styling() %>%
+      kableExtra::scroll_box(width = "80%"))
+  cat("\n")
+  summary <- "The summary statistics table summarizes QC metrics parsed from 'Summary.csv' file if that's available within the STARsolo output folder. This table summarizes the number of cells detected, mean reads / genes per cell, total number of reads, reads sequencinng quality, sequencing saturation and other QC metrics of reads alignment"
+  cat(summary)
+  cat("\n\n") 
+}
 cat("\n")
 ```
 
 
 ```{r, "General quality control metrics", results="asis", fig.align="center", warning=FALSE, message=FALSE, echo=FALSE}
 i="General quality control metrics"
-# cat(paste0('# ', i, ' \n'))
-# cat("\n")
 
 perCellData <- c("sum", "detected", "percent.top_50")
 skipCellData <- any(!perCellData %in% names(colData(sce.qc)))
@@ -290,12 +317,6 @@ cat(description_runPerCellQC$parameter)
 # Doublet Detection
 
 ```{r, "Doublet Summary", fig.width=15, fig.height=5, results="asis", fig.align="center", warning=FALSE, message=FALSE, echo = FALSE}
-i="Doublet Detection Summary"
-cat(paste0('## ', i, ' \n'))
-cat("## {.unlisted .unnumbered .toc-ignore .tabset .tabset-fade}")
-cat("\n")
-
-### get all doublet detection algorithms
 fontSize <- 15
 sampleUMAP =  plotSCEDimReduceColData(
     inSCE=sce.qc,
@@ -321,53 +342,61 @@ dbAlgo <- setNames(
   )
 
 dF <- grep("doubletFinder_doublet_label", names(colData(sce.qc)), value=TRUE)
-names(dF) <- paste(unlist(strsplit(dF, "_"))[-c(2,3,4)], collapse = "_")
-dbAlgo <- c(dbAlgo, dF)
-
-
-
-for (algo in dbAlgo) {
-  if (!algo %in% names(colData(sce.qc))) {
-    next
-  }
-  algoName <- names(dbAlgo)[dbAlgo == algo]
-  cat(paste0("### ", algoName, " {.tabset .tabset-fade} \n"))
-  cat("\n\n")
-
-  plotDoublet <- plotSCEDimReduceColData(
-      inSCE=sce.qc,
-      sample=NULL,
-      colorBy=algo,
-      conditionClass="factor",
-      colorScale = c("lightgray","red"),
-      # shape=shape,
-      reducedDimName=allSampleReducedDim,
-      axisSize = fontSize,
-      axisLabelSize = fontSize,
-      legendSize = fontSize,
-      titleSize = fontSize,
-      xlab=c("QC_UMAP_1"),
-      ylab=c("QC_UMAP_2"),
-      labelClusters=FALSE,
-      title=algoName,
-      legendTitle = "Doublet Call",
-      plotLabels = NULL,
-      combinePlot="none"
-    )
-
-  print(plot_grid(sampleUMAP, plotDoublet, ncol = 2))
-  cat("\n\n")
+if (length(dF) != 0) {
+  names(dF) <- paste(unlist(strsplit(dF, "_"))[-c(2,3,4)], collapse = "_")
+  dbAlgo <- c(dbAlgo, dF)
 }
+
+if (length(dbAlgo) != 0) {
+  i="Doublet Detection Summary"
+  cat(paste0('## ', i, ' \n'))
+  cat("## {.unlisted .unnumbered .toc-ignore .tabset .tabset-fade}")
+  cat("\n")
+  
+  for (algo in dbAlgo) {
+    if (!algo %in% names(colData(sce.qc))) {
+      next
+    }
+    algoName <- names(dbAlgo)[dbAlgo == algo]
+    cat(paste0("### ", algoName, " {.tabset .tabset-fade} \n"))
+    cat("\n\n")
+  
+    plotDoublet <- plotSCEDimReduceColData(
+        inSCE=sce.qc,
+        sample=NULL,
+        colorBy=algo,
+        conditionClass="factor",
+        colorScale = c("lightgray","red"),
+        # shape=shape,
+        reducedDimName=allSampleReducedDim,
+        axisSize = fontSize,
+        axisLabelSize = fontSize,
+        legendSize = fontSize,
+        titleSize = fontSize,
+        xlab=c("QC_UMAP_1"),
+        ylab=c("QC_UMAP_2"),
+        labelClusters=FALSE,
+        title=algoName,
+        legendTitle = "Doublet Call",
+        plotLabels = NULL,
+        combinePlot="none"
+      )
+  
+    print(plot_grid(sampleUMAP, plotDoublet, ncol = 2))
+    cat("\n\n")
+  }
+}
+
+
 ```
 
 
 ```{r, "Scrublet-description", include=FALSE, warning=FALSE, message=FALSE}
-description_Scrublet <- descriptionScrublet()
+description_Scrublet <- singleCellTK:::descriptionScrublet()
 ```
 
 ```{r, "Scrublet", results="asis", fig.align="center", warning=FALSE, message=FALSE, echo = FALSE}
 i="Scrublet"
-# cat(paste0('## ', i, ' \n'))
 
 scrubletData <- c("scrublet_score", "scrublet_call")
 skipScrublet <- any(!scrubletData %in% names(colData(sce.qc)))
@@ -447,13 +476,11 @@ cat("\n")
 
 
 ```{r, "DoubletFinder-description", include=FALSE, warning=FALSE, message=FALSE}
-description_DoubletFinder <- descriptionDoubletFinder()
+description_DoubletFinder <- singleCellTK:::descriptionDoubletFinder()
 ```
 
 ```{r, "DoubletFinder-0", results="asis", fig.align="center", warning=FALSE, message=FALSE, echo=FALSE}
 i="DoubletFinder"
-# cat(paste0('## ', i, ' \n'))
-
 
 doubletFinderData <- grep("doubletFinder_doublet", names(colData(sce.qc)), value=TRUE)
 skipFinder <- length(doubletFinderData)==0  
@@ -544,7 +571,7 @@ cat("\n")
 
 
 ```{r, "ScDblFinder-description", include=FALSE, warning=FALSE, message=FALSE}
-description_ScDblFinder<- descriptionScDblFinder()
+description_ScDblFinder<- singleCellTK:::descriptionScDblFinder()
 ```
 
 ```{r, "ScDblFinder", results="asis", fig.align="center", warning=FALSE, message=FALSE, echo=FALSE}
@@ -629,7 +656,7 @@ cat("\n")
 
 
 ```{r, "Cxds-description", include=FALSE, warning=FALSE, message=FALSE}
-descriprion_CxdsResults<- descriptionCXDS()
+descriprion_CxdsResults<- singleCellTK:::descriptionCXDS()
 ```
 
 ```{r, "Cxds", results="asis", fig.align="center", warning=FALSE, message=FALSE, echo=FALSE}
@@ -720,7 +747,7 @@ cat("\n")
 
 
 ```{r, "Bcds-description", include=FALSE, warning=FALSE, message=FALSE}
-descriprion_BcdsResults<- descriptionBCDS()
+descriprion_BcdsResults<- singleCellTK:::descriptionBCDS()
 ```
 
 ```{r, "Bcds", results="asis", fig.align="center", warning=FALSE, message=FALSE, echo=FALSE}
@@ -811,7 +838,7 @@ cat("\n")
 
 
 ```{r, "ScdsHybrid-description", include=FALSE, warning=FALSE, message=FALSE}
-description_ScdsHybrid<- descriptionScdsHybrid()
+description_ScdsHybrid<- singleCellTK:::descriptionScdsHybrid()
 ```
 
 
@@ -901,11 +928,6 @@ cat("\n")
 # Ambient RNA Detection
 
 ```{r, "AmbientRNA Summary", fig.width=15, fig.height=5, results="asis", fig.align="center", warning=FALSE, message=FALSE, echo = FALSE}
-i="Ambient RNA Detection Summary"
-cat(paste0('## ', i, ' \n'))
-cat("## {.unlisted .unnumbered .toc-ignore .tabset .tabset-fade}")
-cat("\n")
-
 ### get all doublet detection algorithms
 fontSize <- 15
 amBAlgo <- setNames(
@@ -913,41 +935,49 @@ amBAlgo <- setNames(
   c("decontX", "decontX with background")
   )
 
-for (algo in amBAlgo) {
-  if (!algo %in% names(colData(sce.qc))) {
-    next
+if (length(amBAlgo) != 0) {
+  i="Ambient RNA Detection Summary"
+  cat(paste0('## ', i, ' \n'))
+  cat("## {.unlisted .unnumbered .toc-ignore .tabset .tabset-fade}")
+  cat("\n")
+
+  for (algo in amBAlgo) {
+    if (!algo %in% names(colData(sce.qc))) {
+      next
+    }
+    algoName <- names(amBAlgo)[amBAlgo == algo]
+    cat(paste0("### ", algoName, " {.tabset .tabset-fade} \n"))
+    cat("\n\n")
+  
+    plotAmbient <- plotSCEDimReduceColData(
+        inSCE=sce.qc,
+        sample=NULL,
+        colorBy=algo,
+        conditionClass="numeric",
+        colorScale = c("lightgray","red"),
+        reducedDimName=allSampleReducedDim,
+        axisSize = fontSize,
+        axisLabelSize = fontSize,
+        legendSize = fontSize,
+        titleSize = fontSize,
+        xlab=c("QC_UMAP_1"),
+        ylab=c("QC_UMAP_2"),
+        labelClusters=FALSE,
+        title=algoName,
+        legendTitle = "Ambient \nContamination \nScore",
+        plotLabels = NULL,
+        combinePlot="none"
+      )
+  
+    print(plot_grid(sampleUMAP, plotAmbient, ncol = 2))
+    cat("\n\n")
   }
-  algoName <- names(amBAlgo)[amBAlgo == algo]
-  cat(paste0("### ", algoName, " {.tabset .tabset-fade} \n"))
-  cat("\n\n")
-
-  plotAmbient <- plotSCEDimReduceColData(
-      inSCE=sce.qc,
-      sample=NULL,
-      colorBy=algo,
-      conditionClass="numeric",
-      colorScale = c("lightgray","red"),
-      reducedDimName=allSampleReducedDim,
-      axisSize = fontSize,
-      axisLabelSize = fontSize,
-      legendSize = fontSize,
-      titleSize = fontSize,
-      xlab=c("QC_UMAP_1"),
-      ylab=c("QC_UMAP_2"),
-      labelClusters=FALSE,
-      title=algoName,
-      legendTitle = "Ambient \nContamination \nScore",
-      plotLabels = NULL,
-      combinePlot="none"
-    )
-
-  print(plot_grid(sampleUMAP, plotAmbient, ncol = 2))
-  cat("\n\n")
 }
+
 ```
 
 ```{r, "DecontX-description", include=FALSE, warning=FALSE, message=FALSE}
-description_DecontX<- descriptionDecontX()
+description_DecontX<- singleCellTK:::descriptionDecontX()
 ```
 
 ```{r, "DecontX", results="asis", fig.align="center", warning=FALSE, message=FALSE, echo=FALSE}
@@ -1118,7 +1148,7 @@ for (sample in samples){
 
 
 ```{r, "SoupX-description", include=FALSE, warning=FALSE, message=FALSE}
-description_SoupX<- descriptionSoupX()
+description_SoupX<- singleCellTK:::descriptionSoupX()
 ```
 
 ```{r, "SoupX", results="asis", fig.align="center", warning=FALSE, message=FALSE, echo=FALSE}
@@ -1185,11 +1215,11 @@ for (sample in samples){
   
   cat("#### Parameters {.tabset .tabset-fade} \n\n")
   if (length(samples) == 1) {
-    SoupXMeta <- getSoupX(sce.qc, soupXSample, background = TRUE)[[1]]$param
+    SoupXMeta <- getSoupX(sce.qc, soupXSample, background = FALSE)[[1]]$param
     SoupXMeta <- metaChecking(SoupXMeta, soupXSample)
     x <- preprocessMeta(SoupXMeta[[soupXSample]])
   } else {
-    SoupXMeta <- getSoupX(sce.qc, sample, background = TRUE)[[1]]$param
+    SoupXMeta <- getSoupX(sce.qc, sample, background = FALSE)[[1]]$param
     SoupXMeta <- metaChecking(SoupXMeta, sample)
     x <- preprocessMeta(SoupXMeta[[sample]])
   }
