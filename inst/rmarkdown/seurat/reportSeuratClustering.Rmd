@@ -1,0 +1,365 @@
+---
+title: "Clustering using Seurat"
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+params:
+  object: object
+output:
+  html_document:
+    number_sections: yes
+    toc: yes
+    code_folding: hide
+---
+## Clustering
+Clustering helps in the identification of inherent cell-types in the data in an unsupervised manner by discovering the natural clusters that may exist on the basis of the transcriptome. Seurat uses the principal components for its graph-based clustering approach where it iteratively groups cells with similar expression patterns together into highly interconnected communities.  
+
+The clustering results can then be visualized using non-linear dimensionality reduction techniques including tSNE and UMAP. The goal of these algorithms is essentially to understand the structure of the data in high-dimensional space in order to place similar cells together in low-dimensional space thus making visualizing clusters much more intuitive. Cells in the data within the graph-based clusters determined above should co-localize on these plots. 
+
+### Different resolutions {.tabset .tabset-fade}
+Seurat uses a *resolution parameter* that sets the granularity of the clustering, with increased values leading to a greater number of identified clusters. The choice of resolution is slightly subjective and often varies on the size of the input data. Typically, for larger datasets, the optimal resolution often increases. The different clustering results are provided below using a set of different resolutions (ranging from 0.3 to 1.5) which can be visualized using tSNE and UMAP plots below:
+
+#### tSNE {.tabset .tabset-pills -}
+
+##### RES 0.3 {-}
+```{r Seurat tSNE resolution as 0.3, eval = TRUE, warning = FALSE, message=FALSE}
+data <- seuratFindClusters(data, useReduction = "pca", resolution = 0.3, verbose = FALSE)
+data <- seuratRunUMAP(data, useReduction = "pca", dims = significant_PC)
+data <- seuratRunTSNE(data, useReduction = "pca", dims = significant_PC)
+
+p1 <- seuratReductionPlot(data, useReduction = "tsne", showLegend = TRUE)
+p2 <- seuratReductionPlot(data, useReduction = "umap", showLegend = TRUE)
+p1
+```
+
+> The data was clustered using the *`r significant_PC`* principal components previously computed using the community detection based *louvain* algorithm. Using this method, *13, 16, 17, 19, 20, 21* clusters were identified by using a resolution of *0.8, 0.9, 1.0, 1.1* respectively. 
+
+##### RES 0.4 {-}
+```{r Seurat tSNE resolution as 0.4, eval = TRUE, warning = FALSE, message=FALSE}
+data <- seuratFindClusters(data, useReduction = "pca", resolution = 0.4, verbose = FALSE)
+data <- seuratRunUMAP(data, useReduction = "pca", dims = significant_PC)
+data <- seuratRunTSNE(data, useReduction = "pca", dims = significant_PC)
+
+p1 <- seuratReductionPlot(data, useReduction = "tsne", showLegend = TRUE)
+p2 <- seuratReductionPlot(data, useReduction = "umap", showLegend = TRUE)
+p1
+```
+
+> The data was clustered using the *`r significant_PC`* principal components previously computed using the community detection based *louvain* algorithm. Using this method, *13, 16, 17, 19, 20, 21* clusters were identified by using a resolution of *0.8, 0.9, 1.0, 1.1* respectively. 
+
+##### RES 0.5 {-}
+```{r Seurat tSNE resolution as 0.5, eval = TRUE, warning = FALSE, message=FALSE}
+data <- seuratFindClusters(data, useReduction = "pca", resolution = 0.5, verbose = FALSE)
+data <- seuratRunUMAP(data, useReduction = "pca", dims = significant_PC)
+data <- seuratRunTSNE(data, useReduction = "pca", dims = significant_PC)
+
+p1 <- seuratReductionPlot(data, useReduction = "tsne", showLegend = TRUE)
+p2 <- seuratReductionPlot(data, useReduction = "umap", showLegend = TRUE)
+p1
+```
+
+> The data was clustered using the *`r significant_PC`* principal components previously computed using the community detection based *louvain* algorithm. Using this method, *13, 16, 17, 19, 20, 21* clusters were identified by using a resolution of *0.8, 0.9, 1.0, 1.1* respectively. 
+
+##### RES 0.6 {-}
+```{r Seurat tSNE resolution as 0.6, eval = TRUE, warning = FALSE, message=FALSE}
+data <- seuratFindClusters(data, useReduction = "pca", resolution = 0.6, verbose = FALSE)
+data <- seuratRunUMAP(data, useReduction = "pca", dims = significant_PC)
+data <- seuratRunTSNE(data, useReduction = "pca", dims = significant_PC)
+
+p1 <- seuratReductionPlot(data, useReduction = "tsne", showLegend = TRUE)
+p2 <- seuratReductionPlot(data, useReduction = "umap", showLegend = TRUE)
+p1
+```
+
+> The data was clustered using the *`r significant_PC`* principal components previously computed using the community detection based *louvain* algorithm. Using this method, *13, 16, 17, 19, 20, 21* clusters were identified by using a resolution of *0.8, 0.9, 1.0, 1.1* respectively. 
+
+##### RES 0.7 {-}
+```{r Seurat tSNE resolution as 0.7, eval = TRUE, warning = FALSE, message=FALSE}
+data <- seuratFindClusters(data, useReduction = "pca", resolution = 0.7, verbose = FALSE)
+data <- seuratRunUMAP(data, useReduction = "pca", dims = significant_PC)
+data <- seuratRunTSNE(data, useReduction = "pca", dims = significant_PC)
+
+p1 <- seuratReductionPlot(data, useReduction = "tsne", showLegend = TRUE)
+p2 <- seuratReductionPlot(data, useReduction = "umap", showLegend = TRUE)
+p1
+```
+
+> The data was clustered using the *`r significant_PC`* principal components previously computed using the community detection based *louvain* algorithm. Using this method, *13, 16, 17, 19, 20, 21* clusters were identified by using a resolution of *0.8, 0.9, 1.0, 1.1* respectively. 
+
+##### RES 0.8 {-}
+```{r Seurat tSNE resolution as 0.8, eval = TRUE, warning = FALSE, message=FALSE}
+data <- seuratFindClusters(data, useReduction = "pca", resolution = 0.8, verbose = FALSE)
+data <- seuratRunUMAP(data, useReduction = "pca", dims = significant_PC)
+data <- seuratRunTSNE(data, useReduction = "pca", dims = significant_PC)
+
+p1 <- seuratReductionPlot(data, useReduction = "tsne", showLegend = TRUE)
+p2 <- seuratReductionPlot(data, useReduction = "umap", showLegend = TRUE)
+p1
+```
+
+> The data was clustered using the *`r significant_PC`* principal components previously computed using the community detection based *louvain* algorithm. Using this method, *13, 16, 17, 19, 20, 21* clusters were identified by using a resolution of *0.8, 0.9, 1.0, 1.1* respectively. 
+
+##### RES 0.9 {-}
+```{r Seurat tSNE resolution as 0.9, eval = TRUE, warning = FALSE, message=FALSE}
+data <- seuratFindClusters(data, useReduction = "pca", resolution = 0.9, verbose = FALSE)
+data <- seuratRunUMAP(data, useReduction = "pca", dims = significant_PC)
+data <- seuratRunTSNE(data, useReduction = "pca", dims = significant_PC)
+
+p1 <- seuratReductionPlot(data, useReduction = "tsne", showLegend = TRUE)
+p2 <- seuratReductionPlot(data, useReduction = "umap", showLegend = TRUE)
+p1
+```
+
+> The data was clustered using the *`r significant_PC`* principal components previously computed using the community detection based *louvain* algorithm. Using this method, *13, 16, 17, 19, 20, 21* clusters were identified by using a resolution of *0.8, 0.9, 1.0, 1.1* respectively. 
+
+##### RES 1.0 {-}
+```{r Seurat tSNE resolution as 1.0, eval = TRUE, warning = FALSE, message=FALSE}
+data <- seuratFindClusters(data, useReduction = "pca", resolution = 1.0, verbose = FALSE)
+data <- seuratRunUMAP(data, useReduction = "pca", dims = significant_PC)
+data <- seuratRunTSNE(data, useReduction = "pca", dims = significant_PC)
+
+p1 <- seuratReductionPlot(data, useReduction = "tsne", showLegend = TRUE)
+p2 <- seuratReductionPlot(data, useReduction = "umap", showLegend = TRUE)
+p1
+```
+
+> The data was clustered using the *`r significant_PC`* principal components previously computed using the community detection based *louvain* algorithm. Using this method, *13, 16, 17, 19, 20, 21* clusters were identified by using a resolution of *0.8, 0.9, 1.0, 1.1* respectively. 
+
+##### RES 1.1 {-}
+```{r Seurat tSNE resolution as 1.1, eval = TRUE, warning = FALSE, message=FALSE}
+data <- seuratFindClusters(data, useReduction = "pca", resolution = 1.1, verbose = FALSE)
+data <- seuratRunUMAP(data, useReduction = "pca", dims = significant_PC)
+data <- seuratRunTSNE(data, useReduction = "pca", dims = significant_PC)
+
+p1 <- seuratReductionPlot(data, useReduction = "tsne", showLegend = TRUE)
+p2 <- seuratReductionPlot(data, useReduction = "umap", showLegend = TRUE)
+p1
+```
+
+> The data was clustered using the *`r significant_PC`* principal components previously computed using the community detection based *louvain* algorithm. Using this method, *13, 16, 17, 19, 20, 21* clusters were identified by using a resolution of *0.8, 0.9, 1.0, 1.1* respectively. 
+
+##### RES 1.2 {-}
+```{r Seurat tSNE resolution as 1.2, eval = TRUE, warning = FALSE, message=FALSE}
+data <- seuratFindClusters(data, useReduction = "pca", resolution = 1.2, verbose = FALSE)
+data <- seuratRunUMAP(data, useReduction = "pca", dims = significant_PC)
+data <- seuratRunTSNE(data, useReduction = "pca", dims = significant_PC)
+
+p1 <- seuratReductionPlot(data, useReduction = "tsne", showLegend = TRUE)
+p2 <- seuratReductionPlot(data, useReduction = "umap", showLegend = TRUE)
+p1
+```
+
+> The data was clustered using the *`r significant_PC`* principal components previously computed using the community detection based *louvain* algorithm. Using this method, *13, 16, 17, 19, 20, 21* clusters were identified by using a resolution of *0.8, 0.9, 1.0, 1.1* respectively. 
+
+##### RES 1.3 {-}
+```{r Seurat tSNE resolution as 1.3, eval = TRUE, warning = FALSE, message=FALSE}
+data <- seuratFindClusters(data, useReduction = "pca", resolution = 1.3, verbose = FALSE)
+data <- seuratRunUMAP(data, useReduction = "pca", dims = significant_PC)
+data <- seuratRunTSNE(data, useReduction = "pca", dims = significant_PC)
+
+p1 <- seuratReductionPlot(data, useReduction = "tsne", showLegend = TRUE)
+p2 <- seuratReductionPlot(data, useReduction = "umap", showLegend = TRUE)
+p1
+```
+
+> The data was clustered using the *`r significant_PC`* principal components previously computed using the community detection based *louvain* algorithm. Using this method, *13, 16, 17, 19, 20, 21* clusters were identified by using a resolution of *0.8, 0.9, 1.0, 1.1* respectively. 
+
+##### RES 1.4 {-}
+```{r Seurat tSNE resolution as 1.4, eval = TRUE, warning = FALSE, message=FALSE}
+data <- seuratFindClusters(data, useReduction = "pca", resolution = 1.4, verbose = FALSE)
+data <- seuratRunUMAP(data, useReduction = "pca", dims = significant_PC)
+data <- seuratRunTSNE(data, useReduction = "pca", dims = significant_PC)
+
+p1 <- seuratReductionPlot(data, useReduction = "tsne", showLegend = TRUE)
+p2 <- seuratReductionPlot(data, useReduction = "umap", showLegend = TRUE)
+p1
+```
+
+> The data was clustered using the *`r significant_PC`* principal components previously computed using the community detection based *louvain* algorithm. Using this method, *13, 16, 17, 19, 20, 21* clusters were identified by using a resolution of *0.8, 0.9, 1.0, 1.1* respectively. 
+
+##### RES 1.5 {-}
+```{r Seurat tSNE resolution as 1.5, eval = TRUE, warning = FALSE, message=FALSE}
+data <- seuratFindClusters(data, useReduction = "pca", resolution = 1.5, verbose = FALSE)
+data <- seuratRunUMAP(data, useReduction = "pca", dims = significant_PC)
+data <- seuratRunTSNE(data, useReduction = "pca", dims = significant_PC)
+
+p1 <- seuratReductionPlot(data, useReduction = "tsne", showLegend = TRUE)
+p2 <- seuratReductionPlot(data, useReduction = "umap", showLegend = TRUE)
+p1
+```
+
+> The data was clustered using the *`r significant_PC`* principal components previously computed using the community detection based *louvain* algorithm. Using this method, *13, 16, 17, 19, 20, 21* clusters were identified by using a resolution of *0.8, 0.9, 1.0, 1.1* respectively. 
+
+#### UMAP {.tabset .tabset-pills -}
+UMAP can also be used for visualizing high-dimensional non-linear datasets and particularly it has an advantage of preserving the global structure of the data. 
+
+##### RES 0.3 {-}
+```{r Seurat UMAP resolution as 0.3, eval = TRUE, warning = FALSE, message=FALSE}
+data <- seuratFindClusters(data, useReduction = "pca", resolution = 0.3, verbose = FALSE)
+data <- seuratRunUMAP(data, useReduction = "pca", dims = significant_PC)
+data <- seuratRunTSNE(data, useReduction = "pca", dims = significant_PC)
+
+p1 <- seuratReductionPlot(data, useReduction = "tsne", showLegend = TRUE)
+p2 <- seuratReductionPlot(data, useReduction = "umap", showLegend = TRUE)
+p2
+```
+
+> The data was clustered using the *`r significant_PC`* principal components previously computed using the community detection based *louvain* algorithm. Using this method, *13, 16, 17, 19, 20, 21* clusters were identified by using a resolution of *0.8, 0.9, 1.0, 1.1* respectively. 
+
+##### RES 0.4 {-}
+```{r Seurat UMAP resolution as 0.4, eval = TRUE, warning = FALSE, message=FALSE}
+data <- seuratFindClusters(data, useReduction = "pca", resolution = 0.4, verbose = FALSE)
+data <- seuratRunUMAP(data, useReduction = "pca", dims = significant_PC)
+data <- seuratRunTSNE(data, useReduction = "pca", dims = significant_PC)
+
+p1 <- seuratReductionPlot(data, useReduction = "tsne", showLegend = TRUE)
+p2 <- seuratReductionPlot(data, useReduction = "umap", showLegend = TRUE)
+p2
+```
+
+> The data was clustered using the *`r significant_PC`* principal components previously computed using the community detection based *louvain* algorithm. Using this method, *13, 16, 17, 19, 20, 21* clusters were identified by using a resolution of *0.8, 0.9, 1.0, 1.1* respectively. 
+
+##### RES 0.5 {-}
+```{r Seurat UMAP resolution as 0.5, eval = TRUE, warning = FALSE, message=FALSE}
+data <- seuratFindClusters(data, useReduction = "pca", resolution = 0.5, verbose = FALSE)
+data <- seuratRunUMAP(data, useReduction = "pca", dims = significant_PC)
+data <- seuratRunTSNE(data, useReduction = "pca", dims = significant_PC)
+
+p1 <- seuratReductionPlot(data, useReduction = "tsne", showLegend = TRUE)
+p2 <- seuratReductionPlot(data, useReduction = "umap", showLegend = TRUE)
+p2
+```
+
+> The data was clustered using the *`r significant_PC`* principal components previously computed using the community detection based *louvain* algorithm. Using this method, *13, 16, 17, 19, 20, 21* clusters were identified by using a resolution of *0.8, 0.9, 1.0, 1.1* respectively. 
+
+##### RES 0.6 {-}
+```{r Seurat UMAP resolution as 0.6, eval = TRUE, warning = FALSE, message=FALSE}
+data <- seuratFindClusters(data, useReduction = "pca", resolution = 0.6, verbose = FALSE)
+data <- seuratRunUMAP(data, useReduction = "pca", dims = significant_PC)
+data <- seuratRunTSNE(data, useReduction = "pca", dims = significant_PC)
+
+p1 <- seuratReductionPlot(data, useReduction = "tsne", showLegend = TRUE)
+p2 <- seuratReductionPlot(data, useReduction = "umap", showLegend = TRUE)
+p2
+```
+
+> The data was clustered using the *`r significant_PC`* principal components previously computed using the community detection based *louvain* algorithm. Using this method, *13, 16, 17, 19, 20, 21* clusters were identified by using a resolution of *0.8, 0.9, 1.0, 1.1* respectively. 
+
+##### RES 0.7 {-}
+```{r Seurat UMAP resolution as 0.7, eval = TRUE, warning = FALSE, message=FALSE}
+data <- seuratFindClusters(data, useReduction = "pca", resolution = 0.7, verbose = FALSE)
+data <- seuratRunUMAP(data, useReduction = "pca", dims = significant_PC)
+data <- seuratRunTSNE(data, useReduction = "pca", dims = significant_PC)
+
+p1 <- seuratReductionPlot(data, useReduction = "tsne", showLegend = TRUE)
+p2 <- seuratReductionPlot(data, useReduction = "umap", showLegend = TRUE)
+p2
+```
+
+> The data was clustered using the *`r significant_PC`* principal components previously computed using the community detection based *louvain* algorithm. Using this method, *13, 16, 17, 19, 20, 21* clusters were identified by using a resolution of *0.8, 0.9, 1.0, 1.1* respectively. 
+
+##### RES 0.8 {-}
+```{r Seurat UMAP resolution as 0.8, eval = TRUE, warning = FALSE, message=FALSE}
+data <- seuratFindClusters(data, useReduction = "pca", resolution = 0.8, verbose = FALSE)
+data <- seuratRunUMAP(data, useReduction = "pca", dims = significant_PC)
+data <- seuratRunTSNE(data, useReduction = "pca", dims = significant_PC)
+
+p1 <- seuratReductionPlot(data, useReduction = "tsne", showLegend = TRUE)
+p2 <- seuratReductionPlot(data, useReduction = "umap", showLegend = TRUE)
+p2
+```
+
+> The data was clustered using the *`r significant_PC`* principal components previously computed using the community detection based *louvain* algorithm. Using this method, *13, 16, 17, 19, 20, 21* clusters were identified by using a resolution of *0.8, 0.9, 1.0, 1.1* respectively. 
+
+##### RES 0.9 {-}
+```{r Seurat UMAP resolution as 0.9, eval = TRUE, warning = FALSE, message=FALSE}
+data <- seuratFindClusters(data, useReduction = "pca", resolution = 0.9, verbose = FALSE)
+data <- seuratRunUMAP(data, useReduction = "pca", dims = significant_PC)
+data <- seuratRunTSNE(data, useReduction = "pca", dims = significant_PC)
+
+p1 <- seuratReductionPlot(data, useReduction = "tsne", showLegend = TRUE)
+p2 <- seuratReductionPlot(data, useReduction = "umap", showLegend = TRUE)
+p2
+```
+
+> The data was clustered using the *`r significant_PC`* principal components previously computed using the community detection based *louvain* algorithm. Using this method, *13, 16, 17, 19, 20, 21* clusters were identified by using a resolution of *0.8, 0.9, 1.0, 1.1* respectively. 
+
+##### RES 1.0 {-}
+```{r Seurat UMAP resolution as 1.0, eval = TRUE, warning = FALSE, message=FALSE}
+data <- seuratFindClusters(data, useReduction = "pca", resolution = 1.0, verbose = FALSE)
+data <- seuratRunUMAP(data, useReduction = "pca", dims = significant_PC)
+data <- seuratRunTSNE(data, useReduction = "pca", dims = significant_PC)
+
+p1 <- seuratReductionPlot(data, useReduction = "tsne", showLegend = TRUE)
+p2 <- seuratReductionPlot(data, useReduction = "umap", showLegend = TRUE)
+p2
+```
+
+> The data was clustered using the *`r significant_PC`* principal components previously computed using the community detection based *louvain* algorithm. Using this method, *13, 16, 17, 19, 20, 21* clusters were identified by using a resolution of *0.8, 0.9, 1.0, 1.1* respectively. 
+
+##### RES 1.1 {-}
+```{r Seurat UMAP resolution as 1.1, eval = TRUE, warning = FALSE, message=FALSE}
+data <- seuratFindClusters(data, useReduction = "pca", resolution = 1.1, verbose = FALSE)
+data <- seuratRunUMAP(data, useReduction = "pca", dims = significant_PC)
+data <- seuratRunTSNE(data, useReduction = "pca", dims = significant_PC)
+
+p1 <- seuratReductionPlot(data, useReduction = "tsne", showLegend = TRUE)
+p2 <- seuratReductionPlot(data, useReduction = "umap", showLegend = TRUE)
+p2
+```
+
+> The data was clustered using the *`r significant_PC`* principal components previously computed using the community detection based *louvain* algorithm. Using this method, *13, 16, 17, 19, 20, 21* clusters were identified by using a resolution of *0.8, 0.9, 1.0, 1.1* respectively. 
+
+##### RES 1.2 {-}
+```{r Seurat UMAP resolution as 1.2, eval = TRUE, warning = FALSE, message=FALSE}
+data <- seuratFindClusters(data, useReduction = "pca", resolution = 1.2, verbose = FALSE)
+data <- seuratRunUMAP(data, useReduction = "pca", dims = significant_PC)
+data <- seuratRunTSNE(data, useReduction = "pca", dims = significant_PC)
+
+p1 <- seuratReductionPlot(data, useReduction = "tsne", showLegend = TRUE)
+p2 <- seuratReductionPlot(data, useReduction = "umap", showLegend = TRUE)
+p2
+```
+
+> The data was clustered using the *`r significant_PC`* principal components previously computed using the community detection based *louvain* algorithm. Using this method, *13, 16, 17, 19, 20, 21* clusters were identified by using a resolution of *0.8, 0.9, 1.0, 1.1* respectively. 
+
+##### RES 1.3 {-}
+```{r Seurat UMAP resolution as 1.3, eval = TRUE, warning = FALSE, message=FALSE}
+data <- seuratFindClusters(data, useReduction = "pca", resolution = 1.3, verbose = FALSE)
+data <- seuratRunUMAP(data, useReduction = "pca", dims = significant_PC)
+data <- seuratRunTSNE(data, useReduction = "pca", dims = significant_PC)
+
+p1 <- seuratReductionPlot(data, useReduction = "tsne", showLegend = TRUE)
+p2 <- seuratReductionPlot(data, useReduction = "umap", showLegend = TRUE)
+p2
+```
+
+> The data was clustered using the *`r significant_PC`* principal components previously computed using the community detection based *louvain* algorithm. Using this method, *13, 16, 17, 19, 20, 21* clusters were identified by using a resolution of *0.8, 0.9, 1.0, 1.1* respectively. 
+
+##### RES 1.4 {-}
+```{r Seurat UMAP resolution as 1.4, eval = TRUE, warning = FALSE, message=FALSE}
+data <- seuratFindClusters(data, useReduction = "pca", resolution = 1.4, verbose = FALSE)
+data <- seuratRunUMAP(data, useReduction = "pca", dims = significant_PC)
+data <- seuratRunTSNE(data, useReduction = "pca", dims = significant_PC)
+
+p1 <- seuratReductionPlot(data, useReduction = "tsne", showLegend = TRUE)
+p2 <- seuratReductionPlot(data, useReduction = "umap", showLegend = TRUE)
+p2
+```
+
+> The data was clustered using the *`r significant_PC`* principal components previously computed using the community detection based *louvain* algorithm. Using this method, *13, 16, 17, 19, 20, 21* clusters were identified by using a resolution of *0.8, 0.9, 1.0, 1.1* respectively. 
+
+##### RES 1.5 {-}
+```{r Seurat UMAP resolution as 1.5, eval = TRUE, warning = FALSE, message=FALSE}
+data <- seuratFindClusters(data, useReduction = "pca", resolution = 1.5, verbose = FALSE)
+data <- seuratRunUMAP(data, useReduction = "pca", dims = significant_PC)
+data <- seuratRunTSNE(data, useReduction = "pca", dims = significant_PC)
+
+p1 <- seuratReductionPlot(data, useReduction = "tsne", showLegend = TRUE)
+p2 <- seuratReductionPlot(data, useReduction = "umap", showLegend = TRUE)
+p2
+```
+
+> The data was clustered using the *`r significant_PC`* principal components previously computed using the community detection based *louvain* algorithm. Using this method, *13, 16, 17, 19, 20, 21* clusters were identified by using a resolution of *0.8, 0.9, 1.0, 1.1* respectively. 
+
+```{r}
+numClusters <- length(unique(colData(data)[[paste0("Seurat_louvain_Resolution", seurat.selected.resolution)]]))
+```

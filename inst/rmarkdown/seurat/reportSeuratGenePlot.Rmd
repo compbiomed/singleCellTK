@@ -1,0 +1,11 @@
+---
+title: "Gene Plot using Seurat"
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+params:
+  object: object
+output:
+  html_document:
+    number_sections: yes
+    toc: yes
+    code_folding: hide
+---
