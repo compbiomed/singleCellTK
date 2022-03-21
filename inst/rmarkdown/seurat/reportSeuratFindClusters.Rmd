@@ -9,3 +9,12 @@ output:
     toc: yes
     code_folding: hide
 ---
+```{r Seurat Clustering, echo = TRUE, warning = FALSE}
+data <- seuratFindClusters(data, useReduction = "pca", resolution = seurat.selected.resolution, verbose = FALSE)
+```
+```{r, include=FALSE}
+clusterParams <- list(
+  resolution = seurat.selected.resolution
+)
+metadata(data)$seurat$sctk$report$clusterParams <- clusterParams
+```

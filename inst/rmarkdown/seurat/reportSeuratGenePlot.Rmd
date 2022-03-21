@@ -9,3 +9,49 @@ output:
     toc: yes
     code_folding: hide
 ---
+
+## Pre-Selected Markers {.tabset .tabset-fade}
+To examine if the user-specified gene markers confine to specific clusters, expression level of each of these marker genes are highlighted over the UMAP plot. High expression of these marker genes in specific clusters can help in the identification of particular cell-types represented by these marker genes. The following user-specified marker genes (*`r Pre_selected_markers`*) are visualized below:
+
+```{r Seurat Custom markers, echo=TRUE, results = "asis", fig.height = 10, fig.width = 10}
+markerGenes <- Pre_selected_markers
+numMarkerGenes <- length(markerGenes)
+
+template <- "### %s {.tabset .tabset-pills -}
+"
+template_inside <- "#### %s {-}
+"
+space <- "
+
+"
+
+if (numMarkerGenes > 0){
+  cat(sprintf(template, paste0("All sample")))
+  plots <- seuratGenePlot(data, features = markerGenes, cols = c("grey", "blue"), plotType = "feature", groupVariable = group, ncol = 1)
+  plots <- singleCellTK:::.ggSCTKTheme(patchwork::wrap_plots(plots, ncol = 2))
+  print(plots)
+  cat(space)
+  cat(sprintf(template, paste0("Split by sample")))
+    plots <- seuratGenePlot(data, features = markerGenes, plotType = "feature", cols = c("grey", "blue"), groupVariable = group, splitBy = group, ncol = 1)
+    start <- 1
+    end <- numMarkerGenes
+    markerGenesPreSelected <- rep(markerGenes, length(unique(colData(data)[[group]])))
+    for(i in 1:length(unique(colData(data)[[group]]))){
+      cat(space)
+      cat(sprintf(template_inside, paste0(unique(colData(data)[[group]])[i])))
+      cat(space)
+      for(j in start:end){
+        plots[[j]] <- plots[[j]] + ggtitle(markerGenesPreSelected[j])
+      }
+      p <- singleCellTK:::.ggSCTKTheme(patchwork::wrap_plots(plots[start:end], ncol = 2))
+      print(p)
+      start <- start + numMarkerGenes
+      end <- end + numMarkerGenes
+    }
+      
+  cat(space)
+  cat(space)
+}
+cat(space)
+cat(space)
+```

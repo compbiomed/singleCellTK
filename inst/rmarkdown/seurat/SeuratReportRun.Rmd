@@ -106,3 +106,8 @@ cat(resScaleData, sep = '\n')
 cat(resDimRed, sep = '\n')
 cat(resClustering, sep = '\n')
 ```
+
+<!-- Save Data File -->
+```{r}
+saveRDS(data, "data.rds")
+```

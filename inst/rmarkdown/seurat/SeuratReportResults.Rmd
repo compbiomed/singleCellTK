@@ -16,6 +16,8 @@ params:
   showSession: TRUE
   pdf: TRUE
   jackStraw: FALSE
+  data: !r NULL
+  sigPC: 10
 output:
   html_document:
     toc: yes
@@ -55,11 +57,12 @@ Pre_selected_markers <- params$selected.markers
 seurat.selected.resolution <- as.numeric(params$clustering.resolution)
 seurat.selected.features.numbers <- as.numeric(params$variable.features)
 initial.PC.numbers <- as.numeric(params$pc.count)
-data <- params$sce
 sampleNames <- unique(colData(data)[[group]])
 outputPath <- params$outputPath
 showSession <- params$showSession
 pdf <- params$pdf
+data <- params$data
+significant_PC <- params$sigPC
 
 numCells <- ncol(data)
 numFeatures <- nrow(data)
@@ -79,56 +82,27 @@ opts_chunk$set(
 )
 ```
 
-<!-- Compute -->
-```{r, echo=FALSE, results='asis', warning=FALSE, message=FALSE}
-resNormalization <- knitr::knit_child('reportSeuratNormalizeData.Rmd', quiet = TRUE)
-resFeatureSelection <- knitr::knit_child('reportSeuratFeatureSelection.Rmd', quiet = TRUE)
-resScaleData <- knitr::knit_child('reportSeuratScaleData.Rmd', quiet = TRUE)
-resDimRed <- knitr::knit_child('reportSeuratDimRed.Rmd', quiet = TRUE)
-resClustering <- knitr::knit_child('reportSeuratClustering.Rmd', quiet = TRUE)
-```
-
-# Summary {-}
-<!-- Summary -->
-<!-- some variables still need to be included, e.g. from deg -->
-> The input data included *`r numFeatures`* features and *`r numCells`* cells from *`r numSamples`* samples divided through the group *`r group`* namely *`r sampleNames`*. The *`r assayNames(data)[1]`* feature count matrix from the data was normalized using *LogNormalize* method which normalized as well as log-transformed the data. From *`r numFeatures`* total features, a subset of *`r seurat.selected.features.numbers`* features that exhibited high cell-to-cell variation were selected for the downstream analysis to better capture the biological variation using *vst* (mean-to-variance) feature selection method. This subset of features was then scaled (z-score) using *linear model* method and trimmed to a maximum and minimum value of *10* and *-10* respectively. PCA was run on this scaled subset of features and *`r initial.PC.numbers`* components were computed from which top *`r significant_PC`* significant components were selected for subsequent clustering analysis. Using the *louvain* algorithm that uses community-based detection to identify clusters with resolution set to *`r seurat.selected.resolution`*, clustering was performed on the scaled subset of features that identified *`r numClusters`* clusters in the data. These clusters were then used to run differential expression using *wilcox* test and identified *`r 2665`* genes differentially expressed between clusters at significance criteria of *q-value < 0.05*. The gene markers that defined the main biological group *`r group`* were identified using *wilcox* test that highlighted *2651* marker genes at *q-value < 0.05* significance criteria. Additionatlly, markers *`r Pre_selected_markers`* from the input pre-selected markers *`r Pre_selected_markers`* were detected and visualized over UMAP plot.
-
-# Seurat Run
-
-## Introduction
-[Seurat](https://satijalab.org/seurat/) is a popular R package designed for the analysis of single-cell genomics data and offers a multitude of methods for processing and visualization. The singleCellTK package integrates these methods in an intuitive user-interface and all of which are also accessible through console-based wrapper functions. This comprehensive report summarizes the Seurat workflow for the input data by running all of the steps from the proposed pipeline including Normalization, Feature Selection, Scaling, Dimensionality Reduction, Clustering and Differential Expression, along with all of the supporting visualizations. A summary of the input data and results computed from this data is described below:
-
-<!-- Populate RMD with Results -->
-```{r, echo=FALSE, results='asis', warning=FALSE, message=FALSE}
-cat(resNormalization, sep = '\n')
-cat(resFeatureSelection, sep = '\n')
-cat(resScaleData, sep = '\n')
-cat(resDimRed, sep = '\n')
-cat(resClustering, sep = '\n')
-```
 
 # Seurat Results
 
 ## Selected Resolution {.tabset .tabset-fade}
 A final resolution of **`r seurat.selected.resolution`** was selected for downstream clustering that better reflects the input data.
 
-```{r Seurat Clustering, echo = TRUE, warning = FALSE}
-data <- seuratFindClusters(data, useReduction = "pca", resolution = seurat.selected.resolution, verbose = FALSE)
-```
-```{r, include=FALSE}
-clusterParams <- list(
-  resolution = seurat.selected.resolution
-)
-metadata(data)$seurat$sctk$report$clusterParams <- clusterParams
+<!-- Compute -->
+```{r, echo=FALSE, results='asis', warning=FALSE, message=FALSE}
+resClusteringSelectedResolution <- knitr::knit_child('reportSeuratFindClusters.Rmd', quiet = TRUE)
+cat(resClusteringSelectedResolution, sep = '\n')
 ```
 
 ### tSNE {.tabset .tabset-pills -}
 tSNE (Non-linear Dimensional Reduction) is a dimensionality reduction technique that places cells with similar local neighborhoods in high-dimensional space together in low-dimensional space. Using default parameters, a final resolution of **`r seurat.selected.resolution`** and **`r significant_PC`** principal components were chosen to better reflect the data, visualized in the tSNE plot below:
 
-```{r Seurat selected tsne}
-data <- seuratRunTSNE(data, useReduction = "pca", dims = significant_PC)
+<!-- Compute -->
+```{r, echo=FALSE, results='asis', warning=FALSE, message=FALSE}
+dr <- "tsne"
+resTSNE <- knitr::knit_child('reportSeuratUT.Rmd', quiet = TRUE)
+cat(resTSNE, sep = '\n')
 ```
-
 #### Clusters {-}
 Seurat clusters cells and assigned a cluster label to each cell. The following plot is the tSNE representation of the clustering results, colored by the cluster labels.
 
@@ -293,50 +267,10 @@ for (i in 1:length(selected_phenotypes)){
 
 > The data was clustered using the *`r significant_PC`* principal components previously computed using the community detection based *louvain* algorithm. Using this method, *13* clusters were identified by using a resolution of *0.8*. 
 
-## Pre-Selected Markers {.tabset .tabset-fade}
-To examine if the user-specified gene markers confine to specific clusters, expression level of each of these marker genes are highlighted over the UMAP plot. High expression of these marker genes in specific clusters can help in the identification of particular cell-types represented by these marker genes. The following user-specified marker genes (*`r Pre_selected_markers`*) are visualized below:
-
-```{r Seurat Custom markers, echo=TRUE, results = "asis", fig.height = 10, fig.width = 10}
-markerGenes <- Pre_selected_markers
-numMarkerGenes <- length(markerGenes)
-
-template <- "### %s {.tabset .tabset-pills -}
-"
-template_inside <- "#### %s {-}
-"
-space <- "
-
-"
-
-if (numMarkerGenes > 0){
-  cat(sprintf(template, paste0("All sample")))
-  plots <- seuratGenePlot(data, features = markerGenes, cols = c("grey", "blue"), plotType = "feature", groupVariable = group, ncol = 1)
-  plots <- singleCellTK:::.ggSCTKTheme(patchwork::wrap_plots(plots, ncol = 2))
-  print(plots)
-  cat(space)
-  cat(sprintf(template, paste0("Split by sample")))
-    plots <- seuratGenePlot(data, features = markerGenes, plotType = "feature", cols = c("grey", "blue"), groupVariable = group, splitBy = group, ncol = 1)
-    start <- 1
-    end <- numMarkerGenes
-    markerGenesPreSelected <- rep(markerGenes, length(unique(colData(data)[[group]])))
-    for(i in 1:length(unique(colData(data)[[group]]))){
-      cat(space)
-      cat(sprintf(template_inside, paste0(unique(colData(data)[[group]])[i])))
-      cat(space)
-      for(j in start:end){
-        plots[[j]] <- plots[[j]] + ggtitle(markerGenesPreSelected[j])
-      }
-      p <- singleCellTK:::.ggSCTKTheme(patchwork::wrap_plots(plots[start:end], ncol = 2))
-      print(p)
-      start <- start + numMarkerGenes
-      end <- end + numMarkerGenes
-    }
-      
-  cat(space)
-  cat(space)
-}
-cat(space)
-cat(space)
+<!-- Pre-selected Markers -->
+```{r, echo=FALSE, results='asis', warning=FALSE, message=FALSE}
+res <- knitr::knit_child('reportSeuratGenePlot.Rmd', quiet = TRUE)
+cat(res, sep = '\n')
 ```
 
 <!-- Marker Selection (Clusters) -->

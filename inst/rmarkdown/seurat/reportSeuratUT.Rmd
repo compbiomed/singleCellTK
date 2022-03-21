@@ -13,6 +13,6 @@ output:
 if(dr == "umap"){
   data <- seuratRunUMAP(data, useReduction = "pca", dims = significant_PC, verbose = FALSE)
 }else{
-  
+  data <- seuratRunTSNE(data, useReduction = "pca", dims = significant_PC)
 }
 ```

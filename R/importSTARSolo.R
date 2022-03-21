@@ -207,8 +207,12 @@ importSTARsolo <- function(
     }
   }
   
-  # Merge cell ranger metrics_summary csv files from all/multiple samples into a single data.frame
-  metrics_summary <- rlist::list.cbind(metrics_summary)
+  # Merge StarSolo summary csv files from all/multiple samples into a single data.frame
+  for(i in 1:length(metrics_summary)){
+    metrics_summary[[i]] <- as.data.frame(t(metrics_summary[[i]]))
+  }
+  metrics_summary <- plyr::rbind.fill(metrics_summary)
+  metrics_summary <- t(metrics_summary)
   colnames(metrics_summary) <- sampleNames
   
   return(metrics_summary)
