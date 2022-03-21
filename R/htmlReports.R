@@ -354,6 +354,8 @@ seuratReport <- function(inSCE,
 #'  generated for each figure in the report. Default is \code{TRUE}.
 #' @param showSession A \code{logical} value indicating if session information
 #'  should be displayed or not. Default is \code{TRUE}.
+#' @return An HTML file of the report will be generated at the path specified
+#' in the arguments.
 #' @export
 reportDiffAbundanceFET <-
     function(inSCE,
@@ -365,8 +367,7 @@ reportDiffAbundanceFET <-
              output_dir = ".",
              output_file = "DifferentialAbundanceFET_Report",
              pdf = FALSE,
-             showSession = TRUE
-    ){
+             showSession = TRUE) {
         inSCE <- diffAbundanceFET(inSCE, cluster, variable, control, case, analysisName)
         rmarkdown::render(
             system.file("rmarkdown/DifferentialAbundanceFET_Report.Rmd",
@@ -400,6 +401,8 @@ reportDiffAbundanceFET <-
 #'  generated for each figure in the report. Default is \code{TRUE}.
 #' @param showSession A \code{logical} value indicating if session information
 #'  should be displayed or not. Default is \code{TRUE}.
+#' @return An HTML file of the report will be generated at the path specified
+#' in the arguments.
 #' @export
 reportClusterAbundance <- function(inSCE,
                                    cluster,
@@ -407,8 +410,7 @@ reportClusterAbundance <- function(inSCE,
                                    output_dir = ".",
                                    output_file = "plotClusterAbundance_Report",
                                    pdf = FALSE,
-                                   showSession = TRUE
-){
+                                   showSession = TRUE) {
     rmarkdown::render(
         system.file("rmarkdown/PlotClusterAbundance_Report.Rmd",
         package="singleCellTK"),

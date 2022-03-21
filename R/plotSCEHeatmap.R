@@ -109,9 +109,12 @@ dataAnnotationColor <- function(inSCE, axis = NULL,
 }
 
 #' Plot heatmap of using data stored in SingleCellExperiment Object
+#' @rdname plotSCEHeatmap
 #' @param inSCE \linkS4class{SingleCellExperiment} inherited object.
 #' @param useAssay character. A string indicating the assay name that
-#' provides the expression level to plot.
+#' provides the expression level to plot. Only for \code{plotSCEHeatmap}.
+#' @param useReducedDim character. A string indicating the reducedDim name that
+#' provides the expression level to plot. Only for \code{plotSCEDimReduceHeatmap}.
 #' @param doLog Logical scalar. Whether to do \code{log(assay + 1)}
 #' transformation on the assay indicated by \code{useAssay}. Default
 #' \code{FALSE}.
@@ -127,13 +130,14 @@ dataAnnotationColor <- function(inSCE, axis = NULL,
 #' trimmed to their nearst bound. Default \code{c(-2, 2)}
 #' @param featureIndexBy A single character specifying a column name of
 #' \code{rowData(inSCE)}, or a vector of the same length as \code{nrow(inSCE)},
-#' where we search for the non-rowname feature indices. Default
-#' \code{"rownames"}.
+#' where we search for the non-rowname feature indices. Not applicable for 
+#' \code{plotSCEDimReduceHeatmap}. Default \code{"rownames"}. 
 #' @param cellIndexBy A single character specifying a column name of
 #' \code{colData(inSCE)}, or a vector of the same length as \code{ncol(inSCE)},
 #' where we search for the non-rowname cell indices. Default \code{"rownames"}.
 #' @param rowDataName character. The column name(s) in \code{rowData} that need
-#' to be added to the annotation. Default \code{NULL}.
+#' to be added to the annotation. Not applicable for 
+#' \code{plotSCEDimReduceHeatmap}. Default \code{NULL}.
 #' @param colDataName character. The column name(s) in \code{colData} that need
 #' to be added to the annotation. Default \code{NULL}.
 #' @param featureAnnotations \code{data.frame}, with \code{rownames} containing
@@ -513,4 +517,57 @@ plotSCEHeatmap <- function(inSCE, useAssay = 'logcounts', doLog = FALSE,
     HM <- ComplexHeatmap::draw(hm, column_title = title,
                                column_title_gp = grid::gpar(fontsize = 16))
     return(HM)
+}
+
+#' @rdname plotSCEHeatmap
+#' @export
+plotSCEDimReduceHeatmap <- function(inSCE, useReducedDim, 
+                                    featureIndex = NULL, cellIndex = NULL, 
+                                    doLog = FALSE, scale = FALSE, 
+                                    trim = c(-2, 2),
+                                    cellIndexBy = 'rownames',
+                                    colDataName = NULL,
+                                    featureAnnotations = NULL, cellAnnotations = NULL,
+                                    featureAnnotationColor = NULL, cellAnnotationColor = NULL,
+                                    rowSplitBy = NULL, colSplitBy = NULL,
+                                    rowLabel = FALSE, colLabel = FALSE,
+                                    rowLabelSize = 8, colLabelSize = 8,
+                                    rowDend = TRUE, colDend = TRUE,
+                                    title = 'SCE Heatmap', rowTitle = 'Dimensions', colTitle = 'Cells',
+                                    rowGap = grid::unit(0, 'mm'), colGap = grid::unit(0, 'mm'),
+                                    border = FALSE, colorScheme = NULL, ...) {
+    mat <- t(expData(inSCE, useReducedDim))
+    assayList <- list(mat)
+    names(assayList) <- useReducedDim
+    tmpSCE <- SingleCellExperiment::SingleCellExperiment(assays = assayList)
+    SummarizedExperiment::colData(tmpSCE) <- SummarizedExperiment::colData(inSCE)
+    plotSCEHeatmap(inSCE = tmpSCE, 
+                   useAssay = useReducedDim,
+                   featureIndex = featureIndex, 
+                   cellIndex = cellIndex,
+                   doLog = doLog,
+                   scale = scale, 
+                   trim = trim, 
+                   cellIndexBy = cellIndexBy, 
+                   colDataName = colDataName, 
+                   featureAnnotations = featureAnnotations, 
+                   cellAnnotations = cellAnnotations, 
+                   featureAnnotationColor = featureAnnotationColor, 
+                   cellAnnotationColor = cellAnnotationColor, 
+                   rowSplitBy = rowSplitBy, 
+                   colSplitBy = colSplitBy, 
+                   rowLabel = rowLabel, 
+                   colLabel = colLabel, 
+                   rowLabelSize = rowLabelSize, 
+                   colLabelSize = colLabelSize, 
+                   rowDend = rowDend, 
+                   colDend = colDend, 
+                   title = title, 
+                   rowTitle = rowTitle, 
+                   colTitle = colTitle, 
+                   rowGap = rowGap, 
+                   colGap = colGap, 
+                   border = border, 
+                   colorScheme = colorScheme, 
+                   ... = ...)
 }
