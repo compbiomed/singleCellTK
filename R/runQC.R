@@ -151,7 +151,7 @@ runCellQC <- function(inSCE,
 
   if ("decontX" %in% algorithms) {
     if (!is.null(paramsList[["decontX"]][['background']])) {
-      waring("'decontX' algorithm will decontaminate ambient RNA without the background count ",
+      warning("'decontX' algorithm will decontaminate ambient RNA without the background count ",
         "matrix. Ignore 'background' parameter within 'paramsList[['decontX']]' will be ignored. If you want ",
         "to adjust decontamination with background matrix, please run 'decontX_bg' algorithm.")
       paramsList[["decontX"]][['background']] <- NULL
@@ -182,7 +182,7 @@ runCellQC <- function(inSCE,
 
   if ("soupX" %in% algorithms) {
     if (!is.null(paramsList[["soupX"]][['background']])) {
-      waring("'soupX' algorithm step will decontaminate ambient RNA without the background count ",
+      warning("'soupX' algorithm step will decontaminate ambient RNA without the background count ",
         "matrix. 'background' parameter within 'paramsList[['soupX']]' will be ignored. If you want ",
         "to adjust decontamination with background matrix, please run 'soupX_bg' algorithm.")
       paramsList[["soupX"]][['background']] <- NULL
