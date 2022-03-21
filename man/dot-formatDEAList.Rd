@@ -27,6 +27,10 @@ Meanwhile it does all the input checkings.}
 
 \item{useAssay}{character. A string specifying which assay to use. Required.}
 
+\item{useReducedDim}{character. A string specifying which reducedDim to use
+for DE analysis. Usually a pathway analysis result matrix. Set 
+\code{useAssay} to \code{NULL} when using. Required.}
+
 \item{index1}{Any type of indices that can subset a
 \linkS4class{SingleCellExperiment} inherited object by cells. Specifies
 which cells are of interests. Default \code{NULL}.}

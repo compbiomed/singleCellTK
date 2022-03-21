@@ -113,6 +113,9 @@ runWilcox(
 \code{runDEAnalysis()}. Choose from \code{"wilcox"}, \code{"MAST"}, 
 \code{"DESeq2"}, \code{"Limma"}, \code{"ANOVA"}. Default \code{"wilcox"}.}
 
+\item{...}{Arguments to pass to specific methods when using the generic 
+\code{runDEAnalysis()}.}
+
 \item{inSCE}{\linkS4class{SingleCellExperiment} inherited object.}
 
 \item{useAssay}{character. A string specifying which assay to use for the
