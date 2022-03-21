@@ -187,6 +187,8 @@ importSTARsolo <- function(
 
 # Find metrics_summary.csv file in each sample and merge them into a single dataframe
 # Additionally, if file not available for a sample, fill that sample with NA
+# Find metrics_summary.csv file in each sample and merge them into a single dataframe
+# Additionally, if file not available for a sample, fill that sample with NA
 .importMetricsStarSolo <- function(samplePaths, sampleNames, metricsPath, metricsFile){
   # Check if samplePaths and sampleNames are equal in length
   if(!identical(length(samplePaths), length(sampleNames))){
@@ -208,8 +210,12 @@ importSTARsolo <- function(
     }
   }
   
-  # Merge cell ranger metrics_summary csv files from all/multiple samples into a single data.frame
-  metrics_summary <- rlist::list.cbind(metrics_summary)
+  # Merge StarSolo summary csv files from all/multiple samples into a single data.frame
+  for(i in seq_along(metrics_summary)){
+    metrics_summary[[i]] <- as.data.frame(t(metrics_summary[[i]]))
+  }
+  metrics_summary <- plyr::rbind.fill(metrics_summary)
+  metrics_summary <- t(metrics_summary)
   colnames(metrics_summary) <- sampleNames
   
   return(metrics_summary)
