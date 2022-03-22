@@ -154,7 +154,7 @@ shinyPanelDiffex <- fluidPage(
             width = 3,
             numericInput("deFCThresh",
                          "Output Log2FC Absolute value greater than:",
-                         min = 0, step = 0.05, value = 0.5)
+                         min = 0, step = 0.05, value = 0)
           ),
           column(
             width = 3,
@@ -216,7 +216,7 @@ shinyPanelDiffex <- fluidPage(
                     column(
                       width = 6,
                       numericInput("deHMFC", "Aboslute log2FC value greater than:",
-                                   value = 1, min = 0, step = 0.05),
+                                   value = 0.5, min = 0, step = 0.05),
                     ),
                     column(
                       width = 6,
@@ -247,6 +247,14 @@ shinyPanelDiffex <- fluidPage(
                     )
                   ),
                   fluidRow(
+                    column(
+                      width = 6,
+                      checkboxInput(
+                        inputId = "deHMrowLabel",
+                        label = "Add row labels",
+                        value = FALSE  
+                      )
+                    ),
                     column(
                       width = 4,
                       withBusyIndicatorUI(
