@@ -81,7 +81,9 @@
     # Load metrics summary and store in sce
     metrics_summary <- singleCellTK:::.importMetricsStarSolo(STARsoloDirs, samples, "Gene", "Summary.csv")
     # sce <- setSampleSummaryStatsTable(sce, "starsolo", metrics_summary)
-    sce@metadata$sctk$sample_summary[["starsolo"]] <- metrics_summary
+    if (ncol(metrics_summary) > 0) {
+      sce@metadata$sctk$sample_summary[["starsolo"]] <- metrics_summary
+    }
 
     return(sce)
 }
@@ -216,7 +218,9 @@ importSTARsolo <- function(
   }
   metrics_summary <- plyr::rbind.fill(metrics_summary)
   metrics_summary <- t(metrics_summary)
-  colnames(metrics_summary) <- sampleNames
-  
+  if (ncol(metrics_summary) > 0) {
+    colnames(metrics_summary) <- sampleNames
+  }
+
   return(metrics_summary)
 }

@@ -404,8 +404,9 @@
     
     # Load & Store Cell Ranger Summary into SCE
     metrics_summary <- .importMetricsCellRanger(samplePaths, sampleNames, "outs", "metrics_summary.csv")
-    sce@metadata$sctk$sample_summary[["cellranger"]] <- metrics_summary
-
+    if (ncol(metrics_summary) > 0) {
+        sce@metadata$sctk$sample_summary[["cellranger"]] <- metrics_summary
+    }
     # sce <- setSampleSummaryStatsTable(sce, "cellranger", metrics_summary)
     
     if (isTRUE(rowNamesDedup)) {
