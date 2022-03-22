@@ -79,7 +79,7 @@
     }
     
     # Load metrics summary and store in sce
-    metrics_summary <- singleCellTK:::.importMetricsStarSolo(STARsoloDirs, samples, "Gene", "Summary.csv")
+    metrics_summary <- .importMetricsStarSolo(STARsoloDirs, samples, "Gene", "Summary.csv")
     # sce <- setSampleSummaryStatsTable(sce, "starsolo", metrics_summary)
     if (ncol(metrics_summary) > 0) {
       sce@metadata$sctk$sample_summary[["starsolo"]] <- metrics_summary
