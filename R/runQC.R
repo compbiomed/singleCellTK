@@ -4,13 +4,18 @@
 #'  object containing cells after empty droplets have been removed.
 #' @param inSCE A \link[SingleCellExperiment]{SingleCellExperiment} object.
 #' @param algorithms Character vector. Specify which QC algorithms to run.
-#'  Available options are "QCMetrics", "scrublet", "doubletFinder", "scDblFinder", "cxds", "bcds", "cxds_bcds_hybrid", "decontX" and "soupX".
+#'  Available options are "QCMetrics", "scrublet", "doubletFinder", "scDblFinder", 
+#'  "cxds", "bcds", "cxds_bcds_hybrid", "decontX" and "soupX".
 #' @param sample Character vector. Indicates which sample each cell belongs to.
 #'  Algorithms will be run on cells from each sample separately.
-#' @param collectionName Character. Name of a \code{GeneSetCollection} obtained by using one of the importGeneSet* functions. Default \code{NULL}.
+#' @param collectionName Character. Name of a \code{GeneSetCollection} obtained by 
+#'  using one of the importGeneSet* functions. Default \code{NULL}.
 #' @param geneSetList See \code{runPerCellQC}. Default NULL.
 #' @param geneSetListLocation See \code{runPerCellQC}. Default NULL.
 #' @param geneSetCollection See \code{runPerCellQC}. Default NULL.
+#' @param mitoRef,mitoIDType,mitoPrefix,mitoID,mitoGeneLocation Arguments used to 
+#'  import mitochondrial genes and quantify their expression. Please see 
+#'  \link[singleCellTK]{runPerCellQC} for detailed information.  
 #' @param useAssay  A string specifying which assay contains the count
 #'  matrix for cells.
 #' @param background A \link[SingleCellExperiment]{SingleCellExperiment}
@@ -45,12 +50,17 @@
 
 runCellQC <- function(inSCE,
   algorithms = c("QCMetrics", "scDblFinder", "cxds", "bcds",
-    "cxds_bcds_hybrid", "decontX", "soupX"), #"scrublet", "doubletFinder",
+    "cxds_bcds_hybrid", "decontX", "decontX_bg", "soupX", "soupX_bg"), #"scrublet", "doubletFinder",
   sample = NULL,
   collectionName = NULL,
   geneSetList = NULL,
   geneSetListLocation = "rownames",
   geneSetCollection = NULL,
+  mitoRef = NULL,
+  mitoIDType = NULL,
+  mitoPrefix = NULL,
+  mitoID = NULL,
+  mitoGeneLocation = NULL,
   useAssay = "counts",
   background = NULL,
   bgAssayName= NULL,
@@ -59,7 +69,8 @@ runCellQC <- function(inSCE,
   paramsList = NULL) {
 
   nonmatch <- setdiff(algorithms, c("scDblFinder", "cxds", "bcds",
-    "cxds_bcds_hybrid", "decontX", "QCMetrics", "scrublet", "doubletFinder", "soupX"))
+    "cxds_bcds_hybrid", "decontX", "decontX_bg", "QCMetrics", "scrublet", 
+    "doubletFinder", "soupX", "soupX_bg"))
   if (length(nonmatch) > 0) {
     stop("'", paste(nonmatch, collapse=","), "' are not supported algorithms.")
   }
@@ -72,6 +83,11 @@ runCellQC <- function(inSCE,
         geneSetList = geneSetList,
         geneSetListLocation = geneSetListLocation,
         geneSetCollection = geneSetCollection),
+        mitoRef = mitoRef,
+        mitoIDType = mitoIDType,
+        mitoPrefix = mitoPrefix,
+        mitoID = mitoID,
+        mitoGeneLocation = mitoGeneLocation,
         paramsList[["QCMetrics"]]))
   }
 
@@ -134,28 +150,64 @@ runCellQC <- function(inSCE,
   }
 
   if ("decontX" %in% algorithms) {
+    if (!is.null(paramsList[["decontX"]][['background']])) {
+      warning("'decontX' algorithm will decontaminate ambient RNA without the background count ",
+        "matrix. Ignore 'background' parameter within 'paramsList[['decontX']]' will be ignored. If you want ",
+        "to adjust decontamination with background matrix, please run 'decontX_bg' algorithm.")
+      paramsList[["decontX"]][['background']] <- NULL
+    }
     inSCE <- do.call(runDecontX,
       c(list(inSCE = quote(inSCE),
       sample = sample,
       useAssay = useAssay,
-      seed = seed, 
-      background = background,
-      bgAssayName = bgAssayName,
-      bgBatch = bgBatch),
+      seed = seed),
       paramsList[["decontX"]]))
   }
 
+  if ("decontX_bg" %in% algorithms) {
+    if (!is.null(background)) {
+      inSCE <- do.call(runDecontX,
+        c(list(inSCE = quote(inSCE),
+        sample = sample,
+        useAssay = useAssay,
+        seed = seed, 
+        background = background,
+        bgAssayName = bgAssayName,
+        bgBatch = bgBatch),
+        paramsList[["decontX_bg"]]))      
+    } else {
+      warning("'background' is NULL. Skip 'decontX_bg' algorithm.")
+    }
+  }
+
   if ("soupX" %in% algorithms) {
+    if (!is.null(paramsList[["soupX"]][['background']])) {
+      warning("'soupX' algorithm step will decontaminate ambient RNA without the background count ",
+        "matrix. 'background' parameter within 'paramsList[['soupX']]' will be ignored. If you want ",
+        "to adjust decontamination with background matrix, please run 'soupX_bg' algorithm.")
+      paramsList[["soupX"]][['background']] <- NULL
+    }
     inSCE <- do.call(runSoupX,
       c(list(inSCE = quote(inSCE),
       sample = sample,
-      useAssay = useAssay,
-      background = background,
-      bgAssayName = bgAssayName,
-      bgBatch = bgBatch),
+      useAssay = useAssay),
       paramsList[["soupX"]]))
   }
 
+  if ("soupX_bg" %in% algorithms) {
+    if (!is.null(background)) {
+      inSCE <- do.call(runSoupX,
+        c(list(inSCE = quote(inSCE),
+        sample = sample,
+        useAssay = useAssay,
+        background = background,
+        bgAssayName = bgAssayName,
+        bgBatch = bgBatch),
+        paramsList[["soupX_bg"]]))      
+    } else {
+      warning("'background' is NULL. Skip 'decontX_bg' algorithm. ")
+    }
+  }
   return(inSCE)
 }
 

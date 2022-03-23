@@ -11,6 +11,11 @@ runPerCellQC(
   geneSetList = NULL,
   geneSetListLocation = "rownames",
   geneSetCollection = NULL,
+  mitoRef = NULL,
+  mitoIDType = NULL,
+  mitoPrefix = NULL,
+  mitoID = NULL,
+  mitoGeneLocation = NULL,
   percent_top = c(50, 100, 200, 500),
   use_altexps = FALSE,
   flatten = TRUE,
@@ -49,6 +54,30 @@ second column for each gene set should be the description denoting the
 location of the gene IDs in \code{inSCE}. These gene sets will be included
 with those from \code{geneSetList} if both parameters are provided.}
 
+\item{mitoRef}{Character. The species used to extract mitochondrial genes ID from 
+build-in mitochondrial geneset in SCTK. Available species options are "human"  
+and "mouse". Default is \code{NULL}.}
+
+\item{mitoIDType}{Character. Types of mitochondrial gene id. Now it supports "symbol", 
+"entrez", "ensembl" and "ensemblTranscriptID". It is used with \code{mitoRef} to extract
+mitochondrial genes from build-in mitochondrial geneset in SCTK. Default \code{NULL}.}
+
+\item{mitoPrefix}{Character. The prefix used to get mitochondrial gene from 
+either rownames(inSCE) or columns of rowData(inSCE) specified by mitoGeneLocation. 
+This parameter is usually used to extract mito genes from gene symbol. For example,
+mitoPrefix = "^MT-" can be used to detect mito gene symbols like "MT-ND4".}
+
+\item{mitoID}{Character. A vector of mitochondrial genes to be quantified.}
+
+\item{mitoGeneLocation}{Character. Describes the location within \code{inSCE} where
+the gene identifiers in the mitochondrial gene sets should be mapped.
+If set to \code{"rownames"} then the features will
+be searched for among \code{rownames(inSCE)}. This can also be
+set to one of the column names of \code{rowData(inSCE)} in which case the
+gene identifies will be mapped to that column in the \code{rowData}
+of \code{inSCE}. See \link{featureIndex} for more information.
+Default \code{NULL}.}
+
 \item{percent_top}{An integer vector. Each element is treated as a
 number of top genes to compute the percentage of library size occupied by
 the most highly expressed genes in each cell.}
@@ -80,6 +109,23 @@ A \link[SingleCellExperiment]{SingleCellExperiment} object with
 \description{
 A wrapper function for \link[scater]{addPerCellQC}. Calculate
  general quality control metrics for each cell in the count matrix.
+}
+\details{
+This function allows multiple ways to import mitochondrial genes and quantify 
+their expression. 
+\itemize{
+  \item Using \code{mitoRef}, \code{mitoIDType} and \code{mitoGeneLocation} 
+  parameters will load the build-in mitochondrial geneset in SCTK package. 
+  \item Using \code{mitoPrefix} and \code{mitoGeneLocation} parameters will
+  extract mitochondrial genes from either rownames(inSCE) or columns of 
+  rowData(inSCE) specified ny parameter \code{mitoGeneLocation}
+  \item Using \code{mitoID} and \code{mitoGeneLocation} parameters will quantify
+  the expression of mitochondrial genes stored in \code{mitoID}. 
+}
+\code{mitoGeneLocation} is required if you use any methods mentioned above to 
+quantify mitochondrial gene expression. Please make sure \code{mitoGeneLocation}
+is pointing to the location within inSCE object that stores the correct mitochondrial
+genes ID.
 }
 \examples{
 data(scExample, package = "singleCellTK")

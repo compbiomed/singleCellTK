@@ -7,12 +7,17 @@
 runCellQC(
   inSCE,
   algorithms = c("QCMetrics", "scDblFinder", "cxds", "bcds", "cxds_bcds_hybrid",
-    "decontX", "soupX"),
+    "decontX", "decontX_bg", "soupX", "soupX_bg"),
   sample = NULL,
   collectionName = NULL,
   geneSetList = NULL,
   geneSetListLocation = "rownames",
   geneSetCollection = NULL,
+  mitoRef = NULL,
+  mitoIDType = NULL,
+  mitoPrefix = NULL,
+  mitoID = NULL,
+  mitoGeneLocation = NULL,
   useAssay = "counts",
   background = NULL,
   bgAssayName = NULL,
@@ -25,18 +30,24 @@ runCellQC(
 \item{inSCE}{A \link[SingleCellExperiment]{SingleCellExperiment} object.}
 
 \item{algorithms}{Character vector. Specify which QC algorithms to run.
-Available options are "QCMetrics", "scrublet", "doubletFinder", "scDblFinder", "cxds", "bcds", "cxds_bcds_hybrid", "decontX" and "soupX".}
+Available options are "QCMetrics", "scrublet", "doubletFinder", "scDblFinder", 
+"cxds", "bcds", "cxds_bcds_hybrid", "decontX" and "soupX".}
 
 \item{sample}{Character vector. Indicates which sample each cell belongs to.
 Algorithms will be run on cells from each sample separately.}
 
-\item{collectionName}{Character. Name of a \code{GeneSetCollection} obtained by using one of the importGeneSet* functions. Default \code{NULL}.}
+\item{collectionName}{Character. Name of a \code{GeneSetCollection} obtained by 
+using one of the importGeneSet* functions. Default \code{NULL}.}
 
 \item{geneSetList}{See \code{runPerCellQC}. Default NULL.}
 
 \item{geneSetListLocation}{See \code{runPerCellQC}. Default NULL.}
 
 \item{geneSetCollection}{See \code{runPerCellQC}. Default NULL.}
+
+\item{mitoRef, mitoIDType, mitoPrefix, mitoID, mitoGeneLocation}{Arguments used to 
+import mitochondrial genes and quantify their expression. Please see 
+\link[singleCellTK]{runPerCellQC} for detailed information.}
 
 \item{useAssay}{A string specifying which assay contains the count
 matrix for cells.}

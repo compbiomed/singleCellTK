@@ -40,10 +40,12 @@ reportDropletQC <- function(inSCE, output_file = NULL,
 #' @description A  function to generate .html Rmarkdown report containing the visualizations of the runCellQC function output
 #' @param inSCE A \link[SingleCellExperiment]{SingleCellExperiment} object containing
 #' the filtered count matrix with the output from runCellQC function
+#' @param useReducedDim Character. The name of the saved dimension reduction slot including cells  
+#' from all samples in then\linkS4class{SingleCellExperiment} object, Default is NULL
 #' @param subTitle subtitle of the QC HTML report. Default is NULL.
-#' @param studyDesign description of the data set and experiment design. It would be shown at the top of QC HTML report. Default is NULL.
-#' @param output_file name of the generated file. If NULL/default then the output file name will be based on the name of the Rmarkdown template.
-#' @param output_dir name of the output directory to save the rendered file. If NULL/default the file is stored to the current working directory
+#' @param studyDesign Character. The description of the data set and experiment design. It would be shown at the top of QC HTML report. Default is NULL.
+#' @param output_file Character. The name of the generated file. If NULL/default then the output file name will be based on the name of the Rmarkdown template.
+#' @param output_dir Character. The name of the output directory to save the rendered file. If NULL/default the file is stored to the current working directory
 #' @return .html file
 #' @examples
 #' data(scExample, package = "singleCellTK")
@@ -56,7 +58,8 @@ reportDropletQC <- function(inSCE, output_file = NULL,
 reportCellQC <- function(inSCE, output_file = NULL,
                                 output_dir = NULL,
                                 subTitle = NULL,
-                                studyDesign = NULL) {
+                                studyDesign = NULL,
+                                useReducedDim = NULL) {
   if (is.null(output_dir)){
     output_dir<- getwd()
   }
@@ -64,7 +67,8 @@ reportCellQC <- function(inSCE, output_file = NULL,
   #file.copy(system.file("rmarkdown/qc/CellQC.Rmd", package = "singleCellTK"), report_path, overwrite = TRUE)
 
   rmarkdown::render(system.file("rmarkdown/qc/CellQC.Rmd", package = "singleCellTK"),
-    params = list(object = inSCE, subTitle = subTitle, studyDesign = studyDesign),
+    params = list(object = inSCE, subTitle = subTitle, studyDesign = studyDesign,
+    reducedDimName = useReducedDim),
     output_file = output_file,
     output_dir = output_dir,
     intermediates_dir = output_dir,

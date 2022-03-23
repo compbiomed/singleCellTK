@@ -5,6 +5,7 @@ params:
   object: object
   subTitle: subTitle
   studyDesign: studyDesign
+  reducedDimName: reducedDimName
 output:
   html_document:
     number_sections: yes
@@ -25,13 +26,14 @@ require(singleCellTK)
 require(ggplot2)
 require(dplyr)
 require(Biobase)
+require(cowplot)
 
 docs.base <- paste0("https://www.camplab.net/sctk/v",
                     package.version("singleCellTK"), "/")
 docs.qc.Path <- paste0(docs.base, "articles/articles/cmd_qc.html")
 
-metaChecking <- function(metainfo, sample){
-  if (any(!sample %in% names(metainfo))) {
+metaChecking <- function(metainfo, samples){
+  if (any(!samples %in% names(metainfo))) {
 
     ### if length of metainfo is 1, it indicates that the name is the sample name
     ### This format is compatible with the QC report.
@@ -92,6 +94,7 @@ formatPlotList <- function(plotlist, samples) {
 sce.qc <- params$object
 subTitle <- params$subTitle
 studyDesign <- params$studyDesign
+reducedDimName <- params$reducedDimName
 sceSample <- colData(sce.qc)$sample
 samples <- unique(sceSample)
 
@@ -102,6 +105,21 @@ if (typeof(S4Vectors::metadata(sce.qc)$assayType) == 'list') {
 }
 
 sce.qc <- getUMAP(sce.qc, useAssay = "counts", reducedDimName = "QC_UMAP", sample = sceSample)
+
+if (is.null(reducedDimName)) {
+  allSampleReducedDim <- "All_UMAP"
+  sce.qc <- getUMAP(sce.qc, useAssay = "counts", 
+                    reducedDimName = allSampleReducedDim, sample = NULL)
+} else if (!reducedDimName %in% reducedDimNames(sce.qc)) {
+  warning("'reducedDimName' not found in the reducedDimNames of the sce object. ",
+  "Generate new reduced dimension reduction for all samples. ")
+  allSampleReducedDim <- "All_UMAP"
+  sce.qc <- getUMAP(sce.qc, useAssay = "counts", 
+                    reducedDimName = allSampleReducedDim, sample = NULL)
+} else {
+  allSampleReducedDim <- reducedDimName
+}
+
 
 ### when 'sample' doesnn't exists in colData
 if (is.null(samples)) { samples <- "sample" }
@@ -131,14 +149,16 @@ cat(intro)
 <br />
 
 ```{r, "runPerCellQC-description", include=FALSE, warning=FALSE, message=FALSE}
-description_runPerCellQC <- descriptionRunPerCellQC()
+description_runPerCellQC <- singleCellTK:::descriptionRunPerCellQC()
 ```
 
 # Summary Statistics {.tabset .tabset-fade}
-# {.unlisted .unnumbered .toc-ignore .tabset .tabset-fade}
 ```{r "SummaryStats", echo = FALSE, results="asis", fig.align="center", warning=FALSE, message=FALSE}
 cat("\n")
+cat("# {.unlisted .unnumbered .toc-ignore .tabset .tabset-fade}")
+cat("\n")
 
+cat(paste0('## SCTK-QC {.tabset .tabset-fade} \n\n'))
 sce.qc <- sampleSummaryStats(inSCE = sce.qc, 
                                    sample = sceSample,
                                    simple = FALSE)
@@ -150,18 +170,43 @@ cat(apply(summaryTable, 1:2, as.character) %>%
       kableExtra::scroll_box(width = "80%"))
     
 cat("\n")
-  summary <- "The summary statistics table summarizes QC metrics of the cell matrix. This table summarizes the mean and median of UMI counts and median of genes detected per cell, as well as the number and percentages of doublets and estimated ambient RNA scores per dataset."
+summary <- "The summary statistics table summarizes QC metrics of the cell matrix. This table summarizes the mean and median of UMI counts and median of genes detected per cell, as well as the number and percentages of doublets and estimated ambient RNA scores per dataset."
+cat(summary)
+cat("\n\n") 
+
+# cellranger
+if ("cellranger" %in% listSampleSummaryStatsTables(sce.qc)) {
+  cat(paste0('## cellranger {.tabset .tabset-fade} \n\n'))
+  crSummaryTable <- getSampleSummaryStatsTable(sce.qc, 'cellranger')
+  cat(apply(crSummaryTable, 1:2, as.character) %>% 
+    knitr::kable(format = "html") %>%
+      kableExtra::kable_styling() %>%
+      kableExtra::scroll_box(width = "80%"))
+  cat("\n")
+  summary <- "The summary statistics table summarizes QC metrics parsed from 'metrics_summary.csv' file if that's available within the cellranger count output folder. This table summarizes the number of cells detected, mean reads / genes per cell, total number of reads, sequencing saturation and other QC metrics of reads alignment"
   cat(summary)
   cat("\n\n") 
-#}
+}
+
+# starsolo
+if ("starsolo" %in% listSampleSummaryStatsTables(sce.qc)) {
+  cat(paste0('## starsolo {.tabset .tabset-fade} \n\n'))
+  strSummaryTable <- getSampleSummaryStatsTable(sce.qc, 'starsolo')
+  cat(apply(strSummaryTable, 1:2, as.character) %>% 
+    knitr::kable(format = "html") %>%
+      kableExtra::kable_styling() %>%
+      kableExtra::scroll_box(width = "80%"))
+  cat("\n")
+  summary <- "The summary statistics table summarizes QC metrics parsed from 'Summary.csv' file if that's available within the STARsolo output folder. This table summarizes the number of cells detected, mean reads / genes per cell, total number of reads, reads sequencinng quality, sequencing saturation and other QC metrics of reads alignment"
+  cat(summary)
+  cat("\n\n") 
+}
 cat("\n")
 ```
 
 
 ```{r, "General quality control metrics", results="asis", fig.align="center", warning=FALSE, message=FALSE, echo=FALSE}
 i="General quality control metrics"
-# cat(paste0('# ', i, ' \n'))
-# cat("\n")
 
 perCellData <- c("sum", "detected", "percent.top_50")
 skipCellData <- any(!perCellData %in% names(colData(sce.qc)))
@@ -181,7 +226,7 @@ if (skipCellData) {
                              titleSize = NULL)},
     error = function(e) {
       cat("runPerCellQC did not complete successfully. The section of General quality control metrics is skipped")
-      skipCellData <- TRUE
+      skipCellData <<- TRUE
       return(NA)
     }
   )
@@ -192,9 +237,9 @@ if (!skipCellData) {
   if (length(samples) == 1) {
     plotsQCMetrics <- list(Violin=plotsQCMetrics)
   }
-  names(plotsQCMetrics$Violin)[names(plotsQCMetrics$Violin) == "subsets_mito_percent"] <- "Mito_Subset_Top50_Percent"
-  names(plotsQCMetrics$Violin)[names(plotsQCMetrics$Violin) == "subsets_mito_sum"] <- "Mito_Subset_Sum"
-  names(plotsQCMetrics$Violin)[names(plotsQCMetrics$Violin) == "subsets_mito_detected"] <- "Mito_Subset_Features"
+  # names(plotsQCMetrics$Violin)[names(plotsQCMetrics$Violin) == "mito_percent"] <- "MitoGene_Top50_Percent"
+  # names(plotsQCMetrics$Violin)[names(plotsQCMetrics$Violin) == "mito_sum"] <- "MitoGene_Sum"
+  # names(plotsQCMetrics$Violin)[names(plotsQCMetrics$Violin) == "mito_detected"] <- "MitoGene_Features"
   geneSubsetData <- grep("subsets_.*", names(plotsQCMetrics$Violin), value = TRUE)
   geneSubsetName <- unique(gsub("_sum|_detected|_percent","",
                                 gsub("subsets_","",geneSubsetData)))
@@ -222,20 +267,20 @@ plotsQCMetrics$Violin$Detected
 cat("\n\n")
 cat(paste0('## Percentage of Library Size Occupied by Top 50 Expressed Features {.tabset .tabset-fade} \n\n'))
 plotsQCMetrics$Violin$TopPercent
-if(!is.null(plotsQCMetrics$Violin$Mito_Subset_Sum)){
+if(!is.null(plotsQCMetrics$Violin$mito_sum)){
   cat("\n\n")
   cat(paste0('## Total Mitochondrial Counts {.tabset .tabset-fade} \n\n'))
-  plotsQCMetrics$Violin$Mito_Subset_Sum
+  plotsQCMetrics$Violin$mito_sum
 }
-if(!is.null(plotsQCMetrics$Violin$Mito_Subset_Features)){
+if(!is.null(plotsQCMetrics$Violin$mito_detected)){
   cat("\n\n")
   cat(paste0('## Total Mitochondrial Features {.tabset .tabset-fade} \n\n'))
-  plotsQCMetrics$Violin$Mito_Subset_Features
+  plotsQCMetrics$Violin$mito_detected
 }
-if(!is.null(plotsQCMetrics$Violin$Mito_Subset_Top50_Percent)){
+if(!is.null(plotsQCMetrics$Violin$mito_percent)){
   cat("\n\n")
   cat(paste0('## Percentage of Mitochondrial Counts {.tabset .tabset-fade} \n\n'))
-  plotsQCMetrics$Violin$Mito_Subset_Top50_Percent
+  plotsQCMetrics$Violin$mito_percent
 }
 
 
@@ -269,15 +314,89 @@ cat(description_runPerCellQC$parameter)
 `r cat("\n\n")`
 
 
-
 # Doublet Detection
+
+```{r, "Doublet Summary", fig.width=15, fig.height=5, results="asis", fig.align="center", warning=FALSE, message=FALSE, echo = FALSE}
+fontSize <- 15
+sampleUMAP =  plotSCEDimReduceColData(
+    inSCE=sce.qc,
+    sample=NULL,
+    colorBy="sample",
+    conditionClass="factor",
+    reducedDimName=allSampleReducedDim,
+    xlab=c("QC_UMAP_1"),
+    ylab=c("QC_UMAP_2"),
+    axisSize = fontSize,
+    axisLabelSize = fontSize,
+    legendSize = fontSize,
+    titleSize = fontSize,
+    labelClusters=FALSE,
+    title="Sample",
+    plotLabels = NULL,
+    combinePlot="none"
+  )
+
+dbAlgo <- setNames(
+  c("scrublet_call", "scDblFinder_doublet_call", "scds_cxds_call", "scds_bcds_call", "scds_hybrid_call"),
+  c("Scrublet", "scDblFinder", "Scds_Cxds", "Scds_Bcds", "Scds_Hybrid")
+  )
+
+dF <- grep("doubletFinder_doublet_label", names(colData(sce.qc)), value=TRUE)
+if (length(dF) != 0) {
+  names(dF) <- paste(unlist(strsplit(dF, "_"))[-c(2,3,4)], collapse = "_")
+  dbAlgo <- c(dbAlgo, dF)
+}
+
+if (length(dbAlgo) != 0) {
+  i="Doublet Detection Summary"
+  cat(paste0('## ', i, ' \n'))
+  cat("## {.unlisted .unnumbered .toc-ignore .tabset .tabset-fade}")
+  cat("\n")
+  
+  for (algo in dbAlgo) {
+    if (!algo %in% names(colData(sce.qc))) {
+      next
+    }
+    algoName <- names(dbAlgo)[dbAlgo == algo]
+    cat(paste0("### ", algoName, " {.tabset .tabset-fade} \n"))
+    cat("\n\n")
+  
+    plotDoublet <- plotSCEDimReduceColData(
+        inSCE=sce.qc,
+        sample=NULL,
+        colorBy=algo,
+        conditionClass="factor",
+        colorScale = c("lightgray","red"),
+        # shape=shape,
+        reducedDimName=allSampleReducedDim,
+        axisSize = fontSize,
+        axisLabelSize = fontSize,
+        legendSize = fontSize,
+        titleSize = fontSize,
+        xlab=c("QC_UMAP_1"),
+        ylab=c("QC_UMAP_2"),
+        labelClusters=FALSE,
+        title=algoName,
+        legendTitle = "Doublet Call",
+        plotLabels = NULL,
+        combinePlot="none"
+      )
+  
+    print(plot_grid(sampleUMAP, plotDoublet, ncol = 2))
+    cat("\n\n")
+  }
+}
+
+
+```
+
+
 ```{r, "Scrublet-description", include=FALSE, warning=FALSE, message=FALSE}
-description_Scrublet <- descriptionScrublet()
+description_Scrublet <- singleCellTK:::descriptionScrublet()
 ```
 
 ```{r, "Scrublet", results="asis", fig.align="center", warning=FALSE, message=FALSE, echo = FALSE}
 i="Scrublet"
-# cat(paste0('## ', i, ' \n'))
 
 scrubletData <- c("scrublet_score", "scrublet_call")
 skipScrublet <- any(!scrubletData %in% names(colData(sce.qc)))
@@ -297,7 +416,7 @@ if (skipScrublet) {
                            titleSize = NULL)},
     error = function(e) {
       cat("runScrublet did not complete successfully. The section of Scrublet is skipped")
-      skipScrublet <- TRUE
+      skipScrublet <<- TRUE
       return(NA)
     }
   )
@@ -321,6 +440,10 @@ for (sample in samples) {
   cat(paste0("### ", sample, " {.tabset .tabset-fade} \n"))
   cat("\n\n")
   
+  cat("#### Scrublet Doublet Assignment {.tabset .tabset-fade} \n\n")
+  print(plotsScrublet$Sample[[sample]][["scatter_doubletCall"]])
+  cat("\n\n")  
+  
   cat("#### Scrublet Doublet Score {.tabset .tabset-fade} \n")
   print(plotsScrublet$Sample[[sample]][["scatter_doubletScore"]])
   cat("\n\n")
@@ -332,10 +455,6 @@ for (sample in samples) {
   cat("#### Violin Score {.tabset .tabset-fade} \n ")
   print(plotsScrublet$Sample[[sample]][["violin_doubletScore"]])
   cat("\n\n")
-  
-  cat("#### Scrublet Doublet Assignment {.tabset .tabset-fade} \n\n")
-  print(plotsScrublet$Sample[[sample]][["scatter_doubletCall"]])
-  cat("\n\n")  
   
   cat("#### Parameters {.tabset .tabset-fade} \n\n")
   runScrubletMeta <- sce.qc@metadata$runScrublet
@@ -357,13 +476,11 @@ cat("\n")
 
 
 ```{r, "DoubletFinder-description", include=FALSE, warning=FALSE, message=FALSE}
-description_DoubletFinder <- descriptionDoubletFinder()
+description_DoubletFinder <- singleCellTK:::descriptionDoubletFinder()
 ```
 
 ```{r, "DoubletFinder-0", results="asis", fig.align="center", warning=FALSE, message=FALSE, echo=FALSE}
 i="DoubletFinder"
-# cat(paste0('## ', i, ' \n'))
-
 
 doubletFinderData <- grep("doubletFinder_doublet", names(colData(sce.qc)), value=TRUE)
 skipFinder <- length(doubletFinderData)==0  
@@ -383,7 +500,7 @@ if (skipFinder) {
                               titleSize = NULL)},
     error = function(e) {
       cat("runDoubletFinder did not complete successfully. The section of DoubletFinder is skipped")
-      skipFinder <- TRUE
+      skipFinder <<- TRUE
       return(NA)
     }
   )
@@ -412,6 +529,10 @@ for (sample in samples) {
     cat(paste0("#### Resolution: ", resolution, " {.tabset .tabset-fade} \n"))
     cat("\n")
     
+    cat("##### DoubletFinder Doublet Assignment {.tabset .tabset-fade} \n\n")
+    print(plotDoubletFinder$Sample[[sample]][[paste0("Scatter_Call_resolution_", resolution)]])
+    cat("\n\n")
+    
     cat("##### DoubletFinder Doublet Score {.tabset .tabset-fade} \n\n")
     print(plotDoubletFinder$Sample[[sample]][[paste0("Scatter_Score_resolution_", resolution)]])
     cat("\n\n")
@@ -422,10 +543,6 @@ for (sample in samples) {
     
     cat("##### Violin of Doublet Score {.tabset .tabset-fade} \n\n")
     print(plotDoubletFinder$Sample[[sample]][[paste0("violin_resolution_", resolution)]])
-    cat("\n\n")
-    
-    cat("##### DoubletFinder Doublet Assignment {.tabset .tabset-fade} \n\n")
-    print(plotDoubletFinder$Sample[[sample]][[paste0("Scatter_Call_resolution_", resolution)]])
     cat("\n\n")
     
     cat("##### Parameters {.tabset .tabset-fade} \n\n")
@@ -454,7 +571,7 @@ cat("\n")
 
 
 ```{r, "ScDblFinder-description", include=FALSE, warning=FALSE, message=FALSE}
-description_ScDblFinder<- descriptionScDblFinder()
+description_ScDblFinder<- singleCellTK:::descriptionScDblFinder()
 ```
 
 ```{r, "ScDblFinder", results="asis", fig.align="center", warning=FALSE, message=FALSE, echo=FALSE}
@@ -479,7 +596,7 @@ if (skipScDblFinder) {
                             titleSize = NULL)},
     error = function(e) {
       cat("runScDblFinder did not complete successfully. The section of ScDblFinder is skipped")
-      skipScDblFinder <- TRUE
+      skipScDblFinder <<- TRUE
       return(NA)
     }
   )
@@ -502,6 +619,10 @@ for (sample in samples){
   cat(paste0("### ", sample, " {.tabset .tabset-fade} \n"))
   cat("\n\n")
   
+  cat("#### ScDblFinder Doublet Assignment {.tabset .tabset-fade} \n\n ")
+  print(plotScDblFinder$Sample[[sample]][["scatter_doubletCall"]])
+  cat("\n\n")
+    
   cat("#### ScDblFinder Doublet Score {.tabset .tabset-fade} \n\n ")
   print(plotScDblFinder$Sample[[sample]][["scatter_doubletScore"]])
   cat("\n\n")
@@ -513,11 +634,7 @@ for (sample in samples){
   cat("#### Violin Score {.tabset .tabset-fade} \n\n")
   print(plotScDblFinder$Sample[[sample]][["violin_doubletScore"]])
   cat("\n\n")
-  
-  cat("#### ScDblFinder Doublet Assignment {.tabset .tabset-fade} \n\n ")
-  print(plotScDblFinder$Sample[[sample]][["scatter_doubletCall"]])
-  cat("\n\n")
-  
+
   cat("#### Parameters {.tabset .tabset-fade} \n\n")
   ScDblFinderMeta <- sce.qc@metadata$runScDblFinder
   ScDblFinderMeta <- metaChecking(ScDblFinderMeta, sample)
@@ -539,7 +656,7 @@ cat("\n")
 
 
 ```{r, "Cxds-description", include=FALSE, warning=FALSE, message=FALSE}
-descriprion_CxdsResults<- descriptionCXDS()
+descriprion_CxdsResults<- singleCellTK:::descriptionCXDS()
 ```
 
 ```{r, "Cxds", results="asis", fig.align="center", warning=FALSE, message=FALSE, echo=FALSE}
@@ -564,7 +681,7 @@ if (skipCxds) {
                      titleSize = NULL)},
     error = function(e) {
       cat("runCxds did not complete successfully. The section of Cxds is skipped")
-      skipCxds <- TRUE
+      skipCxds <<- TRUE
       return(NA)
     }
   )
@@ -587,6 +704,10 @@ for (sample in samples){
   cat(paste0("### ", sample, " {.tabset .tabset-fade} \n"))
   cat("\n\n")
   
+  cat("#### Cxds Doublet Assignment {.tabset .tabset-fade} \n\n")
+  plot(plotCxds$Sample[[sample]][["scatter_doubletCall"]])
+  cat("\n\n")
+    
   cat("#### Cxds Doublet Score {.tabset .tabset-fade} \n\n")
   plot(plotCxds$Sample[[sample]][["scatter_doubletScore"]])
   cat("\n\n")
@@ -598,11 +719,7 @@ for (sample in samples){
   cat("#### Violin Score {.tabset .tabset-fade} \n\n")
   plot(plotCxds$Sample[[sample]][["violin_doubletScore"]])
   cat("\n\n")
-  
-  cat("#### Cxds Doublet Assignment {.tabset .tabset-fade} \n\n")
-  plot(plotCxds$Sample[[sample]][["scatter_doubletCall"]])
-  cat("\n\n")
-  
+
   cat("#### Parameters {.tabset .tabset-fade} \n\n")
   CxdsMeta <- sce.qc@metadata$runCxds
   CxdsMeta <- metaChecking(CxdsMeta, sample)
@@ -630,7 +747,7 @@ cat("\n")
 
 
 ```{r, "Bcds-description", include=FALSE, warning=FALSE, message=FALSE}
-descriprion_BcdsResults<- descriptionBCDS()
+descriprion_BcdsResults<- singleCellTK:::descriptionBCDS()
 ```
 
 ```{r, "Bcds", results="asis", fig.align="center", warning=FALSE, message=FALSE, echo=FALSE}
@@ -655,7 +772,7 @@ if (skipBcds) {
                      titleSize = NULL)},
     error = function(e) {
       cat("runBcds did not complete successfully. The section of Bcds is skipped")
-      skipBcds <- TRUE
+      skipBcds <<- TRUE
       return(NA)
     }
   )
@@ -678,6 +795,10 @@ for (sample in samples){
   cat(paste0("### ", sample, " {.tabset .tabset-fade} \n"))
   cat("\n\n")
   
+  cat("#### Bcds Doublet Assignment {.tabset .tabset-fade} \n\n")
+  plot(plotBcds$Sample[[sample]][["scatter_doubletCall"]])
+  cat("\n\n")
+    
   cat("#### Bcds Doublet Score {.tabset .tabset-fade} \n\n")
   plot(plotBcds$Sample[[sample]][["scatter_doubletScore"]])
   cat("\n\n")
@@ -689,11 +810,7 @@ for (sample in samples){
   cat("#### Violin Score {.tabset .tabset-fade} \n\n")
   plot(plotBcds$Sample[[sample]][["violin_doubletScore"]])
   cat("\n\n")
-  
-  cat("#### Bcds Doublet Assignment {.tabset .tabset-fade} \n\n")
-  plot(plotBcds$Sample[[sample]][["scatter_doubletCall"]])
-  cat("\n\n")
-  
+
   cat("#### Parameters {.tabset .tabset-fade} \n\n")
   BcdsMeta <- sce.qc@metadata$runBcds
   BcdsMeta <- metaChecking(BcdsMeta, sample)
@@ -721,7 +838,7 @@ cat("\n")
 
 
 ```{r, "ScdsHybrid-description", include=FALSE, warning=FALSE, message=FALSE}
-description_ScdsHybrid<- descriptionScdsHybrid()
+description_ScdsHybrid<- singleCellTK:::descriptionScdsHybrid()
 ```
 
 
@@ -747,7 +864,7 @@ if (skipScdsHybrid) {
                            titleSize = NULL)},
     error = function(e) {
       cat("runCxdsBcdsHybrid did not complete successfully. The section of ScdsHybrid is skipped")
-      skipScdsHybrid <- TRUE
+      skipScdsHybrid <<- TRUE
       return(NA)
     }
   )
@@ -770,6 +887,10 @@ for (sample in samples){
   cat(paste0("### ", sample, " {.tabset .tabset-fade} \n"))
   cat("\n\n")
   
+  cat("#### ScdsHybrid Doublet Assignment {.tabset .tabset-fade} \n\n")
+  plot(plotScdsHybrid$Sample[[sample]][["scatter_doubletCall"]])
+  cat("\n\n")
+    
   cat("#### ScdsHybrid Doublet Score {.tabset .tabset-fade} \n\n")
   plot(plotScdsHybrid$Sample[[sample]][["scatter_doubletScore"]])
   cat("\n\n")
@@ -781,11 +902,7 @@ for (sample in samples){
   cat("#### Violin Score {.tabset .tabset-fade} \n\n")
   plot(plotScdsHybrid$Sample[[sample]][["violin_doubletScore"]])
   cat("\n\n")
-  
-  cat("#### ScdsHybrid Doublet Assignment {.tabset .tabset-fade} \n\n")
-  plot(plotScdsHybrid$Sample[[sample]][["scatter_doubletCall"]])
-  cat("\n\n")
-  
+
   cat("#### Parameters {.tabset .tabset-fade} \n\n")
   HybridMeta <- sce.qc@metadata$runCxdsBcdsHybrid
   HybridMeta <- metaChecking(HybridMeta, sample)
@@ -809,8 +926,58 @@ cat("\n")
 
 
 # Ambient RNA Detection
+
+```{r, "AmbientRNA Summary", fig.width=15, fig.height=5, results="asis", fig.align="center", warning=FALSE, message=FALSE, echo = FALSE}
+### get all doublet detection algorithms
+fontSize <- 15
+amBAlgo <- setNames(
+  c("decontX_contamination", "decontX_contamination_bg"),
+  c("decontX", "decontX with background")
+  )
+
+if (length(amBAlgo) != 0) {
+  i="Ambient RNA Detection Summary"
+  cat(paste0('## ', i, ' \n'))
+  cat("## {.unlisted .unnumbered .toc-ignore .tabset .tabset-fade}")
+  cat("\n")
+
+  for (algo in amBAlgo) {
+    if (!algo %in% names(colData(sce.qc))) {
+      next
+    }
+    algoName <- names(amBAlgo)[amBAlgo == algo]
+    cat(paste0("### ", algoName, " {.tabset .tabset-fade} \n"))
+    cat("\n\n")
+  
+    plotAmbient <- plotSCEDimReduceColData(
+        inSCE=sce.qc,
+        sample=NULL,
+        colorBy=algo,
+        conditionClass="numeric",
+        colorScale = c("lightgray","red"),
+        reducedDimName=allSampleReducedDim,
+        axisSize = fontSize,
+        axisLabelSize = fontSize,
+        legendSize = fontSize,
+        titleSize = fontSize,
+        xlab=c("QC_UMAP_1"),
+        ylab=c("QC_UMAP_2"),
+        labelClusters=FALSE,
+        title=algoName,
+        legendTitle = "Ambient \nContamination \nScore",
+        plotLabels = NULL,
+        combinePlot="none"
+      )
+  
+    print(plot_grid(sampleUMAP, plotAmbient, ncol = 2))
+    cat("\n\n")
+  }
+}
+
+```
+
 ```{r, "DecontX-description", include=FALSE, warning=FALSE, message=FALSE}
-description_DecontX<- descriptionDecontX()
+description_DecontX<- singleCellTK:::descriptionDecontX()
 ```
 
 ```{r, "DecontX", results="asis", fig.align="center", warning=FALSE, message=FALSE, echo=FALSE}
@@ -835,7 +1002,7 @@ if (skipDecontX) {
                         titleSize = NULL)},
     error = function(e) {
       cat("runDecontX did not complete successfully. The section of DecontX is skipped")
-      skipDecontX <- TRUE
+      skipDecontX <<- TRUE
       return(NA)
     }
   )
@@ -865,6 +1032,10 @@ for (sample in samples){
   plot(plotDecontX$Sample[[sample]][["scatter_decontXContamination"]])
   cat("\n\n")
   
+  cat("#### DecontX Clusters {.tabset .tabset-fade} \n\n")
+  plot(plotDecontX$Sample[[sample]][["scatter_decontXClusters"]])
+  cat("\n\n")
+    
   cat("#### Density Score {.tabset .tabset-fade} \n\n")
   plot(plotDecontX$Sample[[sample]][["density_decontXContamination"]])
   cat("\n\n")
@@ -872,11 +1043,7 @@ for (sample in samples){
   cat("#### Violin Score {.tabset .tabset-fade} \n\n")
   plot(plotDecontX$Sample[[sample]][["violin_decontXContamination"]])
   cat("\n\n")
-  
-  cat("#### DecontX Clusters {.tabset .tabset-fade} \n\n")
-  plot(plotDecontX$Sample[[sample]][["scatter_decontXClusters"]])
-  cat("\n\n")
-  
+
   cat("#### Parameters {.tabset .tabset-fade} \n\n")
   DecontXMeta <- sce.qc@metadata$sctk$runDecontX
   DecontXMeta <- metaChecking(DecontXMeta, sample)
@@ -899,15 +1066,15 @@ for (sample in samples){
 i="DecontX with raw/droplet matrix"
 # cat(paste0('## ', i, ' \n'))
 
-decontXData <- c("decontX_contamination_bg", "decontX_clusters_bg")
-skipDecontX <- any(!decontXData %in% names(colData(sce.qc)))
+decontXData_bg <- c("decontX_contamination_bg", "decontX_clusters_bg")
+skipDecontX_bg <- any(!decontXData_bg %in% names(colData(sce.qc)))
 
-if (skipDecontX) {
+if (skipDecontX_bg) {
   #cat("runDecontX did not complete successfully. The section of DecontX is skipped")
-  plotDecontX <- NULL
+  plotDecontX_bg <- NULL
 } else {
   cat(paste0('## ', i, ' \n'))
-  plotDecontX<- tryCatch(
+  plotDecontX_bg<- tryCatch(
     {plotDecontXResults(inSCE = sce.qc, 
                         sample = colData(sce.qc)[['sample']],
                         bgResult = TRUE,
@@ -917,15 +1084,15 @@ if (skipDecontX) {
                         axisLabelSize = NULL,
                         titleSize = NULL)},
     error = function(e) {
-      cat("runDecontX did not complete successfully. The section of DecontX is skipped")
-      skipDecontX <- TRUE
+      cat("runDecontX did not complete successfully. The section of DecontX_bg is skipped")
+      skipDecontX_bg <<- TRUE
       return(NA)
     }
   )
 }
 
-if (!skipDecontX) {
-  plotDecontX <- formatPlotList(plotDecontX, samples)
+if (!skipDecontX_bg) {
+  plotDecontX_bg <- formatPlotList(plotDecontX_bg, samples)
   cat(description_DecontX$introduction)
   cat(description_DecontX$runDecontX)
   cat(description_DecontX$plotDecontXResults)
@@ -938,38 +1105,39 @@ if (!skipDecontX) {
 
 
 ## {.unlisted .unnumbered .toc-ignore .tabset .tabset-fade}
-```{r "DecontX_bg-plot", echo=FALSE, eval=(!skipDecontX), results="asis", fig.align="center"}
+```{r "DecontX_bg-plot", echo=FALSE, eval=(!skipDecontX_bg), results="asis", fig.align="center"}
 cat("\n")
 for (sample in samples){
   cat(paste0("### ", sample, " {.tabset .tabset-fade} \n"))
   cat("\n\n")
-  
+     
   cat("#### DecontX Contamination Score {.tabset .tabset-fade} \n\n")
-  plot(plotDecontX$Sample[[sample]][["scatter_decontXContamination"]])
-  cat("\n\n")
-  
-  cat("#### Density Score {.tabset .tabset-fade} \n\n")
-  plot(plotDecontX$Sample[[sample]][["density_decontXContamination"]])
-  cat("\n\n")
-  
-  cat("#### Violin Score {.tabset .tabset-fade} \n\n")
-  plot(plotDecontX$Sample[[sample]][["violin_decontXContamination"]])
+  plot(plotDecontX_bg$Sample[[sample]][["scatter_decontXContamination"]])
   cat("\n\n")
   
   cat("#### DecontX Clusters {.tabset .tabset-fade} \n\n")
-  plot(plotDecontX$Sample[[sample]][["scatter_decontXClusters"]])
+  plot(plotDecontX_bg$Sample[[sample]][["scatter_decontXClusters"]])
+  cat("\n\n")
+
+  
+  cat("#### Density Score {.tabset .tabset-fade} \n\n")
+  plot(plotDecontX_bg$Sample[[sample]][["density_decontXContamination"]])
   cat("\n\n")
   
+  cat("#### Violin Score {.tabset .tabset-fade} \n\n")
+  plot(plotDecontX_bg$Sample[[sample]][["violin_decontXContamination"]])
+  cat("\n\n")
+
   cat("#### Parameters {.tabset .tabset-fade} \n\n")
-  DecontXMeta <- sce.qc@metadata$sctk$runDecontX_bg
-  DecontXMeta <- metaChecking(DecontXMeta, sample)
+  DecontXMeta_bg <- sce.qc@metadata$sctk$runDecontX_bg
+  DecontXMeta_bg <- metaChecking(DecontXMeta_bg, sample)
 
   # if(length(samples) == 1) {
   #   DecontXMeta <- list(DecontXMeta)
   #   names(DecontXMeta) <- sample
   # }
   
-  x <- preprocessMeta(DecontXMeta[[sample]])
+  x <- preprocessMeta(DecontXMeta_bg[[sample]])
   cat(t(as.data.frame(x)) %>%
     knitr::kable(format = "html") %>% kableExtra::kable_styling() %>%
     kableExtra::scroll_box(width = "80%"))
@@ -980,7 +1148,7 @@ for (sample in samples){
 
 
 ```{r, "SoupX-description", include=FALSE, warning=FALSE, message=FALSE}
-description_SoupX<- descriptionSoupX()
+description_SoupX<- singleCellTK:::descriptionSoupX()
 ```
 
 ```{r, "SoupX", results="asis", fig.align="center", warning=FALSE, message=FALSE, echo=FALSE}
@@ -991,6 +1159,12 @@ soupXData <- c("soupX_nUMIs", "soupX_contamination")
 # soupX cluster label might be supplied by users, thus not checking it.
 skipSoupX <- any(!soupXData %in% names(colData(sce.qc)))
 
+if (length(samples) == 1) {
+  soupXSample <- "all_cells"
+} else {
+  soupXSample <- samples
+}
+
 if (skipSoupX) {
   #cat("runDecontX did not complete successfully. The section of DecontX is skipped")
   plotSoupX <- NULL
@@ -998,11 +1172,11 @@ if (skipSoupX) {
   cat(paste0('## ', i, ' \n'))
   plotSoupX<- tryCatch(
     {plotSoupXResults(inSCE = sce.qc, 
-                     colData(sce.qc)[['sample']], # Why not use the variable predefined at the beginning of this document?????
+                     soupXSample, 
                      combinePlot = "none")},
     error = function(e) {
       cat("runSoupX did not complete successfully. The section of SoupX is skipped\n\n")
-      skipSoupX <- TRUE
+      skipSoupX <<- TRUE
       return(NA)
     }
   )
@@ -1040,10 +1214,15 @@ for (sample in samples){
   }
   
   cat("#### Parameters {.tabset .tabset-fade} \n\n")
-  SoupXMeta <- getSoupX(sce.qc, sample)[[1]]$param
-  SoupXMeta <- metaChecking(SoupXMeta, sample)
-
-  x <- preprocessMeta(SoupXMeta[[sample]])
+  if (length(samples) == 1) {
+    SoupXMeta <- getSoupX(sce.qc, soupXSample, background = FALSE)[[1]]$param
+    SoupXMeta <- metaChecking(SoupXMeta, soupXSample)
+    x <- preprocessMeta(SoupXMeta[[soupXSample]])
+  } else {
+    SoupXMeta <- getSoupX(sce.qc, sample, background = FALSE)[[1]]$param
+    SoupXMeta <- metaChecking(SoupXMeta, sample)
+    x <- preprocessMeta(SoupXMeta[[sample]])
+  }
   cat(t(as.data.frame(x)) %>%
     knitr::kable(format = "html") %>% kableExtra::kable_styling() %>%
     kableExtra::scroll_box(width = "80%"))
@@ -1056,28 +1235,34 @@ for (sample in samples){
 i="SoupX with raw/droplet matrix"
 # cat(paste0('## ', i, ' \n'))
 
-soupXData <- c("soupX_bg_nUMIs", "soupX_bg_contamination")
-skipSoupX <- any(!soupXData %in% names(colData(sce.qc)))
+soupXData_bg <- c("soupX_bg_nUMIs", "soupX_bg_contamination")
+skipSoupX_bg <- any(!soupXData_bg %in% names(colData(sce.qc)))
 
-if (skipSoupX) {
+if (length(samples) == 1) {
+  soupXSample <- "all_cells"
+} else {
+  soupXSample <- samples
+}
+
+if (skipSoupX_bg) {
   plotSoupX <- NULL
 } else {
   cat(paste0('## ', i, ' \n'))
-  plotSoupX<- tryCatch(
+  plotSoupX_bg <- tryCatch(
     {plotSoupXResults(inSCE = sce.qc, 
-                     colData(sce.qc)[['sample']], 
+                     soupXSample, 
                      combinePlot = "none",
                      background = TRUE)},
     error = function(e) {
       cat("runSoupX with background did not complete successfully. The section of SoupX with background is skipped")
-      skipSoupX <- TRUE
+      skipSoupX_bg <- TRUE
       return(NA)
     }
   )
 }
 
-if (!skipSoupX) {
-  plotSoupX <- formatPlotList(plotSoupX, samples)
+if (!skipSoupX_bg) {
+  plotSoupX_bg <- formatPlotList(plotSoupX_bg, samples)
   cat(description_SoupX$introduction)
   cat(description_SoupX$runSoupX)
   cat(description_SoupX$output)
@@ -1090,28 +1275,33 @@ if (!skipSoupX) {
 
 
 ## {.unlisted .unnumbered .toc-ignore .tabset .tabset-fade}
-```{r "SoupX_bg-plot", echo=FALSE, eval=(!skipSoupX), results="asis", fig.align="center"}
+```{r "SoupX_bg-plot", echo=FALSE, eval=(!skipSoupX_bg), results="asis", fig.align="center"}
 cat("\n\n")
 for (sample in samples){
   cat(paste0("### ", sample, " {.tabset .tabset-fade} \n\n"))
   
   cat("#### SoupX Clustering {.tabset .tabset-fade} \n\n")
-  plot(plotSoupX$Sample[[sample]][["scatter_soupXClusters"]])
+  plot(plotSoupX_bg$Sample[[sample]][["scatter_soupXClusters"]])
   cat("\n\n")
   
   cat("#### Soup Fractions {.tabset .tabset-fade} \n\n")
   
   for (marker in names(plotSoupX$Sample[[sample]])[-1]) {
     cat(paste0("##### ", marker, " {.tabset .tabset-fade} \n\n"))
-    plot(plotSoupX$Sample[[sample]][[marker]])
+    plot(plotSoupX_bg$Sample[[sample]][[marker]])
     cat("\n\n")
   }
   
   cat("#### Parameters {.tabset .tabset-fade} \n\n")
-  SoupXMeta <- getSoupX(sce.qc, sample, background = TRUE)[[1]]$param
-  SoupXMeta <- metaChecking(SoupXMeta, sample)
-
-  x <- preprocessMeta(SoupXMeta[[sample]])
+  if (length(samples) == 1) {
+    SoupXMeta <- getSoupX(sce.qc, soupXSample, background = TRUE)[[1]]$param
+    SoupXMeta <- metaChecking(SoupXMeta, soupXSample)
+    x <- preprocessMeta(SoupXMeta[[soupXSample]])
+  } else {
+    SoupXMeta <- getSoupX(sce.qc, sample, background = TRUE)[[1]]$param
+    SoupXMeta <- metaChecking(SoupXMeta, sample)
+    x <- preprocessMeta(SoupXMeta[[sample]])
+  }
   cat(t(as.data.frame(x)) %>%
     knitr::kable(format = "html") %>% kableExtra::kable_styling() %>%
     kableExtra::scroll_box(width = "80%"))
