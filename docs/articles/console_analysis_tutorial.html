@@ -439,27 +439,28 @@
 <span class="co">## 83561       0.31480746       2.765561</span></code></pre>
 <p>For visualization, SCTK has a specific heatmap plotting function for detected markers. The heatmap will take the log-normalized feature expression matrix for the values, and subset the features to only the top markers of each cluster. For the organization of the heatmap, the function groups the markers by the belonging to the clusters, and groups the cells, obviously, by clusters. Inside the grouping, the function finally performs the default hierarchical clustering.</p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">markerHm</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plotMarkerDiffExp.html">plotMarkerDiffExp</a></span><span class="op">(</span><span class="va">sce</span>, topN <span class="op">=</span> <span class="fl">5</span>, log2fcThreshold <span class="op">=</span> <span class="fl">0</span>, 
-                              fdrThreshold <span class="op">=</span> <span class="fl">0.05</span>, minClustExprPerc <span class="op">=</span> <span class="fl">0.5</span>, 
-                              maxCtrlExprPerc <span class="op">=</span> <span class="fl">0.4</span>, minMeanExpr <span class="op">=</span> <span class="fl">0</span>, 
-                              rowLabel <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="../reference/plotMarkerDiffExp.html">plotMarkerDiffExp</a></span><span class="op">(</span><span class="va">sce</span>, topN <span class="op">=</span> <span class="fl">5</span>, log2fcThreshold <span class="op">=</span> <span class="fl">0</span>, 
+                  fdrThreshold <span class="op">=</span> <span class="fl">0.05</span>, minClustExprPerc <span class="op">=</span> <span class="fl">0.5</span>, 
+                  maxCtrlExprPerc <span class="op">=</span> <span class="fl">0.4</span>, minMeanExpr <span class="op">=</span> <span class="fl">0</span>, 
+                  rowLabel <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 <p><img src="console_analysis_tutorial_files/figure-html/markerHeatmap-1.png" width="864"></p>
 </div>
 <div class="section level3">
 <h3 id="customized-differential-expression-analysis">Customized Differential Expression Analysis<a class="anchor" aria-label="anchor" href="#customized-differential-expression-analysis"></a>
 </h3>
-<p>As we can easily tell from the heatmap above, “cluster 6” and “cluster 7” are having a very similar expression profile across the top markers detected. In order to further explore the difference between these two clusters, or any other two reasonable groups of cells, user can use the function <code><a href="../reference/runDEAnalysis.html">runDEAnalysis()</a></code>.</p>
+<p>As we can easily tell from the heatmap above, “cluster 1” and “cluster 3” are having a very similar expression profile across the top markers detected. In order to further explore the difference between these two clusters, or any other two reasonable groups of cells, user can use the function <code><a href="../reference/runDEAnalysis.html">runDEAnalysis()</a></code>.</p>
 <p><code><a href="../reference/runDEAnalysis.html">runDEAnalysis()</a></code> is a generic function for performing differential expression (DE) analysis between two selected groups of cells. This is also used by <code><a href="../reference/findMarkerDiffExp.html">findMarkerDiffExp()</a></code>. By running DE analysis, the function will take the normalized read count data and perform statistical analysis to discover quantitative changes in expression levels between selected groups. See here for the detail of <a href="differential_expression.html">running DE analysis with SCTK</a>.</p>
 <p>There are multiple ways to specify the groups of cells to be compared: by either directly specifying indices of cells, or selecting groups of cells with a categorical variable in <code>colData</code>. Additionally, <code><a href="../reference/runDEAnalysis.html">runDEAnalysis()</a></code> requires a relatively sophisticated inputs for naming the analyses, including the names of the two groups, and the name of one analysis, though these are not necessary for calling the algorithms alone. By requiring these, the results of the analyses can be stored with human readable identifiers and within one single SCE object, and can be more manageable. See the <a href="differential_expression.html">DE documentation</a> for the detail.</p>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runDEAnalysis.html">runDEAnalysis</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, method <span class="op">=</span> <span class="st">"wilcox"</span>, 
-                     class <span class="op">=</span> <span class="st">"cluster"</span>, classGroup1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">6</span><span class="op">)</span>, classGroup2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">7</span><span class="op">)</span>,
-                     groupName1 <span class="op">=</span> <span class="st">"cluster6"</span>, groupName2 <span class="op">=</span> <span class="st">"cluster7"</span>, 
-                     analysisName <span class="op">=</span> <span class="st">"cluster6_VS_7"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runDEAnalysis.html">runDEAnalysis</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, method <span class="op">=</span> <span class="st">"wilcox"</span>, useAssay <span class="op">=</span> <span class="st">"logcounts"</span>,
+                     class <span class="op">=</span> <span class="st">"cluster"</span>, classGroup1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span>, classGroup2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span><span class="op">)</span>,
+                     groupName1 <span class="op">=</span> <span class="st">"cluster1"</span>, groupName2 <span class="op">=</span> <span class="st">"cluster3"</span>, 
+                     analysisName <span class="op">=</span> <span class="st">"cluster1_VS_3"</span><span class="op">)</span></code></pre></div>
 <p>Similarly to the marker detection section, SCTK also has a DE analysis specific heatmap plotting function, <code><a href="../reference/plotDEGHeatmap.html">plotDEGHeatmap()</a></code>. Here, users can just easily enter the <code>analysisName</code> specified for one run and the function will automatically arrange the output. The heatmap is also splitted into a “checker board”, by the “conditions” (i.e. the groups selected when running <code><a href="../reference/runDEAnalysis.html">runDEAnalysis()</a></code>) and the “regulation” (i.e. “up” if the log2 fold change is positive in “group1” against “group2”).</p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">deHm</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plotDEGHeatmap.html">plotDEGHeatmap</a></span><span class="op">(</span><span class="va">sce</span>, useResult <span class="op">=</span> <span class="st">"cluster6_VS_7"</span>, rowLabel <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="../reference/plotDEGHeatmap.html">plotDEGHeatmap</a></span><span class="op">(</span><span class="va">sce</span>, useResult <span class="op">=</span> <span class="st">"cluster1_VS_3"</span>, rowLabel <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 <p><img src="console_analysis_tutorial_files/figure-html/deHeatmap-1.png" width="700"></p>
+<p>In the latest version of SCTK, the input matrix for DE analysis can be specified with either <code>useAssay</code> or <code>useReducedDim</code>. When one of them is specified, the other has to be <code>NULL</code>, to avoid ambiguity. For example, when users perform a pathway analysis and get a score matrix stored in <code>reducedDims</code> slot, DE analysis can be performed on this score matrix. See <a href="#performing-de-analysis-on-pathway-analysis-scores">example</a>.</p>
 </div>
 </div>
 <div class="section level2">
@@ -475,8 +476,8 @@
 <p>We can also plot the labeling on to the UMAP we got previously.</p>
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/plotSCEDimReduceColData.html">plotSCEDimReduceColData</a></span><span class="op">(</span><span class="va">sce</span>, colorBy <span class="op">=</span> <span class="st">"SingleR_hpca_fine_pruned.labels"</span>,
-                        reducedDimName <span class="op">=</span> <span class="st">"UMAP"</span>, dotSize <span class="op">=</span> <span class="fl">1</span>, legendSize <span class="op">=</span> <span class="fl">8</span><span class="op">)</span></code></pre></div>
-<p><img src="console_analysis_tutorial_files/figure-html/singleRUMAP-1.png" width="864"></p>
+                        reducedDimName <span class="op">=</span> <span class="st">"UMAP"</span><span class="op">)</span></code></pre></div>
+<p><img src="console_analysis_tutorial_files/figure-html/singleRUMAP-1.png" width="1152"></p>
 </div>
 <div class="section level2">
 <h2 id="pathway-analysis">Pathway Analysis<a class="anchor" aria-label="anchor" href="#pathway-analysis"></a>
@@ -497,6 +498,23 @@
 <blockquote>
 <p>Note: In the current version of SCTK, the returned score matrices from either VAM or GSVA are stored in the <code>reducedDims</code> slot, since the feature dimensions are for the gene sets instead of the genes or subsets of genes. In the future, SCTK will adopt other types of data container for simpler operation on different types of feature sets.</p>
 </blockquote>
+<div class="section level3">
+<h3 id="performing-de-analysis-on-pathway-analysis-scores">Performing DE Analysis on Pathway Analysis Scores<a class="anchor" aria-label="anchor" href="#performing-de-analysis-on-pathway-analysis-scores"></a>
+</h3>
+<p>The latest version of SCTK allows users to select the score matrix from pathway analysis to perform differential expression analysis. In this process, each geneset will be treated as the feature/gene, and comparison groups can still be set in the same way as introduced in <a href="#customized-differential-expression-analysis">DE analysis section</a>.</p>
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runDEAnalysis.html">runDEAnalysis</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, method <span class="op">=</span> <span class="st">"wilcox"</span>, 
+                     useAssay <span class="op">=</span> <span class="cn">NULL</span>, useReducedDim <span class="op">=</span> <span class="st">"VAM_H_CDF"</span>,
+                     class <span class="op">=</span> <span class="st">"cluster"</span>, classGroup1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">3</span><span class="op">)</span>, classGroup2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span><span class="op">)</span>,
+                     groupName1 <span class="op">=</span> <span class="st">"T_cells"</span>, groupName2 <span class="op">=</span> <span class="st">"monocytes"</span>, 
+                     analysisName <span class="op">=</span> <span class="st">"T_cells_VS_monocytes_VAM_H_CDF"</span><span class="op">)</span>
+<span class="fu"><a href="../reference/plotDEGHeatmap.html">plotDEGHeatmap</a></span><span class="op">(</span><span class="va">sce</span>, useResult <span class="op">=</span> <span class="st">"T_cells_VS_monocytes_VAM_H_CDF"</span>, rowLabel <span class="op">=</span> <span class="cn">TRUE</span>, rowTitle <span class="op">=</span> <span class="st">"Geneset"</span><span class="op">)</span></code></pre></div>
+<p><img src="console_analysis_tutorial_files/figure-html/pathwayDE-1.png" width="700"></p>
+</div>
+</div>
+<div class="section level2">
+<h2 id="differential-abundance">Differential Abundance<a class="anchor" aria-label="anchor" href="#differential-abundance"></a>
+</h2>
 </div>
   </div>
 

@@ -174,7 +174,8 @@ dataAnnotationColor <- function(inSCE, axis = NULL,
 #' \code{8}
 #' @param rowDend Whether to display row dendrogram. Default \code{TRUE}.
 #' @param colDend Whether to display column dendrogram. Default \code{TRUE}.
-#' @param title The main title of the whole plot. Default \code{"SCE Heatmap"}
+#' @param title Deprecated. The main title of the whole plot. Default 
+#' \code{NULL}.
 #' @param rowTitle The subtitle for the rows. Default \code{"Genes"}.
 #' @param colTitle The subtitle for the columns. Default \code{"Cells"}.
 #' @param rowGap A numeric value or a \code{\link[grid]{unit}} object. For the
@@ -192,7 +193,8 @@ dataAnnotationColor <- function(inSCE, axis = NULL,
 #' @examples
 #' data(scExample, package = "singleCellTK")
 #' plotSCEHeatmap(sce[1:3,1:3], useAssay = "counts")
-#' @return A \code{\link[ComplexHeatmap]{Heatmap}} object
+#' @return A \code{\link[ComplexHeatmap]{Heatmap}} object if \code{title} is not
+#' set, otherwise, \code{\link[ggplot2]{ggplot}} object. 
 #' @export
 #' @author Yichen Wang
 plotSCEHeatmap <- function(inSCE, useAssay = 'logcounts', doLog = FALSE,
@@ -206,7 +208,7 @@ plotSCEHeatmap <- function(inSCE, useAssay = 'logcounts', doLog = FALSE,
     rowLabel = FALSE, colLabel = FALSE,
     rowLabelSize = 8, colLabelSize = 8,
     rowDend = TRUE, colDend = TRUE,
-    title = 'SCE Heatmap', rowTitle = 'Genes', colTitle = 'Cells',
+    title = NULL, rowTitle = 'Genes', colTitle = 'Cells',
     rowGap = grid::unit(0, 'mm'), colGap = grid::unit(0, 'mm'),
     border = FALSE, colorScheme = NULL, ...){
     # Check input
@@ -514,9 +516,19 @@ plotSCEHeatmap <- function(inSCE, useAssay = 'logcounts', doLog = FALSE,
                                   row_gap = rowGap, column_gap = colGap,
                                   border = border,
                                   ...)
-    HM <- ComplexHeatmap::draw(hm, column_title = title,
-                               column_title_gp = grid::gpar(fontsize = 16))
-    return(HM)
+    #HM <- ComplexHeatmap::draw(hm, column_title = title,
+    #                           column_title_gp = grid::gpar(fontsize = 16))
+    #if (!is.null(title)) {
+    #  hmGrob <- grid::grid.grabExpr(ComplexHeatmap::draw(hm))
+    #  titleText <- cowplot::ggdraw() + cowplot::draw_text(title)
+    #  hm <- cowplot::plot_grid(titleText,
+    #                           hmGrob,
+    #                           ncol = 1,
+    #                           rel_heights = c(1,19))
+    #} else {
+    #  hm <- cowplot::plot_grid(grid::grid.grabExpr(ComplexHeatmap::draw(hm)))
+    #}
+    return(hm)
 }
 
 #' @rdname plotSCEHeatmap
@@ -533,7 +545,7 @@ plotSCEDimReduceHeatmap <- function(inSCE, useReducedDim,
                                     rowLabel = FALSE, colLabel = FALSE,
                                     rowLabelSize = 8, colLabelSize = 8,
                                     rowDend = TRUE, colDend = TRUE,
-                                    title = 'SCE Heatmap', rowTitle = 'Dimensions', colTitle = 'Cells',
+                                    title = NULL, rowTitle = 'Dimensions', colTitle = 'Cells',
                                     rowGap = grid::unit(0, 'mm'), colGap = grid::unit(0, 'mm'),
                                     border = FALSE, colorScheme = NULL, ...) {
     mat <- t(expData(inSCE, useReducedDim))
