@@ -12,13 +12,16 @@ output:
 ## PCA {.tabset .tabset-fade}
 To reduce the adverse effects of the inherent technical noise in single-cell data on downstream clustering, reduced dimensions are computed where each dimension represents a set of correlated features. However, an important task is to select the number of components that should be utilized by the downstream methods. To select the number of principal components that should be used in the downstream analysis, JackStraw plot and Elbow plot visualized below provide convenience in the selection of the significant components that contain most of the variability.  
 
-```{r Seurat PCAs, JackStraw and Elbow plot, warning=FALSE}
+```{r Seurat PCAs, JackStraw and Elbow plot, warning=FALSE, eval = runDimRed}
 pcaParams <- list(
   inSCE = data,
   nPCs = initial.PC.numbers,
   verbose = FALSE)
 data <- do.call("seuratPCA", pcaParams)
 
+```
+
+```{r, warning=FALSE, eval = plotJackStraw}
 jackStrawParams <- list(
   inSCE = data,
   useAssay = "seuratScaledData",
@@ -31,7 +34,7 @@ data <- do.call("seuratComputeJackStraw", jackStrawParams)
 
 ### Elbow Plot {-}
 Elbow plot is plotted between the principal components (x-axis) and their standard deviation (y-axis), where a clear elbow between the components highlights the cut-off for the no. of components that should be selected as significant for downstream analysis.
-```{r Seurat PCAs, Elbow Plot, warning=FALSE}
+```{r Seurat PCAs, Elbow Plot, warning=FALSE, eval=plotElbowPlot}
 ElbowPlot <- seuratElbowPlot(
   inSCE = data,
   ndims = initial.PC.numbers,
@@ -44,7 +47,7 @@ ElbowPlot
 
 ### JackStraw Plot {-}
 JackStraw computes significance values for all genes in all principal components and plots these genes as a QQ-plot for each component and compares them with the uniform distribution (shown in dotted line). Overall p-values are also computed for each component, where statistically significant principal components can be selected for downstream analysis. Visually, components that lie above the dotted uniform distribution line should be selected. 
-```{r Seurat PCAs, JackStraw Plot, warning=FALSE, eval=jackStraw}
+```{r Seurat PCAs, JackStraw Plot, warning=FALSE, eval=plotJackStraw}
 JackStrawPlot <- seuratJackStrawPlot(
   inSCE = data,
   dims = initial.PC.numbers,
@@ -53,7 +56,7 @@ JackStrawPlot <- seuratJackStrawPlot(
 JackStrawPlot
 ```
 
-```{r Seurat Post PCA calculation, warning=FALSE}
+```{r Seurat Post PCA calculation, warning=FALSE, eval= plotJackStraw}
 if(!is.null(metadata(data)$seurat$obj@reductions$pca@jackstraw)){
   PC_Matrix <- metadata(data)$seurat$obj@reductions$pca@jackstraw@overall.p.values
   
@@ -75,10 +78,12 @@ metadata(data)$seurat$sctk$report$pcaParams <- pcaParams
 
 > PCA was applied to the scaled subset matrix that contained the *2000* top most variable genes to transform the data into reduced dimensions for clustering in the downstream analysis. Significant principal components will show a strong enrichment of genes with low p-values from the JackStraw plot or PC cutoff could also be determined roughly by looking at where a clear elbow is depicted in the elbow plot. The first *`r significant_PC`* components were selected based on the JackStraw *P-value > 0.01* as the cutoff. These *`r significant_PC`* principal components were determined to hold the true dimensionality of the dataset and will be used in the subsequent clustering analysis.
 
-### PC Heatmap {-}
-Heatmaps are plotted for each component that highlight the primary sources of heterogeneity in terms of features in the data. Both cells and features are ordered according to their PCA scores and this heatmap can be utilized to explore highly correlated feature sets in the data.
+```{r, results='asis', include=plotHeatmaps, eval= plotHeatmaps}
+cat("### PC Heatmap {-}")
+cat("Heatmaps are plotted for each component that highlight the primary sources of heterogeneity in terms of features in the data. Both cells and features are ordered according to their PCA scores and this heatmap can be utilized to explore highly correlated feature sets in the data.")
+```
 
-```{r Seurat PC Heatmap, fig.height = PC.separated.height, fig.width = 15, warning=FALSE}
+```{r Seurat PC Heatmap, fig.height = PC.separated.height, fig.width = 15, warning=FALSE, eval = plotHeatmaps}
 pcHeatmapParams <- list(
   inSCE = data,
   useAssay = "seuratScaledData",

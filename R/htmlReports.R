@@ -432,4 +432,3 @@ seuratReportResults <- function(inSCE,
   
   return(outSCE)
 }
-

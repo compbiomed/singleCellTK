@@ -149,14 +149,11 @@ plotDimRed(inSCE = sce, useReduction = "redDimPCA", xAxisLabel = "PC_1", yAxisLa
   sce <- runNormalization(inSCE = sce, normalizationMethod = "LogNormalize", useAssay = "counts", outAssayName = "LogNormalizedScaledCounts", scale = TRUE, trim = c(10, -10))
   # Find Variable Features
   sce <- runFeatureSelection(inSCE = sce, useAssay = "counts", hvgMethod = "vst")
-  HVGs <- getTopHVG(inSCE = sce, method = "vst", n = 2000)
-  HVGs <- stats::na.omit(HVGs)
-  tempAssay <- expData(inSCE = sce, assayName = "LogNormalizedScaledCounts")[HVGs,]
-  expData(inSCE = sce, assayName = "hvg2000", tag = "hvg", altExp = TRUE) <- tempAssay
+  sce <- getTopHVG(inSCE = sce, method = "vst", n = 2000, altExp = "hvg2000")
   # Run PCA
   sce <- runDimReduce(inSCE = sce, useAssay = "hvg2000", useAltExp = "hvg2000", reducedDimName = "redDimPCA", method = "seuratPCA", nComponents = 10)
   # Plot PCA
-  plotDimRed(inSCE = sce, useReduction = "redDimPCA", xAxisLabel = "PC_1", yAxisLabel = "PC_2")
+  plotDimRed(inSCE = sce, useReduction = "redDimPCA", xAxisLabel = "PC_3", yAxisLabel = "PC_2")
 ```
 
 ````{=html}

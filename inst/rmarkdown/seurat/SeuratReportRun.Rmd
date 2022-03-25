@@ -80,11 +80,36 @@ opts_chunk$set(
 ```
 
 <!-- Compute -->
+
+<!-- Normalization -->
 ```{r, echo=FALSE, results='asis', warning=FALSE, message=FALSE}
 resNormalization <- knitr::knit_child('reportSeuratNormalizeData.Rmd', quiet = TRUE)
+```
+
+<!-- Feature Selection -->
+```{r, echo=FALSE, results='asis', warning=FALSE, message=FALSE}
+runHVG <- TRUE
+plotHVG <- FALSE
 resFeatureSelection <- knitr::knit_child('reportSeuratFeatureSelection.Rmd', quiet = TRUE)
+```
+
+<!-- Scale Data -->
+```{r, echo=FALSE, results='asis', warning=FALSE, message=FALSE}
 resScaleData <- knitr::knit_child('reportSeuratScaleData.Rmd', quiet = TRUE)
+```
+
+<!-- Dimensionality Reduction -->
+```{r, echo=FALSE, results='asis', warning=FALSE, message=FALSE}
+runDimRed <- TRUE
+plotJackStraw <- TRUE
+plotElbowPlot <- TRUE
+plotHeatmaps <- TRUE
+
 resDimRed <- knitr::knit_child('reportSeuratDimRed.Rmd', quiet = TRUE)
+```
+
+<!-- Clustering -->
+```{r, echo=FALSE, results='asis', warning=FALSE, message=FALSE}
 resClustering <- knitr::knit_child('reportSeuratClustering.Rmd', quiet = TRUE)
 ```
 
