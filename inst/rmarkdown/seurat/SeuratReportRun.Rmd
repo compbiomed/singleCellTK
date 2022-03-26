@@ -101,15 +101,21 @@ resScaleData <- knitr::knit_child('reportSeuratScaleData.Rmd', quiet = TRUE)
 <!-- Dimensionality Reduction -->
 ```{r, echo=FALSE, results='asis', warning=FALSE, message=FALSE}
 runDimRed <- TRUE
-plotJackStraw <- TRUE
-plotElbowPlot <- TRUE
-plotHeatmaps <- TRUE
+plotJackStraw <- FALSE
+plotElbowPlot <- FALSE
+plotHeatmaps <- FALSE
+significant_PC <- 10
 
 resDimRed <- knitr::knit_child('reportSeuratDimRed.Rmd', quiet = TRUE)
 ```
 
 <!-- Clustering -->
 ```{r, echo=FALSE, results='asis', warning=FALSE, message=FALSE}
+runClustering <- TRUE
+minResolution <- 0.3
+maxResolution <- 1.5
+numClusters <- 10
+
 resClustering <- knitr::knit_child('reportSeuratClustering.Rmd', quiet = TRUE)
 ```
 
