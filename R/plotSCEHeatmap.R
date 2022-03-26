@@ -174,8 +174,7 @@ dataAnnotationColor <- function(inSCE, axis = NULL,
 #' \code{8}
 #' @param rowDend Whether to display row dendrogram. Default \code{TRUE}.
 #' @param colDend Whether to display column dendrogram. Default \code{TRUE}.
-#' @param title Deprecated. The main title of the whole plot. Default 
-#' \code{NULL}.
+#' @param title The main title of the whole plot. Default \code{NULL}.
 #' @param rowTitle The subtitle for the rows. Default \code{"Genes"}.
 #' @param colTitle The subtitle for the columns. Default \code{"Cells"}.
 #' @param rowGap A numeric value or a \code{\link[grid]{unit}} object. For the
@@ -193,8 +192,7 @@ dataAnnotationColor <- function(inSCE, axis = NULL,
 #' @examples
 #' data(scExample, package = "singleCellTK")
 #' plotSCEHeatmap(sce[1:3,1:3], useAssay = "counts")
-#' @return A \code{\link[ComplexHeatmap]{Heatmap}} object if \code{title} is not
-#' set, otherwise, \code{\link[ggplot2]{ggplot}} object. 
+#' @return A \code{\link[ggplot2]{ggplot}} object. 
 #' @export
 #' @author Yichen Wang
 plotSCEHeatmap <- function(inSCE, useAssay = 'logcounts', doLog = FALSE,
@@ -516,18 +514,21 @@ plotSCEHeatmap <- function(inSCE, useAssay = 'logcounts', doLog = FALSE,
                                   row_gap = rowGap, column_gap = colGap,
                                   border = border,
                                   ...)
+    # The only way to add a main title with ComplexHeatmap was to use `draw()`
+    # However, it shows the plot even if we return it to a variable
+    # Therefore, turning to use cowplot to combine a text plot to the single hm
     #HM <- ComplexHeatmap::draw(hm, column_title = title,
     #                           column_title_gp = grid::gpar(fontsize = 16))
-    #if (!is.null(title)) {
-    #  hmGrob <- grid::grid.grabExpr(ComplexHeatmap::draw(hm))
-    #  titleText <- cowplot::ggdraw() + cowplot::draw_text(title)
-    #  hm <- cowplot::plot_grid(titleText,
-    #                           hmGrob,
-    #                           ncol = 1,
-    #                           rel_heights = c(1,19))
-    #} else {
-    #  hm <- cowplot::plot_grid(grid::grid.grabExpr(ComplexHeatmap::draw(hm)))
-    #}
+    if (!is.null(title)) {
+      hmGrob <- grid::grid.grabExpr(ComplexHeatmap::draw(hm))
+      titleText <- cowplot::ggdraw() + cowplot::draw_text(title)
+      hm <- cowplot::plot_grid(titleText,
+                               hmGrob,
+                               ncol = 1,
+                               rel_heights = c(1,19))
+    } else {
+      hm <- cowplot::plot_grid(grid::grid.grabExpr(ComplexHeatmap::draw(hm)))
+    }
     return(hm)
 }
 

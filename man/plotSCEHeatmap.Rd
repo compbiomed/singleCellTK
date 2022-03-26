@@ -157,8 +157,7 @@ customized info. Default \code{FALSE}.}
 
 \item{colDend}{Whether to display column dendrogram. Default \code{TRUE}.}
 
-\item{title}{Deprecated. The main title of the whole plot. Default 
-\code{NULL}.}
+\item{title}{The main title of the whole plot. Default \code{NULL}.}
 
 \item{rowTitle}{The subtitle for the rows. Default \code{"Genes"}.}
 
@@ -185,8 +184,7 @@ Default \code{NULL}.}
 provides the expression level to plot. Only for \code{plotSCEDimReduceHeatmap}.}
 }
 \value{
-A \code{\link[ComplexHeatmap]{Heatmap}} object if \code{title} is not
-set, otherwise, \code{\link[ggplot2]{ggplot}} object.
+A \code{\link[ggplot2]{ggplot}} object.
 }
 \description{
 Plot heatmap of using data stored in SingleCellExperiment Object
