@@ -9,10 +9,13 @@ output:
     toc: yes
     code_folding: hide
 ---
-## Clustering
-Clustering helps in the identification of inherent cell-types in the data in an unsupervised manner by discovering the natural clusters that may exist on the basis of the transcriptome. Seurat uses the principal components for its graph-based clustering approach where it iteratively groups cells with similar expression patterns together into highly interconnected communities.  
 
-The clustering results can then be visualized using non-linear dimensionality reduction techniques including tSNE and UMAP. The goal of these algorithms is essentially to understand the structure of the data in high-dimensional space in order to place similar cells together in low-dimensional space thus making visualizing clusters much more intuitive. Cells in the data within the graph-based clusters determined above should co-localize on these plots. 
+```{r, echo=FALSE, results='asis', warning=FALSE, message=FALSE, eval = showClusterDesc}
+cat("## Clustering\n\n")
+cat("Clustering helps in the identification of inherent cell-types in the data in an unsupervised manner by discovering the natural clusters that may exist on the basis of the transcriptome. Seurat uses the principal components for its graph-based clustering approach where it iteratively groups cells with similar expression patterns together into highly interconnected communities.  
+
+The clustering results can then be visualized using non-linear dimensionality reduction techniques including tSNE and UMAP. The goal of these algorithms is essentially to understand the structure of the data in high-dimensional space in order to place similar cells together in low-dimensional space thus making visualizing clusters much more intuitive. Cells in the data within the graph-based clusters determined above should co-localize on these plots. ")
+```
 
 <!-- Compute -->
 ```{r, eval=runClustering}
@@ -24,25 +27,61 @@ for(i in 1:(((maxResolution-minResolution)*10)+1)){
 ```
 
 <!-- Plot -->
-### Different resolutions {.tabset .tabset-fade}
-Seurat uses a *resolution parameter* that sets the granularity of the clustering, with increased values leading to a greater number of identified clusters. The choice of resolution is slightly subjective and often varies on the size of the input data. Typically, for larger datasets, the optimal resolution often increases. The different clustering results are provided below using a set of different resolutions (ranging from 0.3 to 1.5) which can be visualized using tSNE and UMAP plots below:
+```{r, echo=FALSE, results='asis', warning=FALSE, message=FALSE, eval = showClusterDesc}
+cat("### Different resolutions {.tabset .tabset-fade} \n\n")
+cat("Seurat uses a *resolution parameter* that sets the granularity of the clustering, with increased values leading to a greater number of identified clusters. The choice of resolution is slightly subjective and often varies on the size of the input data. Typically, for larger datasets, the optimal resolution often increases. The different clustering results are provided below using a set of different resolutions (ranging from 0.3 to 1.5) which can be visualized using tSNE and UMAP plots below:")
+```
 
 <!-- #### tSNE {.tabset .tabset-pills -} -->
 ```{r, echo=FALSE, results='asis', warning=FALSE, message=FALSE}
 data <- seuratRunUMAP(data, useReduction = "pca", dims = significant_PC)
 data <- seuratRunTSNE(data, useReduction = "pca", dims = significant_PC)
-
 j <- minResolution
+
+if(!showClusterDesc){
+  headingRES <- "###"
+  headingClust <- "####"
+}else{
+  headingRES <- "####"
+  headingClust <- "#####"
+}
+
 for(i in 1:(((maxResolution-minResolution)*10)+1)){
-  cat("#### RES ", j, " {-} \n\n")
-  p1 <- seuratReductionPlot(data, useReduction = "tsne", groupBy = paste0("Seurat_louvain_Resolution", j), showLegend = TRUE)
+  cat(headingRES, " RES ", j, " {.tabset .tabset-pills -} \n\n")
+  cat(headingClust," Clusters {-} \n\n")
+    p1 <- seuratReductionPlot(data, useReduction = "tsne", groupBy = paste0("Seurat_louvain_Resolution", j), showLegend = TRUE)
   p2 <- seuratReductionPlot(data, useReduction = "umap", groupBy = paste0("Seurat_louvain_Resolution", j), showLegend = TRUE)
-  
   j <- j + 0.1
+  # p3 <- p1 + p2
+  # print(p3)
+  print(p1)
+  print(p2)
+  cat("\n\n")
+  cat(headingClust," Samples {-} \n\n")
+      p1 <- seuratReductionPlot(data, useReduction = "tsne", groupBy = group, showLegend = TRUE)
+  p2 <- seuratReductionPlot(data, useReduction = "umap", groupBy = group, showLegend = TRUE)
+  # p3 <- p1 + p2
+  # print(p3)
+  print(p1)
+  print(p2)
+  cat("\n\n")
   
-  p3 <- p1 + p2
-  print(p3)
+    cat(headingClust," Samples separated {-} \n\n")
+      p1 <- seuratReductionPlot(data, useReduction = "tsne", splitBy = group, showLegend = TRUE)
+  p2 <- seuratReductionPlot(data, useReduction = "umap", splitBy = group, showLegend = TRUE)
+  # p3 <- p1 + p2
+  # print(p3)
+  print(p1)
+  print(p2)
+  cat("\n\n")
   
+      cat(headingClust," Phenotype variable:", phenotype.groups," {-} \n\n")
+      p1 <- seuratReductionPlot(data, useReduction = "tsne", groupBy = phenotype.groups, showLegend = TRUE)
+  p2 <- seuratReductionPlot(data, useReduction = "umap", groupBy = phenotype.groups, showLegend = TRUE)
+  # p3 <- p1 + p2
+  # print(p3)
+  print(p1)
+  print(p2)
   cat("\n\n")
 }
 

@@ -89,7 +89,7 @@ resNormalization <- knitr::knit_child('reportSeuratNormalizeData.Rmd', quiet = T
 <!-- Feature Selection -->
 ```{r, echo=FALSE, results='asis', warning=FALSE, message=FALSE}
 runHVG <- TRUE
-plotHVG <- FALSE
+plotHVG <- TRUE
 resFeatureSelection <- knitr::knit_child('reportSeuratFeatureSelection.Rmd', quiet = TRUE)
 ```
 
@@ -101,8 +101,8 @@ resScaleData <- knitr::knit_child('reportSeuratScaleData.Rmd', quiet = TRUE)
 <!-- Dimensionality Reduction -->
 ```{r, echo=FALSE, results='asis', warning=FALSE, message=FALSE}
 runDimRed <- TRUE
-plotJackStraw <- FALSE
-plotElbowPlot <- FALSE
+plotJackStraw <- TRUE
+plotElbowPlot <- TRUE
 plotHeatmaps <- FALSE
 significant_PC <- 10
 
@@ -115,6 +115,7 @@ runClustering <- TRUE
 minResolution <- 0.3
 maxResolution <- 1.5
 numClusters <- 10
+showClusterDesc <- TRUE
 
 resClustering <- knitr::knit_child('reportSeuratClustering.Rmd', quiet = TRUE)
 ```

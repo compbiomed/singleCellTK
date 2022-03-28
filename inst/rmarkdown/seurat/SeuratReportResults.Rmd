@@ -88,201 +88,55 @@ opts_chunk$set(
 ## Selected Resolution {.tabset .tabset-fade}
 A final resolution of **`r seurat.selected.resolution`** was selected for downstream clustering that better reflects the input data.
 
-<!-- Compute -->
+<!-- Clustering -->
+```{r, echo=FALSE, results='hide', warning=FALSE, message=FALSE}
+runClustering <- TRUE
+minResolution <- 0.8
+maxResolution <- 0.8
+numClusters <- 10 #remove this later
+showClusterDesc <- FALSE
+
+resClustering <- knitr::knit_child('reportSeuratClustering.Rmd', quiet = TRUE)
+```
+
 ```{r, echo=FALSE, results='asis', warning=FALSE, message=FALSE}
-resClusteringSelectedResolution <- knitr::knit_child('reportSeuratFindClusters.Rmd', quiet = TRUE)
-cat(resClusteringSelectedResolution, sep = '\n')
+cat(resClustering, sep = '\n')
 ```
-
-### tSNE {.tabset .tabset-pills -}
-tSNE (Non-linear Dimensional Reduction) is a dimensionality reduction technique that places cells with similar local neighborhoods in high-dimensional space together in low-dimensional space. Using default parameters, a final resolution of **`r seurat.selected.resolution`** and **`r significant_PC`** principal components were chosen to better reflect the data, visualized in the tSNE plot below:
-
-<!-- Compute -->
-```{r, echo=FALSE, results='asis', warning=FALSE, message=FALSE}
-dr <- "tsne"
-resTSNE <- knitr::knit_child('reportSeuratUT.Rmd', quiet = TRUE)
-cat(resTSNE, sep = '\n')
-```
-#### Clusters {-}
-Seurat clusters cells and assigned a cluster label to each cell. The following plot is the tSNE representation of the clustering results, colored by the cluster labels.
-
-```{r Seurat tsne clusters 0.6}
-useReduction <- "tsne"
-showLegend <- TRUE
-groupBy <- NULL
-splitBy <- NULL
-```
-
-<!-- Reduction Plot -->
-```{r, echo=FALSE, results='asis', warning=FALSE, message=FALSE}
-res <- knitr::knit_child('reportSeuratReductionPlot.Rmd', quiet = TRUE)
-cat(res, sep = '\n')
-```
-
-> The data was clustered using the *`r significant_PC`* principal components previously computed using the community detection based *louvain* algorithm. Using this method, *13* clusters were identified by using a resolution of *0.8*. 
-
-#### Samples {-}
-The clustering pattern above determined to hold the true dimensionality of the dataset was grouped by sample (color) to visualize sample clusters.
-
-```{r}
-useReduction <- "tsne"
-showLegend <- TRUE
-groupBy <- group
-splitBy <- NULL
-```
-
-<!-- Reduction Plot -->
-```{r, echo=FALSE, results='asis', warning=FALSE, message=FALSE}
-res <- knitr::knit_child('reportSeuratReductionPlot.Rmd', quiet = TRUE)
-cat(res, sep = '\n')
-```
-
-> The data was clustered using the *`r significant_PC`* principal components previously computed using the community detection based *louvain* algorithm. Using this method, *13* clusters were identified by using a resolution of *0.8*. 
-
-#### Sample separated {-}
-Seurat clusters cells and assigned a cluster label to each cell. The following plot is the tSNE representation of the clustering results, split by each samples.
-
-```{r}
-useReduction <- "tsne"
-showLegend <- TRUE
-groupBy <- NULL
-splitBy <- group
-```
-
-<!-- Reduction Plot -->
-```{r, echo=FALSE, results='asis', warning=FALSE, message=FALSE}
-res <- knitr::knit_child('reportSeuratReductionPlot.Rmd', quiet = TRUE)
-cat(res, sep = '\n')
-```
-
-
-```{r Seurat tsne samples separated 0.6 phenotypes}
-tSNE_coloredby_phenotype <- list()
-for (i in 1:length(selected_phenotypes)){
-  useReduction <- "tsne"
-  showLegend <- TRUE
-  groupBy <- selected_phenotypes[i]
-  splitBy <- NULL
-
-  tSNE_coloredby_phenotype[[i]] <- knitr::knit_child('reportSeuratReductionPlot.Rmd', quiet = TRUE)
-}
-  
-```
-
-```{r Seurat tsne samples separated 0.6 phenotypes plot, results='asis', echo = FALSE}
-for (i in 1:length(selected_phenotypes)){
-  cat('\n\n#### Phenotype variable:  `', selected_phenotypes[i], '` {-} \n\n')
-  cat(tSNE_coloredby_phenotype[[i]], sep = '\n')
-}
-
-```
-
-> The data was clustered using the *`r significant_PC`* principal components previously computed using the community detection based *louvain* algorithm. Using this method, *13* clusters were identified by using a resolution of *0.8*. 
-
-### UMAP {.tabset .tabset-pills -}
-The uniform manifold approximation and projection(UMAP) is another dimension reduction techniques to visualize the cell clusters in a low-dimensional space. Using default parameters, a final resolution of **`r seurat.selected.resolution`** and **`r significant_PC`** PCs was chosen to better reflect the data, visualized in the following UMAP.
-
-```{r Seurat UMAP selected resolution}
-dr <- "umap"
-```
-
-<!-- UT -->
-```{r, echo=FALSE, results='asis', warning=FALSE, message=FALSE}
-res <- knitr::knit_child('reportSeuratUT.Rmd', quiet = TRUE)
-cat(res, sep = '\n')
-```
-
-
-#### Clusters {-}
-Seurat clusters cells and assigned a cluster label to each cell. The following plot is the UMAP representation of the clustering results, colored by the cluster labels.
-```{r}
-useReduction <- "umap"
-showLegend <- TRUE
-groupBy <- NULL
-splitBy <- NULL
-```
-
-<!-- Reduction Plot -->
-```{r, echo=FALSE, results='asis', warning=FALSE, message=FALSE}
-res <- knitr::knit_child('reportSeuratReductionPlot.Rmd', quiet = TRUE)
-cat(res, sep = '\n')
-```
-
-> The data was clustered using the *`r significant_PC`* principal components previously computed using the community detection based *louvain* algorithm. Using this method, *13* clusters were identified by using a resolution of *0.8*. 
-
-#### Samples {-}
-Seurat clusters cells and assigned a cluster label to each cell. The following plot is the UMAP representation of the clustering results, colored by the sample labels. 
-```{r}
-useReduction <- "umap"
-showLegend <- TRUE
-groupBy <- group
-splitBy <- NULL
-```
-
-<!-- Reduction Plot -->
-```{r, echo=FALSE, results='asis', warning=FALSE, message=FALSE}
-res <- knitr::knit_child('reportSeuratReductionPlot.Rmd', quiet = TRUE)
-cat(res, sep = '\n')
-```
-
-> The data was clustered using the *`r significant_PC`* principal components previously computed using the community detection based *louvain* algorithm. Using this method, *13* clusters were identified by using a resolution of *0.8*. 
-
-#### Sample separated {-}
-Seurat clusters cells and assigned a cluster label to each cell. The following plot is the UMAP representation of the clustering results, split by each samples.
-
-```{r}
-useReduction <- "umap"
-showLegend <- TRUE
-groupBy <- NULL
-splitBy <- group
-```
-
-<!-- Reduction Plot -->
-```{r, echo=FALSE, results='asis', warning=FALSE, message=FALSE}
-res <- knitr::knit_child('reportSeuratReductionPlot.Rmd', quiet = TRUE)
-cat(res, sep = '\n')
-```
-
-
-```{r Seurat umap samples separated phenotype}
-UMAP_coloredby_phenotype <- list()
-for (i in 1:length(selected_phenotypes)){
-    useReduction <- "umap"
-    showLegend <- TRUE
-    groupBy <- selected_phenotypes[i]
-    splitBy <- NULL
-
-  UMAP_coloredby_phenotype[[i]] <- knitr::knit_child('reportSeuratReductionPlot.Rmd', quiet = TRUE)
-}
-  
-```
-
-```{r Seurat umap samples separated phenotype plots, results='asis'}
-for (i in 1:length(selected_phenotypes)){
-  cat('\n\n#### Phenotype variable:  `', selected_phenotypes[i], '` {-} \n\n')
-  cat(UMAP_coloredby_phenotype[[i]], sep = '\n')
-}
-
-```
-
-> The data was clustered using the *`r significant_PC`* principal components previously computed using the community detection based *louvain* algorithm. Using this method, *13* clusters were identified by using a resolution of *0.8*. 
 
 <!-- Pre-selected Markers -->
-```{r, echo=FALSE, results='asis', warning=FALSE, message=FALSE}
-res <- knitr::knit_child('reportSeuratGenePlot.Rmd', quiet = TRUE)
+```{r preselected markers, echo=FALSE, results='asis', warning=FALSE, message=FALSE}
+runMarkerSelection <- FALSE
+plotMarkerSelection <- TRUE
+numClusters <- 1
+selectedOption <- paste0("Seurat_louvain_Resolution", seurat.selected.resolution)
+titleMarkerPlots <- "Plot Selected Features"
+countFeatures <- length(Pre_selected_markers)
+res <- knitr::knit_child('reportSeuratMarkerSelection.Rmd', quiet = TRUE)
 cat(res, sep = '\n')
 ```
 
 <!-- Marker Selection (Clusters) -->
-```{r, echo=FALSE, results='asis', warning=FALSE, message=FALSE}
+```{r markerSelection Clusters, echo=FALSE, results='asis', warning=FALSE, message=FALSE}
+runMarkerSelection <- TRUE
+plotMarkerSelection <- TRUE
+numClusters <- length(unique(colData(data)[[paste0("Seurat_louvain_Resolution", seurat.selected.resolution)]]))
 selectedOption <- paste0("Seurat_louvain_Resolution", seurat.selected.resolution)
+groupTitle <- "Clusters"
+titleMarkerPlots <- "Gene Plots of Top Markers by Clusters"
+countFeatures <- 10
 res <- knitr::knit_child('reportSeuratMarkerSelection.Rmd', quiet = TRUE)
 cat(res, sep = '\n')
 ```
 
 <!-- Marker Selection (Group) -->
 ```{r, echo=FALSE, results='asis', warning=FALSE, message=FALSE}
+runMarkerSelection <- TRUE
+plotMarkerSelection <- TRUE
+numClusters <- length(unique(colData(data)[[group]]))
 selectedOption <- group
+groupTitle <- group
+titleMarkerPlots <- paste0("Gene Plots of Top Markers by Group: ", group)
+countFeatures <- 10
 res <- knitr::knit_child('reportSeuratMarkerSelection.Rmd', quiet = TRUE)
 cat(res, sep = '\n')
 ```
