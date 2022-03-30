@@ -42,6 +42,10 @@ jobs:
       - name: Install XQuartz on macOS
         if: runner.os == 'macOS'
         run: brew install xquartz --cask
+
+      - name: Install fftw3 on macOS
+        if: runner.os == 'macOS'
+        run: brew install fftw
           
       - name: Run BiocCheck
         run: |
