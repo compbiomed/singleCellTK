@@ -68,7 +68,6 @@ Imports:
     multtest,
     plotly,
     plyr,
-    rstantools,
     ROCR,
     Rtsne,
     S4Vectors,
