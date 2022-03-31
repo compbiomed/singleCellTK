@@ -115,7 +115,7 @@ After examining the distributions of various QC metrics, poor quality cells will
 ```{R filter, message=FALSE, warning=FALSE}
 sce <- subsetSCECols(sce, colData = c("total > 600", "detected > 300",
                                       "scDblFinder_doublet_score < 0.8",
-                                      "subsets_mito_percent < 5"))
+                                      "mito_percent < 5"))
 
 # See number of cells after filtering
 ncol(sce)

@@ -20,7 +20,7 @@ construction by buildSNNGraph and graph clustering by
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.4.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.5.1</span>
       </span>
     </div>
 
@@ -35,13 +35,13 @@ construction by buildSNNGraph and graph clustering by
   <a href="../articles/installation.html">Installation</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
     Documentation
      
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Data</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Data</a>
       <ul class="dropdown-menu" role="menu"><li>
           <a href="../articles/import_data.html">Import Data</a>
         </li>
@@ -59,7 +59,7 @@ construction by buildSNNGraph and graph clustering by
         </li>
       </ul></li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">QC &amp; Filtering</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">QC &amp; Filtering</a>
       <ul class="dropdown-menu" role="menu"><li>
           <a href="../articles/cnsl_dropletqc.html">Droplet QC (R console)</a>
         </li>
@@ -74,7 +74,7 @@ construction by buildSNNGraph and graph clustering by
         </li>
       </ul></li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Normalization &amp; Batch Correction</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Normalization &amp; Batch Correction</a>
       <ul class="dropdown-menu" role="menu"><li>
           <a href="../articles/cnsl_normalization.html">Normalization</a>
         </li>
@@ -83,7 +83,7 @@ construction by buildSNNGraph and graph clustering by
         </li>
       </ul></li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Feature Selection &amp; Dimensionality Reduction</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Feature Selection &amp; Dimensionality Reduction</a>
       <ul class="dropdown-menu" role="menu"><li>
           <a href="../articles/cnsl_feature_selection.html">Feature Selection</a>
         </li>
@@ -98,7 +98,7 @@ construction by buildSNNGraph and graph clustering by
       <a href="../articles/clustering.html">Clustering</a>
     </li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Differential Expression &amp; Cell Type Labeling</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Differential Expression &amp; Cell Type Labeling</a>
       <ul class="dropdown-menu" role="menu"><li>
           <a href="../articles/differential_expression.html">Differential Expression</a>
         </li>
@@ -110,7 +110,7 @@ construction by buildSNNGraph and graph clustering by
         </li>
       </ul></li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Pathway &amp; Enrichment Analysis</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Pathway &amp; Enrichment Analysis</a>
       <ul class="dropdown-menu" role="menu"><li>
           <a href="../articles/cnsl_enrichR.html">EnrichR</a>
         </li>
@@ -119,7 +119,7 @@ construction by buildSNNGraph and graph clustering by
         </li>
       </ul></li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Curated Workflows</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Curated Workflows</a>
       <ul class="dropdown-menu" role="menu"><li>
           <a href="../articles/cnsl_seurat_curated_workflow.html">Seurat</a>
         </li>
@@ -128,7 +128,7 @@ construction by buildSNNGraph and graph clustering by
         </li>
       </ul></li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Visualization</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Visualization</a>
       <ul class="dropdown-menu" role="menu"><li>
           <a href="../articles/visualization.html">General Visualization</a>
         </li>
@@ -138,7 +138,7 @@ construction by buildSNNGraph and graph clustering by
       </ul></li>
   </ul></li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
     Tutorials
      
     <span class="caret"></span>
@@ -210,29 +210,29 @@ construction by <code><a href="https://rdrr.io/pkg/scran/man/buildSNNGraph.html"
 object.</p></dd>
 <dt>useAssay</dt>
 <dd><p>A single <code>character</code>, specifying which
-<code><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">assay</a></code> to perform the clustering algorithm
+<code>assay</code> to perform the clustering algorithm
 on. Default <code>NULL</code>.</p></dd>
 <dt>useReducedDim</dt>
 <dd><p>A single <code>character</code>, specifying which
-low-dimension representation (<code><a href="https://rdrr.io/pkg/SingleCellExperiment/man/reducedDims.html" class="external-link">reducedDim</a></code>)
+low-dimension representation (<code>reducedDim</code>)
 to perform the clustering algorithm on. Default <code>NULL</code>.</p></dd>
 <dt>useAltExp</dt>
 <dd><p>A single <code>character</code>, specifying the assay which
-<code><a href="https://rdrr.io/pkg/SingleCellExperiment/man/altExps.html" class="external-link">altExp</a></code> to perform the clustering
+<code>altExp</code> to perform the clustering
 algorithm on. Default <code>NULL</code>.</p></dd>
 <dt>altExpAssay</dt>
 <dd><p>A single <code>character</code>, specifying which
-<code><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">assay</a></code> in the chosen
-<code><a href="https://rdrr.io/pkg/SingleCellExperiment/man/altExps.html" class="external-link">altExp</a></code> to work on. Only used when
+<code>assay</code> in the chosen
+<code>altExp</code> to work on. Only used when
 <code>useAltExp</code> is set. Default <code>"counts"</code>.</p></dd>
 <dt>altExpRedDim</dt>
 <dd><p>A single <code>character</code>, specifying which
-<code><a href="https://rdrr.io/pkg/SingleCellExperiment/man/reducedDims.html" class="external-link">reducedDim</a></code> within the <code><a href="https://rdrr.io/pkg/SingleCellExperiment/man/altExps.html" class="external-link">altExp</a></code> specified by
+<code>reducedDim</code> within the <code>altExp</code> specified by
 <code>useAltExp</code> to use. Only used when <code>useAltExp</code> is set. Default
 <code>NULL</code>.</p></dd>
 <dt>clusterName</dt>
 <dd><p>A single <code>character</code>, specifying the name to store
-the cluster label in <code><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></code>. Default
+the cluster label in <code>colData</code>. Default
 <code>"scranSNN_cluster"</code>.</p></dd>
 <dt>k</dt>
 <dd><p>An <code>integer</code>, the number of nearest neighbors used to construct
@@ -267,7 +267,7 @@ detection algorithm to work on the SNN graph. Choose from <code>"walktrap"</code
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"mouseBrainSubsetSCE"</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">mouseBrainSubsetSCE</span> <span class="op">&lt;-</span> <span class="fu">runScranSNN</span><span class="op">(</span><span class="va">mouseBrainSubsetSCE</span>,</span>
 <span class="r-in">                                   useReducedDim <span class="op">=</span> <span class="st">"PCA_logcounts"</span><span class="op">)</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Thu Mar 17 12:24:41 2022 ... Running 'scran SNN clustering'</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Thu Mar 31 12:11:44 2022 ... Running 'scran SNN clustering'</span>
 </code></pre></div>
     </div>
   </div>
@@ -282,7 +282,7 @@ detection algorithm to work on the SNN graph. Choose from <code>"walktrap"</code
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.</p>
 </div>
 
       </footer></div>

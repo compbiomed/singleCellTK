@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.4.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.5.1</span>
       </span>
     </div>
 
@@ -291,7 +291,7 @@
 <dd><p>Arguments to pass to specific methods when using the generic 
 <code>runDEAnalysis()</code>.</p></dd>
 <dt>inSCE</dt>
-<dd><p><a href="https://rdrr.io/pkg/SingleCellExperiment/man/SingleCellExperiment.html" class="external-link">SingleCellExperiment</a> inherited object.</p></dd>
+<dd><p>SingleCellExperiment inherited object.</p></dd>
 <dt>useAssay</dt>
 <dd><p>character. A string specifying which assay to use for the
 DE regression. Default <code>"counts"</code> for DESeq2, <code>"logcounts"</code> for 
@@ -302,11 +302,11 @@ for DE analysis. Usually a pathway analysis result matrix. Set
 <code>useAssay</code> to <code>NULL</code> when using. Default <code>NULL</code>.</p></dd>
 <dt>index1</dt>
 <dd><p>Any type of indices that can subset a
-<a href="https://rdrr.io/pkg/SingleCellExperiment/man/SingleCellExperiment.html" class="external-link">SingleCellExperiment</a> inherited object by cells. Specifies
+SingleCellExperiment inherited object by cells. Specifies
 which cells are of interests. Default <code>NULL</code>.</p></dd>
 <dt>index2</dt>
 <dd><p>Any type of indices that can subset a
-<a href="https://rdrr.io/pkg/SingleCellExperiment/man/SingleCellExperiment.html" class="external-link">SingleCellExperiment</a> inherited object by cells. specifies
+SingleCellExperiment inherited object by cells. specifies
 the control group against those specified by <code>index1</code>. If
 <code>NULL</code> when using index specification, <code>index1</code> cells will be
 compared with all other cells. Default <code>NULL</code>.</p></dd>
@@ -353,7 +353,7 @@ sanity check to see if the counts are logged. Default <code>TRUE</code>.</p></dd
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>The input <a href="https://rdrr.io/pkg/SingleCellExperiment/man/SingleCellExperiment.html" class="external-link">SingleCellExperiment</a> object with
+    <p>The input SingleCellExperiment object with
 <code>metadata(inSCE)$diffExp</code> updated with the results: a list named by
 <code>analysisName</code>, with <code>$groupNames</code> containing the naming of the
 two conditions, <code>$useAssay</code> and <code>$useReducedDim</code> storing the matrix

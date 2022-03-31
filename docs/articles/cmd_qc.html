@@ -34,7 +34,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.4.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.5.1</span>
       </span>
     </div>
 
@@ -50,14 +50,14 @@
   <a href="../articles/installation.html">Installation</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
     Documentation
      
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
 <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Data</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Data</a>
       <ul class="dropdown-menu" role="menu">
 <li>
           <a href="../articles/import_data.html">Import Data</a>
@@ -77,7 +77,7 @@
       </ul>
 </li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">QC &amp; Filtering</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">QC &amp; Filtering</a>
       <ul class="dropdown-menu" role="menu">
 <li>
           <a href="../articles/cnsl_dropletqc.html">Droplet QC (R console)</a>
@@ -94,7 +94,7 @@
       </ul>
 </li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Normalization &amp; Batch Correction</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Normalization &amp; Batch Correction</a>
       <ul class="dropdown-menu" role="menu">
 <li>
           <a href="../articles/cnsl_normalization.html">Normalization</a>
@@ -105,7 +105,7 @@
       </ul>
 </li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Feature Selection &amp; Dimensionality Reduction</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Feature Selection &amp; Dimensionality Reduction</a>
       <ul class="dropdown-menu" role="menu">
 <li>
           <a href="../articles/cnsl_feature_selection.html">Feature Selection</a>
@@ -122,7 +122,7 @@
       <a href="../articles/clustering.html">Clustering</a>
     </li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Differential Expression &amp; Cell Type Labeling</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Differential Expression &amp; Cell Type Labeling</a>
       <ul class="dropdown-menu" role="menu">
 <li>
           <a href="../articles/differential_expression.html">Differential Expression</a>
@@ -136,7 +136,7 @@
       </ul>
 </li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Pathway &amp; Enrichment Analysis</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Pathway &amp; Enrichment Analysis</a>
       <ul class="dropdown-menu" role="menu">
 <li>
           <a href="../articles/cnsl_enrichR.html">EnrichR</a>
@@ -147,7 +147,7 @@
       </ul>
 </li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Curated Workflows</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Curated Workflows</a>
       <ul class="dropdown-menu" role="menu">
 <li>
           <a href="../articles/cnsl_seurat_curated_workflow.html">Seurat</a>
@@ -158,7 +158,7 @@
       </ul>
 </li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Visualization</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Visualization</a>
       <ul class="dropdown-menu" role="menu">
 <li>
           <a href="../articles/visualization.html">General Visualization</a>
@@ -171,7 +171,7 @@
   </ul>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
     Tutorials
      
     <span class="caret"></span>
@@ -225,9 +225,9 @@
 
     
     
-<div class="section level2">
-<h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
-</h2>
+<div class="section level1">
+<h1 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
+</h1>
 <p>This pipeline will import data from single-cell preprocessing algorithms (e.g. <a href="https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/what-is-cell-ranger" class="external-link">CellRanger</a>, <a href="https://data.humancellatlas.org/pipelines/optimus-workflow" class="external-link">HCA Optimus</a>, <a href="https://salmon.readthedocs.io/en/latest/alevin.html" class="external-link">Alevin</a>), generate various quality control metrics (e.g. general metrics, doublet scores, contamination estimates) using multiple tools, and output results in standard data containers (e.g. <a href="https://rdrr.io/bioc/SingleCellExperiment/man/SingleCellExperiment.html" class="external-link">SingleCellExperiment</a>, <a href="https://satijalab.org/seurat/index.html" class="external-link">Seurat object</a>, <a href="https://github.com/theislab/anndata" class="external-link">AnnData</a>).</p>
 <p>For data generated with microfluidic devices, the first major step after UMI counting is to detect cell barcodes that represent droplets containing a true cell and exclude empty droplets that only contain ambient RNA.</p>
 <ul>
@@ -239,45 +239,45 @@
 <p>The Droplet and Cell matrices have also been called “raw” and “filtered” matrices, respectively, by tools such as CellRanger. However, using the term “filtered” can be ambiguous as other forms of cell filtering can be applied beyond empty droplets (e.g. excluding poor-quality cells based on low number of UMIs). Both the original droplet matrix and the filtered cell matrix can be QC’ed in this pipeline. However, QC of the droplet matrix is specific for single cell data generated from microfluidic devices (e.g. 10X).</p>
 <p>To run the pipeline, users can <a href="installation.html">install the singleCellTK (SCTK) package</a> along with Python dependencies that may be potentially used (mainly <a href="https://github.com/swolock/scrublet" class="external-link">Scrublet</a> and <a href="https://github.com/theislab/anndata" class="external-link">AnnData</a>). Alternatively, users can run the Docker version of the pipeline which is described in detail further down in this page.</p>
 </div>
+<div class="section level1">
+<h1 id="running-the-pipeline">Running the pipeline<a class="anchor" aria-label="anchor" href="#running-the-pipeline"></a>
+</h1>
 <div class="section level2">
-<h2 id="running-the-pipeline">Running the pipeline<a class="anchor" aria-label="anchor" href="#running-the-pipeline"></a>
+<h2 id="running-sctk-qc-with-sctk-local-installation">Running SCTK-QC with SCTK local installation<a class="anchor" aria-label="anchor" href="#running-sctk-qc-with-sctk-local-installation"></a>
 </h2>
-<div class="section level3">
-<h3 id="running-sctk-qc-with-sctk-local-installation">Running SCTK-QC with SCTK local installation<a class="anchor" aria-label="anchor" href="#running-sctk-qc-with-sctk-local-installation"></a>
-</h3>
 <p>To run the pipeline script, users will need to download the <code>SCTK_runQC.R</code> script file <a href="https://github.com/compbiomed/singleCellTK/blob/master/exec/SCTK_runQC.R" class="external-link">here</a>. Also, the tutorial of installing singleCellTK package can found in <a href="installation.html">Installation</a> page.</p>
 <p>A simple example to run this pipeline on the ‘Cell’ matrix generated by Cellranger V3 is shown below:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true"></a><span class="ex">Rscript</span> SCTK_runQC.R <span class="kw">\</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true"></a><span class="ex">-b</span> /base/path <span class="kw">\</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true"></a><span class="ex">-P</span> CellRangerV3 <span class="kw">\</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true"></a><span class="ex">-s</span> SampleName <span class="kw">\</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true"></a><span class="ex">-o</span> Output_Directory <span class="kw">\</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true"></a><span class="ex">-S</span> TRUE <span class="kw">\</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true"></a><span class="ex">-F</span> SCE,AnnData,FlatFile,Seurat <span class="kw">\</span></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true"></a><span class="ex">-g</span> /Path_to_gmt/name_of_gmt_file.gmt <span class="kw">\</span></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true"></a><span class="ex">-d</span> Cell <span class="kw">\</span></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true"></a><span class="ex">-n</span> 2 <span class="kw">\</span></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true"></a><span class="ex">-T</span> MulticoreParam </span></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">Rscript</span> SCTK_runQC.R <span class="dt">\</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>-b /base/path <span class="dt">\</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>-P CellRangerV3 <span class="dt">\</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>-s SampleName <span class="dt">\</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>-o Output_Directory <span class="dt">\</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>-S TRUE <span class="dt">\</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>-F SCE,AnnData,FlatFile,Seurat <span class="dt">\</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>-g /Path_to_gmt/name_of_gmt_file.gmt <span class="dt">\</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>-d Cell <span class="dt">\</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>-n 2 <span class="dt">\</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>-T MulticoreParam </span></code></pre></div>
 <p>This pipeline enables different ways to import CellrangerV2/CellrangerV3 data for flexibility. Also, the pipeline is compatible with datasets generated by other algorithms. Please refer to the section <a href="#importing-data-from-different-preprocessing-tools"><em>Importing data from different preprocessing tools</em></a> for more details.</p>
 <p>User can quantify expression of mitochondrial genes by passing a GMT files containing mitochondrial genes (with <code>-g/--gmt</code> argument). User can also quantify expression of mitochondrial genes for human or mouse dataset by setting <code>-M/--detectMitoLevel</code> argument. Please refer to the section <a href="#gene-sets-1"><em>Gene sets</em></a> for more details.</p>
 <p>Besides, the pipeline contains various parameters to control the process of quality control. Please refer to the section <a href="#parameters-1"><em>Parameters</em></a> for more details.</p>
 </div>
+<div class="section level2">
+<h2 id="running-sctk-qc-with-docker">Running SCTK-QC with Docker<a class="anchor" aria-label="anchor" href="#running-sctk-qc-with-docker"></a>
+</h2>
 <div class="section level3">
-<h3 id="running-sctk-qc-with-docker">Running SCTK-QC with Docker<a class="anchor" aria-label="anchor" href="#running-sctk-qc-with-docker"></a>
+<h3 id="installing-docker">Installing docker<a class="anchor" aria-label="anchor" href="#installing-docker"></a>
 </h3>
-<div class="section level4">
-<h4 id="installing-docker">Installing docker<a class="anchor" aria-label="anchor" href="#installing-docker"></a>
-</h4>
 <p>If you have not used docker before, you can follow the instruction to install and set up docker in <a href="https://docs.docker.com/desktop/windows/install/" class="external-link">Windows</a>, <a href="https://docs.docker.com/desktop/mac/install/" class="external-link">Mac</a> or <a href="https://runnable.com/docker/install-docker-on-linux" class="external-link">Linux</a>.</p>
 </div>
-<div class="section level4">
-<h4 id="running-sctk-qc-pipeline-using-docker-image">Running SCTK-QC pipeline using docker image<a class="anchor" aria-label="anchor" href="#running-sctk-qc-pipeline-using-docker-image"></a>
-</h4>
+<div class="section level3">
+<h3 id="running-sctk-qc-pipeline-using-docker-image">Running SCTK-QC pipeline using docker image<a class="anchor" aria-label="anchor" href="#running-sctk-qc-pipeline-using-docker-image"></a>
+</h3>
 <p>The Docker image can be obtained by running:</p>
-<pre><code>docker pull campbio/sctk_qc:2.4.1</code></pre>
+<pre><code>docker pull campbio/sctk_qc:2.5.1</code></pre>
 <p>The usage of each argument is the same as running command line analysis. Here is an example code to perform QC on CellRangerV3 data with SCTK docker:</p>
 <pre><code>docker run --rm -v /path/to/data:/SCTK_docker \
-  -it campbio/sctk_qc:2.4.1 \
+  -it campbio/sctk_qc:2.5.1 \
   -b /SCTK_docker/cellranger_folder \
   -P CellRangerV3 \
   -s SampleName \
@@ -288,15 +288,15 @@
 <p>The docker image will not access files in your host file system by default. To get access to the files on your machine, you can properly set up a mount volume. Noted that the transcriptome data and GMT file needed to be accessible to the container through mounted volume. In the above example, mount volume is enabled for accessing input and output directory using argument <code>-v</code>. The transcriptome and GMT files stored in the path <code>/path/to/data</code> of your machine file system is now available in <code>/SCTK_docker</code> folder inside the docker. To learn more about mounted volumes, please check out <a href="https://docs.docker.com/storage/volumes/" class="external-link">this post</a>.</p>
 <p>Please refer to the section <a href="#parameters-1"><em>Parameters</em></a> for more details about parameters.</p>
 </div>
-<div class="section level4">
-<h4 id="running-sctk-qc-pipeline-docker-image-with-singularity">Running SCTK-QC pipeline docker image with singularity<a class="anchor" aria-label="anchor" href="#running-sctk-qc-pipeline-docker-image-with-singularity"></a>
-</h4>
+<div class="section level3">
+<h3 id="running-sctk-qc-pipeline-docker-image-with-singularity">Running SCTK-QC pipeline docker image with singularity<a class="anchor" aria-label="anchor" href="#running-sctk-qc-pipeline-docker-image-with-singularity"></a>
+</h3>
 <p>Users who have not used <a href="https://sylabs.io/guides/2.6/user-guide/introduction.html" class="external-link">Singularity</a> before can install it following the instruction <a href="https://sylabs.io/guides/3.1/user-guide/installation.html" class="external-link">here</a>. The Singularity image for SCTK-QC can be easily built using Docker Hub as a source:</p>
-<pre><code>singularity pull docker://campbio/sctk_qc:2.4.1</code></pre>
+<pre><code>singularity pull docker://campbio/sctk_qc:2.5.1</code></pre>
 <p>The usage of singleCellTK Singularity image is very similar to that of Docker. In Singularity 3.0+, the mount volume is <a href="https://sylabs.io/guides/3.1/user-guide/bind_paths_and_mounts.html" class="external-link">automatically overlaid</a>.</p>
 <p>It’s recommended to re-set the home directory when you run singularity. Singularity will mount <code>\$HOME</code> path on your file system by default, which might contain your personal R/Python library folder. If we don’t re-set the home to mount, singularity will try to use R/Python libraries which are not built within the singularity image and cause some conflicts. You can point to some “sanitized home”, which is different from <code>\$HOME</code> path on your machine, using argument <code>-H</code>/<code>--home</code> <a href="https://sylabs.io/guides/3.1/user-guide/bind_paths_and_mounts.html" class="external-link">(see more information)</a>. Or you can disable the <code>\$HOME</code> binding by setting the argument <code>--no-home</code>. Besides, you can use argument <code>--bind</code>/<code>-B</code> to specify your own mount volume, which is the path that contains the dataset and will be used to store the output of QC pipeline. The example is shown as below:</p>
 <pre><code>singularity run --home=/PathToSanitizedHome \
-  --bind /PathToData:/data sctk_qc_2.4.1.sif \
+  --bind /PathToData:/data sctk_qc_2.5.1.sif \
   -b /SCTK_docker/cellranger_folder \
   -P CellRangerV3 \
   -s SampleName \
@@ -305,9 +305,9 @@
   -S TRUE \
   -F SCE,AnnData,FlatFile,Seurat</code></pre>
 </div>
-<div class="section level4">
-<h4 id="important-note-about-docker-image">Important note about docker image<a class="anchor" aria-label="anchor" href="#important-note-about-docker-image"></a>
-</h4>
+<div class="section level3">
+<h3 id="important-note-about-docker-image">Important note about docker image<a class="anchor" aria-label="anchor" href="#important-note-about-docker-image"></a>
+</h3>
 <p>One important note about this docker image: please run the docker image on a machine / node which has a <strong>CPU</strong> with the following architecture: <strong>broadwell, haswell, skylake, cascadelake or the latest architecture</strong>. This can avoid having the “illegal operation” issue from Scrublet package, because this Python package are compiled by SIMD instructions that are compatible with these CPU architectures. Please specify the CPU architecture, at the script header after <code>#$ -l cpu_arch=</code>, as one of the following: <code>broadwell</code>, <code>haswell</code>, <code>skylake</code>, <code>cascadelake</code> or latest architecture. One of the example is shown below:</p>
 <pre><code>#!/bin/bash
 #$ -cwd
@@ -316,7 +316,7 @@
 #$ -l cpu_arch=broadwell|haswell|skylake|cascadelake
 
 singularity run --home=/PathToSanitizedHome  ### this also works for 'docker run'
-  --bind /PathToData:/data sctk_qc_2.4.1.sif \
+  --bind /PathToData:/data sctk_qc_2.5.1.sif \
   -b /SCTK_docker/cellranger_folder \
   -P CellRangerV3 \
   -s SampleName \
@@ -327,16 +327,16 @@ singularity run --home=/PathToSanitizedHome  ### this also works for 'docker run
 </div>
 </div>
 </div>
+<div class="section level1">
+<h1 id="parameters">Parameters<a class="anchor" aria-label="anchor" href="#parameters"></a>
+</h1>
 <div class="section level2">
-<h2 id="parameters">Parameters<a class="anchor" aria-label="anchor" href="#parameters"></a>
+<h2 id="table-of-parameters">Table of Parameters<a class="anchor" aria-label="anchor" href="#table-of-parameters"></a>
 </h2>
-<div class="section level3">
-<h3 id="table-of-parameters">Table of Parameters<a class="anchor" aria-label="anchor" href="#table-of-parameters"></a>
-</h3>
 <p>The pipeline contains various parameters to control the process of quality control. The function of each parameter is shown below:</p>
-<div class="section level4">
-<h4 id="required-arguments">Required arguments<a class="anchor" aria-label="anchor" href="#required-arguments"></a>
-</h4>
+<div class="section level3">
+<h3 id="required-arguments">Required arguments<a class="anchor" aria-label="anchor" href="#required-arguments"></a>
+</h3>
 <p>The required arguments are as follows:</p>
 <table class="table">
 <colgroup>
@@ -381,9 +381,9 @@ singularity run --home=/PathToSanitizedHome  ### this also works for 'docker run
 </tbody>
 </table>
 </div>
-<div class="section level4">
-<h4 id="optional-arguments">Optional arguments<a class="anchor" aria-label="anchor" href="#optional-arguments"></a>
-</h4>
+<div class="section level3">
+<h3 id="optional-arguments">Optional arguments<a class="anchor" aria-label="anchor" href="#optional-arguments"></a>
+</h3>
 <p>The optional arguments are as follows. Their usage depend on type of data and user-defined behaviour.</p>
 <table class="table">
 <colgroup>
@@ -500,9 +500,9 @@ singularity run --home=/PathToSanitizedHome  ### this also works for 'docker run
 </table>
 </div>
 </div>
-<div class="section level3">
-<h3 id="specify-parameters-using-yaml-file">Specify parameters using YAML file<a class="anchor" aria-label="anchor" href="#specify-parameters-using-yaml-file"></a>
-</h3>
+<div class="section level2">
+<h2 id="specify-parameters-using-yaml-file">Specify parameters using YAML file<a class="anchor" aria-label="anchor" href="#specify-parameters-using-yaml-file"></a>
+</h2>
 <p>Users can specify parameters for QC algorithms in this pipeline with a YAML file (supplied with <code>-y</code>/<code>--yamlFile</code> argument). The current supported QC algorithms including doublet detection (<code>bcds</code>, <code>cxds</code>, <code>cxds_bcds_hybrid</code>, <code>doubletFinder</code>, <code>doubletCells</code> and <code>scrublet</code>), decontamination (<code>decontX</code>), emptyDrop detection (<code>emptyDrops</code>) and barcodeRankDrops (<code>barcodeRanks</code>). A summary of each function is shown below:</p>
 <div class="figure">
 <img src="qc_yamlParameters.png" alt=""><p class="caption">QC yaml parameters</p>
@@ -531,62 +531,62 @@ singularity run --home=/PathToSanitizedHome  ### this also works for 'docker run
     <span class="va">lower</span><span class="op">:</span> <span class="fl">50</span></code></pre>
 <p>The format of YAML file can be found <a href="https://docs.ansible.com/ansible/latest/reference_appendices/YAMLSyntax.html" class="external-link">here</a>. The parameters should be consistent with the parameters of each QC function in SCTK. Parameters that are not defined in this YAML file will use the default value. Please refer <a href="../reference/index.html#quality-control-preprocessing">reference</a> for detailed information about arguments of each QC function.</p>
 </div>
-<div class="section level3">
-<h3 id="parallel-computing">Parallel computing<a class="anchor" aria-label="anchor" href="#parallel-computing"></a>
-</h3>
+<div class="section level2">
+<h2 id="parallel-computing">Parallel computing<a class="anchor" aria-label="anchor" href="#parallel-computing"></a>
+</h2>
 <p>SCTK-QC pipeline enables parallel computing to speed up the analysis. Parallel computing is enabled by setting <code>-n</code>/<code>--numCores</code> greater than 1. The <code>-n</code>/<code>--numCores</code> is used to set the number of cores used for the pipeline.</p>
 <p>The backend of parallel computing is supported by <a href="https://bioconductor.org/packages/release/bioc/html/BiocParallel.html" class="external-link">BiocParallel</a> package. Therefore, users can select different types of parallel evaluation by setting <code>-T</code>/<code>--parallelType</code> argument. Default is <code>MulticoreParam</code>. Currently, <code>MulticoreParam</code> and <code>SnowParam</code> are supported for <code>-T</code> argument. However, <code>MulticoreParam</code> is not supported by Windows system. Windows user can choose <code>SnowParam</code> as the backend of parallel computing.</p>
 </div>
 </div>
+<div class="section level1">
+<h1 id="description-of-input-data">Description of input data<a class="anchor" aria-label="anchor" href="#description-of-input-data"></a>
+</h1>
 <div class="section level2">
-<h2 id="description-of-input-data">Description of input data<a class="anchor" aria-label="anchor" href="#description-of-input-data"></a>
+<h2 id="qc-on-combinations-of-droplet-and-cell-matrix">QC on combinations of droplet and cell matrix<a class="anchor" aria-label="anchor" href="#qc-on-combinations-of-droplet-and-cell-matrix"></a>
 </h2>
-<div class="section level3">
-<h3 id="qc-on-combinations-of-droplet-and-cell-matrix">QC on combinations of droplet and cell matrix<a class="anchor" aria-label="anchor" href="#qc-on-combinations-of-droplet-and-cell-matrix"></a>
-</h3>
 <p><code>-d</code> argument is used to specify which type of count matrix is used in the pipeline. Default is <code>Both</code>, which means the pipeline will run quality control on both droplet and cell count data.</p>
 <p>Users can also choose to run SCTK-QC pipeline on only the droplet count or cell count matrix, instead of running on both. In this case, the pipeline will only take the single input and perform QC on it. An example is shown below:</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true"></a><span class="ex">Rscript</span> SCTK_runQC.R <span class="kw">\</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true"></a><span class="ex">-b</span> /base/path <span class="kw">\</span></span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true"></a><span class="ex">-P</span> Preprocessing_Algorithm <span class="kw">\</span></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true"></a><span class="ex">-s</span> SampleName <span class="kw">\</span></span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true"></a><span class="ex">-o</span> Output_Directory <span class="kw">\</span></span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true"></a><span class="ex">-S</span> TRUE <span class="kw">\</span></span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true"></a><span class="ex">-F</span> SCE,AnnData,FlatFile,Seurat <span class="kw">\</span></span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true"></a><span class="ex">-d</span> Droplet <span class="kw">\</span></span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true"></a><span class="ex">-D</span> TRUE <span class="kw">\</span></span>
-<span id="cb8-10"><a href="#cb8-10" aria-hidden="true"></a><span class="ex">-m</span> EmptyDrops</span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ex">Rscript</span> SCTK_runQC.R <span class="dt">\</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>-b /base/path <span class="dt">\</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>-P Preprocessing_Algorithm <span class="dt">\</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>-s SampleName <span class="dt">\</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>-o Output_Directory <span class="dt">\</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>-S TRUE <span class="dt">\</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>-F SCE,AnnData,FlatFile,Seurat <span class="dt">\</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>-d Droplet <span class="dt">\</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>-D TRUE <span class="dt">\</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>-m EmptyDrops</span></code></pre></div>
 <p>If <code>-d</code> argument is set as <code>Droplet</code>, the QC pipeline will only take droplet count matrix as input and perform quality control. You can choose whether to detect cells from the droplet matrix by setting <code>-D</code> as <code>TRUE</code>. If yes, cell count matrix will be detected and the pipeline will also perform quality control on this matrix and output the result. You could further define the method used to detect cells from droplet matrix by setting <code>-m</code> argument. <code>-m</code> could be one of <code>EmptyDrops</code>, <code>Knee</code> or <code>Inflection</code>. <code>EmptyDrops</code> will keep cells that pass the <code><a href="../reference/runEmptyDrops.html">runEmptyDrops()</a></code> function test. <code>Knee</code> and <code>Inflection</code> will keep cells that pass the knee or inflection point returned from <code><a href="../reference/runBarcodeRankDrops.html">runBarcodeRankDrops()</a></code> function.</p>
 <p>If <code>-d</code> argument is set as <code>Cell</code>, the QC pipeline will only take cell count matrix as input and perform quality control. A figure showing the analysis steps and outputs of different inputs is shown below:</p>
 <p><img src="qc_singleInput.png" alt="QC single input"><br></p>
 </div>
+<div class="section level2">
+<h2 id="importing-data-from-different-preprocessing-tools">Importing data from different preprocessing tools<a class="anchor" aria-label="anchor" href="#importing-data-from-different-preprocessing-tools"></a>
+</h2>
 <div class="section level3">
-<h3 id="importing-data-from-different-preprocessing-tools">Importing data from different preprocessing tools<a class="anchor" aria-label="anchor" href="#importing-data-from-different-preprocessing-tools"></a>
+<h3 id="import-data-from-cellranger">Import data from Cellranger<a class="anchor" aria-label="anchor" href="#import-data-from-cellranger"></a>
 </h3>
-<div class="section level4">
-<h4 id="import-data-from-cellranger">Import data from Cellranger<a class="anchor" aria-label="anchor" href="#import-data-from-cellranger"></a>
-</h4>
 <p>This pipeline enables different ways to import CellrangerV2/CellrangerV3 data for flexibility.</p>
 <ol style="list-style-type: decimal">
 <li>If the cellranger data set is saved in the default <a href="https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/output/overview" class="external-link">cellranger output directory</a>, you can load the data by running following code:</li>
 </ol>
 <p>For CellRangerV3:</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true"></a><span class="ex">Rscript</span> SCTK_runQC.R <span class="kw">\</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true"></a><span class="ex">-b</span> /base/path <span class="kw">\</span></span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true"></a><span class="ex">-P</span> CellRangerV3 <span class="kw">\</span></span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true"></a><span class="ex">-s</span> SampleName <span class="kw">\</span></span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true"></a><span class="ex">-o</span> Output_Directory <span class="kw">\</span></span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true"></a><span class="ex">-S</span> TRUE <span class="kw">\</span></span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true"></a><span class="ex">-F</span> SCE,AnnData,FlatFile,Seurat</span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="ex">Rscript</span> SCTK_runQC.R <span class="dt">\</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>-b /base/path <span class="dt">\</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>-P CellRangerV3 <span class="dt">\</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>-s SampleName <span class="dt">\</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>-o Output_Directory <span class="dt">\</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>-S TRUE <span class="dt">\</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>-F SCE,AnnData,FlatFile,Seurat</span></code></pre></div>
 <p>For CellRangerV2, the reference used by cellranger needs to be specified by <code>-G</code>/<code>--genome</code>:</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true"></a><span class="ex">Rscript</span> SCTK_runQC.R <span class="kw">\</span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true"></a><span class="ex">-b</span> /base/path <span class="kw">\</span></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true"></a><span class="ex">-P</span> CellRangerV2 <span class="kw">\</span></span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true"></a><span class="ex">-s</span> SampleName <span class="kw">\</span></span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true"></a><span class="ex">-o</span> Output_Directory <span class="kw">\</span></span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true"></a><span class="ex">-S</span> TRUE <span class="kw">\</span></span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true"></a><span class="ex">-G</span> GenomeName <span class="kw">\</span></span>
-<span id="cb10-8"><a href="#cb10-8" aria-hidden="true"></a><span class="ex">-F</span> SCE,AnnData,FlatFile,Seurat</span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="ex">Rscript</span> SCTK_runQC.R <span class="dt">\</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>-b /base/path <span class="dt">\</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>-P CellRangerV2 <span class="dt">\</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>-s SampleName <span class="dt">\</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>-o Output_Directory <span class="dt">\</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>-S TRUE <span class="dt">\</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>-G GenomeName <span class="dt">\</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>-F SCE,AnnData,FlatFile,Seurat</span></code></pre></div>
 <p><code>-b</code> specifies the base path and usually it’s the output folder of 10x <code>cellranger-count</code>. <code>-s</code> specifies the sample name, which has to be the same as the name of the sample folder under the base folder. The folder layout would look like the following:</p>
 <pre><code>├── BasePath
 └── SampleName 
@@ -603,45 +603,45 @@ singularity run --home=/PathToSanitizedHome  ### this also works for 'docker run
 <ol start="2" style="list-style-type: decimal">
 <li>If the <code>cellranger-count</code> output have been moved out of the default <a href="https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/output/overview" class="external-link">cellranger output directory</a>, you can specified the path to droplet and cell count matrix using arguments <code>-R</code> and <code>-C</code>:</li>
 </ol>
-<div class="sourceCode" id="cb12"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true"></a><span class="ex">Rscript</span> SCTK_runQC.R <span class="kw">\</span></span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true"></a><span class="ex">-P</span> CellRangerV2 <span class="kw">\</span></span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true"></a><span class="ex">-C</span> /path/to/cell/matrix <span class="kw">\</span></span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true"></a><span class="ex">-R</span> /path/to/droplet/matrix <span class="kw">\</span></span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true"></a><span class="ex">-s</span> SampleName <span class="kw">\</span></span>
-<span id="cb12-6"><a href="#cb12-6" aria-hidden="true"></a><span class="ex">-o</span> Output_Directory <span class="kw">\</span></span>
-<span id="cb12-7"><a href="#cb12-7" aria-hidden="true"></a><span class="ex">-S</span> TRUE <span class="kw">\</span></span>
-<span id="cb12-8"><a href="#cb12-8" aria-hidden="true"></a><span class="ex">-F</span> SCE,AnnData,FlatFile,Seurat</span></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="ex">Rscript</span> SCTK_runQC.R <span class="dt">\</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>-P CellRangerV2 <span class="dt">\</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>-C /path/to/cell/matrix <span class="dt">\</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>-R /path/to/droplet/matrix <span class="dt">\</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>-s SampleName <span class="dt">\</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>-o Output_Directory <span class="dt">\</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>-S TRUE <span class="dt">\</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>-F SCE,AnnData,FlatFile,Seurat</span></code></pre></div>
 <p>In this case, you <strong>must</strong> skip <code>-b</code> arguments and you can also skip <code>-G</code> argument for CellRangerV2 data.</p>
 </div>
-<div class="section level4">
-<h4 id="import-data-from-rds-or-matrix-stored-in-a-text-file">Import data from RDS or matrix stored in a text file<a class="anchor" aria-label="anchor" href="#import-data-from-rds-or-matrix-stored-in-a-text-file"></a>
-</h4>
+<div class="section level3">
+<h3 id="import-data-from-rds-or-matrix-stored-in-a-text-file">Import data from RDS or matrix stored in a text file<a class="anchor" aria-label="anchor" href="#import-data-from-rds-or-matrix-stored-in-a-text-file"></a>
+</h3>
 <ol style="list-style-type: decimal">
 <li>If your data in stored as a <code>SingleCellExperiment</code> object in RDS file, singleCellTK also supports this type of input. To run quality control with RDS file as input, run the following code:</li>
 </ol>
-<div class="sourceCode" id="cb13"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true"></a><span class="ex">Rscript</span> SCTK_runQC.R <span class="kw">\</span></span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true"></a><span class="ex">-P</span> SceRDS <span class="kw">\</span></span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true"></a><span class="ex">-s</span> Samplename <span class="kw">\</span></span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true"></a><span class="ex">-o</span> Output_Directory <span class="kw">\</span></span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true"></a><span class="ex">-S</span> TRUE <span class="kw">\</span></span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true"></a><span class="ex">-F</span> SCE,AnnData,FlatFile,Seurat <span class="kw">\</span></span>
-<span id="cb13-7"><a href="#cb13-7" aria-hidden="true"></a><span class="ex">-r</span> /path/to/rds/file/droplet.RDS <span class="kw">\</span></span>
-<span id="cb13-8"><a href="#cb13-8" aria-hidden="true"></a><span class="ex">-c</span> /path/to/rds/file/cell.RDS</span></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="ex">Rscript</span> SCTK_runQC.R <span class="dt">\</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>-P SceRDS <span class="dt">\</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>-s Samplename <span class="dt">\</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>-o Output_Directory <span class="dt">\</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>-S TRUE <span class="dt">\</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>-F SCE,AnnData,FlatFile,Seurat <span class="dt">\</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>-r /path/to/rds/file/droplet.RDS <span class="dt">\</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>-c /path/to/rds/file/cell.RDS</span></code></pre></div>
 <ol start="2" style="list-style-type: decimal">
 <li>If your input is stored in TXT file as a matrix, which has barcodes as column names and genes as row names, run the following code to start the quality control pipeline:</li>
 </ol>
-<div class="sourceCode" id="cb14"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true"></a><span class="ex">Rscript</span> SCTK_runQC.R <span class="kw">\</span></span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true"></a><span class="ex">-P</span> CountMatrix <span class="kw">\</span></span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true"></a><span class="ex">-s</span> Samplename <span class="kw">\</span></span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true"></a><span class="ex">-o</span> Output_Directory <span class="kw">\</span></span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true"></a><span class="ex">-S</span> TRUE <span class="kw">\</span></span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true"></a><span class="ex">-F</span> SCE,AnnData,FlatFile,Seurat <span class="kw">\</span></span>
-<span id="cb14-7"><a href="#cb14-7" aria-hidden="true"></a><span class="ex">-r</span> /path/to/matrix/file/droplet.txt <span class="kw">\</span></span>
-<span id="cb14-8"><a href="#cb14-8" aria-hidden="true"></a><span class="ex">-c</span> path/to/matrix/file/cell.txt</span></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="ex">Rscript</span> SCTK_runQC.R <span class="dt">\</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>-P CountMatrix <span class="dt">\</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>-s Samplename <span class="dt">\</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>-o Output_Directory <span class="dt">\</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>-S TRUE <span class="dt">\</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>-F SCE,AnnData,FlatFile,Seurat <span class="dt">\</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>-r /path/to/matrix/file/droplet.txt <span class="dt">\</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>-c path/to/matrix/file/cell.txt</span></code></pre></div>
 </div>
-<div class="section level4">
-<h4 id="methods-to-run-pipeline-on-data-set-generated-by-other-algorithms">Methods to run pipeline on data set generated by other algorithms<a class="anchor" aria-label="anchor" href="#methods-to-run-pipeline-on-data-set-generated-by-other-algorithms"></a>
-</h4>
+<div class="section level3">
+<h3 id="methods-to-run-pipeline-on-data-set-generated-by-other-algorithms">Methods to run pipeline on data set generated by other algorithms<a class="anchor" aria-label="anchor" href="#methods-to-run-pipeline-on-data-set-generated-by-other-algorithms"></a>
+</h3>
 <p>SCTK-QC pipeline allows importing data from the following pre-processing tools or objects:</p>
 <ul>
 <li><a href="https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/what-is-cell-ranger" class="external-link">CellRanger</a></li>
@@ -656,30 +656,30 @@ singularity run --home=/PathToSanitizedHome  ### this also works for 'docker run
 <a href="https://github.com/theislab/anndata" class="external-link">AnnData</a> object saved in HDF5 file</li>
 </ul>
 <p>If your data is preprocessed by other algorithms, you might want to make sure the ‘-b’ argument matches the path storing the data and the ‘-P’ argument matches the right preprocessing tools. Basically, the templated is shown below:</p>
-<div class="sourceCode" id="cb15"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true"></a><span class="ex">Rscript</span> SCTK_runQC.R <span class="kw">\</span></span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true"></a><span class="ex">-b</span> /base/path <span class="kw">\</span></span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true"></a><span class="ex">-P</span> Preprocessing_Algorithm <span class="kw">\</span></span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true"></a><span class="ex">-s</span> SampleName <span class="kw">\</span></span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true"></a><span class="ex">-o</span> Output_Directory <span class="kw">\</span></span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true"></a><span class="ex">-S</span> TRUE <span class="kw">\</span></span>
-<span id="cb15-7"><a href="#cb15-7" aria-hidden="true"></a><span class="ex">-F</span> SCE,AnnData,FlatFile,Seurat</span></code></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="ex">Rscript</span> SCTK_runQC.R <span class="dt">\</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>-b /base/path <span class="dt">\</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>-P Preprocessing_Algorithm <span class="dt">\</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>-s SampleName <span class="dt">\</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>-o Output_Directory <span class="dt">\</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>-S TRUE <span class="dt">\</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>-F SCE,AnnData,FlatFile,Seurat</span></code></pre></div>
 <p>The following table describes how SCTK expects the inputs to be structured and passed for each import function. In all cases, SCTK retains the standard output directory structure from upstream tools. All the import functions return the imported counts matrix as an <code>assay</code> in a <code>SingleCellExperiment</code> object, with associated information in respective <code>colData</code>, <code>rowData</code>, <code>reducedDims</code>, and <code>metadata</code> fields.</p>
 <p><img src="qc_inputShell.png" alt="QC data format"><br></p>
 <p>The table above also shows the R console functions for the QC algorithms. Detailed information about function parameters and defaults are available in the <a href="../reference/index.html"><em>Reference</em></a> section.</p>
 </div>
 </div>
-<div class="section level3">
-<h3 id="gene-sets">Gene sets<a class="anchor" aria-label="anchor" href="#gene-sets"></a>
-</h3>
+<div class="section level2">
+<h2 id="gene-sets">Gene sets<a class="anchor" aria-label="anchor" href="#gene-sets"></a>
+</h2>
 <p>Quantifying the level of gene sets can be useful quality control. For example, the percentage of counts from mitochondrial genes can be an indicator of cell stress or death.</p>
 <p>User can quantify the expression of mitochondrial genes for human or mouse dataset by setting <code>-M</code>/<code>--detectMitoLevel</code> as <code>TRUE</code>. User needs to specify the correct <code>--mitoType</code> argument for the dataset. The SCTK-QC pipeline has built-in mitochondrial gene sets for human and mouse genes. It supports four different type of gene id: <code>gene symbol</code>, <code>entrez ID</code>, <code>ensembl ID</code> and <code>ensembl transcript ID</code>. Therefore, there are eight options for <code>--mitoType</code> arguments: <code>human-ensembl</code>, <code>human-symbol</code>, <code>human-entrez</code>, <code>human-ensemblTranscriptID</code>, <code>mouse-ensembl</code>, <code>mouse-symbol</code>, <code>mouse-entrez</code> and <code>mouse-ensemblTranscriptID</code>.</p>
 <p>To quantify expression of other gene set, users can pass a <a href="http://software.broadinstitute.org/cancer/software/gsea/wiki/index.php/Data_formats" class="external-link">GMT</a> file (with <code>-g</code>/<code>--gmt</code> argument) to the pipeline with one row for each gene set. The first column should be the name of the gene set (e.g. <code>mito</code>).</p>
 <p>The second column for each gene set in the GMT file (i.e. the description) should contain the location of where to look for the matching IDs in the data. If set to <code>rownames</code>, then the gene set IDs will be matched with the row IDs of the data matrix. If a character string or an integer index is supplied, then gene set IDs will be matched to the IDs in that column of feature table. Gene sets with mitochondrial genes can be found <a href="https://github.com/compbiomed/singleCellTK/tree/master/exec" class="external-link">here</a>.</p>
 </div>
 </div>
-<div class="section level2">
-<h2 id="outputs">Outputs<a class="anchor" aria-label="anchor" href="#outputs"></a>
-</h2>
+<div class="section level1">
+<h1 id="outputs">Outputs<a class="anchor" aria-label="anchor" href="#outputs"></a>
+</h1>
 <p>The output directory is created under the path specified by <code>-o</code>/<code>--directory</code> argument. Each sample is stored in the subdirectory (named by <code>-s</code>/<code>--sample</code> argument) within this output direcotry. Within each sample directory, each output format will be separated into subdirectories. The output file hierarchy is shown below:</p>
 <pre><code>(root; output directory)
 ├── level3Meta.csv
@@ -717,12 +717,12 @@ singularity run --home=/PathToSanitizedHome  ### this also works for 'docker run
     |       └── sample1_rowData.txt.gz 
     └── sample1_QCparameters.yaml</code></pre>
 </div>
-<div class="section level2">
-<h2 id="documentation-of-available-tools">Documentation of available tools<a class="anchor" aria-label="anchor" href="#documentation-of-available-tools"></a>
-</h2>
-<div class="section level5">
-<h5 id="empty-droplet-detection">Empty droplet detection:<a class="anchor" aria-label="anchor" href="#empty-droplet-detection"></a>
-</h5>
+<div class="section level1">
+<h1 id="documentation-of-available-tools">Documentation of available tools<a class="anchor" aria-label="anchor" href="#documentation-of-available-tools"></a>
+</h1>
+<div class="section level4">
+<h4 id="empty-droplet-detection">Empty droplet detection:<a class="anchor" aria-label="anchor" href="#empty-droplet-detection"></a>
+</h4>
 <ul>
 <li>
 <a href="https://rdrr.io/github/MarioniLab/DropletUtils/man/emptyDrops.html" class="external-link">emptyDrops</a> from the package <a href="https://bioconductor.org/packages/release/bioc/html/DropletUtils.html" class="external-link">DropletUtils</a>
@@ -732,9 +732,9 @@ singularity run --home=/PathToSanitizedHome  ### this also works for 'docker run
 </li>
 </ul>
 </div>
-<div class="section level5">
-<h5 id="doublet-detection">Doublet Detection<a class="anchor" aria-label="anchor" href="#doublet-detection"></a>
-</h5>
+<div class="section level4">
+<h4 id="doublet-detection">Doublet Detection<a class="anchor" aria-label="anchor" href="#doublet-detection"></a>
+</h4>
 <ul>
 <li>
 <a href="https://bioconductor.org/packages/release/bioc/html/scDblFinder.html" class="external-link">scDblFinder</a> from the package <a href="https://bioconductor.org/packages/release/bioc/html/scDblFinder.html" class="external-link">scDblFinder</a>
@@ -750,9 +750,9 @@ singularity run --home=/PathToSanitizedHome  ### this also works for 'docker run
 </li>
 </ul>
 </div>
-<div class="section level5">
-<h5 id="ambient-rna-detection">Ambient RNA detection<a class="anchor" aria-label="anchor" href="#ambient-rna-detection"></a>
-</h5>
+<div class="section level4">
+<h4 id="ambient-rna-detection">Ambient RNA detection<a class="anchor" aria-label="anchor" href="#ambient-rna-detection"></a>
+</h4>
 <ul>
 <li>
 <a href="https://rdrr.io/bioc/celda/man/decontX.html" class="external-link">decontX</a> from the package <a href="https://bioconductor.org/packages/release/bioc/html/celda.html" class="external-link">celda</a>
@@ -782,7 +782,7 @@ singularity run --home=/PathToSanitizedHome  ### this also works for 'docker run
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.</p>
 </div>
 
       </footer>
