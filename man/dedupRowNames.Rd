@@ -19,7 +19,7 @@ insert a new column called \code{"rownames.uniq"} to \code{rowData(x)}, with
 the deduplicated rownames.}
 
 \item{return.list}{When set to \code{TRUE}, will return a character vector
-with deduplicated rownames.}
+of the deduplicated rownames.}
 }
 \value{
 By default, a matrix or /linkS4class{SingleCellExperiment} object
@@ -34,4 +34,8 @@ Deduplicate the rownames of a matrix or SingleCellExperiment object
 Adds '-1', '-2', ... '-i' to multiple duplicated rownames, and in place
 replace the unique rownames, store unique rownames in \code{rowData}, or
 return the unique rownames as character vecetor.
+}
+\examples{
+data("scExample", package = "singleCellTK")
+sce <- dedupRowNames(sce)
 }

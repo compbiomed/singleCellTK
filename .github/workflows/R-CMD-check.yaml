@@ -1,0 +1,123 @@
+# Workflow derived from https://github.com/r-lib/actions/tree/master/examples
+# Need help debugging build failures? Start at https://github.com/r-lib/actions#where-to-find-help
+on:
+  push:
+    branches: [devel]
+  pull_request:
+    branches: [devel]
+
+name: R-CMD-check
+
+jobs:
+  R-CMD-check:
+    runs-on: ${{ matrix.config.os }}
+
+    name: ${{ matrix.config.os }} (${{ matrix.config.r }})
+
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - {os: macOS-latest,   r: 'release'}
+          - {os: windows-latest, r: 'release'}
+          - {os: ubuntu-latest,   r: 'release'}
+
+    env:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+      R_KEEP_PKG_SOURCE: yes
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: r-lib/actions/setup-pandoc@v1
+      
+      - name: Setup Python
+        uses: actions/setup-python@v2.2.2
+        with:
+          python-version: '3.8'
+          
+      - name: Pip Installer
+        uses: BSFishy/pip-action@v1
+        with:
+          packages: |
+            bbknn
+            pandas
+            scanorama
+            scipy 
+            numpy 
+            astroid 
+            six 
+            scrublet 
+            scanpy
+            
+      - name: isPythonInstalled
+        if: always()
+        run: |
+          python3 --version
+          which python
+        shell: bash
+
+      - uses: r-lib/actions/setup-r@v1
+        with:
+          r-version: ${{ matrix.config.r }}
+          http-user-agent: ${{ matrix.config.http-user-agent }}
+          use-public-rspm: true
+
+      - name: Install fftw3 on Linux
+        if: runner.os == 'Linux'
+        run: sudo apt-get install libfftw3-dev
+
+      - name: Install fftw3 on macOS
+        if: runner.os == 'macOS'
+        run: brew install fftw
+        
+      - uses: r-lib/actions/setup-r-dependencies@v1
+        with:
+          extra-packages: rcmdcheck
+
+      - name: Install Celda devel
+        run: |
+          install.packages("devtools")
+          devtools::install_github("campbio/celda@devel")
+        shell: Rscript {0} 
+
+      - name: Install XQuartz on macOS
+        if: runner.os == 'macOS'
+        run: brew install xquartz --cask
+        
+      - name: Check
+        env:
+          _R_CHECK_CRAN_INCOMING_: false
+        run: |
+          options(crayon.enabled = TRUE)
+          if (Sys.info()[1] == "Windows") {
+            reticulate::use_python(system('where python', intern=TRUE)[1])
+          } else {
+            reticulate::use_python(system('which python', intern=TRUE))
+          }
+          reticulate::py_config()
+          rcmdcheck::rcmdcheck(args = c("--no-manual", "--as-cran"), error_on = "warning", check_dir = "check")
+        shell: Rscript {0}
+
+      - name: Show testthat output
+        if: always()
+        run: find check -name 'testthat.Rout*' -exec cat '{}' \; || true
+        shell: bash
+
+      - name: Upload check results
+        if: failure()
+        uses: actions/upload-artifact@main
+        with:
+          name: ${{ runner.os }}-r${{ matrix.config.r }}-results
+          path: check
+          
+        
+      - name: Run codecov
+        run: |
+          install.packages("covr")
+          library(covr)
+          codecov()
+        shell: Rscript {0}
+      
+      - name: Upload codecov
+        uses: codecov/codecov-action@v2.1.0

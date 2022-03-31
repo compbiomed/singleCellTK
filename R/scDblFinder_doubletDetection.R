@@ -22,8 +22,7 @@
 #'  scDblFinder QC outputs added to the
 #'  \link{colData} slot.
 #' @references Lun ATL (2018). Detecting doublet cells with scran.
-#'  \url{https://ltla.github.io/SingleCellThoughts/software/
-#' doublet_detection/bycell.html}
+#'  \url{https://ltla.github.io/SingleCellThoughts/software/doublet_detection/bycell.html}
 #' @seealso \link[scDblFinder]{scDblFinder}
 #' @examples
 #' data(scExample, package = "singleCellTK")
@@ -39,6 +38,11 @@ runScDblFinder <- function(inSCE,
     seed = 12345,
     BPPARAM=BiocParallel::SerialParam()
 ) {
+
+  tempSCE <- inSCE
+  SummarizedExperiment::assayNames(inSCE)[which(useAssay %in% SummarizedExperiment::assayNames(inSCE))] <- "counts"
+  useAssay <- "counts"
+
   argsList <- mget(names(formals()),sys.frame(sys.nframe()))
 
   if(!is.null(sample)) {
@@ -69,6 +73,7 @@ runScDblFinder <- function(inSCE,
   if(length(rm.ix) > 0){
     inSCE <- mergeSCEColData(inSCE1 = inSCEOrig, inSCE2 = inSCE)
   }
+
   names(SummarizedExperiment::colData(inSCE)) <- gsub(pattern = "scDblFinder\\.",
                                                       "scDblFinder_",
                                                       names(SummarizedExperiment::colData(inSCE)))
@@ -76,15 +81,19 @@ runScDblFinder <- function(inSCE,
   names(SummarizedExperiment::colData(inSCE)) <- gsub(pattern = "scDblFinder_score",
                                                       "scDblFinder_doublet_score",
                                                       names(SummarizedExperiment::colData(inSCE)))
-  names(SummarizedExperiment::colData(inSCE)) <- gsub(pattern = "scDblFinder_call",
+  names(SummarizedExperiment::colData(inSCE)) <- gsub(pattern = "scDblFinder_class",
                                                       "scDblFinder_doublet_call",
                                                       names(SummarizedExperiment::colData(inSCE)))
+
+  levels(inSCE$scDblFinder_doublet_call) <- list(Singlet = "singlet", Doublet = "doublet")
 
   argsList <- argsList[!names(argsList) %in% c("BPPARAM")]
 
   inSCE@metadata$runScDblFinder <- argsList[-1]
   inSCE@metadata$runScDblFinder$packageVersion <- utils::packageDescription("scDblFinder")$Version
 
-  return(inSCE)
-}
+  tempSCE@colData <- inSCE@colData
+  tempSCE@metadata <- inSCE@metadata
 
+  return(tempSCE)
+}

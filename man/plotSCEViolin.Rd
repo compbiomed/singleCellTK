@@ -6,43 +6,57 @@
 \usage{
 plotSCEViolin(
   inSCE,
-  slot,
-  feature,
-  annotation,
+  slotName,
+  itemName,
+  feature = NULL,
   sample = NULL,
+  dimension = NULL,
   groupBy = NULL,
   violin = TRUE,
   boxplot = TRUE,
   dots = TRUE,
+  plotOrder = NULL,
   xlab = NULL,
   ylab = NULL,
   axisSize = 10,
   axisLabelSize = 10,
-  dotSize = 1,
+  dotSize = 0.5,
   transparency = 1,
   defaultTheme = TRUE,
   gridLine = FALSE,
   summary = NULL,
   title = NULL,
   titleSize = NULL,
+  hcutoff = NULL,
+  hcolor = "red",
+  hsize = 1,
+  hlinetype = 1,
+  vcutoff = NULL,
+  vcolor = "red",
+  vsize = 1,
+  vlinetype = 1,
   combinePlot = "none",
   plotLabels = NULL
 )
 }
 \arguments{
 \item{inSCE}{Input \linkS4class{SingleCellExperiment} object with saved
-dimension reduction components or a variable with saved results. Required}
+dimension reduction components or a variable with saved results. Required.}
 
-\item{slot}{Desired slot of SingleCellExperiment used for plotting. Possible
-options: "assays", "colData", "metadata"}
+\item{slotName}{Desired slot of SingleCellExperiment used for plotting. Possible
+options: "assays", "colData", "metadata", "reducedDims". Required.}
 
-\item{feature}{name of feature stored in assay of SingleCellExperiment
-object. Required.
-Will be used only if "assays" slot is chosen. Default NULL.}
+\item{itemName}{Desired vector within the slot used for plotting. Required.}
 
-\item{annotation}{Desired vector within the slot used for plotting.}
+\item{feature}{Desired name of feature stored in assay of SingleCellExperiment
+object. Only used when "assays" slotName is selected. Default NULL.}
 
 \item{sample}{Character vector. Indicates which sample each cell belongs to.}
+
+\item{dimension}{Desired dimension stored in the specified reducedDims.
+Either an integer which indicates the column or a character vector specifies
+column name. By default, the 1st dimension/column will be used.
+Only used when "reducedDims" slotName is selected. Default NULL.}
 
 \item{groupBy}{Groupings for each numeric value. A user may input a vector
 equal length to the number of the samples in the SingleCellExperiment
@@ -56,6 +70,10 @@ Default TRUE.}
 \item{dots}{Boolean. If TRUE, will plot dots for each violin plot.
 Default TRUE.}
 
+\item{plotOrder}{Character vector. If set, reorders the violin plots
+in the order of the character vector when `groupBy` is set.
+Default NULL.}
+
 \item{xlab}{Character vector. Label for x-axis. Default NULL.}
 
 \item{ylab}{Character vector. Label for y-axis. Default NULL.}
@@ -64,7 +82,7 @@ Default TRUE.}
 
 \item{axisLabelSize}{Size of x/y-axis labels. Default 10.}
 
-\item{dotSize}{Size of dots. Default 1.}
+\item{dotSize}{Size of dots. Default 0.5.}
 
 \item{transparency}{Transparency of the dots, values will be 0-1. Default 1.}
 
@@ -81,6 +99,30 @@ violin plot. Options are "mean" or "median". Default NULL.}
 
 \item{titleSize}{Size of title of plot. Default 15.}
 
+\item{hcutoff}{Adds a horizontal line with the y-intercept at given value. Default NULL.}
+
+\item{hcolor}{Character. A color available from `colors()`.
+Controls the color of the horizontal cutoff line, if drawn.
+Default 'black'.}
+
+\item{hsize}{Size of horizontal line, if drawn. Default 0.5.}
+
+\item{hlinetype}{Type of horizontal line, if drawn. can be specified with either an integer or
+a name (0 = blank, 1 = solid, 2 = dashed, 3 = dotted, 4 = dotdash, 5 = longdash, 6 = twodash).
+Default 1.}
+
+\item{vcutoff}{Adds a vertical line with the x-intercept at given value. Default NULL.}
+
+\item{vcolor}{Character. A color available from `colors()`.
+Controls the color of the vertical cutoff line, if drawn.
+Default 'black'.}
+
+\item{vsize}{Size of vertical line, if drawn. Default 0.5.}
+
+\item{vlinetype}{Type of vertical line, if drawn. can be specified with either an integer or
+a name (0 = blank, 1 = solid, 2 = dashed, 3 = dotted, 4 = dotdash, 5 = longdash, 6 = twodash).
+Default 1.}
+
 \item{combinePlot}{Must be either "all", "sample", or "none". "all" will combine all plots into a single
 .ggplot object, while "sample" will output a list of plots separated by sample. Default "none".}
 
@@ -95,8 +137,9 @@ Visualizes values stored in any slot of a
  SingleCellExperiment object via a violin plot.
 }
 \examples{
+data("mouseBrainSubsetSCE")
 plotSCEViolin(
-  inSCE = mouseBrainSubsetSCE, slot = "assays",
-  annotation = "counts", feature = "Apoe", groupBy = "sex"
+  inSCE = mouseBrainSubsetSCE, slotName = "assays",
+  itemName = "counts", feature = "Apoe", groupBy = "sex"
 )
 }

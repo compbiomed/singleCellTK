@@ -76,6 +76,9 @@ dataAnnotationColor <- function(inSCE, axis = NULL,
             nColor <- nColor + length(uniqLevel)
         }
     }
+    if (nColor == 0) {
+      return(list())
+    }
     allColors <- colorGen(nColor)
     nUsed <- 0
     allColorMap <- list()
@@ -106,9 +109,12 @@ dataAnnotationColor <- function(inSCE, axis = NULL,
 }
 
 #' Plot heatmap of using data stored in SingleCellExperiment Object
+#' @rdname plotSCEHeatmap
 #' @param inSCE \linkS4class{SingleCellExperiment} inherited object.
 #' @param useAssay character. A string indicating the assay name that
-#' provides the expression level to plot.
+#' provides the expression level to plot. Only for \code{plotSCEHeatmap}.
+#' @param useReducedDim character. A string indicating the reducedDim name that
+#' provides the expression level to plot. Only for \code{plotSCEDimReduceHeatmap}.
 #' @param doLog Logical scalar. Whether to do \code{log(assay + 1)}
 #' transformation on the assay indicated by \code{useAssay}. Default
 #' \code{FALSE}.
@@ -118,13 +124,22 @@ dataAnnotationColor <- function(inSCE, axis = NULL,
 #' @param cellIndex A vector that can subset the input SCE object by columns
 #' (cells). Alternatively, it can be a vector identifying cells in another
 #' cell list indicated by \code{featureIndexBy}. Default \code{NULL}.
+#' @param scale Whether to perform z-score scaling on each row. Default
+#' \code{TRUE}.
+#' @param trim A 2-element numeric vector. Values outside of this range will be
+#' trimmed to their nearst bound. Default \code{c(-2, 2)}
 #' @param featureIndexBy A single character specifying a column name of
 #' \code{rowData(inSCE)}, or a vector of the same length as \code{nrow(inSCE)},
-#' where we search for the non-rowname feature indices. Default
-#' \code{"rownames"}.
+#' where we search for the non-rowname feature indices. Not applicable for 
+#' \code{plotSCEDimReduceHeatmap}. Default \code{"rownames"}. 
 #' @param cellIndexBy A single character specifying a column name of
 #' \code{colData(inSCE)}, or a vector of the same length as \code{ncol(inSCE)},
 #' where we search for the non-rowname cell indices. Default \code{"rownames"}.
+#' @param rowDataName character. The column name(s) in \code{rowData} that need
+#' to be added to the annotation. Not applicable for 
+#' \code{plotSCEDimReduceHeatmap}. Default \code{NULL}.
+#' @param colDataName character. The column name(s) in \code{colData} that need
+#' to be added to the annotation. Default \code{NULL}.
 #' @param featureAnnotations \code{data.frame}, with \code{rownames} containing
 #' all the features going to be plotted. Character columns should be factors.
 #' Default \code{NULL}.
@@ -139,10 +154,6 @@ dataAnnotationColor <- function(inSCE, axis = NULL,
 #' cell labeling. Should match the entries in the \code{cellAnnotations} or
 #' \code{colDataName}. For each entry, there should be a list/vector of colors
 #' named with categories. Default \code{NULL}.
-#' @param rowDataName character. The column name(s) in \code{rowData} that need
-#' to be added to the annotation. Default \code{NULL}.
-#' @param colDataName character. The column name(s) in \code{colData} that need
-#' to be added to the annotation. Default \code{NULL}.
 #' @param rowSplitBy character. Do semi-heatmap based on the grouping of
 #' this(these) annotation(s). Should exist in either \code{rowDataName} or
 #' \code{names(featureAnnotations)}. Default \code{NULL}.
@@ -157,13 +168,13 @@ dataAnnotationColor <- function(inSCE, axis = NULL,
 #' single character to display a column of \code{colData(inSCE)} annotation,
 #' a vector of the same length as full/subset \code{ncol(inSCE)} to display
 #' customized info. Default \code{FALSE}.
+#' @param rowLabelSize A number for the font size of feature names. Default
+#' \code{8}
+#' @param colLabelSize A number for the font size of cell names. Default
+#' \code{8}
 #' @param rowDend Whether to display row dendrogram. Default \code{TRUE}.
 #' @param colDend Whether to display column dendrogram. Default \code{TRUE}.
-#' @param scale Whether to perform z-score scaling on each row. Default
-#' \code{TRUE}.
-#' @param trim A 2-element numeric vector. Values outside of this range will be
-#' trimmed to their nearst bound. Default \code{c(-2, 2)}
-#' @param title The main title of the whole plot. Default \code{"SCE Heatmap"}
+#' @param title The main title of the whole plot. Default \code{NULL}.
 #' @param rowTitle The subtitle for the rows. Default \code{"Genes"}.
 #' @param colTitle The subtitle for the columns. Default \code{"Cells"}.
 #' @param rowGap A numeric value or a \code{\link[grid]{unit}} object. For the
@@ -181,20 +192,23 @@ dataAnnotationColor <- function(inSCE, axis = NULL,
 #' @examples
 #' data(scExample, package = "singleCellTK")
 #' plotSCEHeatmap(sce[1:3,1:3], useAssay = "counts")
-#' @return A \code{\link[ComplexHeatmap]{Heatmap}} object
+#' @return A \code{\link[ggplot2]{ggplot}} object. 
 #' @export
 #' @author Yichen Wang
 plotSCEHeatmap <- function(inSCE, useAssay = 'logcounts', doLog = FALSE,
-                           featureIndex = NULL,
-    cellIndex = NULL, featureIndexBy = 'rownames', cellIndexBy = 'rownames',
+    featureIndex = NULL, cellIndex = NULL,
+    scale = TRUE, trim = c(-2, 2),
+    featureIndexBy = 'rownames', cellIndexBy = 'rownames',
+    rowDataName = NULL, colDataName = NULL,
     featureAnnotations = NULL, cellAnnotations = NULL,
     featureAnnotationColor = NULL, cellAnnotationColor = NULL,
-    rowDataName = NULL, colDataName = NULL, rowSplitBy = NULL,
-    colSplitBy = NULL, rowLabel = FALSE, colLabel = FALSE, rowDend = TRUE,
-    colDend = TRUE, scale = TRUE, trim = c(-2, 2),
-    title = 'SCE Heatmap', rowTitle = 'Genes', colTitle = 'Cells',
-    rowGap = grid::unit(0, 'mm'), colGap = grid::unit(0, 'mm'), border = FALSE,
-    colorScheme = NULL, ...){
+    rowSplitBy = NULL, colSplitBy = NULL,
+    rowLabel = FALSE, colLabel = FALSE,
+    rowLabelSize = 8, colLabelSize = 8,
+    rowDend = TRUE, colDend = TRUE,
+    title = NULL, rowTitle = 'Genes', colTitle = 'Cells',
+    rowGap = grid::unit(0, 'mm'), colGap = grid::unit(0, 'mm'),
+    border = FALSE, colorScheme = NULL, ...){
     # Check input
     if(!inherits(inSCE, "SingleCellExperiment")){
         stop('Input object is not a valid SingleCellExperiment object.')
@@ -492,12 +506,81 @@ plotSCEHeatmap <- function(inSCE, useAssay = 'logcounts', doLog = FALSE,
                                   row_split = rs, column_split = cs,
                                   row_title = rowTitle, column_title = colTitle,
                                   show_row_names = rowLabel,
+                                  row_names_gp = grid::gpar(fontsize = rowLabelSize),
                                   show_row_dend = rowDend,
                                   show_column_names = colLabel,
+                                  column_names_gp = grid::gpar(fontsize = colLabelSize),
                                   show_column_dend = colDend,
                                   row_gap = rowGap, column_gap = colGap,
                                   border = border,
                                   ...)
-    #HM <- ComplexHeatmap::draw(hm, column_title = title)
+    # The only way to add a main title with ComplexHeatmap was to use `draw()`
+    # However, it shows the plot even if we return it to a variable
+    # Therefore, turning to use cowplot to combine a text plot to the single hm
+    #HM <- ComplexHeatmap::draw(hm, column_title = title,
+    #                           column_title_gp = grid::gpar(fontsize = 16))
+    if (!is.null(title)) {
+      hmGrob <- grid::grid.grabExpr(ComplexHeatmap::draw(hm))
+      titleText <- cowplot::ggdraw() + cowplot::draw_text(title)
+      hm <- cowplot::plot_grid(titleText,
+                               hmGrob,
+                               ncol = 1,
+                               rel_heights = c(1,19))
+    } else {
+      hm <- cowplot::plot_grid(grid::grid.grabExpr(ComplexHeatmap::draw(hm)))
+    }
     return(hm)
+}
+
+#' @rdname plotSCEHeatmap
+#' @export
+plotSCEDimReduceHeatmap <- function(inSCE, useReducedDim, 
+                                    featureIndex = NULL, cellIndex = NULL, 
+                                    doLog = FALSE, scale = FALSE, 
+                                    trim = c(-2, 2),
+                                    cellIndexBy = 'rownames',
+                                    colDataName = NULL,
+                                    featureAnnotations = NULL, cellAnnotations = NULL,
+                                    featureAnnotationColor = NULL, cellAnnotationColor = NULL,
+                                    rowSplitBy = NULL, colSplitBy = NULL,
+                                    rowLabel = FALSE, colLabel = FALSE,
+                                    rowLabelSize = 8, colLabelSize = 8,
+                                    rowDend = TRUE, colDend = TRUE,
+                                    title = NULL, rowTitle = 'Dimensions', colTitle = 'Cells',
+                                    rowGap = grid::unit(0, 'mm'), colGap = grid::unit(0, 'mm'),
+                                    border = FALSE, colorScheme = NULL, ...) {
+    mat <- t(expData(inSCE, useReducedDim))
+    assayList <- list(mat)
+    names(assayList) <- useReducedDim
+    tmpSCE <- SingleCellExperiment::SingleCellExperiment(assays = assayList)
+    SummarizedExperiment::colData(tmpSCE) <- SummarizedExperiment::colData(inSCE)
+    plotSCEHeatmap(inSCE = tmpSCE, 
+                   useAssay = useReducedDim,
+                   featureIndex = featureIndex, 
+                   cellIndex = cellIndex,
+                   doLog = doLog,
+                   scale = scale, 
+                   trim = trim, 
+                   cellIndexBy = cellIndexBy, 
+                   colDataName = colDataName, 
+                   featureAnnotations = featureAnnotations, 
+                   cellAnnotations = cellAnnotations, 
+                   featureAnnotationColor = featureAnnotationColor, 
+                   cellAnnotationColor = cellAnnotationColor, 
+                   rowSplitBy = rowSplitBy, 
+                   colSplitBy = colSplitBy, 
+                   rowLabel = rowLabel, 
+                   colLabel = colLabel, 
+                   rowLabelSize = rowLabelSize, 
+                   colLabelSize = colLabelSize, 
+                   rowDend = rowDend, 
+                   colDend = colDend, 
+                   title = title, 
+                   rowTitle = rowTitle, 
+                   colTitle = colTitle, 
+                   rowGap = rowGap, 
+                   colGap = colGap, 
+                   border = border, 
+                   colorScheme = colorScheme, 
+                   ... = ...)
 }

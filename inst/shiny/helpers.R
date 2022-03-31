@@ -173,7 +173,7 @@ withConsoleMsgRedirect <- function(expr) {
     result <- expr
   },
   message = function(m) {
-    shinyjs::html(id = "console", html = m$message, add = TRUE)
+    shinyjs::html(id = "consoleText", html = m$message, add = TRUE)
   })
   result
 }
@@ -286,8 +286,11 @@ combineQCSubPlots <- function(output, combineP, algo, sampleList, plots, plotIds
   } else {
     tabsetID <- paste0(algo, "Tabs") # for the tabsetPanel within a tab
     mainPlotID <- paste0(plotIds[[algo]], "Main")
-    output[[plotIds[[algo]]]] <- renderUI(plotOutput(mainPlotID))
-    output[[mainPlotID]] <- renderPlot(plots$Violin)
+    if (!is.null(plots$Violin)) {
+      output[[plotIds[[algo]]]] <- renderUI(plotOutput(mainPlotID))
+      output[[mainPlotID]] <- renderPlot(plots$Violin)
+    }
+    
 
     for (i in seq_along(sampleList)) {
       local({
@@ -336,37 +339,40 @@ arrangeQCPlots <- function(inSCE, input, output, algoList, sampleList, plotIDs, 
   for (a in algoList) {
     if (a == "scDblFinder") {
       dcPlots <- plotScDblFinderResults(inSCE, combinePlot = combineP, sample = sampleList,
-                                         reducedDimName = redDimName, plotLabels = "none")
+                                         reducedDimName = redDimName)
       combineQCSubPlots(output, combineP, a, uniqueSampleNames, dcPlots, plotIDs, statuses)
     } else if (a == "cxds") {
       cxPlots <- plotCxdsResults(inSCE, combinePlot = combineP, sample = sampleList,
-                                 reducedDimName = redDimName, plotLabels = "none")
+                                 reducedDimName = redDimName)
       combineQCSubPlots(output, combineP, a, uniqueSampleNames, cxPlots, plotIDs, statuses)
     } else if (a == "bcds") {
       bcPlots <- plotBcdsResults(inSCE, combinePlot = combineP, sample = sampleList,
-                                 reducedDimName = redDimName, plotLabels = "none")
+                                 reducedDimName = redDimName)
       combineQCSubPlots(output, combineP, a, uniqueSampleNames, bcPlots, plotIDs, statuses)
     } else if (a == "cxds_bcds_hybrid") {
       cxbcPlots <- plotScdsHybridResults(inSCE, combinePlot = combineP, sample = sampleList,
-                                         reducedDimName = redDimName, plotLabels = "none")
+                                         reducedDimName = redDimName)
       combineQCSubPlots(output, combineP, a, uniqueSampleNames, cxbcPlots, plotIDs, statuses)
     } else if (a == "decontX") {
       dxPlots <- plotDecontXResults(inSCE, combinePlot = combineP, sample = sampleList,
-                                    reducedDimName = redDimName, plotLabels = "none")
+                                    reducedDimName = redDimName)
       combineQCSubPlots(output, combineP, a, uniqueSampleNames, dxPlots, plotIDs, statuses)
+    } else if (a == "soupX") {
+      soupXPlots <- plotSoupXResults(inSCE, combinePlot = combineP)
+      combineQCSubPlots(output, combineP, a, uniqueSampleNames, soupXPlots, plotIDs, statuses)
     } else if (a == "QCMetrics") {
-      qcmPlots <- plotRunPerCellQCResults(inSCE, sample = sampleList, combinePlot = combineP, plotLabels = "none")
+      qcmPlots <- plotRunPerCellQCResults(inSCE, sample = sampleList, combinePlot = combineP)
       combineQCMPlots(input, output, combineP, uniqueSampleNames, qcmPlots, plotIDs, statuses)
 
     } else if (a == "scrublet") {
       sPlots <- plotScrubletResults(inSCE, combinePlot = combineP, sample = sampleList,
-                                    reducedDimName = redDimName, plotLabels = "none")
+                                    reducedDimName = redDimName)
       combineQCSubPlots(output, combineP, a, uniqueSampleNames, sPlots, plotIDs, statuses)
       return(sPlots)
 
     } else if (a == "doubletFinder") {
       dfPlots <- plotDoubletFinderResults(inSCE, combinePlot = combineP, sample = sampleList,
-                                          reducedDimName = redDimName, plotLabels = "none")
+                                          reducedDimName = redDimName)
       combineQCSubPlots(output, combineP, a, uniqueSampleNames, dfPlots, plotIDs, statuses)
     }
   }

@@ -3,12 +3,12 @@
 \docType{data}
 \name{msigdb_table}
 \alias{msigdb_table}
-\title{MSigDB gene get Cctegory table}
+\title{MSigDB gene get Category table}
 \format{
 A data.frame.
 }
 \usage{
-msigdb_table
+data("msigdb_table")
 }
 \description{
 A table of gene set categories that can be download from MSigDB. The

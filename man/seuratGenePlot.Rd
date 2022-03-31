@@ -18,18 +18,23 @@ seuratGenePlot(
 \arguments{
 \item{inSCE}{Input \code{SingleCellExperiment} object.}
 
-\item{scaledAssayName}{Specify the name of the scaled assay stored in the input object.}
+\item{scaledAssayName}{Specify the name of the scaled assay stored in the
+input object.}
 
-\item{plotType}{Specify the type of the plot to compute. Options are limited to "ridge", "violing", "feature", "dot" and "heatmap".}
+\item{plotType}{Specify the type of the plot to compute. Options are limited
+to "ridge", "violing", "feature", "dot" and "heatmap".}
 
 \item{features}{Specify the features to compute the plot against.}
 
-\item{groupVariable}{Specify the column name from the colData slot that should be used as grouping variable.}
+\item{groupVariable}{Specify the column name from the colData slot that
+should be used as grouping variable.}
 
-\item{splitBy}{Specify the column name from the colData slot that should be used to split samples.
-Default is \code{NULL}.}
+\item{splitBy}{Specify the column name from the colData slot that should be
+used to split samples.
+ Default is \code{NULL}.}
 
-\item{cols}{Specify two colors to form a gradient between. Default is \code{c("lightgrey", "blue")}.}
+\item{cols}{Specify two colors to form a gradient between. Default is
+\code{c("lightgrey", "blue")}.}
 
 \item{ncol}{Visualizations will be adjusted in "ncol" number of columns.
 Default is \code{1}.}

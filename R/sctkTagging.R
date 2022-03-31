@@ -6,18 +6,15 @@
 #' @param assay Name of the assay or the data item against which a tag should be removed.
 #' @return The input \code{SingleCellExperiment} object with tag information removed from the metadata slot.
 #' @export
-#'
+#' @examples 
+#' data(scExample, package = "singleCellTK")
+#' sce <- expSetDataTag(sce, "raw", "counts")
+#' sce <- expDeleteDataTag(sce, "counts")
 expDeleteDataTag <- function(inSCE, assay){
-  for(i in seq(length(S4Vectors::metadata(inSCE)$assayType))){
-    matchedIndex <- match(assay, S4Vectors::metadata(inSCE)$assayType[[i]])
-    if(!is.na(matchedIndex)){
-      if(length(S4Vectors::metadata(inSCE)$assayType[[i]]) == 1){
-        S4Vectors::metadata(inSCE)$assayType[[i]] <- NULL
-      }
-      else{
-        S4Vectors::metadata(inSCE)$assayType[[i]] <- S4Vectors::metadata(inSCE)$assayType[[i]][-matchedIndex]
-      }
-    }
+  if(!is.null(S4Vectors::metadata(inSCE)$assayType)){
+    tbl <- S4Vectors::metadata(inSCE)$assayType
+    tbl <- tbl %>% dplyr::filter(!.data$assayName %in% assay)
+    S4Vectors::metadata(inSCE)$assayType <- tbl
   }
   return(inSCE)
 }
@@ -27,81 +24,78 @@ expDeleteDataTag <- function(inSCE, assay){
 #' @param inSCE Input \code{SingleCellExperiment} object.
 #' @param assayType Specify a \code{character(1)} value as a tag that should be set against a data item.
 #' @param assays Specify name(s) \code{character()} of data item(s) against which the tag should be set.
-#' @param append A \code{logical} value indicating if this assay should be appended to the object or overridden. Default value is \code{TRUE} indicating that it should be appended.
 #' @return The input \code{SingleCellExperiment} object with tag information stored in the metadata slot.
 #' @export
-#'
-expSetDataTag <- function(inSCE, assayType, assays, append = TRUE){
-  if(append){
-    if(!assays %in% S4Vectors::metadata(inSCE)$assayType[[assayType]]){
-      S4Vectors::metadata(inSCE)$assayType[[assayType]] <- base::append(S4Vectors::metadata(inSCE)$assayType[[assayType]], assays)
-    }
+#' @examples 
+#' data(scExample, package = "singleCellTK")
+#' sce <- expSetDataTag(sce, "raw", "counts")
+expSetDataTag <- function(inSCE, assayType, assays){
+  tbl <- NULL
+  if(is.null(S4Vectors::metadata(inSCE)$assayType)){
+    tbl <- tibble::tibble(assayTag = assayType, assayName = assays)
   }
   else{
-    S4Vectors::metadata(inSCE)$assayType[[assayType]] <- assays
+    tbl <- S4Vectors::metadata(inSCE)$assayType
+    tbl <- rbind(tbl, tibble::tibble(assayTag = assayType, assayName = assays))
   }
+  S4Vectors::metadata(inSCE)$assayType <- tbl
   return(inSCE)
 }
 
 #' expTaggedData
-#' Returns a list of names of data items from the input \code{SingleCellExperiment} object based upon the input parameters.
+#' Returns a list of names of data items from the 
+#' input \code{SingleCellExperiment} object based upon the input parameters.
 #' @param inSCE Input \code{SingleCellExperiment} object.
-#' @param tags A \code{character()} value indicating if the data items should be returned separated by the specified tags. Default is \code{NULL} indicating that returned names of the data items are simply returned as a list with default tag as "uncategorized".
-#' @param redDims A \code{logical} value indicating if \code{reducedDims} should be returned as well separated with 'redDims' tag.
-#' @return A \code{list} of names of data items specfied by the other parameters.
+#' @param tags A \code{character()} value indicating if the data items should 
+#' be returned separated by the specified tags. Default is \code{NULL} 
+#' indicating that returned names of the data items are simply returned as a 
+#' list with default tag as "uncategorized".
+#' @param redDims A \code{logical} value indicating if \code{reducedDims} 
+#' should be returned as well separated with 'redDims' tag.
+#' @param recommended A \code{character()} vector indicating the tags that 
+#' should be displayed as recommended. Default is \code{NULL}.
+#' @param showTags A \code{logical} value indicating if the tags should be 
+#' shown. If \code{FALSE}, output is just a simple list, not separated by tags.
+#' @return A \code{list} of names of data items specified by the other 
+#' parameters.
+#' @importFrom stats filter
+#' @importFrom tibble tibble
+#' @importFrom rlang .data
 #' @export
-#'
-expTaggedData <- function(inSCE, tags = NULL, redDims = FALSE){
-  retList <- list()
-  if(is.null(tags)){
-    if(!is.null(S4Vectors::metadata(inSCE)$assayType)){
-      for(i in seq(S4Vectors::metadata(inSCE)$assayType)){
-        if(!is.null(S4Vectors::metadata(inSCE)$assayType[[i]])){
-          if(length(S4Vectors::metadata(inSCE)$assayType[[i]]) == 1){
-            #doing this because of how selectInput named list works, otherwise not needed
-            retList[[names(S4Vectors::metadata(inSCE)$assayType)[i]]] <- list(S4Vectors::metadata(inSCE)$assayType[[i]])
-          }
-          else{
-            retList[[names(S4Vectors::metadata(inSCE)$assayType)[i]]] <- S4Vectors::metadata(inSCE)$assayType[[i]]
-          }
-        }
-      }
+#' @examples 
+#' data(scExample, package = "singleCellTK")
+#' sce <- expSetDataTag(sce, "raw", "counts")
+#' tags <- expTaggedData(sce)
+expTaggedData <- function(inSCE, tags = NULL, redDims = FALSE, recommended = NULL, showTags = TRUE){
+  namedList <- NULL
+  tbl <- S4Vectors::metadata(inSCE)$assayType 
+  
+  if(!is.null(tags)){
+    tbl <- tbl %>% dplyr::filter(.data$assayTag %in% tags)
+  }
+  
+  if(redDims){
+    tbl <- rbind(tbl, tibble::tibble(assayTag = "redDims", assayName = reducedDimNames(inSCE)))
+  }
+  
+  if(!is.null(recommended)){
+    recIx <- which(tbl$assayTag %in% recommended)
+    if(length(recIx) > 0){
+      tbl[recIx, ]$assayTag <- paste0(tbl$assayTag[recIx], " (recommended)")
+      tbl <- rbind(tbl[recIx, ], tbl[-recIx, ])
+      tbl$assayTag <- factor(tbl$assayTag, levels=unique(tbl$assayTag))
     }
-    else{
-      S4Vectors::metadata(inSCE)$assayType[["uncategorized"]] <- SummarizedExperiment::assayNames(inSCE)
-      retList[["uncategorized"]] <- S4Vectors::metadata(inSCE)$assayType[["uncategorized"]]
-    }
+  }
+  
+  if(!showTags){
+    namedList <- as.character(tbl$assayName)
   }
   else{
-    if(!is.null(S4Vectors::metadata(inSCE)$assayType)){
-      for(i in seq(tags)){
-        if(!is.null(S4Vectors::metadata(inSCE)$assayType[[tags[i]]])){
-          if(length(S4Vectors::metadata(inSCE)$assayType[[tags[i]]]) == 1){
-            #doing this because of how selectInput named list works, otherwise not needed
-            retList[[tags[i]]] <- list(S4Vectors::metadata(inSCE)$assayType[[tags[i]]])
-          }
-          else{
-            retList[[tags[i]]] <- S4Vectors::metadata(inSCE)$assayType[[tags[i]]]
-          }
-        }
-      }
-    }
-    else{
-      S4Vectors::metadata(inSCE)$assayType[["uncategorized"]] <- SummarizedExperiment::assayNames(inSCE)
-      retList[["uncategorized"]] <- S4Vectors::metadata(inSCE)$assayType[["uncategorized"]]
-    }
+    namedList <- with(tbl, split(tbl$assayName, tbl$assayTag))
+    namedList <- lapply(namedList, vapply, list, list(length(namedList)))
   }
-  if(redDims){
-    if(length(reducedDimNames(inSCE)) > 0){
-      if(length(reducedDimNames(inSCE)) == 1){
-        retList[["redDims"]] <- list(reducedDimNames(inSCE))
-      }
-      else{
-        retList[["redDims"]] <- reducedDimNames(inSCE)
-      }
-    }
-  }
-  return(retList)
+
+  return(namedList)
 }
 
 setClassUnion("CharacterOrNullOrMissing", c("character", "NULL", "missing"))
@@ -112,7 +106,12 @@ setClassUnion("CharacterOrNullOrMissing", c("character", "NULL", "missing"))
 #' @param tag Specify the tag to store against the input assay. Default is \code{NULL}, which will set the tag to "uncategorized".
 #' @param altExp A \code{logical} value indicating if the input assay is a \code{altExp} or a subset assay.
 #' @param value An input matrix-like value to store in the SCE object.
+#' @return A \code{SingleCellExperiment} object containing the newly stored data.
 #' @export
+#' @examples 
+#' data(scExample, package = "singleCellTK")
+#' mat <- expData(sce, "counts")
+#' expData(sce, "counts", tag = "raw") <- mat
 setGeneric(name = "expData<-",
            function(inSCE, assayName, tag = NULL, altExp = FALSE, value)
              SummarizedExperiment::`assay<-`(x = inSCE,
@@ -127,7 +126,12 @@ setGeneric(name = "expData<-",
 #' @param tag Specify the tag to store against the input assay. Default is \code{NULL}, which will set the tag to "uncategorized".
 #' @param altExp A \code{logical} value indicating if the input assay is a \code{altExp} or a subset assay.
 #' @param value An input matrix-like value to store in the SCE object.
+#' @return A \code{SingleCellExperiment} object containing the newly stored data.
 #' @export
+#' @examples 
+#' data(scExample, package = "singleCellTK")
+#' mat <- expData(sce, "counts")
+#' expData(sce, "counts", tag = "raw") <- mat
 setMethod(f = "expData<-",
           signature = signature(
             inSCE = "ANY",
@@ -173,7 +177,11 @@ setMethod(f = "expData<-",
 #' Get data item from an input \code{SingleCellExperiment} object. The data item can be an \code{assay}, \code{altExp} (subset) or a \code{reducedDim}, which is retrieved based on the name of the data item.
 #' @param inSCE Input \code{SingleCellExperiment} object.
 #' @param assayName Specify the name of the data item to retrieve.
+#' @return Specified data item.
 #' @export
+#' @examples 
+#' data(scExample, package = "singleCellTK")
+#' mat <- expData(sce, "counts")
 setGeneric(name = "expData",
            function(inSCE, assayName)
              SummarizedExperiment::assay(x = inSCE,
@@ -184,7 +192,11 @@ setGeneric(name = "expData",
 #' Get data item from an input \code{SingleCellExperiment} object. The data item can be an \code{assay}, \code{altExp} (subset) or a \code{reducedDim}, which is retrieved based on the name of the data item.
 #' @param inSCE Input \code{SingleCellExperiment} object.
 #' @param assayName Specify the name of the data item to retrieve.
+#' @return Specified data item.
 #' @export
+#' @examples 
+#' data(scExample, package = "singleCellTK")
+#' mat <- expData(sce, "counts")
 setMethod(f = "expData",
           signature = signature(inSCE = "ANY", assayName = "character"),
           definition = function(inSCE,  assayName){
@@ -215,6 +227,9 @@ setMethod(f = "expData",
 #' @param inSCE Input \code{SingleCellExperiment} object.
 #' @return A combined \code{vector} of \code{assayNames}, \code{altExpNames} and \code{reducedDimNames}.
 #' @export
+#' @examples 
+#' data(scExample, package = "singleCellTK")
+#' expDataNames(sce)
 setGeneric(name = "expDataNames",
            function(inSCE)
              SummarizedExperiment::assayNames(x = inSCE)
@@ -225,10 +240,19 @@ setGeneric(name = "expDataNames",
 #' @param inSCE Input \code{SingleCellExperiment} object.
 #' @return A combined \code{vector} of \code{assayNames}, \code{altExpNames} and \code{reducedDimNames}.
 #' @export
+#' @examples 
+#' data(scExample, package = "singleCellTK")
+#' expDataNames(sce)
 setMethod(f = "expDataNames",
           signature = signature(inSCE = "ANY"),
           definition = function(inSCE){
-            result <- c(altExpNames(inSCE), methods::callNextMethod())
+            result <- c(methods::callNextMethod(), altExpNames(inSCE), reducedDimNames(inSCE))
             return(result)
           }
 )
+
+# This utility function removes the redDims from untagged assays for use in expTaggedData function.
+.filterRedDims <- function(inSCE, untaggedAssays){
+  notRedDims <- untaggedAssays[!untaggedAssays %in% reducedDimNames(inSCE)]
+  return(notRedDims)
+}

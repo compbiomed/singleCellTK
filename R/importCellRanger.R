@@ -23,7 +23,7 @@
     if (ncol(res) == 1) {
         colnames(res) <- colnames[1]
     } else if (ncol(res) == 2) {
-        colnames(res) <- colnames[1:2]
+        colnames(res) <- colnames[seq(2)]
     } else if (ncol(res) == 3) {
         colnames(res) <- colnames
     } else {
@@ -46,6 +46,7 @@
     }
 
     mat <- Matrix::readMM(path)
+    mat <- methods::as(mat, "dgCMatrix")
 
     if (class == "matrix") {
         mat <- as.matrix(mat)
@@ -346,7 +347,8 @@
     barcodesFileNames,
     gzipped,
     class,
-    delayedArray) {
+    delayedArray,
+    rowNamesDedup) {
 
     .checkArgsImportCellRanger(cellRangerDirs,
         sampleDirs,
@@ -383,7 +385,7 @@
     if (is.null(sampleNames)) {
         sampleNames <- .getSampleNames(samplePaths)
     }
-
+    
     for (i in seq_along(samplePaths)) {
         dir <- .getOutputFolderPath(samplePaths[i], cellRangerOuts[i],
             cellRangerOuts2[i])
@@ -399,6 +401,22 @@
     }
 
     sce <- do.call(SingleCellExperiment::cbind, res)
+    
+    # Load & Store Cell Ranger Summary into SCE
+    metrics_summary <- .importMetricsCellRanger(samplePaths, sampleNames, "outs", "metrics_summary.csv")
+    if (ncol(metrics_summary) > 0) {
+        sce@metadata$sctk$sample_summary[["cellranger"]] <- metrics_summary
+    }
+    # sce <- setSampleSummaryStatsTable(sce, "cellranger", metrics_summary)
+    
+    if (isTRUE(rowNamesDedup)) {
+        if (any(duplicated(rownames(sce)))) {
+            message("Duplicated gene names found, adding '-1', '-2', ",
+                    "... suffix to them.")
+        }
+        sce <- dedupRowNames(sce)
+    }
+    
     return(sce)
 }
 
@@ -414,8 +432,8 @@
         }
     }
 
-    cellRangerOutsV2 <- unlist(res)  
-    return(cellRangerOutsV2)  
+    cellRangerOutsV2 <- unlist(res)
+    return(cellRangerOutsV2)
 }
 
 #' @name importCellRanger
@@ -513,23 +531,25 @@
 #'  \link[base]{matrix} function). Default \code{"Matrix"}.
 #' @param delayedArray Boolean. Whether to read the expression matrix as
 #'  \link{DelayedArray} object or not. Default \code{FALSE}.
-#' @param reference Character vector. The reference genome names. 
-#'  Default \code{NULL}. If not \code{NULL}, it must gave the length and order as 
+#' @param reference Character vector. The reference genome names.
+#'  Default \code{NULL}. If not \code{NULL}, it must gave the length and order as
 #'  \code{length(unlist(sampleDirs))} if \code{sampleDirs} is not \code{NULL}.
 #'  Otherwise, make sure the length and order match the output of
-#'  \code{unlist(lapply(cellRangerDirs, list.dirs, recursive = FALSE))}. Only needed 
-#'  for Cellranger version below 3.0.0. 
+#'  \code{unlist(lapply(cellRangerDirs, list.dirs, recursive = FALSE))}. Only needed
+#'  for Cellranger version below 3.0.0.
 #' @param dataTypeV2 Character. The type of output to import for
-#'  Cellranger version below 3.0.0. Whether to import the filtered or the 
-#'  raw data. Can be one of 'filtered' or 'raw'. Default 'filtered'. When 
-#'  \code{cellRangerOuts} is specified, \code{dataTypeV2} and \code{reference} will 
+#'  Cellranger version below 3.0.0. Whether to import the filtered or the
+#'  raw data. Can be one of 'filtered' or 'raw'. Default 'filtered'. When
+#'  \code{cellRangerOuts} is specified, \code{dataTypeV2} and \code{reference} will
 #'  be ignored.
-#' @param cellRangerOutsV2 Character vector. The intermediate paths  
-#'  to filtered or raw cell barcode, feature, and matrix files for each 
-#'  sample for Cellranger version below 3.0.0. If \code{NULL}, \code{reference} and 
-#'  \code{dataTypeV2} will be used to determine Cell Ranger output directory. If it has 
-#'  length 1, it assumes that all samples use the same genome reference and 
-#'  the function will load only filtered or raw data. 
+#' @param cellRangerOutsV2 Character vector. The intermediate paths
+#'  to filtered or raw cell barcode, feature, and matrix files for each
+#'  sample for Cellranger version below 3.0.0. If \code{NULL}, \code{reference} and
+#'  \code{dataTypeV2} will be used to determine Cell Ranger output directory. If it has
+#'  length 1, it assumes that all samples use the same genome reference and
+#'  the function will load only filtered or raw data.
+#' @param rowNamesDedup Boolean. Whether to deduplicate rownames. Default 
+#'  \code{TRUE}.
 #' @details
 #'  \code{importCellRangerV2} imports output from Cell Ranger V2.
 #'  \code{importCellRangerV2Sample} imports output from one sample from Cell
@@ -570,7 +590,8 @@ importCellRanger <- function(
     barcodesFileNames = "barcodes.tsv.gz",
     gzipped = "auto",
     class = c("Matrix", "matrix"),
-    delayedArray = FALSE) {
+    delayedArray = FALSE,
+    rowNamesDedup = TRUE) {
 
     class <- match.arg(class)
     dataType <- match.arg(dataType)
@@ -585,7 +606,8 @@ importCellRanger <- function(
         barcodesFileNames = barcodesFileNames,
         gzipped = gzipped,
         class = class,
-        delayedArray = delayedArray)
+        delayedArray = delayedArray,
+        rowNamesDedup = rowNamesDedup)
 }
 
 
@@ -610,15 +632,16 @@ importCellRangerV2 <- function(
     class = c("Matrix", "matrix"),
     delayedArray = FALSE,
     reference = NULL,
-    cellRangerOutsV2 = NULL) {
+    cellRangerOutsV2 = NULL,
+    rowNamesDedup = TRUE) {
 
     class <- match.arg(class)
     dataTypeV2 <- match.arg(dataTypeV2)
 
     if (is.null(cellRangerOutsV2)) {
         if (is.null(reference) | is.null(dataTypeV2)) {
-            stop("'reference' and 'dataTypeV2' are required ", 
-                 "when 'cellRangerOutsV2 is not specified!'")
+            stop("'reference' and 'dataTypeV2' are required ",
+                 "when 'cellRangerOutsV2' is not specified!")
         }
     }
 
@@ -626,7 +649,6 @@ importCellRangerV2 <- function(
     if (is.null(cellRangerOutsV2)) {
         cellRangerOutsV2 <- .getCellRangerOutV2(dataTypeV2, reference)
     }
-
 
     .importCellRanger(cellRangerDirs = cellRangerDirs,
         sampleDirs = sampleDirs,
@@ -638,8 +660,8 @@ importCellRangerV2 <- function(
         barcodesFileNames = "barcodes.tsv",
         gzipped = FALSE,
         class = class,
-        delayedArray = delayedArray)
-
+        delayedArray = delayedArray,
+        rowNamesDedup = rowNamesDedup)
 }
 
 
@@ -657,6 +679,8 @@ importCellRangerV2 <- function(
 #'  \link[base]{matrix} function). Default "Matrix".
 #' @param delayedArray Boolean. Whether to read the expression matrix as
 #'  \link{DelayedArray} object or not. Default \code{FALSE}.
+#' @param rowNamesDedup Boolean. Whether to deduplicate rownames. Default 
+#'  \code{TRUE}.
 #' @return A \code{SingleCellExperiment} object containing the count
 #'  matrix, the feature annotations, and the cell annotation for the sample.
 #' @examples
@@ -669,7 +693,8 @@ importCellRangerV2Sample <- function(
     dataDir = NULL,
     sampleName = NULL,
     class = c("Matrix", "matrix"),
-    delayedArray = FALSE) {
+    delayedArray = FALSE,
+    rowNamesDedup = TRUE) {
 
     class <- match.arg(class)
 
@@ -683,7 +708,8 @@ importCellRangerV2Sample <- function(
         barcodesFileNames = "barcodes.tsv",
         gzipped = FALSE,
         class = class,
-        delayedArray = delayedArray)
+        delayedArray = delayedArray,
+        rowNamesDedup = rowNamesDedup)
 }
 
 
@@ -701,7 +727,8 @@ importCellRangerV3 <- function(
     sampleNames = NULL,
     dataType = c("filtered", "raw"),
     class = c("Matrix", "matrix"),
-    delayedArray = FALSE) {
+    delayedArray = FALSE,
+    rowNamesDedup = TRUE) {
 
     class <- match.arg(class)
     dataType <- match.arg(dataType)
@@ -722,7 +749,8 @@ importCellRangerV3 <- function(
         barcodesFileNames = "barcodes.tsv.gz",
         gzipped = TRUE,
         class = class,
-        delayedArray = delayedArray)
+        delayedArray = delayedArray,
+        rowNamesDedup = rowNamesDedup)
 
 }
 
@@ -741,6 +769,8 @@ importCellRangerV3 <- function(
 #'  \link[base]{matrix} function). Default "Matrix".
 #' @param delayedArray Boolean. Whether to read the expression matrix as
 #'  \link{DelayedArray} object or not. Default \code{FALSE}.
+#' @param rowNamesDedup Boolean. Whether to deduplicate rownames. Default 
+#'  \code{TRUE}.
 #' @return A \code{SingleCellExperiment} object containing the count
 #'  matrix, the feature annotations, and the cell annotation for the sample.
 #' @examples
@@ -753,7 +783,8 @@ importCellRangerV3Sample <- function(
     dataDir = "./",
     sampleName = "sample",
     class = c("Matrix", "matrix"),
-    delayedArray = FALSE) {
+    delayedArray = FALSE,
+    rowNamesDedup = TRUE) {
 
     class <- match.arg(class)
 
@@ -767,5 +798,37 @@ importCellRangerV3Sample <- function(
         barcodesFileNames = "barcodes.tsv.gz",
         gzipped = TRUE,
         class = class,
-        delayedArray = delayedArray)
+        delayedArray = delayedArray,
+        rowNamesDedup = rowNamesDedup)
+}
+
+# Find metrics_summary.csv file in each sample and merge them into a single dataframe
+# Additionally, if file not available for a sample, fill that sample with NA
+.importMetricsCellRanger <- function(samplePaths, sampleNames, metricsPath, metricsFile){
+  # Check if samplePaths and sampleNames are equal in length
+  if(!identical(length(samplePaths), length(sampleNames))){
+    stop("Vectors samplePaths and sampleNames must be equal in length.")
+  }
+  
+  # Processing
+  metrics_summary <- list()
+  for(i in seq(samplePaths)){
+    metrics_summary[[i]] <- list.files(pattern= paste0("*", metricsFile, "$"), path = paste0(samplePaths[i], "/", metricsPath), full.names = TRUE)
+    if(length(metrics_summary[[i]]) > 0){
+      metrics_summary[[i]] <- lapply(metrics_summary[[i]], utils::read.csv, header = TRUE, check.names = FALSE)[[1]]
+    }
+    else{
+      message("Metrics summary file (", metricsFile, ") not found for sample: ", sampleNames[i])
+      ms_colnames_union <- Reduce(union, lapply(metrics_summary, colnames))
+      metrics_summary[[i]] <- data.frame(matrix(data = NA, nrow = 1, ncol = length(ms_colnames_union)))
+      colnames(metrics_summary[[i]]) <- ms_colnames_union
+    }
+  }
+  
+  # Merge cell ranger metrics_summary csv files from all/multiple samples into a single data.frame
+  metrics_summary <- plyr::rbind.fill(metrics_summary)
+  metrics_summary <- t(metrics_summary)
+  colnames(metrics_summary) <- sampleNames
+  
+  return(metrics_summary)
 }

@@ -13,6 +13,7 @@
 #' @return getBiomarker(): A data.frame of expression values
 #' @export
 #' @examples
+#' data("mouseBrainSubsetSCE")
 #' getBiomarker(mouseBrainSubsetSCE, gene="C1qa")
 #'
 getBiomarker <- function(inSCE, gene, binary="Binary", useAssay="counts",
@@ -30,7 +31,7 @@ getBiomarker <- function(inSCE, gene, binary="Binary", useAssay="counts",
   }
 
   # Get counts for gene in sample
-  c <- SummarizedExperiment::assay(inSCE, useAssay)[gene.ix, ,drop = F]
+  c <- SummarizedExperiment::assay(inSCE, useAssay)[gene.ix, ,drop = FALSE]
 
   # If color scale is "yes"/"no"
   if (binary == "Binary"){

@@ -3,25 +3,43 @@
 \name{seuratICA}
 \alias{seuratICA}
 \title{seuratICA
-Computes ICA on the input sce object and stores the calculated independent components within the sce object}
+Computes ICA on the input sce object and stores the calculated independent
+components within the sce object}
 \usage{
-seuratICA(inSCE, useAssay, reducedDimName = "seuratICA", nics = 20)
+seuratICA(
+  inSCE,
+  useAssay,
+  reducedDimName = "seuratICA",
+  features = NULL,
+  nics = 20,
+  seed = NULL
+)
 }
 \arguments{
 \item{inSCE}{(sce) object on which to compute ICA}
 
 \item{useAssay}{Assay containing scaled counts to use in ICA.}
 
-\item{reducedDimName}{Name of new reducedDims object containing Seurat ICA Default \code{seuratICA}.}
+\item{reducedDimName}{Name of new reducedDims object containing Seurat ICA
+Default \code{seuratICA}.}
+
+\item{features}{Specify the feature names or rownames which should be used
+for computation of ICA. Default is \code{NULL} which will use the previously
+stored variable features.}
 
 \item{nics}{Number of independent components to compute. Default \code{20}.}
+
+\item{seed}{Random seed for reproducibility of results.
+Default \code{NULL} will use global seed in use by the R environment.}
 }
 \value{
-Updated \code{SingleCellExperiment} object which now contains the computed independent components
+Updated \code{SingleCellExperiment} object which now contains the
+computed independent components
 }
 \description{
 seuratICA
-Computes ICA on the input sce object and stores the calculated independent components within the sce object
+Computes ICA on the input sce object and stores the calculated independent
+components within the sce object
 }
 \examples{
 data(scExample, package = "singleCellTK")

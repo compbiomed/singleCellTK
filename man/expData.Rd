@@ -12,7 +12,14 @@ expData(inSCE, assayName)
 
 \item{assayName}{Specify the name of the data item to retrieve.}
 }
+\value{
+Specified data item.
+}
 \description{
 expData
 Get data item from an input \code{SingleCellExperiment} object. The data item can be an \code{assay}, \code{altExp} (subset) or a \code{reducedDim}, which is retrieved based on the name of the data item.
+}
+\examples{
+data(scExample, package = "singleCellTK")
+mat <- expData(sce, "counts")
 }

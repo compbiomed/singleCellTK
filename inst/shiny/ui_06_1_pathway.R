@@ -2,11 +2,18 @@ shinyPanelPathway <- fluidPage(
   tags$div(
     class = "container",
     h1("Pathway Activity Analysis"),
-    h5(tags$a(href = "https://www.sctk.science/articles/tab06_pathway-activity-analysis",
+    h5(tags$a(href = paste0(docs.artPath, "pathwayAnalysis.html"),
               "(help)", target = "_blank")),
     sidebarLayout(
       sidebarPanel(
-        uiOutput("pathwayAssay"),
+        selectizeInput(
+          inputId = "pathwayAssay", 
+          label = "Select input matrix:", 
+          choices = NULL, 
+          selected = NULL, 
+          multiple = FALSE,
+          options = NULL),
+        #uiOutput("pathwayAssay"),
         #selectInput("pathwayAssay", "Select Assay:", currassays),
         selectInput("pathwayMethod", "Select Method:", "GSVA"),
         uiOutput("selectPathwayGeneLists"),
@@ -25,7 +32,7 @@ shinyPanelPathway <- fluidPage(
         tabsetPanel(
           tabPanel(
             "Plot",
-            plotOutput("pathwayPlot", height = "600px")
+            shinyjqui::jqui_resizable(plotOutput("pathwayPlot"))
           ),
           tabPanel(
             "Results Table",

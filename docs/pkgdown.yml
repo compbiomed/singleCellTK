@@ -1,0 +1,35 @@
+pandoc: 2.14.0.3
+pkgdown: 2.0.1
+pkgdown_sha: ~
+articles:
+  batch_correction: batch_correction.html
+  celda_curated_workflow: celda_curated_workflow.html
+  cell_type_labeling: cell_type_labeling.html
+  clustering: clustering.html
+  cmd_import_scRNAseq_data_as_SCE: cmd_import_scRNAseq_data_as_SCE.html
+  cmd_qc: cmd_qc.html
+  cnsl_2d_embedding: cnsl_2d_embedding.html
+  cnsl_cellqc: cnsl_cellqc.html
+  cnsl_dimensionality_reduction: cnsl_dimensionality_reduction.html
+  cnsl_dropletqc: cnsl_dropletqc.html
+  cnsl_enrichR: cnsl_enrichR.html
+  cnsl_feature_selection: cnsl_feature_selection.html
+  cnsl_normalization: cnsl_normalization.html
+  cnsl_seurat_curated_workflow: cnsl_seurat_curated_workflow.html
+  console_analysis_tutorial: console_analysis_tutorial.html
+  delete_data: delete_data.html
+  differential_expression: differential_expression.html
+  export_data: export_data.html
+  filtering: filtering.html
+  find_marker: find_marker.html
+  heatmap: heatmap.html
+  import_annotation: import_annotation.html
+  import_data: import_data.html
+  import_genesets: import_genesets.html
+  installation: installation.html
+  pathwayAnalysis: pathwayAnalysis.html
+  ui_qc: ui_qc.html
+  visualization: visualization.html
+  singleCellTK: singleCellTK.html
+last_built: 2022-03-31T16:07Z
+

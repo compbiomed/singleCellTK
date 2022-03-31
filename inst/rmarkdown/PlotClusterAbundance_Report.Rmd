@@ -1,0 +1,59 @@
+---
+title: "plotClusterAbundance Results"
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+params:
+  sce: sce
+  cluster: cluster
+  variable: variable
+  pdf: pdf
+  showSession: showSession
+output: 
+ html_document:
+     toc: true
+     toc_float: true
+     number_sections: true
+     theme: cosmo
+     code_folding: hide
+---
+
+
+```{r setup, include=FALSE}
+require(singleCellTK)
+require(celda)
+require(knitr)
+require(gridExtra)
+require(ggplot2)
+
+sce <- params$sce
+cluster <- params$cluster
+variable <- params$variable
+pdf <- params$pdf
+showSession <- params$showSession
+
+
+dev <- ifelse(isTRUE(pdf), c("png"), c("png", "pdf"))
+knitr::opts_chunk$set(
+  echo = TRUE,
+  cache = FALSE,
+  cache.lazy = FALSE,
+  # don't do lazy-loading for big objects
+  cache.comments = FALSE,
+  fig.align = "center",
+  fig.keep = "all",
+  dev = dev
+)
+
+
+```
+
+# Differential Abundance FET
+This report will visualize results from the `plotClusterAbundance` function will visualize the differential abundance in two given variables, by making bar plots that presents the cell counting and fraction in different cases. The analysis presented here shows 
+
+```{r plotting, echo = FALSE, message = FALSE}
+plotClusterAbundance(inSCE, cluster, variable, combinePlot = "none")
+```
+
+# Session Information
+```{r session, eval = showSession, echo = showSession}
+sessionInfo()
+```

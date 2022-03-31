@@ -12,7 +12,7 @@ charactor vector.
 \code{data('segList', package='scMerge')}
 }
 \usage{
-SEG
+data('SEG')
 }
 \description{
 The two gene sets came from dataset called `segList` of package `scMerge`.

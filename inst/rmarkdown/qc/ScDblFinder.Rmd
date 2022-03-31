@@ -1,5 +1,5 @@
 ---
-title: "Comprehensive reporting of QC metrics: doublet cell annotation using scran doublet??ells"
+title: "Comprehensive reporting of QC metrics: doublet cell annotation using ScDblFinder"
 date: "`r format(Sys.time(), '%B %d, %Y')`"
 params: 
   object: object

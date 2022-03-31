@@ -26,7 +26,6 @@ Given a list of genes this function runs the enrichR() to perform Gene
 enrichment
 }
 \examples{
-\dontrun{
+data("mouseBrainSubsetSCE")
 enrichRSCE(mouseBrainSubsetSCE, "Cmtm5", "GO_Cellular_Component_2017")
-}
 }

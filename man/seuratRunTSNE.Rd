@@ -3,31 +3,45 @@
 \name{seuratRunTSNE}
 \alias{seuratRunTSNE}
 \title{seuratRunTSNE
-Computes tSNE from the given sce object and stores the tSNE computations back into the sce object}
+Computes tSNE from the given sce object and stores the tSNE computations back
+into the sce object}
 \usage{
 seuratRunTSNE(
   inSCE,
   useReduction = c("pca", "ica"),
   reducedDimName = "seuratTSNE",
   dims = 10,
-  perplexity = 30
+  perplexity = 30,
+  externalReduction = NULL,
+  seed = 1
 )
 }
 \arguments{
 \item{inSCE}{(sce) object on which to compute the tSNE}
 
-\item{useReduction}{selected reduction algorithm to use for computing tSNE. One of "pca" or "ica". Default \code{"pca"}.}
+\item{useReduction}{selected reduction algorithm to use for computing tSNE.
+One of "pca" or "ica". Default \code{"pca"}.}
 
-\item{reducedDimName}{Name of new reducedDims object containing Seurat tSNE Default \code{seuratTSNE}.}
+\item{reducedDimName}{Name of new reducedDims object containing Seurat tSNE
+Default \code{seuratTSNE}.}
 
-\item{dims}{Number of reduction components to use for tSNE computation. Default \code{10}.}
+\item{dims}{Number of reduction components to use for tSNE computation.
+Default \code{10}.}
 
-\item{perplexity}{Adjust the preplexity tuneable parameter for the underlying tSNE call. Default \code{30}.}
+\item{perplexity}{Adjust the perplexity tuneable parameter for the underlying
+tSNE call. Default \code{30}.}
+
+\item{externalReduction}{Pass DimReduc object if PCA/ICA computed through
+other libraries. Default \code{NULL}.}
+
+\item{seed}{Random seed for reproducibility of results. 
+Default \code{1}.}
 }
 \value{
 Updated sce object with tSNE computations stored
 }
 \description{
 seuratRunTSNE
-Computes tSNE from the given sce object and stores the tSNE computations back into the sce object
+Computes tSNE from the given sce object and stores the tSNE computations back
+into the sce object
 }

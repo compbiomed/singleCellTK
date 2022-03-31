@@ -33,9 +33,10 @@ test_that(desc = "Testing plotSCEScatter functions", {
 })
 
 test_that(desc = "Testing plotSCEViolin functions", {
-    p1 <- plotSCEViolin(inSCE = sceres, slot = "assays",
-        annotation = "counts", feature = "ENSG00000251562",
-        groupBy = "type", sample = sampleVector, combinePlot = "all")
+    p1 <- plotSCEViolin(inSCE = sceres, slotName = "assays",
+                        itemName = "counts", feature = "ENSG00000251562",
+                        groupBy = "type", sample = sampleVector,
+                        combinePlot = "all")
     expect_is(p1, c("gg","ggplot"))
     p2 <- plotSCEViolinAssayData(inSCE = sceres,
         feature = "ENSG00000251562", groupBy = "type",
@@ -59,7 +60,7 @@ context("Testing QC functions")
 test_that("Testing scds",{
   sce <- runCxdsBcdsHybrid(sce, estNdbl = TRUE)
   expect_equal(class(colData(sceres)$scds_hybrid_score), 'numeric')
-  expect_equal(class(colData(sceres)$scds_hybrid_call), 'logical')
+  expect_equal(class(colData(sceres)$scds_hybrid_call), 'factor')
 })
 
 test_that(desc = "Testing DoubletFinder",  {

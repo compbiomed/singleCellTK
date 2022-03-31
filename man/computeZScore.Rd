@@ -13,14 +13,13 @@ computeZScore(counts)
 z-score computed counts matrix (DelayedMatrix)
 }
 \description{
-Computes Z-Score from an input count matrix using the formula ((x-mean(x))/sd(x))
-for each gene across all cells. The input count matrix can either be a base matrix,
-dgCMatrix or a DelayedMatrix. Computations are performed using DelayedMatrixStats
-package to efficiently compute the Z-Score matrix.
+Computes Z-Score from an input count matrix using the formula
+((x-mean(x))/sd(x)) for each gene across all cells. The input count matrix
+can either be a base matrix, dgCMatrix or a DelayedMatrix. Computations are
+performed using DelayedMatrixStats package to efficiently compute the
+Z-Score matrix.
 }
 \examples{
-
 data(sce_chcl, package = "scds")
 assay(sce_chcl, "countsZScore") <- computeZScore(assay(sce_chcl, "counts"))
-
 }

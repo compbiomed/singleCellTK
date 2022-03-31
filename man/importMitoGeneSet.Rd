@@ -4,18 +4,24 @@
 \alias{importMitoGeneSet}
 \title{Import mitochondrial gene sets}
 \usage{
-importMitoGeneSet(inSCE, reference, id, by, collectionName)
+importMitoGeneSet(
+  inSCE,
+  reference = "human",
+  id = "ensembl",
+  by = "rownames",
+  collectionName = "human_mito"
+)
 }
 \arguments{
 \item{inSCE}{Input \linkS4class{SingleCellExperiment} object.}
 
 \item{reference}{Character. Species available are "human" and "mouse".}
 
-\item{id}{Types of gene id. Now it supports "symbol", "entrez", "ensemble"
-and "ensemble_transcriptID".}
+\item{id}{Types of gene id. Now it supports "symbol", "entrez", "ensembl"
+and "ensemblTranscriptID".}
 
-\item{by}{Character. Describes the location within \code{inSCE} where the gene 
-identifiers in the mitochondrial gene sets should be mapped. 
+\item{by}{Character. Describes the location within \code{inSCE} where the gene
+identifiers in the mitochondrial gene sets should be mapped.
 If set to \code{"rownames"} then the features will
 be searched for among \code{rownames(inSCE)}. This can also be
 set to one of the column names of \code{rowData(inSCE)} in which case the
@@ -39,9 +45,9 @@ Imports mitochondrial gene sets and  stores it in the metadata of the
 downstream quality control and analysis functions in \link{singleCellTK}.
 }
 \details{
-The gene identifiers of mitochondrial genes will be loaded with 
-"data(AllMito)". Currently, it supports human and mouse reference. 
-Also, it supports entrez ID, gene symbol, ensemble ID and ensemble transcript ID. 
+The gene identifiers of mitochondrial genes will be loaded with
+"data(AllMito)". Currently, it supports human and mouse reference.
+Also, it supports entrez ID, gene symbol, ensemble ID and ensemble transcript ID.
 They will be mapped to the IDs in \code{inSCE} using the \code{by} parameter and
 stored in a \linkS4class{GeneSetCollection} object from package
 \link{GSEABase}. This object is stored in
@@ -52,7 +58,7 @@ analysis functions such as \link[singleCellTK]{runCellQC}.
 data(scExample)
 sce <- importMitoGeneSet(inSCE = sce,
                          reference = "human",
-                         id = "ensemble",
+                         id = "ensembl",
                          collectionName = "human_mito",
                          by = "rownames")
 }

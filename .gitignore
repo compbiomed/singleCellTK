@@ -7,3 +7,9 @@ singleCellTK.Rproj
 .DS_Store
 .Rprofile
 renv/
+vignettes/*_cache/*
+vignettes/articles/*_cache/*
+vignettes/articles/raw_data/*
+raw_data/*
+*.rds
+.RDataTmp

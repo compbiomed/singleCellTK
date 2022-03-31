@@ -1,0 +1,664 @@
+---
+title: "Quality Control for cell-level data"
+---
+<style>
+body {
+text-align: justify}
+</style>
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE)
+```
+
+## Introduction
+
+Performing comprehensive quality control (QC) is necessary to remove poor quality cells for downstream analysis of single-cell RNA sequencing (scRNA-seq) data. Therefore, assessment of the data is required, for which various QC algorithms have been developed. In singleCellTK (SCTK), we have written convenience functions for several of these tools. In this guide, we will demonstrate how to use these functions to perform quality control on cell data. (For definition of cell data, please refer [this documentation](cmd_qc.html#introduction-1).)
+
+The package can be loaded using the `library` command.
+
+```{r load_package, message=FALSE, warning=FALSE}
+library(singleCellTK)
+library(dplyr)
+```
+
+<br />
+
+## Running QC on cell-filtered data
+
+### Load PBMC data from 10X
+
+We will use a filtered form of the PBMC 3K and 6K dataset from the package [TENxPBMCData](http://bioconductor.org/packages/release/data/experiment/html/TENxPBMCData.html), which is available from the `importExampleData()` function. We will combine these datasets together into a single [SingleCellExperiment](https://rdrr.io/bioc/SingleCellExperiment/man/SingleCellExperiment.html) object.
+
+
+```{r load_data2, message=FALSE}
+pbmc3k <- importExampleData(dataset = "pbmc3k")
+pbmc6k <- importExampleData(dataset = "pbmc6k")
+
+pbmc.combined <- BiocGenerics::cbind(pbmc3k, pbmc6k)
+sample.vector = colData(pbmc.combined)$sample
+```
+
+SCTK also supports the importing of single-cell data from the following platforms: [10X CellRanger](https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/what-is-cell-ranger), [STARSolo](https://github.com/alexdobin/STAR/blob/master/docs/STARsolo.md), [BUSTools](https://www.kallistobus.tools/), [SEQC](https://github.com/ambrosejcarr/seqc), [DropEST](https://github.com/hms-dbmi/dropEst), [Alevin](https://salmon.readthedocs.io/en/latest/alevin.html), as well as dataset already stored in [SingleCellExperiment](https://rdrr.io/bioc/SingleCellExperiment/man/SingleCellExperiment.html) object and [AnnData](https://github.com/theislab/anndata) object. To load your own input data, please refer `Function Reference for pre-processing tools` under `Console Analysis` section in [Import data into SCTK](import_data.html) for detailed instruction. 
+
+### Run 2D embedding
+
+SCTK utilizes 2D embedding techniques such as TSNE and UMAP for visualizing single-cell data. Users can modify the dimensions by adjusting the parameters within the function. The `logNorm` parameter should be set to `TRUE` for normalization prior to generating the 2D embedding.
+
+The `sample` parameter may be specified if multiple samples exist in the `SingleCellExperiment` object. Here, we will use the sample vector stored in the `colData` slot of the `SingleCellExperiment` object.
+
+
+```{r dimensionalityreduction, warning=FALSE, message=FALSE}
+# UMAP:
+pbmc.combined <- getUMAP(inSCE = pbmc.combined, useAssay = "counts", logNorm = TRUE, sample = sample.vector)
+
+# TSNE (not run):
+# pbmc <- getTSNE(inSCE=pbmc, useAssay="counts", logNorm = TRUE, sample = colData(pbmc)$sample)
+```
+
+### Run CellQC 
+
+All of the droplet-based QC algorithms are able to be run under the wrapper function `runCellQC()`. By default all possible QC algorithms will be run.
+
+Users may set a `sample` parameter if need to compare between multiple samples. Here, we will use the sample vector stored in the `SingleCellExperiment` object.
+
+If users wishes, a list of gene sets can be applied to the function to determine the expression of a set of specific genes. A gene list imported into the `SingleCellExperiment` object using `importGeneSets*` functions can be set as `collectionName`. Additionally, a pre-made list of genes can be used to determine the level of gene expression per cell. A list containing gene identifiers may be set as `geneSetList`, or the user may instead use the `geneSetCollection` parameter to supply a `GeneSetCollection` object from the [GSEABase](https://bioconductor.org/packages/release/bioc/html/GSEABase.html) package. Please also refer to [*Import Genesets* documentation](import_genesets.html).
+
+```{r load_geneset, message = FALSE, warning = FALSE, eval = FALSE}
+pbmc.combined <- importGeneSetsFromGMT(inSCE = pbmc.combined, collectionName = "mito", file = system.file("extdata/mito_subset.gmt", package = "singleCellTK"))
+
+set.seed(12345)
+pbmc.combined <- runCellQC(pbmc.combined, 
+                           algorithms = c("QCMetrics", "scrublet", "scDblFinder", "cxds", "bcds", "cxds_bcds_hybrid", "doubletFinder", "decontX", "soupX"), 
+                           sample = sample.vector, 
+                           collectionName = "mito")
+```
+
+Users can also specify `mitoRef`, `mitoIDType` and `mitoGeneLocation` arguments in `runCellQC` function to quantify mitochondrial gene expression without the need to import gene sets. For the details about these arguments, please refer to `runCellQC` and `runPerCellQC()` . 
+
+```{r mitoGene_quanfity,  message = FALSE, warning = FALSE}
+pbmc.combined <- runCellQC(pbmc.combined,
+                           algorithms = c("QCMetrics", "scrublet", "scDblFinder", "cxds", "bcds", "cxds_bcds_hybrid", "doubletFinder", "decontX", "soupX"),
+                           sample = sample.vector,
+                           mitoRef = "human", mitoIDType = "symbol", mitoGeneLocation = "rownames")
+```
+<br />
+If users choose to only run a specific set of algorithms, they can specify which to run with the `algorithms` parameter. By default, the `runCellQC()` will run `"QCMetrics"`, `"scDblFinder"`, `"cxds"`, `"bcds"`, `"cxds_bcds_hybrid"`, `"decontX"` and `"soupX"` algorithms by default. Besides, `"scrublet"` and `"doubletFinder"` are supported if our users want to run them. 
+
+After running QC functions with SCTK, the output will be stored in the `colData` slot of the `SingleCellExperiment` object.
+
+```{r, coldata_cell, echo=TRUE, eval=FALSE}
+head(colData(pbmc.combined), 5)
+```
+
+```{r, echo = FALSE}
+df.matrix <- head(colData(pbmc.combined), 2)
+df.matrix %>%
+  knitr::kable(format = "html") %>% kableExtra::kable_styling() %>%
+  kableExtra::scroll_box(width = "80%")
+```
+<br />
+
+````{=html}
+<details>
+  <summary><b>A summary of all outputs</b></summary>
+```` 
+
+```{r table3, eval = TRUE, fig.wide = TRUE, echo=FALSE, message=FALSE, warnings=FALSE, results='asis', fig.align="center"}
+tabl <- "
+| QC output                              | Description                                                   | Methods           | Package/Tool  |
+|----------------------------------------|:--------------------------------------------------------------|:------------------|:--------------|
+| `sum`                                    | Total counts                                                  | `runPerCellQC()`      | [scater](https://bioconductor.org/packages/release/bioc/html/scater.html)        |
+| `detected`                               | Total features                                                | `runPerCellQC()`      | [scater](https://bioconductor.org/packages/release/bioc/html/scater.html)        |
+| `percent_top`                            | % Expression coming from top features                         | `runPerCellQC()`      | [scater](https://bioconductor.org/packages/release/bioc/html/scater.html)        |
+| `subsets_*`                               | sum, detected, percent_top calculated on specified gene list  | `runPerCellQC()`      | [scater](https://bioconductor.org/packages/release/bioc/html/scater.html)        |
+| `scrublet_score`                         | Doublet score                                                 | `runScrublet()`       | [scrublet](https://github.com/swolock/scrublet)      |
+| `scrublet_call`                          | Doublet classification based on threshold                     | `runScrublet()`       | [scrublet](https://github.com/swolock/scrublet)      |
+| `scDblFinder_doublet_score`              | Doublet score                                                 | `runScDblFinder()`   | [scDblFinder](https://bioconductor.org/packages/release/bioc/html/scDblFinder.html)         |
+| `doubletFinder_doublet_score`            | Doublet score                                                 | `runDoubletFinder()`  | [DoubletFinder](https://github.com/chris-mcginnis-ucsf/DoubletFinder) |
+| `doubletFinder_doublet_label_resolution` | Doublet classification based on threshold                     | `runDoubletFinder()`  | [DoubletFinder](https://github.com/chris-mcginnis-ucsf/DoubletFinder) |
+| `scds_cxds_score`                        | Doublet score                                                 | `runCxds()`           | [SCDS](https://www.bioconductor.org/packages/release/bioc/html/scds.html)          |
+| `scds_cxds_call`                         | Doublet classification based on threshold                     | `runCxds()`           | [SCDS](https://www.bioconductor.org/packages/release/bioc/html/scds.html)          |
+| `scds_bcds_score`                        | Doublet score                                                 | `runBcds()`           | [SCDS](https://www.bioconductor.org/packages/release/bioc/html/scds.html)          |
+| `scds_bcds_call`                         | Doublet classification based on threshold                     | `runBcds()`           | [SCDS](https://www.bioconductor.org/packages/release/bioc/html/scds.html)          |
+| `scds_hybrid_score`                      | Doublet score                                                 | `runCxdsBcdsHybrid()` | [SCDS](https://www.bioconductor.org/packages/release/bioc/html/scds.html)          |
+| `scds_hybrid_call`                       | Doublet classification based on threshold                     | `runCxdsBcdsHybrid()` | [SCDS](https://www.bioconductor.org/packages/release/bioc/html/scds.html)          |
+| `decontX_contamination`                  | Ambient RNA contamination                                     | `runDecontX()`        | [celda](https://www.bioconductor.org/packages/release/bioc/html/celda.html)         |
+| `decontX_clusters`                       | Clusters determined in dataset based on underlying algorithm  | `runDecontX()`        | [celda](https://www.bioconductor.org/packages/release/bioc/html/celda.html)         |
+| `soupX_nUMIs` | Total number of UMI per cell  | `runSoupX()`        | [SoupX](https://github.com/constantAmateur/SoupX)      |
+| `soupX_clusters` | Quick clustering label if clustering not provided by users | `runSoupX()` | [scran](https://rdrr.io/bioc/scran/man/quickCluster.html)    |
+| `soupX_contamination` | Ambient RNA contamination   | `runSoupX()`        |   [SoupX](https://github.com/constantAmateur/SoupX)     |
+"
+cat(tabl)
+```
+
+````{=html}
+</details>
+```` 
+
+<br />
+
+The names of the 2D embedding and dimension reduction matrices are stored in the `reducedDims` slot of the `SingleCellExperiment` object.
+
+```{r, reduceddimnames_cell}
+reducedDims(pbmc.combined)
+```
+
+#### Generating a summary statistic table
+
+The function `sampleSummaryStats()` may be used to generate a table containing the mean and median of the data per sample, which is stored within the `qc_table` table under `metadata`. The table can then be returned using `getSampleSummaryStatsTable`.
+
+```{r sampleSummaryStats}
+pbmc.combined <- sampleSummaryStats(pbmc.combined, sample = sample.vector)
+getSampleSummaryStatsTable(pbmc.combined, statsName = "qc_table")
+```
+
+If users choose to generate a table for all QC metrics generated through `runCellQC()`, they may set the `simple` parameter to `FALSE`.
+
+```{r sampleSummaryStatsQC}
+pbmc.combined <- sampleSummaryStats(pbmc.combined, sample = sample.vector, simple = FALSE)
+getSampleSummaryStatsTable(pbmc.combined, statsName = "qc_table")
+```
+
+### Running individual QC methods
+
+Instead of running all quality control methods on the dataset at once, users may elect to execute QC methods individually. The parameters as well as the outputs to individual QC functions are described in detail as follows:
+
+````{=html}
+<details>
+  <summary><b>General QC metrics</b></summary>
+  <details>
+    <summary><b>runPerCellQC</b></summary>
+```` 
+
+SingleCellTK utilizes the [scater](https://bioconductor.org/packages/release/bioc/html/scater.html) package to compute cell-level QC metrics. The wrapper function `runPerCellQC()` can be used to separately compute general QC metrics on its own.
+
+- `inSCE` parameter is the input SingleCellExperiment object.
+- `useAssay` is the assay object that in the SingleCellExperiment object the user wishes to use.
+
+A list of gene sets can be applied to the function to determine the expression of a set of specific genes, as mentioned before. Please also refer to [*Import Genesets* documentation](import_genesets.html).
+
+The QC outputs are `sum`, `detected`, and `percent_top_X`, stored as variables in `colData`.
+
+- `sum` contains the total number of counts for each cell.
+- `detected` contains the total number of features for each cell.
+- `percent_top_X` contains the percentage of the total counts that is made up by the expression of the top X genes for each cell.
+- The `subsets_` columns contain information for the specific gene list that was used. For instance, if a gene list containing ribosome genes named `"ribosome"` was used, `subsets_ribosome_sum` would contain the total number of ribosome gene counts for each cell.
+- `mito_sum`, `mito_detected` and `mito_percent` contains number of counts, number of mito features and percentage of mito gene expression of each cells. These columns will show up only if you specify arguments related to mito genes quantification in `runCellQC` function. Please refer to `runCellQC` and `runPerCellQC` documentation for more details. 
+
+```{r, eval=FALSE, message=FALSE}
+pbmc.combined <- runPerCellQC(
+  inSCE = pbmc.combined,
+  useAssay = "counts",
+  collectionName = "ribosome",
+  mitoRef = "human", mitoIDType = "symbol", mitoGeneLocation = "rownames")
+```
+
+````{=html}
+  </details>
+</details>
+<details>
+  <summary><b>Doublet Detection</b></summary>
+````
+
+Doublets hinder cell-type identification by appearing as a distinct transcriptomic state, and need to be removed for downstream analysis. SCTK contains various doublet detection tools that the user may choose from.
+
+````{=html}
+  <details>
+    <summary><b>runScrublet</b></summary>
+```` 
+
+[Scrublet](https://github.com/swolock/scrublet) aims to detect doublets by creating simulated doublets from combining transcriptomic profiles of existing cells in the dataset. The wrapper function `runScrublet()` can be used to separately run the Scrublet algorithm on its own.
+
+- `sample` indicates what sample each cell originates from. It can be set to `NULL` if all cells in the dataset came from the same sample.
+
+Scrublet also has a large set of parameters that the user can adjust, please see the function reference for detail, by clicking on the function name.  
+
+The Scrublet outputs include the following `colData` variables: 
+
+- `scrublet_score`, which is a numeric variable of the likelihood that a cell is a doublet
+- `scrublet_call`, which is the assignment of whether the cell is a doublet.
+
+```{r run_scrublet, eval = FALSE, message=FALSE}
+pbmc.combined <- runScrublet(
+  inSCE = pbmc.combined,
+  sample = colData(pbmc.combined)$sample, 
+  useAssay = "counts"
+)
+```
+
+````{=html}
+</details>
+<details>
+  <summary><b>runScDblFinder</b></summary>
+```` 
+
+[ScDblFinder](https://rdrr.io/bioc/scDblFinder/) is a doublet detection algorithm. ScDblFinder aims to detect doublets by creating a simulated doublet from existing cells and projecting it to the same PCA space as the cells. The wrapper function `runScDblFinder()` can be used to separately run the ScDblFinder algorithm on its own. 
+
+- `nNeighbors` is the number of nearest neighbor used to calculate the density for doublet detection. 
+- `simDoublets` is used to determine the number of simulated doublets used for doublet detection.
+
+The output of ScDblFinder is a `scDblFinder_doublet_score`, which will be stored as a `colData` variable. The doublet score of a droplet will be higher if the it is deemed likely to be a doublet.
+
+```{r run_scDblFinder, eval = FALSE, message=FALSE}
+pbmc.combined <- runScDblFinder(inSCE = pbmc.combined, sample = colData(pbmc.combined)$sample, useAssay = "counts")
+```
+
+````{=html}
+</details>
+<details>
+  <summary><b>runDoubletFinder</b></summary>
+```` 
+
+[DoubletFinder](https://github.com/chris-mcginnis-ucsf/DoubletFinder) is a doublet detection algorithm which depends on the single cell analysis package [Seurat](https://satijalab.org/seurat/). The wrapper function `runDoubletFinder()` can be used to separately run the DoubletFinder algorithm on its own.  
+
+- `seuratRes` - `runDoubletFinder()` relies on a parameter (in Seurat) called "resolution" to determine cells that may be doublets. Users will be able to manipulate the resolution parameter through `seuratRes`. If multiple numeric vectors are stored in `seuratRes`, there will be multiple label/scores. 
+- `seuratNfeatures` determines the number of features that is used in the [`FindVariableFeatures`](https://satijalab.org/seurat/reference/findvariablefeatures) function in Seurat. 
+- `seuratPcs` determines the number of dimensions used in the [`FindNeighbors`](https://satijalab.org/seurat/reference/findneighbors) function in Seurat. 
+- `formationRate` is the estimated doublet detection rate in the dataset. It aims to detect doublets by creating simulated doublets from combining transcriptomic profiles of existing cells in the dataset.
+
+The DoubletFinder outputs include the following `colData` variable:
+
+- `doubletFinder_doublet_score`, which is a numeric variable of the likelihood that a cell is a doublet
+- `doubletFinder_doublet_label`, which is the assignment of whether the cell is a doublet.
+
+```{r run_doubletfinder, eval = FALSE, message=FALSE}
+pbmc.combined <- runDoubletFinder(
+  inSCE = pbmc.combined, useAssay = "counts",
+  sample = colData(pbmc.combined)$sample, 
+  seuratRes = c(1.0), seuratPcs = 1:15,
+  seuratNfeatures = 2000,
+  formationRate = 0.075, seed = 12345
+)
+```
+
+````{=html}
+</details>
+<details>
+  <summary><b>runCXDS</b></summary>
+```` 
+
+CXDS, or co-expression based doublet scoring, is an algorithm in the [SCDS](https://www.bioconductor.org/packages/release/bioc/html/scds.html) package which employs a binomial model for the co-expression of pairs of genes to determine doublets. The wrapper function `runCxds()` can be used to separately run the CXDS algorithm on its own.  
+
+- `ntop` is the number of top variance genes to consider.
+- `binThresh` is the minimum counts a gene needs to have to be included in the analysis. 
+- `verb` determines whether progress messages will be displayed or not. 
+- `retRes` will determine whether the gene pair results should be returned or not. 
+- `estNdbl` is the user estimated number of doublets.
+
+The output of `runCxds()` is the doublet score, `scds_cxds_score`, which will be stored as a `colData` variable.
+
+```{r run_cxds, eval = FALSE, message=FALSE}
+pbmc.combined <- runCxds(
+  inSCE = pbmc.combined, sample = colData(pbmc.combined)$sample, 
+  ntop = 500, binThresh = 0,
+  verb = FALSE, retRes = FALSE, estNdbl = FALSE
+)
+```
+
+````{=html}
+</details>
+<details>
+  <summary><b>runBCDS</b></summary>
+```` 
+
+BCDS, or binary classification based doublet scoring, is an algorithm in the [SCDS](https://www.bioconductor.org/packages/release/bioc/html/scds.html) package which uses a binary classification approach to determine doublets. The wrapper function `runBcds()` can be used to separately run the BCDS algorithm on its own. 
+
+- `ntop` is the number of top variance genes to consider.
+- `srat` is the ratio between original number of cells and simulated doublets. 
+- `nmax` is the maximum number of cycles that the algorithm should run through. If set to `"tune"`, this will be automatic. 
+- `varImp` determines if the variable importance should be returned or not.
+
+The output of `runBcds()` is `scds_bcds_score`, which is the likelihood that a cell is a doublet and will be stored as a `colData` variable.
+
+```{r run_bcds, eval = FALSE, message=FALSE}
+pbmc.combined <- runBcds(
+  inSCE = pbmc.combined, seed = 12345, sample = colData(pbmc.combined)$sample, 
+  ntop = 500, srat = 1, nmax = "tune", varImp = FALSE
+)
+```
+
+````{=html}
+</details>
+<details>
+  <summary><b>runCxdsBcdsHybrid</b></summary>
+```` 
+
+The CXDS-BCDS hybrid algorithm, uses both CXDS and BCDS algorithms from the [SCDS](https://www.bioconductor.org/packages/release/bioc/html/scds.html) package. The wrapper function `runCxdsBcdsHybrid()` can be used to separately run the CXDS-BCDS hybrid algorithm on its own.
+
+All parameters from the `runCxds()` and `runBcds()` functions may be applied to this function in the `cxdsArgs` and `bcdsArgs` parameters, respectively.  
+
+The output of `runCxdsBcdsHybrid()` is the doublet score, `scds_hybrid_score`, which will be stored as a `colData` variable.
+
+```{r run_hybrid, eval = FALSE, message=FALSE}
+pbmc.combined <- runCxdsBcdsHybrid(
+  inSCE = pbmc.combined, sample = colData(pbmc.combined)$sample, 
+  seed = 12345, nTop = 500
+)
+```
+
+````{=html}
+  </details>
+</details>
+<details>
+  <summary><b>Ambient RNA Detection</b></summary>
+  <details>
+    <summary><b>runDecontX</b></summary>
+```` 
+
+In droplet-based single cell technologies, ambient RNA that may have been released from apoptotic or damaged cells may get incorporated into another droplet, and can lead to contamination. [decontX](https://rdrr.io/bioc/celda/man/decontX.html), available from [celda](https://bioconductor.org/packages/release/bioc/html/celda.html), is a Bayesian method for the identification of the contamination level at a cellular level. The wrapper function `runDecontX()` can be used to separately run the DecontX algorithm on its own. 
+
+The outputs of `runDecontX()` are `decontX_contamination` and `decontX_clusters`.
+
+- `decontX_contamination` is a numeric vector which characterizes the level of contamination in each cell. 
+- Clustering is performed as part of the `runDecontX()` algorithm. `decontX_clusters` is the resulting cluster assignment, which can also be labeled on the plot. For performing fine-tuned clustering in SCTK, please refer to [*Clustering* documentation](clustering.html)
+
+```{r run_decontx, eval = FALSE, message=FALSE}
+pbmc.combined <- runDecontX(
+  inSCE = pbmc.combined, useAssay = "counts"
+  sample = colData(pbmc.combined)$sample
+)
+```
+
+````{=html}
+  </details>
+  <details>
+    <summary><b>runSoupX</b></summary>
+````
+
+In droplet-based single cell technologies, ambient RNA that may have been released from apoptotic or damaged cells may get incorporated into another droplet, and can lead to contamination. [SoupX](https://github.com/constantAmateur/SoupX) uses non-expressed genes to estimates a global contamination fraction. The wrapper function `runSoupX()` can be used to separately run the SoupX algorithm on its own. 
+
+he main outputs of `runSoupX` are `soupX_contamination`, `soupX_clusters`, and the corrected assay `SoupX`, together with other intermediate metrics that SoupX generates.
+
+- `soupX_contamination` is a numeric vector which characterizes the level of contamination in each cell. SoupX generates one global contamination estimate per sample, instead of returning cell-specific estimation.
+- Clustering is required for SoupX algorithm. It will be performed if users do not provide the label as input. `quickCluster()` method from package [scran](https://rdrr.io/bioc/scran/man/quickCluster.html) is adopted for this purpose. `soupX_clusters` is the resulting cluster assignment, which can also be labeled on the plot. For performing fine-tuned clustering in SCTK, please refer to [*Clustering* documentation](clustering.html)
+
+```{r run_soupx, eval = FALSE, message=FALSE}
+pbmc.combined <- runSoupX(
+  inSCE = pbmc.combined, useAssay = "counts"
+  sample = colData(pbmc.combined)$sample
+)
+```
+
+````{=html}
+  </details>
+</details>
+````
+
+### Plotting QC metrics
+
+Upon running `runCellQC()` or any individual QC methods, the QC outputs will need to be plotted. For each QC method, SCTK provides a specialized plotting function.
+
+````{=html}
+<details>
+  <summary><b>General QC metrics</b></summary>
+  <details>
+    <summary><b>runPerCellQC</b></summary>
+```` 
+
+The wrapper function `plotRunPerCellQCResults()` can be used to plot the general QC outputs.
+
+```{r plot_percellqc, message=FALSE, warning=FALSE}
+runpercellqc.results <- plotRunPerCellQCResults(inSCE = pbmc.combined, sample = sample.vector, combinePlot = "all", axisSize = 8, axisLabelSize = 9, titleSize = 20, labelSamples=TRUE)
+```
+
+```{r, fig.wide = TRUE, fig.height = 10, fig.width = 10}
+runpercellqc.results
+```
+
+````{=html}
+  </details>
+</details>
+```` 
+
+````{=html}
+<details>
+  <summary><b>Doublet Detection</b></summary>
+  <details>
+    <summary><b>Scrublet</b></summary>
+```` 
+
+The wrapper function `plotScrubletResults()` can be used to plot the results from the Scrublet algorithm. Here, we will use the UMAP coordinates generated from `getUMAP()` in previous sections.
+
+```{r, reduceddimnames_cell2}
+reducedDims(pbmc.combined)
+```
+
+```{r umap_scrubletplots, message=FALSE, warning=FALSE}
+scrublet.results <- plotScrubletResults(
+  inSCE = pbmc.combined,
+  reducedDimName = "UMAP",
+  sample = colData(pbmc.combined)$sample, 
+  combinePlot = "all",
+  titleSize = 10,
+  axisLabelSize = 8,
+  axisSize = 10,
+  legendSize = 10,
+  legendTitleSize = 10
+)
+```
+
+```{r plot_umap_scrublet, fig.wide = TRUE, fig.height = 12, fig.width = 10}
+scrublet.results 
+```
+
+````{=html}
+</details>
+<details>
+  <summary><b>ScDblFinder</b></summary>
+```` 
+
+The wrapper function `plotScDblFinderResults()` can be used to plot the QC outputs from the ScDblFinder algorithm.
+
+```{r umap_scDblFinder_plots, eval=FALSE, message=FALSE, warning=FALSE}
+scDblFinder.results <- plotScDblFinderResults(
+  inSCE = pbmc.combined, sample = colData(pbmc.combined)$sample, 
+  reducedDimName = "UMAP", combinePlot = "all",
+  titleSize = 13,
+  axisLabelSize = 13,
+  axisSize = 13,
+  legendSize = 13,
+  legendTitleSize = 13
+)
+```
+<br />
+
+````{=html}
+</details>
+<details>
+  <summary><b>DoubletFinder</b></summary>
+```` 
+
+The wrapper function `plotDoubletFinderResults()` can be used to plot the QC outputs from the DoubletFinder algorithm.
+
+```{r, umap_doubletfinder_plots, eval=FALSE, message=FALSE, warning=FALSE}
+doubletFinderResults <- plotDoubletFinderResults(
+  inSCE = pbmc.combined,
+  sample = colData(pbmc.combined)$sample, 
+  reducedDimName = "UMAP",
+  combinePlot = "all",
+  titleSize = 13,
+  axisLabelSize = 13,
+  axisSize = 13,
+  legendSize = 13,
+  legendTitleSize = 13
+)
+```
+<br />
+
+````{=html}
+</details>
+<details>
+  <summary><b>SCDS, CXDS</b></summary>
+```` 
+
+The wrapper function `plotCxdsResults()` can be used to plot the QC outputs from the CXDS algorithm.
+
+```{r umap_cxds_plots, eval=FALSE, warning=FALSE, message=FALSE}
+cxdsResults <- plotCxdsResults(
+  inSCE = pbmc.combined,
+  sample = colData(pbmc.combined)$sample, 
+  reducedDimName = "UMAP", combinePlot = "all",
+  titleSize = 13,
+  axisLabelSize = 13,
+  axisSize = 13,
+  legendSize = 13,
+  legendTitleSize = 13
+)
+```
+<br />
+
+````{=html}
+</details>
+<details>
+  <summary><b>SCDS, BCDS</b></summary>
+```` 
+
+The wrapper function `plotBcdsResults()` can be used to plot the QC outputs from the BCDS algorithm
+
+```{r umap_bcds_plots, eval=FALSE, warning=FALSE, message=FALSE}
+bcdsResults <- plotBcdsResults(
+  inSCE = pbmc.combined,
+  sample = colData(pbmc.combined)$sample, 
+  reducedDimName = "UMAP", combinePlot = "all",
+  titleSize = 13,
+  axisLabelSize = 13,
+  axisSize = 13,
+  legendSize = 13,
+  legendTitleSize = 13
+)
+```
+<br />
+
+````{=html}
+</details>
+<details>
+  <summary><b>SCDS, CXDS-BCDS hybrid</b></summary>
+```` 
+
+The wrapper function `plotScdsHybridResults()` can be used to plot the QC outputs from the CXDS-BCDS hybrid algorithm.
+
+```{r umap_hybrid_plots, eval=FALSE, warning=FALSE, message=FALSE}
+bcdsCxdsHybridResults <- plotScdsHybridResults(
+  inSCE = pbmc.combined, sample = colData(pbmc.combined)$sample, 
+  reducedDimName = "UMAP", combinePlot = "all",
+  titleSize = 13,
+  axisLabelSize = 13,
+  axisSize = 13,
+  legendSize = 13,
+  legendTitleSize = 13
+)
+```
+<br />
+
+````{=html}
+</details>
+```` 
+
+````{=html}
+</details>
+```` 
+
+````{=html}
+<details>
+  <summary><b>Ambient RNA Detection</b></summary>
+  <details>
+  <summary><b>DecontX</b></summary>
+```` 
+
+The wrapper function `plotDecontXResults()` can be used to plot the QC outputs from the DecontX algorithm.
+
+```{r umap_decontx_plots, warning=FALSE, message=FALSE, fig.wide = TRUE, fig.height = 10, fig.width = 14}
+decontxResults <- plotDecontXResults(
+  inSCE = pbmc.combined, sample = colData(pbmc.combined)$sample, 
+  reducedDimName = "UMAP", combinePlot = "all",
+  titleSize = 8,
+  axisLabelSize = 8,
+  axisSize = 10,
+  legendSize = 5,
+  legendTitleSize = 7,
+  relWidths = c(0.5, 1, 1),
+  sampleRelWidths = c(0.5, 1, 1),
+  labelSamples = TRUE,
+  labelClusters = FALSE
+)
+```
+
+```{r plots_umap_decontx, fig.wide = TRUE, fig.height = 8, fig.width = 9}
+decontxResults
+```
+
+````{=html}
+  </details>
+  <details>
+    <summary><b>SoupX</b></summary>
+````
+
+The wrapper function `plotSoupXResults()` can be used to plot the QC outputs from the SoupX algorithm.
+
+```{r umap_soupx_plots, warning=FALSE, message=FALSE, fig.wide = TRUE, fig.height = 10, fig.width = 14}
+soupxResults <- plotSoupXResults(
+  inSCE = pbmc.combined, sample = colData(pbmc.combined)$sample, 
+  reducedDimName = "UMAP", combinePlot = "all",
+  titleSize = 8,
+  axisLabelSize = 8,
+  axisSize = 10,
+  legendSize = 5,
+  legendTitleSize = 7,
+  labelClusters = FALSE
+)
+```
+
+```{r plots_umap_soupx, fig.wide = TRUE, fig.height = 8, fig.width = 9}
+soupxResults
+```
+
+````{=html}
+  </details
+</details>
+```` 
+
+### Filtering the dataset
+
+`SingleCellExperiment` objects can be subset by its `colData` using `subsetSCECols()`. The `colData` parameter takes in a character vector of expression(s) which will be used to identify a subset of cells using variables found in the `colData` of the `SingleCellExperiment` object. For example, if `x` is a numeric vector in `colData`, then setting `colData = "x < 5"` will return a `SingleCellExperiment` object where all columns (cells) meet the condition that `x` is less than 5. The `index` parameter takes in a numeric vector of indices which should be kept, while `bool` takes in a logical vector of `TRUE` or `FALSE` which should be of the same length as the number of columns (cells) in the `SingleCellExperiment` object. Please refer to our [*Filtering* documentation](filtering.html) for detail.
+
+```{r}
+#Before filtering:
+dim(pbmc.combined)
+```
+
+Remove barcodes with high mitochondrial gene expression:
+```{r}
+pbmc.combined <- subsetSCECols(pbmc.combined, colData = 'mito_percent < 20')
+```
+
+Remove detected doublets from Scrublet:
+```{r}
+pbmc.combined <- subsetSCECols(pbmc.combined, colData = 'scrublet_call == "Singlet"')
+```
+
+Remove cells with high levels of ambient RNA contamination:
+```{r}
+pbmc.combined <- subsetSCECols(pbmc.combined, colData = 'decontX_contamination < 0.5')
+```
+
+```{r}
+#After filtering:
+dim(pbmc.combined)
+```
+
+<br />
+
+>For performing QC on droplet-level raw count matrix with SCTK, please refer to our [*Droplet QC* documentation](cnsl_dropletqc.html).
+
+````{=html}
+ <details>
+ <summary><b>Session Information</b></summary>
+````
+
+```{r}
+sessionInfo()
+```
+
+````{=html}
+</details>
+````

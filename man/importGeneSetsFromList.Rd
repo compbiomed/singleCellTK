@@ -59,8 +59,8 @@ analysis functions such as \link[singleCellTK]{runCellQC}.
 data(scExample)
 
 # Generate gene sets from 'rownames'
-gs1 <- rownames(sce)[1:10]
-gs2 <- rownames(sce)[11:20]
+gs1 <- rownames(sce)[seq(10)]
+gs2 <- rownames(sce)[seq(11,20)]
 gs <- list("geneset1" = gs1, "geneset2" = gs2)
 sce <- importGeneSetsFromList(inSCE = sce,
                               geneSetList = gs,

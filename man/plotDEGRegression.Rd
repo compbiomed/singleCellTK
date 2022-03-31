@@ -2,8 +2,7 @@
 % Please edit documentation in R/plotDEAnalysis.R
 \name{plotDEGRegression}
 \alias{plotDEGRegression}
-\title{plot the linear regression to show visualize the expression the of DEGs
-identified by differential expression analysis}
+\title{Create linear regression plot to show the expression the of top DEGs}
 \usage{
 plotDEGRegression(
   inSCE,
@@ -18,15 +17,14 @@ plotDEGRegression(
 )
 }
 \arguments{
-\item{inSCE}{\linkS4class{SingleCellExperiment} inherited object.
-\code{runMAST()} has to be run in advance.}
+\item{inSCE}{\linkS4class{SingleCellExperiment} inherited object.}
 
 \item{useResult}{character. A string specifying the \code{analysisName}
 used when running a differential expression analysis function.}
 
 \item{threshP}{logical. Whether to plot threshold values from adaptive
-thresholding, instead of using the assay used by \code{runMAST()}. Default
-\code{FALSE}.}
+thresholding, instead of using the assay used by when performing DE analysis.
+Default \code{FALSE}.}
 
 \item{labelBy}{A single character for a column of \code{rowData(inSCE)} as
 where to search for the labeling text. Default \code{NULL}.}
@@ -49,6 +47,18 @@ to see if the counts are logged. Default \code{TRUE}}
 A ggplot object of linear regression
 }
 \description{
-plot the linear regression to show visualize the expression the of DEGs
-identified by differential expression analysis
+Create linear regression plot to show the expression the of top DEGs
+}
+\details{
+Any of the differential expression analysis method from SCTK should 
+be performed prior to using this function
+}
+\examples{
+data("sceBatches")
+logcounts(sceBatches) <- log(counts(sceBatches) + 1)
+sce.w <- subsetSCECols(sceBatches, colData = "batch == 'w'")
+sce.w <- runWilcox(sce.w, class = "cell_type", classGroup1 = "alpha",
+                   groupName1 = "w.alpha", groupName2 = "w.beta",
+                   analysisName = "w.aVSb")
+plotDEGRegression(sce.w, "w.aVSb")
 }

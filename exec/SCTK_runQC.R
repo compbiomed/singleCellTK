@@ -27,6 +27,46 @@ bioc.package.check <- lapply(bioc.packages, FUN = function(x) {
   }
 }
 
+## tmp function to check the output of QC before generate HTAN meta
+.check_QC <- function(direcotry, samplename) {
+    absFilterDir <- file.path(direcotry, samplename, 'FlatFile', 'Cells')
+    print('The layout of the output folder after QC is done')
+    print(list.files(absFilterDir, recursive = TRUE))
+
+    decontx_AbsFileName = file.path(absFilterDir, 'assays', paste0(samplename,'_decontXcounts.mtx.gz'))
+    mat_AbsFileName = file.path(absFilterDir, 'assays', paste0(samplename,'_counts.mtx.gz'))
+
+    AbsColData = file.path(absFilterDir, paste0(samplename,'_cellData.txt.gz'))
+    AbsDecontXUMAP = file.path(absFilterDir, 'reducedDims', paste0(samplename,'_decontX_UMAP.txt.gz'))
+    AbsScrubletTSNE = file.path(absFilterDir, 'reducedDims', paste0(samplename,'_scrublet_TSNE.txt.gz'))
+    AbsScrubletUMAP = file.path(absFilterDir, 'reducedDims', paste0(samplename,'_scrublet_UMAP.txt.gz'))
+    
+    for (file in c(decontx_AbsFileName, mat_AbsFileName, AbsColData, AbsDecontXUMAP, AbsScrubletTSNE, AbsScrubletUMAP)) {
+        if (!file.exists(file)) {print(paste('The following file cannot be accessed', file))}
+    }
+}
+
+### helper function for importing Mito gene set
+.importMito <- function(MitoImport, MitoType) {
+    reference <- NULL
+    id <- NULL
+
+    if (isTRUE(MitoImport)) {
+        mito_info <- strsplit(MitoType, split="-")
+        if (length(mito_info[[1]]) != 2) {
+            stop("The --MitoType ", MitoType, " is not correct or supported. Please double check the documentation.")
+        }
+
+        reference <- mito_info[[1]][1]
+        id <- mito_info[[1]][2]
+
+        if ((!reference %in% c("human", "mouse")) | (!id %in% c("symbol", "entrez", "ensembl", "ensemblTranscriptID"))) {
+            stop("The --MitoType ", MitoType, " is not correct or supported. Please double check the documentation.")
+        }
+    }
+    return(list('reference' = reference, 'id' = id))
+}
+
 ## Check whether python module is available
 if (!reticulate::py_module_available(module = "scrublet")) {
     stop("Cannot find python module 'scrublet'. ",
@@ -44,7 +84,7 @@ option_list <- list(optparse::make_option(c("-b", "--basePath"),
     optparse::make_option(c("-P", "--preproc"),
         type = "character",
         default=NULL,
-        help="Algorithm used for preprocessing. One of 'CellRangerV2', 'CellRangerV3', 'BUStools', 'STARSolo', 'SEQC', 'Optimus', 'DropEst', 'SceRDS', 'CountMatrix', 'AnnData'"),
+        help="Algorithm used for preprocessing. One of 'CellRangerV2', 'CellRangerV3', 'BUStools', 'STARSolo', 'SEQC', 'Optimus', 'DropEst', 'SceRDS', 'CountMatrix', 'AnnData' and 'Alevin'"),
     optparse::make_option(c("-s","--sample"),
         type="character",
         help="Name of the sample. This will be prepended to the cell barcodes."),
@@ -67,7 +107,7 @@ option_list <- list(optparse::make_option(c("-b", "--basePath"),
     optparse::make_option(c("-G","--genome"),
         type="character",
         default=NULL,
-        help="The name of genome reference. This is only required for CellRangerV2 data."), 
+        help="The name of genome reference. This is only required for CellRangerV2 data."),
     optparse::make_option(c("-C","--cellPath"),
         type="character",
         default=NULL,
@@ -91,7 +131,7 @@ option_list <- list(optparse::make_option(c("-b", "--basePath"),
     optparse::make_option(c("-F", "--outputFormat"),
         type="character",
         default=NULL,
-        help="The output format of this QC pipeline. Currently, it supports SCE, Flatfile, AnnData and HTAN."),
+        help="The output format of this QC pipeline. Currently, it supports SCE, Flatfile, Seurat, AnnData and HTAN."),
     optparse::make_option(c("-y", "--yamlFile"),
         type="character",
         default=NULL,
@@ -123,7 +163,20 @@ option_list <- list(optparse::make_option(c("-b", "--basePath"),
     optparse::make_option(c("-T", "--parallelType"),
         type="character",
         default="MulticoreParam",
-        help="Type of clusters used for parallel computing. Default is 'MulticoreParam'. It can be 'MulticoreParam' or 'SnowParam'. This argument will be evaluated only when numCores > 1.")
+        help="Type of clusters used for parallel computing. Default is 'MulticoreParam'. It can be 'MulticoreParam' or 'SnowParam'. This argument will be evaluated only when numCores > 1."),
+    optparse::make_option(c("-M", "--detectMitoLevel"),
+        type="logical",
+        default=TRUE,
+        help="Detect mitochondrial gene expression level. If TRUE, the pipeline will examinate mito gene expression level automatically without the need of importing user defined gmt file. Default is TRUE"),
+    optparse::make_option(c("-E", "--mitoType"),
+        type="character",
+        default="human-ensembl",
+        help="Type of mitochondrial gene set to be used when --detectMitoLevel is set to TRUE. Possible choices are: 'human-ensembl', 'human-symbol', 'human-entrez', 'human-ensemblTranscriptID',
+        'mouse-ensembl', 'mouse-symbol', 'mouse-entrez', 'mouse-ensemblTranscriptID'. The first part defines the species and second part defines type of gene ID used as the rownames of the count matrix"),
+    optparse::make_option(c("-Q", "--QCReport"),
+        type="logical",
+        default=FALSE,
+        help="Generates QC report when the SCTK-QC pipeline is finished. Default if TRUE")
     )
 ## Define arguments
 arguments <- optparse::parse_args(optparse::OptionParser(option_list=option_list), positional_arguments=TRUE)
@@ -135,7 +188,7 @@ gmt <- opt[["gmt"]]
 sep <- opt[["delim"]]
 split <- opt[["splitSample"]]
 basepath <- opt[["basePath"]]
-FilterDir <- opt[["cellPath"]] 
+FilterDir <- opt[["cellPath"]]
 RawDir <- opt[["rawPath"]]
 Reference <- opt[["genome"]]
 RawFile <- opt[["rawData"]]
@@ -145,29 +198,35 @@ formats <- opt[["outputFormat"]]
 dataType <- opt[["dataType"]]
 detectCell <- opt[["detectCells"]]
 numCores <- opt[["numCores"]]
-parallelType <- opt[["parallelType"]] 
+parallelType <- opt[["parallelType"]]
 cellCalling <- opt[["cellDetectMethod"]]
 studyDesign <- opt[["studyDesign"]]
 subTitles <- opt[["subTitle"]]
 CombinedSamplesName <- opt[["outputPrefix"]]
+MitoImport <- opt[["detectMitoLevel"]]
+MitoType <- opt[["mitoType"]]
+QCReport <- opt[["QCReport"]]
 
-if (!is.null(basepath)) { basepath <- unlist(strsplit(opt[["basePath"]], ",")) } 
+print("The output directory is")
+print(directory)
 
-if (!is.null(FilterDir)) { FilterDir <- unlist(strsplit(opt[["cellPath"]], ",")) } 
+if (!is.null(basepath)) { basepath <- unlist(strsplit(opt[["basePath"]], ",")) }
 
-if (!is.null(RawDir)) { RawDir <- unlist(strsplit(opt[["rawPath"]], ",")) } 
+if (!is.null(FilterDir)) { FilterDir <- unlist(strsplit(opt[["cellPath"]], ",")) }
 
-if (!is.null(Reference)) { Reference <- unlist(strsplit(opt[["genome"]], ",")) } 
+if (!is.null(RawDir)) { RawDir <- unlist(strsplit(opt[["rawPath"]], ",")) }
+
+if (!is.null(Reference)) { Reference <- unlist(strsplit(opt[["genome"]], ",")) }
 
 if (!is.null(RawFile)) { RawFile <- unlist(strsplit(opt[["rawData"]], ",")) }
 
-if (!is.null(FilterFile)) { FilterFile <- unlist(strsplit(opt[["cellData"]], ",")) } 
+if (!is.null(FilterFile)) { FilterFile <- unlist(strsplit(opt[["cellData"]], ",")) }
 
-if (!is.null(formats)) { formats <- unlist(strsplit(opt[["outputFormat"]], ",")) } 
+if (!is.null(formats)) { formats <- unlist(strsplit(opt[["outputFormat"]], ",")) }
 
 if (!is.null(studyDesign)) { studyDesign <- base::readLines(studyDesign, n=-1) }
 
-if (is.null(subTitles)) { 
+if (is.null(subTitles)) {
     subTitles <- paste("SCTK QC HTML report for sample", sample)
 } else {
     subTitles <- unlist(strsplit(opt[["subTitles"]], ","))
@@ -198,7 +257,7 @@ if (numCores > 1) {
 
         if (isTRUE(isWindows)) {
             warning("'MulticoreParam' is not supported for Windows system. Setting 'parallelType' as 'SnowParam'. ")
-            parallelParam <- SnowParam(workers = numCores)            
+            parallelParam <- SnowParam(workers = numCores)
         }
 
     } else if (parallelType == "SnowParam") {
@@ -213,21 +272,22 @@ if (numCores > 1) {
     Params$doubletFinder$nCores <- numCores
 }
 
+
 ### checking output formats
-if (!all(formats %in% c("SCE", "AnnData", "FlatFile", "HTAN"))) {
-    warning("Output format must be 'SCE', 'AnnData', 'HTAN' or 'FlatFile'. Format ", 
-         paste(formats[!formats %in% c("SCE", "AnnData", "FlatFile", "HTAN")], collapse = ","),
+if (!all(formats %in% c("SCE", "AnnData", "FlatFile", "HTAN", "Seurat"))) {
+    warning("Output format must be 'SCE', 'AnnData', 'HTAN', 'Seurat' or 'FlatFile'. Format ",
+         paste(formats[!formats %in% c("SCE", "AnnData", "FlatFile", "HTAN", "Seurat")], collapse = ","),
          " is not supported now. ")
 }
 
-formats <- formats[formats %in% c("SCE", "AnnData", "FlatFile", "HTAN")]
-message("The output format is [", 
+formats <- formats[formats %in% c("SCE", "AnnData", "FlatFile", "HTAN", "Seurat")]
+message("The output format is [",
         paste(formats, collapse = ","), "]. ")
 
 if (length(formats) == 0) {
-    warning("None of the provided format is supported now. Therefore, the output ", 
-        "will be SCE, AnnData, FlatFile and HTAN. ")
-    formats <- c("SCE", "AnnData", "FlatFile", "HTAN")
+    warning("None of the provided format is supported now. Therefore, the output ",
+        "will be SCE, AnnData, Seurat, FlatFile and HTAN. ")
+    formats <- c("SCE", "AnnData", "FlatFile", "HTAN", "Seurat")
 }
 
 if (!(dataType %in% c("Both", "Droplet", "Cell"))) {
@@ -260,16 +320,16 @@ if (dataType == "Both") {
             }
             if (length(basepath) != length(sample)) {
                 stop('The length of "--basePath" should be the same as ',
-                         'the length of "--sample"!')   
+                         'the length of "--sample"!')
 
             if (length(Reference) != sum(process == 'CellRangerV2')) {
                 stop('The length of --genome should be the same as ',
-                        'the number of "CellRangerV2" in the "--preproc"!')        
-        }  
+                        'the number of "CellRangerV2" in the "--preproc"!')
+        }
             }
         }
 
-       
+
     }
 
     if (!is.null(RawFile) | !is.null(FilterFile)) {
@@ -291,7 +351,7 @@ if (dataType == "Cell") {
         if (is.null(basepath)) {
             if ((is.null(FilterDir))) {
                 stop("'cellPath' need to be specified when 'basePath' is NULL.")
-            } 
+            }
             # message("'base_path' is NULL. Data is loaded using directories specified by '--cell_data_path' and '--raw_data_path'.")
             if (length(FilterDir) != length(sample)) {
                 stop("The length of '--cellPath' should be the same as the length of '--sample'.")
@@ -300,7 +360,7 @@ if (dataType == "Cell") {
                 stop('The length of "--cellPath" should be the same as ',
                          'the length of "--preproc"!')
             }
-            
+
         } else {
             if (length(basepath) != length(process)) {
                 stop('The length of "--basePath" should be the same as ',
@@ -308,11 +368,11 @@ if (dataType == "Cell") {
             }
             if (length(basepath) != length(sample)) {
                 stop('The length of "--basePath" should be the same as ',
-                         'the length of "--sample"!')    
+                         'the length of "--sample"!')
             }
             if (length(Reference) != sum(process == 'CellRangerV2')) {
                 stop('The length of --genome should be the same as ',
-                        'the number of "CellRangerV2" in the "--preproc"!')        
+                        'the number of "CellRangerV2" in the "--preproc"!')
             }
         }
 
@@ -334,7 +394,7 @@ if (dataType == "Droplet") {
         if (is.null(basepath)) {
             if ((is.null(RawDir))) {
                 stop("'rawPath' need to be specified when 'basePath' is NULL.")
-            } 
+            }
             # message("'base_path' is NULL. Data is loaded using directories specified by '--cell_data_path' and '--raw_data_path'.")
             if (length(RawDir) != length(sample)) {
                 stop("The length of '--rawPath' should be the same as the length of '--sample'.")
@@ -343,7 +403,7 @@ if (dataType == "Droplet") {
                 stop('The length of "--rawPath" should be the same as ',
                          'the length of "--preproc"!')
             }
-            
+
         } else {
             if (length(basepath) != length(process)) {
                 stop('The length of "--basePath" should be the same as ',
@@ -351,13 +411,13 @@ if (dataType == "Droplet") {
             }
             if (length(basepath) != length(sample)) {
                 stop('The length of "--basePath" should be the same as ',
-                         'the length of "--sample"!')    
+                         'the length of "--sample"!')
             }
             if (length(Reference) != sum(process == 'CellRangerV2')) {
                 stop('The length of --genome should be the same as ',
-                        'the number of "CellRangerV2" in the "--preproc"!')        
+                        'the number of "CellRangerV2" in the "--preproc"!')
             }
-        }       
+        }
     }
 
     if (!is.null(RawFile)) {
@@ -409,7 +469,12 @@ for(i in seq_along(process)) {
 
     dropletSCE <- INPUT[[1]]
     cellSCE <- INPUT[[2]]
-    
+
+    mitoInfo <- .importMito(MitoImport=MitoImport, MitoType=MitoType)
+
+    cellQCAlgos <- c("QCMetrics", "scDblFinder", "cxds", "bcds", "scrublet", "doubletFinder",
+    "cxds_bcds_hybrid", "decontX", "decontX_bg", "soupX", "soupX_bg")
+
     if (dataType == "Cell") {
         if (is.null(cellSCE) && (preproc %in% c("BUStools", "SEQC"))) {
             dropletSCE <- runDropletQC(inSCE = dropletSCE, paramsList=Params)
@@ -417,53 +482,63 @@ for(i in seq_along(process)) {
             cellSCE <- dropletSCE[,ix]
         }
 
-        message(paste0(date(), " .. Running cell QC"))        
-        cellSCE <- runCellQC(inSCE = cellSCE, geneSetCollection = geneSetCollection, paramsList=Params)
+        message(paste0(date(), " .. Running cell QC"))
+        cellSCE <- runCellQC(inSCE = cellSCE, geneSetCollection = geneSetCollection, 
+            paramsList=Params, algorithms = cellQCAlgos, background = dropletSCE,
+            mitoRef = mitoInfo[['reference']], mitoIDType = mitoInfo[['id']],
+            mitoGeneLocation = "rownames")
     }
 
     if (dataType == "Droplet") {
-        message(paste0(date(), " .. Running droplet QC"))        
+        message(paste0(date(), " .. Running droplet QC"))
         dropletSCE <- runDropletQC(inSCE = dropletSCE, paramsList=Params)
         if (isTRUE(detectCell)) {
             if (cellCalling == "EmptyDrops") {
-                ix <- !is.na(dropletSCE$dropletUtils_emptyDrops_fdr) & dropletSCE$dropletUtils_emptyDrops_fdr < 0.01 
+                ix <- !is.na(dropletSCE$dropletUtils_emptyDrops_fdr) & dropletSCE$dropletUtils_emptyDrops_fdr < 0.01
             } else if (cellCalling == "Knee") {
-                ix <- dropletSCE$dropletUtils_BarcodeRank_Knee == 1                 
+                ix <- dropletSCE$dropletUtils_BarcodeRank_Knee == 1
             } else {
                 ix <- dropletSCE$dropletUtils_BarcodeRank_Inflection == 1
             }
             cellSCE <- dropletSCE[,ix]
             message(paste0(date(), " .. Running cell QC"))
-            cellSCE <- runCellQC(inSCE = cellSCE, geneSetCollection = geneSetCollection, paramsList=Params)
+            cellSCE <- runCellQC(inSCE = cellSCE, geneSetCollection = geneSetCollection, 
+                paramsList=Params, algorithms = cellQCAlgos, background = dropletSCE,
+                mitoRef = mitoInfo[['reference']], mitoIDType = mitoInfo[['id']],
+                mitoGeneLocation = "rownames")
         }
     }
 
     if (dataType == "Both") {
         if (!is.null(dropletSCE)) {
-            message(paste0(date(), " .. Running droplet QC"))        
+            message(paste0(date(), " .. Running droplet QC"))
             dropletSCE <- runDropletQC(inSCE = dropletSCE, paramsList=Params)
-            
+
             if (is.null(cellSCE)) {
                 if (cellCalling == "EmptyDrops") {
-                    ix <- !is.na(dropletSCE$dropletUtils_emptyDrops_fdr) & dropletSCE$dropletUtils_emptyDrops_fdr < 0.01 
+                    ix <- !is.na(dropletSCE$dropletUtils_emptyDrops_fdr) & dropletSCE$dropletUtils_emptyDrops_fdr < 0.01
                 } else if (cellCalling == "Knee") {
-                    ix <- dropletSCE$dropletUtils_BarcodeRank_Knee == 1                 
+                    ix <- dropletSCE$dropletUtils_BarcodeRank_Knee == 1
                 } else {
                     ix <- dropletSCE$dropletUtils_BarcodeRank_Inflection == 1
                 }
                 cellSCE <- dropletSCE[,ix]
-            }    
+            } else {
+                ### add indicator which barcodes are in the user-provided cellSCE
+                cbInCellMat <- colnames(dropletSCE) %in% colnames(cellSCE)
+                SummarizedExperiment::colData(dropletSCE)$barcodeInCellMatrix <- cbInCellMat
+            }
         }
 
         if (!is.null(cellSCE)) {
-            message(paste0(date(), " .. Running cell QC"))        
-            cellSCE <- runCellQC(inSCE = cellSCE, geneSetCollection = geneSetCollection, paramsList=Params)
+            message(paste0(date(), " .. Running cell QC"))
+            cellSCE <- runCellQC(inSCE = cellSCE, geneSetCollection = geneSetCollection, 
+                paramsList=Params, algorithms = cellQCAlgos, background = dropletSCE,
+                mitoRef = mitoInfo[['reference']], mitoIDType = mitoInfo[['id']],
+                mitoGeneLocation = "rownames")
         }
-
-        cbInCellMat <- colnames(dropletSCE) %in% colnames(cellSCE)
-        SummarizedExperiment::colData(dropletSCE)$barcodeInCellMatrix <- cbInCellMat
     }
-    
+
     ## merge colData of dropletSCE and FilteredSCE
     mergedDropletSCE <- NULL
     mergedFilteredSCE <- NULL
@@ -480,44 +555,46 @@ for(i in seq_along(process)) {
     if (dataType == "Droplet") {
         if (isTRUE(detectCell)) {
             mergedDropletSCE <- mergeSCEColData(dropletSCE, cellSCE)
-            mergedFilteredSCE <- mergeSCEColData(cellSCE, dropletSCE)            
+            mergedFilteredSCE <- mergeSCEColData(cellSCE, dropletSCE)
         } else{
             mergedDropletSCE <- dropletSCE
         }
     }
-    
+
 
     if (isTRUE(split)) {
         ### assign sample to every runBarcodeRanksMetaOutput metadata slot
         if (!is.null(mergedDropletSCE)) {
-            names(metadata(mergedDropletSCE)$runBarcodeRanksMetaOutput) <- samplename   
+            names(metadata(mergedDropletSCE)$runBarcodeRanksMetaOutput) <- samplename
         }
 
         if (!is.null(mergedFilteredSCE)) {
             for (name in names(metadata(mergedFilteredSCE))) {
-                metadata(mergedFilteredSCE)[[name]] <- list(metadata(mergedFilteredSCE)[[name]])
-                names(metadata(mergedFilteredSCE)[[name]]) <- samplename
+                if (!name %in% c("assayType", "sctk")) {
+                    metadata(mergedFilteredSCE)[[name]] <- list(metadata(mergedFilteredSCE)[[name]])
+                    names(metadata(mergedFilteredSCE)[[name]]) <- samplename
+                }
             }
         }
-        
+
         if ((dataType == "Both") | (dataType == "Droplet" & isTRUE(detectCell))) {
             exportSCE(inSCE = mergedDropletSCE, samplename = samplename, directory = directory, type = "Droplets", format=formats)
             exportSCE(inSCE = mergedFilteredSCE, samplename = samplename, directory = directory, type = "Cells", format=formats)
-            
+
 
             ## Get parameters of QC functions
-            getSceParams(inSCE = mergedFilteredSCE, directory = directory, 
+            getSceParams(inSCE = mergedFilteredSCE, directory = directory,
                          samplename = samplename, writeYAML = TRUE,
                          skip = c("scrublet", "runDecontX", "runBarcodeRanksMetaOutput"))
 
             ## generate meta data
             if ("FlatFile" %in% formats) {
                 if ("HTAN" %in% formats) {
-                    meta <- generateMeta(dropletSCE = mergedDropletSCE, cellSCE = mergedFilteredSCE, samplename = samplename, 
-                                        dir = directory, HTAN=TRUE, dataType = "Both")
+                    meta <- generateHTANMeta(dropletSCE = mergedDropletSCE, cellSCE = mergedFilteredSCE, samplename = samplename,
+                                        dir = directory, htan_biospecimen_id=samplename, dataType = "Both")
                 } else {
-                    meta <- generateMeta(dropletSCE = mergedDropletSCE, cellSCE = mergedFilteredSCE, samplename = samplename, 
-                                        dir = directory, HTAN=FALSE, dataType = "Both")  
+                    meta <- generateMeta(dropletSCE = mergedDropletSCE, cellSCE = mergedFilteredSCE, samplename = samplename,
+                                        dir = directory, HTAN=FALSE, dataType = "Both")
                 }
 
                 level3Meta[[i]] <- meta[[1]]
@@ -528,12 +605,15 @@ for(i in seq_along(process)) {
             }
 
             ## generate html report
-            reportDropletQC(inSCE = mergedDropletSCE, output_dir = directory, output_file = paste0("SCTK_", samplename,'_dropletQC.html'), subTitle = subTitle, studyDesign = studyDesign)
-            reportCellQC(inSCE = mergedFilteredSCE, output_dir = directory, output_file = paste0("SCTK_", samplename,'_cellQC.html'), subTitle = subTitle, studyDesign = studyDesign)
+            if (QCReport) {
+                reportDropletQC(inSCE = mergedDropletSCE, output_dir = directory, output_file = paste0("SCTK_", samplename,'_dropletQC.html'), subTitle = subTitle, studyDesign = studyDesign)
+                reportCellQC(inSCE = mergedFilteredSCE, output_dir = directory, output_file = paste0("SCTK_", samplename,'_cellQC.html'), subTitle = subTitle, studyDesign = studyDesign)                
+            }
 
             ## generate QC metrics table for mergedFilteredSCE
-            QCsummary <- sampleSummaryStats(mergedFilteredSCE, simple=FALSE, sample = colData(mergedFilteredSCE)$sample) #colData(cellSCE)$Study_ID
-            write.csv(QCsummary, file.path(directory, 
+            mergedFilteredSCE <- sampleSummaryStats(mergedFilteredSCE, simple=FALSE, sample = colData(mergedFilteredSCE)$sample) #colData(cellSCE)$Study_ID
+            QCsummary <- getSampleSummaryStatsTable(mergedFilteredSCE, statsName = "qc_table")
+            write.csv(QCsummary, file.path(directory,
                                            samplename,
                                            paste0("SCTK_", samplename,'_cellQC_summary.csv')))
         }
@@ -542,11 +622,11 @@ for(i in seq_along(process)) {
             exportSCE(inSCE = mergedDropletSCE, samplename = samplename, directory = directory, type = "Droplets", format=formats)
             if ("FlatFile" %in% formats) {
                 if ("HTAN" %in% formats) {
-                    meta <- generateMeta(dropletSCE = mergedDropletSCE, cellSCE = NULL, samplename = samplename, 
-                                        dir = directory, HTAN=TRUE, dataType = "Droplet")
+                    meta <- generateHTANMeta(dropletSCE = mergedDropletSCE, cellSCE = NULL, samplename = samplename,
+                                        dir = directory, htan_biospecimen_id=samplename, dataType = "Droplet")
                 } else {
-                    meta <- generateMeta(dropletSCE = mergedDropletSCE, cellSCE = NULL, samplename = samplename, 
-                                        dir = directory, HTAN=FALSE, dataType = "Droplet")  
+                    meta <- generateMeta(dropletSCE = mergedDropletSCE, cellSCE = NULL, samplename = samplename,
+                                        dir = directory, HTAN=FALSE, dataType = "Droplet")
                 }
 
                 level3Meta[[i]] <- meta[[1]]
@@ -556,18 +636,21 @@ for(i in seq_along(process)) {
                 warning("'FlatFile' is not in output format. Skip exporting the manifest file.")
             }
 
-            reportDropletQC(inSCE = mergedDropletSCE, output_dir = directory, output_file = paste0("SCTK_", samplename,'_dropletQC.html'), subTitle = subTitle, studyDesign = studyDesign)
+            if (QCReport) {
+                reportDropletQC(inSCE = mergedDropletSCE, output_dir = directory, output_file = paste0("SCTK_", samplename,'_dropletQC.html'), subTitle = subTitle, studyDesign = studyDesign)
+            }
         }
 
         if (dataType == "Cell") {
             exportSCE(inSCE = mergedFilteredSCE, samplename = samplename, directory = directory, type = "Cells", format=formats)
             if ("FlatFile" %in% formats) {
                 if ("HTAN" %in% formats) {
-                    meta <- generateMeta(dropletSCE = NULL, cellSCE = mergedFilteredSCE, samplename = samplename, 
-                                        dir = directory, HTAN=TRUE, dataType = "Cell")
+                    .check_QC(direcotry = directory, samplename = samplename)
+                    meta <- generateHTANMeta(dropletSCE = NULL, cellSCE = mergedFilteredSCE, samplename = samplename,
+                                        dir = directory, htan_biospecimen_id=samplename, dataType = "Cell")
                 } else {
-                    meta <- generateMeta(dropletSCE = NULL, cellSCE = mergedFilteredSCE, samplename = samplename, 
-                                        dir = directory, HTAN=FALSE, dataType = "Cell")  
+                    meta <- generateMeta(dropletSCE = NULL, cellSCE = mergedFilteredSCE, samplename = samplename,
+                                        dir = directory, HTAN=FALSE, dataType = "Cell")
                 }
 
                 level3Meta[[i]] <- meta[[1]]
@@ -577,14 +660,16 @@ for(i in seq_along(process)) {
                 warning("'FlatFile' is not in output format. Skip exporting the manifest file.")
             }
 
-            reportCellQC(inSCE = mergedFilteredSCE, output_dir = directory, output_file = paste0("SCTK_", samplename,'_cellQC.html'), subTitle = subTitle, studyDesign = studyDesign)
-
-            getSceParams(inSCE = mergedFilteredSCE, directory = directory, 
+            if (QCReport) {
+                reportCellQC(inSCE = mergedFilteredSCE, output_dir = directory, output_file = paste0("SCTK_", samplename,'_cellQC.html'), subTitle = subTitle, studyDesign = studyDesign)
+            }
+            getSceParams(inSCE = mergedFilteredSCE, directory = directory,
                          samplename = samplename, writeYAML = TRUE,
                          skip = c("scrublet", "runDecontX", "runBarcodeRanksMetaOutput"))
 
-            QCsummary <- sampleSummaryStats(mergedFilteredSCE, simple=FALSE, sample = colData(mergedFilteredSCE)$sample) #colData(cellSCE)$Study_ID
-            write.csv(QCsummary, file.path(directory, 
+            mergedFilteredSCE <- sampleSummaryStats(mergedFilteredSCE, simple=FALSE, sample = colData(mergedFilteredSCE)$sample) #colData(cellSCE)$Study_ID
+            QCsummary <- getSampleSummaryStatsTable(mergedFilteredSCE, statsName = "qc_table")
+            write.csv(QCsummary, file.path(directory,
                                            samplename,
                                            paste0("SCTK_", samplename,'_cellQC_summary.csv')))
         }
@@ -595,41 +680,57 @@ for(i in seq_along(process)) {
 }
 
 if (!isTRUE(split)) {
+
     if (length(sample) > 1) {
         samplename <- CombinedSamplesName #paste(sample, collapse="-")
         subTitle <- paste("SCTK QC HTML report for sample", samplename)
     }
 
     if ((dataType == "Both") | (dataType == "Droplet" & isTRUE(detectCell))) {
+
         by.r <- NULL
         by.c <- Reduce(intersect, lapply(dropletSCE_list, function(x) { colnames(colData(x))}))
         dropletSCE <- combineSCE(dropletSCE_list, by.r, by.c, combined = TRUE)
         names(metadata(dropletSCE)$runBarcodeRanksMetaOutput) <- sample
 
-        by.c <- Reduce(intersect, lapply(cellSCE_list, function(x) { colnames(colData(x))}))
-        cellSCE <- combineSCE(cellSCE_list, by.r, by.c, combined = TRUE)
-        for (name in names(metadata(cellSCE))) {
-            names(metadata(cellSCE)[[name]]) <- sample
+        if (length(sample) == 1) {
+            ### one sample. Treat it like split == TRUE
+            cellSCE <- cellSCE_list[[1]]
+            for (name in names(metadata(cellSCE))) {
+              if (!name %in% c("assayType", "sctk")) {
+                metadata(mergedFilteredSCE)[[name]] <- list(metadata(mergedFilteredSCE)[[name]])
+                names(metadata(mergedFilteredSCE)[[name]]) <- samplename
+              }
+            }
+        } else {
+            by.c <- Reduce(intersect, lapply(cellSCE_list, function(x) { colnames(colData(x))}))
+            cellSCE <- combineSCE(cellSCE_list, by.r, by.c, combined = TRUE)
+            for (name in names(metadata(cellSCE))) {
+                if (!name %in% c("assayType", "sctk")) {
+                    names(metadata(cellSCE)[[name]]) <- sample
+                }
+            }
         }
 
         exportSCE(inSCE = dropletSCE, samplename = samplename, directory = directory, type = "Droplets", format=formats)
         exportSCE(inSCE = cellSCE, samplename = samplename, directory = directory, type = "Cells", format=formats)
 
         ## html report
-        reportDropletQC(inSCE = dropletSCE, output_dir = directory, output_file = paste0("SCTK_", samplename,'_dropletQC.html'), subTitle = subTitle, studyDesign = studyDesign)
-        reportCellQC(inSCE = cellSCE, output_dir = directory, output_file = paste0("SCTK_", samplename,'_cellQC.html'), subTitle = subTitle, studyDesign = studyDesign)
-
+        if (QCReport) {
+            reportDropletQC(inSCE = dropletSCE, output_dir = directory, output_file = paste0("SCTK_", samplename,'_dropletQC.html'), subTitle = subTitle, studyDesign = studyDesign)
+            reportCellQC(inSCE = cellSCE, output_dir = directory, output_file = paste0("SCTK_", samplename,'_cellQC.html'), subTitle = subTitle, studyDesign = studyDesign)
+        }
         ## Get parameters of QC functions
         getSceParams(inSCE = cellSCE, directory = directory, samplename = samplename, writeYAML = TRUE)
 
         ## generate meta data
         if ("FlatFile" %in% formats) {
             if ("HTAN" %in% formats) {
-                meta <- generateMeta(dropletSCE = dropletSCE, cellSCE = cellSCE, samplename = samplename, 
-                                    dir = directory, HTAN=TRUE, dataType = "Both")
+                meta <- generateHTANMeta(dropletSCE = dropletSCE, cellSCE = cellSCE, samplename = samplename,
+                                    dir = directory, htan_biospecimen_id=samplename, dataType = "Both")
             } else {
-                meta <- generateMeta(dropletSCE = dropletSCE, cellSCE = cellSCE, samplename = samplename, 
-                                    dir = directory, HTAN=FALSE, dataType = "Both")            
+                meta <- generateMeta(dropletSCE = dropletSCE, cellSCE = cellSCE, samplename = samplename,
+                                    dir = directory, HTAN=FALSE, dataType = "Both")
             }
 
             level3Meta <- list(meta[[1]])
@@ -640,29 +741,43 @@ if (!isTRUE(split)) {
         }
 
         ## generate QC summary
-        QCsummary <- sampleSummaryStats(cellSCE, simple=FALSE, sample = colData(cellSCE)$sample) 
+        cellSCE <- sampleSummaryStats(cellSCE, simple=FALSE, sample = colData(cellSCE)$sample)
+        QCsummary <- getSampleSummaryStatsTable(cellSCE, statsName = "qc_table")
         write.csv(QCsummary, file.path(directory,
-                                       samplename, 
+                                       samplename,
                                        paste0("SCTK_", samplename,'_cellQC_summary.csv')))
     }
 
     if (dataType == "Cell") {
-        by.r <- NULL
-        by.c <- Reduce(intersect, lapply(cellSCE_list, function(x) { colnames(colData(x))}))
 
-        cellSCE <- combineSCE(cellSCE_list, by.r, by.c, combined = TRUE)
-        for (name in names(metadata(cellSCE))) {
-            names(metadata(cellSCE)[[name]]) <- sample
+        if (length(sample) == 1) {
+            ### one sample. Treat it like split == TRUE
+            cellSCE <- cellSCE_list[[1]]
+            for (name in names(metadata(cellSCE))) {
+              if (!name %in% c("assayType", "sctk")) {
+                  metadata(cellSCE)[[name]] <- list(metadata(cellSCE)[[name]])
+                  names(metadata(cellSCE)[[name]]) <- samplename
+              }
+            }
+        } else {
+            by.r <- NULL
+            by.c <- Reduce(intersect, lapply(cellSCE_list, function(x) { colnames(colData(x))}))
+            cellSCE <- combineSCE(cellSCE_list, by.r, by.c, combined = TRUE)
+            for (name in names(metadata(cellSCE))) {
+                if (!name %in% c("assayType", "sctk")) { ### not important and hard to force name. Skipped
+                    names(metadata(cellSCE)[[name]]) <- sample
+                }
+            }
         }
 
         exportSCE(inSCE = cellSCE, samplename = samplename, directory = directory, type = "Cells", format=formats)
         if ("FlatFile" %in% formats) {
             if ("HTAN" %in% formats) {
-                meta <- generateMeta(dropletSCE = NULL, cellSCE = cellSCE, samplename = samplename, 
-                                    dir = directory, HTAN=TRUE, dataType = "Cell")
+                meta <- generateHTANMeta(dropletSCE = NULL, cellSCE = cellSCE, samplename = samplename,
+                                    dir = directory, htan_biospecimen_id=samplename, dataType = "Cell")
             } else {
-                meta <- generateMeta(dropletSCE = NULL, cellSCE = cellSCE, samplename = samplename, 
-                                    dir = directory, HTAN=FALSE, dataType = "Cell")  
+                meta <- generateMeta(dropletSCE = NULL, cellSCE = cellSCE, samplename = samplename,
+                                    dir = directory, HTAN=FALSE, dataType = "Cell")
             }
 
             level3Meta[[i]] <- meta[[1]]
@@ -671,13 +786,15 @@ if (!isTRUE(split)) {
         } else {
             warning("'FlatFile' is not in output format. Skip exporting the manifest file.")
         }
-
-        reportCellQC(inSCE = cellSCE, output_dir = directory, output_file = paste0("SCTK_", samplename,'_cellQC.html'), subTitle = subTitle, studyDesign = studyDesign)
+        if (QCReport) {
+            reportCellQC(inSCE = cellSCE, output_dir = directory, output_file = paste0("SCTK_", samplename,'_cellQC.html'), subTitle = subTitle, studyDesign = studyDesign)
+        }
         getSceParams(inSCE = cellSCE, directory = directory, samplename = samplename, writeYAML = TRUE)
 
-        QCsummary <- sampleSummaryStats(cellSCE, simple=FALSE, sample = colData(cellSCE)$sample) 
+        cellSCE <- sampleSummaryStats(cellSCE, simple=FALSE, sample = colData(cellSCE)$sample)
+        QCsummary <- getSampleSummaryStatsTable(cellSCE, statsName = "qc_table")
         write.csv(QCsummary, file.path(directory,
-                                       samplename, 
+                                       samplename,
                                        paste0("SCTK_", samplename,'_cellQC_summary.csv')))
     }
 
@@ -686,15 +803,15 @@ if (!isTRUE(split)) {
         by.c <- Reduce(intersect, lapply(dropletSCE_list, function(x) { colnames(colData(x))}))
         dropletSCE <- combineSCE(dropletSCE_list, by.r, by.c, combined = TRUE)
         names(metadata(dropletSCE)$runBarcodeRanksMetaOutput) <- sample
-        
+
         exportSCE(inSCE = dropletSCE, samplename = samplename, directory = directory, type = "Droplets", format=formats)
         if ("FlatFile" %in% formats) {
             if ("HTAN" %in% formats) {
-                meta <- generateMeta(dropletSCE = dropletSCE, cellSCE = NULL, samplename = samplename, 
-                                    dir = directory, HTAN=TRUE, dataType = "Droplet")
+                meta <- generateHTANMeta(dropletSCE = dropletSCE, cellSCE = NULL, samplename = samplename,
+                                    dir = directory, htan_biospecimen_id=samplename, dataType = "Droplet")
             } else {
-                meta <- generateMeta(dropletSCE = dropletSCE, cellSCE = NULL, samplename = samplename, 
-                                    dir = directory, HTAN=FALSE, dataType = "Droplet")  
+                meta <- generateMeta(dropletSCE = dropletSCE, cellSCE = NULL, samplename = samplename,
+                                    dir = directory, HTAN=FALSE, dataType = "Droplet")
             }
 
             level3Meta[[i]] <- meta[[1]]
@@ -703,9 +820,9 @@ if (!isTRUE(split)) {
         } else {
             warning("'FlatFile' is not in output format. Skip exporting the manifest file.")
         }
-
-        reportDropletQC(inSCE = dropletSCE, output_dir = directory, output_file = paste0("SCTK_", samplename,'_dropletQC.html'), subTitle = subTitle, studyDesign = studyDesign)
-    
+        if (QCReport) {
+            reportDropletQC(inSCE = dropletSCE, output_dir = directory, output_file = paste0("SCTK_", samplename,'_dropletQC.html'), subTitle = subTitle, studyDesign = studyDesign)
+        }
     }
 }
 

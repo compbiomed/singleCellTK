@@ -1,30 +1,12 @@
 language: r
 cache:
-  - packages
-  - pip
+ - packages
 r:
-  - release
-sudo: false
+  - 4.1.0
+sudo: true
 warnings_are_errors: true
 bioc_required: true
-
-# Current version of xgboost fails install
-# Need to force install older version using 'devtools::install_version'
-#    which is done in 'before_install' (see below)
-# However 'remotes::dev_package_deps' will try to auto upgrade packages
-#    Therefore, a new install command is used with 'upgrade="never"'
-# These parts can be deleted once the xgboost error is fixed
-
-before_install:
-  - pyenv install 3.6.1
-  - pyenv global 3.6.1
-  - Rscript -e 'install.packages("devtools")'
-  - Rscript -e 'devtools::install_version("xgboost", version = "0.90.0.2", repos = "http://cran.us.r-project.org")'
-  - pip install --upgrade pip
-  - pip install scipy scrublet scanpy scanorama bbknn
-
-install:
-- R -e 'devtools::install_deps(dep = TRUE, upgrade="never")'
+bioc_check: true
 
 addons:
   apt:

@@ -1,0 +1,63 @@
+---
+title: "differentialAbundanceFET Results"
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+params:
+  sce: sce
+  analysisName: analysisName
+  pdf: pdf
+  showSession: showSession
+output: 
+ html_document:
+     toc: true
+     toc_float: true
+     number_sections: true
+     theme: cosmo
+     code_folding: hide
+---
+
+```{r setup, include=FALSE}
+require(singleCellTK)
+require(celda)
+require(knitr)
+require(gridExtra)
+require(ggplot2)
+require(dplyr)
+library(kableExtra)
+
+sce <- params$sce
+analysisName <- params$analysisName
+pdf <- params$pdf
+showSession <- params$showSession
+
+
+dev <- ifelse(isTRUE(pdf), c("png"), c("png", "pdf"))
+knitr::opts_chunk$set(
+  echo = TRUE,
+  cache = FALSE,
+  cache.lazy = FALSE,
+  # don't do lazy-loading for big objects
+  cache.comments = FALSE,
+  fig.align = "center",
+  fig.keep = "all",
+  dev = dev
+)
+
+table <- getDiffAbundanceResults(sce, analysisName)
+
+```
+
+# Differential Abundance FET
+
+This report will visualize results from the `diffAbundanceFET` function, which calculates the cell counting and fraction by dividing all cells to groups specified by the arguments, together with statistical summary by performing Fisher Exact Tests (FET). The differential abundance analysis presented here is `r params$analysisName`.
+
+```{r table, echo = FALSE}
+table <- table %>% mutate_if(is.numeric, round, digits = 4)
+kable(table, style = 'html', row.names = F) %>%
+  kable_styling(bootstrap_options = "striped") %>%
+  scroll_box(width = "100%", height = "800px")
+```
+
+# Session Information
+```{r session, eval = showSession, echo = showSession}
+sessionInfo()
+```

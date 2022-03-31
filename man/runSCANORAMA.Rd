@@ -51,7 +51,7 @@ panorama.
 \examples{
 \dontrun{
 data('sceBatches', package = 'singleCellTK')
-sceBatches <- scater_logNormCounts(sceBatches)
+sceBatches <- scaterlogNormCounts(sceBatches)
 sceCorr <- runSCANORAMA(sceBatches, "ScaterLogNormCounts")
 }
 }

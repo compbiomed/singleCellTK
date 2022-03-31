@@ -1,0 +1,120 @@
+---
+title: "Find Marker"
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+params: 
+  object: object
+  study: study
+output:
+  html_document:
+    number_sections: yes
+    toc: yes
+    toc_float: true
+    code_folding: hide
+    html_notebook: default
+---
+
+```{r, "FM-lib", include=FALSE}
+require(singleCellTK)
+require(DT)
+require(knitr)
+```
+
+```{r "FM-import", include=FALSE}
+sce <- params$object
+fmTable <- metadata(sce)$findMarker
+useAssay <- attr(fmTable, "useAssay")
+method <- attr(fmTable, "method")
+clusterName <- names(fmTable)[5]
+nCluster <- length(unique(as.vector(sce[[clusterName]])))
+uniqClusters <- sort(unique(as.vector(sce[[clusterName]])))
+fmParams <- attr(fmTable, "params")
+log2fcThreshold <- fmParams$log2fcThreshold
+fdrThreshold <- fmParams$ fdrThreshold
+minClustExprPerc <- fmParams$minClustExprPerc
+maxCtrlExprPerc <- fmParams$maxCtrlExprPerc
+minMeanExpr <- fmParams$minMeanExpr
+```
+
+# Analysis Setting
+
+## Find Marker basing on: `r clusterName`
+
+The marker finding was accomplished by iteratively performing one-against-others differential expression analysis for each cluster. There are **`r nCluster` clusters** found in the given SingleCellExperiment object. Here is the summary of the number of cells in each cluster:
+
+```{r, "FM-clusterSummary"}
+sum.table <- t(as.data.frame(table(sce$scranSNN_cluster)))
+rownames(sum.table) <- c("cluster", "cell number")
+datatable(sum.table, 
+          options = list(
+            headerCallback = JS(
+              "function(thead, data, start, end, display){",
+              "  $(thead).remove();",
+              "}"),
+            dom = 't')
+)
+```
+
+
+## Method: `r method`
+
+The method used for performing the differential expression analysis was "**`r method`**". For the more information of the method, please refer to [the help page](#).
+
+## Parameters
+
+After the computation, we further filtered the result to select the differentially expressed genes with high significance and high fold change. Specifically, the parameters used are:
+
+```{r "FM-params"}
+p <- data.frame(parameter = c("Min. logFC", 
+                              "Max. FDR", 
+                              "Min. Cluster Expression %", 
+                              "Max. Control Expression %", 
+                              "Min. Mean Expression"),
+                value = c(log2fcThreshold,
+                          fdrThreshold,
+                          minClustExprPerc,
+                          maxCtrlExprPerc,
+                          minMeanExpr))
+datatable(p, options = list(dom = "t"))
+```
+
+When we identify a gene to be the marker of the cluster of interests:  
+
+- **"Min. logFC"** - The log fold change of this gene, by comparing the cluster of interest against all other clusters, must be higher than this threshold;
+- **"Max. FDR"** - The FDR value calculated, by comparing the cluster of interest against all other clusters, must not exceed this threshold; 
+- **"Min. Cluster Expression %"** - The gene must be expressed in at least this fraction of cells in the cluster of interests;
+- **"Max. Control Expression %"** - The gene must be expressed in less than this fraction of cells in all other clusters;
+- **"Min. Mean Expression"** - The mean expression of the gene in the cluster of interests must be higher than this threshold (in the specific assay used for analysis, not necessarily the raw count matrix).
+
+# Result
+
+We report maximum 10 top markers for each cluster, ranked by the FDR value. 
+
+## Marker Table {.tabset}
+
+```{r FM-iterResTable, echo=FALSE, results="asis"}
+out = NULL
+for (i in uniqClusters) {
+  fmTable.cluster <- fmTable[fmTable[[clusterName]] == i,]
+  if (nrow(fmTable.cluster) >= 10) {
+    fmTable.cluster.top <- fmTable.cluster[1:10,]
+  } else {
+    fmTable.cluster.top <- fmTable.cluster
+  }
+  res <- knit_child('FM_child_cluster.Rmd', quiet=TRUE)
+  cat(res, sep = '\n')
+}
+```
+
+## Heatmap
+
+In the marker heatmap, each column stands for a cell in the given SingleCellExperiment object. The cell level color bar annotates the cluster assignment. Each row is a marker gene, and the gene level color bar assigns the cluster correspondence. The cell cluster is ordered by the cluster population size.  
+
+It happens sometimes that a gene is identified as the marker for more than one cluster. In this scenario, we finally assign it to the cluster where it has a higher "logFC" value when plotting.  
+
+```{r FM-heatmap, message=FALSE, warning=FALSE, out.width = '100%'}
+plotMarkerDiffExp(sce, 
+                  log2fcThreshold = 0.5, 
+                  minClustExprPerc = 0.7, 
+                  maxCtrlExprPerc = 0.4, 
+                  minMeanExpr = 1)
+```

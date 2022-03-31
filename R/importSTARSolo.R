@@ -40,7 +40,8 @@
     barcodesFileNames,
     gzipped,
     class,
-    delayedArray) {
+    delayedArray,
+    rowNamesDedup) {
 
     if (length(STARsoloDirs) != length(samples)) {
         stop("'STARsoloDirs' and 'samples' have unequal lengths!")
@@ -68,9 +69,24 @@
     }
 
     sce <- do.call(SingleCellExperiment::cbind, res)
+    
+    if (isTRUE(rowNamesDedup)) {
+        if (any(duplicated(rownames(sce)))) {
+            message("Duplicated gene names found, adding '-1', '-2', ",
+                    "... suffix to them.")
+        }
+        sce <- dedupRowNames(sce)
+    }
+    
+    # Load metrics summary and store in sce
+    metrics_summary <- .importMetricsStarSolo(STARsoloDirs, samples, "Gene", "Summary.csv")
+    # sce <- setSampleSummaryStatsTable(sce, "starsolo", metrics_summary)
+    if (ncol(metrics_summary) > 0) {
+      sce@metadata$sctk$sample_summary[["starsolo"]] <- metrics_summary
+    }
+
     return(sce)
 }
-
 
 #' @name importSTARsolo
 #' @rdname importSTARsolo
@@ -111,6 +127,8 @@
 #'  \link[base]{matrix} function). Default "Matrix".
 #' @param delayedArray Boolean. Whether to read the expression matrix as
 #'  \link{DelayedArray} object or not. Default \code{FALSE}.
+#' @param rowNamesDedup Boolean. Whether to deduplicate rownames. Default 
+#'  \code{TRUE}.
 #' @return A \code{SingleCellExperiment} object containing the count
 #'  matrix, the gene annotation, and the cell annotation.
 #' @examples
@@ -151,7 +169,8 @@ importSTARsolo <- function(
     barcodesFileNames = "barcodes.tsv",
     gzipped = "auto",
     class = c("Matrix", "matrix"),
-    delayedArray = FALSE) {
+    delayedArray = FALSE,
+    rowNamesDedup = TRUE) {
 
     class <- match.arg(class)
 
@@ -164,5 +183,44 @@ importSTARsolo <- function(
         barcodesFileNames = barcodesFileNames,
         gzipped = gzipped,
         class = class,
-        delayedArray = delayedArray)
+        delayedArray = delayedArray,
+        rowNamesDedup = rowNamesDedup)
+}
+
+# Find metrics_summary.csv file in each sample and merge them into a single dataframe
+# Additionally, if file not available for a sample, fill that sample with NA
+# Find metrics_summary.csv file in each sample and merge them into a single dataframe
+# Additionally, if file not available for a sample, fill that sample with NA
+.importMetricsStarSolo <- function(samplePaths, sampleNames, metricsPath, metricsFile){
+  # Check if samplePaths and sampleNames are equal in length
+  if(!identical(length(samplePaths), length(sampleNames))){
+    stop("Vectors samplePaths and sampleNames must be equal in length.")
+  }
+  
+  # Processing
+  metrics_summary <- list()
+  for(i in seq(samplePaths)){
+    metrics_summary[[i]] <- list.files(pattern= paste0("*", metricsFile, "$"), path = paste0(samplePaths[i], "/", metricsPath), full.names = TRUE)
+    if(length(metrics_summary[[i]]) > 0){
+      metrics_summary[[i]] <- lapply(metrics_summary[[i]], utils::read.csv, header = FALSE, check.names = FALSE, row.names = 1)[[1]]
+    }
+    else{
+      message("Metrics summary file (", metricsFile, ") not found for sample: ", sampleNames[i])
+      ms_colnames_union <- Reduce(union, lapply(metrics_summary, colnames))
+      metrics_summary[[i]] <- data.frame(matrix(data = NA, nrow = 1, ncol = length(ms_colnames_union)))
+      colnames(metrics_summary[[i]]) <- ms_colnames_union
+    }
+  }
+  
+  # Merge StarSolo summary csv files from all/multiple samples into a single data.frame
+  for(i in seq_along(metrics_summary)){
+    metrics_summary[[i]] <- as.data.frame(t(metrics_summary[[i]]))
+  }
+  metrics_summary <- plyr::rbind.fill(metrics_summary)
+  metrics_summary <- t(metrics_summary)
+  if (ncol(metrics_summary) > 0) {
+    colnames(metrics_summary) <- sampleNames
+  }
+
+  return(metrics_summary)
 }

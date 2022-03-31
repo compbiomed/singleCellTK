@@ -3,8 +3,8 @@ shinyPanelLabelCellType <- fluidPage(
     class = "container",
     h1("Label Cell Type"),
     p("Currently only 'SingleR' method supported. ", style = "color: grey;"),
-    tags$a(href = "#",
-           "(help)", target = "_blank"),
+    h5(tags$a(href = paste0(docs.artPath, "cell_type_labeling.html"),
+              "(help)", target = "_blank")),
     panel(
       fluidRow(
         column(
@@ -13,7 +13,14 @@ shinyPanelLabelCellType <- fluidPage(
         ),
         column(
           width = 6,
-          uiOutput("ctLabelAssay"),
+          selectizeInput(
+            inputId = "ctLabelAssay", 
+            label = "Select input matrix:", 
+            choices = NULL, 
+            selected = NULL, 
+            multiple = FALSE,
+            options = NULL)
+          #uiOutput("ctLabelAssay"),
         )
       ),
       panel(

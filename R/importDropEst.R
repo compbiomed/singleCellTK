@@ -1,4 +1,3 @@
-
 .readDropEstFile <- function(sampleDir, dataType,rdsFileName){
   dropEst_cell_counts <- file.path(sampleDir, paste(rdsFileName, '.rds', sep=''))
   if (!file.exists(dropEst_cell_counts)){
@@ -43,7 +42,8 @@
                                  dataType,
                                  rdsFileName,
                                  sampleName = 'sample',
-                                 delayedArray = FALSE){
+                                 delayedArray = FALSE,
+                                 class){
   ## Read DropEst RDS
   dropEst_rds <- .readDropEstFile(sampleDir,dataType,rdsFileName)
   if (dataType == 'filtered' && 'cm' %in% names(dropEst_rds)) {
@@ -54,9 +54,15 @@
     stop("No counts matrix found in the .rds provided! Exiting.")
   }
 
+  if (class == "Matrix") {
+    counts_matrix <- .convertToMatrix(counts_matrix)
+  } else if (class == "matrix") {
+    counts_matrix <- base::as.matrix(counts_matrix)
+  }
+
   if (isTRUE(delayedArray)) {
     counts_matrix <- DelayedArray::DelayedArray(counts_matrix)
-    }
+  }
   ## Create SingleCellExperiment object
   ## Add SCE ColData. If using filtered counts matrix, colData is subset to include filtered cells.
   ## append sample name to cells in SCE
@@ -92,6 +98,12 @@
 #' @param rdsFileName File name prefix of the DropEst RDS output. default is "cell.counts"
 #' @param delayedArray Boolean. Whether to read the expression matrix as
 #'  \link{DelayedArray} object or not. Default \code{FALSE}.
+#' @param class Character. The class of the expression matrix stored in the SCE
+#'  object. Can be one of "Matrix" (as returned by
+#'  \link{readMM} function), or "matrix" (as returned by
+#'  \link[base]{matrix} function). Default \code{"Matrix"}.
+#' @param rowNamesDedup Boolean. Whether to deduplicate rownames. Default 
+#'  \code{TRUE}.
 #' @details
 #' \code{importDropEst} expects either raw counts matrix stored as "cm_raw" or filtered
 #' counts matrix stored as "cm" in the DropEst rds output.
@@ -108,14 +120,16 @@
 #' # https://github.com/hms-dbmi/dropEst/blob/master/examples/EXAMPLES.md
 #' sce <- importDropEst(sampleDirs = system.file("extdata/dropEst_scg71", package = "singleCellTK"),
 #'                      sampleNames = 'scg71')
-
 #' @export
 importDropEst <- function(sampleDirs = NULL,
                           dataType = c('filtered','raw'),
                           rdsFileName = 'cell.counts',
                           sampleNames = NULL,
-                          delayedArray = FALSE) {
+                          delayedArray = FALSE,
+                          class = c("Matrix", "matrix"),
+                          rowNamesDedup = TRUE) {
   dataType <- match.arg(dataType)
+  class <- match.arg(class)
 
   if (length(sampleDirs)!=length(sampleNames)){
     stop("Please provide sample names for all input directories")
@@ -128,14 +142,20 @@ importDropEst <- function(sampleDirs = NULL,
                          sampleName = sampleNames[[i]],
                          dataType = dataType,
                          rdsFileName = rdsFileName,
-                         delayedArray = delayedArray)
+                         delayedArray = delayedArray,
+                         class = class)
     res[[i]] <- scei
   }
   sce <- do.call(SingleCellExperiment::cbind, res)
+  
+  if (isTRUE(rowNamesDedup)) {
+    if (any(duplicated(rownames(sce)))) {
+      message("Duplicated gene names found, adding '-1', '-2', ",
+              "... suffix to them.")
+    }
+    sce <- dedupRowNames(sce)
+  }
+  
   return(sce)
 }
-
-
-
-
 

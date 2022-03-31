@@ -26,7 +26,7 @@
 #' @export
 #' @examples
 #' data("mouseBrainSubsetSCE")
-#' subset <- mouseBrainSubsetSCE[1:1000,]
+#' subset <- mouseBrainSubsetSCE[seq(1000),]
 #' res <- downSampleDepth(subset,
 #'                        realLabels = "level1class",
 #'                        iterations=2)
@@ -95,11 +95,12 @@ downSampleDepth <- function(originalData, useAssay = "counts", minCount = 10, mi
 #' @export
 #' @examples
 #' data("mouseBrainSubsetSCE")
-#' subset <- mouseBrainSubsetSCE[1:1000,]
+#' subset <- mouseBrainSubsetSCE[seq(100),]
 #' res <- downSampleCells(subset,
 #'                        realLabels = "level1class",
 #'                        iterations=2)
-downSampleCells <- function(originalData, useAssay = "counts", minCountDetec = 10, minCellsDetec = 3,
+downSampleCells <- function(originalData, useAssay = "counts",
+                            minCountDetec = 10, minCellsDetec = 3,
                             minCellnum = 10, maxCellnum = 1000, realLabels,
                             depthResolution = 10, iterations = 10,
                             totalReads = 1000000){
@@ -183,8 +184,8 @@ generateSimulatedData <- function(totalReads, cells, originalData, realLabels){
 #' res <- iterateSimulations(mouseBrainSubsetSCE, realLabels = "level1class",
 #'                           totalReads = 1000, cells = 10, iterations = 2)
 #'
-iterateSimulations <- function(originalData, useAssay = "counts", realLabels, totalReads, cells,
-                               iterations){
+iterateSimulations <- function(originalData, useAssay = "counts", realLabels,
+                               totalReads, cells, iterations){
   realLabels <- SingleCellExperiment::colData(originalData)[, realLabels]
   originalData <- expData(originalData, useAssay)
   sigMatrix <- matrix(nrow = dim(originalData)[1])
@@ -207,7 +208,7 @@ iterateSimulations <- function(originalData, useAssay = "counts", realLabels, to
 #' Nonviable results (such as for genes with 0 counts in a simulated dataset)
 #' are coerced to 1.
 #'
-#' @describeIn subDiffEx 
+#' @describeIn subDiffEx
 #'
 #' @export
 #' @examples
@@ -251,7 +252,7 @@ subDiffEx <- function(tempData){
 #' #sort first 100 expressed genes
 #' ord <- rownames(mouseBrainSubsetSCE)[
 #'   order(rowSums(assay(mouseBrainSubsetSCE, "counts")),
-#'         decreasing = TRUE)][1:100]
+#'         decreasing = TRUE)][seq(100)]
 #' #subset to those first 100 genes
 #' subset <- mouseBrainSubsetSCE[ord, ]
 #' res <- generateSimulatedData(totalReads = 1000, cells=10,
@@ -288,7 +289,7 @@ subDiffExttest <- function(countMatrix, class.labels, test.type = "t.equalvar") 
 #' #sort first 100 expressed genes
 #' ord <- rownames(mouseBrainSubsetSCE)[
 #'   order(rowSums(assay(mouseBrainSubsetSCE, "counts")),
-#'         decreasing = TRUE)][1:100]
+#'         decreasing = TRUE)][seq(100)]
 #' # subset to those first 100 genes
 #' subset <- mouseBrainSubsetSCE[ord, ]
 #' res <- generateSimulatedData(totalReads = 1000, cells=10,
@@ -333,7 +334,7 @@ subDiffExANOVA <- function(countMatrix, condition){
 #' @examples
 #' data("mouseBrainSubsetSCE")
 #' res <- calcEffectSizes(assay(mouseBrainSubsetSCE, "counts"),
-#'                        condition = colData(mouseBrainSubsetSCE)[, "level1class"])
+#'                        condition = colData(mouseBrainSubsetSCE)$level1class)
 #'
 calcEffectSizes <- function(countMatrix, condition){
   groups <- levels(as.factor(unlist(condition)))

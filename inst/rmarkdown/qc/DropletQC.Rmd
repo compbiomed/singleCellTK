@@ -19,6 +19,11 @@ require(SummarizedExperiment)
 require(SingleCellExperiment)
 require(singleCellTK)
 require(dplyr)
+require(Biobase)
+
+docs.base <- paste0("https://www.camplab.net/sctk/v",
+                    package.version("singleCellTK"), "/")
+docs.qc.Path <- paste0(docs.base, "articles/articles/cmd_qc.html")
 
 preprocessMeta <- function(meta, ignore=c("geneSetCollection", "sample")){
   meta <- meta[!names(meta) %in% ignore]
@@ -59,7 +64,17 @@ subtitle: "`r subTitle`"
 <br />
 
 # Introduction
-Comprehensive quality control (QC) of single-cell RNA-seq data was performed with the [**singleCellTK**](https://github.com/compbiomed/singleCellTK/tree/sctk_qc_1.7.6) package. This report contains information about each QC tool and visualization of the QC metrics for each sample. For more information on running this pipeline and performing quality control, see the [**documentation**](https://github.com/compbiomed/singleCellTK/blob/devel/exec/SCTK_runQC_Documentation2.md). If you use the singleCellTK package for quality control, please include a [**reference**](https://www.biorxiv.org/content/10.1101/329755v1.article-info) in your publication.
+```{r, "Introduction", echo = FALSE, results="asis", fig.align="center", warning=FALSE, message=FALSE}
+cat("\n")
+
+intro <- paste0(
+  "Comprehensive quality control (QC) of single-cell RNA-seq data was performed with the [**singleCellTK**](https://github.com/compbiomed/singleCellTK) package. This report contains information about each QC tool and visualization of the QC metrics for each sample. For more information on running this pipeline and performing quality control, see the [**documentation**](",
+  docs.qc.Path,
+  "). If you use the singleCellTK package for quality control, please include a [**reference**](https://www.biorxiv.org/content/10.1101/329755v1.article-info) in your publication."
+)
+
+cat(intro)
+```
 <br />
 <br />
 
@@ -71,8 +86,8 @@ description_runEmptyDrops <- descriptionEmptyDrops()
 
 ```{r, "EmptyDrops", results="asis", fig.align="center", warning=TRUE, message=FALSE, echo=FALSE}
 i="EmptyDrops"
-cat(paste0('## ', i, ' \n'))
-cat("\n")
+# cat(paste0('## ', i, ' \n'))
+# cat("\n")
 
 
 emptyData <- c("dropletUtils_emptyDrops_logprob", "dropletUtils_emptyDrops_total")
@@ -94,6 +109,8 @@ if (skipRunEmpty) {
 }
 
 if(!skipRunEmpty) {
+  cat(paste0('## ', i, ' \n'))
+  cat("\n")
   if(length(samples) == 1) {
     plotsEmptyDrops$scatterEmptyDrops <- list(Sample = list(plotsEmptyDrops$scatterEmptyDrops))
     names(plotsEmptyDrops$scatterEmptyDrops$Sample) <- samples
@@ -108,8 +125,8 @@ if(!skipRunEmpty) {
 ```
 
 
-## {.unlisted .unnumbered .toc-ignore .tabset .tabset-fade}
 ```{r "EmptyDrops-plot", results="asis", eval=(!skipRunEmpty), fig.align="center", warning=FALSE, message=FALSE, echo=FALSE}
+cat("## {.unlisted .unnumbered .toc-ignore .tabset .tabset-fade}")
 cat("\n")
 for (i in seq_along(samples)) {
   cat(paste0("### ", samples[i], " {.tabset .tabset-fade} \n"))
@@ -130,10 +147,8 @@ for (i in seq_along(samples)) {
   cat(description_runEmptyDrops$parameter)
   cat("\n\n")
 }
+cat("\n")
 ```
-`r cat("\n")`
-
-
 
 
 ```{r, "BarcodeRanks-description", include=FALSE, warning=FALSE, message=FALSE}
@@ -142,17 +157,17 @@ description_runBarcodeRank <- descriptionBarcodeRank()
 
 ```{r, "BarcodeRanks", results="asis", fig.align="center", warning=FALSE, message=FALSE, echo=FALSE}
 i="BarcodeRanks"
-cat(paste0('## ', i, ' \n'))
-cat("\n")
+# cat(paste0('## ', i, ' \n'))
+# cat("\n")
 
 
-barcodeData <- c("dropletUtils_barcodeRank_rank", "dropletUtils_barcodeRank_total", "dropletUtils_barcodeRank_knee", "dropletUtils_barcodeRank_inflection", "sample", "dropletUtils_barcodeRank_fitted")
+barcodeData <- c("dropletUtils_barcodeRank_rank", "dropletUtils_barcodeRank_total", "dropletUtils_barcodeRank_knee", "dropletUtils_barcodeRank_inflection",  "dropletUtils_barcodeRank_fitted") #"sample",
 
 skipBarcode <- (!"runBarcodeRanksMetaOutput" %in% names(S4Vectors::metadata(sce))) || 
               (any(!barcodeData %in% names(S4Vectors::metadata(sce)$runBarcodeRanksMetaOutput[[1]])))
 
 if (skipBarcode) {
-  cat("runBarcodeRankDrops did not run successfully. The section of EmptyDrops is skipped")
+  cat("runBarcodeRankDrops did not run successfully. The section of BarcodeRanks is skipped")
   plotsBarcodeRank <- NA
 } else {
   plotsBarcodeRank <- tryCatch(
@@ -161,7 +176,7 @@ if (skipBarcode) {
                             title="BarcodeRanks Rank Plot",
                             combinePlot = "none")},
       error = function(e) {
-        cat("runBarcodeRankDrops did not run successfully. The section of EmptyDrops is skipped")
+        cat("runBarcodeRankDrops did not run successfully. The section of BarcodeRanks is skipped")
         skipBarcode <- TRUE
         return(NA)
       }
@@ -169,6 +184,8 @@ if (skipBarcode) {
 }
 
 if(!skipBarcode) {
+  cat(paste0('## ', i, ' \n'))
+  cat("\n")
   if(length(samples) == 1) {
     plotsBarcodeRank <- list(Sample = list(plotsBarcodeRank))
     names(plotsBarcodeRank$Sample) <- samples
@@ -183,8 +200,8 @@ if(!skipBarcode) {
 ```
 
 
-## {.unlisted .unnumbered .toc-ignore .tabset .tabset-fade}
 ```{r "BarcodeRanks-plot", results="asis", eval=!(skipBarcode), fig.align="center", warning=FALSE, message=FALSE, echo=FALSE}
+cat("## {.unlisted .unnumbered .toc-ignore .tabset .tabset-fade}")
 cat("\n")
 for (i in seq_along(samples)) {
   cat(paste0("### ", samples[i], " {.tabset .tabset-fade} \n"))
@@ -204,8 +221,8 @@ for (i in seq_along(samples)) {
   cat(description_runBarcodeRank$parameter)
   cat("\n\n")  
 }
+cat("\n")
 ```
-`r cat("\n")`
 
 # Summary Statistics {.tabset .tabset-fade}
 # {.unlisted .unnumbered .toc-ignore .tabset .tabset-fade}
@@ -215,7 +232,8 @@ cat("\n")
 for (i in seq_along(samples)) {
   cat(paste0("## ", samples[i], " {.tabset .tabset-fade} \n"))
   cat("\n\n")
-  sceColData <- colData(sce)%>% as.data.frame() %>% filter(sample == samples[i])
+  sceColData <- colData(sce) %>% as.data.frame()
+  sceColData <- sceColData[sceColData$sample == samples[i], ]
 
   idx <- list(
           'Knee'= sceColData$dropletUtils_BarcodeRank_Knee == 1,

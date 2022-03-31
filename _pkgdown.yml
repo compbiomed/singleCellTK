@@ -3,106 +3,240 @@ template:
     bootswatch: yeti
 
 reference:
-  - title: Shiny App
-    contents:
-    - singleCellTK
-  - title: Data Summary and Filtering
-    contents:
-    - filterSCData
-    - summarizeTable
-    - convertGeneIDs
-  - title: Dimensionality Reduction and Clustering
-    contents:
-    - getPCA
-    - getTSNE
-    - getBiomarker
-    - getClusterInputData
-    - plotBiomarker
-    - plotPCA
-    - plotTSNE
-  - title: Batch Correction
-    contents:
-    - plotBatchVariance
-    - plotSCEBatchFeatureMean
-    - runComBat
-    - runBBKNN
-    - runHarmony
-    - runLimmaBC
-    - runFastMNN
-    - runLIGER
-    - runMNNCorrect
-    - runSCANORAMA
-    - runSCMerge
-    - runZINBWaVE
-    - seuratIntegration
-  - title: Differential Expression
-    contents:
-    - runDESeq2
-    - runLimmaDE
-    - runANOVA
-    - runMAST
-    - plotDEGViolin
-    - plotDEGRegression
-    - plotDEGHeatmap
-    - thresholdGenes
-    - findMarkerDiffExp
-    - plotMarkerDiffExp
-  - title: Pathway Activity Analysis
-    contents:
-    - gsvaPlot
-    - gsvaSCE
-  - title: Sample Size
-    contents:
-    - calcEffectSizes
-    - downSampleCells
-    - downSampleDepth
-    - generateSimulatedData
-    - iterateSimulations
-    - subDiffEx
-    - subDiffExANOVA
-    - subDiffExttest
-  - title: Data
-    contents:
-    - mouseBrainSubsetSCE
-  - title: SCtkExperiment
-    contents:
-    - createSCE
-    - starts_with("SCtkExperiment")
-    - starts_with("pcaVariances")
-  - title: Alignment
-    contents:
-    - alignSingleCellData
-    - parseRsubreadLogs
-
+- title: "Start the Shiny APP"
+- contents:
+  - singleCellTK
+- title: "Importing scRNA-seq Data"
+- contents:
+  - starts_with("import")
+  - readSingleCellMatrix
+- title: "Quality Control & Preprocessing"
+- contents:
+  - runCellQC
+  - runDropletQC
+  - runPerCellQC
+- title: "Decontamination"
+- contents:
+  - runDecontX
+  - runSoupX
+- title: "Doublet/Empty Droplet Detection"
+- contents:
+  - runBarcodeRankDrops
+  - runEmptyDrops
+  - runBcds
+  - runCxds
+  - runCxdsBcdsHybrid
+  - runScDblFinder
+  - runDoubletFinder
+  - runScrublet
+- title: "Normalization"
+- contents:
+  - runNormalization
+  - scaterlogNormCounts
+  - scaterCPM
+  - seuratNormalizeData
+  - seuratScaleData
+  - computeZScore
+  - trimCounts
+- title: "Batch Effect Correction"
+- contents:
+  - runComBatSeq
+  - runBBKNN
+  - runFastMNN
+  - runLimmaBC
+  - runMNNCorrect
+  - runSCANORAMA
+  - runSCMerge
+  - seuratIntegration
+  - runZINBWaVE
+  - plotBatchVariance
+- title: "Feature Selection"
+- contents:
+  - runFeatureSelection
+  - scranModelGeneVar
+  - seuratFindHVG
+  - getTopHVG
+  - seuratPlotHVG
+- title: "Dimensionality Reduction & Embedding"
+- contents:
+  - runDimReduce
+  - scaterPCA
+  - getUMAP
+  - getTSNE
+  - seuratICA
+  - seuratPCA
+  - seuratRunUMAP
+  - seuratRunTSNE
+  - plotSCEDimReduceColData
+  - plotSCEDimReduceFeatures
+- title: "Clustering"
+- contents:
+  - runScranSNN
+  - seuratFindClusters
+  - runKMeans
+- title: "Differential Expression"
+- contents:
+  - runDEAnalysis
+  - runWilcox
+  - runMAST
+  - runDESeq2
+  - runLimmaDE
+  - runANOVA
+  - plotDEGVolcano
+  - plotDEGViolin
+  - plotDEGRegression
+  - plotDEGHeatmap
+  - plotMASTThresholdGenes
+  - diffAbundanceFET
+- title: "Find Marker"
+- contents:
+  - findMarkerDiffExp
+  - findMarkerTopTable
+  - plotMarkerDiffExp
+- title: "Cell Type Labeling"
+- contents:
+  - runSingleR
+- title: "Enrichment & Pathway Analysis"
+- contents:
+  - getMSigDBTable
+  - enrichRSCE
+  - runGSVA
+  - runVAM
+  - getPathwayResultNames
+  - plotPathway
+- title: "Seurat Curated Workflow"
+- contents:
+  - starts_with("seurat")
+  - computeHeatmap
+  - runSeurat
+- title: "Visualization"
+- contents:
+  - starts_with("plot")
+- title: "Report Generation"
+- contents:
+  - starts_with("report")
+- title: "Exporting Results"
+- contents:
+  - starts_with("export")
+- title: "Datasets"
+- contents:
+  - mouseBrainSubsetSCE
+  - sceBatches
+  - MitoGenes
+  - msigdb_table
+  - sce
+  - SEG
+- title: "Other Data Processing"
+- contents:
+  - expData
+  - expData<-
+  - expDataNames
+  - expDeleteDataTag
+  - expSetDataTag
+  - expTaggedData
+  - combineSCE
+  - convertSCEToSeurat
+  - convertSeuratToSCE
+  - convertGeneIDs
+  - dedupRowNames
+  - detectCellOutlier
+  - featureIndex
+  - getGenesetNamesFromCollection
+  - retrieveSCEIndex
+  - sampleSummaryStats
+  - sctkListGeneSetCollections
+  - setSCTKDisplayRow
+  - subsetSCECols
+  - subsetSCERows
+- title: "Python Environment Setting"
+- contents:
+  - sctkPythonInstallConda
+  - selectSCTKConda
+  - sctkPythonInstallVirtualEnv
+  - selectSCTKVirtualEnvironment
 navbar:
   title: "singleCellTK"
   left:
-    - text: "Introduction to singleCellTK"
-      href: articles/v01-Introduction_to_singleCellTK.html
-    - text: "Interactive Shiny Analysis"
+    - icon: fas fa-home fa-lg
+      href: https://www.camplab.net/sctk
+    - text: "Installation"
+      href: articles/installation.html
+    - text: "Documentation"
       menu:
-        - text: "1: Upload"
-          href: articles/v03-tab01_Upload.html
-        - text: "2: Data Summary and Filtering"
-          href: articles/v04-tab02_Data-Summary-and-Filtering.html
-        - text: "3: Visualization and Clustering"
-          href: articles/v05-tab03_Visualization-and-Clustering.html
-        - text: "4: Batch Correction"
-          href: articles/v06-tab04_Batch-Correction.html
-        - text: "5: Differential Expression"
-          href: articles/v07-tab05_Differential-Expression.html
-        - text: "6: Pathway Activity Analysis"
-          href: articles/v08-tab06_Pathway-Activity-Analysis.html
-        - text: "7: Sample Size"
-          href: articles/v09-tab07_Sample-Size.html
-    - text: "Command Line Analysis"
+        - text: "Data"
+          menu:
+            - text: "Import Data"
+              href: articles/import_data.html
+            - text: "Import Gene Sets"
+              href: articles/import_genesets.html
+            - text: "Annotation"
+              href: articles/import_annotation.html
+            - text: "Export Data"
+              href: articles/export_data.html
+            - text: "Delete Data"
+              href: articles/delete_data.html
+        - text: "QC & Filtering"
+          menu:
+            - text: "Droplet QC (R console)"
+              href: articles/cnsl_dropletqc.html
+            - text: "Cell QC (R console)"
+              href: articles/cnsl_cellqc.html
+            - text: "Cell QC (Shiny UI)"
+              href: articles/ui_qc.html
+            - text: "Filtering"
+              href: articles/filtering.html
+        - text: "Normalization & Batch Correction"
+          menu:
+          - text: "Normalization"
+            href: articles/cnsl_normalization.html
+          - text: "Batch Correction"
+            href: articles/batch_correction.html
+        - text: "Feature Selection & Dimensionality Reduction"
+          menu:
+          - text: "Feature Selection"
+            href: articles/cnsl_feature_selection.html
+          - text: "Dimensionality Reduction"
+            href: articles/cnsl_dimensionality_reduction.html
+          - text: "2D Embedding"
+            href: articles/cnsl_2d_embedding.html
+        - text: "Clustering"
+          href: articles/clustering.html
+        - text: "Differential Expression & Cell Type Labeling"
+          menu:
+            - text: "Differential Expression"
+              href: articles/differential_expression.html
+            - text: "Find Marker"
+              href: articles/find_marker.html
+            - text: "Cell Type Labeling"
+              href: articles/cell_type_labeling.html
+        - text: "Pathway & Enrichment Analysis"
+          menu:
+            - text: "EnrichR"
+              href: articles/cnsl_enrichR.html
+            - text: "Pathway Analysis"
+              href: articles/pathwayAnalysis.html
+        - text: "Curated Workflows"
+          menu:
+            - text: "Seurat"
+              href: articles/cnsl_seurat_curated_workflow.html
+            - text: "Celda"
+              href: articles/celda_curated_workflow.html
+        - text: "Visualization"
+          menu:
+          - text: "General Visualization"
+            href: articles/visualization.html
+          - text: "Generic Heatmap"
+            href: articles/heatmap.html
+    - text: "Tutorials"
       menu:
-        - text: "Processing and Visualizing Data"
-          href: articles/v02-Processing_and_Visualizing_Data_in_the_SingleCellTK.html
-        - text: "Aligning and Quantifying scRNA-Seq Data"
-          href: articles/v10-Aligning_and_Quantifying_scRNA-Seq_Data.html
+      - text: "Analysis of PBMC3K (R Console)"
+        href: articles/console_analysis_tutorial.html
+    - text: "SCTK-QC"
+      href: articles/cmd_qc.html
     - text: "Reference"
       href: reference/index.html
   right:
-    - icon: fa-github
+    - icon: fab fa-github fa-lg
       href: https://github.com/compbiomed/singleCellTK
+    - icon: fab fa-twitter fa-lg
+      href: https://twitter.com/camplab1

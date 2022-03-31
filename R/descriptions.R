@@ -36,8 +36,7 @@ descriptionEmptyDrops <- function() {
     return(list(
         introduction = "It is crucial to distinguish the data occurring from real cells
              and empty droplets containing ambient RNA. SCTK employs the
-             [EmptyDrops](https://rdrr.io/github/MarioniLab/DropletUtils/man/emptyDrops.html)
-             algorithm from the
+             EmptyDrops algorithm from the
             [DropletUtils](https://bioconductor.org/packages/release/bioc/html/DropletUtils.html)
             package to test for empty droplets. ",
         runEmptyDrops = "The wrapper function `runEmptyDrops` can be used to separately run the
@@ -80,7 +79,7 @@ descriptionBarcodeRank <- function() {
 
 descriptionScrublet <- function() {
     return(list(
-        introduction = "[Scrublet](https://github.com/swolock/scrublet/blob/master/examples/scrublet_basics.ipynb) aims to detect doublets by
+        introduction = "Scrublet aims to detect doublets by
              creating simulated doublets from combining transcriptomic profiles of existing cells in the dataset. ",
         parameter = "The `sample` parameter indicates what sample each cell originated from.
              It can be set to `NULL` if all cells in the dataset came from the same sample. ",
@@ -99,7 +98,7 @@ descriptionScrublet <- function() {
 
 descriptionDoubletFinder <- function() {
     return(list(
-        introduction = "[DoubletFinder](https://github.com/chris-mcginnis-ucsf/DoubletFinder) is a doublet detection algorithm which depends on
+        introduction = "DoubletFinder is a doublet detection algorithm which depends on
             the single cell analysis package
             [Seurat](https://cran.r-project.org/web/packages/Seurat/index.html). ",
         runDoubletFinder = "The wrapper function `runDoubletFinder` can be used to separately run the
@@ -135,8 +134,8 @@ descriptionScDblFinder <- function() {
         runScDblFinder = "The wrapper function `runScDblFinder` can be used to separately run the
               scDblFinder algorithm on its own. ",
         parameter = "The `nNeighbors` parameter is the number of nearest neighbor
-	used to calculate the density for doublet detection. `simDoublets` is used
-	to determine the number of simulated doublets used for doublet detection. ",
+used to calculate the density for doublet detection. `simDoublets` is used
+to determine the number of simulated doublets used for doublet detection. ",
         output = "The output of scDblFinder is a `scDblFinder_doublet_score` and
              `scDblFinder_doublet_call`. The doublet score of a droplet will be higher if the
              it is deemed likely to be a doublet. ",
@@ -215,18 +214,50 @@ descriptionDecontX <- function() {
             damaged cells may get incorporated into another droplet, and can
             lead to contamination. [decontX](https://rdrr.io/bioc/celda/man/decontX.html),
             available from the [celda](https://bioconductor.org/packages/release/bioc/html/celda.html),
-            is a Bayesian method for the identification of the contamination level at a cellular level. ",
-        runDecontX = "The wrapper function `runDecontX` can be used to separately run the
-            DecontX algorithm on its own. ",
+            is a Bayesian method for the identification of the contamination 
+            level at a cellular level. ",
+        runDecontX = "The wrapper function `runDecontX` can be used to 
+            separately run the DecontX algorithm on its own. ",
         output = "The outputs of `runDecontX` are `decontX_contamination` and
              `decontX_clusters`. ",
-        contamination = "`decontX_contamination` is a numeric vector which characterizes
-             the level of contamination in each cell. ",
-        clustering = "Clustering is performed as part of the `runDecontX` algorithm.
-             `decontX_clusters` is the resulting cluster assignment,
-             which can also be labeled on the plot. ",
-        plotDecontXResults = "The wrapper function `plotDecontXResults` can be used to plot the
-              QC outputs from the DecontX algorithm. "
+        contamination = "`decontX_contamination` is a numeric vector which 
+            characterizes the level of contamination in each cell. ",
+        clustering = "Clustering is performed as part of the `runDecontX` 
+            algorithm. `decontX_clusters` is the resulting cluster assignment,
+            which can also be labeled on the plot. ",
+        plotDecontXResults = "The wrapper function `plotDecontXResults` can be 
+            used to plot the QC outputs from the DecontX algorithm. "
+    ))
+}
+
+descriptionSoupX <- function() {
+    return(list(
+        introduction = "In droplet-based single cell technologies,
+            ambient RNA that may have been released from apoptotic or
+            damaged cells may get incorporated into another droplet, and can
+            lead to contamination. [SoupX](https://github.com/constantAmateur/SoupX)
+            uses non-expressed genes to estimates a global contamination 
+            fraction.",
+        runSoupX = "The wrapper function `runSoupX` can be used to separately 
+            run the SoupX algorithm on its own. ",
+        output = "The main outputs of `runSoupX` are `soupX_contamination`, 
+            `soupX_clusters`, and the corrected assay `SoupX`, together with 
+            other intermediate metrics that SoupX generates.",
+        contamination = "`soupX_contamination` is a numeric vector which 
+            characterizes the level of contamination in each cell. SoupX 
+            generates one global contamination estimate per sample, instead of
+            returning cell-specific estimation.",
+        clustering = "Clustering is required for SoupX algorithm. It will be 
+            performed if users do not provide the label as input. 
+            `quickCluster()` method from package 
+            [scran](https://rdrr.io/bioc/scran/man/quickCluster.html) is adopted
+            for this purpose. `soupX_clusters` is the resulting cluster 
+            assignment, which can also be labeled on the plot. ",
+        plotSoupXResults = "The wrapper function `plotSoupXResult` can be 
+            used to plot the QC outputs from the SoupX algorithm. Plots includes
+            a UMAP with clustering labels and a number of UMAPs colored with 
+            the soup fraction of top marker genes which are identified for 
+            contamination estimation. "
     ))
 }
 

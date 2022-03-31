@@ -20,13 +20,12 @@ plotDEGHeatmap(
   colDataName = NULL,
   colSplitBy = "condition",
   rowSplitBy = "regulation",
-  title = paste0("MAST Result: ", useResult),
+  title = paste0("DE Analysis: ", useResult),
   ...
 )
 }
 \arguments{
-\item{inSCE}{\linkS4class{SingleCellExperiment} inherited object.
-\code{runMAST()} has to be run in advance.}
+\item{inSCE}{\linkS4class{SingleCellExperiment} inherited object.}
 
 \item{useResult}{character. A string specifying the \code{analysisName}
 used when running a differential expression analysis function.}
@@ -38,7 +37,7 @@ transformation on the assay used for the analysis. Default \code{FALSE}.}
 value. Default \code{FALSE}.}
 
 \item{log2fcThreshold}{numeric. Only plot DEGs with the absolute values of
-log2FC larger than this value. Default \code{1}.}
+log2FC larger than this value. Default \code{0.25}.}
 
 \item{fdrThreshold}{numeric. Only plot DEGs with FDR value smaller than this
 value. Default \code{0.05}.}
@@ -80,7 +79,7 @@ this(these) annotation(s). Should exist in either \code{rowDataName} or
 \code{names(featureAnnotations)}. Default \code{"regulation"}.}
 
 \item{title}{character. Main title of the heatmap. Default
-\code{"MAST Result: <useResult>"}.}
+\code{"DE Analysis: <useResult>"}.}
 
 \item{...}{Other arguments passed to \code{\link{plotSCEHeatmap}}}
 }
@@ -88,9 +87,12 @@ this(these) annotation(s). Should exist in either \code{rowDataName} or
 A \code{ComplexHeatmap::Heatmap} object
 }
 \description{
-A differential expression analysis function has to be run in advance so that
-information is stored in the metadata of the input SCE object. This function
-wraps plotSCEHeatmap.
+Heatmap visualization of DEG result
+}
+\details{
+A differential expression analysis function has to be run in advance 
+so that information is stored in the metadata of the input SCE object. This 
+function wraps \code{\link{plotSCEHeatmap}}.
 A feature annotation basing on the log2FC level called \code{"regulation"}
 will be automatically added. A cell annotation basing on the condition
 selection while running the analysis called \code{"condition"}, and the
@@ -98,16 +100,13 @@ annotations used from \code{colData(inSCE)} while setting the condition and
 covariates will also be added.
 }
 \examples{
-data(scExample, package = "singleCellTK")
-\dontrun{
-sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
-sce <- runDEAnalysis(inSCE = sce, method = "DESeq2",
-                     groupName1 = "Sample1", groupName2 = "Sample2",
-                     index1 = 1:100, index2 = 101:190,
-                     analysisName = "DESeq2")
-plotDEGHeatmap(sce, useResult = "DESeq2", fdrThreshold = 1, doLog = TRUE)
-}
-
+data("sceBatches")
+logcounts(sceBatches) <- log(counts(sceBatches) + 1)
+sce.w <- subsetSCECols(sceBatches, colData = "batch == 'w'")
+sce.w <- runWilcox(sce.w, class = "cell_type", classGroup1 = "alpha",
+                   groupName1 = "w.alpha", groupName2 = "w.beta",
+                   analysisName = "w.aVSb")
+plotDEGHeatmap(sce.w, "w.aVSb")
 }
 \author{
 Yichen Wang

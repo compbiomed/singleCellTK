@@ -29,6 +29,10 @@
 #' @return Input SCE object with cell type labeling updated in
 #' \code{colData(inSCE)}, together with scoring metrics.
 #' @export
+#' @examples
+#' data("sceBatches")
+#' logcounts(sceBatches) <- log(counts(sceBatches) + 1)
+#' #sceBatches <- runSingleR(sceBatches, useBltinRef = "mp")
 runSingleR <- function(inSCE,
                        useAssay = "logcounts",
                        useSCERef = NULL,

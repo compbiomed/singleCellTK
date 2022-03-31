@@ -1,0 +1,247 @@
+---
+title: "Pathway Analysis"
+author: "Nida Pervaiz"
+output:
+  pdf_document:
+    toc: yes
+    toc_depth: '5'
+  html_document:
+    toc: yes
+    toc_depth: 5
+bibliography: references.bib
+csl: ieee.csl
+---
+
+```{r develSetting, include=FALSE}
+knitr::opts_chunk$set(warning = FALSE)
+```
+
+````{=html}
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+````
+
+## Introduction
+
+**VAM** [@Frost2020.02.18.954321] and **GSVA** [@Hanzelmann2013] are popular methods for GSE (Gene Set Enrichment) and allows the identification of changes in pathway activity in RNA-Seq data. Overall, gene sets can be uploaded or selected from the available databases ([How to *Import Genesets*?](import_genesets.html)), and the pathway analysis method can be run on the selected gene sets which can eventually be visualized using Violin plot.  
+
+To view detailed instructions on how to use these methods, please select "Interactive Analysis" for using pathway analysis in Shiny application or "Console Analysis" for using these methods on R console from the tabs below:
+
+## Workflow Guide
+
+````{=html}
+<div class="tab">
+  <button class="tablinks" onclick="openTab(event, 'interactive')" id="ia-button">Interactive Analysis</button>
+  <button class="tablinks" onclick="openTab(event, 'console')" id="console-button">Console Analysis</button>
+</div>
+
+<div id="interactive" class="tabcontent">
+````
+
+**Entry of The Panel**
+
+From anywhere of the UI, the panel for pathway analysis can be accessed from the top navigation panel at the circled tab shown below.  
+
+![PathwayEntry](ui_screenshots/pathwayAnalysis/path_ui_entry.PNG)\
+
+The UI is constructed in a sidebar style, where the left-sided sidebar works for setting the parameters and running the pathway analysis, and the right part main panel is for visualization checking.  
+
+
+**Run Pathway Analysis**
+
+**1. Choose An Algorithm**
+
+![PathwayAlgo](ui_screenshots/pathwayAnalysis/path_ui_algo.png)\
+
+For running any types of pathway analysis, there are always three essential inputs that users should be sure with:
+
+- The data matrix to use - selection input **"Select Assay"**. In terms of pathway analysis, SCTK always requires a full-sized feature expression data (i.e. assay) as a valid input.
+- The pathway analysis method - selection input **"Select Method"**. All methods supported are listed as options.
+- The geneset collection name - selection input **"Select Geneset Collection"**. All geneset names are listed as options.
+
+After the pathway analysis method is confirmed, the lower part will dynamically switch to the method specific settings.
+
+**2. Parameter Settings**
+
+````{=html}
+ <style>
+div.offset { background-color:inherit ; border-radius: 5px; margin-left: 15px;}
+</style>
+<div class = "offset">
+<details>
+  <summary><b>VAM</b></summary>
+````  
+
+![VAMParameter](ui_screenshots/pathwayAnalysis/path_ui_VAM.PNG)\
+
+When the selected algorithm is "VAM" , the parameter settings will look like the figure above. The method specific parameters include:
+
+- `center`, If True, values will be mean centered when computating the Mahalanobis statistic.
+- `gamma`, If True, a gamma distribution will be fit to the non-zero squared Mahalanobis distances computed from a row-permuted version of the gene expression matrix. The estimated gamma distribution will be used to compute a one-sided p-value for each cell. If False, the p-value will be computed using the standard chi-square approximation for the squared Mahalanobis distance (or non-central if center = FALSE).  
+
+````{=html}
+</details>
+<details>
+  <summary><b>GSVA</b></summary>
+````  
+
+![GSVAParameter](ui_screenshots/pathwayAnalysis/path_ui_gsva.PNG)\
+
+When the selected algorithm is "GSVA", no additional parameter settings exist other than the three essential inputs common for both VAM and GSVA. 
+
+````{=html}
+</details>
+</div>
+<br/>
+````  
+
+**3. Visualization**
+
+![Pathwayresult](ui_screenshots/pathwayAnalysis/path_ui_result.PNG)\
+
+The visualization is implemented with a plotting of cell by geneset matrix score.
+
+
+````{=html}
+<div class = "offset">
+<details>
+  <summary><b>Detail</b></summary>
+````
+
+![Pathwayvisualization](ui_screenshots/pathwayAnalysis/path_ui_visualization.PNG)\
+
+The parameter panel for visualization comprises of:
+
+- The result to visualize - selection input **"Select Score matrix which you want to plot:"**. User should choose one of the data frames produced within the results which they want to visualize.
+- The geneset to visualize  - selection input **"Select Geneset:"**. User should choose the geneset from the collection used for running the algorithm.
+- The additional condition of grouping the data- selection input **"Select Condition(s) of interest to group data (optional)"**. User may select a condition to group the data in accordance with the colData. 
+- Visualization criteria - Boolean input **"Boxplot"**. If TRUE, will plot boxplots for each violin plot. Default TRUE
+- Visualization criteria - Boolean input **"Violinplot"**. If TRUE, will plot the violin plot. Default TRUE
+- Summarize stats - selection input **"Select summary parameter"**. Adds a summary statistic, as well as a crossbar to the violin plot. Options are "mean" or "median". Default NULL.
+
+ 
+
+````{=html}
+</details>
+</div>
+</div>
+
+<div id="console" class="tabcontent">
+````
+
+The pathway analysis methods can be easily applied to a [`SingleCellExperiment`](https://rdrr.io/bioc/SingleCellExperiment/man/SingleCellExperiment.html) (SCE) object. The methods return the same SCE object with results updated in `reducedDim` slot.
+
+**Basic Parameters**
+
+For each of the three functions, the common things are:
+
+- The input SCE object - `inSCE`.
+- The user must select the gene sets they would like to upload from `Import Gene Sets` tab - `geneSetCollectionName`. 
+- Users need to use `useAssay` for a full-sized expression data. 
+
+As for another essential parameter, the data matrix used for running the algorithm is a must. Here, users should notice that:
+
+- For `runVAM()`, there are two extra parameters: `center` and `gamma`. Please refer to the function manual pages for the details.
+ 
+
+**Examples**
+
+To demonstrate simple and clear examples, here we use the "PBMC-3k" dataset from "10X" which can be easily imported with SCTK functions. 
+
+```{R pathImport, eval=FALSE, message=FALSE, warning=FALSE, fig.align="center", results='hide'}
+library(singleCellTK)
+sce <- importExampleData("pbmc3k")
+```
+
+The preprocessing only includes necessary steps before implementing pathway analysis 
+
+````{=html}
+<div class = "offset">
+<details>
+  <summary><b>Preprocessing</b></summary>
+````
+
+```{R pathPrep, eval=FALSE, message=FALSE, warning=FALSE, fig.align="center", results='hide'}
+
+sce <- scaterlogNormCounts(sce, assayName = "logcounts")
+sce <- importGeneSetsFromMSigDB(inSCE = sce, categoryIDs = "H", species = "Homo sapiens", mapping = "gene_symbol", by = "rownames")
+```
+
+````{=html}
+</details>
+````
+
+````{=html}
+<details>
+  <summary><b>Example with VAM</b></summary>
+  <details>
+    <summary><b>Method specific parameters</b></summary>
+````
+- `center`, If True, values will be mean centered when computating the Mahalanobis statistic.
+- `gamma`, If True, a gamma distribution will be fit to the non-zero squared Mahalanobis distances computed from a row-permuted version of the gene expression matrix. The estimated gamma distribution will be used to compute a one-sided p-value for each cell. If False, the p-value will be computed using the standard chi-square approximation for the squared Mahalanobis distance (or non-central if center = FALSE).
+
+````{=html}
+</details>
+````
+
+```{R path_VAM, eval=FALSE, message=FALSE, warning=FALSE, fig.align="center", results='hide'}
+# Directly use an assay
+sce <- runVAM(inSCE = sce, geneSetCollectionName = "H", useAssay = "logcounts", center = TRUE, gamma = FALSE)
+```
+
+````{=html}
+</details>
+````
+
+````{=html}
+<details>
+  <summary><b>Example with GSVA</b></summary>
+````
+
+```{R path_GSVA, eval=FALSE, message=FALSE, warning=FALSE, fig.align="center", results='hide'}
+# Directly use an assay
+sce <- runGSVA(inSCE = sce, geneSetCollectionName = "H", useAssay = "logcounts")
+```
+
+ 
+
+````{=html}
+</details>
+</div>
+````
+
+**Results and Visualization**
+
+The results generated with either GSVA or VAM are stored in the `reducedDims` slot of the SCE object.
+
+To visualize the scores for a specific geneset from the geneset collection that is used for running the algorithm:
+
+```{R pathVis, eval=FALSE, message=FALSE, warning=FALSE, fig.align="center", results='hide'}
+plotPathway(sce, resultName = "VAM_H_CDF", geneset = "HALLMARK_INFLAMMATORY_RESPONSE")
+```
+
+In the example above, `"VAM_H_CDF"` is the name of the result generated by VAM, where `"HALLMARK_INFLAMMATORY_RESPONSE"` is a geneset from geneset collection `"H"`, imported at the very beginning. 
+
+To get the names of all pathway analysis results:
+
+```{R pathRes, eval=FALSE, message=FALSE, warning=FALSE, fig.align="center", results='hide'}
+getPathwayResultNames(sce)
+```
+
+To get a list of all genesets that a pathway analysis result includes:
+
+```{R pathGS, eval=FALSE, message=FALSE, warning=FALSE, fig.align="center", results='hide'}
+getGenesetNamesFromCollection(inSCE = sce, geneSetCollectionName = "H")
+```
+
+````{=html}
+</div>
+<script>
+document.getElementById("ia-button").click();
+</script>
+</body>
+````
+
+## References
