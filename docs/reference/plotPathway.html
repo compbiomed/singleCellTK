@@ -188,14 +188,23 @@
   groupBy <span class="op">=</span> <span class="cn">NULL</span>,
   boxplot <span class="op">=</span> <span class="cn">FALSE</span>,
   violin <span class="op">=</span> <span class="cn">TRUE</span>,
-  summary <span class="op">=</span> <span class="st">"median"</span>
+  dots <span class="op">=</span> <span class="cn">TRUE</span>,
+  summary <span class="op">=</span> <span class="st">"median"</span>,
+  axisSize <span class="op">=</span> <span class="fl">10</span>,
+  axisLabelSize <span class="op">=</span> <span class="fl">10</span>,
+  dotSize <span class="op">=</span> <span class="fl">0.5</span>,
+  transparency <span class="op">=</span> <span class="fl">1</span>,
+  defaultTheme <span class="op">=</span> <span class="cn">TRUE</span>,
+  gridLine <span class="op">=</span> <span class="cn">FALSE</span>,
+  title <span class="op">=</span> <span class="va">geneset</span>,
+  titleSize <span class="op">=</span> <span class="cn">NULL</span>
 <span class="op">)</span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>inSCE</dt>
-<dd><p>Input SingleCellExperiment object. With 
+<dd><p>Input <a href="https://rdrr.io/pkg/SingleCellExperiment/man/SingleCellExperiment.html" class="external-link">SingleCellExperiment</a> object. With 
 <code><a href="runGSVA.html">runGSVA()</a></code> or <code><a href="runVAM.html">runVAM()</a></code> applied in advance.</p></dd>
 <dt>resultName</dt>
 <dd><p>A single character of the name of a score matrix, which 
@@ -211,10 +220,32 @@ Default <code>NULL</code>.</p></dd>
 <dd><p>Boolean, Whether to add a boxplot. Default <code>FALSE</code>.</p></dd>
 <dt>violin</dt>
 <dd><p>Boolean, Whether to add a violin plot. Default <code>TRUE</code>.</p></dd>
+<dt>dots</dt>
+<dd><p>Boolean, If <code>TRUE</code>, will plot dots for each violin plot.
+Default <code>TRUE</code>.</p></dd>
 <dt>summary</dt>
 <dd><p>Adds a summary statistic, as well as a crossbar to the violin 
 plot. Options are <code>"mean"</code> or <code>"median"</code>, and <code>NULL</code> for not 
 adding. Default <code>"median"</code>.</p></dd>
+<dt>axisSize</dt>
+<dd><p>Size of x/y-axis ticks. Default <code>10</code>.</p></dd>
+<dt>axisLabelSize</dt>
+<dd><p>Size of x/y-axis labels. Default <code>10</code>.</p></dd>
+<dt>dotSize</dt>
+<dd><p>Size of dots. Default <code>0.5</code>.</p></dd>
+<dt>transparency</dt>
+<dd><p>Transparency of the dots, values will be 0-1. Default 
+<code>1</code>.</p></dd>
+<dt>defaultTheme</dt>
+<dd><p>Removes grid in plot and sets axis title size to 
+<code>10</code> when <code>TRUE</code>. Default <code>TRUE</code>.</p></dd>
+<dt>gridLine</dt>
+<dd><p>Adds a horizontal grid line if <code>TRUE</code>. Will still be 
+drawn even if <code>defaultTheme</code> is <code>TRUE</code>. Default <code>FALSE</code>.</p></dd>
+<dt>title</dt>
+<dd><p>Title of plot. Default using <code>geneset</code>.</p></dd>
+<dt>titleSize</dt>
+<dd><p>Size of the title of the plot. Default <code>15</code>.</p></dd>
 </dl></div>
     <div id="value">
     <h2>Value</h2>
@@ -231,8 +262,8 @@ using this function. Users can group the data by specifying <code>groupby</code>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"scExample"</span>, package <span class="op">=</span> <span class="st">"singleCellTK"</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="subsetSCECols.html">subsetSCECols</a></span><span class="op">(</span><span class="va">sce</span>, colData <span class="op">=</span> <span class="st">"type != 'EmptyDroplet'"</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="scaterlogNormCounts.html">scaterlogNormCounts</a></span><span class="op">(</span><span class="va">sce</span>, assayName <span class="op">=</span> <span class="st">"logcounts"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">gs1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/row_colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span><span class="op">]</span></span>
-<span class="r-in"><span class="va">gs2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/row_colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">11</span>,<span class="fl">20</span><span class="op">)</span><span class="op">]</span></span>
+<span class="r-in"><span class="va">gs1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span><span class="op">]</span></span>
+<span class="r-in"><span class="va">gs2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">11</span>,<span class="fl">20</span><span class="op">)</span><span class="op">]</span></span>
 <span class="r-in"><span class="va">gs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"geneset1"</span> <span class="op">=</span> <span class="va">gs1</span>, <span class="st">"geneset2"</span> <span class="op">=</span> <span class="va">gs2</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="importGeneSetsFromList.html">importGeneSetsFromList</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, geneSetList <span class="op">=</span> <span class="va">gs</span>,</span>
 <span class="r-in">                              by <span class="op">=</span> <span class="st">"rownames"</span><span class="op">)</span></span>

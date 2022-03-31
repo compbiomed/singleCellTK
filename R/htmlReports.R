@@ -364,7 +364,8 @@ reportDiffAbundanceFET <-
              output_file = "DifferentialAbundanceFET_Report",
              pdf = FALSE,
              showSession = TRUE) {
-        inSCE <- diffAbundanceFET(inSCE, cluster, variable, control, case, analysisName)
+        inSCE <- diffAbundanceFET(inSCE, cluster, variable, control, 
+                                  case, analysisName)
         rmarkdown::render(
             system.file("rmarkdown/DifferentialAbundanceFET_Report.Rmd",
                         package="singleCellTK"),
@@ -380,7 +381,8 @@ reportDiffAbundanceFET <-
     }
 
 #' @title Get plotClusterAbundance .html report
-#' @description A function to generate .html Rmarkdown report containing the visualizations of the plotClusterAbundance function output
+#' @description A function to generate .html Rmarkdown report containing the 
+#' visualizations of the plotClusterAbundance function output
 #' @param inSCE A \code{\link[SingleCellExperiment]{SingleCellExperiment}}
 #' object.
 #' @param cluster A single \code{character}, specifying the name to store the
