@@ -50,14 +50,14 @@
   <a href="../articles/installation.html">Installation</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Documentation
      
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
 <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Data</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Data</a>
       <ul class="dropdown-menu" role="menu">
 <li>
           <a href="../articles/import_data.html">Import Data</a>
@@ -77,7 +77,7 @@
       </ul>
 </li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">QC &amp; Filtering</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">QC &amp; Filtering</a>
       <ul class="dropdown-menu" role="menu">
 <li>
           <a href="../articles/cnsl_dropletqc.html">Droplet QC (R console)</a>
@@ -94,7 +94,7 @@
       </ul>
 </li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Normalization &amp; Batch Correction</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Normalization &amp; Batch Correction</a>
       <ul class="dropdown-menu" role="menu">
 <li>
           <a href="../articles/cnsl_normalization.html">Normalization</a>
@@ -105,7 +105,7 @@
       </ul>
 </li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Feature Selection &amp; Dimensionality Reduction</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Feature Selection &amp; Dimensionality Reduction</a>
       <ul class="dropdown-menu" role="menu">
 <li>
           <a href="../articles/cnsl_feature_selection.html">Feature Selection</a>
@@ -122,7 +122,7 @@
       <a href="../articles/clustering.html">Clustering</a>
     </li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Differential Expression &amp; Cell Type Labeling</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Differential Expression &amp; Cell Type Labeling</a>
       <ul class="dropdown-menu" role="menu">
 <li>
           <a href="../articles/differential_expression.html">Differential Expression</a>
@@ -136,7 +136,7 @@
       </ul>
 </li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Pathway &amp; Enrichment Analysis</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Pathway &amp; Enrichment Analysis</a>
       <ul class="dropdown-menu" role="menu">
 <li>
           <a href="../articles/cnsl_enrichR.html">EnrichR</a>
@@ -147,7 +147,7 @@
       </ul>
 </li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Curated Workflows</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Curated Workflows</a>
       <ul class="dropdown-menu" role="menu">
 <li>
           <a href="../articles/cnsl_seurat_curated_workflow.html">Seurat</a>
@@ -158,7 +158,7 @@
       </ul>
 </li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Visualization</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Visualization</a>
       <ul class="dropdown-menu" role="menu">
 <li>
           <a href="../articles/visualization.html">General Visualization</a>
@@ -171,7 +171,7 @@
   </ul>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Tutorials
      
     <span class="caret"></span>
@@ -235,21 +235,21 @@
 <p>SingleCellTK is an R based package, allowing users to run analysis in system command-line, R console, and R Shiny user interface. To get your machine fully equipped with singleCellTK, you must have <strong>R (&gt;=4.0)</strong> pre-installed.</p>
 <p><a href="#install-r-4-0-">See more details on how to install R</a></p>
 <ol start="2" style="list-style-type: decimal">
-<li><strong>singleCellTK</strong></li>
-</ol>
-<p>With R successfully installed, users can now install singleCellTK to your local system. For quick start, Bioconductor users can directly install our released version with the following command:</p>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"BiocManager"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span>
-    <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"BiocManager"</span><span class="op">)</span>
-
-<span class="fu">BiocManager</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocManager/man/install.html" class="external-link">install</a></span><span class="op">(</span><span class="st">"singleCellTK"</span><span class="op">)</span></code></pre></div>
-<p><a href="#install-singlecelltk-1">See more details about custom installation of singleCellTK</a></p>
-<ol start="3" style="list-style-type: decimal">
 <li><strong>Python environment</strong></li>
 </ol>
 <p>Additionally, singleCellTK wraps a number of useful toolkits, where some of them are Python based. To enable this part of functionality, users need to get Python (v3.x) and a set of Python packages built. The fast <code>pip</code> command can be used to easily install all the required dependencies as shown below:</p>
 <pre class="shell"><code>pip install scipy numpy astroid six scrublet scanpy bbknn scanorama</code></pre>
 <p><a href="#install-python-dependencies">See more details for setting up Python Environment for singleCellTK</a></p>
+<ol start="3" style="list-style-type: decimal">
+<li><strong>singleCellTK</strong></li>
+</ol>
+<p>With R successfully installed, users can now install singleCellTK to your local system. For quick start, Bioconductor users can directly install our released version with the following command:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"BiocManager"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span>
+    <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"BiocManager"</span><span class="op">)</span>
+
+<span class="fu">BiocManager</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocManager/man/install.html" class="external-link">install</a></span><span class="op">(</span><span class="st">"singleCellTK"</span><span class="op">)</span></code></pre></div>
+<p><a href="#install-singlecelltk-1">See more details about custom installation of singleCellTK</a></p>
 <p><strong>For users who would like to perform console interactive analysis, we strongly suggest that you have <a href="https://www.rstudio.com/products/rstudio/download/#download" class="external-link">RStudio</a> installed.</strong></p>
 </div>
 <div class="section level2">
@@ -403,7 +403,7 @@
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
 </div>
 
       </footer>

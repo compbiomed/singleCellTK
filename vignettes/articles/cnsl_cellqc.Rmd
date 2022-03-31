@@ -63,12 +63,23 @@ Users may set a `sample` parameter if need to compare between multiple samples. 
 
 If users wishes, a list of gene sets can be applied to the function to determine the expression of a set of specific genes. A gene list imported into the `SingleCellExperiment` object using `importGeneSets*` functions can be set as `collectionName`. Additionally, a pre-made list of genes can be used to determine the level of gene expression per cell. A list containing gene identifiers may be set as `geneSetList`, or the user may instead use the `geneSetCollection` parameter to supply a `GeneSetCollection` object from the [GSEABase](https://bioconductor.org/packages/release/bioc/html/GSEABase.html) package. Please also refer to [*Import Genesets* documentation](import_genesets.html).
 
-
-```{r load_geneset,  message = FALSE, warning = FALSE}
+```{r load_geneset, message = FALSE, warning = FALSE, eval = FALSE}
 pbmc.combined <- importGeneSetsFromGMT(inSCE = pbmc.combined, collectionName = "mito", file = system.file("extdata/mito_subset.gmt", package = "singleCellTK"))
 
 set.seed(12345)
-pbmc.combined <- runCellQC(pbmc.combined, algorithms = c("QCMetrics", "scrublet", "scDblFinder", "cxds", "bcds", "cxds_bcds_hybrid", "doubletFinder", "decontX", "soupX"), sample = sample.vector, collectionName = "mito")
+pbmc.combined <- runCellQC(pbmc.combined, 
+                           algorithms = c("QCMetrics", "scrublet", "scDblFinder", "cxds", "bcds", "cxds_bcds_hybrid", "doubletFinder", "decontX", "soupX"), 
+                           sample = sample.vector, 
+                           collectionName = "mito")
+```
+
+Users can also specify `mitoRef`, `mitoIDType` and `mitoGeneLocation` arguments in `runCellQC` function to quantify mitochondrial gene expression without the need to import gene sets. For the details about these arguments, please refer to `runCellQC` and `runPerCellQC()` . 
+
+```{r mitoGene_quanfity,  message = FALSE, warning = FALSE}
+pbmc.combined <- runCellQC(pbmc.combined,
+                           algorithms = c("QCMetrics", "scrublet", "scDblFinder", "cxds", "bcds", "cxds_bcds_hybrid", "doubletFinder", "decontX", "soupX"),
+                           sample = sample.vector,
+                           mitoRef = "human", mitoIDType = "symbol", mitoGeneLocation = "rownames")
 ```
 <br />
 If users choose to only run a specific set of algorithms, they can specify which to run with the `algorithms` parameter. By default, the `runCellQC()` will run `"QCMetrics"`, `"scDblFinder"`, `"cxds"`, `"bcds"`, `"cxds_bcds_hybrid"`, `"decontX"` and `"soupX"` algorithms by default. Besides, `"scrublet"` and `"doubletFinder"` are supported if our users want to run them. 
@@ -171,13 +182,15 @@ The QC outputs are `sum`, `detected`, and `percent_top_X`, stored as variables i
 - `sum` contains the total number of counts for each cell.
 - `detected` contains the total number of features for each cell.
 - `percent_top_X` contains the percentage of the total counts that is made up by the expression of the top X genes for each cell.
-- The `subsets_` columns contain information for the specific gene list that was used. For instance, if a gene list containing mitochondrial genes named `"mito"` was used, `subsets_mito_sum` would contain the total number of mitochondrial counts for each cell.
+- The `subsets_` columns contain information for the specific gene list that was used. For instance, if a gene list containing ribosome genes named `"ribosome"` was used, `subsets_ribosome_sum` would contain the total number of ribosome gene counts for each cell.
+- `mito_sum`, `mito_detected` and `mito_percent` contains number of counts, number of mito features and percentage of mito gene expression of each cells. These columns will show up only if you specify arguments related to mito genes quantification in `runCellQC` function. Please refer to `runCellQC` and `runPerCellQC` documentation for more details. 
 
 ```{r, eval=FALSE, message=FALSE}
 pbmc.combined <- runPerCellQC(
   inSCE = pbmc.combined,
   useAssay = "counts",
-  collectionName = "mito")
+  collectionName = "ribosome",
+  mitoRef = "human", mitoIDType = "symbol", mitoGeneLocation = "rownames")
 ```
 
 ````{=html}
@@ -615,7 +628,7 @@ dim(pbmc.combined)
 
 Remove barcodes with high mitochondrial gene expression:
 ```{r}
-pbmc.combined <- subsetSCECols(pbmc.combined, colData = 'subsets_mito_percent < 20')
+pbmc.combined <- subsetSCECols(pbmc.combined, colData = 'mito_percent < 20')
 ```
 
 Remove detected doublets from Scrublet:

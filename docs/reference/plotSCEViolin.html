@@ -194,6 +194,7 @@
   violin <span class="op">=</span> <span class="cn">TRUE</span>,
   boxplot <span class="op">=</span> <span class="cn">TRUE</span>,
   dots <span class="op">=</span> <span class="cn">TRUE</span>,
+  plotOrder <span class="op">=</span> <span class="cn">NULL</span>,
   xlab <span class="op">=</span> <span class="cn">NULL</span>,
   ylab <span class="op">=</span> <span class="cn">NULL</span>,
   axisSize <span class="op">=</span> <span class="fl">10</span>,
@@ -221,7 +222,7 @@
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>inSCE</dt>
-<dd><p>Input SingleCellExperiment object with saved
+<dd><p>Input <a href="https://rdrr.io/pkg/SingleCellExperiment/man/SingleCellExperiment.html" class="external-link">SingleCellExperiment</a> object with saved
 dimension reduction components or a variable with saved results. Required.</p></dd>
 <dt>slotName</dt>
 <dd><p>Desired slot of SingleCellExperiment used for plotting. Possible
@@ -250,6 +251,10 @@ Default TRUE.</p></dd>
 <dt>dots</dt>
 <dd><p>Boolean. If TRUE, will plot dots for each violin plot.
 Default TRUE.</p></dd>
+<dt>plotOrder</dt>
+<dd><p>Character vector. If set, reorders the violin plots
+in the order of the character vector when `groupBy` is set.
+Default NULL.</p></dd>
 <dt>xlab</dt>
 <dd><p>Character vector. Label for x-axis. Default NULL.</p></dd>
 <dt>ylab</dt>

@@ -188,12 +188,17 @@
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">runCellQC</span><span class="op">(</span>
   <span class="va">inSCE</span>,
   algorithms <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"QCMetrics"</span>, <span class="st">"scDblFinder"</span>, <span class="st">"cxds"</span>, <span class="st">"bcds"</span>, <span class="st">"cxds_bcds_hybrid"</span>,
-    <span class="st">"decontX"</span>, <span class="st">"soupX"</span><span class="op">)</span>,
+    <span class="st">"decontX"</span>, <span class="st">"decontX_bg"</span>, <span class="st">"soupX"</span>, <span class="st">"soupX_bg"</span><span class="op">)</span>,
   sample <span class="op">=</span> <span class="cn">NULL</span>,
   collectionName <span class="op">=</span> <span class="cn">NULL</span>,
   geneSetList <span class="op">=</span> <span class="cn">NULL</span>,
   geneSetListLocation <span class="op">=</span> <span class="st">"rownames"</span>,
   geneSetCollection <span class="op">=</span> <span class="cn">NULL</span>,
+  mitoRef <span class="op">=</span> <span class="cn">NULL</span>,
+  mitoIDType <span class="op">=</span> <span class="cn">NULL</span>,
+  mitoPrefix <span class="op">=</span> <span class="cn">NULL</span>,
+  mitoID <span class="op">=</span> <span class="cn">NULL</span>,
+  mitoGeneLocation <span class="op">=</span> <span class="cn">NULL</span>,
   useAssay <span class="op">=</span> <span class="st">"counts"</span>,
   background <span class="op">=</span> <span class="cn">NULL</span>,
   bgAssayName <span class="op">=</span> <span class="cn">NULL</span>,
@@ -209,18 +214,24 @@
 <dd><p>A <a href="https://rdrr.io/pkg/SingleCellExperiment/man/SingleCellExperiment.html" class="external-link">SingleCellExperiment</a> object.</p></dd>
 <dt>algorithms</dt>
 <dd><p>Character vector. Specify which QC algorithms to run.
-Available options are "QCMetrics", "scrublet", "doubletFinder", "scDblFinder", "cxds", "bcds", "cxds_bcds_hybrid", "decontX" and "soupX".</p></dd>
+Available options are "QCMetrics", "scrublet", "doubletFinder", "scDblFinder", 
+"cxds", "bcds", "cxds_bcds_hybrid", "decontX" and "soupX".</p></dd>
 <dt>sample</dt>
 <dd><p>Character vector. Indicates which sample each cell belongs to.
 Algorithms will be run on cells from each sample separately.</p></dd>
 <dt>collectionName</dt>
-<dd><p>Character. Name of a <code>GeneSetCollection</code> obtained by using one of the importGeneSet* functions. Default <code>NULL</code>.</p></dd>
+<dd><p>Character. Name of a <code>GeneSetCollection</code> obtained by 
+using one of the importGeneSet* functions. Default <code>NULL</code>.</p></dd>
 <dt>geneSetList</dt>
 <dd><p>See <code>runPerCellQC</code>. Default NULL.</p></dd>
 <dt>geneSetListLocation</dt>
 <dd><p>See <code>runPerCellQC</code>. Default NULL.</p></dd>
 <dt>geneSetCollection</dt>
 <dd><p>See <code>runPerCellQC</code>. Default NULL.</p></dd>
+<dt>mitoRef, mitoIDType, mitoPrefix, mitoID, mitoGeneLocation</dt>
+<dd><p>Arguments used to 
+import mitochondrial genes and quantify their expression. Please see 
+<a href="runPerCellQC.html">runPerCellQC</a> for detailed information.</p></dd>
 <dt>useAssay</dt>
 <dd><p>A string specifying which assay contains the count
 matrix for cells.</p></dd>
@@ -252,7 +263,7 @@ algorithms "decontX" and "soupX". Default to NULL.</p></dd>
     <div id="value">
     <h2>Value</h2>
     <p>SingleCellExperiment object containing the outputs of the
- specified algorithms in the colDataof <code>inSCE</code>.</p>
+ specified algorithms in the <a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a>of <code>inSCE</code>.</p>
     </div>
 
     <div id="ref-examples">

@@ -187,6 +187,7 @@
   violin <span class="op">=</span> <span class="cn">TRUE</span>,
   boxplot <span class="op">=</span> <span class="cn">TRUE</span>,
   dots <span class="op">=</span> <span class="cn">TRUE</span>,
+  plotOrder <span class="op">=</span> <span class="cn">NULL</span>,
   xlab <span class="op">=</span> <span class="cn">NULL</span>,
   ylab <span class="op">=</span> <span class="cn">NULL</span>,
   baseSize <span class="op">=</span> <span class="fl">12</span>,
@@ -228,6 +229,10 @@ Default TRUE.</p></dd>
 <dt>dots</dt>
 <dd><p>Boolean. If TRUE, will plot dots for each violin plot.
 Default TRUE.</p></dd>
+<dt>plotOrder</dt>
+<dd><p>Character vector. If set, reorders the violin plots
+in the order of the character vector when `groupBy` is set.
+Default NULL.</p></dd>
 <dt>xlab</dt>
 <dd><p>Character vector. Label for x-axis. Default NULL.</p></dd>
 <dt>ylab</dt>

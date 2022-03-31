@@ -186,7 +186,8 @@
   output_file <span class="op">=</span> <span class="cn">NULL</span>,
   output_dir <span class="op">=</span> <span class="cn">NULL</span>,
   subTitle <span class="op">=</span> <span class="cn">NULL</span>,
-  studyDesign <span class="op">=</span> <span class="cn">NULL</span>
+  studyDesign <span class="op">=</span> <span class="cn">NULL</span>,
+  useReducedDim <span class="op">=</span> <span class="cn">NULL</span>
 <span class="op">)</span></code></pre></div>
     </div>
 
@@ -196,13 +197,16 @@
 <dd><p>A <a href="https://rdrr.io/pkg/SingleCellExperiment/man/SingleCellExperiment.html" class="external-link">SingleCellExperiment</a> object containing
 the filtered count matrix with the output from runCellQC function</p></dd>
 <dt>output_file</dt>
-<dd><p>name of the generated file. If NULL/default then the output file name will be based on the name of the Rmarkdown template.</p></dd>
+<dd><p>Character. The name of the generated file. If NULL/default then the output file name will be based on the name of the Rmarkdown template.</p></dd>
 <dt>output_dir</dt>
-<dd><p>name of the output directory to save the rendered file. If NULL/default the file is stored to the current working directory</p></dd>
+<dd><p>Character. The name of the output directory to save the rendered file. If NULL/default the file is stored to the current working directory</p></dd>
 <dt>subTitle</dt>
 <dd><p>subtitle of the QC HTML report. Default is NULL.</p></dd>
 <dt>studyDesign</dt>
-<dd><p>description of the data set and experiment design. It would be shown at the top of QC HTML report. Default is NULL.</p></dd>
+<dd><p>Character. The description of the data set and experiment design. It would be shown at the top of QC HTML report. Default is NULL.</p></dd>
+<dt>useReducedDim</dt>
+<dd><p>Character. The name of the saved dimension reduction slot including cells
+from all samples in then<a href="https://rdrr.io/pkg/SingleCellExperiment/man/SingleCellExperiment.html" class="external-link">SingleCellExperiment</a> object, Default is NULL</p></dd>
 </dl></div>
     <div id="value">
     <h2>Value</h2>

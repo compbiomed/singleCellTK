@@ -166,14 +166,17 @@ plotRunPerCellQCResults <- function(inSCE,
     merged.plots <- list(combined.sum, combined.detected, combined.toppercent)
     names(merged.plots) <- c("Sum", "Detected", "TopPercent")
 
-    if (any(grepl(
-      pattern="subsets_",
-      names(colData(inSCE))
-    ))) {
+    if (any(grepl(pattern="subsets_",names(colData(inSCE))
+    ) | grepl(pattern="mito_", names(colData(inSCE))))) { 
       subsets <- grep(
         pattern="subsets_",
         names(colData(inSCE)), value=TRUE
       )
+      mitos <- grep(
+        pattern="mito_",
+        names(colData(inSCE)), value=TRUE
+      )
+      subsets <- c(subsets, mitos)
 
       combined.subset <- lapply(subsets, function(x) {
         plotSCEViolinColData(
@@ -304,14 +307,17 @@ plotRunPerCellQCResults <- function(inSCE,
       res.list <- c(res.list, violin.toppercent)
       names(res.list) <- c("Sum", "Detected", "TopPercent")
 
-      if (any(grepl(
-        pattern="subsets_",
-        names(colData(inSCESub))
-      ))) {
+      if (any(grepl(pattern="subsets_", names(colData(inSCESub))) |
+              grepl(pattern="mito_", names(colData(inSCESub))))) {
         subsets <- grep(
           pattern="subsets_",
           names(colData(inSCESub)), value=TRUE
         )
+        mitos <- grep(
+          pattern="mito_",
+          names(colData(inSCESub)), value=TRUE
+        )
+        subsets <- c(subsets, mitos)
 
         violin.subset <- lapply(subsets, function(y) {
           title = paste0(y, " per cell")
@@ -2531,7 +2537,7 @@ plotDecontXResults <- function(inSCE,
   scoreCol <- "decontX_contamination"
   clusterCol <- "decontX_clusters"
 
-  if (!scoreCol %in% colnames(SummarizedExperiment::colData(inSCE))) {
+  if (!isTRUE(bgResult) & !scoreCol %in% colnames(SummarizedExperiment::colData(inSCE))) {
       stop("The result of running decontX without raw/droplet matrix 
            is not found in the input SingleCellExperiment object. 
            Please check whether runDecontX has been run without

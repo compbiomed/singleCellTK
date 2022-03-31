@@ -385,7 +385,7 @@
     if (is.null(sampleNames)) {
         sampleNames <- .getSampleNames(samplePaths)
     }
-
+    
     for (i in seq_along(samplePaths)) {
         dir <- .getOutputFolderPath(samplePaths[i], cellRangerOuts[i],
             cellRangerOuts2[i])
@@ -402,6 +402,13 @@
 
     sce <- do.call(SingleCellExperiment::cbind, res)
     
+    # Load & Store Cell Ranger Summary into SCE
+    metrics_summary <- .importMetricsCellRanger(samplePaths, sampleNames, "outs", "metrics_summary.csv")
+    if (ncol(metrics_summary) > 0) {
+        sce@metadata$sctk$sample_summary[["cellranger"]] <- metrics_summary
+    }
+    # sce <- setSampleSummaryStatsTable(sce, "cellranger", metrics_summary)
+    
     if (isTRUE(rowNamesDedup)) {
         if (any(duplicated(rownames(sce)))) {
             message("Duplicated gene names found, adding '-1', '-2', ",
@@ -409,6 +416,7 @@
         }
         sce <- dedupRowNames(sce)
     }
+    
     return(sce)
 }
 
@@ -792,4 +800,35 @@ importCellRangerV3Sample <- function(
         class = class,
         delayedArray = delayedArray,
         rowNamesDedup = rowNamesDedup)
+}
+
+# Find metrics_summary.csv file in each sample and merge them into a single dataframe
+# Additionally, if file not available for a sample, fill that sample with NA
+.importMetricsCellRanger <- function(samplePaths, sampleNames, metricsPath, metricsFile){
+  # Check if samplePaths and sampleNames are equal in length
+  if(!identical(length(samplePaths), length(sampleNames))){
+    stop("Vectors samplePaths and sampleNames must be equal in length.")
+  }
+  
+  # Processing
+  metrics_summary <- list()
+  for(i in seq(samplePaths)){
+    metrics_summary[[i]] <- list.files(pattern= paste0("*", metricsFile, "$"), path = paste0(samplePaths[i], "/", metricsPath), full.names = TRUE)
+    if(length(metrics_summary[[i]]) > 0){
+      metrics_summary[[i]] <- lapply(metrics_summary[[i]], utils::read.csv, header = TRUE, check.names = FALSE)[[1]]
+    }
+    else{
+      message("Metrics summary file (", metricsFile, ") not found for sample: ", sampleNames[i])
+      ms_colnames_union <- Reduce(union, lapply(metrics_summary, colnames))
+      metrics_summary[[i]] <- data.frame(matrix(data = NA, nrow = 1, ncol = length(ms_colnames_union)))
+      colnames(metrics_summary[[i]]) <- ms_colnames_union
+    }
+  }
+  
+  # Merge cell ranger metrics_summary csv files from all/multiple samples into a single data.frame
+  metrics_summary <- plyr::rbind.fill(metrics_summary)
+  metrics_summary <- t(metrics_summary)
+  colnames(metrics_summary) <- sampleNames
+  
+  return(metrics_summary)
 }
