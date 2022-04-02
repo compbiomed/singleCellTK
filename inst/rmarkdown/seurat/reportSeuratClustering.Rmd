@@ -1,14 +1,51 @@
 ---
-title: "Clustering using Seurat"
+title: "Clustering"
+author: "`r params$authors`"
 date: "`r format(Sys.time(), '%B %d, %Y')`"
 params:
-  object: object
+  subtitle: !r NULL
+  authors: !r NULL
+  sce: !r NULL
+  biological.group: !r NULL
+  phenotype.groups: !r NULL
+  selected.markers: !r NULL
+  clustering.resolution: 0.8
+  variable.features: 2000
+  pc.count: 10
+  outputPath: !r NULL
+  showSession: TRUE
+  pdf: TRUE
+  jackStraw: FALSE
 output:
   html_document:
-    number_sections: yes
     toc: yes
+    toc_float: yes
+    number_sections: yes
+    theme: cosmo
     code_folding: hide
+    self_contained: false
+  pdf_document:
+    toc: yes
+subtitle: "`r params$subtitle`"
+editor_options:
+  chunk_output_type: console
 ---
+```{r, message=FALSE, warning=FALSE}
+library(Seurat)
+library(dplyr)
+library(cowplot)
+library(RColorBrewer)
+library(ggplot2)
+library(knitr)
+library(kableExtra)
+library(SingleCellExperiment)
+library(scater)
+library(gridExtra)
+library(grid)
+library(ggpubr)
+library(patchwork)
+library(singleCellTK)
+```
 
 ```{r, echo=FALSE, results='asis', warning=FALSE, message=FALSE, eval = showClusterDesc}
 cat("## Clustering\n\n")
@@ -18,7 +55,7 @@ The clustering results can then be visualized using non-linear dimensionality re
 ```
 
 <!-- Compute -->
-```{r, eval=runClustering}
+```{r, warning=FALSE, message=FALSE, eval=runClustering}
 j <- minResolution
 for(i in 1:(((maxResolution-minResolution)*10)+1)){
   data <- seuratFindClusters(data, useReduction = "pca", resolution = j, verbose = FALSE)
@@ -58,8 +95,8 @@ for(i in 1:(((maxResolution-minResolution)*10)+1)){
   print(p2)
   cat("\n\n")
   cat(headingClust," Samples {-} \n\n")
-      p1 <- seuratReductionPlot(data, useReduction = "tsne", groupBy = group, showLegend = TRUE)
-  p2 <- seuratReductionPlot(data, useReduction = "umap", groupBy = group, showLegend = TRUE)
+      p1 <- seuratReductionPlot(data, useReduction = "tsne", groupBy = biological.group, showLegend = TRUE)
+  p2 <- seuratReductionPlot(data, useReduction = "umap", groupBy = biological.group, showLegend = TRUE)
   # p3 <- p1 + p2
   # print(p3)
   print(p1)
@@ -67,8 +104,8 @@ for(i in 1:(((maxResolution-minResolution)*10)+1)){
   cat("\n\n")
   
     cat(headingClust," Samples separated {-} \n\n")
-      p1 <- seuratReductionPlot(data, useReduction = "tsne", splitBy = group, showLegend = TRUE)
-  p2 <- seuratReductionPlot(data, useReduction = "umap", splitBy = group, showLegend = TRUE)
+      p1 <- seuratReductionPlot(data, useReduction = "tsne", splitBy = biological.group, showLegend = TRUE)
+  p2 <- seuratReductionPlot(data, useReduction = "umap", splitBy = biological.group, showLegend = TRUE)
   # p3 <- p1 + p2
   # print(p3)
   print(p1)
@@ -89,3 +126,6 @@ for(i in 1:(((maxResolution-minResolution)*10)+1)){
 
 > The data was clustered using the *`r significant_PC`* principal components previously computed using the community detection based *louvain* algorithm. Using this method, *13, 16, 17, 19, 20, 21* clusters were identified by using a resolution of *0.8, 0.9, 1.0, 1.1* respectively. 
 
+```{r}
+saveRDS(data, paste0(outputDir, "SeuratReport", "-", gsub(" ", "_", Sys.Date()), ".rds"))
+```

@@ -1,14 +1,52 @@
 ---
-title: "Marker Selection using Seurat"
+title: "Marker Selection"
+author: "`r params$authors`"
 date: "`r format(Sys.time(), '%B %d, %Y')`"
 params:
-  object: object
+  subtitle: !r NULL
+  authors: !r NULL
+  sce: !r NULL
+  biological.group: !r NULL
+  phenotype.groups: !r NULL
+  selected.markers: !r NULL
+  clustering.resolution: 0.8
+  variable.features: 2000
+  pc.count: 10
+  outputPath: !r NULL
+  showSession: TRUE
+  pdf: TRUE
+  jackStraw: FALSE
 output:
   html_document:
-    number_sections: yes
     toc: yes
+    toc_float: yes
+    number_sections: yes
+    theme: cosmo
     code_folding: hide
+    self_contained: false
+  pdf_document:
+    toc: yes
+subtitle: "`r params$subtitle`"
+editor_options:
+  chunk_output_type: console
 ---
+```{r, message=FALSE, warning=FALSE}
+library(Seurat)
+library(dplyr)
+library(cowplot)
+library(RColorBrewer)
+library(ggplot2)
+library(knitr)
+library(kableExtra)
+library(SingleCellExperiment)
+library(scater)
+library(gridExtra)
+library(grid)
+library(ggpubr)
+library(patchwork)
+library(singleCellTK)
+```
+
 ```{r, echo=FALSE, results='asis', warning=FALSE, message=FALSE, eval=runMarkerSelection}
 cat("\n\n## Differential Expression (", groupTitle,")\n\n")
 cat("Gene markers that are differentially expressed between the previously computed *(`r selectedOption`)* are identified using the Wilcoxon Rank Sum test. Criteria for the identification of these marker genes required them to be detected at a minimum percentage of 25% in either of the two groups of cells (each cluster against all others), and additionally they show 25% log-fold expression difference between two groups.")

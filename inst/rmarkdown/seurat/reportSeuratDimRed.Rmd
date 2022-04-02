@@ -1,21 +1,59 @@
 ---
-title: "Dimensionality Reduction using Seurat"
+title: "DimRed"
+author: "`r params$authors`"
 date: "`r format(Sys.time(), '%B %d, %Y')`"
 params:
-  object: object
+  subtitle: !r NULL
+  authors: !r NULL
+  sce: !r NULL
+  biological.group: !r NULL
+  phenotype.groups: !r NULL
+  selected.markers: !r NULL
+  clustering.resolution: 0.8
+  variable.features: 2000
+  pc.count: 10
+  outputPath: !r NULL
+  showSession: TRUE
+  pdf: TRUE
+  jackStraw: FALSE
 output:
   html_document:
-    number_sections: yes
     toc: yes
+    toc_float: yes
+    number_sections: yes
+    theme: cosmo
     code_folding: hide
+    self_contained: false
+  pdf_document:
+    toc: yes
+subtitle: "`r params$subtitle`"
+editor_options:
+  chunk_output_type: console
 ---
+```{r, message=FALSE, warning=FALSE}
+library(Seurat)
+library(dplyr)
+library(cowplot)
+library(RColorBrewer)
+library(ggplot2)
+library(knitr)
+library(kableExtra)
+library(SingleCellExperiment)
+library(scater)
+library(gridExtra)
+library(grid)
+library(ggpubr)
+library(patchwork)
+library(singleCellTK)
+```
+
 ## PCA {.tabset .tabset-fade}
 To reduce the adverse effects of the inherent technical noise in single-cell data on downstream clustering, reduced dimensions are computed where each dimension represents a set of correlated features. However, an important task is to select the number of components that should be utilized by the downstream methods. To select the number of principal components that should be used in the downstream analysis, JackStraw plot and Elbow plot visualized below provide convenience in the selection of the significant components that contain most of the variability.  
 
-```{r Seurat PCAs, JackStraw and Elbow plot, warning=FALSE, eval = runDimRed}
+```{r, warning=FALSE, eval = runDimRed}
 pcaParams <- list(
   inSCE = data,
-  nPCs = initial.PC.numbers,
+  nPCs = pc.count,
   verbose = FALSE)
 data <- do.call("seuratPCA", pcaParams)
 
@@ -25,69 +63,69 @@ data <- do.call("seuratPCA", pcaParams)
 jackStrawParams <- list(
   inSCE = data,
   useAssay = "seuratScaledData",
-  dims = initial.PC.numbers,
+  dims = pc.count,
   numReplicate = 100,
   propFreq = 0.025
 )
 data <- do.call("seuratComputeJackStraw", jackStrawParams)
 ```
 
-```{r, results='asis', include=plotHeatmaps, eval= plotElbowPlot}
+```{r, results='asis', include=plotElbowPlot, eval= plotElbowPlot}
 cat("### Elbow Plot {-}")
 cat("Elbow plot is plotted between the principal components (x-axis) and their standard deviation (y-axis), where a clear elbow between the components highlights the cut-off for the no. of components that should be selected as significant for downstream analysis.")
 ```
 
-```{r Seurat PCAs, Elbow Plot, warning=FALSE, eval=plotElbowPlot}
+```{r, warning=FALSE, eval=plotElbowPlot}
 ElbowPlot <- seuratElbowPlot(
   inSCE = data,
-  ndims = initial.PC.numbers,
+  ndims = pc.count,
   interactive = FALSE
 )
 ElbowPlot
 ```
 
-```{r, results='asis', include=plotHeatmaps, eval= plotElbowPlot}
+```{r, results='asis', include=plotElbowPlot, eval= plotElbowPlot}
 cat("> PCA was applied to the scaled subset matrix that contained the *2000* top most variable genes to transform the data into reduced dimensions for clustering in the downstream analysis. Significant principal components will show a strong enrichment of genes with low p-values from the JackStraw plot or PC cutoff could also be determined roughly by looking at where a clear elbow is depicted in the elbow plot. The first *`r 20`* components were selected based on the JackStraw *P-value > 0.01* as the cutoff. These *`r 20`* principal components were determined to hold the true dimensionality of the dataset and will be used in the subsequent clustering analysis.")
 ```
 
-```{r, results='asis', include=plotHeatmaps, eval= plotJackStraw}
+```{r, results='asis', include=plotJackStraw, eval= plotJackStraw}
 cat("### JackStraw Plot {-}")
 cat("JackStraw computes significance values for all genes in all principal components and plots these genes as a QQ-plot for each component and compares them with the uniform distribution (shown in dotted line). Overall p-values are also computed for each component, where statistically significant principal components can be selected for downstream analysis. Visually, components that lie above the dotted uniform distribution line should be selected.")
 ```
 
-```{r Seurat PCAs, JackStraw Plot, warning=FALSE, eval=plotJackStraw}
+```{r, warning=FALSE, eval=plotJackStraw}
 JackStrawPlot <- seuratJackStrawPlot(
   inSCE = data,
-  dims = initial.PC.numbers,
+  dims = pc.count,
   xmax = 0.05) + guides(col = guide_legend(ncol = 1)) + theme(
     legend.text = element_text(size = 6), legend.key.size = unit(0.2, "cm"))
 JackStrawPlot
 ```
 
-```{r Seurat Post PCA calculation, warning=FALSE, eval= plotJackStraw}
+```{r, warning=FALSE, eval= plotJackStraw}
 if(!is.null(metadata(data)$seurat$obj@reductions$pca@jackstraw)){
   PC_Matrix <- metadata(data)$seurat$obj@reductions$pca@jackstraw@overall.p.values
   
   significant_PC <- which.min(PC_Matrix[,2] < 0.01) - 1
 if (!exists("significant_PC") || significant_PC == 0){
-  significant_PC <- initial.PC.numbers
+  significant_PC <- pc.count
   }
 }else{
-  significant_PC <- initial.PC.numbers
+  significant_PC <- pc.count
 }
 ```
 
 ```{r}
-PC.separated.height <- 3.5 * ceiling(initial.PC.numbers/3)
+PC.separated.height <- 3.5 * ceiling(pc.count/3)
 ```
 
-```{r, include=FALSE}
+```{r, include=TRUE}
 pcaParams$inSCE <- NULL
 pcaParams$significant_PC <- significant_PC
 metadata(data)$seurat$sctk$report$pcaParams <- pcaParams
 ```
 
-```{r, results='asis', include=plotHeatmaps, eval= plotJackStraw}
+```{r, results='asis', include=plotJackStraw, eval= plotJackStraw}
 cat("> PCA was applied to the scaled subset matrix that contained the *2000* top most variable genes to transform the data into reduced dimensions for clustering in the downstream analysis. Significant principal components will show a strong enrichment of genes with low p-values from the JackStraw plot or PC cutoff could also be determined roughly by looking at where a clear elbow is depicted in the elbow plot. The first *`r significant_PC`* components were selected based on the JackStraw *P-value > 0.01* as the cutoff. These *`r significant_PC`* principal components were determined to hold the true dimensionality of the dataset and will be used in the subsequent clustering analysis.")
 ```
 
@@ -96,12 +134,12 @@ cat("### PC Heatmap {-}")
 cat("Heatmaps are plotted for each component that highlight the primary sources of heterogeneity in terms of features in the data. Both cells and features are ordered according to their PCA scores and this heatmap can be utilized to explore highly correlated feature sets in the data.")
 ```
 
-```{r Seurat PC Heatmap, fig.height = PC.separated.height, fig.width = 15, warning=FALSE, eval = plotHeatmaps}
+```{r Seurat PC Heatmap, fig.width = 15, warning=FALSE, eval = plotHeatmaps}
 pcHeatmapParams <- list(
   inSCE = data,
   useAssay = "seuratScaledData",
   useReduction = "pca",
-  dims = initial.PC.numbers,
+  dims = pc.count,
   balanced = TRUE,
   ncol = 4,
   fast = FALSE
@@ -116,4 +154,8 @@ metadata(data)$seurat$plots$heatmap <- pcHeatmapParams
 
 ```{r, results='asis', include=plotHeatmaps, eval= plotHeatmaps}
 cat("> PCA was applied to the scaled subset matrix that contained the *2000* top most variable genes to transform the data into reduced dimensions for clustering in the downstream analysis. Significant principal components will show a strong enrichment of genes with low p-values from the JackStraw plot or PC cutoff could also be determined roughly by looking at where a clear elbow is depicted in the elbow plot. The first *`r significant_PC`* components were selected based on the JackStraw *P-value > 0.01* as the cutoff. These *`r significant_PC`* principal components were determined to hold the true dimensionality of the dataset and will be used in the subsequent clustering analysis.")
+```
+
+```{r}
+saveRDS(data, paste0(outputDir, "SeuratReport", "-", gsub(" ", "_", Sys.Date()), ".rds"))
 ```

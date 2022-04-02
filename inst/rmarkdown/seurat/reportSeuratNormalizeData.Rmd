@@ -1,14 +1,52 @@
 ---
-title: "Normalizating using Seurat"
+title: "Norm"
+author: "`r params$authors`"
 date: "`r format(Sys.time(), '%B %d, %Y')`"
 params:
-  object: object
+  subtitle: !r NULL
+  authors: !r NULL
+  sce: !r NULL
+  biological.group: !r NULL
+  phenotype.groups: !r NULL
+  selected.markers: !r NULL
+  clustering.resolution: 0.8
+  variable.features: 2000
+  pc.count: 10
+  outputPath: !r NULL
+  showSession: TRUE
+  pdf: TRUE
+  jackStraw: FALSE
 output:
   html_document:
-    number_sections: yes
     toc: yes
+    toc_float: yes
+    number_sections: yes
+    theme: cosmo
     code_folding: hide
+    self_contained: false
+  pdf_document:
+    toc: yes
+subtitle: "`r params$subtitle`"
+editor_options:
+  chunk_output_type: console
 ---
+```{r, message=FALSE, warning=FALSE}
+library(Seurat)
+library(dplyr)
+library(cowplot)
+library(RColorBrewer)
+library(ggplot2)
+library(knitr)
+library(kableExtra)
+library(SingleCellExperiment)
+library(scater)
+library(gridExtra)
+library(grid)
+library(ggpubr)
+library(patchwork)
+library(singleCellTK)
+```
+
 ## Normalization
 Before the data can be used in the downstream analysis, normalization techniques that remove technical noise or variation must be applied. For this purpose, Seurat uses a global-scaling normalization method where the input raw data matrix is normalized by dividing the gene expression measurements by the total expression for each cell, multiplies it with a global-scaling factor and log-transforms the result. The output log-transformed and normalized gene expression measurements with technical variation and bias minimized can now better reflect the biological variability in the downstream methods. 
 
