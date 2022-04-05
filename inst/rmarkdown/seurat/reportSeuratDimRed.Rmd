@@ -55,7 +55,7 @@ pcaParams <- list(
   inSCE = data,
   nPCs = pc.count,
   verbose = FALSE)
-data <- do.call("seuratPCA", pcaParams)
+data <- do.call("runSeuratPCA", pcaParams)
 
 ```
 
@@ -67,7 +67,7 @@ jackStrawParams <- list(
   numReplicate = 100,
   propFreq = 0.025
 )
-data <- do.call("seuratComputeJackStraw", jackStrawParams)
+data <- do.call("runSeuratJackStraw", jackStrawParams)
 ```
 
 ```{r, results='asis', include=plotElbowPlot, eval= plotElbowPlot}
@@ -76,7 +76,7 @@ cat("Elbow plot is plotted between the principal components (x-axis) and their s
 ```
 
 ```{r, warning=FALSE, eval=plotElbowPlot}
-ElbowPlot <- seuratElbowPlot(
+ElbowPlot <- plotSeuratElbow(
   inSCE = data,
   ndims = pc.count,
   interactive = FALSE
@@ -94,7 +94,7 @@ cat("JackStraw computes significance values for all genes in all principal compo
 ```
 
 ```{r, warning=FALSE, eval=plotJackStraw}
-JackStrawPlot <- seuratJackStrawPlot(
+JackStrawPlot <- plotSeuratJackStraw(
   inSCE = data,
   dims = pc.count,
   xmax = 0.05) + guides(col = guide_legend(ncol = 1)) + theme(
@@ -144,7 +144,7 @@ pcHeatmapParams <- list(
   ncol = 4,
   fast = FALSE
 )
-heatmap <- do.call("seuratComputeHeatmap", pcHeatmapParams)  
+heatmap <- do.call("runSeuratHeatmap", pcHeatmapParams)  
 heatmap
 ```
 ```{r, include=FALSE, eval = plotHeatmaps}

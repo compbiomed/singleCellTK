@@ -55,9 +55,9 @@ hvgParams <- list(
   inSCE = data,
   hvgMethod = "vst", 
   hvgNumber = variable.features)
-data <- do.call("seuratFindHVG", hvgParams)
+data <- do.call("runSeuratFindHVG", hvgParams)
 
-num.variable.genes <- length(seuratVariableFeatures(data))
+num.variable.genes <- length(getSeuratVariableFeatures(data))
 ```
 
 ```{r, results='asis', include=plotHVG, eval= plotHVG}
@@ -65,7 +65,7 @@ cat("A scatter plot of standardized variance (y-axis) versus average expression 
 ```
 
 ```{r, eval = plotHVG}
-Labeled_Variable_data <- seuratPlotHVG(inSCE = data, labelPoints = 10)
+Labeled_Variable_data <- plotSeuratHVG(inSCE = data, labelPoints = 10)
 Labeled_Variable_data
 ```
 ```{r, include=FALSE}

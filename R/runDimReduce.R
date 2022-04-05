@@ -64,8 +64,8 @@
 #' @details Wrapper function to run one of the available dimensionality
 #' reduction algorithms integrated within SCTK from \code{\link{scaterPCA}},
 #' \code{\link{seuratPCA}}, \code{\link{seuratICA}}, \code{\link{getTSNE}},
-#' \code{\link{seuratRunTSNE}}, \code{\link{getUMAP}} and
-#' \code{\link{seuratRunUMAP}}. Users can use an assay by specifying
+#' \code{\link{seuratTSNE}}, \code{\link{getUMAP}} and
+#' \code{\link{seuratUMAP}}. Users can use an assay by specifying
 #' \code{useAssay}, use the assay in an altExp by specifying both
 #' \code{useAltExp} and \code{useAssay}, or use a low-dimensionality
 #' representation by specifying \code{useReducedDim}.
@@ -142,22 +142,22 @@ runDimReduce <- function(inSCE,
     # Seurat part
     if (!is.null(useAltExp)) {
       tempSCE <- SingleCellExperiment::altExp(inSCE, useAltExp)
-      # tempSCE <- seuratFindHVG(inSCE = tempSCE, useAssay = useAssay,
+      # tempSCE <- runSeuratFindHVG(inSCE = tempSCE, useAssay = useAssay,
       #                          altExp = TRUE)
     } else if (!is.null(useAssay)) {
       tempSCE <- inSCE
-      #tempSCE <- seuratFindHVG(inSCE = tempSCE, useAssay = useAssay)
+      #tempSCE <- runSeuratFindHVG(inSCE = tempSCE, useAssay = useAssay)
     }
     if (method %in% c("seuratPCA", "seuratICA")) {
       ## SeuratPCA/ICA
       if (method == "seuratPCA") {
         message(paste0(date(), " ... Computing Seurat PCA."))
-        tempSCE <- seuratPCA(tempSCE, useAssay = useAssay,
+        tempSCE <- runSeuratPCA(tempSCE, useAssay = useAssay,
                              reducedDimName = reducedDimName,
                              nPCs = nComponents, features = rownames(inSCE), seed = seed, ...)
       } else if (method == "seuratICA") {
         message(paste0(date(), " ... Computing Seurat ICA."))
-        tempSCE <- seuratICA(tempSCE, useAssay = useAssay,
+        tempSCE <- runSeuratICA(tempSCE, useAssay = useAssay,
                              reducedDimName = reducedDimName,
                              nics = nComponents, seed = seed, ...)
       }
@@ -176,22 +176,22 @@ runDimReduce <- function(inSCE,
         }
         if (args$useReduction == "pca") {
           message(paste0(date(), " ... Computing Seurat PCA."))
-          tempSCE <- seuratPCA(inSCE = tempSCE,
+          tempSCE <- runSeuratPCA(inSCE = tempSCE,
                                useAssay = useAssay,
                                reducedDimName = paste0(useAssay, "_seuratPCA"), seed = seed)
         } else if (args$useReduction == "ica") {
           message(paste0(date(), " ... Computing Seurat ICA."))
-          tempSCE <- seuratICA(inSCE = tempSCE,
+          tempSCE <- runSeuratICA(inSCE = tempSCE,
                                useAssay = useAssay,
                                reducedDimName = paste0(useAssay, "_seuratICA"), seed = seed)
         }
         if (method == "seuratUMAP") {
           message(paste0(date(), " ... Computing Seurat UMAP."))
-          tempSCE <- seuratRunUMAP(inSCE = tempSCE,
+          tempSCE <- runSeuratUMAP(inSCE = tempSCE,
                                    reducedDimName = reducedDimName, seed = seed, ...)
         } else {
           message(paste0(date(), " ... Computing Seurat tSNE."))
-          tempSCE <- seuratRunTSNE(inSCE = tempSCE,
+          tempSCE <- runSeuratTSNE(inSCE = tempSCE,
                                    reducedDimName = reducedDimName, seed = seed, ...)
         }
       } else {
@@ -213,12 +213,12 @@ runDimReduce <- function(inSCE,
         if (method == "seuratUMAP") {
           # hard-code useReduction="pca"
           message(paste0(date(), " ... Computing Seurat UMAP."))
-          tempSCE <- seuratRunUMAP(inSCE = tempSCE, useReduction = "pca",
+          tempSCE <- runSeuratUMAP(inSCE = tempSCE, useReduction = "pca",
                                    reducedDimName = reducedDimName, seed = seed, ...)
         } else {
           # hard-code useReduction="pca"
           message(paste0(date(), " ... Computing Seurat tSNE."))
-          tempSCE <- seuratRunTSNE(inSCE = tempSCE, useReduction = "pca",
+          tempSCE <- runSeuratTSNE(inSCE = tempSCE, useReduction = "pca",
                                    reducedDimName = reducedDimName, seed = seed, ...)
         }
       }

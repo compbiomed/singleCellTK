@@ -53,7 +53,7 @@ cat("Gene markers that are differentially expressed between the previously compu
 ```
 
 ```{r, echo = TRUE, eval = runMarkerSelection}
-data <- seuratFindMarkers(data, allGroup = selectedOption, minPCT = 0.25, threshUse = 0.25, verbose = FALSE)
+data <- runSeuratFindMarkers(data, allGroup = selectedOption, minPCT = 0.25, threshUse = 0.25, verbose = FALSE)
 data.markers <- metadata(data)$seuratMarkers
 #numTotalMarkersQ <- nrow(data.markers[data.markers$p_val_adj < 0.05, ])
 
@@ -97,7 +97,7 @@ space <- "
 for (currentCluster in 0:(numClusters-1)) {
   cat(sprintf(template, paste0("Cluster ", currentCluster)))
   selectedFeatures <- top10[top10$cluster1 == unique(data.markers$cluster1)[currentCluster+1], ]$gene.id
-  plots <- seuratGenePlot(data, plotType = "feature", features = selectedFeatures, groupVariable = selectedOption, ncol = 1, cols = c("grey", "blue"))
+  plots <- plotSeuratGenes(data, plotType = "feature", features = selectedFeatures, groupVariable = selectedOption, ncol = 1, cols = c("grey", "blue"))
   p <- singleCellTK:::.ggSCTKTheme(patchwork::wrap_plots(plots, ncol = 2))
   print(p)
   cat(space)
@@ -122,7 +122,7 @@ space <- "
 for (currentCluster in 0:(numClusters-1)) {
   cat(sprintf(template, paste0("Cluster ", currentCluster)))
   selectedFeatures <- top10[top10$cluster1 == unique(data.markers$cluster1)[currentCluster+1], ]$gene.id
-  plots <- seuratGenePlot(data, plotType = "ridge", features = selectedFeatures, groupVariable = selectedOption, ncol = 1, cols = c("grey", "blue"))
+  plots <- plotSeuratGenes(data, plotType = "ridge", features = selectedFeatures, groupVariable = selectedOption, ncol = 1, cols = c("grey", "blue"))
   p <- singleCellTK:::.ggSCTKTheme(patchwork::wrap_plots(plots, ncol = 2))
   print(p)
   cat(space)
@@ -147,7 +147,7 @@ space <- "
 for (currentCluster in 0:(numClusters-1)) {
   cat(sprintf(template, paste0("Cluster ", currentCluster)))
   selectedFeatures <- top10[top10$cluster1 == unique(data.markers$cluster1)[currentCluster+1], ]$gene.id
-  plots <- seuratGenePlot(data, plotType = "violin", features = selectedFeatures, groupVariable = selectedOption, ncol = 1, cols = c("grey", "blue"))
+  plots <- plotSeuratGenes(data, plotType = "violin", features = selectedFeatures, groupVariable = selectedOption, ncol = 1, cols = c("grey", "blue"))
   p <- singleCellTK:::.ggSCTKTheme(patchwork::wrap_plots(plots, ncol = 2))
   print(p)
   cat(space)
@@ -160,7 +160,7 @@ cat("A *dot plot* visualizes the *change in the expression levels* of a particul
 ```
 
 ```{r, fig.width=15, fig.height=8, eval = plotMarkerSelection}
-seuratGenePlot(data, plotType = "dot", features = top10$gene.id, groupVariable = selectedOption, ncol = 1, cols = c("grey", "blue")) + theme(axis.text.x = element_text(angle = 90, size = 7), legend.text = element_text(size = 8), legend.key.size = unit(0.4, "cm"), legend.position = "top")
+plotSeuratGenes(data, plotType = "dot", features = top10$gene.id, groupVariable = selectedOption, ncol = 1, cols = c("grey", "blue")) + theme(axis.text.x = element_text(angle = 90, size = 7), legend.text = element_text(size = 8), legend.key.size = unit(0.4, "cm"), legend.position = "top")
 ```
 
 ```{r, echo=FALSE, results='asis', warning=FALSE, message=FALSE, eval=plotMarkerSelection}
@@ -168,7 +168,7 @@ cat(paste0(heading, "### Heatmap Plot {-}\n\n"))
 ```
 
 ```{r, fig.width=15, fig.height=15, eval = plotMarkerSelection}
-seuratGenePlot(data, plotType = "heatmap", features = top10$gene.id, groupVariable = selectedOption, ncol = 1, cols = c("grey", "blue")) + theme(axis.text.y = element_text(size = 8), legend.text = element_text(size = 8), legend.key.size = unit(0.5, "cm"), legend.position = "top")
+plotSeuratGenes(data, plotType = "heatmap", features = top10$gene.id, groupVariable = selectedOption, ncol = 1, cols = c("grey", "blue")) + theme(axis.text.y = element_text(size = 8), legend.text = element_text(size = 8), legend.key.size = unit(0.5, "cm"), legend.position = "top")
 ```
 
 ```{r, echo=FALSE, results='asis', warning=FALSE, message=FALSE, eval=runMarkerSelection}

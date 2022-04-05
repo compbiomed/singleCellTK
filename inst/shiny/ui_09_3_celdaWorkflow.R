@@ -12,8 +12,8 @@ shinyPanelCelda <- fluidPage(
                        selectInput("celdaassayselect", "Choose an Assay:",
                                    choices = c()),
                        selectInput("celdafeatureselect", "Choose Feature Selection Method:",
-                                   choices = c("None", "SeuratFindHVG", "Scran_modelGeneVar")),
-                       conditionalPanel("input.celdafeatureselect == 'SeuratFindHVG'",
+                                   choices = c("None", "runSeuratFindHVG", "Scran_modelGeneVar")),
+                       conditionalPanel("input.celdafeatureselect == 'runSeuratFindHVG'",
                                         selectInput("celdaseurathvgmethod", "Select HVG method:",
                                                     choices = c("vst", "dispersion", "mean.var.plot")),
                                        

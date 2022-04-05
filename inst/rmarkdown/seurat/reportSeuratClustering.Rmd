@@ -58,7 +58,7 @@ The clustering results can then be visualized using non-linear dimensionality re
 ```{r, warning=FALSE, message=FALSE, eval=runClustering}
 j <- minResolution
 for(i in 1:(((maxResolution-minResolution)*10)+1)){
-  data <- seuratFindClusters(data, useReduction = "pca", resolution = j, verbose = FALSE)
+  data <- runSeuratFindClusters(data, useReduction = "pca", resolution = j, verbose = FALSE)
   j <- j + 0.1
 }
 ```
@@ -71,8 +71,8 @@ cat("Seurat uses a *resolution parameter* that sets the granularity of the clust
 
 <!-- #### tSNE {.tabset .tabset-pills -} -->
 ```{r, echo=FALSE, results='asis', warning=FALSE, message=FALSE}
-data <- seuratRunUMAP(data, useReduction = "pca", dims = significant_PC)
-data <- seuratRunTSNE(data, useReduction = "pca", dims = significant_PC)
+data <- runSeuratUMAP(data, useReduction = "pca", dims = significant_PC)
+data <- runSeuratTSNE(data, useReduction = "pca", dims = significant_PC)
 j <- minResolution
 
 if(!showClusterDesc){
@@ -86,8 +86,8 @@ if(!showClusterDesc){
 for(i in 1:(((maxResolution-minResolution)*10)+1)){
   cat(headingRES, " RES ", j, " {.tabset .tabset-pills -} \n\n")
   cat(headingClust," Clusters {-} \n\n")
-    p1 <- seuratReductionPlot(data, useReduction = "tsne", groupBy = paste0("Seurat_louvain_Resolution", j), showLegend = TRUE)
-  p2 <- seuratReductionPlot(data, useReduction = "umap", groupBy = paste0("Seurat_louvain_Resolution", j), showLegend = TRUE)
+    p1 <- plotSeuratReduction(data, useReduction = "tsne", groupBy = paste0("Seurat_louvain_Resolution", j), showLegend = TRUE)
+  p2 <- plotSeuratReduction(data, useReduction = "umap", groupBy = paste0("Seurat_louvain_Resolution", j), showLegend = TRUE)
   j <- j + 0.1
   # p3 <- p1 + p2
   # print(p3)
@@ -95,8 +95,8 @@ for(i in 1:(((maxResolution-minResolution)*10)+1)){
   print(p2)
   cat("\n\n")
   cat(headingClust," Samples {-} \n\n")
-      p1 <- seuratReductionPlot(data, useReduction = "tsne", groupBy = biological.group, showLegend = TRUE)
-  p2 <- seuratReductionPlot(data, useReduction = "umap", groupBy = biological.group, showLegend = TRUE)
+      p1 <- plotSeuratReduction(data, useReduction = "tsne", groupBy = biological.group, showLegend = TRUE)
+  p2 <- plotSeuratReduction(data, useReduction = "umap", groupBy = biological.group, showLegend = TRUE)
   # p3 <- p1 + p2
   # print(p3)
   print(p1)
@@ -104,8 +104,8 @@ for(i in 1:(((maxResolution-minResolution)*10)+1)){
   cat("\n\n")
   
     cat(headingClust," Samples separated {-} \n\n")
-      p1 <- seuratReductionPlot(data, useReduction = "tsne", splitBy = biological.group, showLegend = TRUE)
-  p2 <- seuratReductionPlot(data, useReduction = "umap", splitBy = biological.group, showLegend = TRUE)
+      p1 <- plotSeuratReduction(data, useReduction = "tsne", splitBy = biological.group, showLegend = TRUE)
+  p2 <- plotSeuratReduction(data, useReduction = "umap", splitBy = biological.group, showLegend = TRUE)
   # p3 <- p1 + p2
   # print(p3)
   print(p1)
@@ -113,8 +113,8 @@ for(i in 1:(((maxResolution-minResolution)*10)+1)){
   cat("\n\n")
   
       cat(headingClust," Phenotype variable:", phenotype.groups," {-} \n\n")
-      p1 <- seuratReductionPlot(data, useReduction = "tsne", groupBy = phenotype.groups, showLegend = TRUE)
-  p2 <- seuratReductionPlot(data, useReduction = "umap", groupBy = phenotype.groups, showLegend = TRUE)
+      p1 <- plotSeuratReduction(data, useReduction = "tsne", groupBy = phenotype.groups, showLegend = TRUE)
+  p2 <- plotSeuratReduction(data, useReduction = "umap", groupBy = phenotype.groups, showLegend = TRUE)
   # p3 <- p1 + p2
   # print(p3)
   print(p1)

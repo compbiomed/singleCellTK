@@ -222,7 +222,7 @@ If the cell typing is already given, it is strongly recommended to specify `shap
 | Limma [@Ritchie2015] | `runLimmaBC()` | log-normalized | `assay` |
 | Scanorama [@Hie2019] | `runSCANORAMA()` | log-normalized | `assay` |
 | scMerge [@LinY2019] | `runSCMerge()` | log-normalized | `assay` |
-| Seurat Integration [@Butler2018a] | `seuratIntegration()` | raw counts | `altExp` |
+| Seurat Integration [@Butler2018a] | `runSeuratIntegration()` | raw counts | `altExp` |
 | ZINBWaVE [@Risso2018] | `runZINBWaVE()` | raw counts | `reducedDim` |
 
 ````{=html} 

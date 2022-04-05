@@ -1,5 +1,5 @@
 ---
-title: "Single Cell Analysis with Seurat using singleCellTK Package"
+title: "Clustering"
 author: "`r params$authors`"
 date: "`r format(Sys.time(), '%B %d, %Y')`"
 params:
@@ -11,13 +11,11 @@ params:
   selected.markers: !r NULL
   clustering.resolution: 0.8
   variable.features: 2000
-  pc.count: 50
+  pc.count: 10
   outputPath: !r NULL
   showSession: TRUE
   pdf: TRUE
   jackStraw: FALSE
-  data: !r NULL
-  sigPC: 10
 output:
   html_document:
     toc: yes
@@ -32,9 +30,7 @@ subtitle: "`r params$subtitle`"
 editor_options:
   chunk_output_type: console
 ---
-
-```{r parameters_setup, include = TRUE, message=FALSE, warning=FALSE, echo=FALSE}
-#Loading required libraries
+```{r, message=FALSE, warning=FALSE}
 library(Seurat)
 library(dplyr)
 library(cowplot)
@@ -49,39 +45,7 @@ library(grid)
 library(ggpubr)
 library(patchwork)
 library(singleCellTK)
-
-#Setting up parameters and loading data
-group <- params$biological.group
-selected_phenotypes <- params$phenotype.groups
-Pre_selected_markers <- params$selected.markers
-seurat.selected.resolution <- as.numeric(params$clustering.resolution)
-seurat.selected.features.numbers <- as.numeric(params$variable.features)
-initial.PC.numbers <- as.numeric(params$pc.count)
-sampleNames <- unique(colData(data)[[group]])
-outputPath <- params$outputPath
-showSession <- params$showSession
-pdf <- params$pdf
-data <- params$data
-significant_PC <- params$sigPC
-
-numCells <- ncol(data)
-numFeatures <- nrow(data)
-numSamples <- length(sampleNames)
-
-# Knitr Global Options
-dev <- ifelse(isTRUE(pdf), c("png"), c("png", "pdf"))
-opts_chunk$set(
-  echo = TRUE,
-  cache = FALSE,
-  cache.lazy = FALSE,
-  cache.comments = FALSE,
-  fig.align = "center",
-  fig.keep = "all",
-  dev = dev,
-  warning = FALSE
-)
 ```
-
 
 # Seurat Results
 
@@ -96,7 +60,7 @@ maxResolution <- 0.8
 numClusters <- 10 #remove this later
 showClusterDesc <- FALSE
 
-resClustering <- knitr::knit_child('reportSeuratClustering.Rmd', quiet = TRUE)
+resClustering <- knitr::knit_child(paste0(getwd(), "/inst/rmarkdown/seurat/", 'reportSeuratClustering.Rmd'), quiet = TRUE)
 ```
 
 ```{r, echo=FALSE, results='asis', warning=FALSE, message=FALSE}
@@ -111,7 +75,7 @@ numClusters <- 1
 selectedOption <- paste0("Seurat_louvain_Resolution", seurat.selected.resolution)
 titleMarkerPlots <- "Plot Selected Features"
 countFeatures <- length(Pre_selected_markers)
-res <- knitr::knit_child('reportSeuratMarkerSelection.Rmd', quiet = TRUE)
+res <- knitr::knit_child(paste0(getwd(), "/inst/rmarkdown/seurat/", 'reportSeuratMarkerSelection.Rmd'), quiet = TRUE)
 cat(res, sep = '\n')
 ```
 
@@ -124,7 +88,7 @@ selectedOption <- paste0("Seurat_louvain_Resolution", seurat.selected.resolution
 groupTitle <- "Clusters"
 titleMarkerPlots <- "Gene Plots of Top Markers by Clusters"
 countFeatures <- 10
-res <- knitr::knit_child('reportSeuratMarkerSelection.Rmd', quiet = TRUE)
+res <- knitr::knit_child(paste0(getwd(), "/inst/rmarkdown/seurat/", 'reportSeuratMarkerSelection.Rmd'), quiet = TRUE)
 cat(res, sep = '\n')
 ```
 
@@ -137,7 +101,7 @@ selectedOption <- group
 groupTitle <- group
 titleMarkerPlots <- paste0("Gene Plots of Top Markers by Group: ", group)
 countFeatures <- 10
-res <- knitr::knit_child('reportSeuratMarkerSelection.Rmd', quiet = TRUE)
+res <- knitr::knit_child(paste0(getwd(), "/inst/rmarkdown/seurat/", 'reportSeuratMarkerSelection.Rmd'), quiet = TRUE)
 cat(res, sep = '\n')
 ```
 

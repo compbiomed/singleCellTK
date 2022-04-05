@@ -57,7 +57,7 @@
   return(max_components)
 }
 
-#' seuratNormalizeData
+#' runSeuratNormalizeData
 #' Wrapper for NormalizeData() function from seurat library
 #' Normalizes the sce object according to the input parameters
 #' @param inSCE (sce) object to normalize
@@ -73,11 +73,11 @@
 #' @examples
 #' data(scExample, package = "singleCellTK")
 #' \dontrun{
-#' sce <- seuratNormalizeData(sce, useAssay = "counts")
+#' sce <- runSeuratNormalizeData(sce, useAssay = "counts")
 #' }
 #' @return Normalized \code{SingleCellExperiment} object
 #' @export
-seuratNormalizeData <- function(inSCE, useAssay,
+runSeuratNormalizeData <- function(inSCE, useAssay,
                                 normAssayName = "seuratNormData",
                                 normalizationMethod = "LogNormalize",
                                 scaleFactor = 10000, verbose = TRUE) {
@@ -98,7 +98,7 @@ seuratNormalizeData <- function(inSCE, useAssay,
   return(inSCE)
 }
 
-#' seuratScaleData
+#' runSeuratScaleData
 #' Scales the input sce object according to the input parameters
 #' @param inSCE (sce) object to scale
 #' @param useAssay Assay containing normalized counts to scale.
@@ -114,13 +114,13 @@ seuratNormalizeData <- function(inSCE, useAssay,
 #' @examples
 #' data(scExample, package = "singleCellTK")
 #' \dontrun{
-#' sce <- seuratNormalizeData(sce, useAssay = "counts")
-#' sce <- seuratFindHVG(sce, useAssay = "counts")
-#' sce <- seuratScaleData(sce, useAssay = "counts")
+#' sce <- runSeuratNormalizeData(sce, useAssay = "counts")
+#' sce <- runSeuratFindHVG(sce, useAssay = "counts")
+#' sce <- runSeuratScaleData(sce, useAssay = "counts")
 #' }
 #' @return Scaled \code{SingleCellExperiment} object
 #' @export
-seuratScaleData <- function(inSCE, useAssay = "seuratNormData",
+runSeuratScaleData <- function(inSCE, useAssay = "seuratNormData",
                             scaledAssayName = "seuratScaledData",
                             model = "linear", scale = TRUE, center = TRUE,
                             scaleMax = 10, verbose = TRUE) {
@@ -136,7 +136,7 @@ seuratScaleData <- function(inSCE, useAssay = "seuratNormData",
   return(inSCE)
 }
 
-#' seuratFindHVG
+#' runSeuratFindHVG
 #' Find highly variable genes and store in the input sce object
 #' @param inSCE (sce) object to compute highly variable genes from and to store
 #' back to it
@@ -156,14 +156,14 @@ seuratScaleData <- function(inSCE, useAssay = "seuratNormData",
 #' @examples
 #' data(scExample, package = "singleCellTK")
 #' \dontrun{
-#' sce <- seuratNormalizeData(sce, useAssay = "counts")
-#' sce <- seuratFindHVG(sce, useAssay = "counts")
+#' sce <- runSeuratNormalizeData(sce, useAssay = "counts")
+#' sce <- runSeuratFindHVG(sce, useAssay = "counts")
 #' }
 #' @return Updated \code{SingleCellExperiment} object with highly variable genes
 #' computation stored
 #' @export
 #' @importFrom SummarizedExperiment rowData rowData<-
-seuratFindHVG <- function(inSCE, useAssay = "counts",
+runSeuratFindHVG <- function(inSCE, useAssay = "counts",
                           hvgMethod = "vst", hvgNumber = 2000, altExp = FALSE,
                           verbose = TRUE) {
   
@@ -204,7 +204,7 @@ seuratFindHVG <- function(inSCE, useAssay = "counts",
   return(inSCE)
 }
 
-#' seuratPCA
+#' runSeuratPCA
 #' Computes PCA on the input sce object and stores the calculated principal
 #' components within the sce object
 #' @param inSCE (sce) object on which to compute PCA
@@ -223,16 +223,16 @@ seuratFindHVG <- function(inSCE, useAssay = "counts",
 #' @examples
 #' data(scExample, package = "singleCellTK")
 #' \dontrun{
-#' sce <- seuratNormalizeData(sce, useAssay = "counts")
-#' sce <- seuratFindHVG(sce, useAssay = "counts")
-#' sce <- seuratScaleData(sce, useAssay = "counts")
-#' sce <- seuratPCA(sce, useAssay = "counts")
+#' sce <- runSeuratNormalizeData(sce, useAssay = "counts")
+#' sce <- runSeuratFindHVG(sce, useAssay = "counts")
+#' sce <- runSeuratScaleData(sce, useAssay = "counts")
+#' sce <- runSeuratPCA(sce, useAssay = "counts")
 #' }
 #' @return Updated \code{SingleCellExperiment} object which now contains the
 #' computed principal components
 #' @export
 #' @importFrom SingleCellExperiment reducedDim<-
-seuratPCA <- function(inSCE, useAssay = "seuratScaledData",
+runSeuratPCA <- function(inSCE, useAssay = "seuratScaledData",
                       reducedDimName = "seuratPCA", nPCs = 20, features = NULL, seed = NULL, verbose = TRUE) {
   seuratObject <- convertSCEToSeurat(inSCE, scaledAssay = useAssay)
   
@@ -252,7 +252,7 @@ seuratPCA <- function(inSCE, useAssay = "seuratScaledData",
   return(inSCE)
 }
 
-#' seuratICA
+#' runSeuratICA
 #' Computes ICA on the input sce object and stores the calculated independent
 #' components within the sce object
 #' @param inSCE (sce) object on which to compute ICA
@@ -268,16 +268,16 @@ seuratPCA <- function(inSCE, useAssay = "seuratScaledData",
 #' @examples
 #' data(scExample, package = "singleCellTK")
 #' \dontrun{
-#' sce <- seuratNormalizeData(sce, useAssay = "counts")
-#' sce <- seuratFindHVG(sce, useAssay = "counts")
-#' sce <- seuratScaleData(sce, useAssay = "counts")
-#' sce <- seuratICA(sce, useAssay = "counts")
+#' sce <- runSeuratNormalizeData(sce, useAssay = "counts")
+#' sce <- runSeuratFindHVG(sce, useAssay = "counts")
+#' sce <- runSeuratScaleData(sce, useAssay = "counts")
+#' sce <- runSeuratICA(sce, useAssay = "counts")
 #' }
 #' @return Updated \code{SingleCellExperiment} object which now contains the
 #' computed independent components
 #' @export
 #' @importFrom SingleCellExperiment reducedDim<-
-seuratICA <- function(inSCE, useAssay,
+runSeuratICA <- function(inSCE, useAssay,
                       reducedDimName = "seuratICA", features = NULL, nics = 20, seed = NULL) {
   
   seuratObject <- convertSCEToSeurat(inSCE, scaledAssay = useAssay)
@@ -298,7 +298,7 @@ seuratICA <- function(inSCE, useAssay,
   return(inSCE)
 }
 
-#' seuratComputeJackStraw
+#' runSeuratJackStraw
 #' Compute jackstraw plot and store the computations in the input sce object
 #' @param inSCE (sce) object on which to compute and store jackstraw plot
 #' @param useAssay Assay containing scaled counts to use in JackStraw
@@ -316,16 +316,16 @@ seuratICA <- function(inSCE, useAssay,
 #' @examples
 #' data(scExample, package = "singleCellTK")
 #' \dontrun{
-#' sce <- seuratNormalizeData(sce, useAssay = "counts")
-#' sce <- seuratFindHVG(sce, useAssay = "counts")
-#' sce <- seuratScaleData(sce, useAssay = "counts")
-#' sce <- seuratPCA(sce, useAssay = "counts")
-#' sce <- seuratComputeJackStraw(sce, useAssay = "counts")
+#' sce <- runSeuratNormalizeData(sce, useAssay = "counts")
+#' sce <- runSeuratFindHVG(sce, useAssay = "counts")
+#' sce <- runSeuratScaleData(sce, useAssay = "counts")
+#' sce <- runSeuratPCA(sce, useAssay = "counts")
+#' sce <- runSeuratJackStraw(sce, useAssay = "counts")
 #' }
 #' @return Updated \code{SingleCellExperiment} object with jackstraw
 #' computations stored in it
 #' @export
-seuratComputeJackStraw <- function(inSCE, useAssay, dims = NULL,
+runSeuratJackStraw <- function(inSCE, useAssay, dims = NULL,
                                    numReplicate = 100, propFreq = 0.025,
                                    externalReduction = NULL) {
   seuratObject <- convertSCEToSeurat(inSCE, scaledAssay = useAssay)
@@ -345,7 +345,7 @@ seuratComputeJackStraw <- function(inSCE, useAssay, dims = NULL,
     seuratObject@commands$RunPCA.RNA@params$weight.by.var <- TRUE
     }
   if(is.null(seuratObject@reductions[["pca"]])) {
-    stop("'seuratPCA' must be run before JackStraw can be computed.")
+    stop("'runSeuratPCA' must be run before JackStraw can be computed.")
   }
   if(is.null(dims)) {
     dims <- ncol(seuratObject@reductions[["pca"]])
@@ -358,7 +358,7 @@ seuratComputeJackStraw <- function(inSCE, useAssay, dims = NULL,
   return(inSCE)
 }
 
-#' seuratJackStrawPlot
+#' plotSeuratJackStraw
 #' Computes the plot object for jackstraw plot from the pca slot in the input
 #' sce object
 #' @param inSCE (sce) object from which to compute the jackstraw plot (pca
@@ -372,23 +372,23 @@ seuratComputeJackStraw <- function(inSCE, useAssay, dims = NULL,
 #' @examples
 #' data(scExample, package = "singleCellTK")
 #' \dontrun{
-#' sce <- seuratNormalizeData(sce, useAssay = "counts")
-#' sce <- seuratFindHVG(sce, useAssay = "counts")
-#' sce <- seuratScaleData(sce, useAssay = "counts")
-#' sce <- seuratPCA(sce, useAssay = "counts")
-#' sce <- seuratComputeJackStraw(sce, useAssay = "counts")
-#' seuratJackStrawPlot(sce)
+#' sce <- runSeuratNormalizeData(sce, useAssay = "counts")
+#' sce <- runSeuratFindHVG(sce, useAssay = "counts")
+#' sce <- runSeuratScaleData(sce, useAssay = "counts")
+#' sce <- runSeuratPCA(sce, useAssay = "counts")
+#' sce <- runSeuratJackStraw(sce, useAssay = "counts")
+#' plotSeuratJackStraw(sce)
 #' }
 #' @return plot object
 #' @export
-seuratJackStrawPlot <- function(inSCE, dims = NULL, xmax = 0.1, ymax = 0.3,
+plotSeuratJackStraw <- function(inSCE, dims = NULL, xmax = 0.1, ymax = 0.3,
                                 externalReduction = NULL) {
   seuratObject <- convertSCEToSeurat(inSCE)
   if(!is.null(externalReduction)){
     seuratObject@reductions <- list(pca = externalReduction)
   }
   if(is.null(seuratObject@reductions[["pca"]])) {
-    stop("'seuratPCA' must be run before JackStraw can be computed.")
+    stop("'runSeuratPCA' must be run before JackStraw can be computed.")
   }
   if(is.null(dims)) {
     dims <- ncol(seuratObject@reductions[["pca"]])
@@ -397,7 +397,7 @@ seuratJackStrawPlot <- function(inSCE, dims = NULL, xmax = 0.1, ymax = 0.3,
                                xmax = xmax, ymax = ymax))
 }
 
-#' seuratPlotHVG
+#' plotSeuratHVG
 #' Plot highly variable genes from input sce object (must have highly variable
 #' genes computations stored)
 #' @param inSCE (sce) object that contains the highly variable genes
@@ -408,13 +408,13 @@ seuratJackStrawPlot <- function(inSCE, dims = NULL, xmax = 0.1, ymax = 0.3,
 #' @examples
 #' data(scExample, package = "singleCellTK")
 #' \dontrun{
-#' sce <- seuratNormalizeData(sce, useAssay = "counts")
-#' sce <- seuratFindHVG(sce, useAssay = "counts")
-#' seuratPlotHVG(sce)
+#' sce <- runSeuratNormalizeData(sce, useAssay = "counts")
+#' sce <- runSeuratFindHVG(sce, useAssay = "counts")
+#' plotSeuratHVG(sce)
 #' }
 #' @return plot object
 #' @export
-seuratPlotHVG <- function(inSCE, labelPoints = 0) {
+plotSeuratHVG <- function(inSCE, labelPoints = 0) {
   seuratObject <- convertSCEToSeurat(inSCE)
   plot <- Seurat::VariableFeaturePlot(seuratObject)
   plot$labels$colour <- "Variable"
@@ -429,7 +429,7 @@ seuratPlotHVG <- function(inSCE, labelPoints = 0) {
   return(plot)
 }
 
-#' seuratReductionPlot
+#' plotSeuratReduction
 #' Plots the selected dimensionality reduction method
 #' @param inSCE (sce) object which has the selected dimensionality reduction
 #' algorithm already computed and stored
@@ -444,14 +444,14 @@ seuratPlotHVG <- function(inSCE, labelPoints = 0) {
 #' @examples
 #' data(scExample, package = "singleCellTK")
 #' \dontrun{
-#' sce <- seuratNormalizeData(sce, useAssay = "counts")
-#' sce <- seuratFindHVG(sce, useAssay = "counts")
-#' sce <- seuratScaleData(sce, useAssay = "counts")
-#' sce <- seuratPCA(sce, useAssay = "counts")
-#' seuratReductionPlot(sce, useReductionPlot = "pca")}
+#' sce <- runSeuratNormalizeData(sce, useAssay = "counts")
+#' sce <- runSeuratFindHVG(sce, useAssay = "counts")
+#' sce <- runSeuratScaleData(sce, useAssay = "counts")
+#' sce <- runSeuratPCA(sce, useAssay = "counts")
+#' plotSeuratReduction(sce, useReductionPlot = "pca")}
 #' @return plot object
 #' @export
-seuratReductionPlot <- function(inSCE, useReduction = c("pca", "ica",
+plotSeuratReduction <- function(inSCE, useReduction = c("pca", "ica",
                                                         "tsne", "umap"),
                                 showLegend = FALSE, groupBy = NULL,
                                 splitBy = NULL) {
@@ -503,7 +503,7 @@ seuratReductionPlot <- function(inSCE, useReduction = c("pca", "ica",
 }
 
 
-#' seuratFindClusters
+#' runSeuratFindClusters
 #' Computes the clusters from the input sce object and stores them back in sce
 #' object
 #' @param inSCE (sce) object from which clusters should be computed and stored
@@ -528,15 +528,15 @@ seuratReductionPlot <- function(inSCE, useReduction = c("pca", "ica",
 #' @examples
 #' data(scExample, package = "singleCellTK")
 #' \dontrun{
-#' sce <- seuratNormalizeData(sce, useAssay = "counts")
-#' sce <- seuratFindHVG(sce, useAssay = "counts")
-#' sce <- seuratScaleData(sce, useAssay = "counts")
-#' sce <- seuratPCA(sce, useAssay = "counts")
-#' sce <- seuratFindClusters(sce, useAssay = "counts")
+#' sce <- runSeuratNormalizeData(sce, useAssay = "counts")
+#' sce <- runSeuratFindHVG(sce, useAssay = "counts")
+#' sce <- runSeuratScaleData(sce, useAssay = "counts")
+#' sce <- runSeuratPCA(sce, useAssay = "counts")
+#' sce <- runSeuratFindClusters(sce, useAssay = "counts")
 #' }
 #' @return Updated sce object which now contains the computed clusters
 #' @export
-seuratFindClusters <- function(
+runSeuratFindClusters <- function(
   inSCE,
   useAssay = "seuratScaledData",
   useReduction = c("pca", "ica"),
@@ -584,7 +584,7 @@ seuratFindClusters <- function(
   return(inSCE)
 }
 
-#' seuratRunTSNE
+#' runSeuratTSNE
 #' Computes tSNE from the given sce object and stores the tSNE computations back
 #' into the sce object
 #' @param inSCE (sce) object on which to compute the tSNE
@@ -603,7 +603,7 @@ seuratFindClusters <- function(
 #' @return Updated sce object with tSNE computations stored
 #' @export
 #' @importFrom SingleCellExperiment reducedDim<-
-seuratRunTSNE <- function(inSCE, useReduction = c("pca", "ica"),
+runSeuratTSNE <- function(inSCE, useReduction = c("pca", "ica"),
                           reducedDimName = "seuratTSNE", dims = 10,
                           perplexity = 30, externalReduction = NULL, seed = 1) {
   useReduction <- match.arg(useReduction)
@@ -625,7 +625,7 @@ seuratRunTSNE <- function(inSCE, useReduction = c("pca", "ica"),
   return(inSCE)
 }
 
-#' seuratRunUMAP
+#' runSeuratUMAP
 #' Computes UMAP from the given sce object and stores the UMAP computations back
 #' into the sce object
 #' @param inSCE (sce) object on which to compute the UMAP
@@ -651,17 +651,17 @@ seuratRunTSNE <- function(inSCE, useReduction = c("pca", "ica"),
 #' @examples
 #' data(scExample, package = "singleCellTK")
 #' \dontrun{
-#' sce <- seuratNormalizeData(sce, useAssay = "counts")
-#' sce <- seuratFindHVG(sce, useAssay = "counts")
-#' sce <- seuratScaleData(sce, useAssay = "counts")
-#' sce <- seuratPCA(sce, useAssay = "counts")
-#' sce <- seuratFindClusters(sce, useAssay = "counts")
-#' sce <- seuratRunUMAP(sce, useReduction = "pca")
+#' sce <- runSeuratNormalizeData(sce, useAssay = "counts")
+#' sce <- runSeuratFindHVG(sce, useAssay = "counts")
+#' sce <- runSeuratScaleData(sce, useAssay = "counts")
+#' sce <- runSeuratPCA(sce, useAssay = "counts")
+#' sce <- runSeuratFindClusters(sce, useAssay = "counts")
+#' sce <- runSeuratUMAP(sce, useReduction = "pca")
 #' }
 #' @return Updated sce object with UMAP computations stored
 #' @export
 #' @importFrom SingleCellExperiment reducedDim<-
-seuratRunUMAP <- function(inSCE, useReduction = c("pca", "ica"),
+runSeuratUMAP <- function(inSCE, useReduction = c("pca", "ica"),
                           reducedDimName = "seuratUMAP", dims = 10,
                           minDist = 0.3, nNeighbors = 30L, spread = 1,
                           externalReduction = NULL, seed = 42,
@@ -704,7 +704,7 @@ seuratRunUMAP <- function(inSCE, useReduction = c("pca", "ica"),
   }
 }
 
-#' seuratElbowPlot
+#' plotSeuratElbow
 #' Computes the plot object for elbow plot from the pca slot in the input sce
 #' object
 #' @param inSCE (sce) object from which to compute the elbow plot (pca should
@@ -723,15 +723,15 @@ seuratRunUMAP <- function(inSCE, useReduction = c("pca", "ica"),
 #' @examples
 #' data(scExample, package = "singleCellTK")
 #' \dontrun{
-#' sce <- seuratNormalizeData(sce, useAssay = "counts")
-#' sce <- seuratFindHVG(sce, useAssay = "counts")
-#' sce <- seuratScaleData(sce, useAssay = "counts")
-#' sce <- seuratPCA(sce, useAssay = "counts")
-#' seuratElbowPlot(sce)
+#' sce <- runSeuratNormalizeData(sce, useAssay = "counts")
+#' sce <- runSeuratFindHVG(sce, useAssay = "counts")
+#' sce <- runSeuratScaleData(sce, useAssay = "counts")
+#' sce <- runSeuratPCA(sce, useAssay = "counts")
+#' plotSeuratElbow(sce)
 #' }
 #' @return plot object
 #' @export
-seuratElbowPlot <- function(inSCE,
+plotSeuratElbow <- function(inSCE,
                             significantPC = NULL,
                             reduction = "pca",
                             ndims = 20,
@@ -776,7 +776,7 @@ seuratElbowPlot <- function(inSCE,
   return(plot)
 }
 
-#' seuratComputeHeatmap
+#' runSeuratHeatmap
 #' Computes the heatmap plot object from the pca slot in the input sce object
 #' @param inSCE (sce) object from which to compute heatmap (pca should be
 #' computed)
@@ -805,16 +805,16 @@ seuratElbowPlot <- function(inSCE,
 #' @examples
 #' data(scExample, package = "singleCellTK")
 #' \dontrun{
-#' sce <- seuratNormalizeData(sce, useAssay = "counts")
-#' sce <- seuratFindHVG(sce, useAssay = "counts")
-#' sce <- seuratScaleData(sce, useAssay = "counts")
-#' sce <- seuratPCA(sce, useAssay = "counts")
-#' heatmap <- seuratComputeHeatmap(sce, useAssay = "counts")
-#' seuratHeatmapPlot(heatmap)
+#' sce <- runSeuratNormalizeData(sce, useAssay = "counts")
+#' sce <- runSeuratFindHVG(sce, useAssay = "counts")
+#' sce <- runSeuratScaleData(sce, useAssay = "counts")
+#' sce <- runSeuratPCA(sce, useAssay = "counts")
+#' heatmap <- runSeuratHeatmap(sce, useAssay = "counts")
+#' plotSeuratHeatmap(heatmap)
 #' }
 #' @return plot object
 #' @export
-seuratComputeHeatmap <- function(inSCE,
+runSeuratHeatmap <- function(inSCE,
                                  useAssay,
                                  useReduction = c("pca", "ica"),
                                  dims = NULL,
@@ -847,17 +847,17 @@ seuratComputeHeatmap <- function(inSCE,
                             balanced = balanced))
 }
 
-#' seuratHeatmapPlot
+#' plotSeuratHeatmap
 #' Modifies the heatmap plot object so it contains specified number of heatmaps
 #' in a single plot
-#' @param plotObject plot object computed from seuratComputeHeatmap() function
+#' @param plotObject plot object computed from runSeuratHeatmap() function
 #' @param dims numerical value of how many heatmaps to draw (default is 0)
 #' @param ncol numerical value indicating that in how many columns should the
 #' heatmaps be distrbuted (default is 2)
 #' @param labels list() of labels to draw on heatmaps
 #' @return modified plot object
 #' @export
-seuratHeatmapPlot <- function(plotObject, dims, ncol, labels) {
+plotSeuratHeatmap <- function(plotObject, dims, ncol, labels) {
   componentsToPlot <- as.integer(gsub("[^0-9.]", "", labels))
   return(cowplot::plot_grid(plotlist = plotObject[c(componentsToPlot)],
                             ncol = ncol, labels = labels))
@@ -1100,7 +1100,7 @@ convertSCEToSeurat <- function(inSCE, countsAssay = NULL, normAssay = NULL,
   return(seuratObject)
 }
 
-#' seuratSCTransform
+#' runSeuratSCTransform
 #' Runs the \link[Seurat]{SCTransform} function to transform/normalize the input
 #' data
 #' @param inSCE Input SingleCellExperiment object
@@ -1113,8 +1113,8 @@ convertSCEToSeurat <- function(inSCE, countsAssay = NULL, normAssay = NULL,
 #' @export
 #' @examples
 #' data("mouseBrainSubsetSCE", package = "singleCellTK")
-#' mouseBrainSubsetSCE <- seuratSCTransform(mouseBrainSubsetSCE)
-seuratSCTransform <- function(inSCE, normAssayName = "SCTCounts",
+#' mouseBrainSubsetSCE <- runSeuratSCTransform(mouseBrainSubsetSCE)
+runSeuratSCTransform <- function(inSCE, normAssayName = "SCTCounts",
                               useAssay = "counts", verbose = TRUE) {
   seuratObject <- base::suppressWarnings(Seurat::SCTransform(
     object = convertSCEToSeurat(inSCE, useAssay),
@@ -1177,7 +1177,7 @@ seuratSCTransform <- function(inSCE, normAssayName = "SCTCounts",
 }
 
 
-#' seuratIntegration
+#' runSeuratIntegration
 #' A wrapper function to Seurat Batch-Correction/Integration workflow.
 #' @param inSCE Input \code{SingleCellExperiment} object that contains the assay
 #' to batch-correct.
@@ -1196,7 +1196,7 @@ seuratSCTransform <- function(inSCE, normAssayName = "SCTCounts",
 #' @return A \code{SingleCellExperiment} object that contains the
 #' batch-corrected assay inside the \code{altExp} slot of the object
 #' @export
-seuratIntegration <- function(inSCE, useAssay = "counts", batch,
+runSeuratIntegration <- function(inSCE, useAssay = "counts", batch,
                               newAssayName = "SeuratIntegratedAssay", kAnchor,
                               kFilter, kWeight, ndims = 10){
   if(!useAssay %in% SummarizedExperiment::assayNames(inSCE)){
@@ -1249,7 +1249,7 @@ seuratIntegration <- function(inSCE, useAssay = "counts", batch,
   return(inSCE)
 }
 
-#' seuratFindMarkers
+#' runSeuratFindMarkers
 #'
 #' @param inSCE Input \code{SingleCellExperiment} object.
 #' @param cells1 A \code{list} of sample names included in group1.
@@ -1272,7 +1272,7 @@ seuratIntegration <- function(inSCE, useAssay = "counts", batch,
 #' @return A \code{SingleCellExperiment} object that contains marker genes
 #' populated in a data.frame stored inside metadata slot.
 #' @export
-seuratFindMarkers <- function(
+runSeuratFindMarkers <- function(
   inSCE, cells1 = NULL, cells2 = NULL, group1 = NULL, group2 = NULL,
   allGroup = NULL, conserved = FALSE, test = "wilcox", onlyPos = FALSE,
   minPCT = 0.1, threshUse = 0.25, verbose = TRUE){
@@ -1380,7 +1380,7 @@ seuratFindMarkers <- function(
 #'
 #' @return Plot object
 #' @export
-seuratGenePlot <- function(inSCE,
+plotSeuratGenes <- function(inSCE,
                            scaledAssayName = "seuratScaledData",
                            plotType,
                            features,
@@ -1541,13 +1541,13 @@ seuratGenePlot <- function(inSCE,
   return(markers.combined)
 }
 
-#' Get variable feature names after running seuratFindHVG function
+#' Get variable feature names after running runSeuratFindHVG function
 #'
 #' @param inSCE Input \code{SingleCellExperiment} object.
 #'
 #' @return A list of variable feature names.
 #' @export
-seuratVariableFeatures <- function(inSCE){
+getSeuratVariableFeatures <- function(inSCE){
   if(!is.null(S4Vectors::metadata(inSCE)$seurat$obj)){
     return(Seurat::VariableFeatures(S4Vectors::metadata(inSCE)$seurat$obj))
   }

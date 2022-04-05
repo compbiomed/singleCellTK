@@ -142,12 +142,12 @@ sce <- importExampleData("pbmc3k")
 sce <- dedupRowNames(sce)
 # QC and filtering skipped for quick demonstration
 # Users are **not recommended** to skip it in practical analysis
-sce <- seuratNormalizeData(sce, "counts")
-sce <- seuratScaleData(sce)
-sce <- seuratFindHVG(sce)
-sce <- seuratPCA(sce)
-sce <- seuratFindClusters(sce)
-# With `seuratFindClusters()`, the clustering result would be saved to the 
+sce <- runSeuratNormalizeData(sce, "counts")
+sce <- runSeuratScaleData(sce)
+sce <- runSeuratFindHVG(sce)
+sce <- runSeuratPCA(sce)
+sce <- runSeuratFindClusters(sce)
+# With `runSeuratFindClusters()`, the clustering result would be saved to the 
 # `colData` slot with the name "Seurat_louvain_Resolution0.8" by default.
 ```
 
@@ -161,7 +161,7 @@ table(sce$Seurat_louvain_Resolution0.8)
 ````
 
 ```{r pbmc_cluster_plot, message=FALSE, warning=FALSE, results='hide'}
-sce <- seuratRunUMAP(sce)
+sce <- runSeuratUMAP(sce)
 plotSCEDimReduceColData(inSCE = sce, reducedDimName = "seuratUMAP", colorBy = "Seurat_louvain_Resolution0.8", legendTitle = "Seurat Cluster", title = "Clustering on UMAP")
 ```
 

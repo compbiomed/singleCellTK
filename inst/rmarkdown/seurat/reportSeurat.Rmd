@@ -1,0 +1,49 @@
+---
+title: "Single Cell Analysis with Seurat using singleCellTK Package"
+author: "`r params$authors`"
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+params:
+  subtitle: !r NULL
+  authors: !r NULL
+  sce: !r NULL
+  biological.group: !r NULL
+  phenotype.groups: !r NULL
+  selected.markers: !r NULL
+  clustering.resolution: 0.8
+  variable.features: 2000
+  pc.count: 50
+  outputPath: !r NULL
+  showSession: TRUE
+  pdf: TRUE
+  jackStraw: FALSE
+output:
+  html_document:
+    toc: yes
+    toc_float: yes
+    number_sections: yes
+    theme: cosmo
+    code_folding: hide
+    self_contained: false
+  pdf_document:
+    toc: yes
+subtitle: "`r params$subtitle`"
+editor_options:
+  chunk_output_type: console
+---
+
+```{r}
+#setwd("/home/buskut/") #need to set this
+```
+
+```{r, echo=FALSE, results='asis', warning=FALSE, message=FALSE}
+seuratRun <- knitr::knit_child('reportSeuratRun.Rmd', quiet = TRUE, envir = environment())
+```
+
+```{r, echo=FALSE, results='asis', warning=FALSE, message=FALSE}
+seuratResults <- knitr::knit_child('reportSeuratResults.Rmd', quiet = TRUE, envir = environment())
+```
+
+```{r, echo=FALSE, results='asis', warning=FALSE, message=FALSE}
+cat(seuratRun, sep = '\n')
+cat(seuratResults, sep = '\n')
+```

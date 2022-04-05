@@ -59,7 +59,7 @@ normalizeParams <- list(
   scaleFactor = 10000,
   verbose = FALSE
 )
-data <- do.call("seuratNormalizeData", normalizeParams)
+data <- do.call("runSeuratNormalizeData", normalizeParams)
 ```
 
 ```{r, include=FALSE}

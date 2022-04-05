@@ -31,7 +31,7 @@ editor_options:
   chunk_output_type: console
 ---
 
-```{r parameters_setup, include = TRUE, message=FALSE, warning=FALSE, echo=FALSE}
+```{r, include = TRUE, message=FALSE, warning=FALSE, echo=FALSE}
 #Loading required libraries
 library(Seurat)
 library(dplyr)
@@ -83,19 +83,19 @@ opts_chunk$set(
 
 <!-- Normalization -->
 ```{r, echo=FALSE, results='asis', warning=FALSE, message=FALSE}
-resNormalization <- knitr::knit_child('reportSeuratNormalizeData.Rmd', quiet = TRUE)
+resNormalization <- knitr::knit_child(paste0(getwd(), "/inst/rmarkdown/seurat/", 'reportSeuratNormalizeData.Rmd'), quiet = TRUE)
 ```
 
 <!-- Feature Selection -->
 ```{r, echo=FALSE, results='asis', warning=FALSE, message=FALSE}
 runHVG <- TRUE
 plotHVG <- TRUE
-resFeatureSelection <- knitr::knit_child('reportSeuratFeatureSelection.Rmd', quiet = TRUE)
+resFeatureSelection <- knitr::knit_child(paste0(getwd(), "/inst/rmarkdown/seurat/", 'reportSeuratFeatureSelection.Rmd'), quiet = TRUE)
 ```
 
 <!-- Scale Data -->
 ```{r, echo=FALSE, results='asis', warning=FALSE, message=FALSE}
-resScaleData <- knitr::knit_child('reportSeuratScaleData.Rmd', quiet = TRUE)
+resScaleData <- knitr::knit_child(paste0(getwd(), "/inst/rmarkdown/seurat/", 'reportSeuratScaleData.Rmd'), quiet = TRUE)
 ```
 
 <!-- Dimensionality Reduction -->
@@ -106,7 +106,7 @@ plotElbowPlot <- TRUE
 plotHeatmaps <- FALSE
 significant_PC <- 10
 
-resDimRed <- knitr::knit_child('reportSeuratDimRed.Rmd', quiet = TRUE)
+resDimRed <- knitr::knit_child(paste0(getwd(), "/inst/rmarkdown/seurat/", 'reportSeuratDimRed.Rmd'), quiet = TRUE)
 ```
 
 <!-- Clustering -->
@@ -117,7 +117,7 @@ maxResolution <- 1.5
 numClusters <- 10
 showClusterDesc <- TRUE
 
-resClustering <- knitr::knit_child('reportSeuratClustering.Rmd', quiet = TRUE)
+resClustering <- knitr::knit_child(paste0(getwd(), "/inst/rmarkdown/seurat/", 'reportSeuratClustering.Rmd'), quiet = TRUE)
 ```
 
 # Summary {-}

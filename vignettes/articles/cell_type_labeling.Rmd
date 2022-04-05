@@ -105,7 +105,7 @@ Users can choose to visualize the labeling result on a scatter plot. Here, we pr
 
 ```{R visualization, message=FALSE, warning=FALSE, fig.align="center", results='hide'}
 sce <- runNormalization(inSCE = sce, useAssay = "logcounts", scale = TRUE, outAssayName = "logcounts_scaled")
-sce <- seuratFindHVG(inSCE = sce, useAssay = "counts", hvgMethod = "vst")
+sce <- runSeuratFindHVG(inSCE = sce, useAssay = "counts", hvgMethod = "vst")
 sce <- getTopHVG(inSCE = sce, method = "vst", n = 2000, altExp = "hvg")
 sce <- runDimReduce(inSCE = sce, method = "scaterPCA", useAssay = "logcounts_scaled", useAltExp = "hvg", reducedDimName = "PCA")
 sce <- runDimReduce(inSCE = sce, method = "scaterUMAP", useReducedDim = "PCA", reducedDimName = "UMAP")
