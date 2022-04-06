@@ -67,6 +67,10 @@ jobs:
         if: runner.os == 'Linux'
         run: sudo apt-get install libfftw3-dev
 
+      - name: Install fftw3 on macOS
+        if: runner.os == 'macOS'
+        run: brew install fftw
+        
       - uses: r-lib/actions/setup-r-dependencies@v1
         with:
           extra-packages: rcmdcheck

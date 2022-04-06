@@ -4,7 +4,7 @@
 \alias{plotClusterAbundance}
 \title{Plot the differential Abundance}
 \usage{
-plotClusterAbundance(inSCE, cluster, variable)
+plotClusterAbundance(inSCE, cluster, variable, combinePlot = c("all", "none"))
 }
 \arguments{
 \item{inSCE}{A \code{\link[SingleCellExperiment]{SingleCellExperiment}}
@@ -15,9 +15,15 @@ cluster label in \code{\link{colData}}.}
 
 \item{variable}{A single \code{character}, specifying the name to store the
 phenotype labels in \code{\link{colData}}.}
+
+\item{combinePlot}{Must be either "all" or "none". "all" will combine all 
+plots into a single \code{\link[ggplot2]{ggplot}} object. Default 
+\code{"all"}.}
 }
 \value{
-A \code{list} with 4 \code{ggplot} objects.
+When \code{combinePlot = "none"}, a \code{list} with 4 
+\code{\link[ggplot2]{ggplot}} objects; when \code{combinePlot = "all"}, a 
+single \code{\link[ggplot2]{ggplot}} object with for subplots.
 }
 \description{
 Plot the differential Abundance

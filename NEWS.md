@@ -1,7 +1,9 @@
-Changes in Version ?
+Changes in Version 2.5.1 (2022-03-31)
 ================================================================================
 * Added SoupX method for decontamination (runSoupX)
-* Added useReducedDim parameter for DE analysis
+* Added useReducedDim parameter for DE analysis and Heatmap
+* Added Differential Abundance section to the tutorials
+* Fixed Mitochondrial gene list
 * Other refactors and bug fixes
 
 Changes in Version 2.4.1 (2021-12-22)

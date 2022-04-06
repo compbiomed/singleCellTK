@@ -29,7 +29,7 @@ plotSCEHeatmap(
   colLabelSize = 8,
   rowDend = TRUE,
   colDend = TRUE,
-  title = "SCE Heatmap",
+  title = NULL,
   rowTitle = "Genes",
   colTitle = "Cells",
   rowGap = grid::unit(0, "mm"),
@@ -61,7 +61,7 @@ plotSCEDimReduceHeatmap(
   colLabelSize = 8,
   rowDend = TRUE,
   colDend = TRUE,
-  title = "SCE Heatmap",
+  title = NULL,
   rowTitle = "Dimensions",
   colTitle = "Cells",
   rowGap = grid::unit(0, "mm"),
@@ -157,7 +157,7 @@ customized info. Default \code{FALSE}.}
 
 \item{colDend}{Whether to display column dendrogram. Default \code{TRUE}.}
 
-\item{title}{The main title of the whole plot. Default \code{"SCE Heatmap"}}
+\item{title}{The main title of the whole plot. Default \code{NULL}.}
 
 \item{rowTitle}{The subtitle for the rows. Default \code{"Genes"}.}
 
@@ -184,7 +184,7 @@ Default \code{NULL}.}
 provides the expression level to plot. Only for \code{plotSCEDimReduceHeatmap}.}
 }
 \value{
-A \code{\link[ComplexHeatmap]{Heatmap}} object
+A \code{\link[ggplot2]{ggplot}} object.
 }
 \description{
 Plot heatmap of using data stored in SingleCellExperiment Object

@@ -43,5 +43,6 @@ An HTML file of the report will be generated at the path specified
 in the arguments.
 }
 \description{
-A function to generate .html Rmarkdown report containing the visualizations of the plotClusterAbundance function output
+A function to generate .html Rmarkdown report containing the 
+visualizations of the plotClusterAbundance function output
 }
