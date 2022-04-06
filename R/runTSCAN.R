@@ -418,7 +418,7 @@ plotClusterPseudo <- function(inSCE, useClusters, pathIndex = NULL, reducedDimNa
 #' sce <- runTSCAN (sce, reducedDimName = "PCA", seed = NULL)
 #' sce <- runTSCANDEG(sce, pathIndex = 1, discardCluster = 8)
 #' sce <- runTSCANClusterDEAnalysis(sce, useClusters)
-#' plotTSCANDEgenes(sce, geneSymbol, reducedDimName = "TSNE")
+#' plotTSCANDEgenes(sce, geneSymbol, useClusters=NULL, reducedDimName = "TSNE")
 
 plotTSCANDEgenes <- function(inSCE, geneSymbol, useClusters=NULL, reducedDimName){
   
