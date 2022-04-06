@@ -25,7 +25,7 @@ A wrapper function which plots all the cells in the cluster containing the branc
 sce <- runTSCAN (sce, reducedDimName = "PCA", seed = NULL)
 sce <- runTSCANDEG(sce, pathIndex = 1, discardCluster = 8)
 sce <- runTSCANClusterDEAnalysis(sce, useClusters)
-plotTSCANDEgenes(sce, geneSymbol, useClusters=NULL, reducedDimName = "TSNE")
+plotTSCANDEgenes(sce, geneSymbol, reducedDimName = "TSNE")
 }
 \author{
 Nida Pervaiz

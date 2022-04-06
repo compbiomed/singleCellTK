@@ -4,7 +4,12 @@
 \alias{runTSCANClusterDEAnalysis}
 \title{Run runTSCANClusterDEAnalysis function to observe changes between paths and to obtain DE genes}
 \usage{
-runTSCANClusterDEAnalysis(inSCE, useClusters, fdrThreshold = 0.05)
+runTSCANClusterDEAnalysis(
+  inSCE,
+  useClusters,
+  useAssay = "logcounts",
+  fdrThreshold = 0.05
+)
 }
 \arguments{
 \item{inSCE}{Input \linkS4class{SingleCellExperiment} object.}

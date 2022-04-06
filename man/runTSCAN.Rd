@@ -30,12 +30,12 @@ A \link[SingleCellExperiment]{SingleCellExperiment} object with pseudotime order
 Wrapper for obtaining a pseudotime ordering of the cells by projecting them onto the MST
 }
 \examples{
-sce <- NestorowaHSCData()
+sce <- scRNAseq::NestorowaHSCData()
 ens.mm.v97 <- AnnotationHub::AnnotationHub()[["AH73905"]]
 anno <- select(ens.mm.v97, keys = rownames(sce), 
                keytype = "GENEID", columns = c("SYMBOL", "SEQNAME"))
 rowData(sce) <- anno[match(rownames(sce), anno$GENEID),]
-sce <- scaterlogNormCounts(sce, assayName = "logcounts")
+sce <- singleCellTK::scaterlogNormCounts(sce, assayName = "logcounts")
 sce <- scater::runPCA(sce)
 sce <- scater::runTSNE (sce, dimred = "PCA")
 sce <- runTSCAN (sce, reducedDimName = "PCA", seed = NULL)

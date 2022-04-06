@@ -4,7 +4,13 @@
 \alias{runTSCANDEG}
 \title{Run runTSCANDEG function to obtain changes along a trajectory}
 \usage{
-runTSCANDEG(inSCE, pathIndex, discardCluster = NULL, log2fcThreshold = 0)
+runTSCANDEG(
+  inSCE,
+  pathIndex,
+  useAssay = "logcounts",
+  discardCluster = NULL,
+  log2fcThreshold = 0
+)
 }
 \arguments{
 \item{inSCE}{Input \linkS4class{SingleCellExperiment} object.}
