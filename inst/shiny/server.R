@@ -3583,7 +3583,7 @@ shinyServer(function(input, output, session) {
         output$TSCANPlot <- renderPlot({
           isolate({
             plotTSCANResults(inSCE = vals$counts, 
-                             reducedDimName = "TSNE")
+                             reducedDimName = input$TSCANReddim)
             
           })
         })
@@ -3733,7 +3733,7 @@ shinyServer(function(input, output, session) {
           plotClusterPseudo(inSCE = vals$counts, 
                             useClusters = input$useCluster, 
                             pathIndex = NULL,
-                            reducedDimName = "TSNE")
+                            reducedDimName = input$TSCANReddim)
         })
       })
       })
