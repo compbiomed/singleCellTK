@@ -32,6 +32,34 @@ editor_options:
 ---
 
 ```{r}
+# Global report options
+runHVG <- TRUE
+plotHVG <- TRUE
+
+runDimRed <- TRUE
+plotJackStraw <- FALSE
+plotElbowPlot <- TRUE
+plotHeatmaps <- FALSE
+significant_PC <- 10
+
+runClustering <- TRUE
+plotTSNE <- TRUE
+plotUMAP <- TRUE
+minResolution <- 0.3
+maxResolution <- 1.5
+numClusters <- 10
+showClusterDesc <- TRUE
+headingCluster <- "" #use from here
+
+runMarkerSelection <- TRUE
+plotMarkerSelection <- TRUE
+numClusters <- 1 #whats this?
+selectedOption <- params$biological.group
+titleMarkerPlots <- paste0("Marker Selection for ", selectedOption)
+countFeatures <- 10
+```
+
+```{r}
 #setwd("/home/buskut/") #need to set this
 ```
 

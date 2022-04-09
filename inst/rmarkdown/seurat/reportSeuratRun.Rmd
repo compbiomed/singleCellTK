@@ -82,12 +82,12 @@ opts_chunk$set(
 <!-- Compute -->
 
 <!-- Normalization -->
-```{r, echo=FALSE, results='asis', warning=FALSE, message=FALSE}
+```{r, echo=FALSE, results='asis', message=FALSE}
 resNormalization <- knitr::knit_child(paste0(getwd(), "/inst/rmarkdown/seurat/", 'reportSeuratNormalizeData.Rmd'), quiet = TRUE)
 ```
 
 <!-- Feature Selection -->
-```{r, echo=FALSE, results='asis', warning=FALSE, message=FALSE}
+```{r, echo=FALSE, results='asis'}
 runHVG <- TRUE
 plotHVG <- TRUE
 resFeatureSelection <- knitr::knit_child(paste0(getwd(), "/inst/rmarkdown/seurat/", 'reportSeuratFeatureSelection.Rmd'), quiet = TRUE)
@@ -103,7 +103,7 @@ resScaleData <- knitr::knit_child(paste0(getwd(), "/inst/rmarkdown/seurat/", 're
 runDimRed <- TRUE
 plotJackStraw <- TRUE
 plotElbowPlot <- TRUE
-plotHeatmaps <- FALSE
+plotHeatmaps <- TRUE
 significant_PC <- 10
 
 resDimRed <- knitr::knit_child(paste0(getwd(), "/inst/rmarkdown/seurat/", 'reportSeuratDimRed.Rmd'), quiet = TRUE)
@@ -112,9 +112,11 @@ resDimRed <- knitr::knit_child(paste0(getwd(), "/inst/rmarkdown/seurat/", 'repor
 <!-- Clustering -->
 ```{r, echo=FALSE, results='asis', warning=FALSE, message=FALSE}
 runClustering <- TRUE
-minResolution <- 0.3
+plotTSNE <- TRUE
+plotUMAP <- TRUE
+minResolution <- 0.3 
 maxResolution <- 1.5
-numClusters <- 10
+numClusters <- 10 # this should be computed by the code itself (do later)
 showClusterDesc <- TRUE
 
 resClustering <- knitr::knit_child(paste0(getwd(), "/inst/rmarkdown/seurat/", 'reportSeuratClustering.Rmd'), quiet = TRUE)

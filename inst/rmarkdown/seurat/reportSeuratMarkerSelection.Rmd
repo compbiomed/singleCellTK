@@ -67,7 +67,7 @@ heading <- "##"
 ```{r, echo=FALSE, results='asis', warning=FALSE, message=FALSE, eval=!runMarkerSelection}
 top10 <- data.frame(gene.id = Pre_selected_markers, cluster1 = 1)
 data.markers <- data.frame(gene.id = Pre_selected_markers, cluster1 = 1)
-heading <- NULL
+heading <- ""
 ```
 
 ```{r, echo=FALSE, results='asis', warning=FALSE, message=FALSE, eval=plotMarkerSelection}
