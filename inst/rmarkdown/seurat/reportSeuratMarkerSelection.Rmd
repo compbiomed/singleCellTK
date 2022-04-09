@@ -95,7 +95,9 @@ space <- "
 
 
 for (currentCluster in 0:(numClusters-1)) {
-  cat(sprintf(template, paste0("Cluster ", currentCluster)))
+  if(numClusters > 1){
+    cat(sprintf(template, paste0("Cluster ", unique(top10$cluster1)[currentCluster+1])))
+  }
   selectedFeatures <- top10[top10$cluster1 == unique(data.markers$cluster1)[currentCluster+1], ]$gene.id
   plots <- plotSeuratGenes(data, plotType = "feature", features = selectedFeatures, groupVariable = selectedOption, ncol = 1, cols = c("grey", "blue"))
   p <- singleCellTK:::.ggSCTKTheme(patchwork::wrap_plots(plots, ncol = 2))
@@ -120,7 +122,9 @@ space <- "
 
 
 for (currentCluster in 0:(numClusters-1)) {
-  cat(sprintf(template, paste0("Cluster ", currentCluster)))
+  if(numClusters > 1){
+    cat(sprintf(template, paste0("Cluster ", unique(top10$cluster1)[currentCluster+1])))
+  }
   selectedFeatures <- top10[top10$cluster1 == unique(data.markers$cluster1)[currentCluster+1], ]$gene.id
   plots <- plotSeuratGenes(data, plotType = "ridge", features = selectedFeatures, groupVariable = selectedOption, ncol = 1, cols = c("grey", "blue"))
   p <- singleCellTK:::.ggSCTKTheme(patchwork::wrap_plots(plots, ncol = 2))
@@ -145,7 +149,9 @@ space <- "
 
 
 for (currentCluster in 0:(numClusters-1)) {
-  cat(sprintf(template, paste0("Cluster ", currentCluster)))
+  if(numClusters > 1){
+    cat(sprintf(template, paste0("Cluster ", unique(top10$cluster1)[currentCluster+1])))
+  }
   selectedFeatures <- top10[top10$cluster1 == unique(data.markers$cluster1)[currentCluster+1], ]$gene.id
   plots <- plotSeuratGenes(data, plotType = "violin", features = selectedFeatures, groupVariable = selectedOption, ncol = 1, cols = c("grey", "blue"))
   p <- singleCellTK:::.ggSCTKTheme(patchwork::wrap_plots(plots, ncol = 2))
