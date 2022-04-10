@@ -52,7 +52,7 @@ Before the data can be used in the downstream analysis, normalization techniques
 
 > The input raw data matrix *`r assayNames(data)[1]`* was normalized using a global-scaling normalization method *LogNormalize* that divides the gene expression measurements by the total expression for each cell, multiplies the resultant values with a scaling factor of *10,000* and log-transforms the result. 
 
-```{r Seurat Normalization, message=FALSE, warning=FALSE}
+```{r Seurat Normalization, message=FALSE, warning=FALSE, eval=(is.null(metadata(data)$seurat$normAssay))}
 normalizeParams <- list(
   inSCE = data,
   normalizationMethod = "LogNormalize",
@@ -62,7 +62,11 @@ normalizeParams <- list(
 data <- do.call("runSeuratNormalizeData", normalizeParams)
 ```
 
-```{r, include=FALSE}
+```{r, include=FALSE, eval=(is.null(metadata(data)$seurat$normAssay))}
 normalizeParams$inSCE <- NULL
 metadata(data)$seurat$sctk$report$normalizeParams <- normalizeParams
+```
+
+```{r, results="asis", eval=(!is.null(metadata(data)$seurat$normAssay))}
+cat("Restored normalized data")
 ```

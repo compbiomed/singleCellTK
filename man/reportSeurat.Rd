@@ -20,7 +20,19 @@ reportSeurat(
   pc.count = 10,
   showSession = TRUE,
   pdf = TRUE,
-  jackStraw = FALSE
+  runHVG = TRUE,
+  plotHVG = TRUE,
+  runDimRed = TRUE,
+  plotJackStraw = FALSE,
+  plotElbowPlot = TRUE,
+  plotHeatmaps = TRUE,
+  runClustering = TRUE,
+  plotTSNE = TRUE,
+  plotUMAP = TRUE,
+  minResolution = 0.3,
+  maxResolution = 1.5,
+  runMSClusters = TRUE,
+  runMSBioGroup = TRUE
 )
 }
 \arguments{

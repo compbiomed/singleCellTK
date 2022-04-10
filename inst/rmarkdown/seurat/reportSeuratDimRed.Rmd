@@ -32,11 +32,11 @@ editor_options:
 ---
 ```{r}
 # Check control variables
-if(!exists("runDimRed")) runDimRed <- TRUE
-if(!exists("plotJackStraw")) plotJackStraw <- FALSE
-if(!exists("plotElbowPlot")) plotElbowPlot <- TRUE
-if(!exists("plotHeatmaps")) plotHeatmaps <- TRUE
-if(!exists("significant_PC")) significant_PC <- 10
+# if(!exists("runDimRed")) runDimRed <- TRUE
+# if(!exists("plotJackStraw")) plotJackStraw <- FALSE
+# if(!exists("plotElbowPlot")) plotElbowPlot <- TRUE
+# if(!exists("plotHeatmaps")) plotHeatmaps <- TRUE
+# if(!exists("significant_PC")) significant_PC <- 10
 ```
 
 ```{r, message=FALSE, warning=FALSE}

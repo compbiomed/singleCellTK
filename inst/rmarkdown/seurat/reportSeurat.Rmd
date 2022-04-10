@@ -15,7 +15,19 @@ params:
   outputPath: !r NULL
   showSession: TRUE
   pdf: TRUE
-  jackStraw: FALSE
+  runHVG: TRUE
+  plotHVG: TRUE
+  runDimRed: TRUE
+  plotJackStraw: FALSE
+  plotElbowPlot: TRUE
+  plotHeatmaps: TRUE
+  runClustering: TRUE
+  plotTSNE: TRUE
+  plotUMAP: TRUE
+  minResolution: 0.3
+  maxResolution: 1.5 
+  runMSClusters: TRUE
+  runMSBioGroup: TRUE
 output:
   html_document:
     toc: yes
@@ -33,30 +45,57 @@ editor_options:
 
 ```{r}
 # Global report options
-runHVG <- TRUE
-plotHVG <- TRUE
+# runHVG <- TRUE
+# plotHVG <- TRUE
+# 
+# runDimRed <- TRUE
+# plotJackStraw <- FALSE
+# plotElbowPlot <- TRUE
+# plotHeatmaps <- FALSE
+# significant_PC <- 10
+# 
+# runClustering <- TRUE
+# plotTSNE <- TRUE
+# plotUMAP <- TRUE
+# minResolution <- 0.3
+# maxResolution <- 1.5
+# numClusters <- 10
+# showClusterDesc <- TRUE
+# headingCluster <- "" #use from here
+# 
+# runMarkerSelection <- TRUE
+# plotMarkerSelection <- TRUE
+# numClusters <- 1 #whats this?
+# selectedOption <- params$biological.group
+# titleMarkerPlots <- paste0("Marker Selection for ", selectedOption)
+# countFeatures <- 10
 
-runDimRed <- TRUE
-plotJackStraw <- FALSE
-plotElbowPlot <- TRUE
-plotHeatmaps <- FALSE
-significant_PC <- 10
+group <- params$biological.group
+selected_phenotypes <- params$phenotype.groups
+Pre_selected_markers <- params$selected.markers
+seurat.selected.resolution <- as.numeric(params$clustering.resolution)
+seurat.selected.features.numbers <- as.numeric(params$variable.features)
+initial.PC.numbers <- as.numeric(params$pc.count)
+data <- params$sce
+sampleNames <- unique(colData(data)[[group]])
+outputPath <- params$outputPath
+showSession <- params$showSession
+pdf <- params$pdf
+  
+runHVG <- params$runHVG
+plotHVG <- params$plotHVG
+runDimRed <- params$runDimRed
+plotJackStraw <- params$plotJackStraw
+plotElbowPlot <- params$plotElbowPlot
+plotHeatmaps <- params$plotHeatmaps
+runClustering <- params$runClustering
+plotTSNE <- params$plotTSNE
+plotUMAP <- params$plotUMAP
+minResolution <- params$minResolution
+maxResolution <-params$maxResolution
 
-runClustering <- TRUE
-plotTSNE <- TRUE
-plotUMAP <- TRUE
-minResolution <- 0.3
-maxResolution <- 1.5
-numClusters <- 10
-showClusterDesc <- TRUE
-headingCluster <- "" #use from here
-
-runMarkerSelection <- TRUE
-plotMarkerSelection <- TRUE
-numClusters <- 1 #whats this?
-selectedOption <- params$biological.group
-titleMarkerPlots <- paste0("Marker Selection for ", selectedOption)
-countFeatures <- 10
+runMSClusters <- params$runMSClusters
+runMSBioGroup <- params$runMSBioGroup
 ```
 
 ```{r}

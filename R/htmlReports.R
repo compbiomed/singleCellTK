@@ -1128,7 +1128,20 @@ reportSeurat <- function(inSCE,
                                         pc.count = 10,
                                         showSession = TRUE,
                                         pdf = TRUE,
-                                        jackStraw = FALSE){
+                         runHVG = TRUE,
+                         plotHVG = TRUE,
+                         runDimRed = TRUE,
+                         plotJackStraw = FALSE,
+                         plotElbowPlot = TRUE,
+                         plotHeatmaps = TRUE,
+                         runClustering = TRUE,
+                         plotTSNE = TRUE,
+                         plotUMAP = TRUE,
+                         minResolution = 0.3,
+                         maxResolution = 1.5,
+                         runMSClusters = TRUE,
+                         runMSBioGroup = TRUE
+                         ){
   
   if(is.null(biological.group)){
     stop("Must specify atleast one biological.group that is present in the colData of input object.")
@@ -1166,7 +1179,19 @@ reportSeurat <- function(inSCE,
                       outputPath = outputDir,
                       showSession = showSession,
                       pdf = pdf,
-                      jackStraw = jackStraw
+                      runHVG = runHVG,
+                      plotHVG = plotHVG,
+                      runDimRed = runDimRed,
+                      plotJackStraw = plotJackStraw,
+                      plotElbowPlot = plotElbowPlot,
+                      plotHeatmaps = plotHeatmaps,
+                      runClustering = runClustering,
+                      plotTSNE = plotTSNE,
+                      plotUMAP = plotUMAP,
+                      minResolution = minResolution,
+                      maxResolution = maxResolution,
+                      runMSClusters = runMSClusters,
+                      runMSBioGroup = runMSBioGroup
                     ),
                     output_file = outputFile,
                     output_dir = outputDir,

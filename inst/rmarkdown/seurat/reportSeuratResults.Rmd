@@ -73,11 +73,8 @@ A final resolution of **`r seurat.selected.resolution`** was selected for downst
 
 <!-- Clustering -->
 ```{r, echo=FALSE, results='hide', warning=FALSE, message=FALSE}
-runClustering <- TRUE
-plotTSNE <- TRUE
-plotUMAP <- TRUE
-minResolution <- 0.8
-maxResolution <- 0.8
+minResolution <- seurat.selected.resolution
+maxResolution <- seurat.selected.resolution
 numClusters <- 10 #remove this later
 showClusterDesc <- FALSE
 
@@ -92,6 +89,7 @@ cat(resClustering, sep = '\n')
 ```{r preselected markers, echo=FALSE, results='asis', warning=FALSE, message=FALSE}
 runMarkerSelection <- FALSE
 plotMarkerSelection <- TRUE
+groupTitle <- NULL
 numClusters <- 1
 selectedOption <- paste0("Seurat_louvain_Resolution", seurat.selected.resolution)
 titleMarkerPlots <- "Plot Selected Features"
@@ -102,7 +100,7 @@ cat(res, sep = '\n')
 ```
 
 <!-- Marker Selection (Clusters) -->
-```{r markerSelection Clusters, echo=FALSE, results='asis', warning=FALSE, message=FALSE}
+```{r markerSelection Clusters, echo=FALSE, results='asis', warning=FALSE, message=FALSE, eval=runMSClusters}
 runMarkerSelection <- TRUE
 plotMarkerSelection <- TRUE
 numClusters <- length(unique(colData(data)[[paste0("Seurat_louvain_Resolution", seurat.selected.resolution)]]))
@@ -115,7 +113,7 @@ cat(res, sep = '\n')
 ```
 
 <!-- Marker Selection (Group) -->
-```{r, echo=FALSE, results='asis', warning=FALSE, message=FALSE}
+```{r, echo=FALSE, results='asis', warning=FALSE, message=FALSE, eval=runMSBioGroup}
 runMarkerSelection <- TRUE
 plotMarkerSelection <- TRUE
 numClusters <- length(unique(colData(data)[[group]]))
