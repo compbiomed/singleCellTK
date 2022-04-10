@@ -65,12 +65,14 @@ The clustering results can then be visualized using non-linear dimensionality re
 ```
 
 <!-- Compute -->
-```{r, warning=FALSE, message=FALSE, eval=runClustering}
+```{r, results='asis', warning=FALSE, message=FALSE,  eval = !(runClustering && all(paste0("Seurat_louvain_Resolution", seq(from = minResolution, to = maxResolution, by=0.1)) %in% names(colData(data))))}
 j <- minResolution
 for(i in 1:(((maxResolution-minResolution)*10)+1)){
   data <- runSeuratFindClusters(data, useReduction = "pca", resolution = j, verbose = FALSE)
   j <- j + 0.1
 }
+
+cat("run clustering")
 ```
 
 <!-- Plot -->
@@ -94,7 +96,7 @@ if(!showClusterDesc){
 ```{r, echo=FALSE, results='asis', warning=FALSE, message=FALSE, eval=plotTSNE}
 cat(headingTSNEUMAP, " tSNE {.tabset .tabset-pills -}\n\n")
 
-data <- runSeuratTSNE(data, useReduction = "pca", dims = significant_PC)
+data <- runSeuratTSNE(data, useReduction = "pca", dims = significant_PC) #tsne and umap to do
 j <- minResolution
 
 for(i in 1:(((maxResolution-minResolution)*10)+1)){

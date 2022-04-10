@@ -52,9 +52,11 @@ Standardizing gene expression values is considered necessary to ensure that dime
 
 > The variable features identified previously were scaled using *z-score* scaling method and the output expression values were clipped to maximum and minimum value of 10 & -10 respectively.
 
-```{r Seurat Scaling Data, warning=FALSE}
+```{r Seurat Scaling Data, warning=FALSE, eval=(is.null(metadata(data)$seurat$scaledAssay))}
 data <- runSeuratScaleData(inSCE = data, model = "linear", verbose = FALSE)
+cat("run scaledAssay")
 ```
+
 ```{r, include=FALSE}
 scaleParams <- list(
   model = "linear", 

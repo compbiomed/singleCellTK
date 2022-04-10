@@ -133,6 +133,9 @@ runSeuratScaleData <- function(inSCE, useAssay = "seuratNormData",
                                     verbose = verbose)
   inSCE <- .updateAssaySCE(inSCE, seuratObject, scaledAssayName, "scale.data")
   inSCE <- .addSeuratToMetaDataSCE(inSCE, seuratObject)
+  inSCE@metadata$seurat$scaledAssay <- scaledAssayName
+  inSCE <- expSetDataTag(inSCE = inSCE, assayType = "scaled",
+                         assays = scaledAssayName)
   return(inSCE)
 }
 

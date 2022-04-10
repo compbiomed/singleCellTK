@@ -59,13 +59,14 @@ library(singleCellTK)
 ## PCA {.tabset .tabset-fade}
 To reduce the adverse effects of the inherent technical noise in single-cell data on downstream clustering, reduced dimensions are computed where each dimension represents a set of correlated features. However, an important task is to select the number of components that should be utilized by the downstream methods. To select the number of principal components that should be used in the downstream analysis, JackStraw plot and Elbow plot visualized below provide convenience in the selection of the significant components that contain most of the variability.  
 
-```{r, warning=FALSE, eval = runDimRed}
+```{r, results='asis', warning=FALSE, eval = !(runDimRed && !is.null(metadata(data)$seurat$obj@reductions$pca))}
 pcaParams <- list(
   inSCE = data,
   nPCs = pc.count,
   verbose = FALSE)
 data <- do.call("runSeuratPCA", pcaParams)
 
+cat("pca run")
 ```
 
 ```{r, warning=FALSE, eval = plotJackStraw}
@@ -128,7 +129,7 @@ if (!exists("significant_PC") || significant_PC == 0){
 PC.separated.height <- 3.5 * ceiling(pc.count/3)
 ```
 
-```{r, include=TRUE}
+```{r, include=TRUE, eval = !(runDimRed && !is.null(metadata(data)$seurat$obj@reductions$pca))}
 pcaParams$inSCE <- NULL
 pcaParams$significant_PC <- significant_PC
 metadata(data)$seurat$sctk$report$pcaParams <- pcaParams

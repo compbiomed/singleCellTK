@@ -60,6 +60,8 @@ normalizeParams <- list(
   verbose = FALSE
 )
 data <- do.call("runSeuratNormalizeData", normalizeParams)
+
+cat("normalized data run")
 ```
 
 ```{r, include=FALSE, eval=(is.null(metadata(data)$seurat$normAssay))}
@@ -67,6 +69,3 @@ normalizeParams$inSCE <- NULL
 metadata(data)$seurat$sctk$report$normalizeParams <- normalizeParams
 ```
 
-```{r, results="asis", eval=(!is.null(metadata(data)$seurat$normAssay))}
-cat("Restored normalized data")
-```
