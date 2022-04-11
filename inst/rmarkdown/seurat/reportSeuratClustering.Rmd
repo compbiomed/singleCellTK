@@ -93,10 +93,14 @@ if(!showClusterDesc){
 }
 ```
 
+```{r, results='asis', eval = !(plotTSNE && !is.null(metadata(data)$seurat$obj@reductions$tsne))}
+data <- runSeuratTSNE(data, useReduction = "pca", dims = significant_PC)
+cat("run tsne")
+```
+
 ```{r, echo=FALSE, results='asis', warning=FALSE, message=FALSE, eval=plotTSNE}
 cat(headingTSNEUMAP, " tSNE {.tabset .tabset-pills -}\n\n")
 
-data <- runSeuratTSNE(data, useReduction = "pca", dims = significant_PC) #tsne and umap to do
 j <- minResolution
 
 for(i in 1:(((maxResolution-minResolution)*10)+1)){
@@ -125,10 +129,14 @@ for(i in 1:(((maxResolution-minResolution)*10)+1)){
 
 ```
 
+```{r, results='asis', eval = !(plotUMAP && !is.null(metadata(data)$seurat$obj@reductions$umap))}
+data <- runSeuratUMAP(data, useReduction = "pca", dims = significant_PC)
+cat("run umap")
+```
+
 ```{r, echo=FALSE, results='asis', warning=FALSE, message=FALSE, eval=plotUMAP}
 cat(headingTSNEUMAP, " UMAP {.tabset .tabset-pills -}\n\n")
 
-data <- runSeuratUMAP(data, useReduction = "pca", dims = significant_PC)
 j <- minResolution
 
 for(i in 1:(((maxResolution-minResolution)*10)+1)){
