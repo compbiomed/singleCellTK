@@ -3648,7 +3648,7 @@ shinyServer(function(input, output, session) {
         isolate({
          plotTSCANPseudotimeHeatmap(inSCE = vals$counts, 
                                    pathIndex = input$pathIndexx, 
-                                   topN = 10)
+                                   topN = 5)
           })
       })
       })

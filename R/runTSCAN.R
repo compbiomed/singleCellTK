@@ -108,7 +108,7 @@ setMethod("listTSCANResults", "SingleCellExperiment", function(x){
 #' sce <- singleCellTK::scaterlogNormCounts(sce, assayName = "logcounts")
 #' sce <- scater::runPCA(sce)
 #' sce <- scater::runTSNE (sce, dimred = "PCA")
-#' sce <- runTSCAN (sce, useReducedDim = "PCA", seed = NULL)
+#' sce <- runTSCAN (inSCE = sce, useReducedDim = "PCA", seed = NULL)
 
 runTSCAN <- function(inSCE, useReducedDim, cluster = NULL, seed = 12345) {  
   if (is.null(seed)) {
@@ -164,8 +164,8 @@ runTSCAN <- function(inSCE, useReducedDim, cluster = NULL, seed = 12345) {
 #' @author Nida Pervaiz
 #' @importFrom utils head
 #' @examples
-#' sce <- runTSCAN (sce, useReducedDim = "PCA", seed = NULL)
-#' plotTSCANResults(sce, useReducedDim = "TSNE")
+#' sce <- runTSCAN (inSCE = sce, useReducedDim = "PCA", seed = NULL)
+#' plotTSCANResults(inSCE = sce, useReducedDim = "TSNE")
 
 plotTSCANResults <- function(inSCE, useReducedDim){
   results <- getTSCANResults(inSCE, analysisName = "Pseudotime")
@@ -198,8 +198,8 @@ plotTSCANResults <- function(inSCE, useReducedDim){
 #' @author Nida Pervaiz
 #'
 #' @examples
-#' sce <- runTSCAN (sce, useReducedDim = "PCA", seed = NULL)
-#' sce <- runTSCANDEG(sce, pathIndex = 6, discardCluster = 8)
+#' sce <- runTSCAN (inSCE = sce, useReducedDim = "PCA", seed = NULL)
+#' sce <- runTSCANDEG(inSCE = sce, pathIndex = 6, discardCluster = 8)
 
 runTSCANDEG <- function(inSCE, pathIndex, useAssay = "logcounts", discardCluster = NULL, log2fcThreshold = 0 ) {  
   
@@ -255,9 +255,9 @@ runTSCANDEG <- function(inSCE, pathIndex, useAssay = "logcounts", discardCluster
 #' @author Nida Pervaiz
 #' @importFrom utils head
 #' @examples
-#' sce <- runTSCAN (sce, useReducedDim = "PCA", seed = NULL)
-#' sce <- runTSCANDEG(sce, pathIndex = 6, discardCluster = 8)
-#' plotTSCANPseudotimeHeatmap(sce, pathIndex = 6, topN = 10)
+#' sce <- runTSCAN (inSCE = sce, useReducedDim = "PCA", seed = NULL)
+#' sce <- runTSCANDEG(inSCE = sce, pathIndex = 6, discardCluster = 8)
+#' plotTSCANPseudotimeHeatmap(inSCE = sce, pathIndex = 6, topN = 10)
 
 plotTSCANPseudotimeHeatmap <- function(inSCE, pathIndex, topN = 50){
   
@@ -305,9 +305,9 @@ plotTSCANPseudotimeHeatmap <- function(inSCE, pathIndex, topN = 50){
 #' @author Nida Pervaiz
 #' @importFrom utils head
 #' @examples
-#' sce <- runTSCAN (sce, useReducedDim = "PCA", seed = NULL)
-#' sce <- runTSCANDEG(sce, pathIndex = 6, discardCluster = 8)
-#' plotTSCANPseudotimeGenes(sce, pathIndex = 6, direction = "increasing")
+#' sce <- runTSCAN (inSCE = sce, useReducedDim = "PCA", seed = NULL)
+#' sce <- runTSCANDEG(inSCE = sce, pathIndex = 6, discardCluster = 8)
+#' plotTSCANPseudotimeGenes(inSCE = sce, pathIndex = 6, direction = "increasing")
 
 plotTSCANPseudotimeGenes <- function (inSCE, pathIndex, direction = c("increasing", "decreasing"), n = 10){
   
@@ -347,9 +347,9 @@ plotTSCANPseudotimeGenes <- function (inSCE, pathIndex, direction = c("increasin
 #' @author Nida Pervaiz
 #'
 #' @examples
-#' sce <- runTSCAN (sce, useReducedDim = "PCA", seed = NULL)
-#' sce <- runTSCANDEG(sce, pathIndex = 6, discardCluster = 8)
-#' sce <- runTSCANClusterDEAnalysis(sce, useClusters = 3)
+#' sce <- runTSCAN (inSCE = sce, useReducedDim = "PCA", seed = NULL)
+#' sce <- runTSCANDEG(inSCE = sce, pathIndex = 6, discardCluster = 8)
+#' sce <- runTSCANClusterDEAnalysis(inSCE = sce, useClusters = 3)
 
 runTSCANClusterDEAnalysis <- function(inSCE, useClusters , useAssay = "logcounts", fdrThreshold = 0.05){ 
   
@@ -423,10 +423,10 @@ runTSCANClusterDEAnalysis <- function(inSCE, useClusters , useAssay = "logcounts
 #' @author Nida Pervaiz
 #' @importFrom utils head
 #' @examples
-#' sce <- runTSCAN (sce, useReducedDim = "PCA", seed = NULL)
-#' sce <- runTSCANDEG(sce, pathIndex = 6, discardCluster = 8)
-#' sce <- runTSCANClusterDEAnalysis(sce, useClusters = 3)
-#' plotClusterPseudo(sce, useClusters = 3, pathIndex = NULL, useReducedDim = "TSNE")
+#' sce <- runTSCAN (inSCE = sce, useReducedDim = "PCA", seed = NULL)
+#' sce <- runTSCANDEG(inSCE = sce, pathIndex = 6, discardCluster = 8)
+#' sce <- runTSCANClusterDEAnalysis(inSCE = sce, useClusters = 3)
+#' plotClusterPseudo(inSCE = sce, useClusters = 3, pathIndex = NULL, useReducedDim = "TSNE")
 
 plotClusterPseudo <- function(inSCE, useClusters, pathIndex = NULL, useReducedDim){
   
@@ -470,10 +470,10 @@ plotClusterPseudo <- function(inSCE, useClusters, pathIndex = NULL, useReducedDi
 #' @author Nida Pervaiz
 #' @importFrom utils head
 #' @examples
-#' sce <- runTSCAN (sce, useReducedDim = "PCA", seed = NULL)
-#' sce <- runTSCANDEG(sce, pathIndex = 6, discardCluster = 8)
-#' sce <- runTSCANClusterDEAnalysis(sce, useClusters = 3)
-#' plotTSCANDEgenes(sce, geneSymbol = "CD74", useReducedDim = "TSNE")
+#' sce <- runTSCAN (inSCE = sce, useReducedDim = "PCA", seed = NULL)
+#' sce <- runTSCANDEG(inSCE = sce, pathIndex = 6, discardCluster = 8)
+#' sce <- runTSCANClusterDEAnalysis(inSCE = sce, useClusters = 3)
+#' plotTSCANDEgenes(inSCE = sce, geneSymbol = "CD74", useReducedDim = "TSNE")
 
 plotTSCANDEgenes <- function(inSCE, geneSymbol, useClusters=NULL, useReducedDim){
   
