@@ -27,9 +27,9 @@ A \link[SingleCellExperiment]{SingleCellExperiment} object with DE genes that ar
 Wrapper for looking for differences in expression between paths of a branched trajectory. The differential expression analysis may highlight genes which are responsible for the branching event
 }
 \examples{
-sce <- runTSCAN (sce, useReducedDim = "PCA", seed = NULL)
-sce <- runTSCANDEG(sce, pathIndex = 6, discardCluster = 8)
-sce <- runTSCANClusterDEAnalysis(sce, useClusters = 3)
+sce <- runTSCAN (inSCE = sce, useReducedDim = "PCA", seed = NULL)
+sce <- runTSCANDEG(inSCE = sce, pathIndex = 6, discardCluster = 8)
+sce <- runTSCANClusterDEAnalysis(inSCE = sce, useClusters = 3)
 }
 \author{
 Nida Pervaiz

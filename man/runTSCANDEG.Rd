@@ -30,8 +30,8 @@ A \link[SingleCellExperiment]{SingleCellExperiment} object with genes that decre
 Wrapper for identifying genes with significant changes with respect to one of the TSCAN pseudotimes
 }
 \examples{
-sce <- runTSCAN (sce, useReducedDim = "PCA", seed = NULL)
-sce <- runTSCANDEG(sce, pathIndex = 6, discardCluster = 8)
+sce <- runTSCAN (inSCE = sce, useReducedDim = "PCA", seed = NULL)
+sce <- runTSCANDEG(inSCE = sce, pathIndex = 6, discardCluster = 8)
 }
 \author{
 Nida Pervaiz

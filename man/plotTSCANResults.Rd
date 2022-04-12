@@ -18,8 +18,8 @@ A plot with the pseudotime ordering of the cells by projecting them onto the MST
 A wrapper function which visualizes outputs from the runTSCAN function. Plots the pseudotime ordering of the cells by projecting them onto the MST
 }
 \examples{
-sce <- runTSCAN (sce, useReducedDim = "PCA", seed = NULL)
-plotTSCANResults(sce, useReducedDim = "TSNE")
+sce <- runTSCAN (inSCE = sce, useReducedDim = "PCA", seed = NULL)
+plotTSCANResults(inSCE = sce, useReducedDim = "TSNE")
 }
 \author{
 Nida Pervaiz

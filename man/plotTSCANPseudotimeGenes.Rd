@@ -27,9 +27,9 @@ A plot with the top genes that increase/decrease in expression with increasing p
 A wrapper function which visualizes outputs from the runTSCANDEG function. Plots the genes that increase or decrease in expression with increasing pseudotime along the path in the MST
 }
 \examples{
-sce <- runTSCAN (sce, useReducedDim = "PCA", seed = NULL)
-sce <- runTSCANDEG(sce, pathIndex = 6, discardCluster = 8)
-plotTSCANPseudotimeGenes(sce, pathIndex = 6, direction = "increasing")
+sce <- runTSCAN (inSCE = sce, useReducedDim = "PCA", seed = NULL)
+sce <- runTSCANDEG(inSCE = sce, pathIndex = 6, discardCluster = 8)
+plotTSCANPseudotimeGenes(inSCE = sce, pathIndex = 6, direction = "increasing")
 }
 \author{
 Nida Pervaiz

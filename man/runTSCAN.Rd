@@ -26,7 +26,7 @@ sce <- singleCellTK::importExampleData("pbmc3k")
 sce <- singleCellTK::scaterlogNormCounts(sce, assayName = "logcounts")
 sce <- scater::runPCA(sce)
 sce <- scater::runTSNE (sce, dimred = "PCA")
-sce <- runTSCAN (sce, useReducedDim = "PCA", seed = NULL)
+sce <- runTSCAN (inSCE = sce, useReducedDim = "PCA", seed = NULL)
 }
 \author{
 Nida Pervaiz

@@ -22,10 +22,10 @@ A plots with the TSCAN-derived pseudotimes of all the cells along the path belon
 A wrapper function which visualizes outputs from the runTSCANClusterDEAnalysis function. Each point is a cell in the cluster and is colored by its pseudotime value along the path to which it was assigned.
 }
 \examples{
-sce <- runTSCAN (sce, useReducedDim = "PCA", seed = NULL)
-sce <- runTSCANDEG(sce, pathIndex = 6, discardCluster = 8)
-sce <- runTSCANClusterDEAnalysis(sce, useClusters = 3)
-plotClusterPseudo(sce, useClusters = 3, pathIndex = NULL, useReducedDim = "TSNE")
+sce <- runTSCAN (inSCE = sce, useReducedDim = "PCA", seed = NULL)
+sce <- runTSCANDEG(inSCE = sce, pathIndex = 6, discardCluster = 8)
+sce <- runTSCANClusterDEAnalysis(inSCE = sce, useClusters = 3)
+plotClusterPseudo(inSCE = sce, useClusters = 3, pathIndex = NULL, useReducedDim = "TSNE")
 }
 \author{
 Nida Pervaiz

@@ -22,10 +22,10 @@ A plots with the cells colored by the expression of a gene of interest.
 A wrapper function which plots all the cells in the cluster containing the branch point of the MST in the dataset. Each point is a cell colored by the expression of a gene of interest and the relevant edges of the MST are overlaid on top.
 }
 \examples{
-sce <- runTSCAN (sce, useReducedDim = "PCA", seed = NULL)
-sce <- runTSCANDEG(sce, pathIndex = 6, discardCluster = 8)
-sce <- runTSCANClusterDEAnalysis(sce, useClusters = 3)
-plotTSCANDEgenes(sce, geneSymbol = "CD74", useReducedDim = "TSNE")
+sce <- runTSCAN (inSCE = sce, useReducedDim = "PCA", seed = NULL)
+sce <- runTSCANDEG(inSCE = sce, pathIndex = 6, discardCluster = 8)
+sce <- runTSCANClusterDEAnalysis(inSCE = sce, useClusters = 3)
+plotTSCANDEgenes(inSCE = sce, geneSymbol = "CD74", useReducedDim = "TSNE")
 }
 \author{
 Nida Pervaiz
