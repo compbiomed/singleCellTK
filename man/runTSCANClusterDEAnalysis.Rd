@@ -16,6 +16,8 @@ runTSCANClusterDEAnalysis(
 
 \item{useClusters}{Choose the cluster containing the branch point in the data in order to recompute the pseudotimes so that the root lies at the cluster center, allowing us to detect genes that are associated with the divergence of the branches.}
 
+\item{useAssay}{Character. The name of the assay to use. This assay should contain log normalized counts.}
+
 \item{fdrThreshold}{Only out put DEGs with FDR value smaller than this value. Default 0.05}
 }
 \value{
@@ -25,8 +27,8 @@ A \link[SingleCellExperiment]{SingleCellExperiment} object with DE genes that ar
 Wrapper for looking for differences in expression between paths of a branched trajectory. The differential expression analysis may highlight genes which are responsible for the branching event
 }
 \examples{
-sce <- runTSCAN (sce, reducedDimName = "PCA", seed = NULL)
-sce <- runTSCANDEG(sce, pathIndex = 1, discardCluster = 8)
+sce <- runTSCAN (sce, useReducedDim = "PCA", seed = NULL)
+sce <- runTSCANDEG(sce, pathIndex = 6, discardCluster = 8)
 sce <- runTSCANClusterDEAnalysis(sce, useClusters = 3)
 }
 \author{

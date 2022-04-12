@@ -1,13 +1,26 @@
 ###################################################
 ###  Setting accessor functions
 ###################################################
-#' @rdname s4_methods
+#' @title getTSCANResults accessor function 
+#' @param x Input \linkS4class{SingleCellExperiment} object.
+#'
+#' @param analysisName Algorithm name implemented
+#' @param pathName Sub folder name within the analysisName
+#'
+#' @export
+#' @rdname getTSCANResults
+#' 
 setGeneric("getTSCANResults", signature = "x",
            function(x, analysisName=NULL, pathName = NULL) {standardGeneric("getTSCANResults")}
 )
 
 
-#' @rdname s4_methods
+#' @title getTSCANResults accessor function 
+#' @param x Input \linkS4class{SingleCellExperiment} object.
+#'
+#' @export
+#' @rdname getTSCANResults
+#' 
 setMethod("getTSCANResults", signature(x = "SingleCellExperiment"), function(x, analysisName=NULL, pathName = NULL){
   result.names <- listTSCANResults(x)
   if(!analysisName %in% result.names) {
@@ -24,11 +37,20 @@ setMethod("getTSCANResults", signature(x = "SingleCellExperiment"), function(x, 
   return(results)
 })
 
-#' @rdname s4_methods
+#' @title getTSCANResults accessor function 
+#' @param x Input \linkS4class{SingleCellExperiment} object.
+#'
+#' @param analysisName Algorithm name implemented
+#' @param pathName Sub folder name within the analysisName
+#' @param value Value to be stored within the pathName or analysisName
+#'
+#' @export
+#' @rdname getTSCANResults
+#' 
 setGeneric("getTSCANResults<-", function(x, analysisName, pathName = NULL, value) standardGeneric("getTSCANResults<-"))
 
 
-#' @rdname s4_methods
+#' @rdname getTSCANResults
 setReplaceMethod("getTSCANResults", signature(x = "SingleCellExperiment"), function(x, analysisName, pathName = NULL, value) {
   
   if (is.null(pathName)){
@@ -42,12 +64,20 @@ setReplaceMethod("getTSCANResults", signature(x = "SingleCellExperiment"), funct
   return(x)
 })
 
-#' @rdname s4_methods
+#' @title getTSCANResults accessor function 
+#' @param x Input \linkS4class{SingleCellExperiment} object.
+#'
+#' @export
+#' @rdname getTSCANResults
 setGeneric("listTSCANResults", signature = "x",
            function(x) {standardGeneric("listTSCANResults")}
 )
 
-#' @rdname s4_methods
+#' @title getTSCANResults accessor function 
+#' @param SingleCellExperiment Input \linkS4class{SingleCellExperiment} object.
+#'
+#' @export
+#' @rdname getTSCANResults
 setMethod("listTSCANResults", "SingleCellExperiment", function(x){
   all.results <- S4Vectors::metadata(x)$sctk$Traj$TSCAN
   if(is.null(all.results) || length(names(all.results)) == 0) {
@@ -66,29 +96,24 @@ setMethod("listTSCANResults", "SingleCellExperiment", function(x){
 #'
 #' @param inSCE Input \linkS4class{SingleCellExperiment} object.
 #' @param cluster Grouping for each cell in inSCE. A user may input a vector equal length to the number of the samples in the SingleCellExperiment object, or can be retrieved from the colData slot. Default NULL.
-#' @param useAssay Character. The name of the assay to use. This assay should contain log normalized counts.
 #' @param seed An integer. Set the seed for random process that happens only in "random" generation. Default 12345.
-#' @param reducedDimName Character. Saved dimension reduction name in the SingleCellExperiment object. Required. Used for specifying which low-dimension representation to perform the clustering algorithm and building nearest neighbor graph on. Default "PCA"
+#' @param useReducedDim Character. Saved dimension reduction name in the SingleCellExperiment object. Required. Used for specifying which low-dimension representation to perform the clustering algorithm and building nearest neighbor graph on. Default "PCA"
 #'
 #' @return A \link[SingleCellExperiment]{SingleCellExperiment} object with pseudotime ordering of the cells along the paths
-#' @export
+#' @export 
 #' @author Nida Pervaiz
 #' @importFrom utils head
 #' @examples
-#' sce <- scRNAseq::NestorowaHSCData()
-#' ens.mm.v97 <- AnnotationHub::AnnotationHub()[["AH73905"]]
-#' anno <- select(ens.mm.v97, keys = rownames(sce), 
-#'                keytype = "GENEID", columns = c("SYMBOL", "SEQNAME"))
-#' rowData(sce) <- anno[match(rownames(sce), anno$GENEID),]
+#' sce <- singleCellTK::importExampleData("pbmc3k")
 #' sce <- singleCellTK::scaterlogNormCounts(sce, assayName = "logcounts")
 #' sce <- scater::runPCA(sce)
 #' sce <- scater::runTSNE (sce, dimred = "PCA")
-#' sce <- runTSCAN (sce, reducedDimName = "PCA", seed = NULL)
+#' sce <- runTSCAN (sce, useReducedDim = "PCA", seed = NULL)
 
-runTSCAN <- function(inSCE, reducedDimName, cluster = NULL, seed = 12345, useAssay = "logcounts") {  
+runTSCAN <- function(inSCE, useReducedDim, cluster = NULL, seed = 12345) {  
   if (is.null(seed)) {
     if(is.null(cluster)){
-      inSCE <- singleCellTK::runScranSNN(inSCE, useReducedDim = reducedDimName)
+      inSCE <- singleCellTK::runScranSNN(inSCE, useReducedDim = useReducedDim)
       cluster <- colData(inSCE)$"scranSNN_cluster"
     }
   }
@@ -96,17 +121,17 @@ runTSCAN <- function(inSCE, reducedDimName, cluster = NULL, seed = 12345, useAss
     withr::with_seed(   
       seed, 
       if(is.null(cluster)){
-        inSCE <- singleCellTK::runScranSNN(inSCE, useReducedDim = reducedDimName)
+        inSCE <- singleCellTK::runScranSNN(inSCE, useReducedDim = useReducedDim)
         cluster <- colData(inSCE)$"scranSNN_cluster"
       })
   }
   inSCE <- scran::computeSumFactors(inSCE, clusters = cluster)
   by.cluster <- scuttle::aggregateAcrossCells(inSCE, ids = cluster)
-  centroids <- SingleCellExperiment::reducedDim(by.cluster, reducedDimName)         
+  centroids <- SingleCellExperiment::reducedDim(by.cluster, useReducedDim)         
   mst <- TSCAN::createClusterMST(centroids, clusters = NULL)      
   
   #Map each cell to the closest edge on the MST, reporting also the distance to the corresponding vertices.
-  map.tscan <- TSCAN::mapCellsToEdges(inSCE, mst = mst, use.dimred = reducedDimName , clusters = cluster)
+  map.tscan <- TSCAN::mapCellsToEdges(inSCE, mst = mst, use.dimred = useReducedDim , clusters = cluster)
   
   #Compute a pseudotime for each cell lying on each path through the MST from a given starting node.
   tscan.pseudo <- TSCAN::orderCells(map.tscan, mst)
@@ -132,26 +157,26 @@ runTSCAN <- function(inSCE, reducedDimName, cluster = NULL, seed = 12345, useAss
 #' @description A wrapper function which visualizes outputs from the runTSCAN function. Plots the pseudotime ordering of the cells by projecting them onto the MST
 #'
 #' @param inSCE Input \linkS4class{SingleCellExperiment} object.
-#' @param reducedDimName Saved dimension reduction name in the SingleCellExperiment object. Required.
+#' @param useReducedDim Saved dimension reduction name in the SingleCellExperiment object. Required.
 #'
 #' @return A plot with the pseudotime ordering of the cells by projecting them onto the MST. 
-#' @export
+#' @export 
 #' @author Nida Pervaiz
 #' @importFrom utils head
 #' @examples
-#' sce <- runTSCAN (sce, reducedDimName = "PCA", seed = NULL)
-#' plotTSCANResults(sce, reducedDimName = "TSNE")
+#' sce <- runTSCAN (sce, useReducedDim = "PCA", seed = NULL)
+#' plotTSCANResults(sce, useReducedDim = "TSNE")
 
-plotTSCANResults <- function(inSCE, reducedDimName){
+plotTSCANResults <- function(inSCE, useReducedDim){
   results <- getTSCANResults(inSCE, analysisName = "Pseudotime")
-  line.data <- TSCAN::reportEdges(results$by.cluster, mst = results$mst, clusters = NULL, use.dimred = reducedDimName) 
+  line.data <- TSCAN::reportEdges(results$by.cluster, mst = results$mst, clusters = NULL, use.dimred = useReducedDim) 
   
   a <- b <- c <- NULL
   a = unlist(line.data[,2])
   b = unlist(line.data[,3])
   c = unlist(line.data[,1])
   
-  scater::plotReducedDim(inSCE, dimred = reducedDimName, colour_by = I(colData(inSCE)$"TSCAN_pseudotime"), 
+  scater::plotReducedDim(inSCE, dimred = useReducedDim, colour_by = I(colData(inSCE)$"TSCAN_pseudotime"), 
                          text_by = "TSCAN_clusters", text_colour = "black") + 
     ggplot2::geom_path(data = line.data, ggplot2::aes(x = a, y = b, group = c) ) 
 }
@@ -164,16 +189,17 @@ plotTSCANResults <- function(inSCE, reducedDimName){
 #' @description Wrapper for identifying genes with significant changes with respect to one of the TSCAN pseudotimes
 #' @param inSCE Input \linkS4class{SingleCellExperiment} object.
 #' @param pathIndex Path number for which the pseudotime values should be used. PathIndex corresponds to one path from the root node to one of the terminal nodes.
+#' @param useAssay Character. The name of the assay to use. This assay should contain log normalized counts.
 #' @param discardCluster Optional. Clusters which are not of use or masks other interesting effects can be discarded.
 #' @param log2fcThreshold Only output DEGs with the absolute values of log2FC larger than this value. Default Zero
 #'
 #' @return A \link[SingleCellExperiment]{SingleCellExperiment} object with genes that decrease and increase in expression with increasing pseudotime along the path in the MST.
-#' @export
+#' @export 
 #' @author Nida Pervaiz
 #'
 #' @examples
-#' sce <- runTSCAN (sce, reducedDimName = "PCA", seed = NULL)
-#' sce <- runTSCANDEG(sce, pathIndex = 1, discardCluster = 8)
+#' sce <- runTSCAN (sce, useReducedDim = "PCA", seed = NULL)
+#' sce <- runTSCANDEG(sce, pathIndex = 6, discardCluster = 8)
 
 runTSCANDEG <- function(inSCE, pathIndex, useAssay = "logcounts", discardCluster = NULL, log2fcThreshold = 0 ) {  
   
@@ -225,17 +251,18 @@ runTSCANDEG <- function(inSCE, pathIndex, useAssay = "logcounts", discardCluster
 #' @param topN An integer. Only to plot this number of top genes along the path in the MST, in terms of log2FC value. Use NULL to cancel the top N subscription. Default 50
 #'
 #' @return A plot with the top genes that increase in expression with increasing pseudotime along the path in the MST 
-#' @export
+#' @export 
 #' @author Nida Pervaiz
 #' @importFrom utils head
 #' @examples
-#' sce <- runTSCAN (sce, reducedDimName = "PCA", seed = NULL)
-#' sce <- runTSCANDEG(sce, pathIndex = 1, discardCluster = 8)
-#' plotTSCANPseudotimeHeatmap(sce, pathIndex = 1, topN = 10)
+#' sce <- runTSCAN (sce, useReducedDim = "PCA", seed = NULL)
+#' sce <- runTSCANDEG(sce, pathIndex = 6, discardCluster = 8)
+#' plotTSCANPseudotimeHeatmap(sce, pathIndex = 6, topN = 10)
 
 plotTSCANPseudotimeHeatmap <- function(inSCE, pathIndex, topN = 50){
   
   pathName = paste0("path", pathIndex)
+  
   results <- getTSCANResults(inSCE, analysisName = "DEG", pathName = pathName)  
   if(!is.null(results$keptClusters)){
     x <- inSCE[,results$keptClusters]
@@ -243,12 +270,24 @@ plotTSCANPseudotimeHeatmap <- function(inSCE, pathIndex, topN = 50){
   else{
     x <- inSCE
   }
-  on.path <- !is.na(colData(x)[names(colData(x)) == paste0("Path_",pathIndex,"_pseudotime")])
-  on.path <- as.vector(on.path[,max(ncol(on.path))])
-  scater::plotHeatmap(x[,on.path], order_columns_by = paste0("Path_",pathIndex,"_pseudotime"), 
-                      colour_columns_by = "TSCAN_clusters", features = utils::head(results$upRight$SYMBOL, topN),
-                      center = TRUE, swap_rownames = "Symbol") 
   
+  colPathPseudo <- paste0("Path_",pathIndex,"_pseudotime")
+  on.path <- !is.na(colData(x)[names(colData(x)) == colPathPseudo])
+  on.path <- as.vector(on.path[,max(ncol(on.path))])
+  
+  #scater::plotHeatmap(x[,on.path], order_columns_by = paste0("Path_",pathIndex,"_pseudotime"), 
+   #                   colour_columns_by = "TSCAN_clusters", features = utils::head(results$upRight$SYMBOL, topN),
+    #                  center = TRUE, swap_rownames = "Symbol") 
+  
+  
+ singleCellTK::plotSCEHeatmap(x[,on.path],
+                               featureIndex = utils::head(results$upRight$SYMBOL, topN),
+                               colDend = FALSE, 
+                               cluster_columns = FALSE, 
+                               colDataName = c("TSCAN_clusters", colPathPseudo), 
+                               rowLabel = TRUE, 
+                               colSplitBy = colPathPseudo
+                               )
 }
 
 ###################################################
@@ -262,13 +301,13 @@ plotTSCANPseudotimeHeatmap <- function(inSCE, pathIndex, topN = 50){
 #' @param n An integer. Only to plot this number of top genes that are increasing/decreasing in expression with increasing pseudotime along the path in the MST. Default 10
 #'
 #' @return A plot with the top genes that increase/decrease in expression with increasing pseudotime along the path in the MST 
-#' @export
+#' @export 
 #' @author Nida Pervaiz
 #' @importFrom utils head
 #' @examples
-#' sce <- runTSCAN (sce, reducedDimName = "PCA", seed = NULL)
-#' sce <- runTSCANDEG(sce, pathIndex = 1, discardCluster = 8)
-#' plotTSCANPseudotimeGenes(sce, pathIndex = 1, direction = "increasing")
+#' sce <- runTSCAN (sce, useReducedDim = "PCA", seed = NULL)
+#' sce <- runTSCANDEG(sce, pathIndex = 6, discardCluster = 8)
+#' plotTSCANPseudotimeGenes(sce, pathIndex = 6, direction = "increasing")
 
 plotTSCANPseudotimeGenes <- function (inSCE, pathIndex, direction = c("increasing", "decreasing"), n = 10){
   
@@ -300,15 +339,16 @@ plotTSCANPseudotimeGenes <- function (inSCE, pathIndex, direction = c("increasin
 #' @description Wrapper for looking for differences in expression between paths of a branched trajectory. The differential expression analysis may highlight genes which are responsible for the branching event
 #' @param inSCE Input \linkS4class{SingleCellExperiment} object.
 #' @param useClusters Choose the cluster containing the branch point in the data in order to recompute the pseudotimes so that the root lies at the cluster center, allowing us to detect genes that are associated with the divergence of the branches.
+#' @param useAssay Character. The name of the assay to use. This assay should contain log normalized counts.
 #' @param fdrThreshold Only out put DEGs with FDR value smaller than this value. Default 0.05
 #'
 #' @return A \link[SingleCellExperiment]{SingleCellExperiment} object with DE genes that are significant in our path of interest and are not significant and/or changing in the opposite direction in the other paths. 
-#' @export
+#' @export 
 #' @author Nida Pervaiz
 #'
 #' @examples
-#' sce <- runTSCAN (sce, reducedDimName = "PCA", seed = NULL)
-#' sce <- runTSCANDEG(sce, pathIndex = 1, discardCluster = 8)
+#' sce <- runTSCAN (sce, useReducedDim = "PCA", seed = NULL)
+#' sce <- runTSCANDEG(sce, pathIndex = 6, discardCluster = 8)
 #' sce <- runTSCANClusterDEAnalysis(sce, useClusters = 3)
 
 runTSCANClusterDEAnalysis <- function(inSCE, useClusters , useAssay = "logcounts", fdrThreshold = 0.05){ 
@@ -376,25 +416,25 @@ runTSCANClusterDEAnalysis <- function(inSCE, useClusters , useAssay = "logcounts
 #' @param inSCE Input \linkS4class{SingleCellExperiment} object.
 #' @param useClusters Choose the cluster containing the branch point in the data in order to recompute the pseudotimes so that the root lies at the cluster center, allowing us to detect genes that are associated with the divergence of the branches.
 #' @param pathIndex Path number for which the pseudotime values should be used. PathIndex corresponds to one path from the root node to one of the terminal nodes.
-#' @param reducedDimName Saved dimension reduction name in the SingleCellExperiment object. Required.
+#' @param useReducedDim Saved dimension reduction name in the SingleCellExperiment object. Required.
 #'
 #' @return A plots with the TSCAN-derived pseudotimes of all the cells along the path belonging to the cluster
-#' @export
+#' @export 
 #' @author Nida Pervaiz
 #' @importFrom utils head
 #' @examples
-#' sce <- runTSCAN (sce, reducedDimName = "PCA", seed = NULL)
-#' sce <- runTSCANDEG(sce, pathIndex = 1, discardCluster = 8)
-#' sce <- runTSCANClusterDEAnalysis(sce, useClusters)
-#' plotClusterPseudo(sce, useClusters = 3, pathIndex = 1, reducedDimName = "TSNE")
+#' sce <- runTSCAN (sce, useReducedDim = "PCA", seed = NULL)
+#' sce <- runTSCANDEG(sce, pathIndex = 6, discardCluster = 8)
+#' sce <- runTSCANClusterDEAnalysis(sce, useClusters = 3)
+#' plotClusterPseudo(sce, useClusters = 3, pathIndex = NULL, useReducedDim = "TSNE")
 
-plotClusterPseudo <- function(inSCE, useClusters, pathIndex = NULL, reducedDimName){
+plotClusterPseudo <- function(inSCE, useClusters, pathIndex = NULL, useReducedDim){
   
   starter <- colData(inSCE)$"TSCAN_clusters" == useClusters
   inSCE <- inSCE[,starter]
   results <- getTSCANResults(inSCE, analysisName = "Pseudotime")
   
-  line.data <- TSCAN::reportEdges(results$by.cluster, mst = results$mst, clusters = NULL, use.dimred = reducedDimName) 
+  line.data <- TSCAN::reportEdges(results$by.cluster, mst = results$mst, clusters = NULL, use.dimred = useReducedDim) 
   line.data.sub <- line.data[grepl(paste0("^", useClusters, "--"), line.data$edge) | grepl(paste0("--", useClusters, "$"), line.data$edge),]
   
   a <- b <- c <- NULL
@@ -403,12 +443,12 @@ plotClusterPseudo <- function(inSCE, useClusters, pathIndex = NULL, reducedDimNa
   c = unlist(line.data.sub[,1])
   
   if (is.null(pathIndex)){
-    scater::plotReducedDim(inSCE, dimred = reducedDimName, colour_by = I(colData(inSCE)$"TSCAN_pseudotime"), text_by = "TSCAN_clusters", text_colour = "black")+
+    scater::plotReducedDim(inSCE, dimred = useReducedDim, colour_by = I(colData(inSCE)$"TSCAN_pseudotime"), text_by = "TSCAN_clusters", text_colour = "black")+
       ggplot2::geom_line(data = line.data.sub, mapping = ggplot2::aes(x = a, y = b, group = c))
   }
   
   else{
-    scater::plotReducedDim(inSCE, dimred = reducedDimName, colour_by = paste0("TSCAN_Cluster",useClusters,"_Path_" ,pathIndex,"_pseudotime"),  
+    scater::plotReducedDim(inSCE, dimred = useReducedDim, colour_by = paste0("TSCAN_Cluster",useClusters,"_Path_" ,pathIndex,"_pseudotime"),  
                            text_by = "TSCAN_clusters", text_colour = "black") +
       ggplot2::geom_line(data = line.data.sub, mapping = ggplot2::aes(x = a, y = b, group = c)) 
   }
@@ -423,29 +463,29 @@ plotClusterPseudo <- function(inSCE, useClusters, pathIndex = NULL, reducedDimNa
 #' @param inSCE Input \linkS4class{SingleCellExperiment} object.
 #' @param geneSymbol Choose the gene of interest from the DE genes in order to know the level of expression of gene in clusters.
 #' @param useClusters Choose the cluster containing the branch point in the data in order to recompute the pseudotimes so that the root lies at the cluster center, allowing us to detect genes that are associated with the divergence of the branches.
-#' @param reducedDimName Saved dimension reduction name in the SingleCellExperiment object. Required.
+#' @param useReducedDim Saved dimension reduction name in the SingleCellExperiment object. Required.
 #'
 #' @return A plots with the cells colored by the expression of a gene of interest.
-#' @export
+#' @export 
 #' @author Nida Pervaiz
 #' @importFrom utils head
 #' @examples
-#' sce <- runTSCAN (sce, reducedDimName = "PCA", seed = NULL)
-#' sce <- runTSCANDEG(sce, pathIndex = 1, discardCluster = 8)
-#' sce <- runTSCANClusterDEAnalysis(sce, useClusters)
-#' plotTSCANDEgenes(sce, geneSymbol, reducedDimName = "TSNE")
+#' sce <- runTSCAN (sce, useReducedDim = "PCA", seed = NULL)
+#' sce <- runTSCANDEG(sce, pathIndex = 6, discardCluster = 8)
+#' sce <- runTSCANClusterDEAnalysis(sce, useClusters = 3)
+#' plotTSCANDEgenes(sce, geneSymbol = "CD74", useReducedDim = "TSNE")
 
-plotTSCANDEgenes <- function(inSCE, geneSymbol, useClusters=NULL, reducedDimName){
+plotTSCANDEgenes <- function(inSCE, geneSymbol, useClusters=NULL, useReducedDim){
   
   if (is.null(useClusters)){
-    scater::plotReducedDim(inSCE, dimred = reducedDimName, colour_by = geneSymbol, swap_rownames="Symbol", text_by = "TSCAN_clusters", text_colour = "black")
+    scater::plotReducedDim(inSCE, dimred = useReducedDim, colour_by = geneSymbol, swap_rownames="Symbol", text_by = "TSCAN_clusters", text_colour = "black")
   }
   else {
     starter <- colData(inSCE)$"TSCAN_clusters" == useClusters
     inSCE <- inSCE[,starter]
     results <- getTSCANResults(inSCE, analysisName = "Pseudotime")
     
-    line.data <- TSCAN::reportEdges(results$by.cluster, mst = results$mst, clusters = NULL, use.dimred = reducedDimName) 
+    line.data <- TSCAN::reportEdges(results$by.cluster, mst = results$mst, clusters = NULL, use.dimred = useReducedDim) 
     line.data.sub <- line.data[grepl(paste0("^", useClusters, "--"), line.data$edge) | grepl(paste0("--", useClusters, "$"), line.data$edge),]
     
     a <- b <- c <- NULL
@@ -453,7 +493,7 @@ plotTSCANDEgenes <- function(inSCE, geneSymbol, useClusters=NULL, reducedDimName
     b = unlist(line.data.sub[,3])
     c = unlist(line.data.sub[,1])
     
-    scater::plotReducedDim(inSCE, dimred = reducedDimName, colour_by = geneSymbol,  swap_rownames = "Symbol", 
+    scater::plotReducedDim(inSCE, dimred = useReducedDim, colour_by = geneSymbol,  swap_rownames = "Symbol", 
                            text_by = "TSCAN_clusters", text_colour = "black") +
       ggplot2::geom_line(data = line.data.sub, mapping = ggplot2::aes(x = a, y = b, group = c)) 
   }

@@ -3572,8 +3572,7 @@ shinyServer(function(input, output, session) {
       withProgress(message = "Plotting pseudotime values...", max = 1, value = 1, {
       withBusyIndicatorServer("TSCANRun", {
         vals$counts <- runTSCAN(inSCE = vals$counts,
-                                useAssay = input$TSCANassayselect,
-                                reducedDimName = input$TSCANReddim,
+                                useReducedDim = input$TSCANReddim,
                                 cluster = colData(vals$counts)$input$clusterName,
                                 seed = input$seed_TSCAN)
         showNotification("Pseudotime values generated")
@@ -3583,7 +3582,7 @@ shinyServer(function(input, output, session) {
         output$TSCANPlot <- renderPlot({
           isolate({
             plotTSCANResults(inSCE = vals$counts, 
-                             reducedDimName = input$TSCANReddim)
+                             useReducedDim = input$TSCANReddim)
             
           })
         })
@@ -3624,7 +3623,7 @@ shinyServer(function(input, output, session) {
     output$TSCANPlot <- renderPlot({
       isolate({
         plotTSCANResults(inSCE = vals$counts, 
-                         reducedDimName = input$TSCANVisRedDim)
+                         useReducedDim = input$TSCANVisRedDim)
       })
     })
     session$sendCustomMessage("close_dropDownTSCAN", "")
@@ -3649,7 +3648,7 @@ shinyServer(function(input, output, session) {
         isolate({
          plotTSCANPseudotimeHeatmap(inSCE = vals$counts, 
                                    pathIndex = input$pathIndexx, 
-                                   topN = 50)
+                                   topN = 10)
           })
       })
       })
@@ -3733,7 +3732,7 @@ shinyServer(function(input, output, session) {
           plotClusterPseudo(inSCE = vals$counts, 
                             useClusters = input$useCluster, 
                             pathIndex = NULL,
-                            reducedDimName = input$TSCANReddim)
+                            useReducedDim = input$TSCANReddim)
         })
       })
       })
@@ -3768,7 +3767,7 @@ shinyServer(function(input, output, session) {
         plotClusterPseudo(inSCE = vals$counts, 
                           useClusters = input$useVisCluster, 
                           pathIndex = input$clusterPathIndex,
-                          reducedDimName = input$DEClusterRedDimNames)
+                          useReducedDim = input$DEClusterRedDimNames)
       })
     })
     
@@ -3806,9 +3805,11 @@ shinyServer(function(input, output, session) {
         plotTSCANDEgenes(inSCE = vals$counts, 
                          geneSymbol = input$geneName, 
                          useClusters = NULL,
-                         reducedDimName = input$genesRedDimNames)
+                         useReducedDim = input$genesRedDimNames)
       })
     })
+    # Show downstream analysis options
+    callModule(module = nonLinearWorkflow, id = "nlw-Traj", parent = session, de = TRUE, pa = TRUE)
     
     
   })
@@ -3820,7 +3821,7 @@ shinyServer(function(input, output, session) {
         plotTSCANDEgenes(inSCE = vals$counts, 
                          geneSymbol = input$geneName, 
                          useClusters = input$useClusterForPlotGene,
-                         reducedDimName = input$plotGenesRedDimNames)
+                         useReducedDim = input$plotGenesRedDimNames)
       })
     })
     
@@ -3853,6 +3854,7 @@ shinyServer(function(input, output, session) {
   observeEvent(input$closeDropDownGenePlot,{
     session$sendCustomMessage("close_dropDownGenePlot", "")
   })
+  
   
   #-----------------------------------------------------------------------------
   # Page 3.2: Celda ####

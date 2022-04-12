@@ -4,12 +4,12 @@
 \alias{plotTSCANResults}
 \title{Run plotTSCANResults function to plot MST pseudotime values for cells}
 \usage{
-plotTSCANResults(inSCE, reducedDimName)
+plotTSCANResults(inSCE, useReducedDim)
 }
 \arguments{
 \item{inSCE}{Input \linkS4class{SingleCellExperiment} object.}
 
-\item{reducedDimName}{Saved dimension reduction name in the SingleCellExperiment object. Required.}
+\item{useReducedDim}{Saved dimension reduction name in the SingleCellExperiment object. Required.}
 }
 \value{
 A plot with the pseudotime ordering of the cells by projecting them onto the MST.
@@ -18,8 +18,8 @@ A plot with the pseudotime ordering of the cells by projecting them onto the MST
 A wrapper function which visualizes outputs from the runTSCAN function. Plots the pseudotime ordering of the cells by projecting them onto the MST
 }
 \examples{
-sce <- runTSCAN (sce, reducedDimName = "PCA", seed = NULL)
-plotTSCANResults(sce, reducedDimName = "TSNE")
+sce <- runTSCAN (sce, useReducedDim = "PCA", seed = NULL)
+plotTSCANResults(sce, useReducedDim = "TSNE")
 }
 \author{
 Nida Pervaiz

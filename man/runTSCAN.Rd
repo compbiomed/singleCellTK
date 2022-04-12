@@ -4,24 +4,16 @@
 \alias{runTSCAN}
 \title{Run runTSCAN function to obtain pseudotime values for cells}
 \usage{
-runTSCAN(
-  inSCE,
-  reducedDimName,
-  cluster = NULL,
-  seed = 12345,
-  useAssay = "logcounts"
-)
+runTSCAN(inSCE, useReducedDim, cluster = NULL, seed = 12345)
 }
 \arguments{
 \item{inSCE}{Input \linkS4class{SingleCellExperiment} object.}
 
-\item{reducedDimName}{Character. Saved dimension reduction name in the SingleCellExperiment object. Required. Used for specifying which low-dimension representation to perform the clustering algorithm and building nearest neighbor graph on. Default "PCA"}
+\item{useReducedDim}{Character. Saved dimension reduction name in the SingleCellExperiment object. Required. Used for specifying which low-dimension representation to perform the clustering algorithm and building nearest neighbor graph on. Default "PCA"}
 
 \item{cluster}{Grouping for each cell in inSCE. A user may input a vector equal length to the number of the samples in the SingleCellExperiment object, or can be retrieved from the colData slot. Default NULL.}
 
 \item{seed}{An integer. Set the seed for random process that happens only in "random" generation. Default 12345.}
-
-\item{useAssay}{Character. The name of the assay to use. This assay should contain log normalized counts.}
 }
 \value{
 A \link[SingleCellExperiment]{SingleCellExperiment} object with pseudotime ordering of the cells along the paths
@@ -30,15 +22,11 @@ A \link[SingleCellExperiment]{SingleCellExperiment} object with pseudotime order
 Wrapper for obtaining a pseudotime ordering of the cells by projecting them onto the MST
 }
 \examples{
-sce <- scRNAseq::NestorowaHSCData()
-ens.mm.v97 <- AnnotationHub::AnnotationHub()[["AH73905"]]
-anno <- select(ens.mm.v97, keys = rownames(sce), 
-               keytype = "GENEID", columns = c("SYMBOL", "SEQNAME"))
-rowData(sce) <- anno[match(rownames(sce), anno$GENEID),]
+sce <- singleCellTK::importExampleData("pbmc3k")
 sce <- singleCellTK::scaterlogNormCounts(sce, assayName = "logcounts")
 sce <- scater::runPCA(sce)
 sce <- scater::runTSNE (sce, dimred = "PCA")
-sce <- runTSCAN (sce, reducedDimName = "PCA", seed = NULL)
+sce <- runTSCAN (sce, useReducedDim = "PCA", seed = NULL)
 }
 \author{
 Nida Pervaiz

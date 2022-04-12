@@ -4,7 +4,7 @@
 \alias{plotClusterPseudo}
 \title{Run plotClusterPseudo function to plot TSCAN-derived pseudotimes around cluster in the dataset.}
 \usage{
-plotClusterPseudo(inSCE, useClusters, pathIndex = NULL, reducedDimName)
+plotClusterPseudo(inSCE, useClusters, pathIndex = NULL, useReducedDim)
 }
 \arguments{
 \item{inSCE}{Input \linkS4class{SingleCellExperiment} object.}
@@ -13,7 +13,7 @@ plotClusterPseudo(inSCE, useClusters, pathIndex = NULL, reducedDimName)
 
 \item{pathIndex}{Path number for which the pseudotime values should be used. PathIndex corresponds to one path from the root node to one of the terminal nodes.}
 
-\item{reducedDimName}{Saved dimension reduction name in the SingleCellExperiment object. Required.}
+\item{useReducedDim}{Saved dimension reduction name in the SingleCellExperiment object. Required.}
 }
 \value{
 A plots with the TSCAN-derived pseudotimes of all the cells along the path belonging to the cluster
@@ -22,10 +22,10 @@ A plots with the TSCAN-derived pseudotimes of all the cells along the path belon
 A wrapper function which visualizes outputs from the runTSCANClusterDEAnalysis function. Each point is a cell in the cluster and is colored by its pseudotime value along the path to which it was assigned.
 }
 \examples{
-sce <- runTSCAN (sce, reducedDimName = "PCA", seed = NULL)
-sce <- runTSCANDEG(sce, pathIndex = 1, discardCluster = 8)
-sce <- runTSCANClusterDEAnalysis(sce, useClusters)
-plotClusterPseudo(sce, useClusters = 3, pathIndex = 1, reducedDimName = "TSNE")
+sce <- runTSCAN (sce, useReducedDim = "PCA", seed = NULL)
+sce <- runTSCANDEG(sce, pathIndex = 6, discardCluster = 8)
+sce <- runTSCANClusterDEAnalysis(sce, useClusters = 3)
+plotClusterPseudo(sce, useClusters = 3, pathIndex = NULL, useReducedDim = "TSNE")
 }
 \author{
 Nida Pervaiz

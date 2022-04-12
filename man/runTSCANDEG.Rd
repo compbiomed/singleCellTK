@@ -17,6 +17,8 @@ runTSCANDEG(
 
 \item{pathIndex}{Path number for which the pseudotime values should be used. PathIndex corresponds to one path from the root node to one of the terminal nodes.}
 
+\item{useAssay}{Character. The name of the assay to use. This assay should contain log normalized counts.}
+
 \item{discardCluster}{Optional. Clusters which are not of use or masks other interesting effects can be discarded.}
 
 \item{log2fcThreshold}{Only output DEGs with the absolute values of log2FC larger than this value. Default Zero}
@@ -28,8 +30,8 @@ A \link[SingleCellExperiment]{SingleCellExperiment} object with genes that decre
 Wrapper for identifying genes with significant changes with respect to one of the TSCAN pseudotimes
 }
 \examples{
-sce <- runTSCAN (sce, reducedDimName = "PCA", seed = NULL)
-sce <- runTSCANDEG(sce, pathIndex = 1, discardCluster = 8)
+sce <- runTSCAN (sce, useReducedDim = "PCA", seed = NULL)
+sce <- runTSCANDEG(sce, pathIndex = 6, discardCluster = 8)
 }
 \author{
 Nida Pervaiz
