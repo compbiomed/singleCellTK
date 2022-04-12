@@ -15,7 +15,8 @@ plotTSCANResults(inSCE, useReducedDim)
 A plot with the pseudotime ordering of the cells by projecting them onto the MST.
 }
 \description{
-A wrapper function which visualizes outputs from the runTSCAN function. Plots the pseudotime ordering of the cells by projecting them onto the MST
+A wrapper function which visualizes outputs from the runTSCAN function. 
+Plots the pseudotime ordering of the cells by projecting them onto the MST
 }
 \examples{
 data("scExample", package = "singleCellTK")

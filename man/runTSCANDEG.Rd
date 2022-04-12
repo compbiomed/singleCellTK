@@ -15,19 +15,25 @@ runTSCANDEG(
 \arguments{
 \item{inSCE}{Input \linkS4class{SingleCellExperiment} object.}
 
-\item{pathIndex}{Path number for which the pseudotime values should be used. PathIndex corresponds to one path from the root node to one of the terminal nodes.}
+\item{pathIndex}{Path number for which the pseudotime values should be used. PathIndex 
+corresponds to one path from the root node to one of the terminal nodes.}
 
-\item{useAssay}{Character. The name of the assay to use. This assay should contain log normalized counts.}
+\item{useAssay}{Character. The name of the assay to use. This assay should contain log 
+normalized counts.}
 
-\item{discardCluster}{Optional. Clusters which are not of use or masks other interesting effects can be discarded.}
+\item{discardCluster}{Optional. Clusters which are not of use or masks other interesting 
+effects can be discarded.}
 
-\item{log2fcThreshold}{Only output DEGs with the absolute values of log2FC larger than this value. Default Zero}
+\item{log2fcThreshold}{Only output DEGs with the absolute values of log2FC larger than 
+this value. Default Zero}
 }
 \value{
-A \link[SingleCellExperiment]{SingleCellExperiment} object with genes that decrease and increase in expression with increasing pseudotime along the path in the MST.
+A \link[SingleCellExperiment]{SingleCellExperiment} object with genes that decrease 
+and increase in expression with increasing pseudotime along the path in the MST.
 }
 \description{
-Wrapper for identifying genes with significant changes with respect to one of the TSCAN pseudotimes
+Wrapper for identifying genes with significant changes with respect to one 
+of the TSCAN pseudotimes
 }
 \examples{
 data("scExample", package = "singleCellTK")

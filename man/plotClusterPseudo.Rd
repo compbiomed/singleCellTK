@@ -2,24 +2,31 @@
 % Please edit documentation in R/runTSCAN.R
 \name{plotClusterPseudo}
 \alias{plotClusterPseudo}
-\title{Run plotClusterPseudo function to plot TSCAN-derived pseudotimes around cluster in the dataset.}
+\title{Run plotClusterPseudo function to plot TSCAN-derived pseudotimes around cluster in 
+the dataset.}
 \usage{
 plotClusterPseudo(inSCE, useClusters, pathIndex = NULL, useReducedDim)
 }
 \arguments{
 \item{inSCE}{Input \linkS4class{SingleCellExperiment} object.}
 
-\item{useClusters}{Choose the cluster containing the branch point in the data in order to recompute the pseudotimes so that the root lies at the cluster center, allowing us to detect genes that are associated with the divergence of the branches.}
+\item{useClusters}{Choose the cluster containing the branch point in the data in order to 
+recompute the pseudotimes so that the root lies at the cluster center, allowing us to detect 
+genes that are associated with the divergence of the branches.}
 
-\item{pathIndex}{Path number for which the pseudotime values should be used. PathIndex corresponds to one path from the root node to one of the terminal nodes.}
+\item{pathIndex}{Path number for which the pseudotime values should be used. PathIndex 
+corresponds to one path from the root node to one of the terminal nodes.}
 
 \item{useReducedDim}{Saved dimension reduction name in the SingleCellExperiment object. Required.}
 }
 \value{
-A plots with the TSCAN-derived pseudotimes of all the cells along the path belonging to the cluster
+A plots with the TSCAN-derived pseudotimes of all the cells along the path belonging 
+to the cluster
 }
 \description{
-A wrapper function which visualizes outputs from the runTSCANClusterDEAnalysis function. Each point is a cell in the cluster and is colored by its pseudotime value along the path to which it was assigned.
+A wrapper function which visualizes outputs from the runTSCANClusterDEAnalysis 
+function. Each point is a cell in the cluster and is colored by its pseudotime value along 
+the path to which it was assigned.
 }
 \examples{
 data("scExample", package = "singleCellTK")

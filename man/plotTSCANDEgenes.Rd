@@ -2,16 +2,20 @@
 % Please edit documentation in R/runTSCAN.R
 \name{plotTSCANDEgenes}
 \alias{plotTSCANDEgenes}
-\title{Run plotTSCANDEgenes function to plot cells colored by the expression of a gene of interest}
+\title{Run plotTSCANDEgenes function to plot cells colored by the expression of a gene of 
+interest}
 \usage{
 plotTSCANDEgenes(inSCE, geneSymbol, useClusters = NULL, useReducedDim)
 }
 \arguments{
 \item{inSCE}{Input \linkS4class{SingleCellExperiment} object.}
 
-\item{geneSymbol}{Choose the gene of interest from the DE genes in order to know the level of expression of gene in clusters.}
+\item{geneSymbol}{Choose the gene of interest from the DE genes in order to know the level 
+of expression of gene in clusters.}
 
-\item{useClusters}{Choose the cluster containing the branch point in the data in order to recompute the pseudotimes so that the root lies at the cluster center, allowing us to detect genes that are associated with the divergence of the branches.}
+\item{useClusters}{Choose the cluster containing the branch point in the data in order to 
+recompute the pseudotimes so that the root lies at the cluster center, allowing us to 
+detect genes that are associated with the divergence of the branches.}
 
 \item{useReducedDim}{Saved dimension reduction name in the SingleCellExperiment object. Required.}
 }
@@ -19,7 +23,9 @@ plotTSCANDEgenes(inSCE, geneSymbol, useClusters = NULL, useReducedDim)
 A plots with the cells colored by the expression of a gene of interest.
 }
 \description{
-A wrapper function which plots all the cells in the cluster containing the branch point of the MST in the dataset. Each point is a cell colored by the expression of a gene of interest and the relevant edges of the MST are overlaid on top.
+A wrapper function which plots all the cells in the cluster containing the 
+branch point of the MST in the dataset. Each point is a cell colored by the expression of 
+a gene of interest and the relevant edges of the MST are overlaid on top.
 }
 \examples{
 data("scExample", package = "singleCellTK")

@@ -2,7 +2,8 @@
 % Please edit documentation in R/runTSCAN.R
 \name{runTSCANClusterDEAnalysis}
 \alias{runTSCANClusterDEAnalysis}
-\title{Run runTSCANClusterDEAnalysis function to observe changes between paths and to obtain DE genes}
+\title{Run runTSCANClusterDEAnalysis function to observe changes between paths and to 
+obtain DE genes}
 \usage{
 runTSCANClusterDEAnalysis(
   inSCE,
@@ -14,17 +15,24 @@ runTSCANClusterDEAnalysis(
 \arguments{
 \item{inSCE}{Input \linkS4class{SingleCellExperiment} object.}
 
-\item{useClusters}{Choose the cluster containing the branch point in the data in order to recompute the pseudotimes so that the root lies at the cluster center, allowing us to detect genes that are associated with the divergence of the branches.}
+\item{useClusters}{Choose the cluster containing the branch point in the data in order to 
+recompute the pseudotimes so that the root lies at the cluster center, allowing us to detect 
+genes that are associated with the divergence of the branches.}
 
-\item{useAssay}{Character. The name of the assay to use. This assay should contain log normalized counts.}
+\item{useAssay}{Character. The name of the assay to use. This assay should contain log 
+normalized counts.}
 
 \item{fdrThreshold}{Only out put DEGs with FDR value smaller than this value. Default 0.05}
 }
 \value{
-A \link[SingleCellExperiment]{SingleCellExperiment} object with DE genes that are significant in our path of interest and are not significant and/or changing in the opposite direction in the other paths.
+A \link[SingleCellExperiment]{SingleCellExperiment} object with DE genes that are 
+significant in our path of interest and are not significant and/or changing in the opposite 
+direction in the other paths.
 }
 \description{
-Wrapper for looking for differences in expression between paths of a branched trajectory. The differential expression analysis may highlight genes which are responsible for the branching event
+Wrapper for looking for differences in expression between paths of a branched 
+trajectory. The differential expression analysis may highlight genes which are responsible 
+for the branching event
 }
 \examples{
 data("scExample", package = "singleCellTK")

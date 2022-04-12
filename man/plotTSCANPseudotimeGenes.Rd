@@ -14,17 +14,22 @@ plotTSCANPseudotimeGenes(
 \arguments{
 \item{inSCE}{Input \linkS4class{SingleCellExperiment} object.}
 
-\item{pathIndex}{Path number for which the pseudotime values should be used. PathIndex corresponds to one path from the root node to one of the terminal nodes.}
+\item{pathIndex}{Path number for which the pseudotime values should be used. PathIndex 
+corresponds to one path from the root node to one of the terminal nodes.}
 
 \item{direction}{Which direction to use. Choices are increasing or decreasing.}
 
-\item{n}{An integer. Only to plot this number of top genes that are increasing/decreasing in expression with increasing pseudotime along the path in the MST. Default 10}
+\item{n}{An integer. Only to plot this number of top genes that are increasing/decreasing 
+in expression with increasing pseudotime along the path in the MST. Default 10}
 }
 \value{
-A plot with the top genes that increase/decrease in expression with increasing pseudotime along the path in the MST
+A plot with the top genes that increase/decrease in expression with increasing 
+pseudotime along the path in the MST
 }
 \description{
-A wrapper function which visualizes outputs from the runTSCANDEG function. Plots the genes that increase or decrease in expression with increasing pseudotime along the path in the MST
+A wrapper function which visualizes outputs from the runTSCANDEG function. 
+Plots the genes that increase or decrease in expression with increasing pseudotime along 
+the path in the MST
 }
 \examples{
 data("scExample", package = "singleCellTK")

@@ -3616,6 +3616,7 @@ shinyServer(function(input, output, session) {
       })
       })
     }
+    updateCollapse(session = session, "TSCANUI", style = list("Calculate Pseudotime values" = "success"))
   })
   
   #plot results
@@ -3665,6 +3666,7 @@ shinyServer(function(input, output, session) {
       
         
     }) 
+    updateCollapse(session = session, "TSCANUI", style = list("Identify Expressive genes" = "success"))
   })
   
   #plot results on heatmap
@@ -3751,6 +3753,8 @@ shinyServer(function(input, output, session) {
       })
       
       }) 
+    updateCollapse(session = session, "TSCANUI", style = list("Identify DE genes" = "success"))
+    
   })
   
   #plot results for step 3
@@ -3811,6 +3815,7 @@ shinyServer(function(input, output, session) {
     # Show downstream analysis options
     callModule(module = nonLinearWorkflow, id = "nlw-Traj", parent = session, de = TRUE, pa = TRUE)
     
+    updateCollapse(session = session, "TSCANUI", style = list("Visualize genes of interest" = "success"))
     
   })
   
