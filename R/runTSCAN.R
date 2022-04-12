@@ -104,7 +104,10 @@ setMethod("listTSCANResults", "SingleCellExperiment", function(x){
 #' @author Nida Pervaiz
 #' @importFrom utils head
 #' @examples
-#' sce <- singleCellTK::importExampleData("pbmc3k")
+#' data("scExample", package = "singleCellTK")
+#' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
+#' rowData(sce)$Symbol = rowData(sce)$feature_name
+#' rownames(sce) = rowData(sce)$Symbol
 #' sce <- singleCellTK::scaterlogNormCounts(sce, assayName = "logcounts")
 #' sce <- scater::runPCA(sce)
 #' sce <- scater::runTSNE (sce, dimred = "PCA")
@@ -164,6 +167,13 @@ runTSCAN <- function(inSCE, useReducedDim, cluster = NULL, seed = 12345) {
 #' @author Nida Pervaiz
 #' @importFrom utils head
 #' @examples
+#' data("scExample", package = "singleCellTK")
+#' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
+#' rowData(sce)$Symbol = rowData(sce)$feature_name
+#' rownames(sce) = rowData(sce)$Symbol
+#' sce <- singleCellTK::scaterlogNormCounts(sce, assayName = "logcounts")
+#' sce <- scater::runPCA(sce)
+#' sce <- scater::runTSNE (sce, dimred = "PCA")
 #' sce <- runTSCAN (inSCE = sce, useReducedDim = "PCA", seed = NULL)
 #' plotTSCANResults(inSCE = sce, useReducedDim = "TSNE")
 
@@ -198,8 +208,15 @@ plotTSCANResults <- function(inSCE, useReducedDim){
 #' @author Nida Pervaiz
 #'
 #' @examples
+#' data("scExample", package = "singleCellTK")
+#' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
+#' rowData(sce)$Symbol = rowData(sce)$feature_name
+#' rownames(sce) = rowData(sce)$Symbol
+#' sce <- singleCellTK::scaterlogNormCounts(sce, assayName = "logcounts")
+#' sce <- scater::runPCA(sce)
+#' sce <- scater::runTSNE (sce, dimred = "PCA")
 #' sce <- runTSCAN (inSCE = sce, useReducedDim = "PCA", seed = NULL)
-#' sce <- runTSCANDEG(inSCE = sce, pathIndex = 6, discardCluster = 8)
+#' sce <- runTSCANDEG(inSCE = sce, pathIndex = 3)
 
 runTSCANDEG <- function(inSCE, pathIndex, useAssay = "logcounts", discardCluster = NULL, log2fcThreshold = 0 ) {  
   
@@ -255,9 +272,16 @@ runTSCANDEG <- function(inSCE, pathIndex, useAssay = "logcounts", discardCluster
 #' @author Nida Pervaiz
 #' @importFrom utils head
 #' @examples
+#' data("scExample", package = "singleCellTK")
+#' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
+#' rowData(sce)$Symbol = rowData(sce)$feature_name
+#' rownames(sce) = rowData(sce)$Symbol
+#' sce <- singleCellTK::scaterlogNormCounts(sce, assayName = "logcounts")
+#' sce <- scater::runPCA(sce)
+#' sce <- scater::runTSNE (sce, dimred = "PCA")
 #' sce <- runTSCAN (inSCE = sce, useReducedDim = "PCA", seed = NULL)
-#' sce <- runTSCANDEG(inSCE = sce, pathIndex = 6, discardCluster = 8)
-#' plotTSCANPseudotimeHeatmap(inSCE = sce, pathIndex = 6, topN = 10)
+#' sce <- runTSCANDEG(inSCE = sce, pathIndex = 3)
+#' plotTSCANPseudotimeHeatmap(inSCE = sce, pathIndex = 3)
 
 plotTSCANPseudotimeHeatmap <- function(inSCE, pathIndex, topN = 50){
   
@@ -280,9 +304,10 @@ plotTSCANPseudotimeHeatmap <- function(inSCE, pathIndex, topN = 50){
     #                  center = TRUE, swap_rownames = "Symbol") 
   
   x <- x[,on.path]
- singleCellTK::plotSCEHeatmap(inSCE = x,
+  singleCellTK::plotSCEHeatmap(inSCE = x,
                                featureIndex = utils::head(results$upRight$SYMBOL, topN),
                                colDend = FALSE, 
+                               rowDend = FALSE,
                                cluster_columns = FALSE, 
                                colDataName = c("TSCAN_clusters", colPathPseudo), 
                                rowLabel = TRUE, 
@@ -305,27 +330,34 @@ plotTSCANPseudotimeHeatmap <- function(inSCE, pathIndex, topN = 50){
 #' @author Nida Pervaiz
 #' @importFrom utils head
 #' @examples
+#' data("scExample", package = "singleCellTK")
+#' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
+#' rowData(sce)$Symbol = rowData(sce)$feature_name
+#' rownames(sce) = rowData(sce)$Symbol
+#' sce <- singleCellTK::scaterlogNormCounts(sce, assayName = "logcounts")
+#' sce <- scater::runPCA(sce)
+#' sce <- scater::runTSNE (sce, dimred = "PCA")
 #' sce <- runTSCAN (inSCE = sce, useReducedDim = "PCA", seed = NULL)
-#' sce <- runTSCANDEG(inSCE = sce, pathIndex = 6, discardCluster = 8)
-#' plotTSCANPseudotimeGenes(inSCE = sce, pathIndex = 6, direction = "increasing")
+#' sce <- runTSCANDEG(inSCE = sce, pathIndex = 3)
+#' plotTSCANPseudotimeGenes(inSCE = sce, pathIndex = 3, direction = "increasing")
 
 plotTSCANPseudotimeGenes <- function (inSCE, pathIndex, direction = c("increasing", "decreasing"), n = 10){
   
   pathName = paste0("path", pathIndex)
   results <- getTSCANResults(inSCE, analysisName = "DEG", pathName = pathName) 
   if(!is.null(results$keptClusters)){
-    x <- inSCE[,results$keptClusters]
+    y <- inSCE[,results$keptClusters]
   }
   else{
-    x <- inSCE
+    y <- inSCE
   }
   direction = match.arg(direction)
   if (direction == "decreasing"){
-    scater::plotExpression(x, features = utils::head(results$upLeft$SYMBOL, n), swap_rownames = "Symbol",
+    scater::plotExpression(y, features = utils::head(results$upLeft$SYMBOL, n), swap_rownames = "Symbol",
                            x = paste0("Path_",pathIndex,"_pseudotime"), colour_by = "TSCAN_clusters")  
   }
   else{ 
-    scater::plotExpression(x, features = utils::head(results$upRight$SYMBOL, n), swap_rownames = "Symbol",
+    scater::plotExpression(y, features = utils::head(results$upRight$SYMBOL, n), swap_rownames = "Symbol",
                            x = paste0("Path_",pathIndex,"_pseudotime"), colour_by = "TSCAN_clusters")  
     
   }
@@ -347,9 +379,16 @@ plotTSCANPseudotimeGenes <- function (inSCE, pathIndex, direction = c("increasin
 #' @author Nida Pervaiz
 #'
 #' @examples
+#' data("scExample", package = "singleCellTK")
+#' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
+#' rowData(sce)$Symbol = rowData(sce)$feature_name
+#' rownames(sce) = rowData(sce)$Symbol
+#' sce <- singleCellTK::scaterlogNormCounts(sce, assayName = "logcounts")
+#' sce <- scater::runPCA(sce)
+#' sce <- scater::runTSNE (sce, dimred = "PCA")
 #' sce <- runTSCAN (inSCE = sce, useReducedDim = "PCA", seed = NULL)
-#' sce <- runTSCANDEG(inSCE = sce, pathIndex = 6, discardCluster = 8)
-#' sce <- runTSCANClusterDEAnalysis(inSCE = sce, useClusters = 3)
+#' sce <- runTSCANDEG(inSCE = sce, pathIndex = 3)
+#' sce <- runTSCANClusterDEAnalysis(inSCE = sce, useClusters = 2)
 
 runTSCANClusterDEAnalysis <- function(inSCE, useClusters , useAssay = "logcounts", fdrThreshold = 0.05){ 
   
@@ -423,10 +462,17 @@ runTSCANClusterDEAnalysis <- function(inSCE, useClusters , useAssay = "logcounts
 #' @author Nida Pervaiz
 #' @importFrom utils head
 #' @examples
+#' data("scExample", package = "singleCellTK")
+#' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
+#' rowData(sce)$Symbol = rowData(sce)$feature_name
+#' rownames(sce) = rowData(sce)$Symbol
+#' sce <- singleCellTK::scaterlogNormCounts(sce, assayName = "logcounts")
+#' sce <- scater::runPCA(sce)
+#' sce <- scater::runTSNE (sce, dimred = "PCA")
 #' sce <- runTSCAN (inSCE = sce, useReducedDim = "PCA", seed = NULL)
-#' sce <- runTSCANDEG(inSCE = sce, pathIndex = 6, discardCluster = 8)
-#' sce <- runTSCANClusterDEAnalysis(inSCE = sce, useClusters = 3)
-#' plotClusterPseudo(inSCE = sce, useClusters = 3, pathIndex = NULL, useReducedDim = "TSNE")
+#' sce <- runTSCANDEG(inSCE = sce, pathIndex = 3)
+#' sce <- runTSCANClusterDEAnalysis(inSCE = sce, useClusters = 2)
+#' plotClusterPseudo(inSCE = sce, useClusters = 2, pathIndex = NULL, useReducedDim = "TSNE")
 
 plotClusterPseudo <- function(inSCE, useClusters, pathIndex = NULL, useReducedDim){
   
@@ -470,9 +516,16 @@ plotClusterPseudo <- function(inSCE, useClusters, pathIndex = NULL, useReducedDi
 #' @author Nida Pervaiz
 #' @importFrom utils head
 #' @examples
+#' data("scExample", package = "singleCellTK")
+#' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
+#' rowData(sce)$Symbol = rowData(sce)$feature_name
+#' rownames(sce) = rowData(sce)$Symbol
+#' sce <- singleCellTK::scaterlogNormCounts(sce, assayName = "logcounts")
+#' sce <- scater::runPCA(sce)
+#' sce <- scater::runTSNE (sce, dimred = "PCA")
 #' sce <- runTSCAN (inSCE = sce, useReducedDim = "PCA", seed = NULL)
-#' sce <- runTSCANDEG(inSCE = sce, pathIndex = 6, discardCluster = 8)
-#' sce <- runTSCANClusterDEAnalysis(inSCE = sce, useClusters = 3)
+#' sce <- runTSCANDEG(inSCE = sce, pathIndex = 3)
+#' sce <- runTSCANClusterDEAnalysis(inSCE = sce, useClusters = 2)
 #' plotTSCANDEgenes(inSCE = sce, geneSymbol = "CD74", useReducedDim = "TSNE")
 
 plotTSCANDEgenes <- function(inSCE, geneSymbol, useClusters=NULL, useReducedDim){

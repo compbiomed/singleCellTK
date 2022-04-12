@@ -18,6 +18,13 @@ A plot with the pseudotime ordering of the cells by projecting them onto the MST
 A wrapper function which visualizes outputs from the runTSCAN function. Plots the pseudotime ordering of the cells by projecting them onto the MST
 }
 \examples{
+data("scExample", package = "singleCellTK")
+sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
+rowData(sce)$Symbol = rowData(sce)$feature_name
+rownames(sce) = rowData(sce)$Symbol
+sce <- singleCellTK::scaterlogNormCounts(sce, assayName = "logcounts")
+sce <- scater::runPCA(sce)
+sce <- scater::runTSNE (sce, dimred = "PCA")
 sce <- runTSCAN (inSCE = sce, useReducedDim = "PCA", seed = NULL)
 plotTSCANResults(inSCE = sce, useReducedDim = "TSNE")
 }

@@ -20,9 +20,16 @@ A plot with the top genes that increase in expression with increasing pseudotime
 A wrapper function which visualizes outputs from the runTSCANDEG function. Plots the top genes that increase in expression with increasing pseudotime along the path in the MST
 }
 \examples{
+data("scExample", package = "singleCellTK")
+sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
+rowData(sce)$Symbol = rowData(sce)$feature_name
+rownames(sce) = rowData(sce)$Symbol
+sce <- singleCellTK::scaterlogNormCounts(sce, assayName = "logcounts")
+sce <- scater::runPCA(sce)
+sce <- scater::runTSNE (sce, dimred = "PCA")
 sce <- runTSCAN (inSCE = sce, useReducedDim = "PCA", seed = NULL)
-sce <- runTSCANDEG(inSCE = sce, pathIndex = 6, discardCluster = 8)
-plotTSCANPseudotimeHeatmap(inSCE = sce, pathIndex = 6, topN = 10)
+sce <- runTSCANDEG(inSCE = sce, pathIndex = 3)
+plotTSCANPseudotimeHeatmap(inSCE = sce, pathIndex = 3)
 }
 \author{
 Nida Pervaiz

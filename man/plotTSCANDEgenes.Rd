@@ -22,9 +22,16 @@ A plots with the cells colored by the expression of a gene of interest.
 A wrapper function which plots all the cells in the cluster containing the branch point of the MST in the dataset. Each point is a cell colored by the expression of a gene of interest and the relevant edges of the MST are overlaid on top.
 }
 \examples{
+data("scExample", package = "singleCellTK")
+sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
+rowData(sce)$Symbol = rowData(sce)$feature_name
+rownames(sce) = rowData(sce)$Symbol
+sce <- singleCellTK::scaterlogNormCounts(sce, assayName = "logcounts")
+sce <- scater::runPCA(sce)
+sce <- scater::runTSNE (sce, dimred = "PCA")
 sce <- runTSCAN (inSCE = sce, useReducedDim = "PCA", seed = NULL)
-sce <- runTSCANDEG(inSCE = sce, pathIndex = 6, discardCluster = 8)
-sce <- runTSCANClusterDEAnalysis(inSCE = sce, useClusters = 3)
+sce <- runTSCANDEG(inSCE = sce, pathIndex = 3)
+sce <- runTSCANClusterDEAnalysis(inSCE = sce, useClusters = 2)
 plotTSCANDEgenes(inSCE = sce, geneSymbol = "CD74", useReducedDim = "TSNE")
 }
 \author{

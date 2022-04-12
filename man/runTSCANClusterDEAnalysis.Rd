@@ -27,9 +27,16 @@ A \link[SingleCellExperiment]{SingleCellExperiment} object with DE genes that ar
 Wrapper for looking for differences in expression between paths of a branched trajectory. The differential expression analysis may highlight genes which are responsible for the branching event
 }
 \examples{
+data("scExample", package = "singleCellTK")
+sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
+rowData(sce)$Symbol = rowData(sce)$feature_name
+rownames(sce) = rowData(sce)$Symbol
+sce <- singleCellTK::scaterlogNormCounts(sce, assayName = "logcounts")
+sce <- scater::runPCA(sce)
+sce <- scater::runTSNE (sce, dimred = "PCA")
 sce <- runTSCAN (inSCE = sce, useReducedDim = "PCA", seed = NULL)
-sce <- runTSCANDEG(inSCE = sce, pathIndex = 6, discardCluster = 8)
-sce <- runTSCANClusterDEAnalysis(inSCE = sce, useClusters = 3)
+sce <- runTSCANDEG(inSCE = sce, pathIndex = 3)
+sce <- runTSCANClusterDEAnalysis(inSCE = sce, useClusters = 2)
 }
 \author{
 Nida Pervaiz

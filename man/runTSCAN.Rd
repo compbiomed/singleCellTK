@@ -22,7 +22,10 @@ A \link[SingleCellExperiment]{SingleCellExperiment} object with pseudotime order
 Wrapper for obtaining a pseudotime ordering of the cells by projecting them onto the MST
 }
 \examples{
-sce <- singleCellTK::importExampleData("pbmc3k")
+data("scExample", package = "singleCellTK")
+sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
+rowData(sce)$Symbol = rowData(sce)$feature_name
+rownames(sce) = rowData(sce)$Symbol
 sce <- singleCellTK::scaterlogNormCounts(sce, assayName = "logcounts")
 sce <- scater::runPCA(sce)
 sce <- scater::runTSNE (sce, dimred = "PCA")

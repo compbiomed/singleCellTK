@@ -30,8 +30,15 @@ A \link[SingleCellExperiment]{SingleCellExperiment} object with genes that decre
 Wrapper for identifying genes with significant changes with respect to one of the TSCAN pseudotimes
 }
 \examples{
+data("scExample", package = "singleCellTK")
+sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
+rowData(sce)$Symbol = rowData(sce)$feature_name
+rownames(sce) = rowData(sce)$Symbol
+sce <- singleCellTK::scaterlogNormCounts(sce, assayName = "logcounts")
+sce <- scater::runPCA(sce)
+sce <- scater::runTSNE (sce, dimred = "PCA")
 sce <- runTSCAN (inSCE = sce, useReducedDim = "PCA", seed = NULL)
-sce <- runTSCANDEG(inSCE = sce, pathIndex = 6, discardCluster = 8)
+sce <- runTSCANDEG(inSCE = sce, pathIndex = 3)
 }
 \author{
 Nida Pervaiz
