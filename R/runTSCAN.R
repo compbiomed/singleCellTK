@@ -125,13 +125,13 @@ runTSCAN <- function(inSCE, useReducedDim, cluster = NULL, seed = 12345) {
         cluster <- colData(inSCE)$"scranSNN_cluster"
       })
   }
-  inSCE <- scran::computeSumFactors(inSCE = inSCE, clusters = cluster)
-  by.cluster <- scuttle::aggregateAcrossCells(inSCE = inSCE, ids = cluster)
+  inSCE <- scran::computeSumFactors(inSCE, clusters = cluster)
+  by.cluster <- scuttle::aggregateAcrossCells(inSCE , ids = cluster)
   centroids <- SingleCellExperiment::reducedDim(by.cluster, useReducedDim)         
   mst <- TSCAN::createClusterMST(centroids, clusters = NULL)      
   
   #Map each cell to the closest edge on the MST, reporting also the distance to the corresponding vertices.
-  map.tscan <- TSCAN::mapCellsToEdges(inSCE = inSCE, mst = mst, use.dimred = useReducedDim , clusters = cluster)
+  map.tscan <- TSCAN::mapCellsToEdges(inSCE , mst = mst, use.dimred = useReducedDim , clusters = cluster)
   
   #Compute a pseudotime for each cell lying on each path through the MST from a given starting node.
   tscan.pseudo <- TSCAN::orderCells(map.tscan, mst)
