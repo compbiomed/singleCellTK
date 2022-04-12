@@ -113,7 +113,7 @@ setMethod("listTSCANResults", "SingleCellExperiment", function(x){
 runTSCAN <- function(inSCE, useReducedDim, cluster = NULL, seed = 12345) {  
   if (is.null(seed)) {
     if(is.null(cluster)){
-      inSCE <- singleCellTK::runScranSNN(inSCE, useReducedDim = useReducedDim)
+      inSCE <- singleCellTK::runScranSNN(inSCE = inSCE, useReducedDim = useReducedDim)
       cluster <- colData(inSCE)$"scranSNN_cluster"
     }
   }
@@ -121,17 +121,17 @@ runTSCAN <- function(inSCE, useReducedDim, cluster = NULL, seed = 12345) {
     withr::with_seed(   
       seed, 
       if(is.null(cluster)){
-        inSCE <- singleCellTK::runScranSNN(inSCE, useReducedDim = useReducedDim)
+        inSCE <- singleCellTK::runScranSNN(inSCE = inSCE, useReducedDim = useReducedDim)
         cluster <- colData(inSCE)$"scranSNN_cluster"
       })
   }
-  inSCE <- scran::computeSumFactors(inSCE, clusters = cluster)
-  by.cluster <- scuttle::aggregateAcrossCells(inSCE, ids = cluster)
+  inSCE <- scran::computeSumFactors(inSCE = inSCE, clusters = cluster)
+  by.cluster <- scuttle::aggregateAcrossCells(inSCE = inSCE, ids = cluster)
   centroids <- SingleCellExperiment::reducedDim(by.cluster, useReducedDim)         
   mst <- TSCAN::createClusterMST(centroids, clusters = NULL)      
   
   #Map each cell to the closest edge on the MST, reporting also the distance to the corresponding vertices.
-  map.tscan <- TSCAN::mapCellsToEdges(inSCE, mst = mst, use.dimred = useReducedDim , clusters = cluster)
+  map.tscan <- TSCAN::mapCellsToEdges(inSCE = inSCE, mst = mst, use.dimred = useReducedDim , clusters = cluster)
   
   #Compute a pseudotime for each cell lying on each path through the MST from a given starting node.
   tscan.pseudo <- TSCAN::orderCells(map.tscan, mst)
@@ -279,8 +279,8 @@ plotTSCANPseudotimeHeatmap <- function(inSCE, pathIndex, topN = 50){
    #                   colour_columns_by = "TSCAN_clusters", features = utils::head(results$upRight$SYMBOL, topN),
     #                  center = TRUE, swap_rownames = "Symbol") 
   
-  
- singleCellTK::plotSCEHeatmap(x[,on.path],
+  x <- x[,on.path]
+ singleCellTK::plotSCEHeatmap(inSCE = x,
                                featureIndex = utils::head(results$upRight$SYMBOL, topN),
                                colDend = FALSE, 
                                cluster_columns = FALSE, 
