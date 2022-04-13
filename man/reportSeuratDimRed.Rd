@@ -20,7 +20,10 @@ reportSeuratDimRed(
   pc.count = 10,
   showSession = TRUE,
   pdf = TRUE,
-  jackStraw = FALSE
+  runDimRed = TRUE,
+  plotJackStraw = FALSE,
+  plotElbowPlot = TRUE,
+  plotHeatmaps = TRUE
 )
 }
 \arguments{

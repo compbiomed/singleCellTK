@@ -20,7 +20,13 @@ reportSeuratClustering(
   pc.count = 10,
   showSession = TRUE,
   pdf = TRUE,
-  jackStraw = FALSE
+  runClustering = TRUE,
+  plotTSNE = TRUE,
+  plotUMAP = TRUE,
+  minResolution = 0.3,
+  maxResolution = 1.5,
+  numClusters = 10,
+  significant_PC = 10
 )
 }
 \arguments{

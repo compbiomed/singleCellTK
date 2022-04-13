@@ -486,7 +486,10 @@ reportSeuratDimRed <- function(inSCE,
                                 pc.count = 10,
                                 showSession = TRUE,
                                 pdf = TRUE,
-                                jackStraw = FALSE){
+                               runDimRed = TRUE,
+                               plotJackStraw = FALSE,
+                               plotElbowPlot = TRUE,
+                               plotHeatmaps = TRUE){
   
   if(is.null(biological.group)){
     stop("Must specify atleast one biological.group that is present in the colData of input object.")
@@ -524,20 +527,23 @@ reportSeuratDimRed <- function(inSCE,
                       outputPath = outputDir,
                       showSession = showSession,
                       pdf = pdf,
-                      jackStraw = jackStraw
+                      runDimRed = runDimRed,
+                      plotJackStraw = plotJackStraw,
+                      plotElbowPlot = plotElbowPlot,
+                      plotHeatmaps = plotHeatmaps
                     ),
                     output_file = outputFile,
                     output_dir = outputDir,
                     intermediates_dir = outputDir,
                     knit_root_dir = outputDir)
   
-  path <- paste0(outputDir, "SeuratReportDimRed", "-", gsub(" ", "_", Sys.Date()), ".rds")
-  outSCE <- readRDS(path)
+  # path <- paste0(outputDir, "SeuratReportDimRed", "-", gsub(" ", "_", Sys.Date()), ".rds")
+  # outSCE <- readRDS(path)
+  # 
+  # message("Output SCE object stored as ", paste0("SeuratReportDimRed", "-", gsub(" ", "_", Sys.Date()), ".rds"), " in ", outputDir, ".")
+  # message("Output HTML file stored as ", outputFile, " in ", outputDir, ".")
   
-  message("Output SCE object stored as ", paste0("SeuratReportDimRed", "-", gsub(" ", "_", Sys.Date()), ".rds"), " in ", outputDir, ".")
-  message("Output HTML file stored as ", outputFile, " in ", outputDir, ".")
-  
-  return(outSCE)
+  return(data)
 }
 
 #' Computes an HTML report from the Seurat workflow and returns the output SCE
@@ -638,13 +644,13 @@ reportSeuratNormalization <- function(inSCE,
                     intermediates_dir = outputDir,
                     knit_root_dir = outputDir)
   
-  path <- paste0(outputDir, "SeuratReportNormalization", "-", gsub(" ", "_", Sys.Date()), ".rds")
-  outSCE <- readRDS(path)
+  # path <- paste0(outputDir, "SeuratReportNormalization", "-", gsub(" ", "_", Sys.Date()), ".rds")
+  # outSCE <- readRDS(path)
+  # 
+  # message("Output SCE object stored as ", paste0("SeuratReportNormalization", "-", gsub(" ", "_", Sys.Date()), ".rds"), " in ", outputDir, ".")
+  # message("Output HTML file stored as ", outputFile, " in ", outputDir, ".")
   
-  message("Output SCE object stored as ", paste0("SeuratReportNormalization", "-", gsub(" ", "_", Sys.Date()), ".rds"), " in ", outputDir, ".")
-  message("Output HTML file stored as ", outputFile, " in ", outputDir, ".")
-  
-  return(outSCE)
+  return(data)
 }
 
 #' Computes an HTML report from the Seurat workflow and returns the output SCE
@@ -745,13 +751,13 @@ reportSeuratFeatureSelection <- function(inSCE,
                     intermediates_dir = outputDir,
                     knit_root_dir = outputDir)
   
-  path <- paste0(outputDir, "SeuratReportFeatureSelection", "-", gsub(" ", "_", Sys.Date()), ".rds")
-  outSCE <- readRDS(path)
+  # path <- paste0(outputDir, "SeuratReportFeatureSelection", "-", gsub(" ", "_", Sys.Date()), ".rds")
+  # outSCE <- readRDS(path)
+  # 
+  # message("Output SCE object stored as ", paste0("SeuratReportFeatureSelection", "-", gsub(" ", "_", Sys.Date()), ".rds"), " in ", outputDir, ".")
+  # message("Output HTML file stored as ", outputFile, " in ", outputDir, ".")
   
-  message("Output SCE object stored as ", paste0("SeuratReportFeatureSelection", "-", gsub(" ", "_", Sys.Date()), ".rds"), " in ", outputDir, ".")
-  message("Output HTML file stored as ", outputFile, " in ", outputDir, ".")
-  
-  return(outSCE)
+  return(data)
 }
 
 #' Computes an HTML report from the Seurat workflow and returns the output SCE
@@ -852,13 +858,13 @@ reportSeuratScaling <- function(inSCE,
                     intermediates_dir = outputDir,
                     knit_root_dir = outputDir)
   
-  path <- paste0(outputDir, "SeuratReportScaleData", "-", gsub(" ", "_", Sys.Date()), ".rds")
-  outSCE <- readRDS(path)
+  # path <- paste0(outputDir, "SeuratReportScaleData", "-", gsub(" ", "_", Sys.Date()), ".rds")
+  # outSCE <- readRDS(path)
+  # 
+  # message("Output SCE object stored as ", paste0("SeuratReportScaleData", "-", gsub(" ", "_", Sys.Date()), ".rds"), " in ", outputDir, ".")
+  # message("Output HTML file stored as ", outputFile, " in ", outputDir, ".")
   
-  message("Output SCE object stored as ", paste0("SeuratReportScaleData", "-", gsub(" ", "_", Sys.Date()), ".rds"), " in ", outputDir, ".")
-  message("Output HTML file stored as ", outputFile, " in ", outputDir, ".")
-  
-  return(outSCE)
+  return(data)
 }
 
 #' Computes an HTML report from the Seurat workflow and returns the output SCE
@@ -914,7 +920,13 @@ reportSeuratClustering <- function(inSCE,
                            pc.count = 10,
                            showSession = TRUE,
                            pdf = TRUE,
-                           jackStraw = FALSE){
+                           runClustering = TRUE,
+                           plotTSNE = TRUE,
+                           plotUMAP = TRUE,
+                           minResolution = 0.3,
+                           maxResolution = 1.5,
+                           numClusters = 10,
+                           significant_PC = 10){
   
   if(is.null(biological.group)){
     stop("Must specify atleast one biological.group that is present in the colData of input object.")
@@ -952,20 +964,26 @@ reportSeuratClustering <- function(inSCE,
                       outputPath = outputDir,
                       showSession = showSession,
                       pdf = pdf,
-                      jackStraw = jackStraw
+                      runClustering = runClustering,
+                      plotTSNE = plotTSNE,
+                      plotUMAP = plotUMAP,
+                      minResolution = minResolution,
+                      maxResolution = maxResolution,
+                      numClusters = numClusters,
+                      significant_PC = significant_PC 
                     ),
                     output_file = outputFile,
                     output_dir = outputDir,
                     intermediates_dir = outputDir,
                     knit_root_dir = outputDir)
   
-  path <- paste0(outputDir, "SeuratReport", "-", gsub(" ", "_", Sys.Date()), ".rds")
-  outSCE <- readRDS(path)
+  # path <- paste0(outputDir, "SeuratReport", "-", gsub(" ", "_", Sys.Date()), ".rds")
+  # outSCE <- readRDS(path)
+  # 
+  # message("Output SCE object stored as ", paste0("SeuratReport", "-", gsub(" ", "_", Sys.Date()), ".rds"), " in ", outputDir, ".")
+  # message("Output HTML file stored as ", outputFile, " in ", outputDir, ".")
   
-  message("Output SCE object stored as ", paste0("SeuratReport", "-", gsub(" ", "_", Sys.Date()), ".rds"), " in ", outputDir, ".")
-  message("Output HTML file stored as ", outputFile, " in ", outputDir, ".")
-  
-  return(outSCE)
+  return(data)
 }
 
 #' Computes an HTML report from the Seurat workflow and returns the output SCE
@@ -1021,7 +1039,9 @@ reportSeuratMarkerSelection <- function(inSCE,
                            pc.count = 10,
                            showSession = TRUE,
                            pdf = TRUE,
-                           jackStraw = FALSE){
+                           runMarkerSelection = TRUE,
+                           plotMarkerSelection = TRUE,
+                           countFeatures = 10){
   
   if(is.null(biological.group)){
     stop("Must specify atleast one biological.group that is present in the colData of input object.")
@@ -1059,20 +1079,22 @@ reportSeuratMarkerSelection <- function(inSCE,
                       outputPath = outputDir,
                       showSession = showSession,
                       pdf = pdf,
-                      jackStraw = jackStraw
+                      runMarkerSelection = runMarkerSelection,
+                      plotMarkerSelection = plotMarkerSelection,
+                      countFeatures = countFeatures
                     ),
                     output_file = outputFile,
                     output_dir = outputDir,
                     intermediates_dir = outputDir,
                     knit_root_dir = outputDir)
   
-  path <- paste0(outputDir, "SeuratReport", "-", gsub(" ", "_", Sys.Date()), ".rds")
-  outSCE <- readRDS(path)
+  # path <- paste0(outputDir, "SeuratReport", "-", gsub(" ", "_", Sys.Date()), ".rds")
+  # outSCE <- readRDS(path)
+  # 
+  # message("Output SCE object stored as ", paste0("SeuratReport", "-", gsub(" ", "_", Sys.Date()), ".rds"), " in ", outputDir, ".")
+  # message("Output HTML file stored as ", outputFile, " in ", outputDir, ".")
   
-  message("Output SCE object stored as ", paste0("SeuratReport", "-", gsub(" ", "_", Sys.Date()), ".rds"), " in ", outputDir, ".")
-  message("Output HTML file stored as ", outputFile, " in ", outputDir, ".")
-  
-  return(outSCE)
+  return(data)
 }
 
 #' Computes an HTML report from the Seurat workflow and returns the output SCE

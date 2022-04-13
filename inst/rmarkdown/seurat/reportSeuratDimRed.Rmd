@@ -1,5 +1,5 @@
 ---
-title: "DimRed"
+title: "Dimensionality Reduction"
 author: "`r params$authors`"
 date: "`r format(Sys.time(), '%B %d, %Y')`"
 params:
@@ -15,7 +15,10 @@ params:
   outputPath: !r NULL
   showSession: TRUE
   pdf: TRUE
-  jackStraw: FALSE
+  runDimRed: TRUE
+  plotJackStraw: FALSE
+  plotElbowPlot: TRUE
+  plotHeatmaps: TRUE
 output:
   html_document:
     toc: yes
@@ -56,7 +59,13 @@ library(patchwork)
 library(singleCellTK)
 ```
 
-## PCA {.tabset .tabset-fade}
+```{r, echo=FALSE, results='asis', warning=FALSE, message=FALSE}
+if(!exists("headingDR")) headingDR <- "#"
+if(!exists("headingDR2")) headingDR2 <- "##"
+
+cat(headingDR, " PCA {.tabset .tabset-fade}\n\n")
+```
+
 To reduce the adverse effects of the inherent technical noise in single-cell data on downstream clustering, reduced dimensions are computed where each dimension represents a set of correlated features. However, an important task is to select the number of components that should be utilized by the downstream methods. To select the number of principal components that should be used in the downstream analysis, JackStraw plot and Elbow plot visualized below provide convenience in the selection of the significant components that contain most of the variability.  
 
 ```{r, results='asis', warning=FALSE, eval = !(runDimRed && !is.null(metadata(data)$seurat$obj@reductions$pca))}
@@ -81,7 +90,7 @@ data <- do.call("runSeuratJackStraw", jackStrawParams)
 ```
 
 ```{r, results='asis', include=plotElbowPlot, eval= plotElbowPlot}
-cat("### Elbow Plot {-}")
+cat(headingDR2, " Elbow Plot {-}\n\n")
 cat("Elbow plot is plotted between the principal components (x-axis) and their standard deviation (y-axis), where a clear elbow between the components highlights the cut-off for the no. of components that should be selected as significant for downstream analysis.")
 ```
 
@@ -99,7 +108,7 @@ cat("> PCA was applied to the scaled subset matrix that contained the *2000* top
 ```
 
 ```{r, results='asis', include=plotJackStraw, eval= plotJackStraw}
-cat("### JackStraw Plot {-}")
+cat(headingDR2, " JackStraw Plot {-}\n\n")
 cat("JackStraw computes significance values for all genes in all principal components and plots these genes as a QQ-plot for each component and compares them with the uniform distribution (shown in dotted line). Overall p-values are also computed for each component, where statistically significant principal components can be selected for downstream analysis. Visually, components that lie above the dotted uniform distribution line should be selected.")
 ```
 
@@ -140,7 +149,7 @@ cat("> PCA was applied to the scaled subset matrix that contained the *2000* top
 ```
 
 ```{r, results='asis', include=plotHeatmaps, eval= plotHeatmaps}
-cat("### PC Heatmap {-}")
+cat(headingDR2, " PC Heatmap {-}\n\n")
 cat("Heatmaps are plotted for each component that highlight the primary sources of heterogeneity in terms of features in the data. Both cells and features are ordered according to their PCA scores and this heatmap can be utilized to explore highly correlated feature sets in the data.")
 ```
 

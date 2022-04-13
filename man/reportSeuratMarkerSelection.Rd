@@ -20,7 +20,9 @@ reportSeuratMarkerSelection(
   pc.count = 10,
   showSession = TRUE,
   pdf = TRUE,
-  jackStraw = FALSE
+  runMarkerSelection = TRUE,
+  plotMarkerSelection = TRUE,
+  countFeatures = 10
 )
 }
 \arguments{

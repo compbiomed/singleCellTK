@@ -90,18 +90,21 @@ opts_chunk$set(
 
 <!-- Normalization -->
 ```{r, echo=FALSE, results='asis', message=FALSE}
-resNormalization <- knitr::knit_child(paste0(getwd(), "/inst/rmarkdown/seurat/", 'reportSeuratNormalizeData.Rmd'), quiet = TRUE)
+headingNorm <- "##"
+resNormalization <- knitr::knit_child(paste0(getwd(), "/inst/rmarkdown/seurat/", 'reportSeuratNormalizeData.Rmd'), quiet = TRUE, envir = environment())
 ```
 
 <!-- Feature Selection -->
 ```{r, echo=FALSE, results='asis'}
 # runHVG <- TRUE
 # plotHVG <- TRUE
+headingFS <- "##"
 resFeatureSelection <- knitr::knit_child(paste0(getwd(), "/inst/rmarkdown/seurat/", 'reportSeuratFeatureSelection.Rmd'), quiet = TRUE)
 ```
 
 <!-- Scale Data -->
 ```{r, echo=FALSE, results='asis', warning=FALSE, message=FALSE}
+headingSD <- "##"
 resScaleData <- knitr::knit_child(paste0(getwd(), "/inst/rmarkdown/seurat/", 'reportSeuratScaleData.Rmd'), quiet = TRUE)
 ```
 
@@ -111,6 +114,8 @@ resScaleData <- knitr::knit_child(paste0(getwd(), "/inst/rmarkdown/seurat/", 're
 # plotJackStraw <- TRUE
 # plotElbowPlot <- TRUE
 # plotHeatmaps <- TRUE
+headingDR <- "##"
+headingDR2 <- "###"
 significant_PC <- 10
 
 resDimRed <- knitr::knit_child(paste0(getwd(), "/inst/rmarkdown/seurat/", 'reportSeuratDimRed.Rmd'), quiet = TRUE, envir = environment())
@@ -125,6 +130,7 @@ resDimRed <- knitr::knit_child(paste0(getwd(), "/inst/rmarkdown/seurat/", 'repor
 # maxResolution <- 1.5
 numClusters <- 10 # this should be computed by the code itself (do later)
 showClusterDesc <- TRUE
+headingClust <- "##"
 
 resClustering <- knitr::knit_child(paste0(getwd(), "/inst/rmarkdown/seurat/", 'reportSeuratClustering.Rmd'), quiet = TRUE)
 ```

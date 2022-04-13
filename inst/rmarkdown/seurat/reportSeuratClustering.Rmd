@@ -15,7 +15,13 @@ params:
   outputPath: !r NULL
   showSession: TRUE
   pdf: TRUE
-  jackStraw: FALSE
+  runClustering: TRUE
+  plotTSNE: TRUE
+  plotUMAP: TRUE
+  minResolution: 0.3
+  maxResolution: 1.5
+  numClusters: 10
+  significant_PC: 10
 output:
   html_document:
     toc: yes
@@ -31,13 +37,8 @@ editor_options:
   chunk_output_type: console
 ---
 ```{r}
-if(!exists("runClustering")) runClustering <- TRUE
-if(!exists("plotTSNE")) plotTSNE <- TRUE
-if(!exists("plotUMAP")) plotUMAP <- TRUE
-if(!exists("minResolution")) minResolution <- 0.3
-if(!exists("maxResolution")) maxResolution <- 1.5
-if(!exists("numClusters")) numClusters <- 10
-if(!exists("showClustersDesc")) showClustersDesc <- TRUE
+if(!exists("showClusterDesc")) showClusterDesc <- TRUE
+if(!exists("headingClust")) headingClust <- "#"
 ```
 
 ```{r, message=FALSE, warning=FALSE}
@@ -58,7 +59,8 @@ library(singleCellTK)
 ```
 
 ```{r, echo=FALSE, results='asis', warning=FALSE, message=FALSE, eval = showClusterDesc}
-cat("## Clustering\n\n")
+cat(headingClust," Clustering\n\n")
+
 cat("Clustering helps in the identification of inherent cell-types in the data in an unsupervised manner by discovering the natural clusters that may exist on the basis of the transcriptome. Seurat uses the principal components for its graph-based clustering approach where it iteratively groups cells with similar expression patterns together into highly interconnected communities.  
 
 The clustering results can then be visualized using non-linear dimensionality reduction techniques including tSNE and UMAP. The goal of these algorithms is essentially to understand the structure of the data in high-dimensional space in order to place similar cells together in low-dimensional space thus making visualizing clusters much more intuitive. Cells in the data within the graph-based clusters determined above should co-localize on these plots. ")

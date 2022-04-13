@@ -47,7 +47,12 @@ library(patchwork)
 library(singleCellTK)
 ```
 
-## Scaling
+```{r, echo=FALSE, results='asis', warning=FALSE, message=FALSE}
+if(!exists("headingSD")) headingSD <- "#"
+
+cat(headingSD, " Scale Data {}\n\n")
+```
+
 Standardizing gene expression values is considered necessary to ensure that dimensionality reduction tools produce unbiased results due to high variance of some features. For this purpose, Seurat performs a *z-score* scaling on the input matrix and standardizes (centers and scales) the expression values of the variable features identified previously before they are input to the downstream methods.  
 
 > The variable features identified previously were scaled using *z-score* scaling method and the output expression values were clipped to maximum and minimum value of 10 & -10 respectively.
