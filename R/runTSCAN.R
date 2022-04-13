@@ -252,17 +252,16 @@ runTSCANDEG <- function(inSCE,
   if(!is.null(discardCluster)){
     for (i in seq_along(discardCluster)){
       if (i == 1){
-        keep <- colData(inSCE)$"TSCAN_clusters" != discardCluster[i]
-        nx <- inSCE[,keep]
+        nx <- inSCE[, colData(inSCE)$"TSCAN_clusters" != discardCluster[i]]
       }
       else{
-        keep <- colData(nx)$"TSCAN_clusters" != discardCluster[i]
-        nx <- nx[,keep]
+        nx <- nx[, colData(nx)$"TSCAN_clusters" != discardCluster[i]]
+        
       }
     }
+    
   }
   else{
-    keep <- NULL
     nx <- inSCE
   }
   
@@ -276,7 +275,7 @@ runTSCANDEG <- function(inSCE,
   names(colData(inSCE))[names(colData(inSCE)) == 'Path_pseudotime'] <- paste0("Path_",pathIndex,"_pseudotime") 
   
   ## Save these results in a list and then make S4 accessor that passes the entire list
-  pathresults <- list(keptClusters = keep, upLeft = up.left, upRight = up.right) 
+  pathresults <- list(discardClusters = discardCluster, upLeft = up.left, upRight = up.right) 
   getTSCANResults(inSCE, analysisName = "DEG", pathName = paste0("path" , pathIndex)) <- pathresults
   
   return (inSCE)
@@ -319,8 +318,17 @@ plotTSCANPseudotimeHeatmap <- function(inSCE,
   pathName = paste0("path", pathIndex)
   
   results <- getTSCANResults(inSCE, analysisName = "DEG", pathName = pathName)  
-  if(!is.null(results$keptClusters)){
-    x <- inSCE[,results$keptClusters]
+  if(!is.null(results$discardClusters)){
+    for (i in seq_along(results$discardClusters)){
+      if (i == 1){
+        x <- inSCE[, colData(inSCE)$"TSCAN_clusters" != results$discardClusters[i]]
+      }
+      else{
+        x <- x[, colData(x)$"TSCAN_clusters" != results$discardClusters[i]]
+        
+      }
+    }
+    
   }
   else{
     x <- inSCE
@@ -339,7 +347,7 @@ plotTSCANPseudotimeHeatmap <- function(inSCE,
                                colDataName = c("TSCAN_clusters", colPathPseudo), 
                                rowLabel = TRUE, 
                                colSplitBy = colPathPseudo
-                               )
+  )
 }
 
 ###################################################
@@ -380,8 +388,17 @@ plotTSCANPseudotimeGenes <- function (inSCE,
   
   pathName = paste0("path", pathIndex)
   results <- getTSCANResults(inSCE, analysisName = "DEG", pathName = pathName) 
-  if(!is.null(results$keptClusters)){
-    y <- inSCE[,results$keptClusters]
+  if(!is.null(results$discardClusters)){
+    for (i in seq_along(results$discardClusters)){
+      if (i == 1){
+        y <- inSCE[, colData(inSCE)$"TSCAN_clusters" != results$discardClusters[i]]
+      }
+      else{
+        y <- y[, colData(y)$"TSCAN_clusters" != results$discardClusters[i]]
+        
+      }
+    }
+    
   }
   else{
     y <- inSCE
