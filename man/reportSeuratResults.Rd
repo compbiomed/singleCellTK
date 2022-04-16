@@ -20,7 +20,9 @@ reportSeuratResults(
   pc.count = 10,
   showSession = TRUE,
   pdf = TRUE,
-  jackStraw = FALSE
+  plotTSNE = TRUE,
+  plotUMAP = TRUE,
+  forceRun = FALSE
 )
 }
 \arguments{

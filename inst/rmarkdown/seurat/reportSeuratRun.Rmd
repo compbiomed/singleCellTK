@@ -15,7 +15,18 @@ params:
   outputPath: !r NULL
   showSession: TRUE
   pdf: TRUE
-  jackStraw: FALSE
+  runHVG: TRUE
+  plotHVG: TRUE
+  runDimRed: TRUE
+  plotJackStraw: FALSE
+  plotElbowPlot: TRUE
+  plotHeatmaps: TRUE
+  runClustering: TRUE
+  plotTSNE: TRUE
+  plotUMAP: TRUE
+  minResolution: 0.3
+  maxResolution: 1.5 
+  forceRun: FALSE
 output:
   html_document:
     toc: yes
@@ -32,7 +43,7 @@ editor_options:
 ---
 
 
-```{r, include = TRUE, message=FALSE, warning=FALSE, echo=FALSE}
+```{r Load Libraries Seurat Normalization, echo=FALSE, include = TRUE, message=FALSE, warning=FALSE}
 #Loading required libraries
 library(Seurat)
 library(dplyr)
@@ -48,6 +59,9 @@ library(grid)
 library(ggpubr)
 library(patchwork)
 library(singleCellTK)
+
+data <- params$sce
+sampleNames <- unique(colData(data)[[biological.group]])
 
 numCells <- ncol(data)
 numFeatures <- nrow(data)

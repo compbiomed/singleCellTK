@@ -15,7 +15,9 @@ params:
   outputPath: !r NULL
   showSession: TRUE
   pdf: TRUE
-  jackStraw: FALSE
+  plotTSNE: TRUE
+  plotUMAP: TRUE
+  forceRun: FALSE
 output:
   html_document:
     toc: yes
@@ -47,6 +49,9 @@ if(!exists("numClusters")) numClusters <- 1
 if(!exists("selectedOption")) selectedOption <- params$biological.group
 if(!exists("titleMarkerPlots")) titleMarkerPlots <- "Plot Features"
 if(!exists("countFeatures")) countFeatures <- 10
+if(!exists("significant_PC")) significant_PC <- 10
+if(!exists("runMSClusters")) runMSClusters <- TRUE
+if(!exists("runMSBioGroup")) runMSBioGroup <- TRUE
 ```
 
 ```{r, message=FALSE, warning=FALSE}
@@ -64,6 +69,8 @@ library(grid)
 library(ggpubr)
 library(patchwork)
 library(singleCellTK)
+
+data <- params$sce
 ```
 
 # Seurat Results

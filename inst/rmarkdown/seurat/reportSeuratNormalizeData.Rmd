@@ -24,7 +24,7 @@ subtitle: "`r params$subtitle`"
 editor_options:
   chunk_output_type: console
 ---
-```{r, message=FALSE, warning=FALSE}
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
 library(Seurat)
 library(dplyr)
 library(cowplot)
@@ -43,7 +43,6 @@ library(singleCellTK)
 
 ```{r, echo=FALSE, results='asis', warning=FALSE, message=FALSE}
 if(!exists("headingNorm")) headingNorm <- "#"
-
 cat(headingNorm, " Normalization {}\n\n")
 ```
 

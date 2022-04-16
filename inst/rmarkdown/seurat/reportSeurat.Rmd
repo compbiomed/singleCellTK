@@ -28,6 +28,7 @@ params:
   maxResolution: 1.5 
   runMSClusters: TRUE
   runMSBioGroup: TRUE
+  forceRun: FALSE
 output:
   html_document:
     toc: yes

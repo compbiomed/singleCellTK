@@ -32,7 +32,8 @@ reportSeurat(
   minResolution = 0.3,
   maxResolution = 1.5,
   runMSClusters = TRUE,
-  runMSBioGroup = TRUE
+  runMSBioGroup = TRUE,
+  forceRun = FALSE
 )
 }
 \arguments{
