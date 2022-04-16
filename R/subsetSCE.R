@@ -179,5 +179,9 @@ subsetSCECols <- function(inSCE, index = NULL, bool = NULL, colData = NULL) {
   }
 
   inSCE <- inSCE[,final.ix]
+
+  if(!is.null(S4Vectors::metadata(inSCE)$seurat$obj)){
+    S4Vectors::metadata(inSCE)$seurat$obj@meta.data <- S4Vectors::metadata(inSCE)$seurat$obj@meta.data[final.ix, ]
+  }
   return(inSCE)
   }
