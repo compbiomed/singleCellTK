@@ -467,7 +467,6 @@ reportSeuratResults <- function(inSCE,
 #'  should be displayed or not. Default is \code{TRUE}.
 #' @param pdf A \code{logical} value indicating if a pdf should also be
 #'  generated for each figure in the report. Default is \code{TRUE}.
-#' @param jackStraw logical value
 #' @return A \code{SingleCellExperiment} object that has the seurat computations
 #'  stored and can be used to interactively visualize the plots by importing
 #'  in the \code{singleCellTK} user interface.
@@ -478,33 +477,15 @@ reportSeuratDimRed <- function(inSCE,
                                 subtitle = NULL,
                                 authors =  NULL,
                                 sce = NULL,
-                                biological.group = NULL,
-                                phenotype.groups = NULL,
-                                selected.markers = NULL,
-                                clustering.resolution = 0.8,
-                                variable.features = 2000,
-                                pc.count = 10,
+                                pc.count = 50,
                                 showSession = TRUE,
                                 pdf = TRUE,
                                runDimRed = TRUE,
                                plotJackStraw = FALSE,
                                plotElbowPlot = TRUE,
-                               plotHeatmaps = TRUE){
-  
-  if(is.null(biological.group)){
-    stop("Must specify atleast one biological.group that is present in the colData of input object.")
-  }
-  
-  if(!biological.group %in% names(colData(inSCE))){
-    stop(biological.group, " not found in the colData of input object.")
-  }
-  
-  if(!is.null(phenotype.groups)){
-    if(!all(phenotype.groups %in% names(colData(inSCE)))){
-      stop(phenotype.groups, " not found in the colData of input object.")
-    }
-  }
-  
+                               plotHeatmaps = TRUE,
+                               forceRun = FALSE){
+
   if(is.null(outputDir)){
     outputDir <- getwd()
     message("No output directory defined, using current working directory ", outputDir, " instead.")
@@ -518,11 +499,6 @@ reportSeuratDimRed <- function(inSCE,
                       subtitle = subtitle,
                       authors = authors,
                       sce = inSCE,
-                      biological.group = biological.group,
-                      phenotype.groups = phenotype.groups,
-                      selected.markers = selected.markers,
-                      clustering.resolution = clustering.resolution,
-                      variable.features = variable.features,
                       pc.count = pc.count,
                       outputPath = outputDir,
                       showSession = showSession,
@@ -530,7 +506,8 @@ reportSeuratDimRed <- function(inSCE,
                       runDimRed = runDimRed,
                       plotJackStraw = plotJackStraw,
                       plotElbowPlot = plotElbowPlot,
-                      plotHeatmaps = plotHeatmaps
+                      plotHeatmaps = plotHeatmaps,
+                      forceRun = forceRun
                     ),
                     output_file = outputFile,
                     output_dir = outputDir,
@@ -591,29 +568,9 @@ reportSeuratNormalization <- function(inSCE,
                                subtitle = NULL,
                                authors =  NULL,
                                sce = NULL,
-                               biological.group = NULL,
-                               phenotype.groups = NULL,
-                               selected.markers = NULL,
-                               clustering.resolution = 0.8,
-                               variable.features = 2000,
-                               pc.count = 10,
                                showSession = TRUE,
                                pdf = TRUE,
-                               jackStraw = FALSE){
-  
-  if(is.null(biological.group)){
-    stop("Must specify atleast one biological.group that is present in the colData of input object.")
-  }
-  
-  if(!biological.group %in% names(colData(inSCE))){
-    stop(biological.group, " not found in the colData of input object.")
-  }
-  
-  if(!is.null(phenotype.groups)){
-    if(!all(phenotype.groups %in% names(colData(inSCE)))){
-      stop(phenotype.groups, " not found in the colData of input object.")
-    }
-  }
+                               forceRun = FALSE){
   
   if(is.null(outputDir)){
     outputDir <- getwd()
@@ -628,16 +585,10 @@ reportSeuratNormalization <- function(inSCE,
                       subtitle = subtitle,
                       authors = authors,
                       sce = inSCE,
-                      biological.group = biological.group,
-                      phenotype.groups = phenotype.groups,
-                      selected.markers = selected.markers,
-                      clustering.resolution = clustering.resolution,
-                      variable.features = variable.features,
-                      pc.count = pc.count,
                       outputPath = outputDir,
                       showSession = showSession,
                       pdf = pdf,
-                      jackStraw = jackStraw
+                      forceRun = forceRun
                     ),
                     output_file = outputFile,
                     output_dir = outputDir,
@@ -668,26 +619,12 @@ reportSeuratNormalization <- function(inSCE,
 #'  to use in the Seurat report. Default \code{NULL}.
 #' @param sce A \code{character} value specifying the path of the input
 #'  \code{SingleCellExperiment} object.
-#' @param biological.group A character value that specifies the name of the
-#'  \code{colData} column to use as the main biological group in the seurat
-#'  report for differential expression and grouping.
-#' @param phenotype.groups A \code{character} vector that specifies the names
-#'  of the \code{colData} columns to use for differential expression in addition
-#'  to the \code{biological.group} parameter.
-#' @param selected.markers A \code{character} vector specifying the user decided
-#'  gene symbols of pre-selected markers that be used to generate gene plots in
-#'  addition to the gene markers computed from differential expression.
-#' @param clustering.resolution A \code{numeric} value indicating the resolution
-#'  to use with clustering. Default is \code{0.8}.
 #' @param variable.features A \code{numeric} value indicating the number of
 #'  top variable genes to identify in the seurat report. Default is \code{2000}.
-#' @param pc.count A \code{numeric} value indicating the number of principal
-#'  components to use in the analysis workflow. Default is \code{10}.
 #' @param showSession A \code{logical} value indicating if session information
 #'  should be displayed or not. Default is \code{TRUE}.
 #' @param pdf A \code{logical} value indicating if a pdf should also be
 #'  generated for each figure in the report. Default is \code{TRUE}.
-#' @param jackStraw logical value
 #' @return A \code{SingleCellExperiment} object that has the seurat computations
 #'  stored and can be used to interactively visualize the plots by importing
 #'  in the \code{singleCellTK} user interface.
@@ -698,29 +635,12 @@ reportSeuratFeatureSelection <- function(inSCE,
                              subtitle = NULL,
                              authors =  NULL,
                              sce = NULL,
-                             biological.group = NULL,
-                             phenotype.groups = NULL,
-                             selected.markers = NULL,
-                             clustering.resolution = 0.8,
                              variable.features = 2000,
-                             pc.count = 10,
-                             showSession = TRUE,
-                             pdf = TRUE,
-                             jackStraw = FALSE){
-  
-  if(is.null(biological.group)){
-    stop("Must specify atleast one biological.group that is present in the colData of input object.")
-  }
-  
-  if(!biological.group %in% names(colData(inSCE))){
-    stop(biological.group, " not found in the colData of input object.")
-  }
-  
-  if(!is.null(phenotype.groups)){
-    if(!all(phenotype.groups %in% names(colData(inSCE)))){
-      stop(phenotype.groups, " not found in the colData of input object.")
-    }
-  }
+                             runHVG = TRUE,
+                             plotHVG = TRUE,
+                             forceRun = FALSE,
+                             showSession = FALSE,
+                             pdf = FALSE){
   
   if(is.null(outputDir)){
     outputDir <- getwd()
@@ -735,16 +655,10 @@ reportSeuratFeatureSelection <- function(inSCE,
                       subtitle = subtitle,
                       authors = authors,
                       sce = inSCE,
-                      biological.group = biological.group,
-                      phenotype.groups = phenotype.groups,
-                      selected.markers = selected.markers,
-                      clustering.resolution = clustering.resolution,
                       variable.features = variable.features,
-                      pc.count = pc.count,
                       outputPath = outputDir,
                       showSession = showSession,
-                      pdf = pdf,
-                      jackStraw = jackStraw
+                      pdf = pdf
                     ),
                     output_file = outputFile,
                     output_dir = outputDir,
@@ -805,29 +719,9 @@ reportSeuratScaling <- function(inSCE,
                            subtitle = NULL,
                            authors =  NULL,
                            sce = NULL,
-                           biological.group = NULL,
-                           phenotype.groups = NULL,
-                           selected.markers = NULL,
-                           clustering.resolution = 0.8,
-                           variable.features = 2000,
-                           pc.count = 10,
                            showSession = TRUE,
                            pdf = TRUE,
-                           jackStraw = FALSE){
-  
-  if(is.null(biological.group)){
-    stop("Must specify atleast one biological.group that is present in the colData of input object.")
-  }
-  
-  if(!biological.group %in% names(colData(inSCE))){
-    stop(biological.group, " not found in the colData of input object.")
-  }
-  
-  if(!is.null(phenotype.groups)){
-    if(!all(phenotype.groups %in% names(colData(inSCE)))){
-      stop(phenotype.groups, " not found in the colData of input object.")
-    }
-  }
+                           forceRun = FALSE){
   
   if(is.null(outputDir)){
     outputDir <- getwd()
@@ -842,16 +736,10 @@ reportSeuratScaling <- function(inSCE,
                       subtitle = subtitle,
                       authors = authors,
                       sce = inSCE,
-                      biological.group = biological.group,
-                      phenotype.groups = phenotype.groups,
-                      selected.markers = selected.markers,
-                      clustering.resolution = clustering.resolution,
-                      variable.features = variable.features,
-                      pc.count = pc.count,
                       outputPath = outputDir,
                       showSession = showSession,
                       pdf = pdf,
-                      jackStraw = jackStraw
+                      forceRun = forceRun
                     ),
                     output_file = outputFile,
                     output_dir = outputDir,
@@ -914,10 +802,6 @@ reportSeuratClustering <- function(inSCE,
                            sce = NULL,
                            biological.group = NULL,
                            phenotype.groups = NULL,
-                           selected.markers = NULL,
-                           clustering.resolution = 0.8,
-                           variable.features = 2000,
-                           pc.count = 10,
                            showSession = TRUE,
                            pdf = TRUE,
                            runClustering = TRUE,
@@ -942,11 +826,6 @@ reportSeuratClustering <- function(inSCE,
     }
   }
   
-  if(is.null(outputDir)){
-    outputDir <- getwd()
-    message("No output directory defined, using current working directory ", outputDir, " instead.")
-  }
-  
   data <- inSCE
   
   rmarkdown::render(system.file("rmarkdown/seurat/reportSeuratClustering.Rmd",
@@ -957,10 +836,6 @@ reportSeuratClustering <- function(inSCE,
                       sce = inSCE,
                       biological.group = biological.group,
                       phenotype.groups = phenotype.groups,
-                      selected.markers = selected.markers,
-                      clustering.resolution = clustering.resolution,
-                      variable.features = variable.features,
-                      pc.count = pc.count,
                       outputPath = outputDir,
                       showSession = showSession,
                       pdf = pdf,
@@ -1034,9 +909,6 @@ reportSeuratMarkerSelection <- function(inSCE,
                            biological.group = NULL,
                            phenotype.groups = NULL,
                            selected.markers = NULL,
-                           clustering.resolution = 0.8,
-                           variable.features = 2000,
-                           pc.count = 10,
                            showSession = TRUE,
                            pdf = TRUE,
                            runMarkerSelection = TRUE,
@@ -1073,9 +945,6 @@ reportSeuratMarkerSelection <- function(inSCE,
                       biological.group = biological.group,
                       phenotype.groups = phenotype.groups,
                       selected.markers = selected.markers,
-                      clustering.resolution = clustering.resolution,
-                      variable.features = variable.features,
-                      pc.count = pc.count,
                       outputPath = outputDir,
                       showSession = showSession,
                       pdf = pdf,

@@ -9,9 +9,6 @@ params:
   biological.group: !r NULL
   phenotype.groups: !r NULL
   selected.markers: !r NULL
-  clustering.resolution: 0.8
-  variable.features: 2000
-  pc.count: 10
   outputPath: !r NULL
   showSession: TRUE
   pdf: TRUE
@@ -32,14 +29,14 @@ subtitle: "`r params$subtitle`"
 editor_options:
   chunk_output_type: console
 ---
-```{r}
+```{r, echo=FALSE}
 if(!exists("titleMarkerPlots")) titleMarkerPlots <- "Plot Features"
 if(!exists("groupTitle")) groupTitle <- "Seurat_louvain_Resolution0.3"
 if(!exists("selectedOption")) selectedOption <- "Seurat_louvain_Resolution0.3"
 if(!exists("headingMS")) headingMS <- "#"
 ```
 
-```{r, message=FALSE, warning=FALSE}
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
 library(Seurat)
 library(dplyr)
 library(cowplot)
@@ -61,7 +58,7 @@ cat(headingMS, " Differential Expression (", groupTitle,")\n\n")
 cat("Gene markers that are differentially expressed between the previously computed *(`r selectedOption`)* are identified using the Wilcoxon Rank Sum test. Criteria for the identification of these marker genes required them to be detected at a minimum percentage of 25% in either of the two groups of cells (each cluster against all others), and additionally they show 25% log-fold expression difference between two groups.")
 ```
 
-```{r, echo = TRUE, eval = runMarkerSelection}
+```{r, warning=FALSE, message=FALSE, echo = TRUE, eval = runMarkerSelection}
 data <- runSeuratFindMarkers(data, allGroup = selectedOption, minPCT = 0.25, threshUse = 0.25, verbose = FALSE)
 data.markers <- metadata(data)$seuratMarkers
 #numTotalMarkersQ <- nrow(data.markers[data.markers$p_val_adj < 0.05, ])
@@ -73,8 +70,8 @@ numClusters <- length(unique(data.markers$cluster1))
 ```
 
 ```{r, echo=FALSE, results='asis', warning=FALSE, message=FALSE, eval=!runMarkerSelection}
-top10 <- data.frame(gene.id = Pre_selected_markers, cluster1 = 1)
-data.markers <- data.frame(gene.id = Pre_selected_markers, cluster1 = 1)
+top10 <- data.frame(gene.id = selected.markers, cluster1 = 1)
+data.markers <- data.frame(gene.id = selected.markers, cluster1 = 1)
 ```
 
 ```{r, echo=FALSE, results='asis', warning=FALSE, message=FALSE, eval=plotMarkerSelection}
@@ -87,11 +84,11 @@ cat(paste0(headingMS, "## Feature Plot {.tabset .tabset-fade .tabset-pills -}\n\
 cat("A *feature plot* visualizes the *expression level* of a particular *gene marker in all cells of the data* on a *UMAP* plot. The *feature plots* of the *top 10 marker genes* across all *clusters* are visualized below:")
 ```
 
-```{r}
+```{r, echo=FALSE}
 figHeight <- countFeatures * 1.8
 ```
 
-```{r, echo = TRUE, results = "asis", fig.height = figHeight, fig.width = 9, eval=plotMarkerSelection}
+```{r, echo=FALSE}
 template <- paste0(headingMS, "### %s {.tabset .tabset-fade -}
 ")
 template_inside <- paste0(headingMS, "#### %s {-}
@@ -99,8 +96,9 @@ template_inside <- paste0(headingMS, "#### %s {-}
 space <- "
 
 "
+```
 
-
+```{r, echo = TRUE, warning=FALSE, message=FALSE, results = "asis", fig.height = figHeight, fig.width = 9, eval=plotMarkerSelection}
 for (currentCluster in 0:(numClusters-1)) {
   if(numClusters > 1){
     cat(sprintf(template, paste0("Cluster ", unique(top10$cluster1)[currentCluster+1])))
@@ -118,16 +116,7 @@ cat(paste0(headingMS, "## Ridge Plot {.tabset .tabset-fade .tabset-pills -}\n\n"
 cat("A *ridge plot* visualizes the *expression level* of a particular *gene marker in all cells of the data* separated by *clusters* in the form of ridges. The *ridge plots** of the *top 10 marker genes* across all *clusters* are visualized below:")
 ```
 
-```{r, echo = TRUE, results = "asis", fig.height =figHeight, fig.width = 9, message=FALSE, eval = plotMarkerSelection}
-template <- paste0(headingMS, "### %s {.tabset .tabset-fade -}
-")
-template_inside <- paste0(headingMS,"#### %s {-}
-")
-space <- "
-
-"
-
-
+```{r, warning=FALSE, message=FALSE, echo = TRUE, results = "asis", fig.height =figHeight, fig.width = 9, eval = plotMarkerSelection}
 for (currentCluster in 0:(numClusters-1)) {
   if(numClusters > 1){
     cat(sprintf(template, paste0("Cluster ", unique(top10$cluster1)[currentCluster+1])))
@@ -145,16 +134,7 @@ cat(paste0(headingMS, "## Violin Plot {.tabset .tabset-fade .tabset-pills -}\n\n
 cat("A *violin plot* visualizes the *expression level* of a particular *gene marker in all cells of the data* separated by *clusters*. The *violin plots* of the *top 10 marker genes* separated across all *clusters* are visualized below:")
 ```
 
-```{r, echo = TRUE, results = "asis", fig.height =figHeight, fig.width = 9, message=FALSE, eval=plotMarkerSelection}
-template <- paste0(headingMS, "### %s {.tabset .tabset-fade -}
-")
-template_inside <- paste0(headingMS, "#### %s {-}
-")
-space <- "
-
-"
-
-
+```{r, echo = TRUE, warning=FALSE, message=FALSE, results = "asis", fig.height =figHeight, fig.width = 9, message=FALSE, eval=plotMarkerSelection}
 for (currentCluster in 0:(numClusters-1)) {
   if(numClusters > 1){
     cat(sprintf(template, paste0("Cluster ", unique(top10$cluster1)[currentCluster+1])))
@@ -172,7 +152,7 @@ cat(paste0(headingMS, "## Dot Plot {-}\n\n"))
 cat("A *dot plot* visualizes the *change in the expression levels* of a particular *gene marker in all cells of the data* separated by *clusters* in the form of dots where the color of the dots indicate the expression level of that gene in a cluster and the size of the dot indicates the total percentage of the cells in that cluster.")
 ```
 
-```{r, fig.width=15, fig.height=8, eval = plotMarkerSelection}
+```{r, warning=FALSE, message=FALSE, fig.width=15, fig.height=8, eval = plotMarkerSelection}
 plotSeuratGenes(data, plotType = "dot", features = top10$gene.id, groupVariable = selectedOption, ncol = 1, cols = c("grey", "blue")) + theme(axis.text.x = element_text(angle = 90, size = 7), legend.text = element_text(size = 8), legend.key.size = unit(0.4, "cm"), legend.position = "top")
 ```
 
@@ -180,7 +160,7 @@ plotSeuratGenes(data, plotType = "dot", features = top10$gene.id, groupVariable 
 cat(paste0(headingMS, "## Heatmap Plot {-}\n\n"))
 ```
 
-```{r, fig.width=15, fig.height=15, eval = plotMarkerSelection}
+```{r, warning=FALSE, message=FALSE, fig.width=15, fig.height=15, eval = plotMarkerSelection}
 plotSeuratGenes(data, plotType = "heatmap", features = top10$gene.id, groupVariable = selectedOption, ncol = 1, cols = c("grey", "blue")) + theme(axis.text.y = element_text(size = 8), legend.text = element_text(size = 8), legend.key.size = unit(0.5, "cm"), legend.position = "top")
 ```
 
@@ -189,7 +169,7 @@ cat(paste0(headingMS, "# Table of Top Markers by Cluster\n\n"))
 cat("The list of all top genes for each clusters are saved as **top_genes_cluster.csv** which is available within the working directory and the list of top *10* genes for each clusters are listed below:")
 ```
 
-```{r, echo = FALSE, results='asis', eval=runMarkerSelection}
+```{r, echo = FALSE, warning=FALSE, message=FALSE, results='asis', eval=runMarkerSelection}
 # Top genes table
 top5 <- data.frame(data.markers %>% group_by(cluster1) %>% top_n(5, avg_log2FC))
 top10 <- data.frame(data.markers %>% group_by(cluster1) %>% top_n(10, avg_log2FC))

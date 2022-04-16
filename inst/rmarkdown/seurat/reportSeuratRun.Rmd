@@ -31,10 +31,6 @@ editor_options:
   chunk_output_type: console
 ---
 
-```{r}
-# Control variables
-
-```
 
 ```{r, include = TRUE, message=FALSE, warning=FALSE, echo=FALSE}
 #Loading required libraries
@@ -52,19 +48,6 @@ library(grid)
 library(ggpubr)
 library(patchwork)
 library(singleCellTK)
-
-#Setting up parameters and loading data
-# group <- params$biological.group
-# selected_phenotypes <- params$phenotype.groups
-# Pre_selected_markers <- params$selected.markers
-# seurat.selected.resolution <- as.numeric(params$clustering.resolution)
-# seurat.selected.features.numbers <- as.numeric(params$variable.features)
-# initial.PC.numbers <- as.numeric(params$pc.count)
-# data <- params$sce
-# sampleNames <- unique(colData(data)[[group]])
-# outputPath <- params$outputPath
-# showSession <- params$showSession
-# pdf <- params$pdf
 
 numCells <- ncol(data)
 numFeatures <- nrow(data)
@@ -96,8 +79,6 @@ resNormalization <- knitr::knit_child(paste0(getwd(), "/inst/rmarkdown/seurat/",
 
 <!-- Feature Selection -->
 ```{r, echo=FALSE, results='asis'}
-# runHVG <- TRUE
-# plotHVG <- TRUE
 headingFS <- "##"
 resFeatureSelection <- knitr::knit_child(paste0(getwd(), "/inst/rmarkdown/seurat/", 'reportSeuratFeatureSelection.Rmd'), quiet = TRUE)
 ```
@@ -110,10 +91,6 @@ resScaleData <- knitr::knit_child(paste0(getwd(), "/inst/rmarkdown/seurat/", 're
 
 <!-- Dimensionality Reduction -->
 ```{r, echo=FALSE, results='asis', warning=FALSE, message=FALSE}
-# runDimRed <- TRUE
-# plotJackStraw <- TRUE
-# plotElbowPlot <- TRUE
-# plotHeatmaps <- TRUE
 headingDR <- "##"
 headingDR2 <- "###"
 significant_PC <- 10
@@ -123,11 +100,6 @@ resDimRed <- knitr::knit_child(paste0(getwd(), "/inst/rmarkdown/seurat/", 'repor
 
 <!-- Clustering -->
 ```{r, echo=FALSE, results='asis', warning=FALSE, message=FALSE}
-# runClustering <- TRUE
-# plotTSNE <- TRUE
-# plotUMAP <- TRUE
-# minResolution <- 0.3 
-# maxResolution <- 1.5
 numClusters <- 10 # this should be computed by the code itself (do later)
 showClusterDesc <- TRUE
 headingClust <- "##"
@@ -138,7 +110,7 @@ resClustering <- knitr::knit_child(paste0(getwd(), "/inst/rmarkdown/seurat/", 'r
 # Summary {-}
 <!-- Summary -->
 <!-- some variables still need to be included, e.g. from deg -->
-> The input data included *`r numFeatures`* features and *`r numCells`* cells from *`r numSamples`* samples divided through the group *`r group`* namely *`r sampleNames`*. The *`r assayNames(data)[1]`* feature count matrix from the data was normalized using *LogNormalize* method which normalized as well as log-transformed the data. From *`r numFeatures`* total features, a subset of *`r seurat.selected.features.numbers`* features that exhibited high cell-to-cell variation were selected for the downstream analysis to better capture the biological variation using *vst* (mean-to-variance) feature selection method. This subset of features was then scaled (z-score) using *linear model* method and trimmed to a maximum and minimum value of *10* and *-10* respectively. PCA was run on this scaled subset of features and *`r initial.PC.numbers`* components were computed from which top *`r significant_PC`* significant components were selected for subsequent clustering analysis. Using the *louvain* algorithm that uses community-based detection to identify clusters with resolution set to *`r seurat.selected.resolution`*, clustering was performed on the scaled subset of features that identified *`r numClusters`* clusters in the data. These clusters were then used to run differential expression using *wilcox* test and identified *`r 2665`* genes differentially expressed between clusters at significance criteria of *q-value < 0.05*. The gene markers that defined the main biological group *`r group`* were identified using *wilcox* test that highlighted *2651* marker genes at *q-value < 0.05* significance criteria. Additionatlly, markers *`r Pre_selected_markers`* from the input pre-selected markers *`r Pre_selected_markers`* were detected and visualized over UMAP plot.
+> The input data included *`r numFeatures`* features and *`r numCells`* cells from *`r numSamples`* samples divided through the group *`r biological.group`* namely *`r sampleNames`*. The *`r assayNames(data)[1]`* feature count matrix from the data was normalized using *LogNormalize* method which normalized as well as log-transformed the data. From *`r numFeatures`* total features, a subset of *`r variable.features`* features that exhibited high cell-to-cell variation were selected for the downstream analysis to better capture the biological variation using *vst* (mean-to-variance) feature selection method. This subset of features was then scaled (z-score) using *linear model* method and trimmed to a maximum and minimum value of *10* and *-10* respectively. PCA was run on this scaled subset of features and *`r pc.count`* components were computed from which top *`r significant_PC`* significant components were selected for subsequent clustering analysis. Using the *louvain* algorithm that uses community-based detection to identify clusters with resolution set to *`r clustering.resolution`*, clustering was performed on the scaled subset of features that identified *`r numClusters`* clusters in the data. These clusters were then used to run differential expression using *wilcox* test and identified *`r 2665`* genes differentially expressed between clusters at significance criteria of *q-value < 0.05*. The gene markers that defined the main biological group *`r biological.group`* were identified using *wilcox* test that highlighted *2651* marker genes at *q-value < 0.05* significance criteria. Additionatlly, markers *`r selected.markers`* from the input pre-selected markers *`r selected.markers`* were detected and visualized over UMAP plot.
 
 # Seurat Run
 

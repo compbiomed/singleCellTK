@@ -12,18 +12,14 @@ reportSeuratDimRed(
   subtitle = NULL,
   authors = NULL,
   sce = NULL,
-  biological.group = NULL,
-  phenotype.groups = NULL,
-  selected.markers = NULL,
-  clustering.resolution = 0.8,
-  variable.features = 2000,
-  pc.count = 10,
+  pc.count = 50,
   showSession = TRUE,
   pdf = TRUE,
   runDimRed = TRUE,
   plotJackStraw = FALSE,
   plotElbowPlot = TRUE,
-  plotHeatmaps = TRUE
+  plotHeatmaps = TRUE,
+  forceRun = FALSE
 )
 }
 \arguments{
@@ -46,6 +42,15 @@ to use in the Seurat report. Default \code{NULL}.}
 \item{sce}{A \code{character} value specifying the path of the input
 \code{SingleCellExperiment} object.}
 
+\item{pc.count}{A \code{numeric} value indicating the number of principal
+components to use in the analysis workflow. Default is \code{10}.}
+
+\item{showSession}{A \code{logical} value indicating if session information
+should be displayed or not. Default is \code{TRUE}.}
+
+\item{pdf}{A \code{logical} value indicating if a pdf should also be
+generated for each figure in the report. Default is \code{TRUE}.}
+
 \item{biological.group}{A character value that specifies the name of the
 \code{colData} column to use as the main biological group in the seurat
 report for differential expression and grouping.}
@@ -63,17 +68,6 @@ to use with clustering. Default is \code{0.8}.}
 
 \item{variable.features}{A \code{numeric} value indicating the number of
 top variable genes to identify in the seurat report. Default is \code{2000}.}
-
-\item{pc.count}{A \code{numeric} value indicating the number of principal
-components to use in the analysis workflow. Default is \code{10}.}
-
-\item{showSession}{A \code{logical} value indicating if session information
-should be displayed or not. Default is \code{TRUE}.}
-
-\item{pdf}{A \code{logical} value indicating if a pdf should also be
-generated for each figure in the report. Default is \code{TRUE}.}
-
-\item{jackStraw}{logical value}
 }
 \value{
 A \code{SingleCellExperiment} object that has the seurat computations

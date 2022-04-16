@@ -12,15 +12,12 @@ reportSeuratFeatureSelection(
   subtitle = NULL,
   authors = NULL,
   sce = NULL,
-  biological.group = NULL,
-  phenotype.groups = NULL,
-  selected.markers = NULL,
-  clustering.resolution = 0.8,
   variable.features = 2000,
-  pc.count = 10,
-  showSession = TRUE,
-  pdf = TRUE,
-  jackStraw = FALSE
+  runHVG = TRUE,
+  plotHVG = TRUE,
+  forceRun = FALSE,
+  showSession = FALSE,
+  pdf = FALSE
 )
 }
 \arguments{
@@ -43,34 +40,14 @@ to use in the Seurat report. Default \code{NULL}.}
 \item{sce}{A \code{character} value specifying the path of the input
 \code{SingleCellExperiment} object.}
 
-\item{biological.group}{A character value that specifies the name of the
-\code{colData} column to use as the main biological group in the seurat
-report for differential expression and grouping.}
-
-\item{phenotype.groups}{A \code{character} vector that specifies the names
-of the \code{colData} columns to use for differential expression in addition
-to the \code{biological.group} parameter.}
-
-\item{selected.markers}{A \code{character} vector specifying the user decided
-gene symbols of pre-selected markers that be used to generate gene plots in
-addition to the gene markers computed from differential expression.}
-
-\item{clustering.resolution}{A \code{numeric} value indicating the resolution
-to use with clustering. Default is \code{0.8}.}
-
 \item{variable.features}{A \code{numeric} value indicating the number of
 top variable genes to identify in the seurat report. Default is \code{2000}.}
-
-\item{pc.count}{A \code{numeric} value indicating the number of principal
-components to use in the analysis workflow. Default is \code{10}.}
 
 \item{showSession}{A \code{logical} value indicating if session information
 should be displayed or not. Default is \code{TRUE}.}
 
 \item{pdf}{A \code{logical} value indicating if a pdf should also be
 generated for each figure in the report. Default is \code{TRUE}.}
-
-\item{jackStraw}{logical value}
 }
 \value{
 A \code{SingleCellExperiment} object that has the seurat computations

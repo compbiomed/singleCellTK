@@ -44,71 +44,22 @@ editor_options:
 ---
 
 ```{r}
-# Global report options
-# runHVG <- TRUE
-# plotHVG <- TRUE
-# 
-# runDimRed <- TRUE
-# plotJackStraw <- FALSE
-# plotElbowPlot <- TRUE
-# plotHeatmaps <- FALSE
-# significant_PC <- 10
-# 
-# runClustering <- TRUE
-# plotTSNE <- TRUE
-# plotUMAP <- TRUE
-# minResolution <- 0.3
-# maxResolution <- 1.5
-# numClusters <- 10
-# showClusterDesc <- TRUE
-# headingCluster <- "" #use from here
-# 
-# runMarkerSelection <- TRUE
-# plotMarkerSelection <- TRUE
-# numClusters <- 1 #whats this?
-# selectedOption <- params$biological.group
-# titleMarkerPlots <- paste0("Marker Selection for ", selectedOption)
-# countFeatures <- 10
-
-group <- params$biological.group
-selected_phenotypes <- params$phenotype.groups
-Pre_selected_markers <- params$selected.markers
-seurat.selected.resolution <- as.numeric(params$clustering.resolution)
-seurat.selected.features.numbers <- as.numeric(params$variable.features)
-initial.PC.numbers <- as.numeric(params$pc.count)
-data <- params$sce
-sampleNames <- unique(colData(data)[[group]])
-outputPath <- params$outputPath
-showSession <- params$showSession
-pdf <- params$pdf
-  
-runHVG <- params$runHVG
-plotHVG <- params$plotHVG
-runDimRed <- params$runDimRed
-plotJackStraw <- params$plotJackStraw
-plotElbowPlot <- params$plotElbowPlot
-plotHeatmaps <- params$plotHeatmaps
-runClustering <- params$runClustering
-plotTSNE <- params$plotTSNE
-plotUMAP <- params$plotUMAP
-minResolution <- params$minResolution
-maxResolution <-params$maxResolution
-
-runMSClusters <- params$runMSClusters
-runMSBioGroup <- params$runMSBioGroup
+sampleNames <- unique(colData(data)[[biological.group]])
 ```
 
-```{r}
-#setwd("/home/buskut/") #need to set this
-```
+<!-- Seurat Run -->
 
 ```{r, echo=FALSE, results='asis', warning=FALSE, message=FALSE}
 seuratRun <- knitr::knit_child('reportSeuratRun.Rmd', quiet = TRUE, envir = environment())
 ```
 
+<!-- Seurat Results -->
+
 ```{r, echo=FALSE, results='asis', warning=FALSE, message=FALSE}
 seuratResults <- knitr::knit_child('reportSeuratResults.Rmd', quiet = TRUE, envir = environment())
 ```
+
+<!-- Display -->
 
 ```{r, echo=FALSE, results='asis', warning=FALSE, message=FALSE}
 cat(seuratRun, sep = '\n')

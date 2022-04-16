@@ -6,16 +6,10 @@ params:
   subtitle: !r NULL
   authors: !r NULL
   sce: !r NULL
-  biological.group: !r NULL
-  phenotype.groups: !r NULL
-  selected.markers: !r NULL
-  clustering.resolution: 0.8
-  variable.features: 2000
-  pc.count: 10
   outputPath: !r NULL
   showSession: TRUE
   pdf: TRUE
-  jackStraw: FALSE
+  forceRun: FALSE
 output:
   html_document:
     toc: yes
@@ -57,7 +51,7 @@ Before the data can be used in the downstream analysis, normalization techniques
 
 > The input raw data matrix *`r assayNames(data)[1]`* was normalized using a global-scaling normalization method *LogNormalize* that divides the gene expression measurements by the total expression for each cell, multiplies the resultant values with a scaling factor of *10,000* and log-transforms the result. 
 
-```{r Seurat Normalization, message=FALSE, warning=FALSE, eval=(is.null(metadata(data)$seurat$normAssay))}
+```{r Seurat Normalization, message=FALSE, warning=FALSE, eval=is.null(metadata(data)$seurat$normAssay) || forceRun}
 normalizeParams <- list(
   inSCE = data,
   normalizationMethod = "LogNormalize",
@@ -69,7 +63,7 @@ data <- do.call("runSeuratNormalizeData", normalizeParams)
 cat("normalized data run")
 ```
 
-```{r, include=FALSE, eval=(is.null(metadata(data)$seurat$normAssay))}
+```{r, echo=FALSE, include=FALSE, eval=(is.null(metadata(data)$seurat$normAssay))}
 normalizeParams$inSCE <- NULL
 metadata(data)$seurat$sctk$report$normalizeParams <- normalizeParams
 ```

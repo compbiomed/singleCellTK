@@ -14,10 +14,6 @@ reportSeuratClustering(
   sce = NULL,
   biological.group = NULL,
   phenotype.groups = NULL,
-  selected.markers = NULL,
-  clustering.resolution = 0.8,
-  variable.features = 2000,
-  pc.count = 10,
   showSession = TRUE,
   pdf = TRUE,
   runClustering = TRUE,
@@ -57,6 +53,12 @@ report for differential expression and grouping.}
 of the \code{colData} columns to use for differential expression in addition
 to the \code{biological.group} parameter.}
 
+\item{showSession}{A \code{logical} value indicating if session information
+should be displayed or not. Default is \code{TRUE}.}
+
+\item{pdf}{A \code{logical} value indicating if a pdf should also be
+generated for each figure in the report. Default is \code{TRUE}.}
+
 \item{selected.markers}{A \code{character} vector specifying the user decided
 gene symbols of pre-selected markers that be used to generate gene plots in
 addition to the gene markers computed from differential expression.}
@@ -69,12 +71,6 @@ top variable genes to identify in the seurat report. Default is \code{2000}.}
 
 \item{pc.count}{A \code{numeric} value indicating the number of principal
 components to use in the analysis workflow. Default is \code{10}.}
-
-\item{showSession}{A \code{logical} value indicating if session information
-should be displayed or not. Default is \code{TRUE}.}
-
-\item{pdf}{A \code{logical} value indicating if a pdf should also be
-generated for each figure in the report. Default is \code{TRUE}.}
 
 \item{jackStraw}{logical value}
 }

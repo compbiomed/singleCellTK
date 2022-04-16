@@ -69,12 +69,12 @@ library(singleCellTK)
 # Seurat Results
 
 ## Selected Resolution {.tabset .tabset-fade}
-A final resolution of **`r seurat.selected.resolution`** was selected for downstream clustering that better reflects the input data.
+A final resolution of **`r clustering.resolution`** was selected for downstream clustering that better reflects the input data.
 
 <!-- Clustering -->
 ```{r, echo=FALSE, results='hide', warning=FALSE, message=FALSE}
-minResolution <- seurat.selected.resolution
-maxResolution <- seurat.selected.resolution
+minResolution <- clustering.resolution
+maxResolution <- clustering.resolution
 numClusters <- 10 #remove this later
 showClusterDesc <- FALSE
 
@@ -91,9 +91,9 @@ runMarkerSelection <- FALSE
 plotMarkerSelection <- TRUE
 groupTitle <- NULL
 numClusters <- 1
-selectedOption <- paste0("Seurat_louvain_Resolution", seurat.selected.resolution)
+selectedOption <- paste0("Seurat_louvain_Resolution", clustering.resolution)
 titleMarkerPlots <- "Plot Selected Features"
-countFeatures <- length(Pre_selected_markers)
+countFeatures <- length(selected.markers)
 
 res <- knitr::knit_child(paste0(getwd(), "/inst/rmarkdown/seurat/", 'reportSeuratMarkerSelection.Rmd'), quiet = TRUE)
 cat(res, sep = '\n')
@@ -103,11 +103,12 @@ cat(res, sep = '\n')
 ```{r markerSelection Clusters, echo=FALSE, results='asis', warning=FALSE, message=FALSE, eval=runMSClusters}
 runMarkerSelection <- TRUE
 plotMarkerSelection <- TRUE
-numClusters <- length(unique(colData(data)[[paste0("Seurat_louvain_Resolution", seurat.selected.resolution)]]))
-selectedOption <- paste0("Seurat_louvain_Resolution", seurat.selected.resolution)
+numClusters <- length(unique(colData(data)[[paste0("Seurat_louvain_Resolution", clustering.resolution)]]))
+selectedOption <- paste0("Seurat_louvain_Resolution", clustering.resolution)
 groupTitle <- "Clusters"
 titleMarkerPlots <- "Gene Plots of Top Markers by Clusters"
 countFeatures <- 10
+headingMS <- "##"
 res <- knitr::knit_child(paste0(getwd(), "/inst/rmarkdown/seurat/", 'reportSeuratMarkerSelection.Rmd'), quiet = TRUE)
 cat(res, sep = '\n')
 ```
@@ -116,11 +117,12 @@ cat(res, sep = '\n')
 ```{r, echo=FALSE, results='asis', warning=FALSE, message=FALSE, eval=runMSBioGroup}
 runMarkerSelection <- TRUE
 plotMarkerSelection <- TRUE
-numClusters <- length(unique(colData(data)[[group]]))
-selectedOption <- group
-groupTitle <- group
-titleMarkerPlots <- paste0("Gene Plots of Top Markers by Group: ", group)
+numClusters <- length(unique(colData(data)[[biological.group]]))
+selectedOption <- biological.group
+groupTitle <- biological.group
+titleMarkerPlots <- paste0("Gene Plots of Top Markers by Group: ", biological.group)
 countFeatures <- 10
+headingMS <- "##"
 res <- knitr::knit_child(paste0(getwd(), "/inst/rmarkdown/seurat/", 'reportSeuratMarkerSelection.Rmd'), quiet = TRUE)
 cat(res, sep = '\n')
 ```

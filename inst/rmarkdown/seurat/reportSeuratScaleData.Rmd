@@ -6,16 +6,10 @@ params:
   subtitle: !r NULL
   authors: !r NULL
   sce: !r NULL
-  biological.group: !r NULL
-  phenotype.groups: !r NULL
-  selected.markers: !r NULL
-  clustering.resolution: 0.8
-  variable.features: 2000
-  pc.count: 10
   outputPath: !r NULL
   showSession: TRUE
   pdf: TRUE
-  jackStraw: FALSE
+  forceRun: FALSE
 output:
   html_document:
     toc: yes
@@ -57,12 +51,12 @@ Standardizing gene expression values is considered necessary to ensure that dime
 
 > The variable features identified previously were scaled using *z-score* scaling method and the output expression values were clipped to maximum and minimum value of 10 & -10 respectively.
 
-```{r Seurat Scaling Data, warning=FALSE, eval=(is.null(metadata(data)$seurat$scaledAssay))}
+```{r Seurat Scaling Data, warning=FALSE, eval=is.null(metadata(data)$seurat$scaledAssay) || forceRun}
 data <- runSeuratScaleData(inSCE = data, model = "linear", verbose = FALSE)
 cat("run scaledAssay")
 ```
 
-```{r, include=FALSE}
+```{r, echo=FALSE, include=FALSE}
 scaleParams <- list(
   model = "linear", 
   verbose = FALSE)
