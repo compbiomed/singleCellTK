@@ -1,5 +1,5 @@
 ---
-title: "Clustering"
+title: "Seurat Results"
 author: "`r params$authors`"
 date: "`r format(Sys.time(), '%B %d, %Y')`"
 params:
@@ -10,13 +10,17 @@ params:
   phenotype.groups: !r NULL
   selected.markers: !r NULL
   clustering.resolution: 0.8
-  variable.features: 2000
   pc.count: 10
   outputPath: !r NULL
   showSession: TRUE
   pdf: TRUE
   plotTSNE: TRUE
   plotUMAP: TRUE
+  runClustering: TRUE
+  minResolution: 0.3
+  maxResolution: 1.5
+  runMSClusters: TRUE
+  runMSBioGroup: TRUE
   forceRun: FALSE
 output:
   html_document:
@@ -33,28 +37,28 @@ editor_options:
   chunk_output_type: console
 ---
 
-```{r}
+```{r, echo=FALSE}
 # Check control variables
-if(!exists("runClustering")) runClustering <- TRUE
-if(!exists("plotTSNE")) plotTSNE <- TRUE
-if(!exists("plotUMAP")) plotUMAP <- TRUE
-if(!exists("minResolution")) minResolution <- 0.8
-if(!exists("maxResolution")) maxResolution <- 0.8
-if(!exists("numClusters")) numClusters <- 10
-if(!exists("showClusterDesc")) showClusterDesc <- FALSE
+#if(!exists("runClustering")) runClustering <- TRUE
+#if(!exists("plotTSNE")) plotTSNE <- TRUE
+#if(!exists("plotUMAP")) plotUMAP <- TRUE
+#if(!exists("minResolution")) minResolution <- 0.8
+#if(!exists("maxResolution")) maxResolution <- 0.8
+#if(!exists("numClusters")) numClusters <- 10
+#if(!exists("showClusterDesc")) showClusterDesc <- FALSE
 
-if(!exists("runMarkerSelection")) runMarkerSelection <- TRUE
-if(!exists("plotMarkerSelection")) plotMarkerSelection <- TRUE
-if(!exists("numClusters")) numClusters <- 1
-if(!exists("selectedOption")) selectedOption <- params$biological.group
-if(!exists("titleMarkerPlots")) titleMarkerPlots <- "Plot Features"
-if(!exists("countFeatures")) countFeatures <- 10
-if(!exists("significant_PC")) significant_PC <- 10
-if(!exists("runMSClusters")) runMSClusters <- TRUE
-if(!exists("runMSBioGroup")) runMSBioGroup <- TRUE
+#if(!exists("runMarkerSelection")) runMarkerSelection <- TRUE
+#if(!exists("plotMarkerSelection")) plotMarkerSelection <- TRUE
+#if(!exists("numClusters")) numClusters <- 1
+#if(!exists("selectedOption")) selectedOption <- params$biological.group
+#if(!exists("titleMarkerPlots")) titleMarkerPlots <- "Plot Features"
+#if(!exists("countFeatures")) countFeatures <- 10
+if(!exists("significant_PC")) significant_PC <- pc.count
+#if(!exists("runMSClusters")) runMSClusters <- TRUE
+#if(!exists("runMSBioGroup")) runMSBioGroup <- TRUE
 ```
 
-```{r, message=FALSE, warning=FALSE}
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
 library(Seurat)
 library(dplyr)
 library(cowplot)
@@ -93,7 +97,7 @@ cat(resClustering, sep = '\n')
 ```
 
 <!-- Pre-selected Markers -->
-```{r preselected markers, echo=FALSE, results='asis', warning=FALSE, message=FALSE}
+```{r preselected markers, echo=FALSE, results='asis', warning=FALSE, message=FALSE, eval=!is.null(selected.markers)}
 runMarkerSelection <- FALSE
 plotMarkerSelection <- TRUE
 groupTitle <- NULL
@@ -134,8 +138,8 @@ res <- knitr::knit_child(paste0(getwd(), "/inst/rmarkdown/seurat/", 'reportSeura
 cat(res, sep = '\n')
 ```
 
-# Session Information
-```{r session, eval = showSession, echo = showSession}
+```{r session, results='asis', eval = showSession, echo = showSession}
+cat("# Session Information\n\n")
 sessionInfo()
 ```
 

@@ -166,7 +166,7 @@ plotSeuratGenes(data, plotType = "heatmap", features = top10$gene.id, groupVaria
 
 ```{r, echo=FALSE, results='asis', warning=FALSE, message=FALSE, eval=runMarkerSelection}
 cat(paste0(headingMS, "# Table of Top Markers by Cluster\n\n"))
-cat("The list of all top genes for each clusters are saved as **top_genes_cluster.csv** which is available within the working directory and the list of top *10* genes for each clusters are listed below:")
+cat("The list of top *10* genes for each clusters are listed below:")
 ```
 
 ```{r, echo = FALSE, warning=FALSE, message=FALSE, results='asis', eval=runMarkerSelection}
