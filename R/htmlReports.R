@@ -220,13 +220,70 @@ reportFindMarker <- function(inSCE, output_file = NULL, output_dir = NULL) {
 }
 
 
+#' Generates an HTML report for Seurat Run (including Normalization, 
+#'  Feature Selection, Dimensionality Reduction & Clustering) and returns the 
+#'  SCE object with the results computed and stored inside the object.
+#' @param inSCE Input \code{\link[SingleCellExperiment]{SingleCellExperiment}}
+#'  object.
+#' @param biological.group A character value that specifies the name of the 
+#'  \code{colData()} column to use as the main biological group in the Seurat 
+#'  report for tSNE & UMAP visualization.
+#' @param phenotype.groups A character value that specifies the name of the 
+#'  \code{colData()} column to use as additional phenotype variables in the 
+#'  Seurat report for tSNE & UMAP visualization.
+#' @param variable.features A numeric value indicating the number of top 
+#'  variable genes to identify in the report. Default is \code{2000}.
+#' @param pc.count 	A numeric value indicating the number of principal 
+#'  components to use in the analysis workflow. Default is \code{50}.
+#' @param runHVG A logical value indicating if feature selection should be run
+#'  in the report. Default \code{TRUE}.
+#' @param plotHVG A logical value indicating if the top variable genes should
+#'  be visualized through a mean-to-variance plot. Default is \code{TRUE}.
+#' @param runDimRed A logical value indicating if PCA should be computed in the
+#'  report. Default is \code{TRUE}.
+#' @param plotJackStraw A logical value indicating if the JackStraw plot should
+#'  be visualized for the principal components. Default is \code{FALSE}.
+#' @param plotElbowPlot A logical value indicating if the ElbowPlot should be
+#'  visualized for the principal components. Default is \code{FALSE}.
+#' @param plotHeatmaps A logical value indicating if the Heatmaps should be 
+#'  visualized for the principal components. Default is \code{FALSE}.
+#' @param runClustering A logical value indicating if Clustering should be
+#'  run over multiple resolutions as defined by the \code{minResolution} and
+#'  \code{maxResolution} parameters. Default is \code{TRUE}.
+#' @param plotTSNE A logical value indicating if TSNE plot should be visualized
+#'  for clusters. Default is \code{TRUE}.
+#' @param plotUMAP A logical value indicating if UMAP plot should be visualized
+#'  for clusters. Default is \code{TRUE}.
+#' @param minResolution A numeric value indicating the minimum resolution to use
+#'  for clustering. Default \code{0.3}.
+#' @param maxResolution A numeric value indicating the maximum resolution to use
+#'  for clustering. Default \code{1.5}.
+#' @param outputFile Specify the name of the generated output HTML file. 
+#'  If \code{NULL} then the output file name will be based on the name of the 
+#'  Rmarkdown template. Default \code{NULL}.
+#' @param outputDir Specify the name of the output directory to save the 
+#'  rendered HTML file. If \code{NULL} the file is stored to the current 
+#'  working directory. Default \code{NULL}.
+#' @param subtitle A character value specifying the subtitle to use in the 
+#'  report. Default \code{NULL}.
+#' @param authors A character value specifying the names of the authors to use 
+#'  in the report. Default \code{NULL}.
+#' @param showSession 	A logical value indicating if session information 
+#'  should be displayed or not. Default is \code{FALSE}.
+#' @param pdf A logical value indicating if a pdf should also be generated for 
+#'  each figure in the report. Default is \code{FALSE}.
+#' @param forceRun A logical value indicating if all computations previously
+#'  computed should be re-calculated regardless if these computations are
+#'  available in the input object. Default is \code{FALSE}.
+#'
+#' @return A \code{\link[SingleCellExperiment]{SingleCellExperiment}} object
+#'  with computations stored.
+#' @export
 reportSeuratRun <- function(inSCE,
                             biological.group = NULL,
                             phenotype.groups = NULL,
-                            selected.markers = NULL,
-                            clustering.resolution = 0.8,
                             variable.features = 2000,
-                            pc.count = 10,
+                            pc.count = 50,
                             runHVG = TRUE,
                             plotHVG = TRUE,
                             runDimRed = TRUE,
@@ -242,8 +299,8 @@ reportSeuratRun <- function(inSCE,
                             outputDir = NULL,
                             subtitle = NULL,
                             authors =  NULL,
-                            showSession = TRUE,
-                            pdf = TRUE,
+                            showSession = FALSE,
+                            pdf = FALSE,
                             forceRun = FALSE){
 
   if(is.null(biological.group)){
@@ -273,8 +330,6 @@ reportSeuratRun <- function(inSCE,
                       sce = inSCE,
                       biological.group = biological.group,
                       phenotype.groups = phenotype.groups,
-                      selected.markers = selected.markers,
-                      clustering.resolution = clustering.resolution,
                       variable.features = variable.features,
                       pc.count = pc.count,
                       outputPath = outputDir,
@@ -295,14 +350,13 @@ reportSeuratRun <- function(inSCE,
                     ),
                     output_file = outputFile,
                     output_dir = outputDir,
-                    intermediates_dir = outputDir,
-                    knit_root_dir = outputDir)
-
-  # path <- paste0(outputDir, "SCE_SeuratReport", "-", gsub(" ", "_", Sys.Date()), ".rds")
-  # outSCE <- readRDS(path)
-  # 
-  # message("Output SCE object stored as ", paste0("SCE_SeuratReport", "-", gsub(" ", "_", Sys.Date()), ".rds"), " in ", outputDir, ".")
-  # message("Output HTML file stored as ", outputFile, " in ", outputDir, ".")
+                    intermediates_dir = getwd(),
+                    knit_root_dir = getwd())
+  
+  path <- paste0(outputDir, "SCE_SeuratRun", "-", gsub(" ", "_", Sys.Date()), ".rds")
+  saveRDS(data, path)
+  message("Output SCE object stored as ", paste0("SCE_SeuratRun", "-", gsub(" ", "_", Sys.Date()), ".rds"), " in ", outputDir, ".")
+  message("Output HTML file stored as ", outputFile, " in ", outputDir, ".")
 
   return(data)
 }
