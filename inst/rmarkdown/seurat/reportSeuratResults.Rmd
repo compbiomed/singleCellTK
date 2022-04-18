@@ -138,7 +138,7 @@ res <- knitr::knit_child(paste0(getwd(), "/inst/rmarkdown/seurat/", 'reportSeura
 cat(res, sep = '\n')
 ```
 
-```{r session, results='asis', eval = showSession, echo = showSession}
+```{r Session Seurat Results, results='asis', eval = showSession, echo = showSession}
 cat("# Session Information\n\n")
 sessionInfo()
 ```
