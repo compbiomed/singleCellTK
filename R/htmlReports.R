@@ -322,12 +322,14 @@ reportSeuratRun <- function(inSCE,
     message("No output directory defined, using current working directory ", outputDir, " instead.")
   }
 
+  data <- inSCE
+  
   rmarkdown::render(system.file("rmarkdown/seurat/reportSeuratRun.Rmd",
                                 package="singleCellTK"),
                     params = list(
                       subtitle = subtitle,
                       authors = authors,
-                      sce = inSCE,
+                      sce = data,
                       biological.group = biological.group,
                       phenotype.groups = phenotype.groups,
                       variable.features = variable.features,
@@ -487,57 +489,55 @@ reportSeuratResults <- function(inSCE,
   return(data)
 }
 
-#' Computes an HTML report from the Seurat workflow and returns the output SCE
-#'  object with the computations stored in it.
-#' @param inSCE Input \code{SingleCellExperiment} object.
-#' @param outputFile Specify the name of the generated output HTML file. If \code{NULL} then the output
-#' file name will be based on the name of the Rmarkdown template. Default
-#' \code{NULL}.
-#' @param outputDir Specify the name of the output directory to save the
-#'  rendered HTML file. If \code{NULL} the file is stored to the current
-#'  working directory.
-#' @param subtitle A \code{character} value specifying the subtitle to use in the
-#'  Seurat report. Default \code{NULL}.
-#' @param authors A \code{character} value specifying the names of the authors
-#'  to use in the Seurat report. Default \code{NULL}.
-#' @param sce A \code{character} value specifying the path of the input
-#'  \code{SingleCellExperiment} object.
-#' @param biological.group A character value that specifies the name of the
-#'  \code{colData} column to use as the main biological group in the seurat
-#'  report for differential expression and grouping.
-#' @param phenotype.groups A \code{character} vector that specifies the names
-#'  of the \code{colData} columns to use for differential expression in addition
-#'  to the \code{biological.group} parameter.
-#' @param selected.markers A \code{character} vector specifying the user decided
-#'  gene symbols of pre-selected markers that be used to generate gene plots in
-#'  addition to the gene markers computed from differential expression.
-#' @param clustering.resolution A \code{numeric} value indicating the resolution
-#'  to use with clustering. Default is \code{0.8}.
-#' @param variable.features A \code{numeric} value indicating the number of
-#'  top variable genes to identify in the seurat report. Default is \code{2000}.
-#' @param pc.count A \code{numeric} value indicating the number of principal
-#'  components to use in the analysis workflow. Default is \code{10}.
-#' @param showSession A \code{logical} value indicating if session information
-#'  should be displayed or not. Default is \code{TRUE}.
-#' @param pdf A \code{logical} value indicating if a pdf should also be
-#'  generated for each figure in the report. Default is \code{TRUE}.
-#' @return A \code{SingleCellExperiment} object that has the seurat computations
-#'  stored and can be used to interactively visualize the plots by importing
-#'  in the \code{singleCellTK} user interface.
+
+#' Generates an HTML report for Seurat Dimensionality Reduction
+#'  and returns the SCE object with the results computed and stored
+#'  inside the object.
+#' @param inSCE Input \code{\link[SingleCellExperiment]{SingleCellExperiment}}
+#'  object.
+#' @param pc.count A numeric value indicating the number of principal components
+#'  to compute. Default is \code{50}.
+#' @param runDimRed A logical value indicating if dimenionality reduction should
+#'  be computed. Default \code{TRUE}.
+#' @param plotJackStraw A logical value indicating if JackStraw plot should be
+#'  visualized. Default \code{FALSE}.
+#' @param plotElbowPlot A logical value indicating if ElbowPlot should be 
+#'  visualized. Default \code{TRUE}.
+#' @param plotHeatmaps A logical value indicating if heatmaps should be
+#'  visualized. Default \code{TRUE}.
+#' @param outputFile Specify the name of the generated output HTML file. 
+#'  If \code{NULL} then the output file name will be based on the name of the 
+#'  Rmarkdown template. Default \code{NULL}.
+#' @param outputDir Specify the name of the output directory to save the 
+#'  rendered HTML file. If \code{NULL} the file is stored to the current 
+#'  working directory. Default \code{NULL}.
+#' @param subtitle A character value specifying the subtitle to use in the 
+#'  report. Default \code{NULL}.
+#' @param authors A character value specifying the names of the authors to use 
+#'  in the report. Default \code{NULL}.
+#' @param showSession 	A logical value indicating if session information 
+#'  should be displayed or not. Default is \code{FALSE}.
+#' @param pdf A logical value indicating if a pdf should also be generated for 
+#'  each figure in the report. Default is \code{FALSE}.
+#' @param forceRun A logical value indicating if all computations previously
+#'  computed should be re-calculated regardless if these computations are
+#'  available in the input object. Default is \code{FALSE}.
+#'
+#' @return A \code{\link[SingleCellExperiment]{SingleCellExperiment}} object
+#'  with computations stored.
 #' @export
 reportSeuratDimRed <- function(inSCE,
-                                outputFile = NULL,
-                                outputDir = NULL,
-                                subtitle = NULL,
-                                authors =  NULL,
-                                sce = NULL,
-                                pc.count = 50,
-                                showSession = TRUE,
-                                pdf = TRUE,
+                               pc.count = 50,
                                runDimRed = TRUE,
                                plotJackStraw = FALSE,
                                plotElbowPlot = TRUE,
                                plotHeatmaps = TRUE,
+                               outputFile = NULL,
+                               outputDir = NULL,
+                               subtitle = NULL,
+                               authors =  NULL,
+                               showSession = FALSE,
+                               pdf = FALSE,
                                forceRun = FALSE){
 
   if(is.null(outputDir)){
@@ -552,7 +552,7 @@ reportSeuratDimRed <- function(inSCE,
                     params = list(
                       subtitle = subtitle,
                       authors = authors,
-                      sce = inSCE,
+                      sce = data,
                       pc.count = pc.count,
                       outputPath = outputDir,
                       showSession = showSession,
@@ -568,62 +568,48 @@ reportSeuratDimRed <- function(inSCE,
                     intermediates_dir = outputDir,
                     knit_root_dir = outputDir)
   
-  # path <- paste0(outputDir, "SeuratReportDimRed", "-", gsub(" ", "_", Sys.Date()), ".rds")
-  # outSCE <- readRDS(path)
-  # 
-  # message("Output SCE object stored as ", paste0("SeuratReportDimRed", "-", gsub(" ", "_", Sys.Date()), ".rds"), " in ", outputDir, ".")
-  # message("Output HTML file stored as ", outputFile, " in ", outputDir, ".")
+  path <- paste0(outputDir, "SCE_SeuratDimRed", "-", gsub(" ", "_", Sys.Date()), ".rds")
+  saveRDS(data, path)
+  message("Output SCE object stored as ", paste0("SCE_SeuratDimRed", "-", gsub(" ", "_", Sys.Date()), ".rds"), " in ", outputDir, ".")
+  message("Output HTML file stored as ", outputFile, " in ", outputDir, ".")
   
   return(data)
 }
 
-#' Computes an HTML report from the Seurat workflow and returns the output SCE
-#'  object with the computations stored in it.
-#' @param inSCE Input \code{SingleCellExperiment} object.
-#' @param outputFile Specify the name of the generated output HTML file. If \code{NULL} then the output
-#' file name will be based on the name of the Rmarkdown template. Default
-#' \code{NULL}.
-#' @param outputDir Specify the name of the output directory to save the
-#'  rendered HTML file. If \code{NULL} the file is stored to the current
-#'  working directory.
-#' @param subtitle A \code{character} value specifying the subtitle to use in the
-#'  Seurat report. Default \code{NULL}.
-#' @param authors A \code{character} value specifying the names of the authors
-#'  to use in the Seurat report. Default \code{NULL}.
-#' @param sce A \code{character} value specifying the path of the input
-#'  \code{SingleCellExperiment} object.
-#' @param biological.group A character value that specifies the name of the
-#'  \code{colData} column to use as the main biological group in the seurat
-#'  report for differential expression and grouping.
-#' @param phenotype.groups A \code{character} vector that specifies the names
-#'  of the \code{colData} columns to use for differential expression in addition
-#'  to the \code{biological.group} parameter.
-#' @param selected.markers A \code{character} vector specifying the user decided
-#'  gene symbols of pre-selected markers that be used to generate gene plots in
-#'  addition to the gene markers computed from differential expression.
-#' @param clustering.resolution A \code{numeric} value indicating the resolution
-#'  to use with clustering. Default is \code{0.8}.
-#' @param variable.features A \code{numeric} value indicating the number of
-#'  top variable genes to identify in the seurat report. Default is \code{2000}.
-#' @param pc.count A \code{numeric} value indicating the number of principal
-#'  components to use in the analysis workflow. Default is \code{10}.
-#' @param showSession A \code{logical} value indicating if session information
-#'  should be displayed or not. Default is \code{TRUE}.
-#' @param pdf A \code{logical} value indicating if a pdf should also be
-#'  generated for each figure in the report. Default is \code{TRUE}.
-#' @param jackStraw logical value
-#' @return A \code{SingleCellExperiment} object that has the seurat computations
-#'  stored and can be used to interactively visualize the plots by importing
-#'  in the \code{singleCellTK} user interface.
+
+#' Generates an HTML report for Seurat Normalization 
+#'  and returns the SCE object with the results computed and stored
+#'  inside the object.
+#' @param inSCE Input \code{\link[SingleCellExperiment]{SingleCellExperiment}}
+#'  object previously passed through \code{reportSeuratRun()}. 
+#' @param outputFile Specify the name of the generated output HTML file. 
+#'  If \code{NULL} then the output file name will be based on the name of the 
+#'  Rmarkdown template. Default \code{NULL}.
+#' @param outputDir Specify the name of the output directory to save the 
+#'  rendered HTML file. If \code{NULL} the file is stored to the current 
+#'  working directory. Default \code{NULL}.
+#' @param subtitle A character value specifying the subtitle to use in the 
+#'  report. Default \code{NULL}.
+#' @param authors A character value specifying the names of the authors to use 
+#'  in the report. Default \code{NULL}.
+#' @param showSession 	A logical value indicating if session information 
+#'  should be displayed or not. Default is \code{FALSE}.
+#' @param pdf A logical value indicating if a pdf should also be generated for 
+#'  each figure in the report. Default is \code{FALSE}.
+#' @param forceRun A logical value indicating if all computations previously
+#'  computed should be re-calculated regardless if these computations are
+#'  available in the input object. Default is \code{FALSE}.
+#'
+#' @return A \code{\link[SingleCellExperiment]{SingleCellExperiment}} object
+#'  with computations stored.
 #' @export
 reportSeuratNormalization <- function(inSCE,
                                outputFile = NULL,
                                outputDir = NULL,
                                subtitle = NULL,
                                authors =  NULL,
-                               sce = NULL,
-                               showSession = TRUE,
-                               pdf = TRUE,
+                               showSession = FALSE,
+                               pdf = FALSE,
                                forceRun = FALSE){
   
   if(is.null(outputDir)){
@@ -638,7 +624,7 @@ reportSeuratNormalization <- function(inSCE,
                     params = list(
                       subtitle = subtitle,
                       authors = authors,
-                      sce = inSCE,
+                      sce = data,
                       outputPath = outputDir,
                       showSession = showSession,
                       pdf = pdf,
@@ -646,56 +632,60 @@ reportSeuratNormalization <- function(inSCE,
                     ),
                     output_file = outputFile,
                     output_dir = outputDir,
-                    intermediates_dir = outputDir,
-                    knit_root_dir = outputDir)
+                    intermediates_dir = getwd(),
+                    knit_root_dir = getwd())
   
-  # path <- paste0(outputDir, "SeuratReportNormalization", "-", gsub(" ", "_", Sys.Date()), ".rds")
-  # outSCE <- readRDS(path)
-  # 
-  # message("Output SCE object stored as ", paste0("SeuratReportNormalization", "-", gsub(" ", "_", Sys.Date()), ".rds"), " in ", outputDir, ".")
-  # message("Output HTML file stored as ", outputFile, " in ", outputDir, ".")
+  path <- paste0(outputDir, "SCE_SeuratNormalization", "-", gsub(" ", "_", Sys.Date()), ".rds")
+  saveRDS(data, path)
+  message("Output SCE object stored as ", paste0("SCE_SeuratNormalization", "-", gsub(" ", "_", Sys.Date()), ".rds"), " in ", outputDir, ".")
+  message("Output HTML file stored as ", outputFile, " in ", outputDir, ".")
   
   return(data)
 }
 
-#' Computes an HTML report from the Seurat workflow and returns the output SCE
-#'  object with the computations stored in it.
-#' @param inSCE Input \code{SingleCellExperiment} object.
-#' @param outputFile Specify the name of the generated output HTML file. If \code{NULL} then the output
-#' file name will be based on the name of the Rmarkdown template. Default
-#' \code{NULL}.
-#' @param outputDir Specify the name of the output directory to save the
-#'  rendered HTML file. If \code{NULL} the file is stored to the current
-#'  working directory.
-#' @param subtitle A \code{character} value specifying the subtitle to use in the
-#'  Seurat report. Default \code{NULL}.
-#' @param authors A \code{character} value specifying the names of the authors
-#'  to use in the Seurat report. Default \code{NULL}.
-#' @param sce A \code{character} value specifying the path of the input
-#'  \code{SingleCellExperiment} object.
-#' @param variable.features A \code{numeric} value indicating the number of
-#'  top variable genes to identify in the seurat report. Default is \code{2000}.
-#' @param showSession A \code{logical} value indicating if session information
-#'  should be displayed or not. Default is \code{TRUE}.
-#' @param pdf A \code{logical} value indicating if a pdf should also be
-#'  generated for each figure in the report. Default is \code{TRUE}.
-#' @return A \code{SingleCellExperiment} object that has the seurat computations
-#'  stored and can be used to interactively visualize the plots by importing
-#'  in the \code{singleCellTK} user interface.
+
+#' Generates an HTML report for Seurat Feature Selection and returns the
+#' SCE object with the results computed and stored inside the object.
+#' @param inSCE Input \code{\link[SingleCellExperiment]{SingleCellExperiment}}
+#'  object.
+#' @param variable.features A numeric value indicating the number of top variable
+#'  features to identify. Default \code{2000}.
+#' @param runHVG A logical value indicating if the feature selection algorithm
+#'  should be run or not. Default \code{TRUE}.
+#' @param plotHVG A logical value indicating if the mean-to-variance plot
+#'  of the top variable feature should be visualized or not. Default \code{TRUE}.
+#' @param outputFile Specify the name of the generated output HTML file. 
+#'  If \code{NULL} then the output file name will be based on the name of the 
+#'  Rmarkdown template. Default \code{NULL}.
+#' @param outputDir Specify the name of the output directory to save the 
+#'  rendered HTML file. If \code{NULL} the file is stored to the current 
+#'  working directory. Default \code{NULL}.
+#' @param subtitle A character value specifying the subtitle to use in the 
+#'  report. Default \code{NULL}.
+#' @param authors A character value specifying the names of the authors to use 
+#'  in the report. Default \code{NULL}.
+#' @param showSession 	A logical value indicating if session information 
+#'  should be displayed or not. Default is \code{FALSE}.
+#' @param pdf A logical value indicating if a pdf should also be generated for 
+#'  each figure in the report. Default is \code{FALSE}.
+#' @param forceRun A logical value indicating if all computations previously
+#'  computed should be re-calculated regardless if these computations are
+#'  available in the input object. Default is \code{FALSE}.
+#'
+#' @return A \code{\link[SingleCellExperiment]{SingleCellExperiment}} object
+#'  with computations stored.
 #' @export
 reportSeuratFeatureSelection <- function(inSCE,
-                             outputFile = NULL,
-                             outputDir = NULL,
-                             subtitle = NULL,
-                             authors =  NULL,
-                             sce = NULL,
-                             variable.features = 2000,
-                             runHVG = TRUE,
-                             plotHVG = TRUE,
-                             forceRun = FALSE,
-                             showSession = FALSE,
-                             pdf = FALSE){
-  
+                                         variable.features = 2000,
+                                         runHVG = TRUE,
+                                         plotHVG = TRUE,
+                                         outputFile = NULL,
+                                         outputDir = NULL,
+                                         subtitle = NULL,
+                                         authors =  NULL,
+                                         showSession = FALSE,
+                                         pdf = FALSE,
+                                         forceRun = FALSE){
   if(is.null(outputDir)){
     outputDir <- getwd()
     message("No output directory defined, using current working directory ", outputDir, " instead.")
@@ -708,64 +698,52 @@ reportSeuratFeatureSelection <- function(inSCE,
                     params = list(
                       subtitle = subtitle,
                       authors = authors,
-                      sce = inSCE,
+                      sce = data,
                       variable.features = variable.features,
                       outputPath = outputDir,
                       showSession = showSession,
-                      pdf = pdf
+                      pdf = pdf,
+                      forceRun = forceRun
                     ),
                     output_file = outputFile,
                     output_dir = outputDir,
-                    intermediates_dir = outputDir,
-                    knit_root_dir = outputDir)
+                    intermediates_dir = getwd(),
+                    knit_root_dir = getwd())
   
-  # path <- paste0(outputDir, "SeuratReportFeatureSelection", "-", gsub(" ", "_", Sys.Date()), ".rds")
-  # outSCE <- readRDS(path)
-  # 
-  # message("Output SCE object stored as ", paste0("SeuratReportFeatureSelection", "-", gsub(" ", "_", Sys.Date()), ".rds"), " in ", outputDir, ".")
-  # message("Output HTML file stored as ", outputFile, " in ", outputDir, ".")
+  path <- paste0(outputDir, "SCE_SeuratFeatureSelection", "-", gsub(" ", "_", Sys.Date()), ".rds")
+  saveRDS(data, path)
+  message("Output SCE object stored as ", paste0("SCE_SeuratFeatureSelection", "-", gsub(" ", "_", Sys.Date()), ".rds"), " in ", outputDir, ".")
+  message("Output HTML file stored as ", outputFile, " in ", outputDir, ".")
   
   return(data)
 }
 
-#' Computes an HTML report from the Seurat workflow and returns the output SCE
-#'  object with the computations stored in it.
-#' @param inSCE Input \code{SingleCellExperiment} object.
-#' @param outputFile Specify the name of the generated output HTML file. If \code{NULL} then the output
-#' file name will be based on the name of the Rmarkdown template. Default
-#' \code{NULL}.
-#' @param outputDir Specify the name of the output directory to save the
-#'  rendered HTML file. If \code{NULL} the file is stored to the current
-#'  working directory.
-#' @param subtitle A \code{character} value specifying the subtitle to use in the
-#'  Seurat report. Default \code{NULL}.
-#' @param authors A \code{character} value specifying the names of the authors
-#'  to use in the Seurat report. Default \code{NULL}.
-#' @param sce A \code{character} value specifying the path of the input
-#'  \code{SingleCellExperiment} object.
-#' @param biological.group A character value that specifies the name of the
-#'  \code{colData} column to use as the main biological group in the seurat
-#'  report for differential expression and grouping.
-#' @param phenotype.groups A \code{character} vector that specifies the names
-#'  of the \code{colData} columns to use for differential expression in addition
-#'  to the \code{biological.group} parameter.
-#' @param selected.markers A \code{character} vector specifying the user decided
-#'  gene symbols of pre-selected markers that be used to generate gene plots in
-#'  addition to the gene markers computed from differential expression.
-#' @param clustering.resolution A \code{numeric} value indicating the resolution
-#'  to use with clustering. Default is \code{0.8}.
-#' @param variable.features A \code{numeric} value indicating the number of
-#'  top variable genes to identify in the seurat report. Default is \code{2000}.
-#' @param pc.count A \code{numeric} value indicating the number of principal
-#'  components to use in the analysis workflow. Default is \code{10}.
-#' @param showSession A \code{logical} value indicating if session information
-#'  should be displayed or not. Default is \code{TRUE}.
-#' @param pdf A \code{logical} value indicating if a pdf should also be
-#'  generated for each figure in the report. Default is \code{TRUE}.
-#' @param jackStraw logical value
-#' @return A \code{SingleCellExperiment} object that has the seurat computations
-#'  stored and can be used to interactively visualize the plots by importing
-#'  in the \code{singleCellTK} user interface.
+
+#' Generates an HTML report for Seurat Scaling 
+#'  and returns the SCE object with the results computed and stored
+#'  inside the object.
+#' @param inSCE Input \code{\link[SingleCellExperiment]{SingleCellExperiment}}
+#'  object.
+#' @param outputFile Specify the name of the generated output HTML file. 
+#'  If \code{NULL} then the output file name will be based on the name of the 
+#'  Rmarkdown template. Default \code{NULL}.
+#' @param outputDir Specify the name of the output directory to save the 
+#'  rendered HTML file. If \code{NULL} the file is stored to the current 
+#'  working directory. Default \code{NULL}.
+#' @param subtitle A character value specifying the subtitle to use in the 
+#'  report. Default \code{NULL}.
+#' @param authors A character value specifying the names of the authors to use 
+#'  in the report. Default \code{NULL}.
+#' @param showSession 	A logical value indicating if session information 
+#'  should be displayed or not. Default is \code{FALSE}.
+#' @param pdf A logical value indicating if a pdf should also be generated for 
+#'  each figure in the report. Default is \code{FALSE}.
+#' @param forceRun A logical value indicating if all computations previously
+#'  computed should be re-calculated regardless if these computations are
+#'  available in the input object. Default is \code{FALSE}.
+#'
+#' @return A \code{\link[SingleCellExperiment]{SingleCellExperiment}} object
+#'  with computations stored.
 #' @export
 reportSeuratScaling <- function(inSCE,
                            outputFile = NULL,
@@ -773,8 +751,8 @@ reportSeuratScaling <- function(inSCE,
                            subtitle = NULL,
                            authors =  NULL,
                            sce = NULL,
-                           showSession = TRUE,
-                           pdf = TRUE,
+                           showSession = FALSE,
+                           pdf = FALSE,
                            forceRun = FALSE){
   
   if(is.null(outputDir)){
@@ -789,7 +767,7 @@ reportSeuratScaling <- function(inSCE,
                     params = list(
                       subtitle = subtitle,
                       authors = authors,
-                      sce = inSCE,
+                      sce = data,
                       outputPath = outputDir,
                       showSession = showSession,
                       pdf = pdf,
@@ -797,74 +775,80 @@ reportSeuratScaling <- function(inSCE,
                     ),
                     output_file = outputFile,
                     output_dir = outputDir,
-                    intermediates_dir = outputDir,
-                    knit_root_dir = outputDir)
+                    intermediates_dir = getwd(),
+                    knit_root_dir = getwd())
   
-  # path <- paste0(outputDir, "SeuratReportScaleData", "-", gsub(" ", "_", Sys.Date()), ".rds")
-  # outSCE <- readRDS(path)
-  # 
-  # message("Output SCE object stored as ", paste0("SeuratReportScaleData", "-", gsub(" ", "_", Sys.Date()), ".rds"), " in ", outputDir, ".")
-  # message("Output HTML file stored as ", outputFile, " in ", outputDir, ".")
+  path <- paste0(outputDir, "SCE_SeuratScaleData", "-", gsub(" ", "_", Sys.Date()), ".rds")
+  saveRDS(data, path)
+  message("Output SCE object stored as ", paste0("SCE_SeuratScaleData", "-", gsub(" ", "_", Sys.Date()), ".rds"), " in ", outputDir, ".")
+  message("Output HTML file stored as ", outputFile, " in ", outputDir, ".")
   
   return(data)
 }
 
-#' Computes an HTML report from the Seurat workflow and returns the output SCE
-#'  object with the computations stored in it.
-#' @param inSCE Input \code{SingleCellExperiment} object.
-#' @param outputFile Specify the name of the generated output HTML file. If \code{NULL} then the output
-#' file name will be based on the name of the Rmarkdown template. Default
-#' \code{NULL}.
-#' @param outputDir Specify the name of the output directory to save the
-#'  rendered HTML file. If \code{NULL} the file is stored to the current
-#'  working directory.
-#' @param subtitle A \code{character} value specifying the subtitle to use in the
-#'  Seurat report. Default \code{NULL}.
-#' @param authors A \code{character} value specifying the names of the authors
-#'  to use in the Seurat report. Default \code{NULL}.
-#' @param sce A \code{character} value specifying the path of the input
-#'  \code{SingleCellExperiment} object.
-#' @param biological.group A character value that specifies the name of the
-#'  \code{colData} column to use as the main biological group in the seurat
-#'  report for differential expression and grouping.
-#' @param phenotype.groups A \code{character} vector that specifies the names
-#'  of the \code{colData} columns to use for differential expression in addition
-#'  to the \code{biological.group} parameter.
-#' @param selected.markers A \code{character} vector specifying the user decided
-#'  gene symbols of pre-selected markers that be used to generate gene plots in
-#'  addition to the gene markers computed from differential expression.
-#' @param clustering.resolution A \code{numeric} value indicating the resolution
-#'  to use with clustering. Default is \code{0.8}.
-#' @param variable.features A \code{numeric} value indicating the number of
-#'  top variable genes to identify in the seurat report. Default is \code{2000}.
-#' @param pc.count A \code{numeric} value indicating the number of principal
-#'  components to use in the analysis workflow. Default is \code{10}.
-#' @param showSession A \code{logical} value indicating if session information
-#'  should be displayed or not. Default is \code{TRUE}.
-#' @param pdf A \code{logical} value indicating if a pdf should also be
-#'  generated for each figure in the report. Default is \code{TRUE}.
-#' @param jackStraw logical value
-#' @return A \code{SingleCellExperiment} object that has the seurat computations
-#'  stored and can be used to interactively visualize the plots by importing
-#'  in the \code{singleCellTK} user interface.
+
+#' Generates an HTML report for Seurat Clustering and returns the SCE object 
+#'  with the results computed and stored inside the object.
+#' @param inSCE Input \code{\link[SingleCellExperiment]{SingleCellExperiment}}
+#'  object.
+#' @param biological.group A character value that specifies the name of the 
+#'  \code{colData()} column to use as the main biological group in the Seurat 
+#'  report for marker selection and grouping.
+#' @param phenotype.groups A character vector that specifies the names of the 
+#'  \code{colData()} columns to use for differential expression in addition to 
+#'  the \code{biological.group} parameter.
+#' @param runClustering A logical value indicating if Clustering should be run
+#'  or not in the report. Default is \code{TRUE}. If \code{FALSE}, parameters
+#'   \code{plotTSNE} and \code{plotUMAP} are also set to \code{FALSE}.
+#' @param plotTSNE A logical value indicating if TSNE plots should be visualized
+#'  in the clustering section of the report. Default is \code{TRUE}.
+#' @param plotUMAP A logical value indicating if UMAP plots should be visualized
+#'  in the clustering section of the report. Default is \code{TRUE}.
+#' @param minResolution A numeric value indicating the minimum resolution to use
+#'  for clustering. Default \code{0.3}.
+#' @param maxResolution A numeric value indicating the maximum resolution to use
+#'  for clustering. Default \code{1.5}.
+#' @param numClusters temp (to remove)
+#' @param significant_PC temp (change to pc.use)
+#' @param outputFile Specify the name of the generated output HTML file. 
+#'  If \code{NULL} then the output file name will be based on the name of the 
+#'  Rmarkdown template. Default \code{NULL}.
+#' @param outputDir Specify the name of the output directory to save the 
+#'  rendered HTML file. If \code{NULL} the file is stored to the current 
+#'  working directory. Default \code{NULL}.
+#' @param subtitle A character value specifying the subtitle to use in the 
+#'  report. Default \code{NULL}.
+#' @param authors A character value specifying the names of the authors to use 
+#'  in the report. Default \code{NULL}.
+#' @param showSession 	A logical value indicating if session information 
+#'  should be displayed or not. Default is \code{FALSE}.
+#' @param pdf A logical value indicating if a pdf should also be generated for 
+#'  each figure in the report. Default is \code{FALSE}.
+#' @param forceRun A logical value indicating if all computations previously
+#'  computed should be re-calculated regardless if these computations are
+#'  available in the input object. Default is \code{FALSE}.
+#'
+#' @return
 #' @export
+#'
+#' @examples
 reportSeuratClustering <- function(inSCE,
-                           outputFile = NULL,
-                           outputDir = NULL,
-                           subtitle = NULL,
-                           authors =  NULL,
-                           sce = NULL,
-                           biological.group = NULL,
-                           phenotype.groups = NULL,
-                           showSession = TRUE,
-                           pdf = TRUE,
-                           runClustering = TRUE,
-                           plotTSNE = TRUE,
-                           plotUMAP = TRUE,
-                           minResolution = 0.3,
-                           maxResolution = 1.5,
-                           numClusters = 10,
-                           significant_PC = 10){
+                                   biological.group = NULL,
+                                   phenotype.groups = NULL,
+                                   runClustering = TRUE,
+                                   plotTSNE = TRUE,
+                                   plotUMAP = TRUE,
+                                   minResolution = 0.3,
+                                   maxResolution = 1.5,
+                                   numClusters = 10,
+                                   significant_PC = 10,
+                                   outputFile = NULL,
+                                   outputDir = NULL,
+                                   subtitle = NULL,
+                                   authors =  NULL,
+                                   showSession = FALSE,
+                                   pdf = FALSE,
+                                   forceRun = FALSE){
   
   if(is.null(biological.group)){
     stop("Must specify atleast one biological.group that is present in the colData of input object.")
@@ -887,7 +871,7 @@ reportSeuratClustering <- function(inSCE,
                     params = list(
                       subtitle = subtitle,
                       authors = authors,
-                      sce = inSCE,
+                      sce = data,
                       biological.group = biological.group,
                       phenotype.groups = phenotype.groups,
                       outputPath = outputDir,
@@ -899,75 +883,75 @@ reportSeuratClustering <- function(inSCE,
                       minResolution = minResolution,
                       maxResolution = maxResolution,
                       numClusters = numClusters,
-                      significant_PC = significant_PC 
+                      significant_PC = significant_PC,
+                      forceRun = forceRun
                     ),
                     output_file = outputFile,
                     output_dir = outputDir,
-                    intermediates_dir = outputDir,
-                    knit_root_dir = outputDir)
+                    intermediates_dir = getwd(),
+                    knit_root_dir = getwd())
   
-  # path <- paste0(outputDir, "SeuratReport", "-", gsub(" ", "_", Sys.Date()), ".rds")
-  # outSCE <- readRDS(path)
-  # 
-  # message("Output SCE object stored as ", paste0("SeuratReport", "-", gsub(" ", "_", Sys.Date()), ".rds"), " in ", outputDir, ".")
-  # message("Output HTML file stored as ", outputFile, " in ", outputDir, ".")
+  path <- paste0(outputDir, "SCE_SeuratClustering", "-", gsub(" ", "_", Sys.Date()), ".rds")
+  saveRDS(data, path)
+  message("Output SCE object stored as ", paste0("SCE_SeuratClustering", "-", gsub(" ", "_", Sys.Date()), ".rds"), " in ", outputDir, ".")
+  message("Output HTML file stored as ", outputFile, " in ", outputDir, ".")
   
   return(data)
 }
 
-#' Computes an HTML report from the Seurat workflow and returns the output SCE
-#'  object with the computations stored in it.
-#' @param inSCE Input \code{SingleCellExperiment} object.
-#' @param outputFile Specify the name of the generated output HTML file. If \code{NULL} then the output
-#' file name will be based on the name of the Rmarkdown template. Default
-#' \code{NULL}.
-#' @param outputDir Specify the name of the output directory to save the
-#'  rendered HTML file. If \code{NULL} the file is stored to the current
-#'  working directory.
-#' @param subtitle A \code{character} value specifying the subtitle to use in the
-#'  Seurat report. Default \code{NULL}.
-#' @param authors A \code{character} value specifying the names of the authors
-#'  to use in the Seurat report. Default \code{NULL}.
-#' @param sce A \code{character} value specifying the path of the input
-#'  \code{SingleCellExperiment} object.
-#' @param biological.group A character value that specifies the name of the
-#'  \code{colData} column to use as the main biological group in the seurat
-#'  report for differential expression and grouping.
-#' @param phenotype.groups A \code{character} vector that specifies the names
-#'  of the \code{colData} columns to use for differential expression in addition
-#'  to the \code{biological.group} parameter.
-#' @param selected.markers A \code{character} vector specifying the user decided
-#'  gene symbols of pre-selected markers that be used to generate gene plots in
-#'  addition to the gene markers computed from differential expression.
-#' @param clustering.resolution A \code{numeric} value indicating the resolution
-#'  to use with clustering. Default is \code{0.8}.
-#' @param variable.features A \code{numeric} value indicating the number of
-#'  top variable genes to identify in the seurat report. Default is \code{2000}.
-#' @param pc.count A \code{numeric} value indicating the number of principal
-#'  components to use in the analysis workflow. Default is \code{10}.
-#' @param showSession A \code{logical} value indicating if session information
-#'  should be displayed or not. Default is \code{TRUE}.
-#' @param pdf A \code{logical} value indicating if a pdf should also be
-#'  generated for each figure in the report. Default is \code{TRUE}.
-#' @param jackStraw logical value
-#' @return A \code{SingleCellExperiment} object that has the seurat computations
-#'  stored and can be used to interactively visualize the plots by importing
-#'  in the \code{singleCellTK} user interface.
+
+#' Generates an HTML report for Seurat Results (including Clustering & Marker
+#'  Selection) and returns the SCE object with the results computed and stored
+#'  inside the object.
+#' @param inSCE Input \code{\link[SingleCellExperiment]{SingleCellExperiment}}
+#'  object. 
+#' @param biological.group A character value that specifies the name of the 
+#'  \code{colData()} column to use as the main biological group in the Seurat 
+#'  report for marker selection and grouping.
+#' @param phenotype.groups A character vector that specifies the names of the 
+#'  \code{colData()} columns to use for differential expression in addition to 
+#'  the \code{biological.group} parameter.
+#' @param selected.markers A character vector containing the user-specified 
+#'  gene symbols or feature names of marker genes that be used to generate 
+#'  gene plots in addition to the gene markers computed from 
+#'  differential expression.
+#' @param runMarkerSelection A logical value indicating if the marker selection
+#'  computation should be run or not. Default \code{TRUE}.
+#' @param plotMarkerSelection A logical value indicating if the gene marker
+#'  plots should be visualized or not. Default \code{TRUE}.
+#' @param countFeatures A numeric value indicating the number of top features
+#'  to visualize in each group. Default \code{10}.
+#' @param outputFile Specify the name of the generated output HTML file. 
+#'  If \code{NULL} then the output file name will be based on the name of the 
+#'  Rmarkdown template. Default \code{NULL}.
+#' @param outputDir Specify the name of the output directory to save the 
+#'  rendered HTML file. If \code{NULL} the file is stored to the current 
+#'  working directory. Default \code{NULL}.
+#' @param subtitle A character value specifying the subtitle to use in the 
+#'  report. Default \code{NULL}.
+#' @param authors A character value specifying the names of the authors to use 
+#'  in the report. Default \code{NULL}.
+#' @param showSession 	A logical value indicating if session information 
+#'  should be displayed or not. Default is \code{FALSE}.
+#' @param pdf A logical value indicating if a pdf should also be generated for 
+#'  each figure in the report. Default is \code{FALSE}.
+#'
+#' @return A \code{\link[SingleCellExperiment]{SingleCellExperiment}} object
+#'  with computations stored.
 #' @export
 reportSeuratMarkerSelection <- function(inSCE,
-                           outputFile = NULL,
-                           outputDir = NULL,
-                           subtitle = NULL,
-                           authors =  NULL,
-                           sce = NULL,
-                           biological.group = NULL,
-                           phenotype.groups = NULL,
-                           selected.markers = NULL,
-                           showSession = TRUE,
-                           pdf = TRUE,
-                           runMarkerSelection = TRUE,
-                           plotMarkerSelection = TRUE,
-                           countFeatures = 10){
+                                        biological.group = NULL,
+                                        phenotype.groups = NULL,
+                                        selected.markers = NULL,
+                                        runMarkerSelection = TRUE,
+                                        plotMarkerSelection = TRUE,
+                                        countFeatures = 10,
+                                        outputFile = NULL,
+                                        outputDir = NULL,
+                                        subtitle = NULL,
+                                        authors =  NULL,
+                                        showSession = FALSE,
+                                        pdf = FALSE){
   
   if(is.null(biological.group)){
     stop("Must specify atleast one biological.group that is present in the colData of input object.")
@@ -995,7 +979,7 @@ reportSeuratMarkerSelection <- function(inSCE,
                     params = list(
                       subtitle = subtitle,
                       authors = authors,
-                      sce = inSCE,
+                      sce = data,
                       biological.group = biological.group,
                       phenotype.groups = phenotype.groups,
                       selected.markers = selected.markers,
@@ -1008,14 +992,13 @@ reportSeuratMarkerSelection <- function(inSCE,
                     ),
                     output_file = outputFile,
                     output_dir = outputDir,
-                    intermediates_dir = outputDir,
-                    knit_root_dir = outputDir)
+                    intermediates_dir = getwd(),
+                    knit_root_dir = getwd())
   
-  # path <- paste0(outputDir, "SeuratReport", "-", gsub(" ", "_", Sys.Date()), ".rds")
-  # outSCE <- readRDS(path)
-  # 
-  # message("Output SCE object stored as ", paste0("SeuratReport", "-", gsub(" ", "_", Sys.Date()), ".rds"), " in ", outputDir, ".")
-  # message("Output HTML file stored as ", outputFile, " in ", outputDir, ".")
+  path <- paste0(outputDir, "SCE_SeuratResults", "-", gsub(" ", "_", Sys.Date()), ".rds")
+  saveRDS(data, path)
+  message("Output SCE object stored as ", paste0("SCE_SeuratResults", "-", gsub(" ", "_", Sys.Date()), ".rds"), " in ", outputDir, ".")
+  message("Output HTML file stored as ", outputFile, " in ", outputDir, ".")
   
   return(data)
 }
@@ -1100,8 +1083,8 @@ reportSeurat <- function(
   outputDir = NULL,
   subtitle = NULL,
   authors =  NULL,
-  showSession = TRUE,
-  pdf = TRUE,
+  showSession = FALSE,
+  pdf = FALSE,
   runHVG = TRUE,
   plotHVG = TRUE,
   runDimRed = TRUE,

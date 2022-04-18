@@ -2,81 +2,78 @@
 % Please edit documentation in R/htmlReports.R
 \name{reportSeuratMarkerSelection}
 \alias{reportSeuratMarkerSelection}
-\title{Computes an HTML report from the Seurat workflow and returns the output SCE
- object with the computations stored in it.}
+\title{Generates an HTML report for Seurat Results (including Clustering & Marker
+ Selection) and returns the SCE object with the results computed and stored
+ inside the object.}
 \usage{
 reportSeuratMarkerSelection(
   inSCE,
+  biological.group = NULL,
+  phenotype.groups = NULL,
+  selected.markers = NULL,
+  runMarkerSelection = TRUE,
+  plotMarkerSelection = TRUE,
+  countFeatures = 10,
   outputFile = NULL,
   outputDir = NULL,
   subtitle = NULL,
   authors = NULL,
-  sce = NULL,
-  biological.group = NULL,
-  phenotype.groups = NULL,
-  selected.markers = NULL,
-  showSession = TRUE,
-  pdf = TRUE,
-  runMarkerSelection = TRUE,
-  plotMarkerSelection = TRUE,
-  countFeatures = 10
+  showSession = FALSE,
+  pdf = FALSE
 )
 }
 \arguments{
-\item{inSCE}{Input \code{SingleCellExperiment} object.}
+\item{inSCE}{Input \code{\link[SingleCellExperiment]{SingleCellExperiment}}
+object.}
 
-\item{outputFile}{Specify the name of the generated output HTML file. If \code{NULL} then the output
-file name will be based on the name of the Rmarkdown template. Default
-\code{NULL}.}
+\item{biological.group}{A character value that specifies the name of the 
+\code{colData()} column to use as the main biological group in the Seurat 
+report for marker selection and grouping.}
 
-\item{outputDir}{Specify the name of the output directory to save the
-rendered HTML file. If \code{NULL} the file is stored to the current
-working directory.}
+\item{phenotype.groups}{A character vector that specifies the names of the 
+\code{colData()} columns to use for differential expression in addition to 
+the \code{biological.group} parameter.}
 
-\item{subtitle}{A \code{character} value specifying the subtitle to use in the
-Seurat report. Default \code{NULL}.}
+\item{selected.markers}{A character vector containing the user-specified 
+gene symbols or feature names of marker genes that be used to generate 
+gene plots in addition to the gene markers computed from 
+differential expression.}
 
-\item{authors}{A \code{character} value specifying the names of the authors
-to use in the Seurat report. Default \code{NULL}.}
+\item{runMarkerSelection}{A logical value indicating if the marker selection
+computation should be run or not. Default \code{TRUE}.}
 
-\item{sce}{A \code{character} value specifying the path of the input
-\code{SingleCellExperiment} object.}
+\item{plotMarkerSelection}{A logical value indicating if the gene marker
+plots should be visualized or not. Default \code{TRUE}.}
 
-\item{biological.group}{A character value that specifies the name of the
-\code{colData} column to use as the main biological group in the seurat
-report for differential expression and grouping.}
+\item{countFeatures}{A numeric value indicating the number of top features
+to visualize in each group. Default \code{10}.}
 
-\item{phenotype.groups}{A \code{character} vector that specifies the names
-of the \code{colData} columns to use for differential expression in addition
-to the \code{biological.group} parameter.}
+\item{outputFile}{Specify the name of the generated output HTML file. 
+If \code{NULL} then the output file name will be based on the name of the 
+Rmarkdown template. Default \code{NULL}.}
 
-\item{selected.markers}{A \code{character} vector specifying the user decided
-gene symbols of pre-selected markers that be used to generate gene plots in
-addition to the gene markers computed from differential expression.}
+\item{outputDir}{Specify the name of the output directory to save the 
+rendered HTML file. If \code{NULL} the file is stored to the current 
+working directory. Default \code{NULL}.}
 
-\item{showSession}{A \code{logical} value indicating if session information
-should be displayed or not. Default is \code{TRUE}.}
+\item{subtitle}{A character value specifying the subtitle to use in the 
+report. Default \code{NULL}.}
 
-\item{pdf}{A \code{logical} value indicating if a pdf should also be
-generated for each figure in the report. Default is \code{TRUE}.}
+\item{authors}{A character value specifying the names of the authors to use 
+in the report. Default \code{NULL}.}
 
-\item{clustering.resolution}{A \code{numeric} value indicating the resolution
-to use with clustering. Default is \code{0.8}.}
+\item{showSession}{A logical value indicating if session information 
+should be displayed or not. Default is \code{FALSE}.}
 
-\item{variable.features}{A \code{numeric} value indicating the number of
-top variable genes to identify in the seurat report. Default is \code{2000}.}
-
-\item{pc.count}{A \code{numeric} value indicating the number of principal
-components to use in the analysis workflow. Default is \code{10}.}
-
-\item{jackStraw}{logical value}
+\item{pdf}{A logical value indicating if a pdf should also be generated for 
+each figure in the report. Default is \code{FALSE}.}
 }
 \value{
-A \code{SingleCellExperiment} object that has the seurat computations
- stored and can be used to interactively visualize the plots by importing
- in the \code{singleCellTK} user interface.
+A \code{\link[SingleCellExperiment]{SingleCellExperiment}} object
+ with computations stored.
 }
 \description{
-Computes an HTML report from the Seurat workflow and returns the output SCE
- object with the computations stored in it.
+Generates an HTML report for Seurat Results (including Clustering & Marker
+ Selection) and returns the SCE object with the results computed and stored
+ inside the object.
 }

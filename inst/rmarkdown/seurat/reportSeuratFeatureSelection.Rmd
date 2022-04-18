@@ -10,6 +10,7 @@ params:
   outputPath: !r NULL
   showSession: FALSE
   pdf: FALSE
+  forceRun: FALSE
 output:
   html_document:
     toc: yes

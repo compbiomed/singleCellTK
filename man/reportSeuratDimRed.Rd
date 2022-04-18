@@ -2,79 +2,75 @@
 % Please edit documentation in R/htmlReports.R
 \name{reportSeuratDimRed}
 \alias{reportSeuratDimRed}
-\title{Computes an HTML report from the Seurat workflow and returns the output SCE
- object with the computations stored in it.}
+\title{Generates an HTML report for Seurat Dimensionality Reduction
+ and returns the SCE object with the results computed and stored
+ inside the object.}
 \usage{
 reportSeuratDimRed(
   inSCE,
-  outputFile = NULL,
-  outputDir = NULL,
-  subtitle = NULL,
-  authors = NULL,
-  sce = NULL,
   pc.count = 50,
-  showSession = TRUE,
-  pdf = TRUE,
   runDimRed = TRUE,
   plotJackStraw = FALSE,
   plotElbowPlot = TRUE,
   plotHeatmaps = TRUE,
+  outputFile = NULL,
+  outputDir = NULL,
+  subtitle = NULL,
+  authors = NULL,
+  showSession = FALSE,
+  pdf = FALSE,
   forceRun = FALSE
 )
 }
 \arguments{
-\item{inSCE}{Input \code{SingleCellExperiment} object.}
+\item{inSCE}{Input \code{\link[SingleCellExperiment]{SingleCellExperiment}}
+object.}
 
-\item{outputFile}{Specify the name of the generated output HTML file. If \code{NULL} then the output
-file name will be based on the name of the Rmarkdown template. Default
-\code{NULL}.}
+\item{pc.count}{A numeric value indicating the number of principal components
+to compute. Default is \code{50}.}
 
-\item{outputDir}{Specify the name of the output directory to save the
-rendered HTML file. If \code{NULL} the file is stored to the current
-working directory.}
+\item{runDimRed}{A logical value indicating if dimenionality reduction should
+be computed. Default \code{TRUE}.}
 
-\item{subtitle}{A \code{character} value specifying the subtitle to use in the
-Seurat report. Default \code{NULL}.}
+\item{plotJackStraw}{A logical value indicating if JackStraw plot should be
+visualized. Default \code{FALSE}.}
 
-\item{authors}{A \code{character} value specifying the names of the authors
-to use in the Seurat report. Default \code{NULL}.}
+\item{plotElbowPlot}{A logical value indicating if ElbowPlot should be 
+visualized. Default \code{TRUE}.}
 
-\item{sce}{A \code{character} value specifying the path of the input
-\code{SingleCellExperiment} object.}
+\item{plotHeatmaps}{A logical value indicating if heatmaps should be
+visualized. Default \code{TRUE}.}
 
-\item{pc.count}{A \code{numeric} value indicating the number of principal
-components to use in the analysis workflow. Default is \code{10}.}
+\item{outputFile}{Specify the name of the generated output HTML file. 
+If \code{NULL} then the output file name will be based on the name of the 
+Rmarkdown template. Default \code{NULL}.}
 
-\item{showSession}{A \code{logical} value indicating if session information
-should be displayed or not. Default is \code{TRUE}.}
+\item{outputDir}{Specify the name of the output directory to save the 
+rendered HTML file. If \code{NULL} the file is stored to the current 
+working directory. Default \code{NULL}.}
 
-\item{pdf}{A \code{logical} value indicating if a pdf should also be
-generated for each figure in the report. Default is \code{TRUE}.}
+\item{subtitle}{A character value specifying the subtitle to use in the 
+report. Default \code{NULL}.}
 
-\item{biological.group}{A character value that specifies the name of the
-\code{colData} column to use as the main biological group in the seurat
-report for differential expression and grouping.}
+\item{authors}{A character value specifying the names of the authors to use 
+in the report. Default \code{NULL}.}
 
-\item{phenotype.groups}{A \code{character} vector that specifies the names
-of the \code{colData} columns to use for differential expression in addition
-to the \code{biological.group} parameter.}
+\item{showSession}{A logical value indicating if session information 
+should be displayed or not. Default is \code{FALSE}.}
 
-\item{selected.markers}{A \code{character} vector specifying the user decided
-gene symbols of pre-selected markers that be used to generate gene plots in
-addition to the gene markers computed from differential expression.}
+\item{pdf}{A logical value indicating if a pdf should also be generated for 
+each figure in the report. Default is \code{FALSE}.}
 
-\item{clustering.resolution}{A \code{numeric} value indicating the resolution
-to use with clustering. Default is \code{0.8}.}
-
-\item{variable.features}{A \code{numeric} value indicating the number of
-top variable genes to identify in the seurat report. Default is \code{2000}.}
+\item{forceRun}{A logical value indicating if all computations previously
+computed should be re-calculated regardless if these computations are
+available in the input object. Default is \code{FALSE}.}
 }
 \value{
-A \code{SingleCellExperiment} object that has the seurat computations
- stored and can be used to interactively visualize the plots by importing
- in the \code{singleCellTK} user interface.
+A \code{\link[SingleCellExperiment]{SingleCellExperiment}} object
+ with computations stored.
 }
 \description{
-Computes an HTML report from the Seurat workflow and returns the output SCE
- object with the computations stored in it.
+Generates an HTML report for Seurat Dimensionality Reduction
+ and returns the SCE object with the results computed and stored
+ inside the object.
 }

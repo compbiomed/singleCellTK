@@ -18,6 +18,7 @@ params:
   maxResolution: 1.5
   numClusters: 10
   significant_PC: 10
+  forceRun: FALSE
 output:
   html_document:
     toc: yes

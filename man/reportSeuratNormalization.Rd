@@ -2,8 +2,9 @@
 % Please edit documentation in R/htmlReports.R
 \name{reportSeuratNormalization}
 \alias{reportSeuratNormalization}
-\title{Computes an HTML report from the Seurat workflow and returns the output SCE
- object with the computations stored in it.}
+\title{Generates an HTML report for Seurat Normalization 
+ and returns the SCE object with the results computed and stored
+ inside the object.}
 \usage{
 reportSeuratNormalization(
   inSCE,
@@ -11,67 +12,45 @@ reportSeuratNormalization(
   outputDir = NULL,
   subtitle = NULL,
   authors = NULL,
-  sce = NULL,
-  showSession = TRUE,
-  pdf = TRUE,
+  showSession = FALSE,
+  pdf = FALSE,
   forceRun = FALSE
 )
 }
 \arguments{
-\item{inSCE}{Input \code{SingleCellExperiment} object.}
+\item{inSCE}{Input \code{\link[SingleCellExperiment]{SingleCellExperiment}}
+object previously passed through \code{reportSeuratRun()}.}
 
-\item{outputFile}{Specify the name of the generated output HTML file. If \code{NULL} then the output
-file name will be based on the name of the Rmarkdown template. Default
-\code{NULL}.}
+\item{outputFile}{Specify the name of the generated output HTML file. 
+If \code{NULL} then the output file name will be based on the name of the 
+Rmarkdown template. Default \code{NULL}.}
 
-\item{outputDir}{Specify the name of the output directory to save the
-rendered HTML file. If \code{NULL} the file is stored to the current
-working directory.}
+\item{outputDir}{Specify the name of the output directory to save the 
+rendered HTML file. If \code{NULL} the file is stored to the current 
+working directory. Default \code{NULL}.}
 
-\item{subtitle}{A \code{character} value specifying the subtitle to use in the
-Seurat report. Default \code{NULL}.}
+\item{subtitle}{A character value specifying the subtitle to use in the 
+report. Default \code{NULL}.}
 
-\item{authors}{A \code{character} value specifying the names of the authors
-to use in the Seurat report. Default \code{NULL}.}
+\item{authors}{A character value specifying the names of the authors to use 
+in the report. Default \code{NULL}.}
 
-\item{sce}{A \code{character} value specifying the path of the input
-\code{SingleCellExperiment} object.}
+\item{showSession}{A logical value indicating if session information 
+should be displayed or not. Default is \code{FALSE}.}
 
-\item{showSession}{A \code{logical} value indicating if session information
-should be displayed or not. Default is \code{TRUE}.}
+\item{pdf}{A logical value indicating if a pdf should also be generated for 
+each figure in the report. Default is \code{FALSE}.}
 
-\item{pdf}{A \code{logical} value indicating if a pdf should also be
-generated for each figure in the report. Default is \code{TRUE}.}
-
-\item{biological.group}{A character value that specifies the name of the
-\code{colData} column to use as the main biological group in the seurat
-report for differential expression and grouping.}
-
-\item{phenotype.groups}{A \code{character} vector that specifies the names
-of the \code{colData} columns to use for differential expression in addition
-to the \code{biological.group} parameter.}
-
-\item{selected.markers}{A \code{character} vector specifying the user decided
-gene symbols of pre-selected markers that be used to generate gene plots in
-addition to the gene markers computed from differential expression.}
-
-\item{clustering.resolution}{A \code{numeric} value indicating the resolution
-to use with clustering. Default is \code{0.8}.}
-
-\item{variable.features}{A \code{numeric} value indicating the number of
-top variable genes to identify in the seurat report. Default is \code{2000}.}
-
-\item{pc.count}{A \code{numeric} value indicating the number of principal
-components to use in the analysis workflow. Default is \code{10}.}
-
-\item{jackStraw}{logical value}
+\item{forceRun}{A logical value indicating if all computations previously
+computed should be re-calculated regardless if these computations are
+available in the input object. Default is \code{FALSE}.}
 }
 \value{
-A \code{SingleCellExperiment} object that has the seurat computations
- stored and can be used to interactively visualize the plots by importing
- in the \code{singleCellTK} user interface.
+A \code{\link[SingleCellExperiment]{SingleCellExperiment}} object
+ with computations stored.
 }
 \description{
-Computes an HTML report from the Seurat workflow and returns the output SCE
- object with the computations stored in it.
+Generates an HTML report for Seurat Normalization 
+ and returns the SCE object with the results computed and stored
+ inside the object.
 }
