@@ -464,12 +464,14 @@ reportSeuratResults <- function(inSCE,
     message("No output directory defined, using current working directory ", outputDir, " instead.")
   }
   
+  data <- inSCE
+  
   rmarkdown::render(system.file("rmarkdown/seurat/reportSeuratResults.Rmd",
                                 package="singleCellTK"),
                     params = list(
                       subtitle = subtitle,
                       authors = authors,
-                      sce = inSCE,
+                      sce = data,
                       biological.group = biological.group,
                       phenotype.groups = phenotype.groups,
                       selected.markers = selected.markers,
@@ -836,10 +838,9 @@ reportSeuratScaling <- function(inSCE,
 #'  computed should be re-calculated regardless if these computations are
 #'  available in the input object. Default is \code{FALSE}.
 #'
-#' @return
+#' @return A \code{\link[SingleCellExperiment]{SingleCellExperiment}} object
+#'  with computations stored.
 #' @export
-#'
-#' @examples
 reportSeuratClustering <- function(inSCE,
                                    biological.group = NULL,
                                    phenotype.groups = NULL,

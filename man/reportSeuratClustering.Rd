@@ -82,7 +82,8 @@ computed should be re-calculated regardless if these computations are
 available in the input object. Default is \code{FALSE}.}
 }
 \value{
-
+A \code{\link[SingleCellExperiment]{SingleCellExperiment}} object
+ with computations stored.
 }
 \description{
 Generates an HTML report for Seurat Clustering and returns the SCE object 
