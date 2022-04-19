@@ -13,7 +13,14 @@ shinyPanelLabelCellType <- fluidPage(
         ),
         column(
           width = 6,
-          uiOutput("ctLabelAssay"),
+          selectizeInput(
+            inputId = "ctLabelAssay", 
+            label = "Select input matrix:", 
+            choices = NULL, 
+            selected = NULL, 
+            multiple = FALSE,
+            options = NULL)
+          #uiOutput("ctLabelAssay"),
         )
       ),
       panel(

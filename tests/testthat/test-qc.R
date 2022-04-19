@@ -60,7 +60,7 @@ context("Testing QC functions")
 test_that("Testing scds",{
   sce <- runCxdsBcdsHybrid(sce, estNdbl = TRUE)
   expect_equal(class(colData(sceres)$scds_hybrid_score), 'numeric')
-  expect_equal(class(colData(sceres)$scds_hybrid_call), 'logical')
+  expect_equal(class(colData(sceres)$scds_hybrid_call), 'factor')
 })
 
 test_that(desc = "Testing DoubletFinder",  {

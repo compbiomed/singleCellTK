@@ -4,7 +4,24 @@
 \alias{plotPathway}
 \title{Generate violin plots for pathway analysis results}
 \usage{
-plotPathway(inSCE, resultName, geneset, groupby = NULL, boxplot = FALSE)
+plotPathway(
+  inSCE,
+  resultName,
+  geneset,
+  groupBy = NULL,
+  boxplot = FALSE,
+  violin = TRUE,
+  dots = TRUE,
+  summary = "median",
+  axisSize = 10,
+  axisLabelSize = 10,
+  dotSize = 0.5,
+  transparency = 1,
+  defaultTheme = TRUE,
+  gridLine = FALSE,
+  title = geneset,
+  titleSize = NULL
+)
 }
 \arguments{
 \item{inSCE}{Input \linkS4class{SingleCellExperiment} object. With 
@@ -16,11 +33,39 @@ should be found in \code{getPathwayResultNames(inSCE)}.}
 \item{geneset}{A single character specifying the geneset of interest. Should
 be found in the geneSetCollection used for performing the analysis.}
 
-\item{groupby}{Either a single character specifying a column of 
+\item{groupBy}{Either a single character specifying a column of 
 \code{colData(inSCE)} or a vector of equal length as the number of cells. 
 Default \code{NULL}.}
 
-\item{boxplot}{Whether to add a boxplot. Default \code{FALSE}.}
+\item{boxplot}{Boolean, Whether to add a boxplot. Default \code{FALSE}.}
+
+\item{violin}{Boolean, Whether to add a violin plot. Default \code{TRUE}.}
+
+\item{dots}{Boolean, If \code{TRUE}, will plot dots for each violin plot.
+Default \code{TRUE}.}
+
+\item{summary}{Adds a summary statistic, as well as a crossbar to the violin 
+plot. Options are \code{"mean"} or \code{"median"}, and \code{NULL} for not 
+adding. Default \code{"median"}.}
+
+\item{axisSize}{Size of x/y-axis ticks. Default \code{10}.}
+
+\item{axisLabelSize}{Size of x/y-axis labels. Default \code{10}.}
+
+\item{dotSize}{Size of dots. Default \code{0.5}.}
+
+\item{transparency}{Transparency of the dots, values will be 0-1. Default 
+\code{1}.}
+
+\item{defaultTheme}{Removes grid in plot and sets axis title size to 
+\code{10} when \code{TRUE}. Default \code{TRUE}.}
+
+\item{gridLine}{Adds a horizontal grid line if \code{TRUE}. Will still be 
+drawn even if \code{defaultTheme} is \code{TRUE}. Default \code{FALSE}.}
+
+\item{title}{Title of plot. Default using \code{geneset}.}
+
+\item{titleSize}{Size of the title of the plot. Default \code{15}.}
 }
 \value{
 A \code{ggplot} object for the violin plot

@@ -407,7 +407,10 @@
     
     # Load & Store Cell Ranger Summary into SCE
     metrics_summary <- .importMetricsCellRanger(samplePaths, sampleNames, "outs", "metrics_summary.csv")
-    sce <- setSampleSummaryStats(sce, "cellranger", metrics_summary)
+    if (ncol(metrics_summary) > 0) {
+        sce@metadata$sctk$sample_summary[["cellranger"]] <- metrics_summary
+    }
+    # sce <- setSampleSummaryStatsTable(sce, "cellranger", metrics_summary)
     
     if (isTRUE(rowNamesDedup)) {
         if (any(duplicated(rownames(sce)))) {
@@ -815,7 +818,11 @@ importCellRangerV3Sample <- function(
   for(i in seq(samplePaths)){
     metrics_summary[[i]] <- list.files(pattern= paste0("*", metricsFile, "$"), path = paste0(samplePaths[i], "/", metricsPath), full.names = TRUE)
     if(length(metrics_summary[[i]]) > 0){
+<<<<<<< HEAD
       metrics_summary[[i]] <- lapply(metrics_summary[[i]], read.csv, header = TRUE, check.names = FALSE)[[1]]
+=======
+      metrics_summary[[i]] <- lapply(metrics_summary[[i]], utils::read.csv, header = TRUE, check.names = FALSE)[[1]]
+>>>>>>> upstream/devel
     }
     else{
       message("Metrics summary file (", metricsFile, ") not found for sample: ", sampleNames[i])

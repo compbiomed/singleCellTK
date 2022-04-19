@@ -7,6 +7,7 @@ internetConnection <- suppressWarnings(Biobase::testBioCConnection())
 source("partials.R", local = TRUE) # creates several smaller UI components
 # R.utils::sourceDirectory("qc_help_pages")
 source("qc_help_pages/ui_decontX_help.R", local = TRUE) # creates several smaller UI components
+source("qc_help_pages/ui_soupX_help.R", local = TRUE) # creates several smaller UI components
 source("qc_help_pages/ui_cxds_help.R", local = TRUE) # creates several smaller UI components
 source("qc_help_pages/ui_bcds_help.R", local = TRUE) # creates several smaller UI components
 source("qc_help_pages/ui_cxds_bcds_hybrid_help.R", local = TRUE) # creates several smaller UI components
@@ -71,7 +72,7 @@ shinyServer(function(input, output, session) {
   #Update all of the columns that depend on pvals columns
   updateColDataNames <- function(){
     pdataOptions <- colnames(colData(vals$counts))
-
+    updateSelectInput(session, "soupXCluster", choices = c("None", pdataOptions))
     updateSelectInput(session, "qcSampleSelect", choices = pdataOptions)
     updateSelectInput(session, "filteredSample",
                       choices = c("none", pdataOptions))
@@ -205,11 +206,20 @@ shinyServer(function(input, output, session) {
                          choices = expDataNames(vals$counts),
                          recommended = "redDims", redDims = TRUE)
     if (is.null(input$deMethod)) {
-      updateSelectInputTag(session, "deAssay", tags = c("raw", "transformed", "uncategorized", "normalized", "scaled"), recommended = c("transformed"))
+      updateSelectInputTag(session, "deAssay", 
+                           tags = c("raw", "transformed", "uncategorized", 
+                                    "normalized", "scaled", "redDims"), 
+                           recommended = c("transformed"), redDims = TRUE)
     } else if (input$deMethod == "DESeq2") {
-      updateSelectInputTag(session, "deAssay", tags = c("raw", "transformed", "uncategorized", "normalized", "scaled"), recommended = c("raw"))
+      updateSelectInputTag(session, "deAssay", 
+                           tags = c("raw", "transformed", "uncategorized", 
+                                    "normalized", "scaled"), 
+                           recommended = c("raw"))
     } else {
-      updateSelectInputTag(session, "deAssay", tags = c("raw", "transformed", "uncategorized", "normalized", "scaled"), recommended = c("transformed"))
+      updateSelectInputTag(session, "deAssay", 
+                           tags = c("raw", "transformed", "uncategorized", 
+                                    "normalized", "scaled", "redDims"), 
+                           recommended = c("transformed"), redDims = TRUE)
     }
     if (is.null(input$fmMethod)) {
       updateSelectInputTag(session, "fmAssay", recommended = c("transformed"))
@@ -316,6 +326,9 @@ shinyServer(function(input, output, session) {
     updateSelectInput(session, "ApproachSelect_Xaxis", choices = currreddim)
     updateSelectInput(session, "ApproachSelect_Yaxis", choices = currreddim)
     updateSelectInput(session, "ApproachSelect_Colorby", choices = currreddim)
+    availPathwayRes <- getPathwayResultNames(vals$counts)
+    updateSelectizeInput(session, "pathwayRedDimNames", 
+                         choices = availPathwayRes)
   }
 
   updateEnrichDB <- function(){
@@ -931,7 +944,12 @@ shinyServer(function(input, output, session) {
         updateGeneNames()
         updateReddimInputs()
         shinyjs::show(id="annotationData")
-        js$enableTabs();
+        js$enableTabs()
+        allGS <- sctkListGeneSetCollections(vals$counts)
+        updateSelectizeInput(session, "PathwayGeneLists", 
+                             choices = ifelse(length(allGS), 
+                                              allGS,
+                                              "Import geneset before using"))
       } else {
         shinyalert::shinyalert("Error!", "The data upload failed!",
                                type = "error")
@@ -958,6 +976,11 @@ shinyServer(function(input, output, session) {
 
       updateSeuratUIFromRDS(vals$counts)
       cleanGSTable()
+      deResNames <- names(metadata(vals$counts)$diffExp)
+      if (!is.null(deResNames)) {
+        updateSelectInput(session, "deResSel", choices = deResNames,
+                          selected = deResNames[1])
+      }
       # TODO: There are more things that need to be cleaned when uploading new
       # dataset, including any plots, tables that are origined from the old
       # datasets. Otherwise, errors may pop out when Shiny listens to the new
@@ -1422,6 +1445,8 @@ shinyServer(function(input, output, session) {
       updateSelectInput(session, "QCMgeneSets", choices =c(vals$defaultQCGS, allGS),
                         selected = "none")
       shinyjs::show(id = "gsAddToExisting", anim = FALSE)
+
+      updateSelectizeInput(session, "PathwayGeneLists", choices = allGS)
     })
   }))
 
@@ -1470,6 +1495,8 @@ shinyServer(function(input, output, session) {
                                                 anim = FALSE), add = TRUE)
   shinyjs::onclick("decontX", shinyjs::toggle(id = "decontXParams",
                                               anim = FALSE), add = TRUE)
+  shinyjs::onclick("soupX", shinyjs::toggle(id = "soupXParams",
+                                              anim = FALSE), add = TRUE)
   shinyjs::onclick("scDblFinder", shinyjs::toggle(id = "scDblFinderParams",
                                                    anim = FALSE), add = TRUE)
   shinyjs::onclick("cxds", shinyjs::toggle(id = "cxdsParams",
@@ -1484,7 +1511,7 @@ shinyServer(function(input, output, session) {
                                                     anim = FALSE), add = TRUE)
 
   qc_choice_list <- list("scDblFinder", "cxds", "bcds",
-                         "cxds_bcds_hybrid", "decontX", "QCMetrics", "scrublet", "doubletFinder")
+                         "cxds_bcds_hybrid", "decontX", "soupX", "QCMetrics", "scrublet", "doubletFinder")
   # holds all the input ids for the QC algorithm parameters by algorithm name
   qc_input_ids <- list(scDblFinder = list(nNeighbors="DCnNeighbors", simDoublets="DCsimDoublets"),
 
@@ -1498,7 +1525,9 @@ shinyServer(function(input, output, session) {
 
                        decontX = list(maxIter="DXmaxIter", estimateDelta="DXestimateDelta", convergence="DXconvergence",
                                       iterLogLik="DXiterLogLik", varGenes="DXvarGenes", dbscanEps="DXdbscanEps", verbose="DXverbose"),
-
+                       soupX = list(cluster="soupXCluster", tfidfMin="soupXTfidfMin", soupQuantile="soupXQuantile", maxMarkers="soupXMaxMarkers", rhoMaxFDR="soupXRhoMaxFDR",
+                                    priorRho="soupXPriorRho", priorRhoStdDev="soupXPriorRhoStdDev", forceAccept="soupXForceAccept", adjustMethod="soupXAdjustMethod", 
+                                    roundToInt="soupXRoundToInt", tol="soupXTol", pCut="soupXPCut"),
                        doubletFinder = list(seuratNfeatures="DFseuratNfeatures", seuratRes="DFseuratRes", formationRate="DFformationRate", verbose="DFverbose"),
                        scrublet = list(simDoubletRatio="SsimDoubletRatio", nNeighbors="SnNeighbors", minDist="SminDist", expectedDoubletRate="SexpectedDoubletRate",
                                        stdevDoubletRate='SstdevDoubletRate', syntheticDoubletUmiSubsampling="SsyntheticDoubletUmiSubsampling",
@@ -1507,16 +1536,19 @@ shinyServer(function(input, output, session) {
                                        normalizeVariance="SnormalizeVariance", nPrinComps="SnPrinComps", tsneAngle="StsneAngle", tsnePerplexity="StsnePerplexity", verbose="Sverbose")
   )
   # to keep track of whether an algo has already been run
-  qc_algo_status = reactiveValues(scDblFinder=NULL, cxds=NULL, bcds=NULL, cxds_bcds_hybrid=NULL, decontX=NULL,
+  qc_algo_status = reactiveValues(scDblFinder=NULL, cxds=NULL, bcds=NULL, cxds_bcds_hybrid=NULL, decontX=NULL, soupX=NULL,
                                   QCMetrics=NULL, scrublet=NULL, doubletFinder=NULL)
 
   qc_plot_ids = reactiveValues(scDblFinder="DCplots", cxds="CXplots", bcds="BCplots", cxds_bcds_hybrid="CXBCplots", decontX="DXplots",
-                               QCMetrics="QCMplots", scrublet="Splots", doubletFinder="DFplots")
+                               soupX="SoupXPlots", QCMetrics="QCMplots", scrublet="Splots", doubletFinder="DFplots")
 
 
   # event handlers to open help pages for each qc algorithm
   observeEvent(input$DXhelp, {
     showModal(decontXHelpModal())
+  })
+  observeEvent(input$SoupXhelp, {
+    showModal(soupXHelpModal())
   })
   observeEvent(input$CXhelp, {
     showModal(cxdsHelpModal())
@@ -1561,6 +1593,25 @@ shinyServer(function(input, output, session) {
 
     # add to master params list
     paramsList[["decontX"]] = dxParams
+    return(paramsList)
+  }
+  
+  # format the parameters for SoupX
+  prepSoupXParams <- function(paramsList) {
+    inputIds <- qc_input_ids[["soupX"]]
+    soupXParams <- list()
+    # put in all the params from the list (the straightforward ones)
+    for (key in names(inputIds)) {
+      soupXParams[[key]] = input[[inputIds[[key]]]]
+    }
+    
+    soupXParams[["contaminationRange"]] <- c(input$soupXContRangeLow, 
+                                             input$soupXContRangeHigh)
+    if (soupXParams[["cluster"]] == "None") {
+      soupXParams[["cluster"]] <- NULL
+    }
+    # add to master params list
+    paramsList[["decontX"]] = soupXParams
     return(paramsList)
   }
 
@@ -1703,9 +1754,13 @@ shinyServer(function(input, output, session) {
         for (algo in qc_choice_list) {
           if (isTRUE(input[[algo]])) {
             algoList <- c(algoList, algo)
-            # use the specific prep functions for decontX and doubletFinder
+            # use the specific prep functions for decontX, SoupX and doubletFinder
             if (algo == "decontX") {
               paramsList <- prepDecontXParams(paramsList)
+              next
+            }
+            if (algo == "soupX") {
+              paramsList <- prepSoupXParams(paramsList)
               next
             }
             if (algo == "doubletFinder") {
@@ -1743,10 +1798,12 @@ shinyServer(function(input, output, session) {
                                  useAssay = input$qcAssaySelect,
                                  paramsList = paramsList)
         updateColDataNames()
+        updateAssayInputs()
         # redDimList <- strsplit(reducedDimNames(vals$counts), " ")
         # run getUMAP if doublet/ambient RNA detection conducted
+        #umap generated during soupX, skip for now
         if(length(intersect(c("scDblFinder", "cxds", "bcds",
-             "cxds_bcds_hybrid", "decontX",
+             "cxds_bcds_hybrid", "decontX", #"soupX", 
              "scrublet", "doubletFinder"), algoList))){
           message(paste0(date(), " ... Running 'UMAP'"))
           vals$counts <- getUMAP(inSCE = vals$counts,
@@ -1761,10 +1818,10 @@ shinyServer(function(input, output, session) {
                                  reducedDimName = input$QCUMAPName,
                                  seed = input$Useed
                                  )
-          message(paste0(date(), " ... QC Complete"))
           # close console
           shinyjs::hide(id = "consolePanel")
         }
+        message(paste0(date(), " ... QC Complete"))
         updateQCPlots()
         # Show downstream analysis options
         callModule(module = nonLinearWorkflow, id = "nlw-qcf", parent = session, nbc = TRUE, cw = TRUE, cv = TRUE)
@@ -3515,7 +3572,6 @@ shinyServer(function(input, output, session) {
         plotlyOutput(outputId = "plot_modsplit_perp", height = "auto")
       )
     ))
-    
     withBusyIndicatorServer("celdamodsplit",{
       if (input$celdafeatureselect == "None"){
         vals$counts <- selectFeatures(vals$counts, minCount = input$celdarowcountsmin,
@@ -3542,12 +3598,11 @@ shinyServer(function(input, output, session) {
         vals$counts <- selectFeatures(vals$counts[g, ], minCount = input$celdarowcountsmin,
                                       minCell = input$celdacolcountsmin, useAssay = input$celdaassayselect, altExpName = "featureSubset")
       }
-      counts(altExp(vals$counts)) <- as.matrix(counts(altExp(vals$counts)))
+      #counts(altExp(vals$counts)) <- as.matrix(counts(altExp(vals$counts)))
       updateNumericInput(session, "celdaLselect", min = input$celdaLinit, max = input$celdaLmax, value = input$celdaLinit)
       modsplit(recursiveSplitModule(vals$counts, useAssay = input$celdaassayselect, altExpName = "featureSubset",  initialL = input$celdaLinit, maxL = input$celdaLmax))
       output$plot_modsplit_perpdiff <- renderPlotly({plotRPC(modsplit(), sep = 10)})
       output$plot_modsplit_perp <- renderPlotly({plotGridSearchPerplexity(modsplit())})
-      
     })
 
     shinyjs::enable(
@@ -3988,6 +4043,51 @@ shinyServer(function(input, output, session) {
       shinyjs::show("continuousColorConditional")
     }
   })
+
+  testvar <- reactive({
+    event.data <- event_data("plotly_selected")
+    #curveNumber pointNumber x y
+    #pointnumbers <- event.data[["pointNumber"]]
+  })
+
+  observeEvent(input$subsetCelda, {
+    if(!is.null(vals$counts)){
+      copy <- vals$counts
+      if(!("featureSubset" %in% altExpNames(copy))){
+        copy <- selectFeatures(copy)
+      }
+      selection <- event_data("plotly_selected")
+      copy2 <- subsetSCECols(copy, index = testvar()$pointNumber)
+      clustersog <- celdaClusters(copy)[testvar()$pointNumber]
+      #copy2 <- subsetSCECols(copy, index = testvar())
+      maxclust <- max(celdaClusters(copy))
+      #celdaClusters(copy) <- 0
+      #celdaClusters(copy) <- celdaClusters(copy2)
+      #celdaClusters(copy)[testvar()$pointNumber] <- maxclust + 1
+      #celdaClusters(copy)[colnames(copy) %in% colnames(copy2)] <- clustersog
+      #celdaClusters(copy)[testvar()] <- 2
+      saveRDS(copy, "celdasubsettest.RDS")
+    }
+    #subset <- testvar()
+  })
+
+  observeEvent(input$subsetCelda2, {
+    if(!is.null(vals$counts)){
+      copy <- vals$counts
+      if(!("featureSubset" %in% altExpNames(copy))){
+        copy <- selectFeatures(copy)
+      }
+      selection <- event_data("plotly_selected")
+      #copy2 <- subsetSCECols(copy, index = testvar())
+      #maxclust <- max(celdaClusters(copy))
+      celdaClusters(copy) <- 1
+      celdaClusters(copy)[testvar()$pointNumber] <- 2
+      saveRDS(copy, "celdasubsettest2.RDS")
+    }
+    #subset <- testvar()
+  })
+
+  output$testprint <- renderText({as.character(testvar())})
 
   #-+-+-+-+-+-cellviewer prepare step1: choose data. (next steps included)###########################################################
   #cellviewer <- eventReactive(input$runCellViewer,{
@@ -5629,11 +5729,22 @@ shinyServer(function(input, output, session) {
   observeEvent(input$deMethod, {
     if (!is.null(vals$counts)) {
       if (is.null(input$deMethod)) {
-        updateSelectInputTag(session, "deAssay", tags = c("raw", "transformed", "uncategorized", "normalized", "scaled"), recommended = c("transformed", "normalized"))
+        updateSelectInputTag(session, "deAssay", 
+                             tags = c("raw", "transformed", "uncategorized", 
+                                      "normalized", "scaled", "redDims"), 
+                             recommended = c("transformed", "normalized"), 
+                             redDims = TRUE)
       } else if (input$deMethod == "DESeq2") {
-        updateSelectInputTag(session, "deAssay", tags = c("raw", "transformed", "uncategorized", "normalized", "scaled"), recommended = c("raw"))
+        updateSelectInputTag(session, "deAssay", 
+                             tags = c("raw", "transformed", "uncategorized", 
+                                      "normalized", "scaled"), 
+                             recommended = c("raw"))
       } else {
-        updateSelectInputTag(session, "deAssay", tags = c("raw", "transformed", "uncategorized", "normalized", "scaled"), recommended = c("transformed", "normalized"))
+        updateSelectInputTag(session, "deAssay", 
+                             tags = c("raw", "transformed", "uncategorized", 
+                                      "normalized", "scaled", "redDims"), 
+                             recommended = c("transformed", "normalized"), 
+                             redDims = TRUE)
       }
     }
   })
@@ -5897,10 +6008,22 @@ shinyServer(function(input, output, session) {
 
   runDEfromShiny <- function(overwrite){
     withBusyIndicatorServer("runDE", {
+      if (input$deAssay %in% assayNames(vals$counts) &
+          !input$deAssay %in% reducedDimNames(vals$counts)) {
+        deUseAssay <- input$deAssay
+        deUseReducedDim <- NULL
+      } else if (!input$deAssay %in% assayNames(vals$counts) &
+                 input$deAssay %in% reducedDimNames(vals$counts)) {
+        deUseAssay <- NULL
+        deUseReducedDim <- input$deAssay
+      } else {
+        stop("Error in identifying input matrix")
+      }
       if(input$deCondMethod == 1){
         vals$counts <- runDEAnalysis(method = input$deMethod,
                                      inSCE = vals$counts,
-                                     useAssay = input$deAssay,
+                                     useAssay = deUseAssay,
+                                     useReducedDim = deUseReducedDim,
                                      class = input$deC1Class,
                                      classGroup1 = input$deC1G1,
                                      classGroup2 = input$deC1G2,
@@ -5915,7 +6038,8 @@ shinyServer(function(input, output, session) {
       } else if(input$deCondMethod == 2){
         vals$counts <- runDEAnalysis(method = input$deMethod,
                                      inSCE = vals$counts,
-                                     useAssay = input$deAssay,
+                                     useAssay = deUseAssay,
+                                     useReducedDim = deUseReducedDim,
                                      index1 = input$deC2G1Table_rows_selected,
                                      index2 = input$deC2G2Table_rows_selected,
                                      groupName1 = input$deG1Name,
@@ -5935,7 +6059,8 @@ shinyServer(function(input, output, session) {
         g2CellList <- sort(unique(g2CellList))
         vals$counts <- runDEAnalysis(method = input$deMethod,
                                      inSCE = vals$counts,
-                                     useAssay = input$deAssay,
+                                     useAssay = deUseAssay,
+                                     useReducedDim = deUseReducedDim,
                                      index1 = g1CellList,
                                      index2 = g2CellList,
                                      groupName1 = input$deG1Name,
@@ -5976,7 +6101,8 @@ shinyServer(function(input, output, session) {
                          fdrThreshold = input$deFDRThresh,
                          colSplitBy = colSplitBy,
                          rowSplitBy = rowSplitBy,
-                         doLog = !isLogged)
+                         doLog = !isLogged,
+                         rowLabel = input$deHMrowLabel)
         })
       })
 
@@ -6080,14 +6206,18 @@ shinyServer(function(input, output, session) {
         labelBy = input$deVioLabel
       }
       # MAST style sanity check for whether logged or not
-      x <- expData(vals$counts, useAssay)
-      if (!all(floor(x) == x, na.rm = TRUE) & max(x, na.rm = TRUE) <
-          100) {
-        output$deSanityWarnViolin <- renderText("")
-        isLogged <- TRUE
+      if (!is.null(useAssay)) {
+        x <- expData(vals$counts, useAssay)
+        if (!all(floor(x) == x, na.rm = TRUE) & max(x, na.rm = TRUE) <
+            100) {
+          output$deSanityWarnViolin <- renderText("")
+          isLogged <- TRUE
+        } else {
+          output$deSanityWarnViolin <- renderText("Selected assay seems not logged (MAST style sanity check). Forcing to plot by automatically applying log-transformation. ")
+          isLogged <- FALSE
+        }
       } else {
-        output$deSanityWarnViolin <- renderText("Selected assay seems not logged (MAST style sanity check). Forcing to plot by automatically applying log-transformation. ")
-        isLogged <- FALSE
+        isLogged <- TRUE
       }
       output$deViolinPlot <- renderPlot({
         isolate({
@@ -6121,14 +6251,18 @@ shinyServer(function(input, output, session) {
         labelBy = input$deRegLabel
       }
       # MAST style sanity check for whether logged or not
-      x <- expData(vals$counts, useAssay)
-      if (!all(floor(x) == x, na.rm = TRUE) & max(x, na.rm = TRUE) <
-          100) {
-        output$deSanityWarnReg <- renderText("")
-        isLogged <- TRUE
+      if (!is.null(useAssay)) {
+        x <- expData(vals$counts, useAssay)
+        if (!all(floor(x) == x, na.rm = TRUE) & max(x, na.rm = TRUE) <
+            100) {
+          output$deSanityWarnReg <- renderText("")
+          isLogged <- TRUE
+        } else {
+          output$deSanityWarnReg <- renderText("Selected assay seems not logged (MAST style sanity check). Forcing to plot by automatically applying log-transformation. ")
+          isLogged <- FALSE
+        }
       } else {
-        output$deSanityWarnReg <- renderText("Selected assay seems not logged (MAST style sanity check). Forcing to plot by automatically applying log-transformation. ")
-        isLogged <- FALSE
+        isLogged <- TRUE
       }
       output$deRegPlot <- renderPlot({
         isolate({
@@ -6178,7 +6312,8 @@ shinyServer(function(input, output, session) {
                          rowDataName = input$deHMrowData,
                          colDataName = input$deHMcolData,
                          colSplitBy = input$deHMSplitCol,
-                         rowSplitBy = input$deHMSplitRow)
+                         rowSplitBy = input$deHMSplitRow,
+                         rowLabel = input$deHMrowLabel)
         })
       })
       session$sendCustomMessage("close_dropDownDeHM", "")
@@ -6344,139 +6479,97 @@ shinyServer(function(input, output, session) {
   })
 
   #select geneset collection name for pathway analysis
-  output$selectPathwayGeneLists <- renderUI({
-    if (!is.null(vals$counts)){
-      if (!is.null(metadata(vals$counts)$sctk$genesets)) {
-        #newGSchoices <- sctkListGeneSetCollections(vals$original)
-        newGSchoices <- sctkListGeneSetCollections(vals$counts)
-        selectizeInput("PathwayGeneLists", "Select Geneset Collection(s):",
-                       choices = newGSchoices, multiple = FALSE)
-
-      }
-    } else {
-      HTML("<h5><span style='color:red'>Must upload data first!</span></h5></br>")
-    }
-  })
+  #output$selectPathwayGeneLists <- renderUI({
+  #  if (!is.null(vals$counts)){
+  #    if (!is.null(metadata(vals$counts)$sctk$genesets)) {
+  #      newGSchoices <- sctkListGeneSetCollections(vals$counts)
+  #      selectizeInput("PathwayGeneLists", "Select Geneset Collection(s):",
+  #                     choices = newGSchoices, multiple = FALSE)
+  #    }
+  #  } else {
+  #    HTML("<h5><span style='color:red'>Must import geneset data first!</span></h5></br>")
+  #  }
+  #})
 
   #Run algorithm
   observeEvent(input$pathwayRun, {
     if (is.null(vals$counts)){
       shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
+    } else if (input$PathwayGeneLists == "Import geneset before using") {
+      shinyalert::shinyalert("Error!", "Must import geneset first.", type = "error")
     } else {
       withBusyIndicatorServer("pathwayRun", {
-        #checks
 
-        if(is.null(input$PathwayGeneLists)){
-          stop("Must select atleast one Gene List! Gene Lists can be uploaded/selected from 'Import Gene Sets tab'")
-        }
         #update metadata of vals$counts
         #metadata(vals$counts)$sctk <- metadata(vals$original)$sctk
 
-        if(input$pathway == "VAM"){
-
-          vals$vamRes <- runVAM(inSCE = vals$counts,
+        if (input$pathway == "VAM") {
+          vals$counts <- runVAM(inSCE = vals$counts,
                                 useAssay = input$vamAssay,
                                 geneSetCollectionName = input$PathwayGeneLists,
                                 center = input$vamCenterParameter,
                                 gamma = input$vamGammaParameter)
-
-
+          scoreSelect <- paste0("VAM_", input$PathwayGeneLists, "_CDF")
           #vals$vamCdf <- SingleCellExperiment::reducedDim(vals$vamRes, paste0(paste0("VAM_", input$PathwayGeneLists, "_"), "CDF"))
-          vals$vamResults <- SingleCellExperiment::reducedDim(vals$vamRes)
-          vals$vamScore <- paste0(paste0("VAM_", input$PathwayGeneLists, "_"), "CDF")
-          vals$dimreduced <- reducedDims(vals$vamRes)
-
-
-        }
-        else if (input$pathway == "GSVA"){
-
-          vals$gsvaRes <- runGSVA(inSCE = vals$counts,
+          #vals$vamResults <- SingleCellExperiment::reducedDim(vals$vamRes)
+          #vals$vamScore <- paste0("VAM_", input$PathwayGeneLists, "_CDF")
+          #vals$dimreduced <- reducedDims(vals$vamRes)
+        } else if (input$pathway == "GSVA") {
+          vals$counts <- runGSVA(inSCE = vals$counts,
                                   useAssay = input$vamAssay,
                                   geneSetCollectionName = input$PathwayGeneLists)
-
-          vals$gsvaResults <- SingleCellExperiment::reducedDim(vals$gsvaRes)
-          vals$gsvaScore <- paste0(paste0("GSVA_", input$PathwayGeneLists, "_"), "Scores")
-          vals$dimreduced <- append(vals$dimreduced, reducedDims(vals$gsvaRes))
+          scoreSelect <- paste0("GSVA_", input$PathwayGeneLists, "_Scores")
+          #vals$gsvaResults <- SingleCellExperiment::reducedDim(vals$gsvaRes)
+          #vals$gsvaScore <- paste0("GSVA_", input$PathwayGeneLists, "_Scores")
+          #vals$dimreduced <- append(vals$dimreduced, reducedDims(vals$gsvaRes))
         }
-
+        updateAssayInputs()
+        updateReddimInputs()
+        availPathwayRes <- getPathwayResultNames(vals$counts)
+        firstGS <- colnames(reducedDim(vals$counts, scoreSelect))[1]
+        updateSelectizeInput(session, "pathwayRedDimNames", 
+                             choices = availPathwayRes, selected = scoreSelect)
+        updateSelectizeInput(session, "pathwayPlotGS",
+                             choices = colnames(reducedDim(vals$counts, scoreSelect)),
+                             selected = firstGS)
+        #plot results with default values intitially
+        output$pathwayPlot <- renderPlot({
+          isolate({
+            plotPathway(inSCE = vals$counts, 
+                        resultName = scoreSelect,
+                        geneset = firstGS, 
+                        groupBy = input$pathwayPlotVar, 
+                        boxplot = input$pathwayPlotBoxplot, 
+                        violin = input$pathwayPlotViolinplot,
+                        dots = input$pathwayPlotDots,  
+                        summary = input$pathwayPlotSummary)
+          })
+        })
       })
     }
   })
 
-  #select geneset for plotting
-  output$selectGeneSets <- renderUI({
-    if(input$pathway == "VAM"){
-      if (!(is.null(vals$vamRes))){
-        selectizeInput("GeneSets", "Select Geneset:",
-                       choices = colnames(reducedDim(vals$vamRes, vals$vamScore)), multiple = FALSE)
-      }
-    }
-    else if(input$pathway == "GSVA"){
-
-      if (!(is.null(vals$gsvaRes))){
-        selectizeInput("GeneSets", "Select Geneset:",
-                       choices = colnames(reducedDim(vals$gsvaRes, vals$gsvaScore)), multiple = FALSE)
-      }
+  observeEvent(input$pathwayRedDimNames, {
+    if (!is.null(vals$counts)) {
+      updateSelectizeInput(session, "pathwayPlotGS",
+                           choices = colnames(reducedDim(vals$counts, input$pathwayRedDimNames)))
     }
   })
-
-  #select from reducedDimNames
-  output$selectReduceDim <- renderUI({
-    if (!(is.null(vals$counts))){
-      selectizeInput("reducedDimNames", "Select Score matrix which you want to plot:",
-                     choices = names((vals$dimreduced)), multiple = FALSE)
-    }
-  })
-
-
-  #plot results with default values intitially
-  observeEvent(input$pathwayRun, {
-    output$pathwayPlot <- renderPlot({
-      if (input$pathway == "VAM"){
-        if (!(is.null(vals$vamRes))){
-          plotSCEViolin(inSCE = vals$vamRes, slotName = "reducedDims", itemName = vals$vamScore, dimension = colnames(reducedDim(vals$vamRes, vals$vamScore))[[1]], xlab = "sample", ylab = colnames(reducedDim(vals$vamRes, vals$vamScore))[[1]])
-          #groupby can be used for indicating colnames (optional)
-        }
-
-      }
-      else if (input$pathway == "GSVA"){
-        if (!(is.null(vals$gsvaRes))){
-          plotSCEViolin(inSCE = vals$gsvaRes, slotName = "reducedDims", itemName = vals$gsvaScore, dimension = colnames(reducedDim(vals$gsvaRes, vals$gsvaScore))[[1]], xlab = "Sample", ylab = colnames(reducedDim(vals$gsvaRes, vals$gsvaScore))[[1]])
-          #groupby can be used for indicating colnames (optional)
-
-        }
-
-      }
-
-
-    })
-  })
-
-
-
 
  #plot results
-  observeEvent(input$Plot, {
+  observeEvent(input$pathwayPlot, {
     output$pathwayPlot <- renderPlot({
       isolate({
-      if (input$pathway == "VAM"){
-        if (!(is.null(vals$vamRes))){
-          plotSCEViolin(inSCE = vals$vamRes, slotName = "reducedDims", itemName = input$reducedDimNames, dimension = input$GeneSets, xlab = "sample", ylab = input$GeneSets, groupBy = input$pathwayPlotVar, violin = input$violinplot, boxplot = input$boxplot, summary = input$summary)
-          #groupby can be used for indicating colnames (optional)
-        }
-
-      }
-      else if (input$pathway == "GSVA"){
-        if (!(is.null(vals$gsvaRes))){
-          plotSCEViolin(inSCE = vals$gsvaRes, slotName = "reducedDims", itemName = input$reducedDimNames, dimension = input$GeneSets, xlab = "Sample", ylab = input$GeneSets, groupBy = input$pathwayPlotVar, violin = input$violinplot, boxplot = input$boxplot, summary = input$summary)
-          #groupby can be used for indicating colnames (optional)
-
-        }
-
-      }
-
+        plotPathway(inSCE = vals$counts, 
+                    resultName = input$pathwayRedDimNames,
+                    geneset = input$pathwayPlotGS, 
+                    groupBy = input$pathwayPlotVar, 
+                    boxplot = input$pathwayPlotBoxplot, 
+                    violin = input$pathwayPlotViolinplot,
+                    dots = input$pathwayPlotDots,
+                    summary = input$pathwayPlotSummary)
+      })
     })
-     })
     session$sendCustomMessage("close_dropDownPathway", "")
   })
 
@@ -6485,30 +6578,30 @@ shinyServer(function(input, output, session) {
   })
 
   #disable downloadPathway button if the pathway data doesn't exist
-  isVamResult <- reactive(is.null(vals$vamResults))
-  isGsvaResult <- reactive(is.null(vals$gsvaResults))
-  observe({
-    if (isVamResult() && isGsvaResult()) {
-      shinyjs::disable("downloadPathway")
-    } else {
-      shinyjs::enable("downloadPathway")
-    }
-  })
+  #isVamResult <- reactive(is.null(vals$vamResults))
+  #isGsvaResult <- reactive(is.null(vals$gsvaResults))
+  #observe({
+  #  if (isVamResult() && isGsvaResult()) {
+  #    shinyjs::disable("downloadPathway")
+  #  } else {
+  #    shinyjs::enable("downloadPathway")
+  #  }
+  #})
 
   #download pathway results
-  output$downloadPathway <- downloadHandler(
-    filename = function() {
-      paste("Pathway_results-", Sys.Date(), ".csv", sep = "")
-    },
-    content = function(file) {
-      if(input$pathway == "VAM"){
-        utils::write.csv(vals$vamResults, file)
-      }
-      else if (input$pathway == "GSVA"){
-        utils::write.csv(vals$gsvaResults, file)
-      }
-    }
-  )
+  #output$downloadPathway <- downloadHandler(
+  #  filename = function() {
+  #    paste("Pathway_results-", Sys.Date(), ".csv", sep = "")
+  #  },
+  #  content = function(file) {
+  #    if(input$pathway == "VAM"){
+  #      utils::write.csv(vals$vamResults, file)
+  #    }
+  #    else if (input$pathway == "GSVA"){
+  #      utils::write.csv(vals$gsvaResults, file)
+  #    }
+  #  }
+  #)
 
   #-----------------------------------------------------------------------------
   # Page 6.2 : Enrichment Analysis - EnrichR

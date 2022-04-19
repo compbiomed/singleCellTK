@@ -63,9 +63,23 @@ jobs:
           http-user-agent: ${{ matrix.config.http-user-agent }}
           use-public-rspm: true
 
+      - name: Install fftw3 on Linux
+        if: runner.os == 'Linux'
+        run: sudo apt-get install libfftw3-dev
+
+      - name: Install fftw3 on macOS
+        if: runner.os == 'macOS'
+        run: brew install fftw
+        
       - uses: r-lib/actions/setup-r-dependencies@v1
         with:
           extra-packages: rcmdcheck
+
+      - name: Install Celda devel
+        run: |
+          install.packages("devtools")
+          devtools::install_github("campbio/celda@devel")
+        shell: Rscript {0} 
 
       - name: Install XQuartz on macOS
         if: runner.os == 'macOS'
@@ -76,7 +90,11 @@ jobs:
           _R_CHECK_CRAN_INCOMING_: false
         run: |
           options(crayon.enabled = TRUE)
-          reticulate::use_python("/opt/hostedtoolcache/Python/3.8.12/x64/bin/python")
+          if (Sys.info()[1] == "Windows") {
+            reticulate::use_python(system('where python', intern=TRUE)[1])
+          } else {
+            reticulate::use_python(system('which python', intern=TRUE))
+          }
           reticulate::py_config()
           rcmdcheck::rcmdcheck(args = c("--no-manual", "--as-cran"), error_on = "warning", check_dir = "check")
         shell: Rscript {0}

@@ -15,6 +15,7 @@ plotSCEViolin(
   violin = TRUE,
   boxplot = TRUE,
   dots = TRUE,
+  plotOrder = NULL,
   xlab = NULL,
   ylab = NULL,
   axisSize = 10,
@@ -26,6 +27,14 @@ plotSCEViolin(
   summary = NULL,
   title = NULL,
   titleSize = NULL,
+  hcutoff = NULL,
+  hcolor = "red",
+  hsize = 1,
+  hlinetype = 1,
+  vcutoff = NULL,
+  vcolor = "red",
+  vsize = 1,
+  vlinetype = 1,
   combinePlot = "none",
   plotLabels = NULL
 )
@@ -61,6 +70,10 @@ Default TRUE.}
 \item{dots}{Boolean. If TRUE, will plot dots for each violin plot.
 Default TRUE.}
 
+\item{plotOrder}{Character vector. If set, reorders the violin plots
+in the order of the character vector when `groupBy` is set.
+Default NULL.}
+
 \item{xlab}{Character vector. Label for x-axis. Default NULL.}
 
 \item{ylab}{Character vector. Label for y-axis. Default NULL.}
@@ -85,6 +98,30 @@ violin plot. Options are "mean" or "median". Default NULL.}
 \item{title}{Title of plot. Default NULL.}
 
 \item{titleSize}{Size of title of plot. Default 15.}
+
+\item{hcutoff}{Adds a horizontal line with the y-intercept at given value. Default NULL.}
+
+\item{hcolor}{Character. A color available from `colors()`.
+Controls the color of the horizontal cutoff line, if drawn.
+Default 'black'.}
+
+\item{hsize}{Size of horizontal line, if drawn. Default 0.5.}
+
+\item{hlinetype}{Type of horizontal line, if drawn. can be specified with either an integer or
+a name (0 = blank, 1 = solid, 2 = dashed, 3 = dotted, 4 = dotdash, 5 = longdash, 6 = twodash).
+Default 1.}
+
+\item{vcutoff}{Adds a vertical line with the x-intercept at given value. Default NULL.}
+
+\item{vcolor}{Character. A color available from `colors()`.
+Controls the color of the vertical cutoff line, if drawn.
+Default 'black'.}
+
+\item{vsize}{Size of vertical line, if drawn. Default 0.5.}
+
+\item{vlinetype}{Type of vertical line, if drawn. can be specified with either an integer or
+a name (0 = blank, 1 = solid, 2 = dashed, 3 = dotted, 4 = dotdash, 5 = longdash, 6 = twodash).
+Default 1.}
 
 \item{combinePlot}{Must be either "all", "sample", or "none". "all" will combine all plots into a single
 .ggplot object, while "sample" will output a list of plots separated by sample. Default "none".}

@@ -31,10 +31,27 @@ getPathwayResultNames <- function(inSCE, stopIfNone = FALSE){
 #' should be found in \code{getPathwayResultNames(inSCE)}. 
 #' @param geneset A single character specifying the geneset of interest. Should
 #' be found in the geneSetCollection used for performing the analysis.
-#' @param groupby Either a single character specifying a column of 
+#' @param groupBy Either a single character specifying a column of 
 #' \code{colData(inSCE)} or a vector of equal length as the number of cells. 
 #' Default \code{NULL}.
-#' @param boxplot Whether to add a boxplot. Default \code{FALSE}.
+#' @param boxplot Boolean, Whether to add a boxplot. Default \code{FALSE}.
+#' @param violin Boolean, Whether to add a violin plot. Default \code{TRUE}.
+#' @param dots Boolean, If \code{TRUE}, will plot dots for each violin plot.
+#' Default \code{TRUE}.
+#' @param summary Adds a summary statistic, as well as a crossbar to the violin 
+#' plot. Options are \code{"mean"} or \code{"median"}, and \code{NULL} for not 
+#' adding. Default \code{"median"}.
+#' @param axisSize Size of x/y-axis ticks. Default \code{10}.
+#' @param axisLabelSize Size of x/y-axis labels. Default \code{10}.
+#' @param dotSize Size of dots. Default \code{0.5}.
+#' @param transparency Transparency of the dots, values will be 0-1. Default 
+#' \code{1}.
+#' @param defaultTheme Removes grid in plot and sets axis title size to 
+#' \code{10} when \code{TRUE}. Default \code{TRUE}.
+#' @param gridLine Adds a horizontal grid line if \code{TRUE}. Will still be 
+#' drawn even if \code{defaultTheme} is \code{TRUE}. Default \code{FALSE}.
+#' @param title Title of plot. Default using \code{geneset}.
+#' @param titleSize Size of the title of the plot. Default \code{15}.
 #' @return A \code{ggplot} object for the violin plot
 #' @export
 #' @examples 
@@ -52,8 +69,19 @@ getPathwayResultNames <- function(inSCE, stopIfNone = FALSE){
 plotPathway <- function(inSCE, 
                         resultName, 
                         geneset,
-                        groupby = NULL,
-                        boxplot = FALSE
+                        groupBy = NULL,
+                        boxplot = FALSE,
+                        violin = TRUE,
+                        dots = TRUE,
+                        summary = "median",
+                        axisSize = 10,
+                        axisLabelSize = 10,
+                        dotSize = 0.5,
+                        transparency = 1,
+                        defaultTheme = TRUE,
+                        gridLine = FALSE,
+                        title = geneset,
+                        titleSize = NULL
 ){ 
     availResults <- getPathwayResultNames(inSCE, stopIfNone = TRUE)
     if (!resultName %in% availResults) {
@@ -73,8 +101,25 @@ plotPathway <- function(inSCE,
              genesetCollectionName, '". Try `getGenesetNamesFromCollection(inSCE, "',
              genesetCollectionName, '")` for available options.')
     }
-    xlab <- ifelse(is.null(groupby), "Sample", groupby)
-    plotSCEViolin(inSCE, slotName = "reducedDims", itemName = resultName, 
-                  dimension = geneset , xlab = xlab, ylab = geneset, 
-                  sample = NULL, groupBy = groupby, boxplot = boxplot)
+    xlab <- ifelse(is.null(groupBy), "Sample", groupBy)
+    plotSCEViolin(inSCE, 
+                  slotName = "reducedDims", 
+                  itemName = resultName, 
+                  dimension = geneset , 
+                  xlab = xlab, 
+                  ylab = resultName, 
+                  sample = NULL, 
+                  groupBy = groupBy, 
+                  boxplot = boxplot,
+                  dots = dots,
+                  violin = violin, 
+                  summary = summary,
+                  axisSize = axisSize,
+                  axisLabelSize = axisLabelSize,
+                  dotSize = dotSize,
+                  transparency = transparency,
+                  defaultTheme = defaultTheme,
+                  gridLine = gridLine,
+                  title = title,
+                  titleSize = titleSize)
 }

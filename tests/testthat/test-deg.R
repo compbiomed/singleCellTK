@@ -65,7 +65,7 @@ test_that(desc = "Testing Wilcoxon DE", {
   testthat::expect_is(vlcn, "ggplot")
   
   hm <- plotDEGHeatmap(sceBatches, "aVSbWilcox")
-  testthat::expect_is(hm, "HeatmapList")
+  testthat::expect_is(hm, "ggplot")
 
   pR <- plotDEGRegression(sceBatches, "aVSbWilcox")
   testthat::expect_is(pR, "ggplot")
@@ -88,5 +88,5 @@ test_that(desc = "Testing findMarker", {
   testthat::expect_gt(nrow(topTable), 0)
 
   hmFM <- plotMarkerDiffExp(sceBatches)
-  testthat::expect_is(hmFM, "HeatmapList")
+  testthat::expect_is(hmFM, "ggplot")
 })

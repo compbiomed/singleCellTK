@@ -40,10 +40,12 @@ reportDropletQC <- function(inSCE, output_file = NULL,
 #' @description A  function to generate .html Rmarkdown report containing the visualizations of the runCellQC function output
 #' @param inSCE A \link[SingleCellExperiment]{SingleCellExperiment} object containing
 #' the filtered count matrix with the output from runCellQC function
+#' @param useReducedDim Character. The name of the saved dimension reduction slot including cells  
+#' from all samples in then\linkS4class{SingleCellExperiment} object, Default is NULL
 #' @param subTitle subtitle of the QC HTML report. Default is NULL.
-#' @param studyDesign description of the data set and experiment design. It would be shown at the top of QC HTML report. Default is NULL.
-#' @param output_file name of the generated file. If NULL/default then the output file name will be based on the name of the Rmarkdown template.
-#' @param output_dir name of the output directory to save the rendered file. If NULL/default the file is stored to the current working directory
+#' @param studyDesign Character. The description of the data set and experiment design. It would be shown at the top of QC HTML report. Default is NULL.
+#' @param output_file Character. The name of the generated file. If NULL/default then the output file name will be based on the name of the Rmarkdown template.
+#' @param output_dir Character. The name of the output directory to save the rendered file. If NULL/default the file is stored to the current working directory
 #' @return .html file
 #' @examples
 #' data(scExample, package = "singleCellTK")
@@ -56,7 +58,8 @@ reportDropletQC <- function(inSCE, output_file = NULL,
 reportCellQC <- function(inSCE, output_file = NULL,
                                 output_dir = NULL,
                                 subTitle = NULL,
-                                studyDesign = NULL) {
+                                studyDesign = NULL,
+                                useReducedDim = NULL) {
   if (is.null(output_dir)){
     output_dir<- getwd()
   }
@@ -64,7 +67,8 @@ reportCellQC <- function(inSCE, output_file = NULL,
   #file.copy(system.file("rmarkdown/qc/CellQC.Rmd", package = "singleCellTK"), report_path, overwrite = TRUE)
 
   rmarkdown::render(system.file("rmarkdown/qc/CellQC.Rmd", package = "singleCellTK"),
-    params = list(object = inSCE, subTitle = subTitle, studyDesign = studyDesign),
+    params = list(object = inSCE, subTitle = subTitle, studyDesign = studyDesign,
+    reducedDimName = useReducedDim),
     output_file = output_file,
     output_dir = output_dir,
     intermediates_dir = output_dir,
@@ -78,7 +82,7 @@ reportCellQC <- function(inSCE, output_file = NULL,
 #' the count matrix (full droplets or filtered matrix, depends on the selected QC algorithm) with the output from at least one of these functions:
 #' runQCMetrics, runScrublet, runScDblFinder, runCxds, runBcds, runCxdsBcdsHybrid, runDecontX, runBarcodeRankDrops, runEmptyDrops
 #' @param algorithm Character. Specifies which QC algorithm report to generate.
-#'  Available options are "BarcodeRankDrops", "EmptyDrops", "QCMetrics", "Scrublet", "ScDblFinder", "Cxds", "Bcds", "CxdsBcdsHybrid", "DoubletFinder"  and "DecontX".
+#'  Available options are "BarcodeRankDrops", "EmptyDrops", "QCMetrics", "Scrublet", "ScDblFinder", "Cxds", "Bcds", "CxdsBcdsHybrid", "DoubletFinder", "DecontX" and "SoupX".
 #' @param output_file name of the generated file. If NULL/default then the output file name will be based on the name of the selected QC algorithm name .
 #' @param output_dir name of the output directory to save the rendered file. If NULL/default the file is stored to the current working directory
 #' @return .html file
@@ -100,7 +104,8 @@ reportQCTool <- function(inSCE, algorithm=c("BarcodeRankDrops",
                                             "Bcds",
                                             "CxdsBcdsHybrid",
                                             "DoubletFinder",
-                                            "DecontX"),
+                                            "DecontX",
+                                            "SoupX"),
                          output_file = NULL,
                             output_dir = NULL) {
 
@@ -132,6 +137,10 @@ reportQCTool <- function(inSCE, algorithm=c("BarcodeRankDrops",
   }
   if (algorithm =="DecontX"){
     rmarkdown::render(system.file("rmarkdown/qc/DecontX.Rmd", package="singleCellTK"), params = list(
+      object=inSCE), output_file = output_file, output_dir = output_dir)
+  }
+  if (algorithm =="SoupX"){
+    rmarkdown::render(system.file("rmarkdown/qc/SoupX.Rmd", package="singleCellTK"), params = list(
       object=inSCE), output_file = output_file, output_dir = output_dir)
   }
   if (algorithm =="ScDblFinder"){
@@ -1003,7 +1012,6 @@ reportSeuratMarkerSelection <- function(inSCE,
   return(data)
 }
 
-
 #' Generates an HTML report for the complete Seurat workflow and returns the 
 #'  SCE object with the results computed and stored inside the object.
 #' @param inSCE Input \code{\link[SingleCellExperiment]{SingleCellExperiment}}
@@ -1162,4 +1170,102 @@ reportSeurat <- function(
   message("Output HTML file stored as ", outputFile, " in ", outputDir, ".")
   
   return(data)
+}
+
+#' @title Get diffAbundanceFET .html report
+#' @description A function to generate .html Rmarkdown report containing the visualizations of the diffAbundanceFET function output
+#' @param inSCE A \code{\link[SingleCellExperiment]{SingleCellExperiment}}
+#' object.
+#' @param cluster A single \code{character}, specifying the name to store the
+#' cluster label in \code{\link{colData}}.
+#' @param variable A single \code{character}, specifying the name to store the
+#' phenotype labels in \code{\link{colData}}.
+#' @param control \code{character}. Specifying one or more categories that can
+#' be found in the vector specified by \code{variable}.
+#' @param case \code{character}. Specifying one or more categories that can
+#' be found in the vector specified by \code{variable}.
+#' @param analysisName A single \code{character}. Will be used for naming the
+#' result table, which will be saved in metadata slot.
+#' @param output_dir name of the output directory to save the rendered file. If
+#' \code{NULL} the file is stored to the current working directory.
+#' Default \code{NULL}.
+#' @param output_file name of the generated file. If \code{NULL} then the output
+#' file name will be based on the name of the Rmarkdown template. Default
+#' \code{NULL}.
+#' @param pdf A \code{logical} value indicating if a pdf should also be
+#'  generated for each figure in the report. Default is \code{TRUE}.
+#' @param showSession A \code{logical} value indicating if session information
+#'  should be displayed or not. Default is \code{TRUE}.
+#' @return An HTML file of the report will be generated at the path specified
+#' in the arguments.
+#' @export
+reportDiffAbundanceFET <-
+    function(inSCE,
+             cluster,
+             variable,
+             control,
+             case,
+             analysisName,
+             output_dir = ".",
+             output_file = "DifferentialAbundanceFET_Report",
+             pdf = FALSE,
+             showSession = TRUE) {
+        inSCE <- diffAbundanceFET(inSCE, cluster, variable, control, 
+                                  case, analysisName)
+        rmarkdown::render(
+            system.file("rmarkdown/DifferentialAbundanceFET_Report.Rmd",
+                        package="singleCellTK"),
+            params = list(
+               sce = inSCE,
+                analysisName = analysisName,
+                pdf = isTRUE(pdf),
+                showSession = isTRUE(showSession)
+            ),
+           output_file = output_file,
+           output_dir = output_dir
+        )
+    }
+
+#' @title Get plotClusterAbundance .html report
+#' @description A function to generate .html Rmarkdown report containing the 
+#' visualizations of the plotClusterAbundance function output
+#' @param inSCE A \code{\link[SingleCellExperiment]{SingleCellExperiment}}
+#' object.
+#' @param cluster A single \code{character}, specifying the name to store the
+#' cluster label in \code{\link{colData}}.
+#' @param variable A single \code{character}, specifying the name to store the
+#' phenotype labels in \code{\link{colData}}.
+#' @param output_dir name of the output directory to save the rendered file. If
+#' \code{NULL} the file is stored to the current working directory.
+#' Default \code{NULL}.
+#' @param output_file name of the generated file. If \code{NULL} then the output
+#' file name will be based on the name of the Rmarkdown template. Default
+#' \code{NULL}.
+#' @param pdf A \code{logical} value indicating if a pdf should also be
+#'  generated for each figure in the report. Default is \code{TRUE}.
+#' @param showSession A \code{logical} value indicating if session information
+#'  should be displayed or not. Default is \code{TRUE}.
+#' @return An HTML file of the report will be generated at the path specified
+#' in the arguments.
+#' @export
+reportClusterAbundance <- function(inSCE,
+                                   cluster,
+                                   variable,
+                                   output_dir = ".",
+                                   output_file = "plotClusterAbundance_Report",
+                                   pdf = FALSE,
+                                   showSession = TRUE) {
+    rmarkdown::render(
+        system.file("rmarkdown/PlotClusterAbundance_Report.Rmd",
+        package="singleCellTK"),
+        params = list(
+            sce = inSCE,
+            cluster = cluster,
+            variable = variable,
+            pdf = isTRUE(pdf),
+            showSession = isTRUE(showSession)
+        ),
+        output_file = output_file,
+        output_dir = output_dir
+    )
 }

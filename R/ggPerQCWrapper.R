@@ -166,14 +166,17 @@ plotRunPerCellQCResults <- function(inSCE,
     merged.plots <- list(combined.sum, combined.detected, combined.toppercent)
     names(merged.plots) <- c("Sum", "Detected", "TopPercent")
 
-    if (any(grepl(
-      pattern="subsets_",
-      names(colData(inSCE))
-    ))) {
+    if (any(grepl(pattern="subsets_",names(colData(inSCE))
+    ) | grepl(pattern="mito_", names(colData(inSCE))))) { 
       subsets <- grep(
         pattern="subsets_",
         names(colData(inSCE)), value=TRUE
       )
+      mitos <- grep(
+        pattern="mito_",
+        names(colData(inSCE)), value=TRUE
+      )
+      subsets <- c(subsets, mitos)
 
       combined.subset <- lapply(subsets, function(x) {
         plotSCEViolinColData(
@@ -304,14 +307,17 @@ plotRunPerCellQCResults <- function(inSCE,
       res.list <- c(res.list, violin.toppercent)
       names(res.list) <- c("Sum", "Detected", "TopPercent")
 
-      if (any(grepl(
-        pattern="subsets_",
-        names(colData(inSCESub))
-      ))) {
+      if (any(grepl(pattern="subsets_", names(colData(inSCESub))) |
+              grepl(pattern="mito_", names(colData(inSCESub))))) {
         subsets <- grep(
           pattern="subsets_",
           names(colData(inSCESub)), value=TRUE
         )
+        mitos <- grep(
+          pattern="mito_",
+          names(colData(inSCESub)), value=TRUE
+        )
+        subsets <- c(subsets, mitos)
 
         violin.subset <- lapply(subsets, function(y) {
           title = paste0(y, " per cell")
@@ -1143,14 +1149,14 @@ plotDoubletFinderResults <- function(inSCE,
         dotSize=dotSize,
         transparency=transparency,
         baseSize=baseSize,
-        colorScale = c("red","lightgray"),
+        colorScale = c("lightgray", "red"),
         defaultTheme=defaultTheme,
         title=title,
         titleSize=titleSize,
         axisSize=axisSize,
         axisLabelSize=axisLabelSize,
         labelClusters=FALSE,
-        legendTitle="Doublet Score",
+        legendTitle="Doublet \nAssignment",
         legendSize=legendSize,
         legendTitleSize=legendTitleSize,
         combinePlot="all"
@@ -1404,6 +1410,41 @@ plotScDblFinderResults <- function(inSCE,
       combinePlot="all"
     ))
     res.list = c(res.list, scatterScore)
+
+    if("scDblFinder_doublet_call" %in% names(SingleCellExperiment::colData(inSCE))){
+      title = "scDblFinder Doublet Assignment"
+      if(labelSamples && length(samples) > 1){
+        title = paste0(title, ", ", x)
+      }
+      scatterCall <- list(scatter_doubletCall = plotSCEDimReduceColData(
+        inSCE=inSCESub,
+        sample=sampleSub,
+        colorBy="scDblFinder_doublet_call",
+        conditionClass="factor",
+        shape=shape,
+        reducedDimName=reducedDimName,
+        xlab=xlab,
+        ylab=ylab,
+        dim1=dim1,
+        dim2=dim2,
+        bin=bin,
+        binLabel=binLabel,
+        dotSize=dotSize,
+        transparency=transparency,
+        baseSize=baseSize,
+        colorScale = c("lightgray","red"),
+        defaultTheme=defaultTheme,
+        title=title,
+        titleSize=titleSize,
+        axisSize=axisSize, axisLabelSize=axisLabelSize,
+        labelClusters=FALSE,
+        legendTitle="Doublet \nAssignment",
+        legendTitleSize=legendTitleSize,
+        legendSize=legendSize,
+        combinePlot="all"
+      ))
+      res.list <- c(res.list, scatterCall)
+    }
 
     if(combinePlot != "all" | length(samples) == 1){
       if(labelSamples && length(samples) > 1){
@@ -2374,6 +2415,8 @@ plotScdsHybridResults <- function(inSCE,
 #' \link{runDecontX}. Required.
 #' @param sample Character vector. Indicates which sample each cell belongs to.
 #'  Default NULL.
+#' @param bgResult Boolean. If TRUE, will plot decontX results generated with
+#' raw/droplet matrix Default FALSE. 
 #' @param shape If provided, add shapes based on the value.
 #' @param groupBy Groupings for each numeric value. A user may input a vector
 #'  equal length to the number of the samples in the SingleCellExperiment
@@ -2439,6 +2482,7 @@ plotScdsHybridResults <- function(inSCE,
 #' @export
 plotDecontXResults <- function(inSCE,
                                sample=NULL,
+                               bgResult = FALSE,
                                shape=NULL,
                                groupBy=NULL,
                                combinePlot="all",
@@ -2489,12 +2533,37 @@ plotDecontXResults <- function(inSCE,
          SingleCellExperiment object. Please check for spelling errors
          with reducedDimNames().")
   }
+
+  scoreCol <- "decontX_contamination"
+  clusterCol <- "decontX_clusters"
+
+  if (!isTRUE(bgResult) & !scoreCol %in% colnames(SummarizedExperiment::colData(inSCE))) {
+      stop("The result of running decontX without raw/droplet matrix 
+           is not found in the input SingleCellExperiment object. 
+           Please check whether runDecontX has been run without
+           'background' parameter. ")    
+  }
+
+  if (isTRUE(bgResult)) {
+    bgColId <- grep('decontX_contamination_bg', colnames(SummarizedExperiment::colData(inSCE)))
+
+    if (length(bgColId) == 0) {
+      stop("The result of running decontX with raw/droplet matrix 
+           is not found in the input SingleCellExperiment object. 
+           Please check whether runDecontX has been run with
+           'background' parameter. ")
+    } else {
+      scoreCol <- "decontX_contamination_bg"
+      clusterCol <- "decontX_clusters_bg"
+    }
+  }
+
   samples <- unique(sample)
   sampleVector <- sample
   if (length(samples) > 1) {
     merged.plots <- list(Score = plotSCEViolinColData(
       inSCE=inSCE,
-      coldata="decontX_contamination",
+      coldata=scoreCol,
       groupBy=sampleVector,
       xlab="",
       ylab="DecontX Contamination",
@@ -2534,7 +2603,7 @@ plotDecontXResults <- function(inSCE,
     densityContamination <- list(density_decontXContamination = plotSCEDensityColData(
         inSCE=inSCESub,
         sample=sampleSub,
-        coldata="decontX_contamination",
+        coldata=scoreCol,
         groupBy=groupBy,
         xlab="Score",
         ylab="Density",
@@ -2551,7 +2620,7 @@ plotDecontXResults <- function(inSCE,
     scatterContamination <- list(scatter_decontXContamination = plotSCEDimReduceColData(
       inSCE=inSCESub,
       sample=sampleSub,
-      colorBy="decontX_contamination",
+      colorBy=scoreCol,
       conditionClass="numeric",
       shape=shape,
       reducedDimName=reducedDimName,
@@ -2584,7 +2653,7 @@ plotDecontXResults <- function(inSCE,
       }
     violinContamination <- list(violin_decontXContamination = plotSCEViolinColData(
         inSCE=inSCESub,
-        coldata="decontX_contamination",
+        coldata=scoreCol,
         sample=sampleSub,
         xlab="", ylab="DecontX Contamination",
         groupBy=groupBy,
@@ -2619,7 +2688,7 @@ plotDecontXResults <- function(inSCE,
     scatterCluster <- list(scatter_decontXClusters = plotSCEDimReduceColData(
         inSCE=inSCESub,
         sample=sampleSub,
-        colorBy="decontX_clusters",
+        colorBy=clusterCol,
         conditionClass="factor",
         shape=shape,
         reducedDimName=reducedDimName,

@@ -7,13 +7,21 @@
 runCellQC(
   inSCE,
   algorithms = c("QCMetrics", "scDblFinder", "cxds", "bcds", "cxds_bcds_hybrid",
-    "decontX"),
+    "decontX", "decontX_bg", "soupX", "soupX_bg"),
   sample = NULL,
   collectionName = NULL,
   geneSetList = NULL,
   geneSetListLocation = "rownames",
   geneSetCollection = NULL,
+  mitoRef = NULL,
+  mitoIDType = NULL,
+  mitoPrefix = NULL,
+  mitoID = NULL,
+  mitoGeneLocation = NULL,
   useAssay = "counts",
+  background = NULL,
+  bgAssayName = NULL,
+  bgBatch = NULL,
   seed = 12345,
   paramsList = NULL
 )
@@ -22,12 +30,14 @@ runCellQC(
 \item{inSCE}{A \link[SingleCellExperiment]{SingleCellExperiment} object.}
 
 \item{algorithms}{Character vector. Specify which QC algorithms to run.
-Available options are "QCMetrics", "scrublet", "doubletFinder", "scDblFinder", "cxds", "bcds", "cxds_bcds_hybrid", and "decontX".}
+Available options are "QCMetrics", "scrublet", "doubletFinder", "scDblFinder", 
+"cxds", "bcds", "cxds_bcds_hybrid", "decontX" and "soupX".}
 
 \item{sample}{Character vector. Indicates which sample each cell belongs to.
 Algorithms will be run on cells from each sample separately.}
 
-\item{collectionName}{Character. Name of a \code{GeneSetCollection} obtained by using one of the importGeneSet* functions. Default \code{NULL}.}
+\item{collectionName}{Character. Name of a \code{GeneSetCollection} obtained by 
+using one of the importGeneSet* functions. Default \code{NULL}.}
 
 \item{geneSetList}{See \code{runPerCellQC}. Default NULL.}
 
@@ -35,8 +45,32 @@ Algorithms will be run on cells from each sample separately.}
 
 \item{geneSetCollection}{See \code{runPerCellQC}. Default NULL.}
 
+\item{mitoRef, mitoIDType, mitoPrefix, mitoID, mitoGeneLocation}{Arguments used to 
+import mitochondrial genes and quantify their expression. Please see 
+\link[singleCellTK]{runPerCellQC} for detailed information.}
+
 \item{useAssay}{A string specifying which assay contains the count
 matrix for cells.}
+
+\item{background}{A \link[SingleCellExperiment]{SingleCellExperiment}
+with the matrix located in the assay slot under \code{bgAssayName}. It should have 
+the same structure as inSCE except it contains the matrix of empty droplets instead 
+of cells. When supplied, empirical distribution of transcripts from these 
+empty droplets will be used as the contamination distribution. It is only used in 
+algorithms "decontX" and "soupX". Default NULL.}
+
+\item{bgAssayName}{Character. Name of the assay to use if background is a 
+\link[SingleCellExperiment]{SingleCellExperiment}. If NULL, the function
+will use the same value as \code{useAssay}. It is only used in algorithms 
+"decontX" and "soupX". Default is NULL.}
+
+\item{bgBatch}{Batch labels for \code{background}. If \code{background} is a 
+\link[SingleCellExperiment]{SingleCellExperiment} object, this can be a single 
+character specifying a name that can be found in \code{colData(background)} 
+to directly use the barcode annotation Its unique values should be the same
+as those in \code{sample}, such that each batch of cells have their corresponding 
+batch of empty droplets as background, pointed by this parameter. It is only used in
+algorithms "decontX" and "soupX". Default to NULL.}
 
 \item{seed}{Seed for the random number generator. Default 12345.}
 

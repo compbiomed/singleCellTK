@@ -7,6 +7,7 @@
 plotDecontXResults(
   inSCE,
   sample = NULL,
+  bgResult = FALSE,
   shape = NULL,
   groupBy = NULL,
   combinePlot = "all",
@@ -50,6 +51,9 @@ dimension reduction components or a variable with saved results from
 
 \item{sample}{Character vector. Indicates which sample each cell belongs to.
 Default NULL.}
+
+\item{bgResult}{Boolean. If TRUE, will plot decontX results generated with
+raw/droplet matrix Default FALSE.}
 
 \item{shape}{If provided, add shapes based on the value.}
 
