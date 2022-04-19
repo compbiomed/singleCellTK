@@ -12,7 +12,6 @@ reportSeuratScaling(
   outputDir = NULL,
   subtitle = NULL,
   authors = NULL,
-  sce = NULL,
   showSession = FALSE,
   pdf = FALSE,
   forceRun = FALSE

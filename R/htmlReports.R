@@ -759,7 +759,6 @@ reportSeuratScaling <- function(inSCE,
                            outputDir = NULL,
                            subtitle = NULL,
                            authors =  NULL,
-                           sce = NULL,
                            showSession = FALSE,
                            pdf = FALSE,
                            forceRun = FALSE){
@@ -1028,6 +1027,8 @@ reportSeuratMarkerSelection <- function(inSCE,
 #'  differential expression.
 #' @param clustering.resolution A numeric value indicating the user-specified 
 #'  final resolution to use with clustering. Default is \code{0.8}.
+#' @param variable.features A numeric value indicating the number of top 
+#'  variable features to identify. Default \code{2000}.
 #' @param pc.count A numeric value indicating the number of principal components
 #'  to use in the analysis workflow. Default is \code{50}.
 #' @param outputFile Specify the name of the generated output HTML file. 
