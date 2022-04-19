@@ -818,11 +818,7 @@ importCellRangerV3Sample <- function(
   for(i in seq(samplePaths)){
     metrics_summary[[i]] <- list.files(pattern= paste0("*", metricsFile, "$"), path = paste0(samplePaths[i], "/", metricsPath), full.names = TRUE)
     if(length(metrics_summary[[i]]) > 0){
-<<<<<<< HEAD
-      metrics_summary[[i]] <- lapply(metrics_summary[[i]], read.csv, header = TRUE, check.names = FALSE)[[1]]
-=======
       metrics_summary[[i]] <- lapply(metrics_summary[[i]], utils::read.csv, header = TRUE, check.names = FALSE)[[1]]
->>>>>>> upstream/devel
     }
     else{
       message("Metrics summary file (", metricsFile, ") not found for sample: ", sampleNames[i])

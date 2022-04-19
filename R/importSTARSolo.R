@@ -187,13 +187,9 @@ importSTARsolo <- function(
         rowNamesDedup = rowNamesDedup)
 }
 
+
 # Find metrics_summary.csv file in each sample and merge them into a single dataframe
 # Additionally, if file not available for a sample, fill that sample with NA
-<<<<<<< HEAD
-=======
-# Find metrics_summary.csv file in each sample and merge them into a single dataframe
-# Additionally, if file not available for a sample, fill that sample with NA
->>>>>>> upstream/devel
 .importMetricsStarSolo <- function(samplePaths, sampleNames, metricsPath, metricsFile){
   # Check if samplePaths and sampleNames are equal in length
   if(!identical(length(samplePaths), length(sampleNames))){
@@ -205,11 +201,7 @@ importSTARsolo <- function(
   for(i in seq(samplePaths)){
     metrics_summary[[i]] <- list.files(pattern= paste0("*", metricsFile, "$"), path = paste0(samplePaths[i], "/", metricsPath), full.names = TRUE)
     if(length(metrics_summary[[i]]) > 0){
-<<<<<<< HEAD
-      metrics_summary[[i]] <- lapply(metrics_summary[[i]], read.csv, header = FALSE, check.names = FALSE, row.names = 1)[[1]]
-=======
       metrics_summary[[i]] <- lapply(metrics_summary[[i]], utils::read.csv, header = FALSE, check.names = FALSE, row.names = 1)[[1]]
->>>>>>> upstream/devel
     }
     else{
       message("Metrics summary file (", metricsFile, ") not found for sample: ", sampleNames[i])
@@ -220,25 +212,14 @@ importSTARsolo <- function(
   }
   
   # Merge StarSolo summary csv files from all/multiple samples into a single data.frame
-<<<<<<< HEAD
-  for(i in 1:length(metrics_summary)){
-=======
   for(i in seq_along(metrics_summary)){
->>>>>>> upstream/devel
     metrics_summary[[i]] <- as.data.frame(t(metrics_summary[[i]]))
   }
   metrics_summary <- plyr::rbind.fill(metrics_summary)
   metrics_summary <- t(metrics_summary)
-<<<<<<< HEAD
-  colnames(metrics_summary) <- sampleNames
-  
-  return(metrics_summary)
-}
-=======
   if (ncol(metrics_summary) > 0) {
     colnames(metrics_summary) <- sampleNames
   }
 
   return(metrics_summary)
 }
->>>>>>> upstream/devel
