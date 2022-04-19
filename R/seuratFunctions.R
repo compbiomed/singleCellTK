@@ -1369,7 +1369,7 @@ runSeuratFindMarkers <- function(
 #' @param scaledAssayName Specify the name of the scaled assay stored in the
 #' input object.
 #' @param plotType Specify the type of the plot to compute. Options are limited
-#' to "ridge", "violing", "feature", "dot" and "heatmap".
+#' to "ridge", "violin", "feature", "dot" and "heatmap".
 #' @param features Specify the features to compute the plot against.
 #' @param groupVariable Specify the column name from the colData slot that
 #' should be used as grouping variable.
@@ -1380,7 +1380,12 @@ runSeuratFindMarkers <- function(
 #' \code{c("lightgrey", "blue")}.
 #' @param ncol Visualizations will be adjusted in "ncol" number of columns.
 #'  Default is \code{1}.
-#'
+#' @param combine A logical value that indicates if the plots should be combined
+#'  together into a single plot if \code{TRUE}, else if \code{FALSE} returns 
+#'  separate ggplot objects for each feature. Only works when \code{plotType}
+#'  parameter is \code{"feature"}, \code{"violin"} or \code{"ridge"}. For
+#'  \code{"heatmap"} and \code{"dot"}, plots for all features are always
+#'  combined into a single plot. Default \code{FALSE}. 
 #' @return Plot object
 #' @export
 plotSeuratGenes <- function(inSCE,
@@ -1388,10 +1393,10 @@ plotSeuratGenes <- function(inSCE,
                            plotType,
                            features,
                            groupVariable,
-                           
                            splitBy = NULL,
                            cols = c("lightgrey", "blue"),
-                           ncol = 1){
+                           ncol = 1,
+                           combine = FALSE){
   #setup seurat object and the corresponding groups
   seuratObject <- convertSCEToSeurat(inSCE, scaledAssay = scaledAssayName)
   indices <- list()
@@ -1414,14 +1419,14 @@ plotSeuratGenes <- function(inSCE,
     return(Seurat::RidgePlot(
       seuratObject,
       features = features,
-      ncol = ncol, combine = FALSE))
+      ncol = ncol, combine = combine))
   }
   else if(plotType == "violin"){
     return(Seurat::VlnPlot(
       seuratObject,
       features = features,
       ncol = ncol,
-      split.by = splitBy, combine = FALSE))
+      split.by = splitBy, combine = combine))
   }
   else if(plotType == "feature"){
     return(Seurat::FeaturePlot(
@@ -1429,7 +1434,7 @@ plotSeuratGenes <- function(inSCE,
       features = features,
       cols = cols,
       ncol = ncol,
-      split.by = splitBy, combine = FALSE))
+      split.by = splitBy, combine = combine))
   }
   else if(plotType == "dot"){
     return(Seurat::DotPlot(

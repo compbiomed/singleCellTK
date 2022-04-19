@@ -7678,7 +7678,8 @@ shinyServer(function(input, output, session) {
         plotType = "ridge",
         features = df$gene_id,
         groupVariable = input$seuratFindMarkerSelectPhenotype,
-        ncol = 2
+        ncol = 2,
+        combine = TRUE
       )
     })
     output$findMarkerViolinPlot <- renderPlot({
@@ -7688,7 +7689,8 @@ shinyServer(function(input, output, session) {
         plotType = "violin",
         features = df$gene_id,
         groupVariable = input$seuratFindMarkerSelectPhenotype,
-        ncol = 2
+        ncol = 2,
+        combine = TRUE
       )
     })
     output$findMarkerFeaturePlot <- renderPlot({
@@ -7698,7 +7700,8 @@ shinyServer(function(input, output, session) {
         plotType = "feature",
         features = df$gene_id,
         groupVariable = input$seuratFindMarkerSelectPhenotype,
-        ncol = 2
+        ncol = 2,
+        combine = TRUE
       )
     })
     output$findMarkerDotPlot <- renderPlot({

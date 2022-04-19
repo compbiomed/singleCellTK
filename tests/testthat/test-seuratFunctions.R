@@ -87,10 +87,10 @@ test_that(desc = "Testing standard seurat workflow", {
   
   # Test Plots for Top Marker Genes
   top2Features <- metadata(sce)$seuratMarkers[1:2, ]$gene.id
-  genePlot1 <- plotSeuratGenes(sce, plotType = "ridge", features = top2Features, groupVariable = "type")
-  genePlot2 <- plotSeuratGenes(sce, plotType = "violin", features = top2Features, groupVariable = "type")
+  genePlot1 <- plotSeuratGenes(sce, plotType = "ridge", features = top2Features, groupVariable = "type", combine = TRUE)
+  genePlot2 <- plotSeuratGenes(sce, plotType = "violin", features = top2Features, groupVariable = "type", combine = TRUE)
   genePlot3 <- plotSeuratGenes(sce, plotType = "heatmap", features = top2Features, groupVariable = "type")
-  genePlot4 <- plotSeuratGenes(sce, plotType = "feature", features = top2Features, groupVariable = "type")
+  genePlot4 <- plotSeuratGenes(sce, plotType = "feature", features = top2Features, groupVariable = "type", combine = TRUE)
   genePlot5 <- plotSeuratGenes(sce, plotType = "dot", features = top2Features, groupVariable = "type")
   testthat::expect_true(is.ggplot(genePlot1))
   testthat::expect_true(is.ggplot(genePlot2))
