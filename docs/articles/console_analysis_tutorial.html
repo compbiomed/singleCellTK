@@ -34,7 +34,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.4.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.5.1</span>
       </span>
     </div>
 
@@ -319,10 +319,10 @@
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/subsetSCECols.html">subsetSCECols</a></span><span class="op">(</span><span class="va">sce</span>, colData <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"total &gt; 600"</span>, <span class="st">"detected &gt; 300"</span>,
                                       <span class="st">"scDblFinder_doublet_score &lt; 0.8"</span>,
-                                      <span class="st">"subsets_mito_percent &lt; 5"</span><span class="op">)</span><span class="op">)</span>
+                                      <span class="st">"mito_percent &lt; 5"</span><span class="op">)</span><span class="op">)</span>
 
 <span class="co"># See number of cells after filtering</span>
-<span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span></code></pre></div>
+<span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span></code></pre></div>
 <pre><code><span class="co">## [1] 2528</span></code></pre>
 </div>
 </div>
@@ -439,27 +439,28 @@
 <span class="co">## 83561       0.31480746       2.765561</span></code></pre>
 <p>For visualization, SCTK has a specific heatmap plotting function for detected markers. The heatmap will take the log-normalized feature expression matrix for the values, and subset the features to only the top markers of each cluster. For the organization of the heatmap, the function groups the markers by the belonging to the clusters, and groups the cells, obviously, by clusters. Inside the grouping, the function finally performs the default hierarchical clustering.</p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">markerHm</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plotMarkerDiffExp.html">plotMarkerDiffExp</a></span><span class="op">(</span><span class="va">sce</span>, topN <span class="op">=</span> <span class="fl">5</span>, log2fcThreshold <span class="op">=</span> <span class="fl">0</span>, 
-                              fdrThreshold <span class="op">=</span> <span class="fl">0.05</span>, minClustExprPerc <span class="op">=</span> <span class="fl">0.5</span>, 
-                              maxCtrlExprPerc <span class="op">=</span> <span class="fl">0.4</span>, minMeanExpr <span class="op">=</span> <span class="fl">0</span>, 
-                              rowLabel <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="../reference/plotMarkerDiffExp.html">plotMarkerDiffExp</a></span><span class="op">(</span><span class="va">sce</span>, topN <span class="op">=</span> <span class="fl">5</span>, log2fcThreshold <span class="op">=</span> <span class="fl">0</span>, 
+                  fdrThreshold <span class="op">=</span> <span class="fl">0.05</span>, minClustExprPerc <span class="op">=</span> <span class="fl">0.5</span>, 
+                  maxCtrlExprPerc <span class="op">=</span> <span class="fl">0.4</span>, minMeanExpr <span class="op">=</span> <span class="fl">0</span>, 
+                  rowLabel <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 <p><img src="console_analysis_tutorial_files/figure-html/markerHeatmap-1.png" width="864"></p>
 </div>
 <div class="section level3">
 <h3 id="customized-differential-expression-analysis">Customized Differential Expression Analysis<a class="anchor" aria-label="anchor" href="#customized-differential-expression-analysis"></a>
 </h3>
-<p>As we can easily tell from the heatmap above, “cluster 6” and “cluster 7” are having a very similar expression profile across the top markers detected. In order to further explore the difference between these two clusters, or any other two reasonable groups of cells, user can use the function <code><a href="../reference/runDEAnalysis.html">runDEAnalysis()</a></code>.</p>
+<p>As we can easily tell from the heatmap above, “cluster 1” and “cluster 3” are having a very similar expression profile across the top markers detected. In order to further explore the difference between these two clusters, or any other two reasonable groups of cells, user can use the function <code><a href="../reference/runDEAnalysis.html">runDEAnalysis()</a></code>.</p>
 <p><code><a href="../reference/runDEAnalysis.html">runDEAnalysis()</a></code> is a generic function for performing differential expression (DE) analysis between two selected groups of cells. This is also used by <code><a href="../reference/findMarkerDiffExp.html">findMarkerDiffExp()</a></code>. By running DE analysis, the function will take the normalized read count data and perform statistical analysis to discover quantitative changes in expression levels between selected groups. See here for the detail of <a href="differential_expression.html">running DE analysis with SCTK</a>.</p>
 <p>There are multiple ways to specify the groups of cells to be compared: by either directly specifying indices of cells, or selecting groups of cells with a categorical variable in <code>colData</code>. Additionally, <code><a href="../reference/runDEAnalysis.html">runDEAnalysis()</a></code> requires a relatively sophisticated inputs for naming the analyses, including the names of the two groups, and the name of one analysis, though these are not necessary for calling the algorithms alone. By requiring these, the results of the analyses can be stored with human readable identifiers and within one single SCE object, and can be more manageable. See the <a href="differential_expression.html">DE documentation</a> for the detail.</p>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runDEAnalysis.html">runDEAnalysis</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, method <span class="op">=</span> <span class="st">"wilcox"</span>, 
-                     class <span class="op">=</span> <span class="st">"cluster"</span>, classGroup1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">6</span><span class="op">)</span>, classGroup2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">7</span><span class="op">)</span>,
-                     groupName1 <span class="op">=</span> <span class="st">"cluster6"</span>, groupName2 <span class="op">=</span> <span class="st">"cluster7"</span>, 
-                     analysisName <span class="op">=</span> <span class="st">"cluster6_VS_7"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runDEAnalysis.html">runDEAnalysis</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, method <span class="op">=</span> <span class="st">"wilcox"</span>, useAssay <span class="op">=</span> <span class="st">"logcounts"</span>,
+                     class <span class="op">=</span> <span class="st">"cluster"</span>, classGroup1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span>, classGroup2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span><span class="op">)</span>,
+                     groupName1 <span class="op">=</span> <span class="st">"cluster1"</span>, groupName2 <span class="op">=</span> <span class="st">"cluster3"</span>, 
+                     analysisName <span class="op">=</span> <span class="st">"cluster1_VS_3"</span><span class="op">)</span></code></pre></div>
 <p>Similarly to the marker detection section, SCTK also has a DE analysis specific heatmap plotting function, <code><a href="../reference/plotDEGHeatmap.html">plotDEGHeatmap()</a></code>. Here, users can just easily enter the <code>analysisName</code> specified for one run and the function will automatically arrange the output. The heatmap is also splitted into a “checker board”, by the “conditions” (i.e. the groups selected when running <code><a href="../reference/runDEAnalysis.html">runDEAnalysis()</a></code>) and the “regulation” (i.e. “up” if the log2 fold change is positive in “group1” against “group2”).</p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">deHm</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plotDEGHeatmap.html">plotDEGHeatmap</a></span><span class="op">(</span><span class="va">sce</span>, useResult <span class="op">=</span> <span class="st">"cluster6_VS_7"</span>, rowLabel <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="../reference/plotDEGHeatmap.html">plotDEGHeatmap</a></span><span class="op">(</span><span class="va">sce</span>, useResult <span class="op">=</span> <span class="st">"cluster1_VS_3"</span>, rowLabel <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 <p><img src="console_analysis_tutorial_files/figure-html/deHeatmap-1.png" width="700"></p>
+<p>Additionally, the input matrix for DE analysis can be specified with either <code>useAssay</code> or <code>useReducedDim</code>. When one of them is specified, the other has to be <code>NULL</code>, to avoid ambiguity. For example, when users perform a pathway analysis and get a score matrix stored in <code>reducedDims</code> slot, DE analysis can be performed on this score matrix. See <a href="#performing-de-analysis-on-pathway-analysis-scores">example</a>.</p>
 </div>
 </div>
 <div class="section level2">
@@ -475,28 +476,240 @@
 <p>We can also plot the labeling on to the UMAP we got previously.</p>
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/plotSCEDimReduceColData.html">plotSCEDimReduceColData</a></span><span class="op">(</span><span class="va">sce</span>, colorBy <span class="op">=</span> <span class="st">"SingleR_hpca_fine_pruned.labels"</span>,
-                        reducedDimName <span class="op">=</span> <span class="st">"UMAP"</span>, dotSize <span class="op">=</span> <span class="fl">1</span>, legendSize <span class="op">=</span> <span class="fl">8</span><span class="op">)</span></code></pre></div>
-<p><img src="console_analysis_tutorial_files/figure-html/singleRUMAP-1.png" width="864"></p>
+                        reducedDimName <span class="op">=</span> <span class="st">"UMAP"</span><span class="op">)</span></code></pre></div>
+<p><img src="console_analysis_tutorial_files/figure-html/singleRUMAP-1.png" width="1152"></p>
+</div>
+<div class="section level2">
+<h2 id="differential-abundance">Differential Abundance<a class="anchor" aria-label="anchor" href="#differential-abundance"></a>
+</h2>
+<p>The goal of the differential abundance analysis is to determine if categorical variables such as phenotype or sample (e.g. treatment or control) are enriched in different cell clusters using the Fisher’s exact test (FET). Any categorical variables in <code>colData(sce)</code> can be used by passing the variable name to argument <code>cluster</code> or <code>variable</code>. Categories in the phenotype variable (used for <code>variable</code>) can be passed to <code>case</code> or <code>control</code>. For this example, we try to examine whether there are any <a href="#clustering">cell clusters</a> enriched in an annotated cell type <a href="#cell-type-labeling">using SingleR</a>.</p>
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># Returns a vector where TRUE for a type of NK cell</span>
+<span class="va">isNKCell</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/startsWith.html" class="external-link">startsWith</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span><span class="op">$</span><span class="va">SingleR_hpca_fine_pruned.labels</span>, <span class="st">"NK_cell"</span><span class="op">)</span>
+<span class="co"># Returns a vector where TRUE for a type of T cell</span>
+<span class="va">isTCell</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/startsWith.html" class="external-link">startsWith</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span><span class="op">$</span><span class="va">SingleR_hpca_fine_pruned.labels</span>, <span class="st">"T_cell"</span><span class="op">)</span>
+<span class="co"># Make up a variable with only categories of "NK_cell", "T_cell" and "Other".</span>
+<span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span><span class="op">$</span><span class="va">cell_type</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">isNKCell</span>, <span class="st">"NK_cell"</span>, <span class="st">"Other"</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span><span class="op">$</span><span class="va">cell_type</span><span class="op">[</span><span class="va">isTCell</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"T_cell"</span>
+<span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span><span class="op">$</span><span class="va">cell_type</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span><span class="op">$</span><span class="va">cell_type</span><span class="op">)</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"Other"</span>
+<span class="co"># Run differential abundance test</span>
+<span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/diffAbundanceFET.html">diffAbundanceFET</a></span><span class="op">(</span><span class="va">sce</span>, cluster <span class="op">=</span> <span class="st">"cluster"</span>, 
+                        variable <span class="op">=</span> <span class="st">"cell_type"</span>, 
+                        case <span class="op">=</span> <span class="st">"NK_cell"</span>, control <span class="op">=</span> <span class="st">"T_cell"</span>,
+                        analysisName <span class="op">=</span> <span class="st">"NK_VS_T"</span><span class="op">)</span></code></pre></div>
+<p>Users can get the table of result with the method below, using the <code>analysisName</code> specified when running the analysis.</p>
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/getDiffAbundanceResults.html">getDiffAbundanceResults</a></span><span class="op">(</span><span class="va">sce</span>, analysisName <span class="op">=</span> <span class="st">"NK_VS_T"</span><span class="op">)</span></code></pre></div>
+<table class="table">
+<colgroup>
+<col width="2%">
+<col width="10%">
+<col width="11%">
+<col width="10%">
+<col width="11%">
+<col width="10%">
+<col width="11%">
+<col width="11%">
+<col width="12%">
+<col width="2%">
+<col width="2%">
+<col width="2%">
+</colgroup>
+<thead><tr class="header">
+<th align="left">Cluster</th>
+<th align="left">Number of cells in cluster and in T_cell</th>
+<th align="left">Number of cells NOT in cluster and in T_cell</th>
+<th align="left">Number of cells in cluster and in NK_cell</th>
+<th align="left">Number of cells NOT in cluster and in NK_cell</th>
+<th align="left">Fraction of cells in cluster and in T_cell</th>
+<th align="left">Fraction of cells NOT in cluster and in T_cell</th>
+<th align="left">Fraction of cells in cluster and in NK_cell</th>
+<th align="left">Fraction of cells NOT in cluster and in NK_cell</th>
+<th align="left">Odds_Ratio</th>
+<th align="left">Pvalue</th>
+<th align="left">FDR</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">1</td>
+<td align="left">653</td>
+<td align="left">722</td>
+<td align="left">1</td>
+<td align="left">148</td>
+<td align="left">0.474909</td>
+<td align="left">0.525</td>
+<td align="left">0.00671</td>
+<td align="left">0.993</td>
+<td align="left">1.34e+02</td>
+<td align="left">2.74e-37</td>
+<td align="left">1.37e-36</td>
+</tr>
+<tr class="even">
+<td align="left">2</td>
+<td align="left">1</td>
+<td align="left">1374</td>
+<td align="left">0</td>
+<td align="left">149</td>
+<td align="left">0.000727</td>
+<td align="left">0.999</td>
+<td align="left">0.00000</td>
+<td align="left">1.000</td>
+<td align="left">Inf</td>
+<td align="left">1.00e+00</td>
+<td align="left">1.00e+00</td>
+</tr>
+<tr class="odd">
+<td align="left">3</td>
+<td align="left">452</td>
+<td align="left">923</td>
+<td align="left">0</td>
+<td align="left">149</td>
+<td align="left">0.328727</td>
+<td align="left">0.671</td>
+<td align="left">0.00000</td>
+<td align="left">1.000</td>
+<td align="left">Inf</td>
+<td align="left">1.10e-24</td>
+<td align="left">3.65e-24</td>
+</tr>
+<tr class="even">
+<td align="left">4</td>
+<td align="left">0</td>
+<td align="left">1375</td>
+<td align="left">0</td>
+<td align="left">149</td>
+<td align="left">0.000000</td>
+<td align="left">1.000</td>
+<td align="left">0.00000</td>
+<td align="left">1.000</td>
+<td align="left">0.00e+00</td>
+<td align="left">1.00e+00</td>
+<td align="left">1.00e+00</td>
+</tr>
+<tr class="odd">
+<td align="left">5</td>
+<td align="left">22</td>
+<td align="left">1353</td>
+<td align="left">122</td>
+<td align="left">27</td>
+<td align="left">0.016000</td>
+<td align="left">0.984</td>
+<td align="left">0.81879</td>
+<td align="left">0.181</td>
+<td align="left">3.68e-03</td>
+<td align="left">7.85e-129</td>
+<td align="left">7.85e-128</td>
+</tr>
+<tr class="even">
+<td align="left">6</td>
+<td align="left">243</td>
+<td align="left">1132</td>
+<td align="left">24</td>
+<td align="left">125</td>
+<td align="left">0.176727</td>
+<td align="left">0.823</td>
+<td align="left">0.16107</td>
+<td align="left">0.839</td>
+<td align="left">1.12e+00</td>
+<td align="left">7.34e-01</td>
+<td align="left">1.00e+00</td>
+</tr>
+<tr class="odd">
+<td align="left">7</td>
+<td align="left">0</td>
+<td align="left">1375</td>
+<td align="left">0</td>
+<td align="left">149</td>
+<td align="left">0.000000</td>
+<td align="left">1.000</td>
+<td align="left">0.00000</td>
+<td align="left">1.000</td>
+<td align="left">0.00e+00</td>
+<td align="left">1.00e+00</td>
+<td align="left">1.00e+00</td>
+</tr>
+<tr class="even">
+<td align="left">8</td>
+<td align="left">0</td>
+<td align="left">1375</td>
+<td align="left">0</td>
+<td align="left">149</td>
+<td align="left">0.000000</td>
+<td align="left">1.000</td>
+<td align="left">0.00000</td>
+<td align="left">1.000</td>
+<td align="left">0.00e+00</td>
+<td align="left">1.00e+00</td>
+<td align="left">1.00e+00</td>
+</tr>
+<tr class="odd">
+<td align="left">9</td>
+<td align="left">0</td>
+<td align="left">1375</td>
+<td align="left">0</td>
+<td align="left">149</td>
+<td align="left">0.000000</td>
+<td align="left">1.000</td>
+<td align="left">0.00000</td>
+<td align="left">1.000</td>
+<td align="left">0.00e+00</td>
+<td align="left">1.00e+00</td>
+<td align="left">1.00e+00</td>
+</tr>
+<tr class="even">
+<td align="left">10</td>
+<td align="left">4</td>
+<td align="left">1371</td>
+<td align="left">2</td>
+<td align="left">147</td>
+<td align="left">0.002909</td>
+<td align="left">0.997</td>
+<td align="left">0.01342</td>
+<td align="left">0.987</td>
+<td align="left">2.15e-01</td>
+<td align="left">1.10e-01</td>
+<td align="left">2.74e-01</td>
+</tr>
+</tbody>
+</table>
+<p>Alternatively, users can choose to directly make a plot using the two variables and the function <code><a href="../reference/plotClusterAbundance.html">plotClusterAbundance()</a></code> will automatically calculate the statistic and visualize the result. The proportion or count of each category in each cluster will be displayed in stacked bar plots:</p>
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/plotClusterAbundance.html">plotClusterAbundance</a></span><span class="op">(</span><span class="va">sce</span>, cluster <span class="op">=</span> <span class="st">"cluster"</span>, variable <span class="op">=</span> <span class="st">"cell_type"</span><span class="op">)</span></code></pre></div>
+<p><img src="console_analysis_tutorial_files/figure-html/plotClusterAbundance-1.png" width="700"></p>
 </div>
 <div class="section level2">
 <h2 id="pathway-analysis">Pathway Analysis<a class="anchor" aria-label="anchor" href="#pathway-analysis"></a>
 </h2>
 <p>For the purpose of gene set enrichment (GSE) analysis, SCTK imports VAM and GSVA as options. Both of them work by loading some user-defined gene sets (<a href="import_genesets.html">more about loading gene sets</a>), and calculating the enrichment score of each gene set in each cell. Here we will go through calling VAM to inspect the enrichment of the hallmark gene sets available in <a href="https://www.gsea-msigdb.org/gsea/msigdb/" class="external-link">MSigDB database</a>.</p>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/importGeneSetsFromMSigDB.html">importGeneSetsFromMSigDB</a></span><span class="op">(</span><span class="va">sce</span>, categoryIDs <span class="op">=</span> <span class="st">"H"</span>, species <span class="op">=</span> <span class="st">"Homo sapiens"</span><span class="op">)</span>
 <span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runVAM.html">runVAM</a></span><span class="op">(</span><span class="va">sce</span>, geneSetCollectionName <span class="op">=</span> <span class="st">"H"</span>, useAssay <span class="op">=</span> <span class="st">"logcounts"</span><span class="op">)</span></code></pre></div>
 <p>To visualize the result, we simply adopt a violin plot to show the distribution of the CDF scores of the cells, which can be, optionally, grouped by the cluster labels.</p>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">hallmark</span> <span class="op">&lt;-</span> <span class="st">"HALLMARK_INFLAMMATORY_RESPONSE"</span>
 <span class="fu"><a href="../reference/plotPathway.html">plotPathway</a></span><span class="op">(</span><span class="va">sce</span>, resultName <span class="op">=</span> <span class="st">"VAM_H_CDF"</span>, geneset <span class="op">=</span> <span class="va">hallmark</span>, groupBy <span class="op">=</span> <span class="st">"cluster"</span><span class="op">)</span></code></pre></div>
 <p><img src="console_analysis_tutorial_files/figure-html/visVAM-1.png" width="700"></p>
 <p>Note that available options for argument <code>resultName</code> and <code>geneset</code> can be printed with getter functions below.</p>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/getPathwayResultNames.html">getPathwayResultNames</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span><span class="op">)</span>
 <span class="fu"><a href="../reference/getGenesetNamesFromCollection.html">getGenesetNamesFromCollection</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, geneSetCollectionName <span class="op">=</span> <span class="st">"H"</span><span class="op">)</span></code></pre></div>
 <blockquote>
 <p>Note: In the current version of SCTK, the returned score matrices from either VAM or GSVA are stored in the <code>reducedDims</code> slot, since the feature dimensions are for the gene sets instead of the genes or subsets of genes. In the future, SCTK will adopt other types of data container for simpler operation on different types of feature sets.</p>
 </blockquote>
+<div class="section level3">
+<h3 id="performing-de-analysis-on-pathway-analysis-scores">Performing DE Analysis on Pathway Analysis Scores<a class="anchor" aria-label="anchor" href="#performing-de-analysis-on-pathway-analysis-scores"></a>
+</h3>
+<p>SCTK allows users to select the score matrix from pathway analysis to perform differential expression analysis. In this process, each geneset will be treated as the feature/gene, and comparison groups can still be set in the same way as introduced in <a href="#customized-differential-expression-analysis">DE analysis section</a>.</p>
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runDEAnalysis.html">runDEAnalysis</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, method <span class="op">=</span> <span class="st">"wilcox"</span>, 
+                     useAssay <span class="op">=</span> <span class="cn">NULL</span>, useReducedDim <span class="op">=</span> <span class="st">"VAM_H_CDF"</span>,
+                     class <span class="op">=</span> <span class="st">"cluster"</span>, classGroup1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">3</span><span class="op">)</span>, classGroup2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span><span class="op">)</span>,
+                     groupName1 <span class="op">=</span> <span class="st">"T_cells"</span>, groupName2 <span class="op">=</span> <span class="st">"monocytes"</span>, 
+                     analysisName <span class="op">=</span> <span class="st">"T_cells_VS_monocytes_VAM_H_CDF"</span><span class="op">)</span>
+<span class="fu"><a href="../reference/plotDEGHeatmap.html">plotDEGHeatmap</a></span><span class="op">(</span><span class="va">sce</span>, useResult <span class="op">=</span> <span class="st">"T_cells_VS_monocytes_VAM_H_CDF"</span>, 
+               rowLabel <span class="op">=</span> <span class="cn">TRUE</span>, rowTitle <span class="op">=</span> <span class="st">"Geneset"</span><span class="op">)</span></code></pre></div>
+<p><img src="console_analysis_tutorial_files/figure-html/pathwayDE-1.png" width="700"></p>
+</div>
 </div>
   </div>
 

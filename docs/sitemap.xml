@@ -4,93 +4,6 @@
     <loc>/404.html</loc>
   </url>
   <url>
-    <loc>/articles/articles/batch_correction.html</loc>
-  </url>
-  <url>
-    <loc>/articles/articles/celda_curated_workflow.html</loc>
-  </url>
-  <url>
-    <loc>/articles/articles/cell_type_labeling.html</loc>
-  </url>
-  <url>
-    <loc>/articles/articles/clustering.html</loc>
-  </url>
-  <url>
-    <loc>/articles/articles/cmd_import_scRNAseq_data_as_SCE.html</loc>
-  </url>
-  <url>
-    <loc>/articles/articles/cmd_qc.html</loc>
-  </url>
-  <url>
-    <loc>/articles/articles/cnsl_2d_embedding.html</loc>
-  </url>
-  <url>
-    <loc>/articles/articles/cnsl_cellqc.html</loc>
-  </url>
-  <url>
-    <loc>/articles/articles/cnsl_dimensionality_reduction.html</loc>
-  </url>
-  <url>
-    <loc>/articles/articles/cnsl_dropletqc.html</loc>
-  </url>
-  <url>
-    <loc>/articles/articles/cnsl_enrichR.html</loc>
-  </url>
-  <url>
-    <loc>/articles/articles/cnsl_feature_selection.html</loc>
-  </url>
-  <url>
-    <loc>/articles/articles/cnsl_normalization.html</loc>
-  </url>
-  <url>
-    <loc>/articles/articles/cnsl_seurat_curated_workflow.html</loc>
-  </url>
-  <url>
-    <loc>/articles/articles/console_analysis_tutorial.html</loc>
-  </url>
-  <url>
-    <loc>/articles/articles/delete_data.html</loc>
-  </url>
-  <url>
-    <loc>/articles/articles/differential_expression.html</loc>
-  </url>
-  <url>
-    <loc>/articles/articles/export_data.html</loc>
-  </url>
-  <url>
-    <loc>/articles/articles/filtering.html</loc>
-  </url>
-  <url>
-    <loc>/articles/articles/find_marker.html</loc>
-  </url>
-  <url>
-    <loc>/articles/articles/heatmap.html</loc>
-  </url>
-  <url>
-    <loc>/articles/articles/import_annotation.html</loc>
-  </url>
-  <url>
-    <loc>/articles/articles/import_data.html</loc>
-  </url>
-  <url>
-    <loc>/articles/articles/import_genesets.html</loc>
-  </url>
-  <url>
-    <loc>/articles/articles/installation.html</loc>
-  </url>
-  <url>
-    <loc>/articles/articles/pathwayAnalysis.html</loc>
-  </url>
-  <url>
-    <loc>/articles/articles/singleCellTK.html</loc>
-  </url>
-  <url>
-    <loc>/articles/articles/ui_qc.html</loc>
-  </url>
-  <url>
-    <loc>/articles/articles/visualization.html</loc>
-  </url>
-  <url>
     <loc>/articles/batch_correction.html</loc>
   </url>
   <url>
@@ -359,6 +272,9 @@
   </url>
   <url>
     <loc>/reference/getDEGTopTable.html</loc>
+  </url>
+  <url>
+    <loc>/reference/getDiffAbundanceResults.html</loc>
   </url>
   <url>
     <loc>/reference/getGenesetNamesFromCollection.html</loc>
@@ -631,9 +547,6 @@
     <loc>/reference/retrieveSCEIndex.html</loc>
   </url>
   <url>
-    <loc>/reference/runANOVA.html</loc>
-  </url>
-  <url>
     <loc>/reference/runBarcodeRankDrops.html</loc>
   </url>
   <url>
@@ -662,9 +575,6 @@
   </url>
   <url>
     <loc>/reference/runDecontX.html</loc>
-  </url>
-  <url>
-    <loc>/reference/runDESeq2.html</loc>
   </url>
   <url>
     <loc>/reference/runDimReduce.html</loc>
@@ -701,12 +611,6 @@
   </url>
   <url>
     <loc>/reference/runLimmaBC.html</loc>
-  </url>
-  <url>
-    <loc>/reference/runLimmaDE.html</loc>
-  </url>
-  <url>
-    <loc>/reference/runMAST.html</loc>
   </url>
   <url>
     <loc>/reference/runMNNCorrect.html</loc>
@@ -749,9 +653,6 @@
   </url>
   <url>
     <loc>/reference/runVAM.html</loc>
-  </url>
-  <url>
-    <loc>/reference/runWilcox.html</loc>
   </url>
   <url>
     <loc>/reference/runZINBWaVE.html</loc>

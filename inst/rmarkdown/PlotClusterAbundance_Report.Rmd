@@ -50,7 +50,7 @@ knitr::opts_chunk$set(
 This report will visualize results from the `plotClusterAbundance` function will visualize the differential abundance in two given variables, by making bar plots that presents the cell counting and fraction in different cases. The analysis presented here shows 
 
 ```{r plotting, echo = FALSE, message = FALSE}
-plotClusterAbundance(inSCE, cluster, variable)
+plotClusterAbundance(inSCE, cluster, variable, combinePlot = "none")
 ```
 
 # Session Information

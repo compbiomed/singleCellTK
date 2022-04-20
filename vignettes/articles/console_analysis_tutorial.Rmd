@@ -6,6 +6,7 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(warning = FALSE)
+debug <- FALSE
 ```
 
 ## Introduction
@@ -114,7 +115,7 @@ After examining the distributions of various QC metrics, poor quality cells will
 ```{R filter, message=FALSE, warning=FALSE}
 sce <- subsetSCECols(sce, colData = c("total > 600", "detected > 300",
                                       "scDblFinder_doublet_score < 0.8",
-                                      "subsets_mito_percent < 5"))
+                                      "mito_percent < 5"))
 
 # See number of cells after filtering
 ncol(sce)
@@ -228,10 +229,10 @@ head(topMarkers, 10)
 For visualization, SCTK has a specific heatmap plotting function for detected markers. The heatmap will take the log-normalized feature expression matrix for the values, and subset the features to only the top markers of each cluster. For the organization of the heatmap, the function groups the markers by the belonging to the clusters, and groups the cells, obviously, by clusters. Inside the grouping, the function finally performs the default hierarchical clustering. 
 
 ```{R markerHeatmap, message=FALSE, warning=FALSE, results="hold", fig.height= 8, fig.width=9}
-markerHm <- plotMarkerDiffExp(sce, topN = 5, log2fcThreshold = 0, 
-                              fdrThreshold = 0.05, minClustExprPerc = 0.5, 
-                              maxCtrlExprPerc = 0.4, minMeanExpr = 0, 
-                              rowLabel = TRUE)
+plotMarkerDiffExp(sce, topN = 5, log2fcThreshold = 0, 
+                  fdrThreshold = 0.05, minClustExprPerc = 0.5, 
+                  maxCtrlExprPerc = 0.4, minMeanExpr = 0, 
+                  rowLabel = TRUE)
 ```
 
 ### Customized Differential Expression Analysis
@@ -243,7 +244,7 @@ As we can easily tell from the heatmap above, "cluster 1" and "cluster 3" are ha
 There are multiple ways to specify the groups of cells to be compared: by either directly specifying indices of cells, or selecting groups of cells with a categorical variable in `colData`. Additionally, `runDEAnalysis()` requires a relatively sophisticated inputs for naming the analyses, including the names of the two groups, and the name of one analysis, though these are not necessary for calling the algorithms alone. By requiring these, the results of the analyses can be stored with human readable identifiers and within one single SCE object, and can be more manageable. See the [DE documentation](differential_expression.html) for the detail. 
 
 ```{R de, message=FALSE, warning=FALSE, results="hold"}
-sce <- runDEAnalysis(inSCE = sce, method = "wilcox", 
+sce <- runDEAnalysis(inSCE = sce, method = "wilcox", useAssay = "logcounts",
                      class = "cluster", classGroup1 = c(1), classGroup2 = c(3),
                      groupName1 = "cluster1", groupName2 = "cluster3", 
                      analysisName = "cluster1_VS_3")
@@ -251,9 +252,11 @@ sce <- runDEAnalysis(inSCE = sce, method = "wilcox",
 
 Similarly to the marker detection section, SCTK also has a DE analysis specific heatmap plotting function, `plotDEGHeatmap()`. Here, users can just easily enter the `analysisName` specified for one run and the function will automatically arrange the output. The heatmap is also splitted into a "checker board", by the "conditions" (i.e. the groups selected when running `runDEAnalysis()`) and the "regulation" (i.e. "up" if the log2 fold change is positive in "group1" against "group2"). 
 
-```{R deHeatmap, message=FALSE, warning=FALSE, results="hold"}
-deHm <- plotDEGHeatmap(sce, useResult = "cluster1_VS_3", rowLabel = TRUE)
+```{R deHeatmap, message=FALSE, warning=FALSE, results="hold", fig.height=7}
+plotDEGHeatmap(sce, useResult = "cluster1_VS_3", rowLabel = TRUE)
 ```
+
+Additionally, the input matrix for DE analysis can be specified with either `useAssay` or `useReducedDim`. When one of them is specified, the other has to be `NULL`, to avoid ambiguity. For example, when users perform a pathway analysis and get a score matrix stored in `reducedDims` slot, DE analysis can be performed on this score matrix. See [example](#performing-de-analysis-on-pathway-analysis-scores).
 
 ## Cell Type Labeling
 
@@ -269,9 +272,46 @@ The result of labeling will again be saved to `colData` slot of the SCE object. 
 
 We can also plot the labeling on to the UMAP we got previously.  
 
-```{R singleRUMAP, message=FALSE, warning=FALSE, fig.width=9}
+```{R singleRUMAP, message=FALSE, warning=FALSE, fig.width=12}
 plotSCEDimReduceColData(sce, colorBy = "SingleR_hpca_fine_pruned.labels",
-                        reducedDimName = "UMAP", dotSize = 1, legendSize = 8)
+                        reducedDimName = "UMAP")
+```
+
+## Differential Abundance
+
+The goal of the differential abundance analysis is to determine if categorical variables such as phenotype or sample (e.g. treatment or control) are enriched in different cell clusters using the Fisher's exact test (FET). Any categorical variables in `colData(sce)` can be used by passing the variable name to argument `cluster` or `variable`. Categories in the phenotype variable (used for `variable`) can be passed to `case` or `control`. For this example, we try to examine whether there are any [cell clusters](#clustering) enriched in an annotated cell type [using SingleR](#cell-type-labeling). 
+
+```{R diffAbundance, fig.width=10}
+# Returns a vector where TRUE for a type of NK cell
+isNKCell <- startsWith(colData(sce)$SingleR_hpca_fine_pruned.labels, "NK_cell")
+# Returns a vector where TRUE for a type of T cell
+isTCell <- startsWith(colData(sce)$SingleR_hpca_fine_pruned.labels, "T_cell")
+# Make up a variable with only categories of "NK_cell", "T_cell" and "Other".
+colData(sce)$cell_type <- ifelse(isNKCell, "NK_cell", "Other")
+colData(sce)$cell_type[isTCell] <- "T_cell"
+colData(sce)$cell_type[is.na(colData(sce)$cell_type)] <- "Other"
+# Run differential abundance test
+sce <- diffAbundanceFET(sce, cluster = "cluster", 
+                        variable = "cell_type", 
+                        case = "NK_cell", control = "T_cell",
+                        analysisName = "NK_VS_T")
+```
+
+Users can get the table of result with the method below, using the `analysisName` specified when running the analysis. 
+
+```{R getDiffAbundanceCode, eval=FALSE}
+getDiffAbundanceResults(sce, analysisName = "NK_VS_T")
+```
+
+```{R getDiffAbundanceShow, echo=FALSE}
+res <- getDiffAbundanceResults(sce, analysisName = "NK_VS_T")
+knitr::kable(format(res, digits = 3))
+```
+
+Alternatively, users can choose to directly make a plot using the two variables and the function `plotClusterAbundance()` will automatically calculate the statistic and visualize the result. The proportion or count of each category in each cluster will be displayed in stacked bar plots:
+
+```{R plotClusterAbundance, fig.height=7}
+plotClusterAbundance(sce, cluster = "cluster", variable = "cell_type")
 ```
 
 ## Pathway Analysis
@@ -299,4 +339,16 @@ getGenesetNamesFromCollection(inSCE = sce, geneSetCollectionName = "H")
 
 >Note: In the current version of SCTK, the returned score matrices from either VAM or GSVA are stored in the `reducedDims` slot, since the feature dimensions are for the gene sets instead of the genes or subsets of genes. In the future, SCTK will adopt other types of data container for simpler operation on different types of feature sets. 
 
-## Differential Abundance
+### Performing DE Analysis on Pathway Analysis Scores
+
+SCTK allows users to select the score matrix from pathway analysis to perform differential expression analysis. In this process, each geneset will be treated as the feature/gene, and comparison groups can still be set in the same way as introduced in [DE analysis section](#customized-differential-expression-analysis). 
+
+```{R pathwayDE, message=FALSE, warning=FALSE}
+sce <- runDEAnalysis(inSCE = sce, method = "wilcox", 
+                     useAssay = NULL, useReducedDim = "VAM_H_CDF",
+                     class = "cluster", classGroup1 = c(1, 3), classGroup2 = c(4),
+                     groupName1 = "T_cells", groupName2 = "monocytes", 
+                     analysisName = "T_cells_VS_monocytes_VAM_H_CDF")
+plotDEGHeatmap(sce, useResult = "T_cells_VS_monocytes_VAM_H_CDF", 
+               rowLabel = TRUE, rowTitle = "Geneset")
+```

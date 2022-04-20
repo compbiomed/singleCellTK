@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.4.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.5.1</span>
       </span>
     </div>
 
@@ -32,13 +32,13 @@
   <a href="../articles/installation.html">Installation</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
     Documentation
      
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Data</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Data</a>
       <ul class="dropdown-menu" role="menu"><li>
           <a href="../articles/import_data.html">Import Data</a>
         </li>
@@ -56,7 +56,7 @@
         </li>
       </ul></li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">QC &amp; Filtering</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">QC &amp; Filtering</a>
       <ul class="dropdown-menu" role="menu"><li>
           <a href="../articles/cnsl_dropletqc.html">Droplet QC (R console)</a>
         </li>
@@ -71,7 +71,7 @@
         </li>
       </ul></li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Normalization &amp; Batch Correction</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Normalization &amp; Batch Correction</a>
       <ul class="dropdown-menu" role="menu"><li>
           <a href="../articles/cnsl_normalization.html">Normalization</a>
         </li>
@@ -80,7 +80,7 @@
         </li>
       </ul></li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Feature Selection &amp; Dimensionality Reduction</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Feature Selection &amp; Dimensionality Reduction</a>
       <ul class="dropdown-menu" role="menu"><li>
           <a href="../articles/cnsl_feature_selection.html">Feature Selection</a>
         </li>
@@ -95,7 +95,7 @@
       <a href="../articles/clustering.html">Clustering</a>
     </li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Differential Expression &amp; Cell Type Labeling</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Differential Expression &amp; Cell Type Labeling</a>
       <ul class="dropdown-menu" role="menu"><li>
           <a href="../articles/differential_expression.html">Differential Expression</a>
         </li>
@@ -107,7 +107,7 @@
         </li>
       </ul></li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Pathway &amp; Enrichment Analysis</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Pathway &amp; Enrichment Analysis</a>
       <ul class="dropdown-menu" role="menu"><li>
           <a href="../articles/cnsl_enrichR.html">EnrichR</a>
         </li>
@@ -116,7 +116,7 @@
         </li>
       </ul></li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Curated Workflows</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Curated Workflows</a>
       <ul class="dropdown-menu" role="menu"><li>
           <a href="../articles/cnsl_seurat_curated_workflow.html">Seurat</a>
         </li>
@@ -125,7 +125,7 @@
         </li>
       </ul></li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Visualization</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Visualization</a>
       <ul class="dropdown-menu" role="menu"><li>
           <a href="../articles/visualization.html">General Visualization</a>
         </li>
@@ -135,7 +135,7 @@
       </ul></li>
   </ul></li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
     Tutorials
      
     <span class="caret"></span>
@@ -205,8 +205,40 @@
   colLabelSize <span class="op">=</span> <span class="fl">8</span>,
   rowDend <span class="op">=</span> <span class="cn">TRUE</span>,
   colDend <span class="op">=</span> <span class="cn">TRUE</span>,
-  title <span class="op">=</span> <span class="st">"SCE Heatmap"</span>,
+  title <span class="op">=</span> <span class="cn">NULL</span>,
   rowTitle <span class="op">=</span> <span class="st">"Genes"</span>,
+  colTitle <span class="op">=</span> <span class="st">"Cells"</span>,
+  rowGap <span class="op">=</span> <span class="fu">grid</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/grid/unit.html" class="external-link">unit</a></span><span class="op">(</span><span class="fl">0</span>, <span class="st">"mm"</span><span class="op">)</span>,
+  colGap <span class="op">=</span> <span class="fu">grid</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/grid/unit.html" class="external-link">unit</a></span><span class="op">(</span><span class="fl">0</span>, <span class="st">"mm"</span><span class="op">)</span>,
+  border <span class="op">=</span> <span class="cn">FALSE</span>,
+  colorScheme <span class="op">=</span> <span class="cn">NULL</span>,
+  <span class="va">...</span>
+<span class="op">)</span>
+
+<span class="fu">plotSCEDimReduceHeatmap</span><span class="op">(</span>
+  <span class="va">inSCE</span>,
+  <span class="va">useReducedDim</span>,
+  featureIndex <span class="op">=</span> <span class="cn">NULL</span>,
+  cellIndex <span class="op">=</span> <span class="cn">NULL</span>,
+  doLog <span class="op">=</span> <span class="cn">FALSE</span>,
+  scale <span class="op">=</span> <span class="cn">FALSE</span>,
+  trim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">2</span>, <span class="fl">2</span><span class="op">)</span>,
+  cellIndexBy <span class="op">=</span> <span class="st">"rownames"</span>,
+  colDataName <span class="op">=</span> <span class="cn">NULL</span>,
+  featureAnnotations <span class="op">=</span> <span class="cn">NULL</span>,
+  cellAnnotations <span class="op">=</span> <span class="cn">NULL</span>,
+  featureAnnotationColor <span class="op">=</span> <span class="cn">NULL</span>,
+  cellAnnotationColor <span class="op">=</span> <span class="cn">NULL</span>,
+  rowSplitBy <span class="op">=</span> <span class="cn">NULL</span>,
+  colSplitBy <span class="op">=</span> <span class="cn">NULL</span>,
+  rowLabel <span class="op">=</span> <span class="cn">FALSE</span>,
+  colLabel <span class="op">=</span> <span class="cn">FALSE</span>,
+  rowLabelSize <span class="op">=</span> <span class="fl">8</span>,
+  colLabelSize <span class="op">=</span> <span class="fl">8</span>,
+  rowDend <span class="op">=</span> <span class="cn">TRUE</span>,
+  colDend <span class="op">=</span> <span class="cn">TRUE</span>,
+  title <span class="op">=</span> <span class="cn">NULL</span>,
+  rowTitle <span class="op">=</span> <span class="st">"Dimensions"</span>,
   colTitle <span class="op">=</span> <span class="st">"Cells"</span>,
   rowGap <span class="op">=</span> <span class="fu">grid</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/grid/unit.html" class="external-link">unit</a></span><span class="op">(</span><span class="fl">0</span>, <span class="st">"mm"</span><span class="op">)</span>,
   colGap <span class="op">=</span> <span class="fu">grid</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/grid/unit.html" class="external-link">unit</a></span><span class="op">(</span><span class="fl">0</span>, <span class="st">"mm"</span><span class="op">)</span>,
@@ -219,10 +251,10 @@
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>inSCE</dt>
-<dd><p><a href="https://rdrr.io/pkg/SingleCellExperiment/man/SingleCellExperiment.html" class="external-link">SingleCellExperiment</a> inherited object.</p></dd>
+<dd><p>SingleCellExperiment inherited object.</p></dd>
 <dt>useAssay</dt>
 <dd><p>character. A string indicating the assay name that
-provides the expression level to plot.</p></dd>
+provides the expression level to plot. Only for <code>plotSCEHeatmap</code>.</p></dd>
 <dt>doLog</dt>
 <dd><p>Logical scalar. Whether to do <code>log(assay + 1)</code>
 transformation on the assay indicated by <code>useAssay</code>. Default
@@ -244,15 +276,16 @@ trimmed to their nearst bound. Default <code>c(-2, 2)</code></p></dd>
 <dt>featureIndexBy</dt>
 <dd><p>A single character specifying a column name of
 <code>rowData(inSCE)</code>, or a vector of the same length as <code>nrow(inSCE)</code>,
-where we search for the non-rowname feature indices. Default
-<code>"rownames"</code>.</p></dd>
+where we search for the non-rowname feature indices. Not applicable for 
+<code>plotSCEDimReduceHeatmap</code>. Default <code>"rownames"</code>.</p></dd>
 <dt>cellIndexBy</dt>
 <dd><p>A single character specifying a column name of
 <code>colData(inSCE)</code>, or a vector of the same length as <code>ncol(inSCE)</code>,
 where we search for the non-rowname cell indices. Default <code>"rownames"</code>.</p></dd>
 <dt>rowDataName</dt>
 <dd><p>character. The column name(s) in <code>rowData</code> that need
-to be added to the annotation. Default <code>NULL</code>.</p></dd>
+to be added to the annotation. Not applicable for 
+<code>plotSCEDimReduceHeatmap</code>. Default <code>NULL</code>.</p></dd>
 <dt>colDataName</dt>
 <dd><p>character. The column name(s) in <code>colData</code> that need
 to be added to the annotation. Default <code>NULL</code>.</p></dd>
@@ -303,7 +336,7 @@ customized info. Default <code>FALSE</code>.</p></dd>
 <dt>colDend</dt>
 <dd><p>Whether to display column dendrogram. Default <code>TRUE</code>.</p></dd>
 <dt>title</dt>
-<dd><p>The main title of the whole plot. Default <code>"SCE Heatmap"</code></p></dd>
+<dd><p>The main title of the whole plot. Default <code>NULL</code>.</p></dd>
 <dt>rowTitle</dt>
 <dd><p>The subtitle for the rows. Default <code>"Genes"</code>.</p></dd>
 <dt>colTitle</dt>
@@ -325,10 +358,13 @@ a value. Can be generated by <code><a href="https://rdrr.io/pkg/circlize/man/col
 Default <code>NULL</code>.</p></dd>
 <dt>...</dt>
 <dd><p>Other arguments passed to <code><a href="https://rdrr.io/pkg/ComplexHeatmap/man/Heatmap.html" class="external-link">Heatmap</a></code>.</p></dd>
+<dt>useReducedDim</dt>
+<dd><p>character. A string indicating the reducedDim name that
+provides the expression level to plot. Only for <code>plotSCEDimReduceHeatmap</code>.</p></dd>
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A <code><a href="https://rdrr.io/pkg/ComplexHeatmap/man/Heatmap.html" class="external-link">Heatmap</a></code> object</p>
+    <p>A <code><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></code> object.</p>
     </div>
     <div id="author">
     <h2>Author</h2>
@@ -340,7 +376,6 @@ Default <code>NULL</code>.</p></dd>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">scExample</span>, package <span class="op">=</span> <span class="st">"singleCellTK"</span><span class="op">)</span></span>
 <span class="r-in"><span class="fu">plotSCEHeatmap</span><span class="op">(</span><span class="va">sce</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">3</span>,<span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">]</span>, useAssay <span class="op">=</span> <span class="st">"counts"</span><span class="op">)</span></span>
 <span class="r-plt img"><img src="plotSCEHeatmap-1.png" alt="" width="700" height="433"></span>
-<span class="r-plt img"><img src="plotSCEHeatmap-2.png" alt="" width="700" height="433"></span>
 </code></pre></div>
     </div>
   </div>
@@ -355,7 +390,7 @@ Default <code>NULL</code>.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.</p>
 </div>
 
       </footer></div>
