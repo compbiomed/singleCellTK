@@ -44,7 +44,7 @@ exportSCEtoAnnData <- function(sce,
             "If one of these have been previously run to install the modules,",
             "make sure to run selectSCTKConda() or selectSCTKVirtualEnvironment(),",
             " respectively, if R has been restarted since the module installation.",
-            " Alternatively, Scrublet can be installed on the local machine",
+            " Alternatively, 'scanpy' can be installed on the local machine",
             "with pip (e.g. pip install --user scanpy) and then the 'use_python()'",
             " function from the 'reticulate' package can be used to select the",
             " correct Python environment.")
