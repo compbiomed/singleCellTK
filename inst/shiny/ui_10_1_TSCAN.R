@@ -25,12 +25,12 @@ shinyPanelTSCAN <- fluidPage(
           4,
           panel(
             
-            selectInput("TSCANReddim", "Select a reducedDim:", currreddim),
+            selectInput("TSCANReddim", "reducedDim Name:", currreddim),
             numericInput(inputId = "seed_TSCAN",
                          label = "Seed value for reproducibility of result:",
                          value = 12345,
                          step = 1),
-            selectInput("clusterName", "Choose cell cluster ", "Auto generate clusters", selected = NULL),
+            selectInput("clusterName", "Name of Clustering Result: ", "Auto generate clusters", selected = NULL),
             withBusyIndicatorUI(actionButton("TSCANRun", "Run TSCAN")),
             
           )
@@ -51,7 +51,7 @@ shinyPanelTSCAN <- fluidPage(
                              align = "right"),
                     
                     tags$h3("Visualization Parameter"),
-                    selectInput("TSCANVisRedDim", "Select a reducedDim for visualization:", currreddim),
+                    selectInput("TSCANVisRedDim", "reducedDim Name:", currreddim),
                     
                     actionBttn(
                       inputId = "TSCANPlot",
@@ -218,7 +218,7 @@ shinyPanelTSCAN <- fluidPage(
                                    
                                    tags$h3("Visualization Parameter"),
                                    
-                                   selectInput("DEClusterRedDimNames", "Select a reducedDim for visualization:", currreddim),
+                                   selectInput("DEClusterRedDimNames", "reducedDim Name:", currreddim),
                                    selectInput("useVisCluster", "Select branched cluster of interest:",
                                                choices = "", multiple = FALSE),
                                   uiOutput("clusterPathIndex"),
@@ -301,7 +301,7 @@ shinyPanelTSCAN <- fluidPage(
           4,
           panel(
             textInput("geneName", "Enter gene name", "Gene Name"),
-            selectInput("genesRedDimNames", "Select a reducedDim for visualization:", currreddim),
+            selectInput("genesRedDimNames", "reducedDim Name:", currreddim),
             pickerInput("useClusterForPlotGene", "Select cluster of interest:", choices = "", multiple = TRUE, options = list(
               #`actions-box` = TRUE,
               `none-selected-text` = "All clusters selected"
