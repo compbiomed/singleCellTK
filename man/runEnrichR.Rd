@@ -6,28 +6,33 @@
 \usage{
 runEnrichR(
   inSCE,
-  glist = NULL,
-  geneSetCollectionName = NULL,
-  geneSetName = NULL,
-  db = NULL
+  features,
+  analysisName,
+  db = NULL,
+  by = "rownames",
+  featureName = NULL
 )
 }
 \arguments{
 \item{inSCE}{A \linkS4class{SingleCellExperiment} object.}
 
-\item{glist}{Character vector, selected genes for enrichment analysis using. 
-Default \code{NULL}.}
+\item{features}{Character vector, selected genes for enrichment analysis.}
 
-\item{geneSetCollectionName}{Character. The name of an imported geneset 
-collection. Default \code{NULL}.}
-
-\item{geneSetName}{Character. The name of a geneset that should be found in 
-the geneset collection specified by \code{geneSetCollectionName}. Default 
-\code{NULL}.}
+\item{analysisName}{A string that identifies each specific analysis}
 
 \item{db}{Character vector. Selected database name(s) from the enrichR 
-database list. If \code{NULL} then enrichR will be run on all the available 
-databases on the enrichR database. Default \code{NULL}}
+database list. If \code{NULL} then EnrichR will be run on all the available 
+databases on the enrichR database. See details. Default \code{NULL}}
+
+\item{by}{Character. From where should we find the \code{features}? 
+\code{"rownames"} for from \code{rownames(inSCE)}, otherwise, from a column
+of feature metadata (\code{rowData(inSCE)[[by]]}). See details. Default 
+\code{"rownames"}.}
+
+\item{featureName}{Character. Indicates the actual feature identifiers to be
+passed to EnrichR. Can be \code{"rownames"}, a column in feature metadata 
+(\code{rowData(inSCE)[[featureName]]}), or a character vector with its length
+equals to \code{nrow(inSCE)}. See details. Default \code{"rownames"}.}
 }
 \value{
 Updates \code{inSCE} metadata with a data.frame of enrichment terms 
@@ -37,18 +42,29 @@ overlapping in the respective databases along with p-values, z-scores etc.
 Run EnrichR on SCE object
 }
 \details{
-The list of gene to be analyzed could be specified in two ways. 
-Either by directly passing a character vector to \code{glist} and leave 
-\code{geneSetCollectionName} and \code{geneSetName} as \code{NULL}, or by 
-specifying the latter two arguments and leave \code{glist} as \code{NULL}.
+EnrichR works by querying the specified \code{features} to its online 
+databases, thus it requires the Internet connection. 
 
 Available \code{db} options could be shown by running 
 \code{enrichR::listEnrichrDbs()$libraryName}
+
+This function checks for the existence of features in the SCE object. When 
+\code{features} do not have a match in \code{rownames(inSCE)}, users may 
+try to specify \code{by} to pass the check. 
+
+EnrichR expects gene symbols/names as the input (i.e. Ensembl or entrez ID 
+might not work). When specified \code{features} are not qualified for this, 
+users may try to specify \code{featureName} to change the identifier type to
+pass to EnrichR.
 }
 \examples{
 data("mouseBrainSubsetSCE")
-mouseBrainSubsetSCE <- runEnrichR(mouseBrainSubsetSCE, glist = "Cmtm5", 
-                                  db = "GO_Cellular_Component_2017")
+if (Biobase::testBioCConnection()) {
+  mouseBrainSubsetSCE <- runEnrichR(mouseBrainSubsetSCE, features = "Cmtm5", 
+                                    db = "GO_Cellular_Component_2017",
+                                    analysisName = "analysis1")
+}
+
 }
 \seealso{
 \code{\link{getEnrichRResult}}

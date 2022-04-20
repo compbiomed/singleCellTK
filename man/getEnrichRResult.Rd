@@ -7,16 +7,18 @@
 \alias{getEnrichRResult<-,SingleCellExperiment-method}
 \title{Get or Set EnrichR Result}
 \usage{
-getEnrichRResult(inSCE) <- value
+getEnrichRResult(inSCE, analysisName) <- value
 
-getEnrichRResult(inSCE)
+getEnrichRResult(inSCE, analysisName)
 
-\S4method{getEnrichRResult}{SingleCellExperiment}(inSCE)
+\S4method{getEnrichRResult}{SingleCellExperiment}(inSCE, analysisName)
 
-\S4method{getEnrichRResult}{SingleCellExperiment}(inSCE) <- value
+\S4method{getEnrichRResult}{SingleCellExperiment}(inSCE, analysisName) <- value
 }
 \arguments{
 \item{inSCE}{A \linkS4class{SingleCellExperiment} object.}
+
+\item{analysisName}{A string that identifies each specific analysis}
 
 \item{value}{The EnrichR result table}
 }
@@ -29,9 +31,12 @@ Get or Set EnrichR Result
 }
 \examples{
 data("mouseBrainSubsetSCE")
-mouseBrainSubsetSCE <- runEnrichR(mouseBrainSubsetSCE, glist = "Cmtm5", 
-                                  db = "GO_Cellular_Component_2017")
-result <- getEnrichRResult(mouseBrainSubsetSCE)
+if (Biobase::testBioCConnection()) {
+  mouseBrainSubsetSCE <- runEnrichR(mouseBrainSubsetSCE, features = "Cmtm5", 
+                                    db = "GO_Cellular_Component_2017",
+                                    analysisName = "analysis1")
+  result <- getEnrichRResult(mouseBrainSubsetSCE, "analysis1")
+}
 }
 \seealso{
 \code{\link{runEnrichR}}
