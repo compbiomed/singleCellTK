@@ -68,7 +68,8 @@ runScDblFinder <- function(inSCE,
                             samples = sample,
                             artificialDoublets = simDoublets,
                             k = nNeighbors,
-                            verbose = FALSE
+                            verbose = FALSE,
+                            BPPARAM = BPPARAM
                             ))
   if(length(rm.ix) > 0){
     inSCE <- mergeSCEColData(inSCE1 = inSCEOrig, inSCE2 = inSCE)

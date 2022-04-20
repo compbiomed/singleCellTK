@@ -326,6 +326,11 @@ shinyServer(function(input, output, session) {
     updateSelectInput(session, "ApproachSelect_Xaxis", choices = currreddim)
     updateSelectInput(session, "ApproachSelect_Yaxis", choices = currreddim)
     updateSelectInput(session, "ApproachSelect_Colorby", choices = currreddim)
+    updateSelectInput(session, "TSCANReddim", choices = currreddim)
+    updateSelectInput(session, "TSCANVisRedDim", choices = currreddim)
+    updateSelectInput(session, "DEClusterRedDimNames", choices = currreddim)
+    updateSelectInput(session, "plotGenesRedDimNames", choices = currreddim)
+    updateSelectInput(session, "genesRedDimNames", choices = currreddim)
     availPathwayRes <- getPathwayResultNames(vals$counts)
     updateSelectizeInput(session, "pathwayRedDimNames", 
                          choices = availPathwayRes)
@@ -3537,6 +3542,337 @@ shinyServer(function(input, output, session) {
     }
   })
 
+  #-----------------------------------------------------------------------------
+  # Trajectory Analysis####
+  #-----------------------------------------------------------------------------
+  observeEvent(input$navbar, {
+    if(!is.null(vals$counts)){
+      if(input$navbar == "TSCANWorkflow"){
+        updateSelectInput(session, "TSCANassayselect", choices = c(names(assays(vals$counts))))
+        updateColDataNames()
+        updateSelectInput(session, "clusterName", choices = c("Auto generate clusters", clustResults$names))
+        
+      }
+    }
+  })
+  
+  ###################################################
+  ###  Run STEP 1: TSCAN
+  ###################################################
+  observeEvent(input$TSCANRun, {
+    if (is.null(vals$counts)){
+      shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
+    }  
+    if(input$TSCANReddim == ""){
+      shinyalert::shinyalert("Must select a reducedDim! If none available, compute one in the Dimensionality Reduction tab.")
+    }
+    else {
+      withProgress(message = "Plotting pseudotime values...", max = 1, value = 1, {
+      withBusyIndicatorServer("TSCANRun", {
+        vals$counts <- runTSCAN(inSCE = vals$counts,
+                                useReducedDim = input$TSCANReddim,
+                                cluster = colData(vals$counts)[[input$clusterName]],
+                                seed = input$seed_TSCAN)
+        showNotification("Pseudotime values generated")
+        updateAssayInputs()
+        updateReddimInputs()
+        
+        output$TSCANPlot <- renderPlot({
+          isolate({
+            plotTSCANResults(inSCE = vals$counts, 
+                             useReducedDim = input$TSCANReddim)
+            
+          })
+        })
+        
+        
+          terminalNodes <- colnames(getTSCANResults(vals$counts, analysisName = "Pseudotime", pathName = "pseudo"))
+          terminalNodesList <- getTSCANResults(vals$counts, analysisName = "Pseudotime", pathName = "pathIndexList")
+          
+          updatePickerInput(session, "pathIndexx",
+                            choices = c(terminalNodes),
+                            choicesOpt = list(content=terminalNodesList),
+                            selected=NULL)
+            
+        clusterNamesList <- sort(unique(colData(vals$counts)$TSCAN_clusters))
+        updatePickerInput(session, "useClusterForPlotGene",
+                          choices = clusterNamesList,
+                          selected = NULL)
+        
+        updateSelectInput(session, "useCluster",
+                          choices = getTSCANResults(vals$counts, analysisName = "Pseudotime", pathName = "branchClustersList"),
+                          selected = NULL)
+        
+      })
+      })
+    }
+    updateCollapse(session = session, "TSCANUI", style = list("Calculate Pseudotime Values" = "success"))
+  })
+  
+  #plot results
+  observeEvent(input$TSCANPlot, {
+    output$TSCANPlot <- renderPlot({
+      isolate({
+        plotTSCANResults(inSCE = vals$counts, 
+                         useReducedDim = input$TSCANVisRedDim)
+      })
+    })
+    session$sendCustomMessage("close_dropDownTSCAN", "")
+  })
+  
+  ###################################################
+  ###  Run STEP 2: Identify expressive genes
+  ###################################################
+  
+  output$discardCluster <- renderUI({
+    pickerInput("discardCluster", "Select cluster to discard (OPTIONAL):",
+                choices = c(getTSCANResults(vals$counts, analysisName = "Pseudotime", pathName = "pathClusters")[[input$pathIndexx]]),
+                selected = NULL, multiple = TRUE, options = list(
+                  #`actions-box` = TRUE,
+                  `none-selected-text` = "No cluster discarded"))
+  })
+    
+  observeEvent(input$findExpGenes, {
+    withBusyIndicatorServer("findExpGenes", {
+      vals$counts <- runTSCANDEG(inSCE = vals$counts,
+                                 pathIndex = input$pathIndexx,
+                                 useAssay = input$TSCANassayselect,
+                                 discardCluster = c(input$discardCluster),
+                                 log2fcThreshold = input$logFcThreshold_TSCAN)
+      
+      showNotification("Expressive genes identified")                          
+      
+      withProgress(message = "Plotting heatmap", max = 1, value = 1, {
+      output$heatmapPlot <- renderPlot({
+        isolate({
+         plotTSCANPseudotimeHeatmap(inSCE = vals$counts, 
+                                   pathIndex = input$pathIndexx, 
+                                   topN = 5)
+          })
+      })
+      })
+      
+      withProgress(message = "Plotting upregulated genes", max = 1, value = 1, {
+      output$UpregGenesPlot <- renderPlot({
+        isolate({
+          plotTSCANPseudotimeGenes(inSCE = vals$counts, 
+                                   pathIndex = input$pathIndexx, 
+                                   direction = "increasing")
+        })
+      })
+      })
+      
+      withProgress(message = "Plotting downregulated genes", max = 1, value = 1, {
+        output$DownregGenesPlot <- renderPlot({
+          isolate({
+            plotTSCANPseudotimeGenes(inSCE = vals$counts, 
+                                     pathIndex = input$pathIndexx, 
+                                     direction = "decreasing")
+          })
+        })
+      })
+      
+      updateSelectInput(session, "expPathIndex",
+                        choices = names(getTSCANResults(vals$counts, analysisName = "DEG")),
+                        selected = NULL)
+        
+    }) 
+    updateCollapse(session = session, "TSCANUI", style = list("Identify Genes Differentially Expressed For Path" = "success"))
+  })
+  
+  
+  
+  #plot results on Expression plot
+  observeEvent(input$DEGExpPlot, {  
+    output$heatmapPlot <- renderPlot({
+      isolate({
+        plotTSCANPseudotimeHeatmap(inSCE = vals$counts, 
+                                   pathIndex = input$expPathIndex, 
+                                   topN = input$topGenes)
+        
+      }) 
+    })
+    session$sendCustomMessage("close_dropDownDEGExp", "")
+  })
+  
+  observeEvent(input$DEGExpPlot, {  
+    output$UpregGenesPlot <- renderPlot({
+      isolate({
+        plotTSCANPseudotimeGenes(inSCE = vals$counts, 
+                                 pathIndex = input$expPathIndex, 
+                                 direction = "increasing",
+                                 n = input$topGenes)
+        
+      }) 
+    })
+    session$sendCustomMessage("close_dropDownDEGExp", "")
+  })
+  
+  observeEvent(input$DEGExpPlot, {  
+    output$DownregGenesPlot <- renderPlot({
+      isolate({
+        plotTSCANPseudotimeGenes(inSCE = vals$counts, 
+                                 pathIndex = input$expPathIndex, 
+                                 direction = "decreasing", 
+                                 n = input$topGenes)
+        
+      }) 
+    })
+    session$sendCustomMessage("close_dropDownDEGExp", "")
+  })
+  
+  
+  
+  
+  ###################################################
+  ###  Run STEP 3: Identify DE genes in specific cluster 
+  ###################################################
+  observeEvent(input$findDEGenes, {
+    withBusyIndicatorServer("findDEGenes", {
+      
+      vals$counts <- runTSCANClusterDEAnalysis(inSCE = vals$counts,
+                                               useClusters = input$useCluster,
+                                               useAssay = input$TSCANassayselect,
+                                               fdrThreshold = input$fdrThreshold_TSCAN)
+      
+      showNotification("DE genes for cluster found")
+      
+      clusterAnalysisNamesList <- names(getTSCANResults(vals$counts, analysisName = "ClusterDEAnalysis"))
+      terminalNodesList <- c(colnames(getTSCANResults(vals$counts, analysisName = "ClusterDEAnalysis", pathName = input$useCluster)$terminalNodes))
+      
+      updateSelectInput(session, "useVisCluster",
+                        choices = clusterAnalysisNamesList,
+                        selected = NULL)
+      
+      updateSelectInput(session, "useListCluster",
+                        choices = clusterAnalysisNamesList,
+                        selected = NULL)
+      
+      updateSelectInput(session, "clusterPathIndex",
+                        choices = terminalNodesList,
+                        selected = NULL)
+      
+      updateSelectInput(session, "clusterListPathIndex",
+                        choices = terminalNodesList,
+                        selected = NULL)
+      
+      #plot cluster pseudo values by default
+      withProgress(message = "Plotting pseudo values for cluster", max = 1, value = 1, {
+      output$DEClusterPlot <- renderPlot({
+        isolate({
+          plotClusterPseudo(inSCE = vals$counts, 
+                            useClusters = input$useCluster, 
+                            pathIndex = NULL,
+                            useReducedDim = input$TSCANReddim)
+        })
+      })
+      })
+      
+      #print list of DE genes by default
+      withProgress(message = "List of DE genes generated", max = 1, value = 1, {
+      output$DEClusterListPlot <- DT::renderDataTable({
+        isolate({
+        df <- as.data.frame(getTSCANResults(vals$counts, analysisName = "ClusterDEAnalysis", pathName = input$useCluster)$DEgenes[1])
+        DT::datatable(
+          df
+          #filter = 'top', options = list(stateSave = TRUE, scrollX = TRUE)
+        )
+        })
+      })
+      })
+      
+      }) 
+    updateCollapse(session = session, "TSCANUI", style = list("Identify Genes Differentially Expressed For Branched Cluster" = "success"))
+    
+  })
+  
+  #plot results for step 3
+  output$clusterPathIndex <- renderUI({
+    selectInput("clusterPathIndex", "Select Path Index:",
+                      choices = c(colnames(getTSCANResults(vals$counts, analysisName = "ClusterDEAnalysis", pathName = input$useVisCluster)$terminalNodes)),
+                      selected = NULL)
+  })
+  
+  
+  observeEvent(input$DEClusterPlot, {  
+   output$DEClusterPlot <- renderPlot({
+      isolate({
+        plotClusterPseudo(inSCE = vals$counts, 
+                          useClusters = input$useVisCluster, 
+                          pathIndex = input$clusterPathIndex,
+                          useReducedDim = input$DEClusterRedDimNames)
+      })
+    })
+    
+    session$sendCustomMessage("close_dropDownDECluster", "")
+  })
+  
+  #Generate list of DE genes
+  output$clusterListPathIndex <- renderUI({
+    selectInput("clusterListPathIndex", "Select Path Index:",
+                      choices = c(colnames(getTSCANResults(vals$counts, analysisName = "ClusterDEAnalysis", pathName = input$useListCluster)$terminalNodes)),
+                      selected = NULL)
+  })
+  
+  observeEvent(input$DEClusterListPlot, {  
+    output$DEClusterListPlot <- DT::renderDataTable({
+      isolate({
+      df <- as.data.frame(getTSCANResults(vals$counts, analysisName = "ClusterDEAnalysis", pathName = input$useListCluster)$DEgenes[input$clusterListPathIndex])
+      DT::datatable(
+        df
+        #filter = 'top', options = list(stateSave = TRUE, scrollX = TRUE)
+      )
+      })
+    })
+    
+    session$sendCustomMessage("close_dropDownDEList", "")
+  })
+  
+  
+  ###################################################
+  ###  Run STEP 4: Plot gene of interest 
+  ###################################################
+  observeEvent(input$runPlotGene, {  
+    output$updatePlotGene <- renderPlot({
+      isolate({
+        plotTSCANDEgenes(inSCE = vals$counts, 
+                         geneSymbol = input$geneName, 
+                         useClusters = c(input$useClusterForPlotGene),
+                         useReducedDim = input$genesRedDimNames)
+      })
+    })
+    # Show downstream analysis options
+    callModule(module = nonLinearWorkflow, id = "nlw-Traj", parent = session, de = TRUE, pa = TRUE)
+    
+    updateCollapse(session = session, "TSCANUI", style = list("Plot expression of individual genes" = "success"))
+    
+  })
+  
+  
+  
+  
+  
+  ##############################################################
+  
+  observeEvent(input$closeDropDownTSCAN,{
+    session$sendCustomMessage("close_dropDownTSCAN", "")
+  })
+  
+  observeEvent(input$closeDropDownDEGExp,{
+    session$sendCustomMessage("close_dropDownDEGExp", "")
+  })
+  
+  observeEvent(input$closeDropDownDECluster,{
+    session$sendCustomMessage("close_dropDownDECluster", "")
+  })
+  
+  observeEvent(input$closeDropDownDEList,{
+    session$sendCustomMessage("close_dropDownDEList", "")
+  })
+  
+  
+  
+  
   #-----------------------------------------------------------------------------
   # Page 3.2: Celda ####
   #-----------------------------------------------------------------------------
