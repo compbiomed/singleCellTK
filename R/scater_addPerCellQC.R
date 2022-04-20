@@ -113,7 +113,7 @@ runPerCellQC <- function(inSCE,
 
   ## Add mito gene collection from built-in mito gene sets in SCTK package
   if (is.null(mitoGeneLocation)) {
-    message("'mitoGeneLocation' not specified or specified as NULL. Skip quantifying mitochondrial genes.")
+    #message("'mitoGeneLocation' not specified or specified as NULL.")
   } else {
     mitoGS <- NULL
     if (!is.null(mitoRef) & !is.null(mitoIDType)) {
