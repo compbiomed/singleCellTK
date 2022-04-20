@@ -3550,7 +3550,7 @@ shinyServer(function(input, output, session) {
       if(input$navbar == "TSCANWorkflow"){
         updateSelectInput(session, "TSCANassayselect", choices = c(names(assays(vals$counts))))
         updateColDataNames()
-        updateSelectInput(session, "clusterName", choices = c("NULL", clustResults$names))
+        updateSelectInput(session, "clusterName", choices = c("Auto generate clusters", clustResults$names))
         
       }
     }
@@ -3571,7 +3571,7 @@ shinyServer(function(input, output, session) {
       withBusyIndicatorServer("TSCANRun", {
         vals$counts <- runTSCAN(inSCE = vals$counts,
                                 useReducedDim = input$TSCANReddim,
-                                cluster = colData(vals$counts)$input$clusterName,
+                                cluster = colData(vals$counts)[[input$clusterName]],
                                 seed = input$seed_TSCAN)
         showNotification("Pseudotime values generated")
         updateAssayInputs()
@@ -3585,36 +3585,28 @@ shinyServer(function(input, output, session) {
           })
         })
         
-        if("pseudo" %in% names(getTSCANResults(vals$counts, analysisName = "Pseudotime"))){
-            terminalNodes <- colnames(getTSCANResults(vals$counts, analysisName = "Pseudotime", pathName = "pseudo"))
-            updateSelectInput(session, "pathIndexx",
-                              choices = c(terminalNodes),
-                              selected=NULL)
-            updateSelectInput(session, "heatmapPathIndex",
-                              choices = c(terminalNodes),
-                              selected=NULL)
-            updateSelectInput(session, "expPathIndex",
-                              choices = c(terminalNodes),
-                              selected=NULL)
-            
-        } else {
-            p("Run TSCAN first!")
-        }
         
+          terminalNodes <- colnames(getTSCANResults(vals$counts, analysisName = "Pseudotime", pathName = "pseudo"))
+          terminalNodesList <- getTSCANResults(vals$counts, analysisName = "Pseudotime", pathName = "pathIndexList")
+          
+          updatePickerInput(session, "pathIndexx",
+                            choices = c(terminalNodes),
+                            choicesOpt = list(content=terminalNodesList),
+                            selected=NULL)
+            
         clusterNamesList <- sort(unique(colData(vals$counts)$TSCAN_clusters))
-        updateSelectInput(session, "discardCluster",
+        updatePickerInput(session, "useClusterForPlotGene",
                           choices = clusterNamesList,
                           selected = NULL)
+        
         updateSelectInput(session, "useCluster",
-                          choices = clusterNamesList,
+                          choices = getTSCANResults(vals$counts, analysisName = "Pseudotime", pathName = "branchClustersList"),
                           selected = NULL)
-        updateSelectInput(session, "useClusterForPlotGene",
-                          choices = clusterNamesList,
-                          selected = NULL)
+        
       })
       })
     }
-    updateCollapse(session = session, "TSCANUI", style = list("Calculate Pseudotime values" = "success"))
+    updateCollapse(session = session, "TSCANUI", style = list("Calculate Pseudotime Values" = "success"))
   })
   
   #plot results
@@ -3631,8 +3623,16 @@ shinyServer(function(input, output, session) {
   ###################################################
   ###  Run STEP 2: Identify expressive genes
   ###################################################
-  observeEvent(input$findExpGenes, {
+  
+  output$discardCluster <- renderUI({
+    pickerInput("discardCluster", "Select cluster to discard (OPTIONAL):",
+                choices = c(getTSCANResults(vals$counts, analysisName = "Pseudotime", pathName = "pathClusters")[[input$pathIndexx]]),
+                selected = NULL, multiple = TRUE, options = list(
+                  #`actions-box` = TRUE,
+                  `none-selected-text` = "No cluster discarded"))
+  })
     
+  observeEvent(input$findExpGenes, {
     withBusyIndicatorServer("findExpGenes", {
       vals$counts <- runTSCANDEG(inSCE = vals$counts,
                                  pathIndex = input$pathIndexx,
@@ -3643,7 +3643,7 @@ shinyServer(function(input, output, session) {
       showNotification("Expressive genes identified")                          
       
       withProgress(message = "Plotting heatmap", max = 1, value = 1, {
-      output$DEGPlot <- renderPlot({
+      output$heatmapPlot <- renderPlot({
         isolate({
          plotTSCANPseudotimeHeatmap(inSCE = vals$counts, 
                                    pathIndex = input$pathIndexx, 
@@ -3652,8 +3652,8 @@ shinyServer(function(input, output, session) {
       })
       })
       
-      withProgress(message = "Plotting Expression plot", max = 1, value = 1, {
-      output$DEGExpPlot <- renderPlot({
+      withProgress(message = "Plotting upregulated genes", max = 1, value = 1, {
+      output$UpregGenesPlot <- renderPlot({
         isolate({
           plotTSCANPseudotimeGenes(inSCE = vals$counts, 
                                    pathIndex = input$pathIndexx, 
@@ -3662,36 +3662,67 @@ shinyServer(function(input, output, session) {
       })
       })
       
+      withProgress(message = "Plotting downregulated genes", max = 1, value = 1, {
+        output$DownregGenesPlot <- renderPlot({
+          isolate({
+            plotTSCANPseudotimeGenes(inSCE = vals$counts, 
+                                     pathIndex = input$pathIndexx, 
+                                     direction = "decreasing")
+          })
+        })
+      })
+      
+      updateSelectInput(session, "expPathIndex",
+                        choices = names(getTSCANResults(vals$counts, analysisName = "DEG")),
+                        selected = NULL)
         
     }) 
-    updateCollapse(session = session, "TSCANUI", style = list("Identify Expressive genes" = "success"))
+    updateCollapse(session = session, "TSCANUI", style = list("Identify Genes Differentially Expressed For Path" = "success"))
   })
   
-  #plot results on heatmap
-  observeEvent(input$DEGPlot, {  
-    output$DEGPlot <- renderPlot({
-     isolate({
-      plotTSCANPseudotimeHeatmap(inSCE = vals$counts, 
-                                pathIndex = input$heatmapPathIndex, 
-                                topN = input$topGenes)
-    
-      }) 
-      })
-    session$sendCustomMessage("close_dropDownDEG", "")
-  })
+  
   
   #plot results on Expression plot
   observeEvent(input$DEGExpPlot, {  
-    output$DEGExpPlot <- renderPlot({
+    output$heatmapPlot <- renderPlot({
       isolate({
-        plotTSCANPseudotimeGenes(inSCE = vals$counts, 
+        plotTSCANPseudotimeHeatmap(inSCE = vals$counts, 
                                    pathIndex = input$expPathIndex, 
-                                   direction = input$upDownRegulation)
+                                   topN = input$topGenes)
         
       }) 
     })
     session$sendCustomMessage("close_dropDownDEGExp", "")
   })
+  
+  observeEvent(input$DEGExpPlot, {  
+    output$UpregGenesPlot <- renderPlot({
+      isolate({
+        plotTSCANPseudotimeGenes(inSCE = vals$counts, 
+                                 pathIndex = input$expPathIndex, 
+                                 direction = "increasing",
+                                 n = input$topGenes)
+        
+      }) 
+    })
+    session$sendCustomMessage("close_dropDownDEGExp", "")
+  })
+  
+  observeEvent(input$DEGExpPlot, {  
+    output$DownregGenesPlot <- renderPlot({
+      isolate({
+        plotTSCANPseudotimeGenes(inSCE = vals$counts, 
+                                 pathIndex = input$expPathIndex, 
+                                 direction = "decreasing", 
+                                 n = input$topGenes)
+        
+      }) 
+    })
+    session$sendCustomMessage("close_dropDownDEGExp", "")
+  })
+  
+  
+  
   
   ###################################################
   ###  Run STEP 3: Identify DE genes in specific cluster 
@@ -3751,7 +3782,7 @@ shinyServer(function(input, output, session) {
       })
       
       }) 
-    updateCollapse(session = session, "TSCANUI", style = list("Identify DE genes" = "success"))
+    updateCollapse(session = session, "TSCANUI", style = list("Identify Genes Differentially Expressed For Branched Cluster" = "success"))
     
   })
   
@@ -3806,40 +3837,25 @@ shinyServer(function(input, output, session) {
       isolate({
         plotTSCANDEgenes(inSCE = vals$counts, 
                          geneSymbol = input$geneName, 
-                         useClusters = NULL,
+                         useClusters = c(input$useClusterForPlotGene),
                          useReducedDim = input$genesRedDimNames)
       })
     })
     # Show downstream analysis options
     callModule(module = nonLinearWorkflow, id = "nlw-Traj", parent = session, de = TRUE, pa = TRUE)
     
-    updateCollapse(session = session, "TSCANUI", style = list("Visualize genes of interest" = "success"))
+    updateCollapse(session = session, "TSCANUI", style = list("Plot expression of individual genes" = "success"))
     
   })
   
   
-  observeEvent(input$updatePlotGene, {  
-    output$updatePlotGene <- renderPlot({
-      isolate({
-        plotTSCANDEgenes(inSCE = vals$counts, 
-                         geneSymbol = input$geneName, 
-                         useClusters = input$useClusterForPlotGene,
-                         useReducedDim = input$plotGenesRedDimNames)
-      })
-    })
-    
-    session$sendCustomMessage("close_dropDownGenePlot", "")
-  })
+  
   
   
   ##############################################################
   
   observeEvent(input$closeDropDownTSCAN,{
     session$sendCustomMessage("close_dropDownTSCAN", "")
-  })
-  
-  observeEvent(input$closeDropDownDEG,{
-    session$sendCustomMessage("close_dropDownDEG", "")
   })
   
   observeEvent(input$closeDropDownDEGExp,{
@@ -3854,9 +3870,7 @@ shinyServer(function(input, output, session) {
     session$sendCustomMessage("close_dropDownDEList", "")
   })
   
-  observeEvent(input$closeDropDownGenePlot,{
-    session$sendCustomMessage("close_dropDownGenePlot", "")
-  })
+  
   
   
   #-----------------------------------------------------------------------------

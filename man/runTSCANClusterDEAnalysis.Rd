@@ -37,14 +37,14 @@ for the branching event
 \examples{
 data("scExample", package = "singleCellTK")
 sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
-rowData(sce)$Symbol = rowData(sce)$feature_name
-rownames(sce) = rowData(sce)$Symbol
-sce <- singleCellTK::scaterlogNormCounts(sce, assayName = "logcounts")
-sce <- scater::runPCA(sce)
-sce <- scater::runTSNE (sce, dimred = "PCA")
+rowData(sce)$Symbol <- rowData(sce)$feature_name
+rownames(sce) <- rowData(sce)$Symbol
+sce <- scaterlogNormCounts(sce, assayName = "logcounts")
+sce <- runDimReduce(inSCE = sce, method = "scaterPCA", useAssay = "logcounts", reducedDimName = "PCA")
+sce <- runDimReduce(inSCE = sce, method = "rTSNE", useReducedDim = "PCA", reducedDimName = "TSNE")
 sce <- runTSCAN (inSCE = sce, useReducedDim = "PCA", seed = NULL)
-sce <- runTSCANDEG(inSCE = sce, pathIndex = 3)
-sce <- runTSCANClusterDEAnalysis(inSCE = sce, useClusters = 2)
+sce <- runTSCANDEG(inSCE = sce, pathIndex = 4)
+sce <- runTSCANClusterDEAnalysis(inSCE = sce, useClusters = 5)
 }
 \author{
 Nida Pervaiz
