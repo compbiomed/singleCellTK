@@ -157,6 +157,7 @@ source("ui_05_3_cellTypeLabel.R", local = TRUE) # creates shinyPanelLabelCellTyp
 #source("ui_06_1_pathway.R", local = TRUE) #creates shinyPanelPathway variable
 source("ui_06_2_enrichR.R", local = TRUE) #creates shinyPanelEnrichR variable
 source("ui_06_1_pathwayAnalysis.R", local = TRUE) #creates shinyPanelvam variable
+source("ui_10_1_TSCAN.R", local = TRUE) #creates shinyPanelTSCAN variable
 source("ui_07_subsample.R", local = TRUE) #creates shinyPanelSubsample variable
 source("ui_08_2_cellviewer.R", local = TRUE) #creates shinyPanelCellViewer variable
 source("ui_08_3_heatmap.R", local = TRUE) #creates shinyPanelHeatmap variable
@@ -247,6 +248,11 @@ shinyUI(
 
 
       ),
+      navbarMenu(
+        "Trajectory Analysis",
+        tabPanel("TSCAN", value = "TSCANWorkflow", shinyPanelTSCAN)
+      ),
+      
       tabPanel("Sample Size Calculator", shinyPanelSubsample),
       navbarMenu(
         "Curated Workflows",
