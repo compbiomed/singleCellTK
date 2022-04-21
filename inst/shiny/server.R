@@ -331,7 +331,7 @@ shinyServer(function(input, output, session) {
     updateSelectInput(session, "DEClusterRedDimNames", choices = currreddim)
     updateSelectInput(session, "plotGenesRedDimNames", choices = currreddim)
     updateSelectInput(session, "genesRedDimNames", choices = currreddim)
-    availPathwayRes <- getPathwayResultNames(vals$counts)
+    availPathwayRes <- suppressWarnings(getPathwayResultNames(vals$counts))
     updateSelectizeInput(session, "pathwayRedDimNames", 
                          choices = availPathwayRes)
   }

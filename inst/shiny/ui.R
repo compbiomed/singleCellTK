@@ -62,7 +62,7 @@ source("module_filterTable.R")
 
 docs.base <- paste0("https://www.camplab.net/sctk/v",
                     package.version("singleCellTK"), "/")
-docs.artPath <- paste0(docs.base, "articles/articles/")
+docs.artPath <- paste0(docs.base, "articles/")
 
 #test internet connection for enrichR connectivity
 internetConnection <- suppressWarnings(Biobase::testBioCConnection())
