@@ -3888,7 +3888,7 @@ shinyServer(function(input, output, session) {
   modsplit <- reactiveVal()
   cellsplit <- reactiveVal(NULL)
 
-  observeEvent(input$celdamodsplit, {
+  observeEvent(input$celdamodsplit, withConsoleMsgRedirect({
     removeTab(inputId = "celdaModsplitTabset", target = "Perplexity Plot")
     removeTab(inputId = "celdaModsplitTabset", target = "Perplexity Difference Plot")
     appendTab(inputId = "celdaModsplitTabset", tabPanel(title = "Rate of perplexity change",
@@ -3942,7 +3942,7 @@ shinyServer(function(input, output, session) {
     showNotification("Module splitting complete.")
     shinyjs::show(id = "celdaLselect")
     shinyjs::show(id = "celdaLbtn")
-  })
+  }))
 
   observeEvent(input$celdaLbtn, {
     vals$counts <- subsetCeldaList(modsplit(), params = list(L = input$celdaLselect))
@@ -3969,7 +3969,7 @@ shinyServer(function(input, output, session) {
     }
   })
 
-  observeEvent(input$celdacellsplit, {
+  observeEvent(input$celdacellsplit, withConsoleMsgRedirect ({
     withBusyIndicatorServer("celdacellsplit", {
       cellsplit(recursiveSplitCell(vals$counts, useAssay = input$celdaassayselect, initialK = input$celdaKinit, maxK = input$celdaKmax,
                                         yInit = celdaModules(vals$counts)))
@@ -3994,7 +3994,7 @@ shinyServer(function(input, output, session) {
     updateNumericInput(session, "celdaKselect", min = input$celdaKinit, max = input$celdaKmax, value = input$celdaKinit)
     shinyjs::show(id = "celdaKselect")
     shinyjs::show(id = "celdaKbtn")
-  })
+  }))
 
   observeEvent(input$celdaKbtn, {
     vals$counts <- subsetCeldaList(cellsplit(), params = list(K = input$celdaKselect))
