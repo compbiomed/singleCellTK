@@ -70,14 +70,12 @@ for(i in 1:(((maxResolution-minResolution)*10)+1)){
   data <- runSeuratFindClusters(data, useReduction = "pca", resolution = j, verbose = FALSE)
   j <- j + 0.1
 }
-
-cat("run clustering")
 ```
 
 <!-- Plot -->
 ```{r, echo=FALSE, results='asis', warning=FALSE, message=FALSE, eval = showClusterDesc}
 cat("### Different resolutions {.tabset -} \n\n")
-cat("Seurat uses a *resolution parameter* that sets the granularity of the clustering, with increased values leading to a greater number of identified clusters. The choice of resolution is slightly subjective and often varies on the size of the input data. Typically, for larger datasets, the optimal resolution often increases. The different clustering results are provided below using a set of different resolutions (ranging from 0.3 to 1.5) which can be visualized using tSNE and UMAP plots below:")
+cat("Seurat uses a *resolution parameter* that sets the granularity of the clustering, with increased values leading to a greater number of identified clusters. The choice of resolution is slightly subjective and often varies on the size of the input data. Typically, for larger datasets, the optimal resolution often increases. The different clustering results are provided below using a set of different resolutions (ranging from ", minResolution, " to ",  maxResolution, ") which can be visualized using tSNE and UMAP plots below:")
 ```
 
 ```{r, echo=FALSE}
@@ -94,7 +92,6 @@ if(!showClusterDesc){
 
 ```{r, results='asis', warning=FALSE, message=FALSE, eval = !(plotTSNE && !is.null(metadata(data)$seurat$obj@reductions$tsne))}
 data <- runSeuratTSNE(data, useReduction = "pca", dims = significant_PC)
-cat("run tsne")
 ```
 
 ```{r, echo=FALSE, results='asis', warning=FALSE, message=FALSE, eval=plotTSNE}
@@ -125,12 +122,10 @@ for(i in 1:(((maxResolution-minResolution)*10)+1)){
   print(p)
   cat("\n\n")
 }
-
 ```
 
 ```{r, results='asis', warning=FALSE, message=FALSE, eval = !(plotUMAP && !is.null(metadata(data)$seurat$obj@reductions$umap))}
 data <- runSeuratUMAP(data, useReduction = "pca", dims = significant_PC)
-cat("run umap")
 ```
 
 ```{r, echo=FALSE, results='asis', warning=FALSE, message=FALSE, eval=plotUMAP}
@@ -164,8 +159,13 @@ for(i in 1:(((maxResolution-minResolution)*10)+1)){
 }
 ```
 
-> The data was clustered using the *`r significant_PC`* principal components previously computed using the community detection based *louvain* algorithm. Using this method, *13, 16, 17, 19, 20, 21* clusters were identified by using a resolution of *0.8, 0.9, 1.0, 1.1* respectively. 
-
 ```{r, echo=FALSE}
-saveRDS(data, paste0(outputDir, "SeuratReport", "-", gsub(" ", "_", Sys.Date()), ".rds"))
+j <- minResolution
+numClustersAllRes <- NULL
+for(i in 1:(((maxResolution-minResolution)*10)+1)){
+  numClustersAllRes <- c(numClustersAllRes, length(unique(colData(data)[[paste0("Seurat_louvain_Resolution", j)]])))
+  j <- j + 0.1
+}
 ```
+
+> The data was clustered using the *`r significant_PC`* principal components previously computed using the community detection based *louvain* algorithm. Using this method, `r numClustersAllRes` clusters were identified by using a resolution of `r seq(minResolution, maxResolution, 0.1)` respectively. 

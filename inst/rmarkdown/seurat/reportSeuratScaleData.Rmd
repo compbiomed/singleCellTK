@@ -1,5 +1,5 @@
 ---
-title: "Scale"
+title: "Seurat Scale Data"
 author: "`r params$authors`"
 date: "`r format(Sys.time(), '%B %d, %Y')`"
 params:
@@ -51,9 +51,8 @@ Standardizing gene expression values is considered necessary to ensure that dime
 
 > The variable features identified previously were scaled using *z-score* scaling method and the output expression values were clipped to maximum and minimum value of 10 & -10 respectively.
 
-```{r Seurat Scaling Data, warning=FALSE, eval=is.null(metadata(data)$seurat$scaledAssay) || forceRun}
+```{r, warning=FALSE, eval=is.null(metadata(data)$seurat$scaledAssay) || forceRun}
 data <- runSeuratScaleData(inSCE = data, model = "linear", verbose = FALSE)
-cat("run scaledAssay")
 ```
 
 ```{r, echo=FALSE, include=FALSE}
