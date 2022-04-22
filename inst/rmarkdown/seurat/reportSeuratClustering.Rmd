@@ -1,0 +1,171 @@
+---
+title: "Clustering"
+author: "`r params$authors`"
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+params:
+  subtitle: !r NULL
+  authors: !r NULL
+  sce: !r NULL
+  outputPath: !r NULL
+  showSession: TRUE
+  pdf: TRUE
+  biological.group: !r NULL
+  phenotype.groups: !r NULL
+  runClustering: TRUE
+  plotTSNE: TRUE
+  plotUMAP: TRUE
+  minResolution: 0.3
+  maxResolution: 1.5
+  numClusters: 10
+  significant_PC: 10
+  forceRun: FALSE
+output:
+  html_document:
+    toc: yes
+    toc_float: yes
+    number_sections: yes
+    theme: cosmo
+    code_folding: hide
+    self_contained: false
+  pdf_document:
+    toc: yes
+subtitle: "`r params$subtitle`"
+editor_options:
+  chunk_output_type: console
+---
+```{r, echo=FALSE}
+if(!exists("showClusterDesc")) showClusterDesc <- TRUE
+if(!exists("headingClust")) headingClust <- "#"
+```
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+library(Seurat)
+library(dplyr)
+library(cowplot)
+library(RColorBrewer)
+library(ggplot2)
+library(knitr)
+library(kableExtra)
+library(SingleCellExperiment)
+library(scater)
+library(gridExtra)
+library(grid)
+library(ggpubr)
+library(patchwork)
+library(singleCellTK)
+```
+
+```{r, echo=FALSE, results='asis', warning=FALSE, message=FALSE, eval = showClusterDesc}
+cat(headingClust," Clustering\n\n")
+
+cat("Clustering helps in the identification of inherent cell-types in the data in an unsupervised manner by discovering the natural clusters that may exist on the basis of the transcriptome. Seurat uses the principal components for its graph-based clustering approach where it iteratively groups cells with similar expression patterns together into highly interconnected communities.  
+
+The clustering results can then be visualized using non-linear dimensionality reduction techniques including tSNE and UMAP. The goal of these algorithms is essentially to understand the structure of the data in high-dimensional space in order to place similar cells together in low-dimensional space thus making visualizing clusters much more intuitive. Cells in the data within the graph-based clusters determined above should co-localize on these plots. ")
+```
+
+<!-- Compute -->
+```{r, results='asis', warning=FALSE, message=FALSE,  eval = !(runClustering && all(paste0("Seurat_louvain_Resolution", seq(from = minResolution, to = maxResolution, by=0.1)) %in% names(colData(data))))}
+j <- minResolution
+for(i in 1:(((maxResolution-minResolution)*10)+1)){
+  data <- runSeuratFindClusters(data, useReduction = "pca", resolution = j, verbose = FALSE)
+  j <- j + 0.1
+}
+```
+
+<!-- Plot -->
+```{r, echo=FALSE, results='asis', warning=FALSE, message=FALSE, eval = showClusterDesc}
+cat("### Different resolutions {.tabset -} \n\n")
+cat("Seurat uses a *resolution parameter* that sets the granularity of the clustering, with increased values leading to a greater number of identified clusters. The choice of resolution is slightly subjective and often varies on the size of the input data. Typically, for larger datasets, the optimal resolution often increases. The different clustering results are provided below using a set of different resolutions (ranging from ", minResolution, " to ",  maxResolution, ") which can be visualized using tSNE and UMAP plots below:")
+```
+
+```{r, echo=FALSE}
+if(!showClusterDesc){
+  headingTSNEUMAP <- "###"
+  headingRES <- "####"
+  headingClust <- "#####"
+}else{
+  headingTSNEUMAP <- "####"
+  headingRES <- "#####"
+  headingClust <- "######"
+}
+```
+
+```{r, results='asis', warning=FALSE, message=FALSE, eval = !(plotTSNE && !is.null(metadata(data)$seurat$obj@reductions$tsne))}
+data <- runSeuratTSNE(data, useReduction = "pca", dims = significant_PC)
+```
+
+```{r, echo=FALSE, results='asis', warning=FALSE, message=FALSE, eval=plotTSNE}
+cat(headingTSNEUMAP, " tSNE {.tabset .tabset-pills -}\n\n")
+
+j <- minResolution
+
+for(i in 1:(((maxResolution-minResolution)*10)+1)){
+  cat(headingRES, " RES ", j, " {.tabset -} \n\n")
+  cat(headingClust," Clusters {-} \n\n")
+  p <- plotSeuratReduction(data, useReduction = "tsne", groupBy = paste0("Seurat_louvain_Resolution", j), showLegend = TRUE)
+  j <- j + 0.1
+  print(p)
+  cat("\n\n")
+  
+  cat(headingClust," Samples {-} \n\n")
+      p <- plotSeuratReduction(data, useReduction = "tsne", groupBy = biological.group, showLegend = TRUE)
+  print(p)
+  cat("\n\n")
+  
+    cat(headingClust," Samples separated {-} \n\n")
+      p <- plotSeuratReduction(data, useReduction = "tsne", splitBy = biological.group, showLegend = TRUE)
+  print(p)
+  cat("\n\n")
+  
+      cat(headingClust," Phenotype variable:", phenotype.groups," {-} \n\n")
+      p <- plotSeuratReduction(data, useReduction = "tsne", groupBy = phenotype.groups, showLegend = TRUE)
+  print(p)
+  cat("\n\n")
+}
+```
+
+```{r, results='asis', warning=FALSE, message=FALSE, eval = !(plotUMAP && !is.null(metadata(data)$seurat$obj@reductions$umap))}
+data <- runSeuratUMAP(data, useReduction = "pca", dims = significant_PC)
+```
+
+```{r, echo=FALSE, results='asis', warning=FALSE, message=FALSE, eval=plotUMAP}
+cat(headingTSNEUMAP, " UMAP {.tabset .tabset-pills -}\n\n")
+
+j <- minResolution
+
+for(i in 1:(((maxResolution-minResolution)*10)+1)){
+  cat(headingRES, " RES ", j, " {.tabset -} \n\n")
+  cat(headingClust," Clusters {-} \n\n")
+  p <- plotSeuratReduction(data, useReduction = "umap", groupBy = paste0("Seurat_louvain_Resolution", j), showLegend = TRUE)
+  j <- j + 0.1
+  
+  print(p)
+  
+  cat("\n\n")
+  cat(headingClust," Samples {-} \n\n")
+  p <- plotSeuratReduction(data, useReduction = "umap", groupBy = biological.group, showLegend = TRUE)
+  print(p)
+  cat("\n\n")
+  
+    cat(headingClust," Samples separated {-} \n\n")
+  p <- plotSeuratReduction(data, useReduction = "umap", splitBy = biological.group, showLegend = TRUE)
+  print(p)
+  cat("\n\n")
+  
+      cat(headingClust," Phenotype variable:", phenotype.groups," {-} \n\n")
+  p <- plotSeuratReduction(data, useReduction = "umap", groupBy = phenotype.groups, showLegend = TRUE)
+  print(p)
+  cat("\n\n")
+}
+```
+
+```{r, echo=FALSE}
+j <- minResolution
+numClustersAllRes <- NULL
+for(i in 1:(((maxResolution-minResolution)*10)+1)){
+  numClustersAllRes <- c(numClustersAllRes, length(unique(colData(data)[[paste0("Seurat_louvain_Resolution", j)]])))
+  j <- j + 0.1
+}
+```
+
+> The data was clustered using the *`r significant_PC`* principal components previously computed using the community detection based *louvain* algorithm. Using this method, `r numClustersAllRes` clusters were identified by using a resolution of `r seq(minResolution, maxResolution, 0.1)` respectively. 

@@ -91,7 +91,9 @@ shinyPanelCelda <- fluidPage(
                                     )
                                 )
                             )
-                        )
+                         )
+                       )
+                      )
                     ),
                     style = "primary"
                 ),
@@ -239,7 +241,5 @@ shinyPanelCelda <- fluidPage(
             ),
             nonLinearWorkflowUI(id = "nlw-celda")
         )
-    )
-)
-
+   
         

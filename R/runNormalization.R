@@ -83,7 +83,7 @@ runNormalization <- function(inSCE,
     #Perform 'Normalization' - normalizationMethod is selected
     if(normalizationMethod %in% seuratMethods){
       if(normalizationMethod == "SCTransform"){
-        tempSCE <- seuratSCTransform(
+        tempSCE <- runSeuratSCTransform(
           inSCE = inSCE,
           normAssayName = outAssayName,
           useAssay = useAssay,
@@ -92,7 +92,7 @@ runNormalization <- function(inSCE,
         tag <- "transformed"
       }
       else{
-        tempSCE <- seuratNormalizeData(
+        tempSCE <- runSeuratNormalizeData(
           inSCE = inSCE,
           normalizationMethod = normalizationMethod,
           useAssay = useAssay,

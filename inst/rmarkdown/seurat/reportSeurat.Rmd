@@ -1,0 +1,75 @@
+---
+title: "Single Cell Analysis with Seurat using singleCellTK Package"
+author: "`r params$authors`"
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+params:
+  subtitle: !r NULL
+  authors: !r NULL
+  sce: !r NULL
+  biological.group: !r NULL
+  phenotype.groups: !r NULL
+  selected.markers: !r NULL
+  clustering.resolution: 0.8
+  variable.features: 2000
+  pc.count: 50
+  outputPath: !r NULL
+  showSession: TRUE
+  pdf: TRUE
+  runHVG: TRUE
+  plotHVG: TRUE
+  runDimRed: TRUE
+  plotJackStraw: FALSE
+  plotElbowPlot: TRUE
+  plotHeatmaps: TRUE
+  runClustering: TRUE
+  plotTSNE: TRUE
+  plotUMAP: TRUE
+  minResolution: 0.3
+  maxResolution: 1.5 
+  runMSClusters: TRUE
+  runMSBioGroup: TRUE
+  forceRun: FALSE
+output:
+  html_document:
+    toc: yes
+    toc_float: yes
+    number_sections: yes
+    theme: cosmo
+    code_folding: hide
+    self_contained: false
+  pdf_document:
+    toc: yes
+subtitle: "`r params$subtitle`"
+editor_options:
+  chunk_output_type: console
+---
+
+```{r}
+sampleNames <- unique(colData(data)[[biological.group]])
+```
+
+<!-- Seurat Run -->
+
+```{r, echo=FALSE, results='asis', warning=FALSE, message=FALSE}
+showSession <- FALSE
+seuratRun <- knitr::knit_child('reportSeuratRun.Rmd', quiet = TRUE, envir = environment())
+```
+
+<!-- Seurat Results -->
+
+```{r, echo=FALSE, results='asis', warning=FALSE, message=FALSE}
+showSession <- TRUE
+seuratResults <- knitr::knit_child('reportSeuratResults.Rmd', quiet = TRUE, envir = environment())
+```
+
+# Summary {-}
+<!-- Summary -->
+<!-- some variables still need to be included, e.g. from deg -->
+> The input data included *`r numFeatures`* features and *`r numCells`* cells from *`r numSamples`* samples divided through the group *`r biological.group`* namely *`r sampleNames`*. The *`r assayNames(data)[1]`* feature count matrix from the data was normalized using *LogNormalize* method which normalized as well as log-transformed the data. From *`r numFeatures`* total features, a subset of *`r variable.features`* features that exhibited high cell-to-cell variation were selected for the downstream analysis to better capture the biological variation using *vst* (mean-to-variance) feature selection method. This subset of features was then scaled (z-score) using *linear model* method and trimmed to a maximum and minimum value of *10* and *-10* respectively. PCA was run on this scaled subset of features and *`r pc.count`* components were computed from which top *`r significant_PC`* significant components were selected for subsequent clustering analysis. Using the *louvain* algorithm that uses community-based detection to identify clusters with resolution set to *`r 0.8`*, clustering was performed on the scaled subset of features that identified *`r numClusters`* clusters in the data. These clusters were then used to run differential expression using *wilcox* test and identified *`r numMarkerGenesCluster`* genes differentially expressed between clusters at significance criteria of *q-value < 0.05*. The gene markers that defined the main biological group *`r biological.group`* were identified using *wilcox* test that highlighted *`r numMarkerGenesBio`* marker genes at *q-value < 0.05* significance criteria. Additionatlly, markers *`r selected.markers`* from the input pre-selected markers were detected and visualized over UMAP plot.
+
+<!-- Display -->
+
+```{r, echo=FALSE, results='asis', warning=FALSE, message=FALSE}
+cat(seuratRun, sep = '\n')
+cat(seuratResults, sep = '\n')
+```

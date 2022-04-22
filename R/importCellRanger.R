@@ -398,6 +398,9 @@
             class = class,
             delayedArray = delayedArray)
         res[[i]] <- scei
+        
+        
+
     }
 
     sce <- do.call(SingleCellExperiment::cbind, res)

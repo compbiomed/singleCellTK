@@ -139,7 +139,7 @@ sce <- runNormalization(sce, useAssay = "logcounts",
 Selecting highly variable genes (HVG) for downstream analyses is recommended, since a subset of variable features can speed up the computation and reduce the noise being introduced. SCTK wraps the methods used in [Seurat](https://satijalab.org/seurat/) and [Scran](https://bioconductor.org/packages/release/bioc/html/scran.html). We recommend keeping at least 2,000-5,000 HVGs. In the example code, we use the "VST" method from Seurat, and select the top 2,000 genes. 
 
 ```{R hvg, message=FALSE, warning=FALSE}
-sce <- seuratFindHVG(sce, useAssay = "counts", hvgMethod = "vst")
+sce <- runSeuratFindHVG(sce, useAssay = "counts", hvgMethod = "vst")
 sce <- getTopHVG(sce, method = "vst", n = 2000, altExp = "hvg")
 plotTopHVG(sce, method = "vst")
 ```
@@ -179,7 +179,7 @@ Similarly as the steps above, `runScranSNN()` allows various types of input matr
 sce <- runScranSNN(sce, useReducedDim = "PCA", clusterName = "cluster", algorithm = "louvain", k = 4)
 ```
 
-Meanwhile, in the Seurat Curated Workflow, the clustering is also done with an SNN graph, but the wrapper function alone, `seuratFindClusters()`, would be hard to use out of the curated workflow.  
+Meanwhile, in the Seurat Curated Workflow, the clustering is also done with an SNN graph, but the wrapper function alone, `runSeuratFindClusters()`, would be hard to use out of the curated workflow.  
 
 In the other curated workflow that SCTK wraps, Celda Curated Workflow, we use a Bayesian hierarchical model that can bi-cluster features into modules and observations into subpopulations. For detail of this method, please refer to the [Celda Documentation](https://celda.camplab.net).   
 

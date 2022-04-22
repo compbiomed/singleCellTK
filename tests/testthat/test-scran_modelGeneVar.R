@@ -4,7 +4,7 @@ context("Testing scran_modelGeneVar.R")
 data(scExample, package = "singleCellTK")
 
 test_that(desc = "Testing scran_modelGeneVar.R", {
-  sce <- seuratNormalizeData(sce)
+  sce <- runSeuratNormalizeData(sce)
   sce <- scranModelGeneVar(sce, "seuratNormData")
   
   testthat::expect_true(!is.null(rowData(sce)$scran_modelGeneVar_mean))

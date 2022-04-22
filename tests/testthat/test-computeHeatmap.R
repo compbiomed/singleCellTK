@@ -5,10 +5,10 @@ context("Testing computeHeatmap.R")
 data(scExample, package = "singleCellTK")
 
 test_that(desc = "Testing computeHeatmap.R", {
-  sce <- seuratNormalizeData(sce)
-  sce <- seuratScaleData(sce)
-  sce <- seuratFindHVG(sce)
-  sce <- seuratPCA(sce)
+  sce <- runSeuratNormalizeData(sce)
+  sce <- runSeuratScaleData(sce)
+  sce <- runSeuratFindHVG(sce)
+  sce <- runSeuratPCA(sce)
   heatmap_gTree_objects <- computeHeatmap(sce, useAssay = "seuratScaledData", dims = 10)
   heatmapPlot <- singleCellTK:::.plotHeatmapMulti(heatmap_gTree_objects)
   

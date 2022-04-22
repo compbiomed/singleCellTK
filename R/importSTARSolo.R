@@ -187,8 +187,7 @@ importSTARsolo <- function(
         rowNamesDedup = rowNamesDedup)
 }
 
-# Find metrics_summary.csv file in each sample and merge them into a single dataframe
-# Additionally, if file not available for a sample, fill that sample with NA
+
 # Find metrics_summary.csv file in each sample and merge them into a single dataframe
 # Additionally, if file not available for a sample, fill that sample with NA
 .importMetricsStarSolo <- function(samplePaths, sampleNames, metricsPath, metricsFile){

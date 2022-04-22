@@ -1024,7 +1024,7 @@ shinyServer(function(input, output, session) {
       hvgParams <- metadata(vals$counts)$seurat$sctk$report$hvgParams
       output$plot_hvg <- renderPlotly({
         isolate({
-          plotly::ggplotly(seuratPlotHVG(vals$counts, labelPoints = hvgParams$labelPoints))
+          plotly::ggplotly(plotSeuratHVG(vals$counts, labelPoints = hvgParams$labelPoints))
         })
       })
       shinyjs::enable(selector = "div[value='Highly Variable Genes']")
@@ -1086,7 +1086,7 @@ shinyServer(function(input, output, session) {
 
       output$plot_pca <- renderPlotly({
         isolate({
-          plotly::ggplotly(seuratReductionPlot(inSCE = vals$counts, useReduction = "pca"))
+          plotly::ggplotly(plotSeuratReduction(inSCE = vals$counts, useReduction = "pca"))
         })
       })
 
@@ -1099,7 +1099,7 @@ shinyServer(function(input, output, session) {
           #update parameters from seurat report
           output$plot_elbow_pca <- renderPlotly({
             isolate({
-              plotly::ggplotly(seuratElbowPlot(inSCE = vals$counts))
+              plotly::ggplotly(plotSeuratElbow(inSCE = vals$counts))
             })
           })
 
@@ -1115,7 +1115,7 @@ shinyServer(function(input, output, session) {
 
           output$plot_jackstraw_pca <- renderPlotly({
             isolate({
-              plotly::ggplotly(seuratJackStrawPlot(vals$counts))
+              plotly::ggplotly(plotSeuratJackStraw(vals$counts))
             })
           })
 
@@ -1132,7 +1132,7 @@ shinyServer(function(input, output, session) {
           pcHeatmapParams$inSCE <- vals$counts
           output$plot_heatmap_pca <- renderPlot({
             isolate({
-              do.call("seuratComputeHeatmap", pcHeatmapParams)
+              do.call("runSeuratHeatmap", pcHeatmapParams)
             })
           })
 
@@ -1154,13 +1154,13 @@ shinyServer(function(input, output, session) {
 
           output$plot_tsne <- renderPlotly({
             isolate({
-              plotly::ggplotly(seuratReductionPlot(vals$counts, useReduction = "tsne"))
+              plotly::ggplotly(plotSeuratReduction(vals$counts, useReduction = "tsne"))
             })
           })
 
           output$plot_umap <- renderPlotly({
             isolate({
-              plotly::ggplotly(seuratReductionPlot(vals$counts, useReduction = "umap"))
+              plotly::ggplotly(plotSeuratReduction(vals$counts, useReduction = "umap"))
             })
           })
 
@@ -1184,7 +1184,7 @@ shinyServer(function(input, output, session) {
           )
 
           output$plot_pca_clustering <- renderPlotly({
-            plotly::ggplotly(seuratReductionPlot(vals$counts, useReduction = "pca", showLegend = TRUE))
+            plotly::ggplotly(plotSeuratReduction(vals$counts, useReduction = "pca", showLegend = TRUE))
           })
 
           appendTab(inputId = "seuratClusteringPlotTabset", tabPanel(title = "tSNE Plot",
@@ -1195,7 +1195,7 @@ shinyServer(function(input, output, session) {
           )
 
           output$plot_tsne_clustering <- renderPlotly({
-            plotly::ggplotly(seuratReductionPlot(vals$counts, useReduction = "tsne", showLegend = TRUE))
+            plotly::ggplotly(plotSeuratReduction(vals$counts, useReduction = "tsne", showLegend = TRUE))
           })
 
           appendTab(inputId = "seuratClusteringPlotTabset", tabPanel(title = "UMAP Plot",
@@ -1206,7 +1206,7 @@ shinyServer(function(input, output, session) {
           )
 
           output$plot_umap_clustering <- renderPlotly({
-            plotly::ggplotly(seuratReductionPlot(vals$counts, useReduction = "umap", showLegend = TRUE))
+            plotly::ggplotly(plotSeuratReduction(vals$counts, useReduction = "umap", showLegend = TRUE))
           })
 
           shinyjs::show(selector = ".seurat_clustering_plots")
@@ -1282,7 +1282,7 @@ shinyServer(function(input, output, session) {
           groupHeatmapParams$inSCE <- vals$counts
           output$findMarkerHeatmapPlotFull <- renderPlot({
             isolate({
-              do.call("seuratGenePlot", groupHeatmapParams)
+              do.call("plotSeuratGenes", groupHeatmapParams)
             })
           })
 
@@ -1683,9 +1683,16 @@ shinyServer(function(input, output, session) {
       }
     }
   }
+  
+  # Stop auto-scroll console tabe
+  observeEvent(input$qcAutoScrollStatus, {
+    stopAutoScroll <- paste0("clearInterval(", input$qcAutoScrollStatus, ");")
+    shinyjs::runjs(stopAutoScroll)
+  })
 
   
   observeEvent(input$runQC, withConsoleMsgRedirect({
+    shinyjs::runjs("var intervalVarAutoScrollConsole =  setInterval(startAutoScroll, 1000); Shiny.onInputChange('qcAutoScrollStatus', intervalVarAutoScrollConsole);")
     withBusyIndicatorServer("runQC", {
       if (!qcInputExists()) {
         insertUI(
@@ -1827,7 +1834,7 @@ shinyServer(function(input, output, session) {
       }
       delay(500, removeNotification(id = "qcNotification"))
     })
-
+    
   }))
 
   #-----------#
@@ -2786,11 +2793,11 @@ shinyServer(function(input, output, session) {
           message(paste0(date(), " ... Generating Elbow Plot."))
           if(vals$runDimred$dimRedAssaySelect %in% assayNames(vals$counts)){
             output$plotDimRed_elbow <- renderPlotly({
-              seuratElbowPlot(inSCE = vals$counts, )
+              plotSeuratElbow(inSCE = vals$counts, )
             })
           } else if(vals$runDimred$dimRedAssaySelect %in% expDataNames(vals$counts)){
             output$plotDimRed_elbow <- renderPlotly({
-              seuratElbowPlot(inSCE = altExps(vals$counts)[[vals$runDimred$dimRedAssaySelect]])
+              plotSeuratElbow(inSCE = altExps(vals$counts)[[vals$runDimred$dimRedAssaySelect]])
             })
           }
         })
@@ -2799,12 +2806,12 @@ shinyServer(function(input, output, session) {
           message(paste0(date(), " ... Generating Elbow Plot."))
           if(input$dimRedAssaySelect %in% assayNames(vals$counts)){
             output$plotDimRed_elbow <- renderPlotly({
-              seuratElbowPlot(inSCE = vals$counts,
+              plotSeuratElbow(inSCE = vals$counts,
                               externalReduction = new_pca)
             })
           } else if(input$dimRedAssaySelect %in% expDataNames(vals$counts)){
             output$plotDimRed_elbow <- renderPlotly({
-              seuratElbowPlot(inSCE = altExps(vals$counts)[[vals$runDimred$dimRedAssaySelect]],
+              plotSeuratElbow(inSCE = altExps(vals$counts)[[vals$runDimred$dimRedAssaySelect]],
                               externalReduction = new_pca)
             })
           }
@@ -3018,19 +3025,19 @@ shinyServer(function(input, output, session) {
             withProgress(message = "Generating JackStraw Plot", max = 1, value = 1, {
               message(paste0(date(), " ... Generating JackStraw Plot."))
               if(vals$runDimred$dimRedAssaySelect %in% assayNames(vals$counts)){
-                vals$counts <- seuratComputeJackStraw(inSCE = vals$counts,
+                vals$counts <- runSeuratJackStraw(inSCE = vals$counts,
                                                       useAssay = input$dimRedAssaySelect,
                                                       dims = input$dimRedNumberDims)
                 output$plot_jackstraw_dimRed <- renderPlot({
-                  seuratJackStrawPlot(inSCE = vals$counts, dims = input$dimRedNumberDims)
+                  plotSeuratJackStraw(inSCE = vals$counts, dims = input$dimRedNumberDims)
                 })
               }
               else if(vals$runDimred$dimRedAssaySelect %in% expDataNames(vals$counts)){
-                altExps(vals$counts)[[vals$runDimred$dimRedAssaySelect]] <- seuratComputeJackStraw(inSCE = altExps(vals$counts)[[vals$runDimred$dimRedAssaySelect]],
+                altExps(vals$counts)[[vals$runDimred$dimRedAssaySelect]] <- runSeuratJackStraw(inSCE = altExps(vals$counts)[[vals$runDimred$dimRedAssaySelect]],
                                                       useAssay = vals$runDimred$dimRedAssaySelect,
                                                       dims = input$dimRedNumberDims)
                 output$plot_jackstraw_dimRed <- renderPlot({
-                  seuratJackStrawPlot(inSCE = altExps(vals$counts)[[vals$runDimred$dimRedAssaySelect]], dims = input$dimRedNumberDims)
+                  plotSeuratJackStraw(inSCE = altExps(vals$counts)[[vals$runDimred$dimRedAssaySelect]], dims = input$dimRedNumberDims)
                 })
               }
             })
@@ -3039,22 +3046,22 @@ shinyServer(function(input, output, session) {
             withProgress(message = "Generating JackStraw Plot", max = 1, value = 1, {
               message(paste0(date(), " ... Generating JackStraw Plot."))
               if(input$dimRedAssaySelect %in% assayNames(vals$counts)){
-                vals$counts <- seuratComputeJackStraw(inSCE = vals$counts,
+                vals$counts <- runSeuratJackStraw(inSCE = vals$counts,
                                                       useAssay = input$dimRedAssaySelect,
                                                       dims = input$dimRedNumberDims,
                                                       externalReduction = new_pca)
                 output$plot_jackstraw_dimRed <- renderPlot({
-                  seuratJackStrawPlot(inSCE = vals$counts,
+                  plotSeuratJackStraw(inSCE = vals$counts,
                                       dims = input$dimRedNumberDims)
                 })
               }
               else if(input$dimRedAssaySelect %in% expDataNames(vals$counts)){
-                altExps(vals$counts)[[input$dimRedAssaySelect]] <- seuratComputeJackStraw(inSCE = altExps(vals$counts)[[input$dimRedAssaySelect]],
+                altExps(vals$counts)[[input$dimRedAssaySelect]] <- runSeuratJackStraw(inSCE = altExps(vals$counts)[[input$dimRedAssaySelect]],
                                                       useAssay = input$dimRedAssaySelect,
                                                       dims = input$dimRedNumberDims,
                                                       externalReduction = new_pca)
                 output$plot_jackstraw_dimRed <- renderPlot({
-                  seuratJackStrawPlot(inSCE = altExps(vals$counts)[[vals$runDimred$dimRedAssaySelect]],
+                  plotSeuratJackStraw(inSCE = altExps(vals$counts)[[vals$runDimred$dimRedAssaySelect]],
                                       dims = input$dimRedNumberDims)
                 })
               }
@@ -3457,7 +3464,7 @@ shinyServer(function(input, output, session) {
           algoList <- list('10' = "louvain",
                            '11' = "multilevel", '12' = "SLM")
           algo <- algoList[[as.character(input$clustAlgo)]]
-          vals$counts <- seuratFindClusters(inSCE = vals$counts,
+          vals$counts <- runSeuratFindClusters(inSCE = vals$counts,
                                             useAssay = useAssay,
                                             useReduction = "pca",
                                             externalReduction = new_pca,
@@ -3886,7 +3893,7 @@ shinyServer(function(input, output, session) {
   modsplit <- reactiveVal()
   cellsplit <- reactiveVal(NULL)
 
-  observeEvent(input$celdamodsplit, {
+  observeEvent(input$celdamodsplit, withConsoleMsgRedirect({
     removeTab(inputId = "celdaModsplitTabset", target = "Perplexity Plot")
     removeTab(inputId = "celdaModsplitTabset", target = "Perplexity Difference Plot")
     appendTab(inputId = "celdaModsplitTabset", tabPanel(title = "Rate of perplexity change",
@@ -3903,9 +3910,9 @@ shinyServer(function(input, output, session) {
       if (input$celdafeatureselect == "None"){
         vals$counts <- selectFeatures(vals$counts, minCount = input$celdarowcountsmin,
                                       minCell = input$celdacolcountsmin, useAssay = input$celdaassayselect)
-      }else if(input$celdafeatureselect == "SeuratFindHVG"){
-        vals$counts <- seuratNormalizeData(vals$counts, useAssay = input$celdaassayselect)
-        vals$counts <- seuratFindHVG(vals$counts, useAssay = "seuratNormData",
+      }else if(input$celdafeatureselect == "runSeuratFindHVG"){
+        vals$counts <- runSeuratNormalizeData(vals$counts, useAssay = input$celdaassayselect)
+        vals$counts <- runSeuratFindHVG(vals$counts, useAssay = "seuratNormData",
                                      hvgMethod = input$celdaseurathvgmethod, hvgNumber = input$celdafeaturenum)
         
         g <- getTopHVG(vals$counts, method = input$celdaseurathvgmethod, n = input$celdafeaturenum)
@@ -3940,7 +3947,7 @@ shinyServer(function(input, output, session) {
     showNotification("Module splitting complete.")
     shinyjs::show(id = "celdaLselect")
     shinyjs::show(id = "celdaLbtn")
-  })
+  }))
 
   observeEvent(input$celdaLbtn, {
     vals$counts <- subsetCeldaList(modsplit(), params = list(L = input$celdaLselect))
@@ -3967,7 +3974,7 @@ shinyServer(function(input, output, session) {
     }
   })
 
-  observeEvent(input$celdacellsplit, {
+  observeEvent(input$celdacellsplit, withConsoleMsgRedirect ({
     withBusyIndicatorServer("celdacellsplit", {
       cellsplit(recursiveSplitCell(vals$counts, useAssay = input$celdaassayselect, initialK = input$celdaKinit, maxK = input$celdaKmax,
                                         yInit = celdaModules(vals$counts)))
@@ -3992,7 +3999,7 @@ shinyServer(function(input, output, session) {
     updateNumericInput(session, "celdaKselect", min = input$celdaKinit, max = input$celdaKmax, value = input$celdaKinit)
     shinyjs::show(id = "celdaKselect")
     shinyjs::show(id = "celdaKbtn")
-  })
+  }))
 
   observeEvent(input$celdaKbtn, {
     vals$counts <- subsetCeldaList(cellsplit(), params = list(K = input$celdaKselect))
@@ -5825,7 +5832,7 @@ shinyServer(function(input, output, session) {
     } else {
       withBusyIndicatorServer("Srt3IntRun", {
         saveassayname <- gsub(" ", "_", input$Srt3IntSaveAssay)
-        vals$counts <- seuratIntegration(
+        vals$counts <- runSeuratIntegration(
           inSCE = vals$counts,
           batch = input$batchCorrVar,
           newAssayName = saveassayname,
@@ -7291,7 +7298,7 @@ shinyServer(function(input, output, session) {
   observeEvent(input$normalize_button, {
     req(vals$counts)
     withProgress(message = "Normalizing", max = 1, value = 1, {
-      vals$counts <- seuratNormalizeData(inSCE = vals$counts,
+      vals$counts <- runSeuratNormalizeData(inSCE = vals$counts,
                                          useAssay = input$seuratSelectNormalizationAssay,
                                          normAssayName = "seuratNormData",
                                          normalizationMethod = input$normalization_method,
@@ -7312,7 +7319,7 @@ shinyServer(function(input, output, session) {
   observeEvent(input$scale_button, {
     req(vals$counts)
     withProgress(message = "Scaling", max = 1, value = 1, {
-      vals$counts <- seuratScaleData(inSCE = vals$counts,
+      vals$counts <- runSeuratScaleData(inSCE = vals$counts,
                                      useAssay = "seuratNormData",
                                      scaledAssayName = "seuratScaledData",
                                      #model = input$model.use,
@@ -7335,13 +7342,13 @@ shinyServer(function(input, output, session) {
     req(vals$counts)
     withProgress(message = "Finding highly variable genes", max = 1, value = 1, {
       if(input$hvg_method == "vst"){
-        vals$counts <- seuratFindHVG(inSCE = vals$counts,
+        vals$counts <- runSeuratFindHVG(inSCE = vals$counts,
                                      useAssay = metadata(vals$counts)$sctk$seuratUseAssay,
                                      hvgMethod = input$hvg_method,
                                      hvgNumber = as.numeric(input$hvg_no_features))
       }
       else{
-        vals$counts <- seuratFindHVG(inSCE = vals$counts,
+        vals$counts <- runSeuratFindHVG(inSCE = vals$counts,
                                      useAssay = "seuratNormData",
                                      hvgMethod = input$hvg_method,
                                      hvgNumber = as.numeric(input$hvg_no_features))
@@ -7351,7 +7358,7 @@ shinyServer(function(input, output, session) {
     withProgress(message = "Plotting HVG", max = 1, value = 1, {
       output$plot_hvg <- renderPlotly({
         isolate({
-          plotly::ggplotly(seuratPlotHVG(vals$counts, input$hvg_no_features_view))
+          plotly::ggplotly(plotSeuratHVG(vals$counts, input$hvg_no_features_view))
         })
       })
     })
@@ -7387,7 +7394,7 @@ shinyServer(function(input, output, session) {
     removeTab(inputId = "seuratPCAPlotTabset", target = "Heatmap Plot")
 
     withProgress(message = "Running PCA", max = 1, value = 1, {
-      vals$counts <- seuratPCA(inSCE = vals$counts,
+      vals$counts <- runSeuratPCA(inSCE = vals$counts,
                                useAssay = "seuratScaledData",
                                reducedDimName = "seuratPCA",
                                nPCs = input$pca_no_components,
@@ -7406,7 +7413,7 @@ shinyServer(function(input, output, session) {
     withProgress(message = "Plotting PCA", max = 1, value = 1, {
       output$plot_pca <- renderPlotly({
         isolate({
-          plotly::ggplotly(seuratReductionPlot(inSCE = vals$counts,
+          plotly::ggplotly(plotSeuratReduction(inSCE = vals$counts,
                                                useReduction = "pca",
                                                showLegend = FALSE))
         })
@@ -7424,7 +7431,7 @@ shinyServer(function(input, output, session) {
         updateNumericInput(session = session, inputId = "pca_significant_pc_counter", value = singleCellTK:::.computeSignificantPC(vals$counts))
         output$plot_elbow_pca <- renderPlotly({
           isolate({
-            seuratElbowPlot(inSCE = vals$counts,
+            plotSeuratElbow(inSCE = vals$counts,
                             significantPC = singleCellTK:::.computeSignificantPC(vals$counts))
           })
         })
@@ -7443,12 +7450,12 @@ shinyServer(function(input, output, session) {
       ))
 
       withProgress(message = "Generating JackStraw Plot", max = 1, value = 1, {
-        vals$counts <- seuratComputeJackStraw(inSCE = vals$counts,
+        vals$counts <- runSeuratJackStraw(inSCE = vals$counts,
                                               useAssay = "seuratScaledData",
                                               dims = input$pca_no_components)
         output$plot_jackstraw_pca <- renderPlotly({
           isolate({
-            plotly::ggplotly(seuratJackStrawPlot(inSCE = vals$counts,
+            plotly::ggplotly(plotSeuratJackStraw(inSCE = vals$counts,
                                                  dims = input$pca_no_components))
           })
         })
@@ -7496,7 +7503,7 @@ shinyServer(function(input, output, session) {
       ))
 
       withProgress(message = "Generating Heatmaps", max = 1, value = 1, {
-        vals$counts@metadata$seurat$heatmap_pca <- seuratComputeHeatmap(inSCE = vals$counts,
+        vals$counts@metadata$seurat$heatmap_pca <- runSeuratHeatmap(inSCE = vals$counts,
                                                                         useAssay = "seuratScaledData",
                                                                         useReduction = "pca",
                                                                         dims = input$pca_no_components,
@@ -7505,7 +7512,7 @@ shinyServer(function(input, output, session) {
                                                                         fast = FALSE)
         output$plot_heatmap_pca <- renderPlot({
           isolate({
-            seuratHeatmapPlot(plotObject = vals$counts@metadata$seurat$heatmap_pca,
+            plotSeuratHeatmap(plotObject = vals$counts@metadata$seurat$heatmap_pca,
                               dims = input$pca_no_components,
                               ncol = 2,
                               labels = c("PC1", "PC2", "PC3", "PC4"))
@@ -7557,7 +7564,7 @@ shinyServer(function(input, output, session) {
     removeTab(inputId = "seuratICAPlotTabset", target = "Heatmap Plot")
 
     withProgress(message = "Running ICA", max = 1, value = 1, {
-      vals$counts <- seuratICA(inSCE = vals$counts,
+      vals$counts <- runSeuratICA(inSCE = vals$counts,
                                useAssay = "seuratScaledData",
                                nics = input$ica_no_components,
                                seed = input$seed_ICA)
@@ -7575,7 +7582,7 @@ shinyServer(function(input, output, session) {
     withProgress(message = "Plotting ICA", max = 1, value = 1, {
       output$plot_ica <- renderPlotly({
         isolate({
-          plotly::ggplotly(seuratReductionPlot(inSCE = vals$counts,
+          plotly::ggplotly(plotSeuratReduction(inSCE = vals$counts,
                                                useReduction = "ica",
                                                showLegend = FALSE))
         })
@@ -7602,7 +7609,7 @@ shinyServer(function(input, output, session) {
       ))
 
       withProgress(message = "Generating Heatmaps", max = 1, value = 1, {
-        vals$counts@metadata$seurat$heatmap_ica <- seuratComputeHeatmap(inSCE = vals$counts,
+        vals$counts@metadata$seurat$heatmap_ica <- runSeuratHeatmap(inSCE = vals$counts,
                                                                         useAssay = "seuratScaledData",
                                                                         useReduction = "ica",
                                                                         dims = input$ica_no_components,
@@ -7611,7 +7618,7 @@ shinyServer(function(input, output, session) {
                                                                         fast = FALSE)
         output$plot_heatmap_ica <- renderPlot({
           isolate({
-            seuratHeatmapPlot(plotObject = vals$counts@metadata$seurat$heatmap_ica,
+            plotSeuratHeatmap(plotObject = vals$counts@metadata$seurat$heatmap_ica,
                               dims = input$ica_no_components,
                               ncol = 2,
                               labels = c("IC1", "IC2", "IC3", "IC4"))
@@ -7655,7 +7662,7 @@ shinyServer(function(input, output, session) {
 
 
       withProgress(message = "Finding clusters", max = 1, value = 1, {
-        vals$counts <- seuratFindClusters(inSCE = vals$counts,
+        vals$counts <- runSeuratFindClusters(inSCE = vals$counts,
                                           useAssay = "seuratScaledData",
                                           useReduction = input$reduction_clustering_method,
                                           dims = input$pca_significant_pc_counter,
@@ -7677,7 +7684,7 @@ shinyServer(function(input, output, session) {
         withProgress(message = "Re-generating PCA plot with cluster labels", max = 1, value = 1,{
           output$plot_pca_clustering <- renderPlotly({
             isolate({
-              plotly::ggplotly(seuratReductionPlot(inSCE = vals$counts,
+              plotly::ggplotly(plotSeuratReduction(inSCE = vals$counts,
                                                    useReduction = "pca",
                                                    showLegend = TRUE))
             })
@@ -7696,7 +7703,7 @@ shinyServer(function(input, output, session) {
         withProgress(message = "Re-generating ICA plot with cluster labels", max = 1, value = 1,{
           output$plot_ica_clustering <- renderPlotly({
             isolate({
-              plotly::ggplotly(seuratReductionPlot(inSCE = vals$counts,
+              plotly::ggplotly(plotSeuratReduction(inSCE = vals$counts,
                                                    useReduction = "ica",
                                                    showLegend = TRUE))
             })
@@ -7718,7 +7725,7 @@ shinyServer(function(input, output, session) {
         withProgress(message = "Re-generating tSNE plot with cluster labels", max = 1, value = 1,{
           output$plot_tsne_clustering <- renderPlotly({
             isolate({
-              plotly::ggplotly(seuratReductionPlot(inSCE = vals$counts,
+              plotly::ggplotly(plotSeuratReduction(inSCE = vals$counts,
                                                    useReduction = "tsne",
                                                    showLegend = TRUE))
             })
@@ -7739,7 +7746,7 @@ shinyServer(function(input, output, session) {
         withProgress(message = "Re-generating UMAP plot with cluster labels", max = 1, value = 1,{
           output$plot_umap_clustering <- renderPlotly({
             isolate({
-              plotly::ggplotly(seuratReductionPlot(inSCE = vals$counts,
+              plotly::ggplotly(plotSeuratReduction(inSCE = vals$counts,
                                                    useReduction = "umap",
                                                    showLegend = TRUE))
             })
@@ -7812,7 +7819,7 @@ shinyServer(function(input, output, session) {
   observeEvent(input$seuratFindMarkerRun,{
     withProgress(message = "Finding markers", max = 1, value = 1,{
       if(input$seuratFindMarkerType == "markerAll"){
-        vals$counts <- seuratFindMarkers(inSCE = vals$counts,
+        vals$counts <- runSeuratFindMarkers(inSCE = vals$counts,
                                          allGroup = input$seuratFindMarkerSelectPhenotype,
                                          test = input$seuratFindMarkerTest,
                                          onlyPos = input$seuratFindMarkerPosOnly)
@@ -7823,7 +7830,7 @@ shinyServer(function(input, output, session) {
         cells1 <- colnames(vals$counts)[indices1]
         cells2 <- colnames(vals$counts)[indices2]
         if(input$seuratFindMarkerType == "markerConserved"){
-          vals$counts <- seuratFindMarkers(inSCE = vals$counts,
+          vals$counts <- runSeuratFindMarkers(inSCE = vals$counts,
                                            cells1 = cells1,
                                            cells2 = cells2,
                                            group1 = input$seuratFindMarkerGroup1,
@@ -7833,7 +7840,7 @@ shinyServer(function(input, output, session) {
                                            onlyPos = input$seuratFindMarkerPosOnly)
         }
         else{
-          vals$counts <- seuratFindMarkers(inSCE = vals$counts,
+          vals$counts <- runSeuratFindMarkers(inSCE = vals$counts,
                                            cells1 = cells1,
                                            cells2 = cells2,
                                            group1 = input$seuratFindMarkerGroup1,
@@ -8086,37 +8093,40 @@ shinyServer(function(input, output, session) {
     req(vals$fts$selectedRows)
     df <- vals$fts$data[vals$fts$selectedRows, ]
     output$findMarkerRidgePlot <- renderPlot({
-      seuratGenePlot(
+      plotSeuratGenes(
         inSCE = vals$counts,
         scaledAssayName = "seuratScaledData",
         plotType = "ridge",
         features = df$gene_id,
         groupVariable = input$seuratFindMarkerSelectPhenotype,
-        ncol = 2
+        ncol = 2,
+        combine = TRUE
       )
     })
     output$findMarkerViolinPlot <- renderPlot({
-      seuratGenePlot(
+      plotSeuratGenes(
         inSCE = vals$counts,
         scaledAssayName = "seuratScaledData",
         plotType = "violin",
         features = df$gene_id,
         groupVariable = input$seuratFindMarkerSelectPhenotype,
-        ncol = 2
+        ncol = 2,
+        combine = TRUE
       )
     })
     output$findMarkerFeaturePlot <- renderPlot({
-      seuratGenePlot(
+      plotSeuratGenes(
         inSCE = vals$counts,
         scaledAssayName = "seuratScaledData",
         plotType = "feature",
         features = df$gene_id,
         groupVariable = input$seuratFindMarkerSelectPhenotype,
-        ncol = 2
+        ncol = 2,
+        combine = TRUE
       )
     })
     output$findMarkerDotPlot <- renderPlot({
-      seuratGenePlot(
+      plotSeuratGenes(
         inSCE = vals$counts,
         scaledAssayName = "seuratScaledData",
         plotType = "dot",
@@ -8125,7 +8135,7 @@ shinyServer(function(input, output, session) {
       )
     })
     output$findMarkerHeatmapPlot <- renderPlot({
-      seuratGenePlot(
+      plotSeuratGenes(
         inSCE = vals$counts,
         scaledAssayName = "seuratScaledData",
         plotType = "heatmap",
@@ -8139,7 +8149,7 @@ shinyServer(function(input, output, session) {
   #   req(vals$fts$data)
   #   df <- vals$fts$data
   #   output$findMarkerHeatmapPlotFull <- renderPlot({
-  #     seuratGenePlot(
+  #     plotSeuratGenes(
   #       inSCE = vals$counts,
   #       scaledAssayName = "seuratScaledData",
   #       plotType = "heatmap",
@@ -8169,7 +8179,7 @@ shinyServer(function(input, output, session) {
     req(vals$counts)
     if(!is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[[input$reduction_tsne_method]])){
       withProgress(message = "Running tSNE", max = 1, value = 1, {
-        vals$counts <- seuratRunTSNE(inSCE = vals$counts,
+        vals$counts <- runSeuratTSNE(inSCE = vals$counts,
                                      useReduction = input$reduction_tsne_method,
                                      reducedDimName = "seuratTSNE",
                                      dims = input$pca_significant_pc_counter,
@@ -8180,7 +8190,7 @@ shinyServer(function(input, output, session) {
       withProgress(message = "Plotting tSNE", max = 1, value = 1, {
         output$plot_tsne <- renderPlotly({
           isolate({
-            plotly::ggplotly(seuratReductionPlot(inSCE = vals$counts,
+            plotly::ggplotly(plotSeuratReduction(inSCE = vals$counts,
                                                  useReduction = "tsne",
                                                  showLegend = FALSE))
           })
@@ -8218,7 +8228,7 @@ shinyServer(function(input, output, session) {
     req(vals$counts)
     if(!is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[[input$reduction_umap_method]])){
       withProgress(message = "Running UMAP", max = 1, value = 1, {
-        vals$counts <- seuratRunUMAP(inSCE = vals$counts,
+        vals$counts <- runSeuratUMAP(inSCE = vals$counts,
                                      useReduction = input$reduction_umap_method,
                                      reducedDimName = "seuratUMAP",
                                      dims = input$pca_significant_pc_counter,
@@ -8231,7 +8241,7 @@ shinyServer(function(input, output, session) {
       withProgress(message = "Plotting UMAP", max = 1, value = 1, {
         output$plot_umap <- renderPlotly({
           isolate({
-            plotly::ggplotly(seuratReductionPlot(inSCE = vals$counts,
+            plotly::ggplotly(plotSeuratReduction(inSCE = vals$counts,
                                                  useReduction = "umap",
                                                  showLegend = FALSE))
           })
@@ -8306,7 +8316,7 @@ shinyServer(function(input, output, session) {
     if (!is.null(input$picker_dimheatmap_components_pca)) {
       output$plot_heatmap_pca <- renderPlot({
         isolate({
-          seuratHeatmapPlot(plotObject = vals$counts@metadata$seurat$heatmap_pca,
+          plotSeuratHeatmap(plotObject = vals$counts@metadata$seurat$heatmap_pca,
                             dims = length(input$picker_dimheatmap_components_pca),
                             ncol = input$slider_dimheatmap_pca,
                             labels = input$picker_dimheatmap_components_pca)
@@ -8321,7 +8331,7 @@ shinyServer(function(input, output, session) {
     if (!is.null(input$picker_dimheatmap_components_ica)) {
       output$plot_heatmap_ica <- renderPlot({
         isolate({
-          seuratHeatmapPlot(plotObject = vals$counts@metadata$seurat$heatmap_ica,
+          plotSeuratHeatmap(plotObject = vals$counts@metadata$seurat$heatmap_ica,
                             dims = length(input$picker_dimheatmap_components_ica),
                             ncol = input$slider_dimheatmap_ica,
                             labels = input$picker_dimheatmap_components_ica)
@@ -9306,11 +9316,11 @@ shinyServer(function(input, output, session) {
   ##############################################################################
   # Code for ShinyTest ####
   ##############################################################################
-  observe({
-    shinyBS::updateCollapse(session,
-                            "SeuratUI",
-                            open = input$activePanelSelectSeurat)
-  })
+  # observe({
+  #   shinyBS::updateCollapse(session,
+  #                           "SeuratUI",
+  #                           open = input$activePanelSelectSeurat)
+  # })
 
   ##############################################################################
   # Code for PushBar ####

@@ -1,0 +1,142 @@
+---
+title: "Single Cell Analysis with Seurat using singleCellTK Package"
+author: "`r params$authors`"
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+params:
+  subtitle: !r NULL
+  authors: !r NULL
+  sce: !r NULL
+  biological.group: !r NULL
+  phenotype.groups: !r NULL
+  variable.features: 2000
+  pc.count: 50
+  outputPath: !r NULL
+  showSession: TRUE
+  pdf: TRUE
+  runHVG: TRUE
+  plotHVG: TRUE
+  runDimRed: TRUE
+  plotJackStraw: FALSE
+  plotElbowPlot: TRUE
+  plotHeatmaps: TRUE
+  runClustering: TRUE
+  plotTSNE: TRUE
+  plotUMAP: TRUE
+  minResolution: 0.3
+  maxResolution: 1.5 
+  forceRun: FALSE
+output:
+  html_document:
+    toc: yes
+    toc_float: yes
+    number_sections: yes
+    theme: cosmo
+    code_folding: hide
+    self_contained: false
+  pdf_document:
+    toc: yes
+subtitle: "`r params$subtitle`"
+editor_options:
+  chunk_output_type: console
+---
+
+
+```{r Load Libraries Seurat Normalization, echo=FALSE, include = TRUE, message=FALSE, warning=FALSE}
+#Loading required libraries
+library(Seurat)
+library(dplyr)
+library(cowplot)
+library(RColorBrewer)
+library(ggplot2)
+library(knitr)
+library(kableExtra)
+library(SingleCellExperiment)
+library(scater)
+library(gridExtra)
+library(grid)
+library(ggpubr)
+library(patchwork)
+library(singleCellTK)
+
+data <- params$sce
+sampleNames <- unique(colData(data)[[biological.group]])
+
+numCells <- ncol(data)
+numFeatures <- nrow(data)
+numSamples <- length(sampleNames)
+
+# Knitr Global Options
+dev <- ifelse(isTRUE(pdf), c("png"), c("png", "pdf"))
+opts_chunk$set(
+  echo = TRUE,
+  cache = FALSE,
+  cache.lazy = FALSE,
+  cache.comments = FALSE,
+  fig.align = "center",
+  fig.keep = "all",
+  dev = dev,
+  warning = FALSE
+)
+```
+
+
+
+<!-- Compute -->
+
+<!-- Normalization -->
+```{r, echo=FALSE, results='asis', message=FALSE}
+headingNorm <- "##"
+resNormalization <- knitr::knit_child(paste0(getwd(), "/inst/rmarkdown/seurat/", 'reportSeuratNormalizeData.Rmd'), quiet = TRUE, envir = environment())
+```
+
+<!-- Feature Selection -->
+```{r, echo=FALSE, results='asis'}
+headingFS <- "##"
+resFeatureSelection <- knitr::knit_child(paste0(getwd(), "/inst/rmarkdown/seurat/", 'reportSeuratFeatureSelection.Rmd'), quiet = TRUE)
+```
+
+<!-- Scale Data -->
+```{r, echo=FALSE, results='asis', warning=FALSE, message=FALSE}
+headingSD <- "##"
+resScaleData <- knitr::knit_child(paste0(getwd(), "/inst/rmarkdown/seurat/", 'reportSeuratScaleData.Rmd'), quiet = TRUE)
+```
+
+<!-- Dimensionality Reduction -->
+```{r, echo=FALSE, results='asis', warning=FALSE, message=FALSE}
+headingDR <- "##"
+headingDR2 <- "###"
+significant_PC <- 10
+
+resDimRed <- knitr::knit_child(paste0(getwd(), "/inst/rmarkdown/seurat/", 'reportSeuratDimRed.Rmd'), quiet = TRUE, envir = environment())
+```
+
+<!-- Clustering -->
+```{r, echo=FALSE, results='asis', warning=FALSE, message=FALSE}
+numClusters <- 10 # this should be computed by the code itself (do later)
+showClusterDesc <- TRUE
+headingClust <- "##"
+
+resClustering <- knitr::knit_child(paste0(getwd(), "/inst/rmarkdown/seurat/", 'reportSeuratClustering.Rmd'), quiet = TRUE, envir = environment())
+```
+
+# Seurat Run
+
+## Introduction
+[Seurat](https://satijalab.org/seurat/) is a popular R package designed for the analysis of single-cell genomics data and offers a multitude of methods for processing and visualization. The singleCellTK package integrates these methods in an intuitive user-interface and all of which are also accessible through console-based wrapper functions. This comprehensive report summarizes the Seurat workflow for the input data by running all of the steps from the proposed pipeline including Normalization, Feature Selection, Scaling, Dimensionality Reduction, Clustering and Differential Expression, along with all of the supporting visualizations. A summary of the input data and results computed from this data is described below:
+
+<!-- Populate RMD with Results -->
+```{r, echo=FALSE, results='asis', warning=FALSE, message=FALSE}
+cat(resNormalization, sep = '\n')
+cat(resFeatureSelection, sep = '\n')
+cat(resScaleData, sep = '\n')
+cat(resDimRed, sep = '\n')
+cat(resClustering, sep = '\n')
+```
+
+```{r, results='asis', eval=showSession, echo=FALSE}
+cat("# Session Information\n\n")
+```
+
+```{r, results='markup', eval = showSession, echo = showSession}
+sessionInfo()
+```
