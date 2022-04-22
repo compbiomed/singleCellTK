@@ -6332,7 +6332,13 @@ shinyServer(function(input, output, session) {
     span(msg, style = 'margin-left:10px')
   })
   # DE run analysis ####
-
+  handleEmptyNumericInput <- function(x, changeTo=NULL){
+    if (is.na(x)) {
+      return(changeTo)
+    } else {
+      return(x)
+    }
+  }
   runDEfromShiny <- function(overwrite){
     withBusyIndicatorServer("runDE", {
       if (input$deAssay %in% assayNames(vals$counts) &
@@ -6346,6 +6352,11 @@ shinyServer(function(input, output, session) {
       } else {
         stop("Error in identifying input matrix")
       }
+      deFCThresh <- handleEmptyNumericInput(input$deFCThresh, NULL)
+      deMinExp1 <- handleEmptyNumericInput(input$deMinExp1, NULL)
+      deMaxExp2 <- handleEmptyNumericInput(input$deMaxExp2, NULL)
+      deMinExpPerc1 <- handleEmptyNumericInput(input$deMinExpPerc1, NULL)
+      deMaxExpPerc2 <- handleEmptyNumericInput(input$deMaxExpPerc2, NULL)
       if(input$deCondMethod == 1){
         vals$counts <- runDEAnalysis(method = input$deMethod,
                                      inSCE = vals$counts,
@@ -6358,9 +6369,13 @@ shinyServer(function(input, output, session) {
                                      groupName2 = input$deG2Name,
                                      analysisName = input$deAnalysisName,
                                      covariates = input$deCovar,
-                                     log2fcThreshold = input$deFCThresh,
+                                     log2fcThreshold = deFCThresh,
                                      fdrThreshold = input$deFDRThresh,
-                                     onlyPos = input$mastPosOnly,
+                                     onlyPos = input$dePosOnly,
+                                     minGroup1MeanExp = deMinExp1, 
+                                     maxGroup2MeanExp = deMaxExp2, 
+                                     minGroup1ExprPerc = deMinExpPerc1, 
+                                     maxGroup2ExprPerc = deMaxExpPerc2,
                                      overwrite = overwrite)
       } else if(input$deCondMethod == 2){
         vals$counts <- runDEAnalysis(method = input$deMethod,
@@ -6373,9 +6388,13 @@ shinyServer(function(input, output, session) {
                                      groupName2 = input$deG2Name,
                                      analysisName = input$deAnalysisName,
                                      covariates = input$deCovar,
-                                     log2fcThreshold = input$deFCThresh,
+                                     log2fcThreshold = deFCThresh,
                                      fdrThreshold = input$deFDRThresh,
                                      onlyPos = input$dePosOnly,
+                                     minGroup1MeanExp = deMinExp1, 
+                                     maxGroup2MeanExp = deMaxExp2, 
+                                     minGroup1ExprPerc = deMinExpPerc1, 
+                                     maxGroup2ExprPerc = deMaxExpPerc2,
                                      overwrite = overwrite)
       } else {
         g1CellList <- str_trim(scan(text = input$deC3G1Cell,
@@ -6394,9 +6413,13 @@ shinyServer(function(input, output, session) {
                                      groupName2 = input$deG2Name,
                                      analysisName = input$deAnalysisName,
                                      covariates = input$deCovar,
-                                     log2fcThreshold = input$deFCThresh,
+                                     log2fcThreshold = deFCThresh,
                                      fdrThreshold = input$deFDRThresh,
                                      onlyPos = input$dePosOnly,
+                                     minGroup1MeanExp = deMinExp1, 
+                                     maxGroup2MeanExp = deMaxExp2, 
+                                     minGroup1ExprPerc = deMinExpPerc1, 
+                                     maxGroup2ExprPerc = deMaxExpPerc2,
                                      overwrite = overwrite)
       }
       updateDEAnalysisNames()
@@ -6419,14 +6442,17 @@ shinyServer(function(input, output, session) {
         isLogged <- FALSE
         updateCheckboxGroupInput(session, "deHMDoLog", selected = TRUE)
       }
-
       output$deHeatmap <- renderPlot({
         isolate({
           plotDEGHeatmap(inSCE = vals$counts,
                          useResult = input$deAnalysisName,
                          onlyPos = input$dePosOnly,
-                         log2fcThreshold = input$deFCThresh,
+                         log2fcThreshold = deFCThresh,
                          fdrThreshold = input$deFDRThresh,
+                         minGroup1MeanExp = deMinExp1,
+                         maxGroup2MeanExp = deMaxExp2,
+                         minGroup1ExprPerc = deMinExpPerc1,
+                         maxGroup2ExprPerc = deMaxExpPerc2,
                          colSplitBy = colSplitBy,
                          rowSplitBy = rowSplitBy,
                          doLog = !isLogged,
@@ -6640,6 +6666,8 @@ shinyServer(function(input, output, session) {
   observeEvent(input$dePlotHM, {
     if(!is.null(input$deResSel) &&
        !input$deResSel == ""){
+      deHMMinExp1 <- handleEmptyNumericInput(input$deHMMinExp1, NULL)
+      deHMMaxExp2 <- handleEmptyNumericInput(input$deHMMaxExp2, NULL)
       output$deHeatmap <- renderPlot({
         isolate({
           plotDEGHeatmap(inSCE = sce <- vals$counts,
@@ -6647,7 +6675,11 @@ shinyServer(function(input, output, session) {
                          doLog = input$deHMDoLog,
                          onlyPos = input$deHMPosOnly,
                          log2fcThreshold = input$deHMFC,
-                         fdrThreshold = input$deHMFDR,
+                         fdrThreshold = input$deHMFDR, 
+                         minGroup1MeanExp = deHMMinExp1,
+                         maxGroup2MeanExp = deHMMaxExp2,
+                         minGroup1ExprPerc = input$deHMMinExpPerc1,
+                         maxGroup2ExprPerc = input$deHMMaxExpPerc2,
                          rowDataName = input$deHMrowData,
                          colDataName = input$deHMcolData,
                          colSplitBy = input$deHMSplitCol,

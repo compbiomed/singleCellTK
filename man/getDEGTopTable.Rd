@@ -10,7 +10,11 @@ getDEGTopTable(
   labelBy = NULL,
   onlyPos = FALSE,
   log2fcThreshold = 0.25,
-  fdrThreshold = 0.05
+  fdrThreshold = 0.05,
+  minGroup1MeanExp = NULL,
+  maxGroup2MeanExp = NULL,
+  minGroup1ExprPerc = 0.5,
+  maxGroup2ExprPerc = 0.5
 )
 }
 \arguments{
@@ -32,6 +36,18 @@ log2FC larger than this value. Default \code{0.25}.}
 
 \item{fdrThreshold}{numeric. Only fetch DEGs with FDR value smaller than this
 value. Default \code{0.05}.}
+
+\item{minGroup1MeanExp}{numeric. Only fetch DEGs with mean expression in 
+group1 greater then this value. Default \code{NULL}.}
+
+\item{maxGroup2MeanExp}{numeric. Only fetch DEGs with mean expression in 
+group2 less then this value. Default \code{NULL}.}
+
+\item{minGroup1ExprPerc}{numeric. Only fetch DEGs expressed in greater then 
+this fraction of cells in group1. Default \code{0.5}.}
+
+\item{maxGroup2ExprPerc}{numeric. Only fetch DEGs expressed in less then this 
+fraction of cells in group2. Default \code{0.5}.}
 }
 \value{
 A \code{data.frame} object of the top DEGs, with variables of 
@@ -50,5 +66,6 @@ sce.w <- subsetSCECols(sceBatches, colData = "batch == 'w'")
 sce.w <- runWilcox(sce.w, class = "cell_type", classGroup1 = "alpha",
                    groupName1 = "w.alpha", groupName2 = "w.beta",
                    analysisName = "w.aVSb")
-getDEGTopTable(sce.w, "w.aVSb")
+getDEGTopTable(sce.w, "w.aVSb", minGroup1ExprPerc = NULL, 
+               maxGroup2ExprPerc = NULL)
 }

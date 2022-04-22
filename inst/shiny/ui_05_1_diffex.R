@@ -147,25 +147,51 @@ shinyPanelDiffex <- fluidPage(
         fluidRow(
           column(
             width = 3,
+            selectInput("deCovar", "Select Covariates",
+                        clusterChoice, multiple = TRUE)
+          ),
+          column(
+            width = 3,
             numericInput("deFDRThresh", "Output FDR less than:",
-                         min = 0.01, max = 1, step = 0.01, value = 0.05)
+                         min = 0, max = 1, step = 0.01, value = 0.05)
           ),
           column(
             width = 3,
             numericInput("deFCThresh",
                          "Output Log2FC Absolute value greater than:",
-                         min = 0, step = 0.05, value = 0)
-          ),
-          column(
-            width = 3,
-            selectInput("deCovar", "Select Covariates",
-                        clusterChoice, multiple = TRUE)
+                         min = 0, step = 0.05, value = NULL)
           ),
           column(
             width = 3,
             style = 'margin-top: 18px;',
             checkboxInput("dePosOnly", "Only up-regulated genes",
                           value = FALSE)
+          )
+        ),
+        fluidRow(
+          column(
+            width = 3,
+            numericInput("deMinExp1", 
+                         "Output Group1 mean expression greater than:",
+                         min = 0, step = 0.1, value = NULL)
+          ),
+          column(
+            width = 3,
+            numericInput("deMaxExp2", 
+                         "Output Group2 mean expression less than:",
+                         min = 0, step = 0.1, value = NULL)
+          ),
+          column(
+            width = 3,
+            numericInput("deMinExpPerc1",
+                         "Output Group1 expression percentage greater than:",
+                         min = 0, max = 1, step = 0.05, value = NULL)
+          ),
+          column(
+            width = 3,
+            numericInput("deMaxExpPerc2",
+                         "Output Group2 expression percentage less than:",
+                         min = 0, max = 1, step = 0.05, value = NULL)
           )
         ),
         fluidRow(
@@ -224,6 +250,36 @@ shinyPanelDiffex <- fluidPage(
                                    max = 1, step = 0.01),
                     )
                   ),
+                  
+                  fluidRow(
+                    column(
+                      width = 6,
+                      numericInput("deHMMinExp1", 
+                                   "Group1 mean expression greater than:",
+                                   value = NULL, min = 0, step = 0.1),
+                    ),
+                    column(
+                      width = 6,
+                      numericInput("deHMMaxExp2", 
+                                   "Group2 mean expression less than:", 
+                                   value = NULL, min = 0, step = 0.1),
+                    )
+                  ),
+                  fluidRow(
+                    column(
+                      width = 6,
+                      numericInput("deHMMinExpPerc1", 
+                                   "Group1 expression percentage greater than:",
+                                   value = 0.5, min = 0, max = 1, step = 0.05),
+                    ),
+                    column(
+                      width = 6,
+                      numericInput("deHMMaxExpPerc2", 
+                                   "Group2 expression percentage less than:", 
+                                   value = 0.5, min = 0, max = 1, step = 0.05),
+                    )
+                  ),
+                  
                   fluidRow(
                     column(
                       width = 6,
