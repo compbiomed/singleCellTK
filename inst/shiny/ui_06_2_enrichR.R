@@ -6,17 +6,28 @@ shinyPanelEnrichR <- fluidPage(
               "(help)", target = "_blank")),
     sidebarLayout(
       sidebarPanel(
-        h3("Choose data source:"),
+        h4("Choose data source:"),
         radioButtons(
-          "geneListChoice", label = NULL, c("Select Gene(s)" = "selectGenes",
+          "geneListChoice", label = NULL, c("Import DEG" = "deg",
+                                            "Select Gene(s)" = "selectGenes",
                                             "Upload file" = "geneFile")
         ),
+        hr(),
         conditionalPanel(
-          condition = sprintf("input['%s'] == 'selectGenes'", "geneListChoice"),
+          condition = "input.geneListChoice == 'deg'",
+          selectInput("enrDEGSelect", "Select DE Analysis:", NULL),
+          numericInput("enrDEGlog2fc", "Use Log2FC greater than", 0.5),
+          numericInput("enrDEGFDR", "Use FDR less than", 0.05),
+          checkboxInput("enrDEGUpOnly", "Only use upregulated genes", TRUE),
+          uiOutput("enrDEGText"),
+          verbatimTextOutput(outputId = "enrDEGRes", placeholder = TRUE)
+        ),
+        conditionalPanel(
+          condition = "input.geneListChoice == 'selectGenes'",
           selectizeInput("enrichGenes", label = "Select Gene(s):", NULL, multiple = TRUE)
         ),
         conditionalPanel(
-          condition = sprintf("input['%s'] == 'geneFile'", "geneListChoice"),
+          condition = "input.geneListChoice == 'geneFile'",
           fileInput(
             "enrFile",
             tags$b(tags$i("Please upload a file with only gene names or Entrez Gene Symbols")),
@@ -24,16 +35,14 @@ shinyPanelEnrichR <- fluidPage(
                        "text/tab-separated-values", "text/plain",
                        ".csv", ".tsv")
           ),
-          hr(),
-          h4("Sample files:"),
+          h5("Sample files:"),
           tags$a(href = "https://drive.google.com/open?id=1iJZ6H_G2brbeww9B0dA5seMyYUZYyFrU",
                  "Gene Names", target = "_blank"
           ),
           tags$a(href = "https://drive.google.com/open?id=1BLrwW0uMi2pxsX0m1zJrlOTnBLkIiOhk",
                  "Entrez ids", target = "_blank"
           ),
-          hr(),
-          h4("Options:"),
+          h5("Options:"),
           # Input: Checkbox if file has header ----
           checkboxInput("header", "Header", value = TRUE),
           # Input: Select separator ----
@@ -49,22 +58,41 @@ shinyPanelEnrichR <- fluidPage(
                                    "Double Quote" = '"',
                                    "Single Quote" = "'"),
                        selected = '""',
-                       inline = TRUE)
+                       inline = TRUE),
+          selectInput("enrFileBy", "Match feature type:",
+                      choices = c("rownames", featureChoice))
         ),
-        conditionalPanel(
-          helpText("To use this, first run Differential expression and save top genes."),
-          condition = sprintf("input['%s'] == 'biomarker'", "geneListChoice"),
-          uiOutput("enrBioGenes")
-        ),
-        selectizeInput("enrichDb", label = "Select DB:", c("ALL", enrichedDB),
-                       multiple = TRUE),
-        helpText("Selecting 'ALL' or leaving it blank will run enrichR on all available enrichR databases (N = 130) which will take significant amount of time."),
+        hr(),
+        selectInput("enrFeatureName", 
+                    label = "Select symbol annotation:",
+                    choices = c("rownames", featureChoice)),
+        selectizeInput("enrichDb", label = "Select DB:", enrichedDB,
+                       multiple = TRUE, 
+                       options = list(placeholder = "Use all (default)")),
+        textInput('enrAnalysisNameSet', "Set analysis name:", 
+                  placeholder = "Required"),
         withBusyIndicatorUI(actionButton("enrichRun", "Run")),
-        br(),
-        downloadButton("downloadEnrichR", "Download results")
       ),
       mainPanel(
-        uiOutput("enrTabs")
+        dropdown(
+          fluidRow(
+            selectInput('enrAnalysisNameSel', label = "Select analysis name:", 
+                        choices = NULL),
+            selectizeInput('enrDbShow', 
+                           label = "Show result of specific database:", 
+                           choices = NULL, multiple = TRUE,
+                           options = list(placeholder = "Show all (default)"))
+          ),
+          inputId = "enrDropDown",
+          icon = icon("cog"),
+          status = "primary",
+          circle = FALSE,
+          inline = TRUE
+        ),
+        hr(),
+        DT::dataTableOutput("enrDataTable"),
+        br(),
+        downloadButton("downloadEnrichR", "Download results")
       )
     )
   )

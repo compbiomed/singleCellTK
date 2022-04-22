@@ -18,7 +18,7 @@ runEnrichR(
 
 \item{features}{Character vector, selected genes for enrichment analysis.}
 
-\item{analysisName}{A string that identifies each specific analysis}
+\item{analysisName}{A string that identifies each specific analysis.}
 
 \item{db}{Character vector. Selected database name(s) from the enrichR 
 database list. If \code{NULL} then EnrichR will be run on all the available 
@@ -52,10 +52,10 @@ This function checks for the existence of features in the SCE object. When
 \code{features} do not have a match in \code{rownames(inSCE)}, users may 
 try to specify \code{by} to pass the check. 
 
-EnrichR expects gene symbols/names as the input (i.e. Ensembl or entrez ID 
-might not work). When specified \code{features} are not qualified for this, 
-users may try to specify \code{featureName} to change the identifier type to
-pass to EnrichR.
+EnrichR expects gene symbols/names as the input (i.e. Ensembl ID might not 
+work). When specified \code{features} are not qualified for this, users may 
+try to specify \code{featureName} to change the identifier type to pass to 
+EnrichR.
 }
 \examples{
 data("mouseBrainSubsetSCE")

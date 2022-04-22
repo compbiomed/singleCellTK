@@ -10,13 +10,13 @@
 #' \code{features} do not have a match in \code{rownames(inSCE)}, users may 
 #' try to specify \code{by} to pass the check. 
 #' 
-#' EnrichR expects gene symbols/names as the input (i.e. Ensembl or entrez ID 
-#' might not work). When specified \code{features} are not qualified for this, 
-#' users may try to specify \code{featureName} to change the identifier type to
-#' pass to EnrichR. 
+#' EnrichR expects gene symbols/names as the input (i.e. Ensembl ID might not 
+#' work). When specified \code{features} are not qualified for this, users may 
+#' try to specify \code{featureName} to change the identifier type to pass to 
+#' EnrichR. 
 #' @param inSCE A \linkS4class{SingleCellExperiment} object.
 #' @param features Character vector, selected genes for enrichment analysis. 
-#' @param analysisName A string that identifies each specific analysis
+#' @param analysisName A string that identifies each specific analysis.
 #' @param db Character vector. Selected database name(s) from the enrichR 
 #' database list. If \code{NULL} then EnrichR will be run on all the available 
 #' databases on the enrichR database. See details. Default \code{NULL}
@@ -48,6 +48,9 @@ runEnrichR <- function(inSCE,
                        featureName = NULL) {
   if (!inherits(inSCE, "SingleCellExperiment")) {
     stop("inSCE has to inherit from SingleCellExperiment object.")
+  }
+  if (is.null(analysisName)) {
+    stop("Have to specify analysisName.")
   }
   if (by == "rownames") {
     if (!all(features %in% rownames(inSCE))) {
@@ -141,12 +144,12 @@ runEnrichR <- function(inSCE,
 #'   result <- getEnrichRResult(mouseBrainSubsetSCE, "analysis1")
 #' }
 setGeneric("getEnrichRResult<-", function(inSCE, analysisName, value) 
-  standardGeneric("getEnrichRResult<-") )
+  standardGeneric("getEnrichRResult<-"))
 
 #' @rdname getEnrichRResult
 #' @export
 setGeneric("getEnrichRResult", function(inSCE, analysisName) 
-  standardGeneric("getEnrichRResult") )
+  standardGeneric("getEnrichRResult"))
 
 #' @rdname getEnrichRResult
 #' @export
@@ -168,6 +171,9 @@ setMethod("getEnrichRResult",
 setReplaceMethod("getEnrichRResult", 
                  c("SingleCellExperiment"), 
                  function(inSCE, analysisName, value) {
+                   if (is.null(analysisName)) {
+                     stop("Have to specify analysisName.")
+                   }
                    S4Vectors::metadata(inSCE)$sctk$runEnrichR[[analysisName]] <- value
                    return(inSCE)
                  })

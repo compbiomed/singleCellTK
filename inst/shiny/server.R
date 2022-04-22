@@ -35,6 +35,7 @@ shinyServer(function(input, output, session) {
     counts = getShinyOption("inputSCEset"),
     original = getShinyOption("inputSCEset"),
     batchRes = NULL,
+    enrichRes = NULL,
     gsvaRes = NULL,
     gsvaLimma = NULL,
     vamRes = NULL,
@@ -44,7 +45,6 @@ shinyServer(function(input, output, session) {
     gsvaScore = NULL,
     gsvaResults = NULL,
     visplotobject = NULL,
-    enrichRes = NULL,
     celdaMod = NULL,
     celdaList = NULL,
     celdaListAll = NULL,
@@ -167,6 +167,10 @@ shinyServer(function(input, output, session) {
     updateSelectInput(session, 'hmGeneAnn', choices = selectRowData)
     updateSelectInput(session, 'hmAddGeneLabel',
                       choices = c("Default feature IDs", selectRowData))
+    updateSelectInput(session, "enrFeatureName", 
+                      choices = c("rownames", selectRowData))
+    updateSelectInput(session, "enrFileBy", 
+                      choices = c("rownames", selectRowData))
   }
 
   updateNumSamples <- function(){
@@ -961,13 +965,13 @@ shinyServer(function(input, output, session) {
       }
       vals$gsvaRes <- NULL
       vals$vamRes <- NULL
+      vals$enrichRes <- NULL
       vals$vamResults <- NULL
       vals$gsvaResults <- NULL
       vals$gsvaLimma <- NULL
       vals$vamScore <- NULL
       vals$gsvaScore <- NULL
       vals$visplotobject <- NULL
-      vals$enrichRes <- NULL
       vals$dimRedPlot <- NULL
       vals$dimRedPlot_geneExp <- NULL
       vals$dendrogram <- NULL
@@ -981,11 +985,8 @@ shinyServer(function(input, output, session) {
 
       updateSeuratUIFromRDS(vals$counts)
       cleanGSTable()
-      deResNames <- names(metadata(vals$counts)$diffExp)
-      if (!is.null(deResNames)) {
-        updateSelectInput(session, "deResSel", choices = deResNames,
-                          selected = deResNames[1])
-      }
+      updateDEAnalysisNames()
+      updateEnrichRAnalysisNames()
       # TODO: There are more things that need to be cleaned when uploading new
       # dataset, including any plots, tables that are origined from the old
       # datasets. Otherwise, errors may pop out when Shiny listens to the new
@@ -2116,6 +2117,7 @@ shinyServer(function(input, output, session) {
       vals$counts <- vals$original
       #updateSelectInput(session, "deletesamplelist",
       #                  choices = colnames(vals$counts))
+      vals$enrichRes <- NULL
       vals$gsvaRes <- NULL
       vals$vamRes <- NULL
       vals$vamResults <- NULL
@@ -2124,7 +2126,6 @@ shinyServer(function(input, output, session) {
       vals$gsvaScore <- NULL
       vals$gsvaLimma <- NULL
       vals$visplotobject <- NULL
-      vals$enrichRes <- NULL
       vals$dimRedPlot <- NULL
       vals$dimRedPlot_geneExp <- NULL
       vals$dendrogram <- NULL
@@ -2138,7 +2139,7 @@ shinyServer(function(input, output, session) {
       updateAssayInputs()
       updateGeneNames()
       updateEnrichDB()
-      
+      updateEnrichRAnalysisNames()
       message(paste0(date(), " ... All data reset!"))
     }
   }))
@@ -2187,7 +2188,6 @@ shinyServer(function(input, output, session) {
   #      filter <- colData(vals$counts)[, input$filteredSample] %in% input$filterSampleChoices
   #      vals$counts <- vals$counts[, filter]
   #      vals$gsvaRes <- NULL
-  #      vals$enrichRes <- NULL
   #      vals$visplotobject <- NULL
   #      vals$gsvaLimma <- NULL
   #      vals$dimRedPlot <- NULL
@@ -2241,7 +2241,6 @@ shinyServer(function(input, output, session) {
   #                                    database = input$orgOrganism)
   #      updateGeneNames()
   #      vals$gsvaRes <- NULL
-  #      vals$enrichRes <- NULL
   #      vals$visplotobject <- NULL
   #      vals$dimRedPlot <- NULL
   #      vals$dimRedPlot_geneExp <- NULL
@@ -2257,7 +2256,6 @@ shinyServer(function(input, output, session) {
   #    vals$counts <- vals$counts[filter, ]
   #    updateGeneNames()
   #    vals$gsvaRes <- NULL
-  #    vals$enrichRes <- NULL
   #    vals$visplotobject <- NULL
   #    vals$dimRedPlot <- NULL
   #    vals$dimRedPlot_geneExp <- NULL
@@ -6401,12 +6399,13 @@ shinyServer(function(input, output, session) {
                                      onlyPos = input$dePosOnly,
                                      overwrite = overwrite)
       }
+      updateDEAnalysisNames()
       shinyalert::shinyalert(
         "Success",
         text = "Differential expression analysis completed.",
         type = "success"
       )
-      res <- names(metadata(vals$counts)$diffExp)
+      res <- rev(names(metadata(vals$counts)$diffExp))
       updateSelectInput(session, "deResSel", choices = res,
                         selected = input$deAnalysisName)
       colSplitBy <- "condition"
@@ -6454,6 +6453,7 @@ shinyServer(function(input, output, session) {
                             isLogged = isLogged)
         })
       })
+      
 
     })
   }
@@ -6484,6 +6484,16 @@ shinyServer(function(input, output, session) {
     }
   })
 
+  updateDEAnalysisNames <- function() {
+    deResNames <- rev(names(metadata(vals$counts)$diffExp))
+    if (!is.null(deResNames)) {
+      updateSelectInput(session, "deResSel", choices = deResNames,
+                        selected = deResNames[1])
+      updateSelectInput(session, "enrDEGSelect", choices = deResNames,
+                        selected = deResNames[1])
+    }
+  }
+  
   # DE: Result visualize ####
 
   # Data table
@@ -6936,87 +6946,129 @@ shinyServer(function(input, output, session) {
   # Page 6.2 : Enrichment Analysis - EnrichR
   #-----------------------------------------------------------------------------
 
+  
+  
   enrichRfile <- reactive(read.csv(input$enrFile$datapath,
                                    header = input$header,
                                    sep = input$sep,
                                    quote = input$quote,
                                    row.names = 1))
-  output$enrBioGenes <- renderUI({
-    if (!is.null(vals$counts)) {
-      selectInput("selEnrBioGenes", "Select Gene List(s):",
-                  names(which(apply(rowData(vals$counts), 2, function(a) length(unique(a)) == 2) == TRUE)))
+  
+  updateEnrichRAnalysisNames <- function(selected = NULL) {
+    if (is.null(selected)) {
+      selected <- input$enrAnalysisNameSel
     }
+    allNames <- names(metadata(vals$counts)$sctk$runEnrichR)
+    updateSelectInput(session, "enrAnalysisNameSel", 
+                      label = "Select analysis name:", 
+                      choices = allNames, 
+                      selected = selected)
+  }
+  
+  update_enrDEG <- reactive({
+    list(input$enrDEGSelect, input$enrDEGUpOnly, input$enrDEGlog2fc,
+         input$enrDEGFDR)
   })
-  dbs <- reactive({
-    if (internetConnection){
-      enrDatabases <- enrichR::listEnrichrDbs()$libraryName
-    } else {
-      enrDatabases <- ""
-    }
-    if (is.null(input$enrichDb)){
-      dbs <- enrDatabases
-    } else {
-      if (any(input$enrichDb %in% "ALL")){
-        dbs <- enrDatabases
-      } else {
-        dbs <- input$enrichDb
-      }
-    }
+  
+  observeEvent(ignoreInit = TRUE, update_enrDEG(), {
+    req(vals$counts)
+    req(input$enrDEGSelect)
+    degSelect <- getDEGTopTable(vals$counts, useResult = input$enrDEGSelect,
+                                labelBy = NULL, onlyPos = input$enrDEGUpOnly,
+                                log2fcThreshold = input$enrDEGlog2fc,
+                                fdrThreshold = input$enrDEGFDR)$Gene
+    nGene <- length(degSelect)
+    output$enrDEGText <- renderUI(p(paste0("Selected ", nGene, " DEGs. Listed below.")))
+    output$enrDEGRes <- renderText({
+      isolate({
+        degSelect
+      })
+    })
   })
-
+  
   #count_db <- reactive(length(dbs()))
   observeEvent (input$enrichRun, {
     if (is.null(vals$counts)){
       shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
+    } else if (!internetConnection) {
+      shinyalert::shinyalert("Error!", "Internet connection failed.", 
+                             type = "error")
+    } else if (input$enrAnalysisNameSet == "" |
+               is.null(input$enrAnalysisNameSet)) {
+      shinyalert::shinyalert("Error!", "Have to specify analysis name", 
+                             type = "error")
     } else {
       withBusyIndicatorServer ("enrichRun", {
         tryCatch ({
-          if (input$geneListChoice == "selectGenes"){
+          by <- "rownames"
+          if (input$geneListChoice == "deg") {
+            genes <- getDEGTopTable(vals$counts, useResult = input$enrDEGSelect,
+                                    labelBy = NULL, onlyPos = input$enrDEGUpOnly,
+                                    log2fcThreshold = input$enrDEGlog2fc,
+                                    fdrThreshold = input$enrDEGFDR)$Gene
+          } else if (input$geneListChoice == "selectGenes"){
             genes <- input$enrichGenes
           } else if (input$geneListChoice == "geneFile"){
             req(input$enrFile)
             genes <- rownames(enrichRfile())
-          } else  {
-            genes <- rownames(vals$counts)[SingleCellExperiment::rowData(vals$counts)[, input$selEnrBioGenes] == 1]
+            message("Reading from file. The first three features are:")
+            message(paste(genes[seq(3)], collapse = ", "))
+            by <- input$enrFileBy
           }
-          vals$enrichRes <- enrichRSCE(inSCE = vals$counts,
-                                       glist = genes,
-                                       db = dbs())
+          vals$counts <- runEnrichR(inSCE = vals$counts,
+                                    features = genes,
+                                    analysisName = input$enrAnalysisNameSet,
+                                    db = input$enrichDb, 
+                                    by = by,
+                                    featureName = input$enrFeatureName)
+          updateEnrichRAnalysisNames(selected = input$enrAnalysisNameSet)
         }, error = function(e){
           shinyalert::shinyalert("Error!", e$message, type = "error")
         })
       })
     }
   })
-
-  output$enrTabs <- renderUI({
-    req(vals$enrichRes)
-    isoDbs <- isolate(dbs())
-    nTabs <- length(isoDbs)
-    #create tabPanel with datatable in it
-    myTabs <- lapply(seq_len((nTabs)), function(i) {
-      tabPanel(paste0(isoDbs[i]),
-               DT::dataTableOutput(paste0(isoDbs[i]))
-      )
-    })
-    do.call(tabsetPanel, myTabs)
+  
+  enrChangeDBShow <- reactive({
+    list(input$enrAnalysisNameSel,
+         input$enrichRun)
   })
-
+  
+  observeEvent(enrChangeDBShow(), {
+    req(input$enrAnalysisNameSel)
+    dbs <- getEnrichRResult(vals$counts, input$enrAnalysisNameSel)$param$db
+    updateSelectizeInput(session, "enrDbShow", choices = dbs,
+                         selected = input$enrDbShow)
+  })
+  
+  enrResultSel <- reactive({
+    list(input$enrAnalysisNameSel,
+         input$enrDbShow,
+         input$enrichRun)
+  })
   #create datatables
-  observe({
-    req(vals$enrichRes)
-    isoDbs <- isolate(dbs())
-    enrResults <- vals$enrichRes[, c(1:10)] %>%
+  observeEvent(enrResultSel(), {
+    req(vals$counts)
+    req(input$enrAnalysisNameSel)
+    res <- getEnrichRResult(vals$counts, input$enrAnalysisNameSel)$result
+    dbToShow <- input$enrDbShow
+    if (is.null(dbToShow)) {
+      dbToShow <- getEnrichRResult(vals$counts, input$enrAnalysisNameSel)$param$db
+    }
+    res <- res[which(res[, 1] %in% dbToShow), ]
+    vals$enrichRes <- res
+    tableToShow <- res[, c(1:10)] %>%
       mutate(Database_selected =
-               paste0("<a href='", vals$enrichRes[, 11],
+               paste0("<a href='", res[, 11],
                       "' target='_blank'>",
-                      vals$enrichRes[, 1], "</a>"))
-    lapply(seq_len(length(isoDbs)), function(i){
-      output[[paste0(isoDbs[i])]] <- DT::renderDataTable({
-        DT::datatable({
-          enr <- enrResults[which(vals$enrichRes[, 1] %in% isoDbs[i]), ]
-        }, escape = FALSE, options = list(scrollX = TRUE, pageLength = 30), rownames = FALSE)
-      })
+                      res[, 1], "</a>"))
+    output$enrDataTable <- DT::renderDataTable({
+      DT::datatable({
+        tableToShow
+      }, 
+      escape = FALSE, 
+      options = list(scrollX = TRUE, pageLength = 20), 
+      rownames = FALSE)
     })
   })
 
@@ -7032,10 +7084,11 @@ shinyServer(function(input, output, session) {
 
   output$downloadEnrichR <- downloadHandler(
     filename = function() {
-      paste("enrichR-results-", Sys.Date(), ".csv", sep = "")
+      paste0("SCTK_enrichR_results_", input$enrAnalysisNameSel, "_",
+             Sys.Date(), ".csv")
     },
     content = function(file) {
-      utils::write.csv(vals$enrichRes, file)
+      utils::write.csv(vals$enrichRes, file, row.names = FALSE)
     },
     contentType = "text/csv"
   )

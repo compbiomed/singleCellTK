@@ -241,8 +241,7 @@ shinyUI(
 
       ),
       navbarMenu(
-        "Cell Annotation & Pathway Analysis",
-        #tabPanel("GSVA", value = "GSVA", shinyPanelPathway),
+        "Enrichment & Pathway Analysis",
         tabPanel("EnrichR", shinyPanelEnrichR),
         tabPanel("Pathway Activity", shinyPanelvam)
 
