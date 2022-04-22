@@ -1,0 +1,131 @@
+---
+title: "Seurat Results"
+author: "`r params$authors`"
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+params:
+  subtitle: !r NULL
+  authors: !r NULL
+  sce: !r NULL
+  biological.group: !r NULL
+  phenotype.groups: !r NULL
+  selected.markers: !r NULL
+  clustering.resolution: 0.8
+  pc.count: 10
+  outputPath: !r NULL
+  showSession: TRUE
+  pdf: TRUE
+  plotTSNE: TRUE
+  plotUMAP: TRUE
+  runClustering: TRUE
+  minResolution: 0.3
+  maxResolution: 1.5
+  runMSClusters: TRUE
+  runMSBioGroup: TRUE
+  forceRun: FALSE
+output:
+  html_document:
+    toc: yes
+    toc_float: yes
+    number_sections: yes
+    theme: cosmo
+    code_folding: hide
+    self_contained: false
+  pdf_document:
+    toc: yes
+subtitle: "`r params$subtitle`"
+editor_options:
+  chunk_output_type: console
+---
+
+```{r, echo=FALSE}
+if(!exists("significant_PC")) significant_PC <- pc.count
+```
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+library(Seurat)
+library(dplyr)
+library(cowplot)
+library(RColorBrewer)
+library(ggplot2)
+library(knitr)
+library(kableExtra)
+library(SingleCellExperiment)
+library(scater)
+library(gridExtra)
+library(grid)
+library(ggpubr)
+library(patchwork)
+library(singleCellTK)
+```
+
+# Seurat Results
+
+## Selected Resolution {.tabset .tabset-fade}
+A final resolution of **`r clustering.resolution`** was selected for downstream clustering that better reflects the input data.
+
+<!-- Clustering -->
+```{r, echo=FALSE, results='hide', warning=FALSE, message=FALSE}
+minResolution <- clustering.resolution
+maxResolution <- clustering.resolution
+numClusters <- 10 #remove this later
+showClusterDesc <- FALSE
+
+resClustering <- knitr::knit_child(paste0(getwd(), "/inst/rmarkdown/seurat/", 'reportSeuratClustering.Rmd'), quiet = TRUE, envir = environment())
+```
+
+```{r, echo=FALSE, results='asis', warning=FALSE, message=FALSE}
+cat(resClustering, sep = '\n')
+```
+
+<!-- Pre-selected Markers -->
+```{r preselected markers, echo=FALSE, results='asis', warning=FALSE, message=FALSE, eval=!is.null(selected.markers)}
+runMarkerSelection <- FALSE
+plotMarkerSelection <- TRUE
+groupTitle <- NULL
+numClusters <- 1
+selectedOption <- paste0("Seurat_louvain_Resolution", clustering.resolution)
+titleMarkerPlots <- "Plot Selected Features"
+countFeatures <- length(selected.markers)
+
+res <- knitr::knit_child(paste0(getwd(), "/inst/rmarkdown/seurat/", 'reportSeuratMarkerSelection.Rmd'), quiet = TRUE)
+cat(res, sep = '\n')
+```
+
+<!-- Marker Selection (Clusters) -->
+```{r markerSelection Clusters, echo=FALSE, results='asis', warning=FALSE, message=FALSE, eval=runMSClusters}
+runMarkerSelection <- TRUE
+plotMarkerSelection <- TRUE
+numClusters <- length(unique(colData(data)[[paste0("Seurat_louvain_Resolution", clustering.resolution)]]))
+selectedOption <- paste0("Seurat_louvain_Resolution", clustering.resolution)
+groupTitle <- "Clusters"
+titleMarkerPlots <- "Gene Plots of Top Markers by Clusters"
+countFeatures <- 10
+headingMS <- "##"
+res <- knitr::knit_child(paste0(getwd(), "/inst/rmarkdown/seurat/", 'reportSeuratMarkerSelection.Rmd'), quiet = TRUE)
+numMarkerGenesCluster <- nrow(data.markers[data.markers$p_val_adj < 0.05, ])
+cat(res, sep = '\n')
+```
+
+<!-- Marker Selection (Group) -->
+```{r, echo=FALSE, results='asis', warning=FALSE, message=FALSE, eval=runMSBioGroup}
+runMarkerSelection <- TRUE
+plotMarkerSelection <- TRUE
+numClusters <- length(unique(colData(data)[[biological.group]]))
+selectedOption <- biological.group
+groupTitle <- biological.group
+titleMarkerPlots <- paste0("Gene Plots of Top Markers by Group: ", biological.group)
+countFeatures <- 10
+headingMS <- "##"
+res <- knitr::knit_child(paste0(getwd(), "/inst/rmarkdown/seurat/", 'reportSeuratMarkerSelection.Rmd'), quiet = TRUE)
+numMarkerGenesBio <- nrow(data.markers[data.markers$p_val_adj < 0.05, ])
+cat(res, sep = '\n')
+```
+
+```{r, results='asis', eval=showSession, echo=FALSE}
+cat("# Session Information\n\n")
+```
+
+```{r, results='markup', eval = showSession, echo = showSession}
+sessionInfo()
+```
+

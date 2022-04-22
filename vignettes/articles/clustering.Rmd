@@ -151,7 +151,7 @@ As for another essential parameter, the data matrix used for running the algorit
 
 - For `runKMeans()`, only a dimension reduction is acceptable. Users need to use `useReducedDim` to pass the argument.
 - For `runScranSNN()`, either a feature expression matrix or a dimension reduction is acceptable. Users need to use `useAssay` for a full-sized expression data (`assay`), `useAltExp` and `altExpAssay` for a subsetted expression data (`altExp`), or `useReducedDim` for a dimension reduction. 
-- For `seuratFindClusters()`, it is included within the Seurat Curated Workflow, yet usable as an independent function. However, it will be complicated to use this way. It is recommended to invoke the Seurat clustering functionality in the UI since it is automated there. We will still present the complicated workflow later.  
+- For `runSeuratFindClusters()`, it is included within the Seurat Curated Workflow, yet usable as an independent function. However, it will be complicated to use this way. It is recommended to invoke the Seurat clustering functionality in the UI since it is automated there. We will still present the complicated workflow later.  
 
 Other parameters are method specific, please refer to the function manual pages for the detail. 
 
@@ -179,12 +179,12 @@ The preprocessing only includes necessary steps before getting cluster labels (i
 
 sce <- scaterlogNormCounts(sce, "logcounts")
 # Go through the Seurat curated workflow to get basic scaled assay and dimension reduction
-sce <- seuratNormalizeData(inSCE = sce, useAssay = "counts")
-sce <- seuratFindHVG(inSCE = sce, useAssay = "seuratNormData")
-sce <- seuratScaleData(inSCE = sce, useAssay = "seuratNormData")
-sce <- seuratPCA(inSCE = sce, useAssay = "seuratScaledData")
+sce <- runSeuratNormalizeData(inSCE = sce, useAssay = "counts")
+sce <- runSeuratFindHVG(inSCE = sce, useAssay = "seuratNormData")
+sce <- runSeuratScaleData(inSCE = sce, useAssay = "seuratNormData")
+sce <- runSeuratPCA(inSCE = sce, useAssay = "seuratScaledData")
 # Optional visualization
-sce <- seuratRunUMAP(pbmc3k)
+sce <- runSeuratUMAP(pbmc3k)
 plotSCEDimReduceColData(inSCE = sce,  colorBy = "Sample", reducedDimName = "seuratUMAP")
 ```
 
@@ -252,10 +252,10 @@ plotSCEDimReduceColData(inSCE = sce, colorBy = "kmeans_cluster", conditionClass 
   <summary><b>Example with Seurat</b></summary>
 ````
 
-Here we will only present the examples of using `seuratFindClusters()`. 
+Here we will only present the examples of using `runSeuratFindClusters()`. 
 
 ```{R clst_seurat1, eval=FALSE, message=FALSE, warning=FALSE, fig.align="center", cache=TRUE, results='hide'}
-sce <- seuratFindClusters(inSCE = sce, useAssay = "seuratScaledData")
+sce <- runSeuratFindClusters(inSCE = sce, useAssay = "seuratScaledData")
 plotSCEDimReduceColData(inSCE = sce, colorBy = "Seurat_louvain_Resolution0.8", conditionClass = "factor", reducedDimName = "seuratUMAP")
 ```
 
@@ -274,7 +274,7 @@ if ("percentVar" %in% names(attributes(pca))) {
 }
 # Then we can take the Seurat Curated Workflow independent dimension 
 # reduction as an input. 
-pbmc3k <- seuratFindClusters(inSCE = sce, useAssay = assayNames(sce)[1], externalReduction = new_pca, resolution = 0.8)
+pbmc3k <- runSeuratFindClusters(inSCE = sce, useAssay = assayNames(sce)[1], externalReduction = new_pca, resolution = 0.8)
 plotSCEDimReduceColData(inSCE = sce, colorBy = "Seurat_louvain_Resolution0.8", conditionClass = "factor", reducedDimName = "seuratUMAP")
 ```
 

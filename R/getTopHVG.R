@@ -73,10 +73,12 @@ getTopHVG <- function(inSCE, method, n = 2000, altExp = NULL) {
         
         topGenes <- as.character(tempDataFrame$featureNames[seq_len(n)])
         
+        topGenes <- stats::na.omit(topGenes)
+        
         if(!is.null(altExp)){
-            topGenes <- inSCE[topGenes, ]
-            altExp(inSCE, altExp) <- topGenes
-            topGenes <- inSCE
+          topGenes <- inSCE[topGenes, ]
+          expData(inSCE = inSCE, assayName = altExp, tag = "hvg", altExp = TRUE) <- topGenes
+          topGenes <- inSCE
         }
         
     }
@@ -108,11 +110,15 @@ getTopHVG <- function(inSCE, method, n = 2000, altExp = NULL) {
                            (tempDataFrame[, "dispScaled"] < Inf)
         topGenes <- as.character(tempDataFrame$featureNames[which(x = means.use & dispersions.use)])[seq_len(n)]
         
+        topGenes <- stats::na.omit(topGenes)
+        
         if(!is.null(altExp)){
             topGenes <- inSCE[topGenes, ]
-            altExp(inSCE, altExp) <- topGenes
+            expData(inSCE = inSCE, assayName = altExp, tag = "hvg", altExp = TRUE) <- topGenes
             topGenes <- inSCE
         }
     }
+    
+    
     return(topGenes)
 }

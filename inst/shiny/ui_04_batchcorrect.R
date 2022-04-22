@@ -478,7 +478,7 @@ shinyPanelBatchcorrect <- fluidPage(
         # Seurat3 Integration ####
         conditionalPanel(
           condition = "input.batchCorrMethods == 'Seurat3 Integration'",
-          h5(tags$a(href = paste0(docs.base, "reference/seuratIntegration.html"),
+          h5(tags$a(href = paste0(docs.base, "reference/runSeuratIntegration.html"),
                     "(help for Seurat Integration)", target = "_blank")),
           uiOutput('Srt3IntNAnchUI'),
           textInput("Srt3IntSaveAssay", "Assay Name to Use:",

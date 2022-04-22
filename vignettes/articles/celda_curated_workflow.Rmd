@@ -53,7 +53,7 @@ NOTE: This tutorial assumes that the data has already been uploaded via the uplo
 To identify number of feature modules, there are always five essential inputs that users should be sure with:
 
 - The data matrix to use - selection input **"Choose an Assay"**. In terms of celda analysis, SCTK always requires a full-sized feature expression data (i.e. assay) as a valid input.
-- Feature selection method - selection input **"Choose Feature Selection Method"**. Select feature selection method from 'None' , 'SeuratFindHVG' and 'Scran_modelGeneVar'. 
+- Feature selection method - selection input **"Choose Feature Selection Method"**. Select feature selection method from 'None' , 'runSeuratFindHVG' and 'Scran_modelGeneVar'. 
 - Minimum number of counts required for feature selection - integer **"Keep features with this many counts"**.
 - Minimum number of cells required for feature selection - integer **"In at least this many cells"**.
 - Number of initial feature modules - integer **"Select Number of Initial Feature Modules"**. 
@@ -69,11 +69,11 @@ div.offset { background-color:inherit ; border-radius: 5px; margin-left: 15px;}
 </style>
 <div class = "offset">
 <details>
-  <summary><b>SeuratFindHVG</b></summary>
+  <summary><b>runSeuratFindHVG</b></summary>
 ````  
 
 
-The method specific parameters for `SeuratFindHVG` includes:
+The method specific parameters for `runSeuratFindHVG` includes:
 
 - Select method for computation of highly variable genes - selection input **"Select HVG method"**. `Seurat` provides three methods for variable genes identification i.e. `vst` (uses local polynomial regression to fit a relationship between log of variance and log of mean), `mean.var.plot` (uses mean and dispersion to divide features into bins) and `dispersion` (uses highest dispersion values only). 
 - Select variable features - selection input **"Select number of variable features"**.Input the number of genes that should be identified as variable. Default is 2500.
@@ -236,7 +236,7 @@ ncol(sce)
   <summary><b>Finding number of modules</b></summary>
 ````
 
-In general, removing features with low numbers of counts across all cells is recommended to reduce computational run time. A simple selection can be performed by removing features with a minimum number of counts in a minimum number of cells using the selectFeatures function. Other than this options such as SeuratFindHVG and Scran_modelGeneVar also exist for feature selection.           
+In general, removing features with low numbers of counts across all cells is recommended to reduce computational run time. A simple selection can be performed by removing features with a minimum number of counts in a minimum number of cells using the selectFeatures function. Other than this options such as runSeuratFindHVG and Scran_modelGeneVar also exist for feature selection.           
 
 ```{R celda_module, eval=FALSE, message=FALSE, warning=FALSE, fig.align="center", cache=TRUE, results='hide'}
 

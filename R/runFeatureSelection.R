@@ -37,7 +37,7 @@ runFeatureSelection <- function(inSCE,
   if(hvgMethod %in% seuratMethods){
     params$useAssay <- useAssay
     params$hvgMethod <- hvgMethod
-    inSCE <- do.call("seuratFindHVG", args = params)
+    inSCE <- do.call("runSeuratFindHVG", args = params)
   }
   else if(hvgMethod %in% scranMethods){
     params$assayName <- useAssay
