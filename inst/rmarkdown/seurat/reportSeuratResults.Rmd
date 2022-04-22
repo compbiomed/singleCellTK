@@ -121,8 +121,11 @@ numMarkerGenesBio <- nrow(data.markers[data.markers$p_val_adj < 0.05, ])
 cat(res, sep = '\n')
 ```
 
-```{r Session Seurat Results, results='asis', eval = showSession, echo = showSession}
+```{r, results='asis', eval=showSession, echo=FALSE}
 cat("# Session Information\n\n")
+```
+
+```{r, results='markup', eval = showSession, echo = showSession}
 sessionInfo()
 ```
 

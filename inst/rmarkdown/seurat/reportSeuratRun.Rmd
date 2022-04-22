@@ -133,7 +133,10 @@ cat(resDimRed, sep = '\n')
 cat(resClustering, sep = '\n')
 ```
 
-```{r Session Seurat Run, results='asis', eval = showSession, echo = showSession}
+```{r, results='asis', eval=showSession, echo=FALSE}
 cat("# Session Information\n\n")
+```
+
+```{r, results='markup', eval = showSession, echo = showSession}
 sessionInfo()
 ```
