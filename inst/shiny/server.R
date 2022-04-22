@@ -211,16 +211,19 @@ shinyServer(function(input, output, session) {
                          recommended = "redDims", redDims = TRUE)
     if (is.null(input$deMethod)) {
       updateSelectInputTag(session, "deAssay", 
+                           label = "Select input matrix:",
                            tags = c("raw", "transformed", "uncategorized", 
                                     "normalized", "scaled", "redDims"), 
                            recommended = c("transformed"), redDims = TRUE)
     } else if (input$deMethod == "DESeq2") {
       updateSelectInputTag(session, "deAssay", 
+                           label = "Select input matrix:",
                            tags = c("raw", "transformed", "uncategorized", 
                                     "normalized", "scaled"), 
                            recommended = c("raw"))
     } else {
       updateSelectInputTag(session, "deAssay", 
+                           label = "Select input matrix:",
                            tags = c("raw", "transformed", "uncategorized", 
                                     "normalized", "scaled", "redDims"), 
                            recommended = c("transformed"), redDims = TRUE)
@@ -6064,17 +6067,20 @@ shinyServer(function(input, output, session) {
     if (!is.null(vals$counts)) {
       if (is.null(input$deMethod)) {
         updateSelectInputTag(session, "deAssay", 
+                             label = "Select input matrix:",
                              tags = c("raw", "transformed", "uncategorized", 
                                       "normalized", "scaled", "redDims"), 
                              recommended = c("transformed", "normalized"), 
                              redDims = TRUE)
       } else if (input$deMethod == "DESeq2") {
         updateSelectInputTag(session, "deAssay", 
+                             label = "Select input matrix:",
                              tags = c("raw", "transformed", "uncategorized", 
                                       "normalized", "scaled"), 
                              recommended = c("raw"))
       } else {
         updateSelectInputTag(session, "deAssay", 
+                             label = "Select input matrix:",
                              tags = c("raw", "transformed", "uncategorized", 
                                       "normalized", "scaled", "redDims"), 
                              recommended = c("transformed", "normalized"), 
@@ -7006,7 +7012,8 @@ shinyServer(function(input, output, session) {
   
   update_enrDEG <- reactive({
     list(input$enrDEGSelect, input$enrDEGUpOnly, input$enrDEGlog2fc,
-         input$enrDEGFDR)
+         input$enrDEGFDR, input$enrDEGminMean1, input$enrDEGmaxMean2,
+         input$enrDEGminPerc1, input$enrDEGmaxPerc2)
   })
   
   observeEvent(ignoreInit = TRUE, update_enrDEG(), {
@@ -7015,7 +7022,11 @@ shinyServer(function(input, output, session) {
     degSelect <- getDEGTopTable(vals$counts, useResult = input$enrDEGSelect,
                                 labelBy = NULL, onlyPos = input$enrDEGUpOnly,
                                 log2fcThreshold = input$enrDEGlog2fc,
-                                fdrThreshold = input$enrDEGFDR)$Gene
+                                fdrThreshold = input$enrDEGFDR,
+                                minGroup1MeanExp = input$enrDEGminMean1, 
+                                maxGroup2MeanExp = input$enrDEGmaxMean2,
+                                minGroup1ExprPerc = input$enrDEGminPerc1,
+                                maxGroup2ExprPerc = input$enrDEGmaxPerc2)$Gene
     nGene <- length(degSelect)
     output$enrDEGText <- renderUI(p(paste0("Selected ", nGene, " DEGs. Listed below.")))
     output$enrDEGRes <- renderText({
@@ -7044,7 +7055,11 @@ shinyServer(function(input, output, session) {
             genes <- getDEGTopTable(vals$counts, useResult = input$enrDEGSelect,
                                     labelBy = NULL, onlyPos = input$enrDEGUpOnly,
                                     log2fcThreshold = input$enrDEGlog2fc,
-                                    fdrThreshold = input$enrDEGFDR)$Gene
+                                    fdrThreshold = input$enrDEGFDR,
+                                    minGroup1MeanExp = input$enrDEGminMean1, 
+                                    maxGroup2MeanExp = input$enrDEGmaxMean2,
+                                    minGroup1ExprPerc = input$enrDEGminPerc1,
+                                    maxGroup2ExprPerc = input$enrDEGmaxPerc2)$Gene
           } else if (input$geneListChoice == "selectGenes"){
             genes <- input$enrichGenes
           } else if (input$geneListChoice == "geneFile"){
