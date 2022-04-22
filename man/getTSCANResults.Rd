@@ -26,20 +26,14 @@ listTSCANResults(x)
 
 \item{analysisName}{Algorithm name implemented}
 
-\item{pathName}{Sub folder name within the analysisName}
+\item{pathName}{Sub folder name within the \code{analysisName}}
 
-\item{value}{Value to be stored within the pathName or analysisName}
-
-\item{SingleCellExperiment}{Input \linkS4class{SingleCellExperiment} object.}
+\item{value}{Value to be stored within the \code{pathName} or 
+\code{analysisName}}
+}
+\value{
+Get or set TSCAN results
 }
 \description{
-getTSCANResults accessor function
-
-getTSCANResults accessor function
-
-getTSCANResults accessor function
-
-getTSCANResults accessor function
-
 getTSCANResults accessor function
 }
