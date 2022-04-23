@@ -10,7 +10,7 @@ params:
   phenotype.groups: !r NULL
   selected.markers: !r NULL
   outputPath: !r NULL
-  showSession: TRUE
+  showSession: FALSE
   pdf: TRUE
   runMarkerSelection: TRUE
   plotMarkerSelection: TRUE
@@ -76,7 +76,7 @@ data.markers <- data.frame(gene.id = selected.markers, cluster1 = 1)
 
 ```{r, echo=FALSE, results='asis', warning=FALSE, message=FALSE, eval=plotMarkerSelection}
 cat(paste0(headingMS, "# ", titleMarkerPlots," {.tabset .tabset-fade}\n\n"))
-cat("Gene plots for the top marker genes in each of the identified clusters are visualized below through a feature plot, ridge plot, violin plot, dot plot and a heatmap plot.")
+cat("Gene plots for the top marker genes are visualized below through a feature plot, ridge plot, violin plot, dot plot and a heatmap plot.")
 ```
 
 ```{r, echo=FALSE, results='asis', warning=FALSE, message=FALSE, eval=plotMarkerSelection}
@@ -181,4 +181,12 @@ colNames<-colnames(top10)
 kable(top10, style = 'html', row.names = FALSE) %>%
   kable_styling(bootstrap_options = "striped") %>%
   scroll_box(width = "100%", height = "500px")
+```
+
+```{r, results='asis', eval=showSession, echo=FALSE}
+cat("# Session Information\n\n")
+```
+
+```{r, results='markup', eval = showSession, echo = showSession}
+sessionInfo()
 ```

@@ -7,7 +7,7 @@ params:
   authors: !r NULL
   sce: !r NULL
   outputPath: !r NULL
-  showSession: TRUE
+  showSession: FALSE
   pdf: TRUE
   biological.group: !r NULL
   phenotype.groups: !r NULL
@@ -117,10 +117,12 @@ for(i in 1:(((maxResolution-minResolution)*10)+1)){
   print(p)
   cat("\n\n")
   
-      cat(headingClust," Phenotype variable:", phenotype.groups," {-} \n\n")
-      p <- plotSeuratReduction(data, useReduction = "tsne", groupBy = phenotype.groups, showLegend = TRUE)
-  print(p)
-  cat("\n\n")
+  if(!is.null(phenotype.groups)){
+    cat(headingClust," Phenotype variable:", phenotype.groups," {-} \n\n")
+    p <- plotSeuratReduction(data, useReduction = "tsne", groupBy = phenotype.groups, showLegend = TRUE)
+    print(p)
+    cat("\n\n")
+  }
 }
 ```
 
@@ -152,10 +154,12 @@ for(i in 1:(((maxResolution-minResolution)*10)+1)){
   print(p)
   cat("\n\n")
   
+    if(!is.null(phenotype.groups)){
       cat(headingClust," Phenotype variable:", phenotype.groups," {-} \n\n")
-  p <- plotSeuratReduction(data, useReduction = "umap", groupBy = phenotype.groups, showLegend = TRUE)
-  print(p)
-  cat("\n\n")
+      p <- plotSeuratReduction(data, useReduction = "umap", groupBy = phenotype.groups, showLegend = TRUE)
+      print(p)
+      cat("\n\n")
+    }
 }
 ```
 
@@ -169,3 +173,11 @@ for(i in 1:(((maxResolution-minResolution)*10)+1)){
 ```
 
 > The data was clustered using the *`r significant_PC`* principal components previously computed using the community detection based *louvain* algorithm. Using this method, `r numClustersAllRes` clusters were identified by using a resolution of `r seq(minResolution, maxResolution, 0.1)` respectively. 
+
+```{r, results='asis', eval=showSession, echo=FALSE}
+cat("# Session Information\n\n")
+```
+
+```{r, results='markup', eval = showSession, echo = showSession}
+sessionInfo()
+```

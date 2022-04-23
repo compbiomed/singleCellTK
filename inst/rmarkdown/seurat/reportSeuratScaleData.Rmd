@@ -7,7 +7,7 @@ params:
   authors: !r NULL
   sce: !r NULL
   outputPath: !r NULL
-  showSession: TRUE
+  showSession: FALSE
   pdf: TRUE
   forceRun: FALSE
 output:
@@ -60,4 +60,12 @@ scaleParams <- list(
   model = "linear", 
   verbose = FALSE)
 metadata(data)$seurat$sctk$report$scaleParams <- scaleParams
+```
+
+```{r, results='asis', eval=showSession, echo=FALSE}
+cat("# Session Information\n\n")
+```
+
+```{r, results='markup', eval = showSession, echo = showSession}
+sessionInfo()
 ```
