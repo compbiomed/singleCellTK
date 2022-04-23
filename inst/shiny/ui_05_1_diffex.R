@@ -270,13 +270,13 @@ shinyPanelDiffex <- fluidPage(
                       width = 6,
                       numericInput("deHMMinExpPerc1", 
                                    "Group1 expression percentage greater than:",
-                                   value = 0.5, min = 0, max = 1, step = 0.05),
+                                   value = NULL, min = 0, max = 1, step = 0.05),
                     ),
                     column(
                       width = 6,
                       numericInput("deHMMaxExpPerc2", 
                                    "Group2 expression percentage less than:", 
-                                   value = 0.5, min = 0, max = 1, step = 0.05),
+                                   value = NULL, min = 0, max = 1, step = 0.05),
                     )
                   ),
                   

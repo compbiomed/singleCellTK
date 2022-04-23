@@ -20,7 +20,7 @@ Log2_FC, Pvalue, and FDR, will be returned."><!-- mathjax --><script src="https:
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.5.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.5.2</span>
       </span>
     </div>
 
@@ -33,6 +33,25 @@ Log2_FC, Pvalue, and FDR, will be returned."><!-- mathjax --><script src="https:
 </li>
 <li>
   <a href="../articles/installation.html">Installation</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Tutorials
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu"><li>
+      <a href="../articles/console_analysis_tutorial.html">A La Carte Workflow - PBMC3K (R Console)</a>
+    </li>
+    <li>
+      <a href="../articles/cnsl_seurat_curated_workflow.html">Seurat Curated Workflow - PBMC3K</a>
+    </li>
+    <li>
+      <a href="../articles/celda_curated_workflow.html">Celda Curated Workflow - PBMC3K</a>
+    </li>
+  </ul></li>
+<li>
+  <a href="../articles/cmd_qc.html">SCTK-QC</a>
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
@@ -110,7 +129,7 @@ Log2_FC, Pvalue, and FDR, will be returned."><!-- mathjax --><script src="https:
         </li>
       </ul></li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Pathway &amp; Enrichment Analysis</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Enrichment &amp; Pathway Analysis</a>
       <ul class="dropdown-menu" role="menu"><li>
           <a href="../articles/cnsl_enrichR.html">EnrichR</a>
         </li>
@@ -137,21 +156,11 @@ Log2_FC, Pvalue, and FDR, will be returned."><!-- mathjax --><script src="https:
         </li>
       </ul></li>
   </ul></li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Tutorials
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu"><li>
-      <a href="../articles/console_analysis_tutorial.html">Analysis of PBMC3K (R Console)</a>
-    </li>
-  </ul></li>
-<li>
-  <a href="../articles/cmd_qc.html">SCTK-QC</a>
-</li>
 <li>
   <a href="../reference/index.html">Reference</a>
+</li>
+<li>
+  <a href="../news/index.html">NEWS</a>
 </li>
       </ul><ul class="nav navbar-nav navbar-right"><li>
   <a href="https://github.com/compbiomed/singleCellTK" class="external-link">
@@ -193,7 +202,11 @@ the result. A <code>data.frame</code> object, with variables of <code>Gene</code
   labelBy <span class="op">=</span> <span class="cn">NULL</span>,
   onlyPos <span class="op">=</span> <span class="cn">FALSE</span>,
   log2fcThreshold <span class="op">=</span> <span class="fl">0.25</span>,
-  fdrThreshold <span class="op">=</span> <span class="fl">0.05</span>
+  fdrThreshold <span class="op">=</span> <span class="fl">0.05</span>,
+  minGroup1MeanExp <span class="op">=</span> <span class="cn">NULL</span>,
+  maxGroup2MeanExp <span class="op">=</span> <span class="cn">NULL</span>,
+  minGroup1ExprPerc <span class="op">=</span> <span class="cn">NULL</span>,
+  maxGroup2ExprPerc <span class="op">=</span> <span class="cn">NULL</span>
 <span class="op">)</span></code></pre></div>
     </div>
 
@@ -218,6 +231,18 @@ log2FC larger than this value. Default <code>0.25</code>.</p></dd>
 <dt>fdrThreshold</dt>
 <dd><p>numeric. Only fetch DEGs with FDR value smaller than this
 value. Default <code>0.05</code>.</p></dd>
+<dt>minGroup1MeanExp</dt>
+<dd><p>numeric. Only fetch DEGs with mean expression in 
+group1 greater then this value. Default <code>NULL</code>.</p></dd>
+<dt>maxGroup2MeanExp</dt>
+<dd><p>numeric. Only fetch DEGs with mean expression in 
+group2 less then this value. Default <code>NULL</code>.</p></dd>
+<dt>minGroup1ExprPerc</dt>
+<dd><p>numeric. Only fetch DEGs expressed in greater then 
+this fraction of cells in group1. Default <code>NULL</code>.</p></dd>
+<dt>maxGroup2ExprPerc</dt>
+<dd><p>numeric. Only fetch DEGs expressed in less then this 
+fraction of cells in group2. Default <code>NULL</code>.</p></dd>
 </dl></div>
     <div id="value">
     <h2>Value</h2>
@@ -234,64 +259,122 @@ value. Default <code>0.05</code>.</p></dd>
 <span class="r-in">                   groupName1 <span class="op">=</span> <span class="st">"w.alpha"</span>, groupName2 <span class="op">=</span> <span class="st">"w.beta"</span>,</span>
 <span class="r-in">                   analysisName <span class="op">=</span> <span class="st">"w.aVSb"</span><span class="op">)</span></span>
 <span class="r-in"><span class="fu">getDEGTopTable</span><span class="op">(</span><span class="va">sce.w</span>, <span class="st">"w.aVSb"</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>               Gene     Log2_FC       Pvalue          FDR</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 74         ADCYAP1  -9.5222344 3.683325e-21 3.683325e-19</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 57            HADH -10.5612840 6.226069e-20 3.113034e-18</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1              INS -12.7028733 2.368614e-19 4.737227e-18</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2              GCG   9.1517909 2.368614e-19 4.737227e-18</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 29        INS-IGF2 -12.9324068 2.367422e-19 4.737227e-18</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 16            IAPP -11.3726919 1.027650e-17 1.712751e-16</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 88             TTR   4.3825672 3.348780e-17 4.783971e-16</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 48              GC   7.1878882 4.658205e-15 5.822756e-14</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 89            SCGN  -3.8122943 3.019451e-14 3.354946e-13</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 34           MAP1B  -4.0106181 6.802842e-14 6.802842e-13</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9           TM4SF4   6.4072019 2.739759e-13 2.490690e-12</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 86            RBP4  -5.5673377 4.757801e-11 3.964834e-10</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 46          DPYSL2  -3.6028768 3.064074e-10 2.356980e-09</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 56            PTEN  -3.3372373 3.758369e-10 2.684550e-09</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 72            RGS4   5.4637919 9.524267e-10 6.349511e-09</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 32          SEC22B  -2.7715616 2.049612e-09 1.281007e-08</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 26       LOC647979  -2.9204542 2.744513e-09 1.614419e-08</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 37           G6PC2  -4.5526717 4.065000e-09 2.258333e-08</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 67         FAM18B1  -3.4609207 5.739256e-09 3.020661e-08</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 22         SLC30A8  -3.0773276 1.216120e-08 6.080598e-08</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 53           ETNK1  -3.4238773 8.381062e-08 3.990982e-07</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 28        C10orf46  -4.1172723 1.264781e-07 5.749006e-07</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 71            TLK1  -2.7498540 1.541148e-07 6.700642e-07</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 61            PDK4   4.5360064 2.535638e-07 1.056516e-06</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 18    NM-001166106  -1.7095593 4.756783e-07 1.902713e-06</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 100        C8orf83  -3.7073784 6.952554e-07 2.674059e-06</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 39            RIN2  -2.6455051 1.481920e-06 5.488594e-06</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 80            MLL5  -2.3693014 6.750971e-06 2.411061e-05</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 98  RPL17-C18ORF32  -1.7895368 8.133631e-06 2.804700e-05</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 79          TMEM85  -2.5089275 1.018119e-05 3.393730e-05</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 44           SRSF6  -2.0881730 1.189004e-05 3.835497e-05</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 66          C9orf5  -2.9296536 3.752854e-05 1.172767e-04</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 47            TSIX  -3.9086902 4.398954e-05 1.333016e-04</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 70          TUBA1A  -1.8223863 4.544070e-05 1.336491e-04</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 59           SC5DL  -3.2686407 4.937434e-05 1.410695e-04</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 77          ZNF252  -3.1415988 6.620272e-05 1.838964e-04</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 51         C2orf28  -2.3401725 1.039625e-04 2.809797e-04</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 68        SERPINA1   2.9853497 2.218207e-04 5.837387e-04</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 40            VCAN  -1.6914180 2.586650e-04 6.632435e-04</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 33             CHP  -2.0821137 2.684848e-04 6.712119e-04</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 20            EGR1  -2.0661563 3.793268e-04 9.251873e-04</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 43            MLL3  -1.7807672 4.587914e-04 1.077738e-03</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 96        C11orf10  -1.2673860 4.634275e-04 1.077738e-03</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 78        KCNQ1OT1   2.6699417 6.608041e-04 1.501827e-03</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 69             MLL  -1.8153392 1.348475e-03 2.996612e-03</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 63       LOC729013  -2.5631018 1.561273e-03 3.394072e-03</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 64         C6orf62  -1.4303264 1.776495e-03 3.779777e-03</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 99           TTC35  -2.2703597 1.915506e-03 3.990638e-03</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 52        C14orf43  -2.6597468 2.774656e-03 5.662562e-03</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 97           SNX22  -1.1238276 3.454043e-03 6.908086e-03</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 81            PKM2  -1.1729284 6.785609e-03 1.330512e-02</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 75            ROD1  -1.8832646 7.790889e-03 1.498248e-02</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 85        C10orf58  -1.6580742 8.496465e-03 1.603107e-02</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 83        FLJ43390  -2.1821390 1.284192e-02 2.378134e-02</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 11            PENK   0.9654197 1.754329e-02 3.189689e-02</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 73             FOS  -1.3535129 1.823620e-02 3.256465e-02</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 87        KIAA0494  -1.8671111 2.676761e-02 4.696072e-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>               Gene     Log2_FC       Pvalue          FDR group1MeanExp</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 74         ADCYAP1  -9.5222344 3.683325e-21 3.683325e-19     0.4903626</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 57            HADH -10.5612840 6.226069e-20 3.113034e-18     1.3295260</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1              INS -12.7028733 2.368614e-19 4.737227e-18     3.9112870</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2              GCG   9.1517909 2.368614e-19 4.737227e-18    18.2513675</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 29        INS-IGF2 -12.9324068 2.367422e-19 4.737227e-18     3.1557017</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 16            IAPP -11.3726919 1.027650e-17 1.712751e-16     2.8707631</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 88             TTR   4.3825672 3.348780e-17 4.783971e-16    16.0047494</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 48              GC   7.1878882 4.658205e-15 5.822756e-14     8.7962925</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 89            SCGN  -3.8122943 3.019451e-14 3.354946e-13     8.7238794</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 34           MAP1B  -4.0106181 6.802842e-14 6.802842e-13     9.4915049</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9           TM4SF4   6.4072019 2.739759e-13 2.490690e-12    10.2257508</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 86            RBP4  -5.5673377 4.757801e-11 3.964834e-10     0.6734410</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 46          DPYSL2  -3.6028768 3.064074e-10 2.356980e-09     8.6913722</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 56            PTEN  -3.3372373 3.758369e-10 2.684550e-09     9.0773050</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 72            RGS4   5.4637919 9.524267e-10 6.349511e-09     9.3192184</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 32          SEC22B  -2.7715616 2.049612e-09 1.281007e-08     8.3433933</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 26       LOC647979  -2.9204542 2.744513e-09 1.614419e-08     8.6952640</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 37           G6PC2  -4.5526717 4.065000e-09 2.258333e-08     6.6388158</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 67         FAM18B1  -3.4609207 5.739256e-09 3.020661e-08     5.7486900</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 22         SLC30A8  -3.0773276 1.216120e-08 6.080598e-08     9.5767369</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 53           ETNK1  -3.4238773 8.381062e-08 3.990982e-07     8.5213021</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 28        C10orf46  -4.1172723 1.264781e-07 5.749006e-07     6.0973324</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 71            TLK1  -2.7498540 1.541148e-07 6.700642e-07     8.9463780</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 61            PDK4   4.5360064 2.535638e-07 1.056516e-06     8.4809718</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 18    NM-001166106  -1.7095593 4.756783e-07 1.902713e-06     9.7766808</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 100        C8orf83  -3.7073784 6.952554e-07 2.674059e-06     3.3887995</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 39            RIN2  -2.6455051 1.481920e-06 5.488594e-06     9.2894285</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 80            MLL5  -2.3693014 6.750971e-06 2.411061e-05     6.9113917</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 98  RPL17-C18ORF32  -1.7895368 8.133631e-06 2.804700e-05     6.8208473</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 79          TMEM85  -2.5089275 1.018119e-05 3.393730e-05     5.6858668</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 44           SRSF6  -2.0881730 1.189004e-05 3.835497e-05     9.5833679</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 66          C9orf5  -2.9296536 3.752854e-05 1.172767e-04     4.9630843</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 47            TSIX  -3.9086902 4.398954e-05 1.333016e-04     2.6458110</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 70          TUBA1A  -1.8223863 4.544070e-05 1.336491e-04     9.5849051</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 59           SC5DL  -3.2686407 4.937434e-05 1.410695e-04     4.8721506</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 77          ZNF252  -3.1415988 6.620272e-05 1.838964e-04     2.7664542</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 51         C2orf28  -2.3401725 1.039625e-04 2.809797e-04     6.7207090</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 68        SERPINA1   2.9853497 2.218207e-04 5.837387e-04     7.0352827</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 40            VCAN  -1.6914180 2.586650e-04 6.632435e-04     0.1348696</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 33             CHP  -2.0821137 2.684848e-04 6.712119e-04     8.0260864</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 20            EGR1  -2.0661563 3.793268e-04 9.251873e-04     9.0059561</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 43            MLL3  -1.7807672 4.587914e-04 1.077738e-03     7.7422834</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 96        C11orf10  -1.2673860 4.634275e-04 1.077738e-03     7.1695226</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 78        KCNQ1OT1   2.6699417 6.608041e-04 1.501827e-03     6.0075125</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 69             MLL  -1.8153392 1.348475e-03 2.996612e-03     5.9892851</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 63       LOC729013  -2.5631018 1.561273e-03 3.394072e-03     4.2301904</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 64         C6orf62  -1.4303264 1.776495e-03 3.779777e-03    10.1448315</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 99           TTC35  -2.2703597 1.915506e-03 3.990638e-03     3.9697651</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 52        C14orf43  -2.6597468 2.774656e-03 5.662562e-03     4.0551095</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 97           SNX22  -1.1238276 3.454043e-03 6.908086e-03     7.8894950</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 81            PKM2  -1.1729284 6.785609e-03 1.330512e-02     7.3410304</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 75            ROD1  -1.8832646 7.790889e-03 1.498248e-02     5.2421307</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 85        C10orf58  -1.6580742 8.496465e-03 1.603107e-02     5.4053757</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 83        FLJ43390  -2.1821390 1.284192e-02 2.378134e-02     4.1766723</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11            PENK   0.9654197 1.754329e-02 3.189689e-02     1.0147027</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 73             FOS  -1.3535129 1.823620e-02 3.256465e-02     8.2410871</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 87        KIAA0494  -1.8671111 2.676761e-02 4.696072e-02     4.5435264</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     group2MeanExp group1ExprPerc group2ExprPerc</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 74    10.01259702      0.3058824          1.000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 57    11.89080997      0.5294118          1.000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1     16.61416028      0.9882353          1.000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2      9.09957654      1.0000000          1.000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 29    16.08810854      0.9647059          1.000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 16    14.24345508      0.8588235          0.975</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 88    11.62218219      1.0000000          0.950</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 48     1.60840430      0.9529412          0.550</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 89    12.53617374      0.9764706          1.000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 34    13.50212304      0.9882353          1.000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9      3.81854893      0.9647059          0.950</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 86     6.24077871      0.3764706          0.800</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 46    12.29424906      1.0000000          1.000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 56    12.41454230      0.9882353          1.000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 72     3.85542656      0.9882353          0.675</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 32    11.11495483      1.0000000          1.000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 26    11.61571820      1.0000000          1.000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 37    11.19148754      0.8941176          0.975</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 67     9.20961064      0.8352941          0.975</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 22    12.65406454      0.9764706          1.000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 53    11.94517933      0.9764706          1.000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 28    10.21460475      0.8588235          0.925</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 71    11.69623200      0.9882353          1.000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 61     3.94496542      0.9411765          0.725</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 18    11.48624002      1.0000000          1.000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 100    7.09617794      0.6705882          0.925</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 39    11.93493359      0.9529412          1.000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 80     9.28069305      0.9529412          1.000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 98     8.61038416      0.9882353          0.975</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 79     8.19479424      0.8823529          0.950</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 44    11.67154094      0.9882353          1.000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 66     7.89273792      0.8235294          0.900</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 47     6.55450124      0.4235294          0.725</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 70    11.40729140      0.9882353          1.000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 59     8.14079126      0.8352941          0.875</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 77     5.90805298      0.5294118          0.825</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 51     9.06088151      0.8705882          0.975</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 68     4.04993303      0.9176471          0.775</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 40     1.82628761      0.1058824          0.350</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 33    10.10820003      0.9647059          1.000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 20    11.07211242      0.9647059          0.950</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 43     9.52305067      0.9647059          0.975</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 96     8.43690863      0.9764706          0.975</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 78     3.33757081      0.8235294          0.600</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 69     7.80462426      0.9058824          0.950</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 63     6.79329220      0.6117647          0.850</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 64    11.57515787      1.0000000          1.000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 99     6.24012476      0.7294118          0.875</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 52     6.71485637      0.6941176          0.850</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 97     9.01332262      0.9764706          1.000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 81     8.51395886      0.9529412          1.000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 75     7.12539527      0.8941176          0.900</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 85     7.06344991      0.8352941          0.900</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 83     6.35881128      0.8000000          0.775</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11     0.04928302      0.1764706          0.025</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 73     9.59460002      0.9411765          0.925</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 87     6.41063752      0.8235294          0.850</span>
 </code></pre></div>
     </div>
   </div>

@@ -18,7 +18,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.5.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.5.2</span>
       </span>
     </div>
 
@@ -31,6 +31,25 @@
 </li>
 <li>
   <a href="../articles/installation.html">Installation</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Tutorials
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu"><li>
+      <a href="../articles/console_analysis_tutorial.html">A La Carte Workflow - PBMC3K (R Console)</a>
+    </li>
+    <li>
+      <a href="../articles/cnsl_seurat_curated_workflow.html">Seurat Curated Workflow - PBMC3K</a>
+    </li>
+    <li>
+      <a href="../articles/celda_curated_workflow.html">Celda Curated Workflow - PBMC3K</a>
+    </li>
+  </ul></li>
+<li>
+  <a href="../articles/cmd_qc.html">SCTK-QC</a>
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
@@ -108,7 +127,7 @@
         </li>
       </ul></li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Pathway &amp; Enrichment Analysis</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Enrichment &amp; Pathway Analysis</a>
       <ul class="dropdown-menu" role="menu"><li>
           <a href="../articles/cnsl_enrichR.html">EnrichR</a>
         </li>
@@ -135,21 +154,11 @@
         </li>
       </ul></li>
   </ul></li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Tutorials
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu"><li>
-      <a href="../articles/console_analysis_tutorial.html">Analysis of PBMC3K (R Console)</a>
-    </li>
-  </ul></li>
-<li>
-  <a href="../articles/cmd_qc.html">SCTK-QC</a>
-</li>
 <li>
   <a href="../reference/index.html">Reference</a>
+</li>
+<li>
+  <a href="../news/index.html">NEWS</a>
 </li>
       </ul><ul class="nav navbar-nav navbar-right"><li>
   <a href="https://github.com/compbiomed/singleCellTK" class="external-link">
@@ -303,28 +312,36 @@ decontaminated counts will be added as an assay called 'decontXCounts'.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">scExample</span>, package <span class="op">=</span> <span class="st">"singleCellTK"</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="subsetSCECols.html">subsetSCECols</a></span><span class="op">(</span><span class="va">sce</span>, colData <span class="op">=</span> <span class="st">"type != 'EmptyDroplet'"</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu">runDecontX</span><span class="op">(</span><span class="va">sce</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span>,<span class="fl">20</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Thu Mar 31 12:10:48 2022 ... Running 'DecontX'</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Sat Apr 23 00:23:13 2022 ... Running 'DecontX'</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> --------------------------------------------------</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Starting DecontX</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> --------------------------------------------------</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Thu Mar 31 12:10:48 2022 .. Analyzing all cells</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Thu Mar 31 12:10:48 2022 .... Generating UMAP and estimating cell types</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Sat Apr 23 00:23:13 2022 .. Analyzing all cells</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Sat Apr 23 00:23:13 2022 .... Generating UMAP and estimating cell types</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Found more than one class "dist" in cache; using the first, from namespace 'BiocGenerics'</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Also defined by 'spam'</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Found more than one class "dist" in cache; using the first, from namespace 'BiocGenerics'</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Also defined by 'spam'</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Found more than one class "dist" in cache; using the first, from namespace 'BiocGenerics'</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Also defined by 'spam'</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Thu Mar 31 12:10:52 2022 .... Estimating contamination</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Thu Mar 31 12:10:52 2022 ...... Completed iteration: 10 | converge: 0.01714</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Thu Mar 31 12:10:52 2022 ...... Completed iteration: 20 | converge: 0.00868</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Thu Mar 31 12:10:52 2022 ...... Completed iteration: 30 | converge: 0.005011</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Thu Mar 31 12:10:52 2022 ...... Completed iteration: 40 | converge: 0.002911</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Thu Mar 31 12:10:52 2022 ...... Completed iteration: 50 | converge: 0.001471</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Thu Mar 31 12:10:52 2022 ...... Completed iteration: 59 | converge: 0.0009607</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Thu Mar 31 12:10:52 2022 .. Calculating final decontaminated matrix</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Sat Apr 23 00:23:16 2022 .... Estimating contamination</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Sat Apr 23 00:23:16 2022 ...... Completed iteration: 10 | converge: 0.01385</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Sat Apr 23 00:23:16 2022 ...... Completed iteration: 20 | converge: 0.006811</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Sat Apr 23 00:23:16 2022 ...... Completed iteration: 30 | converge: 0.003504</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Sat Apr 23 00:23:16 2022 ...... Completed iteration: 40 | converge: 0.002042</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Sat Apr 23 00:23:16 2022 ...... Completed iteration: 50 | converge: 0.001662</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Sat Apr 23 00:23:16 2022 ...... Completed iteration: 60 | converge: 0.001519</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Sat Apr 23 00:23:16 2022 ...... Completed iteration: 70 | converge: 0.001443</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Sat Apr 23 00:23:16 2022 ...... Completed iteration: 80 | converge: 0.001393</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Sat Apr 23 00:23:16 2022 ...... Completed iteration: 90 | converge: 0.001341</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Sat Apr 23 00:23:16 2022 ...... Completed iteration: 100 | converge: 0.001268</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Sat Apr 23 00:23:16 2022 ...... Completed iteration: 110 | converge: 0.001191</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Sat Apr 23 00:23:16 2022 ...... Completed iteration: 120 | converge: 0.001112</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Sat Apr 23 00:23:16 2022 ...... Completed iteration: 130 | converge: 0.00104</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Sat Apr 23 00:23:16 2022 ...... Completed iteration: 135 | converge: 0.0009998</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Sat Apr 23 00:23:16 2022 .. Calculating final decontaminated matrix</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> --------------------------------------------------</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Completed DecontX. Total time: 3.301383 secs</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Completed DecontX. Total time: 3.420016 secs</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> --------------------------------------------------</span>
 </code></pre></div>
     </div>

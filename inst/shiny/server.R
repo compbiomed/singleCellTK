@@ -6681,6 +6681,8 @@ shinyServer(function(input, output, session) {
        !input$deResSel == ""){
       deHMMinExp1 <- handleEmptyNumericInput(input$deHMMinExp1, NULL)
       deHMMaxExp2 <- handleEmptyNumericInput(input$deHMMaxExp2, NULL)
+      deHMMinExpPerc1 <- handleEmptyNumericInput(input$deHMMinExpPerc1, NULL)
+      deHMMaxExpPerc2 <- handleEmptyNumericInput(input$deHMMaxExpPerc2, NULL)
       output$deHeatmap <- renderPlot({
         isolate({
           plotDEGHeatmap(inSCE = sce <- vals$counts,
@@ -6691,8 +6693,8 @@ shinyServer(function(input, output, session) {
                          fdrThreshold = input$deHMFDR, 
                          minGroup1MeanExp = deHMMinExp1,
                          maxGroup2MeanExp = deHMMaxExp2,
-                         minGroup1ExprPerc = input$deHMMinExpPerc1,
-                         maxGroup2ExprPerc = input$deHMMaxExpPerc2,
+                         minGroup1ExprPerc = deHMMinExpPerc1,
+                         maxGroup2ExprPerc = deHMMaxExpPerc2,
                          rowDataName = input$deHMrowData,
                          colDataName = input$deHMcolData,
                          colSplitBy = input$deHMSplitCol,

@@ -34,7 +34,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.5.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.5.2</span>
       </span>
     </div>
 
@@ -48,6 +48,27 @@
 </li>
 <li>
   <a href="../articles/installation.html">Installation</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Tutorials
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+<li>
+      <a href="../articles/console_analysis_tutorial.html">A La Carte Workflow - PBMC3K (R Console)</a>
+    </li>
+    <li>
+      <a href="../articles/cnsl_seurat_curated_workflow.html">Seurat Curated Workflow - PBMC3K</a>
+    </li>
+    <li>
+      <a href="../articles/celda_curated_workflow.html">Celda Curated Workflow - PBMC3K</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="../articles/cmd_qc.html">SCTK-QC</a>
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
@@ -136,7 +157,7 @@
       </ul>
 </li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Pathway &amp; Enrichment Analysis</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Enrichment &amp; Pathway Analysis</a>
       <ul class="dropdown-menu" role="menu">
 <li>
           <a href="../articles/cnsl_enrichR.html">EnrichR</a>
@@ -170,23 +191,11 @@
 </li>
   </ul>
 </li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Tutorials
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
-<li>
-      <a href="../articles/console_analysis_tutorial.html">Analysis of PBMC3K (R Console)</a>
-    </li>
-  </ul>
-</li>
-<li>
-  <a href="../articles/cmd_qc.html">SCTK-QC</a>
-</li>
 <li>
   <a href="../reference/index.html">Reference</a>
+</li>
+<li>
+  <a href="../news/index.html">NEWS</a>
 </li>
       </ul>
 <ul class="nav navbar-nav navbar-right">
@@ -350,14 +359,11 @@
   <span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runNormalization.html">runNormalization</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, normalizationMethod <span class="op">=</span> <span class="st">"LogNormalize"</span>, useAssay <span class="op">=</span> <span class="st">"counts"</span>, outAssayName <span class="op">=</span> <span class="st">"LogNormalizedScaledCounts"</span>, scale <span class="op">=</span> <span class="cn">TRUE</span>, trim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="op">-</span><span class="fl">10</span><span class="op">)</span><span class="op">)</span>
   <span class="co"># Find Variable Features</span>
   <span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runFeatureSelection.html">runFeatureSelection</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"counts"</span>, hvgMethod <span class="op">=</span> <span class="st">"vst"</span><span class="op">)</span>
-  <span class="va">HVGs</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getTopHVG.html">getTopHVG</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, method <span class="op">=</span> <span class="st">"vst"</span>, n <span class="op">=</span> <span class="fl">2000</span><span class="op">)</span>
-  <span class="va">HVGs</span> <span class="op">&lt;-</span> <span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/na.fail.html" class="external-link">na.omit</a></span><span class="op">(</span><span class="va">HVGs</span><span class="op">)</span>
-  <span class="va">tempAssay</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/expData.html">expData</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, assayName <span class="op">=</span> <span class="st">"LogNormalizedScaledCounts"</span><span class="op">)</span><span class="op">[</span><span class="va">HVGs</span>,<span class="op">]</span>
-  <span class="fu"><a href="../reference/expData.html">expData</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, assayName <span class="op">=</span> <span class="st">"hvg2000"</span>, tag <span class="op">=</span> <span class="st">"hvg"</span>, altExp <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">tempAssay</span>
+  <span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getTopHVG.html">getTopHVG</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, method <span class="op">=</span> <span class="st">"vst"</span>, n <span class="op">=</span> <span class="fl">2000</span>, altExp <span class="op">=</span> <span class="st">"hvg2000"</span><span class="op">)</span>
   <span class="co"># Run PCA</span>
-  <span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runDimReduce.html">runDimReduce</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"hvg2000"</span>, useAltExp <span class="op">=</span> <span class="st">"hvg2000"</span>, reducedDimName <span class="op">=</span> <span class="st">"redDimPCA"</span>, method <span class="op">=</span> <span class="st">"seuratPCA"</span>, nComponents <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>
+  <span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runDimReduce.html">runDimReduce</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"LogNormalizedScaledCounts"</span>, useAltExp <span class="op">=</span> <span class="st">"hvg2000"</span>, reducedDimName <span class="op">=</span> <span class="st">"redDimPCA"</span>, method <span class="op">=</span> <span class="st">"seuratPCA"</span>, nComponents <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>
   <span class="co"># Plot PCA</span>
-  <span class="fu"><a href="../reference/plotDimRed.html">plotDimRed</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useReduction <span class="op">=</span> <span class="st">"redDimPCA"</span>, xAxisLabel <span class="op">=</span> <span class="st">"PC_1"</span>, yAxisLabel <span class="op">=</span> <span class="st">"PC_2"</span><span class="op">)</span></code></pre></div>
+  <span class="fu"><a href="../reference/plotDimRed.html">plotDimRed</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useReduction <span class="op">=</span> <span class="st">"redDimPCA"</span>, xAxisLabel <span class="op">=</span> <span class="st">"PC_3"</span>, yAxisLabel <span class="op">=</span> <span class="st">"PC_2"</span><span class="op">)</span></code></pre></div>
 <p><img src="cnsl_dimensionality_reduction_files/figure-html/dm_console_example-1.png" width="700"></p>
 </details><details><summary><b>Parameters</b></summary><p>The <code>runDimReduce</code> function takes in different parameters based on the specific method used for dimensionality reduction. See below for a complete description of parameters for each individual method in the <code>runDimReduce</code> function:</p>
 <table class="table">
@@ -393,15 +399,15 @@ div.offset { background-color:inherit ; border-radius: 5px; margin-left: 15px;}
 <div class="offset">
 <details><summary><code>PCA</code> from <strong>Seurat</strong> package:
 </summary><div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R">  <span class="co"># Recommended to find variable features before running seuratPCA</span>
-  <span class="co"># sce &lt;- seuratFindHVG(inSCE = sce, useAssay = "seuratScaledData")</span>
-  <span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/seuratPCA.html">seuratPCA</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"seuratScaledData"</span>, reducedDimName <span class="op">=</span> <span class="st">"seuratPCA"</span>, nPCs <span class="op">=</span> <span class="fl">20</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R">  <span class="co"># Recommended to find variable features before running runSeuratPCA</span>
+  <span class="co"># sce &lt;- runSeuratFindHVG(inSCE = sce, useAssay = "seuratScaledData")</span>
+  <span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runSeuratPCA.html">runSeuratPCA</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"seuratScaledData"</span>, reducedDimName <span class="op">=</span> <span class="st">"seuratPCA"</span>, nPCs <span class="op">=</span> <span class="fl">20</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 <p>The parameters to the above function include: <br><br><code>inSCE</code>: an input <code>SingleCellExperiment</code> object <br><code>useAssay</code>: name of the assay to use for PCA computation <br><code>reducedDimName</code>: name of the computed PCA reducedDim <br><code>nPCs</code>: a numeric value indicating the number of components to compute <br><code>verbose</code>: a logical value indicating if progress should be printed <br><br></p>
 </details><details><summary><code>ICA</code> from <strong>Seurat</strong> package:
 </summary><div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R">  <span class="co"># Recommended to find variable features before running seuratICA</span>
-  <span class="co"># sce &lt;- seuratFindHVG(inSCE = sce, useAssay = "seuratScaledData")</span>
-  <span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/seuratICA.html">seuratICA</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"seuratScaledData"</span>, reducedDimName <span class="op">=</span> <span class="st">"seuratICA"</span>, nics <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R">  <span class="co"># Recommended to find variable features before running runSeuratICA</span>
+  <span class="co"># sce &lt;- runSeuratFindHVG(inSCE = sce, useAssay = "seuratScaledData")</span>
+  <span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runSeuratICA.html">runSeuratICA</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"seuratScaledData"</span>, reducedDimName <span class="op">=</span> <span class="st">"seuratICA"</span>, nics <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></code></pre></div>
 <p>The parameters to the above function include: <br><br><code>inSCE</code>: an input <code>SingleCellExperiment</code> object <br><code>useAssay</code>: name of the assay to use for ICA computation <br><code>reducedDimName</code>: name of the computed ICA reducedDim <br><code>nics</code>: a numeric value indicating the number of components to compute <br></p>
 </details><details><summary><code>PCA</code> from <strong>Scater</strong> package:
 </summary><div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">

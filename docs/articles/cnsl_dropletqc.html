@@ -34,7 +34,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.5.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.5.2</span>
       </span>
     </div>
 
@@ -48,6 +48,27 @@
 </li>
 <li>
   <a href="../articles/installation.html">Installation</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Tutorials
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+<li>
+      <a href="../articles/console_analysis_tutorial.html">A La Carte Workflow - PBMC3K (R Console)</a>
+    </li>
+    <li>
+      <a href="../articles/cnsl_seurat_curated_workflow.html">Seurat Curated Workflow - PBMC3K</a>
+    </li>
+    <li>
+      <a href="../articles/celda_curated_workflow.html">Celda Curated Workflow - PBMC3K</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="../articles/cmd_qc.html">SCTK-QC</a>
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
@@ -136,7 +157,7 @@
       </ul>
 </li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Pathway &amp; Enrichment Analysis</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Enrichment &amp; Pathway Analysis</a>
       <ul class="dropdown-menu" role="menu">
 <li>
           <a href="../articles/cnsl_enrichR.html">EnrichR</a>
@@ -170,23 +191,11 @@
 </li>
   </ul>
 </li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Tutorials
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
-<li>
-      <a href="../articles/console_analysis_tutorial.html">Analysis of PBMC3K (R Console)</a>
-    </li>
-  </ul>
-</li>
-<li>
-  <a href="../articles/cmd_qc.html">SCTK-QC</a>
-</li>
 <li>
   <a href="../reference/index.html">Reference</a>
+</li>
+<li>
+  <a href="../news/index.html">NEWS</a>
 </li>
       </ul>
 <ul class="nav navbar-nav navbar-right">
@@ -278,71 +287,70 @@ text-align: justify}
 <p>All droplet-based QC functions are able to be run under the wrapper function <code><a href="../reference/runDropletQC.html">runDropletQC()</a></code>. By default all possible QC algorithms will be run.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">pbmc4k.droplet</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runDropletQC.html">runDropletQC</a></span><span class="op">(</span><span class="va">pbmc4k.droplet</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## Thu Mar 31 12:32:30 2022 ... Running 'perCellQCMetrics'</span></code></pre>
-<pre><code><span class="co">## 'mitoGeneLocation' not specified or specified as NULL. Skip quantifying mitochondrial genes.</span></code></pre>
-<pre><code><span class="co">## Thu Mar 31 12:32:31 2022 ... Running 'emptyDrops'</span></code></pre>
-<pre><code><span class="co">## Thu Mar 31 12:33:05 2022 ... Running 'barcodeRanks'</span></code></pre>
+<pre><code><span class="co">## Sat Apr 23 00:44:26 2022 ... Running 'perCellQCMetrics'</span></code></pre>
+<pre><code><span class="co">## Sat Apr 23 00:44:27 2022 ... Running 'emptyDrops'</span></code></pre>
+<pre><code><span class="co">## Sat Apr 23 00:45:01 2022 ... Running 'barcodeRanks'</span></code></pre>
 <p>If users choose to only run a specific set of algorithms, they can specify which to run with the <code>algorithms</code> parameter.</p>
 <p>After running QC functions with SCTK, the output will be stored in the <code>colData</code> slot of the <code>SingleCellExperiment</code> object.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></span><span class="op">(</span><span class="va">pbmc4k.droplet</span><span class="op">)</span>, <span class="fl">5</span><span class="op">)</span></code></pre></div>
 <pre><code><span class="co">## DataFrame with 5 rows and 16 columns</span>
 <span class="co">##                         sample            Barcode       sum  detected</span>
 <span class="co">##                    &lt;character&gt;        &lt;character&gt; &lt;numeric&gt; &lt;integer&gt;</span>
-<span class="co">## ACCCACTTCTTCAACT-1      pbmc4k ACCCACTTCTTCAACT-1         0         0</span>
-<span class="co">## GTACGTACATCGGACC-1      pbmc4k GTACGTACATCGGACC-1         0         0</span>
-<span class="co">## ACGAGGAGTATCACCA-1      pbmc4k ACGAGGAGTATCACCA-1         0         0</span>
-<span class="co">## CTCTGGTCAATCCAAC-1      pbmc4k CTCTGGTCAATCCAAC-1        33        32</span>
-<span class="co">## AGAATAGTCCGCAGTG-1      pbmc4k AGAATAGTCCGCAGTG-1         0         0</span>
+<span class="co">## CCCAATCAGCCGGTAA-1      pbmc4k CCCAATCAGCCGGTAA-1         0         0</span>
+<span class="co">## GATCTAGTCGATGAGG-1      pbmc4k GATCTAGTCGATGAGG-1         0         0</span>
+<span class="co">## CATCAAGGTCCGACGT-1      pbmc4k CATCAAGGTCCGACGT-1         0         0</span>
+<span class="co">## TTAACTCCAGGATCGA-1      pbmc4k TTAACTCCAGGATCGA-1        19        19</span>
+<span class="co">## CTTACCGCATTTGCCC-1      pbmc4k CTTACCGCATTTGCCC-1         0         0</span>
 <span class="co">##                    percent.top_50 percent.top_100 percent.top_200</span>
 <span class="co">##                         &lt;numeric&gt;       &lt;numeric&gt;       &lt;numeric&gt;</span>
-<span class="co">## ACCCACTTCTTCAACT-1            NaN             NaN             NaN</span>
-<span class="co">## GTACGTACATCGGACC-1            NaN             NaN             NaN</span>
-<span class="co">## ACGAGGAGTATCACCA-1            NaN             NaN             NaN</span>
-<span class="co">## CTCTGGTCAATCCAAC-1            100             100             100</span>
-<span class="co">## AGAATAGTCCGCAGTG-1            NaN             NaN             NaN</span>
+<span class="co">## CCCAATCAGCCGGTAA-1            NaN             NaN             NaN</span>
+<span class="co">## GATCTAGTCGATGAGG-1            NaN             NaN             NaN</span>
+<span class="co">## CATCAAGGTCCGACGT-1            NaN             NaN             NaN</span>
+<span class="co">## TTAACTCCAGGATCGA-1            100             100             100</span>
+<span class="co">## CTTACCGCATTTGCCC-1            NaN             NaN             NaN</span>
 <span class="co">##                    percent.top_500     total dropletUtils_emptyDrops_total</span>
 <span class="co">##                          &lt;numeric&gt; &lt;numeric&gt;                     &lt;integer&gt;</span>
-<span class="co">## ACCCACTTCTTCAACT-1             NaN         0                             0</span>
-<span class="co">## GTACGTACATCGGACC-1             NaN         0                             0</span>
-<span class="co">## ACGAGGAGTATCACCA-1             NaN         0                             0</span>
-<span class="co">## CTCTGGTCAATCCAAC-1             100        33                            33</span>
-<span class="co">## AGAATAGTCCGCAGTG-1             NaN         0                             0</span>
+<span class="co">## CCCAATCAGCCGGTAA-1             NaN         0                             0</span>
+<span class="co">## GATCTAGTCGATGAGG-1             NaN         0                             0</span>
+<span class="co">## CATCAAGGTCCGACGT-1             NaN         0                             0</span>
+<span class="co">## TTAACTCCAGGATCGA-1             100        19                            19</span>
+<span class="co">## CTTACCGCATTTGCCC-1             NaN         0                             0</span>
 <span class="co">##                    dropletUtils_emptyDrops_logprob</span>
 <span class="co">##                                          &lt;numeric&gt;</span>
-<span class="co">## ACCCACTTCTTCAACT-1                              NA</span>
-<span class="co">## GTACGTACATCGGACC-1                              NA</span>
-<span class="co">## ACGAGGAGTATCACCA-1                              NA</span>
-<span class="co">## CTCTGGTCAATCCAAC-1                              NA</span>
-<span class="co">## AGAATAGTCCGCAGTG-1                              NA</span>
+<span class="co">## CCCAATCAGCCGGTAA-1                              NA</span>
+<span class="co">## GATCTAGTCGATGAGG-1                              NA</span>
+<span class="co">## CATCAAGGTCCGACGT-1                              NA</span>
+<span class="co">## TTAACTCCAGGATCGA-1                              NA</span>
+<span class="co">## CTTACCGCATTTGCCC-1                              NA</span>
 <span class="co">##                    dropletUtils_emptyDrops_pvalue</span>
 <span class="co">##                                         &lt;numeric&gt;</span>
-<span class="co">## ACCCACTTCTTCAACT-1                             NA</span>
-<span class="co">## GTACGTACATCGGACC-1                             NA</span>
-<span class="co">## ACGAGGAGTATCACCA-1                             NA</span>
-<span class="co">## CTCTGGTCAATCCAAC-1                             NA</span>
-<span class="co">## AGAATAGTCCGCAGTG-1                             NA</span>
+<span class="co">## CCCAATCAGCCGGTAA-1                             NA</span>
+<span class="co">## GATCTAGTCGATGAGG-1                             NA</span>
+<span class="co">## CATCAAGGTCCGACGT-1                             NA</span>
+<span class="co">## TTAACTCCAGGATCGA-1                             NA</span>
+<span class="co">## CTTACCGCATTTGCCC-1                             NA</span>
 <span class="co">##                    dropletUtils_emptyDrops_limited dropletUtils_emptyDrops_fdr</span>
 <span class="co">##                                          &lt;logical&gt;                   &lt;numeric&gt;</span>
-<span class="co">## ACCCACTTCTTCAACT-1                              NA                          NA</span>
-<span class="co">## GTACGTACATCGGACC-1                              NA                          NA</span>
-<span class="co">## ACGAGGAGTATCACCA-1                              NA                          NA</span>
-<span class="co">## CTCTGGTCAATCCAAC-1                              NA                          NA</span>
-<span class="co">## AGAATAGTCCGCAGTG-1                              NA                          NA</span>
+<span class="co">## CCCAATCAGCCGGTAA-1                              NA                          NA</span>
+<span class="co">## GATCTAGTCGATGAGG-1                              NA                          NA</span>
+<span class="co">## CATCAAGGTCCGACGT-1                              NA                          NA</span>
+<span class="co">## TTAACTCCAGGATCGA-1                              NA                          NA</span>
+<span class="co">## CTTACCGCATTTGCCC-1                              NA                          NA</span>
 <span class="co">##                    dropletUtils_BarcodeRank_Knee</span>
 <span class="co">##                                        &lt;integer&gt;</span>
-<span class="co">## ACCCACTTCTTCAACT-1                             0</span>
-<span class="co">## GTACGTACATCGGACC-1                             0</span>
-<span class="co">## ACGAGGAGTATCACCA-1                             0</span>
-<span class="co">## CTCTGGTCAATCCAAC-1                             0</span>
-<span class="co">## AGAATAGTCCGCAGTG-1                             0</span>
+<span class="co">## CCCAATCAGCCGGTAA-1                             0</span>
+<span class="co">## GATCTAGTCGATGAGG-1                             0</span>
+<span class="co">## CATCAAGGTCCGACGT-1                             0</span>
+<span class="co">## TTAACTCCAGGATCGA-1                             0</span>
+<span class="co">## CTTACCGCATTTGCCC-1                             0</span>
 <span class="co">##                    dropletUtils_BarcodeRank_Inflection</span>
 <span class="co">##                                              &lt;integer&gt;</span>
-<span class="co">## ACCCACTTCTTCAACT-1                                   0</span>
-<span class="co">## GTACGTACATCGGACC-1                                   0</span>
-<span class="co">## ACGAGGAGTATCACCA-1                                   0</span>
-<span class="co">## CTCTGGTCAATCCAAC-1                                   0</span>
-<span class="co">## AGAATAGTCCGCAGTG-1                                   0</span></code></pre>
+<span class="co">## CCCAATCAGCCGGTAA-1                                   0</span>
+<span class="co">## GATCTAGTCGATGAGG-1                                   0</span>
+<span class="co">## CATCAAGGTCCGACGT-1                                   0</span>
+<span class="co">## TTAACTCCAGGATCGA-1                                   0</span>
+<span class="co">## CTTACCGCATTTGCCC-1                                   0</span></code></pre>
 <div style="border: 1px solid #ddd; padding: 5px; overflow-x: scroll; width:80%; ">
 <table class="table table" style="margin-left: auto; margin-right: auto;">
 <thead><tr>
@@ -400,13 +408,13 @@ dropletUtils_BarcodeRank_Inflection
 <tbody>
 <tr>
 <td style="text-align:left;">
-ACCCACTTCTTCAACT-1
+CCCAATCAGCCGGTAA-1
 </td>
 <td style="text-align:left;">
 pbmc4k
 </td>
 <td style="text-align:left;">
-ACCCACTTCTTCAACT-1
+CCCAATCAGCCGGTAA-1
 </td>
 <td style="text-align:right;">
 0
@@ -453,13 +461,13 @@ NA
 </tr>
 <tr>
 <td style="text-align:left;">
-GTACGTACATCGGACC-1
+GATCTAGTCGATGAGG-1
 </td>
 <td style="text-align:left;">
 pbmc4k
 </td>
 <td style="text-align:left;">
-GTACGTACATCGGACC-1
+GATCTAGTCGATGAGG-1
 </td>
 <td style="text-align:right;">
 0
@@ -506,13 +514,13 @@ NA
 </tr>
 <tr>
 <td style="text-align:left;">
-ACGAGGAGTATCACCA-1
+CATCAAGGTCCGACGT-1
 </td>
 <td style="text-align:left;">
 pbmc4k
 </td>
 <td style="text-align:left;">
-ACGAGGAGTATCACCA-1
+CATCAAGGTCCGACGT-1
 </td>
 <td style="text-align:right;">
 0
@@ -559,22 +567,19 @@ NA
 </tr>
 <tr>
 <td style="text-align:left;">
-CTCTGGTCAATCCAAC-1
+TTAACTCCAGGATCGA-1
 </td>
 <td style="text-align:left;">
 pbmc4k
 </td>
 <td style="text-align:left;">
-CTCTGGTCAATCCAAC-1
+TTAACTCCAGGATCGA-1
 </td>
 <td style="text-align:right;">
-33
+19
 </td>
 <td style="text-align:right;">
-32
-</td>
-<td style="text-align:right;">
-100
+19
 </td>
 <td style="text-align:right;">
 100
@@ -586,10 +591,13 @@ CTCTGGTCAATCCAAC-1
 100
 </td>
 <td style="text-align:right;">
-33
+100
 </td>
 <td style="text-align:right;">
-33
+19
+</td>
+<td style="text-align:right;">
+19
 </td>
 <td style="text-align:right;">
 NA
@@ -612,13 +620,13 @@ NA
 </tr>
 <tr>
 <td style="text-align:left;">
-AGAATAGTCCGCAGTG-1
+CTTACCGCATTTGCCC-1
 </td>
 <td style="text-align:left;">
 pbmc4k
 </td>
 <td style="text-align:left;">
-AGAATAGTCCGCAGTG-1
+CTTACCGCATTTGCCC-1
 </td>
 <td style="text-align:right;">
 0
@@ -763,7 +771,7 @@ NA
 <li>
 <code>testAmbient</code> indicates whether results should be returned for barcodes that have a total UMI count below what is specified in <code>lower</code>.</li>
 </ul>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">pbmc4k.droplet</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runEmptyDrops.html">runEmptyDrops</a></span><span class="op">(</span>
   inSCE <span class="op">=</span> <span class="va">pbmc4k.droplet</span>,
   useAssay <span class="op">=</span> <span class="st">"counts"</span>,
@@ -775,7 +783,7 @@ NA
 <li>
 <code>lower</code> is the lower bound of the total UMI count, in which all barcodes below the lower bound are assumed to be empty droplets.</li>
 </ul>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">pbmc4k.droplet</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runBarcodeRankDrops.html">runBarcodeRankDrops</a></span><span class="op">(</span>
   inSCE <span class="op">=</span> <span class="va">pbmc4k.droplet</span>,
   useAssay <span class="op">=</span> <span class="st">"counts"</span>,
@@ -788,7 +796,7 @@ NA
 </h3>
 <p>Upon running <code><a href="../reference/runDropletQC.html">runDropletQC()</a></code> or any of the individual droplet QC functions, the QC outputs will need to be plotted. For each QC method, SCTK provides a specialized plotting function.</p>
 <details><summary><b>EmptyDrops</b></summary><p>The wrapper function <code><a href="../reference/plotEmptyDropsResults.html">plotEmptyDropsResults()</a></code> can be used to plot the results from the EmptyDrops algorithm. This will visualize the empty droplets, by plotting the total UMI counts against the log probability for each barcode.</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">emptyDropsResults</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plotEmptyDropsResults.html">plotEmptyDropsResults</a></span><span class="op">(</span>
   inSCE <span class="op">=</span> <span class="va">pbmc4k.droplet</span>,
   axisLabelSize <span class="op">=</span> <span class="fl">20</span>,
@@ -797,12 +805,12 @@ NA
   dotSize <span class="op">=</span> <span class="fl">0.5</span>,
   defaultTheme <span class="op">=</span> <span class="cn">TRUE</span>
 <span class="op">)</span></code></pre></div>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">emptyDropsResults</span><span class="op">$</span><span class="va">scatterEmptyDrops</span></code></pre></div>
 <p><img src="cnsl_dropletqc_files/figure-html/scatter_emptydrops-1.png" width="768" style="display: block; margin: auto;"></p>
 <p>Data points are colored by FDR values, where we see a small portion of the dataset contains barcodes that do not meet the threshold.</p>
 </details><details><summary><b>BarcodeRanks</b></summary><p>The wrapper function <code><a href="../reference/plotBarcodeRankScatter.html">plotBarcodeRankScatter()</a></code> can be used to plot the results from the BarcodeRanks algorithm.</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/plotBarcodeRankScatter.html">plotBarcodeRankScatter</a></span><span class="op">(</span>
   inSCE <span class="op">=</span> <span class="va">pbmc4k.droplet</span>,
   title <span class="op">=</span> <span class="st">"BarcodeRanks Rank Plot"</span>,
@@ -816,20 +824,20 @@ NA
 <h3 id="filtering-the-dataset">Filtering the dataset<a class="anchor" aria-label="anchor" href="#filtering-the-dataset"></a>
 </h3>
 <p><code>SingleCellExperiment</code> objects can be subset by its <code>colData</code> using <code><a href="../reference/subsetSCECols.html">subsetSCECols()</a></code>. The <code>colData</code> parameter takes in a character vector of expression(s) which will be used to identify a subset of cells using variables found in the <code>colData</code> of the <code>SingleCellExperiment</code> object. For example, if <code>x</code> is a numeric vector in <code>colData</code>, then setting <code>colData = "x &lt; 5"</code> will return a <code>SingleCellExperiment</code> object where all columns (cells) meet the condition that <code>x</code> is less than 5. The <code>index</code> parameter takes in a numeric vector of indices which should be kept, while <code>bool</code> takes in a logical vector of <code>TRUE</code> or <code>FALSE</code> which should be of the same length as the number of columns (cells) in the <code>SingleCellExperiment</code> object. Please refer to our <a href="filtering.html"><em>Filtering</em> documentation</a> for detail.</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co">#Before filtering:</span>
 <span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">pbmc4k.droplet</span><span class="op">)</span></code></pre></div>
 <pre><code><span class="co">## [1] 33694 60000</span></code></pre>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">pbmc4k.droplet</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/subsetSCECols.html">subsetSCECols</a></span><span class="op">(</span><span class="va">pbmc4k.droplet</span>, colData <span class="op">=</span> <span class="st">'dropletUtils_BarcodeRank_Inflection == 1'</span><span class="op">)</span>
 <span class="va">pbmc4k.droplet</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/subsetSCECols.html">subsetSCECols</a></span><span class="op">(</span><span class="va">pbmc4k.droplet</span>, colData <span class="op">=</span> <span class="st">'!is.na(pbmc4k.droplet$dropletUtils_emptyDrops_fdr)'</span><span class="op">)</span>
 <span class="va">pbmc4k.droplet</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/subsetSCECols.html">subsetSCECols</a></span><span class="op">(</span><span class="va">pbmc4k.droplet</span>, colData <span class="op">=</span> <span class="st">'pbmc4k.droplet$dropletUtils_emptyDrops_fdr &lt; 0.01'</span><span class="op">)</span></code></pre></div>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co">#After filtering:</span>
 <span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">pbmc4k.droplet</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## [1] 33694   307</span></code></pre>
+<pre><code><span class="co">## [1] 33694   324</span></code></pre>
 <p>We can compare the average total UMI counts per cell before and after cell filtration:</p>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plotSCEViolinColData.html">plotSCEViolinColData</a></span><span class="op">(</span><span class="va">pbmc4k.droplet.prefilt</span>, coldata <span class="op">=</span> <span class="st">"sum"</span>, summary <span class="op">=</span> <span class="st">"mean"</span>, title <span class="op">=</span> <span class="st">"Pre-filter"</span>, ylab <span class="op">=</span> <span class="st">"Total counts"</span><span class="op">)</span>
 <span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plotSCEViolinColData.html">plotSCEViolinColData</a></span><span class="op">(</span><span class="va">pbmc4k.droplet</span>, coldata <span class="op">=</span> <span class="st">"sum"</span>, summary <span class="op">=</span> <span class="st">"mean"</span>, title <span class="op">=</span> <span class="st">"Post-filter"</span>, ylab <span class="op">=</span> <span class="st">"Total counts"</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu">cowplot</span><span class="fu">::</span><span class="fu"><a href="https://wilkelab.org/cowplot/reference/plot_grid.html" class="external-link">plot_grid</a></span><span class="op">(</span><span class="va">p1</span>, <span class="va">p2</span>, ncol <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span></code></pre></div>
@@ -839,7 +847,7 @@ NA
 <p>For performing QC on cell-filtered count matrix with SCTK, please refer to our <a href="cnsl_cellqc.html"><em>Cell QC</em> documentation</a>.</p>
 </blockquote>
 <p><br></p>
- <details><summary><b>Session Information</b></summary><div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+ <details><summary><b>Session Information</b></summary><div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
 <pre><code><span class="co">## R version 4.1.2 (2021-11-01)</span>
 <span class="co">## Platform: x86_64-w64-mingw32/x64 (64-bit)</span>
@@ -860,7 +868,7 @@ NA
 <span class="co">## </span>
 <span class="co">## other attached packages:</span>
 <span class="co">##  [1] BiocFileCache_2.2.0         dbplyr_2.1.1               </span>
-<span class="co">##  [3] dplyr_1.0.7                 singleCellTK_2.5.1         </span>
+<span class="co">##  [3] dplyr_1.0.7                 singleCellTK_2.5.2         </span>
 <span class="co">##  [5] DelayedArray_0.20.0         Matrix_1.3-4               </span>
 <span class="co">##  [7] SingleCellExperiment_1.16.0 SummarizedExperiment_1.24.0</span>
 <span class="co">##  [9] Biobase_2.54.0              GenomicRanges_1.46.1       </span>

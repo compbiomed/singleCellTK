@@ -34,7 +34,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.5.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.5.2</span>
       </span>
     </div>
 
@@ -48,6 +48,27 @@
 </li>
 <li>
   <a href="../articles/installation.html">Installation</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Tutorials
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+<li>
+      <a href="../articles/console_analysis_tutorial.html">A La Carte Workflow - PBMC3K (R Console)</a>
+    </li>
+    <li>
+      <a href="../articles/cnsl_seurat_curated_workflow.html">Seurat Curated Workflow - PBMC3K</a>
+    </li>
+    <li>
+      <a href="../articles/celda_curated_workflow.html">Celda Curated Workflow - PBMC3K</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="../articles/cmd_qc.html">SCTK-QC</a>
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
@@ -136,7 +157,7 @@
       </ul>
 </li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Pathway &amp; Enrichment Analysis</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Enrichment &amp; Pathway Analysis</a>
       <ul class="dropdown-menu" role="menu">
 <li>
           <a href="../articles/cnsl_enrichR.html">EnrichR</a>
@@ -170,23 +191,11 @@
 </li>
   </ul>
 </li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Tutorials
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
-<li>
-      <a href="../articles/console_analysis_tutorial.html">Analysis of PBMC3K (R Console)</a>
-    </li>
-  </ul>
-</li>
-<li>
-  <a href="../articles/cmd_qc.html">SCTK-QC</a>
-</li>
 <li>
   <a href="../reference/index.html">Reference</a>
+</li>
+<li>
+  <a href="../news/index.html">NEWS</a>
 </li>
       </ul>
 <ul class="nav navbar-nav navbar-right">
@@ -248,16 +257,19 @@
 <p><img src="ui_screenshots/differential_expression/de_ui_entry.png" alt="Entry"><br></p>
 <p>The UI is constructed with mainly five parts: <br></p>
 <p><strong>1. </strong> Method Selection, <strong>2.</strong> Assay Input, <strong>3.</strong> Condition Selection, <strong>4.</strong> Parameter Settings <strong>5.</strong> Results &amp; Visualization</p>
+<p><br></p>
 <p><strong>1. Method Selection</strong></p>
 <div class="offset">
 <p>As mentioned in the Introduction section above, totally five methods are available from SCTK UI, including: Wilcoxon, MAST, Limma, DESeq2 and ANOVA. Users can choose the preferred one from the selection input <strong>“Choose analysis method”</strong>, as shown in the screenshot below.</p>
 <p><img src="ui_screenshots/differential_expression/de_ui_assay.png"><br></p>
 </div>
+<p><br></p>
 <p><strong>2. Assay Input</strong></p>
 <div class="offset">
 <p>Users need to choose a feature expression matrix for the differential expression analysis, and the selection should be made at the selection input <strong>“Select assay”</strong>. For most of the methods, a log-normalized assay would be recommended for the algorithm, though a “raw” counts would be recommended for “DESeq2.” <a href="cnsl_normalization.html">(How to normalize an assay?)</a></p>
 <p>Alternatively, user can choose to use the <a href="pathwayAnalysis.html">Pathway Analysis</a> scores to perform the statistic tests. The matrix names for these scores will lie within the <strong>“redDims” section</strong> in the drop-down list of <strong>“Select assay”</strong>. When using the pathway analysis scores, DESeq2 method is not available since it expects non-negative integer value in the input matrix.</p>
 </div>
+<p><br></p>
 <p><strong>3. Condition Selection</strong></p>
 <div class="offset">
 <p>Usually in terms of a DE analysis, we have two necessary conditions that have to be defined. One is the condition of interests and the other one is the condition of control. The condition of interests will then be compared to the condition of control via computational methods and statistical result will then be returned. The selection for a condition here means deciding which cells should be grouped together as one condition.</p>
@@ -281,10 +293,13 @@ div.offset { background-color:inherit ; border-radius: 5px; margin-left: 15px;}
 <p><br></p>
 <p><strong>NOTE</strong> that the <strong>“Name of Condition”</strong> fields are always required. It is <strong>highly recommended</strong> that users put easily understandable names there, in order to avoid the confusion when multiple sets of analyses are performed, and to keep the automatic legends on DE specific plots clean as well.</p>
 </div>
+<p><br></p>
 <p><strong>4. Parameter Settings</strong></p>
 <div class="offset">
 <p><img src="ui_screenshots/differential_expression/de_ui_param.png"><br></p>
 <ul>
+<li>
+<strong>Covariate</strong>. At the selection input <strong>“Select Covariates”</strong>. A covariate is another set of categorization on the cells involved in the analysis, used for modeling. Multiple selections are acceptable.</li>
 <li>
 <strong>FDR cutoff</strong>. At the numeric input <strong>“Output FDR less than”</strong>. As the label indicates, the cutoff set here will rule out DE genes with FDR (false discovery rate) value more than the cutoff from the result.</li>
 <li>
@@ -292,11 +307,14 @@ div.offset { background-color:inherit ; border-radius: 5px; margin-left: 15px;}
 <li>
 <strong>Whether only up-regulation</strong>. At the checkbox input <strong>“Only up-regulated genes”</strong>. By checking this option, only DE genes with positive log2FC value will remain in the result. And in the DE analysis within SCTK, “up-regulation” will always mean a positive log2FC tested from the condition of interests against the condition of control.</li>
 <li>
-<strong>Covariate</strong>. At the selection input <strong>“Select Covariates”</strong>. A covariate is another set of categorization on the cells involved in the analysis, used for modeling. Multiple selections are acceptable.</li>
+<strong>Cutoff for mean expression</strong>. At the numeric input <strong>“Output Group1 mean expression greater than”</strong> and <strong>“Output Group2 mean expression less than”</strong>. Only output genes with mean expression value in Group1 greater than the former, and that in Group2 less than the latter.</li>
+<li>
+<strong>Cutoff for percentage of cell expression</strong>. At the numeric input <strong>“Output Group1 expression percentage greater than”</strong> and <strong>“Output Group2 expression percentage less than”</strong>. Only output genes that are expressed in greater than the former fraction of cells in Group1, and genes expressed in less than the latter fraction of cells in Group2.</li>
 <li>
 <strong>Name of an analysis</strong>. At the text input <strong>“Name of Differential Expression Analysis:”</strong>. This is a required field for all DE analysis. Similarly to the naming of each condition, when performing batches of analysis, users will need unique identifiers to recognize each set of result, and to avoid confusion in downstream analysis.</li>
 </ul>
 </div>
+<p><br></p>
 <p><strong>5. Results &amp; Visualization</strong></p>
 <div class="offset">
 <p><strong>Heatmap</strong></p>
@@ -306,6 +324,8 @@ div.offset { background-color:inherit ; border-radius: 5px; margin-left: 15px;}
 <li>Do log-normalization on the assay used for calculation (when “DESeq2” method is used) by selecting the check-box input <strong>“Do log transformation”</strong>.</li>
 <li>Keep only the up-regulated genes (by excluding the DE genes with negative log2FC values) by selecting the check-box input <strong>“Only up-regulated”</strong>.</li>
 <li>Further filtering by the statistics can be applied through numeric inputs <strong>“Absolute log2FC value greater than”</strong> and <strong>“FDR value less than”</strong>.</li>
+<li>Further filtering by the mean expression can be applied through numeric inputs <strong>“Group1 mean expression greater than”</strong> and <strong>“Group2 mean expression less than”</strong>.</li>
+<li>Further filtering by the expression percentage per group can be applied through numeric inputs <strong>“Group1 expression percentage greater than”</strong> and <strong>“Group2 expression percentage less than”</strong>.</li>
 <li>Additional labeling can be added from background by multi-selection inputs <strong>“Additional cell annotation”</strong> and <strong>“Additional feature annotation”</strong>.</li>
 <li>The heatmap is by default split by the grouping “condition” and “regulation,” mentioned above. And this can only be achieved by selecting these two option in the multi-selection inputs <strong>“Split columns by”</strong> and <strong>“Split rows by”</strong>, respectively. Technically, these options can be canceled while other options can also be added, as long as users wish.</li>
 </ul></details><br><p>Furthermore, if more sophisticated settings on the DE heatmap are needed, users can move to the <a href="heatmap.html">generic heatmap viewer</a> and make use of the “import from analysis” functionality.</p>
@@ -354,30 +374,33 @@ div.offset { background-color:inherit ; border-radius: 5px; margin-left: 15px;}
 <li>The analysis run itself - <code>analysisName</code>.</li>
 </ul>
 <p>The reason is we assume that users are likely to perform multiple batches of analysis for a single dataset (e.g. group1 Vs. group2 and then group1 Vs. group3), and we hope to have everything stored in one SCE without leaving users any confusion when they look back on it. Also, the namings are also used by DE analysis related plotting functions, so that legends can be well annotated.</p>
-</div>
-<details><summary><b>Example</b></summary><p>To demonstrate a simple and clear example, here we use the “PBMC-3k” dataset from “10X” which can be easily imported with SCTK functions.</p>
+<p><br></p>
+<p><strong>Example</strong></p>
+<p>To demonstrate a simple and clear example, here we use the “PBMC-3k” dataset from “10X” which can be easily imported with SCTK functions.</p>
 <details><summary><b>Preprocessing</b></summary><p>The preprocessing only includes necessary steps to get cluster labels (i.e. QC and filtering are excluded), via using SCTK’s Seurat Curated Workflow.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://www.camplab.net/sctk/" class="external-link">singleCellTK</a></span><span class="op">)</span>
 <span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/importExampleData.html">importExampleData</a></span><span class="op">(</span><span class="st">"pbmc3k"</span><span class="op">)</span>
 <span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/scaterlogNormCounts.html">scaterlogNormCounts</a></span><span class="op">(</span><span class="va">sce</span>, <span class="st">"logcounts"</span><span class="op">)</span>
 <span class="co"># Go through the Seurat curated workflow to get basic clusters</span>
-<span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/seuratNormalizeData.html">seuratNormalizeData</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"counts"</span><span class="op">)</span>
-<span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/seuratFindHVG.html">seuratFindHVG</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"counts"</span>, hvgMethod <span class="op">=</span> <span class="st">"vst"</span><span class="op">)</span>
-<span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/seuratScaleData.html">seuratScaleData</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"seuratNormData"</span><span class="op">)</span>
-<span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/seuratPCA.html">seuratPCA</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"seuratScaledData"</span><span class="op">)</span>
-<span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/seuratFindClusters.html">seuratFindClusters</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"seuratScaledData"</span>, useReduction <span class="op">=</span> <span class="st">"pca"</span><span class="op">)</span>
+<span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runSeuratNormalizeData.html">runSeuratNormalizeData</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"counts"</span><span class="op">)</span>
+<span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runSeuratFindHVG.html">runSeuratFindHVG</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"seuratNormData"</span><span class="op">)</span>
+<span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runSeuratScaleData.html">runSeuratScaleData</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"seuratNormData"</span><span class="op">)</span>
+<span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runSeuratPCA.html">runSeuratPCA</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"seuratScaledData"</span><span class="op">)</span>
+<span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runSeuratFindClusters.html">runSeuratFindClusters</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"seuratScaledData"</span><span class="op">)</span>
 <span class="co"># Optional visualization</span>
-<span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/seuratRunUMAP.html">seuratRunUMAP</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span>
+<span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runSeuratUMAP.html">runSeuratUMAP</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span>
 <span class="fu"><a href="../reference/plotSCEDimReduceColData.html">plotSCEDimReduceColData</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, 
                         colorBy <span class="op">=</span> <span class="st">"Seurat_louvain_Resolution0.8"</span>, 
                         conditionClass <span class="op">=</span> <span class="st">"factor"</span>, 
                         reducedDimName <span class="op">=</span> <span class="st">"seuratUMAP"</span><span class="op">)</span></code></pre></div>
-</details><br><div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+</details><div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Condition chosen basing on the UMAP</span>
-<span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runDEAnalysis.html">runDEAnalysis</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, method <span class="op">=</span> <span class="st">"MAST"</span>, useAssay <span class="op">=</span> <span class="st">"logcounts"</span>, class <span class="op">=</span> <span class="st">"Seurat_louvain_Resolution0.8"</span>, classGroup1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span>, classGroup2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">5</span><span class="op">)</span>, groupName1 <span class="op">=</span> <span class="st">"c2"</span>, groupName2 <span class="op">=</span> <span class="st">"c4_c5"</span>, analysisName <span class="op">=</span> <span class="st">"c2_VS_c4_c5"</span><span class="op">)</span></code></pre></div>
-</details><br><p><strong>Results</strong></p>
-<div class="offset">
+<span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runDEAnalysis.html">runDEAnalysis</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, method <span class="op">=</span> <span class="st">"MAST"</span>, useAssay <span class="op">=</span> <span class="st">"logcounts"</span>, 
+                     class <span class="op">=</span> <span class="st">"Seurat_louvain_Resolution0.8"</span>, classGroup1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span>, classGroup2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">5</span><span class="op">)</span>, 
+                     groupName1 <span class="op">=</span> <span class="st">"c2"</span>, groupName2 <span class="op">=</span> <span class="st">"c4_c5"</span>, analysisName <span class="op">=</span> <span class="st">"c2_VS_c4_c5"</span><span class="op">)</span></code></pre></div>
+<p><br></p>
+<p><strong>Results</strong></p>
 <p>The results are saved in the <code>metadata</code> slot of the returned SCE object</p>
 <details><summary><b>Result list structure</b></summary><pre><code>matadata(sce)
           |- $info1
@@ -387,9 +410,9 @@ div.offset { background-color:inherit ; border-radius: 5px; margin-left: 15px;}
                   |-$AnalysisName1
                   |-$AnalysisName2
                   |-...
-                  |-$c2_VS_c3_c8
+                  |-$c2_VS_c4_c5
                              |-$useAssay    = "logcounts"
-                             |-$groupNames  = c("c2", "c3_c8")
+                             |-$groupNames  = c("c2", "c4_c5")
                              |-$select
                              |      |-$ix1  = c(FALSE, TRUE,  FALSE, ...)
                              |      |-$ix2  = c(FALSE, FALSE, FALSE, ...)
@@ -398,7 +421,7 @@ div.offset { background-color:inherit ; border-radius: 5px; margin-left: 15px;}
                              |         specifies which cells are selected for "c2" or "c3_c8")
                              |
                              |-$annotation  = "Seurat_louvain_Resolution0.8"
-                             |-$result      = (the `data.frame` of top DEG table, shown below)
+                             |-$result      = (the `data.frame` of top DEG table)
                              |-$method      = "MAST"</code></pre>
 </details><br><p>To fetch the result as a table of the Top differential expressed genes and the statistics:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
@@ -407,6 +430,9 @@ div.offset { background-color:inherit ; border-radius: 5px; margin-left: 15px;}
 <p>To visualize the result in a heatmap:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/plotDEGHeatmap.html">plotDEGHeatmap</a></span><span class="op">(</span><span class="va">sce</span>, useResult <span class="op">=</span> <span class="st">"c2_VS_c4_c5"</span>, log2fcThreshold <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></code></pre></div>
+<p>To visualize the result in a volcano plot:</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/plotDEGVolcano.html">plotDEGVolcano</a></span><span class="op">(</span><span class="va">sce</span>, useResult <span class="op">=</span> <span class="st">"c2_VS_c4_c5"</span><span class="op">)</span></code></pre></div>
 <p>For other approaches of visualizing top differential expressed genes, refer to <code><a href="../reference/plotDEGRegression.html">plotDEGRegression()</a></code> and <code><a href="../reference/plotDEGViolin.html">plotDEGViolin()</a></code>, which are borrowed from <a href="https://www.bioconductor.org/packages/release/bioc/vignettes/MAST/inst/doc/MAITAnalysis.html#401_visualization_of_50_most_differentially_expressed_genes" class="external-link">MAST’s tutorial</a>.</p>
 </div>
 </div>

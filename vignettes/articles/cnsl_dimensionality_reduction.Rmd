@@ -151,7 +151,7 @@ plotDimRed(inSCE = sce, useReduction = "redDimPCA", xAxisLabel = "PC_1", yAxisLa
   sce <- runFeatureSelection(inSCE = sce, useAssay = "counts", hvgMethod = "vst")
   sce <- getTopHVG(inSCE = sce, method = "vst", n = 2000, altExp = "hvg2000")
   # Run PCA
-  sce <- runDimReduce(inSCE = sce, useAssay = "hvg2000", useAltExp = "hvg2000", reducedDimName = "redDimPCA", method = "seuratPCA", nComponents = 10)
+  sce <- runDimReduce(inSCE = sce, useAssay = "LogNormalizedScaledCounts", useAltExp = "hvg2000", reducedDimName = "redDimPCA", method = "seuratPCA", nComponents = 10)
   # Plot PCA
   plotDimRed(inSCE = sce, useReduction = "redDimPCA", xAxisLabel = "PC_3", yAxisLabel = "PC_2")
 ```

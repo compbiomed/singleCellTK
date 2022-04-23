@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.5.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.5.2</span>
       </span>
     </div>
 
@@ -30,6 +30,25 @@
 </li>
 <li>
   <a href="../articles/installation.html">Installation</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Tutorials
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu"><li>
+      <a href="../articles/console_analysis_tutorial.html">A La Carte Workflow - PBMC3K (R Console)</a>
+    </li>
+    <li>
+      <a href="../articles/cnsl_seurat_curated_workflow.html">Seurat Curated Workflow - PBMC3K</a>
+    </li>
+    <li>
+      <a href="../articles/celda_curated_workflow.html">Celda Curated Workflow - PBMC3K</a>
+    </li>
+  </ul></li>
+<li>
+  <a href="../articles/cmd_qc.html">SCTK-QC</a>
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
@@ -107,7 +126,7 @@
         </li>
       </ul></li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Pathway &amp; Enrichment Analysis</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Enrichment &amp; Pathway Analysis</a>
       <ul class="dropdown-menu" role="menu"><li>
           <a href="../articles/cnsl_enrichR.html">EnrichR</a>
         </li>
@@ -134,21 +153,11 @@
         </li>
       </ul></li>
   </ul></li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Tutorials
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu"><li>
-      <a href="../articles/console_analysis_tutorial.html">Analysis of PBMC3K (R Console)</a>
-    </li>
-  </ul></li>
-<li>
-  <a href="../articles/cmd_qc.html">SCTK-QC</a>
-</li>
 <li>
   <a href="../reference/index.html">Reference</a>
+</li>
+<li>
+  <a href="../news/index.html">NEWS</a>
 </li>
       </ul><ul class="nav navbar-nav navbar-right"><li>
   <a href="https://github.com/compbiomed/singleCellTK" class="external-link">
@@ -350,17 +359,6 @@ Uses logNormCounts to log normalize input data</p></td>
         <td><p>scaterCPM
 Uses CPM from scater library to compute counts-per-million.</p></td>
       </tr><tr><td>
-          <p><code><a href="seuratNormalizeData.html">seuratNormalizeData()</a></code> </p>
-        </td>
-        <td><p>seuratNormalizeData
-Wrapper for NormalizeData() function from seurat library
-Normalizes the sce object according to the input parameters</p></td>
-      </tr><tr><td>
-          <p><code><a href="seuratScaleData.html">seuratScaleData()</a></code> </p>
-        </td>
-        <td><p>seuratScaleData
-Scales the input sce object according to the input parameters</p></td>
-      </tr><tr><td>
           <p><code><a href="computeZScore.html">computeZScore()</a></code> </p>
         </td>
         <td><p>Compute Z-Score</p></td>
@@ -405,11 +403,6 @@ SingleCellExperiment object</p></td>
         </td>
         <td><p>Apply scMerge batch effect correction method to SingleCellExperiment object</p></td>
       </tr><tr><td>
-          <p><code><a href="seuratIntegration.html">seuratIntegration()</a></code> </p>
-        </td>
-        <td><p>seuratIntegration
-A wrapper function to Seurat Batch-Correction/Integration workflow.</p></td>
-      </tr><tr><td>
           <p><code><a href="runZINBWaVE.html">runZINBWaVE()</a></code> </p>
         </td>
         <td><p>Apply ZINBWaVE Batch effect correction method to SingleCellExperiment object</p></td>
@@ -435,11 +428,6 @@ method.</p></td>
         <td><p>scranModelGeneVar
 Generates and stores variability data from scran::modelGeneVar in the input singleCellExperiment object</p></td>
       </tr><tr><td>
-          <p><code><a href="seuratFindHVG.html">seuratFindHVG()</a></code> </p>
-        </td>
-        <td><p>seuratFindHVG
-Find highly variable genes and store in the input sce object</p></td>
-      </tr><tr><td>
           <p><code><a href="getTopHVG.html">getTopHVG()</a></code> </p>
         </td>
         <td><p>getTopHVG
@@ -451,12 +439,6 @@ input <code>SingleCellExperiment</code> object with the subset containing only t
 top variable features stored as an <code>altExp</code> slot in returned object.
 However, if this parameter is set to <code>NULL</code>, only the names of the top
 variable features will be returned as a <code>character</code> vector.</p></td>
-      </tr><tr><td>
-          <p><code><a href="seuratPlotHVG.html">seuratPlotHVG()</a></code> </p>
-        </td>
-        <td><p>seuratPlotHVG
-Plot highly variable genes from input sce object (must have highly variable
-genes computations stored)</p></td>
       </tr></tbody><tbody><tr><th colspan="2">
           <h2 id="dimensionality-reduction-embedding">Dimensionality Reduction &amp; Embedding <a href="#dimensionality-reduction-embedding" class="anchor" aria-hidden="true"></a></h2>
           <p class="section-desc"></p>
@@ -481,30 +463,6 @@ dimension reduction.</p></td>
         </td>
         <td><p>Run t-SNE dimensionality reduction method on a SingleCellExperiment Object</p></td>
       </tr><tr><td>
-          <p><code><a href="seuratICA.html">seuratICA()</a></code> </p>
-        </td>
-        <td><p>seuratICA
-Computes ICA on the input sce object and stores the calculated independent
-components within the sce object</p></td>
-      </tr><tr><td>
-          <p><code><a href="seuratPCA.html">seuratPCA()</a></code> </p>
-        </td>
-        <td><p>seuratPCA
-Computes PCA on the input sce object and stores the calculated principal
-components within the sce object</p></td>
-      </tr><tr><td>
-          <p><code><a href="seuratRunUMAP.html">seuratRunUMAP()</a></code> </p>
-        </td>
-        <td><p>seuratRunUMAP
-Computes UMAP from the given sce object and stores the UMAP computations back
-into the sce object</p></td>
-      </tr><tr><td>
-          <p><code><a href="seuratRunTSNE.html">seuratRunTSNE()</a></code> </p>
-        </td>
-        <td><p>seuratRunTSNE
-Computes tSNE from the given sce object and stores the tSNE computations back
-into the sce object</p></td>
-      </tr><tr><td>
           <p><code><a href="plotSCEDimReduceColData.html">plotSCEDimReduceColData()</a></code> </p>
         </td>
         <td><p>Dimension reduction plot tool for colData</p></td>
@@ -520,12 +478,6 @@ into the sce object</p></td>
           <p><code><a href="runScranSNN.html">runScranSNN()</a></code> </p>
         </td>
         <td><p>Get clustering with SNN graph</p></td>
-      </tr><tr><td>
-          <p><code><a href="seuratFindClusters.html">seuratFindClusters()</a></code> </p>
-        </td>
-        <td><p>seuratFindClusters
-Computes the clusters from the input sce object and stores them back in sce
-object</p></td>
       </tr><tr><td>
           <p><code><a href="runKMeans.html">runKMeans()</a></code> </p>
         </td>
@@ -594,15 +546,17 @@ on each cluster against all the others.</p></td>
           <p class="section-desc"></p>
         </th>
       </tr></tbody><tbody><tr><td>
+          <p><code><a href="runEnrichR.html">runEnrichR()</a></code> </p>
+        </td>
+        <td><p>Run EnrichR on SCE object</p></td>
+      </tr><tr><td>
+          <p><code><a href="getEnrichRResult.html">`getEnrichRResult&lt;-`()</a></code> <code><a href="getEnrichRResult.html">getEnrichRResult()</a></code> </p>
+        </td>
+        <td><p>Get or Set EnrichR Result</p></td>
+      </tr><tr><td>
           <p><code><a href="getMSigDBTable.html">getMSigDBTable()</a></code> </p>
         </td>
         <td><p>Shows MSigDB categories</p></td>
-      </tr><tr><td>
-          <p><code><a href="enrichRSCE.html">enrichRSCE()</a></code> </p>
-        </td>
-        <td><p>enrichR
-Given a list of genes this function runs the enrichR() to perform Gene
-enrichment</p></td>
       </tr><tr><td>
           <p><code><a href="runGSVA.html">runGSVA()</a></code> </p>
         </td>
@@ -624,118 +578,76 @@ enrichment</p></td>
           <p class="section-desc"></p>
         </th>
       </tr></tbody><tbody><tr><td>
-          <p><code><a href="seuratComputeHeatmap.html">seuratComputeHeatmap()</a></code> </p>
+          <p><code><a href="runSeuratFindClusters.html">runSeuratFindClusters()</a></code> </p>
         </td>
-        <td><p>seuratComputeHeatmap
-Computes the heatmap plot object from the pca slot in the input sce object</p></td>
-      </tr><tr><td>
-          <p><code><a href="seuratComputeJackStraw.html">seuratComputeJackStraw()</a></code> </p>
-        </td>
-        <td><p>seuratComputeJackStraw
-Compute jackstraw plot and store the computations in the input sce object</p></td>
-      </tr><tr><td>
-          <p><code><a href="seuratElbowPlot.html">seuratElbowPlot()</a></code> </p>
-        </td>
-        <td><p>seuratElbowPlot
-Computes the plot object for elbow plot from the pca slot in the input sce
-object</p></td>
-      </tr><tr><td>
-          <p><code><a href="seuratFindClusters.html">seuratFindClusters()</a></code> </p>
-        </td>
-        <td><p>seuratFindClusters
+        <td><p>runSeuratFindClusters
 Computes the clusters from the input sce object and stores them back in sce
 object</p></td>
       </tr><tr><td>
-          <p><code><a href="seuratFindHVG.html">seuratFindHVG()</a></code> </p>
+          <p><code><a href="runSeuratFindHVG.html">runSeuratFindHVG()</a></code> </p>
         </td>
-        <td><p>seuratFindHVG
+        <td><p>runSeuratFindHVG
 Find highly variable genes and store in the input sce object</p></td>
       </tr><tr><td>
-          <p><code><a href="seuratFindMarkers.html">seuratFindMarkers()</a></code> </p>
+          <p><code><a href="runSeuratFindMarkers.html">runSeuratFindMarkers()</a></code> </p>
         </td>
-        <td><p>seuratFindMarkers</p></td>
+        <td><p>runSeuratFindMarkers</p></td>
       </tr><tr><td>
-          <p><code><a href="seuratGenePlot.html">seuratGenePlot()</a></code> </p>
+          <p><code><a href="runSeuratHeatmap.html">runSeuratHeatmap()</a></code> </p>
         </td>
-        <td><p>Compute and plot visualizations for marker genes</p></td>
+        <td><p>runSeuratHeatmap
+Computes the heatmap plot object from the pca slot in the input sce object</p></td>
       </tr><tr><td>
-          <p><code><a href="seuratHeatmapPlot.html">seuratHeatmapPlot()</a></code> </p>
+          <p><code><a href="runSeuratICA.html">runSeuratICA()</a></code> </p>
         </td>
-        <td><p>seuratHeatmapPlot
-Modifies the heatmap plot object so it contains specified number of heatmaps
-in a single plot</p></td>
-      </tr><tr><td>
-          <p><code><a href="seuratICA.html">seuratICA()</a></code> </p>
-        </td>
-        <td><p>seuratICA
+        <td><p>runSeuratICA
 Computes ICA on the input sce object and stores the calculated independent
 components within the sce object</p></td>
       </tr><tr><td>
-          <p><code><a href="seuratIntegration.html">seuratIntegration()</a></code> </p>
+          <p><code><a href="runSeuratIntegration.html">runSeuratIntegration()</a></code> </p>
         </td>
-        <td><p>seuratIntegration
+        <td><p>runSeuratIntegration
 A wrapper function to Seurat Batch-Correction/Integration workflow.</p></td>
       </tr><tr><td>
-          <p><code><a href="seuratJackStrawPlot.html">seuratJackStrawPlot()</a></code> </p>
+          <p><code><a href="runSeuratJackStraw.html">runSeuratJackStraw()</a></code> </p>
         </td>
-        <td><p>seuratJackStrawPlot
-Computes the plot object for jackstraw plot from the pca slot in the input
-sce object</p></td>
+        <td><p>runSeuratJackStraw
+Compute jackstraw plot and store the computations in the input sce object</p></td>
       </tr><tr><td>
-          <p><code><a href="seuratNormalizeData.html">seuratNormalizeData()</a></code> </p>
+          <p><code><a href="runSeuratNormalizeData.html">runSeuratNormalizeData()</a></code> </p>
         </td>
-        <td><p>seuratNormalizeData
+        <td><p>runSeuratNormalizeData
 Wrapper for NormalizeData() function from seurat library
 Normalizes the sce object according to the input parameters</p></td>
       </tr><tr><td>
-          <p><code><a href="seuratPCA.html">seuratPCA()</a></code> </p>
+          <p><code><a href="runSeuratPCA.html">runSeuratPCA()</a></code> </p>
         </td>
-        <td><p>seuratPCA
+        <td><p>runSeuratPCA
 Computes PCA on the input sce object and stores the calculated principal
 components within the sce object</p></td>
       </tr><tr><td>
-          <p><code><a href="seuratPlotHVG.html">seuratPlotHVG()</a></code> </p>
+          <p><code><a href="runSeuratScaleData.html">runSeuratScaleData()</a></code> </p>
         </td>
-        <td><p>seuratPlotHVG
-Plot highly variable genes from input sce object (must have highly variable
-genes computations stored)</p></td>
-      </tr><tr><td>
-          <p><code><a href="seuratReductionPlot.html">seuratReductionPlot()</a></code> </p>
-        </td>
-        <td><p>seuratReductionPlot
-Plots the selected dimensionality reduction method</p></td>
-      </tr><tr><td>
-          <p><code><a href="seuratReport.html">seuratReport()</a></code> </p>
-        </td>
-        <td><p>Computes an HTML report from the Seurat workflow and returns the output SCE
- object with the computations stored in it.</p></td>
-      </tr><tr><td>
-          <p><code><a href="seuratRunTSNE.html">seuratRunTSNE()</a></code> </p>
-        </td>
-        <td><p>seuratRunTSNE
-Computes tSNE from the given sce object and stores the tSNE computations back
-into the sce object</p></td>
-      </tr><tr><td>
-          <p><code><a href="seuratRunUMAP.html">seuratRunUMAP()</a></code> </p>
-        </td>
-        <td><p>seuratRunUMAP
-Computes UMAP from the given sce object and stores the UMAP computations back
-into the sce object</p></td>
-      </tr><tr><td>
-          <p><code><a href="seuratScaleData.html">seuratScaleData()</a></code> </p>
-        </td>
-        <td><p>seuratScaleData
+        <td><p>runSeuratScaleData
 Scales the input sce object according to the input parameters</p></td>
       </tr><tr><td>
-          <p><code><a href="seuratSCTransform.html">seuratSCTransform()</a></code> </p>
+          <p><code><a href="runSeuratSCTransform.html">runSeuratSCTransform()</a></code> </p>
         </td>
-        <td><p>seuratSCTransform
+        <td><p>runSeuratSCTransform
 Runs the <a href="https://satijalab.org/seurat/reference/SCTransform.html" class="external-link">SCTransform</a> function to transform/normalize the input
 data</p></td>
       </tr><tr><td>
-          <p><code><a href="seuratVariableFeatures.html">seuratVariableFeatures()</a></code> </p>
+          <p><code><a href="runSeuratTSNE.html">runSeuratTSNE()</a></code> </p>
         </td>
-        <td><p>Get variable feature names after running seuratFindHVG function</p></td>
+        <td><p>runSeuratTSNE
+Computes tSNE from the given sce object and stores the tSNE computations back
+into the sce object</p></td>
+      </tr><tr><td>
+          <p><code><a href="runSeuratUMAP.html">runSeuratUMAP()</a></code> </p>
+        </td>
+        <td><p>runSeuratUMAP
+Computes UMAP from the given sce object and stores the UMAP computations back
+into the sce object</p></td>
       </tr><tr><td>
           <p><code><a href="computeHeatmap.html">computeHeatmap()</a></code> </p>
         </td>
@@ -744,6 +656,57 @@ The computeHeatmap method computes the heatmap visualization for a set
  of features against a set of dimensionality reduction components. This
  method uses the heatmap computation algorithm code from <code>Seurat</code> but
  plots the heatmap using <code>ComplexHeatmap</code> and <code>cowplot</code> libraries.</p></td>
+      </tr><tr><td>
+          <p><code><a href="reportSeurat.html">reportSeurat()</a></code> </p>
+        </td>
+        <td><p>Generates an HTML report for the complete Seurat workflow and returns the 
+ SCE object with the results computed and stored inside the object.</p></td>
+      </tr><tr><td>
+          <p><code><a href="reportSeuratClustering.html">reportSeuratClustering()</a></code> </p>
+        </td>
+        <td><p>Generates an HTML report for Seurat Clustering and returns the SCE object 
+ with the results computed and stored inside the object.</p></td>
+      </tr><tr><td>
+          <p><code><a href="reportSeuratDimRed.html">reportSeuratDimRed()</a></code> </p>
+        </td>
+        <td><p>Generates an HTML report for Seurat Dimensionality Reduction
+ and returns the SCE object with the results computed and stored
+ inside the object.</p></td>
+      </tr><tr><td>
+          <p><code><a href="reportSeuratFeatureSelection.html">reportSeuratFeatureSelection()</a></code> </p>
+        </td>
+        <td><p>Generates an HTML report for Seurat Feature Selection and returns the
+SCE object with the results computed and stored inside the object.</p></td>
+      </tr><tr><td>
+          <p><code><a href="reportSeuratMarkerSelection.html">reportSeuratMarkerSelection()</a></code> </p>
+        </td>
+        <td><p>Generates an HTML report for Seurat Results (including Clustering &amp; Marker
+ Selection) and returns the SCE object with the results computed and stored
+ inside the object.</p></td>
+      </tr><tr><td>
+          <p><code><a href="reportSeuratNormalization.html">reportSeuratNormalization()</a></code> </p>
+        </td>
+        <td><p>Generates an HTML report for Seurat Normalization 
+ and returns the SCE object with the results computed and stored
+ inside the object.</p></td>
+      </tr><tr><td>
+          <p><code><a href="reportSeuratResults.html">reportSeuratResults()</a></code> </p>
+        </td>
+        <td><p>Generates an HTML report for Seurat Results (including Clustering &amp; Marker
+ Selection) and returns the SCE object with the results computed and stored
+ inside the object.</p></td>
+      </tr><tr><td>
+          <p><code><a href="reportSeuratRun.html">reportSeuratRun()</a></code> </p>
+        </td>
+        <td><p>Generates an HTML report for Seurat Run (including Normalization, 
+ Feature Selection, Dimensionality Reduction &amp; Clustering) and returns the 
+ SCE object with the results computed and stored inside the object.</p></td>
+      </tr><tr><td>
+          <p><code><a href="reportSeuratScaling.html">reportSeuratScaling()</a></code> </p>
+        </td>
+        <td><p>Generates an HTML report for Seurat Scaling 
+ and returns the SCE object with the results computed and stored
+ inside the object.</p></td>
       </tr></tbody><tbody><tr><th colspan="2">
           <h2 id="visualization">Visualization <a href="#visualization" class="anchor" aria-hidden="true"></a></h2>
           <p class="section-desc"></p>
@@ -773,6 +736,11 @@ in the data</p></td>
           <p><code><a href="plotClusterAbundance.html">plotClusterAbundance()</a></code> </p>
         </td>
         <td><p>Plot the differential Abundance</p></td>
+      </tr><tr><td>
+          <p><code><a href="plotClusterPseudo.html">plotClusterPseudo()</a></code> </p>
+        </td>
+        <td><p>Run plotClusterPseudo function to plot TSCAN-derived pseudotimes 
+around cluster in the dataset.</p></td>
       </tr><tr><td>
           <p><code><a href="plotCxdsResults.html">plotCxdsResults()</a></code> </p>
         </td>
@@ -899,6 +867,39 @@ and UMAP</p></td>
         </td>
         <td><p>Plots for runScrublet outputs.</p></td>
       </tr><tr><td>
+          <p><code><a href="plotSeuratElbow.html">plotSeuratElbow()</a></code> </p>
+        </td>
+        <td><p>plotSeuratElbow
+Computes the plot object for elbow plot from the pca slot in the input sce
+object</p></td>
+      </tr><tr><td>
+          <p><code><a href="plotSeuratGenes.html">plotSeuratGenes()</a></code> </p>
+        </td>
+        <td><p>Compute and plot visualizations for marker genes</p></td>
+      </tr><tr><td>
+          <p><code><a href="plotSeuratHeatmap.html">plotSeuratHeatmap()</a></code> </p>
+        </td>
+        <td><p>plotSeuratHeatmap
+Modifies the heatmap plot object so it contains specified number of heatmaps
+in a single plot</p></td>
+      </tr><tr><td>
+          <p><code><a href="plotSeuratHVG.html">plotSeuratHVG()</a></code> </p>
+        </td>
+        <td><p>plotSeuratHVG
+Plot highly variable genes from input sce object (must have highly variable
+genes computations stored)</p></td>
+      </tr><tr><td>
+          <p><code><a href="plotSeuratJackStraw.html">plotSeuratJackStraw()</a></code> </p>
+        </td>
+        <td><p>plotSeuratJackStraw
+Computes the plot object for jackstraw plot from the pca slot in the input
+sce object</p></td>
+      </tr><tr><td>
+          <p><code><a href="plotSeuratReduction.html">plotSeuratReduction()</a></code> </p>
+        </td>
+        <td><p>plotSeuratReduction
+Plots the selected dimensionality reduction method</p></td>
+      </tr><tr><td>
           <p><code><a href="plotSoupXResults.html">plotSoupXResults()</a></code> </p>
         </td>
         <td><p>Plot SoupX Result</p></td>
@@ -906,6 +907,24 @@ and UMAP</p></td>
           <p><code><a href="plotTopHVG.html">plotTopHVG()</a></code> </p>
         </td>
         <td><p>Plot highly variable genes</p></td>
+      </tr><tr><td>
+          <p><code><a href="plotTSCANDEgenes.html">plotTSCANDEgenes()</a></code> </p>
+        </td>
+        <td><p>Run plotTSCANDEgenes function to plot cells colored by the expression 
+of a gene of interest</p></td>
+      </tr><tr><td>
+          <p><code><a href="plotTSCANPseudotimeGenes.html">plotTSCANPseudotimeGenes()</a></code> </p>
+        </td>
+        <td><p>Run plotTSCANPseudotimeGenes function to plot genes with significant 
+changes</p></td>
+      </tr><tr><td>
+          <p><code><a href="plotTSCANPseudotimeHeatmap.html">plotTSCANPseudotimeHeatmap()</a></code> </p>
+        </td>
+        <td><p>Run plotTSCANPseudotimeHeatmap function to plot heatmap for top genes</p></td>
+      </tr><tr><td>
+          <p><code><a href="plotTSCANResults.html">plotTSCANResults()</a></code> </p>
+        </td>
+        <td><p>Plot MST pseudotime values for cells</p></td>
       </tr><tr><td>
           <p><code><a href="plotTSNE.html">plotTSNE()</a></code> </p>
         </td>
@@ -946,6 +965,57 @@ and UMAP</p></td>
           <p><code><a href="reportQCTool.html">reportQCTool()</a></code> </p>
         </td>
         <td><p>Get .html report of the output of the selected QC algorithm</p></td>
+      </tr><tr><td>
+          <p><code><a href="reportSeurat.html">reportSeurat()</a></code> </p>
+        </td>
+        <td><p>Generates an HTML report for the complete Seurat workflow and returns the 
+ SCE object with the results computed and stored inside the object.</p></td>
+      </tr><tr><td>
+          <p><code><a href="reportSeuratClustering.html">reportSeuratClustering()</a></code> </p>
+        </td>
+        <td><p>Generates an HTML report for Seurat Clustering and returns the SCE object 
+ with the results computed and stored inside the object.</p></td>
+      </tr><tr><td>
+          <p><code><a href="reportSeuratDimRed.html">reportSeuratDimRed()</a></code> </p>
+        </td>
+        <td><p>Generates an HTML report for Seurat Dimensionality Reduction
+ and returns the SCE object with the results computed and stored
+ inside the object.</p></td>
+      </tr><tr><td>
+          <p><code><a href="reportSeuratFeatureSelection.html">reportSeuratFeatureSelection()</a></code> </p>
+        </td>
+        <td><p>Generates an HTML report for Seurat Feature Selection and returns the
+SCE object with the results computed and stored inside the object.</p></td>
+      </tr><tr><td>
+          <p><code><a href="reportSeuratMarkerSelection.html">reportSeuratMarkerSelection()</a></code> </p>
+        </td>
+        <td><p>Generates an HTML report for Seurat Results (including Clustering &amp; Marker
+ Selection) and returns the SCE object with the results computed and stored
+ inside the object.</p></td>
+      </tr><tr><td>
+          <p><code><a href="reportSeuratNormalization.html">reportSeuratNormalization()</a></code> </p>
+        </td>
+        <td><p>Generates an HTML report for Seurat Normalization 
+ and returns the SCE object with the results computed and stored
+ inside the object.</p></td>
+      </tr><tr><td>
+          <p><code><a href="reportSeuratResults.html">reportSeuratResults()</a></code> </p>
+        </td>
+        <td><p>Generates an HTML report for Seurat Results (including Clustering &amp; Marker
+ Selection) and returns the SCE object with the results computed and stored
+ inside the object.</p></td>
+      </tr><tr><td>
+          <p><code><a href="reportSeuratRun.html">reportSeuratRun()</a></code> </p>
+        </td>
+        <td><p>Generates an HTML report for Seurat Run (including Normalization, 
+ Feature Selection, Dimensionality Reduction &amp; Clustering) and returns the 
+ SCE object with the results computed and stored inside the object.</p></td>
+      </tr><tr><td>
+          <p><code><a href="reportSeuratScaling.html">reportSeuratScaling()</a></code> </p>
+        </td>
+        <td><p>Generates an HTML report for Seurat Scaling 
+ and returns the SCE object with the results computed and stored
+ inside the object.</p></td>
       </tr></tbody><tbody><tr><th colspan="2">
           <h2 id="exporting-results">Exporting Results <a href="#exporting-results" class="anchor" aria-hidden="true"></a></h2>
           <p class="section-desc"></p>

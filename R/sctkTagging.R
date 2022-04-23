@@ -138,7 +138,7 @@ setMethod(f = "expData<-",
             assayName = "character",
             tag = "CharacterOrNullOrMissing",
             altExp = "logical"),
-          definition = function(inSCE,  assayName, tag = NULL, altExp = FALSE, value){
+          definition = function(inSCE, assayName, tag = NULL, altExp = FALSE, value){
             if(!is.null(value)){
               if(is.null(tag)
                  || missing(tag)){
@@ -163,8 +163,12 @@ setMethod(f = "expData<-",
               )
             }
             if(altExp){
-              altExp(inSCE, assayName) <- SingleCellExperiment(list(counts = value))
-             SummarizedExperiment::assayNames(altExp(inSCE, assayName)) <- assayName
+              if (inherits(value, "SummarizedExperiment")) {
+                altExp(inSCE, assayName) <- value
+              } else {
+                altExp(inSCE, assayName) <- SingleCellExperiment(list(counts = value))
+                SummarizedExperiment::assayNames(altExp(inSCE, assayName)) <- assayName
+              }
             }
             else{
                 inSCE <- methods::callNextMethod()

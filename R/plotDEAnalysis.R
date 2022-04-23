@@ -295,9 +295,9 @@ plotDEGRegression <- function(inSCE, useResult, threshP = FALSE, labelBy = NULL,
 #' @param maxGroup2MeanExp numeric. Only fetch DEGs with mean expression in 
 #' group2 less then this value. Default \code{NULL}.
 #' @param minGroup1ExprPerc numeric. Only fetch DEGs expressed in greater then 
-#' this fraction of cells in group1. Default \code{0.5}.
+#' this fraction of cells in group1. Default \code{NULL}.
 #' @param maxGroup2ExprPerc numeric. Only fetch DEGs expressed in less then this 
-#' fraction of cells in group2. Default \code{0.5}.
+#' fraction of cells in group2. Default \code{NULL}.
 #' @return A \code{data.frame} object of the top DEGs, with variables of 
 #' \code{Gene}, \code{Log2_FC}, \code{Pvalue}, and \code{FDR}.
 #' @export
@@ -308,12 +308,11 @@ plotDEGRegression <- function(inSCE, useResult, threshP = FALSE, labelBy = NULL,
 #' sce.w <- runWilcox(sce.w, class = "cell_type", classGroup1 = "alpha",
 #'                    groupName1 = "w.alpha", groupName2 = "w.beta",
 #'                    analysisName = "w.aVSb")
-#' getDEGTopTable(sce.w, "w.aVSb", minGroup1ExprPerc = NULL, 
-#'                maxGroup2ExprPerc = NULL)
+#' getDEGTopTable(sce.w, "w.aVSb")
 getDEGTopTable <- function(inSCE, useResult, labelBy = NULL, onlyPos = FALSE,
                         log2fcThreshold = 0.25, fdrThreshold = 0.05,
                         minGroup1MeanExp = NULL, maxGroup2MeanExp = NULL, 
-                        minGroup1ExprPerc = 0.5, maxGroup2ExprPerc = 0.5){
+                        minGroup1ExprPerc = NULL, maxGroup2ExprPerc = NULL){
   # Check
   .checkDiffExpResultExists(inSCE, useResult, labelBy)
   # Extract
@@ -355,9 +354,9 @@ getDEGTopTable <- function(inSCE, useResult, labelBy = NULL, onlyPos = FALSE,
 #' @param maxGroup2MeanExp numeric. Only plot DEGs with mean expression in 
 #' group2 less then this value. Default \code{NULL}.
 #' @param minGroup1ExprPerc numeric. Only plot DEGs expressed in greater then 
-#' this fraction of cells in group1. Default \code{0.5}.
+#' this fraction of cells in group1. Default \code{NULL}.
 #' @param maxGroup2ExprPerc numeric. Only plot DEGs expressed in less then this 
-#' fraction of cells in group2. Default \code{0.5}.
+#' fraction of cells in group2. Default \code{NULL}.
 #' @param useAssay character. A string specifying an assay of expression value
 #' to plot. By default the assay used for \code{runMAST()} will be used.
 #' Default \code{NULL}.
@@ -395,15 +394,14 @@ getDEGTopTable <- function(inSCE, useResult, labelBy = NULL, onlyPos = FALSE,
 #' sce.w <- runWilcox(sce.w, class = "cell_type", classGroup1 = "alpha",
 #'                    groupName1 = "w.alpha", groupName2 = "w.beta",
 #'                    analysisName = "w.aVSb")
-#' plotDEGHeatmap(sce.w, "w.aVSb", minGroup1ExprPerc = NULL, 
-#'                maxGroup2ExprPerc = NULL)
+#' plotDEGHeatmap(sce.w, "w.aVSb")
 #' @return A \code{\link[ggplot2]{ggplot}} object
 #' @export
 #' @author Yichen Wang
 plotDEGHeatmap <- function(inSCE, useResult, doLog = FALSE, onlyPos = FALSE,
                            log2fcThreshold = 0.25, fdrThreshold = 0.05,
                            minGroup1MeanExp = NULL, maxGroup2MeanExp = NULL, 
-                           minGroup1ExprPerc = 0.5, maxGroup2ExprPerc = 0.5,
+                           minGroup1ExprPerc = NULL, maxGroup2ExprPerc = NULL,
                            useAssay = NULL, featureAnnotations = NULL,
                            cellAnnotations = NULL,
                            featureAnnotationColor = NULL,

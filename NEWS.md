@@ -1,3 +1,11 @@
+Changes in Version 2.5.2 (2022-04-2)
+================================================================================
+* Added Seurat report functions
+* Added TSCAN trajectory analysis functions
+* Refactored EnrichR wrapper function (runEnrichR)
+* Added new cut-offs for DE functions
+* Other refactors and bug fixes
+
 Changes in Version 2.5.1 (2022-03-31)
 ================================================================================
 * Added SoupX method for decontamination (runSoupX)
