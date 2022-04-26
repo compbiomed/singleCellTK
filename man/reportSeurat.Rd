@@ -14,7 +14,7 @@ reportSeurat(
   variable.features = 2000,
   pc.count = 50,
   outputFile = NULL,
-  outputDir = NULL,
+  outputPath = NULL,
   subtitle = NULL,
   authors = NULL,
   showSession = FALSE,
@@ -32,6 +32,7 @@ reportSeurat(
   maxResolution = 1.5,
   runMSClusters = TRUE,
   runMSBioGroup = TRUE,
+  numTopFeatures = 10,
   forceRun = FALSE
 )
 }
@@ -65,7 +66,7 @@ to use in the analysis workflow. Default is \code{50}.}
 If \code{NULL} then the output file name will be based on the name of the 
 Rmarkdown template. Default \code{NULL}.}
 
-\item{outputDir}{Specify the name of the output directory to save the 
+\item{outputPath}{Specify the name of the output directory to save the 
 rendered HTML file. If \code{NULL} the file is stored to the current 
 working directory. Default \code{NULL}.}
 
@@ -121,6 +122,9 @@ be run between clusters. Default is \code{TRUE}.}
 \item{runMSBioGroup}{A logical value indicating if marker selection should
 be run between the \code{biological.group} parameter. 
 Default is \code{TRUE}.}
+
+\item{numTopFeatures}{A numeric value indicating the number of top features
+to visualize in each group. Default \code{10}.}
 
 \item{forceRun}{A logical value indicating if all algorithms should be
 re-run regardless if they have been computed previously in the input object.

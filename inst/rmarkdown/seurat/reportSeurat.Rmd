@@ -28,6 +28,7 @@ params:
   maxResolution: 1.5 
   runMSClusters: TRUE
   runMSBioGroup: TRUE
+  numTopFeatures: 10
   forceRun: FALSE
 output:
   html_document:
@@ -37,6 +38,7 @@ output:
     theme: cosmo
     code_folding: hide
     self_contained: false
+    keep_md: yes
   pdf_document:
     toc: yes
 subtitle: "`r params$subtitle`"
@@ -44,7 +46,11 @@ editor_options:
   chunk_output_type: console
 ---
 
-```{r}
+```{r global options, include = FALSE}
+knitr::opts_chunk$set(warning=FALSE, message=FALSE)
+```
+
+```{r, echo=FALSE}
 sampleNames <- unique(colData(data)[[biological.group]])
 ```
 

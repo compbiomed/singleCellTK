@@ -270,7 +270,7 @@ reportFindMarker <- function(inSCE, output_file = NULL, output_dir = NULL) {
 #' @param outputFile Specify the name of the generated output HTML file. 
 #'  If \code{NULL} then the output file name will be based on the name of the 
 #'  Rmarkdown template. Default \code{NULL}.
-#' @param outputDir Specify the name of the output directory to save the 
+#' @param outputPath Specify the name of the output directory to save the 
 #'  rendered HTML file. If \code{NULL} the file is stored to the current 
 #'  working directory. Default \code{NULL}.
 #' @param subtitle A character value specifying the subtitle to use in the 
@@ -305,7 +305,7 @@ reportSeuratRun <- function(inSCE,
                             minResolution = 0.3,
                             maxResolution = 1.5,
                             outputFile = NULL,
-                            outputDir = NULL,
+                            outputPath = NULL,
                             subtitle = NULL,
                             authors =  NULL,
                             showSession = FALSE,
@@ -326,9 +326,9 @@ reportSeuratRun <- function(inSCE,
     }
   }
 
-  if(is.null(outputDir)){
-    outputDir <- getwd()
-    message("No output directory defined, using current working directory ", outputDir, " instead.")
+  if(is.null(outputPath)){
+    outputPath <- getwd()
+    message("No output directory defined, using current working directory ", outputPath, " instead.")
   }
 
   data <- inSCE
@@ -343,7 +343,7 @@ reportSeuratRun <- function(inSCE,
                       phenotype.groups = phenotype.groups,
                       variable.features = variable.features,
                       pc.count = pc.count,
-                      outputPath = outputDir,
+                      outputPath = outputPath,
                       showSession = showSession,
                       pdf = pdf,
                       runHVG = runHVG,
@@ -360,14 +360,14 @@ reportSeuratRun <- function(inSCE,
                       forceRun = forceRun
                     ),
                     output_file = outputFile,
-                    output_dir = outputDir,
+                    output_dir = outputPath,
                     intermediates_dir = getwd(),
                     knit_root_dir = getwd())
   
-  path <- paste0(outputDir, "SCE_SeuratRun", "-", gsub(" ", "_", Sys.Date()), ".rds")
+  path <- paste0(outputPath, "SCE_SeuratRun", "-", gsub(" ", "_", Sys.Date()), ".rds")
   saveRDS(data, path)
-  message("Output SCE object stored as ", paste0("SCE_SeuratRun", "-", gsub(" ", "_", Sys.Date()), ".rds"), " in ", outputDir, ".")
-  message("Output HTML file stored as ", outputFile, " in ", outputDir, ".")
+  message("Output SCE object stored as ", paste0("SCE_SeuratRun", "-", gsub(" ", "_", Sys.Date()), ".rds"), " in ", outputPath, ".")
+  message("Output HTML file stored as ", outputFile, " in ", outputPath, ".")
 
   return(data)
 }
@@ -405,10 +405,12 @@ reportSeuratRun <- function(inSCE,
 #' @param runMSBioGroup A logical value indicating if the marker selection
 #'  section for identifying marker genes between the \code{biological.group} 
 #'  parameter should be run and visualized in the report. Default \code{TRUE}.
+#' @param numTopFeatures A numeric value indicating the number of top features
+#'  to visualize in each group. Default \code{10}.
 #' @param outputFile Specify the name of the generated output HTML file. 
 #'  If \code{NULL} then the output file name will be based on the name of the 
 #'  Rmarkdown template. Default \code{NULL}.
-#' @param outputDir Specify the name of the output directory to save the 
+#' @param outputPath Specify the name of the output directory to save the 
 #'  rendered HTML file. If \code{NULL} the file is stored to the current 
 #'  working directory. Default \code{NULL}.
 #' @param subtitle A character value specifying the subtitle to use in the 
@@ -437,8 +439,9 @@ reportSeuratResults <- function(inSCE,
                                 runClustering = TRUE,
                                 runMSClusters = TRUE,
                                 runMSBioGroup = TRUE,
+                                numTopFeatures = 10,
                                 outputFile = NULL,
-                                outputDir = NULL,
+                                outputPath = NULL,
                                 subtitle = NULL,
                                 authors =  NULL,
                                 showSession = FALSE,
@@ -459,9 +462,9 @@ reportSeuratResults <- function(inSCE,
     }
   }
   
-  if(is.null(outputDir)){
-    outputDir <- getwd()
-    message("No output directory defined, using current working directory ", outputDir, " instead.")
+  if(is.null(outputPath)){
+    outputPath <- getwd()
+    message("No output directory defined, using current working directory ", outputPath, " instead.")
   }
   
   data <- inSCE
@@ -477,7 +480,7 @@ reportSeuratResults <- function(inSCE,
                       selected.markers = selected.markers,
                       clustering.resolution = clustering.resolution,
                       pc.count = pc.count,
-                      outputPath = outputDir,
+                      outputPath = outputPath,
                       showSession = showSession,
                       pdf = pdf,
                       plotTSNE = plotTSNE,
@@ -485,17 +488,18 @@ reportSeuratResults <- function(inSCE,
                       runClustering = runClustering,
                       runMSClusters = runMSClusters,
                       runMSBioGroup = runMSBioGroup,
+                      numTopFeatures = numTopFeatures,
                       forceRun = forceRun
                     ),
                     output_file = outputFile,
-                    output_dir = outputDir,
+                    output_dir = outputPath,
                     intermediates_dir = getwd(),
                     knit_root_dir = getwd())
   
-  path <- paste0(outputDir, "SCE_SeuratResults", "-", gsub(" ", "_", Sys.Date()), ".rds")
+  path <- paste0(outputPath, "SCE_SeuratResults", "-", gsub(" ", "_", Sys.Date()), ".rds")
   saveRDS(data, path)
-  message("Output SCE object stored as ", paste0("SCE_SeuratResults", "-", gsub(" ", "_", Sys.Date()), ".rds"), " in ", outputDir, ".")
-  message("Output HTML file stored as ", outputFile, " in ", outputDir, ".")
+  message("Output SCE object stored as ", paste0("SCE_SeuratResults", "-", gsub(" ", "_", Sys.Date()), ".rds"), " in ", outputPath, ".")
+  message("Output HTML file stored as ", outputFile, " in ", outputPath, ".")
   
   return(data)
 }
@@ -519,7 +523,7 @@ reportSeuratResults <- function(inSCE,
 #' @param outputFile Specify the name of the generated output HTML file. 
 #'  If \code{NULL} then the output file name will be based on the name of the 
 #'  Rmarkdown template. Default \code{NULL}.
-#' @param outputDir Specify the name of the output directory to save the 
+#' @param outputPath Specify the name of the output directory to save the 
 #'  rendered HTML file. If \code{NULL} the file is stored to the current 
 #'  working directory. Default \code{NULL}.
 #' @param subtitle A character value specifying the subtitle to use in the 
@@ -544,16 +548,16 @@ reportSeuratDimRed <- function(inSCE,
                                plotElbowPlot = TRUE,
                                plotHeatmaps = TRUE,
                                outputFile = NULL,
-                               outputDir = NULL,
+                               outputPath = NULL,
                                subtitle = NULL,
                                authors =  NULL,
                                showSession = FALSE,
                                pdf = FALSE,
                                forceRun = FALSE){
 
-  if(is.null(outputDir)){
-    outputDir <- getwd()
-    message("No output directory defined, using current working directory ", outputDir, " instead.")
+  if(is.null(outputPath)){
+    outputPath <- getwd()
+    message("No output directory defined, using current working directory ", outputPath, " instead.")
   }
   
   data <- inSCE
@@ -565,7 +569,7 @@ reportSeuratDimRed <- function(inSCE,
                       authors = authors,
                       sce = data,
                       pc.count = pc.count,
-                      outputPath = outputDir,
+                      outputPath = outputPath,
                       showSession = showSession,
                       pdf = pdf,
                       runDimRed = runDimRed,
@@ -575,14 +579,14 @@ reportSeuratDimRed <- function(inSCE,
                       forceRun = forceRun
                     ),
                     output_file = outputFile,
-                    output_dir = outputDir,
-                    intermediates_dir = outputDir,
-                    knit_root_dir = outputDir)
+                    output_dir = outputPath,
+                    intermediates_dir = getwd(),
+                    knit_root_dir = getwd())
   
-  path <- paste0(outputDir, "SCE_SeuratDimRed", "-", gsub(" ", "_", Sys.Date()), ".rds")
+  path <- paste0(outputPath, "SCE_SeuratDimRed", "-", gsub(" ", "_", Sys.Date()), ".rds")
   saveRDS(data, path)
-  message("Output SCE object stored as ", paste0("SCE_SeuratDimRed", "-", gsub(" ", "_", Sys.Date()), ".rds"), " in ", outputDir, ".")
-  message("Output HTML file stored as ", outputFile, " in ", outputDir, ".")
+  message("Output SCE object stored as ", paste0("SCE_SeuratDimRed", "-", gsub(" ", "_", Sys.Date()), ".rds"), " in ", outputPath, ".")
+  message("Output HTML file stored as ", outputFile, " in ", outputPath, ".")
   
   return(data)
 }
@@ -596,7 +600,7 @@ reportSeuratDimRed <- function(inSCE,
 #' @param outputFile Specify the name of the generated output HTML file. 
 #'  If \code{NULL} then the output file name will be based on the name of the 
 #'  Rmarkdown template. Default \code{NULL}.
-#' @param outputDir Specify the name of the output directory to save the 
+#' @param outputPath Specify the name of the output directory to save the 
 #'  rendered HTML file. If \code{NULL} the file is stored to the current 
 #'  working directory. Default \code{NULL}.
 #' @param subtitle A character value specifying the subtitle to use in the 
@@ -616,16 +620,16 @@ reportSeuratDimRed <- function(inSCE,
 #' @export
 reportSeuratNormalization <- function(inSCE,
                                outputFile = NULL,
-                               outputDir = NULL,
+                               outputPath = NULL,
                                subtitle = NULL,
                                authors =  NULL,
                                showSession = FALSE,
                                pdf = FALSE,
                                forceRun = FALSE){
   
-  if(is.null(outputDir)){
-    outputDir <- getwd()
-    message("No output directory defined, using current working directory ", outputDir, " instead.")
+  if(is.null(outputPath)){
+    outputPath <- getwd()
+    message("No output directory defined, using current working directory ", outputPath, " instead.")
   }
   
   data <- inSCE
@@ -636,20 +640,20 @@ reportSeuratNormalization <- function(inSCE,
                       subtitle = subtitle,
                       authors = authors,
                       sce = data,
-                      outputPath = outputDir,
+                      outputPath = outputPath,
                       showSession = showSession,
                       pdf = pdf,
                       forceRun = forceRun
                     ),
                     output_file = outputFile,
-                    output_dir = outputDir,
+                    output_dir = outputPath,
                     intermediates_dir = getwd(),
                     knit_root_dir = getwd())
   
-  path <- paste0(outputDir, "SCE_SeuratNormalization", "-", gsub(" ", "_", Sys.Date()), ".rds")
+  path <- paste0(outputPath, "SCE_SeuratNormalization", "-", gsub(" ", "_", Sys.Date()), ".rds")
   saveRDS(data, path)
-  message("Output SCE object stored as ", paste0("SCE_SeuratNormalization", "-", gsub(" ", "_", Sys.Date()), ".rds"), " in ", outputDir, ".")
-  message("Output HTML file stored as ", outputFile, " in ", outputDir, ".")
+  message("Output SCE object stored as ", paste0("SCE_SeuratNormalization", "-", gsub(" ", "_", Sys.Date()), ".rds"), " in ", outputPath, ".")
+  message("Output HTML file stored as ", outputFile, " in ", outputPath, ".")
   
   return(data)
 }
@@ -668,7 +672,7 @@ reportSeuratNormalization <- function(inSCE,
 #' @param outputFile Specify the name of the generated output HTML file. 
 #'  If \code{NULL} then the output file name will be based on the name of the 
 #'  Rmarkdown template. Default \code{NULL}.
-#' @param outputDir Specify the name of the output directory to save the 
+#' @param outputPath Specify the name of the output directory to save the 
 #'  rendered HTML file. If \code{NULL} the file is stored to the current 
 #'  working directory. Default \code{NULL}.
 #' @param subtitle A character value specifying the subtitle to use in the 
@@ -691,15 +695,15 @@ reportSeuratFeatureSelection <- function(inSCE,
                                          runHVG = TRUE,
                                          plotHVG = TRUE,
                                          outputFile = NULL,
-                                         outputDir = NULL,
+                                         outputPath = NULL,
                                          subtitle = NULL,
                                          authors =  NULL,
                                          showSession = FALSE,
                                          pdf = FALSE,
                                          forceRun = FALSE){
-  if(is.null(outputDir)){
-    outputDir <- getwd()
-    message("No output directory defined, using current working directory ", outputDir, " instead.")
+  if(is.null(outputPath)){
+    outputPath <- getwd()
+    message("No output directory defined, using current working directory ", outputPath, " instead.")
   }
   
   data <- inSCE
@@ -711,20 +715,20 @@ reportSeuratFeatureSelection <- function(inSCE,
                       authors = authors,
                       sce = data,
                       variable.features = variable.features,
-                      outputPath = outputDir,
+                      outputPath = outputPath,
                       showSession = showSession,
                       pdf = pdf,
                       forceRun = forceRun
                     ),
                     output_file = outputFile,
-                    output_dir = outputDir,
+                    output_dir = outputPath,
                     intermediates_dir = getwd(),
                     knit_root_dir = getwd())
   
-  path <- paste0(outputDir, "SCE_SeuratFeatureSelection", "-", gsub(" ", "_", Sys.Date()), ".rds")
+  path <- paste0(outputPath, "SCE_SeuratFeatureSelection", "-", gsub(" ", "_", Sys.Date()), ".rds")
   saveRDS(data, path)
-  message("Output SCE object stored as ", paste0("SCE_SeuratFeatureSelection", "-", gsub(" ", "_", Sys.Date()), ".rds"), " in ", outputDir, ".")
-  message("Output HTML file stored as ", outputFile, " in ", outputDir, ".")
+  message("Output SCE object stored as ", paste0("SCE_SeuratFeatureSelection", "-", gsub(" ", "_", Sys.Date()), ".rds"), " in ", outputPath, ".")
+  message("Output HTML file stored as ", outputFile, " in ", outputPath, ".")
   
   return(data)
 }
@@ -738,7 +742,7 @@ reportSeuratFeatureSelection <- function(inSCE,
 #' @param outputFile Specify the name of the generated output HTML file. 
 #'  If \code{NULL} then the output file name will be based on the name of the 
 #'  Rmarkdown template. Default \code{NULL}.
-#' @param outputDir Specify the name of the output directory to save the 
+#' @param outputPath Specify the name of the output directory to save the 
 #'  rendered HTML file. If \code{NULL} the file is stored to the current 
 #'  working directory. Default \code{NULL}.
 #' @param subtitle A character value specifying the subtitle to use in the 
@@ -758,16 +762,16 @@ reportSeuratFeatureSelection <- function(inSCE,
 #' @export
 reportSeuratScaling <- function(inSCE,
                            outputFile = NULL,
-                           outputDir = NULL,
+                           outputPath = NULL,
                            subtitle = NULL,
                            authors =  NULL,
                            showSession = FALSE,
                            pdf = FALSE,
                            forceRun = FALSE){
   
-  if(is.null(outputDir)){
-    outputDir <- getwd()
-    message("No output directory defined, using current working directory ", outputDir, " instead.")
+  if(is.null(outputPath)){
+    outputPath <- getwd()
+    message("No output directory defined, using current working directory ", outputPath, " instead.")
   }
   
   data <- inSCE
@@ -778,20 +782,20 @@ reportSeuratScaling <- function(inSCE,
                       subtitle = subtitle,
                       authors = authors,
                       sce = data,
-                      outputPath = outputDir,
+                      outputPath = outputPath,
                       showSession = showSession,
                       pdf = pdf,
                       forceRun = forceRun
                     ),
                     output_file = outputFile,
-                    output_dir = outputDir,
+                    output_dir = outputPath,
                     intermediates_dir = getwd(),
                     knit_root_dir = getwd())
   
-  path <- paste0(outputDir, "SCE_SeuratScaleData", "-", gsub(" ", "_", Sys.Date()), ".rds")
+  path <- paste0(outputPath, "SCE_SeuratScaleData", "-", gsub(" ", "_", Sys.Date()), ".rds")
   saveRDS(data, path)
-  message("Output SCE object stored as ", paste0("SCE_SeuratScaleData", "-", gsub(" ", "_", Sys.Date()), ".rds"), " in ", outputDir, ".")
-  message("Output HTML file stored as ", outputFile, " in ", outputDir, ".")
+  message("Output SCE object stored as ", paste0("SCE_SeuratScaleData", "-", gsub(" ", "_", Sys.Date()), ".rds"), " in ", outputPath, ".")
+  message("Output HTML file stored as ", outputFile, " in ", outputPath, ".")
   
   return(data)
 }
@@ -823,7 +827,7 @@ reportSeuratScaling <- function(inSCE,
 #' @param outputFile Specify the name of the generated output HTML file. 
 #'  If \code{NULL} then the output file name will be based on the name of the 
 #'  Rmarkdown template. Default \code{NULL}.
-#' @param outputDir Specify the name of the output directory to save the 
+#' @param outputPath Specify the name of the output directory to save the 
 #'  rendered HTML file. If \code{NULL} the file is stored to the current 
 #'  working directory. Default \code{NULL}.
 #' @param subtitle A character value specifying the subtitle to use in the 
@@ -852,7 +856,7 @@ reportSeuratClustering <- function(inSCE,
                                    numClusters = 10,
                                    significant_PC = 10,
                                    outputFile = NULL,
-                                   outputDir = NULL,
+                                   outputPath = NULL,
                                    subtitle = NULL,
                                    authors =  NULL,
                                    showSession = FALSE,
@@ -883,7 +887,7 @@ reportSeuratClustering <- function(inSCE,
                       sce = data,
                       biological.group = biological.group,
                       phenotype.groups = phenotype.groups,
-                      outputPath = outputDir,
+                      outputPath = outputPath,
                       showSession = showSession,
                       pdf = pdf,
                       runClustering = runClustering,
@@ -896,14 +900,14 @@ reportSeuratClustering <- function(inSCE,
                       forceRun = forceRun
                     ),
                     output_file = outputFile,
-                    output_dir = outputDir,
+                    output_dir = outputPath,
                     intermediates_dir = getwd(),
                     knit_root_dir = getwd())
   
-  path <- paste0(outputDir, "SCE_SeuratClustering", "-", gsub(" ", "_", Sys.Date()), ".rds")
+  path <- paste0(outputPath, "SCE_SeuratClustering", "-", gsub(" ", "_", Sys.Date()), ".rds")
   saveRDS(data, path)
-  message("Output SCE object stored as ", paste0("SCE_SeuratClustering", "-", gsub(" ", "_", Sys.Date()), ".rds"), " in ", outputDir, ".")
-  message("Output HTML file stored as ", outputFile, " in ", outputDir, ".")
+  message("Output SCE object stored as ", paste0("SCE_SeuratClustering", "-", gsub(" ", "_", Sys.Date()), ".rds"), " in ", outputPath, ".")
+  message("Output HTML file stored as ", outputFile, " in ", outputPath, ".")
   
   return(data)
 }
@@ -928,12 +932,12 @@ reportSeuratClustering <- function(inSCE,
 #'  computation should be run or not. Default \code{TRUE}.
 #' @param plotMarkerSelection A logical value indicating if the gene marker
 #'  plots should be visualized or not. Default \code{TRUE}.
-#' @param countFeatures A numeric value indicating the number of top features
+#' @param numTopFeatures A numeric value indicating the number of top features
 #'  to visualize in each group. Default \code{10}.
 #' @param outputFile Specify the name of the generated output HTML file. 
 #'  If \code{NULL} then the output file name will be based on the name of the 
 #'  Rmarkdown template. Default \code{NULL}.
-#' @param outputDir Specify the name of the output directory to save the 
+#' @param outputPath Specify the name of the output directory to save the 
 #'  rendered HTML file. If \code{NULL} the file is stored to the current 
 #'  working directory. Default \code{NULL}.
 #' @param subtitle A character value specifying the subtitle to use in the 
@@ -954,9 +958,9 @@ reportSeuratMarkerSelection <- function(inSCE,
                                         selected.markers = NULL,
                                         runMarkerSelection = TRUE,
                                         plotMarkerSelection = TRUE,
-                                        countFeatures = 10,
+                                        numTopFeatures = 10,
                                         outputFile = NULL,
-                                        outputDir = NULL,
+                                        outputPath = NULL,
                                         subtitle = NULL,
                                         authors =  NULL,
                                         showSession = FALSE,
@@ -976,9 +980,9 @@ reportSeuratMarkerSelection <- function(inSCE,
     }
   }
   
-  if(is.null(outputDir)){
-    outputDir <- getwd()
-    message("No output directory defined, using current working directory ", outputDir, " instead.")
+  if(is.null(outputPath)){
+    outputPath <- getwd()
+    message("No output directory defined, using current working directory ", outputPath, " instead.")
   }
   
   data <- inSCE
@@ -992,22 +996,22 @@ reportSeuratMarkerSelection <- function(inSCE,
                       biological.group = biological.group,
                       phenotype.groups = phenotype.groups,
                       selected.markers = selected.markers,
-                      outputPath = outputDir,
+                      outputPath = outputPath,
                       showSession = showSession,
                       pdf = pdf,
                       runMarkerSelection = runMarkerSelection,
                       plotMarkerSelection = plotMarkerSelection,
-                      countFeatures = countFeatures
+                      numTopFeatures = numTopFeatures
                     ),
                     output_file = outputFile,
-                    output_dir = outputDir,
+                    output_dir = outputPath,
                     intermediates_dir = getwd(),
                     knit_root_dir = getwd())
   
-  path <- paste0(outputDir, "SCE_SeuratResults", "-", gsub(" ", "_", Sys.Date()), ".rds")
+  path <- paste0(outputPath, "SCE_SeuratResults", "-", gsub(" ", "_", Sys.Date()), ".rds")
   saveRDS(data, path)
-  message("Output SCE object stored as ", paste0("SCE_SeuratResults", "-", gsub(" ", "_", Sys.Date()), ".rds"), " in ", outputDir, ".")
-  message("Output HTML file stored as ", outputFile, " in ", outputDir, ".")
+  message("Output SCE object stored as ", paste0("SCE_SeuratResults", "-", gsub(" ", "_", Sys.Date()), ".rds"), " in ", outputPath, ".")
+  message("Output HTML file stored as ", outputFile, " in ", outputPath, ".")
   
   return(data)
 }
@@ -1035,7 +1039,7 @@ reportSeuratMarkerSelection <- function(inSCE,
 #' @param outputFile Specify the name of the generated output HTML file. 
 #'  If \code{NULL} then the output file name will be based on the name of the 
 #'  Rmarkdown template. Default \code{NULL}.
-#' @param outputDir Specify the name of the output directory to save the 
+#' @param outputPath Specify the name of the output directory to save the 
 #'  rendered HTML file. If \code{NULL} the file is stored to the current 
 #'  working directory. Default \code{NULL}.
 #' @param subtitle A character value specifying the subtitle to use in the 
@@ -1074,6 +1078,8 @@ reportSeuratMarkerSelection <- function(inSCE,
 #' @param runMSBioGroup A logical value indicating if marker selection should
 #'  be run between the \code{biological.group} parameter. 
 #'  Default is \code{TRUE}.
+#' @param numTopFeatures A numeric value indicating the number of top features
+#'  to visualize in each group. Default \code{10}.
 #' @param forceRun A logical value indicating if all algorithms should be
 #'  re-run regardless if they have been computed previously in the input object.
 #'  Default is \code{FALSE}. 
@@ -1090,7 +1096,7 @@ reportSeurat <- function(
   variable.features = 2000,
   pc.count = 50,
   outputFile = NULL,
-  outputDir = NULL,
+  outputPath = NULL,
   subtitle = NULL,
   authors =  NULL,
   showSession = FALSE,
@@ -1108,6 +1114,7 @@ reportSeurat <- function(
   maxResolution = 1.5,
   runMSClusters = TRUE,
   runMSBioGroup = TRUE,
+  numTopFeatures = 10,
   forceRun = FALSE){
   
   if(is.null(biological.group)){
@@ -1124,9 +1131,9 @@ reportSeurat <- function(
     }
   }
   
-  if(is.null(outputDir)){
-    outputDir <- getwd()
-    message("No output directory defined, using current working directory ", outputDir, " instead.")
+  if(is.null(outputPath)){
+    outputPath <- getwd()
+    message("No output directory defined, using current working directory ", outputPath, " instead.")
   }
   
   data <- inSCE
@@ -1143,7 +1150,7 @@ reportSeurat <- function(
                       clustering.resolution = clustering.resolution,
                       variable.features = variable.features,
                       pc.count = pc.count,
-                      outputPath = outputDir,
+                      outputPath = outputPath,
                       showSession = showSession,
                       pdf = pdf,
                       runHVG = runHVG,
@@ -1159,17 +1166,18 @@ reportSeurat <- function(
                       maxResolution = maxResolution,
                       runMSClusters = runMSClusters,
                       runMSBioGroup = runMSBioGroup,
-                      forceRun = forceRun
+                      forceRun = forceRun,
+                      numTopFeatures = numTopFeatures
                     ),
                     output_file = outputFile,
-                    output_dir = outputDir,
+                    output_dir = outputPath,
                     intermediates_dir = getwd(),
                     knit_root_dir = getwd())
   
-  path <- paste0(outputDir, "SCE_SeuratReport", "-", gsub(" ", "_", Sys.Date()), ".rds")
+  path <- paste0(outputPath, "SCE_SeuratReport", "-", gsub(" ", "_", Sys.Date()), ".rds")
   saveRDS(data, path)
-  message("Output SCE object stored as ", paste0("SCE_SeuratReport", "-", gsub(" ", "_", Sys.Date()), ".rds"), " in ", outputDir, ".")
-  message("Output HTML file stored as ", outputFile, " in ", outputDir, ".")
+  message("Output SCE object stored as ", paste0("SCE_SeuratReport", "-", gsub(" ", "_", Sys.Date()), ".rds"), " in ", outputPath, ".")
+  message("Output HTML file stored as ", outputFile, " in ", outputPath, ".")
   
   return(data)
 }

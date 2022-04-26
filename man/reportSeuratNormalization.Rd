@@ -9,7 +9,7 @@
 reportSeuratNormalization(
   inSCE,
   outputFile = NULL,
-  outputDir = NULL,
+  outputPath = NULL,
   subtitle = NULL,
   authors = NULL,
   showSession = FALSE,
@@ -25,7 +25,7 @@ object previously passed through \code{reportSeuratRun()}.}
 If \code{NULL} then the output file name will be based on the name of the 
 Rmarkdown template. Default \code{NULL}.}
 
-\item{outputDir}{Specify the name of the output directory to save the 
+\item{outputPath}{Specify the name of the output directory to save the 
 rendered HTML file. If \code{NULL} the file is stored to the current 
 working directory. Default \code{NULL}.}
 
