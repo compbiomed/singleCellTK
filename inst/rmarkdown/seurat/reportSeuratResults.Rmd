@@ -70,7 +70,7 @@ maxResolution <- clustering.resolution
 numClusters <- 10 #remove this later
 showClusterDesc <- FALSE
 
-resClustering <- knitr::knit_child(paste0(getwd(), "/inst/rmarkdown/seurat/", 'reportSeuratClustering.Rmd'), quiet = TRUE, envir = environment())
+resClustering <- knitr::knit_child('reportSeuratClustering.Rmd', quiet = TRUE, envir = environment())
 ```
 
 ```{r, echo=FALSE, results='asis', warning=FALSE, message=FALSE}
@@ -87,7 +87,7 @@ selectedOption <- paste0("Seurat_louvain_Resolution", clustering.resolution)
 titleMarkerPlots <- "Plot Selected Features"
 countFeatures <- length(selected.markers)
 
-res <- knitr::knit_child(paste0(getwd(), "/inst/rmarkdown/seurat/", 'reportSeuratMarkerSelection.Rmd'), quiet = TRUE)
+res <- knitr::knit_child('reportSeuratMarkerSelection.Rmd', quiet = TRUE)
 cat(res, sep = '\n')
 ```
 
@@ -101,7 +101,7 @@ groupTitle <- "Clusters"
 titleMarkerPlots <- "Gene Plots of Top Markers by Clusters"
 countFeatures <- 10
 headingMS <- "##"
-res <- knitr::knit_child(paste0(getwd(), "/inst/rmarkdown/seurat/", 'reportSeuratMarkerSelection.Rmd'), quiet = TRUE)
+res <- knitr::knit_child('reportSeuratMarkerSelection.Rmd', quiet = TRUE)
 numMarkerGenesCluster <- nrow(data.markers[data.markers$p_val_adj < 0.05, ])
 cat(res, sep = '\n')
 ```
@@ -116,7 +116,7 @@ groupTitle <- biological.group
 titleMarkerPlots <- paste0("Gene Plots of Top Markers by Group: ", biological.group)
 countFeatures <- 10
 headingMS <- "##"
-res <- knitr::knit_child(paste0(getwd(), "/inst/rmarkdown/seurat/", 'reportSeuratMarkerSelection.Rmd'), quiet = TRUE)
+res <- knitr::knit_child('reportSeuratMarkerSelection.Rmd', quiet = TRUE)
 numMarkerGenesBio <- nrow(data.markers[data.markers$p_val_adj < 0.05, ])
 cat(res, sep = '\n')
 ```
