@@ -86,19 +86,19 @@ opts_chunk$set(
 <!-- Normalization -->
 ```{r, echo=FALSE, results='asis', message=FALSE}
 headingNorm <- "##"
-resNormalization <- knitr::knit_child(paste0(getwd(), "/inst/rmarkdown/seurat/", 'reportSeuratNormalizeData.Rmd'), quiet = TRUE, envir = environment())
+resNormalization <- knitr::knit_child('reportSeuratNormalizeData.Rmd', quiet = TRUE, envir = environment())
 ```
 
 <!-- Feature Selection -->
 ```{r, echo=FALSE, results='asis'}
 headingFS <- "##"
-resFeatureSelection <- knitr::knit_child(paste0(getwd(), "/inst/rmarkdown/seurat/", 'reportSeuratFeatureSelection.Rmd'), quiet = TRUE)
+resFeatureSelection <- knitr::knit_child('reportSeuratFeatureSelection.Rmd', quiet = TRUE)
 ```
 
 <!-- Scale Data -->
 ```{r, echo=FALSE, results='asis', warning=FALSE, message=FALSE}
 headingSD <- "##"
-resScaleData <- knitr::knit_child(paste0(getwd(), "/inst/rmarkdown/seurat/", 'reportSeuratScaleData.Rmd'), quiet = TRUE)
+resScaleData <- knitr::knit_child('reportSeuratScaleData.Rmd', quiet = TRUE)
 ```
 
 <!-- Dimensionality Reduction -->
@@ -107,7 +107,7 @@ headingDR <- "##"
 headingDR2 <- "###"
 significant_PC <- 10
 
-resDimRed <- knitr::knit_child(paste0(getwd(), "/inst/rmarkdown/seurat/", 'reportSeuratDimRed.Rmd'), quiet = TRUE, envir = environment())
+resDimRed <- knitr::knit_child('reportSeuratDimRed.Rmd', quiet = TRUE, envir = environment())
 ```
 
 <!-- Clustering -->
@@ -116,7 +116,7 @@ numClusters <- 10 # this should be computed by the code itself (do later)
 showClusterDesc <- TRUE
 headingClust <- "##"
 
-resClustering <- knitr::knit_child(paste0(getwd(), "/inst/rmarkdown/seurat/", 'reportSeuratClustering.Rmd'), quiet = TRUE, envir = environment())
+resClustering <- knitr::knit_child('reportSeuratClustering.Rmd', quiet = TRUE, envir = environment())
 ```
 
 # Seurat Run
