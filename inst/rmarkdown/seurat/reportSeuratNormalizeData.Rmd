@@ -7,7 +7,7 @@ params:
   authors: !r NULL
   sce: !r NULL
   outputPath: !r NULL
-  showSession: TRUE
+  showSession: FALSE
   pdf: TRUE
   forceRun: FALSE
 output:
@@ -63,5 +63,13 @@ data <- do.call("runSeuratNormalizeData", normalizeParams)
 ```{r, echo=FALSE, include=FALSE, eval=(is.null(metadata(data)$seurat$normAssay))}
 normalizeParams$inSCE <- NULL
 metadata(data)$seurat$sctk$report$normalizeParams <- normalizeParams
+```
+
+```{r, results='asis', eval=showSession, echo=FALSE}
+cat("# Session Information\n\n")
+```
+
+```{r, results='markup', eval = showSession, echo = showSession}
+sessionInfo()
 ```
 

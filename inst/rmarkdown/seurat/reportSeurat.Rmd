@@ -13,7 +13,7 @@ params:
   variable.features: 2000
   pc.count: 50
   outputPath: !r NULL
-  showSession: TRUE
+  showSession: FALSE
   pdf: TRUE
   runHVG: TRUE
   plotHVG: TRUE
@@ -58,7 +58,7 @@ seuratRun <- knitr::knit_child('reportSeuratRun.Rmd', quiet = TRUE, envir = envi
 <!-- Seurat Results -->
 
 ```{r, echo=FALSE, results='asis', warning=FALSE, message=FALSE}
-showSession <- TRUE
+showSession <- FALSE
 seuratResults <- knitr::knit_child('reportSeuratResults.Rmd', quiet = TRUE, envir = environment())
 ```
 
@@ -73,3 +73,16 @@ seuratResults <- knitr::knit_child('reportSeuratResults.Rmd', quiet = TRUE, envi
 cat(seuratRun, sep = '\n')
 cat(seuratResults, sep = '\n')
 ```
+
+```{r, echo=FALSE}
+showSession <- params$showSession
+```
+
+```{r, results='asis', eval=showSession, echo=FALSE}
+cat("# Session Information\n\n")
+```
+
+```{r, results='markup', eval=showSession, echo=showSession}
+sessionInfo()
+```
+

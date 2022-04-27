@@ -11,7 +11,7 @@ params:
   variable.features: 2000
   pc.count: 50
   outputPath: !r NULL
-  showSession: TRUE
+  showSession: FALSE
   pdf: TRUE
   runHVG: TRUE
   plotHVG: TRUE
@@ -78,8 +78,6 @@ opts_chunk$set(
   warning = FALSE
 )
 ```
-
-
 
 <!-- Compute -->
 

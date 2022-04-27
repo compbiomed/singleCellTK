@@ -83,3 +83,11 @@ metadata(data)$seurat$sctk$report$hvgParams <- hvgParams
 ```
 
 > A total of '*`r variable.features`*' top variable genes were identified from a total of '*`r nrow(data)`*' number of features using Seurat's '*vst*' method that uses log of mean, log of variance and loess to compute the variable features. This subset of '*`r variable.features`*' features was used as an input to dimensionality reduction algorithm. This subset of features was also visualized in a mean-vs-variance plot with the variable features highlighted in red and top most 10 features labeled at the top-right quarter of the plot. 
+
+```{r, results='asis', eval=showSession, echo=FALSE}
+cat("# Session Information\n\n")
+```
+
+```{r, results='markup', eval = showSession, echo = showSession}
+sessionInfo()
+```

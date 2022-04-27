@@ -12,7 +12,7 @@ params:
   clustering.resolution: 0.8
   pc.count: 10
   outputPath: !r NULL
-  showSession: TRUE
+  showSession: FALSE
   pdf: TRUE
   plotTSNE: TRUE
   plotUMAP: TRUE
@@ -121,7 +121,7 @@ numMarkerGenesBio <- nrow(data.markers[data.markers$p_val_adj < 0.05, ])
 cat(res, sep = '\n')
 ```
 
-```{r, results='asis', eval=showSession, echo=FALSE}
+```{r, results='asis', eval=showSession, echo=showSession}
 cat("# Session Information\n\n")
 ```
 
