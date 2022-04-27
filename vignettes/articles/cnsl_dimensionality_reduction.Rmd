@@ -149,14 +149,11 @@ plotDimRed(inSCE = sce, useReduction = "redDimPCA", xAxisLabel = "PC_1", yAxisLa
   sce <- runNormalization(inSCE = sce, normalizationMethod = "LogNormalize", useAssay = "counts", outAssayName = "LogNormalizedScaledCounts", scale = TRUE, trim = c(10, -10))
   # Find Variable Features
   sce <- runFeatureSelection(inSCE = sce, useAssay = "counts", hvgMethod = "vst")
-  HVGs <- getTopHVG(inSCE = sce, method = "vst", n = 2000)
-  HVGs <- stats::na.omit(HVGs)
-  tempAssay <- expData(inSCE = sce, assayName = "LogNormalizedScaledCounts")[HVGs,]
-  expData(inSCE = sce, assayName = "hvg2000", tag = "hvg", altExp = TRUE) <- tempAssay
+  sce <- getTopHVG(inSCE = sce, method = "vst", n = 2000, altExp = "hvg2000")
   # Run PCA
-  sce <- runDimReduce(inSCE = sce, useAssay = "hvg2000", useAltExp = "hvg2000", reducedDimName = "redDimPCA", method = "seuratPCA", nComponents = 10)
+  sce <- runDimReduce(inSCE = sce, useAssay = "LogNormalizedScaledCounts", useAltExp = "hvg2000", reducedDimName = "redDimPCA", method = "seuratPCA", nComponents = 10)
   # Plot PCA
-  plotDimRed(inSCE = sce, useReduction = "redDimPCA", xAxisLabel = "PC_1", yAxisLabel = "PC_2")
+  plotDimRed(inSCE = sce, useReduction = "redDimPCA", xAxisLabel = "PC_3", yAxisLabel = "PC_2")
 ```
 
 ````{=html}
@@ -194,9 +191,9 @@ div.offset { background-color:inherit ; border-radius: 5px; margin-left: 15px;}
   <summary>`PCA` from **Seurat** package:</summary> 
 
 ```{r "dm_seuratPCA", eval = FALSE}
-  # Recommended to find variable features before running seuratPCA
-  # sce <- seuratFindHVG(inSCE = sce, useAssay = "seuratScaledData")
-  sce <- seuratPCA(inSCE = sce, useAssay = "seuratScaledData", reducedDimName = "seuratPCA", nPCs = 20, verbose = TRUE)
+  # Recommended to find variable features before running runSeuratPCA
+  # sce <- runSeuratFindHVG(inSCE = sce, useAssay = "seuratScaledData")
+  sce <- runSeuratPCA(inSCE = sce, useAssay = "seuratScaledData", reducedDimName = "seuratPCA", nPCs = 20, verbose = TRUE)
 ```
 
 The parameters to the above function include: <br><br>
@@ -214,9 +211,9 @@ The parameters to the above function include: <br><br>
   <summary>`ICA` from **Seurat** package:</summary> 
 
 ```{r "dm_seuratICA", eval = FALSE}
-  # Recommended to find variable features before running seuratICA
-  # sce <- seuratFindHVG(inSCE = sce, useAssay = "seuratScaledData")
-  sce <- seuratICA(inSCE = sce, useAssay = "seuratScaledData", reducedDimName = "seuratICA", nics = 20)
+  # Recommended to find variable features before running runSeuratICA
+  # sce <- runSeuratFindHVG(inSCE = sce, useAssay = "seuratScaledData")
+  sce <- runSeuratICA(inSCE = sce, useAssay = "seuratScaledData", reducedDimName = "seuratICA", nics = 20)
 ```
 
 The parameters to the above function include: <br><br>

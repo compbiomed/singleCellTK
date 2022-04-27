@@ -156,7 +156,7 @@ div.offset { background-color:inherit ; border-radius: 5px; margin-left: 15px;}
   <summary>`LogNormalize`, `CLR` or `RC` from **Seurat** [@Butler2018][@Stuart2019] package:</summary> 
 
 ```{r "normalization_console_seurat", eval = FALSE}
-  sce <- seuratNormalizeData(inSCE = sce, normalizationMethod = "CLR", useAssay = "counts", normAssayName = "CLRCounts", scaleFactor = 10000, verbose = TRUE)
+  sce <- runSeuratNormalizeData(inSCE = sce, normalizationMethod = "CLR", useAssay = "counts", normAssayName = "CLRCounts", scaleFactor = 10000, verbose = TRUE)
 ```
 The parameters to the above function include: <br><br>
 `inSCE`: an input `SingleCellExperiment` object <br>
@@ -174,7 +174,7 @@ The parameters to the above function include: <br><br>
   <summary>`SCTransform` from **Seurat** [@Butler2018][@Stuart2019][@Hafemeister2019]  package:</summary> 
 
 ```{r "normalization_console_sctransform", eval = FALSE}
-  sce <- seuratSCTransform(inSCE = sce, useAssay = "counts", normAssayName = "SCTCounts", verbose = TRUE)
+  sce <- runSeuratSCTransform(inSCE = sce, useAssay = "counts", normAssayName = "SCTCounts", verbose = TRUE)
 ```
 
 The parameters to the above function include: <br><br>

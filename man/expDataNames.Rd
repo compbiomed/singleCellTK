@@ -17,3 +17,7 @@ A combined \code{vector} of \code{assayNames}, \code{altExpNames} and \code{redu
 expDataNames
 Get names of all the data items in the input \code{SingleCellExperiment} object including assays, altExps and reducedDims.
 }
+\examples{
+data(scExample, package = "singleCellTK")
+expDataNames(sce)
+}

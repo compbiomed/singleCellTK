@@ -1,0 +1,67 @@
+---
+title: "Seurat Normalization"
+author: "`r params$authors`"
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+params:
+  subtitle: !r NULL
+  authors: !r NULL
+  sce: !r NULL
+  outputPath: !r NULL
+  showSession: TRUE
+  pdf: TRUE
+  forceRun: FALSE
+output:
+  html_document:
+    toc: yes
+    toc_float: yes
+    number_sections: yes
+    theme: cosmo
+    code_folding: hide
+    self_contained: false
+  pdf_document:
+    toc: yes
+subtitle: "`r params$subtitle`"
+editor_options:
+  chunk_output_type: console
+---
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+library(Seurat)
+library(dplyr)
+library(cowplot)
+library(RColorBrewer)
+library(ggplot2)
+library(knitr)
+library(kableExtra)
+library(SingleCellExperiment)
+library(scater)
+library(gridExtra)
+library(grid)
+library(ggpubr)
+library(patchwork)
+library(singleCellTK)
+```
+
+```{r, echo=FALSE, results='asis', warning=FALSE, message=FALSE}
+if(!exists("headingNorm")) headingNorm <- "#"
+cat(headingNorm, " Normalization {}\n\n")
+```
+
+Before the data can be used in the downstream analysis, normalization techniques that remove technical noise or variation must be applied. For this purpose, Seurat uses a global-scaling normalization method where the input raw data matrix is normalized by dividing the gene expression measurements by the total expression for each cell, multiplies it with a global-scaling factor and log-transforms the result. The output log-transformed and normalized gene expression measurements with technical variation and bias minimized can now better reflect the biological variability in the downstream methods. 
+
+> The input raw data matrix '*`r assayNames(data)[1]`*' was normalized using a global-scaling normalization method '*LogNormalize*' that divides the gene expression measurements by the total expression for each cell, multiplies the resultant values with a scaling factor of '*10,000*' and log-transforms the result. 
+
+```{r, message=FALSE, warning=FALSE, eval=is.null(metadata(data)$seurat$normAssay) || forceRun}
+normalizeParams <- list(
+  inSCE = data,
+  normalizationMethod = "LogNormalize",
+  scaleFactor = 10000,
+  verbose = FALSE
+)
+data <- do.call("runSeuratNormalizeData", normalizeParams)
+```
+
+```{r, echo=FALSE, include=FALSE, eval=(is.null(metadata(data)$seurat$normAssay))}
+normalizeParams$inSCE <- NULL
+metadata(data)$seurat$sctk$report$normalizeParams <- normalizeParams
+```
+

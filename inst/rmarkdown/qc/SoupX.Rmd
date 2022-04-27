@@ -1,0 +1,51 @@
+---
+title: "Comprehensive reporting of QC metrics: contamination identification using SoupX"
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+params: 
+  object: object
+output:
+  html_document:
+    number_sections: yes
+    toc: yes
+    code_folding: hide
+---
+
+```{r, "soupX-lib", message = F, include=FALSE}
+require(singleCellTK)
+require(ggplot2)
+```
+
+```{r, "soupX-input",  warning=FALSE}
+sce.qc <- params$object
+```
+
+```{r, "SoupX", results="asis", fig.align="center", warning=FALSE, message=FALSE}
+    plotSoupX <- plotSoupXResults(sce.qc, combinePlot = "none")
+    i <- "SoupX"
+    cat(paste0('# ', i, ' {.tabset} \n\n'))
+    
+    cat(paste0('## Scatter Cluster\n\n'))
+    plot(plotSoupX$scatter_soupXClusters)
+    cat("\n\n")
+    
+    for (marker in names(plotSoupX)[-1]) {
+        cat(paste0('## Soup Fraction: ', marker, ' \n\n'))
+        plot(plotSoupX[[marker]])
+        cat("\n\n")
+    }
+    
+    cat(paste0('## Session info \n\n'))
+    soupXMeta <- getSoupX(sce.qc)[[1]]$param
+    soupXMeta$sample <- NULL
+    soupXMeta$bgBatch <- NULL
+    soupXMeta$sessionInfo <- NULL
+    soupXMeta
+    cat("\n\n")
+```
+
+```{r, "decontX-description", include=FALSE, warning=FALSE, message=FALSE}
+description_SoupX <- descriptionSoupX()
+```
+
+# {.unlisted .unnumbered .toc-ignore}
+`r description_SoupX`

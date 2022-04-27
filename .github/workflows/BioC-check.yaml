@@ -35,6 +35,10 @@ jobs:
           http-user-agent: ${{ matrix.config.http-user-agent }}
           use-public-rspm: true
 
+      - name: Install fftw3 on macOS
+        if: runner.os == 'macOS'
+        run: brew install fftw
+        
       - uses: r-lib/actions/setup-r-dependencies@v1
         with:
           extra-packages: rcmdcheck

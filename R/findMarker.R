@@ -92,6 +92,7 @@ findMarkerDiffExp <- function(inSCE, useAssay = 'logcounts',
   for(c in uniqClust){
     degTable <-
       S4Vectors::metadata(inSCE)$diffExp[[paste0('findMarker', c)]]$result
+    degTable <- degTable[,c(-5,-6,-7,-8)]
     degTable$Gene <- as.character(degTable$Gene)
     if (nrow(degTable) > 0) {
       degTable[[clusterName]] <- c

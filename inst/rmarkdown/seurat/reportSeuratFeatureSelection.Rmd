@@ -1,0 +1,85 @@
+---
+title: "Seurat Feature Selection"
+author: "`r params$authors`"
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+params:
+  subtitle: !r NULL
+  authors: !r NULL
+  sce: !r NULL
+  variable.features: 2000
+  outputPath: !r NULL
+  showSession: FALSE
+  pdf: FALSE
+  forceRun: FALSE
+output:
+  html_document:
+    toc: yes
+    toc_float: yes
+    number_sections: yes
+    theme: cosmo
+    code_folding: hide
+    self_contained: false
+  pdf_document:
+    toc: yes
+subtitle: "`r params$subtitle`"
+editor_options:
+  chunk_output_type: console
+---
+```{r, message=FALSE, warning=FALSE, echo=FALSE}
+library(Seurat)
+library(dplyr)
+library(cowplot)
+library(RColorBrewer)
+library(ggplot2)
+library(knitr)
+library(kableExtra)
+library(SingleCellExperiment)
+library(scater)
+library(gridExtra)
+library(grid)
+library(ggpubr)
+library(patchwork)
+library(singleCellTK)
+```
+
+```{r, echo=FALSE}
+if(!exists("headingFS")) headingFS <- "#"
+if(!exists("forceRun")) forceRun <- FALSE
+```
+
+```{r, echo=FALSE, results='asis', warning=FALSE, message=FALSE}
+cat(headingFS, " Feature Selection {}\n\n")
+```
+
+Generally, a subset of features may represent the biological variation in the overall data and to better capture this true biological signal, it is recommended to identify this subset of features that often exhibit high cell-to-cell variation and use it in the downstream analysis instead of the full set of features. For this purpose, Seurat models the mean-to-variance relationship of the expression data by first computing *log of mean* and *log of variance* using *loess* and then standardizes the values using observed mean and expected variance. The overall variance of each feature is computed from the standardized values by clipping to a maximum value and ordering the features in the order of their variance. Lastly, top genes (by default *2000*) are selected as the top most variable features that represent the highest biological variability and used in the downstream methods.
+
+```{r, results='asis', warning=FALSE, message=FALSE, eval = !((runHVG && length(metadata(data)$seurat$obj@assays$RNA@var.features) > 0)) || forceRun}
+hvgParams <- list(
+  inSCE = data,
+  hvgMethod = "vst", 
+  hvgNumber = variable.features)
+data <- do.call("runSeuratFindHVG", hvgParams)
+
+```
+
+```{r, echo=FALSE}
+num.variable.genes <- length(getSeuratVariableFeatures(data))
+```
+
+```{r, echo=FALSE, results='asis', include=plotHVG, eval= plotHVG}
+cat("A scatter plot of standardized variance (y-axis) versus average expression (x-axis) for each of the gene is visualized below. Top 10 most variable genes are labeled with their gene symbols and the points (genes) highlighted in red are considered as highly variable genes.")
+```
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE, eval = plotHVG}
+Labeled_Variable_data <- plotSeuratHVG(inSCE = data, labelPoints = 10)
+Labeled_Variable_data
+```
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE, include=FALSE, eval=!(runHVG && length(metadata(data)$seurat$obj@assays$RNA@var.features) > 0)}
+hvgParams$inSCE <- NULL
+hvgParams$labelPoints <- 10
+hvgParams$totalFeatures <- variable.features
+metadata(data)$seurat$sctk$report$hvgParams <- hvgParams
+```
+
+> A total of '*`r variable.features`*' top variable genes were identified from a total of '*`r nrow(data)`*' number of features using Seurat's '*vst*' method that uses log of mean, log of variance and loess to compute the variable features. This subset of '*`r variable.features`*' features was used as an input to dimensionality reduction algorithm. This subset of features was also visualized in a mean-vs-variance plot with the variable features highlighted in red and top most 10 features labeled at the top-right quarter of the plot. 

@@ -38,6 +38,11 @@ generated for each figure in the report. Default is \code{TRUE}.}
 \item{showSession}{A \code{logical} value indicating if session information
 should be displayed or not. Default is \code{TRUE}.}
 }
+\value{
+An HTML file of the report will be generated at the path specified
+in the arguments.
+}
 \description{
-A function to generate .html Rmarkdown report containing the visualizations of the plotClusterAbundance function output
+A function to generate .html Rmarkdown report containing the 
+visualizations of the plotClusterAbundance function output
 }

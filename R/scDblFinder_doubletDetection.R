@@ -38,11 +38,11 @@ runScDblFinder <- function(inSCE,
     seed = 12345,
     BPPARAM=BiocParallel::SerialParam()
 ) {
-  
+
   tempSCE <- inSCE
   SummarizedExperiment::assayNames(inSCE)[which(useAssay %in% SummarizedExperiment::assayNames(inSCE))] <- "counts"
   useAssay <- "counts"
-  
+
   argsList <- mget(names(formals()),sys.frame(sys.nframe()))
 
   if(!is.null(sample)) {
@@ -68,12 +68,13 @@ runScDblFinder <- function(inSCE,
                             samples = sample,
                             artificialDoublets = simDoublets,
                             k = nNeighbors,
-                            verbose = FALSE
+                            verbose = FALSE,
+                            BPPARAM = BPPARAM
                             ))
   if(length(rm.ix) > 0){
     inSCE <- mergeSCEColData(inSCE1 = inSCEOrig, inSCE2 = inSCE)
   }
-  
+
   names(SummarizedExperiment::colData(inSCE)) <- gsub(pattern = "scDblFinder\\.",
                                                       "scDblFinder_",
                                                       names(SummarizedExperiment::colData(inSCE)))
@@ -81,15 +82,17 @@ runScDblFinder <- function(inSCE,
   names(SummarizedExperiment::colData(inSCE)) <- gsub(pattern = "scDblFinder_score",
                                                       "scDblFinder_doublet_score",
                                                       names(SummarizedExperiment::colData(inSCE)))
-  names(SummarizedExperiment::colData(inSCE)) <- gsub(pattern = "scDblFinder_call",
+  names(SummarizedExperiment::colData(inSCE)) <- gsub(pattern = "scDblFinder_class",
                                                       "scDblFinder_doublet_call",
                                                       names(SummarizedExperiment::colData(inSCE)))
+
+  levels(inSCE$scDblFinder_doublet_call) <- list(Singlet = "singlet", Doublet = "doublet")
 
   argsList <- argsList[!names(argsList) %in% c("BPPARAM")]
 
   inSCE@metadata$runScDblFinder <- argsList[-1]
   inSCE@metadata$runScDblFinder$packageVersion <- utils::packageDescription("scDblFinder")$Version
-  
+
   tempSCE@colData <- inSCE@colData
   tempSCE@metadata <- inSCE@metadata
 

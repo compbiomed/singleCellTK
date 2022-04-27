@@ -40,3 +40,8 @@ expTaggedData
 Returns a list of names of data items from the 
 input \code{SingleCellExperiment} object based upon the input parameters.
 }
+\examples{
+data(scExample, package = "singleCellTK")
+sce <- expSetDataTag(sce, "raw", "counts")
+tags <- expTaggedData(sce)
+}

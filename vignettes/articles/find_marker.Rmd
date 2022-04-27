@@ -124,12 +124,12 @@ library(singleCellTK)
 sce <- importExampleData("pbmc3k")
 sce <- scaterlogNormCounts(sce, "logcounts")
 # Go through the Seurat curated workflow to get basic clusters
-sce <- seuratNormalizeData(inSCE = sce, useAssay = "counts")
-sce <- seuratFindHVG(inSCE = sce, useAssay = "seuratNormData")
-sce <- seuratScaleData(inSCE = sce, useAssay = "seuratNormData")
-sce <- seuratPCA(inSCE = sce, useAssay = "seuratScaledData")
-sce <- seuratRunUMAP(sce)
-sce <- seuratFindClusters(inSCE = sce, useAssay = "seuratScaledData")
+sce <- runSeuratNormalizeData(inSCE = sce, useAssay = "counts")
+sce <- runSeuratFindHVG(inSCE = sce, useAssay = "seuratNormData")
+sce <- runSeuratScaleData(inSCE = sce, useAssay = "seuratNormData")
+sce <- runSeuratPCA(inSCE = sce, useAssay = "seuratScaledData")
+sce <- runSeuratUMAP(sce)
+sce <- runSeuratFindClusters(inSCE = sce, useAssay = "seuratScaledData")
 # Optional visualization
 plotSCEDimReduceColData(inSCE = sce, colorBy = "Seurat_louvain_Resolution0.8", conditionClass = "factor", reducedDimName = "seuratUMAP")
 ```

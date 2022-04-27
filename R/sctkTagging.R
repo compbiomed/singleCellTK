@@ -6,7 +6,10 @@
 #' @param assay Name of the assay or the data item against which a tag should be removed.
 #' @return The input \code{SingleCellExperiment} object with tag information removed from the metadata slot.
 #' @export
-#'
+#' @examples 
+#' data(scExample, package = "singleCellTK")
+#' sce <- expSetDataTag(sce, "raw", "counts")
+#' sce <- expDeleteDataTag(sce, "counts")
 expDeleteDataTag <- function(inSCE, assay){
   if(!is.null(S4Vectors::metadata(inSCE)$assayType)){
     tbl <- S4Vectors::metadata(inSCE)$assayType
@@ -23,7 +26,9 @@ expDeleteDataTag <- function(inSCE, assay){
 #' @param assays Specify name(s) \code{character()} of data item(s) against which the tag should be set.
 #' @return The input \code{SingleCellExperiment} object with tag information stored in the metadata slot.
 #' @export
-#'
+#' @examples 
+#' data(scExample, package = "singleCellTK")
+#' sce <- expSetDataTag(sce, "raw", "counts")
 expSetDataTag <- function(inSCE, assayType, assays){
   tbl <- NULL
   if(is.null(S4Vectors::metadata(inSCE)$assayType)){
@@ -57,7 +62,10 @@ expSetDataTag <- function(inSCE, assayType, assays){
 #' @importFrom tibble tibble
 #' @importFrom rlang .data
 #' @export
-#'
+#' @examples 
+#' data(scExample, package = "singleCellTK")
+#' sce <- expSetDataTag(sce, "raw", "counts")
+#' tags <- expTaggedData(sce)
 expTaggedData <- function(inSCE, tags = NULL, redDims = FALSE, recommended = NULL, showTags = TRUE){
   namedList <- NULL
   tbl <- S4Vectors::metadata(inSCE)$assayType 
@@ -100,6 +108,10 @@ setClassUnion("CharacterOrNullOrMissing", c("character", "NULL", "missing"))
 #' @param value An input matrix-like value to store in the SCE object.
 #' @return A \code{SingleCellExperiment} object containing the newly stored data.
 #' @export
+#' @examples 
+#' data(scExample, package = "singleCellTK")
+#' mat <- expData(sce, "counts")
+#' expData(sce, "counts", tag = "raw") <- mat
 setGeneric(name = "expData<-",
            function(inSCE, assayName, tag = NULL, altExp = FALSE, value)
              SummarizedExperiment::`assay<-`(x = inSCE,
@@ -116,13 +128,17 @@ setGeneric(name = "expData<-",
 #' @param value An input matrix-like value to store in the SCE object.
 #' @return A \code{SingleCellExperiment} object containing the newly stored data.
 #' @export
+#' @examples 
+#' data(scExample, package = "singleCellTK")
+#' mat <- expData(sce, "counts")
+#' expData(sce, "counts", tag = "raw") <- mat
 setMethod(f = "expData<-",
           signature = signature(
             inSCE = "ANY",
             assayName = "character",
             tag = "CharacterOrNullOrMissing",
             altExp = "logical"),
-          definition = function(inSCE,  assayName, tag = NULL, altExp = FALSE, value){
+          definition = function(inSCE, assayName, tag = NULL, altExp = FALSE, value){
             if(!is.null(value)){
               if(is.null(tag)
                  || missing(tag)){
@@ -147,8 +163,12 @@ setMethod(f = "expData<-",
               )
             }
             if(altExp){
-              altExp(inSCE, assayName) <- SingleCellExperiment(list(counts = value))
-             SummarizedExperiment::assayNames(altExp(inSCE, assayName)) <- assayName
+              if (inherits(value, "SummarizedExperiment")) {
+                altExp(inSCE, assayName) <- value
+              } else {
+                altExp(inSCE, assayName) <- SingleCellExperiment(list(counts = value))
+                SummarizedExperiment::assayNames(altExp(inSCE, assayName)) <- assayName
+              }
             }
             else{
                 inSCE <- methods::callNextMethod()
@@ -163,6 +183,9 @@ setMethod(f = "expData<-",
 #' @param assayName Specify the name of the data item to retrieve.
 #' @return Specified data item.
 #' @export
+#' @examples 
+#' data(scExample, package = "singleCellTK")
+#' mat <- expData(sce, "counts")
 setGeneric(name = "expData",
            function(inSCE, assayName)
              SummarizedExperiment::assay(x = inSCE,
@@ -175,6 +198,9 @@ setGeneric(name = "expData",
 #' @param assayName Specify the name of the data item to retrieve.
 #' @return Specified data item.
 #' @export
+#' @examples 
+#' data(scExample, package = "singleCellTK")
+#' mat <- expData(sce, "counts")
 setMethod(f = "expData",
           signature = signature(inSCE = "ANY", assayName = "character"),
           definition = function(inSCE,  assayName){
@@ -205,6 +231,9 @@ setMethod(f = "expData",
 #' @param inSCE Input \code{SingleCellExperiment} object.
 #' @return A combined \code{vector} of \code{assayNames}, \code{altExpNames} and \code{reducedDimNames}.
 #' @export
+#' @examples 
+#' data(scExample, package = "singleCellTK")
+#' expDataNames(sce)
 setGeneric(name = "expDataNames",
            function(inSCE)
              SummarizedExperiment::assayNames(x = inSCE)
@@ -215,6 +244,9 @@ setGeneric(name = "expDataNames",
 #' @param inSCE Input \code{SingleCellExperiment} object.
 #' @return A combined \code{vector} of \code{assayNames}, \code{altExpNames} and \code{reducedDimNames}.
 #' @export
+#' @examples 
+#' data(scExample, package = "singleCellTK")
+#' expDataNames(sce)
 setMethod(f = "expDataNames",
           signature = signature(inSCE = "ANY"),
           definition = function(inSCE){

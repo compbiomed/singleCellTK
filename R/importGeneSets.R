@@ -473,7 +473,8 @@ importGeneSetsFromMSigDB <- function(inSCE, categoryIDs,
 #'                          collectionName = "human_mito",
 #'                          by = "rownames")
 #' @export
-importMitoGeneSet <- function(inSCE, reference, id, by, collectionName) {
+importMitoGeneSet <- function(inSCE, reference = "human", id = "ensembl", 
+                              by = "rownames", collectionName = "human_mito") {
 
   if (!id %in% c("symbol", "entrez", "ensembl", "ensemblTranscriptID")) {
     stop("`id` should be one of 'symbol', 'entrez', 'ensembl' or 'ensemblTranscriptID'")

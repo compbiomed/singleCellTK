@@ -70,6 +70,7 @@ plotDEGViolin <- function(inSCE, useResult, threshP = FALSE, labelBy = NULL,
   result <- S4Vectors::metadata(inSCE)$diffExp[[useResult]]
   deg <- result$result
   useAssay <- result$useAssay
+  useReducedDim <- result$useReducedDim
   deg <- deg[order(deg$FDR),]
   geneToPlot <- deg[seq_len(min(nrow(deg), nrow*ncol)), "Gene"]
   groupName1 <- result$groupNames[1]
@@ -78,13 +79,25 @@ plotDEGViolin <- function(inSCE, useResult, threshP = FALSE, labelBy = NULL,
   groupName2 <- result$groupNames[2]
   ix2 <- result$select$ix2
   cells2 <- colnames(inSCE)[ix2]
-  if(!is.null(labelBy)){
-    replGeneName <- SummarizedExperiment::rowData(inSCE[geneToPlot,])[[labelBy]]
+  if (!is.null(useAssay)) {
+    if(!is.null(labelBy)){
+      replGeneName <- SummarizedExperiment::rowData(inSCE[geneToPlot,])[[labelBy]]
+    } else {
+      replGeneName <- geneToPlot
+    }
+    expres <- expData(inSCE[geneToPlot, c(cells1, cells2)],
+                      useAssay)
+    useMat <- useAssay
   } else {
+    if(!is.null(labelBy)){
+      warning("Analysis performed on reducedDim. Cannot use rowData for ", 
+              "labelBy. Ignored.")
+    }
     replGeneName <- geneToPlot
+    expres <- t(expData(inSCE[, c(cells1, cells2)], useReducedDim))[geneToPlot,]
+    useMat <- useReducedDim
   }
-  expres <- expData(inSCE[geneToPlot, c(cells1, cells2)],
-                                        useAssay)
+  
   if(!is.matrix(expres)){
     expres <- as.matrix(expres)
   }
@@ -110,11 +123,11 @@ plotDEGViolin <- function(inSCE, useResult, threshP = FALSE, labelBy = NULL,
   }
   flatDat <- methods::as(sca, "data.table")
   flatDat$primerid <- factor(flatDat$primerid, levels = replGeneName)
-  names(flatDat)[5] <- useAssay
+  names(flatDat)[5] <- useMat
   # Plot
   violinplot <- ggplot2::ggplot(flatDat,
                                 ggplot2::aes_string(x = 'condition',
-                                                    y = useAssay,
+                                                    y = useMat,
                                                     color = 'condition')) +
     ggplot2::geom_jitter() +
     ggplot2::facet_wrap(~primerid, scale = "free_y",
@@ -166,6 +179,7 @@ plotDEGRegression <- function(inSCE, useResult, threshP = FALSE, labelBy = NULL,
   # Extract
   result <- S4Vectors::metadata(inSCE)$diffExp[[useResult]]
   deg <- result$result
+  useReducedDim <- result$useReducedDim
   useAssay <- result$useAssay
   geneToPlot <- deg[seq_len(min(nrow(deg), nrow*ncol)), "Gene"]
   groupName1 <- result$groupNames[1]
@@ -174,13 +188,24 @@ plotDEGRegression <- function(inSCE, useResult, threshP = FALSE, labelBy = NULL,
   groupName2 <- result$groupNames[2]
   ix2 <- result$select$ix2
   cells2 <- colnames(inSCE)[ix2]
-  if(!is.null(labelBy)){
-    replGeneName <- SummarizedExperiment::rowData(inSCE[geneToPlot,])[[labelBy]]
+  if (!is.null(useAssay)) {
+    if(!is.null(labelBy)){
+      replGeneName <- SummarizedExperiment::rowData(inSCE[geneToPlot,])[[labelBy]]
+    } else {
+      replGeneName <- geneToPlot
+    }
+    expres <- expData(inSCE[geneToPlot, c(cells1, cells2)],
+                      useAssay)
+    useMat <- useAssay
   } else {
+    if (!is.null(labelBy)) {
+      warning("Analysis performed on reducedDim. Cannot use rowData for ", 
+              "labelBy. Ignored.")
+    }
     replGeneName <- geneToPlot
+    expres <- t(expData(inSCE[,c(cells1, cells2)], useReducedDim))[geneToPlot,]
+    useMat <- useReducedDim
   }
-  expres <- expData(inSCE[geneToPlot, c(cells1, cells2)],
-                                        useAssay)
   if(!is.matrix(expres)){
     expres <- as.matrix(expres)
   }
@@ -212,13 +237,13 @@ plotDEGRegression <- function(inSCE, useResult, threshP = FALSE, labelBy = NULL,
   }
   flatDat <- methods::as(sca, "data.table")
   flatDat$primerid <- factor(flatDat$primerid, levels = replGeneName)
-  names(flatDat)[6] <- useAssay
+  names(flatDat)[6] <- useMat
   # Calculate
   resData <- NULL
   for (i in unique(flatDat$primerid)){
     resdf <- flatDat[flatDat$primerid == i, ]
     resdf$lmPred <- stats::lm(
-      stats::as.formula(paste0(useAssay, "~cngeneson+", 'condition')),
+      stats::as.formula(paste0(useMat, "~cngeneson+", 'condition')),
       data = flatDat[flatDat$primerid == i, ])$fitted
     if (is.null(resData)){
       resData <- resdf
@@ -229,7 +254,7 @@ plotDEGRegression <- function(inSCE, useResult, threshP = FALSE, labelBy = NULL,
   # Plot
   ggbase <- ggplot2::ggplot(resData, ggplot2::aes_string(
     x = 'condition',
-    y = useAssay,
+    y = useMat,
     color = 'condition')) +
     ggplot2::geom_jitter() +
     ggplot2::facet_wrap(~primerid, scale = "free_y",
@@ -265,6 +290,14 @@ plotDEGRegression <- function(inSCE, useResult, threshP = FALSE, labelBy = NULL,
 #' log2FC larger than this value. Default \code{0.25}.
 #' @param fdrThreshold numeric. Only fetch DEGs with FDR value smaller than this
 #' value. Default \code{0.05}.
+#' @param minGroup1MeanExp numeric. Only fetch DEGs with mean expression in 
+#' group1 greater then this value. Default \code{NULL}.
+#' @param maxGroup2MeanExp numeric. Only fetch DEGs with mean expression in 
+#' group2 less then this value. Default \code{NULL}.
+#' @param minGroup1ExprPerc numeric. Only fetch DEGs expressed in greater then 
+#' this fraction of cells in group1. Default \code{NULL}.
+#' @param maxGroup2ExprPerc numeric. Only fetch DEGs expressed in less then this 
+#' fraction of cells in group2. Default \code{NULL}.
 #' @return A \code{data.frame} object of the top DEGs, with variables of 
 #' \code{Gene}, \code{Log2_FC}, \code{Pvalue}, and \code{FDR}.
 #' @export
@@ -277,7 +310,9 @@ plotDEGRegression <- function(inSCE, useResult, threshP = FALSE, labelBy = NULL,
 #'                    analysisName = "w.aVSb")
 #' getDEGTopTable(sce.w, "w.aVSb")
 getDEGTopTable <- function(inSCE, useResult, labelBy = NULL, onlyPos = FALSE,
-                        log2fcThreshold = 0.25, fdrThreshold = 0.05){
+                        log2fcThreshold = 0.25, fdrThreshold = 0.05,
+                        minGroup1MeanExp = NULL, maxGroup2MeanExp = NULL, 
+                        minGroup1ExprPerc = NULL, maxGroup2ExprPerc = NULL){
   # Check
   .checkDiffExpResultExists(inSCE, useResult, labelBy)
   # Extract
@@ -287,15 +322,9 @@ getDEGTopTable <- function(inSCE, useResult, labelBy = NULL, onlyPos = FALSE,
     result$Gene <- SummarizedExperiment::rowData(inSCE[genes,])[[labelBy]]
   }
   # Filter
-  if (isTRUE(onlyPos)) {
-    result <- result[result$Log2_FC > 0,]
-  }
-  if (!is.null(log2fcThreshold)) {
-    result <- result[abs(result$Log2_FC) > log2fcThreshold,]
-  }
-  if (!is.null(fdrThreshold)) {
-    result <- result[result$FDR < fdrThreshold,]
-  }
+  result <- .filterDETable(result, onlyPos, log2fcThreshold, fdrThreshold, 
+                           minGroup1MeanExp, maxGroup2MeanExp, 
+                           minGroup1ExprPerc, maxGroup2ExprPerc)
   return(result)
 }
 
@@ -320,6 +349,14 @@ getDEGTopTable <- function(inSCE, useResult, labelBy = NULL, onlyPos = FALSE,
 #' log2FC larger than this value. Default \code{0.25}.
 #' @param fdrThreshold numeric. Only plot DEGs with FDR value smaller than this
 #' value. Default \code{0.05}.
+#' @param minGroup1MeanExp numeric. Only plot DEGs with mean expression in 
+#' group1 greater then this value. Default \code{NULL}.
+#' @param maxGroup2MeanExp numeric. Only plot DEGs with mean expression in 
+#' group2 less then this value. Default \code{NULL}.
+#' @param minGroup1ExprPerc numeric. Only plot DEGs expressed in greater then 
+#' this fraction of cells in group1. Default \code{NULL}.
+#' @param maxGroup2ExprPerc numeric. Only plot DEGs expressed in less then this 
+#' fraction of cells in group2. Default \code{NULL}.
 #' @param useAssay character. A string specifying an assay of expression value
 #' to plot. By default the assay used for \code{runMAST()} will be used.
 #' Default \code{NULL}.
@@ -358,11 +395,13 @@ getDEGTopTable <- function(inSCE, useResult, labelBy = NULL, onlyPos = FALSE,
 #'                    groupName1 = "w.alpha", groupName2 = "w.beta",
 #'                    analysisName = "w.aVSb")
 #' plotDEGHeatmap(sce.w, "w.aVSb")
-#' @return A \code{ComplexHeatmap::Heatmap} object
+#' @return A \code{\link[ggplot2]{ggplot}} object
 #' @export
 #' @author Yichen Wang
 plotDEGHeatmap <- function(inSCE, useResult, doLog = FALSE, onlyPos = FALSE,
                            log2fcThreshold = 0.25, fdrThreshold = 0.05,
+                           minGroup1MeanExp = NULL, maxGroup2MeanExp = NULL, 
+                           minGroup1ExprPerc = NULL, maxGroup2ExprPerc = NULL,
                            useAssay = NULL, featureAnnotations = NULL,
                            cellAnnotations = NULL,
                            featureAnnotationColor = NULL,
@@ -381,26 +420,49 @@ plotDEGHeatmap <- function(inSCE, useResult, doLog = FALSE, onlyPos = FALSE,
   }
   # Extract
   result <- S4Vectors::metadata(inSCE)$diffExp[[useResult]]
-  if(is.null(useAssay)){
-    useAssay <- result$useAssay
-  } else {
-    if(useAssay != result$useAssay){
-      warning("`useAssay` is different to the one used for `runMAST()`")
+  if (!is.null(result$useReducedDim)) {
+    # Analysis performed with reducedDim, cannot set useAssay in plotDEGHeatmap
+    if (!is.null(useAssay)) {
+      warning("Analysis performed on reducedDim, cannot set `useAssay`, ", 
+              "ignored.")
     }
+    useAssay <- NULL
+    useReducedDim <- result$useReducedDim
+  } else {
+    if(is.null(useAssay)){
+      useAssay <- result$useAssay
+    }
+    useReducedDim <- NULL
   }
+  
   ix1 <- result$select$ix1
   ix2 <- result$select$ix2
   deg.filtered <- getDEGTopTable(inSCE, useResult = useResult, labelBy = NULL, 
                                  onlyPos = onlyPos, 
                                  log2fcThreshold = log2fcThreshold, 
-                                 fdrThreshold = fdrThreshold)
+                                 fdrThreshold = fdrThreshold,
+                                 minGroup1MeanExp, maxGroup2MeanExp, 
+                                 minGroup1ExprPerc, maxGroup2ExprPerc)
   if(dim(deg.filtered)[1] <= 1){
     stop('Too few genes that pass filtration, unable to plot')
   }
-  gene.ix <- rownames(inSCE) %in% deg.filtered$Gene
+  # Not directly using deg.filtered$Gene because rownames might be deduplicated
+  # to avoid error when performing DEG.
+  if (!is.null(useReducedDim)) {
+    mat <- t(expData(inSCE, useReducedDim))
+    assayList <- list(mat)
+    names(assayList) <- useReducedDim
+    tmpSCE <- SingleCellExperiment::SingleCellExperiment(assays = assayList)
+    SummarizedExperiment::colData(tmpSCE) <- SummarizedExperiment::colData(inSCE)
+    assayName <- useReducedDim
+  } else {
+    tmpSCE <- inSCE
+    assayName <- useAssay
+  }
+  gene.ix <- rownames(tmpSCE) %in% deg.filtered$Gene
   cell.ix <- which(ix1 | ix2)
-  allGenes <- rownames(inSCE)[gene.ix]
-  allCells <- colnames(inSCE)[cell.ix]
+  allGenes <- rownames(tmpSCE)[gene.ix]
+  allCells <- colnames(tmpSCE)[cell.ix]
 
   # Annotation organization
   ## Cells
@@ -441,8 +503,8 @@ plotDEGHeatmap <- function(inSCE, useResult, doLog = FALSE, onlyPos = FALSE,
   regulation <- vector()
   genes.up <- deg.filtered[deg.filtered$Log2_FC > 0, "Gene"]
   genes.down <- deg.filtered[deg.filtered$Log2_FC < 0, "Gene"]
-  regulation[rownames(inSCE) %in% genes.up] <- 'up'
-  regulation[rownames(inSCE) %in% genes.down] <- 'down'
+  regulation[rownames(tmpSCE) %in% genes.up] <- 'up'
+  regulation[rownames(tmpSCE) %in% genes.down] <- 'down'
   regulation <- factor(regulation[gene.ix], levels = c('up', 'down'))
   if(!is.null(featureAnnotations)){
     if(!all(allGenes %in% rownames(featureAnnotations))){
@@ -467,7 +529,7 @@ plotDEGHeatmap <- function(inSCE, useResult, doLog = FALSE, onlyPos = FALSE,
     featureAnnotationColor <- list(regulation = lCol)
   }
   # Plot
-  hm <- plotSCEHeatmap(inSCE = inSCE, useAssay = useAssay, doLog = doLog,
+  hm <- plotSCEHeatmap(inSCE = tmpSCE, useAssay = assayName, doLog = doLog,
                        featureIndex = gene.ix, cellIndex = cell.ix,
                        featureAnnotations = featureAnnotations,
                        cellAnnotations = cellAnnotations,
@@ -476,7 +538,7 @@ plotDEGHeatmap <- function(inSCE, useResult, doLog = FALSE, onlyPos = FALSE,
                        featureAnnotationColor = featureAnnotationColor,
                        cellAnnotationColor = cellAnnotationColor,
                        rowSplitBy = rowSplitBy, colSplitBy = colSplitBy,
-                       title = title)
+                       title = title, ...)
   return(hm)
 }
 

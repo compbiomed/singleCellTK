@@ -1,0 +1,63 @@
+---
+title: "Seurat Scale Data"
+author: "`r params$authors`"
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+params:
+  subtitle: !r NULL
+  authors: !r NULL
+  sce: !r NULL
+  outputPath: !r NULL
+  showSession: TRUE
+  pdf: TRUE
+  forceRun: FALSE
+output:
+  html_document:
+    toc: yes
+    toc_float: yes
+    number_sections: yes
+    theme: cosmo
+    code_folding: hide
+    self_contained: false
+  pdf_document:
+    toc: yes
+subtitle: "`r params$subtitle`"
+editor_options:
+  chunk_output_type: console
+---
+```{r, message=FALSE, warning=FALSE}
+library(Seurat)
+library(dplyr)
+library(cowplot)
+library(RColorBrewer)
+library(ggplot2)
+library(knitr)
+library(kableExtra)
+library(SingleCellExperiment)
+library(scater)
+library(gridExtra)
+library(grid)
+library(ggpubr)
+library(patchwork)
+library(singleCellTK)
+```
+
+```{r, echo=FALSE, results='asis', warning=FALSE, message=FALSE}
+if(!exists("headingSD")) headingSD <- "#"
+
+cat(headingSD, " Scale Data {}\n\n")
+```
+
+Standardizing gene expression values is considered necessary to ensure that dimensionality reduction tools produce unbiased results due to high variance of some features. For this purpose, Seurat performs a *z-score* scaling on the input matrix and standardizes (centers and scales) the expression values of the variable features identified previously before they are input to the downstream methods.  
+
+> The variable features identified previously were scaled using *z-score* scaling method and the output expression values were clipped to maximum and minimum value of 10 & -10 respectively.
+
+```{r, warning=FALSE, eval=is.null(metadata(data)$seurat$scaledAssay) || forceRun}
+data <- runSeuratScaleData(inSCE = data, model = "linear", verbose = FALSE)
+```
+
+```{r, echo=FALSE, include=FALSE}
+scaleParams <- list(
+  model = "linear", 
+  verbose = FALSE)
+metadata(data)$seurat$sctk$report$scaleParams <- scaleParams
+```

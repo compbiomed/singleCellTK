@@ -98,13 +98,63 @@ diffAbundanceFET <- function(inSCE, cluster, variable, control, case,
   res <- data.frame(Cluster=cluster.label, res,
                     FDR=stats::p.adjust(res[,"Pvalue"], 'fdr'),
                     check.names=FALSE)
-  if (!"diffAbundanceFET" %in% names(S4Vectors::metadata(inSCE))) {
-    S4Vectors::metadata(inSCE)$diffAbundanceFET <- list()
-  }
-  S4Vectors::metadata(inSCE)$diffAbundanceFET[[analysisName]] <- res
-
+  getDiffAbundanceResults(inSCE, analysisName = analysisName) <- res
   return(inSCE)
 }
+
+#' Get/Set diffAbundanceFET result table
+#' @rdname getDiffAbundanceResults
+#' @param x A \code{\link[SingleCellExperiment]{SingleCellExperiment}}
+#' object.
+#' @param analysisName A single character string specifying an analysis 
+#' performed with \code{\link{diffAbundanceFET}}
+#' @param value The output table of \code{\link{diffAbundanceFET}}
+#' @return The differential abundance table for getter method, or update the SCE
+#' object with new result for setter method. 
+#' @export
+#' @examples 
+#' data("mouseBrainSubsetSCE", package = "singleCellTK")
+#' mouseBrainSubsetSCE <- diffAbundanceFET(inSCE = mouseBrainSubsetSCE,
+#'                                                 cluster = "tissue",
+#'                                                 variable = "level1class",
+#'                                                 case = "oligodendrocytes",
+#'                                                 control = "microglia",
+#'                                                 analysisName = "diffAbund")
+#' result <- getDiffAbundanceResults(mouseBrainSubsetSCE, "diffAbund")
+setGeneric("getDiffAbundanceResults", signature = "x",
+           function(x, analysisName) {
+             standardGeneric("getDiffAbundanceResults")
+           }
+)
+
+#' @rdname getDiffAbundanceResults
+#' @export
+setMethod("getDiffAbundanceResults", signature(x = "SingleCellExperiment"), 
+          function(x, analysisName) {
+  result.names <- names(S4Vectors::metadata(x)$sctk$diffAbundanceFET)
+  if(!analysisName %in% result.names) {
+    stop("The analysis '", analysisName, "' was not found in the results ", 
+         "for tool 'diffAbundanceFET'")
+  }
+  
+  results <- S4Vectors::metadata(x)$sctk$diffAbundanceFET[[analysisName]]
+  return(results)
+})
+
+#' @rdname getDiffAbundanceResults
+#' @export
+setGeneric("getDiffAbundanceResults<-", function(x, analysisName, value) {
+  standardGeneric("getDiffAbundanceResults<-")
+  })
+
+#' @rdname getDiffAbundanceResults
+#' @export
+setReplaceMethod("getDiffAbundanceResults", 
+                 signature(x = "SingleCellExperiment"), 
+                 function(x, analysisName, value) {
+  S4Vectors::metadata(x)$sctk$diffAbundanceFET[[analysisName]] <- value
+  return(x)
+})
 
 #' Plot the differential Abundance
 #' @details This function will visualize the differential abundance in two given
@@ -116,14 +166,20 @@ diffAbundanceFET <- function(inSCE, cluster, variable, control, case,
 #' cluster label in \code{\link{colData}}.
 #' @param variable A single \code{character}, specifying the name to store the
 #' phenotype labels in \code{\link{colData}}.
-#' @return A \code{list} with 4 \code{ggplot} objects.
+#' @param combinePlot Must be either "all" or "none". "all" will combine all 
+#' plots into a single \code{\link[ggplot2]{ggplot}} object. Default 
+#' \code{"all"}.
+#' @return When \code{combinePlot = "none"}, a \code{list} with 4 
+#' \code{\link[ggplot2]{ggplot}} objects; when \code{combinePlot = "all"}, a 
+#' single \code{\link[ggplot2]{ggplot}} object with for subplots. 
 #' @export
 #' @examples
 #' data("mouseBrainSubsetSCE", package = "singleCellTK")
 #' plotClusterAbundance(inSCE = mouseBrainSubsetSCE,
 #'                      cluster = "tissue",
 #'                      variable = "level1class")
-plotClusterAbundance <- function(inSCE, cluster, variable) {
+plotClusterAbundance <- function(inSCE, cluster, variable, 
+                                 combinePlot = c("all", "none")) {
   if (!inherits(inSCE, "SingleCellExperiment")) {
     stop("'inSCE' should be a SingleCellExperiment object.")
   }
@@ -135,13 +191,14 @@ plotClusterAbundance <- function(inSCE, cluster, variable) {
       !variable %in% names(SummarizedExperiment::colData(inSCE))) {
     stop("Argument 'variable' should be a column name in colData(inSCE).")
   }
+  combinePlot <- match.arg(combinePlot)
   cluster <- SummarizedExperiment::colData(inSCE)[, cluster]
   color_palette <- distinctColors(length(unique(cluster)))
 
   label <- SummarizedExperiment::colData(inSCE)[, variable]
 
   cluster.color <- color_palette
-  df <- data.frame(Cluster=as.factor(cluster), Sample=as.factor(label))
+    df <- data.frame(Cluster=as.factor(cluster), Sample=as.factor(label))
 
   g1 <- ggplot2::ggplot(df, ggplot2::aes_string("Cluster")) +
     ggplot2::geom_bar(ggplot2::aes_string(fill="Sample")) +
@@ -169,5 +226,11 @@ plotClusterAbundance <- function(inSCE, cluster, variable) {
     ggplot2::scale_fill_manual(values=cluster.color) +
     ggplot2::ylab("Fraction")
   g <- list(g1, g2, g3, g4)
+  if (combinePlot == "all") {
+    g <- cowplot::plot_grid(g1, g3, g2, g4, ncol = 2, 
+                            align = "hv", axis = "blr")
+  } else if (combinePlot == "none") {
+    g <- list(g1, g2, g3, g4)
+  }
   return(g)
 }

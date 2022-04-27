@@ -11,7 +11,18 @@ SingleCellTK is an R based package, allowing users to run analysis in system com
 
 [See more details on how to install R](#install-r-4-0-)   
 
-2. **singleCellTK**
+
+2. **Python environment**
+
+Additionally, singleCellTK wraps a number of useful toolkits, where some of them are Python based. To enable this part of functionality, users need to get Python (v3.x) and a set of Python packages built. The fast `pip` command can be used to easily install all the required dependencies as shown below:  
+
+```{shell pipInstall, eval=FALSE}
+pip install scipy numpy astroid six scrublet scanpy bbknn scanorama
+```
+
+[See more details for setting up Python Environment for singleCellTK](#install-python-dependencies)  
+
+3. **singleCellTK**
 
 With R successfully installed, users can now install singleCellTK to your local system. For quick start, Bioconductor users can directly install our released version with the following command:  
 
@@ -23,16 +34,6 @@ BiocManager::install("singleCellTK")
 ```
 
 [See more details about custom installation of singleCellTK](#install-singlecelltk-1)
-
-3. **Python environment**
-
-Additionally, singleCellTK wraps a number of useful toolkits, where some of them are Python based. To enable this part of functionality, users need to get Python (v3.x) and a set of Python packages built. The fast `pip` command can be used to easily install all the required dependencies as shown below:  
-
-```{shell pipInstall, eval=FALSE}
-pip install scipy numpy astroid six scrublet scanpy bbknn scanorama
-```
-
-[See more details for setting up Python Environment for singleCellTK](#install-python-dependencies)  
 
 **For users who would like to perform console interactive analysis, we strongly suggest that you have [RStudio](https://www.rstudio.com/products/rstudio/download/#download) installed.** 
 

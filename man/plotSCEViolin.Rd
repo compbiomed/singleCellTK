@@ -15,6 +15,7 @@ plotSCEViolin(
   violin = TRUE,
   boxplot = TRUE,
   dots = TRUE,
+  plotOrder = NULL,
   xlab = NULL,
   ylab = NULL,
   axisSize = 10,
@@ -68,6 +69,10 @@ Default TRUE.}
 
 \item{dots}{Boolean. If TRUE, will plot dots for each violin plot.
 Default TRUE.}
+
+\item{plotOrder}{Character vector. If set, reorders the violin plots
+in the order of the character vector when `groupBy` is set.
+Default NULL.}
 
 \item{xlab}{Character vector. Label for x-axis. Default NULL.}
 

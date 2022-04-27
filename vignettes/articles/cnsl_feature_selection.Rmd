@@ -146,7 +146,7 @@ div.offset { background-color:inherit ; border-radius: 5px; margin-left: 15px;}
   <summary>`vst`, `mean.var.plot` or `dispersion` from **Seurat** [@Butler2018][@Stuart2019] package:</summary> 
 
 ```{r "fs_seurat", eval = FALSE}
-  sce <- seuratFindHVG(inSCE = sce, useAssay = "counts", hvgMethod = "vst", hvgNumber = 2000, altExp = FALSE, verbose = TRUE)
+  sce <- runSeuratFindHVG(inSCE = sce, useAssay = "counts", hvgMethod = "vst", hvgNumber = 2000, altExp = FALSE, verbose = TRUE)
 ```
 The parameters to the above function include: <br><br>
 `inSCE`: an input `SingleCellExperiment` object <br>

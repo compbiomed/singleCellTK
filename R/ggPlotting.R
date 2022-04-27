@@ -777,6 +777,9 @@ plotSCEScatter <- function(inSCE,
 #'  Default TRUE.
 #' @param dots Boolean. If TRUE, will plot dots for each violin plot.
 #'  Default TRUE.
+#' @param plotOrder Character vector. If set, reorders the violin plots
+#'  in the order of the character vector when `groupBy` is set.
+#'  Default NULL.
 #' @param xlab Character vector. Label for x-axis. Default NULL.
 #' @param ylab Character vector. Label for y-axis. Default NULL.
 #' @param baseSize The base font size for all text. Default 12.
@@ -804,7 +807,7 @@ plotSCEScatter <- function(inSCE,
 #' @param hsize Size of horizontal line, if drawn. Default 0.5.
 #' @param hlinetype Type of horizontal line, if drawn. can be specified with either an integer or
 #'  a name (0 = blank, 1 = solid, 2 = dashed, 3 = dotted, 4 = dotdash, 5 = longdash, 6 = twodash).
-#'  Default 1. 
+#'  Default 1.
 #' @param vcutoff Adds a vertical line with the x-intercept at given value. Default NULL.
 #' @param vcolor Character. A color available from `colors()`.
 #'  Controls the color of the vertical cutoff line, if drawn.
@@ -812,7 +815,7 @@ plotSCEScatter <- function(inSCE,
 #' @param vsize Size of vertical line, if drawn. Default 0.5.
 #' @param vlinetype Type of vertical line, if drawn. can be specified with either an integer or
 #'  a name (0 = blank, 1 = solid, 2 = dashed, 3 = dotted, 4 = dotdash, 5 = longdash, 6 = twodash).
-#'  Default 1. 
+#'  Default 1.
 #' @return a ggplot of the reduced dimensions.
 #' @importFrom dplyr group_by
 #' @importFrom dplyr summarize
@@ -822,6 +825,7 @@ plotSCEScatter <- function(inSCE,
                       violin = TRUE,
                       boxplot = TRUE,
                       dots = TRUE,
+                      plotOrder = NULL,
                       xlab = NULL,
                       ylab = NULL,
                       baseSize = 12,
@@ -847,7 +851,19 @@ plotSCEScatter <- function(inSCE,
   if (is.null(groupBy)) {
     groupBy <- rep("Sample", length(y))
   }
-  groupBy <- factor(groupBy, levels = unique(groupBy))
+
+
+  if(!is.factor(groupBy)){
+    if(is.null(plotOrder)){
+      plotOrder = unique(groupBy)
+    }
+    groupBy <- factor(groupBy, levels = plotOrder)
+  }else{
+    if(!is.null(plotOrder)){
+      groupBy <- factor(groupBy, levels = plotOrder)
+    }
+  }
+
   df <- data.frame(groupBy = groupBy, y = y)
 
   p <- ggplot2::ggplot(df) +
@@ -983,6 +999,9 @@ plotSCEScatter <- function(inSCE,
 #'  Default TRUE.
 #' @param dots Boolean. If TRUE, will plot dots for each violin plot.
 #'  Default TRUE.
+#' @param plotOrder Character vector. If set, reorders the violin plots
+#'  in the order of the character vector when `groupBy` is set.
+#'  Default NULL.
 #' @param xlab Character vector. Label for x-axis. Default NULL.
 #' @param ylab Character vector. Label for y-axis. Default NULL.
 #' @param baseSize The base font size for all text. Default 12.
@@ -1008,7 +1027,7 @@ plotSCEScatter <- function(inSCE,
 #' @param hsize Size of horizontal line, if drawn. Default 0.5.
 #' @param hlinetype Type of horizontal line, if drawn. can be specified with either an integer or
 #'  a name (0 = blank, 1 = solid, 2 = dashed, 3 = dotted, 4 = dotdash, 5 = longdash, 6 = twodash).
-#'  Default 1. 
+#'  Default 1.
 #' @param vcutoff Adds a vertical line with the x-intercept at given value. Default NULL.
 #' @param vcolor Character. A color available from `colors()`.
 #'  Controls the color of the vertical cutoff line, if drawn.
@@ -1016,7 +1035,7 @@ plotSCEScatter <- function(inSCE,
 #' @param vsize Size of vertical line, if drawn. Default 0.5.
 #' @param vlinetype Type of vertical line, if drawn. can be specified with either an integer or
 #'  a name (0 = blank, 1 = solid, 2 = dashed, 3 = dotted, 4 = dotdash, 5 = longdash, 6 = twodash).
-#'  Default 1. 
+#'  Default 1.
 #' @param combinePlot Must be either "all", "sample", or "none". "all" will combine all plots into a single
 #' .ggplot object, while "sample" will output a list of plots separated by sample. Default "none".
 #' @param plotLabels labels to each plot. If set to "default", will use the name of the samples
@@ -1036,6 +1055,7 @@ plotSCEViolinColData <- function(inSCE,
                                  violin = TRUE,
                                  boxplot = TRUE,
                                  dots = TRUE,
+                                 plotOrder = NULL,
                                  xlab = NULL,
                                  ylab = NULL,
                                  baseSize = 12,
@@ -1114,6 +1134,7 @@ plotSCEViolinColData <- function(inSCE,
       violin = violin,
       boxplot = boxplot,
       dots = dots,
+      plotOrder = plotOrder,
       xlab = xlab,
       ylab = ylab,
       baseSize=baseSize,
@@ -1180,6 +1201,9 @@ plotSCEViolinColData <- function(inSCE,
 #'  Default TRUE.
 #' @param dots Boolean. If TRUE, will plot dots for each violin plot.
 #'  Default TRUE.
+#' @param plotOrder Character vector. If set, reorders the violin plots
+#'  in the order of the character vector when `groupBy` is set.
+#'  Default NULL.
 #' @param xlab Character vector. Label for x-axis. Default NULL.
 #' @param ylab Character vector. Label for y-axis. Default NULL.
 #' @param axisSize Size of x/y-axis ticks. Default 10.
@@ -1201,7 +1225,7 @@ plotSCEViolinColData <- function(inSCE,
 #' @param hsize Size of horizontal line, if drawn. Default 0.5.
 #' @param hlinetype Type of horizontal line, if drawn. can be specified with either an integer or
 #'  a name (0 = blank, 1 = solid, 2 = dashed, 3 = dotted, 4 = dotdash, 5 = longdash, 6 = twodash).
-#'  Default 1. 
+#'  Default 1.
 #' @param vcutoff Adds a vertical line with the x-intercept at given value. Default NULL.
 #' @param vcolor Character. A color available from `colors()`.
 #'  Controls the color of the vertical cutoff line, if drawn.
@@ -1209,7 +1233,7 @@ plotSCEViolinColData <- function(inSCE,
 #' @param vsize Size of vertical line, if drawn. Default 0.5.
 #' @param vlinetype Type of vertical line, if drawn. can be specified with either an integer or
 #'  a name (0 = blank, 1 = solid, 2 = dashed, 3 = dotted, 4 = dotdash, 5 = longdash, 6 = twodash).
-#'  Default 1. 
+#'  Default 1.
 #' @param combinePlot Must be either "all", "sample", or "none". "all" will combine all plots into a single
 #' .ggplot object, while "sample" will output a list of plots separated by sample. Default "none".
 #' @param plotLabels labels to each plot. If set to "default", will use the name of the samples
@@ -1232,6 +1256,7 @@ plotSCEViolinAssayData <- function(inSCE,
                                    violin = TRUE,
                                    boxplot = TRUE,
                                    dots = TRUE,
+                                   plotOrder = NULL,
                                    xlab = NULL,
                                    ylab = NULL,
                                    axisSize = 10,
@@ -1320,6 +1345,7 @@ plotSCEViolinAssayData <- function(inSCE,
       violin = violin,
       boxplot = boxplot,
       dots = dots,
+      plotOrder = plotOrder,
       xlab = xlab,
       ylab = ylab,
       axisSize = axisSize,
@@ -1394,6 +1420,9 @@ plotSCEViolinAssayData <- function(inSCE,
 #'  Default TRUE.
 #' @param dots Boolean. If TRUE, will plot dots for each violin plot.
 #'  Default TRUE.
+#' @param plotOrder Character vector. If set, reorders the violin plots
+#'  in the order of the character vector when `groupBy` is set.
+#'  Default NULL.
 #' @param xlab Character vector. Label for x-axis. Default NULL.
 #' @param ylab Character vector. Label for y-axis. Default NULL.
 #' @param axisSize Size of x/y-axis ticks. Default 10.
@@ -1415,7 +1444,7 @@ plotSCEViolinAssayData <- function(inSCE,
 #' @param hsize Size of horizontal line, if drawn. Default 0.5.
 #' @param hlinetype Type of horizontal line, if drawn. can be specified with either an integer or
 #'  a name (0 = blank, 1 = solid, 2 = dashed, 3 = dotted, 4 = dotdash, 5 = longdash, 6 = twodash).
-#'  Default 1. 
+#'  Default 1.
 #' @param vcutoff Adds a vertical line with the x-intercept at given value. Default NULL.
 #' @param vcolor Character. A color available from `colors()`.
 #'  Controls the color of the vertical cutoff line, if drawn.
@@ -1423,7 +1452,7 @@ plotSCEViolinAssayData <- function(inSCE,
 #' @param vsize Size of vertical line, if drawn. Default 0.5.
 #' @param vlinetype Type of vertical line, if drawn. can be specified with either an integer or
 #'  a name (0 = blank, 1 = solid, 2 = dashed, 3 = dotted, 4 = dotdash, 5 = longdash, 6 = twodash).
-#'  Default 1. 
+#'  Default 1.
 #' @param combinePlot Must be either "all", "sample", or "none". "all" will combine all plots into a single
 #' .ggplot object, while "sample" will output a list of plots separated by sample. Default "none".
 #' @param plotLabels labels to each plot. If set to "default", will use the name of the samples
@@ -1446,6 +1475,7 @@ plotSCEViolin <- function(inSCE,
                           violin = TRUE,
                           boxplot = TRUE,
                           dots = TRUE,
+                          plotOrder = NULL,
                           xlab = NULL,
                           ylab = NULL,
                           axisSize = 10,
@@ -1540,6 +1570,7 @@ plotSCEViolin <- function(inSCE,
             violin = violin,
             boxplot = boxplot,
             dots = dots,
+            plotOrder = plotOrder,
             xlab = xlab,
             ylab = ylab,
             axisSize = axisSize,
@@ -2911,7 +2942,7 @@ setSCTKDisplayRow <- function(inSCE,
   return(scaleFactor)
 }
 
-.ggAddLine <- function(plot, 
+.ggAddLine <- function(plot,
                        hcutoff = NULL,
                        vcutoff = NULL,
                        hcolor = "red",

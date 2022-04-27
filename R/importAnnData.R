@@ -44,7 +44,7 @@
     tryCatch({
       SingleCellExperiment::reducedDims(sce)[[obsm_name]] <- reticulate::py_to_r(anndata$obsm[obsm_name])
     }, error = function(x){
-      error_message <- paste0("Warning: unable to add '",obsm_name,"' from .obsm AnnData slot to SCE metadata. Skipping. ")
+      error_message <- paste0("Warning: unable to add '",obsm_name,"' from .obsm AnnData slot to SCE reducedDims. Skipping. ")
       message(error_message)
     })
   }

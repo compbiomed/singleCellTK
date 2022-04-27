@@ -22,9 +22,8 @@ csl: ieee.csl
 ## Introduction
 
 Celda is a Bayesian hierarchical model that can perform bi-clustering of features into modules and observations into subpopulations.
-The `celda` package uses the [SingleCellExperiment](https://rdrr.io/bioc/SingleCellExperiment/man/SingleCellExperiment.html) (SCE) object for management of expression matrices, feature/cell annotation data, and metadata. All of the functions have an SCE object as the first input parameter. The functions operate on a matrix stored in the assay slot of the SCE object. The parameter `useAssay` can be used to specify which matrix to use (the default is `"counts"`). Matrices can be of class `matrix` or `dgCMatrix` from the [Matrix](https://cran.r-project.org/web/packages/Matrix/index.html) package. While the primary clustering is performed with functions from the celda package, the [singleCellTK](https://bioconductor.org/packages/release/bioc/html/singleCellTK.html) package is used for some other tasks such as importing data, quality control, and marker identification with differential expression.
 
-To view detailed instructions on how to apply celda to single-cell RNA sequencing (scRNA-seq) datasets, please select 'Interactive Analysis' for using celda in shiny application or 'Console Analysis' for using this package on R console from the tabs below:
+To view instructions on how to apply Celda to single-cell RNA sequencing (scRNA-seq) datasets, please select 'Interactive Analysis' for using Celda in shiny application or 'Console Analysis' for using this package on R console from the tabs below. The detailed tutorial of Celda can be found at [Celda's official website](https://www.camplab.net/celda/).
 
 ## Workflow Guide
 
@@ -53,7 +52,7 @@ NOTE: This tutorial assumes that the data has already been uploaded via the uplo
 To identify number of feature modules, there are always five essential inputs that users should be sure with:
 
 - The data matrix to use - selection input **"Choose an Assay"**. In terms of celda analysis, SCTK always requires a full-sized feature expression data (i.e. assay) as a valid input.
-- Feature selection method - selection input **"Choose Feature Selection Method"**. Select feature selection method from 'None' , 'SeuratFindHVG' and 'Scran_modelGeneVar'. 
+- Feature selection method - selection input **"Choose Feature Selection Method"**. Select feature selection method from 'None' , 'runSeuratFindHVG' and 'Scran_modelGeneVar'. 
 - Minimum number of counts required for feature selection - integer **"Keep features with this many counts"**.
 - Minimum number of cells required for feature selection - integer **"In at least this many cells"**.
 - Number of initial feature modules - integer **"Select Number of Initial Feature Modules"**. 
@@ -69,11 +68,11 @@ div.offset { background-color:inherit ; border-radius: 5px; margin-left: 15px;}
 </style>
 <div class = "offset">
 <details>
-  <summary><b>SeuratFindHVG</b></summary>
+  <summary><b>runSeuratFindHVG</b></summary>
 ````  
 
 
-The method specific parameters for `SeuratFindHVG` includes:
+The method specific parameters for `runSeuratFindHVG` includes:
 
 - Select method for computation of highly variable genes - selection input **"Select HVG method"**. `Seurat` provides three methods for variable genes identification i.e. `vst` (uses local polynomial regression to fit a relationship between log of variance and log of mean), `mean.var.plot` (uses mean and dispersion to divide features into bins) and `dispersion` (uses highest dispersion values only). 
 - Select variable features - selection input **"Select number of variable features"**.Input the number of genes that should be identified as variable. Default is 2500.
@@ -236,7 +235,7 @@ ncol(sce)
   <summary><b>Finding number of modules</b></summary>
 ````
 
-In general, removing features with low numbers of counts across all cells is recommended to reduce computational run time. A simple selection can be performed by removing features with a minimum number of counts in a minimum number of cells using the selectFeatures function. Other than this options such as SeuratFindHVG and Scran_modelGeneVar also exist for feature selection.           
+In general, removing features with low numbers of counts across all cells is recommended to reduce computational run time. A simple selection can be performed by removing features with a minimum number of counts in a minimum number of cells using the selectFeatures function. Other than this options such as runSeuratFindHVG and Scran_modelGeneVar also exist for feature selection.           
 
 ```{R celda_module, eval=FALSE, message=FALSE, warning=FALSE, fig.align="center", cache=TRUE, results='hide'}
 

@@ -1,0 +1,184 @@
+---
+title: "Seurat Marker Selection"
+author: "`r params$authors`"
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+params:
+  subtitle: !r NULL
+  authors: !r NULL
+  sce: !r NULL
+  biological.group: !r NULL
+  phenotype.groups: !r NULL
+  selected.markers: !r NULL
+  outputPath: !r NULL
+  showSession: TRUE
+  pdf: TRUE
+  runMarkerSelection: TRUE
+  plotMarkerSelection: TRUE
+  countFeatures: 10
+output:
+  html_document:
+    toc: yes
+    toc_float: yes
+    number_sections: yes
+    theme: cosmo
+    code_folding: hide
+    self_contained: false
+  pdf_document:
+    toc: yes
+subtitle: "`r params$subtitle`"
+editor_options:
+  chunk_output_type: console
+---
+```{r, echo=FALSE}
+if(!exists("titleMarkerPlots")) titleMarkerPlots <- "Plot Features"
+if(!exists("groupTitle")) groupTitle <- "Seurat_louvain_Resolution0.3"
+if(!exists("selectedOption")) selectedOption <- "Seurat_louvain_Resolution0.3"
+if(!exists("headingMS")) headingMS <- "#"
+```
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+library(Seurat)
+library(dplyr)
+library(cowplot)
+library(RColorBrewer)
+library(ggplot2)
+library(knitr)
+library(kableExtra)
+library(SingleCellExperiment)
+library(scater)
+library(gridExtra)
+library(grid)
+library(ggpubr)
+library(patchwork)
+library(singleCellTK)
+```
+
+```{r, echo=FALSE, results='asis', warning=FALSE, message=FALSE, eval=runMarkerSelection}
+cat(headingMS, " Differential Expression (", groupTitle,")\n\n")
+cat("Gene markers that are differentially expressed between the previously computed ", selectedOption, " are identified using the Wilcoxon Rank Sum test. Criteria for the identification of these marker genes required them to be detected at a minimum percentage of 25% in either of the two groups of cells (each cluster against all others), and additionally they show 25% log-fold expression difference between two groups.")
+```
+
+```{r, warning=FALSE, message=FALSE, echo = TRUE, eval = runMarkerSelection}
+data <- runSeuratFindMarkers(data, allGroup = selectedOption, minPCT = 0.25, threshUse = 0.25, verbose = FALSE)
+data.markers <- metadata(data)$seuratMarkers
+#numTotalMarkersQ <- nrow(data.markers[data.markers$p_val_adj < 0.05, ])
+
+# write.csv(data.markers, file = paste0(outputPath, "DEGTable", groupTitle, "-", gsub(" ", "_", Sys.Date()), ".csv"), row.names = FALSE)
+top10 <- data.frame(data.markers %>% group_by(cluster1) %>% top_n(10, avg_log2FC))
+numClusters <- length(unique(data.markers$cluster1))
+
+```
+
+```{r, echo=FALSE, results='asis', warning=FALSE, message=FALSE, eval=!runMarkerSelection}
+top10 <- data.frame(gene.id = selected.markers, cluster1 = 1)
+data.markers <- data.frame(gene.id = selected.markers, cluster1 = 1)
+```
+
+```{r, echo=FALSE, results='asis', warning=FALSE, message=FALSE, eval=plotMarkerSelection}
+cat(paste0(headingMS, "# ", titleMarkerPlots," {.tabset .tabset-fade}\n\n"))
+cat("Gene plots for the top marker genes in each of the identified clusters are visualized below through a feature plot, ridge plot, violin plot, dot plot and a heatmap plot.")
+```
+
+```{r, echo=FALSE, results='asis', warning=FALSE, message=FALSE, eval=plotMarkerSelection}
+cat(paste0(headingMS, "## Feature Plot {.tabset .tabset-fade .tabset-pills -}\n\n"))
+cat("A *feature plot* visualizes the *expression level* of a particular *gene marker in all cells of the data* on a *UMAP* plot. The *feature plots* of the *top 10 marker genes* across all *clusters* are visualized below:")
+```
+
+```{r, echo=FALSE}
+figHeight <- countFeatures * 1.8
+```
+
+```{r, echo=FALSE}
+template <- paste0(headingMS, "### %s {.tabset .tabset-fade -}
+")
+template_inside <- paste0(headingMS, "#### %s {-}
+")
+space <- "
+
+"
+```
+
+```{r, echo = TRUE, warning=FALSE, message=FALSE, results = "asis", fig.height = figHeight, fig.width = 9, eval=plotMarkerSelection}
+for (currentCluster in 0:(numClusters-1)) {
+  if(numClusters > 1){
+    cat(sprintf(template, paste0("Cluster ", unique(top10$cluster1)[currentCluster+1])))
+  }
+  selectedFeatures <- top10[top10$cluster1 == unique(data.markers$cluster1)[currentCluster+1], ]$gene.id
+  plots <- plotSeuratGenes(data, plotType = "feature", features = selectedFeatures, groupVariable = selectedOption, ncol = 1, cols = c("grey", "blue"))
+  p <- singleCellTK:::.ggSCTKTheme(patchwork::wrap_plots(plots, ncol = 2))
+  print(p)
+  cat(space)
+}
+```
+
+```{r, echo=FALSE, results='asis', warning=FALSE, message=FALSE, eval=plotMarkerSelection}
+cat(paste0(headingMS, "## Ridge Plot {.tabset .tabset-fade .tabset-pills -}\n\n"))
+cat("A *ridge plot* visualizes the *expression level* of a particular *gene marker in all cells of the data* separated by *clusters* in the form of ridges. The *ridge plots** of the *top 10 marker genes* across all *clusters* are visualized below:")
+```
+
+```{r, warning=FALSE, message=FALSE, echo = TRUE, results = "asis", fig.height =figHeight, fig.width = 9, eval = plotMarkerSelection}
+for (currentCluster in 0:(numClusters-1)) {
+  if(numClusters > 1){
+    cat(sprintf(template, paste0("Cluster ", unique(top10$cluster1)[currentCluster+1])))
+  }
+  selectedFeatures <- top10[top10$cluster1 == unique(data.markers$cluster1)[currentCluster+1], ]$gene.id
+  plots <- plotSeuratGenes(data, plotType = "ridge", features = selectedFeatures, groupVariable = selectedOption, ncol = 1, cols = c("grey", "blue"))
+  p <- singleCellTK:::.ggSCTKTheme(patchwork::wrap_plots(plots, ncol = 2))
+  print(p)
+  cat(space)
+}
+```
+
+```{r, echo=FALSE, results='asis', warning=FALSE, message=FALSE, eval=plotMarkerSelection}
+cat(paste0(headingMS, "## Violin Plot {.tabset .tabset-fade .tabset-pills -}\n\n"))
+cat("A *violin plot* visualizes the *expression level* of a particular *gene marker in all cells of the data* separated by *clusters*. The *violin plots* of the *top 10 marker genes* separated across all *clusters* are visualized below:")
+```
+
+```{r, echo = TRUE, warning=FALSE, message=FALSE, results = "asis", fig.height =figHeight, fig.width = 9, message=FALSE, eval=plotMarkerSelection}
+for (currentCluster in 0:(numClusters-1)) {
+  if(numClusters > 1){
+    cat(sprintf(template, paste0("Cluster ", unique(top10$cluster1)[currentCluster+1])))
+  }
+  selectedFeatures <- top10[top10$cluster1 == unique(data.markers$cluster1)[currentCluster+1], ]$gene.id
+  plots <- plotSeuratGenes(data, plotType = "violin", features = selectedFeatures, groupVariable = selectedOption, ncol = 1, cols = c("grey", "blue"))
+  p <- singleCellTK:::.ggSCTKTheme(patchwork::wrap_plots(plots, ncol = 2))
+  print(p)
+  cat(space)
+}
+```
+
+```{r, echo=FALSE, results='asis', warning=FALSE, message=FALSE, eval=plotMarkerSelection}
+cat(paste0(headingMS, "## Dot Plot {-}\n\n"))
+cat("A *dot plot* visualizes the *change in the expression levels* of a particular *gene marker in all cells of the data* separated by *clusters* in the form of dots where the color of the dots indicate the expression level of that gene in a cluster and the size of the dot indicates the total percentage of the cells in that cluster.")
+```
+
+```{r, warning=FALSE, message=FALSE, fig.width=15, fig.height=8, eval = plotMarkerSelection}
+plotSeuratGenes(data, plotType = "dot", features = top10$gene.id, groupVariable = selectedOption, ncol = 1, cols = c("grey", "blue")) + theme(axis.text.x = element_text(angle = 90, size = 7), legend.text = element_text(size = 8), legend.key.size = unit(0.4, "cm"), legend.position = "top")
+```
+
+```{r, echo=FALSE, results='asis', warning=FALSE, message=FALSE, eval=plotMarkerSelection}
+cat(paste0(headingMS, "## Heatmap Plot {-}\n\n"))
+```
+
+```{r, warning=FALSE, message=FALSE, fig.width=15, fig.height=15, eval = plotMarkerSelection}
+plotSeuratGenes(data, plotType = "heatmap", features = top10$gene.id, groupVariable = selectedOption, ncol = 1, cols = c("grey", "blue")) + theme(axis.text.y = element_text(size = 8), legend.text = element_text(size = 8), legend.key.size = unit(0.5, "cm"), legend.position = "top")
+```
+
+```{r, echo=FALSE, results='asis', warning=FALSE, message=FALSE, eval=runMarkerSelection}
+cat(paste0(headingMS, "# Table of Top Markers by Cluster\n\n"))
+cat("The list of top *10* genes for each clusters are listed below:")
+```
+
+```{r, echo = FALSE, warning=FALSE, message=FALSE, results='asis', eval=runMarkerSelection}
+# Top genes table
+top5 <- data.frame(data.markers %>% group_by(cluster1) %>% top_n(5, avg_log2FC))
+top10 <- data.frame(data.markers %>% group_by(cluster1) %>% top_n(10, avg_log2FC))
+top_all <- data.frame(data.markers %>% group_by(cluster1))
+
+# write.csv(top10, file = paste0(outputPath, "DEGTable",groupTitle, "Top10", "-", gsub(" ", "_", Sys.Date()), ".csv"), row.names = FALSE)
+
+colNames<-colnames(top10)
+kable(top10, style = 'html', row.names = FALSE) %>%
+  kable_styling(bootstrap_options = "striped") %>%
+  scroll_box(width = "100%", height = "500px")
+```

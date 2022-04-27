@@ -64,8 +64,9 @@ test_that(desc = "Testing Wilcoxon DE", {
   vlcn <- plotDEGVolcano(sceBatches, "aVSbWilcox")
   testthat::expect_is(vlcn, "ggplot")
   
-  hm <- plotDEGHeatmap(sceBatches, "aVSbWilcox")
-  testthat::expect_is(hm, "HeatmapList")
+  hm <- plotDEGHeatmap(sceBatches, "aVSbWilcox", 
+                       minGroup1ExprPerc = NULL, maxGroup2ExprPerc = NULL)
+  testthat::expect_is(hm, "ggplot")
 
   pR <- plotDEGRegression(sceBatches, "aVSbWilcox")
   testthat::expect_is(pR, "ggplot")
@@ -88,5 +89,5 @@ test_that(desc = "Testing findMarker", {
   testthat::expect_gt(nrow(topTable), 0)
 
   hmFM <- plotMarkerDiffExp(sceBatches)
-  testthat::expect_is(hmFM, "HeatmapList")
+  testthat::expect_is(hmFM, "ggplot")
 })

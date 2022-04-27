@@ -34,7 +34,7 @@ sce <- runNormalization(sce, useAssay = "logcounts",
                         outAssayName = "logcounts_scaled", scale = TRUE)
 
 # Variable Feature ####
-sce <- seuratFindHVG(sce, useAssay = "counts", hvgMethod = "vst")
+sce <- runSeuratFindHVG(sce, useAssay = "counts", hvgMethod = "vst")
 sce <- getTopHVG(sce, method = "vst", n = 2000, altExp = "hvg")
 
 # Dimensionality Reduction ####

@@ -196,11 +196,11 @@ The parameters to the above function include: <br><br>
     
   <summary>`TSNE` from Seurat package:</summary> 
 
-```{r "seuratRunTSNE", eval = FALSE}
-  # Recommended to find variable features & compute PCA before running seuratRunTSNE
-  # sce <- seuratFindHVG(inSCE = sce, useAssay = "seuratScaledData")
-  # sce <- seuratPCA(inSCE = sce, useAssay = "seuratScaledData", reducedDimName = "pca", nPCs = 20, verbose = TRUE)
-  sce <- seuratRunTSNE(inSCE = sce, useReduction = "pca", reducedDimName = "seuratTSNE", dims = 10, perplexity = 30)
+```{r "runSeuratTSNE", eval = FALSE}
+  # Recommended to find variable features & compute PCA before running runSeuratTSNE
+  # sce <- runSeuratFindHVG(inSCE = sce, useAssay = "seuratScaledData")
+  # sce <- runSeuratPCA(inSCE = sce, useAssay = "seuratScaledData", reducedDimName = "pca", nPCs = 20, verbose = TRUE)
+  sce <- runSeuratTSNE(inSCE = sce, useReduction = "pca", reducedDimName = "seuratTSNE", dims = 10, perplexity = 30)
 ```
 
 The parameters to the above function include: <br><br>
@@ -241,11 +241,11 @@ The parameters to the above function include: <br><br>
 
   <summary>`UMAP` from Seurat package:</summary> 
   
-```{r "seuratRunUMAP", eval = FALSE}
-  # Recommended to find variable features & compute PCA before running seuratRunUMAP
-  # sce <- seuratFindHVG(inSCE = sce, useAssay = "seuratScaledData")
-  # sce <- seuratPCA(inSCE = sce, useAssay = "seuratScaledData", reducedDimName = "pca", nPCs = 20, verbose = TRUE)
-  sce <- seuratRunUMAP(inSCE = sce, useReduction = "pca", reducedDimName = "seuratUMAP", dims = 10, minDist = 0.3, nNeighbors = 30, spread = 1)
+```{r "runSeuratUMAP", eval = FALSE}
+  # Recommended to find variable features & compute PCA before running runSeuratUMAP
+  # sce <- runSeuratFindHVG(inSCE = sce, useAssay = "seuratScaledData")
+  # sce <- runSeuratPCA(inSCE = sce, useAssay = "seuratScaledData", reducedDimName = "pca", nPCs = 20, verbose = TRUE)
+  sce <- runSeuratUMAP(inSCE = sce, useReduction = "pca", reducedDimName = "seuratUMAP", dims = 10, minDist = 0.3, nNeighbors = 30, spread = 1)
 ```
 
 The parameters to the above function include: <br><br>
