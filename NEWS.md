@@ -1,4 +1,8 @@
-Changes in Version 2.5.2 (2022-04-2)
+Changes in Version 2.6.0 (2022-04-28)
+================================================================================
+* Updated version to match Bioconductor
+
+Changes in Version 2.5.2 (2022-04-23)
 ================================================================================
 * Added Seurat report functions
 * Added TSCAN trajectory analysis functions
