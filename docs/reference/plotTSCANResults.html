@@ -19,7 +19,7 @@ by projecting them onto the MST"><!-- mathjax --><script src="https://cdnjs.clou
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.5.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.6.0</span>
       </span>
     </div>
 
@@ -224,13 +224,13 @@ onto the MST.</p>
 <span class="r-in"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="scaterlogNormCounts.html">scaterlogNormCounts</a></span><span class="op">(</span><span class="va">sce</span>, assayName <span class="op">=</span> <span class="st">"logcounts"</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="runDimReduce.html">runDimReduce</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, method <span class="op">=</span> <span class="st">"scaterPCA"</span>, </span>
 <span class="r-in">                    useAssay <span class="op">=</span> <span class="st">"logcounts"</span>, reducedDimName <span class="op">=</span> <span class="st">"PCA"</span><span class="op">)</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Sat Apr 23 00:22:52 2022 ... Computing Scater PCA.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Thu Apr 28 11:27:26 2022 ... Computing Scater PCA.</span>
 <span class="r-in"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="runDimReduce.html">runDimReduce</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, method <span class="op">=</span> <span class="st">"rTSNE"</span>, useReducedDim <span class="op">=</span> <span class="st">"PCA"</span>, </span>
 <span class="r-in">                    reducedDimName <span class="op">=</span> <span class="st">"TSNE"</span><span class="op">)</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Sat Apr 23 00:22:52 2022 ... Computing RtSNE.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Thu Apr 28 11:27:26 2022 ... Computing RtSNE.</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>using `useReducedDim`, `run_pca` and `ntop` forced to be FALSE/NULL</span>
 <span class="r-in"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="runTSCAN.html">runTSCAN</a></span> <span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useReducedDim <span class="op">=</span> <span class="st">"PCA"</span>, seed <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Sat Apr 23 00:22:52 2022 ... Running 'scran SNN clustering'</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Thu Apr 28 11:27:27 2022 ... Running 'scran SNN clustering'</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Cluster involved in path 4 are: 1:5</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Number of estimated paths is 1</span>
 <span class="r-in"><span class="fu">plotTSCANResults</span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useReducedDim <span class="op">=</span> <span class="st">"TSNE"</span><span class="op">)</span></span>

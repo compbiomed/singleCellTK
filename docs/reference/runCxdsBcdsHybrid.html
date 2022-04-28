@@ -20,7 +20,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.5.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.6.0</span>
       </span>
     </div>
 
@@ -253,8 +253,8 @@ colData slot. The columns include
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">scExample</span>, package <span class="op">=</span> <span class="st">"singleCellTK"</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="subsetSCECols.html">subsetSCECols</a></span><span class="op">(</span><span class="va">sce</span>, colData <span class="op">=</span> <span class="st">"type != 'EmptyDroplet'"</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu">runCxdsBcdsHybrid</span><span class="op">(</span><span class="va">sce</span><span class="op">)</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Sat Apr 23 00:23:10 2022 ... Running 'cxds_bcds_hybrid'</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [00:23:11] WARNING: amalgamation/../src/learner.cc:1115: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Thu Apr 28 11:27:46 2022 ... Running 'cxds_bcds_hybrid'</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [11:27:47] WARNING: amalgamation/../src/learner.cc:1115: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.</span>
 </code></pre></div>
     </div>
   </div>
