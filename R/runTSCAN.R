@@ -588,7 +588,7 @@ runTSCANClusterDEAnalysis <- function(inSCE,
 ###################################################
 ###  plot branch cluster
 ###################################################
-#' @title Run plotClusterPseudo function to plot TSCAN-derived pseudotimes 
+#' @title Run plotTSCANClusterPseudo function to plot TSCAN-derived pseudotimes 
 #' around cluster in the dataset.
 #' @description A wrapper function which visualizes outputs from the 
 #' \code{\link{runTSCANClusterDEAnalysis}} function. Each point is a cell in the
@@ -618,10 +618,10 @@ runTSCANClusterDEAnalysis <- function(inSCE,
 #' sce <- runTSCAN (inSCE = sce, useReducedDim = "PCA", seed = NULL)
 #' sce <- runTSCANDEG(inSCE = sce, pathIndex = 4)
 #' sce <- runTSCANClusterDEAnalysis(inSCE = sce, useClusters = 5)
-#' plotClusterPseudo(inSCE = sce, useClusters = 5, pathIndex = NULL, 
+#' plotTSCANClusterPseudo(inSCE = sce, useClusters = 5, pathIndex = NULL, 
 #'                   useReducedDim = "TSNE")
 
-plotClusterPseudo <- function(inSCE, 
+plotTSCANClusterPseudo <- function(inSCE, 
                               useClusters, 
                               pathIndex = NULL, 
                               useReducedDim){

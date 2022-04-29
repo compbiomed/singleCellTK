@@ -3763,7 +3763,7 @@ shinyServer(function(input, output, session) {
       withProgress(message = "Plotting pseudo values for cluster", max = 1, value = 1, {
       output$DEClusterPlot <- renderPlot({
         isolate({
-          plotClusterPseudo(inSCE = vals$counts, 
+          plotTSCANClusterPseudo(inSCE = vals$counts, 
                             useClusters = input$useCluster, 
                             pathIndex = NULL,
                             useReducedDim = input$TSCANReddim)
@@ -3802,7 +3802,7 @@ shinyServer(function(input, output, session) {
   observeEvent(input$DEClusterPlot, {  
    output$DEClusterPlot <- renderPlot({
       isolate({
-        plotClusterPseudo(inSCE = vals$counts, 
+        plotTSCANClusterPseudo(inSCE = vals$counts, 
                           useClusters = input$useVisCluster, 
                           pathIndex = input$clusterPathIndex,
                           useReducedDim = input$DEClusterRedDimNames)
