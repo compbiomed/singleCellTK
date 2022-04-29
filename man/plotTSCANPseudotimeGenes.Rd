@@ -15,16 +15,13 @@ plotTSCANPseudotimeGenes(
 \arguments{
 \item{inSCE}{Input \linkS4class{SingleCellExperiment} object.}
 
-
 \item{pathIndex}{Path index for which the pseudotime values should be used. PathIndex 
 corresponds to the terminal node of specific path from the root node to the terminal node.}
 
-\item{direction}{Which direction to use. Choices are increasing or 
-decreasing.}
+\item{direction}{Which direction to use. Choices are increasing or decreasing.}
 
-\item{n}{An integer. Only to plot this number of top genes that are 
-increasing/decreasing in expression with increasing pseudotime along the path
-in the MST. Default \code{10}.}
+\item{n}{An integer. Only to plot this number of top genes that are increasing/decreasing 
+in expression with increasing pseudotime along the path in the MST. Default 10}
 }
 \value{
 A plot with the top genes that increase/decrease in expression with 

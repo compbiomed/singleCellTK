@@ -18,14 +18,14 @@ runTSCANDEG(
 \item{pathIndex}{Path index for which the pseudotime values should be used. PathIndex 
 corresponds to the terminal node of specific path from the root node to the terminal node.}
 
-\item{useAssay}{Character. The name of the assay to use. This assay should 
-contain log normalized counts.}
+\item{useAssay}{Character. The name of the assay to use. This assay should contain log 
+normalized counts.}
 
-\item{discardCluster}{Optional. Clusters which are not of use or masks other 
-interesting effects can be discarded.}
+\item{discardCluster}{Optional. Clusters which are not of use or masks other interesting 
+effects can be discarded.}
 
-\item{log2fcThreshold}{Only output DEGs with the absolute values of log2FC 
-larger than this value. Default \code{0}}
+\item{log2fcThreshold}{Only output DEGs with the absolute values of log2FC larger than 
+this value. Default Zero}
 }
 \value{
 A \linkS4class{SingleCellExperiment} object with genes that decrease 
