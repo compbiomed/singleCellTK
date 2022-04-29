@@ -3738,7 +3738,10 @@ shinyServer(function(input, output, session) {
       showNotification("DE genes for cluster found")
       
       clusterAnalysisNamesList <- names(getTSCANResults(vals$counts, analysisName = "ClusterDEAnalysis"))
-      terminalNodesList <- c(colnames(getTSCANResults(vals$counts, analysisName = "ClusterDEAnalysis", pathName = input$useCluster)$terminalNodes))
+      terminalNodes<- c(colnames(getTSCANResults(vals$counts, analysisName = "ClusterDEAnalysis", pathName = input$useCluster)$terminalNodes))
+      
+      terminalNodesList <- getTSCANResults(vals$counts, analysisName = "ClusterDEAnalysis", pathName = "pathIndexList")
+      
       
       updateSelectInput(session, "useVisCluster",
                         choices = clusterAnalysisNamesList,
@@ -3746,14 +3749,6 @@ shinyServer(function(input, output, session) {
       
       updateSelectInput(session, "useListCluster",
                         choices = clusterAnalysisNamesList,
-                        selected = NULL)
-      
-      updateSelectInput(session, "clusterPathIndex",
-                        choices = terminalNodesList,
-                        selected = NULL)
-      
-      updateSelectInput(session, "clusterListPathIndex",
-                        choices = terminalNodesList,
                         selected = NULL)
       
       #plot cluster pseudo values by default
@@ -3786,10 +3781,12 @@ shinyServer(function(input, output, session) {
     
   })
   
+  
   #plot results for step 3
   output$clusterPathIndex <- renderUI({
-    selectInput("clusterPathIndex", "Select Path Index:",
+    pickerInput("clusterPathIndex", "Select Path Index:",
                       choices = c(colnames(getTSCANResults(vals$counts, analysisName = "ClusterDEAnalysis", pathName = input$useVisCluster)$terminalNodes)),
+                      choicesOpt = list(content = getTSCANResults(vals$counts, analysisName = "ClusterDEAnalysis", pathName = input$useVisCluster)$pathIndexList),
                       selected = NULL)
   })
   
@@ -3809,8 +3806,9 @@ shinyServer(function(input, output, session) {
   
   #Generate list of DE genes
   output$clusterListPathIndex <- renderUI({
-    selectInput("clusterListPathIndex", "Select Path Index:",
+    pickerInput("clusterListPathIndex", "Select Path Index:",
                       choices = c(colnames(getTSCANResults(vals$counts, analysisName = "ClusterDEAnalysis", pathName = input$useListCluster)$terminalNodes)),
+                      choicesOpt = list(content = getTSCANResults(vals$counts, analysisName = "ClusterDEAnalysis", pathName = input$useListCluster)$pathIndexList),
                       selected = NULL)
   })
   

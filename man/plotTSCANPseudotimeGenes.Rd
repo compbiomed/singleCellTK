@@ -14,8 +14,8 @@ plotTSCANPseudotimeGenes(
 \arguments{
 \item{inSCE}{Input \linkS4class{SingleCellExperiment} object.}
 
-\item{pathIndex}{Path number for which the pseudotime values should be used. PathIndex 
-corresponds to one path from the root node to one of the terminal nodes.}
+\item{pathIndex}{Path index for which the pseudotime values should be used. PathIndex 
+corresponds to the terminal node of specific path from the root node to the terminal node.}
 
 \item{direction}{Which direction to use. Choices are increasing or decreasing.}
 
@@ -36,7 +36,7 @@ data("scExample", package = "singleCellTK")
 sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 rowData(sce)$Symbol <- rowData(sce)$feature_name
 rownames(sce) <- rowData(sce)$Symbol
-sce <- scaterlogNormCounts(sce, assayName = "logcounts")
+sce <- runNormalization(sce, normalizationMethod = "LogNormalize", useAssay = "counts", outAssayName = "logcounts")
 sce <- runDimReduce(inSCE = sce, method = "scaterPCA", useAssay = "logcounts", reducedDimName = "PCA")
 sce <- runDimReduce(inSCE = sce, method = "rTSNE", useReducedDim = "PCA", reducedDimName = "TSNE")
 sce <- runTSCAN (inSCE = sce, useReducedDim = "PCA", seed = NULL)
