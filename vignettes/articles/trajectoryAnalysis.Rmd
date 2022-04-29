@@ -255,7 +255,7 @@ plotTSCANPseudotimeGenes(inSCE = sce, pathIndex = 6, direction = "increasing")
 ```{R TSCAN_Step4, eval=FALSE, message=FALSE, warning=FALSE, fig.align="center", cache=TRUE, results='hide'}
 
 sce <- runTSCANClusterDEAnalysis(inSCE = sce, useClusters = 3)
-plotClusterPseudo(inSCE = sce, useClusters = 3, pathIndex = NULL, useReducedDim = "TSNE")
+plotTSCANClusterPseudo(inSCE = sce, useClusters = 3, pathIndex = NULL, useReducedDim = "TSNE")
 ```
 
 ````{=html}
