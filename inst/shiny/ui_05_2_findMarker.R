@@ -40,7 +40,8 @@ shinyPanelfindMarker <- fluidPage(
         tabsetPanel(
           tabPanel(
             "Result Table",
-            DT::dataTableOutput("fmResTable"),
+            filterTableUI(id = "filterfmResTable"),
+            #DT::dataTableOutput("fmResTable"),
             downloadButton("fmDownload", "Download Results"),
           ),
           tabPanel(

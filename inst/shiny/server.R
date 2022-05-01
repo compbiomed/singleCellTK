@@ -6359,18 +6359,28 @@ shinyServer(function(input, output, session) {
         shinyalert::shinyalert("Success", "Find Marker completed.",
                                "success")
         updateFMPlot()
+        
+        callModule(
+          module = filterTableServer,
+          id = "filterfmResTable",
+          dataframe = metadata(vals$counts)$findMarker,
+          defaultFilterColumns = c("Log2_FC", "FDR", "clusterExprPerc", "ControlExprPerc", "clusterAveExpr"),
+          defaultFilterOperators = c(">", "<", ">=", "<=", ">="),
+          defaultFilterValues = c("0", "0.05", "0", "1", "0"),
+          initialTopN = 200
+        )
       })
     }
   })
   # findMarker ResultTable ####
-  output$fmResTable <- DT::renderDataTable({
-    if(!is.null(vals$counts) &&
-       'findMarker' %in% names(metadata(vals$counts))){
-      fullTable <- metadata(vals$counts)$findMarker
-      fullTable[,5] <- as.factor(fullTable[,5])
-      fullTable
-    }
-  }, filter = "top", options = list(scrollX = TRUE))
+  # output$fmResTable <- DT::renderDataTable({
+  #   if(!is.null(vals$counts) &&
+  #      'findMarker' %in% names(metadata(vals$counts))){
+  #     fullTable <- metadata(vals$counts)$findMarker
+  #     fullTable[,5] <- as.factor(fullTable[,5])
+  #     fullTable
+  #   }
+  # }, filter = "top", options = list(scrollX = TRUE))
 
   observe({
     if (!is.null(vals$counts) &&
@@ -7611,19 +7621,19 @@ shinyServer(function(input, output, session) {
 
     orderByLFCMarkers <- metadata(vals$counts)$seuratMarkers
     orderByLFCMarkers <- orderByLFCMarkers[order(-orderByLFCMarkers$avg_log2FC), ]
-    # vals$fts <- callModule(
-    #   module = filterTableServer,
-    #   id = "filterSeuratFindMarker",
-    #   dataframe = orderByLFCMarkers,
-    #   defaultFilterColumns = c("p_val_adj"),
-    #   defaultFilterOperators = c("<="),
-    #   defaultFilterValues = c("0.05")
-    #   )
     vals$fts <- callModule(
       module = filterTableServer,
       id = "filterSeuratFindMarker",
-      dataframe = orderByLFCMarkers
-    )
+      dataframe = orderByLFCMarkers,
+      defaultFilterColumns = c("p_val_adj"),
+      defaultFilterOperators = c("<="),
+      defaultFilterValues = c("0.05")
+      )
+    # vals$fts <- callModule(
+    #   module = filterTableServer,
+    #   id = "filterSeuratFindMarker",
+    #   dataframe = orderByLFCMarkers
+    # )
 
   })
 

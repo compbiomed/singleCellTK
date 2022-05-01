@@ -121,7 +121,7 @@ headingMS <- "#"
 resPSM <- knitr::knit_child(paste0(getwd(), "/inst/rmarkdown/seurat/", 'reportSeuratMarkerSelection.Rmd'), quiet = TRUE, envir = environment())
 ```
 
-```{r, echo=FALSE, results='asis', warning=FALSE, message=FALSE}
+```{r, echo=FALSE, results='asis', warning=FALSE, message=FALSE, eval=!is.null(selected.markers)}
 cat(resPSM, sep = '\n')
 ```
 
