@@ -292,8 +292,10 @@ shinyPanelDiffex <- fluidPage(
           )
         ),
         tabPanel("Results Table",
-                 DT::dataTableOutput("deResult"),
-                 downloadButton("deDownload", "Download Result Table")),
+                 filterTableUI(id = "deResult")
+                 # DT::dataTableOutput("deResult"),
+                 # downloadButton("deDownload", "Download Result Table")
+                 ),
         tabPanel(
           "Violin Plot",
           panel(

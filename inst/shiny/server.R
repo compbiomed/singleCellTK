@@ -6150,6 +6150,12 @@ shinyServer(function(input, output, session) {
       } else {
         runDEfromShiny(FALSE)
       }
+      callModule(
+        module = filterTableServer,
+        id = "deResult",
+        dataframe = metadata(vals$counts)$diffExp[[1]]$result,
+        initialTopN = 200
+      )
       # Show downstream analysis options
       callModule(module = nonLinearWorkflow, id = "nlw-de", parent = session, pa = TRUE, cv = TRUE)
     }
@@ -6158,12 +6164,14 @@ shinyServer(function(input, output, session) {
   # DE: Result visualize ####
 
   # Data table
-  output$deResult <- DT::renderDataTable({
-    if(!is.null(input$deResSel) &&
-       !is.null(vals$counts)){
-      metadata(vals$counts)$diffExp[[input$deResSel]]$result
-    }
-  }, filter = 'top')
+  # output$deResult <- DT::renderDataTable({
+  #   if(!is.null(input$deResSel) &&
+  #      !is.null(vals$counts)){
+  #     metadata(vals$counts)$diffExp[[input$deResSel]]$result
+  #   }
+  # }, filter = 'top')
+  
+
 
   observeEvent(input$deResSel, {
     if (is.null(input$deResSel) ||
