@@ -6150,12 +6150,6 @@ shinyServer(function(input, output, session) {
       } else {
         runDEfromShiny(FALSE)
       }
-      callModule(
-        module = filterTableServer,
-        id = "deResult",
-        dataframe = metadata(vals$counts)$diffExp[[1]]$result,
-        initialTopN = 200
-      )
       # Show downstream analysis options
       callModule(module = nonLinearWorkflow, id = "nlw-de", parent = session, pa = TRUE, cv = TRUE)
     }
@@ -6179,6 +6173,12 @@ shinyServer(function(input, output, session) {
       shinyjs::disable("deDownload")
     } else {
       shinyjs::enable("deDownload")
+      callModule(
+        module = filterTableServer,
+        id = "deResult",
+        dataframe = metadata(vals$counts)$diffExp[[input$deResSel]]$result,
+        initialTopN = 200
+      )
     }
   })
 
