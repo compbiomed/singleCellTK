@@ -6177,7 +6177,7 @@ shinyServer(function(input, output, session) {
         module = filterTableServer,
         id = "deResult",
         dataframe = metadata(vals$counts)$diffExp[[input$deResSel]]$result,
-        initialTopN = 200
+        initialTopN = 100
       )
     }
   })
