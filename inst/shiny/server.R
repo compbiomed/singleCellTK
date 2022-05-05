@@ -844,7 +844,7 @@ shinyServer(function(input, output, session) {
     allImportEntries$samples <- c(allImportEntries$samples, list(entry))
     allImportEntries$id_count <- allImportEntries$id_count+1
 
-    scRNAseqDatasets <- c("fluidigm_pollen", "allen_tasic")
+    scRNAseqDatasets <- c("fluidigm_pollen", "allen_tasic", "NestorowaHSCData")
     tenxPbmcDatasets <- c("pbmc3k", "pbmc4k", "pbmc6k", "pbmc8k", "pbmc33k", "pbmc68k")
     locCol <- ""
     if (input$selectExampleData %in% scRNAseqDatasets) {

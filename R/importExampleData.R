@@ -48,7 +48,7 @@ importExampleData <- function(dataset, class = c("Matrix", "matrix"),
                               delayedArray = FALSE, rowNamesDedup = TRUE) {
   class <- match.arg(class)
 
-  scRNAseqDatasets <- c("fluidigm_pollen", "allen_tasic")
+  scRNAseqDatasets <- c("fluidigm_pollen", "allen_tasic", "NestorowaHSCData")
   tenxPbmcDatasets <- c("pbmc3k", "pbmc4k", "pbmc6k", "pbmc8k", "pbmc33k", "pbmc68k")
 
   ExperimentHub::setExperimentHubOption("ASK", FALSE)
@@ -62,6 +62,9 @@ importExampleData <- function(dataset, class = c("Matrix", "matrix"),
       temp$sample <- paste0(colData(temp)$Biological_Condition, "_", colData(temp)$Coverage_Type)
     } else if (dataset == "allen_tasic") {
       temp <- scRNAseq::ReprocessedAllenData()
+      temp$sample <- paste0(colData(temp)$driver_1_s, "_", colData(temp)$dissection_s)
+    }else if (dataset == "NestorowaHSCData") {
+      temp <- scRNAseq::NestorowaHSCData()
       temp$sample <- paste0(colData(temp)$driver_1_s, "_", colData(temp)$dissection_s)
     }
     if (isTRUE(rowNamesDedup)) {

@@ -12,7 +12,8 @@ if ("TENxPBMCData" %in% rownames(installed.packages())){
 if ("scRNAseq" %in% rownames(installed.packages())){
   exampleDatasets <- c(exampleDatasets,
                        "Fluidigm (Pollen et al, 2014)" = "fluidigm_pollen",
-                       "Mouse Brain (Tasic et al, 2016)" = "allen_tasic")
+                       "Mouse Brain (Tasic et al, 2016)" = "allen_tasic", 
+                       "NestorowaHSC (Nestorowa et al, 2016)" = "NestorowaHSCData")
 }
 
 shinyPanelImport <- fluidPage(
@@ -148,6 +149,13 @@ shinyPanelImport <- fluidPage(
         condition = sprintf("input['%s'] == 'allen_tasic'", "selectExampleData"),
         h3(tags$a(href = "http://dx.doi.org/10.1038/nn.4216", "Mouse visual cortex cells from (Tasic et al. 2016)", target = "_blank")),
         "Subset of 379 cells from the mouse visual cortex. Data was loaded from the 'scRNASeq' package.",
+        tags$br(),
+        tags$br()
+      ),
+      conditionalPanel(
+        condition = sprintf("input['%s'] == 'NestorowaHSCData'", "selectExampleData"),
+        h3(tags$a(href = "https://www.nature.com/articles/nbt.2967", target = "_blank")),
+        "Data was loaded from the 'scRNASeq' package.",
         tags$br(),
         tags$br()
       ),
