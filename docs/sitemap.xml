@@ -199,9 +199,6 @@
     <loc>/reference/downSampleDepth.html</loc>
   </url>
   <url>
-    <loc>/reference/enrichRSCE.html</loc>
-  </url>
-  <url>
     <loc>/reference/expData-ANY-character-method.html</loc>
   </url>
   <url>
@@ -277,6 +274,9 @@
     <loc>/reference/getDiffAbundanceResults.html</loc>
   </url>
   <url>
+    <loc>/reference/getEnrichRResult.html</loc>
+  </url>
+  <url>
     <loc>/reference/getGenesetNamesFromCollection.html</loc>
   </url>
   <url>
@@ -292,10 +292,16 @@
     <loc>/reference/getSceParams.html</loc>
   </url>
   <url>
+    <loc>/reference/getSeuratVariableFeatures.html</loc>
+  </url>
+  <url>
     <loc>/reference/getSoupX.html</loc>
   </url>
   <url>
     <loc>/reference/getTopHVG.html</loc>
+  </url>
+  <url>
+    <loc>/reference/getTSCANResults.html</loc>
   </url>
   <url>
     <loc>/reference/getTSNE.html</loc>
@@ -409,6 +415,9 @@
     <loc>/reference/plotClusterAbundance.html</loc>
   </url>
   <url>
+    <loc>/reference/plotClusterPseudo.html</loc>
+  </url>
+  <url>
     <loc>/reference/plotCxdsResults.html</loc>
   </url>
   <url>
@@ -505,10 +514,40 @@
     <loc>/reference/plotScrubletResults.html</loc>
   </url>
   <url>
+    <loc>/reference/plotSeuratElbow.html</loc>
+  </url>
+  <url>
+    <loc>/reference/plotSeuratGenes.html</loc>
+  </url>
+  <url>
+    <loc>/reference/plotSeuratHeatmap.html</loc>
+  </url>
+  <url>
+    <loc>/reference/plotSeuratHVG.html</loc>
+  </url>
+  <url>
+    <loc>/reference/plotSeuratJackStraw.html</loc>
+  </url>
+  <url>
+    <loc>/reference/plotSeuratReduction.html</loc>
+  </url>
+  <url>
     <loc>/reference/plotSoupXResults.html</loc>
   </url>
   <url>
     <loc>/reference/plotTopHVG.html</loc>
+  </url>
+  <url>
+    <loc>/reference/plotTSCANDEgenes.html</loc>
+  </url>
+  <url>
+    <loc>/reference/plotTSCANPseudotimeGenes.html</loc>
+  </url>
+  <url>
+    <loc>/reference/plotTSCANPseudotimeHeatmap.html</loc>
+  </url>
+  <url>
+    <loc>/reference/plotTSCANResults.html</loc>
   </url>
   <url>
     <loc>/reference/plotTSNE.html</loc>
@@ -542,6 +581,33 @@
   </url>
   <url>
     <loc>/reference/reportQCTool.html</loc>
+  </url>
+  <url>
+    <loc>/reference/reportSeurat.html</loc>
+  </url>
+  <url>
+    <loc>/reference/reportSeuratClustering.html</loc>
+  </url>
+  <url>
+    <loc>/reference/reportSeuratDimRed.html</loc>
+  </url>
+  <url>
+    <loc>/reference/reportSeuratFeatureSelection.html</loc>
+  </url>
+  <url>
+    <loc>/reference/reportSeuratMarkerSelection.html</loc>
+  </url>
+  <url>
+    <loc>/reference/reportSeuratNormalization.html</loc>
+  </url>
+  <url>
+    <loc>/reference/reportSeuratResults.html</loc>
+  </url>
+  <url>
+    <loc>/reference/reportSeuratRun.html</loc>
+  </url>
+  <url>
+    <loc>/reference/reportSeuratScaling.html</loc>
   </url>
   <url>
     <loc>/reference/retrieveSCEIndex.html</loc>
@@ -590,6 +656,9 @@
   </url>
   <url>
     <loc>/reference/runEmptyDrops.html</loc>
+  </url>
+  <url>
+    <loc>/reference/runEnrichR.html</loc>
   </url>
   <url>
     <loc>/reference/runFastMNN.html</loc>
@@ -646,10 +715,58 @@
     <loc>/reference/runSeurat3Integration.html</loc>
   </url>
   <url>
+    <loc>/reference/runSeuratFindClusters.html</loc>
+  </url>
+  <url>
+    <loc>/reference/runSeuratFindHVG.html</loc>
+  </url>
+  <url>
+    <loc>/reference/runSeuratFindMarkers.html</loc>
+  </url>
+  <url>
+    <loc>/reference/runSeuratHeatmap.html</loc>
+  </url>
+  <url>
+    <loc>/reference/runSeuratICA.html</loc>
+  </url>
+  <url>
+    <loc>/reference/runSeuratIntegration.html</loc>
+  </url>
+  <url>
+    <loc>/reference/runSeuratJackStraw.html</loc>
+  </url>
+  <url>
+    <loc>/reference/runSeuratNormalizeData.html</loc>
+  </url>
+  <url>
+    <loc>/reference/runSeuratPCA.html</loc>
+  </url>
+  <url>
+    <loc>/reference/runSeuratScaleData.html</loc>
+  </url>
+  <url>
+    <loc>/reference/runSeuratSCTransform.html</loc>
+  </url>
+  <url>
+    <loc>/reference/runSeuratTSNE.html</loc>
+  </url>
+  <url>
+    <loc>/reference/runSeuratUMAP.html</loc>
+  </url>
+  <url>
     <loc>/reference/runSingleR.html</loc>
   </url>
   <url>
     <loc>/reference/runSoupX.html</loc>
+  </url>
+  <url>
+    <loc>/reference/runTSCAN.html</loc>
+  </url>
+  <url>
+    <loc>/reference/runTSCANClusterDEAnalysis.html</loc>
+  </url>
+  <url>
+    <loc>/reference/runTSCANDEG.html</loc>
   </url>
   <url>
     <loc>/reference/runVAM.html</loc>
@@ -716,69 +833,6 @@
   </url>
   <url>
     <loc>/reference/setSCTKDisplayRow.html</loc>
-  </url>
-  <url>
-    <loc>/reference/seuratComputeHeatmap.html</loc>
-  </url>
-  <url>
-    <loc>/reference/seuratComputeJackStraw.html</loc>
-  </url>
-  <url>
-    <loc>/reference/seuratElbowPlot.html</loc>
-  </url>
-  <url>
-    <loc>/reference/seuratFindClusters.html</loc>
-  </url>
-  <url>
-    <loc>/reference/seuratFindHVG.html</loc>
-  </url>
-  <url>
-    <loc>/reference/seuratFindMarkers.html</loc>
-  </url>
-  <url>
-    <loc>/reference/seuratGenePlot.html</loc>
-  </url>
-  <url>
-    <loc>/reference/seuratHeatmapPlot.html</loc>
-  </url>
-  <url>
-    <loc>/reference/seuratICA.html</loc>
-  </url>
-  <url>
-    <loc>/reference/seuratIntegration.html</loc>
-  </url>
-  <url>
-    <loc>/reference/seuratJackStrawPlot.html</loc>
-  </url>
-  <url>
-    <loc>/reference/seuratNormalizeData.html</loc>
-  </url>
-  <url>
-    <loc>/reference/seuratPCA.html</loc>
-  </url>
-  <url>
-    <loc>/reference/seuratPlotHVG.html</loc>
-  </url>
-  <url>
-    <loc>/reference/seuratReductionPlot.html</loc>
-  </url>
-  <url>
-    <loc>/reference/seuratReport.html</loc>
-  </url>
-  <url>
-    <loc>/reference/seuratRunTSNE.html</loc>
-  </url>
-  <url>
-    <loc>/reference/seuratRunUMAP.html</loc>
-  </url>
-  <url>
-    <loc>/reference/seuratScaleData.html</loc>
-  </url>
-  <url>
-    <loc>/reference/seuratSCTransform.html</loc>
-  </url>
-  <url>
-    <loc>/reference/seuratVariableFeatures.html</loc>
   </url>
   <url>
     <loc>/reference/simpleLog.html</loc>

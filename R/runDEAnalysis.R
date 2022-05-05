@@ -137,6 +137,66 @@
     )
 }
 
+# Filter the formated DEG table
+# Could be used in runDE, getTable and plotDE functions
+.filterDETable <- function(deg, onlyPos = FALSE, log2fcThreshold = NULL, 
+                           fdrThreshold = NULL, minGroup1MeanExp = NULL,
+                           maxGroup2MeanExp = NULL, minGroup1ExprPerc = NULL,
+                           maxGroup2ExprPerc = NULL) {
+  if (isTRUE(onlyPos)) {
+    deg <- deg[deg$Log2_FC > 0,]
+  }
+  if (!is.null(fdrThreshold)) {
+    deg <- deg[deg$FDR < fdrThreshold,]
+  }
+  if (!is.null(log2fcThreshold)) {
+    deg <- deg[abs(deg$Log2_FC) >= log2fcThreshold,]
+  }
+  if (!is.null(minGroup1MeanExp)) {
+    deg <- deg[deg$group1MeanExp >= minGroup1MeanExp,]
+  }
+  if (!is.null(maxGroup2MeanExp)) {
+    deg <- deg[deg$group2MeanExp <= maxGroup2MeanExp,]
+  }
+  if (!is.null(minGroup1ExprPerc)) {
+    deg <- deg[deg$group1ExprPerc >= minGroup1ExprPerc,]
+  }
+  if (!is.null(maxGroup2ExprPerc)) {
+    deg <- deg[deg$group2ExprPerc <= maxGroup2ExprPerc,]
+  }
+  # Format output
+  deg <- deg[order(deg$FDR, na.last = TRUE),]
+  if (length(which(rowSums(is.na(deg)) > 2)) > 0) {
+    deg <- deg[-which(rowSums(is.na(deg)) > 2),]
+  }
+  return(deg)
+}
+
+# Calculate extra metrics for each deg
+# Including the mean expression value in group1,
+# Percentage of cells in group1 that express each gene
+# Percentage of cells in group2 that express each gene
+.calculateDEMetrics <- function(deg, mat, ix1, ix2) {
+  geneIdx <- rownames(mat) %in% deg$Gene
+  # Mean expression in group1
+  meanExp1 <- rowMeans(mat[geneIdx, ix1])
+  meanExp1 <- meanExp1[deg$Gene]
+  deg$group1MeanExp <- meanExp1
+  # Mean expression in group2
+  meanExp2 <- rowMeans(mat[geneIdx, ix2])
+  meanExp2 <- meanExp2[deg$Gene]
+  deg$group2MeanExp <- meanExp2
+  # Expressed percentage in group1
+  group1ExprPerc <- rowMeans(mat[geneIdx, ix1] > 0)
+  group1ExprPerc <- group1ExprPerc[deg$Gene]
+  deg$group1ExprPerc <-group1ExprPerc
+  # Expressed percentage in group2
+  group2ExprPerc <- rowMeans(mat[geneIdx, ix2] > 0)
+  group2ExprPerc <- group2ExprPerc[deg$Gene]
+  deg$group2ExprPerc <-group2ExprPerc
+  return(deg)
+}
+
 #' Perform differential expression analysis on SCE object
 #' @rdname runDEAnalysis
 #' @details 
@@ -188,9 +248,17 @@
 #' @param onlyPos Whether to only output DEG with positive log2_FC value.
 #' Default \code{FALSE}.
 #' @param log2fcThreshold Only out put DEGs with the absolute values of log2FC
-#' greater than this value. Default \code{NULL}
+#' greater than this value. Default \code{NULL}.
 #' @param fdrThreshold Only out put DEGs with FDR value less than this
-#' value. Default \code{NULL}
+#' value. Default \code{NULL}.
+#' @param minGroup1MeanExp Only out put DEGs with mean expression in group1 
+#' greater then this value. Default \code{NULL}.
+#' @param maxGroup2MeanExp Only out put DEGs with mean expression in group2 
+#' less then this value. Default \code{NULL}.
+#' @param minGroup1ExprPerc Only out put DEGs expressed in greater then this 
+#' fraction of cells in group1. Default \code{NULL}.
+#' @param maxGroup2ExprPerc Only out put DEGs expressed in less then this 
+#' fraction of cells in group2. Default \code{NULL}.
 #' @param overwrite A logical scalar. Whether to overwrite result if exists.
 #' Default \code{FALSE}.
 #' @param fullReduced Logical, DESeq2 only argument. Whether to apply LRT 
@@ -234,7 +302,10 @@ runDESeq2 <- function(inSCE, useAssay = 'counts', useReducedDim = NULL,
                       classGroup1 = NULL, classGroup2 = NULL, analysisName, 
                       groupName1, groupName2, covariates = NULL, 
                       fullReduced = TRUE, onlyPos = FALSE, 
-                      log2fcThreshold = NULL, fdrThreshold = NULL, overwrite = FALSE){
+                      log2fcThreshold = NULL, fdrThreshold = NULL, 
+                      minGroup1MeanExp = NULL, maxGroup2MeanExp = NULL, 
+                      minGroup1ExprPerc = NULL, maxGroup2ExprPerc = NULL,
+                      overwrite = FALSE){
     resultList <- .formatDEAList(inSCE, useAssay, useReducedDim, index1, index2, 
                                  class, classGroup1, classGroup2, groupName1,
                                  groupName2, analysisName, covariates,
@@ -287,21 +358,11 @@ runDESeq2 <- function(inSCE, useAssay = 'counts', useReducedDim = NULL,
     rownames(deg) <- NULL
     colnames(deg) <- c('Gene', 'Log2_FC', 'Pvalue', 'FDR')
     deg$Log2_FC <- - deg$Log2_FC # JNMLP
-    # Result Filtration
-    if(isTRUE(onlyPos)){
-        deg <- deg[deg$Log2_FC > 0,]
-    }
-    if(!is.null(fdrThreshold)){
-        deg <- deg[deg$FDR < fdrThreshold,]
-    }
-    if(!is.null(log2fcThreshold)){
-        deg <- deg[abs(deg$Log2_FC) > log2fcThreshold,]
-    }
-    # Format output
-    deg <- deg[order(deg$FDR, na.last = TRUE),]
-    if (length(which(rowSums(is.na(deg)) > 2)) > 0) {
-      deg <- deg[-which(rowSums(is.na(deg)) > 2),]
-    }
+    deg <- .calculateDEMetrics(deg, expData(inSCE, useAssay), ix1, ix2)
+    deg <- .filterDETable(deg, onlyPos, log2fcThreshold, fdrThreshold, 
+                          minGroup1MeanExp, maxGroup2MeanExp, 
+                          minGroup1ExprPerc, maxGroup2ExprPerc)
+    
     resultList$result <- deg
     resultList$method <- 'DESeq2'
     if ("diffExp" %in% names(S4Vectors::metadata(inSCE))){
@@ -320,7 +381,9 @@ runLimmaDE <- function(inSCE, useAssay = 'logcounts', useReducedDim = NULL,
                        classGroup1 = NULL, classGroup2 = NULL, analysisName, 
                        groupName1, groupName2, covariates = NULL, 
                        onlyPos = FALSE, log2fcThreshold = NULL, 
-                       fdrThreshold = NULL, overwrite = FALSE){
+                       fdrThreshold = NULL, minGroup1MeanExp = NULL, 
+                       maxGroup2MeanExp = NULL, minGroup1ExprPerc = NULL, 
+                       maxGroup2ExprPerc = NULL, overwrite = FALSE){
     resultList <- .formatDEAList(inSCE, useAssay, useReducedDim, index1, index2,
                                  class, classGroup1, classGroup2, groupName1,
                                  groupName2, analysisName, covariates,
@@ -367,21 +430,11 @@ runLimmaDE <- function(inSCE, useAssay = 'logcounts', useReducedDim = NULL,
     rownames(deg) <- NULL
     colnames(deg) <- c("Gene", "Log2_FC", "Pvalue", "FDR")
     deg$Log2_FC <- - deg$Log2_FC # JNMLP
-    # Result Filtration
-    if(isTRUE(onlyPos)){
-      deg <- deg[deg$Log2_FC > 0,]
-    }
-    if(!is.null(fdrThreshold)){
-      deg <- deg[deg$FDR < fdrThreshold,]
-    }
-    if(!is.null(log2fcThreshold)){
-      deg <- deg[abs(deg$Log2_FC) > log2fcThreshold,]
-    }
-    # Format output
-    deg <- deg[order(deg$FDR, na.last = TRUE),]
-    if (length(which(rowSums(is.na(deg)) > 2)) > 0) {
-      deg <- deg[-which(rowSums(is.na(deg)) > 2),]
-    }
+    deg <- .calculateDEMetrics(deg, expData(inSCE, useAssay), ix1, ix2)
+    deg <- .filterDETable(deg, onlyPos, log2fcThreshold, fdrThreshold, 
+                          minGroup1MeanExp, maxGroup2MeanExp, 
+                          minGroup1ExprPerc, maxGroup2ExprPerc)
+
     resultList$result <- deg
     resultList$method <- 'Limma'
     if ("diffExp" %in% names(S4Vectors::metadata(inSCE))){
@@ -399,7 +452,9 @@ runANOVA <- function(inSCE, useAssay = 'logcounts', useReducedDim = NULL,
                      index1 = NULL, index2 = NULL, class = NULL, 
                      classGroup1 = NULL, classGroup2 = NULL, analysisName, 
                      groupName1, groupName2, covariates = NULL, onlyPos = FALSE,
-                     log2fcThreshold = NULL, fdrThreshold = NULL,
+                     log2fcThreshold = NULL, fdrThreshold = NULL, 
+                     minGroup1MeanExp = NULL, maxGroup2MeanExp = NULL, 
+                     minGroup1ExprPerc = NULL, maxGroup2ExprPerc = NULL,
                      overwrite = FALSE){
     resultList <- .formatDEAList(inSCE, useAssay, useReducedDim, index1, index2,
                                  class, classGroup1, classGroup2, groupName1,
@@ -473,22 +528,11 @@ runANOVA <- function(inSCE, useAssay = 'logcounts', useReducedDim = NULL,
     }
     # Assuming that useAssay is log-normalized counts
     deg$Log2_FC <- rowMeans(cond1.assay) - rowMeans(cond2.assay)
+    deg <- .calculateDEMetrics(deg, expData(inSCE, useAssay), ix1, ix2)
+    deg <- .filterDETable(deg, onlyPos, log2fcThreshold, fdrThreshold,
+                          minGroup1MeanExp, maxGroup2MeanExp, 
+                          minGroup1ExprPerc, maxGroup2ExprPerc)
     
-    # Result Filtration
-    if(isTRUE(onlyPos)){
-      deg <- deg[deg$Log2_FC > 0,]
-    }
-    if(!is.null(fdrThreshold)){
-      deg <- deg[deg$FDR < fdrThreshold,]
-    }
-    if(!is.null(log2fcThreshold)){
-      deg <- deg[abs(deg$Log2_FC) > log2fcThreshold,]
-    }
-    # Format output
-    deg <- deg[order(deg$FDR, na.last = TRUE),]
-    if (length(which(rowSums(is.na(deg)) > 2)) > 0) {
-      deg <- deg[-which(rowSums(is.na(deg)) > 2),]
-    }
     resultList$result <- deg
     resultList$method <- 'ANOVA'
 
@@ -508,6 +552,8 @@ runMAST <- function(inSCE, useAssay = 'logcounts', useReducedDim = NULL,
                     classGroup1 = NULL, classGroup2 = NULL, analysisName, 
                     groupName1, groupName2, covariates = NULL, onlyPos = FALSE,
                     log2fcThreshold = NULL, fdrThreshold = NULL,
+                    minGroup1MeanExp = NULL, maxGroup2MeanExp = NULL, 
+                    minGroup1ExprPerc = NULL, maxGroup2ExprPerc = NULL,
                     overwrite = FALSE, check_sanity = TRUE){
     resultList <- .formatDEAList(inSCE, useAssay, useReducedDim, index1, index2, 
                                  class, classGroup1, classGroup2, groupName1,
@@ -584,27 +630,18 @@ runMAST <- function(inSCE, useAssay = 'logcounts', useReducedDim = NULL,
     fcHurdleSig <- merge(fcHurdle,
                          data.table::as.data.table(S4Vectors::mcols(sca)),
                          by = "primerid")
-    if(!is.null(log2fcThreshold)){
-      fcHurdleSig <- fcHurdleSig[abs(fcHurdleSig$coef) > log2fcThreshold,]
-    }
-    if(isTRUE(onlyPos)){
-      fcHurdleSig <- fcHurdleSig[fcHurdleSig$coef > 0,]
-    }
-    if(!is.null(fdrThreshold)){
-      fcHurdleSig <- fcHurdleSig[fcHurdleSig$fdr < fdrThreshold,]
-    }
     fcHurdleSig <- fcHurdleSig[, -c(4, 5)]
     names(fcHurdleSig)[c(1, 2, 3, 4)] <- c("Gene", "Pvalue",
                                            "Log2_FC", "FDR")
     fcHurdleSig$Gene <- as.character(fcHurdleSig$Gene)
-    fcHurdleSig <- fcHurdleSig[order(fcHurdleSig$FDR, na.last = TRUE),
-    ]
-    # Format output
-    deg <- as.data.frame(fcHurdleSig)
-    if (length(which(rowSums(is.na(deg)) > 2)) > 0) {
-      deg <- deg[-which(rowSums(is.na(deg)) > 2),]
-    }
-    resultList$result <- deg
+    fcHurdleSig <- .calculateDEMetrics(fcHurdleSig, expData(inSCE, useAssay), 
+                                       ix1, ix2)
+    fcHurdleSig <- .filterDETable(fcHurdleSig, onlyPos, log2fcThreshold, 
+                                  fdrThreshold, minGroup1MeanExp, 
+                                  maxGroup2MeanExp, minGroup1ExprPerc, 
+                                  maxGroup2ExprPerc)
+
+    resultList$result <- fcHurdleSig
     resultList$method <- 'MAST'
 
     if ("diffExp" %in% names(S4Vectors::metadata(inSCE))){
@@ -623,7 +660,9 @@ runWilcox <- function(inSCE, useAssay = 'logcounts', useReducedDim = NULL,
                       classGroup1 = NULL, classGroup2 = NULL, analysisName, 
                       groupName1, groupName2, covariates = NULL, 
                       onlyPos = FALSE, log2fcThreshold = NULL, 
-                      fdrThreshold = NULL, overwrite = FALSE){
+                      fdrThreshold = NULL, minGroup1MeanExp = NULL, 
+                      maxGroup2MeanExp = NULL, minGroup1ExprPerc = NULL, 
+                      maxGroup2ExprPerc = NULL,overwrite = FALSE){
   resultList <- .formatDEAList(inSCE, useAssay, useReducedDim, index1, index2, 
                                class, classGroup1, classGroup2, groupName1,
                                groupName2, analysisName, covariates,
@@ -668,21 +707,11 @@ runWilcox <- function(inSCE, useAssay = 'logcounts', useReducedDim = NULL,
                     Pvalue = table$p.value,
                     FDR = table$FDR)
   rownames(deg) <- NULL
-  # Result Filtration
-  if(isTRUE(onlyPos)){
-    deg <- deg[deg$Log2_FC > 0,]
-  }
-  if(!is.null(fdrThreshold)){
-    deg <- deg[deg$FDR < fdrThreshold,]
-  }
-  if(!is.null(log2fcThreshold)){
-    deg <- deg[abs(deg$Log2_FC) > log2fcThreshold,]
-  }
-  # Format output
-  deg <- deg[order(deg$FDR, na.last = TRUE),]
-  if (length(which(rowSums(is.na(deg)) > 2)) > 0) {
-    deg <- deg[-which(rowSums(is.na(deg)) > 2),]
-  }
+  deg <- .calculateDEMetrics(deg, mat, ix1, ix2)
+  deg <- .filterDETable(deg, onlyPos, log2fcThreshold, fdrThreshold,
+                        minGroup1MeanExp, maxGroup2MeanExp, 
+                        minGroup1ExprPerc, maxGroup2ExprPerc)
+  
   resultList$result <- deg
   resultList$method <- 'wilcox'
   if ("diffExp" %in% names(S4Vectors::metadata(inSCE))){

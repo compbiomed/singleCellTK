@@ -5,14 +5,14 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>enrichR • singleCellTK</title>
+<title>Enrichment Analysis with enrichR • singleCellTK</title>
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/yeti/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="../bootstrap-toc.css">
 <script src="../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
 <script src="../pkgdown.js"></script><link href="../extra.css" rel="stylesheet">
-<script src="../extra.js"></script><meta property="og:title" content="enrichR">
+<script src="../extra.js"></script><meta property="og:title" content="Enrichment Analysis with enrichR">
 <meta property="og:description" content="singleCellTK">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
@@ -34,7 +34,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.5.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.6.0</span>
       </span>
     </div>
 
@@ -48,6 +48,27 @@
 </li>
 <li>
   <a href="../articles/installation.html">Installation</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Tutorials
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+<li>
+      <a href="../articles/console_analysis_tutorial.html">A La Carte Workflow - PBMC3K (R Console)</a>
+    </li>
+    <li>
+      <a href="../articles/cnsl_seurat_curated_workflow.html">Seurat Curated Workflow - PBMC3K</a>
+    </li>
+    <li>
+      <a href="../articles/celda_curated_workflow.html">Celda Curated Workflow - PBMC3K</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="../articles/cmd_qc.html">SCTK-QC</a>
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
@@ -136,7 +157,7 @@
       </ul>
 </li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Pathway &amp; Enrichment Analysis</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Enrichment &amp; Pathway Analysis</a>
       <ul class="dropdown-menu" role="menu">
 <li>
           <a href="../articles/cnsl_enrichR.html">EnrichR</a>
@@ -170,23 +191,11 @@
 </li>
   </ul>
 </li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Tutorials
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
-<li>
-      <a href="../articles/console_analysis_tutorial.html">Analysis of PBMC3K (R Console)</a>
-    </li>
-  </ul>
-</li>
-<li>
-  <a href="../articles/cmd_qc.html">SCTK-QC</a>
-</li>
 <li>
   <a href="../reference/index.html">Reference</a>
+</li>
+<li>
+  <a href="../news/index.html">NEWS</a>
 </li>
       </ul>
 <ul class="nav navbar-nav navbar-right">
@@ -215,8 +224,8 @@
       </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
-      <h1 data-toc-skip>enrichR</h1>
-                        <h4 data-toc-skip class="author">Irzam Sarfraz</h4>
+      <h1 data-toc-skip>Enrichment Analysis with enrichR</h1>
+                        <h4 data-toc-skip class="author">Irzam Sarfraz, Yichen Wang</h4>
             
       
       <small class="dont-index">Source: <a href="https://github.com/compbiomed/singleCellTK/blob/HEAD/vignettes/articles/cnsl_enrichR.Rmd" class="external-link"><code>vignettes/articles/cnsl_enrichR.Rmd</code></a></small>
@@ -229,8 +238,8 @@
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
-<p><strong>EnrichR</strong> <span class="citation">[1]</span><span class="citation">[2]</span> is a GSE (Gene Set Enrichment) method that infers biological knowledge by performing enrichment of input gene sets with curated biologically relevant prior databases that represent biological functions or functional pathways. The <strong>singleCellTK</strong> toolkit offers an easy to use interface to the EnrichR method and only requires the selection of input genes and the databases against which the genes should be tested. <br></p>
-<p>To view detailed instructions on how to use the method from the toolkit, please select ‘Interactive Analysis’ for using enrichR in shiny application or ‘Console Analysis’ for using this method on R console from the tabs below:</p>
+<p><strong>EnrichR</strong> <span class="citation">[1]</span><span class="citation">[2]</span> is a GSE (Gene Set Enrichment) method that infers biological knowledge by performing enrichment of input gene sets with curated biologically relevant prior databases that represent biological functions or functional pathways. Single-Cell Toolkit (SCTK) offers an easy to use interface to the EnrichR method and only requires the selection of input genes and the databases against which the genes should be tested. <br></p>
+<p>To view detailed instructions on how to use the method from the toolkit, please select “Interactive Analysis” for using enrichR in shiny application or “Console Analysis” for using this method on R console from the tabs below:</p>
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
 </div>
@@ -244,78 +253,212 @@
 
 <div id="interactive" class="tabcontent">
 <p>An overall workflow guide on how to use <strong><em>EnrichR</em></strong> sub-tab is described below. <br></p>
-<p><img src="ui_screenshots/pathway_analysis/enrichR_1.png"></p>
-<ol style="list-style-type: decimal">
-<li>Select <strong><em>Cell Annotation &amp; Pathway Analysis</em></strong> tab from the top menu. <br>
-</li>
-<li>Select <strong><em>EnrichR</em></strong> option from the drop-down menu. <br>
-</li>
-</ol>
+<p><img src="ui_screenshots/pathway_analysis/enrichR_1.png"> To enter the tab for running EnrichR analysis, users need to: <br> 1. Select <strong><em>Enrichment &amp; Pathway Analysis</em></strong> tab from the top menu. <br> 2. Select <strong><em>EnrichR</em></strong> option from the drop-down menu. <br></p>
+<p><br></p>
+<p><strong>Approaches to select genes</strong></p>
 <p><img src="ui_screenshots/pathway_analysis/enrichR_2.png"></p>
-<ol start="3" style="list-style-type: decimal">
-<li><p>Select if you want to upload a gene symbol file using the option <strong><em>Upload file</em></strong> or choose the <strong><em>Select Gene(s)</em></strong> option if you want to select genes from the already uploaded data. <br></p></li>
-<li><p>If <strong><em>Select Gene(s)</em></strong> option is selected, you can select the genes from the available data here. Alternatively, you can upload a gene file using the options specified in <strong>(9)</strong> and <strong>(10)</strong>. <br></p></li>
-<li><p>Select <strong><em>databases</em></strong> to test the input genes against. Selecting <strong><em>ALL</em></strong> will test against all available <strong><em>databases</em></strong> and may take long time to compute. <br></p></li>
-<li><p>Press <strong><em>Run</em></strong> to start computation of enrichment scores. <br></p></li>
-<li><p>Once <strong><em>EnrichR</em></strong> computation is complete, results can be saved to local drive by pressing the <strong><em>Download Results</em></strong> button. <br></p></li>
-<li><p>Results are displayed in the table for genes that are significant (adjusted p value &lt; 0.05). <br></p></li>
+<p>At the top-left of the EnrichR tab, a radio-button set is provided for users to choose a way to specify the gene set to use for EnrichR test.</p>
+<details><summary><b>A. Use differential expression genes already identified</b></summary><ol style="list-style-type: decimal">
+<li><p><strong>Select DE Analysis</strong> - After performing <a href="differential_expression.html">differential expression analysis</a> with SCTK, users will have options available in this dropdown box. Users can select an analysis to import the DEGs identified there. <br></p></li>
+<li><p><strong>Use Log2FC greater than</strong> - Filter the DEGs, to only use genes with the absolute value of log2 fold-change greater than the input. <br></p></li>
+<li><p><strong>Use FDR less than</strong> - Filter the DEGs, to only use genes with FDR value less than the input. <br></p></li>
+<li><p><strong>Only use upregulated genes</strong> - Filter the DEGs, check to only use genes with positive log2 fold-change values. <br></p></li>
+<li><p><strong>Use mean exp in group1 greater than</strong> - Filter the DEGs, to only use genes with mean expression within group1 (<a href="differential_expression.html">what is group1?</a>) greater then the input. <br></p></li>
+<li><p><strong>Use mean exp in group2 less than</strong> - Filter the DEGs, to only use genes with mean expression within group2 less then the input. <br></p></li>
+<li><p><strong>Use exp% in group1 greater than</strong> - Filter the DEGs, to only use genes expressed in greater than this fraction of cells in group1. <br></p></li>
+<li><p><strong>Use exp% in group2 less than</strong> - Filter the DEGs, to only use genes expressed in greater than this fraction of cells in group1. <br></p></li>
 </ol>
+<p>By making changes above, the number of remaining DEGs and the list of remaining DEGs will be shown at the bottom of this section.</p>
+</details><details><summary><b>B. Manually select genes</b></summary><ol start="9" style="list-style-type: decimal">
+<li>
+<strong>Select Gene(s)</strong> - Users can manually select the genes from the available data here.</li>
+</ol></details><details><summary><b>C. Upload a file that contains gene names</b></summary><ol start="10" style="list-style-type: decimal">
+<li><p>Users can upload a text table file where the first column contains the gene identifiers. A text file with one gene per line works the same. CSV, TSV or TXT formats may be accepted. Depending on the exact situation of the file, selection might be applied in the following options.</p></li>
+<li><p><strong>Header</strong> - If the first line of the file is a header (e.g. column names if it’s a table, “Genes,” “Symbols” or etc. if it’s just the genes), users need to check this option to let the APP ignore the line.</p></li>
+<li><p><strong>Separator</strong> - If the text file is a table, users need to make sure of the separator of entries and make the corresponding selection here. Usually, “Comma” for CSV files and “Tab” for TSV files.</p></li>
+<li><p><strong>Quote</strong> - Depending on whether each entry in the text table file is quoted, users might make a selection here. Users might open file with a text editor software, or run <code>head ${FILENAME}</code> command on Unix system, to exactly have a check on it.</p></li>
+<li><p><strong>Match feature type</strong> - If the type of the gene identifiers (e.g. symbol, ensembl ID, etc.) provided in the file does not match to the default type for the dataset (denoted as “rownames”), users need to select from available feature metadata to find the match.</p></li>
+</ol></details><p><br></p>
+<p><strong>Other necessary options</strong></p>
 <p><img src="ui_screenshots/pathway_analysis/enrichR_3.png"></p>
-<ol start="9" style="list-style-type: decimal">
-<li><p>If <strong><em>Upload file</em></strong> option is selected in <strong>(3)</strong>, additional options are displayed to upload the <strong><em>gene symbols</em></strong> file. The file path can be selected here. <br></p></li>
-<li><p>Once filed is selected in <strong>(9)</strong>, options to select the parameters of the input file are displayed so the input file is correctly parsed.</p></li>
+<ol style="list-style-type: decimal">
+<li><p><strong>Select symbol annotation</strong> - EnrichR only expects gene symbols as the input. That’s to say, if the genes selected from previous steps appear to be IDs, EnrichR is likely to return zero lines of result. In this case, users are provided with a selection to convert the identifier type from available feature metadata. <br></p></li>
+<li><p><strong>Select DB</strong> - Select databases to test the input genes against. By default, no selection is made and all available databases will be used. However, this may take long time to compute <br></p></li>
+<li><p><strong>Set analysis name</strong> - Users have to set an analysis name for each run, in order to distinguish the results of different input. <br></p></li>
+<li><p>Press <strong>Run</strong> to start computation of enrichment scores. <br></p></li>
+</ol>
+<p><br></p>
+<p><strong>Result display</strong></p>
+<p><img src="ui_screenshots/pathway_analysis/enrichR_4.png"></p>
+<p>After running the analysis, the result table will be automatically shown on the right side of the EnrichR tab (left part of the figure). The content to be shown might be adjusted as instructed below.</p>
+<ol style="list-style-type: decimal">
+<li><p>Click on the cog button to open a dropdown box with options (right part of the figure). <br></p></li>
+<li><p><strong>Select analysis name</strong> - Choose to show the result of a sepecific analysis. All EnrichR analyses conducted by SCTK will be available here. <br></p></li>
+<li><p><strong>Show result of sepecific database</strong> - Filter the result table by database. Only the databases used for the selected analysis will be available here. Leave unselected for showing all results.</p></li>
 </ol>
 </div>
 <div id="console" class="tabcontent">
-<p><strong>1. Select genes and databases:</strong></p>
+<p><strong>1. Select genes and databases</strong></p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">genes</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"HES1"</span>, <span class="st">"PON2"</span>, <span class="st">"FBXO44"</span>, <span class="st">"DEK"</span>, <span class="st">"SOX4"</span>, <span class="st">"FBXL16"</span><span class="op">)</span>
 <span class="va">databases</span> <span class="op">&lt;-</span> <span class="fu">enrichR</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/enrichR/man/listEnrichrDbs.html" class="external-link">listEnrichrDbs</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="va">libraryName</span></code></pre></div>
-<p><strong>2. Run ‘enrichR’ using <code>enrichRSCE</code> function:</strong></p>
+<p><strong>2. Run EnrichR</strong></p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">enrichRes</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/enrichRSCE.html">enrichRSCE</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, glist <span class="op">=</span> <span class="va">genes</span>, db <span class="op">=</span> <span class="va">databases</span><span class="op">)</span></code></pre></div>
-<p>The <code>enrichRSCE</code> function above, takes the following parameters: <br><code>inSCE</code>: input <code>SingleCellExperiment</code> object <br><code>glist</code>: vector of input gene names <br><code>db</code>: a list of databases to test <br></p>
-<p><strong>3. Print results:</strong></p>
+<code class="sourceCode R"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runEnrichR.html">runEnrichR</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, features <span class="op">=</span> <span class="va">genes</span>, db <span class="op">=</span> <span class="va">databases</span>,
+                  analysisName <span class="op">=</span> <span class="st">"tutorial_analysis"</span><span class="op">)</span></code></pre></div>
+<p>For the <code><a href="../reference/runEnrichR.html">runEnrichR()</a></code> function above, the required parameters are:</p>
+<ul>
+<li>
+<code>inSCE</code>: The input <code>SingleCellExperiment</code> object</li>
+<li>
+<code>features</code>: A vector of input gene names</li>
+<li>
+<code>analysisName</code>: A string to identify a single analysis</li>
+</ul>
+<p>Other optional parameters include:</p>
+<ul>
+<li>
+<code>db</code>: A character vector of the databases to test</li>
+<li>
+<code>by</code>: Indicates where the method should find the <code>features</code>. Can be <code>"rownames"</code> or a column name of <code>rowData(inSCE)</code>.</li>
+<li>
+<code>featureName</code>: EnrichR expects gene symbols as the input. Need to choose from <code>rowData</code> to convert <code>features</code> if necessary.</li>
+</ul>
+<p><strong>3. Get results</strong></p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">enrichRes</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="../reference/getEnrichRResult.html">getEnrichRResult</a></span><span class="op">(</span><span class="va">sce</span>, analysisName <span class="op">=</span> <span class="st">"tutorial_analysis"</span><span class="op">)</span><span class="op">$</span><span class="va">result</span></code></pre></div>
+<p><br></p>
 <details><summary><b>Example</b></summary><div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R">  <span class="co"># Load singleCellTK &amp; pbmc3k example data</span>
-  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://www.camplab.net/sctk/" class="external-link">singleCellTK</a></span><span class="op">)</span>
-  <span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/importExampleData.html">importExampleData</a></span><span class="op">(</span>dataset <span class="op">=</span> <span class="st">"pbmc3k"</span><span class="op">)</span>
-  <span class="co"># Select genes</span>
-  <span class="va">genes</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"HES1"</span>, <span class="st">"PON2"</span>, <span class="st">"FBXO44"</span>, <span class="st">"DEK"</span>, <span class="st">"SOX4"</span>, <span class="st">"FBXL16"</span><span class="op">)</span>
-  <span class="co"># Fetch databases</span>
-  <span class="va">databases</span> <span class="op">&lt;-</span> <span class="fu">enrichR</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/enrichR/man/listEnrichrDbs.html" class="external-link">listEnrichrDbs</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="va">libraryName</span>
-  <span class="co"># Run enrichR</span>
-  <span class="va">enrichRes</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/enrichRSCE.html">enrichRSCE</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, glist <span class="op">=</span> <span class="va">genes</span>, db <span class="op">=</span> <span class="va">databases</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="co"># Load singleCellTK &amp; pbmc3k example data</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://www.camplab.net/sctk/" class="external-link">singleCellTK</a></span><span class="op">)</span>
+<span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/importExampleData.html">importExampleData</a></span><span class="op">(</span>dataset <span class="op">=</span> <span class="st">"pbmc3k"</span><span class="op">)</span>
+<span class="co"># Select genes</span>
+<span class="va">genes</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"HES1"</span>, <span class="st">"PON2"</span>, <span class="st">"FBXO44"</span>, <span class="st">"DEK"</span>, <span class="st">"SOX4"</span>, <span class="st">"FBXL16"</span><span class="op">)</span>
+<span class="co"># Fetch databases</span>
+<span class="va">databases</span> <span class="op">&lt;-</span> <span class="fu">enrichR</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/enrichR/man/listEnrichrDbs.html" class="external-link">listEnrichrDbs</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="va">libraryName</span>
+<span class="co"># Run enrichR</span>
+<span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runEnrichR.html">runEnrichR</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, features <span class="op">=</span> <span class="va">genes</span>, db <span class="op">=</span> <span class="va">databases</span>, 
+                  analysisName <span class="op">=</span> <span class="st">"tutorial_test"</span><span class="op">)</span></code></pre></div>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R">  <span class="co"># Print the first five results</span>
-  <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">enrichRes</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span>, <span class="op">]</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">##                     Database_selected                               Term</span>
-<span class="co">## 7750       LINCS_L1000_Chem_Pert_down LJP006 MCF10A 3H-withaferin-a-3.33</span>
-<span class="co">## 7751       LINCS_L1000_Chem_Pert_down      LJP006 MCF10A 3H-radicicol-10</span>
-<span class="co">## 5530         LINCS_L1000_Chem_Pert_up    LJP006 A375 24H-KIN001-043-1.11</span>
-<span class="co">## 4156 Genes_Associated_with_NIH_Grants                        R01GM072915</span>
-<span class="co">## 7752       LINCS_L1000_Chem_Pert_down       LJP006 A549 24H-BI-2536-0.37</span>
-<span class="co">##      Overlap P.value Adjusted.P.value Old.P.value Old.Adjusted.P.value</span>
-<span class="co">## 7750    3/68 7.0e-07        0.0013233           0                    0</span>
-<span class="co">## 7751    3/82 1.3e-06        0.0013233           0                    0</span>
-<span class="co">## 5530    3/91 1.8e-06        0.0040058           0                    0</span>
-<span class="co">## 4156     2/8 2.1e-06        0.0002791           0                    0</span>
-<span class="co">## 7752   3/119 4.1e-06        0.0027163           0                    0</span>
-<span class="co">##      Odds.Ratio Combined.Score          Genes</span>
-<span class="co">## 7750   306.6000       4325.556 PON2;HES1;SOX4</span>
-<span class="co">## 7751   252.0886       3413.374 PON2;HES1;SOX4</span>
-<span class="co">## 5530   226.2045       2991.617 PON2;HES1;SOX4</span>
-<span class="co">## 4156  1665.6667      21777.601       DEK;SOX4</span>
-<span class="co">## 7752   171.3621       2127.588 PON2;HES1;SOX4</span>
-<span class="co">##                                         link</span>
-<span class="co">## 7750                        https://clue.io/</span>
-<span class="co">## 7751                        https://clue.io/</span>
-<span class="co">## 5530                        https://clue.io/</span>
-<span class="co">## 4156 https://grants.nih.gov/grants/oer.htm\n</span>
-<span class="co">## 7752                        https://clue.io/</span></code></pre>
-</details>
+<code class="sourceCode R"><span class="co"># Print the first five results</span>
+<span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getEnrichRResult.html">getEnrichRResult</a></span><span class="op">(</span><span class="va">sce</span>, <span class="st">"tutorial_test"</span><span class="op">)</span><span class="op">$</span><span class="va">result</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">result</span><span class="op">)</span></code></pre></div>
+<table class="table">
+<colgroup>
+<col width="2%">
+<col width="15%">
+<col width="15%">
+<col width="3%">
+<col width="4%">
+<col width="7%">
+<col width="5%">
+<col width="9%">
+<col width="5%">
+<col width="6%">
+<col width="6%">
+<col width="17%">
+</colgroup>
+<thead><tr class="header">
+<th align="left"></th>
+<th align="left">Database_selected</th>
+<th align="left">Term</th>
+<th align="left">Overlap</th>
+<th align="left">P.value</th>
+<th align="left">Adjusted.P.value</th>
+<th align="left">Old.P.value</th>
+<th align="left">Old.Adjusted.P.value</th>
+<th align="left">Odds.Ratio</th>
+<th align="left">Combined.Score</th>
+<th align="left">Genes</th>
+<th align="left">link</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">7750</td>
+<td align="left">LINCS_L1000_Chem_Pert_down</td>
+<td align="left">LJP006 MCF10A 3H-withaferin-a-3.33</td>
+<td align="left">3/68</td>
+<td align="left">7.46e-07</td>
+<td align="left">0.001323</td>
+<td align="left">0</td>
+<td align="left">0</td>
+<td align="left">307</td>
+<td align="left">4326</td>
+<td align="left">PON2;HES1;SOX4</td>
+<td align="left"><a href="https://clue.io/" class="external-link uri">https://clue.io/</a></td>
+</tr>
+<tr class="even">
+<td align="left">7751</td>
+<td align="left">LINCS_L1000_Chem_Pert_down</td>
+<td align="left">LJP006 MCF10A 3H-radicicol-10</td>
+<td align="left">3/82</td>
+<td align="left">1.32e-06</td>
+<td align="left">0.001323</td>
+<td align="left">0</td>
+<td align="left">0</td>
+<td align="left">252</td>
+<td align="left">3413</td>
+<td align="left">PON2;HES1;SOX4</td>
+<td align="left"><a href="https://clue.io/" class="external-link uri">https://clue.io/</a></td>
+</tr>
+<tr class="odd">
+<td align="left">5530</td>
+<td align="left">LINCS_L1000_Chem_Pert_up</td>
+<td align="left">LJP006 A375 24H-KIN001-043-1.11</td>
+<td align="left">3/91</td>
+<td align="left">1.80e-06</td>
+<td align="left">0.004006</td>
+<td align="left">0</td>
+<td align="left">0</td>
+<td align="left">226</td>
+<td align="left">2992</td>
+<td align="left">PON2;HES1;SOX4</td>
+<td align="left"><a href="https://clue.io/" class="external-link uri">https://clue.io/</a></td>
+</tr>
+<tr class="even">
+<td align="left">4156</td>
+<td align="left">Genes_Associated_with_NIH_Grants</td>
+<td align="left">R01GM072915</td>
+<td align="left">2/8</td>
+<td align="left">2.10e-06</td>
+<td align="left">0.000279</td>
+<td align="left">0</td>
+<td align="left">0</td>
+<td align="left">1666</td>
+<td align="left">21778</td>
+<td align="left">DEK;SOX4</td>
+<td align="left"><a href="https://grants.nih.gov/grants/oer.htm" class="external-link uri">https://grants.nih.gov/grants/oer.htm</a></td>
+</tr>
+<tr class="odd">
+<td align="left">7752</td>
+<td align="left">LINCS_L1000_Chem_Pert_down</td>
+<td align="left">LJP006 A549 24H-BI-2536-0.37</td>
+<td align="left">3/119</td>
+<td align="left">4.05e-06</td>
+<td align="left">0.002716</td>
+<td align="left">0</td>
+<td align="left">0</td>
+<td align="left">171</td>
+<td align="left">2128</td>
+<td align="left">PON2;HES1;SOX4</td>
+<td align="left"><a href="https://clue.io/" class="external-link uri">https://clue.io/</a></td>
+</tr>
+<tr class="even">
+<td align="left">4157</td>
+<td align="left">Genes_Associated_with_NIH_Grants</td>
+<td align="left">R01CA118316</td>
+<td align="left">2/12</td>
+<td align="left">4.94e-06</td>
+<td align="left">0.000329</td>
+<td align="left">0</td>
+<td align="left">0</td>
+<td align="left">999</td>
+<td align="left">12208</td>
+<td align="left">DEK;SOX4</td>
+<td align="left"><a href="https://grants.nih.gov/grants/oer.htm" class="external-link uri">https://grants.nih.gov/grants/oer.htm</a></td>
+</tr>
+</tbody>
+</table></details>
 </div>
 <script>
 document.getElementById("ia-button").click();

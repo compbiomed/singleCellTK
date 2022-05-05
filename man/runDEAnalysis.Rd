@@ -28,6 +28,10 @@ runDESeq2(
   onlyPos = FALSE,
   log2fcThreshold = NULL,
   fdrThreshold = NULL,
+  minGroup1MeanExp = NULL,
+  maxGroup2MeanExp = NULL,
+  minGroup1ExprPerc = NULL,
+  maxGroup2ExprPerc = NULL,
   overwrite = FALSE
 )
 
@@ -47,6 +51,10 @@ runLimmaDE(
   onlyPos = FALSE,
   log2fcThreshold = NULL,
   fdrThreshold = NULL,
+  minGroup1MeanExp = NULL,
+  maxGroup2MeanExp = NULL,
+  minGroup1ExprPerc = NULL,
+  maxGroup2ExprPerc = NULL,
   overwrite = FALSE
 )
 
@@ -66,6 +74,10 @@ runANOVA(
   onlyPos = FALSE,
   log2fcThreshold = NULL,
   fdrThreshold = NULL,
+  minGroup1MeanExp = NULL,
+  maxGroup2MeanExp = NULL,
+  minGroup1ExprPerc = NULL,
+  maxGroup2ExprPerc = NULL,
   overwrite = FALSE
 )
 
@@ -85,6 +97,10 @@ runMAST(
   onlyPos = FALSE,
   log2fcThreshold = NULL,
   fdrThreshold = NULL,
+  minGroup1MeanExp = NULL,
+  maxGroup2MeanExp = NULL,
+  minGroup1ExprPerc = NULL,
+  maxGroup2ExprPerc = NULL,
   overwrite = FALSE,
   check_sanity = TRUE
 )
@@ -105,6 +121,10 @@ runWilcox(
   onlyPos = FALSE,
   log2fcThreshold = NULL,
   fdrThreshold = NULL,
+  minGroup1MeanExp = NULL,
+  maxGroup2MeanExp = NULL,
+  minGroup1ExprPerc = NULL,
+  maxGroup2ExprPerc = NULL,
   overwrite = FALSE
 )
 }
@@ -165,10 +185,22 @@ building the model. All covariates must exist in
 Default \code{FALSE}.}
 
 \item{log2fcThreshold}{Only out put DEGs with the absolute values of log2FC
-greater than this value. Default \code{NULL}}
+greater than this value. Default \code{NULL}.}
 
 \item{fdrThreshold}{Only out put DEGs with FDR value less than this
-value. Default \code{NULL}}
+value. Default \code{NULL}.}
+
+\item{minGroup1MeanExp}{Only out put DEGs with mean expression in group1 
+greater then this value. Default \code{NULL}.}
+
+\item{maxGroup2MeanExp}{Only out put DEGs with mean expression in group2 
+less then this value. Default \code{NULL}.}
+
+\item{minGroup1ExprPerc}{Only out put DEGs expressed in greater then this 
+fraction of cells in group1. Default \code{NULL}.}
+
+\item{maxGroup2ExprPerc}{Only out put DEGs expressed in less then this 
+fraction of cells in group2. Default \code{NULL}.}
 
 \item{overwrite}{A logical scalar. Whether to overwrite result if exists.
 Default \code{FALSE}.}

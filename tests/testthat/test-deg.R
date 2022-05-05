@@ -64,7 +64,8 @@ test_that(desc = "Testing Wilcoxon DE", {
   vlcn <- plotDEGVolcano(sceBatches, "aVSbWilcox")
   testthat::expect_is(vlcn, "ggplot")
   
-  hm <- plotDEGHeatmap(sceBatches, "aVSbWilcox")
+  hm <- plotDEGHeatmap(sceBatches, "aVSbWilcox", 
+                       minGroup1ExprPerc = NULL, maxGroup2ExprPerc = NULL)
   testthat::expect_is(hm, "ggplot")
 
   pR <- plotDEGRegression(sceBatches, "aVSbWilcox")

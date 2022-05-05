@@ -11,6 +11,10 @@ plotDEGHeatmap(
   onlyPos = FALSE,
   log2fcThreshold = 0.25,
   fdrThreshold = 0.05,
+  minGroup1MeanExp = NULL,
+  maxGroup2MeanExp = NULL,
+  minGroup1ExprPerc = NULL,
+  maxGroup2ExprPerc = NULL,
   useAssay = NULL,
   featureAnnotations = NULL,
   cellAnnotations = NULL,
@@ -41,6 +45,18 @@ log2FC larger than this value. Default \code{0.25}.}
 
 \item{fdrThreshold}{numeric. Only plot DEGs with FDR value smaller than this
 value. Default \code{0.05}.}
+
+\item{minGroup1MeanExp}{numeric. Only plot DEGs with mean expression in 
+group1 greater then this value. Default \code{NULL}.}
+
+\item{maxGroup2MeanExp}{numeric. Only plot DEGs with mean expression in 
+group2 less then this value. Default \code{NULL}.}
+
+\item{minGroup1ExprPerc}{numeric. Only plot DEGs expressed in greater then 
+this fraction of cells in group1. Default \code{NULL}.}
+
+\item{maxGroup2ExprPerc}{numeric. Only plot DEGs expressed in less then this 
+fraction of cells in group2. Default \code{NULL}.}
 
 \item{useAssay}{character. A string specifying an assay of expression value
 to plot. By default the assay used for \code{runMAST()} will be used.
@@ -84,7 +100,7 @@ this(these) annotation(s). Should exist in either \code{rowDataName} or
 \item{...}{Other arguments passed to \code{\link{plotSCEHeatmap}}}
 }
 \value{
-A \code{ComplexHeatmap::Heatmap} object
+A \code{\link[ggplot2]{ggplot}} object
 }
 \description{
 Heatmap visualization of DEG result

@@ -22,9 +22,8 @@ csl: ieee.csl
 ## Introduction
 
 Celda is a Bayesian hierarchical model that can perform bi-clustering of features into modules and observations into subpopulations.
-The `celda` package uses the [SingleCellExperiment](https://rdrr.io/bioc/SingleCellExperiment/man/SingleCellExperiment.html) (SCE) object for management of expression matrices, feature/cell annotation data, and metadata. All of the functions have an SCE object as the first input parameter. The functions operate on a matrix stored in the assay slot of the SCE object. The parameter `useAssay` can be used to specify which matrix to use (the default is `"counts"`). Matrices can be of class `matrix` or `dgCMatrix` from the [Matrix](https://cran.r-project.org/web/packages/Matrix/index.html) package. While the primary clustering is performed with functions from the celda package, the [singleCellTK](https://bioconductor.org/packages/release/bioc/html/singleCellTK.html) package is used for some other tasks such as importing data, quality control, and marker identification with differential expression.
 
-To view detailed instructions on how to apply celda to single-cell RNA sequencing (scRNA-seq) datasets, please select 'Interactive Analysis' for using celda in shiny application or 'Console Analysis' for using this package on R console from the tabs below:
+To view instructions on how to apply Celda to single-cell RNA sequencing (scRNA-seq) datasets, please select 'Interactive Analysis' for using Celda in shiny application or 'Console Analysis' for using this package on R console from the tabs below. The detailed tutorial of Celda can be found at [Celda's official website](https://www.camplab.net/celda/).
 
 ## Workflow Guide
 

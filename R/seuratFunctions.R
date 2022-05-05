@@ -1072,7 +1072,7 @@ convertSCEToSeurat <- function(inSCE, countsAssay = NULL, normAssay = NULL,
   if (length(SingleCellExperiment::reducedDims(inSCE)) > 0 && copyReducedDim) {
     for (redc in SingleCellExperiment::reducedDimNames(inSCE)) {
       reDim <- SingleCellExperiment::reducedDim(inSCE, redc)
-      colnames(reDim) <- paste0(redc, "_", seq_len(length(colnames(reDim))))
+      colnames(reDim) <- paste0(redc, "_", seq_len(ncol(reDim))) #length(colnames(reDim)))
       rownames(reDim) <- gsub('_', '-', rownames(reDim))
       key <-  gsub('_', '', redc)
       seuratObject@reductions[[redc]] <- Seurat::CreateDimReducObject(embeddings = reDim,
