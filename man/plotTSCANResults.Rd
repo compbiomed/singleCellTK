@@ -26,11 +26,9 @@ data("scExample", package = "singleCellTK")
 sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 rowData(sce)$Symbol <- rowData(sce)$feature_name
 rownames(sce) <- rowData(sce)$Symbol
-sce <- scaterlogNormCounts(sce, assayName = "logcounts")
-sce <- runDimReduce(inSCE = sce, method = "scaterPCA", 
-                    useAssay = "logcounts", reducedDimName = "PCA")
-sce <- runDimReduce(inSCE = sce, method = "rTSNE", useReducedDim = "PCA", 
-                    reducedDimName = "TSNE")
+sce <- runNormalization(sce, normalizationMethod = "LogNormalize", useAssay = "counts", outAssayName = "logcounts")
+sce <- runDimReduce(inSCE = sce, method = "scaterPCA", useAssay = "logcounts", reducedDimName = "PCA")
+sce <- runDimReduce(inSCE = sce, method = "rTSNE", useReducedDim = "PCA", reducedDimName = "TSNE")
 sce <- runTSCAN (inSCE = sce, useReducedDim = "PCA", seed = NULL)
 plotTSCANResults(inSCE = sce, useReducedDim = "TSNE")
 }

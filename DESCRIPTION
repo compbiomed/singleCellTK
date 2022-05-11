@@ -36,6 +36,7 @@ biocViews: SingleCell, GeneExpression, DifferentialExpression, Alignment,
 LazyData: FALSE
 Imports:
     ape,
+    AnnotationHub,
     batchelor,
     BiocParallel,
     celldex,
@@ -50,6 +51,7 @@ Imports:
     dplyr,
     DT,
     ExperimentHub,
+    ensembldb,
     fields,
     ggplot2,
     ggplotify,

@@ -844,7 +844,7 @@ shinyServer(function(input, output, session) {
     allImportEntries$samples <- c(allImportEntries$samples, list(entry))
     allImportEntries$id_count <- allImportEntries$id_count+1
 
-    scRNAseqDatasets <- c("fluidigm_pollen", "allen_tasic")
+    scRNAseqDatasets <- c("fluidigm_pollen", "allen_tasic", "NestorowaHSCData")
     tenxPbmcDatasets <- c("pbmc3k", "pbmc4k", "pbmc6k", "pbmc8k", "pbmc33k", "pbmc68k")
     locCol <- ""
     if (input$selectExampleData %in% scRNAseqDatasets) {
@@ -3746,7 +3746,10 @@ shinyServer(function(input, output, session) {
       showNotification("DE genes for cluster found")
       
       clusterAnalysisNamesList <- names(getTSCANResults(vals$counts, analysisName = "ClusterDEAnalysis"))
-      terminalNodesList <- c(colnames(getTSCANResults(vals$counts, analysisName = "ClusterDEAnalysis", pathName = input$useCluster)$terminalNodes))
+      terminalNodes<- c(colnames(getTSCANResults(vals$counts, analysisName = "ClusterDEAnalysis", pathName = input$useCluster)$terminalNodes))
+      
+      terminalNodesList <- getTSCANResults(vals$counts, analysisName = "ClusterDEAnalysis", pathName = "pathIndexList")
+      
       
       updateSelectInput(session, "useVisCluster",
                         choices = clusterAnalysisNamesList,
@@ -3756,19 +3759,11 @@ shinyServer(function(input, output, session) {
                         choices = clusterAnalysisNamesList,
                         selected = NULL)
       
-      updateSelectInput(session, "clusterPathIndex",
-                        choices = terminalNodesList,
-                        selected = NULL)
-      
-      updateSelectInput(session, "clusterListPathIndex",
-                        choices = terminalNodesList,
-                        selected = NULL)
-      
       #plot cluster pseudo values by default
       withProgress(message = "Plotting pseudo values for cluster", max = 1, value = 1, {
       output$DEClusterPlot <- renderPlot({
         isolate({
-          plotClusterPseudo(inSCE = vals$counts, 
+          plotTSCANClusterPseudo(inSCE = vals$counts, 
                             useClusters = input$useCluster, 
                             pathIndex = NULL,
                             useReducedDim = input$TSCANReddim)
@@ -3794,10 +3789,12 @@ shinyServer(function(input, output, session) {
     
   })
   
+  
   #plot results for step 3
   output$clusterPathIndex <- renderUI({
-    selectInput("clusterPathIndex", "Select Path Index:",
+    pickerInput("clusterPathIndex", "Select Path Index:",
                       choices = c(colnames(getTSCANResults(vals$counts, analysisName = "ClusterDEAnalysis", pathName = input$useVisCluster)$terminalNodes)),
+                      choicesOpt = list(content = getTSCANResults(vals$counts, analysisName = "ClusterDEAnalysis", pathName = input$useVisCluster)$pathIndexList),
                       selected = NULL)
   })
   
@@ -3805,7 +3802,7 @@ shinyServer(function(input, output, session) {
   observeEvent(input$DEClusterPlot, {  
    output$DEClusterPlot <- renderPlot({
       isolate({
-        plotClusterPseudo(inSCE = vals$counts, 
+        plotTSCANClusterPseudo(inSCE = vals$counts, 
                           useClusters = input$useVisCluster, 
                           pathIndex = input$clusterPathIndex,
                           useReducedDim = input$DEClusterRedDimNames)
@@ -3817,8 +3814,9 @@ shinyServer(function(input, output, session) {
   
   #Generate list of DE genes
   output$clusterListPathIndex <- renderUI({
-    selectInput("clusterListPathIndex", "Select Path Index:",
+    pickerInput("clusterListPathIndex", "Select Path Index:",
                       choices = c(colnames(getTSCANResults(vals$counts, analysisName = "ClusterDEAnalysis", pathName = input$useListCluster)$terminalNodes)),
+                      choicesOpt = list(content = getTSCANResults(vals$counts, analysisName = "ClusterDEAnalysis", pathName = input$useListCluster)$pathIndexList),
                       selected = NULL)
   })
   
