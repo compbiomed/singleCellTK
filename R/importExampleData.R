@@ -25,6 +25,9 @@
 #' \item{"allen_tasic"}{Retrieved with
 #' \code{\link{ReprocessedAllenData}}. Returns a dataset of 379 mouse
 #' brain cells from Tasic et al. (2016).}
+#' \item{"NestorowaHSCData"}{Retrieved with
+#' \code{\link{NestorowaHSCData}}. Returns a dataset of 1920 mouse  
+#'  haematopoietic stem cells from Nestorowa et al. 2015}
 #' \item{"pbmc3k"}{Retrieved with \code{\link[TENxPBMCData]{TENxPBMCData}}.
 #'  2,700 peripheral blood mononuclear cells (PBMCs) from 10X Genomics.}
 #' \item{"pbmc4k"}{Retrieved with \code{\link[TENxPBMCData]{TENxPBMCData}}.
@@ -65,7 +68,16 @@ importExampleData <- function(dataset, class = c("Matrix", "matrix"),
       temp$sample <- paste0(colData(temp)$driver_1_s, "_", colData(temp)$dissection_s)
     }else if (dataset == "NestorowaHSCData") {
       temp <- scRNAseq::NestorowaHSCData()
-      temp$sample <- paste0(colData(temp)$driver_1_s, "_", colData(temp)$dissection_s)
+      ens.mm.v97 <- AnnotationHub::AnnotationHub()[["AH73905"]]
+      anno <- ensembldb::select(ens.mm.v97, keys=rownames(temp),keytype="GENEID", columns=c("SYMBOL", "SEQNAME"))
+      rowData(temp) <- anno[match(rownames(temp), anno$GENEID),]
+      temp <- temp[!is.na(rowData(temp)$SYMBOL), ]  
+      temp <- setRowNames(temp, "SYMBOL", dedup = rowNamesDedup)
+      colnames(rowData(temp))[which(names(rowData(temp)) == "SYMBOL")] <- "Symbol"      
+      #rowData(temp)$Symbol <- rowData(temp)$SYMBOL
+      temp$cell.type <- NULL
+      temp$sample <- "NestorowaHSCData"
+      
     }
     if (isTRUE(rowNamesDedup)) {
       temp <- dedupRowNames(temp)

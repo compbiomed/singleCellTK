@@ -154,7 +154,7 @@ shinyPanelImport <- fluidPage(
       ),
       conditionalPanel(
         condition = sprintf("input['%s'] == 'NestorowaHSCData'", "selectExampleData"),
-        h3(tags$a(href = "https://www.nature.com/articles/nbt.2967", target = "_blank")),
+        h3(tags$a(href = "https://www.nature.com/articles/nbt.2967", "1920 Mouse haematopoietic stem cells from (Nestorowa et al. 2015).", target= "_blank")),
         "Data was loaded from the 'scRNASeq' package.",
         tags$br(),
         tags$br()
