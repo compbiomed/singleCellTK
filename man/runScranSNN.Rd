@@ -12,11 +12,14 @@ runScranSNN(
   altExpAssay = "counts",
   altExpRedDim = NULL,
   clusterName = "scranSNN_cluster",
-  k = 10,
+  k = 8,
   nComp = 50,
   weightType = c("rank", "number", "jaccard"),
-  algorithm = c("walktrap", "louvain", "infomap", "fastGreedy", "labelProp",
-    "leadingEigen")
+  algorithm = c("louvain", "leiden", "walktrap", "infomap", "fastGreedy", "labelProp",
+    "leadingEigen"),
+  BPPARAM = BiocParallel::SerialParam(),
+  seed = 12345,
+  ...
 )
 }
 \arguments{
@@ -51,7 +54,7 @@ the cluster label in \code{\link{colData}}. Default
 
 \item{k}{An \code{integer}, the number of nearest neighbors used to construct
 the graph. Smaller value indicates higher resolution and larger number of
-clusters. Default \code{10}.}
+clusters. Default \code{8}.}
 
 \item{nComp}{An \code{integer}, the number of components to use when
 \code{useAssay} or \code{useAltExp} is specified. WON'T work with
@@ -62,9 +65,19 @@ scheme when constructing the Shared Nearest-Neighbor (SNN) graph. Choose from
 \code{"rank"}, \code{"number"}, \code{"jaccard"}. Default \code{"rank"}.}
 
 \item{algorithm}{A single \code{character}, that specifies the community
-detection algorithm to work on the SNN graph. Choose from \code{"walktrap"},
-\code{"louvain"}, \code{"infomap"}, \code{"fastGreedy"}, \code{"labelProp"},
-\code{"leadingEigen"}. Default \code{"walktrap"}.}
+detection algorithm to work on the SNN graph. Choose from \code{"leiden"}, 
+\code{"louvain"}, \code{"walktrap"}, \code{"infomap"}, \code{"fastGreedy"}, 
+\code{"labelProp"}, \code{"leadingEigen"}. Default \code{"louvain"}. See 
+Detail.}
+
+\item{BPPARAM}{A \code{\link[BiocParallel]{BiocParallelParam}} object to use 
+for processing the SNN graph generation step in parallel.}
+
+\item{seed}{Random seed for reproducibility of results. Default \code{NULL} 
+will use global seed in use by the R environment.}
+
+\item{...}{Other optional parameters passed to the \code{\link{igraph}} 
+clustering functions. See Details.}
 }
 \value{
 The input \code{\link[SingleCellExperiment]{SingleCellExperiment}}
@@ -76,6 +89,26 @@ Perform SNN graph clustering on a
 \code{\link[SingleCellExperiment]{SingleCellExperiment}} object, with graph
 construction by \code{\link[scran]{buildSNNGraph}} and graph clustering by
 "igraph" package.
+}
+\details{
+Different graph based clustering algorithms have diverse sets of 
+parameters that users can tweak. The help information can be found here:
+\itemize{
+ \item{for \code{"louvain"}, see function help 
+ \code{\link[igraph]{cluster_louvain}}}
+ \item{for \code{"leiden"}, see function help 
+ \code{\link[igraph]{cluster_leiden}}}
+ \item{for \code{"walktrap"}, see function help 
+ \code{\link[igraph]{cluster_walktrap}}}
+ \item{for \code{"infomap"}, see function help 
+ \code{\link[igraph]{cluster_infomap}}}
+ \item{for \code{"fastGreedy"}, see function help 
+ \code{\link[igraph]{cluster_fast_greedy}}}
+ \item{for \code{"labelProp"}, see function help 
+ \code{\link[igraph]{cluster_label_prop}}}
+ \item{for \code{"leadingEigen"}, see function help 
+ \code{\link[igraph]{cluster_leading_eigen}}}
+}
 }
 \examples{
 data("mouseBrainSubsetSCE")

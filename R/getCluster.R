@@ -27,7 +27,7 @@
 #' \code{"scranSNN_cluster"}.
 #' @param k An \code{integer}, the number of nearest neighbors used to construct
 #' the graph. Smaller value indicates higher resolution and larger number of
-#' clusters. Default \code{10}.
+#' clusters. Default \code{8}.
 #' @param nComp An \code{integer}, the number of components to use when
 #' \code{useAssay} or \code{useAltExp} is specified. WON'T work with
 #' \code{useReducedDim}. Default \code{50}.
@@ -35,12 +35,37 @@
 #' scheme when constructing the Shared Nearest-Neighbor (SNN) graph. Choose from
 #' \code{"rank"}, \code{"number"}, \code{"jaccard"}. Default \code{"rank"}.
 #' @param algorithm A single \code{character}, that specifies the community
-#' detection algorithm to work on the SNN graph. Choose from \code{"walktrap"},
-#' \code{"louvain"}, \code{"infomap"}, \code{"fastGreedy"}, \code{"labelProp"},
-#' \code{"leadingEigen"}. Default \code{"walktrap"}.
+#' detection algorithm to work on the SNN graph. Choose from \code{"leiden"}, 
+#' \code{"louvain"}, \code{"walktrap"}, \code{"infomap"}, \code{"fastGreedy"}, 
+#' \code{"labelProp"}, \code{"leadingEigen"}. Default \code{"louvain"}. See 
+#' Detail.
+#' @param BPPARAM A \code{\link[BiocParallel]{BiocParallelParam}} object to use 
+#' for processing the SNN graph generation step in parallel.
+#' @param seed Random seed for reproducibility of results. Default \code{NULL} 
+#' will use global seed in use by the R environment.
+#' @param ... Other optional parameters passed to the \code{\link{igraph}} 
+#' clustering functions. See Details.
 #' @return The input \code{\link[SingleCellExperiment]{SingleCellExperiment}}
 #' object with \code{factor} cluster labeling updated in
 #' \code{colData(inSCE)[[clusterName]]}.
+#' @details Different graph based clustering algorithms have diverse sets of 
+#' parameters that users can tweak. The help information can be found here:
+#' \itemize{
+#'  \item{for \code{"louvain"}, see function help 
+#'  \code{\link[igraph]{cluster_louvain}}}
+#'  \item{for \code{"leiden"}, see function help 
+#'  \code{\link[igraph]{cluster_leiden}}}
+#'  \item{for \code{"walktrap"}, see function help 
+#'  \code{\link[igraph]{cluster_walktrap}}}
+#'  \item{for \code{"infomap"}, see function help 
+#'  \code{\link[igraph]{cluster_infomap}}}
+#'  \item{for \code{"fastGreedy"}, see function help 
+#'  \code{\link[igraph]{cluster_fast_greedy}}}
+#'  \item{for \code{"labelProp"}, see function help 
+#'  \code{\link[igraph]{cluster_label_prop}}}
+#'  \item{for \code{"leadingEigen"}, see function help 
+#'  \code{\link[igraph]{cluster_leading_eigen}}}
+#' }
 #' @references Aaron Lun and et. al., 2016
 #' @export
 #' @examples
@@ -51,65 +76,90 @@ runScranSNN <- function(inSCE, useAssay = NULL, useReducedDim = NULL,
                         useAltExp = NULL, altExpAssay = "counts",
                         altExpRedDim = NULL,
                         clusterName = "scranSNN_cluster",
-                        k = 10, nComp = 50,
+                        k = 8, nComp = 50, 
                         weightType = c("rank", "number", "jaccard"),
-                        algorithm = c("walktrap", "louvain", "infomap",
-                                      "fastGreedy", "labelProp",
-                                      "leadingEigen")) {
-  # TODO: parallele parameter
-  if (!inherits(inSCE, "SingleCellExperiment")) {
-    stop("'inSCE' should be a SingleCellExperiment object.")
-  }
-  if (is.null(useAssay) + is.null(useReducedDim) + is.null(useAltExp) != 2) {
-    stop("Scran SNN clustering requires one and only one of 'useAssay', ",
-         "'useReducedDim', and 'useAltExp'.")
-  }
-  weightType <- match.arg(weightType)
-  algorithm <- match.arg(algorithm)
-
-  graphClustAlgoList = list(walktrap = igraph::cluster_walktrap,
-                            louvain = igraph::cluster_louvain,
-                            infomap = igraph::cluster_infomap,
-                            fastGreedy = igraph::cluster_fast_greedy,
-                            labelProp = igraph::cluster_label_prop,
-                            leadingEigen = igraph::cluster_leading_eigen)
-  message(paste0(date(), " ... Running 'scran SNN clustering'"))
-  if (!is.null(useAssay)){
-    if (!useAssay %in% SummarizedExperiment::assayNames(inSCE)) {
-      stop("Specified assay '", useAssay, "' not found.")
+                        algorithm = c("louvain", "leiden", "walktrap", 
+                                      "infomap", "fastGreedy", "labelProp",
+                                      "leadingEigen"),
+                        BPPARAM = BiocParallel::SerialParam(),
+                        seed = 12345,
+                        ...) {
+  if (!is.null(seed)) {
+    # If set seed, run the whole function again but enter the next condition
+    # Not sure if this is computationally inefficient. 
+    withr::with_seed(
+      seed = seed,
+      code = runScranSNN(inSCE, useAssay = useAssay, 
+                         useReducedDim = useReducedDim, useAltExp = useAltExp, 
+                         altExpAssay = altExpAssay, altExpRedDim = altExpRedDim,
+                         clusterName = clusterName, k = k, nComp = nComp, 
+                         weightType = weightType, algorithm = algorithm,
+                         BPPARAM = BPPARAM, seed = NULL))
+  } else {
+    if (!inherits(inSCE, "SingleCellExperiment")) {
+      stop("'inSCE' should be a SingleCellExperiment object.")
     }
-    g <- scran::buildSNNGraph(x = inSCE, k = k, assay.type = useAssay,
-                              d = nComp, type = weightType, use.dimred = NULL)
-  } else if (!is.null(useReducedDim)) {
-    if (!useReducedDim %in% SingleCellExperiment::reducedDimNames(inSCE)) {
-      stop("Specified reducedDim '", useReducedDim, "' not found.")
+    if (is.null(useAssay) + is.null(useReducedDim) + is.null(useAltExp) != 2) {
+      stop("Scran SNN clustering requires one and only one of 'useAssay', ",
+           "'useReducedDim', and 'useAltExp'.")
     }
-    g <- scran::buildSNNGraph(x = inSCE, k = k, use.dimred = useReducedDim,
-                              type = weightType)
-  } else if (!is.null(useAltExp)) {
-    if (!useAltExp %in% SingleCellExperiment::altExpNames(inSCE)) {
-      stop("Specified altExp '", useAltExp, "' not found.")
-    }
-    ae <- SingleCellExperiment::altExp(inSCE, useAltExp)
-    if (!is.null(altExpRedDim)) {
-      if (!altExpRedDim %in% SingleCellExperiment::reducedDimNames(ae)) {
-        stop("altExpRedDim: '", altExpRedDim, "' not in specified altExp.")
+    weightType <- match.arg(weightType)
+    algorithm <- match.arg(algorithm)
+    
+    graphClustAlgoList = list(leiden = igraph::cluster_leiden,
+                              walktrap = igraph::cluster_walktrap,
+                              louvain = igraph::cluster_louvain,
+                              infomap = igraph::cluster_infomap,
+                              fastGreedy = igraph::cluster_fast_greedy,
+                              labelProp = igraph::cluster_label_prop,
+                              leadingEigen = igraph::cluster_leading_eigen)
+    message(paste0(date(), " ... Running 'scran SNN clustering'"))
+    if (!is.null(useAssay)){
+      if (!useAssay %in% SummarizedExperiment::assayNames(inSCE)) {
+        stop("Specified assay '", useAssay, "' not found.")
       }
-      g <- scran::buildSNNGraph(x = ae, k = k, use.dimred = altExpRedDim,
-                                type = weightType)
+      g <- scran::buildSNNGraph(x = inSCE, k = k, assay.type = useAssay,
+                                d = nComp, type = weightType, use.dimred = NULL,
+                                BPPARAM = BPPARAM)
+    } else if (!is.null(useReducedDim)) {
+      if (!useReducedDim %in% SingleCellExperiment::reducedDimNames(inSCE)) {
+        stop("Specified reducedDim '", useReducedDim, "' not found.")
+      }
+      g <- scran::buildSNNGraph(x = inSCE, k = k, use.dimred = useReducedDim,
+                                type = weightType, BPPARAM = BPPARAM)
+    } else if (!is.null(useAltExp)) {
+      if (!useAltExp %in% SingleCellExperiment::altExpNames(inSCE)) {
+        stop("Specified altExp '", useAltExp, "' not found.")
+      }
+      ae <- SingleCellExperiment::altExp(inSCE, useAltExp)
+      if (!is.null(altExpRedDim)) {
+        if (!altExpRedDim %in% SingleCellExperiment::reducedDimNames(ae)) {
+          stop("altExpRedDim: '", altExpRedDim, "' not in specified altExp.")
+        }
+        g <- scran::buildSNNGraph(x = ae, k = k, use.dimred = altExpRedDim,
+                                  type = weightType, BPPARAM = BPPARAM)
+      } else {
+        if (!altExpAssay %in% SummarizedExperiment::assayNames(ae)) {
+          stop("altExpAssay: '", altExpAssay, "' not in specified altExp.")
+        }
+        g <- scran::buildSNNGraph(x = ae, k = k, assay.type = altExpAssay,
+                                  d = nComp, type = weightType, 
+                                  use.dimred = NULL, BPPARAM = BPPARAM)
+      }
+    }
+    
+    clustFunc = graphClustAlgoList[[algorithm]]
+    if (!is.null(seed)) {
+      withr::with_seed(
+        seed = seed,
+        code = clust <- clustFunc(g, ...)$membership)
     } else {
-      if (!altExpAssay %in% SummarizedExperiment::assayNames(ae)) {
-        stop("altExpAssay: '", altExpAssay, "' not in specified altExp.")
-      }
-      g <- scran::buildSNNGraph(x = ae, k = k, assay.type = altExpAssay,
-                                d = nComp, type = weightType, use.dimred = NULL)
+      clust <- clustFunc(g, ...)$membership
     }
+    clust <- clustFunc(g, ...)$membership
+    SummarizedExperiment::colData(inSCE)[[clusterName]] <- factor(clust)
+    return(inSCE)
   }
-
-  clustFunc = graphClustAlgoList[[algorithm]]
-  clust <- clustFunc(g)$membership
-  SummarizedExperiment::colData(inSCE)[[clusterName]] <- factor(clust)
-  return(inSCE)
 }
 
 #' Get clustering with KMeans

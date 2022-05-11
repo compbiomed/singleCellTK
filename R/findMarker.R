@@ -18,15 +18,16 @@
 #' @param log2fcThreshold Only out put DEGs with the absolute values of log2FC
 #' larger than this value. Default \code{NULL}
 #' @param fdrThreshold Only out put DEGs with FDR value smaller than this
-#' value. Default \code{1}
+#' value. Default \code{NULL}
 #' @param minClustExprPerc A numeric scalar. The minimum cutoff of the
 #' percentage of cells in the cluster of interests that expressed the marker
-#' gene. Default \code{0.7}.
+#' gene. From 0 to 1. Default \code{NULL}.
 #' @param maxCtrlExprPerc A numeric scalar. The maximum cutoff of the
 #' percentage of cells out of the cluster (control group) that expressed the
-#' marker gene. Default \code{0.4}.
+#' marker gene. From 0 to 1. Default \code{NULL}.
 #' @param minMeanExpr A numeric scalar. The minimum cutoff of the mean
-#' expression value of the marker in the cluster of interests. Default \code{1}.
+#' expression value of the marker in the cluster of interests. Default 
+#' \code{NULL}.
 #' @return The input \linkS4class{SingleCellExperiment} object with
 #' \code{metadata(inSCE)$findMarker} updated with a data.table of the up-
 #' regulated DEGs for each cluster.
@@ -40,9 +41,9 @@ findMarkerDiffExp <- function(inSCE, useAssay = 'logcounts',
                               method = c('wilcox', 'MAST', "DESeq2", "Limma",
                                          "ANOVA"),
                               cluster = 'cluster', covariates = NULL,
-                              log2fcThreshold = 0.25, fdrThreshold = 0.05,
-                              minClustExprPerc = 0.6, maxCtrlExprPerc = 0.4,
-                              minMeanExpr = 0.5){
+                              log2fcThreshold = NULL, fdrThreshold = 0.05,
+                              minClustExprPerc = NULL, maxCtrlExprPerc = NULL,
+                              minMeanExpr = NULL){
   # Input checks
   if(!inherits(inSCE, "SingleCellExperiment")){
     stop('"inSCE" should be a SingleCellExperiment inherited Object.')

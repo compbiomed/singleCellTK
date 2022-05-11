@@ -173,13 +173,13 @@ plotDimRed(sce, useReduction = "PCA")
 
 SCTK supports clustering cells with Shared Nearest Neighbors (SNN) graph based methods and K-Means algorithm. For SNN graph based methods, we wrap the graph constructor from `scran` library, and have options of algorithms from `igraph` that can perform clustering on the graph. The result of clustering will be stored in the `colData` slot with variable name set by `clusterName`.  
 
-Similarly as the steps above, `runScranSNN()` allows various types of input matrix, including log-normalized a full sized feature expression matrix or a subset of it, as well as a dimension reduction matrix. In this tutorial, we will use the PCA embedding generated in the previous section.  
+Similarly as the steps above, `runScranSNN()` allows various types of input matrix, including a log-normalized full sized feature expression matrix or a subset of it, as well as a dimension reduction matrix which is more commonly used. In this tutorial, we will use the PCA embedding generated in the previous section.  
 
 ```{R cluster, message=FALSE, warning=FALSE, results="hold"}
 sce <- runScranSNN(sce, useReducedDim = "PCA", clusterName = "cluster", algorithm = "louvain", k = 4)
 ```
 
-Meanwhile, in the Seurat Curated Workflow, the clustering is also done with an SNN graph, but the wrapper function alone, `runSeuratFindClusters()`, would be hard to use out of the curated workflow.  
+Meanwhile, in the [Seurat Curated Workflow](cnsl_seurat_curated_workflow.html), the clustering is also done with an SNN graph, but the wrapper function alone, `runSeuratFindClusters()`, would be hard to use out of the curated workflow.  
 
 In the other curated workflow that SCTK wraps, Celda Curated Workflow, we use a Bayesian hierarchical model that can bi-cluster features into modules and observations into subpopulations. For detail of this method, please refer to the [Celda Documentation](https://celda.camplab.net).   
 
@@ -189,7 +189,7 @@ Uniform Manifold Approximation and Projection (UMAP) is one of the most commonly
 
 Following the steps above, we will now use `useReducedDim` argument to pass the PCA embedding just generated to the function. This wrapper function also allows `useAssay` or `useAltExp` + `useAssay` method, while providing an option of running PCA dimension reduction on the expression matrix prior to the UMAP computation. In this way, however, the PCA will be done by `scater`, thus cannot be customized.  
 
-SCTK also has the function for t-distributed Stochastic Neighbor Embedding (tSNE) method to create 2-D embedding for visualization, `getTSNE()`, where the general arguments for inputting a matrix work in the similar way.  
+SCTK also has the function for t-distributed Stochastic Neighbor Embedding (tSNE) method to create 2-D embedding for visualization, `getTSNE()`, where the general arguments for inputting a matrix work in the similar way. UMAP gives a better presentation of the global structure and is more efficient, while tSNE performs better in preserving the local structure. 
 
 ```{R umap, message=FALSE, warning=FALSE, results="hold"}
 sce <- runDimReduce(inSCE = sce, method = "scaterUMAP", useReducedDim = "PCA", reducedDimName = "UMAP", seed = 12345)
@@ -210,18 +210,14 @@ plotSCEDimReduceColData(sce, colorBy = "cluster", reducedDimName = "UMAP")
 Users can next perform marker detection process with clusters labeled, or any other types of reasonable grouping of similar biological state of cells annotated in `colData` slot. SCTK finds markers for each cluster by running DE analysis on one cluster against all other clusters and iterating the same process for each cluster.  
 
 ```{R findMarker, message=FALSE, warning=FALSE, results="hold"}
-sce <- findMarkerDiffExp(sce, useAssay = "logcounts", method = "wilcox",
-                         cluster = "cluster",
-                         log2fcThreshold = 0, fdrThreshold = 0.05,
-                         minClustExprPerc = 0, maxCtrlExprPerc = 1,
-                         minMeanExpr = 0)
+sce <- findMarkerDiffExp(sce, useAssay = "logcounts", method = "wilcox", cluster = "cluster")
 ```
 
 By running `findMarkerDiffExp()`, SCTK stores a `data.table` of marker table to the `matadata` slot of the SCE object. The marker table will include all detected markers for each cluster and statistical values associated to each marker. To fetch the table, users can use the command below, and even add filtering parameters.  
 
 ```{R getMarkerTable, message=FALSE, warning=FALSE, results="hold"}
 topMarkers <- findMarkerTopTable(sce, topN = 1, log2fcThreshold = 0, fdrThreshold = 0.05,
-                                 minClustExprPerc = 0.5, maxCtrlExprPerc = 0.4,
+                                 minClustExprPerc = 0.5, maxCtrlExprPerc = 0.5,
                                  minMeanExpr = 0)
 head(topMarkers, 10)
 ```
@@ -231,7 +227,7 @@ For visualization, SCTK has a specific heatmap plotting function for detected ma
 ```{R markerHeatmap, message=FALSE, warning=FALSE, results="hold", fig.height= 8, fig.width=9}
 plotMarkerDiffExp(sce, topN = 5, log2fcThreshold = 0, 
                   fdrThreshold = 0.05, minClustExprPerc = 0.5, 
-                  maxCtrlExprPerc = 0.4, minMeanExpr = 0, 
+                  maxCtrlExprPerc = 0.5, minMeanExpr = 0, 
                   rowLabel = TRUE)
 ```
 
