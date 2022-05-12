@@ -6,8 +6,8 @@
 \usage{
 runScranSNN(
   inSCE,
-  useAssay = NULL,
   useReducedDim = NULL,
+  useAssay = NULL,
   useAltExp = NULL,
   altExpAssay = "counts",
   altExpRedDim = NULL,
@@ -25,13 +25,13 @@ runScranSNN(
 \arguments{
 \item{inSCE}{A \linkS4class{SingleCellExperiment} object.}
 
-\item{useAssay}{A single \code{character}, specifying which
-\code{\link{assay}} to perform the clustering algorithm
-on. Default \code{NULL}.}
-
 \item{useReducedDim}{A single \code{character}, specifying which
 low-dimension representation (\code{\link{reducedDim}})
 to perform the clustering algorithm on. Default \code{NULL}.}
+
+\item{useAssay}{A single \code{character}, specifying which
+\code{\link{assay}} to perform the clustering algorithm
+on. Default \code{NULL}.}
 
 \item{useAltExp}{A single \code{character}, specifying the assay which
 \code{\link{altExp}} to perform the clustering
@@ -55,9 +55,8 @@ the cluster label in \code{\link{colData}}. Default
 the graph. Smaller value indicates higher resolution and larger number of
 clusters. Default \code{8}.}
 
-\item{nComp}{An \code{integer}, the number of components to use when
-\code{useAssay} or \code{useAltExp} is specified. WON'T work with
-\code{useReducedDim}. Default \code{50}.}
+\item{nComp}{An \code{integer}. The number of components to use for graph 
+construction. Default \code{50}. See Detail.}
 
 \item{weightType}{A single \code{character}, that specifies the edge weighing
 scheme when constructing the Shared Nearest-Neighbor (SNN) graph. Choose from
@@ -108,6 +107,13 @@ parameters that users can tweak. The help information can be found here:
  \item{for \code{"leadingEigen"}, see function help 
  \code{\link[igraph]{cluster_leading_eigen}}}
 }
+
+The Scran SNN building method can work on specified \code{nComp} components.
+When users specify input matrix by \code{useAssay} or \code{useAltExp} +
+\code{altExpAssay}, the method will generate \code{nComp} components and use
+them all. When specifying \code{useReducedDim} or \code{useAltExp} +
+\code{altExpRedDim}, this function will subset the top \code{nComp} 
+components and pass them to the method.
 }
 \examples{
 data("mouseBrainSubsetSCE")

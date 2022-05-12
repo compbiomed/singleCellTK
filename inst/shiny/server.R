@@ -3421,6 +3421,7 @@ shinyServer(function(input, output, session) {
           }
           if (algo == 'leiden') {
             params$resolution_parameter <- input$clustScranSNNLeidenReso
+            params$objective_function <- input$clusterScranSNNLeidenObjFunc
           }
           if (algo == "walktrap") {
             params$steps <- input$clustScranSNNWalktrapStep

@@ -23,11 +23,11 @@ knitr::opts_chunk$set(warning = FALSE)
 
 ## Introduction
 
-SCTK allows users to do clustering on their data. The clustering methods that SCTK adopts are mainly graph based, such as an SNN graph, supported by Scran [@Aaron2016], or a KNN graph, supported by Seurat [@Stuart2019]. Meanwhile, we also support traditional method such as K-Means [@Forgy65].  
+SCTK allows users to do clustering on their data. The clustering methods that SCTK adopts are mainly graph based algorithms, such as Louvain and Leiden, which partitions a Shared Nearest-Neighbor (SNN) graph. The graph can be constructed by Scran [@Aaron2016] or Seurat [@Stuart2019], and the graph clustering is done by `igraph` or Seurat, respectively. Meanwhile, we also support traditional method such as K-Means [@Forgy65].  
 
-SCTK allows different types data matrix as input. When using Scran's SNN graph based clustering algorithms, users can specify either a expression matrix or a low-dimension representation as the input, while for Seurat's KNN graph based algorithms and K-Means, users can only use the reduced dimensions.
+SCTK allows different types data matrix as input. When using Scran's SNN graph based clustering algorithms, users can specify either an expression matrix or a low-dimension representation as the input, while for Seurat's methods and K-Means, users can only use the reduced dimensions.
 
-To view detailed instructions on how to use these methods, please select 'Interactive Analysis' for using clustering methods in shiny application or 'Console Analysis' for using these methods on R console from the tabs below: <br>
+To view detailed instructions on how to use these methods, please select 'Interactive Analysis' for using clustering methods in Shiny application or 'Console Analysis' for using these methods in R console from the tabs below: <br>
 
 ## Workflow Guide
 
@@ -46,13 +46,13 @@ From anywhere of the UI, the panel for clustering can be accessed from the top n
 
 ![Entry](ui_screenshots/clustering/clst_ui_entry.png)\
 
-The UI is includes two panels. The top one is for setting the parameters and run the clustering, while the bottom one is for visualizing the results. 
+The UI includes two panels. The top one is for setting the parameters and run the clustering, while the bottom one is for visualizing the results. 
 
 **Run Clustering**
 
 **1. Choose An Algorithm**
 
-<img src="ui_screenshots/clustering/clst_ui_algo.png" style="border: 1px solid rgba(0,0,0,0.2)"></img>
+![Algo](ui_screenshots/clustering/clst_ui_algo.png)\
 
 User will choose an algorithm to run the clustering at the very first step. The slide-down option list is constructed in a grouped style. Each group lists all the algorithm that a dependency (shown with grey text) supports. By selecting an algorithm that belongs to different groups, the parameter settings will change.
 
@@ -71,12 +71,17 @@ div.offset { background-color:inherit ; border-radius: 5px; margin-left: 15px;}
 
 ![scran](ui_screenshots/clustering/clst_ui_scran.png)\
 
-When the selected algorithm belongs to "Scran SNN" group, the parameter settings will look like the figure above. For the choices in the algorithm list, please refer to `igraph::cluster_walktrap()`, `igraph::cluster_louvain()`, `igraph::cluster_infomap()`, `igraph::cluster_fast_greedy()`, `igraph::cluster_label_prop()`, and `igraph::cluster_leading_eigen()`.  
+When the selected algorithm belongs to "Scran SNN" group, the parameter settings will look like the figure above. For the choices in the algorithm list, please refer to `igraph::cluster_louvain()`, `igraph::cluster_leiden()`, `igraph::cluster_walktrap()`, `igraph::cluster_infomap()`, `igraph::cluster_fast_greedy()`, `igraph::cluster_label_prop()`, and `igraph::cluster_leading_eigen()`.  
 
 - Data matrix selection - selection input **"Select Input Matrix"**. Scran SNN method allows various types of data matrices. Either a full-sized or a subsetted expression matrix, technically called `assay` or `altExp`, respectively, or a reduced dimension, technically `reducedDim`, is allowed. 
-- Resolution setting - numeric input **"K value"**. `K` is an integer scalar specifying the number of nearest neighbors to consider during graph construction. Considering more neighbors results in larger groups. (See parameter `k` of `scran::buildSNNGraph()`)
-- Algorithm detail setting - selection input **"Edge Weight Type"**. Users can specify the type of weighting scheme to use for shared neighbors. (See parameter `type` of `scran::buildSNNGraph()`)
-- Component number setting (only used when the chosen data matrix is an `assay` or `altExp`) - numeric input **"Number of Components"**. When an `assay` or `altExp` is chosen, the algorithm will perform a PCA on the matrix and obtain the top principal components (PCs) for downstream use. Thus users will specify the number of PCs here. 
+- Resolution related parameters:
+    - Numeric input **"K value"**. `K` is an integer scalar specifying the number of nearest neighbors to consider during graph construction. Considering more neighbors results in larger groups. (See parameter `k` of `scran::buildSNNGraph()`)
+    - Numeric input **"Resolution"**, only seen when choosing "leiden" algorithm. Higher resolutions lead to more smaller communities, while lower resolutions lead to fewer larger communities. (See parameter `resolution_parameter` of `igraph::cluster_leiden()`)
+    - Numeric input **"Steps"**, only seen when choosing "walktrap" algorithm. The length of the random walks to perform. Less steps lead to fewer larger communities, and take more time for computation. (See parameter `steps` of `igraph::cluster_walktrap()`)
+- Algorithm detail setting 
+    - selection input **"Edge Weight Type"**. Users can specify the type of weighting scheme to use for shared neighbors. (See parameter `type` of `scran::buildSNNGraph()`)
+    - Selection input **"Objective Function"**, only seen when choosing "leiden" algorithm. The objective function, "CPM" [@Ronhovde2010] or "modularity" [@Newman2004], evaluates the partitioning of the graph, and the algorithm attempts to maximize the score. 
+- Component number setting - numeric input **"Number of Components"**. If users specify a low-dimensional matrix as input, the method will be applied on the top components. When an `assay` or `altExp` is chosen, the algorithm will perform a PCA on the matrix and obtain the top PCs for downstream use. This number could be determined with the help of an Elbow plot in the ["Dimension Reduction"](cnsl_dimensionality_reduction.html) section, and should be consistent with what is used for 2D embedding for better visualization. 
 
 ````{=html}
 </details>
@@ -137,7 +142,7 @@ The visualization is implemented with a plotting of a chosen low-dimension embed
 <div id="console" class="tabcontent">
 ````
 
-The clustering methods mentioned in the Introduction can be easily applied to any preprocessed SCE object. Meanwhile, there are other types of clustering methods supported by SCTK, but usually dependent to a curated workflow, such as [`celda`](https://rdrr.io/bioc/celda/). Here we present the usage of the three functions only.  
+The clustering methods mentioned in the Introduction can be easily applied to any preprocessed SCE object. Meanwhile, there are other types of clustering methods supported by SCTK, but usually dependent to a curated workflow, such as the [Celda Curated Workflow](celda_curated_workflow.html). Here we present the usage of the three functions only.  
 
 **Basic Parameters**
 
@@ -149,25 +154,19 @@ For each of the three functions, the common things are:
 
 As for another essential parameter, the data matrix used for running the algorithm is a must. Here, users should notice that:
 
+- For `runScranSNN()`, either a feature expression matrix or a dimension reduction is acceptable. Users need to use: 
+    - `useAssay` for a full-sized expression data (`assay`)
+    - `useAltExp` and `altExpAssay` for a subsetted expression data (`altExp`)
+    - `useReducedDim` for a dimension reduction. (`reducedDim`)
+    - `useAltExp` and `altExpRedDim` for a reduced dimension stored in the `altExp` object. 
 - For `runKMeans()`, only a dimension reduction is acceptable. Users need to use `useReducedDim` to pass the argument.
-- For `runScranSNN()`, either a feature expression matrix or a dimension reduction is acceptable. Users need to use `useAssay` for a full-sized expression data (`assay`), `useAltExp` and `altExpAssay` for a subsetted expression data (`altExp`), or `useReducedDim` for a dimension reduction. 
 - For `runSeuratFindClusters()`, it is included within the Seurat Curated Workflow, yet usable as an independent function. However, it will be complicated to use this way. It is recommended to invoke the Seurat clustering functionality in the UI since it is automated there. We will still present the complicated workflow later.  
 
 Other parameters are method specific, please refer to the function manual pages for the detail. 
 
-````{=html}
-<details>
-  <summary><b>Example</b></summary>
-```` 
+**Example**
 
-To demonstrate simple and clear examples, here we use the "PBMC-3k" dataset from "10X" which can be easily imported with SCTK functions. 
-
-```{R clst_import, eval=FALSE, message=FALSE, warning=FALSE, fig.align="center", cache=TRUE, results='hide'}
-library(singleCellTK)
-sce <- importExampleData("pbmc3k")
-```
-
-The preprocessing only includes necessary steps before getting cluster labels (i.e. QC and filtering are excluded). 
+To demonstrate simple and clear examples, here we use the "PBMC-3k" dataset from "10X" which can be easily imported with SCTK functions. The preprocessing only includes necessary steps before getting cluster labels (i.e. QC and filtering are excluded). 
 
 ````{=html}
 <div class = "offset">
@@ -176,16 +175,16 @@ The preprocessing only includes necessary steps before getting cluster labels (i
 ````
 
 ```{R clst_prep, eval=FALSE, message=FALSE, warning=FALSE, fig.align="center", cache=TRUE, results='hide'}
-
-sce <- scaterlogNormCounts(sce, "logcounts")
-# Go through the Seurat curated workflow to get basic scaled assay and dimension reduction
+library(singleCellTK)
+sce <- importExampleData("pbmc3k")
+# Go through the Seurat curated workflow to get the dimension reduction
 sce <- runSeuratNormalizeData(inSCE = sce, useAssay = "counts")
 sce <- runSeuratFindHVG(inSCE = sce, useAssay = "seuratNormData")
 sce <- runSeuratScaleData(inSCE = sce, useAssay = "seuratNormData")
 sce <- runSeuratPCA(inSCE = sce, useAssay = "seuratScaledData")
 # Optional visualization
-sce <- runSeuratUMAP(pbmc3k)
-plotSCEDimReduceColData(inSCE = sce,  colorBy = "Sample", reducedDimName = "seuratUMAP")
+sce <- runSeuratUMAP(sce)
+plotSCEDimReduceColData(inSCE = sce, colorBy = "Sample", reducedDimName = "seuratUMAP")
 ```
 
 ````{=html}
@@ -200,24 +199,23 @@ plotSCEDimReduceColData(inSCE = sce,  colorBy = "Sample", reducedDimName = "seur
 ````
 - `k`, the number of nearest neighbors used to construct the graph. Smaller value indicates higher resolution and larger number of clusters. 
 - `nComp`, the number of components to use when `useAssay` or `useAltExp` is specified. WON'T work with `useReducedDim`. 
-- For `weightType` and `algorithm`, users should choose from a given list of options, which can be found with `?runScranSNN`. For the introduction of those options, please refer to `scran::buildSNNGraph()` and [`igraph`](https://rdrr.io/cran/igraph/). 
+- For `weightType` and `algorithm`, users should choose from a given list of options, which can be found with `?runScranSNN`. For the introduction of those options, please refer to `scran::buildSNNGraph()` and [igraph](https://rdrr.io/cran/igraph/). 
+- Different algorithms, supported by [igraph](https://rdrr.io/cran/igraph/), might allows different parameters, such as `objective_function` and `resolution_parameter` for Leiden [@Traag2019], `steps` for Walktrap [@Pons2005]. Please also refer to function reference for detail. 
 ````{=html}
 </details>
 ````
 
 ```{R clst_ScranSNN, eval=FALSE, message=FALSE, warning=FALSE, fig.align="center", cache=TRUE, results='hide'}
 # Directly use an assay
-sce <- runScranSNN(inSCE = sce, useAssay = "logcounts", k = 10, clusterName = "scranSNN_logcounts")
-plotSCEDimReduceColData(inSCE = sce, colorBy = "scranSNN_logcounts", conditionClass = "factor", reducedDimName = "seuratUMAP")
+sce <- runScranSNN(inSCE = sce, useAssay = "seuratNormData", clusterName = "scranSNN_logcounts")
+plotSCEDimReduceColData(inSCE = sce, colorBy = "scranSNN_logcounts", reducedDimName = "seuratUMAP")
 # Directly use a dimension reduction
-sce <- runScranSNN(inSCE = sce, useReducedDim =  "seuratUMAP", k = 25, clusterName = "scranSNN_seuratUMAP")
-plotSCEDimReduceColData(inSCE = sce, colorBy = "scranSNN_seuratUMAP", conditionClass = "factor", reducedDimName = "seuratUMAP")
+sce <- runScranSNN(inSCE = sce, useReducedDim =  "seuratPCA", clusterName = "scranSNN_seuratPCA")
+plotSCEDimReduceColData(inSCE = sce, colorBy = "scranSNN_seuratPCA", reducedDimName = "seuratUMAP")
 # Use a subset of an assay
-hvg <- getTopHVG(sce, "vst", n = 500)
-ae <- SingleCellExperiment(assays = list(logcounts = logcounts(sce[hvg,])))
-altExp(sce, "subset") <- ae
-sce <- runScranSNN(inSCE = sce, useAltExp = "subset", altExpAssay = "logcounts", k = 8, clusterName = "scranSNN_altExp")
-plotSCEDimReduceColData(inSCE = sce, colorBy = "scranSNN_altExp", conditionClass = "factor", reducedDimName = "seuratUMAP")
+sce <- getTopHVG(sce, "vst", n = 1000, altExp = "hvg")
+sce <- runScranSNN(inSCE = sce, useAltExp = "hvg", altExpAssay = "seuratNormData",  clusterName = "scranSNN_altExp")
+plotSCEDimReduceColData(inSCE = sce, colorBy = "scranSNN_altExp", reducedDimName = "seuratUMAP")
 ```
 
 ````{=html}
@@ -242,8 +240,8 @@ plotSCEDimReduceColData(inSCE = sce, colorBy = "scranSNN_altExp", conditionClass
 ````
 
 ```{R clst_kmeans, eval=FALSE, message=FALSE, warning=FALSE, fig.align="center", cache=TRUE, results='hide'}
-sce <- runKMeans(inSCE = sce, useReducedDim = "seuratUMAP", nCenters = 13, clusterName = "kmeans_cluster")
-plotSCEDimReduceColData(inSCE = sce, colorBy = "kmeans_cluster", conditionClass = "factor", reducedDimName = "seuratUMAP")
+sce <- runKMeans(inSCE = sce, useReducedDim = "seuratPCA", nCenters = 10, clusterName = "kmeans_cluster")
+plotSCEDimReduceColData(inSCE = sce, colorBy = "kmeans_cluster", reducedDimName = "seuratUMAP")
 ```
 
 ````{=html}
@@ -255,31 +253,27 @@ plotSCEDimReduceColData(inSCE = sce, colorBy = "kmeans_cluster", conditionClass 
 Here we will only present the examples of using `runSeuratFindClusters()`. 
 
 ```{R clst_seurat1, eval=FALSE, message=FALSE, warning=FALSE, fig.align="center", cache=TRUE, results='hide'}
-sce <- runSeuratFindClusters(inSCE = sce, useAssay = "seuratScaledData")
-plotSCEDimReduceColData(inSCE = sce, colorBy = "Seurat_louvain_Resolution0.8", conditionClass = "factor", reducedDimName = "seuratUMAP")
+sce <- runSeuratFindClusters(inSCE = sce, useReduction = "pca")
+plotSCEDimReduceColData(inSCE = sce, colorBy = "Seurat_louvain_Resolution0.8", reducedDimName = "seuratUMAP")
 ```
 
 When users preprocessed the dataset with other approaches. The clustering with Seurat function can be complicated, since some sorts of Seurat specific metadata is always needed.  
 
 ```{R clst_seurat2, eval=FALSE, message=FALSE, warning=FALSE, fig.align="center", cache=TRUE, results='hide'}
 # Let's get another totally independent dimension reduction for demonstration. 
-sce <- scaterPCA(sce, reducedDimName = "PCA")
+sce <- scaterPCA(sce, useAssay = "seuratNormData", scale = TRUE, reducedDimName = "PCA")
+# Prepare what seurat function needs
 pca <- reducedDim(sce, "PCA")
 rownames(pca) <- gsub("_", "-", rownames(pca))
-if ("percentVar" %in% names(attributes(pca))) {
-    stdev <- as.numeric(attr(pca, "percentVar"))
-    new_pca <- Seurat::CreateDimReducObject(embeddings = sce, assay = "RNA", stdev = stdev, key = "PC_")
-} else {
-    new_pca <- Seurat::CreateDimReducObject(embeddings = sce, assay = "RNA", key = "PC_")
-}
+stdev <- as.numeric(attr(pca, "percentVar"))
+new_pca <- Seurat::CreateDimReducObject(embeddings = pca, assay = "RNA", stdev = stdev, key = "PC_")
 # Then we can take the Seurat Curated Workflow independent dimension 
 # reduction as an input. 
-pbmc3k <- runSeuratFindClusters(inSCE = sce, useAssay = assayNames(sce)[1], externalReduction = new_pca, resolution = 0.8)
-plotSCEDimReduceColData(inSCE = sce, colorBy = "Seurat_louvain_Resolution0.8", conditionClass = "factor", reducedDimName = "seuratUMAP")
+pbmc3k <- runSeuratFindClusters(sce, externalReduction = new_pca)
+plotSCEDimReduceColData(inSCE = sce, colorBy = "Seurat_louvain_Resolution0.8", reducedDimName = "seuratUMAP")
 ```
 
 ````{=html}
-</details>
 </details>
 </div>
 </div>

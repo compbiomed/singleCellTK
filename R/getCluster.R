@@ -4,12 +4,12 @@
 #' construction by \code{\link[scran]{buildSNNGraph}} and graph clustering by
 #' "igraph" package.
 #' @param inSCE A \linkS4class{SingleCellExperiment} object.
-#' @param useAssay A single \code{character}, specifying which
-#' \code{\link{assay}} to perform the clustering algorithm
-#' on. Default \code{NULL}.
 #' @param useReducedDim A single \code{character}, specifying which
 #' low-dimension representation (\code{\link{reducedDim}})
 #' to perform the clustering algorithm on. Default \code{NULL}.
+#' @param useAssay A single \code{character}, specifying which
+#' \code{\link{assay}} to perform the clustering algorithm
+#' on. Default \code{NULL}.
 #' @param useAltExp A single \code{character}, specifying the assay which
 #' \code{\link{altExp}} to perform the clustering
 #' algorithm on. Default \code{NULL}.
@@ -27,9 +27,8 @@
 #' @param k An \code{integer}, the number of nearest neighbors used to construct
 #' the graph. Smaller value indicates higher resolution and larger number of
 #' clusters. Default \code{8}.
-#' @param nComp An \code{integer}, the number of components to use when
-#' \code{useAssay} or \code{useAltExp} is specified. WON'T work with
-#' \code{useReducedDim}. Default \code{50}.
+#' @param nComp An \code{integer}. The number of components to use for graph 
+#' construction. Default \code{50}. See Detail.
 #' @param weightType A single \code{character}, that specifies the edge weighing
 #' scheme when constructing the Shared Nearest-Neighbor (SNN) graph. Choose from
 #' \code{"rank"}, \code{"number"}, \code{"jaccard"}. Default \code{"rank"}.
@@ -65,13 +64,20 @@
 #'  \item{for \code{"leadingEigen"}, see function help 
 #'  \code{\link[igraph]{cluster_leading_eigen}}}
 #' }
+#' 
+#' The Scran SNN building method can work on specified \code{nComp} components.
+#' When users specify input matrix by \code{useAssay} or \code{useAltExp} +
+#' \code{altExpAssay}, the method will generate \code{nComp} components and use
+#' them all. When specifying \code{useReducedDim} or \code{useAltExp} +
+#' \code{altExpRedDim}, this function will subset the top \code{nComp} 
+#' components and pass them to the method. 
 #' @references Aaron Lun and et. al., 2016
 #' @export
 #' @examples
 #' data("mouseBrainSubsetSCE")
 #' mouseBrainSubsetSCE <- runScranSNN(mouseBrainSubsetSCE,
 #'                                    useReducedDim = "PCA_logcounts")
-runScranSNN <- function(inSCE, useAssay = NULL, useReducedDim = NULL,
+runScranSNN <- function(inSCE, useReducedDim = NULL, useAssay = NULL, 
                         useAltExp = NULL, altExpAssay = "counts",
                         altExpRedDim = NULL,
                         clusterName = "scranSNN_cluster",
@@ -124,7 +130,15 @@ runScranSNN <- function(inSCE, useAssay = NULL, useReducedDim = NULL,
       if (!useReducedDim %in% SingleCellExperiment::reducedDimNames(inSCE)) {
         stop("Specified reducedDim '", useReducedDim, "' not found.")
       }
-      g <- scran::buildSNNGraph(x = inSCE, k = k, use.dimred = useReducedDim,
+      # scran::buildSNNGraph by default use all dims of useReducedDim
+      # Need to subset it before passing to Scran, if nComp specified
+      nComp <- min(nComp, ncol(SingleCellExperiment::reducedDim(inSCE, 
+                                                                useReducedDim)))
+      tempSCE <- SingleCellExperiment::SingleCellExperiment(
+        assays = list(counts = assay(inSCE)),
+        reducedDims = list(pca = reducedDim(inSCE, useReducedDim)[,seq(nComp)])
+      )
+      g <- scran::buildSNNGraph(x = tempSCE, k = k, use.dimred = "pca",
                                 type = weightType, BPPARAM = BPPARAM)
     } else if (!is.null(useAltExp)) {
       if (!useAltExp %in% SingleCellExperiment::altExpNames(inSCE)) {
@@ -135,7 +149,14 @@ runScranSNN <- function(inSCE, useAssay = NULL, useReducedDim = NULL,
         if (!altExpRedDim %in% SingleCellExperiment::reducedDimNames(ae)) {
           stop("altExpRedDim: '", altExpRedDim, "' not in specified altExp.")
         }
-        g <- scran::buildSNNGraph(x = ae, k = k, use.dimred = altExpRedDim,
+        nComp <- min(nComp, 
+                     ncol(SingleCellExperiment::reducedDim(ae, 
+                                                           useReducedDim)))
+        tempSCE <- SingleCellExperiment::SingleCellExperiment(
+          assays = list(counts = assay(ae)),
+          reducedDims = list(pca = reducedDim(ae, useReducedDim)[,seq(nComp)])
+        )
+        g <- scran::buildSNNGraph(x = tempSCE, k = k, use.dimred = "pca",
                                   type = weightType, BPPARAM = BPPARAM)
       } else {
         if (!altExpAssay %in% SummarizedExperiment::assayNames(ae)) {

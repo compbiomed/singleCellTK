@@ -60,6 +60,12 @@ shinyPanelCluster <- fluidPage(
               4,
               numericInput("clustScranSNNLeidenReso", "Resolution:",
                            value = 1, min = 0, step = 0.1)
+            ),
+            column(
+              6,
+              selectInput("clusterScranSNNLeidenObjFunc", "Objective Function:",
+                          c("Constant Potts Model (CPM)" = "CPM",
+                            "Modularity" = "modularity"), selected = "CPM")
             )
           ),
           conditionalPanel(
