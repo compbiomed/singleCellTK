@@ -1,10 +1,9 @@
 #' Get clustering with SNN graph
-#' @description Perform SNN graph clustering on a
-#' \code{\link[SingleCellExperiment]{SingleCellExperiment}} object, with graph
+#' @description Perform SNN graph clustering on a 
+#' \linkS4class{SingleCellExperiment} object, with graph
 #' construction by \code{\link[scran]{buildSNNGraph}} and graph clustering by
 #' "igraph" package.
-#' @param inSCE A \code{\link[SingleCellExperiment]{SingleCellExperiment}}
-#' object.
+#' @param inSCE A \linkS4class{SingleCellExperiment} object.
 #' @param useAssay A single \code{character}, specifying which
 #' \code{\link{assay}} to perform the clustering algorithm
 #' on. Default \code{NULL}.
@@ -45,8 +44,8 @@
 #' will use global seed in use by the R environment.
 #' @param ... Other optional parameters passed to the \code{\link{igraph}} 
 #' clustering functions. See Details.
-#' @return The input \code{\link[SingleCellExperiment]{SingleCellExperiment}}
-#' object with \code{factor} cluster labeling updated in
+#' @return The input \linkS4class{SingleCellExperiment} object with 
+#' \code{factor} cluster labeling updated in 
 #' \code{colData(inSCE)[[clusterName]]}.
 #' @details Different graph based clustering algorithms have diverse sets of 
 #' parameters that users can tweak. The help information can be found here:
@@ -94,7 +93,7 @@ runScranSNN <- function(inSCE, useAssay = NULL, useReducedDim = NULL,
                          altExpAssay = altExpAssay, altExpRedDim = altExpRedDim,
                          clusterName = clusterName, k = k, nComp = nComp, 
                          weightType = weightType, algorithm = algorithm,
-                         BPPARAM = BPPARAM, seed = NULL))
+                         BPPARAM = BPPARAM, seed = NULL, ...))
   } else {
     if (!inherits(inSCE, "SingleCellExperiment")) {
       stop("'inSCE' should be a SingleCellExperiment object.")
@@ -147,15 +146,7 @@ runScranSNN <- function(inSCE, useAssay = NULL, useReducedDim = NULL,
                                   use.dimred = NULL, BPPARAM = BPPARAM)
       }
     }
-    
     clustFunc = graphClustAlgoList[[algorithm]]
-    if (!is.null(seed)) {
-      withr::with_seed(
-        seed = seed,
-        code = clust <- clustFunc(g, ...)$membership)
-    } else {
-      clust <- clustFunc(g, ...)$membership
-    }
     clust <- clustFunc(g, ...)$membership
     SummarizedExperiment::colData(inSCE)[[clusterName]] <- factor(clust)
     return(inSCE)
@@ -163,11 +154,9 @@ runScranSNN <- function(inSCE, useAssay = NULL, useReducedDim = NULL,
 }
 
 #' Get clustering with KMeans
-#' @description Perform KMeans clustering on a
-#' \code{\link[SingleCellExperiment]{SingleCellExperiment}} object, with
-#' \code{\link[stats]{kmeans}}.
-#' @param inSCE A \code{\link[SingleCellExperiment]{SingleCellExperiment}}
-#' object.
+#' @description Perform KMeans clustering on a 
+#' \linkS4class{SingleCellExperiment} object, with \code{\link[stats]{kmeans}}.
+#' @param inSCE A \linkS4class{SingleCellExperiment} object.
 #' @param useReducedDim A single \code{character}, specifying which
 #' low-dimension representation to perform the clustering algorithm on. Default
 #' \code{"PCA"}.
@@ -184,8 +173,8 @@ runScranSNN <- function(inSCE, useAssay = NULL, useReducedDim = NULL,
 #' @param algorithm A single \code{character}. Choose from
 #' \code{"Hartigan-Wong"}, \code{"Lloyd"}, \code{"MacQueen"}. May be
 #' abbreviated. Default \code{"Hartigan-Wong"}.
-#' @return The input \code{\link[SingleCellExperiment]{SingleCellExperiment}}
-#' object with \code{factor} cluster labeling updated in
+#' @return The input \linkS4class{SingleCellExperiment} object with 
+#' \code{factor} cluster labeling updated in 
 #' \code{colData(inSCE)[[clusterName]]}.
 #' @export
 #' @examples

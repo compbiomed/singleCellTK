@@ -16,8 +16,7 @@ runKMeans(
 )
 }
 \arguments{
-\item{inSCE}{A \code{\link[SingleCellExperiment]{SingleCellExperiment}}
-object.}
+\item{inSCE}{A \linkS4class{SingleCellExperiment} object.}
 
 \item{useReducedDim}{A single \code{character}, specifying which
 low-dimension representation to perform the clustering algorithm on. Default
@@ -43,14 +42,13 @@ Default \code{12345}.}
 abbreviated. Default \code{"Hartigan-Wong"}.}
 }
 \value{
-The input \code{\link[SingleCellExperiment]{SingleCellExperiment}}
-object with \code{factor} cluster labeling updated in
+The input \linkS4class{SingleCellExperiment} object with 
+\code{factor} cluster labeling updated in 
 \code{colData(inSCE)[[clusterName]]}.
 }
 \description{
-Perform KMeans clustering on a
-\code{\link[SingleCellExperiment]{SingleCellExperiment}} object, with
-\code{\link[stats]{kmeans}}.
+Perform KMeans clustering on a 
+\linkS4class{SingleCellExperiment} object, with \code{\link[stats]{kmeans}}.
 }
 \examples{
 data("mouseBrainSubsetSCE")

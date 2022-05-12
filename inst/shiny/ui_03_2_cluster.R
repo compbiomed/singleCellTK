@@ -13,13 +13,14 @@ shinyPanelCluster <- fluidPage(
         column(
           6,
           selectInput("clustAlgo", "Select Algorithm",
-                      list("Scran SNN" = c("walktrap" = 1, "louvain" = 2,
-                                           "infomap" = 3, "fastGreedy" = 4,
-                                           "labelProp" = 5, "leadingEigen" = 6),
-                           "K-Means" = c("Hartigan-Wong" = 7, "Lloyd" = 8,
-                                         "MacQueen" = 9),
-                           "Seurat" = c("louvain" = 10, "multilevel" = 11,
-                                        "SLM" = 12)),
+                      list("Scran SNN" = c("louvain" = 1, "leiden" = 2, 
+                                           "walktrap" = 3, "infomap" = 4, 
+                                           "fast greedy" = 5, "label prop" = 6, 
+                                           "leading eigen" = 7),
+                           "K-Means" = c("Hartigan-Wong" = 8, "Lloyd" = 9,
+                                         "MacQueen" = 10),
+                           "Seurat" = c("louvain" = 11, "multilevel" = 12,
+                                        "SLM" = 13)),
                       )
         )
       ),
@@ -27,7 +28,7 @@ shinyPanelCluster <- fluidPage(
       fluidRow(
         # Scran SNN ####
         conditionalPanel(
-          "input.clustAlgo >=1 && input.clustAlgo <= 6",
+          "input.clustAlgo >=1 && input.clustAlgo <= 7",
           column(
             6,
             selectizeInput(
@@ -41,26 +42,39 @@ shinyPanelCluster <- fluidPage(
           ),
           column(
             4,
-            numericInput("clustScranSNNK", "K value:", 10, min = 1, step = 1),
+            numericInput("clustScranSNNK", "K value:", 8, min = 1, step = 1),
           ),
-          conditionalPanel(
-            "input.clustScranSNNInType != 'ReducedDim'",
-            column(
-              4,
-              numericInput("clustScranSNNd", "Number of Components:",
-                           50, min = 2, step = 5)
-            )
+          column(
+            4,
+            numericInput("clustScranSNNd", "Number of Components:",
+                         50, min = 2, step = 5)
           ),
           column(
             4,
             selectInput("clustScranSNNType", "Edge Weight Type:",
                         c("rank", "number", "jaccard"), selected = "rank")
+          ),
+          conditionalPanel(
+            condition = 'input.clustAlgo == 2',
+            column(
+              4,
+              numericInput("clustScranSNNLeidenReso", "Resolution:",
+                           value = 1, min = 0, step = 0.1)
+            )
+          ),
+          conditionalPanel(
+            condition = 'input.clustAlgo == 3',
+            column(
+              4,
+              numericInput("clustScranSNNWalktrapStep", "Steps:",
+                           value = 4, min = 1, step = 1)
+            )
           )
         ),
 
         # K-Means ####
         conditionalPanel(
-          "input.clustAlgo >= 7 && input.clustAlgo <= 9",
+          "input.clustAlgo >= 8 && input.clustAlgo <= 10",
           column(
             6,
             selectInput("clustKMeansReddim", "Select A ReducedDim:", currreddim)
@@ -89,7 +103,7 @@ shinyPanelCluster <- fluidPage(
 
         # Seurat ####
         conditionalPanel(
-          "input.clustAlgo >= 10 && input.clustAlgo <= 12",
+          "input.clustAlgo >= 11 && input.clustAlgo <= 13",
           column(
             6,
             selectInput("clustSeuratReddim", "Select A ReducedDim:", currreddim)
@@ -116,7 +130,9 @@ shinyPanelCluster <- fluidPage(
         )
       ), # fuildRow ends here
       useShinyjs(),
-      uiOutput("clustNameUI"),
+      textInput("clustName", "Name of Clustering Result:",
+                ""),
+      #uiOutput("clustNameUI"),
       withBusyIndicatorUI(actionButton("clustRun", "Run"))
     ),
     h3("Visualization"),

@@ -23,8 +23,7 @@ runScranSNN(
 )
 }
 \arguments{
-\item{inSCE}{A \code{\link[SingleCellExperiment]{SingleCellExperiment}}
-object.}
+\item{inSCE}{A \linkS4class{SingleCellExperiment} object.}
 
 \item{useAssay}{A single \code{character}, specifying which
 \code{\link{assay}} to perform the clustering algorithm
@@ -80,13 +79,13 @@ will use global seed in use by the R environment.}
 clustering functions. See Details.}
 }
 \value{
-The input \code{\link[SingleCellExperiment]{SingleCellExperiment}}
-object with \code{factor} cluster labeling updated in
+The input \linkS4class{SingleCellExperiment} object with 
+\code{factor} cluster labeling updated in 
 \code{colData(inSCE)[[clusterName]]}.
 }
 \description{
-Perform SNN graph clustering on a
-\code{\link[SingleCellExperiment]{SingleCellExperiment}} object, with graph
+Perform SNN graph clustering on a 
+\linkS4class{SingleCellExperiment} object, with graph
 construction by \code{\link[scran]{buildSNNGraph}} and graph clustering by
 "igraph" package.
 }

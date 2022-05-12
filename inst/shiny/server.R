@@ -3316,24 +3316,35 @@ shinyServer(function(input, output, session) {
   # Page 3: Clustering ####
   #-----------------------------------------------------------------------------
 
-  output$clustNameUI <- renderUI({
-    if(input$clustAlgo %in% seq(6)){
+  observeEvent(input$clustAlgo, {
+    if(input$clustAlgo %in% seq(7)){
       # Scran SNN
-      textInput("clustName", "Name of Clustering Result:",
-                "scran_snn_cluster")
-    } else if(input$clustAlgo %in% seq(7, 9)){
+      updateTextInput(session, "clustName", value = "scran_snn_cluster")
+      enable("clustName")
+    } else if(input$clustAlgo %in% seq(8, 10)){
       # K-Means
-      textInput("clustName", "Name of Clustering Result:",
-                "kmeans_cluster")
-    } else if(input$clustAlgo %in% seq(10, 12)){
-      algoList <- list('10' = "louvain",
-                       '11' = "multilevel", '12' = "SLM")
+      updateTextInput(session, "clustName", value = "kmeans_cluster")
+      enable("clustName")
+    } else if(input$clustAlgo %in% seq(11, 13)){
+      algoList <- list('11' = "louvain",
+                       '12' = "multilevel", '13' = "SLM")
       algo <- algoList[[as.character(input$clustAlgo)]]
-      disabled(
-        textInput("clustName", "Name of Clustering Result:",
-                  paste0("Seurat", "_", algo, "_",
-                         "Resolution", input$clustSeuratRes))
-      )
+        updateTextInput(session, "clustName", 
+                        value = paste0("Seurat", "_", algo, "_",
+                                       "Resolution", input$clustSeuratRes))
+        disable("clustName")
+    }
+  })
+  
+  observeEvent(input$clustSeuratRes, {
+    if (input$clustAlgo %in% seq(11, 13)) {
+      algoList <- list('11' = "louvain",
+                       '12' = "multilevel", '13' = "SLM")
+      algo <- algoList[[as.character(input$clustAlgo)]]
+      updateTextInput(session, "clustName", 
+                      value = paste0("Seurat", "_", algo, "_",
+                                     "Resolution", input$clustSeuratRes))
+      disable("clustName")
     }
   })
 
@@ -3364,7 +3375,7 @@ shinyServer(function(input, output, session) {
     } else {
       withBusyIndicatorServer("clustRun", {
         saveClusterName = gsub(" ", "_", input$clustName)
-        if(input$clustAlgo %in% seq(6)){
+        if(input$clustAlgo %in% seq(7)){
           # Scran SNN
           if(is.na(input$clustScranSNNK)){
             stop("K must be a numeric non-empty value!")
@@ -3372,9 +3383,9 @@ shinyServer(function(input, output, session) {
           if(is.na(input$clustScranSNNd)){
             stop("Number of components must be a numeric non-empty value!")
           }
-          algoList <- list('1' = "walktrap", '2' = "louvain", '3' = "infomap",
-                           '4' = "fastGreedy", '5' = "labelProp",
-                           '6' = "leadingEigen")
+          algoList <- list('1' = "louvain", '2' = "leiden", '3' = "walktrap", 
+                           '4' = "infomap", '5' = "fastGreedy", 
+                           '6' = "labelProp", '7' = "leadingEigen")
           algo <- algoList[[as.character(input$clustAlgo)]]
           params = list(inSCE = vals$counts,
                         clusterName = saveClusterName,
@@ -3408,8 +3419,14 @@ shinyServer(function(input, output, session) {
             updateSelectInput(session, "clustVisReddim",
                               selected = input$clustScranSNNMat)
           }
+          if (algo == 'leiden') {
+            params$resolution_parameter <- input$clustScranSNNLeidenReso
+          }
+          if (algo == "walktrap") {
+            params$steps <- input$clustScranSNNWalktrapStep
+          }
           vals$counts <- do.call(runScranSNN, params)
-        } else if (input$clustAlgo %in% seq(7, 9)) {
+        } else if (input$clustAlgo %in% seq(8, 10)) {
           # K-Means
           if(input$clustKMeansReddim == ""){
             stop("Must select a reducedDim! If none available, compute one in the Dimensionality Reduction tab.")
@@ -3423,8 +3440,8 @@ shinyServer(function(input, output, session) {
           if(is.na(input$clustKMeansNStart)){
             stop("Number of random sets must be a numeric non-empty value!")
           }
-          algoList <- list('7' = "Hartigan-Wong",
-                           '8' = "Lloyd", '9' = "MacQueen")
+          algoList <- list('8' = "Hartigan-Wong",
+                           '9' = "Lloyd", '10' = "MacQueen")
           algo <- algoList[[as.character(input$clustAlgo)]]
           vals$counts <- runKMeans(inSCE = vals$counts,
                                    useReducedDim = input$clustKMeansReddim,
@@ -3436,7 +3453,7 @@ shinyServer(function(input, output, session) {
           updateSelectInput(session, "clustVisReddim",
                             selected = input$clustKMeansReddim)
           plotReddim <- input$clustKMeansReddim
-        } else if (input$clustAlgo %in% seq(10, 12)) {
+        } else if (input$clustAlgo %in% seq(11, 13)) {
           # Seurat
           if(input$clustSeuratReddim == ""){
             stop("Must select a reducedDim! If none available, compute one in the Dimensionality Reduction tab.")
@@ -3464,8 +3481,8 @@ shinyServer(function(input, output, session) {
             dims <- input$clustSeuratDims
           }
           useAssay <- assayNames(vals$counts)[1]
-          algoList <- list('10' = "louvain",
-                           '11' = "multilevel", '12' = "SLM")
+          algoList <- list('11' = "louvain",
+                           '12' = "multilevel", '13' = "SLM")
           algo <- algoList[[as.character(input$clustAlgo)]]
           vals$counts <- runSeuratFindClusters(inSCE = vals$counts,
                                             useAssay = useAssay,
