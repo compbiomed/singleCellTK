@@ -283,7 +283,7 @@ plotDEGRegression <- function(inSCE, useResult, threshP = FALSE, labelBy = NULL,
 #' used when running a differential expression analysis function.
 #' @param labelBy A single character for a column of \code{rowData(inSCE)} as
 #' where to search for the labeling text. Leave \code{NULL} for \code{rownames}.
-#' Default \code{metadata(sce)$featureDisplay} (see 
+#' Default \code{metadata(inSCE)$featureDisplay} (see 
 #' \code{\link{setSCTKDisplayRow}}).
 #' @param onlyPos logical. Whether to only fetch DEG with positive log2_FC
 #' value. Default \code{FALSE}.
@@ -311,7 +311,7 @@ plotDEGRegression <- function(inSCE, useResult, threshP = FALSE, labelBy = NULL,
 #'                    analysisName = "w.aVSb")
 #' getDEGTopTable(sce.w, "w.aVSb")
 getDEGTopTable <- function(inSCE, useResult, 
-                           labelBy = S4Vectors::metadata(sce)$featureDisplay, 
+                           labelBy = S4Vectors::metadata(inSCE)$featureDisplay, 
                            onlyPos = FALSE, log2fcThreshold = 0.25, 
                            fdrThreshold = 0.05, minGroup1MeanExp = NULL, 
                            maxGroup2MeanExp = NULL, minGroup1ExprPerc = NULL, 
@@ -571,7 +571,7 @@ plotDEGHeatmap <- function(inSCE, useResult, onlyPos = FALSE,
 #' value as regulated. Default \code{0.05}.
 #' @param featureDisplay A character string to indicate a variable in 
 #' \code{rowData(inSCE)} for feature labeling. \code{NULL} for using 
-#' \code{rownames}. Default \code{metadata(sce)$featureDisplay} (see 
+#' \code{rownames}. Default \code{metadata(inSCE)$featureDisplay} (see 
 #' \code{\link{setSCTKDisplayRow}})
 #' @return A \code{ggplot} object of volcano plot
 #' @seealso \code{\link{runDEAnalysis}}, \code{\link{plotDEGHeatmap}}
