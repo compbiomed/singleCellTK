@@ -564,12 +564,17 @@ plotDEGHeatmap <- function(inSCE, useResult, onlyPos = FALSE,
 #' @param useResult character. A string specifying the \code{analysisName}
 #' used when running a differential expression analysis function.
 #' @param labelTopN Integer, label this number of top DEGs that pass the 
-#' filters.
+#' filters. \code{FALSE} for not labeling. Default \code{10}.
 #' @param log2fcThreshold numeric. Label genes with the absolute values of
 #' log2FC greater than this value as regulated. Default \code{0.25}.
 #' @param fdrThreshold numeric. Label genes with FDR value less than this
 #' value as regulated. Default \code{0.05}.
+#' @param featureDisplay A character string to indicate a variable in 
+#' \code{rowData(inSCE)} for feature labeling. \code{NULL} for using 
+#' \code{rownames}. Default \code{metadata(sce)$featureDisplay} (see 
+#' \code{\link{setSCTKDisplayRow}})
 #' @return A \code{ggplot} object of volcano plot
+#' @seealso \code{\link{runDEAnalysis}}, \code{\link{plotDEGHeatmap}}
 #' @export
 #' @examples 
 #' data("sceBatches")
@@ -579,14 +584,21 @@ plotDEGHeatmap <- function(inSCE, useResult, onlyPos = FALSE,
 #'                    groupName1 = "w.alpha", groupName2 = "w.beta",
 #'                    analysisName = "w.aVSb")
 #' plotDEGVolcano(sce.w, "w.aVSb")
-plotDEGVolcano <- function(inSCE,
-                           useResult,
-                           labelTopN = 10,
-                           log2fcThreshold = 0.25, 
-                           fdrThreshold = 0.05) {
-  .checkDiffExpResultExists(inSCE, useResult)
+plotDEGVolcano <- function(
+  inSCE,
+  useResult,
+  labelTopN = 10,
+  log2fcThreshold = 0.25, 
+  fdrThreshold = 0.05,
+  featureDisplay = S4Vectors::metadata(inSCE)$featureDisplay
+) {
+  .checkDiffExpResultExists(inSCE, useResult, featureDisplay)
   deg <- S4Vectors::metadata(inSCE)$diffExp[[useResult]]$result
-  deg <- deg[order(deg$FDR),]
+  deg <- deg[order(abs(deg$Log2_FC), decreasing = TRUE),]
+  if (!is.null(featureDisplay)) {
+    geneIdx <- featureIndex(deg$Gene, inSCE)
+    deg$Gene <- SummarizedExperiment::rowData(inSCE)[[featureDisplay]][geneIdx]
+  }
   rownames(deg) <- deg$Gene
   groupNames <- S4Vectors::metadata(inSCE)$diffExp[[useResult]]$groupNames
   # Prepare for coloring that shows the filtering
@@ -594,18 +606,22 @@ plotDEGVolcano <- function(inSCE,
   deg$Regulation[deg$Log2_FC > 0] <- "Up"
   deg$Regulation[deg$Log2_FC < 0] <- "Down"
   if (!is.null(log2fcThreshold)) {
-    deg$Regulation[abs(deg$Log2_FC) < log2fcThreshold] <- "No"
+    deg$Regulation[abs(deg$Log2_FC) <= log2fcThreshold] <- "No"
   }
   if (!is.null(fdrThreshold)) {
-    deg$Regulation[deg$FDR > fdrThreshold] <- "No"
+    deg$Regulation[deg$FDR >= fdrThreshold] <- "No"
   }
   # Prepare for Top DEG text labeling
   passIdx <- deg$Regulation != "No"
   deg$label <- NA
-  labelTopN <- min(labelTopN, length(which(passIdx)))
-  deg.pass <- deg[passIdx,]
-  label.origTable.idx <- deg$Gene %in% deg.pass$Gene[seq(labelTopN)]
-  deg$label[label.origTable.idx] <- deg$Gene[label.origTable.idx]
+  if (!is.null(labelTopN) & !isFALSE(labelTopN)) {
+    labelTopN <- min(labelTopN, length(which(passIdx)))
+    if (labelTopN > 0) {
+      deg.pass <- deg[passIdx,]
+      label.origTable.idx <- deg$Gene %in% deg.pass$Gene[seq(labelTopN)]
+      deg$label[label.origTable.idx] <- deg$Gene[label.origTable.idx]
+    }
+  }
   # Prepare for lines that mark the cutoffs
   vlineLab <- data.frame(
     X = c(-log2fcThreshold, log2fcThreshold),

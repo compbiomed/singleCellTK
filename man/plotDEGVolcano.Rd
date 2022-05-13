@@ -9,7 +9,8 @@ plotDEGVolcano(
   useResult,
   labelTopN = 10,
   log2fcThreshold = 0.25,
-  fdrThreshold = 0.05
+  fdrThreshold = 0.05,
+  featureDisplay = S4Vectors::metadata(inSCE)$featureDisplay
 )
 }
 \arguments{
@@ -26,6 +27,11 @@ log2FC greater than this value as regulated. Default \code{0.25}.}
 
 \item{fdrThreshold}{numeric. Label genes with FDR value less than this
 value as regulated. Default \code{0.05}.}
+
+\item{featureDisplay}{A character string to indicate a variable in 
+\code{rowData(inSCE)} for feature labeling. \code{NULL} for using 
+\code{rownames}. Default \code{metadata(sce)$featureDisplay} (see 
+\code{\link{setSCTKDisplayRow}})}
 }
 \value{
 A \code{ggplot} object of volcano plot

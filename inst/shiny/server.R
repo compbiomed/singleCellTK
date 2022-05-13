@@ -157,10 +157,15 @@ shinyServer(function(input, output, session) {
     updateSelectInput(session, "deHMrowLabel",
                       choices = c("Default (set at import)",
                                   "rownames", selectRowData))
+    updateSelectInput(session, "deVolcFeatureDisplay",
+                      choices = c("Default (set at import)",
+                                  "rownames", selectRowData))
     updateSelectInput(session, 'deVioLabel',
-                      choices = c('Default ID', selectRowData))
+                      choices = c("Default (set at import)",
+                                  "rownames", selectRowData))
     updateSelectInput(session, 'deRegLabel',
-                      choices = c('Default ID', selectRowData))
+                      choices = c("Default (set at import)",
+                                  "rownames", selectRowData))
     updateSelectInput(session, "fmHMrowData",
                       choices = selectRowData)
     updateSelectInput(session, "hmGeneCol",
@@ -1323,6 +1328,9 @@ shinyServer(function(input, output, session) {
         if (!input$importFeatureDispOpt == "Rownames (Default)") {
           vals$counts <- setSCTKDisplayRow(vals$counts,
                                            input$importFeatureDispOpt)
+        } else {
+          vals$counts <- setSCTKDisplayRow(vals$counts,
+                                           NULL)
         }
       })
     }
@@ -6596,6 +6604,52 @@ shinyServer(function(input, output, session) {
       utils::write.csv(filteredTable, file, row.names = FALSE, )
     }
   )
+  
+  # Volcano plot
+  
+  observeEvent(input$closeDropDownDeVolcano, {
+    session$sendCustomMessage("close_dropDownDeVolcano", "")
+  })
+  
+  observeEvent(input$deVolcShowLabel, {
+    if (isTRUE(input$deVolcShowLabel)) {
+      enable("deVolcTopN")
+      enable("deVolcFeatureDisplay")
+    } else if (isFALSE(input$deVolcShowLabel)) {
+      disable("deVolcTopN")
+      disable("deVolcFeatureDisplay")
+    }
+  })
+  
+  observeEvent(input$dePlotVolcano, {
+    req(vals$counts)
+    req(input$deResSel)
+    if (isFALSE(input$deVolcShowLabel)) {
+      labelTopN <- FALSE
+    } else if (isTRUE(input$deVolcShowLabel)) {
+      labelTopN <- input$deVolcTopN
+    }
+    if (input$deVolcFeatureDisplay == "Default (set at import)") {
+      featureDisplay <- metadata(vals$counts)$featureDisplay
+    } else if (input$deVolcFeatureDisplay == "rownames") {
+      featureDisplay <- NULL
+    } else {
+      featureDisplay <- input$deVolcFeatureDisplay
+    }
+    output$deVolcanoPlot <- renderPlot({
+      isolate({
+        plotDEGVolcano(inSCE = vals$counts,
+                       useResult = input$deResSel,
+                       labelTopN = labelTopN,
+                       log2fcThreshold = input$deVolcLog2FC,
+                       fdrThreshold = input$deVolcFDR, 
+                       featureDisplay = featureDisplay
+                       )
+      })
+    })
+    session$sendCustomMessage("close_dropDownDeVolcano", "")
+  })
+
   # Violin plot
   output$deVioTotalUI <- renderUI({
     topN <- input$deVioNRow * input$deVioNCol
@@ -6611,10 +6665,12 @@ shinyServer(function(input, output, session) {
        !input$deResSel == "" &&
        !is.null(vals$counts)){
       useAssay <- metadata(vals$counts)$diffExp[[input$deResSel]]$useAssay
-      if(input$deVioLabel == "Default ID"){
-        labelBy = NULL
+      if (input$deVioLabel == "Default (set at import)") {
+        labelBy <- metadata(vals$counts)$featureDisplay
+      } else if (input$deVioLabel == "rownames"){
+        labelBy <- NULL
       } else {
-        labelBy = input$deVioLabel
+        labelBy <- input$deVioLabel
       }
       # MAST style sanity check for whether logged or not
       if (!is.null(useAssay)) {
@@ -6656,10 +6712,12 @@ shinyServer(function(input, output, session) {
        !input$deResSel == "" &&
        !is.null(vals$counts)){
       useAssay <- metadata(vals$counts)$diffExp[[input$deResSel]]$useAssay
-      if(input$deRegLabel == "Default ID"){
-        labelBy = NULL
+      if (input$deRegLabel == "Default (set at import)") {
+        labelBy <- metadata(vals$counts)$featureDisplay
+      } else if (input$deRegLabel == "rownames") {
+        labelBy <- NULL
       } else {
-        labelBy = input$deRegLabel
+        labelBy <- input$deRegLabel
       }
       # MAST style sanity check for whether logged or not
       if (!is.null(useAssay)) {
