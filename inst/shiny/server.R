@@ -154,6 +154,9 @@ shinyServer(function(input, output, session) {
     updateSelectInput(session, "deHMSplitRow",
                       choices = c('regulation', selectRowData),
                       selected = 'regulation')
+    updateSelectInput(session, "deHMrowLabel",
+                      choices = c("Default (set at import)",
+                                  "rownames", selectRowData))
     updateSelectInput(session, 'deVioLabel',
                       choices = c('Default ID', selectRowData))
     updateSelectInput(session, 'deRegLabel',
@@ -6471,6 +6474,20 @@ shinyServer(function(input, output, session) {
         isLogged <- FALSE
         updateCheckboxGroupInput(session, "deHMDoLog", selected = TRUE)
       }
+      if (isTRUE(input$deHMShowRowLabel)) {
+        if (input$deHMrowLabel == "Default (set at import)") {
+          rowLabel <- metadata(vals$counts)$featureDisplay
+          if (is.null(rowLabel)) {
+            rowLabel <- TRUE
+          }
+        } else if (input$deHMrowLabel == "rownames") {
+          rowLabel <- TRUE
+        } else {
+          rowLabel <- input$deHMrowLabel
+        }
+      } else {
+        rowLabel <- FALSE
+      }
       output$deHeatmap <- renderPlot({
         isolate({
           plotDEGHeatmap(inSCE = vals$counts,
@@ -6485,7 +6502,7 @@ shinyServer(function(input, output, session) {
                          colSplitBy = colSplitBy,
                          rowSplitBy = rowSplitBy,
                          doLog = !isLogged,
-                         rowLabel = input$deHMrowLabel)
+                         rowLabel = rowLabel)
         })
       })
 
@@ -6699,9 +6716,23 @@ shinyServer(function(input, output, session) {
       deHMMaxExp2 <- handleEmptyNumericInput(input$deHMMaxExp2, NULL)
       deHMMinExpPerc1 <- handleEmptyNumericInput(input$deHMMinExpPerc1, NULL)
       deHMMaxExpPerc2 <- handleEmptyNumericInput(input$deHMMaxExpPerc2, NULL)
+      if (isTRUE(input$deHMShowRowLabel)) {
+        if (input$deHMrowLabel == "Default (set at import)") {
+          rowLabel <- metadata(vals$counts)$featureDisplay
+          if (is.null(rowLabel)) {
+            rowLabel <- TRUE
+          }
+        } else if (input$deHMrowLabel == "rownames") {
+          rowLabel <- TRUE
+        } else {
+          rowLabel <- input$deHMrowLabel
+        }
+      } else {
+        rowLabel <- FALSE
+      }
       output$deHeatmap <- renderPlot({
         isolate({
-          plotDEGHeatmap(inSCE = sce <- vals$counts,
+          plotDEGHeatmap(inSCE = vals$counts,
                          useResult = input$deResSel,
                          doLog = input$deHMDoLog,
                          onlyPos = input$deHMPosOnly,
@@ -6715,7 +6746,7 @@ shinyServer(function(input, output, session) {
                          colDataName = input$deHMcolData,
                          colSplitBy = input$deHMSplitCol,
                          rowSplitBy = input$deHMSplitRow,
-                         rowLabel = input$deHMrowLabel)
+                         rowLabel = rowLabel)
         })
       })
       session$sendCustomMessage("close_dropDownDeHM", "")

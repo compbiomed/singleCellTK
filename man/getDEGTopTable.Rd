@@ -7,7 +7,7 @@
 getDEGTopTable(
   inSCE,
   useResult,
-  labelBy = NULL,
+  labelBy = S4Vectors::metadata(sce)$featureDisplay,
   onlyPos = FALSE,
   log2fcThreshold = 0.25,
   fdrThreshold = 0.05,
@@ -25,8 +25,9 @@ singleCellTK DEG method performed in advance.}
 used when running a differential expression analysis function.}
 
 \item{labelBy}{A single character for a column of \code{rowData(inSCE)} as
-where to search for the labeling text. Default \code{NULL} for the 
-"rownames".}
+where to search for the labeling text. Leave \code{NULL} for \code{rownames}.
+Default \code{metadata(sce)$featureDisplay} (see 
+\code{\link{setSCTKDisplayRow}}).}
 
 \item{onlyPos}{logical. Whether to only fetch DEG with positive log2_FC
 value. Default \code{FALSE}.}

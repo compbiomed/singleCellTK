@@ -7,7 +7,6 @@
 plotDEGHeatmap(
   inSCE,
   useResult,
-  doLog = FALSE,
   onlyPos = FALSE,
   log2fcThreshold = 0.25,
   fdrThreshold = 0.05,
@@ -16,6 +15,7 @@ plotDEGHeatmap(
   minGroup1ExprPerc = NULL,
   maxGroup2ExprPerc = NULL,
   useAssay = NULL,
+  doLog = FALSE,
   featureAnnotations = NULL,
   cellAnnotations = NULL,
   featureAnnotationColor = NULL,
@@ -24,6 +24,7 @@ plotDEGHeatmap(
   colDataName = NULL,
   colSplitBy = "condition",
   rowSplitBy = "regulation",
+  rowLabel = S4Vectors::metadata(inSCE)$featureDisplay,
   title = paste0("DE Analysis: ", useResult),
   ...
 )
@@ -33,9 +34,6 @@ plotDEGHeatmap(
 
 \item{useResult}{character. A string specifying the \code{analysisName}
 used when running a differential expression analysis function.}
-
-\item{doLog}{Logical scalar. Whether to do \code{log(assay + 1)}
-transformation on the assay used for the analysis. Default \code{FALSE}.}
 
 \item{onlyPos}{logical. Whether to only plot DEG with positive log2_FC
 value. Default \code{FALSE}.}
@@ -61,6 +59,9 @@ fraction of cells in group2. Default \code{NULL}.}
 \item{useAssay}{character. A string specifying an assay of expression value
 to plot. By default the assay used for \code{runMAST()} will be used.
 Default \code{NULL}.}
+
+\item{doLog}{Logical scalar. Whether to do \code{log(assay + 1)}
+transformation on the assay used for the analysis. Default \code{FALSE}.}
 
 \item{featureAnnotations}{\code{data.frame}, with \code{rownames} containing
 all the features going to be plotted. Character columns should be factors.
@@ -93,6 +94,13 @@ this(these) annotation(s). Should exist in either \code{colDataName} or
 \item{rowSplitBy}{character. Do semi-heatmap based on the grouping of
 this(these) annotation(s). Should exist in either \code{rowDataName} or
 \code{names(featureAnnotations)}. Default \code{"regulation"}.}
+
+\item{rowLabel}{\code{FALSE} for not displaying; a variable in \code{rowData}
+to display feature identifiers stored there; if have run 
+\code{\link{setSCTKDisplayRow}}, display the specified feature name; 
+\code{TRUE} for the \code{rownames} of \code{inSCE}; \code{NULL} for 
+auto-display \code{rownames} when the number of filtered feature is less 
+than 60. Default looks for \code{\link{setSCTKDisplayRow}} information.}
 
 \item{title}{character. Main title of the heatmap. Default
 \code{"DE Analysis: <useResult>"}.}

@@ -307,18 +307,20 @@ plotSCEHeatmap <- function(inSCE, useAssay = 'logcounts', doLog = FALSE,
     ## Customized row text labeling
     rowLabelText <- rownames(inSCE)[featureIndex]
     if(!is.logical(rowLabel)){
-        if(is.character(rowLabel) && length(rowLabel) == 1){
-            if(!rowLabel %in% names(SummarizedExperiment::rowData(inSCE))){
+        if (is.null(rowLabel)) {
+          rowLabel <- FALSE
+        } else if (is.character(rowLabel) && length(rowLabel) == 1) {
+            if (!rowLabel %in% names(SummarizedExperiment::rowData(inSCE))) {
                 stop('"rowLabel": ', rowLabel, ' is not a column of ',
                      'rowData(inSCE).')
             }
             rowLabelText <- SummarizedExperiment::rowData(inSCE)[featureIndex,
                                                                  rowLabel]
             rowLabel <- TRUE
-        } else if(length(rowLabel) == nrow(inSCE)){
+        } else if (length(rowLabel) == nrow(inSCE)) {
             rowLabelText <- rowLabel[featureIndex]
             rowLabel <- TRUE
-        } else if(length(rowLabel) == length(featureIndex)){
+        } else if (length(rowLabel) == length(featureIndex)) {
             rowLabelText <- rowLabel
             rowLabel <- TRUE
         } else {

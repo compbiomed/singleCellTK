@@ -305,14 +305,22 @@ shinyPanelDiffex <- fluidPage(
                   fluidRow(
                     column(
                       width = 6,
-                      checkboxInput(
+                      materialSwitch(
+                        inputId = "deHMShowRowLabel",
+                        label = "Display row labels", status = "success",
+                        value = TRUE
+                      ),
+                      selectInput(
                         inputId = "deHMrowLabel",
-                        label = "Add row labels",
-                        value = FALSE  
+                        label = "Select row labels",
+                        choices = c("Default (set at import)",
+                                    "rownames",
+                                    featureChoice)
                       )
                     ),
                     column(
                       width = 4,
+                      br(),
                       withBusyIndicatorUI(
                         actionBttn(
                           inputId = "dePlotHM",
