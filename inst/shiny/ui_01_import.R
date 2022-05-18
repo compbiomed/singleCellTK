@@ -287,9 +287,9 @@ shinyPanelImport <- fluidPage(
         )
       )
     ),
-    withBusyIndicatorUI(
-      actionButton("uploadData", "Import")
-    ),
+    #withBusyIndicatorUI(
+      actionButton("uploadData", "Import"),
+    #),
     tags$br(),
     tags$br(),
     hidden(

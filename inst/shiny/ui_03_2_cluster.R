@@ -117,7 +117,7 @@ shinyPanelCluster <- fluidPage(
       ), # fuildRow ends here
       useShinyjs(),
       uiOutput("clustNameUI"),
-      withBusyIndicatorUI(actionButton("clustRun", "Run"))
+      actionButton("clustRun", "Run")
     ),
     h3("Visualization"),
     panel(

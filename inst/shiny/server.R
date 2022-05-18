@@ -356,7 +356,11 @@ shinyServer(function(input, output, session) {
     shinyjs::toggle(id = "consolePanel")
   })
 
-
+  # Stop auto-scroll console tab
+  observeEvent(input$logDataAutoScrollStatus, {
+    stopAutoScroll <- paste0("clearInterval(", input$logDataAutoScrollStatus, ");")
+    shinyjs::runjs(stopAutoScroll)
+  })
   # js$disableTabs()
   # Close app on quit
   # session$onSessionEnded(stopApp)
@@ -898,12 +902,20 @@ shinyServer(function(input, output, session) {
   })
 
   # Event handler for "Upload" button on import page
-  observeEvent(input$uploadData, withConsoleMsgRedirect({
+  observeEvent(input$uploadData,  withConsoleMsgRedirect({
+    
+    .loadOpen ("Please wait...Data is being imported") # show the notification spinner
+    shinyjs::runjs("var intervalVarAutoScrollConsole =  setInterval(startAutoScroll, 1000); Shiny.onInputChange('logDataAutoScrollStatus', intervalVarAutoScrollConsole);")
+    
     withBusyIndicatorServer("uploadData", {
+      
       if (length(allImportEntries$samples) == 0) {
         stop("You have not selected any samples to import.")
       }
+      # open console
+      shinyjs::show(id = "consolePanel")  
       sceObj <- importMultipleSources(allImportEntries)
+     
       if (input$combineSCEChoice == "addToExistingSCE") {
         if(!is.null(vals$original)) {
           sceList <- list(vals$original, sceObj)
@@ -990,13 +1002,17 @@ shinyServer(function(input, output, session) {
       cleanGSTable()
       updateDEAnalysisNames()
       updateEnrichRAnalysisNames()
+      # close console
+      shinyjs::hide(id = "consolePanel")
       # TODO: There are more things that need to be cleaned when uploading new
       # dataset, including any plots, tables that are origined from the old
       # datasets. Otherwise, errors may pop out when Shiny listens to the new
       # object but cannot find the old result.
     })
     callModule(module = nonLinearWorkflow, id = "nlw-import", parent = session, qcf = TRUE)
-  }))
+  
+    .loadClose() # close the notification spinner
+    }))
 
   updateSeuratUIFromRDS <- function(inSCE){
     if(!is.null(metadata(inSCE)$seurat$plots)){
@@ -1402,13 +1418,18 @@ shinyServer(function(input, output, session) {
       }
     }
   }
-
+  
   observeEvent(input$uploadGS, withConsoleMsgRedirect({
+    
+    .loadOpen ("Please wait...Importing gene sets") # show the notification spinner
+    shinyjs::runjs("var intervalVarAutoScrollConsole =  setInterval(startAutoScroll, 1000); Shiny.onInputChange('logDataAutoScrollStatus', intervalVarAutoScrollConsole);")
+    
     withBusyIndicatorServer("uploadGS", {
       byParam = NULL
       if (input$gsByParam != "None") {
         byParam <- input$gsByParam
       }
+      shinyjs::show(id = "consolePanel") 
       if (input$geneSetSourceChoice == "gsGMTUpload") {
         if (is.null(input$geneSetGMT)) {
           shinyjs::show(id = "gsUploadError", anim = FALSE)
@@ -1416,6 +1437,7 @@ shinyServer(function(input, output, session) {
           shinyjs::show(id = "gsUploadError", anim = FALSE)
         } else {
           shinyjs::hide(id = "gsUploadError", anim = FALSE)
+          
           vals$counts <- importGeneSetsFromGMT(vals$counts,
                                                  input$geneSetGMT$datapath,
                                                  by = byParam,
@@ -1453,10 +1475,14 @@ shinyServer(function(input, output, session) {
       names(allGS) <- allGS
       updateSelectInput(session, "QCMgeneSets", choices =c(vals$defaultQCGS, allGS),
                         selected = "none")
+      
       shinyjs::show(id = "gsAddToExisting", anim = FALSE)
 
       updateSelectizeInput(session, "PathwayGeneLists", choices = allGS)
+      # close console
+      shinyjs::hide(id = "consolePanel")
     })
+    .loadClose() #close the notification spinner
   }))
 
   #-----------------------------------------------------------------------------
@@ -1687,15 +1713,10 @@ shinyServer(function(input, output, session) {
     }
   }
   
-  # Stop auto-scroll console tabe
-  observeEvent(input$qcAutoScrollStatus, {
-    stopAutoScroll <- paste0("clearInterval(", input$qcAutoScrollStatus, ");")
-    shinyjs::runjs(stopAutoScroll)
-  })
-
-  
   observeEvent(input$runQC, withConsoleMsgRedirect({
-    shinyjs::runjs("var intervalVarAutoScrollConsole =  setInterval(startAutoScroll, 1000); Shiny.onInputChange('qcAutoScrollStatus', intervalVarAutoScrollConsole);")
+    .loadOpen ("Please wait...QC metrics are being calculated") # show the notification spinner
+    shinyjs::runjs("var intervalVarAutoScrollConsole =  setInterval(startAutoScroll, 1000); Shiny.onInputChange('logDataAutoScrollStatus', intervalVarAutoScrollConsole);")
+    
     withBusyIndicatorServer("runQC", {
       if (!qcInputExists()) {
         insertUI(
@@ -1827,16 +1848,18 @@ shinyServer(function(input, output, session) {
                                  reducedDimName = input$QCUMAPName,
                                  seed = input$Useed
                                  )
-          # close console
-          shinyjs::hide(id = "consolePanel")
+          
         }
         message(paste0(date(), " ... QC Complete"))
         updateQCPlots()
+        # close console
+        shinyjs::hide(id = "consolePanel")
         # Show downstream analysis options
         callModule(module = nonLinearWorkflow, id = "nlw-qcf", parent = session, nbc = TRUE, cw = TRUE, cv = TRUE)
       }
       delay(500, removeNotification(id = "qcNotification"))
     })
+    .loadClose() # close the notification spinner
     
   }))
 
@@ -2045,7 +2068,13 @@ shinyServer(function(input, output, session) {
   })
 
   observeEvent(input$filterSCE, withConsoleMsgRedirect({
+    
+    .loadOpen ("Please wait...Data is being filtered") # show the notification spinner
+    shinyjs::runjs("var intervalVarAutoScrollConsole =  setInterval(startAutoScroll, 1000); Shiny.onInputChange('logDataAutoScrollStatus', intervalVarAutoScrollConsole);")
+    
     withBusyIndicatorServer("filterSCE", {
+      shinyjs::show(id = "consolePanel") 
+      
       # handle column filtering (pull out the criteria strings first)
       colInput <- formatFilteringCriteria(filteringParams$params)
       if (length(colInput) > 0) {
@@ -2064,10 +2093,13 @@ shinyServer(function(input, output, session) {
         }
       }
       shinyjs::show(id="filteringSummary")
-
+      # close console
+      shinyjs::hide(id = "consolePanel")
+      
       # Show downstream analysis options
       shinyjs::show(selector = ".nlw-qcf")
     })
+    .loadClose() #close the notification spinner
   }))
 
   #Render summary table
@@ -2362,8 +2394,13 @@ shinyServer(function(input, output, session) {
       )
     }
   })
-
+ 
   observeEvent(input$delRedDim, withConsoleMsgRedirect({
+    
+    .loadOpen ("Please wait...Removing selected data") # show the notification spinner
+    shinyjs::runjs("var intervalVarAutoScrollConsole =  setInterval(startAutoScroll, 1000); Shiny.onInputChange('logDataAutoScrollStatus', intervalVarAutoScrollConsole);")
+    
+    shinyjs::show(id = "consolePanel") 
     req(vals$counts)
     if(length(input$checkboxAssaysToRemove) > 0){
       for(i in seq(input$checkboxAssaysToRemove)){
@@ -2400,6 +2437,9 @@ shinyServer(function(input, output, session) {
     updateReddimInputs()
     updateFeatureAnnots()
     updateColDataNames()
+    # close console
+    shinyjs::hide(id = "consolePanel")
+    .loadClose() # close the notification spinner
   }))
 
   # Normalization ####
@@ -2462,10 +2502,15 @@ shinyServer(function(input, output, session) {
     }
 
   })
-
+  
   observeEvent(input$modifyAssay, withConsoleMsgRedirect({
+    
+    .loadOpen ("Please wait...Data is being normalized") # show the notification spinner
+    shinyjs::runjs("var intervalVarAutoScrollConsole =  setInterval(startAutoScroll, 1000); Shiny.onInputChange('logDataAutoScrollStatus', intervalVarAutoScrollConsole);")
+    
     req(vals$counts)
     withBusyIndicatorServer("modifyAssay", {
+      shinyjs::show(id = "consolePanel") 
       if (!(input$modifyAssaySelect %in% names(assays(vals$counts)))) {
         stop("Assay does not exist!")
       } else if (input$modifyAssayOutname == "") {
@@ -2525,16 +2570,24 @@ shinyServer(function(input, output, session) {
         vals$counts <- do.call("runNormalization", args)
         
         message(paste0(date(), " ... Ended normalization/transformation."))
-        
         # Show downstream analysis options
         callModule(module = nonLinearWorkflow, id = "nlw-nbc", parent = session, dr = TRUE, fs = TRUE)
       }
     })
+    # close console
+    shinyjs::hide(id = "consolePanel")
+    .loadClose() # close the notification spinner
+    
   }))
-
+ 
   observeEvent(input$normalizeAssay, withConsoleMsgRedirect({
+    
+    .loadOpen ("Please wait...Data is being normalized") # show the notification spinner
+    shinyjs::runjs("var intervalVarAutoScrollConsole =  setInterval(startAutoScroll, 1000); Shiny.onInputChange('logDataAutoScrollStatus', intervalVarAutoScrollConsole);")
+    
     req(vals$counts)
     withBusyIndicatorServer("normalizeAssay", {
+      shinyjs::show(id = "consolePanel") 
       if(!(input$normalizeAssaySelect %in% expDataNames(vals$counts))){
         stop("Selected assay does not exist!")
       }
@@ -2578,11 +2631,14 @@ shinyServer(function(input, output, session) {
         vals$counts <- do.call("runNormalization", args) 
         
         message(paste0(date(), " ... Ended normalization."))
-        
+        # close console
+        shinyjs::hide(id = "consolePanel")
         # Show downstream analysis options
         callModule(module = nonLinearWorkflow, id = "nlw-nbc", parent = session, dr = TRUE, fs = TRUE)
       }
     })
+    .loadClose() # close the motification spinner
+    
   }))
 
   observeEvent(input$normalizeAssayMethodSelect, {
@@ -2719,10 +2775,17 @@ shinyServer(function(input, output, session) {
   observeEvent(input$closeDropDownDimRedHeatmap, {
     session$sendCustomMessage("close_dropDownDimRedHeatmap", "")
   })
-
+  
   observeEvent(input$runDimred, withConsoleMsgRedirect({
+    
+    .loadOpen ("Please wait...Running dimensionality reduction") # show the notification spinner
+    shinyjs::runjs("var intervalVarAutoScrollConsole =  setInterval(startAutoScroll, 1000); Shiny.onInputChange('logDataAutoScrollStatus', intervalVarAutoScrollConsole);")
+    
     if (!is.null(vals$counts)){
       withBusyIndicatorServer("runDimred", {
+        # open console 
+        shinyjs::show(id = "consolePanel") 
+        
         message(paste0(date(), " ... Starting Dimensionality Reduction: '", input$dimRedPlotMethod, "'."))
         vals$runDimred$dimRedAssaySelect <- input$dimRedAssaySelect
         if (vals$runDimred$dimRedAssaySelect %in% altExpNames(vals$counts)) {
@@ -2754,6 +2817,7 @@ shinyServer(function(input, output, session) {
             #  nComponents = input$dimRedNumberDims
             #)
             updateReddimInputs()
+            
             # Show downstream analysis options
             callModule(module = nonLinearWorkflow, id = "nlw-dr", parent = session, cl = TRUE, cv = TRUE)
           }
@@ -2792,7 +2856,7 @@ shinyServer(function(input, output, session) {
         ), select = TRUE
       )
       if (input$dimRedPlotMethod == "seuratPCA"){
-        withProgress(message = "Generating Elbow Plot", max = 1, value = 1, {
+        #withProgress(message = "Generating Elbow Plot", max = 1, value = 1, {
           message(paste0(date(), " ... Generating Elbow Plot."))
           if(vals$runDimred$dimRedAssaySelect %in% assayNames(vals$counts)){
             output$plotDimRed_elbow <- renderPlotly({
@@ -2803,9 +2867,9 @@ shinyServer(function(input, output, session) {
               plotSeuratElbow(inSCE = altExps(vals$counts)[[vals$runDimred$dimRedAssaySelect]])
             })
           }
-        })
+        #})
       } else {
-        withProgress(message = "Generating Elbow Plot", max = 1, value = 1, {
+        #withProgress(message = "Generating Elbow Plot", max = 1, value = 1, {
           message(paste0(date(), " ... Generating Elbow Plot."))
           if(input$dimRedAssaySelect %in% assayNames(vals$counts)){
             output$plotDimRed_elbow <- renderPlotly({
@@ -2818,7 +2882,7 @@ shinyServer(function(input, output, session) {
                               externalReduction = new_pca)
             })
           }
-        })
+        #})
       }
     }
 
@@ -2870,7 +2934,7 @@ shinyServer(function(input, output, session) {
         )
       )
       if (input$dimRedPlotMethod == "seuratPCA") {
-        withProgress(message = "Generating Heatmaps", max = 1, value = 1, {
+        #withProgress(message = "Generating Heatmaps", max = 1, value = 1, {
           message(paste0(date(), " ... Generating Heatmaps."))
           if(input$dimRedAssaySelect %in% assayNames(vals$counts)){
             vals$counts@metadata$seurat$heatmap_dimRed <- singleCellTK::computeHeatmap(
@@ -2896,10 +2960,10 @@ shinyServer(function(input, output, session) {
               singleCellTK:::.plotHeatmapMulti(altExps(vals$counts)[[vals$runDimred$dimRedAssaySelect]]@metadata$seurat$heatmap_dimRed)
             })
           }
-        })
+        #})
       }
       else if(input$dimRedPlotMethod == "seuratICA"){
-        withProgress(message = "Generating Heatmaps", max = 1, value = 1, {
+        #withProgress(message = "Generating Heatmaps", max = 1, value = 1, {
           message(paste0(date(), " ... Generating Heatmaps."))
           if(vals$runDimred$dimRedAssaySelect %in% assayNames(vals$counts)){
             vals$counts@metadata$seurat$heatmap_dimRed <- singleCellTK::computeHeatmap(
@@ -2925,10 +2989,10 @@ shinyServer(function(input, output, session) {
               singleCellTK:::.plotHeatmapMulti(altExps(vals$counts)[[vals$runDimred$dimRedAssaySelect]]@metadata$seurat$heatmap_dimRed)
             })
           }
-        })
+        #})
       }
       else{
-        withProgress(message = "Generating Heatmaps", max = 1, value = 1, {
+        #withProgress(message = "Generating Heatmaps", max = 1, value = 1, {
           message(paste0(date(), " ... Generating Heatmaps."))
           if(input$dimRedAssaySelect %in% assayNames(vals$counts)){
             vals$counts@metadata$seurat$heatmap_dimRed <- singleCellTK::computeHeatmap(
@@ -2954,7 +3018,7 @@ shinyServer(function(input, output, session) {
               singleCellTK:::.plotHeatmapMulti(altExps(vals$counts)[[vals$runDimred$dimRedAssaySelect]]@metadata$seurat$heatmap_dimRed)
             })
           }
-        })
+        #})
       }
 
       if(input$dimRedPlotMethod == "seuratICA"){
@@ -3003,7 +3067,7 @@ shinyServer(function(input, output, session) {
                                                             )
     ))
 
-    withProgress(message = "Plotting PCA/ICA", max = 1, value = 1, {
+    #withProgress(message = "Plotting PCA/ICA", max = 1, value = 1, {
       message(paste0(date(), " ... Plotting PCA/ICA."))
         output$plotDimRed_pca <- renderPlotly({
           plotly::ggplotly(
@@ -3014,7 +3078,7 @@ shinyServer(function(input, output, session) {
               yAxisLabel = paste0(input$dimRedPlotMethod, "_2"))
           )
         })
-    })
+    #})
 
         if(input$computeJackstrawPlot
            && input$dimRedPlotMethod != "seuratICA"){
@@ -3025,7 +3089,7 @@ shinyServer(function(input, output, session) {
           ))
 
           if (input$dimRedPlotMethod == "seuratPCA"){
-            withProgress(message = "Generating JackStraw Plot", max = 1, value = 1, {
+            #withProgress(message = "Generating JackStraw Plot", max = 1, value = 1, {
               message(paste0(date(), " ... Generating JackStraw Plot."))
               if(vals$runDimred$dimRedAssaySelect %in% assayNames(vals$counts)){
                 vals$counts <- runSeuratJackStraw(inSCE = vals$counts,
@@ -3043,10 +3107,10 @@ shinyServer(function(input, output, session) {
                   plotSeuratJackStraw(inSCE = altExps(vals$counts)[[vals$runDimred$dimRedAssaySelect]], dims = input$dimRedNumberDims)
                 })
               }
-            })
+            #})
           }
           else{
-            withProgress(message = "Generating JackStraw Plot", max = 1, value = 1, {
+            #withProgress(message = "Generating JackStraw Plot", max = 1, value = 1, {
               message(paste0(date(), " ... Generating JackStraw Plot."))
               if(input$dimRedAssaySelect %in% assayNames(vals$counts)){
                 vals$counts <- runSeuratJackStraw(inSCE = vals$counts,
@@ -3068,9 +3132,12 @@ shinyServer(function(input, output, session) {
                                       dims = input$dimRedNumberDims)
                 })
               }
-            })
+            #})
           }
         }
+    # close console
+    shinyjs::hide(id = "consolePanel")
+    .loadClose() #close the notification spinner
   }))
 
   observeEvent(input$updateRedDimPlot_pca,{
@@ -3108,9 +3175,17 @@ shinyServer(function(input, output, session) {
       shinyjs::enable("reductionMethodUMAPTSNEDimRed")
     }
   })
-  observeEvent(input$runDimred_tsneUmap, {
+  
+  observeEvent(input$runDimred_tsneUmap, withConsoleMsgRedirect ({
+    
+    .loadOpen ("Please wait...Creating 2D embeddings") # show the notification spinner
+    shinyjs::runjs("var intervalVarAutoScrollConsole =  setInterval(startAutoScroll, 1000); Shiny.onInputChange('logDataAutoScrollStatus', intervalVarAutoScrollConsole);")
+    
     if (!is.null(vals$counts)){
       withBusyIndicatorServer("runDimred_tsneUmap", {
+        # open console 
+        shinyjs::show(id = "consolePanel")
+        
         message(paste0(date(), " ... Starting Dimensionality Reduction: '", input$dimRedPlotMethod_tsneUmap , "'."))
         vals$runDimred$dimRedAssaySelect_tsneUmap <- input$dimRedAssaySelect_tsneUmap
         if (vals$runDimred$dimRedAssaySelect_tsneUmap %in% reducedDimNames(vals$counts)) {
@@ -3263,6 +3338,8 @@ shinyServer(function(input, output, session) {
               #)
             }
             updateReddimInputs()
+            # close console
+            shinyjs::hide(id = "consolePanel")
             # Show downstream analysis options
             callModule(module = nonLinearWorkflow, id = "nlw-dr", parent = session, cl = TRUE, cv = TRUE)
           }
@@ -3278,7 +3355,7 @@ shinyServer(function(input, output, session) {
                          selected = redDimName,
                          server = TRUE)
 
-    withProgress(message = "Plotting tSNE/UMAP", max = 1, value = 1, {
+    #withProgress(message = "Plotting tSNE/UMAP", max = 1, value = 1, {
       message(paste0(date(), " ... Plotting tSNE/UMAP."))
         output$plotDimRed_tsneUmap <- renderPlotly({
           plotly::ggplotly(plotDimRed(
@@ -3288,8 +3365,10 @@ shinyServer(function(input, output, session) {
             yAxisLabel = paste0(input$dimRedPlotMethod_tsneUmap,"_2")
           ))
         })
-    })
-  })
+    #})
+    .loadClose() #close the notification spinner
+    
+  }))
 
   observeEvent(input$updateRedDimPlot_tsneUmap,{
     req(vals$counts)
@@ -3356,13 +3435,20 @@ shinyServer(function(input, output, session) {
     }
   }
 
-  observeEvent(input$clustRun, {
+  observeEvent(input$clustRun, withConsoleMsgRedirect ({
+    
+    .loadOpen ("Please wait...Running clustering algorithm") # show the notification spinner
+    shinyjs::runjs("var intervalVarAutoScrollConsole =  setInterval(startAutoScroll, 1000); Shiny.onInputChange('logDataAutoScrollStatus', intervalVarAutoScrollConsole);")
+    
     if (is.null(vals$counts)){
       shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
     } else if (input$clustName == "") {
       shinyalert::shinyalert("Error!", "Cluster name required.", type = "error")
     } else {
       withBusyIndicatorServer("clustRun", {
+        # open console 
+        shinyjs::show(id = "consolePanel") 
+        
         saveClusterName = gsub(" ", "_", input$clustName)
         if(input$clustAlgo %in% seq(6)){
           # Scran SNN
@@ -3495,11 +3581,15 @@ shinyServer(function(input, output, session) {
             })
           })
         }
+        # close console
+        shinyjs::hide(id = "consolePanel")
+        
         # Show downstream analysis options
         callModule(module = nonLinearWorkflow, id = "nlw-cl", parent = session, de = TRUE, pa = TRUE, cv = TRUE)
       })
     }
-  })
+    .loadClose() #close the notification spinner 
+  }))
   
   observeEvent(input$closeDropDownClust, {
     session$sendCustomMessage("close_dropDownClust", "")
@@ -3567,7 +3657,12 @@ shinyServer(function(input, output, session) {
   ###################################################
   ###  Run STEP 1: TSCAN
   ###################################################
-  observeEvent(input$TSCANRun, {
+  
+  observeEvent(input$TSCANRun,  withConsoleMsgRedirect ({
+    
+    .loadOpen ("Please wait...Running TSCAN") # show the notification spinner
+    shinyjs::runjs("var intervalVarAutoScrollConsole =  setInterval(startAutoScroll, 1000); Shiny.onInputChange('logDataAutoScrollStatus', intervalVarAutoScrollConsole);")
+    
     if (is.null(vals$counts)){
       shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
     }  
@@ -3575,13 +3670,18 @@ shinyServer(function(input, output, session) {
       shinyalert::shinyalert("Must select a reducedDim! If none available, compute one in the Dimensionality Reduction tab.")
     }
     else {
-      withProgress(message = "Plotting pseudotime values...", max = 1, value = 1, {
+      #withProgress(message = "Plotting pseudotime values...", max = 1, value = 1, {
+      message(paste0(date(), " ... Plotting pseudotime values"))
       withBusyIndicatorServer("TSCANRun", {
+        # open console 
+        shinyjs::show(id = "consolePanel") 
+        
         vals$counts <- runTSCAN(inSCE = vals$counts,
                                 useReducedDim = input$TSCANReddim,
                                 cluster = colData(vals$counts)[[input$clusterName]],
                                 seed = input$seed_TSCAN)
-        showNotification("Pseudotime values generated")
+        #showNotification("Pseudotime values generated")
+        message(paste0(date(), " ... Pseudotime Values Generated"))
         updateAssayInputs()
         updateReddimInputs()
         
@@ -3612,10 +3712,14 @@ shinyServer(function(input, output, session) {
                           selected = NULL)
         
       })
-      })
+      #})
+      # close console
+      shinyjs::hide(id = "consolePanel")
     }
     updateCollapse(session = session, "TSCANUI", style = list("Calculate Pseudotime Values" = "success"))
-  })
+    .loadClose() #close the notification spinner
+    
+    }))
   
   #plot results
   observeEvent(input$TSCANPlot, {
@@ -3640,17 +3744,25 @@ shinyServer(function(input, output, session) {
                   `none-selected-text` = "No cluster discarded"))
   })
     
-  observeEvent(input$findExpGenes, {
+  observeEvent(input$findExpGenes, withConsoleMsgRedirect ({
+    
+    .loadOpen ("Please wait...Finding DE genes for path") # show the notification spinner
+    shinyjs::runjs("var intervalVarAutoScrollConsole =  setInterval(startAutoScroll, 1000); Shiny.onInputChange('logDataAutoScrollStatus', intervalVarAutoScrollConsole);")
+    
     withBusyIndicatorServer("findExpGenes", {
+      # open console 
+      shinyjs::show(id = "consolePanel") 
       vals$counts <- runTSCANDEG(inSCE = vals$counts,
                                  pathIndex = input$pathIndexx,
                                  useAssay = input$TSCANassayselect,
                                  discardCluster = c(input$discardCluster),
                                  log2fcThreshold = input$logFcThreshold_TSCAN)
       
-      showNotification("Expressive genes identified")                          
+      #showNotification("Expressive genes identified")                          
+      message(paste0(date(), " ... Expressive Genes Identified"))
       
-      withProgress(message = "Plotting heatmap", max = 1, value = 1, {
+      #withProgress(message = "Plotting heatmap", max = 1, value = 1, {
+      message(paste0(date(), " ... Plotting heatmap"))
       output$heatmapPlot <- renderPlot({
         isolate({
          plotTSCANPseudotimeHeatmap(inSCE = vals$counts, 
@@ -3658,9 +3770,10 @@ shinyServer(function(input, output, session) {
                                    topN = 5)
           })
       })
-      })
+     # })
       
-      withProgress(message = "Plotting upregulated genes", max = 1, value = 1, {
+      #withProgress(message = "Plotting upregulated genes", max = 1, value = 1, {
+      message(paste0(date(), " ... Plotting upregulated genes"))
       output$UpregGenesPlot <- renderPlot({
         isolate({
           plotTSCANPseudotimeGenes(inSCE = vals$counts, 
@@ -3668,9 +3781,10 @@ shinyServer(function(input, output, session) {
                                    direction = "increasing")
         })
       })
-      })
+      #})
       
-      withProgress(message = "Plotting downregulated genes", max = 1, value = 1, {
+      #withProgress(message = "Plotting downregulated genes", max = 1, value = 1, {
+        message(paste0(date(), " ... Plotting downregulated genes"))
         output$DownregGenesPlot <- renderPlot({
           isolate({
             plotTSCANPseudotimeGenes(inSCE = vals$counts, 
@@ -3678,15 +3792,19 @@ shinyServer(function(input, output, session) {
                                      direction = "decreasing")
           })
         })
-      })
+      #})
       
       updateSelectInput(session, "expPathIndex",
                         choices = names(getTSCANResults(vals$counts, analysisName = "DEG")),
                         selected = NULL)
-        
+      
+      
     }) 
+    # close console
+    shinyjs::hide(id = "consolePanel")
     updateCollapse(session = session, "TSCANUI", style = list("Identify Genes Differentially Expressed For Path" = "success"))
-  })
+    .loadClose() #close the notification spinner
+    }))
   
   
   
@@ -3735,15 +3853,23 @@ shinyServer(function(input, output, session) {
   ###################################################
   ###  Run STEP 3: Identify DE genes in specific cluster 
   ###################################################
-  observeEvent(input$findDEGenes, {
+  
+  observeEvent(input$findDEGenes, withConsoleMsgRedirect ({
+    
+    .loadOpen ("Please wait...Finding DE genes for branched cluster") # show the notification spinner
+    shinyjs::runjs("var intervalVarAutoScrollConsole =  setInterval(startAutoScroll, 1000); Shiny.onInputChange('logDataAutoScrollStatus', intervalVarAutoScrollConsole);")
+    
     withBusyIndicatorServer("findDEGenes", {
       
+      # open console 
+      shinyjs::show(id = "consolePanel") 
       vals$counts <- runTSCANClusterDEAnalysis(inSCE = vals$counts,
                                                useClusters = input$useCluster,
                                                useAssay = input$TSCANassayselect,
                                                fdrThreshold = input$fdrThreshold_TSCAN)
       
-      showNotification("DE genes for cluster found")
+      #showNotification("DE genes for cluster found")
+      message(paste0(date(), " ... DE Genes for Cluster Found"))
       
       clusterAnalysisNamesList <- names(getTSCANResults(vals$counts, analysisName = "ClusterDEAnalysis"))
       terminalNodes<- c(colnames(getTSCANResults(vals$counts, analysisName = "ClusterDEAnalysis", pathName = input$useCluster)$terminalNodes))
@@ -3760,7 +3886,9 @@ shinyServer(function(input, output, session) {
                         selected = NULL)
       
       #plot cluster pseudo values by default
-      withProgress(message = "Plotting pseudo values for cluster", max = 1, value = 1, {
+      #withProgress(message = "Plotting pseudo values for cluster", max = 1, value = 1, {
+      message(paste0(date(), " ... Plotting Pseudo Values for Cluster"))
+      
       output$DEClusterPlot <- renderPlot({
         isolate({
           plotTSCANClusterPseudo(inSCE = vals$counts, 
@@ -3769,10 +3897,12 @@ shinyServer(function(input, output, session) {
                             useReducedDim = input$TSCANReddim)
         })
       })
-      })
+      #})
       
       #print list of DE genes by default
-      withProgress(message = "List of DE genes generated", max = 1, value = 1, {
+      #withProgress(message = "List of DE genes generated", max = 1, value = 1, {
+      message(paste0(date(), " ... List of DE Genes Generated"))
+      
       output$DEClusterListPlot <- DT::renderDataTable({
         isolate({
         df <- as.data.frame(getTSCANResults(vals$counts, analysisName = "ClusterDEAnalysis", pathName = input$useCluster)$DEgenes[1])
@@ -3782,12 +3912,13 @@ shinyServer(function(input, output, session) {
         )
         })
       })
-      })
-      
+      #})
+      # close console
+      shinyjs::hide(id = "consolePanel")
       }) 
     updateCollapse(session = session, "TSCANUI", style = list("Identify Genes Differentially Expressed For Branched Cluster" = "success"))
-    
-  })
+    .loadClose() #close the notification spinner
+  }))
   
   
   #plot results for step 3
@@ -3893,8 +4024,12 @@ shinyServer(function(input, output, session) {
 
   modsplit <- reactiveVal()
   cellsplit <- reactiveVal(NULL)
-
+  
   observeEvent(input$celdamodsplit, withConsoleMsgRedirect({
+    
+    .loadOpen ("Please wait...Running recursive module split") # show the notification spinner
+    shinyjs::runjs("var intervalVarAutoScrollConsole =  setInterval(startAutoScroll, 1000); Shiny.onInputChange('logDataAutoScrollStatus', intervalVarAutoScrollConsole);")
+    
     removeTab(inputId = "celdaModsplitTabset", target = "Perplexity Plot")
     removeTab(inputId = "celdaModsplitTabset", target = "Perplexity Difference Plot")
     appendTab(inputId = "celdaModsplitTabset", tabPanel(title = "Rate of perplexity change",
@@ -3908,6 +4043,9 @@ shinyServer(function(input, output, session) {
       )
     ))
     withBusyIndicatorServer("celdamodsplit",{
+      # open console 
+      shinyjs::show(id = "consolePanel")
+      
       if (input$celdafeatureselect == "None"){
         vals$counts <- selectFeatures(vals$counts, minCount = input$celdarowcountsmin,
                                       minCell = input$celdacolcountsmin, useAssay = input$celdaassayselect)
@@ -3945,9 +4083,15 @@ shinyServer(function(input, output, session) {
     shinyjs::enable(
       selector = ".celda_modsplit_plots a[data-value='Perplexity Diff Plot']")
     shinyjs::show(selector = ".celda_modsplit_plots")
-    showNotification("Module splitting complete.")
+    #showNotification("Module splitting complete.")
+    message(paste0(date(), " ... Module Splitting Complete"))
+    
     shinyjs::show(id = "celdaLselect")
     shinyjs::show(id = "celdaLbtn")
+    # close console
+    shinyjs::hide(id = "consolePanel")
+    
+    .loadClose() #close the notification spinner
   }))
 
   observeEvent(input$celdaLbtn, {
@@ -3974,9 +4118,16 @@ shinyServer(function(input, output, session) {
       }
     }
   })
-
+  
   observeEvent(input$celdacellsplit, withConsoleMsgRedirect ({
+    
+    .loadOpen ("Please wait...Running recursive split cell") # show the notification spinner
+    shinyjs::runjs("var intervalVarAutoScrollConsole =  setInterval(startAutoScroll, 1000); Shiny.onInputChange('logDataAutoScrollStatus', intervalVarAutoScrollConsole);")
+    
     withBusyIndicatorServer("celdacellsplit", {
+      # open console 
+      shinyjs::show(id = "consolePanel") 
+      
       cellsplit(recursiveSplitCell(vals$counts, useAssay = input$celdaassayselect, initialK = input$celdaKinit, maxK = input$celdaKmax,
                                         yInit = celdaModules(vals$counts)))
       temp_umap <- celdaUmap(vals$counts)
@@ -3996,10 +4147,15 @@ shinyServer(function(input, output, session) {
       }
     })
     shinyjs::show(selector = ".celda_cellsplit_plots")
-    showNotification("Cell Clustering Complete.")
+    #showNotification("Cell Clustering Complete.")
+    message(paste0(date(), " ... Cell Clustering Complete"))
     updateNumericInput(session, "celdaKselect", min = input$celdaKinit, max = input$celdaKmax, value = input$celdaKinit)
     shinyjs::show(id = "celdaKselect")
     shinyjs::show(id = "celdaKbtn")
+    # close console
+    shinyjs::hide(id = "consolePanel")
+    
+    .loadClose() #close the notification spinner
   }))
 
   observeEvent(input$celdaKbtn, {
@@ -4017,8 +4173,16 @@ shinyServer(function(input, output, session) {
   output$celdaheatmapplt <- renderPlot({plot(celdaHeatmap(vals$counts))})
   output$celdaprobmapplt <- renderPlot({celdaProbabilityMap(vals$counts)})
 
-  observeEvent(input$CeldaUmap, {
+  
+  observeEvent(input$CeldaUmap, withConsoleMsgRedirect ({
+    
+    .loadOpen ("Please wait...Running UMAP") # show the notification spinner
+    shinyjs::runjs("var intervalVarAutoScrollConsole =  setInterval(startAutoScroll, 1000); Shiny.onInputChange('logDataAutoScrollStatus', intervalVarAutoScrollConsole);")
+    
     withBusyIndicatorServer("CeldaUmap", {
+      # open console 
+      shinyjs::show(id = "consolePanel") 
+      
       vals$counts <- celdaUmap(vals$counts,
                                useAssay = input$celdaassayselect,
                                maxCells = input$celdaUMAPmaxCells,
@@ -4031,14 +4195,27 @@ shinyServer(function(input, output, session) {
                                                                  ylab = "UMAP_2", labelClusters = TRUE)})
       
     })
-    showNotification("Umap complete.")
+    #showNotification("Umap complete.")
+    message(paste0(date(), " ... UMAP Complete"))
     colData(vals$counts)$celda_clusters <- celdaClusters(vals$counts)
     updateColDataNames()
     shinyjs::enable("CeldaTsne")
-  })
+    # close console
+    shinyjs::hide(id = "consolePanel")
+    
+    .loadClose() #close the notification spinner
+  }))
 
-  observeEvent(input$CeldaTsne, {
+  
+  observeEvent(input$CeldaTsne, withConsoleMsgRedirect ({
+    
+    .loadOpen ("Please wait...Running tSNE") # show the notification spinner
+    shinyjs::runjs("var intervalVarAutoScrollConsole =  setInterval(startAutoScroll, 1000); Shiny.onInputChange('logDataAutoScrollStatus', intervalVarAutoScrollConsole);")
+    
     withBusyIndicatorServer("CeldaTsne", {
+      # open console 
+      shinyjs::show(id = "consolePanel") 
+      
       vals$counts <- celdaTsne(vals$counts,
                                useAssay = input$celdaassayselect,
                                maxCells = input$celdatSNEmaxCells,
@@ -4049,13 +4226,19 @@ shinyServer(function(input, output, session) {
       output$celdatsneplot <- renderPlotly({plotDimReduceCluster(vals$counts, reducedDimName = "celda_tSNE", xlab = "tSNE_1",
                                                                  ylab = "tSNE_2", labelClusters = TRUE)})
     })
-    showNotification("Tsne complete.")
-  })
+    #showNotification("Tsne complete.")
+    message(paste0(date(), " ... tSNE Complete"))
+    # close console
+    shinyjs::hide(id = "consolePanel")
+    
+    .loadClose() #close the notification spinner 
+  }))
 
   observeEvent(input$celdamodheatmapbtn,{
     output$celdamodheatmapplt <- renderPlot({moduleHeatmap(vals$counts, topCells= input$celdamodheatmaptopcells, featureModule = input$celdamodheatmapnum)})
     output$celdamodprobplt <- renderPlot({plotDimReduceModule(vals$counts, modules =  input$celdamodheatmapnum, reducedDimName = "celda_UMAP")})
     showNotification("Module heatmap complete.")
+    
   })
 
   observe({
@@ -5558,11 +5741,17 @@ shinyServer(function(input, output, session) {
     session$sendCustomMessage("close_dropDownBC", "")
   })
 
-  observeEvent(input$BBKNNRun, {
+  observeEvent(input$BBKNNRun, withConsoleMsgRedirect ({
+    
+    .loadOpen ("Please wait...Running BBKNN method for batch correction") # show the notification spinner
+    shinyjs::runjs("var intervalVarAutoScrollConsole =  setInterval(startAutoScroll, 1000); Shiny.onInputChange('logDataAutoScrollStatus', intervalVarAutoScrollConsole);")
+    
     if (is.null(vals$counts)){
       shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
     } else {
       withBusyIndicatorServer("BBKNNRun", {
+        # open console 
+        shinyjs::show(id = "consolePanel") 
         saveassayname <- gsub(" ", "_", input$BBKNNSaveReddim)
         vals$counts <- runBBKNN(vals$counts,
                                 useAssay = input$batchCorrAssay,
@@ -5573,16 +5762,26 @@ shinyServer(function(input, output, session) {
                                type = 'success')
         vals$batchRes[[saveassayname]] <- 'reddim'
         updateReddimInputs()
+        # close console
+        shinyjs::hide(id = "consolePanel")
       })
     }
-  })
+    .loadClose() #close the notification spinner
+  }))
 
-  observeEvent(input$combatRun, {
+  observeEvent(input$combatRun, withConsoleMsgRedirect ({
+    
+    .loadOpen ("Please wait...Running Combat method for batch correction") # show the notification spinner
+    shinyjs::runjs("var intervalVarAutoScrollConsole =  setInterval(startAutoScroll, 1000); Shiny.onInputChange('logDataAutoScrollStatus', intervalVarAutoScrollConsole);")
+    
     if (is.null(vals$counts)){
       shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
     }
     else{
       withBusyIndicatorServer("combatRun", {
+        # open console 
+        shinyjs::show(id = "consolePanel") 
+        
         #check for zeros
         if (any(rowSums(assay(vals$counts, input$batchCorrAssay)) == 0)){
           shinyalert::shinyalert("Error!", "Rows with a sum of zero found. Filter data to continue.", type = "error")
@@ -5618,15 +5817,25 @@ shinyServer(function(input, output, session) {
           shinyalert::shinyalert('Success!', 'ComBatSeq completed.',
                                  type = 'success')
         }
+        # close console
+        shinyjs::hide(id = "consolePanel")
       })
     }
-  })
-
-  observeEvent(input$FastMNNRun, {
+    .loadClose() #close the notification spinner
+  }))
+  
+  observeEvent(input$FastMNNRun, withConsoleMsgRedirect ({
+    
+    .loadOpen ("Please wait...Running FASTMNN method for batch correction") # show the notification spinner
+    shinyjs::runjs("var intervalVarAutoScrollConsole =  setInterval(startAutoScroll, 1000); Shiny.onInputChange('logDataAutoScrollStatus', intervalVarAutoScrollConsole);")
+    
     if (is.null(vals$counts)){
       shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
     } else {
       withBusyIndicatorServer("FastMNNRun", {
+        # open console 
+        shinyjs::show(id = "consolePanel") 
+        
         saveassayname <- gsub(" ", "_", input$FastMNNSaveReddim)
         if(isTRUE(input$FastMNNPcInput)){
           fmnnAssay <- input$FastMNNReddim
@@ -5643,9 +5852,14 @@ shinyServer(function(input, output, session) {
                                type = 'success')
         vals$batchRes[[saveassayname]] <- 'reddim'
         updateReddimInputs()
+        # close console
+        shinyjs::hide(id = "consolePanel")
+        
       })
     }
-  })
+    .loadClose() #close the notification spinner
+    
+  }))
 
   # observeEvent(input$HarmonyRun, {
   #   if (is.null(vals$counts)){
@@ -5676,12 +5890,17 @@ shinyServer(function(input, output, session) {
   #     })
   #   }
   # })
-
-  observeEvent(input$limmaRun, {
+ observeEvent(input$limmaRun, withConsoleMsgRedirect ({
+    
+   .loadOpen ("Please wait...Running Limma method for batch correction") # show the notification spinner
+   shinyjs::runjs("var intervalVarAutoScrollConsole =  setInterval(startAutoScroll, 1000); Shiny.onInputChange('logDataAutoScrollStatus', intervalVarAutoScrollConsole);")
+   
     if (is.null(vals$counts)){
       shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
     } else {
       withBusyIndicatorServer("limmaRun", {
+        # open console 
+        shinyjs::show(id = "consolePanel") 
         saveassayname <- gsub(" ", "_", input$limmaSaveAssay)
         vals$counts <- runLimmaBC(vals$counts,
                                   useAssay = input$batchCorrAssay,
@@ -5691,9 +5910,14 @@ shinyServer(function(input, output, session) {
                                type = 'success')
         vals$batchRes[[saveassayname]] <- 'assay'
         updateAssayInputs()
+        # close console
+        shinyjs::hide(id = "consolePanel")
+        
+        
       })
     }
-  })
+    .loadClose() #close the notification spinner
+  }))
 
   observeEvent(input$ligerRun, {
     if (is.null(vals$counts)){
@@ -5723,11 +5947,17 @@ shinyServer(function(input, output, session) {
     }
   })
 
-  observeEvent(input$MNNRun, {
+  observeEvent(input$MNNRun, withConsoleMsgRedirect ({
+    
+    .loadOpen ("Please wait...Running MNN method for batch correction") # show the notification spinner
+    shinyjs::runjs("var intervalVarAutoScrollConsole =  setInterval(startAutoScroll, 1000); Shiny.onInputChange('logDataAutoScrollStatus', intervalVarAutoScrollConsole);")
+    
     if (is.null(vals$counts)){
       shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
     } else {
       withBusyIndicatorServer("MNNRun", {
+        # open console 
+        shinyjs::show(id = "consolePanel") 
         saveassayname <- gsub(" ", "_", input$MNNSaveAssay)
         vals$counts <- runMNNCorrect(vals$counts,
                                      useAssay = input$batchCorrAssay,
@@ -5738,15 +5968,26 @@ shinyServer(function(input, output, session) {
                                type = 'success')
         vals$batchRes[[saveassayname]] <- 'assay'
         updateAssayInputs()
+        # close console
+        shinyjs::hide(id = "consolePanel")
+        
       })
     }
-  })
+    .loadClose() #close the notification spinner
+  }))
 
-  observeEvent(input$scnrmRun, {
+  observeEvent(input$scnrmRun, withConsoleMsgRedirect ({
+    
+    .loadOpen ("Please wait...Running Scanorama method for batch correction") # show the notification spinner
+    shinyjs::runjs("var intervalVarAutoScrollConsole =  setInterval(startAutoScroll, 1000); Shiny.onInputChange('logDataAutoScrollStatus', intervalVarAutoScrollConsole);")
+    
     if (is.null(vals$counts)){
       shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
     } else {
       withBusyIndicatorServer("scnrmRun", {
+        # open console 
+        shinyjs::show(id = "consolePanel") 
+        
         saveassayname <- gsub(" ", "_", input$scnrmSaveAssay)
         vals$counts <- runSCANORAMA(vals$counts,
                                     useAssay = input$batchCorrAssay,
@@ -5759,9 +6000,12 @@ shinyServer(function(input, output, session) {
                                type = 'success')
         vals$batchRes[[saveassayname]] <- 'assay'
         updateAssayInputs()
+        # close console
+        shinyjs::hide(id = "consolePanel")
       })
     }
-  })
+    .loadClose() #close the notification spinner 
+  }))
 
   output$scMergeNBatch <- renderUI({
     if(!is.null(vals$counts) &&
@@ -5771,11 +6015,18 @@ shinyServer(function(input, output, session) {
     }
   })
 
-  observeEvent(input$scMergeRun, {
+  observeEvent(input$scMergeRun, withConsoleMsgRedirect ({
+    
+    .loadOpen ("Please wait...Running scMerge method for batch correction") # show the notification spinner
+    shinyjs::runjs("var intervalVarAutoScrollConsole =  setInterval(startAutoScroll, 1000); Shiny.onInputChange('logDataAutoScrollStatus', intervalVarAutoScrollConsole);")
+    
     if (is.null(vals$counts)){
       shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
     } else {
       withBusyIndicatorServer("scMergeRun", {
+        # open console 
+        shinyjs::show(id = "consolePanel") 
+        
         saveassayname <- gsub(" ", "_", input$scMergeSaveAssay)
         if(input$scMergeSEGOpt == 1){
           seg <- NULL
@@ -5802,9 +6053,13 @@ shinyServer(function(input, output, session) {
                                type = 'success')
         vals$batchRes[[saveassayname]] <- 'assay'
         updateAssayInputs()
+        # close console
+        shinyjs::hide(id = "consolePanel")
+        
       })
     }
-  })
+    .loadClose() #close the notification spinner
+  }))
 
   output$Srt3IntNAnchUI <- renderUI({
     if(!is.null(vals$counts)){
@@ -5827,11 +6082,18 @@ shinyServer(function(input, output, session) {
     }
   })
 
-  observeEvent(input$Srt3IntRun, {
+  observeEvent(input$Srt3IntRun, withConsoleMsgRedirect ({
+    
+    .loadOpen ("Please wait...Running Seurat3 integration for batch correction") # show the notification spinner
+    shinyjs::runjs("var intervalVarAutoScrollConsole =  setInterval(startAutoScroll, 1000); Shiny.onInputChange('logDataAutoScrollStatus', intervalVarAutoScrollConsole);")
+    
     if (is.null(vals$counts)){
       shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
     } else {
       withBusyIndicatorServer("Srt3IntRun", {
+        # open console 
+        shinyjs::show(id = "consolePanel") 
+        
         saveassayname <- gsub(" ", "_", input$Srt3IntSaveAssay)
         vals$counts <- runSeuratIntegration(
           inSCE = vals$counts,
@@ -5844,9 +6106,15 @@ shinyServer(function(input, output, session) {
         vals$batchRes[[saveassayname]] <- 'altExp'
         shinyalert::shinyalert('Success!', 'Seurat3 Integration completed.',
                                type = 'success')
+        
+        # close console
+        shinyjs::hide(id = "consolePanel")
+        
       })
     }
-  })
+    .loadClose() #close the notification spinner
+    
+  }))
 
   output$zinbwaveNHvgUI <- renderUI({
     if(!is.null(vals$counts)){
@@ -5865,12 +6133,18 @@ shinyServer(function(input, output, session) {
                    value = zwdefault, max = ngenes)
     }
   })
-
-  observeEvent(input$zinbwaveRun, {
+  
+  observeEvent(input$zinbwaveRun, withConsoleMsgRedirect ({
+    
+    .loadOpen ("Please wait...Running ZINBWaVE method for batch correction") # show the notification spinner
+    shinyjs::runjs("var intervalVarAutoScrollConsole =  setInterval(startAutoScroll, 1000); Shiny.onInputChange('logDataAutoScrollStatus', intervalVarAutoScrollConsole);")
+    
     if (is.null(vals$counts)){
       shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
     } else {
       withBusyIndicatorServer("zinbwaveRun", {
+        # open console 
+        shinyjs::show(id = "consolePanel") 
         saveassayname <- gsub(" ", "_", input$limmaSaveAssay)
         vals$counts <- runZINBWaVE(vals$counts,
                                    useAssay = input$batchCorrAssay,
@@ -5885,16 +6159,25 @@ shinyServer(function(input, output, session) {
                                type = 'success')
         vals$batchRes[[saveassayname]] <- 'reddim'
         updateReddimInputs()
+        # close console
+        shinyjs::hide(id = "consolePanel")
       })
     }
-  })
+    .loadClose() #close the notification spinner
+  }))
 
   #-----------------------------------------------------------------------------
   # Page 4.1: Feature Selection ####
   #-----------------------------------------------------------------------------
 
-  observeEvent(input$findHvgButtonFS, {
+  observeEvent(input$findHvgButtonFS, withConsoleMsgRedirect ({
+    
+    .loadOpen ("Please wait...Computing variability") # show the notification spinner
+    shinyjs::runjs("var intervalVarAutoScrollConsole =  setInterval(startAutoScroll, 1000); Shiny.onInputChange('logDataAutoScrollStatus', intervalVarAutoScrollConsole);")
+    
     withBusyIndicatorServer("findHvgButtonFS", {
+      # open console 
+      shinyjs::show(id = "consolePanel") 
       if (!is.null(vals$counts)) {
         tryCatch(vals$counts <- runFeatureSelection(
           inSCE = vals$counts,
@@ -5904,12 +6187,15 @@ shinyServer(function(input, output, session) {
         vals$hvgCalculated$status <- TRUE
         vals$hvgCalculated$method <- input$hvgMethodFS
         vals$hvgCalculated$assayName <- input$assaySelectFS_Norm
+        # close console
+        shinyjs::hide(id = "consolePanel")
       }
     })
     updateSelectInputTag(session, "hvgSubsetAssay",
                          recommended = c("scaled", "transformed", "normalized"),
                          choices = expDataNames(vals$counts))
-  })
+    .loadClose() #close the notification spinner
+  }))
 
   observeEvent(input$updatePlotFS, {
     req(vals$counts)
@@ -5949,11 +6235,19 @@ shinyServer(function(input, output, session) {
     session$sendCustomMessage("close_dropDownFS", "")
   })
 
-  observeEvent(input$hvgSubsetRun, {
+  observeEvent(input$hvgSubsetRun, withConsoleMsgRedirect ({
+    
+    .loadOpen ("Please wait...Feature are being selected") # show the notification spinner
+    shinyjs::runjs("var intervalVarAutoScrollConsole =  setInterval(startAutoScroll, 1000); Shiny.onInputChange('logDataAutoScrollStatus', intervalVarAutoScrollConsole);")
+    
     withBusyIndicatorServer("hvgSubsetRun", {
+      
       if (isTRUE(vals$hvgCalculated$status) &&
           !is.null(vals$hvgCalculated$method) &&
           !is.null(input$hvgSubsetAssay)) {
+        # open console 
+        shinyjs::show(id = "consolePanel") 
+        
         if(is.na(input$hvgNumberSelect)){
           stop("Number of HVG cannot be empty!")
         }
@@ -6015,6 +6309,8 @@ shinyServer(function(input, output, session) {
             })
           })
         }
+        # close console
+        shinyjs::hide(id = "consolePanel")
         # Show downstream analysis options
         callModule(module = nonLinearWorkflow, id = "nlw-fs", parent = session, dr = TRUE, cl = TRUE)
       } else {
@@ -6024,8 +6320,12 @@ shinyServer(function(input, output, session) {
           type = "error"
         )
       }
+      
+      
+      
     })
-  })
+    .loadClose() #close the notification spinner
+  }))
 
   # observeEvent(input$scatterFSRun,{
   #   useAssay <- "tophat_counts"
@@ -6087,13 +6387,22 @@ shinyServer(function(input, output, session) {
     }
   })
 
-  ## DE - Thresholding Vis ####
-  observeEvent(input$deViewThresh, {
+   ## DE - Thresholding Vis ####
+  observeEvent(input$deViewThresh, withConsoleMsgRedirect ({
+    
+    .loadOpen ("Please wait...Threshold is being plotted") # show the notification spinner
+    shinyjs::runjs("var intervalVarAutoScrollConsole =  setInterval(startAutoScroll, 1000); Shiny.onInputChange('logDataAutoScrollStatus', intervalVarAutoScrollConsole);")
+    
     if (!is.null(vals$counts) &&
         !is.null(input$deAssay)) {
       shinyjs::showElement(id= "deThreshpanel")
-      withProgress(message = "Plotting thresholding...", max = 1, value = 1, {
+      #withProgress(message = "Plotting thresholding...", max = 1, value = 1, {
+        message(paste0(date(), " ... Plotting thresholding"))
+        
         withBusyIndicatorServer("deViewThresh", {
+          # open console 
+          shinyjs::show(id = "consolePanel") 
+          
           # MAST style sanity check for whether logged or not
           x <- expData(vals$counts, input$deAssay)
           if (!all(floor(x) == x, na.rm = TRUE) & max(x, na.rm = TRUE) <
@@ -6124,11 +6433,13 @@ shinyServer(function(input, output, session) {
             grid.draw(thres.grob)
           }, height = plotHeight)
           updateActionButton(session, "deViewThresh", "Refresh")
+          # close console
+          shinyjs::hide(id = "consolePanel")
         })
-      })
+      #})
     }
-
-  })
+    .loadClose() #close the notification spinner 
+  }))
 
   observeEvent(input$deHideThresh, {
     shinyjs::hideElement(id= "deThreshpanel")
@@ -6494,8 +6805,15 @@ shinyServer(function(input, output, session) {
 
     })
   }
-
-  observeEvent(input$runDE, {
+ 
+  observeEvent(input$runDE, withConsoleMsgRedirect ({
+    
+    .loadOpen ("Please wait...Running differential expression analysis") # show the notification spinner
+    shinyjs::runjs("var intervalVarAutoScrollConsole =  setInterval(startAutoScroll, 1000); Shiny.onInputChange('logDataAutoScrollStatus', intervalVarAutoScrollConsole);")
+    
+    # open console 
+    shinyjs::show(id = "consolePanel") 
+    
     if (is.null(vals$counts)){
       shinyalert("Error!", "Upload data first.", type = "error")
     } else if(input$deAnalysisName == "" ||
@@ -6516,10 +6834,13 @@ shinyServer(function(input, output, session) {
       } else {
         runDEfromShiny(FALSE)
       }
+      # close console
+      shinyjs::hide(id = "consolePanel")
       # Show downstream analysis options
       callModule(module = nonLinearWorkflow, id = "nlw-de", parent = session, pa = TRUE, cv = TRUE)
     }
-  })
+    .loadClose() #close the notification spinner
+  }))
 
   updateDEAnalysisNames <- function() {
     deResNames <- rev(names(metadata(vals$counts)$diffExp))
@@ -6718,12 +7039,20 @@ shinyServer(function(input, output, session) {
       }
     }
   })
+  
   # findMarker RUN ####
-  observeEvent(input$runFM, {
+  observeEvent(input$runFM, withConsoleMsgRedirect ({
+    
+    .loadOpen ("Please wait...Finding marker genes") # show the notification spinner
+    shinyjs::runjs("var intervalVarAutoScrollConsole =  setInterval(startAutoScroll, 1000); Shiny.onInputChange('logDataAutoScrollStatus', intervalVarAutoScrollConsole);")
+    
     if (is.null(vals$counts)){
       shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
     } else {
       withBusyIndicatorServer("runFM", {
+        # open console 
+        shinyjs::show(id = "consolePanel") 
+        
         if(is.na(input$fmLogFC)){
           stop("Log2FC must be a numeric non-empty value!")
         }
@@ -6743,9 +7072,13 @@ shinyServer(function(input, output, session) {
         shinyalert::shinyalert("Success", "Find Marker completed.",
                                "success")
         updateFMPlot()
+        # close console
+        shinyjs::hide(id = "consolePanel")
       })
     }
-  })
+    .loadClose() #close the notification spinner
+  }))
+  
   # findMarker ResultTable ####
   output$fmResTable <- DT::renderDataTable({
     if(!is.null(vals$counts) &&
@@ -6811,7 +7144,9 @@ shinyServer(function(input, output, session) {
     if(!is.null(vals$counts) &&
        'findMarker' %in% names(metadata(vals$counts))){
       withBusyIndicatorServer("plotFM", {
-        withProgress(message = "Updating marker heatmap...", max = 1, value = 1, {
+        #withProgress(message = "Updating marker heatmap...", max = 1, value = 1, {
+          message(paste0(date(), " ... Updating marker heatmap"))
+          
           if(isTRUE(input$fmUseTopN)
              && is.na(input$fmTopN)){
             stop("Top N marker must be a numeric non-empty value")
@@ -6845,7 +7180,7 @@ shinyServer(function(input, output, session) {
                                 rowLabel = TRUE)
             })
           })
-        })
+       # })
       })
     }
   }
@@ -6876,14 +7211,20 @@ shinyServer(function(input, output, session) {
   #})
 
   #Run algorithm
-  observeEvent(input$pathwayRun, {
+  observeEvent(input$pathwayRun, withConsoleMsgRedirect ({
+    
+    .loadOpen ("Please wait...Running pathway analysis") # show the notification spinner
+    shinyjs::runjs("var intervalVarAutoScrollConsole =  setInterval(startAutoScroll, 1000); Shiny.onInputChange('logDataAutoScrollStatus', intervalVarAutoScrollConsole);")
+    
     if (is.null(vals$counts)){
       shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
     } else if (input$PathwayGeneLists == "Import geneset before using") {
       shinyalert::shinyalert("Error!", "Must import geneset first.", type = "error")
     } else {
       withBusyIndicatorServer("pathwayRun", {
-
+        # open console 
+        shinyjs::show(id = "consolePanel") 
+        
         #update metadata of vals$counts
         #metadata(vals$counts)$sctk <- metadata(vals$original)$sctk
 
@@ -6931,7 +7272,12 @@ shinyServer(function(input, output, session) {
         })
       })
     }
-  })
+    # close console
+    shinyjs::hide(id = "consolePanel")
+    
+    .loadClose() #close the notification spinner
+    
+  }))
 
   observeEvent(input$pathwayRedDimNames, {
     if (!is.null(vals$counts)) {
@@ -7036,8 +7382,12 @@ shinyServer(function(input, output, session) {
     })
   })
   
-  #count_db <- reactive(length(dbs()))
-  observeEvent (input$enrichRun, {
+   #count_db <- reactive(length(dbs()))
+  observeEvent (input$enrichRun, withConsoleMsgRedirect ({
+    
+    .loadOpen ("Please wait...Running gene set enrichment analysis") # show the notification spinner
+    shinyjs::runjs("var intervalVarAutoScrollConsole =  setInterval(startAutoScroll, 1000); Shiny.onInputChange('logDataAutoScrollStatus', intervalVarAutoScrollConsole);")
+    
     if (is.null(vals$counts)){
       shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
     } else if (!internetConnection) {
@@ -7049,6 +7399,8 @@ shinyServer(function(input, output, session) {
                              type = "error")
     } else {
       withBusyIndicatorServer ("enrichRun", {
+        # open console 
+        shinyjs::show(id = "consolePanel") 
         tryCatch ({
           by <- "rownames"
           if (input$geneListChoice == "deg") {
@@ -7081,7 +7433,11 @@ shinyServer(function(input, output, session) {
         })
       })
     }
-  })
+    # close console
+    shinyjs::hide(id = "consolePanel")
+    .loadClose() #close the notification spinner
+    
+  }))
   
   enrChangeDBShow <- reactive({
     list(input$enrAnalysisNameSel,
@@ -7151,12 +7507,19 @@ shinyServer(function(input, output, session) {
   # Page 7: Subsampling
   #-----------------------------------------------------------------------------
 
-  #Run subsampling analysis
-  observeEvent(input$runSubsampleDepth, {
+   #Run subsampling analysis
+  observeEvent(input$runSubsampleDepth, withConsoleMsgRedirect ({
+    
+    .loadOpen ("Please wait...Running subsampler") # show the notification spinner
+    shinyjs::runjs("var intervalVarAutoScrollConsole =  setInterval(startAutoScroll, 1000); Shiny.onInputChange('logDataAutoScrollStatus', intervalVarAutoScrollConsole);")
+    
     if (is.null(vals$counts)){
       shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
     } else{
       withBusyIndicatorServer("runSubsampleDepth", {
+        # open console 
+        shinyjs::show(id = "consolePanel") 
+        
         if(is.na(input$minCount)){
           stop("Minimum readcount must be a non-empty numeric value!")
         }
@@ -7204,15 +7567,25 @@ shinyServer(function(input, output, session) {
           lines(apply(vals$subDepth[, , 3], 2, function(x){quantile(x, 0.75)})~
                   seq(from = 0, to = input$maxDepth, length.out = input$depthResolution), lty = 2, lwd = 3)
         })
+        # close console
+        shinyjs::hide(id = "consolePanel")
       })
     }
-  })
-
-  observeEvent(input$runSubsampleCells, {
+    .loadClose() #close the notification spinner
+  }))
+  
+  observeEvent(input$runSubsampleCells, withConsoleMsgRedirect ({
+    
+    .loadOpen ("Please wait...Running resampler") # show the notification spinner
+    shinyjs::runjs("var intervalVarAutoScrollConsole =  setInterval(startAutoScroll, 1000); Shiny.onInputChange('logDataAutoScrollStatus', intervalVarAutoScrollConsole);")
+    
     if (is.null(vals$counts)){
       shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
     } else{
       withBusyIndicatorServer("runSubsampleCells", {
+        # open console 
+        shinyjs::show(id = "consolePanel") 
+        
         if(is.na(input$minCellNum)
            || is.na(input$maxCellNum)
            || is.na(input$iterations)
@@ -7276,15 +7649,27 @@ shinyServer(function(input, output, session) {
                   seq(from = input$minCellNum, to = input$maxCellNum, length.out = input$depthResolution), lty = 2, lwd = 3)
         })
       })
+      # close console
+      shinyjs::hide(id = "consolePanel")
     }
-  })
+    .loadClose() #close the notification spinner
+  }))
+
 
   #Run differential power analysis
-  observeEvent(input$runSnapshot, {
+  observeEvent(input$runSnapshot, withConsoleMsgRedirect ({
+    
+    .loadOpen ("Please wait...Running resampling snapshot") # show the notification spinner
+    shinyjs::runjs("var intervalVarAutoScrollConsole =  setInterval(startAutoScroll, 1000); Shiny.onInputChange('logDataAutoScrollStatus', intervalVarAutoScrollConsole);")
+    
     if (is.null(vals$counts)){
       shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
     } else{
       withBusyIndicatorServer("runSnapshot", {
+        
+        # open console 
+        shinyjs::show(id = "consolePanel") 
+        
         if(is.na(input$numCellsSnap)
            || is.na(input$numReadsSnap)
            || is.na(input$iterationsSnap)){
@@ -7302,17 +7687,28 @@ shinyServer(function(input, output, session) {
                xlab = "Cohen's d effect size", ylab = "Detection power", lwd = 4, main = "Power to detect diffex by effect size")
         })
       })
+      # close console
+      shinyjs::hide(id = "consolePanel")
     }
-  })
+    .loadClose() #close the notification spinner
+  }))
 
   #-----------------------------------------------------------------------------
   # Page 8: Seurat Workflow
   #-----------------------------------------------------------------------------
-
+ 
   #Perform normalization
-  observeEvent(input$normalize_button, {
+  observeEvent(input$normalize_button, withConsoleMsgRedirect ({
+    
+    .loadOpen ("Please wait...Normalizing the data") # show the notification spinner
+    shinyjs::runjs("var intervalVarAutoScrollConsole =  setInterval(startAutoScroll, 1000); Shiny.onInputChange('logDataAutoScrollStatus', intervalVarAutoScrollConsole);")
+    
     req(vals$counts)
-    withProgress(message = "Normalizing", max = 1, value = 1, {
+    # open console 
+    shinyjs::show(id = "consolePanel") 
+    #withProgress(message = "Normalizing", max = 1, value = 1, {
+      message(paste0(date(), " ... Normalizing Data"))
+      
       vals$counts <- runSeuratNormalizeData(inSCE = vals$counts,
                                          useAssay = input$seuratSelectNormalizationAssay,
                                          normAssayName = "seuratNormData",
@@ -7321,19 +7717,35 @@ shinyServer(function(input, output, session) {
       metadata(vals$counts)$sctk$seuratUseAssay <- input$seuratSelectNormalizationAssay
       # updateAssayInputs()
       vals$counts <- singleCellTK:::.seuratInvalidate(inSCE = vals$counts)
-    })
+   # })
     updateCollapse(session = session, "SeuratUI", style = list("Normalize Data" = "success"))
     shinyjs::enable(selector = "div[value='Scale Data']")
     S4Vectors::metadata(vals$counts)$seuratMarkers <- NULL
     shinyjs::hide(
       selector = "div[value='Downstream Analysis']")
-    showNotification("Normalization Complete")
-  })
-
+    #showNotification("Normalization Complete")
+    message(paste0(date(), " ... Normalization Complete"))
+    
+    # close console
+    shinyjs::hide(id = "consolePanel")
+    
+    .loadClose() #close the notification spinner
+    
+  }))
+  
   #Perform scaling
-  observeEvent(input$scale_button, {
+  observeEvent(input$scale_button, withConsoleMsgRedirect ({
+    
+    .loadOpen ("Please wait...Scaling the data") # show the notification spinner
+    shinyjs::runjs("var intervalVarAutoScrollConsole =  setInterval(startAutoScroll, 1000); Shiny.onInputChange('logDataAutoScrollStatus', intervalVarAutoScrollConsole);")
+    
     req(vals$counts)
-    withProgress(message = "Scaling", max = 1, value = 1, {
+    # open console 
+    shinyjs::show(id = "consolePanel") 
+    
+    #withProgress(message = "Scaling", max = 1, value = 1, {
+      message(paste0(date(), " ... Scaling Data"))
+      
       vals$counts <- runSeuratScaleData(inSCE = vals$counts,
                                      useAssay = "seuratNormData",
                                      scaledAssayName = "seuratScaledData",
@@ -7343,19 +7755,34 @@ shinyServer(function(input, output, session) {
                                      scaleMax = input$scale.max)
       # updateAssayInputs()
       vals$counts <- singleCellTK:::.seuratInvalidate(inSCE = vals$counts, scaleData = FALSE)
-    })
+   # })
     updateCollapse(session = session, "SeuratUI", style = list("Scale Data" = "success"))
     shinyjs::enable(selector = "div[value='Highly Variable Genes']")
     S4Vectors::metadata(vals$counts)$seuratMarkers <- NULL
     shinyjs::hide(
       selector = "div[value='Downstream Analysis']")
-    showNotification("Scale Complete")
-  })
+    #showNotification("Scale Complete")
+    message(paste0(date(), " ... Scaling Complete"))
+    
+    # close console
+    shinyjs::hide(id = "consolePanel")
+    
+    .loadClose() #close the notification spinner
+  }))
 
   #Find HVG
-  observeEvent(input$find_hvg_button, {
+   observeEvent(input$find_hvg_button, withConsoleMsgRedirect ({
+    
+     .loadOpen ("Please wait...Finding high variable genes") # show the notification spinner
+     shinyjs::runjs("var intervalVarAutoScrollConsole =  setInterval(startAutoScroll, 1000); Shiny.onInputChange('logDataAutoScrollStatus', intervalVarAutoScrollConsole);")
+     
     req(vals$counts)
-    withProgress(message = "Finding highly variable genes", max = 1, value = 1, {
+    # open console 
+    shinyjs::show(id = "consolePanel") 
+    
+   # withProgress(message = "Finding highly variable genes", max = 1, value = 1, {
+      message(paste0(date(), " ... Finding High Variable Genes"))
+      
       if(input$hvg_method == "vst"){
         vals$counts <- runSeuratFindHVG(inSCE = vals$counts,
                                      useAssay = metadata(vals$counts)$sctk$seuratUseAssay,
@@ -7369,21 +7796,29 @@ shinyServer(function(input, output, session) {
                                      hvgNumber = as.numeric(input$hvg_no_features))
       }
       vals$counts <- singleCellTK:::.seuratInvalidate(inSCE = vals$counts, scaleData = FALSE, varFeatures = FALSE)
-    })
-    withProgress(message = "Plotting HVG", max = 1, value = 1, {
+   # })
+    #withProgress(message = "Plotting HVG", max = 1, value = 1, {
+      message(paste0(date(), " ... Plotting HVG"))
+      
       output$plot_hvg <- renderPlotly({
         isolate({
           plotly::ggplotly(plotSeuratHVG(vals$counts, input$hvg_no_features_view))
         })
       })
-    })
+    #})
     updateCollapse(session = session, "SeuratUI", style = list("Highly Variable Genes" = "success"))
     shinyjs::enable(selector = "div[value='Dimensionality Reduction']")
     S4Vectors::metadata(vals$counts)$seuratMarkers <- NULL
     shinyjs::hide(
       selector = "div[value='Downstream Analysis']")
-    showNotification("Find HVG Complete")
-  })
+    #showNotification("Find HVG Complete")
+    message(paste0(date(), " ... Finding HVG Complete"))
+    
+    # close console
+    shinyjs::hide(id = "consolePanel")
+    
+    .loadClose() #close the notification spinner 
+  }))
 
   #Display highly variable genes
   output$hvg_output <- renderText({
@@ -7399,7 +7834,12 @@ shinyServer(function(input, output, session) {
   })
 
   #Run PCA
-  observeEvent(input$run_pca_button, {
+  
+  observeEvent(input$run_pca_button, withConsoleMsgRedirect ({
+    
+    .loadOpen ("Please wait...Running PCA") # show the notification spinner
+    shinyjs::runjs("var intervalVarAutoScrollConsole =  setInterval(startAutoScroll, 1000); Shiny.onInputChange('logDataAutoScrollStatus', intervalVarAutoScrollConsole);")
+    
     req(vals$counts)
 
     #remove tabs if not generated
@@ -7408,7 +7848,12 @@ shinyServer(function(input, output, session) {
     removeTab(inputId = "seuratPCAPlotTabset", target = "JackStraw Plot")
     removeTab(inputId = "seuratPCAPlotTabset", target = "Heatmap Plot")
 
-    withProgress(message = "Running PCA", max = 1, value = 1, {
+    # open console 
+    shinyjs::show(id = "consolePanel") 
+    
+   # withProgress(message = "Running PCA", max = 1, value = 1, {
+      message(paste0(date(), " ... Running PCA"))
+      
       vals$counts <- runSeuratPCA(inSCE = vals$counts,
                                useAssay = "seuratScaledData",
                                reducedDimName = "seuratPCA",
@@ -7417,7 +7862,7 @@ shinyServer(function(input, output, session) {
 
       vals$counts@metadata$seurat$count_pc <- dim(convertSCEToSeurat(vals$counts)[["pca"]])[2]
       vals$counts <- singleCellTK:::.seuratInvalidate(inSCE = vals$counts, scaleData = FALSE, varFeatures = FALSE, PCA = FALSE, ICA = FALSE)
-    })
+   # })
 
     appendTab(inputId = "seuratPCAPlotTabset", tabPanel(title = "PCA Plot",
                                                         panel(heading = "PCA Plot",
@@ -7425,7 +7870,9 @@ shinyServer(function(input, output, session) {
                                                         )
     ), select = TRUE)
 
-    withProgress(message = "Plotting PCA", max = 1, value = 1, {
+    #withProgress(message = "Plotting PCA", max = 1, value = 1, {
+      message(paste0(date(), " ... Plotting PCA"))
+    
       output$plot_pca <- renderPlotly({
         isolate({
           plotly::ggplotly(plotSeuratReduction(inSCE = vals$counts,
@@ -7433,7 +7880,7 @@ shinyServer(function(input, output, session) {
                                                showLegend = FALSE))
         })
       })
-    })
+    #})
     if (input$pca_compute_elbow) {
       appendTab(inputId = "seuratPCAPlotTabset", tabPanel(title = "Elbow Plot",
                                                           panel(
@@ -7442,7 +7889,9 @@ shinyServer(function(input, output, session) {
                                                           )
       ))
 
-      withProgress(message = "Generating Elbow Plot", max = 1, value = 1, {
+      #withProgress(message = "Generating Elbow Plot", max = 1, value = 1, {
+        message(paste0(date(), " ... Generating Elbow Plot"))
+      
         updateNumericInput(session = session, inputId = "pca_significant_pc_counter", value = singleCellTK:::.computeSignificantPC(vals$counts))
         output$plot_elbow_pca <- renderPlotly({
           isolate({
@@ -7455,7 +7904,7 @@ shinyServer(function(input, output, session) {
             paste("<p>Number of significant components suggested by ElbowPlot: <span style='color:red'>", singleCellTK:::.computeSignificantPC(vals$counts)," </span> </p> <hr>")
           })
         })
-      })
+      #})
     }
     if (input$pca_compute_jackstraw) {
       appendTab(inputId = "seuratPCAPlotTabset", tabPanel(title = "JackStraw Plot",
@@ -7464,7 +7913,9 @@ shinyServer(function(input, output, session) {
                                                           )
       ))
 
-      withProgress(message = "Generating JackStraw Plot", max = 1, value = 1, {
+      #withProgress(message = "Generating JackStraw Plot", max = 1, value = 1, {
+        message(paste0(date(), " ... Generating JackStraw Plot"))
+      
         vals$counts <- runSeuratJackStraw(inSCE = vals$counts,
                                               useAssay = "seuratScaledData",
                                               dims = input$pca_no_components)
@@ -7474,7 +7925,7 @@ shinyServer(function(input, output, session) {
                                                  dims = input$pca_no_components))
           })
         })
-      })
+      #})
     }
     if (input$pca_compute_heatmap) {
       appendTab(inputId = "seuratPCAPlotTabset", tabPanel(title = "Heatmap Plot",
@@ -7517,7 +7968,9 @@ shinyServer(function(input, output, session) {
                                                           )
       ))
 
-      withProgress(message = "Generating Heatmaps", max = 1, value = 1, {
+      #withProgress(message = "Generating Heatmaps", max = 1, value = 1, {
+        message(paste0(date(), "  ... Generating Heatmaps"))
+      
         vals$counts@metadata$seurat$heatmap_pca <- runSeuratHeatmap(inSCE = vals$counts,
                                                                         useAssay = "seuratScaledData",
                                                                         useReduction = "pca",
@@ -7534,7 +7987,7 @@ shinyServer(function(input, output, session) {
           })
         })
         updatePickerInput(session = session, inputId = "picker_dimheatmap_components_pca", choices = singleCellTK:::.getComponentNames(vals$counts@metadata$seurat$count_pc, "PC"))
-      })
+     # })
     }
     updateCollapse(session = session, "SeuratUI", style = list("Dimensionality Reduction" = "success"))
 
@@ -7563,22 +8016,38 @@ shinyServer(function(input, output, session) {
     shinyjs::hide(
       selector = "div[value='Downstream Analysis']")
 
-    showNotification("PCA Complete")
-  })
+    #showNotification("PCA Complete")
+    message(paste0(date(), " ... PCA Complete"))
+    
+    # close console
+    shinyjs::hide(id = "consolePanel")
+    
+    .loadClose() #close the notification spinner 
+    
+  }))
   
   observeEvent(input$closeDropDownSeuratHM,{
     session$sendCustomMessage("close_dropDownSeuratHM", "")
   })
 
   #Run ICA
-  observeEvent(input$run_ica_button, {
+  
+  observeEvent(input$run_ica_button, withConsoleMsgRedirect ({
+    
+    .loadOpen ("Please wait...Running ICA") # show the notification spinner
+    shinyjs::runjs("var intervalVarAutoScrollConsole =  setInterval(startAutoScroll, 1000); Shiny.onInputChange('logDataAutoScrollStatus', intervalVarAutoScrollConsole);")
+    
     req(vals$counts)
 
     #remove tabs if not generated
     removeTab(inputId = "seuratICAPlotTabset", target = "ICA Plot")
     removeTab(inputId = "seuratICAPlotTabset", target = "Heatmap Plot")
-
-    withProgress(message = "Running ICA", max = 1, value = 1, {
+    
+    # open console 
+    shinyjs::show(id = "consolePanel")
+   # withProgress(message = "Running ICA", max = 1, value = 1, {
+      message(paste0(date(), " ... Running ICA"))
+      
       vals$counts <- runSeuratICA(inSCE = vals$counts,
                                useAssay = "seuratScaledData",
                                nics = input$ica_no_components,
@@ -7586,7 +8055,7 @@ shinyServer(function(input, output, session) {
 
       vals$counts@metadata$seurat$count_ic <- dim(convertSCEToSeurat(vals$counts)[["ica"]])[2]
       vals$counts <- singleCellTK:::.seuratInvalidate(inSCE = vals$counts, scaleData = FALSE, varFeatures = FALSE, PCA = FALSE, ICA = FALSE)
-    })
+   # })
 
     appendTab(inputId = "seuratICAPlotTabset", tabPanel(title = "ICA Plot",
                                                         panel(heading = "ICA Plot",
@@ -7594,7 +8063,9 @@ shinyServer(function(input, output, session) {
                                                         )
     ), select = TRUE)
 
-    withProgress(message = "Plotting ICA", max = 1, value = 1, {
+    #withProgress(message = "Plotting ICA", max = 1, value = 1, {
+      message(paste0(date(), " ... Plotting ICA"))
+    
       output$plot_ica <- renderPlotly({
         isolate({
           plotly::ggplotly(plotSeuratReduction(inSCE = vals$counts,
@@ -7602,7 +8073,7 @@ shinyServer(function(input, output, session) {
                                                showLegend = FALSE))
         })
       })
-    })
+    #})
     if (input$ica_compute_heatmap) {
       appendTab(inputId = "seuratICAPlotTabset", tabPanel(title = "Heatmap Plot",
                                                           panel(heading = "Heatmap Plot",
@@ -7623,7 +8094,9 @@ shinyServer(function(input, output, session) {
                                                           )
       ))
 
-      withProgress(message = "Generating Heatmaps", max = 1, value = 1, {
+      #withProgress(message = "Generating Heatmaps", max = 1, value = 1, {
+        message(paste0(date(), " ... Generating Heatmaps"))
+      
         vals$counts@metadata$seurat$heatmap_ica <- runSeuratHeatmap(inSCE = vals$counts,
                                                                         useAssay = "seuratScaledData",
                                                                         useReduction = "ica",
@@ -7640,7 +8113,7 @@ shinyServer(function(input, output, session) {
           })
         })
         updatePickerInput(session = session, inputId = "picker_dimheatmap_components_ica", choices = singleCellTK:::.getComponentNames(vals$counts@metadata$seurat$count_ic, "IC"))
-      })
+      #})
     }
     updateCollapse(session = session, "SeuratUI", style = list("Dimensionality Reduction" = "success"))
 
@@ -7661,12 +8134,27 @@ shinyServer(function(input, output, session) {
     shinyjs::hide(
       selector = "div[value='Downstream Analysis']")
 
-    showNotification("ICA Complete")
-  })
+    #showNotification("ICA Complete")
+    message(paste0(date(), " ... ICA Complete"))
+    
+    # close console
+    shinyjs::hide(id = "consolePanel")
+    
+    .loadClose() #close the notification spinner 
+    
+  }))
 
   #Find clusters
-  observeEvent(input$find_clusters_button, {
+  
+  observeEvent(input$find_clusters_button, withConsoleMsgRedirect ({
+    
+    .loadOpen ("Please wait...Finding clusters") # show the notification spinner
+    shinyjs::runjs("var intervalVarAutoScrollConsole =  setInterval(startAutoScroll, 1000); Shiny.onInputChange('logDataAutoScrollStatus', intervalVarAutoScrollConsole);")
+    
     req(vals$counts)
+    # open console 
+    shinyjs::show(id = "consolePanel") 
+    
     if(!is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[[input$reduction_clustering_method]])){
 
       #Remove plot tabs if generated before
@@ -7676,7 +8164,9 @@ shinyServer(function(input, output, session) {
       removeTab(inputId = "seuratClusteringPlotTabset", target = "UMAP Plot")
 
 
-      withProgress(message = "Finding clusters", max = 1, value = 1, {
+      #withProgress(message = "Finding clusters", max = 1, value = 1, {
+        message(paste0(date(), " ... Clustering Dataset"))
+        
         vals$counts <- runSeuratFindClusters(inSCE = vals$counts,
                                           useAssay = "seuratScaledData",
                                           useReduction = input$reduction_clustering_method,
@@ -7684,9 +8174,11 @@ shinyServer(function(input, output, session) {
                                           algorithm = input$algorithm.use,
                                           groupSingletons = input$group.singletons,
                                           resolution = input$resolution_clustering)
-      })
+      #})
       updateCollapse(session = session, "SeuratUI", style = list("Clustering" = "success"))
-      showNotification("Find Clusters Complete")
+      #showNotification("Find Clusters Complete")
+      message(paste0(date(), " ... Finding Clusters Complete"))
+      
 
       if(!is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[["pca"]])){
         appendTab(inputId = "seuratClusteringPlotTabset", tabPanel(title = "PCA Plot",
@@ -7696,7 +8188,9 @@ shinyServer(function(input, output, session) {
         ), select = TRUE
 
         )
-        withProgress(message = "Re-generating PCA plot with cluster labels", max = 1, value = 1,{
+        #withProgress(message = "Re-generating PCA plot with cluster labels", max = 1, value = 1,{
+          message(paste0(date(), " ... Re-generating PCA Plot with Cluster Labels"))
+        
           output$plot_pca_clustering <- renderPlotly({
             isolate({
               plotly::ggplotly(plotSeuratReduction(inSCE = vals$counts,
@@ -7704,7 +8198,7 @@ shinyServer(function(input, output, session) {
                                                    showLegend = TRUE))
             })
           })
-        })
+        #})
         shinyjs::toggleState(
           selector = ".seurat_clustering_plots a[data-value='PCA Plot']",
           condition = !is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[["pca"]]))
@@ -7715,7 +8209,9 @@ shinyServer(function(input, output, session) {
                                                                          plotlyOutput(outputId = "plot_ica_clustering")
                                                                    )
         ), select = TRUE)
-        withProgress(message = "Re-generating ICA plot with cluster labels", max = 1, value = 1,{
+        #withProgress(message = "Re-generating ICA plot with cluster labels", max = 1, value = 1,{
+          message(paste0(date(), " ... Re-generating ICA Plot with Cluster Labels"))
+        
           output$plot_ica_clustering <- renderPlotly({
             isolate({
               plotly::ggplotly(plotSeuratReduction(inSCE = vals$counts,
@@ -7723,7 +8219,7 @@ shinyServer(function(input, output, session) {
                                                    showLegend = TRUE))
             })
           })
-        })
+        #})
         shinyjs::toggleState(
           selector = ".seurat_clustering_plots a[data-value='ICA Plot']",
           condition = !is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[["ica"]]))
@@ -7737,7 +8233,9 @@ shinyServer(function(input, output, session) {
         )
         )
 
-        withProgress(message = "Re-generating tSNE plot with cluster labels", max = 1, value = 1,{
+        #withProgress(message = "Re-generating tSNE plot with cluster labels", max = 1, value = 1,{
+        message(paste0(date(), " ... Re-generating tSNE Plot with Cluster Labels"))
+        
           output$plot_tsne_clustering <- renderPlotly({
             isolate({
               plotly::ggplotly(plotSeuratReduction(inSCE = vals$counts,
@@ -7745,7 +8243,7 @@ shinyServer(function(input, output, session) {
                                                    showLegend = TRUE))
             })
           })
-        })
+        #})
         shinyjs::toggleState(
           selector = ".seurat_clustering_plots a[data-value='tSNE Plot']",
           condition = !is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[["tsne"]]))
@@ -7758,7 +8256,9 @@ shinyServer(function(input, output, session) {
                                                                    )
         )
         )
-        withProgress(message = "Re-generating UMAP plot with cluster labels", max = 1, value = 1,{
+        #withProgress(message = "Re-generating UMAP plot with cluster labels", max = 1, value = 1,{
+        message(paste0(date(), " ... Re-generating UMAP Plot with Cluster Labels"))
+        
           output$plot_umap_clustering <- renderPlotly({
             isolate({
               plotly::ggplotly(plotSeuratReduction(inSCE = vals$counts,
@@ -7766,7 +8266,7 @@ shinyServer(function(input, output, session) {
                                                    showLegend = TRUE))
             })
           })
-        })
+        #})
         shinyjs::toggleState(
           selector = ".seurat_clustering_plots a[data-value='UMAP Plot']",
           condition = !is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[["umap"]]))
@@ -7799,7 +8299,12 @@ shinyServer(function(input, output, session) {
     else{
       showNotification(paste0("'", input$reduction_clustering_method, "' reduction not found in input object"))
     }
-  })
+    
+    # close console
+    shinyjs::hide(id = "consolePanel")
+    
+    .loadClose() #close the notification spinner
+  }))
 
   observeEvent(input$seuratFindMarkerSelectPhenotype,{
     if(!is.null(vals$counts)){
@@ -7830,9 +8335,17 @@ shinyServer(function(input, output, session) {
   })
 
 
-
-  observeEvent(input$seuratFindMarkerRun,{
-    withProgress(message = "Finding markers", max = 1, value = 1,{
+  observeEvent(input$seuratFindMarkerRun, withConsoleMsgRedirect ({
+    
+    .loadOpen ("Please wait...Finding marker genes") # show the notification spinner
+    shinyjs::runjs("var intervalVarAutoScrollConsole =  setInterval(startAutoScroll, 1000); Shiny.onInputChange('logDataAutoScrollStatus', intervalVarAutoScrollConsole);")
+    
+    # open console 
+    shinyjs::show(id = "consolePanel") 
+    
+    #withProgress(message = "Finding markers", max = 1, value = 1,{
+      message(paste0(date(), " ... Finding Marker Genes"))
+      
       if(input$seuratFindMarkerType == "markerAll"){
         vals$counts <- runSeuratFindMarkers(inSCE = vals$counts,
                                          allGroup = input$seuratFindMarkerSelectPhenotype,
@@ -7864,7 +8377,7 @@ shinyServer(function(input, output, session) {
                                            onlyPos = input$seuratFindMarkerPosOnly)
         }
       }
-    })
+   # })
 
 
     shinyjs::show(selector = ".seurat_findmarker_table")
@@ -7982,7 +8495,9 @@ shinyServer(function(input, output, session) {
      #   h6(paste("Heatmap plotted across all groups against genes with adjusted p-values <", input$seuratFindMarkerPValAdjInput))
      # })
 
-    showNotification("Find Markers Complete")
+    #showNotification("Find Markers Complete")
+     message(paste0(date(), " ... Find Markers Complete"))
+     
 
     # Show downstream analysis options
     callModule(module = nonLinearWorkflow, id = "nlw-seurat", parent = session, de = TRUE, pa = TRUE)
@@ -8060,10 +8575,20 @@ shinyServer(function(input, output, session) {
       id = "filterSeuratFindMarker",
       dataframe = orderByLFCMarkers
     )
+    # close console
+    shinyjs::hide(id = "consolePanel")
+    
+    .loadClose() #close the notification spinner
+  }))
 
-  })
-
-  observeEvent(input$findMarkerHeatmapPlotFullNumericRun,{
+  observeEvent(input$findMarkerHeatmapPlotFullNumericRun, withConsoleMsgRedirect ({
+    
+    .loadOpen ("Please wait...Plotting heatmap") # show the notification spinner
+    shinyjs::runjs("var intervalVarAutoScrollConsole =  setInterval(startAutoScroll, 1000); Shiny.onInputChange('logDataAutoScrollStatus', intervalVarAutoScrollConsole);")
+    
+    # open console 
+    shinyjs::show(id = "consolePanel") 
+    
     ##df <- metadata(vals$counts)$seuratMarkers[which(metadata(vals$counts)$seuratMarkers$p_val_adj < 0.05, arr.ind = TRUE),]
     df <- metadata(vals$counts)$seuratMarkers
     seuratObject <- convertSCEToSeurat(vals$counts, scaledAssay = "seuratScaledData")
@@ -8101,7 +8626,12 @@ shinyServer(function(input, output, session) {
         DoHeatmap(seuratObject, features = topMarkers$gene.id)
       })
     })
-  })
+    # close console
+    shinyjs::hide(id = "consolePanel")
+    
+    .loadClose() #close the notification spinner
+    
+  }))
 
   observe({
     req(vals$fts$data)
@@ -8190,10 +8720,19 @@ shinyServer(function(input, output, session) {
   })
 
   #Run tSNE
-  observeEvent(input$run_tsne_button, {
+  
+  observeEvent(input$run_tsne_button, withConsoleMsgRedirect ({
+    
+    .loadOpen ("Please wait...Running tSNE") # show the notification spinner
+    shinyjs::runjs("var intervalVarAutoScrollConsole =  setInterval(startAutoScroll, 1000); Shiny.onInputChange('logDataAutoScrollStatus', intervalVarAutoScrollConsole);")
+    
     req(vals$counts)
+    # open console 
+    shinyjs::show(id = "consolePanel") 
+    
     if(!is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[[input$reduction_tsne_method]])){
-      withProgress(message = "Running tSNE", max = 1, value = 1, {
+      #withProgress(message = "Running tSNE", max = 1, value = 1, {
+        message(paste0(date(), " ... Running tSNE"))
         vals$counts <- runSeuratTSNE(inSCE = vals$counts,
                                      useReduction = input$reduction_tsne_method,
                                      reducedDimName = "seuratTSNE",
@@ -8201,8 +8740,10 @@ shinyServer(function(input, output, session) {
                                      perplexity = input$perplexity_tsne,
                                      seed = input$seed_TSNE)
         vals$counts <- singleCellTK:::.seuratInvalidate(inSCE = vals$counts, scaleData = FALSE, varFeatures = FALSE, PCA = FALSE, ICA = FALSE, tSNE = FALSE, UMAP = FALSE)
-      })
-      withProgress(message = "Plotting tSNE", max = 1, value = 1, {
+      #})
+      #withProgress(message = "Plotting tSNE", max = 1, value = 1, {
+        message(paste0(date(), " ... Plotting tSNE"))
+        
         output$plot_tsne <- renderPlotly({
           isolate({
             plotly::ggplotly(plotSeuratReduction(inSCE = vals$counts,
@@ -8210,18 +8751,25 @@ shinyServer(function(input, output, session) {
                                                  showLegend = FALSE))
           })
         })
-      })
+      #})
       updateCollapse(session = session, "SeuratUI", style = list("tSNE/UMAP" = "success"))
       shinyjs::enable(selector = "div[value='Clustering']")
       S4Vectors::metadata(vals$counts)$seuratMarkers <- NULL
       shinyjs::hide(
         selector = "div[value='Downstream Analysis']")
-      showNotification("tSNE Complete")
+      #showNotification("tSNE Complete")
+      message(paste0(date(), " ... tSNE Complete"))
+      
     }
     else{
       showNotification(paste0("'", input$reduction_tsne_method, "' reduction not found in input object"))
     }
-  })
+    # close console
+    shinyjs::hide(id = "consolePanel")
+    
+    .loadClose() #close the notification spinner
+    
+  }))
 
 
   #Update PCA/ICA message in tSNE tab
@@ -8239,10 +8787,19 @@ shinyServer(function(input, output, session) {
   })
 
   #Run UMAP
-  observeEvent(input$run_umap_button, {
+  
+  observeEvent(input$run_umap_button, withConsoleMsgRedirect ({
+    
+    .loadOpen ("Please wait...Running UMAP") # show the notification spinner
+    shinyjs::runjs("var intervalVarAutoScrollConsole =  setInterval(startAutoScroll, 1000); Shiny.onInputChange('logDataAutoScrollStatus', intervalVarAutoScrollConsole);")
+    
     req(vals$counts)
+    # open console 
+    shinyjs::show(id = "consolePanel") 
+    
     if(!is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[[input$reduction_umap_method]])){
-      withProgress(message = "Running UMAP", max = 1, value = 1, {
+      #withProgress(message = "Running UMAP", max = 1, value = 1, {
+        message(paste0(date(), " ... Running UMAP"))
         vals$counts <- runSeuratUMAP(inSCE = vals$counts,
                                      useReduction = input$reduction_umap_method,
                                      reducedDimName = "seuratUMAP",
@@ -8252,8 +8809,10 @@ shinyServer(function(input, output, session) {
                                      spread = input$spread_umap,
                                      seed = input$seed_UMAP)
         vals$counts <- singleCellTK:::.seuratInvalidate(inSCE = vals$counts, scaleData = FALSE, varFeatures = FALSE, PCA = FALSE, ICA = FALSE, tSNE = FALSE, UMAP = FALSE)
-      })
-      withProgress(message = "Plotting UMAP", max = 1, value = 1, {
+     # })
+      #withProgress(message = "Plotting UMAP", max = 1, value = 1, {
+        message(paste0(date(), " ... Plotting UMAP"))
+        
         output$plot_umap <- renderPlotly({
           isolate({
             plotly::ggplotly(plotSeuratReduction(inSCE = vals$counts,
@@ -8261,18 +8820,24 @@ shinyServer(function(input, output, session) {
                                                  showLegend = FALSE))
           })
         })
-      })
+      #})
       updateCollapse(session = session, "SeuratUI", style = list("tSNE/UMAP" = "success"))
       shinyjs::enable(selector = "div[value='Clustering']")
       S4Vectors::metadata(vals$counts)$seuratMarkers <- NULL
       shinyjs::hide(
         selector = "div[value='Downstream Analysis']")
-      showNotification("UMAP Complete")
+      message(paste0(date(), " ... UMAP Complete"))
+      
+      #showNotification("UMAP Complete")
     }
     else{
       showNotification(paste0("'", input$reduction_umap_method, "' reduction not found in input object"))
     }
-  })
+    # close console
+    shinyjs::hide(id = "consolePanel")
+    
+    .loadClose() #close the notification spinner 
+  }))
 
   #Update PCA/ICA message in UMAP tab
   output$display_message_umap <- renderText({
@@ -9259,7 +9824,12 @@ shinyServer(function(input, output, session) {
   addPopover(session, 'overwriteLabel', '', 'Overwrites the file if it already exists', 'right')
 
   observeEvent(input$exportData, {
+    
+    .loadOpen ("Please wait...Data is being exported") # show the notification spinner
+    shinyjs::runjs("var intervalVarAutoScrollConsole =  setInterval(startAutoScroll, 1000); Shiny.onInputChange('logDataAutoScrollStatus', intervalVarAutoScrollConsole);")
+    
     withBusyIndicatorServer("exportData", {
+      shinyjs::show(id = "consolePanel") 
       if (is.null(vals$counts) && is.null(vals$original)) {
         shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
       } else {
@@ -9283,7 +9853,10 @@ shinyServer(function(input, output, session) {
                               prefix = input$exportPrefix)
         }
       }
+      # close console
+      shinyjs::hide(id = "consolePanel")
     })
+    .loadClose() #close the notification spinner
   })
 
   ##############################################################################
@@ -9301,9 +9874,15 @@ shinyServer(function(input, output, session) {
     }
   })
 
-  observeEvent(input$ctLabelRun, {
+  observeEvent(input$ctLabelRun, withConsoleMsgRedirect ({
+    
+    .loadOpen ("Please wait...Labelling cell type") # show the notification spinner
+    shinyjs::runjs("var intervalVarAutoScrollConsole =  setInterval(startAutoScroll, 1000); Shiny.onInputChange('logDataAutoScrollStatus', intervalVarAutoScrollConsole);")
+    
     if (!is.null(vals$counts)) {
       withBusyIndicatorServer("ctLabelRun", {
+        # open console 
+        shinyjs::show(id = "consolePanel")
         if (input$ctLabelBy == "Clusters") {
           cluster <- input$ctLabelByCluster
           if (is.null(cluster)) {
@@ -9324,9 +9903,12 @@ shinyServer(function(input, output, session) {
           type = "success",
           text = "Cell type labeling stored as cell annotations. Users can visualize via CellViewer."
         )
+        # close console
+        shinyjs::hide(id = "consolePanel")
       })
     }
-  })
+    .loadClose() #close the notification spinner 
+  }))
 
   ##############################################################################
   # Code for ShinyTest ####

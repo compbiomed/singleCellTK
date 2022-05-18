@@ -441,3 +441,21 @@ addRowFiltersToSCE <- function(inSCE, paramsReactive) {
   return(inSCE)
 }
 
+#helper function to add notification bar while code is executing
+spinnerShape = "orbit"
+spinnerColor = "gainsboro"
+
+.loadOpen <- function(message) {
+  shinybusy::show_modal_spinner(
+    spin = spinnerShape,
+    color = spinnerColor,
+    text = message
+  ) # show the notification spinner
+  
+}
+
+.loadClose <- function(){
+  shinybusy::remove_modal_spinner() #closes the notification spinner
+}
+
+

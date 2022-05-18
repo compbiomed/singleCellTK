@@ -44,7 +44,7 @@ shinyPanelvam <- fluidPage(
                        value = TRUE),
        ),
 
-       withBusyIndicatorUI(actionButton("pathwayRun", "Run")),
+       actionButton("pathwayRun", "Run"),
        tags$hr(),
        #h3("Save results:"),
        #downloadButton("downloadPathway", "Download Results")
