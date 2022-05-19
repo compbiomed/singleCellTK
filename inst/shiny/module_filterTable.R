@@ -217,6 +217,8 @@ filterTableServer <- function(input, output, session, dataframe,
                              fluidRow(
                                panel(
                                  column(12,
+                                        fluidRow(htmlOutput(ns("textTotalRows"))),
+                                        br(),
                                         numericInput(
                                           inputId = ns("seuratFindMarkerFilterTopN"),
                                           label = "Return a maximum of how many rows?",
@@ -286,6 +288,10 @@ filterTableServer <- function(input, output, session, dataframe,
     rv$parameters$operators[index] <- defaultFilterOperators
     rv$parameters$values[index] <- defaultFilterValues
 
+    output$textTotalRows <- renderText({
+      paste("<b>Total rows available: ", nrow(dataframe), "</br>")
+    })
+    
     output$seuratFindMarkerTable <- DT::renderDataTable({
       df <- .filterDF(df = dataframe,
                       operators = rv$parameters$operators,
@@ -328,6 +334,10 @@ filterTableServer <- function(input, output, session, dataframe,
     })
   }
     else{
+      output$textTotalRows <- renderText({
+        paste("<b>Total rows available: ", nrow(dataframe), "</br>")
+      })
+      
       output$seuratFindMarkerTable <- DT::renderDataTable({
         df <- .filterDF(df = dataframe,
                         topN = initialTopN)
@@ -352,6 +362,11 @@ filterTableServer <- function(input, output, session, dataframe,
     }
 
   observeEvent(input$seuratFindMarkerFilterRunTopN,{
+    
+    output$textTotalRows <- renderText({
+      paste("<b>Total rows available: ", nrow(dataframe), "</br>")
+    })
+    
     output$seuratFindMarkerTable <- DT::renderDataTable({
       isolate({
         df <- .filterDF(df = dataframe,
@@ -593,7 +608,9 @@ filterTableServer <- function(input, output, session, dataframe,
 
 
 
-
+    output$textTotalRows <- renderText({
+      paste("<b>Total rows available: ", nrow(dataframe), "</br>")
+    })
 
     output$seuratFindMarkerTable <- DT::renderDataTable({
       df
@@ -667,6 +684,10 @@ filterTableServer <- function(input, output, session, dataframe,
 
     rv$data <- df
 
+    output$textTotalRows <- renderText({
+      paste("<b>Total rows available: ", nrow(dataframe), "</br>")
+    })
+    
     output$seuratFindMarkerTable <- DT::renderDataTable({
       df
     }, extensions = 'Buttons', options = list(pageLength = 6, dom = "<'top'li>t<'bottom'Bp>", stateSave = TRUE,
