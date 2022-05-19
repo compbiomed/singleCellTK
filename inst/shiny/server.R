@@ -2750,7 +2750,7 @@ shinyServer(function(input, output, session) {
   
   observeEvent(input$runDimred, withConsoleMsgRedirect({
     #shows the notification spinner and console log
-    .loadOpen ("Please wait while dimensionality reduction is being calculated. See console log for progress.") 
+    .loadOpen ("Please wait while dimensionality reduction is being computed. See console log for progress.") 
 
     if (!is.null(vals$counts)){
       withBusyIndicatorServer("runDimred", {
@@ -3379,7 +3379,7 @@ shinyServer(function(input, output, session) {
 
   observeEvent(input$clustRun, withConsoleMsgRedirect ({
     #shows the notification spinner and console log
-    .loadOpen ("Please wait while clustering algorithm is being executed. See console log for progress.") 
+    .loadOpen ("Please wait while clustering algorithm is being computed. See console log for progress.") 
 
     if (is.null(vals$counts)){
       shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
@@ -3595,7 +3595,7 @@ shinyServer(function(input, output, session) {
   
   observeEvent(input$TSCANRun,  withConsoleMsgRedirect ({
     #shows the notification spinner and console log
-    .loadOpen ("Please wait while TSCAN is being executed. See console log for progress.") 
+    .loadOpen ("Please wait while TSCAN is being computed. See console log for progress.") 
 
     if (is.null(vals$counts)){
       shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
@@ -3928,7 +3928,7 @@ shinyServer(function(input, output, session) {
   
   observeEvent(input$celdamodsplit, withConsoleMsgRedirect({
     #shows the notification spinner and console log
-    .loadOpen ("Please wait while recursive module split is being executed. See console log for progress.") 
+    .loadOpen ("Please wait while recursive module split is being computed. See console log for progress.") 
 
     removeTab(inputId = "celdaModsplitTabset", target = "Perplexity Plot")
     removeTab(inputId = "celdaModsplitTabset", target = "Perplexity Difference Plot")
@@ -4014,7 +4014,7 @@ shinyServer(function(input, output, session) {
   
   observeEvent(input$celdacellsplit, withConsoleMsgRedirect ({
     #shows the notification spinner and console log
-    .loadOpen ("Please wait while recursive split cell is being executed. See console log for progress.") 
+    .loadOpen ("Please wait while recursive split cell is being computed. See console log for progress.") 
 
     withBusyIndicatorServer("celdacellsplit", {
       cellsplit(recursiveSplitCell(vals$counts, useAssay = input$celdaassayselect, initialK = input$celdaKinit, maxK = input$celdaKmax,
@@ -4061,7 +4061,7 @@ shinyServer(function(input, output, session) {
   
   observeEvent(input$CeldaUmap, withConsoleMsgRedirect ({
     #shows the notification spinner and console log
-    .loadOpen ("Please wait while UMAP is being calculated. See console log for progress.") 
+    .loadOpen ("Please wait while UMAP is being computed. See console log for progress.") 
 
     withBusyIndicatorServer("CeldaUmap", {
       vals$counts <- celdaUmap(vals$counts,
@@ -4086,7 +4086,7 @@ shinyServer(function(input, output, session) {
   
   observeEvent(input$CeldaTsne, withConsoleMsgRedirect ({
     #shows the notification spinner and console log
-    .loadOpen ("Please wait while tSNE is being calculated. See console log for progress.") 
+    .loadOpen ("Please wait while tSNE is being computed. See console log for progress.") 
 
     withBusyIndicatorServer("CeldaTsne", {
       vals$counts <- celdaTsne(vals$counts,
@@ -7266,7 +7266,7 @@ shinyServer(function(input, output, session) {
    #Run subsampling analysis
   observeEvent(input$runSubsampleDepth, withConsoleMsgRedirect ({
     #shows the notification spinner and console log
-    .loadOpen ("Please wait while subsampler is being executed. See console log for progress.") 
+    .loadOpen ("Please wait while subsampler is being computed. See console log for progress.") 
 
     if (is.null(vals$counts)){
       shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
@@ -7326,7 +7326,7 @@ shinyServer(function(input, output, session) {
   
   observeEvent(input$runSubsampleCells, withConsoleMsgRedirect ({
     #shows the notification spinner and console log
-    .loadOpen ("Please wait while resampler is being executed. See console log for progress.") 
+    .loadOpen ("Please wait while resampler is being computed. See console log for progress.") 
 
     if (is.null(vals$counts)){
       shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
@@ -7403,7 +7403,7 @@ shinyServer(function(input, output, session) {
   #Run differential power analysis
   observeEvent(input$runSnapshot, withConsoleMsgRedirect ({
     #shows the notification spinner and console log
-    .loadOpen ("Please wait while resampling snapshot is being executed. See console log for progress.") 
+    .loadOpen ("Please wait while resampling snapshot is being computed. See console log for progress.") 
 
     if (is.null(vals$counts)){
       shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
@@ -7538,7 +7538,7 @@ shinyServer(function(input, output, session) {
   
   observeEvent(input$run_pca_button, withConsoleMsgRedirect ({
     #shows the notification spinner and console log
-    .loadOpen ("Please wait while PCA is being performed. See console log for progress.")
+    .loadOpen ("Please wait while PCA is being computed. See console log for progress.")
 
     req(vals$counts)
     #remove tabs if not generated
@@ -7712,7 +7712,7 @@ shinyServer(function(input, output, session) {
   
   observeEvent(input$run_ica_button, withConsoleMsgRedirect ({
     #shows the notification spinner and console log
-    .loadOpen ("Please wait while ICA is being performed. See console log for progress.") 
+    .loadOpen ("Please wait while ICA is being computed. See console log for progress.") 
 
     req(vals$counts)
     #remove tabs if not generated
@@ -7808,7 +7808,7 @@ shinyServer(function(input, output, session) {
   
   observeEvent(input$find_clusters_button, withConsoleMsgRedirect ({
     #shows the notification spinner and console log
-    .loadOpen ("Please wait while clusters are being calculated. See console log for progress.") 
+    .loadOpen ("Please wait while clusters are being computed. See console log for progress.") 
 
     req(vals$counts)
     if(!is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[[input$reduction_clustering_method]])){
@@ -8345,7 +8345,7 @@ shinyServer(function(input, output, session) {
   
   observeEvent(input$run_tsne_button, withConsoleMsgRedirect ({
     #shows the notification spinner and console log
-    .loadOpen ("Please wait while tSNE is being calculated. See console log for progress.") 
+    .loadOpen ("Please wait while tSNE is being computed. See console log for progress.") 
 
     req(vals$counts)
     if(!is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[[input$reduction_tsne_method]])){
@@ -8400,7 +8400,7 @@ shinyServer(function(input, output, session) {
   
   observeEvent(input$run_umap_button, withConsoleMsgRedirect ({
     #shows the notification spinner and console log
-    .loadOpen ("Please wait while UMAP is being calculated. See console log for progress.") 
+    .loadOpen ("Please wait while UMAP is being computed. See console log for progress.") 
 
     req(vals$counts)
     if(!is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[[input$reduction_umap_method]])){
