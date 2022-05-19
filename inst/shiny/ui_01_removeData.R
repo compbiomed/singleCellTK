@@ -25,11 +25,11 @@ shinyPanelRemove <- fluidPage(
       ),
       hr(),
       h6("Warning: This action is inreversible. "),
-      #withBusyIndicatorUI(
-        actionButton(
-          inputId = "delRedDim",
-          label = "Delete"),
-      #)
+      
+      actionButton(
+        inputId = "delRedDim",
+        label = "Delete"),
+      
     )
   ),
   br()

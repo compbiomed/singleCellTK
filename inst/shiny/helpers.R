@@ -442,8 +442,8 @@ addRowFiltersToSCE <- function(inSCE, paramsReactive) {
 }
 
 #helper function to add notification bar while code is executing
-spinnerShape = "orbit"
-spinnerColor = "gainsboro"
+spinnerShape <- "orbit"
+spinnerColor <- "gainsboro"
 
 .loadOpen <- function(message) {
   shinybusy::show_modal_spinner(
@@ -452,9 +452,14 @@ spinnerColor = "gainsboro"
     text = message
   ) # show the notification spinner
   
+  shinyjs::runjs("var intervalVarAutoScrollConsole =  setInterval(startAutoScroll, 1000); Shiny.onInputChange('logDataAutoScrollStatus', intervalVarAutoScrollConsole);")
+  
+  shinyjs::show(id = "consolePanel") # open console
+  
 }
 
 .loadClose <- function(){
+  shinyjs::hide(id = "consolePanel") # close console
   shinybusy::remove_modal_spinner() #closes the notification spinner
 }
 

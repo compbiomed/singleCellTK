@@ -72,9 +72,8 @@ shinyPanelGeneSets <- fluidPage(
 
     selectInput("gsByParam", "Location within SCE object where the gene identifiers in should be mapped.", list()),
 
-    #withBusyIndicatorUI(
-      actionButton("uploadGS", "Upload"),
-    #),
+    actionButton("uploadGS", "Upload"),
+    
     shinyjs::hidden(
       tags$div(id = "gsUploadError",
                tags$b("Please fill out all the required fields", style = "color: red;"),

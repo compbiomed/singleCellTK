@@ -86,7 +86,6 @@ shinyPanelvam <- fluidPage(
                 choices = c("mean", "median"), 
                 selected = "median"),
               
-              #withBusyIndicatorUI(actionButton("Plot", "Update Plot")),
               actionBttn(
                 inputId = "pathwayPlot",
                 label = "Update Plot",
