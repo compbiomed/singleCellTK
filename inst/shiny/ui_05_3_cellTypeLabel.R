@@ -98,7 +98,7 @@ shinyPanelLabelCellType <- fluidPage(
           "please refer to SCTK's console function: runSingleR()",
           style = "color: grey;")
       ),
-      withBusyIndicatorUI(actionButton("ctLabelRun", "Label"))
+      actionButton("ctLabelRun", "Label")
     )
   )
 )

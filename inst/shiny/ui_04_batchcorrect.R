@@ -275,11 +275,11 @@ shinyPanelBatchcorrect <- fluidPage(
                               column(12,
                                      conditionalPanel(
                                        condition = "input.normalizeAssayMethodSelect != 'custom'",
-                                       div(style = "display:inline-block; float:right", withBusyIndicatorUI(actionButton("normalizeAssay", "Run"))),
+                                       div(style = "display:inline-block; float:right", actionButton("normalizeAssay", "Run")),
                                       ),
                                      conditionalPanel(
                                        condition = "input.normalizeAssayMethodSelect == 'custom'",
-                                       div(style = "display:inline-block; float:right", withBusyIndicatorUI(actionButton("modifyAssay", "Run")))
+                                       div(style = "display:inline-block; float:right", actionButton("modifyAssay", "Run"))
                                        )
                                      )
                             )
@@ -318,7 +318,7 @@ shinyPanelBatchcorrect <- fluidPage(
                        value = 50L, min = 2, max = 100000, step = 1),
           textInput("BBKNNSaveReddim", "ReducedDim Name to Use:",
                     value = "BBKNN"),
-          withBusyIndicatorUI(actionButton("BBKNNRun", "Run"))
+          actionButton("BBKNNRun", "Run")
         ),
         # ComBatSeq ####
         conditionalPanel(
@@ -356,7 +356,7 @@ shinyPanelBatchcorrect <- fluidPage(
                         "Apply shrinkage on dispersion",
                         value = FALSE),
           textInput("combatSaveAssay", "Assay Name to Use:", value = "ComBatSeq"),
-          withBusyIndicatorUI(actionButton("combatRun", "Run"))
+          actionButton("combatRun", "Run")
         ),
         # FastMNN ####
         conditionalPanel(
@@ -372,7 +372,7 @@ shinyPanelBatchcorrect <- fluidPage(
           ),
           textInput("FastMNNSaveReddim", "ReducedDim Name to Use:",
                     value = "FastMNN"),
-          withBusyIndicatorUI(actionButton("FastMNNRun", "Run"))
+          actionButton("FastMNNRun", "Run")
         ),
         # # Harmony ####
         # conditionalPanel(
@@ -417,7 +417,7 @@ shinyPanelBatchcorrect <- fluidPage(
           h5(tags$a(href = paste0(docs.base, "reference/runLimmaBC.html"),
                     "(help for Limma)", target = "_blank")),
           textInput("limmaSaveAssay", "Assay Name to Use:", value = "LIMMA"),
-          withBusyIndicatorUI(actionButton("limmaRun", "Run"))
+          actionButton("limmaRun", "Run")
         ),
         # MNN ####
         conditionalPanel(
@@ -428,7 +428,7 @@ shinyPanelBatchcorrect <- fluidPage(
                        value = 20, min = 1, step = 1),
           numericInput("MNNSigma", 'Sigma value', value = 0.1),
           textInput("MNNSaveAssay", "Assay Name to Use:", value = "MNN"),
-          withBusyIndicatorUI(actionButton("MNNRun", "Run"))
+          actionButton("MNNRun", "Run")
         ),
         # scanorama ####
         conditionalPanel(
@@ -440,7 +440,7 @@ shinyPanelBatchcorrect <- fluidPage(
           numericInput('scnrmKNN', 'KNN value', 20, min = 1, step = 1),
           textInput("scnrmSaveAssay", "Assay Name to Use:",
                     value = "SCANORAMA"),
-          withBusyIndicatorUI(actionButton("scnrmRun", "Run"))
+          actionButton("scnrmRun", "Run")
         ),
         # scMerge ####
         conditionalPanel(
@@ -473,7 +473,7 @@ shinyPanelBatchcorrect <- fluidPage(
           selectInput("scMergeCT", "Cell Type Annotation:", clusterChoice),
           textInput("scMergeSaveAssay", "Assay Name to Use:",
                     value = "scMerge"),
-          withBusyIndicatorUI(actionButton("scMergeRun", "Run"))
+          actionButton("scMergeRun", "Run")
         ),
         # Seurat3 Integration ####
         conditionalPanel(
@@ -483,7 +483,7 @@ shinyPanelBatchcorrect <- fluidPage(
           uiOutput('Srt3IntNAnchUI'),
           textInput("Srt3IntSaveAssay", "Assay Name to Use:",
                     value = "Seurat3Int"),
-          withBusyIndicatorUI(actionButton("Srt3IntRun", "Run"))
+          actionButton("Srt3IntRun", "Run")
         ),
         # ZINBWaVE ####
         conditionalPanel(
@@ -500,7 +500,7 @@ shinyPanelBatchcorrect <- fluidPage(
                        value = 50, min = 2, step = 1),
           textInput("zinbwaveSaveReddim", "ReducedDim Name to Use:",
                     value = "ZINBWaVE"),
-          withBusyIndicatorUI(actionButton("zinbwaveRun", "Run"))
+          actionButton("zinbwaveRun", "Run")
         ),
         uiOutput("batchCorrStatus")
       ),

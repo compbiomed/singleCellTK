@@ -31,7 +31,7 @@ shinyPanelTSCAN <- fluidPage(
                          value = 12345,
                          step = 1),
             selectInput("clusterName", "Name of Clustering Result: ", "Auto generate clusters", selected = NULL),
-            withBusyIndicatorUI(actionButton("TSCANRun", "Run TSCAN")),
+            actionButton("TSCANRun", "Run TSCAN"),
             
           )
         ),
@@ -99,7 +99,7 @@ shinyPanelTSCAN <- fluidPage(
             uiOutput("discardCluster"),
             #selectInput("discardCluster", "Select cluster to discard (OPTIONAL):",
              #              choices = "", multiple = TRUE),
-            withBusyIndicatorUI(actionButton("findExpGenes", "Identify genes")),
+            actionButton("findExpGenes", "Identify genes"),
             
           )
         ),
@@ -192,7 +192,7 @@ shinyPanelTSCAN <- fluidPage(
                          label = "FDR less than:",
                          value = 0.05,
                          step = 0.01),
-            withBusyIndicatorUI(actionButton("findDEGenes", "Identify DE genes")),
+            actionButton("findDEGenes", "Identify DE genes"),
             
           )
         ),

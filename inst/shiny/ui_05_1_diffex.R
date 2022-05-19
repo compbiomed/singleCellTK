@@ -204,7 +204,7 @@ shinyPanelDiffex <- fluidPage(
           column(
             width = 2,
             style = 'margin-top: 25px;',
-            withBusyIndicatorUI(actionButton("runDE", "Run"))
+           actionButton("runDE", "Run")
           )
         )
       )

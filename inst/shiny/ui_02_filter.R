@@ -42,9 +42,9 @@ shinyPanelFilter <- fluidPage(
     actionButton("addRowFilteringParam", "Add a Filter"),
     actionButton("clearAllRowFilters", "Clear Filters"),
   ),
-  withBusyIndicatorUI(
-    actionButton("filterSCE", "Filter")
-  ),
+  
+  actionButton("filterSCE", "Filter"),
+  
   tags$br(),
   tags$br(),
   hidden(wellPanel(id = "filteringSummary",
