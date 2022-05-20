@@ -44,7 +44,7 @@ shinyPanelvam <- fluidPage(
                        value = TRUE),
        ),
 
-       withBusyIndicatorUI(actionButton("pathwayRun", "Run")),
+       actionButton("pathwayRun", "Run"),
        tags$hr(),
        #h3("Save results:"),
        #downloadButton("downloadPathway", "Download Results")
@@ -86,7 +86,6 @@ shinyPanelvam <- fluidPage(
                 choices = c("mean", "median"), 
                 selected = "median"),
               
-              #withBusyIndicatorUI(actionButton("Plot", "Update Plot")),
               actionBttn(
                 inputId = "pathwayPlot",
                 label = "Update Plot",

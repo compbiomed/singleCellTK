@@ -214,7 +214,7 @@ shinyPanelQC <- fluidPage(
           numericInput("Useed", "Seed value for reproducibility of UMAP result (default 12345)", 12345),
 
 
-          withBusyIndicatorUI(actionButton("runQC", "Run")),
+          actionButton("runQC", "Run"),
           tags$div(id = "qcPageErrors"),
         ),
         mainPanel(

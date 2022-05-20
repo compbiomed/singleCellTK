@@ -37,8 +37,7 @@ shinyPanelFS_DimRed <- fluidPage(
             multiple = FALSE,
             options = NULL),
           #uiOutput("assaySelectFS_Norm"),
-          withBusyIndicatorUI(actionButton("findHvgButtonFS",
-                                           "Compute Variability"))
+          actionButton("findHvgButtonFS","Compute Variability")
         ),
         panel(
           heading = "Select and Subset",
@@ -55,7 +54,7 @@ shinyPanelFS_DimRed <- fluidPage(
           #uiOutput("hvgSubsetAssay"),
           textInput("hvgAltExpName", "Name for the subset",
                     "featureSubset"),
-          withBusyIndicatorUI(actionButton("hvgSubsetRun", "Select"))
+          actionButton("hvgSubsetRun", "Select")
         )
       ),
       column(
@@ -170,7 +169,7 @@ shinyPanelFS_DimRed <- fluidPage(
                                        label = "Seed value for reproducibility of result:",
                                        value = 12345,
                                        step = 1),
-                          withBusyIndicatorUI(actionButton("runDimred", "Run"))
+                          actionButton("runDimred", "Run")
                         )
                       ))),
                column(8,
@@ -271,7 +270,7 @@ shinyPanelFS_DimRed <- fluidPage(
                                        label = "Seed value for reproducibility of result:",
                                        value = 12345,
                                        step = 1),
-                          withBusyIndicatorUI(actionButton("runDimred_tsneUmap", "Run"))
+                          actionButton("runDimred_tsneUmap", "Run")
                         )
                       ))),
                column(8,
