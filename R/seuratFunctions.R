@@ -1450,6 +1450,7 @@ plotSeuratGenes <- function(inSCE,
       split.by = splitBy))
   }
   else if(plotType == "heatmap"){
+    seuratObject <- Seurat::ScaleData(seuratObject, features = features)
     return(Seurat::DoHeatmap(seuratObject, features = features))
   }
 }

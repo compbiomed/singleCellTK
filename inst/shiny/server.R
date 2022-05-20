@@ -7545,6 +7545,7 @@ shinyServer(function(input, output, session) {
        subsetIdents <- subsetIdents[subsetIdents!="all"]
        seuratObject <- subset(seuratObject, idents = subsetIdents) 
      }
+     seuratObject <- Seurat::ScaleData(seuratObject, features = top10markers$gene.id)
      # Plot heatmap
      output$findMarkerHeatmapPlotFull <- renderPlot({
        isolate({
@@ -7669,6 +7670,7 @@ shinyServer(function(input, output, session) {
       subsetIdents <- subsetIdents[subsetIdents!="all"]
       seuratObject <- subset(seuratObject, idents = subsetIdents) 
     }
+    seuratObject <- Seurat::ScaleData(seuratObject, features = topMarkers$gene.id)
     # Plot heatmap
     output$findMarkerHeatmapPlotFull <- renderPlot({
       isolate({
