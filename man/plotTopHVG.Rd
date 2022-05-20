@@ -7,38 +7,41 @@
 plotTopHVG(
   inSCE,
   method = c("vst", "mean.var.plot", "dispersion", "modelGeneVar"),
-  hvgList = NULL,
-  n = NULL,
-  labelsCount = NULL
+  hvgNumber = 2000,
+  labelsCount = 20,
+  featureDisplay = metadata(inSCE)$featureDisplay
 )
 }
 \arguments{
 \item{inSCE}{Input \code{SingleCellExperiment} object containing the
 computations.}
 
-\item{method}{Select either "vst", "mean.var.plot", "dispersion" or
-"modelGeneVar".}
+\item{method}{Select either \code{"vst"}, \code{"mean.var.plot"}, 
+\code{"dispersion"} or \code{"modelGeneVar"}.}
 
-\item{hvgList}{Character vector indicating the labels of highly variable
-genes.}
+\item{hvgNumber}{Specify the number of top genes to highlight in red. Default
+\code{2000}.}
 
-\item{n}{Specify the number of top genes to highlight in red. If
-\code{hvgList}
- parameter is not provided, this parameter can be used simply to specify
- the number of top genes to highlight in red.}
+\item{labelsCount}{Specify the number of data points/genes to label. Should 
+be less than \code{hvgNumber}. Default \code{20}.}
 
-\item{labelsCount}{Specify the number of data points/genes to label.
-By default, all top genes will be labeled.}
+\item{featureDisplay}{A character string for the \code{rowData} variable name
+to indicate what type of feature ID should be displayed. If set by 
+\code{\link{setSCTKDisplayRow}}, will by default use it. If \code{NULL}, will
+use \code{rownames(inSCE)}.}
 }
 \value{
-plot object
+ggplot of HVG metrics
 }
 \description{
 Plot highly variable genes
 }
 \examples{
 data("mouseBrainSubsetSCE", package = "singleCellTK")
-mouseBrainSubsetSCE <- scranModelGeneVar(mouseBrainSubsetSCE, "logcounts")
-plotTopHVG(mouseBrainSubsetSCE, method = "modelGeneVar",
-           n = 1000, labelsCount = 0)
+mouseBrainSubsetSCE <- runModelGeneVar(mouseBrainSubsetSCE)
+plotTopHVG(mouseBrainSubsetSCE, method = "modelGeneVar")
+}
+\seealso{
+\code{\link{runFeatureSelection}}, \code{\link{runSeuratFindHVG}},
+\code{\link{runModelGeneVar}}, \code{\link{getTopHVG}}
 }

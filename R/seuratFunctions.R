@@ -145,44 +145,51 @@ runSeuratScaleData <- function(inSCE, useAssay = "seuratNormData",
 #' back to it
 #' @param useAssay Specify the name of the assay to use for computation
 #'  of variable genes. It is recommended to use a raw counts assay with the 
-#'  `vst` method and normalized assay with all other methods. Default
+#'  \code{"vst"} method and normalized assay with all other methods. Default
 #'  is \code{"counts"}. 
-#' @param hvgMethod selected method to use for computation of highly variable
-#'  genes. One of 'vst', 'dispersion', or 'mean.var.plot'. Default method 
-#'  is `vst` which uses the raw counts. All other methods use normalized counts.
+#' @param method selected method to use for computation of highly variable
+#' genes. One of \code{'vst'}, \code{'dispersion'}, or \code{'mean.var.plot'}. 
+#' Default \code{"vst"} which uses the raw counts. All other methods use 
+#' normalized counts.
 #' @param hvgNumber numeric value of how many genes to select as highly
 #' variable. Default \code{2000}
+#' @param rowSubsetName A character string for the \code{rowData} variable name
+#' to store a logical index of selected HVGs. Default 
+#' \code{paste0("HVG_", method, hvgNumber)}
 #' @param altExp Logical value indicating if the input object is an
 #' altExperiment. Default \code{FALSE}.
 #' @param verbose Logical value indicating if informative messages should
 #'  be displayed. Default is \code{TRUE}.
 #' @examples
 #' data(scExample, package = "singleCellTK")
-#' \dontrun{
-#' sce <- runSeuratNormalizeData(sce, useAssay = "counts")
-#' sce <- runSeuratFindHVG(sce, useAssay = "counts")
-#' }
+#' sce <- runSeuratFindHVG(sce)
 #' @return Updated \code{SingleCellExperiment} object with highly variable genes
 #' computation stored
+#' @seealso \code{\link{runFeatureSelection}}, \code{\link{runModelGeneVar}},
+#' \code{\link{getTopHVG}}, \code{\link{plotTopHVG}}
 #' @export
 #' @importFrom SummarizedExperiment rowData rowData<-
-runSeuratFindHVG <- function(inSCE, useAssay = "counts",
-                          hvgMethod = "vst", hvgNumber = 2000, altExp = FALSE,
-                          verbose = TRUE) {
-  
-  if(hvgMethod == "vst"){
+runSeuratFindHVG <- function(inSCE, 
+                             useAssay = "counts",
+                             method = c("vst", "dispersion", "mean.var.plot"), 
+                             hvgNumber = 2000,
+                             rowSubsetName = paste0("HVG_", method, 
+                                                    hvgNumber),
+                             altExp = FALSE,
+                             verbose = TRUE) {
+  method <- match.arg(method)
+  if (method == "vst") {
     seuratObject <- convertSCEToSeurat(inSCE, countsAssay = useAssay)
-  }
-  else{
+  } else {
     seuratObject <- convertSCEToSeurat(inSCE, normAssay = useAssay)
   }
   
   seuratObject <- Seurat::FindVariableFeatures(seuratObject,
-                                               selection.method = hvgMethod,
+                                               selection.method = method,
                                                nfeatures = hvgNumber,
                                                verbose = verbose)
   inSCE <- .addSeuratToMetaDataSCE(inSCE, seuratObject)
-  if (hvgMethod == "vst") {
+  if (method == "vst") {
     if(!altExp){
       rowData(inSCE)$seurat_variableFeatures_vst_varianceStandardized <- methods::slot(inSCE@metadata$seurat$obj, "assays")[["RNA"]]@meta.features$vst.variance.standardized
       rowData(inSCE)$seurat_variableFeatures_vst_mean <- methods::slot(inSCE@metadata$seurat$obj, "assays")[["RNA"]]@meta.features$vst.mean
@@ -194,16 +201,17 @@ runSeuratFindHVG <- function(inSCE, useAssay = "counts",
       rowData(inSCE)$seurat_variableFeatures_vst_varianceStandardized <- methods::slot(inSCE@metadata$seurat$obj, "assays")[["RNA"]]@meta.features$vst.variance.standardized[altExpRows]
       rowData(inSCE)$seurat_variableFeatures_vst_mean <- methods::slot(inSCE@metadata$seurat$obj, "assays")[["RNA"]]@meta.features$vst.mean[altExpRows]
     }
-  } else if (hvgMethod == "dispersion") {
+  } else if (method == "dispersion") {
     rowData(inSCE)$seurat_variableFeatures_dispersion_dispersion <- methods::slot(inSCE@metadata$seurat$obj, "assays")[["RNA"]]@meta.features$mvp.dispersion
     rowData(inSCE)$seurat_variableFeatures_dispersion_dispersionScaled <- methods::slot(inSCE@metadata$seurat$obj, "assays")[["RNA"]]@meta.features$mvp.dispersion.scaled
     rowData(inSCE)$seurat_variableFeatures_dispersion_mean <- methods::slot(inSCE@metadata$seurat$obj, "assays")[["RNA"]]@meta.features$mvp.mean
   }
-  else if (hvgMethod == "mean.var.plot") {
+  else if (method == "mean.var.plot") {
     rowData(inSCE)$seurat_variableFeatures_mvp_dispersion <- methods::slot(inSCE@metadata$seurat$obj, "assays")[["RNA"]]@meta.features$mvp.dispersion
     rowData(inSCE)$seurat_variableFeatures_mvp_dispersionScaled <- methods::slot(inSCE@metadata$seurat$obj, "assays")[["RNA"]]@meta.features$mvp.dispersion.scaled
     rowData(inSCE)$seurat_variableFeatures_mvp_mean <- methods::slot(inSCE@metadata$seurat$obj, "assays")[["RNA"]]@meta.features$mvp.mean
   }
+  inSCE <- setTopHVG(inSCE, method, hvgNumber, rowSubsetName)
   return(inSCE)
 }
 

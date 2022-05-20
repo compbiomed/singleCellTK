@@ -1,18 +1,42 @@
-#' scranModelGeneVar
-#' Generates and stores variability data from scran::modelGeneVar in the input singleCellExperiment object
-#' @param inSCE a singleCellExperiment object
-#' @param assayName selected assay to compute variable features from
-#' @return inSCE updated singleCellExperiment object that contains variable feature metrics in rowData
+#' Calculate Variable Genes with Scran modelGeneVar
+#' 
+#' @description Generates and stores variability data in the input 
+#' \linkS4class{SingleCellExperiment} object, using 
+#' \code{\link[scran]{modelGeneVar}} method. 
+#' 
+#' Also selects a specified number of top HVGs and store the logical selection 
+#' in \code{rowData}. 
+#' @param inSCE A \linkS4class{SingleCellExperiment} object
+#' @param useAssay A character string to specify an assay to compute variable 
+#' features from. Default \code{"logcounts"}.
+#' @param hvgNumber An integer for the number of top HVG to select. Default 
+#' \code{2000}.
+#' @param rowSubsetName A character string for the \code{rowData} variable name
+#' to store a logical index of selected HVGs. Default 
+#' \code{paste0("HVG_modelGeneVar", hvgNumber)}
+#' @return \code{inSCE} updated with variable feature metrics in \code{rowData}
 #' @export
 #' @author Irzam Sarfraz
 #' @examples
-#' data(sce_chcl, package = "scds")
-#' sce_chcl <- scranModelGeneVar(sce_chcl, "counts")
+#' data("scExample", package = "singleCellTK")
+#' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
+#' sce <- scaterlogNormCounts(sce, "logcounts")
+#' sce <- runModelGeneVar(sce)
+#' getTopHVG(sce, method = "modelGeneVar", hvgNumber = 10)
+#' @seealso \code{\link{runFeatureSelection}}, \code{\link{runSeuratFindHVG}},
+#' \code{\link{getTopHVG}}, \code{\link{plotTopHVG}}
 #' @importFrom SummarizedExperiment assay rowData rowData<-
-scranModelGeneVar <- function(inSCE, assayName) {
-    tempDataFrame <- data.frame(scran::modelGeneVar(assay(inSCE, assayName)))
+#' @importFrom SingleCellExperiment rowSubset
+#' @importFrom S4Vectors metadata
+runModelGeneVar <- function(inSCE,
+                            useAssay = "logcounts", 
+                            hvgNumber = 2000,
+                            rowSubsetName = paste0("HVG_modelGeneVar", 
+                                                   hvgNumber)) {
+    tempDataFrame <- data.frame(scran::modelGeneVar(assay(inSCE, useAssay)))
     rowData(inSCE)$scran_modelGeneVar_mean <- tempDataFrame$mean
     rowData(inSCE)$scran_modelGeneVar_totalVariance <- tempDataFrame$total
     rowData(inSCE)$scran_modelGeneVar_bio <- tempDataFrame$bio
+    inSCE <- setTopHVG(inSCE, "modelGeneVar", hvgNumber, rowSubsetName)
     return(inSCE)
 }

@@ -95,11 +95,10 @@
 #' data(scExample, package = "singleCellTK")
 #' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 #' sce <- runNormalization(sce, useAssay = "counts",
-#'                         outAssayName = "logcounts_scaled",
-#'                         normalizationMethod = "logNormCounts",
-#'                         scale = TRUE)
+#'                         outAssayName = "logcounts",
+#'                         normalizationMethod = "logNormCounts")
 #' sce <- runDimReduce(inSCE = sce, method = "scaterPCA",
-#'                     useAssay = "logcounts_scaled",
+#'                     useAssay = "logcounts", scale = TRUE,
 #'                     reducedDimName = "PCA")
 runDimReduce <- function(inSCE,
                          method = c("scaterPCA",

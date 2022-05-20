@@ -35,7 +35,7 @@ data(scExample, package = "singleCellTK")
 sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 \dontrun{
 sce <- runDecontX(sce)
-sce <- getUMAP(sce)
+sce <- getUMAP(sce, useAssay = "counts", logNorm = TRUE)
 reportQCTool(inSCE = sce, algorithm = "DecontX")
 }
 }

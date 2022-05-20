@@ -2,18 +2,26 @@
 % Please edit documentation in R/getTSNE.R
 \name{getTSNE}
 \alias{getTSNE}
-\title{Run t-SNE dimensionality reduction method on a SingleCellExperiment Object}
+\title{Run t-SNE embedding with Rtsne method}
 \usage{
 getTSNE(
   inSCE,
   useAssay = "logcounts",
-  useAltExp = NULL,
   useReducedDim = NULL,
+  useAltExp = NULL,
   reducedDimName = "TSNE",
-  nIterations = 1000,
+  logNorm = FALSE,
+  useHVG = NULL,
+  nTop = 2000,
+  center = TRUE,
+  scale = TRUE,
+  pca = TRUE,
+  partialPCA = FALSE,
+  initialDims = 25,
+  theta = 0.5,
   perplexity = 30,
-  run_pca = TRUE,
-  ntop = NULL,
+  nIterations = 1000,
+  numThreads = 1,
   seed = NULL
 )
 }
@@ -22,25 +30,56 @@ getTSNE(
 
 \item{useAssay}{Assay to use for tSNE computation. If \code{useAltExp} is
 specified, \code{useAssay} has to exist in
-\code{assays(altExp(inSCE, useAltExp))}. Default \code{"logcounts"}}
-
-\item{useAltExp}{The subset to use for tSNE computation, usually for the
-selected.variable features. Default \code{NULL}.}
+\code{assays(altExp(inSCE, useAltExp))}. Default \code{"logcounts"}.}
 
 \item{useReducedDim}{The low dimension representation to use for UMAP
 computation. Default \code{NULL}.}
 
+\item{useAltExp}{The subset to use for tSNE computation, usually for the
+selected.variable features. Default \code{NULL}.}
+
 \item{reducedDimName}{a name to store the results of the dimension
 reductions. Default \code{"TSNE"}.}
 
+\item{logNorm}{Whether the counts will need to be log-normalized prior to
+generating the tSNE via \code{\link{scaterlogNormCounts}}. Ignored when using
+\code{useReducedDim}. Default \code{FALSE}.}
+
+\item{useHVG}{A character string indicating a \code{rowData} variable that
+stores the logical vector of HVG selection. Ignored when using
+\code{useReducedDim}. Default \code{NULL}.}
+
+\item{nTop}{Automatically detect this number of variable features to use for
+dimension reduction. Ignored when using \code{useReducedDim} or using 
+\code{useHVG}. Default \code{2000}.}
+
+\item{center}{Whether data should be centered before PCA is applied. Ignored 
+when using \code{useReducedDim}. Default \code{TRUE}.}
+
+\item{scale}{Whether data should be scaled before PCA is applied. Ignored 
+when using \code{useReducedDim}. Default \code{TRUE}.}
+
+\item{pca}{Whether an initial PCA step should be performed. Ignored when 
+using \code{useReducedDim}. Default \code{TRUE}.}
+
+\item{partialPCA}{Whether truncated PCA should be used to calculate principal
+components (requires the irlba package). This is faster for large input 
+matrices. Ignored when using \code{useReducedDim}. Default \code{FALSE}.}
+
+\item{initialDims}{Number of dimensions from PCA to use as input in tSNE.
+Default \code{25}.}
+
+\item{theta}{Numeric value for speed/accuracy trade-off (increase for less 
+accuracy), set to \code{0.0} for exact TSNE. Default \code{0.5}.}
+
+\item{perplexity}{perplexity parameter. Should not be bigger than 
+\code{3 * perplexity < ncol(inSCE) - 1}. Default \code{30}. See 
+\code{\link[Rtsne]{Rtsne}} details for interpretation.}
+
 \item{nIterations}{maximum iterations. Default \code{1000}.}
 
-\item{perplexity}{perplexity parameter. Default \code{30}.}
-
-\item{run_pca}{run tSNE on PCA components? Default \code{TRUE}.}
-
-\item{ntop}{Number of top features to use as a further variable feature
-selection. Default \code{NULL}.}
+\item{numThreads}{Integer, number of threads to use using OpenMP, Default 
+\code{1}. \code{0} corresponds to using all available cores.}
 
 \item{seed}{Random seed for reproducibility of tSNE results. 
 Default \code{NULL} will use global seed in use by the R environment.}
@@ -50,16 +89,28 @@ A \linkS4class{SingleCellExperiment} object with tSNE computation
 updated in \code{reducedDim(inSCE, reducedDimName)}.
 }
 \description{
-Run t-SNE dimensionality reduction method on a SingleCellExperiment Object
+T-Stochastic Neighbour Embedding (t-SNE) algorithm is commonly 
+for 2D visualization of single-cell data. This function wraps the 
+Rtsne \code{\link[Rtsne]{Rtsne}} function. 
+
+With this funciton, users can create tSNE embedding directly from raw count
+matrix, with necessary preprocessing including normalization, scaling, 
+dimension reduction all automated. Yet we still recommend having the PCA as 
+input, so that the result can match with the clustering based on the same 
+input PCA, and will be much faster.
 }
 \examples{
-data("mouseBrainSubsetSCE")
-#add a CPM assay
-assay(mouseBrainSubsetSCE, "cpm") <- apply(
-  assay(mouseBrainSubsetSCE, "counts"), 2, function(x) {
-    x / (sum(x) / 1000000)
-  })
-mouseBrainSubsetSCE <- getTSNE(mouseBrainSubsetSCE, useAssay = "cpm",
-                               reducedDimName = "TSNE_cpm",
-                               perplexity = NULL)
+data(scExample, package = "singleCellTK")
+sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
+# Run from raw counts
+sce <- getTSNE(inSCE = sce, useAssay = "counts", logNorm = TRUE, nTop = 2000,
+               scale = TRUE, pca = TRUE)
+\dontrun{
+# Run from PCA
+sce <- scaterlogNormCounts(sce, "logcounts")
+sce <- runModelGeneVar(sce)
+sce <- scaterPCA(sce, useAssay = "logcounts", 
+                 useHVG = "HVG_modelGeneVar2000", scale = TRUE)
+sce <- getTSNE(sce, useReducedDim = "PCA")
+}
 }
