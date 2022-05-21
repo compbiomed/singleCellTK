@@ -1161,7 +1161,7 @@ runSeuratSCTransform <- function(inSCE, normAssayName = "SCTCounts",
                               PCA = TRUE, ICA = TRUE, tSNE = TRUE, UMAP = TRUE,
                               clusters = TRUE){
   if(scaleData){
-    assay(inSCE, "seuratScaledData") <- NULL
+    altExp(inSCE, "scale.data") <- NULL
   }
   if(varFeatures){
     methods::slot(inSCE@metadata$seurat$obj, "assays")[["RNA"]]@var.features <- logical()

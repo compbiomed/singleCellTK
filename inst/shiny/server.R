@@ -7933,111 +7933,111 @@ shinyServer(function(input, output, session) {
   })
 
 
-  # #Disable tabs & reset collapse panel tabs
-  # observe({
-  #   if(!is.null(vals$counts)){
-  #     #If data is uploaded in data tab, enable first tab i.e. Normalization tab in Seurat workflow
-  #     shinyjs::enable(
-  #       selector = "div[value='Normalize Data']")
-  # 
-  #     #Proceed only if sce object has metadata slot
-  #     if(!is.null(vals$counts@metadata)){
-  # 
-  #       #Proceed only if sce object has seurat object stored in metadata slot
-  #       if(!is.null(vals$counts@metadata$seurat$obj)){
-  #         #If seuratScaledData has been removed from sce object, reset Scale Data tab and reset/lock its next tab
-  #         if(!"scale.data" %in% expDataNames(vals$counts)){
-  #           updateCollapse(session = session, "SeuratUI", style = list("Scale Data" = "primary"))
-  #           updateCollapse(session = session, "SeuratUI", style = list("Dimensionality Reduction" = "primary"))
-  #           shinyjs::disable(selector = "div[value='Dimensionality Reduction']")
-  #         }
-  # 
-  #         #If variableFeatures have been removed from sce object, reset HVG tab and reset/lock next tab
-  #         if(length(slot(vals$counts@metadata$seurat$obj, "assays")[["RNA"]]@var.features) <= 0){
-  #           updateCollapse(session = session, "SeuratUI", style = list("Highly Variable Genes" = "primary"))
-  #           updateCollapse(session = session, "SeuratUI", style = list("Dimensionality Reduction" = "primary"))
-  #           shinyjs::disable(selector = "div[value='Dimensionality Reduction']")
-  #         }
-  # 
-  #         #Proceed if reduction slot is present in seurat object in metadata slot
-  #         if("reductions" %in% slotNames(vals$counts@metadata$seurat$obj)){
-  # 
-  #           #If PCA and ICA both removed from sce object, reset DR tab and reset/lock next tab
-  #           if(is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[["pca"]])
-  #              && is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[["ica"]])){
-  #             updateCollapse(session = session, "SeuratUI", style = list("Dimensionality Reduction" = "primary"))
-  #             updateCollapse(session = session, "SeuratUI", style = list("tSNE/UMAP" = "primary"))
-  #             shinyjs::disable(selector = "div[value='tSNE/UMAP']")
-  #           }
-  # 
-  #           #If TSNE and UMAP both removed from sce object, reset tSNE/UMAP tab and reset/lock next tab
-  #           if(is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[["tsne"]])
-  #              && is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[["umap"]])){
-  #             updateCollapse(session = session, "SeuratUI", style = list("tSNE/UMAP" = "primary"))
-  #             updateCollapse(session = session, "SeuratUI", style = list("Clustering" = "primary"))
-  #             shinyjs::disable(selector = "div[value='Clustering']")
-  #           }
-  # 
-  #           #If seurat cluster information removed from sce object, reset Clustering tab
-  #           if(!"seurat_clusters" %in% names(vals$counts@metadata$seurat$obj@meta.data)){
-  #             updateCollapse(session = session, "SeuratUI", style = list("Clustering" = "primary"))
-  #             updateCollapse(session = session, "SeuratUI", style = list("Find Markers" = "primary"))
-  #             shinyjs::disable(selector = "div[value='Find Markers']")
-  #           }
-  #         }
-  # 
-  #       }
-  # 
-  #     }
-  #   }
-  #   else{
-  #     #If no data uploaded in data tab, disabled all tabs and plots.
-  # 
-  #     #Disable tabs
-  #     shinyjs::disable(
-  #       selector = "div[value='Normalize Data']")
-  #     shinyjs::disable(
-  #       selector = "div[value='Scale Data']")
-  #     shinyjs::disable(
-  #       selector = "div[value='Highly Variable Genes']")
-  #     shinyjs::disable(
-  #       selector = "div[value='Dimensionality Reduction']")
-  #     shinyjs::disable(
-  #       selector = "div[value='tSNE/UMAP']")
-  #     shinyjs::disable(
-  #       selector = "div[value='Clustering']")
-  #     shinyjs::disable(
-  #       selector = "div[value='Scale Data']")
-  #     shinyjs::disable(
-  #       selector = "div[value='Find Markers']")
-  # 
-  #     #Disable plots inside PCA subtab
-  #     shinyjs::disable(
-  #       selector = ".seurat_pca_plots a[data-value='PCA Plot']")
-  #     shinyjs::disable(
-  #       selector = ".seurat_pca_plots a[data-value='Elbow Plot']")
-  #     shinyjs::disable(
-  #       selector = ".seurat_pca_plots a[data-value='JackStraw Plot']")
-  #     shinyjs::disable(
-  #       selector = ".seurat_pca_plots a[data-value='Heatmap Plot']")
-  # 
-  #     #Disable plots inside ICA subtab
-  #     shinyjs::disable(
-  #       selector = ".seurat_ica_plots a[data-value='ICA Plot']")
-  #     shinyjs::disable(
-  #       selector = ".seurat_ica_plots a[data-value='Heatmap Plot']")
-  # 
-  #     #Disabled plots inside Clustering tab
-  #     shinyjs::disable(
-  #       selector = ".seurat_clustering_plots a[data-value='PCA Plot']")
-  #     shinyjs::disable(
-  #       selector = ".seurat_clustering_plots a[data-value='ICA Plot']")
-  #     shinyjs::disable(
-  #       selector = ".seurat_clustering_plots a[data-value='tSNE Plot']")
-  #     shinyjs::disable(
-  #       selector = ".seurat_clustering_plots a[data-value='UMAP Plot']")
-  #   }
-  # })
+  #Disable Seurat tabs & reset collapse panel tabs
+  observe({
+    if(!is.null(vals$counts)){
+      #If data is uploaded in data tab, enable first tab i.e. Normalization tab in Seurat workflow
+      shinyjs::enable(
+        selector = "div[value='Normalize Data']")
+      
+      #Proceed only if sce object has metadata slot
+      if(!is.null(vals$counts@metadata)){
+        
+        #Proceed only if sce object has seurat object stored in metadata slot
+        if(!is.null(vals$counts@metadata$seurat$obj)){
+          #If seuratScaledData has been removed from sce object, reset Scale Data tab and reset/lock its next tab
+          if(!"scale.data" %in% expDataNames(vals$counts)){
+            updateCollapse(session = session, "SeuratUI", style = list("Scale Data" = "primary"))
+            updateCollapse(session = session, "SeuratUI", style = list("Dimensionality Reduction" = "primary"))
+            shinyjs::disable(selector = "div[value='Dimensionality Reduction']")
+          }
+          
+          #If variableFeatures have been removed from sce object, reset HVG tab and reset/lock next tab
+          if(length(slot(vals$counts@metadata$seurat$obj, "assays")[["RNA"]]@var.features) <= 0){
+            updateCollapse(session = session, "SeuratUI", style = list("Highly Variable Genes" = "primary"))
+            updateCollapse(session = session, "SeuratUI", style = list("Dimensionality Reduction" = "primary"))
+            shinyjs::disable(selector = "div[value='Scale Data']")
+          }
+          
+          #Proceed if reduction slot is present in seurat object in metadata slot
+          if("reductions" %in% slotNames(vals$counts@metadata$seurat$obj)){
+            
+            #If PCA and ICA both removed from sce object, reset DR tab and reset/lock next tab
+            if(is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[["pca"]])
+               && is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[["ica"]])){
+              updateCollapse(session = session, "SeuratUI", style = list("Dimensionality Reduction" = "primary"))
+              updateCollapse(session = session, "SeuratUI", style = list("tSNE/UMAP" = "primary"))
+              shinyjs::disable(selector = "div[value='tSNE/UMAP']")
+            }
+            
+            #If TSNE and UMAP both removed from sce object, reset tSNE/UMAP tab and reset/lock next tab
+            if(is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[["tsne"]])
+               && is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[["umap"]])){
+              updateCollapse(session = session, "SeuratUI", style = list("tSNE/UMAP" = "primary"))
+              updateCollapse(session = session, "SeuratUI", style = list("Clustering" = "primary"))
+              shinyjs::disable(selector = "div[value='Clustering']")
+            }
+            
+            #If seurat cluster information removed from sce object, reset Clustering tab
+            if(!"seurat_clusters" %in% names(vals$counts@metadata$seurat$obj@meta.data)){
+              updateCollapse(session = session, "SeuratUI", style = list("Clustering" = "primary"))
+              updateCollapse(session = session, "SeuratUI", style = list("Find Markers" = "primary"))
+              shinyjs::disable(selector = "div[value='Find Markers']")
+            }
+          }
+          
+        }
+        
+      }
+    }
+    else{
+      #If no data uploaded in data tab, disable all tabs and plots.
+      
+      #Disable tabs
+      shinyjs::disable(
+        selector = "div[value='Normalize Data']")
+      shinyjs::disable(
+        selector = "div[value='Highly Variable Genes']")
+      shinyjs::disable(
+        selector = "div[value='Scale Data']")
+      shinyjs::disable(
+        selector = "div[value='Dimensionality Reduction']")
+      shinyjs::disable(
+        selector = "div[value='tSNE/UMAP']")
+      shinyjs::disable(
+        selector = "div[value='Clustering']")
+      shinyjs::disable(
+        selector = "div[value='Scale Data']")
+      shinyjs::disable(
+        selector = "div[value='Find Markers']")
+
+      #Disable plots inside PCA subtab
+      shinyjs::disable(
+        selector = ".seurat_pca_plots a[data-value='PCA Plot']")
+      shinyjs::disable(
+        selector = ".seurat_pca_plots a[data-value='Elbow Plot']")
+      shinyjs::disable(
+        selector = ".seurat_pca_plots a[data-value='JackStraw Plot']")
+      shinyjs::disable(
+        selector = ".seurat_pca_plots a[data-value='Heatmap Plot']")
+
+      #Disable plots inside ICA subtab
+      shinyjs::disable(
+        selector = ".seurat_ica_plots a[data-value='ICA Plot']")
+      shinyjs::disable(
+        selector = ".seurat_ica_plots a[data-value='Heatmap Plot']")
+
+      #Disabled plots inside Clustering tab
+      shinyjs::disable(
+        selector = ".seurat_clustering_plots a[data-value='PCA Plot']")
+      shinyjs::disable(
+        selector = ".seurat_clustering_plots a[data-value='ICA Plot']")
+      shinyjs::disable(
+        selector = ".seurat_clustering_plots a[data-value='tSNE Plot']")
+      shinyjs::disable(
+        selector = ".seurat_clustering_plots a[data-value='UMAP Plot']")
+    }
+  })
 
   #-----------------------------------------------------------------------------
   # Page: Column Annotation (colData) ####
