@@ -265,10 +265,13 @@ runSeuratFindHVG <- function(inSCE,
 #' computed principal components
 #' @export
 #' @importFrom SingleCellExperiment reducedDim<- rowSubset
+#' @importFrom S4vectors metadata<-
 runSeuratPCA <- function(inSCE, useAssay = "seuratScaledData", features = NULL, 
                          useHVGList = NULL, scale = TRUE, 
                          reducedDimName = "seuratPCA", nPCs = 20, seed = NULL, 
                          verbose = TRUE) {
+  params <- as.list(environment())
+  params$inSCE <- NULL
   if (!isTRUE(scale)) {
     # If not doing a scaling, put useAssay as scaled as RunPCA need it
     seuratObject <- convertSCEToSeurat(inSCE, scaledAssay = useAssay)
@@ -298,7 +301,7 @@ runSeuratPCA <- function(inSCE, useAssay = "seuratScaledData", features = NULL,
   temp <- seuratObject@reductions$pca@cell.embeddings
   rownames(temp) <- colnames(inSCE)
   reducedDim(inSCE, reducedDimName) <- temp
-
+  metadata(inSCE)$sctk$runDimReduce$reddim[[reducedDimName]] <- params
   return(inSCE)
 }
 
@@ -338,12 +341,14 @@ runSeuratPCA <- function(inSCE, useAssay = "seuratScaledData", features = NULL,
 #' @return Updated \code{SingleCellExperiment} object which now contains the
 #' computed independent components
 #' @export
-#' @importFrom SingleCellExperiment reducedDim<-
+#' @importFrom SingleCellExperiment reducedDim<- rowSubset
+#' @importFrom S4vectors metadata<-
 runSeuratICA <- function(inSCE, useAssay = "seuratScaledData", features = NULL, 
                          useHVGList = NULL, scale = TRUE, 
                          reducedDimName = "seuratICA", nics = 20, seed = NULL,
                          verbose = FALSE) {
-  
+  params <- as.list(environment())
+  params$inSCE <- NULL
   if (!isTRUE(scale)) {
     # If not doing a scaling, put useAssay as scaled as RunPCA need it
     seuratObject <- convertSCEToSeurat(inSCE, scaledAssay = useAssay)
@@ -373,7 +378,7 @@ runSeuratICA <- function(inSCE, useAssay = "seuratScaledData", features = NULL,
   temp <- seuratObject@reductions$ica@cell.embeddings
   rownames(temp) <- colnames(inSCE)
   reducedDim(inSCE, reducedDimName) <- temp
-
+  metadata(inSCE)$sctk$runDimReduce$reddim[[reducedDimName]] <- params
   return(inSCE)
 }
 

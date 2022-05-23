@@ -28,7 +28,7 @@
 #' the graph. Smaller value indicates higher resolution and larger number of
 #' clusters. Default \code{8}.
 #' @param nComp An \code{integer}. The number of components to use for graph 
-#' construction. Default \code{50}. See Detail.
+#' construction. Default \code{10}. See Detail.
 #' @param weightType A single \code{character}, that specifies the edge weighing
 #' scheme when constructing the Shared Nearest-Neighbor (SNN) graph. Choose from
 #' \code{"rank"}, \code{"number"}, \code{"jaccard"}. Default \code{"rank"}.
@@ -81,7 +81,7 @@ runScranSNN <- function(inSCE, useReducedDim = NULL, useAssay = NULL,
                         useAltExp = NULL, altExpAssay = "counts",
                         altExpRedDim = NULL,
                         clusterName = "scranSNN_cluster",
-                        k = 8, nComp = 50, 
+                        k = 8, nComp = 10, 
                         weightType = c("rank", "number", "jaccard"),
                         algorithm = c("louvain", "leiden", "walktrap", 
                                       "infomap", "fastGreedy", "labelProp",
@@ -92,6 +92,8 @@ runScranSNN <- function(inSCE, useReducedDim = NULL, useAssay = NULL,
   if (!is.null(seed)) {
     # If set seed, run the whole function again but enter the next condition
     # Not sure if this is computationally inefficient. 
+    # Doing this now b/c both graph building and clustering steps are 
+    # randomized. 
     withr::with_seed(
       seed = seed,
       code = runScranSNN(inSCE, useAssay = useAssay, 
@@ -182,8 +184,9 @@ runScranSNN <- function(inSCE, useReducedDim = NULL, useAssay = NULL,
 #' low-dimension representation to perform the clustering algorithm on. Default
 #' \code{"PCA"}.
 #' @param clusterName A single \code{character}, specifying the name to store
-#' the cluster label in \code{\link{colData}}. Default
-#' \code{"scranSNN_cluster"}.
+#' the cluster label in \code{\link{colData}}. Default \code{"KMeans_cluster"}.
+#' @param nComp An \code{integer}. The number of components to use for K-Means. 
+#' Default \code{10}. See Detail.
 #' @param nCenters An \code{integer}, the number of centroids (clusters).
 #' @param nIter An \code{integer}, the maximum number of iterations allowed.
 #' Default \code{10}.
@@ -203,8 +206,8 @@ runScranSNN <- function(inSCE, useReducedDim = NULL, useAssay = NULL,
 #' mouseBrainSubsetSCE <- runKMeans(mouseBrainSubsetSCE,
 #'                                  useReducedDim = "PCA_logcounts",
 #'                                  nCenters = 2)
-runKMeans <- function(inSCE, useReducedDim = "PCA",
-                      clusterName = "KMeans_cluster", nCenters, nIter = 10,
+runKMeans <- function(inSCE, nCenters, useReducedDim = "PCA",
+                      clusterName = "KMeans_cluster", nComp = 10, nIter = 10,
                       nStart = 1, seed = 12345,
                       algorithm = c("Hartigan-Wong", "Lloyd", "MacQueen")){
   if (!inherits(inSCE, "SingleCellExperiment")) {
@@ -217,13 +220,24 @@ runKMeans <- function(inSCE, useReducedDim = "PCA",
     stop("Specified reducedDim '", useReducedDim, "' not found.")
   }
   algorithm <- match.arg(algorithm)
-  message(paste0(date(), " ... Running 'KMeans clustering'"))
+  message(paste0(date(), " ... Running 'KMeans clustering' with ", algorithm, 
+                 " algorithm."))
   mat <- SingleCellExperiment::reducedDim(inSCE, useReducedDim)
-
-  clust.kmeans <- withr::with_seed(seed = seed,
-                {stats::kmeans(mat, centers = nCenters, iter.max = nIter,
-                        nstart = nStart, algorithm = algorithm)})
-
+  if (nComp < ncol(mat)) {
+    mat <- mat[,seq(nComp)]
+  }
+  if (!is.null(seed)) {
+    withr::with_seed(
+      seed = seed,
+      code = {
+        clust.kmeans <- stats::kmeans(mat, centers = nCenters, iter.max = nIter,
+                                      nstart = nStart, algorithm = algorithm)
+      })
+  } else {
+    clust.kmeans <- stats::kmeans(mat, centers = nCenters, iter.max = nIter,
+                                  nstart = nStart, algorithm = algorithm)
+  }
+  
   clust.kmeans <- factor(clust.kmeans$cluster)
   SummarizedExperiment::colData(inSCE)[[clusterName]] <- clust.kmeans
   return(inSCE)

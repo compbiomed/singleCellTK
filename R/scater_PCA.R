@@ -30,10 +30,14 @@
 #' sce <- scaterPCA(sce, "logcounts", scale = TRUE)
 #' @importFrom SingleCellExperiment reducedDim altExp rowSubset
 #' @importFrom SummarizedExperiment rowData
+#' @importFrom S4vectors metadata<-
 scaterPCA <- function(inSCE, useAssay = "logcounts", useHVGList = NULL, 
                       scale = TRUE, reducedDimName = "PCA", nComponents = 50, 
                       useAltExp = NULL, seed = NULL, 
                       BPPARAM = BiocParallel::SerialParam()) {
+  params <- as.list(environment())
+  params$inSCE <- NULL
+  params$BPPARAM <- NULL
   if (!is.null(useAltExp)) {
     if (!(useAltExp %in% SingleCellExperiment::altExpNames(inSCE))) {
       stop("Specified altExp '", useAltExp, "' not found. ")
@@ -73,5 +77,6 @@ scaterPCA <- function(inSCE, useAssay = "logcounts", useHVGList = NULL,
                           subset_row = subset_row, BPPARAM = BPPARAM)
   }
   reducedDim(inSCE, reducedDimName) <- reducedDim(sce, reducedDimName)
+  metadata(inSCE)$sctk$runDimReduce$reddim[[reducedDimName]] <- params
   return(inSCE)
 }

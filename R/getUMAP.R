@@ -76,12 +76,16 @@
 #'                  useHVGList = "HVG_modelGeneVar2000", scale = TRUE)
 #' sce <- getUMAP(sce, useReducedDim = "PCA")
 #' }
+#' @importFrom S4Vectors metadata<-
 getUMAP <- function(inSCE, useAssay = "logcounts", useReducedDim = NULL, 
                     useAltExp = NULL, sample = NULL, reducedDimName = "UMAP", 
-                    logNorm = FALSE, useHVGList = NULL, nTop = 2000, scale = TRUE, 
-                    pca = TRUE, initialDims = 25, nNeighbors = 30, 
+                    logNorm = FALSE, useHVGList = NULL, nTop = 2000, 
+                    scale = TRUE, pca = TRUE, initialDims = 25, nNeighbors = 30, 
                     nIterations = 200, alpha = 1, minDist = 0.01, spread = 1, 
                     seed = NULL, BPPARAM = BiocParallel::SerialParam()) {
+  params <- as.list(environment())
+  params$inSCE <- NULL
+  params$BPPARAM <- NULL
   # input class check
   if (!inherits(inSCE, "SingleCellExperiment")){
     stop("Please use a SingleCellExperiment object")
@@ -192,5 +196,6 @@ getUMAP <- function(inSCE, useAssay = "logcounts", useReducedDim = NULL,
   }
   colnames(umapDims) <- c("UMAP1", "UMAP2")
   SingleCellExperiment::reducedDim(inSCE, reducedDimName) <- umapDims
+  metadata(inSCE)$sctk$runDimReduce$embedding[[reducedDimName]] <- params
   return(inSCE)
 }

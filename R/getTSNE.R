@@ -65,12 +65,15 @@
 #'                  useHVGList = "HVG_modelGeneVar2000", scale = TRUE)
 #' sce <- getTSNE(sce, useReducedDim = "PCA")
 #' }
+#' @importFrom S4vectors metadata<-
 getTSNE <- function(inSCE, useAssay = "logcounts", useReducedDim = NULL, 
                     useAltExp = NULL, reducedDimName = "TSNE", logNorm = FALSE, 
                     useHVGList = NULL, nTop = 2000, center = TRUE, scale = TRUE, 
                     pca = TRUE, partialPCA = FALSE, initialDims = 25, 
                     theta = 0.5, perplexity = 30, nIterations = 1000, 
                     numThreads = 1, seed = NULL){
+  params <- as.list(environment())
+  params$inSCE <- NULL
   # input class check
   if (!inherits(inSCE, "SingleCellExperiment")){
     stop("Please use a SingleCellExperiment object")
@@ -166,8 +169,6 @@ getTSNE <- function(inSCE, useAssay = "logcounts", useReducedDim = NULL,
   rownames(tsneOut) <- colnames(inSCE)
   colnames(tsneOut) <- c("tSNE1", "tSNE2")
   SingleCellExperiment::reducedDim(inSCE, reducedDimName) <- tsneOut
+  metadata(inSCE)$sctk$runDimReduce$embedding[[reducedDimName]] <- params
   return(inSCE)
 }
-
-
-
