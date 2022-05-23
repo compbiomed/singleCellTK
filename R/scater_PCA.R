@@ -30,7 +30,7 @@
 #' sce <- scaterPCA(sce, "logcounts", scale = TRUE)
 #' @importFrom SingleCellExperiment reducedDim altExp rowSubset
 #' @importFrom SummarizedExperiment rowData
-#' @importFrom S4vectors metadata<-
+#' @importFrom S4Vectors metadata<-
 scaterPCA <- function(inSCE, useAssay = "logcounts", useHVGList = NULL, 
                       scale = TRUE, reducedDimName = "PCA", nComponents = 50, 
                       useAltExp = NULL, seed = NULL, 

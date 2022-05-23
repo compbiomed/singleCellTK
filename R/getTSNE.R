@@ -65,7 +65,7 @@
 #'                  useHVGList = "HVG_modelGeneVar2000", scale = TRUE)
 #' sce <- getTSNE(sce, useReducedDim = "PCA")
 #' }
-#' @importFrom S4vectors metadata<-
+#' @importFrom S4Vectors metadata<-
 getTSNE <- function(inSCE, useAssay = "logcounts", useReducedDim = NULL, 
                     useAltExp = NULL, reducedDimName = "TSNE", logNorm = FALSE, 
                     useHVGList = NULL, nTop = 2000, center = TRUE, scale = TRUE, 

@@ -28,8 +28,8 @@ low-dimension representation to perform the clustering algorithm on. Default
 \item{clusterName}{A single \code{character}, specifying the name to store
 the cluster label in \code{\link{colData}}. Default \code{"KMeans_cluster"}.}
 
-\item{nComp}{An \code{integer}. The number of components to use for graph 
-construction. Default \code{10}. See Detail.}
+\item{nComp}{An \code{integer}. The number of components to use for K-Means. 
+Default \code{10}. See Detail.}
 
 \item{nIter}{An \code{integer}, the maximum number of iterations allowed.
 Default \code{10}.}

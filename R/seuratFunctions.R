@@ -265,7 +265,7 @@ runSeuratFindHVG <- function(inSCE,
 #' computed principal components
 #' @export
 #' @importFrom SingleCellExperiment reducedDim<- rowSubset
-#' @importFrom S4vectors metadata<-
+#' @importFrom S4Vectors metadata<-
 runSeuratPCA <- function(inSCE, useAssay = "seuratScaledData", features = NULL, 
                          useHVGList = NULL, scale = TRUE, 
                          reducedDimName = "seuratPCA", nPCs = 20, seed = NULL, 
@@ -342,7 +342,7 @@ runSeuratPCA <- function(inSCE, useAssay = "seuratScaledData", features = NULL,
 #' computed independent components
 #' @export
 #' @importFrom SingleCellExperiment reducedDim<- rowSubset
-#' @importFrom S4vectors metadata<-
+#' @importFrom S4Vectors metadata<-
 runSeuratICA <- function(inSCE, useAssay = "seuratScaledData", features = NULL, 
                          useHVGList = NULL, scale = TRUE, 
                          reducedDimName = "seuratICA", nics = 20, seed = NULL,
