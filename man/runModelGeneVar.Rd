@@ -4,25 +4,13 @@
 \alias{runModelGeneVar}
 \title{Calculate Variable Genes with Scran modelGeneVar}
 \usage{
-runModelGeneVar(
-  inSCE,
-  useAssay = "logcounts",
-  hvgNumber = 2000,
-  rowSubsetName = paste0("HVG_modelGeneVar", hvgNumber)
-)
+runModelGeneVar(inSCE, useAssay = "logcounts")
 }
 \arguments{
 \item{inSCE}{A \linkS4class{SingleCellExperiment} object}
 
 \item{useAssay}{A character string to specify an assay to compute variable 
 features from. Default \code{"logcounts"}.}
-
-\item{hvgNumber}{An integer for the number of top HVG to select. Default 
-\code{2000}.}
-
-\item{rowSubsetName}{A character string for the \code{rowData} variable name
-to store a logical index of selected HVGs. Default 
-\code{paste0("HVG_modelGeneVar", hvgNumber)}}
 }
 \value{
 \code{inSCE} updated with variable feature metrics in \code{rowData}

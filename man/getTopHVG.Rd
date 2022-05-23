@@ -9,6 +9,7 @@ getTopHVG(
   inSCE,
   method = c("vst", "dispersion", "mean.var.plot", "modelGeneVar"),
   hvgNumber = 2000,
+  useHVGList = NULL,
   featureDisplay = metadata(inSCE)$featureDisplay
 )
 
@@ -16,7 +17,9 @@ setTopHVG(
   inSCE,
   method = c("vst", "dispersion", "mean.var.plot", "modelGeneVar"),
   hvgNumber = 2000,
-  rowSubsetName = paste0("HVG_", method, hvgNumber),
+  genes = NULL,
+  genesBy = NULL,
+  hvgListName = NULL,
   altExp = FALSE
 )
 }
@@ -29,25 +32,38 @@ Scran \code{"modelGeneVar"}. Default \code{"vst"}}
 
 \item{hvgNumber}{Specify the number of top variable genes to extract.}
 
+\item{useHVGList}{For getting top HVG, use the HVG list set by 
+\code{setTopHVG}. Will ignore \code{method} and \code{hvgNumber} if not 
+\code{NULL}. Default \code{NULL}.}
+
 \item{featureDisplay}{A character string for the \code{rowData} variable name
 to indicate what type of feature ID should be displayed. If set by 
 \code{\link{setSCTKDisplayRow}}, will by default use it. If \code{NULL}, will
 use \code{rownames(inSCE)}.}
 
-\item{rowSubsetName}{A character string for the \code{rowData} variable name
-to store a logical index of selected HVGs. Default 
-\code{paste0("HVG_", method, hvgNumber)}}
+\item{genes}{A customized character vector of gene list to be set as a 
+\code{rowData} variable. Will ignore \code{method} and \code{hvgNumber} if 
+set. Default \code{NULL}.}
+
+\item{genesBy}{If setting customized \code{genes}, where should it be found
+in \code{rowData}? Leave \code{NULL} for matching \code{rownames}. Default 
+\code{NULL}.}
+
+\item{hvgListName}{A character string for the \code{rowData} variable name
+to store a logical index of selected HVGs. Default \code{NULL}, will be 
+determined basing on other parameters.}
 
 \item{altExp}{\code{TRUE} for also creating a subset \code{inSCE} object with
 the selected HVGs and store this subset in the \code{altExps} slot, named by
-\code{rowSubsetName}. Default \code{FALSE}.}
+\code{hvgListName}. Default \code{FALSE}.}
 }
 \value{
 \item{getTopHVG}{A character vector of the top \code{hvgNumber} variable 
 feature names}
 \item{setTopHVG}{The input \code{inSCE} object with the logical vector of 
-HVG selection updated in \code{rowData}. If \code{altExp} is \code{TRUE},
-an \code{altExp} is also added}
+HVG selection updated in \code{rowData}, and related parameter updated in 
+\code{metadata}. If \code{altExp} is \code{TRUE}, an \code{altExp} is also 
+added}
 }
 \description{
 Extracts or select the top variable genes from an input
@@ -57,13 +73,13 @@ extracting the feature names of the top variable features. \code{getTopHVG}
 only returns a character vector of the HVG selection, while with 
 \code{setTopHVG}, a logical vector of the selection will be saved in the 
 \code{rowData}, and optionally, a subset object for the HVGs can be stored 
-in the \code{altExps} slot.
+in the \code{altExps} slot at the same time.
 }
 \examples{
 data("scExample", package = "singleCellTK")
 sce <- runSeuratFindHVG(sce)
-getTopHVG(sce, hvgNumber = 10)
-sce <- setTopHVG(sce, )
+hvgs <- getTopHVG(sce, hvgNumber = 10)
+sce <- setTopHVG(sce, method = "vst", hvgNumber = 5)
 }
 \seealso{
 \code{\link{runFeatureSelection}}, \code{\link{runSeuratFindHVG}},

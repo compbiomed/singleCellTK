@@ -26,12 +26,12 @@
 #' @param logNorm Whether the counts will need to be log-normalized prior to
 #' generating the UMAP via \code{\link{scaterlogNormCounts}}. Ignored when using
 #' \code{useReducedDim}. Default \code{FALSE}.
-#' @param useHVG A character string indicating a \code{rowData} variable that
-#' stores the logical vector of HVG selection. Ignored when using
+#' @param useHVGList A character string indicating a \code{rowData} variable 
+#' that stores the logical vector of HVG selection. Ignored when using
 #' \code{useReducedDim}. Default \code{NULL}.
 #' @param nTop Automatically detect this number of variable features to use for
 #' dimension reduction. Ignored when using \code{useReducedDim} or using 
-#' \code{useHVG}. Default \code{2000}.
+#' \code{useHVGList}. Default \code{2000}.
 #' @param scale Whether \code{useAssay} matrix will need to be standardized. 
 #' Default \code{TRUE}.
 #' @param pca Logical. Whether to perform dimension reduction with PCA before
@@ -73,12 +73,12 @@
 #' sce <- scaterlogNormCounts(sce, "logcounts")
 #' sce <- runModelGeneVar(sce)
 #' sce <- scaterPCA(sce, useAssay = "logcounts", 
-#'                  useHVG = "HVG_modelGeneVar2000", scale = TRUE)
+#'                  useHVGList = "HVG_modelGeneVar2000", scale = TRUE)
 #' sce <- getUMAP(sce, useReducedDim = "PCA")
 #' }
 getUMAP <- function(inSCE, useAssay = "logcounts", useReducedDim = NULL, 
                     useAltExp = NULL, sample = NULL, reducedDimName = "UMAP", 
-                    logNorm = FALSE, useHVG = NULL, nTop = 2000, scale = TRUE, 
+                    logNorm = FALSE, useHVGList = NULL, nTop = 2000, scale = TRUE, 
                     pca = TRUE, initialDims = 25, nNeighbors = 30, 
                     nIterations = 200, alpha = 1, minDist = 0.01, spread = 1, 
                     seed = NULL, BPPARAM = BiocParallel::SerialParam()) {
@@ -141,8 +141,11 @@ getUMAP <- function(inSCE, useAssay = "logcounts", useReducedDim = NULL,
         useAssayTemp = "ScaterLogNormCounts"
       }
     }
-    if (!is.null(useHVG) & !is.null(useAssay)) {
-      hvgs <- rownames(inSCE)[rowSubset(inSCE, useHVG)]
+    if (!is.null(useHVGList) & !is.null(useAssay)) {
+      if (!useHVGList %in% colnames(SummarizedExperiment::rowData(inSCE))) {
+        stop("Specified HVG list not found")
+      }
+      hvgs <- rownames(inSCE)[rowSubset(inSCE, useHVGList)]
       subset_row <- rownames(sceSample) %in% hvgs
     } else {
       subset_row <- NULL
@@ -153,6 +156,8 @@ getUMAP <- function(inSCE, useAssay = "logcounts", useReducedDim = NULL,
     }
     
     nNeighbors <- min(ncol(sceSample), nNeighbors)
+    message(paste0(date(), " ... Computing Scater UMAP for sample '",
+                   samples[i], "'."))
     if (!is.null(seed)) {
       withr::with_seed(
         seed = seed,

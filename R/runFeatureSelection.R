@@ -5,24 +5,18 @@
 #' Scran \code{modelGeneVar} method.
 #' 
 #' This function does not return the names of the variable features but only 
-#' computes the statistics and the selection which will be stored in the 
-#' \code{rowData} slot. To get the names of the variable features, users should 
-#' call \code{\link{getTopHVG}} function after computing the statistics.
+#' computes the metrics, which will be stored in the \code{rowData} slot. To set
+#' a HVG list for downstream use, users should call \code{\link{setTopHVG}} 
+#' after computing the metrics. To get the names of the variable features, users
+#' should call \code{\link{getTopHVG}} function after computing the metrics.
 #' @param inSCE Input \linkS4class{SingleCellExperiment} object.
 #' @param useAssay Specify the name of the assay that should be used. Should use
 #' raw counts for \code{"vst"} method, or a normalized assay for other methods.
 #' @param method Specify the method to use for variable gene selection.
 #' Options include \code{"vst"}, \code{"mean.var.plot"} or \code{"dispersion"}
 #' from Seurat and \code{"modelGeneVar"} from Scran.
-#' @param hvgNumber An integer for the number of top HVG to select. Default 
-#' \code{2000}.
-#' @param rowSubsetName A character string for the \code{rowData} variable name
-#' to store a logical index of selected HVGs. Default 
-#' \code{paste0("HVG_", method, hvgNumber)}
 #' @return The input \linkS4class{SingleCellExperiment} object that contains 
-#' \item{}{The computed statistics in the \code{rowData} slot} 
-#' \item{}{A logical vector indicating the selected HVG in the 
-#' \code{rowData} slot, named by \code{rowSubsetName}}  
+#' the computed statistics in the \code{rowData} slot
 #' @seealso \code{\link{runModelGeneVar}}, \code{\link{runSeuratFindHVG}},
 #' \code{\link{getTopHVG}}, \code{\link{plotTopHVG}}
 #' @export
@@ -34,20 +28,14 @@
 runFeatureSelection <- function(inSCE,
                                 useAssay,
                                 method = c("vst", "mean.var.plot",
-                                           "dispersion", "modelGeneVar"),
-                                hvgNumber = 2000,
-                                rowSubsetName = paste0("HVG_", method, 
-                                                       hvgNumber)
-                                ){
+                                           "dispersion", "modelGeneVar")){
   method <- match.arg(method)
   seuratMethods <- c("vst", "mean.var.plot", "dispersion")
   scranMethods <- c("modelGeneVar")
 
   params <- list(
     inSCE = inSCE,
-    useAssay = useAssay,
-    hvgNumber = hvgNumber,
-    rowSubsetName = rowSubsetName
+    useAssay = useAssay
   )
 
   if(method %in% seuratMethods){

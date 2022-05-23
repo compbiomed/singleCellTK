@@ -21,12 +21,12 @@
 #' @param logNorm Whether the counts will need to be log-normalized prior to
 #' generating the tSNE via \code{\link{scaterlogNormCounts}}. Ignored when using
 #' \code{useReducedDim}. Default \code{FALSE}.
-#' @param useHVG A character string indicating a \code{rowData} variable that
-#' stores the logical vector of HVG selection. Ignored when using
+#' @param useHVGList A character string indicating a \code{rowData} variable 
+#' that stores the logical vector of HVG selection. Ignored when using
 #' \code{useReducedDim}. Default \code{NULL}.
 #' @param nTop Automatically detect this number of variable features to use for
 #' dimension reduction. Ignored when using \code{useReducedDim} or using 
-#' \code{useHVG}. Default \code{2000}.
+#' \code{useHVGList}. Default \code{2000}.
 #' @param center Whether data should be centered before PCA is applied. Ignored 
 #' when using \code{useReducedDim}. Default \code{TRUE}.
 #' @param scale Whether data should be scaled before PCA is applied. Ignored 
@@ -62,12 +62,12 @@
 #' sce <- scaterlogNormCounts(sce, "logcounts")
 #' sce <- runModelGeneVar(sce)
 #' sce <- scaterPCA(sce, useAssay = "logcounts", 
-#'                  useHVG = "HVG_modelGeneVar2000", scale = TRUE)
+#'                  useHVGList = "HVG_modelGeneVar2000", scale = TRUE)
 #' sce <- getTSNE(sce, useReducedDim = "PCA")
 #' }
 getTSNE <- function(inSCE, useAssay = "logcounts", useReducedDim = NULL, 
                     useAltExp = NULL, reducedDimName = "TSNE", logNorm = FALSE, 
-                    useHVG = NULL, nTop = 2000, center = TRUE, scale = TRUE, 
+                    useHVGList = NULL, nTop = 2000, center = TRUE, scale = TRUE, 
                     pca = TRUE, partialPCA = FALSE, initialDims = 25, 
                     theta = 0.5, perplexity = 30, nIterations = 1000, 
                     numThreads = 1, seed = NULL){
@@ -106,17 +106,20 @@ getTSNE <- function(inSCE, useAssay = "logcounts", useReducedDim = NULL,
       sce <- scaterlogNormCounts(sce, "logcounts")
       useAssay <- "logcounts"
     }
-    if (!is.null(useHVG)) {
-      hvgs <- rownames(inSCE)[rowSubset(inSCE, useHVG)]
+    if (!is.null(useHVGList)) {
+      if (!useHVGList %in% colnames(SummarizedExperiment::rowData(inSCE))) {
+        stop("Specified HVG list not found")
+      }
+      hvgs <- rownames(inSCE)[rowSubset(inSCE, useHVGList)]
       sce <- sce[rownames(sce) %in% hvgs,]
     } else {
       if (!is.null(nTop) && nTop < nrow(sce)) {
         suppressMessages({
-          sce <- runFeatureSelection(sce, useAssay, method = "modelGeneVar",
-                                     hvgNumber = nTop)
+          sce <- runFeatureSelection(sce, useAssay, method = "modelGeneVar")
         })
-        sce <- subsetSCERows(sce, rowData = paste0("HVG_modelGeneVar", nTop),
-                             returnAsAltExp = FALSE)
+        sce <- setTopHVG(sce, method = "modelGeneVar", hvgNumber = nTop, 
+                         hvgListName = "tsneHVG")
+        sce <- subsetSCERows(sce, rowData = "tsneHVG", returnAsAltExp = FALSE)
       }
     }
     mat <- t(SummarizedExperiment::assay(sce, useAssay))
@@ -139,6 +142,7 @@ getTSNE <- function(inSCE, useAssay = "logcounts", useReducedDim = NULL,
   }
   # Rtsne requires a matrix input
   mat <- as.matrix(mat)
+  message(paste0(date(), " ... Computing Rtsne."))
   if (!is.null(seed)) {
     withr::with_seed(
       seed = seed,

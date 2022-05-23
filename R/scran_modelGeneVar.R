@@ -9,11 +9,6 @@
 #' @param inSCE A \linkS4class{SingleCellExperiment} object
 #' @param useAssay A character string to specify an assay to compute variable 
 #' features from. Default \code{"logcounts"}.
-#' @param hvgNumber An integer for the number of top HVG to select. Default 
-#' \code{2000}.
-#' @param rowSubsetName A character string for the \code{rowData} variable name
-#' to store a logical index of selected HVGs. Default 
-#' \code{paste0("HVG_modelGeneVar", hvgNumber)}
 #' @return \code{inSCE} updated with variable feature metrics in \code{rowData}
 #' @export
 #' @author Irzam Sarfraz
@@ -27,16 +22,17 @@
 #' \code{\link{getTopHVG}}, \code{\link{plotTopHVG}}
 #' @importFrom SummarizedExperiment assay rowData rowData<-
 #' @importFrom SingleCellExperiment rowSubset
-#' @importFrom S4Vectors metadata
+#' @importFrom S4Vectors metadata<-
 runModelGeneVar <- function(inSCE,
-                            useAssay = "logcounts", 
-                            hvgNumber = 2000,
-                            rowSubsetName = paste0("HVG_modelGeneVar", 
-                                                   hvgNumber)) {
+                            useAssay = "logcounts") {
     tempDataFrame <- data.frame(scran::modelGeneVar(assay(inSCE, useAssay)))
     rowData(inSCE)$scran_modelGeneVar_mean <- tempDataFrame$mean
     rowData(inSCE)$scran_modelGeneVar_totalVariance <- tempDataFrame$total
     rowData(inSCE)$scran_modelGeneVar_bio <- tempDataFrame$bio
-    inSCE <- setTopHVG(inSCE, "modelGeneVar", hvgNumber, rowSubsetName)
+    metadata(inSCE)$sctk$runFeatureSelection$modelGeneVar <- 
+        list(useAssay = useAssay,
+             rowData = c("scran_modelGeneVar_mean", 
+                         "scran_modelGeneVar_totalVariance",
+                         "scran_modelGeneVar_bio"))
     return(inSCE)
 }

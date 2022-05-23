@@ -315,8 +315,7 @@ shinyPanelDiffex <- fluidPage(
                       selectInput(
                         inputId = "deHMrowLabel",
                         label = "Select row labels",
-                        choices = c("Default (set at import)",
-                                    "rownames",
+                        choices = c("Rownames (Default)",
                                     featureChoice)
                       )
                     ),
@@ -417,7 +416,7 @@ shinyPanelDiffex <- fluidPage(
                       width = 6,
                       selectInput("deVolcFeatureDisplay",
                                   "Display ID Type",
-                                  c("Default (set at import)", "rownames",
+                                  c("Rownames (Default)",
                                     featureChoice))
                     )
                   ),
@@ -493,8 +492,7 @@ shinyPanelDiffex <- fluidPage(
                     column(
                       width = 6,
                       selectInput('deVioLabel', "Label features by",
-                                  c("Default (set at import)",
-                                    "rownames",
+                                  c("Rownames (Default)",
                                     featureChoice))
                     ),
                     column(
@@ -568,8 +566,7 @@ shinyPanelDiffex <- fluidPage(
                     column(
                       width = 6,
                       selectInput('deRegLabel', "Label features by",
-                                  c("Default (set at import)",
-                                    "rownames",
+                                  c("Rownames (Default)",
                                     featureChoice))
                     ),
                     column(

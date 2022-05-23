@@ -6,8 +6,8 @@
 #' @param useAssay Assay to use for PCA computation. If \code{useAltExp} is
 #' specified, \code{useAssay} has to exist in
 #' \code{assays(altExp(inSCE, useAltExp))}. Default \code{"logcounts"}
-#' @param useHVG A character string indicating a \code{rowData} variable that
-#' stores the logical vector of HVG selection. Default \code{NULL}.
+#' @param useHVGList A character string indicating a \code{rowData} variable 
+#' that stores the logical vector of HVG selection. Default \code{NULL}.
 #' @param scale Logical scalar, whether to standardize the expression values.
 #' Default \code{TRUE}.
 #' @param reducedDimName Name to use for the reduced output assay. Default
@@ -29,7 +29,8 @@
 #' sce <- scaterlogNormCounts(sce, "logcounts")
 #' sce <- scaterPCA(sce, "logcounts", scale = TRUE)
 #' @importFrom SingleCellExperiment reducedDim altExp rowSubset
-scaterPCA <- function(inSCE, useAssay = "logcounts", useHVG = NULL, 
+#' @importFrom SummarizedExperiment rowData
+scaterPCA <- function(inSCE, useAssay = "logcounts", useHVGList = NULL, 
                       scale = TRUE, reducedDimName = "PCA", nComponents = 50, 
                       useAltExp = NULL, seed = NULL, 
                       BPPARAM = BiocParallel::SerialParam()) {
@@ -49,10 +50,14 @@ scaterPCA <- function(inSCE, useAssay = "logcounts", useHVG = NULL,
     sce <- inSCE
   }
   subset_row <- NULL
-  if (!is.null(useHVG)) {
-    hvgs <- rownames(inSCE)[rowSubset(inSCE, useHVG)]
+  if (!is.null(useHVGList)) {
+    if (!useHVGList %in% colnames(rowData(inSCE))) {
+      stop("Specified HVG list not found")
+    }
+    hvgs <- rownames(inSCE)[rowSubset(inSCE, useHVGList)]
     subset_row <- rownames(sce) %in% hvgs
   }
+  message(paste0(date(), " ... Computing Scater PCA."))
   if (!is.null(seed)) {
     withr::with_seed(seed = seed,
                      code = sce <- scater::runPCA(sce, 

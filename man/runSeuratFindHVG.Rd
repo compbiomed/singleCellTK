@@ -10,7 +10,6 @@ runSeuratFindHVG(
   useAssay = "counts",
   method = c("vst", "dispersion", "mean.var.plot"),
   hvgNumber = 2000,
-  rowSubsetName = paste0("HVG_", method, hvgNumber),
   altExp = FALSE,
   verbose = TRUE
 )
@@ -31,10 +30,6 @@ normalized counts.}
 
 \item{hvgNumber}{numeric value of how many genes to select as highly
 variable. Default \code{2000}}
-
-\item{rowSubsetName}{A character string for the \code{rowData} variable name
-to store a logical index of selected HVGs. Default 
-\code{paste0("HVG_", method, hvgNumber)}}
 
 \item{altExp}{Logical value indicating if the input object is an
 altExperiment. Default \code{FALSE}.}

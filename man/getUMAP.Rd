@@ -12,7 +12,7 @@ getUMAP(
   sample = NULL,
   reducedDimName = "UMAP",
   logNorm = FALSE,
-  useHVG = NULL,
+  useHVGList = NULL,
   nTop = 2000,
   scale = TRUE,
   pca = TRUE,
@@ -52,13 +52,13 @@ coordinates obtained from this method. Default \code{"UMAP"}.}
 generating the UMAP via \code{\link{scaterlogNormCounts}}. Ignored when using
 \code{useReducedDim}. Default \code{FALSE}.}
 
-\item{useHVG}{A character string indicating a \code{rowData} variable that
-stores the logical vector of HVG selection. Ignored when using
+\item{useHVGList}{A character string indicating a \code{rowData} variable 
+that stores the logical vector of HVG selection. Ignored when using
 \code{useReducedDim}. Default \code{NULL}.}
 
 \item{nTop}{Automatically detect this number of variable features to use for
 dimension reduction. Ignored when using \code{useReducedDim} or using 
-\code{useHVG}. Default \code{2000}.}
+\code{useHVGList}. Default \code{2000}.}
 
 \item{scale}{Whether \code{useAssay} matrix will need to be standardized. 
 Default \code{TRUE}.}
@@ -123,7 +123,7 @@ sce <- getUMAP(inSCE = sce, useAssay = "counts", logNorm = TRUE, nTop = 2000,
 sce <- scaterlogNormCounts(sce, "logcounts")
 sce <- runModelGeneVar(sce)
 sce <- scaterPCA(sce, useAssay = "logcounts", 
-                 useHVG = "HVG_modelGeneVar2000", scale = TRUE)
+                 useHVGList = "HVG_modelGeneVar2000", scale = TRUE)
 sce <- getUMAP(sce, useReducedDim = "PCA")
 }
 }
