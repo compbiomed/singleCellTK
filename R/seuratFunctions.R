@@ -145,11 +145,12 @@ runSeuratScaleData <- function(inSCE, useAssay = "seuratNormData",
 #' back to it
 #' @param useAssay Specify the name of the assay to use for computation
 #'  of variable genes. It is recommended to use a raw counts assay with the 
-#'  `vst` method and normalized assay with all other methods. Default
+#'  \code{"vst"} method and normalized assay with all other methods. Default
 #'  is \code{"counts"}. 
-#' @param hvgMethod selected method to use for computation of highly variable
-#'  genes. One of 'vst', 'dispersion', or 'mean.var.plot'. Default method 
-#'  is `vst` which uses the raw counts. All other methods use normalized counts.
+#' @param method selected method to use for computation of highly variable
+#' genes. One of \code{'vst'}, \code{'dispersion'}, or \code{'mean.var.plot'}. 
+#' Default \code{"vst"} which uses the raw counts. All other methods use 
+#' normalized counts.
 #' @param hvgNumber numeric value of how many genes to select as highly
 #' variable. Default \code{2000}
 #' @param altExp Logical value indicating if the input object is an
@@ -158,31 +159,33 @@ runSeuratScaleData <- function(inSCE, useAssay = "seuratNormData",
 #'  be displayed. Default is \code{TRUE}.
 #' @examples
 #' data(scExample, package = "singleCellTK")
-#' \dontrun{
-#' sce <- runSeuratNormalizeData(sce, useAssay = "counts")
-#' sce <- runSeuratFindHVG(sce, useAssay = "counts")
-#' }
+#' sce <- runSeuratFindHVG(sce)
 #' @return Updated \code{SingleCellExperiment} object with highly variable genes
 #' computation stored
+#' @seealso \code{\link{runFeatureSelection}}, \code{\link{runModelGeneVar}},
+#' \code{\link{getTopHVG}}, \code{\link{plotTopHVG}}
 #' @export
 #' @importFrom SummarizedExperiment rowData rowData<-
-runSeuratFindHVG <- function(inSCE, useAssay = "counts",
-                          hvgMethod = "vst", hvgNumber = 2000, altExp = FALSE,
-                          verbose = TRUE) {
-  
-  if(hvgMethod == "vst"){
+#' @importFrom S4Vectors metadata<-
+runSeuratFindHVG <- function(inSCE, 
+                             useAssay = "counts",
+                             method = c("vst", "dispersion", "mean.var.plot"), 
+                             hvgNumber = 2000,
+                             altExp = FALSE,
+                             verbose = TRUE) {
+  method <- match.arg(method)
+  if (method == "vst") {
     seuratObject <- convertSCEToSeurat(inSCE, countsAssay = useAssay)
-  }
-  else{
+  } else {
     seuratObject <- convertSCEToSeurat(inSCE, normAssay = useAssay)
   }
   
   seuratObject <- Seurat::FindVariableFeatures(seuratObject,
-                                               selection.method = hvgMethod,
+                                               selection.method = method,
                                                nfeatures = hvgNumber,
                                                verbose = verbose)
   inSCE <- .addSeuratToMetaDataSCE(inSCE, seuratObject)
-  if (hvgMethod == "vst") {
+  if (method == "vst") {
     if(!altExp){
       rowData(inSCE)$seurat_variableFeatures_vst_varianceStandardized <- methods::slot(inSCE@metadata$seurat$obj, "assays")[["RNA"]]@meta.features$vst.variance.standardized
       rowData(inSCE)$seurat_variableFeatures_vst_mean <- methods::slot(inSCE@metadata$seurat$obj, "assays")[["RNA"]]@meta.features$vst.mean
@@ -194,15 +197,29 @@ runSeuratFindHVG <- function(inSCE, useAssay = "counts",
       rowData(inSCE)$seurat_variableFeatures_vst_varianceStandardized <- methods::slot(inSCE@metadata$seurat$obj, "assays")[["RNA"]]@meta.features$vst.variance.standardized[altExpRows]
       rowData(inSCE)$seurat_variableFeatures_vst_mean <- methods::slot(inSCE@metadata$seurat$obj, "assays")[["RNA"]]@meta.features$vst.mean[altExpRows]
     }
-  } else if (hvgMethod == "dispersion") {
+    metadata(inSCE)$sctk$runFeatureSelection$vst <- 
+      list(useAssay = useAssay,
+           rowData = c("seurat_variableFeatures_vst_varianceStandardized",
+                       "seurat_variableFeatures_vst_mean"))
+  } else if (method == "dispersion") {
     rowData(inSCE)$seurat_variableFeatures_dispersion_dispersion <- methods::slot(inSCE@metadata$seurat$obj, "assays")[["RNA"]]@meta.features$mvp.dispersion
     rowData(inSCE)$seurat_variableFeatures_dispersion_dispersionScaled <- methods::slot(inSCE@metadata$seurat$obj, "assays")[["RNA"]]@meta.features$mvp.dispersion.scaled
     rowData(inSCE)$seurat_variableFeatures_dispersion_mean <- methods::slot(inSCE@metadata$seurat$obj, "assays")[["RNA"]]@meta.features$mvp.mean
+    metadata(inSCE)$sctk$runFeatureSelection$dispersion <- 
+      list(useAssay = useAssay,
+           rowData = c("seurat_variableFeatures_dispersion_dispersion",
+                       "seurat_variableFeatures_dispersion_dispersionScaled",
+                       "seurat_variableFeatures_dispersion_mean"))
   }
-  else if (hvgMethod == "mean.var.plot") {
+  else if (method == "mean.var.plot") {
     rowData(inSCE)$seurat_variableFeatures_mvp_dispersion <- methods::slot(inSCE@metadata$seurat$obj, "assays")[["RNA"]]@meta.features$mvp.dispersion
     rowData(inSCE)$seurat_variableFeatures_mvp_dispersionScaled <- methods::slot(inSCE@metadata$seurat$obj, "assays")[["RNA"]]@meta.features$mvp.dispersion.scaled
     rowData(inSCE)$seurat_variableFeatures_mvp_mean <- methods::slot(inSCE@metadata$seurat$obj, "assays")[["RNA"]]@meta.features$mvp.mean
+    metadata(inSCE)$sctk$runFeatureSelection$mean.var.plot <- 
+      list(useAssay = useAssay,
+           rowData = c("seurat_variableFeatures_mvp_dispersion",
+                       "seurat_variableFeatures_mvp_dispersionScaled",
+                       "seurat_variableFeatures_mvp_mean"))
   }
   return(inSCE)
 }
@@ -211,18 +228,31 @@ runSeuratFindHVG <- function(inSCE, useAssay = "counts",
 #' Computes PCA on the input sce object and stores the calculated principal
 #' components within the sce object
 #' @param inSCE (sce) object on which to compute PCA
-#' @param useAssay Assay containing scaled counts to use in PCA.
+#' @param useAssay Assay containing scaled counts to use in PCA. Default 
+#' \code{"seuratScaledData"}.
 #' @param reducedDimName Name of new reducedDims object containing Seurat PCA.
 #' Default \code{seuratPCA}.
 #' @param nPCs numeric value of how many components to compute. Default
 #' \code{20}.
 #' @param features Specify the feature names or rownames which should be used
-#'  for computation of PCA. Default is \code{NULL} which will use the previously
-#'  stored variable features.
+#' for computation of PCA. Default is \code{NULL} which will use all features.
+#' @param useHVGList A character string indicating a \code{rowData} variable 
+#' that stores the logical vector of HVG selection. Ignored when using 
+#' \code{features}. Default \code{NULL}. 
+#' @param scale Logical scalar, whether to standardize the expression values 
+#' using \code{\link[Seurat]{ScaleData}}. Default \code{TRUE}.
 #' @param seed Random seed for reproducibility of results.
 #' Default \code{NULL} will use global seed in use by the R environment.
 #' @param verbose Logical value indicating if informative messages should
 #'  be displayed. Default is \code{TRUE}.
+#' @details 
+#' For features used for computation, it can be controlled by \code{features} or
+#' \code{useHVGList}. When \code{features} is specified, the scaling and 
+#' dimensionality reduction will only be processed with these features. When 
+#' \code{features} is \code{NULL} but \code{useHVGList} is specified, will use
+#' the features that the HVG list points to. If both parameters are \code{NULL},
+#' the function will see if any Seurat's variable feature detection has been 
+#' ever performed, and use them if found. Otherwise, all features are used. 
 #' @examples
 #' data(scExample, package = "singleCellTK")
 #' \dontrun{
@@ -234,24 +264,44 @@ runSeuratFindHVG <- function(inSCE, useAssay = "counts",
 #' @return Updated \code{SingleCellExperiment} object which now contains the
 #' computed principal components
 #' @export
-#' @importFrom SingleCellExperiment reducedDim<-
-runSeuratPCA <- function(inSCE, useAssay = "seuratScaledData",
-                      reducedDimName = "seuratPCA", nPCs = 20, features = NULL, seed = NULL, verbose = TRUE) {
-  seuratObject <- convertSCEToSeurat(inSCE, scaledAssay = useAssay)
+#' @importFrom SingleCellExperiment reducedDim<- rowSubset
+#' @importFrom S4Vectors metadata<-
+runSeuratPCA <- function(inSCE, useAssay = "seuratScaledData", features = NULL, 
+                         useHVGList = NULL, scale = TRUE, 
+                         reducedDimName = "seuratPCA", nPCs = 20, seed = NULL, 
+                         verbose = TRUE) {
+  params <- as.list(environment())
+  params$inSCE <- NULL
+  if (!isTRUE(scale)) {
+    # If not doing a scaling, put useAssay as scaled as RunPCA need it
+    seuratObject <- convertSCEToSeurat(inSCE, scaledAssay = useAssay)
+  } else {
+    # If doing scaling, put useAssay as normed, used by ScaleData first
+    seuratObject <- convertSCEToSeurat(inSCE, normAssay = useAssay)
+  }
   
-  if(length(Seurat::VariableFeatures(seuratObject)) == 0
-     && is.null(features)){
+  if (!is.null(features)) {
+    features <- features[features %in% rownames(inSCE)]
+  } else if (!is.null(useHVGList)) {
+    features <- rownames(inSCE)[rowSubset(inSCE, useHVGList)]
+  } else if (length(Seurat::VariableFeatures(seuratObject)) == 0) {
     features <- rownames(inSCE)
   }
   
+  if (isTRUE(scale)) {
+    seuratObject <- Seurat::ScaleData(seuratObject, features = features, 
+                                      verbose = verbose)
+  }
+  
   seuratObject <- Seurat::RunPCA(seuratObject,
-                                 npcs = as.double(nPCs), verbose = verbose, features = features, seed.use = seed)
+                                 npcs = as.double(nPCs), verbose = verbose, 
+                                 features = features, seed.use = seed)
   inSCE <- .addSeuratToMetaDataSCE(inSCE, seuratObject)
 
   temp <- seuratObject@reductions$pca@cell.embeddings
   rownames(temp) <- colnames(inSCE)
   reducedDim(inSCE, reducedDimName) <- temp
-
+  metadata(inSCE)$sctk$runDimReduce$reddim[[reducedDimName]] <- params
   return(inSCE)
 }
 
@@ -263,11 +313,23 @@ runSeuratPCA <- function(inSCE, useAssay = "seuratScaledData",
 #' @param reducedDimName Name of new reducedDims object containing Seurat ICA
 #' Default \code{seuratICA}.
 #' @param features Specify the feature names or rownames which should be used
-#'  for computation of ICA. Default is \code{NULL} which will use the previously
-#'  stored variable features.
+#' for computation of PCA. Default is \code{NULL}.
+#' @param useHVGList A character string indicating a \code{rowData} variable 
+#' that stores the logical vector of HVG selection. Ignored when using 
+#' \code{features}. Default \code{NULL}. 
+#' @param scale Logical scalar, whether to standardize the expression values 
+#' using \code{\link[Seurat]{ScaleData}}. Default \code{TRUE}.
 #' @param nics Number of independent components to compute. Default \code{20}.
 #' @param seed Random seed for reproducibility of results.
 #' Default \code{NULL} will use global seed in use by the R environment.
+#' @details 
+#' For features used for computation, it can be controlled by \code{features} or
+#' \code{useHVGList}. When \code{features} is specified, the scaling and 
+#' dimensionality reduction will only be processed with these features. When 
+#' \code{features} is \code{NULL} but \code{useHVGList} is specified, will use
+#' the features that the HVG list points to. If both parameters are \code{NULL},
+#' the function will see if any Seurat's variable feature detection has been 
+#' ever performed, and use them if found. Otherwise, all features are used. 
 #' @examples
 #' data(scExample, package = "singleCellTK")
 #' \dontrun{
@@ -279,25 +341,44 @@ runSeuratPCA <- function(inSCE, useAssay = "seuratScaledData",
 #' @return Updated \code{SingleCellExperiment} object which now contains the
 #' computed independent components
 #' @export
-#' @importFrom SingleCellExperiment reducedDim<-
-runSeuratICA <- function(inSCE, useAssay,
-                      reducedDimName = "seuratICA", features = NULL, nics = 20, seed = NULL) {
+#' @importFrom SingleCellExperiment reducedDim<- rowSubset
+#' @importFrom S4Vectors metadata<-
+runSeuratICA <- function(inSCE, useAssay = "seuratScaledData", features = NULL, 
+                         useHVGList = NULL, scale = TRUE, 
+                         reducedDimName = "seuratICA", nics = 20, seed = NULL,
+                         verbose = FALSE) {
+  params <- as.list(environment())
+  params$inSCE <- NULL
+  if (!isTRUE(scale)) {
+    # If not doing a scaling, put useAssay as scaled as RunPCA need it
+    seuratObject <- convertSCEToSeurat(inSCE, scaledAssay = useAssay)
+  } else {
+    # If doing scaling, put useAssay as normed, used by ScaleData first
+    seuratObject <- convertSCEToSeurat(inSCE, normAssay = useAssay)
+  }
   
-  seuratObject <- convertSCEToSeurat(inSCE, scaledAssay = useAssay)
-  
-  if(length(Seurat::VariableFeatures(seuratObject)) == 0
-     && is.null(features)){
+  if (!is.null(features)) {
+    features <- features[features %in% rownames(inSCE)]
+  } else if (!is.null(useHVGList)) {
+    features <- rownames(inSCE)[rowSubset(inSCE, useHVGList)]
+  } else if (length(Seurat::VariableFeatures(seuratObject)) == 0) {
     features <- rownames(inSCE)
   }
   
+  if (isTRUE(scale)) {
+    seuratObject <- Seurat::ScaleData(seuratObject, features = features, 
+                                      verbose = verbose)
+  }
+  
   seuratObject <- Seurat::RunICA(seuratObject,
-                                 nics = as.double(nics), features = features, verbose = FALSE, seed.use = seed)
+                                 nics = as.double(nics), features = features, 
+                                 verbose = verbose, seed.use = seed)
   inSCE <- .addSeuratToMetaDataSCE(inSCE, seuratObject)
 
   temp <- seuratObject@reductions$ica@cell.embeddings
   rownames(temp) <- colnames(inSCE)
   reducedDim(inSCE, reducedDimName) <- temp
-
+  metadata(inSCE)$sctk$runDimReduce$reddim[[reducedDimName]] <- params
   return(inSCE)
 }
 

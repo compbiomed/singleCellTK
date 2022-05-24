@@ -2,44 +2,40 @@
 #'
 #' @param inSCE Input \code{SingleCellExperiment} object containing the
 #' computations.
-#' @param method Select either "vst", "mean.var.plot", "dispersion" or
-#' "modelGeneVar".
-#' @param hvgList Character vector indicating the labels of highly variable
-#' genes.
-#' @param n Specify the number of top genes to highlight in red. If
-#' \code{hvgList}
-#'  parameter is not provided, this parameter can be used simply to specify
-#'  the number of top genes to highlight in red.
-#' @param labelsCount Specify the number of data points/genes to label.
-#'  By default, all top genes will be labeled.
-#' @return plot object
+#' @param method Select either \code{"vst"}, \code{"mean.var.plot"}, 
+#' \code{"dispersion"} or \code{"modelGeneVar"}.
+#' @param hvgNumber Specify the number of top genes to highlight in red. Default
+#' \code{2000}.
+#' @param labelsCount Specify the number of data points/genes to label. Should 
+#' be less than \code{hvgNumber}. Default \code{20}.
+#' @param featureDisplay A character string for the \code{rowData} variable name
+#' to indicate what type of feature ID should be displayed. If set by 
+#' \code{\link{setSCTKDisplayRow}}, will by default use it. If \code{NULL}, will
+#' use \code{rownames(inSCE)}.
+#' @return ggplot of HVG metrics
 #' @export
 #' @examples
 #' data("mouseBrainSubsetSCE", package = "singleCellTK")
-#' mouseBrainSubsetSCE <- scranModelGeneVar(mouseBrainSubsetSCE, "logcounts")
-#' plotTopHVG(mouseBrainSubsetSCE, method = "modelGeneVar",
-#'            n = 1000, labelsCount = 0)
+#' mouseBrainSubsetSCE <- runModelGeneVar(mouseBrainSubsetSCE)
+#' plotTopHVG(mouseBrainSubsetSCE, method = "modelGeneVar")
+#' @seealso \code{\link{runFeatureSelection}}, \code{\link{runSeuratFindHVG}},
+#' \code{\link{runModelGeneVar}}, \code{\link{getTopHVG}}
+#' @importFrom SummarizedExperiment rowData
+#' @importFrom S4Vectors metadata
 plotTopHVG <- function(inSCE,
                        method = c("vst", "mean.var.plot", "dispersion",
                                   "modelGeneVar"),
-                       hvgList = NULL,
-                       n = NULL,
-                       labelsCount = NULL)
+                       hvgNumber = 2000,
+                       labelsCount = 20,
+                       featureDisplay = metadata(inSCE)$featureDisplay
+                       )
 {
   method <- match.arg(method)
-  if(is.null(n)){
-    n = length(hvgList)
-  }
-  else{
-    hvgList <- getTopHVG(
-      inSCE = inSCE,
-      method = method,
-      n = n)
-  }
 
-  if(is.null(labelsCount)){
-    labelsCount = n
-  }
+  hvgList <- getTopHVG(inSCE = inSCE,
+                       method = method, 
+                       hvgNumber = hvgNumber,
+                       featureDisplay = NULL)
 
   if (method == "vst") {
     x <- log(rowData(inSCE)$seurat_variableFeatures_vst_mean)
@@ -58,17 +54,31 @@ plotTopHVG <- function(inSCE,
     y <- rowData(inSCE)$scran_modelGeneVar_totalVariance
     labeling <- "Variance"
   }
+  if (is.null(hvgNumber) || hvgNumber == 0) {
+    redIdx <- logical()
+  } else {
+    redIdx <- rownames(inSCE) %in% hvgList[seq(hvgNumber)]
+  }
+  if (is.null(hvgNumber) || labelsCount == 0) {
+    labelIdx <- logical()
+  } else {
+    labelIdx <- rownames(inSCE) %in% hvgList[seq(labelsCount)]
+  }
+  if (!is.null(featureDisplay)) {
+    labelTxt <- rowData(inSCE)[[featureDisplay]][labelIdx]
+  } else {
+    labelTxt <- rownames(inSCE)[labelIdx]
+  }
   vfplot <- ggplot2::ggplot() +
     ggplot2::geom_point(ggplot2::aes(x = x, y = y)) +
-    ggplot2::geom_point(ggplot2::aes(x = subset(x, rownames(inSCE) %in% hvgList[seq(n)]),
-                   y = subset(y, rownames(inSCE) %in% hvgList[seq(n)])),
-                   colour = "red") +
-    ggplot2::geom_label(ggplot2::aes(x = subset(x, rownames(inSCE) %in% hvgList[seq(labelsCount)]),
-                   y = subset(y, rownames(inSCE) %in% hvgList[seq(labelsCount)]),
-                   label = subset(rownames(inSCE),
-                                  rownames(inSCE) %in% hvgList[seq(labelsCount)])),
-               colour = "red",
-               size = 2) +
+    ggplot2::geom_point(ggplot2::aes(x = subset(x, redIdx),
+                                     y = subset(y, redIdx)),
+                        colour = "red") +
+    ggplot2::geom_label(ggplot2::aes(x = subset(x, labelIdx),
+                                     y = subset(y, labelIdx),
+                                     label = labelTxt),
+                        colour = "red",
+                        size = 2) +
     ggplot2::labs(x = "Mean", y = labeling)
   
   vfplot <- .ggSCTKTheme(vfplot)

@@ -8,7 +8,7 @@ Find highly variable genes and store in the input sce object}
 runSeuratFindHVG(
   inSCE,
   useAssay = "counts",
-  hvgMethod = "vst",
+  method = c("vst", "dispersion", "mean.var.plot"),
   hvgNumber = 2000,
   altExp = FALSE,
   verbose = TRUE
@@ -20,12 +20,13 @@ back to it}
 
 \item{useAssay}{Specify the name of the assay to use for computation
 of variable genes. It is recommended to use a raw counts assay with the 
-`vst` method and normalized assay with all other methods. Default
+\code{"vst"} method and normalized assay with all other methods. Default
 is \code{"counts"}.}
 
-\item{hvgMethod}{selected method to use for computation of highly variable
-genes. One of 'vst', 'dispersion', or 'mean.var.plot'. Default method 
-is `vst` which uses the raw counts. All other methods use normalized counts.}
+\item{method}{selected method to use for computation of highly variable
+genes. One of \code{'vst'}, \code{'dispersion'}, or \code{'mean.var.plot'}. 
+Default \code{"vst"} which uses the raw counts. All other methods use 
+normalized counts.}
 
 \item{hvgNumber}{numeric value of how many genes to select as highly
 variable. Default \code{2000}}
@@ -46,8 +47,9 @@ Find highly variable genes and store in the input sce object
 }
 \examples{
 data(scExample, package = "singleCellTK")
-\dontrun{
-sce <- runSeuratNormalizeData(sce, useAssay = "counts")
-sce <- runSeuratFindHVG(sce, useAssay = "counts")
+sce <- runSeuratFindHVG(sce)
 }
+\seealso{
+\code{\link{runFeatureSelection}}, \code{\link{runModelGeneVar}},
+\code{\link{getTopHVG}}, \code{\link{plotTopHVG}}
 }

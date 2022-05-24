@@ -179,19 +179,19 @@
 .calculateDEMetrics <- function(deg, mat, ix1, ix2) {
   geneIdx <- rownames(mat) %in% deg$Gene
   # Mean expression in group1
-  meanExp1 <- rowMeans(mat[geneIdx, ix1])
+  meanExp1 <- rowMeans(mat[geneIdx, ix1, drop=FALSE])
   meanExp1 <- meanExp1[deg$Gene]
   deg$group1MeanExp <- meanExp1
   # Mean expression in group2
-  meanExp2 <- rowMeans(mat[geneIdx, ix2])
+  meanExp2 <- rowMeans(mat[geneIdx, ix2, drop=FALSE])
   meanExp2 <- meanExp2[deg$Gene]
   deg$group2MeanExp <- meanExp2
   # Expressed percentage in group1
-  group1ExprPerc <- rowMeans(mat[geneIdx, ix1] > 0)
+  group1ExprPerc <- rowMeans(mat[geneIdx, ix1, drop=FALSE] > 0)
   group1ExprPerc <- group1ExprPerc[deg$Gene]
   deg$group1ExprPerc <-group1ExprPerc
   # Expressed percentage in group2
-  group2ExprPerc <- rowMeans(mat[geneIdx, ix2] > 0)
+  group2ExprPerc <- rowMeans(mat[geneIdx, ix2, drop=FALSE] > 0)
   group2ExprPerc <- group2ExprPerc[deg$Gene]
   deg$group2ExprPerc <-group2ExprPerc
   return(deg)
@@ -520,11 +520,11 @@ runANOVA <- function(inSCE, useAssay = 'logcounts', useReducedDim = NULL,
     rownames(deg) <- NULL
     
     if (!is.null(useAssay)) {
-      cond1.assay <- expData(inSCE, useAssay)[, ix1]
-      cond2.assay <- expData(inSCE, useAssay)[, ix2]
+      cond1.assay <- expData(inSCE, useAssay)[, ix1, drop=FALSE]
+      cond2.assay <- expData(inSCE, useAssay)[, ix2, drop=FALSE]
     } else {
-      cond1.assay <- t(expData(inSCE, useReducedDim))[, ix1]
-      cond2.assay <- t(expData(inSCE, useReducedDim))[, ix2]
+      cond1.assay <- t(expData(inSCE, useReducedDim))[, ix1, drop=FALSE]
+      cond2.assay <- t(expData(inSCE, useReducedDim))[, ix2, drop=FALSE]
     }
     # Assuming that useAssay is log-normalized counts
     deg$Log2_FC <- rowMeans(cond1.assay) - rowMeans(cond2.assay)
@@ -693,11 +693,11 @@ runWilcox <- function(inSCE, useAssay = 'logcounts', useReducedDim = NULL,
   # Generate LogFC value
   
   if (!is.null(useAssay)) {
-    cond1.assay <- expData(inSCE, useAssay)[rownames(table), ix1]
-    cond2.assay <- expData(inSCE, useAssay)[rownames(table), ix2]
+    cond1.assay <- expData(inSCE, useAssay)[rownames(table), ix1, drop=FALSE]
+    cond2.assay <- expData(inSCE, useAssay)[rownames(table), ix2, drop=FALSE]
   } else {
-    cond1.assay <- t(expData(inSCE, useReducedDim))[rownames(table), ix1]
-    cond2.assay <- t(expData(inSCE, useReducedDim))[rownames(table), ix2]
+    cond1.assay <- t(expData(inSCE, useReducedDim))[rownames(table), ix1, drop=FALSE]
+    cond2.assay <- t(expData(inSCE, useReducedDim))[rownames(table), ix2, drop=FALSE]
   }
   # Assuming that useAssay is log-normalized counts
   table$Log2_FC <- rowMeans(cond1.assay) - rowMeans(cond2.assay)

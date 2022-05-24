@@ -2,6 +2,9 @@ shinyPanelDiffex <- fluidPage(
   tags$script("Shiny.addCustomMessageHandler('close_dropDownDeHM', function(x){
                   $('html').click();
                 });"),
+  tags$script("Shiny.addCustomMessageHandler('close_dropDownDeVolcano', function(x){
+                  $('html').click();
+                });"),
   tags$script("Shiny.addCustomMessageHandler('close_dropDownDeViolin', function(x){
                   $('html').click();
                 });"),
@@ -217,7 +220,6 @@ shinyPanelDiffex <- fluidPage(
         tabPanel(
           "Heatmap",
           panel(
-
             fluidRow(
               column(
                 width = 4,
@@ -305,14 +307,21 @@ shinyPanelDiffex <- fluidPage(
                   fluidRow(
                     column(
                       width = 6,
-                      checkboxInput(
+                      materialSwitch(
+                        inputId = "deHMShowRowLabel",
+                        label = "Display row labels", status = "success",
+                        value = TRUE
+                      ),
+                      selectInput(
                         inputId = "deHMrowLabel",
-                        label = "Add row labels",
-                        value = FALSE  
+                        label = "Select row labels",
+                        choices = c("Rownames (Default)",
+                                    featureChoice)
                       )
                     ),
                     column(
                       width = 4,
+                      br(),
                       withBusyIndicatorUI(
                         actionBttn(
                           inputId = "dePlotHM",
@@ -350,11 +359,110 @@ shinyPanelDiffex <- fluidPage(
         tabPanel("Results Table",
                  DT::dataTableOutput("deResult"),
                  downloadButton("deDownload", "Download Result Table")),
+        
+        
+        
+        tabPanel(
+          "Volcano Plot",
+          panel(
+            fluidRow(
+              column(
+                width = 4,
+                dropdown(
+                  fluidRow(
+                    column(
+                      12,
+                      fluidRow(
+                        actionBttn(
+                          inputId = "closeDropDownDeVolcano", label = NULL, 
+                          style = "simple", color = "danger", 
+                          icon = icon("times"), size = "xs"
+                        ), 
+                        align = "right"
+                      ),
+                    )
+                  ),
+                  fluidRow(
+                    column(
+                      width = 6,
+                      numericInput(
+                        inputId = "deVolcLog2FC", 
+                        label = "Aboslute log2FC value greater than:",
+                        value = 0.5, min = 0, step = 0.05
+                      )
+                    ),
+                    column(
+                      width = 6,
+                      numericInput(inputId = "deVolcFDR", 
+                                   label = "FDR value less than",
+                                   value = 0.05, min = 0, max = 1, step = 0.01)
+                    )
+                  ),
+                  fluidRow(
+                    column(
+                      width = 12,
+                      materialSwitch("deVolcShowLabel", "Label Top DEG",
+                                     value = TRUE, status = "success" )
+                    )
+                  ),
+                  fluidRow(
+                    column(
+                      width = 6,
+                      numericInput(inputId = "deVolcTopN", 
+                                   label = "N top DEG to label",
+                                   value = 10, min = 1, step = 1)
+                    ),
+                    column(
+                      width = 6,
+                      selectInput("deVolcFeatureDisplay",
+                                  "Display ID Type",
+                                  c("Rownames (Default)",
+                                    featureChoice))
+                    )
+                  ),
+                  fluidRow(
+                    column(
+                      width = 4,
+                      style = 'margin-top: 23px;',
+                      withBusyIndicatorUI(
+                        actionBttn(
+                          inputId = "dePlotVolcano",
+                          label = "Update",
+                          style = "bordered",
+                          color = "primary",
+                          size = "sm"
+                        )
+                      )
+                    )
+                  ),
+                  inputId = "dropDownDeVolcano",
+                  icon = icon("cog"),
+                  status = "primary",
+                  circle = FALSE,
+                  inline = TRUE,
+                  width = "500px"
+                )
+              ),
+              column(
+                width = 7,
+                fluidRow(
+                  h6(
+                    "Volcano plots of all identified DEGs in the selected analysis. DEG with top Log2FC could be labeled. Colors indicates the regulation"),
+                  align="center"
+                )
+              )
+            ),
+            hr(),
+            br(),
+            shinyjqui::jqui_resizable(plotOutput("deVolcanoPlot"))
+          )
+        ),
+        
+        
+        
         tabPanel(
           "Violin Plot",
           panel(
-
-
             fluidRow(
               column(
                 width = 4,
@@ -384,7 +492,8 @@ shinyPanelDiffex <- fluidPage(
                     column(
                       width = 6,
                       selectInput('deVioLabel', "Label features by",
-                                  c("Default ID", featureChoice))
+                                  c("Rownames (Default)",
+                                    featureChoice))
                     ),
                     column(
                       width = 4,
@@ -457,7 +566,8 @@ shinyPanelDiffex <- fluidPage(
                     column(
                       width = 6,
                       selectInput('deRegLabel', "Label features by",
-                                  c("Default ID", featureChoice))
+                                  c("Rownames (Default)",
+                                    featureChoice))
                     ),
                     column(
                       width = 4,

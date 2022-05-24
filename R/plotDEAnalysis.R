@@ -282,8 +282,9 @@ plotDEGRegression <- function(inSCE, useResult, threshP = FALSE, labelBy = NULL,
 #' @param useResult character. A string specifying the \code{analysisName}
 #' used when running a differential expression analysis function.
 #' @param labelBy A single character for a column of \code{rowData(inSCE)} as
-#' where to search for the labeling text. Default \code{NULL} for the 
-#' "rownames".
+#' where to search for the labeling text. Leave \code{NULL} for \code{rownames}.
+#' Default \code{metadata(inSCE)$featureDisplay} (see 
+#' \code{\link{setSCTKDisplayRow}}).
 #' @param onlyPos logical. Whether to only fetch DEG with positive log2_FC
 #' value. Default \code{FALSE}.
 #' @param log2fcThreshold numeric. Only fetch DEGs with the absolute values of
@@ -309,17 +310,20 @@ plotDEGRegression <- function(inSCE, useResult, threshP = FALSE, labelBy = NULL,
 #'                    groupName1 = "w.alpha", groupName2 = "w.beta",
 #'                    analysisName = "w.aVSb")
 #' getDEGTopTable(sce.w, "w.aVSb")
-getDEGTopTable <- function(inSCE, useResult, labelBy = NULL, onlyPos = FALSE,
-                        log2fcThreshold = 0.25, fdrThreshold = 0.05,
-                        minGroup1MeanExp = NULL, maxGroup2MeanExp = NULL, 
-                        minGroup1ExprPerc = NULL, maxGroup2ExprPerc = NULL){
+getDEGTopTable <- function(inSCE, useResult, 
+                           labelBy = S4Vectors::metadata(inSCE)$featureDisplay, 
+                           onlyPos = FALSE, log2fcThreshold = 0.25, 
+                           fdrThreshold = 0.05, minGroup1MeanExp = NULL, 
+                           maxGroup2MeanExp = NULL, minGroup1ExprPerc = NULL, 
+                           maxGroup2ExprPerc = NULL){
   # Check
   .checkDiffExpResultExists(inSCE, useResult, labelBy)
   # Extract
   result <- S4Vectors::metadata(inSCE)$diffExp[[useResult]]$result
   if (!is.null(labelBy)) {
     genes <- result$Gene
-    result$Gene <- SummarizedExperiment::rowData(inSCE[genes,])[[labelBy]]
+    geneIdx <- featureIndex(genes, inSCE)
+    result$Gene <- SummarizedExperiment::rowData(inSCE)[[labelBy]][geneIdx]
   }
   # Filter
   result <- .filterDETable(result, onlyPos, log2fcThreshold, fdrThreshold, 
@@ -384,6 +388,12 @@ getDEGTopTable <- function(inSCE, useResult, labelBy = NULL, onlyPos = FALSE,
 #' @param colSplitBy character. Do semi-heatmap based on the grouping of
 #' this(these) annotation(s). Should exist in either \code{colDataName} or
 #' \code{names(cellAnnotations)}. Default \code{"condition"}.
+#' @param rowLabel \code{FALSE} for not displaying; a variable in \code{rowData}
+#' to display feature identifiers stored there; if have run 
+#' \code{\link{setSCTKDisplayRow}}, display the specified feature name; 
+#' \code{TRUE} for the \code{rownames} of \code{inSCE}; \code{NULL} for 
+#' auto-display \code{rownames} when the number of filtered feature is less 
+#' than 60. Default looks for \code{\link{setSCTKDisplayRow}} information. 
 #' @param title character. Main title of the heatmap. Default
 #' \code{"DE Analysis: <useResult>"}.
 #' @param ... Other arguments passed to \code{\link{plotSCEHeatmap}}
@@ -398,16 +408,18 @@ getDEGTopTable <- function(inSCE, useResult, labelBy = NULL, onlyPos = FALSE,
 #' @return A \code{\link[ggplot2]{ggplot}} object
 #' @export
 #' @author Yichen Wang
-plotDEGHeatmap <- function(inSCE, useResult, doLog = FALSE, onlyPos = FALSE,
+plotDEGHeatmap <- function(inSCE, useResult, onlyPos = FALSE,
                            log2fcThreshold = 0.25, fdrThreshold = 0.05,
                            minGroup1MeanExp = NULL, maxGroup2MeanExp = NULL, 
                            minGroup1ExprPerc = NULL, maxGroup2ExprPerc = NULL,
-                           useAssay = NULL, featureAnnotations = NULL,
+                           useAssay = NULL, doLog = FALSE, 
+                           featureAnnotations = NULL,
                            cellAnnotations = NULL,
                            featureAnnotationColor = NULL,
                            cellAnnotationColor = NULL,
                            rowDataName = NULL, colDataName = NULL,
                            colSplitBy = 'condition', rowSplitBy = 'regulation',
+                           rowLabel = S4Vectors::metadata(inSCE)$featureDisplay,
                            title = paste0("DE Analysis: ", useResult), ...){
   # Check
   .checkDiffExpResultExists(inSCE, useResult)
@@ -528,6 +540,9 @@ plotDEGHeatmap <- function(inSCE, useResult, doLog = FALSE, onlyPos = FALSE,
   } else {
     featureAnnotationColor <- list(regulation = lCol)
   }
+  if (is.null(rowLabel) & nrow(deg.filtered) < 60) {
+    rowLabel <- TRUE
+  }
   # Plot
   hm <- plotSCEHeatmap(inSCE = tmpSCE, useAssay = assayName, doLog = doLog,
                        featureIndex = gene.ix, cellIndex = cell.ix,
@@ -538,7 +553,7 @@ plotDEGHeatmap <- function(inSCE, useResult, doLog = FALSE, onlyPos = FALSE,
                        featureAnnotationColor = featureAnnotationColor,
                        cellAnnotationColor = cellAnnotationColor,
                        rowSplitBy = rowSplitBy, colSplitBy = colSplitBy,
-                       title = title, ...)
+                       title = title, rowLabel = rowLabel, ...)
   return(hm)
 }
 
@@ -549,12 +564,17 @@ plotDEGHeatmap <- function(inSCE, useResult, doLog = FALSE, onlyPos = FALSE,
 #' @param useResult character. A string specifying the \code{analysisName}
 #' used when running a differential expression analysis function.
 #' @param labelTopN Integer, label this number of top DEGs that pass the 
-#' filters.
+#' filters. \code{FALSE} for not labeling. Default \code{10}.
 #' @param log2fcThreshold numeric. Label genes with the absolute values of
 #' log2FC greater than this value as regulated. Default \code{0.25}.
 #' @param fdrThreshold numeric. Label genes with FDR value less than this
 #' value as regulated. Default \code{0.05}.
+#' @param featureDisplay A character string to indicate a variable in 
+#' \code{rowData(inSCE)} for feature labeling. \code{NULL} for using 
+#' \code{rownames}. Default \code{metadata(inSCE)$featureDisplay} (see 
+#' \code{\link{setSCTKDisplayRow}})
 #' @return A \code{ggplot} object of volcano plot
+#' @seealso \code{\link{runDEAnalysis}}, \code{\link{plotDEGHeatmap}}
 #' @export
 #' @examples 
 #' data("sceBatches")
@@ -564,14 +584,21 @@ plotDEGHeatmap <- function(inSCE, useResult, doLog = FALSE, onlyPos = FALSE,
 #'                    groupName1 = "w.alpha", groupName2 = "w.beta",
 #'                    analysisName = "w.aVSb")
 #' plotDEGVolcano(sce.w, "w.aVSb")
-plotDEGVolcano <- function(inSCE,
-                           useResult,
-                           labelTopN = 10,
-                           log2fcThreshold = 0.25, 
-                           fdrThreshold = 0.05) {
-  .checkDiffExpResultExists(inSCE, useResult)
+plotDEGVolcano <- function(
+  inSCE,
+  useResult,
+  labelTopN = 10,
+  log2fcThreshold = 0.25, 
+  fdrThreshold = 0.05,
+  featureDisplay = S4Vectors::metadata(inSCE)$featureDisplay
+) {
+  .checkDiffExpResultExists(inSCE, useResult, featureDisplay)
   deg <- S4Vectors::metadata(inSCE)$diffExp[[useResult]]$result
-  deg <- deg[order(deg$FDR),]
+  deg <- deg[order(abs(deg$Log2_FC), decreasing = TRUE),]
+  if (!is.null(featureDisplay)) {
+    geneIdx <- featureIndex(deg$Gene, inSCE)
+    deg$Gene <- SummarizedExperiment::rowData(inSCE)[[featureDisplay]][geneIdx]
+  }
   rownames(deg) <- deg$Gene
   groupNames <- S4Vectors::metadata(inSCE)$diffExp[[useResult]]$groupNames
   # Prepare for coloring that shows the filtering
@@ -579,18 +606,22 @@ plotDEGVolcano <- function(inSCE,
   deg$Regulation[deg$Log2_FC > 0] <- "Up"
   deg$Regulation[deg$Log2_FC < 0] <- "Down"
   if (!is.null(log2fcThreshold)) {
-    deg$Regulation[abs(deg$Log2_FC) < log2fcThreshold] <- "No"
+    deg$Regulation[abs(deg$Log2_FC) <= log2fcThreshold] <- "No"
   }
   if (!is.null(fdrThreshold)) {
-    deg$Regulation[deg$FDR > fdrThreshold] <- "No"
+    deg$Regulation[deg$FDR >= fdrThreshold] <- "No"
   }
   # Prepare for Top DEG text labeling
   passIdx <- deg$Regulation != "No"
   deg$label <- NA
-  labelTopN <- min(labelTopN, length(which(passIdx)))
-  deg.pass <- deg[passIdx,]
-  label.origTable.idx <- deg$Gene %in% deg.pass$Gene[seq(labelTopN)]
-  deg$label[label.origTable.idx] <- deg$Gene[label.origTable.idx]
+  if (!is.null(labelTopN) & !isFALSE(labelTopN)) {
+    labelTopN <- min(labelTopN, length(which(passIdx)))
+    if (labelTopN > 0) {
+      deg.pass <- deg[passIdx,]
+      label.origTable.idx <- deg$Gene %in% deg.pass$Gene[seq(labelTopN)]
+      deg$label[label.origTable.idx] <- deg$Gene[label.origTable.idx]
+    }
+  }
   # Prepare for lines that mark the cutoffs
   vlineLab <- data.frame(
     X = c(-log2fcThreshold, log2fcThreshold),

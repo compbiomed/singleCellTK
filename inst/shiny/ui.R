@@ -93,7 +93,7 @@ color_table <- RColorBrewer::brewer.pal.info %>% data.frame()
 color_seqdiv <- rownames(color_table[which(color_table$category == "div"
                                            |color_table$category == "seq"),])
 if (internetConnection){
-  enrichedDB <- enrichR::listEnrichrDbs()$libraryName
+  enrichedDB <- listEnrichrDbs()$libraryName
 } else {
   enrichedDB <- ""
 }

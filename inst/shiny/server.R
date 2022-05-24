@@ -149,15 +149,26 @@ shinyServer(function(input, output, session) {
                       choices = c("Rownames (Default)", selectRowData))
     updateSelectInput(session, "filteredFeature",
                       choices = c("none", selectRowData))
+    updateSelectInput(session, "hvgPlotFeatureDisplay",
+                      choices = c("Rownames (Default)",
+                                  selectRowData))
     updateSelectInput(session, "deHMrowData",
                       choices = selectRowData)
     updateSelectInput(session, "deHMSplitRow",
                       choices = c('regulation', selectRowData),
                       selected = 'regulation')
+    updateSelectInput(session, "deHMrowLabel",
+                      choices = c("Rownames (Default)",
+                                  selectRowData))
+    updateSelectInput(session, "deVolcFeatureDisplay",
+                      choices = c("Rownames (Default)",
+                                  selectRowData))
     updateSelectInput(session, 'deVioLabel',
-                      choices = c('Default ID', selectRowData))
+                      choices = c("Rownames (Default)",
+                                  selectRowData))
     updateSelectInput(session, 'deRegLabel',
-                      choices = c('Default ID', selectRowData))
+                      choices = c("Rownames (Default)",
+                                  selectRowData))
     updateSelectInput(session, "fmHMrowData",
                       choices = selectRowData)
     updateSelectInput(session, "hmGeneCol",
@@ -198,7 +209,7 @@ shinyServer(function(input, output, session) {
     currassays <- names(assays(vals$counts))
     updateSelectInputTag(session, "dimRedAssaySelect",
                          label = "Select Input Matrix:",
-                         recommended = c("hvg"),
+                         recommended = c("transformed", "hvg"),
                          choices = expDataNames(vals$counts))
     updateSelectInputTag(session, "dimRedAssaySelect_tsneUmap",
                          label = "Select Input Matrix:",
@@ -345,7 +356,7 @@ shinyServer(function(input, output, session) {
 
   updateEnrichDB <- function(){
     if (internetConnection){
-      enrDB <- enrichR::listEnrichrDbs()$libraryName
+      enrDB <- listEnrichrDbs()$libraryName
     } else {
       enrDB <- ""
     }
@@ -997,6 +1008,8 @@ shinyServer(function(input, output, session) {
 
       updateSeuratUIFromRDS(vals$counts)
       cleanGSTable()
+      updateHVGMetricSelection()
+      updateHVGListSelection()
       updateDEAnalysisNames()
       updateEnrichRAnalysisNames()
       
@@ -1329,13 +1342,26 @@ shinyServer(function(input, output, session) {
   observeEvent(input$importFeatureDipSet, {
     if (!is.null(vals$counts)) {
       withBusyIndicatorServer("importFeatureDipSet", {
+        selected <- NULL
         if (!input$importFeatureDispOpt == "Rownames (Default)") {
-          vals$counts <- setSCTKDisplayRow(vals$counts,
-                                           input$importFeatureDispOpt)
+          selected <- input$importFeatureDispOpt
         }
+        vals$counts <- setSCTKDisplayRow(vals$counts, selected)
+        updateFeatureDisplaySelect(selected = selected)
       })
     }
   })
+  updateFeatureDisplaySelect <- function(selected = NULL, updateOptions = FALSE) 
+  {
+    if (is.null(selected)) {
+      selected <- "Rownames (Default)"
+    }
+    updateSelectInput(session, "hvgPlotFeatureDisplay", selected = selected)
+    updateSelectInput(session, "deHMrowLabel", selected = selected)
+    updateSelectInput(session, "deVolcFeatureDisplay", selected = selected)
+    updateSelectInput(session, "deVioLabel", selected = selected)
+    updateSelectInput(session, "deRegLabel", selected = selected)
+  }
 
   #-----------#
   # Gene Sets ####
@@ -2750,50 +2776,46 @@ shinyServer(function(input, output, session) {
   
   observeEvent(input$runDimred, withConsoleMsgRedirect({
     #shows the notification spinner and console log
+    req(vals$counts)
     .loadOpen ("Please wait while dimensionality reduction is being computed. See console log for progress.") 
 
-    if (!is.null(vals$counts)){
-      withBusyIndicatorServer("runDimred", {
-        message(paste0(date(), " ... Starting Dimensionality Reduction: '", input$dimRedPlotMethod, "'."))
-        vals$runDimred$dimRedAssaySelect <- input$dimRedAssaySelect
-        if (vals$runDimred$dimRedAssaySelect %in% altExpNames(vals$counts)) {
-          dimRedUseAltExp <- vals$runDimred$dimRedAssaySelect
-        } else {
-          dimRedUseAltExp <- NULL
+    withBusyIndicatorServer("runDimred", {
+      vals$runDimred$dimRedAssaySelect <- input$dimRedAssaySelect
+      if (vals$runDimred$dimRedAssaySelect %in% altExpNames(vals$counts)) {
+        dimRedUseAltExp <- vals$runDimred$dimRedAssaySelect
+      } else {
+        dimRedUseAltExp <- NULL
+      }
+      if (input$dimRedNameInput == "" ||
+          is.null(input$dimRedNameInput)){
+        shinyalert::shinyalert("Error", "enter a reducedDim name", type = "error")
+      }  else {
+        dimrednamesave <- gsub(" ", "_", input$dimRedNameInput)
+        
+        useHVGList <- input$dimRedHVGSelect
+        if (input$dimRedHVGSelect == "None") {
+          useHVGList <- NULL
         }
-        if (input$dimRedNameInput == ""){
-          shinyalert::shinyalert("Error", "enter a reducedDim name", type = "error")
-        } #check for named entered and if its a duplicate
-        else if (!is.null(input$dimRedNameInput)){
-          dimrednamesave <- gsub(" ", "_", input$dimRedNameInput)
-          if (input$dimRedNameInput %in% reducedDimNames(vals$counts)){
-            stop("A reducedDim with name '", dimrednamesave, "' is already stored in the object. Please specify a different name for this reducedDim.")
-          } else {
-            vals$counts <- runDimReduce(
-              inSCE = vals$counts,
-              useAssay = vals$runDimred$dimRedAssaySelect,
-              useAltExp = dimRedUseAltExp,
-              method = input$dimRedPlotMethod,
-              nComponents = input$dimRedNumberDims,
-              reducedDimName = dimrednamesave,
-              seed = input$seed_dimRed)
-            #vals$counts <- runDimensionalityReduction(
-            #  inSCE = vals$counts,
-            #  useAssay = vals$runDimred$dimRedAssaySelect,
-            #  reducedDimName = dimrednamesave,
-            #  method = input$dimRedPlotMethod,
-            #  nComponents = input$dimRedNumberDims
-            #)
-            updateReddimInputs()
-            
-            # Show downstream analysis options
-            callModule(module = nonLinearWorkflow, id = "nlw-dr", parent = session, cl = TRUE, cv = TRUE)
-          }
-        }
-        message(paste0(date(), " ... Ending Dimensionality Reduction."))
-      })
-    }
-    dimrednamesave <- gsub(" ", "_", input$dimRedNameInput)
+        vals$counts <- runDimReduce(
+          inSCE = vals$counts,
+          useAssay = vals$runDimred$dimRedAssaySelect,
+          useAltExp = dimRedUseAltExp,
+          method = input$dimRedPlotMethod,
+          useHVGList = useHVGList,
+          scale = input$dimRedScale,
+          nComponents = input$dimRedNumberDims,
+          reducedDimName = dimrednamesave,
+          seed = input$seed_dimRed)
+        updateReddimInputs()
+        
+        # Show downstream analysis options
+        callModule(module = nonLinearWorkflow, id = "nlw-dr", parent = session, 
+                   cl = TRUE, cv = TRUE)
+        
+      }
+      message(paste0(date(), " ... Ending Dimensionality Reduction."))
+    })
+    
     if(input$dimRedPlotMethod == "scaterPCA"){
       redDim <- reducedDim(vals$counts, dimrednamesave)
       new_pca <- CreateDimReducObject(
@@ -2823,8 +2845,8 @@ shinyServer(function(input, output, session) {
           )
         ), select = TRUE
       )
+      message(paste0(date(), " ... Generating Elbow Plot."))
       if (input$dimRedPlotMethod == "seuratPCA"){
-          message(paste0(date(), " ... Generating Elbow Plot."))
           if(vals$runDimred$dimRedAssaySelect %in% assayNames(vals$counts)){
             output$plotDimRed_elbow <- renderPlotly({
               plotSeuratElbow(inSCE = vals$counts, )
@@ -2835,7 +2857,6 @@ shinyServer(function(input, output, session) {
             })
           }
       } else {
-          message(paste0(date(), " ... Generating Elbow Plot."))
           if(input$dimRedAssaySelect %in% assayNames(vals$counts)){
             output$plotDimRed_elbow <- renderPlotly({
               plotSeuratElbow(inSCE = vals$counts,
@@ -2897,8 +2918,8 @@ shinyServer(function(input, output, session) {
           )
         )
       )
+      message(paste0(date(), " ... Generating Heatmaps."))
       if (input$dimRedPlotMethod == "seuratPCA") {
-          message(paste0(date(), " ... Generating Heatmaps."))
           if(input$dimRedAssaySelect %in% assayNames(vals$counts)){
             vals$counts@metadata$seurat$heatmap_dimRed <- singleCellTK::computeHeatmap(
               inSCE = vals$counts,
@@ -2925,7 +2946,6 @@ shinyServer(function(input, output, session) {
           }
       }
       else if(input$dimRedPlotMethod == "seuratICA"){
-          message(paste0(date(), " ... Generating Heatmaps."))
           if(vals$runDimred$dimRedAssaySelect %in% assayNames(vals$counts)){
             vals$counts@metadata$seurat$heatmap_dimRed <- singleCellTK::computeHeatmap(
               inSCE = vals$counts,
@@ -3118,8 +3138,21 @@ shinyServer(function(input, output, session) {
     if (!is.null(input$dimRedAssaySelect_tsneUmap)) {
       if (input$dimRedAssaySelect_tsneUmap %in% reducedDimNames(vals$counts)) {
         shinyjs::disable("reductionMethodUMAPTSNEDimRed")
+        shinyjs::disable("logNorm_tsneUmap")
+        shinyjs::disable("hvg_tsneUmap")
+        shinyjs::disable("scale_tsneUmap")
+        shinyjs::disable("pca_tsneUmap")
+        updateCheckboxInput(session, "logNorm_tsneUmap", value = FALSE)
+        updateCheckboxInput(session, "scale_tsneUmap", value = FALSE)
+        updateCheckboxInput(session, "pca_tsneUmap", value = FALSE)
       } else {
         shinyjs::enable("reductionMethodUMAPTSNEDimRed")
+        shinyjs::enable("logNorm_tsneUmap")
+        shinyjs::enable("hvg_tsneUmap")
+        shinyjs::enable("scale_tsneUmap")
+        shinyjs::enable("pca_tsneUmap")
+        updateCheckboxInput(session, "scale_tsneUmap", value = TRUE)
+        updateCheckboxInput(session, "pca_tsneUmap", value = TRUE)
       }
     } else {
       shinyjs::enable("reductionMethodUMAPTSNEDimRed")
@@ -3132,7 +3165,8 @@ shinyServer(function(input, output, session) {
 
     if (!is.null(vals$counts)){
       withBusyIndicatorServer("runDimred_tsneUmap", {
-        message(paste0(date(), " ... Starting Dimensionality Reduction: '", input$dimRedPlotMethod_tsneUmap , "'."))
+        message(paste0(date(), " ... Starting Dimensionality Reduction: '", 
+                       input$dimRedPlotMethod_tsneUmap , "'."))
         vals$runDimred$dimRedAssaySelect_tsneUmap <- input$dimRedAssaySelect_tsneUmap
         if (vals$runDimred$dimRedAssaySelect_tsneUmap %in% reducedDimNames(vals$counts)) {
           embedUseAssay <- NULL
@@ -3148,33 +3182,41 @@ shinyServer(function(input, output, session) {
           embedUseAltExp <- NULL
         }
         if (input$dimRedNameInput_tsneUmap == ""){
-          shinyalert::shinyalert("Error", "enter a reducedDim name", type = "error")
+          shinyalert::shinyalert("Error", "enter a reducedDim name", 
+                                 type = "error")
         } #check for named entered and if its a duplicate
-        else if (!is.null(input$dimRedNameInput_tsneUmap)){
+        else if (!is.null(input$dimRedNameInput_tsneUmap)) {
           if (input$dimRedNameInput_tsneUmap %in% names(reducedDims(vals$counts))){
-            stop("A reducedDim with name '", input$dimRedNameInput_tsneUmap, "' is already stored in the object. Please specify a different name for this reducedDim.")
+            # TODO this error message actually doesn't show up when rerunning 
+            # with the same name
+            stop("A reducedDim with name '", input$dimRedNameInput_tsneUmap, 
+                 "' is already stored in the object. Please specify a ", 
+                 "different name for this reducedDim.")
           } else {
             dimrednamesave <- gsub(" ", "_", input$dimRedNameInput_tsneUmap)
             if (input$dimRedPlotMethod_tsneUmap == "rTSNE"){
+              useHVGList <- input$hvg_tsneUmap
+              if (input$hvg_tsneUmap == "None") {
+                useHVGList <- NULL
+              }
               vals$counts <- runDimReduce(
                 inSCE = vals$counts,
                 useAssay = embedUseAssay,
                 useReducedDim = embedUseRedDim,
                 useAltExp = embedUseAltExp,
                 method = "rTSNE",
+                logNorm = input$logNorm_tsneUmap, 
+                useHVGList = useHVGList, 
+                center = input$scale_tsneUmap, 
+                scale = input$scale_tsneUmap, 
+                pca = input$pca_tsneUmap, 
+                initialDims = input$dimRedNumberDims_tsneUmap, 
+                theta = input$thetaTSNE, 
                 reducedDimName = dimrednamesave,
                 perplexity = input$perplexityTSNE,
                 nIterations = input$iterTSNE,
                 seed = input$seed__tsneUmap
               )
-              #vals$counts <- runDimensionalityReduction(
-              #  inSCE = vals$counts,
-              #  useAssay = input$dimRedAssaySelect_tsneUmap,
-              #  reducedDimName = dimrednamesave,
-              #  method = input$dimRedPlotMethod_tsneUmap,
-              #  perplexity = input$perplexityTSNE,
-              #  nIterations = input$iterTSNE
-              #)
             } else if(input$dimRedPlotMethod_tsneUmap == "seuratTSNE"){
               if (!is.null(embedUseRedDim)) {
                 vals$counts <- runDimReduce(
@@ -3202,15 +3244,6 @@ shinyServer(function(input, output, session) {
                   seed = input$seed__tsneUmap
                 )
               }
-              #vals$counts <- runDimensionalityReduction(
-              #  inSCE = vals$counts,
-              #  useAssay = input$dimRedAssaySelect_tsneUmap,
-              #  reducedDimName = dimrednamesave,
-              #  method = input$dimRedPlotMethod_tsneUmap,
-              #  nComponents = input$dimRedNumberDims_tsneUmap,
-              #  perplexity = input$perplexityTSNE,
-              #  useReduction = input$reductionMethodUMAPTSNEDimRed
-              #)
             } else if(input$dimRedPlotMethod_tsneUmap == "seuratUMAP"){
               if (!is.null(embedUseRedDim)) {
                 vals$counts <- runDimReduce(
@@ -3242,21 +3275,14 @@ shinyServer(function(input, output, session) {
                   seed = input$seed__tsneUmap
                 )
               }
-              #vals$counts <- runDimensionalityReduction(
-              #  inSCE = vals$counts,
-              #  useAssay = input$dimRedAssaySelect_tsneUmap,
-              #  reducedDimName = dimrednamesave,
-              #  method = input$dimRedPlotMethod_tsneUmap,
-              #  nComponents = input$dimRedNumberDims_tsneUmap,
-              #  minDist = input$minDistUMAPDimRed,
-              #  nNeighbors = input$nNeighboursUMAPDimRed,
-              #  spread = input$spreadUMAPDimRed,
-              #  useReduction = input$reductionMethodUMAPTSNEDimRed
-              #)
             }
             else {
               if (is.na(input$alphaUMAP)) {
                 stop("Learning rate (alpha) must be a numeric non-empty value!")
+              }
+              useHVGList <- input$hvg_tsneUmap
+              if (input$hvg_tsneUmap == "None") {
+                useHVGList <- NULL
               }
               vals$counts <- runDimReduce(
                 inSCE = vals$counts,
@@ -3264,6 +3290,11 @@ shinyServer(function(input, output, session) {
                 useReducedDim = embedUseRedDim,
                 useAltExp = embedUseAltExp,
                 method = "scaterUMAP",
+                logNorm = input$logNorm_tsneUmap, 
+                useHVGList = useHVGList, 
+                scale = input$scale_tsneUmap, 
+                pca = input$pca_tsneUmap, 
+                initialDims = input$dimRedNumberDims_tsneUmap, 
                 reducedDimName = dimrednamesave,
                 nNeighbors = input$neighborsUMAP,
                 nIterations = input$iterUMAP,
@@ -3272,16 +3303,6 @@ shinyServer(function(input, output, session) {
                 spread = input$spreadUMAP,
                 seed = input$seed__tsneUmap
               )
-              #vals$counts <- runDimensionalityReduction(
-              #  inSCE = vals$counts,
-              #  useAssay = input$dimRedAssaySelect_tsneUmap,
-              #  reducedDimName = dimrednamesave,
-              #  method = input$dimRedPlotMethod_tsneUmap,
-              #  nNeighbors = input$neighborsUMAP,
-              #  nIterations = input$iterUMAP,
-              #  minDist = input$mindistUMAP,
-              #  alpha = input$alphaUMAP
-              #)
             }
             updateReddimInputs()
             # Show downstream analysis options
@@ -3300,13 +3321,15 @@ shinyServer(function(input, output, session) {
                          server = TRUE)
     message(paste0(date(), " ... Plotting tSNE/UMAP."))
     output$plotDimRed_tsneUmap <- renderPlotly({
-      plotly::ggplotly(plotDimRed(
-        inSCE = vals$counts,
-        useReduction = redDimName,
-        xAxisLabel = paste0(input$dimRedPlotMethod_tsneUmap,"_1"),
-        yAxisLabel = paste0(input$dimRedPlotMethod_tsneUmap,"_2")
+      isolate({
+        plotly::ggplotly(plotDimRed(
+          inSCE = vals$counts,
+          useReduction = redDimName,
+          xAxisLabel = paste0(input$dimRedPlotMethod_tsneUmap,"_1"),
+          yAxisLabel = paste0(input$dimRedPlotMethod_tsneUmap,"_2")
         ))
       })
+    })
     
     .loadClose() #close the notification spinner and console log
     
@@ -3337,24 +3360,35 @@ shinyServer(function(input, output, session) {
   # Page 3: Clustering ####
   #-----------------------------------------------------------------------------
 
-  output$clustNameUI <- renderUI({
-    if(input$clustAlgo %in% seq(6)){
+  observeEvent(input$clustAlgo, {
+    if(input$clustAlgo %in% seq(7)){
       # Scran SNN
-      textInput("clustName", "Name of Clustering Result:",
-                "scran_snn_cluster")
-    } else if(input$clustAlgo %in% seq(7, 9)){
+      updateTextInput(session, "clustName", value = "scran_snn_cluster")
+      enable("clustName")
+    } else if(input$clustAlgo %in% seq(8, 10)){
       # K-Means
-      textInput("clustName", "Name of Clustering Result:",
-                "kmeans_cluster")
-    } else if(input$clustAlgo %in% seq(10, 12)){
-      algoList <- list('10' = "louvain",
-                       '11' = "multilevel", '12' = "SLM")
+      updateTextInput(session, "clustName", value = "kmeans_cluster")
+      enable("clustName")
+    } else if(input$clustAlgo %in% seq(11, 13)){
+      algoList <- list('11' = "louvain",
+                       '12' = "multilevel", '13' = "SLM")
       algo <- algoList[[as.character(input$clustAlgo)]]
-      disabled(
-        textInput("clustName", "Name of Clustering Result:",
-                  paste0("Seurat", "_", algo, "_",
-                         "Resolution", input$clustSeuratRes))
-      )
+        updateTextInput(session, "clustName", 
+                        value = paste0("Seurat", "_", algo, "_",
+                                       "Resolution", input$clustSeuratRes))
+        disable("clustName")
+    }
+  })
+  
+  observeEvent(input$clustSeuratRes, {
+    if (input$clustAlgo %in% seq(11, 13)) {
+      algoList <- list('11' = "louvain",
+                       '12' = "multilevel", '13' = "SLM")
+      algo <- algoList[[as.character(input$clustAlgo)]]
+      updateTextInput(session, "clustName", 
+                      value = paste0("Seurat", "_", algo, "_",
+                                     "Resolution", input$clustSeuratRes))
+      disable("clustName")
     }
   })
 
@@ -3388,7 +3422,7 @@ shinyServer(function(input, output, session) {
     } else {
       withBusyIndicatorServer("clustRun", {
         saveClusterName = gsub(" ", "_", input$clustName)
-        if(input$clustAlgo %in% seq(6)){
+        if(input$clustAlgo %in% seq(7)){
           # Scran SNN
           if(is.na(input$clustScranSNNK)){
             stop("K must be a numeric non-empty value!")
@@ -3396,9 +3430,9 @@ shinyServer(function(input, output, session) {
           if(is.na(input$clustScranSNNd)){
             stop("Number of components must be a numeric non-empty value!")
           }
-          algoList <- list('1' = "walktrap", '2' = "louvain", '3' = "infomap",
-                           '4' = "fastGreedy", '5' = "labelProp",
-                           '6' = "leadingEigen")
+          algoList <- list('1' = "louvain", '2' = "leiden", '3' = "walktrap", 
+                           '4' = "infomap", '5' = "fastGreedy", 
+                           '6' = "labelProp", '7' = "leadingEigen")
           algo <- algoList[[as.character(input$clustAlgo)]]
           params = list(inSCE = vals$counts,
                         clusterName = saveClusterName,
@@ -3432,8 +3466,15 @@ shinyServer(function(input, output, session) {
             updateSelectInput(session, "clustVisReddim",
                               selected = input$clustScranSNNMat)
           }
+          if (algo == 'leiden') {
+            params$resolution_parameter <- input$clustScranSNNLeidenReso
+            params$objective_function <- input$clusterScranSNNLeidenObjFunc
+          }
+          if (algo == "walktrap") {
+            params$steps <- input$clustScranSNNWalktrapStep
+          }
           vals$counts <- do.call(runScranSNN, params)
-        } else if (input$clustAlgo %in% seq(7, 9)) {
+        } else if (input$clustAlgo %in% seq(8, 10)) {
           # K-Means
           if(input$clustKMeansReddim == ""){
             stop("Must select a reducedDim! If none available, compute one in the Dimensionality Reduction tab.")
@@ -3447,8 +3488,8 @@ shinyServer(function(input, output, session) {
           if(is.na(input$clustKMeansNStart)){
             stop("Number of random sets must be a numeric non-empty value!")
           }
-          algoList <- list('7' = "Hartigan-Wong",
-                           '8' = "Lloyd", '9' = "MacQueen")
+          algoList <- list('8' = "Hartigan-Wong",
+                           '9' = "Lloyd", '10' = "MacQueen")
           algo <- algoList[[as.character(input$clustAlgo)]]
           vals$counts <- runKMeans(inSCE = vals$counts,
                                    useReducedDim = input$clustKMeansReddim,
@@ -3460,7 +3501,7 @@ shinyServer(function(input, output, session) {
           updateSelectInput(session, "clustVisReddim",
                             selected = input$clustKMeansReddim)
           plotReddim <- input$clustKMeansReddim
-        } else if (input$clustAlgo %in% seq(10, 12)) {
+        } else if (input$clustAlgo %in% seq(11, 13)) {
           # Seurat
           if(input$clustSeuratReddim == ""){
             stop("Must select a reducedDim! If none available, compute one in the Dimensionality Reduction tab.")
@@ -3488,8 +3529,8 @@ shinyServer(function(input, output, session) {
             dims <- input$clustSeuratDims
           }
           useAssay <- assayNames(vals$counts)[1]
-          algoList <- list('10' = "louvain",
-                           '11' = "multilevel", '12' = "SLM")
+          algoList <- list('11' = "louvain",
+                           '12' = "multilevel", '13' = "SLM")
           algo <- algoList[[as.character(input$clustAlgo)]]
           vals$counts <- runSeuratFindClusters(inSCE = vals$counts,
                                             useAssay = useAssay,
@@ -5981,180 +6022,218 @@ shinyServer(function(input, output, session) {
   #-----------------------------------------------------------------------------
   # Page 4.1: Feature Selection ####
   #-----------------------------------------------------------------------------
-
-  observeEvent(input$findHvgButtonFS, withConsoleMsgRedirect ({
-    #shows the notification spinner and console log
-    .loadOpen ("Please wait while variability is being computed. See console log for progress.") 
-
-    withBusyIndicatorServer("findHvgButtonFS", {
-      if (!is.null(vals$counts)) {
-        tryCatch(vals$counts <- runFeatureSelection(
-          inSCE = vals$counts,
-          useAssay = input$assaySelectFS_Norm,
-          hvgMethod = input$hvgMethodFS
-        ), error = function(e) stop("HVG computation failed. Try re-computing with a normalized assay!"))
-        vals$hvgCalculated$status <- TRUE
-        vals$hvgCalculated$method <- input$hvgMethodFS
-        vals$hvgCalculated$assayName <- input$assaySelectFS_Norm
+  
+  updateHVGMetricSelection <- function(selected = NULL){
+    metricList <- lapply(metadata(vals$counts)$sctk$runFeatureSelection, 
+                         function(x){x$useAssay})
+    metricOptions <- names(metricList)
+    names(metricOptions) <- paste0(names(metricList), " - ", metricList)
+    updateSelectInput(session, "hvgPlotMethod", choices = metricOptions,
+                      selected = selected)
+    updateSelectInput(session, "hvgMetricSelect", choices = metricOptions,
+                      selected = selected)
+  }
+  updateHVGListSelection <- function(selected = NULL) {
+    hvgLists <- names(metadata(vals$counts)$sctk$hvgLists)
+    if (is.null(selected)) {
+      if (!is.null(hvgLists)) {
+        selected <- hvgLists[1]
+      } else {
+        selected <- "None"
       }
+    } 
+    updateSelectInput(session, "dimRedHVGSelect", choices = c("None", hvgLists),
+                      selected = selected)
+    updateSelectInput(session, "hvg_tsneUmap", choices = c("None", hvgLists),
+                      selected = selected)
+  }
+  
+  observeEvent(input$findHvgButtonFS, withConsoleMsgRedirect({
+    #shows the notification spinner and console log
+    req(vals$counts)
+    .loadOpen ("Please wait while variability is being computed. See console log for progress.") 
+    vals$counts <- runFeatureSelection(inSCE = vals$counts,
+                                       useAssay = input$assaySelectFS_Norm,
+                                       method = input$hvgMethodFS)
+    updateHVGMetricSelection(selected = input$hvgMethodFS)
+    output$plotFS <- renderPlot({
+      isolate({
+        plotTopHVG(inSCE =  vals$counts,
+                   method = input$hvgMethodFS,
+                   hvgNumber = 0, 
+                   labelsCount = 0)
+      })
     })
-    updateSelectInputTag(session, "hvgSubsetAssay",
-                         recommended = c("scaled", "transformed", "normalized"),
-                         choices = expDataNames(vals$counts))
     .loadClose() #close the notification spinner and console log
+  }))
+  
+  observeEvent(c(input$hvgMetricSelect, input$hvgNumberSelect), {
+    # Auto made default hvgListName
+    subsetName <- paste0("HVG_", input$hvgMetricSelect, input$hvgNumberSelect)
+    updateTextInput(session, "hvgSubsetName", value = subsetName)
+  })
+  
+  observeEvent(input$hvgSubsetRun, withConsoleMsgRedirect({
+    req(vals$counts)
+    if (input$hvgMetricSelect == "") {
+      shinyalert(title = "Error", 
+                 text = "Must calculate variability before selection.", 
+                 type = "error")
+    } else if (input$hvgSubsetName == "") {
+      shinyalert(title = "Error", 
+                 text = "Must specify a name for the HVG list.", 
+                 type = "error")
+    } else if (is.na(input$hvgNumberSelect)) {
+      shinyalert(title = "Error", 
+                 text = "Must set the number of HVGs for the selection.", 
+                 type = "error")
+    } else {
+      .loadOpen ("Please wait while features are being selected. See console log for progress.") 
+      vals$counts <- setTopHVG(vals$counts,
+                               method = input$hvgMetricSelect,
+                               hvgNumber = input$hvgNumberSelect,
+                               hvgListName = input$hvgSubsetName)
+      updateHVGListSelection()
+      updateHVGMetricSelection(selected = input$hvgMetricSelect)
+      updateNumericInput(session, "hvgPlotNSelect", value = input$hvgNumberSelect)
+      featureDisplay <- NULL
+      if (input$hvgPlotFeatureDisplay != "Rownames (Default)") {
+        featureDisplay <- input$hvgPlotFeatureDisplay
+      }
+      # After selection, update visualization part
+      output$plotFS <- renderPlot({
+        isolate({
+          plotTopHVG(inSCE =  vals$counts,
+                     method = input$hvgMetricSelect,
+                     hvgNumber = input$hvgNumberSelect, 
+                     labelsCount = 20,
+                     featureDisplay = featureDisplay)
+        })
+      })
+      output$hvgOutputFS <- renderText({
+        isolate({
+          getTopHVG(inSCE = vals$counts,
+                    method = input$hvgMetricSelect,
+                    hvgNumber = 20)
+        })
+      })
+      .loadClose() #close the notification spinner and console log
+    }
   }))
 
   observeEvent(input$updatePlotFS, {
     req(vals$counts)
-      if (isTRUE(vals$hvgCalculated$status) &&
-          !is.null(vals$hvgCalculated$method)) {
-        #checks
-        if(is.na(input$hvgNoFeaturesViewFS)){
-          stop("Number of features cannot be empty!")
-        }
-        #processing
-        HVGs <- getTopHVG(inSCE = vals$counts,
-                          method = input$hvgMethodFS,
-                          n = input$hvgNoFeaturesViewFS)
-        vals$vfplot <- plotTopHVG(
-          inSCE =  vals$counts,
-          method = input$hvgMethodFS,
-          hvgList = HVGs
-        )
-        output$plotFS <- renderPlot({
-          isolate({
-            if (!is.null(vals$vfplot)) {
-              vals$vfplot
-            }
-          })
-        })
-        output$hvgOutputFS <- renderText({
-          isolate({
-            HVGs
-          })
-        })
-      }
+    req(metadata(vals$counts)$sctk$runFeatureSelection)
+    featureDisplay <- NULL
+    if (input$hvgPlotFeatureDisplay != "Rownames (Default)") {
+      featureDisplay <- input$hvgPlotFeatureDisplay
+    }
+    output$plotFS <- renderPlot({
+      isolate({
+        plotTopHVG(inSCE =  vals$counts,
+                   method = input$hvgPlotMethod,
+                   hvgNumber = input$hvgPlotNSelect, 
+                   labelsCount = input$hvgPlotNLabel,
+                   featureDisplay = featureDisplay)
+      })
+    })
+    output$hvgOutputFS <- renderText({
+      isolate({
+        getTopHVG(inSCE = vals$counts,
+                  method = input$hvgPlotMethod,
+                  hvgNumber = input$hvgPlotNLabel,
+                  featureDisplay = featureDisplay)
+      })
+    })
     session$sendCustomMessage("close_dropDownFS", "")
   })
 
   observeEvent(input$closeDropDownFS, {
-    req(vals$counts)
     session$sendCustomMessage("close_dropDownFS", "")
   })
 
-  observeEvent(input$hvgSubsetRun, withConsoleMsgRedirect ({
-    #shows the notification spinner and console log
-    .loadOpen ("Please wait while features are being selected. See console log for progress.") 
+  #observeEvent(input$hvgSubsetRun, withConsoleMsgRedirect ({
+  #  #shows the notification spinner and console log
+  #  .loadOpen ("Please wait while features are being selected. See console log for progress.") 
 
-    withBusyIndicatorServer("hvgSubsetRun", {
-      if (isTRUE(vals$hvgCalculated$status) &&
-          !is.null(vals$hvgCalculated$method) &&
-          !is.null(input$hvgSubsetAssay)) {
+  #  withBusyIndicatorServer("hvgSubsetRun", {
+  #    if (isTRUE(vals$hvgCalculated$status) &&
+  #        !is.null(vals$hvgCalculated$method) &&
+  #        !is.null(input$hvgSubsetAssay)) {
 
-        if(is.na(input$hvgNumberSelect)){
-          stop("Number of HVG cannot be empty!")
-        }
-        if(input$hvgAltExpName == ""){
-          stop("Name of the subset cannot be empty!")
-        }
-        if (input$hvgAltExpName %in% altExpNames(vals$counts)) {
-          shinyalert(
-            "Warning",
-            "Entered subset name is already there.",
-            "warning",
-            showCancelButton = TRUE,
-            confirmButtonText = "Overwrite",
-            callbackR = function(x){
-              if (isTRUE(x)) {
-                HVGs <- getTopHVG(inSCE = vals$counts,
-                                  method = input$hvgMethodFS,
-                                  n = input$hvgNumberSelect)
+  #      if(is.na(input$hvgNumberSelect)){
+  #        stop("Number of HVG cannot be empty!")
+  #      }
+  #      if(input$hvgAltExpName == ""){
+  #        stop("Name of the subset cannot be empty!")
+  #      }
+  #      if (input$hvgAltExpName %in% altExpNames(vals$counts)) {
+  #        shinyalert(
+  #          "Warning",
+  #          "Entered subset name is already there.",
+  #          "warning",
+  #          showCancelButton = TRUE,
+  #          confirmButtonText = "Overwrite",
+  #          callbackR = function(x){
+  #            if (isTRUE(x)) {
+  #              HVGs <- getTopHVG(inSCE = vals$counts,
+  #                                method = input$hvgMethodFS,
+  #                                n = input$hvgNumberSelect)
 
-                #make sure no NA's are introduced in HVGs
-                HVGs <- stats::na.omit(HVGs)
-                #tempAssay <- expData(vals$counts, vals$hvgCalculated$assayName)[HVGs,]
-                tempAssay <- expData(vals$counts, input$hvgSubsetAssay)[HVGs,]
-                expData(vals$counts, input$hvgAltExpName, tag = "hvg", altExp = TRUE) <- tempAssay
-                updateAssayInputs()
-              }
-            })
-        } else {
-          HVGs <- getTopHVG(inSCE = vals$counts,
-                            method = input$hvgMethodFS,
-                            n = input$hvgNumberSelect)
+  #              #make sure no NA's are introduced in HVGs
+  #              HVGs <- stats::na.omit(HVGs)
+  #              #tempAssay <- expData(vals$counts, vals$hvgCalculated$assayName)[HVGs,]
+  #              tempAssay <- expData(vals$counts, input$hvgSubsetAssay)[HVGs,]
+  #              expData(vals$counts, input$hvgAltExpName, tag = "hvg", altExp = TRUE) <- tempAssay
+  #              updateAssayInputs()
+  #            }
+  #          })
+  #      } else {
+  #        HVGs <- getTopHVG(inSCE = vals$counts,
+  #                          method = input$hvgMethodFS,
+  #                          n = input$hvgNumberSelect)
 
-          #make sure no NA's are introduced in HVGs
-          HVGs <- stats::na.omit(HVGs)
-          #tempAssay <- expData(vals$counts, vals$hvgCalculated$assayName)[HVGs,]
-          tempAssay <- expData(vals$counts, input$hvgSubsetAssay)[HVGs,]
-          expData(vals$counts, input$hvgAltExpName, tag = "hvg", altExp = TRUE) <- tempAssay
-          updateAssayInputs()
+  #        #make sure no NA's are introduced in HVGs
+  #        HVGs <- stats::na.omit(HVGs)
+  #        #tempAssay <- expData(vals$counts, vals$hvgCalculated$assayName)[HVGs,]
+  #        tempAssay <- expData(vals$counts, input$hvgSubsetAssay)[HVGs,]
+  #        expData(vals$counts, input$hvgAltExpName, tag = "hvg", altExp = TRUE) <- tempAssay
+  #        updateAssayInputs()
 
-          # added this
-          HVGs <- getTopHVG(inSCE = vals$counts,
-                            method = input$hvgMethodFS,
-                            n = 100)
-          vals$vfplot <- plotTopHVG(
-            inSCE =  vals$counts,
-            method = input$hvgMethodFS,
-            hvgList = HVGs
-          )
-          output$plotFS <- renderPlot({
-            isolate({
-              if (!is.null(vals$vfplot)) {
-                vals$vfplot
-              }
-            })
-          })
-          output$hvgOutputFS <- renderText({
-            isolate({
-              HVGs
-            })
-          })
-        }
-        # Show downstream analysis options
-        callModule(module = nonLinearWorkflow, id = "nlw-fs", parent = session, dr = TRUE, cl = TRUE)
-      } else {
-        shinyalert::shinyalert(
-          "Error",
-          text = "Please compute the variance before the subsetting!",
-          type = "error"
-        )
-      }
-    })
-    .loadClose() #close the notification spinner and console log
-  }))
-
-  # observeEvent(input$scatterFSRun,{
-  #   useAssay <- "tophat_counts"
-  #   xname <- input$scatterFSGenes[1]
-  #   yname <- input$scatterFSGenes[2]
-  #   xvec <- expData(vals$counts, useAssay)[xname,]
-  #   yvec <- expData(vals$counts, useAssay)[yname,]
-  #   customMat <- matrix(c(xvec, yvec), nrow = length(xvec))
-  #   colnames(customMat) <- c(xname, yname)
-  #   rownames(customMat) <- names(xvec)
-  #   reducedDim(vals$counts, "Custom") <- customMat
-  #   reducedDimName <- "Custom"
-  #   colorLow <- "#FFFFFF"
-  #   colorMid <- "#666666"
-  #   colorHigh <- "#0000FF"
-  #
-  #
-  #   a <- plotSCEDimReduceFeatures(vals$counts, feature = xname,
-  #                                 reducedDimName = reducedDimName, useAssay = useAssay,
-  #                                 xlab = xname, ylab = yname, transparency = 1,
-  #                                 colorLow = colorLow, colorMid = colorMid, colorHigh = colorHigh,
-  #                                 combinePlot = "none")
-  #
-  #
-  #   a <- a + ggplot2::theme_bw()
-  #   a <- plotly::ggplotly(a)
-  #
-  #   output$scatterFS <- renderPlotly({
-  #     plotly::subplot(plotlist = a, titleX = TRUE, titleY = TRUE)
-  #   })
-  # })
+  #        # added this
+  #        HVGs <- getTopHVG(inSCE = vals$counts,
+  #                          method = input$hvgMethodFS,
+  #                          n = 100)
+  #        vals$vfplot <- plotTopHVG(
+  #          inSCE =  vals$counts,
+  #          method = input$hvgMethodFS,
+  #          hvgList = HVGs
+  #        )
+  #        output$plotFS <- renderPlot({
+  #          isolate({
+  #            if (!is.null(vals$vfplot)) {
+  #              vals$vfplot
+  #            }
+  #          })
+  #        })
+  #        output$hvgOutputFS <- renderText({
+  #          isolate({
+  #            HVGs
+  #          })
+  #        })
+  #      }
+  #      # Show downstream analysis options
+  #      callModule(module = nonLinearWorkflow, id = "nlw-fs", parent = session, dr = TRUE, cl = TRUE)
+  #    } else {
+  #      shinyalert::shinyalert(
+  #        "Error",
+  #        text = "Please compute the variance before the subsetting!",
+  #        type = "error"
+  #      )
+  #    }
+  #  })
+  #  .loadClose() #close the notification spinner and console log
+  #}))
 
   #-----------------------------------------------------------------------------
   # Page 5.1: Differential Expression ####
@@ -6554,6 +6633,14 @@ shinyServer(function(input, output, session) {
         isLogged <- FALSE
         updateCheckboxGroupInput(session, "deHMDoLog", selected = TRUE)
       }
+      if (isTRUE(input$deHMShowRowLabel)) {
+        rowLabel <- TRUE
+        if (input$hvgPlotFeatureDisplay != "Rownames (Default)") {
+          rowLabel <- input$deHMrowLabel
+        }
+      } else {
+        rowLabel <- FALSE
+      }
       output$deHeatmap <- renderPlot({
         isolate({
           plotDEGHeatmap(inSCE = vals$counts,
@@ -6568,14 +6655,15 @@ shinyServer(function(input, output, session) {
                          colSplitBy = colSplitBy,
                          rowSplitBy = rowSplitBy,
                          doLog = !isLogged,
-                         rowLabel = input$deHMrowLabel)
+                         rowLabel = rowLabel)
         })
       })
 
       output$deViolinPlot <- renderPlot({
         isolate({
           plotDEGViolin(inSCE = vals$counts, useResult = input$deAnalysisName,
-                        nrow = input$deVioNRow, ncol = input$deVioNCol, labelBy = NULL,
+                        nrow = input$deVioNRow, ncol = input$deVioNCol, 
+                        labelBy = NULL,
                         check_sanity = FALSE, isLogged = isLogged)
         })
       })
@@ -6666,6 +6754,49 @@ shinyServer(function(input, output, session) {
       utils::write.csv(filteredTable, file, row.names = FALSE, )
     }
   )
+  
+  # Volcano plot
+  
+  observeEvent(input$closeDropDownDeVolcano, {
+    session$sendCustomMessage("close_dropDownDeVolcano", "")
+  })
+  
+  observeEvent(input$deVolcShowLabel, {
+    if (isTRUE(input$deVolcShowLabel)) {
+      enable("deVolcTopN")
+      enable("deVolcFeatureDisplay")
+    } else if (isFALSE(input$deVolcShowLabel)) {
+      disable("deVolcTopN")
+      disable("deVolcFeatureDisplay")
+    }
+  })
+  
+  observeEvent(input$dePlotVolcano, {
+    req(vals$counts)
+    req(input$deResSel)
+    if (isFALSE(input$deVolcShowLabel)) {
+      labelTopN <- FALSE
+    } else if (isTRUE(input$deVolcShowLabel)) {
+      labelTopN <- input$deVolcTopN
+    }
+    featureDisplay <- NULL
+    if (input$deVolcFeatureDisplay != "Rownames (Default)") {
+      featureDisplay <- input$deVolcFeatureDisplay
+    }
+    output$deVolcanoPlot <- renderPlot({
+      isolate({
+        plotDEGVolcano(inSCE = vals$counts,
+                       useResult = input$deResSel,
+                       labelTopN = labelTopN,
+                       log2fcThreshold = input$deVolcLog2FC,
+                       fdrThreshold = input$deVolcFDR, 
+                       featureDisplay = featureDisplay
+                       )
+      })
+    })
+    session$sendCustomMessage("close_dropDownDeVolcano", "")
+  })
+
   # Violin plot
   output$deVioTotalUI <- renderUI({
     topN <- input$deVioNRow * input$deVioNCol
@@ -6681,10 +6812,9 @@ shinyServer(function(input, output, session) {
        !input$deResSel == "" &&
        !is.null(vals$counts)){
       useAssay <- metadata(vals$counts)$diffExp[[input$deResSel]]$useAssay
-      if(input$deVioLabel == "Default ID"){
-        labelBy = NULL
-      } else {
-        labelBy = input$deVioLabel
+      labelBy <- NULL
+      if (input$deVioLabel != "Rownames (Default)") {
+        labelBy <- input$deVioLabel
       }
       # MAST style sanity check for whether logged or not
       if (!is.null(useAssay)) {
@@ -6726,10 +6856,9 @@ shinyServer(function(input, output, session) {
        !input$deResSel == "" &&
        !is.null(vals$counts)){
       useAssay <- metadata(vals$counts)$diffExp[[input$deResSel]]$useAssay
-      if(input$deRegLabel == "Default ID"){
-        labelBy = NULL
-      } else {
-        labelBy = input$deRegLabel
+      labelBy <- NULL
+      if (input$deVioLabel != "Rownames (Default)") {
+        labelBy <- input$deVioLabel
       }
       # MAST style sanity check for whether logged or not
       if (!is.null(useAssay)) {
@@ -6786,9 +6915,23 @@ shinyServer(function(input, output, session) {
       deHMMaxExp2 <- handleEmptyNumericInput(input$deHMMaxExp2, NULL)
       deHMMinExpPerc1 <- handleEmptyNumericInput(input$deHMMinExpPerc1, NULL)
       deHMMaxExpPerc2 <- handleEmptyNumericInput(input$deHMMaxExpPerc2, NULL)
+      if (isTRUE(input$deHMShowRowLabel)) {
+        if (input$deHMrowLabel == "Default (set at import)") {
+          rowLabel <- metadata(vals$counts)$featureDisplay
+          if (is.null(rowLabel)) {
+            rowLabel <- TRUE
+          }
+        } else if (input$deHMrowLabel == "rownames") {
+          rowLabel <- TRUE
+        } else {
+          rowLabel <- input$deHMrowLabel
+        }
+      } else {
+        rowLabel <- FALSE
+      }
       output$deHeatmap <- renderPlot({
         isolate({
-          plotDEGHeatmap(inSCE = sce <- vals$counts,
+          plotDEGHeatmap(inSCE = vals$counts,
                          useResult = input$deResSel,
                          doLog = input$deHMDoLog,
                          onlyPos = input$deHMPosOnly,
@@ -6802,7 +6945,7 @@ shinyServer(function(input, output, session) {
                          colDataName = input$deHMcolData,
                          colSplitBy = input$deHMSplitCol,
                          rowSplitBy = input$deHMSplitRow,
-                         rowLabel = input$deHMrowLabel)
+                         rowLabel = rowLabel)
         })
       })
       session$sendCustomMessage("close_dropDownDeHM", "")

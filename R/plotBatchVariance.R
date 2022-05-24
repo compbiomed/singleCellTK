@@ -146,10 +146,10 @@ plotBatchCorrCompare <- function(inSCE, corrMat, batch = NULL, condition = NULL,
       ggplot2::theme(text=ggplot2::element_text(size=10))
 
     if (method == "ComBatSeq") {
-      inSCE <- getUMAP(inSCE, useAssay = corrMat, reducedDimName = "umap.after")
+      inSCE <- getUMAP(inSCE, useAssay = corrMat, logNorm = TRUE, 
+                       reducedDimName = "umap.after")
     } else {
-      inSCE <- getUMAP(inSCE, useAssay = corrMat, reducedDimName = "umap.after",
-                       logNorm = FALSE)
+      inSCE <- getUMAP(inSCE, useAssay = corrMat, reducedDimName = "umap.after")
     }
   } else if (matType == "altExp") {
     # Doing log, because only Seurat returns altExp,
@@ -174,7 +174,7 @@ plotBatchCorrCompare <- function(inSCE, corrMat, batch = NULL, condition = NULL,
       SingleCellExperiment::reducedDim(inSCE, "umap.after") <-
         SingleCellExperiment::reducedDim(inSCE, corrMat)
     } else {
-      inSCE <- getUMAP(inSCE, useAssay = NULL, useReducedDim = corrMat,
+      inSCE <- getUMAP(inSCE, useReducedDim = corrMat, 
                        reducedDimName = "umap.after")
     }
   } else {
