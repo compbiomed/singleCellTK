@@ -2,44 +2,47 @@
 % Please edit documentation in R/runFeatureSelection.R
 \name{runFeatureSelection}
 \alias{runFeatureSelection}
-\title{Wrapper function to run all of the feature selection methods integrated
-within the singleCellTK package including three methods from
-Seurat (`vst`, `mean.var.plot` or `dispersion`) and the Scran `modelGeneVar`
-method.}
+\title{Run Variable Feature Detection Methods}
 \usage{
 runFeatureSelection(
   inSCE,
   useAssay,
-  hvgMethod = c("vst", "mean.var.plot", "dispersion", "modelGeneVar")
+  method = c("vst", "mean.var.plot", "dispersion", "modelGeneVar")
 )
 }
 \arguments{
-\item{inSCE}{Input \code{SingleCellExperiment} object.}
+\item{inSCE}{Input \linkS4class{SingleCellExperiment} object.}
 
-\item{useAssay}{Specify the name of the assay that should be used.
-A normalized assay is recommended for use with this function.}
+\item{useAssay}{Specify the name of the assay that should be used. Should use
+raw counts for \code{"vst"} method, or a normalized assay for other methods.}
 
-\item{hvgMethod}{Specify the method to use for variable gene selection.
+\item{method}{Specify the method to use for variable gene selection.
 Options include \code{"vst"}, \code{"mean.var.plot"} or \code{"dispersion"}
 from Seurat and \code{"modelGeneVar"} from Scran.}
 }
 \value{
-A \code{SingleCellExperiment} object that contains the computed
- statistics in the \code{rowData} slot of the output object. This function
- does not return the names of the variable features but only computes the
- statistics that are stored in the \code{rowData} slot of the. To get the
- names of the variable features \code{getTopHVG} function should be used
- after computing these statistics.
+The input \linkS4class{SingleCellExperiment} object that contains 
+the computed statistics in the \code{rowData} slot
 }
 \description{
-Wrapper function to run all of the feature selection methods integrated
-within the singleCellTK package including three methods from
-Seurat (`vst`, `mean.var.plot` or `dispersion`) and the Scran `modelGeneVar`
-method.
+Wrapper function to run all of the feature selection methods 
+integrated within the singleCellTK package including three methods from
+Seurat (\code{"vst"}, \code{"mean.var.plot"} or \code{dispersion}) and the 
+Scran \code{modelGeneVar} method.
+
+This function does not return the names of the variable features but only 
+computes the metrics, which will be stored in the \code{rowData} slot. To set
+a HVG list for downstream use, users should call \code{\link{setTopHVG}} 
+after computing the metrics. To get the names of the variable features, users
+should call \code{\link{getTopHVG}} function after computing the metrics.
 }
 \examples{
 data("mouseBrainSubsetSCE", package = "singleCellTK")
 mouseBrainSubsetSCE <- runFeatureSelection(mouseBrainSubsetSCE,
                                            "logcounts",
                                            "modelGeneVar")
+}
+\seealso{
+\code{\link{runModelGeneVar}}, \code{\link{runSeuratFindHVG}},
+\code{\link{getTopHVG}}, \code{\link{plotTopHVG}}
 }

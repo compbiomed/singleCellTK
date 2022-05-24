@@ -29,7 +29,7 @@ shinyPanelSubsample <- fluidPage(
             sliderInput("maxDepth", "Maximum log10(number of simulated reads)", 3, 12, 5, 0.5),
             sliderInput("depthResolution", "Number of values to simulate", 5, 100, 10, 5),
             selectInput("selectReadDepthCondition", "Condition for diffex", c("Random", clusterChoice), selected = "Random"),
-            withBusyIndicatorUI(actionButton("runSubsampleDepth", "Run subsampler"))
+            actionButton("runSubsampleDepth", "Run subsampler")
           )
         ),
         column(8,
@@ -73,7 +73,7 @@ shinyPanelSubsample <- fluidPage(
                          value = 3, min = 1, max = 100000),
             numericInput("depthResolution", "Number of dataset sizes to simulate",
                          value = 10, min = 1, max = 100),
-            withBusyIndicatorUI(actionButton("runSubsampleCells", "Run resampler"))
+            actionButton("runSubsampleCells", "Run resampler")
           ),
           tabPanel("Genes Detected", plotOutput("CellCountDone")),
           tabPanel("Minimum Detectable Effect Size", plotOutput("MinEffectCellsDone")),
@@ -110,7 +110,7 @@ shinyPanelSubsample <- fluidPage(
             selectInput("selectSnapshotCondition", "Condition for diffex", clusterChoice),
             numericInput("iterationsSnap", "Number of bootstrap iterations",
                          value = 10, min = 2, max = 1000),
-            withBusyIndicatorUI(actionButton("runSnapshot", "Run resampling snapshot"))
+            actionButton("runSnapshot", "Run resampling snapshot")
           )
         ),
         column(8,

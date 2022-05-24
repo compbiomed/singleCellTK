@@ -36,7 +36,7 @@ shinyPanelfindMarker <- fluidPage(
         # numericInput("fmMinMeanExpr",
         #              "Minimum Mean Expression Level in Cluster",
         #              value = 0, min = 0),
-        withBusyIndicatorUI(actionButton("runFM", "Find Marker"))
+        actionButton("runFM", "Find Marker")
       ),
       mainPanel(
         tabsetPanel(

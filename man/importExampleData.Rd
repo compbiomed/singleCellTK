@@ -47,6 +47,9 @@ descriptions.
 \item{"allen_tasic"}{Retrieved with
 \code{\link{ReprocessedAllenData}}. Returns a dataset of 379 mouse
 brain cells from Tasic et al. (2016).}
+\item{"NestorowaHSCData"}{Retrieved with
+\code{\link{NestorowaHSCData}}. Returns a dataset of 1920 mouse  
+ haematopoietic stem cells from Nestorowa et al. 2015}
 \item{"pbmc3k"}{Retrieved with \code{\link[TENxPBMCData]{TENxPBMCData}}.
  2,700 peripheral blood mononuclear cells (PBMCs) from 10X Genomics.}
 \item{"pbmc4k"}{Retrieved with \code{\link[TENxPBMCData]{TENxPBMCData}}.

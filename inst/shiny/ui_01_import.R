@@ -12,7 +12,8 @@ if ("TENxPBMCData" %in% rownames(installed.packages())){
 if ("scRNAseq" %in% rownames(installed.packages())){
   exampleDatasets <- c(exampleDatasets,
                        "Fluidigm (Pollen et al, 2014)" = "fluidigm_pollen",
-                       "Mouse Brain (Tasic et al, 2016)" = "allen_tasic")
+                       "Mouse Brain (Tasic et al, 2016)" = "allen_tasic", 
+                       "NestorowaHSC (Nestorowa et al, 2016)" = "NestorowaHSCData")
 }
 
 shinyPanelImport <- fluidPage(
@@ -152,6 +153,13 @@ shinyPanelImport <- fluidPage(
         tags$br()
       ),
       conditionalPanel(
+        condition = sprintf("input['%s'] == 'NestorowaHSCData'", "selectExampleData"),
+        h3(tags$a(href = "https://www.nature.com/articles/nbt.2967", "1920 Mouse haematopoietic stem cells from (Nestorowa et al. 2015).", target= "_blank")),
+        "Data was loaded from the 'scRNASeq' package.",
+        tags$br(),
+        tags$br()
+      ),
+      conditionalPanel(
         condition = sprintf("input['%s'] == 'pbmc3k'", "selectExampleData"),
         h3(tags$a(href = "https://doi.org/10.1038/ncomms14049", "2,700 peripheral blood mononuclear cells (PBMCs) from 10X Genomics", target = "_blank")),
         "Data was loaded with the 'TENxPBMCData' package.",
@@ -279,9 +287,8 @@ shinyPanelImport <- fluidPage(
         )
       )
     ),
-    withBusyIndicatorUI(
-      actionButton("uploadData", "Import")
-    ),
+    actionButton("uploadData", "Import"),
+  
     tags$br(),
     tags$br(),
     hidden(

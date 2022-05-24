@@ -13,11 +13,11 @@ findMarkerDiffExp(
   method = c("wilcox", "MAST", "DESeq2", "Limma", "ANOVA"),
   cluster = "cluster",
   covariates = NULL,
-  log2fcThreshold = 0.25,
+  log2fcThreshold = NULL,
   fdrThreshold = 0.05,
-  minClustExprPerc = 0.6,
-  maxCtrlExprPerc = 0.4,
-  minMeanExpr = 0.5
+  minClustExprPerc = NULL,
+  maxCtrlExprPerc = NULL,
+  minMeanExpr = NULL
 )
 }
 \arguments{
@@ -43,18 +43,19 @@ building the model. All covariates must exist in
 larger than this value. Default \code{NULL}}
 
 \item{fdrThreshold}{Only out put DEGs with FDR value smaller than this
-value. Default \code{1}}
+value. Default \code{NULL}}
 
 \item{minClustExprPerc}{A numeric scalar. The minimum cutoff of the
 percentage of cells in the cluster of interests that expressed the marker
-gene. Default \code{0.7}.}
+gene. From 0 to 1. Default \code{NULL}.}
 
 \item{maxCtrlExprPerc}{A numeric scalar. The maximum cutoff of the
 percentage of cells out of the cluster (control group) that expressed the
-marker gene. Default \code{0.4}.}
+marker gene. From 0 to 1. Default \code{NULL}.}
 
 \item{minMeanExpr}{A numeric scalar. The minimum cutoff of the mean
-expression value of the marker in the cluster of interests. Default \code{1}.}
+expression value of the marker in the cluster of interests. Default 
+\code{NULL}.}
 }
 \value{
 The input \linkS4class{SingleCellExperiment} object with

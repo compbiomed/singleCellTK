@@ -79,7 +79,7 @@ shinyPanelEnrichR <- fluidPage(
                        options = list(placeholder = "Use all (default)")),
         textInput('enrAnalysisNameSet', "Set analysis name:", 
                   placeholder = "Required"),
-        withBusyIndicatorUI(actionButton("enrichRun", "Run")),
+        actionButton("enrichRun", "Run"),
       ),
       mainPanel(
         dropdown(

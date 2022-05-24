@@ -93,7 +93,7 @@ color_table <- RColorBrewer::brewer.pal.info %>% data.frame()
 color_seqdiv <- rownames(color_table[which(color_table$category == "div"
                                            |color_table$category == "seq"),])
 if (internetConnection){
-  enrichedDB <- enrichR::listEnrichrDbs()$libraryName
+  enrichedDB <- listEnrichrDbs()$libraryName
 } else {
   enrichedDB <- ""
 }
@@ -267,7 +267,7 @@ shinyUI(
                  tags$script(HTML(jsScriptAutoScrollConsole))
                ),
                hidden(div(id = "consolePanel", style = "overflow-y:scroll; 
-                          max-height: 120px; width: 100%; background-color: white; 
+                          max-height: 220px; width: 100%; background-color: white; 
                           position: relative; bottom: 0; align: centre; padding: 0px;",
                           verbatimTextOutput(outputId="consoleText", placeholder = TRUE) 
                ))
