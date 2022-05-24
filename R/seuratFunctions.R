@@ -890,7 +890,7 @@ plotSeuratHeatmap <- function(plotObject, dims, ncol, labels) {
   colnames(temp.matrix) <- colnames(inSCE)
   
   if(seuratDataSlot == "scale.data"){
-    altExp(inSCE, "scale.data") <- SingleCellExperiment(list(counts = temp.matrix))
+    altExp(inSCE, assaySlotSCE) <- SingleCellExperiment(list(counts = temp.matrix))
   }
   else{
     rownames(temp.matrix) <- rownames(inSCE)
@@ -920,7 +920,7 @@ convertSeuratToSCE <- function(seuratObject, normAssayName = "seuratNormData",
   
   assay(inSCE, normAssayName) <- methods::slot(seuratObject@assays$RNA, "data")
   if (length(methods::slot(seuratObject, "assays")[["RNA"]]@scale.data) > 0) {
-    assay(inSCE, scaledAssayName) <- methods::slot(seuratObject@assays$RNA,
+    assay(altExp(inSCE, scaledAssayName), "counts") <- methods::slot(seuratObject@assays$RNA,
                                                    "scale.data")
   }
   inSCE <- .addSeuratToMetaDataSCE(inSCE, seuratObject)
@@ -986,7 +986,7 @@ convertSCEToSeurat <- function(inSCE, countsAssay = NULL, normAssay = NULL,
     stop(paste0("'", normAssay, "' not found in the list of assays: ",
                 paste(names(assays(inSCE)), collapse=",")))
   }
-  if(!is.null(scaledAssay) && !("scale.data" %in% expDataNames(inSCE))) {
+  if(!is.null(scaledAssay) && !(scaledAssay %in% expDataNames(inSCE))) {
     stop(paste0("'", scaledAssay, "' not found in the list of assays: ",
                 paste(names(assays(inSCE)), collapse=",")))
   }
@@ -1037,10 +1037,10 @@ convertSCEToSeurat <- function(inSCE, countsAssay = NULL, normAssay = NULL,
   }
 
   # Set Scaled Assay
-  if (!is.null(scaledAssay) && "scale.data" %in% expDataNames(inSCE)) {
-    seuratObject@assays$RNA@scale.data <- as.matrix(assay(altExp(inSCE, "scale.data"), "counts"))
-    rownames(seuratObject@assays$RNA@scale.data) <- rownames(altExp(inSCE, "scale.data"))
-    colnames(seuratObject@assays$RNA@scale.data) <- .convertToHyphen(colnames(altExp(inSCE, "scale.data")))
+  if (!is.null(scaledAssay) && scaledAssay %in% expDataNames(inSCE)) {
+    seuratObject@assays$RNA@scale.data <- as.matrix(assay(altExp(inSCE, scaledAssay), "counts"))
+    rownames(seuratObject@assays$RNA@scale.data) <- rownames(altExp(inSCE, scaledAssay))
+    colnames(seuratObject@assays$RNA@scale.data) <- .convertToHyphen(colnames(altExp(inSCE, scaledAssay)))
   }
 
   if (!is.null(inSCE@metadata$seurat$obj)) {
@@ -1161,7 +1161,7 @@ runSeuratSCTransform <- function(inSCE, normAssayName = "SCTCounts",
                               PCA = TRUE, ICA = TRUE, tSNE = TRUE, UMAP = TRUE,
                               clusters = TRUE){
   if(scaleData){
-    altExp(inSCE, "scale.data") <- NULL
+    altExp(inSCE, "seuratScaledData") <- NULL
   }
   if(varFeatures){
     methods::slot(inSCE@metadata$seurat$obj, "assays")[["RNA"]]@var.features <- logical()

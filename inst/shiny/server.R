@@ -7946,7 +7946,7 @@ shinyServer(function(input, output, session) {
         #Proceed only if sce object has seurat object stored in metadata slot
         if(!is.null(vals$counts@metadata$seurat$obj)){
           #If seuratScaledData has been removed from sce object, reset Scale Data tab and reset/lock its next tab
-          if(!"scale.data" %in% expDataNames(vals$counts)){
+          if(!"seuratScaledData" %in% expDataNames(vals$counts)){
             updateCollapse(session = session, "SeuratUI", style = list("Scale Data" = "primary"))
             updateCollapse(session = session, "SeuratUI", style = list("Dimensionality Reduction" = "primary"))
             shinyjs::disable(selector = "div[value='Dimensionality Reduction']")
