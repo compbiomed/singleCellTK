@@ -10,14 +10,17 @@ plotTSCANClusterPseudo(inSCE, useClusters, pathIndex = NULL, useReducedDim)
 \arguments{
 \item{inSCE}{Input \linkS4class{SingleCellExperiment} object.}
 
-\item{useClusters}{Choose the cluster containing the branch point in the data in order to 
-recompute the pseudotimes so that the root lies at the cluster center, allowing us to detect 
-genes that are associated with the divergence of the branches.}
+\item{useClusters}{Choose the cluster containing the branch point in the 
+data in order to recompute the pseudotimes so that the root lies at the 
+cluster center, allowing us to detect genes that are associated with the 
+divergence of the branches.}
 
-\item{pathIndex}{Path index for which the pseudotime values should be used. PathIndex 
-corresponds to the terminal node of specific path from the root node to the terminal node.}
+\item{pathIndex}{Path index for which the pseudotime values should be used.
+PathIndex corresponds to the terminal node of specific path from the root 
+node to the terminal node.}
 
-\item{useReducedDim}{Saved dimension reduction name in the SingleCellExperiment object. Required.}
+\item{useReducedDim}{Saved dimension reduction name in the 
+SingleCellExperiment object. Required.}
 }
 \value{
 A plots with the TSCAN-derived pseudotimes of all the cells along the
@@ -34,14 +37,30 @@ data("scExample", package = "singleCellTK")
 sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 rowData(sce)$Symbol <- rowData(sce)$feature_name
 rownames(sce) <- rowData(sce)$Symbol
-sce <- runNormalization(sce, normalizationMethod = "LogNormalize", useAssay = "counts", outAssayName = "logcounts")
-sce <- runDimReduce(inSCE = sce, method = "scaterPCA", useAssay = "logcounts", reducedDimName = "PCA")
-sce <- runDimReduce(inSCE = sce, method = "rTSNE", useReducedDim = "PCA", reducedDimName = "TSNE")
-sce <- runTSCAN (inSCE = sce, useReducedDim = "PCA", seed = NULL)
-sce <- runTSCANDEG(inSCE = sce, pathIndex = 4)
-sce <- runTSCANClusterDEAnalysis(inSCE = sce, useClusters = 5)
-plotTSCANClusterPseudo(inSCE = sce, useClusters = 5, pathIndex = NULL, 
-                  useReducedDim = "TSNE")
+sce <- runNormalization(sce, 
+                        normalizationMethod = "LogNormalize", 
+                        useAssay = "counts", 
+                        outAssayName = "logcounts")
+sce <- runDimReduce(inSCE = sce, 
+                    method = "scaterPCA", 
+                    useAssay = "logcounts", 
+                    reducedDimName = "PCA")
+sce <- runDimReduce(inSCE = sce, 
+                    method = "rTSNE", 
+                    useReducedDim = "PCA", 
+                    reducedDimName = "TSNE")
+sce <- runTSCAN (inSCE = sce, 
+                 useReducedDim = "PCA", 
+                 seed = NULL)
+terminalNodes <- listTSCANTerminalNodes(sce, analysisName = "Pseudotime")
+sce <- runTSCANDEG(inSCE = sce, 
+                   pathIndex = terminalNodes[1])
+sce <- runTSCANClusterDEAnalysis(inSCE = sce, 
+                                 useClusters = 1)
+plotTSCANClusterPseudo(inSCE = sce, 
+                       useClusters = 1, 
+                       pathIndex = NULL, 
+                       useReducedDim = "TSNE")
 }
 \author{
 Nida Pervaiz

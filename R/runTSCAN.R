@@ -76,6 +76,30 @@ setMethod("listTSCANResults", "SingleCellExperiment", function(x){
   return(names(all.results))
 })
 
+#' @export
+#' @rdname getTSCANResults
+#' 
+setGeneric("listTSCANTerminalNodes", signature = "x",
+           function(x, analysisName=NULL, pathName = NULL) {
+             standardGeneric("listTSCANTerminalNodes")
+           }
+)
+
+#' @export
+#' @rdname getTSCANResults
+#' 
+setMethod("listTSCANTerminalNodes", signature(x = "SingleCellExperiment"), 
+          function(x, analysisName=NULL, pathName = NULL){
+            
+  result.names <- listTSCANResults(x)
+  if(!analysisName %in% result.names) {
+    stop("The analysis was not found in the results for tool 'Trajectory'")  
+  }
+  
+  results <- S4Vectors::metadata(x)$sctk$Traj$TSCAN[[analysisName]][["pathClusters"]]
+  return(names(results))
+          
+  })
 
 ###################################################
 ###  STEP 1:: creating cluster and MST
@@ -106,10 +130,21 @@ setMethod("listTSCANResults", "SingleCellExperiment", function(x){
 #' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 #' rowData(sce)$Symbol <- rowData(sce)$feature_name
 #' rownames(sce) <- rowData(sce)$Symbol
-#' sce <- runNormalization(sce, normalizationMethod = "LogNormalize", useAssay = "counts", outAssayName = "logcounts")
-#' sce <- runDimReduce(inSCE = sce, method = "scaterPCA", useAssay = "logcounts", reducedDimName = "PCA")
-#' sce <- runDimReduce(inSCE = sce, method = "rTSNE", useReducedDim = "PCA", reducedDimName = "TSNE")
-#' sce <- runTSCAN (inSCE = sce, useReducedDim = "PCA", seed = NULL)
+#' sce <- runNormalization(sce, 
+#'                         normalizationMethod = "LogNormalize", 
+#'                         useAssay = "counts", 
+#'                         outAssayName = "logcounts")
+#' sce <- runDimReduce(inSCE = sce, 
+#'                     method = "scaterPCA", 
+#'                     useAssay = "logcounts", 
+#'                     reducedDimName = "PCA")
+#' sce <- runDimReduce(inSCE = sce, 
+#'                     method = "rTSNE", 
+#'                     useReducedDim = "PCA", 
+#'                     reducedDimName = "TSNE")
+#' sce <- runTSCAN (inSCE = sce, 
+#'                  useReducedDim = "PCA", 
+#'                  seed = NULL)
 runTSCAN <- function(inSCE, 
                      useReducedDim, 
                      cluster = NULL, 
@@ -214,11 +249,23 @@ runTSCAN <- function(inSCE,
 #' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 #' rowData(sce)$Symbol <- rowData(sce)$feature_name
 #' rownames(sce) <- rowData(sce)$Symbol
-#' sce <- runNormalization(sce, normalizationMethod = "LogNormalize", useAssay = "counts", outAssayName = "logcounts")
-#' sce <- runDimReduce(inSCE = sce, method = "scaterPCA", useAssay = "logcounts", reducedDimName = "PCA")
-#' sce <- runDimReduce(inSCE = sce, method = "rTSNE", useReducedDim = "PCA", reducedDimName = "TSNE")
-#' sce <- runTSCAN (inSCE = sce, useReducedDim = "PCA", seed = NULL)
-#' plotTSCANResults(inSCE = sce, useReducedDim = "TSNE")
+#' sce <- runNormalization(sce, 
+#'                         normalizationMethod = "LogNormalize", 
+#'                         useAssay = "counts", 
+#'                         outAssayName = "logcounts")
+#' sce <- runDimReduce(inSCE = sce, 
+#'                     method = "scaterPCA", 
+#'                     useAssay = "logcounts", 
+#'                     reducedDimName = "PCA")
+#' sce <- runDimReduce(inSCE = sce, 
+#'                     method = "rTSNE", 
+#'                     useReducedDim = "PCA", 
+#'                     reducedDimName = "TSNE")
+#' sce <- runTSCAN (inSCE = sce, 
+#'                  useReducedDim = "PCA", 
+#'                  seed = NULL)
+#' plotTSCANResults(inSCE = sce, 
+#'                  useReducedDim = "TSNE")
 
 plotTSCANResults <- function(inSCE, 
                              useReducedDim){
@@ -247,14 +294,15 @@ plotTSCANResults <- function(inSCE,
 #' respect to one 
 #' of the TSCAN pseudotimes
 #' @param inSCE Input \linkS4class{SingleCellExperiment} object.
-#' @param pathIndex Path index for which the pseudotime values should be used. PathIndex 
-#' corresponds to the terminal node of specific path from the root node to the terminal node.
-#' @param useAssay Character. The name of the assay to use. This assay should contain log 
-#' normalized counts.
-#' @param discardCluster Optional. Clusters which are not of use or masks other interesting 
-#' effects can be discarded.
-#' @param log2fcThreshold Only output DEGs with the absolute values of log2FC larger than 
-#' this value. Default Zero
+#' @param pathIndex Path index for which the pseudotime values should be used. 
+#' PathIndex corresponds to the terminal node of specific path from the root 
+#' node to the terminal node.
+#' @param useAssay Character. The name of the assay to use. This assay should 
+#' contain log normalized counts.
+#' @param discardCluster Optional. Clusters which are not of use or masks other 
+#' interesting effects can be discarded.
+#' @param log2fcThreshold Only output DEGs with the absolute values of log2FC 
+#' larger than this value. Default Zero
 #'
 #' @return A \linkS4class{SingleCellExperiment} object with genes that decrease 
 #' and increase in expression with increasing pseudotime along the path in the 
@@ -267,11 +315,24 @@ plotTSCANResults <- function(inSCE,
 #' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 #' rowData(sce)$Symbol <- rowData(sce)$feature_name
 #' rownames(sce) <- rowData(sce)$Symbol
-#' sce <- runNormalization(sce, normalizationMethod = "LogNormalize", useAssay = "counts", outAssayName = "logcounts")
-#' sce <- runDimReduce(inSCE = sce, method = "scaterPCA", useAssay = "logcounts", reducedDimName = "PCA")
-#' sce <- runDimReduce(inSCE = sce, method = "rTSNE", useReducedDim = "PCA", reducedDimName = "TSNE")
-#' sce <- runTSCAN (inSCE = sce, useReducedDim = "PCA", seed = NULL)
-#' sce <- runTSCANDEG(inSCE = sce, pathIndex = 4)
+#' sce <- runNormalization(sce, 
+#'                         normalizationMethod = "LogNormalize", 
+#'                         useAssay = "counts", 
+#'                         outAssayName = "logcounts")
+#' sce <- runDimReduce(inSCE = sce, 
+#'                     method = "scaterPCA", 
+#'                     useAssay = "logcounts", 
+#'                     reducedDimName = "PCA")
+#' sce <- runDimReduce(inSCE = sce, 
+#'                     method = "rTSNE", 
+#'                     useReducedDim = "PCA", 
+#'                     reducedDimName = "TSNE")
+#' sce <- runTSCAN (inSCE = sce, 
+#'                  useReducedDim = "PCA", 
+#'                  seed = NULL)
+#' terminalNodes <- listTSCANTerminalNodes(sce, analysisName = "Pseudotime")
+#' sce <- runTSCANDEG(inSCE = sce, 
+#'                    pathIndex = terminalNodes[1])
 
 runTSCANDEG <- function(inSCE, 
                         pathIndex, 
@@ -319,17 +380,19 @@ runTSCANDEG <- function(inSCE,
 ###  plot heatmap of top genes
 ###################################################
 #' @title Run plotTSCANPseudotimeHeatmap function to plot heatmap for top genes
-#' @description A wrapper function which visualizes outputs from the runTSCANDEG function. 
-#' Plots the top genes that increase in expression with increasing pseudotime along the path 
-#' in the MST 
+#' @description A wrapper function which visualizes outputs from the 
+#' runTSCANDEG function. Plots the top genes that increase in expression with 
+#' increasing pseudotime along the path in the MST 
 #' @param inSCE Input \linkS4class{SingleCellExperiment} object.
-#' @param pathIndex Path index for which the pseudotime values should be used. PathIndex 
-#' corresponds to the terminal node of specific path from the root node to the terminal node.
-#' @param topN An integer. Only to plot this number of top genes along the path in the MST, 
-#' in terms of log2FC value. Use NULL to cancel the top N subscription. Default 50
+#' @param pathIndex Path index for which the pseudotime values should be used. 
+#' PathIndex corresponds to the terminal node of specific path from the root 
+#' node to the terminal node.
+#' @param topN An integer. Only to plot this number of top genes along the 
+#' path in the MST, in terms of log2FC value. Use NULL to cancel the top N 
+#' subscription. Default 50
 #'
-#' @return A plot with the top genes that increase in expression with increasing pseudotime 
-#' along the path in the MST 
+#' @return A plot with the top genes that increase in expression with increasing
+#' pseudotime along the path in the MST 
 #' @param inSCE Input \linkS4class{SingleCellExperiment} object.
 #' @param pathIndex Path number for which the pseudotime values should be used. 
 #' PathIndex corresponds to one path from the root node to one of the terminal 
@@ -347,12 +410,27 @@ runTSCANDEG <- function(inSCE,
 #' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 #' rowData(sce)$Symbol <- rowData(sce)$feature_name
 #' rownames(sce) <- rowData(sce)$Symbol
-#' sce <- runNormalization(sce, normalizationMethod = "LogNormalize", useAssay = "counts", outAssayName = "logcounts")
-#' sce <- runDimReduce(inSCE = sce, method = "scaterPCA", useAssay = "logcounts", reducedDimName = "PCA")
-#' sce <- runDimReduce(inSCE = sce, method = "rTSNE", useReducedDim = "PCA", reducedDimName = "TSNE")
-#' sce <- runTSCAN (inSCE = sce, useReducedDim = "PCA", seed = NULL)
-#' sce <- runTSCANDEG(inSCE = sce, pathIndex = 4)
-#' plotTSCANPseudotimeHeatmap(inSCE = sce, pathIndex = 4,topN = 5)
+#' sce <- runNormalization(sce, 
+#'                         normalizationMethod = "LogNormalize", 
+#'                         useAssay = "counts", 
+#'                         outAssayName = "logcounts")
+#' sce <- runDimReduce(inSCE = sce, 
+#'                     method = "scaterPCA", 
+#'                     useAssay = "logcounts", 
+#'                     reducedDimName = "PCA")
+#' sce <- runDimReduce(inSCE = sce, 
+#'                     method = "rTSNE", 
+#'                     useReducedDim = "PCA", 
+#'                     reducedDimName = "TSNE")
+#' sce <- runTSCAN (inSCE = sce, 
+#'                  useReducedDim = "PCA", 
+#'                  seed = NULL)
+#' terminalNodes <- listTSCANTerminalNodes(sce, analysisName = "Pseudotime")
+#' sce <- runTSCANDEG(inSCE = sce, 
+#'                    pathIndex = terminalNodes[1])
+#' plotTSCANPseudotimeHeatmap(inSCE = sce, 
+#'                            pathIndex = terminalNodes[1],
+#'                            topN = 5)
 
 plotTSCANPseudotimeHeatmap <- function(inSCE, 
                                        pathIndex, 
@@ -402,11 +480,14 @@ plotTSCANPseudotimeHeatmap <- function(inSCE,
 #' \code{\link{runTSCANDEG}} function. Plots the genes that increase or decrease
 #' in expression with increasing pseudotime along the path in the MST.
 #' @param inSCE Input \linkS4class{SingleCellExperiment} object.
-#' @param pathIndex Path index for which the pseudotime values should be used. PathIndex 
-#' corresponds to the terminal node of specific path from the root node to the terminal node.
-#' @param direction Which direction to use. Choices are increasing or decreasing.
-#' @param n An integer. Only to plot this number of top genes that are increasing/decreasing 
-#' in expression with increasing pseudotime along the path in the MST. Default 10
+#' @param pathIndex Path index for which the pseudotime values should be used. 
+#' PathIndex corresponds to the terminal node of specific path from the root 
+#' node to the terminal node.
+#' @param direction Which direction to use. Choices are increasing or 
+#' decreasing.
+#' @param n An integer. Only to plot this number of top genes that are 
+#' increasing/decreasing in expression with increasing pseudotime along 
+#' the path in the MST. Default 10
 #'
 #' @return A plot with the top genes that increase/decrease in expression with 
 #' increasing pseudotime along the path in the MST 
@@ -418,12 +499,26 @@ plotTSCANPseudotimeHeatmap <- function(inSCE,
 #' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 #' rowData(sce)$Symbol <- rowData(sce)$feature_name
 #' rownames(sce) <- rowData(sce)$Symbol
-#' sce <- runNormalization(sce, normalizationMethod = "LogNormalize", useAssay = "counts", outAssayName = "logcounts")
-#' sce <- runDimReduce(inSCE = sce, method = "scaterPCA", useAssay = "logcounts", reducedDimName = "PCA")
-#' sce <- runDimReduce(inSCE = sce, method = "rTSNE", useReducedDim = "PCA", reducedDimName = "TSNE")
-#' sce <- runTSCAN (inSCE = sce, useReducedDim = "PCA", seed = NULL)
-#' sce <- runTSCANDEG(inSCE = sce, pathIndex = 4)
-#' plotTSCANPseudotimeGenes(inSCE = sce, pathIndex = 4, 
+#' sce <- runNormalization(sce, 
+#'                         normalizationMethod = "LogNormalize", 
+#'                         useAssay = "counts", 
+#'                         outAssayName = "logcounts")
+#' sce <- runDimReduce(inSCE = sce, 
+#'                     method = "scaterPCA", 
+#'                     useAssay = "logcounts", 
+#'                     reducedDimName = "PCA")
+#' sce <- runDimReduce(inSCE = sce, 
+#'                     method = "rTSNE", 
+#'                     useReducedDim = "PCA", 
+#'                     reducedDimName = "TSNE")
+#' sce <- runTSCAN (inSCE = sce, 
+#'                  useReducedDim = "PCA", 
+#'                  seed = NULL)
+#' terminalNodes <- listTSCANTerminalNodes(sce, analysisName = "Pseudotime")
+#' sce <- runTSCANDEG(inSCE = sce, 
+#'                    pathIndex = terminalNodes[1])
+#' plotTSCANPseudotimeGenes(inSCE = sce, 
+#'                          pathIndex = terminalNodes[1], 
 #'                          direction = "increasing")
 
 plotTSCANPseudotimeGenes <- function (inSCE, 
@@ -495,12 +590,26 @@ plotTSCANPseudotimeGenes <- function (inSCE,
 #' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 #' rowData(sce)$Symbol <- rowData(sce)$feature_name
 #' rownames(sce) <- rowData(sce)$Symbol
-#' sce <- runNormalization(sce, normalizationMethod = "LogNormalize", useAssay = "counts", outAssayName = "logcounts")
-#' sce <- runDimReduce(inSCE = sce, method = "scaterPCA", useAssay = "logcounts", reducedDimName = "PCA")
-#' sce <- runDimReduce(inSCE = sce, method = "rTSNE", useReducedDim = "PCA", reducedDimName = "TSNE")
-#' sce <- runTSCAN (inSCE = sce, useReducedDim = "PCA", seed = NULL)
-#' sce <- runTSCANDEG(inSCE = sce, pathIndex = 4)
-#' sce <- runTSCANClusterDEAnalysis(inSCE = sce, useClusters = 5)
+#' sce <- runNormalization(sce, 
+#'                         normalizationMethod = "LogNormalize", 
+#'                         useAssay = "counts", 
+#'                         outAssayName = "logcounts")
+#' sce <- runDimReduce(inSCE = sce, 
+#'                     method = "scaterPCA", 
+#'                     useAssay = "logcounts", 
+#'                     reducedDimName = "PCA")
+#' sce <- runDimReduce(inSCE = sce, 
+#'                     method = "rTSNE", 
+#'                     useReducedDim = "PCA", 
+#'                     reducedDimName = "TSNE")
+#' sce <- runTSCAN (inSCE = sce, 
+#'                  useReducedDim = "PCA", 
+#'                  seed = NULL)
+#' terminalNodes <- listTSCANTerminalNodes(sce, analysisName = "Pseudotime")
+#' sce <- runTSCANDEG(inSCE = sce, 
+#'                    pathIndex = terminalNodes[1])
+#' sce <- runTSCANClusterDEAnalysis(inSCE = sce, 
+#'                                  useClusters = 1)
 
 runTSCANClusterDEAnalysis <- function(inSCE, 
                                       useClusters , 
@@ -595,12 +704,15 @@ runTSCANClusterDEAnalysis <- function(inSCE,
 #' cluster and is colored by its pseudotime value along the path to which it was
 #' assigned. 
 #' @param inSCE Input \linkS4class{SingleCellExperiment} object.
-#' @param useClusters Choose the cluster containing the branch point in the data in order to 
-#' recompute the pseudotimes so that the root lies at the cluster center, allowing us to detect 
-#' genes that are associated with the divergence of the branches.
-#' @param pathIndex Path index for which the pseudotime values should be used. PathIndex 
-#' corresponds to the terminal node of specific path from the root node to the terminal node.
-#' @param useReducedDim Saved dimension reduction name in the SingleCellExperiment object. Required.
+#' @param useClusters Choose the cluster containing the branch point in the 
+#' data in order to recompute the pseudotimes so that the root lies at the 
+#' cluster center, allowing us to detect genes that are associated with the 
+#' divergence of the branches.
+#' @param pathIndex Path index for which the pseudotime values should be used.
+#' PathIndex corresponds to the terminal node of specific path from the root 
+#' node to the terminal node.
+#' @param useReducedDim Saved dimension reduction name in the 
+#' SingleCellExperiment object. Required.
 #'
 #' @return A plots with the TSCAN-derived pseudotimes of all the cells along the
 #' path belonging to the cluster
@@ -612,14 +724,30 @@ runTSCANClusterDEAnalysis <- function(inSCE,
 #' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 #' rowData(sce)$Symbol <- rowData(sce)$feature_name
 #' rownames(sce) <- rowData(sce)$Symbol
-#' sce <- runNormalization(sce, normalizationMethod = "LogNormalize", useAssay = "counts", outAssayName = "logcounts")
-#' sce <- runDimReduce(inSCE = sce, method = "scaterPCA", useAssay = "logcounts", reducedDimName = "PCA")
-#' sce <- runDimReduce(inSCE = sce, method = "rTSNE", useReducedDim = "PCA", reducedDimName = "TSNE")
-#' sce <- runTSCAN (inSCE = sce, useReducedDim = "PCA", seed = NULL)
-#' sce <- runTSCANDEG(inSCE = sce, pathIndex = 4)
-#' sce <- runTSCANClusterDEAnalysis(inSCE = sce, useClusters = 5)
-#' plotTSCANClusterPseudo(inSCE = sce, useClusters = 5, pathIndex = NULL, 
-#'                   useReducedDim = "TSNE")
+#' sce <- runNormalization(sce, 
+#'                         normalizationMethod = "LogNormalize", 
+#'                         useAssay = "counts", 
+#'                         outAssayName = "logcounts")
+#' sce <- runDimReduce(inSCE = sce, 
+#'                     method = "scaterPCA", 
+#'                     useAssay = "logcounts", 
+#'                     reducedDimName = "PCA")
+#' sce <- runDimReduce(inSCE = sce, 
+#'                     method = "rTSNE", 
+#'                     useReducedDim = "PCA", 
+#'                     reducedDimName = "TSNE")
+#' sce <- runTSCAN (inSCE = sce, 
+#'                  useReducedDim = "PCA", 
+#'                  seed = NULL)
+#' terminalNodes <- listTSCANTerminalNodes(sce, analysisName = "Pseudotime")
+#' sce <- runTSCANDEG(inSCE = sce, 
+#'                    pathIndex = terminalNodes[1])
+#' sce <- runTSCANClusterDEAnalysis(inSCE = sce, 
+#'                                  useClusters = 1)
+#' plotTSCANClusterPseudo(inSCE = sce, 
+#'                        useClusters = 1, 
+#'                        pathIndex = NULL, 
+#'                        useReducedDim = "TSNE")
 
 plotTSCANClusterPseudo <- function(inSCE, 
                               useClusters, 
@@ -678,11 +806,12 @@ plotTSCANClusterPseudo <- function(inSCE,
 #' colored by the expression of a gene of interest and the relevant edges of 
 #' the MST are overlaid on top.
 #' @param inSCE Input \linkS4class{SingleCellExperiment} object.
-#' @param geneSymbol Choose the gene of interest from the DE genes in order to know the level 
-#' of expression of gene in clusters.
-#' @param useClusters Choose a specific cluster on which gene expression needs to be visualized.
-#' By default all clusters are chosen. 
-#' @param useReducedDim Saved dimension reduction name in the SingleCellExperiment object. Required.
+#' @param geneSymbol Choose the gene of interest from the DE genes in order to 
+#' know the level of expression of gene in clusters.
+#' @param useClusters Choose a specific cluster on which gene expression needs 
+#' to be visualized. By default all clusters are chosen. 
+#' @param useReducedDim Saved dimension reduction name in the 
+#' SingleCellExperiment object. Required.
 #'
 #' @return A plots with the cells colored by the expression of a gene of 
 #' interest.
@@ -694,13 +823,29 @@ plotTSCANClusterPseudo <- function(inSCE,
 #' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 #' rowData(sce)$Symbol <- rowData(sce)$feature_name
 #' rownames(sce) <- rowData(sce)$Symbol
-#' sce <- runNormalization(sce, normalizationMethod = "LogNormalize", useAssay = "counts", outAssayName = "logcounts")
-#' sce <- runDimReduce(inSCE = sce, method = "scaterPCA", useAssay = "logcounts", reducedDimName = "PCA")
-#' sce <- runDimReduce(inSCE = sce, method = "rTSNE", useReducedDim = "PCA", reducedDimName = "TSNE")
-#' sce <- runTSCAN (inSCE = sce, useReducedDim = "PCA", seed = NULL)
-#' sce <- runTSCANDEG(inSCE = sce, pathIndex = 4)
-#' sce <- runTSCANClusterDEAnalysis(inSCE = sce, useClusters = 5)
-#' plotTSCANDEgenes(inSCE = sce, geneSymbol = "CD74", useReducedDim = "TSNE")
+#' sce <- runNormalization(sce, 
+#'                         normalizationMethod = "LogNormalize", 
+#'                         useAssay = "counts", 
+#'                         outAssayName = "logcounts")
+#' sce <- runDimReduce(inSCE = sce, 
+#'                     method = "scaterPCA", 
+#'                     useAssay = "logcounts", 
+#'                     reducedDimName = "PCA")
+#' sce <- runDimReduce(inSCE = sce, 
+#'                     method = "rTSNE", 
+#'                     useReducedDim = "PCA", 
+#'                     reducedDimName = "TSNE")
+#' sce <- runTSCAN (inSCE = sce, 
+#'                  useReducedDim = "PCA", 
+#'                  seed = NULL)
+#' terminalNodes <- listTSCANTerminalNodes(sce, analysisName = "Pseudotime")
+#' sce <- runTSCANDEG(inSCE = sce, 
+#'                    pathIndex = terminalNodes[1])
+#' sce <- runTSCANClusterDEAnalysis(inSCE = sce, 
+#'                                  useClusters = 1)
+#' plotTSCANDEgenes(inSCE = sce, 
+#'                  geneSymbol = "CD74", 
+#'                  useReducedDim = "TSNE")
 
 plotTSCANDEgenes <- function(inSCE, 
                              geneSymbol, 
