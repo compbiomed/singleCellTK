@@ -18,28 +18,43 @@ in the MST, in terms of log2FC value. Use \code{NULL} to cancel the top N
 subscription. Default \code{50}.}
 }
 \value{
-A plot with the top genes that increase in expression with increasing pseudotime 
-along the path in the MST
+A plot with the top genes that increase in expression with increasing
+pseudotime along the path in the MST
 
 A plot with the top genes that increase in expression with increasing
 pseudotime along the path in the MST.
 }
 \description{
-A wrapper function which visualizes outputs from the runTSCANDEG function. 
-Plots the top genes that increase in expression with increasing pseudotime along the path 
-in the MST
+A wrapper function which visualizes outputs from the 
+runTSCANDEG function. Plots the top genes that increase in expression with 
+increasing pseudotime along the path in the MST
 }
 \examples{
 data("scExample", package = "singleCellTK")
 sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 rowData(sce)$Symbol <- rowData(sce)$feature_name
 rownames(sce) <- rowData(sce)$Symbol
-sce <- runNormalization(sce, normalizationMethod = "LogNormalize", useAssay = "counts", outAssayName = "logcounts")
-sce <- runDimReduce(inSCE = sce, method = "scaterPCA", useAssay = "logcounts", reducedDimName = "PCA")
-sce <- runDimReduce(inSCE = sce, method = "rTSNE", useReducedDim = "PCA", reducedDimName = "TSNE")
-sce <- runTSCAN (inSCE = sce, useReducedDim = "PCA", seed = NULL)
-sce <- runTSCANDEG(inSCE = sce, pathIndex = 4)
-plotTSCANPseudotimeHeatmap(inSCE = sce, pathIndex = 4,topN = 5)
+sce <- runNormalization(sce, 
+                        normalizationMethod = "LogNormalize", 
+                        useAssay = "counts", 
+                        outAssayName = "logcounts")
+sce <- runDimReduce(inSCE = sce, 
+                    method = "scaterPCA", 
+                    useAssay = "logcounts", 
+                    reducedDimName = "PCA")
+sce <- runDimReduce(inSCE = sce, 
+                    method = "rTSNE", 
+                    useReducedDim = "PCA", 
+                    reducedDimName = "TSNE")
+sce <- runTSCAN (inSCE = sce, 
+                 useReducedDim = "PCA", 
+                 seed = NULL)
+terminalNodes <- listTSCANTerminalNodes(sce, analysisName = "Pseudotime")
+sce <- runTSCANDEG(inSCE = sce, 
+                   pathIndex = terminalNodes[1])
+plotTSCANPseudotimeHeatmap(inSCE = sce, 
+                           pathIndex = terminalNodes[1],
+                           topN = 5)
 }
 \author{
 Nida Pervaiz

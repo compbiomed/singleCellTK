@@ -15,13 +15,16 @@ plotTSCANPseudotimeGenes(
 \arguments{
 \item{inSCE}{Input \linkS4class{SingleCellExperiment} object.}
 
-\item{pathIndex}{Path index for which the pseudotime values should be used. PathIndex 
-corresponds to the terminal node of specific path from the root node to the terminal node.}
+\item{pathIndex}{Path index for which the pseudotime values should be used. 
+PathIndex corresponds to the terminal node of specific path from the root 
+node to the terminal node.}
 
-\item{direction}{Which direction to use. Choices are increasing or decreasing.}
+\item{direction}{Which direction to use. Choices are increasing or 
+decreasing.}
 
-\item{n}{An integer. Only to plot this number of top genes that are increasing/decreasing 
-in expression with increasing pseudotime along the path in the MST. Default 10}
+\item{n}{An integer. Only to plot this number of top genes that are 
+increasing/decreasing in expression with increasing pseudotime along 
+the path in the MST. Default 10}
 }
 \value{
 A plot with the top genes that increase/decrease in expression with 
@@ -37,12 +40,26 @@ data("scExample", package = "singleCellTK")
 sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 rowData(sce)$Symbol <- rowData(sce)$feature_name
 rownames(sce) <- rowData(sce)$Symbol
-sce <- runNormalization(sce, normalizationMethod = "LogNormalize", useAssay = "counts", outAssayName = "logcounts")
-sce <- runDimReduce(inSCE = sce, method = "scaterPCA", useAssay = "logcounts", reducedDimName = "PCA")
-sce <- runDimReduce(inSCE = sce, method = "rTSNE", useReducedDim = "PCA", reducedDimName = "TSNE")
-sce <- runTSCAN (inSCE = sce, useReducedDim = "PCA", seed = NULL)
-sce <- runTSCANDEG(inSCE = sce, pathIndex = 4)
-plotTSCANPseudotimeGenes(inSCE = sce, pathIndex = 4, 
+sce <- runNormalization(sce, 
+                        normalizationMethod = "LogNormalize", 
+                        useAssay = "counts", 
+                        outAssayName = "logcounts")
+sce <- runDimReduce(inSCE = sce, 
+                    method = "scaterPCA", 
+                    useAssay = "logcounts", 
+                    reducedDimName = "PCA")
+sce <- runDimReduce(inSCE = sce, 
+                    method = "rTSNE", 
+                    useReducedDim = "PCA", 
+                    reducedDimName = "TSNE")
+sce <- runTSCAN (inSCE = sce, 
+                 useReducedDim = "PCA", 
+                 seed = NULL)
+terminalNodes <- listTSCANTerminalNodes(sce, analysisName = "Pseudotime")
+sce <- runTSCANDEG(inSCE = sce, 
+                   pathIndex = terminalNodes[1])
+plotTSCANPseudotimeGenes(inSCE = sce, 
+                         pathIndex = terminalNodes[1], 
                          direction = "increasing")
 }
 \author{
