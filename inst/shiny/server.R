@@ -3981,7 +3981,7 @@ shinyServer(function(input, output, session) {
       }else if(input$celdafeatureselect == "runSeuratFindHVG"){
         vals$counts <- runSeuratNormalizeData(vals$counts, useAssay = input$celdaassayselect)
         vals$counts <- runSeuratFindHVG(vals$counts, useAssay = "seuratNormData",
-                                     hvgMethod = input$celdaseurathvgmethod, hvgNumber = input$celdafeaturenum)
+                                     method = input$celdaseurathvgmethod, hvgNumber = input$celdafeaturenum)
         
         g <- getTopHVG(vals$counts, method = input$celdaseurathvgmethod, n = input$celdafeaturenum)
         altExp(vals$counts, "featureSubset") <- vals$counts[g, ]
@@ -7516,32 +7516,32 @@ shinyServer(function(input, output, session) {
     
   }))
   
-  #Perform scaling
-  observeEvent(input$scale_button, withConsoleMsgRedirect ({
-    #shows the notification spinner and console log
-    .loadOpen ("Please wait while data is being scaled. See console log for progress.") 
-
-    req(vals$counts)
-    message(paste0(date(), " ... Scaling Data"))
-    vals$counts <- runSeuratScaleData(inSCE = vals$counts,
-                                     useAssay = "seuratNormData",
-                                     scaledAssayName = "seuratScaledData",
-                                     #model = input$model.use,
-                                     scale = input$do.scale,
-                                     center = input$do.center,
-                                     scaleMax = input$scale.max)
-
-      vals$counts <- singleCellTK:::.seuratInvalidate(inSCE = vals$counts, scaleData = FALSE, varFeatures = FALSE)
-
-    updateCollapse(session = session, "SeuratUI", style = list("Scale Data" = "success"))
-    shinyjs::enable(selector = "div[value='Dimensionality Reduction']")
-    S4Vectors::metadata(vals$counts)$seuratMarkers <- NULL
-    shinyjs::hide(
-      selector = "div[value='Downstream Analysis']")
-    message(paste0(date(), " ... Scaling Complete"))
-
-    .loadClose() #close the notification spinner and console log
-  }))
+  # #Perform scaling
+  # observeEvent(input$scale_button, withConsoleMsgRedirect ({
+  #   #shows the notification spinner and console log
+  #   .loadOpen ("Please wait while data is being scaled. See console log for progress.") 
+  # 
+  #   req(vals$counts)
+  #   message(paste0(date(), " ... Scaling Data"))
+  #   vals$counts <- runSeuratScaleData(inSCE = vals$counts,
+  #                                    useAssay = "seuratNormData",
+  #                                    scaledAssayName = "seuratScaledData",
+  #                                    #model = input$model.use,
+  #                                    scale = input$do.scale,
+  #                                    center = input$do.center,
+  #                                    scaleMax = input$scale.max)
+  # 
+  #     vals$counts <- singleCellTK:::.seuratInvalidate(inSCE = vals$counts, scaleData = FALSE, varFeatures = FALSE)
+  # 
+  #   updateCollapse(session = session, "SeuratUI", style = list("Scale Data" = "success"))
+  #   shinyjs::enable(selector = "div[value='Dimensionality Reduction']")
+  #   S4Vectors::metadata(vals$counts)$seuratMarkers <- NULL
+  #   shinyjs::hide(
+  #     selector = "div[value='Downstream Analysis']")
+  #   message(paste0(date(), " ... Scaling Complete"))
+  # 
+  #   .loadClose() #close the notification spinner and console log
+  # }))
 
   #Find HVG
    observeEvent(input$find_hvg_button, withConsoleMsgRedirect ({
@@ -7553,13 +7553,13 @@ shinyServer(function(input, output, session) {
     if(input$hvg_method == "vst"){
       vals$counts <- runSeuratFindHVG(inSCE = vals$counts,
                                      useAssay = metadata(vals$counts)$sctk$seuratUseAssay,
-                                     hvgMethod = input$hvg_method,
+                                     method = input$hvg_method,
                                      hvgNumber = as.numeric(input$hvg_no_features))
     }
     else{
       vals$counts <- runSeuratFindHVG(inSCE = vals$counts,
                                      useAssay = "seuratNormData",
-                                     hvgMethod = input$hvg_method,
+                                     method = input$hvg_method,
                                      hvgNumber = as.numeric(input$hvg_no_features))
 
       }
@@ -7571,7 +7571,7 @@ shinyServer(function(input, output, session) {
         })
       })
     updateCollapse(session = session, "SeuratUI", style = list("Highly Variable Genes" = "success"))
-    shinyjs::enable(selector = "div[value='Scale Data']")
+    shinyjs::enable(selector = "div[value='Dimensionality Reduction']")
     S4Vectors::metadata(vals$counts)$seuratMarkers <- NULL
     shinyjs::hide(
       selector = "div[value='Downstream Analysis']")
@@ -7608,8 +7608,9 @@ shinyServer(function(input, output, session) {
 
     message(paste0(date(), " ... Running PCA"))
     vals$counts <- runSeuratPCA(inSCE = vals$counts,
-                               useAssay = "seuratScaledData",
+                               useAssay = "seuratNormData",
                                reducedDimName = "seuratPCA",
+                               features = getSeuratVariableFeatures(vals$counts),
                                nPCs = input$pca_no_components,
                                seed = input$seed_PCA)
 
@@ -8144,8 +8145,9 @@ shinyServer(function(input, output, session) {
     )
 
     #df <- metadata(vals$counts)$seuratMarkers[which(metadata(vals$counts)$seuratMarkers$p_val_adj < 0.05, arr.ind = TRUE),]
+   print("markers complete")
     df <- metadata(vals$counts)$seuratMarkers
-    seuratObject <- convertSCEToSeurat(vals$counts, scaledAssay = "seuratScaledData")
+    seuratObject <- convertSCEToSeurat(vals$counts)
     indices <- list()
     cells <- list()
     groups <- unique(colData(vals$counts)[[input$seuratFindMarkerSelectPhenotype]])
@@ -8552,7 +8554,6 @@ shinyServer(function(input, output, session) {
 
   #Customize heatmap (pca) with selected options
   observeEvent(input$plot_heatmap_pca_button, {
-    print("update button")
     if (!is.null(input$picker_dimheatmap_components_pca)) {
       output$plot_heatmap_pca <- renderPlot({
         isolate({
@@ -8593,18 +8594,18 @@ shinyServer(function(input, output, session) {
         
         #Proceed only if sce object has seurat object stored in metadata slot
         if(!is.null(vals$counts@metadata$seurat$obj)){
-          #If seuratScaledData has been removed from sce object, reset Scale Data tab and reset/lock its next tab
-          if(!"seuratScaledData" %in% expDataNames(vals$counts)){
-            updateCollapse(session = session, "SeuratUI", style = list("Scale Data" = "primary"))
-            updateCollapse(session = session, "SeuratUI", style = list("Dimensionality Reduction" = "primary"))
-            shinyjs::disable(selector = "div[value='Dimensionality Reduction']")
-          }
+          # #If seuratScaledData has been removed from sce object, reset Scale Data tab and reset/lock its next tab
+          # if(!"seuratScaledData" %in% expDataNames(vals$counts)){
+          #   updateCollapse(session = session, "SeuratUI", style = list("Scale Data" = "primary"))
+          #   updateCollapse(session = session, "SeuratUI", style = list("Dimensionality Reduction" = "primary"))
+          #   shinyjs::disable(selector = "div[value='Dimensionality Reduction']")
+          # }
           
           #If variableFeatures have been removed from sce object, reset HVG tab and reset/lock next tab
           if(length(slot(vals$counts@metadata$seurat$obj, "assays")[["RNA"]]@var.features) <= 0){
             updateCollapse(session = session, "SeuratUI", style = list("Highly Variable Genes" = "primary"))
             updateCollapse(session = session, "SeuratUI", style = list("Dimensionality Reduction" = "primary"))
-            shinyjs::disable(selector = "div[value='Scale Data']")
+            shinyjs::disable(selector = "div[value='Dimensionality Reduction']")
           }
           
           #Proceed if reduction slot is present in seurat object in metadata slot

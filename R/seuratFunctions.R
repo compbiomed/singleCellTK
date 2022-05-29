@@ -634,11 +634,16 @@ runSeuratFindClusters <- function(
   algorithm <- match.arg(algorithm)
   useReduction <- match.arg(useReduction)
 
-  seuratObject <- convertSCEToSeurat(inSCE, scaledAssay = useAssay)
-
   if(!is.null(externalReduction)){
     seuratObject@reductions <- list(pca = externalReduction)
     useReduction <- "pca"
+  }
+  
+  if(is.null(useReduction)){
+    seuratObject <- convertSCEToSeurat(inSCE, scaledAssay = useAssay) 
+  }
+  else{
+    seuratObject <- convertSCEToSeurat(inSCE)
   }
 
   seuratObject <- Seurat::FindNeighbors(seuratObject, reduction = useReduction,
@@ -911,7 +916,9 @@ runSeuratHeatmap <- function(inSCE,
                                  raster = TRUE,
                                  externalReduction = NULL) {
   useReduction <- match.arg(useReduction)
-  seuratObject <- convertSCEToSeurat(inSCE, scaledAssay = useAssay)
+  # seuratObject <- convertSCEToSeurat(inSCE, scaledAssay = useAssay)
+  seuratObject <- convertSCEToSeurat(inSCE)
+  
   if(!is.null(externalReduction)){
     seuratObject@reductions <- list(pca = externalReduction)
     useReduction <- "pca"
@@ -919,16 +926,27 @@ runSeuratHeatmap <- function(inSCE,
   if(is.null(dims)) {
     dims <- ncol(seuratObject@reductions[[useReduction]])
   }
-  return(Seurat::DimHeatmap(seuratObject,
-                            dims = seq(dims),
-                            nfeatures = nfeatures,
-                            cells = cells,
-                            reduction = useReduction,
-                            ncol = ncol,
-                            fast = fast,
-                            combine = combine,
-                            raster = raster,
-                            balanced = balanced))
+  
+  # Only scale requested features
+  featuresToScale <- NULL
+  temp <- as.data.frame(seuratObject[[useReduction]]@feature.loadings)
+  for(i in seq(1:dims)){
+    featuresToScale <- c(featuresToScale, rownames(temp[order(-temp[[i]] ), ])[1:nfeatures])
+    featuresToScale <- c(featuresToScale, rownames(temp[order(temp[[i]] ), ])[1:nfeatures])
+  }
+  seuratObject <- Seurat::ScaleData(seuratObject, features = featuresToScale)
+  
+  plotObject <- Seurat::DimHeatmap(seuratObject,
+                                     dims = seq(dims),
+                                     nfeatures = nfeatures,
+                                     cells = cells,
+                                     reduction = useReduction,
+                                     ncol = ncol,
+                                     fast = fast,
+                                     combine = combine,
+                                     raster = raster,
+                                     balanced = balanced)
+  return(plotObject)
 }
 
 #' plotSeuratHeatmap
@@ -1118,10 +1136,10 @@ convertSCEToSeurat <- function(inSCE, countsAssay = NULL, normAssay = NULL,
   }
 
   # Set Scaled Assay
-  if (!is.null(scaledAssay) && scaledAssay %in% expDataNames(inSCE)) {
-    seuratObject@assays$RNA@scale.data <- as.matrix(assay(altExp(inSCE, scaledAssay), "counts"))
-    rownames(seuratObject@assays$RNA@scale.data) <- rownames(altExp(inSCE, scaledAssay))
-    colnames(seuratObject@assays$RNA@scale.data) <- .convertToHyphen(colnames(altExp(inSCE, scaledAssay)))
+  if (!is.null(scaledAssay) && scaledAssay %in% names(assays(inSCE))) {
+    seuratObject@assays$RNA@scale.data <- as.matrix(assay(inSCE, scaledAssay))
+    rownames(seuratObject@assays$RNA@scale.data) <- seuratRowNames
+    colnames(seuratObject@assays$RNA@scale.data) <- seuratColNames
   }
 
   if (!is.null(inSCE@metadata$seurat$obj)) {
@@ -1486,7 +1504,8 @@ plotSeuratGenes <- function(inSCE,
                            ncol = 1,
                            combine = FALSE){
   #setup seurat object and the corresponding groups
-  seuratObject <- convertSCEToSeurat(inSCE, scaledAssay = scaledAssayName)
+  seuratObject <- convertSCEToSeurat(inSCE)
+  seuratObject <- Seurat::ScaleData(seuratObject, features = features)
   indices <- list()
   cells <- list()
   groups <- unique(colData(inSCE)[[groupVariable]])

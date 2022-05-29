@@ -80,20 +80,20 @@ shinyPanelSeurat <- fluidPage(
                     ),
                     style = "primary"),
             
-            bsCollapsePanel("Scale Data",
-                            fluidRow(
-                              column(4,
-                                     panel(heading = "Options",
-                                           #selectInput(inputId = "model.use", label = "Select model for scaling: ", choices = c("linear", "poisson", "negbinom")),
-                                           materialSwitch(inputId = "do.scale", label = "Scale data?", value = TRUE),
-                                           materialSwitch(inputId = "do.center", label = "Center data?", value = TRUE),
-                                           textInput(inputId = "scale.max", label = "Max value for scaled data: ", value = "10"),
-                                           actionButton(inputId = "scale_button", "Scale")
-                                     )
-                              )
-                            ),
-                            style = "primary"
-            ),
+            # bsCollapsePanel("Scale Data",
+            #                 fluidRow(
+            #                   column(4,
+            #                          panel(heading = "Options",
+            #                                #selectInput(inputId = "model.use", label = "Select model for scaling: ", choices = c("linear", "poisson", "negbinom")),
+            #                                materialSwitch(inputId = "do.scale", label = "Scale data?", value = TRUE),
+            #                                materialSwitch(inputId = "do.center", label = "Center data?", value = TRUE),
+            #                                textInput(inputId = "scale.max", label = "Max value for scaled data: ", value = "10"),
+            #                                actionButton(inputId = "scale_button", "Scale")
+            #                          )
+            #                   )
+            #                 ),
+            #                 style = "primary"
+            # ),
 
             bsCollapsePanel("Dimensionality Reduction",
                 tabsetPanel(type = "tabs",
