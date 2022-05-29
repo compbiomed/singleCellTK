@@ -7,6 +7,8 @@
 \alias{getTSCANResults<-,SingleCellExperiment-method}
 \alias{listTSCANResults}
 \alias{listTSCANResults,SingleCellExperiment-method}
+\alias{listTSCANTerminalNodes}
+\alias{listTSCANTerminalNodes,SingleCellExperiment-method}
 \title{getTSCANResults accessor function}
 \usage{
 getTSCANResults(x, analysisName = NULL, pathName = NULL)
@@ -20,6 +22,10 @@ getTSCANResults(x, analysisName, pathName = NULL) <- value
 listTSCANResults(x)
 
 \S4method{listTSCANResults}{SingleCellExperiment}(x)
+
+listTSCANTerminalNodes(x, analysisName = NULL, pathName = NULL)
+
+\S4method{listTSCANTerminalNodes}{SingleCellExperiment}(x, analysisName = NULL, pathName = NULL)
 }
 \arguments{
 \item{x}{Input \linkS4class{SingleCellExperiment} object.}

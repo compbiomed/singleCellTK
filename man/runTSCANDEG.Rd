@@ -15,17 +15,18 @@ runTSCANDEG(
 \arguments{
 \item{inSCE}{Input \linkS4class{SingleCellExperiment} object.}
 
-\item{pathIndex}{Path index for which the pseudotime values should be used. PathIndex 
-corresponds to the terminal node of specific path from the root node to the terminal node.}
+\item{pathIndex}{Path index for which the pseudotime values should be used. 
+PathIndex corresponds to the terminal node of specific path from the root 
+node to the terminal node.}
 
-\item{useAssay}{Character. The name of the assay to use. This assay should contain log 
-normalized counts.}
+\item{useAssay}{Character. The name of the assay to use. This assay should 
+contain log normalized counts.}
 
-\item{discardCluster}{Optional. Clusters which are not of use or masks other interesting 
-effects can be discarded.}
+\item{discardCluster}{Optional. Clusters which are not of use or masks other 
+interesting effects can be discarded.}
 
-\item{log2fcThreshold}{Only output DEGs with the absolute values of log2FC larger than 
-this value. Default Zero}
+\item{log2fcThreshold}{Only output DEGs with the absolute values of log2FC 
+larger than this value. Default Zero}
 }
 \value{
 A \linkS4class{SingleCellExperiment} object with genes that decrease 
@@ -42,11 +43,24 @@ data("scExample", package = "singleCellTK")
 sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 rowData(sce)$Symbol <- rowData(sce)$feature_name
 rownames(sce) <- rowData(sce)$Symbol
-sce <- runNormalization(sce, normalizationMethod = "LogNormalize", useAssay = "counts", outAssayName = "logcounts")
-sce <- runDimReduce(inSCE = sce, method = "scaterPCA", useAssay = "logcounts", reducedDimName = "PCA")
-sce <- runDimReduce(inSCE = sce, method = "rTSNE", useReducedDim = "PCA", reducedDimName = "TSNE")
-sce <- runTSCAN (inSCE = sce, useReducedDim = "PCA", seed = NULL)
-sce <- runTSCANDEG(inSCE = sce, pathIndex = 4)
+sce <- runNormalization(sce, 
+                        normalizationMethod = "LogNormalize", 
+                        useAssay = "counts", 
+                        outAssayName = "logcounts")
+sce <- runDimReduce(inSCE = sce, 
+                    method = "scaterPCA", 
+                    useAssay = "logcounts", 
+                    reducedDimName = "PCA")
+sce <- runDimReduce(inSCE = sce, 
+                    method = "rTSNE", 
+                    useReducedDim = "PCA", 
+                    reducedDimName = "TSNE")
+sce <- runTSCAN (inSCE = sce, 
+                 useReducedDim = "PCA", 
+                 seed = NULL)
+terminalNodes <- listTSCANTerminalNodes(sce, analysisName = "Pseudotime")
+sce <- runTSCANDEG(inSCE = sce, 
+                   pathIndex = terminalNodes[1])
 }
 \author{
 Nida Pervaiz
