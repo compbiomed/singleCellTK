@@ -1,0 +1,520 @@
+---
+title: "A La Carte Workflow Tutorial - PBMC3K"
+author: "Yichen Wang"
+output:
+  html_document:
+    toc: true
+    toc_depth: 5
+bibliography: references.bib
+csl: ieee.csl
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, eval = TRUE, message=FALSE, warning=FALSE)
+```
+
+```{r import, include=FALSE}
+library(singleCellTK)
+sce <- readRDS("tutorial_pbmc3k_qc.rds")
+```
+
+````{=html}
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+````
+
+## Introduction
+
+Single Cell Toolkit (singleCellTK, SCTK) is a package that works on single-cell RNA-seq (scRNAseq) dataset. SCTK allows users to import multiple datasets, perform quality control and a series of preprocessing, get clustering on cells and markers of clusters, and run various downstream analysis. Meanwhile, SCTK also wraps curated workflows for [celda](https://www.camplab.net/celda/) and [Seurat](https://satijalab.org/seurat/). 
+
+This tutorial takes the real-world scRNAseq dataset as an example, which consists of 2,700 Peripheral Blood Mononuclear Cells (PBMCs) collected from a healthy donor, namingly PBMC3K. This dataset is available from 10X Genomics and can be found on the 10X website. 
+
+Before heading into the next steps, we assume that users have already loaded SCTK, imported and QC'ed the PBMC3K data, following the [Import and QC Tutorial](import_and_qc_tutorial.html).
+
+## Normalization
+
+After removing cells of low quality, we next need to normalize the feature expression matrix. In this tutorial, we apply a global-scaling normalization method from [scater](https://bioconductor.org/packages/release/bioc/html/scater.html), `"logNormCounts"`. It normalizes the feature expression for each cell by the total expression, multiplies this by a scale factor, and log-transforms the result. 
+
+For detail about all normalization methods, please refer to the [Normalization Documentation](cnsl_normalization.html)
+
+````{=html}
+<!--Remember to change tabset id-->
+<div class="tabset" id="tabset1">
+<div class="tab">
+  <!--Remember to change tabset id argument of `openTab`-->
+  <button class="tablinks ia" onclick="openTab(event, 'ia', 'tabset1')">Interactive Analysis</button>
+  <button class="tablinks console" onclick="openTab(event, 'console', 'tabset1')">Console Analysis</button>
+</div>
+
+<div class="tabcontent ia">
+````
+
+![norm](ui_screenshots/ui_tutorial/norm.png)\
+
+1. Users should enter the section for normalization from the **"Normalization & Batch Correction"** tab at the top navigation panel.
+2. In the **"Normalization"** sub-tab, choose the method `"Scater - LogNormCounts"` from the left panel.
+3. Users can directly press the **"Run"** button at the bottom right without taking any more action. 
+
+````{=html}
+</div>
+<div class="tabcontent console">
+````
+
+SCTK has a generic wrapper function for various types of normalization, called `runNormalization()`. 
+
+```{R norm, results='hold'}
+sce <- runNormalization(sce, useAssay = "counts", outAssayName = "logcounts",
+                        normalizationMethod = "logNormCounts")
+```
+
+````{=html}
+</div>
+</div>
+````
+
+SCTK also supports a number of batch correction methods. Here we don't present the workflow because PBMC3k dataset only has one batch. For examples, please refer to the [document of batch correction](batch_correction.html).
+
+We also recommend performing the scaling method to standardize the variance, and this results in a better PCA. The UI and console function allow users to perform scaling on the expression assay. However, we don't recommend directly apply this to the full-sized expression matrix because the memory usage will be large. To accomplish this, we suggest finding the highly variable genes first in the next section, and only scaling the subset of the expression matrix as instructed. 
+
+## Variable Feature Selection
+
+Selecting highly variable genes (HVG) for downstream analyses is recommended, since a subset of variable features enhances the biological signal for community detection and reduces amount of data being used which hence speeds up the computation. SCTK wraps the methods used in [Seurat](https://satijalab.org/seurat/) and [Scran](https://bioconductor.org/packages/release/bioc/html/scran.html). We recommend keeping at least 2,000-5,000 HVGs. In this tutorial, we use the "modelGeneVar" method from Scarn, and select the top 2,000 genes. 
+
+````{=html}
+<!--Remember to change tabset id-->
+<div class="tabset" id="tabset2">
+<div class="tab">
+  <!--Remember to change 2 tabset id arguments of `openTab`-->
+  <button class="tablinks ia" onclick="openTab(event, 'ia', 'tabset2')">Interactive Analysis</button>
+  <button class="tablinks console" onclick="openTab(event, 'console', 'tabset2')">Console Analysis</button>
+</div>
+
+<div class="tabcontent ia">
+````
+
+Will write this after we confirm the change in UI
+
+````{=html}
+</div>
+<div class="tabcontent console">
+````
+
+SCTK requires at least two steps to create the HVG subset. The first step performs variability calculation and stores the metrics, and the second step selects top genes basing on the ranking of the metrics. 
+
+```{R hvg}
+sce <- runModelGeneVar(sce, useAssay = "logcounts")
+sce <- setTopHVG(sce, method = "modelGeneVar", hvgNumber = 2000, hvgListName = "hvg2000")
+```
+
+Users can also get the character vector of gene names:
+
+```{R getTopHVG}
+hvg <- getTopHVG(sce, useHVGList = "hvg2000")
+print(hvg[1:10])
+```
+
+The variability metrics and the top variable feature selection can also be visualized:
+
+```{R plotTopHVG}
+plotTopHVG(sce, method = "modelGeneVar", hvgNumber = 2000, labelsCount = 10)
+```
+
+````{=html}
+</div>
+</div>
+````
+
+## Dimension Reduction
+
+The next step is performing a principal component analysis (PCA), which creates new uncorrelated variables that successively maximize variance and finally increases the data interpretability and at the same time minimizes the information loss.  
+
+With the HVG selected from the previous step, we will perform PCA using the method from [Scater](http://bioconductor.org/packages/release/bioc/html/scater.html). As mentioned in the [Normalization section](#normalization), we will also have the selected HVG scaled in this step. 
+
+SCTK also supports Seurat's PCA and ICA method, which do a similar job. Please see: [Seurat Curated Workflow](cnsl_seurat_curated_workflow.html), and [Dimension Reduction Documentation](cnsl_dimensionality_reduction.html). 
+
+````{=html}
+<!--Remember to change tabset id-->
+<div class="tabset" id="tabset3">
+<div class="tab">
+  <!--Remember to change tabset id argument of `openTab`-->
+  <button class="tablinks ia" onclick="openTab(event, 'ia', 'tabset3')">Interactive Analysis</button>
+  <button class="tablinks console" onclick="openTab(event, 'console', 'tabset3')">Console Analysis</button>
+</div>
+
+<div class="tabcontent ia">
+````
+
+Contents for UI 2
+
+````{=html}
+</div>
+<div class="tabcontent console">
+````
+
+Here we use the wrapper function `scaterPCA()`. The name of transformed normalized expression matrix can be passed to `useAssay` (by default `useAssay = "logcounts"`), and the name of the HVG subset should be passed to `useHVGList`. The scaling will be done by Scater by setting `scale = TRUE` (default). The output PCs will be updated in the `reducedDims` slot of the SCE object, named by `"PCA"` by default. 
+
+```{R pca}
+sce <- scaterPCA(sce, useHVGList = "hvg2000", seed = 12345)
+```
+
+Afterwards, users can make scatter plots to visualize the top dimensions that explains the most variance of the original data:
+
+```{R plotPCA}
+plotDimRed(sce, useReduction = "PCA")
+```
+
+````{=html}
+</div>
+</div>
+````
+
+## 2D Embedding
+
+Uniform Manifold Approximation and Projection (UMAP) and  t-distributed Stochastic Neighbor Embedding (tSNE) are the most commonly used methods to visualize the relationships between the cells in a 2-D embedding. UMAP gives a better presentation of the global structure and is more efficient, while tSNE performs better in preserving the local structure. 
+
+In this tutorial, we calculate a UMAP embedding from the principal components generated in the previous step. We will use only 10 dimensions out of the 50 dimensions generated. 
+
+````{=html}
+<!--Remember to change tabset id-->
+<div class="tabset" id="tabset4">
+<div class="tab">
+  <!--Remember to change tabset id argument of `openTab`-->
+  <button class="tablinks ia" onclick="openTab(event, 'ia', 'tabset4')">Interactive Analysis</button>
+  <button class="tablinks console" onclick="openTab(event, 'console', 'tabset4')">Console Analysis</button>
+</div>
+
+<div class="tabcontent ia">
+````
+
+Contents for UI 2
+
+````{=html}
+</div>
+<div class="tabcontent console">
+````
+
+A UMAP can be generated with the function `getUMAP()`, which is a wrapper of `scater::calculateUMAP()` method. We will now use `useReducedDim` argument to pass the PCA embedding just generated to the function. The result will be saved in `reducedDim` slot. 
+
+Users can also create the tSNE embedding with `getTSNE()` function, which works in a similar way as `getUMAP()`
+
+```{R UMAP, results="hold"}
+sce <- getUMAP(sce, useReducedDim = "PCA", initialDims = 10, seed = 12345)
+```
+
+```{R plotUMAP}
+plotDimRed(sce, useReduction = "UMAP")
+```
+
+````{=html}
+</div>
+</div>
+````
+
+## Clustering
+
+SCTK supports clustering cells with Shared Nearest Neighbors (SNN) graph based methods and K-Means algorithm. For SNN graph based methods, we wrap the graph constructor from `scran` library, and have options of algorithms from `igraph` that can perform clustering on the graph. Alternatively, in the [Seurat Curated Workflow](cnsl_seurat_curated_workflow.html), the Seurat's SNN graph construction and community detection method are also wrapped as one method. 
+
+````{=html}
+<!--Remember to change tabset id-->
+<div class="tabset" id="tabset5">
+<div class="tab">
+  <!--Remember to change tabset id argument of `openTab`-->
+  <button class="tablinks ia" onclick="openTab(event, 'ia', 'tabset5')">Interactive Analysis</button>
+  <button class="tablinks console" onclick="openTab(event, 'console', 'tabset5')">Console Analysis</button>
+</div>
+
+<div class="tabcontent ia">
+````
+
+Contents for UI 2
+
+````{=html}
+</div>
+<div class="tabcontent console">
+````
+
+Now we will use the same 10 components from the PCA, as we generated the UMAP, for building the SNN graph and detecting the communities. With `runScranSNN()` function, the dimension reduction matrix can be specified through argument `useReducedDim`, and the cluster label assignment will be updated in the `colData` slot, and the variable will be named by argument `clusterName`. 
+
+The default graph clustering algorithm is Louvain, while we also provide options including Leiden, Walktrap and etc. (from `igraph`). Though there could be algorithm specific parameters, the argument `k` can always be tweaked as it affects the connectivity of the graph. When `k` is larger, stronger connection will be constructed across the cells, thus larger and fewer clusters will be identified. 
+
+```{R cluster, results="hold"}
+sce <- runScranSNN(sce, useReducedDim = "PCA", clusterName = "cluster", nComp = 10, seed = 12345, )
+```
+
+In the other curated workflow that SCTK wraps ([Celda Curated Workflow](celda_curated_workflow.html)), we use a Bayesian hierarchical model that can bi-cluster features into modules and observations into subpopulations. For detail of this method, please refer to the [Celda Documentation](https://celda.camplab.net).
+
+After getting the cluster labeling, we can then visualize it:
+
+```{R plotCluster}
+plotSCEDimReduceColData(sce, "cluster", "UMAP")
+```
+
+````{=html}
+</div>
+</div>
+````
+
+## Marker Detection
+
+Users can next perform marker detection process with the cluster labels, or any other types of reasonable grouping of similar biological state of cells stored in the cell metadata. SCTK finds markers for each cluster by running differential expression (DE) analysis on one cluster against all other clusters and iterating the same process for each cluster.
+
+````{=html}
+<!--Remember to change tabset id-->
+<div class="tabset" id="tabset6">
+<div class="tab">
+  <!--Remember to change tabset id argument of `openTab`-->
+  <button class="tablinks ia" onclick="openTab(event, 'ia', 'tabset6')">Interactive Analysis</button>
+  <button class="tablinks console" onclick="openTab(event, 'console', 'tabset6')">Console Analysis</button>
+</div>
+
+<div class="tabcontent ia">
+````
+
+Contents for UI 2
+
+````{=html}
+</div>
+<div class="tabcontent console">
+````
+
+Although we selected the variable features and reduced the dimensionality of the original expression matrix, here we will get back to the transformed normalized counts of all features. 
+
+```{R findMarker, message=FALSE, warning=FALSE, results="hold"}
+sce <- findMarkerDiffExp(sce, useAssay = "logcounts", method = "wilcox", cluster = "cluster")
+```
+
+By running `findMarkerDiffExp()`, SCTK stores a `data.frame` of marker table to the `matadata` slot of the SCE object. The marker table will include all detected markers for each cluster and statistical values associated to each marker. To fetch the table, users can use the command below, and even add filtering parameters.  
+
+```{R getMarkerTable, results="hold"}
+topMarkers <- findMarkerTopTable(sce, topN = 1, log2fcThreshold = 0, fdrThreshold = 0.05,
+                                 minClustExprPerc = 0.5, maxCtrlExprPerc = 0.5,
+                                 minMeanExpr = 0)
+head(topMarkers, 10)
+```
+
+For visualization, SCTK has a specific heatmap plotting function for detected markers. The heatmap will take the log-normalized feature expression matrix for the values (scaled when plotting), and subset the features to only the top markers of each cluster. For the organization of the heatmap, the function groups the markers by the belonging to the clusters, and groups the cells, obviously, by clusters. 
+
+```{R markerHeatmap, results="hold", fig.height= 8, fig.width=9}
+plotMarkerDiffExp(sce, topN = 5, log2fcThreshold = 0, 
+                  fdrThreshold = 0.05, minClustExprPerc = 0.5, 
+                  maxCtrlExprPerc = 0.5, minMeanExpr = 0, 
+                  rowLabel = TRUE)
+```
+
+````{=html}
+</div>
+</div>
+````
+
+## Differential Expression Analysis
+
+Beyond finding the markers for each cluster, usually people are also interested in the differential expression between specific clusters and even groups of clusters. SCTK provides a relatively flexible way for conducting such analysis. 
+
+There are multiple ways to specify the groups of cells to be compared: by either directly specifying indices of cells, or selecting groups of cells with a categorical variable annotated in the cell metadata. However, when running DE analysis, SCTK requires a relatively sophisticated inputs for naming the analyses, including the names of the two groups, and the name of one analysis, though these are not necessary for calling the algorithms alone. By requiring these, the results of the analyses can be stored with human readable identifiers and within one single data container (SCE object), and can be more manageable. See the [DE documentation](differential_expression.html) for the detail. 
+
+````{=html}
+<!--Remember to change tabset id-->
+<div class="tabset" id="tabset7">
+<div class="tab">
+  <!--Remember to change tabset id argument of `openTab`-->
+  <button class="tablinks ia" onclick="openTab(event, 'ia', 'tabset7')">Interactive Analysis</button>
+  <button class="tablinks console" onclick="openTab(event, 'console', 'tabset7')">Console Analysis</button>
+</div>
+
+<div class="tabcontent ia">
+````
+
+Contents for UI 2
+
+````{=html}
+</div>
+<div class="tabcontent console">
+````
+
+As we can easily tell from the find-marker heatmap above, "cluster 8" and "cluster 6" are having a very similar expression profile in terms of the top markers detected. In order to further explore the difference between these two clusters, or any other two reasonable groups of cells, user can use the function `runDEAnalysis()`. 
+
+`runDEAnalysis()` is a generic function for performing differential expression (DE) analysis between two selected groups of cells. This is also used by `findMarkerDiffExp()`. By running DE analysis, the function will take the expression assay with all features and perform statistical analysis to discover quantitative changes in expression levels between selected groups. 
+
+```{R de, results="hold"}
+sce <- runDEAnalysis(inSCE = sce, method = "wilcox", useAssay = "logcounts",
+                     class = "cluster", classGroup1 = c(8), classGroup2 = c(6),
+                     groupName1 = "cluster8", groupName2 = "cluster6", 
+                     analysisName = "cluster8_VS_6")
+```
+
+Similarly to the marker detection section, SCTK also has a DE analysis specific heatmap plotting function, `plotDEGHeatmap()`. Here, users can just easily enter the `analysisName` specified for one run and the function will automatically arrange the output. The heatmap is also splitted into a "checker board", by the "conditions" (i.e. the groups selected when running `runDEAnalysis()`) and the "regulation" (i.e. "up" if the log2 fold change is positive in "group1" against "group2"). 
+
+```{R deHeatmap, message=FALSE, warning=FALSE, results="hold", fig.height=7}
+plotDEGHeatmap(sce, useResult = "cluster8_VS_6")
+```
+
+Additionally, the input matrix for DE analysis can be specified with either `useAssay` or `useReducedDim`. When one of them is specified, the other has to be `NULL`, to avoid ambiguity. For example, when users perform a pathway analysis and get a score matrix stored in `reducedDims` slot, DE analysis can be performed on this score matrix. See [example](#performing-de-analysis-on-pathway-analysis-scores).
+
+````{=html}
+</div>
+</div>
+````
+
+## Cell Type Labeling
+
+SCTK adopts [SingleR](https://bioconductor.org/packages/release/bioc/html/SingleR.html) method for labeling the cell types. Briefly, this method labels each cell (or cluster) in users' datasets basing on similarity to a reference datasets. SingleR has recommended some datasets, so we enable quick loading of these references. Please see [Cell Type Labeling Documentation](cell_type_labeling.html) for detail.  
+
+>Note: Choosing a reference from the recommended builtin references would also require some prior knowledge of user data. **Users should choose a reference that covers the cell types possibly exist in the user dataset.** SingleR works by scoring the similarity to each cell type and assigning a cell type by the highest score, regardless of how low the score is. A beta cell from pancrea data cound even be wrongly labeled as a platelet if using a blood cell reference. 
+
+````{=html}
+<!--Remember to change tabset id-->
+<div class="tabset" id="tabset8">
+<div class="tab">
+  <!--Remember to change tabset id argument of `openTab`-->
+  <button class="tablinks ia" onclick="openTab(event, 'ia', 'tabset8')">Interactive Analysis</button>
+  <button class="tablinks console" onclick="openTab(event, 'console', 'tabset8')">Console Analysis</button>
+</div>
+
+<div class="tabcontent ia">
+````
+
+Contents for UI 2
+
+````{=html}
+</div>
+<div class="tabcontent console">
+````
+
+The recommended reference can be chosen by specifying the abbreviation name of them in argument `useBltinRef`. Please click on the function name for usage detail. 
+
+```{R singleR, results="hold"}
+sce <- runSingleR(sce, useAssay = "logcounts", level = "fine")
+```
+
+The result of labeling will again be saved to `colData` slot of the SCE object. There will be multiple types of information being stored, including a scoring matrix named by `"SingleR_{ref}_{level}_scores"`, where `{ref}` refers to the reference selected, `{level}` refers to the `level` argument being passed to the function. And three `"SingleR_{ref}_{level}_{typeOfLabels}"` columns, where `{typeOfLabels}` includes `first.labels`, `labels`, `pruned.labels`. For the difference, please refer to `?SingleR::classifySingleR`.  
+
+We can also plot the labeling on to the UMAP we got previously.  
+
+```{R singleRUMAP, message=FALSE, warning=FALSE, fig.width=12}
+plotSCEDimReduceColData(sce, colorBy = "SingleR_hpca_fine_pruned.labels",
+                        reducedDimName = "UMAP")
+```
+
+````{=html}
+</div>
+</div>
+````
+
+## Differential Abundance
+
+The goal of the differential abundance analysis is to determine if categorical variables such as phenotype or sample (e.g. treatment or control) are enriched in different cell clusters using the Fisher's exact test (FET). Any categorical variables in `colData(sce)` can be used by passing the variable name to argument `cluster` or `variable`. Categories in the phenotype variable (used for `variable`) can be passed to `case` or `control`. For this example, we try to examine whether there are any [cell clusters](#clustering) enriched in an annotated cell type [using SingleR](#cell-type-labeling). 
+
+```{R diffAbundance, fig.width=10}
+# Returns a vector where TRUE for a type of NK cell
+isNKCell <- startsWith(colData(sce)$SingleR_hpca_fine_pruned.labels, "NK_cell")
+# Returns a vector where TRUE for a type of T cell
+isTCell <- startsWith(colData(sce)$SingleR_hpca_fine_pruned.labels, "T_cell")
+# Make up a variable with only categories of "NK_cell", "T_cell" and "Other".
+colData(sce)$cell_type <- ifelse(isNKCell, "NK_cell", "Other")
+colData(sce)$cell_type[isTCell] <- "T_cell"
+colData(sce)$cell_type[is.na(colData(sce)$cell_type)] <- "Other"
+# Run differential abundance test
+sce <- diffAbundanceFET(sce, cluster = "cluster", 
+                        variable = "cell_type", 
+                        case = "NK_cell", control = "T_cell",
+                        analysisName = "NK_VS_T")
+```
+
+Users can get the table of result with the method below, using the `analysisName` specified when running the analysis. 
+
+```{R getDiffAbundanceCode, eval=FALSE}
+getDiffAbundanceResults(sce, analysisName = "NK_VS_T")
+```
+
+```{R getDiffAbundanceShow, echo=FALSE}
+res <- getDiffAbundanceResults(sce, analysisName = "NK_VS_T")
+knitr::kable(format(res, digits = 3))
+```
+
+Alternatively, users can choose to directly make a plot using the two variables and the function `plotClusterAbundance()` will automatically calculate the statistic and visualize the result. The proportion or count of each category in each cluster will be displayed in stacked bar plots:
+
+```{R plotClusterAbundance, fig.height=7}
+plotClusterAbundance(sce, cluster = "cluster", variable = "cell_type")
+```
+
+## Pathway Analysis
+
+For the purpose of gene set enrichment (GSE) analysis, SCTK imports VAM and GSVA as options. Both of them work by loading some user-defined gene sets ([more about loading gene sets](import_genesets.html)), and calculating the enrichment score of each gene set in each cell. Here we will go through calling VAM to inspect the enrichment of the hallmark gene sets available in [MSigDB database](https://www.gsea-msigdb.org/gsea/msigdb/).  
+
+````{=html}
+<!--Remember to change tabset id-->
+<div class="tabset" id="tabset10">
+<div class="tab">
+  <!--Remember to change tabset id argument of `openTab`-->
+  <button class="tablinks ia" onclick="openTab(event, 'ia', 'tabset10')">Interactive Analysis</button>
+  <button class="tablinks console" onclick="openTab(event, 'console', 'tabset10')">Console Analysis</button>
+</div>
+
+<div class="tabcontent ia">
+````
+
+Contents for UI 2
+
+````{=html}
+</div>
+<div class="tabcontent console">
+````
+
+```{R VAM}
+sce <- importGeneSetsFromMSigDB(sce, categoryIDs = "H", species = "Homo sapiens")
+sce <- runVAM(sce, geneSetCollectionName = "H", useAssay = "logcounts")
+```
+
+To visualize the result, we simply adopt a violin plot to show the distribution of the CDF scores of the cells, which can be, optionally, grouped by the cluster labels. 
+
+```{R visVAM}
+hallmark <- "HALLMARK_INFLAMMATORY_RESPONSE"
+plotPathway(sce, resultName = "VAM_H_CDF", geneset = hallmark, groupBy = "cluster")
+```
+
+Note that available options for argument `resultName` and `geneset` can be printed with getter functions below.
+
+```{R pathwayGetter, eval=FALSE}
+getPathwayResultNames(sce)
+getGenesetNamesFromCollection(sce, geneSetCollectionName = "H")
+```
+
+>Note: In the current version of SCTK, the returned score matrices from either VAM or GSVA are stored in the `reducedDims` slot, since the feature dimensions are for the gene sets instead of the genes or subsets of genes. In the future, SCTK will adopt other types of data container for simpler operation on different types of feature sets. 
+
+Additionally, SCTK allows users to select the score matrix from pathway analysis to perform differential expression analysis. In this process, each geneset will be treated as the feature, and comparison groups can still be set in the same way as introduced in [DE analysis section](#customized-differential-expression-analysis). 
+
+```{R pathwayDE, fig.height=9, fig.width=9}
+sce <- runDEAnalysis(inSCE = sce, method = "wilcox", useReducedDim = "VAM_H_CDF",
+                     class = "cluster", classGroup1 = c(3, 6, 8), classGroup2 = c(7),
+                     groupName1 = "T_cells", groupName2 = "monocytes", 
+                     analysisName = "T_cells_VS_monocytes_VAM_H_CDF")
+plotDEGHeatmap(sce, useResult = "T_cells_VS_monocytes_VAM_H_CDF", rowTitle = "Geneset", log2fcThreshold = 0.05)
+```
+
+````{=html}
+</div>
+</div>
+````
+
+Any ending paragraph?
+
+````{=html}
+<script>
+var ia_contents = document.getElementsByClassName("tabcontent ia")
+for (var i = 0; i < ia_contents.length; i++){
+    ia_contents[i].style.display = "block";
+}
+var cnsl_contents = document.getElementsByClassName("tabcontent console")
+for (var i = 0; i < cnsl_contents.length; i++){
+    cnsl_contents[i].style.display = "none";
+}
+var ia_buttons = document.getElementsByClassName("tablinks ia")
+for (var i = 0; i < ia_buttons.length; i++){
+    ia_buttons[i].classList.add("active");
+}
+</script>
+</body>
+````
+

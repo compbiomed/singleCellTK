@@ -164,8 +164,10 @@ navbar:
       href: articles/installation.html
     - text: "Tutorials"
       menu:
-      - text: "A La Carte Workflow - PBMC3K (R Console)"
-        href: articles/console_analysis_tutorial.html
+      - text: "Get Started - Importing and QC - PBMC3K"
+        href: articles/01_import_and_qc_tutorial.html
+      - text: "A La Carte Workflow - PBMC3K"
+        href: articles/02_a_la_carte_workflow.html
       - text: "Seurat Curated Workflow - PBMC3K"
         href: articles/cnsl_seurat_curated_workflow.html
       - text: "Celda Curated Workflow - PBMC3K"

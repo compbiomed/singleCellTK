@@ -42,18 +42,17 @@
     }
     if (is.null(useAssay) & is.null(useReducedDim)) {
       stop("`useAssay` or `useReducedDim` must be specified.")
-    } else if (!is.null(useAssay) & !is.null(useReducedDim)) {
-      stop("Only one of `useAssay` or `useReducedDim` can be specified.")
     } else {
-      if (!is.null(useAssay)) {
-        if(!useAssay %in% SummarizedExperiment::assayNames(inSCE)){
-          stop(paste('"useAssay" name: ', useAssay, ' not found.'))
-        }
-      } else {
+      if (!is.null(useReducedDim)) {
         if(!useReducedDim %in% SingleCellExperiment::reducedDimNames(inSCE)){
           stop(paste('"useReducedDim" name: ', useReducedDim, ' not found.'))
         }
-      }
+        useAssay <- NULL
+      } else {
+        if(!useAssay %in% SummarizedExperiment::assayNames(inSCE)){
+          stop(paste('"useAssay" name: ', useAssay, ' not found.'))
+        }
+      } 
     }
   
     if(is.null(index1) && (is.null(classGroup1) || is.null(class))){
@@ -205,10 +204,9 @@
 #' while others expect logcounts. 
 #' 
 #' Condition specification allows two methods:
-#' 1. Index level selection. Arguments \code{index1} and \code{index2} will be
-#' used.
-#' 2. Annotation level selection. Arguments \code{class}, \code{classGroup1} and
-#' \code{classGroup2} will be used.
+#' 1. Index level selection. Only use arguments \code{index1} and \code{index2}.
+#' 2. Annotation level selection. Only use arguments \code{class}, 
+#' \code{classGroup1} and \code{classGroup2}.
 #' @seealso See \code{\link{plotDEGHeatmap}}, \code{\link{plotDEGRegression}}, 
 #' \code{\link{plotDEGViolin}} and \code{\link{plotDEGVolcano}} for 
 #' visualization method after running DE analysis. 
@@ -217,11 +215,10 @@
 #' \code{runDEAnalysis()}. Choose from \code{"wilcox"}, \code{"MAST"}, 
 #' \code{"DESeq2"}, \code{"Limma"}, \code{"ANOVA"}. Default \code{"wilcox"}.
 #' @param useAssay character. A string specifying which assay to use for the
-#' DE regression. Default \code{"counts"} for DESeq2, \code{"logcounts"} for 
-#' other methods. 
+#' DE regression. Ignored when \code{useReducedDim} is specified. Default 
+#' \code{"counts"} for DESeq2, \code{"logcounts"} for other methods. 
 #' @param useReducedDim character. A string specifying which reducedDim to use
-#' for DE analysis. Usually a pathway analysis result matrix. Set 
-#' \code{useAssay} to \code{NULL} when using. Default \code{NULL}. 
+#' for DE analysis. Will treat the dimensions as features. Default \code{NULL}. 
 #' @param index1 Any type of indices that can subset a
 #' \linkS4class{SingleCellExperiment} inherited object by cells. Specifies
 #' which cells are of interests. Default \code{NULL}.
@@ -275,14 +272,15 @@
 #'  groupName2 = "group2", index1 = seq(20), index2 = seq(21,40),
 #'  analysisName = "Limma")
 #'
-#' @return The input \linkS4class{SingleCellExperiment} object with
-#' \code{metadata(inSCE)$diffExp} updated with the results: a list named by
-#' \code{analysisName}, with \code{$groupNames} containing the naming of the
-#' two conditions, \code{$useAssay} and \code{$useReducedDim} storing the matrix
-#' name that was used for calculation, \code{$select} storing the cell selection
-#' indices (logical) for each condition, \code{$result} storing a 
-#' \code{\link{data.frame}} of the DEGs summary, and \code{$method} storing the 
-#' character method name used.
+#' @return The input \linkS4class{SingleCellExperiment} object, where
+#' \code{metadata(inSCE)$diffExp} is updated with a list named by
+#' \code{analysisName}, with elements of: 
+#' \item{$groupNames}{the naming of the two conditions}
+#' \item{$useAssay, $useReducedDim}{the matrix name that was used for 
+#' calculation}
+#' \item{$select}{the cell selection indices (logical) for each condition}
+#' \item{$result}{a \code{data.frame} of the DEGs table}
+#' \item{$method}{the method used}
 #' @export
 runDEAnalysis <- function(method = c('wilcox', 'MAST', 'DESeq2', 'Limma', 
                                      'ANOVA'), ...){
@@ -310,6 +308,7 @@ runDESeq2 <- function(inSCE, useAssay = 'counts', useReducedDim = NULL,
                                  class, classGroup1, classGroup2, groupName1,
                                  groupName2, analysisName, covariates,
                                  overwrite)
+    useAssay <- resultList$useAssay
     ix1 <- resultList$select$ix1
     ix2 <- resultList$select$ix2
     subsetIdx <- (ix1 | ix2)
@@ -388,6 +387,7 @@ runLimmaDE <- function(inSCE, useAssay = 'logcounts', useReducedDim = NULL,
                                  class, classGroup1, classGroup2, groupName1,
                                  groupName2, analysisName, covariates,
                                  overwrite)
+    useAssay <- resultList$useAssay
     ix1 <- resultList$select$ix1
     ix2 <- resultList$select$ix2
     subsetIdx <- (ix1 | ix2)
@@ -460,7 +460,7 @@ runANOVA <- function(inSCE, useAssay = 'logcounts', useReducedDim = NULL,
                                  class, classGroup1, classGroup2, groupName1,
                                  groupName2, analysisName, covariates,
                                  overwrite)
-
+    useAssay <- resultList$useAssay
     ix1 <- resultList$select$ix1
     ix2 <- resultList$select$ix2
     subsetIdx <- (ix1 | ix2)
@@ -559,7 +559,7 @@ runMAST <- function(inSCE, useAssay = 'logcounts', useReducedDim = NULL,
                                  class, classGroup1, classGroup2, groupName1,
                                  groupName2, analysisName, covariates,
                                  overwrite)
-
+    useAssay <- resultList$useAssay
     ix1 <- resultList$select$ix1
     ix2 <- resultList$select$ix2
     cells1 <- which(ix1)
@@ -667,6 +667,7 @@ runWilcox <- function(inSCE, useAssay = 'logcounts', useReducedDim = NULL,
                                class, classGroup1, classGroup2, groupName1,
                                groupName2, analysisName, covariates,
                                overwrite)
+  useAssay <- resultList$useAssay
   if (!is.null(covariates)) {
     warning("Wilcoxon test from Scran does not support covariate modeling.
             Ignoring this argument in calculation, but will be included in
