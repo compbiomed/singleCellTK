@@ -9,13 +9,12 @@ components within the sce object}
 runSeuratICA(
   inSCE,
   useAssay = "seuratScaledData",
-  features = NULL,
-  useHVGList = NULL,
+  useFeatureSubset = NULL,
   scale = TRUE,
   reducedDimName = "seuratICA",
   nics = 20,
   seed = NULL,
-  verbose = FALSE
+  verbose = TRUE
 )
 }
 \arguments{
@@ -23,12 +22,10 @@ runSeuratICA(
 
 \item{useAssay}{Assay containing scaled counts to use in ICA.}
 
-\item{features}{Specify the feature names or rownames which should be used
-for computation of PCA. Default is \code{NULL}.}
-
-\item{useHVGList}{A character string indicating a \code{rowData} variable 
-that stores the logical vector of HVG selection. Ignored when using 
-\code{features}. Default \code{NULL}.}
+\item{useFeatureSubset}{Subset of feature to use for dimension reduction. A 
+character string indicating a \code{rowData} variable that stores the logical
+vector of HVG selection, or a vector that can subset the rows of 
+\code{inSCE}. Default \code{NULL}.}
 
 \item{scale}{Logical scalar, whether to standardize the expression values 
 using \code{\link[Seurat]{ScaleData}}. Default \code{TRUE}.}
@@ -40,6 +37,9 @@ Default \code{seuratICA}.}
 
 \item{seed}{Random seed for reproducibility of results.
 Default \code{NULL} will use global seed in use by the R environment.}
+
+\item{verbose}{Logical value indicating if informative messages should
+be displayed. Default is \code{TRUE}.}
 }
 \value{
 Updated \code{SingleCellExperiment} object which now contains the
@@ -52,12 +52,13 @@ components within the sce object
 }
 \details{
 For features used for computation, it can be controlled by \code{features} or
-\code{useHVGList}. When \code{features} is specified, the scaling and 
+\code{useFeatureSubset}. When \code{features} is specified, the scaling and 
 dimensionality reduction will only be processed with these features. When 
-\code{features} is \code{NULL} but \code{useHVGList} is specified, will use
-the features that the HVG list points to. If both parameters are \code{NULL},
-the function will see if any Seurat's variable feature detection has been 
-ever performed, and use them if found. Otherwise, all features are used.
+\code{features} is \code{NULL} but \code{useFeatureSubset} is specified, will
+use the features that the HVG list points to. If both parameters are 
+\code{NULL}, the function will see if any Seurat's variable feature detection
+has been ever performed, and use them if found. Otherwise, all features are 
+used.
 }
 \examples{
 data(scExample, package = "singleCellTK")

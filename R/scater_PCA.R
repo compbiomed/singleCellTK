@@ -6,8 +6,10 @@
 #' @param useAssay Assay to use for PCA computation. If \code{useAltExp} is
 #' specified, \code{useAssay} has to exist in
 #' \code{assays(altExp(inSCE, useAltExp))}. Default \code{"logcounts"}
-#' @param useHVGList A character string indicating a \code{rowData} variable 
-#' that stores the logical vector of HVG selection. Default \code{NULL}.
+#' @param useFeatureSubset Subset of feature to use for dimension reduction. A 
+#' character string indicating a \code{rowData} variable that stores the logical
+#' vector of HVG selection, or a vector that can subset the rows of 
+#' \code{inSCE}. Default \code{NULL}.
 #' @param scale Logical scalar, whether to standardize the expression values.
 #' Default \code{TRUE}.
 #' @param reducedDimName Name to use for the reduced output assay. Default
@@ -31,7 +33,7 @@
 #' @importFrom SingleCellExperiment reducedDim altExp rowSubset
 #' @importFrom SummarizedExperiment rowData
 #' @importFrom S4Vectors metadata<-
-scaterPCA <- function(inSCE, useAssay = "logcounts", useHVGList = NULL, 
+scaterPCA <- function(inSCE, useAssay = "logcounts", useFeatureSubset = NULL, 
                       scale = TRUE, reducedDimName = "PCA", nComponents = 50, 
                       useAltExp = NULL, seed = NULL, 
                       BPPARAM = BiocParallel::SerialParam()) {
@@ -53,30 +55,18 @@ scaterPCA <- function(inSCE, useAssay = "logcounts", useHVGList = NULL,
     }
     sce <- inSCE
   }
-  subset_row <- NULL
-  if (!is.null(useHVGList)) {
-    if (!useHVGList %in% colnames(rowData(inSCE))) {
-      stop("Specified HVG list not found")
-    }
-    hvgs <- rownames(inSCE)[rowSubset(inSCE, useHVGList)]
-    subset_row <- rownames(sce) %in% hvgs
-  }
+  subset_row <- .parseUseFeatureSubset(inSCE, useFeatureSubset, 
+                                       altExpObj = sce, returnType = "logical")
   message(paste0(date(), " ... Computing Scater PCA."))
-  if (!is.null(seed)) {
-    withr::with_seed(seed = seed,
-                     code = sce <- scater::runPCA(sce, 
-                                                  name = reducedDimName, 
-                                                  exprs_values = useAssay,
-                                                  ncomponents = nComponents, 
-                                                  scale = scale, 
-                                                  subset_row = subset_row,
-                                                  BPPARAM = BPPARAM))
-  } else {
+  .withSeed(seed, {
     sce <- scater::runPCA(sce, name = reducedDimName, exprs_values = useAssay,
                           ncomponents = nComponents, scale = scale, 
                           subset_row = subset_row, BPPARAM = BPPARAM)
-  }
+  })
   reducedDim(inSCE, reducedDimName) <- reducedDim(sce, reducedDimName)
   metadata(inSCE)$sctk$runDimReduce$reddim[[reducedDimName]] <- params
   return(inSCE)
 }
+
+
+

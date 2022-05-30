@@ -2792,16 +2792,16 @@ shinyServer(function(input, output, session) {
       }  else {
         dimrednamesave <- gsub(" ", "_", input$dimRedNameInput)
         
-        useHVGList <- input$dimRedHVGSelect
+        useFeatureSubset <- input$dimRedHVGSelect
         if (input$dimRedHVGSelect == "None") {
-          useHVGList <- NULL
+          useFeatureSubset <- NULL
         }
         vals$counts <- runDimReduce(
           inSCE = vals$counts,
           useAssay = vals$runDimred$dimRedAssaySelect,
           useAltExp = dimRedUseAltExp,
           method = input$dimRedPlotMethod,
-          useHVGList = useHVGList,
+          useFeatureSubset = useFeatureSubset,
           scale = input$dimRedScale,
           nComponents = input$dimRedNumberDims,
           reducedDimName = dimrednamesave,
@@ -3007,42 +3007,58 @@ shinyServer(function(input, output, session) {
       }
     }
 
-    appendTab(inputId = "dimRedPCAICA_plotTabset", tabPanel(title = "Component Plot",
-                                                            panel(
-                                                              tags$script("Shiny.addCustomMessageHandler('close_dropDownDimRedComponentPlot', function(x){$('html').click();});"),
-                                                              fluidRow(
-                                                                column(4, dropdown(
-                                                                  fluidRow(
-                                                                    column(12,
-                                                                           fluidRow(actionBttn(inputId = "closeDropDownDimRedComponentPlot", label = NULL, style = "simple", color = "danger", icon = icon("times"), size = "xs"), align = "right"),
-                                                                           selectizeInput(
-                                                                             inputId = "plotDimRed_pca_selectRedDim",
-                                                                             label = "Select reducedDim:",
-                                                                             choices = reducedDimNames(vals$counts)
-                                                                           ),
-                                                                           numericInput(inputId = "plotDimRed_pca_dimX", label = "Select component for X-axis:", value = 1),
-                                                                           numericInput(inputId = "plotDimRed_pca_dimY", label = "Select component for Y-axis:", value = 2),
-                                                                           actionBttn(
-                                                                             inputId = "updateRedDimPlot_pca",
-                                                                             label = "Update",
-                                                                             style = "bordered",
-                                                                             color = "primary",
-                                                                             size = "sm"
-                                                                           )
-                                                                    )
-                                                                  ),
-                                                                  inputId = "dropDownDimRedComponentPlot",
-                                                                  icon = icon("cog"),
-                                                                  status = "primary",
-                                                                  circle = FALSE,
-                                                                  inline = TRUE
-                                                                )),
-                                                                column(6, fluidRow(h6("Scatterplot of cells on selected components from a dimensionality reduction"), align = "center"))
-                                                              ),
-                                                              hr(),
-                                                              br(),
-                                                                  plotlyOutput(outputId = "plotDimRed_pca")
-                                                            )
+    appendTab(inputId = "dimRedPCAICA_plotTabset", 
+              tabPanel(
+                title = "Component Plot",
+                panel(
+                  tags$script("Shiny.addCustomMessageHandler('close_dropDownDimRedComponentPlot', function(x){$('html').click();});"),
+                  fluidRow(
+                    column(
+                      4, 
+                      dropdown(
+                        fluidRow(
+                          column(
+                            12,
+                            fluidRow(
+                              actionBttn(inputId = "closeDropDownDimRedComponentPlot", 
+                                         label = NULL, style = "simple", 
+                                         color = "danger", 
+                                         icon = icon("times"), size = "xs"), 
+                              align = "right"),
+                            selectizeInput(
+                              inputId = "plotDimRed_pca_selectRedDim",
+                              label = "Select reducedDim:",
+                              choices = reducedDimNames(vals$counts)
+                            ),
+                            numericInput(inputId = "plotDimRed_pca_dimX", 
+                                         label = "Select component for X-axis:", 
+                                         value = 1),
+                            numericInput(inputId = "plotDimRed_pca_dimY", 
+                                         label = "Select component for Y-axis:", 
+                                         value = 2),
+                            actionBttn(
+                              inputId = "updateRedDimPlot_pca",
+                              label = "Update",
+                              style = "bordered",
+                              color = "primary",
+                              size = "sm"
+                            )
+                          )
+                        ),
+                        inputId = "dropDownDimRedComponentPlot",
+                        icon = icon("cog"),
+                        status = "primary",
+                        circle = FALSE,
+                        inline = TRUE
+                      )),
+                    column(
+                      6, 
+                      fluidRow(h6("Scatterplot of cells on selected components from a dimensionality reduction"), align = "center"))
+                  ),
+                  hr(),
+                  br(),
+                  plotlyOutput(outputId = "plotDimRed_pca")
+                )
     ))
     
     message(paste0(date(), " ... Plotting PCA/ICA."))
@@ -3194,11 +3210,11 @@ shinyServer(function(input, output, session) {
                  "different name for this reducedDim.")
           } else {
             dimrednamesave <- gsub(" ", "_", input$dimRedNameInput_tsneUmap)
+            useFeatureSubset <- input$hvg_tsneUmap
+            if (input$hvg_tsneUmap == "None") {
+              useFeatureSubset <- NULL
+            }
             if (input$dimRedPlotMethod_tsneUmap == "rTSNE"){
-              useHVGList <- input$hvg_tsneUmap
-              if (input$hvg_tsneUmap == "None") {
-                useHVGList <- NULL
-              }
               vals$counts <- runDimReduce(
                 inSCE = vals$counts,
                 useAssay = embedUseAssay,
@@ -3206,7 +3222,7 @@ shinyServer(function(input, output, session) {
                 useAltExp = embedUseAltExp,
                 method = "rTSNE",
                 logNorm = input$logNorm_tsneUmap, 
-                useHVGList = useHVGList, 
+                useFeatureSubset = useFeatureSubset, 
                 center = input$scale_tsneUmap, 
                 scale = input$scale_tsneUmap, 
                 pca = input$pca_tsneUmap, 
@@ -3237,6 +3253,7 @@ shinyServer(function(input, output, session) {
                   useReducedDim = embedUseRedDim,
                   useAltExp = embedUseAltExp,
                   method = "seuratTSNE",
+                  useFeatureSubset = useFeatureSubset,
                   reducedDimName = dimrednamesave,
                   dims = input$dimRedNumberDims_tsneUmap,
                   perplexity = input$perplexityTSNE,
@@ -3266,6 +3283,7 @@ shinyServer(function(input, output, session) {
                   useReducedDim = embedUseRedDim,
                   useAltExp = embedUseAltExp,
                   method = "seuratUMAP",
+                  useFeatureSubset = useFeatureSubset,
                   reducedDimName = dimrednamesave,
                   dims = input$dimRedNumberDims_tsneUmap,
                   minDist = input$minDistUMAPDimRed,
@@ -3275,14 +3293,13 @@ shinyServer(function(input, output, session) {
                   seed = input$seed__tsneUmap
                 )
               }
-            }
-            else {
+            } else {
               if (is.na(input$alphaUMAP)) {
                 stop("Learning rate (alpha) must be a numeric non-empty value!")
               }
-              useHVGList <- input$hvg_tsneUmap
+              useFeatureSubset <- input$hvg_tsneUmap
               if (input$hvg_tsneUmap == "None") {
-                useHVGList <- NULL
+                useFeatureSubset <- NULL
               }
               vals$counts <- runDimReduce(
                 inSCE = vals$counts,
@@ -3291,7 +3308,7 @@ shinyServer(function(input, output, session) {
                 useAltExp = embedUseAltExp,
                 method = "scaterUMAP",
                 logNorm = input$logNorm_tsneUmap, 
-                useHVGList = useHVGList, 
+                useFeatureSubset = useFeatureSubset, 
                 scale = input$scale_tsneUmap, 
                 pca = input$pca_tsneUmap, 
                 initialDims = input$dimRedNumberDims_tsneUmap, 
@@ -6034,17 +6051,19 @@ shinyServer(function(input, output, session) {
                       selected = selected)
   }
   updateHVGListSelection <- function(selected = NULL) {
-    hvgLists <- names(metadata(vals$counts)$sctk$hvgLists)
+    featureSubsets <- names(metadata(vals$counts)$sctk$featureSubsets)
     if (is.null(selected)) {
-      if (!is.null(hvgLists)) {
-        selected <- hvgLists[1]
+      if (!is.null(featureSubsets)) {
+        selected <- featureSubsets[1]
       } else {
         selected <- "None"
       }
     } 
-    updateSelectInput(session, "dimRedHVGSelect", choices = c("None", hvgLists),
+    updateSelectInput(session, "hvgPlotSubsetSelect", choices = c("None", featureSubsets),
                       selected = selected)
-    updateSelectInput(session, "hvg_tsneUmap", choices = c("None", hvgLists),
+    updateSelectInput(session, "dimRedHVGSelect", choices = c("None", featureSubsets),
+                      selected = selected)
+    updateSelectInput(session, "hvg_tsneUmap", choices = c("None", featureSubsets),
                       selected = selected)
   }
   
@@ -6064,6 +6083,11 @@ shinyServer(function(input, output, session) {
                    labelsCount = 0)
       })
     })
+    enable("hvgMetricSelect")
+    enable("hvgNumberSelect")
+    enable("hvgSubsetName")
+    enable("hvgSubsetRun")
+    enable("hvgPlotMethod")
     .loadClose() #close the notification spinner and console log
   }))
   
@@ -6092,8 +6116,10 @@ shinyServer(function(input, output, session) {
       vals$counts <- setTopHVG(vals$counts,
                                method = input$hvgMetricSelect,
                                hvgNumber = input$hvgNumberSelect,
-                               hvgListName = input$hvgSubsetName)
-      updateHVGListSelection()
+                               featureSubsetName = input$hvgSubsetName)
+      enable("hvgPlotSubsetSelect")
+      enable("hvgPlotNLabel")
+      updateHVGListSelection(selected = input$hvgSubsetName)
       updateHVGMetricSelection(selected = input$hvgMetricSelect)
       updateNumericInput(session, "hvgPlotNSelect", value = input$hvgNumberSelect)
       featureDisplay <- NULL
@@ -6105,7 +6131,7 @@ shinyServer(function(input, output, session) {
         isolate({
           plotTopHVG(inSCE =  vals$counts,
                      method = input$hvgMetricSelect,
-                     hvgNumber = input$hvgNumberSelect, 
+                     useFeatureSubset = input$hvgSubsetName,
                      labelsCount = 20,
                      featureDisplay = featureDisplay)
         })
@@ -6113,8 +6139,8 @@ shinyServer(function(input, output, session) {
       output$hvgOutputFS <- renderText({
         isolate({
           getTopHVG(inSCE = vals$counts,
-                    method = input$hvgMetricSelect,
-                    hvgNumber = 20)
+                    useFeatureSubset = input$hvgSubsetName,
+                    featureDisplay = featureDisplay)
         })
       })
       .loadClose() #close the notification spinner and console log
@@ -6128,21 +6154,28 @@ shinyServer(function(input, output, session) {
     if (input$hvgPlotFeatureDisplay != "Rownames (Default)") {
       featureDisplay <- input$hvgPlotFeatureDisplay
     }
+    usefeatureSubset <- input$hvgPlotSubsetSelect
+    if (input$hvgPlotSubsetSelect == "None") {
+      usefeatureSubset <- NULL
+    }
     output$plotFS <- renderPlot({
       isolate({
         plotTopHVG(inSCE =  vals$counts,
                    method = input$hvgPlotMethod,
-                   hvgNumber = input$hvgPlotNSelect, 
+                   useFeatureSubset = usefeatureSubset,
                    labelsCount = input$hvgPlotNLabel,
                    featureDisplay = featureDisplay)
       })
     })
     output$hvgOutputFS <- renderText({
       isolate({
-        getTopHVG(inSCE = vals$counts,
-                  method = input$hvgPlotMethod,
-                  hvgNumber = input$hvgPlotNLabel,
-                  featureDisplay = featureDisplay)
+        if (!is.null(usefeatureSubset)) {
+          getTopHVG(inSCE = vals$counts,
+                    useFeatureSubset = usefeatureSubset,  
+                    featureDisplay = featureDisplay)
+        } else {
+          ""
+        }
       })
     })
     session$sendCustomMessage("close_dropDownFS", "")

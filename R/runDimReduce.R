@@ -81,8 +81,10 @@
 #' @param useReducedDim The low dimension representation to use for embedding
 #' computation. Default \code{NULL}.
 #' @param reducedDimName The name of the result matrix. Required.
-#' @param useHVGList A character string indicating a \code{rowData} variable 
-#' that stores the logical vector of HVG selection. Default \code{NULL}.
+#' @param useFeatureSubset Subset of feature to use for dimension reduction. A 
+#' character string indicating a \code{rowData} variable that stores the logical
+#' vector of HVG selection, or a vector that can subset the rows of 
+#' \code{inSCE}. Default \code{NULL}.
 #' @param scale Logical scalar, whether to standardize the expression values.
 #' Default \code{TRUE}.
 #' @param nComponents Specify the number of dimensions to compute with the
@@ -114,8 +116,8 @@ runDimReduce <- function(inSCE,
                                     "seuratUMAP"),
                          useAssay = NULL, useReducedDim = NULL,
                          useAltExp = NULL, reducedDimName = method, 
-                         nComponents = 20, useHVGList = NULL, scale = FALSE,
-                         seed = NULL, ...) 
+                         nComponents = 20, useFeatureSubset = NULL, 
+                         scale = FALSE, seed = NULL, ...) 
 {
 
   method <- match.arg(method)
@@ -130,18 +132,19 @@ runDimReduce <- function(inSCE,
   if (method == "scaterPCA") {
     inSCE <- scaterPCA(inSCE = inSCE, useAssay = useAssay, 
                        useAltExp = useAltExp, reducedDimName = reducedDimName, 
-                       nComponents = nComponents, useHVGList = useHVGList,
-                       scale = scale, seed = seed, ...)
+                       nComponents = nComponents, 
+                       useFeatureSubset = useFeatureSubset, scale = scale, 
+                       seed = seed, ...)
   } else if (method == "scaterUMAP") {
     inSCE <- getUMAP(inSCE = inSCE, useAssay = useAssay, useAltExp = useAltExp,
-                     useReducedDim = useReducedDim, useHVGList = useHVGList,
-                     scale = scale, reducedDimName = reducedDimName, 
-                     seed = seed, ...)
+                     useReducedDim = useReducedDim, 
+                     useFeatureSubset = useFeatureSubset, scale = scale, 
+                     reducedDimName = reducedDimName, seed = seed, ...)
   } else if (method == "rTSNE") {
     inSCE <- getTSNE(inSCE = inSCE, useAssay = useAssay, useAltExp = useAltExp,
-                     useReducedDim = useReducedDim, useHVGList = useHVGList,
-                     scale = scale, reducedDimName = reducedDimName, 
-                     seed = seed, ...)
+                     useReducedDim = useReducedDim, 
+                     useFeatureSubset = useFeatureSubset, scale = scale, 
+                     reducedDimName = reducedDimName, seed = seed, ...)
   } else {
     # Seurat part
     
@@ -156,13 +159,15 @@ runDimReduce <- function(inSCE,
         message(paste0(date(), " ... Computing Seurat PCA."))
         tempSCE <- runSeuratPCA(tempSCE, useAssay = useAssay, 
                                 reducedDimName = reducedDimName,
-                                nPCs = nComponents, useHVGList = useHVGList,
+                                nPCs = nComponents, 
+                                useFeatureSubset = useFeatureSubset,
                                 scale = scale, seed = seed, ...)
       } else if (method == "seuratICA") {
         message(paste0(date(), " ... Computing Seurat ICA."))
         tempSCE <- runSeuratICA(tempSCE, useAssay = useAssay,
                                 reducedDimName = reducedDimName,
-                                nics = nComponents, useHVGList = useHVGList, 
+                                nics = nComponents, 
+                                useFeatureSubset = useFeatureSubset, 
                                 scale = scale, seed = seed, ...)
       }
       seuratObj <- tempSCE@metadata$seurat
@@ -182,21 +187,25 @@ runDimReduce <- function(inSCE,
           message(paste0(date(), " ... Computing Seurat PCA."))
           tempSCE <- runSeuratPCA(inSCE = tempSCE,
                                useAssay = useAssay,
-                               reducedDimName = paste0(useAssay, "_seuratPCA"), seed = seed)
+                               reducedDimName = paste0(useAssay, "_seuratPCA"), 
+                               useFeatureSubset = useFeatureSubset, seed = seed)
         } else if (args$useReduction == "ica") {
           message(paste0(date(), " ... Computing Seurat ICA."))
           tempSCE <- runSeuratICA(inSCE = tempSCE,
                                useAssay = useAssay,
-                               reducedDimName = paste0(useAssay, "_seuratICA"), seed = seed)
+                               reducedDimName = paste0(useAssay, "_seuratICA"), 
+                               useFeatureSubset = useFeatureSubset, seed = seed)
         }
         if (method == "seuratUMAP") {
           message(paste0(date(), " ... Computing Seurat UMAP."))
-          tempSCE <- runSeuratUMAP(inSCE = tempSCE,
-                                   reducedDimName = reducedDimName, seed = seed, ...)
+          tempSCE <- runSeuratUMAP(inSCE = tempSCE, 
+                                   reducedDimName = reducedDimName, 
+                                   seed = seed, ...)
         } else {
           message(paste0(date(), " ... Computing Seurat tSNE."))
           tempSCE <- runSeuratTSNE(inSCE = tempSCE,
-                                   reducedDimName = reducedDimName, seed = seed, ...)
+                                   reducedDimName = reducedDimName, 
+                                   seed = seed, ...)
         }
       } else {
         ### using external reducedDim
@@ -218,12 +227,14 @@ runDimReduce <- function(inSCE,
           # hard-code useReduction="pca"
           message(paste0(date(), " ... Computing Seurat UMAP."))
           tempSCE <- runSeuratUMAP(inSCE = tempSCE, useReduction = "pca",
-                                   reducedDimName = reducedDimName, seed = seed, ...)
+                                   reducedDimName = reducedDimName, 
+                                   seed = seed, ...)
         } else {
           # hard-code useReduction="pca"
           message(paste0(date(), " ... Computing Seurat tSNE."))
           tempSCE <- runSeuratTSNE(inSCE = tempSCE, useReduction = "pca",
-                                   reducedDimName = reducedDimName, seed = seed, ...)
+                                   reducedDimName = reducedDimName, 
+                                   seed = seed, ...)
         }
       }
     }

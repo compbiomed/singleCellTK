@@ -7,7 +7,8 @@
 plotTopHVG(
   inSCE,
   method = c("vst", "mean.var.plot", "dispersion", "modelGeneVar"),
-  hvgNumber = 2000,
+  hvgNumber = NULL,
+  useFeatureSubset = NULL,
   labelsCount = 20,
   featureDisplay = metadata(inSCE)$featureDisplay
 )
@@ -20,10 +21,14 @@ computations.}
 \code{"dispersion"} or \code{"modelGeneVar"}.}
 
 \item{hvgNumber}{Specify the number of top genes to highlight in red. Default
-\code{2000}.}
+\code{NULL}. See details.}
+
+\item{useFeatureSubset}{A character string for the \code{rowData} variable 
+name to store a logical index of selected features. Default \code{NULL}. See 
+details.}
 
 \item{labelsCount}{Specify the number of data points/genes to label. Should 
-be less than \code{hvgNumber}. Default \code{20}.}
+be less than \code{hvgNumber}. Default \code{20}. See details.}
 
 \item{featureDisplay}{A character string for the \code{rowData} variable name
 to indicate what type of feature ID should be displayed. If set by 
@@ -31,10 +36,18 @@ to indicate what type of feature ID should be displayed. If set by
 use \code{rownames(inSCE)}.}
 }
 \value{
-ggplot of HVG metrics
+ggplot of HVG metrics and top HVG labels
 }
 \description{
 Plot highly variable genes
+}
+\details{
+When \code{hvgNumber = NULL} and \code{useFeature = NULL}, only plot
+the mean VS variance/dispersion scatter plot. When only \code{hvgNumber} set,
+label the top \code{hvgNumber} HVGs ranked by the metrics calculated by 
+\code{method}. When \code{useFeatureSubset} set, label the features in 
+the subset on the scatter plot created with \code{method} and ignore 
+\code{hvgNumber}.
 }
 \examples{
 data("mouseBrainSubsetSCE", package = "singleCellTK")

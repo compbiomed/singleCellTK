@@ -464,3 +464,12 @@ getGenesetNamesFromCollection <- function(inSCE, geneSetCollectionName) {
   geneSet <- .getGeneSetCollection(inSCE, geneSetCollectionName)
   return(names(geneSet))
 }
+
+.withSeed <- function(seed, code) {
+  if (is.null(seed)) {
+    code
+  } else {
+    withr::with_seed(seed = seed,
+                     code)
+  }
+}

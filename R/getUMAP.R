@@ -26,12 +26,13 @@
 #' @param logNorm Whether the counts will need to be log-normalized prior to
 #' generating the UMAP via \code{\link{scaterlogNormCounts}}. Ignored when using
 #' \code{useReducedDim}. Default \code{FALSE}.
-#' @param useHVGList A character string indicating a \code{rowData} variable 
-#' that stores the logical vector of HVG selection. Ignored when using
-#' \code{useReducedDim}. Default \code{NULL}.
+#' @param useFeatureSubset Subset of feature to use for dimension reduction. A 
+#' character string indicating a \code{rowData} variable that stores the logical
+#' vector of HVG selection, or a vector that can subset the rows of 
+#' \code{inSCE}. Default \code{NULL}.
 #' @param nTop Automatically detect this number of variable features to use for
 #' dimension reduction. Ignored when using \code{useReducedDim} or using 
-#' \code{useHVGList}. Default \code{2000}.
+#' \code{useFeatureSubset}. Default \code{2000}.
 #' @param scale Whether \code{useAssay} matrix will need to be standardized. 
 #' Default \code{TRUE}.
 #' @param pca Logical. Whether to perform dimension reduction with PCA before
@@ -73,13 +74,13 @@
 #' sce <- scaterlogNormCounts(sce, "logcounts")
 #' sce <- runModelGeneVar(sce)
 #' sce <- scaterPCA(sce, useAssay = "logcounts", 
-#'                  useHVGList = "HVG_modelGeneVar2000", scale = TRUE)
+#'                  useFeatureSubset = "HVG_modelGeneVar2000", scale = TRUE)
 #' sce <- getUMAP(sce, useReducedDim = "PCA")
 #' }
 #' @importFrom S4Vectors metadata<-
 getUMAP <- function(inSCE, useAssay = "logcounts", useReducedDim = NULL, 
                     useAltExp = NULL, sample = NULL, reducedDimName = "UMAP", 
-                    logNorm = FALSE, useHVGList = NULL, nTop = 2000, 
+                    logNorm = FALSE, useFeatureSubset = NULL, nTop = 2000, 
                     scale = TRUE, pca = TRUE, initialDims = 25, nNeighbors = 30, 
                     nIterations = 200, alpha = 1, minDist = 0.01, spread = 1, 
                     seed = NULL, BPPARAM = BiocParallel::SerialParam()) {
@@ -145,15 +146,8 @@ getUMAP <- function(inSCE, useAssay = "logcounts", useReducedDim = NULL,
         useAssayTemp = "ScaterLogNormCounts"
       }
     }
-    if (!is.null(useHVGList) & !is.null(useAssay)) {
-      if (!useHVGList %in% colnames(SummarizedExperiment::rowData(inSCE))) {
-        stop("Specified HVG list not found")
-      }
-      hvgs <- rownames(inSCE)[rowSubset(inSCE, useHVGList)]
-      subset_row <- rownames(sceSample) %in% hvgs
-    } else {
-      subset_row <- NULL
-    }
+    subset_row <- .parseUseFeatureSubset(inSCE, useFeatureSubset, 
+                                         altExpObj = sce, returnType = "logic")
     # initialDims passed to `pca` of scran::calculateUMAP. 
     if (!isTRUE(pca) & !is.null(useAssay)) {
       initialDims <- NULL
@@ -162,23 +156,7 @@ getUMAP <- function(inSCE, useAssay = "logcounts", useReducedDim = NULL,
     nNeighbors <- min(ncol(sceSample), nNeighbors)
     message(paste0(date(), " ... Computing Scater UMAP for sample '",
                    samples[i], "'."))
-    if (!is.null(seed)) {
-      withr::with_seed(
-        seed = seed,
-        code = umapRes <- scater::calculateUMAP(sceSample, scale = scale,
-                                                exprs_values = useAssayTemp,
-                                                dimred = useReducedDim,
-                                                n_neighbors = nNeighbors,
-                                                learning_rate = alpha,
-                                                min_dist = minDist, 
-                                                spread = spread,
-                                                n_sgd_threads = 1, 
-                                                pca = initialDims,
-                                                n_epochs = nIterations, 
-                                                subset_row = subset_row, 
-                                                ntop = nTop, BPPARAM = BPPARAM)
-      )
-    } else {
+    .withSeed(seed, {
       umapRes <- scater::calculateUMAP(sceSample, exprs_values = useAssayTemp,
                                        dimred = useReducedDim, scale = scale,
                                        n_neighbors = nNeighbors,
@@ -188,7 +166,7 @@ getUMAP <- function(inSCE, useAssay = "logcounts", useReducedDim = NULL,
                                        n_epochs = nIterations, 
                                        subset_row = subset_row, ntop = nTop, 
                                        BPPARAM = BPPARAM)
-    }
+    })
     if (is.null(rownames(sceSample))) {
       rownames(umapRes) <- colnames(sceSample)
     }
