@@ -873,7 +873,9 @@ plotSeuratElbow <- function(inSCE,
 #' Computes the heatmap plot object from the pca slot in the input sce object
 #' @param inSCE (sce) object from which to compute heatmap (pca should be
 #' computed)
-#' @param useAssay Assay containing scaled counts to use in heatmap.
+#' @param useAssay Specify name of the assay that will be scaled 
+#'  by this function. The output scaled assay will be used for computation
+#'  of the heatmap. 
 #' @param useReduction Reduction method to use for computing clusters. One of
 #' "pca" or "ica". Default \code{"pca"}.
 #' @param dims Number of components to generate heatmap plot objects. If
@@ -921,7 +923,7 @@ runSeuratHeatmap <- function(inSCE,
                                  externalReduction = NULL) {
   useReduction <- match.arg(useReduction)
   # seuratObject <- convertSCEToSeurat(inSCE, scaledAssay = useAssay)
-  seuratObject <- convertSCEToSeurat(inSCE)
+  seuratObject <- convertSCEToSeurat(inSCE, normAssay = useAssay)
   
   if(!is.null(externalReduction)){
     seuratObject@reductions <- list(pca = externalReduction)
@@ -1476,8 +1478,8 @@ runSeuratFindMarkers <- function(
 #' Compute and plot visualizations for marker genes
 #'
 #' @param inSCE Input \code{SingleCellExperiment} object.
-#' @param scaledAssayName Specify the name of the scaled assay stored in the
-#' input object.
+#' @param useAssay Specify the name of the assay that will be scaled by this
+#'  function. 
 #' @param plotType Specify the type of the plot to compute. Options are limited
 #' to "ridge", "violin", "feature", "dot" and "heatmap".
 #' @param features Specify the features to compute the plot against.
@@ -1499,7 +1501,7 @@ runSeuratFindMarkers <- function(
 #' @return Plot object
 #' @export
 plotSeuratGenes <- function(inSCE,
-                           scaledAssayName = "seuratScaledData",
+                           useAssay = "seuratNormData",
                            plotType,
                            features,
                            groupVariable,
@@ -1508,7 +1510,7 @@ plotSeuratGenes <- function(inSCE,
                            ncol = 1,
                            combine = FALSE){
   #setup seurat object and the corresponding groups
-  seuratObject <- convertSCEToSeurat(inSCE)
+  seuratObject <- convertSCEToSeurat(inSCE, normAssay = useAssay)
   seuratObject <- Seurat::ScaleData(seuratObject, features = features)
   indices <- list()
   cells <- list()
@@ -1554,7 +1556,6 @@ plotSeuratGenes <- function(inSCE,
       split.by = splitBy))
   }
   else if(plotType == "heatmap"){
-    seuratObject <- Seurat::ScaleData(seuratObject, features = features)
     return(Seurat::DoHeatmap(seuratObject, features = features))
   }
 }

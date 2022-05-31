@@ -6,7 +6,7 @@
 \usage{
 plotSeuratGenes(
   inSCE,
-  scaledAssayName = "seuratScaledData",
+  useAssay = "seuratNormData",
   plotType,
   features,
   groupVariable,
@@ -19,8 +19,8 @@ plotSeuratGenes(
 \arguments{
 \item{inSCE}{Input \code{SingleCellExperiment} object.}
 
-\item{scaledAssayName}{Specify the name of the scaled assay stored in the
-input object.}
+\item{useAssay}{Specify the name of the assay that will be scaled by this
+function.}
 
 \item{plotType}{Specify the type of the plot to compute. Options are limited
 to "ridge", "violin", "feature", "dot" and "heatmap".}

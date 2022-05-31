@@ -7709,7 +7709,7 @@ shinyServer(function(input, output, session) {
       message(paste0(date(), "  ... Generating Heatmaps"))
       
       vals$counts@metadata$seurat$heatmap_pca <- runSeuratHeatmap(inSCE = vals$counts,
-                                                                        useAssay = "seuratScaledData",
+                                                                        useAssay = "seuratNormData",
                                                                         useReduction = "pca",
                                                                         dims = input$pca_no_components,
                                                                         nfeatures = input$pca_compute_heatmap_nfeatures,
@@ -8139,9 +8139,8 @@ shinyServer(function(input, output, session) {
     )
 
     #df <- metadata(vals$counts)$seuratMarkers[which(metadata(vals$counts)$seuratMarkers$p_val_adj < 0.05, arr.ind = TRUE),]
-   print("markers complete")
     df <- metadata(vals$counts)$seuratMarkers
-    seuratObject <- convertSCEToSeurat(vals$counts)
+    seuratObject <- convertSCEToSeurat(vals$counts, normAssay = "seuratNormData")
     indices <- list()
     cells <- list()
     groups <- unique(colData(vals$counts)[[input$seuratFindMarkerSelectPhenotype]])
@@ -8272,7 +8271,7 @@ shinyServer(function(input, output, session) {
 
     ##df <- metadata(vals$counts)$seuratMarkers[which(metadata(vals$counts)$seuratMarkers$p_val_adj < 0.05, arr.ind = TRUE),]
     df <- metadata(vals$counts)$seuratMarkers
-    seuratObject <- convertSCEToSeurat(vals$counts, scaledAssay = "seuratScaledData")
+    seuratObject <- convertSCEToSeurat(vals$counts, normAssay =  "seuratNormData")
     indices <- list()
     cells <- list()
     groups <- unique(colData(vals$counts)[[input$seuratFindMarkerSelectPhenotype]])
@@ -8319,7 +8318,6 @@ shinyServer(function(input, output, session) {
     output$findMarkerRidgePlot <- renderPlot({
       plotSeuratGenes(
         inSCE = vals$counts,
-        scaledAssayName = "seuratScaledData",
         plotType = "ridge",
         features = df$gene_id,
         groupVariable = input$seuratFindMarkerSelectPhenotype,
@@ -8330,7 +8328,6 @@ shinyServer(function(input, output, session) {
     output$findMarkerViolinPlot <- renderPlot({
       plotSeuratGenes(
         inSCE = vals$counts,
-        scaledAssayName = "seuratScaledData",
         plotType = "violin",
         features = df$gene_id,
         groupVariable = input$seuratFindMarkerSelectPhenotype,
@@ -8341,7 +8338,6 @@ shinyServer(function(input, output, session) {
     output$findMarkerFeaturePlot <- renderPlot({
       plotSeuratGenes(
         inSCE = vals$counts,
-        scaledAssayName = "seuratScaledData",
         plotType = "feature",
         features = df$gene_id,
         groupVariable = input$seuratFindMarkerSelectPhenotype,
@@ -8352,7 +8348,6 @@ shinyServer(function(input, output, session) {
     output$findMarkerDotPlot <- renderPlot({
       plotSeuratGenes(
         inSCE = vals$counts,
-        scaledAssayName = "seuratScaledData",
         plotType = "dot",
         features = df$gene_id,
         groupVariable = input$seuratFindMarkerSelectPhenotype
@@ -8361,7 +8356,6 @@ shinyServer(function(input, output, session) {
     output$findMarkerHeatmapPlot <- renderPlot({
       plotSeuratGenes(
         inSCE = vals$counts,
-        scaledAssayName = "seuratScaledData",
         plotType = "heatmap",
         features = df$gene_id,
         groupVariable = input$seuratFindMarkerSelectPhenotype
