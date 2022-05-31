@@ -4,7 +4,8 @@
 #'  method uses the heatmap computation algorithm code from \code{Seurat} but
 #'  plots the heatmap using \code{ComplexHeatmap} and \code{cowplot} libraries.
 #' @param inSCE Input \code{SingleCellExperiment} object.
-#' @param useAssay The assay to use for heatmap computation.
+#' @param useAssay Specify the name of the assay that will be scaled
+#'  by this function for the features that are used in the heatmap.
 #' @param dims Specify the number of dimensions to use for heatmap. Default
 #' \code{10}.
 #' @param nfeatures Specify the number of features to use for heatmap. Default
@@ -28,7 +29,7 @@
 #' @return Heatmap plot object.
 #' @export
 computeHeatmap <- function(inSCE,
-                        useAssay,
+                           useAssay,
                         dims = 10,
                         nfeatures = 30,
                         cells = NULL,
@@ -38,7 +39,8 @@ computeHeatmap <- function(inSCE,
                         balanced = TRUE,
                         nCol = NULL,
                         externalReduction = NULL){
-  object <- convertSCEToSeurat(inSCE, scaledAssay = useAssay)
+  object <- convertSCEToSeurat(inSCE, normAssay = useAssay)
+
   slot <- "scale.data"
   assays <- NULL
   ncol <- NULL
@@ -127,7 +129,9 @@ computeHeatmap <- function(inSCE,
   for (i in seq_len(length(dims))){
     features[[i]] <- .convertToHyphen(features[[i]])
   }
-
+  
+  object <- Seurat::ScaleData(object, features = features.all)
+  
   # get assay data with only selected features (all dims) and
   # selected cells (all)
   data.all <- Seurat::FetchData(

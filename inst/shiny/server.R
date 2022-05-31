@@ -2914,7 +2914,6 @@ shinyServer(function(input, output, session) {
           if(input$dimRedAssaySelect %in% assayNames(vals$counts)){
             vals$counts@metadata$seurat$heatmap_dimRed <- singleCellTK::computeHeatmap(
               inSCE = vals$counts,
-              useAssay = input$dimRedAssaySelect,
               dims = 1:input$dimRedNumberDims,
               nfeatures = input$dimRedNFeaturesHeatmap,
               reduction = "pca"
@@ -2926,7 +2925,6 @@ shinyServer(function(input, output, session) {
           else if(vals$runDimred$dimRedAssaySelect %in% expDataNames(vals$counts)){
             altExps(vals$counts)[[vals$runDimred$dimRedAssaySelect]]@metadata$seurat$heatmap_dimRed <- singleCellTK::computeHeatmap(
               inSCE = altExps(vals$counts)[[vals$runDimred$dimRedAssaySelect]],
-              useAssay = vals$runDimred$dimRedAssaySelect,
               dims = 1:input$dimRedNumberDims,
               nfeatures = input$dimRedNFeaturesHeatmap,
               reduction = "pca"
@@ -2940,7 +2938,6 @@ shinyServer(function(input, output, session) {
           if(vals$runDimred$dimRedAssaySelect %in% assayNames(vals$counts)){
             vals$counts@metadata$seurat$heatmap_dimRed <- singleCellTK::computeHeatmap(
               inSCE = vals$counts,
-              useAssay = input$dimRedAssaySelect,
               dims = 1:input$dimRedNumberDims,
               nfeatures = input$dimRedNFeaturesHeatmap,
               reduction = "ica"
@@ -2952,7 +2949,6 @@ shinyServer(function(input, output, session) {
           else if(vals$runDimred$dimRedAssaySelect %in% expDataNames(vals$counts)){
             altExps(vals$counts)[[vals$runDimred$dimRedAssaySelect]]@metadata$seurat$heatmap_dimRed <- singleCellTK::computeHeatmap(
               inSCE = altExps(vals$counts)[[vals$runDimred$dimRedAssaySelect]],
-              useAssay = vals$runDimred$dimRedAssaySelect,
               dims = 1:input$dimRedNumberDims,
               nfeatures = input$dimRedNFeaturesHeatmap,
               reduction = "ica"
@@ -2967,7 +2963,6 @@ shinyServer(function(input, output, session) {
           if(input$dimRedAssaySelect %in% assayNames(vals$counts)){
             vals$counts@metadata$seurat$heatmap_dimRed <- singleCellTK::computeHeatmap(
               inSCE = vals$counts,
-              useAssay = input$dimRedAssaySelect,
               dims = 1:input$dimRedNumberDims,
               nfeatures = input$dimRedNFeaturesHeatmap,
               externalReduction = new_pca
@@ -2979,7 +2974,6 @@ shinyServer(function(input, output, session) {
           else if(input$dimRedAssaySelect %in% expDataNames(vals$counts)){
             altExps(vals$counts)[[input$dimRedAssaySelect]]@metadata$seurat$heatmap_dimRed <- singleCellTK::computeHeatmap(
               inSCE = altExps(vals$counts)[[input$dimRedAssaySelect]],
-              useAssay = input$dimRedAssaySelect,
               dims = 1:input$dimRedNumberDims,
               nfeatures = input$dimRedNFeaturesHeatmap,
               externalReduction = new_pca

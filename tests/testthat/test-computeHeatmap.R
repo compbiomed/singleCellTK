@@ -9,7 +9,7 @@ test_that(desc = "Testing computeHeatmap.R", {
   sce <- runSeuratScaleData(sce)
   sce <- runSeuratFindHVG(sce)
   sce <- runSeuratPCA(sce)
-  heatmap_gTree_objects <- computeHeatmap(sce, useAssay = "seuratScaledData", dims = 10)
+  heatmap_gTree_objects <- computeHeatmap(sce, useAssay = "seuratNormData", dims = 10)
   heatmapPlot <- singleCellTK:::.plotHeatmapMulti(heatmap_gTree_objects)
   
   testthat::expect_equal(length(heatmap_gTree_objects), 10)

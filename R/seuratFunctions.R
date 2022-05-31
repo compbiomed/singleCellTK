@@ -385,8 +385,10 @@ runSeuratICA <- function(inSCE, useAssay = "seuratScaledData", features = NULL,
 #' runSeuratJackStraw
 #' Compute jackstraw plot and store the computations in the input sce object
 #' @param inSCE (sce) object on which to compute and store jackstraw plot
-#' @param useAssay Assay containing scaled counts to use in JackStraw
-#' calculation.
+#' @param useAssay Specify name of the assay to use for scaling. Assay name
+#'  provided against this parameter is scaled by the function and used
+#'  for the computation of JackStraw scores along with the reduced dimensions
+#'  specified by the \code{dims} parameter. 
 #' @param dims Number of components to test in Jackstraw. If \code{NULL}, then
 #' all components are used. Default \code{NULL}.
 #' @param numReplicate Numeric value indicating the number of replicate
@@ -412,7 +414,9 @@ runSeuratICA <- function(inSCE, useAssay = "seuratScaledData", features = NULL,
 runSeuratJackStraw <- function(inSCE, useAssay, dims = NULL,
                                    numReplicate = 100, propFreq = 0.025,
                                    externalReduction = NULL) {
-  seuratObject <- convertSCEToSeurat(inSCE, scaledAssay = useAssay)
+  seuratObject <- convertSCEToSeurat(inSCE, normAssay = useAssay)
+  seuratObject <- Seurat::ScaleData(seuratObject)
+  
   if(!is.null(externalReduction)){
     #convert (_) to (-) as required by Seurat
 

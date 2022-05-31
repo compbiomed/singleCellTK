@@ -11,7 +11,7 @@ test_that(desc = "Testing standard seurat workflow", {
   
   # Test Scaling Method
   sce <- runSeuratScaleData(sce)
-  testthat::expect_true("seuratScaledData" %in% assayNames(sce))
+  testthat::expect_true("seuratScaledData" %in% expDataNames(sce))
   
   # Test Feature Selection Method
   sce <- runSeuratFindHVG(sce)
