@@ -10,13 +10,14 @@ plotTSCANDEgenes(inSCE, geneSymbol, useClusters = NULL, useReducedDim)
 \arguments{
 \item{inSCE}{Input \linkS4class{SingleCellExperiment} object.}
 
-\item{geneSymbol}{Choose the gene of interest from the DE genes in order to know the level 
-of expression of gene in clusters.}
+\item{geneSymbol}{Choose the gene of interest from the DE genes in order to 
+know the level of expression of gene in clusters.}
 
-\item{useClusters}{Choose a specific cluster on which gene expression needs to be visualized.
-By default all clusters are chosen.}
+\item{useClusters}{Choose a specific cluster on which gene expression needs 
+to be visualized. By default all clusters are chosen.}
 
-\item{useReducedDim}{Saved dimension reduction name in the SingleCellExperiment object. Required.}
+\item{useReducedDim}{Saved dimension reduction name in the 
+SingleCellExperiment object. Required.}
 }
 \value{
 A plots with the cells colored by the expression of a gene of 
@@ -33,13 +34,29 @@ data("scExample", package = "singleCellTK")
 sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 rowData(sce)$Symbol <- rowData(sce)$feature_name
 rownames(sce) <- rowData(sce)$Symbol
-sce <- runNormalization(sce, normalizationMethod = "LogNormalize", useAssay = "counts", outAssayName = "logcounts")
-sce <- runDimReduce(inSCE = sce, method = "scaterPCA", useAssay = "logcounts", reducedDimName = "PCA")
-sce <- runDimReduce(inSCE = sce, method = "rTSNE", useReducedDim = "PCA", reducedDimName = "TSNE")
-sce <- runTSCAN (inSCE = sce, useReducedDim = "PCA", seed = NULL)
-sce <- runTSCANDEG(inSCE = sce, pathIndex = 4)
-sce <- runTSCANClusterDEAnalysis(inSCE = sce, useClusters = 5)
-plotTSCANDEgenes(inSCE = sce, geneSymbol = "CD74", useReducedDim = "TSNE")
+sce <- runNormalization(sce, 
+                        normalizationMethod = "LogNormalize", 
+                        useAssay = "counts", 
+                        outAssayName = "logcounts")
+sce <- runDimReduce(inSCE = sce, 
+                    method = "scaterPCA", 
+                    useAssay = "logcounts", 
+                    reducedDimName = "PCA")
+sce <- runDimReduce(inSCE = sce, 
+                    method = "rTSNE", 
+                    useReducedDim = "PCA", 
+                    reducedDimName = "TSNE")
+sce <- runTSCAN (inSCE = sce, 
+                 useReducedDim = "PCA", 
+                 seed = NULL)
+terminalNodes <- listTSCANTerminalNodes(sce, analysisName = "Pseudotime")
+sce <- runTSCANDEG(inSCE = sce, 
+                   pathIndex = terminalNodes[1])
+sce <- runTSCANClusterDEAnalysis(inSCE = sce, 
+                                 useClusters = 1)
+plotTSCANDEgenes(inSCE = sce, 
+                 geneSymbol = "CD74", 
+                 useReducedDim = "TSNE")
 }
 \author{
 Nida Pervaiz
