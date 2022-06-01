@@ -19,13 +19,13 @@ runSeuratFindHVG(
 back to it}
 
 \item{useAssay}{Specify the name of the assay to use for computation
-of variable genes. It is recommended to use a raw counts assay with the 
+of variable genes. It is recommended to use a raw counts assay with the
 \code{"vst"} method and normalized assay with all other methods. Default
 is \code{"counts"}.}
 
 \item{method}{selected method to use for computation of highly variable
-genes. One of \code{'vst'}, \code{'dispersion'}, or \code{'mean.var.plot'}. 
-Default \code{"vst"} which uses the raw counts. All other methods use 
+genes. One of \code{'vst'}, \code{'dispersion'}, or \code{'mean.var.plot'}.
+Default \code{"vst"} which uses the raw counts. All other methods use
 normalized counts.}
 
 \item{hvgNumber}{numeric value of how many genes to select as highly

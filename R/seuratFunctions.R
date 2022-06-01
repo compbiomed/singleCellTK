@@ -384,6 +384,8 @@ runSeuratPCA <-
 #' @param nics Number of independent components to compute. Default \code{20}.
 #' @param seed Random seed for reproducibility of results.
 #' Default \code{NULL} will use global seed in use by the R environment.
+#' @param verbose Logical value indicating if progress should be printed.
+#'  Default \code{FALSE}.
 #' @details
 #' For features used for computation, it can be controlled by \code{features} or
 #' \code{useHVGList}. When \code{features} is specified, the scaling and

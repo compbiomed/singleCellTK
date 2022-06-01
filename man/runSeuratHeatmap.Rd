@@ -24,7 +24,7 @@ runSeuratHeatmap(
 \item{inSCE}{(sce) object from which to compute heatmap (pca should be
 computed)}
 
-\item{useAssay}{Specify name of the assay that will be scaled 
+\item{useAssay}{Specify name of the assay that will be scaled
 by this function. The output scaled assay will be used for computation
 of the heatmap.}
 

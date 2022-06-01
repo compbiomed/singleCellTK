@@ -41,7 +41,7 @@ used to split samples.
 Default is \code{1}.}
 
 \item{combine}{A logical value that indicates if the plots should be combined
-together into a single plot if \code{TRUE}, else if \code{FALSE} returns 
+together into a single plot if \code{TRUE}, else if \code{FALSE} returns
 separate ggplot objects for each feature. Only works when \code{plotType}
 parameter is \code{"feature"}, \code{"violin"} or \code{"ridge"}. For
 \code{"heatmap"} and \code{"dot"}, plots for all features are always
