@@ -24,6 +24,7 @@ output:
     theme: cosmo
     code_folding: hide
     self_contained: false
+    keep_md: yes
   pdf_document:
     toc: yes
 subtitle: "`r params$subtitle`"

@@ -21,6 +21,7 @@ params:
   maxResolution: 1.5
   runMSClusters: TRUE
   runMSBioGroup: TRUE
+  numTopFeatures: 10
   forceRun: FALSE
 output:
   html_document:
@@ -30,6 +31,7 @@ output:
     theme: cosmo
     code_folding: hide
     self_contained: false
+    keep_md: yes
   pdf_document:
     toc: yes
 subtitle: "`r params$subtitle`"
@@ -77,48 +79,56 @@ resClustering <- knitr::knit_child('reportSeuratClustering.Rmd', quiet = TRUE, e
 cat(resClustering, sep = '\n')
 ```
 
-<!-- Pre-selected Markers -->
-```{r preselected markers, echo=FALSE, results='asis', warning=FALSE, message=FALSE, eval=!is.null(selected.markers)}
-runMarkerSelection <- FALSE
-plotMarkerSelection <- TRUE
-groupTitle <- NULL
-numClusters <- 1
-selectedOption <- paste0("Seurat_louvain_Resolution", clustering.resolution)
-titleMarkerPlots <- "Plot Selected Features"
-countFeatures <- length(selected.markers)
-
-res <- knitr::knit_child('reportSeuratMarkerSelection.Rmd', quiet = TRUE)
-cat(res, sep = '\n')
-```
-
 <!-- Marker Selection (Clusters) -->
-```{r markerSelection Clusters, echo=FALSE, results='asis', warning=FALSE, message=FALSE, eval=runMSClusters}
+```{r markerSelection Clusters, echo=FALSE, warning=FALSE, message=FALSE, eval=runMSClusters}
 runMarkerSelection <- TRUE
 plotMarkerSelection <- TRUE
 numClusters <- length(unique(colData(data)[[paste0("Seurat_louvain_Resolution", clustering.resolution)]]))
 selectedOption <- paste0("Seurat_louvain_Resolution", clustering.resolution)
 groupTitle <- "Clusters"
 titleMarkerPlots <- "Gene Plots of Top Markers by Clusters"
-countFeatures <- 10
 headingMS <- "##"
-res <- knitr::knit_child('reportSeuratMarkerSelection.Rmd', quiet = TRUE)
+resMSC <- knitr::knit_child('reportSeuratMarkerSelection.Rmd', quiet = TRUE, envir = environment())
 numMarkerGenesCluster <- nrow(data.markers[data.markers$p_val_adj < 0.05, ])
-cat(res, sep = '\n')
 ```
 
 <!-- Marker Selection (Group) -->
-```{r, echo=FALSE, results='asis', warning=FALSE, message=FALSE, eval=runMSBioGroup}
+```{r, echo=FALSE, warning=FALSE, message=FALSE, eval=runMSBioGroup}
 runMarkerSelection <- TRUE
 plotMarkerSelection <- TRUE
 numClusters <- length(unique(colData(data)[[biological.group]]))
 selectedOption <- biological.group
 groupTitle <- biological.group
 titleMarkerPlots <- paste0("Gene Plots of Top Markers by Group: ", biological.group)
-countFeatures <- 10
 headingMS <- "##"
-res <- knitr::knit_child('reportSeuratMarkerSelection.Rmd', quiet = TRUE)
+resMSB <- knitr::knit_child('reportSeuratMarkerSelection.Rmd', quiet = TRUE)
 numMarkerGenesBio <- nrow(data.markers[data.markers$p_val_adj < 0.05, ])
-cat(res, sep = '\n')
+```
+
+<!-- Pre-selected Markers -->
+```{r preselected markers, echo=FALSE, warning=FALSE, message=FALSE, eval=!is.null(selected.markers)}
+runMarkerSelection <- FALSE
+plotMarkerSelection <- TRUE
+groupTitle <- NULL
+numClusters <- 1
+selectedOption <- paste0("Seurat_louvain_Resolution", clustering.resolution)
+titleMarkerPlots <- "Plot Selected Features"
+numTopFeatures <- length(selected.markers)
+headingMS <- "#"
+
+resPSM <- knitr::knit_child('reportSeuratMarkerSelection.Rmd', quiet = TRUE)
+```
+
+```{r, echo=FALSE, results='asis', warning=FALSE, message=FALSE, eval=!is.null(selected.markers)}
+cat(resPSM, sep = '\n')
+```
+
+```{r, echo=FALSE, results='asis', warning=FALSE, message=FALSE, eval=runMSClusters}
+cat(resMSC, sep = '\n')
+```
+
+```{r, echo=FALSE, results='asis', warning=FALSE, message=FALSE, eval=runMSBioGroup}
+cat(resMSB, sep = '\n')
 ```
 
 ```{r, results='asis', eval=showSession, echo=showSession}

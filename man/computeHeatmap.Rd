@@ -25,7 +25,8 @@ computeHeatmap(
 \arguments{
 \item{inSCE}{Input \code{SingleCellExperiment} object.}
 
-\item{useAssay}{The assay to use for heatmap computation.}
+\item{useAssay}{Specify the name of the assay that will be scaled
+by this function for the features that are used in the heatmap.}
 
 \item{dims}{Specify the number of dimensions to use for heatmap. Default
 \code{10}.}
