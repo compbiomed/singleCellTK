@@ -10,7 +10,7 @@ csl: ieee.csl
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, eval = TRUE, message=FALSE, warning=FALSE)
+knitr::opts_chunk$set(echo = TRUE, eval = FALSE, message=FALSE, warning=FALSE)
 ```
 
 ```{r import, include=FALSE}
@@ -82,6 +82,8 @@ We also recommend performing the scaling method to standardize the variance, and
 
 Selecting highly variable genes (HVG) for downstream analyses is recommended, since a subset of variable features enhances the biological signal for community detection and reduces amount of data being used which hence speeds up the computation. SCTK wraps the methods used in [Seurat](https://satijalab.org/seurat/) and [Scran](https://bioconductor.org/packages/release/bioc/html/scran.html). We recommend keeping at least 2,000-5,000 HVGs. In this tutorial, we use the "modelGeneVar" method from Scarn, and select the top 2,000 genes. 
 
+SCTK requires at least two steps to create the HVG subset. The first step performs variability calculation and stores the metrics, and the second step selects top genes basing on the ranking of the metrics. 
+
 ````{=html}
 <!--Remember to change tabset id-->
 <div class="tabset" id="tabset2">
@@ -94,14 +96,34 @@ Selecting highly variable genes (HVG) for downstream analyses is recommended, si
 <div class="tabcontent ia">
 ````
 
-Will write this after we confirm the change in UI
+![hvg1](ui_screenshots/ui_tutorial/hvg1.png)\
+
+1. Users should enter the feature selection tab from the top navigation bar as instructed in the screenshot. And then the **"Feature Selection"** sub-tab.
+2. For the first step, in the top-left panel **"1. Compute variability metric"**, select the method via **"Select method for calculating variability of features"**. The assay to be used will be automatically updated on selection, since different method has different recommended assay type. 
+3. Click on button **"Run"** to calculate the variability.
+
+After calculation, the panel for selecting the top features, **"2. Select number of variable features"** becomes enabled. A scatter plot of features, with axis of variance and mean, will also be shown on the right panel **"Plot"**.
+
+![hvg2](ui_screenshots/ui_tutorial/hvg2.png)\
+
+4. In the bottom-left panel **"2. Select number of variable features"**, users now only need to click on the button **"Run"** to finish the selection for this tutorial.
+
+After selection, the plot will be again updated, with highlighted red dots representing the selected features, texts labeling a smaller number (adjustable in the dropdown) of features with the top variability among the selected ones. The names of highlighted features are also updated in a text box at the bottom of the plotting region.  
+
+Note that:
+
+- The metrics to be used for selection will only be available after calculation in the first panel. 
+- In the dropdown box at the top of the plotting region, users can choose to label the selected subset on a different metric scatter plot. 
+- When analyzing users' own data, if the text labels of features being shown are Ensembl IDs (i.e. starts with things like "ENSG000"), users can change the display ID type with **"Choose feature label"**. This works only when the annotation is available in imported feature metadata. We strongly recommend users go back to the **"Data" -> "Import Single Cell Data"** page, scroll down to the bottom, and set the display ID type at **"Set Feature for Display:"**, so the change works globally.
+
+![setFeatureDisp](ui_screenshots/ui_tutorial/setFeatureDisplay.png)\
 
 ````{=html}
 </div>
 <div class="tabcontent console">
 ````
 
-SCTK requires at least two steps to create the HVG subset. The first step performs variability calculation and stores the metrics, and the second step selects top genes basing on the ranking of the metrics. 
+For calculating the feature variablity, users can use either the wrapper function of each method (`runSeuratFindHVG()`, `runModelGeneVar()`) or using the generic wrapper `runFeatureSelection()` with argument `method` specified. 
 
 ```{R hvg}
 sce <- runModelGeneVar(sce, useAssay = "logcounts")
@@ -146,7 +168,30 @@ SCTK also supports Seurat's PCA and ICA method, which do a similar job. Please s
 <div class="tabcontent ia">
 ````
 
-Contents for UI 2
+![pca_entry](ui_screenshots/ui_tutorial/pca_entry.png)\
+
+1. Enter the main tab as instructed in the screenshot above. If users are following the previous steps in this tutorial, then we are already here.
+2. Enter the sub-tab for dimension reduction via **"Dimensionality Reduction"**
+
+![pca_entry](ui_screenshots/ui_tutorial/pca_param.png)\
+
+3. All of the parameters have been automatically updated for the most commonly seen scenario. Users can directly click on button **"Run"** for this tutorial. 
+
+What we actually set for the parameters:
+
+- Use the log-transformed normalized counts as the input
+- Subset features basing on the selection in the previous section
+- opt to scale the feature subset
+
+Besides the scatter plot of the top two components for all cells, the switches also add an elbow plot and heatmap for visualization
+
+![pca_entry](ui_screenshots/ui_tutorial/pca_plots.png)\
+
+After running, the plots will be updated on the right side. The elbow plot and heatmaps are internally calculated by Seurat functions. 
+
+The elbow plot is a heuristic method for determining the dimensionality to be used for downstream analysis. It is a ranking of principle components based on the percentage of variance explained by each one. In this example, we can observe an "elbow" around PC9-10, suggesting that the majority of true signal is captured in the first 10 PCs.
+
+The heatmap allows for easy exploration of the primary sources of heterogeneity in a dataset, and can be useful when trying to decide which PCs to include for further downstream analyses. Both cells and features are ordered according to their PCA scores. Please refer to [Seurat's tutorial](https://satijalab.org/seurat/articles/pbmc3k_tutorial.html#perform-linear-dimensional-reduction-1) for more explanation on these two visualization approaches. 
 
 ````{=html}
 </div>
@@ -188,7 +233,17 @@ In this tutorial, we calculate a UMAP embedding from the principal components ge
 <div class="tabcontent ia">
 ````
 
-Contents for UI 2
+![umap_entry](ui_screenshots/ui_tutorial/umap_entry.png)\
+
+1. Users should be at the same main tab as performing dimension reduction with PCA.
+2. Click on the last sub-tab **"Embedding"** to access the functionality for this section. 
+
+![umap_run](ui_screenshots/ui_tutorial/umap_run.png)\
+
+3. Select the name of the PCA matrix we generated in the previous section, from the selection input **"Select Input Matrix"**. 
+4. While users feel reasonable with other parameters, users can click on button **"Run"** to start the UMAP calculation. 
+
+After done, a scatter plot of all cells on the UMAP dimension will be shown on the right panel. 
 
 ````{=html}
 </div>
@@ -216,6 +271,10 @@ plotDimRed(sce, useReduction = "UMAP")
 
 SCTK supports clustering cells with Shared Nearest Neighbors (SNN) graph based methods and K-Means algorithm. For SNN graph based methods, we wrap the graph constructor from `scran` library, and have options of algorithms from `igraph` that can perform clustering on the graph. Alternatively, in the [Seurat Curated Workflow](cnsl_seurat_curated_workflow.html), the Seurat's SNN graph construction and community detection method are also wrapped as one method. 
 
+In this tutorial, we use the scran SNN graph approach, with the community detection algorithm set as Louvain. We will use the top 10 components for identifying the clusters. Though we have generated the UMAP representation in the previous section (also using 10 PCs), users are always allowed to test clustering with different numbers of PCs. In this case, we strongly suggest regenerating the UMAP with the consistent number of PCs, so that the UMAP can best reflect the information included in the PCs. 
+
+For the scran SNN graph approach, the parameter `k` can always be tweaked as it affects the connectivity of the graph. When `k` is larger, stronger connection will be constructed across the cells, thus larger and fewer clusters will be identified. 
+
 ````{=html}
 <!--Remember to change tabset id-->
 <div class="tabset" id="tabset5">
@@ -228,22 +287,29 @@ SCTK supports clustering cells with Shared Nearest Neighbors (SNN) graph based m
 <div class="tabcontent ia">
 ````
 
-Contents for UI 2
+![cluster_entry](ui_screenshots/ui_tutorial/cluster_entry.png)\
+
+1. Users should enter the clustering tab via the top navigation bar as instructed in the screenshot above. 
+
+![cluster_run](ui_screenshots/ui_tutorial/cluster_run.png)\
+
+2. Select the same PCA matrix as we've done in the 2D Embedding section, at the selection input **"Select Input Matrix"**
+3. Click on button **"Run"** to start clustering the data.
+
+Upon completing clustering, a scatter plot of cells on a low dimensional axis with cluster labeling colored on each cell will be shown on the right. However, we use the dimensions used for calculation as the default. For the best visualization, we suggest users change the dimensions to the 2D embedding obtained from the same components (of the same PCA matrix) as used for clustering. 
+
+4. In the dropdown panel of the plotting region, select the UMAP we previously generated from **"Use Reduction"**, and then click on button **"Update"**.
 
 ````{=html}
 </div>
 <div class="tabcontent console">
 ````
 
-Now we will use the same 10 components from the PCA, as we generated the UMAP, for building the SNN graph and detecting the communities. With `runScranSNN()` function, the dimension reduction matrix can be specified through argument `useReducedDim`, and the cluster label assignment will be updated in the `colData` slot, and the variable will be named by argument `clusterName`. 
-
-The default graph clustering algorithm is Louvain, while we also provide options including Leiden, Walktrap and etc. (from `igraph`). Though there could be algorithm specific parameters, the argument `k` can always be tweaked as it affects the connectivity of the graph. When `k` is larger, stronger connection will be constructed across the cells, thus larger and fewer clusters will be identified. 
+With `runScranSNN()` function, the dimension reduction matrix can be specified through argument `useReducedDim`, and the cluster label assignment will be updated in the `colData` slot, and the variable will be named by argument `clusterName`. The default graph clustering algorithm is Louvain, while we also provide options including Leiden, Walktrap and etc. (from `igraph`). 
 
 ```{R cluster, results="hold"}
 sce <- runScranSNN(sce, useReducedDim = "PCA", clusterName = "cluster", nComp = 10, seed = 12345, )
 ```
-
-In the other curated workflow that SCTK wraps ([Celda Curated Workflow](celda_curated_workflow.html)), we use a Bayesian hierarchical model that can bi-cluster features into modules and observations into subpopulations. For detail of this method, please refer to the [Celda Documentation](https://celda.camplab.net).
 
 After getting the cluster labeling, we can then visualize it:
 
@@ -255,6 +321,9 @@ plotSCEDimReduceColData(sce, "cluster", "UMAP")
 </div>
 </div>
 ````
+
+
+In the other curated workflow that SCTK wraps ([Celda Curated Workflow](celda_curated_workflow.html)), we use a Bayesian hierarchical model that can bi-cluster features into modules and observations into subpopulations. For detail of this method, please refer to the [Celda Documentation](https://celda.camplab.net).
 
 ## Marker Detection
 

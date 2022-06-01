@@ -196,7 +196,7 @@ Besides the approaches described above, we have also published the SCTK-QC pipel
 
 ## Filtering
 
-After examining the distributions of various QC metrics, poor quality cells will need to be removed. Typically, thresholds for QC metrics should exclude cells that are outliers of the distribution (i.e. long tails in the violin or density plots). Here is how we limit the data to cells with 1. at least 600 counts, 2. at least 300 genes detected, 3. doublet score no more than 0.8, and 4. at most 5% of detected counts are mitochondrial. For more detail about filtering, please refer to the [Filtering documentation](filtering.html)
+After examining the distributions of various QC metrics, poor quality cells will need to be removed. Typically, thresholds for QC metrics should exclude cells that are outliers of the distribution (i.e. long tails in the violin or density plots). Here is how we limit the data to cells with 1. at least 600 counts, 2. at least 300 genes detected, and 3. at most 5% of detected counts are mitochondrial. For more detail about filtering, please refer to the [Filtering documentation](filtering.html)
 
 ````{=html}
 <!--Remember to change tabset id-->
@@ -217,10 +217,10 @@ After examining the distributions of various QC metrics, poor quality cells will
 ![import](ui_screenshots/ui_tutorial/filter_add.png)\
 
 2. Click on button **"Add a Filter"** in the first grey panel **"Select Cell Filtering Criteria"**.
-3. In the pop up, select one of the cell metadata variables that stands for the QC metrics. It should be `total`, `detected`, `scDblFinder_doublet_score` and `mito_percent` for each criteria. 
-4. Set the cut-off for each criteria. If you want to keep cells with value `total` greater than 600, you would check **"Greater than"**, and enter the number `600`. Similarly, if you want to keep cells with value `scDblFinder_doublet_score` less than 0.8, you would check **"Less than"** and enter the number `0.8`. 
+3. In the pop up, select one of the cell metadata variables that stands for the QC metrics. It should be `total`, `detected` and `mito_percent` for each criteria. 
+4. Set the cut-off for each criteria. If you want to keep cells with value `total` greater than 600, you would check **"Greater than"**, and enter the number `600`. Similarly, if you want to keep cells with value `mito_percent` less than 5, you would check **"Less than"** and enter the number `5`. 
 5. For every criteria, after entering the cut-off, click on button **OK** to add the filter "to the cart". 
-6. Repeat step 2-5 to add the four filters. After each criteria is added, you can see a new row inserted to the table, as shown in the dashed box in the screenshot below. 
+6. Repeat step 2-5 to add the three filters. After each criteria is added, you can see a new row inserted to the table, as shown in the dashed box in the screenshot below. 
 
 ![import](ui_screenshots/ui_tutorial/filter_run.png)\
 
