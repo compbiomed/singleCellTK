@@ -11,7 +11,7 @@ reportSeuratFeatureSelection(
   runHVG = TRUE,
   plotHVG = TRUE,
   outputFile = NULL,
-  outputDir = NULL,
+  outputPath = NULL,
   subtitle = NULL,
   authors = NULL,
   showSession = FALSE,
@@ -36,7 +36,7 @@ of the top variable feature should be visualized or not. Default \code{TRUE}.}
 If \code{NULL} then the output file name will be based on the name of the 
 Rmarkdown template. Default \code{NULL}.}
 
-\item{outputDir}{Specify the name of the output directory to save the 
+\item{outputPath}{Specify the name of the output directory to save the 
 rendered HTML file. If \code{NULL} the file is stored to the current 
 working directory. Default \code{NULL}.}
 

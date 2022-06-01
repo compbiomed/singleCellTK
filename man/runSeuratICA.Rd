@@ -14,7 +14,7 @@ runSeuratICA(
   reducedDimName = "seuratICA",
   nics = 20,
   seed = NULL,
-  verbose = TRUE
+  verbose = FALSE
 )
 }
 \arguments{

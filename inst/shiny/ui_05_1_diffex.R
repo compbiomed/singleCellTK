@@ -158,12 +158,12 @@ shinyPanelDiffex <- fluidPage(
             numericInput("deFDRThresh", "Output FDR less than:",
                          min = 0, max = 1, step = 0.01, value = 0.05)
           ),
-          column(
-            width = 3,
-            numericInput("deFCThresh",
-                         "Output Log2FC Absolute value greater than:",
-                         min = 0, step = 0.05, value = NULL)
-          ),
+          # column(
+          #   width = 3,
+          #   numericInput("deFCThresh",
+          #                "Output Log2FC Absolute value greater than:",
+          #                min = 0, step = 0.05, value = NULL)
+          # ),
           column(
             width = 3,
             style = 'margin-top: 18px;',
@@ -171,32 +171,32 @@ shinyPanelDiffex <- fluidPage(
                           value = FALSE)
           )
         ),
-        fluidRow(
-          column(
-            width = 3,
-            numericInput("deMinExp1", 
-                         "Output Group1 mean expression greater than:",
-                         min = 0, step = 0.1, value = NULL)
-          ),
-          column(
-            width = 3,
-            numericInput("deMaxExp2", 
-                         "Output Group2 mean expression less than:",
-                         min = 0, step = 0.1, value = NULL)
-          ),
-          column(
-            width = 3,
-            numericInput("deMinExpPerc1",
-                         "Output Group1 expression percentage greater than:",
-                         min = 0, max = 1, step = 0.05, value = NULL)
-          ),
-          column(
-            width = 3,
-            numericInput("deMaxExpPerc2",
-                         "Output Group2 expression percentage less than:",
-                         min = 0, max = 1, step = 0.05, value = NULL)
-          )
-        ),
+        # fluidRow(
+        #   column(
+        #     width = 3,
+        #     numericInput("deMinExp1", 
+        #                  "Output Group1 mean expression greater than:",
+        #                  min = 0, step = 0.1, value = NULL)
+        #   ),
+        #   column(
+        #     width = 3,
+        #     numericInput("deMaxExp2", 
+        #                  "Output Group2 mean expression less than:",
+        #                  min = 0, step = 0.1, value = NULL)
+        #   ),
+        #   column(
+        #     width = 3,
+        #     numericInput("deMinExpPerc1",
+        #                  "Output Group1 expression percentage greater than:",
+        #                  min = 0, max = 1, step = 0.05, value = NULL)
+        #   ),
+        #   column(
+        #     width = 3,
+        #     numericInput("deMaxExpPerc2",
+        #                  "Output Group2 expression percentage less than:",
+        #                  min = 0, max = 1, step = 0.05, value = NULL)
+        #   )
+        # ),
         fluidRow(
           column(
             width = 3,
@@ -357,11 +357,10 @@ shinyPanelDiffex <- fluidPage(
           )
         ),
         tabPanel("Results Table",
-                 DT::dataTableOutput("deResult"),
-                 downloadButton("deDownload", "Download Result Table")),
-        
-        
-        
+                 filterTableUI(id = "deResult")
+                 # DT::dataTableOutput("deResult"),
+                 # downloadButton("deDownload", "Download Result Table")
+                 ),
         tabPanel(
           "Volcano Plot",
           panel(
@@ -457,9 +456,6 @@ shinyPanelDiffex <- fluidPage(
             shinyjqui::jqui_resizable(plotOutput("deVolcanoPlot"))
           )
         ),
-        
-        
-        
         tabPanel(
           "Violin Plot",
           panel(

@@ -20,7 +20,7 @@ runSeuratPCA(
 \arguments{
 \item{inSCE}{(sce) object on which to compute PCA}
 
-\item{useAssay}{Assay containing scaled counts to use in PCA. Default 
+\item{useAssay}{Assay containing scaled counts to use in PCA. Default
 \code{"seuratScaledData"}.}
 
 \item{useFeatureSubset}{Subset of feature to use for dimension reduction. A 

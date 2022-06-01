@@ -98,18 +98,17 @@ reference:
   - runSingleR
 - title: "Enrichment & Pathway Analysis"
 - contents:
-  - runEnrichR
-  - getEnrichRResult
   - getMSigDBTable
+  - enrichRSCE
   - runGSVA
   - runVAM
   - getPathwayResultNames
   - plotPathway
 - title: "Seurat Curated Workflow"
 - contents:
-  - starts_with("runSeurat")
+  - starts_with("seurat")
   - computeHeatmap
-  - starts_with("reportSeurat")
+  - runSeurat
 - title: "Visualization"
 - contents:
   - starts_with("plot")
@@ -222,7 +221,7 @@ navbar:
               href: articles/find_marker.html
             - text: "Cell Type Labeling"
               href: articles/cell_type_labeling.html
-        - text: "Enrichment & Pathway Analysis"
+        - text: "Pathway & Enrichment Analysis"
           menu:
             - text: "EnrichR"
               href: articles/cnsl_enrichR.html
@@ -240,10 +239,14 @@ navbar:
             href: articles/visualization.html
           - text: "Generic Heatmap"
             href: articles/heatmap.html
+    - text: "Tutorials"
+      menu:
+      - text: "Analysis of PBMC3K (R Console)"
+        href: articles/console_analysis_tutorial.html
+    - text: "SCTK-QC"
+      href: articles/cmd_qc.html
     - text: "Reference"
       href: reference/index.html
-    - text: "NEWS"
-      href: news/index.html
   right:
     - icon: fab fa-github fa-lg
       href: https://github.com/compbiomed/singleCellTK

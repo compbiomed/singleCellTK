@@ -18,8 +18,9 @@ reportSeuratResults(
   runClustering = TRUE,
   runMSClusters = TRUE,
   runMSBioGroup = TRUE,
+  numTopFeatures = 10,
   outputFile = NULL,
-  outputDir = NULL,
+  outputPath = NULL,
   subtitle = NULL,
   authors = NULL,
   showSession = FALSE,
@@ -68,11 +69,14 @@ visualized in the report. Default \code{TRUE}.}
 section for identifying marker genes between the \code{biological.group} 
 parameter should be run and visualized in the report. Default \code{TRUE}.}
 
+\item{numTopFeatures}{A numeric value indicating the number of top features
+to visualize in each group. Default \code{10}.}
+
 \item{outputFile}{Specify the name of the generated output HTML file. 
 If \code{NULL} then the output file name will be based on the name of the 
 Rmarkdown template. Default \code{NULL}.}
 
-\item{outputDir}{Specify the name of the output directory to save the 
+\item{outputPath}{Specify the name of the output directory to save the 
 rendered HTML file. If \code{NULL} the file is stored to the current 
 working directory. Default \code{NULL}.}
 
