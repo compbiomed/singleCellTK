@@ -47,6 +47,7 @@ plotTopHVG <- function(inSCE,
                        modelGeneVar = "Variance")
   x <- metric[,"mean"]
   y <- metric[,"v_plot"]
+  if (method == "vst") x <- log(x)
   yAxisLabel <- yLabelChoice[[method]]
   hvgList <- character()
   if (!is.null(useFeatureSubset)) {

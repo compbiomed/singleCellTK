@@ -76,17 +76,17 @@ runSingleR <- function(inSCE,
         }
     } else {
         if (useBltinRef == "hpca") {
-            message("Loading reference data 'HumanPrimaryCellAtlasData'...")
+            message(date(), " ... Loading reference data 'HumanPrimaryCellAtlasData'")
             ref <- celldex::HumanPrimaryCellAtlasData(ensembl = useEnsembl,
                                                       cell.ont = "none")
             labelColName <- paste0("label.", level)
         } else if (useBltinRef == "bpe") {
-            message("Loading reference data 'BlueprintEncodeData'...")
+            message(date(), " ... Loading reference data 'BlueprintEncodeData'")
             ref <- celldex::BlueprintEncodeData(ensembl = useEnsembl,
                                                 cell.ont = "none")
             labelColName <- paste0("label.", level)
         } else if (useBltinRef == "mp") {
-            message("Loading reference data 'MuraroPancreasData'...")
+            message(date(), " ... Loading reference data 'MuraroPancreasData'")
             ref <- scRNAseq::MuraroPancreasData(ensembl = useEnsembl)
             if (!isTRUE(useEnsembl)) {
                 rownames(ref) <- SummarizedExperiment::rowData(ref)$symbol
@@ -97,19 +97,19 @@ runSingleR <- function(inSCE,
             warning("MuraroPancreasData does not have multiple levels of ",
                     "label. Using its default labeling.")
         } else if (useBltinRef == "dice") {
-            message("Loading reference data 'DatabaseImmuneCellExpressionData'...")
+            message(date(), " ... Loading reference data 'DatabaseImmuneCellExpressionData'")
             ref <- celldex::DatabaseImmuneCellExpressionData(ensembl = useEnsembl)
             labelColName <- paste0("label.", level)
         } else if (useBltinRef == "immgen") {
-            message("Loading reference data 'ImmGenData'...")
+            message(date(), " ... Loading reference data 'ImmGenData'")
             ref <- celldex::ImmGenData(ensembl = useEnsembl)
             labelColName <- paste0("label.", level)
         } else if (useBltinRef == "mouse") {
-            message("Loading reference data 'MouseRNAseqData'...")
+            message(date(), " ... Loading reference data 'MouseRNAseqData'")
             ref <- celldex::MouseRNAseqData(ensembl = useEnsembl)
             labelColName <- paste0("label.", level)
         } else if (useBltinRef == "zeisel") {
-            message("Loading reference data 'ZeiselBrainData'...")
+            message(date(), " ... Loading reference data 'ZeiselBrainData'")
             ref <- scRNAseq::ZeiselBrainData(ensembl = useEnsembl)
             ref <- ref[,ref$level2class!="(none)"]
             ref <- scaterlogNormCounts(ref, assayName = "logcounts")
@@ -126,6 +126,7 @@ runSingleR <- function(inSCE,
     # predictions <- SingleR::SingleR(test = inSCE, assay.type.test = useAssay,
     #                                 ref = ref, clusters = clusters,
     #                                 labels = ref[[labelColName]])
+    message(date(), " ... Labeling cell type with SingleR")
     predictions <- SingleR::SingleR(test = expData(inSCE, useAssay),
                                     ref = ref, clusters = clusters,
                                     labels = ref[[labelColName]])

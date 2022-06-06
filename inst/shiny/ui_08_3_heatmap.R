@@ -10,7 +10,7 @@ shinyPanelHeatmap <- fluidPage(
       fluidRow(
         div(style="display:inline-block;vertical-align:top;width:120px;margin-left:20px;",
             h4("Assay to Plot")),
-        div(style="display:inline-block;vertical-align:bottom;width:120px;margin-top:5px;",
+        div(style="display:inline-block;vertical-align:bottom;width:160px;margin-top:5px;",
             selectizeInput(
               inputId = "hmAssay", 
               label = "Select input matrix:", 
@@ -23,9 +23,9 @@ shinyPanelHeatmap <- fluidPage(
             #selectInput("hmAssay", NULL, currassays))
       ),
       fluidRow(
-        div(style="display:inline-block;vertical-align:top;width:180px;margin-left:20px;",
+        div(style="display:inline-block;vertical-align:bottom;width:180px;margin-left:20px;",
             h4("Import from analysis")),
-        div(style="display:inline-block;vertical-align:bottom;width:150px;margin-top:5px;",
+        div(style="display:inline-block;vertical-align:bottom;width:200px;margin-top:5px;",
             selectInput("hmImport", NULL,
                         c("None",
                           "Differential Expression",

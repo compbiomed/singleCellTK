@@ -258,6 +258,8 @@
 #' fraction of cells in group2. Default \code{NULL}.
 #' @param overwrite A logical scalar. Whether to overwrite result if exists.
 #' Default \code{FALSE}.
+#' @param verbose A logical scalar. Whether to show messages. Default 
+#' \code{TRUE}.
 #' @param fullReduced Logical, DESeq2 only argument. Whether to apply LRT 
 #' (Likelihood ratio test) with a 'full' model. Default \code{TRUE}.
 #' @param check_sanity Logical, MAST only argument. Whether to perform MAST's 
@@ -303,7 +305,7 @@ runDESeq2 <- function(inSCE, useAssay = 'counts', useReducedDim = NULL,
                       log2fcThreshold = NULL, fdrThreshold = NULL, 
                       minGroup1MeanExp = NULL, maxGroup2MeanExp = NULL, 
                       minGroup1ExprPerc = NULL, maxGroup2ExprPerc = NULL,
-                      overwrite = FALSE){
+                      overwrite = FALSE, verbose = TRUE){
     resultList <- .formatDEAList(inSCE, useAssay, useReducedDim, index1, index2, 
                                  class, classGroup1, classGroup2, groupName1,
                                  groupName2, analysisName, covariates,
@@ -335,18 +337,23 @@ runDESeq2 <- function(inSCE, useAssay = 'counts', useReducedDim = NULL,
               "unique in the result. They will not show in plots.")
       mat <- dedupRowNames(mat)
     }
+    if (isTRUE(verbose)) {
+      message(date(), " ... Running DE with DESeq2. Analysis name: ",
+              analysisName)
+    }
     dds <- DESeq2::DESeqDataSetFromMatrix(
         countData = mat, colData = annotData,
         design = stats::as.formula(paste0("~", c('condition', covariates),
                                           collapse = "+"))
     )
     if(isTRUE(fullReduced)){
-        dds <- DESeq2::DESeq(dds, test = "LRT", reduced = ~ 1)
+        dds <- DESeq2::DESeq(dds, test = "LRT", reduced = ~ 1, quiet = !verbose)
     } else {
         dds <- DESeq2::DESeq(
             dds, test = "LRT",
             reduced = stats::as.formula(paste0('~condition', covariates,
-                                               collapse = '+'))
+                                               collapse = '+')), 
+            quiet = !verbose
         )
     }
     res <- DESeq2::results(dds, pAdjustMethod = 'fdr')
@@ -382,7 +389,8 @@ runLimmaDE <- function(inSCE, useAssay = 'logcounts', useReducedDim = NULL,
                        onlyPos = FALSE, log2fcThreshold = NULL, 
                        fdrThreshold = NULL, minGroup1MeanExp = NULL, 
                        maxGroup2MeanExp = NULL, minGroup1ExprPerc = NULL, 
-                       maxGroup2ExprPerc = NULL, overwrite = FALSE){
+                       maxGroup2ExprPerc = NULL, overwrite = FALSE, 
+                       verbose = TRUE){
     resultList <- .formatDEAList(inSCE, useAssay, useReducedDim, index1, index2,
                                  class, classGroup1, classGroup2, groupName1,
                                  groupName2, analysisName, covariates,
@@ -413,6 +421,10 @@ runLimmaDE <- function(inSCE, useAssay = 'logcounts', useReducedDim = NULL,
       warning("Duplicated feature names found in given dataset. Making them ",
               "unique in the result. They will not show in plots.")
       mat <- dedupRowNames(mat)
+    }
+    if (isTRUE(verbose)) {
+      message(date(), " ... Running DE with limma, Analysis name: ", 
+              analysisName)
     }
     design <- stats::model.matrix(
         stats::as.formula(paste0("~", paste0(c('condition', covariates),
@@ -455,7 +467,7 @@ runANOVA <- function(inSCE, useAssay = 'logcounts', useReducedDim = NULL,
                      log2fcThreshold = NULL, fdrThreshold = NULL, 
                      minGroup1MeanExp = NULL, maxGroup2MeanExp = NULL, 
                      minGroup1ExprPerc = NULL, maxGroup2ExprPerc = NULL,
-                     overwrite = FALSE){
+                     overwrite = FALSE, verbose = TRUE){
     resultList <- .formatDEAList(inSCE, useAssay, useReducedDim, index1, index2,
                                  class, classGroup1, classGroup2, groupName1,
                                  groupName2, analysisName, covariates,
@@ -498,7 +510,10 @@ runANOVA <- function(inSCE, useAssay = 'logcounts', useReducedDim = NULL,
               "unique in the result. They will not show in plots.")
       dat <- dedupRowNames(dat)
     }
-
+    if (isTRUE(verbose)) {
+      message(date(), " ... Running DE with ANOVA, Analysis name: ", 
+              analysisName)
+    }
     n <- dim(dat)[2]
     m <- dim(dat)[1]
     df1 <- dim(mod)[2]
@@ -554,7 +569,7 @@ runMAST <- function(inSCE, useAssay = 'logcounts', useReducedDim = NULL,
                     log2fcThreshold = NULL, fdrThreshold = NULL,
                     minGroup1MeanExp = NULL, maxGroup2MeanExp = NULL, 
                     minGroup1ExprPerc = NULL, maxGroup2ExprPerc = NULL,
-                    overwrite = FALSE, check_sanity = TRUE){
+                    overwrite = FALSE, check_sanity = TRUE, verbose = TRUE){
     resultList <- .formatDEAList(inSCE, useAssay, useReducedDim, index1, index2, 
                                  class, classGroup1, classGroup2, groupName1,
                                  groupName2, analysisName, covariates,
@@ -579,6 +594,10 @@ runMAST <- function(inSCE, useAssay = 'logcounts', useReducedDim = NULL,
       warning("Duplicated feature names found in given dataset. Making them ",
               "unique in the result. They will not show in plots.")
       mat <- dedupRowNames(mat)
+    }
+    if (isTRUE(verbose)) {
+      message(date(), " ... Running DE with MAST, Analysis name: ", 
+              analysisName)
     }
     cond <- rep(NA, ncol(inSCE))
     cond[ix1] <- 'c1'
@@ -662,7 +681,8 @@ runWilcox <- function(inSCE, useAssay = 'logcounts', useReducedDim = NULL,
                       onlyPos = FALSE, log2fcThreshold = NULL, 
                       fdrThreshold = NULL, minGroup1MeanExp = NULL, 
                       maxGroup2MeanExp = NULL, minGroup1ExprPerc = NULL, 
-                      maxGroup2ExprPerc = NULL,overwrite = FALSE){
+                      maxGroup2ExprPerc = NULL, overwrite = FALSE, 
+                      verbose = TRUE){
   resultList <- .formatDEAList(inSCE, useAssay, useReducedDim, index1, index2, 
                                class, classGroup1, classGroup2, groupName1,
                                groupName2, analysisName, covariates,
@@ -682,6 +702,10 @@ runWilcox <- function(inSCE, useAssay = 'logcounts', useReducedDim = NULL,
     mat <- expData(inSCE, useAssay)
   } else {
     mat <- t(expData(inSCE, useReducedDim))
+  }
+  if (isTRUE(verbose)) {
+    message(date(), " ... Running DE with wilcox, Analysis name: ", 
+            analysisName)
   }
   result <- scran::pairwiseWilcox(mat, groups = conditions)
   # result <- scran::pairwiseWilcox(inSCE, groups = conditions,

@@ -32,7 +32,8 @@ runDESeq2(
   maxGroup2MeanExp = NULL,
   minGroup1ExprPerc = NULL,
   maxGroup2ExprPerc = NULL,
-  overwrite = FALSE
+  overwrite = FALSE,
+  verbose = TRUE
 )
 
 runLimmaDE(
@@ -55,7 +56,8 @@ runLimmaDE(
   maxGroup2MeanExp = NULL,
   minGroup1ExprPerc = NULL,
   maxGroup2ExprPerc = NULL,
-  overwrite = FALSE
+  overwrite = FALSE,
+  verbose = TRUE
 )
 
 runANOVA(
@@ -78,7 +80,8 @@ runANOVA(
   maxGroup2MeanExp = NULL,
   minGroup1ExprPerc = NULL,
   maxGroup2ExprPerc = NULL,
-  overwrite = FALSE
+  overwrite = FALSE,
+  verbose = TRUE
 )
 
 runMAST(
@@ -102,7 +105,8 @@ runMAST(
   minGroup1ExprPerc = NULL,
   maxGroup2ExprPerc = NULL,
   overwrite = FALSE,
-  check_sanity = TRUE
+  check_sanity = TRUE,
+  verbose = TRUE
 )
 
 runWilcox(
@@ -125,7 +129,8 @@ runWilcox(
   maxGroup2MeanExp = NULL,
   minGroup1ExprPerc = NULL,
   maxGroup2ExprPerc = NULL,
-  overwrite = FALSE
+  overwrite = FALSE,
+  verbose = TRUE
 )
 }
 \arguments{
@@ -203,6 +208,9 @@ fraction of cells in group2. Default \code{NULL}.}
 
 \item{overwrite}{A logical scalar. Whether to overwrite result if exists.
 Default \code{FALSE}.}
+
+\item{verbose}{A logical scalar. Whether to show messages. Default 
+\code{TRUE}.}
 
 \item{check_sanity}{Logical, MAST only argument. Whether to perform MAST's 
 sanity check to see if the counts are logged. Default \code{TRUE}.}

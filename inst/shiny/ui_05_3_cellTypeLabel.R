@@ -98,7 +98,7 @@ shinyPanelLabelCellType <- fluidPage(
           "please refer to SCTK's console function: runSingleR()",
           style = "color: grey;")
       ),
-      actionButton("ctLabelRun", "Label")
+      actionButton("ctLabelRun", "Run")
     )
   )
 )

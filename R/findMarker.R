@@ -77,7 +77,8 @@ findMarkerDiffExp <- function(inSCE, useAssay = 'logcounts',
     uniqClust <- unique(cluster)
   }
   for(c in uniqClust){
-    message('Computing for cluster: ', c)
+    message(date(), " ... Identifying markers for cluster '", c, 
+            "', using DE method '", method, "'")
     clusterIndex <- cluster == c
     inSCE <- runDEAnalysis(method = method, inSCE = inSCE,
                            useAssay = useAssay,
@@ -87,8 +88,10 @@ findMarkerDiffExp <- function(inSCE, useAssay = 'logcounts',
                            log2fcThreshold = log2fcThreshold,
                            fdrThreshold = fdrThreshold,
                            covariates = covariates,
-                           groupName1 = c, groupName2 = 'others')
+                           groupName1 = c, groupName2 = 'others', 
+                           verbose = FALSE)
   }
+  message(date(), " ... Organizing findMarker result")
   degFull <- NULL
   for(c in uniqClust){
     degTable <-

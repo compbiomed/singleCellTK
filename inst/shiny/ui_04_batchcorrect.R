@@ -297,8 +297,8 @@ shinyPanelBatchcorrect <- fluidPage(
         h5(tags$a(href = paste0(docs.artPath, "batch_correction.html"),
                   "(help)", target = "_blank")),
         selectInput('batchCorrMethods', "Select Batch Correction Method:",
-                    c("ComBatSeq", "BBKNN", "FastMNN", "Limma", #"Harmony", "LIGER",
-                      "MNN", "scanorama", "scMerge", "Seurat3 Integration",
+                    c("MNN", "ComBatSeq", "FastMNN", "Limma", #"BBKNN", "Harmony", "LIGER",
+                      "scanorama", "scMerge", "Seurat3 Integration",
                       "ZINBWaVE")),
         selectizeInput(
           inputId = "batchCorrAssay", 

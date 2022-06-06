@@ -19,13 +19,15 @@ shinyPanelQC <- fluidPage(
             tags$div(id = "QCMetricsParams",
                      actionLink("QCMhelp", "Help", icon = icon("info-circle")),
                      tags$hr(),
-                     selectInput("QCMgeneSets",
-                                 "collectionName - Select a Gene Set for Quality Control",
-                                 c("None" = "none",
+                     selectInput("QCMito", "Use mitochondrial gene set",
+                                 c("None" = "None",
                                    "Human Mitochondrial Genes (Ensembl)" = "he",
                                    "Human Mitochondrial Genes (Symbol)" = "hs",
                                    "Mouse Mitochondrial Genes (Ensembl)" = "me",
                                    "Mouse Mitochondrial Genes (Symbol)" = "ms")),
+                     selectInput("QCMgeneSets",
+                                 "collectionName - Select a Gene Set for Quality Control",
+                                 c("None")),
                      actionLink("QCImportGS", "Import Gene Sets", icon = icon("upload"))
             )
           ),
@@ -99,7 +101,6 @@ shinyPanelQC <- fluidPage(
 
                      checkboxInput("CXverb", "verb - Output progress messages?", value = TRUE), # T/F input
                      checkboxInput("CXretRes", "retRes - Return gene pair scores and top-scoring gene pairs?"), # T/F input
-                     checkboxInput("CXestNdbl", "estNdbl - Estimate the number of doublets?"), # T/F input
             )
           ),
           # bcds
@@ -117,7 +118,6 @@ shinyPanelQC <- fluidPage(
                      checkboxInput("BCverb", "verb - Output progress messages?", value = TRUE), # T/F input
                      checkboxInput("BCretRes", "retRes - Return trained classifier?"), # T/F input
                      checkboxInput("BCvarImp", "varImp - Return variable importance?"), # T/F input
-                     checkboxInput("BCestNdbl", "estNdbl - Estimate the number of doublets?"), # T/F input
             )
           ),
           # cxds_bcds_hybrid
@@ -139,9 +139,7 @@ shinyPanelQC <- fluidPage(
                      textInput("BC2nmax", "nmax - Max number of training rounds (default 'tune')", value = "tune"),
                      checkboxInput("BC2retRes", "retRes - Return trained classifier?"), # T/F input
                      checkboxInput("BC2varImp", "varImp - Return variable importance?"), # T/F input
-
                      checkboxInput("CXBCverb", "verb - Output bcds progress messages?", value = TRUE), # T/F input
-                     checkboxInput("CXBCestNdbl", "estNdbl - Estimate the number of doublets?", value = TRUE), # T/F input
             )
           ),
           # scrublet

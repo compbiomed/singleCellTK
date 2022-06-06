@@ -70,12 +70,7 @@ cxdsBcdsHybridHelpModal <- function() {
       fluidRow(
         column(4, "verb"),
         column(8, "Check off to print log messages to the console. Default: TRUE.")
-      ),
-      tags$hr(),
-      fluidRow(
-        column(4, "estNdbl"),
-        column(8, "Check off to estimate  the numer of doublets be estimated from the data. Enables doublet calls.")
-      ),
+      )
     )
   )
 }
