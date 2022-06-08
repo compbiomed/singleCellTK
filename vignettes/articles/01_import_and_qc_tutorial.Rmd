@@ -148,14 +148,11 @@ Please find [the detailed documentation of the QC UI](ui_qc.html) for more expla
 To perform QC, we suggest using the `runCellQC()` function. This is a wrapper for several methods for calculation of QC metrics, doublet detection, and estimation of ambient RNA. For a full list of algorithms that this function runs by default, see `?runCellQC`. 
 
 ```{R qc, results='hold'}
-# Get list of mitochondrial genes
-sce <- importMitoGeneSet(sce, reference = "human", id = "symbol",
-                         by = "rownames", collectionName = "mito")
 # Run QC
 sce <- runCellQC(sce, sample = NULL,
                  algorithms = c("QCMetrics", "scDblFinder", "decontX"),
-                 collectionName = "mito",
-                 geneSetListLocation = "rownames", seed = 12345)
+                 mitoRef = "human", mitoIDType = "symbol", 
+                 mitoGeneLocation = "rownames", seed = 12345)
 
 sce <- getUMAP(inSCE = sce, useAssay = "counts", logNorm = TRUE, 
                reducedDimName = "QC_UMAP", seed = 12345)

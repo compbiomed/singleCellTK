@@ -164,7 +164,7 @@
     deg <- deg[deg$group2ExprPerc <= maxGroup2ExprPerc,]
   }
   # Format output
-  deg <- deg[order(deg$FDR, na.last = TRUE),]
+  deg <- deg[order(deg$Log2_FC, na.last = TRUE, decreasing = TRUE),]
   if (length(which(rowSums(is.na(deg)) > 2)) > 0) {
     deg <- deg[-which(rowSums(is.na(deg)) > 2),]
   }

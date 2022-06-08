@@ -7334,7 +7334,7 @@ shinyServer(function(input, output, session) {
                              type = "error")
     } else {
       .loadOpen("Please wait while EnrichR is running. See console log for progress.") 
-      withBusyIndicatorServer ("enrichRun", {
+      withBusyIndicatorServer("enrichRun", {
         
         by <- "rownames"
         if (input$geneListChoice == "deg") {

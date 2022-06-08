@@ -52,7 +52,6 @@ findMarkerDiffExp <- function(inSCE, useAssay = 'logcounts',
     stop('"useAssay" name: ', useAssay, ' not found.')
   }
   method <- match.arg(method)
-  message("Running with ", method)
   ## Check whether use colData or customized vector/factor
   if(is.character(cluster) && length(cluster) == 1){
     if(!cluster %in% names(SummarizedExperiment::colData(inSCE))){
