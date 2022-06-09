@@ -88,6 +88,7 @@ withBusyIndicatorServer <- function(buttonId, expr) {
 
 # When an error happens after a button click, show the error
 errorFunc <- function(err, buttonId) {
+  message(paste0(date(), " !!! ", err))
   errEl <- sprintf("[data-for-btn=%s] .btn-err", buttonId)
   errElMsg <- sprintf("[data-for-btn=%s] .btn-err-msg", buttonId)
   errMessage <- gsub("^ddpcr: (.*)", "\\1", err$message)
@@ -463,4 +464,26 @@ spinnerColor <- "gainsboro"
   shinybusy::remove_modal_spinner() #closes the notification spinner
 }
 
-
+#' Usually numericInput returns NA when not entering anything in UI, but 
+#' directly using NA causes error. Similarly, character inputs (selectionInput) 
+#' returns empty string "", which should usually be changed to NULL. 
+#' @value if not identified as empty inputs, returns as is; otherwise, 
+#' changeTo to `changeTo`
+handleEmptyInput <- function(x, 
+                             type = c("auto", "numeric", "character"), 
+                             changeTo = NULL) {
+  type = match.arg(type)
+  if (type == "auto") {
+    if (is.numeric(x) || is.na(x)) {
+      type <- "numeric"
+    } else if (is.character(x)) {
+      type <- "character"
+    }
+  }
+  if (type == "numeric" & is.na(x)) {
+    x <- changeTo
+  } else if (type == "character" & x == "") {
+    x <- changeTo
+  }
+  return(x)
+}

@@ -232,8 +232,8 @@ shinyUI(
       tabPanel("Clustering", shinyPanelCluster),
       navbarMenu(
         "Differential Expression & Cell Type Labeling",
-        tabPanel("Differential Expression", shinyPanelDiffex),
         tabPanel("Find Marker", shinyPanelfindMarker),
+        tabPanel("Differential Expression", shinyPanelDiffex),
         tabPanel("Cell Type Labeling", shinyPanelLabelCellType)
 
       ),

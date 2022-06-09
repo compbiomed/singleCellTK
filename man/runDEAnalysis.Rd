@@ -32,7 +32,8 @@ runDESeq2(
   maxGroup2MeanExp = NULL,
   minGroup1ExprPerc = NULL,
   maxGroup2ExprPerc = NULL,
-  overwrite = FALSE
+  overwrite = FALSE,
+  verbose = TRUE
 )
 
 runLimmaDE(
@@ -55,7 +56,8 @@ runLimmaDE(
   maxGroup2MeanExp = NULL,
   minGroup1ExprPerc = NULL,
   maxGroup2ExprPerc = NULL,
-  overwrite = FALSE
+  overwrite = FALSE,
+  verbose = TRUE
 )
 
 runANOVA(
@@ -78,7 +80,8 @@ runANOVA(
   maxGroup2MeanExp = NULL,
   minGroup1ExprPerc = NULL,
   maxGroup2ExprPerc = NULL,
-  overwrite = FALSE
+  overwrite = FALSE,
+  verbose = TRUE
 )
 
 runMAST(
@@ -102,7 +105,8 @@ runMAST(
   minGroup1ExprPerc = NULL,
   maxGroup2ExprPerc = NULL,
   overwrite = FALSE,
-  check_sanity = TRUE
+  check_sanity = TRUE,
+  verbose = TRUE
 )
 
 runWilcox(
@@ -125,7 +129,8 @@ runWilcox(
   maxGroup2MeanExp = NULL,
   minGroup1ExprPerc = NULL,
   maxGroup2ExprPerc = NULL,
-  overwrite = FALSE
+  overwrite = FALSE,
+  verbose = TRUE
 )
 }
 \arguments{
@@ -139,12 +144,11 @@ runWilcox(
 \item{inSCE}{\linkS4class{SingleCellExperiment} inherited object.}
 
 \item{useAssay}{character. A string specifying which assay to use for the
-DE regression. Default \code{"counts"} for DESeq2, \code{"logcounts"} for 
-other methods.}
+DE regression. Ignored when \code{useReducedDim} is specified. Default 
+\code{"counts"} for DESeq2, \code{"logcounts"} for other methods.}
 
 \item{useReducedDim}{character. A string specifying which reducedDim to use
-for DE analysis. Usually a pathway analysis result matrix. Set 
-\code{useAssay} to \code{NULL} when using. Default \code{NULL}.}
+for DE analysis. Will treat the dimensions as features. Default \code{NULL}.}
 
 \item{index1}{Any type of indices that can subset a
 \linkS4class{SingleCellExperiment} inherited object by cells. Specifies
@@ -205,18 +209,22 @@ fraction of cells in group2. Default \code{NULL}.}
 \item{overwrite}{A logical scalar. Whether to overwrite result if exists.
 Default \code{FALSE}.}
 
+\item{verbose}{A logical scalar. Whether to show messages. Default 
+\code{TRUE}.}
+
 \item{check_sanity}{Logical, MAST only argument. Whether to perform MAST's 
 sanity check to see if the counts are logged. Default \code{TRUE}.}
 }
 \value{
-The input \linkS4class{SingleCellExperiment} object with
-\code{metadata(inSCE)$diffExp} updated with the results: a list named by
-\code{analysisName}, with \code{$groupNames} containing the naming of the
-two conditions, \code{$useAssay} and \code{$useReducedDim} storing the matrix
-name that was used for calculation, \code{$select} storing the cell selection
-indices (logical) for each condition, \code{$result} storing a 
-\code{\link{data.frame}} of the DEGs summary, and \code{$method} storing the 
-character method name used.
+The input \linkS4class{SingleCellExperiment} object, where
+\code{metadata(inSCE)$diffExp} is updated with a list named by
+\code{analysisName}, with elements of: 
+\item{$groupNames}{the naming of the two conditions}
+\item{$useAssay, $useReducedDim}{the matrix name that was used for 
+calculation}
+\item{$select}{the cell selection indices (logical) for each condition}
+\item{$result}{a \code{data.frame} of the DEGs table}
+\item{$method}{the method used}
 }
 \description{
 Perform differential expression analysis on SCE object
@@ -227,10 +235,9 @@ expression analysis, where DESeq2 expects non-negtive integer assay input
 while others expect logcounts. 
 
 Condition specification allows two methods:
-1. Index level selection. Arguments \code{index1} and \code{index2} will be
-used.
-2. Annotation level selection. Arguments \code{class}, \code{classGroup1} and
-\code{classGroup2} will be used.
+1. Index level selection. Only use arguments \code{index1} and \code{index2}.
+2. Annotation level selection. Only use arguments \code{class}, 
+\code{classGroup1} and \code{classGroup2}.
 }
 \examples{
 data(scExample, package = "singleCellTK")

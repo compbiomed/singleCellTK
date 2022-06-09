@@ -2,8 +2,6 @@ shinyPanelfindMarker <- fluidPage(
   tags$script("Shiny.addCustomMessageHandler('close_dropDownFM', function(x){
                   $('html').click();
                 });"),
-  tags$div(
-    class = "container",
     h1("Find Marker"),
     h5(tags$a(href = paste0(docs.artPath, "find_marker.html"),
               "(help)", target = "_blank")),
@@ -18,14 +16,11 @@ shinyPanelfindMarker <- fluidPage(
           selected = NULL, 
           multiple = FALSE,
           options = NULL),
-        #uiOutput('fmAssay'),
         selectInput("fmCluster", "Cluster Annotation", clusterChoice),
         selectInput("fmCovar", "Covariate(s)", clusterChoice, multiple = TRUE),
         # numericInput("fmLogFC", "Log2FC greater than",
         #              value = 0, min = 0, step = 0.05),
-        hr(),
-        HTML("<p style='color:LightGray;'>Thresholds</p>"),
-        numericInput("fmFDR", "FDR less than", value = 0.05,
+        numericInput("fmFDR", "Keep FDR less than", value = 0.05,
                      max = 1, min = 0.01, step = 0.01),
         # numericInput("fmMinClustExprPerc",
         #              "Minimum Expressed Percentage in Cluster",
@@ -36,16 +31,10 @@ shinyPanelfindMarker <- fluidPage(
         # numericInput("fmMinMeanExpr",
         #              "Minimum Mean Expression Level in Cluster",
         #              value = 0, min = 0),
-        actionButton("runFM", "Find Marker")
+        actionButton("runFM", "Run")
       ),
       mainPanel(
         tabsetPanel(
-          tabPanel(
-            "Result Table",
-            filterTableUI(id = "filterfmResTable"),
-            #DT::dataTableOutput("fmResTable"),
-            downloadButton("fmDownload", "Download Results"),
-          ),
           tabPanel(
             "Heatmap",
             shinyjs::useShinyjs(),
@@ -154,10 +143,15 @@ shinyPanelfindMarker <- fluidPage(
             hr(),
             br(),
             shinyjqui::jqui_resizable(plotOutput('fmHeatmap'))
+          ),
+          tabPanel(
+            "Result Table",
+            filterTableUI(id = "filterfmResTable"),
+            #DT::dataTableOutput("fmResTable"),
+            downloadButton("fmDownload", "Download Results"),
           )
         )
       )
     )
-  )
 )
 

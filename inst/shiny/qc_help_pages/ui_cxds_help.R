@@ -30,12 +30,7 @@ cxdsHelpModal <- function() {
       fluidRow(
         column(4, "retRes"),
         column(8, "Check off to return gene pair scores & top-scoring gene pairs.")
-      ),
-      tags$hr(),
-      fluidRow(
-        column(4, "estNdbl"),
-        column(8, "Check off to estimate  the numer of doublets be estimated from the data. Enables doublet calls.")
-      ),
+      )
     )
   )
 }

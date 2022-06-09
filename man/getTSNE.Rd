@@ -11,7 +11,7 @@ getTSNE(
   useAltExp = NULL,
   reducedDimName = "TSNE",
   logNorm = FALSE,
-  useHVGList = NULL,
+  useFeatureSubset = NULL,
   nTop = 2000,
   center = TRUE,
   scale = TRUE,
@@ -45,13 +45,14 @@ reductions. Default \code{"TSNE"}.}
 generating the tSNE via \code{\link{scaterlogNormCounts}}. Ignored when using
 \code{useReducedDim}. Default \code{FALSE}.}
 
-\item{useHVGList}{A character string indicating a \code{rowData} variable 
-that stores the logical vector of HVG selection. Ignored when using
-\code{useReducedDim}. Default \code{NULL}.}
+\item{useFeatureSubset}{Subset of feature to use for dimension reduction. A 
+character string indicating a \code{rowData} variable that stores the logical
+vector of HVG selection, or a vector that can subset the rows of 
+\code{inSCE}. Default \code{NULL}.}
 
 \item{nTop}{Automatically detect this number of variable features to use for
 dimension reduction. Ignored when using \code{useReducedDim} or using 
-\code{useHVGList}. Default \code{2000}.}
+\code{useFeatureSubset}. Default \code{2000}.}
 
 \item{center}{Whether data should be centered before PCA is applied. Ignored 
 when using \code{useReducedDim}. Default \code{TRUE}.}
@@ -110,7 +111,7 @@ sce <- getTSNE(inSCE = sce, useAssay = "counts", logNorm = TRUE, nTop = 2000,
 sce <- scaterlogNormCounts(sce, "logcounts")
 sce <- runModelGeneVar(sce)
 sce <- scaterPCA(sce, useAssay = "logcounts", 
-                 useHVGList = "HVG_modelGeneVar2000", scale = TRUE)
+                 useFeatureSubset = "HVG_modelGeneVar2000", scale = TRUE)
 sce <- getTSNE(sce, useReducedDim = "PCA")
 }
 }

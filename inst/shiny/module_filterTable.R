@@ -21,7 +21,8 @@ filterTableServer <- function(input, output, session, dataframe,
                               defaultFilterColumns = NULL,
                               defaultFilterOperators = NULL,
                               defaultFilterValues = NULL,
-                              initialTopN = NULL){
+                              initialTopN = NULL,
+                              topText = NULL){
 
   ns <- session$ns
   x <- session$ns('tmp')
@@ -48,7 +49,7 @@ filterTableServer <- function(input, output, session, dataframe,
     inputSecond[i] <- paste0("inputSecond_", colnamesDF[i])
   }
 
-  lapply(1:length(colnamesDF), function(i) {
+  lapply(seq_along(colnamesDF), function(i) {
     if(is.numeric(dataframe[,i])){
       if(i == 1){
         output[[paste0("filterOutput",i)]] <- renderUI({
@@ -207,75 +208,75 @@ filterTableServer <- function(input, output, session, dataframe,
   output$seuratFindMarkerFilter <- renderUI({
     fluidPage(
       fluidRow(
-        h6("You can view the marker genes in the table below and apply custom filters to filter the table accordingly. A joint heatmap for all the marker genes available in the table is plotted underneath the table. Additional visualizations are plotted for select genes which can be selected by clicking on the rows of the table.")
+        h6(topText)
       ),
       br(),
-                     panel(heading = "Active Filters",
-                           uiOutput(ns("seuratFindMarkerActiveFilters")),
-                           br(),
-                           dropdownButton(
-                             fluidRow(
-                               panel(
-                                 column(12,
-                                        fluidRow(htmlOutput(ns("textTotalRows"))),
-                                        br(),
-                                        numericInput(
-                                          inputId = ns("seuratFindMarkerFilterTopN"),
-                                          label = "Return a maximum of how many rows?",
-                                          value = 100,
-                                          min = 1,
-                                          step = 1
-                                        ),
-                                        actionButton(
-                                          inputId = ns("seuratFindMarkerFilterRunTopN"),
-                                          label = "Apply"
-                                        )
-                                 )
-                               )
-                             ),
-                             inputId = ns("addFilterDropdownTopN"),
-                             label = "Set # of Rows",
-                             circle = FALSE,
-                             inline = TRUE
-                           ),
-                           dropdownButton(
-                             fluidRow(
-                               panel(
-                               column(12,
-                                      selectInput(
-                                        inputId = ns("seuratFindMarkerSelectFilter"),
-                                        label = "Select column to filter:",
-                                        choices = colnamesDF
-                                      ),
-                                      lapply(1:length(colnamesDF), function(i) {
-                                        uiOutput(ns(paste0("filterOutput", i)))
-                                      }),
-                                      actionButton(
-                                        inputId = ns("seuratFindMarkerFilterRun"),
-                                        label = "Apply Filter"
-                                      )
-                                      )
-                               )
-                             ),
-                             inputId = ns("addFilterDropdown"),
-                             label = "Add Filter",
-                             circle = FALSE,
-                             inline = TRUE
-                           ),
-                        if(all(rv$parameters$operators == "NULL")){
-                          disabled(actionButton(
-                            inputId = ns("seuratFindMarkerRemoveAllFilters"),
-                            label = "Remove Filter"
-                          )
-                          )
-                        }
-                        else{
-                          actionButton(
-                            inputId = ns("seuratFindMarkerRemoveAllFilters"),
-                            label = "Remove Filter"
-                          )
-                        }
-                     ),
+      panel(heading = "Active Filters",
+            uiOutput(ns("seuratFindMarkerActiveFilters")),
+            br(),
+            dropdownButton(
+              fluidRow(
+                panel(
+                  column(12,
+                         fluidRow(htmlOutput(ns("textTotalRows"))),
+                         br(),
+                         numericInput(
+                           inputId = ns("seuratFindMarkerFilterTopN"),
+                           label = "Return a maximum of how many rows?",
+                           value = 100,
+                           min = 1,
+                           step = 1
+                         ),
+                         actionButton(
+                           inputId = ns("seuratFindMarkerFilterRunTopN"),
+                           label = "Apply"
+                         )
+                  )
+                )
+              ),
+              inputId = ns("addFilterDropdownTopN"),
+              label = "Set # of Rows",
+              circle = FALSE,
+              inline = TRUE
+            ),
+            dropdownButton(
+              fluidRow(
+                panel(
+                  column(12,
+                         selectInput(
+                           inputId = ns("seuratFindMarkerSelectFilter"),
+                           label = "Select column to filter:",
+                           choices = colnamesDF
+                         ),
+                         lapply(seq_along(colnamesDF), function(i) {
+                           uiOutput(ns(paste0("filterOutput", i)))
+                         }),
+                         actionButton(
+                           inputId = ns("seuratFindMarkerFilterRun"),
+                           label = "Apply Filter"
+                         )
+                  )
+                )
+              ),
+              inputId = ns("addFilterDropdown"),
+              label = "Add Filter",
+              circle = FALSE,
+              inline = TRUE
+            ),
+            if(all(rv$parameters$operators == "NULL")){
+              disabled(actionButton(
+                inputId = ns("seuratFindMarkerRemoveAllFilters"),
+                label = "Remove Filter"
+              )
+              )
+            }
+            else{
+              actionButton(
+                inputId = ns("seuratFindMarkerRemoveAllFilters"),
+                label = "Remove Filter"
+              )
+            }
+      ),
     )
   })
 

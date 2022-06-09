@@ -7,7 +7,7 @@
 scaterPCA(
   inSCE,
   useAssay = "logcounts",
-  useHVGList = NULL,
+  useFeatureSubset = NULL,
   scale = TRUE,
   reducedDimName = "PCA",
   nComponents = 50,
@@ -23,8 +23,10 @@ scaterPCA(
 specified, \code{useAssay} has to exist in
 \code{assays(altExp(inSCE, useAltExp))}. Default \code{"logcounts"}}
 
-\item{useHVGList}{A character string indicating a \code{rowData} variable 
-that stores the logical vector of HVG selection. Default \code{NULL}.}
+\item{useFeatureSubset}{Subset of feature to use for dimension reduction. A 
+character string indicating a \code{rowData} variable that stores the logical
+vector of HVG selection, or a vector that can subset the rows of 
+\code{inSCE}. Default \code{NULL}.}
 
 \item{scale}{Logical scalar, whether to standardize the expression values.
 Default \code{TRUE}.}

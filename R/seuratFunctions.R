@@ -283,12 +283,11 @@ runSeuratFindHVG <- function(inSCE,
 #' Default \code{seuratPCA}.
 #' @param nPCs numeric value of how many components to compute. Default
 #' \code{20}.
-#' @param features Specify the feature names or rownames which should be used
-#' for computation of PCA. Default is \code{NULL} which will use all features.
-#' @param useHVGList A character string indicating a \code{rowData} variable
-#' that stores the logical vector of HVG selection. Ignored when using
-#' \code{features}. Default \code{NULL}.
-#' @param scale Logical scalar, whether to standardize the expression values
+#' @param useFeatureSubset Subset of feature to use for dimension reduction. A 
+#' character string indicating a \code{rowData} variable that stores the logical
+#' vector of HVG selection, or a vector that can subset the rows of 
+#' \code{inSCE}. Default \code{NULL}.
+#' @param scale Logical scalar, whether to standardize the expression values 
 #' using \code{\link[Seurat]{ScaleData}}. Default \code{TRUE}.
 #' @param seed Random seed for reproducibility of results.
 #' Default \code{NULL} will use global seed in use by the R environment.
@@ -296,12 +295,13 @@ runSeuratFindHVG <- function(inSCE,
 #'  be displayed. Default is \code{TRUE}.
 #' @details
 #' For features used for computation, it can be controlled by \code{features} or
-#' \code{useHVGList}. When \code{features} is specified, the scaling and
-#' dimensionality reduction will only be processed with these features. When
-#' \code{features} is \code{NULL} but \code{useHVGList} is specified, will use
-#' the features that the HVG list points to. If both parameters are \code{NULL},
-#' the function will see if any Seurat's variable feature detection has been
-#' ever performed, and use them if found. Otherwise, all features are used.
+#' \code{useFeatureSubset}. When \code{features} is specified, the scaling and 
+#' dimensionality reduction will only be processed with these features. When 
+#' \code{features} is \code{NULL} but \code{useFeatureSubset} is specified, will
+#' use the features that the HVG list points to. If both parameters are 
+#' \code{NULL}, the function will see if any Seurat's variable feature detection
+#' has been ever performed, and use them if found. Otherwise, all features are 
+#' used. 
 #' @examples
 #' data(scExample, package = "singleCellTK")
 #' \dontrun{
@@ -318,8 +318,7 @@ runSeuratFindHVG <- function(inSCE,
 runSeuratPCA <-
   function(inSCE,
            useAssay = "seuratScaledData",
-           features = NULL,
-           useHVGList = NULL,
+           useFeatureSubset = NULL,
            scale = TRUE,
            reducedDimName = "seuratPCA",
            nPCs = 20,
@@ -336,12 +335,13 @@ runSeuratPCA <-
       seuratObject <- convertSCEToSeurat(inSCE, normAssay = useAssay)
     }
     
-    if (!is.null(features)) {
-      features <- features[features %in% rownames(inSCE)]
-    } else if (!is.null(useHVGList)) {
-      features <- rownames(inSCE)[rowSubset(inSCE, useHVGList)]
-    } else if (length(Seurat::VariableFeatures(seuratObject)) == 0) {
-      features <- rownames(inSCE)
+    features <- .parseUseFeatureSubset(inSCE, useFeatureSubset, 
+                                       altExpObj = NULL, 
+                                       returnType = "character")
+    if (is.null(features)) {
+      if (length(Seurat::VariableFeatures(seuratObject)) == 0) {
+        features <- rownames(inSCE)
+      }
     }
     
     if (isTRUE(scale)) {
@@ -362,8 +362,7 @@ runSeuratPCA <-
     temp <- seuratObject@reductions$pca@cell.embeddings
     rownames(temp) <- colnames(inSCE)
     reducedDim(inSCE, reducedDimName) <- temp
-    metadata(inSCE)$sctk$runDimReduce$reddim[[reducedDimName]] <-
-      params
+    metadata(inSCE)$sctk$runDimReduce$reddim[[reducedDimName]] <- params
     return(inSCE)
   }
 
@@ -374,26 +373,26 @@ runSeuratPCA <-
 #' @param useAssay Assay containing scaled counts to use in ICA.
 #' @param reducedDimName Name of new reducedDims object containing Seurat ICA
 #' Default \code{seuratICA}.
-#' @param features Specify the feature names or rownames which should be used
-#' for computation of PCA. Default is \code{NULL}.
-#' @param useHVGList A character string indicating a \code{rowData} variable
-#' that stores the logical vector of HVG selection. Ignored when using
-#' \code{features}. Default \code{NULL}.
-#' @param scale Logical scalar, whether to standardize the expression values
+#' @param useFeatureSubset Subset of feature to use for dimension reduction. A 
+#' character string indicating a \code{rowData} variable that stores the logical
+#' vector of HVG selection, or a vector that can subset the rows of 
+#' \code{inSCE}. Default \code{NULL}.
+#' @param scale Logical scalar, whether to standardize the expression values 
 #' using \code{\link[Seurat]{ScaleData}}. Default \code{TRUE}.
 #' @param nics Number of independent components to compute. Default \code{20}.
 #' @param seed Random seed for reproducibility of results.
 #' Default \code{NULL} will use global seed in use by the R environment.
-#' @param verbose Logical value indicating if progress should be printed.
-#'  Default \code{FALSE}.
-#' @details
+#' @param verbose Logical value indicating if informative messages should
+#'  be displayed. Default is \code{TRUE}.
+#' @details 
 #' For features used for computation, it can be controlled by \code{features} or
-#' \code{useHVGList}. When \code{features} is specified, the scaling and
-#' dimensionality reduction will only be processed with these features. When
-#' \code{features} is \code{NULL} but \code{useHVGList} is specified, will use
-#' the features that the HVG list points to. If both parameters are \code{NULL},
-#' the function will see if any Seurat's variable feature detection has been
-#' ever performed, and use them if found. Otherwise, all features are used.
+#' \code{useFeatureSubset}. When \code{features} is specified, the scaling and 
+#' dimensionality reduction will only be processed with these features. When 
+#' \code{features} is \code{NULL} but \code{useFeatureSubset} is specified, will
+#' use the features that the HVG list points to. If both parameters are 
+#' \code{NULL}, the function will see if any Seurat's variable feature detection
+#' has been ever performed, and use them if found. Otherwise, all features are 
+#' used. 
 #' @examples
 #' data(scExample, package = "singleCellTK")
 #' \dontrun{
@@ -410,8 +409,7 @@ runSeuratPCA <-
 runSeuratICA <-
   function(inSCE,
            useAssay = "seuratScaledData",
-           features = NULL,
-           useHVGList = NULL,
+           useFeatureSubset = NULL,
            scale = TRUE,
            reducedDimName = "seuratICA",
            nics = 20,
@@ -428,12 +426,13 @@ runSeuratICA <-
       seuratObject <- convertSCEToSeurat(inSCE, normAssay = useAssay)
     }
     
-    if (!is.null(features)) {
-      features <- features[features %in% rownames(inSCE)]
-    } else if (!is.null(useHVGList)) {
-      features <- rownames(inSCE)[rowSubset(inSCE, useHVGList)]
-    } else if (length(Seurat::VariableFeatures(seuratObject)) == 0) {
-      features <- rownames(inSCE)
+    features <- .parseUseFeatureSubset(inSCE, useFeatureSubset, 
+                                       altExpObj = NULL, 
+                                       returnType = "character")
+    if (is.null(features)) {
+      if (length(Seurat::VariableFeatures(seuratObject)) == 0) {
+        features <- rownames(inSCE)
+      }
     }
     
     if (isTRUE(scale)) {
@@ -454,8 +453,7 @@ runSeuratICA <-
     temp <- seuratObject@reductions$ica@cell.embeddings
     rownames(temp) <- colnames(inSCE)
     reducedDim(inSCE, reducedDimName) <- temp
-    metadata(inSCE)$sctk$runDimReduce$reddim[[reducedDimName]] <-
-      params
+    metadata(inSCE)$sctk$runDimReduce$reddim[[reducedDimName]] <- params
     return(inSCE)
   }
 
