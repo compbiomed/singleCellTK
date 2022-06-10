@@ -22,17 +22,22 @@ nonLinearWorkflow <- function(input, output, session, parent,
   ns <- session$ns
   
   output$ui <- renderUI({
-    bsCollapsePanel(tagList(icon("chevron-circle-down"), "Downstream Analysis"), 
-                    uiOutput(ns("de")),
-                    uiOutput(ns("pa")),
-                    uiOutput(ns("qcf")),
-                    uiOutput(ns("nbc")),
-                    uiOutput(ns("cw")),
-                    uiOutput(ns("dr")),
-                    uiOutput(ns("fs")),
-                    uiOutput(ns("cl")),
-                    uiOutput(ns("cv")),
-                    style = "success")
+    bsCollapse(
+      open = "Next Steps",
+      bsCollapsePanel("Next Steps", 
+                               uiOutput(ns("de")),
+                               uiOutput(ns("pa")),
+                               uiOutput(ns("qcf")),
+                               uiOutput(ns("nbc")),
+                               uiOutput(ns("cw")),
+                               uiOutput(ns("dr")),
+                               uiOutput(ns("fs")),
+                               uiOutput(ns("cl")),
+                               uiOutput(ns("cv")),
+                               style = "success"
+                      )
+      )
+    
   })
   
   if(de){
