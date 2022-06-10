@@ -158,12 +158,12 @@ shinyPanelDiffex <- fluidPage(
             numericInput("deFDRThresh", "Output FDR less than:",
                          min = 0, max = 1, step = 0.01, value = 0.05)
           ),
-          column(
-            width = 3,
-            numericInput("deFCThresh",
-                         "Output Log2FC Absolute value greater than:",
-                         min = 0, step = 0.05, value = NULL)
-          ),
+          # column(
+          #   width = 3,
+          #   numericInput("deFCThresh",
+          #                "Output Log2FC Absolute value greater than:",
+          #                min = 0, step = 0.05, value = NULL)
+          # ),
           column(
             width = 3,
             style = 'margin-top: 18px;',
@@ -171,32 +171,32 @@ shinyPanelDiffex <- fluidPage(
                           value = FALSE)
           )
         ),
-        fluidRow(
-          column(
-            width = 3,
-            numericInput("deMinExp1", 
-                         "Output Group1 mean expression greater than:",
-                         min = 0, step = 0.1, value = NULL)
-          ),
-          column(
-            width = 3,
-            numericInput("deMaxExp2", 
-                         "Output Group2 mean expression less than:",
-                         min = 0, step = 0.1, value = NULL)
-          ),
-          column(
-            width = 3,
-            numericInput("deMinExpPerc1",
-                         "Output Group1 expression percentage greater than:",
-                         min = 0, max = 1, step = 0.05, value = NULL)
-          ),
-          column(
-            width = 3,
-            numericInput("deMaxExpPerc2",
-                         "Output Group2 expression percentage less than:",
-                         min = 0, max = 1, step = 0.05, value = NULL)
-          )
-        ),
+        # fluidRow(
+        #   column(
+        #     width = 3,
+        #     numericInput("deMinExp1", 
+        #                  "Output Group1 mean expression greater than:",
+        #                  min = 0, step = 0.1, value = NULL)
+        #   ),
+        #   column(
+        #     width = 3,
+        #     numericInput("deMaxExp2", 
+        #                  "Output Group2 mean expression less than:",
+        #                  min = 0, step = 0.1, value = NULL)
+        #   ),
+        #   column(
+        #     width = 3,
+        #     numericInput("deMinExpPerc1",
+        #                  "Output Group1 expression percentage greater than:",
+        #                  min = 0, max = 1, step = 0.05, value = NULL)
+        #   ),
+        #   column(
+        #     width = 3,
+        #     numericInput("deMaxExpPerc2",
+        #                  "Output Group2 expression percentage less than:",
+        #                  min = 0, max = 1, step = 0.05, value = NULL)
+        #   )
+        # ),
         fluidRow(
           column(
             width = 3,
@@ -213,9 +213,18 @@ shinyPanelDiffex <- fluidPage(
       )
     ),
     h3("Visualization"),
-    p("For preview and result presentation.", style = "color:grey;"),
+    p('Select an analysis and click on "Update All" to show the results.', 
+      style = "color:grey;"),
     fluidRow(
       selectInput("deResSel", "Select Differential Expression Analysis", choices = NULL),
+      actionBttn(
+        inputId = "deResSelUpdate",
+        label = "Update All",
+        style = "bordered",
+        color = "primary",
+        size = "sm", 
+      ),
+      hr(),
       tabsetPanel(
         tabPanel(
           "Heatmap",
@@ -357,11 +366,10 @@ shinyPanelDiffex <- fluidPage(
           )
         ),
         tabPanel("Results Table",
-                 DT::dataTableOutput("deResult"),
-                 downloadButton("deDownload", "Download Result Table")),
-        
-        
-        
+                 filterTableUI(id = "deResult")
+                 # DT::dataTableOutput("deResult"),
+                 # downloadButton("deDownload", "Download Result Table")
+                 ),
         tabPanel(
           "Volcano Plot",
           panel(
@@ -457,9 +465,6 @@ shinyPanelDiffex <- fluidPage(
             shinyjqui::jqui_resizable(plotOutput("deVolcanoPlot"))
           )
         ),
-        
-        
-        
         tabPanel(
           "Violin Plot",
           panel(
@@ -476,11 +481,11 @@ shinyPanelDiffex <- fluidPage(
                     div(style="display: inline-block;vertical-align:center; width: 100px;margin-left:10px",
                         p('Plot the top')),
                     div(style="display: inline-block;vertical-align:center; width: 60px;",
-                        numericInput('deVioNRow', label = NULL, value = 4, min = 1)),
+                        numericInput('deVioNRow', label = NULL, value = 3, min = 1)),
                     div(style="display: inline-block;vertical-align:center; width: 12px;",
                         p('x')),
                     div(style="display: inline-block;vertical-align:center; width: 60px;",
-                        numericInput('deVioNCol', label = NULL, value = 4, min = 1)),
+                        numericInput('deVioNCol', label = NULL, value = 3, min = 1)),
                     div(style="display: inline-block;vertical-align:center; width: 10px;",
                         p('=')),
                     div(style="display: inline-block;vertical-align:center; width: 30px;",
@@ -550,11 +555,11 @@ shinyPanelDiffex <- fluidPage(
                     div(style="display: inline-block;vertical-align:center; width: 100px;margin-left:10px",
                         p('Plot the top')),
                     div(style="display: inline-block;vertical-align:center; width: 60px;",
-                        numericInput('deRegNRow', label = NULL, value = 4, min = 1)),
+                        numericInput('deRegNRow', label = NULL, value = 3, min = 1)),
                     div(style="display: inline-block;vertical-align:center; width: 12px;",
                         p('x')),
                     div(style="display: inline-block;vertical-align:center; width: 60px;",
-                        numericInput('deRegNCol', label = NULL, value = 4, min = 1)),
+                        numericInput('deRegNCol', label = NULL, value = 3, min = 1)),
                     div(style="display: inline-block;vertical-align:center; width: 10px;",
                         p('=')),
                     div(style="display: inline-block;vertical-align:center; width: 30px;",

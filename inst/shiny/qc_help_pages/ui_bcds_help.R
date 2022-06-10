@@ -40,12 +40,7 @@ bcdsHelpModal <- function() {
       fluidRow(
         column(4, "varImp"),
         column(8, "Check off to return variable importance.")
-      ),
-      tags$hr(),
-      fluidRow(
-        column(4, "estNdbl"),
-        column(8, "Check off to estimate the number of doublets from the data. Enables doublet calls.")
-      ),
+      )
     )
   )
 }

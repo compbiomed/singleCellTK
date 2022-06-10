@@ -21,12 +21,13 @@
 #' @param logNorm Whether the counts will need to be log-normalized prior to
 #' generating the tSNE via \code{\link{scaterlogNormCounts}}. Ignored when using
 #' \code{useReducedDim}. Default \code{FALSE}.
-#' @param useHVGList A character string indicating a \code{rowData} variable 
-#' that stores the logical vector of HVG selection. Ignored when using
-#' \code{useReducedDim}. Default \code{NULL}.
+#' @param useFeatureSubset Subset of feature to use for dimension reduction. A 
+#' character string indicating a \code{rowData} variable that stores the logical
+#' vector of HVG selection, or a vector that can subset the rows of 
+#' \code{inSCE}. Default \code{NULL}.
 #' @param nTop Automatically detect this number of variable features to use for
 #' dimension reduction. Ignored when using \code{useReducedDim} or using 
-#' \code{useHVGList}. Default \code{2000}.
+#' \code{useFeatureSubset}. Default \code{2000}.
 #' @param center Whether data should be centered before PCA is applied. Ignored 
 #' when using \code{useReducedDim}. Default \code{TRUE}.
 #' @param scale Whether data should be scaled before PCA is applied. Ignored 
@@ -62,16 +63,16 @@
 #' sce <- scaterlogNormCounts(sce, "logcounts")
 #' sce <- runModelGeneVar(sce)
 #' sce <- scaterPCA(sce, useAssay = "logcounts", 
-#'                  useHVGList = "HVG_modelGeneVar2000", scale = TRUE)
+#'                  useFeatureSubset = "HVG_modelGeneVar2000", scale = TRUE)
 #' sce <- getTSNE(sce, useReducedDim = "PCA")
 #' }
 #' @importFrom S4Vectors metadata<-
 getTSNE <- function(inSCE, useAssay = "logcounts", useReducedDim = NULL, 
                     useAltExp = NULL, reducedDimName = "TSNE", logNorm = FALSE, 
-                    useHVGList = NULL, nTop = 2000, center = TRUE, scale = TRUE, 
-                    pca = TRUE, partialPCA = FALSE, initialDims = 25, 
-                    theta = 0.5, perplexity = 30, nIterations = 1000, 
-                    numThreads = 1, seed = NULL){
+                    useFeatureSubset = NULL, nTop = 2000, center = TRUE, 
+                    scale = TRUE, pca = TRUE, partialPCA = FALSE, 
+                    initialDims = 25, theta = 0.5, perplexity = 30, 
+                    nIterations = 1000, numThreads = 1, seed = NULL){
   params <- as.list(environment())
   params$inSCE <- NULL
   # input class check
@@ -109,19 +110,18 @@ getTSNE <- function(inSCE, useAssay = "logcounts", useReducedDim = NULL,
       sce <- scaterlogNormCounts(sce, "logcounts")
       useAssay <- "logcounts"
     }
-    if (!is.null(useHVGList)) {
-      if (!useHVGList %in% colnames(SummarizedExperiment::rowData(inSCE))) {
-        stop("Specified HVG list not found")
-      }
-      hvgs <- rownames(inSCE)[rowSubset(inSCE, useHVGList)]
-      sce <- sce[rownames(sce) %in% hvgs,]
+    if (!is.null(useFeatureSubset)) {
+      subset_row <- .parseUseFeatureSubset(inSCE, useFeatureSubset, 
+                                           altExpObj = sce, 
+                                           returnType = "logical")
+      sce <- sce[subset_row,]
     } else {
       if (!is.null(nTop) && nTop < nrow(sce)) {
         suppressMessages({
           sce <- runFeatureSelection(sce, useAssay, method = "modelGeneVar")
         })
         sce <- setTopHVG(sce, method = "modelGeneVar", hvgNumber = nTop, 
-                         hvgListName = "tsneHVG")
+                         featureSubsetName = "tsneHVG")
         sce <- subsetSCERows(sce, rowData = "tsneHVG", returnAsAltExp = FALSE)
       }
     }
@@ -146,25 +146,14 @@ getTSNE <- function(inSCE, useAssay = "logcounts", useReducedDim = NULL,
   # Rtsne requires a matrix input
   mat <- as.matrix(mat)
   message(paste0(date(), " ... Computing Rtsne."))
-  if (!is.null(seed)) {
-    withr::with_seed(
-      seed = seed,
-      code = tsneOut <- Rtsne::Rtsne(mat, pca_scale = scale, 
-                                     pca_center = center,
-                                     pca = pca, partial_pca = partialPCA, 
-                                     perplexity = perplexity,
-                                     initial_dims = initialDims,
-                                     max_iter = nIterations, theta = theta, 
-                                     num_threads = numThreads)
-    )
-  } else {
+  .withSeed(seed, {
     tsneOut <- Rtsne::Rtsne(mat, pca_scale = scale, pca_center = center,
                             pca = pca, partial_pca = partialPCA, 
                             perplexity = perplexity,
                             initial_dims = initialDims,
                             max_iter = nIterations, theta = theta, 
                             num_threads = numThreads) 
-  }
+  })
   tsneOut <- tsneOut$Y
   rownames(tsneOut) <- colnames(inSCE)
   colnames(tsneOut) <- c("tSNE1", "tSNE2")

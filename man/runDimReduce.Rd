@@ -13,7 +13,7 @@ runDimReduce(
   useAltExp = NULL,
   reducedDimName = method,
   nComponents = 20,
-  useHVGList = NULL,
+  useFeatureSubset = NULL,
   scale = FALSE,
   seed = NULL,
   ...
@@ -42,8 +42,10 @@ selected variable features. Default \code{NULL}.}
 selected method in case of PCA/ICA and the number of components to
 use in the case of TSNE/UMAP methods.}
 
-\item{useHVGList}{A character string indicating a \code{rowData} variable 
-that stores the logical vector of HVG selection. Default \code{NULL}.}
+\item{useFeatureSubset}{Subset of feature to use for dimension reduction. A 
+character string indicating a \code{rowData} variable that stores the logical
+vector of HVG selection, or a vector that can subset the rows of 
+\code{inSCE}. Default \code{NULL}.}
 
 \item{scale}{Logical scalar, whether to standardize the expression values.
 Default \code{TRUE}.}

@@ -17,8 +17,10 @@ runSeuratJackStraw(
 \arguments{
 \item{inSCE}{(sce) object on which to compute and store jackstraw plot}
 
-\item{useAssay}{Assay containing scaled counts to use in JackStraw
-calculation.}
+\item{useAssay}{Specify name of the assay to use for scaling. Assay name
+provided against this parameter is scaled by the function and used
+for the computation of JackStraw scores along with the reduced dimensions
+specified by the \code{dims} parameter.}
 
 \item{dims}{Number of components to test in Jackstraw. If \code{NULL}, then
 all components are used. Default \code{NULL}.}

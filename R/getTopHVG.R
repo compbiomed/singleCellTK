@@ -13,7 +13,7 @@
 #' from Seurat \code{"vst"}, \code{"mean.var.plot"}, \code{"dispersion"} or 
 #' Scran \code{"modelGeneVar"}. Default \code{"vst"}
 #' @param hvgNumber Specify the number of top variable genes to extract.
-#' @param useHVGList For getting top HVG, use the HVG list set by 
+#' @param useFeatureSubset Get the feature names in the HVG list set by 
 #' \code{setTopHVG}. Will ignore \code{method} and \code{hvgNumber} if not 
 #' \code{NULL}. Default \code{NULL}.
 #' @param featureDisplay A character string for the \code{rowData} variable name
@@ -29,9 +29,9 @@
 #' @param altExp \code{TRUE} for also creating a subset \code{inSCE} object with
 #' the selected HVGs and store this subset in the \code{altExps} slot, named by
 #' \code{hvgListName}. Default \code{FALSE}.
-#' @param hvgListName A character string for the \code{rowData} variable name
-#' to store a logical index of selected HVGs. Default \code{NULL}, will be 
-#' determined basing on other parameters. 
+#' @param featureSubsetName A character string for the \code{rowData} variable 
+#' name to store a logical index of selected features. Default \code{NULL}, will
+#' be determined basing on other parameters. 
 #' @return 
 #' \item{getTopHVG}{A character vector of the top \code{hvgNumber} variable 
 #' feature names}
@@ -54,70 +54,24 @@ getTopHVG <- function(inSCE,
                       method = c("vst", "dispersion", 
                                  "mean.var.plot", "modelGeneVar"), 
                       hvgNumber = 2000, 
-                      useHVGList = NULL,
+                      useFeatureSubset = NULL,
                       featureDisplay = metadata(inSCE)$featureDisplay) {
     method <- match.arg(method)
     topGenes <- character()
-    if (!is.null(useHVGList)) {
-        topGenes <- rownames(inSCE)[rowSubset(inSCE, useHVGList)]
+    if (!is.null(useFeatureSubset)) {
+        topGenes <- .parseUseFeatureSubset(inSCE, useFeatureSubset, 
+                                           altExpObj = NULL, returnType = "cha")
     } else {
-        if (method == "vst" || method == "dispersion" || method == "modelGeneVar") {
-            varianceColumnName = ""
-            if (method == "vst") {
-                if (is.null(rowData(inSCE)$seurat_variableFeatures_vst_varianceStandardized)) {
-                    stop("'seurat_variableFeatures_vst_varianceStandardized' ",
-                         "metric not found in rowData of input sce object. ",
-                         "Run `runSeuratFindHVG()` with 'vst' method before ", 
-                         "using this function!")
-                }
-                varianceColumnName = "seurat_variableFeatures_vst_varianceStandardized"
-            } else if (method == "dispersion") {
-                if (is.null(rowData(inSCE)$seurat_variableFeatures_dispersion_dispersion)) {
-                    stop("'seurat_variableFeatures_dispersion_dispersion' ", 
-                         "metric not found in rowData of input sce object. ", 
-                         "Run `runSeuratFindHVG()` with 'dispersion' method ", 
-                         "before using this function!")
-                }
-                varianceColumnName = "seurat_variableFeatures_dispersion_dispersion"
-            } else if (method == "modelGeneVar") {
-                if (is.null(rowData(inSCE)$scran_modelGeneVar_bio)) {
-                    stop("'scran_modelGeneVar_bio' metric not found in ", 
-                         "rowData of input sce object. Run ",
-                         "`runModelGeneVar()` before using this function!")
-                }
-                varianceColumnName = "scran_modelGeneVar_bio"
-            }
-            tempDataFrame <- data.frame(
-                featureNames = rownames(inSCE),
-                variance = rowData(inSCE)[[varianceColumnName]])
-            tempDataFrame <- tempDataFrame[order(-tempDataFrame$variance),]
-            tempDataFrame <- tempDataFrame[tempDataFrame$variance > 0, ]
-            hvgNumber <- min(hvgNumber, nrow(tempDataFrame))
-            topGenes <- as.character(tempDataFrame$featureNames[seq_len(hvgNumber)])
-        } else if (method == "mean.var.plot") {
-            if (is.null(rowData(inSCE)$seurat_variableFeatures_mvp_mean)
-                || is.null(rowData(inSCE)$seurat_variableFeatures_mvp_dispersion)
-                || is.null(rowData(inSCE)$seurat_variableFeatures_mvp_dispersionScaled)) {
-                stop("'Seurat mean.var.plot' metrics not found in rowData of ",
-                     "input sce object. Run `runSeuratFindHVG()` with ",
-                     "'mean.var.plot' method before using this function!")
-                #inSCE <- runSeuratFindHVG(inSCE, hvgMethod = "mean.var.plot", 
-                #                          hvgNumber = n, altExp = FALSE, ...)
-            }
-            tempDataFrame <- data.frame(
-                featureNames = rownames(inSCE),
-                mean = rowData(inSCE)$seurat_variableFeatures_mvp_mean,
-                disp = rowData(inSCE)$seurat_variableFeatures_mvp_dispersion,
-                dispScaled = rowData(inSCE)$seurat_variableFeatures_mvp_dispersionScaled)
-            tempDataFrame <- tempDataFrame[order(-tempDataFrame$disp),]
-            tempDataFrame <- tempDataFrame[tempDataFrame$disp > 0,]
-            means.use <- (tempDataFrame$mean > 0.1) & (tempDataFrame$mean < 8)
-            dispersions.use <- (tempDataFrame$dispScaled > 1) & 
-                (tempDataFrame$dispScaled < Inf)
-            tempDataFrame <- tempDataFrame[which(means.use & dispersions.use),]
-            hvgNumber <- min(hvgNumber, nrow(tempDataFrame))
-            topGenes <- as.character(tempDataFrame$featureNames)[seq_len(hvgNumber)]
+        metrics <- .dfFromHVGMetric(inSCE, method)
+        metrics <- metrics[order(-metrics$v_rank),]
+        metrics <- metrics[metrics$v_rank > 0, ]
+        if (method == "mean.var.plot") {
+            means.use <- (metrics$mean > 0.1) & (metrics$mean < 8)
+            dispersions.use <- (metrics$v_plot > 1) & (metrics$v_plot < Inf)
+            metrics <- metrics[means.use & dispersions.use,]
         }
+        hvgNumber <- min(hvgNumber, nrow(metrics))
+        topGenes <- as.character(metrics$featureNames)[seq_len(hvgNumber)]
     }
     topGenes <- stats::na.omit(topGenes)
     if (!is.null(featureDisplay)) {
@@ -135,42 +89,194 @@ setTopHVG <- function(inSCE,
                       method =  c("vst", "dispersion", 
                                   "mean.var.plot", "modelGeneVar"), 
                       hvgNumber = 2000, 
+                      featureSubsetName = NULL,
                       genes = NULL, genesBy = NULL,
-                      hvgListName = NULL,
                       altExp = FALSE) {
     method <- match.arg(method)
+    features <- character()
+    useAssay <- NULL
     if (!is.null(genes)) {
         # Set customized gene list
-        if (is.null(genesBy)) {
-            hvg <- genes
-        } else {
-            geneIdx <- featureIndex(features = genes, inSCE = inSCE, 
+        features <- genes
+        if (!is.null(genesBy)) {
+            geneIdx <- featureIndex(features = features, inSCE = inSCE, 
                                     by = genesBy)
-            hvg <- rownames(inSCE)[geneIdx]
+            features <- rownames(inSCE)[geneIdx]
         }
     } else {
         # Use pre-calculated variability metrics
-        hvg <- getTopHVG(inSCE, method = method, hvgNumber = hvgNumber, 
-                         featureDisplay = NULL)
+        features <- getTopHVG(inSCE, method = method, hvgNumber = hvgNumber, 
+                              featureDisplay = NULL)
+        useAssay <- metadata(inSCE)$sctk$runFeatureSelection[[method]]$useAssay
     }
-    if (is.null(hvgListName)) {
+    nFeature <- length(features)
+    if (is.null(featureSubsetName)) {
         if (!is.null(genes)) {
-            hvgListName <- "CustomizedHVG"
+            featureSubsetName <- "CustomizedHVG"
         } else {
-            hvgListName <- paste0("HVG_", method, hvgNumber)
+            featureSubsetName <- paste0("HVG_", method, hvgNumber)
         }
     }
-    rowSubset(inSCE, hvgListName) <- hvg
-    message(paste0(date(), " ... HVG variable '", hvgListName, "' created."))
-    useAssay <- metadata(inSCE)$sctk$runFeatureSelection[[method]]$useAssay
-    metadata(inSCE)$sctk$hvgLists[[hvgListName]] <- list(method = method,
-                                                         hvgNumber = hvgNumber,
-                                                         useAssay = useAssay)
+    rowSubset(inSCE, featureSubsetName) <- features
+    message(paste0(date(), " ... Feature subset variable '", featureSubsetName, 
+                   "' created."))
+    metadata(inSCE)$sctk$featureSubsets[[featureSubsetName]] <- 
+        list(method = method,
+             number = nFeature,
+             useAssay = useAssay)
     if (isTRUE(altExp)) {
         inSCE <- subsetSCERows(inSCE, 
-                               rowData = hvgListName, 
+                               rowData = featureSubsetName, 
                                returnAsAltExp = TRUE, 
-                               altExpName = hvgListName)
+                               altExpName = featureSubsetName)
     }
     return(inSCE)
+}
+
+#' Check if specified method has already been performed, and extract the metric.
+#' Will be used by `getTopHVG` to rank the top, and `plotTopHVG` for the axis
+#' @param inSCE Input \linkS4class{SingleCellExperiment} object
+#' @param method Specify which method to use for variable gene extraction
+#' from Seurat \code{"vst"}, \code{"mean.var.plot"}, \code{"dispersion"} or 
+#' Scran \code{"modelGeneVar"}. Default \code{"vst"}
+#' @return data.frame object of HVG metrics calculated by \code{method}, 
+#' containing columns of \code{"mean"}, \code{"v_rank"}, \code{"v_plot"}
+.dfFromHVGMetric <- function(inSCE, 
+                             method = c("vst", "mean.var.plot", "dispersion",
+                                        "modelGeneVar")) {
+    method <- match.arg(method)
+    df <- data.frame(featureNames = rownames(inSCE))
+    if (method == "vst") {
+        m <- "seurat_variableFeatures_vst_mean"
+        v_rank <- "seurat_variableFeatures_vst_varianceStandardized"
+        v_plot <- "seurat_variableFeatures_vst_varianceStandardized"
+        if (is.null(rowData(inSCE)[[v_rank]]) || is.null(rowData(inSCE)[[m]])) {
+            stop("Seurat vst metric not found in inSCE. ",
+                 "Run `runSeuratFindHVG()` with 'vst' method before ", 
+                 "using this function!")
+        }
+    } else if (method == "dispersion") {
+        m <- "seurat_variableFeatures_dispersion_mean"
+        v_rank <- "seurat_variableFeatures_dispersion_dispersion"
+        v_plot <- "seurat_variableFeatures_dispersion_dispersionScaled"
+        if (is.null(rowData(inSCE)[[v_rank]]) || 
+            is.null(rowData(inSCE)[[m]]) ||
+            is.null(rowData(inSCE)[[v_plot]])) {
+            stop("Seurat dispersion metric not found in inSCE. ", 
+                 "Run `runSeuratFindHVG()` with 'dispersion' method ", 
+                 "before using this function!")
+        }
+    } else if (method == "modelGeneVar") {
+        m <- "scran_modelGeneVar_mean"
+        v_rank <- "scran_modelGeneVar_bio"
+        v_plot <- "scran_modelGeneVar_totalVariance"
+        if (is.null(rowData(inSCE)[[v_rank]]) || 
+            is.null(rowData(inSCE)[[m]]) ||
+            is.null(rowData(inSCE)[[v_plot]])) {
+            stop("Scran modelGeneVar metric not found in inSCE. Run ",
+                 "`runModelGeneVar()` before using this function!")
+        }
+    } else if (method == "mean.var.plot") {
+        m <- "seurat_variableFeatures_mvp_mean"
+        v_rank <- "seurat_variableFeatures_mvp_dispersion"
+        v_plot <- "seurat_variableFeatures_mvp_dispersionScaled"
+        if (is.null(rowData(inSCE)[[v_rank]]) || 
+            is.null(rowData(inSCE)[[m]]) ||
+            is.null(rowData(inSCE)[[v_plot]])) {
+            stop("Seurat mean.var.plot metric not found in inSCE. ", 
+                 "Run `runSeuratFindHVG()` with ",
+                 "'mean.var.plot' method before using this function!")
+        }
+    }
+    df$mean <- rowData(inSCE)[[m]]
+    df$v_rank <- rowData(inSCE)[[v_rank]]
+    df$v_plot <- rowData(inSCE)[[v_plot]]
+    return(df)
+}
+
+#' parse `useFeatureSubset` in other functions such as `scaterPCA`, `getUMAP`..
+#' Do checks, and return logical vector. Or character vector as needed by Seurat
+#' methods
+#' @param inSCE Input \linkS4class{SingleCellExperiment} object
+#' @param useFeatureSubset Subset of feature to use. A character string 
+#' indicating a \code{rowData} variable that stores the logical vector of HVG 
+#' selection, or a vector that can subset the rows of \code{inSCE}. 
+#' @param altExpObj A \linkS4class{SingleCellExperiment} object, extracted from
+#' \code{altExps} of \code{inSCE}, can be \code{identical()} to \code{inSCE}.
+#' Used when functions like \code{\link{scaterPCA}} allows \code{useAltExp}, so
+#' that the output vector match to the rownames of \code{altExpObj}
+#' @param returnType What type of vector should be returned
+#' @return \code{NULL} if \code{is.null(useFeatureSubset)}. Otherwise, a vector
+#' subsetting the features. 
+.parseUseFeatureSubset <- function(inSCE, useFeatureSubset, altExpObj = NULL, 
+                                  returnType = c("logical", "character")) {
+    returnType <- match.arg(returnType)
+    if (!is.null(altExpObj)) {
+        if (!inherits(altExpObj, "SingleCellExperiment")) {
+            stop()
+        }
+    }
+    if (identical(altExpObj, inSCE)) altExpObj <- NULL
+    features <- NULL
+    if (!is.null(useFeatureSubset)) {
+        if (is.character(useFeatureSubset) & length(useFeatureSubset) == 1) {
+            # Assume using rowData variable
+            if (!useFeatureSubset %in% names(rowData(inSCE))) {
+                stop("Specified feature subset not found.")
+            }
+            feature.logical <- rowData(inSCE)[[useFeatureSubset]]
+            if (!is.logical(feature.logical)) {
+                stop("Specified rowData variable is not logical.")
+            }
+            features <- rownames(inSCE)[feature.logical]
+            if (useFeatureSubset %in% names(metadata(inSCE)$sctk$featureSubsets)) {
+                # If the subset is created with SCTK HVG methods
+                # Return a ranked gene list
+                method <- metadata(inSCE)$sctk$featureSubsets[[useFeatureSubset]]$method
+                useAssay <- metadata(inSCE)$sctk$featureSubsets[[useFeatureSubset]]$useAssay
+                metricAssay <- metadata(inSCE)$sctk$runFeatureSelection[[method]]$useAssay
+                if (useAssay != metricAssay) {
+                    warning("Sorting features subset using metrics ", 
+                            "calculated from an assay different than the ", 
+                            "assay used for the subset creation")
+                }
+                metrics <- .dfFromHVGMetric(inSCE, method)
+                metrics <- metrics[order(-metrics$v_rank),]
+                features <- metrics$featureNames[metrics$featureNames %in% features]
+            }
+        } else if (is.character(useFeatureSubset) & 
+                   length(useFeatureSubset) > 1) {
+            # Assume using rownames
+            if (any(!useFeatureSubset %in% rownames(inSCE))) {
+                nf <- useFeatureSubset[!useFeatureSubset %in% rownames(inSCE)]
+                stop("Specified features not found: ", 
+                     paste(nf, collapse = ", "))
+            }
+            features <- useFeatureSubset
+        } else if (is.logical(useFeatureSubset)) {
+            if (length(useFeatureSubset) != nrow(inSCE)) {
+                stop("Length of logical subset doesn't match nrow(inSCE).")
+            }
+            features <- rownames(inSCE)[useFeatureSubset]
+        } else if (is.numeric(useFeatureSubset)) {
+            features <- rownames(inSCE)[useFeatureSubset]
+            if (any(is.na(features))) {
+                stop("Numeric subscript contains out-of-bounds indices.")
+            }
+        } else {
+            stop("Invalid useFeatureSubset specification.")
+        }
+        if (!is.null(altExpObj)) {
+            features <- features[features %in% rownames(altExpObj)]
+        }
+        if (returnType == "logical") {
+            if (!is.null(altExpObj)) {
+                features <- rownames(altExpObj) %in% features
+            } else {
+                features <- rownames(inSCE) %in% features
+            }
+        }
+        
+    }
+    return(features)
 }

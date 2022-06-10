@@ -9,7 +9,7 @@ getTopHVG(
   inSCE,
   method = c("vst", "dispersion", "mean.var.plot", "modelGeneVar"),
   hvgNumber = 2000,
-  useHVGList = NULL,
+  useFeatureSubset = NULL,
   featureDisplay = metadata(inSCE)$featureDisplay
 )
 
@@ -17,9 +17,9 @@ setTopHVG(
   inSCE,
   method = c("vst", "dispersion", "mean.var.plot", "modelGeneVar"),
   hvgNumber = 2000,
+  featureSubsetName = NULL,
   genes = NULL,
   genesBy = NULL,
-  hvgListName = NULL,
   altExp = FALSE
 )
 }
@@ -32,7 +32,7 @@ Scran \code{"modelGeneVar"}. Default \code{"vst"}}
 
 \item{hvgNumber}{Specify the number of top variable genes to extract.}
 
-\item{useHVGList}{For getting top HVG, use the HVG list set by 
+\item{useFeatureSubset}{Get the feature names in the HVG list set by 
 \code{setTopHVG}. Will ignore \code{method} and \code{hvgNumber} if not 
 \code{NULL}. Default \code{NULL}.}
 
@@ -41,6 +41,10 @@ to indicate what type of feature ID should be displayed. If set by
 \code{\link{setSCTKDisplayRow}}, will by default use it. If \code{NULL}, will
 use \code{rownames(inSCE)}.}
 
+\item{featureSubsetName}{A character string for the \code{rowData} variable 
+name to store a logical index of selected features. Default \code{NULL}, will
+be determined basing on other parameters.}
+
 \item{genes}{A customized character vector of gene list to be set as a 
 \code{rowData} variable. Will ignore \code{method} and \code{hvgNumber} if 
 set. Default \code{NULL}.}
@@ -48,10 +52,6 @@ set. Default \code{NULL}.}
 \item{genesBy}{If setting customized \code{genes}, where should it be found
 in \code{rowData}? Leave \code{NULL} for matching \code{rownames}. Default 
 \code{NULL}.}
-
-\item{hvgListName}{A character string for the \code{rowData} variable name
-to store a logical index of selected HVGs. Default \code{NULL}, will be 
-determined basing on other parameters.}
 
 \item{altExp}{\code{TRUE} for also creating a subset \code{inSCE} object with
 the selected HVGs and store this subset in the \code{altExps} slot, named by

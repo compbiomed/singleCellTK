@@ -166,30 +166,26 @@ discreteColorPalette <- function(n, palette = c("random", "ggplot", "celda"),
 }
 
 ## Convert a matrix to a sparse matrix and preserve column/row names
-.convertToMatrix <- function(x) {
+.convertToMatrix <- function(x, chuS = 3000) {
   cn <- colnames(x)
   rn <- rownames(x)
-  limit <- (2^32/2-1)
+  #limit <- (2^32/2-1)
   dimN <- dim(x)
-  chuS <- floor(floor(limit/dimN[1])) # size of chunk
-  chuN <- ceiling(dimN[2]/chuS) # number of chunks
+  # chuS <- floor(floor(limit/dimN[1])) # size of chunk
+  # chuN <- ceiling(dimN[2]/chuS) # number of chunks
+  #chuS <- 3000 # loading 3000 cells in each chunk
+  chuN <- ceiling(dimN[2]/chuS)  
   Mat <- list()
-
+  
   for (i in seq_len(chuN)) {
     start <- (i-1)*chuS + 1
     end <- min(i*chuS, dimN[2])
-    if (methods::is(x, 'DelayedMatrix')) {
-      # Efficient way to convert DelayedArray to dgCMatrix
-      Mat[[i]] <- methods::as(x[, start:end], "Matrix")
-    } else {
-      # Convert dgTMatrix to dgCMatrix
-      Mat[[i]] <- methods::as(x[, start:end], "dgCMatrix")
-    }
+    Mat[[i]] <- methods::as(x[, start:end], "dgCMatrix")
   }
   x <- do.call(base::cbind, Mat)
   colnames(x) <- cn
   rownames(x) <- rn
-
+  
   return(x)
 }
 
@@ -463,4 +459,13 @@ retrieveSCEIndex <- function(inSCE, IDs, axis, by = NULL,
 getGenesetNamesFromCollection <- function(inSCE, geneSetCollectionName) {
   geneSet <- .getGeneSetCollection(inSCE, geneSetCollectionName)
   return(names(geneSet))
+}
+
+.withSeed <- function(seed, code) {
+  if (is.null(seed)) {
+    code
+  } else {
+    withr::with_seed(seed = seed,
+                     code)
+  }
 }

@@ -13,7 +13,7 @@ shinyPanelFS_DimRed <- fluidPage(
       fluidRow(column(
         4,
         panel(
-          heading = "1. Compute Variability",
+          heading = "1. Compute variability metric",
           h5(tags$a(
             href = paste0(docs.artPath, "cnsl_feature_selection.html"),
             "(help)",
@@ -21,7 +21,7 @@ shinyPanelFS_DimRed <- fluidPage(
           )),
           selectInput(
             inputId = "hvgMethodFS",
-            label = "Select HVG method: ",
+            label = "Select method for calculating variability of features:",
             choices = c(
               "Seurat - vst" = "vst",
               "Seurat - mean.var.plot" = "mean.var.plot",
@@ -39,18 +39,18 @@ shinyPanelFS_DimRed <- fluidPage(
           actionButton("findHvgButtonFS","Run")
         ),
         panel(
-          heading = "2. Select and Subset",
-          selectInput("hvgMetricSelect", "Use computed metric:",
-                       choices = NULL),
-          numericInput(
-            "hvgNumberSelect", "Number of HVG to select",
-            value = 2000, step = 100, min = 0),
-          textInput(
+          heading = "2. Select number of variable features",
+          disabled(selectInput("hvgMetricSelect", "Select variability metric:",
+                               choices = NULL)),
+          disabled(numericInput(
+            "hvgNumberSelect", "Select the number of highly variable features:",
+            value = 2000, step = 100, min = 0)),
+          disabled(textInput(
             inputId = "hvgSubsetName",
-            label = "Name for the HVG list",
+            label = "Name of the feature subset:",
             value = NULL
-          ),
-          actionButton("hvgSubsetRun", "Run")
+          )),
+          disabled(actionButton("hvgSubsetRun", "Run"))
         )
       ),
       column(
@@ -66,25 +66,30 @@ shinyPanelFS_DimRed <- fluidPage(
                                            color = "danger", 
                                            icon = icon("times"), size = "xs"), 
                                 align = "right"),
-                       h6("Tweaking the plot does not create HVG list."),
-                       selectInput(
-                         inputId = "hvgPlotMethod",
-                         label = "Show computed metric:",
-                         choices = NULL
+                       disabled(
+                         selectInput(
+                           inputId = "hvgPlotMethod",
+                           label = "Select variability metric (created in step 1): ",
+                           choices = NULL
+                         )
                        ),
-                       numericInput(
-                         inputId = "hvgPlotNSelect",
-                         label = "Number of points to label in red:",
-                         value = 2000, min = 0, step = 100
+                       disabled(
+                         selectInput(
+                           inputId = "hvgPlotSubsetSelect",
+                           label = "Select feature subset (created in step 2): ",
+                           choices = "None"
+                         )
                        ),
-                       numericInput(
-                         inputId = "hvgPlotNLabel",
-                         label = "Number of text label: ",
-                         value = 20, min = 0, step = 10
+                       disabled(
+                         numericInput(
+                           inputId = "hvgPlotNLabel",
+                           label = "Number of features to label:",
+                           value = 20, min = 0, step = 10
+                         )
                        ),
                        selectInput(
                          inputId = "hvgPlotFeatureDisplay",
-                         label = "Label features by:",
+                         label = "Choose feature label:",
                          choices = c("Rownames (Default)",
                                      featureChoice)
                        ),
@@ -103,7 +108,7 @@ shinyPanelFS_DimRed <- fluidPage(
               circle = FALSE,
               inline = TRUE
             )),
-            column(7, fluidRow(h6("Scatterplot of features showing the variability versus average expression"), align="center"))
+            column(7, fluidRow(h6("Scatterplot showing the variability of each feature versus its average expression across all cells"), align="center"))
           ),
           hr(),
           br(),
