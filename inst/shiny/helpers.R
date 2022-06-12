@@ -89,6 +89,7 @@ withBusyIndicatorServer <- function(buttonId, expr) {
 # When an error happens after a button click, show the error
 errorFunc <- function(err, buttonId) {
   message(paste0(date(), " !!! ", err))
+  shinyalert("Error", text = err$message, type = "error")
   errEl <- sprintf("[data-for-btn=%s] .btn-err", buttonId)
   errElMsg <- sprintf("[data-for-btn=%s] .btn-err-msg", buttonId)
   errMessage <- gsub("^ddpcr: (.*)", "\\1", err$message)
@@ -170,13 +171,23 @@ withConsoleRedirect <- function(expr) {
 }
 
 withConsoleMsgRedirect <- function(expr) {
-  withCallingHandlers({
-    result <- expr
-  },
-  message = function(m) {
-    shinyjs::html(id = "consoleText", html = m$message, add = TRUE)
-  })
-  result
+  withCallingHandlers(
+    expr = {
+      tryCatch(
+        {
+          result <- expr
+        },
+        error = function(e) {
+          message(paste0(date(), " !!! ", e))
+          shinyalert("Error", text = e$message, type = "error", 
+                     callbackR = .loadClose())
+        }
+      )
+    },
+    message = function(m) {
+      shinyjs::html(id = "consoleText", html = m$message, add = TRUE)
+    }
+  )
 }
 
 
@@ -467,7 +478,7 @@ spinnerColor <- "gainsboro"
 #' Usually numericInput returns NA when not entering anything in UI, but 
 #' directly using NA causes error. Similarly, character inputs (selectionInput) 
 #' returns empty string "", which should usually be changed to NULL. 
-#' @value if not identified as empty inputs, returns as is; otherwise, 
+#' @return if not identified as empty inputs, returns as is; otherwise, 
 #' changeTo to `changeTo`
 handleEmptyInput <- function(x, 
                              type = c("auto", "numeric", "character"), 
