@@ -145,11 +145,32 @@ shinyServer(function(input, output, session) {
   }
 
   updateFeatureAnnots <- function(){
+    
     selectRowData <- colnames(rowData(vals$counts))
+    my_list <- data.frame()
+    for(i in selectRowData) {
+      my_list[i,1] <- paste0(i, " (e.g. ", paste(head(rowData(vals$counts)[,i], n = 3), collapse = ","), ")")    
+    }
+    selectRowDataWithExamples <- as.character(my_list[,1])
+    
+    
+    selectNonNARowData <- names(apply(rowData(vals$counts), 2, anyNA)[apply(rowData(vals$counts), 2, anyNA) == FALSE])
+    my_list2 <- data.frame()
+    for(j in selectNonNARowData) {
+      my_list2[j,1] <- paste0(j, " (e.g. ", paste(head(rowData(vals$counts)[,j], n = 3), collapse = ","), ")")    
+    }
+    selectNonNARowDataWithExamples <- as.character(my_list2[,1])
+    
+    Default <- paste0("Default (e.g. ", paste(head(rownames(vals$counts), n = 3), collapse = ","), ")")
+    
     updateSelectInput(session, "gsByParam",
                       choices = c("rownames", selectRowData))
     updateSelectInput(session, "importFeatureDispOpt",
-                      choices = c("Rownames (Default)", selectRowData))
+                      choices = c(Default, 
+                                  selectRowDataWithExamples))
+    updateSelectInput(session, "importFeatureNamesOpt",
+                      choices = c(Default, 
+                                  selectNonNARowDataWithExamples))
     updateSelectInput(session, "filteredFeature",
                       choices = c("none", selectRowData))
     updateSelectInput(session, "hvgPlotFeatureDisplay",
@@ -435,7 +456,7 @@ shinyServer(function(input, output, session) {
         count <- 0
         if (!is.na(path)) {
           # Add Reference selection for cellRangerV2
-          if (input$algoChoice == "cellRanger2") {
+          if (input$uploadChoice == "cellRanger2") {
             ## Identify available reference
             firstSampleDir <- list.dirs(path, recursive = FALSE)[1]
             refPath <- file.path(firstSampleDir, "outs/filtered_gene_bc_matrices")
@@ -492,7 +513,7 @@ shinyServer(function(input, output, session) {
                                                  collapse = .Platform$file.sep))
         path <- dirPaths$sDirectory
         if (!is.na(path)) {
-          if (input$algoChoice == "cellRanger2") {
+          if (input$uploadChoice == "cellRanger2") {
             ## Identify available reference
             refPath <- file.path(path, "outs/filtered_gene_bc_matrices")
             refList <- basename(list.dirs(refPath, recursive = FALSE))
@@ -582,7 +603,7 @@ shinyServer(function(input, output, session) {
     } else {
       allDirs <- list.dirs(basePath, recursive = FALSE)
       # if we are adding a new CellRangerV2 sample
-      if (input$algoChoice == "cellRanger2") {
+      if (input$uploadChoice == "cellRanger2") {
         allUI <- vector()
         allIDs <- vector()
         count <- 0
@@ -671,6 +692,7 @@ shinyServer(function(input, output, session) {
       )
       removeModal()
     }
+    updateCollapse(session = session, "importUI", style = list("1. Add sample to import:" = "success"))
   })
 
   # event listeners for Cell Ranger import modals' OK buttons
@@ -682,7 +704,7 @@ shinyServer(function(input, output, session) {
       showModal(importCRSDir(failed = TRUE))
     } else {
       # add the files to the appropriate reactiveValues
-      if (input$algoChoice == "cellRanger2") {
+      if (input$uploadChoice == "cellRanger2") {
         id <- paste0("snewSampleCR2", allImportEntries$id_count)
         entry <- list(type="cellRanger2", id=id, 
                       params=list(cellRangerDirs = dirname(samplePath), 
@@ -698,7 +720,7 @@ shinyServer(function(input, output, session) {
         allImportEntries$id_count <- allImportEntries$id_count + 1
       }
       # add new row to table
-      addToGeneralSampleTable(input$algoChoice, id, samplePath, input$sSampleID)
+      addToGeneralSampleTable(input$uploadChoice, id, samplePath, input$sSampleID)
       # handler to remove the sample that was just added
       observeEvent(input[[paste0("remove", id)]],{
         removeUI(
@@ -716,6 +738,8 @@ shinyServer(function(input, output, session) {
       })
       removeModal()
     }
+    updateCollapse(session = session, "importUI", style = list("1. Add sample to import:" = "success"))
+    
   })
 
   # data directory
@@ -724,7 +748,7 @@ shinyServer(function(input, output, session) {
     if ((!nzchar(input$dSampleID)) || (identical(dataPath, character(0)))) {
       showModal(importCRDDir(failed = TRUE))
     } else {
-      if (input$algoChoice == "cellRanger2") {
+      if (input$uploadChoice == "cellRanger2") {
         id <- paste0("dnewSampleCR2", allImportEntries$id_count)
         entry <- list(type="cellRanger2", id=id, 
                       params=list(dataDir = dataPath, 
@@ -738,7 +762,7 @@ shinyServer(function(input, output, session) {
         allImportEntries$id_count <- allImportEntries$id_count + 1
       }
       # add new row to table
-      addToGeneralSampleTable(input$algoChoice, id, dataPath, input$dSampleID)
+      addToGeneralSampleTable(input$uploadChoice, id, dataPath, input$dSampleID)
       observeEvent(input[[paste0("remove", id)]],{
         removeUI(
           selector = paste0("#", id)
@@ -755,6 +779,8 @@ shinyServer(function(input, output, session) {
       })
       removeModal()
     }
+    updateCollapse(session = session, "importUI", style = list("1. Add sample to import:" = "success"))
+    
   })
 
   # event handler for pressing OK on the import modal
@@ -765,29 +791,29 @@ shinyServer(function(input, output, session) {
       showModal(importModal(failed = TRUE))
     } else {
       entry <- list()
-      if (input$algoChoice == "starSolo") {
+      if (input$uploadChoice == "starSolo") {
         id <- paste0("newSampleSS", allImportEntries$id_count)
         entry <- list(type="starSolo", id = id, params=list(STARsoloDirs = basePath, samples = input$sampleName))
         allImportEntries$samples <- c(allImportEntries$samples, list(entry))
         allImportEntries$id_count <- allImportEntries$id_count+1
-      } else if (input$algoChoice == "busTools") {
+      } else if (input$uploadChoice == "busTools") {
         id <- paste0("newSampleBUS", allImportEntries$id_count)
         entry <- list(type="busTools", id = id, params=list(BUStoolsDirs = basePath, samples = input$sampleName))
         allImportEntries$samples <- c(allImportEntries$samples, list(entry))
         allImportEntries$id_count <- allImportEntries$id_count+1
-      } else if (input$algoChoice == "seqc") {
+      } else if (input$uploadChoice == "seqc") {
         id <- paste0("newSampleSEQ", allImportEntries$id_count)
         entry <- list(type="seqc", id = id, params=list(seqcDirs = basePath, prefix = input$sampleID, samples = input$sampleName))
         updateTextInput(session, "sampleID", value = "")
         allImportEntries$samples <- c(allImportEntries$samples, list(entry))
         allImportEntries$id_count <- allImportEntries$id_count+1
-      } else if (input$algoChoice == "optimus") {
+      } else if (input$uploadChoice == "optimus") {
         id <- paste0("newSampleOpt", allImportEntries$id_count)
         entry <- list(type="optimus", id = id, params=list(OptimusDirs = basePath, samples = input$sampleName))
         allImportEntries$samples <- c(allImportEntries$samples, list(entry))
         allImportEntries$id_count <- allImportEntries$id_count+1
       }
-      addToGeneralSampleTable(input$algoChoice, id, basePath, input$sampleName)
+      addToGeneralSampleTable(input$uploadChoice, id, basePath, input$sampleName)
       observeEvent(input[[paste0("remove", id)]],{
         removeUI(
           selector = paste0("#", id)
@@ -804,6 +830,8 @@ shinyServer(function(input, output, session) {
       })
       removeModal()
     }
+    updateCollapse(session = session, "importUI", style = list("1. Add sample to import:" = "success"))
+    
   })
 
   # Event handler to import a file input
@@ -844,6 +872,8 @@ shinyServer(function(input, output, session) {
       }
       allImportEntries$samples <- allImportEntries$samples[toRemove]
     })
+    updateCollapse(session = session, "importUI", style = list("1. Add sample to import:" = "success"))
+    
   })
 
   # Event handler to import an example input
@@ -879,6 +909,8 @@ shinyServer(function(input, output, session) {
       }
       allImportEntries$samples <- allImportEntries$samples[toRemove]
     })
+    updateCollapse(session = session, "importUI", style = list("1. Add sample to import:" = "success"))
+    
   })
 
   # Event handler to import an RDS input
@@ -904,6 +936,8 @@ shinyServer(function(input, output, session) {
       }
       allImportEntries$samples <- allImportEntries$samples[toRemove]
     })
+    updateCollapse(session = session, "importUI", style = list("1. Add sample to import:" = "success"))
+    
   })
 
   # Event handler for "Upload" button on import page
@@ -1006,6 +1040,8 @@ shinyServer(function(input, output, session) {
       # datasets. Otherwise, errors may pop out when Shiny listens to the new
       # object but cannot find the old result.
     })
+    updateCollapse(session = session, "importUI", style = list("2. Create dataset:" = "success"))
+    
     callModule(module = nonLinearWorkflow, id = "nlw-import", parent = session, qcf = TRUE)
   
     .loadClose() # close the notification spinner and console log
@@ -1332,13 +1368,20 @@ shinyServer(function(input, output, session) {
     if (!is.null(vals$counts)) {
       withBusyIndicatorServer("importFeatureDipSet", {
         selected <- NULL
-        if (!input$importFeatureDispOpt == "Rownames (Default)") {
-          selected <- input$importFeatureDispOpt
+        
+        if (!stringr::word(input$importFeatureDispOpt, 1) == "Default") {
+          featureName <- word(input$importFeatureDispOpt, 1) 
+          selected <- featureName
+        }
+        if (!stringr::word(input$importFeatureNamesOpt, 1) == "Default") {
+          featureID <- word(input$importFeatureNamesOpt, 1) 
+          rownames(vals$counts) <- rowData(vals$counts)[[featureID]]
         }
         vals$counts <- setSCTKDisplayRow(vals$counts, selected)
         updateFeatureDisplaySelect(selected = selected)
       })
     }
+    updateCollapse(session = session, "importUI", style = list("3. Data summary:" = "success"))
   })
   updateFeatureDisplaySelect <- function(selected = NULL, updateOptions = FALSE) 
   {
@@ -2125,7 +2168,7 @@ shinyServer(function(input, output, session) {
   }, striped = TRUE, border = TRUE, align = "c", spacing = "l")
 
   #Render summary table
-  output$summarycontents <- renderTable({
+  output$summarycontents <- DT::renderDataTable({
       req(vals$counts)
       if ("Sample" %in% names(colData(vals$counts))) {
         sampleVar <- "Sample"
@@ -2138,7 +2181,7 @@ shinyServer(function(input, output, session) {
       singleCellTK::summarizeSCE(inSCE = vals$counts,
                                  useAssay = NULL,
                                  sampleVariableName = sampleVar)
-  }, striped = TRUE, border = TRUE, align = "c", spacing = "l")
+  })
 
 
   #Reset the data to the original uploaded dataset
