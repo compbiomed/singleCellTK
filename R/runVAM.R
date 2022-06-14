@@ -69,7 +69,7 @@ runVAM <- function(inSCE, geneSetCollectionName, useAssay,
     
   }
   names(gene.Set.Collection) <- gene.Set.Rows
-  
+  message(date(), " ... Running VAM")
   gene.Set.Collection <- VAM::createGeneSetCollection(gene.ids = rownames(inSCE),
                                                       gene.set.collection = gene.Set.Collection)
   
@@ -101,5 +101,4 @@ runVAM <- function(inSCE, geneSetCollectionName, useAssay,
   }
   
   return (inSCE)
-  
 }

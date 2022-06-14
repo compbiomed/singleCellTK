@@ -30,7 +30,8 @@ shinyPanelTSCAN <- fluidPage(
                          label = "Seed value for reproducibility of result:",
                          value = 12345,
                          step = 1),
-            selectInput("clusterName", "Name of Clustering Result: ", "Auto generate clusters", selected = NULL),
+            selectInput("TSCANclusterName", "Name of Clustering Result: ", 
+                        "Auto generate clusters", selected = NULL),
             actionButton("TSCANRun", "Run TSCAN"),
             
           )
@@ -86,9 +87,13 @@ shinyPanelTSCAN <- fluidPage(
         column(
           4,
           panel(
-            selectInput("TSCANassayselect", "Choose an assay:",
-                        choices = c()),
-            
+            selectizeInput(
+              inputId = "TSCANassayselect", 
+              label = "Select input matrix:", 
+              choices = NULL, 
+              selected = NULL, 
+              multiple = FALSE,
+              options = NULL),
             pickerInput("pathIndexx", "Select path terminal node:",
                            choices = "", multiple = FALSE),
             

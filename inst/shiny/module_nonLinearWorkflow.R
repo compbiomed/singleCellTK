@@ -12,6 +12,7 @@ nonLinearWorkflow <- function(input, output, session, parent,
                               de = FALSE,
                               cv = FALSE, 
                               pa = FALSE,
+                              tj = FALSE,
                               qcf = FALSE,
                               nbc = FALSE,
                               cw = FALSE,
@@ -25,31 +26,31 @@ nonLinearWorkflow <- function(input, output, session, parent,
     bsCollapse(
       open = "Next Steps",
       bsCollapsePanel("Next Steps", 
-                               uiOutput(ns("de")),
-                               uiOutput(ns("pa")),
-                               uiOutput(ns("qcf")),
-                               uiOutput(ns("nbc")),
-                               uiOutput(ns("cw")),
-                               uiOutput(ns("dr")),
-                               uiOutput(ns("fs")),
-                               uiOutput(ns("cl")),
-                               uiOutput(ns("cv")),
-                               style = "success"
-                      )
+                      uiOutput(ns("de")),
+                      uiOutput(ns("pa")),
+                      uiOutput(ns("tj")),
+                      uiOutput(ns("qcf")),
+                      uiOutput(ns("nbc")),
+                      uiOutput(ns("cw")),
+                      uiOutput(ns("dr")),
+                      uiOutput(ns("fs")),
+                      uiOutput(ns("cl")),
+                      uiOutput(ns("cv")),
+                      style = "success")
       )
     
   })
   
   if(de){
     output$de <- renderUI({
-                      panel(
-                        heading = "Differential Expression & Marker Selection",
-                        h5("Discover quantitative changes between experimental conditions using one of the many integrated statistical frameworks for differential expression:"),
-                        actionButton(inputId = ns("goDE"), label = "Go to Differential Expression!"),
-                        hr(),
-                        h5("Compute and visualize marker genes from cluster classes using 'MAST', 'Limma' or 'DESeq2' methods:"),
-                        actionButton(inputId = ns("goMS"), label = "Go to Marker Selection!"),
-                      )
+      panel(
+        heading = "Differential Expression & Marker Selection",
+        h5("Compute and visualize marker genes for each cluster using one of the many integrated statistical frameworks for differential expression:"),
+        actionButton(inputId = ns("goMS"), label = "Go to Marker Selection!"),
+        hr(),
+        h5("Discover quantitative changes between experimental conditions using one of the many integrated statistical frameworks for differential expression:"),
+        actionButton(inputId = ns("goDE"), label = "Go to Differential Expression!")
+      )
     })
   }
   
@@ -70,6 +71,16 @@ nonLinearWorkflow <- function(input, output, session, parent,
         h5("Explore biological activity or functions with pathway analysis using either 'GSVA' or 'EnrichR' statistical frameworks:"),
         actionButton(inputId = ns("goPathwayAnalysis"), label = "Go to Pathway Analysis!"),
         actionButton(inputId = ns("goEnrichR"), label = "Go to EnrichR!"),
+      )
+    })
+  }
+  
+  if(tj){
+    output$tj <- renderUI({
+      panel(
+        heading = "Trajectory Analysis",
+        h5("Estimate Pseudotime path of cell population with TSCAN method:"),
+        actionButton(inputId = ns("goTSCAN"), label = "Go to Trajectory Analysis!")
       )
     })
   }
@@ -167,6 +178,13 @@ nonLinearWorkflow <- function(input, output, session, parent,
     observeEvent(input$goEnrichR,{
       showTab(inputId = "navbar",
               target = "EnrichR",
+              select = TRUE,
+              session = parent)
+    })
+    
+    observeEvent(input$goTSCAN,{
+      showTab(inputId = "navbar",
+              target = "TSCANWorkflow",
               select = TRUE,
               session = parent)
     })

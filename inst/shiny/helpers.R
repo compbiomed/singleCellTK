@@ -170,9 +170,10 @@ withConsoleRedirect <- function(expr) {
   result
 }
 
-withConsoleMsgRedirect <- function(expr) {
+withConsoleMsgRedirect <- function(expr, msg="Please wait. See console log for progress.") {
   withCallingHandlers(
     expr = {
+      .loadOpen(msg)
       tryCatch(
         {
           result <- expr
@@ -183,6 +184,7 @@ withConsoleMsgRedirect <- function(expr) {
                      callbackR = .loadClose())
         }
       )
+      .loadClose()
     },
     message = function(m) {
       shinyjs::html(id = "consoleText", html = m$message, add = TRUE)
@@ -497,4 +499,21 @@ handleEmptyInput <- function(x,
     x <- changeTo
   }
   return(x)
+}
+
+getTypeByMat <- function(inSCE, matName) {
+  if (matName %in% assayNames(inSCE)) {
+    return("assay")
+  } else if (matName %in% altExpNames(inSCE)) {
+    return("altExp")
+  } else if (matName %in% reducedDimNames(inSCE)) {
+    return("reducedDim")
+  } else {
+    for (i in altExpNames(inSCE)) {
+      if (matName %in% reducedDimNames(altExp(inSCE, i))) {
+        return(c("reducedDim", i))
+      }
+    }
+    return()
+  }
 }
