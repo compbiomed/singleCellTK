@@ -17,15 +17,21 @@ runGSVA(
 
 \item{useAssay}{Indicate which assay to use. The default is "logcounts"}
 
-\item{resultNamePrefix}{Character. Prefix to the name the GSVA results which will be stored in the reducedDim slot of \code{inSCE}. The names of the output matrix will be \code{resultNamePrefix_Scores}. If this parameter is set to \code{NULL}, then "GSVA_geneSetCollectionName_" will be used. Default \code{NULL}.}
+\item{resultNamePrefix}{Character. Prefix to the name the GSVA results 
+which will be stored in the reducedDim slot of \code{inSCE}. The names of the 
+output matrix will be \code{resultNamePrefix_Scores}. If this parameter is 
+set to \code{NULL}, then "GSVA_geneSetCollectionName_" will be used. Default 
+\code{NULL}.}
 
-\item{geneSetCollectionName}{Character. The name of the gene set collection to use.
-parameter.}
+\item{geneSetCollectionName}{Character. The name of the gene set collection 
+to use.}
 
 \item{...}{Parameters to pass to gsva()}
 }
 \value{
-A \link[SingleCellExperiment]{SingleCellExperiment} object with pathway activity scores from GSVA stored in \code{reducedDim} as \code{GSVA_geneSetCollectionName_Scores}.
+A \linkS4class{SingleCellExperiment} object with pathway activity 
+scores from GSVA stored in \code{reducedDim} as 
+\code{GSVA_geneSetCollectionName_Scores}.
 }
 \description{
 Run GSVA analysis on a \linkS4class{SingleCellExperiment} object
@@ -40,7 +46,7 @@ gs <- list("geneset1" = gs1, "geneset2" = gs2)
 
 sce <- importGeneSetsFromList(inSCE = sce,geneSetList = gs,
                                            by = "rownames")
-sce <- runGSVA(inSCE = sce, geneSetCollectionName = "GeneSetCollection", useAssay = "logcounts")
-
- 
+sce <- runGSVA(inSCE = sce, 
+               geneSetCollectionName = "GeneSetCollection", 
+               useAssay = "logcounts")
 }

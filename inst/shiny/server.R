@@ -5574,7 +5574,7 @@ shinyServer(function(input, output, session) {
 
   observeEvent(input$batchCorrVar, {
     req(vals$counts)
-    req(batchCorrVar)
+    req(input$batchCorrVar)
     nBatch <- length(unique(colData(vals$counts)[[input$batchCorrVar]]))
     output$scMergeNBatch <- renderUI({
       span(paste0("Please input ", nBatch, " integer(s), separated by ','."))

@@ -120,7 +120,8 @@ runScranSNN <- function(inSCE, useReducedDim = NULL, useAssay = NULL,
                               fastGreedy = igraph::cluster_fast_greedy,
                               labelProp = igraph::cluster_label_prop,
                               leadingEigen = igraph::cluster_leading_eigen)
-    message(paste0(date(), " ... Running 'scran SNN clustering'"))
+    message(date(), " ... Running 'scran SNN clustering' with '", algorithm, 
+            "' algorithm")
     if (!is.null(useAssay)){
       if (!useAssay %in% SummarizedExperiment::assayNames(inSCE)) {
         stop("Specified assay '", useAssay, "' not found.")
@@ -172,6 +173,7 @@ runScranSNN <- function(inSCE, useReducedDim = NULL, useAssay = NULL,
     clustFunc = graphClustAlgoList[[algorithm]]
     clust <- clustFunc(g, ...)$membership
     SummarizedExperiment::colData(inSCE)[[clusterName]] <- factor(clust)
+    message(date(), " ...   Identified ", length(unique(clust)), " clusters")
     return(inSCE)
   }
 }
@@ -220,25 +222,18 @@ runKMeans <- function(inSCE, nCenters, useReducedDim = "PCA",
     stop("Specified reducedDim '", useReducedDim, "' not found.")
   }
   algorithm <- match.arg(algorithm)
-  message(paste0(date(), " ... Running 'KMeans clustering' with ", algorithm, 
-                 " algorithm."))
+  message(date(), " ... Running 'KMeans clustering' with ", algorithm, 
+          " algorithm.")
   mat <- SingleCellExperiment::reducedDim(inSCE, useReducedDim)
   if (nComp < ncol(mat)) {
     mat <- mat[,seq(nComp)]
   }
-  if (!is.null(seed)) {
-    withr::with_seed(
-      seed = seed,
-      code = {
-        clust.kmeans <- stats::kmeans(mat, centers = nCenters, iter.max = nIter,
-                                      nstart = nStart, algorithm = algorithm)
-      })
-  } else {
+  .withSeed(seed, {
     clust.kmeans <- stats::kmeans(mat, centers = nCenters, iter.max = nIter,
                                   nstart = nStart, algorithm = algorithm)
-  }
-  
+  })
   clust.kmeans <- factor(clust.kmeans$cluster)
   SummarizedExperiment::colData(inSCE)[[clusterName]] <- clust.kmeans
+  message(date(), " ...   Identified ", length(levels(clust.kmeans)), " clusters")
   return(inSCE)
 }
