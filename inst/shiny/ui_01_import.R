@@ -12,7 +12,7 @@ if ("TENxPBMCData" %in% rownames(installed.packages())){
 if ("scRNAseq" %in% rownames(installed.packages())){
   exampleDatasets <- c(exampleDatasets,
                        "Fluidigm (Pollen et al, 2014)" = "fluidigm_pollen",
-                       "Mouse Brain (Tasic et al, 2016)" = "allen_tasic", 
+                       "Mouse Brain (Tasic et al, 2016)" = "allen_tasic",
                        "NestorowaHSC (Nestorowa et al, 2016)" = "NestorowaHSCData")
 }
 
@@ -34,14 +34,14 @@ shinyPanelImport <- fluidPage(
     )
   ),
   tags$br(),
-  
+
   h1("Import"),
   h5(tags$a(href = paste0(docs.artPath, "import_data.html"),
             "(help)", target = "_blank")),
   tags$hr(),
-  
+
   bsCollapse(
-    id = "importUI", 
+    id = "importUI",
     open = "1. Add sample to import:",
     bsCollapsePanel(
       "1. Add sample to import:",
@@ -276,7 +276,7 @@ shinyPanelImport <- fluidPage(
       ),
       style = "primary"
     ),
-    
+
     bsCollapsePanel(
       "2. Create dataset:",
       wellPanel(
@@ -300,13 +300,17 @@ shinyPanelImport <- fluidPage(
           )
         )
       ),
-      actionButton("uploadData", "Create"),
-      
+      fluidRow(
+        column(2, actionButton("uploadData", "Import")),
+        column(3, actionButton("backToStepOne", "Add more sample"))
+      ),
+
+
       tags$br(),
       tags$br(),
       style = "primary"
     ),
-    
+
     bsCollapsePanel(
       "3. Data summary:",
       hidden(
@@ -314,9 +318,9 @@ shinyPanelImport <- fluidPage(
           id = "annotationData",
           h3("Data summary"),
           DT::dataTableOutput("summarycontents"),
-          
+
           tags$hr(),
-          
+
           h3("Dataset options:"),
           selectInput("importFeatureNamesOpt",
                       "Set feature ID (only showing annotations without the NAs)",
@@ -324,11 +328,11 @@ shinyPanelImport <- fluidPage(
           selectInput("importFeatureDispOpt",
                       "Set feature names to be displayed in downstream visualization",
                       c("Default", featureChoice)),
-          
+
           withBusyIndicatorUI(actionButton("importFeatureDipSet", "Set")),
         )
       ),
-     
+
       style = "primary"
     )
   ),

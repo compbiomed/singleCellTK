@@ -21,7 +21,7 @@ test_that(desc = "Testing TSCAN", {
   sce <- runTSCAN(inSCE = sce, useReducedDim = "PCA", seed = NULL)
   terminalNodes <- listTSCANTerminalNodes(sce)
   sce <- runTSCANDEG(inSCE = sce, pathIndex = terminalNodes[1])
-  sce <- runTSCANBranchDEG(inSCE = sce, useCluster = 1)
+  sce <- runTSCANClusterDEAnalysis(inSCE = sce, useCluster = 1)
   testthat::expect_true(!is.null(names(
                           getTSCANResults(sce,
                                           analysisName = "Pseudotime"))))
@@ -49,10 +49,10 @@ test_that(desc = "Testing TSCAN", {
   TSCANPseudotimeGenesPlot <- plotTSCANPseudotimeGenes(inSCE = sce,
                                                        pathIndex = terminalNodes[1],
                                                        direction = "increasing")
-  ClusterPseudoPlot <- plotTSCANBranchPseudo(inSCE = sce,
-                                             useCluster = 1,
-                                             useReducedDim = "TSNE")
-  TSCANBranchGenesPlot <- plotTSCANBranchDEG(inSCE = sce,
+  ClusterPseudoPlot <- plotTSCANClusterPseudo(inSCE = sce,
+                                              useCluster = 1,
+                                              useReducedDim = "TSNE")
+  TSCANBranchGenesPlot <- plotTSCANClusterDEG(inSCE = sce,
                                              useCluster = 1,
                                              useReducedDim = "TSNE")
   TSCANFeaturePlot <- plotTSCANDimReduceFeatures(inSCE = sce,

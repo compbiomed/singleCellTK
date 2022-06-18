@@ -24,16 +24,16 @@ shinyPanelSeurat <- fluidPage(
             selected = ""
         )
     ),
-    bsCollapse(id = "SeuratUI", open = "Data Input",
+    bsCollapse(id = "SeuratUI", open = "Normalize Data",
             bsCollapsePanel("Normalize Data",
                 fluidRow(
                     column(4,
                         panel(heading = "Options",
                               selectizeInput(
-                                  inputId = "seuratSelectNormalizationAssay", 
-                                  label = "Select input matrix:", 
-                                  choices = NULL, 
-                                  selected = NULL, 
+                                  inputId = "seuratSelectNormalizationAssay",
+                                  label = "Select input matrix:",
+                                  choices = NULL,
+                                  selected = NULL,
                                   multiple = FALSE,
                                   options = NULL),
                             #uiOutput("seuratSelectNormalizationAssay"),
@@ -79,7 +79,7 @@ shinyPanelSeurat <- fluidPage(
                            )
                     ),
                     style = "primary"),
-            
+
             # bsCollapsePanel("Scale Data",
             #                 fluidRow(
             #                   column(4,

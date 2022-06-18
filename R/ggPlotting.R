@@ -546,7 +546,9 @@ plotSCEDimReduceFeatures <- function(inSCE,
 
   if(!is.null(featureDisplay)){
     featureDisplay <- match.arg(featureDisplay,
-                                colnames(SummarizedExperiment::rowData(inSCE)))
+                                c("rownames",
+                                  colnames(SummarizedExperiment::rowData(inSCE)))
+                                )
   }else{
     if(exists(x = "featureDisplay", inSCE@metadata)){
       featureDisplay <- inSCE@metadata$featureDisplay

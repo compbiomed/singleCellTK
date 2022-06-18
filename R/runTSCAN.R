@@ -21,7 +21,7 @@
 #' \code{listTSCANTerminalNodes}.
 #'
 #' When \code{analysisName = "ClusterDEAnalysis"}, returns the list result from
-#' \code{\link{runTSCANBranchDEG}}. Here \code{pathName} needs to match
+#' \code{\link{runTSCANClusterDEAnalysis}}. Here \code{pathName} needs to match
 #' with the \code{useCluster} argument when running the algorithm.
 #' @export
 #' @rdname getTSCANResults
@@ -50,10 +50,11 @@ setMethod("getTSCANResults", signature(x = "SingleCellExperiment"),
     results <- S4Vectors::metadata(x)$sctk$Traj$TSCAN$Pseudotime
   else {
     if (is.null(pathName)) {
-      stop("Have to specify `pathName` for TSCAN DE analyses")
+      results <- S4Vectors::metadata(x)$sctk$Traj$TSCAN[[analysisName]]
+    } else {
+      pathName <- as.character(pathName)
+      results <- S4Vectors::metadata(x)$sctk$Traj$TSCAN[[analysisName]][[pathName]]
     }
-    pathName <- as.character(pathName)
-    results <- S4Vectors::metadata(x)$sctk$Traj$TSCAN[[analysisName]][[pathName]]
   }
   return(results)
 })
@@ -161,7 +162,9 @@ runTSCAN <- function(inSCE,
     stop("`cluster` should either has length equal to `ncol(inSCE)` or be a ",
          "colData variable.")
   }
-
+  if (length(unique(cluster)) == 1) {
+    stop("Only one cluster found. Unable to calculate.")
+  }
   message(date(), " ... Running TSCAN to estimate pseudotime")
   inSCE <- scran::computeSumFactors(inSCE, clusters = cluster)
   by.cluster <- scuttle::aggregateAcrossCells(inSCE, ids = cluster)
@@ -205,12 +208,12 @@ runTSCAN <- function(inSCE,
   edgeList <- mst
   for (i in seq_along(unique(colData(inSCE)$TSCAN_clusters))){
     degree <- sum(edgeList[i] != 0)
-    if (degree > 2) branchClusters <- c(branchClusters, i)
+    if (degree > 1) branchClusters <- c(branchClusters, i)
   }
 
   ## Save these results in a list and then make S4 accessor that passes the
   ## entire list
-  result <- list(pseudo = tscan.pseudo, mst = mst, clusters = cluster,
+  result <- list(pseudo = tscan.pseudo, mst = mst,
                  maptscan = map.tscan,
                  pathClusters = pathClusters,
                  branchClusters = branchClusters,
@@ -246,7 +249,8 @@ runTSCAN <- function(inSCE,
 plotTSCANResults <- function(inSCE, useReducedDim = "UMAP") {
 
   results <- getTSCANResults(inSCE, analysisName = "Pseudotime")
-  by.cluster <- scuttle::aggregateAcrossCells(inSCE, ids = results$clusters)
+  clusters <- colData(inSCE)$TSCAN_clusters
+  by.cluster <- scuttle::aggregateAcrossCells(inSCE, ids = clusters)
   line.data <- TSCAN::reportEdges(by.cluster, mst = results$mst,
                                   clusters = NULL, use.dimred = useReducedDim)
 
@@ -543,12 +547,12 @@ plotTSCANPseudotimeGenes <- function(inSCE,
 #' data("mouseBrainSubsetSCE", package = "singleCellTK")
 #' mouseBrainSubsetSCE <- runTSCAN(inSCE = mouseBrainSubsetSCE,
 #'                                 useReducedDim = "PCA_logcounts")
-#' mouseBrainSubsetSCE <- runTSCANBranchDEG(inSCE = mouseBrainSubsetSCE,
+#' mouseBrainSubsetSCE <- runTSCANClusterDEAnalysis(inSCE = mouseBrainSubsetSCE,
 #'                                          useCluster = 1)
-runTSCANBranchDEG <- function(inSCE,
-                              useCluster,
-                              useAssay = "logcounts",
-                              fdrThreshold = 0.05){
+runTSCANClusterDEAnalysis <- function(inSCE,
+                                      useCluster,
+                                      useAssay = "logcounts",
+                                      fdrThreshold = 0.05) {
   results <- getTSCANResults(inSCE, analysisName = "Pseudotime")
   message(date(), " ... Finding DEG between TSCAN branches")
   tscan.pseudo <- TSCAN::orderCells(results$maptscan, mst = results$mst,
@@ -637,14 +641,15 @@ runTSCANBranchDEG <- function(inSCE,
 #' data("mouseBrainSubsetSCE", package = "singleCellTK")
 #' mouseBrainSubsetSCE <- runTSCAN(inSCE = mouseBrainSubsetSCE,
 #'                                 useReducedDim = "PCA_logcounts")
-#' plotTSCANBranchPseudo(mouseBrainSubsetSCE, useCluster = 1,
-#'                       useReducedDim = "TSNE_logcounts")
-plotTSCANBranchPseudo <- function(inSCE, useCluster, useReducedDim = "UMAP",
+#' plotTSCANClusterPseudo(mouseBrainSubsetSCE, useCluster = 1,
+#'                        useReducedDim = "TSNE_logcounts")
+plotTSCANClusterPseudo <- function(inSCE, useCluster, useReducedDim = "UMAP",
                                    combinePlot = c("all", "none")){
   # Get the plotting info of edges
   results <- getTSCANResults(inSCE, analysisName = "Pseudotime")
   combinePlot <- match.arg(combinePlot)
-  by.cluster <- scuttle::aggregateAcrossCells(inSCE, ids = results$clusters)
+  clusters <- colData(inSCE)$TSCAN_clusters
+  by.cluster <- scuttle::aggregateAcrossCells(inSCE, ids = clusters)
   line.data <- TSCAN::reportEdges(by.cluster, mst = results$mst,
                                   clusters = NULL, use.dimred = useReducedDim)
   line.data.sub <- line.data[grepl(paste0("^", useCluster, "--"),
@@ -681,20 +686,20 @@ plotTSCANBranchPseudo <- function(inSCE, useCluster, useReducedDim = "UMAP",
 ###  plot gene of interest in branch cluster
 ###################################################
 
-#' @title Plot features identified by \code{\link{runTSCANBranchDEG}} on cell
-#' 2D embedding with MST overlaid
+#' @title Plot features identified by \code{\link{runTSCANClusterDEAnalysis}} on
+#' cell 2D embedding with MST overlaid
 #' @description A wrapper function which plot the top features expression
-#' identified by \code{\link{runTSCANBranchDEG}} on the 2D embedding of the
-#' cells cluster used in the analysis. The related MST edges are overlaid.
+#' identified by \code{\link{runTSCANClusterDEAnalysis}} on the 2D embedding of
+#' the cells cluster used in the analysis. The related MST edges are overlaid.
 #' @param inSCE Input \linkS4class{SingleCellExperiment} object.
 #' @param useCluster Choose a cluster used for identifying DEG with
-#' \code{\link{runTSCANBranchDEG}}. Required.
+#' \code{\link{runTSCANClusterDEAnalysis}}. Required.
 #' @param useReducedDim A single character for the matrix of 2D embedding.
 #' Should exist in \code{reducedDims} slot. Default \code{"UMAP"}.
 #' @param topN Integer. Use top N genes identified. Default \code{9}.
 #' @param useAssay A single character for the feature expression matrix. Should
 #' exist in \code{assayNames(inSCE)}. Default \code{NULL} for using the one used
-#' in \code{\link{runTSCANBranchDEG}}.
+#' in \code{\link{runTSCANClusterDEAnalysis}}.
 #' @param featureDisplay Specify the feature ID type to display. Users can set
 #' default value with \code{\link{setSCTKDisplayRow}}. \code{NULL} or
 #' \code{"rownames"} specifies the rownames of \code{inSCE}. Other character
@@ -703,8 +708,8 @@ plotTSCANBranchPseudo <- function(inSCE, useCluster, useReducedDim = "UMAP",
 #' will combine plots of each feature into a single \code{.ggplot} object,
 #' while \code{"none"} will output a list of plots. Default \code{"all"}.
 #' @return A \code{.ggplot} object of cell scatter plot, colored by the
-#' expression of a gene identified by \code{\link{runTSCANBranchDEG}}, with the
-#' layer of trajectory.
+#' expression of a gene identified by \code{\link{runTSCANClusterDEAnalysis}},
+#' with the layer of trajectory.
 #' @export
 #' @author Yichen Wang
 #' @importFrom S4Vectors metadata
@@ -712,13 +717,14 @@ plotTSCANBranchPseudo <- function(inSCE, useCluster, useReducedDim = "UMAP",
 #' data("mouseBrainSubsetSCE", package = "singleCellTK")
 #' mouseBrainSubsetSCE <- runTSCAN(inSCE = mouseBrainSubsetSCE,
 #'                                 useReducedDim = "PCA_logcounts")
-#' mouseBrainSubsetSCE <- runTSCANBranchDEG(inSCE = mouseBrainSubsetSCE,
-#'                                          useCluster = 1)
-#' plotTSCANBranchDEG(mouseBrainSubsetSCE, useCluster = 1,
-#'                    useReducedDim = "TSNE_logcounts")
-plotTSCANBranchDEG <- function(
+#' mouseBrainSubsetSCE <- runTSCANClusterDEAnalysis(inSCE = mouseBrainSubsetSCE,
+#'                                                  useCluster = 1)
+#' plotTSCANClusterDEG(mouseBrainSubsetSCE, useCluster = 1,
+#'                     useReducedDim = "TSNE_logcounts")
+plotTSCANClusterDEG <- function(
   inSCE,
   useCluster,
+  pathIndex = NULL,
   useReducedDim = "UMAP",
   topN = 9,
   useAssay = NULL,
@@ -731,12 +737,17 @@ plotTSCANBranchDEG <- function(
                                pathName = useCluster)
   if (is.null(DEResults)) {
     stop("Branch DE result of specified cluster not found. Run ",
-         "`runTSCANBranchDEG()` with the same `useCluster` first.")
+         "`runTSCANClusterDEAnalysis()` with the same `useCluster` first.")
   }
   combinePlot <- match.arg(combinePlot)
-  deg <- do.call(rbind, DEResults$DEgenes)
-  deg <- deg[order(deg$FDR),]
-  features <- rownames(deg)[seq(min(topN, nrow(deg)))]
+  if (is.null(pathIndex)) {
+    deg <- do.call(rbind, DEResults$DEgenes)
+    deg <- deg[order(deg$FDR),]
+  } else {
+    pathIndex <- as.character(pathIndex)
+    deg <- DEResults$DEgenes[[pathIndex]]
+  }
+  features <- rownames(deg)[seq(min(topN, nrow(deg), na.rm = TRUE))]
   if (is.null(useAssay)) useAssay <- DEResults$useAssay
   plotTSCANDimReduceFeatures(inSCE = inSCE, features = features,
                              useReducedDim = useReducedDim,
@@ -794,7 +805,8 @@ plotTSCANDimReduceFeatures <- function(
   if (!is.null(useCluster) && length(useCluster) != 1)
     stop("`useCluster`: can only use one cluster.")
   combinePlot <- match.arg(combinePlot)
-  by.cluster <- scuttle::aggregateAcrossCells(inSCE, ids = results$clusters)
+  clusters <- colData(inSCE)$TSCAN_clusters
+  by.cluster <- scuttle::aggregateAcrossCells(inSCE, ids = clusters)
   line.data <- TSCAN::reportEdges(by.cluster, mst = results$mst,
                                   clusters = NULL, use.dimred = useReducedDim)
   if (!is.null(useCluster)) {
@@ -802,44 +814,46 @@ plotTSCANDimReduceFeatures <- function(
                                  line.data$edge) |
                              grepl(paste0("--", useCluster, "$"),
                                    line.data$edge),]
-    inSCE <- inSCE[, colData(inSCE)$TSCAN_clusters %in% useCluster]
+    inSCE <- inSCE[, clusters %in% useCluster]
   }
   if (by == "rownames") by <- NULL
-  if (!is.null(featureDisplay) &&
-      featureDisplay == "rownames")
-    featureDisplay <- NULL
   plotList <- list()
-  for (f in features) {
-    g <- plotSCEDimReduceFeatures(inSCE, feature = f,
-                                  featureLocation = by,
-                                  featureDisplay = featureDisplay,
-                                  reducedDimName = useReducedDim,
-                                  title = f) +
-      ggplot2::geom_line(data = line.data,
-                         ggplot2::aes_string(x = colnames(line.data)[2],
-                                             y = colnames(line.data)[3]),
-                         inherit.aes = FALSE)
-    # Text labeling code credit: scater
-    reddim <- as.data.frame(SingleCellExperiment::reducedDim(inSCE,
-                                                             useReducedDim))
-    text_out <- scater::retrieveCellInfo(inSCE, "TSCAN_clusters",
-                                         search = "colData")
-    by_text_x <- vapply(split(reddim[,1], text_out$val),
-                        stats::median, FUN.VALUE = 0)
-    by_text_y <- vapply(split(reddim[,2], text_out$val),
-                        stats::median, FUN.VALUE = 0)
-    g <- g + ggrepel::geom_text_repel(
-      data = data.frame(x = by_text_x,
-                        y = by_text_y,
-                        label = names(by_text_x)),
-      mapping = ggplot2::aes_string(x = "x",
-                                    y = "y",
-                                    label = "label"),
-      inherit.aes = FALSE
-    )
-    plotList[[f]] <- g
+  if (!is.na(features)) {
+    for (f in features) {
+      g <- plotSCEDimReduceFeatures(inSCE, feature = f,
+                                    useAssay = useAssay,
+                                    featureLocation = by,dim1 = 1, dim2 = 2,
+                                    featureDisplay = featureDisplay,
+                                    reducedDimName = useReducedDim,
+                                    title = f) +
+        ggplot2::geom_line(data = line.data,
+                           ggplot2::aes_string(x = colnames(line.data)[2],
+                                               y = colnames(line.data)[3],
+                                               group = "edge"),
+                           inherit.aes = FALSE)
+      # Text labeling code credit: scater
+      reddim <- as.data.frame(SingleCellExperiment::reducedDim(inSCE,
+                                                               useReducedDim))
+      text_out <- scater::retrieveCellInfo(inSCE, "TSCAN_clusters",
+                                           search = "colData")
+      by_text_x <- vapply(split(reddim[,1], text_out$val),
+                          stats::median, FUN.VALUE = 0)
+      by_text_y <- vapply(split(reddim[,2], text_out$val),
+                          stats::median, FUN.VALUE = 0)
+      g <- g + ggrepel::geom_text_repel(
+        data = data.frame(x = by_text_x,
+                          y = by_text_y,
+                          label = names(by_text_x)),
+        mapping = ggplot2::aes_string(x = "x",
+                                      y = "y",
+                                      label = "label"),
+        inherit.aes = FALSE
+      )
+      plotList[[f]] <- g
+    }
   }
   if (combinePlot == "all") {
+    if (length(plotList) > 0)
     plotList <- cowplot::plot_grid(plotlist = plotList)
   }
   return(plotList)
