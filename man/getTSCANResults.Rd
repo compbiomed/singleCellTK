@@ -56,7 +56,7 @@ the path index, the available options of which can be listed by
 \code{listTSCANTerminalNodes}.
 
 When \code{analysisName = "ClusterDEAnalysis"}, returns the list result from
-\code{\link{runTSCANBranchDEG}}. Here \code{pathName} needs to match
+\code{\link{runTSCANClusterDEAnalysis}}. Here \code{pathName} needs to match
 with the \code{useCluster} argument when running the algorithm.
 }
 \examples{

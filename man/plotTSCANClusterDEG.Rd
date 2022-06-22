@@ -2,12 +2,13 @@
 % Please edit documentation in R/runTSCAN.R
 \name{plotTSCANClusterDEG}
 \alias{plotTSCANClusterDEG}
-\title{Plot features identified by \code{\link{runTSCANBranchDEG}} on cell
-2D embedding with MST overlaid}
+\title{Plot features identified by \code{\link{runTSCANClusterDEAnalysis}} on
+cell 2D embedding with MST overlaid}
 \usage{
 plotTSCANClusterDEG(
   inSCE,
   useCluster,
+  pathIndex = NULL,
   useReducedDim = "UMAP",
   topN = 9,
   useAssay = NULL,
@@ -19,7 +20,11 @@ plotTSCANClusterDEG(
 \item{inSCE}{Input \linkS4class{SingleCellExperiment} object.}
 
 \item{useCluster}{Choose a cluster used for identifying DEG with
-\code{\link{runTSCANBranchDEG}}. Required.}
+\code{\link{runTSCANClusterDEAnalysis}}. Required.}
+
+\item{pathIndex}{Specifies one of the branching paths from \code{useCluster}
+and plot the top DEGs on this path. Ususally presented by the terminal
+cluster of a path. By default \code{NULL} plot top DEGs of all paths.}
 
 \item{useReducedDim}{A single character for the matrix of 2D embedding.
 Should exist in \code{reducedDims} slot. Default \code{"UMAP"}.}
@@ -28,7 +33,7 @@ Should exist in \code{reducedDims} slot. Default \code{"UMAP"}.}
 
 \item{useAssay}{A single character for the feature expression matrix. Should
 exist in \code{assayNames(inSCE)}. Default \code{NULL} for using the one used
-in \code{\link{runTSCANBranchDEG}}.}
+in \code{\link{runTSCANClusterDEAnalysis}}.}
 
 \item{featureDisplay}{Specify the feature ID type to display. Users can set
 default value with \code{\link{setSCTKDisplayRow}}. \code{NULL} or
@@ -41,13 +46,13 @@ while \code{"none"} will output a list of plots. Default \code{"all"}.}
 }
 \value{
 A \code{.ggplot} object of cell scatter plot, colored by the
-expression of a gene identified by \code{\link{runTSCANBranchDEG}}, with the
-layer of trajectory.
+expression of a gene identified by \code{\link{runTSCANClusterDEAnalysis}},
+with the layer of trajectory.
 }
 \description{
 A wrapper function which plot the top features expression
-identified by \code{\link{runTSCANBranchDEG}} on the 2D embedding of the
-cells cluster used in the analysis. The related MST edges are overlaid.
+identified by \code{\link{runTSCANClusterDEAnalysis}} on the 2D embedding of
+the cells cluster used in the analysis. The related MST edges are overlaid.
 }
 \examples{
 data("mouseBrainSubsetSCE", package = "singleCellTK")

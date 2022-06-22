@@ -196,10 +196,7 @@ shinyServer(function(input, output, session) {
     updateSelectInput(session, 'deRegLabel',
                       choices = c("Rownames (Default)",
                                   selectRowData))
-    updateSelectInput(session, 'tscanDEHMFeatureDisplay',
-                      choices = c("Rownames (Default)",
-                                  selectRowData))
-    updateSelectInput(session, 'tscanDERegFeatureDisplay',
+    updateSelectInput(session, 'tscanDEFeatureDisplay',
                       choices = c("Rownames (Default)",
                                   selectRowData))
     updateSelectInput(session, 'plotTSCANClusterDEG_featureDisplay',
@@ -1093,7 +1090,8 @@ shinyServer(function(input, output, session) {
                    close = "2. Create dataset:",
                    style = list("2. Create dataset:" = "success"))
 
-    callModule(module = nonLinearWorkflow, id = "nlw-import", parent = session, qcf = TRUE)
+    callModule(module = nonLinearWorkflow, id = "nlw-import", parent = session,
+               qcf = TRUE)
     }))
 
   updateSeuratUIFromRDS <- function(inSCE){
@@ -1445,8 +1443,7 @@ shinyServer(function(input, output, session) {
     updateSelectInput(session, "deVolcFeatureDisplay", selected = selected)
     updateSelectInput(session, "deVioLabel", selected = selected)
     updateSelectInput(session, "deRegLabel", selected = selected)
-    updateSelectInput(session, "tscanDEHMFeatureDisplay", selected = selected)
-    updateSelectInput(session, "tscanDERegFeatureDisplay", selected = selected)
+    updateSelectInput(session, "tscanDEFeatureDisplay", selected = selected)
     updateSelectInput(session, "plotTSCANClusterDEG_featureDisplay",
                       selected = selected)
     updateSelectInput(session, "plotTSCANDimReduceFeatures_featureDisplay",
@@ -1906,7 +1903,8 @@ shinyServer(function(input, output, session) {
         message(paste0(date(), " ... QC Complete"))
         updateQCPlots()
         # Show downstream analysis options
-        callModule(module = nonLinearWorkflow, id = "nlw-qcf", parent = session, nbc = TRUE, cw = TRUE, cv = TRUE)
+        callModule(module = nonLinearWorkflow, id = "nlw-qcf", parent = session,
+                   nbc = TRUE, cw = TRUE, cv = TRUE)
       }
       delay(500, removeNotification(id = "qcNotification"))
   }))
@@ -2452,7 +2450,8 @@ shinyServer(function(input, output, session) {
 
         message(paste0(date(), " ... Ended normalization/transformation."))
         # Show downstream analysis options
-        callModule(module = nonLinearWorkflow, id = "nlw-nbc", parent = session, dr = TRUE, fs = TRUE)
+        callModule(module = nonLinearWorkflow, id = "nlw-nbc", parent = session,
+                   dr = TRUE, fs = TRUE)
       }
     }
   ))
@@ -3130,7 +3129,8 @@ shinyServer(function(input, output, session) {
       updateReddimInputs()
       updateAssayInputs()
       # Show downstream analysis options
-      callModule(module = nonLinearWorkflow, id = "nlw-dr", parent = session, cl = TRUE, cv = TRUE)
+      callModule(module = nonLinearWorkflow, id = "nlw-dr", parent = session,
+                 cl = TRUE, cv = TRUE)
 
       message(paste0(date(), " ... Ending Dimensionality Reduction."))
       updateSelectizeInput(session, "selectRedDimPlot_tsneUmap",
@@ -3357,7 +3357,7 @@ shinyServer(function(input, output, session) {
       }
       # Show downstream analysis options
       callModule(module = nonLinearWorkflow, id = "nlw-cl", parent = session,
-                 de = TRUE, pa = TRUE, cv = TRUE, tj = TRUE)
+                 de = TRUE, fm = TRUE, pa = TRUE, cv = TRUE, tj = TRUE)
     }
   ))
 
@@ -3462,8 +3462,8 @@ shinyServer(function(input, output, session) {
       updatePickerInput(session, "useClusterForPlotGene",
                         choices = clusterNamesList,
                         selected = NULL)
-      updateSelectInput(session, "plotTSCANDimReduceFeatures_useCluster",
-                        choices = c("Use all", clusterNamesList))
+      updatePickerInput(session, "plotTSCANDimReduceFeatures_useCluster",
+                        choices = clusterNamesList)
       updateSelectInput(session, "TSCANUseCluster",
                         choices = results$branchClusters)
       updateCollapse(session = session, "TSCANUI",
@@ -3481,6 +3481,10 @@ shinyServer(function(input, output, session) {
                          useReducedDim = input$TSCANVisRedDim)
       })
     })
+    updateSelectInput(session, "plotTSCANClusterDEG_useReducedDim",
+                      selected = input$TSCANVisRedDim)
+    updateSelectInput(session, "plotTSCANDimReduceFeatures_useReducedDim",
+                      selected = input$TSCANVisRedDim)
     session$sendCustomMessage("close_dropDownTSCAN", "")
   })
 
@@ -3498,7 +3502,7 @@ shinyServer(function(input, output, session) {
                       ))
   })
 
-  observeEvent(input$findExpGenes, withConsoleMsgRedirect(
+  observeEvent(input$runTSCANDEG, withConsoleMsgRedirect(
     msg = "Please wait while DE genes are being found for path. See console log for progress.",
     {
       req(vals$counts)
@@ -3516,7 +3520,7 @@ shinyServer(function(input, output, session) {
         })
       })
 
-      message(paste0(date(), " ... Updating upregulated genes"))
+      message(paste0(date(), " ... Updating up-regulated genes"))
       output$UpregGenesPlot <- renderPlot({
         isolate({
           plotTSCANPseudotimeGenes(inSCE = vals$counts,
@@ -3524,58 +3528,73 @@ shinyServer(function(input, output, session) {
                                    direction = "increasing")
         })
       })
+
+      message(paste0(date(), " ... Updating down-regulated genes"))
+      output$DownregGenesPlot <- renderPlot({
+        isolate({
+          plotTSCANPseudotimeGenes(inSCE = vals$counts,
+                                   pathIndex = input$pathIndexx,
+                                   direction = "decreasing")
+        })
+      })
+
       all.results <- getTSCANResults(vals$counts, analysisName = "DEG")
-      updateSelectInput(session, "tscanDEHMexpPathIndex",
+      updateSelectInput(session, "tscanDEexpPathIndex",
                         choices = names(all.results),
-                        selected = NULL)
-      updateSelectInput(session, "tscanDERegexpPathIndex",
-                        choices = names(all.results),
-                        selected = NULL)
+                        selected = input$pathIndexx)
       updateCollapse(
         session = session, "TSCANUI",
-        style = list("Identify Genes Differentially Expressed For Path" = "success"))
-      callModule(module = nonLinearWorkflow, id = "nlw-Traj",
-                 parent = session, de = TRUE, pa = TRUE)
+        style = list("Identify Genes Differentially Expressed For Path" = "success")
+      )
+      callModule(module = nonLinearWorkflow, id = "nlw-Traj", parent = session,
+                 de = TRUE, pa = TRUE)
     }
   ))
 
-  #plot results on Expression plot
-  observeEvent(input$tscanDEHMPlot, {
-    req(vals$counts)
-    if (input$tscanDEHMFeatureDisplay == "Rownames (Default)") {
-      featureDisplay <- NULL
-    } else {
-      featureDisplay <- input$tscanDEHMFeatureDisplay
-    }
-    output$heatmapPlot <- renderPlot({
-      isolate({
-        plotTSCANPseudotimeHeatmap(inSCE = vals$counts,
-                                   pathIndex = input$tscanDEHMexpPathIndex,
-                                   topN = input$tscanDEHMTopGenes,
-                                   featureDisplay = featureDisplay)
+  observeEvent(input$tscanDEPlot, withConsoleMsgRedirect(
+    msg = "Please wait while TSCAN DE plots are being updated. See console log for progress",
+    {
+      req(vals$counts)
+      if (input$tscanDEFeatureDisplay == "Rownames (Default)") {
+        featureDisplay <- NULL
+      } else {
+        featureDisplay <- input$tscanDEFeatureDisplay
+      }
+      message(paste0(date(), " ... Updating heatmap"))
+      output$heatmapPlot <- renderPlot({
+        isolate({
+          plotTSCANPseudotimeHeatmap(inSCE = vals$counts,
+                                     pathIndex = input$tscanDEexpPathIndex,
+                                     topN = input$tscanDEHMTopGenes,
+                                     featureDisplay = featureDisplay)
+        })
       })
-    })
-    session$sendCustomMessage("close_dropDownTscanDEHM", "")
-  })
 
-  observeEvent(input$tscanDERegPlot, {
-    req(vals$counts)
-    if (input$tscanDERegFeatureDisplay == "Rownames (Default)") {
-      featureDisplay <- NULL
-    } else {
-      featureDisplay <- input$tscanDERegFeatureDisplay
-    }
-    output$UpregGenesPlot <- renderPlot({
-      isolate({
-        plotTSCANPseudotimeGenes(inSCE = vals$counts,
-                                 pathIndex = input$tscanDERegexpPathIndex,
-                                 direction = input$tscanDERegDirection,
-                                 topN = input$tscanDERegTopGenes,
-                                 featureDisplay = featureDisplay)
+      message(paste0(date(), " ... Updating up-regulated genes"))
+      output$UpregGenesPlot <- renderPlot({
+        isolate({
+          plotTSCANPseudotimeGenes(inSCE = vals$counts,
+                                   pathIndex = input$tscanDEexpPathIndex,
+                                   direction = "increasing",
+                                   topN = input$tscanDERegTopGenes,
+                                   featureDisplay = featureDisplay)
+        })
       })
-    })
-    session$sendCustomMessage("close_dropDownTscanDEReg", "")
-  })
+
+      message(paste0(date(), " ... Updating down-regulated genes"))
+      output$DownregGenesPlot <- renderPlot({
+        isolate({
+          plotTSCANPseudotimeGenes(inSCE = vals$counts,
+                                   pathIndex = input$tscanDEexpPathIndex,
+                                   direction = "decreasing",
+                                   topN = input$tscanDERegTopGenes,
+                                   featureDisplay = featureDisplay)
+        })
+      })
+
+      session$sendCustomMessage("close_dropDownTscanDE", "")
+    }
+  ))
 
   ###################################################
   ###  Run STEP 3: Identify DE genes in specific cluster
@@ -3590,29 +3609,17 @@ shinyServer(function(input, output, session) {
                                                useAssay = input$TSCANBranchAssaySelect,
                                                fdrThreshold = input$fdrThreshold_TSCAN)
 
-      clusterAnalysisNamesList <- names(getTSCANResults(vals$counts,
+      clusterAnalysisNames <- names(getTSCANResults(vals$counts,
                                                         analysisName = "ClusterDEAnalysis"))
-      terminalNodes<- c(colnames(getTSCANResults(vals$counts,
-                                                 analysisName = "ClusterDEAnalysis",
-                                                 pathName = input$TSCANUseCluster)$terminalNodes))
-
-      terminalNodesList <- getTSCANResults(vals$counts,
-                                           analysisName = "ClusterDEAnalysis",
-                                           pathName = "pathIndexList")
-
-      updateSelectInput(session, "plotTSCANClusterDEG_useCluster",
-                        choices = clusterAnalysisNamesList,
-                        selected = NULL)
-      updateSelectInput(session, "useListCluster",
-                        choices = clusterAnalysisNamesList,
-                        selected = NULL)
-      updateSelectInput(session, "useVisCluster",
-                        choices = clusterAnalysisNamesList,
-                        selected = NULL)
 
       results <- getTSCANResults(vals$counts,
                                  analysisName = "ClusterDEAnalysis",
                                  pathName = input$TSCANUseCluster)
+      pathChoices <- colnames(results$terminalNodes)
+
+      updateSelectInput(session, "plotTSCANClusterDEG_useCluster",
+                        choices = clusterAnalysisNames,
+                        selected = input$TSCANUseCluster)
 
       #plot cluster deg by default
       message(paste0(date(), " ... Plotting top DEG expression"))
@@ -3620,8 +3627,9 @@ shinyServer(function(input, output, session) {
         isolate({
           plotTSCANClusterDEG(inSCE = vals$counts,
                               useCluster = input$TSCANUseCluster,
+                              pathIndex = pathChoices[1],
                               topN = 4,
-                              useReducedDim = input$TSCANReddim)
+                              useReducedDim = input$TSCANVisRedDim)
         })
       })
 
@@ -3638,20 +3646,20 @@ shinyServer(function(input, output, session) {
       })
 
       #plot cluster pseudo values by default
-      message(paste0(date(), " ... Plotting pseudotime of branches for Cluster"))
+      message(paste0(date(), " ... Plotting pseudotime of branches for cluster"))
 
       output$tscanCLusterPeudo <- renderPlot({
         isolate({
           plotTSCANClusterPseudo(inSCE = vals$counts,
                                  useCluster = input$TSCANUseCluster,
-                                 useReducedDim = input$TSCANReddim)
+                                 useReducedDim = input$plotTSCANClusterDEG_useReducedDim)
         })
       })
 
       updateCollapse(session = session, "TSCANUI",
                      style = list("Identify Genes Differentially Expressed For Branched Cluster" = "success"))
-      callModule(module = nonLinearWorkflow, id = "nlw-Traj",
-                 parent = session, de = TRUE, pa = TRUE)
+      callModule(module = nonLinearWorkflow, id = "nlw-Traj", parent = session,
+                 de = TRUE, pa = TRUE)
     }
   ))
 
@@ -3668,78 +3676,61 @@ shinyServer(function(input, output, session) {
                       selected = NULL)
   })
 
-  observeEvent(input$plotTSCANClusterDEG, {
-    req(vals$counts)
-    if (input$plotTSCANClusterDEG_featureDisplay == "Rownames (Default)") {
-      featureDisplay <- "rownames"
-    } else {
-      featureDisplay <- input$plotTSCANClusterDEG_featureDisplay
-    }
-    plot <- plotTSCANClusterDEG(inSCE = vals$counts,
-                                useCluster = input$plotTSCANClusterDEG_useCluster,
-                                pathIndex = input$plotTSCANClusterDEG_pathIndex,
-                                useReducedDim = input$plotTSCANClusterDEG_useReducedDim,
-                                topN = handleEmptyInput(input$plotTSCANClusterDEG_topN, type = "numeric"),
-                                featureDisplay = featureDisplay)
-    if (identical(plot, list())) {
-      shinyalert(text = "No significant feature identified for the selected path.",
-                 type = "warning")
-    } else {
+  observeEvent(input$plotTSCANClusterDEG, withConsoleMsgRedirect(
+    msg = "Please wait while cluster DEG visualization is being updated. See console log for progress.",
+    {
+      req(vals$counts)
+      results <- getTSCANResults(vals$counts,
+                                 analysisName = "ClusterDEAnalysis",
+                                 pathName = input$plotTSCANClusterDEG_useCluster)
+      req(results)
+      if (input$plotTSCANClusterDEG_featureDisplay == "Rownames (Default)") {
+        featureDisplay <- "rownames"
+      } else {
+        featureDisplay <- input$plotTSCANClusterDEG_featureDisplay
+      }
+
+      if (nrow(results$DEgenes[[input$plotTSCANClusterDEG_pathIndex]]) == 0) {
+        shinyalert(text = "No significant feature identified for the selected path.",
+                   type = "warning")
+      }
+      message(date(), " ... Updating UMAP with feature expression")
+      plot <- plotTSCANClusterDEG(inSCE = vals$counts,
+                                  useCluster = input$plotTSCANClusterDEG_useCluster,
+                                  pathIndex = input$plotTSCANClusterDEG_pathIndex,
+                                  useReducedDim = input$plotTSCANClusterDEG_useReducedDim,
+                                  topN = handleEmptyInput(input$plotTSCANClusterDEG_topN, type = "numeric"),
+                                  featureDisplay = featureDisplay)
+
       output$tscanCLusterDEG <- renderPlot({
         isolate({
           plot
         })
       })
-    }
 
-    session$sendCustomMessage("close_dropDownTscanClusterDEG", "")
-  })
-
-
-  # Retrieve DEG table on different branches of the cluster
-  observeEvent(input$useListCluster, {
-    req(vals$counts)
-    results <- getTSCANResults(vals$counts,
-                               analysisName = "ClusterDEAnalysis",
-                               pathName = input$useListCluster)
-    choices <- colnames(results$terminalNodes)
-    choicesOpt <- list(content = results$pathIndexList)
-    updatePickerInput(session, "clusterListPathIndex",
-                      choices = choices, choicesOpt = choicesOpt,
-                      selected = NULL)
-  })
-
-  observeEvent(input$DEClusterListPlot, {
-    req(vals$counts)
-    results <- getTSCANResults(vals$counts,
-                               analysisName = "ClusterDEAnalysis",
-                               pathName = input$useListCluster)
-    req(results)
-    df <- as.data.frame(results$DEgenes[[input$clusterListPathIndex]])
-    output$tscanCLusterDEGTable <- DT::renderDataTable({
-      isolate({
-        DT::datatable(
-          df,
-          options = list(scrollX = TRUE)
-        )
+      message(date(), " ... Updating DEG table")
+      df <- as.data.frame(results$DEgenes[[input$plotTSCANClusterDEG_pathIndex]])
+      output$tscanCLusterDEGTable <- DT::renderDataTable({
+        isolate({
+          DT::datatable(
+            df,
+            options = list(scrollX = TRUE)
+          )
+        })
       })
-    })
 
-    session$sendCustomMessage("close_dropDownTscanClusterDEGTable", "")
-  })
-
-  # Plot recomputed pseudotime on branches of the cluster
-  observeEvent(input$DEClusterPlot, {
-    req(vals$counts)
-    output$tscanCLusterPeudo <- renderPlot({
-      isolate({
-        plotTSCANClusterPseudo(inSCE = vals$counts,
-                               useCluster = input$useVisCluster,
-                               useReducedDim = input$DEClusterRedDimNames)
+      message(date(), " ... Updating UMAP with pseudotime")
+      output$tscanCLusterPeudo <- renderPlot({
+        isolate({
+          plotTSCANClusterPseudo(inSCE = vals$counts,
+                                 useCluster = input$plotTSCANClusterDEG_useCluster,
+                                 useReducedDim = input$plotTSCANClusterDEG_useReducedDim)
+        })
       })
+
+      session$sendCustomMessage("close_dropDownTscanClusterDEG", "")
     })
-    session$sendCustomMessage("close_dropDownTscanClusterPseudo", "")
-  })
+  )
 
   ###################################################
   ###  Run STEP 4: Plot gene of interest
@@ -3748,7 +3739,7 @@ shinyServer(function(input, output, session) {
     msg = "Please wait when the expression of selected features are being plotted. See console log for progress.",
     {
       req(vals$counts)
-      if (input$plotTSCANDimReduceFeatures_features == "") {
+      if (is.null(input$plotTSCANDimReduceFeatures_features)) {
         stop("Must select at least one feature.")
       }
       if (input$plotTSCANDimReduceFeatures_featureDisplay == "Rownames (Default)") {
@@ -3757,9 +3748,6 @@ shinyServer(function(input, output, session) {
         featureDisplay <- input$plotTSCANDimReduceFeatures_featureDisplay
       }
       useCluster <- input$plotTSCANDimReduceFeatures_useCluster
-      if (useCluster == "Use all") {
-        useCluster <- NULL
-      }
       output$TscanDimReduceFeatures <- renderPlot({
         isolate({
           plotTSCANDimReduceFeatures(inSCE = vals$counts,
@@ -3782,24 +3770,12 @@ shinyServer(function(input, output, session) {
     session$sendCustomMessage("close_dropDownTSCAN", "")
   })
 
-  observeEvent(input$closeDropDownTscanDEHM,{
-    session$sendCustomMessage("close_dropDownTscanDEHM", "")
-  })
-
-  observeEvent(input$closeDropDownTscanDEReg,{
-    session$sendCustomMessage("close_dropDownTscanDEReg", "")
+  observeEvent(input$closeDropDownTscanDE,{
+    session$sendCustomMessage("close_dropDownTscanDE", "")
   })
 
   observeEvent(input$closeDropDownTscanClusterDEG,{
     session$sendCustomMessage("close_dropDownTscanClusterDEG", "")
-  })
-
-  observeEvent(input$closeDropDownTscanClusterDEGTable,{
-    session$sendCustomMessage("close_dropDownTscanClusterDEGTable", "")
-  })
-
-  observeEvent(input$closeDropDownTscanClusterPseudo,{
-    session$sendCustomMessage("close_dropDownTscanClusterPseudo", "")
   })
 
   #-----------------------------------------------------------------------------
@@ -3939,7 +3915,8 @@ shinyServer(function(input, output, session) {
       selector = "div[value='Visualization']")
     updateNumericInput(session, "celdamodheatmapnum", min = 1, max = input$celdaLselect, value = 1)
     # Show downstream analysis options
-    callModule(module = nonLinearWorkflow, id = "nlw-celda", parent = session, de = TRUE, pa = TRUE)
+    callModule(module = nonLinearWorkflow, id = "nlw-celda", parent = session,
+               de = TRUE, pa = TRUE)
 
   })
 
@@ -7947,7 +7924,8 @@ shinyServer(function(input, output, session) {
 
 
     # Show downstream analysis options
-    callModule(module = nonLinearWorkflow, id = "nlw-seurat", parent = session, de = TRUE, pa = TRUE)
+    callModule(module = nonLinearWorkflow, id = "nlw-seurat", parent = session,
+               de = TRUE, fm = TRUE, pa = TRUE)
 
     updateCollapse(session = session, "SeuratUI", style = list("Find Markers" = "success"))
 

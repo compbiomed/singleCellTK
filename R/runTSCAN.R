@@ -652,10 +652,7 @@ plotTSCANClusterPseudo <- function(inSCE, useCluster, useReducedDim = "UMAP",
   by.cluster <- scuttle::aggregateAcrossCells(inSCE, ids = clusters)
   line.data <- TSCAN::reportEdges(by.cluster, mst = results$mst,
                                   clusters = NULL, use.dimred = useReducedDim)
-  line.data.sub <- line.data[grepl(paste0("^", useCluster, "--"),
-                                   line.data$edge) |
-                               grepl(paste0("--", useCluster, "$"),
-                                     line.data$edge),]
+  line.data.sub <- .getClustersLineData(line.data, useCluster)
 
   # Get Branch pseudotime
   tscan.pseudo <- TSCAN::orderCells(results$maptscan, mst = results$mst,
@@ -694,6 +691,9 @@ plotTSCANClusterPseudo <- function(inSCE, useCluster, useReducedDim = "UMAP",
 #' @param inSCE Input \linkS4class{SingleCellExperiment} object.
 #' @param useCluster Choose a cluster used for identifying DEG with
 #' \code{\link{runTSCANClusterDEAnalysis}}. Required.
+#' @param pathIndex Specifies one of the branching paths from \code{useCluster}
+#' and plot the top DEGs on this path. Ususally presented by the terminal
+#' cluster of a path. By default \code{NULL} plot top DEGs of all paths.
 #' @param useReducedDim A single character for the matrix of 2D embedding.
 #' Should exist in \code{reducedDims} slot. Default \code{"UMAP"}.
 #' @param topN Integer. Use top N genes identified. Default \code{9}.
@@ -802,59 +802,73 @@ plotTSCANDimReduceFeatures <- function(
   combinePlot = c("all", "none"))
 {
   results <- getTSCANResults(inSCE, analysisName = "Pseudotime")
-  if (!is.null(useCluster) && length(useCluster) != 1)
-    stop("`useCluster`: can only use one cluster.")
   combinePlot <- match.arg(combinePlot)
   clusters <- colData(inSCE)$TSCAN_clusters
   by.cluster <- scuttle::aggregateAcrossCells(inSCE, ids = clusters)
   line.data <- TSCAN::reportEdges(by.cluster, mst = results$mst,
                                   clusters = NULL, use.dimred = useReducedDim)
   if (!is.null(useCluster)) {
-    line.data <- line.data[grepl(paste0("^", useCluster, "--"),
-                                 line.data$edge) |
-                             grepl(paste0("--", useCluster, "$"),
-                                   line.data$edge),]
+    line.data <- .getClustersLineData(line.data, useCluster)
     inSCE <- inSCE[, clusters %in% useCluster]
   }
   if (by == "rownames") by <- NULL
   plotList <- list()
-  if (!is.na(features)) {
-    for (f in features) {
-      g <- plotSCEDimReduceFeatures(inSCE, feature = f,
-                                    useAssay = useAssay,
-                                    featureLocation = by,dim1 = 1, dim2 = 2,
-                                    featureDisplay = featureDisplay,
-                                    reducedDimName = useReducedDim,
-                                    title = f) +
-        ggplot2::geom_line(data = line.data,
-                           ggplot2::aes_string(x = colnames(line.data)[2],
-                                               y = colnames(line.data)[3],
-                                               group = "edge"),
-                           inherit.aes = FALSE)
-      # Text labeling code credit: scater
-      reddim <- as.data.frame(SingleCellExperiment::reducedDim(inSCE,
-                                                               useReducedDim))
-      text_out <- scater::retrieveCellInfo(inSCE, "TSCAN_clusters",
-                                           search = "colData")
-      by_text_x <- vapply(split(reddim[,1], text_out$val),
-                          stats::median, FUN.VALUE = 0)
-      by_text_y <- vapply(split(reddim[,2], text_out$val),
-                          stats::median, FUN.VALUE = 0)
-      g <- g + ggrepel::geom_text_repel(
-        data = data.frame(x = by_text_x,
-                          y = by_text_y,
-                          label = names(by_text_x)),
-        mapping = ggplot2::aes_string(x = "x",
-                                      y = "y",
-                                      label = "label"),
-        inherit.aes = FALSE
-      )
-      plotList[[f]] <- g
-    }
+  features <- stats::na.omit(features)
+  for (f in features) {
+    # Should not enter the loop if features is length zero after NA omit
+    g <- plotSCEDimReduceFeatures(inSCE, feature = f,
+                                  useAssay = useAssay,
+                                  featureLocation = by,dim1 = 1, dim2 = 2,
+                                  featureDisplay = featureDisplay,
+                                  reducedDimName = useReducedDim,
+                                  title = f) +
+      ggplot2::geom_line(data = line.data,
+                         ggplot2::aes_string(x = colnames(line.data)[2],
+                                             y = colnames(line.data)[3],
+                                             group = "edge"),
+                         inherit.aes = FALSE)
+    # Text labeling code credit: scater
+    reddim <- as.data.frame(SingleCellExperiment::reducedDim(inSCE,
+                                                             useReducedDim))
+    text_out <- scater::retrieveCellInfo(inSCE, "TSCAN_clusters",
+                                         search = "colData")
+    by_text_x <- vapply(split(reddim[,1], text_out$val),
+                        stats::median, FUN.VALUE = 0)
+    by_text_y <- vapply(split(reddim[,2], text_out$val),
+                        stats::median, FUN.VALUE = 0)
+    g <- g + ggrepel::geom_text_repel(
+      data = data.frame(x = by_text_x,
+                        y = by_text_y,
+                        label = names(by_text_x)),
+      mapping = ggplot2::aes_string(x = "x",
+                                    y = "y",
+                                    label = "label"),
+      inherit.aes = FALSE, na.rm = TRUE,
+    )
+    plotList[[f]] <- g
   }
   if (combinePlot == "all") {
     if (length(plotList) > 0)
     plotList <- cowplot::plot_grid(plotlist = plotList)
   }
   return(plotList)
+}
+
+#' Extract edges that connects to the clusters of interest
+#' @param line.data data.frame of three columns. First column should be named
+#' "edge", the other two are coordinates of one of the vertices that this
+#' edge connects.
+#' @param useCluster Vector of clusters, that are going to be the vertices for
+#' edge finding.
+#' @return data.frame, subset rows of line.data
+.getClustersLineData <- function(line.data, useCluster) {
+  idx <- vapply(useCluster, function(x){
+    grepl(paste0("^", x, "--"), line.data$edge) |
+      grepl(paste0("--", x, "$"), line.data$edge)
+  }, logical(nrow(line.data)))
+  # `idx` returned was c("matrix", "array") class. Each column is a logical
+  # vector for edge selection of each cluster.
+  # Next, do "or" for each row.
+  idx <- rowSums(idx) > 0
+  line.data[idx,]
 }

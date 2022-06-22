@@ -4,19 +4,10 @@ shinyPanelTSCAN <- fluidPage(
   tags$script("Shiny.addCustomMessageHandler('close_dropDownTSCAN', function(x){
                   $('html').click();
                 });"),
-  tags$script("Shiny.addCustomMessageHandler('close_dropDownTscanDEHM', function(x){
-                  $('html').click();
-                });"),
-  tags$script("Shiny.addCustomMessageHandler('close_dropDownTscanDEReg', function(x){
+  tags$script("Shiny.addCustomMessageHandler('close_dropDownTscanDE', function(x){
                   $('html').click();
                 });"),
   tags$script("Shiny.addCustomMessageHandler('close_dropDownTscanClusterDEG', function(x){
-                  $('html').click();
-                });"),
-  tags$script("Shiny.addCustomMessageHandler('close_dropDownTscanClusterDEGTable', function(x){
-                  $('html').click();
-                });"),
-  tags$script("Shiny.addCustomMessageHandler('close_dropDownTscanClusterPseudo', function(x){
                   $('html').click();
                 });"),
 
@@ -124,143 +115,127 @@ shinyPanelTSCAN <- fluidPage(
                         options = list(
                           `none-selected-text` = "No cluster discarded"
                         )),
-            actionButton("findExpGenes", "Run")
+            actionButton("runTSCANDEG", "Run")
           )
         ),
         column(
           8,
-          tabsetPanel(
-            tabPanel(
-              # Tab 2.1, DEG Heatmap ####
-              "Heatmap",
-              panel(
-                fluidRow(
-                  column(
-                    width = 3,
-                    dropdown(
+          panel(
+            fluidRow(
+              column(
+                width = 3,
+                dropdown(
+                  fluidRow(
+                    column(
+                      12,
                       fluidRow(
-                        column(
-                          12,
-                          fluidRow(
-                            actionBttn(inputId = "closeDropDownTscanDEHM",
-                                       label = NULL, style = "simple",
-                                       color = "danger", icon = icon("times"),
-                                       size = "xs"),
-                            align = "right"
-                          ),
-                          selectInput("tscanDEHMexpPathIndex",
-                                      "Select path terminal node:",
-                                      choices = "", multiple = FALSE),
-                          numericInput(inputId = "tscanDEHMTopGenes",
-                                       label = "Number of top features",
-                                       value = 30,
-                                       step = 1),
-                          selectInput("tscanDEHMFeatureDisplay",
-                                      "Display ID Type",
-                                      c("Rownames (Default)",
-                                        featureChoice)),
-                          actionBttn(
-                            inputId = "tscanDEHMPlot",
-                            label = "Update",
-                            style = "bordered",
-                            color = "primary",
-                            size = "sm"
-                          ),
-                        )
+                        actionBttn(inputId = "closeDropDownTscanDE",
+                                   label = NULL, style = "simple",
+                                   color = "danger", icon = icon("times"),
+                                   size = "xs"),
+                        align = "right"
                       ),
-                      inputId = "dropDownTscanDEHM",
-                      icon = icon("cog"),
-                      status = "primary",
-                      circle = FALSE,
-                      inline = TRUE
+                      selectInput("tscanDEexpPathIndex",
+                                  "Select path terminal node:",
+                                  choices = "", multiple = FALSE),
+                      numericInput(inputId = "tscanDEHMTopGenes",
+                                   label = "Number of top features for heatmap",
+                                   value = 30,
+                                   step = 1),
+                      numericInput(inputId = "tscanDERegTopGenes",
+                                   label = "Number of top features for regulation plots",
+                                   value = 10,
+                                   step = 1),
+                      selectInput("tscanDEFeatureDisplay",
+                                  "Display ID Type",
+                                  c("Rownames (Default)",
+                                    featureChoice)),
+                      actionBttn(
+                        inputId = "tscanDEPlot",
+                        label = "Update",
+                        style = "bordered",
+                        color = "primary",
+                        size = "sm"
+                      )
                     )
                   ),
+                  inputId = "dropDownTscanDE",
+                  icon = icon("cog"),
+                  status = "primary",
+                  circle = FALSE,
+                  inline = TRUE
+                )
+              ),
+              column(
+                width = 9,
+                fluidRow(
                   column(
-                    width = 9,
-                    fluidRow(
-                      column(
-                        width = 12,
-                        h6(
-                          "A heatmap of the expression of the top DE genes along the path in the cells on the path. "
-                        )
-                      ),
-                      align="center"
+                    width = 12,
+                    h6(
+                      "Visualization on top genes that have significant expression changes along the pseudotime path of insterest."
                     )
-                  )
-                ),
-                hr(),
-                shinyjqui::jqui_resizable(
-                  plotOutput(outputId = "heatmapPlot")
+                  ),
+                  align = "center"
                 )
               )
             ),
-            tabPanel(
-              # Tab 2.2, Gene expression change along pseudotime ####
-              "Regulated Genes",
-              panel(
-                fluidRow(
-                  column(
-                    width = 3,
-                    dropdown(
-                      fluidRow(
-                        column(
-                          12,
-                          fluidRow(
-                            actionBttn(inputId = "closeDropDownTscanDEReg",
-                                       label = NULL, style = "simple",
-                                       color = "danger", icon = icon("times"),
-                                       size = "xs"),
-                            align = "right"
-                          ),
-                          selectInput("tscanDERegexpPathIndex",
-                                      "Select path terminal node:",
-                                      choices = "", multiple = FALSE),
-                          radioButtons("tscanDERegDirection",
-                                      "Regulation",
-                                      choices = c("up" = "increasing",
-                                                  "down" = "decreasing"),
-                                      selected = "increasing",
-                                      inline = TRUE),
-                          numericInput(inputId = "tscanDERegTopGenes",
-                                       label = "Number of top features",
-                                       value = 10,
-                                       step = 1),
-                          selectInput("tscanDERegFeatureDisplay",
-                                      "Display ID Type",
-                                      c("Rownames (Default)",
-                                        featureChoice)),
-                          actionBttn(
-                            inputId = "tscanDERegPlot",
-                            label = "Update",
-                            style = "bordered",
-                            color = "primary",
-                            size = "sm"
-                          )
-                        )
-                      ),
-                      inputId = "dropDownTscanDEReg",
-                      icon = icon("cog"),
-                      status = "primary",
-                      circle = FALSE,
-                      inline = TRUE
-                    )
+            hr(),
+            tabsetPanel(
+              tabPanel(
+                # Tab 2.1, DEG Heatmap ####
+                "Heatmap",
+                panel(
+                  fluidRow(
+                    column(
+                      width = 12,
+                      h6(
+                        "A heatmap of the expression of the top DE genes along the path in the cells on the path. "
+                      )
+                    ),
+
                   ),
-                  column(
-                    width = 9,
-                    fluidRow(
-                      column(
-                        width = 12,
-                        h6(
-                          "A cell scatter plot showing the expression change along the pseudotime. Genes with top significance in the changes are displayed."
-                        )
-                      ),
-                      align="center"
-                    )
+                  hr(),
+                  shinyjqui::jqui_resizable(
+                    plotOutput(outputId = "heatmapPlot")
                   )
-                ),
-                hr(),
-                shinyjqui::jqui_resizable(
-                  plotOutput(outputId = "UpregGenesPlot")
+                )
+              ),
+              tabPanel(
+                # Tab 2.2, Gene expression increasing along pseudotime ####
+                "Up-regulated Genes",
+                panel(
+                  fluidRow(
+                    column(
+                      width = 12,
+                      h6(
+                        "A cell scatter plot showing the expression change along the pseudotime. Genes with top significance in increasing expression along the pseudotime are displayed."
+                      )
+                    ),
+                    align="center"
+                  ),
+                  hr(),
+                  shinyjqui::jqui_resizable(
+                    plotOutput(outputId = "UpregGenesPlot")
+                  )
+                )
+              ),
+              tabPanel(
+                # Tab 2.3, Gene expression decreasing along pseudotime ####
+                "Down-regulated Genes",
+                panel(
+                  fluidRow(
+                    column(
+                      width = 12,
+                      h6(
+                        "A cell scatter plot showing the expression change along the pseudotime. Genes with top significance in decreasing expression along the pseudotime are displayed."
+                      )
+                    ),
+                    align="center"
+                  ),
+                  hr(),
+                  shinyjqui::jqui_resizable(
+                    plotOutput(outputId = "DownregGenesPlot")
+                  )
                 )
               )
             )
@@ -296,177 +271,118 @@ shinyPanelTSCAN <- fluidPage(
         ),
         column(
           8,
-          tabsetPanel(
-            tabPanel(
-              # Tab 3.1, feature cluster expression scatter ####
-              "Top Feature Plot",
-              panel(
+          panel(
+            fluidRow(
+              column(
+                width = 3,
+                dropdown(
+                  fluidRow(
+                    actionBttn(inputId = "closeDropDownTscanClusterDEG",
+                               label = NULL, style = "simple",
+                               color = "danger", icon = icon("times"),
+                               size = "xs"),
+                    align = "right"
+                  ),
+                  selectInput("plotTSCANClusterDEG_useCluster",
+                              "Select branched cluster of interest:",
+                              choices = "", multiple = FALSE),
+                  pickerInput("plotTSCANClusterDEG_pathIndex",
+                              "Select Path Index:",
+                              choices = NULL,
+                              choicesOpt = NULL,
+                              selected = NULL),
+                  selectInput("plotTSCANClusterDEG_useReducedDim",
+                              "Select 2D embedding for visualization:",
+                              currreddim),
+                  numericInput("plotTSCANClusterDEG_topN",
+                               label = "Number of top features to plot:",
+                               value = 4, min = 1, step = 1),
+                  selectInput("plotTSCANClusterDEG_featureDisplay",
+                              "Display ID Type",
+                              c("Rownames (Default)",
+                                featureChoice)),
+                  actionBttn(
+                    inputId = "plotTSCANClusterDEG",
+                    label = "Update",
+                    style = "bordered",
+                    color = "primary",
+                    size = "sm"
+                  ),
+                  inputId = "dropDownTscanClusterDEG",
+                  icon = icon("cog"),
+                  status = "primary",
+                  circle = FALSE,
+                  inline = TRUE
+                )
+              ),
+              column(
+                width = 9,
                 fluidRow(
                   column(
-                    width = 3,
-                    dropdown(
-                      fluidRow(
-                        actionBttn(inputId = "closeDropDownTscanClusterDEG",
-                                   label = NULL, style = "simple",
-                                   color = "danger", icon = icon("times"),
-                                   size = "xs"),
-                        align = "right"
-                      ),
-                      selectInput("plotTSCANClusterDEG_useCluster",
-                                  "Select branched cluster of interest:",
-                                  choices = "", multiple = FALSE),
-                      pickerInput("plotTSCANClusterDEG_pathIndex",
-                                  "Select Path Index:",
-                                  choices = NULL,
-                                  choicesOpt = NULL,
-                                  selected = NULL),
-                      selectInput("plotTSCANClusterDEG_useReducedDim",
-                                  "Select 2D embedding for visualization:",
-                                  currreddim),
-                      numericInput("plotTSCANClusterDEG_topN",
-                                   label = "Number of top features:",
-                                   value = 9, min = 1, step = 1),
-                      selectInput("plotTSCANClusterDEG_featureDisplay",
-                                  "Display ID Type",
-                                  c("Rownames (Default)",
-                                    featureChoice)),
-                      actionBttn(
-                        inputId = "plotTSCANClusterDEG",
-                        label = "Update",
-                        style = "bordered",
-                        color = "primary",
-                        size = "sm"
-                      ),
-                      inputId = "dropDownTscanClusterDEG",
-                      icon = icon("cog"),
-                      status = "primary",
-                      circle = FALSE,
-                      inline = TRUE
+                    width = 12,
+                    h6(
+                      "Visualization and tables of top DE genes on different branch path of the cluster of interest."
                     )
                   ),
-                  column(
-                    width = 9,
-                    fluidRow(
-                      column(
-                        width = 12,
-                        h6(
-                          "Scatter plots on the selected low-dimension representation of cells in the selected cluster, colored by the expression of top features differentially expressed in the selected branch path. Local MST overlaid."
-                        )
-                      ),
-                      align="center"
-                    )
-                  )
-                ),
-                hr(),
-                shinyjqui::jqui_resizable(
-                  plotOutput(outputId = "tscanCLusterDEG")
+                  align="center"
                 )
               )
             ),
-            tabPanel(
-              # Tab 3.2, Datatable ####
-              "Top Feature Table",
-              panel(
-                fluidRow(
-                  column(
-                    width = 3,
-                    dropdown(
-                      fluidRow(
-                        actionBttn(inputId = "closeDropDownTscanClusterDEGTable",
-                                   label = NULL, style = "simple",
-                                   color = "danger", icon = icon("times"),
-                                   size = "xs"),
-                        align = "right"
-                      ),
-                      selectInput("useListCluster",
-                                  "Select branched cluster of interest:",
-                                  choices = "", multiple = FALSE),
-                      pickerInput("clusterListPathIndex",
-                                  "Select Path Index:",
-                                  choices = NULL,
-                                  choicesOpt = NULL,
-                                  selected = NULL),
-                      actionBttn(
-                        inputId = "DEClusterListPlot",
-                        label = "Update",
-                        style = "bordered",
-                        color = "primary",
-                        size = "sm"
-                      ),
-                      inputId = "dropDownDEList",
-                      icon = icon("cog"),
-                      status = "primary",
-                      circle = FALSE,
-                      inline = TRUE
-                    )
+            hr(),
+            tabsetPanel(
+              tabPanel(
+                # Tab 3.1, feature cluster expression scatter ####
+                "Top Feature Plot",
+                panel(
+                  fluidRow(
+                    column(
+                      width = 12,
+                      h6(
+                        "Scatter plots on the selected low-dimension representation of cells in the selected cluster, colored by the expression of top features differentially expressed in the selected branch path. Local MST overlaid."
+                      )
+                    ),
+                    align="center"
                   ),
-                  column(
-                    width = 9,
-                    fluidRow(
-                      column(
-                        width = 12,
-                        h6(
-                          "A table of top features differentially expressed in the selected branch path of the selected cluster, with statistical metrics displayed."
-                        )
-                      ),
-                      align="center"
-                    )
+                  hr(),
+                  shinyjqui::jqui_resizable(
+                    plotOutput(outputId = "tscanCLusterDEG")
                   )
-                ),
-                hr(),
-                DT::dataTableOutput("tscanCLusterDEGTable")
-              )
-            ),
-            tabPanel(
-              # Tab 3.3, scatter plots of pseudotime ####
-              "Pseudotime",
-              panel(
-                fluidRow(
-                  column(
-                    width = 3,
-                    dropdown(
-                      fluidRow(actionBttn(inputId = "closeDropDownTscanClusterPseudo",
-                                          label = NULL, style = "simple",
-                                          color = "danger", icon = icon("times"),
-                                          size = "xs"),
-                               align = "right"),
-                      selectInput("DEClusterRedDimNames",
-                                  "Select 2D embedding for visualization:",
-                                  currreddim),
-                      selectInput("useVisCluster",
-                                  "Select branched cluster of interest:",
-                                  choices = "", multiple = FALSE),
-                      #uiOutput("clusterPathIndex"),
-                      actionBttn(
-                        inputId = "DEClusterPlot",
-                        label = "Update",
-                        style = "bordered",
-                        color = "primary",
-                        size = "sm"
-                      ),
-                      inputId = "dropDownDECluster",
-                      icon = icon("cog"),
-                      status = "primary",
-                      circle = FALSE,
-                      inline = TRUE
-                    )
+                )
+              ),
+              tabPanel(
+                # Tab 3.2, Datatable ####
+                "Top Feature Table",
+                panel(
+                  fluidRow(
+                    column(
+                      width = 12,
+                      h6(
+                        "A table of top features differentially expressed in the selected branch path of the selected cluster, with statistical metrics displayed."
+                      )
+                    ),
+                    align="center"
                   ),
-                  column(
-                    width = 9,
-                    fluidRow(
-                      column(
-                        width = 12,
-                        h6(
-                          "Scatter plots on the selected low-dimension representation of cells in the selected cluster, colored by the recomputed pseudotime value on each of the branching path. Local MST overlaid."
-                        )
-                      ),
-                      align="center"
-                    )
+                  hr(),
+                  DT::dataTableOutput("tscanCLusterDEGTable")
+                )
+              ),
+              tabPanel(
+                # Tab 3.3, scatter plots of pseudotime ####
+                "Pseudotime",
+                panel(
+                  fluidRow(
+                    column(
+                      width = 12,
+                      h6(
+                        "Scatter plots on the selected low-dimension representation of cells in the selected cluster, colored by the recomputed pseudotime value on each of the branching path. Local MST overlaid."
+                      )
+                    ),
+                    align="center"
+                  ),
+                  hr(),
+                  shinyjqui::jqui_resizable(
+                    plotOutput(outputId = "tscanCLusterPeudo")
                   )
-                ),
-                hr(),
-                shinyjqui::jqui_resizable(
-                  plotOutput(outputId = "tscanCLusterPeudo")
                 )
               )
             )
@@ -494,9 +410,14 @@ shinyPanelTSCAN <- fluidPage(
                            multiple = TRUE),
             selectInput("plotTSCANDimReduceFeatures_useReducedDim",
                         "Select 2D embedding for visualization:", currreddim),
-            selectInput("plotTSCANDimReduceFeatures_useCluster",
-                        "Select cluster of interest:",
-                        choices = "Use all"),
+            pickerInput("plotTSCANDimReduceFeatures_useCluster",
+                        "Show cluster(s) of interest:",
+                        choices = NULL,
+                        selected = NULL,
+                        multiple = TRUE,
+                        options = list(
+                          `none-selected-text` = "Show all"
+                        )),
             selectInput("plotTSCANDimReduceFeatures_featureDisplay",
                         "Display ID Type",
                         c("Rownames (Default)",
