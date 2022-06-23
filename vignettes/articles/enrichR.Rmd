@@ -8,14 +8,10 @@ output:
 bibliography: references.bib
 csl: ieee.csl
 ---
+
 ```{r develSetting, include=FALSE}
-doEval = TRUE
 knitr::opts_chunk$set(warning = FALSE)
 ```
-## Introduction
-**EnrichR** [@Kuleshov2016][@Chen2013] is a GSE (Gene Set Enrichment) method that infers biological knowledge by performing enrichment of input gene sets with curated biologically relevant prior databases that represent biological functions or functional pathways. Single-Cell Toolkit (SCTK) offers an easy to use interface to the EnrichR method and only requires the selection of input genes and the databases against which the genes should be tested. <br>
-
-To view detailed instructions on how to use the method from the toolkit, please select "Interactive Analysis" for using enrichR in shiny application or "Console Analysis" for using this method on R console from the tabs below:
 
 ````{=html}
 <head>
@@ -24,6 +20,11 @@ To view detailed instructions on how to use the method from the toolkit, please 
 <body>
 ````
 
+## Introduction
+
+**EnrichR** [@Kuleshov2016][@Chen2013] is a GSE (Gene Set Enrichment) method that infers biological knowledge by performing enrichment of input gene sets with curated biologically relevant prior databases that represent biological functions or functional pathways. Single-Cell Toolkit (SCTK) offers an easy to use interface to the EnrichR method and only requires the selection of input genes and the databases against which the genes should be tested. 
+
+To view detailed instructions on how to use the method from the toolkit, please select "Interactive Analysis" for using enrichR in shiny application or "Console Analysis" for using this method on R console from the tabs below:
 
 ## Workflow Guide
 
@@ -36,18 +37,18 @@ To view detailed instructions on how to use the method from the toolkit, please 
 <div id="interactive" class="tabcontent">
 ````
 
-An overall workflow guide on how to use ***EnrichR*** sub-tab is described below. <br>
+An overall workflow guide on how to use ***EnrichR*** sub-tab is described below.
 
-![](ui_screenshots/pathway_analysis/enrichR_1.png)
-To enter the tab for running EnrichR analysis, users need to: <br>
-1. Select ***Enrichment & Pathway Analysis*** tab from the top menu. <br>
-2. Select ***EnrichR*** option from the drop-down menu. <br>
+![](ui_screenshots/pathway_analysis/enrichR_1.png)\
 
-<br>
+To enter the tab for running EnrichR analysis, users need to: 
+
+1. Select ***Enrichment & Pathway Analysis*** tab from the top menu. 
+2. Select ***EnrichR*** option from the drop-down menu. 
 
 **Approaches to select genes**
 
-![](ui_screenshots/pathway_analysis/enrichR_2.png)
+![](ui_screenshots/pathway_analysis/enrichR_2.png)\
 
 At the top-left of the EnrichR tab, a radio-button set is provided for users to choose a way to specify the gene set to use for EnrichR test. 
 

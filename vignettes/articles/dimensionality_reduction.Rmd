@@ -1,0 +1,199 @@
+---
+title: "Dimensionality Reduction"
+author: "Irzam Sarfraz"
+output:
+  html_document:
+    toc: true
+    toc_depth: 2
+bibliography: references.bib
+csl: ieee.csl
+---
+
+```{r develSetting, include=FALSE}
+knitr::opts_chunk$set(warning = FALSE)
+```
+
+## Introduction
+
+Dimensionality reduction algorithms (PCA/ICA) can be run through the **singleCellTK** toolkit using both interactive shiny application and R console. For the interactive analysis, the toolkit offers a streamlined workflow to both compute metrics for dimensionality reduction and then visualize the results using any of the available interactive plots. For the console analysis, the toolkit offers a single wrapper function `runDimReduce()` to compute metrics for any of the integrated algorithms and multiple methods to visualize the computed results. 
+
+Methods available with the toolkit include `PCA` from `scater` [@McCarthy2017] package and `PCA` & `ICA` from `Seurat` [@Butler2018][@Stuart2019][@Satija2017][@Hao2021] package. Visualization options available for users include 2D Component Plot, Elbow Plot, JackStraw Plot and Heatmap. A complete list of supported visualization options against each method are specified at the bottom of the tabs below. 
+
+To view detailed instructions on how to use these methods, please select 'Interactive Analysis', from the tabs below, for performing dimension reduction in shiny application or 'Console Analysis' for using these methods in R console: 
+
+````{=html}
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+````
+
+## Workflow Guide
+
+````{=html}
+<div class="tab">
+  <button class="tablinks" onclick="openTab(event, 'interactive')" id="ia-button">Interactive Analysis</button>
+  <button class="tablinks" onclick="openTab(event, 'console')" id="console-button">Console Analysis</button>
+</div>
+
+<div id="interactive" class="tabcontent">
+````
+
+In general, the UI offers options for selection of data items and choice of parameters on the left side, and a visualization panel on the right side of the interface. A detailed workflow guide to run and visualize dimension reduction (DR) is described below: 
+
+1. To begin the DR workflow, click on the **"Feature Selection & Dimensionality Reduction"** tab from the top menu. This workflow assumes that before proceeding towards computation of DR, data has been uploaded, filtered and normalized (and optionally variable features have been identified) through the preceding tabs.
+
+![](ui_screenshots/dimensionality_reduction/dr_1.PNG)\
+
+2. Select "Dimensionality Reduction" tab:
+
+![](ui_screenshots/dimensionality_reduction/dr_2.png)\
+
+3. Select an expression matrix which should be used for computation, usually log-normalized matrix is recommended. 
+4. Select a method for dimensionality reduction. Available choices are "PCA" from *scater* package and "PCA" & "ICA" from *Seurat* package. 
+5. (Optional) Choose a subset of features to use for dimension reduction. Subsets can be obtained from [Feature Selection](feature_selection.html) tab.
+6. (Optional) Check whether to scale the variance of features (subset of features if chosen in 5.) in the selected expression matrix before reducing dimensionality. Usually, scaling the subset of highly variable features is recommended. 
+7. Specify a name for result low-dimensional data. 
+8. Specify the number of dimensions to generate with the selected algorithm. Default value is `50`.
+9. (Optional) Check the boxes for optional visualization methods that should be applied after the computation of dimension reduction. Requested visualization will be shown in sub-tabs on the right side.
+10. If "Compute HeatmapPlot?" is selected in 9., you can specify how many features should be involved in the each heatmap. This setting can be changed later as well from the visualization panel on the right. 
+11. Set the seed of randomized computation process. A fixed seed generates reproducible result each run. 
+12. Press "Run" to start computation. 
+13. Once processing is complete, selected visualization methods will be shown in the tabset on the right, together with the "Component Plot" (by default shown) which contains a scatter plot of cells on the top two components (dimensions).
+
+![](ui_screenshots/dimensionality_reduction/dr_4.png)\
+
+14. An optional elbow plot can be computed for a PCA result, when chosen in step 9. It is a heuristic method which shows a relationship between the increasing number of components and the standard deviation. Components before an elbow break are empirically considered as containing most of the information of the data, and should be selected for downstream analysis. 
+
+![](ui_screenshots/dimensionality_reduction/dr_6.png)\
+
+15. Heatmaps can be computed optionally, when chosen in step 9. Each heatmap shows the expression of the features that are correlated to a component. This method allows for easy exploration of the primary sources of heterogeneity in a data set, and can be useful for determining number of components to include for downstream analysis. 
+
+![](ui_screenshots/dimensionality_reduction/dr_7a.png)
+
+16. Customization for the heatmaps can be made by selecting the components to display and entering the number of columns to organize the sub-plots.
+
+![](ui_screenshots/dimensionality_reduction/dr_7b.png)
+
+````{=html}
+<details>
+  <summary><b>Visualizations Supported</b></summary>
+````
+
+| Method | 2-Dimensional Component Plot | Elbow Plot | JackStraw Plot | Heatmap Plot |
+|---|---|---|---|---|
+|PCA| yes | yes | yes | yes |
+|ICA| yes | no | no |yes|
+
+````{=html}
+</details>
+</div>
+<div id="console" class="tabcontent">
+````
+
+Here we show how to perform dimension reduction with the generic function `runDimReduce()`, 
+together with the method to visualize and explore the results.  
+
+**1. Compute dimensionality reduction**
+
+```{r "dm_overview_1", eval = FALSE}
+sce <- runDimReduce(inSCE = sce, method = "scaterPCA", useAssay = "logcounts", 
+                    scale = TRUE, useFeatureSubset = "HVG_modelGeneVar2000", 
+                    nComponents = 50, reducedDimName = "PCA")
+```
+
+The generic function `runDimReduce()` allows `"scaterPCA"` from *scater*, `"seuratPCA"` and `"seuratICA"` from *Seurat* as options of dimension reduction for `method` argument. For detailed parameter description, please click on the function name to be redirected to its reference page. 
+
+**2. Visualization**
+
+There are multiple functions that can create scatter plot using dimensions stored in `reducedDims` slot of the SCE object. 
+
+```{r "dm_overview_2", eval=FALSE}
+# Make scatter plot without annotation
+plotDimRed(sce, useReduction = "PCA")
+# Short-cut for reduced dims named as "PCA"
+plotPCA(sce)
+# Customizing scatter plot with more information from cell metadata (colData)
+plotSCEDimReduceColData(sce, colorBy = "cluster", reducedDimName = "PCA")
+# Color scatter plot with feature expression
+plotSCEDimReduceFeatures(sce, feature = "CD8A", reducedDimName = "PCA")
+```
+
+Besides, SCTK also wraps elbow plot, Jackstraw plot and DimHeatmap methods from *Seurat*. For usage of these visualization methods, please refer to [Seurat Curated Workflow](seurat_curated_workflow.html)
+
+````{=html}
+<details>
+  <summary><b>Example</b></summary>
+````  
+  
+```{r "dm_console_example", message = FALSE, warning = FALSE}
+library(singleCellTK)
+sce <- importExampleData("pbmc3k")
+sce <- runNormalization(sce, normalizationMethod = "LogNormalize", useAssay = "counts", outAssayName = "logcounts")
+sce <- runFeatureSelection(sce, useAssay = "counts", method = "modelGeneVar")
+sce <- setTopHVG(sce, method = "modelGeneVar", hvgNumber = 2000, featureSubsetName = "HVG")
+# Run
+sce <- runDimReduce(sce, method = "seuratPCA", useAssay = "logcounts", 
+                    scale = TRUE, useFeatureSubset = "HVG", reducedDimName = "PCA", nComponents = 50)
+# Plot
+plotDimRed(sce, "PCA")
+```
+
+````{=html}
+</details> 
+<details>
+  <summary><b>Individual Functions</b></summary>
+````
+
+While the `runDimReduce()` wrapper function can be used for all dimensionality reduction algorithms including PCA and ICA, and additionally for 2D embeddings like tSNE and UMAP, separate functions are also available for all of the included methods. The following functions can be used for specific methods:
+  
+Running PCA with *Seurat* method:
+
+```{r "dm_seuratPCA", eval = FALSE}
+# Recommended to find variable features before running runSeuratPCA
+# sce <- runSeuratFindHVG(inSCE = sce, useAssay = "seuratScaledData")
+sce <- runSeuratPCA(inSCE = sce, useAssay = "seuratNormData", scale = TRUE, reducedDimName = "seuratPCA")
+```
+
+Running ICA with Seurat method:
+
+```{r "dm_seuratICA", eval = FALSE}
+# Recommended to find variable features before running runSeuratICA
+# sce <- runSeuratFindHVG(inSCE = sce, useAssay = "seuratScaledData")
+sce <- runSeuratICA(inSCE = sce, useAssay = "seuratNormData", scale = TRUE, reducedDimName = "seuratICA")
+```
+
+Running PCA with scater method:
+
+```{r "scaterPCA", eval = FALSE}
+# Recommended to find variable features before running scaterPCA
+# sce <- runSeuratFindHVG(inSCE = sce, useAssay = "seuratScaledData")
+# sce <- setTopHVG(inSCE = sce, hvgNumber = 2000)
+sce <- scaterPCA(inSCE = sce, useAssay = "logcounts", 
+                 useFeatureSubset = "HVG_vst2000", scale = TRUE,
+                 reducedDimName = "scaterPCA")
+```
+
+````{=html}
+</details>
+
+<details>
+  <summary><b>Visualizations Supported</b></summary>
+````
+
+| Method | 2-Dimensional Component Plot | Elbow Plot | JackStraw Plot | Heatmap Plot |
+|---|---|---|---|---|
+|PCA| yes | yes | yes | yes |
+|ICA| yes | no | no |yes|
+
+````{=html}
+</details>
+
+</div>
+<script>
+document.getElementById("ia-button").click();
+</script>
+</body>
+````
+
+## References

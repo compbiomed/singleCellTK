@@ -10,7 +10,6 @@ csl: ieee.csl
 ---
 
 ```{r develSetting, include=FALSE}
-doEval = FALSE
 knitr::opts_chunk$set(warning = FALSE)
 ```
 
@@ -91,7 +90,7 @@ sce <- subsetSCECols(sce, colData = c("sum < 10000", "detected < 2000"))
 
 For the detail of the arguments, please click on the function name to see the reference page.  
 
-Furthermore, in terms of subsetting the features, such as using a set of highly variable genes (HVG), SCTK tends to store a subsetted SCE object in the `altExp` slot of the main SCE object. For detail, please see [feature selection documentation](cnsl_feature_selection.html). Therefore, when using `subsetSCERows()`, we recommend turning the argument `returnAsAltExp` to `TRUE`.  
+Furthermore, in terms of subsetting the features, such as using a set of highly variable genes (HVG), SCTK tends to store a subsetted SCE object in the `altExp` slot of the main SCE object. For detail, please see [feature selection documentation](feature_selection.html). Therefore, when using `subsetSCERows()`, we recommend turning the argument `returnAsAltExp` to `TRUE`.  
 
 ````{=html} 
 </div>

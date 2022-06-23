@@ -37,7 +37,7 @@ Before heading into the next steps, we assume that users have already loaded SCT
 
 After removing cells of low quality, we next need to normalize the feature expression matrix. In this tutorial, we apply a global-scaling normalization method from [scater](https://bioconductor.org/packages/release/bioc/html/scater.html), `"logNormCounts"`. It normalizes the feature expression for each cell by the total expression, multiplies this by a scale factor, and log-transforms the result. 
 
-For detail about all normalization methods, please refer to the [Normalization Documentation](cnsl_normalization.html)
+For detail about all normalization methods, please refer to the [Normalization Documentation](normalization.html)
 
 ````{=html}
 <!--Remember to change tabset id-->
@@ -154,7 +154,7 @@ The next step is performing a principal component analysis (PCA), which creates 
 
 With the HVG selected from the previous step, we will perform PCA using the method from [Scater](http://bioconductor.org/packages/release/bioc/html/scater.html). As mentioned in the [Normalization section](#normalization), we will also have the selected HVG scaled in this step. 
 
-SCTK also supports Seurat's PCA and ICA method, which do a similar job. Please see: [Seurat Curated Workflow](cnsl_seurat_curated_workflow.html), and [Dimension Reduction Documentation](cnsl_dimensionality_reduction.html). 
+SCTK also supports Seurat's PCA and ICA method, which do a similar job. Please see: [Seurat Curated Workflow](seurat_curated_workflow.html), and [Dimension Reduction Documentation](dimensionality_reduction.html). 
 
 ````{=html}
 <!--Remember to change tabset id-->
@@ -269,7 +269,7 @@ plotDimRed(sce, useReduction = "UMAP")
 
 ## Clustering
 
-SCTK supports clustering cells with Shared Nearest Neighbors (SNN) graph based methods and K-Means algorithm. For SNN graph based methods, we wrap the graph constructor from `scran` library, and have options of algorithms from `igraph` that can perform clustering on the graph. Alternatively, in the [Seurat Curated Workflow](cnsl_seurat_curated_workflow.html), the Seurat's SNN graph construction and community detection method are also wrapped as one method. 
+SCTK supports clustering cells with Shared Nearest Neighbors (SNN) graph based methods and K-Means algorithm. For SNN graph based methods, we wrap the graph constructor from `scran` library, and have options of algorithms from `igraph` that can perform clustering on the graph. Alternatively, in the [Seurat Curated Workflow](seurat_curated_workflow.html), the Seurat's SNN graph construction and community detection method are also wrapped as one method. 
 
 In this tutorial, we use the scran SNN graph approach, with the community detection algorithm set as Louvain. We will use the top 10 components for identifying the clusters. Though we have generated the UMAP representation in the previous section (also using 10 PCs), users are always allowed to test clustering with different numbers of PCs. In this case, we strongly suggest regenerating the UMAP with the consistent number of PCs, so that the UMAP can best reflect the information included in the PCs. 
 
@@ -548,7 +548,7 @@ plotClusterAbundance(sce, cluster = "cluster", variable = "cell_type")
 
 For the purpose of gene set enrichment (GSE) analysis, SCTK imports VAM and GSVA as options. Both of them work by loading some user-defined gene sets ([more about loading gene sets](import_genesets.html)), and calculating the enrichment score of each gene set in each cell. Here we will go through calling VAM to inspect the enrichment of the hallmark gene sets available in [MSigDB database](https://www.gsea-msigdb.org/gsea/msigdb/). Please refer to the [document](pathwayAnalysis.html) for the detail of running pathway analysis with VAM or GSVA. 
 
-SCTK also supports GSEA method from EnrichR, which queries a given gene list and finds the significant overlap against the curated gene sets from multiple gene set libraries. For detail, please refer to [EnrichR Documentation](cnsl_enrichR.html).
+SCTK also supports GSEA method from EnrichR, which queries a given gene list and finds the significant overlap against the curated gene sets from multiple gene set libraries. For detail, please refer to [EnrichR Documentation](enrichR.html).
 
 ````{=html}
 <!--Remember to change tabset id-->

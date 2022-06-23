@@ -168,7 +168,7 @@ navbar:
       - text: "A La Carte Workflow - PBMC3K"
         href: articles/02_a_la_carte_workflow.html
       - text: "Seurat Curated Workflow - PBMC3K"
-        href: articles/cnsl_seurat_curated_workflow.html
+        href: articles/seurat_curated_workflow.html
       - text: "Celda Curated Workflow - PBMC3K"
         href: articles/celda_curated_workflow.html
     - text: "SCTK-QC"
@@ -200,17 +200,17 @@ navbar:
         - text: "Normalization & Batch Correction"
           menu:
           - text: "Normalization"
-            href: articles/cnsl_normalization.html
+            href: articles/normalization.html
           - text: "Batch Correction"
             href: articles/batch_correction.html
         - text: "Feature Selection & Dimensionality Reduction"
           menu:
           - text: "Feature Selection"
-            href: articles/cnsl_feature_selection.html
+            href: articles/feature_selection.html
           - text: "Dimensionality Reduction"
-            href: articles/cnsl_dimensionality_reduction.html
+            href: articles/dimensionality_reduction.html
           - text: "2D Embedding"
-            href: articles/cnsl_2d_embedding.html
+            href: articles/2d_embedding.html
         - text: "Clustering"
           href: articles/clustering.html
         - text: "Differential Expression & Cell Type Labeling"
@@ -224,13 +224,13 @@ navbar:
         - text: "Pathway & Enrichment Analysis"
           menu:
             - text: "EnrichR"
-              href: articles/cnsl_enrichR.html
+              href: articles/enrichR.html
             - text: "Pathway Analysis"
               href: articles/pathwayAnalysis.html
         - text: "Curated Workflows"
           menu:
             - text: "Seurat"
-              href: articles/cnsl_seurat_curated_workflow.html
+              href: articles/seurat_curated_workflow.html
             - text: "Celda"
               href: articles/celda_curated_workflow.html
         - text: "Visualization"
@@ -239,10 +239,10 @@ navbar:
             href: articles/visualization.html
           - text: "Generic Heatmap"
             href: articles/heatmap.html
-    - text: "SCTK-QC"
-      href: articles/cmd_qc.html
     - text: "Reference"
       href: reference/index.html
+    - text: "NEWS"
+      href: news/index.html
   right:
     - icon: fab fa-github fa-lg
       href: https://github.com/compbiomed/singleCellTK

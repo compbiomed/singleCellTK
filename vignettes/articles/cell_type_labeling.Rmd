@@ -10,7 +10,6 @@ csl: ieee.csl
 ---
 
 ```{r develSetting, include=FALSE}
-doEval = FALSE
 knitr::opts_chunk$set(warning = FALSE)
 ```
 
@@ -53,7 +52,7 @@ Users should enter the page as instructed in the screenshot above, by clicking o
 ![panel2](ui_screenshots/cell_type_labeling/panel2.jpg)\
 There are 6 basic widgets that users need to work with before reaching to the result:
 
-1. **Select assay** - Select the feature expression matrix for the comparison against the reference dataset. This matrix has to be a log-normalized assay. [(How to normalize an assay with SCTK)](cnsl_normalization.html)
+1. **Select assay** - Select the feature expression matrix for the comparison against the reference dataset. This matrix has to be a log-normalized assay. [(How to normalize an assay with SCTK)](normalization.html)
 2. **Choose a reference** - Select the curated online reference dataset. There are multiple options that cover the need of analyzing data from human and mouse and from different tissues. The link at the bottom will pop users to the detail of the reference, which is currently chosen. 
 3. **Labeling level** - For most of the provided references, there will be 3 levels of annotations - **"main"** for main cell types, **"fine"** for more subtypes, and with **"ont"**, subtypes are mapped to Cell Ontology. 
 4. **Feature type** - Choose the identifier type that matches with users' dataset. Unfortunately, the references are only annotated with symbols and ensembl IDs. Therefore, users working with other types of IDs might need to do the conversion prior to using this functionality. Automated conversion maybe added in future versions of SCTK. 

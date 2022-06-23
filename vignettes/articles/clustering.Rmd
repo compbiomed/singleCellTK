@@ -10,7 +10,6 @@ csl: ieee.csl
 ---
 
 ```{r develSetting, include=FALSE}
-doEval = FALSE
 knitr::opts_chunk$set(warning = FALSE)
 ```
 
@@ -81,7 +80,7 @@ When the selected algorithm belongs to "Scran SNN" group, the parameter settings
 - Algorithm detail setting 
     - selection input **"Edge Weight Type"**. Users can specify the type of weighting scheme to use for shared neighbors. (See parameter `type` of `scran::buildSNNGraph()`)
     - Selection input **"Objective Function"**, only seen when choosing "leiden" algorithm. The objective function, "CPM" [@Ronhovde2010] or "modularity" [@Newman2004], evaluates the partitioning of the graph, and the algorithm attempts to maximize the score. 
-- Component number setting - numeric input **"Number of Components"**. If users specify a low-dimensional matrix as input, the method will be applied on the top components. When an `assay` or `altExp` is chosen, the algorithm will perform a PCA on the matrix and obtain the top PCs for downstream use. This number could be determined with the help of an Elbow plot in the ["Dimension Reduction"](cnsl_dimensionality_reduction.html) section, and should be consistent with what is used for 2D embedding for better visualization. 
+- Component number setting - numeric input **"Number of Components"**. If users specify a low-dimensional matrix as input, the method will be applied on the top components. When an `assay` or `altExp` is chosen, the algorithm will perform a PCA on the matrix and obtain the top PCs for downstream use. This number could be determined with the help of an Elbow plot in the ["Dimension Reduction"](dimensionality_reduction.html) section, and should be consistent with what is used for 2D embedding for better visualization. 
 
 ````{=html}
 </details>
@@ -93,7 +92,7 @@ When the selected algorithm belongs to "Scran SNN" group, the parameter settings
 
 When the selected algorithm belongs to "K-Means" group, the parameter settings will look like the figure above.  
 
-- Data matrix selection - selection input **"Select a ReducedDim"**. Here the data matrix allowed can only be a reduced dimension, technically called `reducedDim` and should be obtained in advance from ["Feature Selection & Dimensionality Reduction" tab](cnsl_dimensionality_reduction.html). 
+- Data matrix selection - selection input **"Select a ReducedDim"**. Here the data matrix allowed can only be a reduced dimension, technically called `reducedDim` and should be obtained in advance from ["Feature Selection & Dimensionality Reduction" tab](dimensionality_reduction.html). 
 - Cluster number determining - numeric input **"Number of Centers (Clusters)"**. User will decide the exact number of clusters here. In term of K-means algorithm, the number of cluster centroids. 
 - Iteration limit setting - numeric input **"Max Number of Iterations"**. User will here decide the maximum number of iterations to run. 
 - Algorithm detail setting - numeric input **"Number of Random Sets"**. Kmeans attempts multiple initial configurations and reports on the best one. Here users will set the number of initial configurations to use. 
@@ -108,7 +107,7 @@ When the selected algorithm belongs to "K-Means" group, the parameter settings w
 
 When the selected algorithm belongs to "Seurat" group, the parameter settings will look like the figure above.  
 
-- Data matrix selection - selection input **"Select a ReducedDim"**. Here the data matrix allowed can only be a reduced dimension, technically called `reducedDim` and should be obtained in advance from ["Feature Selection & Dimension Reduction" tab](cnsl_dimensionality_reduction.html). 
+- Data matrix selection - selection input **"Select a ReducedDim"**. Here the data matrix allowed can only be a reduced dimension, technically called `reducedDim` and should be obtained in advance from ["Feature Selection & Dimension Reduction" tab](dimensionality_reduction.html). 
 - Component number setting - numeric input **"How Many Dimensions to Use"**.
 - Algorithm detail setting - checkbox input **"Group Singletons"**.
 - Resolution setting - numeric input **"Resolution"**.
@@ -132,7 +131,7 @@ The visualization is implemented with a plotting of a chosen low-dimension embed
 ````
 
 - Cluster annotation selection - radio button selection **"Select from Current Results"** and **"Select from All Present Annotation"**. This selection updates the dropdown menu with the available annotations. Only a successful run of clustering in the current SCTK session adds an option for the new result to "Select from Current Results", while all the cell annotation stored in background (i.e. `colData(sce)`) are accessible if "Select from All Present Annotation" is chosen. 
-- Dimension Reduction selection - selection input **"Use Reduction"**. User have to choose a reduction here for plotting. If there is not yet any option, user can obtain one from ["Feature Selection & Dimension Reduction" tab](cnsl_dimensionality_reduction.html). 
+- Dimension Reduction selection - selection input **"Use Reduction"**. User have to choose a reduction here for plotting. If there is not yet any option, user can obtain one from ["Feature Selection & Dimension Reduction" tab](dimensionality_reduction.html). 
 
 ````{=html}
 </details>

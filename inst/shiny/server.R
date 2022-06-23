@@ -2994,7 +2994,7 @@ shinyServer(function(input, output, session) {
     {
       req(vals$counts)
       message(date(), " ... Starting Dimensionality Reduction with: '",
-              input$dimRedPlotMethod_tsneUmap)
+              input$dimRedPlotMethod_tsneUmap, "'.")
       vals$runDimred$dimRedAssaySelect_tsneUmap <- input$dimRedAssaySelect_tsneUmap
       if (vals$runDimred$dimRedAssaySelect_tsneUmap %in% reducedDimNames(vals$counts)) {
         embedUseAssay <- NULL
