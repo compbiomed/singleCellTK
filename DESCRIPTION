@@ -111,11 +111,10 @@ Imports:
     rlang,
     TSCAN,
     TrajectoryUtils,
-    generics,
     scuttle,
     utils,
     stats
-RoxygenNote: 7.1.2
+RoxygenNote: 7.2.0
 Suggests:
     testthat,
     Rsubread,
