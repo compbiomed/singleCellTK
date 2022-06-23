@@ -200,7 +200,7 @@ runSeuratFindHVG <- function(inSCE,
   } else {
     seuratObject <- convertSCEToSeurat(inSCE, normAssay = useAssay)
   }
-  
+
   seuratObject <- Seurat::FindVariableFeatures(
     seuratObject,
     selection.method = method,
@@ -283,11 +283,11 @@ runSeuratFindHVG <- function(inSCE,
 #' Default \code{seuratPCA}.
 #' @param nPCs numeric value of how many components to compute. Default
 #' \code{20}.
-#' @param useFeatureSubset Subset of feature to use for dimension reduction. A 
+#' @param useFeatureSubset Subset of feature to use for dimension reduction. A
 #' character string indicating a \code{rowData} variable that stores the logical
-#' vector of HVG selection, or a vector that can subset the rows of 
+#' vector of HVG selection, or a vector that can subset the rows of
 #' \code{inSCE}. Default \code{NULL}.
-#' @param scale Logical scalar, whether to standardize the expression values 
+#' @param scale Logical scalar, whether to standardize the expression values
 #' using \code{\link[Seurat]{ScaleData}}. Default \code{TRUE}.
 #' @param seed Random seed for reproducibility of results.
 #' Default \code{NULL} will use global seed in use by the R environment.
@@ -295,13 +295,13 @@ runSeuratFindHVG <- function(inSCE,
 #'  be displayed. Default is \code{TRUE}.
 #' @details
 #' For features used for computation, it can be controlled by \code{features} or
-#' \code{useFeatureSubset}. When \code{features} is specified, the scaling and 
-#' dimensionality reduction will only be processed with these features. When 
+#' \code{useFeatureSubset}. When \code{features} is specified, the scaling and
+#' dimensionality reduction will only be processed with these features. When
 #' \code{features} is \code{NULL} but \code{useFeatureSubset} is specified, will
-#' use the features that the HVG list points to. If both parameters are 
+#' use the features that the HVG list points to. If both parameters are
 #' \code{NULL}, the function will see if any Seurat's variable feature detection
-#' has been ever performed, and use them if found. Otherwise, all features are 
-#' used. 
+#' has been ever performed, and use them if found. Otherwise, all features are
+#' used.
 #' @examples
 #' data(scExample, package = "singleCellTK")
 #' \dontrun{
@@ -334,22 +334,22 @@ runSeuratPCA <-
       # If doing scaling, put useAssay as normed, used by ScaleData first
       seuratObject <- convertSCEToSeurat(inSCE, normAssay = useAssay)
     }
-    
-    features <- .parseUseFeatureSubset(inSCE, useFeatureSubset, 
-                                       altExpObj = NULL, 
+
+    features <- .parseUseFeatureSubset(inSCE, useFeatureSubset,
+                                       altExpObj = NULL,
                                        returnType = "character")
     if (is.null(features)) {
       if (length(Seurat::VariableFeatures(seuratObject)) == 0) {
         features <- rownames(inSCE)
       }
     }
-    
+
     if (isTRUE(scale)) {
       seuratObject <-
         Seurat::ScaleData(seuratObject, features = features,
                           verbose = verbose)
     }
-    
+
     seuratObject <- Seurat::RunPCA(
       seuratObject,
       npcs = as.double(nPCs),
@@ -358,7 +358,7 @@ runSeuratPCA <-
       seed.use = seed
     )
     inSCE <- .addSeuratToMetaDataSCE(inSCE, seuratObject)
-    
+
     temp <- seuratObject@reductions$pca@cell.embeddings
     rownames(temp) <- colnames(inSCE)
     reducedDim(inSCE, reducedDimName) <- temp
@@ -373,26 +373,26 @@ runSeuratPCA <-
 #' @param useAssay Assay containing scaled counts to use in ICA.
 #' @param reducedDimName Name of new reducedDims object containing Seurat ICA
 #' Default \code{seuratICA}.
-#' @param useFeatureSubset Subset of feature to use for dimension reduction. A 
+#' @param useFeatureSubset Subset of feature to use for dimension reduction. A
 #' character string indicating a \code{rowData} variable that stores the logical
-#' vector of HVG selection, or a vector that can subset the rows of 
+#' vector of HVG selection, or a vector that can subset the rows of
 #' \code{inSCE}. Default \code{NULL}.
-#' @param scale Logical scalar, whether to standardize the expression values 
+#' @param scale Logical scalar, whether to standardize the expression values
 #' using \code{\link[Seurat]{ScaleData}}. Default \code{TRUE}.
 #' @param nics Number of independent components to compute. Default \code{20}.
 #' @param seed Random seed for reproducibility of results.
 #' Default \code{NULL} will use global seed in use by the R environment.
 #' @param verbose Logical value indicating if informative messages should
 #'  be displayed. Default is \code{TRUE}.
-#' @details 
+#' @details
 #' For features used for computation, it can be controlled by \code{features} or
-#' \code{useFeatureSubset}. When \code{features} is specified, the scaling and 
-#' dimensionality reduction will only be processed with these features. When 
+#' \code{useFeatureSubset}. When \code{features} is specified, the scaling and
+#' dimensionality reduction will only be processed with these features. When
 #' \code{features} is \code{NULL} but \code{useFeatureSubset} is specified, will
-#' use the features that the HVG list points to. If both parameters are 
+#' use the features that the HVG list points to. If both parameters are
 #' \code{NULL}, the function will see if any Seurat's variable feature detection
-#' has been ever performed, and use them if found. Otherwise, all features are 
-#' used. 
+#' has been ever performed, and use them if found. Otherwise, all features are
+#' used.
 #' @examples
 #' data(scExample, package = "singleCellTK")
 #' \dontrun{
@@ -425,22 +425,22 @@ runSeuratICA <-
       # If doing scaling, put useAssay as normed, used by ScaleData first
       seuratObject <- convertSCEToSeurat(inSCE, normAssay = useAssay)
     }
-    
-    features <- .parseUseFeatureSubset(inSCE, useFeatureSubset, 
-                                       altExpObj = NULL, 
+
+    features <- .parseUseFeatureSubset(inSCE, useFeatureSubset,
+                                       altExpObj = NULL,
                                        returnType = "character")
     if (is.null(features)) {
       if (length(Seurat::VariableFeatures(seuratObject)) == 0) {
         features <- rownames(inSCE)
       }
     }
-    
+
     if (isTRUE(scale)) {
       seuratObject <-
         Seurat::ScaleData(seuratObject, features = features,
                           verbose = verbose)
     }
-    
+
     seuratObject <- Seurat::RunICA(
       seuratObject,
       nics = as.double(nics),
@@ -449,7 +449,7 @@ runSeuratICA <-
       seed.use = seed
     )
     inSCE <- .addSeuratToMetaDataSCE(inSCE, seuratObject)
-    
+
     temp <- seuratObject@reductions$ica@cell.embeddings
     rownames(temp) <- colnames(inSCE)
     reducedDim(inSCE, reducedDimName) <- temp
@@ -494,10 +494,10 @@ runSeuratJackStraw <- function(inSCE,
                                externalReduction = NULL) {
   seuratObject <- convertSCEToSeurat(inSCE, normAssay = useAssay)
   seuratObject <- Seurat::ScaleData(seuratObject)
-  
+
   if (!is.null(externalReduction)) {
     #convert (_) to (-) as required by Seurat
-    
+
     rownames(externalReduction@cell.embeddings) <-
       .convertToHyphen(rownames(externalReduction@cell.embeddings))
     seuratObject <- Seurat::FindVariableFeatures(seuratObject)
@@ -653,7 +653,7 @@ plotSeuratReduction <-
     else{
       seuratObject@meta.data <- data.frame()
     }
-    
+
     if (showLegend) {
       if (!is.null(seuratObject@meta.data$seurat_clusters)) {
         Seurat::Idents(seuratObject) <-
@@ -661,15 +661,15 @@ plotSeuratReduction <-
         seuratObject@meta.data <- data.frame()
       }
     }
-    
+
     if (!is.null(groupBy)) {
       seuratObject[[groupBy]] <- colData(inSCE)[[groupBy]]
     }
-    
+
     if (!is.null(splitBy)) {
       seuratObject[[splitBy]] <- colData(inSCE)[[splitBy]]
     }
-    
+
     if (showLegend) {
       plot <- Seurat::DimPlot(
         object = seuratObject,
@@ -688,7 +688,7 @@ plotSeuratReduction <-
         label = FALSE
       ) + Seurat::NoLegend()
     }
-    
+
     if ("ident" %in% names(plot$data) &&
         "seurat_clusters" %in% names(seuratObject@meta.data)) {
       plot$data$ident <- seuratObject@meta.data$seurat_clusters
@@ -741,19 +741,19 @@ runSeuratFindClusters <- function(inSCE,
                                   verbose = TRUE) {
   algorithm <- match.arg(algorithm)
   useReduction <- match.arg(useReduction)
-  
+
   if (!is.null(externalReduction)) {
     seuratObject@reductions <- list(pca = externalReduction)
     useReduction <- "pca"
   }
-  
+
   if (is.null(useReduction)) {
     seuratObject <- convertSCEToSeurat(inSCE, scaledAssay = useAssay)
   }
   else{
     seuratObject <- convertSCEToSeurat(inSCE)
   }
-  
+
   seuratObject <-
     Seurat::FindNeighbors(
       seuratObject,
@@ -819,12 +819,12 @@ runSeuratTSNE <- function(inSCE,
                           seed = 1) {
   useReduction <- match.arg(useReduction)
   seuratObject <- convertSCEToSeurat(inSCE)
-  
+
   if (!is.null(externalReduction)) {
     seuratObject@reductions <- list(pca = externalReduction)
     useReduction <- "pca"
   }
-  
+
   seuratObject <-
     Seurat::RunTSNE(
       seuratObject,
@@ -838,7 +838,7 @@ runSeuratTSNE <- function(inSCE,
   temp <- seuratObject@reductions$tsne@cell.embeddings
   rownames(temp) <- colnames(inSCE)
   reducedDim(inSCE, reducedDimName) <- temp
-  
+
   return(inSCE)
 }
 
@@ -890,12 +890,12 @@ runSeuratUMAP <- function(inSCE,
                           verbose = TRUE) {
   useReduction <- match.arg(useReduction)
   seuratObject <- convertSCEToSeurat(inSCE)
-  
+
   if (!is.null(externalReduction)) {
     seuratObject@reductions <- list(pca = externalReduction)
     useReduction <- "pca"
   }
-  
+
   seuratObject <- Seurat::RunUMAP(
     seuratObject,
     reduction = useReduction,
@@ -907,11 +907,11 @@ runSeuratUMAP <- function(inSCE,
     seed.use = seed
   )
   inSCE <- .addSeuratToMetaDataSCE(inSCE, seuratObject)
-  
+
   temp <- seuratObject@reductions$umap@cell.embeddings
   rownames(temp) <- colnames(inSCE)
   reducedDim(inSCE, reducedDimName) <- temp
-  
+
   return(inSCE)
 }
 
@@ -987,7 +987,7 @@ plotSeuratElbow <- function(inSCE,
   plot$labels$x <- "PC"
   plot$labels$y <- "Standard Deviation"
   plot$labels$colour <- "Significant"
-  
+
   if (interactive) {
     hoverText <-
       paste(
@@ -1010,7 +1010,7 @@ plotSeuratElbow <- function(inSCE,
       plot <- plotly::style(plot, text = hoverText)
     }
   }
-  
+
   return(plot)
 }
 
@@ -1069,7 +1069,7 @@ runSeuratHeatmap <- function(inSCE,
   useReduction <- match.arg(useReduction)
   # seuratObject <- convertSCEToSeurat(inSCE, scaledAssay = useAssay)
   seuratObject <- convertSCEToSeurat(inSCE, normAssay = useAssay)
-  
+
   if (!is.null(externalReduction)) {
     seuratObject@reductions <- list(pca = externalReduction)
     useReduction <- "pca"
@@ -1077,20 +1077,20 @@ runSeuratHeatmap <- function(inSCE,
   if (is.null(dims)) {
     dims <- ncol(seuratObject@reductions[[useReduction]])
   }
-  
+
   # Only scale requested features
   featuresToScale <- NULL
   temp <-
     as.data.frame(seuratObject[[useReduction]]@feature.loadings)
-  for (i in seq(1:dims)) {
+  for (i in seq(dims)) {
     featuresToScale <-
-      c(featuresToScale, rownames(temp[order(-temp[[i]]),])[1:nfeatures])
+      c(featuresToScale, rownames(temp[order(-temp[[i]]),])[seq(nfeatures)])
     featuresToScale <-
-      c(featuresToScale, rownames(temp[order(temp[[i]]),])[1:nfeatures])
+      c(featuresToScale, rownames(temp[order(temp[[i]]),])[seq(nfeatures)])
   }
   seuratObject <-
     Seurat::ScaleData(seuratObject, features = featuresToScale)
-  
+
   plotObject <- Seurat::DimHeatmap(
     seuratObject,
     dims = seq(dims),
@@ -1148,9 +1148,9 @@ plotSeuratHeatmap <- function(plotObject, dims, ncol, labels) {
   temp.matrix <-
     methods::slot(Seurat::GetAssay(seuratObject, seuratAssaySlot),
                   seuratDataSlot)
-  
+
   colnames(temp.matrix) <- colnames(inSCE)
-  
+
   if (seuratDataSlot == "scale.data") {
     altExp(inSCE, assaySlotSCE) <-
       SingleCellExperiment(list(counts = temp.matrix))
@@ -1183,7 +1183,7 @@ convertSeuratToSCE <-
       assays = list(counts = seuratObject@assays[[1]]@counts),
       colData = seuratObject@meta.data
     )
-    
+
     assay(inSCE, normAssayName) <-
       methods::slot(seuratObject@assays$RNA, "data")
     if (length(methods::slot(seuratObject, "assays")[["RNA"]]@scale.data) > 0) {
@@ -1251,7 +1251,7 @@ convertSCEToSeurat <-
            tsneReducedDim = NULL,
            umapReducedDim = NULL) {
     .checkSCEValidity(inSCE)
-    
+
     if (!is.null(countsAssay) &&
         !(countsAssay %in% expDataNames(inSCE))) {
       stop(paste0(
@@ -1315,14 +1315,14 @@ convertSCEToSeurat <-
         paste(reducedDimNames(inSCE), collapse = ",")
       ))
     }
-    
+
     # Seurat has a particular way of modifying row/colnames
     # Save row/colnames in metadata
     seuratRowNames <- gsub("_", "-", rownames(inSCE))
     seuratColNames <- gsub("_", "-", colnames(inSCE))
     inSCE@metadata$seurat$colNames <- seuratColNames
     inSCE@metadata$seurat$rowNames <- seuratRowNames
-    
+
     # Create Seurat object and Set counts assay
     # If no counts assay is supplied, the first assay is used
     if (!is.null(countsAssay) &&
@@ -1334,7 +1334,7 @@ convertSCEToSeurat <-
     rownames(temp) <- seuratRowNames
     colnames(temp) <- seuratColNames
     seuratObject <- Seurat::CreateSeuratObject(counts = temp)
-    
+
     # Set normalized assay
     if (!is.null(normAssay) && normAssay %in% names(assays(inSCE))) {
       tempMatrix <- .convertToMatrix(assay(inSCE, normAssay))
@@ -1345,7 +1345,7 @@ convertSCEToSeurat <-
       rownames(seuratObject@assays$RNA@data) <- seuratRowNames
       colnames(seuratObject@assays$RNA@data) <- seuratColNames
     }
-    
+
     # Set Scaled Assay
     if (!is.null(scaledAssay) &&
         scaledAssay %in% names(assays(inSCE))) {
@@ -1354,7 +1354,7 @@ convertSCEToSeurat <-
       rownames(seuratObject@assays$RNA@scale.data) <- seuratRowNames
       colnames(seuratObject@assays$RNA@scale.data) <- seuratColNames
     }
-    
+
     if (!is.null(inSCE@metadata$seurat$obj)) {
       if (length(inSCE@metadata$seurat$obj@assays$RNA@var.features) > 0) {
         seuratObject@assays$RNA@var.features <-
@@ -1387,13 +1387,13 @@ convertSCEToSeurat <-
         seuratObject@commands <- inSCE@metadata$seurat$obj@commands
       }
     }
-    
+
     # Set colData from inSCE object if required
     if (!is.null(colData(inSCE)) && copyColData) {
       seuratObject@meta.data <-
         cbind(seuratObject@meta.data, colData(inSCE))
     }
-    
+
     # Set additional reducedDims from inSCE object if required
     if (length(SingleCellExperiment::reducedDims(inSCE)) > 0 &&
         copyReducedDim) {
@@ -1408,7 +1408,7 @@ convertSCEToSeurat <-
                                        key = paste0(key, "_"),
                                        assay = "RNA")
       }
-      
+
       availReducedDims <- c("pca", "ica", "tsne", "umap")
       for (i in availReducedDims) {
         if (!is.null(eval(parse(text = paste0(
@@ -1430,7 +1430,7 @@ convertSCEToSeurat <-
         }
       }
     }
-    
+
     # Set 'decontXCounts' assay to seurat object if required
     if ("decontXcounts" %in% SummarizedExperiment::assayNames(inSCE) &&
         copyDecontX) {
@@ -1440,10 +1440,10 @@ convertSCEToSeurat <-
       seuratObject[["decontXcounts"]] <-
         Seurat::CreateAssayObject(counts = .convertToMatrix(decontM))
     }
-    
+
     # Ensuring that colnames from input SCE converted to Seurat object are same in the Seurat metadata slot
     rownames(seuratObject@meta.data) <- colnames(seuratObject)
-    
+
     return(seuratObject)
   }
 
@@ -1579,19 +1579,19 @@ runSeuratIntegration <- function(inSCE,
     stop("kAnchor, kFilter or kWeight cannot be zero. Please input correct ",
          "parameters.")
   }
-  
+
   #create seurat object
   seuratObject <- convertSCEToSeurat(inSCE, useAssay)
   rownames(seuratObject@meta.data) <- gsub("_", "-",
                                            rownames(seuratObject@meta.data))
   seuratObject@meta.data <-
     cbind(seuratObject@meta.data, colData(inSCE))
-  
+
   #split seurat object by batch variable
   seurat.list <- Seurat::SplitObject(seuratObject, split.by = batch)
   seurat.list <-
     seurat.list[c(unique(seuratObject@meta.data[[batch]]))]
-  
+
   #find anchors
   seurat.anchors <-
     Seurat::FindIntegrationAnchors(
@@ -1612,20 +1612,20 @@ runSeuratIntegration <- function(inSCE,
   SummarizedExperiment::assayNames(altExp(inSCE, newAssayName)) <-
     newAssayName
   # remove this if counts in above line set to altExp
-  
+
   # store back colData from sce into the altExp slot
   colData(altExp(inSCE, newAssayName)) <- colData(inSCE)
-  
+
   #counts <- assay(altExp(inSCE, newAssayName), "altExp")
   # remove NA values from counts and replace with zero so can be used properly
   # by dgCMatrix
   counts <- assay(altExp(inSCE, newAssayName), newAssayName)
   counts[is.na(counts)] <- 0
-  
+
   #store back counts
   #assay(altExp(inSCE, newAssayName), "altExp") <- counts
   assay(altExp(inSCE, newAssayName), newAssayName) <- counts
-  
+
   return(inSCE)
 }
 
@@ -1801,11 +1801,11 @@ plotSeuratGenes <- function(inSCE,
     cells[[i]] <- .convertToHyphen(cells[[i]])
     Seurat::Idents(seuratObject, cells = cells[[i]]) <- groups[i]
   }
-  
+
   if (!is.null(splitBy)) {
     seuratObject[[splitBy]] <- colData(inSCE)[[splitBy]]
   }
-  
+
   #plot required visualization
   if (plotType == "ridge") {
     return(
@@ -1865,12 +1865,12 @@ plotSeuratGenes <- function(inSCE,
   slot <- "data"
   assay <- "RNA"
   marker.test <- list()
-  
+
   object.var <-
     Seurat::FetchData(object = object, vars = grouping.var)
   levels.split <- names(x = sort(x = table(object.var[, 1])))
   num.groups <- length(levels.split)
-  
+
   marker.test[[1]] <- Seurat::FindMarkers(
     object = object,
     assay = assay,
@@ -1878,7 +1878,7 @@ plotSeuratGenes <- function(inSCE,
     ident.1 = levels.split[1],
     ident.2 = levels.split[2],
   )
-  
+
   marker.test[[2]] <- Seurat::FindMarkers(
     object = object,
     assay = assay,
@@ -1886,7 +1886,7 @@ plotSeuratGenes <- function(inSCE,
     ident.1 = levels.split[2],
     ident.2 = levels.split[3],
   )
-  
+
   marker.test[[3]] <- Seurat::FindMarkers(
     object = object,
     assay = assay,
@@ -1894,11 +1894,11 @@ plotSeuratGenes <- function(inSCE,
     ident.1 = levels.split[3],
     ident.2 = levels.split[1],
   )
-  
+
   names(x = marker.test)[1] <- levels.split[1]
   names(x = marker.test)[2] <- levels.split[2]
   names(x = marker.test)[3] <- levels.split[3]
-  
+
   marker.test <- Filter(f = Negate(f = is.null), x = marker.test)
   genes.conserved <- Reduce(f = intersect,
                             x = lapply(

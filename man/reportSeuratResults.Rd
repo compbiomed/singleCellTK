@@ -32,20 +32,20 @@ reportSeuratResults(
 \item{inSCE}{Input \code{\link[SingleCellExperiment]{SingleCellExperiment}}
 object previously passed through \code{reportSeuratRun()}.}
 
-\item{biological.group}{A character value that specifies the name of the 
-\code{colData()} column to use as the main biological group in the Seurat 
+\item{biological.group}{A character value that specifies the name of the
+\code{colData()} column to use as the main biological group in the Seurat
 report for marker selection and grouping.}
 
-\item{phenotype.groups}{A character vector that specifies the names of the 
-\code{colData()} columns to use for differential expression in addition to 
+\item{phenotype.groups}{A character vector that specifies the names of the
+\code{colData()} columns to use for differential expression in addition to
 the \code{biological.group} parameter.}
 
-\item{selected.markers}{A character vector containing the user-specified 
-gene symbols or feature names of marker genes that be used to generate 
-gene plots in addition to the gene markers computed from 
+\item{selected.markers}{A character vector containing the user-specified
+gene symbols or feature names of marker genes that be used to generate
+gene plots in addition to the gene markers computed from
 differential expression.}
 
-\item{clustering.resolution}{A numeric value indicating the user-specified 
+\item{clustering.resolution}{A numeric value indicating the user-specified
 final resolution to use with clustering. Default is \code{0.8}.}
 
 \item{pc.count}{A numeric value indicating the number of principal components
@@ -66,30 +66,30 @@ section for identifying marker genes between clusters should be run and
 visualized in the report. Default \code{TRUE}.}
 
 \item{runMSBioGroup}{A logical value indicating if the marker selection
-section for identifying marker genes between the \code{biological.group} 
+section for identifying marker genes between the \code{biological.group}
 parameter should be run and visualized in the report. Default \code{TRUE}.}
 
 \item{numTopFeatures}{A numeric value indicating the number of top features
 to visualize in each group. Default \code{10}.}
 
-\item{outputFile}{Specify the name of the generated output HTML file. 
-If \code{NULL} then the output file name will be based on the name of the 
+\item{outputFile}{Specify the name of the generated output HTML file.
+If \code{NULL} then the output file name will be based on the name of the
 Rmarkdown template. Default \code{NULL}.}
 
-\item{outputPath}{Specify the name of the output directory to save the 
-rendered HTML file. If \code{NULL} the file is stored to the current 
+\item{outputPath}{Specify the name of the output directory to save the
+rendered HTML file. If \code{NULL} the file is stored to the current
 working directory. Default \code{NULL}.}
 
-\item{subtitle}{A character value specifying the subtitle to use in the 
+\item{subtitle}{A character value specifying the subtitle to use in the
 report. Default \code{NULL}.}
 
-\item{authors}{A character value specifying the names of the authors to use 
+\item{authors}{A character value specifying the names of the authors to use
 in the report. Default \code{NULL}.}
 
-\item{showSession}{A logical value indicating if session information 
+\item{showSession}{A logical value indicating if session information
 should be displayed or not. Default is \code{FALSE}.}
 
-\item{pdf}{A logical value indicating if a pdf should also be generated for 
+\item{pdf}{A logical value indicating if a pdf should also be generated for
 each figure in the report. Default is \code{FALSE}.}
 
 \item{forceRun}{A logical value indicating if all computations previously

@@ -442,6 +442,7 @@ plotTSCANPseudotimeHeatmap <- function(inSCE,
 #' Basing on pseudotime is presented within range from 0 to 100
 #' Use the viridis color scale to match with `plotTSCANResult` embedding color
 #' @param x numeric vector of pseudotime
+#' @return function object returned by circlize::colorRamp2
 .viridisPseudoTimeColor <- function(x) {
   a <- max(x, na.rm = TRUE)
   b <- min(x, na.rm = TRUE)

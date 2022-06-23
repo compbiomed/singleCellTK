@@ -59,10 +59,11 @@ analysis functions such as \link[singleCellTK]{runCellQC}.
 }
 \examples{
 data(scExample)
-library(GSEABase)
-gs1 <- GeneSet(setName = "geneset1", geneIds = rownames(sce)[seq(10)])
-gs2 <- GeneSet(setName = "geneset2", geneIds = rownames(sce)[seq(11,20)])
-gsc <- GeneSetCollection(list(gs1, gs2))
+gs1 <- GSEABase::GeneSet(setName = "geneset1",
+                         geneIds = rownames(sce)[seq(10)])
+gs2 <- GSEABase::GeneSet(setName = "geneset2",
+                         geneIds = rownames(sce)[seq(11,20)])
+gsc <- GSEABase::GeneSetCollection(list(gs1, gs2))
 sce <- importGeneSetsFromCollection(inSCE = sce,
                                     geneSetCollection = gsc,
                                     by = "rownames")

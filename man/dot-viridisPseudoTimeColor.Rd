@@ -10,6 +10,9 @@ Use the viridis color scale to match with `plotTSCANResult` embedding color}
 \arguments{
 \item{x}{numeric vector of pseudotime}
 }
+\value{
+function object returned by circlize::colorRamp2
+}
 \description{
 Basing on pseudotime is presented within range from 0 to 100
 Use the viridis color scale to match with `plotTSCANResult` embedding color

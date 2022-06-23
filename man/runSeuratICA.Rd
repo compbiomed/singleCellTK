@@ -22,12 +22,12 @@ runSeuratICA(
 
 \item{useAssay}{Assay containing scaled counts to use in ICA.}
 
-\item{useFeatureSubset}{Subset of feature to use for dimension reduction. A 
+\item{useFeatureSubset}{Subset of feature to use for dimension reduction. A
 character string indicating a \code{rowData} variable that stores the logical
-vector of HVG selection, or a vector that can subset the rows of 
+vector of HVG selection, or a vector that can subset the rows of
 \code{inSCE}. Default \code{NULL}.}
 
-\item{scale}{Logical scalar, whether to standardize the expression values 
+\item{scale}{Logical scalar, whether to standardize the expression values
 using \code{\link[Seurat]{ScaleData}}. Default \code{TRUE}.}
 
 \item{reducedDimName}{Name of new reducedDims object containing Seurat ICA
@@ -52,12 +52,12 @@ components within the sce object
 }
 \details{
 For features used for computation, it can be controlled by \code{features} or
-\code{useFeatureSubset}. When \code{features} is specified, the scaling and 
-dimensionality reduction will only be processed with these features. When 
+\code{useFeatureSubset}. When \code{features} is specified, the scaling and
+dimensionality reduction will only be processed with these features. When
 \code{features} is \code{NULL} but \code{useFeatureSubset} is specified, will
-use the features that the HVG list points to. If both parameters are 
+use the features that the HVG list points to. If both parameters are
 \code{NULL}, the function will see if any Seurat's variable feature detection
-has been ever performed, and use them if found. Otherwise, all features are 
+has been ever performed, and use them if found. Otherwise, all features are
 used.
 }
 \examples{
