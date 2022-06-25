@@ -132,7 +132,8 @@ shinyServer(function(input, output, session) {
     if (!is.null(hmTemp$sce)) {
       hmAnnAllColors$col <- singleCellTK:::dataAnnotationColor(hmTemp$sce, 'col')
     }
-    updateSelectInput(session, "TSCANclusterName", choices = pdataOptions)
+    updateSelectInput(session, "TSCANclusterName",
+                      choices = c("Auto generate clusters", pdataOptions))
   }
 
   updateGeneNames <- function(){
@@ -1866,7 +1867,6 @@ shinyServer(function(input, output, session) {
             paramsList[[algo]] = algoParams
           }
         }
-        print(paramsList)
         # run selected cell QC algorithms
         vals$counts <- runCellQC(inSCE = vals$counts,
                                  algorithms = algoList,
@@ -3440,9 +3440,11 @@ shinyServer(function(input, output, session) {
       if (input$TSCANReddim == "") {
         stop("Must select a reducedDim! If none available, compute one in the Dimensionality Reduction tab.")
       }
+      cluster <- input$TSCANclusterName
+      if (cluster == "Auto generate clusters") cluster <- NULL
       vals$counts <- runTSCAN(inSCE = vals$counts,
                               useReducedDim = input$TSCANReddim,
-                              cluster = input$TSCANclusterName,
+                              cluster = cluster,
                               seed = handleEmptyInput(input$seed_TSCAN))
 
       output$TSCANPlot <- renderPlot({
@@ -3759,7 +3761,7 @@ shinyServer(function(input, output, session) {
         })
       })
       updateCollapse(session = session, "TSCANUI",
-                     style = list("Plot expression of individual genes" = "success"))
+                     style = list("Plot feature expression on trajectory" = "success"))
 
     }
   ))

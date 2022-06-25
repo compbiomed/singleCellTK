@@ -743,24 +743,25 @@ runSeuratFindClusters <- function(inSCE,
   useReduction <- match.arg(useReduction)
 
   if (!is.null(externalReduction)) {
+    seuratObject <- convertSCEToSeurat(inSCE)
     seuratObject@reductions <- list(pca = externalReduction)
     useReduction <- "pca"
+  } else {
+    if (is.null(useReduction)) {
+      seuratObject <- convertSCEToSeurat(inSCE, scaledAssay = useAssay)
+    }
+    else{
+      seuratObject <- convertSCEToSeurat(inSCE)
+    }
   }
 
-  if (is.null(useReduction)) {
-    seuratObject <- convertSCEToSeurat(inSCE, scaledAssay = useAssay)
-  }
-  else{
-    seuratObject <- convertSCEToSeurat(inSCE)
-  }
+  seuratObject <- Seurat::FindNeighbors(
+    seuratObject,
+    reduction = useReduction,
+    dims = seq(dims),
+    verbose = verbose
+  )
 
-  seuratObject <-
-    Seurat::FindNeighbors(
-      seuratObject,
-      reduction = useReduction,
-      dims = seq(dims),
-      verbose = verbose
-    )
   no_algorithm <- 1
   if (algorithm == "louvain") {
     no_algorithm = 1
@@ -783,11 +784,10 @@ runSeuratFindClusters <- function(inSCE,
   inSCE <- .addSeuratToMetaDataSCE(inSCE, seuratObject)
   colData(inSCE)[[paste0("Seurat", "_", algorithm, "_", "Resolution", resolution)]] <-
     seuratObject@meta.data$seurat_clusters
-  S4Vectors::metadata(inSCE)$seurat$clusterName <-
-    paste0("Seurat", "_",
-           algorithm, "_",
-           "Resolution",
-           resolution)
+  S4Vectors::metadata(inSCE)$seurat$clusterName <- paste0("Seurat", "_",
+                                                         algorithm, "_",
+                                                         "Resolution",
+                                                         resolution)
   return(inSCE)
 }
 

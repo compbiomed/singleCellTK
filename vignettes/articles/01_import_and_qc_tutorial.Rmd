@@ -46,9 +46,14 @@ After starting the UI, the landing page will be for importing the scRNAseq data.
 
 ![import](ui_screenshots/ui_tutorial/import.png)\
 
-1. In step 1 **"Choose data source"**, check the radio button **"Import example datasets"**.
-2. In step 2 **"Choose Example Dataset"**, select the option **"PBMC 3K (10X)"**, and click on button **"Add To Sample List"**.
-3. In step 3 **"Import"**, users will see a new row added for the dataset, in the table **"Samples to Import"**. Then users should click on button **"Import"** right below the table, in order to successfully load the data in to the toolkit.
+1. In collapse box **"1. Add sample to import"**, check the radio button **"Import example datasets"**.
+2. After step 1, a selection will shown for choosing example datasets. Here we select the default option "PBMC 3K (10X)".
+3. Click on button **"Add To Sample List"**. At this point, the second collapse box **"2. Create dataset"** will automatically pop up. 
+4. In collapse box **"2. Create dataset"**, click on button **"Import"**, to start loading the dataset.
+
+![import](ui_screenshots/ui_tutorial/import2.png)\
+
+After successfully importing, the third collapse box will pop up and show users the basic summary stats of the imported dataset. Meanwhile, users can set feature display options here. Most of the time, the dataset has default feature ID (usually seen as row names of a matrix) together with other types of ID (e.g. symbol) in the feature metadata. The first option **"Set feature ID"** sets the type of default feature ID, which should be unique and has no `NA` value. The second option **"Set feature names to be displayed in downstream visualization"** does what it says. When we need to show features on a plot, such as a heatmap or a volcano plot, usually it is better to show gene symbols rather than ensembl IDs. 
 
 ````{=html}
 </div>

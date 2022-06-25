@@ -40,7 +40,7 @@ Meanwhile, SCTK also supports importing raw count matrix, with metadata, stored 
 - [SingleCellExperiment](https://rdrr.io/bioc/SingleCellExperiment/man/SingleCellExperiment.html) object saved in RDS file
 - [AnnData](https://anndata.readthedocs.io/en/latest/) object saved in  hdf5 file
 
-A chart at the bottom of this documentation summarizes the [expected directory structure](#expected-directory-structure-for-all-data-source-1) of the input data, for each type of data source. 
+A chart at the bottom of this documentation summarizes the [expected directory structure](#expected-directory-structure-for-all-data-source) of the input data, for each type of data source. 
 
 To view detailed instructions on how to import data, please select, from the tabs below, "Interactive Analysis" for importing data into the Shiny application, or "Console Analysis" for importing into R environment via R console.  
 
@@ -55,17 +55,19 @@ To view detailed instructions on how to import data, please select, from the tab
 <div id="interactive" class="tabcontent">
 ````
 
+**Introduction**
+
 This page is the landing page of the SCTK UI application. Here SCTK allows users to import multiple datasets at once, and the datasets can be in various forms, as listed above. SCTK also provides online example datasets.  
 
-The UI contains mainly three sections for importing and another section for data summary. Through the first and the second sections, users can choose the type of a single data source and specify the location of the data from this single source, respectively. A table in the third section summarizes files and samples that are specified from all sources. Finally, all data can be imported by clicking on the import button right below this table. 
+Generally, the UI contains mainly two sections for importing and another section for data summary. Through the first section, users can choose the type of a single data source and specify the location of the data from this single source. A table in the second section summarizes files and samples that are specified from all sources. To finally import all samples into one dataset, clicking on the "import" button right below this table. After successfully importing the dataset, a summary table together with some setting options will be shown in the third section. 
 
 ![workflow](ui_screenshots/import/import_ui_workflow.png)\
 
-**Importing Single-Cell Datasets**
+**1. Add sample to import**
 
 ![](ui_screenshots/import/import_ui_source.png)\
 
-For a single source of data, users need to choose one option from the radio buttons listed in the screenshot. The next step will depend on the option chosen.  
+The first section introduced above is embedded in the the collapse box **"1. Add sample to import"**. For a single source of data, users need to choose one option from the radio buttons listed in the screenshot. The next step will depend on the option chosen.  
 
 ````{=html}
  <style>
@@ -76,16 +78,7 @@ div.offset { background-color:inherit ; border-radius: 5px; margin-left: 15px;}
   <summary><b>Import from a preprocessing tool</b></summary>
 ```` 
 
-![source1](ui_screenshots/import/import_ui_source1.png)\
-
-SCTK supports importing data from the following pre-processing tools in our UI workflow:  
-- [CellRanger](https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/what-is-cell-ranger) (versions 2 and 3)  
-- [STARSolo](https://github.com/alexdobin/STAR/blob/master/docs/STARsolo.md)  
-- [BUStools](https://github.com/BUStools/bustools)  
-- [Seqc](https://github.com/ambrosejcarr/seqc)  
-- [Optimus](https://data.humancellatlas.org/pipelines/optimus-workflow)  
-
-Choose the specific preprocessing tool that matches your dataset, and then press "**Add a Sample**". A corresponding dialog modal will pop out with description that instructs you to select the directory that stores your data.  
+The preprocessing tools that SCTK supports are circled in the screenshot above and the links for them are listed at the top of this documentation. To import the data processed by any one of these tools, select the corresponding radio botton, and click on button **"Add a sample"**. After this, a dialog modal will pop up with description that instructs you to select the directory that stores your data. 
 
 ````{=html}
 <details>
@@ -143,7 +136,7 @@ To import an Optimus sample, the user must select the directory that contains th
   <summary><b>Flat files (.cvs, .tsv)</b></summary>
 ````
 
-To import tab-separated data, the user must provide **a counts file** (.csv or .tsv) and specify what type of input assay it is. The user can optionally also provide **cell annotation** and **feature** files (also .csv or .tsv). The user must then click **"Add to Sample List"** to add it to the table of samples.  
+To import tab-separated data, the user must provide **a counts file** (.csv or .tsv) and specify what type of input assay it is. The user can optionally also provide **cell annotation** and **feature** files (also .csv or .tsv). The user must then click **"Add to dataset list"** to add it to the table of samples.  
 After choosing a single file for uploading, user must wait until the progress bar runs to the right end and says "Upload complete". Sometimes the progress bar runs to the end but it takes some time for the system to finalize reading a large file.  
 
 ![Flat files](ui_screenshots/import/import_ui_source2.png)\
@@ -175,16 +168,24 @@ Users can also opt to import and work with published example datasets. To do so,
 <br>
 ````
 
-**Complete Upload**
+**2. Create dataset**
 
-After successfully choosing each source of dataset, it will be inserted to a new line of the table at the buttom of this UI page, in "**3. Import**" section. This is a wait-list for all the samples of interests. To finally import all datasets of interests, users must click on **"Import"** button.  
+Each time users add a sample/dataset, the second collapse box **"2. Create dataset"** will automatically pop up and show the list of samples that are already added. Users can click on either the first collapse or the button **"Add one more sample"** to go back and add a new sample. At this point, the samples are just on a wait list but **not imported yet**.
 
-Before importing, users can click on the "`[X]`" button on the right to remove the selection of the corresponding single dataset, or click on **"Clear Samples"** to reset all selections. This only clears this wait-list for importing, but will not work on any dataset already imported.  
+The `[X]` button on the right of each row works for removing the corresponding sample from the wait list, before finally importing them. The button **"Clear Sample"** clears all samples in the wait list, but do not interfere what has been imported.
 
-Note that it is normal that in the "Location" field, some paths might happen to point to a temporary cache.  
+When ready, click on button **"Import"** to start importing.
 
 ![](ui_screenshots/import/import_ui_sampleList.png)\
 
+**3. Data summary**
+
+Upon successfully importing all samples/datasets, the third collapse box **"3. Data summary"** will automatically pop up. There will be a summary table for the stats of each sample. and preset options for downstream analysis. 
+
+- **Set feature ID**: The feature ID here refers to the default feature identifiers. Usually this is what we see as the row names of an expression matrix. Most of the cases has ensembl ID as their default feature ID. Users can opt to change the ID type here, but are limited to using unique non-NA variables in the feature metadata.  
+- **Set feature names to be displayed in downstream visualization**: While the feature ID in the previous setting is used for uniquely identify features during calculation, it might not be necessarily suitable for visualization. For example, ensembl ID is commonly seen as the unique identifier, but people hardly know what the gene/transcript is at a glance. Here SCTK provides an interface for setting feature name for visualization without modifying the unique identifier. Options still come from the feature metadata but are not limited. The setting here applies through out the whole UI. 
+
+![](ui_screenshots/import/import_ui_dataSummary.png)\
 
 ````{=html}
 </div>

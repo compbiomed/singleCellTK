@@ -140,7 +140,7 @@ shinyPanelImport <- fluidPage(
                                 )
                          )
                        ),
-                       actionButton("addFilesImport", "Add To Dataset List")
+                       actionButton("addFilesImport", "Add to dataset list")
       ),
       conditionalPanel(
         condition = sprintf("input['%s'] == 'example'", "uploadChoice"),
@@ -209,7 +209,7 @@ shinyPanelImport <- fluidPage(
           tags$br(),
           tags$br()
         ),
-        actionButton("addExampleImport", "Add To Sample List")
+        actionButton("addExampleImport", "Add to sample list")
       ),
       conditionalPanel(
         condition = sprintf("input['%s'] == 'rds'", "uploadChoice"),
@@ -217,7 +217,7 @@ shinyPanelImport <- fluidPage(
         fileInput(
           "rdsFile", "SingleCellExperiment or Seurat RDS file:", accept = c(".rds", ".RDS")
         ),
-        actionButton("addRDSImport", "Add To Sample List")
+        actionButton("addRDSImport", "Add to sample list")
       ),
       #conditionalPanel(
       #condition = sprintf("input['%s'] == 'directory'", "uploadChoice"),
@@ -237,39 +237,39 @@ shinyPanelImport <- fluidPage(
       #tags$br(),
       conditionalPanel(
         condition = sprintf("input['%s'] == 'cellRanger2'", "uploadChoice"),
-        actionButton("addCR2Sample", "Add a Sample"),
+        actionButton("addCR2Sample", "Add a sample"),
       ),
       conditionalPanel(
         condition = sprintf("input['%s'] == 'cellRanger3'", "uploadChoice"),
-        actionButton("addCR3Sample", "Add a Sample"),
+        actionButton("addCR3Sample", "Add a sample"),
       ),
       conditionalPanel(
         condition = sprintf("input['%s'] == 'starSolo'", "uploadChoice"),
         wellPanel(
           h5("Please select the directory that contains your /Gene directory as your base directory. ")
         ),
-        actionButton("addSSSample", "Add a Sample"),
+        actionButton("addSSSample", "Add a sample"),
       ),
       conditionalPanel(
         condition = sprintf("input['%s'] == 'busTools'", "uploadChoice"),
         wellPanel(
           h5("Please select your /genecount directory as your base directory.")
         ),
-        actionButton("addBUSSample", "Add a Sample"),
+        actionButton("addBUSSample", "Add a sample"),
       ),
       conditionalPanel(
         condition = sprintf("input['%s'] == 'seqc'", "uploadChoice"),
         wellPanel(
           h5("Please select the directory that contains your sample files as your base directory.")
         ),
-        actionButton("addSEQSample", "Add a Sample"),
+        actionButton("addSEQSample", "Add a sample"),
       ),
       conditionalPanel(
         condition = sprintf("input['%s'] == 'optimus'", "uploadChoice"),
         wellPanel(
           h5("Please select the directory that contains the following four directories - call-MergeCountFiles, call-MergeCellMetrics, call-MergeGeneMetrics, call-RunEmptyDrops - as your base directory.")
         ),
-        actionButton("addOptSample", "Add a Sample"),
+        actionButton("addOptSample", "Add a sample"),
       ),
       style = "primary"
     ),

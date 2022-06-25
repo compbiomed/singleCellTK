@@ -10,7 +10,7 @@ csl: ieee.csl
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, eval = FALSE, message=FALSE, warning=FALSE)
+knitr::opts_chunk$set(echo = TRUE, eval = TRUE, message = FALSE, warning = FALSE)
 ```
 
 ```{r import, include=FALSE}
@@ -102,7 +102,7 @@ SCTK requires at least two steps to create the HVG subset. The first step perfor
 2. For the first step, in the top-left panel **"1. Compute variability metric"**, select the method via **"Select method for calculating variability of features"**. The assay to be used will be automatically updated on selection, since different method has different recommended assay type. 
 3. Click on button **"Run"** to calculate the variability.
 
-After calculation, the panel for selecting the top features, **"2. Select number of variable features"** becomes enabled. A scatter plot of features, with axis of variance and mean, will also be shown on the right panel **"Plot"**.
+After calculation, the panel for selecting the top features, **"2. Select number of variable features"** becomes enabled. A scatter plot of features, with axes of variance and mean, will also be shown on the right panel **"Plot"**.
 
 ![hvg2](ui_screenshots/ui_tutorial/hvg2.png)\
 
@@ -114,9 +114,7 @@ Note that:
 
 - The metrics to be used for selection will only be available after calculation in the first panel. 
 - In the dropdown box at the top of the plotting region, users can choose to label the selected subset on a different metric scatter plot. 
-- When analyzing users' own data, if the text labels of features being shown are Ensembl IDs (i.e. starts with things like "ENSG000"), users can change the display ID type with **"Choose feature label"**. This works only when the annotation is available in imported feature metadata. We strongly recommend users go back to the **"Data" -> "Import Single Cell Data"** page, scroll down to the bottom, and set the display ID type at **"Set Feature for Display:"**, so the change works globally.
-
-![setFeatureDisp](ui_screenshots/ui_tutorial/setFeatureDisplay.png)\
+- When analyzing users' own data, if the text labels of features being shown are Ensembl IDs (i.e. starts with things like "ENSG000"), users can change the display ID type with **"Choose feature label"**. This works only when the annotation is available in imported feature metadata. We strongly recommend users go back to the **"Data" -> "Import Single Cell Data"** page, scroll down to the bottom, and set the display ID type at **"Set feature names to be displayed in downstream visualization"**, so the change works globally through out SCTK.
 
 ````{=html}
 </div>
@@ -133,7 +131,7 @@ sce <- setTopHVG(sce, method = "modelGeneVar", hvgNumber = 2000, featureSubsetNa
 Users can also get the character vector of gene names:
 
 ```{R getTopHVG}
-hvg <- getTopHVG(sce, useHVGList = "hvg2000")
+hvg <- getTopHVG(sce, useFeatureSubset = "hvg2000")
 print(hvg[1:10])
 ```
 
@@ -198,7 +196,7 @@ The heatmap allows for easy exploration of the primary sources of heterogeneity 
 <div class="tabcontent console">
 ````
 
-Here we use the wrapper function `scaterPCA()`. The name of transformed normalized expression matrix can be passed to `useAssay` (by default `useAssay = "logcounts"`), and the name of the HVG subset should be passed to `useHVGList`. The scaling will be done by Scater by setting `scale = TRUE` (default). The output PCs will be updated in the `reducedDims` slot of the SCE object, named by `"PCA"` by default. 
+Here we use the wrapper function `scaterPCA()`. The name of transformed normalized expression matrix can be passed to `useAssay` (by default `useAssay = "logcounts"`), and the name of the HVG subset should be passed to `useFeatureSubset`. The scaling will be done by Scater by setting `scale = TRUE` (default). The output PCs will be updated in the `reducedDims` slot of the SCE object, named by `"PCA"` by default. 
 
 ```{R pca}
 sce <- scaterPCA(sce, useFeatureSubset = "hvg2000", seed = 12345)
@@ -273,7 +271,7 @@ SCTK supports clustering cells with Shared Nearest Neighbors (SNN) graph based m
 
 In this tutorial, we use the scran SNN graph approach, with the community detection algorithm set as Louvain. We will use the top 10 components for identifying the clusters. Though we have generated the UMAP representation in the previous section (also using 10 PCs), users are always allowed to test clustering with different numbers of PCs. In this case, we strongly suggest regenerating the UMAP with the consistent number of PCs, so that the UMAP can best reflect the information included in the PCs. 
 
-For the scran SNN graph approach, the parameter `k` can always be tweaked as it affects the connectivity of the graph. When `k` is larger, stronger connection will be constructed across the cells, thus larger and fewer clusters will be identified. 
+For the scran SNN graph approach, the parameter `k` can always be tweaked as it affects the connectivity of the graph. When `k` is larger, stronger connection will be constructed across the cells, thus larger and fewer clusters will be identified. Parameter `weightType` allows for different shared neighbor weighting schemes. In this tutorial, we use `"jaccard"` as it provides consistency with Seurat methods. 
 
 ````{=html}
 <!--Remember to change tabset id-->
@@ -294,11 +292,12 @@ For the scran SNN graph approach, the parameter `k` can always be tweaked as it 
 ![cluster_run](ui_screenshots/ui_tutorial/cluster_run.png)\
 
 2. Select the same PCA matrix as we've done in the 2D Embedding section, at the selection input **"Select Input Matrix"**
-3. Click on button **"Run"** to start clustering the data.
+3. Tweak the parameters as we described in the introduction of this section. 
+4. Click on button **"Run"** to start clustering the data.
 
-Upon completing clustering, a scatter plot of cells on a low dimensional axis with cluster labeling colored on each cell will be shown on the right. However, we use the dimensions used for calculation as the default. For the best visualization, we suggest users change the dimensions to the 2D embedding obtained from the same components (of the same PCA matrix) as used for clustering. 
+Upon completing clustering, a scatter plot of cells on a low-dimensional representation with cluster labeling colored on each cell will be shown on the right. However, we use the dimensions used for calculation as the default. For the best visualization, we suggest users change the dimensions to the 2D embedding obtained from the same components (of the same PCA matrix) as used for clustering. 
 
-4. In the dropdown panel of the plotting region, select the UMAP we previously generated from **"Use Reduction"**, and then click on button **"Update"**.
+5. In the dropdown panel of the plotting region, select the UMAP we previously generated from **"Use Reduction"**, and then click on button **"Update"**.
 
 ````{=html}
 </div>
@@ -308,7 +307,8 @@ Upon completing clustering, a scatter plot of cells on a low dimensional axis wi
 With `runScranSNN()` function, the dimension reduction matrix can be specified through argument `useReducedDim`, and the cluster label assignment will be updated in the `colData` slot, and the variable will be named by argument `clusterName`. The default graph clustering algorithm is Louvain, while we also provide options including Leiden, Walktrap and etc. (from `igraph`). 
 
 ```{R cluster, results="hold"}
-sce <- runScranSNN(sce, useReducedDim = "PCA", clusterName = "cluster", nComp = 10, seed = 12345, )
+sce <- runScranSNN(sce, "PCA", clusterName = "cluster", nComp = 10,
+                   weightType = "jaccard", k = 14, seed = 12345)
 ```
 
 After getting the cluster labeling, we can then visualize it:
@@ -322,8 +322,11 @@ plotSCEDimReduceColData(sce, "cluster", "UMAP")
 </div>
 ````
 
-
 In the other curated workflow that SCTK wraps ([Celda Curated Workflow](celda_curated_workflow.html)), we use a Bayesian hierarchical model that can bi-cluster features into modules and observations into subpopulations. For detail of this method, please refer to the [Celda Documentation](https://celda.camplab.net).
+
+```{r export_cluster, include=FALSE}
+saveRDS(sce, "tutorial_pbmc3k_clustered.rds")
+```
 
 ## Marker Detection
 
@@ -344,10 +347,12 @@ Although we selected the variable features and reduced the dimensionality of the
 ````
 
 ![marker_entry](ui_screenshots/ui_tutorial/marker_entry.png)\
-![marker_run](ui_screenshots/ui_tutorial/marker_run.png)\
 
 1. Click on the **"Differential Expression & Cell Type Labeling"** tab at the top navigation bar.
 2. In the dropdown, click **"Find Marker"** to enter this tab, as instructed in the screenshot above. 
+
+![marker_run](ui_screenshots/ui_tutorial/marker_run.png)\
+
 3. Users need to check if the proper log-normalized assay data is chosen at selection **"Select assay"**. SCTK usually push a recommended one to the top, but sometimes alternatives of the same type can be in the place. Also, users need to select the cluster label variable at selection **"Cluster Annotation"**.
 4. Click on **"Run"** button to start the analysis. 
 
@@ -374,7 +379,7 @@ topMarkers
 For visualization, SCTK has a specific heatmap plotting function for detected markers. The heatmap will take the log-normalized feature expression matrix for the values (scaled when plotting), and subset the features to only the top markers of each cluster. For the organization of the heatmap, the function groups the markers by the belonging to the clusters, and groups the cells, obviously, by clusters. 
 
 ```{R markerHeatmap, results="hold", fig.height= 8, fig.width=9}
-plotMarkerDiffExp(sce, topN = 5, log2fcThreshold = 0, 
+plotMarkerDiffExp(sce, topN = 5, log2fcThreshold = 0.5, 
                   fdrThreshold = 0.05, minClustExprPerc = 0.5, 
                   maxCtrlExprPerc = 0.5, minMeanExpr = 0, 
                   rowLabel = TRUE)
@@ -385,7 +390,7 @@ plotMarkerDiffExp(sce, topN = 5, log2fcThreshold = 0,
 </div>
 ````
 
-As we can observe from the marker heatmaps above, most of the clusters can be easily differentiated by the top marker genes of each cluster. However, "cluster 8", "cluster 6" and "cluster 3" are seemingly having less difference between each other than compared to other cell clusters, in terms of the marker genes presented in the heatmap (top 5 markers for each cluster). To further explore the differential expression between them, we could do a cluster-by-cluster DE analysis in the next section. 
+As we can observe from the marker heatmaps above, most of the clusters can be easily differentiated by the top marker genes of each cluster. However, "cluster 1" and "cluster 2"are seemingly having less difference between each other than compared to other cell clusters, in terms of the marker genes presented in the heatmap (top 5 markers for each cluster). To further explore the differential expression between them, we could do a cluster-by-cluster DE analysis in the next section. 
 
 ## Differential Expression Analysis
 
@@ -393,7 +398,7 @@ Beyond finding the markers for each cluster, usually people are also interested 
 
 There are multiple ways to specify the groups of cells to be compared: by either directly specifying indices of cells, or selecting groups of cells with a categorical variable annotated in the cell metadata. However, when running DE analysis, SCTK requires a relatively sophisticated inputs for naming the analyses, including the names of the two groups, and the name of one analysis, though these are not necessary for calling the algorithms alone. By requiring these, the results of the analyses can be stored with human readable identifiers and within one single data container (SCE object), and can be more manageable. See the [DE documentation](differential_expression.html) for the detail. 
 
-Continued from the previous section, we will now set "cluster 8" and "cluster 6" as the two groups to perform the analysis. For a quick tutorial, we skip the full pairwise comparison. 
+Continued from the previous section, we will now set "cluster 1" and "cluster 2" as the two groups to perform the analysis. 
 
 ````{=html}
 <!--Remember to change tabset id-->
@@ -431,15 +436,15 @@ After running, The visualization section at the bottom of this tab will be autom
 
 ```{R de, results="hold"}
 sce <- runDEAnalysis(inSCE = sce, method = "wilcox", useAssay = "logcounts",
-                     class = "cluster", classGroup1 = c(8), classGroup2 = c(6),
-                     groupName1 = "cluster8", groupName2 = "cluster6", 
-                     analysisName = "cluster8_VS_6")
+                     class = "cluster", classGroup1 = c(1), classGroup2 = c(2),
+                     groupName1 = "cluster1", groupName2 = "cluster2", 
+                     analysisName = "cluster1_VS_2")
 ```
 
 Similarly to the marker detection section, SCTK also has a DE analysis specific heatmap plotting function, `plotDEGHeatmap()`. Here, users can just easily enter the `analysisName` specified for one run and the function will automatically arrange the output. The heatmap is also splitted into a "checker board", by the "conditions" (i.e. the groups selected when running `runDEAnalysis()`) and the "regulation" (i.e. "up" if the log2 fold change is positive in "group1" against "group2"). 
 
 ```{R deHeatmap, message=FALSE, warning=FALSE, results="hold", fig.height=7}
-plotDEGHeatmap(sce, useResult = "cluster8_VS_6")
+plotDEGHeatmap(sce, useResult = "cluster1_VS_2", log2fcThreshold = 0.3, rowLabel = TRUE)
 ```
 
 ````{=html}
@@ -638,9 +643,9 @@ To run DE analysis with matrix in the `reducedDims` slot, users only need to sim
 
 ```{R pathwayDE}
 sce <- runDEAnalysis(inSCE = sce, method = "wilcox", useReducedDim = "VAM_H_CDF",
-                     class = "cluster", classGroup1 = c(3, 6, 8), classGroup2 = c(7),
+                     class = "cluster", classGroup1 = c(1, 2, 5), classGroup2 = c(3, 6),
                      groupName1 = "T_cells", groupName2 = "monocytes", 
-                     analysisName = "T_cells_VS_monocytes_VAM_H_CDF")
+                     analysisName = "T_cells_VS_monocytes_VAM_H_CDF", overwrite=T)
 ```
 
 As the nature of the pathway analysis score is different from a log-normalized gene expression value, the default cutoff for log2 fold-change is likely to rule out all gene sets in this case. Therefore, we need to manually set a rather small value for this cutoff. 

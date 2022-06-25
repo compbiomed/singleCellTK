@@ -29,12 +29,15 @@ shinyPanelTSCAN <- fluidPage(
           4,
           panel(
             selectInput("TSCANReddim", "Select input dimension reduction:", currreddim),
-            numericInput(inputId = "seed_TSCAN",
-                         label = "Seed value for reproducibility of result:",
-                         value = 12345,
-                         step = 1),
             selectInput("TSCANclusterName", "Select clustering result: ",
                         "Auto generate clusters", selected = NULL),
+            conditionalPanel(
+              condition = 'input.TSCANclusterName == "Auto generate clusters"',
+              numericInput(inputId = "seed_TSCAN",
+                           label = "Seed value for reproducibility of result:",
+                           value = 12345,
+                           step = 1)
+            ),
             actionButton("TSCANRun", "Run")
           )
         ),

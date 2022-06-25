@@ -163,7 +163,7 @@ navbar:
       href: articles/installation.html
     - text: "Tutorials"
       menu:
-      - text: "Get Started - Importing and QC - PBMC3K"
+      - text: "Importing and QC - PBMC3K"
         href: articles/01_import_and_qc_tutorial.html
       - text: "A La Carte Workflow - PBMC3K"
         href: articles/02_a_la_carte_workflow.html
@@ -227,6 +227,10 @@ navbar:
               href: articles/enrichR.html
             - text: "Pathway Analysis"
               href: articles/pathwayAnalysis.html
+        - text: "Trajectory Analysis"
+          menu:
+            - text: "TSCAN"
+              href: articles/trajectoryAnalysis.html
         - text: "Curated Workflows"
           menu:
             - text: "Seurat"

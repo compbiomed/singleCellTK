@@ -55,7 +55,7 @@ the cluster label in \code{\link{colData}}. Default
 the graph. Smaller value indicates higher resolution and larger number of
 clusters. Default \code{8}.}
 
-\item{nComp}{An \code{integer}. The number of components to use for graph 
+\item{nComp}{An \code{integer}. The number of components to use for graph
 construction. Default \code{10}. See Detail.}
 
 \item{weightType}{A single \code{character}, that specifies the edge weighing
@@ -63,48 +63,48 @@ scheme when constructing the Shared Nearest-Neighbor (SNN) graph. Choose from
 \code{"rank"}, \code{"number"}, \code{"jaccard"}. Default \code{"rank"}.}
 
 \item{algorithm}{A single \code{character}, that specifies the community
-detection algorithm to work on the SNN graph. Choose from \code{"leiden"}, 
-\code{"louvain"}, \code{"walktrap"}, \code{"infomap"}, \code{"fastGreedy"}, 
-\code{"labelProp"}, \code{"leadingEigen"}. Default \code{"louvain"}. See 
+detection algorithm to work on the SNN graph. Choose from \code{"leiden"},
+\code{"louvain"}, \code{"walktrap"}, \code{"infomap"}, \code{"fastGreedy"},
+\code{"labelProp"}, \code{"leadingEigen"}. Default \code{"louvain"}. See
 Detail.}
 
-\item{BPPARAM}{A \code{\link[BiocParallel]{BiocParallelParam}} object to use 
+\item{BPPARAM}{A \code{\link[BiocParallel]{BiocParallelParam}} object to use
 for processing the SNN graph generation step in parallel.}
 
-\item{seed}{Random seed for reproducibility of results. Default \code{NULL} 
+\item{seed}{Random seed for reproducibility of results. Default \code{NULL}
 will use global seed in use by the R environment.}
 
-\item{...}{Other optional parameters passed to the \code{\link{igraph}} 
+\item{...}{Other optional parameters passed to the \code{\link{igraph}}
 clustering functions. See Details.}
 }
 \value{
-The input \linkS4class{SingleCellExperiment} object with 
-\code{factor} cluster labeling updated in 
+The input \linkS4class{SingleCellExperiment} object with
+\code{factor} cluster labeling updated in
 \code{colData(inSCE)[[clusterName]]}.
 }
 \description{
-Perform SNN graph clustering on a 
+Perform SNN graph clustering on a
 \linkS4class{SingleCellExperiment} object, with graph
 construction by \code{\link[scran]{buildSNNGraph}} and graph clustering by
 "igraph" package.
 }
 \details{
-Different graph based clustering algorithms have diverse sets of 
+Different graph based clustering algorithms have diverse sets of
 parameters that users can tweak. The help information can be found here:
 \itemize{
- \item{for \code{"louvain"}, see function help 
+ \item{for \code{"louvain"}, see function help
  \code{\link[igraph]{cluster_louvain}}}
- \item{for \code{"leiden"}, see function help 
+ \item{for \code{"leiden"}, see function help
  \code{\link[igraph]{cluster_leiden}}}
- \item{for \code{"walktrap"}, see function help 
+ \item{for \code{"walktrap"}, see function help
  \code{\link[igraph]{cluster_walktrap}}}
- \item{for \code{"infomap"}, see function help 
+ \item{for \code{"infomap"}, see function help
  \code{\link[igraph]{cluster_infomap}}}
- \item{for \code{"fastGreedy"}, see function help 
+ \item{for \code{"fastGreedy"}, see function help
  \code{\link[igraph]{cluster_fast_greedy}}}
- \item{for \code{"labelProp"}, see function help 
+ \item{for \code{"labelProp"}, see function help
  \code{\link[igraph]{cluster_label_prop}}}
- \item{for \code{"leadingEigen"}, see function help 
+ \item{for \code{"leadingEigen"}, see function help
  \code{\link[igraph]{cluster_leading_eigen}}}
 }
 
@@ -112,7 +112,7 @@ The Scran SNN building method can work on specified \code{nComp} components.
 When users specify input matrix by \code{useAssay} or \code{useAltExp} +
 \code{altExpAssay}, the method will generate \code{nComp} components and use
 them all. When specifying \code{useReducedDim} or \code{useAltExp} +
-\code{altExpRedDim}, this function will subset the top \code{nComp} 
+\code{altExpRedDim}, this function will subset the top \code{nComp}
 components and pass them to the method.
 }
 \examples{
