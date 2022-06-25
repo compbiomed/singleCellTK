@@ -24,17 +24,17 @@ plotPathway(
 )
 }
 \arguments{
-\item{inSCE}{Input \linkS4class{SingleCellExperiment} object. With 
+\item{inSCE}{Input \linkS4class{SingleCellExperiment} object. With
 \code{runGSVA()} or \code{runVAM()} applied in advance.}
 
-\item{resultName}{A single character of the name of a score matrix, which 
+\item{resultName}{A single character of the name of a score matrix, which
 should be found in \code{getPathwayResultNames(inSCE)}.}
 
 \item{geneset}{A single character specifying the geneset of interest. Should
 be found in the geneSetCollection used for performing the analysis.}
 
-\item{groupBy}{Either a single character specifying a column of 
-\code{colData(inSCE)} or a vector of equal length as the number of cells. 
+\item{groupBy}{Either a single character specifying a column of
+\code{colData(inSCE)} or a vector of equal length as the number of cells.
 Default \code{NULL}.}
 
 \item{boxplot}{Boolean, Whether to add a boxplot. Default \code{FALSE}.}
@@ -44,8 +44,8 @@ Default \code{NULL}.}
 \item{dots}{Boolean, If \code{TRUE}, will plot dots for each violin plot.
 Default \code{TRUE}.}
 
-\item{summary}{Adds a summary statistic, as well as a crossbar to the violin 
-plot. Options are \code{"mean"} or \code{"median"}, and \code{NULL} for not 
+\item{summary}{Adds a summary statistic, as well as a crossbar to the violin
+plot. Options are \code{"mean"} or \code{"median"}, and \code{NULL} for not
 adding. Default \code{"median"}.}
 
 \item{axisSize}{Size of x/y-axis ticks. Default \code{10}.}
@@ -54,13 +54,13 @@ adding. Default \code{"median"}.}
 
 \item{dotSize}{Size of dots. Default \code{0.5}.}
 
-\item{transparency}{Transparency of the dots, values will be 0-1. Default 
+\item{transparency}{Transparency of the dots, values will be 0-1. Default
 \code{1}.}
 
-\item{defaultTheme}{Removes grid in plot and sets axis title size to 
+\item{defaultTheme}{Removes grid in plot and sets axis title size to
 \code{10} when \code{TRUE}. Default \code{TRUE}.}
 
-\item{gridLine}{Adds a horizontal grid line if \code{TRUE}. Will still be 
+\item{gridLine}{Adds a horizontal grid line if \code{TRUE}. Will still be
 drawn even if \code{defaultTheme} is \code{TRUE}. Default \code{FALSE}.}
 
 \item{title}{Title of plot. Default using \code{geneset}.}
@@ -74,7 +74,7 @@ A \code{ggplot} object for the violin plot
 Generate violin plots for pathway analysis results
 }
 \details{
-\code{runGSVA()} or \code{runVAM()} should be applied in advance of 
+\code{runGSVA()} or \code{runVAM()} should be applied in advance of
 using this function. Users can group the data by specifying \code{groupby}.
 }
 \examples{
