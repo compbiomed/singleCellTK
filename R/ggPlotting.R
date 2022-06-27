@@ -170,15 +170,15 @@
     }
 
     if (!is.null(groupBy)){
-      dataframe$groups <- factor(SingleCellExperiment::colData(inSCE)@listData[[groupBy]])
+      dataframe$groups <- factor(SingleCellExperiment::colData(inSCE)[[groupBy]])
     }
     if (!is.null(shape)) {
-      dataframe$shape <- factor(SingleCellExperiment::colData(inSCESub)[, shape])
+      dataframe$shape <- factor(SingleCellExperiment::colData(inSCESub)[[shape]])
     }
     dataframe$Sample <- colnames(inSCESub)
     g <- ggplot2::ggplot(dataframe, ggplot2::aes_string(xdim, ydim,
-                                                        label = "Sample")) + ggplot2::geom_point(size = dotSize,
-                                                                                                 alpha = transparency)
+                                                        label = "Sample")) +
+      ggplot2::geom_point(size = dotSize, alpha = transparency)
     if (!is.null(colorBySub)) {
       g <- g + ggplot2::aes_string(color = "color")
     }
@@ -546,7 +546,9 @@ plotSCEDimReduceFeatures <- function(inSCE,
 
   if(!is.null(featureDisplay)){
     featureDisplay <- match.arg(featureDisplay,
-                                colnames(SummarizedExperiment::rowData(inSCE)))
+                                c("rownames",
+                                  colnames(SummarizedExperiment::rowData(inSCE)))
+                                )
   }else{
     if(exists(x = "featureDisplay", inSCE@metadata)){
       featureDisplay <- inSCE@metadata$featureDisplay
@@ -1543,7 +1545,7 @@ plotSCEViolin <- function(inSCE,
             if (!groupBy %in% names(SummarizedExperiment::colData(inSCE))) {
                 stop("'", paste(groupBy), "' is not found in ColData.")
             }
-            groupBy <- as.character(SummarizedExperiment::colData(inSCE)[, groupBy])
+            groupBy <- SummarizedExperiment::colData(inSCE)[, groupBy]
         }
     }
 

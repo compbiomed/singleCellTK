@@ -2,53 +2,38 @@
 % Please edit documentation in R/runTSCAN.R
 \name{runTSCAN}
 \alias{runTSCAN}
-\title{Run runTSCAN function to obtain pseudotime values for cells}
+\title{Run TSCAN to obtain pseudotime values for cells}
 \usage{
-runTSCAN(inSCE, useReducedDim, cluster = NULL, seed = 12345)
+runTSCAN(inSCE, useReducedDim = "PCA", cluster = NULL, seed = 12345)
 }
 \arguments{
 \item{inSCE}{Input \linkS4class{SingleCellExperiment} object.}
 
-\item{useReducedDim}{Character. Saved dimension reduction name in 
-\code{inSCE} object. Required. Used for specifying which low-dimension 
-representation to perform the clustering algorithm and building nearest 
-neighbor graph on. Default \code{"PCA"}}
+\item{useReducedDim}{Character. A low-dimension representation in
+\code{reducedDims}, will be used for both clustering if \code{cluster} not
+specified and MST construction. Default \code{"PCA"}.}
 
-\item{cluster}{Grouping for each cell in \code{inSCE}. A user may input a 
-vector equal length to the number of the samples in \code{inSCE}, or can be 
-retrieved from the \code{colData} slot. Default \code{NULL}.}
+\item{cluster}{Grouping for each cell in \code{inSCE}. A vector with equal
+length to the number of the cells in \code{inSCE}, or a single character for
+retriving \code{colData} variable. Default \code{NULL}, will run
+\code{runScranSNN} to obtain.}
 
-\item{seed}{An integer. Set the seed for random process that happens only in 
-"random" generation. Default \code{12345}.}
+\item{seed}{An integer. Random seed for clustering if \code{cluster} is not
+specified. Default \code{12345}.}
 }
 \value{
-A \linkS4class{SingleCellExperiment} object with pseudotime ordering 
-of the cells along the paths
+The input \code{inSCE} object with pseudotime ordering of the cells
+along the paths and the cluster label stored in \code{colData}, and other
+unstructured information in \code{metadata}.
 }
 \description{
-Wrapper for obtaining a pseudotime ordering of the cells by 
-projecting them onto the MST
+Wrapper for obtaining a pseudotime ordering of the cells by
+projecting them onto the minimum spanning tree (MST)
 }
 \examples{
-data("scExample", package = "singleCellTK")
-sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
-rowData(sce)$Symbol <- rowData(sce)$feature_name
-rownames(sce) <- rowData(sce)$Symbol
-sce <- runNormalization(sce, 
-                        normalizationMethod = "LogNormalize", 
-                        useAssay = "counts", 
-                        outAssayName = "logcounts")
-sce <- runDimReduce(inSCE = sce, 
-                    method = "scaterPCA", 
-                    useAssay = "logcounts", 
-                    reducedDimName = "PCA")
-sce <- runDimReduce(inSCE = sce, 
-                    method = "rTSNE", 
-                    useReducedDim = "PCA", 
-                    reducedDimName = "TSNE")
-sce <- runTSCAN (inSCE = sce, 
-                 useReducedDim = "PCA", 
-                 seed = NULL)
+data("mouseBrainSubsetSCE", package = "singleCellTK")
+mouseBrainSubsetSCE <- runTSCAN(inSCE = mouseBrainSubsetSCE,
+                                useReducedDim = "PCA_logcounts")
 }
 \author{
 Nida Pervaiz

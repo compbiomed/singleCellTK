@@ -1,3 +1,12 @@
+Changes in Version 2.6.1 (2022-06-23)
+================================================================================
+* Refactored scaling related parts of the workflow, including variable feature
+detection, dimension reduction and 2D embedding
+* Redesigned UI landing page and UI running prompt
+* Added marker table module across UI
+* Fixed bugs in TSCAN UI
+* Other minor bug fixes
+
 Changes in Version 2.6.0 (2022-04-28)
 ================================================================================
 * Updated version to match Bioconductor

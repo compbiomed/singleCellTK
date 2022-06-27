@@ -10,7 +10,6 @@ csl: ieee.csl
 ---
 
 ```{r develSetting, include=FALSE}
-doEval = FALSE
 knitr::opts_chunk$set(warning = FALSE)
 ```
 

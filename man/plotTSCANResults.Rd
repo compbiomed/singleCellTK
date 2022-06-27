@@ -2,47 +2,31 @@
 % Please edit documentation in R/runTSCAN.R
 \name{plotTSCANResults}
 \alias{plotTSCANResults}
-\title{Plot MST pseudotime values for cells}
+\title{Plot MST pseudotime values on cell 2D embedding}
 \usage{
-plotTSCANResults(inSCE, useReducedDim)
+plotTSCANResults(inSCE, useReducedDim = "UMAP")
 }
 \arguments{
 \item{inSCE}{Input \linkS4class{SingleCellExperiment} object.}
 
-\item{useReducedDim}{Saved dimension reduction name in \code{inSCE} object. 
+\item{useReducedDim}{Saved dimension reduction name in \code{inSCE} object.
 Required.}
 }
 \value{
-A plot with the pseudotime ordering of the cells by projecting them 
-onto the MST.
+A \code{.ggplot} object with the pseudotime ordering of the cells
+colored on a cell 2D embedding, and the MST path drawn on it.
 }
 \description{
-A wrapper function which visualizes outputs from the 
-\code{\link{runTSCAN}} function. Plots the pseudotime ordering of the cells 
-by projecting them onto the MST
+A wrapper function which visualizes outputs from the
+\code{\link{runTSCAN}} function. Plots the pseudotime ordering of the cells
+and project them onto the MST.
 }
 \examples{
-data("scExample", package = "singleCellTK")
-sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
-rowData(sce)$Symbol <- rowData(sce)$feature_name
-rownames(sce) <- rowData(sce)$Symbol
-sce <- runNormalization(sce, 
-                        normalizationMethod = "LogNormalize", 
-                        useAssay = "counts", 
-                        outAssayName = "logcounts")
-sce <- runDimReduce(inSCE = sce, 
-                    method = "scaterPCA", 
-                    useAssay = "logcounts", 
-                    reducedDimName = "PCA")
-sce <- runDimReduce(inSCE = sce, 
-                    method = "rTSNE", 
-                    useReducedDim = "PCA", 
-                    reducedDimName = "TSNE")
-sce <- runTSCAN (inSCE = sce, 
-                 useReducedDim = "PCA", 
-                 seed = NULL)
-plotTSCANResults(inSCE = sce, 
-                 useReducedDim = "TSNE")
+data("mouseBrainSubsetSCE", package = "singleCellTK")
+mouseBrainSubsetSCE <- runTSCAN(inSCE = mouseBrainSubsetSCE,
+                                useReducedDim = "PCA_logcounts")
+plotTSCANResults(inSCE = mouseBrainSubsetSCE,
+                 useReducedDim = "TSNE_logcounts")
 }
 \author{
 Nida Pervaiz

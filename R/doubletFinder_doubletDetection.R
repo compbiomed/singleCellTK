@@ -8,8 +8,8 @@
 
     ## Make merged real-artifical data
     if (verbose) {
-        print(paste("Creating artificial doublets for pN = ",
-                    pN[n] * 100, "%", sep = ""))
+        message(date(), " ...   Creating artificial doublets for pN = ",
+                    pN[n] * 100, "%")
     }
     n_doublets <- ceiling(n.real.cells / (1 - pN[n]) - n.real.cells)
     real.cells1 <- sample(real.cells, n_doublets, replace = TRUE)
@@ -21,12 +21,12 @@
     ## Pre-process Seurat object
     if (sct == FALSE) {
         if (verbose) {
-            print("Creating Seurat object...")
+          message(date(), " ...   Creating Seurat object")
         }
         seu_wdoublets <- Seurat::CreateSeuratObject(counts = data_wdoublets)
 
         if (verbose) {
-            print("Normalizing Seurat object...")
+          message(date(), " ...   Normalizing Seurat object")
         }
         seu_wdoublets <- Seurat::NormalizeData(seu_wdoublets,
                                        normalization.method = orig.commands$NormalizeData.RNA@params$normalization.method,
@@ -36,7 +36,7 @@
         )
 
         if (verbose) {
-            print("Finding variable genes...")
+          message(date(), " ...   Finding variable genes")
         }
         seu_wdoublets <- Seurat::FindVariableFeatures(seu_wdoublets,
                                               selection.method = orig.commands$FindVariableFeatures.RNA$selection.method,
@@ -53,7 +53,7 @@
         )
 
         if (verbose) {
-            print("Scaling data...")
+          message(date(), " ...   Scaling data")
         }
         seu_wdoublets <- Seurat::ScaleData(
             seu_wdoublets,
@@ -68,7 +68,7 @@
         )
 
         if (verbose) {
-            print("Running PCA...")
+          message(date(), " ...   Running PCA")
         }
         seu_wdoublets <- Seurat::RunPCA(
             seu_wdoublets,
@@ -83,17 +83,17 @@
 
     if (sct == TRUE) {
         if (verbose) {
-            print("Creating Seurat object...")
+            message(date(), " ...   Creating Seurat object")
         }
         seu_wdoublets <- Seurat::CreateSeuratObject(counts = data_wdoublets)
 
         if (verbose) {
-            print("Running SCTransform...")
+          message(date(), " ...   Running SCTransform")
         }
         seu_wdoublets <- Seurat::SCTransform(seu_wdoublets)
 
         if (verbose) {
-            print("Running PCA...")
+          message(date(), " ...   Running PCA")
         }
         seu_wdoublets <- Seurat::RunPCA(seu_wdoublets,
                                 npcs = length(PCs), seed.use = seed,
@@ -103,7 +103,7 @@
 
     ## Compute PC distance matrix
     if (verbose) {
-        print("Calculating PC distance matrix...")
+      message(date(), " ...   Calculating PC distance matrix")
     }
     nCells <- nrow(seu_wdoublets@meta.data)
     pca.coord <- seu_wdoublets@reductions$pca@cell.embeddings[, PCs]
@@ -114,7 +114,7 @@
     ## Pre-order PC distance matrix prior to iterating across pK
     ## for pANN computations
     if (verbose) {
-        print("Defining neighborhoods...")
+      message(date(), " ...   Defining neighborhoods")
     }
 
     for (i in seq(n.real.cells)) {
@@ -128,11 +128,11 @@
     ## Compute pANN across pK sweep
 
     if (verbose) {
-        print("Computing pANN across all pK...")
+      message(date(), " ...   Computing pANN across all pK")
     }
     for (k in seq_along(pK)) {
         if (verbose) {
-            print(paste("pK = ", pK[k], "...", sep = ""))
+            message(date(), " ...   pK = ", pK[k])
         }
         pk.temp <- round(nCells * pK[k])
         pANN <- as.data.frame(matrix(0L, nrow = n.real.cells, ncol = 1))
@@ -362,7 +362,7 @@ runDoubletFinder <- function(inSCE,
     sample <- rep(1, ncol(inSCE))
   }
 
-  message(paste0(date(), " ... Running 'doubletFinder'"))
+  message(date(), " ... Running 'doubletFinder'")
 
   doubletScore <- rep(NA, ncol(inSCE))
   doubletLabel <- rep(NA, ncol(inSCE))
@@ -584,7 +584,7 @@ runDoubletFinder <- function(inSCE,
     n_real.cells <- length(real.cells)
     n_doublets <- round(n_real.cells/(1 - pN) - n_real.cells)
     if (verbose) {
-      print(paste("Creating",n_doublets,"artificial doublets...",sep=" "))
+      message(date(), " ...   Creating", n_doublets, "artificial doublets")
     }
     real.cells1 <- sample(real.cells, n_doublets, replace = TRUE)
     real.cells2 <- sample(real.cells, n_doublets, replace = TRUE)
@@ -639,13 +639,13 @@ runDoubletFinder <- function(inSCE,
 
     if (sct == TRUE) {
       #require(sctransform)
-      print("Creating Seurat object...")
+      message(date(), " ...   Creating Seurat object")
       seu_wdoublets <- Seurat::CreateSeuratObject(counts = data_wdoublets)
 
-      print("Running SCTransform...")
+      message(date(), " ...   Running SCTransform")
       seu_wdoublets <- Seurat::SCTransform(seu_wdoublets)
 
-      print("Running PCA...")
+      message(date(), " ...   Running PCA")
       seu_wdoublets <- Seurat::RunPCA(seu_wdoublets, npcs = length(PCs))
       pca.coord <- seu_wdoublets@reductions$pca@cell.embeddings[ , PCs]
       cell.names <- rownames(seu_wdoublets@meta.data)

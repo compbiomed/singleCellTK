@@ -2,8 +2,8 @@
 % Please edit documentation in R/htmlReports.R
 \name{reportSeuratRun}
 \alias{reportSeuratRun}
-\title{Generates an HTML report for Seurat Run (including Normalization, 
- Feature Selection, Dimensionality Reduction & Clustering) and returns the 
+\title{Generates an HTML report for Seurat Run (including Normalization,
+ Feature Selection, Dimensionality Reduction & Clustering) and returns the
  SCE object with the results computed and stored inside the object.}
 \usage{
 reportSeuratRun(
@@ -36,18 +36,18 @@ reportSeuratRun(
 \item{inSCE}{Input \code{\link[SingleCellExperiment]{SingleCellExperiment}}
 object.}
 
-\item{biological.group}{A character value that specifies the name of the 
-\code{colData()} column to use as the main biological group in the Seurat 
+\item{biological.group}{A character value that specifies the name of the
+\code{colData()} column to use as the main biological group in the Seurat
 report for tSNE & UMAP visualization.}
 
-\item{phenotype.groups}{A character value that specifies the name of the 
-\code{colData()} column to use as additional phenotype variables in the 
+\item{phenotype.groups}{A character value that specifies the name of the
+\code{colData()} column to use as additional phenotype variables in the
 Seurat report for tSNE & UMAP visualization.}
 
-\item{variable.features}{A numeric value indicating the number of top 
+\item{variable.features}{A numeric value indicating the number of top
 variable genes to identify in the report. Default is \code{2000}.}
 
-\item{pc.count}{A numeric value indicating the number of principal 
+\item{pc.count}{A numeric value indicating the number of principal
 components to use in the analysis workflow. Default is \code{50}.}
 
 \item{runHVG}{A logical value indicating if feature selection should be run
@@ -65,7 +65,7 @@ be visualized for the principal components. Default is \code{FALSE}.}
 \item{plotElbowPlot}{A logical value indicating if the ElbowPlot should be
 visualized for the principal components. Default is \code{FALSE}.}
 
-\item{plotHeatmaps}{A logical value indicating if the Heatmaps should be 
+\item{plotHeatmaps}{A logical value indicating if the Heatmaps should be
 visualized for the principal components. Default is \code{FALSE}.}
 
 \item{runClustering}{A logical value indicating if Clustering should be
@@ -84,24 +84,24 @@ for clustering. Default \code{0.3}.}
 \item{maxResolution}{A numeric value indicating the maximum resolution to use
 for clustering. Default \code{1.5}.}
 
-\item{outputFile}{Specify the name of the generated output HTML file. 
-If \code{NULL} then the output file name will be based on the name of the 
+\item{outputFile}{Specify the name of the generated output HTML file.
+If \code{NULL} then the output file name will be based on the name of the
 Rmarkdown template. Default \code{NULL}.}
 
-\item{outputPath}{Specify the name of the output directory to save the 
-rendered HTML file. If \code{NULL} the file is stored to the current 
+\item{outputPath}{Specify the name of the output directory to save the
+rendered HTML file. If \code{NULL} the file is stored to the current
 working directory. Default \code{NULL}.}
 
-\item{subtitle}{A character value specifying the subtitle to use in the 
+\item{subtitle}{A character value specifying the subtitle to use in the
 report. Default \code{NULL}.}
 
-\item{authors}{A character value specifying the names of the authors to use 
+\item{authors}{A character value specifying the names of the authors to use
 in the report. Default \code{NULL}.}
 
-\item{showSession}{A logical value indicating if session information 
+\item{showSession}{A logical value indicating if session information
 should be displayed or not. Default is \code{FALSE}.}
 
-\item{pdf}{A logical value indicating if a pdf should also be generated for 
+\item{pdf}{A logical value indicating if a pdf should also be generated for
 each figure in the report. Default is \code{FALSE}.}
 
 \item{forceRun}{A logical value indicating if all computations previously
@@ -113,7 +113,7 @@ A \code{\link[SingleCellExperiment]{SingleCellExperiment}} object
  with computations stored.
 }
 \description{
-Generates an HTML report for Seurat Run (including Normalization, 
- Feature Selection, Dimensionality Reduction & Clustering) and returns the 
+Generates an HTML report for Seurat Run (including Normalization,
+ Feature Selection, Dimensionality Reduction & Clustering) and returns the
  SCE object with the results computed and stored inside the object.
 }

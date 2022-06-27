@@ -35,7 +35,6 @@ shinyPanelDiffex <- fluidPage(
               selected = NULL, 
               multiple = FALSE,
               options = NULL)
-            #uiOutput("deAssay")
           )
         ),
         useShinyjs(),

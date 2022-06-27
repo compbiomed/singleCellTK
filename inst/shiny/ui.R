@@ -1,5 +1,6 @@
 # Check if CRAN packages are installed, otherwise prompt user to install them.
-requiredPackages <- c("shinyjqui", "shinyWidgets", "shinythemes", "shinyFiles")
+requiredPackages <- c("shinyjqui", "shinyWidgets", "shinythemes", "shinyFiles",
+                      "shinyBS", "shinybusy", "tidyverse")
 if(!all(requiredPackages %in% installed.packages())){
   missingPackages <- requiredPackages[which(requiredPackages %in% installed.packages() == FALSE)]
   message("Installing missing packages: ")
@@ -248,7 +249,7 @@ shinyUI(
         "Trajectory Analysis",
         tabPanel("TSCAN", value = "TSCANWorkflow", shinyPanelTSCAN)
       ),
-      
+
       tabPanel("Sample Size Calculator", shinyPanelSubsample),
       navbarMenu(
         "Curated Workflows",
@@ -266,14 +267,14 @@ shinyUI(
                tags$head(
                  tags$script(HTML(jsScriptAutoScrollConsole))
                ),
-               hidden(div(id = "consolePanel", style = "overflow-y:scroll; 
-                          max-height: 220px; width: 100%; background-color: white; 
+               hidden(div(id = "consolePanel", style = "overflow-y:scroll;
+                          max-height: 220px; width: 100%; background-color: white;
                           position: relative; bottom: 0; align: centre; padding: 0px;",
-                          verbatimTextOutput(outputId="consoleText", placeholder = TRUE) 
+                          verbatimTextOutput(outputId="consoleText", placeholder = TRUE)
                ))
         )
       ),
-      
+
       # fluidRow(
       #   column(12, id = "consoleDiv", align = "right",
       #          actionButton(inputId="interpretToggle", label = "Interpret"),

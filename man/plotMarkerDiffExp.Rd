@@ -173,6 +173,4 @@ plotMarkerDiffExp(sce.w)
 }
 \author{
 Yichen Wang
-
-Yichen Wang
 }

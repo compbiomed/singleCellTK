@@ -139,9 +139,6 @@ discreteColorPalette <- function(n, palette = c("random", "ggplot", "celda"),
     colors <- grDevices::hcl(h = hues, l = 65, c = 100)[seq_len(n)]
   } else if (palette == "celda") {
     colors <- distinctColors(n, ...)
-  } else {
-    stop("Given palette '", palette, "' is not supported. Please choose from ",
-         "'ggplot', 'celda' or 'random'.")
   }
   return(colors)
 }

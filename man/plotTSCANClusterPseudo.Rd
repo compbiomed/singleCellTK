@@ -2,65 +2,45 @@
 % Please edit documentation in R/runTSCAN.R
 \name{plotTSCANClusterPseudo}
 \alias{plotTSCANClusterPseudo}
-\title{Run plotTSCANClusterPseudo function to plot TSCAN-derived pseudotimes 
-around cluster in the dataset.}
+\title{Plot TSCAN pseudotime rooted from given cluster}
 \usage{
-plotTSCANClusterPseudo(inSCE, useClusters, pathIndex = NULL, useReducedDim)
+plotTSCANClusterPseudo(
+  inSCE,
+  useCluster,
+  useReducedDim = "UMAP",
+  combinePlot = c("all", "none")
+)
 }
 \arguments{
 \item{inSCE}{Input \linkS4class{SingleCellExperiment} object.}
 
-\item{useClusters}{Choose the cluster containing the branch point in the 
-data in order to recompute the pseudotimes so that the root lies at the 
-cluster center, allowing us to detect genes that are associated with the 
-divergence of the branches.}
+\item{useCluster}{The cluster to be regarded as the root, has to existing in
+\code{colData(inSCE)$TSCAN_clusters}.}
 
-\item{pathIndex}{Path index for which the pseudotime values should be used.
-PathIndex corresponds to the terminal node of specific path from the root 
-node to the terminal node.}
-
-\item{useReducedDim}{Saved dimension reduction name in the 
+\item{useReducedDim}{Saved dimension reduction name in the
 SingleCellExperiment object. Required.}
+
+\item{combinePlot}{Must be either \code{"all"} or \code{"none"}. \code{"all"}
+will combine plots of pseudotime along each path into a single \code{.ggplot}
+object, while \code{"none"} will output a list of plots. Default
+\code{"all"}.}
 }
 \value{
-A plots with the TSCAN-derived pseudotimes of all the cells along the
-path belonging to the cluster
+\item{combinePlot = "all"}{A \code{.ggplot} object}
+\item{combinePlot = "none"}{A list of \code{.ggplot}}
 }
 \description{
-A wrapper function which visualizes outputs from the 
-\code{\link{runTSCANClusterDEAnalysis}} function. Each point is a cell in the
-cluster and is colored by its pseudotime value along the path to which it was
-assigned.
+This function finds all paths that root from a given cluster
+\code{useCluster}. For each path, this function plots the recomputed
+pseudotime starting from the root on a scatter plot which contains cells only
+in this cluster. MST has to be pre-calculated with \code{\link{runTSCAN}}.
 }
 \examples{
-data("scExample", package = "singleCellTK")
-sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
-rowData(sce)$Symbol <- rowData(sce)$feature_name
-rownames(sce) <- rowData(sce)$Symbol
-sce <- runNormalization(sce, 
-                        normalizationMethod = "LogNormalize", 
-                        useAssay = "counts", 
-                        outAssayName = "logcounts")
-sce <- runDimReduce(inSCE = sce, 
-                    method = "scaterPCA", 
-                    useAssay = "logcounts", 
-                    reducedDimName = "PCA")
-sce <- runDimReduce(inSCE = sce, 
-                    method = "rTSNE", 
-                    useReducedDim = "PCA", 
-                    reducedDimName = "TSNE")
-sce <- runTSCAN (inSCE = sce, 
-                 useReducedDim = "PCA", 
-                 seed = NULL)
-terminalNodes <- listTSCANTerminalNodes(sce, analysisName = "Pseudotime")
-sce <- runTSCANDEG(inSCE = sce, 
-                   pathIndex = terminalNodes[1])
-sce <- runTSCANClusterDEAnalysis(inSCE = sce, 
-                                 useClusters = 1)
-plotTSCANClusterPseudo(inSCE = sce, 
-                       useClusters = 1, 
-                       pathIndex = NULL, 
-                       useReducedDim = "TSNE")
+data("mouseBrainSubsetSCE", package = "singleCellTK")
+mouseBrainSubsetSCE <- runTSCAN(inSCE = mouseBrainSubsetSCE,
+                                useReducedDim = "PCA_logcounts")
+plotTSCANClusterPseudo(mouseBrainSubsetSCE, useCluster = 1,
+                       useReducedDim = "TSNE_logcounts")
 }
 \author{
 Nida Pervaiz

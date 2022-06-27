@@ -28,7 +28,7 @@ low-dimension representation to perform the clustering algorithm on. Default
 \item{clusterName}{A single \code{character}, specifying the name to store
 the cluster label in \code{\link{colData}}. Default \code{"KMeans_cluster"}.}
 
-\item{nComp}{An \code{integer}. The number of components to use for K-Means. 
+\item{nComp}{An \code{integer}. The number of components to use for K-Means.
 Default \code{10}. See Detail.}
 
 \item{nIter}{An \code{integer}, the maximum number of iterations allowed.
@@ -45,12 +45,12 @@ Default \code{12345}.}
 abbreviated. Default \code{"Hartigan-Wong"}.}
 }
 \value{
-The input \linkS4class{SingleCellExperiment} object with 
-\code{factor} cluster labeling updated in 
+The input \linkS4class{SingleCellExperiment} object with
+\code{factor} cluster labeling updated in
 \code{colData(inSCE)[[clusterName]]}.
 }
 \description{
-Perform KMeans clustering on a 
+Perform KMeans clustering on a
 \linkS4class{SingleCellExperiment} object, with \code{\link[stats]{kmeans}}.
 }
 \examples{

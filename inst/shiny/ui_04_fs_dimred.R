@@ -40,17 +40,17 @@ shinyPanelFS_DimRed <- fluidPage(
         ),
         panel(
           heading = "2. Select number of variable features",
-          disabled(selectInput("hvgMetricSelect", "Select variability metric:",
-                               choices = NULL)),
-          disabled(numericInput(
+          selectInput("hvgMetricSelect", "Select variability metric:",
+                      choices = NULL),
+          numericInput(
             "hvgNumberSelect", "Select the number of highly variable features:",
-            value = 2000, step = 100, min = 0)),
-          disabled(textInput(
+            value = 2000, step = 100, min = 0),
+          textInput(
             inputId = "hvgSubsetName",
             label = "Name of the feature subset:",
             value = NULL
-          )),
-          disabled(actionButton("hvgSubsetRun", "Run"))
+          ),
+          actionButton("hvgSubsetRun", "Run")
         )
       ),
       column(
@@ -66,26 +66,21 @@ shinyPanelFS_DimRed <- fluidPage(
                                            color = "danger", 
                                            icon = icon("times"), size = "xs"), 
                                 align = "right"),
-                       disabled(
-                         selectInput(
-                           inputId = "hvgPlotMethod",
-                           label = "Select variability metric (created in step 1): ",
-                           choices = NULL
-                         )
+                       
+                       selectInput(
+                         inputId = "hvgPlotMethod",
+                         label = "Select variability metric (created in step 1): ",
+                         choices = NULL
                        ),
-                       disabled(
-                         selectInput(
-                           inputId = "hvgPlotSubsetSelect",
-                           label = "Select feature subset (created in step 2): ",
-                           choices = "None"
-                         )
+                       selectInput(
+                         inputId = "hvgPlotSubsetSelect",
+                         label = "Select feature subset (created in step 2): ",
+                         choices = "None"
                        ),
-                       disabled(
-                         numericInput(
-                           inputId = "hvgPlotNLabel",
-                           label = "Number of features to label:",
-                           value = 20, min = 0, step = 10
-                         )
+                       numericInput(
+                         inputId = "hvgPlotNLabel",
+                         label = "Number of features to label:",
+                         value = 20, min = 0, step = 10
                        ),
                        selectInput(
                          inputId = "hvgPlotFeatureDisplay",
@@ -166,7 +161,8 @@ shinyPanelFS_DimRed <- fluidPage(
                             inputId = "dimRedNumberDims",
                             label = "Number of dimensions:",
                             value = 50,
-                            step = 1
+                            step = 1,
+                            min = 2
                           ),
                           conditionalPanel(
                             condition = "input.dimRedPlotMethod != 'seuratICA'",
@@ -216,7 +212,7 @@ shinyPanelFS_DimRed <- fluidPage(
                       )))),
       nonLinearWorkflowUI(id = "nlw-dr")
     ),
-
+    
     tabPanel(title = "Embedding",
              h5(
                tags$a(
@@ -318,45 +314,61 @@ shinyPanelFS_DimRed <- fluidPage(
                           actionButton("runDimred_tsneUmap", "Run")
                         )
                       ))),
-               column(8,
-                      fluidRow(column(
-                        12,
-                        tags$div(class = "dimRedTSNEUMAP_plotTabset_class",
-                                 tabPanel(
-                                   title = "Plot",
-                                   panel(heading = "Plot",
-                                         fluidRow(
-                                           column(4, dropdown(
-                                             fluidRow(
-                                               column(12,
-                                                      fluidRow(actionBttn(inputId = "closeDropDownDimRedEmbedding", label = NULL, style = "simple", color = "danger", icon = icon("times"), size = "xs"), align = "right"),
-                                                      selectizeInput(
-                                                        inputId = "selectRedDimPlot_tsneUmap",
-                                                        label = "Select reducedDim:",
-                                                        choices = NULL
-                                                      ),
-                                                      actionBttn(
-                                                        inputId = "updateRedDimPlot_tsneUmap",
-                                                        label = "Update",
-                                                        style = "bordered",
-                                                        color = "primary",
-                                                        size = "sm"
-                                                      )
-                                               )
-                                             ),
-                                             inputId = "dropDownDimRedEmbedding",
-                                             icon = icon("cog"),
-                                             status = "primary",
-                                             circle = FALSE,
-                                             inline = TRUE
-                                           )),
-                                           column(7, fluidRow(h6("Scatterplot of cells on a 2D embedding"), align="center"))
-                                         ),
-                                         hr(),
-                                         br(),
-                                         plotlyOutput(outputId = "plotDimRed_tsneUmap"))
-                                 ))
-                      )))
+               column(
+                 8,
+                 fluidRow(
+                   column(
+                     12,
+                     tags$div(
+                       class = "dimRedTSNEUMAP_plotTabset_class",
+                       tabPanel(
+                         title = "Plot",
+                         panel(
+                           heading = "Plot",
+                           fluidRow(
+                             column(
+                               4, 
+                               dropdown(
+                                 fluidRow(
+                                   column(
+                                     12,
+                                     fluidRow(
+                                       actionBttn(
+                                         inputId = "closeDropDownDimRedEmbedding", 
+                                         label = NULL, style = "simple", 
+                                         color = "danger", icon = icon("times"), 
+                                         size = "xs"), align = "right"
+                                     ),
+                                     selectizeInput(
+                                       inputId = "selectRedDimPlot_tsneUmap",
+                                       label = "Select reducedDim:",
+                                       choices = currreddim
+                                     ),
+                                     actionBttn(
+                                       inputId = "updateRedDimPlot_tsneUmap",
+                                       label = "Update",
+                                       style = "bordered",
+                                       color = "primary",
+                                       size = "sm"
+                                     )
+                                   )
+                                 ),
+                                 inputId = "dropDownDimRedEmbedding",
+                                 icon = icon("cog"),
+                                 status = "primary",
+                                 circle = FALSE,
+                                 inline = TRUE
+                               )),
+                             column(
+                               7, 
+                               fluidRow(h6("Scatterplot of cells on a 2D embedding"), 
+                                        align="center"))
+                           ),
+                           hr(),
+                           br(),
+                           plotlyOutput(outputId = "plotDimRed_tsneUmap"))
+                       ))
+                   )))
              ))
   )
 )

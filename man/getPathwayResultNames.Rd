@@ -19,7 +19,7 @@ A character vector of valid pathway analysis result names.
 List pathway analysis result names
 }
 \details{
-Pathway analysis results will be stored as matrices in 
+Pathway analysis results will be stored as matrices in
 \code{reducedDims} slot of \code{inSCE}. This function lists the result names
 stored in \code{metadata} slot when analysis is performed.
 }

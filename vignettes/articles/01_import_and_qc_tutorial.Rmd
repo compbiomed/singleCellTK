@@ -24,7 +24,7 @@ knitr::opts_chunk$set(echo = TRUE, eval = TRUE, message=FALSE, warning=FALSE)
 
 Single Cell Toolkit (singleCellTK, SCTK) is a package that works on single-cell RNA-seq (scRNAseq) dataset. SCTK allows users to import multiple datasets, perform quality control and a series of preprocessing, get clustering on cells and markers of clusters, and run various downstream analysis. Meanwhile, SCTK also wraps curated workflows for [celda](https://www.camplab.net/celda/) and [Seurat](https://satijalab.org/seurat/). 
 
-The SCTK tutorial series start from importing, QC and filtering. After this, users can go through either the [A La Carte Workflow](A_la_carte_workflow.html) or the Curated Workflows ([Seurat](cnsl_seurat_curated_workflow.html) or [Celda](celda_curated_workflow.html)). These tutorials will take the real-world scRNAseq dataset as an example, which consists of 2,700 Peripheral Blood Mononuclear Cells (PBMCs) collected from a healthy donor, namingly PBMC3K. This dataset is available from 10X Genomics and can be found on the 10X website.
+The SCTK tutorial series start from importing, QC and filtering. After this, users can go through either the [A La Carte Workflow](A_la_carte_workflow.html) or the Curated Workflows ([Seurat](seurat_curated_workflow.html) or [Celda](celda_curated_workflow.html)). These tutorials will take the real-world scRNAseq dataset as an example, which consists of 2,700 Peripheral Blood Mononuclear Cells (PBMCs) collected from a healthy donor, namingly PBMC3K. This dataset is available from 10X Genomics and can be found on the 10X website.
 
 Before starting the analysis from either UI or console, users should have SCTK properly installed first. Please refer to the [Installation](installation.html) documentation for detail of installing the `singleCellTK` package and relevant dependencies. Alternatively, users can also access the functionality by visiting our <a href="https://sctk.bu.edu/" target="_blank">online web server deployment</a> via a Boston University network, or using a stand-alone [docker image](https://hub.docker.com/r/campbio/sctk_shiny). 
 
@@ -46,9 +46,14 @@ After starting the UI, the landing page will be for importing the scRNAseq data.
 
 ![import](ui_screenshots/ui_tutorial/import.png)\
 
-1. In step 1 **"Choose data source"**, check the radio button **"Import example datasets"**.
-2. In step 2 **"Choose Example Dataset"**, select the option **"PBMC 3K (10X)"**, and click on button **"Add To Sample List"**.
-3. In step 3 **"Import"**, users will see a new row added for the dataset, in the table **"Samples to Import"**. Then users should click on button **"Import"** right below the table, in order to successfully load the data in to the toolkit.
+1. In collapse box **"1. Add sample to import"**, check the radio button **"Import example datasets"**.
+2. After step 1, a selection will shown for choosing example datasets. Here we select the default option "PBMC 3K (10X)".
+3. Click on button **"Add To Sample List"**. At this point, the second collapse box **"2. Create dataset"** will automatically pop up. 
+4. In collapse box **"2. Create dataset"**, click on button **"Import"**, to start loading the dataset.
+
+![import](ui_screenshots/ui_tutorial/import2.png)\
+
+After successfully importing, the third collapse box will pop up and show users the basic summary stats of the imported dataset. Meanwhile, users can set feature display options here. Most of the time, the dataset has default feature ID (usually seen as row names of a matrix) together with other types of ID (e.g. symbol) in the feature metadata. The first option **"Set feature ID"** sets the type of default feature ID, which should be unique and has no `NA` value. The second option **"Set feature names to be displayed in downstream visualization"** does what it says. When we need to show features on a plot, such as a heatmap or a volcano plot, usually it is better to show gene symbols rather than ensembl IDs. 
 
 ````{=html}
 </div>
@@ -110,7 +115,7 @@ sce <- importCellRanger(sampleDirs = "otherCellRangerData",
 
 Quality control of cells is often needed before downstream analyses such as dimension reduction and clustering. Typical filtering procedures include exclusion of poor quality cells with low numbers of counts/UMIs, estimation and removal of ambient RNA, and identification of potential doublet/multiplets. Many tools and packages are available to perform these operations and users are free to apply their tool(s) of choice with SCTK. 
 
-Below is a quick example of how to perform standard QC before heading to the downstream analyses. If your data is already QC'ed or you decide to skip this step, you can directly move to the workflows ([A La Carte](A_la_carte_workflow.html), [Seurat](cnsl_seurat_curated_workflow.html) or [Celda](celda_curated_workflow.html)). For this tutorial, we will only run one doublet detection algorithm ([scDblFinder](https://bioconductor.org/packages/release/bioc/html/scDblFinder.html)) and one decontamination algorithm ([decontX](https://rdrr.io/bioc/celda/man/decontX.html)). We will also quantify the percentage of mitochondrial genes in each cell as this is often used as a measure of cell viability. 
+Below is a quick example of how to perform standard QC before heading to the downstream analyses. If your data is already QC'ed or you decide to skip this step, you can directly move to the workflows ([A La Carte](A_la_carte_workflow.html), [Seurat](seurat_curated_workflow.html) or [Celda](celda_curated_workflow.html)). For this tutorial, we will only run one doublet detection algorithm ([scDblFinder](https://bioconductor.org/packages/release/bioc/html/scDblFinder.html)) and one decontamination algorithm ([decontX](https://rdrr.io/bioc/celda/man/decontX.html)). We will also quantify the percentage of mitochondrial genes in each cell as this is often used as a measure of cell viability. 
 
 ````{=html}
 <!--Remember to change tabset id-->

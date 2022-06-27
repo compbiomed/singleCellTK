@@ -1,0 +1,165 @@
+---
+title: "2D Embedding"
+author: "Irzam Sarfraz"
+output:
+  html_document:
+    toc: true
+    toc_depth: 2
+bibliography: references.bib
+csl: ieee.csl
+---
+
+```{r develSetting, include=FALSE}
+knitr::opts_chunk$set(warning = FALSE)
+```
+
+````{=html}
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+````
+
+## Introduction
+
+Non-linear 2D embedding algorithms can be run through Single-Cell Toolkit (SCTK) using both interactive shiny application and R console. For the interactive analysis, the toolkit offers a streamlined workflow to both compute the embedding and then visualize the results. For the console analysis, SCTK offers a generic function `runDimReduce()` to compute the 2D embedding.
+
+Methods available with the toolkit include tSNE and UMAP from *Seurat* [@Butler2018][@Stuart2019][@Satija2017][@Hao2021] package, tSNE from *Rtsne* [@Maaten2014][@Maaten2008] package and UMAP from *scater* [@McCarthy2017] package. 
+
+To view detailed instructions on how to use these methods, please select "Interactive Analysis", from the tabs below, for the usage in Shiny application or "Console Analysis" for using these methods in R console: 
+
+## Workflow Guide
+
+````{=html}
+<div class="tab">
+  <button class="tablinks" onclick="openTab(event, 'interactive')" id="ia-button">Interactive Analysis</button>
+  <button class="tablinks" onclick="openTab(event, 'console')" id="console-button">Console Analysis</button>
+</div>
+
+<div id="interactive" class="tabcontent">
+````
+
+In general, the UI offers options for selection of data items and choice of parameters on the left side, and a visualization panel on the right side of the interface. 
+
+1. To begin with, click on the **"Feature Selection & Dimensionality Reduction"** tab from the top menu. This workflow assumes that before proceeding towards computation of 2D embedding, data has been uploaded, filtered, normalized and dimension reduction has been performed through the preceding tabs.
+
+![](ui_screenshots/embedding/dr_1.PNG)\
+
+2. Select "Embedding" sub-tab:
+
+![](ui_screenshots/embedding/e1.png)\
+
+3. Select an input matrix to use with the tSNE or UMAP algorithm. A dimension reduction is recommended and can be obtained from [Dimension Reduction](dimensionality_reduction.html) tab. 
+4. Select a specific tSNE or UMAP method for computation. Available methods include tSNE and UMAP from *Seurat* package, tSNE from *Rtsne* package and UMAP from *scater* package.
+5. Specify a name for the output embedding. 
+6. (Optional) If selected input in step 3. is an feature expression matrix, users can specify preprocessing here before the embedding is computed. HVG list refers to a feature subset which could be obtained in [Feature Selection](feature_selection.html) tab. Preprocessing is only available for scater UMAP and Rtsne tSNE methods. 
+7. Number of top dimensions (components) to use from the input dimension reduction (or the PCA generated with preprocessing specified by step 6.). Methods for determining this number have been provided in [Dimension Reduction](dimensionality_reduction.html) tab. And we recommend using the same number for the dimension reduction used for [clustering](clustering.html), in order to get the best visualization of the clustering result.
+8. Embedding method specific parameters. These vary when different methods are selected in step 3. 
+9. Set the seed of randomized computation process. A fixed seed generates reproducible result each run. 
+10. Start computation of selected method with the specified parameters. 
+11. Once computation is complete, a scatter plot of the cells on the selected 2D embedding is shown in the panel with additional options available in step 12.
+
+![](ui_screenshots/embedding/e2.png)\
+
+12. Users can select another computed embedding to visualize through dropdown box.
+
+![](ui_screenshots/embedding/e3.png)\
+
+````{=html}
+</div>
+<div id="console" class="tabcontent">
+````
+
+Here we show how to generate 2D embedding with the generic function `runDimReduce()`, 
+together with the method to visualize and explore the results. 
+
+**1. Compute 2D embedding**
+
+```{r "dm_overview_1", eval = FALSE}
+sce <- runDimReduce(inSCE = sce, method = "scaterUMAP", useReducedDim = "PCA", reducedDimName = "UMAP")
+```
+
+The generic function `runDimReduce()` allows `"scaterUMAP"` from *scater*, `"rTSNE"` from *Rtsne*, `"seuratUMAP"` and `"seuratTSNE"` from *Seurat* as options of 2D embedding for `method` argument. For detailed parameter description, please click on the function name to be redirected to its reference page. 
+
+**2. Visualization**
+
+There are multiple functions that can create scatter plot using dimensions stored in `reducedDims` slot of the SCE object. 
+
+```{r "dm_overview_2", eval=FALSE}
+# Make scatter plot without annotation
+plotDimRed(sce, useReduction = "UMAP")
+# Short-cut for embedding named as "UMAP"
+plotUMAP(sce)
+# Customizing scatter plot with more information from cell metadata (colData)
+plotSCEDimReduceColData(sce, colorBy = "cluster", reducedDimName = "UMAP")
+# Color scatter plot with feature expression
+plotSCEDimReduceFeatures(sce, feature = "CD8A", reducedDimName = "UMAP")
+```
+
+````{=html}
+<details>
+  <summary><b>Example</b></summary>
+````  
+  
+```{r "dm_console_example", message = FALSE, warning = FALSE}
+library(singleCellTK)
+sce <- importExampleData("pbmc3k")
+sce <- runNormalization(sce, normalizationMethod = "LogNormalize", useAssay = "counts", outAssayName = "logcounts")
+sce <- runFeatureSelection(sce, useAssay = "counts", method = "modelGeneVar")
+sce <- setTopHVG(sce, method = "modelGeneVar", hvgNumber = 2000, featureSubsetName = "HVG")
+sce <- runDimReduce(sce, method = "seuratPCA", useAssay = "logcounts", 
+                    scale = TRUE, useFeatureSubset = "HVG", reducedDimName = "PCA",
+                    nComponents = 50)
+# Run UMAP on the PCA reducedDim
+sce <- runDimReduce(sce, method = "scaterUMAP", useReducedDim = "PCA", 
+                    reducedDimName = "UMAP")
+# Plot UMAP
+plotDimRed(sce, useReduction = "UMAP")
+```
+
+````{=html}
+</details> 
+<details>
+  <summary><b>Individual Functions</b></summary>
+````
+
+While the `runDimReduce()` wrapper function can be used for all 2D embedding algorithms including tSNE and UMAP, and additionally for dimension reduction methods like PCA and ICA, separate functions are also available for all of the included methods. The following functions can be used for specific methods:
+
+Running tSNE from *Rtsne* package:
+
+```{r "getTSNE", eval = FALSE}
+sce <- getTSNE(inSCE = sce, useReducedDim = "PCA", reducedDimName = "TSNE")
+```
+
+Using the *Seurat* tSNE wrapper is recommended only in the [Seurat Curated Workflow](seurat_curated_workflow.html).
+
+```{r "runSeuratTSNE", eval = FALSE}
+sce <- runSeuratFindHVG(inSCE = sce, useAssay = "seuratNormData")
+sce <- runSeuratPCA(inSCE = sce, useAssay = "seuratNormData", scale = TRUE, reducedDimName = "seuratPCA")
+  sce <- runSeuratTSNE(inSCE = sce, useReduction = "pca", reducedDimName = "seuratTSNE")
+```
+
+Running UMAP from *scater* package:
+
+```{r "getUMAP", eval = FALSE}
+sce <- getUMAP(inSCE = sce, useReducedDim = "PCA", reducedDimName = "UMAP")
+```
+
+Using the *Seurat* UMAP wrapper is recommended only in the [Seurat Curated Workflow](seurat_curated_workflow.html).
+  
+```{r "runSeuratUMAP", eval = FALSE}
+sce <- runSeuratFindHVG(inSCE = sce, useAssay = "seuratNormData")
+sce <- runSeuratPCA(inSCE = sce, useAssay = "seuratNormData", scale = TRUE, reducedDimName = "seuratPCA")
+sce <- runSeuratUMAP(inSCE = sce, useReduction = "pca", reducedDimName = "seuratUMAP")
+```
+
+````{=html} 
+</details> 
+</div>
+<script>
+document.getElementById("ia-button").click();
+</script>
+</body>
+````
+
+## References
