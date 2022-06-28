@@ -16,7 +16,6 @@
 #' data("mouseBrainSubsetSCE")
 #' plotTSNE(mouseBrainSubsetSCE, colorBy = "level1class",
 #'          reducedDimName = "TSNE_counts")
-#'
 plotTSNE <- function(inSCE, colorBy=NULL, shape=NULL,
                      reducedDimName="TSNE", runTSNE=FALSE,
                      useAssay="logcounts"){

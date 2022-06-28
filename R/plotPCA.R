@@ -18,7 +18,6 @@
 #' data("mouseBrainSubsetSCE")
 #' plotPCA(mouseBrainSubsetSCE, colorBy = "level1class",
 #'         reducedDimName = "PCA_counts")
-#'
 plotPCA <- function(inSCE, colorBy=NULL, shape=NULL, pcX="PC1",
                     pcY="PC2", reducedDimName="PCA", runPCA=FALSE,
                     useAssay="logcounts"){

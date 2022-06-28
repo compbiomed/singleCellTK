@@ -45,5 +45,4 @@ Plot PCA run data from its components.
 data("mouseBrainSubsetSCE")
 plotPCA(mouseBrainSubsetSCE, colorBy = "level1class",
         reducedDimName = "PCA_counts")
-
 }

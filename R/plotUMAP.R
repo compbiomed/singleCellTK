@@ -17,9 +17,7 @@
 #' data(scExample, package = "singleCellTK")
 #' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 #' sce <- getUMAP(inSCE = sce, useAssay = "counts", reducedDimName = "UMAP")
-#' plotUMAP(sce, shape = "No Shape", reducedDimName = "UMAP",
-#'          runUMAP = TRUE, useAssay = "counts")
-#'
+#' plotUMAP(sce)
 plotUMAP <- function(inSCE, colorBy = NULL, shape = NULL,
                      reducedDimName = "UMAP", runUMAP = FALSE,
                      useAssay = "logcounts"){

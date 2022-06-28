@@ -39,5 +39,4 @@ Plot t-SNE plot on dimensionality reduction data run from t-SNE method.
 data("mouseBrainSubsetSCE")
 plotTSNE(mouseBrainSubsetSCE, colorBy = "level1class",
          reducedDimName = "TSNE_counts")
-
 }
