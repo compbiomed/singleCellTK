@@ -34,7 +34,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.6.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.0</span>
       </span>
     </div>
 
@@ -50,17 +50,20 @@
   <a href="articles/installation.html">Installation</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Tutorials
      
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="articles/console_analysis_tutorial.html">A La Carte Workflow - PBMC3K (R Console)</a>
+      <a href="articles/01_import_and_qc_tutorial.html">Importing and QC - PBMC3K</a>
     </li>
     <li>
-      <a href="articles/cnsl_seurat_curated_workflow.html">Seurat Curated Workflow - PBMC3K</a>
+      <a href="articles/02_a_la_carte_workflow.html">A La Carte Workflow - PBMC3K</a>
+    </li>
+    <li>
+      <a href="articles/seurat_curated_workflow.html">Seurat Curated Workflow - PBMC3K</a>
     </li>
     <li>
       <a href="articles/celda_curated_workflow.html">Celda Curated Workflow - PBMC3K</a>
@@ -71,14 +74,14 @@
   <a href="articles/cmd_qc.html">SCTK-QC</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Documentation
      
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
 <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Data</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Data</a>
       <ul class="dropdown-menu" role="menu">
 <li>
           <a href="articles/import_data.html">Import Data</a>
@@ -98,7 +101,7 @@
       </ul>
 </li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">QC &amp; Filtering</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">QC &amp; Filtering</a>
       <ul class="dropdown-menu" role="menu">
 <li>
           <a href="articles/cnsl_dropletqc.html">Droplet QC (R console)</a>
@@ -115,10 +118,10 @@
       </ul>
 </li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Normalization &amp; Batch Correction</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Normalization &amp; Batch Correction</a>
       <ul class="dropdown-menu" role="menu">
 <li>
-          <a href="articles/cnsl_normalization.html">Normalization</a>
+          <a href="articles/normalization.html">Normalization</a>
         </li>
         <li>
           <a href="articles/batch_correction.html">Batch Correction</a>
@@ -126,16 +129,16 @@
       </ul>
 </li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Feature Selection &amp; Dimensionality Reduction</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Feature Selection &amp; Dimensionality Reduction</a>
       <ul class="dropdown-menu" role="menu">
 <li>
-          <a href="articles/cnsl_feature_selection.html">Feature Selection</a>
+          <a href="articles/feature_selection.html">Feature Selection</a>
         </li>
         <li>
-          <a href="articles/cnsl_dimensionality_reduction.html">Dimensionality Reduction</a>
+          <a href="articles/dimensionality_reduction.html">Dimensionality Reduction</a>
         </li>
         <li>
-          <a href="articles/cnsl_2d_embedding.html">2D Embedding</a>
+          <a href="articles/2d_embedding.html">2D Embedding</a>
         </li>
       </ul>
 </li>
@@ -143,7 +146,7 @@
       <a href="articles/clustering.html">Clustering</a>
     </li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Differential Expression &amp; Cell Type Labeling</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Differential Expression &amp; Cell Type Labeling</a>
       <ul class="dropdown-menu" role="menu">
 <li>
           <a href="articles/differential_expression.html">Differential Expression</a>
@@ -157,10 +160,10 @@
       </ul>
 </li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Enrichment &amp; Pathway Analysis</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Pathway &amp; Enrichment Analysis</a>
       <ul class="dropdown-menu" role="menu">
 <li>
-          <a href="articles/cnsl_enrichR.html">EnrichR</a>
+          <a href="articles/enrichR.html">EnrichR</a>
         </li>
         <li>
           <a href="articles/pathwayAnalysis.html">Pathway Analysis</a>
@@ -168,10 +171,18 @@
       </ul>
 </li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Curated Workflows</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Trajectory Analysis</a>
       <ul class="dropdown-menu" role="menu">
 <li>
-          <a href="articles/cnsl_seurat_curated_workflow.html">Seurat</a>
+          <a href="articles/trajectoryAnalysis.html">TSCAN</a>
+        </li>
+      </ul>
+</li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Curated Workflows</a>
+      <ul class="dropdown-menu" role="menu">
+<li>
+          <a href="articles/seurat_curated_workflow.html">Seurat</a>
         </li>
         <li>
           <a href="articles/celda_curated_workflow.html">Celda</a>
@@ -179,7 +190,7 @@
       </ul>
 </li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Visualization</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Visualization</a>
       <ul class="dropdown-menu" role="menu">
 <li>
           <a href="articles/visualization.html">General Visualization</a>
@@ -226,17 +237,51 @@
 <div class="section level1">
 <div class="page-header"><h1 id="single-cell-tk">Single Cell TK<a class="anchor" aria-label="anchor" href="#single-cell-tk"></a>
 </h1></div>
-<p><!-- badges: start --> <a href="https://github.com/compbiomed/singleCellTK/actions" class="external-link"><img src="https://github.com/compbiomed/singleCellTK/workflows/R-CMD-check/badge.svg" alt="R-CMD-check"></a> <a href="https://codecov.io/gh/compbiomed/singleCellTK" class="external-link"><img src="https://codecov.io/gh/compbiomed/singleCellTK/branch/devel/graph/badge.svg" alt="codecov"></a> <!-- badges: end --></p>
-<p>The Single Cell ToolKit (SCTK) is an analysis platform that provides an <strong>R interface to several popular single-cell RNA-sequencing (scRNAseq) data preprocessing, quality control, analysis, and visualization tools</strong>. SCTK imports raw or filtered counts from various scRNAseq preprocessing tools such as 10x CellRanger, BUStools, Optimus, STARSolo, and more. By integrating several publicly available tools written in R or Python, SCTK can be used to perform extensive quality control including doublet detection, ambient RNA removal, and batch effect correction. SCTK integrates analysis workflows from popular tools such as Seurat and Bioconductor/OSCA into a single unified framework. Results from various workflows can be summarized and easily shared using comprehensive HTML reports. Lastly, data can be exported to Seurat or AnnData object to allow for seamless integration with other downstream analysis workflows. More information about the toolkit can be found at the toolkit <a href="https://camplab.net/sctk/" class="external-link">homepage</a>.</p>
-<div class="section level2">
-<h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
-</h2>
-<p>Detailed instruction on how to install SCTK and additional dependencies are available at our homepage: <a href="https://camplab.net/sctk/" class="external-link uri">https://camplab.net/sctk/</a></p>
-</div>
+
+<p>The Single Cell ToolKit (SCTK) is an analysis platform that provides an <strong>R interface to several popular single-cell RNA-sequencing (scRNAseq) data preprocessing, quality control, analysis, and visualization tools</strong>. SCTK imports raw or filtered counts from various scRNAseq preprocessing tools such as 10x CellRanger, BUStools, Optimus, STARSolo, and more. By integrating several publicly available tools written in R or Python, SCTK can be used to perform extensive quality control including doublet detection, ambient RNA removal. SCTK integrates analysis workflows from popular tools such as Seurat and Bioconductor/OSCA into a single unified framework. Results from various workflows can be summarized and easily shared using comprehensive HTML reports. Lastly, data can be exported to Seurat or AnnData object to allow for seamless integration with other downstream analysis workflows. More information about the toolkit can be found at the toolkit <a href="https://camplab.net/sctk/" class="external-link">Homepage</a>.</p>
 <div class="section level2">
 <h2 id="features">Features<a class="anchor" aria-label="anchor" href="#features"></a>
 </h2>
-<p>SCTK offers multiple ways to analyze your scRNAseq data both through the R console, commandline (QC) and graphical user interface (GUI) with the ability to use a large number of algorithms from both R &amp; Python integrated within the toolkit. #### Console Analysis Traditional analysis of scRNAseq data can be performed in the R console using wrapper functions for a multitude of tools and algorithms. #### Interactive Analysis The Shiny APP allows users without programming experience to easily analyze their scRNAseq data with a GUI. #### Reports Comprehensive HTML reports developed with RMarkdown allows users to document, explore, and share their analyses. #### Interoperability Tools from both R and Python can be seamlessly integrated within the same analysis workflow.</p>
+<p>SCTK offers multiple ways to analyze your scRNAseq data both through the R console, commandline (QC) and graphical user interface (GUI) with the ability to use a large number of algorithms from both R &amp; Python integrated within the toolkit.</p>
+<div class="section level4">
+<h4 id="interactive-analysis">Interactive Analysis<a class="anchor" aria-label="anchor" href="#interactive-analysis"></a>
+</h4>
+<p>The Shiny APP allows users without programming experience to easily analyze their scRNAseq data with a GUI. Try the instance at <a href="https://sctk.bu.edu/" class="external-link uri">https://sctk.bu.edu/</a></p>
+</div>
+<div class="section level4">
+<h4 id="console-analysis">Console Analysis<a class="anchor" aria-label="anchor" href="#console-analysis"></a>
+</h4>
+<p>Traditional analysis of scRNAseq data can be performed in the R console using wrapper functions for a multitude of tools and algorithms.</p>
+</div>
+<div class="section level4">
+<h4 id="reports">Reports<a class="anchor" aria-label="anchor" href="#reports"></a>
+</h4>
+<p>Comprehensive HTML reports developed with RMarkdown allows users to document, explore, and share their analyses.</p>
+</div>
+<div class="section level4">
+<h4 id="interoperability">Interoperability<a class="anchor" aria-label="anchor" href="#interoperability"></a>
+</h4>
+<p>Tools from both R and Python can be seamlessly integrated within the same analysis workflow.</p>
+</div>
+</div>
+<div class="section level2">
+<h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
+</h2>
+<p>R package <code>singleCellTK</code> is available on <a href="https://bioconductor.org/packages/release/bioc/html/singleCellTK.html" class="external-link">Bioconductor</a>.</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="st">"BiocManager"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span>
+    <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"BiocManager"</span><span class="op">)</span>
+
+<span class="fu">BiocManager</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocManager/man/install.html" class="external-link">install</a></span><span class="op">(</span><span class="st">"singleCellTK"</span><span class="op">)</span></code></pre></div>
+<p>Detailed instruction on how to install SCTK and additional dependencies are available at our <a href="https://camplab.net/sctk/" class="external-link">Homepage</a>.</p>
+</div>
+<div class="section level2">
+<h2 id="citation">Citation<a class="anchor" aria-label="anchor" href="#citation"></a>
+</h2>
+<p>If you use SCTK, please cite our <em>Nature Communication</em> paper</p>
+<blockquote>
+<p>Rui Hong, Yusuke Koga, Shruthi Bandyadka, Anastasia Leshchyk, Yichen Wang, Vidya Akavoor, Xinyun Cao, Irzam Sarfraz, Zhe Wang, Salam Alabdullatif, Frederick Jansen, Masanao Yajima, W. Evan Johnson &amp; Joshua D. Campbell, Comprehensive generation, visualization, and reporting of quality control metrics for single-cell RNA sequencing data. <em>Nat Commun</em> <strong>13</strong>, 1688 (2022). <a href="https://doi.org/10.1038/s41467-022-29212-9" class="external-link uri">https://doi.org/10.1038/s41467-022-29212-9</a></p>
+</blockquote>
 </div>
 <div class="section level2">
 <h2 id="report-issues">Report Issues<a class="anchor" aria-label="anchor" href="#report-issues"></a>
@@ -294,7 +339,14 @@
 </ul>
 </div>
 
-
+<div class="dev-status">
+<h2 data-toc-skip>Dev status</h2>
+<ul class="list-unstyled">
+<li><a href="https://github.com/compbiomed/singleCellTK/actions/workflows/BioC-check.yaml" class="external-link"><img src="https://github.com/compbiomed/singleCellTK/actions/workflows/BioC-check.yaml/badge.svg?branch=master" alt="BioC-check"></a></li>
+<li><a href="https://github.com/compbiomed/singleCellTK/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/compbiomed/singleCellTK/actions/workflows/R-CMD-check.yaml/badge.svg?branch=master" alt="R-CMD-check"></a></li>
+<li><a href="https://codecov.io/gh/compbiomed/singleCellTK" class="external-link"><img src="https://codecov.io/gh/compbiomed/singleCellTK/branch/devel/graph/badge.svg" alt="codecov"></a></li>
+</ul>
+</div>
 
   </div>
 </div>
@@ -307,7 +359,7 @@
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer>

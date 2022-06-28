@@ -66,3 +66,8 @@ pre, code {
   font-size: 12px;
   margin-top: 0.3em;
 }
+
+blockquote {
+  font-size: 15px;
+  border-left-width: 4px;
+}
