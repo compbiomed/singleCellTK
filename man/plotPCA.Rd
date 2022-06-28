@@ -6,8 +6,8 @@
 \usage{
 plotPCA(
   inSCE,
-  colorBy = "No Color",
-  shape = "No Shape",
+  colorBy = NULL,
+  shape = NULL,
   pcX = "PC1",
   pcY = "PC2",
   reducedDimName = "PCA",

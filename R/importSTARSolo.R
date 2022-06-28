@@ -69,7 +69,7 @@
     }
 
     sce <- do.call(SingleCellExperiment::cbind, res)
-    
+
     if (isTRUE(rowNamesDedup)) {
         if (any(duplicated(rownames(sce)))) {
             message("Duplicated gene names found, adding '-1', '-2', ",
@@ -77,7 +77,7 @@
         }
         sce <- dedupRowNames(sce)
     }
-    
+
     # Load metrics summary and store in sce
     metrics_summary <- .importMetricsStarSolo(STARsoloDirs, samples, "Gene", "Summary.csv")
     # sce <- setSampleSummaryStatsTable(sce, "starsolo", metrics_summary)
@@ -127,7 +127,7 @@
 #'  \link[base]{matrix} function). Default "Matrix".
 #' @param delayedArray Boolean. Whether to read the expression matrix as
 #'  \link{DelayedArray} object or not. Default \code{FALSE}.
-#' @param rowNamesDedup Boolean. Whether to deduplicate rownames. Default 
+#' @param rowNamesDedup Boolean. Whether to deduplicate rownames. Default
 #'  \code{TRUE}.
 #' @return A \code{SingleCellExperiment} object containing the count
 #'  matrix, the gene annotation, and the cell annotation.
@@ -195,7 +195,7 @@ importSTARsolo <- function(
   if(!identical(length(samplePaths), length(sampleNames))){
     stop("Vectors samplePaths and sampleNames must be equal in length.")
   }
-  
+
   # Processing
   metrics_summary <- list()
   for(i in seq(samplePaths)){
@@ -210,7 +210,7 @@ importSTARsolo <- function(
       colnames(metrics_summary[[i]]) <- ms_colnames_union
     }
   }
-  
+
   # Merge StarSolo summary csv files from all/multiple samples into a single data.frame
   for(i in seq_along(metrics_summary)){
     metrics_summary[[i]] <- as.data.frame(t(metrics_summary[[i]]))

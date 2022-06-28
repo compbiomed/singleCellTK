@@ -44,7 +44,7 @@ importMultipleSources <- function(allImportEntries, delayedArray = FALSE) {
     } else if (entry$type == "starSolo") {
       newSce <- importSTARsolo(
         STARsoloDirs = entry$params$STARsoloDirs,
-        samples = entry$params$amples,
+        samples = entry$params$samples,
         delayedArray = delayedArray
       )
     } else if (entry$type == "busTools") {
@@ -96,7 +96,7 @@ importMultipleSources <- function(allImportEntries, delayedArray = FALSE) {
       }
 
     }
-    
+
     # Begin Set Tags
     if(entry$type %in% c("cellRanger2", "cellRanger3", "starSolo", "busTools", "seqc", "optimus", "example")){
       newSce <- expSetDataTag(
@@ -114,7 +114,7 @@ importMultipleSources <- function(allImportEntries, delayedArray = FALSE) {
             assayType = "raw",
             assays = "counts")
         }, silent = TRUE)
-        
+
         try({
           logcounts(newSce)
           newSce <- expSetDataTag(
@@ -122,7 +122,7 @@ importMultipleSources <- function(allImportEntries, delayedArray = FALSE) {
             assayType = "transformed",
             assays = "logcounts")
         }, silent = TRUE)
-        
+
         try({
           normcounts(newSce)
           newSce <- expSetDataTag(
@@ -130,7 +130,7 @@ importMultipleSources <- function(allImportEntries, delayedArray = FALSE) {
             assayType = "transformed",
             assays = "normcounts")
         }, silent = TRUE)
-        
+
         try({
           celda::decontXcounts(newSce)
           newSce <- expSetDataTag(
@@ -138,21 +138,21 @@ importMultipleSources <- function(allImportEntries, delayedArray = FALSE) {
             assayType = "raw",
             assays = "decontXcounts")
         }, silent = TRUE)
-        
+
         untaggedAssays <- SummarizedExperiment::assayNames(newSce)
         untaggedAssays <- untaggedAssays[! untaggedAssays %in% c('counts', 'logcounts', 'normcounts', 'decontX')]
-        
+
         newSce <- expSetDataTag(
           inSCE = newSce,
           assayType = "uncategorized",
-          assays = untaggedAssays) 
+          assays = untaggedAssays)
       }
       # End Set Tags
     }
-    
+
     sceObjs = c(sceObjs, list(newSce))
   }
-  
+
   return(combineSCE(sceList = sceObjs,
                     by.r = Reduce(base::intersect, lapply(sceObjs, function(x) { colnames(rowData(x))})),
                     by.c = Reduce(base::intersect, lapply(sceObjs, function(x) { colnames(colData(x))})),

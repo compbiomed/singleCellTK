@@ -45,44 +45,44 @@ reductions. Default \code{"TSNE"}.}
 generating the tSNE via \code{\link{scaterlogNormCounts}}. Ignored when using
 \code{useReducedDim}. Default \code{FALSE}.}
 
-\item{useFeatureSubset}{Subset of feature to use for dimension reduction. A 
+\item{useFeatureSubset}{Subset of feature to use for dimension reduction. A
 character string indicating a \code{rowData} variable that stores the logical
-vector of HVG selection, or a vector that can subset the rows of 
+vector of HVG selection, or a vector that can subset the rows of
 \code{inSCE}. Default \code{NULL}.}
 
 \item{nTop}{Automatically detect this number of variable features to use for
-dimension reduction. Ignored when using \code{useReducedDim} or using 
+dimension reduction. Ignored when using \code{useReducedDim} or using
 \code{useFeatureSubset}. Default \code{2000}.}
 
-\item{center}{Whether data should be centered before PCA is applied. Ignored 
+\item{center}{Whether data should be centered before PCA is applied. Ignored
 when using \code{useReducedDim}. Default \code{TRUE}.}
 
-\item{scale}{Whether data should be scaled before PCA is applied. Ignored 
+\item{scale}{Whether data should be scaled before PCA is applied. Ignored
 when using \code{useReducedDim}. Default \code{TRUE}.}
 
-\item{pca}{Whether an initial PCA step should be performed. Ignored when 
+\item{pca}{Whether an initial PCA step should be performed. Ignored when
 using \code{useReducedDim}. Default \code{TRUE}.}
 
 \item{partialPCA}{Whether truncated PCA should be used to calculate principal
-components (requires the irlba package). This is faster for large input 
+components (requires the irlba package). This is faster for large input
 matrices. Ignored when using \code{useReducedDim}. Default \code{FALSE}.}
 
 \item{initialDims}{Number of dimensions from PCA to use as input in tSNE.
 Default \code{25}.}
 
-\item{theta}{Numeric value for speed/accuracy trade-off (increase for less 
+\item{theta}{Numeric value for speed/accuracy trade-off (increase for less
 accuracy), set to \code{0.0} for exact TSNE. Default \code{0.5}.}
 
-\item{perplexity}{perplexity parameter. Should not be bigger than 
-\code{3 * perplexity < ncol(inSCE) - 1}. Default \code{30}. See 
+\item{perplexity}{perplexity parameter. Should not be bigger than
+\code{3 * perplexity < ncol(inSCE) - 1}. Default \code{30}. See
 \code{\link[Rtsne]{Rtsne}} details for interpretation.}
 
 \item{nIterations}{maximum iterations. Default \code{1000}.}
 
-\item{numThreads}{Integer, number of threads to use using OpenMP, Default 
+\item{numThreads}{Integer, number of threads to use using OpenMP, Default
 \code{1}. \code{0} corresponds to using all available cores.}
 
-\item{seed}{Random seed for reproducibility of tSNE results. 
+\item{seed}{Random seed for reproducibility of tSNE results.
 Default \code{NULL} will use global seed in use by the R environment.}
 }
 \value{
@@ -90,14 +90,14 @@ A \linkS4class{SingleCellExperiment} object with tSNE computation
 updated in \code{reducedDim(inSCE, reducedDimName)}.
 }
 \description{
-T-Stochastic Neighbour Embedding (t-SNE) algorithm is commonly 
-for 2D visualization of single-cell data. This function wraps the 
-Rtsne \code{\link[Rtsne]{Rtsne}} function. 
+T-Stochastic Neighbour Embedding (t-SNE) algorithm is commonly
+for 2D visualization of single-cell data. This function wraps the
+Rtsne \code{\link[Rtsne]{Rtsne}} function.
 
 With this funciton, users can create tSNE embedding directly from raw count
-matrix, with necessary preprocessing including normalization, scaling, 
-dimension reduction all automated. Yet we still recommend having the PCA as 
-input, so that the result can match with the clustering based on the same 
+matrix, with necessary preprocessing including normalization, scaling,
+dimension reduction all automated. Yet we still recommend having the PCA as
+input, so that the result can match with the clustering based on the same
 input PCA, and will be much faster.
 }
 \examples{
@@ -110,7 +110,7 @@ sce <- getTSNE(inSCE = sce, useAssay = "counts", logNorm = TRUE, nTop = 2000,
 # Run from PCA
 sce <- scaterlogNormCounts(sce, "logcounts")
 sce <- runModelGeneVar(sce)
-sce <- scaterPCA(sce, useAssay = "logcounts", 
+sce <- scaterPCA(sce, useAssay = "logcounts",
                  useFeatureSubset = "HVG_modelGeneVar2000", scale = TRUE)
 sce <- getTSNE(sce, useReducedDim = "PCA")
 }

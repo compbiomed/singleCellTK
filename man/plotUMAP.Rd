@@ -6,8 +6,8 @@
 \usage{
 plotUMAP(
   inSCE,
-  colorBy = "No Color",
-  shape = "No Shape",
+  colorBy = NULL,
+  shape = NULL,
   reducedDimName = "UMAP",
   runUMAP = FALSE,
   useAssay = "logcounts"

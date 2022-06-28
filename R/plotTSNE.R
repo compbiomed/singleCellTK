@@ -17,7 +17,7 @@
 #' plotTSNE(mouseBrainSubsetSCE, colorBy = "level1class",
 #'          reducedDimName = "TSNE_counts")
 #'
-plotTSNE <- function(inSCE, colorBy="No Color", shape="No Shape",
+plotTSNE <- function(inSCE, colorBy=NULL, shape=NULL,
                      reducedDimName="TSNE", runTSNE=FALSE,
                      useAssay="logcounts"){
   if(!(reducedDimName %in% names(SingleCellExperiment::reducedDims(inSCE)))){
@@ -38,12 +38,6 @@ plotTSNE <- function(inSCE, colorBy="No Color", shape="No Shape",
   colnames(tsneDf)[2] <- "tSNE2"
   xdim <- colnames(tsneDf)[1]
   ydim <- colnames(tsneDf)[2]
-  if (colorBy == "No Color"){
-    colorBy <- NULL
-  }
-  if (shape == "No Shape"){
-    shape <- NULL
-  }
   if (!is.null(colorBy)){
     tsneDf$color <- SingleCellExperiment::colData(inSCE)[, colorBy]
   }

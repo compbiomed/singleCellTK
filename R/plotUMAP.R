@@ -20,7 +20,7 @@
 #' plotUMAP(sce, shape = "No Shape", reducedDimName = "UMAP",
 #'          runUMAP = TRUE, useAssay = "counts")
 #'
-plotUMAP <- function(inSCE, colorBy = "No Color", shape = "No Shape",
+plotUMAP <- function(inSCE, colorBy = NULL, shape = NULL,
                      reducedDimName = "UMAP", runUMAP = FALSE,
                      useAssay = "logcounts"){
   if(!(reducedDimName %in% names(SingleCellExperiment::reducedDims(inSCE)))){
@@ -41,12 +41,7 @@ plotUMAP <- function(inSCE, colorBy = "No Color", shape = "No Shape",
   colnames(UMAPDf)[2] <- "UMAP2"
   xdim <- colnames(UMAPDf)[1]
   ydim <- colnames(UMAPDf)[2]
-  if (colorBy == "No Color"){
-    colorBy <- NULL
-  }
-  if (shape == "No Shape"){
-    shape <- NULL
-  }
+
   if (!is.null(colorBy)){
     UMAPDf$color <- SingleCellExperiment::colData(inSCE)[, colorBy]
   }

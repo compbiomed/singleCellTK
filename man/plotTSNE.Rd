@@ -6,8 +6,8 @@
 \usage{
 plotTSNE(
   inSCE,
-  colorBy = "No Color",
-  shape = "No Shape",
+  colorBy = NULL,
+  shape = NULL,
   reducedDimName = "TSNE",
   runTSNE = FALSE,
   useAssay = "logcounts"
