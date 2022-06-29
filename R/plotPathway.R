@@ -7,12 +7,16 @@
 #' \code{FALSE}, will return an empty character vector.
 #' @return A character vector of valid pathway analysis result names.
 #' @export
-getPathwayResultNames <- function(inSCE, stopIfNone = FALSE){
+#' @examples
+#' data(scExample)
+#' getPathwayResultNames(sce)
+getPathwayResultNames <- function(inSCE, stopIfNone = FALSE, verbose = FALSE){
     if (!"pathwayAnalysisResultNames" %in% names(S4Vectors::metadata(inSCE))) {
         if (isTRUE(stopIfNone)) {
-            stop("No pathway analysis has been performed via singleCellTK.",
+            stop("No pathway analysis has been performed via singleCellTK. ",
                  "Please try `runVAM()` or `runGSVA()`.")
         } else {
+            if (verbose)
             warning("No pathway analysis has been performed via singleCellTK.",
                     "Please try `runVAM()` or `runGSVA()`.")
             return(character())

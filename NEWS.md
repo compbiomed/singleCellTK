@@ -1,9 +1,10 @@
-Changes in Version 2.6.1 (2022-06-23)
+Changes in Version 2.7.1 (2022-06-29)
 ================================================================================
 * Refactored scaling related parts of the workflow, including variable feature
 detection, dimension reduction and 2D embedding
 * Redesigned UI landing page and UI running prompt
 * Added marker table module across UI
+* Added more unit tests
 * Fixed bugs in TSCAN UI
 * Other minor bug fixes
 

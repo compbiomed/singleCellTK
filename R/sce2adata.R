@@ -11,6 +11,7 @@
 #' will be saved in `adata$X`, Other assays will be stored in `adata$obsm`
 #' together with the low-dimension representations (for now).
 #' @return A Python anndata.AnnData object
+#' @noRd
 .sce2adata <- function(SCE, useAssay = 'counts') {
     # Transfer SCE object back to AnnData
     # Argument check first

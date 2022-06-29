@@ -50,7 +50,7 @@ A ggplot object of violin plot
 Generate violin plot to show the expression of top DEGs
 }
 \details{
-Any of the differential expression analysis method from SCTK should 
+Any of the differential expression analysis method from SCTK should
 be performed prior to using this function
 }
 \examples{

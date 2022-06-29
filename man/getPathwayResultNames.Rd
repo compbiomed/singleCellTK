@@ -4,7 +4,7 @@
 \alias{getPathwayResultNames}
 \title{List pathway analysis result names}
 \usage{
-getPathwayResultNames(inSCE, stopIfNone = FALSE)
+getPathwayResultNames(inSCE, stopIfNone = FALSE, verbose = FALSE)
 }
 \arguments{
 \item{inSCE}{Input \linkS4class{SingleCellExperiment} object.}
@@ -22,4 +22,8 @@ List pathway analysis result names
 Pathway analysis results will be stored as matrices in
 \code{reducedDims} slot of \code{inSCE}. This function lists the result names
 stored in \code{metadata} slot when analysis is performed.
+}
+\examples{
+data(scExample)
+getPathwayResultNames(sce)
 }

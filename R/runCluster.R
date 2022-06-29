@@ -249,6 +249,7 @@ runKMeans <- function(inSCE, nCenters, useReducedDim = "PCA",
 #' Reassign cluster label by group size
 #' @param x categorical vector, factor
 #' @return factor
+#' @noRd
 .relabelClusterBySize <- function(x) {
     x <- as.numeric(x)
     count <- as.data.frame(table(x))

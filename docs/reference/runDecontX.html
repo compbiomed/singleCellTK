@@ -18,7 +18,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.6.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.1</span>
       </span>
     </div>
 
@@ -33,16 +33,19 @@
   <a href="../articles/installation.html">Installation</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Tutorials
      
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li>
-      <a href="../articles/console_analysis_tutorial.html">A La Carte Workflow - PBMC3K (R Console)</a>
+      <a href="../articles/01_import_and_qc_tutorial.html">Importing and QC - PBMC3K</a>
     </li>
     <li>
-      <a href="../articles/cnsl_seurat_curated_workflow.html">Seurat Curated Workflow - PBMC3K</a>
+      <a href="../articles/02_a_la_carte_workflow.html">A La Carte Workflow - PBMC3K</a>
+    </li>
+    <li>
+      <a href="../articles/seurat_curated_workflow.html">Seurat Curated Workflow - PBMC3K</a>
     </li>
     <li>
       <a href="../articles/celda_curated_workflow.html">Celda Curated Workflow - PBMC3K</a>
@@ -52,13 +55,13 @@
   <a href="../articles/cmd_qc.html">SCTK-QC</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Documentation
      
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Data</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Data</a>
       <ul class="dropdown-menu" role="menu"><li>
           <a href="../articles/import_data.html">Import Data</a>
         </li>
@@ -76,7 +79,7 @@
         </li>
       </ul></li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">QC &amp; Filtering</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">QC &amp; Filtering</a>
       <ul class="dropdown-menu" role="menu"><li>
           <a href="../articles/cnsl_dropletqc.html">Droplet QC (R console)</a>
         </li>
@@ -91,31 +94,31 @@
         </li>
       </ul></li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Normalization &amp; Batch Correction</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Normalization &amp; Batch Correction</a>
       <ul class="dropdown-menu" role="menu"><li>
-          <a href="../articles/cnsl_normalization.html">Normalization</a>
+          <a href="../articles/normalization.html">Normalization</a>
         </li>
         <li>
           <a href="../articles/batch_correction.html">Batch Correction</a>
         </li>
       </ul></li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Feature Selection &amp; Dimensionality Reduction</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Feature Selection &amp; Dimensionality Reduction</a>
       <ul class="dropdown-menu" role="menu"><li>
-          <a href="../articles/cnsl_feature_selection.html">Feature Selection</a>
+          <a href="../articles/feature_selection.html">Feature Selection</a>
         </li>
         <li>
-          <a href="../articles/cnsl_dimensionality_reduction.html">Dimensionality Reduction</a>
+          <a href="../articles/dimensionality_reduction.html">Dimensionality Reduction</a>
         </li>
         <li>
-          <a href="../articles/cnsl_2d_embedding.html">2D Embedding</a>
+          <a href="../articles/2d_embedding.html">2D Embedding</a>
         </li>
       </ul></li>
     <li>
       <a href="../articles/clustering.html">Clustering</a>
     </li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Differential Expression &amp; Cell Type Labeling</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Differential Expression &amp; Cell Type Labeling</a>
       <ul class="dropdown-menu" role="menu"><li>
           <a href="../articles/differential_expression.html">Differential Expression</a>
         </li>
@@ -127,25 +130,31 @@
         </li>
       </ul></li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Enrichment &amp; Pathway Analysis</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Pathway &amp; Enrichment Analysis</a>
       <ul class="dropdown-menu" role="menu"><li>
-          <a href="../articles/cnsl_enrichR.html">EnrichR</a>
+          <a href="../articles/enrichR.html">EnrichR</a>
         </li>
         <li>
           <a href="../articles/pathwayAnalysis.html">Pathway Analysis</a>
         </li>
       </ul></li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Curated Workflows</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Trajectory Analysis</a>
       <ul class="dropdown-menu" role="menu"><li>
-          <a href="../articles/cnsl_seurat_curated_workflow.html">Seurat</a>
+          <a href="../articles/trajectoryAnalysis.html">TSCAN</a>
+        </li>
+      </ul></li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Curated Workflows</a>
+      <ul class="dropdown-menu" role="menu"><li>
+          <a href="../articles/seurat_curated_workflow.html">Seurat</a>
         </li>
         <li>
           <a href="../articles/celda_curated_workflow.html">Celda</a>
         </li>
       </ul></li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Visualization</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Visualization</a>
       <ul class="dropdown-menu" role="menu"><li>
           <a href="../articles/visualization.html">General Visualization</a>
         </li>
@@ -217,25 +226,35 @@
     <h2>Arguments</h2>
     <dl><dt>inSCE</dt>
 <dd><p>A <a href="https://rdrr.io/pkg/SingleCellExperiment/man/SingleCellExperiment.html" class="external-link">SingleCellExperiment</a> object.</p></dd>
+
+
 <dt>sample</dt>
 <dd><p>A single character specifying a name that can be found in
 <code>colData(inSCE)</code> to directly use the cell annotation; or a character
 vector with as many elements as cells to indicates which sample each cell
 belongs to. Default NULL. <a href="https://rdrr.io/pkg/celda/man/decontX.html" class="external-link">decontX</a> will be run on cells from
 each sample separately.</p></dd>
+
+
 <dt>useAssay</dt>
 <dd><p>A string specifying which assay in the SCE to use. Default
 'counts'.</p></dd>
+
+
 <dt>background</dt>
 <dd><p>A <a href="https://rdrr.io/pkg/SingleCellExperiment/man/SingleCellExperiment.html" class="external-link">SingleCellExperiment</a>
 with the matrix located in the assay slot under <code>bgAssayName</code>. It should have 
 the same structure as inSCE except it contains the matrix of empty droplets instead 
 of cells. When supplied, empirical distribution of transcripts from these 
 empty droplets will be used as the contamination distribution. Default NULL.</p></dd>
+
+
 <dt>bgAssayName</dt>
 <dd><p>Character. Name of the assay to use if background is a 
 <a href="https://rdrr.io/pkg/SingleCellExperiment/man/SingleCellExperiment.html" class="external-link">SingleCellExperiment</a>. If NULL, the function
 will use the same value as <code>useAssay</code>. Default is NULL.</p></dd>
+
+
 <dt>bgBatch</dt>
 <dd><p>Batch labels for <code>background</code>. If <code>background</code> is a 
 <a href="https://rdrr.io/pkg/SingleCellExperiment/man/SingleCellExperiment.html" class="external-link">SingleCellExperiment</a> object, this can be a single 
@@ -245,6 +264,8 @@ as many elements as barcodes to indicate which sample each barcode belongs to. I
 unique values should be the same as those in <code>sample</code>, such that each 
 batch of cells have their corresponding batch of empty droplets as background, 
 pointed by this parameter. Default to NULL.</p></dd>
+
+
 <dt>z</dt>
 <dd><p>Numeric or character vector. Cell cluster labels. If NULL,
 PCA will be used to reduce the dimensionality of the dataset initially,
@@ -252,8 +273,12 @@ PCA will be used to reduce the dimensionality of the dataset initially,
 will be used to further reduce the dataset to 2 dimenions and
 the '<a href="https://rdrr.io/pkg/dbscan/man/dbscan.html" class="external-link">dbscan</a>' function from the 'dbscan' package
 will be used to identify clusters of broad cell types. Default NULL.</p></dd>
+
+
 <dt>maxIter</dt>
 <dd><p>Integer. Maximum iterations of the EM algorithm. Default 500.</p></dd>
+
+
 <dt>delta</dt>
 <dd><p>Numeric Vector of length 2. Concentration parameters for
 the Dirichlet prior for the contamination in each cell. The first element
@@ -270,40 +295,60 @@ setting a high number in the second element will force <code>decontX</code>
 to be more aggressive and estimate higher levels of contamination at
 the expense of potentially removing native expression.
 Default <code>c(10, 10)</code>.</p></dd>
+
+
 <dt>estimateDelta</dt>
 <dd><p>Boolean. Whether to update <code>delta</code> at each
 iteration.</p></dd>
+
+
 <dt>convergence</dt>
 <dd><p>Numeric. The EM algorithm will be stopped if the maximum
 difference in the contamination estimates between the previous and
 current iterations is less than this. Default 0.001.</p></dd>
+
+
 <dt>iterLogLik</dt>
 <dd><p>Integer. Calculate log likelihood every <code>iterLogLik</code>
 iteration. Default 10.</p></dd>
+
+
 <dt>varGenes</dt>
 <dd><p>Integer. The number of variable genes to use in
 dimensionality reduction before clustering. Variability is calcualted using
 <code><a href="https://rdrr.io/pkg/scran/man/modelGeneVar.html" class="external-link">modelGeneVar</a></code> function from the 'scran' package.
 Used only when z is not provided. Default 5000.</p></dd>
+
+
 <dt>dbscanEps</dt>
 <dd><p>Numeric. The clustering resolution parameter
 used in '<a href="https://rdrr.io/pkg/dbscan/man/dbscan.html" class="external-link">dbscan</a>' to estimate broad cell clusters.
 Used only when z is not provided. Default 1.</p></dd>
+
+
 <dt>seed</dt>
 <dd><p>Integer. Passed to <a href="https://withr.r-lib.org/reference/with_seed.html" class="external-link">with_seed</a>. For reproducibility,
 a default value of 12345 is used. If NULL, no calls to
 <a href="https://withr.r-lib.org/reference/with_seed.html" class="external-link">with_seed</a> are made.</p></dd>
+
+
 <dt>logfile</dt>
 <dd><p>Character. Messages will be redirected to a file named
 `logfile`. If NULL, messages will be printed to stdout.  Default NULL.</p></dd>
+
+
 <dt>verbose</dt>
 <dd><p>Logical. Whether to print log messages. Default TRUE.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A <a href="https://rdrr.io/pkg/SingleCellExperiment/man/SingleCellExperiment.html" class="external-link">SingleCellExperiment</a> object with
- 'decontX_Contamination' and 'decontX_Clusters' added to the
-colData slot. Additionally, the
+    
+
+<p>A <a href="https://rdrr.io/pkg/SingleCellExperiment/man/SingleCellExperiment.html" class="external-link">SingleCellExperiment</a> object with
+ 'decontX_Contamination' and 'decontX_Clusters' added to the</p>
+<p></p>
+<p>colData slot. Additionally, the
 decontaminated counts will be added as an assay called 'decontXCounts'.</p>
     </div>
 
@@ -311,37 +356,35 @@ decontaminated counts will be added as an assay called 'decontXCounts'.</p>
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">scExample</span>, package <span class="op">=</span> <span class="st">"singleCellTK"</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="subsetSCECols.html">subsetSCECols</a></span><span class="op">(</span><span class="va">sce</span>, colData <span class="op">=</span> <span class="st">"type != 'EmptyDroplet'"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu">runDecontX</span><span class="op">(</span><span class="va">sce</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span>,<span class="fl">20</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Thu Apr 28 11:27:49 2022 ... Running 'DecontX'</span>
+<span class="r-in"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu">runDecontX</span><span class="op">(</span><span class="va">sce</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span>,<span class="fl">20</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Jun 28 22:06:23 2022 ... Running 'DecontX'</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> --------------------------------------------------</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Starting DecontX</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> --------------------------------------------------</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Thu Apr 28 11:27:49 2022 .. Analyzing all cells</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Thu Apr 28 11:27:49 2022 .... Generating UMAP and estimating cell types</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Jun 28 22:06:23 2022 .. Analyzing all cells</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Jun 28 22:06:23 2022 .... Generating UMAP and estimating cell types</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Found more than one class "dist" in cache; using the first, from namespace 'BiocGenerics'</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Also defined by 'spam'</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Found more than one class "dist" in cache; using the first, from namespace 'BiocGenerics'</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Also defined by 'spam'</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Found more than one class "dist" in cache; using the first, from namespace 'BiocGenerics'</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Also defined by 'spam'</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Thu Apr 28 11:27:53 2022 .... Estimating contamination</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Thu Apr 28 11:27:53 2022 ...... Completed iteration: 10 | converge: 0.01385</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Thu Apr 28 11:27:53 2022 ...... Completed iteration: 20 | converge: 0.006811</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Thu Apr 28 11:27:53 2022 ...... Completed iteration: 30 | converge: 0.003504</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Thu Apr 28 11:27:53 2022 ...... Completed iteration: 40 | converge: 0.002042</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Thu Apr 28 11:27:53 2022 ...... Completed iteration: 50 | converge: 0.001662</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Thu Apr 28 11:27:53 2022 ...... Completed iteration: 60 | converge: 0.001519</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Thu Apr 28 11:27:53 2022 ...... Completed iteration: 70 | converge: 0.001443</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Thu Apr 28 11:27:53 2022 ...... Completed iteration: 80 | converge: 0.001393</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Thu Apr 28 11:27:53 2022 ...... Completed iteration: 90 | converge: 0.001341</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Thu Apr 28 11:27:53 2022 ...... Completed iteration: 100 | converge: 0.001268</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Thu Apr 28 11:27:53 2022 ...... Completed iteration: 110 | converge: 0.001191</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Thu Apr 28 11:27:53 2022 ...... Completed iteration: 120 | converge: 0.001112</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Thu Apr 28 11:27:53 2022 ...... Completed iteration: 130 | converge: 0.00104</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Thu Apr 28 11:27:53 2022 ...... Completed iteration: 135 | converge: 0.0009998</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Thu Apr 28 11:27:53 2022 .. Calculating final decontaminated matrix</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Jun 28 22:06:26 2022 .... Estimating contamination</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Jun 28 22:06:26 2022 ...... Completed iteration: 10 | converge: 0.01829</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Jun 28 22:06:26 2022 ...... Completed iteration: 20 | converge: 0.006499</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Jun 28 22:06:26 2022 ...... Completed iteration: 30 | converge: 0.002824</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Jun 28 22:06:26 2022 ...... Completed iteration: 40 | converge: 0.001408</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Jun 28 22:06:26 2022 ...... Completed iteration: 50 | converge: 0.002768</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Jun 28 22:06:26 2022 ...... Completed iteration: 60 | converge: 0.002484</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Jun 28 22:06:26 2022 ...... Completed iteration: 70 | converge: 0.001823</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Jun 28 22:06:26 2022 ...... Completed iteration: 80 | converge: 0.001533</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Jun 28 22:06:26 2022 ...... Completed iteration: 90 | converge: 0.001423</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Jun 28 22:06:26 2022 ...... Completed iteration: 100 | converge: 0.001309</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Jun 28 22:06:26 2022 ...... Completed iteration: 110 | converge: 0.001183</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Jun 28 22:06:26 2022 ...... Completed iteration: 118 | converge: 0.000992</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Jun 28 22:06:26 2022 .. Calculating final decontaminated matrix</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> --------------------------------------------------</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Completed DecontX. Total time: 3.888997 secs</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Completed DecontX. Total time: 3.62207 secs</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> --------------------------------------------------</span>
 </code></pre></div>
     </div>
@@ -357,7 +400,7 @@ decontaminated counts will be added as an assay called 'decontXCounts'.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

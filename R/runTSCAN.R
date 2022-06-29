@@ -443,6 +443,7 @@ plotTSCANPseudotimeHeatmap <- function(inSCE,
 #' Use the viridis color scale to match with `plotTSCANResult` embedding color
 #' @param x numeric vector of pseudotime
 #' @return function object returned by circlize::colorRamp2
+#' @noRd
 .viridisPseudoTimeColor <- function(x) {
   a <- max(x, na.rm = TRUE)
   b <- min(x, na.rm = TRUE)
@@ -862,6 +863,7 @@ plotTSCANDimReduceFeatures <- function(
 #' @param useCluster Vector of clusters, that are going to be the vertices for
 #' edge finding.
 #' @return data.frame, subset rows of line.data
+#' @noRd
 .getClustersLineData <- function(line.data, useCluster) {
   idx <- vapply(useCluster, function(x){
     grepl(paste0("^", x, "--"), line.data$edge) |

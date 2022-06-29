@@ -2,10 +2,7 @@
 % Please edit documentation in R/findMarker.R
 \name{findMarkerDiffExp}
 \alias{findMarkerDiffExp}
-\title{Find the marker gene set for each cluster
-With an input SingleCellExperiment object and specifying the clustering
-labels, this function iteratively call the differential expression analysis
-on each cluster against all the others.}
+\title{Find the marker gene set for each cluster}
 \usage{
 findMarkerDiffExp(
   inSCE,
@@ -54,7 +51,7 @@ percentage of cells out of the cluster (control group) that expressed the
 marker gene. From 0 to 1. Default \code{NULL}.}
 
 \item{minMeanExpr}{A numeric scalar. The minimum cutoff of the mean
-expression value of the marker in the cluster of interests. Default 
+expression value of the marker in the cluster of interests. Default
 \code{NULL}.}
 }
 \value{
@@ -63,10 +60,9 @@ The input \linkS4class{SingleCellExperiment} object with
 regulated DEGs for each cluster.
 }
 \description{
-Find the marker gene set for each cluster
-With an input SingleCellExperiment object and specifying the clustering
-labels, this function iteratively call the differential expression analysis
-on each cluster against all the others.
+With an input SingleCellExperiment object and specifying the
+clustering labels, this function iteratively call the differential expression
+analysis on each cluster against all the others.
 }
 \examples{
 data("mouseBrainSubsetSCE", package = "singleCellTK")

@@ -9,7 +9,7 @@ output: html_document
 
 SingleCellTK is an R based package, allowing users to run analysis in system command-line, R console, and R Shiny user interface. To get your machine fully equipped with singleCellTK, you must have **R (>=4.0)** pre-installed. 
 
-[See more details on how to install R](#install-r-4-0-)   
+[See more details on how to install R](#install-r-4-0)   
 
 
 2. **Python environment**
@@ -33,7 +33,7 @@ if (!requireNamespace("BiocManager", quietly = TRUE))
 BiocManager::install("singleCellTK")
 ```
 
-[See more details about custom installation of singleCellTK](#install-singlecelltk-1)
+[See more details about custom installation of singleCellTK](#install-singlecelltk)
 
 **For users who would like to perform console interactive analysis, we strongly suggest that you have [RStudio](https://www.rstudio.com/products/rstudio/download/#download) installed.** 
 

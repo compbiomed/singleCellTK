@@ -50,7 +50,7 @@ A ggplot object of linear regression
 Create linear regression plot to show the expression the of top DEGs
 }
 \details{
-Any of the differential expression analysis method from SCTK should 
+Any of the differential expression analysis method from SCTK should
 be performed prior to using this function
 }
 \examples{

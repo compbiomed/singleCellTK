@@ -34,7 +34,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.6.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.1</span>
       </span>
     </div>
 
@@ -171,6 +171,14 @@
       </ul>
 </li>
     <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Trajectory Analysis</a>
+      <ul class="dropdown-menu" role="menu">
+<li>
+          <a href="../articles/trajectoryAnalysis.html">TSCAN</a>
+        </li>
+      </ul>
+</li>
+    <li class="dropdown-submenu">
       <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Curated Workflows</a>
       <ul class="dropdown-menu" role="menu">
 <li>
@@ -252,20 +260,19 @@ preprocessing, get clustering on cells and markers of clusters, and run
 various downstream analysis. Meanwhile, SCTK also wraps curated
 workflows for <a href="https://www.camplab.net/celda/" class="external-link">celda</a> and <a href="https://satijalab.org/seurat/" class="external-link">Seurat</a>.</p>
 <p>The SCTK tutorial series start from importing, QC and filtering.
-After this, users can go through either the <a href="A_la_carte_workflow.html">A La Carte Workflow</a> or the Curated
-Workflows (<a href="seurat_curated_workflow.html">Seurat</a> or <a href="celda_curated_workflow.html">Celda</a>). These tutorials will take
-the real-world scRNAseq dataset as an example, which consists of 2,700
-Peripheral Blood Mononuclear Cells (PBMCs) collected from a healthy
-donor, namingly PBMC3K. This dataset is available from 10X Genomics and
-can be found on the 10X website.</p>
+After this, users can go through either the <a href="02_a_la_carte_workflow.html">A La Carte Workflow</a> or the
+Curated Workflows (<a href="seurat_curated_workflow.html">Seurat</a> or
+<a href="celda_curated_workflow.html">Celda</a>). These tutorials will
+take the real-world scRNAseq dataset as an example, which consists of
+2,700 Peripheral Blood Mononuclear Cells (PBMCs) collected from a
+healthy donor, namingly PBMC3K. This dataset is available from 10X
+Genomics and can be found on the 10X website.</p>
 <p>Before starting the analysis from either UI or console, users should
 have SCTK properly installed first. Please refer to the <a href="installation.html">Installation</a> documentation for detail of
 installing the <code>singleCellTK</code> package and relevant
 dependencies. Alternatively, users can also access the functionality by
 visiting our <a href="https://sctk.bu.edu/" target="_blank" class="external-link">online web
-server deployment</a> via a Boston University network, or using a
-stand-alone <a href="https://hub.docker.com/r/campbio/sctk_shiny" class="external-link">docker
-image</a>.</p>
+server deployment https://sctk.bu.edu/</a>, or using a stand-alone <a href="https://hub.docker.com/r/campbio/sctk_shiny" class="external-link">docker image</a>.</p>
 </div>
 <div class="section level2">
 <h2 id="importing-data">Importing Data<a class="anchor" aria-label="anchor" href="#importing-data"></a>
@@ -387,7 +394,7 @@ these operations and users are free to apply their tool(s) of choice
 with SCTK.</p>
 <p>Below is a quick example of how to perform standard QC before heading
 to the downstream analyses. If your data is already QC’ed or you decide
-to skip this step, you can directly move to the workflows (<a href="A_la_carte_workflow.html">A La Carte</a>, <a href="seurat_curated_workflow.html">Seurat</a> or <a href="celda_curated_workflow.html">Celda</a>). For this tutorial, we
+to skip this step, you can directly move to the workflows (<a href="02_a_la_carte_workflow.html">A La Carte</a>, <a href="seurat_curated_workflow.html">Seurat</a> or <a href="celda_curated_workflow.html">Celda</a>). For this tutorial, we
 will only run one doublet detection algorithm (<a href="https://bioconductor.org/packages/release/bioc/html/scDblFinder.html" class="external-link">scDblFinder</a>)
 and one decontamination algorithm (<a href="https://rdrr.io/bioc/celda/man/decontX.html" class="external-link">decontX</a>). We will
 also quantify the percentage of mitochondrial genes in each cell as this
@@ -407,7 +414,7 @@ is often used as a measure of cell viability.</p>
 <li>Users need to select <strong>“QC &amp; Filtering”</strong> at the
 top navigation panel to enter this section.</li>
 <li>In this tutorial, we perform General <strong>“QC Metrics”</strong>,
-decontamination algorithm <a href="https://bioconductor.org/packages/release/bioc/html/scDblFinder.html" class="external-link"><strong>“decontX”</strong></a>
+decontamination algorithm <a href="https://rdrr.io/bioc/celda/man/decontX.html" class="external-link"><strong>“decontX”</strong></a>
 and doublet detection algorithm <a href="https://bioconductor.org/packages/release/bioc/html/scDblFinder.html" class="external-link"><strong>“scDblFinder”</strong></a>,
 by checking the corresponding method in the left panel of this
 page.</li>

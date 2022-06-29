@@ -23,7 +23,7 @@ input matrix, and then devided by the input."><!-- mathjax --><script src="https
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.6.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.1</span>
       </span>
     </div>
 
@@ -38,16 +38,19 @@ input matrix, and then devided by the input."><!-- mathjax --><script src="https
   <a href="../articles/installation.html">Installation</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Tutorials
      
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li>
-      <a href="../articles/console_analysis_tutorial.html">A La Carte Workflow - PBMC3K (R Console)</a>
+      <a href="../articles/01_import_and_qc_tutorial.html">Importing and QC - PBMC3K</a>
     </li>
     <li>
-      <a href="../articles/cnsl_seurat_curated_workflow.html">Seurat Curated Workflow - PBMC3K</a>
+      <a href="../articles/02_a_la_carte_workflow.html">A La Carte Workflow - PBMC3K</a>
+    </li>
+    <li>
+      <a href="../articles/seurat_curated_workflow.html">Seurat Curated Workflow - PBMC3K</a>
     </li>
     <li>
       <a href="../articles/celda_curated_workflow.html">Celda Curated Workflow - PBMC3K</a>
@@ -57,13 +60,13 @@ input matrix, and then devided by the input."><!-- mathjax --><script src="https
   <a href="../articles/cmd_qc.html">SCTK-QC</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Documentation
      
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Data</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Data</a>
       <ul class="dropdown-menu" role="menu"><li>
           <a href="../articles/import_data.html">Import Data</a>
         </li>
@@ -81,7 +84,7 @@ input matrix, and then devided by the input."><!-- mathjax --><script src="https
         </li>
       </ul></li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">QC &amp; Filtering</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">QC &amp; Filtering</a>
       <ul class="dropdown-menu" role="menu"><li>
           <a href="../articles/cnsl_dropletqc.html">Droplet QC (R console)</a>
         </li>
@@ -96,31 +99,31 @@ input matrix, and then devided by the input."><!-- mathjax --><script src="https
         </li>
       </ul></li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Normalization &amp; Batch Correction</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Normalization &amp; Batch Correction</a>
       <ul class="dropdown-menu" role="menu"><li>
-          <a href="../articles/cnsl_normalization.html">Normalization</a>
+          <a href="../articles/normalization.html">Normalization</a>
         </li>
         <li>
           <a href="../articles/batch_correction.html">Batch Correction</a>
         </li>
       </ul></li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Feature Selection &amp; Dimensionality Reduction</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Feature Selection &amp; Dimensionality Reduction</a>
       <ul class="dropdown-menu" role="menu"><li>
-          <a href="../articles/cnsl_feature_selection.html">Feature Selection</a>
+          <a href="../articles/feature_selection.html">Feature Selection</a>
         </li>
         <li>
-          <a href="../articles/cnsl_dimensionality_reduction.html">Dimensionality Reduction</a>
+          <a href="../articles/dimensionality_reduction.html">Dimensionality Reduction</a>
         </li>
         <li>
-          <a href="../articles/cnsl_2d_embedding.html">2D Embedding</a>
+          <a href="../articles/2d_embedding.html">2D Embedding</a>
         </li>
       </ul></li>
     <li>
       <a href="../articles/clustering.html">Clustering</a>
     </li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Differential Expression &amp; Cell Type Labeling</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Differential Expression &amp; Cell Type Labeling</a>
       <ul class="dropdown-menu" role="menu"><li>
           <a href="../articles/differential_expression.html">Differential Expression</a>
         </li>
@@ -132,25 +135,31 @@ input matrix, and then devided by the input."><!-- mathjax --><script src="https
         </li>
       </ul></li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Enrichment &amp; Pathway Analysis</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Pathway &amp; Enrichment Analysis</a>
       <ul class="dropdown-menu" role="menu"><li>
-          <a href="../articles/cnsl_enrichR.html">EnrichR</a>
+          <a href="../articles/enrichR.html">EnrichR</a>
         </li>
         <li>
           <a href="../articles/pathwayAnalysis.html">Pathway Analysis</a>
         </li>
       </ul></li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Curated Workflows</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Trajectory Analysis</a>
       <ul class="dropdown-menu" role="menu"><li>
-          <a href="../articles/cnsl_seurat_curated_workflow.html">Seurat</a>
+          <a href="../articles/trajectoryAnalysis.html">TSCAN</a>
+        </li>
+      </ul></li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Curated Workflows</a>
+      <ul class="dropdown-menu" role="menu"><li>
+          <a href="../articles/seurat_curated_workflow.html">Seurat</a>
         </li>
         <li>
           <a href="../articles/celda_curated_workflow.html">Celda</a>
         </li>
       </ul></li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Visualization</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Visualization</a>
       <ul class="dropdown-menu" role="menu"><li>
           <a href="../articles/visualization.html">General Visualization</a>
         </li>
@@ -233,69 +242,114 @@ input matrix, and then devided by the input.</p>
     <dl><dt>inSCE</dt>
 <dd><p>A SingleCellExperiment object. With 
 <code><a href="runSoupX.html">runSoupX</a></code> already applied.</p></dd>
+
+
 <dt>sample</dt>
 <dd><p>Character vector. Indicates which sample each cell belongs to. 
 Default <code>NULL</code>.</p></dd>
+
+
 <dt>background</dt>
 <dd><p>Logical. Whether <code>background</code> was applied when 
 running <code><a href="runSoupX.html">runSoupX</a></code>. Default <code>FALSE</code>.</p></dd>
+
+
 <dt>reducedDimName</dt>
 <dd><p>Character. The embedding to use for plotting. Leave it
 <code>NULL</code> for using the sample-specific UMAPs generated when running 
 <code><a href="runSoupX.html">runSoupX</a></code>. Default <code>NULL</code>.</p></dd>
+
+
 <dt>plotNCols</dt>
 <dd><p>Integer. Number of columns for the plot grid per sample. 
 Will determine the number of top markers to show together with 
 <code>plotNRows</code>. Default <code>3</code>.</p></dd>
+
+
 <dt>plotNRows</dt>
 <dd><p>Integer. Number of rows for the plot grid per sample. Will
 determine the number of top markers to show together with <code>plotNCols</code>.
 Default <code>2</code>.</p></dd>
+
+
 <dt>baseSize</dt>
 <dd><p>Numeric. The base font size for all text. Default 12. Can be 
 overwritten by titleSize, axisSize, and axisLabelSize, legendSize, 
 legendTitleSize. Default <code>8</code>.</p></dd>
+
+
 <dt>combinePlot</dt>
 <dd><p>Must be either <code>"all"</code>, <code>"sample"</code>, or 
 <code>"none"</code>. <code>"all"</code> will combine all plots into a single 
 <code>.ggplot</code> object, while <code>"sample"</code> will output a list of plots 
 separated by sample. Default <code>"all"</code>.</p></dd>
+
+
 <dt>xlab</dt>
 <dd><p>Character vector. Label for x-axis. Default <code>NULL</code>.</p></dd>
+
+
 <dt>ylab</dt>
 <dd><p>Character vector. Label for y-axis. Default <code>NULL</code>.</p></dd>
+
+
 <dt>dim1</dt>
 <dd><p>See <code><a href="plotSCEDimReduceColData.html">plotSCEDimReduceColData</a></code>. Default <code>NULL</code>.</p></dd>
+
+
 <dt>dim2</dt>
 <dd><p>See <code><a href="plotSCEDimReduceColData.html">plotSCEDimReduceColData</a></code>. Default <code>NULL</code>.</p></dd>
+
+
 <dt>labelClusters</dt>
 <dd><p>Logical. Whether the cluster labels are plotted. Default
 <code>FALSE</code>.</p></dd>
+
+
 <dt>clusterLabelSize</dt>
 <dd><p>Numeric. Determines the size of cluster label when 
 <code>labelClusters</code> is set to <code>TRUE</code>. Default <code>3.5</code>.</p></dd>
+
+
 <dt>defaultTheme</dt>
 <dd><p>Logical. Adds grid to plot when <code>TRUE</code>. Default 
 <code>TRUE</code>.</p></dd>
+
+
 <dt>dotSize</dt>
 <dd><p>Numeric. Size of dots. Default <code>0.5</code>.</p></dd>
+
+
 <dt>transparency</dt>
 <dd><p>Numeric. Transparency of the dots, values will be from 0
 to 1. Default <code>1</code>.</p></dd>
+
+
 <dt>titleSize</dt>
 <dd><p>Numeric. Size of title of plot. Default <code>15</code>.</p></dd>
+
+
 <dt>axisLabelSize</dt>
 <dd><p>Numeric. Size of x/y-axis labels. Default <code>NULL</code>.</p></dd>
+
+
 <dt>axisSize</dt>
 <dd><p>Numeric. Size of x/y-axis ticks. Default <code>NULL</code>.</p></dd>
+
+
 <dt>legendSize</dt>
 <dd><p>Numeric. Size of legend. Default <code>NULL</code>.</p></dd>
+
+
 <dt>legendTitleSize</dt>
 <dd><p>Numeric. Size of legend title. Default <code>NULL</code>.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>ggplot object of the combination of UMAPs. See description.</p>
+    
+
+<p>ggplot object of the combination of UMAPs. See description.</p>
     </div>
 
     <div id="ref-examples">
@@ -322,7 +376,7 @@ to 1. Default <code>1</code>.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

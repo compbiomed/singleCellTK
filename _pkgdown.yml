@@ -19,6 +19,7 @@ reference:
 - contents:
   - runDecontX
   - runSoupX
+  - getSoupX<-
 - title: "Doublet/Empty Droplet Detection"
 - contents:
   - runBarcodeRankDrops
@@ -34,8 +35,9 @@ reference:
   - runNormalization
   - scaterlogNormCounts
   - scaterCPM
-  - seuratNormalizeData
-  - seuratScaleData
+  - runSeuratNormalizeData
+  - runSeuratScaleData
+  - runSeuratSCTransform
   - computeZScore
   - trimCounts
 - title: "Batch Effect Correction"
@@ -47,32 +49,37 @@ reference:
   - runMNNCorrect
   - runSCANORAMA
   - runSCMerge
-  - seuratIntegration
+  - runSeuratIntegration
   - runZINBWaVE
   - plotBatchVariance
 - title: "Feature Selection"
 - contents:
   - runFeatureSelection
-  - scranModelGeneVar
-  - seuratFindHVG
+  - runModelGeneVar
+  - runSeuratFindHVG
   - getTopHVG
-  - seuratPlotHVG
+  - setTopHVG
+  - plotTopHVG
 - title: "Dimensionality Reduction & Embedding"
 - contents:
   - runDimReduce
   - scaterPCA
   - getUMAP
   - getTSNE
-  - seuratICA
-  - seuratPCA
-  - seuratRunUMAP
-  - seuratRunTSNE
+  - runSeuratICA
+  - runSeuratPCA
+  - runSeuratUMAP
+  - runSeuratTSNE
+  - plotPCA
+  - plotUMAP
+  - plotTSNE
+  - plotDimRed
   - plotSCEDimReduceColData
   - plotSCEDimReduceFeatures
 - title: "Clustering"
 - contents:
   - runScranSNN
-  - seuratFindClusters
+  - runSeuratFindClusters
   - runKMeans
 - title: "Differential Expression"
 - contents:
@@ -82,33 +89,44 @@ reference:
   - runDESeq2
   - runLimmaDE
   - runANOVA
+  - getDEGTopTable
   - plotDEGVolcano
   - plotDEGViolin
   - plotDEGRegression
   - plotDEGHeatmap
   - plotMASTThresholdGenes
-  - diffAbundanceFET
 - title: "Find Marker"
 - contents:
   - findMarkerDiffExp
   - findMarkerTopTable
   - plotMarkerDiffExp
+- title: "Differential Abundance"
+- contents:
+  - diffAbundanceFET
+  - getDiffAbundanceResults
+  - plotClusterAbundance
 - title: "Cell Type Labeling"
 - contents:
   - runSingleR
 - title: "Enrichment & Pathway Analysis"
 - contents:
   - getMSigDBTable
-  - enrichRSCE
+  - runEnrichR
+  - getEnrichRResult<-
   - runGSVA
   - runVAM
   - getPathwayResultNames
   - plotPathway
+- title: "Trajectory Analysis"
+- contents:
+  - starts_with("runTSCAN")
+  - starts_with("plotTSCAN")
+  - getTSCANResults
 - title: "Seurat Curated Workflow"
 - contents:
-  - starts_with("seurat")
+  - starts_with("runSeurat")
   - computeHeatmap
-  - runSeurat
+  - getSeuratVariableFeatures
 - title: "Visualization"
 - contents:
   - starts_with("plot")
@@ -128,26 +146,44 @@ reference:
   - SEG
 - title: "Other Data Processing"
 - contents:
-  - expData
-  - expData<-
+  - starts_with("expData")
   - expDataNames
   - expDeleteDataTag
   - expSetDataTag
   - expTaggedData
+  - calcEffectSizes
   - combineSCE
   - convertSCEToSeurat
   - convertSeuratToSCE
-  - convertGeneIDs
+  - constructSCE
   - dedupRowNames
   - detectCellOutlier
+  - discreteColorPalette
+  - distinctColors
+  - downSampleCells
+  - downSampleDepth
   - featureIndex
-  - getGenesetNamesFromCollection
   - retrieveSCEIndex
   - sampleSummaryStats
+  - getSampleSummaryStatsTable
+  - setSampleSummaryStatsTable<-
+  - listSampleSummaryStatsTables
   - sctkListGeneSetCollections
+  - getGenesetNamesFromCollection
   - setSCTKDisplayRow
   - subsetSCECols
   - subsetSCERows
+  - generateHTANMeta
+  - generateMeta
+  - generateSimulatedData
+  - getBiomarker
+  - getSceParams
+  - iterateSimulations
+  - mergeSCEColData
+  - qcInputProcess
+  - setRowNames
+  - subDiffEx
+  - summarizeSCE
 - title: "Python Environment Setting"
 - contents:
   - sctkPythonInstallConda

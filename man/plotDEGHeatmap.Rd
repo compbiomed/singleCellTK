@@ -44,16 +44,16 @@ log2FC larger than this value. Default \code{0.25}.}
 \item{fdrThreshold}{numeric. Only plot DEGs with FDR value smaller than this
 value. Default \code{0.05}.}
 
-\item{minGroup1MeanExp}{numeric. Only plot DEGs with mean expression in 
+\item{minGroup1MeanExp}{numeric. Only plot DEGs with mean expression in
 group1 greater then this value. Default \code{NULL}.}
 
-\item{maxGroup2MeanExp}{numeric. Only plot DEGs with mean expression in 
+\item{maxGroup2MeanExp}{numeric. Only plot DEGs with mean expression in
 group2 less then this value. Default \code{NULL}.}
 
-\item{minGroup1ExprPerc}{numeric. Only plot DEGs expressed in greater then 
+\item{minGroup1ExprPerc}{numeric. Only plot DEGs expressed in greater then
 this fraction of cells in group1. Default \code{NULL}.}
 
-\item{maxGroup2ExprPerc}{numeric. Only plot DEGs expressed in less then this 
+\item{maxGroup2ExprPerc}{numeric. Only plot DEGs expressed in less then this
 fraction of cells in group2. Default \code{NULL}.}
 
 \item{useAssay}{character. A string specifying an assay of expression value
@@ -96,10 +96,10 @@ this(these) annotation(s). Should exist in either \code{rowDataName} or
 \code{names(featureAnnotations)}. Default \code{"regulation"}.}
 
 \item{rowLabel}{\code{FALSE} for not displaying; a variable in \code{rowData}
-to display feature identifiers stored there; if have run 
-\code{\link{setSCTKDisplayRow}}, display the specified feature name; 
-\code{TRUE} for the \code{rownames} of \code{inSCE}; \code{NULL} for 
-auto-display \code{rownames} when the number of filtered feature is less 
+to display feature identifiers stored there; if have run
+\code{\link{setSCTKDisplayRow}}, display the specified feature name;
+\code{TRUE} for the \code{rownames} of \code{inSCE}; \code{NULL} for
+auto-display \code{rownames} when the number of filtered feature is less
 than 60. Default looks for \code{\link{setSCTKDisplayRow}} information.}
 
 \item{title}{character. Main title of the heatmap. Default
@@ -114,8 +114,8 @@ A \code{\link[ggplot2]{ggplot}} object
 Heatmap visualization of DEG result
 }
 \details{
-A differential expression analysis function has to be run in advance 
-so that information is stored in the metadata of the input SCE object. This 
+A differential expression analysis function has to be run in advance
+so that information is stored in the metadata of the input SCE object. This
 function wraps \code{\link{plotSCEHeatmap}}.
 A feature annotation basing on the log2FC level called \code{"regulation"}
 will be automatically added. A cell annotation basing on the condition

@@ -10,7 +10,7 @@ csl: ieee.csl
 ---
 
 ```{r develSetting, include=FALSE}
-knitr::opts_chunk$set(warning = FALSE)
+knitr::opts_chunk$set(warning = FALSE, message = FALSE, eval = TRUE, results = "hold")
 ```
 
 ````{=html}
@@ -117,29 +117,40 @@ The returned SCE object will contain the updated information of the markers iden
 
 **Preprocessing**
 
-To demonstrate a simple and clear example, here we use the "PBMC-3k" dataset from "10X" which can be easily imported with SCTK functions. The preprocessing only includes necessary steps to get cluster labels (i.e. QC and filtering are excluded). 
+The preprocessing for obtaining cluster assignment was done using the exactly same workflow presented in the [A La Carte Workflow Tutorial](02_a_la_carte_workflow.html).  
 
-```{R de_prep, eval=FALSE, message=FALSE, warning=FALSE, cache=TRUE, fig.align="center", results='hide'}
+```{R de_prep, eval = FALSE}
 library(singleCellTK)
 sce <- importExampleData("pbmc3k")
-sce <- scaterlogNormCounts(sce, "logcounts")
-# Go through the Seurat curated workflow to get basic clusters
-sce <- runSeuratNormalizeData(inSCE = sce, useAssay = "counts")
-sce <- runSeuratFindHVG(inSCE = sce, useAssay = "seuratNormData")
-sce <- runSeuratScaleData(inSCE = sce, useAssay = "seuratNormData")
-sce <- runSeuratPCA(inSCE = sce, useAssay = "seuratScaledData")
-sce <- runSeuratUMAP(sce)
-sce <- runSeuratFindClusters(inSCE = sce, useAssay = "seuratScaledData")
-# Optional visualization
-plotSCEDimReduceColData(inSCE = sce, colorBy = "Seurat_louvain_Resolution0.8", conditionClass = "factor", reducedDimName = "seuratUMAP")
+sce <- runPerCellQC(sce, mitoRef = "human", mitoIDType = "symbol", mitoGeneLocation = "rownames")
+sce <- subsetSCECols(sce, colData = c('total > 600', 'detected > 300', 'mito_percent < 5'))
+sce <- scaterlogNormCounts(sce, useAssay = "counts", assayName = "logcounts")
+sce <- runModelGeneVar(sce, useAssay = "logcounts")
+sce <- setTopHVG(sce, method = "modelGeneVar")
+sce <- scaterPCA(inSCE = sce, useAssay = "logcounts", useFeatureSubset = "HVG_modelGeneVar2000", 
+                 reducedDimName = "PCA", seed = 12345)
+sce <- runScranSNN(sce, useReducedDim = "PCA", nComp = 10, k = 14,
+                   weightType = "jaccard", clusterName = "cluster", seed = 12345)
+sce <- getUMAP(sce, useReducedDim = "PCA", initialDims = 10, reducedDimName = "UMAP", seed = 12345)
+```
+
+```{r import_prep, include=FALSE}
+library(singleCellTK)
+sce <- readRDS("tutorial_pbmc3k_clustered.rds")
+```
+
+And we can visualize the cell populations on the UMAP with cluster labeled.
+
+```{R de_prep_plot, results = "hide"}
+plotSCEDimReduceColData(sce, colorBy = "cluster", reducedDimName = "UMAP")
 ```
 
 **Get Markers**
 
-Then we call `findMarkerDiffExp()` on the clustered data, with the cluster annotation just attached, which by default named with `"Seurat_louvain_Resolution0.8"`.  
+Then we call `findMarkerDiffExp()` on the clustered data, with the cluster annotation just obtained, `"cluster"`.  
 
-```{R runFM, eval=FALSE, message=FALSE, warning=FALSE, cache=TRUE}
-sce <- findMarkerDiffExp(inSCE = sce, useAssay = "logcounts", cluster = "Seurat_louvain_Resolution0.8")
+```{R runFM}
+sce <- findMarkerDiffExp(inSCE = sce, useAssay = "logcounts", cluster = "cluster")
 ```
 
 ````{=html}
@@ -149,24 +160,16 @@ sce <- findMarkerDiffExp(inSCE = sce, useAssay = "logcounts", cluster = "Seurat_
 
 **Results**
 
-After successfully running `findMarkerDiffExp()`, the result marker table would be stored in `metadata(sce)`. This table can be fetched by:  
+After successfully running `findMarkerDiffExp()`, the result marker table would be stored in `metadata(sce)`. This table can be fetched by `findMarkerTopTable()`. Argument `topN` controls how many top markers, that pass filters, to include for each clsuter.
 
-```{R getMarkerTable, eval=FALSE}
-markerTable <- metadata(sce)$findMarker
-head(markerTable)
-```
-
-```{R getMarkerTable_kable, eval=FALSE, echo=FALSE, message=FALSE, warning=FALSE, cache=TRUE}
-library(kableExtra)
-library(knitr)
-markerTable <- metadata(sce)$findMarker
-kable_styling(kable(head(markerTable)), bootstrap_options = c("striped", "hover"), full_width = FALSE)
+```{R getMarkerTable}
+findMarkerTopTable(sce, log2fcThreshold = 0, minClustExprPerc = 0.5, topN = 1)
 ```
 
 Similarly to the Differential Expression section, we also provide a automated and organized **heatmap plotting** for the markers:  
 
-```{R plotMarkers, eval=FALSE, cache=TRUE, fig.align="center", fig.width=9, fig.height=6, warning=FALSE, message=FALSE}
-plotMarkerDiffExp(sce)
+```{R plotMarkers, fig.height = 8, fig.width = 7}
+plotMarkerDiffExp(sce, log2fcThreshold = 0, minClustExprPerc = 0.5, maxCtrlExprPerc = 0.5, rowLabel = TRUE)
 ```
 
 Note that when plotting the heatmap, the genes that are identified as up-regulated in multiple clusters will be considered only for the one cluster with the highest fold-change, while all of them are still kept in the table in `metadata`. 

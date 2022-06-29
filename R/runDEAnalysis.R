@@ -4,8 +4,8 @@
 #' @param inSCE \linkS4class{SingleCellExperiment} inherited object. Required.
 #' @param useAssay character. A string specifying which assay to use. Required.
 #' @param useReducedDim character. A string specifying which reducedDim to use
-#' for DE analysis. Usually a pathway analysis result matrix. Set 
-#' \code{useAssay} to \code{NULL} when using. Required. 
+#' for DE analysis. Usually a pathway analysis result matrix. Set
+#' \code{useAssay} to \code{NULL} when using. Required.
 #' @param index1 Any type of indices that can subset a
 #' \linkS4class{SingleCellExperiment} inherited object by cells. Specifies
 #' which cells are of interests. Default \code{NULL}.
@@ -32,6 +32,7 @@
 #' Default \code{FALSE}.
 #' @return A list object with part of formatted DE analysis information
 #' @author Yichen Wang
+#' @noRd
 .formatDEAList <- function(inSCE, useAssay, useReducedDim, index1 = NULL, index2 = NULL,
                            class = NULL, classGroup1 = NULL,
                            classGroup2 = NULL, groupName1, groupName2,
@@ -52,9 +53,9 @@
         if(!useAssay %in% SummarizedExperiment::assayNames(inSCE)){
           stop(paste('"useAssay" name: ', useAssay, ' not found.'))
         }
-      } 
+      }
     }
-  
+
     if(is.null(index1) && (is.null(classGroup1) || is.null(class))){
         stop('At least "index1" or "classGroup1" should be specified.')
     } else if(!is.null(index1) && (!is.null(classGroup1) || !is.null(class))){
@@ -138,7 +139,7 @@
 
 # Filter the formated DEG table
 # Could be used in runDE, getTable and plotDE functions
-.filterDETable <- function(deg, onlyPos = FALSE, log2fcThreshold = NULL, 
+.filterDETable <- function(deg, onlyPos = FALSE, log2fcThreshold = NULL,
                            fdrThreshold = NULL, minGroup1MeanExp = NULL,
                            maxGroup2MeanExp = NULL, minGroup1ExprPerc = NULL,
                            maxGroup2ExprPerc = NULL) {
@@ -198,27 +199,27 @@
 
 #' Perform differential expression analysis on SCE object
 #' @rdname runDEAnalysis
-#' @details 
+#' @details
 #' SCTK provides Limma, MAST, DESeq2, ANOVA and Wilcoxon test for differential
-#' expression analysis, where DESeq2 expects non-negtive integer assay input 
-#' while others expect logcounts. 
-#' 
+#' expression analysis, where DESeq2 expects non-negtive integer assay input
+#' while others expect logcounts.
+#'
 #' Condition specification allows two methods:
 #' 1. Index level selection. Only use arguments \code{index1} and \code{index2}.
-#' 2. Annotation level selection. Only use arguments \code{class}, 
+#' 2. Annotation level selection. Only use arguments \code{class},
 #' \code{classGroup1} and \code{classGroup2}.
-#' @seealso See \code{\link{plotDEGHeatmap}}, \code{\link{plotDEGRegression}}, 
-#' \code{\link{plotDEGViolin}} and \code{\link{plotDEGVolcano}} for 
-#' visualization method after running DE analysis. 
+#' @seealso See \code{\link{plotDEGHeatmap}}, \code{\link{plotDEGRegression}},
+#' \code{\link{plotDEGViolin}} and \code{\link{plotDEGVolcano}} for
+#' visualization method after running DE analysis.
 #' @param inSCE \linkS4class{SingleCellExperiment} inherited object.
-#' @param method Character. Specify which method to use when using 
-#' \code{runDEAnalysis()}. Choose from \code{"wilcox"}, \code{"MAST"}, 
+#' @param method Character. Specify which method to use when using
+#' \code{runDEAnalysis()}. Choose from \code{"wilcox"}, \code{"MAST"},
 #' \code{"DESeq2"}, \code{"Limma"}, \code{"ANOVA"}. Default \code{"wilcox"}.
 #' @param useAssay character. A string specifying which assay to use for the
-#' DE regression. Ignored when \code{useReducedDim} is specified. Default 
-#' \code{"counts"} for DESeq2, \code{"logcounts"} for other methods. 
+#' DE regression. Ignored when \code{useReducedDim} is specified. Default
+#' \code{"counts"} for DESeq2, \code{"logcounts"} for other methods.
 #' @param useReducedDim character. A string specifying which reducedDim to use
-#' for DE analysis. Will treat the dimensions as features. Default \code{NULL}. 
+#' for DE analysis. Will treat the dimensions as features. Default \code{NULL}.
 #' @param index1 Any type of indices that can subset a
 #' \linkS4class{SingleCellExperiment} inherited object by cells. Specifies
 #' which cells are of interests. Default \code{NULL}.
@@ -248,23 +249,23 @@
 #' greater than this value. Default \code{NULL}.
 #' @param fdrThreshold Only out put DEGs with FDR value less than this
 #' value. Default \code{NULL}.
-#' @param minGroup1MeanExp Only out put DEGs with mean expression in group1 
+#' @param minGroup1MeanExp Only out put DEGs with mean expression in group1
 #' greater then this value. Default \code{NULL}.
-#' @param maxGroup2MeanExp Only out put DEGs with mean expression in group2 
+#' @param maxGroup2MeanExp Only out put DEGs with mean expression in group2
 #' less then this value. Default \code{NULL}.
-#' @param minGroup1ExprPerc Only out put DEGs expressed in greater then this 
+#' @param minGroup1ExprPerc Only out put DEGs expressed in greater then this
 #' fraction of cells in group1. Default \code{NULL}.
-#' @param maxGroup2ExprPerc Only out put DEGs expressed in less then this 
+#' @param maxGroup2ExprPerc Only out put DEGs expressed in less then this
 #' fraction of cells in group2. Default \code{NULL}.
 #' @param overwrite A logical scalar. Whether to overwrite result if exists.
 #' Default \code{FALSE}.
-#' @param verbose A logical scalar. Whether to show messages. Default 
+#' @param verbose A logical scalar. Whether to show messages. Default
 #' \code{TRUE}.
-#' @param fullReduced Logical, DESeq2 only argument. Whether to apply LRT 
+#' @param fullReduced Logical, DESeq2 only argument. Whether to apply LRT
 #' (Likelihood ratio test) with a 'full' model. Default \code{TRUE}.
-#' @param check_sanity Logical, MAST only argument. Whether to perform MAST's 
+#' @param check_sanity Logical, MAST only argument. Whether to perform MAST's
 #' sanity check to see if the counts are logged. Default \code{TRUE}.
-#' @param ... Arguments to pass to specific methods when using the generic 
+#' @param ... Arguments to pass to specific methods when using the generic
 #' \code{runDEAnalysis()}.
 #' @examples
 #' data(scExample, package = "singleCellTK")
@@ -276,15 +277,15 @@
 #'
 #' @return The input \linkS4class{SingleCellExperiment} object, where
 #' \code{metadata(inSCE)$diffExp} is updated with a list named by
-#' \code{analysisName}, with elements of: 
+#' \code{analysisName}, with elements of:
 #' \item{$groupNames}{the naming of the two conditions}
-#' \item{$useAssay, $useReducedDim}{the matrix name that was used for 
+#' \item{$useAssay, $useReducedDim}{the matrix name that was used for
 #' calculation}
 #' \item{$select}{the cell selection indices (logical) for each condition}
 #' \item{$result}{a \code{data.frame} of the DEGs table}
 #' \item{$method}{the method used}
 #' @export
-runDEAnalysis <- function(method = c('wilcox', 'MAST', 'DESeq2', 'Limma', 
+runDEAnalysis <- function(method = c('wilcox', 'MAST', 'DESeq2', 'Limma',
                                      'ANOVA'), ...){
     method <- match.arg(method)
     funcList <- list(MAST = runMAST,
@@ -297,16 +298,16 @@ runDEAnalysis <- function(method = c('wilcox', 'MAST', 'DESeq2', 'Limma',
 
 #' @rdname runDEAnalysis
 #' @export
-runDESeq2 <- function(inSCE, useAssay = 'counts', useReducedDim = NULL, 
-                      index1 = NULL, index2 = NULL, class = NULL, 
-                      classGroup1 = NULL, classGroup2 = NULL, analysisName, 
-                      groupName1, groupName2, covariates = NULL, 
-                      fullReduced = TRUE, onlyPos = FALSE, 
-                      log2fcThreshold = NULL, fdrThreshold = NULL, 
-                      minGroup1MeanExp = NULL, maxGroup2MeanExp = NULL, 
+runDESeq2 <- function(inSCE, useAssay = 'counts', useReducedDim = NULL,
+                      index1 = NULL, index2 = NULL, class = NULL,
+                      classGroup1 = NULL, classGroup2 = NULL, analysisName,
+                      groupName1, groupName2, covariates = NULL,
+                      fullReduced = TRUE, onlyPos = FALSE,
+                      log2fcThreshold = NULL, fdrThreshold = NULL,
+                      minGroup1MeanExp = NULL, maxGroup2MeanExp = NULL,
                       minGroup1ExprPerc = NULL, maxGroup2ExprPerc = NULL,
                       overwrite = FALSE, verbose = TRUE){
-    resultList <- .formatDEAList(inSCE, useAssay, useReducedDim, index1, index2, 
+    resultList <- .formatDEAList(inSCE, useAssay, useReducedDim, index1, index2,
                                  class, classGroup1, classGroup2, groupName1,
                                  groupName2, analysisName, covariates,
                                  overwrite)
@@ -328,7 +329,7 @@ runDESeq2 <- function(inSCE, useAssay = 'counts', useReducedDim = NULL,
     } else {
       mat <- t(expData(inSCE[,subsetIdx], useReducedDim))
     }
-    
+
     if(!inherits(mat, 'matrix')){
         mat <- as.matrix(mat)
     }
@@ -352,7 +353,7 @@ runDESeq2 <- function(inSCE, useAssay = 'counts', useReducedDim = NULL,
         dds <- DESeq2::DESeq(
             dds, test = "LRT",
             reduced = stats::as.formula(paste0('~condition', covariates,
-                                               collapse = '+')), 
+                                               collapse = '+')),
             quiet = !verbose
         )
     }
@@ -365,10 +366,10 @@ runDESeq2 <- function(inSCE, useAssay = 'counts', useReducedDim = NULL,
     colnames(deg) <- c('Gene', 'Log2_FC', 'Pvalue', 'FDR')
     deg$Log2_FC <- - deg$Log2_FC # JNMLP
     deg <- .calculateDEMetrics(deg, expData(inSCE, useAssay), ix1, ix2)
-    deg <- .filterDETable(deg, onlyPos, log2fcThreshold, fdrThreshold, 
-                          minGroup1MeanExp, maxGroup2MeanExp, 
+    deg <- .filterDETable(deg, onlyPos, log2fcThreshold, fdrThreshold,
+                          minGroup1MeanExp, maxGroup2MeanExp,
                           minGroup1ExprPerc, maxGroup2ExprPerc)
-    
+
     resultList$result <- deg
     resultList$method <- 'DESeq2'
     if ("diffExp" %in% names(S4Vectors::metadata(inSCE))){
@@ -382,14 +383,14 @@ runDESeq2 <- function(inSCE, useAssay = 'counts', useReducedDim = NULL,
 
 #' @rdname runDEAnalysis
 #' @export
-runLimmaDE <- function(inSCE, useAssay = 'logcounts', useReducedDim = NULL, 
-                       index1 = NULL, index2 = NULL, class = NULL, 
-                       classGroup1 = NULL, classGroup2 = NULL, analysisName, 
-                       groupName1, groupName2, covariates = NULL, 
-                       onlyPos = FALSE, log2fcThreshold = NULL, 
-                       fdrThreshold = NULL, minGroup1MeanExp = NULL, 
-                       maxGroup2MeanExp = NULL, minGroup1ExprPerc = NULL, 
-                       maxGroup2ExprPerc = NULL, overwrite = FALSE, 
+runLimmaDE <- function(inSCE, useAssay = 'logcounts', useReducedDim = NULL,
+                       index1 = NULL, index2 = NULL, class = NULL,
+                       classGroup1 = NULL, classGroup2 = NULL, analysisName,
+                       groupName1, groupName2, covariates = NULL,
+                       onlyPos = FALSE, log2fcThreshold = NULL,
+                       fdrThreshold = NULL, minGroup1MeanExp = NULL,
+                       maxGroup2MeanExp = NULL, minGroup1ExprPerc = NULL,
+                       maxGroup2ExprPerc = NULL, overwrite = FALSE,
                        verbose = TRUE){
     resultList <- .formatDEAList(inSCE, useAssay, useReducedDim, index1, index2,
                                  class, classGroup1, classGroup2, groupName1,
@@ -413,7 +414,7 @@ runLimmaDE <- function(inSCE, useAssay = 'logcounts', useReducedDim = NULL,
     } else {
       mat <- t(expData(inSCE[,subsetIdx], useReducedDim))
     }
-    
+
     if(!inherits(mat, 'matrix')){
         mat <- as.matrix(mat)
     }
@@ -423,7 +424,7 @@ runLimmaDE <- function(inSCE, useAssay = 'logcounts', useReducedDim = NULL,
       mat <- dedupRowNames(mat)
     }
     if (isTRUE(verbose)) {
-      message(date(), " ... Running DE with limma, Analysis name: ", 
+      message(date(), " ... Running DE with limma, Analysis name: ",
               analysisName)
     }
     design <- stats::model.matrix(
@@ -443,8 +444,8 @@ runLimmaDE <- function(inSCE, useAssay = 'logcounts', useReducedDim = NULL,
     colnames(deg) <- c("Gene", "Log2_FC", "Pvalue", "FDR")
     deg$Log2_FC <- - deg$Log2_FC # JNMLP
     deg <- .calculateDEMetrics(deg, expData(inSCE, useAssay), ix1, ix2)
-    deg <- .filterDETable(deg, onlyPos, log2fcThreshold, fdrThreshold, 
-                          minGroup1MeanExp, maxGroup2MeanExp, 
+    deg <- .filterDETable(deg, onlyPos, log2fcThreshold, fdrThreshold,
+                          minGroup1MeanExp, maxGroup2MeanExp,
                           minGroup1ExprPerc, maxGroup2ExprPerc)
 
     resultList$result <- deg
@@ -460,12 +461,12 @@ runLimmaDE <- function(inSCE, useAssay = 'logcounts', useReducedDim = NULL,
 
 #' @rdname runDEAnalysis
 #' @export
-runANOVA <- function(inSCE, useAssay = 'logcounts', useReducedDim = NULL, 
-                     index1 = NULL, index2 = NULL, class = NULL, 
-                     classGroup1 = NULL, classGroup2 = NULL, analysisName, 
+runANOVA <- function(inSCE, useAssay = 'logcounts', useReducedDim = NULL,
+                     index1 = NULL, index2 = NULL, class = NULL,
+                     classGroup1 = NULL, classGroup2 = NULL, analysisName,
                      groupName1, groupName2, covariates = NULL, onlyPos = FALSE,
-                     log2fcThreshold = NULL, fdrThreshold = NULL, 
-                     minGroup1MeanExp = NULL, maxGroup2MeanExp = NULL, 
+                     log2fcThreshold = NULL, fdrThreshold = NULL,
+                     minGroup1MeanExp = NULL, maxGroup2MeanExp = NULL,
                      minGroup1ExprPerc = NULL, maxGroup2ExprPerc = NULL,
                      overwrite = FALSE, verbose = TRUE){
     resultList <- .formatDEAList(inSCE, useAssay, useReducedDim, index1, index2,
@@ -511,7 +512,7 @@ runANOVA <- function(inSCE, useAssay = 'logcounts', useReducedDim = NULL,
       dat <- dedupRowNames(dat)
     }
     if (isTRUE(verbose)) {
-      message(date(), " ... Running DE with ANOVA, Analysis name: ", 
+      message(date(), " ... Running DE with ANOVA, Analysis name: ",
               analysisName)
     }
     n <- dim(dat)[2]
@@ -533,7 +534,7 @@ runANOVA <- function(inSCE, useAssay = 'logcounts', useReducedDim = NULL,
                       FDR = stats::p.adjust(p, method = 'fdr'),
                       stringsAsFactors = FALSE)
     rownames(deg) <- NULL
-    
+
     if (!is.null(useAssay)) {
       cond1.assay <- expData(inSCE, useAssay)[, ix1, drop=FALSE]
       cond2.assay <- expData(inSCE, useAssay)[, ix2, drop=FALSE]
@@ -545,9 +546,9 @@ runANOVA <- function(inSCE, useAssay = 'logcounts', useReducedDim = NULL,
     deg$Log2_FC <- rowMeans(cond1.assay) - rowMeans(cond2.assay)
     deg <- .calculateDEMetrics(deg, expData(inSCE, useAssay), ix1, ix2)
     deg <- .filterDETable(deg, onlyPos, log2fcThreshold, fdrThreshold,
-                          minGroup1MeanExp, maxGroup2MeanExp, 
+                          minGroup1MeanExp, maxGroup2MeanExp,
                           minGroup1ExprPerc, maxGroup2ExprPerc)
-    
+
     resultList$result <- deg
     resultList$method <- 'ANOVA'
 
@@ -563,14 +564,14 @@ runANOVA <- function(inSCE, useAssay = 'logcounts', useReducedDim = NULL,
 #' @rdname runDEAnalysis
 #' @export
 runMAST <- function(inSCE, useAssay = 'logcounts', useReducedDim = NULL,
-                    index1 = NULL, index2 = NULL, class = NULL, 
-                    classGroup1 = NULL, classGroup2 = NULL, analysisName, 
+                    index1 = NULL, index2 = NULL, class = NULL,
+                    classGroup1 = NULL, classGroup2 = NULL, analysisName,
                     groupName1, groupName2, covariates = NULL, onlyPos = FALSE,
                     log2fcThreshold = NULL, fdrThreshold = NULL,
-                    minGroup1MeanExp = NULL, maxGroup2MeanExp = NULL, 
+                    minGroup1MeanExp = NULL, maxGroup2MeanExp = NULL,
                     minGroup1ExprPerc = NULL, maxGroup2ExprPerc = NULL,
                     overwrite = FALSE, check_sanity = TRUE, verbose = TRUE){
-    resultList <- .formatDEAList(inSCE, useAssay, useReducedDim, index1, index2, 
+    resultList <- .formatDEAList(inSCE, useAssay, useReducedDim, index1, index2,
                                  class, classGroup1, classGroup2, groupName1,
                                  groupName2, analysisName, covariates,
                                  overwrite)
@@ -586,7 +587,7 @@ runMAST <- function(inSCE, useAssay = 'logcounts', useReducedDim = NULL,
     } else {
       mat <- t(expData(inSCE[,subsetIdx], useReducedDim))
     }
-    
+
     if(!inherits(mat, 'matrix')){
       mat <- as.matrix(mat)
     }
@@ -596,7 +597,7 @@ runMAST <- function(inSCE, useAssay = 'logcounts', useReducedDim = NULL,
       mat <- dedupRowNames(mat)
     }
     if (isTRUE(verbose)) {
-      message(date(), " ... Running DE with MAST, Analysis name: ", 
+      message(date(), " ... Running DE with MAST, Analysis name: ",
               analysisName)
     }
     cond <- rep(NA, ncol(inSCE))
@@ -653,11 +654,11 @@ runMAST <- function(inSCE, useAssay = 'logcounts', useReducedDim = NULL,
     names(fcHurdleSig)[c(1, 2, 3, 4)] <- c("Gene", "Pvalue",
                                            "Log2_FC", "FDR")
     fcHurdleSig$Gene <- as.character(fcHurdleSig$Gene)
-    fcHurdleSig <- .calculateDEMetrics(fcHurdleSig, expData(inSCE, useAssay), 
+    fcHurdleSig <- .calculateDEMetrics(fcHurdleSig, expData(inSCE, useAssay),
                                        ix1, ix2)
-    fcHurdleSig <- .filterDETable(fcHurdleSig, onlyPos, log2fcThreshold, 
-                                  fdrThreshold, minGroup1MeanExp, 
-                                  maxGroup2MeanExp, minGroup1ExprPerc, 
+    fcHurdleSig <- .filterDETable(fcHurdleSig, onlyPos, log2fcThreshold,
+                                  fdrThreshold, minGroup1MeanExp,
+                                  maxGroup2MeanExp, minGroup1ExprPerc,
                                   maxGroup2ExprPerc)
 
     resultList$result <- fcHurdleSig
@@ -674,16 +675,16 @@ runMAST <- function(inSCE, useAssay = 'logcounts', useReducedDim = NULL,
 
 #' @rdname runDEAnalysis
 #' @export
-runWilcox <- function(inSCE, useAssay = 'logcounts', useReducedDim = NULL, 
-                      index1 = NULL, index2 = NULL, class = NULL, 
-                      classGroup1 = NULL, classGroup2 = NULL, analysisName, 
-                      groupName1, groupName2, covariates = NULL, 
-                      onlyPos = FALSE, log2fcThreshold = NULL, 
-                      fdrThreshold = NULL, minGroup1MeanExp = NULL, 
-                      maxGroup2MeanExp = NULL, minGroup1ExprPerc = NULL, 
-                      maxGroup2ExprPerc = NULL, overwrite = FALSE, 
+runWilcox <- function(inSCE, useAssay = 'logcounts', useReducedDim = NULL,
+                      index1 = NULL, index2 = NULL, class = NULL,
+                      classGroup1 = NULL, classGroup2 = NULL, analysisName,
+                      groupName1, groupName2, covariates = NULL,
+                      onlyPos = FALSE, log2fcThreshold = NULL,
+                      fdrThreshold = NULL, minGroup1MeanExp = NULL,
+                      maxGroup2MeanExp = NULL, minGroup1ExprPerc = NULL,
+                      maxGroup2ExprPerc = NULL, overwrite = FALSE,
                       verbose = TRUE){
-  resultList <- .formatDEAList(inSCE, useAssay, useReducedDim, index1, index2, 
+  resultList <- .formatDEAList(inSCE, useAssay, useReducedDim, index1, index2,
                                class, classGroup1, classGroup2, groupName1,
                                groupName2, analysisName, covariates,
                                overwrite)
@@ -704,7 +705,7 @@ runWilcox <- function(inSCE, useAssay = 'logcounts', useReducedDim = NULL,
     mat <- t(expData(inSCE, useReducedDim))
   }
   if (isTRUE(verbose)) {
-    message(date(), " ... Running DE with wilcox, Analysis name: ", 
+    message(date(), " ... Running DE with wilcox, Analysis name: ",
             analysisName)
   }
   result <- scran::pairwiseWilcox(mat, groups = conditions)
@@ -716,7 +717,7 @@ runWilcox <- function(inSCE, useAssay = 'logcounts', useReducedDim = NULL,
     table <- result$statistics[[2]]
   }
   # Generate LogFC value
-  
+
   if (!is.null(useAssay)) {
     cond1.assay <- expData(inSCE, useAssay)[rownames(table), ix1, drop=FALSE]
     cond2.assay <- expData(inSCE, useAssay)[rownames(table), ix2, drop=FALSE]
@@ -726,7 +727,7 @@ runWilcox <- function(inSCE, useAssay = 'logcounts', useReducedDim = NULL,
   }
   # Assuming that useAssay is log-normalized counts
   table$Log2_FC <- rowMeans(cond1.assay) - rowMeans(cond2.assay)
-  
+
   deg <- data.frame(Gene = as.character(rownames(table)),
                     Log2_FC = table$Log2_FC,
                     Pvalue = table$p.value,
@@ -734,9 +735,9 @@ runWilcox <- function(inSCE, useAssay = 'logcounts', useReducedDim = NULL,
   rownames(deg) <- NULL
   deg <- .calculateDEMetrics(deg, mat, ix1, ix2)
   deg <- .filterDETable(deg, onlyPos, log2fcThreshold, fdrThreshold,
-                        minGroup1MeanExp, maxGroup2MeanExp, 
+                        minGroup1MeanExp, maxGroup2MeanExp,
                         minGroup1ExprPerc, maxGroup2ExprPerc)
-  
+
   resultList$result <- deg
   resultList$method <- 'wilcox'
   if ("diffExp" %in% names(S4Vectors::metadata(inSCE))){

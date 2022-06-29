@@ -146,7 +146,7 @@ plotBatchCorrCompare <- function(inSCE, corrMat, batch = NULL, condition = NULL,
       ggplot2::theme(text=ggplot2::element_text(size=10))
 
     if (method == "ComBatSeq") {
-      inSCE <- getUMAP(inSCE, useAssay = corrMat, logNorm = TRUE, 
+      inSCE <- getUMAP(inSCE, useAssay = corrMat, logNorm = TRUE,
                        reducedDimName = "umap.after")
     } else {
       inSCE <- getUMAP(inSCE, useAssay = corrMat, reducedDimName = "umap.after")
@@ -174,7 +174,7 @@ plotBatchCorrCompare <- function(inSCE, corrMat, batch = NULL, condition = NULL,
       SingleCellExperiment::reducedDim(inSCE, "umap.after") <-
         SingleCellExperiment::reducedDim(inSCE, corrMat)
     } else {
-      inSCE <- getUMAP(inSCE, useReducedDim = corrMat, 
+      inSCE <- getUMAP(inSCE, useReducedDim = corrMat,
                        reducedDimName = "umap.after")
     }
   } else {
@@ -366,7 +366,7 @@ plotBatchVariance <- function(inSCE, useAssay = NULL, useReddim = NULL,
 #' \code{colData(inSCE)}. Default \code{"batch"}.
 #' @param xlab label for x-axis. Default \code{"batch"}.
 #' @param ylab label for y-axis. Default \code{"Feature Mean"}.
-#' @param ... Additional arguments passed to \code{\link{.ggViolin}}.
+#' @param ... Additional arguments passed to \code{.ggViolin}.
 #' @examples
 #' data('sceBatches', package = 'singleCellTK')
 #' plotSCEBatchFeatureMean(sceBatches, useAssay = "counts")

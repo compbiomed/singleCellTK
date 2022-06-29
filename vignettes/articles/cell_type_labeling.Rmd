@@ -103,10 +103,9 @@ Besides, users can also use their own labeled reference datasets wrapped in a [S
 Users can choose to visualize the labeling result on a scatter plot. Here, we provide an example to create a UMAP embedding that can clearly reflect the relationship between cells in 2D, and then color the cells by the labels.  
 
 ```{R visualization, message=FALSE, warning=FALSE, fig.align="center", results='hide'}
-sce <- runNormalization(inSCE = sce, useAssay = "logcounts", scale = TRUE, outAssayName = "logcounts_scaled")
-sce <- runSeuratFindHVG(inSCE = sce, useAssay = "counts", hvgMethod = "vst")
-sce <- getTopHVG(inSCE = sce, method = "vst", n = 2000, altExp = "hvg")
-sce <- runDimReduce(inSCE = sce, method = "scaterPCA", useAssay = "logcounts_scaled", useAltExp = "hvg", reducedDimName = "PCA")
+sce <- runSeuratFindHVG(inSCE = sce, useAssay = "counts", method = "vst")
+sce <- setTopHVG(inSCE = sce, method = "vst", hvgNumber = 2000)
+sce <- runDimReduce(inSCE = sce, method = "scaterPCA", useAssay = "logcounts", useFeatureSubset = "HVG_vst2000", reducedDimName = "PCA")
 sce <- runDimReduce(inSCE = sce, method = "scaterUMAP", useReducedDim = "PCA", reducedDimName = "UMAP")
 plotSCEDimReduceColData(inSCE = sce, colorBy = "SingleR_hpca_main_pruned.labels", reducedDimName = "UMAP")
 ```

@@ -322,7 +322,7 @@ plotSCEDimReduceColData(sce, "cluster", "UMAP")
 </div>
 ````
 
-In the other curated workflow that SCTK wraps ([Celda Curated Workflow](celda_curated_workflow.html)), we use a Bayesian hierarchical model that can bi-cluster features into modules and observations into subpopulations. For detail of this method, please refer to the [Celda Documentation](https://celda.camplab.net).
+In the other curated workflow that SCTK wraps ([Celda Curated Workflow](celda_curated_workflow.html)), we use a Bayesian hierarchical model that can bi-cluster features into modules and observations into subpopulations. For detail of this method, please refer to the [Celda Documentation](https://www.camplab.net/celda/).
 
 ```{r export_cluster, include=FALSE}
 saveRDS(sce, "tutorial_pbmc3k_clustered.rds")

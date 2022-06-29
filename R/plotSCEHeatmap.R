@@ -6,6 +6,7 @@
 #' names. Default \code{NULL}.
 #' @param index Valid index to subset the col/row.
 #' @return A \code{data.frame} object.
+#' @noRd
 .extractSCEAnnotation <- function(inSCE, axis = NULL, columns = NULL,
                                   index = NULL){
     if(is.null(axis) || !axis %in% c('col', 'row')){
@@ -45,6 +46,7 @@
 #' possible categorical entries in \code{rowData(inSCE)} or
 #' \code{colData(inSCE)}.
 #' @author Yichen Wang
+#' @noRd
 dataAnnotationColor <- function(inSCE, axis = NULL,
                                 colorGen = distinctColors){
     if(!is.null(axis) && axis == 'col'){
@@ -130,13 +132,13 @@ dataAnnotationColor <- function(inSCE, axis = NULL,
 #' trimmed to their nearst bound. Default \code{c(-2, 2)}
 #' @param featureIndexBy A single character specifying a column name of
 #' \code{rowData(inSCE)}, or a vector of the same length as \code{nrow(inSCE)},
-#' where we search for the non-rowname feature indices. Not applicable for 
-#' \code{plotSCEDimReduceHeatmap}. Default \code{"rownames"}. 
+#' where we search for the non-rowname feature indices. Not applicable for
+#' \code{plotSCEDimReduceHeatmap}. Default \code{"rownames"}.
 #' @param cellIndexBy A single character specifying a column name of
 #' \code{colData(inSCE)}, or a vector of the same length as \code{ncol(inSCE)},
 #' where we search for the non-rowname cell indices. Default \code{"rownames"}.
 #' @param rowDataName character. The column name(s) in \code{rowData} that need
-#' to be added to the annotation. Not applicable for 
+#' to be added to the annotation. Not applicable for
 #' \code{plotSCEDimReduceHeatmap}. Default \code{NULL}.
 #' @param colDataName character. The column name(s) in \code{colData} that need
 #' to be added to the annotation. Default \code{NULL}.
@@ -192,7 +194,7 @@ dataAnnotationColor <- function(inSCE, axis = NULL,
 #' @examples
 #' data(scExample, package = "singleCellTK")
 #' plotSCEHeatmap(sce[1:3,1:3], useAssay = "counts")
-#' @return A \code{\link[ggplot2]{ggplot}} object. 
+#' @return A \code{\link[ggplot2]{ggplot}} object.
 #' @export
 #' @author Yichen Wang
 plotSCEHeatmap <- function(inSCE, useAssay = 'logcounts', doLog = FALSE,
@@ -536,9 +538,9 @@ plotSCEHeatmap <- function(inSCE, useAssay = 'logcounts', doLog = FALSE,
 
 #' @rdname plotSCEHeatmap
 #' @export
-plotSCEDimReduceHeatmap <- function(inSCE, useReducedDim, 
-                                    featureIndex = NULL, cellIndex = NULL, 
-                                    doLog = FALSE, scale = FALSE, 
+plotSCEDimReduceHeatmap <- function(inSCE, useReducedDim,
+                                    featureIndex = NULL, cellIndex = NULL,
+                                    doLog = FALSE, scale = FALSE,
                                     trim = c(-2, 2),
                                     cellIndexBy = 'rownames',
                                     colDataName = NULL,
@@ -556,33 +558,33 @@ plotSCEDimReduceHeatmap <- function(inSCE, useReducedDim,
     names(assayList) <- useReducedDim
     tmpSCE <- SingleCellExperiment::SingleCellExperiment(assays = assayList)
     SummarizedExperiment::colData(tmpSCE) <- SummarizedExperiment::colData(inSCE)
-    plotSCEHeatmap(inSCE = tmpSCE, 
+    plotSCEHeatmap(inSCE = tmpSCE,
                    useAssay = useReducedDim,
-                   featureIndex = featureIndex, 
+                   featureIndex = featureIndex,
                    cellIndex = cellIndex,
                    doLog = doLog,
-                   scale = scale, 
-                   trim = trim, 
-                   cellIndexBy = cellIndexBy, 
-                   colDataName = colDataName, 
-                   featureAnnotations = featureAnnotations, 
-                   cellAnnotations = cellAnnotations, 
-                   featureAnnotationColor = featureAnnotationColor, 
-                   cellAnnotationColor = cellAnnotationColor, 
-                   rowSplitBy = rowSplitBy, 
-                   colSplitBy = colSplitBy, 
-                   rowLabel = rowLabel, 
-                   colLabel = colLabel, 
-                   rowLabelSize = rowLabelSize, 
-                   colLabelSize = colLabelSize, 
-                   rowDend = rowDend, 
-                   colDend = colDend, 
-                   title = title, 
-                   rowTitle = rowTitle, 
-                   colTitle = colTitle, 
-                   rowGap = rowGap, 
-                   colGap = colGap, 
-                   border = border, 
-                   colorScheme = colorScheme, 
+                   scale = scale,
+                   trim = trim,
+                   cellIndexBy = cellIndexBy,
+                   colDataName = colDataName,
+                   featureAnnotations = featureAnnotations,
+                   cellAnnotations = cellAnnotations,
+                   featureAnnotationColor = featureAnnotationColor,
+                   cellAnnotationColor = cellAnnotationColor,
+                   rowSplitBy = rowSplitBy,
+                   colSplitBy = colSplitBy,
+                   rowLabel = rowLabel,
+                   colLabel = colLabel,
+                   rowLabelSize = rowLabelSize,
+                   colLabelSize = colLabelSize,
+                   rowDend = rowDend,
+                   colDend = colDend,
+                   title = title,
+                   rowTitle = rowTitle,
+                   colTitle = colTitle,
+                   rowGap = rowGap,
+                   colGap = colGap,
+                   border = border,
+                   colorScheme = colorScheme,
                    ... = ...)
 }

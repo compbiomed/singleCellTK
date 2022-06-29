@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.6.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.1</span>
       </span>
     </div>
 
@@ -32,16 +32,19 @@
   <a href="../articles/installation.html">Installation</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Tutorials
      
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li>
-      <a href="../articles/console_analysis_tutorial.html">A La Carte Workflow - PBMC3K (R Console)</a>
+      <a href="../articles/01_import_and_qc_tutorial.html">Importing and QC - PBMC3K</a>
     </li>
     <li>
-      <a href="../articles/cnsl_seurat_curated_workflow.html">Seurat Curated Workflow - PBMC3K</a>
+      <a href="../articles/02_a_la_carte_workflow.html">A La Carte Workflow - PBMC3K</a>
+    </li>
+    <li>
+      <a href="../articles/seurat_curated_workflow.html">Seurat Curated Workflow - PBMC3K</a>
     </li>
     <li>
       <a href="../articles/celda_curated_workflow.html">Celda Curated Workflow - PBMC3K</a>
@@ -51,13 +54,13 @@
   <a href="../articles/cmd_qc.html">SCTK-QC</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Documentation
      
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Data</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Data</a>
       <ul class="dropdown-menu" role="menu"><li>
           <a href="../articles/import_data.html">Import Data</a>
         </li>
@@ -75,7 +78,7 @@
         </li>
       </ul></li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">QC &amp; Filtering</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">QC &amp; Filtering</a>
       <ul class="dropdown-menu" role="menu"><li>
           <a href="../articles/cnsl_dropletqc.html">Droplet QC (R console)</a>
         </li>
@@ -90,31 +93,31 @@
         </li>
       </ul></li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Normalization &amp; Batch Correction</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Normalization &amp; Batch Correction</a>
       <ul class="dropdown-menu" role="menu"><li>
-          <a href="../articles/cnsl_normalization.html">Normalization</a>
+          <a href="../articles/normalization.html">Normalization</a>
         </li>
         <li>
           <a href="../articles/batch_correction.html">Batch Correction</a>
         </li>
       </ul></li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Feature Selection &amp; Dimensionality Reduction</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Feature Selection &amp; Dimensionality Reduction</a>
       <ul class="dropdown-menu" role="menu"><li>
-          <a href="../articles/cnsl_feature_selection.html">Feature Selection</a>
+          <a href="../articles/feature_selection.html">Feature Selection</a>
         </li>
         <li>
-          <a href="../articles/cnsl_dimensionality_reduction.html">Dimensionality Reduction</a>
+          <a href="../articles/dimensionality_reduction.html">Dimensionality Reduction</a>
         </li>
         <li>
-          <a href="../articles/cnsl_2d_embedding.html">2D Embedding</a>
+          <a href="../articles/2d_embedding.html">2D Embedding</a>
         </li>
       </ul></li>
     <li>
       <a href="../articles/clustering.html">Clustering</a>
     </li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Differential Expression &amp; Cell Type Labeling</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Differential Expression &amp; Cell Type Labeling</a>
       <ul class="dropdown-menu" role="menu"><li>
           <a href="../articles/differential_expression.html">Differential Expression</a>
         </li>
@@ -126,25 +129,31 @@
         </li>
       </ul></li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Enrichment &amp; Pathway Analysis</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Pathway &amp; Enrichment Analysis</a>
       <ul class="dropdown-menu" role="menu"><li>
-          <a href="../articles/cnsl_enrichR.html">EnrichR</a>
+          <a href="../articles/enrichR.html">EnrichR</a>
         </li>
         <li>
           <a href="../articles/pathwayAnalysis.html">Pathway Analysis</a>
         </li>
       </ul></li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Curated Workflows</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Trajectory Analysis</a>
       <ul class="dropdown-menu" role="menu"><li>
-          <a href="../articles/cnsl_seurat_curated_workflow.html">Seurat</a>
+          <a href="../articles/trajectoryAnalysis.html">TSCAN</a>
+        </li>
+      </ul></li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Curated Workflows</a>
+      <ul class="dropdown-menu" role="menu"><li>
+          <a href="../articles/seurat_curated_workflow.html">Seurat</a>
         </li>
         <li>
           <a href="../articles/celda_curated_workflow.html">Celda</a>
         </li>
       </ul></li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Visualization</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Visualization</a>
       <ul class="dropdown-menu" role="menu"><li>
           <a href="../articles/visualization.html">General Visualization</a>
         </li>
@@ -193,7 +202,6 @@
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">plotDEGHeatmap</span><span class="op">(</span>
   <span class="va">inSCE</span>,
   <span class="va">useResult</span>,
-  doLog <span class="op">=</span> <span class="cn">FALSE</span>,
   onlyPos <span class="op">=</span> <span class="cn">FALSE</span>,
   log2fcThreshold <span class="op">=</span> <span class="fl">0.25</span>,
   fdrThreshold <span class="op">=</span> <span class="fl">0.05</span>,
@@ -202,6 +210,7 @@
   minGroup1ExprPerc <span class="op">=</span> <span class="cn">NULL</span>,
   maxGroup2ExprPerc <span class="op">=</span> <span class="cn">NULL</span>,
   useAssay <span class="op">=</span> <span class="cn">NULL</span>,
+  doLog <span class="op">=</span> <span class="cn">FALSE</span>,
   featureAnnotations <span class="op">=</span> <span class="cn">NULL</span>,
   cellAnnotations <span class="op">=</span> <span class="cn">NULL</span>,
   featureAnnotationColor <span class="op">=</span> <span class="cn">NULL</span>,
@@ -210,6 +219,7 @@
   colDataName <span class="op">=</span> <span class="cn">NULL</span>,
   colSplitBy <span class="op">=</span> <span class="st">"condition"</span>,
   rowSplitBy <span class="op">=</span> <span class="st">"regulation"</span>,
+  rowLabel <span class="op">=</span> <span class="fu">S4Vectors</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/Annotated-class.html" class="external-link">metadata</a></span><span class="op">(</span><span class="va">inSCE</span><span class="op">)</span><span class="op">$</span><span class="va">featureDisplay</span>,
   title <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"DE Analysis: "</span>, <span class="va">useResult</span><span class="op">)</span>,
   <span class="va">...</span>
 <span class="op">)</span></code></pre></div>
@@ -219,83 +229,135 @@
     <h2>Arguments</h2>
     <dl><dt>inSCE</dt>
 <dd><p>SingleCellExperiment inherited object.</p></dd>
+
+
 <dt>useResult</dt>
 <dd><p>character. A string specifying the <code>analysisName</code>
 used when running a differential expression analysis function.</p></dd>
-<dt>doLog</dt>
-<dd><p>Logical scalar. Whether to do <code>log(assay + 1)</code>
-transformation on the assay used for the analysis. Default <code>FALSE</code>.</p></dd>
+
+
 <dt>onlyPos</dt>
 <dd><p>logical. Whether to only plot DEG with positive log2_FC
 value. Default <code>FALSE</code>.</p></dd>
+
+
 <dt>log2fcThreshold</dt>
 <dd><p>numeric. Only plot DEGs with the absolute values of
 log2FC larger than this value. Default <code>0.25</code>.</p></dd>
+
+
 <dt>fdrThreshold</dt>
 <dd><p>numeric. Only plot DEGs with FDR value smaller than this
 value. Default <code>0.05</code>.</p></dd>
+
+
 <dt>minGroup1MeanExp</dt>
-<dd><p>numeric. Only plot DEGs with mean expression in 
+<dd><p>numeric. Only plot DEGs with mean expression in
 group1 greater then this value. Default <code>NULL</code>.</p></dd>
+
+
 <dt>maxGroup2MeanExp</dt>
-<dd><p>numeric. Only plot DEGs with mean expression in 
+<dd><p>numeric. Only plot DEGs with mean expression in
 group2 less then this value. Default <code>NULL</code>.</p></dd>
+
+
 <dt>minGroup1ExprPerc</dt>
-<dd><p>numeric. Only plot DEGs expressed in greater then 
+<dd><p>numeric. Only plot DEGs expressed in greater then
 this fraction of cells in group1. Default <code>NULL</code>.</p></dd>
+
+
 <dt>maxGroup2ExprPerc</dt>
-<dd><p>numeric. Only plot DEGs expressed in less then this 
+<dd><p>numeric. Only plot DEGs expressed in less then this
 fraction of cells in group2. Default <code>NULL</code>.</p></dd>
+
+
 <dt>useAssay</dt>
 <dd><p>character. A string specifying an assay of expression value
 to plot. By default the assay used for <code><a href="runDEAnalysis.html">runMAST()</a></code> will be used.
 Default <code>NULL</code>.</p></dd>
+
+
+<dt>doLog</dt>
+<dd><p>Logical scalar. Whether to do <code>log(assay + 1)</code>
+transformation on the assay used for the analysis. Default <code>FALSE</code>.</p></dd>
+
+
 <dt>featureAnnotations</dt>
 <dd><p><code>data.frame</code>, with <code>rownames</code> containing
 all the features going to be plotted. Character columns should be factors.
 Default <code>NULL</code>.</p></dd>
+
+
 <dt>cellAnnotations</dt>
 <dd><p><code>data.frame</code>, with <code>rownames</code> containing
 all the cells going to be plotted. Character columns should be factors.
 Default <code>NULL</code>.</p></dd>
+
+
 <dt>featureAnnotationColor</dt>
 <dd><p>A named list. Customized color settings for
 feature labeling. Should match the entries in the <code>featureAnnotations</code>
 or <code>rowDataName</code>. For each entry, there should be a list/vector of
 colors named with categories. Default <code>NULL</code>.</p></dd>
+
+
 <dt>cellAnnotationColor</dt>
 <dd><p>A named list. Customized color settings for
 cell labeling. Should match the entries in the <code>cellAnnotations</code> or
 <code>colDataName</code>. For each entry, there should be a list/vector of colors
 named with categories. Default <code>NULL</code>.</p></dd>
+
+
 <dt>rowDataName</dt>
 <dd><p>character. The column name(s) in <code>rowData</code> that need
 to be added to the annotation. Default <code>NULL</code>.</p></dd>
+
+
 <dt>colDataName</dt>
 <dd><p>character. The column name(s) in <code>colData</code> that need
 to be added to the annotation. Default <code>NULL</code>.</p></dd>
+
+
 <dt>colSplitBy</dt>
 <dd><p>character. Do semi-heatmap based on the grouping of
 this(these) annotation(s). Should exist in either <code>colDataName</code> or
 <code>names(cellAnnotations)</code>. Default <code>"condition"</code>.</p></dd>
+
+
 <dt>rowSplitBy</dt>
 <dd><p>character. Do semi-heatmap based on the grouping of
 this(these) annotation(s). Should exist in either <code>rowDataName</code> or
 <code>names(featureAnnotations)</code>. Default <code>"regulation"</code>.</p></dd>
+
+
+<dt>rowLabel</dt>
+<dd><p><code>FALSE</code> for not displaying; a variable in <code>rowData</code>
+to display feature identifiers stored there; if have run
+<code><a href="setSCTKDisplayRow.html">setSCTKDisplayRow</a></code>, display the specified feature name;
+<code>TRUE</code> for the <code>rownames</code> of <code>inSCE</code>; <code>NULL</code> for
+auto-display <code>rownames</code> when the number of filtered feature is less
+than 60. Default looks for <code><a href="setSCTKDisplayRow.html">setSCTKDisplayRow</a></code> information.</p></dd>
+
+
 <dt>title</dt>
 <dd><p>character. Main title of the heatmap. Default
 <code>"DE Analysis: &lt;useResult&gt;"</code>.</p></dd>
+
+
 <dt>...</dt>
 <dd><p>Other arguments passed to <code><a href="plotSCEHeatmap.html">plotSCEHeatmap</a></code></p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A <code><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></code> object</p>
+    
+
+<p>A <code><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></code> object</p>
     </div>
     <div id="details">
     <h2>Details</h2>
-    <p>A differential expression analysis function has to be run in advance 
-so that information is stored in the metadata of the input SCE object. This 
+    <p>A differential expression analysis function has to be run in advance
+so that information is stored in the metadata of the input SCE object. This
 function wraps <code><a href="plotSCEHeatmap.html">plotSCEHeatmap</a></code>.
 A feature annotation basing on the log2FC level called <code>"regulation"</code>
 will be automatically added. A cell annotation basing on the condition
@@ -311,11 +373,12 @@ covariates will also be added.</p>
     <div id="ref-examples">
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"sceBatches"</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu">logcounts</span><span class="op">(</span><span class="va">sceBatches</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/dge.html" class="external-link">counts</a></span><span class="op">(</span><span class="va">sceBatches</span><span class="op">)</span> <span class="op">+</span> <span class="fl">1</span><span class="op">)</span></span>
+<span class="r-in"><span class="fu">logcounts</span><span class="op">(</span><span class="va">sceBatches</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fu">counts</span><span class="op">(</span><span class="va">sceBatches</span><span class="op">)</span> <span class="op">+</span> <span class="fl">1</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">sce.w</span> <span class="op">&lt;-</span> <span class="fu"><a href="subsetSCECols.html">subsetSCECols</a></span><span class="op">(</span><span class="va">sceBatches</span>, colData <span class="op">=</span> <span class="st">"batch == 'w'"</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">sce.w</span> <span class="op">&lt;-</span> <span class="fu"><a href="runDEAnalysis.html">runWilcox</a></span><span class="op">(</span><span class="va">sce.w</span>, class <span class="op">=</span> <span class="st">"cell_type"</span>, classGroup1 <span class="op">=</span> <span class="st">"alpha"</span>,</span>
 <span class="r-in">                   groupName1 <span class="op">=</span> <span class="st">"w.alpha"</span>, groupName2 <span class="op">=</span> <span class="st">"w.beta"</span>,</span>
 <span class="r-in">                   analysisName <span class="op">=</span> <span class="st">"w.aVSb"</span><span class="op">)</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Jun 28 22:04:08 2022 ... Running DE with wilcox, Analysis name: w.aVSb</span>
 <span class="r-in"><span class="fu">plotDEGHeatmap</span><span class="op">(</span><span class="va">sce.w</span>, <span class="st">"w.aVSb"</span><span class="op">)</span></span>
 <span class="r-plt img"><img src="plotDEGHeatmap-1.png" alt="" width="700" height="433"></span>
 </code></pre></div>
@@ -332,7 +395,7 @@ covariates will also be added.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

@@ -97,7 +97,7 @@ trimmed to their nearst bound. Default \code{c(-2, 2)}}
 
 \item{featureIndexBy}{A single character specifying a column name of
 \code{rowData(inSCE)}, or a vector of the same length as \code{nrow(inSCE)},
-where we search for the non-rowname feature indices. Not applicable for 
+where we search for the non-rowname feature indices. Not applicable for
 \code{plotSCEDimReduceHeatmap}. Default \code{"rownames"}.}
 
 \item{cellIndexBy}{A single character specifying a column name of
@@ -105,7 +105,7 @@ where we search for the non-rowname feature indices. Not applicable for
 where we search for the non-rowname cell indices. Default \code{"rownames"}.}
 
 \item{rowDataName}{character. The column name(s) in \code{rowData} that need
-to be added to the annotation. Not applicable for 
+to be added to the annotation. Not applicable for
 \code{plotSCEDimReduceHeatmap}. Default \code{NULL}.}
 
 \item{colDataName}{character. The column name(s) in \code{colData} that need

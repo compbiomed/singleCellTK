@@ -27,30 +27,30 @@ setTopHVG(
 \item{inSCE}{Input \linkS4class{SingleCellExperiment} object}
 
 \item{method}{Specify which method to use for variable gene extraction
-from Seurat \code{"vst"}, \code{"mean.var.plot"}, \code{"dispersion"} or 
+from Seurat \code{"vst"}, \code{"mean.var.plot"}, \code{"dispersion"} or
 Scran \code{"modelGeneVar"}. Default \code{"vst"}}
 
 \item{hvgNumber}{Specify the number of top variable genes to extract.}
 
-\item{useFeatureSubset}{Get the feature names in the HVG list set by 
-\code{setTopHVG}. Will ignore \code{method} and \code{hvgNumber} if not 
+\item{useFeatureSubset}{Get the feature names in the HVG list set by
+\code{setTopHVG}. Will ignore \code{method} and \code{hvgNumber} if not
 \code{NULL}. Default \code{NULL}.}
 
 \item{featureDisplay}{A character string for the \code{rowData} variable name
-to indicate what type of feature ID should be displayed. If set by 
+to indicate what type of feature ID should be displayed. If set by
 \code{\link{setSCTKDisplayRow}}, will by default use it. If \code{NULL}, will
 use \code{rownames(inSCE)}.}
 
-\item{featureSubsetName}{A character string for the \code{rowData} variable 
+\item{featureSubsetName}{A character string for the \code{rowData} variable
 name to store a logical index of selected features. Default \code{NULL}, will
 be determined basing on other parameters.}
 
-\item{genes}{A customized character vector of gene list to be set as a 
-\code{rowData} variable. Will ignore \code{method} and \code{hvgNumber} if 
+\item{genes}{A customized character vector of gene list to be set as a
+\code{rowData} variable. Will ignore \code{method} and \code{hvgNumber} if
 set. Default \code{NULL}.}
 
 \item{genesBy}{If setting customized \code{genes}, where should it be found
-in \code{rowData}? Leave \code{NULL} for matching \code{rownames}. Default 
+in \code{rowData}? Leave \code{NULL} for matching \code{rownames}. Default
 \code{NULL}.}
 
 \item{altExp}{\code{TRUE} for also creating a subset \code{inSCE} object with
@@ -58,21 +58,21 @@ the selected HVGs and store this subset in the \code{altExps} slot, named by
 \code{hvgListName}. Default \code{FALSE}.}
 }
 \value{
-\item{getTopHVG}{A character vector of the top \code{hvgNumber} variable 
+\item{getTopHVG}{A character vector of the top \code{hvgNumber} variable
 feature names}
-\item{setTopHVG}{The input \code{inSCE} object with the logical vector of 
-HVG selection updated in \code{rowData}, and related parameter updated in 
-\code{metadata}. If \code{altExp} is \code{TRUE}, an \code{altExp} is also 
+\item{setTopHVG}{The input \code{inSCE} object with the logical vector of
+HVG selection updated in \code{rowData}, and related parameter updated in
+\code{metadata}. If \code{altExp} is \code{TRUE}, an \code{altExp} is also
 added}
 }
 \description{
 Extracts or select the top variable genes from an input
 \linkS4class{SingleCellExperiment} object. Note that the variability metrics
-must be computed using the \code{runFeatureSelection} method before 
+must be computed using the \code{runFeatureSelection} method before
 extracting the feature names of the top variable features. \code{getTopHVG}
-only returns a character vector of the HVG selection, while with 
-\code{setTopHVG}, a logical vector of the selection will be saved in the 
-\code{rowData}, and optionally, a subset object for the HVGs can be stored 
+only returns a character vector of the HVG selection, while with
+\code{setTopHVG}, a logical vector of the selection will be saved in the
+\code{rowData}, and optionally, a subset object for the HVGs can be stored
 in the \code{altExps} slot at the same time.
 }
 \examples{

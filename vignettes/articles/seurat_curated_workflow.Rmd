@@ -190,8 +190,8 @@ Highly variable genes can be identified by first using the `runSeuratFindHVG()` 
 Parameters for `runSeuratFindHVG()` include `useAssay` (specify the name of the scaled assay, defaults to `"seuratScaledData"` but `"counts"` should be used with `"vst"` method) and `hvgMethod()` (specify the method to use for variable genes computation, defaults to `"vst"`).
 
 ```{r "seurat_hvg", warning=FALSE, message=FALSE}
-sce <- runSeuratFindHVG(inSCE = sce, useAssay = "counts", hvgMethod = "vst")
-print(getTopHVG(inSCE = sce, method = "vst", n = 10))
+sce <- runSeuratFindHVG(inSCE = sce, useAssay = "counts", method = "vst")
+print(getTopHVG(inSCE = sce, method = "vst", hvgNumber = 10))
 plotSeuratHVG(sce, labelPoints = 10)
 ```
 
@@ -242,7 +242,7 @@ print(head(metadata(sce)[["seuratMarkers"]]))
 
 The marker genes identified can be visualized through one of the available plots from `ridge plot`, `violin plot`, `feature plot`, `dot plot` and `heatmap plot`. All marker genes visualizations can be plotted through the wrapper function `plotSeuratGenes()`, which must be supplied the SCE object (markers previously computed), name of the scaled assay, type of the plot (available options are `"ridge"`, `"feature"`, `"violin"`, `"dot"` and `"heatmap"`), features that should be plotted (`character` vector) and the grouping variable that is available in the `colData` slot of the input object. An additional parameter `ncol` decides in how many columns should the visualizations be plotted.
 ```{r "seurat_genePlots", warning=FALSE, message=FALSE}
-plotSeuratGenes(inSCE = sce, scaledAssayName = "seuratScaledData", plotType = "ridge", features = metadata(sce)[["seuratMarkers"]]$gene.id[1:4], groupVariable = "Seurat_louvain_Resolution0.8", ncol = 2, combine = TRUE)
+plotSeuratGenes(inSCE = sce, useAssay = "seuratScaledData", plotType = "ridge", features = metadata(sce)[["seuratMarkers"]]$gene.id[1:4], groupVariable = "Seurat_louvain_Resolution0.8", ncol = 2, combine = TRUE)
 ```
 
 ````{=html} 

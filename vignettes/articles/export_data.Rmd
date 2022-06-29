@@ -25,7 +25,7 @@ knitr::opts_chunk$set(warning = FALSE)
 Users can export/save their dataset after analyzing with SCTK, in three different formats:
 
 1. Save as [SingleCellExperiment](https://rdrr.io/bioc/SingleCellExperiment/man/SingleCellExperiment.html) object, which can be used in R and analyzed with SCTK and many other choices of tools.  
-2. Save as [AnnData](https://anndata.readthedocs.io/en/latest/anndata.AnnData.html) object, which is Python based, and can be analyzed with [scanpy](https://scanpy.readthedocs.io/en/stable/) and many other choices of tools.  
+2. Save as [AnnData](https://anndata.readthedocs.io/en/latest/) object, which is Python based, and can be analyzed with [scanpy](https://scanpy.readthedocs.io/en/stable/) and many other choices of tools.  
 3. Save as text files. The count matrices (assays), cell/feature annotation tables, dimension reduction matrices, feature subsets and metadata will be saved separately within a folder.  
 
 To view detailed instructions on how to export data, please select 'Interactive Analysis' for exporting through the shiny application or 'Console Analysis' for exporting through the R console from the tabs below: <br>

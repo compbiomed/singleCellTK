@@ -7,6 +7,7 @@
 #' @param labelBy A single character for a column of \code{rowData(inSCE)} as
 #' where to search for the labeling text. Default \code{NULL}.
 #' @return Stop point if found
+#' @noRd
 .checkDiffExpResultExists <- function(inSCE, useResult, labelBy = NULL){
   if(!inherits(inSCE, 'SingleCellExperiment')){
     stop('Given object is not a valid SingleCellExperiment object.')
@@ -31,7 +32,7 @@
 }
 
 #' Generate violin plot to show the expression of top DEGs
-#' @details Any of the differential expression analysis method from SCTK should 
+#' @details Any of the differential expression analysis method from SCTK should
 #' be performed prior to using this function
 #' @param inSCE \linkS4class{SingleCellExperiment} inherited object.
 #' @param useResult character. A string specifying the \code{analysisName}
@@ -90,14 +91,14 @@ plotDEGViolin <- function(inSCE, useResult, threshP = FALSE, labelBy = NULL,
     useMat <- useAssay
   } else {
     if(!is.null(labelBy)){
-      warning("Analysis performed on reducedDim. Cannot use rowData for ", 
+      warning("Analysis performed on reducedDim. Cannot use rowData for ",
               "labelBy. Ignored.")
     }
     replGeneName <- geneToPlot
     expres <- t(expData(inSCE[, c(cells1, cells2)], useReducedDim))[geneToPlot,]
     useMat <- useReducedDim
   }
-  
+
   if(!is.matrix(expres)){
     expres <- as.matrix(expres)
   }
@@ -141,7 +142,7 @@ plotDEGViolin <- function(inSCE, useResult, threshP = FALSE, labelBy = NULL,
 }
 
 #' Create linear regression plot to show the expression the of top DEGs
-#' @details Any of the differential expression analysis method from SCTK should 
+#' @details Any of the differential expression analysis method from SCTK should
 #' be performed prior to using this function
 #' @param inSCE \linkS4class{SingleCellExperiment} inherited object.
 #' @param useResult character. A string specifying the \code{analysisName}
@@ -199,7 +200,7 @@ plotDEGRegression <- function(inSCE, useResult, threshP = FALSE, labelBy = NULL,
     useMat <- useAssay
   } else {
     if (!is.null(labelBy)) {
-      warning("Analysis performed on reducedDim. Cannot use rowData for ", 
+      warning("Analysis performed on reducedDim. Cannot use rowData for ",
               "labelBy. Ignored.")
     }
     replGeneName <- geneToPlot
@@ -273,17 +274,17 @@ plotDEGRegression <- function(inSCE, useResult, threshP = FALSE, labelBy = NULL,
 }
 
 #' Get Top Table of a DEG analysis
-#' @description Users have to run \code{runDEAnalysis()} first, any of the 
+#' @description Users have to run \code{runDEAnalysis()} first, any of the
 #' wrapped functions of this generic function. Users can set further filters on
-#' the result. A \code{data.frame} object, with variables of \code{Gene}, 
-#' \code{Log2_FC}, \code{Pvalue}, and \code{FDR}, will be returned. 
+#' the result. A \code{data.frame} object, with variables of \code{Gene},
+#' \code{Log2_FC}, \code{Pvalue}, and \code{FDR}, will be returned.
 #' @param inSCE \linkS4class{SingleCellExperiment} inherited object, with of the
-#' singleCellTK DEG method performed in advance. 
+#' singleCellTK DEG method performed in advance.
 #' @param useResult character. A string specifying the \code{analysisName}
 #' used when running a differential expression analysis function.
 #' @param labelBy A single character for a column of \code{rowData(inSCE)} as
 #' where to search for the labeling text. Leave \code{NULL} for \code{rownames}.
-#' Default \code{metadata(inSCE)$featureDisplay} (see 
+#' Default \code{metadata(inSCE)$featureDisplay} (see
 #' \code{\link{setSCTKDisplayRow}}).
 #' @param onlyPos logical. Whether to only fetch DEG with positive log2_FC
 #' value. Default \code{FALSE}.
@@ -291,15 +292,15 @@ plotDEGRegression <- function(inSCE, useResult, threshP = FALSE, labelBy = NULL,
 #' log2FC larger than this value. Default \code{0.25}.
 #' @param fdrThreshold numeric. Only fetch DEGs with FDR value smaller than this
 #' value. Default \code{0.05}.
-#' @param minGroup1MeanExp numeric. Only fetch DEGs with mean expression in 
+#' @param minGroup1MeanExp numeric. Only fetch DEGs with mean expression in
 #' group1 greater then this value. Default \code{NULL}.
-#' @param maxGroup2MeanExp numeric. Only fetch DEGs with mean expression in 
+#' @param maxGroup2MeanExp numeric. Only fetch DEGs with mean expression in
 #' group2 less then this value. Default \code{NULL}.
-#' @param minGroup1ExprPerc numeric. Only fetch DEGs expressed in greater then 
+#' @param minGroup1ExprPerc numeric. Only fetch DEGs expressed in greater then
 #' this fraction of cells in group1. Default \code{NULL}.
-#' @param maxGroup2ExprPerc numeric. Only fetch DEGs expressed in less then this 
+#' @param maxGroup2ExprPerc numeric. Only fetch DEGs expressed in less then this
 #' fraction of cells in group2. Default \code{NULL}.
-#' @return A \code{data.frame} object of the top DEGs, with variables of 
+#' @return A \code{data.frame} object of the top DEGs, with variables of
 #' \code{Gene}, \code{Log2_FC}, \code{Pvalue}, and \code{FDR}.
 #' @export
 #' @examples
@@ -310,11 +311,11 @@ plotDEGRegression <- function(inSCE, useResult, threshP = FALSE, labelBy = NULL,
 #'                    groupName1 = "w.alpha", groupName2 = "w.beta",
 #'                    analysisName = "w.aVSb")
 #' getDEGTopTable(sce.w, "w.aVSb")
-getDEGTopTable <- function(inSCE, useResult, 
-                           labelBy = S4Vectors::metadata(inSCE)$featureDisplay, 
-                           onlyPos = FALSE, log2fcThreshold = 0.25, 
-                           fdrThreshold = 0.05, minGroup1MeanExp = NULL, 
-                           maxGroup2MeanExp = NULL, minGroup1ExprPerc = NULL, 
+getDEGTopTable <- function(inSCE, useResult,
+                           labelBy = S4Vectors::metadata(inSCE)$featureDisplay,
+                           onlyPos = FALSE, log2fcThreshold = 0.25,
+                           fdrThreshold = 0.05, minGroup1MeanExp = NULL,
+                           maxGroup2MeanExp = NULL, minGroup1ExprPerc = NULL,
                            maxGroup2ExprPerc = NULL){
   # Check
   .checkDiffExpResultExists(inSCE, useResult, labelBy)
@@ -326,16 +327,16 @@ getDEGTopTable <- function(inSCE, useResult,
     result$Gene <- SummarizedExperiment::rowData(inSCE)[[labelBy]][geneIdx]
   }
   # Filter
-  result <- .filterDETable(result, onlyPos, log2fcThreshold, fdrThreshold, 
-                           minGroup1MeanExp, maxGroup2MeanExp, 
+  result <- .filterDETable(result, onlyPos, log2fcThreshold, fdrThreshold,
+                           minGroup1MeanExp, maxGroup2MeanExp,
                            minGroup1ExprPerc, maxGroup2ExprPerc)
   return(result)
 }
 
 #' Heatmap visualization of DEG result
 #'
-#' @details A differential expression analysis function has to be run in advance 
-#' so that information is stored in the metadata of the input SCE object. This 
+#' @details A differential expression analysis function has to be run in advance
+#' so that information is stored in the metadata of the input SCE object. This
 #' function wraps \code{\link{plotSCEHeatmap}}.
 #' A feature annotation basing on the log2FC level called \code{"regulation"}
 #' will be automatically added. A cell annotation basing on the condition
@@ -353,13 +354,13 @@ getDEGTopTable <- function(inSCE, useResult,
 #' log2FC larger than this value. Default \code{0.25}.
 #' @param fdrThreshold numeric. Only plot DEGs with FDR value smaller than this
 #' value. Default \code{0.05}.
-#' @param minGroup1MeanExp numeric. Only plot DEGs with mean expression in 
+#' @param minGroup1MeanExp numeric. Only plot DEGs with mean expression in
 #' group1 greater then this value. Default \code{NULL}.
-#' @param maxGroup2MeanExp numeric. Only plot DEGs with mean expression in 
+#' @param maxGroup2MeanExp numeric. Only plot DEGs with mean expression in
 #' group2 less then this value. Default \code{NULL}.
-#' @param minGroup1ExprPerc numeric. Only plot DEGs expressed in greater then 
+#' @param minGroup1ExprPerc numeric. Only plot DEGs expressed in greater then
 #' this fraction of cells in group1. Default \code{NULL}.
-#' @param maxGroup2ExprPerc numeric. Only plot DEGs expressed in less then this 
+#' @param maxGroup2ExprPerc numeric. Only plot DEGs expressed in less then this
 #' fraction of cells in group2. Default \code{NULL}.
 #' @param useAssay character. A string specifying an assay of expression value
 #' to plot. By default the assay used for \code{runMAST()} will be used.
@@ -389,11 +390,11 @@ getDEGTopTable <- function(inSCE, useResult,
 #' this(these) annotation(s). Should exist in either \code{colDataName} or
 #' \code{names(cellAnnotations)}. Default \code{"condition"}.
 #' @param rowLabel \code{FALSE} for not displaying; a variable in \code{rowData}
-#' to display feature identifiers stored there; if have run 
-#' \code{\link{setSCTKDisplayRow}}, display the specified feature name; 
-#' \code{TRUE} for the \code{rownames} of \code{inSCE}; \code{NULL} for 
-#' auto-display \code{rownames} when the number of filtered feature is less 
-#' than 60. Default looks for \code{\link{setSCTKDisplayRow}} information. 
+#' to display feature identifiers stored there; if have run
+#' \code{\link{setSCTKDisplayRow}}, display the specified feature name;
+#' \code{TRUE} for the \code{rownames} of \code{inSCE}; \code{NULL} for
+#' auto-display \code{rownames} when the number of filtered feature is less
+#' than 60. Default looks for \code{\link{setSCTKDisplayRow}} information.
 #' @param title character. Main title of the heatmap. Default
 #' \code{"DE Analysis: <useResult>"}.
 #' @param ... Other arguments passed to \code{\link{plotSCEHeatmap}}
@@ -410,9 +411,9 @@ getDEGTopTable <- function(inSCE, useResult,
 #' @author Yichen Wang
 plotDEGHeatmap <- function(inSCE, useResult, onlyPos = FALSE,
                            log2fcThreshold = 0.25, fdrThreshold = 0.05,
-                           minGroup1MeanExp = NULL, maxGroup2MeanExp = NULL, 
+                           minGroup1MeanExp = NULL, maxGroup2MeanExp = NULL,
                            minGroup1ExprPerc = NULL, maxGroup2ExprPerc = NULL,
-                           useAssay = NULL, doLog = FALSE, 
+                           useAssay = NULL, doLog = FALSE,
                            featureAnnotations = NULL,
                            cellAnnotations = NULL,
                            featureAnnotationColor = NULL,
@@ -435,7 +436,7 @@ plotDEGHeatmap <- function(inSCE, useResult, onlyPos = FALSE,
   if (!is.null(result$useReducedDim)) {
     # Analysis performed with reducedDim, cannot set useAssay in plotDEGHeatmap
     if (!is.null(useAssay)) {
-      warning("Analysis performed on reducedDim, cannot set `useAssay`, ", 
+      warning("Analysis performed on reducedDim, cannot set `useAssay`, ",
               "ignored.")
     }
     useAssay <- NULL
@@ -446,14 +447,14 @@ plotDEGHeatmap <- function(inSCE, useResult, onlyPos = FALSE,
     }
     useReducedDim <- NULL
   }
-  
+
   ix1 <- result$select$ix1
   ix2 <- result$select$ix2
-  deg.filtered <- getDEGTopTable(inSCE, useResult = useResult, labelBy = NULL, 
-                                 onlyPos = onlyPos, 
-                                 log2fcThreshold = log2fcThreshold, 
+  deg.filtered <- getDEGTopTable(inSCE, useResult = useResult, labelBy = NULL,
+                                 onlyPos = onlyPos,
+                                 log2fcThreshold = log2fcThreshold,
                                  fdrThreshold = fdrThreshold,
-                                 minGroup1MeanExp, maxGroup2MeanExp, 
+                                 minGroup1MeanExp, maxGroup2MeanExp,
                                  minGroup1ExprPerc, maxGroup2ExprPerc)
   if(dim(deg.filtered)[1] <= 1){
     stop('Too few genes that pass filtration, unable to plot')
@@ -558,25 +559,25 @@ plotDEGHeatmap <- function(inSCE, useResult, onlyPos = FALSE,
 }
 
 #' Generate volcano plot for DEGs
-#' @details Any of the differential expression analysis method from SCTK should 
-#' be performed prior to using this function to generate volcano plots. 
+#' @details Any of the differential expression analysis method from SCTK should
+#' be performed prior to using this function to generate volcano plots.
 #' @param inSCE \linkS4class{SingleCellExperiment} inherited object.
 #' @param useResult character. A string specifying the \code{analysisName}
 #' used when running a differential expression analysis function.
-#' @param labelTopN Integer, label this number of top DEGs that pass the 
+#' @param labelTopN Integer, label this number of top DEGs that pass the
 #' filters. \code{FALSE} for not labeling. Default \code{10}.
 #' @param log2fcThreshold numeric. Label genes with the absolute values of
 #' log2FC greater than this value as regulated. Default \code{0.25}.
 #' @param fdrThreshold numeric. Label genes with FDR value less than this
 #' value as regulated. Default \code{0.05}.
-#' @param featureDisplay A character string to indicate a variable in 
-#' \code{rowData(inSCE)} for feature labeling. \code{NULL} for using 
-#' \code{rownames}. Default \code{metadata(inSCE)$featureDisplay} (see 
+#' @param featureDisplay A character string to indicate a variable in
+#' \code{rowData(inSCE)} for feature labeling. \code{NULL} for using
+#' \code{rownames}. Default \code{metadata(inSCE)$featureDisplay} (see
 #' \code{\link{setSCTKDisplayRow}})
 #' @return A \code{ggplot} object of volcano plot
 #' @seealso \code{\link{runDEAnalysis}}, \code{\link{plotDEGHeatmap}}
 #' @export
-#' @examples 
+#' @examples
 #' data("sceBatches")
 #' sceBatches <- scaterlogNormCounts(sceBatches, "logcounts")
 #' sce.w <- subsetSCECols(sceBatches, colData = "batch == 'w'")
@@ -588,7 +589,7 @@ plotDEGVolcano <- function(
   inSCE,
   useResult,
   labelTopN = 10,
-  log2fcThreshold = 0.25, 
+  log2fcThreshold = 0.25,
   fdrThreshold = 0.05,
   featureDisplay = S4Vectors::metadata(inSCE)$featureDisplay
 ) {
@@ -635,22 +636,22 @@ plotDEGVolcano <- function(
   )
   # Plot
   ggplot2::ggplot() +
-    ggplot2::geom_point(data = deg, 
-                        ggplot2::aes_string(x = "Log2_FC", y = "-log10(FDR)", 
+    ggplot2::geom_point(data = deg,
+                        ggplot2::aes_string(x = "Log2_FC", y = "-log10(FDR)",
                                             col = "Regulation")) +
-    ggplot2::scale_color_manual(values = c("Down" = "#619cff", 
-                                           "No" = "light grey", 
+    ggplot2::scale_color_manual(values = c("Down" = "#619cff",
+                                           "No" = "light grey",
                                            "Up" = "#f8766d")) +
     ggrepel::geom_text_repel(data = deg,
-                             ggplot2::aes_string(x = "Log2_FC", 
+                             ggplot2::aes_string(x = "Log2_FC",
                                                  y = "-log10(FDR)",
                                                  label = "label"),
                              colour = "black", na.rm = TRUE) +
     ggplot2::geom_vline(data = vlineLab,
                         ggplot2::aes_string(xintercept = "X"),
                         linetype = "longdash") +
-    ggplot2::geom_text(data = vlineLab, 
-                       ggplot2::aes_string(x = "X", y = 0, label = "text", 
+    ggplot2::geom_text(data = vlineLab,
+                       ggplot2::aes_string(x = "X", y = 0, label = "text",
                                            hjust = "h"),
                        size = 3, vjust = 1) +
     ggplot2::geom_hline(data = hlineLab,
@@ -661,12 +662,12 @@ plotDEGVolcano <- function(
                        size = 3, vjust = -0.5, hjust = -.03) +
     ggplot2::xlab("Fold Change (log2)") +
     ggplot2::ylab("FDR (-Log10 q-value)") +
-    ggplot2::theme(panel.grid.major = ggplot2::element_blank(), 
+    ggplot2::theme(panel.grid.major = ggplot2::element_blank(),
                    panel.grid.minor = ggplot2::element_blank(),
                    panel.background = ggplot2::element_blank(),
                    axis.line = ggplot2::element_line(colour = "black")) +
     ggplot2::xlim(-max(abs(deg$Log2_FC)), max(abs(deg$Log2_FC))) +
-    ggplot2::ggtitle(paste("DEG between", groupNames[1], 
+    ggplot2::ggtitle(paste("DEG between", groupNames[1],
                            "and", groupNames[2]))
 }
 

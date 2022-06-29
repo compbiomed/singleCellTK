@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.6.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.1</span>
       </span>
     </div>
 
@@ -32,16 +32,19 @@
   <a href="../articles/installation.html">Installation</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Tutorials
      
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li>
-      <a href="../articles/console_analysis_tutorial.html">A La Carte Workflow - PBMC3K (R Console)</a>
+      <a href="../articles/01_import_and_qc_tutorial.html">Importing and QC - PBMC3K</a>
     </li>
     <li>
-      <a href="../articles/cnsl_seurat_curated_workflow.html">Seurat Curated Workflow - PBMC3K</a>
+      <a href="../articles/02_a_la_carte_workflow.html">A La Carte Workflow - PBMC3K</a>
+    </li>
+    <li>
+      <a href="../articles/seurat_curated_workflow.html">Seurat Curated Workflow - PBMC3K</a>
     </li>
     <li>
       <a href="../articles/celda_curated_workflow.html">Celda Curated Workflow - PBMC3K</a>
@@ -51,13 +54,13 @@
   <a href="../articles/cmd_qc.html">SCTK-QC</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Documentation
      
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Data</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Data</a>
       <ul class="dropdown-menu" role="menu"><li>
           <a href="../articles/import_data.html">Import Data</a>
         </li>
@@ -75,7 +78,7 @@
         </li>
       </ul></li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">QC &amp; Filtering</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">QC &amp; Filtering</a>
       <ul class="dropdown-menu" role="menu"><li>
           <a href="../articles/cnsl_dropletqc.html">Droplet QC (R console)</a>
         </li>
@@ -90,31 +93,31 @@
         </li>
       </ul></li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Normalization &amp; Batch Correction</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Normalization &amp; Batch Correction</a>
       <ul class="dropdown-menu" role="menu"><li>
-          <a href="../articles/cnsl_normalization.html">Normalization</a>
+          <a href="../articles/normalization.html">Normalization</a>
         </li>
         <li>
           <a href="../articles/batch_correction.html">Batch Correction</a>
         </li>
       </ul></li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Feature Selection &amp; Dimensionality Reduction</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Feature Selection &amp; Dimensionality Reduction</a>
       <ul class="dropdown-menu" role="menu"><li>
-          <a href="../articles/cnsl_feature_selection.html">Feature Selection</a>
+          <a href="../articles/feature_selection.html">Feature Selection</a>
         </li>
         <li>
-          <a href="../articles/cnsl_dimensionality_reduction.html">Dimensionality Reduction</a>
+          <a href="../articles/dimensionality_reduction.html">Dimensionality Reduction</a>
         </li>
         <li>
-          <a href="../articles/cnsl_2d_embedding.html">2D Embedding</a>
+          <a href="../articles/2d_embedding.html">2D Embedding</a>
         </li>
       </ul></li>
     <li>
       <a href="../articles/clustering.html">Clustering</a>
     </li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Differential Expression &amp; Cell Type Labeling</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Differential Expression &amp; Cell Type Labeling</a>
       <ul class="dropdown-menu" role="menu"><li>
           <a href="../articles/differential_expression.html">Differential Expression</a>
         </li>
@@ -126,25 +129,31 @@
         </li>
       </ul></li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Enrichment &amp; Pathway Analysis</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Pathway &amp; Enrichment Analysis</a>
       <ul class="dropdown-menu" role="menu"><li>
-          <a href="../articles/cnsl_enrichR.html">EnrichR</a>
+          <a href="../articles/enrichR.html">EnrichR</a>
         </li>
         <li>
           <a href="../articles/pathwayAnalysis.html">Pathway Analysis</a>
         </li>
       </ul></li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Curated Workflows</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Trajectory Analysis</a>
       <ul class="dropdown-menu" role="menu"><li>
-          <a href="../articles/cnsl_seurat_curated_workflow.html">Seurat</a>
+          <a href="../articles/trajectoryAnalysis.html">TSCAN</a>
+        </li>
+      </ul></li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Curated Workflows</a>
+      <ul class="dropdown-menu" role="menu"><li>
+          <a href="../articles/seurat_curated_workflow.html">Seurat</a>
         </li>
         <li>
           <a href="../articles/celda_curated_workflow.html">Celda</a>
         </li>
       </ul></li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Visualization</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Visualization</a>
       <ul class="dropdown-menu" role="menu"><li>
           <a href="../articles/visualization.html">General Visualization</a>
         </li>
@@ -213,7 +222,8 @@
   maxGroup2MeanExp <span class="op">=</span> <span class="cn">NULL</span>,
   minGroup1ExprPerc <span class="op">=</span> <span class="cn">NULL</span>,
   maxGroup2ExprPerc <span class="op">=</span> <span class="cn">NULL</span>,
-  overwrite <span class="op">=</span> <span class="cn">FALSE</span>
+  overwrite <span class="op">=</span> <span class="cn">FALSE</span>,
+  verbose <span class="op">=</span> <span class="cn">TRUE</span>
 <span class="op">)</span>
 
 <span class="fu">runLimmaDE</span><span class="op">(</span>
@@ -236,7 +246,8 @@
   maxGroup2MeanExp <span class="op">=</span> <span class="cn">NULL</span>,
   minGroup1ExprPerc <span class="op">=</span> <span class="cn">NULL</span>,
   maxGroup2ExprPerc <span class="op">=</span> <span class="cn">NULL</span>,
-  overwrite <span class="op">=</span> <span class="cn">FALSE</span>
+  overwrite <span class="op">=</span> <span class="cn">FALSE</span>,
+  verbose <span class="op">=</span> <span class="cn">TRUE</span>
 <span class="op">)</span>
 
 <span class="fu">runANOVA</span><span class="op">(</span>
@@ -259,7 +270,8 @@
   maxGroup2MeanExp <span class="op">=</span> <span class="cn">NULL</span>,
   minGroup1ExprPerc <span class="op">=</span> <span class="cn">NULL</span>,
   maxGroup2ExprPerc <span class="op">=</span> <span class="cn">NULL</span>,
-  overwrite <span class="op">=</span> <span class="cn">FALSE</span>
+  overwrite <span class="op">=</span> <span class="cn">FALSE</span>,
+  verbose <span class="op">=</span> <span class="cn">TRUE</span>
 <span class="op">)</span>
 
 <span class="fu">runMAST</span><span class="op">(</span>
@@ -283,7 +295,8 @@
   minGroup1ExprPerc <span class="op">=</span> <span class="cn">NULL</span>,
   maxGroup2ExprPerc <span class="op">=</span> <span class="cn">NULL</span>,
   overwrite <span class="op">=</span> <span class="cn">FALSE</span>,
-  check_sanity <span class="op">=</span> <span class="cn">TRUE</span>
+  check_sanity <span class="op">=</span> <span class="cn">TRUE</span>,
+  verbose <span class="op">=</span> <span class="cn">TRUE</span>
 <span class="op">)</span>
 
 <span class="fu">runWilcox</span><span class="op">(</span>
@@ -306,118 +319,182 @@
   maxGroup2MeanExp <span class="op">=</span> <span class="cn">NULL</span>,
   minGroup1ExprPerc <span class="op">=</span> <span class="cn">NULL</span>,
   maxGroup2ExprPerc <span class="op">=</span> <span class="cn">NULL</span>,
-  overwrite <span class="op">=</span> <span class="cn">FALSE</span>
+  overwrite <span class="op">=</span> <span class="cn">FALSE</span>,
+  verbose <span class="op">=</span> <span class="cn">TRUE</span>
 <span class="op">)</span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>method</dt>
-<dd><p>Character. Specify which method to use when using 
-<code>runDEAnalysis()</code>. Choose from <code>"wilcox"</code>, <code>"MAST"</code>, 
+<dd><p>Character. Specify which method to use when using
+<code>runDEAnalysis()</code>. Choose from <code>"wilcox"</code>, <code>"MAST"</code>,
 <code>"DESeq2"</code>, <code>"Limma"</code>, <code>"ANOVA"</code>. Default <code>"wilcox"</code>.</p></dd>
+
+
 <dt>...</dt>
-<dd><p>Arguments to pass to specific methods when using the generic 
+<dd><p>Arguments to pass to specific methods when using the generic
 <code>runDEAnalysis()</code>.</p></dd>
+
+
 <dt>inSCE</dt>
 <dd><p>SingleCellExperiment inherited object.</p></dd>
+
+
 <dt>useAssay</dt>
 <dd><p>character. A string specifying which assay to use for the
-DE regression. Default <code>"counts"</code> for DESeq2, <code>"logcounts"</code> for 
-other methods.</p></dd>
+DE regression. Ignored when <code>useReducedDim</code> is specified. Default
+<code>"counts"</code> for DESeq2, <code>"logcounts"</code> for other methods.</p></dd>
+
+
 <dt>useReducedDim</dt>
 <dd><p>character. A string specifying which reducedDim to use
-for DE analysis. Usually a pathway analysis result matrix. Set 
-<code>useAssay</code> to <code>NULL</code> when using. Default <code>NULL</code>.</p></dd>
+for DE analysis. Will treat the dimensions as features. Default <code>NULL</code>.</p></dd>
+
+
 <dt>index1</dt>
 <dd><p>Any type of indices that can subset a
 SingleCellExperiment inherited object by cells. Specifies
 which cells are of interests. Default <code>NULL</code>.</p></dd>
+
+
 <dt>index2</dt>
 <dd><p>Any type of indices that can subset a
 SingleCellExperiment inherited object by cells. specifies
 the control group against those specified by <code>index1</code>. If
 <code>NULL</code> when using index specification, <code>index1</code> cells will be
 compared with all other cells. Default <code>NULL</code>.</p></dd>
+
+
 <dt>class</dt>
 <dd><p>A vector/factor with <code>ncol(inSCE)</code> elements, or a character
 scalar that specifies a column name of <code>colData(inSCE)</code>. Default
 <code>NULL</code>.</p></dd>
+
+
 <dt>classGroup1</dt>
 <dd><p>a vector specifying which "levels" given in <code>class</code>
 are of interests. Default <code>NULL</code>.</p></dd>
+
+
 <dt>classGroup2</dt>
 <dd><p>a vector specifying which "levels" given in <code>class</code>
 is the control group against those specified by <code>classGroup1</code>. If
 <code>NULL</code> when using annotation specification, <code>classGroup1</code> cells
 will be compared with all other cells.</p></dd>
+
+
 <dt>analysisName</dt>
 <dd><p>A character scalar naming the DEG analysis. Required</p></dd>
+
+
 <dt>groupName1</dt>
 <dd><p>A character scalar naming the group of interests. Required.</p></dd>
+
+
 <dt>groupName2</dt>
 <dd><p>A character scalar naming the control group. Required.</p></dd>
+
+
 <dt>covariates</dt>
 <dd><p>A character vector of additional covariates to use when
 building the model. All covariates must exist in
 <code>names(colData(inSCE))</code>. Default <code>NULL</code>.</p></dd>
+
+
 <dt>fullReduced</dt>
-<dd><p>Logical, DESeq2 only argument. Whether to apply LRT 
+<dd><p>Logical, DESeq2 only argument. Whether to apply LRT
 (Likelihood ratio test) with a 'full' model. Default <code>TRUE</code>.</p></dd>
+
+
 <dt>onlyPos</dt>
 <dd><p>Whether to only output DEG with positive log2_FC value.
 Default <code>FALSE</code>.</p></dd>
+
+
 <dt>log2fcThreshold</dt>
 <dd><p>Only out put DEGs with the absolute values of log2FC
 greater than this value. Default <code>NULL</code>.</p></dd>
+
+
 <dt>fdrThreshold</dt>
 <dd><p>Only out put DEGs with FDR value less than this
 value. Default <code>NULL</code>.</p></dd>
+
+
 <dt>minGroup1MeanExp</dt>
-<dd><p>Only out put DEGs with mean expression in group1 
+<dd><p>Only out put DEGs with mean expression in group1
 greater then this value. Default <code>NULL</code>.</p></dd>
+
+
 <dt>maxGroup2MeanExp</dt>
-<dd><p>Only out put DEGs with mean expression in group2 
+<dd><p>Only out put DEGs with mean expression in group2
 less then this value. Default <code>NULL</code>.</p></dd>
+
+
 <dt>minGroup1ExprPerc</dt>
-<dd><p>Only out put DEGs expressed in greater then this 
+<dd><p>Only out put DEGs expressed in greater then this
 fraction of cells in group1. Default <code>NULL</code>.</p></dd>
+
+
 <dt>maxGroup2ExprPerc</dt>
-<dd><p>Only out put DEGs expressed in less then this 
+<dd><p>Only out put DEGs expressed in less then this
 fraction of cells in group2. Default <code>NULL</code>.</p></dd>
+
+
 <dt>overwrite</dt>
 <dd><p>A logical scalar. Whether to overwrite result if exists.
 Default <code>FALSE</code>.</p></dd>
+
+
+<dt>verbose</dt>
+<dd><p>A logical scalar. Whether to show messages. Default
+<code>TRUE</code>.</p></dd>
+
+
 <dt>check_sanity</dt>
-<dd><p>Logical, MAST only argument. Whether to perform MAST's 
+<dd><p>Logical, MAST only argument. Whether to perform MAST's
 sanity check to see if the counts are logged. Default <code>TRUE</code>.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>The input SingleCellExperiment object with
-<code>metadata(inSCE)$diffExp</code> updated with the results: a list named by
-<code>analysisName</code>, with <code>$groupNames</code> containing the naming of the
-two conditions, <code>$useAssay</code> and <code>$useReducedDim</code> storing the matrix
-name that was used for calculation, <code>$select</code> storing the cell selection
-indices (logical) for each condition, <code>$result</code> storing a 
-<code><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></code> of the DEGs summary, and <code>$method</code> storing the 
-character method name used.</p>
-    </div>
+    
+
+<p>The input SingleCellExperiment object, where
+<code>metadata(inSCE)$diffExp</code> is updated with a list named by
+<code>analysisName</code>, with elements of:</p>
+<dl><dt>$groupNames</dt>
+<dd><p>the naming of the two conditions</p></dd>
+
+<dt>$useAssay, $useReducedDim</dt>
+<dd><p>the matrix name that was used for
+calculation</p></dd>
+
+<dt>$select</dt>
+<dd><p>the cell selection indices (logical) for each condition</p></dd>
+
+<dt>$result</dt>
+<dd><p>a <code>data.frame</code> of the DEGs table</p></dd>
+
+<dt>$method</dt>
+<dd><p>the method used</p></dd>
+
+</dl></div>
     <div id="details">
     <h2>Details</h2>
     <p>SCTK provides Limma, MAST, DESeq2, ANOVA and Wilcoxon test for differential
-expression analysis, where DESeq2 expects non-negtive integer assay input 
+expression analysis, where DESeq2 expects non-negtive integer assay input
 while others expect logcounts.</p>
 <p>Condition specification allows two methods:
-1. Index level selection. Arguments <code>index1</code> and <code>index2</code> will be
-used.
-2. Annotation level selection. Arguments <code>class</code>, <code>classGroup1</code> and
-<code>classGroup2</code> will be used.</p>
+1. Index level selection. Only use arguments <code>index1</code> and <code>index2</code>.
+2. Annotation level selection. Only use arguments <code>class</code>,
+<code>classGroup1</code> and <code>classGroup2</code>.</p>
     </div>
     <div id="see-also">
     <h2>See also</h2>
-    <div class="dont-index"><p>See <code><a href="plotDEGHeatmap.html">plotDEGHeatmap</a></code>, <code><a href="plotDEGRegression.html">plotDEGRegression</a></code>, 
-<code><a href="plotDEGViolin.html">plotDEGViolin</a></code> and <code><a href="plotDEGVolcano.html">plotDEGVolcano</a></code> for 
+    <div class="dont-index"><p>See <code><a href="plotDEGHeatmap.html">plotDEGHeatmap</a></code>, <code><a href="plotDEGRegression.html">plotDEGRegression</a></code>,
+<code><a href="plotDEGViolin.html">plotDEGViolin</a></code> and <code><a href="plotDEGVolcano.html">plotDEGVolcano</a></code> for
 visualization method after running DE analysis.</p></div>
     </div>
 
@@ -429,6 +506,7 @@ visualization method after running DE analysis.</p></div>
 <span class="r-in"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu">runDEAnalysis</span><span class="op">(</span>method <span class="op">=</span> <span class="st">"Limma"</span>, inSCE <span class="op">=</span> <span class="va">sce</span>, groupName1 <span class="op">=</span> <span class="st">"group1"</span>,</span>
 <span class="r-in"> groupName2 <span class="op">=</span> <span class="st">"group2"</span>, index1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">20</span><span class="op">)</span>, index2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">21</span>,<span class="fl">40</span><span class="op">)</span>,</span>
 <span class="r-in"> analysisName <span class="op">=</span> <span class="st">"Limma"</span><span class="op">)</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Jun 28 22:06:22 2022 ... Running DE with limma, Analysis name: Limma</span>
 <span class="r-in"></span>
 </code></pre></div>
     </div>
@@ -444,7 +522,7 @@ visualization method after running DE analysis.</p></div>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

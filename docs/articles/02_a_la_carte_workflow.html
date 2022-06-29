@@ -34,7 +34,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.6.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.1</span>
       </span>
     </div>
 
@@ -624,7 +624,7 @@ etc. (from <code>igraph</code>).</p>
 <p>In the other curated workflow that SCTK wraps (<a href="celda_curated_workflow.html">Celda Curated Workflow</a>), we use a
 Bayesian hierarchical model that can bi-cluster features into modules
 and observations into subpopulations. For detail of this method, please
-refer to the <a href="https://celda.camplab.net" class="external-link">Celda
+refer to the <a href="https://www.camplab.net/celda/" class="external-link">Celda
 Documentation</a>.</p>
 </div>
 <div class="section level2">
@@ -1205,7 +1205,7 @@ users only need to simply specify the matrix name to argument
 this case).</p>
 <div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runDEAnalysis.html">runDEAnalysis</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, method <span class="op">=</span> <span class="st">"wilcox"</span>, useReducedDim <span class="op">=</span> <span class="st">"VAM_H_CDF"</span>,
-                     class <span class="op">=</span> <span class="st">"cluster"</span>, classGroup1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">4</span><span class="op">)</span>, classGroup2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">6</span><span class="op">)</span>,
+                     class <span class="op">=</span> <span class="st">"cluster"</span>, classGroup1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">5</span><span class="op">)</span>, classGroup2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">6</span><span class="op">)</span>,
                      groupName1 <span class="op">=</span> <span class="st">"T_cells"</span>, groupName2 <span class="op">=</span> <span class="st">"monocytes"</span>, 
                      analysisName <span class="op">=</span> <span class="st">"T_cells_VS_monocytes_VAM_H_CDF"</span>, overwrite<span class="op">=</span><span class="cn">T</span><span class="op">)</span></code></pre></div>
 <p>As the nature of the pathway analysis score is different from a

@@ -8,6 +8,7 @@
 #' @param maxComponents Number of components to return for the picker
 #' @param component Which component to use. Choices are \code{PC} or \code{IC}.
 #' @return List of component names (appended with \code{PC} or \code{IC})
+#' @noRd
 .getComponentNames <-
   function(maxComponents, component = c("PC", "IC")) {
     componentNames <- list()
@@ -26,6 +27,7 @@
 #' of sce object (copy from)
 #' @return Updated \code{SingleCellExperiment} object which now contains the
 #' seurat object in its metadata slot (excluding data matrices)
+#' @noRd
 .addSeuratToMetaDataSCE <- function(inSCE, seuratObject) {
   seuratObject@assays$RNA@counts <- methods::new("dgCMatrix")
   seuratObject@assays$RNA@data <- methods::new("dgCMatrix")
@@ -40,6 +42,7 @@
 #' @param inSCE (sce) object with pca computed
 #' @return A numerical value indicating how many number of components are
 #' considered significant
+#' @noRd
 .computeSignificantPC <- function(inSCE) {
   seuratObject <- convertSCEToSeurat(inSCE)
   max_components <- 0
@@ -921,6 +924,7 @@ runSeuratUMAP <- function(inSCE,
 #' @param numberOfFeatures numerical value indicating how many feature names
 #' should be retrieved (default is 100)
 #' @return list() of variable feature names
+#' @noRd
 .seuratGetVariableFeatures <- function(inSCE, numberOfFeatures) {
   seuratObject <- convertSCEToSeurat(inSCE)
   if (length(seuratObject@assays$RNA@var.features) > 0) {
@@ -1139,6 +1143,7 @@ plotSeuratHeatmap <- function(plotObject, dims, ncol, labels) {
 #' @return A \link[SingleCellExperiment]{SingleCellExperiment} object with
 #'  data from Seurat object appended to the \link{assay} slot.
 #' @importFrom SummarizedExperiment assay<-
+#' @noRd
 .updateAssaySCE <- function(inSCE,
                             seuratObject,
                             assaySlotSCE,
@@ -1504,6 +1509,7 @@ runSeuratSCTransform <- function(inSCE,
 #' @return Updated SingleCellExperiment object containing the Seurat object in
 #' the metadata slot with the data removed
 #' @importFrom SummarizedExperiment assay<-
+#' @noRd
 .seuratInvalidate <-
   function(inSCE,
            scaleData = TRUE,

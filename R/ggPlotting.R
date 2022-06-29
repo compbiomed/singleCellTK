@@ -59,6 +59,7 @@
 #' @param plotLabels labels to each plot. If set to "default", will use the name of the samples
 #'  as the labels. If set to "none", no label will be plotted.
 #' @return a ggplot of the reduced dimensions.
+#' @noRd
 .ggScatter <- function(inSCE,
                        reducedDimName,
                        sample = NULL,
@@ -822,6 +823,7 @@ plotSCEScatter <- function(inSCE,
 #' @importFrom dplyr group_by
 #' @importFrom dplyr summarize
 #' @importFrom dplyr %>%
+#' @noRd
 .ggViolin <- function(y,
                       groupBy = NULL,
                       violin = TRUE,
@@ -1650,6 +1652,7 @@ plotSCEViolin <- function(inSCE,
 #' @param combinePlot Must be either "all", "sample", or "none". "all" will combine all plots into a single
 #' .ggplot object, while "sample" will output a list of plots separated by sample. Default "none".
 #' @return density plot, in .ggplot.
+#' @noRd
 .ggDensity <- function(value,
                        groupBy = NULL,
                        xlab = NULL,
@@ -2483,6 +2486,7 @@ plotBarcodeRankScatter <- function(inSCE,
 #' @importFrom dplyr group_by
 #' @importFrom dplyr summarize
 #' @importFrom dplyr %>%
+#' @noRd
 .ggBar <- function(y,
                    groupBy = NULL,
                    xlab = NULL,

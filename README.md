@@ -43,7 +43,7 @@ Detailed instruction on how to install SCTK and additional dependencies are avai
 
 If you use SCTK, please cite our *Nature Communication* paper
 
-> Rui Hong, Yusuke Koga, Shruthi Bandyadka, Anastasia Leshchyk, Yichen Wang, Vidya Akavoor, Xinyun Cao, Irzam Sarfraz, Zhe Wang, Salam Alabdullatif, Frederick Jansen, Masanao Yajima, W. Evan Johnson & Joshua D. Campbell, Comprehensive generation, visualization, and reporting of quality control metrics for single-cell RNA sequencing data. *Nat Commun* **13**, 1688 (2022). https://doi.org/10.1038/s41467-022-29212-9
+> Rui Hong, Yusuke Koga, Shruthi Bandyadka, Anastasia Leshchyk, Yichen Wang, Vidya Akavoor, Xinyun Cao, Irzam Sarfraz, Zhe Wang, Salam Alabdullatif, Frederick Jansen, Masanao Yajima, W. Evan Johnson & Joshua D. Campbell, “Comprehensive generation, visualization, and reporting of quality control metrics for single-cell RNA sequencing data,” *Nature Communications*, vol. 13, no. 1688, 2022, doi: 10.1038/s41467-022-29212-9.
 
 ## Report Issues
 

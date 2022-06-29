@@ -34,7 +34,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.6.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.1</span>
       </span>
     </div>
 
@@ -57,7 +57,7 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../articles/01_import_and_qc_tutorial.html">Get Started - Importing and QC - PBMC3K</a>
+      <a href="../articles/01_import_and_qc_tutorial.html">Importing and QC - PBMC3K</a>
     </li>
     <li>
       <a href="../articles/02_a_la_carte_workflow.html">A La Carte Workflow - PBMC3K</a>
@@ -171,6 +171,14 @@
       </ul>
 </li>
     <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Trajectory Analysis</a>
+      <ul class="dropdown-menu" role="menu">
+<li>
+          <a href="../articles/trajectoryAnalysis.html">TSCAN</a>
+        </li>
+      </ul>
+</li>
+    <li class="dropdown-submenu">
       <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Curated Workflows</a>
       <ul class="dropdown-menu" role="menu">
 <li>
@@ -195,10 +203,10 @@
   </ul>
 </li>
 <li>
-  <a href="../articles/cmd_qc.html">SCTK-QC</a>
+  <a href="../reference/index.html">Reference</a>
 </li>
 <li>
-  <a href="../reference/index.html">Reference</a>
+  <a href="../news/index.html">NEWS</a>
 </li>
       </ul>
 <ul class="nav navbar-nav navbar-right">
@@ -373,7 +381,7 @@ HVG subset.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R">  <span class="co"># Set subset of variable features</span>
   <span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getTopHVG.html">setTopHVG</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, method <span class="op">=</span> <span class="st">"vst"</span>, hvgNumber <span class="op">=</span> <span class="fl">1000</span>, featureSubsetName <span class="op">=</span> <span class="st">"HVG_vst1000"</span><span class="op">)</span></code></pre></div>
-</details><details><summary><b>Individual Functions</b></summary><p>While the <code>runFeatureSelection</code> wrapper function can be
+</details><details><summary><b>Individual Functions</b></summary><p>While the <code><a href="../reference/runFeatureSelection.html">runFeatureSelection()</a></code> wrapper function can be
 used to run all available feature selection methods, separate functions
 are also available for all of the included methods. The following
 functions can be used for specific feature selection methods:</p>
