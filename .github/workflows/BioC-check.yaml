@@ -2,9 +2,9 @@
 # Need help debugging build failures? Start at https://github.com/r-lib/actions#where-to-find-help
 on:
   push:
-    branches: [devel]
+    branches: [master, devel]
   pull_request:
-    branches: [devel]
+    branches: [master, devel]
 
 name: BioC-check
 
@@ -38,7 +38,7 @@ jobs:
       - name: Install fftw3 on macOS
         if: runner.os == 'macOS'
         run: brew install fftw
-        
+
       - uses: r-lib/actions/setup-r-dependencies@v1
         with:
           extra-packages: rcmdcheck
@@ -46,7 +46,7 @@ jobs:
       - name: Install XQuartz on macOS
         if: runner.os == 'macOS'
         run: brew install xquartz --cask
-          
+
       - name: Run BiocCheck
         run: |
           BiocManager::install("BiocCheck")
@@ -57,4 +57,4 @@ jobs:
               `no-check-bioc-help` = TRUE
           )
         shell: Rscript {0}
-        
+
