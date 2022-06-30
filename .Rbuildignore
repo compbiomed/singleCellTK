@@ -12,6 +12,6 @@ misc/
 renv*
 Dockerfile
 exec/png
-.covignore
+.covrignore
 ^pkgdown$
 ^\.github$
