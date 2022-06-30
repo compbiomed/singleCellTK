@@ -5,6 +5,7 @@
 #' @param inSCE Input \linkS4class{SingleCellExperiment} object.
 #' @param stopIfNone Whether to stop and raise an error if no results found. If
 #' \code{FALSE}, will return an empty character vector.
+#' @param verbose Show warning if no result found. Default \code{FALSE}
 #' @return A character vector of valid pathway analysis result names.
 #' @export
 #' @examples

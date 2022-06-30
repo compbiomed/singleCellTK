@@ -11,6 +11,8 @@ getPathwayResultNames(inSCE, stopIfNone = FALSE, verbose = FALSE)
 
 \item{stopIfNone}{Whether to stop and raise an error if no results found. If
 \code{FALSE}, will return an empty character vector.}
+
+\item{verbose}{Show warning if no result found. Default \code{FALSE}}
 }
 \value{
 A character vector of valid pathway analysis result names.
