@@ -264,79 +264,86 @@ runFastMNN <- function(inSCE, useAssay = "logcounts",
   return(inSCE)
 }
 
-# #' Apply Harmony batch effect correction method to SingleCellExperiment object
-# #'
-# #' Harmony is an algorithm that projects cells into a shared embedding in which
-# #' cells group by cell type rather than dataset-specific conditions.
-# #' @param inSCE \linkS4class{SingleCellExperiment} inherited object. Required.
-# #' @param useAssay A single character indicating the name of the assay requiring
-# #' batch correction. Default \code{"logcounts"}.
-# #' @param batch A single character indicating a field in
-# #' \code{\link{colData}} that annotates the batches.
-# #' Default \code{"batch"}.
-# #' @param reducedDimName A single character. The name for the corrected
-# #' low-dimensional representation. Will be saved to \code{reducedDim(inSCE)}.
-# #' Default \code{"HARMONY"}.
-# #' @param pcInput A logical scalar. Whether to use a low-dimension matrix for
-# #' batch effect correction. If \code{TRUE}, \code{useAssay} will be searched
-# #' from \code{reducedDimNames(inSCE)}. Default \code{FALSE}.
-# #' @param nComponents An integer. The number of principle components or
-# #' dimensionality to generate in the resulting matrix. If \code{pcInput} is set
-# #' to \code{TRUE}, the output dimension will follow the low-dimension matrix,
-# #' so this argument will be ignored. Default \code{50L}.
-# #' @param nIter An integer. The max number of iterations to perform. Default
-# #' \code{10L}.
-# #' @param theta A Numeric scalar. Diversity clustering penalty parameter,
-# #' Larger value results in more diverse clusters. Default \code{5}
-# #' @return The input \linkS4class{SingleCellExperiment} object with
-# #' \code{reducedDim(inSCE, reducedDimName)} updated.
-# #' @export
-# #' @references Ilya Korsunsky, et al., 2019
-# #' @examples
-# #' data('sceBatches', package = 'singleCellTK')
-# #' sceCorr <- runHarmony(sceBatches, nComponents = 10L)
-# runHarmony <- function(inSCE, useAssay = "logcounts", pcInput = FALSE,
-#                        batch = "batch", reducedDimName = "HARMONY",
-#                        nComponents = 50L, theta = 5, nIter = 10L){
-#   if (!requireNamespace("harmony", quietly = TRUE)) {
-#     stop("The Harmony package is required to run this function. ",
-#          "Install harmony with: ",
-#          "devtools::install_github('joshua-d-campbell/harmony') ",
-#          call. = FALSE)
-#   }
-#   ## Input check
-#   if(!inherits(inSCE, "SingleCellExperiment")){
-#     stop("\"inSCE\" should be a SingleCellExperiment Object.")
-#   }
-#   if(pcInput){
-#     if(!useAssay %in% SingleCellExperiment::reducedDimNames(inSCE)) {
-#       stop(paste("\"useAssay\" (reducedDim) name: ", useAssay, " not found."))
-#     }
-#   } else {
-#     if(!useAssay %in% SummarizedExperiment::assayNames(inSCE)) {
-#       stop(paste("\"useAssay\" (assay) name: ", useAssay, " not found."))
-#     }
-#   }
-#   if(!batch %in% names(SummarizedExperiment::colData(inSCE))){
-#     stop(paste("\"batch\" name:", batch, "not found"))
-#   }
-#   reducedDimName <- gsub(' ', '_', reducedDimName)
-#   nComponents <- as.integer(nComponents)
-#   nIter <- as.integer(nIter)
-#   ## Run algorithm
-#   batchCol <- SummarizedExperiment::colData(inSCE)[[batch]]
-#   if(pcInput){
-#     mat <- SingleCellExperiment::reducedDim(inSCE, useAssay)
-#   } else{
-#     sceTmp <- scater::runPCA(inSCE, exprs_values = useAssay,
-#                              ncomponents = nComponents)
-#     mat <- SingleCellExperiment::reducedDim(sceTmp, 'PCA')
-#   }
-#   h <- harmony::HarmonyMatrix(mat, batchCol, do_pca = FALSE,
-#                               theta = theta, max.iter.harmony = nIter)
-#   SingleCellExperiment::reducedDim(inSCE, reducedDimName) <- h
-#   return(inSCE)
-# }
+#' Apply Harmony batch effect correction method to SingleCellExperiment object
+#' @description Harmony is an algorithm that projects cells into a shared
+#' embedding in which cells group by cell type rather than dataset-specific
+#' conditions.
+#' @param inSCE Input \linkS4class{SingleCellExperiment} inherited object.
+#' @param useAssay A single character indicating the name of the assay requiring
+#' batch correction. Default \code{"logcounts"}.
+#' @param useReducedDim A single character indicating the name of the reducedDim
+#' used to be corrected. Specifying this will ignore \code{useAssay}. Default
+#' \code{NULL}.
+#' @param batch A single character indicating a field in
+#' \code{\link{colData}} that annotates the batches.
+#' Default \code{"batch"}.
+#' @param reducedDimName A single character. The name for the corrected
+#' low-dimensional representation. Will be saved to \code{reducedDim(inSCE)}.
+#' Default \code{"HARMONY"}.
+#' @param nComponents An integer. The number of PCs to use and generate.
+#' Default \code{50L}.
+#' @param lambda A Numeric scalar. Ridge regression penalty parameter. Must be
+#' strictly positive. Smaller values result in more aggressive correction.
+#' Default \code{0.1}.
+#' @param theta A Numeric scalar. Diversity clustering penalty parameter. Larger
+#' values of theta result in more diverse clusters. theta=0 does not encourage
+#' any diversity. Default \code{5}.
+#' @param sigma A Numeric scalar. Width of soft kmeans clusters. Larger values
+#' of sigma result in cells assigned to more clusters. Smaller values of sigma
+#' make soft kmeans cluster approach hard clustering. Default \code{0.1}.
+#' @param nIter An integer. The max number of iterations to perform. Default
+#' \code{10L}.
+#' @param verbose Whether to print progress messages. Default \code{TRUE}.
+#' @param ... Other arguments passed to \code{\link[harmony]{HarmonyMatrix}}.
+#' See details.
+#' @details Since some of the arguments of \code{\link[harmony]{HarmonyMatrix}}
+#' is controlled by this wrapper function. The additional arguments users can
+#' work with only include: \code{nclust}, \code{tau}, \code{block.size},
+#' \code{max.iter.cluster}, \code{epsilon.cluster}, \code{epsilon.harmony},
+#' \code{plot_convergence}, \code{reference_values} and \code{cluster_prior}.
+#' @return The input \linkS4class{SingleCellExperiment} object with
+#' \code{reducedDim(inSCE, reducedDimName)} updated.
+#' @export
+#' @references Ilya Korsunsky, et al., 2019
+#' @examples
+#' data('sceBatches', package = 'singleCellTK')
+#' logcounts(sceBatches) <- log(counts(sceBatches) + 1)
+#' sceCorr <- runHarmony(sceBatches)
+runHarmony <- function(inSCE, useAssay = "logcounts", useReducedDim = NULL,
+                       batch = "batch", reducedDimName = "HARMONY",
+                       nComponents = 50, lambda = 0.1, theta = 5,
+                       sigma = 0.1, nIter = 10, verbose = TRUE, ...) {
+  if (!requireNamespace("harmony", quietly = TRUE)) {
+    stop("The Harmony package is required to run this function. ",
+         "Install harmony with: ",
+         "install.packages('harmony')",
+         call. = FALSE)
+  }
+  ## Input check
+  matrixSelect <- .selectSCEMatrix(inSCE, useAssay, useReducedDim,
+                                   useAltExp = NULL, returnMatrix = TRUE)
+  batch <- .manageCellVar(inSCE, batch, as.factor = TRUE)
+  reducedDimName <- gsub(' ', '_', reducedDimName)
+  ## Run algorithm
+  message(Sys.Date(), " ... Running harmony batch correction")
+  mat <- matrixSelect$mat
+  do_pca <- ifelse(is.null(matrixSelect$names$useReducedDim), TRUE, FALSE)
+  if (!is.null(matrixSelect$names$useReducedDim)) {
+    if (nComponents > ncol(mat)) {
+      warning("Specified number of components more than available, ",
+              "using all (", ncol(mat), ") components.")
+      nComponents <- ncol(mat)
+    }
+    mat <- mat[,seq(nComponents)]
+  }
+  h <- harmony::HarmonyMatrix(data_mat = mat, meta_data = batch,
+                              do_pca = do_pca, npcs = nComponents,
+                              lambda = lambda, theta = theta,
+                              sigma = sigma, max.iter.harmony = nIter,
+                              verbose = verbose, return_object = FALSE, ...)
+  SingleCellExperiment::reducedDim(inSCE, reducedDimName) <- h
+  return(inSCE)
+}
 
 # #' Apply LIGER batch effect correction method to SingleCellExperiment object
 # #'

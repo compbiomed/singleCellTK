@@ -132,7 +132,8 @@ Suggests:
     shinyFiles,
     BiocGenerics,
     RColorBrewer,
-    fastmap (>= 1.1.0)
+    fastmap (>= 1.1.0),
+    harmony
 VignetteBuilder: knitr
 URL: https://www.camplab.net/sctk/
 BugReports: https://github.com/compbiomed/singleCellTK/issues
