@@ -19,7 +19,7 @@
 #' @return A \code{SingleCellExperiment} object containing the count
 #'  matrix, the feature annotations, and the cell annotation
 #'  (which includes QC metrics stored in 'featureDump.txt').
-#' @import fishpond
+#' @import eds
 #' @export
 
 importAlevin <- function(
@@ -32,7 +32,7 @@ importAlevin <- function(
   class <- match.arg(class)
 
   matFile <- file.path(alevinDir, "alevin/quants_mat.gz")
-  ### require package fishpond
+  ### require package eds
   ma <- tximport::tximport(files = matFile, type = "alevin")
   if (!'counts' %in% names(ma)) {
     stop("RNA count matrix not found in the alevin output!")
