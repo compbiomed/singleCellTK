@@ -74,138 +74,167 @@
 #' sce.w <- findMarkerDiffExp(sce.w, method = "wilcox", cluster = "cell_type")
 #' plotMarkerDiffExp(sce.w)
 plotMarkerDiffExp <- function(inSCE, orderBy = 'size',
-    log2fcThreshold = 1, fdrThreshold = 0.05, minClustExprPerc = 0.7,
-    maxCtrlExprPerc = 0.4, minMeanExpr = 1, topN = 10, decreasing = TRUE,
-    rowDataName = NULL, colDataName = NULL, featureAnnotations = NULL,
-    cellAnnotations = NULL, featureAnnotationColor = NULL,
-    cellAnnotationColor = NULL,
-    colSplitBy = ifelse(is.null(orderBy), NULL,
-                        colnames(inSCE@metadata$findMarker)[5]),
-    rowSplitBy = "marker", rowDend = FALSE, colDend = FALSE,
-    title = "Top Marker Heatmap", ...){
-    if(!inherits(inSCE, 'SingleCellExperiment')){
-        stop('"inSCE" should be a SingleCellExperiment inherited Object.')
+                              log2fcThreshold = 1, fdrThreshold = 0.05, 
+                              minClustExprPerc = 0.7, maxCtrlExprPerc = 0.4, 
+                              minMeanExpr = 1, topN = 10, decreasing = TRUE,
+                              rowDataName = NULL, colDataName = NULL, 
+                              featureAnnotations = NULL, cellAnnotations = NULL, 
+                              featureAnnotationColor = NULL,
+                              cellAnnotationColor = NULL,
+                              colSplitBy = NULL,
+                              rowSplitBy = "marker", rowDend = FALSE, 
+                              colDend = FALSE,
+                              title = "Top Marker Heatmap", ...){
+  if(!inherits(inSCE, 'SingleCellExperiment')){
+    stop('"inSCE" should be a SingleCellExperiment inherited Object.')
+  }
+  if(!'findMarker' %in% names(S4Vectors::metadata(inSCE))){
+    stop('"findMarker" result not found in metadata. ',
+         'Run findMarkerDiffExp() before plotting.')
+  }
+  colSplitBy <- 
+    ifelse(is.null(orderBy), NULL, colnames(metadata(inSCE)$findMarker)[5])
+  
+  if(!is.null(orderBy)){
+    if(length(orderBy) == 1){
+      if(!orderBy %in% c('size', 'name')){
+        stop('Single charater setting for "orderBy" should be chosen',
+             'from "size" or "name".')
+      }
+    }# else if(any(!SummarizedExperiment::colData(inSCE)[[cluster]] %in%
+    #             orderBy)){
+    #   stop('Invalid "orderBy", please input a vector of unique ordered ',
+    #        'cluster identifiers that match all clusters in ',
+    #        'colData(inSCE) specified by "cluster" to adjust the order ',
+    #        'of clusters.')
+    #}
+  }
+  # Extract and basic filter
+  degFull <- S4Vectors::metadata(inSCE)$findMarker
+  if(!all(c("Gene", "Pvalue", "Log2_FC", "FDR") %in%
+          colnames(degFull)[seq_len(4)])){
+    stop('"findMarker" result cannot be interpreted properly')
+  }
+  #if(length(which(!degFull$Gene %in% rownames(inSCE))) > 0){
+  # Remove genes happen in deg table but not in sce. Weird.
+  # degFull <- degFull[-which(!degFull$Gene %in% rownames(inSCE)),]
+  #}
+  if(!is.null(log2fcThreshold)){
+    degFull <- degFull[degFull$Log2_FC > log2fcThreshold,]
+  }
+  if(!is.null(fdrThreshold)){
+    degFull <- degFull[degFull$FDR < fdrThreshold,]
+  }
+  if (!is.null(minClustExprPerc)) {
+    degFull <- degFull[degFull$clusterExprPerc >= minClustExprPerc,]
+  }
+  if (!is.null(maxCtrlExprPerc)) {
+    degFull <- degFull[degFull$ControlExprPerc <= maxCtrlExprPerc,]
+  }
+  if (!is.null(minMeanExpr)) {
+    degFull <- degFull[degFull$clusterAveExpr >= minMeanExpr,]
+  }
+  # Remove duplicate by assigning the duplicated genes to the cluster where
+  # their log2FC is the highest.
+  # Done by keeping all unique genes and the rows  with highest Log2FC entry
+  # for each duplicated gene.
+  dup.gene <- unique(degFull$Gene[duplicated(degFull$Gene)])
+  for(g in dup.gene){
+    deg.gix <- degFull$Gene == g
+    deg.gtable <- degFull[deg.gix,]
+    toKeep <- which.max(deg.gtable$Log2_FC)
+    toRemove <- which(deg.gix)[-toKeep]
+    degFull <- degFull[-toRemove,]
+  }
+  clusterName <- colnames(degFull)[5]
+  selected <- character()
+  if (!is.null(topN)) {
+    for (c in unique(degFull[[clusterName]])) {
+      deg.cluster <- degFull[degFull[[clusterName]] == c,]
+      deg.cluster <- deg.cluster[order(deg.cluster$Log2_FC,
+                                       decreasing = TRUE),]
+      if (dim(deg.cluster)[1] > topN) {
+        deg.cluster <- deg.cluster[seq_len(topN),]
+      }
+      selected <- c(selected, deg.cluster$Gene)
     }
-    if(!'findMarker' %in% names(S4Vectors::metadata(inSCE))){
-        stop('"findMarker" result not found in metadata. ',
-             'Run findMarkerDiffExp() before plotting.')
-    }
-    if(!is.null(orderBy)){
-        if(length(orderBy) == 1){
-            if(!orderBy %in% c('size', 'name')){
-                stop('Single charater setting for "orderBy" should be chosen',
-                     'from "size" or "name".')
-            }
-        }# else if(any(!SummarizedExperiment::colData(inSCE)[[cluster]] %in%
-         #             orderBy)){
-         #   stop('Invalid "orderBy", please input a vector of unique ordered ',
-         #        'cluster identifiers that match all clusters in ',
-         #        'colData(inSCE) specified by "cluster" to adjust the order ',
-         #        'of clusters.')
-        #}
-    }
-    # Extract and basic filter
-    degFull <- S4Vectors::metadata(inSCE)$findMarker
-    useAssay <- attr(degFull, "useAssay")
-    if(!all(c("Gene", "Pvalue", "Log2_FC", "FDR") %in%
-            colnames(degFull)[seq_len(4)])){
-        stop('"findMarker" result cannot be interpreted properly')
-    }
-    if(length(which(!degFull$Gene %in% rownames(inSCE))) > 0){
-      # Remove genes happen in deg table but not in sce. Weird.
-      degFull <- degFull[-which(!degFull$Gene %in% rownames(inSCE)),]
-    }
-    if(!is.null(log2fcThreshold)){
-        degFull <- degFull[degFull$Log2_FC > log2fcThreshold,]
-    }
-    if(!is.null(fdrThreshold)){
-        degFull <- degFull[degFull$FDR < fdrThreshold,]
-    }
-    if (!is.null(minClustExprPerc)) {
-      degFull <- degFull[degFull$clusterExprPerc >= minClustExprPerc,]
-    }
-    if (!is.null(maxCtrlExprPerc)) {
-      degFull <- degFull[degFull$ControlExprPerc <= maxCtrlExprPerc,]
-    }
-    if (!is.null(minMeanExpr)) {
-      degFull <- degFull[degFull$clusterAveExpr >= minMeanExpr,]
-    }
-    # Remove duplicate by assigning the duplicated genes to the cluster where
-    # their log2FC is the highest.
-    # Done by keeping all unique genes and the rows  with highest Log2FC entry
-    # for each duplicated gene.
-    dup.gene <- unique(degFull$Gene[duplicated(degFull$Gene)])
-    for(g in dup.gene){
-        deg.gix <- degFull$Gene == g
-        deg.gtable <- degFull[deg.gix,]
-        toKeep <- which.max(deg.gtable$Log2_FC)
-        toRemove <- which(deg.gix)[-toKeep]
-        degFull <- degFull[-toRemove,]
-    }
-    clusterName <- colnames(degFull)[5]
-    selected <- character()
-    if (!is.null(topN)) {
-      for (c in unique(degFull[[clusterName]])) {
-        deg.cluster <- degFull[degFull[[clusterName]] == c,]
-        deg.cluster <- deg.cluster[order(deg.cluster$Log2_FC,
-                                         decreasing = TRUE),]
-        if (dim(deg.cluster)[1] > topN) {
-          deg.cluster <- deg.cluster[seq_len(topN),]
-        }
-        selected <- c(selected, deg.cluster$Gene)
+  } else {
+    selected <- degFull$Gene
+  }
+  degFull <- degFull[degFull$Gene %in% selected,]
+  
+  if (!is.null(attr(degFull, "useReducedDim"))) {
+    mat <- t(expData(inSCE, attr(degFull, "useReducedDim")))
+    assayList <- list(mat)
+    names(assayList) <- attr(degFull, "useReducedDim")
+    tmpSCE <- SingleCellExperiment::SingleCellExperiment(assays = assayList)
+    SummarizedExperiment::colData(tmpSCE) <- 
+      SummarizedExperiment::colData(inSCE)
+    assayName <- attr(degFull, "useReducedDim")
+    
+  } else {
+    tmpSCE <- inSCE
+    assayName <- attr(degFull, "useAssay")
+    
+  }
+  
+  inSCE <- tmpSCE[degFull$Gene,]
+  z <- SummarizedExperiment::colData(inSCE)[[clusterName]]
+  if(is.factor(z)){
+    z.order <- levels(z)
+    # When 'z' is a subset factor, there would be redundant levels.
+    z.order <- z.order[z.order %in% as.vector(unique(z))]
+    z <- factor(z, levels = z.order)
+    SummarizedExperiment::rowData(inSCE)[[clusterName]] <-
+      factor(degFull[[clusterName]], levels = z.order)
+    
+  } else {
+    SummarizedExperiment::rowData(inSCE)[[clusterName]] <-
+      degFull[[clusterName]]
+  }
+  if(!is.null(orderBy)){
+    if(length(orderBy) == 1 && orderBy == 'size'){
+      z.order <- names(table(z)[order(table(z), decreasing = decreasing)])
+    } else if(length(orderBy) == 1 && orderBy == 'name'){
+      if(is.factor(z)){
+        z.order <- sort(levels(z), decreasing = decreasing)
+      } else {
+        z.order <- sort(unique(z), decreasing = decreasing)
       }
     } else {
-      selected <- degFull$Gene
+      z.order <- orderBy[-which(!orderBy %in% z)]
     }
-    degFull <- degFull[degFull$Gene %in% selected,]
-    inSCE <- inSCE[degFull$Gene,]
-
-    z <- SummarizedExperiment::colData(inSCE)[[clusterName]]
-    if(is.factor(z)){
-        z.order <- levels(z)
-        # When 'z' is a subset factor, there would be redundant levels.
-        z.order <- z.order[z.order %in% as.vector(unique(z))]
-        z <- factor(z, levels = z.order)
-        SummarizedExperiment::rowData(inSCE)[[clusterName]] <-
-            factor(degFull[[clusterName]], levels = z.order)
-    } else {
-        SummarizedExperiment::rowData(inSCE)[[clusterName]] <-
-          degFull[[clusterName]]
-    }
-    y <- SummarizedExperiment::rowData(inSCE)[[clusterName]]
-    if(!is.null(orderBy)){
-        if(length(orderBy) == 1 && orderBy == 'size'){
-            z.order <- names(table(z)[order(table(z), decreasing = decreasing)])
-        } else if(length(orderBy) == 1 && orderBy == 'name'){
-            if(is.factor(z)){
-                z.order <- sort(levels(z), decreasing = decreasing)
-            } else {
-                z.order <- sort(unique(z), decreasing = decreasing)
-            }
-        } else {
-            z.order <- orderBy[-which(!orderBy %in% z)]
-        }
-    }
-    SummarizedExperiment::colData(inSCE)[[clusterName]] <-
-        factor(z, levels = z.order)
-    SummarizedExperiment::rowData(inSCE)[["marker"]] <-
-        factor(y, levels = z.order)
-    # Organize plotSCEHeatmap arguments
-    colDataName <- c(colDataName, clusterName)
-    rowDataName <- c(rowDataName, "marker")
-    markerConsistColor <-
-        list(marker = dataAnnotationColor(inSCE, 'col')[[clusterName]])
-    featureAnnotationColor <- c(featureAnnotationColor, markerConsistColor)
-    hm <- plotSCEHeatmap(inSCE, useAssay = useAssay, colDataName = colDataName,
-                         rowDataName = rowDataName, colSplitBy = colSplitBy,
-                         rowSplitBy = rowSplitBy,
-                         featureAnnotations = featureAnnotations,
-                         cellAnnotations = cellAnnotations,
-                         featureAnnotationColor = featureAnnotationColor,
-                         cellAnnotationColor = cellAnnotationColor,
-                         cluster_row_slices = FALSE,
-                         cluster_column_slices = FALSE,
-                         rowDend = rowDend, colDend = colDend, title = title,
-                         ...)
-    return(hm)
+  }
+  
+  SummarizedExperiment::colData(inSCE)[[clusterName]] <-
+    factor(z, levels = z.order)
+  
+  
+  y <- SummarizedExperiment::rowData(inSCE)[[clusterName]]
+  SummarizedExperiment::rowData(inSCE)[["marker"]] <- 
+    factor(y, levels = z.order)
+  markerConsistColor <-
+    list(marker = dataAnnotationColor(inSCE, 'col')[[clusterName]])
+  
+  # Organize plotSCEHeatmap arguments
+  colDataName <- c(colDataName, clusterName)
+  rowDataName <- c(rowDataName, "marker")
+  
+  featureAnnotationColor <- c(featureAnnotationColor, markerConsistColor)
+  
+  hm <- plotSCEHeatmap(inSCE, useAssay = assayName, colDataName = colDataName,
+                       rowDataName = rowDataName, colSplitBy = colSplitBy,
+                       rowSplitBy = rowSplitBy,
+                       featureAnnotations = featureAnnotations,
+                       cellAnnotations = cellAnnotations,
+                       featureAnnotationColor = featureAnnotationColor,
+                       cellAnnotationColor = cellAnnotationColor,
+                       cluster_row_slices = FALSE,
+                       cluster_column_slices = FALSE,
+                       rowDend = rowDend, colDend = colDend, title = title, ...)
+  
+  
+  
+  return(hm)
 }
+
