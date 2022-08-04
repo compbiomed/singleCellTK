@@ -5,6 +5,9 @@
 #' @param inSCE \linkS4class{SingleCellExperiment} inherited object.
 #' @param useAssay character. A string specifying which assay to use for the
 #' MAST calculations. Default \code{"logcounts"}.
+#' @param useReducedDim character. A string specifying which reducedDim to use
+#' for MAST calculations. Set \code{useAssay} to \code{NULL} when using. 
+#' Required.
 #' @param method A single character for specific differential expression
 #' analysis method. Choose from \code{'wilcox'}, \code{'MAST'}, \code{'DESeq2'},
 #' \code{'Limma'}, and \code{'ANOVA'}. Default \code{"wilcox"}.
@@ -37,7 +40,8 @@
 #' mouseBrainSubsetSCE <- findMarkerDiffExp(mouseBrainSubsetSCE,
 #'                                          useAssay = "logcounts",
 #'                                          cluster = "level1class")
-findMarkerDiffExp <- function(inSCE, useAssay = 'logcounts',
+findMarkerDiffExp <- function(inSCE, useAssay = 'logcounts', 
+                              useReducedDim = NULL,
                               method = c('wilcox', 'MAST', "DESeq2", "Limma",
                                          "ANOVA"),
                               cluster = 'cluster', covariates = NULL,
@@ -48,8 +52,26 @@ findMarkerDiffExp <- function(inSCE, useAssay = 'logcounts',
   if(!inherits(inSCE, "SingleCellExperiment")){
     stop('"inSCE" should be a SingleCellExperiment inherited Object.')
   }
-  if(!useAssay %in% expDataNames(inSCE)){
-    stop('"useAssay" name: ', useAssay, ' not found.')
+  
+  if (!is.null(useAssay)) {
+    if(!useAssay %in% expDataNames(inSCE)){
+      stop('"useAssay" name: ', useAssay, ' not found.')
+    }
+    else{
+      useAssay <- useAssay
+      useReducedDim = NULL
+    }
+    
+  } 
+  else{
+    if(!useReducedDim %in% expDataNames(inSCE)){
+      stop('"useReducedDim" name: ', useReducedDim, ' not found.')
+    }
+    else{
+      useReducedDim <- useReducedDim
+      useAssay = NULL
+    }
+    
   }
   method <- match.arg(method)
   ## Check whether use colData or customized vector/factor
@@ -81,6 +103,7 @@ findMarkerDiffExp <- function(inSCE, useAssay = 'logcounts',
     clusterIndex <- cluster == c
     inSCE <- runDEAnalysis(method = method, inSCE = inSCE,
                            useAssay = useAssay,
+                           useReducedDim = useReducedDim,
                            index1 = clusterIndex,
                            analysisName = paste0('findMarker', c),
                            onlyPos = TRUE,
@@ -111,7 +134,13 @@ findMarkerDiffExp <- function(inSCE, useAssay = 'logcounts',
     S4Vectors::metadata(inSCE)$diffExp <- NULL
   }
   degFull <- degFull[stats::complete.cases(degFull),]
-  attr(degFull, "useAssay") <- useAssay
+  if (!is.null(useAssay)) {
+    attr(degFull, "useAssay") <- useAssay
+  } 
+  else {
+    attr(degFull, "useReducedDim") <- useReducedDim
+  }
+  
   degFull <- .calcMarkerExpr(degFull, inSCE, clusterName)
   if (!is.null(minClustExprPerc)) {
     degFull <- degFull[degFull$clusterExprPerc > minClustExprPerc,]
@@ -133,18 +162,29 @@ findMarkerDiffExp <- function(inSCE, useAssay = 'logcounts',
 }
 
 .calcMarkerExpr <- function(markerTable, inSCE, clusterName) {
-  markerTable <- markerTable[markerTable$Gene %in% rownames(inSCE),]
+  #markerTable <- markerTable[markerTable$Gene %in% rownames(inSCE),]
   genes <- markerTable$Gene
   uniqClust <- unique(markerTable[[clusterName]])
-  useAssay <- attr(markerTable, "useAssay")
+  useAssay <- attr(markerTable, "useAssay" )
+  useReducedDim <- attr(markerTable, "useReducedDim")
+  
   cells.in.col <- rep(NA, length(genes))
   cells.out.col <- rep(NA, length(genes))
   exprs.avg <- rep(NA, length(genes))
   for (i in uniqClust) {
     markers <- genes[markerTable[[clusterName]] == i]
     cells.ix <- inSCE[[clusterName]] == i
-    assay.in <- expData(inSCE, useAssay)[markers, cells.ix, drop = FALSE]
-    assay.out <- expData(inSCE, useAssay)[markers, !cells.ix, drop = FALSE]
+    if (!is.null(useReducedDim)) {
+      assay.in <- 
+        t(expData(inSCE, useReducedDim))[markers, cells.ix, drop = FALSE]
+      assay.out <- 
+        t(expData(inSCE, useReducedDim))[markers, !cells.ix, drop = FALSE]
+      
+    } else {
+      assay.in <- expData(inSCE, useAssay)[markers, cells.ix, drop = FALSE]
+      assay.out <- expData(inSCE, useAssay)[markers, !cells.ix, drop = FALSE]
+      
+    }
     assay.in.expr.perc <- rowSums(assay.in > 0) / ncol(assay.in)
     cells.in.col[markerTable[[clusterName]] == i] <- assay.in.expr.perc
     assay.out.expr.perc <- rowSums(assay.out > 0) / ncol(assay.out)
