@@ -20,7 +20,7 @@ plotMarkerDiffExp(
   cellAnnotations = NULL,
   featureAnnotationColor = NULL,
   cellAnnotationColor = NULL,
-  colSplitBy = ifelse(is.null(orderBy), NULL, colnames(inSCE@metadata$findMarker)[5]),
+  colSplitBy = NULL,
   rowSplitBy = "marker",
   rowDend = FALSE,
   colDend = FALSE,

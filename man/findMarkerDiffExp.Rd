@@ -7,6 +7,7 @@
 findMarkerDiffExp(
   inSCE,
   useAssay = "logcounts",
+  useReducedDim = NULL,
   method = c("wilcox", "MAST", "DESeq2", "Limma", "ANOVA"),
   cluster = "cluster",
   covariates = NULL,
@@ -22,6 +23,10 @@ findMarkerDiffExp(
 
 \item{useAssay}{character. A string specifying which assay to use for the
 MAST calculations. Default \code{"logcounts"}.}
+
+\item{useReducedDim}{character. A string specifying which reducedDim to use
+for MAST calculations. Set \code{useAssay} to \code{NULL} when using. 
+Required.}
 
 \item{method}{A single character for specific differential expression
 analysis method. Choose from \code{'wilcox'}, \code{'MAST'}, \code{'DESeq2'},
