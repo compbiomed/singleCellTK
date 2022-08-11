@@ -3,7 +3,7 @@ library(singleCellTK)
 context("Testing DEG functions")
 data(sceBatches, package = "singleCellTK")
 
-sceBatches <- scaterlogNormCounts(sceBatches, "logcounts")
+logcounts(sceBatches) <- log1p(counts(sceBatches))
 sceBatches <- subsetSCECols(sceBatches, colData = "batch == 'w'")
 
 test_that(desc = "Testing Limma DE", {
@@ -63,8 +63,8 @@ test_that(desc = "Testing Wilcoxon DE", {
   # Also Plotting functions at this point
   vlcn <- plotDEGVolcano(sceBatches, "aVSbWilcox")
   testthat::expect_is(vlcn, "ggplot")
-  
-  hm <- plotDEGHeatmap(sceBatches, "aVSbWilcox", 
+
+  hm <- plotDEGHeatmap(sceBatches, "aVSbWilcox",
                        minGroup1ExprPerc = NULL, maxGroup2ExprPerc = NULL)
   testthat::expect_is(hm, "ggplot")
 
@@ -76,18 +76,17 @@ test_that(desc = "Testing Wilcoxon DE", {
 })
 
 test_that(desc = "Testing findMarker", {
-  sceBatches <- findMarkerDiffExp(inSCE = sceBatches,
-                                  cluster = "cell_type")
-
+  sceBatches <- runFindMarker(inSCE = sceBatches,
+                              cluster = "cell_type")
   testthat::expect_true("findMarker" %in% names(metadata(sceBatches)))
 
-  topTable <- findMarkerTopTable(sceBatches)
+  topTable <- getFindMarkerTopTable(sceBatches)
   testthat::expect_is(topTable, "data.frame")
   testthat::expect_named(topTable, c("Gene", "Log2_FC", "Pvalue", "FDR",
                                      "cell_type", "clusterExprPerc",
                                      "ControlExprPerc", "clusterAveExpr"))
   testthat::expect_gt(nrow(topTable), 0)
 
-  hmFM <- plotMarkerDiffExp(sceBatches)
+  hmFM <- plotFindMarkerHeatmap(sceBatches)
   testthat::expect_is(hmFM, "ggplot")
 })

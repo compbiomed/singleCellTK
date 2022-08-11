@@ -1,12 +1,14 @@
 #' Find the marker gene set for each cluster
+#' @rdname runFindMarker
 #' @description With an input SingleCellExperiment object and specifying the
 #' clustering labels, this function iteratively call the differential expression
-#' analysis on each cluster against all the others.
+#' analysis on each cluster against all the others. \code{findMarkerDiffExp}
+#' will be deprecated in the future.
 #' @param inSCE \linkS4class{SingleCellExperiment} inherited object.
 #' @param useAssay character. A string specifying which assay to use for the
 #' MAST calculations. Default \code{"logcounts"}.
 #' @param useReducedDim character. A string specifying which reducedDim to use
-#' for MAST calculations. Set \code{useAssay} to \code{NULL} when using. 
+#' for MAST calculations. Set \code{useAssay} to \code{NULL} when using.
 #' Required.
 #' @param method A single character for specific differential expression
 #' analysis method. Choose from \code{'wilcox'}, \code{'MAST'}, \code{'DESeq2'},
@@ -34,59 +36,25 @@
 #' @return The input \linkS4class{SingleCellExperiment} object with
 #' \code{metadata(inSCE)$findMarker} updated with a data.table of the up-
 #' regulated DEGs for each cluster.
+#' @seealso \code{\link{runDEAnalysis}}
 #' @export
 #' @examples
 #' data("mouseBrainSubsetSCE", package = "singleCellTK")
-#' mouseBrainSubsetSCE <- findMarkerDiffExp(mouseBrainSubsetSCE,
-#'                                          useAssay = "logcounts",
-#'                                          cluster = "level1class")
-findMarkerDiffExp <- function(inSCE, useAssay = 'logcounts', 
-                              useReducedDim = NULL,
-                              method = c('wilcox', 'MAST', "DESeq2", "Limma",
-                                         "ANOVA"),
-                              cluster = 'cluster', covariates = NULL,
-                              log2fcThreshold = NULL, fdrThreshold = 0.05,
-                              minClustExprPerc = NULL, maxCtrlExprPerc = NULL,
-                              minMeanExpr = NULL){
-  # Input checks
-  if(!inherits(inSCE, "SingleCellExperiment")){
-    stop('"inSCE" should be a SingleCellExperiment inherited Object.')
-  }
-  
-  if (!is.null(useAssay)) {
-    if(!useAssay %in% expDataNames(inSCE)){
-      stop('"useAssay" name: ', useAssay, ' not found.')
-    }
-    else{
-      useAssay <- useAssay
-      useReducedDim = NULL
-    }
-    
-  } 
-  else{
-    if(!useReducedDim %in% expDataNames(inSCE)){
-      stop('"useReducedDim" name: ', useReducedDim, ' not found.')
-    }
-    else{
-      useReducedDim <- useReducedDim
-      useAssay = NULL
-    }
-    
-  }
-  method <- match.arg(method)
-  ## Check whether use colData or customized vector/factor
-  if(is.character(cluster) && length(cluster) == 1){
-    if(!cluster %in% names(SummarizedExperiment::colData(inSCE))){
-      stop('"cluster": ', cluster, ' not found in colData(inSCE).')
-    }
-    clusterName <- cluster
-    cluster <- SummarizedExperiment::colData(inSCE)[[cluster]]
-  } else if(!length(cluster) == ncol(inSCE)){
-    stop('The number of cluster labels does not match the number of cells.')
-  } else {
-    clusterName <- 'findMarker_cluster'
-    SummarizedExperiment::colData(inSCE)[[clusterName]] <- cluster
-  }
+#' mouseBrainSubsetSCE <- runFindMarker(mouseBrainSubsetSCE,
+#'                                      useAssay = "logcounts",
+#'                                      cluster = "level1class")
+runFindMarker <- function(inSCE, useAssay = 'logcounts',
+                          useReducedDim = NULL,
+                          method = c('wilcox', 'MAST', "DESeq2", "Limma",
+                                     "ANOVA"),
+                          cluster = 'cluster', covariates = NULL,
+                          log2fcThreshold = NULL, fdrThreshold = 0.05,
+                          minClustExprPerc = NULL, maxCtrlExprPerc = NULL,
+                          minMeanExpr = NULL){
+  # Input checks will be done in `runDEAnalysis()`
+  if (is.character(cluster) && length(cluster) == 1) clusterName <- cluster
+  else clusterName <- 'findMarker_cluster'
+  cluster <- .manageCellVar(inSCE, var = cluster)
   # Iterate
   if(is.factor(cluster)){
     # In case inSCE is a subset, when "levels" is a full list of all
@@ -136,11 +104,11 @@ findMarkerDiffExp <- function(inSCE, useAssay = 'logcounts',
   degFull <- degFull[stats::complete.cases(degFull),]
   if (!is.null(useAssay)) {
     attr(degFull, "useAssay") <- useAssay
-  } 
+  }
   else {
     attr(degFull, "useReducedDim") <- useReducedDim
   }
-  
+
   degFull <- .calcMarkerExpr(degFull, inSCE, clusterName)
   if (!is.null(minClustExprPerc)) {
     degFull <- degFull[degFull$clusterExprPerc > minClustExprPerc,]
@@ -161,13 +129,20 @@ findMarkerDiffExp <- function(inSCE, useAssay = 'logcounts',
   return(inSCE)
 }
 
+#' @rdname runFindMarker
+#' @export
+findMarkerDiffExp <- function(...) {
+  .Deprecated("runFindMarker")
+  runFindMarker(...)
+}
+
 .calcMarkerExpr <- function(markerTable, inSCE, clusterName) {
   #markerTable <- markerTable[markerTable$Gene %in% rownames(inSCE),]
   genes <- markerTable$Gene
   uniqClust <- unique(markerTable[[clusterName]])
   useAssay <- attr(markerTable, "useAssay" )
   useReducedDim <- attr(markerTable, "useReducedDim")
-  
+
   cells.in.col <- rep(NA, length(genes))
   cells.out.col <- rep(NA, length(genes))
   exprs.avg <- rep(NA, length(genes))
@@ -175,15 +150,15 @@ findMarkerDiffExp <- function(inSCE, useAssay = 'logcounts',
     markers <- genes[markerTable[[clusterName]] == i]
     cells.ix <- inSCE[[clusterName]] == i
     if (!is.null(useReducedDim)) {
-      assay.in <- 
+      assay.in <-
         t(expData(inSCE, useReducedDim))[markers, cells.ix, drop = FALSE]
-      assay.out <- 
+      assay.out <-
         t(expData(inSCE, useReducedDim))[markers, !cells.ix, drop = FALSE]
-      
+
     } else {
       assay.in <- expData(inSCE, useAssay)[markers, cells.ix, drop = FALSE]
       assay.out <- expData(inSCE, useAssay)[markers, !cells.ix, drop = FALSE]
-      
+
     }
     assay.in.expr.perc <- rowSums(assay.in > 0) / ncol(assay.in)
     cells.in.col[markerTable[[clusterName]] == i] <- assay.in.expr.perc
@@ -200,7 +175,7 @@ findMarkerDiffExp <- function(inSCE, useAssay = 'logcounts',
 
 
 #' Fetch the table of top markers that pass the filtering
-#'
+#' @rdname getFindMarkerTopTable
 #' @details Users have to run \code{findMarkerDiffExp()} prior to using this
 #' function to extract a top marker table.
 #' @param inSCE \linkS4class{SingleCellExperiment} inherited object.
@@ -224,11 +199,11 @@ findMarkerDiffExp <- function(inSCE, useAssay = 'logcounts',
 #' @export
 #' @examples
 #' data("mouseBrainSubsetSCE", package = "singleCellTK")
-#' mouseBrainSubsetSCE <- findMarkerDiffExp(mouseBrainSubsetSCE,
-#'                                          useAssay = "logcounts",
-#'                                          cluster = "level1class")
-#' findMarkerTopTable(mouseBrainSubsetSCE)
-findMarkerTopTable <- function(inSCE, log2fcThreshold = 1,
+#' mouseBrainSubsetSCE <- runFindMarker(mouseBrainSubsetSCE,
+#'                                      useAssay = "logcounts",
+#'                                      cluster = "level1class")
+#' getFindMarkerTopTable(mouseBrainSubsetSCE)
+getFindMarkerTopTable <- function(inSCE, log2fcThreshold = 1,
                                fdrThreshold = 0.05, minClustExprPerc = 0.7,
                                maxCtrlExprPerc = 0.4, minMeanExpr = 1,
                                topN = 10) {
@@ -237,7 +212,7 @@ findMarkerTopTable <- function(inSCE, log2fcThreshold = 1,
   }
   if(!'findMarker' %in% names(S4Vectors::metadata(inSCE))){
     stop('"findMarker" result not found in metadata. ',
-         'Run findMarkerDiffExp() in advance')
+         'Run runFindMarker() in advance')
   }
 
   # Extract and basic filter
@@ -295,4 +270,11 @@ findMarkerTopTable <- function(inSCE, log2fcThreshold = 1,
   }
   degFull <- degFull[degFull$Gene %in% selected,]
   return(degFull)
+}
+
+#' @rdname getFindMarkerTopTable
+#' @export
+findMarkerTopTable <- function(...) {
+  .Deprecated("getFindMarkerTopTable")
+  getFindMarkerTopTable(...)
 }
