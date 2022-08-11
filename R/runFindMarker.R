@@ -33,6 +33,21 @@
 #' @param minMeanExpr A numeric scalar. The minimum cutoff of the mean
 #' expression value of the marker in the cluster of interests. Default
 #' \code{NULL}.
+#' @param detectThresh A numeric scalar, above which a matrix value will be
+#' treated as expressed when calculating cluster/control expression percentage.
+#' Default \code{0}.
+#' @details
+#' The returned marker table, in the \code{metadata} slot, consists of 8
+#' columns: \code{"Gene"}, \code{"Log2_FC"}, \code{"Pvalue"}, \code{"FDR"},
+#' \code{cluster}, \code{"clusterExprPerc"}, \code{"ControlExprPerc"} and
+#' \code{"clusterAveExpr"}.
+#'
+#' \code{"clusterExprPerc"} is the fraction of cells,
+#' that has marker value (e.g. gene expression counts) larger than
+#' \code{detectThresh}, in the cell population of the cluster. As for each
+#' cluster, we set all cells out of this cluster as control. Similarly,
+#' \code{"ControlExprPerc"} is the fraction of cells with marker value larger
+#' than \code{detectThresh} in the control cell group.
 #' @return The input \linkS4class{SingleCellExperiment} object with
 #' \code{metadata(inSCE)$findMarker} updated with a data.table of the up-
 #' regulated DEGs for each cluster.
@@ -50,7 +65,7 @@ runFindMarker <- function(inSCE, useAssay = 'logcounts',
                           cluster = 'cluster', covariates = NULL,
                           log2fcThreshold = NULL, fdrThreshold = 0.05,
                           minClustExprPerc = NULL, maxCtrlExprPerc = NULL,
-                          minMeanExpr = NULL){
+                          minMeanExpr = NULL, detectThresh = 0){
   # Input checks will be done in `runDEAnalysis()`
   if (is.character(cluster) && length(cluster) == 1) clusterName <- cluster
   else clusterName <- 'findMarker_cluster'
@@ -104,12 +119,11 @@ runFindMarker <- function(inSCE, useAssay = 'logcounts',
   degFull <- degFull[stats::complete.cases(degFull),]
   if (!is.null(useAssay)) {
     attr(degFull, "useAssay") <- useAssay
-  }
-  else {
+  } else {
     attr(degFull, "useReducedDim") <- useReducedDim
   }
 
-  degFull <- .calcMarkerExpr(degFull, inSCE, clusterName)
+  degFull <- .calcMarkerExpr(degFull, inSCE, clusterName, detectThresh)
   if (!is.null(minClustExprPerc)) {
     degFull <- degFull[degFull$clusterExprPerc > minClustExprPerc,]
   }
@@ -136,7 +150,7 @@ findMarkerDiffExp <- function(...) {
   runFindMarker(...)
 }
 
-.calcMarkerExpr <- function(markerTable, inSCE, clusterName) {
+.calcMarkerExpr <- function(markerTable, inSCE, clusterName, detectThresh) {
   #markerTable <- markerTable[markerTable$Gene %in% rownames(inSCE),]
   genes <- markerTable$Gene
   uniqClust <- unique(markerTable[[clusterName]])
@@ -160,9 +174,9 @@ findMarkerDiffExp <- function(...) {
       assay.out <- expData(inSCE, useAssay)[markers, !cells.ix, drop = FALSE]
 
     }
-    assay.in.expr.perc <- rowSums(assay.in > 0) / ncol(assay.in)
+    assay.in.expr.perc <- rowSums(assay.in > detectThresh) / ncol(assay.in)
     cells.in.col[markerTable[[clusterName]] == i] <- assay.in.expr.perc
-    assay.out.expr.perc <- rowSums(assay.out > 0) / ncol(assay.out)
+    assay.out.expr.perc <- rowSums(assay.out > detectThresh) / ncol(assay.out)
     cells.out.col[markerTable[[clusterName]] == i] <- assay.out.expr.perc
     assay.in.mean <- rowMeans(assay.in)
     exprs.avg[markerTable[[clusterName]] == i] <- assay.in.mean

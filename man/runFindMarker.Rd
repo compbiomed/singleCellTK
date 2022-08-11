@@ -16,7 +16,8 @@ runFindMarker(
   fdrThreshold = 0.05,
   minClustExprPerc = NULL,
   maxCtrlExprPerc = NULL,
-  minMeanExpr = NULL
+  minMeanExpr = NULL,
+  detectThresh = 0
 )
 
 findMarkerDiffExp(...)
@@ -61,6 +62,10 @@ marker gene. From 0 to 1. Default \code{NULL}.}
 \item{minMeanExpr}{A numeric scalar. The minimum cutoff of the mean
 expression value of the marker in the cluster of interests. Default
 \code{NULL}.}
+
+\item{detectThresh}{A numeric scalar, above which a matrix value will be
+treated as expressed when calculating cluster/control expression percentage.
+Default \code{0}.}
 }
 \value{
 The input \linkS4class{SingleCellExperiment} object with
@@ -72,6 +77,19 @@ With an input SingleCellExperiment object and specifying the
 clustering labels, this function iteratively call the differential expression
 analysis on each cluster against all the others. \code{findMarkerDiffExp}
 will be deprecated in the future.
+}
+\details{
+The returned marker table, in the \code{metadata} slot, consists of 8
+columns: \code{"Gene"}, \code{"Log2_FC"}, \code{"Pvalue"}, \code{"FDR"},
+\code{cluster}, \code{"clusterExprPerc"}, \code{"ControlExprPerc"} and
+\code{"clusterAveExpr"}.
+
+\code{"clusterExprPerc"} is the fraction of cells,
+that has marker value (e.g. gene expression counts) larger than
+\code{detectThresh}, in the cell population of the cluster. As for each
+cluster, we set all cells out of this cluster as control. Similarly,
+\code{"ControlExprPerc"} is the fraction of cells with marker value larger
+than \code{detectThresh} in the control cell group.
 }
 \examples{
 data("mouseBrainSubsetSCE", package = "singleCellTK")
