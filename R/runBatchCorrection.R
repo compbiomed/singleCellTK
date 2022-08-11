@@ -3,12 +3,12 @@
 #' BBKNN, an extremely fast graph-based data integration algorithm. It modifies
 #' the neighbourhood construction step to produce a graph that is balanced
 #' across all batches of the data.
-#' @param inSCE \linkS4class{SingleCellExperiment} inherited object. Required.
+#' @param inSCE Input \linkS4class{SingleCellExperiment} object
 #' @param useAssay A single character indicating the name of the assay requiring
 #' batch correction. Default \code{"logcounts"}.
-#' @param batch A single character indicating a field in
-#' \code{\link{colData}} that annotates the batches.
-#' Default \code{"batch"}.
+#' @param batch A single character indicating a field in \code{colData} that
+#' annotates the batches of each cell; or a vector/factor with the same length
+#' as the number of cells. Default \code{"batch"}.
 #' @param reducedDimName A single character. The name for the corrected
 #' low-dimensional representation. Will be saved to \code{reducedDim(inSCE)}.
 #' Default \code{"BBKNN"}.
@@ -24,17 +24,12 @@
 #' @examples
 #' \dontrun{
 #' data('sceBatches', package = 'singleCellTK')
-#' logcounts(sceBatches) <- log(counts(sceBatches) + 1)
-#' sceBatches.small <- sample(sceBatches, 20)
-#' sceCorr <- runBBKNN(sceBatches.small, useAssay = "logcounts",
-#'                     nComponents = 10)
+#' logcounts(sceBatches) <- log1p(counts(sceBatches))
+#' sceBatches <- runBBKNN(sceBatches, useAssay = "logcounts",
+#'                        nComponents = 10)
 #' }
 runBBKNN <-function(inSCE, useAssay = 'logcounts', batch = 'batch',
                     reducedDimName = 'BBKNN', nComponents = 50L){
-  ## Input check
-  if(!inherits(inSCE, "SingleCellExperiment")){
-    stop("\"inSCE\" should be a SingleCellExperiment Object.")
-  }
   if(!reticulate::py_module_available(module = "bbknn")){
     warning("Cannot find python module 'bbknn', please install Conda and",
             " run sctkPythonInstallConda() or run ",
@@ -48,15 +43,16 @@ runBBKNN <-function(inSCE, useAssay = 'logcounts', batch = 'batch',
             " to select the correct Python environment.")
     return(inSCE)
   }
-  if(!batch %in% names(SummarizedExperiment::colData(inSCE))){
-    stop(paste("\"batch\" name:", batch, "not found"))
-  }
+  useAssay <- .selectSCEMatrix(inSCE, useAssay = useAssay,
+                               returnMatrix = FALSE)$names$useAssay
+  batchVec <- .manageCellVar(inSCE, batch, as.factor = FALSE)
   reducedDimName <- gsub(' ', '_', reducedDimName)
   nComponents <- as.integer(nComponents)
   ## Run algorithm
   adata <- .sce2adata(inSCE, useAssay = useAssay)
+  adata$obs[["batch"]] <- batchVec
   sc$tl$pca(adata, n_comps = nComponents)
-  bbknn$bbknn(adata, batch_key = batch, n_pcs = nComponents)
+  bbknn$bbknn(adata, batch_key = "batch", n_pcs = nComponents)
   sc$tl$umap(adata, n_components = nComponents)
   bbknnUmap <- adata$obsm[["X_umap"]]
   SingleCellExperiment::reducedDim(inSCE, reducedDimName) <- bbknnUmap
@@ -84,7 +80,7 @@ runBBKNN <-function(inSCE, useAssay = 'logcounts', batch = 'batch',
 #' informative covariates could still be useful. If the cell types are unknown
 #' and are expected to be unbalanced, it is recommended to set \code{useSVA}
 #' to \code{TRUE}.
-#' @param inSCE \linkS4class{SingleCellExperiment} inherited object. Required.
+#' @param inSCE Input \linkS4class{SingleCellExperiment} object
 #' @param useAssay A single character indicating the name of the assay requiring
 #' batch correction. Default \code{"counts"}.
 #' @param batch A single character indicating a field in
@@ -198,69 +194,76 @@ runComBatSeq <- function(inSCE, useAssay = "counts", batch = 'batch',
 #'
 #' fastMNN is a variant of the classic MNN method, modified for speed and more
 #' robust performance. For introduction of MNN, see \code{\link{runMNNCorrect}}.
-#' @param inSCE  inherited object. Required.
+#' @param inSCE Input \linkS4class{SingleCellExperiment} object
 #' @param useAssay A single character indicating the name of the assay requiring
-#' batch correction. Default \code{"logcounts"}. Alternatively, see
-#' \code{pcInput} parameter.
-#' @param batch A single character indicating a field in
-#' \code{\link{colData}} that annotates the batches.
-#' Default \code{"batch"}.
+#' batch correction. Default \code{"logcounts"}.
+#' @param useReducedDim A single character indicating the dimension reduction
+#' used for batch correction. Will ignore \code{useAssay} when using.
+#' Default \code{NULL}.
+#' @param batch A single character indicating a field in \code{colData} that
+#' annotates the batches of each cell; or a vector/factor with the same length
+#' as the number of cells. Default \code{"batch"}.
 #' @param reducedDimName A single character. The name for the corrected
-#' low-dimensional representation. Will be saved to \code{reducedDim(inSCE)}.
-#' Default \code{"fastMNN"}.
-#' @param pcInput A logical scalar. Whether to use a low-dimension matrix for
-#' batch effect correction. If \code{TRUE}, \code{useAssay} will be searched
-#' from \code{reducedDimNames(inSCE)}. Default \code{FALSE}.
+#' low-dimensional representation. Default \code{"fastMNN"}.
+#' @param k An integer scalar specifying the number of nearest neighbors to
+#' consider when identifying MNNs. See "See Also". Default \code{20}.
+#' @param propK A numeric scalar in (0, 1) specifying the proportion of cells in
+#' each dataset to use for mutual nearest neighbor searching. See "See Also".
+#' Default \code{NULL}.
+#' @param ndist A numeric scalar specifying the threshold beyond which
+#' neighbours are to be ignored when computing correction vectors. See "See
+#' Also". Default \code{3}.
+#' @param minBatchSkip Numeric scalar specifying the minimum relative magnitude
+#' of the batch effect, below which no correction will be performed at a given
+#' merge step. See "See Also". Default \code{0}.
+#' @param cosNorm A logical scalar indicating whether cosine normalization
+#' should be performed on \code{useAssay} prior to PCA. See "See Also". Default
+#' \code{TRUE}.
+#' @param nComponents An integer scalar specifying the number of dimensions to
+#' produce. See "See Also". Default \code{50}.
+#' @param weights The weighting scheme to use. Passed to
+#' \code{\link[batchelor]{multiBatchPCA}}. Default \code{NULL}.
+#' @param BPPARAM A \linkS4class{BiocParallelParam} object specifying whether
+#' the SVD should be parallelized.
 #' @return The input \linkS4class{SingleCellExperiment} object with
 #' \code{reducedDim(inSCE, reducedDimName)} updated.
+#' @seealso \code{\link[batchelor]{fastMNN}} for using \code{useAssay}, and
+#' \code{\link[batchelor]{reducedMNN}} for using \code{useReducedDim}
 #' @export
 #' @references Lun ATL, et al., 2016
 #' @examples
 #' data('sceBatches', package = 'singleCellTK')
-#' logcounts(sceBatches) <- log(counts(sceBatches) + 1)
-#' sceCorr <- runFastMNN(sceBatches, useAssay = 'logcounts', pcInput = FALSE)
-runFastMNN <- function(inSCE, useAssay = "logcounts",
-                       reducedDimName = "fastMNN", batch = 'batch',
-                       pcInput = FALSE){
-  ## Input check
-  if(!inherits(inSCE, "SingleCellExperiment")){
-    stop("\"inSCE\" should be a SingleCellExperiment Object.")
-  }
-  if(isTRUE(pcInput)){
-    if(!(useAssay %in% SingleCellExperiment::reducedDimNames(inSCE))) {
-      stop(paste("\"useAssay\" (reducedDim) name: ", useAssay, " not found."))
-    }
-  } else {
-    if(!(useAssay %in% SummarizedExperiment::assayNames(inSCE))) {
-      stop(paste("\"useAssay\" (assay) name: ", useAssay, " not found."))
-    }
-  }
-
-  if(!(batch %in% names(SummarizedExperiment::colData(inSCE)))){
-    stop(paste("\"batch name:", batch, "not found."))
-  }
+#' logcounts(sceBatches) <- log1p(counts(sceBatches))
+#' sceCorr <- runFastMNN(sceBatches, useAssay = 'logcounts')
+runFastMNN <- function(inSCE, useAssay = "logcounts", useReducedDim = NULL,
+                       batch = 'batch', reducedDimName = "fastMNN", k = 20,
+                       propK = NULL, ndist = 3, minBatchSkip = 0,
+                       cosNorm = TRUE, nComponents = 50, weights = NULL,
+                       BPPARAM = BiocParallel::SerialParam()){
+  useMat <- .selectSCEMatrix(inSCE, useAssay = useAssay,
+                             useReducedDim = useReducedDim,
+                             returnMatrix = TRUE)
+  mat <- useMat$mat
+  batchVec <- .manageCellVar(inSCE, batch, as.factor = TRUE)
   reducedDimName <- gsub(' ', '_', reducedDimName)
 
-  ## Run algorithm
-  batches <- list()
-  batchCol <- SummarizedExperiment::colData(inSCE)[[batch]]
-  batchFactor <- as.factor(batchCol)
-
-  if(pcInput){
-    mat <- SingleCellExperiment::reducedDim(inSCE, useAssay)
-    redMNN <- batchelor::reducedMNN(mat, batch = batchFactor)
+  if (!is.null(useReducedDim)) {
+    redMNN <- batchelor::reducedMNN(mat, batch = batchVec, BPPARAM = BPPARAM,
+                                    k = k, prop.k = propK, ndist = ndist,
+                                    min.batch.skip = minBatchSkip)
     newRedDim <- redMNN$corrected
   } else {
-    mat <- SummarizedExperiment::assay(inSCE, useAssay)
-    mnnSCE <- batchelor::fastMNN(mat, batch = batchFactor)
+    mnnSCE <- batchelor::fastMNN(mat, batch = batchVec, BPPARAM = BPPARAM, k = k,
+                                 prop.k = propK, ndist = ndist,
+                                 min.batch.skip = minBatchSkip,
+                                 cos.norm = cosNorm, d = nComponents,
+                                 weights = weights)
     newRedDim <- SingleCellExperiment::reducedDim(mnnSCE, 'corrected')
   }
   SingleCellExperiment::reducedDim(inSCE, reducedDimName) <- newRedDim
-  S4Vectors::metadata(inSCE)$batchCorr[[reducedDimName]] <- list(useAssay = useAssay,
-                                                            origLogged = TRUE,
-                                                            method = "fastMNN",
-                                                            matType = "reducedDim",
-                                                            batch = batch)
+  S4Vectors::metadata(inSCE)$batchCorr[[reducedDimName]] <-
+    list(useAssay = useAssay, origLogged = TRUE, method = "fastMNN",
+         matType = "reducedDim", batch = batch)
   return(inSCE)
 }
 
@@ -268,15 +271,15 @@ runFastMNN <- function(inSCE, useAssay = "logcounts",
 #' @description Harmony is an algorithm that projects cells into a shared
 #' embedding in which cells group by cell type rather than dataset-specific
 #' conditions.
-#' @param inSCE Input \linkS4class{SingleCellExperiment} inherited object.
+#' @param inSCE Input \linkS4class{SingleCellExperiment} object
 #' @param useAssay A single character indicating the name of the assay requiring
 #' batch correction. Default \code{"logcounts"}.
 #' @param useReducedDim A single character indicating the name of the reducedDim
 #' used to be corrected. Specifying this will ignore \code{useAssay}. Default
 #' \code{NULL}.
-#' @param batch A single character indicating a field in
-#' \code{\link{colData}} that annotates the batches.
-#' Default \code{"batch"}.
+#' @param batch A single character indicating a field in \code{colData} that
+#' annotates the batches of each cell; or a vector/factor with the same length
+#' as the number of cells. Default \code{"batch"}.
 #' @param reducedDimName A single character. The name for the corrected
 #' low-dimensional representation. Will be saved to \code{reducedDim(inSCE)}.
 #' Default \code{"HARMONY"}.
@@ -307,7 +310,7 @@ runFastMNN <- function(inSCE, useAssay = "logcounts",
 #' @references Ilya Korsunsky, et al., 2019
 #' @examples
 #' data('sceBatches', package = 'singleCellTK')
-#' logcounts(sceBatches) <- log(counts(sceBatches) + 1)
+#' logcounts(sceBatches) <- log1p(counts(sceBatches))
 #' sceCorr <- runHarmony(sceBatches)
 runHarmony <- function(inSCE, useAssay = "logcounts", useReducedDim = NULL,
                        batch = "batch", reducedDimName = "HARMONY",
@@ -320,15 +323,15 @@ runHarmony <- function(inSCE, useAssay = "logcounts", useReducedDim = NULL,
          call. = FALSE)
   }
   ## Input check
-  matrixSelect <- .selectSCEMatrix(inSCE, useAssay, useReducedDim,
-                                   useAltExp = NULL, returnMatrix = TRUE)
-  batch <- .manageCellVar(inSCE, batch, as.factor = TRUE)
+  useMat <- .selectSCEMatrix(inSCE, useAssay, useReducedDim,
+                             useAltExp = NULL, returnMatrix = TRUE)
+  batchVec <- .manageCellVar(inSCE, batch, as.factor = TRUE)
   reducedDimName <- gsub(' ', '_', reducedDimName)
   ## Run algorithm
   message(Sys.Date(), " ... Running harmony batch correction")
-  mat <- matrixSelect$mat
-  do_pca <- ifelse(is.null(matrixSelect$names$useReducedDim), TRUE, FALSE)
-  if (!is.null(matrixSelect$names$useReducedDim)) {
+  mat <- useMat$mat
+  do_pca <- ifelse(is.null(useMat$names$useReducedDim), TRUE, FALSE)
+  if (!is.null(useMat$names$useReducedDim)) {
     if (nComponents > ncol(mat)) {
       warning("Specified number of components more than available, ",
               "using all (", ncol(mat), ") components.")
@@ -336,12 +339,15 @@ runHarmony <- function(inSCE, useAssay = "logcounts", useReducedDim = NULL,
     }
     mat <- mat[,seq(nComponents)]
   }
-  h <- harmony::HarmonyMatrix(data_mat = mat, meta_data = batch,
+  h <- harmony::HarmonyMatrix(data_mat = mat, meta_data = batchVec,
                               do_pca = do_pca, npcs = nComponents,
                               lambda = lambda, theta = theta,
                               sigma = sigma, max.iter.harmony = nIter,
                               verbose = verbose, return_object = FALSE, ...)
   SingleCellExperiment::reducedDim(inSCE, reducedDimName) <- h
+  S4Vectors::metadata(inSCE)$batchCorr[[reducedDimName]] <-
+    list(useAssay = useAssay, origLogged = TRUE, method = "harmony",
+         matType = "reducedDim", batch = batch)
   return(inSCE)
 }
 
@@ -349,7 +355,7 @@ runHarmony <- function(inSCE, useAssay = "logcounts", useReducedDim = NULL,
 # #'
 # #' LIGER relies on integrative non-negative matrix factorization to identify
 # #' shared and dataset-specific factors.
-# #' @param inSCE \linkS4class{SingleCellExperiment} inherited object. Required.
+# #' @param Input \linkS4class{SingleCellExperiment} object
 # #' @param useAssay A single character indicating the name of the assay requiring
 # #' batch correction. Default \code{"logcounts"}.
 # #' @param batch A single character indicating a field in
@@ -427,12 +433,12 @@ runHarmony <- function(inSCE, useAssay = "logcounts", useReducedDim = NULL,
 #'
 #' Limma's batch effect removal function fits a linear model to the data, then
 #' removes the component due to the batch effects.
-#' @param inSCE \linkS4class{SingleCellExperiment} inherited object. Required.
+#' @param inSCE Input \linkS4class{SingleCellExperiment} object
 #' @param useAssay A single character indicating the name of the assay requiring
 #' batch correction. Default \code{"logcounts"}.
-#' @param batch A single character indicating a field in
-#' \code{\link{colData}} that annotates the batches.
-#' Default \code{"batch"}.
+#' @param batch A single character indicating a field in \code{colData} that
+#' annotates the batches of each cell; or a vector/factor with the same length
+#' as the number of cells. Default \code{"batch"}.
 #' @param assayName A single characeter. The name for the corrected assay. Will
 #' be saved to \code{\link{assay}}. Default
 #' \code{"LIMMA"}.
@@ -442,30 +448,19 @@ runHarmony <- function(inSCE, useAssay = "logcounts", useReducedDim = NULL,
 #' @references Gordon K Smyth, et al., 2003
 #' @examples
 #' data('sceBatches', package = 'singleCellTK')
-#' logcounts(sceBatches) <- log(counts(sceBatches) + 1)
+#' logcounts(sceBatches) <- log1p(counts(sceBatches))
 #' sceCorr <- runLimmaBC(sceBatches)
 runLimmaBC <- function(inSCE, useAssay = "logcounts", assayName = "LIMMA",
                        batch = "batch") {
   ## Input check
-  if(!inherits(inSCE, "SingleCellExperiment")){
-    stop("\"inSCE\" should be a SingleCellExperiment Object.")
-  }
-  if(!useAssay %in% SummarizedExperiment::assayNames(inSCE)) {
-    stop(paste("\"useAssay\" (assay) name: ", useAssay, " not found."))
-  }
-  if(!batch %in% names(SummarizedExperiment::colData(inSCE))){
-    stop(paste("\"batch\" name:", batch, "not found."))
-  }
-
+  useMat <- .selectSCEMatrix(inSCE, useAssay = useAssay, returnMatrix = TRUE)
+  mat <- useMat$mat
+  batchVec <- .manageCellVar(inSCE, batch, as.factor = TRUE)
   assayName <- gsub(' ', '_', assayName)
-
   ## Run algorithm
   ## One more check for the batch names
-  batchCol <- SummarizedExperiment::colData(inSCE)[[batch]]
-  mat <- SummarizedExperiment::assay(inSCE, useAssay)
-  newMat <- limma::removeBatchEffect(mat, batch = batchCol)
+  newMat <- limma::removeBatchEffect(mat, batch = batchVec)
   expData(inSCE, assayName, tag = "batchCorrected", altExp = FALSE) <- newMat
-  #SummarizedExperiment::assay(inSCE, assayName) <- newMat
   S4Vectors::metadata(inSCE)$batchCorr[[assayName]] <- list(useAssay = useAssay,
                                                             origLogged = TRUE,
                                                             method = "Limma",
@@ -482,57 +477,61 @@ runLimmaBC <- function(inSCE, useAssay = "logcounts", assayName = "LIMMA",
 #' does so by identifying pairs of MNN in the high-dimensional log-expression
 #' space. For each MNN pair, a pairwise correction vector is computed by
 #' applying a Gaussian smoothing kernel with bandwidth `sigma`.
-#' @param inSCE \linkS4class{SingleCellExperiment} inherited object. Required.
+#' @param inSCE Input \linkS4class{SingleCellExperiment} object
 #' @param useAssay A single character indicating the name of the assay requiring
 #' batch correction. Default \code{"logcounts"}.
-#' @param batch A single character indicating a field in
-#' \code{\link{colData}} that annotates the batches.
-#' Default \code{"batch"}.
-#' @param k An integer. Specifies the number of nearest neighbours to
-#' consider when defining MNN pairs. This should be interpreted as the minimum
-#' frequency of each cell type or state in each batch. Larger values will
-#' improve the precision of the correction by increasing the number of MNN
-#' pairs, at the cost of reducing accuracy by allowing MNN pairs to form between
-#' cells of different type. Default \code{20L}.
-#' @param sigma A Numeric scalar. Specifies how much information is
-#' shared between MNN pairs when computing the batch effect. Larger values will
-#' share more information, approaching a global correction for all cells in the
-#' same batch. Smaller values allow the correction to vary across cell types,
-#' which may be more accurate but comes at the cost of precision. Default
-#' \code{0.1}.
+#' @param batch A single character indicating a field in \code{colData} that
+#' annotates the batches of each cell; or a vector/factor with the same length
+#' as the number of cells. Default \code{"batch"}.
 #' @param assayName A single characeter. The name for the corrected assay. Will
 #' be saved to \code{\link{assay}}. Default
 #' \code{"MNN"}.
+#' @param k An integer scalar specifying the number of nearest neighbors to
+#' consider when identifying MNNs. See "See Also". Default \code{20}.
+#' @param propK A numeric scalar in (0, 1) specifying the proportion of cells in
+#' each dataset to use for mutual nearest neighbor searching. See "See Also".
+#' Default \code{NULL}.
+#' @param sigma A numeric scalar specifying the bandwidth of the Gaussian
+#' smoothing kernel used to compute the correction vector for each cell. See
+#' "See Also". Default \code{0.1}.
+#' @param cosNormIn A logical scalar indicating whether cosine normalization
+#' should be performed on the input data prior to calculating distances between
+#' cells. See "See Also". Default \code{TRUE}.
+#' @param cosNormOut A logical scalar indicating whether cosine normalization
+#' should be performed prior to computing corrected expression values. See "See
+#' Also". Default \code{TRUE}.
+#' @param varAdj A logical scalar indicating whether variance adjustment should
+#' be performed on the correction vectors. See "See Also". Default \code{TRUE}.
+#' @param BPPARAM A \linkS4class{BiocParallelParam} object specifying whether
+#' the PCA and nearest-neighbor searches should be parallelized.
 #' @return The input \linkS4class{SingleCellExperiment} object with
 #' \code{assay(inSCE, assayName)} updated.
+#' @seealso \code{\link[batchelor]{mnnCorrect}}
 #' @export
-#' @references Lun ATL, et al., 2016 & 2018
+#' @references Haghverdi L, Lun ATL, et. al., 2018
 #' @examples
 #' data('sceBatches', package = 'singleCellTK')
-#' logcounts(sceBatches) <- log(counts(sceBatches) + 1)
+#' logcounts(sceBatches) <- log1p(counts(sceBatches))
 #' sceCorr <- runMNNCorrect(sceBatches)
 runMNNCorrect <- function(inSCE, useAssay = 'logcounts', batch = 'batch',
-                          assayName = 'MNN', k = 20L, sigma = 0.1){
+                          assayName = 'MNN', k = 20L, propK = NULL,
+                          sigma = 0.1, cosNormIn = TRUE, cosNormOut = TRUE,
+                          varAdj = TRUE, BPPARAM = BiocParallel::SerialParam()){
   ## Input check
-  if(!inherits(inSCE, "SingleCellExperiment")){
-    stop("\"inSCE\" should be a SingleCellExperiment Object.")
-  }
-  if(!useAssay %in% SummarizedExperiment::assayNames(inSCE)) {
-    stop(paste("\"useAssay\" (assay) name: ", useAssay, " not found."))
-  }
-  if(!batch %in% names(SummarizedExperiment::colData(inSCE))){
-    stop(paste("\"batch name:", batch, "not found."))
-  }
+  useMat <- .selectSCEMatrix(inSCE, useAssay = useAssay, returnMatrix = TRUE)
+  mat <- useMat$mat
+  batchVec <- .manageCellVar(inSCE, batch, as.factor = TRUE)
   assayName <- gsub(' ', '_', assayName)
   k <- as.integer(k)
 
   ## Run algorithm
-  batchCol <- SummarizedExperiment::colData(inSCE)[[batch]]
-  batchFactor <- as.factor(batchCol)
-  mnnSCE <- batchelor::mnnCorrect(inSCE, assay.type = useAssay,
-                                  batch = batchFactor, k = k, sigma = sigma)
-  corrected <- SummarizedExperiment::assay(mnnSCE, 'corrected')
-  expData(inSCE, assayName, tag = "batchCorrected", altExp = FALSE) <- corrected
+  corr.sce <- batchelor::mnnCorrect(mat, batch = batchVec, k = k,
+                                    prop.k = propK, sigma = sigma,
+                                    cos.norm.in = cosNormIn,
+                                    cos.norm.out = cosNormOut, var.adj = varAdj,
+                                    BPPARAM = BPPARAM)
+  expData(inSCE, assayName, tag = "batchCorrected", altExp = FALSE) <-
+    SummarizedExperiment::assay(corr.sce, "corrected")
   S4Vectors::metadata(inSCE)$batchCorr[[assayName]] <- list(useAssay = useAssay,
                                                             origLogged = TRUE,
                                                             method = "MNN",
@@ -547,22 +546,24 @@ runMNNCorrect <- function(inSCE, useAssay = 'logcounts', batch = 'batch',
 #' SCANORAMA is analogous to computer vision algorithms for panorama stitching
 #' that identify images with overlapping content and merge these into a larger
 #' panorama.
-#' @param inSCE \linkS4class{SingleCellExperiment} inherited object. Required.
+#' @param inSCE Input \linkS4class{SingleCellExperiment} object
 #' @param useAssay A single character indicating the name of the assay requiring
 #' batch correction. Scanorama requires a transformed normalized expression
 #' assay. Default \code{"logcounts"}.
-#' @param batch A single character indicating a field in
-#' \code{\link{colData}} that annotates the batches.
-#' Default \code{"batch"}.
+#' @param batch A single character indicating a field in \code{colData} that
+#' annotates the batches of each cell; or a vector/factor with the same length
+#' as the number of cells. Default \code{"batch"}.
+#' @param assayName A single characeter. The name for the corrected assay. Will
+#' be saved to \code{\link{assay}}. Default
+#' \code{"SCANORAMA"}.
 #' @param SIGMA A numeric scalar. Algorithmic parameter, correction smoothing
 #' parameter on Gaussian kernel. Default \code{15}.
 #' @param ALPHA A numeric scalar. Algorithmic parameter, alignment score
 #' minimum cutoff. Default \code{0.1}.
 #' @param KNN An integer. Algorithmic parameter, number of nearest neighbors to
-#' use for matching. Default \code{20L}.
-#' @param assayName A single characeter. The name for the corrected assay. Will
-#' be saved to \code{\link{assay}}. Default
-#' \code{"SCANORAMA"}.
+#' use for matching. Default \code{20}.
+#' @param approx Boolean. Use approximate nearest neighbors, greatly speeds up
+#' matching runtime. Default \code{TRUE}.
 #' @return The input \linkS4class{SingleCellExperiment} object with
 #' \code{assay(inSCE, assayName)} updated.
 #' @export
@@ -570,16 +571,13 @@ runMNNCorrect <- function(inSCE, useAssay = 'logcounts', batch = 'batch',
 #' @examples
 #' \dontrun{
 #' data('sceBatches', package = 'singleCellTK')
-#' sceBatches <- scaterlogNormCounts(sceBatches)
+#' logcounts(sceBatches) <- log1p(counts(sceBatches))
 #' sceCorr <- runSCANORAMA(sceBatches, "ScaterLogNormCounts")
 #' }
 runSCANORAMA <- function(inSCE, useAssay = 'logcounts', batch = 'batch',
-                         SIGMA = 15, ALPHA = 0.1, KNN = 20L,
-                         assayName = 'SCANORAMA'){
+                         assayName = 'SCANORAMA', SIGMA = 15, ALPHA = 0.1,
+                         KNN = 20, approx = TRUE){
   ## Input check
-  if(!inherits(inSCE, "SingleCellExperiment")){
-    stop("\"inSCE\" should be a SingleCellExperiment Object.")
-  }
   if(!reticulate::py_module_available(module = "scanorama")){
     warning("Cannot find python module 'scanorama', please install Conda and",
             " run sctkPythonInstallConda() or run ",
@@ -593,31 +591,27 @@ runSCANORAMA <- function(inSCE, useAssay = 'logcounts', batch = 'batch',
             " to select the correct Python environment.")
     return(inSCE)
   }
-  if(!useAssay %in% SummarizedExperiment::assayNames(inSCE)) {
-    stop(paste("\"useAssay\" (assay) name: ", useAssay, " not found"))
-  }
-  if(!batch %in% names(SummarizedExperiment::colData(inSCE))){
-    stop(paste("\"batch\" name:", batch, "not found"))
-  }
+  useMat <- .selectSCEMatrix(inSCE, useAssay = useAssay)
+  batchVec <- .manageCellVar(inSCE, batch)
   assayName <- gsub(' ', '_', assayName)
   adata <- .sce2adata(inSCE, useAssay)
+  adata$obs[["batch"]] <- batchVec
   py <- reticulate::py
   py$adata <- adata
-  py$batch <- batch
   py$sigma <- SIGMA
   py$alpha <- ALPHA
   py$KNN <- as.integer(KNN)
   reticulate::py_run_string('
 import numpy as np
 import scanorama
-batches = list(set(adata.obs[batch]))
-adatas = [adata[adata.obs[batch] == b,] for b in batches]
-datasets_full = [a.X.toarray() for a in adatas]
+batches = list(set(adata.obs["batch"]))
+adatas = [adata[adata.obs["batch"] == b,] for b in batches]
+datasets_full = [a.X for a in adatas]
 genes_list = [a.var_names.to_list() for a in adatas]
 corrected, genes = scanorama.correct(datasets_full, genes_list, sigma=sigma,
                                      alpha=alpha, knn=KNN)
 corrected = [m.toarray() for m in corrected]
-cellOrders = [adata.obs[batch] == b for b in batches]
+cellOrders = [adata.obs["batch"] == b for b in batches]
 integrated = np.zeros(adata.shape)
 integrated[:,:] = np.NAN
 for i in range(len(batches)):
@@ -632,6 +626,9 @@ integrated = integrated[:, orderIdx]
   rownames(mat) <- rownames(inSCE)
   colnames(mat) <- colnames(inSCE)
   expData(inSCE, assayName, tag = "batchCorrected", altExp = FALSE) <- mat
+  S4Vectors::metadata(inSCE)$batchCorr[[assayName]] <-
+    list(useAssay = useAssay,  origLogged = TRUE, method = "Scanorama",
+         matType = "assay", batch = batch)
   return(inSCE)
 }
 
@@ -640,12 +637,16 @@ integrated = integrated[:, orderIdx]
 #' The scMerge method leverages factor analysis, stably expressed genes (SEGs)
 #' and (pseudo-) replicates to remove unwanted variations and merge multiple
 #' scRNA-Seq data.
-#' @param inSCE \linkS4class{SingleCellExperiment} inherited object. Required.
+#' @param inSCE Input \linkS4class{SingleCellExperiment} object
 #' @param useAssay A single character indicating the name of the assay requiring
 #' batch correction. Default \code{"logcounts"}.
 #' @param batch A single character indicating a field in
 #' \code{\link{colData}} that annotates the batches.
 #' Default \code{"batch"}.
+#' @param assayName A single characeter. The name for the corrected assay. Will
+#' be saved to \code{\link{assay}}. Default \code{"scMerge"}.
+#' @param hvgExprs A single characeter. The assay that to be used for highly
+#' variable genes identification. Default \code{"counts"}.
 #' @param kmeansK An integer vector. Indicating the kmeans' K-value for each
 #' batch (i.e. how many subclusters in each batch should exist), in order to
 #' construct pseudo-replicates. The length of code{kmeansK} needs to be the same
@@ -656,14 +657,12 @@ integrated = integrated[:, orderIdx]
 #' \code{'cell_type'}.
 #' @param seg A vector of gene names or indices that specifies SEG (Stably
 #' Expressed Genes) set as negative control. Pre-defined dataset with human and
-#' mouse SEG lists is available to user by running \code{data('SEG')}. Default
+#' mouse SEG lists is available with \code{\link[scMerge]{segList}} or
+#' \code{\link[scMerge]{segList_ensemblGeneID}}. Default
 #' \code{NULL}, and this value will be auto-detected by default with
 #' \code{\link[scMerge]{scSEGIndex}}.
-#' @param nCores An integer. The number of cores of processors to allocate for
-#' the task. Default \code{1L}.
-#' @param assayName A single characeter. The name for the corrected assay. Will
-#' be saved to \code{\link{assay}}. Default
-#' \code{"scMerge"}.
+#' @param BPPARAM A \linkS4class{BiocParallelParam} object specifying whether
+#' should be parallelized. Default \code{BiocParallel::SerialParam()}.
 #' @return The input \linkS4class{SingleCellExperiment} object with
 #' \code{assay(inSCE, assayName)} updated.
 #' @export
@@ -671,53 +670,33 @@ integrated = integrated[:, orderIdx]
 #' @examples
 #' data('sceBatches', package = 'singleCellTK')
 #' \dontrun{
-#' logcounts(sceBatches) <- log(counts(sceBatches) + 1)
+#' logcounts(sceBatches) <- log1p(counts(sceBatches))
 #' sceCorr <- runSCMerge(sceBatches)
 #' }
 runSCMerge <- function(inSCE, useAssay = "logcounts", batch = 'batch',
-                       assayName = "scMerge", seg = NULL, kmeansK = NULL,
-                       cellType = 'cell_type',
-                       nCores = 1L){
+                       assayName = "scMerge", hvgExprs = "counts", seg = NULL,
+                       kmeansK = NULL, cellType = NULL,
+                       BPPARAM = BiocParallel::SerialParam()){
   ## Input check
-  if(!inherits(inSCE, "SingleCellExperiment")){
-    stop("\"inSCE\" should be a SingleCellExperiment Object.")
-  }
-  if(!useAssay %in% SummarizedExperiment::assayNames(inSCE)) {
-    stop(paste("\"useAssay\" (assay) name: ", useAssay, " not found."))
-  }
-  if(!batch %in% names(SummarizedExperiment::colData(inSCE))){
-    stop(paste("\"batch\" name:", batch, "not found"))
-  }
-  if(is.null(cellType) & is.null(kmeansK)){
-    stop("\"cellType\" and \"kmeansK\" cannot be NULL at the same time")
-  }
-  if(!is.null(cellType) &&
-     !cellType %in% names(SummarizedExperiment::colData(inSCE))){
-    # If NULL, scMerge still works
-    stop(paste("\"cellType\" name:", cellType, "not found"))
-  }
-
-  nCores <- min(as.integer(nCores), parallel::detectCores())
+  useMat <- .selectSCEMatrix(inSCE, useAssay = useAssay, returnMatrix = TRUE)
+  .selectSCEMatrix(inSCE, useAssay = hvgExprs, returnMatrix = FALSE)
+  mat <- useMat$mat
+  batchVec <- .manageCellVar(inSCE, batch)
+  cellTypeCol <- .manageCellVar(inSCE, cellType)
+  #if(is.null(cellType) & is.null(kmeansK)){
+  #  stop("\"cellType\" and \"kmeansK\" cannot be NULL at the same time")
+  #}
   assayName <- gsub(' ', '_', assayName)
 
   ## Run algorithm
+  uniqBatch <- unique(batch)
 
-  batchCol <- SummarizedExperiment::colData(inSCE)[[batch]]
-  uniqBatch <- unique(batchCol)
-
-  # Infer parameters
-  if(is.null(cellType)){
-    cellTypeCol <- NULL
-  } else {
-    cellTypeCol <- SummarizedExperiment::colData(inSCE)[[cellType]]
-  }
   ## kmeansK
   if(!is.null(cellType) && is.null(kmeansK)){
     # If kmeansK not given, detect by cell type.
-    cellTypeCol <- SummarizedExperiment::colData(inSCE)[[cellType]]
     kmeansK <- c()
     for (i in seq_along(uniqBatch)){
-      cellTypePerBatch <- cellTypeCol[batchCol == uniqBatch[i]]
+      cellTypePerBatch <- cellType[batchVec == uniqBatch[i]]
       kmeansK <- c(kmeansK, length(unique(cellTypePerBatch)))
     }
     cat("Detected kmeansK:\n")
@@ -725,37 +704,25 @@ runSCMerge <- function(inSCE, useAssay = "logcounts", batch = 'batch',
   }
   ## SEG
   if(is.null(seg)){
-    bpParam <- BiocParallel::MulticoreParam(workers = nCores)
-    seg <- scMerge::scSEGIndex(SummarizedExperiment::assay(inSCE, useAssay),
-                               cell_type = cellTypeCol,
-                               BPPARAM = bpParam)
-    ctl <- rownames(seg[order(seg$segIdx, decreasing = TRUE)[seq_len(1000)],])
+    seg <- scMerge::scSEGIndex(mat, cell_type = cellTypeCol, BPPARAM = BPPARAM)
+    ctl <- rownames(seg[order(seg$segIdx, decreasing = TRUE)[seq(1000)],])
   } else {
     ctl <- seg
   }
 
-  # scMerge automatically search for the column called "batch"...
-  colDataNames <- names(SummarizedExperiment::colData(inSCE))
-  names(SummarizedExperiment::colData(inSCE))[colDataNames == batch] <- 'batch'
-  bpParam <- BiocParallel::MulticoreParam(workers = nCores)
   inSCE <- scMerge::scMerge(sce_combine = inSCE, exprs = useAssay,
-                            hvg_exprs = useAssay,
+                            hvg_exprs = useAssay, batch_name = batch,
                             assay_name = assayName,
                             ctl = ctl, kmeansK = kmeansK,
                             #marker_list = topVarGenesPerBatch,
                             cell_type = cellTypeCol,
-                            BPPARAM = bpParam)
-  colDataNames <- names(SummarizedExperiment::colData(inSCE))
-  names(SummarizedExperiment::colData(inSCE))[colDataNames == 'batch'] <- batch
+                            BPPARAM = BPPARAM)
   # scMerge's function automatically returns the SCE object with information
   # completed, thus using this helper function to simply add the tag.
   inSCE <- expSetDataTag(inSCE, "batchCorrected", assayName)
-  S4Vectors::metadata(inSCE)$batchCorr[[assayName]] <- list(useAssay = useAssay,
-                                                            origLogged = TRUE,
-                                                            method = "scMerge",
-                                                            matType = "assay",
-                                                            batch = batch,
-                                                            condition = cellType)
+  S4Vectors::metadata(inSCE)$batchCorr[[assayName]] <-
+    list(useAssay = useAssay, origLogged = TRUE, method = "scMerge",
+         matType = "assay", batch = batch, condition = cellType)
   return(inSCE)
 }
 
@@ -766,7 +733,7 @@ runSCMerge <- function(inSCE, useAssay = "logcounts", batch = 'batch',
 #' model accounts for zero inflation (dropouts), over-dispersion, and the count
 #' nature of the data. The model also accounts for the difference in library
 #' sizes and optionally for batch effects and/or other covariates.
-#' @param inSCE \linkS4class{SingleCellExperiment} inherited object. Required.
+#' @param inSCE Input \linkS4class{SingleCellExperiment} object
 #' @param useAssay A single character indicating the name of the assay requiring
 #' batch correction. Note that ZINBWaVE works for counts (integer) input rather
 #' than logcounts that other methods prefer. Default \code{"counts"}.
@@ -785,6 +752,8 @@ runSCMerge <- function(inSCE, useAssay = "logcounts", batch = 'batch',
 #' @param reducedDimName A single character. The name for the corrected
 #' low-dimensional representation. Will be saved to \code{reducedDim(inSCE)}.
 #' Default \code{"zinbwave"}.
+#' @param BPPARAM A \linkS4class{BiocParallelParam} object specifying whether
+#' should be parallelized. Default \code{BiocParallel::SerialParam()}.
 #' @return The input \linkS4class{SingleCellExperiment} object with
 #' \code{reducedDim(inSCE, reducedDimName)} updated.
 #' @export
@@ -796,7 +765,8 @@ runSCMerge <- function(inSCE, useAssay = "logcounts", batch = 'batch',
 #' }
 runZINBWaVE <- function(inSCE, useAssay = 'counts', batch = 'batch',
                         nHVG = 1000L, nComponents = 50L, epsilon = 1000,
-                        nIter = 10L, reducedDimName = 'zinbwave'){
+                        nIter = 10L, reducedDimName = 'zinbwave',
+                        BPPARAM = BiocParallel::SerialParam()){
   ## Input check
   if(!inherits(inSCE, "SingleCellExperiment")){
     stop("\"inSCE\" should be a SingleCellExperiment Object.")
@@ -819,16 +789,24 @@ runZINBWaVE <- function(inSCE, useAssay = 'counts', batch = 'batch',
     vars <- matrixStats::rowVars(logAssay)
     names(vars) <- rownames(inSCE)
     vars <- sort(vars, decreasing = TRUE)
-    tmpSCE <- inSCE[names(vars)[seq_len(nHVG)],]
+    hvgs <- names(vars)[seq_len(nHVG)]
+    #tmpSCE <- inSCE[names(vars)[seq_len(nHVG)],]
   } else {
-    tmpSCE <- inSCE
+    #tmpSCE <- inSCE
+    hvgs <- rownames(inSCE)
   }
-  epsilon <- min(nrow(tmpSCE), epsilon)
-  tmpSCE <- zinbwave::zinbwave(tmpSCE, K = nComponents, epsilon = epsilon,
-                               which_assay = useAssay,
+  epsilon <- min(nrow(inSCE), epsilon)
+  inSCE <- zinbwave::zinbwave(inSCE, K = nComponents, epsilon = epsilon,
+                               which_assay = useAssay, which_genes = hvgs,
                                X = paste('~', batch, sep = ''),
-                               maxiter.optimize = nIter, verbose = TRUE)
-  SingleCellExperiment::reducedDim(inSCE, reducedDimName) <-
-    SingleCellExperiment::reducedDim(tmpSCE, 'zinbwave')
+                               maxiter.optimize = nIter, verbose = TRUE,
+                              BPPARAM = BPPARAM)
+  reddimName <- reducedDimNames(inSCE)
+  reddimName[reddimName == "zinbwave"] <- reducedDimName
+  #SingleCellExperiment::reducedDim(inSCE, reducedDimName) <-
+  #  SingleCellExperiment::reducedDim(inSCE, 'zinbwave')
+  S4Vectors::metadata(inSCE)$batchCorr[[reducedDimName]] <-
+    list(useAssay = useAssay, origLogged = FALSE, method = "ZINBWaVE",
+         matType = "reducedDim", batch = batch)
   return(inSCE)
 }

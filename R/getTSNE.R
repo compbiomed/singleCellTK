@@ -75,34 +75,20 @@ getTSNE <- function(inSCE, useAssay = "logcounts", useReducedDim = NULL,
                     nIterations = 1000, numThreads = 1, seed = NULL){
   params <- as.list(environment())
   params$inSCE <- NULL
-  # input class check
-  if (!inherits(inSCE, "SingleCellExperiment")){
-    stop("Please use a SingleCellExperiment object")
-  }
-  # matrix specification check
-  # When useReducedDim, never useAssay;
-  # when useAltExp, useAssay/reducedDim from there
-  if (is.null(useAssay) && is.null(useReducedDim)) {
-    stop("`useAssay` and `useReducedDim` cannot be NULL at the same time.")
-  }
+  # Note: useMat = list(useAssay = useAssay, ...)
+  # `.selectSCEMatrix()` does the check and corrects the conditions
+  # When using useReducedDim, useAssay will be ignored
+  useMat <- .selectSCEMatrix(inSCE, useAssay = useAssay,
+                             useReducedDim = useReducedDim,
+                             useAltExp = useAltExp,
+                             returnMatrix = FALSE)$names
+  params$useAssay <- useMat$useAssay
+  useAssay <- useMat$useAssay
+
   if (!is.null(useAltExp)) {
-    if (!useAltExp %in% SingleCellExperiment::altExpNames(inSCE)) {
-      stop("Specified `useAltExp` not found.")
-    }
     sce <- SingleCellExperiment::altExp(inSCE, useAltExp)
   } else {
     sce <- inSCE
-  }
-  if (!is.null(useReducedDim)) {
-    useAssay <- NULL
-    if (!useReducedDim %in% SingleCellExperiment::reducedDimNames(sce)) {
-      stop("Specified `useReducedDim` not found.")
-    }
-  } else {
-    # In this case, there is definitely `useAssay` specified
-    if (!useAssay %in% SummarizedExperiment::assayNames(sce)) {
-      stop("Specified `useAssay` not found.")
-    }
   }
 
   if (!is.null(useAssay)) {
@@ -119,9 +105,9 @@ getTSNE <- function(inSCE, useAssay = "logcounts", useReducedDim = NULL,
       if (!is.null(nTop) && nTop < nrow(sce)) {
         suppressMessages({
           sce <- runFeatureSelection(sce, useAssay, method = "modelGeneVar")
+          sce <- setTopHVG(sce, method = "modelGeneVar", hvgNumber = nTop,
+                           featureSubsetName = "tsneHVG")
         })
-        sce <- setTopHVG(sce, method = "modelGeneVar", hvgNumber = nTop,
-                         featureSubsetName = "tsneHVG")
         sce <- subsetSCERows(sce, rowData = "tsneHVG", returnAsAltExp = FALSE)
       }
     }

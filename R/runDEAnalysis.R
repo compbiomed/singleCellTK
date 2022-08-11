@@ -38,24 +38,17 @@
                            classGroup2 = NULL, groupName1, groupName2,
                            analysisName, covariates = NULL, overwrite = FALSE){
     # Input checks
-    if(!inherits(inSCE, "SingleCellExperiment")){
-        stop('"inSCE" should be a SingleCellExperiment inherited Object.')
-    }
-    if (is.null(useAssay) & is.null(useReducedDim)) {
-      stop("`useAssay` or `useReducedDim` must be specified.")
-    } else {
-      if (!is.null(useReducedDim)) {
-        if(!useReducedDim %in% SingleCellExperiment::reducedDimNames(inSCE)){
-          stop(paste('"useReducedDim" name: ', useReducedDim, ' not found.'))
-        }
-        useAssay <- NULL
-      } else {
-        if(!useAssay %in% SummarizedExperiment::assayNames(inSCE)){
-          stop(paste('"useAssay" name: ', useAssay, ' not found.'))
+    useMat <- .selectSCEMatrix(inSCE, useAssay = useAssay,
+                               useReducedDim = useReducedDim,
+                               returnMatrix = FALSE)
+    if ("diffExp" %in% names(S4Vectors::metadata(inSCE))){
+      if(analysisName %in% names(S4Vectors::metadata(inSCE)$diffExp)){
+        if(!isTRUE(overwrite)){
+          stop("analysisName '", analysisName, "' already exists. ",
+               "Set `overwrite` to `TRUE` to overwrite.")
         }
       }
     }
-
     if(is.null(index1) && (is.null(classGroup1) || is.null(class))){
         stop('At least "index1" or "classGroup1" should be specified.')
     } else if(!is.null(index1) && (!is.null(classGroup1) || !is.null(class))){
@@ -66,14 +59,7 @@
        !all(covariates %in% names(SummarizedExperiment::colData(inSCE)))){
         stop("Not all specified covariates exist.")
     }
-    if ("diffExp" %in% names(S4Vectors::metadata(inSCE))){
-        if(analysisName %in% names(S4Vectors::metadata(inSCE)$diffExp)){
-            if(!isTRUE(overwrite)){
-                stop("analysisName '", analysisName, "' already exists. ",
-                     "Set `overwrite` to `TRUE` to overwrite.")
-            }
-        }
-    }
+
     groupNames <- c(groupName1, groupName2)
     annotation <- c(class, covariates)
     if(!is.null(index1)){
@@ -84,18 +70,7 @@
             cells2 <- sort(setdiff(colnames(inSCE), cells1))
         }
     } else {
-        if(length(class) == 1 && inherits(class, "character")){
-            if(!class %in% names(SummarizedExperiment::colData(inSCE))){
-                stop("class: '", class, "' not found.")
-            }
-            class <- SummarizedExperiment::colData(inSCE)[[class]]
-        } else {
-            if(!length(class) == ncol(inSCE)){
-                stop("Length of given `class` vector should equal to ",
-                     "`ncol(inSCE)`; Or specify a column name of ",
-                     "`colData(inSCE)`")
-            }
-        }
+        class <- .manageCellVar(inSCE, var = class)
         uniqCats <- unique(as.vector(class))
         index1 <- class %in% classGroup1
         if(is.null(classGroup2)){
@@ -129,8 +104,8 @@
         }
     }
     return(
-        list(useAssay = useAssay,
-             useReducedDim = useReducedDim,
+        list(useAssay = useMat$names$useAssay,
+             useReducedDim = useMat$names$useReducedDim,
              groupNames = groupNames,
              select = select,
              annotation = annotation)
@@ -702,7 +677,7 @@ runWilcox <- function(inSCE, useAssay = 'logcounts', useReducedDim = NULL,
   if (!is.null(useAssay)) {
     mat <- expData(inSCE, useAssay)
   } else {
-    mat <- t(expData(inSCE, useReducedDim))
+    mat <- t(SingleCellExperiment::reducedDim(inSCE, useReducedDim))
   }
   if (isTRUE(verbose)) {
     message(date(), " ... Running DE with wilcox, Analysis name: ",

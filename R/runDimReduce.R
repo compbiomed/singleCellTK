@@ -1,65 +1,3 @@
-.matrixTypeCheck <- function(inSCE, redDimType = NULL,
-                             useAssay = NULL, useReducedDim = NULL,
-                             useAltExp = NULL) {
-  # Helper function for checking if the specified matrix type is valid
-  if (!inherits(inSCE, "SingleCellExperiment")){
-    stop("Please use a SingleCellExperiment object")
-  }
-  if (redDimType == "embedding") {
-    if (is.null(useAssay) && is.null(useReducedDim)) {
-      stop("`useAssay` and `useReducedDim` cannot be NULL at the same time.")
-    } else if (!is.null(useAssay) && !is.null(useReducedDim)) {
-      stop("`useAssay` and `useReducedDim` cannot be specified at the same time.")
-    } else {
-      if (!is.null(useReducedDim)) {
-        if (!useReducedDim %in% SingleCellExperiment::reducedDimNames(inSCE)) {
-          stop("Specified `useReducedDim` not found.")
-        }
-        if (!is.null(useAltExp)) {
-          warning("`useAltExp` will be ignored when using `useReducedDim`.")
-        }
-        sce <- inSCE
-      } else {
-        if (!is.null(useAltExp)) {
-          if (!useAltExp %in% SingleCellExperiment::altExpNames(inSCE)) {
-            stop("Specified `useAltExp` not found.")
-          }
-          sce <- SingleCellExperiment::altExp(inSCE, useAltExp)
-          if (!useAssay %in% SummarizedExperiment::assayNames(sce)) {
-            stop("Specified `useAssay` not found in `useAltExp`.")
-          }
-        } else {
-          if (!useAssay %in% SummarizedExperiment::assayNames(inSCE)) {
-            stop("Specified `useAssay` not found.")
-          }
-          sce <- inSCE
-        }
-      }
-    }
-  } else if (redDimType == "linear") {
-    if (!is.null(useReducedDim)) {
-      stop("Currently `useReducedDim` is not allowed for linear dimension reduction.")
-    }
-    if (is.null(useAssay)) {
-      stop("`useAssay` cannot be NULL for linear dimension reduction")
-    } else {
-      if (is.null(useAltExp)) {
-        if (!useAssay %in% SummarizedExperiment::assayNames(inSCE)) {
-          stop("Specified `useAssay` not found.")
-        }
-      } else {
-        if (!useAltExp %in% SingleCellExperiment::altExpNames(inSCE)) {
-          stop("Specified `useAltExp` not found.")
-        }
-        sce <- SingleCellExperiment::altExp(inSCE, useAltExp)
-        if (!useAssay %in% SummarizedExperiment::assayNames(sce)) {
-          stop("Specified `useAssay` not found in `useAltExp`.")
-        }
-      }
-    }
-  }
-}
-
 #' Generic Wrapper function for running dimensionality reduction
 #' @details Wrapper function to run one of the available dimensionality
 #' reduction algorithms integrated within SCTK from \code{\link{scaterPCA}},
@@ -81,9 +19,9 @@
 #' @param useReducedDim The low dimension representation to use for embedding
 #' computation. Default \code{NULL}.
 #' @param reducedDimName The name of the result matrix. Required.
-#' @param useFeatureSubset Subset of feature to use for dimension reduction. A 
+#' @param useFeatureSubset Subset of feature to use for dimension reduction. A
 #' character string indicating a \code{rowData} variable that stores the logical
-#' vector of HVG selection, or a vector that can subset the rows of 
+#' vector of HVG selection, or a vector that can subset the rows of
 #' \code{inSCE}. Default \code{NULL}.
 #' @param scale Logical scalar, whether to standardize the expression values.
 #' Default \code{TRUE}.
@@ -115,39 +53,43 @@ runDimReduce <- function(inSCE,
                                     "scaterUMAP",
                                     "seuratUMAP"),
                          useAssay = NULL, useReducedDim = NULL,
-                         useAltExp = NULL, reducedDimName = method, 
-                         nComponents = 20, useFeatureSubset = NULL, 
-                         scale = FALSE, seed = NULL, ...) 
+                         useAltExp = NULL, reducedDimName = method,
+                         nComponents = 20, useFeatureSubset = NULL,
+                         scale = FALSE, seed = NULL, ...)
 {
 
   method <- match.arg(method)
   args <- list(...)
-  
-  if (method %in% c("scaterPCA", "seuratPCA", "seuratICA")) {
-    .matrixTypeCheck(inSCE, "linear", useAssay, useReducedDim, useAltExp)
-  } else {
-    .matrixTypeCheck(inSCE, "embedding", useAssay, useReducedDim, useAltExp)
+  if (method %in% c("scaterPCA", "seuratPCA", "seuratICA") &
+      !is.null(useReducedDim)) {
+    stop("`useReducedDim` is not allowed for linear dimension reduction.")
   }
 
   if (method == "scaterPCA") {
-    inSCE <- scaterPCA(inSCE = inSCE, useAssay = useAssay, 
-                       useAltExp = useAltExp, reducedDimName = reducedDimName, 
-                       nComponents = nComponents, 
-                       useFeatureSubset = useFeatureSubset, scale = scale, 
+    inSCE <- scaterPCA(inSCE = inSCE, useAssay = useAssay,
+                       useAltExp = useAltExp, reducedDimName = reducedDimName,
+                       nComponents = nComponents,
+                       useFeatureSubset = useFeatureSubset, scale = scale,
                        seed = seed, ...)
   } else if (method == "scaterUMAP") {
     inSCE <- getUMAP(inSCE = inSCE, useAssay = useAssay, useAltExp = useAltExp,
-                     useReducedDim = useReducedDim, 
-                     useFeatureSubset = useFeatureSubset, scale = scale, 
+                     useReducedDim = useReducedDim,
+                     useFeatureSubset = useFeatureSubset, scale = scale,
                      reducedDimName = reducedDimName, seed = seed, ...)
   } else if (method == "rTSNE") {
     inSCE <- getTSNE(inSCE = inSCE, useAssay = useAssay, useAltExp = useAltExp,
-                     useReducedDim = useReducedDim, 
-                     useFeatureSubset = useFeatureSubset, scale = scale, 
+                     useReducedDim = useReducedDim,
+                     useFeatureSubset = useFeatureSubset, scale = scale,
                      reducedDimName = reducedDimName, seed = seed, ...)
   } else {
     # Seurat part
-    
+    # TODO: Honestly, the input checks should have been implemented for
+    # functions being wrapped because they are being exposed to users as well.
+    # We should not being performing redundant checks when wrapping them again.
+    useMat <- .selectSCEMatrix(inSCE, useAssay = useAssay,
+                               useReducedDim = useReducedDim,
+                               useAltExp = useAltExp, returnMatrix = FALSE)
+    useAssay <- useMat$names$useAssay
     if (!is.null(useAltExp)) {
       tempSCE <- SingleCellExperiment::altExp(inSCE, useAltExp)
     } else if (!is.null(useAssay)) {
@@ -157,17 +99,17 @@ runDimReduce <- function(inSCE,
       ## SeuratPCA/ICA
       if (method == "seuratPCA") {
         message(paste0(date(), " ... Computing Seurat PCA."))
-        tempSCE <- runSeuratPCA(tempSCE, useAssay = useAssay, 
+        tempSCE <- runSeuratPCA(tempSCE, useAssay = useAssay,
                                 reducedDimName = reducedDimName,
-                                nPCs = nComponents, 
+                                nPCs = nComponents,
                                 useFeatureSubset = useFeatureSubset,
                                 scale = scale, seed = seed, ...)
       } else if (method == "seuratICA") {
         message(paste0(date(), " ... Computing Seurat ICA."))
         tempSCE <- runSeuratICA(tempSCE, useAssay = useAssay,
                                 reducedDimName = reducedDimName,
-                                nics = nComponents, 
-                                useFeatureSubset = useFeatureSubset, 
+                                nics = nComponents,
+                                useFeatureSubset = useFeatureSubset,
                                 scale = scale, seed = seed, ...)
       }
       seuratObj <- tempSCE@metadata$seurat
@@ -187,24 +129,24 @@ runDimReduce <- function(inSCE,
           message(paste0(date(), " ... Computing Seurat PCA."))
           tempSCE <- runSeuratPCA(inSCE = tempSCE,
                                useAssay = useAssay,
-                               reducedDimName = paste0(useAssay, "_seuratPCA"), 
+                               reducedDimName = paste0(useAssay, "_seuratPCA"),
                                useFeatureSubset = useFeatureSubset, seed = seed)
         } else if (args$useReduction == "ica") {
           message(paste0(date(), " ... Computing Seurat ICA."))
           tempSCE <- runSeuratICA(inSCE = tempSCE,
                                useAssay = useAssay,
-                               reducedDimName = paste0(useAssay, "_seuratICA"), 
+                               reducedDimName = paste0(useAssay, "_seuratICA"),
                                useFeatureSubset = useFeatureSubset, seed = seed)
         }
         if (method == "seuratUMAP") {
           message(paste0(date(), " ... Computing Seurat UMAP."))
-          tempSCE <- runSeuratUMAP(inSCE = tempSCE, 
-                                   reducedDimName = reducedDimName, 
+          tempSCE <- runSeuratUMAP(inSCE = tempSCE,
+                                   reducedDimName = reducedDimName,
                                    seed = seed, ...)
         } else {
           message(paste0(date(), " ... Computing Seurat tSNE."))
           tempSCE <- runSeuratTSNE(inSCE = tempSCE,
-                                   reducedDimName = reducedDimName, 
+                                   reducedDimName = reducedDimName,
                                    seed = seed, ...)
         }
       } else {
@@ -227,13 +169,13 @@ runDimReduce <- function(inSCE,
           # hard-code useReduction="pca"
           message(paste0(date(), " ... Computing Seurat UMAP."))
           tempSCE <- runSeuratUMAP(inSCE = tempSCE, useReduction = "pca",
-                                   reducedDimName = reducedDimName, 
+                                   reducedDimName = reducedDimName,
                                    seed = seed, ...)
         } else {
           # hard-code useReduction="pca"
           message(paste0(date(), " ... Computing Seurat tSNE."))
           tempSCE <- runSeuratTSNE(inSCE = tempSCE, useReduction = "pca",
-                                   reducedDimName = reducedDimName, 
+                                   reducedDimName = reducedDimName,
                                    seed = seed, ...)
         }
       }

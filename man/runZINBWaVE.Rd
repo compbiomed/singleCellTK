@@ -12,11 +12,12 @@ runZINBWaVE(
   nComponents = 50L,
   epsilon = 1000,
   nIter = 10L,
-  reducedDimName = "zinbwave"
+  reducedDimName = "zinbwave",
+  BPPARAM = BiocParallel::SerialParam()
 )
 }
 \arguments{
-\item{inSCE}{\linkS4class{SingleCellExperiment} inherited object. Required.}
+\item{inSCE}{Input \linkS4class{SingleCellExperiment} object}
 
 \item{useAssay}{A single character indicating the name of the assay requiring
 batch correction. Note that ZINBWaVE works for counts (integer) input rather
@@ -42,6 +43,9 @@ is often required to obtained a good low-level representation. Default
 \item{reducedDimName}{A single character. The name for the corrected
 low-dimensional representation. Will be saved to \code{reducedDim(inSCE)}.
 Default \code{"zinbwave"}.}
+
+\item{BPPARAM}{A \linkS4class{BiocParallelParam} object specifying whether
+should be parallelized. Default \code{BiocParallel::SerialParam()}.}
 }
 \value{
 The input \linkS4class{SingleCellExperiment} object with

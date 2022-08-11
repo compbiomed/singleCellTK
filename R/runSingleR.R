@@ -118,11 +118,7 @@ runSingleR <- function(inSCE,
                     "Using its default labeling.")
         }
     }
-    if (is.null(labelByCluster)) {
-        clusters <- NULL
-    } else {
-        clusters <- inSCE[[labelByCluster]]
-    }
+    clusters <- .manageCellVar(inSCE, var = labelByCluster)
     # predictions <- SingleR::SingleR(test = inSCE, assay.type.test = useAssay,
     #                                 ref = ref, clusters = clusters,
     #                                 labels = ref[[labelColName]])

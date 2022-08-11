@@ -20,7 +20,7 @@ runHarmony(
 )
 }
 \arguments{
-\item{inSCE}{Input \linkS4class{SingleCellExperiment} inherited object.}
+\item{inSCE}{Input \linkS4class{SingleCellExperiment} object}
 
 \item{useAssay}{A single character indicating the name of the assay requiring
 batch correction. Default \code{"logcounts"}.}
@@ -29,9 +29,9 @@ batch correction. Default \code{"logcounts"}.}
 used to be corrected. Specifying this will ignore \code{useAssay}. Default
 \code{NULL}.}
 
-\item{batch}{A single character indicating a field in
-\code{\link{colData}} that annotates the batches.
-Default \code{"batch"}.}
+\item{batch}{A single character indicating a field in \code{colData} that
+annotates the batches of each cell; or a vector/factor with the same length
+as the number of cells. Default \code{"batch"}.}
 
 \item{reducedDimName}{A single character. The name for the corrected
 low-dimensional representation. Will be saved to \code{reducedDim(inSCE)}.
@@ -78,7 +78,7 @@ work with only include: \code{nclust}, \code{tau}, \code{block.size},
 }
 \examples{
 data('sceBatches', package = 'singleCellTK')
-logcounts(sceBatches) <- log(counts(sceBatches) + 1)
+logcounts(sceBatches) <- log1p(counts(sceBatches))
 sceCorr <- runHarmony(sceBatches)
 }
 \references{

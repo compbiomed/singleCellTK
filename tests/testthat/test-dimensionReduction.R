@@ -20,13 +20,13 @@ test_that(desc = "Testing scaterPCA", {
 
     expect_error({
         scaterPCA(sce, useAssay = "null", useFeatureSubset = "hvg")
-    }, "Specified assay")
+    }, "Specified `useAssay` 'null' not found.")
     expect_error({
         scaterPCA(sce, useAssay = "null", useAltExp = "null", useFeatureSubset = "hvg")
-    }, "Specified altExp ")
+    }, "Specified `useAltExp` 'null' not found.")
     expect_error({
         scaterPCA(sce, useAssay = "null", useAltExp = "hvgAltExp", useFeatureSubset = "hvg")
-    }, "not found in the specified altExp")
+    }, "Specified `useAssay` 'null' not found in the altExp.")
 
     p1 <- plotPCA(sce, reducedDimName = "PCA1", colorBy = "type", shape = "type")
     p2 <- plotPCA(sce, reducedDimName = "PCA3", runPCA = TRUE)
@@ -53,25 +53,25 @@ test_that(desc = "Testing scater UMAP", {
     # TODO: Still some runable conditions
     expect_error({
         getUMAP(inSCE = 1)
-    }, "Please use a SingleCellExperiment object")
+    }, "`inSCE` should be a SingleCellExperiment Object.")
     expect_error({
         getUMAP(sce, useAssay = NULL, useReducedDim = NULL)
-    }, "`useAssay` and `useReducedDim` cannot be NULL")
+    }, "Either `useAssay` or `useReducedDim` has to be specified.")
     expect_error({
         getUMAP(sce, useAltExp = "altexp")
-    }, "Specified `useAltExp` not found.")
+    }, "Specified `useAltExp` 'altexp' not found.")
     expect_error({
         getUMAP(sce, useReducedDim = "TSNE")
-    }, "Specified `useReducedDim` not found.")
+    }, "Specified `useReducedDim` 'TSNE' not found.")
     expect_error({
         getUMAP(sce, useAssay = "TSNE")
-    }, regexp = "Specified `useAssay` not found.")
+    }, regexp = "Specified `useAssay` 'TSNE' not found.")
     expect_error({
         getUMAP(sce, sample = "batch")
-    }, regexp = "Given sample annotation ")
+    }, regexp = "Specified variable not found")
     expect_error({
         getUMAP(sce, sample = letters)
-    }, regexp = "'sample' must be the same length")
+    }, regexp = "Invalid variable length")
 
     p1 <- plotUMAP(sce, reducedDimName = "UMAP1", colorBy = "type", shape = "type")
     p2 <- plotUMAP(sce, reducedDimName = "UMAP3", runUMAP = TRUE)
@@ -95,20 +95,17 @@ test_that(desc = "Testing Rtsne TSNE", {
     testthat::expect_true("TSNE2" %in% reducedDimNames(sce))
     # TODO: Still some runable conditions
     expect_error({
-        getTSNE(inSCE = 1)
-    }, "Please use a SingleCellExperiment object")
-    expect_error({
         getTSNE(sce, useAssay = NULL, useReducedDim = NULL)
-    }, "`useAssay` and `useReducedDim` cannot be NULL")
+    }, "Either `useAssay` or `useReducedDim` has to be specified.")
     expect_error({
         getTSNE(sce, useAltExp = "altexp")
-    }, "Specified `useAltExp` not found.")
+    }, "Specified `useAltExp` 'altexp' not found.")
     expect_error({
         getUMAP(sce, useReducedDim = "TSNE")
-    }, "Specified `useReducedDim` not found.")
+    }, "Specified `useReducedDim` 'TSNE' not found.")
     expect_error({
         getUMAP(sce, useAssay = "TSNE")
-    }, regexp = "Specified `useAssay` not found.")
+    }, regexp = "Specified `useAssay` 'TSNE' not found.")
 
     p1 <- plotTSNE(sce, reducedDimName = "TSNE1", colorBy = "type", shape = "type")
     p2 <- plotTSNE(sce, reducedDimName = "TSNE3", runTSNE = TRUE)

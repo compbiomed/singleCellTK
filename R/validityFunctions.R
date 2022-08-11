@@ -18,32 +18,29 @@
 #' @return a vector of cell metadata variable, or a factor if
 #' \code{as.factor = TRUE}.
 #' @noRd
-.manageCellVar <- function(inSCE, var, as.factor = FALSE) {
-    if (is.null(var)) {
-        stop("Variable cannot be NULL")
-    }
-    if (!is.vector(var)) {
+.manageCellVar <- function(inSCE, var = NULL, as.factor = FALSE) {
+    if (!is.null(var)) {
+      if (!is.vector(var) & !is.factor(var)) {
         stop("Invalid variable class")
-    }
-    if (length(var) != 1 & length(var) != ncol(inSCE)) {
+      }
+      if (length(var) != 1 & length(var) != ncol(inSCE)) {
         stop("Invalid variable length")
-    }
-    if (is.character(var)) {
+      }
+      if (is.character(var)) {
         if (length(var) == 1) {
-            if (!var %in% names(colData(inSCE))) {
-                stop("Specified variable not found in colData(inSCE)")
-            }
-            var <- colData(inSCE)[[var]]
+          if (!var %in% names(colData(inSCE))) {
+            stop("Specified variable not found in colData(inSCE)")
+          }
+          var <- colData(inSCE)[[var]]
         }
-    } else {
+      } else {
         if (length(var) == 1) {
-            stop("Invalid variable class of length 1")
+          stop("Invalid variable class of length 1")
         }
-    }
-    if (isTRUE(as.factor)) {
-        if (!is.factor(var)) {
-            var <- factor(var)
-        }
+      }
+      if (isTRUE(as.factor) & !is.factor(var)) {
+        var <- factor(var)
+      }
     }
     return(var)
 }
@@ -58,6 +55,8 @@
 #' @param useReducedDim Name of low-dimensional representation to use
 #' @param useAltExp Name of alt-experiment to use
 #' @param returnMatrix Whether to also return the matrix indicated by inputs.
+#' @param cellAsCol When \code{returnMatrix = TRUE}, whether each column should
+#' be a cell (i.e. transpose reducedDim).
 #' @return A list, including \code{$names} for the final decision, and,
 #' \code{$mat} for the matrix fetched when \code{returnMatrix = TRUE}.
 #' @noRd
@@ -66,7 +65,8 @@
     useAssay = NULL,
     useReducedDim = NULL,
     useAltExp = NULL,
-    returnMatrix = FALSE
+    returnMatrix = FALSE,
+    cellAsCol = FALSE
 ) {
     if (!inherits(inSCE, "SingleCellExperiment")) {
         stop("`inSCE` should be a SingleCellExperiment Object.")
@@ -117,6 +117,7 @@
                 mat <- SingleCellExperiment::reducedDim(
                     SingleCellExperiment::altExp(inSCE, useAltExp),
                     useReducedDim)
+                if (isTRUE(cellAsCol)) mat <- t(mat)
             } else {
                 mat <- SummarizedExperiment::assay(
                     SingleCellExperiment::altExp(inSCE, useAltExp),
@@ -125,6 +126,7 @@
         } else {
             if (!is.null(useReducedDim)) {
                 mat <- SingleCellExperiment::reducedDim(inSCE, useReducedDim)
+                if (isTRUE(cellAsCol)) mat <- t(mat)
             } else {
                 mat <- SummarizedExperiment::assay(inSCE, useAssay)
             }

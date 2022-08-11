@@ -13,14 +13,14 @@ runBBKNN(
 )
 }
 \arguments{
-\item{inSCE}{\linkS4class{SingleCellExperiment} inherited object. Required.}
+\item{inSCE}{Input \linkS4class{SingleCellExperiment} object}
 
 \item{useAssay}{A single character indicating the name of the assay requiring
 batch correction. Default \code{"logcounts"}.}
 
-\item{batch}{A single character indicating a field in
-\code{\link{colData}} that annotates the batches.
-Default \code{"batch"}.}
+\item{batch}{A single character indicating a field in \code{colData} that
+annotates the batches of each cell; or a vector/factor with the same length
+as the number of cells. Default \code{"batch"}.}
 
 \item{reducedDimName}{A single character. The name for the corrected
 low-dimensional representation. Will be saved to \code{reducedDim(inSCE)}.
@@ -44,10 +44,9 @@ across all batches of the data.
 \examples{
 \dontrun{
 data('sceBatches', package = 'singleCellTK')
-logcounts(sceBatches) <- log(counts(sceBatches) + 1)
-sceBatches.small <- sample(sceBatches, 20)
-sceCorr <- runBBKNN(sceBatches.small, useAssay = "logcounts",
-                    nComponents = 10)
+logcounts(sceBatches) <- log1p(counts(sceBatches))
+sceBatches <- runBBKNN(sceBatches, useAssay = "logcounts",
+                       nComponents = 10)
 }
 }
 \references{
