@@ -246,71 +246,40 @@ plotSCEHeatmap <- function(inSCE, useAssay = 'logcounts', doLog = FALSE,
         stop('colSplitBy - Specified columns: ', paste(notIn, collapse = ', '),
              ', not found. ')
     }
+    # STAGE 1: Create clean SCE object with only needed information ####
+
+
+
+    # STAGE 2: Subset as needed ####
+    # Manage feature subsetting
     if(is.null(featureIndex)){
-        featureIndex <- seq_len(nrow(inSCE))
-    } else {
-        if(is.character(featureIndexBy) && length(featureIndexBy) == 1){
-            if(!featureIndexBy == 'rownames'){
-                # Search by a column in rowData
-                featureIndex <- celda::retrieveFeatureIndex(featureIndex,
-                                                            inSCE,
-                                                            featureIndexBy)
-            }
-        } else if(length(featureIndexBy) == nrow(inSCE)){
-            # featureIndexBy is vector or single-col/row matrix
-            featureIndex <- celda::retrieveFeatureIndex(featureIndex,
-                                                        featureIndexBy,
-                                                        '')
-        } else {
-            stop('Given "featureIndexBy" not valid. Please give a single ',
-                 'character to specify a column in rowData(inSCE) or a vector ',
-                 'as long as nrow(inSCE) where you search for "featureIndex".')
+        featureIndex <- seq(nrow(inSCE))
+    } else if (is.character(featureIndex)) {
+        featureIndex <- retrieveSCEIndex(inSCE, featureIndex, axis = "row",
+                                         by = featureIndexBy)
+    } else if (is.logical(featureIndex)) {
+        if (length(featureIndex) != nrow(inSCE)) {
+            stop("Logical index length does not match nrow(inSCE)")
         }
-    }
-    ### Force index as numeric
-    if(is.character(featureIndex)){
-        featureIndex <- which(rownames(inSCE) %in% featureIndex)
-    } else if(is.logical(featureIndex)){
         featureIndex <- which(featureIndex)
     }
+    # Manage cell subsetting
     if(is.null(cellIndex)){
-        cellIndex <- seq_len(ncol(inSCE))
-    } else {
-        if(is.character(cellIndexBy) && length(cellIndexBy) == 1){
-            if(!cellIndexBy == 'rownames'){
-                # Search by a column in colData
-                if(!cellIndexBy %in%
-                   names(SummarizedExperiment::colData(inSCE))){
-                    stop('"cellIndexBy": ', cellIndexBy, ' is not a column of ',
-                         'colData(inSCE)')
-                }
-                searchIn <- SummarizedExperiment::colData(inSCE)[[cellIndexBy]]
-                cellIndex <- celda::retrieveFeatureIndex(cellIndex,
-                                                            searchIn,
-                                                            '')
-            }
-        } else if(length(cellIndexBy) == ncol(inSCE)){
-            # featureIndexBy is vector or single-col/row matrix
-            cellIndex <- celda::retrieveFeatureIndex(cellIndex,
-                                                        cellIndexBy,
-                                                        '')
-        } else {
-            stop('Given "cellIndexBy" not valid. Please give a single ',
-                 'character to specify a column in colData(inSCE) or a vector ',
-                 'as long as ncol(inSCE) where you search for "cellIndex".')
+        cellIndex <- seq(ncol(inSCE))
+    } else if (is.character(cellIndex)) {
+        cellIndex <- retrieveSCEIndex(inSCE, cellIndex, axis = "col",
+                                      by = cellIndexBy)
+    } else if (is.logical(cellIndex)) {
+        if (length(cellIndex) != ncol(inSCE)) {
+            stop("Logical index length does not match ncol(inSCE)")
         }
-    }
-    ### Force index as numeric
-    if(is.character(cellIndex)){
-        cellIndex <- which(colnames(inSCE) %in% cellIndex)
-    } else if (is.logical(cellIndex)){
         cellIndex <- which(cellIndex)
     }
     ## Customized row text labeling
     rowLabelText <- rownames(inSCE)[featureIndex]
     if(!is.logical(rowLabel)){
         if (is.null(rowLabel)) {
-          rowLabel <- FALSE
+            rowLabel <- FALSE
         } else if (is.character(rowLabel) && length(rowLabel) == 1) {
             if (!rowLabel %in% names(SummarizedExperiment::rowData(inSCE))) {
                 stop('"rowLabel": ', rowLabel, ' is not a column of ',

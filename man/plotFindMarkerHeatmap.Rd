@@ -29,7 +29,29 @@ plotFindMarkerHeatmap(
   ...
 )
 
-plotMarkerDiffExp(...)
+plotMarkerDiffExp(
+  inSCE,
+  orderBy = "size",
+  log2fcThreshold = 1,
+  fdrThreshold = 0.05,
+  minClustExprPerc = 0.7,
+  maxCtrlExprPerc = 0.4,
+  minMeanExpr = 1,
+  topN = 10,
+  decreasing = TRUE,
+  rowDataName = NULL,
+  colDataName = NULL,
+  featureAnnotations = NULL,
+  cellAnnotations = NULL,
+  featureAnnotationColor = NULL,
+  cellAnnotationColor = NULL,
+  colSplitBy = NULL,
+  rowSplitBy = "marker",
+  rowDend = FALSE,
+  colDend = FALSE,
+  title = "Top Marker Heatmap",
+  ...
+)
 }
 \arguments{
 \item{inSCE}{\linkS4class{SingleCellExperiment} inherited object.}

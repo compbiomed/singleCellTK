@@ -66,24 +66,25 @@ runFindMarker <- function(inSCE, useAssay = 'logcounts',
                           log2fcThreshold = NULL, fdrThreshold = 0.05,
                           minClustExprPerc = NULL, maxCtrlExprPerc = NULL,
                           minMeanExpr = NULL, detectThresh = 0){
+  method <- match.arg(method)
   # Input checks will be done in `runDEAnalysis()`
   if (is.character(cluster) && length(cluster) == 1) clusterName <- cluster
   else clusterName <- 'findMarker_cluster'
-  cluster <- .manageCellVar(inSCE, var = cluster)
+  clusterVar <- .manageCellVar(inSCE, var = cluster)
   # Iterate
-  if(is.factor(cluster)){
+  if(is.factor(clusterVar)){
     # In case inSCE is a subset, when "levels" is a full list of all
     # clusters, want to keep the ordering stored in the factor.
-    uniqClust <- as.vector(unique(cluster))
-    levelOrder <- levels(cluster)
+    uniqClust <- as.vector(unique(clusterVar))
+    levelOrder <- levels(clusterVar)
     uniqClust <- levelOrder[levelOrder %in% uniqClust]
   } else {
-    uniqClust <- unique(cluster)
+    uniqClust <- unique(clusterVar)
   }
   for(c in uniqClust){
     message(date(), " ... Identifying markers for cluster '", c,
             "', using DE method '", method, "'")
-    clusterIndex <- cluster == c
+    clusterIndex <- clusterVar == c
     inSCE <- runDEAnalysis(method = method, inSCE = inSCE,
                            useAssay = useAssay,
                            useReducedDim = useReducedDim,
@@ -123,7 +124,8 @@ runFindMarker <- function(inSCE, useAssay = 'logcounts',
     attr(degFull, "useReducedDim") <- useReducedDim
   }
 
-  degFull <- .calcMarkerExpr(degFull, inSCE, clusterName, detectThresh)
+  degFull <- .calcMarkerExpr(degFull, inSCE, clusterName, clusterVar,
+                             detectThresh)
   if (!is.null(minClustExprPerc)) {
     degFull <- degFull[degFull$clusterExprPerc > minClustExprPerc,]
   }
@@ -134,6 +136,8 @@ runFindMarker <- function(inSCE, useAssay = 'logcounts',
     degFull <- degFull[degFull$clusterAveExpr > minMeanExpr,]
   }
   attr(degFull, "method") <- method
+  attr(degFull, "cluster") <- clusterVar
+  attr(degFull, "clusterName") <- clusterName
   attr(degFull, "params") <- list(log2fcThreshold = log2fcThreshold,
                                   fdrThreshold = fdrThreshold,
                                   minClustExprPerc = minClustExprPerc,
@@ -145,12 +149,26 @@ runFindMarker <- function(inSCE, useAssay = 'logcounts',
 
 #' @rdname runFindMarker
 #' @export
-findMarkerDiffExp <- function(...) {
+findMarkerDiffExp <- function(inSCE, useAssay = 'logcounts',
+                              useReducedDim = NULL,
+                              method = c('wilcox', 'MAST', "DESeq2", "Limma",
+                                         "ANOVA"),
+                              cluster = 'cluster', covariates = NULL,
+                              log2fcThreshold = NULL, fdrThreshold = 0.05,
+                              minClustExprPerc = NULL, maxCtrlExprPerc = NULL,
+                              minMeanExpr = NULL, detectThresh = 0) {
   .Deprecated("runFindMarker")
-  runFindMarker(...)
+  runFindMarker(inSCE = inSCE, useAssay = useAssay,
+                useReducedDim = useReducedDim,
+                method = method, cluster = cluster, covariates = covariates,
+                log2fcThreshold = log2fcThreshold, fdrThreshold = fdrThreshold,
+                minClustExprPerc = minClustExprPerc,
+                maxCtrlExprPerc = maxCtrlExprPerc,
+                minMeanExpr = minMeanExpr, detectThresh = detectThresh)
 }
 
-.calcMarkerExpr <- function(markerTable, inSCE, clusterName, detectThresh) {
+.calcMarkerExpr <- function(markerTable, inSCE, clusterName, clusterVar,
+                            detectThresh) {
   #markerTable <- markerTable[markerTable$Gene %in% rownames(inSCE),]
   genes <- markerTable$Gene
   uniqClust <- unique(markerTable[[clusterName]])
@@ -162,7 +180,7 @@ findMarkerDiffExp <- function(...) {
   exprs.avg <- rep(NA, length(genes))
   for (i in uniqClust) {
     markers <- genes[markerTable[[clusterName]] == i]
-    cells.ix <- inSCE[[clusterName]] == i
+    cells.ix <- clusterVar == i
     if (!is.null(useReducedDim)) {
       assay.in <-
         t(expData(inSCE, useReducedDim))[markers, cells.ix, drop = FALSE]
@@ -218,9 +236,9 @@ findMarkerDiffExp <- function(...) {
 #'                                      cluster = "level1class")
 #' getFindMarkerTopTable(mouseBrainSubsetSCE)
 getFindMarkerTopTable <- function(inSCE, log2fcThreshold = 1,
-                               fdrThreshold = 0.05, minClustExprPerc = 0.7,
-                               maxCtrlExprPerc = 0.4, minMeanExpr = 1,
-                               topN = 10) {
+                                  fdrThreshold = 0.05, minClustExprPerc = 0.7,
+                                  maxCtrlExprPerc = 0.4, minMeanExpr = 1,
+                                  topN = 10) {
   if(!inherits(inSCE, 'SingleCellExperiment')){
     stop('"inSCE" should be a SingleCellExperiment inherited Object.')
   }
@@ -288,7 +306,15 @@ getFindMarkerTopTable <- function(inSCE, log2fcThreshold = 1,
 
 #' @rdname getFindMarkerTopTable
 #' @export
-findMarkerTopTable <- function(...) {
+findMarkerTopTable <- function(inSCE, log2fcThreshold = 1,
+                               fdrThreshold = 0.05, minClustExprPerc = 0.7,
+                               maxCtrlExprPerc = 0.4, minMeanExpr = 1,
+                               topN = 10) {
   .Deprecated("getFindMarkerTopTable")
-  getFindMarkerTopTable(...)
+  getFindMarkerTopTable(inSCE = inSCE, log2fcThreshold = log2fcThreshold,
+                        fdrThreshold = fdrThreshold,
+                        minClustExprPerc = minClustExprPerc,
+                        maxCtrlExprPerc = maxCtrlExprPerc,
+                        minMeanExpr = minMeanExpr,
+                        topN = topN)
 }

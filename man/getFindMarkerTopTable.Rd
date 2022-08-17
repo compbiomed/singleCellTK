@@ -15,7 +15,15 @@ getFindMarkerTopTable(
   topN = 10
 )
 
-findMarkerTopTable(...)
+findMarkerTopTable(
+  inSCE,
+  log2fcThreshold = 1,
+  fdrThreshold = 0.05,
+  minClustExprPerc = 0.7,
+  maxCtrlExprPerc = 0.4,
+  minMeanExpr = 1,
+  topN = 10
+)
 }
 \arguments{
 \item{inSCE}{\linkS4class{SingleCellExperiment} inherited object.}

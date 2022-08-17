@@ -20,7 +20,20 @@ runFindMarker(
   detectThresh = 0
 )
 
-findMarkerDiffExp(...)
+findMarkerDiffExp(
+  inSCE,
+  useAssay = "logcounts",
+  useReducedDim = NULL,
+  method = c("wilcox", "MAST", "DESeq2", "Limma", "ANOVA"),
+  cluster = "cluster",
+  covariates = NULL,
+  log2fcThreshold = NULL,
+  fdrThreshold = 0.05,
+  minClustExprPerc = NULL,
+  maxCtrlExprPerc = NULL,
+  minMeanExpr = NULL,
+  detectThresh = 0
+)
 }
 \arguments{
 \item{inSCE}{\linkS4class{SingleCellExperiment} inherited object.}

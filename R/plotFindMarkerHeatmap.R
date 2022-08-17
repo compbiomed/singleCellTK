@@ -77,6 +77,7 @@ plotFindMarkerHeatmap <- function(inSCE, orderBy = 'size',
                               log2fcThreshold = 1, fdrThreshold = 0.05,
                               minClustExprPerc = 0.7, maxCtrlExprPerc = 0.4,
                               minMeanExpr = 1, topN = 10, decreasing = TRUE,
+                              rowLabel = TRUE,
                               rowDataName = NULL, colDataName = NULL,
                               featureAnnotations = NULL, cellAnnotations = NULL,
                               featureAnnotationColor = NULL,
@@ -115,14 +116,16 @@ plotFindMarkerHeatmap <- function(inSCE, orderBy = 'size',
           colnames(degFull)[seq_len(4)])){
     stop('"findMarker" result cannot be interpreted properly')
   }
+  clusterVar <- attr(degFull, "cluster")
+  clusterName <- attr(degFull, "clusterName")
   #if(length(which(!degFull$Gene %in% rownames(inSCE))) > 0){
   # Remove genes happen in deg table but not in sce. Weird.
   # degFull <- degFull[-which(!degFull$Gene %in% rownames(inSCE)),]
   #}
-  if(!is.null(log2fcThreshold)){
+  if (!is.null(log2fcThreshold)) {
     degFull <- degFull[degFull$Log2_FC > log2fcThreshold,]
   }
-  if(!is.null(fdrThreshold)){
+  if (!is.null(fdrThreshold)) {
     degFull <- degFull[degFull$FDR < fdrThreshold,]
   }
   if (!is.null(minClustExprPerc)) {
@@ -146,7 +149,6 @@ plotFindMarkerHeatmap <- function(inSCE, orderBy = 'size',
     toRemove <- which(deg.gix)[-toKeep]
     degFull <- degFull[-toRemove,]
   }
-  clusterName <- colnames(degFull)[5]
   selected <- character()
   if (!is.null(topN)) {
     for (c in unique(degFull[[clusterName]])) {
@@ -179,7 +181,7 @@ plotFindMarkerHeatmap <- function(inSCE, orderBy = 'size',
   }
 
   inSCE <- tmpSCE[degFull$Gene,]
-  z <- SummarizedExperiment::colData(inSCE)[[clusterName]]
+  z <- clusterVar
   if(is.factor(z)){
     z.order <- levels(z)
     # When 'z' is a subset factor, there would be redundant levels.
@@ -187,7 +189,6 @@ plotFindMarkerHeatmap <- function(inSCE, orderBy = 'size',
     z <- factor(z, levels = z.order)
     SummarizedExperiment::rowData(inSCE)[[clusterName]] <-
       factor(degFull[[clusterName]], levels = z.order)
-
   } else {
     SummarizedExperiment::rowData(inSCE)[[clusterName]] <-
       degFull[[clusterName]]
@@ -205,7 +206,6 @@ plotFindMarkerHeatmap <- function(inSCE, orderBy = 'size',
       z.order <- orderBy[-which(!orderBy %in% z)]
     }
   }
-
   SummarizedExperiment::colData(inSCE)[[clusterName]] <-
     factor(z, levels = z.order)
 
@@ -213,34 +213,57 @@ plotFindMarkerHeatmap <- function(inSCE, orderBy = 'size',
   y <- SummarizedExperiment::rowData(inSCE)[[clusterName]]
   SummarizedExperiment::rowData(inSCE)[["marker"]] <-
     factor(y, levels = z.order)
-  markerConsistColor <-
-    list(marker = dataAnnotationColor(inSCE, 'col')[[clusterName]])
+
+  #markerConsistColor <-
+  #  list(marker = dataAnnotationColor(inSCE, 'col')[[clusterName]])
 
   # Organize plotSCEHeatmap arguments
   colDataName <- c(colDataName, clusterName)
   rowDataName <- c(rowDataName, "marker")
 
-  featureAnnotationColor <- c(featureAnnotationColor, markerConsistColor)
+  #featureAnnotationColor <- c(featureAnnotationColor, markerConsistColor)
 
-  hm <- plotSCEHeatmap(inSCE, useAssay = assayName, colDataName = colDataName,
+  hm <- plotSCEHeatmap2(inSCE, useAssay = assayName, colDataName = colDataName,
                        rowDataName = rowDataName, colSplitBy = colSplitBy,
                        rowSplitBy = rowSplitBy,
                        featureAnnotations = featureAnnotations,
                        cellAnnotations = cellAnnotations,
                        featureAnnotationColor = featureAnnotationColor,
                        cellAnnotationColor = cellAnnotationColor,
-                       cluster_row_slices = FALSE,
+                       cluster_row_slices = FALSE, rowLabel = rowLabel,
                        cluster_column_slices = FALSE,
                        rowDend = rowDend, colDend = colDend, title = title, ...)
-
-
-
   return(hm)
 }
 
 #' @rdname plotFindMarkerHeatmap
 #' @export
-plotMarkerDiffExp <- function(...) {
+plotMarkerDiffExp <- function(inSCE, orderBy = 'size',
+                              log2fcThreshold = 1, fdrThreshold = 0.05,
+                              minClustExprPerc = 0.7, maxCtrlExprPerc = 0.4,
+                              minMeanExpr = 1, topN = 10, decreasing = TRUE,
+                              rowDataName = NULL, colDataName = NULL,
+                              featureAnnotations = NULL, cellAnnotations = NULL,
+                              featureAnnotationColor = NULL,
+                              cellAnnotationColor = NULL,
+                              colSplitBy = NULL,
+                              rowSplitBy = "marker", rowDend = FALSE,
+                              colDend = FALSE,
+                              title = "Top Marker Heatmap", ...) {
   .Deprecated("plotFindMarkerHeatmap")
-  plotFindMarkerHeatmap(...)
+  plotFindMarkerHeatmap(inSCE = inSCE, orderBy = orderBy,
+                        log2fcThreshold = log2fcThreshold,
+                        fdrThreshold = fdrThreshold,
+                        minClustExprPerc = minClustExprPerc,
+                        maxCtrlExprPerc = maxCtrlExprPerc,
+                        minMeanExpr = minMeanExpr, topN = topN,
+                        decreasing = decreasing,
+                        rowDataName = rowDataName, colDataName = colDataName,
+                        featureAnnotations = featureAnnotations,
+                        cellAnnotations = cellAnnotations,
+                        featureAnnotationColor = featureAnnotationColor,
+                        cellAnnotationColor = cellAnnotationColor,
+                        colSplitBy = colSplitBy,
+                        rowSplitBy = rowSplitBy, rowDend = rowDend,
+                        colDend = colDend, title = title, ...)
 }

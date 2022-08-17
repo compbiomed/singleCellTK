@@ -29,7 +29,7 @@
       if (is.character(var)) {
         if (length(var) == 1) {
           if (!var %in% names(colData(inSCE))) {
-            stop("Specified variable not found in colData(inSCE)")
+            stop("Specified variable '", var, "' not found in colData(inSCE)")
           }
           var <- colData(inSCE)[[var]]
         }
@@ -45,6 +45,32 @@
     return(var)
 }
 
+.manageFeatureVar <- function(inSCE, var = NULL, as.factor = FALSE) {
+  if (!is.null(var)) {
+    if (!is.vector(var) & !is.factor(var)) {
+      stop("Invalid variable class")
+    }
+    if (length(var) != 1 & length(var) != nrow(inSCE)) {
+      stop("Invalid variable length")
+    }
+    if (is.character(var)) {
+      if (length(var) == 1) {
+        if (!var %in% names(rowData(inSCE))) {
+          stop("Specified variable '", var, "' not found in rowData(inSCE)")
+        }
+        var <- rowData(inSCE)[[var]]
+      }
+    } else {
+      if (length(var) == 1) {
+        stop("Invalid variable class of length 1")
+      }
+    }
+    if (isTRUE(as.factor) & !is.factor(var)) {
+      var <- factor(var)
+    }
+  }
+  return(var)
+}
 
 #' Perform Checks and finally indicate which matrix to use.
 #' @details Basic rule: (1) When \code{useAltExp} is not \code{NULL}, fetch
