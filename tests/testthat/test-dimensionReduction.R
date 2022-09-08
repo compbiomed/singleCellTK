@@ -68,7 +68,7 @@ test_that(desc = "Testing scater UMAP", {
     }, regexp = "Specified `useAssay` 'TSNE' not found.")
     expect_error({
         getUMAP(sce, sample = "batch")
-    }, regexp = "Specified variable not found")
+    }, regexp = "Specified variable 'batch'")
     expect_error({
         getUMAP(sce, sample = letters)
     }, regexp = "Invalid variable length")

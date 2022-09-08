@@ -114,7 +114,7 @@ Imports:
     scuttle,
     utils,
     stats
-RoxygenNote: 7.2.0
+RoxygenNote: 7.2.1
 Suggests:
     testthat,
     Rsubread,

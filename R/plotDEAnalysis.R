@@ -479,7 +479,7 @@ plotDEGHeatmap <- function(inSCE, useResult, onlyPos = FALSE,
 
   # Annotation organization
   ## Cells
-  group <- vector()
+  group <- rep(NA, ncol(tmpSCE))
   group[ix1] <- result$groupNames[1]
   group[ix2] <- result$groupNames[2]
   group <- factor(group[cell.ix], levels = result$groupNames)

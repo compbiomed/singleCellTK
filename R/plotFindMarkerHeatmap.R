@@ -32,6 +32,10 @@
 #' ordered unique cluster labels, or set as \code{NULL} for unsplitted heatmap.
 #' Default \code{"size"}.
 #' @param decreasing Order the cluster decreasingly. Default \code{TRUE}.
+#' @param rowLabel \code{TRUE} for displaying \code{rownames} of \code{inSCE}, a
+#' \code{rowData} variable to use other feature identifiers, or a vector for
+#' customized row labels. Use \code{FALSE} for not displaying. Default
+#' \code{TRUE}.
 #' @param rowDataName character. The column name(s) in \code{rowData} that need
 #' to be added to the annotation. Default \code{NULL}.
 #' @param colDataName character. The column name(s) in \code{colData} that need
@@ -223,7 +227,7 @@ plotFindMarkerHeatmap <- function(inSCE, orderBy = 'size',
 
   #featureAnnotationColor <- c(featureAnnotationColor, markerConsistColor)
 
-  hm <- plotSCEHeatmap2(inSCE, useAssay = assayName, colDataName = colDataName,
+  hm <- plotSCEHeatmap(inSCE, useAssay = assayName, colDataName = colDataName,
                        rowDataName = rowDataName, colSplitBy = colSplitBy,
                        rowSplitBy = rowSplitBy,
                        featureAnnotations = featureAnnotations,

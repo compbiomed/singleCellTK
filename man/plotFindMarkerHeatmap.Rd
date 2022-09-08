@@ -15,6 +15,7 @@ plotFindMarkerHeatmap(
   minMeanExpr = 1,
   topN = 10,
   decreasing = TRUE,
+  rowLabel = TRUE,
   rowDataName = NULL,
   colDataName = NULL,
   featureAnnotations = NULL,
@@ -83,6 +84,11 @@ cluster in maximum, in terms of log2FC value. Use \code{NULL} to cancel the
 top N subscription. Default \code{10}.}
 
 \item{decreasing}{Order the cluster decreasingly. Default \code{TRUE}.}
+
+\item{rowLabel}{\code{TRUE} for displaying \code{rownames} of \code{inSCE}, a
+\code{rowData} variable to use other feature identifiers, or a vector for
+customized row labels. Use \code{FALSE} for not displaying. Default
+\code{TRUE}.}
 
 \item{rowDataName}{character. The column name(s) in \code{rowData} that need
 to be added to the annotation. Default \code{NULL}.}

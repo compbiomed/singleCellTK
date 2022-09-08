@@ -9,8 +9,8 @@ setRowNames(x, rowNames, dedup = TRUE)
 \arguments{
 \item{x}{Input object where the rownames will be modified.}
 
-\item{rowNames}{Character vector of the rownames. If \code{x} is an 
-\linkS4class{SingleCellExperiment} object, a single character specifying a 
+\item{rowNames}{Character vector of the rownames. If \code{x} is an
+\linkS4class{SingleCellExperiment} object, a single character specifying a
 column in \code{rowData(x)}.}
 
 \item{dedup}{Logical. Whether to deduplicate the specified rowNames. Default
@@ -21,11 +21,11 @@ The input SCE object with rownames updated.
 }
 \description{
 Users can set rownames of an SCE object with either a character
-vector where the length equals to \code{nrow(x)}, or a single character 
-specifying a column in \code{rowData(x)}. Also applicable to matrix like 
-object where \code{rownames<-} method works, but only allows full size name 
+vector where the length equals to \code{nrow(x)}, or a single character
+specifying a column in \code{rowData(x)}. Also applicable to matrix like
+object where \code{rownames<-} method works, but only allows full size name
 vector. Users can set \code{dedup = TRUE} to remove duplicated entries in the
-specification, by adding \code{-1, -2, ..., -i} suffix to the duplication of 
+specification, by adding \code{-1, -2, ..., -i} suffix to the duplication of
 the same identifier.
 }
 \examples{
