@@ -62,8 +62,8 @@ test_that(desc = "Testing TSCAN", {
                                                  featureDisplay = "feature_name")
 
   testthat::expect_is(TSCANResultsPlot, "ggplot")
-  testthat::expect_is(TSCANPseudotimeHeatmapPlot1, "ggplot")
-  testthat::expect_is(TSCANPseudotimeHeatmapPlot2, "ggplot")
+  testthat::expect_is(TSCANPseudotimeHeatmapPlot1, "Heatmap")
+  testthat::expect_is(TSCANPseudotimeHeatmapPlot2, "Heatmap")
   testthat::expect_is(TSCANPseudotimeGenesPlot, "ggplot")
   testthat::expect_is(ClusterPseudoPlot, "ggplot")
   testthat::expect_is(TSCANFeaturePlot, "ggplot")

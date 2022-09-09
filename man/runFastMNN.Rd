@@ -8,29 +8,63 @@ correction method to SingleCellExperiment object}
 runFastMNN(
   inSCE,
   useAssay = "logcounts",
-  reducedDimName = "fastMNN",
+  useReducedDim = NULL,
   batch = "batch",
-  pcInput = FALSE
+  reducedDimName = "fastMNN",
+  k = 20,
+  propK = NULL,
+  ndist = 3,
+  minBatchSkip = 0,
+  cosNorm = TRUE,
+  nComponents = 50,
+  weights = NULL,
+  BPPARAM = BiocParallel::SerialParam()
 )
 }
 \arguments{
-\item{inSCE}{inherited object. Required.}
+\item{inSCE}{Input \linkS4class{SingleCellExperiment} object}
 
 \item{useAssay}{A single character indicating the name of the assay requiring
-batch correction. Default \code{"logcounts"}. Alternatively, see
-\code{pcInput} parameter.}
+batch correction. Default \code{"logcounts"}.}
+
+\item{useReducedDim}{A single character indicating the dimension reduction
+used for batch correction. Will ignore \code{useAssay} when using.
+Default \code{NULL}.}
+
+\item{batch}{A single character indicating a field in \code{colData} that
+annotates the batches of each cell; or a vector/factor with the same length
+as the number of cells. Default \code{"batch"}.}
 
 \item{reducedDimName}{A single character. The name for the corrected
-low-dimensional representation. Will be saved to \code{reducedDim(inSCE)}.
-Default \code{"fastMNN"}.}
+low-dimensional representation. Default \code{"fastMNN"}.}
 
-\item{batch}{A single character indicating a field in
-\code{\link{colData}} that annotates the batches.
-Default \code{"batch"}.}
+\item{k}{An integer scalar specifying the number of nearest neighbors to
+consider when identifying MNNs. See "See Also". Default \code{20}.}
 
-\item{pcInput}{A logical scalar. Whether to use a low-dimension matrix for
-batch effect correction. If \code{TRUE}, \code{useAssay} will be searched
-from \code{reducedDimNames(inSCE)}. Default \code{FALSE}.}
+\item{propK}{A numeric scalar in (0, 1) specifying the proportion of cells in
+each dataset to use for mutual nearest neighbor searching. See "See Also".
+Default \code{NULL}.}
+
+\item{ndist}{A numeric scalar specifying the threshold beyond which
+neighbours are to be ignored when computing correction vectors. See "See
+Also". Default \code{3}.}
+
+\item{minBatchSkip}{Numeric scalar specifying the minimum relative magnitude
+of the batch effect, below which no correction will be performed at a given
+merge step. See "See Also". Default \code{0}.}
+
+\item{cosNorm}{A logical scalar indicating whether cosine normalization
+should be performed on \code{useAssay} prior to PCA. See "See Also". Default
+\code{TRUE}.}
+
+\item{nComponents}{An integer scalar specifying the number of dimensions to
+produce. See "See Also". Default \code{50}.}
+
+\item{weights}{The weighting scheme to use. Passed to
+\code{\link[batchelor]{multiBatchPCA}}. Default \code{NULL}.}
+
+\item{BPPARAM}{A \linkS4class{BiocParallelParam} object specifying whether
+the SVD should be parallelized.}
 }
 \value{
 The input \linkS4class{SingleCellExperiment} object with
@@ -42,9 +76,13 @@ robust performance. For introduction of MNN, see \code{\link{runMNNCorrect}}.
 }
 \examples{
 data('sceBatches', package = 'singleCellTK')
-logcounts(sceBatches) <- log(counts(sceBatches) + 1)
-sceCorr <- runFastMNN(sceBatches, useAssay = 'logcounts', pcInput = FALSE)
+logcounts(sceBatches) <- log1p(counts(sceBatches))
+sceCorr <- runFastMNN(sceBatches, useAssay = 'logcounts')
 }
 \references{
 Lun ATL, et al., 2016
+}
+\seealso{
+\code{\link[batchelor]{fastMNN}} for using \code{useAssay}, and
+\code{\link[batchelor]{reducedMNN}} for using \code{useReducedDim}
 }

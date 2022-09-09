@@ -9,14 +9,15 @@ runSCMerge(
   useAssay = "logcounts",
   batch = "batch",
   assayName = "scMerge",
+  hvgExprs = "counts",
   seg = NULL,
   kmeansK = NULL,
-  cellType = "cell_type",
-  nCores = 1L
+  cellType = NULL,
+  BPPARAM = BiocParallel::SerialParam()
 )
 }
 \arguments{
-\item{inSCE}{\linkS4class{SingleCellExperiment} inherited object. Required.}
+\item{inSCE}{Input \linkS4class{SingleCellExperiment} object}
 
 \item{useAssay}{A single character indicating the name of the assay requiring
 batch correction. Default \code{"logcounts"}.}
@@ -26,12 +27,15 @@ batch correction. Default \code{"logcounts"}.}
 Default \code{"batch"}.}
 
 \item{assayName}{A single characeter. The name for the corrected assay. Will
-be saved to \code{\link{assay}}. Default
-\code{"scMerge"}.}
+be saved to \code{\link{assay}}. Default \code{"scMerge"}.}
+
+\item{hvgExprs}{A single characeter. The assay that to be used for highly
+variable genes identification. Default \code{"counts"}.}
 
 \item{seg}{A vector of gene names or indices that specifies SEG (Stably
 Expressed Genes) set as negative control. Pre-defined dataset with human and
-mouse SEG lists is available to user by running \code{data('SEG')}. Default
+mouse SEG lists is available with \code{\link[scMerge]{segList}} or
+\code{\link[scMerge]{segList_ensemblGeneID}}. Default
 \code{NULL}, and this value will be auto-detected by default with
 \code{\link[scMerge]{scSEGIndex}}.}
 
@@ -45,8 +49,8 @@ auto-detected by default, depending on \code{cellType}.}
 \code{colData(inSCE)} that defines different cell types. Default
 \code{'cell_type'}.}
 
-\item{nCores}{An integer. The number of cores of processors to allocate for
-the task. Default \code{1L}.}
+\item{BPPARAM}{A \linkS4class{BiocParallelParam} object specifying whether
+should be parallelized. Default \code{BiocParallel::SerialParam()}.}
 }
 \value{
 The input \linkS4class{SingleCellExperiment} object with
@@ -60,7 +64,7 @@ scRNA-Seq data.
 \examples{
 data('sceBatches', package = 'singleCellTK')
 \dontrun{
-logcounts(sceBatches) <- log(counts(sceBatches) + 1)
+logcounts(sceBatches) <- log1p(counts(sceBatches))
 sceCorr <- runSCMerge(sceBatches)
 }
 }

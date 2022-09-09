@@ -9,22 +9,27 @@ runSCANORAMA(
   inSCE,
   useAssay = "logcounts",
   batch = "batch",
+  assayName = "SCANORAMA",
   SIGMA = 15,
   ALPHA = 0.1,
-  KNN = 20L,
-  assayName = "SCANORAMA"
+  KNN = 20,
+  approx = TRUE
 )
 }
 \arguments{
-\item{inSCE}{\linkS4class{SingleCellExperiment} inherited object. Required.}
+\item{inSCE}{Input \linkS4class{SingleCellExperiment} object}
 
 \item{useAssay}{A single character indicating the name of the assay requiring
 batch correction. Scanorama requires a transformed normalized expression
 assay. Default \code{"logcounts"}.}
 
-\item{batch}{A single character indicating a field in
-\code{\link{colData}} that annotates the batches.
-Default \code{"batch"}.}
+\item{batch}{A single character indicating a field in \code{colData} that
+annotates the batches of each cell; or a vector/factor with the same length
+as the number of cells. Default \code{"batch"}.}
+
+\item{assayName}{A single characeter. The name for the corrected assay. Will
+be saved to \code{\link{assay}}. Default
+\code{"SCANORAMA"}.}
 
 \item{SIGMA}{A numeric scalar. Algorithmic parameter, correction smoothing
 parameter on Gaussian kernel. Default \code{15}.}
@@ -33,11 +38,10 @@ parameter on Gaussian kernel. Default \code{15}.}
 minimum cutoff. Default \code{0.1}.}
 
 \item{KNN}{An integer. Algorithmic parameter, number of nearest neighbors to
-use for matching. Default \code{20L}.}
+use for matching. Default \code{20}.}
 
-\item{assayName}{A single characeter. The name for the corrected assay. Will
-be saved to \code{\link{assay}}. Default
-\code{"SCANORAMA"}.}
+\item{approx}{Boolean. Use approximate nearest neighbors, greatly speeds up
+matching runtime. Default \code{TRUE}.}
 }
 \value{
 The input \linkS4class{SingleCellExperiment} object with
@@ -51,7 +55,7 @@ panorama.
 \examples{
 \dontrun{
 data('sceBatches', package = 'singleCellTK')
-sceBatches <- scaterlogNormCounts(sceBatches)
+logcounts(sceBatches) <- log1p(counts(sceBatches))
 sceCorr <- runSCANORAMA(sceBatches, "ScaterLogNormCounts")
 }
 }

@@ -4,65 +4,105 @@ date: "`r format(Sys.time(), '%B %d, %Y')`"
 params: 
   object: object
   study: study
+  useReducedDim: useReducedDim
+  featureDisplay: featureDisplay
 output:
   html_document:
-    number_sections: yes
     toc: yes
-    toc_float: true
+    toc_float: yes
+    number_sections: no
+    theme: cosmo
     code_folding: hide
-    html_notebook: default
+    self_contained: yes
+    mode: selfcontained
+    keep_md: no
+  pdf_document:
+    toc: yes
 ---
 
 ```{r, "DE-lib", include=FALSE}
 require(singleCellTK)
 require(DT)
+require(ggplot2)
 ```
 
 ```{r "DE-import", include=FALSE}
 sce <- params$object
 study <- params$study
+useReducedDim <- params$useReducedDim
 metas <- metadata(sce)$diffExp[[study]]
+featureDisplay <- params$featureDisplay
 useAssay <- metas$useAssay
 cond1 <- metas$groupNames[[1]]
 cond2 <- metas$groupNames[[2]]
+helpURL <- paste0("https://camplab.net/sctk/v", packageVersion("singleCellTK"), "/reference/runDEAnalysis.html")
 ```
 
 # Analysis: `r study`
 
-The differential expression was performed by comparing the feature expression of cells belonging to condition "**`r cond1`**" against the cells belonging to condition "**`r cond2`**". The feature expression matrix used was "**`r useAssay`**".  
+The differential expression was performed by comparing the feature expression of cells belonging to condition "**`r cond1`**" against the cells belonging to condition "**`r cond2`**". The relationship between the two selected group is could be indicated via the embedding plot below. The feature expression matrix used was "**`r useAssay`**".  
 
 In the condition "**`r cond1`**", **`r length(which(metas$select$ix1))`** cells were included, while **`r length(which(metas$select$ix2))`** cells were included for condition **`r cond2`**. 
 
-The method used for performing the differential expression analysis was "**`r metas$method`**". For the more information of the method, please refer to [the help page](#).
+The method used for performing the differential expression analysis was "**`r metas$method`**". For the more information of the method, please refer to [the help page](`r helpURL`).
+
+```{r "UMAP", warning=FALSE, message=FALSE, fig.align="center"}
+sce$deClass <- "Not involved"
+sce$deClass[metas$select$ix1] <- cond1
+sce$deClass[metas$select$ix2] <- cond2
+twoColors <- discreteColorPalette(2, palette = "ggplot")
+colorValue <- c("grey", twoColors[1], twoColors[2])
+names(colorValue) <- c("Not involved", cond1, cond2)
+plotSCEDimReduceColData(sce, colorBy = "deClass", reducedDimName = useReducedDim, labelClusters = FALSE) + scale_color_manual(values = colorValue)
+```
 
 ## Result Table
 
+The following table presents the statistic metrics of the differential expression analysis. The DEGs in the table are pre-filtered by FDR value less than 0.05. 
+
 ```{r "DE-table"}
-datatable(metas$result, options = list(pageLength = 10))
+resultTable <- getDEGTopTable(sce, useResult = study, log2fcThreshold = 0, labelBy = featureDisplay)
+datatable(resultTable, options = list(pageLength = 10, scollX = 400))
 ```
 
-## Visualization
+>The table above can be reordered by clicking on the column name.
 
-The following plot shows the linear model regression of the top 36 differentially expressed genes, ranked by FDR values. 
+# Visualization
 
-```{r "DE-Vis-regression", results="asis", fig.align="center", warning=FALSE, message=FALSE}
-plotDEGRegression(sce, study)
-```
-
-The following plot shows the violin plot also for comparing the expression of the top 36 genes between the two conditions. 
-
-```{r "DE-Vis-violin", results="asis", fig.align="center", warning=FALSE, message=FALSE}
-plotDEGViolin(sce, study)
-```
+## Heatmap
 
 The following heatmap will be divided by the conditions and the regulation. A gene will be determined as up-regulated in condition **`r cond1`** if its log2FC value was greater than 0.25 and FDR is less than 0.05, and down-regulated in condition **`r cond1`** if the log2FC value is less than -0.25. The gene regulation and condition setting will be annotated by default. In addition, if the condition setting was achieved by using a categorical annotation in the object, the annotation used will also be labeled to the column level of the heatmap. 
 
-```{r "DE-Vis-heatmap", results="asis", fig.align="center", warning=FALSE, message=FALSE}
-plotDEGHeatmap(sce, study)
+```{r "DE-Vis-heatmap", results="asis", fig.align="center", warning=FALSE, message=FALSE, fig.width=9, fig.height=10}
+plotDEGHeatmap(sce, study, rowLabel = featureDisplay)
+```
+
+## Volcano Plot
+
+The following volcano plot contains dots as all the genes, while the log2FC value on the X axis and -log10(FDR) value on the Y axis. That's to say, the genes farther away from the center of the plot (i.e. at the left or right) show larger fold-change between the two conditions, while the genes closer to the top of the plot show higher significance. The genes with positive log2FC values are up-regulated in the group **`r cond1`**, and those with negative log2FC values are up-regulated in **`r cond2`**. 10 genes with top fold-change (absolute value) are labeled with text.  
+
+```{r "DE-Vis-volcano", results="asis", fig.align="center", warning=FALSE, message=FALSE}
+plotDEGVolcano(sce, study, featureDisplay = featureDisplay)
+```
+
+## Regression Plot
+
+The following plot shows the linear model regression of the top 36 DEGs, ranked by FDR values. 
+
+```{r "DE-Vis-regression", results="asis", fig.align="center", warning=FALSE, message=FALSE, fig.width=9, fig.height=7}
+plotDEGRegression(sce, study, labelBy = featureDisplay)
+```
+
+## Violin Plot
+ 
+The following plot shows the violin plot also for comparing the expression of the top 36 DEGs between the two conditions. 
+
+```{r "DE-Vis-violin", results="asis", fig.align="center", warning=FALSE, message=FALSE, fig.width=9, fig.height=7}
+plotDEGViolin(sce, study, labelBy = featureDisplay)
 ```
 
 # SessionInfo
 
-```{r "DropletQC-session-info"}
-    sessionInfo()
+```{r "DE-session-info"}
+sessionInfo()
 ```

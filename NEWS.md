@@ -1,3 +1,9 @@
+Changes in Version 2.? (2022-MM-DD)
+================================================================================
+* Deprecated `findMarkerDiffExp()`, `findMarkerTopTable()` and `plotMarkerDiffExp()`, which are replaced by `runFindMarker()`, `getFindMarkerTopTable()` and `plotFindMarkerHeatmap()`, respectively
+* Added `useReducedDim`, `detectThresh` arguments for find marker functions
+* Refined batch correction function set
+
 Changes in Version 2.7.1 (2022-06-29)
 ================================================================================
 * Refactored scaling related parts of the workflow, including variable feature

@@ -31,7 +31,7 @@
 #' @export
 #' @examples
 #' data("sceBatches")
-#' logcounts(sceBatches) <- log(counts(sceBatches) + 1)
+#' logcounts(sceBatches) <- log1p(counts(sceBatches))
 #' #sceBatches <- runSingleR(sceBatches, useBltinRef = "mp")
 runSingleR <- function(inSCE,
                        useAssay = "logcounts",
@@ -118,11 +118,7 @@ runSingleR <- function(inSCE,
                     "Using its default labeling.")
         }
     }
-    if (is.null(labelByCluster)) {
-        clusters <- NULL
-    } else {
-        clusters <- inSCE[[labelByCluster]]
-    }
+    clusters <- .manageCellVar(inSCE, var = labelByCluster)
     # predictions <- SingleR::SingleR(test = inSCE, assay.type.test = useAssay,
     #                                 ref = ref, clusters = clusters,
     #                                 labels = ref[[labelColName]])

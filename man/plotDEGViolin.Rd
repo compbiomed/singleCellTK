@@ -55,7 +55,7 @@ be performed prior to using this function
 }
 \examples{
 data("sceBatches")
-logcounts(sceBatches) <- log(counts(sceBatches) + 1)
+logcounts(sceBatches) <- log1p(counts(sceBatches))
 sce.w <- subsetSCECols(sceBatches, colData = "batch == 'w'")
 sce.w <- runWilcox(sce.w, class = "cell_type", classGroup1 = "alpha",
                    groupName1 = "w.alpha", groupName2 = "w.beta",
