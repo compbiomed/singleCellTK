@@ -168,6 +168,11 @@ reportQCTool <- function(inSCE, algorithm=c("BarcodeRankDrops",
 #' object containing the output from \code{\link{runDEAnalysis}} function
 #' @param study The specific analysis to visualize, used as \code{analysisName}
 #' argument when running differential expression.
+#' @param useReducedDim Specify an embedding for visualizing the relation ship
+#' between the conditions.
+#' @param featureDisplay The feature ID type to use for displaying. Should
+#' exists as a variable name of \code{rowData}. Default \code{NULL} use rownames
+#' of \code{inSCE}.
 #' @param output_file name of the generated file. If \code{NULL} then the output
 #' file name will be based on the name of the Rmarkdown template. Default
 #' \code{NULL}.
@@ -176,7 +181,8 @@ reportQCTool <- function(inSCE, algorithm=c("BarcodeRankDrops",
 #' Default \code{NULL}.
 #' @return Saves the HTML report in the specified output directory.
 #' @export
-reportDiffExp <- function(inSCE, study,
+reportDiffExp <- function(inSCE, study, useReducedDim,
+                          featureDisplay = NULL,
                           output_file = NULL,
                           output_dir = NULL) {
 
@@ -188,7 +194,9 @@ reportDiffExp <- function(inSCE, study,
   }
   rmarkdown::render(system.file("rmarkdown/de/DifferentialExpression.Rmd",
                                 package="singleCellTK"),
-                    params = list(object=inSCE, study=study),
+                    params = list(object=inSCE, study=study,
+                                  useReducedDim=useReducedDim,
+                                  featureDisplay=featureDisplay),
                     output_file = output_file,
                     output_dir = output_dir )
 }

@@ -45,11 +45,8 @@ runScDblFinder <- function(inSCE,
 
   argsList <- mget(names(formals()),sys.frame(sys.nframe()))
 
-  if(!is.null(sample)) {
-    if(length(sample) != ncol(inSCE)) {
-      stop("'sample' must be the same length as the number of columns in 'inSCE'")
-    }
-  } else {
+  sample <- .manageCellVar(inSCE, var = sample)
+  if (is.null(sample)) {
     sample = rep(1, ncol(inSCE))
   }
 
