@@ -180,7 +180,7 @@ withConsoleMsgRedirect <- function(expr, msg="Please wait. See console log for p
         },
         error = function(e) {
           message(paste0(date(), " !!! ", e))
-          shinyalert("Error", text = e$message, type = "error", 
+          shinyalert("Error", text = e$message, type = "error",
                      callbackR = .loadClose())
         }
       )
@@ -304,7 +304,7 @@ combineQCSubPlots <- function(output, combineP, algo, sampleList, plots, plotIds
       output[[plotIds[[algo]]]] <- renderUI(plotOutput(mainPlotID))
       output[[mainPlotID]] <- renderPlot(plots$Violin)
     }
-    
+
 
     for (i in seq_along(sampleList)) {
       local({
@@ -465,11 +465,11 @@ spinnerColor <- "gainsboro"
     color = spinnerColor,
     text = message
   ) # show the notification spinner
-  
+
   shinyjs::runjs("var intervalVarAutoScrollConsole =  setInterval(startAutoScroll, 1000); Shiny.onInputChange('logDataAutoScrollStatus', intervalVarAutoScrollConsole);")
-  
+
   shinyjs::show(id = "consolePanel") # open console
-  
+
 }
 
 .loadClose <- function(){
@@ -477,13 +477,13 @@ spinnerColor <- "gainsboro"
   shinybusy::remove_modal_spinner() #closes the notification spinner
 }
 
-#' Usually numericInput returns NA when not entering anything in UI, but 
-#' directly using NA causes error. Similarly, character inputs (selectionInput) 
-#' returns empty string "", which should usually be changed to NULL. 
-#' @return if not identified as empty inputs, returns as is; otherwise, 
+#' Usually numericInput returns NA when not entering anything in UI, but
+#' directly using NA causes error. Similarly, character inputs (selectionInput)
+#' returns empty string "", which should usually be changed to NULL.
+#' @return if not identified as empty inputs, returns as is; otherwise,
 #' changeTo to `changeTo`
-handleEmptyInput <- function(x, 
-                             type = c("auto", "numeric", "character"), 
+handleEmptyInput <- function(x,
+                             type = c("auto", "numeric", "character"),
                              changeTo = NULL) {
   type = match.arg(type)
   if (type == "auto") {
@@ -516,4 +516,79 @@ getTypeByMat <- function(inSCE, matName) {
     }
     return()
   }
+}
+
+#' Generate distinct colors for all categorical col/rowData entries.
+#' Character columns will be considered as well as all-integer columns. Any
+#' column with all-distinct values will be excluded.
+#' @param inSCE \linkS4class{SingleCellExperiment} inherited object.
+#' @param axis Choose from \code{"col"} or \code{"row"}.
+#' @param colorGen A function that generates color code vector by giving an
+#' integer for the number of colors. Alternatively,
+#' \code{\link{rainbow}}. Default \code{\link{distinctColors}}.
+#' @return A \code{list} object containing distinct colors mapped to all
+#' possible categorical entries in \code{rowData(inSCE)} or
+#' \code{colData(inSCE)}.
+#' @author Yichen Wang
+dataAnnotationColor <- function(inSCE, axis = NULL,
+                                colorGen = distinctColors){
+    if(!is.null(axis) && axis == 'col'){
+        data <- SummarizedExperiment::colData(inSCE)
+    } else if(!is.null(axis) && axis == 'row'){
+        data <- SummarizedExperiment::rowData(inSCE)
+    } else {
+        stop('please specify "col" or "row"')
+    }
+    nColor <- 0
+    for(i in names(data)){
+        if(length(grep('counts', i)) > 0){
+            next
+        }
+        column <- stats::na.omit(data[[i]])
+        if(is.numeric(column)){
+            if(!all(as.integer(column) == column)){
+                # Temporarily the way to tell whether numeric categorical
+                next
+            }
+        }
+        if(is.factor(column)){
+            uniqLevel <- levels(column)
+        } else {
+            uniqLevel <- unique(column)
+        }
+        if(!length(uniqLevel) == nrow(data)){
+            # Don't generate color for all-uniq annotation (such as IDs/symbols)
+            nColor <- nColor + length(uniqLevel)
+        }
+    }
+    if (nColor == 0) {
+        return(list())
+    }
+    allColors <- colorGen(nColor)
+    nUsed <- 0
+    allColorMap <- list()
+    for(i in names(data)){
+        if(length(grep('counts', i)) > 0){
+            next
+        }
+        column <- stats::na.omit(data[[i]])
+        if(is.numeric(column)){
+            if(!all(as.integer(column) == column)){
+                # Temporarily the way to tell whether numeric categorical
+                next
+            }
+        }
+        if(is.factor(column)){
+            uniqLevel <- levels(column)
+        } else {
+            uniqLevel <- unique(column)
+        }
+        if(!length(uniqLevel) == nrow(data)){
+            subColors <- allColors[(nUsed+1):(nUsed+length(uniqLevel))]
+            names(subColors) <- uniqLevel
+            allColorMap[[i]] <- subColors
+            nUsed <- nUsed + length(uniqLevel)
+        }
+    }
+    return(allColorMap)
 }
