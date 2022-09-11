@@ -130,7 +130,7 @@ shinyServer(function(input, output, session) {
     updateSelectInput(session, "ctLabelByCluster",
                       choices = pdataOptions)
     if (!is.null(hmTemp$sce)) {
-      hmAnnAllColors$col <- singleCellTK:::dataAnnotationColor(hmTemp$sce, 'col')
+      hmAnnAllColors$col <- dataAnnotationColor(hmTemp$sce, 'col')
     }
     updateSelectInput(session, "TSCANclusterName",
                       choices = c("Auto generate clusters", pdataOptions))
@@ -216,7 +216,7 @@ shinyServer(function(input, output, session) {
     updateSelectInput(session, 'hmAddGeneLabel',
                       choices = c("Default feature IDs", selectRowData))
     if (!is.null(hmTemp$sce)) {
-      hmAnnAllColors$row <- singleCellTK:::dataAnnotationColor(hmTemp$sce, 'row')
+      hmAnnAllColors$row <- dataAnnotationColor(hmTemp$sce, 'row')
     }
   }
 
