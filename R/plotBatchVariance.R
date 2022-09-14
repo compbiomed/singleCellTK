@@ -55,9 +55,8 @@
                 "matType. Force using user specification.")
       }
       matType <- ifelse(is.null(matType), bcInfo$matType, matType)
-      batch <- ifelse(is.null(batch), bcInfo$batch, batch)
+      if (is.null(batch)) batch <- bcInfo$batch
       if (is.null(condition)) condition <- bcInfo$condition
-      #condition <- ifelse(is.null(condition), bcInfo$condition, condition)
     }
   }
   return(list(origAssay = origAssay,
@@ -94,7 +93,7 @@
 #' @return An object of class \code{"gtable"}, combining four \code{ggplot}s.
 #' @examples
 #' data("sceBatches")
-#' sceBatches <- scaterlogNormCounts(sceBatches, "logcounts")
+#' logcounts(sceBatches) <- log1p(counts(sceBatches))
 #' sceBatches <- runLimmaBC(sceBatches)
 #' plotBatchCorrCompare(sceBatches, "LIMMA", condition = "cell_type")
 #' @export
@@ -232,59 +231,33 @@ plotBatchCorrCompare <- function(inSCE, corrMat, batch = NULL, condition = NULL,
 #'                   condition = "cell_type")
 plotBatchVariance <- function(inSCE, useAssay = NULL, useReddim = NULL,
                               useAltExp = NULL, batch = 'batch',
-                              condition=NULL, title = NULL) {
-  if(!inherits(inSCE, 'SingleCellExperiment')){
-    stop("'inSCE' must inherit from 'SingleCellExperiment'.")
-  }
-  if(is.null(useAssay) + is.null(useReddim) + is.null(useAltExp) != 2){
-    stop("One and only one of `useAssay`, `useReddim`, ",
-         "`usAltExp` has to be specified.")
-  }
-  if(!is.null(useAssay)){
-    if(!useAssay %in% SummarizedExperiment::assayNames(inSCE)){
-      stop("'useAssay' not found in 'inSCE'.")
-    }
-    mat <- SummarizedExperiment::assay(inSCE, useAssay)
-  }
-  if(!is.null(useReddim)){
-    if(!useReddim %in% SingleCellExperiment::reducedDimNames(inSCE)){
-      stop("'useReddim not found in 'inSCE'.")
-    }
-    mat <- t(SingleCellExperiment::reducedDim(inSCE, useReddim))
-  }
-  if(!is.null(useAltExp)){
-    if(!useAltExp %in% SingleCellExperiment::altExpNames(inSCE)){
-      stop("'useAltExp not found in 'inSCE'.")
-    }
-    ae <- SingleCellExperiment::altExp(inSCE, useAltExp)
-    mat <- SummarizedExperiment::assay(ae)
-  }
+                              condition = NULL, title = NULL) {
+  useMat <- .selectSCEMatrix(inSCE, useAssay = useAssay,
+                             useReducedDim = useReddim, useAltExp = useAltExp,
+                             returnMatrix = TRUE, cellAsCol = TRUE)
+  mat <- useMat$mat
   if(is.null(batch)){
     stop("Batch annotation has to be given.")
-  } else{
-    if(!batch %in% names(SummarizedExperiment::colData(inSCE))){
-      stop("'batch' not found in 'inSCE'.")
-    }
   }
+  batchCol <- .manageCellVar(inSCE, var = batch, as.factor = TRUE)
   if(!inherits(mat, 'matrix')){
     mat <- as.matrix(mat)
   }
-  batchCol <- SummarizedExperiment::colData(inSCE)[, batch]
-  nlb <- nlevels(as.factor(batchCol))
+  nlb <- nlevels(batchCol)
   if (nlb <= 1){
     stop("No more than one batch found in specified annotation")
   } else {
-    batchMod <- stats::model.matrix(~as.factor(batchCol))
+    batchMod <- stats::model.matrix(~batchCol)
   }
   if (is.null(condition)){
     condMod <- matrix(rep(1, ncol(mat)), ncol = 1)
   } else {
-    condCol <- SingleCellExperiment::colData(inSCE)[, condition]
-    nlc <- nlevels(as.factor(condCol))
+    condCol <- .manageCellVar(inSCE, var = condition, as.factor = TRUE)
+    nlc <- nlevels(condCol)
     if (nlc <= 1){
       condMod <- matrix(rep(1, ncol(mat)), ncol = 1)
     } else {
-      condMod <- stats::model.matrix(~as.factor(condCol))
+      condMod <- stats::model.matrix(~condCol)
     }
   }
   mod <- cbind(condMod, batchMod[, -1])

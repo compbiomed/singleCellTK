@@ -55,7 +55,7 @@
 #' @export
 #' @examples
 #' data("sceBatches")
-#' logcounts(sceBatches) <- log(counts(sceBatches) + 1)
+#' logcounts(sceBatches) <- log1p(counts(sceBatches))
 #' sce.w <- subsetSCECols(sceBatches, colData = "batch == 'w'")
 #' sce.w <- runWilcox(sce.w, class = "cell_type", classGroup1 = "alpha",
 #'                    groupName1 = "w.alpha", groupName2 = "w.beta",
@@ -165,7 +165,7 @@ plotDEGViolin <- function(inSCE, useResult, threshP = FALSE, labelBy = NULL,
 #' @export
 #' @examples
 #' data("sceBatches")
-#' logcounts(sceBatches) <- log(counts(sceBatches) + 1)
+#' logcounts(sceBatches) <- log1p(counts(sceBatches))
 #' sce.w <- subsetSCECols(sceBatches, colData = "batch == 'w'")
 #' sce.w <- runWilcox(sce.w, class = "cell_type", classGroup1 = "alpha",
 #'                    groupName1 = "w.alpha", groupName2 = "w.beta",
@@ -400,7 +400,7 @@ getDEGTopTable <- function(inSCE, useResult,
 #' @param ... Other arguments passed to \code{\link{plotSCEHeatmap}}
 #' @examples
 #' data("sceBatches")
-#' logcounts(sceBatches) <- log(counts(sceBatches) + 1)
+#' logcounts(sceBatches) <- log1p(counts(sceBatches))
 #' sce.w <- subsetSCECols(sceBatches, colData = "batch == 'w'")
 #' sce.w <- runWilcox(sce.w, class = "cell_type", classGroup1 = "alpha",
 #'                    groupName1 = "w.alpha", groupName2 = "w.beta",
@@ -479,7 +479,7 @@ plotDEGHeatmap <- function(inSCE, useResult, onlyPos = FALSE,
 
   # Annotation organization
   ## Cells
-  group <- vector()
+  group <- rep(NA, ncol(tmpSCE))
   group[ix1] <- result$groupNames[1]
   group[ix2] <- result$groupNames[2]
   group <- factor(group[cell.ix], levels = result$groupNames)

@@ -19,20 +19,20 @@ getSoupX(inSCE, sampleID = NULL, background = FALSE)
 \item{inSCE}{A \linkS4class{SingleCellExperiment} object. For getter method,
 \code{\link{runSoupX}} must have been already applied.}
 
-\item{sampleID}{Character vector. For getter method, the samples that should 
-be included in the returned list. Leave this \code{NULL} for all samples. 
+\item{sampleID}{Character vector. For getter method, the samples that should
+be included in the returned list. Leave this \code{NULL} for all samples.
 Default \code{NULL}. For setter method, only one sample allowed.}
 
-\item{background}{Logical. Whether \code{background} was applied when 
+\item{background}{Logical. Whether \code{background} was applied when
 running \code{\link{runSoupX}}. Default \code{FALSE}.}
 
 \item{value}{Dedicated list object of SoupX results.}
 }
 \value{
-For getter method, a list with SoupX results for specified samples. 
+For getter method, a list with SoupX results for specified samples.
 For setter method, \code{inSCE} with SoupX results updated.
 
-For getter method, a list with SoupX results for specified samples. 
+For getter method, a list with SoupX results for specified samples.
 For setter method, \code{inSCE} with SoupX results updated.
 }
 \description{
@@ -46,7 +46,7 @@ appended to either \code{rowData(inSCE)} or \code{colData(inSCE)}.
 data(scExample, package = "singleCellTK")
 sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 \dontrun{
-# SoupX does not work for toy example, 
+# SoupX does not work for toy example,
 # can be tested with `sce <- importExampleData("pbmc3k")`
 sce <- runSoupX(sce, sample = "sample")
 soupXResults <- getSoupX(sce)
@@ -54,7 +54,7 @@ soupXResults <- getSoupX(sce)
 data(scExample, package = "singleCellTK")
 sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 \dontrun{
-# SoupX does not work for toy example, 
+# SoupX does not work for toy example,
 # can be tested with `sce <- importExampleData("pbmc3k")`
 sce <- runSoupX(sce, sample = "sample")
 soupXResults <- getSoupX(sce)

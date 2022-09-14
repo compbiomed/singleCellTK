@@ -4,7 +4,14 @@
 \alias{reportDiffExp}
 \title{Get runDEAnalysis .html report}
 \usage{
-reportDiffExp(inSCE, study, output_file = NULL, output_dir = NULL)
+reportDiffExp(
+  inSCE,
+  study,
+  useReducedDim,
+  featureDisplay = NULL,
+  output_file = NULL,
+  output_dir = NULL
+)
 }
 \arguments{
 \item{inSCE}{A \code{\link[SingleCellExperiment]{SingleCellExperiment}}
@@ -12,6 +19,13 @@ object containing the output from \code{\link{runDEAnalysis}} function}
 
 \item{study}{The specific analysis to visualize, used as \code{analysisName}
 argument when running differential expression.}
+
+\item{useReducedDim}{Specify an embedding for visualizing the relation ship
+between the conditions.}
+
+\item{featureDisplay}{The feature ID type to use for displaying. Should
+exists as a variable name of \code{rowData}. Default \code{NULL} use rownames
+of \code{inSCE}.}
 
 \item{output_file}{name of the generated file. If \code{NULL} then the output
 file name will be based on the name of the Rmarkdown template. Default

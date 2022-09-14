@@ -56,7 +56,7 @@ improvement might include solution to reduce redundant UMAP calculation.
 }
 \examples{
 data("sceBatches")
-sceBatches <- scaterlogNormCounts(sceBatches, "logcounts")
+logcounts(sceBatches) <- log1p(counts(sceBatches))
 sceBatches <- runLimmaBC(sceBatches)
 plotBatchCorrCompare(sceBatches, "LIMMA", condition = "cell_type")
 }

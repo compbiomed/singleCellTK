@@ -171,9 +171,9 @@ discreteColorPalette <- function(n, palette = c("random", "ggplot", "celda"),
   # chuS <- floor(floor(limit/dimN[1])) # size of chunk
   # chuN <- ceiling(dimN[2]/chuS) # number of chunks
   #chuS <- 3000 # loading 3000 cells in each chunk
-  chuN <- ceiling(dimN[2]/chuS)  
+  chuN <- ceiling(dimN[2]/chuS)
   Mat <- list()
-  
+
   for (i in seq_len(chuN)) {
     start <- (i-1)*chuS + 1
     end <- min(i*chuS, dimN[2])
@@ -182,7 +182,7 @@ discreteColorPalette <- function(n, palette = c("random", "ggplot", "celda"),
   x <- do.call(base::cbind, Mat)
   colnames(x) <- cn
   rownames(x) <- rn
-  
+
   return(x)
 }
 
@@ -233,21 +233,21 @@ dedupRowNames <- function(x, as.rowData = FALSE, return.list = FALSE){
 
 #' Set rownames of SCE with a character vector or a rowData column
 #' @description Users can set rownames of an SCE object with either a character
-#' vector where the length equals to \code{nrow(x)}, or a single character 
-#' specifying a column in \code{rowData(x)}. Also applicable to matrix like 
-#' object where \code{rownames<-} method works, but only allows full size name 
+#' vector where the length equals to \code{nrow(x)}, or a single character
+#' specifying a column in \code{rowData(x)}. Also applicable to matrix like
+#' object where \code{rownames<-} method works, but only allows full size name
 #' vector. Users can set \code{dedup = TRUE} to remove duplicated entries in the
-#' specification, by adding \code{-1, -2, ..., -i} suffix to the duplication of 
-#' the same identifier. 
-#' @param x Input object where the rownames will be modified. 
-#' @param rowNames Character vector of the rownames. If \code{x} is an 
-#' \linkS4class{SingleCellExperiment} object, a single character specifying a 
-#' column in \code{rowData(x)}. 
+#' specification, by adding \code{-1, -2, ..., -i} suffix to the duplication of
+#' the same identifier.
+#' @param x Input object where the rownames will be modified.
+#' @param rowNames Character vector of the rownames. If \code{x} is an
+#' \linkS4class{SingleCellExperiment} object, a single character specifying a
+#' column in \code{rowData(x)}.
 #' @param dedup Logical. Whether to deduplicate the specified rowNames. Default
 #' \code{TRUE}
 #' @return The input SCE object with rownames updated.
 #' @export
-#' @examples 
+#' @examples
 #' data("scExample", package = "singleCellTK")
 #' head(rownames(sce))
 #' sce <- setRowNames(sce, "feature_name")
@@ -272,7 +272,7 @@ setRowNames <- function(x, rowNames, dedup = TRUE) {
   } else {
     rownames(x) <- rowNames
   }
-  
+
   if (isTRUE(dedup)) {
     x <- dedupRowNames(x)
   }
@@ -305,7 +305,7 @@ setRowNames <- function(x, rowNames, dedup = TRUE) {
 #'  axis = "row")
 #' @return A unique, non-NA numeric vector of indices for the matching
 #' features/cells in \code{inSCE}.
-#' @author Yusuke Koga, Joshua Campbell
+#' @author Yusuke Koga, Joshua Campbell, Yichen Wang
 #' @export
 retrieveSCEIndex <- function(inSCE, IDs, axis, by = NULL,
                              exactMatch = TRUE, firstMatch = TRUE){
@@ -317,19 +317,24 @@ retrieveSCEIndex <- function(inSCE, IDs, axis, by = NULL,
   }
   if(axis %in% c('row', 'feature', 'gene')){
     data <- SummarizedExperiment::rowData(inSCE)
+    if (length(by) == 1 && by == "rownames") by <- NULL
   } else {
     data <- SummarizedExperiment::colData(inSCE)
+    if (length(by) == 1 && by == "colnames") by <- NULL
   }
 
   if(!is.null(by)){
-    if(!by %in% colnames(data)){
-      stop('"', by, '" annotation not found for "', axis, '".')
+    if (is.character(by) && length(by) == 1) {
+      if(!by %in% colnames(data)){
+        stop('"', by, '" annotation not found for "', axis, '".')
+      }
+      search <- data[[by]]
+    } else if(length(by) == nrow(data)){
+      search <- by
     }
-    search <- data[[by]]
   } else {
     if (is.null(rownames(data))) {
-      stop("'rownames' of 'inSCE' are 'NULL'. Please set 'rownames' or change",
-           " 'by' to search a different annotation of 'inSCE'.")
+      stop("No default", axis, " name found for 'inSCE'. Please set `by`.")
     }
     search <- rownames(data)
   }
@@ -439,13 +444,13 @@ retrieveSCEIndex <- function(inSCE, IDs, axis, by = NULL,
   if(is.null(gs)) {
     stop("No gene set collections have been imported.")
   }
-  
+
   if(!geneSetCollectionName %in% names(gs)) {
     stop("'", geneSetCollectionName, "' is not in the list of imported gene set collections: ",
          paste(names(gs), collapse = ","))
   }
-  
-  return(gs[[geneSetCollectionName]]) 
+
+  return(gs[[geneSetCollectionName]])
 }
 
 #' List geneset names from geneSetCollection

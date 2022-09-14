@@ -153,14 +153,8 @@ runTSCAN <- function(inSCE,
     sce <- runScranSNN(inSCE, useReducedDim = useReducedDim, seed = seed)
     cluster <- colData(sce)$scranSNN_cluster
     rm(sce)
-  } else if (length(cluster) == 1 & is.character(cluster)) {
-    if (!cluster %in% names(colData(inSCE))) {
-      stop("Specified cluster not found in `colData(inSCE)`.")
-    }
-    cluster <- colData(inSCE)[[cluster]]
-  } else if (length(cluster) != ncol(inSCE)) {
-    stop("`cluster` should either has length equal to `ncol(inSCE)` or be a ",
-         "colData variable.")
+  } else {
+    cluster <- .manageCellVar(inSCE, var = cluster)
   }
   if (length(unique(cluster)) == 1) {
     stop("Only one cluster found. Unable to calculate.")

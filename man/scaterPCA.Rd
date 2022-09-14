@@ -11,6 +11,7 @@ scaterPCA(
   scale = TRUE,
   reducedDimName = "PCA",
   nComponents = 50,
+  ntop = 2000,
   useAltExp = NULL,
   seed = NULL,
   BPPARAM = BiocParallel::SerialParam()
@@ -23,9 +24,9 @@ scaterPCA(
 specified, \code{useAssay} has to exist in
 \code{assays(altExp(inSCE, useAltExp))}. Default \code{"logcounts"}}
 
-\item{useFeatureSubset}{Subset of feature to use for dimension reduction. A 
+\item{useFeatureSubset}{Subset of feature to use for dimension reduction. A
 character string indicating a \code{rowData} variable that stores the logical
-vector of HVG selection, or a vector that can subset the rows of 
+vector of HVG selection, or a vector that can subset the rows of
 \code{inSCE}. Default \code{NULL}.}
 
 \item{scale}{Logical scalar, whether to standardize the expression values.
@@ -37,13 +38,17 @@ Default \code{TRUE}.}
 \item{nComponents}{Number of principal components to obtain from the PCA
 computation. Default \code{50}.}
 
+\item{ntop}{Automatically detect this number of variable features to use for
+dimension reduction. Ignored when using \code{useReducedDim} or using
+\code{useFeatureSubset}. Default \code{2000}.}
+
 \item{useAltExp}{The subset to use for PCA computation, usually for the
 selected.variable features. Default \code{NULL}.}
 
-\item{seed}{Integer, random seed for reproducibility of PCA results. 
+\item{seed}{Integer, random seed for reproducibility of PCA results.
 Default \code{NULL}.}
 
-\item{BPPARAM}{A \linkS4class{BiocParallelParam} object specifying whether 
+\item{BPPARAM}{A \linkS4class{BiocParallelParam} object specifying whether
 the PCA should be parallelized.}
 }
 \value{
@@ -52,7 +57,7 @@ updated in \code{reducedDim(inSCE, reducedDimName)}.
 }
 \description{
 A wrapper to \link[scater]{runPCA} function to compute principal
-component analysis (PCA) from a given \linkS4class{SingleCellExperiment} 
+component analysis (PCA) from a given \linkS4class{SingleCellExperiment}
 object.
 }
 \examples{
