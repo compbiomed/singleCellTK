@@ -36,32 +36,32 @@ shinyPanelScanpy <- fluidPage(
             selected = ""
         )
     ),
-    bsCollapse(id = "ScanpyUI", open = "scanpy QC & Filtering", # SeuratUI
-            bsCollapsePanel("scanpy QC & Filtering",
+    bsCollapse(id = "ScanpyUI", open = "scanpy QC & Filtering", # ScanPy
+            bsCollapsePanel("QC & Filtering",
                 fluidRow(
                         ),
                             style = "primary"
                             ),
-            bsCollapsePanel("scanpy Normalize Data",
-                            fluidRow(
-                              column(4,
-                                     panel(heading = "Options",
-                                           selectizeInput(
-                                             inputId = "scanpySelectNormalizationAssay", # seuratSelectNormalizationAssay
-                                             label = "Select input matrix:",
-                                             choices = NULL,
-                                             selected = NULL,
-                                             multiple = FALSE,
-                                             options = NULL),
-                                           selectInput(inputId = "scanpy_normalization_method", label = "Select normalization method: ", choices = c("decide")), #normalization_method
-                                           # textInput(inputId = "scale_factor", label = "Set scaling factor: ", value = "10000"),
-                                           actionButton(inputId = "scanpy_normalize_button", "Normalize") # normalize_button
-                                     )
-                              )
-                            ),
-                            style = "primary"
+            bsCollapsePanel("Normalize Data",
+                                                                   fluidRow(
+                                                                     column(4,
+                                                                            panel(heading = "Options",
+                                                                                  selectizeInput(
+                                                                                    inputId = "scanpySelectNormalizationAssay", # seuratSelectNormalizationAssay
+                                                                                    label = "Select input matrix:",
+                                                                                    choices = NULL,
+                                                                                    selected = NULL,
+                                                                                    multiple = FALSE,
+                                                                                    options = NULL),
+                                                                                  selectInput(inputId = "scanpy_normalization_method", label = "Select normalization method: ", choices = c("decide")), #normalization_method
+                                                                                  # textInput(inputId = "scale_factor", label = "Set scaling factor: ", value = "10000"),
+                                                                                  actionButton(inputId = "scanpy_normalize_button", "Normalize") # normalize_button
+                                                                            )
+                                                                     )
+                                                                   ),
+                                                                   style = "primary"
             ),
-            bsCollapsePanel("scanpy Highly Variable Genes",
+            bsCollapsePanel("Feature Selection",
                             fluidRow(
                               column(4,
                                      fluidRow(
@@ -95,7 +95,7 @@ shinyPanelScanpy <- fluidPage(
                             ),
                             style = "primary"
             ),
-            bsCollapsePanel("scanpy Dimensionality Reduction", # to rename
+            bsCollapsePanel("PCA", # to rename
                             fluidRow(
                               column(4,
                                      fluidRow(
@@ -137,7 +137,7 @@ shinyPanelScanpy <- fluidPage(
                             ),
                             style = "primary"
             ),
-            bsCollapsePanel("scanpy tSNE/UMAP",
+            bsCollapsePanel("tSNE & UMAP",
                             tabsetPanel(id = "tsneUmapTabsetScanpy", type = "tabs",
                                         tabPanel("scanpy tSNE",
                                                  br(),
@@ -206,7 +206,7 @@ shinyPanelScanpy <- fluidPage(
                             ),
                             style = "primary"
             ),
-            bsCollapsePanel("scanpy Clustering",
+            bsCollapsePanel("Clustering",
                             fluidRow(
                               column(4,
                                      fluidRow(
@@ -238,7 +238,7 @@ shinyPanelScanpy <- fluidPage(
                               )
                             ),
                             style = "primary"),
-            bsCollapsePanel("scanpy Find Markers",
+            bsCollapsePanel("Marker Selection",
                             fluidRow(
                               column(4,
                                      fluidRow(

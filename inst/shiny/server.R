@@ -8367,7 +8367,7 @@ shinyServer(function(input, output, session) {
 
       #Disable tabs
       shinyjs::disable(
-        selector = "div[value='Normalize Data']")
+        selector = "#ScanpyUI > div[value='Normalize Data']")
       shinyjs::disable(
         selector = "div[value='Highly Variable Genes']")
       shinyjs::disable(
