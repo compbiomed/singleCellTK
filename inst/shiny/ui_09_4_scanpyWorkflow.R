@@ -61,7 +61,7 @@ shinyPanelScanpy <- fluidPage(
                                                                    ),
                                                                    style = "primary"
             ),
-            bsCollapsePanel("Feature Selection",
+            bsCollapsePanel("Highly Variable Genes",
                             fluidRow(
                               column(4,
                                      fluidRow(
@@ -95,7 +95,7 @@ shinyPanelScanpy <- fluidPage(
                             ),
                             style = "primary"
             ),
-            bsCollapsePanel("PCA", # to rename
+            bsCollapsePanel("Dimensionality Reduction",
                             fluidRow(
                               column(4,
                                      fluidRow(
@@ -137,7 +137,7 @@ shinyPanelScanpy <- fluidPage(
                             ),
                             style = "primary"
             ),
-            bsCollapsePanel("tSNE & UMAP",
+            bsCollapsePanel("tSNE/UMAP",
                             tabsetPanel(id = "tsneUmapTabsetScanpy", type = "tabs",
                                         tabPanel("scanpy tSNE",
                                                  br(),
@@ -238,7 +238,7 @@ shinyPanelScanpy <- fluidPage(
                               )
                             ),
                             style = "primary"),
-            bsCollapsePanel("Marker Selection",
+            bsCollapsePanel("Find Markers",
                             fluidRow(
                               column(4,
                                      fluidRow(
