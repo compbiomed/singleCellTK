@@ -276,26 +276,6 @@ shinyUI(
                ))
         )
       ),
-
-      # fluidRow(
-      #   column(12, id = "consoleDiv", align = "right",
-      #          actionButton(inputId="interpretToggle", label = "Interpret"),
-      #          pushbar_deps(),
-      #          pushbar(
-      #            from = "bottom",
-      #            id = "myPushbar",
-      #            spsTimeline(
-      #              "b",
-      #              up_labels = c("Data Import",
-      #                            "Quality Control",
-      #                            "Normalization"),
-      #              down_labels = c("step 1", "step 2", "step3"),
-      #              icons = list(icon("dna"), icon("dna"), icon("dna")),
-      #              completes = c(TRUE, TRUE, FALSE)
-      #            )
-      #          )
-      #   )
-      # ),
       useShinyjs(),
       extendShinyjs(text = jsCode, functions = c("enableTabs", "disableTabs")),
 
