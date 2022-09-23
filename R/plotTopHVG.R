@@ -15,6 +15,11 @@
 #' to indicate what type of feature ID should be displayed. If set by
 #' \code{\link{setSCTKDisplayRow}}, will by default use it. If \code{NULL}, will
 #' use \code{rownames(inSCE)}.
+#' @param labelSize Numeric, size of the text label on top HVGs. Default 
+#' \code{2}.
+#' @param dotSize Numeric, size of the dots of the features. Default \code{2}.
+#' @param textSize Numeric, size of the text of axis title, axis label, etc.
+#' Default \code{12}.
 #' @return ggplot of HVG metrics and top HVG labels
 #' @details When \code{hvgNumber = NULL} and \code{useFeature = NULL}, only plot
 #' the mean VS variance/dispersion scatter plot. When only \code{hvgNumber} set,
