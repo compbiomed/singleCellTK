@@ -1749,7 +1749,7 @@ shinyServer(function(input, output, session) {
           algoList <- c(algoList, algo)
         }
       }
-      # only run getUMAP if there are no reducedDimNames
+      # only run runUMAP if there are no reducedDimNames
       # redDimName <- input$qcPlotRedDim
       # show the tabs for the result plots  output[[qc_plot_ids[[a]]]]
 
@@ -1880,15 +1880,16 @@ shinyServer(function(input, output, session) {
         updateColDataNames()
         updateAssayInputs()
         # redDimList <- strsplit(reducedDimNames(vals$counts), " ")
-        # run getUMAP if doublet/ambient RNA detection conducted
+        # run runUMAP if doublet/ambient RNA detection conducted
         #umap generated during soupX, skip for now
         if(length(intersect(c("scDblFinder", "cxds", "bcds",
              "cxds_bcds_hybrid", "decontX", #"soupX",
              "scrublet", "doubletFinder"), algoList))){
           message(paste0(date(), " ... Running 'UMAP'"))
-          vals$counts <- getUMAP(inSCE = vals$counts,
+          vals$counts <- runUMAP(inSCE = vals$counts,
                                  sample = qcSample,
                                  useAssay = input$qcAssaySelect,
+                                 useReducedDim = NULL,
                                  nNeighbors = input$UnNeighbors,
                                  nIterations = input$UnIterations,
                                  alpha = input$Ualpha,
