@@ -124,7 +124,8 @@ plotBatchCorrCompare <- function(inSCE, corrMat, batch = NULL, condition = NULL,
                                  title = "Batch Variance before correction") +
     ggplot2::theme(text=ggplot2::element_text(size=10))
 
-  inSCE <- getUMAP(inSCE, useAssay = origAssay, reducedDimName = "umap.before")
+  inSCE <- runUMAP(inSCE, useAssay = origAssay, useReducedDim = NULL, 
+                   reducedDimName = "umap.before")
   umap.before <- plotSCEDimReduceColData(inSCE, batch, "umap.before",
                                          shape = condition, axisLabelSize = 9,
                                          axisSize = 8, dotSize = 1,
@@ -145,10 +146,11 @@ plotBatchCorrCompare <- function(inSCE, corrMat, batch = NULL, condition = NULL,
       ggplot2::theme(text=ggplot2::element_text(size=10))
 
     if (method == "ComBatSeq") {
-      inSCE <- getUMAP(inSCE, useAssay = corrMat, logNorm = TRUE,
-                       reducedDimName = "umap.after")
+      inSCE <- runUMAP(inSCE, useAssay = corrMat, useReducedDim = NULL, 
+                       logNorm = TRUE, reducedDimName = "umap.after")
     } else {
-      inSCE <- getUMAP(inSCE, useAssay = corrMat, reducedDimName = "umap.after")
+      inSCE <- runUMAP(inSCE, useAssay = corrMat, useReducedDim = NULL,
+                       logNorm = FALSE, reducedDimName = "umap.after")
     }
   } else if (matType == "altExp") {
     # Doing log, because only Seurat returns altExp,
@@ -161,8 +163,8 @@ plotBatchCorrCompare <- function(inSCE, corrMat, batch = NULL, condition = NULL,
                                   title = paste0("Batch Variance corrected with ",
                                                  method)) +
       ggplot2::theme(text=ggplot2::element_text(size=10))
-    inSCE <- getUMAP(inSCE, useAltExp = corrMat, useAssay = corrMat,
-                     reducedDimName = "umap.after")
+    inSCE <- runQuickUMAP(inSCE, useAssay = corrMat, useAltExp = corrMat, 
+                          reducedDimName = "umap.after")
   } else if (matType == "reducedDim") {
     bv.after <- plotBatchVariance(inSCE, useReddim = corrMat, batch = batch,
                                   condition = condition,
@@ -173,7 +175,7 @@ plotBatchCorrCompare <- function(inSCE, corrMat, batch = NULL, condition = NULL,
       SingleCellExperiment::reducedDim(inSCE, "umap.after") <-
         SingleCellExperiment::reducedDim(inSCE, corrMat)
     } else {
-      inSCE <- getUMAP(inSCE, useReducedDim = corrMat,
+      inSCE <- runUMAP(inSCE, useReducedDim = corrMat,
                        reducedDimName = "umap.after")
     }
   } else {

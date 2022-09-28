@@ -91,7 +91,7 @@ reportCellQC <- function(inSCE, output_file = NULL,
 #' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 #' \dontrun{
 #' sce <- runDecontX(sce)
-#' sce <- getUMAP(sce, useAssay = "counts", logNorm = TRUE)
+#' sce <- runQuickUMAP(sce)
 #' reportQCTool(inSCE = sce, algorithm = "DecontX")
 #' }
 #' @export

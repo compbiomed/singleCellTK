@@ -195,7 +195,7 @@ setTopHVG <- function(inSCE,
     return(df)
 }
 
-#' parse `useFeatureSubset` in other functions such as `scaterPCA`, `getUMAP`..
+#' parse `useFeatureSubset` in other functions such as `scaterPCA`, `runUMAP`..
 #' Do checks, and return logical vector. Or character vector as needed by Seurat
 #' methods
 #' @param inSCE Input \linkS4class{SingleCellExperiment} object

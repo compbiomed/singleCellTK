@@ -1,21 +1,26 @@
 #' Run UMAP embedding with scater method
+#' @rdname runUMAP
 #' @description Uniform Manifold Approximation and Projection (UMAP) algorithm
-#' is commonly for 2D visualization of single-cell data. This function wraps the
-#' scater \code{\link[scater]{calculateUMAP}} function.
-#'
-#' With this funciton, users can create UMAP embedding directly from raw count
-#' matrix, with necessary preprocessing including normalization, scaling,
-#' dimension reduction all automated. Yet we still recommend having the PCA as
-#' input, so that the result can match with the clustering based on the same
-#' input PCA.
+#' is commonly for 2D visualization of single-cell data. These functions wrap 
+#' the scater \code{\link[scater]{calculateUMAP}} function.
+#' 
+#' Users can use \code{runQuickUMAP} to directly create UMAP embedding from raw
+#' count matrix, with necessary preprocessing including normalization, variable
+#' feature selection, scaling, dimension reduction all automated. Therefore, 
+#' \code{useReducedDim} is disabled for \code{runQuickUMAP}. 
+#' 
+#' In a complete analysis, we still recommend having dimension reduction such as
+#' PCA created beforehand and select proper numbers of dimensions for using
+#' \code{runUMAP}, so that the result can match with the clustering based on the
+#' same input PCA. 
 #' @param inSCE Input \linkS4class{SingleCellExperiment} object.
+#' @param useReducedDim The low dimension representation to use for UMAP
+#' computation. If \code{useAltExp} is specified, \code{useReducedDim} has to
+#' exist in \code{reducedDims(altExp(inSCE, useAltExp))}. Default \code{"PCA"}.
 #' @param useAssay Assay to use for UMAP computation. If \code{useAltExp} is
 #' specified, \code{useAssay} has to exist in
 #' \code{assays(altExp(inSCE, useAltExp))}. Ignored when using
-#' \code{useReducedDim}. Default \code{"logcounts"}.
-#' @param useReducedDim The low dimension representation to use for UMAP
-#' computation. If \code{useAltExp} is specified, \code{useReducedDim} has to
-#' exist in \code{reducedDims(altExp(inSCE, useAltExp))}. Default \code{NULL}.
+#' \code{useReducedDim}. Default \code{NULL}.
 #' @param useAltExp The subset to use for UMAP computation, usually for the
 #' selected variable features. Default \code{NULL}.
 #' @param sample Character vector. Indicates which sample each cell belongs to.
@@ -25,7 +30,7 @@
 #' coordinates obtained from this method. Default \code{"UMAP"}.
 #' @param logNorm Whether the counts will need to be log-normalized prior to
 #' generating the UMAP via \code{\link{scaterlogNormCounts}}. Ignored when using
-#' \code{useReducedDim}. Default \code{FALSE}.
+#' \code{useReducedDim}. Default \code{TRUE}.
 #' @param useFeatureSubset Subset of feature to use for dimension reduction. A
 #' character string indicating a \code{rowData} variable that stores the logical
 #' vector of HVG selection, or a vector that can subset the rows of
@@ -67,23 +72,23 @@
 #' data(scExample, package = "singleCellTK")
 #' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 #' # Run from raw counts
-#' sce <- getUMAP(inSCE = sce, useAssay = "counts", logNorm = TRUE, nTop = 2000,
-#'                scale = TRUE, pca = TRUE)
+#' sce <- runQuickUMAP(sce)
 #' \dontrun{
 #' # Run from PCA
 #' sce <- scaterlogNormCounts(sce, "logcounts")
 #' sce <- runModelGeneVar(sce)
 #' sce <- scaterPCA(sce, useAssay = "logcounts",
 #'                  useFeatureSubset = "HVG_modelGeneVar2000", scale = TRUE)
-#' sce <- getUMAP(sce, useReducedDim = "PCA")
+#' sce <- runUMAP(sce, useReducedDim = "PCA")
 #' }
 #' @importFrom S4Vectors metadata<-
-getUMAP <- function(inSCE, useAssay = "logcounts", useReducedDim = NULL,
+#' @importFrom BiocParallel SerialParam
+runUMAP <- function(inSCE, useReducedDim = "PCA", useAssay = NULL, 
                     useAltExp = NULL, sample = NULL, reducedDimName = "UMAP",
-                    logNorm = FALSE, useFeatureSubset = NULL, nTop = 2000,
+                    logNorm = TRUE, useFeatureSubset = NULL, nTop = 2000,
                     scale = TRUE, pca = TRUE, initialDims = 25, nNeighbors = 30,
                     nIterations = 200, alpha = 1, minDist = 0.01, spread = 1,
-                    seed = NULL, BPPARAM = BiocParallel::SerialParam()) {
+                    seed = NULL, BPPARAM = SerialParam()) {
   params <- as.list(environment())
   params$inSCE <- NULL
   params$BPPARAM <- NULL
@@ -120,7 +125,7 @@ getUMAP <- function(inSCE, useAssay = "logcounts", useReducedDim = NULL,
     if (!isTRUE(pca) & !is.null(useAssay)) {
       initialDims <- NULL
     }
-
+    
     nNeighbors <- min(ncol(sceSample), nNeighbors)
     message(paste0(date(), " ... Computing Scater UMAP for sample '",
                    samples[i], "'."))
@@ -144,4 +149,40 @@ getUMAP <- function(inSCE, useAssay = "logcounts", useReducedDim = NULL,
   SingleCellExperiment::reducedDim(inSCE, reducedDimName) <- umapDims
   metadata(inSCE)$sctk$runDimReduce$embedding[[reducedDimName]] <- params
   return(inSCE)
+}
+
+#' @rdname runUMAP
+#' @param ... Parameters passed to \code{runUMAP}
+#' @importFrom BiocParallel SerialParam
+#' @export
+runQuickUMAP <- function(inSCE, useAssay = "counts", sample = "sample", ...) {
+  args <- list(...)
+  if (!is.null(args$useReducedDim)) {
+    warning("Forcing `useReducedDim` to be `NULL`. Please use `runUMAP` for ",
+            "using reducedDim.")
+  }
+  args$useReducedDim <- NULL
+  args <- c(list(inSCE = inSCE, useAssay = useAssay, useReducedDim = NULL), 
+            args)
+  inSCE <- do.call("runUMAP", args = args)
+  return(inSCE)
+}
+
+#' @rdname runUMAP
+#' @export
+#' @importFrom BiocParallel SerialParam
+getUMAP <- function(inSCE, useReducedDim = "PCA", useAssay = NULL, 
+                    useAltExp = NULL, sample = NULL, reducedDimName = "UMAP",
+                    logNorm = TRUE, useFeatureSubset = NULL, nTop = 2000,
+                    scale = TRUE, pca = TRUE, initialDims = 25, nNeighbors = 30,
+                    nIterations = 200, alpha = 1, minDist = 0.01, spread = 1,
+                    seed = NULL, BPPARAM = SerialParam()) {
+  .Deprecated("runUMAP")
+  runUMAP(inSCE, useReducedDim = useReducedDim, useAssay = useAssay, 
+          useAltExp = useAltExp, sample = sample, 
+          reducedDimName = reducedDimName,
+          logNorm = logNorm, useFeatureSubset = useFeatureSubset, nTop = nTop,
+          scale = scale, pca = pca, initialDims = initialDims, 
+          nNeighbors = nNeighbors, nIterations = nIterations, alpha = alpha, 
+          minDist = minDist, spread = spread, seed = seed, BPPARAM = BPPARAM)
 }

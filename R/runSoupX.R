@@ -360,9 +360,8 @@ runSoupX <- function(inSCE,
     out <- SoupX::adjustCounts(sc, method = adjustMethod,
                                roundToInt = roundToInt, tol = tol, pCut = pCut)
     message(paste0(date(), " ... Generating UMAP"))
-    # Most of time `useAssay` should be "counts", thus logNorm=TRUE
-    inSCE <- getUMAP(inSCE, useAssay = useAssay, logNorm = TRUE,
-                     reducedDimName = "sampleUMAP")
+    inSCE <- runQuickUMAP(inSCE, useAssay = useAssay, 
+                          reducedDimName = "sampleUMAP")
     return(list(sc = sc, out = out,
                 umap = SingleCellExperiment::reducedDim(inSCE, "sampleUMAP")))
 }
