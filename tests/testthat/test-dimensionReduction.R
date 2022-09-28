@@ -89,17 +89,17 @@ test_that(desc = "Testing scater UMAP", {
 
 test_that(desc = "Testing Rtsne TSNE", {
     sce <- scaterPCA(sce, useFeatureSubset = "hvg", seed = 12345, reducedDimName = "PCA1")
-    sce <- getTSNE(sce, useReducedDim = "PCA1", reducedDimName = "TSNE1")
+    sce <- runTSNE(sce, useReducedDim = "PCA1", reducedDimName = "TSNE1")
     testthat::expect_true("TSNE1" %in% reducedDimNames(sce))
-    sce <- getTSNE(sce, useAssay = "hvgAltExpcounts", useAltExp = "hvgAltExp",
-                   reducedDimName = "TSNE2", logNorm = TRUE, nTop = 50)
+    sce <- runQuickTSNE(sce, useAssay = "hvgAltExpcounts", useAltExp = "hvgAltExp",
+                        reducedDimName = "TSNE2", logNorm = TRUE, nTop = 50)
     testthat::expect_true("TSNE2" %in% reducedDimNames(sce))
     # TODO: Still some runable conditions
     expect_error({
-        getTSNE(sce, useAssay = NULL, useReducedDim = NULL)
+        runTSNE(sce, useAssay = NULL, useReducedDim = NULL)
     }, "Either `useAssay` or `useReducedDim` has to be specified.")
     expect_error({
-        getTSNE(sce, useAltExp = "altexp")
+        runTSNE(sce, useAltExp = "altexp")
     }, "Specified `useAltExp` 'altexp' not found.")
 
     p1 <- plotTSNE(sce, reducedDimName = "TSNE1", colorBy = "type", shape = "type")

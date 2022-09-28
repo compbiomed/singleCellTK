@@ -27,7 +27,7 @@ plotUMAP <- function(inSCE, colorBy = NULL, shape = NULL,
                             reducedDimName = reducedDimName)
     } else {
       stop(reducedDimName,
-           " dimension not found. Run runUMAP() or set runUMAP to TRUE.")
+           " dimension not found. Run `runUMAP()` or set `runUMAP` to `TRUE`.")
     }
   }
   UMAPDf <- data.frame(SingleCellExperiment::reducedDim(inSCE,

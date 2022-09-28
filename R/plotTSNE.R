@@ -16,16 +16,16 @@
 #' data("mouseBrainSubsetSCE")
 #' plotTSNE(mouseBrainSubsetSCE, colorBy = "level1class",
 #'          reducedDimName = "TSNE_counts")
-plotTSNE <- function(inSCE, colorBy=NULL, shape=NULL,
-                     reducedDimName="TSNE", runTSNE=FALSE,
-                     useAssay="logcounts"){
+plotTSNE <- function(inSCE, colorBy = NULL, shape = NULL,
+                     reducedDimName = "TSNE", runTSNE = FALSE,
+                     useAssay = "counts"){
   if(!(reducedDimName %in% names(SingleCellExperiment::reducedDims(inSCE)))){
     if (runTSNE){
-      inSCE <- getTSNE(inSCE, useAssay = useAssay,
-                       reducedDimName = reducedDimName)
+      inSCE <- runQuickTSNE(inSCE, useAssay = useAssay,
+                            reducedDimName = reducedDimName)
     } else {
       stop(reducedDimName,
-           " dimension not found. Run getTSNE() or set runTSNE to TRUE.")
+           " dimension not found. Run `runTSNE()` or set `runTSNE` to `TRUE`.")
     }
   }
   tsneDf <- data.frame(SingleCellExperiment::reducedDim(inSCE,

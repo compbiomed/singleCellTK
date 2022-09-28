@@ -66,7 +66,7 @@ Generic Wrapper function for running dimensionality reduction
 \details{
 Wrapper function to run one of the available dimensionality
 reduction algorithms integrated within SCTK from \code{\link{scaterPCA}},
-\code{\link{runSeuratPCA}}, \code{\link{runSeuratICA}}, \code{\link{getTSNE}},
+\code{\link{runSeuratPCA}}, \code{\link{runSeuratICA}}, \code{\link{runTSNE}},
 \code{\link{runSeuratTSNE}}, \code{\link{runUMAP}} and
 \code{\link{runSeuratUMAP}}. Users can use an assay by specifying
 \code{useAssay}, use the assay in an altExp by specifying both
