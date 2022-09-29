@@ -1,8 +1,8 @@
 #' Generic Wrapper function for running dimensionality reduction
 #' @details Wrapper function to run one of the available dimensionality
 #' reduction algorithms integrated within SCTK from \code{\link{scaterPCA}},
-#' \code{\link{runSeuratPCA}}, \code{\link{runSeuratICA}}, \code{\link{getTSNE}},
-#' \code{\link{runSeuratTSNE}}, \code{\link{getUMAP}} and
+#' \code{\link{runSeuratPCA}}, \code{\link{runSeuratICA}}, \code{\link{runTSNE}},
+#' \code{\link{runSeuratTSNE}}, \code{\link{runUMAP}} and
 #' \code{\link{runSeuratUMAP}}. Users can use an assay by specifying
 #' \code{useAssay}, use the assay in an altExp by specifying both
 #' \code{useAltExp} and \code{useAssay}, or use a low-dimensionality
@@ -72,12 +72,12 @@ runDimReduce <- function(inSCE,
                        useFeatureSubset = useFeatureSubset, scale = scale,
                        seed = seed, ...)
   } else if (method == "scaterUMAP") {
-    inSCE <- getUMAP(inSCE = inSCE, useAssay = useAssay, useAltExp = useAltExp,
+    inSCE <- runUMAP(inSCE = inSCE, useAssay = useAssay, useAltExp = useAltExp,
                      useReducedDim = useReducedDim,
                      useFeatureSubset = useFeatureSubset, scale = scale,
                      reducedDimName = reducedDimName, seed = seed, ...)
   } else if (method == "rTSNE") {
-    inSCE <- getTSNE(inSCE = inSCE, useAssay = useAssay, useAltExp = useAltExp,
+    inSCE <- runTSNE(inSCE = inSCE, useAssay = useAssay, useAltExp = useAltExp,
                      useReducedDim = useReducedDim,
                      useFeatureSubset = useFeatureSubset, scale = scale,
                      reducedDimName = reducedDimName, seed = seed, ...)

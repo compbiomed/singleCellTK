@@ -159,8 +159,7 @@ sce <- runCellQC(sce, sample = NULL,
                  mitoRef = "human", mitoIDType = "symbol", 
                  mitoGeneLocation = "rownames", seed = 12345)
 
-sce <- getUMAP(inSCE = sce, useAssay = "counts", logNorm = TRUE, 
-               reducedDimName = "QC_UMAP", seed = 12345)
+sce <- runQuickUMAP(sce, reducedDimName = "QC_UMAP", seed = 12345)
 ```
 
 >**Note:** If you have cells from multiple samples stored in the SCE object, make sure to supply the `sample` parameter as the QC tools need to be applied to cells from each sample individually.

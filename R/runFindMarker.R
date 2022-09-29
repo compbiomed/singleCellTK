@@ -68,9 +68,12 @@ runFindMarker <- function(inSCE, useAssay = 'logcounts',
                           minMeanExpr = NULL, detectThresh = 0){
   method <- match.arg(method)
   # Input checks will be done in `runDEAnalysis()`
-  if (is.character(cluster) && length(cluster) == 1) clusterName <- cluster
-  else clusterName <- 'findMarker_cluster'
   clusterVar <- .manageCellVar(inSCE, var = cluster)
+  if (is.character(cluster) && length(cluster) == 1) clusterName <- cluster
+  else {
+    clusterName <- 'findMarker_cluster'
+    inSCE[[clusterName]] <- cluster
+  }
   # Iterate
   if(is.factor(clusterVar)){
     # In case inSCE is a subset, when "levels" is a full list of all

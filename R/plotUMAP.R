@@ -16,18 +16,18 @@
 #' @examples
 #' data(scExample, package = "singleCellTK")
 #' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
-#' sce <- getUMAP(inSCE = sce, useAssay = "counts", reducedDimName = "UMAP")
+#' sce <- runQuickUMAP(sce)
 #' plotUMAP(sce)
 plotUMAP <- function(inSCE, colorBy = NULL, shape = NULL,
                      reducedDimName = "UMAP", runUMAP = FALSE,
-                     useAssay = "logcounts"){
+                     useAssay = "counts"){
   if(!(reducedDimName %in% names(SingleCellExperiment::reducedDims(inSCE)))){
     if (runUMAP){
-      inSCE <- getUMAP(inSCE, useAssay = useAssay,
-                       reducedDimName = reducedDimName)
+      inSCE <- runQuickUMAP(inSCE, useAssay = useAssay,
+                            reducedDimName = reducedDimName)
     } else {
       stop(reducedDimName,
-           " dimension not found. Run getUMAP() or set runUMAP to TRUE.")
+           " dimension not found. Run `runUMAP()` or set `runUMAP` to `TRUE`.")
     }
   }
   UMAPDf <- data.frame(SingleCellExperiment::reducedDim(inSCE,

@@ -579,8 +579,7 @@ plotBarcodeRankDropsResults <- function(inSCE,
 #' data(scExample, package="singleCellTK")
 #' \dontrun{
 #' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
-#' sce <- getUMAP(inSCE=sce, useAssay="counts", logNorm=TRUE, 
-#'                reducedDimName="UMAP")
+#' sce <- runQuickUMAP(sce)
 #' sce <- runScrublet(sce)
 #' plotScrubletResults(inSCE=sce, reducedDimName="UMAP")
 #' }
@@ -878,8 +877,7 @@ plotScrubletResults <- function(inSCE,
 #' @examples
 #' data(scExample, package="singleCellTK")
 #' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
-#' sce <- getUMAP(inSCE=sce, useAssay="counts", logNorm=TRUE, 
-#'                reducedDimName="UMAP")
+#' sce <- runQuickUMAP(sce)
 #' sce <- runDoubletFinder(sce)
 #' plotDoubletFinderResults(inSCE=sce, reducedDimName="UMAP")
 #' @export
@@ -1262,8 +1260,7 @@ plotDoubletFinderResults <- function(inSCE,
 #' @examples
 #' data(scExample, package="singleCellTK")
 #' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
-#' sce <- getUMAP(inSCE=sce, useAssay="counts", logNorm=TRUE, 
-#'                reducedDimName="UMAP")
+#' sce <- runQuickUMAP(sce)
 #' sce <- runScDblFinder(sce)
 #' plotScDblFinderResults(inSCE=sce, reducedDimName="UMAP")
 #' @export
@@ -1568,8 +1565,7 @@ plotScDblFinderResults <- function(inSCE,
 #' @examples
 #' data(scExample, package="singleCellTK")
 #' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
-#' sce <- getUMAP(inSCE=sce, useAssay="counts", logNorm=TRUE, 
-#'                reducedDimName="UMAP")
+#' sce <- runQuickUMAP(sce)
 #' sce <- runCxds(sce)
 #' plotCxdsResults(inSCE=sce, reducedDimName="UMAP")
 #' @export
@@ -1871,8 +1867,7 @@ plotCxdsResults <- function(inSCE,
 #' @examples
 #' data(scExample, package="singleCellTK")
 #' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
-#' sce <- getUMAP(inSCE=sce, useAssay="counts", logNorm=TRUE, 
-#'                reducedDimName="UMAP")
+#' sce <- runQuickUMAP(sce)
 #' sce <- runBcds(sce)
 #' plotBcdsResults(inSCE=sce, reducedDimName="UMAP")
 #' @export
@@ -2175,8 +2170,7 @@ plotBcdsResults <- function(inSCE,
 #' @examples
 #' data(scExample, package="singleCellTK")
 #' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
-#' sce <- getUMAP(inSCE=sce, useAssay="counts", logNorm=TRUE, 
-#'                reducedDimName="UMAP")
+#' sce <- runQuickUMAP(sce)
 #' sce <- runCxdsBcdsHybrid(sce)
 #' plotScdsHybridResults(inSCE=sce, reducedDimName="UMAP")
 #' @export

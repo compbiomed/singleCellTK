@@ -10,7 +10,7 @@ plotTSNE(
   shape = NULL,
   reducedDimName = "TSNE",
   runTSNE = FALSE,
-  useAssay = "logcounts"
+  useAssay = "counts"
 )
 }
 \arguments{

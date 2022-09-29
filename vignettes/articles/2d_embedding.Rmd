@@ -127,8 +127,8 @@ While the `runDimReduce()` wrapper function can be used for all 2D embedding alg
 
 Running tSNE from *Rtsne* package:
 
-```{r "getTSNE", eval = FALSE}
-sce <- getTSNE(inSCE = sce, useReducedDim = "PCA", reducedDimName = "TSNE")
+```{r "runTSNE", eval = FALSE}
+sce <- runTSNE(inSCE = sce, useReducedDim = "PCA", reducedDimName = "TSNE")
 ```
 
 Using the *Seurat* tSNE wrapper is recommended only in the [Seurat Curated Workflow](seurat_curated_workflow.html).
@@ -141,8 +141,8 @@ sce <- runSeuratPCA(inSCE = sce, useAssay = "seuratNormData", scale = TRUE, redu
 
 Running UMAP from *scater* package:
 
-```{r "getUMAP", eval = FALSE}
-sce <- getUMAP(inSCE = sce, useReducedDim = "PCA", reducedDimName = "UMAP")
+```{r "runUMAP", eval = FALSE}
+sce <- runUMAP(inSCE = sce, useReducedDim = "PCA", reducedDimName = "UMAP")
 ```
 
 Using the *Seurat* UMAP wrapper is recommended only in the [Seurat Curated Workflow](seurat_curated_workflow.html).
