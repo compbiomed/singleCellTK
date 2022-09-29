@@ -21,6 +21,8 @@
 setGeneric("getSampleSummaryStatsTable", function(inSCE, statsName, ...) standardGeneric("getSampleSummaryStatsTable"))
 
 #' @rdname getSampleSummaryStatsTable
+#' @param value The summary table for QC statistics generated from SingleCellTK
+#' to be added to the SCE object.
 setGeneric("setSampleSummaryStatsTable<-", function(inSCE, statsName, ..., value) standardGeneric("setSampleSummaryStatsTable<-"))
 
 #' @title Lists the table of SCTK QC outputs stored within the metadata.

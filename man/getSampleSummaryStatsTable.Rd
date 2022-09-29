@@ -24,6 +24,9 @@ that stores the stats table within the metadata of the
 SingleCellExperiment object. Required.}
 
 \item{...}{Other arguments passed to the function.}
+
+\item{value}{The summary table for QC statistics generated from SingleCellTK
+to be added to the SCE object.}
 }
 \value{
 For \code{getSampleSummaryStatsTable}, A matrix/array object. 
