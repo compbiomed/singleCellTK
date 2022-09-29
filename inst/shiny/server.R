@@ -227,10 +227,12 @@ shinyServer(function(input, output, session) {
   }
 
 
-  updateSelectInputTag <- function(session, inputId, choices = NULL, selected = NULL,
-                                   label = "Select assay:", tags = NULL, recommended = NULL, showTags = TRUE,
-                                   redDims = FALSE){
-    choices <- expTaggedData(vals$counts, tags, redDims = redDims, showTags = showTags, recommended = recommended)
+  updateSelectInputTag <- function(session, inputId, choices = NULL, 
+                                   selected = NULL, label = "Select assay:", 
+                                   tags = NULL, recommended = NULL, 
+                                   showTags = TRUE, redDims = FALSE, 
+                                   inSCE = vals$counts){
+    choices <- expTaggedData(inSCE, tags, redDims = redDims, showTags = showTags, recommended = recommended)
     updateSelectizeInput(session = session, inputId = inputId, label = label, choices = choices, selected = selected)
   }
 
@@ -294,7 +296,7 @@ shinyServer(function(input, output, session) {
                            recommended = c("transformed", "normalized"))
     }
     updateSelectInputTag(session, "filterAssaySelect", choices = currassays)
-    updateSelectInputTag(session, "qcAssaySelect", recommended = "raw")
+    updateSelectInputTag(session, "qcAssaySelect", recommended = "raw", inSCE = vals$original)
     updateSelectInputTag(session, "celdaAssay", choices = currassays)
     updateSelectInputTag(session, "celdaAssayGS", choices = currassays)
     updateSelectInputTag(session, "celdaAssaytSNE", choices = currassays)
@@ -1735,12 +1737,12 @@ shinyServer(function(input, output, session) {
 
   updateQCPlots <- function() {
     # get selected sample from run QC section
-    if (!is.null(vals$counts)) {
+    if (!is.null(vals$original)) {
       qcSample <- input$qcSampleSelect
       if (qcSample == "None") {
         qcSample <- NULL
       } else {
-        qcSample <- colData(vals$counts)[,input$qcSampleSelect]
+        qcSample <- colData(vals$original)[,input$qcSampleSelect]
       }
       # build list of selected algos
       algoList = list()
@@ -1749,16 +1751,16 @@ shinyServer(function(input, output, session) {
           algoList <- c(algoList, algo)
         }
       }
-      # only run getUMAP if there are no reducedDimNames
+      # only run runUMAP if there are no reducedDimNames
       # redDimName <- input$qcPlotRedDim
       # show the tabs for the result plots  output[[qc_plot_ids[[a]]]]
 
       showQCResTabs(vals, algoList, qc_algo_status, qc_plot_ids)
-      arrangeQCPlots(vals$counts, input, output, algoList,
-                     colData(vals$counts)[[input$qcSampleSelect]], qc_plot_ids,
+      arrangeQCPlots(vals$original, input, output, algoList,
+                     colData(vals$original)[[input$qcSampleSelect]], qc_plot_ids,
                      qc_algo_status, input$QCUMAPName)
 
-      uniqueSampleNames = unique(colData(vals$counts)[[input$qcSampleSelect]])
+      uniqueSampleNames = unique(colData(vals$original)[[input$qcSampleSelect]])
       for (algo in algoList) {
         qc_algo_status[[algo]] <- list(self="done")
         if (length(uniqueSampleNames) > 1) {
@@ -1778,7 +1780,7 @@ shinyServer(function(input, output, session) {
           selector = "#qcPageErrors",
           ui = wellPanel(id = "noSelected", tags$b("Please select at least one algorithm.", style = "color: red;"))
         )
-      } else if (is.null(vals$counts)) {
+      } else if (is.null(vals$original)) {
         insertUI(
           selector = "#qcPageErrors",
           ui = wellPanel(id = "noSCE", tags$b("Please upload a sample first.", style = "color: red;"))
@@ -1868,7 +1870,7 @@ shinyServer(function(input, output, session) {
           }
         }
         # run selected cell QC algorithms
-        vals$counts <- runCellQC(inSCE = vals$counts,
+        vals$original <- runCellQC(inSCE = vals$original,
                                  algorithms = algoList,
                                  sample = qcSample,
                                  collectionName = qcCollName,
@@ -1877,27 +1879,31 @@ shinyServer(function(input, output, session) {
                                  mitoGeneLocation = mgsLoc,
                                  useAssay = input$qcAssaySelect,
                                  paramsList = paramsList)
+        # Only copy the newly generated colData variables to vals$counts, but
+        # not replacing the vals$counts. vals$counts might have already become
+        # a subset.
+        vals$counts <- passQCVar(vals$original, vals$counts, algoList)
         updateColDataNames()
         updateAssayInputs()
-        # redDimList <- strsplit(reducedDimNames(vals$counts), " ")
-        # run getUMAP if doublet/ambient RNA detection conducted
+        # redDimList <- strsplit(reducedDimNames(vals$original), " ")
+        # run runUMAP if doublet/ambient RNA detection conducted
         #umap generated during soupX, skip for now
-        if(length(intersect(c("scDblFinder", "cxds", "bcds",
+        if (length(intersect(c("scDblFinder", "cxds", "bcds",
              "cxds_bcds_hybrid", "decontX", #"soupX",
-             "scrublet", "doubletFinder"), algoList))){
+             "scrublet", "doubletFinder"), algoList)) > 0) {
           message(paste0(date(), " ... Running 'UMAP'"))
-          vals$counts <- getUMAP(inSCE = vals$counts,
-                                 sample = qcSample,
-                                 useAssay = input$qcAssaySelect,
-                                 nNeighbors = input$UnNeighbors,
-                                 nIterations = input$UnIterations,
-                                 alpha = input$Ualpha,
-                                 minDist = input$UminDist,
-                                 spread = input$Uspread,
-                                 initialDims = input$UinitialDims,
-                                 reducedDimName = input$QCUMAPName,
-                                 seed = input$Useed
-                                 )
+          vals$original <- runUMAP(inSCE = vals$original,
+                                   sample = qcSample,
+                                   useAssay = input$qcAssaySelect,
+                                   useReducedDim = NULL,
+                                   nNeighbors = input$UnNeighbors,
+                                   nIterations = input$UnIterations,
+                                   alpha = input$Ualpha,
+                                   minDist = input$UminDist,
+                                   spread = input$Uspread,
+                                   initialDims = input$UinitialDims,
+                                   reducedDimName = input$QCUMAPName,
+                                   seed = input$Useed)
 
         }
         message(paste0(date(), " ... QC Complete"))
@@ -1920,15 +1926,15 @@ shinyServer(function(input, output, session) {
   rowFilteringParams <- reactiveValues(params = list(), id_count = 0)
 
   observeEvent(input$addFilteringParam, {
-    if (!is.null(vals$counts)) {
-      showModal(filteringModal(colNames = names(colData(vals$counts))))
+    if (!is.null(vals$original)) {
+      showModal(filteringModal(colNames = names(colData(vals$original))))
     }
   })
 
   observeEvent(input$addRowFilteringParam, {
-    if (!is.null(vals$counts) &&
-        !is.null(names(assays(vals$counts)))) {
-      showModal(rowFilteringModal(assayInput = names(assays(vals$counts))))
+    if (!is.null(vals$original) &&
+        !is.null(names(assays(vals$original)))) {
+      showModal(rowFilteringModal(assayInput = names(assays(vals$original))))
     }
   })
 
@@ -1938,13 +1944,13 @@ shinyServer(function(input, output, session) {
     removeUI(selector = "#newThresh")
     removeUI(selector = "div:has(>> #convertToCat)")
     # check if column contains numerical values
-    isNum <- is.numeric(vals$counts[[input$filterColSelect]][0])
-    if (length(vals$counts[[input$filterColSelect]]) > 0) {
+    isNum <- is.numeric(vals$original[[input$filterColSelect]][0])
+    if (length(vals$original[[input$filterColSelect]]) > 0) {
       if (isTRUE(isNum)) {
         # (from partials) insertUI for choosing greater than and less than params
-        addFilteringThresholdOptions(vals$counts[[input$filterColSelect]])
+        addFilteringThresholdOptions(vals$original[[input$filterColSelect]])
         # if less than 25 unique categories, give categorical option
-        if (length(unique(vals$counts[[input$filterColSelect]])) < 25) {
+        if (length(unique(vals$original[[input$filterColSelect]])) < 25) {
           insertUI(
             selector = "#convertFilterType",
             ui = checkboxInput("convertToCat", "Convert to categorical filter?")
@@ -1957,7 +1963,7 @@ shinyServer(function(input, output, session) {
           selector = "#filterCriteria",
           ui = tags$div(id="newThresh",
                         checkboxGroupInput("filterThresh", "Please select which columns to keep:",
-                                           choices = as.vector(unique(vals$counts[[input$filterColSelect]])),
+                                           choices = as.vector(unique(vals$original[[input$filterColSelect]])),
                         ),
           )
         )
@@ -1978,13 +1984,13 @@ shinyServer(function(input, output, session) {
           selector = "#filterCriteria",
           ui = tags$div(id="newThresh",
                         checkboxGroupInput("filterThresh", "Please select which columns to keep:",
-                                           choices = as.vector(unique(vals$counts[[input$filterColSelect]])),
+                                           choices = as.vector(unique(vals$original[[input$filterColSelect]])),
                         )
           )
         )
       } else {
-        addFilteringThresholdOptions(vals$counts[[input$filterColSelect]])
-        if (length(unique(vals$counts[[input$filterColSelect]])) < 25) {
+        addFilteringThresholdOptions(vals$original[[input$filterColSelect]])
+        if (length(unique(vals$original[[input$filterColSelect]])) < 25) {
           shinyjs::show("convertFilterType")
         }
       }
@@ -2005,7 +2011,7 @@ shinyServer(function(input, output, session) {
 
   observeEvent(input$filtModalOK, {
     if (is.null(input$filterThresh) && is.null(input$filterThreshGT) && is.null(input$filterThreshLT)) {
-      showModal(filteringModal(failed=TRUE, colNames = names(colData(vals$counts))))
+      showModal(filteringModal(failed=TRUE, colNames = names(colData(vals$original))))
     } else {
       id <- paste0("filteringParam", filteringParams$id_count)
       # figure out which options the user selected
@@ -2073,7 +2079,7 @@ shinyServer(function(input, output, session) {
 
   observeEvent(input$rowFiltModalOK, {
     if ((is.null(input$filterThreshX)) || (is.null(input$filterThreshY)) || (is.null(input$filterAssaySelect))) {
-      showModal(rowFilteringModal(failed=TRUE, assayInput = names(assays(vals$counts))))
+      showModal(rowFilteringModal(failed=TRUE, assayInput = names(assays(vals$original))))
     } else {
       id <- paste0("rowFilteringParam", rowFilteringParams$id_count)
       # new row in parameters table
@@ -2112,29 +2118,43 @@ shinyServer(function(input, output, session) {
     }
     rowFilteringParams$params <- list()
   })
-
-  observeEvent(input$filterSCE, withConsoleMsgRedirect(
-    msg = "Please wait while data is being filtered. See console log for progress.",
-    {
+  
+  filterSCE <- function(inSCE, colFilter, rowFilter) {
+    if (!is.null(colFilter)) {
       # handle column filtering (pull out the criteria strings first)
-      colInput <- formatFilteringCriteria(filteringParams$params)
+      colInput <- formatFilteringCriteria(colFilter$params)
       if (length(colInput) > 0) {
-        vals$counts <- subsetSCECols(vals$counts, colData = colInput)
+        inSCE <- subsetSCECols(inSCE, colData = colInput)
       }
-
-      # handle row filtering (enter information as rows first, then pull out criteria strings)
-      vals$counts <- addRowFiltersToSCE(vals$counts, rowFilteringParams)
-      rowInput <- formatFilteringCriteria(rowFilteringParams$params)
+    }
+    if (!is.null(rowFilter)) {
+      # handle row filtering (enter information as rows first, then pull out 
+      # criteria strings)
+      rowInput <- formatFilteringCriteria(rowFilter$params)
       if (length(rowInput) > 0) {
-        temp <- subsetSCERows(vals$counts, rowData = rowInput, returnAsAltExp = FALSE)
+        inSCE <- addRowFiltersToSCE(inSCE, rowFilter)
+        temp <- subsetSCERows(inSCE, rowData = rowInput, returnAsAltExp = FALSE)
         if (nrow(temp) == 0) {
           stop("This filter will clear all rows. Filter has not been applied.")
         } else {
-          vals$counts <- temp
+          inSCE <- temp
         }
       }
+    }
+    return(inSCE)
+  }
+  
+  observeEvent(input$filterSCE, withConsoleMsgRedirect(
+    msg = "Please wait while data is being filtered. See console log for progress.",
+    {
+      vals$counts <- filterSCE(vals$original, filteringParams, rowFilteringParams)
       shinyjs::show(id="filteringSummary")
-
+      updateColDataNames()
+      updateReddimInputs()
+      updateFeatureAnnots()
+      updateAssayInputs()
+      # TODO: When new subset is being created and maybe replacing previous
+      # vals$counts, please find if any of the downstream UI need to be updated
       # Show downstream analysis options
       shinyjs::show(selector = ".nlw-qcf")
   }))

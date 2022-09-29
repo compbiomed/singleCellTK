@@ -190,15 +190,15 @@ This functionality is implemented in `plotSCEBatchFeatureMean()`. The methodolog
 
 3. Plot an embedding to see the grouping of cells  
 
-There is no function special for batch correction, but this can be achieved simply by using the [dimension reduction](dimensionality_reduction.html)/[2D embedding](2d_embedding.html) calculation functions (e.g. `scaterPCA()`, `getUMAP()` and `getTSNE()`) and `plotSCEDimReduceColData()`.
+There is no function special for batch correction, but this can be achieved simply by using the [dimension reduction](dimensionality_reduction.html)/[2D embedding](2d_embedding.html) calculation functions (e.g. `scaterPCA()`, `runUMAP()` and `run`TSNE()`) and `plotSCEDimReduceColData()`.
 
 ```{r umapBefore}
-sce.small <- getUMAP(inSCE = sce.small)
+sce.small <- runUMAP(inSCE = sce.small, useAssay = "logcounts", useReducedDim = NULL, logNorm = FALSE)
 plotSCEDimReduceColData(inSCE = sce.small, colorBy = 'sample', reducedDimName = 'UMAP', title = 'UMAP Before Correction')
 ```
 
 ```{r umapAfter}
-sce.small <- getUMAP(inSCE = sce.small, useAssay = 'LIMMA', reducedDimName = 'UMAP_LIMMA')
+sce.small <- runUMAP(inSCE = sce.small, useAssay = 'LIMMA', useReducedDim = NULL, logNorm = FALSE, reducedDimName = 'UMAP_LIMMA')
 plotSCEDimReduceColData(inSCE = sce.small, colorBy = 'sample', reducedDimName = 'UMAP_LIMMA', title = 'UMAP After Correction')
 ```
 

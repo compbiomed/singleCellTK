@@ -1,4 +1,5 @@
 #' @rdname getSampleSummaryStatsTable
+#' @importFrom S4Vectors metadata
 setMethod("getSampleSummaryStatsTable", "SingleCellExperiment", function(inSCE, statsName, ...){
     allStatsNames <- listSampleSummaryStatsTables(inSCE)
     if(!statsName %in% allStatsNames){
@@ -6,28 +7,30 @@ setMethod("getSampleSummaryStatsTable", "SingleCellExperiment", function(inSCE, 
                    "The following are the names of the tables stored:",
                    paste(allStatsNames, collapse = ",")))
     }else{
-        return(inSCE@metadata$sctk$sample_summary[[statsName]])
+        return(metadata(inSCE)$sctk$sample_summary[[statsName]])
     }
 })
 
-#' @rdname setSampleSummaryStatsTable<-
+#' @rdname getSampleSummaryStatsTable
+#' @importFrom S4Vectors metadata
 setReplaceMethod("setSampleSummaryStatsTable", c("SingleCellExperiment", "ANY"), function(inSCE, statsName, ..., value) {
-    inSCE@metadata$sctk$sample_summary[[statsName]] <- value
+    metadata(inSCE)$sctk$sample_summary[[statsName]] <- value
     return(inSCE)
 })
 
 #' @rdname listSampleSummaryStatsTables
+#' @importFrom S4Vectors metadata
 setMethod("listSampleSummaryStatsTables", "SingleCellExperiment", function(inSCE, ...){
-    if(is.null(inSCE@metadata$sctk$sample_summary)){
+    if(is.null(metadata(inSCE)$sctk$sample_summary)){
         stop(paste("No sample-level QC tables are available.",
                      "Please try executing functions such as sampleSummaryStats first."))
     }else{
-        allStatsNames <- names(inSCE@metadata$sctk$sample_summary)
+        allStatsNames <- names(metadata(inSCE)$sctk$sample_summary)
         if(is.null(allStatsNames) || length(allStatsNames) == 0){
             stop(paste("No sample-level QC tables are available.",
                          "Please try executing functions such as sampleSummaryStats first."))
         }else{
-            return(names(inSCE@metadata$sctk$sample_summary))
+            return(names(metadata(inSCE)$sctk$sample_summary))
         }
     }
 })
