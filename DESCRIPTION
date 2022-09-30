@@ -113,8 +113,7 @@ Imports:
     TrajectoryUtils,
     scuttle,
     utils,
-    stats,
-    zellkonverter
+    stats
 RoxygenNote: 7.2.1
 Suggests:
     testthat,
