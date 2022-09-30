@@ -1,8 +1,5 @@
 # Helper/Wrapper Functions ---
 
-#import scanpy library
-sc <- reticulate::import("scanpy")
-
 #' .updateAssaySCEFromScanpy
 #' Update/Modify/Add an assay in the provided SingleCellExperiment object from
 #' an AnnData object
@@ -31,7 +28,7 @@ sc <- reticulate::import("scanpy")
 
 #' runScanpyNormalizeData
 #' Wrapper for NormalizeData() function from scanpy library
-#' Normalizes the sce object according to the input parameters
+#' Normalizes the sce object according to the input parameters provided.
 #' @param inSCE (sce) object to normalize
 #' @param useAssay Assay containing raw counts to use for normalization.
 #' @param normAssayName Name of new assay containing normalized data. Default
