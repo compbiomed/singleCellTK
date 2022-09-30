@@ -8,7 +8,7 @@ shinyPanelfindMarker <- fluidPage(
     sidebarLayout(
       sidebarPanel(
         selectInput('fmMethod', "Select Differential Expression Method",
-                    c("wilcox", "MAST", "DESeq2", "Limma", "ANOVA")),
+                    c("wilcox", "MAST", "DESeq2", "Limma", "ANOVA", "Scanpy")),
         selectizeInput(
           inputId = "fmAssay", 
           label = "Select input matrix:", 

@@ -26,7 +26,8 @@ shinyPanelFS_DimRed <- fluidPage(
               "Seurat - vst" = "vst",
               "Seurat - mean.var.plot" = "mean.var.plot",
               "Seurat - dispersion" = "dispersion",
-              "Scran - modelGeneVar" = "modelGeneVar"
+              "Scran - modelGeneVar" = "modelGeneVar",
+              "Scanpy" = "scanpy"
             )
           ),
           selectizeInput(
@@ -143,7 +144,8 @@ shinyPanelFS_DimRed <- fluidPage(
                             c(
                               "Scater - PCA" = "scaterPCA",
                               "Seurat - PCA" = "seuratPCA",
-                              "Seurat - ICA" = "seuratICA"
+                              "Seurat - ICA" = "seuratICA",
+                              "Scanpy" = "scanpy"
                             )
                           ),
                           selectInput(
@@ -238,7 +240,9 @@ shinyPanelFS_DimRed <- fluidPage(
                                       c("scaterUMAP" = "scaterUMAP",
                                         "rtSNE" = "rTSNE",
                                         "seuratUMAP" = "seuratUMAP",
-                                        "seuratTSNE" = "seuratTSNE")),
+                                        "seuratTSNE" = "seuratTSNE",
+                                        "ScanpyTSNE" = "scanpyTSNE",
+                                        "ScanpyUMAP" = "scanpyUMAP")),
                           uiOutput("dimRedNameUI_tsneUmap"),
                           conditionalPanel(
                             condition = "input.dimRedPlotMethod_tsneUmap == 'scaterUMAP' ||
