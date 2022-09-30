@@ -1192,9 +1192,8 @@ convertSeuratToSCE <-
     assay(inSCE, normAssayName) <-
       methods::slot(seuratObject@assays$RNA, "data")
     if (length(methods::slot(seuratObject, "assays")[["RNA"]]@scale.data) > 0) {
-      assay(altExp(inSCE, scaledAssayName), "counts") <-
-        methods::slot(seuratObject@assays$RNA,
-                      "scale.data")
+      altExp(inSCE, scaledAssayName) <- SingleCellExperiment::SingleCellExperiment(
+        list(counts = methods::slot(seuratObject@assays$RNA, "scale.data")))
     }
     inSCE <- .addSeuratToMetaDataSCE(inSCE, seuratObject)
     return(inSCE)

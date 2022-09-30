@@ -1110,7 +1110,7 @@ shinyServer(function(input, output, session) {
       ), id = "goSeuratNotification")
 
       #Normalize Data
-      shinyjs::enable(selector = "div[value='Normalize Data']")
+      shinyjs::enable(selector = "#SeuratUI > div[value='Normalize Data']")
       updateCollapse(session = session, "SeuratUI", style = list("Normalize Data" = "success"))
       normalizeParams <- metadata(vals$counts)$seurat$sctk$report$normalizeParams
       updateSelectInput(session, "normalization_method", selected = normalizeParams$normalizationMethod)
@@ -1129,7 +1129,7 @@ shinyServer(function(input, output, session) {
           plotly::ggplotly(plotSeuratHVG(vals$counts, labelPoints = hvgParams$labelPoints))
         })
       })
-      shinyjs::enable(selector = "div[value='Highly Variable Genes']")
+      shinyjs::enable(selector = "#SeuratUI > div[value='Highly Variable Genes']")
       updateCollapse(session = session, "SeuratUI", style = list("Highly Variable Genes" = "success"))
       updateSelectInput(session, "hvg_method", selected = hvgParams$hvgMethod)
       updateTextInput(session, "hvg_no_features", value = hvgParams$hvgNumber)
@@ -1137,7 +1137,7 @@ shinyServer(function(input, output, session) {
 
       #DR
       pcaParams <- metadata(vals$counts)$seurat$sctk$report$pcaParams
-      shinyjs::enable(selector = "div[value='Dimensionality Reduction']")
+      shinyjs::enable(selector = "#SeuratUI > div[value='Dimensionality Reduction']")
       updateCollapse(session = session, "SeuratUI", style = list("Dimensionality Reduction" = "success"))
 
       removeTab(inputId = "seuratPCAPlotTabset", target = "PCA Plot")
@@ -1243,7 +1243,7 @@ shinyServer(function(input, output, session) {
 
 
       #tSNE/UMAP
-          shinyjs::enable(selector = "div[value='tSNE/UMAP']")
+          shinyjs::enable(selector = "#SeuratUI > div[value='tSNE/UMAP']")
           updateCollapse(session = session, "SeuratUI", style = list("tSNE/UMAP" = "success"))
 
           # output$plot_tsne <- renderPlotly({
@@ -1269,7 +1269,7 @@ shinyServer(function(input, output, session) {
 
       #Clustering
           clusterParams <- metadata(vals$counts)$seurat$sctk$report$clusterParams
-          shinyjs::enable(selector = "div[value='Clustering']")
+          shinyjs::enable(selector = "#SeuratUI > div[value='Clustering']")
           updateCollapse(session = session, "SeuratUI", style = list("Clustering" = "success"))
 
           removeTab(inputId = "seuratClusteringPlotTabset", target = "PCA Plot")
@@ -1317,7 +1317,7 @@ shinyServer(function(input, output, session) {
 
 
       #Find Markers
-          shinyjs::enable(selector = "div[value='Find Markers']")
+          shinyjs::enable(selector = "#SeuratUI > div[value='Find Markers']")
           updateCollapse(session = session, "SeuratUI", style = list("Find Markers" = "success"))
 
           shinyjs::show(selector = ".seurat_findmarker_table")
@@ -7263,7 +7263,7 @@ shinyServer(function(input, output, session) {
 
     vals$counts <- singleCellTK:::.seuratInvalidate(inSCE = vals$counts)
     updateCollapse(session = session, "SeuratUI", style = list("Normalize Data" = "success"))
-    shinyjs::enable(selector = "div[value='Highly Variable Genes']")
+    shinyjs::enable(selector = "#SeuratUI > div[value='Highly Variable Genes']")
     S4Vectors::metadata(vals$counts)$seuratMarkers <- NULL
     shinyjs::hide(
       selector = "div[value='Downstream Analysis']")
@@ -7325,7 +7325,7 @@ shinyServer(function(input, output, session) {
       })
     })
     updateCollapse(session = session, "SeuratUI", style = list("Highly Variable Genes" = "success"))
-    shinyjs::enable(selector = "div[value='Dimensionality Reduction']")
+    shinyjs::enable(selector = "#SeuratUI > div[value='Dimensionality Reduction']")
     S4Vectors::metadata(vals$counts)$seuratMarkers <- NULL
     shinyjs::hide(
       selector = "div[value='Downstream Analysis']")
@@ -7507,7 +7507,7 @@ shinyServer(function(input, output, session) {
       condition = input$pca_compute_heatmap)
 
     shinyjs::enable(
-      selector = "div[value='tSNE/UMAP']")
+      selector = "#SeuratUI > div[value='tSNE/UMAP']")
 
     shinyjs::show(selector = ".seurat_pca_plots")
 
@@ -7604,7 +7604,7 @@ shinyServer(function(input, output, session) {
       condition = input$ica_compute_heatmap)
 
     shinyjs::enable(
-      selector = "div[value='tSNE/UMAP']")
+      selector = "#SeuratUI > div[value='tSNE/UMAP']")
 
     shinyjs::show(selector = ".seurat_ica_plots")
 
@@ -7728,7 +7728,7 @@ shinyServer(function(input, output, session) {
 
       #enable find marker selection
       shinyjs::enable(
-        selector = "div[value='Find Markers']")
+        selector = "#SeuratUI > div[value='Find Markers']")
 
       #update colData names
       updateColDataNames()
@@ -8178,7 +8178,7 @@ shinyServer(function(input, output, session) {
           })
         })
       updateCollapse(session = session, "SeuratUI", style = list("tSNE/UMAP" = "success"))
-      shinyjs::enable(selector = "div[value='Clustering']")
+      shinyjs::enable(selector = "#SeuratUI > div[value='Clustering']")
       S4Vectors::metadata(vals$counts)$seuratMarkers <- NULL
       shinyjs::hide(
         selector = "div[value='Downstream Analysis']")
@@ -8231,7 +8231,7 @@ shinyServer(function(input, output, session) {
           })
         })
       updateCollapse(session = session, "SeuratUI", style = list("tSNE/UMAP" = "success"))
-      shinyjs::enable(selector = "div[value='Clustering']")
+      shinyjs::enable(selector = "#SeuratUI > div[value='Clustering']")
       S4Vectors::metadata(vals$counts)$seuratMarkers <- NULL
       shinyjs::hide(
         selector = "div[value='Downstream Analysis']")
@@ -8330,7 +8330,7 @@ shinyServer(function(input, output, session) {
     if(!is.null(vals$counts)){
       #If data is uploaded in data tab, enable first tab i.e. Normalization tab in Seurat workflow
       shinyjs::enable(
-        selector = "div[value='Normalize Data']")
+        selector = "#SeuratUI > div[value='Normalize Data']")
 
       #Proceed only if sce object has metadata slot
       if(!is.null(vals$counts@metadata)){
@@ -8348,7 +8348,7 @@ shinyServer(function(input, output, session) {
           if(length(slot(vals$counts@metadata$seurat$obj, "assays")[["RNA"]]@var.features) <= 0){
             updateCollapse(session = session, "SeuratUI", style = list("Highly Variable Genes" = "primary"))
             updateCollapse(session = session, "SeuratUI", style = list("Dimensionality Reduction" = "primary"))
-            shinyjs::disable(selector = "div[value='Dimensionality Reduction']")
+            shinyjs::disable(selector = "#SeuratUI > div[value='Dimensionality Reduction']")
           }
 
           #Proceed if reduction slot is present in seurat object in metadata slot
@@ -8359,7 +8359,7 @@ shinyServer(function(input, output, session) {
                && is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[["ica"]])){
               updateCollapse(session = session, "SeuratUI", style = list("Dimensionality Reduction" = "primary"))
               updateCollapse(session = session, "SeuratUI", style = list("tSNE/UMAP" = "primary"))
-              shinyjs::disable(selector = "div[value='tSNE/UMAP']")
+              shinyjs::disable(selector = "#SeuratUI > div[value='tSNE/UMAP']")
             }
 
             #If TSNE and UMAP both removed from sce object, reset tSNE/UMAP tab and reset/lock next tab
@@ -8367,14 +8367,14 @@ shinyServer(function(input, output, session) {
                && is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[["umap"]])){
               updateCollapse(session = session, "SeuratUI", style = list("tSNE/UMAP" = "primary"))
               updateCollapse(session = session, "SeuratUI", style = list("Clustering" = "primary"))
-              shinyjs::disable(selector = "div[value='Clustering']")
+              shinyjs::disable(selector = "#SeuratUI > div[value='Clustering']")
             }
 
             #If seurat cluster information removed from sce object, reset Clustering tab
             if(!"seurat_clusters" %in% names(vals$counts@metadata$seurat$obj@meta.data)){
               updateCollapse(session = session, "SeuratUI", style = list("Clustering" = "primary"))
               updateCollapse(session = session, "SeuratUI", style = list("Find Markers" = "primary"))
-              shinyjs::disable(selector = "div[value='Find Markers']")
+              shinyjs::disable(selector = "#SeuratUI > div[value='Find Markers']")
             }
           }
 
@@ -8387,21 +8387,21 @@ shinyServer(function(input, output, session) {
 
       #Disable tabs
       shinyjs::disable(
-        selector = "div[value='Normalize Data']")
+        selector = "#SeuratUI > div[value='Normalize Data']")
       shinyjs::disable(
-        selector = "div[value='Highly Variable Genes']")
+        selector = "#SeuratUI > div[value='Highly Variable Genes']")
       shinyjs::disable(
-        selector = "div[value='Scale Data']")
+        selector = "#SeuratUI > div[value='Scale Data']")
       shinyjs::disable(
-        selector = "div[value='Dimensionality Reduction']")
+        selector = "#SeuratUI > div[value='Dimensionality Reduction']")
       shinyjs::disable(
-        selector = "div[value='tSNE/UMAP']")
+        selector = "#SeuratUI > div[value='tSNE/UMAP']")
       shinyjs::disable(
-        selector = "div[value='Clustering']")
+        selector = "#SeuratUI > div[value='Clustering']")
       shinyjs::disable(
-        selector = "div[value='Scale Data']")
+        selector = "#SeuratUI > div[value='Scale Data']")
       shinyjs::disable(
-        selector = "div[value='Find Markers']")
+        selector = "#SeuratUI > div[value='Find Markers']")
 
       #Disable plots inside PCA subtab
       shinyjs::disable(
