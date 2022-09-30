@@ -5,13 +5,8 @@ data(scExample, package = "singleCellTK")
 sceDroplet <- sce
 sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 sampleVector <- c(rep("Sample1", 100), rep("Sample2", 95))
-sceres <- getUMAP(inSCE = sce, useAssay = "counts", logNorm = TRUE, sample = sampleVector, nNeighbors = 10, reducedDimName = "UMAP",
-                nIterations = 20, alpha = 1, minDist = 0.01, pca = TRUE, initialDims = 20)
-
-test_that(desc = "Testing getUMAP", {
-        expect_equal(names(reducedDims(sceres)), "UMAP")
-	expect_equal(nrow(reducedDim(sceres, "UMAP")), ncol(sce))
-})
+sceres <- runQuickUMAP(inSCE = sce, sample = sampleVector, nNeighbors = 10,
+                nIterations = 20, alpha = 1, minDist = 0.01, initialDims = 20)
 
 test_that(desc = "Testing plotSCEScatter functions", {
     p1 <- plotSCEScatter(inSCE = sceres, legendTitle = NULL,

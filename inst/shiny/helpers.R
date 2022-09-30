@@ -592,3 +592,39 @@ dataAnnotationColor <- function(inSCE, axis = NULL,
     }
     return(allColorMap)
 }
+
+# Pass newly generated QC metric variable from vals$original to vals$counts, the
+# latter might be a subset.
+passQCVar <- function(sce.original, sce.counts, algoList) {
+  vars <- c()
+  for (a in algoList) {
+    if (a == "scDblFinder") {
+      new <- grep("scDblFinder", names(colData(sce.original)), value = TRUE)
+    } else if (a == "cxds") {
+      new <- grep("scds_cxds", names(colData(sce.original)), value = TRUE)
+    } else if (a == "bcds") {
+      new <- grep("scds_bcds", names(colData(sce.original)), value = TRUE)
+    } else if (a == "cxds_bcds_hybrid") {
+      new <- grep("scds_hybrid", names(colData(sce.original)), value = TRUE)
+    } else if (a == "decontX") {
+      new <- grep("decontX", names(colData(sce.original)), value = TRUE)
+    } else if (a == "soupX") {
+      new <- grep("soupX", names(colData(sce.original)), value = TRUE)
+    } else if (a == "scrublet") {
+      new <- grep("scrublet", names(colData(sce.original)), value = TRUE)
+    } else if (a == "doubletFinder") {
+      new <- grep("doubletFinder", names(colData(sce.original)), value = TRUE)
+    } else if (a == "QCMetrics") {
+      new <- c("total", "sum", "detected")
+      new <- c(new, grep("percent.top", names(colData(sce.original)), value = TRUE))
+      new <- c(new, grep("mito_", names(colData(sce.original)), value = TRUE))
+      new <- c(new, grep("^subsets_.+_sum$", names(colData(sce.original)), value = TRUE))
+      new <- c(new, grep("^subsets_.+_detected$", names(colData(sce.original)), value = TRUE))
+      new <- c(new, grep("^subsets_.+_percent$", names(colData(sce.original)), value = TRUE))
+    } 
+    vars <- c(vars, new)
+  }
+  sce.original <- sce.original[rownames(sce.counts), colnames(sce.counts)]
+  colData(sce.counts)[vars] <- colData(sce.original)[vars]
+  return(sce.counts)
+}

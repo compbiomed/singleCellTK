@@ -145,8 +145,7 @@ A wrapper function which visualizes outputs from the
 data(scExample, package="singleCellTK")
 \dontrun{
 sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
-sce <- getUMAP(inSCE=sce, useAssay="counts", logNorm=TRUE, 
-               reducedDimName="UMAP")
+sce <- runQuickUMAP(sce)
 sce <- runScrublet(sce)
 plotScrubletResults(inSCE=sce, reducedDimName="UMAP")
 }
