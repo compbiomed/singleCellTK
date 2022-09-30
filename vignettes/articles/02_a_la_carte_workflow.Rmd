@@ -248,17 +248,19 @@ After done, a scatter plot of all cells on the UMAP dimension will be shown on t
 <div class="tabcontent console">
 ````
 
-A UMAP can be generated with the function `getUMAP()`, which is a wrapper of `scater::calculateUMAP()` method. We will now use `useReducedDim` argument to pass the PCA embedding just generated to the function. The result will be saved in `reducedDim` slot. 
+A UMAP can be generated with the function `runUMAP()`, which is a wrapper of `scater::calculateUMAP()` method. We will now use `useReducedDim` argument to pass the PCA embedding just generated to the function. The result will be saved in `reducedDim` slot. 
 
-Users can also create the tSNE embedding with `getTSNE()` function, which works in a similar way as `getUMAP()`
+Users can also create the tSNE embedding with `runTSNE()` function, which works in a similar way as `runUMAP()`
 
 ```{R UMAP, results="hold"}
-sce <- getUMAP(sce, useReducedDim = "PCA", initialDims = 10, seed = 12345)
+sce <- runUMAP(sce, initialDims = 10, seed = 12345)
 ```
 
 ```{R plotUMAP}
 plotDimRed(sce, useReduction = "UMAP")
 ```
+
+Note that we have another two functions `runQuickUMAP()` and `runQuickTSNE()`, which wrap the two functions mentioned above, respectively, and run directly from raw count matrix with all steps in the workflow automated internally. They can help with fast visualization at the beginning of an analysis. 
 
 ````{=html}
 </div>

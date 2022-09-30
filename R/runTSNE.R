@@ -1,4 +1,5 @@
 #' Run t-SNE embedding with Rtsne method
+#' @rdname runTSNE
 #' @description T-Stochastic Neighbour Embedding (t-SNE) algorithm is commonly
 #' for 2D visualization of single-cell data. This function wraps the
 #' Rtsne \code{\link[Rtsne]{Rtsne}} function.
@@ -9,18 +10,18 @@
 #' input, so that the result can match with the clustering based on the same
 #' input PCA, and will be much faster.
 #' @param inSCE Input \linkS4class{SingleCellExperiment} object.
+#' @param useReducedDim The low dimension representation to use for UMAP
+#' computation. Default \code{"PCA"}.
 #' @param useAssay Assay to use for tSNE computation. If \code{useAltExp} is
 #' specified, \code{useAssay} has to exist in
-#' \code{assays(altExp(inSCE, useAltExp))}. Default \code{"logcounts"}.
-#' @param useReducedDim The low dimension representation to use for UMAP
-#' computation. Default \code{NULL}.
+#' \code{assays(altExp(inSCE, useAltExp))}. Default \code{NULL}.
 #' @param useAltExp The subset to use for tSNE computation, usually for the
 #' selected.variable features. Default \code{NULL}.
 #' @param reducedDimName a name to store the results of the dimension
 #' reductions. Default \code{"TSNE"}.
 #' @param logNorm Whether the counts will need to be log-normalized prior to
 #' generating the tSNE via \code{\link{scaterlogNormCounts}}. Ignored when using
-#' \code{useReducedDim}. Default \code{FALSE}.
+#' \code{useReducedDim}. Default \code{TRUE}.
 #' @param useFeatureSubset Subset of feature to use for dimension reduction. A
 #' character string indicating a \code{rowData} variable that stores the logical
 #' vector of HVG selection, or a vector that can subset the rows of
@@ -56,23 +57,24 @@
 #' data(scExample, package = "singleCellTK")
 #' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 #' # Run from raw counts
-#' sce <- getTSNE(inSCE = sce, useAssay = "counts", logNorm = TRUE, nTop = 2000,
-#'                scale = TRUE, pca = TRUE)
+#' sce <- runQuickTSNE(sce)
 #' \dontrun{
 #' # Run from PCA
 #' sce <- scaterlogNormCounts(sce, "logcounts")
 #' sce <- runModelGeneVar(sce)
+#' sce <- setTopHVG(sce, method = "modelGeneVar", hvgNumber = 2000, 
+#'                  featureSubsetName = "HVG_modelGeneVar2000")
 #' sce <- scaterPCA(sce, useAssay = "logcounts",
 #'                  useFeatureSubset = "HVG_modelGeneVar2000", scale = TRUE)
-#' sce <- getTSNE(sce, useReducedDim = "PCA")
+#' sce <- runTSNE(sce, useReducedDim = "PCA")
 #' }
 #' @importFrom S4Vectors metadata<-
-getTSNE <- function(inSCE, useAssay = "logcounts", useReducedDim = NULL,
-                    useAltExp = NULL, reducedDimName = "TSNE", logNorm = FALSE,
+runTSNE <- function(inSCE, useReducedDim = "PCA", useAssay = NULL, 
+                    useAltExp = NULL, reducedDimName = "TSNE", logNorm = TRUE,
                     useFeatureSubset = NULL, nTop = 2000, center = TRUE,
                     scale = TRUE, pca = TRUE, partialPCA = FALSE,
                     initialDims = 25, theta = 0.5, perplexity = 30,
-                    nIterations = 1000, numThreads = 1, seed = NULL){
+                    nIterations = 1000, numThreads = 1, seed = NULL) {
   params <- as.list(environment())
   params$inSCE <- NULL
   # Note: useMat = list(useAssay = useAssay, ...)
@@ -84,13 +86,13 @@ getTSNE <- function(inSCE, useAssay = "logcounts", useReducedDim = NULL,
                              returnMatrix = FALSE)$names
   params$useAssay <- useMat$useAssay
   useAssay <- useMat$useAssay
-
+  
   if (!is.null(useAltExp)) {
     sce <- SingleCellExperiment::altExp(inSCE, useAltExp)
   } else {
     sce <- inSCE
   }
-
+  
   if (!is.null(useAssay)) {
     if (isTRUE(logNorm)) {
       sce <- scaterlogNormCounts(sce, assayName = "logcounts", useAssay = useAssay)
@@ -125,7 +127,7 @@ getTSNE <- function(inSCE, useAssay = "logcounts", useReducedDim = NULL,
       mat <- mat[,seq(initialDims)]
     }
   }
-
+  
   if (is.null(perplexity)){
     perplexity <- floor(ncol(inSCE) / 5)
   }
@@ -146,4 +148,37 @@ getTSNE <- function(inSCE, useAssay = "logcounts", useReducedDim = NULL,
   SingleCellExperiment::reducedDim(inSCE, reducedDimName) <- tsneOut
   metadata(inSCE)$sctk$runDimReduce$embedding[[reducedDimName]] <- params
   return(inSCE)
+}
+
+#' @rdname runTSNE
+#' @param ... Other parameters to be passed to \code{runTSNE}
+#' @export
+runQuickTSNE <- function(inSCE, useAssay = "counts", ...) {
+  args <- list(...)
+  if (!is.null(args$useReducedDim)) {
+    warning("Forcing `useReducedDim` to be `NULL`. Please use `runTSNE` for ",
+            "using reducedDim.")
+  }
+  args$useReducedDim <- NULL
+  args <- c(list(inSCE = inSCE, useAssay = useAssay, useReducedDim = NULL), 
+            args)
+  inSCE <- do.call("runTSNE", args = args)
+  return(inSCE)
+}
+
+#' @rdname runTSNE
+#' @export
+getTSNE <- function(inSCE, useReducedDim = "PCA", useAssay = NULL, 
+                    useAltExp = NULL, reducedDimName = "TSNE", logNorm = TRUE,
+                    useFeatureSubset = NULL, nTop = 2000, center = TRUE,
+                    scale = TRUE, pca = TRUE, partialPCA = FALSE,
+                    initialDims = 25, theta = 0.5, perplexity = 30,
+                    nIterations = 1000, numThreads = 1, seed = NULL) {
+  .Deprecated("runTSNE")
+  runTSNE(inSCE = inSCE, useReducedDim = useReducedDim, useAssay = useAssay, 
+          useAltExp = useAltExp, reducedDimName = reducedDimName, 
+          logNorm = logNorm, useFeatureSubset = useFeatureSubset, nTop = nTop, 
+          center = center, scale = scale, pca = pca, partialPCA = partialPCA,
+          initialDims = initialDims, theta = theta, perplexity = perplexity,
+          nIterations = nIterations, numThreads = numThreads, seed = seed)
 }

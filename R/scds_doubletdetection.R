@@ -38,15 +38,17 @@ runCxds <- function(inSCE,
     estNdbl = FALSE,
     useAssay = "counts") {
 
-    if (!is.null(sample)) {
-        if (length(sample) != ncol(inSCE)) {
-            stop("'sample' must be the same length as the number",
-                " of columns in 'inSCE'")
-        }
-    } else {
-        sample <- rep(1, ncol(inSCE))
-    }
-
+    #if (!is.null(sample)) {
+    #    if (length(sample) != ncol(inSCE)) {
+    #        stop("'sample' must be the same length as the number",
+    #            " of columns in 'inSCE'")
+    #    }
+    #} else {
+    #    sample <- rep(1, ncol(inSCE))
+    #}
+    if (!is.null(sample)) sample <- .manageCellVar(inSCE, var = sample)
+    else sample <- rep(1, ncol(inSCE))
+    
     message(paste0(date(), " ... Running 'cxds'"))
 
     ## Getting current arguments
@@ -160,14 +162,16 @@ runBcds <- function(inSCE,
     useAssay = "counts"
     ) {
 
-    if (!is.null(sample)) {
-        if (length(sample) != ncol(inSCE)) {
-            stop("'sample' must be the same length as the number",
-                " of columns in 'inSCE'")
-        }
-    } else {
-        sample <- rep(1, ncol(inSCE))
-    }
+    #if (!is.null(sample)) {
+    #    if (length(sample) != ncol(inSCE)) {
+    #        stop("'sample' must be the same length as the number",
+    #            " of columns in 'inSCE'")
+    #    }
+    #} else {
+    #    sample <- rep(1, ncol(inSCE))
+    #}
+    if (!is.null(sample)) sample <- .manageCellVar(inSCE, var = sample)
+    else sample <- rep(1, ncol(inSCE))
 
     message(paste0(date(), " ... Running 'bcds'"))
 
@@ -287,14 +291,16 @@ runCxdsBcdsHybrid <- function(inSCE,
     force = FALSE,
     useAssay = "counts") {
 
-    if (!is.null(sample)) {
-        if (length(sample) != ncol(inSCE)) {
-            stop("'sample' must be the same length as the number",
-                " of columns in 'inSCE'")
-        }
-    } else {
-        sample <- rep(1, ncol(inSCE))
-    }
+    #if (!is.null(sample)) {
+    #    if (length(sample) != ncol(inSCE)) {
+    #        stop("'sample' must be the same length as the number",
+    #            " of columns in 'inSCE'")
+    #    }
+    #} else {
+    #    sample <- rep(1, ncol(inSCE))
+    #}
+    if (!is.null(sample)) sample <- .manageCellVar(inSCE, var = sample)
+    else sample <- rep(1, ncol(inSCE))
 
     message(paste0(date(), " ... Running 'cxds_bcds_hybrid'"))
 

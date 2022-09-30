@@ -1,4 +1,5 @@
 #' @title Stores and returns table of SCTK QC outputs to metadata.
+#' @rdname getSampleSummaryStatsTable
 #' @description  Stores and returns table of QC metrics generated from
 #'  QC algorithms within the metadata slot of the SingleCellExperiment object.
 #' @param inSCE Input \linkS4class{SingleCellExperiment} object with saved
@@ -7,8 +8,10 @@
 #' that stores the stats table within the metadata of the
 #' SingleCellExperiment object. Required.
 #' @param ... Other arguments passed to the function. 
-#' @return A matrix/array object. Contains a summary table for QC statistics
-#' generated from SingleCellTK.
+#' @return For \code{getSampleSummaryStatsTable}, A matrix/array object. 
+#' Contains a summary table for QC statistics generated from SingleCellTK. For
+#' \code{setSampleSummaryStatsTable<-}, A SingleCellExperiment object where the 
+#' summary table is updated in the \code{metadata} slot.
 #' @examples
 #' data(scExample, package = "singleCellTK")
 #' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
@@ -17,18 +20,13 @@
 #' @export
 setGeneric("getSampleSummaryStatsTable", function(inSCE, statsName, ...) standardGeneric("getSampleSummaryStatsTable"))
 
-#' @title Setter function which stores table of SCTK QC outputs to metadata.
-#' @description  Stores table of QC metrics generated from
-#'  QC algorithms within the metadata slot of the SingleCellExperiment object.
-#' @param inSCE Input \linkS4class{SingleCellExperiment} object with saved
-#' \link{assay} data and/or \link{colData} data. Required.
-#' @param value The sample summary table of SCTK QC outputs 
-#' @param ... Other arguments passed to the function. 
-#' @return A SingleCellExperiment object which contains a summary table for QC statistics
-#' generated from SingleCellTK.
-setGeneric("setSampleSummaryStatsTable<-", function(inSCE, ..., value) standardGeneric("setSampleSummaryStatsTable<-"))
+#' @rdname getSampleSummaryStatsTable
+#' @param value The summary table for QC statistics generated from SingleCellTK
+#' to be added to the SCE object.
+setGeneric("setSampleSummaryStatsTable<-", function(inSCE, statsName, ..., value) standardGeneric("setSampleSummaryStatsTable<-"))
 
 #' @title Lists the table of SCTK QC outputs stored within the metadata.
+#' @rdname listSampleSummaryStatsTables
 #' @description  Returns a character vector of the tables
 #' within the metadata slot of the SingleCellExperiment object.
 #' @param inSCE Input \linkS4class{SingleCellExperiment} object with saved

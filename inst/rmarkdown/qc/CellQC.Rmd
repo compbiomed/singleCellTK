@@ -104,18 +104,16 @@ if (typeof(S4Vectors::metadata(sce.qc)$assayType) == 'list') {
   S4Vectors::metadata(sce.qc)$assayType <- assayType
 }
 
-sce.qc <- getUMAP(sce.qc, useAssay = "counts", reducedDimName = "QC_UMAP", sample = sceSample)
+sce.qc <- runQuickUMAP(sce.qc, reducedDimName = "QC_UMAP", sample = sceSample)
 
 if (is.null(reducedDimName)) {
   allSampleReducedDim <- "All_UMAP"
-  sce.qc <- getUMAP(sce.qc, useAssay = "counts", 
-                    reducedDimName = allSampleReducedDim, sample = NULL)
+  sce.qc <- runQuickUMAP(sce.qc, reducedDimName = allSampleReducedDim, sample = NULL)
 } else if (!reducedDimName %in% reducedDimNames(sce.qc)) {
   warning("'reducedDimName' not found in the reducedDimNames of the sce object. ",
   "Generate new reduced dimension reduction for all samples. ")
   allSampleReducedDim <- "All_UMAP"
-  sce.qc <- getUMAP(sce.qc, useAssay = "counts", 
-                    reducedDimName = allSampleReducedDim, sample = NULL)
+  sce.qc <- runQuickUMAP(sce.qc, reducedDimName = allSampleReducedDim, sample = NULL)
 } else {
   allSampleReducedDim <- reducedDimName
 }

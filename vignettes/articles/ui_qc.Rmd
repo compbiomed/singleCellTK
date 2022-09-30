@@ -28,7 +28,7 @@ After checking off all the desired QC algorithms, users should also go through o
 
 ![general](ui_screenshots/qc/qc_ui_general.png)\
 
-A UMAP embedding will be calculated in the end when running SCTK QC workflow. It will be used across all QC algorithms for visualization of any scores or clusters. The parameters are already described in the UI. For more information, please refer to `getUMAP()` 
+A UMAP embedding will be calculated in the end when running SCTK QC workflow. It will be used across all QC algorithms for visualization of any scores or clusters. The parameters are already described in the UI. For more information, please refer to `runUMAP()` 
 ![umap](ui_screenshots/qc/qc_ui_umap.png)\
 
 Having everything checked and ready, users can then press **"Run"** to start the procedure.

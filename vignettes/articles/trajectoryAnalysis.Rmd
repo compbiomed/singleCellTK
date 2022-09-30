@@ -172,7 +172,7 @@ sce <- scaterPCA(inSCE = sce, useAssay = "logcounts", useFeatureSubset = "HVG_mo
 sce <- runScranSNN(sce, useReducedDim = "PCA", nComp = 10, k = 14,
                    weightType = "jaccard", clusterName = "cluster", seed = 12345)
 # Values needed for visualization
-sce <- getUMAP(sce, useReducedDim = "PCA", initialDims = 10, reducedDimName = "UMAP", seed = 12345)
+sce <- runUMAP(sce, useReducedDim = "PCA", initialDims = 10, reducedDimName = "UMAP", seed = 12345)
 ```
 
 ```{R importRDS, include = FALSE}
