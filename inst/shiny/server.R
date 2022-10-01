@@ -9298,20 +9298,29 @@ shinyServer(function(input, output, session) {
   ))
 
   ##############################################################################
-  # Code for ShinyTest ####
+  # Page: Scanpy Curated Workflow  ####
   ##############################################################################
-  # observe({
-  #   shinyBS::updateCollapse(session,
-  #                           "SeuratUI",
-  #                           open = input$activePanelSelectSeurat)
-  # })
-
-  ##############################################################################
-  # Code for PushBar ####
-  ##############################################################################
-  # observeEvent(input$interpretToggle, {
-  #   pushbar_open(id = "myPushbar")
-  # })
+  
+  # Run Normalization
+  #Perform normalization
+  observeEvent(input$scanpy_normalize_button, withConsoleMsgRedirect(
+    msg = "Please wait while data is being normalized. See console log for progress.",
+    {
+      req(vals$counts)
+      message(paste0(date(), " ... Normalizing Data"))
+      vals$counts <- runScanpyNormalizeData(inSCE = vals$counts,
+                                            useAssay = "counts")
+      # metadata(vals$counts)$sctk$seuratUseAssay <- input$seuratSelectNormalizationAssay
+      # 
+      # vals$counts <- singleCellTK:::.seuratInvalidate(inSCE = vals$counts)
+      # updateCollapse(session = session, "SeuratUI", style = list("Normalize Data" = "success"))
+      # shinyjs::enable(selector = "#SeuratUI > div[value='Highly Variable Genes']")
+      # S4Vectors::metadata(vals$counts)$seuratMarkers <- NULL
+      # shinyjs::hide(
+      #   selector = "div[value='Downstream Analysis']")
+      # updateAssayInputs()
+      message(paste0(date(), " ... Normalization Complete"))
+    }))
 
 })
 

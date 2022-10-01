@@ -18,7 +18,8 @@ shinyPanelCluster <- fluidPage(
                          "K-Means" = c("Hartigan-Wong" = 8, "Lloyd" = 9,
                                        "MacQueen" = 10),
                          "Seurat" = c("louvain" = 11, "multilevel" = 12,
-                                      "SLM" = 13)),
+                                      "SLM" = 13),
+                         "Scanpy" = c("standard" = 14)),
         ),
         # Scran SNN ####
         conditionalPanel(
