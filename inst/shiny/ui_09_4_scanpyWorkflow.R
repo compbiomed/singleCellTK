@@ -1,16 +1,4 @@
-# QC & Filtering
-
-# Normalize
-
-# HVG
-
-# PCA
-
-# Clustering
-
-# Find Marker
-
-# User Interface for Seurat Workflow ---
+# User Interface for Scanpy Workflow ---
 shinyPanelScanpy <- fluidPage(
     tags$script("Shiny.addCustomMessageHandler('close_dropDownScanpy', function(x){
                   $('html').click();

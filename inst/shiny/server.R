@@ -9302,7 +9302,6 @@ shinyServer(function(input, output, session) {
   ##############################################################################
   
   # Run Normalization
-  #Perform normalization
   observeEvent(input$scanpy_normalize_button, withConsoleMsgRedirect(
     msg = "Please wait while data is being normalized. See console log for progress.",
     {
@@ -9321,6 +9320,419 @@ shinyServer(function(input, output, session) {
       # updateAssayInputs()
       message(paste0(date(), " ... Normalization Complete"))
     }))
+  
+  # HVG
+  #Find HVG
+  observeEvent(input$scanpy_find_hvg_button, withConsoleMsgRedirect(
+    msg = "Please wait while high variable genes are being found. See console log for progress.",
+    {
+      req(vals$counts)
+      message(paste0(date(), " ... Finding High Variable Genes"))
+        # vals$counts <- runSeuratFindHVG(inSCE = vals$counts,
+        #                                 useAssay = metadata(vals$counts)$sctk$seuratUseAssay,
+        #                                 method = input$hvg_method,
+        #                                 hvgNumber = as.numeric(input$hvg_no_features))
+
+      # vals$counts <- singleCellTK:::.seuratInvalidate(inSCE = vals$counts, varFeatures = FALSE)
+      # message(paste0(date(), " ... Plotting HVG"))
+      # output$plot_hvg <- renderPlotly({
+      #   isolate({
+      #     plotly::ggplotly(plotSeuratHVG(vals$counts, input$hvg_no_features_view))
+      #   })
+      # })
+      # updateCollapse(session = session, "SeuratUI", style = list("Highly Variable Genes" = "success"))
+      # shinyjs::enable(selector = "#SeuratUI > div[value='Dimensionality Reduction']")
+      # S4Vectors::metadata(vals$counts)$seuratMarkers <- NULL
+      # shinyjs::hide(
+      #   selector = "div[value='Downstream Analysis']")
+      # message(paste0(date(), " ... Finding HVG Complete"))
+    }
+  ))
+  
+  # PCA
+  observeEvent(input$scanpy_run_pca_button, withConsoleMsgRedirect(
+    msg = "Please wait while PCA is being computed. See console log for progress.",
+    {
+      # req(vals$counts)
+      # #remove tabs if not generated
+      # removeTab(inputId = "seuratPCAPlotTabset", target = "PCA Plot")
+      # removeTab(inputId = "seuratPCAPlotTabset", target = "Elbow Plot")
+      # removeTab(inputId = "seuratPCAPlotTabset", target = "JackStraw Plot")
+      # removeTab(inputId = "seuratPCAPlotTabset", target = "Heatmap Plot")
+      # 
+      # message(paste0(date(), " ... Running PCA"))
+      # # For the commented line below:
+      # # `useFeatureSubset`, in any functions that use it, goes to util function
+      # # `.parseUseFeatureSubset()` which does a check for rownames(inSCE). Thus
+      # # incompatible with Seurat's "_"-to-"-" change. But in `runSeuratPCA/ICA`,
+      # # we automatically detect seurat HVG from the object when `useFeatureSubset
+      # # = NULL`, so no need to specify this now.
+      # vals$counts <- runSeuratPCA(inSCE = vals$counts,
+      #                             useAssay = "seuratNormData",
+      #                             reducedDimName = "seuratPCA",
+      #                             #useFeatureSubset = getSeuratVariableFeatures(vals$counts),
+      #                             nPCs = input$pca_no_components,
+      #                             seed = input$seed_PCA)
+      # 
+      # vals$counts@metadata$seurat$count_pc <- dim(convertSCEToSeurat(vals$counts)[["pca"]])[2]
+      # vals$counts <- singleCellTK:::.seuratInvalidate(inSCE = vals$counts, scaleData = FALSE, varFeatures = FALSE, PCA = FALSE, ICA = FALSE)
+      # 
+      # appendTab(inputId = "seuratPCAPlotTabset", tabPanel(title = "PCA Plot",
+      #                                                     panel(heading = "PCA Plot",
+      #                                                           plotlyOutput(outputId = "plot_pca")
+      #                                                     )
+      # ), select = TRUE)
+      # 
+      # message(paste0(date(), " ... Plotting PCA"))
+      # 
+      # output$plot_pca <- renderPlotly({
+      #   isolate({
+      #     plotly::ggplotly(plotSeuratReduction(inSCE = vals$counts,
+      #                                          useReduction = "pca",
+      #                                          showLegend = FALSE))
+      #   })
+      # })
+      # if (input$pca_compute_elbow) {
+      #   appendTab(inputId = "seuratPCAPlotTabset", tabPanel(title = "Elbow Plot",
+      #                                                       panel(
+      #                                                         heading = "Elbow Plot",
+      #                                                         plotlyOutput(outputId = "plot_elbow_pca")
+      #                                                       )
+      #   ))
+      #   
+      #   message(paste0(date(), " ... Generating Elbow Plot"))
+      #   updateNumericInput(session = session, inputId = "pca_significant_pc_counter", value = singleCellTK:::.computeSignificantPC(vals$counts))
+      #   output$plot_elbow_pca <- renderPlotly({
+      #     isolate({
+      #       plotSeuratElbow(inSCE = vals$counts,
+      #                       significantPC = singleCellTK:::.computeSignificantPC(vals$counts))
+      #     })
+      #   })
+      #   output$pca_significant_pc_output <- renderText({
+      #     isolate({
+      #       paste("<p>Number of significant components suggested by ElbowPlot: <span style='color:red'>", singleCellTK:::.computeSignificantPC(vals$counts)," </span> </p> <hr>")
+      #     })
+      #   })
+      # }
+      # if (input$pca_compute_jackstraw) {
+      #   appendTab(inputId = "seuratPCAPlotTabset", tabPanel(title = "JackStraw Plot",
+      #                                                       panel(heading = "JackStraw Plot",
+      #                                                             plotlyOutput(outputId = "plot_jackstraw_pca")
+      #                                                       )
+      #   ))
+      #   message(paste0(date(), " ... Generating JackStraw Plot"))
+      #   vals$counts <- runSeuratJackStraw(inSCE = vals$counts,
+      #                                     useAssay = "seuratScaledData",
+      #                                     dims = input$pca_no_components)
+      #   output$plot_jackstraw_pca <- renderPlotly({
+      #     isolate({
+      #       plotly::ggplotly(plotSeuratJackStraw(inSCE = vals$counts,
+      #                                            dims = input$pca_no_components))
+      #     })
+      #   })
+      # }
+      # if (input$pca_compute_heatmap) {
+      #   appendTab(inputId = "seuratPCAPlotTabset", tabPanel(title = "Heatmap Plot",
+      #                                                       panel(heading = "Heatmap Plot",
+      #                                                             panel(heading = "Plot Options",
+      #                                                                   fluidRow(
+      #                                                                     column(4, dropdown(
+      #                                                                       fluidRow(
+      #                                                                         column(12,
+      #                                                                                fluidRow(actionBttn(inputId = "closeDropDownSeuratHM", label = NULL, style = "simple", color = "danger", icon = icon("times"), size = "xs"), align = "right"),
+      #                                                                                fluidRow(
+      #                                                                                  column(6,
+      #                                                                                         pickerInput(inputId = "picker_dimheatmap_components_pca", label = "Select principal components to plot:", choices = c(), options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3"), multiple = TRUE)
+      #                                                                                  ),
+      #                                                                                  column(6,
+      #                                                                                         sliderInput(inputId = "slider_dimheatmap_pca", label = "Number of columns for the plot: ", min = 1, max = 4, value = 2)
+      #                                                                                  )
+      #                                                                                ),
+      #                                                                                actionBttn(
+      #                                                                                  inputId = "plot_heatmap_pca_button",
+      #                                                                                  label = "Update",
+      #                                                                                  style = "bordered",
+      #                                                                                  color = "primary",
+      #                                                                                  size = "sm"
+      #                                                                                )
+      #                                                                         )
+      #                                                                       ),
+      #                                                                       inputId = "dropDownSeuratHM",
+      #                                                                       icon = icon("cog"),
+      #                                                                       status = "primary",
+      #                                                                       circle = FALSE,
+      #                                                                       inline = TRUE
+      #                                                                     )),
+      #                                                                     column(7, fluidRow(h6("Heatmaps of the top features correlated with each component"), align="center"))
+      #                                                                   )
+      #                                                             ),
+      #                                                             panel(heading = "Plot",
+      #                                                                   shinyjqui::jqui_resizable(plotOutput(outputId = "plot_heatmap_pca"), options = list(maxWidth = 700))
+      #                                                             )
+      #                                                       )
+      #   ))
+      #   
+      #   message(paste0(date(), "  ... Generating Heatmaps"))
+      #   
+      #   vals$counts@metadata$seurat$heatmap_pca <- runSeuratHeatmap(inSCE = vals$counts,
+      #                                                               useAssay = "seuratNormData",
+      #                                                               useReduction = "pca",
+      #                                                               dims = input$pca_no_components,
+      #                                                               nfeatures = input$pca_compute_heatmap_nfeatures,
+      #                                                               combine = FALSE,
+      #                                                               fast = FALSE)
+      #   output$plot_heatmap_pca <- renderPlot({
+      #     isolate({
+      #       plotSeuratHeatmap(plotObject = vals$counts@metadata$seurat$heatmap_pca,
+      #                         dims = input$pca_no_components,
+      #                         ncol = 2,
+      #                         labels = c("PC1", "PC2", "PC3", "PC4"))
+      #     })
+      #   })
+      #   updatePickerInput(session = session, inputId = "picker_dimheatmap_components_pca", choices = singleCellTK:::.getComponentNames(vals$counts@metadata$seurat$count_pc, "PC"))
+      # }
+      # updateCollapse(session = session, "SeuratUI", style = list("Dimensionality Reduction" = "success"))
+      # 
+      # #Enable/Disable PCA plot panels not selected for computation (ElbowPlot, JackStraw or Heatmap)
+      # shinyjs::enable(
+      #   selector = ".seurat_pca_plots a[data-value='PCA Plot']")
+      # 
+      # shinyjs::toggleState(
+      #   selector = ".seurat_pca_plots a[data-value='Elbow Plot']",
+      #   condition = input$pca_compute_elbow)
+      # 
+      # shinyjs::toggleState(
+      #   selector = ".seurat_pca_plots a[data-value='JackStraw Plot']",
+      #   condition = input$pca_compute_jackstraw)
+      # 
+      # shinyjs::toggleState(
+      #   selector = ".seurat_pca_plots a[data-value='Heatmap Plot']",
+      #   condition = input$pca_compute_heatmap)
+      # 
+      # shinyjs::enable(
+      #   selector = "#SeuratUI > div[value='tSNE/UMAP']")
+      # 
+      # shinyjs::show(selector = ".seurat_pca_plots")
+      # 
+      # S4Vectors::metadata(vals$counts)$seuratMarkers <- NULL
+      # shinyjs::hide(
+      #   selector = "div[value='Downstream Analysis']")
+      # 
+      # message(paste0(date(), " ... PCA Complete"))
+    }))
+  
+  # TSNE
+  observeEvent(input$scanpy_run_tsne_button, withConsoleMsgRedirect(
+    msg = "Please wait while tSNE is being computed. See console log for progress.",
+    {
+      # req(vals$counts)
+      # if(!is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[[input$reduction_tsne_method]])){
+      #   message(paste0(date(), " ... Running tSNE"))
+      #   vals$counts <- runSeuratTSNE(inSCE = vals$counts,
+      #                                useReduction = input$reduction_tsne_method,
+      #                                reducedDimName = "seuratTSNE",
+      #                                dims = input$pca_significant_pc_counter,
+      #                                perplexity = input$perplexity_tsne,
+      #                                seed = input$seed_TSNE)
+      #   vals$counts <- singleCellTK:::.seuratInvalidate(inSCE = vals$counts, scaleData = FALSE, varFeatures = FALSE, PCA = FALSE, ICA = FALSE, tSNE = FALSE, UMAP = FALSE)
+      #   message(paste0(date(), " ... Plotting tSNE"))
+      #   
+      #   output$plot_tsne <- renderPlotly({
+      #     isolate({
+      #       plotly::ggplotly(plotSeuratReduction(inSCE = vals$counts,
+      #                                            useReduction = "tsne",
+      #                                            showLegend = FALSE))
+      #     })
+      #   })
+      #   updateCollapse(session = session, "SeuratUI", style = list("tSNE/UMAP" = "success"))
+      #   shinyjs::enable(selector = "#SeuratUI > div[value='Clustering']")
+      #   S4Vectors::metadata(vals$counts)$seuratMarkers <- NULL
+      #   shinyjs::hide(
+      #     selector = "div[value='Downstream Analysis']")
+      #   message(paste0(date(), " ... tSNE Complete"))
+      #   
+      # }
+      # else{
+      #   showNotification(paste0("'", input$reduction_tsne_method, "' reduction not found in input object"))
+      # }
+    }))
+  
+  #UMAP 
+  observeEvent(input$scanpy_run_umap_button, withConsoleMsgRedirect(
+    msg = "Please wait while UMAP is being computed. See console log for progress.",
+    {
+      # req(vals$counts)
+      # if(!is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[[input$reduction_umap_method]])){
+      #   message(paste0(date(), " ... Running UMAP"))
+      #   vals$counts <- runSeuratUMAP(inSCE = vals$counts,
+      #                                useReduction = input$reduction_umap_method,
+      #                                reducedDimName = "seuratUMAP",
+      #                                dims = input$pca_significant_pc_counter,
+      #                                minDist = input$min_dist_umap,
+      #                                nNeighbors = input$n_neighbors_umap,
+      #                                spread = input$spread_umap,
+      #                                seed = input$seed_UMAP)
+      #   vals$counts <- singleCellTK:::.seuratInvalidate(inSCE = vals$counts, scaleData = FALSE, varFeatures = FALSE, PCA = FALSE, ICA = FALSE, tSNE = FALSE, UMAP = FALSE)
+      #   message(paste0(date(), " ... Plotting UMAP"))
+      #   
+      #   output$plot_umap <- renderPlotly({
+      #     isolate({
+      #       plotly::ggplotly(plotSeuratReduction(inSCE = vals$counts,
+      #                                            useReduction = "umap",
+      #                                            showLegend = FALSE))
+      #     })
+      #   })
+      #   updateCollapse(session = session, "SeuratUI", style = list("tSNE/UMAP" = "success"))
+      #   shinyjs::enable(selector = "#SeuratUI > div[value='Clustering']")
+      #   S4Vectors::metadata(vals$counts)$seuratMarkers <- NULL
+      #   shinyjs::hide(
+      #     selector = "div[value='Downstream Analysis']")
+      #   message(paste0(date(), " ... UMAP Complete"))
+      #   
+      # }
+      # else{
+      #   showNotification(paste0("'", input$reduction_umap_method, "' reduction not found in input object"))
+      # }
+    }))
+  
+  #Clustering
+  observeEvent(input$scanpy_find_clusters_button, withConsoleMsgRedirect(
+    msg = "Please wait while clusters are being computed. See console log for progress.",
+    {
+      # req(vals$counts)
+      # if(!is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[[input$reduction_clustering_method]])){
+      #   #Remove plot tabs if generated before
+      #   removeTab(inputId = "seuratClusteringPlotTabset", target = "PCA Plot")
+      #   removeTab(inputId = "seuratClusteringPlotTabset", target = "ICA Plot")
+      #   removeTab(inputId = "seuratClusteringPlotTabset", target = "tSNE Plot")
+      #   removeTab(inputId = "seuratClusteringPlotTabset", target = "UMAP Plot")
+      #   
+      #   
+      #   message(paste0(date(), " ... Clustering Dataset"))
+      #   vals$counts <- runSeuratFindClusters(inSCE = vals$counts,
+      #                                        useAssay = "seuratScaledData",
+      #                                        useReduction = input$reduction_clustering_method,
+      #                                        dims = input$pca_significant_pc_counter,
+      #                                        algorithm = input$algorithm.use,
+      #                                        groupSingletons = input$group.singletons,
+      #                                        resolution = input$resolution_clustering)
+      #   updateCollapse(session = session, "SeuratUI", style = list("Clustering" = "success"))
+      #   message(paste0(date(), " ... Finding Clusters Complete"))
+      #   
+      #   
+      #   if(!is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[["pca"]])){
+      #     appendTab(inputId = "seuratClusteringPlotTabset", tabPanel(title = "PCA Plot",
+      #                                                                panel(heading = "PCA Plot",
+      #                                                                      plotlyOutput(outputId = "plot_pca_clustering")
+      #                                                                )
+      #     ), select = TRUE
+      #     
+      #     )
+      #     message(paste0(date(), " ... Re-generating PCA Plot with Cluster Labels"))
+      #     output$plot_pca_clustering <- renderPlotly({
+      #       isolate({
+      #         plotly::ggplotly(plotSeuratReduction(inSCE = vals$counts,
+      #                                              useReduction = "pca",
+      #                                              showLegend = TRUE))
+      #       })
+      #     })
+      #     shinyjs::toggleState(
+      #       selector = ".seurat_clustering_plots a[data-value='PCA Plot']",
+      #       condition = !is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[["pca"]]))
+      #   }
+      #   if(!is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[["ica"]])){
+      #     appendTab(inputId = "seuratClusteringPlotTabset", tabPanel(title = "ICA Plot",
+      #                                                                panel(heading = "ICA Plot",
+      #                                                                      plotlyOutput(outputId = "plot_ica_clustering")
+      #                                                                )
+      #     ), select = TRUE)
+      #     
+      #     message(paste0(date(), " ... Re-generating ICA Plot with Cluster Labels"))
+      #     output$plot_ica_clustering <- renderPlotly({
+      #       isolate({
+      #         plotly::ggplotly(plotSeuratReduction(inSCE = vals$counts,
+      #                                              useReduction = "ica",
+      #                                              showLegend = TRUE))
+      #       })
+      #     })
+      #     shinyjs::toggleState(
+      #       selector = ".seurat_clustering_plots a[data-value='ICA Plot']",
+      #       condition = !is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[["ica"]]))
+      #   }
+      #   
+      #   if(!is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[["tsne"]])){
+      #     appendTab(inputId = "seuratClusteringPlotTabset", tabPanel(title = "tSNE Plot",
+      #                                                                panel(heading = "tSNE Plot",
+      #                                                                      plotlyOutput(outputId = "plot_tsne_clustering")
+      #                                                                )
+      #     )
+      #     )
+      #     
+      #     message(paste0(date(), " ... Re-generating tSNE Plot with Cluster Labels"))
+      #     
+      #     output$plot_tsne_clustering <- renderPlotly({
+      #       isolate({
+      #         plotly::ggplotly(plotSeuratReduction(inSCE = vals$counts,
+      #                                              useReduction = "tsne",
+      #                                              showLegend = TRUE))
+      #       })
+      #     })
+      #     shinyjs::toggleState(
+      #       selector = ".seurat_clustering_plots a[data-value='tSNE Plot']",
+      #       condition = !is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[["tsne"]]))
+      #   }
+      #   
+      #   if(!is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[["umap"]])){
+      #     appendTab(inputId = "seuratClusteringPlotTabset", tabPanel(title = "UMAP Plot",
+      #                                                                panel(heading = "UMAP Plot",
+      #                                                                      plotlyOutput(outputId = "plot_umap_clustering")
+      #                                                                )
+      #     )
+      #     )
+      #     message(paste0(date(), " ... Re-generating UMAP Plot with Cluster Labels"))
+      #     
+      #     output$plot_umap_clustering <- renderPlotly({
+      #       isolate({
+      #         plotly::ggplotly(plotSeuratReduction(inSCE = vals$counts,
+      #                                              useReduction = "umap",
+      #                                              showLegend = TRUE))
+      #       })
+      #     })
+      #     shinyjs::toggleState(
+      #       selector = ".seurat_clustering_plots a[data-value='UMAP Plot']",
+      #       condition = !is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[["umap"]]))
+      #   }
+      #   
+      #   shinyjs::show(selector = ".seurat_clustering_plots")
+      #   
+      #   #enable find marker selection
+      #   shinyjs::enable(
+      #     selector = "#SeuratUI > div[value='Find Markers']")
+      #   
+      #   #update colData names
+      #   updateColDataNames()
+      #   
+      #   S4Vectors::metadata(vals$counts)$seuratMarkers <- NULL
+      #   shinyjs::hide(
+      #     selector = "div[value='Downstream Analysis']")
+      #   
+      #   #populate updated colData items for findMarkers tab
+      #   updateSelectInput(session = session,
+      #                     inputId = "seuratFindMarkerSelectPhenotype",
+      #                     choices = colnames(colData(vals$counts)))
+      #   
+      #   #populate reducDim objects from seuratObject for findMarkers tab
+      #   updateSelectInput(session = session,
+      #                     inputId = "seuratFindMarkerReductionMethod",
+      #                     choices = Seurat::Reductions(convertSCEToSeurat(vals$counts)))
+      #   
+      # }
+      # else{
+      #   showNotification(paste0("'", input$reduction_clustering_method, "' reduction not found in input object"))
+      # }
+    }))
+  
+  
 
 })
 
