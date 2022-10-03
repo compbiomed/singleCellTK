@@ -112,7 +112,7 @@ In the marker heatmap, each column stands for a cell in the given SingleCellExpe
 It happens sometimes that a gene is identified as the marker for more than one cluster. In this scenario, we finally assign it to the cluster where it has a higher "logFC" value when plotting.  
 
 ```{r FM-heatmap, message=FALSE, warning=FALSE, out.width = '100%'}
-plotMarkerDiffExp(sce, 
+plotFindMarkerHeatmap(sce, 
                   log2fcThreshold = 0.5, 
                   minClustExprPerc = 0.7, 
                   maxCtrlExprPerc = 0.4, 
