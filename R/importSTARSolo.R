@@ -79,7 +79,11 @@
     }
 
     # Load metrics summary and store in sce
-    metrics_summary <- .importMetricsStarSolo(STARsoloDirs, samples, "Gene", "Summary.csv")
+    metrics_summary <- .importMetricsStarSolo(
+      samplePaths = STARsoloDirs, 
+      sampleNames = samples, 
+      metricsPath = c("Gene", "GeneFull"), 
+      metricsFile = "Summary.csv")
     # sce <- setSampleSummaryStatsTable(sce, "starsolo", metrics_summary)
     if (ncol(metrics_summary) > 0) {
       sce@metadata$sctk$sample_summary[["starsolo"]] <- metrics_summary
@@ -195,11 +199,12 @@ importSTARsolo <- function(
   if(!identical(length(samplePaths), length(sampleNames))){
     stop("Vectors samplePaths and sampleNames must be equal in length.")
   }
-
+  
   # Processing
   metrics_summary <- list()
   for(i in seq(samplePaths)){
-    metrics_summary[[i]] <- list.files(pattern= paste0("*", metricsFile, "$"), path = paste0(samplePaths[i], "/", metricsPath), full.names = TRUE)
+    metricsPath <- paste0(samplePaths[i], "/", metricsPath)
+    metrics_summary[[i]] <- list.files(pattern= paste0("*", metricsFile, "$"), path = metricsPath, full.names = TRUE)
     if(length(metrics_summary[[i]]) > 0){
       metrics_summary[[i]] <- lapply(metrics_summary[[i]], utils::read.csv, header = FALSE, check.names = FALSE, row.names = 1)[[1]]
     }
