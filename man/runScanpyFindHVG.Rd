@@ -9,7 +9,11 @@ runScanpyFindHVG(
   inSCE,
   useAssay = "counts",
   method = c("seurat", "cell_ranger", "seurat_v3"),
-  hvgNumber = 2000
+  hvgNumber = NULL,
+  minMean = 0.0125,
+  maxMean = 3,
+  minDisp = 0.5,
+  maxDisp = Inf
 )
 }
 \arguments{
@@ -24,7 +28,23 @@ genes. One of \code{'seurat'}, \code{'cell_ranger'}, or \code{'seurat_v3'}.
 Default \code{"seurat"}.}
 
 \item{hvgNumber}{numeric value of how many genes to select as highly
-variable. Default \code{2000}}
+variable. Default \code{NULL}}
+
+\item{minMean}{If n_top_genes unequals None, this and all other cutoffs for 
+the means and the normalized dispersions are ignored. Ignored if 
+flavor='seurat_v3'.}
+
+\item{maxMean}{If n_top_genes unequals None, this and all other cutoffs for 
+the means and the normalized dispersions are ignored. Ignored if 
+flavor='seurat_v3'.}
+
+\item{minDisp}{If n_top_genes unequals None, this and all other cutoffs for 
+the means and the normalized dispersions are ignored. Ignored if 
+flavor='seurat_v3'.}
+
+\item{maxDisp}{If n_top_genes unequals None, this and all other cutoffs for 
+the means and the normalized dispersions are ignored. Ignored if 
+flavor='seurat_v3'.}
 }
 \value{
 Updated \code{SingleCellExperiment} object with highly variable genes

@@ -22,7 +22,8 @@ runScanpyUMAP(
 \arguments{
 \item{inSCE}{(sce) object on which to compute the UMAP}
 
-\item{useReduction}{Reduction to use for computing UMAP. Default is \code{"pca"}.}
+\item{useReduction}{Reduction to use for computing UMAP. 
+Default is \code{"pca"}.}
 
 \item{reducedDimName}{Name of new reducedDims object containing Scanpy UMAP
 Default \code{scanpyUMAP}.}
@@ -37,10 +38,12 @@ call. Default \code{0.5}.}
 UMAP call. Default \code{15L}.}
 
 \item{spread}{Sets the \code{"spread"} parameter to the underlying UMAP call.
-Default \code{1}.
-#' @param alpha Sets the \code{"alpha"} parameter to the underlying UMAP call.
-Default \code{1}.
-#' @param gamma Sets the \code{"gamma"} parameter to the underlying UMAP call.
+Default \code{1}.}
+
+\item{alpha}{Sets the \code{"alpha"} parameter to the underlying UMAP call.
+Default \code{1}.}
+
+\item{gamma}{Sets the \code{"gamma"} parameter to the underlying UMAP call.
 Default \code{1}.}
 
 \item{externalReduction}{Pass DimReduce object if PCA computed through
