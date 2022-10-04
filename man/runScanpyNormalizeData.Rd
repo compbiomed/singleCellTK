@@ -9,8 +9,10 @@ Normalizes the sce object according to the input parameters}
 runScanpyNormalizeData(
   inSCE,
   useAssay,
-  normAssayName = "scanpyNormData",
-  normalizationMethod = "LogNormalize"
+  countsPerCellAfter = 10000,
+  countsPerCell = NULL,
+  minCount = 0,
+  normAssayName = "scanpyNormData"
 )
 }
 \arguments{
@@ -18,11 +20,16 @@ runScanpyNormalizeData(
 
 \item{useAssay}{Assay containing raw counts to use for normalization.}
 
+\item{countsPerCellAfter}{If None, after normalization, each cell has a total
+count equal to the median of the counts_per_cell before normalization.}
+
+\item{countsPerCell}{Precomputed counts per cell.}
+
+\item{minCount}{Cells with counts less than min_counts are filtered out 
+during normalization.}
+
 \item{normAssayName}{Name of new assay containing normalized data. Default
 \code{scanpyNormData}.}
-
-\item{normalizationMethod}{selected normalization method. Default
-\code{"LogNormalize"}.}
 }
 \value{
 Normalized \code{SingleCellExperiment} object

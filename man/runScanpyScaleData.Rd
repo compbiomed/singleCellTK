@@ -30,7 +30,6 @@ Scales the input sce object according to the input parameters
 data(scExample, package = "singleCellTK")
 \dontrun{
 sce <- runScanpyNormalizeData(sce, useAssay = "counts")
-sce <- runScanpyFindHVG(sce, useAssay = "counts")
-sce <- runScanpyScaleData(sce, useAssay = "counts")
+sce <- runScanpyScaleData(sce, useAssay = "scanpyNormData")
 }
 }

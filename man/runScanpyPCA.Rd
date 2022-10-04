@@ -8,7 +8,7 @@ components within the sce object}
 \usage{
 runScanpyPCA(
   inSCE,
-  useAssay = "scanpyScaledData",
+  useAssay = "scanpyNormData",
   reducedDimName = "scanpyPCA",
   nPCs = 50L,
   algorithm = c("arpack", "randomized", "auto", "lobpcg"),
@@ -27,10 +27,12 @@ Default \code{scanpyPCA}.}
 \item{nPCs}{numeric value of how many components to compute. Default
 \code{20}.}
 
-\item{algorithm}{selected method to use for computation of pca. One of \code{'arpack'}, \code{'randomized'}, \code{'auto'} or \code{'lobpcg'}.
+\item{algorithm}{selected method to use for computation of pca. 
+One of \code{'arpack'}, \code{'randomized'}, \code{'auto'} or \code{'lobpcg'}.
 Default \code{"arpack"}.}
 
-\item{use_highly_variable}{boolean value of whether to use highly variable genes only. By default uses them if they have been determined beforehand.}
+\item{use_highly_variable}{boolean value of whether to use highly variable 
+genes only. By default uses them if they have been determined beforehand.}
 }
 \value{
 Updated \code{SingleCellExperiment} object which now contains the
@@ -46,7 +48,6 @@ data(scExample, package = "singleCellTK")
 \dontrun{
 sce <- runScanpyNormalizeData(sce, useAssay = "counts")
 sce <- runScanpyFindHVG(sce, useAssay = "counts")
-sce <- runScanpyScaleData(sce, useAssay = "counts")
-sce <- runScanpyPCA(sce, useAssay = "counts")
+sce <- runScanpyPCA(sce, useAssay = "scanpyNormData")
 }
 }
