@@ -4,7 +4,7 @@
 \alias{runScanpyNormalizeData}
 \title{runScanpyNormalizeData
 Wrapper for NormalizeData() function from scanpy library
-Normalizes the sce object according to the input parameters provided.}
+Normalizes the sce object according to the input parameters}
 \usage{
 runScanpyNormalizeData(
   inSCE,
@@ -30,7 +30,7 @@ Normalized \code{SingleCellExperiment} object
 \description{
 runScanpyNormalizeData
 Wrapper for NormalizeData() function from scanpy library
-Normalizes the sce object according to the input parameters provided.
+Normalizes the sce object according to the input parameters
 }
 \examples{
 data(scExample, package = "singleCellTK")

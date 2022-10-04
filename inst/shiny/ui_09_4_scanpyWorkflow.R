@@ -25,11 +25,6 @@ shinyPanelScanpy <- fluidPage(
         )
     ),
     bsCollapse(id = "ScanpyUI", open = "scanpy QC & Filtering", # ScanPy
-            bsCollapsePanel("QC & Filtering",
-                fluidRow(
-                        ),
-                            style = "primary"
-                            ),
             bsCollapsePanel("Normalize Data",
                                                                    fluidRow(
                                                                      column(4,

@@ -9328,10 +9328,11 @@ shinyServer(function(input, output, session) {
     {
       req(vals$counts)
       message(paste0(date(), " ... Finding High Variable Genes"))
-        # vals$counts <- runSeuratFindHVG(inSCE = vals$counts,
-        #                                 useAssay = metadata(vals$counts)$sctk$seuratUseAssay,
-        #                                 method = input$hvg_method,
-        #                                 hvgNumber = as.numeric(input$hvg_no_features))
+        vals$counts <- runScanpyFindHVG(inSCE = vals$counts,
+                                        #useAssay = metadata(vals$counts)$sctk$seuratUseAssay,
+                                        useAssay = "counts",
+                                        method = "cell_ranger")
+                                        #hvgNumber = as.numeric(input$hvg_no_features))
 
       # vals$counts <- singleCellTK:::.seuratInvalidate(inSCE = vals$counts, varFeatures = FALSE)
       # message(paste0(date(), " ... Plotting HVG"))
@@ -9367,12 +9368,12 @@ shinyServer(function(input, output, session) {
       # # incompatible with Seurat's "_"-to-"-" change. But in `runSeuratPCA/ICA`,
       # # we automatically detect seurat HVG from the object when `useFeatureSubset
       # # = NULL`, so no need to specify this now.
-      # vals$counts <- runSeuratPCA(inSCE = vals$counts,
-      #                             useAssay = "seuratNormData",
-      #                             reducedDimName = "seuratPCA",
-      #                             #useFeatureSubset = getSeuratVariableFeatures(vals$counts),
-      #                             nPCs = input$pca_no_components,
-      #                             seed = input$seed_PCA)
+      vals$counts <- runScanpyPCA(inSCE = vals$counts,
+                                  algorithm = "auto")
+                                  #useAssay = "seuratNormData",
+                                  #reducedDimName = "seuratPCA",
+                                  #nPCs = input$pca_no_components,
+                                  #seed = input$seed_PCA)
       # 
       # vals$counts@metadata$seurat$count_pc <- dim(convertSCEToSeurat(vals$counts)[["pca"]])[2]
       # vals$counts <- singleCellTK:::.seuratInvalidate(inSCE = vals$counts, scaleData = FALSE, varFeatures = FALSE, PCA = FALSE, ICA = FALSE)
