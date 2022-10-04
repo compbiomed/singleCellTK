@@ -1253,7 +1253,7 @@ if (skipSoupX_bg) {
                      background = TRUE)},
     error = function(e) {
       cat("runSoupX with background did not complete successfully. The section of SoupX with background is skipped")
-      skipSoupX_bg <- TRUE
+      skipSoupX_bg <<- TRUE
       return(NA)
     }
   )
