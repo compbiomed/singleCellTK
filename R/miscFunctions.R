@@ -177,7 +177,7 @@ discreteColorPalette <- function(n, palette = c("random", "ggplot", "celda"),
   for (i in seq_len(chuN)) {
     start <- (i-1)*chuS + 1
     end <- min(i*chuS, dimN[2])
-    Mat[[i]] <- methods::as(x[, start:end], "dgCMatrix")
+    Mat[[i]] <- methods::as(x[, start:end], "CsparseMatrix")
   }
   x <- do.call(base::cbind, Mat)
   colnames(x) <- cn

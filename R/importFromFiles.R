@@ -124,7 +124,6 @@ importFromFiles <- function(assayFile, annotFile = NULL, featureFile = NULL,
   if (is.null(colnames(countsin))){
     colnames(countsin) <- rownames(annotin)
   }
-  #assaylist[[assayName]] <- methods::as(countsin, "dgCMatrix")
   assaylist[[assayName]] <- .convertToMatrix(countsin)
 
   newassay <- SingleCellExperiment::SingleCellExperiment(assays = assaylist,

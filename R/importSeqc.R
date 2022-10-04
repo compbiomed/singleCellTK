@@ -25,7 +25,7 @@
     missMat <- Matrix::Matrix(0, nrow = length(missGene), ncol = ncol(matrix),
         dimnames = list(missGene, NULL))
 
-    matb <- methods::as(matrix, "dgCMatrix")
+    matb <- methods::as(matrix, "CsparseMatrix")
     rownames(matb) <- rownames(matrix)
 
     mat <- rbind(matb, missMat)
