@@ -63,6 +63,7 @@ shinyPanelCluster <- fluidPage(
         # Seurat ####
         conditionalPanel(
           "input.clustAlgo >= 11 && input.clustAlgo <= 13",
+          selectInput("clustSeuratReddim", "Select A ReducedDim:", currreddim),
           numericInput("clustSeuratDims", "How Many Dimensions to Use:", 10,
                        min = 2, step = 1),
           checkboxInput("clustSeuratGrpSgltn", "Group Singletons",
