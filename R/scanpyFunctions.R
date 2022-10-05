@@ -29,11 +29,11 @@
 #' Normalizes the sce object according to the input parameters
 #' @param inSCE (sce) object to normalize
 #' @param useAssay Assay containing raw counts to use for normalization.
-#' @param countsPerCellAfter If None, after normalization, each cell has a total
-#' count equal to the median of the counts_per_cell before normalization.
-#' @param countsPerCell Precomputed counts per cell.
-#' @param minCount Cells with counts less than min_counts are filtered out 
-#' during normalization.
+#' @param targetSum If NULL, after normalization, each observation (cell) has a 
+#' total count equal to the median of total counts for observations (cells) 
+#' before normalization. Default \code{1}
+#' @param maxFraction Include cells that have more counts than max_fraction of 
+#' the original total counts in at least one cell. Default \code{0.05}
 #' @param normAssayName Name of new assay containing normalized data. Default
 #' \code{scanpyNormData}.
 #' @examples
@@ -45,9 +45,8 @@
 #' @export
 runScanpyNormalizeData <- function(inSCE,
                                    useAssay,
-                                   countsPerCellAfter = 1e4,
-                                   countsPerCell = NULL,
-                                   minCount = 0,
+                                   targetSum = 1,
+                                   maxFraction = 0.05,
                                    normAssayName = "scanpyNormData") {
   if (missing(useAssay)) {
     useAssay <- SummarizedExperiment::assayNames(inSCE)[1]
@@ -59,11 +58,14 @@ runScanpyNormalizeData <- function(inSCE,
     )
   }
   scanpyObject <- zellkonverter::SCE2AnnData(sce = inSCE, X_name = useAssay)
-  # Total-count normalize (library-size correct) to 10,000 reads/cell
-  sc$pp$normalize_per_cell(scanpyObject, 
-                           counts_per_cell_after = countsPerCellAfter, 
-                           counts_per_cell = countsPerCell,
-                           min_counts = minCount)
+  normValue <- sc$pp$normalize_total(scanpyObject, 
+                                     target_sum = targetSum, 
+                                     max_fraction =  maxFraction,
+                                     inplace = FALSE)
+  
+  scanpyObject$obs$n_counts <- normValue$norm_factor
+  scanpyObject$X <- normValue$X
+  
   # log transform the data.
   sc$pp$log1p(scanpyObject)
   
