@@ -9,7 +9,9 @@ runScanpyFindHVG(
   inSCE,
   useAssay = "counts",
   method = c("seurat", "cell_ranger", "seurat_v3"),
-  hvgNumber = NULL,
+  altExpName = "featureSubset",
+  altExp = FALSE,
+  hvgNumber = 2000,
   minMean = 0.0125,
   maxMean = 3,
   minDisp = 0.5,
@@ -27,8 +29,14 @@ of variable genes. It is recommended to use a raw counts assay with the}
 genes. One of \code{'seurat'}, \code{'cell_ranger'}, or \code{'seurat_v3'}.
 Default \code{"seurat"}.}
 
+\item{altExpName}{Character. Name of the alternative experiment object to
+add if \code{returnAsAltExp = TRUE}. Default \code{featureSubset}.}
+
+\item{altExp}{Logical value indicating if the input object is an
+altExperiment. Default \code{FALSE}.}
+
 \item{hvgNumber}{numeric value of how many genes to select as highly
-variable. Default \code{NULL}}
+variable. Default \code{2000}}
 
 \item{minMean}{If n_top_genes unequals None, this and all other cutoffs for 
 the means and the normalized dispersions are ignored. Ignored if 
@@ -57,5 +65,5 @@ Find highly variable genes and store in the input sce object
 }
 \examples{
 data(scExample, package = "singleCellTK")
-sce <- runScanpyFindHVG(sce)
+sce <- runScanpyFindHVG(sce, useAssay = "counts", method = "seurat")
 }

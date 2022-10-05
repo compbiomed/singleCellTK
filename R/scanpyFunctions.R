@@ -86,8 +86,12 @@ runScanpyNormalizeData <- function(inSCE,
 #' @param method selected method to use for computation of highly variable
 #' genes. One of \code{'seurat'}, \code{'cell_ranger'}, or \code{'seurat_v3'}.
 #' Default \code{"seurat"}.
+#' @param altExpName Character. Name of the alternative experiment object to
+#' add if \code{returnAsAltExp = TRUE}. Default \code{featureSubset}.
+#' @param altExp Logical value indicating if the input object is an
+#' altExperiment. Default \code{FALSE}.
 #' @param hvgNumber numeric value of how many genes to select as highly
-#' variable. Default \code{NULL}
+#' variable. Default \code{2000}
 #' @param minMean If n_top_genes unequals None, this and all other cutoffs for 
 #' the means and the normalized dispersions are ignored. Ignored if 
 #' flavor='seurat_v3'.
@@ -102,7 +106,7 @@ runScanpyNormalizeData <- function(inSCE,
 #' flavor='seurat_v3'.
 #' @examples
 #' data(scExample, package = "singleCellTK")
-#' sce <- runScanpyFindHVG(sce)
+#' sce <- runScanpyFindHVG(sce, useAssay = "counts", method = "seurat")
 #' @return Updated \code{SingleCellExperiment} object with highly variable genes
 #' computation stored
 #' \code{\link{getTopHVG}}, \code{\link{plotTopHVG}}
@@ -112,28 +116,45 @@ runScanpyNormalizeData <- function(inSCE,
 runScanpyFindHVG <- function(inSCE,
                              useAssay = "counts",
                              method = c("seurat", "cell_ranger", "seurat_v3"),
-                             hvgNumber = NULL, # ask Nida
+                             altExpName = "featureSubset",
+                             altExp = FALSE,
+                             hvgNumber = 2000,
                              minMean = 0.0125,
                              maxMean = 3,
                              minDisp = 0.5,
                              maxDisp = Inf) {
   
   method <- match.arg(method)
-  scanpyObject <- zellkonverter::SCE2AnnData(sce = inSCE, X_name = useAssay)
-  sc$pp$scale(scanpyObject, max_value=10)
-  sc$pp$highly_variable_genes(scanpyObject, 
-                              flavor = method,
-                              n_top_genes = hvgNumber,
-                              min_mean = minMean,
-                              max_mean = maxMean,
-                              min_disp = minDisp,
-                              max_disp = maxDisp)
-  #options
-  #sc["pp"]["highly_variable_genes"](scanpyObject, min_mean, max_mean, min_disp)
-  #inSCE <- convertScanpytoSCE(scanpyObject)
+  if (missing(useAssay)) {
+    useAssay <- SummarizedExperiment::assayNames(inSCE)[1]
+    message(
+      "'useAssay' parameter missing. Using the first available assay ",
+      "instead: '",
+      useAssay,
+      "'"
+    )
+  }
+  if (!altExp) {
+    scanpyObject <- zellkonverter::SCE2AnnData(sce = inSCE, 
+                                               X_name = useAssay)
+  }
+  else{
+    scanpyObject <- zellkonverter::SCE2AnnData(sce = altExp(inSCE, altExpName), 
+                                               X_name = useAssay)
+    
+  }
   
-  inSCE@metadata$scanpy$obj <- scanpyObject
   if (method == "seurat") {
+    sc$pp$scale(scanpyObject, max_value=10)
+    sc$pp$highly_variable_genes(scanpyObject, 
+                                flavor = method,
+                                n_top_genes = as.integer(hvgNumber),
+                                min_mean = minMean,
+                                max_mean = maxMean,
+                                min_disp = minDisp,
+                                max_disp = maxDisp)
+    
+    inSCE@metadata$scanpy$obj <- scanpyObject
     rowData(inSCE)$scanpy_variableFeatures_seurat_dispersion <-
       inSCE@metadata$scanpy$obj["var"][["dispersions"]]
     rowData(inSCE)$scanpy_variableFeatures_seurat_dispersionScaled <-
@@ -151,15 +172,38 @@ runScanpyFindHVG <- function(inSCE,
         )
       )
   } 
-  #for this approach it is required that filering of cells must be done 
-  #initially so that duplicates can be dropped
+  #for this approach it is required that sce basic filering of cells and genes 
+  #must be done
   else if (method == "cell_ranger") {
-    rowData(inSCE)$scanpy_variableFeatures_cr_dispersion <-
-      inSCE@metadata$scanpy$obj["var"][["dispersions"]]
-    rowData(inSCE)$scanpy_variableFeatures_cr_dispersionScaled <-
-      inSCE@metadata$scanpy$obj["var"][["dispersions_norm"]]    
-    rowData(inSCE)$scanpy_variableFeatures_cr_mean <-
-      inSCE@metadata$scanpy$obj["var"][["means"]]  
+    sc$pp$highly_variable_genes(scanpyObject, 
+                                flavor = method,
+                                n_top_genes = as.integer(hvgNumber),
+                                min_mean = minMean,
+                                max_mean = maxMean,
+                                min_disp = minDisp,
+                                max_disp = maxDisp)
+    
+    inSCE@metadata$scanpy$obj <- scanpyObject
+    if (!altExp) {
+      rowData(inSCE)$scanpy_variableFeatures_cr_dispersion <-
+        inSCE@metadata$scanpy$obj["var"][["dispersions"]]
+      rowData(inSCE)$scanpy_variableFeatures_cr_dispersionScaled <-
+        inSCE@metadata$scanpy$obj["var"][["dispersions_norm"]]    
+      rowData(inSCE)$scanpy_variableFeatures_cr_mean <-
+        inSCE@metadata$scanpy$obj["var"][["means"]] 
+      
+    }
+    else{
+      scanpyToSCE <- zellkonverter::AnnData2SCE(adata = scanpyObject)
+      altExpRows <- match(rownames(inSCE), rownames(scanpyToSCE))
+      rowData(inSCE)$scanpy_variableFeatures_cr_dispersion <-
+        inSCE@metadata$scanpy$obj["var"][["dispersions"]][altExpRows]
+      rowData(inSCE)$scanpy_variableFeatures_cr_dispersionScaled <-
+        inSCE@metadata$scanpy$obj["var"][["dispersions_norm"]] [altExpRows]   
+      rowData(inSCE)$scanpy_variableFeatures_cr_mean <-
+        inSCE@metadata$scanpy$obj["var"][["means"]][altExpRows]
+    }
+    
     metadata(inSCE)$sctk$runFeatureSelection$cell_ranger <-
       list(
         useAssay = useAssay,
@@ -172,6 +216,15 @@ runScanpyFindHVG <- function(inSCE,
   }
   
   else if (method == "seurat_v3") {
+    sc$pp$highly_variable_genes(scanpyObject, 
+                                flavor = method,
+                                n_top_genes = as.integer(hvgNumber),
+                                min_mean = minMean,
+                                max_mean = maxMean,
+                                min_disp = minDisp,
+                                max_disp = maxDisp)
+    
+    inSCE@metadata$scanpy$obj <- scanpyObject
     rowData(inSCE)$scanpy_variableFeatures_seuratv3_variances <-
       inSCE@metadata$scanpy$obj["var"][["variances"]]
     rowData(inSCE)$scanpy_variableFeatures_seuratv3_variancesScaled <-
@@ -190,8 +243,6 @@ runScanpyFindHVG <- function(inSCE,
   }
   return(inSCE)
 }
-
-
 
 #' runScanpyScaleData
 #' Scales the input sce object according to the input parameters
