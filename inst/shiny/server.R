@@ -288,6 +288,9 @@ shinyServer(function(input, output, session) {
 
     updateSelectInputTag(session, "seuratSelectNormalizationAssay",
                          choices = currassays, showTags = FALSE)
+    updateSelectInputTag(session, "scanpySelectNormalizationAssay",
+                         choices = currassays, showTags = FALSE)
+    
     if(input$hvgMethodFS == "vst"){
       updateSelectInputTag(session, "assaySelectFS_Norm", recommended = c("raw"))
     }
@@ -9308,8 +9311,12 @@ shinyServer(function(input, output, session) {
       req(vals$counts)
       message(paste0(date(), " ... Normalizing Data"))
       vals$counts <- runScanpyNormalizeData(inSCE = vals$counts,
-                                            useAssay = "counts")
-      # metadata(vals$counts)$sctk$seuratUseAssay <- input$seuratSelectNormalizationAssay
+                                            useAssay = input$scanpySelectNormalizationAssay,
+                                            countsPerCellAfter = input$scanpy_countsPerCellAfter,
+                                            #countsPerCell = input$scanpy_countsPerCell,
+                                            minCount = input$scanpy_minCount
+                                            )
+      metadata(vals$counts)$sctk$scanpyUseAssay <- input$scanpySelectNormalizationAssay
       # 
       # vals$counts <- singleCellTK:::.seuratInvalidate(inSCE = vals$counts)
       # updateCollapse(session = session, "SeuratUI", style = list("Normalize Data" = "success"))
@@ -9329,10 +9336,13 @@ shinyServer(function(input, output, session) {
       req(vals$counts)
       message(paste0(date(), " ... Finding High Variable Genes"))
         vals$counts <- runScanpyFindHVG(inSCE = vals$counts,
-                                        #useAssay = metadata(vals$counts)$sctk$seuratUseAssay,
-                                        useAssay = "counts",
-                                        method = "cell_ranger")
-                                        #hvgNumber = as.numeric(input$hvg_no_features))
+                                        useAssay = metadata(vals$counts)$sctk$scanpyUseAssay,
+                                        method = input$scanpy_hvg_method,
+                                        hvgNumber = as.numeric(input$scanpy_hvg_no_features),
+                                        minMean = input$scanpy_minMean,
+                                        maxMean = input$scanpy_maxMean,
+                                        minDisp = input$scanpy_minDisp,
+                                        maxDisp = input$scanpy_maxDisp)
 
       # vals$counts <- singleCellTK:::.seuratInvalidate(inSCE = vals$counts, varFeatures = FALSE)
       # message(paste0(date(), " ... Plotting HVG"))

@@ -112,7 +112,7 @@ runScanpyNormalizeData <- function(inSCE,
 runScanpyFindHVG <- function(inSCE,
                              useAssay = "counts",
                              method = c("seurat", "cell_ranger", "seurat_v3"),
-                             hvgNumber = NULL,
+                             hvgNumber = NULL, # ask Nida
                              minMean = 0.0125,
                              maxMean = 3,
                              minDisp = 0.5,
