@@ -7,8 +7,7 @@
 \usage{
 getTopHVG(
   inSCE,
-  method = c("vst", "dispersion", "mean.var.plot", "modelGeneVar", "seurat",
-    "seurat_v3", "cell_ranger"),
+  method = c("vst", "dispersion", "mean.var.plot", "modelGeneVar"),
   hvgNumber = 2000,
   useFeatureSubset = NULL,
   featureDisplay = metadata(inSCE)$featureDisplay

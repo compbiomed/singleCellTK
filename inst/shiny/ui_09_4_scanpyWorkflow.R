@@ -36,7 +36,10 @@ shinyPanelScanpy <- fluidPage(
                                                                                     selected = NULL,
                                                                                     multiple = FALSE,
                                                                                     options = NULL),
-                                                                                  selectInput(inputId = "scanpy_normalization_method", label = "Select normalization method: ", choices = c("decide")), #normalization_method
+                                                                                  numericInput(inputId = "scanpy_countsPerCellAfter", label = "Specify counts per cell after:", value = 1e4),
+                                                                                  # numericInput(inputId = "scanpy_countsPerCell", label = "Specify counts per cell:", value = NULL), # ask Nida
+                                                                                  numericInput(inputId = "scanpy_minCount", label = "Specify min counts:", value = 0),
+                                                                                  # selectInput(inputId = "scanpy_normalization_method", label = "Select normalization method: ", choices = c("decide")), #normalization_method
                                                                                   # textInput(inputId = "scale_factor", label = "Set scaling factor: ", value = "10000"),
                                                                                   actionButton(inputId = "scanpy_normalize_button", "Normalize") # normalize_button
                                                                             )
@@ -50,8 +53,12 @@ shinyPanelScanpy <- fluidPage(
                                      fluidRow(
                                        column(12,
                                               panel(heading = "Compute HVG",
-                                                    selectInput(inputId = "scanpy_hvg_method", label = "Select HVG method: ", choices = c("decide")), # hvg_method
-                                                    textInput(inputId = "scanpy_hvg_no_features", label = "Select number of features to find: ", value = "2000"), # hvg_no_features
+                                                    selectInput(inputId = "scanpy_hvg_method", label = "Select HVG method: ", choices = c("seurat", "cell_ranger", "seurat_v3")), # hvg_method
+                                                    numericInput(inputId = "scanpy_hvg_no_features", label = "Select number of features to find: ", value = "2000"), # hvg_no_features
+                                                    numericInput(inputId = "scanpy_minMean", label = "Specify minMean: ", value = "0.0125"),
+                                                    numericInput(inputId = "scanpy_maxMean", label = "Specify maxMean: ", value = "3"),
+                                                    numericInput(inputId = "scanpy_minDisp", label = "Specify minDisp: ", value = "0.5"),
+                                                    numericInput(inputId = "scanpy_maxDisp", label = "Specify maxDisp: ", value = Inf),
                                                     actionButton(inputId = "scanpy_find_hvg_button", "Find HVG") # find_hvg_button
                                               )
                                        )
