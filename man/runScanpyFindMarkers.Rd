@@ -46,8 +46,6 @@ runScanpyFindMarkers
 data(scExample, package = "singleCellTK")
 \dontrun{
 sce <- runScanpyNormalizeData(sce, useAssay = "counts")
-sce <- runScanpyFindHVG(sce, useAssay = "counts")
-sce <- runScanpyScaleData(sce, useAssay = "counts")
 sce <- runScanpyPCA(sce, useAssay = "counts")
 sce <- runScanpyFindClusters(sce, useAssay = "counts", algorithm = "louvain")
 sce <- runScanpyFindMarkers(sce, colDataName = "Scanpy_louvain" )

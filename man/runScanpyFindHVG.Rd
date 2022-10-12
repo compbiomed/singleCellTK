@@ -7,7 +7,7 @@ Find highly variable genes and store in the input sce object}
 \usage{
 runScanpyFindHVG(
   inSCE,
-  useAssay = "counts",
+  useAssay = "scanpyScaledData",
   method = c("seurat", "cell_ranger", "seurat_v3"),
   altExpName = "featureSubset",
   altExp = FALSE,
@@ -65,5 +65,9 @@ Find highly variable genes and store in the input sce object
 }
 \examples{
 data(scExample, package = "singleCellTK")
-sce <- runScanpyFindHVG(sce, useAssay = "counts", method = "seurat")
+\dontrun{
+sce <- runScanpyNormalizeData(sce, useAssay = "counts")
+sce <- runScanpyScaleData(sce, useAssay = "scanpyNormData")
+sce <- runScanpyFindHVG(sce, useAssay = "scanpyScaledData", method = "seurat")
+}
 }

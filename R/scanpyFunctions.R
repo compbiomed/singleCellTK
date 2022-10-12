@@ -1,3 +1,7 @@
+########################################
+### Helper Functions ##################
+#######################################
+
 #' .updateAssaySCEFromScanpy
 #' Update/Modify/Add an assay in the provided SingleCellExperiment object from
 #' an AnnData object
@@ -23,6 +27,11 @@
   
   return(inSCE)
 }
+
+
+#####################################################
+#### Normalization and Scaling function ############
+#####################################################
 
 #' runScanpyNormalizeData
 #' Wrapper for NormalizeData() function from scanpy library
@@ -71,13 +80,55 @@ runScanpyNormalizeData <- function(inSCE,
   
   inSCE <-
     .updateAssaySCEFromScanpy(inSCE, scanpyObject, normAssayName)
-  inSCE@metadata$scanpy$obj <- scanpyObject
+  metadata(inSCE)$scanpy$obj <- scanpyObject
+  metadata(inSCE)$scanpy$normValues <- normValue$X
   inSCE@metadata$scanpy$normAssay <- normAssayName
+  colData(inSCE)$n_counts <- 
+    as.factor(unlist(metadata(inSCE)$scanpy$obj$obs['n_counts']))
+  
   inSCE <- expSetDataTag(inSCE = inSCE,
                          assayType = "normalized",
                          assays = normAssayName)
   return(inSCE)
 }
+
+#' runScanpyScaleData
+#' Scales the input sce object according to the input parameters
+#' @param inSCE (sce) object to scale
+#' @param useAssay Assay containing normalized counts to scale.
+#' @param scaledAssayName Name of new assay containing scaled data. Default
+#' \code{scanpyScaledData}.
+#' @examples
+#' data(scExample, package = "singleCellTK")
+#' \dontrun{
+#' sce <- runScanpyNormalizeData(sce, useAssay = "counts")
+#' sce <- runScanpyScaleData(sce, useAssay = "scanpyNormData")
+#' }
+#' @return Scaled \code{SingleCellExperiment} object
+#' @export
+runScanpyScaleData <- function(inSCE,
+                               useAssay = "scanpyNormData",
+                               scaledAssayName = "scanpyScaledData") {
+  
+  scanpyObject <- zellkonverter::SCE2AnnData(sce = inSCE, X_name = useAssay)
+  sc$pp$scale(scanpyObject, max_value=10)
+  inSCE <-
+    .updateAssaySCEFromScanpy(inSCE, scanpyObject, scaledAssayName, "X")
+  metadata(inSCE)$scanpy$obj <- scanpyObject
+  metadata(inSCE)$scanpy$scaledAssay <- scaledAssayName
+  rowData(inSCE)$"Scanpy_mean" <- metadata(inSCE)$scanpy$obj$var$mean 
+  rowData(inSCE)$"Scanpy_std" <- metadata(inSCE)$scanpy$obj$var$std 
+  
+  inSCE <- expSetDataTag(inSCE = inSCE,
+                         assayType = "scaled",
+                         assays = scaledAssayName)
+  
+  return(inSCE)
+}
+
+######################################
+### High Variable Genes ###############
+######################################
 
 #' runScanpyFindHVG
 #' Find highly variable genes and store in the input sce object
@@ -108,7 +159,11 @@ runScanpyNormalizeData <- function(inSCE,
 #' flavor='seurat_v3'.
 #' @examples
 #' data(scExample, package = "singleCellTK")
-#' sce <- runScanpyFindHVG(sce, useAssay = "counts", method = "seurat")
+#' \dontrun{
+#' sce <- runScanpyNormalizeData(sce, useAssay = "counts")
+#' sce <- runScanpyScaleData(sce, useAssay = "scanpyNormData")
+#' sce <- runScanpyFindHVG(sce, useAssay = "scanpyScaledData", method = "seurat")
+#' }
 #' @return Updated \code{SingleCellExperiment} object with highly variable genes
 #' computation stored
 #' \code{\link{getTopHVG}}, \code{\link{plotTopHVG}}
@@ -116,7 +171,7 @@ runScanpyNormalizeData <- function(inSCE,
 #' @importFrom SummarizedExperiment rowData rowData<-
 #' @importFrom S4Vectors metadata<-
 runScanpyFindHVG <- function(inSCE,
-                             useAssay = "counts",
+                             useAssay = "scanpyScaledData",
                              method = c("seurat", "cell_ranger", "seurat_v3"),
                              altExpName = "featureSubset",
                              altExp = FALSE,
@@ -147,7 +202,8 @@ runScanpyFindHVG <- function(inSCE,
   }
   
   if (method == "seurat") {
-    sc$pp$scale(scanpyObject, max_value=10)
+    scanpyObject$var['mean'] <- rowData(inSCE)$"Scanpy_mean"
+    scanpyObject$var['std'] <- rowData(inSCE)$"Scanpy_std"
     sc$pp$highly_variable_genes(scanpyObject, 
                                 flavor = method,
                                 n_top_genes = as.integer(hvgNumber),
@@ -156,7 +212,7 @@ runScanpyFindHVG <- function(inSCE,
                                 min_disp = minDisp,
                                 max_disp = maxDisp)
     
-    inSCE@metadata$scanpy$obj <- scanpyObject
+    metadata(inSCE)$scanpy$hvg <- scanpyObject
     rowData(inSCE)$scanpy_variableFeatures_seurat_dispersion <-
       inSCE@metadata$scanpy$obj["var"][["dispersions"]]
     rowData(inSCE)$scanpy_variableFeatures_seurat_dispersionScaled <-
@@ -185,7 +241,7 @@ runScanpyFindHVG <- function(inSCE,
                                 min_disp = minDisp,
                                 max_disp = maxDisp)
     
-    inSCE@metadata$scanpy$obj <- scanpyObject
+    metadata(inSCE)$scanpy$hvg <- scanpyObject
     if (!altExp) {
       rowData(inSCE)$scanpy_variableFeatures_cr_dispersion <-
         inSCE@metadata$scanpy$obj["var"][["dispersions"]]
@@ -226,7 +282,7 @@ runScanpyFindHVG <- function(inSCE,
                                 min_disp = minDisp,
                                 max_disp = maxDisp)
     
-    inSCE@metadata$scanpy$obj <- scanpyObject
+    metadata(inSCE)$scanpy$hvg <- scanpyObject
     rowData(inSCE)$scanpy_variableFeatures_seuratv3_variances <-
       inSCE@metadata$scanpy$obj["var"][["variances"]]
     rowData(inSCE)$scanpy_variableFeatures_seuratv3_variancesScaled <-
@@ -246,37 +302,38 @@ runScanpyFindHVG <- function(inSCE,
   return(inSCE)
 }
 
-#' runScanpyScaleData
-#' Scales the input sce object according to the input parameters
-#' @param inSCE (sce) object to scale
-#' @param useAssay Assay containing normalized counts to scale.
-#' @param scaledAssayName Name of new assay containing scaled data. Default
-#' \code{scanpyScaledData}.
+
+#' plotScanpyHVG
+#'
+#' @param inSCE Input \code{SingleCellExperiment} object.
+#' @param log Plot on logarithmic axes. Default \code{FALSE}.
 #' @examples
 #' data(scExample, package = "singleCellTK")
 #' \dontrun{
 #' sce <- runScanpyNormalizeData(sce, useAssay = "counts")
 #' sce <- runScanpyScaleData(sce, useAssay = "scanpyNormData")
+#' sce <- runScanpyFindHVG(sce, useAssay = "counts")
+#' plotScanpyHVG(sce)
 #' }
-#' @return Scaled \code{SingleCellExperiment} object
+#' @return plot object
 #' @export
-runScanpyScaleData <- function(inSCE,
-                               useAssay = "scanpyNormData",
-                               scaledAssayName = "scanpyScaledData") {
+#findhvg stored in scanpy$hvg rather than scanpy$obj. plot function made
+plotScanpyHVG <- function(inSCE,
+                          log = FALSE){
   
-  scanpyObject <- zellkonverter::SCE2AnnData(sce = inSCE, X_name = useAssay)
-  sc$pp$scale(scanpyObject, max_value=10)
-  inSCE <-
-    .updateAssaySCEFromScanpy(inSCE, scanpyObject, scaledAssayName, "X")
-  inSCE@metadata$scanpy$obj <- scanpyObject
-  inSCE@metadata$scanpy$scaledAssay <- scaledAssayName
-  inSCE <- expSetDataTag(inSCE = inSCE,
-                         assayType = "scaled",
-                         assays = scaledAssayName)
-  
-  return(inSCE)
+  scanpyObject <- zellkonverter::SCE2AnnData(sce = inSCE)
+  if(is.null(scanpyObject$uns['scanpy']$hvg)){
+    stop(
+      " High variable genes not found. Kindly run 'runScanpyFindHVG' first "
+    )
+  }
+  return(sc$pl$highly_variable_genes(scanpyObject$uns['scanpy']$hvg,
+                                     log = log))
 }
 
+################################################
+######## PCA Function #########################
+################################################
 
 #' runScanpyPCA
 #' Computes PCA on the input sce object and stores the calculated principal
@@ -297,7 +354,6 @@ runScanpyScaleData <- function(inSCE,
 #' data(scExample, package = "singleCellTK")
 #' \dontrun{
 #' sce <- runScanpyNormalizeData(sce, useAssay = "counts")
-#' sce <- runScanpyFindHVG(sce, useAssay = "counts")
 #' sce <- runScanpyPCA(sce, useAssay = "scanpyNormData")
 #' }
 #' @return Updated \code{SingleCellExperiment} object which now contains the
@@ -330,7 +386,7 @@ runScanpyPCA <- function(inSCE,
   
   sc$tl$pca(scanpyObject, svd_solver= algorithm, n_comps = nPCs)
   
-  inSCE@metadata$scanpy$obj <- scanpyObject
+  metadata(inSCE)$scanpy$PCA <- scanpyObject
   
   temp <- scanpyObject$obsm['X_pca']
   rownames(temp) <- colnames(inSCE)
@@ -340,6 +396,199 @@ runScanpyPCA <- function(inSCE,
   return(inSCE)
 }
 
+
+#' plotScanpyPCA
+#' 
+#' @param inSCE Input \code{SingleCellExperiment} object.
+#' @param reducedDimName Name of new reducedDims object containing Scanpy PCA. 
+#' @param color Keys for annotations of observations/cells or variables/genes.
+#' @param title Provide title for panels either as string or list of strings
+#' @param legend Location of legend, either 'on data', 'right margin' or a 
+#' valid keyword for the loc parameter of Legend.
+#' @examples
+#' data(scExample, package = "singleCellTK")
+#' \dontrun{
+#' sce <- runScanpyNormalizeData(sce, useAssay = "counts")
+#' sce <- runScanpyPCA(sce, useAssay = "scanpyNormData")
+#' plotScanpyPCA(sce)
+#' }
+#' @return plot object
+#' @export
+plotScanpyPCA <- function(inSCE,
+                          reducedDimName = "scanpyPCA", 
+                          color = NULL,
+                          title = '',
+                          legend = 'right margin'){
+  
+  if(!reducedDimName %in% reducedDimNames(inSCE)){
+    stop(
+      "PCA results not found. Perform runScanpyPCA first. "
+    )
+  }
+  #As scanpyPCA function will find the X_pca variable where it originally 
+  #stores the result, thereby we should have the results saved by that variable
+  #name
+  reducedDim (inSCE, "X_pca") <- reducedDim(inSCE, reducedDimName)
+  scanpyObject <- zellkonverter::SCE2AnnData(sce = inSCE)
+  return(sc$pl$pca(scanpyObject,
+                   color = color,
+                   title = title, 
+                   legend_loc = legend))
+}
+
+
+#' plotScanpyPCAGeneRanking
+#'
+#' @param inSCE Input \code{SingleCellExperiment} object.
+#' @param PC_comp For example, '1,2,3' means [1, 2, 3], first, second, 
+#' third principal component.
+#' @param includeLowest Whether to show the variables with both highest and 
+#' lowest loadings. Default \code{TRUE}
+#' @examples
+#' data(scExample, package = "singleCellTK")
+#' \dontrun{
+#' sce <- runScanpyNormalizeData(sce, useAssay = "counts")
+#' sce <- runScanpyPCA(sce, useAssay = "scanpyNormData")
+#' plotScanpyPCAGeneRanking(sce)
+#' }
+#' @return plot object
+#' @export
+plotScanpyPCAGeneRanking <- function(inSCE, 
+                                     PC_comp = "1,2,3",
+                                     includeLowest = TRUE){
+  
+  scanpyObject <- metadata(inSCE)$scanpy$PCA
+  return(sc$pl$pca_loadings(scanpyObject,
+                            components = PC_comp,
+                            include_lowest = includeLowest))
+  
+}
+
+#' plotScanpyPCAVariance
+#'
+#' @param inSCE Input \code{SingleCellExperiment} object.
+#' @param nPCs Number of PCs to show. Default \code{20}.
+#' @param log Plot on logarithmic scale. Default \code{FALSE}
+#' @examples
+#' data(scExample, package = "singleCellTK")
+#' \dontrun{
+#' sce <- runScanpyNormalizeData(sce, useAssay = "counts")
+#' sce <- runScanpyPCA(sce, useAssay = "scanpyNormData")
+#' plotScanpyPCAVariance(sce)
+#' }
+#' @return plot object
+#' @export
+plotScanpyPCAVariance <- function(inSCE,
+                                  nPCs = 20,
+                                  log = FALSE){
+  scanpyObject <- metadata(inSCE)$scanpy$PCA
+  return(sc$pl$pca_variance_ratio(scanpyObject,
+                                  n_pcs = as.integer(nPCs),
+                                  log = log))
+  
+}
+
+########################################################
+###### Clustering function ############################
+#######################################################
+
+#' runScanpyFindClusters
+#' Computes the clusters from the input sce object and stores them back in sce
+#' object
+#' @param inSCE (sce) object from which clusters should be computed and stored
+#' in
+#' @param useAssay Assay containing scaled counts to use for clustering.
+#' @param useReduction Reduction method to use for computing clusters. 
+#' Default \code{"pca"}.
+#' @param nNeighbors The size of local neighborhood (in terms of number of 
+#' neighboring data points) used for manifold approximation. Larger values 
+#' result in more global views of the manifold, while smaller values result in 
+#' more local data being preserved. Default \code{15L}.
+#' @param dims numeric value of how many components to use for computing
+#' clusters. Default \code{10}.
+#' @param algorithm selected algorithm to compute clusters. One of "louvain",
+#' and "leiden". Default \code{louvain}.
+#' @param resolution A parameter value controlling the coarseness of the 
+#' clustering. Higher values lead to more clusters Default \code{1}.
+#' @param niterations How many iterations of the Leiden clustering algorithm to 
+#' perform. Positive values above 2 define the total number of iterations to 
+#' perform, -1 has the algorithm run until it reaches its optimal clustering.
+#' @param flavor Choose between to packages for computing the clustering. 
+#' @param use_weights Boolean. Use weights from knn graph.
+#' @param cor_method correlation method to use. Options are ‘pearson’, 
+#' ‘kendall’, and ‘spearman’. Default 'pearson'.
+#' @param inplace If True, adds dendrogram information to annData object, 
+#' else this function returns the information.
+#' @param externalReduction Pass DimReduce object if PCA computed through
+#' other libraries. Default \code{NULL}.
+#' @examples
+#' data(scExample, package = "singleCellTK")
+#' \dontrun{
+#' sce <- runScanpyNormalizeData(sce, useAssay = "counts")
+#' sce <- runScanpyPCA(sce, useAssay = "counts")
+#' sce <- runScanpyFindClusters(sce, useAssay = "counts")
+#' }
+#' @return Updated sce object which now contains the computed clusters
+#' @export
+runScanpyFindClusters <- function(inSCE,
+                                  useAssay = "scanpyScaledData",
+                                  useReduction = "scanpyPCA",
+                                  nNeighbors = 15L,
+                                  dims = 2L,
+                                  algorithm = c("louvain", "leiden"),
+                                  resolution,
+                                  niterations = -1,
+                                  flavor = 'vtraag',
+                                  use_weights = FALSE,
+                                  cor_method = 'pearson',
+                                  inplace = TRUE,
+                                  externalReduction = NULL) {
+  algorithm <- match.arg(algorithm)
+  useReduction <- useReduction
+  if (missing(useAssay)) {
+    useAssay <- SummarizedExperiment::assayNames(inSCE)[1]
+    message(
+      "'useAssay' parameter missing. Using the first available assay ",
+      "instead: '",
+      useAssay,
+      "'"
+    )
+  }
+  scanpyObject <- zellkonverter::SCE2AnnData(sce = inSCE,  X_name = useAssay)
+  
+  if (!is.null(externalReduction)) {
+    scanpyObject$obsm <- list(pca = externalReduction)
+    useReduction <- "pca"
+  } 
+  colDataName = paste0("Scanpy", "_", algorithm)
+  
+  sc$pp$neighbors(scanpyObject, 
+                  n_neighbors = nNeighbors, 
+                  n_pcs = dims,
+                  use_rep = useReduction)
+  
+  if (algorithm == "louvain") {
+    sc$tl$louvain(adata = scanpyObject,
+                  key_added = colDataName,
+                  flavor = flavor,
+                  use_weights = use_weights)
+  } else if (algorithm == "leiden") {
+    sc$tl$leiden(adata = scanpyObject,
+                 key_added = colDataName,
+                 n_iterations = niterations)
+  } 
+  
+  metadata(inSCE)$scanpy$obj <- scanpyObject
+  colData(inSCE)[[colDataName]] <-
+    as.factor(unlist(scanpyObject$obs[colDataName]))
+  S4Vectors::metadata(inSCE)$scanpy[algorithm] <- colDataName
+  
+  return(inSCE)
+}
+
+###############################################
+###### Embedding functions #####################
+###############################################
 
 #' runScanpyUMAP
 #' Computes UMAP from the given sce object and stores the UMAP computations back
@@ -367,8 +616,6 @@ runScanpyPCA <- function(inSCE,
 #' data(scExample, package = "singleCellTK")
 #' \dontrun{
 #' sce <- runScanpyNormalizeData(sce, useAssay = "counts")
-#' sce <- runScanpyFindHVG(sce, useAssay = "counts")
-#' sce <- runScanpyScaleData(sce, useAssay = "counts")
 #' sce <- runScanpyPCA(sce, useAssay = "counts")
 #' sce <- runScanpyFindClusters(sce, useAssay = "counts")
 #' sce <- runScanpyUMAP(sce, useReduction = "scanpyPCA")
@@ -406,7 +653,7 @@ runScanpyUMAP <- function(inSCE,
              gamma = gamma,
              spread = spread)
   
-  inSCE@metadata$scanpy$obj <- scanpyObject
+  metadata(inSCE)$scanpy$obj <- scanpyObject
   
   temp <- scanpyObject$obsm['X_umap']
   rownames(temp) <- colnames(inSCE)
@@ -456,7 +703,7 @@ runScanpyTSNE <- function(inSCE,
              use_rep = useReduction, 
              perplexity = perplexity)
   
-  inSCE@metadata$scanpy$obj <- scanpyObject
+  metadata(inSCE)$scanpy$obj <- scanpyObject
   
   temp <- scanpyObject$obsm['X_tsne']
   rownames(temp) <- colnames(inSCE)
@@ -466,109 +713,50 @@ runScanpyTSNE <- function(inSCE,
   return(inSCE)
 }
 
-
-
-#' runScanpyFindClusters
-#' Computes the clusters from the input sce object and stores them back in sce
-#' object
-#' @param inSCE (sce) object from which clusters should be computed and stored
-#' in
-#' @param useAssay Assay containing scaled counts to use for clustering.
-#' @param useReduction Reduction method to use for computing clusters. 
-#' Default \code{"pca"}.
-#' @param nNeighbors The size of local neighborhood (in terms of number of 
-#' neighboring data points) used for manifold approximation. Larger values 
-#' result in more global views of the manifold, while smaller values result in 
-#' more local data being preserved. Default \code{15L}.
-#' @param dims numeric value of how many components to use for computing
-#' clusters. Default \code{10}.
-#' @param algorithm selected algorithm to compute clusters. One of "louvain",
-#' and "leiden". Default \code{louvain}.
-#' @param resolution A parameter value controlling the coarseness of the 
-#' clustering. Higher values lead to more clusters Default \code{1}.
-#' @param colDataName colName to store the result in annData object
-#' @param niterations How many iterations of the Leiden clustering algorithm to 
-#' perform. Positive values above 2 define the total number of iterations to 
-#' perform, -1 has the algorithm run until it reaches its optimal clustering.
-#' @param flavor Choose between to packages for computing the clustering. 
-#' @param use_weights Boolean. Use weights from knn graph.
-#' @param cor_method correlation method to use. Options are ‘pearson’, 
-#' ‘kendall’, and ‘spearman’. Default 'pearson'.
-#' @param inplace If True, adds dendrogram information to annData object, 
-#' else this function returns the information.
-#' @param externalReduction Pass DimReduce object if PCA computed through
-#' other libraries. Default \code{NULL}.
+#' plotScanpyEmbedding
+#' 
+#' @param inSCE Input \code{SingleCellExperiment} object.
+#' @param reducedDimName Name of reducedDims object containing embeddings.
+#' Eg. scanpyUMAP.
+#' @param color Keys for annotations of observations/cells or variables/genes.
+#' @param title Provide title for panels either as string or list of strings
+#' @param legend Location of legend, either 'on data', 'right margin' or a 
+#' valid keyword for the loc parameter of Legend.
 #' @examples
 #' data(scExample, package = "singleCellTK")
 #' \dontrun{
 #' sce <- runScanpyNormalizeData(sce, useAssay = "counts")
-#' sce <- runScanpyFindHVG(sce, useAssay = "counts")
-#' sce <- runScanpyScaleData(sce, useAssay = "counts")
-#' sce <- runScanpyPCA(sce, useAssay = "counts")
+#' sce <- runScanpyPCA(sce, useAssay = "scanpyNormData")
 #' sce <- runScanpyFindClusters(sce, useAssay = "counts")
+#' sce <- runScanpyUMAP(sce, useReduction = "scanpyPCA")
+#' plotScanpyEmbedding(sce, reducedDimName = "scanpyUMAP", color = 'Scanpy_louvain')
 #' }
-#' @return Updated sce object which now contains the computed clusters
+#' @return plot object
 #' @export
-runScanpyFindClusters <- function(inSCE,
-                                  useAssay = "scanpyScaledData",
-                                  useReduction = "scanpyPCA",
-                                  nNeighbors = 15L,
-                                  dims = 2L,
-                                  algorithm = c("louvain", "leiden"),
-                                  resolution,
-                                  colDataName,
-                                  niterations = -1,
-                                  flavor = 'vtraag',
-                                  use_weights = FALSE,
-                                  cor_method = 'pearson',
-                                  inplace = TRUE,
-                                  externalReduction = NULL) {
-  algorithm <- match.arg(algorithm)
-  useReduction <- useReduction
-  if (missing(useAssay)) {
-    useAssay <- SummarizedExperiment::assayNames(inSCE)[1]
-    message(
-      "'useAssay' parameter missing. Using the first available assay ",
-      "instead: '",
-      useAssay,
-      "'"
+plotScanpyEmbedding <- function(inSCE,
+                                reducedDimName,
+                                color = NULL,
+                                legend = 'right margin',
+                                title = ''){
+  
+  if(!reducedDimName %in% reducedDimNames(inSCE)){
+    stop(
+      "Embedding result not found. Kindly implement embedding algorithms first"
     )
   }
-  scanpyObject <- zellkonverter::SCE2AnnData(sce = inSCE,  X_name = useAssay)
+  scanpyObject <- zellkonverter::SCE2AnnData(sce = inSCE)
   
-  if (!is.null(externalReduction)) {
-    scanpyObject$obsm <- list(pca = externalReduction)
-    useReduction <- "pca"
-  } 
+  return(sc$pl$embedding(scanpyObject,
+                         basis = reducedDimName,
+                         color = color,
+                         legend_loc = legend,
+                         title = title))
   
-  if(missing(colDataName)){
-    colDataName = algorithm
-  }
-  
-  sc$pp$neighbors(scanpyObject, 
-                  n_neighbors = nNeighbors, 
-                  n_pcs = dims,
-                  use_rep = useReduction)
-  
-  if (algorithm == "louvain") {
-    sc$tl$louvain(adata = scanpyObject,
-                  key_added = colDataName,
-                  flavor = flavor,
-                  use_weights = use_weights)
-  } else if (algorithm == "leiden") {
-    sc$tl$leiden(adata = scanpyObject,
-                 key_added = colDataName,
-                 n_iterations = niterations)
-  } 
-  
-  inSCE@metadata$scanpy$obj <- scanpyObject
-  colData(inSCE)[[paste0("Scanpy", "_", algorithm)]] <-
-    as.factor(unlist(scanpyObject$obs[algorithm]))
-  S4Vectors::metadata(inSCE)$scanpy[algorithm] <- paste0("Scanpy", "_",
-                                                         algorithm)
-  return(inSCE)
 }
 
+###################################################
+########## Marker Genes function ###################
+###################################################
 
 #' runScanpyFindMarkers
 #'
@@ -589,8 +777,6 @@ runScanpyFindClusters <- function(inSCE,
 #' data(scExample, package = "singleCellTK")
 #' \dontrun{
 #' sce <- runScanpyNormalizeData(sce, useAssay = "counts")
-#' sce <- runScanpyFindHVG(sce, useAssay = "counts")
-#' sce <- runScanpyScaleData(sce, useAssay = "counts")
 #' sce <- runScanpyPCA(sce, useAssay = "counts")
 #' sce <- runScanpyFindClusters(sce, useAssay = "counts", algorithm = "louvain")
 #' sce <- runScanpyFindMarkers(sce, colDataName = "Scanpy_louvain" )
@@ -610,12 +796,9 @@ runScanpyFindMarkers <- function(inSCE,
   corr_method <- match.arg(corr_method)
   
   scanpyObject <- zellkonverter::SCE2AnnData(sce = inSCE)
-  sc$pp$normalize_per_cell(scanpyObject, 
-                           counts_per_cell_after = 1e4, 
-                           counts_per_cell = NULL,
-                           min_counts = 0)
-  # log transform the data.
+  scanpyObject$X <- metadata(inSCE)$scanpy$normValues
   sc$pp$log1p(scanpyObject)
+  
   sc$tl$rank_genes_groups(scanpyObject, 
                           groupby = colDataName, 
                           groups = group1,
@@ -651,6 +834,425 @@ runScanpyFindMarkers <- function(inSCE,
   markerGenesTable <- data.frame()
   markerGenesTable <- cbind(markerGenesNames, Log2_FC, Pvalue, zscore)
   
+  S4Vectors::metadata(inSCE)$"findMarkerScanpyObject" <- scanpyObject
   S4Vectors::metadata(inSCE)$scanpyMarkers <- markerGenesTable
   return(inSCE)
 }
+
+#' plotScanpyMarkerGenes
+#' 
+#' @param inSCE Input \code{SingleCellExperiment} object.
+#' @param groups The groups for which to show the gene ranking. Default \code{NULL}
+#' means that all groups will be considered. 
+#' @param nGenes Number of genes to show. Default \code{10}
+#' @param nCols Number of panels shown per row. Default \code{4}
+#' @param sharey Controls if the y-axis of each panels should be shared. 
+#' Default \code{FALSE} allows each panel to have its own y-axis range.
+#' @examples
+#' data(scExample, package = "singleCellTK")
+#' \dontrun{
+#' sce <- runScanpyNormalizeData(sce, useAssay = "counts")
+#' sce <- runScanpyPCA(sce, useAssay = "scanpyNormData")
+#' sce <- runScanpyFindClusters(sce, useAssay = "counts")
+#' sce <- runScanpyFindMarkers(sce, colDataName = "Scanpy_louvain" )
+#' plotScanpyMarkerGenes(sce, groups = '0')
+#' }
+#' @return plot object
+#' @export
+plotScanpyMarkerGenes <- function(inSCE,
+                                  groups = NULL,
+                                  nGenes = 10,
+                                  nCols = 4,
+                                  sharey = FALSE){
+  
+  if(is.null(inSCE@metadata[["findMarkerScanpyObject"]])){
+    stop("marker genes not found. Kindly run runScanpyFindMarkers function first")
+  }
+  scanpyObject <- metadata(inSCE)[["findMarkerScanpyObject"]]
+  return(sc$pl$rank_genes_groups(scanpyObject, 
+                                 groups = groups, 
+                                 n_genes = as.integer(nGenes),
+                                 ncols = nCols, 
+                                 sharey = sharey))
+  
+}
+
+#' plotScanpyMarkerGenesViolin
+#' 
+#' @param inSCE Input \code{SingleCellExperiment} object.
+#' @param groups The groups for which to show the gene ranking. Default \code{NULL}
+#' means that all groups will be considered. 
+#' @param nGenes Number of genes to show. Default \code{10}
+#' @examples
+#' data(scExample, package = "singleCellTK")
+#' \dontrun{
+#' sce <- runScanpyNormalizeData(sce, useAssay = "counts")
+#' sce <- runScanpyPCA(sce, useAssay = "scanpyNormData")
+#' sce <- runScanpyFindClusters(sce, useAssay = "counts")
+#' sce <- runScanpyFindMarkers(sce, colDataName = "Scanpy_louvain" )
+#' plotScanpyMarkerGenesViolin(sce, groups = '0')
+#' }
+#' @return plot object
+#' @export
+plotScanpyMarkerGenesViolin <- function(inSCE,
+                                        groups = NULL,
+                                        nGenes = 10){
+  
+  if(is.null(inSCE@metadata["findMarkerScanpyObject"])){
+    stop("marker genes not found. Kindly run runScanpyFindMarkers function first")
+  }
+  scanpyObject <- metadata(inSCE)[["findMarkerScanpyObject"]]
+  return(sc$pl$rank_genes_groups_violin(scanpyObject,
+                                        groups = groups,
+                                        n_genes = as.integer(nGenes)))
+  
+}
+
+#' plotScanpyMarkerGenesHeatmap
+#' 
+#' @param inSCE Input \code{SingleCellExperiment} object.
+#' @param groups The groups for which to show the gene ranking. Default \code{NULL}
+#' means that all groups will be considered.
+#' @param groupBy The key of the observation grouping to consider. By default, 
+#' the groupby is chosen from the rank genes groups parameter.
+#' @param nGenes Number of genes to show. Default \code{10}
+#' @param log2fcThreshold Only output DEGs with the absolute values of log2FC
+#' larger than this value. Default \code{NULL}.
+#' @examples
+#' data(scExample, package = "singleCellTK")
+#' \dontrun{
+#' sce <- runScanpyNormalizeData(sce, useAssay = "counts")
+#' sce <- runScanpyPCA(sce, useAssay = "scanpyNormData")
+#' sce <- runScanpyFindClusters(sce, useAssay = "counts")
+#' sce <- runScanpyFindMarkers(sce, colDataName = "Scanpy_louvain" )
+#' plotScanpyMarkerGenesHeatmap(sce, groupBy = 'Scanpy_louvain')
+#' }
+#' @return plot object
+#' @export
+plotScanpyMarkerGenesHeatmap <- function(inSCE,
+                                         groups = NULL,
+                                         groupBy,
+                                         nGenes = 10,
+                                         log2fcThreshold = NULL){
+  
+  if(is.null(inSCE@metadata["findMarkerScanpyObject"])){
+    stop("marker genes not found. Kindly run runScanpyFindMarkers function first")
+  }
+  scanpyObject <- metadata(inSCE)[["findMarkerScanpyObject"]]
+  
+  return(sc$pl$rank_genes_groups_heatmap(scanpyObject,
+                                         groups = groups,
+                                         groupby = groupBy,
+                                         n_genes = as.integer(nGenes),
+                                         min_logfoldchange = log2fcThreshold,
+                                         show_gene_labels = TRUE,
+                                         dendrogram = FALSE))
+  
+}
+
+#' plotScanpyMarkerGenesDotPlot
+#' 
+#' @param inSCE Input \code{SingleCellExperiment} object.
+#' @param groups The groups for which to show the gene ranking. Default \code{NULL}
+#' means that all groups will be considered.
+#' @param nGenes Number of genes to show. Default \code{10}
+#' @param groupBy The key of the observation grouping to consider. By default, 
+#' the groupby is chosen from the rank genes groups parameter.
+#' @param log2fcThreshold Only output DEGs with the absolute values of log2FC
+#' larger than this value. Default \code{NULL}.
+#' @param parameters The options for marker genes results to plot are: 
+#' ‘scores’, ‘logfoldchanges’, ‘pvals’, ‘pvals_adj’, ‘log10_pvals’, ‘log10_pvals_adj’.
+#' If NULL provided then it uses mean gene value to plot.  
+#' @param standardScale Whether or not to standardize the given dimension 
+#' between 0 and 1, meaning for each variable or group, subtract the minimum and 
+#' divide each by its maximum. Default \code{NULL} means that it doesn't perform
+#' any scaling. 
+#' @param features Genes to plot. Sometimes is useful to pass a specific list of
+#'  var names (e.g. genes) to check their fold changes or p-values, instead of 
+#'  the top/bottom genes. The var_names could be a dictionary or a list. 
+#'  Default \code{NULL}
+#' @param title Provide title for the figure.
+#' @param vmin The value representing the lower limit of the color scale. 
+#' Values smaller than vmin are plotted with the same color as vmin. 
+#' Default \code{NULL}
+#' @param vmax The value representing the upper limit of the color scale. 
+#' Values larger than vmax are plotted with the same color as vmax. 
+#' Default \code{NULL}
+#' @param colorBarTitle Title for the color bar. 
+#' @examples
+#' data(scExample, package = "singleCellTK")
+#' \dontrun{
+#' sce <- runScanpyNormalizeData(sce, useAssay = "counts")
+#' sce <- runScanpyPCA(sce, useAssay = "scanpyNormData")
+#' sce <- runScanpyFindClusters(sce, useAssay = "counts")
+#' sce <- runScanpyFindMarkers(sce, colDataName = "Scanpy_louvain" )
+#' plotScanpyMarkerGenesDotPlot(sce, groupBy = 'Scanpy_louvain')
+#' }
+#' @return plot object
+#' @export
+plotScanpyMarkerGenesDotPlot <- function(inSCE,
+                                         groups = NULL,
+                                         nGenes = 10, 
+                                         groupBy,
+                                         log2fcThreshold = NULL,
+                                         parameters = "logfoldchanges",
+                                         standardScale = NULL,
+                                         features = NULL,
+                                         title = '',
+                                         vmin = NULL,
+                                         vmax = NULL,
+                                         colorBarTitle = "log fold change"){
+  
+  if(is.null(inSCE@metadata["findMarkerScanpyObject"])){
+    stop("marker genes not found. Kindly run runScanpyFindMarkers function first")
+  }
+  scanpyObject <- metadata(inSCE)[["findMarkerScanpyObject"]]
+  
+  return(sc$pl$rank_genes_groups_dotplot(scanpyObject,
+                                         groups = groups,
+                                         n_genes = as.integer(nGenes),
+                                         groupby = groupBy,
+                                         min_logfoldchange = log2fcThreshold,
+                                         values_to_plot = parameters,
+                                         standard_scale = standardScale,
+                                         var_names = features,
+                                         title = title,
+                                         vmin = vmin,
+                                         vmax = vmax,
+                                         cmap = 'bwr',
+                                         dendrogram = FALSE,
+                                         colorbar_title = colorBarTitle))
+  
+}
+
+#' plotScanpyMarkerGenesMatrixPlot
+#' 
+#' @param inSCE Input \code{SingleCellExperiment} object.
+#' @param groups The groups for which to show the gene ranking. Default \code{NULL}
+#' means that all groups will be considered.
+#' @param nGenes Number of genes to show. Default \code{10}
+#' @param groupBy The key of the observation grouping to consider. By default, 
+#' the groupby is chosen from the rank genes groups parameter.
+#' @param log2fcThreshold Only output DEGs with the absolute values of log2FC
+#' larger than this value. Default \code{NULL}.
+#' @param parameters The options for marker genes results to plot are: 
+#' ‘scores’, ‘logfoldchanges’, ‘pvals’, ‘pvals_adj’, ‘log10_pvals’, ‘log10_pvals_adj’.
+#' If NULL provided then it uses mean gene value to plot.  
+#' @param standardScale Whether or not to standardize the given dimension 
+#' between 0 and 1, meaning for each variable or group, subtract the minimum and 
+#' divide each by its maximum. Default \code{NULL} means that it doesn't perform
+#' any scaling. 
+#' @param features Genes to plot. Sometimes is useful to pass a specific list of
+#'  var names (e.g. genes) to check their fold changes or p-values, instead of 
+#'  the top/bottom genes. The var_names could be a dictionary or a list. 
+#'  Default \code{NULL}
+#' @param title Provide title for the figure.
+#' @param vmin The value representing the lower limit of the color scale. 
+#' Values smaller than vmin are plotted with the same color as vmin. 
+#' Default \code{NULL}
+#' @param vmax The value representing the upper limit of the color scale. 
+#' Values larger than vmax are plotted with the same color as vmax. 
+#' Default \code{NULL}
+#' @param colorBarTitle Title for the color bar. 
+#' @examples
+#' data(scExample, package = "singleCellTK")
+#' \dontrun{
+#' sce <- runScanpyNormalizeData(sce, useAssay = "counts")
+#' sce <- runScanpyPCA(sce, useAssay = "scanpyNormData")
+#' sce <- runScanpyFindClusters(sce, useAssay = "counts")
+#' sce <- runScanpyFindMarkers(sce, colDataName = "Scanpy_louvain" )
+#' plotScanpyMarkerGenesMatrixPlot(sce, groupBy = 'Scanpy_louvain')
+#' }
+#' @return plot object
+#' @export
+plotScanpyMarkerGenesMatrixPlot <- function(inSCE,
+                                            groups = NULL,
+                                            nGenes = 10, 
+                                            groupBy,
+                                            log2fcThreshold = NULL,
+                                            parameters = "logfoldchanges",
+                                            standardScale = 'var',
+                                            features = NULL,
+                                            title = '',
+                                            vmin = NULL,
+                                            vmax = NULL,
+                                            colorBarTitle = "log fold change"){
+  
+  if(is.null(inSCE@metadata["findMarkerScanpyObject"])){
+    stop("marker genes not found. Kindly run runScanpyFindMarkers function first")
+  }
+  scanpyObject <- metadata(inSCE)[["findMarkerScanpyObject"]]
+  
+  return(sc$pl$rank_genes_groups_matrixplot(scanpyObject,
+                                            groups = groups,
+                                            n_genes = as.integer(nGenes),
+                                            groupby = groupBy,
+                                            min_logfoldchange = log2fcThreshold,
+                                            values_to_plot = parameters,
+                                            standard_scale = standardScale,
+                                            var_names = features,
+                                            title = title,
+                                            vmin = vmin,
+                                            vmax = vmax,
+                                            cmap = 'bwr',
+                                            dendrogram = FALSE,
+                                            colorbar_title = colorBarTitle))
+  
+}
+
+
+
+###############################################
+####### General plotting functions ############
+################################################
+
+#' plotScanpyHeatmap
+#' 
+#' @param inSCE Input \code{SingleCellExperiment} object.
+#' @param features Genes to plot. Sometimes is useful to pass a specific list of
+#'  var names (e.g. genes). The var_names could be a dictionary or a list. 
+#' @param groupBy The key of the observation grouping to consider.
+#' @param standardScale Whether or not to standardize the given dimension 
+#' between 0 and 1, meaning for each variable or group, subtract the minimum and 
+#' divide each by its maximum. Default \code{NULL} means that it doesn't perform
+#' any scaling. 
+#' @param vmin The value representing the lower limit of the color scale. 
+#' Values smaller than vmin are plotted with the same color as vmin.
+#' Default \code{NULL}
+#' @param vmax The value representing the upper limit of the color scale. 
+#' Values larger than vmax are plotted with the same color as vmax. 
+#' Default \code{NULL}
+#' @examples
+#' data(scExample, package = "singleCellTK")
+#' \dontrun{
+#' sce <- runScanpyNormalizeData(sce, useAssay = "counts")
+#' sce <- runScanpyPCA(sce, useAssay = "scanpyNormData")
+#' sce <- runScanpyUMAP(sce, useReduction = "scanpyPCA")
+#' sce <- runScanpyFindClusters(sce, useAssay = "counts")
+#' markers <- c("ENSG00000102879" ,"ENSG00000167283" ,"ENSG00000065978")
+#' plotScanpyHeatmap(sce, features = markers, groupBy = 'Scanpy_louvain')
+#' }
+#' @return plot object
+#' @export
+plotScanpyHeatmap <- function(inSCE,
+                              features,
+                              groupBy,
+                              standardScale = 'var',
+                              vmin = NULL,
+                              vmax = NULL){
+  
+  scanpyObject <- zellkonverter::SCE2AnnData(sce = inSCE)
+  
+  return(sc$pl$heatmap(scanpyObject,
+                       var_names = features,
+                       groupby = groupBy,
+                       standard_scale = standardScale,
+                       vmin = vmin,
+                       vmax = vmax,
+                       show_gene_labels = TRUE,
+                       dendrogram = FALSE))
+  
+}
+
+
+#' plotScanpyDotPlot
+#' 
+#' @param inSCE Input \code{SingleCellExperiment} object.
+#' @param features Genes to plot. Sometimes is useful to pass a specific list of
+#'  var names (e.g. genes). The var_names could be a dictionary or a list. 
+#' @param groupBy The key of the observation grouping to consider.
+#' @param standardScale Whether or not to standardize the given dimension 
+#' between 0 and 1, meaning for each variable or group, subtract the minimum and 
+#' divide each by its maximum. Default \code{NULL} means that it doesn't perform
+#' any scaling. 
+#' @param title Provide title for the figure.
+#' @param vmin The value representing the lower limit of the color scale. 
+#' Values smaller than vmin are plotted with the same color as vmin.
+#' Default \code{NULL}
+#' @param vmax The value representing the upper limit of the color scale. 
+#' Values larger than vmax are plotted with the same color as vmax. 
+#' Default \code{NULL}
+#' @param title Provide title for the figure.
+#' @param vmin The value representing the lower limit of the color scale. 
+#' Values smaller than vmin are plotted with the same color as vmin. 
+#' Default \code{NULL}
+#' @param vmax The value representing the upper limit of the color scale. 
+#' Values larger than vmax are plotted with the same color as vmax. 
+#' Default \code{NULL}
+#' @param colorBarTitle Title for the color bar. 
+#' @examples
+#' data(scExample, package = "singleCellTK")
+#' \dontrun{
+#' sce <- runScanpyNormalizeData(sce, useAssay = "counts")
+#' sce <- runScanpyPCA(sce, useAssay = "scanpyNormData")
+#' sce <- runScanpyUMAP(sce, useReduction = "scanpyPCA")
+#' sce <- runScanpyFindClusters(sce, useAssay = "counts")
+#' markers <- c("ENSG00000102879" ,"ENSG00000167283" ,"ENSG00000065978")
+#' plotScanpyDotPlot(sce, features = markers, groupBy = 'Scanpy_louvain')
+#' }
+#' @return plot object
+#' @export
+plotScanpyDotPlot <- function(inSCE,
+                              features,
+                              groupBy,
+                              standardScale = NULL,
+                              title = '',
+                              vmin = NULL,
+                              vmax = NULL,
+                              colorBarTitle = "Mean expression in group"){
+  
+  scanpyObject <- zellkonverter::SCE2AnnData(sce = inSCE)
+  
+  return(sc$pl$dotplot(scanpyObject,
+                       var_names = features,
+                       groupby = groupBy,
+                       standard_scale = standardScale,
+                       title = title,
+                       vmin = vmin,
+                       vmax = vmax,
+                       cmap = 'bwr',
+                       dendrogram = FALSE,
+                       colorbar_title = colorBarTitle))
+  
+  
+}
+
+
+#' plotScanpyViolin
+#' 
+#' @param inSCE Input \code{SingleCellExperiment} object.
+#' @param features Genes to plot. Sometimes is useful to pass a specific list of
+#'  var names (e.g. genes). The var_names could be a dictionary or a list. 
+#' @param groupBy The key of the observation grouping to consider.
+#' @param xlabel Label of the x axis. Defaults to groupBy.
+#' @param ylabel Label of the y axis. If NULL and groupBy is NULL, 
+#' defaults to 'value'. If NULL and groupBy is not NULL, defaults to features.
+#' @examples
+#' data(scExample, package = "singleCellTK")
+#' \dontrun{
+#' sce <- runScanpyNormalizeData(sce, useAssay = "counts")
+#' sce <- runScanpyPCA(sce, useAssay = "scanpyNormData")
+#' sce <- runScanpyUMAP(sce, useReduction = "scanpyPCA")
+#' sce <- runScanpyFindClusters(sce, useAssay = "counts")
+#' marker <- c("ENSG00000102879" , "ENSG00000167283")
+#' plotScanpyViolin(sce, features = markers, groupBy = "Scanpy_louvain")
+#' }
+#' @return plot object
+#' @export
+plotScanpyViolin <- function(inSCE,
+                             features,
+                             groupBy, 
+                             xlabel = '', 
+                             ylabel = NULL){
+  
+  scanpyObject <- zellkonverter::SCE2AnnData(sce = inSCE)
+  
+  return(sc$pl$violin(scanpyObject,
+                      keys = features,
+                      groupby = groupBy,
+                      xlabel = xlabel,
+                      ylabel = ylabel))
+  
+}
+
+
