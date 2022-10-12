@@ -24,91 +24,96 @@ runPerCellQC(
 )
 }
 \arguments{
-\item{inSCE}{Input \link[SingleCellExperiment]{SingleCellExperiment} object.}
+\item{inSCE}{A \linkS4class{SingleCellExperiment} object.}
 
 \item{useAssay}{A string specifying which assay in the SCE to use. Default
 \code{"counts"}.}
 
 \item{collectionName}{Character. Name of a \code{GeneSetCollection} obtained
-by using one of the importGeneSet* functions. Default \code{NULL}.}
+by using one of the \code{importGeneSet*} functions. Default \code{NULL}.}
 
 \item{geneSetList}{List of gene sets to be quantified. The genes in the
 assays will be matched to the genes in the list based on
 \code{geneSetListLocation}. Default \code{NULL}.}
 
-\item{geneSetListLocation}{Character or numeric vector. If set to 'rownames',
-then the genes in 'geneSetList' will be looked up in \code{rownames(inSCE)}.
-If another character is supplied, then genes will be looked up in the column
- names of \code{rowData(inSCE)}. A character vector with the same length as
- \code{geneSetList} can be supplied if the IDs for different
-gene sets are found in different places, including a mixture of 'rownames'
-and \code{rowData(inSCE)}. An integer or integer vector can be supplied to
-denote the column index in \code{rowData(inSCE)}. Default 'rownames'.}
+\item{geneSetListLocation}{Character or numeric vector. If set to 
+\code{'rownames'}, then the genes in \code{geneSetList} will be looked up in 
+\code{rownames(inSCE)}. If another character is supplied, then genes will be 
+looked up in the column names of \code{rowData(inSCE)}. A character vector 
+with the same length as \code{geneSetList} can be supplied if the IDs for 
+different gene sets are found in different places, including a mixture of 
+\code{'rownames'} and \code{rowData(inSCE)}. An integer or integer vector can
+be supplied to denote the column index in \code{rowData(inSCE)}. Default 
+\code{'rownames'}.}
 
 \item{geneSetCollection}{Class of \code{GeneSetCollection} from package
-\code{GSEAbase}. The location of the gene IDs in \code{inSCE} should be in
-the \code{description} slot of each gene set and should follow the
-same notation as \code{geneSetListLocation}. The function \link{getGmt} can
-be used to read in gene sets from a GMT file. If reading a GMT file, the
-second column for each gene set should be the description denoting the
-location of the gene IDs in \code{inSCE}. These gene sets will be included
-with those from \code{geneSetList} if both parameters are provided.}
+GSEABase. The location of the gene IDs in \code{inSCE} should be in the
+\code{description} slot of each gene set and should follow the
+same notation as \code{geneSetListLocation}. The function 
+\code{\link[GSEABase]{getGmt}} can be used to read in gene sets from a GMT 
+file. If reading a GMT file, the second column for each gene set should be 
+the description denoting the location of the gene IDs in \code{inSCE}. These 
+gene sets will be included with those from \code{geneSetList} if both 
+parameters are provided.}
 
-\item{mitoRef}{Character. The species used to extract mitochondrial genes ID from 
-build-in mitochondrial geneset in SCTK. Available species options are "human"  
-and "mouse". Default is \code{NULL}.}
+\item{mitoRef}{Character. The species used to extract mitochondrial genes ID 
+from build-in mitochondrial geneset in SCTK. Available species options are 
+\code{"human"} and \code{"mouse"}. Default is \code{NULL}.}
 
-\item{mitoIDType}{Character. Types of mitochondrial gene id. Now it supports "symbol", 
-"entrez", "ensembl" and "ensemblTranscriptID". It is used with \code{mitoRef} to extract
-mitochondrial genes from build-in mitochondrial geneset in SCTK. Default \code{NULL}.}
+\item{mitoIDType}{Character. Types of mitochondrial gene id. SCTK supports 
+\code{"symbol"}, \code{"entrez"}, \code{"ensembl"} and 
+\code{"ensemblTranscriptID"}. It is used with \code{mitoRef} to extract 
+mitochondrial genes from build-in mitochondrial geneset in SCTK. Default 
+\code{NULL}.}
 
 \item{mitoPrefix}{Character. The prefix used to get mitochondrial gene from 
-either rownames(inSCE) or columns of rowData(inSCE) specified by mitoGeneLocation. 
-This parameter is usually used to extract mito genes from gene symbol. For example,
-mitoPrefix = "^MT-" can be used to detect mito gene symbols like "MT-ND4".}
+either \code{rownames(inSCE)} or columns of \code{rowData(inSCE)} specified 
+by \code{mitoGeneLocation}. This parameter is usually used to extract mito 
+genes from gene symbol. For example, \code{mitoPrefix = "^MT-"} can be used 
+to detect mito gene symbols like "MT-ND4".}
 
 \item{mitoID}{Character. A vector of mitochondrial genes to be quantified.}
 
-\item{mitoGeneLocation}{Character. Describes the location within \code{inSCE} where
-the gene identifiers in the mitochondrial gene sets should be mapped.
-If set to \code{"rownames"} then the features will
-be searched for among \code{rownames(inSCE)}. This can also be
-set to one of the column names of \code{rowData(inSCE)} in which case the
-gene identifies will be mapped to that column in the \code{rowData}
-of \code{inSCE}. See \link{featureIndex} for more information.
-Default \code{NULL}.}
+\item{mitoGeneLocation}{Character. Describes the location within \code{inSCE}
+where the gene identifiers in the mitochondrial gene sets should be mapped.
+If set to \code{"rownames"} then the features will be searched for among 
+\code{rownames(inSCE)}. This can also be set to one of the column names of 
+\code{rowData(inSCE)} in which case the gene identifies will be mapped to 
+that column in the \code{rowData} of \code{inSCE}. See 
+\code{\link{featureIndex}} for more information. Default \code{NULL}.}
 
-\item{percent_top}{An integer vector. Each element is treated as a
-number of top genes to compute the percentage of library size occupied by
-the most highly expressed genes in each cell.}
+\item{percent_top}{An integer vector. Each element is treated as a number of
+top genes to compute the percentage of library size occupied by the most 
+highly expressed genes in each cell. Default \code{c(50, 100, 200, 500)}.}
 
 \item{use_altexps}{Logical scalar indicating whether QC statistics should
-be computed for alternative Experiments in x. If TRUE, statistics are
-computed
-for all alternative experiments.
-Alternatively, an integer or character vector specifying the alternative
-Experiments to use to compute QC statistics.
-Alternatively NULL, in which case alternative experiments are not used.}
+be computed for alternative Experiments in \code{inSCE} 
+(\code{altExps(inSCE)}). If \code{TRUE}, statistics are computed for all 
+alternative experiments. Alternatively, an integer or character vector 
+specifying the alternative Experiments to use to compute QC statistics. 
+Alternatively \code{NULL}, in which case alternative experiments are not 
+used. Default \code{FALSE}.}
 
 \item{flatten}{Logical scalar indicating whether the nested
-\link[S4Vectors]{DataFrame-class}
-in the output should be flattened.}
+\link[S4Vectors]{DataFrame-class} in the output should be flattened. Default 
+\code{TRUE}.}
 
 \item{detectionLimit}{A numeric scalar specifying the lower detection limit
-for expression.}
+for expression. Default \code{0}}
 
-\item{BPPARAM}{A \link{BiocParallelParam} object specifying
-whether the QC calculations should be parallelized.}
+\item{BPPARAM}{A \link{BiocParallelParam} object specifying whether the QC
+calculations should be parallelized. Default 
+\code{BiocParallel::SerialParam()}.}
 }
 \value{
 A \link[SingleCellExperiment]{SingleCellExperiment} object with
- cell QC metrics added to the \link{colData} slot. If \code{geneSetList} or
- \code{geneSetCollection} are provided, then the rownames for each gene set
- will be saved in \code{metadata(inSCE)$scater$addPerCellQC$geneSets}.
+cell QC metrics added to the \link{colData} slot. If \code{geneSetList} or
+\code{geneSetCollection} are provided, then the rownames for each gene set
+will be saved in \code{metadata(inSCE)$scater$addPerCellQC$geneSets}.
 }
 \description{
 A wrapper function for \link[scater]{addPerCellQC}. Calculate
- general quality control metrics for each cell in the count matrix.
+general quality control metrics for each cell in the count matrix.
 }
 \details{
 This function allows multiple ways to import mitochondrial genes and quantify 
@@ -119,13 +124,13 @@ their expression.
   \item Using \code{mitoPrefix} and \code{mitoGeneLocation} parameters will
   extract mitochondrial genes from either rownames(inSCE) or columns of 
   rowData(inSCE) specified ny parameter \code{mitoGeneLocation}
-  \item Using \code{mitoID} and \code{mitoGeneLocation} parameters will quantify
-  the expression of mitochondrial genes stored in \code{mitoID}. 
+  \item Using \code{mitoID} and \code{mitoGeneLocation} parameters will 
+  quantify the expression of mitochondrial genes stored in \code{mitoID}. 
 }
 \code{mitoGeneLocation} is required if you use any methods mentioned above to 
-quantify mitochondrial gene expression. Please make sure \code{mitoGeneLocation}
-is pointing to the location within inSCE object that stores the correct mitochondrial
-genes ID.
+quantify mitochondrial gene expression. Please make sure 
+\code{mitoGeneLocation} is pointing to the location within inSCE object that 
+stores the correct mitochondrial genes ID.
 }
 \examples{
 data(scExample, package = "singleCellTK")
