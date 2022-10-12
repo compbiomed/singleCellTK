@@ -109,7 +109,7 @@ calculations should be parallelized. Default
 A \link[SingleCellExperiment]{SingleCellExperiment} object with
 cell QC metrics added to the \link{colData} slot. If \code{geneSetList} or
 \code{geneSetCollection} are provided, then the rownames for each gene set
-will be saved in \code{metadata(inSCE)$scater$addPerCellQC$geneSets}.
+will be saved in \code{metadata(inSCE)$sctk$runPerCellQC[[sample]]$geneSets}.
 }
 \description{
 A wrapper function for \link[scater]{addPerCellQC}. Calculate
@@ -137,4 +137,8 @@ data(scExample, package = "singleCellTK")
 mito.ix = grep("^MT-", rowData(sce)$feature_name)
 geneSet <- list("Mito"=rownames(sce)[mito.ix])
 sce <- runPerCellQC(sce, geneSetList = geneSet)
+}
+\seealso{
+\code{\link[scater]{addPerCellQC}}, 
+\code{link{plotRunPerCellQCResults}}, \code{\link{runCellQC}}
 }
