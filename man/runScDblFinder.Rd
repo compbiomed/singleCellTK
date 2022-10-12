@@ -17,9 +17,8 @@ runScDblFinder(
 \arguments{
 \item{inSCE}{A \linkS4class{SingleCellExperiment} object.}
 
-\item{sample}{Character vector or a colData variable name. Indicates which 
-sample each cell belongs to. \link[scDblFinder]{scDblFinder} will be run on 
-cells from each sample separately. Default \code{NULL}.}
+\item{sample}{Character vector or colData variable name. Indicates which 
+sample each cell belongs to. Default \code{NULL}.}
 
 \item{useAssay}{A string specifying which assay in the SCE to use. Default 
 \code{"counts"}.}

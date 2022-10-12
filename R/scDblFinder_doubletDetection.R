@@ -3,9 +3,8 @@
 #'  potential doublet cells based on simulations of putative doublet expression
 #'  profiles. Generate a doublet score for each cell.
 #' @param inSCE A \linkS4class{SingleCellExperiment} object.
-#' @param sample Character vector or a colData variable name. Indicates which 
-#' sample each cell belongs to. \link[scDblFinder]{scDblFinder} will be run on 
-#' cells from each sample separately. Default \code{NULL}.
+#' @param sample Character vector or colData variable name. Indicates which 
+#' sample each cell belongs to. Default \code{NULL}.
 #' @param useAssay  A string specifying which assay in the SCE to use. Default 
 #' \code{"counts"}.
 #' @param nNeighbors Number of nearest neighbors used to calculate density for
@@ -34,7 +33,7 @@
 #' sce <- runScDblFinder(sce)
 #' @export
 #' @importFrom SummarizedExperiment colData colData<- assayNames assayNames<-
-#' @importFrom S4Vectors metadata<-
+#' @importFrom S4Vectors metadata<- metadata
 runScDblFinder <- function(inSCE,
     sample = NULL,
     useAssay = "counts",
@@ -46,20 +45,23 @@ runScDblFinder <- function(inSCE,
   tempSCE <- inSCE
   #assayNames(inSCE)[which(useAssay %in% assayNames(inSCE))] <- "counts"
   #useAssay <- "counts"
-
-  argsList <- mget(names(formals()), sys.frame(sys.nframe()))
-
+  
+  argsList <- mget(names(formals()),sys.frame(sys.nframe()))
+  argsList <- argsList[!names(argsList) %in% c("inSCE", "BPPARAM")]
+  argsList$packageVersion <- utils::packageDescription("scDblFinder")$Version
+  
   sample <- .manageCellVar(inSCE, var = sample)
   if (is.null(sample)) {
     sample = rep(1, ncol(inSCE))
   }
+  
   
   message(date(), " ... Running 'scDblFinder'")
 
   ## Loop through each sample and run barcodeRank
 
   rm.ix <- which(colSums(assay(inSCE, useAssay)) == 0)
-  if(length(rm.ix) > 0){
+  if (length(rm.ix) > 0) {
     inSCEOrig <- inSCE
     inSCE <- inSCE[,-rm.ix]
     sample <- sample[-rm.ix]
@@ -73,7 +75,7 @@ runScDblFinder <- function(inSCE,
                                       BPPARAM = BPPARAM
     )
   })
-  if(length(rm.ix) > 0){
+  if (length(rm.ix) > 0) {
     inSCE <- mergeSCEColData(inSCE1 = inSCEOrig, inSCE2 = inSCE)
   }
 
@@ -91,19 +93,17 @@ runScDblFinder <- function(inSCE,
   levels(inSCE$scDblFinder_doublet_call) <- list(Singlet = "singlet", 
                                                  Doublet = "doublet")
 
-  argsList <- argsList[!names(argsList) %in% c("inSCE", "sample", "BPPARAM")]
-  argsList$packageVersion <- utils::packageDescription("scDblFinder")$Version
   if (all(sample == 1)) {
     metadata(inSCE)$sctk$runScDblFinder$all_cells <- argsList
   } else {
     metadata(inSCE)$sctk$runScDblFinder <- sapply(unique(sample), 
-                                                  function(x) return(argsList), 
+                                                  function(x) return(argsList),
                                                   simplify = FALSE, 
                                                   USE.NAMES = TRUE)
   }
 
-  tempSCE@colData <- inSCE@colData
-  tempSCE@metadata <- inSCE@metadata
+  colData(tempSCE) <- colData(inSCE)
+  metadata(tempSCE) <- metadata(inSCE)
 
   return(tempSCE)
 }

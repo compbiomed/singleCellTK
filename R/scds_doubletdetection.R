@@ -44,16 +44,17 @@ runCxds <- function(
     estNdbl = FALSE,
     useAssay = "counts") 
 {
-  sample <- .manageCellVar(inSCE, var = sample)
-  if (is.null(sample)) {
-    sample = rep(1, ncol(inSCE))
-  }
-  
   message(date(), " ... Running 'cxds'")
   
   ## Getting current arguments
   argsList <- mget(names(formals()),sys.frame(sys.nframe()))
+  argsList <- argsList[!names(argsList) %in% c("inSCE")]
+  argsList$packageVersion <- utils::packageDescription("scds")$Version
   
+  sample <- .manageCellVar(inSCE, var = sample)
+  if (is.null(sample)) {
+    sample <- rep(1, ncol(inSCE))
+  }
   ## Define result matrix for all samples
   if (isTRUE(estNdbl)) {
     output <- S4Vectors::DataFrame(row.names = colnames(inSCE),
@@ -91,11 +92,10 @@ runCxds <- function(
     
     if (!inherits(result, "try-error") & !is.null(result)) {
       if ("cxds_call" %in% colnames(colData(result))) {
-        output[sceSampleInd, ] <- colData(result)[,
-                                                  c("cxds_score", "cxds_call")]
+        output[sceSampleInd, ] <- colData(result)[, c("cxds_score", 
+                                                      "cxds_call")]
       } else {
-        output[sceSampleInd, ] <- colData(result)[,
-                                                  c("cxds_score")]
+        output[sceSampleInd, ] <- colData(result)[, c("cxds_score")]
       }
     } else {
       output[sceSampleInd, ] <- NA
@@ -103,20 +103,16 @@ runCxds <- function(
               "for sample: ", s)
     }
     if (!identical(samples, 1)) {
-      metadata(inSCE)$sctk$runCxds[[s]] <- argsList[-c(1, 2)]
-      metadata(inSCE)$sctk$runCxds[[s]]$packageVersion <- 
-        utils::packageDescription("scds")$Version
+      metadata(inSCE)$sctk$runCxds[[s]] <- argsList
     }
   }
   if (identical(samples, 1)) {
-    metadata(inSCE)$sctk$runCxds$all_cells <- argsList[-c(1, 2)]
-    metadata(inSCE)$sctk$runCxds$all_cells$packageVersion <- 
-      utils::packageDescription("scds")$Version
+    metadata(inSCE)$sctk$runCxds$all_cells <- argsList
   }
   
   colData(inSCE)[, paste0("scds_", colnames(output))] <- NULL
   
-  if (estNdbl) {
+  if (isTRUE(estNdbl)) {
     output$cxds_call <- as.factor(output$cxds_call)
     levels(output$cxds_call) <- list(Singlet = "FALSE", Doublet = "TRUE")
   }
@@ -180,18 +176,19 @@ runBcds <- function(
     estNdbl = FALSE,
     useAssay = "counts"
 ) {
-  sample <- .manageCellVar(inSCE, var = sample)
-  if (is.null(sample)) {
-    sample = rep(1, ncol(inSCE))
-  }
-  
   message(date(), " ... Running 'bcds'")
   
   ## Getting current arguments
   argsList <- mget(names(formals()),sys.frame(sys.nframe()))
+  argsList <- argsList[!names(argsList) %in% c("inSCE")]
+  argsList$packageVersion <- utils::packageDescription("scds")$Version
   
+  sample <- .manageCellVar(inSCE, var = sample)
+  if (is.null(sample)) {
+    sample <- rep(1, ncol(inSCE))
+  }
   ## Define result matrix for all samples
-  if (estNdbl) {
+  if (isTRUE(estNdbl)) {
     output <- S4Vectors::DataFrame(row.names = colnames(inSCE),
                                    bcds_score = numeric(ncol(inSCE)),
                                    bcds_call = logical(ncol(inSCE)))
@@ -240,20 +237,16 @@ runBcds <- function(
               "sample: ", s)
     }
     if (!identical(samples, 1)) {
-      metadata(inSCE)$sctk$runBcds[[s]] <- argsList[-c(1, 2)]
-      metadata(inSCE)$sctk$runBcds[[s]]$packageVersion <- 
-        utils::packageDescription("scds")$Version
+      metadata(inSCE)$sctk$runBcds[[s]] <- argsList
     }
   }
   if (identical(samples, 1)) {
-    metadata(inSCE)$sctk$runBcds$all_cells <- argsList[-c(1, 2)]
-    metadata(inSCE)$sctk$runBcds$all_cells$packageVersion <- 
-      utils::packageDescription("scds")$Version
+    metadata(inSCE)$sctk$runBcds$all_cells <- argsList
   }
   
   colData(inSCE)[, paste0("scds_", colnames(output))] <- NULL
   
-  if (estNdbl) {
+  if (isTRUE(estNdbl)) {
     output$bcds_call <- as.factor(output$bcds_call)
     levels(output$bcds_call) <- list(Singlet = "FALSE", Doublet = "TRUE")
   }
@@ -307,27 +300,21 @@ runCxdsBcdsHybrid <- function(inSCE,
                               verb = FALSE,
                               estNdbl = FALSE,
                               force = FALSE,
-                              useAssay = "counts") {
-  
-  #if (!is.null(sample)) {
-  #    if (length(sample) != ncol(inSCE)) {
-  #        stop("'sample' must be the same length as the number",
-  #            " of columns in 'inSCE'")
-  #    }
-  #} else {
-  #    sample <- rep(1, ncol(inSCE))
-  #}
-  if (!is.null(sample)) sample <- .manageCellVar(inSCE, var = sample)
-  else sample <- rep(1, ncol(inSCE))
-  
-  message(paste0(date(), " ... Running 'cxds_bcds_hybrid'"))
+                              useAssay = "counts") 
+{
+  message(date(), " ... Running 'cxds_bcds_hybrid'")
   
   ## Getting current arguments
-  #argsList <- as.list(formals(fun = sys.function(sys.parent()), envir = parent.frame()))
   argsList <- mget(names(formals()),sys.frame(sys.nframe()))
+  argsList <- argsList[!names(argsList) %in% c("inSCE")]
+  argsList$packageVersion <- utils::packageDescription("scds")$Version
   
+  sample <- .manageCellVar(inSCE, var = sample)
+  if (is.null(sample)) {
+    sample <- rep(1, ncol(inSCE))
+  }
   ## Define result matrix for all samples
-  if (estNdbl) {
+  if (isTRUE(estNdbl)) {
     output <- S4Vectors::DataFrame(row.names = colnames(inSCE),
                                    hybrid_score = numeric(ncol(inSCE)),
                                    hybrid_call = logical(ncol(inSCE)))
@@ -338,8 +325,8 @@ runCxdsBcdsHybrid <- function(inSCE,
   
   ## Loop through each sample and run cxds_bcds_hybrid
   samples <- unique(sample)
-  for (i in seq_len(length(samples))) {
-    sceSampleInd <- sample == samples[i]
+  for (s in samples) {
+    sceSampleInd <- sample == s
     sceSample <- inSCE[, sceSampleInd]
     
     mat <- SummarizedExperiment::assay(sceSample, i = useAssay)
@@ -349,54 +336,62 @@ runCxdsBcdsHybrid <- function(inSCE,
     # the 'ntop' parameter
     result <- NULL
     nGene.cxds <- nTop
-    if(!is.null(cxdsArgs[["ntop"]])) {
+    if (!is.null(cxdsArgs[["ntop"]])) {
       nGene.cxds <- cxdsArgs[["ntop"]]
       cxdsArgs[["ntop"]] <- NULL
     }
     nGene.bcds <- nTop
-    if(!is.null(bcdsArgs[["ntop"]])) {
+    if (!is.null(bcdsArgs[["ntop"]])) {
       nGene.bcds <- bcdsArgs[["ntop"]]
       bcdsArgs[["ntop"]] <- NULL
     }
     
     nGene <- min(nGene.cxds, nGene.bcds)
-    while(!inherits(result, "SingleCellExperiment") & nGene > 0) {
-      try({result <- withr::with_seed(seed, scds::cxds_bcds_hybrid(sce = sceSample,
-                                                                   cxdsArgs=c(list(ntop = nGene.cxds), cxdsArgs),
-                                                                   bcdsArgs=c(list(ntop = nGene.bcds), bcdsArgs),
-                                                                   verb = verb,
-                                                                   estNdbl = estNdbl,
-                                                                   force = force))}, silent = TRUE)
+    while (!inherits(result, "SingleCellExperiment") & nGene > 0) {
+      try({
+        result <- .withSeed(seed, {
+          scds::cxds_bcds_hybrid(sce = sceSample,
+                                 cxdsArgs = c(list(ntop = nGene.cxds), 
+                                              cxdsArgs),
+                                 bcdsArgs = c(list(ntop = nGene.bcds), 
+                                              bcdsArgs),
+                                 verb = verb,
+                                 estNdbl = estNdbl,
+                                 force = force)
+        })
+      }, silent = TRUE)
       nGene <- nGene - 100
       nGene.bcds <- nGene.bcds - 100
       nGene.cxds <- nGene.cxds - 100
     }
     
     if (!inherits(result, "try-error") & !is.null(result)) {
-      if ("hybrid_call" %in% colnames(SummarizedExperiment::colData(result))) {
-        output[sceSampleInd, ] <- SummarizedExperiment::colData(result)[,
-                                                                        c("hybrid_score", "hybrid_call")]
+      if ("hybrid_call" %in% colnames(colData(result))) {
+        output[sceSampleInd, ] <- colData(result)[, c("hybrid_score", 
+                                                      "hybrid_call")]
       } else {
-        output[sceSampleInd, ] <- SummarizedExperiment::colData(result)[,
-                                                                        c("hybrid_score")]
+        output[sceSampleInd, ] <- colData(result)[, c("hybrid_score")]
       }
     } else {
       output[sceSampleInd, ] <- NA
-      warning(paste0("'cxds_bcds_hybrid' from package 'scds' did not complete successfully for sample: ", samples[i]))
+      warning("'cxds_bcds_hybrid' from package 'scds' did not complete ", 
+              "successfully for sample: ", s)
+    }
+    if (!identical(samples, 1)) {
+      metadata(inSCE)$sctk$runCxdsBcdsHybrid[[s]] <- argsList
     }
   }
-  
+  if (identical(samples, 1)) {
+    metadata(inSCE)$sctk$runCxdsBcdsHybrid$all_cells <- argsList
+  }
   colData(inSCE)[, paste0("scds_", colnames(output))] <- NULL
-  if (estNdbl) {
+  if (isTRUE(estNdbl)) {
     output$hybrid_call <- as.factor(output$hybrid_call)
     levels(output$hybrid_call) <- list(Singlet = "FALSE", Doublet = "TRUE")
   }
   
   colnames(output) <- paste0("scds_", colnames(output))
-  colData(inSCE) = cbind(colData(inSCE), output)
-  
-  inSCE@metadata$runCxdsBcdsHybrid <- argsList[-1]
-  inSCE@metadata$runCxdsBcdsHybrid$packageVersion <- utils::packageDescription("scds")$Version
+  colData(inSCE) <- cbind(colData(inSCE), output)
   
   return(inSCE)
 }
