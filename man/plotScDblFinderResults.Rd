@@ -6,7 +6,6 @@
 \usage{
 plotScDblFinderResults(
   inSCE,
-  reducedDimName = "UMAP",
   sample = NULL,
   shape = NULL,
   groupBy = NULL,
@@ -14,6 +13,7 @@ plotScDblFinderResults(
   violin = TRUE,
   boxplot = FALSE,
   dots = TRUE,
+  reducedDimName = "UMAP",
   xlab = NULL,
   ylab = NULL,
   dim1 = NULL,
@@ -46,9 +46,6 @@ plotScDblFinderResults(
 dimension reduction components or a variable with saved results from
 \code{\link{runScDblFinder}}. Required.}
 
-\item{reducedDimName}{Saved dimension reduction name in \code{inSCE}. 
-Required.}
-
 \item{sample}{Character vector or colData variable name. Indicates which 
 sample each cell belongs to. Default \code{NULL}.}
 
@@ -71,6 +68,9 @@ plot. Default \code{TRUE}.}
 
 \item{dots}{Boolean. If \code{TRUE}, will plot dots for each violin plot.
 Default \code{TRUE}.}
+
+\item{reducedDimName}{Saved dimension reduction name in \code{inSCE}. 
+Default \code{"UMAP"}.}
 
 \item{xlab}{Character vector. Label for x-axis. Default \code{NULL}.}
 
@@ -149,8 +149,8 @@ list of .ggplot objects
 }
 \description{
 A wrapper function which visualizes outputs from the
- runScDblFinder function stored in the colData slot of the
- SingleCellExperiment object via various plots.
+\code{\link{runScDblFinder}} function stored in the colData slot of the
+\linkS4class{SingleCellExperiment} object via various plots.
 }
 \examples{
 data(scExample, package="singleCellTK")

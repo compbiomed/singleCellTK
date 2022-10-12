@@ -19,15 +19,13 @@ runBcds(
 )
 }
 \arguments{
-\item{inSCE}{A \link[SingleCellExperiment]{SingleCellExperiment} object.
-Needs \code{counts} in assays slot.}
+\item{inSCE}{A \linkS4class{SingleCellExperiment} object.}
 
-\item{sample}{Character vector. Indicates which sample each cell belongs to.
-\link[scds]{bcds} will be run on cells from each sample
-separately. If NULL, then all cells will be processed together.
-Default NULL.}
+\item{sample}{Character vector or colData variable name. Indicates which 
+sample each cell belongs to. Default \code{NULL}.}
 
-\item{seed}{Seed for the random number generator. Default 12345.}
+\item{seed}{Seed for the random number generator, can be \code{NULL}. Default
+\code{12345}.}
 
 \item{ntop}{See \link[scds]{bcds} for more information. Default \code{500}.}
 
@@ -35,22 +33,26 @@ Default NULL.}
 
 \item{verb}{See \link[scds]{bcds} for more information. Default \code{FALSE}.}
 
-\item{retRes}{See \link[scds]{bcds} for more information. Default \code{FALSE}.}
+\item{retRes}{See \link[scds]{bcds} for more information. Default 
+\code{FALSE}.}
 
-\item{nmax}{See \link[scds]{bcds} for more information. Default \code{"tune"}.}
+\item{nmax}{See \link[scds]{bcds} for more information. Default 
+\code{"tune"}.}
 
-\item{varImp}{See \link[scds]{bcds} for more information. Default \code{FALSE}.}
+\item{varImp}{See \link[scds]{bcds} for more information. Default 
+\code{FALSE}.}
 
-\item{estNdbl}{See \link[scds]{bcds} for more information. Default \code{FALSE}.}
+\item{estNdbl}{See \link[scds]{bcds} for more information. Default 
+\code{FALSE}.}
 
-\item{useAssay}{A string specifying which assay in the SCE to use.}
+\item{useAssay}{A string specifying which assay in \code{inSCE} to use.
+Default \code{"counts"}}
 }
 \value{
-A \link[SingleCellExperiment]{SingleCellExperiment} object with
- \link[scds]{bcds} output appended to the
- \link{colData} slot. The columns include
- \emph{bcds_score} and optionally \emph{bcds_call}.
- Please refer to the documentation of \link[scds]{bcds} for details.
+A \linkS4class{SingleCellExperiment} object with \link[scds]{bcds} 
+output appended to the \link{colData} slot. The columns include 
+\emph{bcds_score} and optionally \emph{bcds_call}. Please refer to the 
+documentation of \link[scds]{bcds} for details.
 }
 \description{
 A wrapper function for \link[scds]{bcds}. Annotate
@@ -58,8 +60,17 @@ A wrapper function for \link[scds]{bcds}. Annotate
  artificial doublets from original data. Generate a doublet
  score for each cell. Infer doublets if \code{estNdbl} is \code{TRUE}.
 }
+\details{
+When the argument \code{sample} is specified, \link[scds]{bcds} will
+be run on cells from each sample separately. If \code{sample = NULL}, then 
+all cells will be processed together.
+}
 \examples{
 data(scExample, package = "singleCellTK")
 sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 sce <- runBcds(sce)
+}
+\seealso{
+\code{\link[scds]{bcds}}, \code{\link{plotBcdsResults}}, 
+\code{\link{runCellQC}}
 }
