@@ -14,7 +14,6 @@ runScanpyFindClusters(
   dims = 2L,
   algorithm = c("louvain", "leiden"),
   resolution,
-  colDataName,
   niterations = -1,
   flavor = "vtraag",
   use_weights = FALSE,
@@ -46,8 +45,6 @@ and "leiden". Default \code{louvain}.}
 \item{resolution}{A parameter value controlling the coarseness of the 
 clustering. Higher values lead to more clusters Default \code{1}.}
 
-\item{colDataName}{colName to store the result in annData object}
-
 \item{niterations}{How many iterations of the Leiden clustering algorithm to 
 perform. Positive values above 2 define the total number of iterations to 
 perform, -1 has the algorithm run until it reaches its optimal clustering.}
@@ -77,8 +74,6 @@ object
 data(scExample, package = "singleCellTK")
 \dontrun{
 sce <- runScanpyNormalizeData(sce, useAssay = "counts")
-sce <- runScanpyFindHVG(sce, useAssay = "counts")
-sce <- runScanpyScaleData(sce, useAssay = "counts")
 sce <- runScanpyPCA(sce, useAssay = "counts")
 sce <- runScanpyFindClusters(sce, useAssay = "counts")
 }
