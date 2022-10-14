@@ -840,159 +840,164 @@ plotScrubletResults <- function(
 #'  SingleCellExperiment object via various plots.
 #' @param inSCE Input \linkS4class{SingleCellExperiment} object with saved
 #' dimension reduction components or a variable with saved results from
-#' \link{runDoubletFinder}. Required.
-#' @param sample Character vector. Indicates which sample each cell belongs to.
-#'  Default NULL.
-#' @param shape If provided, add shapes based on the value.
+#' \code{\link{runCxds}}. Required.
+#' @param sample Character vector or colData variable name. Indicates which 
+#' sample each cell belongs to. Default \code{NULL}.
+#' @param shape If provided, add shapes based on the value. Default \code{NULL}.
 #' @param groupBy Groupings for each numeric value. A user may input a vector
-#'  equal length to the number of the samples in the SingleCellExperiment
-#'  object, or can be retrieved from the colData slot. Default NULL.
-#' @param violin Boolean. If TRUE, will plot the violin plot. Default TRUE.
-#' @param boxplot Boolean. If TRUE, will plot boxplots for each violin plot.
-#'  Default TRUE.
-#' @param dots Boolean. If TRUE, will plot dots for each violin plot.
-#'  Default TRUE.
-#' @param reducedDimName Saved dimension reduction name in the
-#' \linkS4class{SingleCellExperiment} object. Required.
-#' @param xlab Character vector. Label for x-axis. Default NULL.
-#' @param ylab Character vector. Label for y-axis. Default NULL.
-#' @param dim1 1st dimension to be used for plotting. Can either be a string which specifies
-#'  the name of the dimension to be plotted from reducedDims, or a numeric value which specifies
-#'  the index of the dimension to be plotted. Default is NULL.
-#' @param dim2 2nd dimension to be used for plotting. Can either be a string which specifies
-#'  the name of the dimension to be plotted from reducedDims, or a numeric value which specifies
-#'  the index of the dimension to be plotted. Default is NULL.
-#' @param bin Numeric vector. If single value, will divide the numeric values into the `bin` groups.
-#'  If more than one value, will bin numeric values using values as a cut point.
-#' @param binLabel Character vector. Labels for the bins created by the `bin` parameter.
-#'  Default NULL.
-#' @param defaultTheme Removes grid in plot and sets axis title size to 10
-#'  when TRUE. Default TRUE.
-#' @param dotSize Size of dots. Default 0.5.
+#' equal length to the number of the samples in \code{inSCE}, or can be 
+#' retrieved from the colData slot. Default \code{NULL}.
+#' @param violin Boolean. If \code{TRUE}, will plot the violin plot. Default 
+#' \code{TRUE}.
+#' @param boxplot Boolean. If \code{TRUE}, will plot boxplots for each violin 
+#' plot. Default \code{TRUE}.
+#' @param dots Boolean. If \code{TRUE}, will plot dots for each violin plot.
+#' Default \code{TRUE}.
+#' @param reducedDimName Saved dimension reduction name in \code{inSCE}. 
+#' Default \code{"UMAP"}.
+#' @param xlab Character vector. Label for x-axis. Default \code{NULL}.
+#' @param ylab Character vector. Label for y-axis. Default \code{NULL}.
+#' @param dim1 1st dimension to be used for plotting. Can either be a string 
+#' which specifies the name of the dimension to be plotted from reducedDims, or 
+#' a numeric value which specifies the index of the dimension to be plotted. 
+#' Default is \code{NULL}.
+#' @param dim2 2nd dimension to be used for plotting. Similar to \code{dim1}. 
+#' Default is \code{NULL}.
+#' @param bin Numeric vector. If single value, will divide the numeric values 
+#' into \code{bin} groups. If more than one value, will bin numeric values using
+#' values as a cut point. Default \code{NULL}.
+#' @param binLabel Character vector. Labels for the bins created by \code{bin}.
+#' Default \code{NULL}.
+#' @param defaultTheme Removes grid in plot and sets axis title size to 
+#' \code{10} when \code{TRUE}. Default \code{TRUE}.
+#' @param dotSize Size of dots. Default \code{0.5}.
 #' @param summary Adds a summary statistic, as well as a crossbar to the
-#'  violin plot. Options are "mean" or "median". Default NULL.
+#' violin plot. Options are \code{"mean"} or \code{"median"}. Default 
+#' \code{NULL}.
 #' @param summaryTextSize The text size of the summary statistic displayed
-#'  above the violin plot. Default 3.
-#' @param transparency Transparency of the dots, values will be 0-1. Default 1.
-#' @param baseSize The base font size for all text. Default 12.
-#'  Can be overwritten by titleSize, axisSize, and axisLabelSize,
-#'  legendSize, legendTitleSize.
-#' @param titleSize Size of title of plot. Default NULL.
-#' @param axisSize Size of x/y-axis ticks. Default NULL.
-#' @param axisLabelSize Size of x/y-axis labels. Default NULL.
-#' @param legendSize size of legend. Default NULL.
-#' @param legendTitleSize size of legend title. Default NULL.
-#' @param combinePlot Must be either "all", "sample", or "none". "all" will combine all plots into a single .ggplot object,
-#' while "sample" will output a list of plots separated by sample. Default "all".
-#' @param relHeights Relative heights of plots when combine is set.
-#' @param relWidths Relative widths of plots when combine is set.
-#' @param plotNCols Number of columns when plots are combined in a grid.
-#' @param plotNRows Number of rows when plots are combined in a grid.
-#' @param labelSamples Will label sample name in title of plot if TRUE. Default TRUE.
-#' @param samplePerColumn If TRUE, when there are multiple samples and combining by "all",
-#'  the output .ggplot will have plots from each sample on a single column. Default TRUE.
-#' @param sampleRelHeights If there are multiple samples and combining by "all",
-#'  the relative heights for each plot.
-#' @param sampleRelWidths If there are multiple samples and combining by "all",
-#'  the relative widths for each plot.
+#' above the violin plot. Default \code{3}.
+#' @param transparency Transparency of the dots, values will be 0-1. Default 
+#' \code{1}.
+#' @param baseSize The base font size for all text. Default \code{12}.
+#' Can be overwritten by \code{titleSize}, \code{axisSize}, and 
+#' \code{axisLabelSize}, \code{legendSize}, \code{legendTitleSize}.
+#' @param titleSize Size of title of plot. Default \code{NULL}.
+#' @param axisSize Size of x/y-axis ticks. Default \code{NULL}.
+#' @param axisLabelSize Size of x/y-axis labels. Default \code{NULL}.
+#' @param legendSize size of legend. Default \code{NULL}.
+#' @param legendTitleSize size of legend title. Default \code{NULL}.
+#' @param combinePlot Must be either \code{"all"}, \code{"sample"}, or 
+#' \code{"none"}. \code{"all"} will combine all plots into a single .ggplot 
+#' object, while \code{"sample"} will output a list of plots separated by 
+#' sample. Default \code{"all"}.
+#' @param relHeights Relative heights of plots when combine is set. Default 
+#' \code{1}.
+#' @param relWidths Relative widths of plots when combine is set. Default 
+#' \code{c(1, 1, 1)}.
+#' @param plotNCols Number of columns when plots are combined in a grid. Default 
+#' \code{NULL}.
+#' @param plotNRows Number of rows when plots are combined in a grid. Default 
+#' \code{NULL}.
+#' @param labelSamples Will label sample name in title of plot if TRUE. Default 
+#' \code{TRUE}.
+#' @param samplePerColumn If \code{TRUE}, when there are multiple samples and 
+#' combining by \code{"all"}, the output .ggplot will have plots from each 
+#' sample on a single column. Default \code{TRUE}.
+#' @param sampleRelHeights If there are multiple samples and combining by 
+#' \code{"all"}, the relative heights for each plot. Default \code{1}.
+#' @param sampleRelWidths If there are multiple samples and combining by 
+#' \code{"all"}, the relative widths for each plot. Default \code{1}.
 #' @return list of .ggplot objects
+#' @seealso \code{\link{runDoubletFinder}}
 #' @examples
 #' data(scExample, package="singleCellTK")
 #' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 #' sce <- runQuickUMAP(sce)
 #' sce <- runDoubletFinder(sce)
-#' plotDoubletFinderResults(inSCE=sce, reducedDimName="UMAP")
+#' plotDoubletFinderResults(inSCE = sce, reducedDimName = "UMAP")
 #' @export
-plotDoubletFinderResults <- function(inSCE,
-                                     sample=NULL,
-                                     shape=NULL,
-                                     groupBy=NULL,
-                                     combinePlot="all",
-                                     violin=TRUE,
-                                     boxplot=FALSE,
-                                     dots=TRUE,
-                                     reducedDimName="UMAP",
-                                     xlab=NULL,
-                                     ylab=NULL,
-                                     dim1=NULL,
-                                     dim2=NULL,
-                                     bin=NULL,
-                                     binLabel=NULL,
-                                     defaultTheme=TRUE,
-                                     dotSize=0.5,
-                                     summary="median",
-                                     summaryTextSize=3,
-                                     transparency=1,
-                                     baseSize=15,
-                                     titleSize=NULL,
-                                     axisLabelSize=NULL,
-                                     axisSize=NULL,
-                                     legendSize=NULL,
-                                     legendTitleSize=NULL,
-                                     relHeights=1,
-                                     relWidths=c(1, 1, 1),
-                                     plotNCols = NULL,
-                                     plotNRows = NULL,
-                                     labelSamples = TRUE,
-                                     samplePerColumn = TRUE,
-                                     sampleRelHeights = 1,
-                                     sampleRelWidths = 1) {
-  if (!is.null(sample)) {
-    if (length(sample) != ncol(inSCE)) {
-      stop(
-        "'sample' must be the same length as the number",
-        " of columns in 'inSCE'"
-      )
-    }
-  } else {
+plotDoubletFinderResults <- function(
+    inSCE,
+    sample = NULL,
+    shape = NULL,
+    groupBy = NULL,
+    combinePlot = "all",
+    violin = TRUE,
+    boxplot = FALSE,
+    dots = TRUE,
+    reducedDimName = "UMAP",
+    xlab = NULL,
+    ylab = NULL,
+    dim1 = NULL,
+    dim2 = NULL,
+    bin = NULL,
+    binLabel = NULL,
+    defaultTheme = TRUE,
+    dotSize = 0.5,
+    summary = "median",
+    summaryTextSize = 3,
+    transparency = 1,
+    baseSize = 15,
+    titleSize = NULL,
+    axisLabelSize = NULL,
+    axisSize = NULL,
+    legendSize = NULL,
+    legendTitleSize = NULL,
+    relHeights = 1,
+    relWidths = c(1, 1, 1),
+    plotNCols = NULL,
+    plotNRows = NULL,
+    labelSamples = TRUE,
+    samplePerColumn = TRUE,
+    sampleRelHeights = 1,
+    sampleRelWidths = 1
+) {
+  sample <- .manageCellVar(inSCE, var = sample)
+  if (is.null(sample)) {
     sample <- rep(1, ncol(inSCE))
   }
-  sampleVector <- sample
   samples <- unique(sample)
   
-  if (!(reducedDimName %in% reducedDimNames(inSCE))){
+  if (!(reducedDimName %in% reducedDimNames(inSCE))) {
     stop("Specified `reducedDimName` is not found in input
          SingleCellExperiment object. Please check for spelling errors
          with reducedDimNames().")
   }
   
   df.scores <- grep(
-    pattern="doubletFinder_doublet_score_resolution_",
-    names(colData(inSCE)), value=TRUE
+    pattern = "doubletFinder_doublet_score_resolution_",
+    names(colData(inSCE)), value = TRUE
   )
   
   df.labels <- grep(
-    pattern="doubletFinder_doublet_label_resolution_",
-    names(colData(inSCE)), value=TRUE
+    pattern = "doubletFinder_doublet_label_resolution_",
+    names(colData(inSCE)), value = TRUE
   )
   if (length(samples) > 1) {
     merged.plots <- lapply(df.scores, function(x) {
       plotSCEViolinColData(
-        inSCE=inSCE,
-        coldata=x,
-        sample=NULL,
-        xlab="",
-        ylab="Doublet Score",
-        groupBy=sampleVector,
-        violin=violin,
-        boxplot=boxplot,
-        dots=TRUE,
-        transparency=transparency,
-        baseSize=baseSize,
-        axisSize=axisSize,
-        axisLabelSize=axisLabelSize,
-        defaultTheme=defaultTheme,
-        titleSize=titleSize,
-        title=paste(
+        inSCE = inSCE,
+        coldata = x,
+        sample = NULL,
+        xlab = "",
+        ylab = "Doublet Score",
+        groupBy = sample,
+        violin = violin,
+        boxplot = boxplot,
+        dots = TRUE,
+        transparency = transparency,
+        baseSize = baseSize,
+        axisSize = axisSize,
+        axisLabelSize = axisLabelSize,
+        defaultTheme = defaultTheme,
+        titleSize = titleSize,
+        title = paste(
           "DoubletFinder Score Resolution",
-          gsub(
-            pattern="doubletFinder_doublet_score_Resolution_",
-            "", x
-          )
+          gsub(pattern = "doubletFinder_doublet_score_Resolution_", "", x)
         ),
-        dotSize=dotSize,
-        summary=summary,
-        summaryTextSize=summaryTextSize,
+        dotSize = dotSize,
+        summary = summary,
+        summaryTextSize = summaryTextSize,
         combinePlot = "all",
         plotLabels = "none"
       )
@@ -1000,8 +1005,8 @@ plotDoubletFinderResults <- function(inSCE,
     
     names(merged.plots) <- vapply(df.scores, function(x) {
       paste0("Violin_", gsub(
-        pattern="doubletFinder_doublet_score_",
-        "", x=x
+        pattern = "doubletFinder_doublet_score_",
+        "", x = x
       ))
     }, character(1))
     
@@ -1015,39 +1020,37 @@ plotDoubletFinderResults <- function(inSCE,
     sampleSub <- sample[sampleInd]
     inSCESub <- inSCE[, sampleInd]
     
-    if(combinePlot == "sample" | combinePlot == "all"){
+    if (combinePlot == "sample" | combinePlot == "all") {
       baseSize = baseSize * 0.5
     }
     
     densityScore <- lapply(df.scores, function(y) {
       title <- paste(
         "Density, Doublet Score Resolution",
-        gsub(
-          pattern="doubletFinder_doublet_score_resolution_","", y))
-      if(labelSamples && length(samples) > 1){
+        gsub("doubletFinder_doublet_score_resolution_", "", y))
+      if (labelSamples && length(samples) > 1) {
         title = paste0(title, ", ", x)
       }
       plotSCEDensityColData(
-        inSCE=inSCESub,
-        sample=sampleSub,
-        coldata=y,
-        groupBy=groupBy,
-        xlab="Score",
-        ylab="Density",
-        baseSize=baseSize,
-        axisSize=axisSize,
-        axisLabelSize=axisLabelSize,
-        defaultTheme=defaultTheme,
-        cutoff=0.5,
-        combinePlot="all",
-        titleSize=titleSize,
-        title=title
+        inSCE = inSCESub,
+        sample = sampleSub,
+        coldata = y,
+        groupBy = groupBy,
+        xlab = "Score",
+        ylab = "Density",
+        baseSize = baseSize,
+        axisSize = axisSize,
+        axisLabelSize = axisLabelSize,
+        defaultTheme = defaultTheme,
+        cutoff = 0.5,
+        combinePlot = "all",
+        titleSize = titleSize,
+        title = title
       )
     })
     names(densityScore) <- vapply(df.scores, function(y) {
-      paste0("Density_", gsub(
-        pattern="doubletFinder_doublet_score_",
-        "", x=y
+      paste0("Density_", gsub(pattern = "doubletFinder_doublet_score_", "", 
+                              x = y
       ))
     }, character(1))
     res.list <- c(res.list, densityScore)
@@ -1056,89 +1059,89 @@ plotDoubletFinderResults <- function(inSCE,
       title <- paste(
         "Doublet Score Resolution",
         gsub(
-          pattern="doubletFinder_doublet_score_resolution_","", y))
-      if(labelSamples && length(samples) > 1){
+          pattern = "doubletFinder_doublet_score_resolution_", "", y))
+      if (labelSamples && length(samples) > 1) {
         title = paste0(title, ", ", x)
       }
       
       plotSCEDimReduceColData(
-        inSCE=inSCESub,
-        sample=sampleSub,
-        conditionClass="numeric",
-        shape=shape,
-        colorBy=y,
-        reducedDimName=reducedDimName,
-        xlab=xlab,
-        ylab=ylab,
-        dim1=dim1,
-        dim2=dim2,
-        bin=bin,
-        binLabel=binLabel,
-        dotSize=dotSize,
-        transparency=transparency,
-        baseSize=baseSize,
-        defaultTheme=defaultTheme,
-        title=title,
-        titleSize=titleSize,
-        axisSize=axisSize,
-        axisLabelSize=axisLabelSize,
-        labelClusters=FALSE,
-        legendTitle="Doublet \nScore",
-        legendSize=legendSize,
-        legendTitleSize=legendTitleSize,
-        combinePlot="all"
+        inSCE = inSCESub,
+        sample = sampleSub,
+        conditionClass = "numeric",
+        shape = shape,
+        colorBy = y,
+        reducedDimName = reducedDimName,
+        xlab = xlab,
+        ylab = ylab,
+        dim1 = dim1,
+        dim2 = dim2,
+        bin = bin,
+        binLabel = binLabel,
+        dotSize = dotSize,
+        transparency = transparency,
+        baseSize = baseSize,
+        defaultTheme = defaultTheme,
+        title = title,
+        titleSize = titleSize,
+        axisSize = axisSize,
+        axisLabelSize = axisLabelSize,
+        labelClusters = FALSE,
+        legendTitle = "Doublet \nScore",
+        legendSize = legendSize,
+        legendTitleSize = legendTitleSize,
+        combinePlot = "all"
       )
     })
     
     names(scatterScore) <- vapply(df.scores, function(y) {
       paste0("Scatter_Score_", gsub(
-        pattern="doubletFinder_doublet_score_",
-        "", x=y
+        pattern = "doubletFinder_doublet_score_",
+        "", x = y
       ))
     }, character(1))
     res.list <- c(res.list, scatterScore)
     
-    if(combinePlot != "all" | length(samples) == 1){
+    if (combinePlot != "all" | length(samples) == 1) {
       
       violinScore <- lapply(df.scores, function(y) {
         title <- paste(
           "Doublet Score Resolution",
           gsub(
-            pattern="doubletFinder_doublet_score_resolution_",
+            pattern = "doubletFinder_doublet_score_resolution_",
             "", y))
         
-        if(labelSamples && length(samples) > 1){
+        if (labelSamples && length(samples) > 1) {
           title = paste0(title, ", ", x)
         }
         
         plotSCEViolinColData(
-          inSCE=inSCESub,
-          coldata=y,
-          sample=sampleSub,
-          xlab="",
-          ylab="Doublet Score",
-          groupBy=groupBy,
-          violin=violin,
-          boxplot=boxplot,
-          dots=dots,
-          transparency=transparency,
-          baseSize=baseSize,
-          defaultTheme=defaultTheme,
-          summary=summary,
-          summaryTextSize=summaryTextSize,
-          title=title,
-          titleSize=titleSize,
-          dotSize=dotSize,
-          axisSize=axisSize,
-          axisLabelSize=axisLabelSize,
-          combinePlot="all"
+          inSCE = inSCESub,
+          coldata = y,
+          sample = sampleSub,
+          xlab = "",
+          ylab = "Doublet Score",
+          groupBy = groupBy,
+          violin = violin,
+          boxplot = boxplot,
+          dots = dots,
+          transparency = transparency,
+          baseSize = baseSize,
+          defaultTheme = defaultTheme,
+          summary = summary,
+          summaryTextSize = summaryTextSize,
+          title = title,
+          titleSize = titleSize,
+          dotSize = dotSize,
+          axisSize = axisSize,
+          axisLabelSize = axisLabelSize,
+          combinePlot = "all"
         )
       })
       
       names(violinScore) <- vapply(df.scores, function(y) {
         paste0("violin_", gsub(
-          pattern="doubletFinder_doublet_score_",
-          "", x=y
+          pattern = "doubletFinder_doublet_score_",
+          "", x = y
         ))
       }, character(1))
       res.list <- c(res.list, violinScore)
@@ -1148,47 +1151,47 @@ plotDoubletFinderResults <- function(inSCE,
       title <- paste(
         "Doublet Call Resolution",
         gsub(
-          pattern="doubletFinder_doublet_label_resolution_",
+          pattern = "doubletFinder_doublet_label_resolution_",
           "", y))
       
-      if(labelSamples && length(samples) > 1){
+      if (labelSamples && length(samples) > 1) {
         title = paste0(title, ", ", x)
       }
       
       plotSCEDimReduceColData(
-        inSCE=inSCESub,
-        sample=sampleSub,
-        conditionClass="factor",
-        shape=shape,
-        colorBy=y,
-        reducedDimName=reducedDimName,
-        xlab=xlab,
-        ylab=ylab,
-        dim1=dim1,
-        dim2=dim2,
-        bin=bin,
-        binLabel=binLabel,
-        dotSize=dotSize,
-        transparency=transparency,
-        baseSize=baseSize,
+        inSCE = inSCESub,
+        sample = sampleSub,
+        conditionClass = "factor",
+        shape = shape,
+        colorBy = y,
+        reducedDimName = reducedDimName,
+        xlab = xlab,
+        ylab = ylab,
+        dim1 = dim1,
+        dim2 = dim2,
+        bin = bin,
+        binLabel = binLabel,
+        dotSize = dotSize,
+        transparency = transparency,
+        baseSize = baseSize,
         colorScale = c("lightgray", "red"),
-        defaultTheme=defaultTheme,
-        title=title,
-        titleSize=titleSize,
-        axisSize=axisSize,
-        axisLabelSize=axisLabelSize,
-        labelClusters=FALSE,
-        legendTitle="Doublet \nAssignment",
-        legendSize=legendSize,
-        legendTitleSize=legendTitleSize,
-        combinePlot="all"
+        defaultTheme = defaultTheme,
+        title = title,
+        titleSize = titleSize,
+        axisSize = axisSize,
+        axisLabelSize = axisLabelSize,
+        labelClusters = FALSE,
+        legendTitle = "Doublet \nAssignment",
+        legendSize = legendSize,
+        legendTitleSize = legendTitleSize,
+        combinePlot = "all"
       )
     })
     
     names(scatterCall) <- vapply(df.labels, function(y) {
       paste0("Scatter_Call_", gsub(
-        pattern="doubletFinder_doublet_label_",
-        "", x=y
+        pattern = "doubletFinder_doublet_label_",
+        "", x = y
       ))
     }, character(1))
     res.list <- c(res.list, scatterCall)
@@ -1198,12 +1201,12 @@ plotDoubletFinderResults <- function(inSCE,
     names(plotlist) <- samples
     plotlist <- c(merged.plots, list(Sample = plotlist))
   } else {
-    plotlist <- unlist(plotlist, recursive=FALSE)
-    plotLabels <- "none"
-    relHeights=1
+    plotlist <- unlist(plotlist, recursive = FALSE)
+    #plotLabels <- "none"
+    relHeights = 1
   }
-  if(!is.null(combinePlot)){
-    if(combinePlot %in% c("all", "sample")){
+  if (!is.null(combinePlot)) {
+    if (combinePlot %in% c("all", "sample")) {
       plotlist <- .ggSCTKCombinePlots(plotlist, combinePlot = combinePlot,
                                       relHeights = relHeights,
                                       relWidths = relWidths,
