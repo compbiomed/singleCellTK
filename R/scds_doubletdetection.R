@@ -15,7 +15,7 @@
 #' \code{FALSE}.
 #' @param estNdbl See \link[scds]{cxds} for more information. Default 
 #' \code{FALSE}.
-#' @param useAssay  A string specifying which assay in the SCE to use. Default 
+#' @param useAssay A string specifying which assay in the SCE to use. Default 
 #' \code{"counts"}
 #' @details When the argument \code{sample} is specified, \link[scds]{cxds} will
 #' be run on cells from each sample separately. If \code{sample = NULL}, then 

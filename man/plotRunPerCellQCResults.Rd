@@ -57,7 +57,7 @@ plot. Default \code{FALSE}.}
 \item{dots}{Boolean. If \code{TRUE}, will plot dots for each violin plot.
 Default \code{TRUE}.}
 
-\item{dotSize}{Size of dots. Default 0.5.}
+\item{dotSize}{Size of dots. Default \code{0.5}.}
 
 \item{summary}{Adds a summary statistic, as well as a crossbar to the
 violin plot. Options are \code{"mean"} or \code{"median"}. Default 

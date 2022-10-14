@@ -16,7 +16,7 @@
 #' plot. Default \code{FALSE}.
 #' @param dots Boolean. If \code{TRUE}, will plot dots for each violin plot.
 #' Default \code{TRUE}.
-#' @param dotSize Size of dots. Default 0.5.
+#' @param dotSize Size of dots. Default \code{0.5}.
 #' @param summary Adds a summary statistic, as well as a crossbar to the
 #' violin plot. Options are \code{"mean"} or \code{"median"}. Default 
 #' \code{"median"}.
@@ -363,20 +363,20 @@ plotRunPerCellQCResults <- function(inSCE,
   
   if (length(unique(samples)) > 1) {
     names(plotlist) <- samples
-    if(combinePlot == "all"){
+    if (combinePlot == "all") {
       plotlist <- c(merged.plots)
-    }else if(combinePlot == "sample"){
+    } else if (combinePlot == "sample") {
       plotlist <- c(merged.plots, list(Sample = plotlist))
-    }else if(combinePlot == "none"){
+    } else if (combinePlot == "none") {
       plotlist <- c(merged.plots, list(Sample = plotlist))
     }
   } else {
-    plotlist <- unlist(plotlist, recursive=FALSE)
-    relHeights=1
+    plotlist <- unlist(plotlist, recursive = FALSE)
+    relHeights <- 1
   }
   
-  if(!is.null(combinePlot)){
-    if(combinePlot %in% c("all", "sample")){
+  if (!is.null(combinePlot)) {
+    if (combinePlot %in% c("all", "sample")) {
       plotlist <- .ggSCTKCombinePlots(plotlist, combinePlot = combinePlot,
                                       relHeights = relHeights,
                                       relWidths = relWidths,
@@ -393,75 +393,83 @@ plotRunPerCellQCResults <- function(inSCE,
 
 #' @title Plots for runEmptyDrops outputs.
 #' @description A wrapper function which visualizes outputs from the
-#'  runEmptyDrops function stored in the colData slot of the SingleCellExperiment
-#'  object via plots.
+#' \code{\link{runEmptyDrops}} function stored in the \code{colData} slot of the 
+#' \linkS4class{SingleCellExperiment} object.
 #' @param inSCE Input \linkS4class{SingleCellExperiment} object with saved
 #' dimension reduction components or a variable with saved results from
-#' \link{runScrublet}. Required.
-#' @param sample Character vector. Indicates which sample each cell belongs to.
-#'  Default NULL.
+#' \code{\link{runEmptyDrops}}. Required.
+#' @param sample Character vector or colData variable name. Indicates which 
+#' sample each cell belongs to. Default \code{NULL}.
+#' @param defaultTheme Removes grid in plot and sets axis title size to 
+#' \code{10} when \code{TRUE}. Default \code{TRUE}.
 #' @param fdrCutoff Numeric. Thresholds barcodes based on the FDR values from
-#'  runEmptyDrops as "Empty Droplet" or "Putative Cell". Default 0.01.
-#' @param defaultTheme Removes grid in plot and sets axis title size to 10
-#'  when TRUE. Default TRUE.
-#' @param dotSize Size of dots. Default 0.5.
-#' @param titleSize Size of title of plot. Default 18.
-#' @param axisSize Size of x/y-axis ticks. Default 15.
-#' @param axisLabelSize Size of x/y-axis labels. Default 18.
-#' @param legendSize size of legend. Default 15.
-#' @param legendTitleSize size of legend title. Default 16.
-#' @param combinePlot Must be either "all", "sample", or "none". "all" will combine all plots into a single
-#' .ggplot object, while "sample" will output a list of plots separated by sample. Default "all".
-#' @param relHeights Relative heights of plots when combine is set.
-#' @param relWidths Relative widths of plots when combine is set.
-#' @param samplePerColumn If TRUE, when there are multiple samples and combining by "all",
-#'  the output .ggplot will have plots from each sample on a single column. Default TRUE.
-#' @param sampleRelHeights If there are multiple samples and combining by "all",
-#'  the relative heights for each plot.
-#' @param sampleRelWidths If there are multiple samples and combining by "all",
-#'  the relative widths for each plot.
+#' \code{\link{runEmptyDrops}} as "Empty Droplet" or "Putative Cell". Default 
+#' \code{0.01}.
+#' @param dotSize Size of dots. Default \code{0.5.
+#' @param titleSize Size of title of plot. Default \code{18}.
+#' @param axisSize Size of x/y-axis ticks. Default \code{15}.
+#' @param axisLabelSize Size of x/y-axis labels. Default \code{18}.
+#' @param legendSize size of legend. Default \code{15}.
+#' @param legendTitleSize size of legend title. Default \code{16}.
+#' @param combinePlot Must be either \code{"all"}, \code{"sample"}, or object,
+#' \code{"none"}. \code{"all"} will combine all plots into a single .ggplot 
+#' while \code{"sample"} will output a list of plots separated by sample. 
+#' Default \code{"all"}.
+#' @param relHeights Relative heights of plots when combine is set. Default 
+#' \code{1}.
+#' @param relWidths Relative widths of plots when combine is set. Default 
+#' \code{1}.
+#' @param samplePerColumn If \code{TRUE}, when there are multiple samples and 
+#' combining by \code{"all"}, the output .ggplot will have plots from each 
+#' sample on a single column. Default \code{TRUE}.
+#' @param sampleRelHeights If there are multiple samples and combining by 
+#' \code{"all"}, the relative heights for each plot. Default \code{1}.
+#' @param sampleRelWidths If there are multiple samples and combining by 
+#' \code{"all"}, the relative widths for each plot. Default \code{1}.
 #' @return list of .ggplot objects
+#' @seealso \code{\link{runEmptyDrops}}, \code{\link{plotEmptyDropsScatter}}
 #' @examples
-#' data(scExample, package="singleCellTK")
-#' sce <- runEmptyDrops(inSCE=sce)
-#' plotEmptyDropsResults(inSCE=sce)
+#' data(scExample, package = "singleCellTK")
+#' sce <- runEmptyDrops(inSCE = sce)
+#' plotEmptyDropsResults(inSCE = sce)
 #' @export
 plotEmptyDropsResults <- function(inSCE,
-                                  sample=NULL,
-                                  combinePlot="all",
-                                  fdrCutoff=0.01,
-                                  defaultTheme=TRUE,
-                                  dotSize=0.5,
-                                  titleSize=18,
-                                  axisLabelSize=18,
-                                  axisSize=15,
-                                  legendSize=15,
-                                  legendTitleSize=16,
-                                  relHeights=1,
-                                  relWidths=1,
+                                  sample = NULL,
+                                  combinePlot = "all",
+                                  fdrCutoff = 0.01,
+                                  defaultTheme = TRUE,
+                                  dotSize = 0.5,
+                                  titleSize = 18,
+                                  axisLabelSize = 18,
+                                  axisSize = 15,
+                                  legendSize = 15,
+                                  legendTitleSize = 16,
+                                  relHeights = 1,
+                                  relWidths = 1,
                                   samplePerColumn = TRUE,
                                   sampleRelHeights = 1,
                                   sampleRelWidths = 1) {
-  scatterEmptyDrops <- plotEmptyDropsScatter(inSCE,
-                                             sample=sample,
-                                             combinePlot=combinePlot,
-                                             fdrCutoff=fdrCutoff,
-                                             dotSize=dotSize,
-                                             title="EmptyDrops, Total UMI counts vs Log-Probability",
-                                             titleSize=titleSize,
-                                             defaultTheme=TRUE,
-                                             xlab="Total UMI count",
-                                             ylab="-Log Probability",
-                                             axisLabelSize=axisLabelSize,
-                                             axisSize=axisSize,
-                                             legendTitle=paste0("Cutoff:\nFDR < ", fdrCutoff),
-                                             legendTitleSize=legendTitleSize,
-                                             legendSize=legendSize,
-                                             relHeights = relHeights,
-                                             relWidths = relWidths,
-                                             samplePerColumn = samplePerColumn,
-                                             sampleRelHeights = sampleRelHeights,
-                                             sampleRelWidths = sampleRelWidths
+  scatterEmptyDrops <- plotEmptyDropsScatter(
+    inSCE,
+    sample = sample,
+    combinePlot = combinePlot,
+    fdrCutoff = fdrCutoff,
+    dotSize = dotSize,
+    title = "EmptyDrops, Total UMI counts vs Log-Probability",
+    titleSize = titleSize,
+    defaultTheme = TRUE,
+    xlab = "Total UMI count",
+    ylab = "-Log Probability",
+    axisLabelSize = axisLabelSize,
+    axisSize = axisSize,
+    legendTitle = paste0("Cutoff:\nFDR < ", fdrCutoff),
+    legendTitleSize = legendTitleSize,
+    legendSize = legendSize,
+    relHeights = relHeights,
+    relWidths = relWidths,
+    samplePerColumn = samplePerColumn,
+    sampleRelHeights = sampleRelHeights,
+    sampleRelWidths = sampleRelWidths
   )
   
   res.list <- list(scatterEmptyDrops)
@@ -469,45 +477,45 @@ plotEmptyDropsResults <- function(inSCE,
   return(res.list)
 }
 
-#' @title Plots for runEmptyDrops outputs.
+#' @title Plots for runBarcodeRankDrops outputs.
 #' @description A wrapper function which visualizes outputs from the
-#'  runEmptyDrops function stored in the colData slot of the SingleCellExperiment
-#'  object via plots.
+#' \code{runBarcodeRankDrops} function stored in the \code{metadata} slot of 
+#' the \linkS4class{SingleCellExperiment} object.
 #' @param inSCE Input \linkS4class{SingleCellExperiment} object with saved
 #' dimension reduction components or a variable with saved results from
-#' \link{runBarcodeRankDrops}. Required.
-#' @param sample Character vector. Indicates which sample each cell belongs to.
-#'  Default NULL.
-#' @param defaultTheme Removes grid in plot and sets axis title size to 10
-#'  when TRUE. Default TRUE.
-#' @param dotSize Size of dots. Default 0.5.
-#' @param titleSize Size of title of plot. Default 18.
-#' @param axisSize Size of x/y-axis ticks. Default 15.
-#' @param axisLabelSize Size of x/y-axis labels. Default 18.
-#' @param legendSize size of legend. Default 15.
+#' \code{\link{runBarcodeRankDrops}}. Required.
+#' @param sample Character vector or colData variable name. Indicates which 
+#' sample each cell belongs to. Default \code{NULL}.
+#' @param defaultTheme Removes grid in plot and sets axis title size to 
+#' \code{10} when \code{TRUE}. Default \code{TRUE}.
+#' @param dotSize Size of dots. Default \code{0.5}.
+#' @param titleSize Size of title of plot. Default \code{18}.
+#' @param axisSize Size of x/y-axis ticks. Default \code{15}.
+#' @param axisLabelSize Size of x/y-axis labels. Default \code{18}.
+#' @param legendSize size of legend. Default \code{15}.
 #' @return list of .ggplot objects
 #' @examples
-#' data(scExample, package="singleCellTK")
-#' sce <- runBarcodeRankDrops(inSCE=sce)
-#' plotBarcodeRankDropsResults(inSCE=sce)
+#' data(scExample, package = "singleCellTK")
+#' sce <- runBarcodeRankDrops(inSCE = sce)
+#' plotBarcodeRankDropsResults(inSCE = sce)
 #' @export
 plotBarcodeRankDropsResults <- function(inSCE,
-                                        sample=NULL,
-                                        defaultTheme=TRUE,
-                                        dotSize=0.5,
-                                        titleSize=18,
-                                        axisLabelSize=18,
-                                        axisSize=15,
-                                        legendSize=15) {
+                                        sample = NULL,
+                                        defaultTheme = TRUE,
+                                        dotSize = 0.5,
+                                        titleSize = 18,
+                                        axisSize = 15,
+                                        axisLabelSize = 18,
+                                        legendSize = 15) {
   scatterBarcodeRank <- plotBarcodeRankScatter(inSCE,
-                                               sample=sample,
-                                               dotSize=dotSize,
-                                               title="BarcodeRanks Rank Plot",
-                                               titleSize=titleSize,
-                                               defaultTheme=TRUE,
-                                               axisLabelSize=axisLabelSize,
-                                               axisSize=axisSize,
-                                               legendSize=legendSize
+                                               sample = sample,
+                                               dotSize = dotSize,
+                                               title = "BarcodeRanks Rank Plot",
+                                               titleSize = titleSize,
+                                               defaultTheme = TRUE,
+                                               axisLabelSize = axisLabelSize,
+                                               axisSize = axisSize,
+                                               legendSize = legendSize
   )
   
   res.list <- list(scatterBarcodeRank)
@@ -840,7 +848,7 @@ plotScrubletResults <- function(
 #'  SingleCellExperiment object via various plots.
 #' @param inSCE Input \linkS4class{SingleCellExperiment} object with saved
 #' dimension reduction components or a variable with saved results from
-#' \code{\link{runCxds}}. Required.
+#' \code{\link{runDoubletFinder}}. Required.
 #' @param sample Character vector or colData variable name. Indicates which 
 #' sample each cell belongs to. Default \code{NULL}.
 #' @param shape If provided, add shapes based on the value. Default \code{NULL}.
