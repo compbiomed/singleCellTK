@@ -76,7 +76,7 @@ runScanpyNormalizeData <- function(inSCE,
   scanpyObject$X <- normValue$X
   
   # log transform the data.
-  sc$pp$log1p(scanpyObject)
+  sc$pp$log1p(scanpyObject, copy = TRUE)
   
   inSCE <-
     .updateAssaySCEFromScanpy(inSCE, scanpyObject, normAssayName)
@@ -792,12 +792,13 @@ runScanpyFindMarkers <- function(inSCE,
                                  test = c("t-test", "wilcoxon", "t-test_overestim_var", "logreg"),
                                  corr_method = c("benjamini-hochberg", "bonferroni")) {
   
+  library(reticulate)
   test <- match.arg(test)
   corr_method <- match.arg(corr_method)
   
   scanpyObject <- zellkonverter::SCE2AnnData(sce = inSCE)
   scanpyObject$X <- metadata(inSCE)$scanpy$normValues
-  sc$pp$log1p(scanpyObject)
+  sc$pp$log1p(scanpyObject, copy = TRUE)
   
   sc$tl$rank_genes_groups(scanpyObject, 
                           groupby = colDataName, 
@@ -805,23 +806,23 @@ runScanpyFindMarkers <- function(inSCE,
                           reference = group2,
                           method = test, 
                           n_genes = nGenes,
-                          corr_method = corr_method)
+                          corr_method = corr_method,
+                          layer = "scanpyScaledData")
   
+  py <- reticulate::py
+  py$scanpyObject <- scanpyObject
   py_run_string("import pandas as pd")
   py_run_string(
-    "names = pd.DataFrame(r.scanpyObject.uns['rank_genes_groups']['names'])", 
+    "names = pd.DataFrame(scanpyObject.uns['rank_genes_groups']['names'])", 
     convert = TRUE)
-  py_run_string(
-    "logFoldChanges = 
-    pd.DataFrame(r.scanpyObject.uns['rank_genes_groups']['logfoldchanges'])", 
+  reticulate::py_run_string(
+    "logFoldChanges = pd.DataFrame(scanpyObject.uns['rank_genes_groups']['logfoldchanges'])", 
     convert = TRUE)
-  py_run_string(
-    "pvals_adj = 
-    pd.DataFrame(r.scanpyObject.uns['rank_genes_groups']['pvals_adj'])", 
+  reticulate::py_run_string(
+    "pvals_adj = pd.DataFrame(scanpyObject.uns['rank_genes_groups']['pvals_adj'])", 
     convert = TRUE)
-  py_run_string(
-    "scores = 
-    pd.DataFrame(r.scanpyObject.uns['rank_genes_groups']['scores'])",
+  reticulate::py_run_string(
+    "scores = pd.DataFrame(scanpyObject.uns['rank_genes_groups']['scores'])",
     convert = TRUE)
   
   markerGenesNames <- utils::stack(py$names)

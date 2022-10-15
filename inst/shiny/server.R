@@ -9311,12 +9311,9 @@ shinyServer(function(input, output, session) {
       req(vals$counts)
       message(paste0(date(), " ... Normalizing Data"))
       vals$counts <- runScanpyNormalizeData(inSCE = vals$counts,
-                                            useAssay = input$scanpySelectNormalizationAssay,
-                                            countsPerCellAfter = input$scanpy_countsPerCellAfter,
-                                            #countsPerCell = input$scanpy_countsPerCell,
-                                            minCount = input$scanpy_minCount
+                                            useAssay = input$scanpySelectNormalizationAssay
                                             )
-      metadata(vals$counts)$sctk$scanpyUseAssay <- input$scanpySelectNormalizationAssay
+      # metadata(vals$counts)$sctk$scanpyUseAssay <- input$scanpySelectNormalizationAssay
       # 
       # vals$counts <- singleCellTK:::.seuratInvalidate(inSCE = vals$counts)
       # updateCollapse(session = session, "SeuratUI", style = list("Normalize Data" = "success"))
@@ -9326,6 +9323,7 @@ shinyServer(function(input, output, session) {
       #   selector = "div[value='Downstream Analysis']")
       # updateAssayInputs()
       message(paste0(date(), " ... Normalization Complete"))
+      print(vals$counts)
     }))
   
   # HVG
@@ -9335,14 +9333,14 @@ shinyServer(function(input, output, session) {
     {
       req(vals$counts)
       message(paste0(date(), " ... Finding High Variable Genes"))
+      
+      #scaling before?
+      
+      vals$counts <- runScanpyScaleData(inSCE = vals$counts,
+                                        useAssay = "scanpyNormData")
+      
         vals$counts <- runScanpyFindHVG(inSCE = vals$counts,
-                                        useAssay = metadata(vals$counts)$sctk$scanpyUseAssay,
-                                        method = input$scanpy_hvg_method,
-                                        hvgNumber = as.numeric(input$scanpy_hvg_no_features),
-                                        minMean = input$scanpy_minMean,
-                                        maxMean = input$scanpy_maxMean,
-                                        minDisp = input$scanpy_minDisp,
-                                        maxDisp = input$scanpy_maxDisp)
+                                        useAssay = "scanpyScaledData")
 
       # vals$counts <- singleCellTK:::.seuratInvalidate(inSCE = vals$counts, varFeatures = FALSE)
       # message(paste0(date(), " ... Plotting HVG"))
@@ -9357,6 +9355,9 @@ shinyServer(function(input, output, session) {
       # shinyjs::hide(
       #   selector = "div[value='Downstream Analysis']")
       # message(paste0(date(), " ... Finding HVG Complete"))
+        
+        print("hvg complete (after scaling)")
+        print(vals$counts)
     }
   ))
   
@@ -9379,6 +9380,7 @@ shinyServer(function(input, output, session) {
       # # we automatically detect seurat HVG from the object when `useFeatureSubset
       # # = NULL`, so no need to specify this now.
       vals$counts <- runScanpyPCA(inSCE = vals$counts,
+                                  useAssay = "scanpyNormData",
                                   algorithm = "auto")
                                   #useAssay = "seuratNormData",
                                   #reducedDimName = "seuratPCA",
@@ -9529,7 +9531,10 @@ shinyServer(function(input, output, session) {
       # shinyjs::hide(
       #   selector = "div[value='Downstream Analysis']")
       # 
-      # message(paste0(date(), " ... PCA Complete"))
+      message(paste0(date(), " ... PCA Complete"))
+      
+      print("pca complete")
+      print(vals$counts)
     }))
   
   # TSNE
@@ -9572,17 +9577,12 @@ shinyServer(function(input, output, session) {
   observeEvent(input$scanpy_run_umap_button, withConsoleMsgRedirect(
     msg = "Please wait while UMAP is being computed. See console log for progress.",
     {
-      # req(vals$counts)
+       req(vals$counts)
       # if(!is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[[input$reduction_umap_method]])){
-      #   message(paste0(date(), " ... Running UMAP"))
-      #   vals$counts <- runSeuratUMAP(inSCE = vals$counts,
-      #                                useReduction = input$reduction_umap_method,
-      #                                reducedDimName = "seuratUMAP",
-      #                                dims = input$pca_significant_pc_counter,
-      #                                minDist = input$min_dist_umap,
-      #                                nNeighbors = input$n_neighbors_umap,
-      #                                spread = input$spread_umap,
-      #                                seed = input$seed_UMAP)
+         message(paste0(date(), " ... Running UMAP"))
+         vals$counts <- runScanpyUMAP(inSCE = vals$counts, # its using counts, should it use another assay?
+                                      useReduction = "scanpyPCA")
+                                      
       #   vals$counts <- singleCellTK:::.seuratInvalidate(inSCE = vals$counts, scaleData = FALSE, varFeatures = FALSE, PCA = FALSE, ICA = FALSE, tSNE = FALSE, UMAP = FALSE)
       #   message(paste0(date(), " ... Plotting UMAP"))
       #   
@@ -9598,19 +9598,22 @@ shinyServer(function(input, output, session) {
       #   S4Vectors::metadata(vals$counts)$seuratMarkers <- NULL
       #   shinyjs::hide(
       #     selector = "div[value='Downstream Analysis']")
-      #   message(paste0(date(), " ... UMAP Complete"))
+         message(paste0(date(), " ... UMAP Complete"))
       #   
       # }
       # else{
       #   showNotification(paste0("'", input$reduction_umap_method, "' reduction not found in input object"))
       # }
+         
+         print("umap complete")
+         print(vals$counts)
     }))
   
   #Clustering
   observeEvent(input$scanpy_find_clusters_button, withConsoleMsgRedirect(
     msg = "Please wait while clusters are being computed. See console log for progress.",
     {
-      # req(vals$counts)
+       req(vals$counts)
       # if(!is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[[input$reduction_clustering_method]])){
       #   #Remove plot tabs if generated before
       #   removeTab(inputId = "seuratClusteringPlotTabset", target = "PCA Plot")
@@ -9619,16 +9622,16 @@ shinyServer(function(input, output, session) {
       #   removeTab(inputId = "seuratClusteringPlotTabset", target = "UMAP Plot")
       #   
       #   
-      #   message(paste0(date(), " ... Clustering Dataset"))
-      #   vals$counts <- runSeuratFindClusters(inSCE = vals$counts,
-      #                                        useAssay = "seuratScaledData",
-      #                                        useReduction = input$reduction_clustering_method,
-      #                                        dims = input$pca_significant_pc_counter,
-      #                                        algorithm = input$algorithm.use,
-      #                                        groupSingletons = input$group.singletons,
-      #                                        resolution = input$resolution_clustering)
+         message(paste0(date(), " ... Clustering Dataset"))
+         vals$counts <- runScanpyFindClusters(inSCE = vals$counts,
+                                              useAssay = "scanpyScaledData",
+                                              useReduction = "scanpyPCA",
+                                              algorithm = "louvain",
+                                              resolution = 0.8)
       #   updateCollapse(session = session, "SeuratUI", style = list("Clustering" = "success"))
-      #   message(paste0(date(), " ... Finding Clusters Complete"))
+         message(paste0(date(), " ... Finding Clusters Complete"))
+         print("finding clusters complete")
+         print(vals$counts)
       #   
       #   
       #   if(!is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[["pca"]])){
@@ -9743,6 +9746,256 @@ shinyServer(function(input, output, session) {
       # }
     }))
   
+  observeEvent(input$scanpyFindMarkerRun, withConsoleMsgRedirect(
+    msg = "Please wait while marker genes are being found. See console log for progress.",
+    {
+      req(vals$counts)
+      message(paste0(date(), " ... Finding Marker Genes"))
+      
+#      if(input$seuratFindMarkerType == "markerAll"){
+        vals$counts <- runScanpyFindMarkers(inSCE = vals$counts,
+                                            nGenes = 100,
+                                            colDataName = "Scanpy_louvain",
+                                            test = "t-test",
+                                            corr_method = "benjamini-hochberg")
+        
+        print("find marker complete")
+        print(vals$counts)
+#      }
+      # else{
+      #   indices1 <- which(colData(vals$counts)[[input$seuratFindMarkerSelectPhenotype]] == input$seuratFindMarkerGroup1, arr.ind = TRUE)
+      #   indices2 <- which(colData(vals$counts)[[input$seuratFindMarkerSelectPhenotype]] == input$seuratFindMarkerGroup2, arr.ind = TRUE)
+      #   cells1 <- colnames(vals$counts)[indices1]
+      #   cells2 <- colnames(vals$counts)[indices2]
+      #   if(input$seuratFindMarkerType == "markerConserved"){
+      #     vals$counts <- runSeuratFindMarkers(inSCE = vals$counts,
+      #                                         cells1 = cells1,
+      #                                         cells2 = cells2,
+      #                                         group1 = input$seuratFindMarkerGroup1,
+      #                                         group2 = input$seuratFindMarkerGroup2,
+      #                                         conserved = TRUE,
+      #                                         test = input$seuratFindMarkerTest,
+      #                                         onlyPos = input$seuratFindMarkerPosOnly)
+      #   }
+      #   else{
+      #     vals$counts <- runSeuratFindMarkers(inSCE = vals$counts,
+      #                                         cells1 = cells1,
+      #                                         cells2 = cells2,
+      #                                         group1 = input$seuratFindMarkerGroup1,
+      #                                         group2 = input$seuratFindMarkerGroup2,
+      #                                         test = input$seuratFindMarkerTest,
+      #                                         onlyPos = input$seuratFindMarkerPosOnly)
+      #   }
+      # }
+      
+      
+      # shinyjs::show(selector = ".seurat_findmarker_table")
+      # shinyjs::show(selector = ".seurat_findmarker_jointHeatmap")
+      # shinyjs::show(selector = ".seurat_findmarker_plots")
+      # 
+      # removeTab(inputId = "seuratFindMarkerPlotTabset", target = "Ridge Plot")
+      # removeTab(inputId = "seuratFindMarkerPlotTabset", target = "Violin Plot")
+      # removeTab(inputId = "seuratFindMarkerPlotTabset", target = "Feature Plot")
+      # removeTab(inputId = "seuratFindMarkerPlotTabset", target = "Dot Plot")
+      # removeTab(inputId = "seuratFindMarkerPlotTabset", target = "Heatmap Plot")
+      
+      # appendTab(inputId = "seuratFindMarkerPlotTabset",
+      #           tabPanel(title = "Ridge Plot",
+      #                    panel(heading = "Ridge Plot",
+      #                          fluidRow(
+      #                            column(12, align = "center",
+      #                                   panel(
+      #                                     HTML(paste("<span style='color:red'>Select genes from the above table to plot!</span>"))
+      #                                   )
+      #                            )
+      #                          )
+      #                    )
+      #           )
+      # )
+      # appendTab(inputId = "seuratFindMarkerPlotTabset",
+      #           tabPanel(title = "Violin Plot",
+      #                    panel(heading = "Violin Plot",
+      #                          fluidRow(
+      #                            column(12, align = "center",
+      #                                   panel(
+      #                                     HTML(paste("<span style='color:red'>Select genes from the above table to plot!</span>"))
+      #                                   )
+      #                            )
+      #                          )
+      #                    )
+      #           )
+      # )
+      # appendTab(inputId = "seuratFindMarkerPlotTabset",
+      #           tabPanel(title = "Feature Plot",
+      #                    panel(heading = "Feature Plot",
+      #                          fluidRow(
+      #                            column(12, align = "center",
+      #                                   panel(
+      #                                     HTML(paste("<span style='color:red'>Select genes from the above table to plot!</span>"))
+      #                                   )
+      #                            )
+      #                          )
+      #                    )
+      #           )
+      # )
+      # appendTab(inputId = "seuratFindMarkerPlotTabset",
+      #           tabPanel(title = "Dot Plot",
+      #                    panel(heading = "Dot Plot",
+      #                          fluidRow(
+      #                            column(12, align = "center",
+      #                                   panel(
+      #                                     HTML(paste("<span style='color:red'>Select genes from the above table to plot!</span>"))
+      #                                   )
+      #                            )
+      #                          )
+      #                    )
+      #           )
+      # )
+      # appendTab(inputId = "seuratFindMarkerPlotTabset",
+      #           tabPanel(title = "Heatmap Plot",
+      #                    panel(heading = "Heatmap Plot",
+      #                          fluidRow(
+      #                            column(12, align = "center",
+      #                                   panel(
+      #                                     HTML(paste("<span style='color:red'>Select genes from the above table to plot!</span>"))
+      #                                   )
+      #                            )
+      #                          )
+      #                    )
+      #           )
+      # )
+      # 
+      # #df <- metadata(vals$counts)$seuratMarkers[which(metadata(vals$counts)$seuratMarkers$p_val_adj < 0.05, arr.ind = TRUE),]
+      # df <- metadata(vals$counts)$seuratMarkers
+      # seuratObject <- convertSCEToSeurat(vals$counts, normAssay = "seuratNormData")
+      # indices <- list()
+      # cells <- list()
+      # groups <- unique(colData(vals$counts)[[input$seuratFindMarkerSelectPhenotype]])
+      # for(i in seq(length(groups))){
+      #   indices[[i]] <- which(colData(vals$counts)[[input$seuratFindMarkerSelectPhenotype]] == groups[i], arr.ind = TRUE)
+      #   cells[[i]] <- colnames(vals$counts)[indices[[i]]]
+      #   cells[[i]] <- lapply(
+      #     X = cells[[i]],
+      #     FUN = function(t) gsub(
+      #       pattern = "_",
+      #       replacement = "-",
+      #       x = t,
+      #       fixed = TRUE)
+      #   )
+      #   Idents(seuratObject, cells = cells[[i]]) <- groups[i]
+      # }
+      # 
+      # showTab(inputId = "seuratFindMarkerPlotTabset", target = "Joint Heatmap Plot")
+      # updateTabsetPanel(session = session, inputId = "seuratFindMarkerPlotTabset", selected = "Ridge Plot")
+      # shinyjs::show(selector = ".seurat_findmarker_plots")
+      # 
+      # # Output the heatmap
+      # colnames(df)[which(startsWith(colnames(df), "avg") == TRUE)] <- "avg_log2FC"
+      # top10markers <- df %>% group_by(cluster1) %>% arrange(desc(avg_log2FC)) %>% slice_head(n=10)
+      # # Subset seuratObject to contain only cells available in selected clusters
+      # if(input$seuratFindMarkerType != "markerAll"){
+      #   subsetIdents <- c(unique(top10markers$cluster1), unique(top10markers$cluster2))
+      #   subsetIdents <- subsetIdents[subsetIdents!="all"]
+      #   seuratObject <- subset(seuratObject, idents = subsetIdents)
+      # }
+      # seuratObject <- Seurat::ScaleData(seuratObject, features = top10markers$gene.id)
+      # # Plot heatmap
+      # output$findMarkerHeatmapPlotFull <- renderPlot({
+      #   isolate({
+      #     DoHeatmap(seuratObject, features = top10markers$gene.id)
+      #   })
+      # })
+      # 
+      # # output$findMarkerHeatmapPlotFullTopText <- renderUI({
+      # #   h6(paste("Heatmap plotted across all groups against genes with adjusted p-values <", input$seuratFindMarkerPValAdjInput))
+      # # })
+      # 
+      # message(paste0(date(), " ... Find Markers Complete"))
+      # 
+      # 
+      # # Show downstream analysis options
+      # callModule(module = nonLinearWorkflow, id = "nlw-seurat", parent = session,
+      #            de = TRUE, fm = TRUE, pa = TRUE)
+      # 
+      # updateCollapse(session = session, "SeuratUI", style = list("Find Markers" = "success"))
+      # 
+      # updateCollapse(session = session, "SeuratUI", style = list("Downstream Analysis" = "info"))
+      # 
+      # removeTab(inputId = "seuratFindMarkerPlotTabset", target = "Ridge Plot")
+      # removeTab(inputId = "seuratFindMarkerPlotTabset", target = "Violin Plot")
+      # removeTab(inputId = "seuratFindMarkerPlotTabset", target = "Feature Plot")
+      # removeTab(inputId = "seuratFindMarkerPlotTabset", target = "Dot Plot")
+      # removeTab(inputId = "seuratFindMarkerPlotTabset", target = "Heatmap Plot")
+      # 
+      # appendTab(inputId = "seuratFindMarkerPlotTabset",
+      #           tabPanel(title = "Ridge Plot",
+      #                    panel(heading = "Ridge Plot",
+      #                          shinyjqui::jqui_resizable(
+      #                            plotOutput(outputId = "findMarkerRidgePlot")
+      #                          )
+      #                    )
+      #           )
+      # )
+      # appendTab(inputId = "seuratFindMarkerPlotTabset",
+      #           tabPanel(title = "Violin Plot",
+      #                    panel(heading = "Violin Plot",
+      #                          shinyjqui::jqui_resizable(
+      #                            plotOutput(outputId = "findMarkerViolinPlot")
+      #                          )
+      #                    )
+      #           )
+      # )
+      # appendTab(inputId = "seuratFindMarkerPlotTabset",
+      #           tabPanel(title = "Feature Plot",
+      #                    panel(heading = "Feature Plot",
+      #                          shinyjqui::jqui_resizable(
+      #                            plotOutput(outputId = "findMarkerFeaturePlot")
+      #                          )
+      #                    )
+      #           )
+      # )
+      # appendTab(inputId = "seuratFindMarkerPlotTabset",
+      #           tabPanel(title = "Dot Plot",
+      #                    panel(heading = "Dot Plot",
+      #                          shinyjqui::jqui_resizable(
+      #                            plotOutput(outputId = "findMarkerDotPlot")
+      #                          )
+      #                    )
+      #           )
+      # )
+      # appendTab(inputId = "seuratFindMarkerPlotTabset",
+      #           tabPanel(title = "Heatmap Plot",
+      #                    panel(heading = "Heatmap Plot",
+      #                          fluidRow(
+      #                            column(12, align = "center",
+      #                                   panel(
+      #                                     plotOutput(outputId = "findMarkerHeatmapPlot")
+      #                                   )
+      #                            )
+      #                          )
+      #                    )
+      #           )
+      # )
+      # 
+      # #singleCellTK:::.exportMetaSlot(vals$counts, "seuratMarkers")
+      # 
+      # orderByLFCMarkers <- metadata(vals$counts)$seuratMarkers
+      # orderByLFCMarkers <- orderByLFCMarkers[order(-orderByLFCMarkers$avg_log2FC), ]
+      # vals$fts <- callModule(
+      #   module = filterTableServer,
+      #   id = "filterSeuratFindMarker",
+      #   dataframe = orderByLFCMarkers,
+      #   defaultFilterColumns = c("p_val_adj"),
+      #   defaultFilterOperators = c("<="),
+      #   defaultFilterValues = c("0.05"),
+      #   topText = "You can view the marker genes in the table below and apply custom filters to filter the table accordingly. A joint heatmap for all the marker genes available in the table is plotted underneath the table. Additional visualizations are plotted for select genes which can be selected by clicking on the rows of the table."
+      # )
+      # # vals$fts <- callModule(
+      # #   module = filterTableServer,
+      # #   id = "filterSeuratFindMarker",
+      # #   dataframe = orderByLFCMarkers
+      # # )
+    }))
   
 
 })
