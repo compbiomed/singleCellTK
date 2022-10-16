@@ -9311,7 +9311,10 @@ shinyServer(function(input, output, session) {
       req(vals$counts)
       message(paste0(date(), " ... Normalizing Data"))
       vals$counts <- runScanpyNormalizeData(inSCE = vals$counts,
-                                            useAssay = input$scanpySelectNormalizationAssay
+                                            useAssay = input$scanpySelectNormalizationAssay,
+                                            targetSum = input$scanpy_targetSum,
+                                            maxFraction = input$scanpy_maxFraction,
+                                            normAssayName = "scanpyNormData"
                                             )
       # metadata(vals$counts)$sctk$scanpyUseAssay <- input$scanpySelectNormalizationAssay
       # 
@@ -9323,7 +9326,6 @@ shinyServer(function(input, output, session) {
       #   selector = "div[value='Downstream Analysis']")
       # updateAssayInputs()
       message(paste0(date(), " ... Normalization Complete"))
-      print(vals$counts)
     }))
   
   # HVG
@@ -9340,24 +9342,22 @@ shinyServer(function(input, output, session) {
                                         useAssay = "scanpyNormData")
       
         vals$counts <- runScanpyFindHVG(inSCE = vals$counts,
-                                        useAssay = "scanpyScaledData")
+                                        useAssay = "scanpyScaledData",
+                                        method = input$scanpy_hvg_method,
+                                        hvgNumber = input$scanpy_hvg_no_features,
+                                        minMean = input$scanpy_minMean,
+                                        maxMean = input$scanpy_maxMean,
+                                        minDisp = input$scanpy_minDisp,
+                                        maxDisp = input$scanpy_maxDisp)
 
       # vals$counts <- singleCellTK:::.seuratInvalidate(inSCE = vals$counts, varFeatures = FALSE)
-      # message(paste0(date(), " ... Plotting HVG"))
-      # output$plot_hvg <- renderPlotly({
-      #   isolate({
-      #     plotly::ggplotly(plotSeuratHVG(vals$counts, input$hvg_no_features_view))
-      #   })
-      # })
+      # message(paste0(date(), " ... Finding HVG Complete"))
       # updateCollapse(session = session, "SeuratUI", style = list("Highly Variable Genes" = "success"))
       # shinyjs::enable(selector = "#SeuratUI > div[value='Dimensionality Reduction']")
       # S4Vectors::metadata(vals$counts)$seuratMarkers <- NULL
       # shinyjs::hide(
       #   selector = "div[value='Downstream Analysis']")
-      # message(paste0(date(), " ... Finding HVG Complete"))
-        
-        print("hvg complete (after scaling)")
-        print(vals$counts)
+      message(paste0(date(), " ... Finding HVG Complete"))
     }
   ))
   
@@ -9372,7 +9372,7 @@ shinyServer(function(input, output, session) {
       # removeTab(inputId = "seuratPCAPlotTabset", target = "JackStraw Plot")
       # removeTab(inputId = "seuratPCAPlotTabset", target = "Heatmap Plot")
       # 
-      # message(paste0(date(), " ... Running PCA"))
+      message(paste0(date(), " ... Running PCA"))
       # # For the commented line below:
       # # `useFeatureSubset`, in any functions that use it, goes to util function
       # # `.parseUseFeatureSubset()` which does a check for rownames(inSCE). Thus
@@ -9381,11 +9381,10 @@ shinyServer(function(input, output, session) {
       # # = NULL`, so no need to specify this now.
       vals$counts <- runScanpyPCA(inSCE = vals$counts,
                                   useAssay = "scanpyNormData",
-                                  algorithm = "auto")
-                                  #useAssay = "seuratNormData",
-                                  #reducedDimName = "seuratPCA",
-                                  #nPCs = input$pca_no_components,
-                                  #seed = input$seed_PCA)
+                                  algorithm = input$scanpy_pca_method,
+                                  nPCs = input$scanpy_pca_no_components,
+                                  reducedDimName = "scanpyPCA",
+                                  use_highly_variable = TRUE)
       # 
       # vals$counts@metadata$seurat$count_pc <- dim(convertSCEToSeurat(vals$counts)[["pca"]])[2]
       # vals$counts <- singleCellTK:::.seuratInvalidate(inSCE = vals$counts, scaleData = FALSE, varFeatures = FALSE, PCA = FALSE, ICA = FALSE)
@@ -9532,9 +9531,6 @@ shinyServer(function(input, output, session) {
       #   selector = "div[value='Downstream Analysis']")
       # 
       message(paste0(date(), " ... PCA Complete"))
-      
-      print("pca complete")
-      print(vals$counts)
     }))
   
   # TSNE
@@ -9543,13 +9539,12 @@ shinyServer(function(input, output, session) {
     {
       # req(vals$counts)
       # if(!is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[[input$reduction_tsne_method]])){
-      #   message(paste0(date(), " ... Running tSNE"))
-      #   vals$counts <- runSeuratTSNE(inSCE = vals$counts,
-      #                                useReduction = input$reduction_tsne_method,
-      #                                reducedDimName = "seuratTSNE",
-      #                                dims = input$pca_significant_pc_counter,
-      #                                perplexity = input$perplexity_tsne,
-      #                                seed = input$seed_TSNE)
+        message(paste0(date(), " ... Running tSNE"))
+        vals$counts <- runScanpyTSNE(inSCE = vals$counts,
+                                     useReduction = "scanpyPCA",
+                                     reducedDimName = "scanpyTSNE",
+                                     dims = 10L,
+                                     perplexity = input$scanpy_perplexity_tsne)
       #   vals$counts <- singleCellTK:::.seuratInvalidate(inSCE = vals$counts, scaleData = FALSE, varFeatures = FALSE, PCA = FALSE, ICA = FALSE, tSNE = FALSE, UMAP = FALSE)
       #   message(paste0(date(), " ... Plotting tSNE"))
       #   
@@ -9565,7 +9560,7 @@ shinyServer(function(input, output, session) {
       #   S4Vectors::metadata(vals$counts)$seuratMarkers <- NULL
       #   shinyjs::hide(
       #     selector = "div[value='Downstream Analysis']")
-      #   message(paste0(date(), " ... tSNE Complete"))
+        message(paste0(date(), " ... tSNE Complete"))
       #   
       # }
       # else{
@@ -9580,8 +9575,15 @@ shinyServer(function(input, output, session) {
        req(vals$counts)
       # if(!is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[[input$reduction_umap_method]])){
          message(paste0(date(), " ... Running UMAP"))
-         vals$counts <- runScanpyUMAP(inSCE = vals$counts, # its using counts, should it use another assay?
-                                      useReduction = "scanpyPCA")
+         vals$counts <- runScanpyUMAP(inSCE = vals$counts,
+                                      useReduction = "scanpyPCA",
+                                      reducedDimName = "scanpyUMAP",
+                                      dims = input$scanpy_reduction_umap_count,  
+                                      minDist = input$scanpy_min_dist_umap,
+                                      nNeighbors = input$scanpy_n_neighbors_umap, 
+                                      spread = input$scanpy_spread_umap,
+                                      alpha = input$scanpy_spread_alpha, 
+                                      gamma = input$scanpy_spread_gamma)
                                       
       #   vals$counts <- singleCellTK:::.seuratInvalidate(inSCE = vals$counts, scaleData = FALSE, varFeatures = FALSE, PCA = FALSE, ICA = FALSE, tSNE = FALSE, UMAP = FALSE)
       #   message(paste0(date(), " ... Plotting UMAP"))
@@ -9604,9 +9606,6 @@ shinyServer(function(input, output, session) {
       # else{
       #   showNotification(paste0("'", input$reduction_umap_method, "' reduction not found in input object"))
       # }
-         
-         print("umap complete")
-         print(vals$counts)
     }))
   
   #Clustering
@@ -9626,8 +9625,12 @@ shinyServer(function(input, output, session) {
          vals$counts <- runScanpyFindClusters(inSCE = vals$counts,
                                               useAssay = "scanpyScaledData",
                                               useReduction = "scanpyPCA",
-                                              algorithm = "louvain",
-                                              resolution = 0.8)
+                                              nNeighbors = input$scanpy_nNeighbors,
+                                              dims = input$scanpy_reduction_clustering_count,
+                                              algorithm = input$scanpy_algorithm.use,
+                                              resolution = input$scanpy_resolution_clustering,
+                                              niterations = -1,
+                                              cor_method = input$scanpy_corr_method)
       #   updateCollapse(session = session, "SeuratUI", style = list("Clustering" = "success"))
          message(paste0(date(), " ... Finding Clusters Complete"))
          print("finding clusters complete")
