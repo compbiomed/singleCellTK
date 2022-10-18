@@ -79,8 +79,10 @@ work with only include: \code{nclust}, \code{tau}, \code{block.size},
 \examples{
 data('sceBatches', package = 'singleCellTK')
 logcounts(sceBatches) <- log1p(counts(sceBatches))
+\dontrun{
 if (require("harmony"))
     sceCorr <- runHarmony(sceBatches)
+}
 }
 \references{
 Ilya Korsunsky, et al., 2019

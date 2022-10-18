@@ -405,7 +405,7 @@ plotRunPerCellQCResults <- function(inSCE,
 #' @param fdrCutoff Numeric. Thresholds barcodes based on the FDR values from
 #' \code{\link{runEmptyDrops}} as "Empty Droplet" or "Putative Cell". Default 
 #' \code{0.01}.
-#' @param dotSize Size of dots. Default \code{0.5.
+#' @param dotSize Size of dots. Default \code{0.5}.
 #' @param titleSize Size of title of plot. Default \code{18}.
 #' @param axisSize Size of x/y-axis ticks. Default \code{15}.
 #' @param axisLabelSize Size of x/y-axis labels. Default \code{18}.
