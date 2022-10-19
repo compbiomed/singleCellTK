@@ -46,7 +46,7 @@
     }
 
     mat <- Matrix::readMM(path)
-    mat <- methods::as(mat, "dgCMatrix")
+    mat <- methods::as(mat, "CsparseMatrix")
 
     if (class == "matrix") {
         mat <- as.matrix(mat)

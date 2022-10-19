@@ -38,7 +38,6 @@ runScDblFinder <- function(inSCE,
     seed = 12345,
     BPPARAM=BiocParallel::SerialParam()
 ) {
-
   tempSCE <- inSCE
   SummarizedExperiment::assayNames(inSCE)[which(useAssay %in% SummarizedExperiment::assayNames(inSCE))] <- "counts"
   useAssay <- "counts"
@@ -49,7 +48,7 @@ runScDblFinder <- function(inSCE,
   if (is.null(sample)) {
     sample = rep(1, ncol(inSCE))
   }
-
+  
   message(paste0(date(), " ... Running 'scDblFinder'"))
 
   ## Loop through each sample and run barcodeRank

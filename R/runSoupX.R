@@ -82,7 +82,7 @@
 #' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 #' \dontrun{
 #' # SoupX does not work for toy example,
-#' # can be tested with `sce <- importExampleData("pbmc3k")`
+#' sce <- importExampleData("pbmc3k")
 #' sce <- runSoupX(sce, sample = "sample")
 #' }
 runSoupX <- function(inSCE,

@@ -106,20 +106,29 @@ shinyPanelfindMarker <- fluidPage(
                       width = 6,
                       selectInput("fmHMrowData", "Additional feature annotation",
                                   featureChoice, multiple = TRUE),
-                      withBusyIndicatorUI(
-                        actionBttn(
-                        inputId = "plotFM",
-                        label = "Update",
-                        style = "bordered",
-                        color = "primary",
-                        size = "sm"
-                      )
-                      )
                     ),
                     column(
                       width = 6,
                       selectInput("fmHMcolData", "Additional cell annotation",
                                   clusterChoice, multiple = TRUE)
+                    )
+                  ),
+                  fluidRow(
+                    column(
+                      width = 12,
+                      selectInput("fmHMFeatureDisplay",
+                                  "Display ID Type",
+                                  c("Rownames (Default)",
+                                    featureChoice)),
+                      withBusyIndicatorUI(
+                        actionBttn(
+                          inputId = "plotFM",
+                          label = "Update",
+                          style = "bordered",
+                          color = "primary",
+                          size = "sm"
+                        )
+                      )
                     )
                   ),
                   inputId = "dropDownFM",
