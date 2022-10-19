@@ -9,8 +9,8 @@ runVAM(
   geneSetCollectionName,
   useAssay,
   resultNamePrefix = NULL,
-  center = TRUE,
-  gamma = FALSE
+  center = FALSE,
+  gamma = TRUE
 )
 }
 \arguments{
@@ -29,7 +29,7 @@ output matrices will be \code{resultNamePrefix_Distance} and
 \code{"VAM_geneSetCollectionName_"} will be used. Default \code{NULL}.}
 
 \item{center}{Boolean. If \code{TRUE}, values will be mean centered when
-computing the Mahalanobis statistic. Default \code{TRUE}.}
+computing the Mahalanobis statistic. Default \code{FALSE}.}
 
 \item{gamma}{Boolean. If \code{TRUE}, a gamma distribution will be fit to
 the non-zero squared Mahalanobis distances computed from a row-permuted
@@ -37,7 +37,7 @@ version of the gene expression matrix. The estimated gamma distribution will
 be used to compute a one-sided p-value for each cell. If \code{FALSE}, the
 p-value will be computed using the standard chi-square approximation for the
 squared Mahalanobis distance (or non-central if \code{center = FALSE}).
-Default \code{FALSE}.}
+Default \code{TRUE}.}
 }
 \value{
 A \linkS4class{SingleCellExperiment} object with VAM metrics stored
