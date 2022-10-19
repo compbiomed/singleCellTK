@@ -311,8 +311,10 @@ runFastMNN <- function(inSCE, useAssay = "logcounts", useReducedDim = NULL,
 #' @examples
 #' data('sceBatches', package = 'singleCellTK')
 #' logcounts(sceBatches) <- log1p(counts(sceBatches))
+#' \dontrun{
 #' if (require("harmony"))
 #'     sceCorr <- runHarmony(sceBatches)
+#' }
 runHarmony <- function(inSCE, useAssay = "logcounts", useReducedDim = NULL,
                        batch = "batch", reducedDimName = "HARMONY",
                        nComponents = 50, lambda = 0.1, theta = 5,
