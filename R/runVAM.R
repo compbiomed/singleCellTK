@@ -16,14 +16,14 @@
 #' \code{resultNamePrefix_CDF}. If this parameter is set to \code{NULL}, then
 #' \code{"VAM_geneSetCollectionName_"} will be used. Default \code{NULL}.
 #' @param center Boolean. If \code{TRUE}, values will be mean centered when
-#' computing the Mahalanobis statistic. Default \code{TRUE}.
+#' computing the Mahalanobis statistic. Default \code{FALSE}.
 #' @param gamma Boolean. If \code{TRUE}, a gamma distribution will be fit to
 #' the non-zero squared Mahalanobis distances computed from a row-permuted
 #' version of the gene expression matrix. The estimated gamma distribution will
 #' be used to compute a one-sided p-value for each cell. If \code{FALSE}, the
 #' p-value will be computed using the standard chi-square approximation for the
 #' squared Mahalanobis distance (or non-central if \code{center = FALSE}).
-#' Default \code{FALSE}.
+#' Default \code{TRUE}.
 #' @importFrom methods slot
 #' @return A \linkS4class{SingleCellExperiment} object with VAM metrics stored
 #' in \code{reducedDim} as \code{VAM_NameOfTheGeneset_Distance} and
