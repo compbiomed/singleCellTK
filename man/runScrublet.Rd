@@ -31,73 +31,67 @@ runScrublet(
 )
 }
 \arguments{
-\item{inSCE}{A \link[SingleCellExperiment]{SingleCellExperiment} object.
-Needs \code{counts} in assays slot.}
+\item{inSCE}{A \linkS4class{SingleCellExperiment} object.}
 
-\item{sample}{Character vector. Indicates which sample each cell belongs to.
-Scrublet will be run on cells from each sample separately. If NULL, then
-all cells will be processed together. Default \code{NULL}.}
+\item{sample}{Character vector or colData variable name. Indicates which 
+sample each cell belongs to. Default \code{NULL}.}
 
-\item{useAssay}{A string specifying which assay in the SCE to use. Default
-'counts'.}
+\item{useAssay}{A string specifying which assay in the SCE to use. Default 
+\code{"counts"}.}
 
 \item{simDoubletRatio}{Numeric. Number of doublets to simulate relative to
-the number of observed transcriptomes. Default 2.0.}
+the number of observed transcriptomes. Default \code{2.0}.}
 
 \item{nNeighbors}{Integer. Number of neighbors used to construct the KNN
 graph of observed transcriptomes and simulated doublets. If \code{NULL},
 this is set to \code{round(0.5 * sqrt(n_cells))}. Default \code{NULL}.}
 
-\item{minDist}{Float Determines how tightly UMAP packs points together. If \code{NULL},
-this is set to 0.1. Default \code{NULL}.}
+\item{minDist}{Float Determines how tightly UMAP packs points together. If 
+\code{NULL}, this is set to \code{0.1}. Default \code{NULL}.}
 
 \item{expectedDoubletRate}{The estimated doublet rate for the experiment.
-Default 0.1.}
+Default \code{0.1}.}
 
-\item{stdevDoubletRate}{Uncertainty in the expected doublet rate.
-Default 0.02.}
+\item{stdevDoubletRate}{Uncertainty in the expected doublet rate. Default 
+\code{0.02}.}
 
-\item{syntheticDoubletUmiSubsampling}{Numeric. Rate for sampling UMIs
-when creating synthetic doublets. If 1.0, each doublet is created by simply
+\item{syntheticDoubletUmiSubsampling}{Numeric. Rate for sampling UMIs when
+creating synthetic doublets. If \code{1.0}, each doublet is created by simply
 adding the UMIs from two randomly sampled observed transcriptomes. For
 values less than 1, the UMI counts are added and then randomly sampled at
-the specified rate. Defuault: 1.0.}
+the specified rate. Defuault \code{1.0}.}
 
 \item{useApproxNeighbors}{Boolean. Use approximate nearest neighbor method
-(\code{annoy}) for the KNN classifier. Default \code{TRUE}.}
+(annoy) for the KNN classifier. Default \code{TRUE}.}
 
 \item{distanceMetric}{Character. Distance metric used when finding nearest
-neighbors.
-For list of valid values, see the documentation for \code{annoy} (if
-\code{useApproxNeighbors} is \code{TRUE}) or
-\code{sklearn.neighbors.NearestNeighbors} (if \code{useApproxNeighbors} is
-\code{FALSE}). Default "euclidean".}
+neighbors. See detail. Default \code{"euclidean"}.}
 
 \item{getDoubletNeighborParents}{Boolean. If \code{TRUE}, return the
 parent transcriptomes that generated the doublet neighbors of each
-observed transcriptome. This information can be used to infer the cell
-states that generated a given doublet state. Default \code{FALSE}.}
+observed transcriptome. This information can be used to infer the cell states
+that generated a given doublet state. Default \code{FALSE}.}
 
 \item{minCounts}{Numeric. Used for gene filtering prior to PCA. Genes
-expressed at fewer than \code{minCounts} in fewer than \code{minCells}
-(see below) are excluded. Default 3.}
+expressed at fewer than \code{minCounts} in fewer than \code{minCells} are
+excluded. Default \code{3}.}
 
 \item{minCells}{Integer. Used for gene filtering prior to PCA. Genes
-expressed at fewer than \code{minCounts} (see above) in fewer than
-\code{minCells} are excluded. Default 3.}
+expressed at fewer than \code{minCounts} in fewer than \code{minCells} are 
+excluded. Default \code{3}.}
 
 \item{minGeneVariabilityPctl}{Numeric. Used for gene filtering prior to
 PCA. Keep the most highly variable genes (in the top
-minGeneVariabilityPctl percentile), as measured by the v-statistic
-(\emph{Klein et al., Cell 2015}). Default 85.}
+\code{minGeneVariabilityPctl} percentile), as measured by the v-statistic
+(Klein et al., Cell 2015). Default \code{85}.}
 
 \item{logTransform}{Boolean. If \code{TRUE}, log-transform the counts matrix
-(log10(1+TPM)). \code{sklearn.decomposition.TruncatedSVD} will be used for
-dimensionality reduction, unless \code{meanCenter} is \code{TRUE}.
-Default \code{FALSE}.}
+(log1p(TPM)). \code{sklearn.decomposition.TruncatedSVD} will be used for
+dimensionality reduction, unless \code{meanCenter} is \code{TRUE}. Default 
+\code{FALSE}.}
 
 \item{meanCenter}{If \code{TRUE}, center the data such that each gene has a
-mean of 0. \code{sklearn.decomposition.PCA} will be used for
+mean of \code{0}. \code{sklearn.decomposition.PCA} will be used for
 dimensionality reduction. Default \code{TRUE}.}
 
 \item{normalizeVariance}{Boolean. If \code{TRUE}, normalize the data such
@@ -107,25 +101,26 @@ reduction, unless \code{meanCenter} is \code{TRUE}. Default \code{TRUE}.}
 
 \item{nPrinComps}{Integer. Number of principal components used to embed
 the transcriptomes prior to k-nearest-neighbor graph construction.
-Default 30.}
+Default \code{30}.}
 
 \item{tsneAngle}{Float. Determines angular size of a distant node as measured
-from a point in the t-SNE plot. If default, it is set to 0.5 Default \code{NULL}.}
+from a point in the t-SNE plot. If \code{NULL}, it is set to \code{0.5}. 
+Default \code{NULL}.}
 
-\item{tsnePerplexity}{Integer. The number of nearest neighbors that
-is used in other manifold learning algorithms.
-If default, it is set to 30. Default \code{NULL}.}
+\item{tsnePerplexity}{Integer. The number of nearest neighbors that is used
+in other manifold learning algorithms. If \code{NULL}, it is set to 30. 
+Default \code{NULL}.}
 
 \item{verbose}{Boolean. If \code{TRUE}, print progress updates. Default
 \code{TRUE}.}
 
-\item{seed}{Seed for the random number generator. Default 12345.}
+\item{seed}{Seed for the random number generator, can be set to \code{NULL}. 
+Default \code{12345}.}
 }
 \value{
-A \link[SingleCellExperiment]{SingleCellExperiment} object with
- \code{scrub_doublets} output appended to the
- \link{colData} slot. The columns include
- \emph{scrublet_score} and \emph{scrublet_call}.
+A \linkS4class{SingleCellExperiment} object with
+\code{scrub_doublets} output appended to the \link{colData} slot. The columns
+include \code{scrublet_score} and \code{scrublet_call}.
 }
 \description{
 A wrapper function that calls \code{scrub_doublets} from python
@@ -136,10 +131,21 @@ A wrapper function that calls \code{scrub_doublets} from python
  array that is \code{TRUE} for predicted doublets and \code{FALSE}
  otherwise.
 }
+\details{
+For the list of valid values for \code{distanceMetric}, see the 
+documentation for 
+\href{https://github.com/spotify/annoy#full-python-api}{annoy} (if 
+\code{useApproxNeighbors} is \code{TRUE}) or 
+\href{https://scikit-learn.org/stable/modules/generated/sklearn.neighbors.NearestNeighbors.html}{sklearn.neighbors.NearestNeighbors}
+(if \code{useApproxNeighbors} is  \code{FALSE}).
+}
 \examples{
 data(scExample, package = "singleCellTK")
 \dontrun{
 sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 sce <- runScrublet(sce)
 }
+}
+\seealso{
+\code{\link{plotScrubletResults}}, \code{\link{runCellQC}}
 }

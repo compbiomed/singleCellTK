@@ -1,10 +1,10 @@
 .constructSCE <- function(
-  matrices,
-  features,
-  barcodes,
-  metadata,
-  reducedDims) {
-
+    matrices,
+    features,
+    barcodes,
+    metadata,
+    reducedDims) {
+  
   sce <- SingleCellExperiment::SingleCellExperiment(assays = matrices)
   SummarizedExperiment::rowData(sce) <- S4Vectors::DataFrame(features)
   SummarizedExperiment::colData(sce) <- S4Vectors::DataFrame(barcodes)
@@ -34,7 +34,7 @@
   } else {
     fill <- NA
   }
-
+  
   ### combine row
   if (isTRUE(combineRow) & (!is.null(row))) {
     missRow <- row[!row %in% rownames(x)]
@@ -43,14 +43,14 @@
     if (!isTRUE(sparse)) {
       missMat <- as.matrix(missMat)
     }
-
+    
     mat <- rbind(matOrigin, missMat)
     if (anyDuplicated(rownames(mat))) {
       mat <- mat[!duplicated(rownames(mat)), ]
     }
     matOrigin <- mat[row, ]
   }
-
+  
   ### combine cols
   if (isTRUE(combineCol) & (!is.null(col))) {
     missCol <- col[!col %in% colnames(x)]
@@ -59,7 +59,7 @@
     if (!isTRUE(sparse)) {
       missMat <- as.matrix(missMat)
     }
-
+    
     mat <- cbind(matOrigin, missMat)
     if (anyDuplicated(colnames(mat))) {
       mat <- mat[, !duplicated(colnames(mat))]
@@ -76,12 +76,12 @@
     rw[['rownames']] <- rownames(rw)
     return(rw)
   })
-
+  
   ## Get merged rowData
   by.r <- unique(c('rownames', by.r))
   unionFe <- Reduce(function(r1, r2) merge(r1, r2, by=by.r, all=TRUE), feList)
   allGenes <- unique(unlist(lapply(feList, rownames)))
-
+  
   ## rowData
   newFe <- unionFe
   if (nrow(newFe) != length(allGenes)) {
@@ -102,7 +102,7 @@
     cD[['rownames']] <- rownames(cD)
     return(cD)
   })
-
+  
   by.c <- unique(c("rownames", by.c))
   unionCb <- Reduce(function(c1, c2) merge(c1, c2, by=by.c, all=TRUE), cbList)
   rownames(unionCb) <- unionCb[['rownames']]
@@ -118,19 +118,19 @@
   reduceList <- lapply(sceList, SingleCellExperiment::reducedDims)
   ## get every reducedDim exists in at least one SCEs
   UnionReducedDims <- unique(unlist(lapply(sceList, SingleCellExperiment::reducedDimNames)))
-
+  
   ## for each reducedDim, get union row/cols
   reducedDims <- list()
   for (reduceDim in UnionReducedDims) {
     x <- lapply(sceList, function(x) {if (reduceDim %in% SingleCellExperiment::reducedDimNames(x)) {SingleCellExperiment::reducedDim(x, reduceDim)}})
     reducedDims[[reduceDim]] <- .getDimUnion(x)
   }
-
+  
   ## Merge reducedDim for each SCE
   redList <- list()
   for (idx in seq_along(sceList)){
     redMat <- reduceList[[idx]]
-
+    
     for (DimName in UnionReducedDims) {
       if (DimName %in% names(redMat)) {
         redMat[[DimName]] <- .getMatUnion(reducedDims[[DimName]], redMat[[DimName]],
@@ -142,10 +142,10 @@
                                           dimnames = list(colnames(sceList[[idx]]), reducedDims[[DimName]][[2]]))
       }
     }
-
+    
     redList[[idx]] <- redMat
   }
-
+  
   return(redList)
 }
 
@@ -157,7 +157,7 @@
     unique(unlist(lapply(sceList, rownames))),
     unique(unlist(lapply(sceList, colnames)))
   )
-
+  
   asList <- list()
   for (idx in seq_along(assayList)){
     assay <- assayList[[idx]]
@@ -174,7 +174,7 @@
     }
     asList[[idx]] <- assay
   }
-
+  
   return(asList)
 }
 
@@ -197,27 +197,48 @@
 # }
 
 .mergeMetaSCE <- function(SCE_list) {
+  # Merge highest level metadata entries (except "sctk") by sample names in
+  # SCE_list. For analysis results in "sctk", merge by SCE_list sample name if 
+  # given "all_cells" in one object, else, use existing sample names. 
+  samples <- names(SCE_list)
   sampleMeta <- lapply(SCE_list, S4Vectors::metadata)
   metaNames <- unique(unlist(lapply(sampleMeta, names)))
+  sampleSctkMeta <- lapply(SCE_list, function(x) {S4Vectors::metadata(x)$sctk})
+  sctkMetaNames <- unique(unlist(lapply(sampleMeta, 
+                                        function(x) names(x$sctk))))
+  sampleMeta$sctk <- NULL
+  metaNames <- metaNames[!metaNames %in% c("sctk")]
   NewMeta <- list()
-
-  for (meta in metaNames) {
-    for (i in seq_along(sampleMeta)) {
-      NewMeta[[meta]][[i]] <- sampleMeta[[i]][[meta]]
+  for (meta in sctkMetaNames) {
+    for (i in seq_along(sampleSctkMeta)) {
+      # `i` is for identifying each SCE object, usually matching a sample in 
+      # the pipeline. `sampleAvail` for samples stored in metadata entry, in
+      # case users are merging merged objects. 
+      sampleAvail <- names(sampleSctkMeta[[i]][[meta]])
+      if (length(sampleAvail) == 1) {
+        NewMeta$sctk[[meta]][[samples[i]]] <- sampleSctkMeta[[i]][[meta]][[1]]
+      } else if (length(sampleAvail) > 1) {
+        names(sampleSctkMeta[[i]][[meta]]) <- 
+          paste(names(sampleSctkMeta)[i], 
+                names(sampleSctkMeta[[i]][[meta]]), sep = "_")
+        NewMeta$sctk[[meta]] <- c(NewMeta$sctk[[meta]], 
+                                  sampleSctkMeta[[i]][[meta]])
+      }
     }
   }
-
-  if ("runBarcodeRanksMetaOutput" %in% metaNames) {
-    NewMeta[["runBarcodeRanksMetaOutput"]] <- unlist(NewMeta[["runBarcodeRanksMetaOutput"]])
+  for (meta in metaNames) {
+    for (i in seq_along(sampleMeta)) {
+      NewMeta[[meta]][[samples[i]]] <- sampleMeta[[i]][[meta]]
+    }
   }
-
+  
   if ("assayType" %in% metaNames) {
     assayType <- lapply(SCE_list, function(x){S4Vectors::metadata(x)$assayType})
     assayType <- BiocGenerics::Reduce(dplyr::union, assayType)
     
     NewMeta[["assayType"]] <- assayType
   }
-
+  
   return(NewMeta)
 }
 
@@ -241,7 +262,7 @@
 #' @export
 
 combineSCE <- function(sceList, by.r = NULL, by.c = NULL, combined = TRUE){
-  if(length(sceList) == 1){
+  if (length(sceList) == 1) {
     return(sceList[[1]])
   }
   ##  rowData
@@ -252,16 +273,21 @@ combineSCE <- function(sceList, by.r = NULL, by.c = NULL, combined = TRUE){
   redMatList <- .mergeRedimSCE(sceList)
   ## assay
   assayList <- .mergeAssaySCE(sceList)
-
+  samples <- names(sceList)
+  if (is.null(samples)) {
+    samples <- paste0("sample", seq_along(sceList))
+  }
   New_SCE <- list()
   for (i in seq(length(sceList))) {
     ## create new sce
-    New_SCE[[i]] <- .constructSCE(matrices = assayList[[i]], features = newFeList,
-                                  barcodes = newCbList[[i]],
-                                  metadata = S4Vectors::metadata(sceList[[i]]),
-                                  reducedDims = redMatList[[i]])
+    sampleName <- samples[i]
+    New_SCE[[sampleName]] <- .constructSCE(matrices = assayList[[i]], 
+                                           features = newFeList,
+                                           barcodes = newCbList[[i]],
+                                           metadata = S4Vectors::metadata(sceList[[i]]),
+                                           reducedDims = redMatList[[i]])
   }
-
+  
   if (isTRUE(combined)) {
     sce <- do.call(SingleCellExperiment::cbind, New_SCE)
     meta <- .mergeMetaSCE(New_SCE)
