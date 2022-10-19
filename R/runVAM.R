@@ -48,7 +48,7 @@
 #'               geneSetCollectionName = "GeneSetCollection",
 #'               useAssay = "logcounts")
 runVAM <- function(inSCE, geneSetCollectionName, useAssay,
-                   resultNamePrefix = NULL, center = TRUE, gamma = FALSE) {
+                   resultNamePrefix = NULL, center = FALSE, gamma = TRUE) {
   ###################################################
   ###  create gene set collection
   ###################################################
