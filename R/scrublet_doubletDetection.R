@@ -140,7 +140,7 @@ runScrublet <- function(inSCE,
   ##  Getting current arguments values
   argsList <- mget(names(formals()),sys.frame(sys.nframe()))
   argsList <- argsList[!names(argsList) %in% c("inSCE")]
-  argsList$packageVersion <- pkg_resources$require("scrublet")[[1]]
+  argsList$packageVersion <- pkg_resources$"require"("scrublet")[[1]]
   
   sample <- .manageCellVar(inSCE, var = sample)
   if (is.null(sample)) {
