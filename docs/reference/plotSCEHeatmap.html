@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.2</span>
       </span>
     </div>
 
@@ -199,71 +199,43 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">plotSCEHeatmap</span><span class="op">(</span>
-  <span class="va">inSCE</span>,
-  useAssay <span class="op">=</span> <span class="st">"logcounts"</span>,
-  doLog <span class="op">=</span> <span class="cn">FALSE</span>,
-  featureIndex <span class="op">=</span> <span class="cn">NULL</span>,
-  cellIndex <span class="op">=</span> <span class="cn">NULL</span>,
-  scale <span class="op">=</span> <span class="cn">TRUE</span>,
-  trim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">2</span>, <span class="fl">2</span><span class="op">)</span>,
-  featureIndexBy <span class="op">=</span> <span class="st">"rownames"</span>,
-  cellIndexBy <span class="op">=</span> <span class="st">"rownames"</span>,
-  rowDataName <span class="op">=</span> <span class="cn">NULL</span>,
-  colDataName <span class="op">=</span> <span class="cn">NULL</span>,
-  featureAnnotations <span class="op">=</span> <span class="cn">NULL</span>,
-  cellAnnotations <span class="op">=</span> <span class="cn">NULL</span>,
-  featureAnnotationColor <span class="op">=</span> <span class="cn">NULL</span>,
-  cellAnnotationColor <span class="op">=</span> <span class="cn">NULL</span>,
-  rowSplitBy <span class="op">=</span> <span class="cn">NULL</span>,
-  colSplitBy <span class="op">=</span> <span class="cn">NULL</span>,
-  rowLabel <span class="op">=</span> <span class="cn">FALSE</span>,
-  colLabel <span class="op">=</span> <span class="cn">FALSE</span>,
-  rowLabelSize <span class="op">=</span> <span class="fl">8</span>,
-  colLabelSize <span class="op">=</span> <span class="fl">8</span>,
-  rowDend <span class="op">=</span> <span class="cn">TRUE</span>,
-  colDend <span class="op">=</span> <span class="cn">TRUE</span>,
-  title <span class="op">=</span> <span class="cn">NULL</span>,
-  rowTitle <span class="op">=</span> <span class="st">"Genes"</span>,
-  colTitle <span class="op">=</span> <span class="st">"Cells"</span>,
-  rowGap <span class="op">=</span> <span class="fu">grid</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/grid/unit.html" class="external-link">unit</a></span><span class="op">(</span><span class="fl">0</span>, <span class="st">"mm"</span><span class="op">)</span>,
-  colGap <span class="op">=</span> <span class="fu">grid</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/grid/unit.html" class="external-link">unit</a></span><span class="op">(</span><span class="fl">0</span>, <span class="st">"mm"</span><span class="op">)</span>,
-  border <span class="op">=</span> <span class="cn">FALSE</span>,
-  colorScheme <span class="op">=</span> <span class="cn">NULL</span>,
-  <span class="va">...</span>
-<span class="op">)</span>
-
-<span class="fu">plotSCEDimReduceHeatmap</span><span class="op">(</span>
-  <span class="va">inSCE</span>,
-  <span class="va">useReducedDim</span>,
-  featureIndex <span class="op">=</span> <span class="cn">NULL</span>,
-  cellIndex <span class="op">=</span> <span class="cn">NULL</span>,
-  doLog <span class="op">=</span> <span class="cn">FALSE</span>,
-  scale <span class="op">=</span> <span class="cn">FALSE</span>,
-  trim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">2</span>, <span class="fl">2</span><span class="op">)</span>,
-  cellIndexBy <span class="op">=</span> <span class="st">"rownames"</span>,
-  colDataName <span class="op">=</span> <span class="cn">NULL</span>,
-  featureAnnotations <span class="op">=</span> <span class="cn">NULL</span>,
-  cellAnnotations <span class="op">=</span> <span class="cn">NULL</span>,
-  featureAnnotationColor <span class="op">=</span> <span class="cn">NULL</span>,
-  cellAnnotationColor <span class="op">=</span> <span class="cn">NULL</span>,
-  rowSplitBy <span class="op">=</span> <span class="cn">NULL</span>,
-  colSplitBy <span class="op">=</span> <span class="cn">NULL</span>,
-  rowLabel <span class="op">=</span> <span class="cn">FALSE</span>,
-  colLabel <span class="op">=</span> <span class="cn">FALSE</span>,
-  rowLabelSize <span class="op">=</span> <span class="fl">8</span>,
-  colLabelSize <span class="op">=</span> <span class="fl">8</span>,
-  rowDend <span class="op">=</span> <span class="cn">TRUE</span>,
-  colDend <span class="op">=</span> <span class="cn">TRUE</span>,
-  title <span class="op">=</span> <span class="cn">NULL</span>,
-  rowTitle <span class="op">=</span> <span class="st">"Dimensions"</span>,
-  colTitle <span class="op">=</span> <span class="st">"Cells"</span>,
-  rowGap <span class="op">=</span> <span class="fu">grid</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/grid/unit.html" class="external-link">unit</a></span><span class="op">(</span><span class="fl">0</span>, <span class="st">"mm"</span><span class="op">)</span>,
-  colGap <span class="op">=</span> <span class="fu">grid</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/grid/unit.html" class="external-link">unit</a></span><span class="op">(</span><span class="fl">0</span>, <span class="st">"mm"</span><span class="op">)</span>,
-  border <span class="op">=</span> <span class="cn">FALSE</span>,
-  colorScheme <span class="op">=</span> <span class="cn">NULL</span>,
-  <span class="va">...</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">plotSCEHeatmap</span><span class="op">(</span></span>
+<span>  <span class="va">inSCE</span>,</span>
+<span>  useAssay <span class="op">=</span> <span class="st">"logcounts"</span>,</span>
+<span>  useReducedDim <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  doLog <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  featureIndex <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  cellIndex <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  scale <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  trim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">2</span>, <span class="fl">2</span><span class="op">)</span>,</span>
+<span>  featureIndexBy <span class="op">=</span> <span class="st">"rownames"</span>,</span>
+<span>  cellIndexBy <span class="op">=</span> <span class="st">"rownames"</span>,</span>
+<span>  rowDataName <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  colDataName <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  aggregateRow <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  aggregateCol <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  featureAnnotations <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  cellAnnotations <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  featureAnnotationColor <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  cellAnnotationColor <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  palette <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ggplot"</span>, <span class="st">"celda"</span>, <span class="st">"random"</span><span class="op">)</span>,</span>
+<span>  rowSplitBy <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  colSplitBy <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  rowLabel <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  colLabel <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  rowLabelSize <span class="op">=</span> <span class="fl">6</span>,</span>
+<span>  colLabelSize <span class="op">=</span> <span class="fl">6</span>,</span>
+<span>  rowDend <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  colDend <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  title <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  rowTitle <span class="op">=</span> <span class="st">"Features"</span>,</span>
+<span>  colTitle <span class="op">=</span> <span class="st">"Cells"</span>,</span>
+<span>  rowGap <span class="op">=</span> <span class="fu">grid</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/grid/unit.html" class="external-link">unit</a></span><span class="op">(</span><span class="fl">0</span>, <span class="st">"mm"</span><span class="op">)</span>,</span>
+<span>  colGap <span class="op">=</span> <span class="fu">grid</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/grid/unit.html" class="external-link">unit</a></span><span class="op">(</span><span class="fl">0</span>, <span class="st">"mm"</span><span class="op">)</span>,</span>
+<span>  border <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  colorScheme <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -275,6 +247,11 @@
 <dt>useAssay</dt>
 <dd><p>character. A string indicating the assay name that
 provides the expression level to plot. Only for <code>plotSCEHeatmap</code>.</p></dd>
+
+
+<dt>useReducedDim</dt>
+<dd><p>character. A string indicating the reducedDim name that
+provides the expression level to plot. Only for <code>plotSCEDimReduceHeatmap</code>.</p></dd>
 
 
 <dt>doLog</dt>
@@ -329,6 +306,18 @@ to be added to the annotation. Not applicable for
 to be added to the annotation. Default <code>NULL</code>.</p></dd>
 
 
+<dt>aggregateRow</dt>
+<dd><p>Feature variable for aggregating the heatmap by row. Can
+be a vector or a <code>rowData</code> column name for feature variable. Multiple
+variables are allowed. Default <code>NULL</code>.</p></dd>
+
+
+<dt>aggregateCol</dt>
+<dd><p>Cell variable for aggregating the heatmap by column. Can
+be a vector or a <code>colData</code> column name for cell variable. Multiple
+variables are allowed. Default <code>NULL</code>.</p></dd>
+
+
 <dt>featureAnnotations</dt>
 <dd><p><code>data.frame</code>, with <code>rownames</code> containing
 all the features going to be plotted. Character columns should be factors.
@@ -353,6 +342,11 @@ colors named with categories. Default <code>NULL</code>.</p></dd>
 cell labeling. Should match the entries in the <code>cellAnnotations</code> or
 <code>colDataName</code>. For each entry, there should be a list/vector of colors
 named with categories. Default <code>NULL</code>.</p></dd>
+
+
+<dt>palette</dt>
+<dd><p>Choose from <code>"ggplot"</code>, <code>"celda"</code> or <code>"random"</code>
+to generate unique category colors.</p></dd>
 
 
 <dt>rowSplitBy</dt>
@@ -437,11 +431,6 @@ Default <code>NULL</code>.</p></dd>
 <dt>...</dt>
 <dd><p>Other arguments passed to <code><a href="https://rdrr.io/pkg/ComplexHeatmap/man/Heatmap.html" class="external-link">Heatmap</a></code>.</p></dd>
 
-
-<dt>useReducedDim</dt>
-<dd><p>character. A string indicating the reducedDim name that
-provides the expression level to plot. Only for <code>plotSCEDimReduceHeatmap</code>.</p></dd>
-
 </dl></div>
     <div id="value">
     <h2>Value</h2>
@@ -456,8 +445,12 @@ provides the expression level to plot. Only for <code>plotSCEDimReduceHeatmap</c
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">scExample</span>, package <span class="op">=</span> <span class="st">"singleCellTK"</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu">plotSCEHeatmap</span><span class="op">(</span><span class="va">sce</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">3</span>,<span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">]</span>, useAssay <span class="op">=</span> <span class="st">"counts"</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">scExample</span>, package <span class="op">=</span> <span class="st">"singleCellTK"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">plotSCEHeatmap</span><span class="op">(</span><span class="va">sce</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">3</span>,<span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">]</span>, useAssay <span class="op">=</span> <span class="st">"counts"</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> dimnames(.) &lt;- NULL translated to</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> dimnames(.) &lt;- list(NULL,NULL)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> dimnames(.) &lt;- NULL translated to</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> dimnames(.) &lt;- list(NULL,NULL)</span>
 <span class="r-plt img"><img src="plotSCEHeatmap-1.png" alt="" width="700" height="433"></span>
 </code></pre></div>
     </div>
@@ -473,7 +466,7 @@ provides the expression level to plot. Only for <code>plotSCEDimReduceHeatmap</c
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

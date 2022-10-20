@@ -23,7 +23,7 @@ effects."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/ma
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.2</span>
       </span>
     </div>
 
@@ -210,24 +210,24 @@ effects.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">runComBatSeq</span><span class="op">(</span>
-  <span class="va">inSCE</span>,
-  useAssay <span class="op">=</span> <span class="st">"counts"</span>,
-  batch <span class="op">=</span> <span class="st">"batch"</span>,
-  covariates <span class="op">=</span> <span class="cn">NULL</span>,
-  bioCond <span class="op">=</span> <span class="cn">NULL</span>,
-  useSVA <span class="op">=</span> <span class="cn">FALSE</span>,
-  assayName <span class="op">=</span> <span class="st">"ComBatSeq"</span>,
-  shrink <span class="op">=</span> <span class="cn">FALSE</span>,
-  shrinkDisp <span class="op">=</span> <span class="cn">FALSE</span>,
-  nGene <span class="op">=</span> <span class="cn">NULL</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">runComBatSeq</span><span class="op">(</span></span>
+<span>  <span class="va">inSCE</span>,</span>
+<span>  useAssay <span class="op">=</span> <span class="st">"counts"</span>,</span>
+<span>  batch <span class="op">=</span> <span class="st">"batch"</span>,</span>
+<span>  covariates <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  bioCond <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  useSVA <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  assayName <span class="op">=</span> <span class="st">"ComBatSeq"</span>,</span>
+<span>  shrink <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  shrinkDisp <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  nGene <span class="op">=</span> <span class="cn">NULL</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>inSCE</dt>
-<dd><p>SingleCellExperiment inherited object. Required.</p></dd>
+<dd><p>Input SingleCellExperiment object</p></dd>
 
 
 <dt>useAssay</dt>
@@ -300,12 +300,12 @@ to <code>TRUE</code>.</p>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">'sceBatches'</span>, package <span class="op">=</span> <span class="st">'singleCellTK'</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">sceBatches</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="va">sceBatches</span>, <span class="fl">40</span><span class="op">)</span></span>
-<span class="r-in"><span class="co"># Cell type known</span></span>
-<span class="r-in"><span class="va">sceBatches</span> <span class="op">&lt;-</span> <span class="fu">runComBatSeq</span><span class="op">(</span><span class="va">sceBatches</span>, <span class="st">"counts"</span>, <span class="st">"batch"</span>,</span>
-<span class="r-in">                           covariates <span class="op">=</span> <span class="st">"cell_type"</span>,</span>
-<span class="r-in">                           assayName <span class="op">=</span> <span class="st">"ComBat_cell_seq"</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">'sceBatches'</span>, package <span class="op">=</span> <span class="st">'singleCellTK'</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">sceBatches</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="va">sceBatches</span>, <span class="fl">40</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># Cell type known</span></span></span>
+<span class="r-in"><span><span class="va">sceBatches</span> <span class="op">&lt;-</span> <span class="fu">runComBatSeq</span><span class="op">(</span><span class="va">sceBatches</span>, <span class="st">"counts"</span>, <span class="st">"batch"</span>,</span></span>
+<span class="r-in"><span>                           covariates <span class="op">=</span> <span class="st">"cell_type"</span>,</span></span>
+<span class="r-in"><span>                           assayName <span class="op">=</span> <span class="st">"ComBat_cell_seq"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Found 2 batches</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Using null model in ComBat-seq.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Adjusting for 1 covariate(s) or covariate level(s)</span>
@@ -313,13 +313,13 @@ to <code>TRUE</code>.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Fitting the GLM model</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Shrinkage off - using GLM estimates for parameters</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Adjusting the data</span>
-<span class="r-in"><span class="co"># Cell type unknown but balanced</span></span>
-<span class="r-in"><span class="co">#sceBatches &lt;- runComBatSeq(sceBatches, "counts", "batch",</span></span>
-<span class="r-in"><span class="co">#                           assayName = "ComBat_seq")</span></span>
-<span class="r-in"><span class="co"># Cell type unknown and unbalanced</span></span>
-<span class="r-in"><span class="co">#sceBatches &lt;- runComBatSeq(sceBatches, "counts", "batch",</span></span>
-<span class="r-in"><span class="co">#                           useSVA = TRUE,</span></span>
-<span class="r-in"><span class="co">#                           assayName = "ComBat_sva_seq")</span></span>
+<span class="r-in"><span><span class="co"># Cell type unknown but balanced</span></span></span>
+<span class="r-in"><span><span class="co">#sceBatches &lt;- runComBatSeq(sceBatches, "counts", "batch",</span></span></span>
+<span class="r-in"><span><span class="co">#                           assayName = "ComBat_seq")</span></span></span>
+<span class="r-in"><span><span class="co"># Cell type unknown and unbalanced</span></span></span>
+<span class="r-in"><span><span class="co">#sceBatches &lt;- runComBatSeq(sceBatches, "counts", "batch",</span></span></span>
+<span class="r-in"><span><span class="co">#                           useSVA = TRUE,</span></span></span>
+<span class="r-in"><span><span class="co">#                           assayName = "ComBat_sva_seq")</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -334,7 +334,7 @@ to <code>TRUE</code>.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

@@ -34,7 +34,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.2</span>
       </span>
     </div>
 
@@ -469,12 +469,12 @@ reduction result.</p>
 manual pages for the detail. The typical command call for for each
 method is shown below:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># Scran method</span>
-<span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runScranSNN.html">runScranSNN</a></span><span class="op">(</span><span class="va">sce</span>, useReducedDim <span class="op">=</span> <span class="st">"PCA"</span>, clusterName <span class="op">=</span> <span class="st">"scranSNN"</span><span class="op">)</span>
-<span class="co"># K-means method</span>
-<span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runKMeans.html">runKMeans</a></span><span class="op">(</span><span class="va">sce</span>, nCenters <span class="op">=</span> <span class="fl">9</span>, useReducedDim <span class="op">=</span> <span class="st">"PCA"</span>, clusterName <span class="op">=</span> <span class="st">"KMeans"</span><span class="op">)</span>
-<span class="co"># Seurat method</span>
-<span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runSeuratFindClusters.html">runSeuratFindClusters</a></span><span class="op">(</span><span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"seuratScaledData"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># Scran method</span></span>
+<span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runScranSNN.html">runScranSNN</a></span><span class="op">(</span><span class="va">sce</span>, useReducedDim <span class="op">=</span> <span class="st">"PCA"</span>, clusterName <span class="op">=</span> <span class="st">"scranSNN"</span><span class="op">)</span></span>
+<span><span class="co"># K-means method</span></span>
+<span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runKMeans.html">runKMeans</a></span><span class="op">(</span><span class="va">sce</span>, nCenters <span class="op">=</span> <span class="fl">9</span>, useReducedDim <span class="op">=</span> <span class="st">"PCA"</span>, clusterName <span class="op">=</span> <span class="st">"KMeans"</span><span class="op">)</span></span>
+<span><span class="co"># Seurat method</span></span>
+<span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runSeuratFindClusters.html">runSeuratFindClusters</a></span><span class="op">(</span><span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"seuratScaledData"</span><span class="op">)</span></span></code></pre></div>
 <p><strong>Example</strong></p>
 <p>To demonstrate simple and clear examples, here we use the “PBMC-3k”
 dataset from “10X” which can be easily imported with SCTK functions. The
@@ -482,16 +482,16 @@ preprocessing only includes necessary steps before getting cluster
 labels (i.e. QC and filtering are excluded).</p>
 <div class="offset">
 <details><summary><b>Preprocessing</b></summary><div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://www.camplab.net/sctk/" class="external-link">singleCellTK</a></span><span class="op">)</span>
-<span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/importExampleData.html">importExampleData</a></span><span class="op">(</span><span class="st">"pbmc3k"</span><span class="op">)</span>
-<span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runNormalization.html">runNormalization</a></span><span class="op">(</span><span class="va">sce</span>, outAssayName <span class="op">=</span> <span class="st">"logcounts"</span>, normalizationMethod <span class="op">=</span> <span class="st">"logNormCounts"</span><span class="op">)</span>
-<span class="co"># Default HVG method is "vst" from Seurat</span>
-<span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runFeatureSelection.html">runFeatureSelection</a></span><span class="op">(</span><span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"counts"</span><span class="op">)</span>
-<span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getTopHVG.html">setTopHVG</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span>
-<span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runDimReduce.html">runDimReduce</a></span><span class="op">(</span><span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"logcounts"</span>, useFeatureSubset <span class="op">=</span> <span class="st">"HVG_vst2000"</span>, scale <span class="op">=</span> <span class="cn">TRUE</span>, reducedDimName <span class="op">=</span> <span class="st">"PCA"</span><span class="op">)</span>
-<span class="co"># Optional visualization</span>
-<span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runDimReduce.html">runDimReduce</a></span><span class="op">(</span><span class="va">sce</span>, method <span class="op">=</span> <span class="st">"scaterUMAP"</span>, useReducedDim <span class="op">=</span> <span class="st">"PCA"</span>, reducedDimName <span class="op">=</span> <span class="st">"UMAP"</span>, nComponents <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>
-<span class="fu"><a href="../reference/plotDimRed.html">plotDimRed</a></span><span class="op">(</span><span class="va">sce</span>, <span class="st">"UMAP"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://www.camplab.net/sctk/" class="external-link">singleCellTK</a></span><span class="op">)</span></span>
+<span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/importExampleData.html">importExampleData</a></span><span class="op">(</span><span class="st">"pbmc3k"</span><span class="op">)</span></span>
+<span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runNormalization.html">runNormalization</a></span><span class="op">(</span><span class="va">sce</span>, outAssayName <span class="op">=</span> <span class="st">"logcounts"</span>, normalizationMethod <span class="op">=</span> <span class="st">"logNormCounts"</span><span class="op">)</span></span>
+<span><span class="co"># Default HVG method is "vst" from Seurat</span></span>
+<span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runFeatureSelection.html">runFeatureSelection</a></span><span class="op">(</span><span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"counts"</span><span class="op">)</span></span>
+<span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getTopHVG.html">setTopHVG</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span></span>
+<span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runDimReduce.html">runDimReduce</a></span><span class="op">(</span><span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"logcounts"</span>, useFeatureSubset <span class="op">=</span> <span class="st">"HVG_vst2000"</span>, scale <span class="op">=</span> <span class="cn">TRUE</span>, reducedDimName <span class="op">=</span> <span class="st">"PCA"</span><span class="op">)</span></span>
+<span><span class="co"># Optional visualization</span></span>
+<span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runDimReduce.html">runDimReduce</a></span><span class="op">(</span><span class="va">sce</span>, method <span class="op">=</span> <span class="st">"scaterUMAP"</span>, useReducedDim <span class="op">=</span> <span class="st">"PCA"</span>, reducedDimName <span class="op">=</span> <span class="st">"UMAP"</span>, nComponents <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/plotDimRed.html">plotDimRed</a></span><span class="op">(</span><span class="va">sce</span>, <span class="st">"UMAP"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="clustering_files/figure-html/clst_prep-1.png" width="700" style="display: block; margin: auto;"></p>
 </details><details><summary><b>Example with Scran SNN</b></summary><details><summary><b>Method specific parameters</b></summary><ul>
 <li>
@@ -511,14 +511,14 @@ parameters, such as <code>objective_function</code> and
 <code>resolution_parameter</code> for Leiden <span class="citation">[6]</span>, <code>steps</code> for Walktrap <span class="citation">[7]</span>. Please also refer to function reference for
 detail.</li>
 </ul></details><div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># Directly use an assay</span>
-<span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runScranSNN.html">runScranSNN</a></span><span class="op">(</span><span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"logcounts"</span>, clusterName <span class="op">=</span> <span class="st">"scranSNN_logcounts"</span><span class="op">)</span>
-<span class="fu"><a href="../reference/plotSCEDimReduceColData.html">plotSCEDimReduceColData</a></span><span class="op">(</span><span class="va">sce</span>, colorBy <span class="op">=</span> <span class="st">"scranSNN_logcounts"</span>, reducedDimName <span class="op">=</span> <span class="st">"UMAP"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># Directly use an assay</span></span>
+<span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runScranSNN.html">runScranSNN</a></span><span class="op">(</span><span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"logcounts"</span>, clusterName <span class="op">=</span> <span class="st">"scranSNN_logcounts"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/plotSCEDimReduceColData.html">plotSCEDimReduceColData</a></span><span class="op">(</span><span class="va">sce</span>, colorBy <span class="op">=</span> <span class="st">"scranSNN_logcounts"</span>, reducedDimName <span class="op">=</span> <span class="st">"UMAP"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="clustering_files/figure-html/clst_ScranSNN-1.png" width="700" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># Directly use a dimension reduction</span>
-<span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runScranSNN.html">runScranSNN</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useReducedDim <span class="op">=</span> <span class="st">"PCA"</span>, nComp <span class="op">=</span> <span class="fl">10</span>, clusterName <span class="op">=</span> <span class="st">"scranSNN_PCA"</span><span class="op">)</span>
-<span class="fu"><a href="../reference/plotSCEDimReduceColData.html">plotSCEDimReduceColData</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, colorBy <span class="op">=</span> <span class="st">"scranSNN_PCA"</span>, reducedDimName <span class="op">=</span> <span class="st">"UMAP"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># Directly use a dimension reduction</span></span>
+<span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runScranSNN.html">runScranSNN</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useReducedDim <span class="op">=</span> <span class="st">"PCA"</span>, nComp <span class="op">=</span> <span class="fl">10</span>, clusterName <span class="op">=</span> <span class="st">"scranSNN_PCA"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/plotSCEDimReduceColData.html">plotSCEDimReduceColData</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, colorBy <span class="op">=</span> <span class="st">"scranSNN_PCA"</span>, reducedDimName <span class="op">=</span> <span class="st">"UMAP"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="clustering_files/figure-html/clst_ScranSNN-2.png" width="700" style="display: block; margin: auto;"></p>
 </details><details><summary><b>Example with K-Means</b></summary><details><summary><b>Method specific parameters</b></summary><ul>
 <li>
@@ -538,23 +538,23 @@ options, which can be found with <code><a href="../reference/runKMeans.html">?ru
 introduction of those options, please refer to
 <code><a href="https://rdrr.io/r/stats/kmeans.html" class="external-link">?stats::kmeans</a></code>.</li>
 </ul></details><div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runKMeans.html">runKMeans</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useReducedDim <span class="op">=</span> <span class="st">"PCA"</span>, nComp <span class="op">=</span> <span class="fl">10</span>, nCenters <span class="op">=</span> <span class="fl">10</span>, clusterName <span class="op">=</span> <span class="st">"kmeans"</span><span class="op">)</span>
-<span class="fu"><a href="../reference/plotSCEDimReduceColData.html">plotSCEDimReduceColData</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, colorBy <span class="op">=</span> <span class="st">"kmeans"</span>, reducedDimName <span class="op">=</span> <span class="st">"UMAP"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runKMeans.html">runKMeans</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useReducedDim <span class="op">=</span> <span class="st">"PCA"</span>, nComp <span class="op">=</span> <span class="fl">10</span>, nCenters <span class="op">=</span> <span class="fl">10</span>, clusterName <span class="op">=</span> <span class="st">"kmeans"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/plotSCEDimReduceColData.html">plotSCEDimReduceColData</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, colorBy <span class="op">=</span> <span class="st">"kmeans"</span>, reducedDimName <span class="op">=</span> <span class="st">"UMAP"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="clustering_files/figure-html/clst_kmeans-1.png" width="700" style="display: block; margin: auto;"></p>
 </details><details><summary><b>Example with Seurat</b></summary><p>Seurat clustering method is recommended to be used in the <a href="seurat_curated_workflow.html">Seurat Curated Workflow</a> in
 console analysis. When users preprocessed the dataset with other
 approaches, the clustering with Seurat function can be complicated,
 since some sorts of Seurat specific metadata is always needed.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># Prepare what seurat function needs</span>
-<span class="va">pca</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/SingleCellExperiment/man/reducedDims.html" class="external-link">reducedDim</a></span><span class="op">(</span><span class="va">sce</span>, <span class="st">"PCA"</span><span class="op">)</span><span class="op">[</span>,<span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">]</span>
-<span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">pca</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">gsub</a></span><span class="op">(</span><span class="st">"_"</span>, <span class="st">"-"</span>, <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">pca</span><span class="op">)</span><span class="op">)</span>
-<span class="va">stdev</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">pca</span>, <span class="st">"percentVar"</span><span class="op">)</span><span class="op">)</span>
-<span class="va">new_pca</span> <span class="op">&lt;-</span> <span class="fu">Seurat</span><span class="fu">::</span><span class="fu"><a href="https://mojaveazure.github.io/seurat-object/reference/CreateDimReducObject.html" class="external-link">CreateDimReducObject</a></span><span class="op">(</span>embeddings <span class="op">=</span> <span class="va">pca</span>, assay <span class="op">=</span> <span class="st">"RNA"</span>, stdev <span class="op">=</span> <span class="va">stdev</span>, key <span class="op">=</span> <span class="st">"PC_"</span><span class="op">)</span>
-<span class="co"># Then we can take the Seurat Curated Workflow independent dimension </span>
-<span class="co"># reduction as an input. </span>
-<span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runSeuratFindClusters.html">runSeuratFindClusters</a></span><span class="op">(</span><span class="va">sce</span>, externalReduction <span class="op">=</span> <span class="va">new_pca</span><span class="op">)</span>
-<span class="fu"><a href="../reference/plotSCEDimReduceColData.html">plotSCEDimReduceColData</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, colorBy <span class="op">=</span> <span class="st">"Seurat_louvain_Resolution0.8"</span>, reducedDimName <span class="op">=</span> <span class="st">"UMAP"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># Prepare what seurat function needs</span></span>
+<span><span class="va">pca</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/SingleCellExperiment/man/reducedDims.html" class="external-link">reducedDim</a></span><span class="op">(</span><span class="va">sce</span>, <span class="st">"PCA"</span><span class="op">)</span><span class="op">[</span>,<span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">]</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">pca</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">gsub</a></span><span class="op">(</span><span class="st">"_"</span>, <span class="st">"-"</span>, <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">pca</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">stdev</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">pca</span>, <span class="st">"percentVar"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">new_pca</span> <span class="op">&lt;-</span> <span class="fu">Seurat</span><span class="fu">::</span><span class="fu"><a href="https://mojaveazure.github.io/seurat-object/reference/CreateDimReducObject.html" class="external-link">CreateDimReducObject</a></span><span class="op">(</span>embeddings <span class="op">=</span> <span class="va">pca</span>, assay <span class="op">=</span> <span class="st">"RNA"</span>, stdev <span class="op">=</span> <span class="va">stdev</span>, key <span class="op">=</span> <span class="st">"PC_"</span><span class="op">)</span></span>
+<span><span class="co"># Then we can take the Seurat Curated Workflow independent dimension </span></span>
+<span><span class="co"># reduction as an input. </span></span>
+<span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runSeuratFindClusters.html">runSeuratFindClusters</a></span><span class="op">(</span><span class="va">sce</span>, externalReduction <span class="op">=</span> <span class="va">new_pca</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/plotSCEDimReduceColData.html">plotSCEDimReduceColData</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, colorBy <span class="op">=</span> <span class="st">"Seurat_louvain_Resolution0.8"</span>, reducedDimName <span class="op">=</span> <span class="st">"UMAP"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="clustering_files/figure-html/clst_seurat2-1.png" width="700" style="display: block; margin: auto;"></p>
 </details>
 </div>
@@ -639,7 +639,7 @@ random walks,”</span> in <em>Computer and information sciences - ISCIS
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer>

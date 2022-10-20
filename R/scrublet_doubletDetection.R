@@ -197,23 +197,31 @@ runScrublet <- function(inSCE,
       ## Extract UMAP and TSNE coordinates
       if (is.null(nNeighbors) && is.null(minDist)) {
         umap_coordinates <- scrublet$get_umap(scr$manifold_obs_)
-      } else {
+      } else if (!is.null(nNeighbors) && !is.null(minDist)) {
         umap_coordinates <- scrublet$get_umap(
           scr$manifold_obs_,
           n_neighbors = as.integer(nNeighbors),
           min_dist = minDist
         )
+      } else {
+        warning("`nNeighbors` and `minDist` has to be specified or set to NULL",
+                " at the same time. Setting both to NULL.")
+        umap_coordinates <- scrublet$get_umap(scr$manifold_obs_)
       }
       umapDims[sceSampleInd, ] <- umap_coordinates
       
       if (is.null(tsneAngle) && is.null(tsnePerplexity)) {
         tsne_coordinates <- scrublet$get_tsne(scr$manifold_obs_)
-      } else {
+      } else if (!is.null(tsneAngle) && !is.null(tsnePerplexity)) {
         tsne_coordinates <- scrublet$get_tsne(
           scr$manifold_obs_,
           angle = tsneAngle,
           perplexity = as.integer(tsnePerplexity)
         )
+      } else {
+        warning("`tsneAngle` and `tsnePerplexity` has to be specified or set ", 
+                "to NULL at the same time. Setting both to NULL.")
+        tsne_coordinates <- scrublet$get_tsne(scr$manifold_obs_)
       }
       tsneDims[sceSampleInd, ] <- tsne_coordinates
       if (!identical(samples, 1)) {

@@ -18,7 +18,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.2</span>
       </span>
     </div>
 
@@ -201,38 +201,38 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">plotSCEDimReduceFeatures</span><span class="op">(</span>
-  <span class="va">inSCE</span>,
-  <span class="va">feature</span>,
-  <span class="va">reducedDimName</span>,
-  sample <span class="op">=</span> <span class="cn">NULL</span>,
-  featureLocation <span class="op">=</span> <span class="cn">NULL</span>,
-  featureDisplay <span class="op">=</span> <span class="cn">NULL</span>,
-  shape <span class="op">=</span> <span class="cn">NULL</span>,
-  useAssay <span class="op">=</span> <span class="st">"logcounts"</span>,
-  xlab <span class="op">=</span> <span class="cn">NULL</span>,
-  ylab <span class="op">=</span> <span class="cn">NULL</span>,
-  axisSize <span class="op">=</span> <span class="fl">10</span>,
-  axisLabelSize <span class="op">=</span> <span class="fl">10</span>,
-  dim1 <span class="op">=</span> <span class="cn">NULL</span>,
-  dim2 <span class="op">=</span> <span class="cn">NULL</span>,
-  bin <span class="op">=</span> <span class="cn">NULL</span>,
-  binLabel <span class="op">=</span> <span class="cn">NULL</span>,
-  dotSize <span class="op">=</span> <span class="fl">0.5</span>,
-  transparency <span class="op">=</span> <span class="fl">1</span>,
-  colorLow <span class="op">=</span> <span class="st">"white"</span>,
-  colorMid <span class="op">=</span> <span class="st">"gray"</span>,
-  colorHigh <span class="op">=</span> <span class="st">"blue"</span>,
-  defaultTheme <span class="op">=</span> <span class="cn">TRUE</span>,
-  title <span class="op">=</span> <span class="cn">NULL</span>,
-  titleSize <span class="op">=</span> <span class="fl">15</span>,
-  legendTitle <span class="op">=</span> <span class="cn">NULL</span>,
-  legendSize <span class="op">=</span> <span class="fl">10</span>,
-  legendTitleSize <span class="op">=</span> <span class="fl">12</span>,
-  groupBy <span class="op">=</span> <span class="cn">NULL</span>,
-  combinePlot <span class="op">=</span> <span class="st">"none"</span>,
-  plotLabels <span class="op">=</span> <span class="cn">NULL</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">plotSCEDimReduceFeatures</span><span class="op">(</span></span>
+<span>  <span class="va">inSCE</span>,</span>
+<span>  <span class="va">feature</span>,</span>
+<span>  <span class="va">reducedDimName</span>,</span>
+<span>  sample <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  featureLocation <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  featureDisplay <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  shape <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  useAssay <span class="op">=</span> <span class="st">"logcounts"</span>,</span>
+<span>  xlab <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  ylab <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  axisSize <span class="op">=</span> <span class="fl">10</span>,</span>
+<span>  axisLabelSize <span class="op">=</span> <span class="fl">10</span>,</span>
+<span>  dim1 <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  dim2 <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  bin <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  binLabel <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  dotSize <span class="op">=</span> <span class="fl">0.5</span>,</span>
+<span>  transparency <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  colorLow <span class="op">=</span> <span class="st">"white"</span>,</span>
+<span>  colorMid <span class="op">=</span> <span class="st">"gray"</span>,</span>
+<span>  colorHigh <span class="op">=</span> <span class="st">"blue"</span>,</span>
+<span>  defaultTheme <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  title <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  titleSize <span class="op">=</span> <span class="fl">15</span>,</span>
+<span>  legendTitle <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  legendSize <span class="op">=</span> <span class="fl">10</span>,</span>
+<span>  legendTitleSize <span class="op">=</span> <span class="fl">12</span>,</span>
+<span>  groupBy <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  combinePlot <span class="op">=</span> <span class="st">"none"</span>,</span>
+<span>  plotLabels <span class="op">=</span> <span class="cn">NULL</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -385,12 +385,12 @@ as the labels. If set to "none", no label will be plotted.</p></dd>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"mouseBrainSubsetSCE"</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu">plotSCEDimReduceFeatures</span><span class="op">(</span></span>
-<span class="r-in">  inSCE <span class="op">=</span> <span class="va">mouseBrainSubsetSCE</span>, feature <span class="op">=</span> <span class="st">"Apoe"</span>,</span>
-<span class="r-in">  shape <span class="op">=</span> <span class="cn">NULL</span>, reducedDimName <span class="op">=</span> <span class="st">"TSNE_counts"</span>,</span>
-<span class="r-in">  useAssay <span class="op">=</span> <span class="st">"counts"</span>, xlab <span class="op">=</span> <span class="st">"tSNE1"</span>, ylab <span class="op">=</span> <span class="st">"tSNE2"</span></span>
-<span class="r-in"><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"mouseBrainSubsetSCE"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">plotSCEDimReduceFeatures</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  inSCE <span class="op">=</span> <span class="va">mouseBrainSubsetSCE</span>, feature <span class="op">=</span> <span class="st">"Apoe"</span>,</span></span>
+<span class="r-in"><span>  shape <span class="op">=</span> <span class="cn">NULL</span>, reducedDimName <span class="op">=</span> <span class="st">"TSNE_counts"</span>,</span></span>
+<span class="r-in"><span>  useAssay <span class="op">=</span> <span class="st">"counts"</span>, xlab <span class="op">=</span> <span class="st">"tSNE1"</span>, ylab <span class="op">=</span> <span class="st">"tSNE2"</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="plotSCEDimReduceFeatures-1.png" alt="" width="700" height="433"></span>
 </code></pre></div>
     </div>
@@ -406,7 +406,7 @@ as the labels. If set to "none", no label will be plotted.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

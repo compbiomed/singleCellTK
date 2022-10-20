@@ -187,6 +187,7 @@ discreteColorPalette <- function(n, palette = c("random", "ggplot", "celda"),
 }
 
 #' Deduplicate the rownames of a matrix or SingleCellExperiment object
+#' @description 
 #' Adds '-1', '-2', ... '-i' to multiple duplicated rownames, and in place
 #' replace the unique rownames, store unique rownames in \code{rowData}, or
 #' return the unique rownames as character vecetor.

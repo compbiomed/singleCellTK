@@ -19,7 +19,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.2</span>
       </span>
     </div>
 
@@ -203,42 +203,42 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">plotScrubletResults</span><span class="op">(</span>
-  <span class="va">inSCE</span>,
-  sample <span class="op">=</span> <span class="cn">NULL</span>,
-  shape <span class="op">=</span> <span class="cn">NULL</span>,
-  groupBy <span class="op">=</span> <span class="cn">NULL</span>,
-  combinePlot <span class="op">=</span> <span class="st">"all"</span>,
-  violin <span class="op">=</span> <span class="cn">TRUE</span>,
-  boxplot <span class="op">=</span> <span class="cn">FALSE</span>,
-  dots <span class="op">=</span> <span class="cn">TRUE</span>,
-  <span class="va">reducedDimName</span>,
-  xlab <span class="op">=</span> <span class="cn">NULL</span>,
-  ylab <span class="op">=</span> <span class="cn">NULL</span>,
-  dim1 <span class="op">=</span> <span class="cn">NULL</span>,
-  dim2 <span class="op">=</span> <span class="cn">NULL</span>,
-  bin <span class="op">=</span> <span class="cn">NULL</span>,
-  binLabel <span class="op">=</span> <span class="cn">NULL</span>,
-  defaultTheme <span class="op">=</span> <span class="cn">TRUE</span>,
-  dotSize <span class="op">=</span> <span class="fl">0.5</span>,
-  summary <span class="op">=</span> <span class="st">"median"</span>,
-  summaryTextSize <span class="op">=</span> <span class="fl">3</span>,
-  transparency <span class="op">=</span> <span class="fl">1</span>,
-  baseSize <span class="op">=</span> <span class="fl">15</span>,
-  titleSize <span class="op">=</span> <span class="cn">NULL</span>,
-  axisLabelSize <span class="op">=</span> <span class="cn">NULL</span>,
-  axisSize <span class="op">=</span> <span class="cn">NULL</span>,
-  legendSize <span class="op">=</span> <span class="cn">NULL</span>,
-  legendTitleSize <span class="op">=</span> <span class="cn">NULL</span>,
-  relHeights <span class="op">=</span> <span class="fl">1</span>,
-  relWidths <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span>,
-  plotNCols <span class="op">=</span> <span class="cn">NULL</span>,
-  plotNRows <span class="op">=</span> <span class="cn">NULL</span>,
-  labelSamples <span class="op">=</span> <span class="cn">TRUE</span>,
-  samplePerColumn <span class="op">=</span> <span class="cn">TRUE</span>,
-  sampleRelHeights <span class="op">=</span> <span class="fl">1</span>,
-  sampleRelWidths <span class="op">=</span> <span class="fl">1</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">plotScrubletResults</span><span class="op">(</span></span>
+<span>  <span class="va">inSCE</span>,</span>
+<span>  <span class="va">reducedDimName</span>,</span>
+<span>  sample <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  shape <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  groupBy <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  combinePlot <span class="op">=</span> <span class="st">"all"</span>,</span>
+<span>  violin <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  boxplot <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  dots <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  xlab <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  ylab <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  dim1 <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  dim2 <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  bin <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  binLabel <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  defaultTheme <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  dotSize <span class="op">=</span> <span class="fl">0.5</span>,</span>
+<span>  summary <span class="op">=</span> <span class="st">"median"</span>,</span>
+<span>  summaryTextSize <span class="op">=</span> <span class="fl">3</span>,</span>
+<span>  transparency <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  baseSize <span class="op">=</span> <span class="fl">15</span>,</span>
+<span>  titleSize <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  axisLabelSize <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  axisSize <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  legendSize <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  legendTitleSize <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  relHeights <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  relWidths <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span>,</span>
+<span>  plotNCols <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  plotNRows <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  labelSamples <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  samplePerColumn <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  sampleRelHeights <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  sampleRelWidths <span class="op">=</span> <span class="fl">1</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -246,160 +246,172 @@
     <dl><dt>inSCE</dt>
 <dd><p>Input SingleCellExperiment object with saved
 dimension reduction components or a variable with saved results from
-<a href="runScrublet.html">runScrublet</a>. Required.</p></dd>
+<code><a href="runCxds.html">runCxds</a></code>. Required.</p></dd>
+
+
+<dt>reducedDimName</dt>
+<dd><p>Saved dimension reduction name in <code>inSCE</code>. 
+Default <code>"UMAP"</code>.</p></dd>
 
 
 <dt>sample</dt>
-<dd><p>Character vector. Indicates which sample each cell belongs to.
-Default NULL.</p></dd>
+<dd><p>Character vector or colData variable name. Indicates which 
+sample each cell belongs to. Default <code>NULL</code>.</p></dd>
 
 
 <dt>shape</dt>
-<dd><p>If provided, add shapes based on the value.</p></dd>
+<dd><p>If provided, add shapes based on the value. Default <code>NULL</code>.</p></dd>
 
 
 <dt>groupBy</dt>
 <dd><p>Groupings for each numeric value. A user may input a vector
-equal length to the number of the samples in the SingleCellExperiment
-object, or can be retrieved from the colData slot. Default NULL.</p></dd>
+equal length to the number of the samples in <code>inSCE</code>, or can be 
+retrieved from the colData slot. Default <code>NULL</code>.</p></dd>
 
 
 <dt>combinePlot</dt>
-<dd><p>Must be either "all", "sample", or "none". "all" will combine all plots into a single .ggplot object,
-while "sample" will output a list of plots separated by sample. Default "all".</p></dd>
+<dd><p>Must be either <code>"all"</code>, <code>"sample"</code>, or 
+<code>"none"</code>. <code>"all"</code> will combine all plots into a single .ggplot 
+object, while <code>"sample"</code> will output a list of plots separated by 
+sample. Default <code>"all"</code>.</p></dd>
 
 
 <dt>violin</dt>
-<dd><p>Boolean. If TRUE, will plot the violin plot. Default TRUE.</p></dd>
+<dd><p>Boolean. If <code>TRUE</code>, will plot the violin plot. Default 
+<code>TRUE</code>.</p></dd>
 
 
 <dt>boxplot</dt>
-<dd><p>Boolean. If TRUE, will plot boxplots for each violin plot.
-Default TRUE.</p></dd>
+<dd><p>Boolean. If <code>TRUE</code>, will plot boxplots for each violin 
+plot. Default <code>TRUE</code>.</p></dd>
 
 
 <dt>dots</dt>
-<dd><p>Boolean. If TRUE, will plot dots for each violin plot.
-Default TRUE.</p></dd>
-
-
-<dt>reducedDimName</dt>
-<dd><p>Saved dimension reduction name in the
-SingleCellExperiment object. Required.</p></dd>
+<dd><p>Boolean. If <code>TRUE</code>, will plot dots for each violin plot.
+Default <code>TRUE</code>.</p></dd>
 
 
 <dt>xlab</dt>
-<dd><p>Character vector. Label for x-axis. Default NULL.</p></dd>
+<dd><p>Character vector. Label for x-axis. Default <code>NULL</code>.</p></dd>
 
 
 <dt>ylab</dt>
-<dd><p>Character vector. Label for y-axis. Default NULL.</p></dd>
+<dd><p>Character vector. Label for y-axis. Default <code>NULL</code>.</p></dd>
 
 
 <dt>dim1</dt>
-<dd><p>1st dimension to be used for plotting. Can either be a string which specifies
-the name of the dimension to be plotted from reducedDims, or a numeric value which specifies
-the index of the dimension to be plotted. Default is NULL.</p></dd>
+<dd><p>1st dimension to be used for plotting. Can either be a string 
+which specifies the name of the dimension to be plotted from reducedDims, or 
+a numeric value which specifies the index of the dimension to be plotted. 
+Default is <code>NULL</code>.</p></dd>
 
 
 <dt>dim2</dt>
-<dd><p>2nd dimension to be used for plotting. Can either be a string which specifies
-the name of the dimension to be plotted from reducedDims, or a numeric value which specifies
-the index of the dimension to be plotted. Default is NULL.</p></dd>
+<dd><p>2nd dimension to be used for plotting. Similar to <code>dim1</code>. 
+Default is <code>NULL</code>.</p></dd>
 
 
 <dt>bin</dt>
-<dd><p>Numeric vector. If single value, will divide the numeric values into the `bin` groups.
-If more than one value, will bin numeric values using values as a cut point.</p></dd>
+<dd><p>Numeric vector. If single value, will divide the numeric values 
+into <code>bin</code> groups. If more than one value, will bin numeric values using
+values as a cut point. Default <code>NULL</code>.</p></dd>
 
 
 <dt>binLabel</dt>
-<dd><p>Character vector. Labels for the bins created by the `bin` parameter.
-Default NULL.</p></dd>
+<dd><p>Character vector. Labels for the bins created by <code>bin</code>.
+Default <code>NULL</code>.</p></dd>
 
 
 <dt>defaultTheme</dt>
-<dd><p>Removes grid in plot and sets axis title size to 10
-when TRUE. Default TRUE.</p></dd>
+<dd><p>Removes grid in plot and sets axis title size to 
+<code>10</code> when <code>TRUE</code>. Default <code>TRUE</code>.</p></dd>
 
 
 <dt>dotSize</dt>
-<dd><p>Size of dots. Default 0.5.</p></dd>
+<dd><p>Size of dots. Default <code>0.5</code>.</p></dd>
 
 
 <dt>summary</dt>
 <dd><p>Adds a summary statistic, as well as a crossbar to the
-violin plot. Options are "mean" or "median". Default NULL.</p></dd>
+violin plot. Options are <code>"mean"</code> or <code>"median"</code>. Default 
+<code>NULL</code>.</p></dd>
 
 
 <dt>summaryTextSize</dt>
 <dd><p>The text size of the summary statistic displayed
-above the violin plot. Default 3.</p></dd>
+above the violin plot. Default <code>3</code>.</p></dd>
 
 
 <dt>transparency</dt>
-<dd><p>Transparency of the dots, values will be 0-1. Default 1.</p></dd>
+<dd><p>Transparency of the dots, values will be 0-1. Default 
+<code>1</code>.</p></dd>
 
 
 <dt>baseSize</dt>
-<dd><p>The base font size for all text. Default 12.
-Can be overwritten by titleSize, axisSize, and axisLabelSize,
-legendSize, legendTitleSize.</p></dd>
+<dd><p>The base font size for all text. Default <code>12</code>.
+Can be overwritten by <code>titleSize</code>, <code>axisSize</code>, and 
+<code>axisLabelSize</code>, <code>legendSize</code>, <code>legendTitleSize</code>.</p></dd>
 
 
 <dt>titleSize</dt>
-<dd><p>Size of title of plot. Default NULL.</p></dd>
+<dd><p>Size of title of plot. Default <code>NULL</code>.</p></dd>
 
 
 <dt>axisLabelSize</dt>
-<dd><p>Size of x/y-axis labels. Default NULL.</p></dd>
+<dd><p>Size of x/y-axis labels. Default <code>NULL</code>.</p></dd>
 
 
 <dt>axisSize</dt>
-<dd><p>Size of x/y-axis ticks. Default NULL.</p></dd>
+<dd><p>Size of x/y-axis ticks. Default <code>NULL</code>.</p></dd>
 
 
 <dt>legendSize</dt>
-<dd><p>size of legend. Default NULL.</p></dd>
+<dd><p>size of legend. Default <code>NULL</code>.</p></dd>
 
 
 <dt>legendTitleSize</dt>
-<dd><p>size of legend title. Default NULL.</p></dd>
+<dd><p>size of legend title. Default <code>NULL</code>.</p></dd>
 
 
 <dt>relHeights</dt>
-<dd><p>Relative heights of plots when combine is set.</p></dd>
+<dd><p>Relative heights of plots when combine is set. Default 
+<code>1</code>.</p></dd>
 
 
 <dt>relWidths</dt>
-<dd><p>Relative widths of plots when combine is set.</p></dd>
+<dd><p>Relative widths of plots when combine is set. Default 
+<code>c(1, 1, 1)</code>.</p></dd>
 
 
 <dt>plotNCols</dt>
-<dd><p>Number of columns when plots are combined in a grid.</p></dd>
+<dd><p>Number of columns when plots are combined in a grid. Default 
+<code>NULL</code>.</p></dd>
 
 
 <dt>plotNRows</dt>
-<dd><p>Number of rows when plots are combined in a grid.</p></dd>
+<dd><p>Number of rows when plots are combined in a grid. Default 
+<code>NULL</code>.</p></dd>
 
 
 <dt>labelSamples</dt>
-<dd><p>Will label sample name in title of plot if TRUE. Default TRUE.</p></dd>
+<dd><p>Will label sample name in title of plot if TRUE. Default 
+<code>TRUE</code>.</p></dd>
 
 
 <dt>samplePerColumn</dt>
-<dd><p>If TRUE, when there are multiple samples and combining by "all",
-the output .ggplot will have plots from each sample on a single column. Default TRUE.</p></dd>
+<dd><p>If <code>TRUE</code>, when there are multiple samples and 
+combining by <code>"all"</code>, the output .ggplot will have plots from each 
+sample on a single column. Default <code>TRUE</code>.</p></dd>
 
 
 <dt>sampleRelHeights</dt>
-<dd><p>If there are multiple samples and combining by "all",
-the relative heights for each plot.</p></dd>
+<dd><p>If there are multiple samples and combining by 
+<code>"all"</code>, the relative heights for each plot. Default <code>1</code>.</p></dd>
 
 
 <dt>sampleRelWidths</dt>
-<dd><p>If there are multiple samples and combining by "all",
-the relative widths for each plot.</p></dd>
+<dd><p>If there are multiple samples and combining by 
+<code>"all"</code>, the relative widths for each plot. Default <code>1</code>.</p></dd>
 
 </dl></div>
     <div id="value">
@@ -408,17 +420,20 @@ the relative widths for each plot.</p></dd>
 
 <p>list of .ggplot objects</p>
     </div>
+    <div id="see-also">
+    <h2>See also</h2>
+    <div class="dont-index"><p><code><a href="runScrublet.html">runScrublet</a></code></p></div>
+    </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">scExample</span>, package<span class="op">=</span><span class="st">"singleCellTK"</span><span class="op">)</span></span>
-<span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="subsetSCECols.html">subsetSCECols</a></span><span class="op">(</span><span class="va">sce</span>, colData <span class="op">=</span> <span class="st">"type != 'EmptyDroplet'"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="getUMAP.html">getUMAP</a></span><span class="op">(</span>inSCE<span class="op">=</span><span class="va">sce</span>, useAssay<span class="op">=</span><span class="st">"counts"</span>, logNorm<span class="op">=</span><span class="cn">TRUE</span>, </span>
-<span class="r-in">               reducedDimName<span class="op">=</span><span class="st">"UMAP"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="runScrublet.html">runScrublet</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu">plotScrubletResults</span><span class="op">(</span>inSCE<span class="op">=</span><span class="va">sce</span>, reducedDimName<span class="op">=</span><span class="st">"UMAP"</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">scExample</span>, package<span class="op">=</span><span class="st">"singleCellTK"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="subsetSCECols.html">subsetSCECols</a></span><span class="op">(</span><span class="va">sce</span>, colData <span class="op">=</span> <span class="st">"type != 'EmptyDroplet'"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="runUMAP.html">runQuickUMAP</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="runScrublet.html">runScrublet</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">plotScrubletResults</span><span class="op">(</span>inSCE<span class="op">=</span><span class="va">sce</span>, reducedDimName<span class="op">=</span><span class="st">"UMAP"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -433,7 +448,7 @@ the relative widths for each plot.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

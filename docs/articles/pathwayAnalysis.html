@@ -34,7 +34,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.2</span>
       </span>
     </div>
 
@@ -381,14 +381,14 @@ manual pages for the details.</li>
 <p>To demonstrate simple and clear examples, here we use the “PBMC-3k”
 dataset from “10X” which can be easily imported with SCTK functions.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://www.camplab.net/sctk/" class="external-link">singleCellTK</a></span><span class="op">)</span>
-<span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/importExampleData.html">importExampleData</a></span><span class="op">(</span><span class="st">"pbmc3k"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://www.camplab.net/sctk/" class="external-link">singleCellTK</a></span><span class="op">)</span></span>
+<span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/importExampleData.html">importExampleData</a></span><span class="op">(</span><span class="st">"pbmc3k"</span><span class="op">)</span></span></code></pre></div>
 <p>The preprocessing only includes necessary steps before implementing
 pathway analysis</p>
 <div class="offset">
 <details><summary><b>Preprocessing</b></summary><div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/scaterlogNormCounts.html">scaterlogNormCounts</a></span><span class="op">(</span><span class="va">sce</span>, assayName <span class="op">=</span> <span class="st">"logcounts"</span><span class="op">)</span>
-<span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/importGeneSetsFromMSigDB.html">importGeneSetsFromMSigDB</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, categoryIDs <span class="op">=</span> <span class="st">"H"</span>, species <span class="op">=</span> <span class="st">"Homo sapiens"</span>, mapping <span class="op">=</span> <span class="st">"gene_symbol"</span>, by <span class="op">=</span> <span class="st">"rownames"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/scaterlogNormCounts.html">scaterlogNormCounts</a></span><span class="op">(</span><span class="va">sce</span>, assayName <span class="op">=</span> <span class="st">"logcounts"</span><span class="op">)</span></span>
+<span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/importGeneSetsFromMSigDB.html">importGeneSetsFromMSigDB</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, categoryIDs <span class="op">=</span> <span class="st">"H"</span>, species <span class="op">=</span> <span class="st">"Homo sapiens"</span>, mapping <span class="op">=</span> <span class="st">"gene_symbol"</span>, by <span class="op">=</span> <span class="st">"rownames"</span><span class="op">)</span></span></code></pre></div>
 </details><details><summary><b>Example with VAM</b></summary><details><summary><b>Method specific parameters</b></summary><ul>
 <li>
 <code>center</code>, If True, values will be mean centered when
@@ -402,12 +402,12 @@ p-value will be computed using the standard chi-square approximation for
 the squared Mahalanobis distance (or non-central if center =
 FALSE).</li>
 </ul></details><div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># Directly use an assay</span>
-<span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runVAM.html">runVAM</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, geneSetCollectionName <span class="op">=</span> <span class="st">"H"</span>, useAssay <span class="op">=</span> <span class="st">"logcounts"</span>, center <span class="op">=</span> <span class="cn">TRUE</span>, gamma <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># Directly use an assay</span></span>
+<span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runVAM.html">runVAM</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, geneSetCollectionName <span class="op">=</span> <span class="st">"H"</span>, useAssay <span class="op">=</span> <span class="st">"logcounts"</span>, center <span class="op">=</span> <span class="cn">TRUE</span>, gamma <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
 </details><details><summary><b>Example with GSVA</b></summary><div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># Directly use an assay</span>
-<span class="co"># not run</span>
-<span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runGSVA.html">runGSVA</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, geneSetCollectionName <span class="op">=</span> <span class="st">"H"</span>, useAssay <span class="op">=</span> <span class="st">"logcounts"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># Directly use an assay</span></span>
+<span><span class="co"># not run</span></span>
+<span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runGSVA.html">runGSVA</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, geneSetCollectionName <span class="op">=</span> <span class="st">"H"</span>, useAssay <span class="op">=</span> <span class="st">"logcounts"</span><span class="op">)</span></span></code></pre></div>
 </details>
 </div>
 <p><strong>Results and Visualization</strong></p>
@@ -416,7 +416,7 @@ FALSE).</li>
 <p>To visualize the scores for a specific geneset from the geneset
 collection that is used for running the algorithm:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/plotPathway.html">plotPathway</a></span><span class="op">(</span><span class="va">sce</span>, resultName <span class="op">=</span> <span class="st">"VAM_H_CDF"</span>, geneset <span class="op">=</span> <span class="st">"HALLMARK_INFLAMMATORY_RESPONSE"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plotPathway.html">plotPathway</a></span><span class="op">(</span><span class="va">sce</span>, resultName <span class="op">=</span> <span class="st">"VAM_H_CDF"</span>, geneset <span class="op">=</span> <span class="st">"HALLMARK_INFLAMMATORY_RESPONSE"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="pathwayAnalysis_files/figure-html/pathVis-1.png" width="700"></p>
 <p>In the example above, <code>"VAM_H_CDF"</code> is the name of the
 result generated by VAM, where
@@ -427,15 +427,15 @@ variable for clusters or any biological conditions, in order to group
 the scores into multiple violin plots.</p>
 <p>To get the names of all pathway analysis results:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/getPathwayResultNames.html">getPathwayResultNames</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## [1] "VAM_H_Distance" "VAM_H_CDF"</span></code></pre>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/getPathwayResultNames.html">getPathwayResultNames</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] "VAM_H_Distance" "VAM_H_CDF"</span></span></code></pre>
 <p>To get a list of all genesets that a pathway analysis result
 includes:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="../reference/getGenesetNamesFromCollection.html">getGenesetNamesFromCollection</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, geneSetCollectionName <span class="op">=</span> <span class="st">"H"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## [1] "HALLMARK_ADIPOGENESIS"        "HALLMARK_ALLOGRAFT_REJECTION"</span>
-<span class="co">## [3] "HALLMARK_ANDROGEN_RESPONSE"   "HALLMARK_ANGIOGENESIS"       </span>
-<span class="co">## [5] "HALLMARK_APICAL_JUNCTION"     "HALLMARK_APICAL_SURFACE"</span></code></pre>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="../reference/getGenesetNamesFromCollection.html">getGenesetNamesFromCollection</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, geneSetCollectionName <span class="op">=</span> <span class="st">"H"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] "HALLMARK_ADIPOGENESIS"        "HALLMARK_ALLOGRAFT_REJECTION"</span></span>
+<span><span class="co">## [3] "HALLMARK_ANDROGEN_RESPONSE"   "HALLMARK_ANGIOGENESIS"       </span></span>
+<span><span class="co">## [5] "HALLMARK_APICAL_JUNCTION"     "HALLMARK_APICAL_SURFACE"</span></span></code></pre>
 </div>
 <script>
 document.getElementById("ia-button").click();
@@ -480,7 +480,7 @@ RNA-Seq data</span>,”</span> <em>BMC Bioinformatics</em>, vol. 14, no.
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer>

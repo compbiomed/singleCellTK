@@ -34,7 +34,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.2</span>
       </span>
     </div>
 
@@ -263,8 +263,8 @@ quality control on cell data. (For definition of cell data, please refer
 <a href="cmd_qc.html#introduction-1">this documentation</a>.)</p>
 <p>The package can be loaded using the <code>library</code> command.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://www.camplab.net/sctk/" class="external-link">singleCellTK</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://www.camplab.net/sctk/" class="external-link">singleCellTK</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span></code></pre></div>
 <p><br></p>
 </div>
 <div class="section level2">
@@ -279,11 +279,11 @@ which is available from the <code><a href="../reference/importExampleData.html">
 We will combine these datasets together into a single <a href="https://rdrr.io/bioc/SingleCellExperiment/man/SingleCellExperiment.html" class="external-link">SingleCellExperiment</a>
 object.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">pbmc3k</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/importExampleData.html">importExampleData</a></span><span class="op">(</span>dataset <span class="op">=</span> <span class="st">"pbmc3k"</span><span class="op">)</span>
-<span class="va">pbmc6k</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/importExampleData.html">importExampleData</a></span><span class="op">(</span>dataset <span class="op">=</span> <span class="st">"pbmc6k"</span><span class="op">)</span>
-
-<span class="va">pbmc.combined</span> <span class="op">&lt;-</span> <span class="fu">BiocGenerics</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">pbmc3k</span>, <span class="va">pbmc6k</span><span class="op">)</span>
-<span class="va">sample.vector</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></span><span class="op">(</span><span class="va">pbmc.combined</span><span class="op">)</span><span class="op">$</span><span class="va">sample</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">pbmc3k</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/importExampleData.html">importExampleData</a></span><span class="op">(</span>dataset <span class="op">=</span> <span class="st">"pbmc3k"</span><span class="op">)</span></span>
+<span><span class="va">pbmc6k</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/importExampleData.html">importExampleData</a></span><span class="op">(</span>dataset <span class="op">=</span> <span class="st">"pbmc6k"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">pbmc.combined</span> <span class="op">&lt;-</span> <span class="fu">BiocGenerics</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">pbmc3k</span>, <span class="va">pbmc6k</span><span class="op">)</span></span>
+<span><span class="va">sample.vector</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></span><span class="op">(</span><span class="va">pbmc.combined</span><span class="op">)</span><span class="op">$</span><span class="va">sample</span></span></code></pre></div>
 <p>SCTK also supports the importing of single-cell data from the
 following platforms: <a href="https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/what-is-cell-ranger" class="external-link">10X
 CellRanger</a>, <a href="https://github.com/alexdobin/STAR/blob/master/docs/STARsolo.md" class="external-link">STARSolo</a>,
@@ -308,11 +308,7 @@ samples exist in the <code>SingleCellExperiment</code> object. Here, we
 will use the sample vector stored in the <code>colData</code> slot of
 the <code>SingleCellExperiment</code> object.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># UMAP:</span>
-<span class="va">pbmc.combined</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getUMAP.html">getUMAP</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">pbmc.combined</span>, useAssay <span class="op">=</span> <span class="st">"counts"</span>, logNorm <span class="op">=</span> <span class="cn">TRUE</span>, sample <span class="op">=</span> <span class="va">sample.vector</span><span class="op">)</span>
-
-<span class="co"># TSNE (not run):</span>
-<span class="co"># pbmc &lt;- getTSNE(inSCE=pbmc, useAssay="counts", logNorm = TRUE, sample = colData(pbmc)$sample)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">pbmc.combined</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runUMAP.html">runQuickUMAP</a></span><span class="op">(</span><span class="va">pbmc.combined</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="run-cellqc">Run CellQC<a class="anchor" aria-label="anchor" href="#run-cellqc"></a>
@@ -335,23 +331,23 @@ supply a <code>GeneSetCollection</code> object from the <a href="https://biocond
 package. Please also refer to <a href="import_genesets.html"><em>Import
 Genesets</em> documentation</a>.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">pbmc.combined</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/importGeneSetsFromGMT.html">importGeneSetsFromGMT</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">pbmc.combined</span>, collectionName <span class="op">=</span> <span class="st">"mito"</span>, file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/mito_subset.gmt"</span>, package <span class="op">=</span> <span class="st">"singleCellTK"</span><span class="op">)</span><span class="op">)</span>
-
-<span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">12345</span><span class="op">)</span>
-<span class="va">pbmc.combined</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runCellQC.html">runCellQC</a></span><span class="op">(</span><span class="va">pbmc.combined</span>, 
-                           algorithms <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"QCMetrics"</span>, <span class="st">"scrublet"</span>, <span class="st">"scDblFinder"</span>, <span class="st">"cxds"</span>, <span class="st">"bcds"</span>, <span class="st">"cxds_bcds_hybrid"</span>, <span class="st">"doubletFinder"</span>, <span class="st">"decontX"</span>, <span class="st">"soupX"</span><span class="op">)</span>, 
-                           sample <span class="op">=</span> <span class="va">sample.vector</span>, 
-                           collectionName <span class="op">=</span> <span class="st">"mito"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">pbmc.combined</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/importGeneSetsFromGMT.html">importGeneSetsFromGMT</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">pbmc.combined</span>, collectionName <span class="op">=</span> <span class="st">"mito"</span>, file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/mito_subset.gmt"</span>, package <span class="op">=</span> <span class="st">"singleCellTK"</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">12345</span><span class="op">)</span></span>
+<span><span class="va">pbmc.combined</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runCellQC.html">runCellQC</a></span><span class="op">(</span><span class="va">pbmc.combined</span>, </span>
+<span>                           algorithms <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"QCMetrics"</span>, <span class="st">"scrublet"</span>, <span class="st">"scDblFinder"</span>, <span class="st">"cxds"</span>, <span class="st">"bcds"</span>, <span class="st">"cxds_bcds_hybrid"</span>, <span class="st">"doubletFinder"</span>, <span class="st">"decontX"</span>, <span class="st">"soupX"</span><span class="op">)</span>, </span>
+<span>                           sample <span class="op">=</span> <span class="va">sample.vector</span>, </span>
+<span>                           collectionName <span class="op">=</span> <span class="st">"mito"</span><span class="op">)</span></span></code></pre></div>
 <p>Users can also specify <code>mitoRef</code>, <code>mitoIDType</code>
 and <code>mitoGeneLocation</code> arguments in <code>runCellQC</code>
 function to quantify mitochondrial gene expression without the need to
 import gene sets. For the details about these arguments, please refer to
 <code>runCellQC</code> and <code><a href="../reference/runPerCellQC.html">runPerCellQC()</a></code> .</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">pbmc.combined</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runCellQC.html">runCellQC</a></span><span class="op">(</span><span class="va">pbmc.combined</span>,
-                           algorithms <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"QCMetrics"</span>, <span class="st">"scrublet"</span>, <span class="st">"scDblFinder"</span>, <span class="st">"cxds"</span>, <span class="st">"bcds"</span>, <span class="st">"cxds_bcds_hybrid"</span>, <span class="st">"doubletFinder"</span>, <span class="st">"decontX"</span>, <span class="st">"soupX"</span><span class="op">)</span>,
-                           sample <span class="op">=</span> <span class="va">sample.vector</span>,
-                           mitoRef <span class="op">=</span> <span class="st">"human"</span>, mitoIDType <span class="op">=</span> <span class="st">"symbol"</span>, mitoGeneLocation <span class="op">=</span> <span class="st">"rownames"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">pbmc.combined</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runCellQC.html">runCellQC</a></span><span class="op">(</span><span class="va">pbmc.combined</span>,</span>
+<span>                           algorithms <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"QCMetrics"</span>, <span class="st">"scrublet"</span>, <span class="st">"scDblFinder"</span>, <span class="st">"cxds"</span>, <span class="st">"bcds"</span>, <span class="st">"cxds_bcds_hybrid"</span>, <span class="st">"doubletFinder"</span>, <span class="st">"decontX"</span>, <span class="st">"soupX"</span><span class="op">)</span>,</span>
+<span>                           sample <span class="op">=</span> <span class="va">sample.vector</span>,</span>
+<span>                           mitoRef <span class="op">=</span> <span class="st">"human"</span>, mitoIDType <span class="op">=</span> <span class="st">"symbol"</span>, mitoGeneLocation <span class="op">=</span> <span class="st">"rownames"</span><span class="op">)</span></span></code></pre></div>
 <p><br> If users choose to only run a specific set of algorithms, they
 can specify which to run with the <code>algorithms</code> parameter. By
 default, the <code><a href="../reference/runCellQC.html">runCellQC()</a></code> will run <code>"QCMetrics"</code>,
@@ -364,7 +360,7 @@ if our users want to run them.</p>
 the <code>colData</code> slot of the <code>SingleCellExperiment</code>
 object.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></span><span class="op">(</span><span class="va">pbmc.combined</span><span class="op">)</span>, <span class="fl">5</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></span><span class="op">(</span><span class="va">pbmc.combined</span><span class="op">)</span>, <span class="fl">5</span><span class="op">)</span></span></code></pre></div>
 <div style="border: 1px solid #ddd; padding: 5px; overflow-x: scroll; width:80%; ">
 <table class="table table" style="margin-left: auto; margin-right: auto;">
 <thead><tr>
@@ -581,13 +577,13 @@ pbmc3k
 Singlet
 </td>
 <td style="text-align:right;">
-0.0797733
+0.1210292
 </td>
 <td style="text-align:right;">
-0.7789423
+0.7837616
 </td>
 <td style="text-align:right;">
-0.0397657
+0.0446885
 </td>
 <td style="text-align:right;">
 0.0138889
@@ -614,7 +610,7 @@ Singlet
 Singlet
 </td>
 <td style="text-align:right;">
-0.0320272
+0.0334339
 </td>
 <td style="text-align:left;">
 pbmc3k-1
@@ -700,7 +696,7 @@ pbmc3k
 4903
 </td>
 <td style="text-align:right;">
-0.1147541
+0.1089109
 </td>
 <td style="text-align:left;">
 Singlet
@@ -712,13 +708,13 @@ pbmc3k
 Singlet
 </td>
 <td style="text-align:right;">
-0.4324135
+0.3434467
 </td>
 <td style="text-align:right;">
-0.5577750
+0.5700511
 </td>
 <td style="text-align:right;">
-0.1585731
+0.1495769
 </td>
 <td style="text-align:right;">
 0.1527778
@@ -745,7 +741,7 @@ Doublet
 Singlet
 </td>
 <td style="text-align:right;">
-0.1196156
+0.1329936
 </td>
 <td style="text-align:left;">
 pbmc3k-2
@@ -907,9 +903,9 @@ users</td>
 stored in the <code>reducedDims</code> slot of the
 <code>SingleCellExperiment</code> object.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/SingleCellExperiment/man/reducedDims.html" class="external-link">reducedDims</a></span><span class="op">(</span><span class="va">pbmc.combined</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## List of length 8</span>
-<span class="co">## names(8): UMAP scrublet_TSNE ... SoupX_UMAP_pbmc3k SoupX_UMAP_pbmc6k</span></code></pre>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/SingleCellExperiment/man/reducedDims.html" class="external-link">reducedDims</a></span><span class="op">(</span><span class="va">pbmc.combined</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## List of length 8</span></span>
+<span><span class="co">## names(8): UMAP scrublet_TSNE ... SoupX_UMAP_pbmc3k SoupX_UMAP_pbmc6k</span></span></code></pre>
 <div class="section level4">
 <h4 id="generating-a-summary-statistic-table">Generating a summary statistic table<a class="anchor" aria-label="anchor" href="#generating-a-summary-statistic-table"></a>
 </h4>
@@ -919,60 +915,60 @@ which is stored within the <code>qc_table</code> table under
 <code>metadata</code>. The table can then be returned using
 <code>getSampleSummaryStatsTable</code>.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">pbmc.combined</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sampleSummaryStats.html">sampleSummaryStats</a></span><span class="op">(</span><span class="va">pbmc.combined</span>, sample <span class="op">=</span> <span class="va">sample.vector</span><span class="op">)</span>
-<span class="fu"><a href="../reference/getSampleSummaryStatsTable.html">getSampleSummaryStatsTable</a></span><span class="op">(</span><span class="va">pbmc.combined</span>, statsName <span class="op">=</span> <span class="st">"qc_table"</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">##                           pbmc3k  pbmc6k All Samples</span>
-<span class="co">## Number of Cells          2700.00 5419.00     8119.00</span>
-<span class="co">## Mean counts              2366.90 2027.60     2140.50</span>
-<span class="co">## Median counts            2197.00 1873.00     1988.00</span>
-<span class="co">## Mean features detected    846.99  748.06      780.96</span>
-<span class="co">## Median features detected  817.00  716.00      750.00</span></code></pre>
+<code class="sourceCode R"><span><span class="va">pbmc.combined</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sampleSummaryStats.html">sampleSummaryStats</a></span><span class="op">(</span><span class="va">pbmc.combined</span>, sample <span class="op">=</span> <span class="va">sample.vector</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/getSampleSummaryStatsTable.html">getSampleSummaryStatsTable</a></span><span class="op">(</span><span class="va">pbmc.combined</span>, statsName <span class="op">=</span> <span class="st">"qc_table"</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">##                           pbmc3k  pbmc6k All Samples</span></span>
+<span><span class="co">## Number of Cells          2700.00 5419.00     8119.00</span></span>
+<span><span class="co">## Mean counts              2366.90 2027.60     2140.50</span></span>
+<span><span class="co">## Median counts            2197.00 1873.00     1988.00</span></span>
+<span><span class="co">## Mean features detected    846.99  748.06      780.96</span></span>
+<span><span class="co">## Median features detected  817.00  716.00      750.00</span></span></code></pre>
 <p>If users choose to generate a table for all QC metrics generated
 through <code><a href="../reference/runCellQC.html">runCellQC()</a></code>, they may set the <code>simple</code>
 parameter to <code>FALSE</code>.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">pbmc.combined</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sampleSummaryStats.html">sampleSummaryStats</a></span><span class="op">(</span><span class="va">pbmc.combined</span>, sample <span class="op">=</span> <span class="va">sample.vector</span>, simple <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
-<span class="fu"><a href="../reference/getSampleSummaryStatsTable.html">getSampleSummaryStatsTable</a></span><span class="op">(</span><span class="va">pbmc.combined</span>, statsName <span class="op">=</span> <span class="st">"qc_table"</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">##                                                           pbmc3k    pbmc6k</span>
-<span class="co">## Number of Cells                                        2700.0000 5419.0000</span>
-<span class="co">## Mean counts                                            2366.9000 2027.6000</span>
-<span class="co">## Median counts                                          2197.0000 1873.0000</span>
-<span class="co">## Mean features detected                                  846.9900  748.0600</span>
-<span class="co">## Median features detected                                817.0000  716.0000</span>
-<span class="co">## Scrublet - Number of doublets                             0.0000    0.0000</span>
-<span class="co">## Scrublet - Percentage of doublets                         0.0000    0.0000</span>
-<span class="co">## scDblFinder - Number of doublets                        115.0000  294.0000</span>
-<span class="co">## scDblFinder - Percentage of doublets                      4.2600    5.4300</span>
-<span class="co">## DoubletFinder - Number of doublets, Resolution 1.5      202.0000  406.0000</span>
-<span class="co">## DoubletFinder - Percentage of doublets, Resolution 1.5    7.4800    7.4900</span>
-<span class="co">## CXDS - Number of doublets                               132.0000  294.0000</span>
-<span class="co">## CXDS - Percentage of doublets                             4.8900    5.4300</span>
-<span class="co">## BCDS - Number of doublets                               151.0000  257.0000</span>
-<span class="co">## BCDS - Percentage of doublets                             5.5900    4.7400</span>
-<span class="co">## SCDS Hybrid - Number of doublets                        173.0000  301.0000</span>
-<span class="co">## SCDS Hybrid - Percentage of doublets                      6.4100    5.5500</span>
-<span class="co">## DecontX - Mean contamination                              0.0811    0.0603</span>
-<span class="co">## DecontX - Median contamination                            0.0535    0.0364</span>
-<span class="co">##                                                        All Samples</span>
-<span class="co">## Number of Cells                                          8119.0000</span>
-<span class="co">## Mean counts                                              2140.5000</span>
-<span class="co">## Median counts                                            1988.0000</span>
-<span class="co">## Mean features detected                                    780.9600</span>
-<span class="co">## Median features detected                                  750.0000</span>
-<span class="co">## Scrublet - Number of doublets                               0.0000</span>
-<span class="co">## Scrublet - Percentage of doublets                           0.0000</span>
-<span class="co">## scDblFinder - Number of doublets                          409.0000</span>
-<span class="co">## scDblFinder - Percentage of doublets                        5.0400</span>
-<span class="co">## DoubletFinder - Number of doublets, Resolution 1.5        608.0000</span>
-<span class="co">## DoubletFinder - Percentage of doublets, Resolution 1.5      7.4900</span>
-<span class="co">## CXDS - Number of doublets                                 426.0000</span>
-<span class="co">## CXDS - Percentage of doublets                               5.2500</span>
-<span class="co">## BCDS - Number of doublets                                 408.0000</span>
-<span class="co">## BCDS - Percentage of doublets                               5.0300</span>
-<span class="co">## SCDS Hybrid - Number of doublets                          474.0000</span>
-<span class="co">## SCDS Hybrid - Percentage of doublets                        5.8400</span>
-<span class="co">## DecontX - Mean contamination                                0.0673</span>
-<span class="co">## DecontX - Median contamination                              0.0412</span></code></pre>
+<code class="sourceCode R"><span><span class="va">pbmc.combined</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sampleSummaryStats.html">sampleSummaryStats</a></span><span class="op">(</span><span class="va">pbmc.combined</span>, sample <span class="op">=</span> <span class="va">sample.vector</span>, simple <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/getSampleSummaryStatsTable.html">getSampleSummaryStatsTable</a></span><span class="op">(</span><span class="va">pbmc.combined</span>, statsName <span class="op">=</span> <span class="st">"qc_table"</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">##                                                           pbmc3k    pbmc6k</span></span>
+<span><span class="co">## Number of Cells                                        2700.0000 5419.0000</span></span>
+<span><span class="co">## Mean counts                                            2366.9000 2027.6000</span></span>
+<span><span class="co">## Median counts                                          2197.0000 1873.0000</span></span>
+<span><span class="co">## Mean features detected                                  846.9900  748.0600</span></span>
+<span><span class="co">## Median features detected                                817.0000  716.0000</span></span>
+<span><span class="co">## Scrublet - Number of doublets                             0.0000    0.0000</span></span>
+<span><span class="co">## Scrublet - Percentage of doublets                         0.0000    0.0000</span></span>
+<span><span class="co">## scDblFinder - Number of doublets                        126.0000  304.0000</span></span>
+<span><span class="co">## scDblFinder - Percentage of doublets                      4.6700    5.6100</span></span>
+<span><span class="co">## DoubletFinder - Number of doublets, Resolution 1.5      202.0000  406.0000</span></span>
+<span><span class="co">## DoubletFinder - Percentage of doublets, Resolution 1.5    7.4800    7.4900</span></span>
+<span><span class="co">## CXDS - Number of doublets                               132.0000  294.0000</span></span>
+<span><span class="co">## CXDS - Percentage of doublets                             4.8900    5.4300</span></span>
+<span><span class="co">## BCDS - Number of doublets                               151.0000  257.0000</span></span>
+<span><span class="co">## BCDS - Percentage of doublets                             5.5900    4.7400</span></span>
+<span><span class="co">## SCDS Hybrid - Number of doublets                        173.0000  301.0000</span></span>
+<span><span class="co">## SCDS Hybrid - Percentage of doublets                      6.4100    5.5500</span></span>
+<span><span class="co">## DecontX - Mean contamination                              0.0809    0.0613</span></span>
+<span><span class="co">## DecontX - Median contamination                            0.0552    0.0365</span></span>
+<span><span class="co">##                                                        All Samples</span></span>
+<span><span class="co">## Number of Cells                                          8119.0000</span></span>
+<span><span class="co">## Mean counts                                              2140.5000</span></span>
+<span><span class="co">## Median counts                                            1988.0000</span></span>
+<span><span class="co">## Mean features detected                                    780.9600</span></span>
+<span><span class="co">## Median features detected                                  750.0000</span></span>
+<span><span class="co">## Scrublet - Number of doublets                               0.0000</span></span>
+<span><span class="co">## Scrublet - Percentage of doublets                           0.0000</span></span>
+<span><span class="co">## scDblFinder - Number of doublets                          430.0000</span></span>
+<span><span class="co">## scDblFinder - Percentage of doublets                        5.3000</span></span>
+<span><span class="co">## DoubletFinder - Number of doublets, Resolution 1.5        608.0000</span></span>
+<span><span class="co">## DoubletFinder - Percentage of doublets, Resolution 1.5      7.4900</span></span>
+<span><span class="co">## CXDS - Number of doublets                                 426.0000</span></span>
+<span><span class="co">## CXDS - Percentage of doublets                               5.2500</span></span>
+<span><span class="co">## BCDS - Number of doublets                                 408.0000</span></span>
+<span><span class="co">## BCDS - Percentage of doublets                               5.0300</span></span>
+<span><span class="co">## SCDS Hybrid - Number of doublets                          474.0000</span></span>
+<span><span class="co">## SCDS Hybrid - Percentage of doublets                        5.8400</span></span>
+<span><span class="co">## DecontX - Mean contamination                                0.0678</span></span>
+<span><span class="co">## DecontX - Median contamination                              0.0417</span></span></code></pre>
 </div>
 </div>
 <div class="section level3">
@@ -1027,11 +1023,11 @@ quantification in <code>runCellQC</code> function. Please refer to
 more details.</li>
 </ul>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">pbmc.combined</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runPerCellQC.html">runPerCellQC</a></span><span class="op">(</span>
-  inSCE <span class="op">=</span> <span class="va">pbmc.combined</span>,
-  useAssay <span class="op">=</span> <span class="st">"counts"</span>,
-  collectionName <span class="op">=</span> <span class="st">"ribosome"</span>,
-  mitoRef <span class="op">=</span> <span class="st">"human"</span>, mitoIDType <span class="op">=</span> <span class="st">"symbol"</span>, mitoGeneLocation <span class="op">=</span> <span class="st">"rownames"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">pbmc.combined</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runPerCellQC.html">runPerCellQC</a></span><span class="op">(</span></span>
+<span>  inSCE <span class="op">=</span> <span class="va">pbmc.combined</span>,</span>
+<span>  useAssay <span class="op">=</span> <span class="st">"counts"</span>,</span>
+<span>  collectionName <span class="op">=</span> <span class="st">"ribosome"</span>,</span>
+<span>  mitoRef <span class="op">=</span> <span class="st">"human"</span>, mitoIDType <span class="op">=</span> <span class="st">"symbol"</span>, mitoGeneLocation <span class="op">=</span> <span class="st">"rownames"</span><span class="op">)</span></span></code></pre></div>
   </details></details><details><summary><b>Doublet Detection</b></summary><p>Doublets hinder cell-type identification by appearing as a distinct
 transcriptomic state, and need to be removed for downstream analysis.
 SCTK contains various doublet detection tools that the user may choose
@@ -1061,11 +1057,11 @@ likelihood that a cell is a doublet</li>
 cell is a doublet.</li>
 </ul>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">pbmc.combined</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runScrublet.html">runScrublet</a></span><span class="op">(</span>
-  inSCE <span class="op">=</span> <span class="va">pbmc.combined</span>,
-  sample <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></span><span class="op">(</span><span class="va">pbmc.combined</span><span class="op">)</span><span class="op">$</span><span class="va">sample</span>, 
-  useAssay <span class="op">=</span> <span class="st">"counts"</span>
-<span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">pbmc.combined</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runScrublet.html">runScrublet</a></span><span class="op">(</span></span>
+<span>  inSCE <span class="op">=</span> <span class="va">pbmc.combined</span>,</span>
+<span>  sample <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></span><span class="op">(</span><span class="va">pbmc.combined</span><span class="op">)</span><span class="op">$</span><span class="va">sample</span>, </span>
+<span>  useAssay <span class="op">=</span> <span class="st">"counts"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 </details><details><summary><b>runScDblFinder</b></summary><p><a href="https://rdrr.io/bioc/scDblFinder/" class="external-link">ScDblFinder</a> is a
 doublet detection algorithm. ScDblFinder aims to detect doublets by
 creating a simulated doublet from existing cells and projecting it to
@@ -1085,7 +1081,7 @@ simulated doublets used for doublet detection.</li>
 <code>colData</code> variable. The doublet score of a droplet will be
 higher if the it is deemed likely to be a doublet.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">pbmc.combined</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runScDblFinder.html">runScDblFinder</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">pbmc.combined</span>, sample <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></span><span class="op">(</span><span class="va">pbmc.combined</span><span class="op">)</span><span class="op">$</span><span class="va">sample</span>, useAssay <span class="op">=</span> <span class="st">"counts"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">pbmc.combined</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runScDblFinder.html">runScDblFinder</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">pbmc.combined</span>, sample <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></span><span class="op">(</span><span class="va">pbmc.combined</span><span class="op">)</span><span class="op">$</span><span class="va">sample</span>, useAssay <span class="op">=</span> <span class="st">"counts"</span><span class="op">)</span></span></code></pre></div>
 </details><details><summary><b>runDoubletFinder</b></summary><p><a href="https://github.com/chris-mcginnis-ucsf/DoubletFinder" class="external-link">DoubletFinder</a>
 is a doublet detection algorithm which depends on the single cell
 analysis package <a href="https://satijalab.org/seurat/" class="external-link">Seurat</a>. The
@@ -1123,13 +1119,13 @@ variable of the likelihood that a cell is a doublet</li>
 whether the cell is a doublet.</li>
 </ul>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">pbmc.combined</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runDoubletFinder.html">runDoubletFinder</a></span><span class="op">(</span>
-  inSCE <span class="op">=</span> <span class="va">pbmc.combined</span>, useAssay <span class="op">=</span> <span class="st">"counts"</span>,
-  sample <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></span><span class="op">(</span><span class="va">pbmc.combined</span><span class="op">)</span><span class="op">$</span><span class="va">sample</span>, 
-  seuratRes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1.0</span><span class="op">)</span>, seuratPcs <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">15</span>,
-  seuratNfeatures <span class="op">=</span> <span class="fl">2000</span>,
-  formationRate <span class="op">=</span> <span class="fl">0.075</span>, seed <span class="op">=</span> <span class="fl">12345</span>
-<span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">pbmc.combined</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runDoubletFinder.html">runDoubletFinder</a></span><span class="op">(</span></span>
+<span>  inSCE <span class="op">=</span> <span class="va">pbmc.combined</span>, useAssay <span class="op">=</span> <span class="st">"counts"</span>,</span>
+<span>  sample <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></span><span class="op">(</span><span class="va">pbmc.combined</span><span class="op">)</span><span class="op">$</span><span class="va">sample</span>, </span>
+<span>  seuratRes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1.0</span><span class="op">)</span>, seuratPcs <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">15</span>,</span>
+<span>  seuratNfeatures <span class="op">=</span> <span class="fl">2000</span>,</span>
+<span>  formationRate <span class="op">=</span> <span class="fl">0.075</span>, seed <span class="op">=</span> <span class="fl">12345</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 </details><details><summary><b>runCXDS</b></summary><p>CXDS, or co-expression based doublet scoring, is an algorithm in the
 <a href="https://www.bioconductor.org/packages/release/bioc/html/scds.html" class="external-link">SCDS</a>
 package which employs a binomial model for the co-expression of pairs of
@@ -1155,11 +1151,11 @@ should be returned or not.</li>
 <code>scds_cxds_score</code>, which will be stored as a
 <code>colData</code> variable.</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">pbmc.combined</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runCxds.html">runCxds</a></span><span class="op">(</span>
-  inSCE <span class="op">=</span> <span class="va">pbmc.combined</span>, sample <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></span><span class="op">(</span><span class="va">pbmc.combined</span><span class="op">)</span><span class="op">$</span><span class="va">sample</span>, 
-  ntop <span class="op">=</span> <span class="fl">500</span>, binThresh <span class="op">=</span> <span class="fl">0</span>,
-  verb <span class="op">=</span> <span class="cn">FALSE</span>, retRes <span class="op">=</span> <span class="cn">FALSE</span>, estNdbl <span class="op">=</span> <span class="cn">FALSE</span>
-<span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">pbmc.combined</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runCxds.html">runCxds</a></span><span class="op">(</span></span>
+<span>  inSCE <span class="op">=</span> <span class="va">pbmc.combined</span>, sample <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></span><span class="op">(</span><span class="va">pbmc.combined</span><span class="op">)</span><span class="op">$</span><span class="va">sample</span>, </span>
+<span>  ntop <span class="op">=</span> <span class="fl">500</span>, binThresh <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  verb <span class="op">=</span> <span class="cn">FALSE</span>, retRes <span class="op">=</span> <span class="cn">FALSE</span>, estNdbl <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 </details><details><summary><b>runBCDS</b></summary><p>BCDS, or binary classification based doublet scoring, is an algorithm
 in the <a href="https://www.bioconductor.org/packages/release/bioc/html/scds.html" class="external-link">SCDS</a>
 package which uses a binary classification approach to determine
@@ -1184,10 +1180,10 @@ returned or not.</li>
 which is the likelihood that a cell is a doublet and will be stored as a
 <code>colData</code> variable.</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">pbmc.combined</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runBcds.html">runBcds</a></span><span class="op">(</span>
-  inSCE <span class="op">=</span> <span class="va">pbmc.combined</span>, seed <span class="op">=</span> <span class="fl">12345</span>, sample <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></span><span class="op">(</span><span class="va">pbmc.combined</span><span class="op">)</span><span class="op">$</span><span class="va">sample</span>, 
-  ntop <span class="op">=</span> <span class="fl">500</span>, srat <span class="op">=</span> <span class="fl">1</span>, nmax <span class="op">=</span> <span class="st">"tune"</span>, varImp <span class="op">=</span> <span class="cn">FALSE</span>
-<span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">pbmc.combined</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runBcds.html">runBcds</a></span><span class="op">(</span></span>
+<span>  inSCE <span class="op">=</span> <span class="va">pbmc.combined</span>, seed <span class="op">=</span> <span class="fl">12345</span>, sample <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></span><span class="op">(</span><span class="va">pbmc.combined</span><span class="op">)</span><span class="op">$</span><span class="va">sample</span>, </span>
+<span>  ntop <span class="op">=</span> <span class="fl">500</span>, srat <span class="op">=</span> <span class="fl">1</span>, nmax <span class="op">=</span> <span class="st">"tune"</span>, varImp <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 </details><details><summary><b>runCxdsBcdsHybrid</b></summary><p>The CXDS-BCDS hybrid algorithm, uses both CXDS and BCDS algorithms
 from the <a href="https://www.bioconductor.org/packages/release/bioc/html/scds.html" class="external-link">SCDS</a>
 package. The wrapper function <code><a href="../reference/runCxdsBcdsHybrid.html">runCxdsBcdsHybrid()</a></code> can be
@@ -1200,10 +1196,10 @@ respectively.</p>
 <code>scds_hybrid_score</code>, which will be stored as a
 <code>colData</code> variable.</p>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">pbmc.combined</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runCxdsBcdsHybrid.html">runCxdsBcdsHybrid</a></span><span class="op">(</span>
-  inSCE <span class="op">=</span> <span class="va">pbmc.combined</span>, sample <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></span><span class="op">(</span><span class="va">pbmc.combined</span><span class="op">)</span><span class="op">$</span><span class="va">sample</span>, 
-  seed <span class="op">=</span> <span class="fl">12345</span>, nTop <span class="op">=</span> <span class="fl">500</span>
-<span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">pbmc.combined</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runCxdsBcdsHybrid.html">runCxdsBcdsHybrid</a></span><span class="op">(</span></span>
+<span>  inSCE <span class="op">=</span> <span class="va">pbmc.combined</span>, sample <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></span><span class="op">(</span><span class="va">pbmc.combined</span><span class="op">)</span><span class="op">$</span><span class="va">sample</span>, </span>
+<span>  seed <span class="op">=</span> <span class="fl">12345</span>, nTop <span class="op">=</span> <span class="fl">500</span></span>
+<span><span class="op">)</span></span></code></pre></div>
   </details></details><details><summary><b>Ambient RNA Detection</b></summary><details><summary><b>runDecontX</b></summary><p>In droplet-based single cell technologies, ambient RNA that may have
 been released from apoptotic or damaged cells may get incorporated into
 another droplet, and can lead to contamination. <a href="https://rdrr.io/bioc/celda/man/decontX.html" class="external-link">decontX</a>,
@@ -1267,136 +1263,136 @@ provides a specialized plotting function.</p>
 <details><summary><b>General QC metrics</b></summary><details><summary><b>runPerCellQC</b></summary><p>The wrapper function <code><a href="../reference/plotRunPerCellQCResults.html">plotRunPerCellQCResults()</a></code> can be
 used to plot the general QC outputs.</p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">runpercellqc.results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plotRunPerCellQCResults.html">plotRunPerCellQCResults</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">pbmc.combined</span>, sample <span class="op">=</span> <span class="va">sample.vector</span>, combinePlot <span class="op">=</span> <span class="st">"all"</span>, axisSize <span class="op">=</span> <span class="fl">8</span>, axisLabelSize <span class="op">=</span> <span class="fl">9</span>, titleSize <span class="op">=</span> <span class="fl">20</span>, labelSamples<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">runpercellqc.results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plotRunPerCellQCResults.html">plotRunPerCellQCResults</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">pbmc.combined</span>, sample <span class="op">=</span> <span class="va">sample.vector</span>, combinePlot <span class="op">=</span> <span class="st">"all"</span>, axisSize <span class="op">=</span> <span class="fl">8</span>, axisLabelSize <span class="op">=</span> <span class="fl">9</span>, titleSize <span class="op">=</span> <span class="fl">20</span>, labelSamples<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">runpercellqc.results</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">runpercellqc.results</span></span></code></pre></div>
 <p><img src="cnsl_cellqc_files/figure-html/unnamed-chunk-3-1.png" width="960"></p>
   </details></details><details><summary><b>Doublet Detection</b></summary><details><summary><b>Scrublet</b></summary><p>The wrapper function <code><a href="../reference/plotScrubletResults.html">plotScrubletResults()</a></code> can be used
 to plot the results from the Scrublet algorithm. Here, we will use the
-UMAP coordinates generated from <code><a href="../reference/getUMAP.html">getUMAP()</a></code> in previous
+UMAP coordinates generated from <code><a href="../reference/runUMAP.html">runQuickUMAP()</a></code> in previous
 sections.</p>
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/SingleCellExperiment/man/reducedDims.html" class="external-link">reducedDims</a></span><span class="op">(</span><span class="va">pbmc.combined</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## List of length 8</span>
-<span class="co">## names(8): UMAP scrublet_TSNE ... SoupX_UMAP_pbmc3k SoupX_UMAP_pbmc6k</span></code></pre>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/SingleCellExperiment/man/reducedDims.html" class="external-link">reducedDims</a></span><span class="op">(</span><span class="va">pbmc.combined</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## List of length 8</span></span>
+<span><span class="co">## names(8): UMAP scrublet_TSNE ... SoupX_UMAP_pbmc3k SoupX_UMAP_pbmc6k</span></span></code></pre>
 <div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">scrublet.results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plotScrubletResults.html">plotScrubletResults</a></span><span class="op">(</span>
-  inSCE <span class="op">=</span> <span class="va">pbmc.combined</span>,
-  reducedDimName <span class="op">=</span> <span class="st">"UMAP"</span>,
-  sample <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></span><span class="op">(</span><span class="va">pbmc.combined</span><span class="op">)</span><span class="op">$</span><span class="va">sample</span>, 
-  combinePlot <span class="op">=</span> <span class="st">"all"</span>,
-  titleSize <span class="op">=</span> <span class="fl">10</span>,
-  axisLabelSize <span class="op">=</span> <span class="fl">8</span>,
-  axisSize <span class="op">=</span> <span class="fl">10</span>,
-  legendSize <span class="op">=</span> <span class="fl">10</span>,
-  legendTitleSize <span class="op">=</span> <span class="fl">10</span>
-<span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">scrublet.results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plotScrubletResults.html">plotScrubletResults</a></span><span class="op">(</span></span>
+<span>  inSCE <span class="op">=</span> <span class="va">pbmc.combined</span>,</span>
+<span>  reducedDimName <span class="op">=</span> <span class="st">"UMAP"</span>,</span>
+<span>  sample <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></span><span class="op">(</span><span class="va">pbmc.combined</span><span class="op">)</span><span class="op">$</span><span class="va">sample</span>, </span>
+<span>  combinePlot <span class="op">=</span> <span class="st">"all"</span>,</span>
+<span>  titleSize <span class="op">=</span> <span class="fl">10</span>,</span>
+<span>  axisLabelSize <span class="op">=</span> <span class="fl">8</span>,</span>
+<span>  axisSize <span class="op">=</span> <span class="fl">10</span>,</span>
+<span>  legendSize <span class="op">=</span> <span class="fl">10</span>,</span>
+<span>  legendTitleSize <span class="op">=</span> <span class="fl">10</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">scrublet.results</span> </code></pre></div>
+<code class="sourceCode R"><span><span class="va">scrublet.results</span> </span></code></pre></div>
 <p><img src="cnsl_cellqc_files/figure-html/plot_umap_scrublet-1.png" width="960"></p>
 </details><details><summary><b>ScDblFinder</b></summary><p>The wrapper function <code><a href="../reference/plotScDblFinderResults.html">plotScDblFinderResults()</a></code> can be
 used to plot the QC outputs from the ScDblFinder algorithm.</p>
 <div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">scDblFinder.results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plotScDblFinderResults.html">plotScDblFinderResults</a></span><span class="op">(</span>
-  inSCE <span class="op">=</span> <span class="va">pbmc.combined</span>, sample <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></span><span class="op">(</span><span class="va">pbmc.combined</span><span class="op">)</span><span class="op">$</span><span class="va">sample</span>, 
-  reducedDimName <span class="op">=</span> <span class="st">"UMAP"</span>, combinePlot <span class="op">=</span> <span class="st">"all"</span>,
-  titleSize <span class="op">=</span> <span class="fl">13</span>,
-  axisLabelSize <span class="op">=</span> <span class="fl">13</span>,
-  axisSize <span class="op">=</span> <span class="fl">13</span>,
-  legendSize <span class="op">=</span> <span class="fl">13</span>,
-  legendTitleSize <span class="op">=</span> <span class="fl">13</span>
-<span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">scDblFinder.results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plotScDblFinderResults.html">plotScDblFinderResults</a></span><span class="op">(</span></span>
+<span>  inSCE <span class="op">=</span> <span class="va">pbmc.combined</span>, sample <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></span><span class="op">(</span><span class="va">pbmc.combined</span><span class="op">)</span><span class="op">$</span><span class="va">sample</span>, </span>
+<span>  reducedDimName <span class="op">=</span> <span class="st">"UMAP"</span>, combinePlot <span class="op">=</span> <span class="st">"all"</span>,</span>
+<span>  titleSize <span class="op">=</span> <span class="fl">13</span>,</span>
+<span>  axisLabelSize <span class="op">=</span> <span class="fl">13</span>,</span>
+<span>  axisSize <span class="op">=</span> <span class="fl">13</span>,</span>
+<span>  legendSize <span class="op">=</span> <span class="fl">13</span>,</span>
+<span>  legendTitleSize <span class="op">=</span> <span class="fl">13</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <p><br></p>
 </details><details><summary><b>DoubletFinder</b></summary><p>The wrapper function <code><a href="../reference/plotDoubletFinderResults.html">plotDoubletFinderResults()</a></code> can be
 used to plot the QC outputs from the DoubletFinder algorithm.</p>
 <div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">doubletFinderResults</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plotDoubletFinderResults.html">plotDoubletFinderResults</a></span><span class="op">(</span>
-  inSCE <span class="op">=</span> <span class="va">pbmc.combined</span>,
-  sample <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></span><span class="op">(</span><span class="va">pbmc.combined</span><span class="op">)</span><span class="op">$</span><span class="va">sample</span>, 
-  reducedDimName <span class="op">=</span> <span class="st">"UMAP"</span>,
-  combinePlot <span class="op">=</span> <span class="st">"all"</span>,
-  titleSize <span class="op">=</span> <span class="fl">13</span>,
-  axisLabelSize <span class="op">=</span> <span class="fl">13</span>,
-  axisSize <span class="op">=</span> <span class="fl">13</span>,
-  legendSize <span class="op">=</span> <span class="fl">13</span>,
-  legendTitleSize <span class="op">=</span> <span class="fl">13</span>
-<span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">doubletFinderResults</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plotDoubletFinderResults.html">plotDoubletFinderResults</a></span><span class="op">(</span></span>
+<span>  inSCE <span class="op">=</span> <span class="va">pbmc.combined</span>,</span>
+<span>  sample <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></span><span class="op">(</span><span class="va">pbmc.combined</span><span class="op">)</span><span class="op">$</span><span class="va">sample</span>, </span>
+<span>  reducedDimName <span class="op">=</span> <span class="st">"UMAP"</span>,</span>
+<span>  combinePlot <span class="op">=</span> <span class="st">"all"</span>,</span>
+<span>  titleSize <span class="op">=</span> <span class="fl">13</span>,</span>
+<span>  axisLabelSize <span class="op">=</span> <span class="fl">13</span>,</span>
+<span>  axisSize <span class="op">=</span> <span class="fl">13</span>,</span>
+<span>  legendSize <span class="op">=</span> <span class="fl">13</span>,</span>
+<span>  legendTitleSize <span class="op">=</span> <span class="fl">13</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <p><br></p>
 </details><details><summary><b>SCDS, CXDS</b></summary><p>The wrapper function <code><a href="../reference/plotCxdsResults.html">plotCxdsResults()</a></code> can be used to
 plot the QC outputs from the CXDS algorithm.</p>
 <div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">cxdsResults</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plotCxdsResults.html">plotCxdsResults</a></span><span class="op">(</span>
-  inSCE <span class="op">=</span> <span class="va">pbmc.combined</span>,
-  sample <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></span><span class="op">(</span><span class="va">pbmc.combined</span><span class="op">)</span><span class="op">$</span><span class="va">sample</span>, 
-  reducedDimName <span class="op">=</span> <span class="st">"UMAP"</span>, combinePlot <span class="op">=</span> <span class="st">"all"</span>,
-  titleSize <span class="op">=</span> <span class="fl">13</span>,
-  axisLabelSize <span class="op">=</span> <span class="fl">13</span>,
-  axisSize <span class="op">=</span> <span class="fl">13</span>,
-  legendSize <span class="op">=</span> <span class="fl">13</span>,
-  legendTitleSize <span class="op">=</span> <span class="fl">13</span>
-<span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">cxdsResults</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plotCxdsResults.html">plotCxdsResults</a></span><span class="op">(</span></span>
+<span>  inSCE <span class="op">=</span> <span class="va">pbmc.combined</span>,</span>
+<span>  sample <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></span><span class="op">(</span><span class="va">pbmc.combined</span><span class="op">)</span><span class="op">$</span><span class="va">sample</span>, </span>
+<span>  reducedDimName <span class="op">=</span> <span class="st">"UMAP"</span>, combinePlot <span class="op">=</span> <span class="st">"all"</span>,</span>
+<span>  titleSize <span class="op">=</span> <span class="fl">13</span>,</span>
+<span>  axisLabelSize <span class="op">=</span> <span class="fl">13</span>,</span>
+<span>  axisSize <span class="op">=</span> <span class="fl">13</span>,</span>
+<span>  legendSize <span class="op">=</span> <span class="fl">13</span>,</span>
+<span>  legendTitleSize <span class="op">=</span> <span class="fl">13</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <p><br></p>
 </details><details><summary><b>SCDS, BCDS</b></summary><p>The wrapper function <code><a href="../reference/plotBcdsResults.html">plotBcdsResults()</a></code> can be used to
 plot the QC outputs from the BCDS algorithm</p>
 <div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">bcdsResults</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plotBcdsResults.html">plotBcdsResults</a></span><span class="op">(</span>
-  inSCE <span class="op">=</span> <span class="va">pbmc.combined</span>,
-  sample <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></span><span class="op">(</span><span class="va">pbmc.combined</span><span class="op">)</span><span class="op">$</span><span class="va">sample</span>, 
-  reducedDimName <span class="op">=</span> <span class="st">"UMAP"</span>, combinePlot <span class="op">=</span> <span class="st">"all"</span>,
-  titleSize <span class="op">=</span> <span class="fl">13</span>,
-  axisLabelSize <span class="op">=</span> <span class="fl">13</span>,
-  axisSize <span class="op">=</span> <span class="fl">13</span>,
-  legendSize <span class="op">=</span> <span class="fl">13</span>,
-  legendTitleSize <span class="op">=</span> <span class="fl">13</span>
-<span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">bcdsResults</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plotBcdsResults.html">plotBcdsResults</a></span><span class="op">(</span></span>
+<span>  inSCE <span class="op">=</span> <span class="va">pbmc.combined</span>,</span>
+<span>  sample <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></span><span class="op">(</span><span class="va">pbmc.combined</span><span class="op">)</span><span class="op">$</span><span class="va">sample</span>, </span>
+<span>  reducedDimName <span class="op">=</span> <span class="st">"UMAP"</span>, combinePlot <span class="op">=</span> <span class="st">"all"</span>,</span>
+<span>  titleSize <span class="op">=</span> <span class="fl">13</span>,</span>
+<span>  axisLabelSize <span class="op">=</span> <span class="fl">13</span>,</span>
+<span>  axisSize <span class="op">=</span> <span class="fl">13</span>,</span>
+<span>  legendSize <span class="op">=</span> <span class="fl">13</span>,</span>
+<span>  legendTitleSize <span class="op">=</span> <span class="fl">13</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <p><br></p>
 </details><details><summary><b>SCDS, CXDS-BCDS hybrid</b></summary><p>The wrapper function <code><a href="../reference/plotScdsHybridResults.html">plotScdsHybridResults()</a></code> can be used
 to plot the QC outputs from the CXDS-BCDS hybrid algorithm.</p>
 <div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">bcdsCxdsHybridResults</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plotScdsHybridResults.html">plotScdsHybridResults</a></span><span class="op">(</span>
-  inSCE <span class="op">=</span> <span class="va">pbmc.combined</span>, sample <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></span><span class="op">(</span><span class="va">pbmc.combined</span><span class="op">)</span><span class="op">$</span><span class="va">sample</span>, 
-  reducedDimName <span class="op">=</span> <span class="st">"UMAP"</span>, combinePlot <span class="op">=</span> <span class="st">"all"</span>,
-  titleSize <span class="op">=</span> <span class="fl">13</span>,
-  axisLabelSize <span class="op">=</span> <span class="fl">13</span>,
-  axisSize <span class="op">=</span> <span class="fl">13</span>,
-  legendSize <span class="op">=</span> <span class="fl">13</span>,
-  legendTitleSize <span class="op">=</span> <span class="fl">13</span>
-<span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">bcdsCxdsHybridResults</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plotScdsHybridResults.html">plotScdsHybridResults</a></span><span class="op">(</span></span>
+<span>  inSCE <span class="op">=</span> <span class="va">pbmc.combined</span>, sample <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></span><span class="op">(</span><span class="va">pbmc.combined</span><span class="op">)</span><span class="op">$</span><span class="va">sample</span>, </span>
+<span>  reducedDimName <span class="op">=</span> <span class="st">"UMAP"</span>, combinePlot <span class="op">=</span> <span class="st">"all"</span>,</span>
+<span>  titleSize <span class="op">=</span> <span class="fl">13</span>,</span>
+<span>  axisLabelSize <span class="op">=</span> <span class="fl">13</span>,</span>
+<span>  axisSize <span class="op">=</span> <span class="fl">13</span>,</span>
+<span>  legendSize <span class="op">=</span> <span class="fl">13</span>,</span>
+<span>  legendTitleSize <span class="op">=</span> <span class="fl">13</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <p><br></p>
 </details></details><details><summary><b>Ambient RNA Detection</b></summary><details><summary><b>DecontX</b></summary><p>The wrapper function <code><a href="../reference/plotDecontXResults.html">plotDecontXResults()</a></code> can be used to
 plot the QC outputs from the DecontX algorithm.</p>
 <div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">decontxResults</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plotDecontXResults.html">plotDecontXResults</a></span><span class="op">(</span>
-  inSCE <span class="op">=</span> <span class="va">pbmc.combined</span>, sample <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></span><span class="op">(</span><span class="va">pbmc.combined</span><span class="op">)</span><span class="op">$</span><span class="va">sample</span>, 
-  reducedDimName <span class="op">=</span> <span class="st">"UMAP"</span>, combinePlot <span class="op">=</span> <span class="st">"all"</span>,
-  titleSize <span class="op">=</span> <span class="fl">8</span>,
-  axisLabelSize <span class="op">=</span> <span class="fl">8</span>,
-  axisSize <span class="op">=</span> <span class="fl">10</span>,
-  legendSize <span class="op">=</span> <span class="fl">5</span>,
-  legendTitleSize <span class="op">=</span> <span class="fl">7</span>,
-  relWidths <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span>,
-  sampleRelWidths <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span>,
-  labelSamples <span class="op">=</span> <span class="cn">TRUE</span>,
-  labelClusters <span class="op">=</span> <span class="cn">FALSE</span>
-<span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">decontxResults</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plotDecontXResults.html">plotDecontXResults</a></span><span class="op">(</span></span>
+<span>  inSCE <span class="op">=</span> <span class="va">pbmc.combined</span>, sample <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></span><span class="op">(</span><span class="va">pbmc.combined</span><span class="op">)</span><span class="op">$</span><span class="va">sample</span>, </span>
+<span>  reducedDimName <span class="op">=</span> <span class="st">"UMAP"</span>, combinePlot <span class="op">=</span> <span class="st">"all"</span>,</span>
+<span>  titleSize <span class="op">=</span> <span class="fl">8</span>,</span>
+<span>  axisLabelSize <span class="op">=</span> <span class="fl">8</span>,</span>
+<span>  axisSize <span class="op">=</span> <span class="fl">10</span>,</span>
+<span>  legendSize <span class="op">=</span> <span class="fl">5</span>,</span>
+<span>  legendTitleSize <span class="op">=</span> <span class="fl">7</span>,</span>
+<span>  relWidths <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span>,</span>
+<span>  sampleRelWidths <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span>,</span>
+<span>  labelSamples <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  labelClusters <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">decontxResults</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">decontxResults</span></span></code></pre></div>
 <p><img src="cnsl_cellqc_files/figure-html/plots_umap_decontx-1.png" width="864"></p>
   </details><details><summary><b>SoupX</b></summary><p>The wrapper function <code><a href="../reference/plotSoupXResults.html">plotSoupXResults()</a></code> can be used to
 plot the QC outputs from the SoupX algorithm.</p>
 <div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">soupxResults</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plotSoupXResults.html">plotSoupXResults</a></span><span class="op">(</span>
-  inSCE <span class="op">=</span> <span class="va">pbmc.combined</span>, sample <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></span><span class="op">(</span><span class="va">pbmc.combined</span><span class="op">)</span><span class="op">$</span><span class="va">sample</span>, 
-  reducedDimName <span class="op">=</span> <span class="st">"UMAP"</span>, combinePlot <span class="op">=</span> <span class="st">"all"</span>,
-  titleSize <span class="op">=</span> <span class="fl">8</span>,
-  axisLabelSize <span class="op">=</span> <span class="fl">8</span>,
-  axisSize <span class="op">=</span> <span class="fl">10</span>,
-  legendSize <span class="op">=</span> <span class="fl">5</span>,
-  legendTitleSize <span class="op">=</span> <span class="fl">7</span>,
-  labelClusters <span class="op">=</span> <span class="cn">FALSE</span>
-<span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">soupxResults</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plotSoupXResults.html">plotSoupXResults</a></span><span class="op">(</span></span>
+<span>  inSCE <span class="op">=</span> <span class="va">pbmc.combined</span>, sample <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></span><span class="op">(</span><span class="va">pbmc.combined</span><span class="op">)</span><span class="op">$</span><span class="va">sample</span>, </span>
+<span>  reducedDimName <span class="op">=</span> <span class="st">"UMAP"</span>, combinePlot <span class="op">=</span> <span class="st">"all"</span>,</span>
+<span>  titleSize <span class="op">=</span> <span class="fl">8</span>,</span>
+<span>  axisLabelSize <span class="op">=</span> <span class="fl">8</span>,</span>
+<span>  axisSize <span class="op">=</span> <span class="fl">10</span>,</span>
+<span>  legendSize <span class="op">=</span> <span class="fl">5</span>,</span>
+<span>  legendTitleSize <span class="op">=</span> <span class="fl">7</span>,</span>
+<span>  labelClusters <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">soupxResults</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">soupxResults</span></span></code></pre></div>
 <p><img src="cnsl_cellqc_files/figure-html/plots_umap_soupx-1.png" width="864"></p>
   </details></details>
 </div>
@@ -1420,22 +1416,22 @@ of columns (cells) in the <code>SingleCellExperiment</code> object.
 Please refer to our <a href="filtering.html"><em>Filtering</em>
 documentation</a> for detail.</p>
 <div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co">#Before filtering:</span>
-<span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">pbmc.combined</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## [1] 32738  8119</span></code></pre>
+<code class="sourceCode R"><span><span class="co">#Before filtering:</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">pbmc.combined</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] 32738  8119</span></span></code></pre>
 <p>Remove barcodes with high mitochondrial gene expression:</p>
 <div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">pbmc.combined</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/subsetSCECols.html">subsetSCECols</a></span><span class="op">(</span><span class="va">pbmc.combined</span>, colData <span class="op">=</span> <span class="st">'mito_percent &lt; 20'</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">pbmc.combined</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/subsetSCECols.html">subsetSCECols</a></span><span class="op">(</span><span class="va">pbmc.combined</span>, colData <span class="op">=</span> <span class="st">'mito_percent &lt; 20'</span><span class="op">)</span></span></code></pre></div>
 <p>Remove detected doublets from Scrublet:</p>
 <div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">pbmc.combined</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/subsetSCECols.html">subsetSCECols</a></span><span class="op">(</span><span class="va">pbmc.combined</span>, colData <span class="op">=</span> <span class="st">'scrublet_call == "Singlet"'</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">pbmc.combined</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/subsetSCECols.html">subsetSCECols</a></span><span class="op">(</span><span class="va">pbmc.combined</span>, colData <span class="op">=</span> <span class="st">'scrublet_call == "Singlet"'</span><span class="op">)</span></span></code></pre></div>
 <p>Remove cells with high levels of ambient RNA contamination:</p>
 <div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">pbmc.combined</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/subsetSCECols.html">subsetSCECols</a></span><span class="op">(</span><span class="va">pbmc.combined</span>, colData <span class="op">=</span> <span class="st">'decontX_contamination &lt; 0.5'</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">pbmc.combined</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/subsetSCECols.html">subsetSCECols</a></span><span class="op">(</span><span class="va">pbmc.combined</span>, colData <span class="op">=</span> <span class="st">'decontX_contamination &lt; 0.5'</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co">#After filtering:</span>
-<span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">pbmc.combined</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## [1] 32738  7931</span></code></pre>
+<code class="sourceCode R"><span><span class="co">#After filtering:</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">pbmc.combined</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] 32738  7939</span></span></code></pre>
 <p><br></p>
 <blockquote>
 <p>For performing QC on droplet-level raw count matrix with SCTK, please
@@ -1443,149 +1439,146 @@ refer to our <a href="cnsl_dropletqc.html"><em>Droplet QC</em>
 documentation</a>.</p>
 </blockquote>
  <details><summary><b>Session Information</b></summary><div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## R version 4.2.0 (2022-04-22 ucrt)</span>
-<span class="co">## Platform: x86_64-w64-mingw32/x64 (64-bit)</span>
-<span class="co">## Running under: Windows 10 x64 (build 19043)</span>
-<span class="co">## </span>
-<span class="co">## Matrix products: default</span>
-<span class="co">## </span>
-<span class="co">## locale:</span>
-<span class="co">## [1] LC_COLLATE=Chinese (Simplified)_China.utf8 </span>
-<span class="co">## [2] LC_CTYPE=Chinese (Simplified)_China.utf8   </span>
-<span class="co">## [3] LC_MONETARY=Chinese (Simplified)_China.utf8</span>
-<span class="co">## [4] LC_NUMERIC=C                               </span>
-<span class="co">## [5] LC_TIME=Chinese (Simplified)_China.utf8    </span>
-<span class="co">## </span>
-<span class="co">## attached base packages:</span>
-<span class="co">## [1] stats4    stats     graphics  grDevices utils     datasets  methods  </span>
-<span class="co">## [8] base     </span>
-<span class="co">## </span>
-<span class="co">## other attached packages:</span>
-<span class="co">##  [1] TENxPBMCData_1.14.0         HDF5Array_1.24.1           </span>
-<span class="co">##  [3] rhdf5_2.40.0                dplyr_1.0.9                </span>
-<span class="co">##  [5] singleCellTK_2.7.1          DelayedArray_0.22.0        </span>
-<span class="co">##  [7] Matrix_1.4-1                SingleCellExperiment_1.18.0</span>
-<span class="co">##  [9] SummarizedExperiment_1.26.1 Biobase_2.56.0             </span>
-<span class="co">## [11] GenomicRanges_1.48.0        GenomeInfoDb_1.32.2        </span>
-<span class="co">## [13] IRanges_2.30.0              S4Vectors_0.34.0           </span>
-<span class="co">## [15] BiocGenerics_0.42.0         MatrixGenerics_1.8.0       </span>
-<span class="co">## [17] matrixStats_0.62.0         </span>
-<span class="co">## </span>
-<span class="co">## loaded via a namespace (and not attached):</span>
-<span class="co">##   [1] rsvd_1.0.5                    svglite_2.1.0                </span>
-<span class="co">##   [3] ica_1.0-2                     assertive.properties_0.0-5   </span>
-<span class="co">##   [5] Rsamtools_2.12.0              foreach_1.5.2                </span>
-<span class="co">##   [7] lmtest_0.9-40                 rprojroot_2.0.3              </span>
-<span class="co">##   [9] crayon_1.5.1                  spatstat.core_2.4-4          </span>
-<span class="co">##  [11] MASS_7.3-57                   rhdf5filters_1.8.0           </span>
-<span class="co">##  [13] nlme_3.1-157                  rlang_1.0.2                  </span>
-<span class="co">##  [15] XVector_0.36.0                ROCR_1.0-11                  </span>
-<span class="co">##  [17] irlba_2.3.5                   SoupX_1.6.1                  </span>
-<span class="co">##  [19] limma_3.52.2                  scater_1.24.0                </span>
-<span class="co">##  [21] filelock_1.0.2                xgboost_1.6.0.1              </span>
-<span class="co">##  [23] BiocParallel_1.30.3           rjson_0.2.21                 </span>
-<span class="co">##  [25] bit64_4.0.5                   glue_1.6.2                   </span>
-<span class="co">##  [27] scDblFinder_1.10.0            sctransform_0.3.3            </span>
-<span class="co">##  [29] parallel_4.2.0                vipor_0.4.5                  </span>
-<span class="co">##  [31] spatstat.sparse_2.1-1         AnnotationDbi_1.58.0         </span>
-<span class="co">##  [33] dotCall64_1.0-1               spatstat.geom_2.4-0          </span>
-<span class="co">##  [35] tidyselect_1.1.2              SeuratObject_4.1.0           </span>
-<span class="co">##  [37] fitdistrplus_1.1-8            XML_3.99-0.10                </span>
-<span class="co">##  [39] tidyr_1.2.0                   assertive.types_0.0-3        </span>
-<span class="co">##  [41] zoo_1.8-10                    GenomicAlignments_1.32.0     </span>
-<span class="co">##  [43] xtable_1.8-4                  magrittr_2.0.3               </span>
-<span class="co">##  [45] evaluate_0.15                 ggplot2_3.3.6                </span>
-<span class="co">##  [47] scuttle_1.6.2                 cli_3.3.0                    </span>
-<span class="co">##  [49] zlibbioc_1.42.0               dbscan_1.1-10                </span>
-<span class="co">##  [51] rstudioapi_0.13               miniUI_0.1.1.1               </span>
-<span class="co">##  [53] sp_1.5-0                      bslib_0.3.1                  </span>
-<span class="co">##  [55] rpart_4.1.16                  RcppEigen_0.3.3.9.2          </span>
-<span class="co">##  [57] maps_3.4.0                    fields_13.3                  </span>
-<span class="co">##  [59] shiny_1.7.1                   BiocSingular_1.12.0          </span>
-<span class="co">##  [61] xfun_0.31                     cluster_2.1.3                </span>
-<span class="co">##  [63] KEGGREST_1.36.2               tibble_3.1.7                 </span>
-<span class="co">##  [65] interactiveDisplayBase_1.34.0 ggrepel_0.9.1                </span>
-<span class="co">##  [67] celda_1.12.0                  listenv_0.8.0                </span>
-<span class="co">##  [69] Biostrings_2.64.0             png_0.1-7                    </span>
-<span class="co">##  [71] future_1.26.1                 withr_2.5.0                  </span>
-<span class="co">##  [73] bitops_1.0-7                  plyr_1.8.7                   </span>
-<span class="co">##  [75] assertive.base_0.0-9          GSEABase_1.58.0              </span>
-<span class="co">##  [77] dqrng_0.3.0                   pROC_1.18.0                  </span>
-<span class="co">##  [79] pillar_1.7.0                  cachem_1.0.6                 </span>
-<span class="co">##  [81] fs_1.5.2                      DelayedMatrixStats_1.18.0    </span>
-<span class="co">##  [83] vctrs_0.4.1                   ellipsis_0.3.2               </span>
-<span class="co">##  [85] generics_0.1.2                tools_4.2.0                  </span>
-<span class="co">##  [87] beeswarm_0.4.0                munsell_0.5.0                </span>
-<span class="co">##  [89] fastmap_1.1.0                 compiler_4.2.0               </span>
-<span class="co">##  [91] abind_1.4-5                   httpuv_1.6.5                 </span>
-<span class="co">##  [93] rtracklayer_1.56.0            ExperimentHub_2.4.0          </span>
-<span class="co">##  [95] plotly_4.10.0                 rgeos_0.5-9                  </span>
-<span class="co">##  [97] GenomeInfoDbData_1.2.8        gridExtra_2.3                </span>
-<span class="co">##  [99] enrichR_3.0                   edgeR_3.38.1                 </span>
-<span class="co">## [101] lattice_0.20-45               deldir_1.0-6                 </span>
-<span class="co">## [103] utf8_1.2.2                    later_1.3.0                  </span>
-<span class="co">## [105] BiocFileCache_2.4.0           jsonlite_1.8.0               </span>
-<span class="co">## [107] multipanelfigure_2.1.2        scales_1.2.0                 </span>
-<span class="co">## [109] graph_1.74.0                  ScaledMatrix_1.4.0           </span>
-<span class="co">## [111] pbapply_1.5-0                 sparseMatrixStats_1.8.0      </span>
-<span class="co">## [113] lazyeval_0.2.2                promises_1.2.0.1             </span>
-<span class="co">## [115] doParallel_1.0.17             R.utils_2.11.0               </span>
-<span class="co">## [117] goftest_1.2-3                 spatstat.utils_2.3-1         </span>
-<span class="co">## [119] reticulate_1.25               rmarkdown_2.14               </span>
-<span class="co">## [121] pkgdown_2.0.5                 cowplot_1.1.1                </span>
-<span class="co">## [123] textshaping_0.3.6             webshot_0.5.3                </span>
-<span class="co">## [125] statmod_1.4.36                Rtsne_0.16                   </span>
-<span class="co">## [127] uwot_0.1.11                   igraph_1.3.2                 </span>
-<span class="co">## [129] survival_3.3-1                yaml_2.3.5                   </span>
-<span class="co">## [131] systemfonts_1.0.4             htmltools_0.5.2              </span>
-<span class="co">## [133] memoise_2.0.1                 BiocIO_1.6.0                 </span>
-<span class="co">## [135] Seurat_4.1.1                  locfit_1.5-9.5               </span>
-<span class="co">## [137] here_1.0.1                    viridisLite_0.4.0            </span>
-<span class="co">## [139] digest_0.6.29                 assertthat_0.2.1             </span>
-<span class="co">## [141] mime_0.12                     rappdirs_0.3.3               </span>
-<span class="co">## [143] spam_2.8-0                    RSQLite_2.2.14               </span>
-<span class="co">## [145] future.apply_1.9.0            data.table_1.14.2            </span>
-<span class="co">## [147] blob_1.2.3                    R.oo_1.25.0                  </span>
-<span class="co">## [149] ragg_1.2.2                    labeling_0.4.2               </span>
-<span class="co">## [151] splines_4.2.0                 Rhdf5lib_1.18.2              </span>
-<span class="co">## [153] AnnotationHub_3.4.0           RCurl_1.98-1.7               </span>
-<span class="co">## [155] assertive.numbers_0.0-2       colorspace_2.0-3             </span>
-<span class="co">## [157] DropletUtils_1.16.0           BiocManager_1.30.18          </span>
-<span class="co">## [159] ggbeeswarm_0.6.0              assertive.files_0.0-2        </span>
-<span class="co">## [161] sass_0.4.1                    Rcpp_1.0.8.3                 </span>
-<span class="co">## [163] RANN_2.6.1                    fansi_1.0.3                  </span>
-<span class="co">## [165] parallelly_1.32.0             R6_2.5.1                     </span>
-<span class="co">## [167] grid_4.2.0                    ggridges_0.5.3               </span>
-<span class="co">## [169] lifecycle_1.0.1               bluster_1.6.0                </span>
-<span class="co">## [171] curl_4.3.2                    leiden_0.4.2                 </span>
-<span class="co">## [173] jquerylib_0.1.4               svMisc_1.2.3                 </span>
-<span class="co">## [175] desc_1.4.1                    RcppAnnoy_0.0.19             </span>
-<span class="co">## [177] GSVAdata_1.32.0               RColorBrewer_1.1-3           </span>
-<span class="co">## [179] iterators_1.0.14              stringr_1.4.0                </span>
-<span class="co">## [181] htmlwidgets_1.5.4             beachmat_2.12.0              </span>
-<span class="co">## [183] polyclip_1.10-0               purrr_0.3.4                  </span>
-<span class="co">## [185] gridGraphics_0.5-1            rvest_1.0.2                  </span>
-<span class="co">## [187] mgcv_1.8-40                   globals_0.15.0               </span>
-<span class="co">## [189] fishpond_2.2.0                patchwork_1.1.1              </span>
-<span class="co">## [191] spatstat.random_2.2-0         scds_1.12.0                  </span>
-<span class="co">## [193] progressr_0.10.1              codetools_0.2-18             </span>
-<span class="co">## [195] FNN_1.1.3.1                   metapod_1.4.0                </span>
-<span class="co">## [197] gtools_3.9.2.2                dbplyr_2.2.0                 </span>
-<span class="co">## [199] MCMCprecision_0.4.0           RSpectra_0.16-1              </span>
-<span class="co">## [201] R.methodsS3_1.8.2             gtable_0.3.0                 </span>
-<span class="co">## [203] DBI_1.1.3                     highr_0.9                    </span>
-<span class="co">## [205] tensor_1.5                    httr_1.4.3                   </span>
-<span class="co">## [207] KernSmooth_2.23-20            stringi_1.7.6                </span>
-<span class="co">## [209] farver_2.1.0                  reshape2_1.4.4               </span>
-<span class="co">## [211] annotate_1.74.0               viridis_0.6.2                </span>
-<span class="co">## [213] magick_2.7.3                  xml2_1.3.3                   </span>
-<span class="co">## [215] combinat_0.0-8                kableExtra_1.3.4             </span>
-<span class="co">## [217] BiocNeighbors_1.14.0          restfulr_0.0.15              </span>
-<span class="co">## [219] scattermore_0.8               BiocVersion_3.15.2           </span>
-<span class="co">## [221] scran_1.24.0                  bit_4.0.4                    </span>
-<span class="co">## [223] spatstat.data_2.2-0           pkgconfig_2.0.3              </span>
-<span class="co">## [225] knitr_1.39</span></code></pre>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## R version 4.2.1 (2022-06-23)</span></span>
+<span><span class="co">## Platform: aarch64-apple-darwin20 (64-bit)</span></span>
+<span><span class="co">## Running under: macOS Monterey 12.6</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## Matrix products: default</span></span>
+<span><span class="co">## BLAS:   /Library/Frameworks/R.framework/Versions/4.2-arm64/Resources/lib/libRblas.0.dylib</span></span>
+<span><span class="co">## LAPACK: /Library/Frameworks/R.framework/Versions/4.2-arm64/Resources/lib/libRlapack.dylib</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## locale:</span></span>
+<span><span class="co">## [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## attached base packages:</span></span>
+<span><span class="co">## [1] stats4    stats     graphics  grDevices utils     datasets  methods  </span></span>
+<span><span class="co">## [8] base     </span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## other attached packages:</span></span>
+<span><span class="co">##  [1] TENxPBMCData_1.14.0         HDF5Array_1.24.2           </span></span>
+<span><span class="co">##  [3] rhdf5_2.40.0                dplyr_1.0.10               </span></span>
+<span><span class="co">##  [5] singleCellTK_2.7.1          DelayedArray_0.22.0        </span></span>
+<span><span class="co">##  [7] Matrix_1.5-1                SingleCellExperiment_1.18.0</span></span>
+<span><span class="co">##  [9] SummarizedExperiment_1.26.1 Biobase_2.56.0             </span></span>
+<span><span class="co">## [11] GenomicRanges_1.48.0        GenomeInfoDb_1.32.4        </span></span>
+<span><span class="co">## [13] IRanges_2.30.1              S4Vectors_0.34.0           </span></span>
+<span><span class="co">## [15] BiocGenerics_0.42.0         MatrixGenerics_1.8.1       </span></span>
+<span><span class="co">## [17] matrixStats_0.62.0         </span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## loaded via a namespace (and not attached):</span></span>
+<span><span class="co">##   [1] rsvd_1.0.5                    svglite_2.1.0                </span></span>
+<span><span class="co">##   [3] ica_1.0-3                     assertive.properties_0.0-5   </span></span>
+<span><span class="co">##   [5] Rsamtools_2.12.0              foreach_1.5.2                </span></span>
+<span><span class="co">##   [7] lmtest_0.9-40                 rprojroot_2.0.3              </span></span>
+<span><span class="co">##   [9] crayon_1.5.1                  spatstat.core_2.4-4          </span></span>
+<span><span class="co">##  [11] MASS_7.3-57                   rhdf5filters_1.8.0           </span></span>
+<span><span class="co">##  [13] nlme_3.1-157                  rlang_1.0.5                  </span></span>
+<span><span class="co">##  [15] XVector_0.36.0                ROCR_1.0-11                  </span></span>
+<span><span class="co">##  [17] irlba_2.3.5                   SoupX_1.6.1                  </span></span>
+<span><span class="co">##  [19] limma_3.52.3                  scater_1.24.0                </span></span>
+<span><span class="co">##  [21] filelock_1.0.2                xgboost_1.6.0.1              </span></span>
+<span><span class="co">##  [23] BiocParallel_1.30.3           rjson_0.2.21                 </span></span>
+<span><span class="co">##  [25] bit64_4.0.5                   glue_1.6.2                   </span></span>
+<span><span class="co">##  [27] scDblFinder_1.10.0            sctransform_0.3.5            </span></span>
+<span><span class="co">##  [29] parallel_4.2.1                vipor_0.4.5                  </span></span>
+<span><span class="co">##  [31] spatstat.sparse_2.1-1         AnnotationDbi_1.58.0         </span></span>
+<span><span class="co">##  [33] dotCall64_1.0-1               spatstat.geom_2.4-0          </span></span>
+<span><span class="co">##  [35] tidyselect_1.1.2              SeuratObject_4.1.2           </span></span>
+<span><span class="co">##  [37] fitdistrplus_1.1-8            XML_3.99-0.10                </span></span>
+<span><span class="co">##  [39] tidyr_1.2.1                   assertive.types_0.0-3        </span></span>
+<span><span class="co">##  [41] zoo_1.8-11                    GenomicAlignments_1.32.1     </span></span>
+<span><span class="co">##  [43] xtable_1.8-4                  magrittr_2.0.3               </span></span>
+<span><span class="co">##  [45] evaluate_0.16                 ggplot2_3.3.6                </span></span>
+<span><span class="co">##  [47] scuttle_1.6.3                 cli_3.4.0                    </span></span>
+<span><span class="co">##  [49] zlibbioc_1.42.0               dbscan_1.1-10                </span></span>
+<span><span class="co">##  [51] rstudioapi_0.14               miniUI_0.1.1.1               </span></span>
+<span><span class="co">##  [53] sp_1.5-0                      bslib_0.4.0                  </span></span>
+<span><span class="co">##  [55] rpart_4.1.16                  RcppEigen_0.3.3.9.2          </span></span>
+<span><span class="co">##  [57] maps_3.4.0                    fields_14.1                  </span></span>
+<span><span class="co">##  [59] shiny_1.7.2                   BiocSingular_1.12.0          </span></span>
+<span><span class="co">##  [61] xfun_0.33                     cluster_2.1.3                </span></span>
+<span><span class="co">##  [63] KEGGREST_1.36.3               tibble_3.1.8                 </span></span>
+<span><span class="co">##  [65] interactiveDisplayBase_1.34.0 ggrepel_0.9.1                </span></span>
+<span><span class="co">##  [67] celda_1.12.0                  listenv_0.8.0                </span></span>
+<span><span class="co">##  [69] Biostrings_2.64.1             png_0.1-7                    </span></span>
+<span><span class="co">##  [71] future_1.28.0                 withr_2.5.0                  </span></span>
+<span><span class="co">##  [73] bitops_1.0-7                  plyr_1.8.7                   </span></span>
+<span><span class="co">##  [75] assertive.base_0.0-9          GSEABase_1.58.0              </span></span>
+<span><span class="co">##  [77] dqrng_0.3.0                   pROC_1.18.0                  </span></span>
+<span><span class="co">##  [79] pillar_1.8.1                  cachem_1.0.6                 </span></span>
+<span><span class="co">##  [81] fs_1.5.2                      DelayedMatrixStats_1.18.0    </span></span>
+<span><span class="co">##  [83] vctrs_0.4.1                   ellipsis_0.3.2               </span></span>
+<span><span class="co">##  [85] generics_0.1.3                tools_4.2.1                  </span></span>
+<span><span class="co">##  [87] beeswarm_0.4.0                munsell_0.5.0                </span></span>
+<span><span class="co">##  [89] fastmap_1.1.0                 compiler_4.2.1               </span></span>
+<span><span class="co">##  [91] abind_1.4-5                   httpuv_1.6.6                 </span></span>
+<span><span class="co">##  [93] rtracklayer_1.56.1            ExperimentHub_2.4.0          </span></span>
+<span><span class="co">##  [95] plotly_4.10.0                 rgeos_0.5-9                  </span></span>
+<span><span class="co">##  [97] GenomeInfoDbData_1.2.8        gridExtra_2.3                </span></span>
+<span><span class="co">##  [99] enrichR_3.1                   edgeR_3.38.4                 </span></span>
+<span><span class="co">## [101] lattice_0.20-45               deldir_1.0-6                 </span></span>
+<span><span class="co">## [103] utf8_1.2.2                    later_1.3.0                  </span></span>
+<span><span class="co">## [105] BiocFileCache_2.4.0           jsonlite_1.8.0               </span></span>
+<span><span class="co">## [107] multipanelfigure_2.1.2        scales_1.2.1                 </span></span>
+<span><span class="co">## [109] graph_1.74.0                  ScaledMatrix_1.4.1           </span></span>
+<span><span class="co">## [111] pbapply_1.5-0                 sparseMatrixStats_1.8.0      </span></span>
+<span><span class="co">## [113] lazyeval_0.2.2                promises_1.2.0.1             </span></span>
+<span><span class="co">## [115] doParallel_1.0.17             R.utils_2.12.0               </span></span>
+<span><span class="co">## [117] goftest_1.2-3                 spatstat.utils_2.3-1         </span></span>
+<span><span class="co">## [119] reticulate_1.26               rmarkdown_2.16               </span></span>
+<span><span class="co">## [121] pkgdown_2.0.6                 cowplot_1.1.1                </span></span>
+<span><span class="co">## [123] textshaping_0.3.6             webshot_0.5.3                </span></span>
+<span><span class="co">## [125] statmod_1.4.37                Rtsne_0.16                   </span></span>
+<span><span class="co">## [127] uwot_0.1.14                   igraph_1.3.5                 </span></span>
+<span><span class="co">## [129] survival_3.3-1                yaml_2.3.5                   </span></span>
+<span><span class="co">## [131] systemfonts_1.0.4             htmltools_0.5.3              </span></span>
+<span><span class="co">## [133] memoise_2.0.1                 BiocIO_1.6.0                 </span></span>
+<span><span class="co">## [135] Seurat_4.2.0                  locfit_1.5-9.6               </span></span>
+<span><span class="co">## [137] here_1.0.1                    viridisLite_0.4.1            </span></span>
+<span><span class="co">## [139] digest_0.6.29                 assertthat_0.2.1             </span></span>
+<span><span class="co">## [141] mime_0.12                     rappdirs_0.3.3               </span></span>
+<span><span class="co">## [143] spam_2.9-1                    RSQLite_2.2.17               </span></span>
+<span><span class="co">## [145] future.apply_1.9.1            data.table_1.14.2            </span></span>
+<span><span class="co">## [147] blob_1.2.3                    R.oo_1.25.0                  </span></span>
+<span><span class="co">## [149] ragg_1.2.2                    labeling_0.4.2               </span></span>
+<span><span class="co">## [151] splines_4.2.1                 Rhdf5lib_1.18.2              </span></span>
+<span><span class="co">## [153] AnnotationHub_3.4.0           RCurl_1.98-1.8               </span></span>
+<span><span class="co">## [155] assertive.numbers_0.0-2       colorspace_2.0-3             </span></span>
+<span><span class="co">## [157] DropletUtils_1.16.0           BiocManager_1.30.18          </span></span>
+<span><span class="co">## [159] ggbeeswarm_0.6.0              assertive.files_0.0-2        </span></span>
+<span><span class="co">## [161] sass_0.4.2                    Rcpp_1.0.9                   </span></span>
+<span><span class="co">## [163] RANN_2.6.1                    fansi_1.0.3                  </span></span>
+<span><span class="co">## [165] parallelly_1.32.1             R6_2.5.1                     </span></span>
+<span><span class="co">## [167] grid_4.2.1                    ggridges_0.5.3               </span></span>
+<span><span class="co">## [169] lifecycle_1.0.2               bluster_1.6.0                </span></span>
+<span><span class="co">## [171] curl_4.3.2                    leiden_0.4.3                 </span></span>
+<span><span class="co">## [173] jquerylib_0.1.4               svMisc_1.2.3                 </span></span>
+<span><span class="co">## [175] desc_1.4.2                    RcppAnnoy_0.0.19             </span></span>
+<span><span class="co">## [177] GSVAdata_1.32.0               RColorBrewer_1.1-3           </span></span>
+<span><span class="co">## [179] iterators_1.0.14              stringr_1.4.1                </span></span>
+<span><span class="co">## [181] htmlwidgets_1.5.4             beachmat_2.12.0              </span></span>
+<span><span class="co">## [183] polyclip_1.10-0               purrr_0.3.4                  </span></span>
+<span><span class="co">## [185] gridGraphics_0.5-1            rvest_1.0.3                  </span></span>
+<span><span class="co">## [187] mgcv_1.8-40                   globals_0.16.1               </span></span>
+<span><span class="co">## [189] fishpond_2.2.0                patchwork_1.1.2              </span></span>
+<span><span class="co">## [191] spatstat.random_2.2-0         scds_1.12.0                  </span></span>
+<span><span class="co">## [193] progressr_0.11.0              codetools_0.2-18             </span></span>
+<span><span class="co">## [195] FNN_1.1.3.1                   metapod_1.4.0                </span></span>
+<span><span class="co">## [197] gtools_3.9.3                  dbplyr_2.2.1                 </span></span>
+<span><span class="co">## [199] MCMCprecision_0.4.0           R.methodsS3_1.8.2            </span></span>
+<span><span class="co">## [201] gtable_0.3.1                  DBI_1.1.3                    </span></span>
+<span><span class="co">## [203] highr_0.9                     tensor_1.5                   </span></span>
+<span><span class="co">## [205] httr_1.4.4                    KernSmooth_2.23-20           </span></span>
+<span><span class="co">## [207] stringi_1.7.8                 farver_2.1.1                 </span></span>
+<span><span class="co">## [209] reshape2_1.4.4                annotate_1.74.0              </span></span>
+<span><span class="co">## [211] viridis_0.6.2                 magick_2.7.3                 </span></span>
+<span><span class="co">## [213] xml2_1.3.3                    combinat_0.0-8               </span></span>
+<span><span class="co">## [215] BiocNeighbors_1.14.0          kableExtra_1.3.4             </span></span>
+<span><span class="co">## [217] restfulr_0.0.15               scattermore_0.8              </span></span>
+<span><span class="co">## [219] BiocVersion_3.15.2            scran_1.24.1                 </span></span>
+<span><span class="co">## [221] bit_4.0.4                     spatstat.data_2.2-0          </span></span>
+<span><span class="co">## [223] pkgconfig_2.0.3               knitr_1.40</span></span></code></pre>
 </details>
 </div>
 </div>
@@ -1608,7 +1601,7 @@ documentation</a>.</p>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer>

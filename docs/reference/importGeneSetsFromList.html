@@ -20,7 +20,7 @@ downstream quality control and analysis functions in singleCellTK."><!-- mathjax
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.2</span>
       </span>
     </div>
 
@@ -205,12 +205,12 @@ downstream quality control and analysis functions in <a href="singleCellTK.html"
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">importGeneSetsFromList</span><span class="op">(</span>
-  <span class="va">inSCE</span>,
-  <span class="va">geneSetList</span>,
-  collectionName <span class="op">=</span> <span class="st">"GeneSetCollection"</span>,
-  by <span class="op">=</span> <span class="st">"rownames"</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">importGeneSetsFromList</span><span class="op">(</span></span>
+<span>  <span class="va">inSCE</span>,</span>
+<span>  <span class="va">geneSetList</span>,</span>
+<span>  collectionName <span class="op">=</span> <span class="st">"GeneSetCollection"</span>,</span>
+<span>  by <span class="op">=</span> <span class="st">"rownames"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -278,23 +278,23 @@ GeneSetCollection objects,
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">scExample</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Generate gene sets from 'rownames'</span></span>
-<span class="r-in"><span class="va">gs1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span><span class="op">]</span></span>
-<span class="r-in"><span class="va">gs2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">11</span>,<span class="fl">20</span><span class="op">)</span><span class="op">]</span></span>
-<span class="r-in"><span class="va">gs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"geneset1"</span> <span class="op">=</span> <span class="va">gs1</span>, <span class="st">"geneset2"</span> <span class="op">=</span> <span class="va">gs2</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu">importGeneSetsFromList</span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>,</span>
-<span class="r-in">                              geneSetList <span class="op">=</span> <span class="va">gs</span>,</span>
-<span class="r-in">                              by <span class="op">=</span> <span class="st">"rownames"</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Generate a gene set for mitochondrial genes using</span></span>
-<span class="r-in"><span class="co"># Gene Symbols stored in 'rowData'</span></span>
-<span class="r-in"><span class="va">mito.ix</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grep</a></span><span class="op">(</span><span class="st">"^MT-"</span>, <span class="fu">rowData</span><span class="op">(</span><span class="va">sce</span><span class="op">)</span><span class="op">$</span><span class="va">feature_name</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">mito</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mito <span class="op">=</span> <span class="fu">rowData</span><span class="op">(</span><span class="va">sce</span><span class="op">)</span><span class="op">$</span><span class="va">feature_name</span><span class="op">[</span><span class="va">mito.ix</span><span class="op">]</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu">importGeneSetsFromList</span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>,</span>
-<span class="r-in">                             geneSetList <span class="op">=</span> <span class="va">mito</span>,</span>
-<span class="r-in">                             by <span class="op">=</span> <span class="st">"feature_name"</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">scExample</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Generate gene sets from 'rownames'</span></span></span>
+<span class="r-in"><span><span class="va">gs1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span><span class="op">]</span></span></span>
+<span class="r-in"><span><span class="va">gs2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">11</span>,<span class="fl">20</span><span class="op">)</span><span class="op">]</span></span></span>
+<span class="r-in"><span><span class="va">gs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"geneset1"</span> <span class="op">=</span> <span class="va">gs1</span>, <span class="st">"geneset2"</span> <span class="op">=</span> <span class="va">gs2</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu">importGeneSetsFromList</span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>,</span></span>
+<span class="r-in"><span>                              geneSetList <span class="op">=</span> <span class="va">gs</span>,</span></span>
+<span class="r-in"><span>                              by <span class="op">=</span> <span class="st">"rownames"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Generate a gene set for mitochondrial genes using</span></span></span>
+<span class="r-in"><span><span class="co"># Gene Symbols stored in 'rowData'</span></span></span>
+<span class="r-in"><span><span class="va">mito.ix</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grep</a></span><span class="op">(</span><span class="st">"^MT-"</span>, <span class="fu">rowData</span><span class="op">(</span><span class="va">sce</span><span class="op">)</span><span class="op">$</span><span class="va">feature_name</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">mito</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mito <span class="op">=</span> <span class="fu">rowData</span><span class="op">(</span><span class="va">sce</span><span class="op">)</span><span class="op">$</span><span class="va">feature_name</span><span class="op">[</span><span class="va">mito.ix</span><span class="op">]</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu">importGeneSetsFromList</span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>,</span></span>
+<span class="r-in"><span>                             geneSetList <span class="op">=</span> <span class="va">mito</span>,</span></span>
+<span class="r-in"><span>                             by <span class="op">=</span> <span class="st">"feature_name"</span><span class="op">)</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -309,7 +309,7 @@ GeneSetCollection objects,
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

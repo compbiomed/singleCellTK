@@ -201,11 +201,11 @@ reportDiffExp <- function(inSCE, study, useReducedDim,
                     output_dir = output_dir )
 }
 
-#' @title Get findMarkerDiffExp .html report
+#' @title Get runFindMarker .html report
 #' @description A  function to generate .html Rmarkdown report containing the
-#' visualizations of the \code{\link{findMarkerDiffExp}} function output
+#' visualizations of the \code{\link{runFindMarker}} function output
 #' @param inSCE A \code{\link[SingleCellExperiment]{SingleCellExperiment}}
-#' object containing the output from \code{\link{findMarkerDiffExp}} function
+#' object containing the output from \code{\link{runFindMarker}} function
 #' @param output_file name of the generated file. If \code{NULL} then the output
 #' file name will be based on the name of the Rmarkdown template. Default
 #' \code{NULL}.
@@ -222,15 +222,15 @@ reportFindMarker <- function(inSCE, output_file = NULL, output_dir = NULL) {
   }
   if (!"findMarker" %in% names(S4Vectors::metadata(inSCE))) {
     stop("Find marker result not presented in input SCE object. Run ",
-         "findMarkerDiffExp() first. ")
+         "runFindMarker() first. ")
   }
   att <- names(attributes(S4Vectors::metadata(inSCE)$findMarker))
   if (!"useAssay" %in% att) {
     stop("Can't identify the structure of find marker result. Run ",
-         "findMarkerDiffExp() first. ")
+         "runFindMarker() first. ")
   }
   rmarkdown::render(system.file("rmarkdown/de/FindMarker.Rmd",
-                                package="singleCellTK"),
+                                package = "singleCellTK"),
                     params = list(object = inSCE),
                     output_file = output_file,
                     output_dir = output_dir )

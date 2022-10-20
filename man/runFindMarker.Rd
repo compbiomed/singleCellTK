@@ -88,7 +88,7 @@ regulated DEGs for each cluster.
 \description{
 With an input SingleCellExperiment object and specifying the
 clustering labels, this function iteratively call the differential expression
-analysis on each cluster against all the others. \code{findMarkerDiffExp}
+analysis on each cluster against all the others. \code{\link{runFindMarker}}
 will be deprecated in the future.
 }
 \details{
@@ -111,5 +111,6 @@ mouseBrainSubsetSCE <- runFindMarker(mouseBrainSubsetSCE,
                                      cluster = "level1class")
 }
 \seealso{
-\code{\link{runDEAnalysis}}
+\code{\link{runDEAnalysis}}, \code{\link{getFindMarkerTopTable}},
+\code{\link{plotFindMarkerHeatmap}}
 }

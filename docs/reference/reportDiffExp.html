@@ -18,7 +18,7 @@ visualizations of the runDEAnalysis function output"><!-- mathjax --><script src
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.2</span>
       </span>
     </div>
 
@@ -201,7 +201,14 @@ visualizations of the <code><a href="runDEAnalysis.html">runDEAnalysis</a></code
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">reportDiffExp</span><span class="op">(</span><span class="va">inSCE</span>, <span class="va">study</span>, output_file <span class="op">=</span> <span class="cn">NULL</span>, output_dir <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">reportDiffExp</span><span class="op">(</span></span>
+<span>  <span class="va">inSCE</span>,</span>
+<span>  <span class="va">study</span>,</span>
+<span>  <span class="va">useReducedDim</span>,</span>
+<span>  featureDisplay <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  output_file <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  output_dir <span class="op">=</span> <span class="cn">NULL</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -214,6 +221,17 @@ object containing the output from <code><a href="runDEAnalysis.html">runDEAnalys
 <dt>study</dt>
 <dd><p>The specific analysis to visualize, used as <code>analysisName</code>
 argument when running differential expression.</p></dd>
+
+
+<dt>useReducedDim</dt>
+<dd><p>Specify an embedding for visualizing the relation ship
+between the conditions.</p></dd>
+
+
+<dt>featureDisplay</dt>
+<dd><p>The feature ID type to use for displaying. Should
+exists as a variable name of <code>rowData</code>. Default <code>NULL</code> use rownames
+of <code>inSCE</code>.</p></dd>
 
 
 <dt>output_file</dt>
@@ -247,7 +265,7 @@ Default <code>NULL</code>.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

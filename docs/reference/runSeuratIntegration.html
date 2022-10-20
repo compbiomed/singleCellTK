@@ -20,7 +20,7 @@ A wrapper function to Seurat Batch-Correction/Integration workflow."><!-- mathja
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.2</span>
       </span>
     </div>
 
@@ -204,16 +204,16 @@ A wrapper function to Seurat Batch-Correction/Integration workflow.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">runSeuratIntegration</span><span class="op">(</span>
-  <span class="va">inSCE</span>,
-  useAssay <span class="op">=</span> <span class="st">"counts"</span>,
-  <span class="va">batch</span>,
-  newAssayName <span class="op">=</span> <span class="st">"SeuratIntegratedAssay"</span>,
-  <span class="va">kAnchor</span>,
-  <span class="va">kFilter</span>,
-  <span class="va">kWeight</span>,
-  ndims <span class="op">=</span> <span class="fl">10</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">runSeuratIntegration</span><span class="op">(</span></span>
+<span>  <span class="va">inSCE</span>,</span>
+<span>  useAssay <span class="op">=</span> <span class="st">"counts"</span>,</span>
+<span>  <span class="va">batch</span>,</span>
+<span>  newAssayName <span class="op">=</span> <span class="st">"SeuratIntegratedAssay"</span>,</span>
+<span>  <span class="va">kAnchor</span>,</span>
+<span>  <span class="va">kFilter</span>,</span>
+<span>  <span class="va">kWeight</span>,</span>
+<span>  ndims <span class="op">=</span> <span class="fl">10</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -275,7 +275,7 @@ batch-corrected assay inside the <code>altExp</code> slot of the object</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

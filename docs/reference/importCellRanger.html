@@ -20,7 +20,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.2</span>
       </span>
     </div>
 
@@ -205,42 +205,42 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">importCellRanger</span><span class="op">(</span>
-  cellRangerDirs <span class="op">=</span> <span class="cn">NULL</span>,
-  sampleDirs <span class="op">=</span> <span class="cn">NULL</span>,
-  sampleNames <span class="op">=</span> <span class="cn">NULL</span>,
-  cellRangerOuts <span class="op">=</span> <span class="cn">NULL</span>,
-  dataType <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"filtered"</span>, <span class="st">"raw"</span><span class="op">)</span>,
-  matrixFileNames <span class="op">=</span> <span class="st">"matrix.mtx.gz"</span>,
-  featuresFileNames <span class="op">=</span> <span class="st">"features.tsv.gz"</span>,
-  barcodesFileNames <span class="op">=</span> <span class="st">"barcodes.tsv.gz"</span>,
-  gzipped <span class="op">=</span> <span class="st">"auto"</span>,
-  class <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Matrix"</span>, <span class="st">"matrix"</span><span class="op">)</span>,
-  delayedArray <span class="op">=</span> <span class="cn">FALSE</span>,
-  rowNamesDedup <span class="op">=</span> <span class="cn">TRUE</span>
-<span class="op">)</span>
-
-<span class="fu">importCellRangerV2</span><span class="op">(</span>
-  cellRangerDirs <span class="op">=</span> <span class="cn">NULL</span>,
-  sampleDirs <span class="op">=</span> <span class="cn">NULL</span>,
-  sampleNames <span class="op">=</span> <span class="cn">NULL</span>,
-  dataTypeV2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"filtered"</span>, <span class="st">"raw"</span><span class="op">)</span>,
-  class <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Matrix"</span>, <span class="st">"matrix"</span><span class="op">)</span>,
-  delayedArray <span class="op">=</span> <span class="cn">FALSE</span>,
-  reference <span class="op">=</span> <span class="cn">NULL</span>,
-  cellRangerOutsV2 <span class="op">=</span> <span class="cn">NULL</span>,
-  rowNamesDedup <span class="op">=</span> <span class="cn">TRUE</span>
-<span class="op">)</span>
-
-<span class="fu">importCellRangerV3</span><span class="op">(</span>
-  cellRangerDirs <span class="op">=</span> <span class="cn">NULL</span>,
-  sampleDirs <span class="op">=</span> <span class="cn">NULL</span>,
-  sampleNames <span class="op">=</span> <span class="cn">NULL</span>,
-  dataType <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"filtered"</span>, <span class="st">"raw"</span><span class="op">)</span>,
-  class <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Matrix"</span>, <span class="st">"matrix"</span><span class="op">)</span>,
-  delayedArray <span class="op">=</span> <span class="cn">FALSE</span>,
-  rowNamesDedup <span class="op">=</span> <span class="cn">TRUE</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">importCellRanger</span><span class="op">(</span></span>
+<span>  cellRangerDirs <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  sampleDirs <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  sampleNames <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  cellRangerOuts <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  dataType <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"filtered"</span>, <span class="st">"raw"</span><span class="op">)</span>,</span>
+<span>  matrixFileNames <span class="op">=</span> <span class="st">"matrix.mtx.gz"</span>,</span>
+<span>  featuresFileNames <span class="op">=</span> <span class="st">"features.tsv.gz"</span>,</span>
+<span>  barcodesFileNames <span class="op">=</span> <span class="st">"barcodes.tsv.gz"</span>,</span>
+<span>  gzipped <span class="op">=</span> <span class="st">"auto"</span>,</span>
+<span>  class <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Matrix"</span>, <span class="st">"matrix"</span><span class="op">)</span>,</span>
+<span>  delayedArray <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  rowNamesDedup <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">importCellRangerV2</span><span class="op">(</span></span>
+<span>  cellRangerDirs <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  sampleDirs <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  sampleNames <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  dataTypeV2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"filtered"</span>, <span class="st">"raw"</span><span class="op">)</span>,</span>
+<span>  class <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Matrix"</span>, <span class="st">"matrix"</span><span class="op">)</span>,</span>
+<span>  delayedArray <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  reference <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  cellRangerOutsV2 <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  rowNamesDedup <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">importCellRangerV3</span><span class="op">(</span></span>
+<span>  cellRangerDirs <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  sampleDirs <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  sampleNames <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  dataType <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"filtered"</span>, <span class="st">"raw"</span><span class="op">)</span>,</span>
+<span>  class <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Matrix"</span>, <span class="st">"matrix"</span><span class="op">)</span>,</span>
+<span>  delayedArray <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  rowNamesDedup <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -420,34 +420,34 @@ the function will load only filtered or raw data.</p></dd>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co"># Example #1</span></span>
-<span class="r-in"><span class="co"># The following filtered feature, cell, and matrix files were downloaded from</span></span>
-<span class="r-in"><span class="co"># https://support.10xgenomics.com/single-cell-gene-expression/datasets/</span></span>
-<span class="r-in"><span class="co"># 3.0.0/hgmm_1k_v3</span></span>
-<span class="r-in"><span class="co"># The top 10 hg19 &amp; mm10 genes are included in this example.</span></span>
-<span class="r-in"><span class="co"># Only the first 20 cells are included.</span></span>
-<span class="r-in"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu">importCellRanger</span><span class="op">(</span></span>
-<span class="r-in">    cellRangerDirs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/"</span>, package <span class="op">=</span> <span class="st">"singleCellTK"</span><span class="op">)</span>,</span>
-<span class="r-in">    sampleDirs <span class="op">=</span> <span class="st">"hgmm_1k_v3_20x20"</span>,</span>
-<span class="r-in">    sampleNames <span class="op">=</span> <span class="st">"hgmm1kv3"</span>,</span>
-<span class="r-in">    dataType <span class="op">=</span> <span class="st">"filtered"</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Example #1</span></span></span>
+<span class="r-in"><span><span class="co"># The following filtered feature, cell, and matrix files were downloaded from</span></span></span>
+<span class="r-in"><span><span class="co"># https://support.10xgenomics.com/single-cell-gene-expression/datasets/</span></span></span>
+<span class="r-in"><span><span class="co"># 3.0.0/hgmm_1k_v3</span></span></span>
+<span class="r-in"><span><span class="co"># The top 10 hg19 &amp; mm10 genes are included in this example.</span></span></span>
+<span class="r-in"><span><span class="co"># Only the first 20 cells are included.</span></span></span>
+<span class="r-in"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu">importCellRanger</span><span class="op">(</span></span></span>
+<span class="r-in"><span>    cellRangerDirs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/"</span>, package <span class="op">=</span> <span class="st">"singleCellTK"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    sampleDirs <span class="op">=</span> <span class="st">"hgmm_1k_v3_20x20"</span>,</span></span>
+<span class="r-in"><span>    sampleNames <span class="op">=</span> <span class="st">"hgmm1kv3"</span>,</span></span>
+<span class="r-in"><span>    dataType <span class="op">=</span> <span class="st">"filtered"</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Metrics summary file (metrics_summary.csv) not found for sample: hgmm1kv3</span>
-<span class="r-in"><span class="co"># The following filtered feature, cell, and matrix files were downloaded from</span></span>
-<span class="r-in"><span class="co"># https://support.10xgenomics.com/single-cell-gene-expression/datasets/</span></span>
-<span class="r-in"><span class="co"># 2.1.0/pbmc4k</span></span>
-<span class="r-in"><span class="co"># Top 20 genes are kept. 20 cell barcodes are extracted.</span></span>
-<span class="r-in"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu">importCellRangerV2</span><span class="op">(</span></span>
-<span class="r-in">    cellRangerDirs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/"</span>, package <span class="op">=</span> <span class="st">"singleCellTK"</span><span class="op">)</span>,</span>
-<span class="r-in">    sampleDirs <span class="op">=</span> <span class="st">"pbmc_4k_v2_20x20"</span>,</span>
-<span class="r-in">    sampleNames <span class="op">=</span> <span class="st">"pbmc4k_20"</span>,</span>
-<span class="r-in">    reference <span class="op">=</span> <span class="st">'GRCh38'</span>,</span>
-<span class="r-in">    dataTypeV2 <span class="op">=</span> <span class="st">"filtered"</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="co"># The following filtered feature, cell, and matrix files were downloaded from</span></span></span>
+<span class="r-in"><span><span class="co"># https://support.10xgenomics.com/single-cell-gene-expression/datasets/</span></span></span>
+<span class="r-in"><span><span class="co"># 2.1.0/pbmc4k</span></span></span>
+<span class="r-in"><span><span class="co"># Top 20 genes are kept. 20 cell barcodes are extracted.</span></span></span>
+<span class="r-in"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu">importCellRangerV2</span><span class="op">(</span></span></span>
+<span class="r-in"><span>    cellRangerDirs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/"</span>, package <span class="op">=</span> <span class="st">"singleCellTK"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    sampleDirs <span class="op">=</span> <span class="st">"pbmc_4k_v2_20x20"</span>,</span></span>
+<span class="r-in"><span>    sampleNames <span class="op">=</span> <span class="st">"pbmc4k_20"</span>,</span></span>
+<span class="r-in"><span>    reference <span class="op">=</span> <span class="st">'GRCh38'</span>,</span></span>
+<span class="r-in"><span>    dataTypeV2 <span class="op">=</span> <span class="st">"filtered"</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Metrics summary file (metrics_summary.csv) not found for sample: pbmc4k_20</span>
-<span class="r-in"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu">importCellRangerV3</span><span class="op">(</span></span>
-<span class="r-in">    cellRangerDirs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/"</span>, package <span class="op">=</span> <span class="st">"singleCellTK"</span><span class="op">)</span>,</span>
-<span class="r-in">    sampleDirs <span class="op">=</span> <span class="st">"hgmm_1k_v3_20x20"</span>,</span>
-<span class="r-in">    sampleNames <span class="op">=</span> <span class="st">"hgmm1kv3"</span>,</span>
-<span class="r-in">    dataType <span class="op">=</span> <span class="st">"filtered"</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu">importCellRangerV3</span><span class="op">(</span></span></span>
+<span class="r-in"><span>    cellRangerDirs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/"</span>, package <span class="op">=</span> <span class="st">"singleCellTK"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    sampleDirs <span class="op">=</span> <span class="st">"hgmm_1k_v3_20x20"</span>,</span></span>
+<span class="r-in"><span>    sampleNames <span class="op">=</span> <span class="st">"hgmm1kv3"</span>,</span></span>
+<span class="r-in"><span>    dataType <span class="op">=</span> <span class="st">"filtered"</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Metrics summary file (metrics_summary.csv) not found for sample: hgmm1kv3</span>
 </code></pre></div>
     </div>
@@ -463,7 +463,7 @@ the function will load only filtered or raw data.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

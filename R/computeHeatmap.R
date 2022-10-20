@@ -1,4 +1,6 @@
-#' computeHeatmap
+#' Computes heatmap for a set of features against dimensionality reduction 
+#' components
+#' @description 
 #' The computeHeatmap method computes the heatmap visualization for a set
 #'  of features against a set of dimensionality reduction components. This
 #'  method uses the heatmap computation algorithm code from \code{Seurat} but

@@ -20,7 +20,7 @@ Note that Anaconda or Miniconda already need to be installed on the local system
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.2</span>
       </span>
     </div>
 
@@ -199,23 +199,23 @@ Note that Anaconda or Miniconda already need to be installed on the local system
 
     <div class="ref-description">
     <p>Install all Python packages used in the <code><a href="singleCellTK.html">singleCellTK</a></code> package
-using <code>conda_install</code> from package <code>reticulate</code>. This
+using <code><a href="https://rstudio.github.io/reticulate/reference/conda-tools.html" class="external-link">conda_install</a></code> from package <code><a href="https://rstudio.github.io/reticulate/reference/reticulate.html" class="external-link">reticulate</a></code>. This
 will create a new Conda environment with the name <code>envname</code> if not already present.
 Note that Anaconda or Miniconda already need to be installed on the local system.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">sctkPythonInstallConda</span><span class="op">(</span>
-  envname <span class="op">=</span> <span class="st">"sctk-reticulate"</span>,
-  conda <span class="op">=</span> <span class="st">"auto"</span>,
-  packages <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"scipy"</span>, <span class="st">"numpy"</span>, <span class="st">"astroid"</span>, <span class="st">"six"</span><span class="op">)</span>,
-  pipPackages <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"scrublet"</span>, <span class="st">"scanpy"</span>, <span class="st">"bbknn"</span>, <span class="st">"scanorama"</span>, <span class="st">"anndata"</span><span class="op">)</span>,
-  selectConda <span class="op">=</span> <span class="cn">TRUE</span>,
-  forge <span class="op">=</span> <span class="cn">FALSE</span>,
-  pipIgnoreInstalled <span class="op">=</span> <span class="cn">TRUE</span>,
-  pythonVersion <span class="op">=</span> <span class="cn">NULL</span>,
-  <span class="va">...</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">sctkPythonInstallConda</span><span class="op">(</span></span>
+<span>  envname <span class="op">=</span> <span class="st">"sctk-reticulate"</span>,</span>
+<span>  conda <span class="op">=</span> <span class="st">"auto"</span>,</span>
+<span>  packages <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"scipy"</span>, <span class="st">"numpy"</span>, <span class="st">"astroid"</span>, <span class="st">"six"</span><span class="op">)</span>,</span>
+<span>  pipPackages <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"scrublet"</span>, <span class="st">"scanpy"</span>, <span class="st">"bbknn"</span>, <span class="st">"scanorama"</span>, <span class="st">"anndata"</span><span class="op">)</span>,</span>
+<span>  selectConda <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  forge <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  pipIgnoreInstalled <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  pythonVersion <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -251,11 +251,11 @@ to install via pip due to compilation requirements).</p></dd>
 
 
 <dt>pythonVersion</dt>
-<dd><p>Passed to <code>python_version</code> variable in <code>conda_install</code>. Default NULL.</p></dd>
+<dd><p>Passed to <code>python_version</code> variable in <code><a href="https://rstudio.github.io/reticulate/reference/conda-tools.html" class="external-link">conda_install</a></code>. Default NULL.</p></dd>
 
 
 <dt>...</dt>
-<dd><p>Other parameters to pass to <code>conda_install</code>.</p></dd>
+<dd><p>Other parameters to pass to <code><a href="https://rstudio.github.io/reticulate/reference/conda-tools.html" class="external-link">conda_install</a></code>.</p></dd>
 
 </dl></div>
     <div id="value">
@@ -266,9 +266,9 @@ to install via pip due to compilation requirements).</p></dd>
     </div>
     <div id="see-also">
     <h2>See also</h2>
-    <div class="dont-index"><p>See <code>conda_create</code> for more information on creating a Conda environment.
-See <code>conda_install</code> for more description of the installation parameters.
-See <a href="https://rstudio.github.io/reticulate/" class="external-link">https://rstudio.github.io/reticulate/</a> for more information on package <code>reticulate</code>.
+    <div class="dont-index"><p>See <code><a href="https://rstudio.github.io/reticulate/reference/conda-tools.html" class="external-link">conda_create</a></code> for more information on creating a Conda environment.
+See <code><a href="https://rstudio.github.io/reticulate/reference/conda-tools.html" class="external-link">conda_install</a></code> for more description of the installation parameters.
+See <a href="https://rstudio.github.io/reticulate/" class="external-link">https://rstudio.github.io/reticulate/</a> for more information on package <code><a href="https://rstudio.github.io/reticulate/reference/reticulate.html" class="external-link">reticulate</a></code>.
 See <code><a href="selectSCTKConda.html">selectSCTKConda</a></code> for reloading the Conda environment if R is restarted without
 going through the whole installation process again.
 See <a href="https://docs.conda.io/en/latest/" class="external-link">https://docs.conda.io/en/latest/</a> for more information on Conda environments.</p></div>
@@ -276,9 +276,9 @@ See <a href="https://docs.conda.io/en/latest/" class="external-link">https://doc
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"><span class="fu">sctkPythonInstallConda</span><span class="op">(</span>envname <span class="op">=</span> <span class="st">"sctk-reticulate"</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="fu">sctkPythonInstallConda</span><span class="op">(</span>envname <span class="op">=</span> <span class="st">"sctk-reticulate"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -293,7 +293,7 @@ See <a href="https://docs.conda.io/en/latest/" class="external-link">https://doc
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

@@ -34,7 +34,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.2</span>
       </span>
     </div>
 
@@ -438,22 +438,22 @@ specific heatmap.</p>
 <p>To present the usage of <code><a href="../reference/plotSCEHeatmap.html">plotSCEHeatmap()</a></code>, we would like
 to use a small example provided with SCTK.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://www.camplab.net/sctk/" class="external-link">singleCellTK</a></span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"scExample"</span><span class="op">)</span> <span class="co"># This imports SCE object "sce"</span>
-<span class="va">sce</span></code></pre></div>
-<pre><code><span class="co">## class: SingleCellExperiment </span>
-<span class="co">## dim: 200 390 </span>
-<span class="co">## metadata(0):</span>
-<span class="co">## assays(1): counts</span>
-<span class="co">## rownames(200): ENSG00000251562 ENSG00000205542 ... ENSG00000204472</span>
-<span class="co">##   ENSG00000133872</span>
-<span class="co">## rowData names(2): feature_ID feature_name</span>
-<span class="co">## colnames(390): pbmc_4k_GACCAATTCCTAGAAC-1 pbmc_4k_AAATGCCGTTTCGCTC-1</span>
-<span class="co">##   ... pbmc_4k_CTGAAGTTCCACTCCA-1 pbmc_4k_CATCGAACAGCCAGAA-1</span>
-<span class="co">## colData names(4): cell_barcode column_name sample type</span>
-<span class="co">## reducedDimNames(0):</span>
-<span class="co">## mainExpName: NULL</span>
-<span class="co">## altExpNames(0):</span></code></pre>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://www.camplab.net/sctk/" class="external-link">singleCellTK</a></span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"scExample"</span><span class="op">)</span> <span class="co"># This imports SCE object "sce"</span></span>
+<span><span class="va">sce</span></span></code></pre></div>
+<pre><code><span><span class="co">## class: SingleCellExperiment </span></span>
+<span><span class="co">## dim: 200 390 </span></span>
+<span><span class="co">## metadata(0):</span></span>
+<span><span class="co">## assays(1): counts</span></span>
+<span><span class="co">## rownames(200): ENSG00000251562 ENSG00000205542 ... ENSG00000204472</span></span>
+<span><span class="co">##   ENSG00000133872</span></span>
+<span><span class="co">## rowData names(2): feature_ID feature_name</span></span>
+<span><span class="co">## colnames(390): pbmc_4k_GACCAATTCCTAGAAC-1 pbmc_4k_AAATGCCGTTTCGCTC-1</span></span>
+<span><span class="co">##   ... pbmc_4k_CTGAAGTTCCACTCCA-1 pbmc_4k_CATCGAACAGCCAGAA-1</span></span>
+<span><span class="co">## colData names(4): cell_barcode column_name sample type</span></span>
+<span><span class="co">## reducedDimNames(0):</span></span>
+<span><span class="co">## mainExpName: NULL</span></span>
+<span><span class="co">## altExpNames(0):</span></span></code></pre>
 <p><strong>“Raw” plotting</strong></p>
 <p>The minimum setting for <code><a href="../reference/plotSCEHeatmap.html">plotSCEHeatmap()</a></code> is the input
 SCE object and the data matrix to plot (default
@@ -461,8 +461,12 @@ SCE object and the data matrix to plot (default
 presented while no annotation or legend (except the main color scheme)
 will be shown.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/plotSCEHeatmap.html">plotSCEHeatmap</a></span><span class="op">(</span><span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"counts"</span><span class="op">)</span></code></pre></div>
-<p><img src="heatmap_files/figure-html/hmFull-1.png" width="700"><img src="heatmap_files/figure-html/hmFull-2.png" width="700"></p>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plotSCEHeatmap.html">plotSCEHeatmap</a></span><span class="op">(</span><span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"counts"</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## dimnames(.) &lt;- NULL translated to</span></span>
+<span><span class="co">## dimnames(.) &lt;- list(NULL,NULL)</span></span>
+<span><span class="co">## dimnames(.) &lt;- NULL translated to</span></span>
+<span><span class="co">## dimnames(.) &lt;- list(NULL,NULL)</span></span></code></pre>
+<p><img src="heatmap_files/figure-html/hmFull-1.png" width="700"></p>
 <p><strong>Subsetting</strong></p>
 <p>SCTK allows relatively flexible approaches to select the
 cells/features to plot.</p>
@@ -472,13 +476,17 @@ and <code>cellIndex</code>, including <code>numeric</code>, and
 <code>logical</code> vectors, which are widely used, and
 <code>character</code> vector containing the row/col names. Of course,
 user can directly use a subsetted SCE object as input.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># Make up random downsampling numeric vector</span>
-<span class="va">featureSubset</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span>, <span class="fl">50</span><span class="op">)</span>
-<span class="va">cellSubset</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span>, <span class="fl">50</span><span class="op">)</span>
-
-<span class="fu"><a href="../reference/plotSCEHeatmap.html">plotSCEHeatmap</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"counts"</span>, featureIndex <span class="op">=</span> <span class="va">featureSubset</span>, cellIndex <span class="op">=</span> <span class="va">cellSubset</span><span class="op">)</span></code></pre></div>
-<p><img src="heatmap_files/figure-html/idxSubset-1.png" width="700"><img src="heatmap_files/figure-html/idxSubset-2.png" width="700"></p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Make up random downsampling numeric vector</span></span>
+<span><span class="va">featureSubset</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span>, <span class="fl">50</span><span class="op">)</span></span>
+<span><span class="va">cellSubset</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span>, <span class="fl">50</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/plotSCEHeatmap.html">plotSCEHeatmap</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"counts"</span>, featureIndex <span class="op">=</span> <span class="va">featureSubset</span>, cellIndex <span class="op">=</span> <span class="va">cellSubset</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## dimnames(.) &lt;- NULL translated to</span></span>
+<span><span class="co">## dimnames(.) &lt;- list(NULL,NULL)</span></span>
+<span><span class="co">## dimnames(.) &lt;- NULL translated to</span></span>
+<span><span class="co">## dimnames(.) &lt;- list(NULL,NULL)</span></span></code></pre>
+<p><img src="heatmap_files/figure-html/idxSubset-1.png" width="700"></p>
 
 <details><summary><b>Using Identifiers in <code>rowData</code>/<code>colData</code></b></summary><p>In a more complex situation, where users might only have a set of
 identifiers which are not inside the row/col names (i.e. unable to
@@ -487,25 +495,33 @@ subset, in this situation, can be accessed via specifying a vector that
 contains the identifiers users have, to <code>featureIndexBy</code> or
 <code>cellIndexBy</code>. This specification allows directly giving one
 column name of <code>rowData</code> or <code>colData</code>.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">subsetFeatureName</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">rowData</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span><span class="op">$</span><span class="va">feature_name</span>, <span class="fl">50</span><span class="op">)</span>
-<span class="va">subsetCellBarcode</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="va">sce</span><span class="op">$</span><span class="va">cell_barcode</span>, <span class="fl">50</span><span class="op">)</span>
-<span class="fu"><a href="../reference/plotSCEHeatmap.html">plotSCEHeatmap</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"counts"</span>, featureIndex <span class="op">=</span> <span class="va">subsetFeatureName</span>, featureIndexBy <span class="op">=</span> <span class="st">"feature_name"</span>, cellIndex <span class="op">=</span> <span class="va">subsetCellBarcode</span>, cellIndexBy <span class="op">=</span> <span class="st">"cell_barcode"</span><span class="op">)</span></code></pre></div>
-<p><img src="heatmap_files/figure-html/indexBy-1.png" width="700"><img src="heatmap_files/figure-html/indexBy-2.png" width="700"></p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">subsetFeatureName</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu">rowData</span><span class="op">(</span><span class="va">sce</span><span class="op">)</span><span class="op">$</span><span class="va">feature_name</span>, <span class="fl">50</span><span class="op">)</span></span>
+<span><span class="va">subsetCellBarcode</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="va">sce</span><span class="op">$</span><span class="va">cell_barcode</span>, <span class="fl">50</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/plotSCEHeatmap.html">plotSCEHeatmap</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"counts"</span>, featureIndex <span class="op">=</span> <span class="va">subsetFeatureName</span>, featureIndexBy <span class="op">=</span> <span class="st">"feature_name"</span>, cellIndex <span class="op">=</span> <span class="va">subsetCellBarcode</span>, cellIndexBy <span class="op">=</span> <span class="st">"cell_barcode"</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## dimnames(.) &lt;- NULL translated to</span></span>
+<span><span class="co">## dimnames(.) &lt;- list(NULL,NULL)</span></span>
+<span><span class="co">## dimnames(.) &lt;- NULL translated to</span></span>
+<span><span class="co">## dimnames(.) &lt;- list(NULL,NULL)</span></span></code></pre>
+<p><img src="heatmap_files/figure-html/indexBy-1.png" width="700"></p>
 </details><p><strong>Adding Annotations</strong></p>
 <p>As introduced before, we allow directly using column names of
 <code>rowData</code> or <code>colData</code> to attach color bar
 annotations. To make use of this functionality, pass a
 <code>character</code> vector to <code>rowDataName</code> or
 <code>colDataName</code>.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># Make up arbitrary annotation, </span>
-<span class="va">rowRandLabel</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">'aa'</span>, <span class="fl">100</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">'bb'</span>, <span class="fl">100</span><span class="op">)</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">rowData</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span><span class="op">$</span><span class="va">randLabel</span> <span class="op">&lt;-</span> <span class="va">rowRandLabel</span>
-<span class="va">colRandLabel</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">'cc'</span>, <span class="fl">195</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">'dd'</span>, <span class="fl">195</span><span class="op">)</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span><span class="op">$</span><span class="va">randLabel</span> <span class="op">&lt;-</span> <span class="va">colRandLabel</span>
-<span class="fu"><a href="../reference/plotSCEHeatmap.html">plotSCEHeatmap</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"counts"</span>, featureIndex <span class="op">=</span> <span class="va">featureSubset</span>, cellIndex <span class="op">=</span> <span class="va">cellSubset</span>, rowDataName <span class="op">=</span> <span class="st">"randLabel"</span>, colDataName <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"type"</span>, <span class="st">"randLabel"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<p><img src="heatmap_files/figure-html/colRowAnn-1.png" width="700"><img src="heatmap_files/figure-html/colRowAnn-2.png" width="700"></p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Make up arbitrary annotation, </span></span>
+<span><span class="va">rowRandLabel</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">'aa'</span>, <span class="fl">100</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">'bb'</span>, <span class="fl">100</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu">rowData</span><span class="op">(</span><span class="va">sce</span><span class="op">)</span><span class="op">$</span><span class="va">randLabel</span> <span class="op">&lt;-</span> <span class="va">rowRandLabel</span></span>
+<span><span class="va">colRandLabel</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">'cc'</span>, <span class="fl">195</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">'dd'</span>, <span class="fl">195</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu">colData</span><span class="op">(</span><span class="va">sce</span><span class="op">)</span><span class="op">$</span><span class="va">randLabel</span> <span class="op">&lt;-</span> <span class="va">colRandLabel</span></span>
+<span><span class="fu"><a href="../reference/plotSCEHeatmap.html">plotSCEHeatmap</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"counts"</span>, featureIndex <span class="op">=</span> <span class="va">featureSubset</span>, cellIndex <span class="op">=</span> <span class="va">cellSubset</span>, rowDataName <span class="op">=</span> <span class="st">"randLabel"</span>, colDataName <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"type"</span>, <span class="st">"randLabel"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## dimnames(.) &lt;- NULL translated to</span></span>
+<span><span class="co">## dimnames(.) &lt;- list(NULL,NULL)</span></span>
+<span><span class="co">## dimnames(.) &lt;- NULL translated to</span></span>
+<span><span class="co">## dimnames(.) &lt;- list(NULL,NULL)</span></span></code></pre>
+<p><img src="heatmap_files/figure-html/colRowAnn-1.png" width="700"></p>
 <details><summary><b>Customized Annotation</b></summary><p>Fully customized annotation is also supported, though it can be
 complexed for users. For the labeling, it is more recommanded to insert
 the information into <code>rowData</code> or <code>colData</code> and
@@ -516,22 +532,6 @@ annotation classes (such as <code>"randLabel"</code> and
 <code>"type"</code>); each inner object under a name must be a named
 vector, with colors as the values and existing categories as the names.
 The working instance looks like this:</p>
-<pre><code><span class="co">## [1] "For row annotation"</span></code></pre>
-<pre><code><span class="co">## $randLabel</span>
-<span class="co">##        aa        bb </span>
-<span class="co">## "#FF4D4D" "#4DFFFF"</span></code></pre>
-<pre><code><span class="co">## [1] "For column annotation"</span></code></pre>
-<pre><code><span class="co">## $sample</span>
-<span class="co">##   pbmc_4k </span>
-<span class="co">## "#FF4D4D" </span>
-<span class="co">## </span>
-<span class="co">## $type</span>
-<span class="co">##      Singlet      Doublet EmptyDroplet </span>
-<span class="co">##    "#4DFFFF"    "#FFC04D"    "#4D4DFF" </span>
-<span class="co">## </span>
-<span class="co">## $randLabel</span>
-<span class="co">##        cc        dd </span>
-<span class="co">## "#FFFF4D" "#BA4DFF"</span></code></pre>
 </details><p><strong>Others</strong></p>
 <p><strong>1. Grouping/Splitting</strong> In some cases, it might be
 better to do a “semi-heatmap” (i.e. split the rows/columns first and
@@ -541,8 +541,12 @@ such as evaluating the differential expression. For this need, use
 must be a <code>character</code> vector that is a subset of the
 specified annotation.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/plotSCEHeatmap.html">plotSCEHeatmap</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"counts"</span>, featureIndex <span class="op">=</span> <span class="va">featureSubset</span>, cellIndex <span class="op">=</span> <span class="va">cellSubset</span>, rowDataName <span class="op">=</span> <span class="st">"randLabel"</span>, colDataName <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"type"</span>, <span class="st">"randLabel"</span><span class="op">)</span>, rowSplitBy <span class="op">=</span> <span class="st">"randLabel"</span>, colSplitBy <span class="op">=</span> <span class="st">"type"</span><span class="op">)</span></code></pre></div>
-<p><img src="heatmap_files/figure-html/split-1.png" width="700"><img src="heatmap_files/figure-html/split-2.png" width="700"></p>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plotSCEHeatmap.html">plotSCEHeatmap</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"counts"</span>, featureIndex <span class="op">=</span> <span class="va">featureSubset</span>, cellIndex <span class="op">=</span> <span class="va">cellSubset</span>, rowDataName <span class="op">=</span> <span class="st">"randLabel"</span>, colDataName <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"type"</span>, <span class="st">"randLabel"</span><span class="op">)</span>, rowSplitBy <span class="op">=</span> <span class="st">"randLabel"</span>, colSplitBy <span class="op">=</span> <span class="st">"type"</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## dimnames(.) &lt;- NULL translated to</span></span>
+<span><span class="co">## dimnames(.) &lt;- list(NULL,NULL)</span></span>
+<span><span class="co">## dimnames(.) &lt;- NULL translated to</span></span>
+<span><span class="co">## dimnames(.) &lt;- list(NULL,NULL)</span></span></code></pre>
+<p><img src="heatmap_files/figure-html/split-1.png" width="700"></p>
 <p><strong>2. Cell/Feature Labeling</strong> Text labels of features or
 cells can be added via <code>rowLabel</code> or <code>colLabel</code>.
 Use <code>TRUE</code> or <code>FALSE</code> to specify whether to show
@@ -559,9 +563,9 @@ can be removed by passing <code>FALSE</code> to <code>rowDend</code> or
 (<code>"Genes"</code>) and column title (<code>"Cells"</code>) can be
 changed or removed by passing a string or <code>NULL</code> to
 <code>rowTitle</code> or <code>colTitle</code>, respectively.</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/plotSCEHeatmap.html">plotSCEHeatmap</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"counts"</span>, featureIndex <span class="op">=</span> <span class="va">featureSubset</span>, cellIndex <span class="op">=</span> <span class="va">cellSubset</span>, rowLabel <span class="op">=</span> <span class="st">"feature_name"</span>, colLabel <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">50</span><span class="op">)</span>, colDend <span class="op">=</span> <span class="cn">FALSE</span>, rowTitle <span class="op">=</span> <span class="st">"Downsampled features"</span><span class="op">)</span></code></pre></div>
-<p><img src="heatmap_files/figure-html/label-1.png" width="700"><img src="heatmap_files/figure-html/label-2.png" width="700"></p>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plotSCEHeatmap.html">plotSCEHeatmap</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"counts"</span>, featureIndex <span class="op">=</span> <span class="va">featureSubset</span>, cellIndex <span class="op">=</span> <span class="va">cellSubset</span>, rowLabel <span class="op">=</span> <span class="st">"feature_name"</span>, colLabel <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span><span class="op">)</span>, colDend <span class="op">=</span> <span class="cn">FALSE</span>, rowTitle <span class="op">=</span> <span class="st">"Downsampled features"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="heatmap_files/figure-html/label-1.png" width="700"></p>
 <p>There are still some parameters not mentioned here, but they are not
 frequently used. Please refer to <code><a href="../reference/plotSCEHeatmap.html">?plotSCEHeatmap</a></code> as well as
 <code><a href="https://rdrr.io/pkg/ComplexHeatmap/man/Heatmap.html" class="external-link">?ComplexHeatmap::Heatmap</a></code>.</p>
@@ -603,7 +607,7 @@ Sep. 2016, doi: <a href="https://doi.org/10.1093/bioinformatics/btw313" class="e
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer>
