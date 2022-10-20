@@ -1,4 +1,5 @@
-
+#' Run normalization/transformation with various methods
+#' @description 
 #' Wrapper function to run any of the integrated normalization/transformation
 #' methods in the singleCellTK. The available methods include 'LogNormalize',
 #' 'CLR', 'RC' and 'SCTransform' from Seurat, 'logNormCounts and 'CPM' from

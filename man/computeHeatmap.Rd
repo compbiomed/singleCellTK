@@ -2,11 +2,8 @@
 % Please edit documentation in R/computeHeatmap.R
 \name{computeHeatmap}
 \alias{computeHeatmap}
-\title{computeHeatmap
-The computeHeatmap method computes the heatmap visualization for a set
- of features against a set of dimensionality reduction components. This
- method uses the heatmap computation algorithm code from \code{Seurat} but
- plots the heatmap using \code{ComplexHeatmap} and \code{cowplot} libraries.}
+\title{Computes heatmap for a set of features against dimensionality reduction 
+components}
 \usage{
 computeHeatmap(
   inSCE,
@@ -60,7 +57,6 @@ using \code{CreateDimReducObject} function.}
 Heatmap plot object.
 }
 \description{
-computeHeatmap
 The computeHeatmap method computes the heatmap visualization for a set
  of features against a set of dimensionality reduction components. This
  method uses the heatmap computation algorithm code from \code{Seurat} but

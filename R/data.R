@@ -19,6 +19,7 @@
 
 #' Example Single Cell RNA-Seq data in SingleCellExperiment Object,
 #' subset of 10x public dataset
+#' @description 
 #' https://support.10xgenomics.com/single-cell-gene-expression/datasets/2.1.0/pbmc4k
 #' A subset of 390 barcodes and top 200 genes were included in this example.
 #' Within 390 barcodes, 195 barcodes are empty droplet, 150 barcodes are cell

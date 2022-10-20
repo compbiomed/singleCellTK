@@ -34,7 +34,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.2</span>
       </span>
     </div>
 
@@ -481,24 +481,24 @@ dataset from 10X, which is available with
 PCA, a UMAP and the cluster assignment are presented, while QC and
 filtering steps are skipped.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://www.camplab.net/sctk/" class="external-link">singleCellTK</a></span><span class="op">)</span>
-<span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/importExampleData.html">importExampleData</a></span><span class="op">(</span><span class="st">"pbmc3k"</span><span class="op">)</span>
-<span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runPerCellQC.html">runPerCellQC</a></span><span class="op">(</span><span class="va">sce</span>, mitoRef <span class="op">=</span> <span class="st">"human"</span>, mitoIDType <span class="op">=</span> <span class="st">"symbol"</span>, mitoGeneLocation <span class="op">=</span> <span class="st">"rownames"</span><span class="op">)</span>
-<span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/subsetSCECols.html">subsetSCECols</a></span><span class="op">(</span><span class="va">sce</span>, colData <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'total &gt; 600'</span>, <span class="st">'detected &gt; 300'</span>, <span class="st">'mito_percent &lt; 5'</span><span class="op">)</span><span class="op">)</span>
-<span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/scaterlogNormCounts.html">scaterlogNormCounts</a></span><span class="op">(</span><span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"counts"</span>, assayName <span class="op">=</span> <span class="st">"logcounts"</span><span class="op">)</span>
-<span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runModelGeneVar.html">runModelGeneVar</a></span><span class="op">(</span><span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"logcounts"</span><span class="op">)</span>
-<span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getTopHVG.html">setTopHVG</a></span><span class="op">(</span><span class="va">sce</span>, method <span class="op">=</span> <span class="st">"modelGeneVar"</span><span class="op">)</span>
-<span class="co"># Values required as input</span>
-<span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/scaterPCA.html">scaterPCA</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"logcounts"</span>, useFeatureSubset <span class="op">=</span> <span class="st">"HVG_modelGeneVar2000"</span>, 
-                 reducedDimName <span class="op">=</span> <span class="st">"PCA"</span>, seed <span class="op">=</span> <span class="fl">12345</span><span class="op">)</span>
-<span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runScranSNN.html">runScranSNN</a></span><span class="op">(</span><span class="va">sce</span>, useReducedDim <span class="op">=</span> <span class="st">"PCA"</span>, nComp <span class="op">=</span> <span class="fl">10</span>, k <span class="op">=</span> <span class="fl">14</span>,
-                   weightType <span class="op">=</span> <span class="st">"jaccard"</span>, clusterName <span class="op">=</span> <span class="st">"cluster"</span>, seed <span class="op">=</span> <span class="fl">12345</span><span class="op">)</span>
-<span class="co"># Values needed for visualization</span>
-<span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getUMAP.html">getUMAP</a></span><span class="op">(</span><span class="va">sce</span>, useReducedDim <span class="op">=</span> <span class="st">"PCA"</span>, initialDims <span class="op">=</span> <span class="fl">10</span>, reducedDimName <span class="op">=</span> <span class="st">"UMAP"</span>, seed <span class="op">=</span> <span class="fl">12345</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://www.camplab.net/sctk/" class="external-link">singleCellTK</a></span><span class="op">)</span></span>
+<span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/importExampleData.html">importExampleData</a></span><span class="op">(</span><span class="st">"pbmc3k"</span><span class="op">)</span></span>
+<span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runPerCellQC.html">runPerCellQC</a></span><span class="op">(</span><span class="va">sce</span>, mitoRef <span class="op">=</span> <span class="st">"human"</span>, mitoIDType <span class="op">=</span> <span class="st">"symbol"</span>, mitoGeneLocation <span class="op">=</span> <span class="st">"rownames"</span><span class="op">)</span></span>
+<span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/subsetSCECols.html">subsetSCECols</a></span><span class="op">(</span><span class="va">sce</span>, colData <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'total &gt; 600'</span>, <span class="st">'detected &gt; 300'</span>, <span class="st">'mito_percent &lt; 5'</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/scaterlogNormCounts.html">scaterlogNormCounts</a></span><span class="op">(</span><span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"counts"</span>, assayName <span class="op">=</span> <span class="st">"logcounts"</span><span class="op">)</span></span>
+<span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runModelGeneVar.html">runModelGeneVar</a></span><span class="op">(</span><span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"logcounts"</span><span class="op">)</span></span>
+<span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getTopHVG.html">setTopHVG</a></span><span class="op">(</span><span class="va">sce</span>, method <span class="op">=</span> <span class="st">"modelGeneVar"</span><span class="op">)</span></span>
+<span><span class="co"># Values required as input</span></span>
+<span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/scaterPCA.html">scaterPCA</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"logcounts"</span>, useFeatureSubset <span class="op">=</span> <span class="st">"HVG_modelGeneVar2000"</span>, </span>
+<span>                 reducedDimName <span class="op">=</span> <span class="st">"PCA"</span>, seed <span class="op">=</span> <span class="fl">12345</span><span class="op">)</span></span>
+<span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runScranSNN.html">runScranSNN</a></span><span class="op">(</span><span class="va">sce</span>, useReducedDim <span class="op">=</span> <span class="st">"PCA"</span>, nComp <span class="op">=</span> <span class="fl">10</span>, k <span class="op">=</span> <span class="fl">14</span>,</span>
+<span>                   weightType <span class="op">=</span> <span class="st">"jaccard"</span>, clusterName <span class="op">=</span> <span class="st">"cluster"</span>, seed <span class="op">=</span> <span class="fl">12345</span><span class="op">)</span></span>
+<span><span class="co"># Values needed for visualization</span></span>
+<span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runUMAP.html">runUMAP</a></span><span class="op">(</span><span class="va">sce</span>, useReducedDim <span class="op">=</span> <span class="st">"PCA"</span>, initialDims <span class="op">=</span> <span class="fl">10</span>, reducedDimName <span class="op">=</span> <span class="st">"UMAP"</span>, seed <span class="op">=</span> <span class="fl">12345</span><span class="op">)</span></span></code></pre></div>
 <p>And we can visualize the cell populations on the UMAP with cluster
 labeled.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/plotSCEDimReduceColData.html">plotSCEDimReduceColData</a></span><span class="op">(</span><span class="va">sce</span>, colorBy <span class="op">=</span> <span class="st">"cluster"</span>, reducedDimName <span class="op">=</span> <span class="st">"UMAP"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plotSCEDimReduceColData.html">plotSCEDimReduceColData</a></span><span class="op">(</span><span class="va">sce</span>, colorBy <span class="op">=</span> <span class="st">"cluster"</span>, reducedDimName <span class="op">=</span> <span class="st">"UMAP"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="trajectoryAnalysis_files/figure-html/tscan_prep_plot-1.png" width="700" style="display: block; margin: auto;"></p>
 </details><p><strong>1. Calculate trajectory and pseudotime</strong></p>
 <p>SCTK provides <code><a href="../reference/runTSCAN.html">runTSCAN()</a></code> function to obtain the MST
@@ -506,12 +506,12 @@ trajectory and stores pseudotime estimated for each path in
 <code>colData</code>. The dimension reduction and cluster labels are
 already obtained with ther preprocessing steps above.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runTSCAN.html">runTSCAN</a></span><span class="op">(</span><span class="va">sce</span>, useReducedDim <span class="op">=</span> <span class="st">"PCA"</span>, cluster <span class="op">=</span> <span class="st">"cluster"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runTSCAN.html">runTSCAN</a></span><span class="op">(</span><span class="va">sce</span>, useReducedDim <span class="op">=</span> <span class="st">"PCA"</span>, cluster <span class="op">=</span> <span class="st">"cluster"</span><span class="op">)</span></span></code></pre></div>
 <p>To see how the trajectory paths span across the cell population, SCTK
 provides <code><a href="../reference/plotTSCANResults.html">plotTSCANResults()</a></code> function which project the MST
 on to the embedding.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/plotTSCANResults.html">plotTSCANResults</a></span><span class="op">(</span><span class="va">sce</span>, useReducedDim <span class="op">=</span> <span class="st">"UMAP"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plotTSCANResults.html">plotTSCANResults</a></span><span class="op">(</span><span class="va">sce</span>, useReducedDim <span class="op">=</span> <span class="st">"UMAP"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="trajectoryAnalysis_files/figure-html/plotTSCANResults-1.png" width="700" style="display: block; margin: auto;"></p>
 <p><strong>2. Identify features differentially expressed along a
 path</strong></p>
@@ -520,16 +520,16 @@ for specifying the path of interest. In SCTK wrapped workflow, we use
 the terminal node of each path as the index. Available options can be
 shown with function <code><a href="../reference/getTSCANResults.html">listTSCANTerminalNodes()</a></code>.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runTSCANDEG.html">runTSCANDEG</a></span><span class="op">(</span><span class="va">sce</span>, pathIndex <span class="op">=</span> <span class="fl">7</span>, useAssay <span class="op">=</span> <span class="st">"logcounts"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runTSCANDEG.html">runTSCANDEG</a></span><span class="op">(</span><span class="va">sce</span>, pathIndex <span class="op">=</span> <span class="fl">7</span>, useAssay <span class="op">=</span> <span class="st">"logcounts"</span><span class="op">)</span></span></code></pre></div>
 <p>Two visualization methods are provided. One is a heatmap of the
 expression of features significantly changed on the path of interest, in
 the cells involved in this path. Another groups scatter plots of cells
 with top feature expression change along the path.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/plotTSCANPseudotimeHeatmap.html">plotTSCANPseudotimeHeatmap</a></span><span class="op">(</span><span class="va">sce</span>, pathIndex <span class="op">=</span> <span class="fl">7</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plotTSCANPseudotimeHeatmap.html">plotTSCANPseudotimeHeatmap</a></span><span class="op">(</span><span class="va">sce</span>, pathIndex <span class="op">=</span> <span class="fl">7</span><span class="op">)</span></span></code></pre></div>
 <p><img src="trajectoryAnalysis_files/figure-html/plotTSCANDEG-1.png" width="700" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/plotTSCANPseudotimeGenes.html">plotTSCANPseudotimeGenes</a></span><span class="op">(</span><span class="va">sce</span>, pathIndex <span class="op">=</span> <span class="fl">7</span>, direction <span class="op">=</span> <span class="st">"increasing"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plotTSCANPseudotimeGenes.html">plotTSCANPseudotimeGenes</a></span><span class="op">(</span><span class="va">sce</span>, pathIndex <span class="op">=</span> <span class="fl">7</span>, direction <span class="op">=</span> <span class="st">"increasing"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="trajectoryAnalysis_files/figure-html/plotTSCANDEG-2.png" width="700" style="display: block; margin: auto;"></p>
 <p><strong>3. Identify features Differentially Expressed For Branched
 Cluster</strong></p>
@@ -540,7 +540,7 @@ in step 1 to determine the branch of interest. Valid input options can
 be listed with
 <code>getTSCANResults(sce, "Pseudotime")$branchClusters</code>.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runTSCANClusterDEAnalysis.html">runTSCANClusterDEAnalysis</a></span><span class="op">(</span><span class="va">sce</span>, useCluster <span class="op">=</span> <span class="fl">3</span>, useAssay <span class="op">=</span> <span class="st">"logcounts"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runTSCANClusterDEAnalysis.html">runTSCANClusterDEAnalysis</a></span><span class="op">(</span><span class="va">sce</span>, useCluster <span class="op">=</span> <span class="fl">3</span>, useAssay <span class="op">=</span> <span class="st">"logcounts"</span><span class="op">)</span></span></code></pre></div>
 <p>We can explore the features significantly changes on a specific
 branch in the approaches below. For visualization method in this step,
 argument <code>useCluster</code> is used to specify the cluster used in
@@ -550,37 +550,37 @@ specifying the branch of interest. Valid path indices can be listed with
 where <code>"3"</code> corresponds to <code>useCluster</code> in the
 calculation above.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/plotTSCANClusterDEG.html">plotTSCANClusterDEG</a></span><span class="op">(</span><span class="va">sce</span>, useCluster <span class="op">=</span> <span class="fl">3</span>, pathIndex <span class="op">=</span> <span class="fl">6</span>, useReducedDim <span class="op">=</span> <span class="st">"UMAP"</span>, topN <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plotTSCANClusterDEG.html">plotTSCANClusterDEG</a></span><span class="op">(</span><span class="va">sce</span>, useCluster <span class="op">=</span> <span class="fl">3</span>, pathIndex <span class="op">=</span> <span class="fl">6</span>, useReducedDim <span class="op">=</span> <span class="st">"UMAP"</span>, topN <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></code></pre></div>
 <p><img src="trajectoryAnalysis_files/figure-html/plotTSCANClusterDE-1.png" width="700" style="display: block; margin: auto;"></p>
 <details><summary><b>Show DEG tables of each path</b></summary><p>There will be a table (<code>DFrame</code> class) for each of the
 branch paths and all of them can be retrieved within a list object:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">useCluster</span> <span class="op">&lt;-</span> <span class="fl">3</span>
-<span class="va">tableList</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getTSCANResults.html">getTSCANResults</a></span><span class="op">(</span><span class="va">sce</span>, <span class="st">"ClusterDEAnalysis"</span>, <span class="va">useCluster</span><span class="op">)</span><span class="op">$</span><span class="va">DEgenes</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">useCluster</span> <span class="op">&lt;-</span> <span class="fl">3</span></span>
+<span><span class="va">tableList</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getTSCANResults.html">getTSCANResults</a></span><span class="op">(</span><span class="va">sce</span>, <span class="st">"ClusterDEAnalysis"</span>, <span class="va">useCluster</span><span class="op">)</span><span class="op">$</span><span class="va">DEgenes</span></span></code></pre></div>
 <p>The table from the branch, of which we just visualized the top
 feature expression, looks like:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">tableList</span><span class="op">$</span><span class="va">`6`</span></code></pre></div>
-<pre><code><span class="co">## DataFrame with 12 rows and 4 columns</span>
-<span class="co">##              logFC    logFC.1     p.value         FDR</span>
-<span class="co">##          &lt;numeric&gt;  &lt;numeric&gt;   &lt;numeric&gt;   &lt;numeric&gt;</span>
-<span class="co">## GPX1     -0.161598  -0.161598 7.72253e-08 4.82474e-05</span>
-<span class="co">## RBP7     -0.131954  -0.131954 3.57329e-07 1.84926e-04</span>
-<span class="co">## CD14     -0.143327  -0.143327 2.95415e-06 1.33774e-03</span>
-<span class="co">## S100A12  -0.121480  -0.121480 5.04022e-06 1.90967e-03</span>
-<span class="co">## FOLR3    -0.106884  -0.106884 1.15951e-05 3.93798e-03</span>
-<span class="co">## ...            ...        ...         ...         ...</span>
-<span class="co">## LYZ     -0.1007743 -0.1007743 5.10931e-05   0.0132210</span>
-<span class="co">## QPCT    -0.0691165 -0.0691165 1.00350e-04   0.0227209</span>
-<span class="co">## TSPO    -0.1225684 -0.1225684 1.17562e-04   0.0260747</span>
-<span class="co">## IL8     -0.1241204 -0.1241204 1.38549e-04   0.0289568</span>
-<span class="co">## BST1    -0.0769784 -0.0769784 1.84220e-04   0.0357519</span></code></pre>
+<code class="sourceCode R"><span><span class="va">tableList</span><span class="op">$</span><span class="va">`6`</span></span></code></pre></div>
+<pre><code><span><span class="co">## DataFrame with 12 rows and 4 columns</span></span>
+<span><span class="co">##              logFC    logFC.1     p.value         FDR</span></span>
+<span><span class="co">##          &lt;numeric&gt;  &lt;numeric&gt;   &lt;numeric&gt;   &lt;numeric&gt;</span></span>
+<span><span class="co">## GPX1     -0.161598  -0.161598 7.72253e-08 4.82474e-05</span></span>
+<span><span class="co">## RBP7     -0.131954  -0.131954 3.57329e-07 1.84926e-04</span></span>
+<span><span class="co">## CD14     -0.143327  -0.143327 2.95415e-06 1.33774e-03</span></span>
+<span><span class="co">## S100A12  -0.121480  -0.121480 5.04022e-06 1.90967e-03</span></span>
+<span><span class="co">## FOLR3    -0.106884  -0.106884 1.15951e-05 3.93798e-03</span></span>
+<span><span class="co">## ...            ...        ...         ...         ...</span></span>
+<span><span class="co">## LYZ     -0.1007743 -0.1007743 5.10931e-05   0.0132210</span></span>
+<span><span class="co">## QPCT    -0.0691165 -0.0691165 1.00350e-04   0.0227209</span></span>
+<span><span class="co">## TSPO    -0.1225684 -0.1225684 1.17562e-04   0.0260747</span></span>
+<span><span class="co">## IL8     -0.1241204 -0.1241204 1.38549e-04   0.0289568</span></span>
+<span><span class="co">## BST1    -0.0769784 -0.0769784 1.84220e-04   0.0357519</span></span></code></pre>
 </details><details><summary><b>Show recomputed pseudotime rooting from the cluster</b></summary><div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/plotTSCANClusterPseudo.html">plotTSCANClusterPseudo</a></span><span class="op">(</span><span class="va">sce</span>, useCluster <span class="op">=</span> <span class="va">useCluster</span>, useReducedDim <span class="op">=</span> <span class="st">"UMAP"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plotTSCANClusterPseudo.html">plotTSCANClusterPseudo</a></span><span class="op">(</span><span class="va">sce</span>, useCluster <span class="op">=</span> <span class="va">useCluster</span>, useReducedDim <span class="op">=</span> <span class="st">"UMAP"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="trajectoryAnalysis_files/figure-html/tscanClusterPseudo-1.png" width="700" style="display: block; margin: auto;"></p>
 </details><p><strong>Explore feature expression with MST overlaid</strong></p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/plotTSCANDimReduceFeatures.html">plotTSCANDimReduceFeatures</a></span><span class="op">(</span><span class="va">sce</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"IL7R"</span>, <span class="st">"CD14"</span>, <span class="st">"MS4A1"</span>, <span class="st">"CD8A"</span>, <span class="st">"FCGR3A"</span>, <span class="st">"NKG7"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plotTSCANDimReduceFeatures.html">plotTSCANDimReduceFeatures</a></span><span class="op">(</span><span class="va">sce</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"IL7R"</span>, <span class="st">"CD14"</span>, <span class="st">"MS4A1"</span>, <span class="st">"CD8A"</span>, <span class="st">"FCGR3A"</span>, <span class="st">"NKG7"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="trajectoryAnalysis_files/figure-html/plotTSCANDimReduceFeatures-1.png" width="960" style="display: block; margin: auto;"></p>
 </div>
 <script>
@@ -619,7 +619,7 @@ vol. 44, 2016, doi: <a href="https://doi.org/10.1093/nar/gkw430" class="external
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer>

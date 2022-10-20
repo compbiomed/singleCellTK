@@ -2,12 +2,7 @@
 % Please edit documentation in R/runNormalization.R
 \name{runNormalization}
 \alias{runNormalization}
-\title{Wrapper function to run any of the integrated normalization/transformation
-methods in the singleCellTK. The available methods include 'LogNormalize',
-'CLR', 'RC' and 'SCTransform' from Seurat, 'logNormCounts and 'CPM' from
-Scater. Additionally, users can 'scale' using Z.Score, 'transform' using
-log, log1p and sqrt, add 'pseudocounts' and trim the final matrices
-between a range of values.}
+\title{Run normalization/transformation with various methods}
 \usage{
 runNormalization(
   inSCE,

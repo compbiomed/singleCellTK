@@ -366,25 +366,25 @@ After the analysis is done, the result would be presented in the right main pane
 ````
 
 ```{R findMarker, message=FALSE, warning=FALSE, results="hold"}
-sce <- findMarkerDiffExp(sce, useAssay = "logcounts", method = "wilcox", cluster = "cluster")
+sce <- runFindMarker(sce, useAssay = "logcounts", method = "wilcox", cluster = "cluster")
 ```
 
-By running `findMarkerDiffExp()`, SCTK stores a `data.frame` of marker table to the `matadata` slot of the SCE object. The marker table will include all detected markers for each cluster and statistical values associated to each marker. To fetch the table, users can use the command below, and even add filtering parameters.  
+By running `runFindMarker()`, SCTK stores a `data.frame` of marker table to the `matadata` slot of the SCE object. The marker table will include all detected markers for each cluster and statistical values associated to each marker. To fetch the table, users can use the command below, and even add filtering parameters.  
 
 ```{R getMarkerTable, results="hold"}
-topMarkers <- findMarkerTopTable(sce, topN = 1, log2fcThreshold = 0, fdrThreshold = 0.05,
-                                 minClustExprPerc = 0.5, maxCtrlExprPerc = 0.5,
-                                 minMeanExpr = 0)
+topMarkers <- getFindMarkerTopTable(sce, topN = 1, log2fcThreshold = 0, 
+                                    fdrThreshold = 0.05, minClustExprPerc = 0.5, 
+                                    maxCtrlExprPerc = 0.5, minMeanExpr = 0)
 topMarkers
 ```
 
 For visualization, SCTK has a specific heatmap plotting function for detected markers. The heatmap will take the log-normalized feature expression matrix for the values (scaled when plotting), and subset the features to only the top markers of each cluster. For the organization of the heatmap, the function groups the markers by the belonging to the clusters, and groups the cells, obviously, by clusters. 
 
 ```{R markerHeatmap, results="hold", fig.height= 8, fig.width=9}
-plotMarkerDiffExp(sce, topN = 5, log2fcThreshold = 0.5, 
-                  fdrThreshold = 0.05, minClustExprPerc = 0.5, 
-                  maxCtrlExprPerc = 0.5, minMeanExpr = 0, 
-                  rowLabel = TRUE)
+plotFindMarkerHeatmap(sce, topN = 5, log2fcThreshold = 0.5, 
+                      fdrThreshold = 0.05, minClustExprPerc = 0.5, 
+                      maxCtrlExprPerc = 0.5, minMeanExpr = 0, 
+                      rowLabel = TRUE)
 ```
 
 ````{=html}
@@ -434,7 +434,7 @@ After running, The visualization section at the bottom of this tab will be autom
 <div class="tabcontent console">
 ````
 
-`runDEAnalysis()` is a generic function for performing differential expression (DE) analysis between two selected groups of cells. This is also used by `findMarkerDiffExp()`. By running DE analysis, the function will take the expression assay with all features and perform statistical analysis to discover quantitative changes in expression levels between selected groups. 
+`runDEAnalysis()` is a generic function for performing differential expression (DE) analysis between two selected groups of cells. This is also used by `runFindMarker()`. By running DE analysis, the function will take the expression assay with all features and perform statistical analysis to discover quantitative changes in expression levels between selected groups. 
 
 ```{R de, results="hold"}
 sce <- runDEAnalysis(inSCE = sce, method = "wilcox", useAssay = "logcounts",

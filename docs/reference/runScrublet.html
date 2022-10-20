@@ -23,7 +23,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.2</span>
       </span>
     </div>
 
@@ -211,54 +211,52 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">runScrublet</span><span class="op">(</span>
-  <span class="va">inSCE</span>,
-  sample <span class="op">=</span> <span class="cn">NULL</span>,
-  useAssay <span class="op">=</span> <span class="st">"counts"</span>,
-  simDoubletRatio <span class="op">=</span> <span class="fl">2</span>,
-  nNeighbors <span class="op">=</span> <span class="cn">NULL</span>,
-  minDist <span class="op">=</span> <span class="cn">NULL</span>,
-  expectedDoubletRate <span class="op">=</span> <span class="fl">0.1</span>,
-  stdevDoubletRate <span class="op">=</span> <span class="fl">0.02</span>,
-  syntheticDoubletUmiSubsampling <span class="op">=</span> <span class="fl">1</span>,
-  useApproxNeighbors <span class="op">=</span> <span class="cn">TRUE</span>,
-  distanceMetric <span class="op">=</span> <span class="st">"euclidean"</span>,
-  getDoubletNeighborParents <span class="op">=</span> <span class="cn">FALSE</span>,
-  minCounts <span class="op">=</span> <span class="fl">3</span>,
-  minCells <span class="op">=</span> <span class="fl">3L</span>,
-  minGeneVariabilityPctl <span class="op">=</span> <span class="fl">85</span>,
-  logTransform <span class="op">=</span> <span class="cn">FALSE</span>,
-  meanCenter <span class="op">=</span> <span class="cn">TRUE</span>,
-  normalizeVariance <span class="op">=</span> <span class="cn">TRUE</span>,
-  nPrinComps <span class="op">=</span> <span class="fl">30L</span>,
-  tsneAngle <span class="op">=</span> <span class="cn">NULL</span>,
-  tsnePerplexity <span class="op">=</span> <span class="cn">NULL</span>,
-  verbose <span class="op">=</span> <span class="cn">TRUE</span>,
-  seed <span class="op">=</span> <span class="fl">12345</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">runScrublet</span><span class="op">(</span></span>
+<span>  <span class="va">inSCE</span>,</span>
+<span>  sample <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  useAssay <span class="op">=</span> <span class="st">"counts"</span>,</span>
+<span>  simDoubletRatio <span class="op">=</span> <span class="fl">2</span>,</span>
+<span>  nNeighbors <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  minDist <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  expectedDoubletRate <span class="op">=</span> <span class="fl">0.1</span>,</span>
+<span>  stdevDoubletRate <span class="op">=</span> <span class="fl">0.02</span>,</span>
+<span>  syntheticDoubletUmiSubsampling <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  useApproxNeighbors <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  distanceMetric <span class="op">=</span> <span class="st">"euclidean"</span>,</span>
+<span>  getDoubletNeighborParents <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  minCounts <span class="op">=</span> <span class="fl">3</span>,</span>
+<span>  minCells <span class="op">=</span> <span class="fl">3L</span>,</span>
+<span>  minGeneVariabilityPctl <span class="op">=</span> <span class="fl">85</span>,</span>
+<span>  logTransform <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  meanCenter <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  normalizeVariance <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  nPrinComps <span class="op">=</span> <span class="fl">30L</span>,</span>
+<span>  tsneAngle <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  tsnePerplexity <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  seed <span class="op">=</span> <span class="fl">12345</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>inSCE</dt>
-<dd><p>A <a href="https://rdrr.io/pkg/SingleCellExperiment/man/SingleCellExperiment.html" class="external-link">SingleCellExperiment</a> object.
-Needs <code>counts</code> in assays slot.</p></dd>
+<dd><p>A SingleCellExperiment object.</p></dd>
 
 
 <dt>sample</dt>
-<dd><p>Character vector. Indicates which sample each cell belongs to.
-Scrublet will be run on cells from each sample separately. If NULL, then
-all cells will be processed together. Default <code>NULL</code>.</p></dd>
+<dd><p>Character vector or colData variable name. Indicates which 
+sample each cell belongs to. Default <code>NULL</code>.</p></dd>
 
 
 <dt>useAssay</dt>
-<dd><p>A string specifying which assay in the SCE to use. Default
-'counts'.</p></dd>
+<dd><p>A string specifying which assay in the SCE to use. Default 
+<code>"counts"</code>.</p></dd>
 
 
 <dt>simDoubletRatio</dt>
 <dd><p>Numeric. Number of doublets to simulate relative to
-the number of observed transcriptomes. Default 2.0.</p></dd>
+the number of observed transcriptomes. Default <code>2.0</code>.</p></dd>
 
 
 <dt>nNeighbors</dt>
@@ -268,78 +266,74 @@ this is set to <code>round(0.5 * sqrt(n_cells))</code>. Default <code>NULL</code
 
 
 <dt>minDist</dt>
-<dd><p>Float Determines how tightly UMAP packs points together. If <code>NULL</code>,
-this is set to 0.1. Default <code>NULL</code>.</p></dd>
+<dd><p>Float Determines how tightly UMAP packs points together. If 
+<code>NULL</code>, this is set to <code>0.1</code>. Default <code>NULL</code>.</p></dd>
 
 
 <dt>expectedDoubletRate</dt>
 <dd><p>The estimated doublet rate for the experiment.
-Default 0.1.</p></dd>
+Default <code>0.1</code>.</p></dd>
 
 
 <dt>stdevDoubletRate</dt>
-<dd><p>Uncertainty in the expected doublet rate.
-Default 0.02.</p></dd>
+<dd><p>Uncertainty in the expected doublet rate. Default 
+<code>0.02</code>.</p></dd>
 
 
 <dt>syntheticDoubletUmiSubsampling</dt>
-<dd><p>Numeric. Rate for sampling UMIs
-when creating synthetic doublets. If 1.0, each doublet is created by simply
+<dd><p>Numeric. Rate for sampling UMIs when
+creating synthetic doublets. If <code>1.0</code>, each doublet is created by simply
 adding the UMIs from two randomly sampled observed transcriptomes. For
 values less than 1, the UMI counts are added and then randomly sampled at
-the specified rate. Defuault: 1.0.</p></dd>
+the specified rate. Defuault <code>1.0</code>.</p></dd>
 
 
 <dt>useApproxNeighbors</dt>
 <dd><p>Boolean. Use approximate nearest neighbor method
-(<code>annoy</code>) for the KNN classifier. Default <code>TRUE</code>.</p></dd>
+(annoy) for the KNN classifier. Default <code>TRUE</code>.</p></dd>
 
 
 <dt>distanceMetric</dt>
 <dd><p>Character. Distance metric used when finding nearest
-neighbors.
-For list of valid values, see the documentation for <code>annoy</code> (if
-<code>useApproxNeighbors</code> is <code>TRUE</code>) or
-<code>sklearn.neighbors.NearestNeighbors</code> (if <code>useApproxNeighbors</code> is
-<code>FALSE</code>). Default "euclidean".</p></dd>
+neighbors. See detail. Default <code>"euclidean"</code>.</p></dd>
 
 
 <dt>getDoubletNeighborParents</dt>
 <dd><p>Boolean. If <code>TRUE</code>, return the
 parent transcriptomes that generated the doublet neighbors of each
-observed transcriptome. This information can be used to infer the cell
-states that generated a given doublet state. Default <code>FALSE</code>.</p></dd>
+observed transcriptome. This information can be used to infer the cell states
+that generated a given doublet state. Default <code>FALSE</code>.</p></dd>
 
 
 <dt>minCounts</dt>
 <dd><p>Numeric. Used for gene filtering prior to PCA. Genes
-expressed at fewer than <code>minCounts</code> in fewer than <code>minCells</code>
-(see below) are excluded. Default 3.</p></dd>
+expressed at fewer than <code>minCounts</code> in fewer than <code>minCells</code> are
+excluded. Default <code>3</code>.</p></dd>
 
 
 <dt>minCells</dt>
 <dd><p>Integer. Used for gene filtering prior to PCA. Genes
-expressed at fewer than <code>minCounts</code> (see above) in fewer than
-<code>minCells</code> are excluded. Default 3.</p></dd>
+expressed at fewer than <code>minCounts</code> in fewer than <code>minCells</code> are 
+excluded. Default <code>3</code>.</p></dd>
 
 
 <dt>minGeneVariabilityPctl</dt>
 <dd><p>Numeric. Used for gene filtering prior to
 PCA. Keep the most highly variable genes (in the top
-minGeneVariabilityPctl percentile), as measured by the v-statistic
-(<em>Klein et al., Cell 2015</em>). Default 85.</p></dd>
+<code>minGeneVariabilityPctl</code> percentile), as measured by the v-statistic
+(Klein et al., Cell 2015). Default <code>85</code>.</p></dd>
 
 
 <dt>logTransform</dt>
 <dd><p>Boolean. If <code>TRUE</code>, log-transform the counts matrix
-(log10(1+TPM)). <code>sklearn.decomposition.TruncatedSVD</code> will be used for
-dimensionality reduction, unless <code>meanCenter</code> is <code>TRUE</code>.
-Default <code>FALSE</code>.</p></dd>
+(log1p(TPM)). <code>sklearn.decomposition.TruncatedSVD</code> will be used for
+dimensionality reduction, unless <code>meanCenter</code> is <code>TRUE</code>. Default 
+<code>FALSE</code>.</p></dd>
 
 
 <dt>meanCenter</dt>
 <dd><p>If <code>TRUE</code>, center the data such that each gene has a
-mean of 0. <code>sklearn.decomposition.PCA</code> will be used for
+mean of <code>0</code>. <code>sklearn.decomposition.PCA</code> will be used for
 dimensionality reduction. Default <code>TRUE</code>.</p></dd>
 
 
@@ -353,18 +347,19 @@ reduction, unless <code>meanCenter</code> is <code>TRUE</code>. Default <code>TR
 <dt>nPrinComps</dt>
 <dd><p>Integer. Number of principal components used to embed
 the transcriptomes prior to k-nearest-neighbor graph construction.
-Default 30.</p></dd>
+Default <code>30</code>.</p></dd>
 
 
 <dt>tsneAngle</dt>
 <dd><p>Float. Determines angular size of a distant node as measured
-from a point in the t-SNE plot. If default, it is set to 0.5 Default <code>NULL</code>.</p></dd>
+from a point in the t-SNE plot. If <code>NULL</code>, it is set to <code>0.5</code>. 
+Default <code>NULL</code>.</p></dd>
 
 
 <dt>tsnePerplexity</dt>
-<dd><p>Integer. The number of nearest neighbors that
-is used in other manifold learning algorithms.
-If default, it is set to 30. Default <code>NULL</code>.</p></dd>
+<dd><p>Integer. The number of nearest neighbors that is used
+in other manifold learning algorithms. If <code>NULL</code>, it is set to 30. 
+Default <code>NULL</code>.</p></dd>
 
 
 <dt>verbose</dt>
@@ -373,29 +368,39 @@ If default, it is set to 30. Default <code>NULL</code>.</p></dd>
 
 
 <dt>seed</dt>
-<dd><p>Seed for the random number generator. Default 12345.</p></dd>
+<dd><p>Seed for the random number generator, can be set to <code>NULL</code>. 
+Default <code>12345</code>.</p></dd>
 
 </dl></div>
     <div id="value">
     <h2>Value</h2>
     
 
-<p>A <a href="https://rdrr.io/pkg/SingleCellExperiment/man/SingleCellExperiment.html" class="external-link">SingleCellExperiment</a> object with</p>
-<p></p>
-<p><code>scrub_doublets</code> output appended to the</p>
-<p></p>
-<p>colData slot. The columns include</p>
-<p></p>
-<p><em>scrublet_score</em> and <em>scrublet_call</em>.</p>
+<p>A SingleCellExperiment object with
+<code>scrub_doublets</code> output appended to the colData slot. The columns
+include <code>scrublet_score</code> and <code>scrublet_call</code>.</p>
+    </div>
+    <div id="details">
+    <h2>Details</h2>
+    <p>For the list of valid values for <code>distanceMetric</code>, see the 
+documentation for 
+<a href="https://github.com/spotify/annoy#full-python-api" class="external-link">annoy</a> (if 
+<code>useApproxNeighbors</code> is <code>TRUE</code>) or 
+<a href="https://scikit-learn.org/stable/modules/generated/sklearn.neighbors.NearestNeighbors.html" class="external-link">sklearn.neighbors.NearestNeighbors</a>
+(if <code>useApproxNeighbors</code> is  <code>FALSE</code>).</p>
+    </div>
+    <div id="see-also">
+    <h2>See also</h2>
+    <div class="dont-index"><p><code><a href="plotScrubletResults.html">plotScrubletResults</a></code>, <code><a href="runCellQC.html">runCellQC</a></code></p></div>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">scExample</span>, package <span class="op">=</span> <span class="st">"singleCellTK"</span><span class="op">)</span></span>
-<span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="subsetSCECols.html">subsetSCECols</a></span><span class="op">(</span><span class="va">sce</span>, colData <span class="op">=</span> <span class="st">"type != 'EmptyDroplet'"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu">runScrublet</span><span class="op">(</span><span class="va">sce</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">scExample</span>, package <span class="op">=</span> <span class="st">"singleCellTK"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="subsetSCECols.html">subsetSCECols</a></span><span class="op">(</span><span class="va">sce</span>, colData <span class="op">=</span> <span class="st">"type != 'EmptyDroplet'"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu">runScrublet</span><span class="op">(</span><span class="va">sce</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -410,7 +415,7 @@ If default, it is set to 30. Default <code>NULL</code>.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

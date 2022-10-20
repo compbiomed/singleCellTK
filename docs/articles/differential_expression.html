@@ -34,7 +34,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.2</span>
       </span>
     </div>
 
@@ -583,28 +583,28 @@ dataset from “10X” which can be easily imported with SCTK functions.</p>
 <details><summary><b>Preprocessing</b></summary><p>The preprocessing for obtaining cluster assignment was done using the
 exactly same workflow presented in the <a href="02_a_la_carte_workflow.html">A La Carte Workflow Tutorial</a>.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://www.camplab.net/sctk/" class="external-link">singleCellTK</a></span><span class="op">)</span>
-<span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/importExampleData.html">importExampleData</a></span><span class="op">(</span><span class="st">"pbmc3k"</span><span class="op">)</span>
-<span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runPerCellQC.html">runPerCellQC</a></span><span class="op">(</span><span class="va">sce</span>, mitoRef <span class="op">=</span> <span class="st">"human"</span>, mitoIDType <span class="op">=</span> <span class="st">"symbol"</span>, mitoGeneLocation <span class="op">=</span> <span class="st">"rownames"</span><span class="op">)</span>
-<span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/subsetSCECols.html">subsetSCECols</a></span><span class="op">(</span><span class="va">sce</span>, colData <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'total &gt; 600'</span>, <span class="st">'detected &gt; 300'</span>, <span class="st">'mito_percent &lt; 5'</span><span class="op">)</span><span class="op">)</span>
-<span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/scaterlogNormCounts.html">scaterlogNormCounts</a></span><span class="op">(</span><span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"counts"</span>, assayName <span class="op">=</span> <span class="st">"logcounts"</span><span class="op">)</span>
-<span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runModelGeneVar.html">runModelGeneVar</a></span><span class="op">(</span><span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"logcounts"</span><span class="op">)</span>
-<span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getTopHVG.html">setTopHVG</a></span><span class="op">(</span><span class="va">sce</span>, method <span class="op">=</span> <span class="st">"modelGeneVar"</span><span class="op">)</span>
-<span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/scaterPCA.html">scaterPCA</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"logcounts"</span>, useFeatureSubset <span class="op">=</span> <span class="st">"HVG_modelGeneVar2000"</span>, 
-                 reducedDimName <span class="op">=</span> <span class="st">"PCA"</span>, seed <span class="op">=</span> <span class="fl">12345</span><span class="op">)</span>
-<span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runScranSNN.html">runScranSNN</a></span><span class="op">(</span><span class="va">sce</span>, useReducedDim <span class="op">=</span> <span class="st">"PCA"</span>, nComp <span class="op">=</span> <span class="fl">10</span>, k <span class="op">=</span> <span class="fl">14</span>,
-                   weightType <span class="op">=</span> <span class="st">"jaccard"</span>, clusterName <span class="op">=</span> <span class="st">"cluster"</span>, seed <span class="op">=</span> <span class="fl">12345</span><span class="op">)</span>
-<span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getUMAP.html">getUMAP</a></span><span class="op">(</span><span class="va">sce</span>, useReducedDim <span class="op">=</span> <span class="st">"PCA"</span>, initialDims <span class="op">=</span> <span class="fl">10</span>, reducedDimName <span class="op">=</span> <span class="st">"UMAP"</span>, seed <span class="op">=</span> <span class="fl">12345</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://www.camplab.net/sctk/" class="external-link">singleCellTK</a></span><span class="op">)</span></span>
+<span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/importExampleData.html">importExampleData</a></span><span class="op">(</span><span class="st">"pbmc3k"</span><span class="op">)</span></span>
+<span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runPerCellQC.html">runPerCellQC</a></span><span class="op">(</span><span class="va">sce</span>, mitoRef <span class="op">=</span> <span class="st">"human"</span>, mitoIDType <span class="op">=</span> <span class="st">"symbol"</span>, mitoGeneLocation <span class="op">=</span> <span class="st">"rownames"</span><span class="op">)</span></span>
+<span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/subsetSCECols.html">subsetSCECols</a></span><span class="op">(</span><span class="va">sce</span>, colData <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'total &gt; 600'</span>, <span class="st">'detected &gt; 300'</span>, <span class="st">'mito_percent &lt; 5'</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/scaterlogNormCounts.html">scaterlogNormCounts</a></span><span class="op">(</span><span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"counts"</span>, assayName <span class="op">=</span> <span class="st">"logcounts"</span><span class="op">)</span></span>
+<span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runModelGeneVar.html">runModelGeneVar</a></span><span class="op">(</span><span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"logcounts"</span><span class="op">)</span></span>
+<span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getTopHVG.html">setTopHVG</a></span><span class="op">(</span><span class="va">sce</span>, method <span class="op">=</span> <span class="st">"modelGeneVar"</span><span class="op">)</span></span>
+<span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/scaterPCA.html">scaterPCA</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"logcounts"</span>, useFeatureSubset <span class="op">=</span> <span class="st">"HVG_modelGeneVar2000"</span>, </span>
+<span>                 reducedDimName <span class="op">=</span> <span class="st">"PCA"</span>, seed <span class="op">=</span> <span class="fl">12345</span><span class="op">)</span></span>
+<span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runScranSNN.html">runScranSNN</a></span><span class="op">(</span><span class="va">sce</span>, useReducedDim <span class="op">=</span> <span class="st">"PCA"</span>, nComp <span class="op">=</span> <span class="fl">10</span>, k <span class="op">=</span> <span class="fl">14</span>,</span>
+<span>                   weightType <span class="op">=</span> <span class="st">"jaccard"</span>, clusterName <span class="op">=</span> <span class="st">"cluster"</span>, seed <span class="op">=</span> <span class="fl">12345</span><span class="op">)</span></span>
+<span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runUMAP.html">runUMAP</a></span><span class="op">(</span><span class="va">sce</span>, useReducedDim <span class="op">=</span> <span class="st">"PCA"</span>, initialDims <span class="op">=</span> <span class="fl">10</span>, reducedDimName <span class="op">=</span> <span class="st">"UMAP"</span>, seed <span class="op">=</span> <span class="fl">12345</span><span class="op">)</span></span></code></pre></div>
 <p>And we can visualize the cell populations on the UMAP with cluster
 labeled.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/plotSCEDimReduceColData.html">plotSCEDimReduceColData</a></span><span class="op">(</span><span class="va">sce</span>, colorBy <span class="op">=</span> <span class="st">"cluster"</span>, reducedDimName <span class="op">=</span> <span class="st">"UMAP"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plotSCEDimReduceColData.html">plotSCEDimReduceColData</a></span><span class="op">(</span><span class="va">sce</span>, colorBy <span class="op">=</span> <span class="st">"cluster"</span>, reducedDimName <span class="op">=</span> <span class="st">"UMAP"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="differential_expression_files/figure-html/de_prep_plot-1.png" width="700"></p>
 </details><div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># Condition chosen basing on the UMAP</span>
-<span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runDEAnalysis.html">runDEAnalysis</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, method <span class="op">=</span> <span class="st">"wilcox"</span>, useAssay <span class="op">=</span> <span class="st">"logcounts"</span>, 
-                     class <span class="op">=</span> <span class="st">"cluster"</span>, classGroup1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span>, classGroup2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">5</span><span class="op">)</span>, 
-                     groupName1 <span class="op">=</span> <span class="st">"c1_2"</span>, groupName2 <span class="op">=</span> <span class="st">"c5"</span>, analysisName <span class="op">=</span> <span class="st">"c1_2_VS_c5"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># Condition chosen basing on the UMAP</span></span>
+<span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runDEAnalysis.html">runDEAnalysis</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, method <span class="op">=</span> <span class="st">"wilcox"</span>, useAssay <span class="op">=</span> <span class="st">"logcounts"</span>, </span>
+<span>                     class <span class="op">=</span> <span class="st">"cluster"</span>, classGroup1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span>, classGroup2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">5</span><span class="op">)</span>, </span>
+<span>                     groupName1 <span class="op">=</span> <span class="st">"c1_2"</span>, groupName2 <span class="op">=</span> <span class="st">"c5"</span>, analysisName <span class="op">=</span> <span class="st">"c1_2_VS_c5"</span><span class="op">)</span></span></code></pre></div>
 <p><strong>Results</strong></p>
 <p>The results are saved in the <code>metadata</code> slot of the
 returned SCE object</p>
@@ -634,29 +634,29 @@ result as a table of the top differential expressed genes and the
 statistics. Additional filters on the results can be applied and the
 feature ID type to display in the table can also be changed.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">DEG</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getDEGTopTable.html">getDEGTopTable</a></span><span class="op">(</span><span class="va">sce</span>, <span class="st">"c1_2_VS_c5"</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">DEG</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">##        Gene   Log2_FC       Pvalue          FDR group1MeanExp group2MeanExp</span>
-<span class="co">## 10608   LTB 1.1264965 6.754884e-43 1.163902e-39      2.474387      1.347890</span>
-<span class="co">## 29915  JUNB 0.8900972 9.865921e-31 7.340694e-28      3.116122      2.226025</span>
-<span class="co">## 20398  LDHB 0.7723192 7.738507e-44 1.490254e-40      1.939164      1.166845</span>
-<span class="co">## 5522  RPL32 0.6061814 2.730154e-64 8.937979e-61      4.613614      4.007433</span>
-<span class="co">## 23081   FOS 0.5978641 2.252030e-16 6.702452e-14      2.641626      2.043762</span>
-<span class="co">## 18502 RPS13 0.5829358 1.815492e-36 2.122699e-33      3.223682      2.640746</span>
-<span class="co">##       group1ExprPerc group2ExprPerc</span>
-<span class="co">## 10608      0.9417122      0.6206897</span>
-<span class="co">## 29915      0.9526412      0.8275862</span>
-<span class="co">## 20398      0.9417122      0.6867816</span>
-<span class="co">## 5522       1.0000000      0.9971264</span>
-<span class="co">## 23081      0.9562842      0.8390805</span>
-<span class="co">## 18502      0.9899818      0.9683908</span></code></pre>
+<code class="sourceCode R"><span><span class="va">DEG</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getDEGTopTable.html">getDEGTopTable</a></span><span class="op">(</span><span class="va">sce</span>, <span class="st">"c1_2_VS_c5"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">DEG</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">##        Gene   Log2_FC       Pvalue          FDR group1MeanExp group2MeanExp</span></span>
+<span><span class="co">## 10608   LTB 1.1264965 6.754884e-43 1.053054e-39      2.474387      1.347890</span></span>
+<span><span class="co">## 29915  JUNB 0.8900972 9.865921e-31 6.591644e-28      3.116122      2.226025</span></span>
+<span><span class="co">## 20398  LDHB 0.7723192 7.738507e-44 1.333385e-40      1.939164      1.166845</span></span>
+<span><span class="co">## 5522  RPL32 0.6061814 2.730154e-64 8.125436e-61      4.613614      4.007433</span></span>
+<span><span class="co">## 23081   FOS 0.5978641 2.252030e-16 6.093138e-14      2.641626      2.043762</span></span>
+<span><span class="co">## 18502 RPS13 0.5829358 1.815492e-36 1.917277e-33      3.223682      2.640746</span></span>
+<span><span class="co">##       group1ExprPerc group2ExprPerc</span></span>
+<span><span class="co">## 10608      0.9417122      0.6206897</span></span>
+<span><span class="co">## 29915      0.9526412      0.8275862</span></span>
+<span><span class="co">## 20398      0.9417122      0.6867816</span></span>
+<span><span class="co">## 5522       1.0000000      0.9971264</span></span>
+<span><span class="co">## 23081      0.9562842      0.8390805</span></span>
+<span><span class="co">## 18502      0.9899818      0.9683908</span></span></code></pre>
 <p>To visualize the result in a heatmap:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/plotDEGHeatmap.html">plotDEGHeatmap</a></span><span class="op">(</span><span class="va">sce</span>, useResult <span class="op">=</span> <span class="st">"c1_2_VS_c5"</span>, log2fcThreshold <span class="op">=</span> <span class="fl">.5</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plotDEGHeatmap.html">plotDEGHeatmap</a></span><span class="op">(</span><span class="va">sce</span>, useResult <span class="op">=</span> <span class="st">"c1_2_VS_c5"</span>, log2fcThreshold <span class="op">=</span> <span class="fl">.5</span><span class="op">)</span></span></code></pre></div>
 <p><img src="differential_expression_files/figure-html/plotDEHeatmap-1.png" width="672"></p>
 <p>To visualize the result in a volcano plot:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/plotDEGVolcano.html">plotDEGVolcano</a></span><span class="op">(</span><span class="va">sce</span>, useResult <span class="op">=</span> <span class="st">"c1_2_VS_c5"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plotDEGVolcano.html">plotDEGVolcano</a></span><span class="op">(</span><span class="va">sce</span>, useResult <span class="op">=</span> <span class="st">"c1_2_VS_c5"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="differential_expression_files/figure-html/plotDEVolcano-1.png" width="700"></p>
 <p>For other approaches of visualizing top differential expressed genes,
 refer to <code><a href="../reference/plotDEGRegression.html">plotDEGRegression()</a></code> and
@@ -733,7 +733,7 @@ reference online</em>, American Cancer Society, 2014. doi: <a href="https://doi.
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer>

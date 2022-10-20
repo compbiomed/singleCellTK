@@ -21,7 +21,7 @@ panorama."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/m
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.2</span>
       </span>
     </div>
 
@@ -206,21 +206,22 @@ panorama.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">runSCANORAMA</span><span class="op">(</span>
-  <span class="va">inSCE</span>,
-  useAssay <span class="op">=</span> <span class="st">"logcounts"</span>,
-  batch <span class="op">=</span> <span class="st">"batch"</span>,
-  SIGMA <span class="op">=</span> <span class="fl">15</span>,
-  ALPHA <span class="op">=</span> <span class="fl">0.1</span>,
-  KNN <span class="op">=</span> <span class="fl">20L</span>,
-  assayName <span class="op">=</span> <span class="st">"SCANORAMA"</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">runSCANORAMA</span><span class="op">(</span></span>
+<span>  <span class="va">inSCE</span>,</span>
+<span>  useAssay <span class="op">=</span> <span class="st">"logcounts"</span>,</span>
+<span>  batch <span class="op">=</span> <span class="st">"batch"</span>,</span>
+<span>  assayName <span class="op">=</span> <span class="st">"SCANORAMA"</span>,</span>
+<span>  SIGMA <span class="op">=</span> <span class="fl">15</span>,</span>
+<span>  ALPHA <span class="op">=</span> <span class="fl">0.1</span>,</span>
+<span>  KNN <span class="op">=</span> <span class="fl">20</span>,</span>
+<span>  approx <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>inSCE</dt>
-<dd><p>SingleCellExperiment inherited object. Required.</p></dd>
+<dd><p>Input SingleCellExperiment object</p></dd>
 
 
 <dt>useAssay</dt>
@@ -230,9 +231,15 @@ assay. Default <code>"logcounts"</code>.</p></dd>
 
 
 <dt>batch</dt>
-<dd><p>A single character indicating a field in
-<code>colData</code> that annotates the batches.
-Default <code>"batch"</code>.</p></dd>
+<dd><p>A single character indicating a field in <code>colData</code> that
+annotates the batches of each cell; or a vector/factor with the same length
+as the number of cells. Default <code>"batch"</code>.</p></dd>
+
+
+<dt>assayName</dt>
+<dd><p>A single characeter. The name for the corrected assay. Will
+be saved to <code>assay</code>. Default
+<code>"SCANORAMA"</code>.</p></dd>
 
 
 <dt>SIGMA</dt>
@@ -247,13 +254,12 @@ minimum cutoff. Default <code>0.1</code>.</p></dd>
 
 <dt>KNN</dt>
 <dd><p>An integer. Algorithmic parameter, number of nearest neighbors to
-use for matching. Default <code>20L</code>.</p></dd>
+use for matching. Default <code>20</code>.</p></dd>
 
 
-<dt>assayName</dt>
-<dd><p>A single characeter. The name for the corrected assay. Will
-be saved to <code>assay</code>. Default
-<code>"SCANORAMA"</code>.</p></dd>
+<dt>approx</dt>
+<dd><p>Boolean. Use approximate nearest neighbors, greatly speeds up
+matching runtime. Default <code>TRUE</code>.</p></dd>
 
 </dl></div>
     <div id="value">
@@ -270,11 +276,11 @@ be saved to <code>assay</code>. Default
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">'sceBatches'</span>, package <span class="op">=</span> <span class="st">'singleCellTK'</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">sceBatches</span> <span class="op">&lt;-</span> <span class="fu"><a href="scaterlogNormCounts.html">scaterlogNormCounts</a></span><span class="op">(</span><span class="va">sceBatches</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">sceCorr</span> <span class="op">&lt;-</span> <span class="fu">runSCANORAMA</span><span class="op">(</span><span class="va">sceBatches</span>, <span class="st">"ScaterLogNormCounts"</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">'sceBatches'</span>, package <span class="op">=</span> <span class="st">'singleCellTK'</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">logcounts</span><span class="op">(</span><span class="va">sceBatches</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log1p</a></span><span class="op">(</span><span class="fu">counts</span><span class="op">(</span><span class="va">sceBatches</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">sceCorr</span> <span class="op">&lt;-</span> <span class="fu">runSCANORAMA</span><span class="op">(</span><span class="va">sceBatches</span>, <span class="st">"ScaterLogNormCounts"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -289,7 +295,7 @@ be saved to <code>assay</code>. Default
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

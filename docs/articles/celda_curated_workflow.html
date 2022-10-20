@@ -34,7 +34,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.2</span>
       </span>
     </div>
 
@@ -424,19 +424,19 @@ Analysis) from within the celda workflow.</p>
 demonstrate simple and clear examples, here we use the “PBMC-3k” dataset
 from “10X” which can be easily imported with SCTK functions.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://www.camplab.net/sctk/" class="external-link">singleCellTK</a></span><span class="op">)</span>
-<span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/importExampleData.html">importExampleData</a></span><span class="op">(</span><span class="st">"pbmc3k"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://www.camplab.net/sctk/" class="external-link">singleCellTK</a></span><span class="op">)</span></span>
+<span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/importExampleData.html">importExampleData</a></span><span class="op">(</span><span class="st">"pbmc3k"</span><span class="op">)</span></span></code></pre></div>
 <p>After the data has been uploaded, user may perform basic QC and
 filtering via QC &amp; Filtering tab.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">mito.genes</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grep</a></span><span class="op">(</span><span class="st">"^MT-"</span>, <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span>, value <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-<span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runCellQC.html">runCellQC</a></span><span class="op">(</span><span class="va">sce</span>, sample <span class="op">=</span> <span class="cn">NULL</span>, algorithms <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"QCMetrics"</span>, <span class="st">"scDblFinder"</span>, <span class="st">"decontX"</span><span class="op">)</span>, geneSetList <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mito<span class="op">=</span><span class="va">mito.genes</span><span class="op">)</span>, geneSetListLocation <span class="op">=</span> <span class="st">"rownames"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">mito.genes</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grep</a></span><span class="op">(</span><span class="st">"^MT-"</span>, <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span>, value <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runCellQC.html">runCellQC</a></span><span class="op">(</span><span class="va">sce</span>, sample <span class="op">=</span> <span class="cn">NULL</span>, algorithms <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"QCMetrics"</span>, <span class="st">"scDblFinder"</span>, <span class="st">"decontX"</span><span class="op">)</span>, geneSetList <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mito<span class="op">=</span><span class="va">mito.genes</span><span class="op">)</span>, geneSetListLocation <span class="op">=</span> <span class="st">"rownames"</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># Filter SCE</span>
-<span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/subsetSCECols.html">subsetSCECols</a></span><span class="op">(</span><span class="va">sce</span>, colData <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"total &gt; 600"</span>, <span class="st">"detected &gt; 300"</span><span class="op">)</span><span class="op">)</span>
-
-<span class="co"># See number of cells after filtering</span>
-<span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># Filter SCE</span></span>
+<span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/subsetSCECols.html">subsetSCECols</a></span><span class="op">(</span><span class="va">sce</span>, colData <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"total &gt; 600"</span>, <span class="st">"detected &gt; 300"</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># See number of cells after filtering</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span></span></code></pre></div>
 <div class="offset">
 <details><summary><b>Finding number of modules</b></summary><p>In general, removing features with low numbers of counts across all
 cells is recommended to reduce computational run time. A simple
@@ -445,36 +445,36 @@ counts in a minimum number of cells using the selectFeatures function.
 Other than this options such as runSeuratFindHVG and Scran_modelGeneVar
 also exist for feature selection.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">celda</span><span class="op">)</span>
-
-<span class="va">useAssay</span> <span class="op">&lt;-</span> <span class="st">"counts"</span>
-<span class="va">altExpName</span> <span class="op">&lt;-</span> <span class="st">"featureSubset"</span>
-<span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/celda/man/selectFeatures.html" class="external-link">selectFeatures</a></span><span class="op">(</span><span class="va">sce</span>, minCount <span class="op">=</span> <span class="fl">3</span>, minCell <span class="op">=</span> <span class="fl">3</span>, useAssay <span class="op">=</span> <span class="va">useAssay</span>, altExpName <span class="op">=</span> <span class="va">altExpName</span><span class="op">)</span>
-
-<span class="co"># See number of features after filtering</span>
-<span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/SingleCellExperiment/man/altExps.html" class="external-link">altExp</a></span><span class="op">(</span><span class="va">sce</span>, <span class="va">altExpName</span><span class="op">)</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/pkg/SingleCellExperiment/man/assays.html" class="external-link">counts</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/SingleCellExperiment/man/altExps.html" class="external-link">altExp</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/SingleCellExperiment/man/assays.html" class="external-link">counts</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/SingleCellExperiment/man/altExps.html" class="external-link">altExp</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
-<span class="va">moduleSplit</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/celda/man/recursiveSplitModule.html" class="external-link">recursiveSplitModule</a></span><span class="op">(</span><span class="va">sce</span>, useAssay <span class="op">=</span> <span class="va">useAssay</span>, altExpName <span class="op">=</span> <span class="va">altExpName</span>, initialL <span class="op">=</span> <span class="fl">10</span>, maxL <span class="op">=</span> <span class="fl">150</span><span class="op">)</span>
-
-<span class="co">#plots to decide value of L</span>
-<span class="fu"><a href="https://rdrr.io/pkg/celda/man/plotGridSearchPerplexity.html" class="external-link">plotGridSearchPerplexity</a></span><span class="op">(</span><span class="va">moduleSplit</span>, altExpName <span class="op">=</span> <span class="va">altExpName</span>, sep <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/pkg/celda/man/plotRPC.html" class="external-link">plotRPC</a></span><span class="op">(</span><span class="va">moduleSplit</span>, altExpName <span class="op">=</span> <span class="va">altExpName</span>, sep <span class="op">=</span> <span class="fl">10</span>, n <span class="op">=</span> <span class="fl">30</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">celda</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">useAssay</span> <span class="op">&lt;-</span> <span class="st">"counts"</span></span>
+<span><span class="va">altExpName</span> <span class="op">&lt;-</span> <span class="st">"featureSubset"</span></span>
+<span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/celda/man/selectFeatures.html" class="external-link">selectFeatures</a></span><span class="op">(</span><span class="va">sce</span>, minCount <span class="op">=</span> <span class="fl">3</span>, minCell <span class="op">=</span> <span class="fl">3</span>, useAssay <span class="op">=</span> <span class="va">useAssay</span>, altExpName <span class="op">=</span> <span class="va">altExpName</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># See number of features after filtering</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/SingleCellExperiment/man/altExps.html" class="external-link">altExp</a></span><span class="op">(</span><span class="va">sce</span>, <span class="va">altExpName</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/dge.html" class="external-link">counts</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/SingleCellExperiment/man/altExps.html" class="external-link">altExp</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/dge.html" class="external-link">counts</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/SingleCellExperiment/man/altExps.html" class="external-link">altExp</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">moduleSplit</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/celda/man/recursiveSplitModule.html" class="external-link">recursiveSplitModule</a></span><span class="op">(</span><span class="va">sce</span>, useAssay <span class="op">=</span> <span class="va">useAssay</span>, altExpName <span class="op">=</span> <span class="va">altExpName</span>, initialL <span class="op">=</span> <span class="fl">10</span>, maxL <span class="op">=</span> <span class="fl">150</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">#plots to decide value of L</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/celda/man/plotGridSearchPerplexity.html" class="external-link">plotGridSearchPerplexity</a></span><span class="op">(</span><span class="va">moduleSplit</span>, altExpName <span class="op">=</span> <span class="va">altExpName</span>, sep <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/celda/man/plotRPC.html" class="external-link">plotRPC</a></span><span class="op">(</span><span class="va">moduleSplit</span>, altExpName <span class="op">=</span> <span class="va">altExpName</span>, sep <span class="op">=</span> <span class="fl">10</span>, n <span class="op">=</span> <span class="fl">30</span><span class="op">)</span></span></code></pre></div>
 <p>Using the plots visualization we can then decide the value for L
 i.e. the number of modules. The point at which RPC curve tends to level
 off can be taken as the best value for L.</p>
 </details><details><summary><b>Finding number of clusters</b></summary><div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">temp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/celda/man/subsetCeldaList.html" class="external-link">subsetCeldaList</a></span><span class="op">(</span><span class="va">moduleSplit</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>L <span class="op">=</span> <span class="va">L</span><span class="op">)</span><span class="op">)</span>
-<span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/celda/man/recursiveSplitCell.html" class="external-link">recursiveSplitCell</a></span><span class="op">(</span><span class="va">sce</span>, useAssay <span class="op">=</span> <span class="va">useAssay</span>, altExpName <span class="op">=</span> <span class="va">altExpName</span>, initialK <span class="op">=</span> <span class="fl">3</span>, maxK <span class="op">=</span> <span class="fl">25</span>, yInit <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/celda/man/celdaModules.html" class="external-link">celdaModules</a></span><span class="op">(</span><span class="va">temp</span><span class="op">)</span><span class="op">)</span>
-
-<span class="co">#plots to decide value of K</span>
-<span class="fu"><a href="https://rdrr.io/pkg/celda/man/plotGridSearchPerplexity.html" class="external-link">plotGridSearchPerplexity</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/pkg/celda/man/plotRPC.html" class="external-link">plotRPC</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">temp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/celda/man/subsetCeldaList.html" class="external-link">subsetCeldaList</a></span><span class="op">(</span><span class="va">moduleSplit</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>L <span class="op">=</span> <span class="va">L</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/celda/man/recursiveSplitCell.html" class="external-link">recursiveSplitCell</a></span><span class="op">(</span><span class="va">sce</span>, useAssay <span class="op">=</span> <span class="va">useAssay</span>, altExpName <span class="op">=</span> <span class="va">altExpName</span>, initialK <span class="op">=</span> <span class="fl">3</span>, maxK <span class="op">=</span> <span class="fl">25</span>, yInit <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/celda/man/celdaModules.html" class="external-link">celdaModules</a></span><span class="op">(</span><span class="va">temp</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">#plots to decide value of K</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/celda/man/plotGridSearchPerplexity.html" class="external-link">plotGridSearchPerplexity</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/celda/man/plotRPC.html" class="external-link">plotRPC</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span></span></code></pre></div>
 <p>Using the plots visualization we can then decide the value for K
 i.e. the number of clusters. The point at which RPC curve tends to level
 off can be taken as the best value for K. The following code selects the
 final celda_CG model with L and K value chosen by the user.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/celda/man/subsetCeldaList.html" class="external-link">subsetCeldaList</a></span><span class="op">(</span><span class="va">sce</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>L <span class="op">=</span> <span class="va">L</span>, K <span class="op">=</span> <span class="va">K</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/celda/man/subsetCeldaList.html" class="external-link">subsetCeldaList</a></span><span class="op">(</span><span class="va">sce</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>L <span class="op">=</span> <span class="va">L</span>, K <span class="op">=</span> <span class="va">K</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </details><details><summary><b>Visualization</b></summary><p>After selecting a celda model with specific values of L and K, we can
 then perform additional exploratory and downstream analyses to
 understand the biology of the transcriptional modules and cell
@@ -489,13 +489,13 @@ from PCA). The calculated dimension reduction coordinates for the cells
 are stored under the reducedDim slot of the altExp slot in the original
 SCE object.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/celda/man/celdaUmap.html" class="external-link">celdaUmap</a></span><span class="op">(</span><span class="va">sce</span>, useAssay <span class="op">=</span> <span class="va">useAssay</span>, altExpName <span class="op">=</span> <span class="va">altExpName</span><span class="op">)</span>
-<span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/celda/man/celdaTsne.html" class="external-link">celdaTsne</a></span><span class="op">(</span><span class="va">sce</span>, useAssay <span class="op">=</span> <span class="va">useAssay</span>, altExpName <span class="op">=</span> <span class="va">altExpName</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/celda/man/celdaUmap.html" class="external-link">celdaUmap</a></span><span class="op">(</span><span class="va">sce</span>, useAssay <span class="op">=</span> <span class="va">useAssay</span>, altExpName <span class="op">=</span> <span class="va">altExpName</span><span class="op">)</span></span>
+<span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/celda/man/celdaTsne.html" class="external-link">celdaTsne</a></span><span class="op">(</span><span class="va">sce</span>, useAssay <span class="op">=</span> <span class="va">useAssay</span>, altExpName <span class="op">=</span> <span class="va">altExpName</span><span class="op">)</span></span></code></pre></div>
 <p>The function plotDimReduceCluster can be used to plot the cluster
 labels for cell populations identified by celda on the UMAP.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/celda/man/plotDimReduceCluster.html" class="external-link">plotDimReduceCluster</a></span><span class="op">(</span><span class="va">sce</span>, reducedDimName <span class="op">=</span> <span class="st">"celda_UMAP"</span>, labelClusters <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/pkg/celda/man/plotDimReduceCluster.html" class="external-link">plotDimReduceCluster</a></span><span class="op">(</span><span class="va">sce</span>, reducedDimName <span class="op">=</span> <span class="st">"celda_tSNE"</span>, labelClusters <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/celda/man/plotDimReduceCluster.html" class="external-link">plotDimReduceCluster</a></span><span class="op">(</span><span class="va">sce</span>, reducedDimName <span class="op">=</span> <span class="st">"celda_UMAP"</span>, labelClusters <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/celda/man/plotDimReduceCluster.html" class="external-link">plotDimReduceCluster</a></span><span class="op">(</span><span class="va">sce</span>, reducedDimName <span class="op">=</span> <span class="st">"celda_tSNE"</span>, labelClusters <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p>The function moduleHeatmap can be used to view the expression of
 features across cells for a specific module. The featureModule parameter
 denotes the module(s) to be displayed. Cells are ordered from those with
@@ -504,13 +504,13 @@ probability on the right. Similarly, features are ordered from those
 with the highest probability within the module on the top to the lowest
 probability on the bottom.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/celda/man/moduleHeatmap.html" class="external-link">moduleHeatmap</a></span><span class="op">(</span><span class="va">sce</span>, featureModule <span class="op">=</span> <span class="fl">27</span>, useAssay <span class="op">=</span> <span class="va">useAssay</span>, altExpName <span class="op">=</span> <span class="va">altExpName</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/celda/man/moduleHeatmap.html" class="external-link">moduleHeatmap</a></span><span class="op">(</span><span class="va">sce</span>, featureModule <span class="op">=</span> <span class="fl">27</span>, useAssay <span class="op">=</span> <span class="va">useAssay</span>, altExpName <span class="op">=</span> <span class="va">altExpName</span><span class="op">)</span></span></code></pre></div>
 <p>The function plotDimReduceModule can be used visualize the
 probabilities of a particular module or sets of modules on a reduced
 dimensional plot such as a UMAP. This can be another quick method to see
 how modules are expressed across various cells in 2-D space.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/celda/man/plotDimReduceModule.html" class="external-link">plotDimReduceModule</a></span><span class="op">(</span><span class="va">sce</span>, modules <span class="op">=</span> <span class="fl">27</span>, useAssay <span class="op">=</span> <span class="va">useAssay</span>, altExpName <span class="op">=</span> <span class="va">altExpName</span>, reducedDimName <span class="op">=</span> <span class="st">"celda_UMAP"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/celda/man/plotDimReduceModule.html" class="external-link">plotDimReduceModule</a></span><span class="op">(</span><span class="va">sce</span>, modules <span class="op">=</span> <span class="fl">27</span>, useAssay <span class="op">=</span> <span class="va">useAssay</span>, altExpName <span class="op">=</span> <span class="va">altExpName</span>, reducedDimName <span class="op">=</span> <span class="st">"celda_UMAP"</span><span class="op">)</span></span></code></pre></div>
 <p>Celda has the ability to identify modules of co-expressed features
 and quantify the probability of these modules in each cell population.
 An overview of the relationships between modules and cell subpopulations
@@ -523,7 +523,7 @@ population. The “Relative expression” map shows the standardized
 heatmap can be used to explore which modules are relatively higher than
 other modules across cell populations.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/celda/man/celdaProbabilityMap.html" class="external-link">celdaProbabilityMap</a></span><span class="op">(</span><span class="va">sce</span>, useAssay <span class="op">=</span> <span class="va">useAssay</span>, altExpName <span class="op">=</span> <span class="va">altExpName</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/celda/man/celdaProbabilityMap.html" class="external-link">celdaProbabilityMap</a></span><span class="op">(</span><span class="va">sce</span>, useAssay <span class="op">=</span> <span class="va">useAssay</span>, altExpName <span class="op">=</span> <span class="va">altExpName</span><span class="op">)</span></span></code></pre></div>
 </details>
 </div>
 </div>
@@ -554,7 +554,7 @@ document.getElementById("ia-button").click();
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer>
