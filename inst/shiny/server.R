@@ -9357,6 +9357,14 @@ shinyServer(function(input, output, session) {
       # S4Vectors::metadata(vals$counts)$seuratMarkers <- NULL
       # shinyjs::hide(
       #   selector = "div[value='Downstream Analysis']")
+        
+        message(paste0(date(), " ... Plotting HVG"))
+        output$scanpy_plot_hvg <- renderPlot({
+          isolate({
+            plotScanpyHVG(vals$counts)
+          })
+        })
+        
       message(paste0(date(), " ... Finding HVG Complete"))
     }
   ))
@@ -9389,21 +9397,19 @@ shinyServer(function(input, output, session) {
       # vals$counts@metadata$seurat$count_pc <- dim(convertSCEToSeurat(vals$counts)[["pca"]])[2]
       # vals$counts <- singleCellTK:::.seuratInvalidate(inSCE = vals$counts, scaleData = FALSE, varFeatures = FALSE, PCA = FALSE, ICA = FALSE)
       # 
-      # appendTab(inputId = "seuratPCAPlotTabset", tabPanel(title = "PCA Plot",
-      #                                                     panel(heading = "PCA Plot",
-      #                                                           plotlyOutput(outputId = "plot_pca")
-      #                                                     )
-      # ), select = TRUE)
-      # 
-      # message(paste0(date(), " ... Plotting PCA"))
-      # 
-      # output$plot_pca <- renderPlotly({
-      #   isolate({
-      #     plotly::ggplotly(plotSeuratReduction(inSCE = vals$counts,
-      #                                          useReduction = "pca",
-      #                                          showLegend = FALSE))
-      #   })
-      # })
+      appendTab(inputId = "scanpyPCAPlotTabset", tabPanel(title = "PCA Plot",
+                                                          panel(heading = "PCA Plot",
+                                                                plotOutput(outputId = "scanpy_plot_pca")
+                                                          )
+      ), select = TRUE)
+
+      message(paste0(date(), " ... Plotting PCA"))
+
+      output$scanpy_plot_pca <- renderPlot({
+        isolate({
+          plotScanpyPCA(inSCE = vals$counts)
+        })
+      })
       # if (input$pca_compute_elbow) {
       #   appendTab(inputId = "seuratPCAPlotTabset", tabPanel(title = "Elbow Plot",
       #                                                       panel(
@@ -9524,7 +9530,7 @@ shinyServer(function(input, output, session) {
       # shinyjs::enable(
       #   selector = "#SeuratUI > div[value='tSNE/UMAP']")
       # 
-      # shinyjs::show(selector = ".seurat_pca_plots")
+      shinyjs::show(selector = ".scanpy_pca_plots")
       # 
       # S4Vectors::metadata(vals$counts)$seuratMarkers <- NULL
       # shinyjs::hide(
@@ -9757,13 +9763,12 @@ shinyServer(function(input, output, session) {
       
 #      if(input$seuratFindMarkerType == "markerAll"){
         vals$counts <- runScanpyFindMarkers(inSCE = vals$counts,
-                                            nGenes = 100,
-                                            colDataName = "Scanpy_louvain",
+                                            nGenes = NULL,
+                                            colDataName = "Scanpy_leiden",
                                             test = "t-test",
                                             corr_method = "benjamini-hochberg")
         
-        print("find marker complete")
-        print(vals$counts)
+        print(head(metadata(vals$counts)$scanpyMarkers))
 #      }
       # else{
       #   indices1 <- which(colData(vals$counts)[[input$seuratFindMarkerSelectPhenotype]] == input$seuratFindMarkerGroup1, arr.ind = TRUE)

@@ -74,7 +74,7 @@ shinyPanelScanpy <- fluidPage(
                                      fluidRow(
                                        column(12,
                                               panel(heading = "Plot",
-                                                    plotlyOutput(outputId = "scanpy_plot_hvg") # plot_hvg
+                                                    plotOutput(outputId = "scanpy_plot_hvg") # plot_hvg
                                               )
                                        )
                                      )
