@@ -94,7 +94,7 @@ Then users can use `runSingleR()` to invoke the algorithm. Here we choose to use
 sce <- runSingleR(inSCE = sce, useAssay = "logcounts", useBltinRef = "hpca", level = "main", featureType = "symbol")
 ```
 
-Four results from SingleR will be stored in `colData()` slot with the same prefix as `"SingleR_{reference abbr}_{annotation level}_"`, then `"score"`, `"first.labels"`, `"labels"` and `"pruned.labels"`, respectively. `"first.labels"` refers to the labeling initially indicated by the scores, `"labels"` is fine-tuned, and `"pruned.labels"` is the pruned result.  
+Four results from SingleR will be stored in `colData()` slot with the same prefix as `"SingleR_{reference abbr}_{annotation level}_"`, then `"score"`, `"labels"`, `"delta.next"` and `"pruned.labels"`, respectively. `"labels"` contains the predicted label, basing only on the maximum entry in scores. `"delta.next"` contains difference between the best and next-best score. `"pruned.labels"` contains predictions where "low-quality" labels are replaced with `NA`s. 
 
 Besides, users can also use their own labeled reference datasets wrapped in a [SingleCellExperiment](https://rdrr.io/bioc/SingleCellExperiment/man/SingleCellExperiment.html) object. Refer to argument `useSCERef` and `labelColName`. Additionally, the labeling can also be done on cluster label if users have already performed clustering on their dataset and have the result stored in `colData()` slot. Refer to argument `labelByCluster`.  
 
