@@ -34,7 +34,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.3</span>
       </span>
     </div>
 
@@ -384,7 +384,7 @@ Ontology information. For more information, please click on the function
 name and see the reference page of this function.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runSingleR.html">runSingleR</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"logcounts"</span>, useBltinRef <span class="op">=</span> <span class="st">"hpca"</span>, level <span class="op">=</span> <span class="st">"main"</span>, featureType <span class="op">=</span> <span class="st">"symbol"</span><span class="op">)</span></span></code></pre></div>
-<p>Four results from SingleR will be stored in <code>colData()</code>
+<p>Four results from SingleR will be stored in <code><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData()</a></code>
 slot with the same prefix as
 <code>"SingleR_{reference abbr}_{annotation level}_"</code>, then
 <code>"score"</code>, <code>"labels"</code>, <code>"delta.next"</code>
@@ -406,7 +406,7 @@ wrapped in a <a href="https://rdrr.io/bioc/SingleCellExperiment/man/SingleCellEx
 object. Refer to argument <code>useSCERef</code> and
 <code>labelColName</code>. Additionally, the labeling can also be done
 on cluster label if users have already performed clustering on their
-dataset and have the result stored in <code>colData()</code> slot. Refer
+dataset and have the result stored in <code><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData()</a></code> slot. Refer
 to argument <code>labelByCluster</code>.</p>
 <p><strong>Visualization</strong></p>
 <p>Users can choose to visualize the labeling result on a scatter plot.

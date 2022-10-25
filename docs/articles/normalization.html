@@ -34,7 +34,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.3</span>
       </span>
     </div>
 
@@ -464,10 +464,10 @@ be printed <br><br></p>
 <br><code>assayName</code>: name of the output normalized assay
 <br><br></p>
 </details><details><summary>Compute <b>Z-Score</b>:</summary><div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span>  <span class="fu">assay</span><span class="op">(</span><span class="va">sce</span>, <span class="st">"countsZScore"</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/computeZScore.html">computeZScore</a></span><span class="op">(</span>counts <span class="op">=</span> <span class="fu">assay</span><span class="op">(</span><span class="va">sce</span>, <span class="st">"counts"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span>  <span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">assay</a></span><span class="op">(</span><span class="va">sce</span>, <span class="st">"countsZScore"</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/computeZScore.html">computeZScore</a></span><span class="op">(</span>counts <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">assay</a></span><span class="op">(</span><span class="va">sce</span>, <span class="st">"counts"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>The parameters to the above function include: <br><br><code>counts</code>: input matrix to scale with Z-Score <br><br></p>
 </details><details><summary>Matrix <b>trimming</b>:</summary><div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span>  <span class="fu">assay</span><span class="op">(</span><span class="va">sce</span>, <span class="st">"countsTrimmed"</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/trimCounts.html">trimCounts</a></span><span class="op">(</span>counts <span class="op">=</span> <span class="fu">assay</span><span class="op">(</span><span class="va">sce</span>, <span class="st">"counts"</span><span class="op">)</span>, trimValue <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="op">-</span><span class="fl">10</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span>  <span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">assay</a></span><span class="op">(</span><span class="va">sce</span>, <span class="st">"countsTrimmed"</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/trimCounts.html">trimCounts</a></span><span class="op">(</span>counts <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">assay</a></span><span class="op">(</span><span class="va">sce</span>, <span class="st">"counts"</span><span class="op">)</span>, trimValue <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="op">-</span><span class="fl">10</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>The parameters to the above function include: <br><br><code>counts</code>: an input <code>SingleCellExperiment</code> object
 <br><code>trimValue</code>: a <code>numeric(2)</code> vector with the
 first value indicating the upper trim value and the second value

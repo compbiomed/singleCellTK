@@ -1,3 +1,7 @@
+Changes in Version 2.7.3 (2022-10-25)
+================================================================================
+* Fixed bugs related to dependency updates
+
 Changes in Version 2.7.2 (2022-10-19)
 ================================================================================
 * Deprecated `findMarkerDiffExp()`, `findMarkerTopTable()` and `plotMarkerDiffExp()`, which are replaced by `runFindMarker()`, `getFindMarkerTopTable()` and `plotFindMarkerHeatmap()`, respectively
