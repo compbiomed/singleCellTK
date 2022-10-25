@@ -338,11 +338,20 @@ on this to run the cell type labeling process.</li>
 annotation will be inserted to the background object. They will all have
 the same prefix as
 <code>"SingleR_{reference abbr}_{annotation level}_"</code>, then
+<code>"score"</code>, <code>"labels"</code>, <code>"delta.next"</code>
+and <code>"pruned.labels"</code>, respectively. <code>"labels"</code>
+contains the predicted label, basing only on the maximum entry in
+scores. <code>"delta.next"</code> contains difference between the best
+and next-best score. <code>"pruned.labels"</code> contains predictions
+where “low-quality” labels are replaced with <code>NA</code>s.</p>
+<blockquote>
+<p>With older versions of SingleR, the output variables ends with
 <code>"score"</code>, <code>"first.labels"</code>, <code>"labels"</code>
 and <code>"pruned.labels"</code>, respectively.
 <code>"first.labels"</code> refers to the labeling initially indicated
 by the scores, <code>"labels"</code> is fine-tuned, and
 <code>"pruned.labels"</code> is the pruned result.</p>
+</blockquote>
 <p><strong>Visualization</strong></p>
 <p>SCTK does not have a quick visualization at this point. But users can
 go to the <a href="visualization.html">CellViewer</a> tab to create a
@@ -384,6 +393,14 @@ contains the predicted label, basing only on the maximum entry in
 scores. <code>"delta.next"</code> contains difference between the best
 and next-best score. <code>"pruned.labels"</code> contains predictions
 where “low-quality” labels are replaced with <code>NA</code>s.</p>
+<blockquote>
+<p>With older versions of SingleR, the output variables ends with
+<code>"score"</code>, <code>"first.labels"</code>, <code>"labels"</code>
+and <code>"pruned.labels"</code>, respectively.
+<code>"first.labels"</code> refers to the labeling initially indicated
+by the scores, <code>"labels"</code> is fine-tuned, and
+<code>"pruned.labels"</code> is the pruned result.</p>
+</blockquote>
 <p>Besides, users can also use their own labeled reference datasets
 wrapped in a <a href="https://rdrr.io/bioc/SingleCellExperiment/man/SingleCellExperiment.html" class="external-link">SingleCellExperiment</a>
 object. Refer to argument <code>useSCERef</code> and

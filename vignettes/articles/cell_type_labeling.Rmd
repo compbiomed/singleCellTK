@@ -62,7 +62,9 @@ There are 6 basic widgets that users need to work with before reaching to the re
 
 6. **Label** - The button to trigger the algorithm. Click on this to run the cell type labeling process. 
 
-The result will not be pop out directly, but three levels of cell annotation will be inserted to the background object. They will all have the same prefix as `"SingleR_{reference abbr}_{annotation level}_"`, then `"score"`, `"first.labels"`, `"labels"` and `"pruned.labels"`, respectively. `"first.labels"` refers to the labeling initially indicated by the scores, `"labels"` is fine-tuned, and `"pruned.labels"` is the pruned result.  
+The result will not be pop out directly, but three levels of cell annotation will be inserted to the background object. They will all have the same prefix as `"SingleR_{reference abbr}_{annotation level}_"`, then `"score"`, `"labels"`, `"delta.next"` and `"pruned.labels"`, respectively. `"labels"` contains the predicted label, basing only on the maximum entry in scores. `"delta.next"` contains difference between the best and next-best score. `"pruned.labels"` contains predictions where "low-quality" labels are replaced with `NA`s. 
+
+> With older versions of SingleR, the output variables ends with `"score"`, `"first.labels"`, `"labels"` and `"pruned.labels"`, respectively. `"first.labels"` refers to the labeling initially indicated by the scores, `"labels"` is fine-tuned, and `"pruned.labels"` is the pruned result.  
 
 **Visualization**
 
@@ -95,6 +97,8 @@ sce <- runSingleR(inSCE = sce, useAssay = "logcounts", useBltinRef = "hpca", lev
 ```
 
 Four results from SingleR will be stored in `colData()` slot with the same prefix as `"SingleR_{reference abbr}_{annotation level}_"`, then `"score"`, `"labels"`, `"delta.next"` and `"pruned.labels"`, respectively. `"labels"` contains the predicted label, basing only on the maximum entry in scores. `"delta.next"` contains difference between the best and next-best score. `"pruned.labels"` contains predictions where "low-quality" labels are replaced with `NA`s. 
+
+> With older versions of SingleR, the output variables ends with `"score"`, `"first.labels"`, `"labels"` and `"pruned.labels"`, respectively. `"first.labels"` refers to the labeling initially indicated by the scores, `"labels"` is fine-tuned, and `"pruned.labels"` is the pruned result.  
 
 Besides, users can also use their own labeled reference datasets wrapped in a [SingleCellExperiment](https://rdrr.io/bioc/SingleCellExperiment/man/SingleCellExperiment.html) object. Refer to argument `useSCERef` and `labelColName`. Additionally, the labeling can also be done on cluster label if users have already performed clustering on their dataset and have the result stored in `colData()` slot. Refer to argument `labelByCluster`.  
 
