@@ -36,11 +36,8 @@ shinyPanelScanpy <- fluidPage(
                                                                                     selected = NULL,
                                                                                     multiple = FALSE,
                                                                                     options = NULL),
-                                                                                  numericInput(inputId = "scanpy_countsPerCellAfter", label = "Specify counts per cell after:", value = 1e4),
-                                                                                  # numericInput(inputId = "scanpy_countsPerCell", label = "Specify counts per cell:", value = NULL), # ask Nida
-                                                                                  numericInput(inputId = "scanpy_minCount", label = "Specify min counts:", value = 0),
-                                                                                  # selectInput(inputId = "scanpy_normalization_method", label = "Select normalization method: ", choices = c("decide")), #normalization_method
-                                                                                  # textInput(inputId = "scale_factor", label = "Set scaling factor: ", value = "10000"),
+                                                                                  numericInput(inputId = "scanpy_targetSum", label = "Specify targetSum:", value = 1),
+                                                                                  numericInput(inputId = "scanpy_maxFraction", label = "Specify maxFraction:", value = 0.05),
                                                                                   actionButton(inputId = "scanpy_normalize_button", "Normalize") # normalize_button
                                                                             )
                                                                      )
@@ -77,7 +74,7 @@ shinyPanelScanpy <- fluidPage(
                                      fluidRow(
                                        column(12,
                                               panel(heading = "Plot",
-                                                    plotlyOutput(outputId = "scanpy_plot_hvg") # plot_hvg
+                                                    plotOutput(outputId = "scanpy_plot_hvg") # plot_hvg
                                               )
                                        )
                                      )
@@ -91,19 +88,20 @@ shinyPanelScanpy <- fluidPage(
                                      fluidRow(
                                        column(12,
                                               panel(heading = "scanpy PCA",
+                                                    selectInput(inputId = "scanpy_pca_method", label = "Select PCA method: ", choices = c("arpack", "randomized", "auto", "lobpcg")),
                                                     numericInput(inputId = "scanpy_pca_no_components", label = "Select number of components to compute: ", value = 50), # pca_no_components
-                                                    materialSwitch(inputId = "scanpy_pca_compute_elbow", label = "Compute ElbowPlot?", value = TRUE),
-                                                    materialSwitch(inputId = "scanpy_pca_compute_jackstraw", label = "Compute JackStrawPlot?", value = FALSE),
-                                                    materialSwitch(inputId = "scanpy_pca_compute_heatmap", label = "Compute Heatmap?", value = TRUE),
-                                                    conditionalPanel(
-                                                      condition = 'input.pca_compute_heatmap == true',
-                                                      numericInput(inputId = "scanpy_pca_compute_heatmap_nfeatures",
-                                                                   label = "Set number of features for heatmap:", value = 30, step = 1),
-                                                    ),
-                                                    numericInput(inputId = "scanpy_seed_PCA",
-                                                                 label = "Seed value for reproducibility of result:",
-                                                                 value = 42,
-                                                                 step = 1),
+                                                    # materialSwitch(inputId = "scanpy_pca_compute_elbow", label = "Compute ElbowPlot?", value = TRUE),
+                                                    # materialSwitch(inputId = "scanpy_pca_compute_jackstraw", label = "Compute JackStrawPlot?", value = FALSE),
+                                                    # materialSwitch(inputId = "scanpy_pca_compute_heatmap", label = "Compute Heatmap?", value = TRUE),
+                                                    # conditionalPanel(
+                                                    #   condition = 'input.pca_compute_heatmap == true',
+                                                    #   numericInput(inputId = "scanpy_pca_compute_heatmap_nfeatures",
+                                                    #                label = "Set number of features for heatmap:", value = 30, step = 1),
+                                                    # ),
+                                                    # numericInput(inputId = "scanpy_seed_PCA",
+                                                    #              label = "Seed value for reproducibility of result:",
+                                                    #              value = 42,
+                                                    #              step = 1),
                                                     actionButton(inputId = "scanpy_run_pca_button", "Run PCA")
                                               ),
                                               panel(heading = "Select No. of Components",
@@ -138,12 +136,12 @@ shinyPanelScanpy <- fluidPage(
                                                                    panel(heading = "scanpy tSNE",
                                                                          selectInput(inputId = "scanpy_reduction_tsne_method", label = "Select reduction method: ", choices = c("pca", "ica")),
                                                                          #textInput(inputId = "reduction_tsne_count", label = "Select number of reduction components: ", value = "20"),
-                                                                         numericInput(inputId = "scanpy_perplexity_tsne", label = "Set perplexity:", value = 30),
-                                                                         numericInput(inputId = "scanpy_seed_TSNE",
-                                                                                      label = "Seed value for reproducibility of result:",
-                                                                                      value = 1,
-                                                                                      step = 1),
-                                                                         htmlOutput(outputId = "scanpy_display_message_tsne", inline = FALSE),
+                                                                         numericInput(inputId = "scanpy_perplexity_tsne", label = "Set perplexity:", value = 15),
+                                                                         # numericInput(inputId = "scanpy_seed_TSNE",
+                                                                         #              label = "Seed value for reproducibility of result:",
+                                                                         #              value = 1,
+                                                                         #              step = 1),
+                                                                         # htmlOutput(outputId = "scanpy_display_message_tsne", inline = FALSE),
                                                                          actionButton(inputId = "scanpy_run_tsne_button", "Run tSNE")
                                                                    )
                                                             )
@@ -167,16 +165,18 @@ shinyPanelScanpy <- fluidPage(
                                                           fluidRow(
                                                             column(12,
                                                                    panel(heading = "scanpy UMAP",
-                                                                         selectInput(inputId = "scanpy_reduction_umap_method", label = "Select reduction method: ", choices = c("pca", "ica")),
-                                                                         #textInput(inputId = "reduction_umap_count", label = "Select number of reduction components: ", value = "20"),
-                                                                         numericInput(inputId = "scanpy_min_dist_umap", label = "Set min.dist:", value = 0.3),
-                                                                         numericInput(inputId = "scanpy_n_neighbors_umap", label = "Set n.neighbors:", value = 30, step = 1),
+                                                                         #selectInput(inputId = "scanpy_reduction_umap_method", label = "Select reduction method: ", choices = c("pca", "ica")),
+                                                                         numericInput(inputId = "scanpy_reduction_umap_count", label = "Select number of reduction components: ", value = 10),
+                                                                         numericInput(inputId = "scanpy_min_dist_umap", label = "Set min.dist:", value = 0.5),
+                                                                         numericInput(inputId = "scanpy_n_neighbors_umap", label = "Set n.neighbors:", value = 15, step = 1),
                                                                          numericInput(inputId = "scanpy_spread_umap", label = "Set spread:", value = 1),
-                                                                         numericInput(inputId = "scanpy_seed_UMAP",
-                                                                                      label = "Seed value for reproducibility of result:",
-                                                                                      value = 42,
-                                                                                      step = 1),
-                                                                         htmlOutput(outputId = "scanpy_display_message_umap", inline = FALSE),
+                                                                         numericInput(inputId = "scanpy_spread_alpha", label = "Set alpha:", value = 1),
+                                                                         numericInput(inputId = "scanpy_spread_gamma", label = "Set gamma:", value = 1),
+                                                                         # numericInput(inputId = "scanpy_seed_UMAP",
+                                                                         #              label = "Seed value for reproducibility of result:",
+                                                                         #              value = 42,
+                                                                         #              step = 1),
+                                                                         # htmlOutput(outputId = "scanpy_display_message_umap", inline = FALSE),
                                                                          actionButton(inputId = "scanpy_run_umap_button", "Run UMAP")
                                                                    )
                                                             )
@@ -202,14 +202,17 @@ shinyPanelScanpy <- fluidPage(
                                      fluidRow(
                                        column(12,
                                               panel(heading = "Options",
-                                                    selectInput(inputId = "scanpy_reduction_clustering_method", label = "Select reduction method: ", choices = c("pca", "ica")),
-                                                    #textInput(inputId = "reduction_clustering_count", label = "Select number of reduction components: ", value = "20"),
-                                                    selectInput(inputId = "scanpy_algorithm.use", label = "Select clustering algorithm: ", choices = list("Original Louvain algorithm" = "louvain",
-                                                                                                                                                   "Louvain algorithm with multilevel refinement" = "multilevel",
-                                                                                                                                                   "SLM algorithm" = "SLM")),
+                                                    #selectInput(inputId = "scanpy_reduction_clustering_method", label = "Select reduction method: ", choices = c("pca", "ica")),
+                                                    numericInput(inputId = "scanpy_reduction_clustering_count", label = "Select number of reduction components: ", value = 2),
+                                                    selectInput(inputId = "scanpy_algorithm.use", label = "Select clustering algorithm: ", choices = list("louvain algorithm" = "louvain",
+                                                                                                                                                   "leiden algorithm" = "leiden")),
                                                     numericInput(inputId = "scanpy_resolution_clustering", label = "Set resolution:", value = 0.8),
-                                                    materialSwitch(inputId = "scanpy_group.singletons", label = "Group singletons?", value = TRUE),
-                                                    htmlOutput(outputId = "scanpy_display_message_clustering", inline = FALSE),
+                                                    numericInput(inputId = "scanpy_nNeighbors", label = "Set no. of neigbours:", value = 15),
+                                                    # materialSwitch(inputId = "scanpy_group.singletons", label = "Group singletons?", value = TRUE),
+                                                    # htmlOutput(outputId = "scanpy_display_message_clustering", inline = FALSE),
+                                                    selectInput(inputId = "scanpy_corr_method", label = "Select clustering algorithm: ", choices = list("pearson" = "pearson",
+                                                                                                                                                          "kendall" = "kendall",
+                                                                                                                                                        "spearman" = "spearman")),
                                                     actionButton(inputId = "scanpy_find_clusters_button", "Find Clusters")
                                               )
                                        )
