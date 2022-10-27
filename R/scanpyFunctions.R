@@ -560,7 +560,7 @@ runScanpyFindClusters <- function(inSCE,
     scanpyObject$obsm <- list(pca = externalReduction)
     useReduction <- "pca"
   } 
-  colDataName = paste0("Scanpy", "_", algorithm)
+  colDataName = paste0("Scanpy", "_", algorithm, "_", resolution)
   
   sc$pp$neighbors(scanpyObject, 
                   n_neighbors = nNeighbors, 

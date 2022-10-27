@@ -151,7 +151,7 @@ shinyPanelScanpy <- fluidPage(
                                                           fluidRow(
                                                             panel(heading = "scanpy Plot",
                                                                   column(12,
-                                                                         plotlyOutput(outputId = "scanpy_plot_tsne")
+                                                                         plotOutput(outputId = "scanpy_plot_tsne")
                                                                   )
                                                             )
                                                           )
@@ -186,7 +186,7 @@ shinyPanelScanpy <- fluidPage(
                                                           fluidRow(
                                                             panel(heading = "scanpy Plot",
                                                                   column(12,
-                                                                         plotlyOutput(outputId = "scanpy_plot_umap")
+                                                                         plotOutput(outputId = "scanpy_plot_umap")
                                                                   )
                                                             )
                                                           )

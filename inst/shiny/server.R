@@ -9402,9 +9402,33 @@ shinyServer(function(input, output, session) {
                                                                 plotOutput(outputId = "scanpy_plot_pca")
                                                           )
       ), select = TRUE)
+      
+      appendTab(inputId = "scanpyPCAPlotTabset", tabPanel(title = "PCA Variance",
+                                                          panel(heading = "PCA Variance",
+                                                                plotOutput(outputId = "scanpy_plot_pca_variance")
+                                                          )
+      ), select = FALSE)
+      
+      appendTab(inputId = "scanpyPCAPlotTabset", tabPanel(title = "PCA Gene Ranking",
+                                                          panel(heading = "PCA Gene Ranking",
+                                                                plotOutput(outputId = "scanpy_plot_pca_gene_ranking")
+                                                          )
+      ), select = FALSE)
 
       message(paste0(date(), " ... Plotting PCA"))
 
+      output$scanpy_plot_pca_variance <- renderPlot({
+        isolate({
+          plotScanpyPCAVariance(inSCE = vals$counts)
+        })
+      })
+      
+      output$scanpy_plot_pca_gene_ranking <- renderPlot({
+        isolate({
+          plotScanpyPCAGeneRanking(inSCE = vals$counts)
+        })
+      })
+      
       output$scanpy_plot_pca <- renderPlot({
         isolate({
           plotScanpyPCA(inSCE = vals$counts)
@@ -9552,15 +9576,14 @@ shinyServer(function(input, output, session) {
                                      dims = 10L,
                                      perplexity = input$scanpy_perplexity_tsne)
       #   vals$counts <- singleCellTK:::.seuratInvalidate(inSCE = vals$counts, scaleData = FALSE, varFeatures = FALSE, PCA = FALSE, ICA = FALSE, tSNE = FALSE, UMAP = FALSE)
-      #   message(paste0(date(), " ... Plotting tSNE"))
+        message(paste0(date(), " ... Plotting tSNE"))
       #   
-      #   output$plot_tsne <- renderPlotly({
-      #     isolate({
-      #       plotly::ggplotly(plotSeuratReduction(inSCE = vals$counts,
-      #                                            useReduction = "tsne",
-      #                                            showLegend = FALSE))
-      #     })
-      #   })
+        output$scanpy_plot_tsne <- renderPlot({
+          isolate({
+            plotScanpyEmbedding(inSCE = vals$counts,
+                                                 reducedDimName = "scanpyTSNE")
+          })
+        })
       #   updateCollapse(session = session, "SeuratUI", style = list("tSNE/UMAP" = "success"))
       #   shinyjs::enable(selector = "#SeuratUI > div[value='Clustering']")
       #   S4Vectors::metadata(vals$counts)$seuratMarkers <- NULL
@@ -9592,15 +9615,14 @@ shinyServer(function(input, output, session) {
                                       gamma = input$scanpy_spread_gamma)
                                       
       #   vals$counts <- singleCellTK:::.seuratInvalidate(inSCE = vals$counts, scaleData = FALSE, varFeatures = FALSE, PCA = FALSE, ICA = FALSE, tSNE = FALSE, UMAP = FALSE)
-      #   message(paste0(date(), " ... Plotting UMAP"))
-      #   
-      #   output$plot_umap <- renderPlotly({
-      #     isolate({
-      #       plotly::ggplotly(plotSeuratReduction(inSCE = vals$counts,
-      #                                            useReduction = "umap",
-      #                                            showLegend = FALSE))
-      #     })
-      #   })
+        message(paste0(date(), " ... Plotting UMAP"))
+
+        output$scanpy_plot_umap <- renderPlot({
+          isolate({
+            plotScanpyEmbedding(inSCE = vals$counts,
+                                reducedDimName = "scanpyUMAP")
+          })
+        })
       #   updateCollapse(session = session, "SeuratUI", style = list("tSNE/UMAP" = "success"))
       #   shinyjs::enable(selector = "#SeuratUI > div[value='Clustering']")
       #   S4Vectors::metadata(vals$counts)$seuratMarkers <- NULL
@@ -9639,26 +9661,26 @@ shinyServer(function(input, output, session) {
                                               cor_method = input$scanpy_corr_method)
       #   updateCollapse(session = session, "SeuratUI", style = list("Clustering" = "success"))
          message(paste0(date(), " ... Finding Clusters Complete"))
-         print("finding clusters complete")
-         print(vals$counts)
       #   
       #   
       #   if(!is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[["pca"]])){
-      #     appendTab(inputId = "seuratClusteringPlotTabset", tabPanel(title = "PCA Plot",
-      #                                                                panel(heading = "PCA Plot",
-      #                                                                      plotlyOutput(outputId = "plot_pca_clustering")
-      #                                                                )
-      #     ), select = TRUE
-      #     
-      #     )
-      #     message(paste0(date(), " ... Re-generating PCA Plot with Cluster Labels"))
-      #     output$plot_pca_clustering <- renderPlotly({
-      #       isolate({
-      #         plotly::ggplotly(plotSeuratReduction(inSCE = vals$counts,
-      #                                              useReduction = "pca",
-      #                                              showLegend = TRUE))
-      #       })
-      #     })
+          appendTab(inputId = "scanpyClusteringPlotTabset", tabPanel(title = "PCA Plot",
+                                                                     panel(heading = "PCA Plot",
+                                                                           plotOutput(outputId = "scanpy_plot_pca_clustering")
+                                                                     )
+          ), select = TRUE)
+          
+          message(paste0(date(), " ... Re-generating PCA Plot with Cluster Labels"))
+          output$scanpy_plot_pca_clustering <- renderPlot({
+            isolate({
+              plotScanpyPCA(inSCE = vals$counts, 
+                            color = paste0(
+                              "Scanpy_", 
+                              input$scanpy_algorithm.use, 
+                              "_", 
+                              input$scanpy_resolution_clustering))
+            })
+          })
       #     shinyjs::toggleState(
       #       selector = ".seurat_clustering_plots a[data-value='PCA Plot']",
       #       condition = !is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[["pca"]]))
@@ -9683,50 +9705,60 @@ shinyServer(function(input, output, session) {
       #       condition = !is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[["ica"]]))
       #   }
       #   
-      #   if(!is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[["tsne"]])){
-      #     appendTab(inputId = "seuratClusteringPlotTabset", tabPanel(title = "tSNE Plot",
-      #                                                                panel(heading = "tSNE Plot",
-      #                                                                      plotlyOutput(outputId = "plot_tsne_clustering")
-      #                                                                )
-      #     )
-      #     )
-      #     
-      #     message(paste0(date(), " ... Re-generating tSNE Plot with Cluster Labels"))
-      #     
-      #     output$plot_tsne_clustering <- renderPlotly({
-      #       isolate({
-      #         plotly::ggplotly(plotSeuratReduction(inSCE = vals$counts,
-      #                                              useReduction = "tsne",
-      #                                              showLegend = TRUE))
-      #       })
-      #     })
+        if("scanpyTSNE" %in% reducedDimNames(vals$counts)){
+          appendTab(inputId = "scanpyClusteringPlotTabset", tabPanel(title = "tSNE Plot",
+                                                                     panel(heading = "tSNE Plot",
+                                                                           plotOutput(outputId = "scanpy_plot_tsne_clustering")
+                                                                     )
+          )
+          )
+
+          message(paste0(date(), " ... Re-generating tSNE Plot with Cluster Labels"))
+
+          output$scanpy_plot_tsne_clustering <- renderPlot({
+            isolate({
+              plotScanpyEmbedding(inSCE = vals$counts, 
+                                  reducedDimName = "scanpyTSNE",
+                                  color = paste0(
+                                    "Scanpy_", 
+                                    input$scanpy_algorithm.use, 
+                                    "_", 
+                                    input$scanpy_resolution_clustering))
+            })
+          })
       #     shinyjs::toggleState(
       #       selector = ".seurat_clustering_plots a[data-value='tSNE Plot']",
       #       condition = !is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[["tsne"]]))
-      #   }
+        }
       #   
-      #   if(!is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[["umap"]])){
-      #     appendTab(inputId = "seuratClusteringPlotTabset", tabPanel(title = "UMAP Plot",
-      #                                                                panel(heading = "UMAP Plot",
-      #                                                                      plotlyOutput(outputId = "plot_umap_clustering")
-      #                                                                )
-      #     )
-      #     )
-      #     message(paste0(date(), " ... Re-generating UMAP Plot with Cluster Labels"))
-      #     
-      #     output$plot_umap_clustering <- renderPlotly({
-      #       isolate({
-      #         plotly::ggplotly(plotSeuratReduction(inSCE = vals$counts,
-      #                                              useReduction = "umap",
-      #                                              showLegend = TRUE))
-      #       })
-      #     })
+        if("scanpyUMAP" %in% reducedDimNames(vals$counts)){
+          appendTab(inputId = "scanpyClusteringPlotTabset", tabPanel(title = "UMAP Plot",
+                                                                     panel(heading = "UMAP Plot",
+                                                                           plotOutput(outputId = "scanpy_plot_umap_clustering")
+                                                                     )
+          )
+          )
+          message(paste0(date(), " ... Re-generating UMAP Plot with Cluster Labels"))
+
+          output$scanpy_plot_umap_clustering <- renderPlot({
+            isolate({
+              plotScanpyEmbedding(
+                inSCE = vals$counts,
+                reducedDimName = "scanpyUMAP",
+                color = paste0(
+                  "Scanpy_", 
+                  input$scanpy_algorithm.use, 
+                  "_", 
+                  input$scanpy_resolution_clustering)
+              )
+            })
+          })
       #     shinyjs::toggleState(
       #       selector = ".seurat_clustering_plots a[data-value='UMAP Plot']",
       #       condition = !is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[["umap"]]))
-      #   }
+        }
       #   
-      #   shinyjs::show(selector = ".seurat_clustering_plots")
+        shinyjs::show(selector = ".scanpy_clustering_plots")
       #   
       #   #enable find marker selection
       #   shinyjs::enable(
