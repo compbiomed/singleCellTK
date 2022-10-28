@@ -43,6 +43,8 @@ plotMusicResults<- function(inSCE,
                           useAssay = useAssay){
     
     
+    
+    
     testBulk<-metadata(inSCE)$sctk$music[[analysisName]][[useAssay]]
     bulkinSCE<-SingleCellExperiment(assays = list(EstProps = testBulk))
     names(assays(bulkinSCE))<-useAssay
