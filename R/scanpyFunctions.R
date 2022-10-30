@@ -873,7 +873,7 @@ plotScanpyMarkerGenes <- function(inSCE,
   return(sc$pl$rank_genes_groups(scanpyObject, 
                                  groups = groups, 
                                  n_genes = as.integer(nGenes),
-                                 ncols = nCols, 
+                                 ncols = as.integer(nCols), 
                                  sharey = sharey))
   
 }
