@@ -214,11 +214,11 @@ runScanpyFindHVG <- function(inSCE,
     
     metadata(inSCE)$scanpy$hvg <- scanpyObject
     rowData(inSCE)$scanpy_variableFeatures_seurat_dispersion <-
-      inSCE@metadata$scanpy$obj["var"][["dispersions"]]
+      inSCE@metadata$scanpy$hvg["var"][["dispersions"]]
     rowData(inSCE)$scanpy_variableFeatures_seurat_dispersionScaled <-
-      inSCE@metadata$scanpy$obj["var"][["dispersions_norm"]]    
+      inSCE@metadata$scanpy$hvg["var"][["dispersions_norm"]]    
     rowData(inSCE)$scanpy_variableFeatures_seurat_mean <-
-      inSCE@metadata$scanpy$obj["var"][["means"]]  
+      inSCE@metadata$scanpy$hvg["var"][["means"]]  
     
     metadata(inSCE)$sctk$runFeatureSelection$seurat <-
       list(
@@ -244,22 +244,22 @@ runScanpyFindHVG <- function(inSCE,
     metadata(inSCE)$scanpy$hvg <- scanpyObject
     if (!altExp) {
       rowData(inSCE)$scanpy_variableFeatures_cr_dispersion <-
-        inSCE@metadata$scanpy$obj["var"][["dispersions"]]
+        inSCE@metadata$scanpy$hvg["var"][["dispersions"]]
       rowData(inSCE)$scanpy_variableFeatures_cr_dispersionScaled <-
-        inSCE@metadata$scanpy$obj["var"][["dispersions_norm"]]    
+        inSCE@metadata$scanpy$hvg["var"][["dispersions_norm"]]    
       rowData(inSCE)$scanpy_variableFeatures_cr_mean <-
-        inSCE@metadata$scanpy$obj["var"][["means"]] 
+        inSCE@metadata$scanpy$hvg["var"][["means"]] 
       
     }
     else{
       scanpyToSCE <- zellkonverter::AnnData2SCE(adata = scanpyObject)
       altExpRows <- match(rownames(inSCE), rownames(scanpyToSCE))
       rowData(inSCE)$scanpy_variableFeatures_cr_dispersion <-
-        inSCE@metadata$scanpy$obj["var"][["dispersions"]][altExpRows]
+        inSCE@metadata$scanpy$hvg["var"][["dispersions"]][altExpRows]
       rowData(inSCE)$scanpy_variableFeatures_cr_dispersionScaled <-
-        inSCE@metadata$scanpy$obj["var"][["dispersions_norm"]] [altExpRows]   
+        inSCE@metadata$scanpy$hvg["var"][["dispersions_norm"]] [altExpRows]   
       rowData(inSCE)$scanpy_variableFeatures_cr_mean <-
-        inSCE@metadata$scanpy$obj["var"][["means"]][altExpRows]
+        inSCE@metadata$scanpy$hvg["var"][["means"]][altExpRows]
     }
     
     metadata(inSCE)$sctk$runFeatureSelection$cell_ranger <-
@@ -284,11 +284,11 @@ runScanpyFindHVG <- function(inSCE,
     
     metadata(inSCE)$scanpy$hvg <- scanpyObject
     rowData(inSCE)$scanpy_variableFeatures_seuratv3_variances <-
-      inSCE@metadata$scanpy$obj["var"][["variances"]]
+      inSCE@metadata$scanpy$hvg["var"][["variances"]]
     rowData(inSCE)$scanpy_variableFeatures_seuratv3_variancesScaled <-
-      inSCE@metadata$scanpy$obj["var"][["variances_norm"]]    
+      inSCE@metadata$scanpy$hvg["var"][["variances_norm"]]    
     rowData(inSCE)$scanpy_variableFeatures_seuratv3_mean <-
-      inSCE@metadata$scanpy$obj["var"][["means"]]  
+      inSCE@metadata$scanpy$hvg["var"][["means"]]  
     metadata(inSCE)$sctk$runFeatureSelection$seurat_v3 <-
       list(
         useAssay = useAssay,
