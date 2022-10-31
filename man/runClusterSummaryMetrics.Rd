@@ -32,6 +32,7 @@ Calculates the mean expression of percent of cells that express the
 given genes for each cluster
 }
 \examples{
+data("scExample")
 runClusterSummaryMetrics(inSCE=sce, useAssay="counts", gene=c("B2M"), 
-displayName="feature_name", clusters="cluster")
+displayName="feature_name", clusters="type")
 }

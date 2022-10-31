@@ -12,8 +12,9 @@
 #' @param colorHigh The color to be used for highest value of mean expression
 #' @return A ggplot of the bubble plot.
 #' @examples
+#' data("scExample")
 #' plotBubble(inSCE=sce, useAssay="counts", gene=c("B2M"), displayName="feature_name", 
-#' clusters="cluster", title="cell type test", colorLow="white", colorHigh="blue")
+#' clusters="type", title="cell type test", colorLow="white", colorHigh="blue")
 #' @export
 plotBubble <- function(inSCE, useAssay="logcounts", gene, displayName=NULL, clusters="cluster", title="", colorLow="white", colorHigh="blue"){
   summaryMetrics <- runClusterSummaryMetrics(inSCE, useAssay=useAssay, gene=gene, displayName=displayName, clusters=clusters)

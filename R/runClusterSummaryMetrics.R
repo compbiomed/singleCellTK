@@ -10,8 +10,9 @@
 #' @return A dataframe with mean expression and percent of cells in cluster that 
 #' express for each cluster.
 #' @examples
+#' data("scExample")
 #' runClusterSummaryMetrics(inSCE=sce, useAssay="counts", gene=c("B2M"), 
-#' displayName="feature_name", clusters="cluster")
+#' displayName="feature_name", clusters="type")
 #' @export
 
 runClusterSummaryMetrics <- function(inSCE, useAssay="logcounts", gene, displayName, clusters="cluster"){

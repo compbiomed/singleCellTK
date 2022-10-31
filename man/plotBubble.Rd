@@ -40,6 +40,7 @@ Plot a bubble plot with the color of the plot being the mean expression
 and the size of the dot being the percent of cells in the cluster expressing the gene.
 }
 \examples{
+data("scExample")
 plotBubble(inSCE=sce, useAssay="counts", gene=c("B2M"), displayName="feature_name", 
-clusters="cluster", title="cell type test", colorLow="white", colorHigh="blue")
+clusters="type", title="cell type test", colorLow="white", colorHigh="blue")
 }
