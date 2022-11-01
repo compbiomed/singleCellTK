@@ -43,10 +43,10 @@ runSingleR <- function(inSCE,
                        featureType = c("symbol", "ensembl"),
                        labelByCluster = NULL) {
     # Input checks
-    if(!inherits(inSCE, "SingleCellExperiment")){
+    if (!inherits(inSCE, "SingleCellExperiment")) {
         stop('"inSCE" should be a SingleCellExperiment inherited Object.')
     }
-    if(!useAssay %in% expDataNames(inSCE)){
+    if (!useAssay %in% expDataNames(inSCE)) {
         stop('"useAssay" name: ', useAssay, ' not found.')
     }
 
@@ -91,7 +91,7 @@ runSingleR <- function(inSCE,
             if (!isTRUE(useEnsembl)) {
                 rownames(ref) <- SummarizedExperiment::rowData(ref)$symbol
             }
-            ref <- ref[,!is.na(ref$label) & ref$label!="unclear"]
+            ref <- ref[,!is.na(ref$label) & ref$label != "unclear"]
             ref <- scaterlogNormCounts(ref, assayName = "logcounts")
             labelColName <- "label"
             warning("MuraroPancreasData does not have multiple levels of ",

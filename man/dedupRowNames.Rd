@@ -2,10 +2,7 @@
 % Please edit documentation in R/miscFunctions.R
 \name{dedupRowNames}
 \alias{dedupRowNames}
-\title{Deduplicate the rownames of a matrix or SingleCellExperiment object
-Adds '-1', '-2', ... '-i' to multiple duplicated rownames, and in place
-replace the unique rownames, store unique rownames in \code{rowData}, or
-return the unique rownames as character vecetor.}
+\title{Deduplicate the rownames of a matrix or SingleCellExperiment object}
 \usage{
 dedupRowNames(x, as.rowData = FALSE, return.list = FALSE)
 }
@@ -30,7 +27,6 @@ When \code{return.list} is set to \code{TRUE}, will return a character vector
 with the deduplicated rownames.
 }
 \description{
-Deduplicate the rownames of a matrix or SingleCellExperiment object
 Adds '-1', '-2', ... '-i' to multiple duplicated rownames, and in place
 replace the unique rownames, store unique rownames in \code{rowData}, or
 return the unique rownames as character vecetor.

@@ -18,7 +18,7 @@ imported and stored in metadata(inSCE)$sctk$genesets."><!-- mathjax --><script s
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.3</span>
       </span>
     </div>
 
@@ -201,7 +201,7 @@ imported and stored in <code>metadata(inSCE)$sctk$genesets</code>.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">sctkListGeneSetCollections</span><span class="op">(</span><span class="va">inSCE</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">sctkListGeneSetCollections</span><span class="op">(</span><span class="va">inSCE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -230,22 +230,22 @@ for importing MSigDB gene sets.</p></div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">scExample</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">gs1</span> <span class="op">&lt;-</span> <span class="fu">GSEABase</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/GSEABase/man/GeneSet-methods.html" class="external-link">GeneSet</a></span><span class="op">(</span>setName <span class="op">=</span> <span class="st">"geneset1"</span>,</span>
-<span class="r-in">                         geneIds <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">gs2</span> <span class="op">&lt;-</span> <span class="fu">GSEABase</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/GSEABase/man/GeneSet-methods.html" class="external-link">GeneSet</a></span><span class="op">(</span>setName <span class="op">=</span> <span class="st">"geneset2"</span>,</span>
-<span class="r-in">                         geneIds <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">11</span>,<span class="fl">20</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">gsc1</span> <span class="op">&lt;-</span> <span class="fu">GSEABase</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/GSEABase/man/GeneSetCollection-methods.html" class="external-link">GeneSetCollection</a></span><span class="op">(</span><span class="va">gs1</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">gsc2</span> <span class="op">&lt;-</span> <span class="fu">GSEABase</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/GSEABase/man/GeneSetCollection-methods.html" class="external-link">GeneSetCollection</a></span><span class="op">(</span><span class="va">gs2</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="importGeneSetsFromCollection.html">importGeneSetsFromCollection</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>,</span>
-<span class="r-in">                                    geneSetCollection <span class="op">=</span> <span class="va">gsc1</span>,</span>
-<span class="r-in">                                    by <span class="op">=</span> <span class="st">"rownames"</span>,</span>
-<span class="r-in">                                    collectionName <span class="op">=</span> <span class="st">"Collection1"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="importGeneSetsFromCollection.html">importGeneSetsFromCollection</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>,</span>
-<span class="r-in">                                    geneSetCollection <span class="op">=</span> <span class="va">gsc2</span>,</span>
-<span class="r-in">                                    by <span class="op">=</span> <span class="st">"rownames"</span>,</span>
-<span class="r-in">                                    collectionName <span class="op">=</span> <span class="st">"Collection2"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">collections</span> <span class="op">&lt;-</span> <span class="fu">sctkListGeneSetCollections</span><span class="op">(</span><span class="va">sce</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">scExample</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">gs1</span> <span class="op">&lt;-</span> <span class="fu">GSEABase</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/GSEABase/man/GeneSet-methods.html" class="external-link">GeneSet</a></span><span class="op">(</span>setName <span class="op">=</span> <span class="st">"geneset1"</span>,</span></span>
+<span class="r-in"><span>                         geneIds <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">gs2</span> <span class="op">&lt;-</span> <span class="fu">GSEABase</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/GSEABase/man/GeneSet-methods.html" class="external-link">GeneSet</a></span><span class="op">(</span>setName <span class="op">=</span> <span class="st">"geneset2"</span>,</span></span>
+<span class="r-in"><span>                         geneIds <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">11</span>,<span class="fl">20</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">gsc1</span> <span class="op">&lt;-</span> <span class="fu">GSEABase</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/GSEABase/man/GeneSetCollection-methods.html" class="external-link">GeneSetCollection</a></span><span class="op">(</span><span class="va">gs1</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">gsc2</span> <span class="op">&lt;-</span> <span class="fu">GSEABase</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/GSEABase/man/GeneSetCollection-methods.html" class="external-link">GeneSetCollection</a></span><span class="op">(</span><span class="va">gs2</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="importGeneSetsFromCollection.html">importGeneSetsFromCollection</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>,</span></span>
+<span class="r-in"><span>                                    geneSetCollection <span class="op">=</span> <span class="va">gsc1</span>,</span></span>
+<span class="r-in"><span>                                    by <span class="op">=</span> <span class="st">"rownames"</span>,</span></span>
+<span class="r-in"><span>                                    collectionName <span class="op">=</span> <span class="st">"Collection1"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="importGeneSetsFromCollection.html">importGeneSetsFromCollection</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>,</span></span>
+<span class="r-in"><span>                                    geneSetCollection <span class="op">=</span> <span class="va">gsc2</span>,</span></span>
+<span class="r-in"><span>                                    by <span class="op">=</span> <span class="st">"rownames"</span>,</span></span>
+<span class="r-in"><span>                                    collectionName <span class="op">=</span> <span class="st">"Collection2"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">collections</span> <span class="op">&lt;-</span> <span class="fu">sctkListGeneSetCollections</span><span class="op">(</span><span class="va">sce</span><span class="op">)</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -260,7 +260,7 @@ for importing MSigDB gene sets.</p></div>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

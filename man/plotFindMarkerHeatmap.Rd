@@ -3,7 +3,7 @@
 \name{plotFindMarkerHeatmap}
 \alias{plotFindMarkerHeatmap}
 \alias{plotMarkerDiffExp}
-\title{Plot a heatmap to visualize the result of \code{\link{findMarkerDiffExp}}}
+\title{Plot a heatmap to visualize the result of \code{\link{runFindMarker}}}
 \usage{
 plotFindMarkerHeatmap(
   inSCE,
@@ -117,7 +117,7 @@ named with categories. Default \code{NULL}.}
 \item{colSplitBy}{character vector. Do semi-heatmap based on the grouping of
 this(these) annotation(s). Should exist in either \code{colDataName} or
 \code{names(cellAnnotations)}. Default is the value of \code{cluster} in
-\code{\link{findMarkerDiffExp}} when \code{orderBy} is not \code{NULL}, or
+\code{\link{runFindMarker}} when \code{orderBy} is not \code{NULL}, or
 \code{NULL} otherwise.}
 
 \item{rowSplitBy}{character vector. Do semi-heatmap based on the grouping of
@@ -157,6 +157,9 @@ logcounts(sceBatches) <- log1p(counts(sceBatches))
 sce.w <- subsetSCECols(sceBatches, colData = "batch == 'w'")
 sce.w <- runFindMarker(sce.w, method = "wilcox", cluster = "cell_type")
 plotFindMarkerHeatmap(sce.w)
+}
+\seealso{
+\code{\link{runFindMarker}}, \code{\link{getFindMarkerTopTable}}
 }
 \author{
 Yichen Wang

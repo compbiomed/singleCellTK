@@ -15,11 +15,16 @@ reference:
   - runCellQC
   - runDropletQC
   - runPerCellQC
+  - reportDropletQC
+  - reportCellQC
+  - plotRunPerCellQCResults
 - title: "Decontamination"
 - contents:
   - runDecontX
+  - plotDecontXResults
   - runSoupX
   - getSoupX<-
+  - plotSoupXResults
 - title: "Doublet/Empty Droplet Detection"
 - contents:
   - runBarcodeRankDrops
@@ -30,6 +35,14 @@ reference:
   - runScDblFinder
   - runDoubletFinder
   - runScrublet
+  - plotBarcodeRankDropsResults
+  - plotEmptyDropsResults
+  - plotBcdsResults
+  - plotCxdsResults
+  - plotScdsHybridResults
+  - plotScDblFinderResults
+  - plotDoubletFinderResults
+  - plotScrubletResults
 - title: "Normalization"
 - contents:
   - runNormalization
@@ -42,16 +55,19 @@ reference:
   - trimCounts
 - title: "Batch Effect Correction"
 - contents:
+  - runMNNCorrect
   - runComBatSeq
   - runBBKNN
   - runFastMNN
   - runLimmaBC
-  - runMNNCorrect
+  - runHarmony
   - runSCANORAMA
   - runSCMerge
   - runSeuratIntegration
   - runZINBWaVE
   - plotBatchVariance
+  - plotBatchCorrCompare
+  - plotSCEBatchFeatureMean
 - title: "Feature Selection"
 - contents:
   - runFeatureSelection
@@ -64,12 +80,14 @@ reference:
 - contents:
   - runDimReduce
   - scaterPCA
-  - getUMAP
-  - getTSNE
+  - runUMAP
+  - runTSNE
   - runSeuratICA
   - runSeuratPCA
   - runSeuratUMAP
   - runSeuratTSNE
+  - runQuickUMAP
+  - runQuickTSNE
   - plotPCA
   - plotUMAP
   - plotTSNE
@@ -97,9 +115,9 @@ reference:
   - plotMASTThresholdGenes
 - title: "Find Marker"
 - contents:
-  - findMarkerDiffExp
-  - findMarkerTopTable
-  - plotMarkerDiffExp
+  - runFindMarker
+  - getFindMarkerTopTable
+  - plotFindMarkerHeatmap
 - title: "Differential Abundance"
 - contents:
   - diffAbundanceFET

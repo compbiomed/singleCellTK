@@ -207,7 +207,7 @@ MitoImport <- opt[["detectMitoLevel"]]
 MitoType <- opt[["mitoType"]]
 QCReport <- opt[["QCReport"]]
 
-print("The output directory is")
+message("The output directory is")
 print(directory)
 
 if (!is.null(basepath)) { basepath <- unlist(strsplit(opt[["basePath"]], ",")) }

@@ -22,7 +22,7 @@ knitr::opts_chunk$set(warning = FALSE, message = FALSE, eval = TRUE, results = "
 
 ## Introduction
 
-This section comes together with the previous section [Differential Expression](differential_expression.html). The basic strategy singleCellTK (SCTK) uses to find biomarkers is to iteratively identify the significantly up-regulated features of each group of cells against all the other cells. This means, the function we have (`findMarkerDiffExp()`) is a wrapper of functions that do differential expression (DE) analysis, which would be invoked in a loop. For the detail of the DE functions and DE computation methods, please refer to the [Differential Expression documentation](differential_expression.html).  
+This section comes together with the previous section [Differential Expression](differential_expression.html). The basic strategy singleCellTK (SCTK) uses to find biomarkers is to iteratively identify the significantly up-regulated features of each group of cells against all the other cells. This means, the function we have (`runFindMarker()`) is a wrapper of functions that do differential expression (DE) analysis, which would be invoked in a loop. For the detail of the DE functions and DE computation methods, please refer to the [Differential Expression documentation](differential_expression.html).  
 
 To view detailed instructions on how to use these methods, please select 'Interactive Analysis' for shiny application or 'Console Analysis' for using these methods on R console from the tabs below: <br>
 
@@ -103,7 +103,7 @@ A heatmap will be automatically generated after running the marker detection pro
 As per SCTK's strategy, the primary input is limited to an [SingleCellExperiment](https://rdrr.io/bioc/SingleCellExperiment/man/SingleCellExperiment.html) (SCE) object, which has been through preprocessing steps with cluster labels annotated. While the iteration is a fixed pattern, the parameters needed are rather simple:  
 
 ```{R egCall, eval = FALSE}
-sce <- findMarkerDiffExp(inSCE = sce, useAssay = "logcounts", cluster = "cluster", covariates = NULL, log2fcThreshold = 0.25, fdrThreshold = 0.05)
+sce <- runFindMarker(inSCE = sce, useAssay = "logcounts", cluster = "cluster", covariates = NULL, log2fcThreshold = 0.25, fdrThreshold = 0.05)
 ```
 
 Here all arguments execpt the input SCE object (`inSCE`) are set by default. `method` can only be chosen from the table above. `cluster` and `covariates` should be given a single string which is present in `names(colData(inSCE))`. `cluster` is required for grouping cells, while `covariates` is optional for DE detection. `log2fcThreshold` and `fdrThreshold` are numeric and has to be set in plausible range. `log2fcThrshold` has to be positive and `fdrThreshold` has to be greater than zero and less than one.  
@@ -147,10 +147,10 @@ plotSCEDimReduceColData(sce, colorBy = "cluster", reducedDimName = "UMAP")
 
 **Get Markers**
 
-Then we call `findMarkerDiffExp()` on the clustered data, with the cluster annotation just obtained, `"cluster"`.  
+Then we call `runFindMarker()` on the clustered data, with the cluster annotation just obtained, `"cluster"`.  
 
 ```{R runFM}
-sce <- findMarkerDiffExp(inSCE = sce, useAssay = "logcounts", cluster = "cluster")
+sce <- runFindMarker(inSCE = sce, useAssay = "logcounts", cluster = "cluster")
 ```
 
 ````{=html}
@@ -160,16 +160,16 @@ sce <- findMarkerDiffExp(inSCE = sce, useAssay = "logcounts", cluster = "cluster
 
 **Results**
 
-After successfully running `findMarkerDiffExp()`, the result marker table would be stored in `metadata(sce)`. This table can be fetched by `findMarkerTopTable()`. Argument `topN` controls how many top markers, that pass filters, to include for each clsuter.
+After successfully running `runFindMarker()`, the result marker table would be stored in `metadata(sce)`. This table can be fetched by `getFindMarkerTopTable()`. Argument `topN` controls how many top markers, that pass filters, to include for each clsuter.
 
 ```{R getMarkerTable}
-findMarkerTopTable(sce, log2fcThreshold = 0, minClustExprPerc = 0.5, topN = 1)
+getFindMarkerTopTable(sce, log2fcThreshold = 0, minClustExprPerc = 0.5, topN = 1)
 ```
 
 Similarly to the Differential Expression section, we also provide a automated and organized **heatmap plotting** for the markers:  
 
 ```{R plotMarkers, fig.height = 8, fig.width = 7}
-plotMarkerDiffExp(sce, log2fcThreshold = 0, minClustExprPerc = 0.5, maxCtrlExprPerc = 0.5, rowLabel = TRUE)
+plotFindMarkerHeatmap(sce, log2fcThreshold = 0, minClustExprPerc = 0.5, maxCtrlExprPerc = 0.5, rowLabel = TRUE)
 ```
 
 Note that when plotting the heatmap, the genes that are identified as up-regulated in multiple clusters will be considered only for the one cluster with the highest fold-change, while all of them are still kept in the table in `metadata`. 

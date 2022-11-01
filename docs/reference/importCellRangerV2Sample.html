@@ -19,7 +19,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.3</span>
       </span>
     </div>
 
@@ -203,13 +203,13 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">importCellRangerV2Sample</span><span class="op">(</span>
-  dataDir <span class="op">=</span> <span class="cn">NULL</span>,
-  sampleName <span class="op">=</span> <span class="cn">NULL</span>,
-  class <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Matrix"</span>, <span class="st">"matrix"</span><span class="op">)</span>,
-  delayedArray <span class="op">=</span> <span class="cn">FALSE</span>,
-  rowNamesDedup <span class="op">=</span> <span class="cn">TRUE</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">importCellRangerV2Sample</span><span class="op">(</span></span>
+<span>  dataDir <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  sampleName <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  class <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Matrix"</span>, <span class="st">"matrix"</span><span class="op">)</span>,</span>
+<span>  delayedArray <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  rowNamesDedup <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -250,10 +250,10 @@ DelayedArray object or not. Default <code>FALSE</code>.</p></dd>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu">importCellRangerV2Sample</span><span class="op">(</span></span>
-<span class="r-in">    dataDir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/pbmc_4k_v2_20x20/outs/"</span>,</span>
-<span class="r-in">        <span class="st">"filtered_gene_bc_matrices/GRCh38"</span>, package <span class="op">=</span> <span class="st">"singleCellTK"</span><span class="op">)</span>,</span>
-<span class="r-in">    sampleName <span class="op">=</span> <span class="st">"pbmc4k_20"</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu">importCellRangerV2Sample</span><span class="op">(</span></span></span>
+<span class="r-in"><span>    dataDir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/pbmc_4k_v2_20x20/outs/"</span>,</span></span>
+<span class="r-in"><span>        <span class="st">"filtered_gene_bc_matrices/GRCh38"</span>, package <span class="op">=</span> <span class="st">"singleCellTK"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    sampleName <span class="op">=</span> <span class="st">"pbmc4k_20"</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Metrics summary file (metrics_summary.csv) not found for sample: pbmc4k_20</span>
 </code></pre></div>
     </div>
@@ -269,7 +269,7 @@ DelayedArray object or not. Default <code>FALSE</code>.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

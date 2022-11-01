@@ -19,7 +19,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.3</span>
       </span>
     </div>
 
@@ -203,45 +203,45 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">plotDecontXResults</span><span class="op">(</span>
-  <span class="va">inSCE</span>,
-  sample <span class="op">=</span> <span class="cn">NULL</span>,
-  bgResult <span class="op">=</span> <span class="cn">FALSE</span>,
-  shape <span class="op">=</span> <span class="cn">NULL</span>,
-  groupBy <span class="op">=</span> <span class="cn">NULL</span>,
-  combinePlot <span class="op">=</span> <span class="st">"all"</span>,
-  violin <span class="op">=</span> <span class="cn">TRUE</span>,
-  boxplot <span class="op">=</span> <span class="cn">FALSE</span>,
-  dots <span class="op">=</span> <span class="cn">TRUE</span>,
-  reducedDimName <span class="op">=</span> <span class="st">"UMAP"</span>,
-  xlab <span class="op">=</span> <span class="cn">NULL</span>,
-  ylab <span class="op">=</span> <span class="cn">NULL</span>,
-  dim1 <span class="op">=</span> <span class="cn">NULL</span>,
-  dim2 <span class="op">=</span> <span class="cn">NULL</span>,
-  bin <span class="op">=</span> <span class="cn">NULL</span>,
-  binLabel <span class="op">=</span> <span class="cn">NULL</span>,
-  defaultTheme <span class="op">=</span> <span class="cn">TRUE</span>,
-  dotSize <span class="op">=</span> <span class="fl">0.5</span>,
-  summary <span class="op">=</span> <span class="st">"median"</span>,
-  summaryTextSize <span class="op">=</span> <span class="fl">3</span>,
-  transparency <span class="op">=</span> <span class="fl">1</span>,
-  baseSize <span class="op">=</span> <span class="fl">15</span>,
-  titleSize <span class="op">=</span> <span class="cn">NULL</span>,
-  axisLabelSize <span class="op">=</span> <span class="cn">NULL</span>,
-  axisSize <span class="op">=</span> <span class="cn">NULL</span>,
-  legendSize <span class="op">=</span> <span class="cn">NULL</span>,
-  legendTitleSize <span class="op">=</span> <span class="cn">NULL</span>,
-  relHeights <span class="op">=</span> <span class="fl">1</span>,
-  relWidths <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span>,
-  plotNCols <span class="op">=</span> <span class="cn">NULL</span>,
-  plotNRows <span class="op">=</span> <span class="cn">NULL</span>,
-  labelSamples <span class="op">=</span> <span class="cn">TRUE</span>,
-  labelClusters <span class="op">=</span> <span class="cn">TRUE</span>,
-  clusterLabelSize <span class="op">=</span> <span class="fl">3.5</span>,
-  samplePerColumn <span class="op">=</span> <span class="cn">TRUE</span>,
-  sampleRelHeights <span class="op">=</span> <span class="fl">1</span>,
-  sampleRelWidths <span class="op">=</span> <span class="fl">1</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">plotDecontXResults</span><span class="op">(</span></span>
+<span>  <span class="va">inSCE</span>,</span>
+<span>  sample <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  bgResult <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  shape <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  groupBy <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  combinePlot <span class="op">=</span> <span class="st">"all"</span>,</span>
+<span>  violin <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  boxplot <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  dots <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  reducedDimName <span class="op">=</span> <span class="st">"UMAP"</span>,</span>
+<span>  xlab <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  ylab <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  dim1 <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  dim2 <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  bin <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  binLabel <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  defaultTheme <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  dotSize <span class="op">=</span> <span class="fl">0.5</span>,</span>
+<span>  summary <span class="op">=</span> <span class="st">"median"</span>,</span>
+<span>  summaryTextSize <span class="op">=</span> <span class="fl">3</span>,</span>
+<span>  transparency <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  baseSize <span class="op">=</span> <span class="fl">15</span>,</span>
+<span>  titleSize <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  axisLabelSize <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  axisSize <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  legendSize <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  legendTitleSize <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  relHeights <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  relWidths <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span>,</span>
+<span>  plotNCols <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  plotNRows <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  labelSamples <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  labelClusters <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  clusterLabelSize <span class="op">=</span> <span class="fl">3.5</span>,</span>
+<span>  samplePerColumn <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  sampleRelHeights <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  sampleRelWidths <span class="op">=</span> <span class="fl">1</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -429,32 +429,32 @@ the relative widths for each plot.</p></dd>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">scExample</span>, package<span class="op">=</span><span class="st">"singleCellTK"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="subsetSCECols.html">subsetSCECols</a></span><span class="op">(</span><span class="va">sce</span>, colData <span class="op">=</span> <span class="st">"type != 'EmptyDroplet'"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="runDecontX.html">runDecontX</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Jun 28 22:04:02 2022 ... Running 'DecontX'</span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">scExample</span>, package<span class="op">=</span><span class="st">"singleCellTK"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="subsetSCECols.html">subsetSCECols</a></span><span class="op">(</span><span class="va">sce</span>, colData <span class="op">=</span> <span class="st">"type != 'EmptyDroplet'"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="runDecontX.html">runDecontX</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Oct 25 15:45:08 2022 ... Running 'DecontX'</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> --------------------------------------------------</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Starting DecontX</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> --------------------------------------------------</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Jun 28 22:04:02 2022 .. Analyzing all cells</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Jun 28 22:04:02 2022 .... Generating UMAP and estimating cell types</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Jun 28 22:04:06 2022 .... Estimating contamination</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Jun 28 22:04:06 2022 ...... Completed iteration: 10 | converge: 0.0278</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Jun 28 22:04:06 2022 ...... Completed iteration: 20 | converge: 0.01058</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Jun 28 22:04:06 2022 ...... Completed iteration: 30 | converge: 0.00584</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Jun 28 22:04:06 2022 ...... Completed iteration: 40 | converge: 0.004697</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Jun 28 22:04:06 2022 ...... Completed iteration: 50 | converge: 0.003356</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Jun 28 22:04:06 2022 ...... Completed iteration: 60 | converge: 0.002634</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Jun 28 22:04:06 2022 ...... Completed iteration: 70 | converge: 0.001941</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Jun 28 22:04:06 2022 ...... Completed iteration: 80 | converge: 0.001413</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Jun 28 22:04:06 2022 ...... Completed iteration: 90 | converge: 0.001284</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Jun 28 22:04:06 2022 ...... Completed iteration: 100 | converge: 0.00111</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Jun 28 22:04:06 2022 ...... Completed iteration: 104 | converge: 0.0009827</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Jun 28 22:04:06 2022 .. Calculating final decontaminated matrix</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Oct 25 15:45:08 2022 .. Analyzing all cells</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Oct 25 15:45:08 2022 .... Generating UMAP and estimating cell types</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Oct 25 15:45:10 2022 .... Estimating contamination</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Oct 25 15:45:11 2022 ...... Completed iteration: 10 | converge: 0.0278</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Oct 25 15:45:11 2022 ...... Completed iteration: 20 | converge: 0.01058</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Oct 25 15:45:11 2022 ...... Completed iteration: 30 | converge: 0.00584</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Oct 25 15:45:11 2022 ...... Completed iteration: 40 | converge: 0.004697</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Oct 25 15:45:11 2022 ...... Completed iteration: 50 | converge: 0.003356</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Oct 25 15:45:11 2022 ...... Completed iteration: 60 | converge: 0.002634</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Oct 25 15:45:11 2022 ...... Completed iteration: 70 | converge: 0.001941</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Oct 25 15:45:11 2022 ...... Completed iteration: 80 | converge: 0.001413</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Oct 25 15:45:11 2022 ...... Completed iteration: 90 | converge: 0.001284</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Oct 25 15:45:11 2022 ...... Completed iteration: 100 | converge: 0.00111</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Oct 25 15:45:11 2022 ...... Completed iteration: 104 | converge: 0.0009827</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Oct 25 15:45:11 2022 .. Calculating final decontaminated matrix</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> --------------------------------------------------</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Completed DecontX. Total time: 3.346597 secs</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Completed DecontX. Total time: 2.589864 secs</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> --------------------------------------------------</span>
-<span class="r-in"><span class="fu">plotDecontXResults</span><span class="op">(</span>inSCE<span class="op">=</span><span class="va">sce</span>, reducedDimName<span class="op">=</span><span class="st">"decontX_UMAP"</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu">plotDecontXResults</span><span class="op">(</span>inSCE<span class="op">=</span><span class="va">sce</span>, reducedDimName<span class="op">=</span><span class="st">"decontX_UMAP"</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="plotDecontXResults-1.png" alt="" width="700" height="433"></span>
 </code></pre></div>
     </div>
@@ -470,7 +470,7 @@ the relative widths for each plot.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

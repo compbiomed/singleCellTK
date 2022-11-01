@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.3</span>
       </span>
     </div>
 
@@ -199,14 +199,17 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">plotTopHVG</span><span class="op">(</span>
-  <span class="va">inSCE</span>,
-  method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"vst"</span>, <span class="st">"mean.var.plot"</span>, <span class="st">"dispersion"</span>, <span class="st">"modelGeneVar"</span><span class="op">)</span>,
-  hvgNumber <span class="op">=</span> <span class="cn">NULL</span>,
-  useFeatureSubset <span class="op">=</span> <span class="cn">NULL</span>,
-  labelsCount <span class="op">=</span> <span class="fl">20</span>,
-  featureDisplay <span class="op">=</span> <span class="fu">metadata</span><span class="op">(</span><span class="va">inSCE</span><span class="op">)</span><span class="op">$</span><span class="va">featureDisplay</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">plotTopHVG</span><span class="op">(</span></span>
+<span>  <span class="va">inSCE</span>,</span>
+<span>  method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"vst"</span>, <span class="st">"mean.var.plot"</span>, <span class="st">"dispersion"</span>, <span class="st">"modelGeneVar"</span><span class="op">)</span>,</span>
+<span>  hvgNumber <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  useFeatureSubset <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  labelsCount <span class="op">=</span> <span class="fl">20</span>,</span>
+<span>  featureDisplay <span class="op">=</span> <span class="fu">metadata</span><span class="op">(</span><span class="va">inSCE</span><span class="op">)</span><span class="op">$</span><span class="va">featureDisplay</span>,</span>
+<span>  labelSize <span class="op">=</span> <span class="fl">2</span>,</span>
+<span>  dotSize <span class="op">=</span> <span class="fl">2</span>,</span>
+<span>  textSize <span class="op">=</span> <span class="fl">12</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -217,7 +220,7 @@ computations.</p></dd>
 
 
 <dt>method</dt>
-<dd><p>Select either <code>"vst"</code>, <code>"mean.var.plot"</code>, 
+<dd><p>Select either <code>"vst"</code>, <code>"mean.var.plot"</code>,
 <code>"dispersion"</code> or <code>"modelGeneVar"</code>.</p></dd>
 
 
@@ -227,21 +230,35 @@ computations.</p></dd>
 
 
 <dt>useFeatureSubset</dt>
-<dd><p>A character string for the <code>rowData</code> variable 
-name to store a logical index of selected features. Default <code>NULL</code>. See 
+<dd><p>A character string for the <code>rowData</code> variable
+name to store a logical index of selected features. Default <code>NULL</code>. See
 details.</p></dd>
 
 
 <dt>labelsCount</dt>
-<dd><p>Specify the number of data points/genes to label. Should 
+<dd><p>Specify the number of data points/genes to label. Should
 be less than <code>hvgNumber</code>. Default <code>20</code>. See details.</p></dd>
 
 
 <dt>featureDisplay</dt>
 <dd><p>A character string for the <code>rowData</code> variable name
-to indicate what type of feature ID should be displayed. If set by 
+to indicate what type of feature ID should be displayed. If set by
 <code><a href="setSCTKDisplayRow.html">setSCTKDisplayRow</a></code>, will by default use it. If <code>NULL</code>, will
 use <code>rownames(inSCE)</code>.</p></dd>
+
+
+<dt>labelSize</dt>
+<dd><p>Numeric, size of the text label on top HVGs. Default 
+<code>2</code>.</p></dd>
+
+
+<dt>dotSize</dt>
+<dd><p>Numeric, size of the dots of the features. Default <code>2</code>.</p></dd>
+
+
+<dt>textSize</dt>
+<dd><p>Numeric, size of the text of axis title, axis label, etc.
+Default <code>12</code>.</p></dd>
 
 </dl></div>
     <div id="value">
@@ -254,9 +271,9 @@ use <code>rownames(inSCE)</code>.</p></dd>
     <h2>Details</h2>
     <p>When <code>hvgNumber = NULL</code> and <code>useFeature = NULL</code>, only plot
 the mean VS variance/dispersion scatter plot. When only <code>hvgNumber</code> set,
-label the top <code>hvgNumber</code> HVGs ranked by the metrics calculated by 
-<code>method</code>. When <code>useFeatureSubset</code> set, label the features in 
-the subset on the scatter plot created with <code>method</code> and ignore 
+label the top <code>hvgNumber</code> HVGs ranked by the metrics calculated by
+<code>method</code>. When <code>useFeatureSubset</code> set, label the features in
+the subset on the scatter plot created with <code>method</code> and ignore
 <code>hvgNumber</code>.</p>
     </div>
     <div id="see-also">
@@ -267,10 +284,10 @@ the subset on the scatter plot created with <code>method</code> and ignore
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"mouseBrainSubsetSCE"</span>, package <span class="op">=</span> <span class="st">"singleCellTK"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">mouseBrainSubsetSCE</span> <span class="op">&lt;-</span> <span class="fu"><a href="runModelGeneVar.html">runModelGeneVar</a></span><span class="op">(</span><span class="va">mouseBrainSubsetSCE</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"mouseBrainSubsetSCE"</span>, package <span class="op">=</span> <span class="st">"singleCellTK"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">mouseBrainSubsetSCE</span> <span class="op">&lt;-</span> <span class="fu"><a href="runModelGeneVar.html">runModelGeneVar</a></span><span class="op">(</span><span class="va">mouseBrainSubsetSCE</span><span class="op">)</span></span></span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>collapsing to unique 'x' values</span>
-<span class="r-in"><span class="fu">plotTopHVG</span><span class="op">(</span><span class="va">mouseBrainSubsetSCE</span>, method <span class="op">=</span> <span class="st">"modelGeneVar"</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu">plotTopHVG</span><span class="op">(</span><span class="va">mouseBrainSubsetSCE</span>, method <span class="op">=</span> <span class="st">"modelGeneVar"</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="plotTopHVG-1.png" alt="" width="700" height="433"></span>
 </code></pre></div>
     </div>
@@ -286,7 +303,7 @@ the subset on the scatter plot created with <code>method</code> and ignore
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

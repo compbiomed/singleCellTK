@@ -19,7 +19,7 @@ scRNA-Seq data."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.3</span>
       </span>
     </div>
 
@@ -203,22 +203,23 @@ scRNA-Seq data.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">runSCMerge</span><span class="op">(</span>
-  <span class="va">inSCE</span>,
-  useAssay <span class="op">=</span> <span class="st">"logcounts"</span>,
-  batch <span class="op">=</span> <span class="st">"batch"</span>,
-  assayName <span class="op">=</span> <span class="st">"scMerge"</span>,
-  seg <span class="op">=</span> <span class="cn">NULL</span>,
-  kmeansK <span class="op">=</span> <span class="cn">NULL</span>,
-  cellType <span class="op">=</span> <span class="st">"cell_type"</span>,
-  nCores <span class="op">=</span> <span class="fl">1L</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">runSCMerge</span><span class="op">(</span></span>
+<span>  <span class="va">inSCE</span>,</span>
+<span>  useAssay <span class="op">=</span> <span class="st">"logcounts"</span>,</span>
+<span>  batch <span class="op">=</span> <span class="st">"batch"</span>,</span>
+<span>  assayName <span class="op">=</span> <span class="st">"scMerge"</span>,</span>
+<span>  hvgExprs <span class="op">=</span> <span class="st">"counts"</span>,</span>
+<span>  seg <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  kmeansK <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  cellType <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  BPPARAM <span class="op">=</span> <span class="fu">BiocParallel</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocParallel/man/SerialParam-class.html" class="external-link">SerialParam</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>inSCE</dt>
-<dd><p>SingleCellExperiment inherited object. Required.</p></dd>
+<dd><p>Input SingleCellExperiment object</p></dd>
 
 
 <dt>useAssay</dt>
@@ -234,14 +235,19 @@ Default <code>"batch"</code>.</p></dd>
 
 <dt>assayName</dt>
 <dd><p>A single characeter. The name for the corrected assay. Will
-be saved to <code>assay</code>. Default
-<code>"scMerge"</code>.</p></dd>
+be saved to <code>assay</code>. Default <code>"scMerge"</code>.</p></dd>
+
+
+<dt>hvgExprs</dt>
+<dd><p>A single characeter. The assay that to be used for highly
+variable genes identification. Default <code>"counts"</code>.</p></dd>
 
 
 <dt>seg</dt>
 <dd><p>A vector of gene names or indices that specifies SEG (Stably
 Expressed Genes) set as negative control. Pre-defined dataset with human and
-mouse SEG lists is available to user by running <code>data('SEG')</code>. Default
+mouse SEG lists is available with <code><a href="https://rdrr.io/pkg/scMerge/man/segList.html" class="external-link">segList</a></code> or
+<code><a href="https://rdrr.io/pkg/scMerge/man/segList_ensemblGeneID.html" class="external-link">segList_ensemblGeneID</a></code>. Default
 <code>NULL</code>, and this value will be auto-detected by default with
 <code><a href="https://rdrr.io/pkg/scMerge/man/scSEGIndex.html" class="external-link">scSEGIndex</a></code>.</p></dd>
 
@@ -260,9 +266,9 @@ auto-detected by default, depending on <code>cellType</code>.</p></dd>
 <code>'cell_type'</code>.</p></dd>
 
 
-<dt>nCores</dt>
-<dd><p>An integer. The number of cores of processors to allocate for
-the task. Default <code>1L</code>.</p></dd>
+<dt>BPPARAM</dt>
+<dd><p>A BiocParallelParam object specifying whether
+should be parallelized. Default <code><a href="https://rdrr.io/pkg/BiocParallel/man/SerialParam-class.html" class="external-link">BiocParallel::SerialParam()</a></code>.</p></dd>
 
 </dl></div>
     <div id="value">
@@ -279,11 +285,11 @@ the task. Default <code>1L</code>.</p></dd>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">'sceBatches'</span>, package <span class="op">=</span> <span class="st">'singleCellTK'</span><span class="op">)</span></span>
-<span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"><span class="fu">logcounts</span><span class="op">(</span><span class="va">sceBatches</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fu">counts</span><span class="op">(</span><span class="va">sceBatches</span><span class="op">)</span> <span class="op">+</span> <span class="fl">1</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">sceCorr</span> <span class="op">&lt;-</span> <span class="fu">runSCMerge</span><span class="op">(</span><span class="va">sceBatches</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">'sceBatches'</span>, package <span class="op">=</span> <span class="st">'singleCellTK'</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="fu">logcounts</span><span class="op">(</span><span class="va">sceBatches</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log1p</a></span><span class="op">(</span><span class="fu">counts</span><span class="op">(</span><span class="va">sceBatches</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">sceCorr</span> <span class="op">&lt;-</span> <span class="fu">runSCMerge</span><span class="op">(</span><span class="va">sceBatches</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -298,7 +304,7 @@ the task. Default <code>1L</code>.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

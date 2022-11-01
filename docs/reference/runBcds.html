@@ -20,7 +20,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.3</span>
       </span>
     </div>
 
@@ -205,37 +205,35 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">runBcds</span><span class="op">(</span>
-  <span class="va">inSCE</span>,
-  sample <span class="op">=</span> <span class="cn">NULL</span>,
-  seed <span class="op">=</span> <span class="fl">12345</span>,
-  ntop <span class="op">=</span> <span class="fl">500</span>,
-  srat <span class="op">=</span> <span class="fl">1</span>,
-  verb <span class="op">=</span> <span class="cn">FALSE</span>,
-  retRes <span class="op">=</span> <span class="cn">FALSE</span>,
-  nmax <span class="op">=</span> <span class="st">"tune"</span>,
-  varImp <span class="op">=</span> <span class="cn">FALSE</span>,
-  estNdbl <span class="op">=</span> <span class="cn">FALSE</span>,
-  useAssay <span class="op">=</span> <span class="st">"counts"</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">runBcds</span><span class="op">(</span></span>
+<span>  <span class="va">inSCE</span>,</span>
+<span>  sample <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  seed <span class="op">=</span> <span class="fl">12345</span>,</span>
+<span>  ntop <span class="op">=</span> <span class="fl">500</span>,</span>
+<span>  srat <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  verb <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  retRes <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  nmax <span class="op">=</span> <span class="st">"tune"</span>,</span>
+<span>  varImp <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  estNdbl <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  useAssay <span class="op">=</span> <span class="st">"counts"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>inSCE</dt>
-<dd><p>A <a href="https://rdrr.io/pkg/SingleCellExperiment/man/SingleCellExperiment.html" class="external-link">SingleCellExperiment</a> object.
-Needs <code>counts</code> in assays slot.</p></dd>
+<dd><p>A SingleCellExperiment object.</p></dd>
 
 
 <dt>sample</dt>
-<dd><p>Character vector. Indicates which sample each cell belongs to.
-<a href="https://rdrr.io/pkg/scds/man/bcds.html" class="external-link">bcds</a> will be run on cells from each sample
-separately. If NULL, then all cells will be processed together.
-Default NULL.</p></dd>
+<dd><p>Character vector or colData variable name. Indicates which 
+sample each cell belongs to. Default <code>NULL</code>.</p></dd>
 
 
 <dt>seed</dt>
-<dd><p>Seed for the random number generator. Default 12345.</p></dd>
+<dd><p>Seed for the random number generator, can be <code>NULL</code>. Default
+<code>12345</code>.</p></dd>
 
 
 <dt>ntop</dt>
@@ -251,45 +249,59 @@ Default NULL.</p></dd>
 
 
 <dt>retRes</dt>
-<dd><p>See <a href="https://rdrr.io/pkg/scds/man/bcds.html" class="external-link">bcds</a> for more information. Default <code>FALSE</code>.</p></dd>
+<dd><p>See <a href="https://rdrr.io/pkg/scds/man/bcds.html" class="external-link">bcds</a> for more information. Default 
+<code>FALSE</code>.</p></dd>
 
 
 <dt>nmax</dt>
-<dd><p>See <a href="https://rdrr.io/pkg/scds/man/bcds.html" class="external-link">bcds</a> for more information. Default <code>"tune"</code>.</p></dd>
+<dd><p>See <a href="https://rdrr.io/pkg/scds/man/bcds.html" class="external-link">bcds</a> for more information. Default 
+<code>"tune"</code>.</p></dd>
 
 
 <dt>varImp</dt>
-<dd><p>See <a href="https://rdrr.io/pkg/scds/man/bcds.html" class="external-link">bcds</a> for more information. Default <code>FALSE</code>.</p></dd>
+<dd><p>See <a href="https://rdrr.io/pkg/scds/man/bcds.html" class="external-link">bcds</a> for more information. Default 
+<code>FALSE</code>.</p></dd>
 
 
 <dt>estNdbl</dt>
-<dd><p>See <a href="https://rdrr.io/pkg/scds/man/bcds.html" class="external-link">bcds</a> for more information. Default <code>FALSE</code>.</p></dd>
+<dd><p>See <a href="https://rdrr.io/pkg/scds/man/bcds.html" class="external-link">bcds</a> for more information. Default 
+<code>FALSE</code>.</p></dd>
 
 
 <dt>useAssay</dt>
-<dd><p>A string specifying which assay in the SCE to use.</p></dd>
+<dd><p>A string specifying which assay in <code>inSCE</code> to use.
+Default <code>"counts"</code></p></dd>
 
 </dl></div>
     <div id="value">
     <h2>Value</h2>
     
 
-<p>A <a href="https://rdrr.io/pkg/SingleCellExperiment/man/SingleCellExperiment.html" class="external-link">SingleCellExperiment</a> object with</p>
-<p></p>
-<p><a href="https://rdrr.io/pkg/scds/man/bcds.html" class="external-link">bcds</a> output appended to the</p>
-<p></p>
-<p>colData slot. The columns include</p>
-<p></p>
-<p><em>bcds_score</em> and optionally <em>bcds_call</em>.
- Please refer to the documentation of <a href="https://rdrr.io/pkg/scds/man/bcds.html" class="external-link">bcds</a> for details.</p>
+<p>A SingleCellExperiment object with <a href="https://rdrr.io/pkg/scds/man/bcds.html" class="external-link">bcds</a></p>
+ 
+
+<p>output appended to the colData slot. The columns include 
+<em>bcds_score</em> and optionally <em>bcds_call</em>. Please refer to the 
+documentation of <a href="https://rdrr.io/pkg/scds/man/bcds.html" class="external-link">bcds</a> for details.</p>
+    </div>
+    <div id="details">
+    <h2>Details</h2>
+    <p>When the argument <code>sample</code> is specified, <a href="https://rdrr.io/pkg/scds/man/bcds.html" class="external-link">bcds</a> will
+be run on cells from each sample separately. If <code>sample = NULL</code>, then 
+all cells will be processed together.</p>
+    </div>
+    <div id="see-also">
+    <h2>See also</h2>
+    <div class="dont-index"><p><code><a href="https://rdrr.io/pkg/scds/man/bcds.html" class="external-link">bcds</a></code>, <code><a href="plotBcdsResults.html">plotBcdsResults</a></code>, 
+<code><a href="runCellQC.html">runCellQC</a></code></p></div>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">scExample</span>, package <span class="op">=</span> <span class="st">"singleCellTK"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="subsetSCECols.html">subsetSCECols</a></span><span class="op">(</span><span class="va">sce</span>, colData <span class="op">=</span> <span class="st">"type != 'EmptyDroplet'"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu">runBcds</span><span class="op">(</span><span class="va">sce</span><span class="op">)</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Jun 28 22:06:17 2022 ... Running 'bcds'</span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">scExample</span>, package <span class="op">=</span> <span class="st">"singleCellTK"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="subsetSCECols.html">subsetSCECols</a></span><span class="op">(</span><span class="va">sce</span>, colData <span class="op">=</span> <span class="st">"type != 'EmptyDroplet'"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu">runBcds</span><span class="op">(</span><span class="va">sce</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Oct 25 15:46:27 2022 ... Running 'bcds'</span>
 </code></pre></div>
     </div>
   </div>
@@ -304,7 +316,7 @@ Default NULL.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

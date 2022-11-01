@@ -19,7 +19,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.3</span>
       </span>
     </div>
 
@@ -203,49 +203,52 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">runScDblFinder</span><span class="op">(</span>
-  <span class="va">inSCE</span>,
-  sample <span class="op">=</span> <span class="cn">NULL</span>,
-  useAssay <span class="op">=</span> <span class="st">"counts"</span>,
-  nNeighbors <span class="op">=</span> <span class="fl">50</span>,
-  simDoublets <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="fl">10000</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">inSCE</span><span class="op">)</span><span class="op">)</span>,
-  seed <span class="op">=</span> <span class="fl">12345</span>,
-  BPPARAM <span class="op">=</span> <span class="fu">BiocParallel</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocParallel/man/SerialParam-class.html" class="external-link">SerialParam</a></span><span class="op">(</span><span class="op">)</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">runScDblFinder</span><span class="op">(</span></span>
+<span>  <span class="va">inSCE</span>,</span>
+<span>  sample <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  useAssay <span class="op">=</span> <span class="st">"counts"</span>,</span>
+<span>  nNeighbors <span class="op">=</span> <span class="fl">50</span>,</span>
+<span>  simDoublets <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="fl">10000</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">inSCE</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  seed <span class="op">=</span> <span class="fl">12345</span>,</span>
+<span>  BPPARAM <span class="op">=</span> <span class="fu">BiocParallel</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocParallel/man/SerialParam-class.html" class="external-link">SerialParam</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>inSCE</dt>
-<dd><p>A <a href="https://rdrr.io/pkg/SingleCellExperiment/man/SingleCellExperiment.html" class="external-link">SingleCellExperiment</a> object.</p></dd>
+<dd><p>A SingleCellExperiment object.</p></dd>
 
 
 <dt>sample</dt>
-<dd><p>Character vector. Indicates which sample each cell belongs to.
-<a href="https://rdrr.io/pkg/scDblFinder/man/scDblFinder.html" class="external-link">scDblFinder</a> will be run on cells from each sample separately.</p></dd>
+<dd><p>Character vector or colData variable name. Indicates which 
+sample each cell belongs to. Default <code>NULL</code>.</p></dd>
 
 
 <dt>useAssay</dt>
-<dd><p>A string specifying which assay in the SCE to use.</p></dd>
+<dd><p>A string specifying which assay in the SCE to use. Default 
+<code>"counts"</code>.</p></dd>
 
 
 <dt>nNeighbors</dt>
 <dd><p>Number of nearest neighbors used to calculate density for
-doublet detection. Default 50.</p></dd>
+doublet detection. Default <code>50</code>.</p></dd>
 
 
 <dt>simDoublets</dt>
-<dd><p>Number of simulated doublets created for doublet
-detection. Default 10000.</p></dd>
+<dd><p>Number of simulated doublets created for doublet 
+detection. Default <code>10000</code>.</p></dd>
 
 
 <dt>seed</dt>
-<dd><p>Seed for the random number generator. Default 12345.</p></dd>
+<dd><p>Seed for the random number generator, can be set to <code>NULL</code>. 
+Default <code>12345</code>.</p></dd>
 
 
 <dt>BPPARAM</dt>
-<dd><p>A <code>BiocParallelParam</code> object specifying whether the
-neighbour searches should be parallelized.</p></dd>
+<dd><p>A <code><a href="https://rdrr.io/pkg/BiocParallel/man/BiocParallelParam-class.html" class="external-link">BiocParallelParam-class</a></code> object 
+specifying whether the neighbour searches should be parallelized. Default 
+<code><a href="https://rdrr.io/pkg/BiocParallel/man/SerialParam-class.html" class="external-link">BiocParallel::SerialParam()</a></code>.</p></dd>
 
 </dl></div>
     <div id="value">
@@ -253,17 +256,15 @@ neighbour searches should be parallelized.</p></dd>
     
 
 <p>A <a href="https://rdrr.io/pkg/SingleCellExperiment/man/SingleCellExperiment.html" class="external-link">SingleCellExperiment</a> object with the
- scDblFinder QC outputs added to the</p>
-<p></p>
-<p>colData slot.</p>
+scDblFinder QC outputs added to the colData slot.</p>
     </div>
     <div id="details">
     <h2>Details</h2>
-    <p>This function is a wrapper function for <a href="https://rdrr.io/pkg/scDblFinder/man/scDblFinder.html" class="external-link">scDblFinder</a>.
- <code>runScDblFinder</code> runs <a href="https://rdrr.io/pkg/scDblFinder/man/scDblFinder.html" class="external-link">scDblFinder</a> for each
- <code>sample</code> within <code>inSCE</code> iteratively. The
- resulting doublet scores for all cells will be appended to the
- colData of <code>inSCE</code>.</p>
+    <p>This function is a wrapper function for 
+<a href="https://rdrr.io/pkg/scDblFinder/man/scDblFinder.html" class="external-link">scDblFinder</a>. <code>runScDblFinder</code> runs 
+<a href="https://rdrr.io/pkg/scDblFinder/man/scDblFinder.html" class="external-link">scDblFinder</a> for each sample within <code>inSCE</code> 
+iteratively. The resulting doublet scores for all cells will be appended to 
+the <code>colData</code> of <code>inSCE</code>.</p>
     </div>
     <div id="references">
     <h2>References</h2>
@@ -272,15 +273,16 @@ neighbour searches should be parallelized.</p></dd>
     </div>
     <div id="see-also">
     <h2>See also</h2>
-    <div class="dont-index"><p><a href="https://rdrr.io/pkg/scDblFinder/man/scDblFinder.html" class="external-link">scDblFinder</a></p></div>
+    <div class="dont-index"><p><code><a href="https://rdrr.io/pkg/scDblFinder/man/scDblFinder.html" class="external-link">scDblFinder</a></code>, 
+<code><a href="plotScDblFinderResults.html">plotScDblFinderResults</a></code>, <code><a href="runCellQC.html">runCellQC</a></code></p></div>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">scExample</span>, package <span class="op">=</span> <span class="st">"singleCellTK"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="subsetSCECols.html">subsetSCECols</a></span><span class="op">(</span><span class="va">sce</span>, colData <span class="op">=</span> <span class="st">"type != 'EmptyDroplet'"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu">runScDblFinder</span><span class="op">(</span><span class="va">sce</span><span class="op">)</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Jun 28 22:07:11 2022 ... Running 'scDblFinder'</span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">scExample</span>, package <span class="op">=</span> <span class="st">"singleCellTK"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="subsetSCECols.html">subsetSCECols</a></span><span class="op">(</span><span class="va">sce</span>, colData <span class="op">=</span> <span class="st">"type != 'EmptyDroplet'"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu">runScDblFinder</span><span class="op">(</span><span class="va">sce</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Oct 25 15:47:03 2022 ... Running 'scDblFinder'</span>
 </code></pre></div>
     </div>
   </div>
@@ -295,7 +297,7 @@ neighbour searches should be parallelized.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

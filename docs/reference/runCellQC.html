@@ -19,7 +19,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.3</span>
       </span>
     </div>
 
@@ -203,27 +203,27 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">runCellQC</span><span class="op">(</span>
-  <span class="va">inSCE</span>,
-  algorithms <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"QCMetrics"</span>, <span class="st">"scDblFinder"</span>, <span class="st">"cxds"</span>, <span class="st">"bcds"</span>, <span class="st">"cxds_bcds_hybrid"</span>,
-    <span class="st">"decontX"</span>, <span class="st">"decontX_bg"</span>, <span class="st">"soupX"</span>, <span class="st">"soupX_bg"</span><span class="op">)</span>,
-  sample <span class="op">=</span> <span class="cn">NULL</span>,
-  collectionName <span class="op">=</span> <span class="cn">NULL</span>,
-  geneSetList <span class="op">=</span> <span class="cn">NULL</span>,
-  geneSetListLocation <span class="op">=</span> <span class="st">"rownames"</span>,
-  geneSetCollection <span class="op">=</span> <span class="cn">NULL</span>,
-  mitoRef <span class="op">=</span> <span class="cn">NULL</span>,
-  mitoIDType <span class="op">=</span> <span class="cn">NULL</span>,
-  mitoPrefix <span class="op">=</span> <span class="cn">NULL</span>,
-  mitoID <span class="op">=</span> <span class="cn">NULL</span>,
-  mitoGeneLocation <span class="op">=</span> <span class="cn">NULL</span>,
-  useAssay <span class="op">=</span> <span class="st">"counts"</span>,
-  background <span class="op">=</span> <span class="cn">NULL</span>,
-  bgAssayName <span class="op">=</span> <span class="cn">NULL</span>,
-  bgBatch <span class="op">=</span> <span class="cn">NULL</span>,
-  seed <span class="op">=</span> <span class="fl">12345</span>,
-  paramsList <span class="op">=</span> <span class="cn">NULL</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">runCellQC</span><span class="op">(</span></span>
+<span>  <span class="va">inSCE</span>,</span>
+<span>  algorithms <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"QCMetrics"</span>, <span class="st">"scDblFinder"</span>, <span class="st">"cxds"</span>, <span class="st">"bcds"</span>, <span class="st">"cxds_bcds_hybrid"</span>,</span>
+<span>    <span class="st">"decontX"</span>, <span class="st">"decontX_bg"</span>, <span class="st">"soupX"</span>, <span class="st">"soupX_bg"</span><span class="op">)</span>,</span>
+<span>  sample <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  collectionName <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  geneSetList <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  geneSetListLocation <span class="op">=</span> <span class="st">"rownames"</span>,</span>
+<span>  geneSetCollection <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  mitoRef <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  mitoIDType <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  mitoPrefix <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  mitoID <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  mitoGeneLocation <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  useAssay <span class="op">=</span> <span class="st">"counts"</span>,</span>
+<span>  background <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  bgAssayName <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  bgBatch <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  seed <span class="op">=</span> <span class="fl">12345</span>,</span>
+<span>  paramsList <span class="op">=</span> <span class="cn">NULL</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -318,11 +318,11 @@ algorithms "decontX" and "soupX". Default to NULL.</p></dd>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">scExample</span>, package <span class="op">=</span> <span class="st">"singleCellTK"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="subsetSCECols.html">subsetSCECols</a></span><span class="op">(</span><span class="va">sce</span>, colData <span class="op">=</span> <span class="st">"type != 'EmptyDroplet'"</span><span class="op">)</span></span>
-<span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu">runCellQC</span><span class="op">(</span><span class="va">sce</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">scExample</span>, package <span class="op">=</span> <span class="st">"singleCellTK"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="subsetSCECols.html">subsetSCECols</a></span><span class="op">(</span><span class="va">sce</span>, colData <span class="op">=</span> <span class="st">"type != 'EmptyDroplet'"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu">runCellQC</span><span class="op">(</span><span class="va">sce</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -337,7 +337,7 @@ algorithms "decontX" and "soupX". Default to NULL.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>
