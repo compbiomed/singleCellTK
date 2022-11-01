@@ -8,7 +8,7 @@ runClusterSummaryMetrics(
   inSCE,
   useAssay = "logcounts",
   gene,
-  displayName,
+  displayName = NULL,
   clusters = "cluster"
 )
 }
@@ -33,6 +33,6 @@ given genes for each cluster
 }
 \examples{
 data("scExample")
-runClusterSummaryMetrics(inSCE=sce, useAssay="counts", gene=c("B2M"), 
+runClusterSummaryMetrics(inSCE=sce, useAssay="counts", gene=c("B2M", "MALAT1"), 
 displayName="feature_name", clusters="type")
 }

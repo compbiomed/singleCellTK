@@ -11,25 +11,34 @@
 #' express for each cluster.
 #' @examples
 #' data("scExample")
-#' runClusterSummaryMetrics(inSCE=sce, useAssay="counts", gene=c("B2M"), 
+#' runClusterSummaryMetrics(inSCE=sce, useAssay="counts", gene=c("B2M", "MALAT1"), 
 #' displayName="feature_name", clusters="type")
 #' @export
 
-runClusterSummaryMetrics <- function(inSCE, useAssay="logcounts", gene, displayName, clusters="cluster"){
+runClusterSummaryMetrics <- function(inSCE, useAssay="logcounts", gene, displayName=NULL, clusters="cluster"){
+  
   if (!clusters %in% names(SingleCellExperiment::colData(inSCE))) {
     stop("Specified variable '", clusters, "' not found in colData(inSCE)")
   }
-  falseGenes <- setdiff(gene, rowData(inSCE)[[displayName]])
-  gene <- intersect(gene, rowData(inSCE)[[displayName]])
-  if (length(gene) == 0) {
-    stop("All genes in '", toString(falseGenes), "' not found in rowData(inSCE)$", displayName)
+  if (!is.null(displayName)) {
+    dimnames(inSCE)[[1]] <- rowData(inSCE)[[displayName]]
+    dimnames(assay(inSCE, i=useAssay, withDimnames=FALSE))[[1]] <- rowData(inSCE)[[displayName]]
+    falseGenes <- setdiff(gene, rowData(inSCE)[[displayName]])
+    gene <- intersect(gene, rowData(inSCE)[[displayName]])
+    warning <- paste0("rowData(inSCE)$", displayName)
   }
-  if (length(falseGenes) > 0) {
-    warning("Specified genes '", toString(falseGenes), "' not found in rowData(inSCE)$", displayName)
+  else {
+    falseGenes <- setdiff(gene, dimnames(inSCE)[[1]])
+    gene <- intersect(gene, dimnames(inSCE)[[1]])
+    warning <- "dimnames"
   }
   
-  dimnames(inSCE)[[1]] <- rowData(inSCE)[[displayName]]
-  dimnames(assay(inSCE, i=useAssay, withDimnames=FALSE))[[1]] <- rowData(inSCE)[[displayName]]
+  if (length(gene) == 0) {
+    stop("All genes in '", toString(falseGenes), "' not found in ", warning)
+  }
+  if (length(falseGenes) > 0) {
+    warning("Specified genes '", toString(falseGenes), "' not found in ", warning)
+  }
   
   avgExpr <- data.frame(assay(scuttle::aggregateAcrossCells(inSCE, ids=SingleCellExperiment::colData(inSCE)[,clusters], 
                                 statistics="mean", use.assay.type=useAssay, 
