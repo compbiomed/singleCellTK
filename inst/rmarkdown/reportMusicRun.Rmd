@@ -1,0 +1,54 @@
+---
+title: "Single Cell Deconvolution with MuSiC using singleCellTK package"
+author: "Amulya Shastry"
+date: "2022-10-25"
+output: html_document
+---
+
+
+
+```{r MuSiC_library, message = FALSE, include = FALSE}
+require(singleCellTK)
+require(ggplot2)
+require(dplyr)
+```
+
+
+
+
+```{r}
+
+musicParams <- list(
+                   inSCE, 
+                   bulkData, 
+                   analysisName = "NULL",
+                   analysisType = c("EstCellProp","PreGroupedClustProp","SingleCellClust"), 
+                   markers = NULL, 
+                   clusters = "cellType", 
+                   samples = "sampleID", 
+                   preClusterlist = NULL,
+                   DEmarkers = NULL,
+                   groups = NULL, 
+                   selectCt = NULL, 
+                   cellSize = NULL, #same as cell_size 
+                   ctCov = FALSE, #same as ctCov
+                   verbose = TRUE,
+                   iterMax = 1000, #same as iter.max 
+                   nu = 1e-04,
+                   eps = 0.01,
+                   centered = FALSE,
+                   normalize = FALSE,
+                   nonZero = TRUE
+)
+
+
+sce <- do.call("runMusic", musicParams)
+
+```
+
+
+
+
+
+
+
