@@ -89,13 +89,24 @@ runMusic<-function(inSCE,
   ####################################################################
   # convert inSCE into eset
   
+<<<<<<< HEAD
+=======
+  assay = assay(inSCE)
+  pheno = colData(inSCE)
+  meta= new('AnnotatedDataFrame', data = data.frame(pheno))
+  eset = Biobase::ExpressionSet(assayData = assay, phenoData = meta)
+>>>>>>> e1d20c084051489466516fbda97d233d5711b61e
   
   
   # Estimate cell type proportions 
   
   
   .musicProp <-function(bulkData, 
+<<<<<<< HEAD
                         inSCE, 
+=======
+                        eset, 
+>>>>>>> e1d20c084051489466516fbda97d233d5711b61e
                         analysisType, 
                         markers, 
                         clusters, 
@@ -110,7 +121,11 @@ runMusic<-function(inSCE,
                         normalize){
     # Can also supply list of marker genes here as an input
     est_prop =  music_prop(bulk = bulkData,
+<<<<<<< HEAD
                            sc.sce = inSCE,
+=======
+                           sc.eset = eset,
+>>>>>>> e1d20c084051489466516fbda97d233d5711b61e
                            markers = markers, 
                            samples = samples, 
                            clusters = clusters, 
@@ -136,7 +151,11 @@ runMusic<-function(inSCE,
   
   
   
+<<<<<<< HEAD
   .musicBase<- function(inSCE,
+=======
+  .musicBase<- function(eset,
+>>>>>>> e1d20c084051489466516fbda97d233d5711b61e
                         clusters,
                         samples, 
                         markers,
@@ -146,7 +165,11 @@ runMusic<-function(inSCE,
                         ctCov
   ){
     
+<<<<<<< HEAD
     basis_object = music_basis(x = inSCE, 
+=======
+    basis_object = music_basis(x = eset, 
+>>>>>>> e1d20c084051489466516fbda97d233d5711b61e
                                clusters = clusters, 
                                samples = samples,
                                markers = markers,
@@ -163,7 +186,11 @@ runMusic<-function(inSCE,
   }
   
   .musicPropCluster<- function(bulkData,
+<<<<<<< HEAD
                                inSCE, 
+=======
+                               eset, 
+>>>>>>> e1d20c084051489466516fbda97d233d5711b61e
                                clusters, 
                                groups,
                                preClusterlist, # list of list cluster groups
@@ -177,15 +204,25 @@ runMusic<-function(inSCE,
     
     
     # Preprocess cluster labels
+<<<<<<< HEAD
     data<-colData(inSCE)
     clusterExclude = levels(factor(unique(data[[clusters]][data[[clusters]] %in% unlist(preClusterlist) == FALSE])))
     mergeall<-append(preClusterlist,clusterExclude)
     names(mergeall)<-c(names(preClusterlist),clusterExclude)
     cluster_new<-data.frame(do.call(cbind,mergeall)) %>% gather() %>% unique() %>% dplyr::rename(!!clusters:= "value", !!groups:= "key")
+=======
+    preClusterlist = clusters.type
+    data<-pData(eset)
+    clusterExclude = levels(factor(unique(data[[clusters]][data[[clusters]] %in% unlist(preClusterlist) == FALSE])))
+    mergeall<-append(preClusterlist,clusterExclude)
+    names(mergeall)<-c(names(preClusterlist),clusterExclude)
+    cluster_new<-data.frame(do.call(cbind,mergeall)) %>% gather() %>% unique() %>% dplyr::rename(!!clusters:="value", !!groups:="key")
+>>>>>>> e1d20c084051489466516fbda97d233d5711b61e
     
     
     # adding cluster labels to phenodata
     data %>% 
+<<<<<<< HEAD
       data.frame() %>%
       rownames_to_column("row") %>%
       left_join(cluster_new) %>%
@@ -196,6 +233,16 @@ runMusic<-function(inSCE,
     
     prop_clust  = music_prop.cluster(bulk.mtx = bulkData, 
                                      sc.sce = inSCE, 
+=======
+      left_join(cluster_new) %>%
+      transform(clusterType = as.factor(clusterType)) -> data
+    rownames(data)<-rownames(pData(eset))
+    pData(eset)<-data
+    
+    
+    prop_clust  = music_prop.cluster(bulk.eset = bulkData, 
+                                     sc.eset = eset, 
+>>>>>>> e1d20c084051489466516fbda97d233d5711b61e
                                      group.markers = DEmarkers, 
                                      clusters = clusters, 
                                      groups = groups, 
@@ -220,7 +267,11 @@ runMusic<-function(inSCE,
   if(analysisType == "EstCellProp"){
     
     temp_result<- .musicProp(bulkData, 
+<<<<<<< HEAD
                              inSCE, 
+=======
+                             eset, 
+>>>>>>> e1d20c084051489466516fbda97d233d5711b61e
                              analysisType, 
                              markers, 
                              clusters, 
@@ -240,11 +291,19 @@ runMusic<-function(inSCE,
   
   else if (analysisType == "SingleCellClust"){
     
+<<<<<<< HEAD
     temp_result<- .musicBase(inSCE,
                              clusters,
                              samples, 
                              markers,
                              selectCt, 
+=======
+    temp_result<- .musicBase(eset,
+                             clusters,
+                             samples, 
+                             markers,
+                             selectCt,
+>>>>>>> e1d20c084051489466516fbda97d233d5711b61e
                              nonZero,
                              cellSize,
                              ctCov)
@@ -259,7 +318,11 @@ runMusic<-function(inSCE,
     if(class(preClusterlist) == "list"){
       
       temp_result = .musicPropCluster(bulkData = bulkData, 
+<<<<<<< HEAD
                                       inSCE = inSCE, 
+=======
+                                      eset = eset, 
+>>>>>>> e1d20c084051489466516fbda97d233d5711b61e
                                       DEmarkers = IEmarkers, 
                                       clusters = clusters, 
                                       groups = groups, 
@@ -283,7 +346,11 @@ runMusic<-function(inSCE,
   temp_result[["params"]]<-c(as.list(environment()))
   
   
+<<<<<<< HEAD
   if(length(metadata(inSCE)$sctk$music)>0){
+=======
+  if(length(inSCE@metadata$sctk$music)>0){
+>>>>>>> e1d20c084051489466516fbda97d233d5711b61e
     getMusicResults(x = inSCE, y = analysisName) <- temp_result
    # metadata(inSCE)$sctk$music[[analysisName]]<-temp_result
   }
