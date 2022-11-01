@@ -5,23 +5,32 @@
 #' @param inSCE The single cell experiment to use.
 #' @param useAssay The assay to use.
 #' @param gene A string or vector of strings with each gene to aggregate.
+#' @param displayName A string that is the name of the column used for genes.
 #' @param clusters The name of a colData entry that can be used as groups.
 #' @return A dataframe with mean expression and percent of cells in cluster that 
 #' express for each cluster.
 #' @examples
-#' runClusterSummaryMetrics(inSCE=pbmc3k_2.7.1_sce, useAssay="logcounts", 
-#' gene=c("IL7R", "CD3E"), clusters="cluster")
+#' data("scExample")
+#' runClusterSummaryMetrics(inSCE=sce, useAssay="counts", gene=c("B2M"), 
+#' displayName="feature_name", clusters="type")
 #' @export
 
-runClusterSummaryMetrics <- function(inSCE, useAssay="logcounts", gene, clusters="cluster"){
+runClusterSummaryMetrics <- function(inSCE, useAssay="logcounts", gene, displayName, clusters="cluster"){
   if (!clusters %in% names(SingleCellExperiment::colData(inSCE))) {
     stop("Specified variable '", clusters, "' not found in colData(inSCE)")
   }
-  falseGenes <- setdiff(gene, rowData(inSCE)$Symbol)
-  if (length(falseGenes) > 0) {
-    geneString <- toString(falseGenes)
-    stop("Specified genes '", toString(falseGenes), "' not found in rowData(inSCE)$Symbol")
+  falseGenes <- setdiff(gene, rowData(inSCE)[[displayName]])
+  gene <- intersect(gene, rowData(inSCE)[[displayName]])
+  if (length(gene) == 0) {
+    stop("All genes in '", toString(falseGenes), "' not found in rowData(inSCE)$", displayName)
   }
+  if (length(falseGenes) > 0) {
+    warning("Specified genes '", toString(falseGenes), "' not found in rowData(inSCE)$", displayName)
+  }
+  
+  dimnames(inSCE)[[1]] <- rowData(inSCE)[[displayName]]
+  dimnames(assay(inSCE, i=useAssay, withDimnames=FALSE))[[1]] <- rowData(inSCE)[[displayName]]
+  
   avgExpr <- data.frame(assay(scuttle::aggregateAcrossCells(inSCE, ids=SingleCellExperiment::colData(inSCE)[,clusters], 
                                 statistics="mean", use.assay.type=useAssay, 
                                 subset.row=gene)), check.names=FALSE)
