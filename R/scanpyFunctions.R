@@ -47,6 +47,8 @@
 #' \code{scanpyNormData}.
 #' @examples
 #' data(scExample, package = "singleCellTK")
+#' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
+#' rownames(sce) <- rowData(sce)$feature_name
 #' \dontrun{
 #' sce <- runScanpyNormalizeData(sce, useAssay = "counts")
 #' }
@@ -163,6 +165,7 @@ runScanpyScaleData <- function(inSCE,
 #' sce <- runScanpyNormalizeData(sce, useAssay = "counts")
 #' sce <- runScanpyScaleData(sce, useAssay = "scanpyNormData")
 #' sce <- runScanpyFindHVG(sce, useAssay = "scanpyScaledData", method = "seurat")
+#' g <- getTopHVG(sce, method = "seurat", hvgNumber = 500)
 #' }
 #' @return Updated \code{SingleCellExperiment} object with highly variable genes
 #' computation stored
@@ -536,7 +539,7 @@ runScanpyFindClusters <- function(inSCE,
                                   nNeighbors = 15L,
                                   dims = 2L,
                                   algorithm = c("louvain", "leiden"),
-                                  resolution,
+                                  resolution = 1,
                                   niterations = -1,
                                   flavor = 'vtraag',
                                   use_weights = FALSE,
@@ -729,7 +732,7 @@ runScanpyTSNE <- function(inSCE,
 #' sce <- runScanpyPCA(sce, useAssay = "scanpyNormData")
 #' sce <- runScanpyFindClusters(sce, useAssay = "counts")
 #' sce <- runScanpyUMAP(sce, useReduction = "scanpyPCA")
-#' plotScanpyEmbedding(sce, reducedDimName = "scanpyUMAP", color = 'Scanpy_louvain')
+#' plotScanpyEmbedding(sce, reducedDimName = "scanpyUMAP", color = 'Scanpy_louvain_1')
 #' }
 #' @return plot object
 #' @export
@@ -779,7 +782,7 @@ plotScanpyEmbedding <- function(inSCE,
 #' sce <- runScanpyNormalizeData(sce, useAssay = "counts")
 #' sce <- runScanpyPCA(sce, useAssay = "counts")
 #' sce <- runScanpyFindClusters(sce, useAssay = "counts", algorithm = "louvain")
-#' sce <- runScanpyFindMarkers(sce, colDataName = "Scanpy_louvain" )
+#' sce <- runScanpyFindMarkers(sce, colDataName = "Scanpy_louvain_1" )
 #' }
 #' @return A \code{SingleCellExperiment} object that contains marker genes
 #' populated in a data.frame stored inside metadata slot.
@@ -855,7 +858,7 @@ runScanpyFindMarkers <- function(inSCE,
 #' sce <- runScanpyNormalizeData(sce, useAssay = "counts")
 #' sce <- runScanpyPCA(sce, useAssay = "scanpyNormData")
 #' sce <- runScanpyFindClusters(sce, useAssay = "counts")
-#' sce <- runScanpyFindMarkers(sce, colDataName = "Scanpy_louvain" )
+#' sce <- runScanpyFindMarkers(sce, colDataName = "Scanpy_louvain_1" )
 #' plotScanpyMarkerGenes(sce, groups = '0')
 #' }
 #' @return plot object
@@ -890,7 +893,7 @@ plotScanpyMarkerGenes <- function(inSCE,
 #' sce <- runScanpyNormalizeData(sce, useAssay = "counts")
 #' sce <- runScanpyPCA(sce, useAssay = "scanpyNormData")
 #' sce <- runScanpyFindClusters(sce, useAssay = "counts")
-#' sce <- runScanpyFindMarkers(sce, colDataName = "Scanpy_louvain" )
+#' sce <- runScanpyFindMarkers(sce, colDataName = "Scanpy_louvain_1" )
 #' plotScanpyMarkerGenesViolin(sce, groups = '0')
 #' }
 #' @return plot object
@@ -925,8 +928,8 @@ plotScanpyMarkerGenesViolin <- function(inSCE,
 #' sce <- runScanpyNormalizeData(sce, useAssay = "counts")
 #' sce <- runScanpyPCA(sce, useAssay = "scanpyNormData")
 #' sce <- runScanpyFindClusters(sce, useAssay = "counts")
-#' sce <- runScanpyFindMarkers(sce, colDataName = "Scanpy_louvain" )
-#' plotScanpyMarkerGenesHeatmap(sce, groupBy = 'Scanpy_louvain')
+#' sce <- runScanpyFindMarkers(sce, colDataName = "Scanpy_louvain_1" )
+#' plotScanpyMarkerGenesHeatmap(sce, groupBy = 'Scanpy_louvain_1')
 #' }
 #' @return plot object
 #' @export
@@ -986,8 +989,8 @@ plotScanpyMarkerGenesHeatmap <- function(inSCE,
 #' sce <- runScanpyNormalizeData(sce, useAssay = "counts")
 #' sce <- runScanpyPCA(sce, useAssay = "scanpyNormData")
 #' sce <- runScanpyFindClusters(sce, useAssay = "counts")
-#' sce <- runScanpyFindMarkers(sce, colDataName = "Scanpy_louvain" )
-#' plotScanpyMarkerGenesDotPlot(sce, groupBy = 'Scanpy_louvain')
+#' sce <- runScanpyFindMarkers(sce, colDataName = "Scanpy_louvain_1" )
+#' plotScanpyMarkerGenesDotPlot(sce, groupBy = 'Scanpy_louvain_1')
 #' }
 #' @return plot object
 #' @export
@@ -1061,8 +1064,8 @@ plotScanpyMarkerGenesDotPlot <- function(inSCE,
 #' sce <- runScanpyNormalizeData(sce, useAssay = "counts")
 #' sce <- runScanpyPCA(sce, useAssay = "scanpyNormData")
 #' sce <- runScanpyFindClusters(sce, useAssay = "counts")
-#' sce <- runScanpyFindMarkers(sce, colDataName = "Scanpy_louvain" )
-#' plotScanpyMarkerGenesMatrixPlot(sce, groupBy = 'Scanpy_louvain')
+#' sce <- runScanpyFindMarkers(sce, colDataName = "Scanpy_louvain_1" )
+#' plotScanpyMarkerGenesMatrixPlot(sce, groupBy = 'Scanpy_louvain_1')
 #' }
 #' @return plot object
 #' @export
@@ -1130,8 +1133,8 @@ plotScanpyMarkerGenesMatrixPlot <- function(inSCE,
 #' sce <- runScanpyPCA(sce, useAssay = "scanpyNormData")
 #' sce <- runScanpyUMAP(sce, useReduction = "scanpyPCA")
 #' sce <- runScanpyFindClusters(sce, useAssay = "counts")
-#' markers <- c("ENSG00000102879" ,"ENSG00000167283" ,"ENSG00000065978")
-#' plotScanpyHeatmap(sce, features = markers, groupBy = 'Scanpy_louvain')
+#' markers <- c("MALAT1" ,"RPS27" ,"CST3")
+#' plotScanpyHeatmap(sce, features = markers, groupBy = 'Scanpy_louvain_1')
 #' }
 #' @return plot object
 #' @export
@@ -1189,7 +1192,7 @@ plotScanpyHeatmap <- function(inSCE,
 #' sce <- runScanpyUMAP(sce, useReduction = "scanpyPCA")
 #' sce <- runScanpyFindClusters(sce, useAssay = "counts")
 #' markers <- c("ENSG00000102879" ,"ENSG00000167283" ,"ENSG00000065978")
-#' plotScanpyDotPlot(sce, features = markers, groupBy = 'Scanpy_louvain')
+#' plotScanpyDotPlot(sce, features = markers, groupBy = 'Scanpy_louvain_1')
 #' }
 #' @return plot object
 #' @export
@@ -1236,7 +1239,7 @@ plotScanpyDotPlot <- function(inSCE,
 #' sce <- runScanpyUMAP(sce, useReduction = "scanpyPCA")
 #' sce <- runScanpyFindClusters(sce, useAssay = "counts")
 #' marker <- c("ENSG00000102879" , "ENSG00000167283")
-#' plotScanpyViolin(sce, features = markers, groupBy = "Scanpy_louvain")
+#' plotScanpyViolin(sce, features = markers, groupBy = "Scanpy_louvain_1")
 #' }
 #' @return plot object
 #' @export

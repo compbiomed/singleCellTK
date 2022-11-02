@@ -39,6 +39,8 @@ Normalizes the sce object according to the input parameters
 }
 \examples{
 data(scExample, package = "singleCellTK")
+sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
+rownames(sce) <- rowData(sce)$feature_name
 \dontrun{
 sce <- runScanpyNormalizeData(sce, useAssay = "counts")
 }

@@ -71,7 +71,7 @@ data(scExample, package = "singleCellTK")
 sce <- runScanpyNormalizeData(sce, useAssay = "counts")
 sce <- runScanpyPCA(sce, useAssay = "scanpyNormData")
 sce <- runScanpyFindClusters(sce, useAssay = "counts")
-sce <- runScanpyFindMarkers(sce, colDataName = "Scanpy_louvain" )
-plotScanpyMarkerGenesDotPlot(sce, groupBy = 'Scanpy_louvain')
+sce <- runScanpyFindMarkers(sce, colDataName = "Scanpy_louvain_1" )
+plotScanpyMarkerGenesDotPlot(sce, groupBy = 'Scanpy_louvain_1')
 }
 }

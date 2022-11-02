@@ -69,5 +69,6 @@ data(scExample, package = "singleCellTK")
 sce <- runScanpyNormalizeData(sce, useAssay = "counts")
 sce <- runScanpyScaleData(sce, useAssay = "scanpyNormData")
 sce <- runScanpyFindHVG(sce, useAssay = "scanpyScaledData", method = "seurat")
+g <- getTopHVG(sce, method = "seurat", hvgNumber = 500)
 }
 }
