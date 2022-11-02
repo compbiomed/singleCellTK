@@ -33,6 +33,6 @@ sce <- runScanpyPCA(sce, useAssay = "scanpyNormData")
 sce <- runScanpyUMAP(sce, useReduction = "scanpyPCA")
 sce <- runScanpyFindClusters(sce, useAssay = "counts")
 marker <- c("ENSG00000102879" , "ENSG00000167283")
-plotScanpyViolin(sce, features = markers, groupBy = "Scanpy_louvain")
+plotScanpyViolin(sce, features = markers, groupBy = "Scanpy_louvain_1")
 }
 }

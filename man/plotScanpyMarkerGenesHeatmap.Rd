@@ -38,7 +38,7 @@ data(scExample, package = "singleCellTK")
 sce <- runScanpyNormalizeData(sce, useAssay = "counts")
 sce <- runScanpyPCA(sce, useAssay = "scanpyNormData")
 sce <- runScanpyFindClusters(sce, useAssay = "counts")
-sce <- runScanpyFindMarkers(sce, colDataName = "Scanpy_louvain" )
-plotScanpyMarkerGenesHeatmap(sce, groupBy = 'Scanpy_louvain')
+sce <- runScanpyFindMarkers(sce, colDataName = "Scanpy_louvain_1" )
+plotScanpyMarkerGenesHeatmap(sce, groupBy = 'Scanpy_louvain_1')
 }
 }

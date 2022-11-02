@@ -13,7 +13,7 @@ runScanpyFindClusters(
   nNeighbors = 15L,
   dims = 2L,
   algorithm = c("louvain", "leiden"),
-  resolution,
+  resolution = 1,
   niterations = -1,
   flavor = "vtraag",
   use_weights = FALSE,

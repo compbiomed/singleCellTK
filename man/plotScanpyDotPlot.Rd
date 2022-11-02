@@ -54,6 +54,6 @@ sce <- runScanpyPCA(sce, useAssay = "scanpyNormData")
 sce <- runScanpyUMAP(sce, useReduction = "scanpyPCA")
 sce <- runScanpyFindClusters(sce, useAssay = "counts")
 markers <- c("ENSG00000102879" ,"ENSG00000167283" ,"ENSG00000065978")
-plotScanpyDotPlot(sce, features = markers, groupBy = 'Scanpy_louvain')
+plotScanpyDotPlot(sce, features = markers, groupBy = 'Scanpy_louvain_1')
 }
 }

@@ -48,6 +48,6 @@ data(scExample, package = "singleCellTK")
 sce <- runScanpyNormalizeData(sce, useAssay = "counts")
 sce <- runScanpyPCA(sce, useAssay = "counts")
 sce <- runScanpyFindClusters(sce, useAssay = "counts", algorithm = "louvain")
-sce <- runScanpyFindMarkers(sce, colDataName = "Scanpy_louvain" )
+sce <- runScanpyFindMarkers(sce, colDataName = "Scanpy_louvain_1" )
 }
 }

@@ -38,6 +38,6 @@ sce <- runScanpyNormalizeData(sce, useAssay = "counts")
 sce <- runScanpyPCA(sce, useAssay = "scanpyNormData")
 sce <- runScanpyFindClusters(sce, useAssay = "counts")
 sce <- runScanpyUMAP(sce, useReduction = "scanpyPCA")
-plotScanpyEmbedding(sce, reducedDimName = "scanpyUMAP", color = 'Scanpy_louvain')
+plotScanpyEmbedding(sce, reducedDimName = "scanpyUMAP", color = 'Scanpy_louvain_1')
 }
 }
