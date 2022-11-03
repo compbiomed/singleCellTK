@@ -9,6 +9,7 @@ plotScanpyMarkerGenesHeatmap(
   groups = NULL,
   groupBy,
   nGenes = 10,
+  features = NULL,
   log2fcThreshold = NULL
 )
 }
@@ -22,6 +23,9 @@ means that all groups will be considered.}
 the groupby is chosen from the rank genes groups parameter.}
 
 \item{nGenes}{Number of genes to show. Default \code{10}}
+
+\item{features}{Genes to plot. Sometimes is useful to pass a specific list of
+var names (e.g. genes). The var_names could be a dictionary or a list.}
 
 \item{log2fcThreshold}{Only output DEGs with the absolute values of log2FC
 larger than this value. Default \code{NULL}.}

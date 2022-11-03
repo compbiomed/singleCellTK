@@ -886,6 +886,8 @@ plotScanpyMarkerGenes <- function(inSCE,
 #' @param inSCE Input \code{SingleCellExperiment} object.
 #' @param groups The groups for which to show the gene ranking. Default \code{NULL}
 #' means that all groups will be considered. 
+#' @param features List of genes to plot. Is only useful if interested in a 
+#' custom gene list
 #' @param nGenes Number of genes to show. Default \code{10}
 #' @examples
 #' data(scExample, package = "singleCellTK")
@@ -900,6 +902,7 @@ plotScanpyMarkerGenes <- function(inSCE,
 #' @export
 plotScanpyMarkerGenesViolin <- function(inSCE,
                                         groups = NULL,
+                                        features = NULL,
                                         nGenes = 10){
   
   if(is.null(inSCE@metadata["findMarkerScanpyObject"])){
@@ -908,6 +911,7 @@ plotScanpyMarkerGenesViolin <- function(inSCE,
   scanpyObject <- metadata(inSCE)[["findMarkerScanpyObject"]]
   return(sc$pl$rank_genes_groups_violin(scanpyObject,
                                         groups = groups,
+                                        gene_names = features,
                                         n_genes = as.integer(nGenes)))
   
 }
@@ -920,6 +924,8 @@ plotScanpyMarkerGenesViolin <- function(inSCE,
 #' @param groupBy The key of the observation grouping to consider. By default, 
 #' the groupby is chosen from the rank genes groups parameter.
 #' @param nGenes Number of genes to show. Default \code{10}
+#' @param features Genes to plot. Sometimes is useful to pass a specific list of
+#'  var names (e.g. genes). The var_names could be a dictionary or a list. 
 #' @param log2fcThreshold Only output DEGs with the absolute values of log2FC
 #' larger than this value. Default \code{NULL}.
 #' @examples
@@ -937,6 +943,7 @@ plotScanpyMarkerGenesHeatmap <- function(inSCE,
                                          groups = NULL,
                                          groupBy,
                                          nGenes = 10,
+                                         features = NULL,
                                          log2fcThreshold = NULL){
   
   if(is.null(inSCE@metadata["findMarkerScanpyObject"])){
@@ -948,6 +955,7 @@ plotScanpyMarkerGenesHeatmap <- function(inSCE,
                                          groups = groups,
                                          groupby = groupBy,
                                          n_genes = as.integer(nGenes),
+                                         var_names = features,
                                          min_logfoldchange = log2fcThreshold,
                                          show_gene_labels = TRUE,
                                          dendrogram = FALSE))
@@ -973,7 +981,7 @@ plotScanpyMarkerGenesHeatmap <- function(inSCE,
 #' any scaling. 
 #' @param features Genes to plot. Sometimes is useful to pass a specific list of
 #'  var names (e.g. genes) to check their fold changes or p-values, instead of 
-#'  the top/bottom genes. The var_names could be a dictionary or a list. 
+#'  the top/bottom genes. The gene names could be a dictionary or a list. 
 #'  Default \code{NULL}
 #' @param title Provide title for the figure.
 #' @param vmin The value representing the lower limit of the color scale. 
@@ -1191,7 +1199,7 @@ plotScanpyHeatmap <- function(inSCE,
 #' sce <- runScanpyPCA(sce, useAssay = "scanpyNormData")
 #' sce <- runScanpyUMAP(sce, useReduction = "scanpyPCA")
 #' sce <- runScanpyFindClusters(sce, useAssay = "counts")
-#' markers <- c("ENSG00000102879" ,"ENSG00000167283" ,"ENSG00000065978")
+#' markers <- c("MALAT1" ,"RPS27" ,"CST3")
 #' plotScanpyDotPlot(sce, features = markers, groupBy = 'Scanpy_louvain_1')
 #' }
 #' @return plot object
@@ -1238,7 +1246,7 @@ plotScanpyDotPlot <- function(inSCE,
 #' sce <- runScanpyPCA(sce, useAssay = "scanpyNormData")
 #' sce <- runScanpyUMAP(sce, useReduction = "scanpyPCA")
 #' sce <- runScanpyFindClusters(sce, useAssay = "counts")
-#' marker <- c("ENSG00000102879" , "ENSG00000167283")
+#' markers <- c("MALAT1" ,"RPS27" ,"CST3")
 #' plotScanpyViolin(sce, features = markers, groupBy = "Scanpy_louvain_1")
 #' }
 #' @return plot object

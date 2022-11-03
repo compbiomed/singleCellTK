@@ -44,7 +44,7 @@ any scaling.}
 
 \item{features}{Genes to plot. Sometimes is useful to pass a specific list of
 var names (e.g. genes) to check their fold changes or p-values, instead of 
-the top/bottom genes. The var_names could be a dictionary or a list. 
+the top/bottom genes. The gene names could be a dictionary or a list. 
 Default \code{NULL}}
 
 \item{title}{Provide title for the figure.}
