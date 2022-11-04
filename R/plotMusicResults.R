@@ -46,7 +46,7 @@ plotMusicResults<- function(inSCE,
     
     
     
-    testBulk<-metadata(inSCE)$sctk$music[[analysisName]][[useAssay]]
+    testBulk<-metadata(inSCE)[["sctk"]][["music"]][[analysisName]][[useAssay]]
     bulkinSCE<-SingleCellExperiment(assays = list(EstProps = testBulk))
     names(assays(bulkinSCE))<-useAssay
     heatmap<-plotSCEHeatmap(bulkinSCE,  # Check version
@@ -68,7 +68,7 @@ plotMusicResults<- function(inSCE,
   #  metadata(inSCE)$sctk$music[[analysisName]][["Clusters"]]<- temp_results 
   }
   else if(analysisType == "EstCellProp"){
-
+    
     plots<-.plotHeatmap(inSCE,heatmapTitle = heatmapTitle,useAssay = "Est.prop.weighted" ,analysisName = analysisName )
     # Do if else for pulling the assay data and have one single call for the sce heatmap
     
