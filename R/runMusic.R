@@ -103,7 +103,7 @@ runMusic<-function(inSCE,
                         centered,
                         normalize){
     # Can also supply list of marker genes here as an input
-    est_prop =  music_prop(bulk = bulkData,
+    est_prop =  music_prop(bulk.mtx = bulkData,
                            sc.sce = inSCE,
                            markers = markers, 
                            samples = samples, 
@@ -132,7 +132,6 @@ runMusic<-function(inSCE,
   
 
   .musicBase<- function(inSCE,
-                        bulkData,
                         clusters,
                         samples, 
                         markers,
@@ -143,15 +142,14 @@ runMusic<-function(inSCE,
   ){
     
     basis_object = music_basis(x = inSCE, 
-                               bulkData,
                                clusters = clusters, 
                                samples = samples,
                                markers = markers,
                                select.ct = selectCt,
                                non.zero = nonZero, 
                                cell_size = cellSize,
-                               ct.cov = ctCov,
-    )
+                               ct.cov = ctCov)
+    
     basis_object$analysisType = analysisType
     # putting things back to sce
     # should this be a new S4? How to create a new slot?
@@ -159,7 +157,7 @@ runMusic<-function(inSCE,
     
   }
   
-  .musicPropCluster<- function(bulkData,
+  .musicPropCluster<- function(bulk.mtx,
                                inSCE, 
                                clusters, 
                                groups,
@@ -190,8 +188,8 @@ runMusic<-function(inSCE,
     colData(inSCE)<- DataFrame(data)
     
     
-    prop_clust  = music_prop.cluster(bulk.eset = bulkData, 
-                                     sc.eset = eset, 
+    prop_clust  = music_prop.cluster(bulk.mtx = bulkData, 
+                                     sc.sce = inSCE, 
                                      group.markers = DEmarkers, 
                                      clusters = clusters, 
                                      groups = groups, 
@@ -255,7 +253,7 @@ runMusic<-function(inSCE,
     
     if(class(preClusterlist) == "list"){
       
-      temp_result = .musicPropCluster(bulkData = bulkData, 
+      temp_result = .musicPropCluster(bulk.mtx = bulkData, 
                                       inSCE = inSCE, 
                                       DEmarkers = IEmarkers, 
                                       clusters = clusters, 
@@ -281,24 +279,21 @@ runMusic<-function(inSCE,
   
   
 
-  if(length(metadata(inSCE)$sctk$music)>0){
-
-  if(length(inSCE@metadata$sctk$music)>0){
-    getMusicResults(x = inSCE, y = analysisName) <- temp_result
-   # metadata(inSCE)$sctk$music[[analysisName]]<-temp_result
-  }
+ if(length(inSCE@metadata$sctk$music)>0){
+        getMusicResults(x = inSCE, y = analysisName) <- temp_result
+        # metadata(inSCE)$sctk$music[[analysisName]]<-temp_result
+    }
   else{
     new_list<-c()
-  #  metadata(inSCE)$sctk$music<-new_list
+    metadata(inSCE)$sctk$music<-new_list
    # metadata(inSCE)$sctk$music[[analysisName]]<-temp_result
     getMusicResults(x = inSCE, y = analysisName)<-temp_result
   }
   
-  
+
   
   return(inSCE)
   
 }
 
 
-}

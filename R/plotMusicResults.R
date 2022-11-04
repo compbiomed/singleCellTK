@@ -23,10 +23,11 @@ plotMusicResults<- function(inSCE,
   # Plot clusters
   
   .musicPlotclusters<- function(inSCE,analysisName){
-    basisObject = metadata(inSCE)$sckt$music[[analysisName]]$Disgn.mtx
+    basisObject = metadata(inSCE)[["sctk"]][["music"]][[analysisName]][["Disgn.mtx"]]
     calc_dmat_dist = dist(t(log(basisObject + 1e-6)), method = "euclidean")
     hc1<- hclust(calc_dmat_dist, method = "complete")
-    calc_RA_dist = dist(t(log(basisObject + 1e-8)), method = "euclidean")
+    basisObject2 =  metadata(inSCE)[["sctk"]][["music"]][[analysisName]][["M.theta"]]
+    calc_RA_dist = dist(t(log(basisObject2 + 1e-8)), method = "euclidean")
     hc2<- hclust(calc_RA_dist,method = "complete")
     p1<-plot(hc1,cex =0.6,hang = -1, main = 'Cluster log(Design Matrix)')
     p2<-plot(hc2,cex =0.6,hang = -1, main = 'Cluster log(Mean of RA)')
