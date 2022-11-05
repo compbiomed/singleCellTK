@@ -9359,6 +9359,14 @@ shinyServer(function(input, output, session) {
       vals$counts <- runScanpyScaleData(inSCE = vals$counts,
                                         useAssay = "scanpyNormData")
       
+      maxDisp <- NULL
+      if(input$scanpy_maxDisp_Inf){
+        maxDisp <- Inf
+      }
+      else{
+        maxDisp <- input$scanpy_maxDisp
+      }
+      
         vals$counts <- runScanpyFindHVG(inSCE = vals$counts,
                                         useAssay = "scanpyScaledData",
                                         method = input$scanpy_hvg_method,
@@ -9366,7 +9374,7 @@ shinyServer(function(input, output, session) {
                                         minMean = input$scanpy_minMean,
                                         maxMean = input$scanpy_maxMean,
                                         minDisp = input$scanpy_minDisp,
-                                        maxDisp = input$scanpy_maxDisp)
+                                        maxDisp = maxDisp)
 
       # vals$counts <- singleCellTK:::.seuratInvalidate(inSCE = vals$counts, varFeatures = FALSE)
       message(paste0(date(), " ... Finding HVG Complete"))

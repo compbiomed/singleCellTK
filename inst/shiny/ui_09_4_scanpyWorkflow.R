@@ -54,7 +54,7 @@ shinyPanelScanpy <- fluidPage(
                                                     numericInput(inputId = "scanpy_minMean", label = "Specify minMean: ", value = "0.0125"),
                                                     numericInput(inputId = "scanpy_maxMean", label = "Specify maxMean: ", value = "3"),
                                                     numericInput(inputId = "scanpy_minDisp", label = "Specify minDisp: ", value = "0.5"),
-                                                    checkboxInput(inputId = "scanpy_maxDisp_Inf", label = "Set maxDisp to Infinite:", value = TRUE),
+                                                    checkboxInput(inputId = "scanpy_maxDisp_Inf", label = "Set maxDisp to infinite?", value = TRUE),
                                                     conditionalPanel(
                                                       condition = 'input.scanpy_maxDisp_Inf == false',
                                                     numericInput(inputId = "scanpy_maxDisp", label = "Specify maxDisp: ", value = 3)
