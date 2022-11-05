@@ -32,7 +32,7 @@ sce <- runScanpyNormalizeData(sce, useAssay = "counts")
 sce <- runScanpyPCA(sce, useAssay = "scanpyNormData")
 sce <- runScanpyUMAP(sce, useReduction = "scanpyPCA")
 sce <- runScanpyFindClusters(sce, useAssay = "counts")
-marker <- c("ENSG00000102879" , "ENSG00000167283")
+markers <- c("MALAT1" ,"RPS27" ,"CST3")
 plotScanpyViolin(sce, features = markers, groupBy = "Scanpy_louvain_1")
 }
 }

@@ -4,13 +4,16 @@
 \alias{plotScanpyMarkerGenesViolin}
 \title{plotScanpyMarkerGenesViolin}
 \usage{
-plotScanpyMarkerGenesViolin(inSCE, groups = NULL, nGenes = 10)
+plotScanpyMarkerGenesViolin(inSCE, groups = NULL, features = NULL, nGenes = 10)
 }
 \arguments{
 \item{inSCE}{Input \code{SingleCellExperiment} object.}
 
 \item{groups}{The groups for which to show the gene ranking. Default \code{NULL}
 means that all groups will be considered.}
+
+\item{features}{List of genes to plot. Is only useful if interested in a 
+custom gene list}
 
 \item{nGenes}{Number of genes to show. Default \code{10}}
 }
