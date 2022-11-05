@@ -9812,16 +9812,10 @@ shinyServer(function(input, output, session) {
       
 #      if(input$seuratFindMarkerType == "markerAll"){
         vals$counts <- runScanpyFindMarkers(inSCE = vals$counts,
-                                            nGenes = NULL,
-                                            colDataName = paste0(
-                                              "Scanpy_", 
-                                              input$scanpy_algorithm.use, 
-                                              "_", 
-                                              input$scanpy_resolution_clustering),
-                                            test = "t-test", 
-                                            corr_method = "benjamini-hochberg")
-        
-        print(head(metadata(vals$counts)$scanpyMarkers))
+                                            nGenes = input$scanpyFindMarkerNGenes,
+                                            colDataName = input$scanpyFindMarkerSelectPhenotype,
+                                            test = input$scanpyFindMarkerTest, 
+                                            corr_method = input$scanpyFindMarkerCorrMethod)
 #      }
       # else{
       #   indices1 <- which(colData(vals$counts)[[input$seuratFindMarkerSelectPhenotype]] == input$seuratFindMarkerGroup1, arr.ind = TRUE)
