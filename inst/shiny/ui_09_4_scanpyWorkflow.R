@@ -14,7 +14,6 @@ shinyPanelScanpy <- fluidPage(
             label = "Active Panel:",
             choices = c("",
                         "Normalize Data",
-                        "Scale Data",
                         "Highly Variable Genes",
                         "Dimensionality Reduction",
                         "tSNE/UMAP",

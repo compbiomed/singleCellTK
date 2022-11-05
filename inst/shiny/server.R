@@ -8334,6 +8334,8 @@ shinyServer(function(input, output, session) {
       #If data is uploaded in data tab, enable first tab i.e. Normalization tab in Seurat workflow
       shinyjs::enable(
         selector = "#SeuratUI > div[value='Normalize Data']")
+      shinyjs::enable(
+        selector = "#ScanpyUI > div[value='Normalize Data']")
 
       #Proceed only if sce object has metadata slot
       if(!is.null(vals$counts@metadata)){
@@ -8392,19 +8394,37 @@ shinyServer(function(input, output, session) {
       shinyjs::disable(
         selector = "#SeuratUI > div[value='Normalize Data']")
       shinyjs::disable(
+        selector = "#ScanpyUI > div[value='Normalize Data']")
+      
+      shinyjs::disable(
         selector = "#SeuratUI > div[value='Highly Variable Genes']")
+      shinyjs::disable(
+        selector = "#ScanpyUI > div[value='Highly Variable Genes']")
+      
       shinyjs::disable(
         selector = "#SeuratUI > div[value='Scale Data']")
       shinyjs::disable(
         selector = "#SeuratUI > div[value='Dimensionality Reduction']")
       shinyjs::disable(
+        selector = "#ScanpyUI > div[value='Dimensionality Reduction']")
+      
+      shinyjs::disable(
         selector = "#SeuratUI > div[value='tSNE/UMAP']")
       shinyjs::disable(
+        selector = "#ScanpyUI > div[value='tSNE/UMAP']")
+      
+      shinyjs::disable(
         selector = "#SeuratUI > div[value='Clustering']")
+      shinyjs::disable(
+        selector = "#ScanpyUI > div[value='Clustering']")
+      
       shinyjs::disable(
         selector = "#SeuratUI > div[value='Scale Data']")
       shinyjs::disable(
         selector = "#SeuratUI > div[value='Find Markers']")
+      shinyjs::disable(
+        selector = "#ScanpyUI > div[value='Find Markers']")
+      
 
       #Disable plots inside PCA subtab
       shinyjs::disable(
@@ -9319,12 +9339,12 @@ shinyServer(function(input, output, session) {
       # metadata(vals$counts)$sctk$scanpyUseAssay <- input$scanpySelectNormalizationAssay
       # 
       # vals$counts <- singleCellTK:::.seuratInvalidate(inSCE = vals$counts)
-      # updateCollapse(session = session, "SeuratUI", style = list("Normalize Data" = "success"))
-      # shinyjs::enable(selector = "#SeuratUI > div[value='Highly Variable Genes']")
+      updateCollapse(session = session, "ScanpyUI", style = list("Normalize Data" = "success"))
+      shinyjs::enable(selector = "#ScanpyUI > div[value='Highly Variable Genes']")
       # S4Vectors::metadata(vals$counts)$seuratMarkers <- NULL
       # shinyjs::hide(
       #   selector = "div[value='Downstream Analysis']")
-      # updateAssayInputs()
+      updateAssayInputs()
       message(paste0(date(), " ... Normalization Complete"))
     }))
   
@@ -9335,8 +9355,6 @@ shinyServer(function(input, output, session) {
     {
       req(vals$counts)
       message(paste0(date(), " ... Finding High Variable Genes"))
-      
-      #scaling before?
       
       vals$counts <- runScanpyScaleData(inSCE = vals$counts,
                                         useAssay = "scanpyNormData")
@@ -9351,9 +9369,9 @@ shinyServer(function(input, output, session) {
                                         maxDisp = input$scanpy_maxDisp)
 
       # vals$counts <- singleCellTK:::.seuratInvalidate(inSCE = vals$counts, varFeatures = FALSE)
-      # message(paste0(date(), " ... Finding HVG Complete"))
-      # updateCollapse(session = session, "SeuratUI", style = list("Highly Variable Genes" = "success"))
-      # shinyjs::enable(selector = "#SeuratUI > div[value='Dimensionality Reduction']")
+      message(paste0(date(), " ... Finding HVG Complete"))
+      updateCollapse(session = session, "ScanpyUI", style = list("Highly Variable Genes" = "success"))
+      shinyjs::enable(selector = "#ScanpyUI > div[value='Dimensionality Reduction']")
       # S4Vectors::metadata(vals$counts)$seuratMarkers <- NULL
       # shinyjs::hide(
       #   selector = "div[value='Downstream Analysis']")
@@ -9373,7 +9391,7 @@ shinyServer(function(input, output, session) {
   observeEvent(input$scanpy_run_pca_button, withConsoleMsgRedirect(
     msg = "Please wait while PCA is being computed. See console log for progress.",
     {
-      # req(vals$counts)
+      req(vals$counts)
       # #remove tabs if not generated
       # removeTab(inputId = "seuratPCAPlotTabset", target = "PCA Plot")
       # removeTab(inputId = "seuratPCAPlotTabset", target = "Elbow Plot")
@@ -9533,7 +9551,7 @@ shinyServer(function(input, output, session) {
       #   })
       #   updatePickerInput(session = session, inputId = "picker_dimheatmap_components_pca", choices = singleCellTK:::.getComponentNames(vals$counts@metadata$seurat$count_pc, "PC"))
       # }
-      # updateCollapse(session = session, "SeuratUI", style = list("Dimensionality Reduction" = "success"))
+      updateCollapse(session = session, "ScanpyUI", style = list("Dimensionality Reduction" = "success"))
       # 
       # #Enable/Disable PCA plot panels not selected for computation (ElbowPlot, JackStraw or Heatmap)
       # shinyjs::enable(
@@ -9551,9 +9569,9 @@ shinyServer(function(input, output, session) {
       #   selector = ".seurat_pca_plots a[data-value='Heatmap Plot']",
       #   condition = input$pca_compute_heatmap)
       # 
-      # shinyjs::enable(
-      #   selector = "#SeuratUI > div[value='tSNE/UMAP']")
-      # 
+      shinyjs::enable(
+        selector = "#ScanpyUI > div[value='tSNE/UMAP']")
+
       shinyjs::show(selector = ".scanpy_pca_plots")
       # 
       # S4Vectors::metadata(vals$counts)$seuratMarkers <- NULL
@@ -9567,7 +9585,7 @@ shinyServer(function(input, output, session) {
   observeEvent(input$scanpy_run_tsne_button, withConsoleMsgRedirect(
     msg = "Please wait while tSNE is being computed. See console log for progress.",
     {
-      # req(vals$counts)
+      req(vals$counts)
       # if(!is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[[input$reduction_tsne_method]])){
         message(paste0(date(), " ... Running tSNE"))
         vals$counts <- runScanpyTSNE(inSCE = vals$counts,
@@ -9577,15 +9595,15 @@ shinyServer(function(input, output, session) {
                                      perplexity = input$scanpy_perplexity_tsne)
       #   vals$counts <- singleCellTK:::.seuratInvalidate(inSCE = vals$counts, scaleData = FALSE, varFeatures = FALSE, PCA = FALSE, ICA = FALSE, tSNE = FALSE, UMAP = FALSE)
         message(paste0(date(), " ... Plotting tSNE"))
-      #   
+        
         output$scanpy_plot_tsne <- renderPlot({
           isolate({
             plotScanpyEmbedding(inSCE = vals$counts,
                                                  reducedDimName = "scanpyTSNE")
           })
         })
-      #   updateCollapse(session = session, "SeuratUI", style = list("tSNE/UMAP" = "success"))
-      #   shinyjs::enable(selector = "#SeuratUI > div[value='Clustering']")
+        updateCollapse(session = session, "ScanpyUI", style = list("tSNE/UMAP" = "success"))
+        shinyjs::enable(selector = "#ScanpyUI > div[value='Clustering']")
       #   S4Vectors::metadata(vals$counts)$seuratMarkers <- NULL
       #   shinyjs::hide(
       #     selector = "div[value='Downstream Analysis']")
@@ -9623,8 +9641,8 @@ shinyServer(function(input, output, session) {
                                 reducedDimName = "scanpyUMAP")
           })
         })
-      #   updateCollapse(session = session, "SeuratUI", style = list("tSNE/UMAP" = "success"))
-      #   shinyjs::enable(selector = "#SeuratUI > div[value='Clustering']")
+        updateCollapse(session = session, "ScanpyUI", style = list("tSNE/UMAP" = "success"))
+        shinyjs::enable(selector = "#ScanpyUI > div[value='Clustering']")
       #   S4Vectors::metadata(vals$counts)$seuratMarkers <- NULL
       #   shinyjs::hide(
       #     selector = "div[value='Downstream Analysis']")
@@ -9642,13 +9660,12 @@ shinyServer(function(input, output, session) {
     {
        req(vals$counts)
       # if(!is.null(slot(vals$counts@metadata$seurat$obj, "reductions")[[input$reduction_clustering_method]])){
-      #   #Remove plot tabs if generated before
-      #   removeTab(inputId = "seuratClusteringPlotTabset", target = "PCA Plot")
-      #   removeTab(inputId = "seuratClusteringPlotTabset", target = "ICA Plot")
-      #   removeTab(inputId = "seuratClusteringPlotTabset", target = "tSNE Plot")
-      #   removeTab(inputId = "seuratClusteringPlotTabset", target = "UMAP Plot")
-      #   
-      #   
+        #Remove plot tabs if generated before
+        removeTab(inputId = "scanpyClusteringPlotTabset", target = "PCA Plot")
+        removeTab(inputId = "scanpyClusteringPlotTabset", target = "ICA Plot")
+        removeTab(inputId = "scanpyClusteringPlotTabset", target = "tSNE Plot")
+        removeTab(inputId = "scanpyClusteringPlotTabset", target = "UMAP Plot")
+
          message(paste0(date(), " ... Clustering Dataset"))
          vals$counts <- runScanpyFindClusters(inSCE = vals$counts,
                                               useAssay = "scanpyScaledData",
@@ -9659,7 +9676,7 @@ shinyServer(function(input, output, session) {
                                               resolution = input$scanpy_resolution_clustering,
                                               niterations = -1,
                                               cor_method = input$scanpy_corr_method)
-      #   updateCollapse(session = session, "SeuratUI", style = list("Clustering" = "success"))
+        updateCollapse(session = session, "ScanpyUI", style = list("Clustering" = "success"))
          message(paste0(date(), " ... Finding Clusters Complete"))
       #   
       #   
@@ -9760,26 +9777,26 @@ shinyServer(function(input, output, session) {
       #   
         shinyjs::show(selector = ".scanpy_clustering_plots")
       #   
-      #   #enable find marker selection
-      #   shinyjs::enable(
-      #     selector = "#SeuratUI > div[value='Find Markers']")
-      #   
-      #   #update colData names
-      #   updateColDataNames()
-      #   
+        #enable find marker selection
+        shinyjs::enable(
+          selector = "#ScanpyUI > div[value='Find Markers']")
+
+        #update colData names
+        updateColDataNames()
+
       #   S4Vectors::metadata(vals$counts)$seuratMarkers <- NULL
       #   shinyjs::hide(
       #     selector = "div[value='Downstream Analysis']")
       #   
-      #   #populate updated colData items for findMarkers tab
-      #   updateSelectInput(session = session,
-      #                     inputId = "seuratFindMarkerSelectPhenotype",
-      #                     choices = colnames(colData(vals$counts)))
+        #populate updated colData items for findMarkers tab
+        updateSelectInput(session = session,
+                          inputId = "scanpyFindMarkerSelectPhenotype",
+                          choices = colnames(colData(vals$counts)))
       #   
-      #   #populate reducDim objects from seuratObject for findMarkers tab
-      #   updateSelectInput(session = session,
-      #                     inputId = "seuratFindMarkerReductionMethod",
-      #                     choices = Seurat::Reductions(convertSCEToSeurat(vals$counts)))
+        # #populate reducDim objects from seuratObject for findMarkers tab
+        # updateSelectInput(session = session,
+        #                   inputId = "seuratFindMarkerReductionMethod",
+        #                   choices = Seurat::Reductions(convertSCEToSeurat(vals$counts)))
       #   
       # }
       # else{
@@ -9962,14 +9979,14 @@ shinyServer(function(input, output, session) {
       message(paste0(date(), " ... Find Markers Complete"))
       # 
       # 
-      # # Show downstream analysis options
-      # callModule(module = nonLinearWorkflow, id = "nlw-seurat", parent = session,
-      #            de = TRUE, fm = TRUE, pa = TRUE)
-      # 
-      # updateCollapse(session = session, "SeuratUI", style = list("Find Markers" = "success"))
-      # 
-      # updateCollapse(session = session, "SeuratUI", style = list("Downstream Analysis" = "info"))
-      # 
+      # Show downstream analysis options
+      callModule(module = nonLinearWorkflow, id = "nlw-scanpy", parent = session,
+                 de = TRUE, fm = TRUE, pa = TRUE)
+
+      updateCollapse(session = session, "ScanpyUI", style = list("Find Markers" = "success"))
+
+      # updateCollapse(session = session, "ScanpyUI", style = list("Downstream Analysis" = "info"))
+
       removeTab(inputId = "scanpyFindMarkerPlotTabset", target = "Ridge Plot")
       removeTab(inputId = "scanpyFindMarkerPlotTabset", target = "Violin Plot")
       removeTab(inputId = "scanpyFindMarkerPlotTabset", target = "Feature Plot")
