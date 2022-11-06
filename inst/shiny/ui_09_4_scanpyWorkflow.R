@@ -14,7 +14,6 @@ shinyPanelScanpy <- fluidPage(
             label = "Active Panel:",
             choices = c("",
                         "Normalize Data",
-                        "Scale Data",
                         "Highly Variable Genes",
                         "Dimensionality Reduction",
                         "tSNE/UMAP",
@@ -55,7 +54,11 @@ shinyPanelScanpy <- fluidPage(
                                                     numericInput(inputId = "scanpy_minMean", label = "Specify minMean: ", value = "0.0125"),
                                                     numericInput(inputId = "scanpy_maxMean", label = "Specify maxMean: ", value = "3"),
                                                     numericInput(inputId = "scanpy_minDisp", label = "Specify minDisp: ", value = "0.5"),
-                                                    numericInput(inputId = "scanpy_maxDisp", label = "Specify maxDisp: ", value = Inf),
+                                                    checkboxInput(inputId = "scanpy_maxDisp_Inf", label = "Set maxDisp to infinite?", value = TRUE),
+                                                    conditionalPanel(
+                                                      condition = 'input.scanpy_maxDisp_Inf == false',
+                                                    numericInput(inputId = "scanpy_maxDisp", label = "Specify maxDisp: ", value = 3)
+                                                    ),
                                                     actionButton(inputId = "scanpy_find_hvg_button", "Find HVG") # find_hvg_button
                                               )
                                        )
@@ -237,16 +240,6 @@ shinyPanelScanpy <- fluidPage(
                                      fluidRow(
                                        column(12,
                                               panel(heading = "Options",
-                                                    h6("Compute marker genes that are either differentially expressed or conserved between selected groups and visualize them from the selected plots on right panel."),
-                                                    radioButtons(
-                                                      inputId = "scanpyFindMarkerType",
-                                                      label = "Select type of markers to identify:",
-                                                      choices = c(
-                                                        "markers between all groups" = "markerAll",
-                                                        "markers differentially expressed between two selected groups" = "markerDiffExp",
-                                                        "markers conserved between two selected groups" = "markerConserved"
-                                                      )
-                                                    ),
                                                     selectInput(
                                                       inputId = "scanpyFindMarkerSelectPhenotype",
                                                       label = "Select biological phenotype:",
@@ -269,15 +262,18 @@ shinyPanelScanpy <- fluidPage(
                                                     selectInput(
                                                       inputId = "scanpyFindMarkerTest",
                                                       label = "Select test:",
-                                                      choices = c("wilcox", "bimod",
-                                                                  "t", "negbinom",
-                                                                  "poisson", "LR",
-                                                                  "DESeq2")
+                                                      choices = c("t-test", "wilcoxon", "t-test_overestim_var", "logreg")
                                                     ),
-                                                    materialSwitch(
-                                                      inputId = "scanpyFindMarkerPosOnly",
-                                                      label = "Only return positive markers?",
-                                                      value = FALSE
+                                                    selectInput(
+                                                      inputId = "scanpyFindMarkerCorrMethod",
+                                                      label = "Multiple testing correction method:",
+                                                      choices = c("benjamini-hochberg", "bonferroni")
+                                                    ),
+                                                    numericInput(
+                                                      inputId = "scanpyFindMarkerNGenes",
+                                                      label = "No. of genes to return per group:", 
+                                                      value = 1000, 
+                                                      step = 1
                                                     ),
                                                     actionButton(inputId = "scanpyFindMarkerRun", "Find Markers")
                                               )
