@@ -18,7 +18,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.3</span>
       </span>
     </div>
 
@@ -201,25 +201,25 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">runDecontX</span><span class="op">(</span>
-  <span class="va">inSCE</span>,
-  sample <span class="op">=</span> <span class="cn">NULL</span>,
-  useAssay <span class="op">=</span> <span class="st">"counts"</span>,
-  background <span class="op">=</span> <span class="cn">NULL</span>,
-  bgAssayName <span class="op">=</span> <span class="cn">NULL</span>,
-  bgBatch <span class="op">=</span> <span class="cn">NULL</span>,
-  z <span class="op">=</span> <span class="cn">NULL</span>,
-  maxIter <span class="op">=</span> <span class="fl">500</span>,
-  delta <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">10</span><span class="op">)</span>,
-  estimateDelta <span class="op">=</span> <span class="cn">TRUE</span>,
-  convergence <span class="op">=</span> <span class="fl">0.001</span>,
-  iterLogLik <span class="op">=</span> <span class="fl">10</span>,
-  varGenes <span class="op">=</span> <span class="fl">5000</span>,
-  dbscanEps <span class="op">=</span> <span class="fl">1</span>,
-  seed <span class="op">=</span> <span class="fl">12345</span>,
-  logfile <span class="op">=</span> <span class="cn">NULL</span>,
-  verbose <span class="op">=</span> <span class="cn">TRUE</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">runDecontX</span><span class="op">(</span></span>
+<span>  <span class="va">inSCE</span>,</span>
+<span>  sample <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  useAssay <span class="op">=</span> <span class="st">"counts"</span>,</span>
+<span>  background <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  bgAssayName <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  bgBatch <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  z <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  maxIter <span class="op">=</span> <span class="fl">500</span>,</span>
+<span>  delta <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">10</span><span class="op">)</span>,</span>
+<span>  estimateDelta <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  convergence <span class="op">=</span> <span class="fl">0.001</span>,</span>
+<span>  iterLogLik <span class="op">=</span> <span class="fl">10</span>,</span>
+<span>  varGenes <span class="op">=</span> <span class="fl">5000</span>,</span>
+<span>  dbscanEps <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  seed <span class="op">=</span> <span class="fl">12345</span>,</span>
+<span>  logfile <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -354,37 +354,38 @@ decontaminated counts will be added as an assay called 'decontXCounts'.</p>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">scExample</span>, package <span class="op">=</span> <span class="st">"singleCellTK"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="subsetSCECols.html">subsetSCECols</a></span><span class="op">(</span><span class="va">sce</span>, colData <span class="op">=</span> <span class="st">"type != 'EmptyDroplet'"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu">runDecontX</span><span class="op">(</span><span class="va">sce</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span>,<span class="fl">20</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Jun 28 22:06:23 2022 ... Running 'DecontX'</span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">scExample</span>, package <span class="op">=</span> <span class="st">"singleCellTK"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="subsetSCECols.html">subsetSCECols</a></span><span class="op">(</span><span class="va">sce</span>, colData <span class="op">=</span> <span class="st">"type != 'EmptyDroplet'"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu">runDecontX</span><span class="op">(</span><span class="va">sce</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span>,<span class="fl">20</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Oct 25 15:46:31 2022 ... Running 'DecontX'</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> --------------------------------------------------</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Starting DecontX</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> --------------------------------------------------</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Jun 28 22:06:23 2022 .. Analyzing all cells</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Jun 28 22:06:23 2022 .... Generating UMAP and estimating cell types</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Oct 25 15:46:31 2022 .. Analyzing all cells</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Oct 25 15:46:31 2022 .... Generating UMAP and estimating cell types</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Found more than one class "dist" in cache; using the first, from namespace 'BiocGenerics'</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Also defined by 'spam'</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Also defined by ‘spam’</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Found more than one class "dist" in cache; using the first, from namespace 'BiocGenerics'</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Also defined by 'spam'</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Also defined by ‘spam’</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Found more than one class "dist" in cache; using the first, from namespace 'BiocGenerics'</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Also defined by 'spam'</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Jun 28 22:06:26 2022 .... Estimating contamination</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Jun 28 22:06:26 2022 ...... Completed iteration: 10 | converge: 0.01829</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Jun 28 22:06:26 2022 ...... Completed iteration: 20 | converge: 0.006499</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Jun 28 22:06:26 2022 ...... Completed iteration: 30 | converge: 0.002824</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Jun 28 22:06:26 2022 ...... Completed iteration: 40 | converge: 0.001408</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Jun 28 22:06:26 2022 ...... Completed iteration: 50 | converge: 0.002768</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Jun 28 22:06:26 2022 ...... Completed iteration: 60 | converge: 0.002484</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Jun 28 22:06:26 2022 ...... Completed iteration: 70 | converge: 0.001823</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Jun 28 22:06:26 2022 ...... Completed iteration: 80 | converge: 0.001533</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Jun 28 22:06:26 2022 ...... Completed iteration: 90 | converge: 0.001423</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Jun 28 22:06:26 2022 ...... Completed iteration: 100 | converge: 0.001309</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Jun 28 22:06:26 2022 ...... Completed iteration: 110 | converge: 0.001183</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Jun 28 22:06:26 2022 ...... Completed iteration: 118 | converge: 0.000992</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Jun 28 22:06:26 2022 .. Calculating final decontaminated matrix</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Also defined by ‘spam’</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Oct 25 15:46:34 2022 .... Estimating contamination</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Oct 25 15:46:34 2022 ...... Completed iteration: 10 | converge: 0.01749</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Oct 25 15:46:34 2022 ...... Completed iteration: 20 | converge: 0.007662</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Oct 25 15:46:34 2022 ...... Completed iteration: 30 | converge: 0.004958</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Oct 25 15:46:34 2022 ...... Completed iteration: 40 | converge: 0.003703</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Oct 25 15:46:34 2022 ...... Completed iteration: 50 | converge: 0.00228</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Oct 25 15:46:34 2022 ...... Completed iteration: 60 | converge: 0.001732</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Oct 25 15:46:34 2022 ...... Completed iteration: 70 | converge: 0.00162</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Oct 25 15:46:34 2022 ...... Completed iteration: 80 | converge: 0.001494</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Oct 25 15:46:34 2022 ...... Completed iteration: 90 | converge: 0.001375</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Oct 25 15:46:34 2022 ...... Completed iteration: 100 | converge: 0.001265</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Oct 25 15:46:34 2022 ...... Completed iteration: 110 | converge: 0.001168</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Oct 25 15:46:34 2022 ...... Completed iteration: 120 | converge: 0.001077</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Oct 25 15:46:34 2022 ...... Completed iteration: 130 | converge: 0.000996</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Oct 25 15:46:34 2022 .. Calculating final decontaminated matrix</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> --------------------------------------------------</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Completed DecontX. Total time: 3.62207 secs</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Completed DecontX. Total time: 2.447904 secs</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> --------------------------------------------------</span>
 </code></pre></div>
     </div>
@@ -400,7 +401,7 @@ decontaminated counts will be added as an assay called 'decontXCounts'.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

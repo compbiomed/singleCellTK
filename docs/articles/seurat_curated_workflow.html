@@ -34,7 +34,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.3</span>
       </span>
     </div>
 
@@ -471,21 +471,21 @@ Seurat workflow.</p>
 output.</p>
 <p>Using a sample dataset:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://www.camplab.net/sctk/" class="external-link">singleCellTK</a></span><span class="op">)</span>
-<span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/importExampleData.html">importExampleData</a></span><span class="op">(</span><span class="st">'pbmc3k'</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## class: SingleCellExperiment </span>
-<span class="co">## dim: 32738 2700 </span>
-<span class="co">## metadata(0):</span>
-<span class="co">## assays(1): counts</span>
-<span class="co">## rownames(32738): MIR1302-10 FAM138A ... AC002321.2 AC002321.1</span>
-<span class="co">## rowData names(3): ENSEMBL_ID Symbol_TENx Symbol</span>
-<span class="co">## colnames(2700): pbmc3k_AAACATACAACCAC-1 pbmc3k_AAACATTGAGCTAC-1 ...</span>
-<span class="co">##   pbmc3k_TTTGCATGAGAGGC-1 pbmc3k_TTTGCATGCCTCAC-1</span>
-<span class="co">## colData names(12): Sample Barcode ... Date_published sample</span>
-<span class="co">## reducedDimNames(0):</span>
-<span class="co">## mainExpName: NULL</span>
-<span class="co">## altExpNames(0):</span></code></pre>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://www.camplab.net/sctk/" class="external-link">singleCellTK</a></span><span class="op">)</span></span>
+<span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/importExampleData.html">importExampleData</a></span><span class="op">(</span><span class="st">'pbmc3k'</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## class: SingleCellExperiment </span></span>
+<span><span class="co">## dim: 32738 2700 </span></span>
+<span><span class="co">## metadata(0):</span></span>
+<span><span class="co">## assays(1): counts</span></span>
+<span><span class="co">## rownames(32738): MIR1302-10 FAM138A ... AC002321.2 AC002321.1</span></span>
+<span><span class="co">## rowData names(3): ENSEMBL_ID Symbol_TENx Symbol</span></span>
+<span><span class="co">## colnames(2700): pbmc3k_AAACATACAACCAC-1 pbmc3k_AAACATTGAGCTAC-1 ...</span></span>
+<span><span class="co">##   pbmc3k_TTTGCATGAGAGGC-1 pbmc3k_TTTGCATGCCTCAC-1</span></span>
+<span><span class="co">## colData names(12): Sample Barcode ... Date_published sample</span></span>
+<span><span class="co">## reducedDimNames(0):</span></span>
+<span><span class="co">## mainExpName: NULL</span></span>
+<span><span class="co">## altExpNames(0):</span></span></code></pre>
 <p><strong>1. Normalize Data</strong> <br> Once raw data is uploaded and
 stored in a <code>SingleCellExperiment</code> object,
 <code><a href="../reference/runSeuratNormalizeData.html">runSeuratNormalizeData()</a></code> function can be used to normalize
@@ -499,7 +499,7 @@ the assay that should be normalized), <code>normAssayName</code>
 <code>"LogNormalize"</code>) and <code>scaleFactor</code> (defaults to
 <code>10000</code>).</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runSeuratNormalizeData.html">runSeuratNormalizeData</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"counts"</span>, normAssayName <span class="op">=</span> <span class="st">"seuratNormData"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runSeuratNormalizeData.html">runSeuratNormalizeData</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"counts"</span>, normAssayName <span class="op">=</span> <span class="st">"seuratNormData"</span><span class="op">)</span></span></code></pre></div>
 <p><strong>2. Scale Data</strong> <br> Normalized data can be scaled by
 using the <code><a href="../reference/runSeuratScaleData.html">runSeuratScaleData()</a></code> function that takes input a
 <code>SingleCellExperiment</code> object that has been normalized
@@ -515,7 +515,7 @@ if the data should be centered, defaults to <code>TRUE</code>) and
 <code>scaleMax</code> (specify the maximum clipping value, defaults to
 <code>10</code>).</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runSeuratScaleData.html">runSeuratScaleData</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"seuratNormData"</span>, scaledAssayName <span class="op">=</span> <span class="st">"seuratScaledData"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runSeuratScaleData.html">runSeuratScaleData</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"seuratNormData"</span>, scaledAssayName <span class="op">=</span> <span class="st">"seuratScaledData"</span><span class="op">)</span></span></code></pre></div>
 <p><strong>3. Highly Variable Genes</strong> <br> Highly variable genes
 can be identified by first using the <code><a href="../reference/runSeuratFindHVG.html">runSeuratFindHVG()</a></code>
 function that computes that statistics against a selected HVG method in
@@ -529,12 +529,12 @@ with <code>"vst"</code> method) and <code>hvgMethod()</code> (specify
 the method to use for variable genes computation, defaults to
 <code>"vst"</code>).</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runSeuratFindHVG.html">runSeuratFindHVG</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"counts"</span>, method <span class="op">=</span> <span class="st">"vst"</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="../reference/getTopHVG.html">getTopHVG</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, method <span class="op">=</span> <span class="st">"vst"</span>, hvgNumber <span class="op">=</span> <span class="fl">10</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">##  [1] "PPBP"   "LYZ"    "S100A9" "IGLL5"  "GNLY"   "FTL"    "PF4"    "FTH1"  </span>
-<span class="co">##  [9] "GNG11"  "FCER1A"</span></code></pre>
+<code class="sourceCode R"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runSeuratFindHVG.html">runSeuratFindHVG</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"counts"</span>, method <span class="op">=</span> <span class="st">"vst"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="../reference/getTopHVG.html">getTopHVG</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, method <span class="op">=</span> <span class="st">"vst"</span>, hvgNumber <span class="op">=</span> <span class="fl">10</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">##  [1] "PPBP"   "LYZ"    "S100A9" "IGLL5"  "GNLY"   "FTL"    "PF4"    "FTH1"  </span></span>
+<span><span class="co">##  [9] "GNG11"  "FCER1A"</span></span></code></pre>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/plotSeuratHVG.html">plotSeuratHVG</a></span><span class="op">(</span><span class="va">sce</span>, labelPoints <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plotSeuratHVG.html">plotSeuratHVG</a></span><span class="op">(</span><span class="va">sce</span>, labelPoints <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></code></pre></div>
 <p><img src="seurat_curated_workflow_files/figure-html/seurat_hvg-1.png" width="700"></p>
 <p><strong>4. Dimensionality Reduction</strong> <br> PCA or ICA can be
 computed using the <code><a href="../reference/runSeuratPCA.html">runSeuratPCA()</a></code> and
@@ -544,20 +544,20 @@ visualized using <code><a href="../reference/plotSeuratReduction.html">plotSeura
 previously be computed by <code><a href="../reference/runSeuratJackStraw.html">runSeuratJackStraw()</a></code>) and
 <code><a href="../reference/runSeuratHeatmap.html">runSeuratHeatmap()</a></code>.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runSeuratPCA.html">runSeuratPCA</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"seuratScaledData"</span>, reducedDimName <span class="op">=</span> <span class="st">"seuratPCA"</span>, nPCs <span class="op">=</span> <span class="fl">20</span><span class="op">)</span>
-<span class="fu"><a href="../reference/plotSeuratReduction.html">plotSeuratReduction</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useReduction <span class="op">=</span> <span class="st">"pca"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runSeuratPCA.html">runSeuratPCA</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"seuratScaledData"</span>, reducedDimName <span class="op">=</span> <span class="st">"seuratPCA"</span>, nPCs <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/plotSeuratReduction.html">plotSeuratReduction</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useReduction <span class="op">=</span> <span class="st">"pca"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="seurat_curated_workflow_files/figure-html/seurat_dm-1.png" width="700"></p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/plotSeuratElbow.html">plotSeuratElbow</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span><span class="op">)</span></code></pre></div>
-<div id="htmlwidget-89605a391141fad5dcc9" style="width:700px;height:432.632880098888px;" class="plotly html-widget"></div>
-<script type="application/json" data-for="htmlwidget-89605a391141fad5dcc9">{"x":{"data":[{"x":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20],"y":[5.9927964081561,3.89197844600912,3.09962596343293,2.98392495695699,2.5940326419091,2.51620724580311,2.05124615113675,1.78251559757953,1.60081782811634,1.4805000895253,1.45453959622047,1.44028361020404,1.41548459173963,1.35425758196804,1.3514516162775,1.33147175652949,1.30785772620998,1.26299867634961,1.26096683907117,1.22115879915756],"text":["Dimension: 1 <br />Standard Deviation: 6 <br />Is Significant? ","Dimension: 2 <br />Standard Deviation: 3.9 <br />Is Significant? ","Dimension: 3 <br />Standard Deviation: 3.1 <br />Is Significant? ","Dimension: 4 <br />Standard Deviation: 3 <br />Is Significant? ","Dimension: 5 <br />Standard Deviation: 2.6 <br />Is Significant? ","Dimension: 6 <br />Standard Deviation: 2.5 <br />Is Significant? ","Dimension: 7 <br />Standard Deviation: 2.1 <br />Is Significant? ","Dimension: 8 <br />Standard Deviation: 1.8 <br />Is Significant? ","Dimension: 9 <br />Standard Deviation: 1.6 <br />Is Significant? ","Dimension: 10 <br />Standard Deviation: 1.5 <br />Is Significant? ","Dimension: 11 <br />Standard Deviation: 1.5 <br />Is Significant? ","Dimension: 12 <br />Standard Deviation: 1.4 <br />Is Significant? ","Dimension: 13 <br />Standard Deviation: 1.4 <br />Is Significant? ","Dimension: 14 <br />Standard Deviation: 1.4 <br />Is Significant? ","Dimension: 15 <br />Standard Deviation: 1.4 <br />Is Significant? ","Dimension: 16 <br />Standard Deviation: 1.3 <br />Is Significant? ","Dimension: 17 <br />Standard Deviation: 1.3 <br />Is Significant? ","Dimension: 18 <br />Standard Deviation: 1.3 <br />Is Significant? ","Dimension: 19 <br />Standard Deviation: 1.3 <br />Is Significant? ","Dimension: 20 <br />Standard Deviation: 1.2 <br />Is Significant? "],"type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(0,0,0,1)","opacity":1,"size":5.66929133858268,"symbol":"circle","line":{"width":1.88976377952756,"color":"rgba(0,0,0,1)"}},"hoveron":"points","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null}],"layout":{"margin":{"t":31.049537260322,"r":9.29846409298464,"b":54.2359216521858,"l":40.5147364051474},"font":{"color":"rgba(0,0,0,1)","family":"","size":18.5969281859693},"xaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[0.0499999999999999,20.95],"tickmode":"array","ticktext":["5","10","15","20"],"tickvals":[5,10,15,20],"categoryorder":"array","categoryarray":["5","10","15","20"],"nticks":null,"ticks":"outside","tickcolor":"rgba(0,0,0,1)","ticklen":4.64923204649232,"tickwidth":0.66417600664176,"showticklabels":true,"tickfont":{"color":"rgba(0,0,0,1)","family":"","size":15.9402241594022},"tickangle":-0,"showline":true,"linecolor":"rgba(0,0,0,1)","linewidth":0.66417600664176,"showgrid":false,"gridcolor":null,"gridwidth":0,"zeroline":false,"anchor":"y","title":{"text":"PC","font":{"color":"rgba(0,0,0,1)","family":"","size":18.5969281859693}},"hoverformat":".2f"},"yaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[0.982576918707638,6.23137828860603],"tickmode":"array","ticktext":["1","2","3","4","5","6"],"tickvals":[1,2,3,4,5,6],"categoryorder":"array","categoryarray":["1","2","3","4","5","6"],"nticks":null,"ticks":"outside","tickcolor":"rgba(0,0,0,1)","ticklen":4.64923204649232,"tickwidth":0.66417600664176,"showticklabels":true,"tickfont":{"color":"rgba(0,0,0,1)","family":"","size":15.9402241594022},"tickangle":-0,"showline":true,"linecolor":"rgba(0,0,0,1)","linewidth":0.66417600664176,"showgrid":false,"gridcolor":null,"gridwidth":0,"zeroline":false,"anchor":"x","title":{"text":"Standard Deviation","font":{"color":"rgba(0,0,0,1)","family":"","size":18.5969281859693}},"hoverformat":".2f"},"shapes":[{"type":"rect","fillcolor":null,"line":{"color":null,"width":0,"linetype":[]},"yref":"paper","xref":"paper","x0":0,"x1":1,"y0":0,"y1":1}],"showlegend":false,"legend":{"bgcolor":null,"bordercolor":null,"borderwidth":0,"font":{"color":"rgba(0,0,0,1)","family":"","size":15.9402241594022}},"hovermode":"closest","barmode":"relative"},"config":{"doubleClick":"reset","modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"source":"A","attrs":{"a1244df2264b":{"x":{},"y":{},"type":"scatter"}},"cur_data":"a1244df2264b","visdat":{"a1244df2264b":["function (y) ","x"]},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.2,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script><div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runSeuratJackStraw.html">runSeuratJackStraw</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"seuratScaledData"</span>, dims <span class="op">=</span> <span class="fl">20</span><span class="op">)</span>
-<span class="fu"><a href="../reference/plotSeuratJackStraw.html">plotSeuratJackStraw</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, dims <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plotSeuratElbow.html">plotSeuratElbow</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span><span class="op">)</span></span></code></pre></div>
+<div id="htmlwidget-0cf886ff5f1e17fca7d7" style="width:700px;height:432.632880098888px;" class="plotly html-widget"></div>
+<script type="application/json" data-for="htmlwidget-0cf886ff5f1e17fca7d7">{"x":{"data":[{"x":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20],"y":[5.99268011092252,3.89205340015971,3.09417865627179,2.98287677132568,2.59396720438834,2.51624730666284,2.05122735982297,1.78258449871969,1.60032154496538,1.47698484803538,1.45417814531191,1.43912901380949,1.41557396436057,1.35384663930408,1.35189900465498,1.33127753915262,1.30790393651404,1.26308416718621,1.26098768652334,1.22113026578106],"text":["Dimension: 1 <br />Standard Deviation: 6 <br />Is Significant? ","Dimension: 2 <br />Standard Deviation: 3.9 <br />Is Significant? ","Dimension: 3 <br />Standard Deviation: 3.1 <br />Is Significant? ","Dimension: 4 <br />Standard Deviation: 3 <br />Is Significant? ","Dimension: 5 <br />Standard Deviation: 2.6 <br />Is Significant? ","Dimension: 6 <br />Standard Deviation: 2.5 <br />Is Significant? ","Dimension: 7 <br />Standard Deviation: 2.1 <br />Is Significant? ","Dimension: 8 <br />Standard Deviation: 1.8 <br />Is Significant? ","Dimension: 9 <br />Standard Deviation: 1.6 <br />Is Significant? ","Dimension: 10 <br />Standard Deviation: 1.5 <br />Is Significant? ","Dimension: 11 <br />Standard Deviation: 1.5 <br />Is Significant? ","Dimension: 12 <br />Standard Deviation: 1.4 <br />Is Significant? ","Dimension: 13 <br />Standard Deviation: 1.4 <br />Is Significant? ","Dimension: 14 <br />Standard Deviation: 1.4 <br />Is Significant? ","Dimension: 15 <br />Standard Deviation: 1.4 <br />Is Significant? ","Dimension: 16 <br />Standard Deviation: 1.3 <br />Is Significant? ","Dimension: 17 <br />Standard Deviation: 1.3 <br />Is Significant? ","Dimension: 18 <br />Standard Deviation: 1.3 <br />Is Significant? ","Dimension: 19 <br />Standard Deviation: 1.3 <br />Is Significant? ","Dimension: 20 <br />Standard Deviation: 1.2 <br />Is Significant? "],"type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(0,0,0,1)","opacity":1,"size":5.66929133858268,"symbol":"circle","line":{"width":1.88976377952756,"color":"rgba(0,0,0,1)"}},"hoveron":"points","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null}],"layout":{"margin":{"t":31.049537260322,"r":9.29846409298464,"b":54.2359216521858,"l":40.5147364051474},"font":{"color":"rgba(0,0,0,1)","family":"","size":18.5969281859693},"xaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[0.0499999999999999,20.95],"tickmode":"array","ticktext":["5","10","15","20"],"tickvals":[5,10,15,20],"categoryorder":"array","categoryarray":["5","10","15","20"],"nticks":null,"ticks":"outside","tickcolor":"rgba(0,0,0,1)","ticklen":4.64923204649232,"tickwidth":0.66417600664176,"showticklabels":true,"tickfont":{"color":"rgba(0,0,0,1)","family":"","size":15.9402241594022},"tickangle":-0,"showline":true,"linecolor":"rgba(0,0,0,1)","linewidth":0.66417600664176,"showgrid":false,"gridcolor":null,"gridwidth":0,"zeroline":false,"anchor":"y","title":{"text":"PC","font":{"color":"rgba(0,0,0,1)","family":"","size":18.5969281859693}},"hoverformat":".2f"},"yaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[0.982552773523985,6.23125760317959],"tickmode":"array","ticktext":["1","2","3","4","5","6"],"tickvals":[1,2,3,4,5,6],"categoryorder":"array","categoryarray":["1","2","3","4","5","6"],"nticks":null,"ticks":"outside","tickcolor":"rgba(0,0,0,1)","ticklen":4.64923204649232,"tickwidth":0.66417600664176,"showticklabels":true,"tickfont":{"color":"rgba(0,0,0,1)","family":"","size":15.9402241594022},"tickangle":-0,"showline":true,"linecolor":"rgba(0,0,0,1)","linewidth":0.66417600664176,"showgrid":false,"gridcolor":null,"gridwidth":0,"zeroline":false,"anchor":"x","title":{"text":"Standard Deviation","font":{"color":"rgba(0,0,0,1)","family":"","size":18.5969281859693}},"hoverformat":".2f"},"shapes":[{"type":"rect","fillcolor":null,"line":{"color":null,"width":0,"linetype":[]},"yref":"paper","xref":"paper","x0":0,"x1":1,"y0":0,"y1":1}],"showlegend":false,"legend":{"bgcolor":null,"bordercolor":null,"borderwidth":0,"font":{"color":"rgba(0,0,0,1)","family":"","size":15.9402241594022}},"hovermode":"closest","barmode":"relative"},"config":{"doubleClick":"reset","modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"source":"A","attrs":{"e688ef30fba":{"x":{},"y":{},"type":"scatter"}},"cur_data":"e688ef30fba","visdat":{"e688ef30fba":["function (y) ","x"]},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.2,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script><div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runSeuratJackStraw.html">runSeuratJackStraw</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"seuratScaledData"</span>, dims <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/plotSeuratJackStraw.html">plotSeuratJackStraw</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, dims <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span></code></pre></div>
 <p><img src="seurat_curated_workflow_files/figure-html/seurat_dm-3.png" width="700"></p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/runSeuratHeatmap.html">runSeuratHeatmap</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"seuratScaledData"</span>, useReduction <span class="op">=</span> <span class="st">"pca"</span>, nfeatures <span class="op">=</span> <span class="fl">20</span>, dims <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/runSeuratHeatmap.html">runSeuratHeatmap</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"seuratScaledData"</span>, useReduction <span class="op">=</span> <span class="st">"pca"</span>, nfeatures <span class="op">=</span> <span class="fl">20</span>, dims <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
 <p><img src="seurat_curated_workflow_files/figure-html/seurat_dm-4.png" width="700"></p>
-<pre><code><span class="co">## NULL</span></code></pre>
+<pre><code><span><span class="co">## NULL</span></span></code></pre>
 <p><strong>5. tSNE/UMAP</strong> <br><code><a href="../reference/runSeuratTSNE.html">runSeuratTSNE()</a></code> and
 <code><a href="../reference/runSeuratUMAP.html">runSeuratUMAP()</a></code> can be used to compute tSNE/UMAP statistics
 and store into the input object. Parameters to both functions include
@@ -568,13 +568,13 @@ reduction) and <code>dims</code> (number of dims to use).
 <code><a href="../reference/plotSeuratReduction.html">plotSeuratReduction()</a></code> can be used to visualize the
 results.</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runSeuratTSNE.html">runSeuratTSNE</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useReduction <span class="op">=</span> <span class="st">"pca"</span>, reducedDimName <span class="op">=</span> <span class="st">"seuratTSNE"</span>, dims <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>
-<span class="fu"><a href="../reference/plotSeuratReduction.html">plotSeuratReduction</a></span><span class="op">(</span><span class="va">sce</span>, <span class="st">"tsne"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runSeuratTSNE.html">runSeuratTSNE</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useReduction <span class="op">=</span> <span class="st">"pca"</span>, reducedDimName <span class="op">=</span> <span class="st">"seuratTSNE"</span>, dims <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/plotSeuratReduction.html">plotSeuratReduction</a></span><span class="op">(</span><span class="va">sce</span>, <span class="st">"tsne"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="seurat_curated_workflow_files/figure-html/seurat_tsne_umap-1.png" width="700"></p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runSeuratUMAP.html">runSeuratUMAP</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useReduction <span class="op">=</span> <span class="st">"pca"</span>, reducedDimName <span class="op">=</span> <span class="st">"seuratUMAP"</span>, dims <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runSeuratUMAP.html">runSeuratUMAP</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useReduction <span class="op">=</span> <span class="st">"pca"</span>, reducedDimName <span class="op">=</span> <span class="st">"seuratUMAP"</span>, dims <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/plotSeuratReduction.html">plotSeuratReduction</a></span><span class="op">(</span><span class="va">sce</span>, <span class="st">"umap"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plotSeuratReduction.html">plotSeuratReduction</a></span><span class="op">(</span><span class="va">sce</span>, <span class="st">"umap"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="seurat_curated_workflow_files/figure-html/unnamed-chunk-2-1.png" width="700"></p>
 <p><strong>6. Clustering</strong> <br><code><a href="../reference/runSeuratFindClusters.html">runSeuratFindClusters()</a></code> function can be used to compute the
 clusters, which can later be plotted through the
@@ -587,26 +587,26 @@ i.e. <code>"pca"</code> or <code>"ica"</code>), <code>dims</code>
 <code>"louvain"</code>, <code>"multilevel"</code> or
 <code>"SLM"</code>).</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runSeuratFindClusters.html">runSeuratFindClusters</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"seuratScaledData"</span>, useReduction <span class="op">=</span> <span class="st">"pca"</span>, dims <span class="op">=</span> <span class="fl">10</span>, algorithm <span class="op">=</span> <span class="st">"louvain"</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck</span>
-<span class="co">## </span>
-<span class="co">## Number of nodes: 2700</span>
-<span class="co">## Number of edges: 92305</span>
-<span class="co">## </span>
-<span class="co">## Running Louvain algorithm...</span>
-<span class="co">## Maximum modularity in 10 random starts: 0.8487</span>
-<span class="co">## Number of communities: 13</span>
-<span class="co">## Elapsed time: 0 seconds</span></code></pre>
+<code class="sourceCode R"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runSeuratFindClusters.html">runSeuratFindClusters</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"seuratScaledData"</span>, useReduction <span class="op">=</span> <span class="st">"pca"</span>, dims <span class="op">=</span> <span class="fl">10</span>, algorithm <span class="op">=</span> <span class="st">"louvain"</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## Number of nodes: 2700</span></span>
+<span><span class="co">## Number of edges: 92363</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## Running Louvain algorithm...</span></span>
+<span><span class="co">## Maximum modularity in 10 random starts: 0.8492</span></span>
+<span><span class="co">## Number of communities: 13</span></span>
+<span><span class="co">## Elapsed time: 0 seconds</span></span></code></pre>
 <p><code><a href="../reference/plotSeuratReduction.html">plotSeuratReduction()</a></code> can then be used to plot all
 reductions previously computed with cluster labels:</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/plotSeuratReduction.html">plotSeuratReduction</a></span><span class="op">(</span><span class="va">sce</span>, <span class="st">"pca"</span>, showLegend <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plotSeuratReduction.html">plotSeuratReduction</a></span><span class="op">(</span><span class="va">sce</span>, <span class="st">"pca"</span>, showLegend <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p><img src="seurat_curated_workflow_files/figure-html/seurat_cluster_plots-1.png" width="700"></p>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/plotSeuratReduction.html">plotSeuratReduction</a></span><span class="op">(</span><span class="va">sce</span>, <span class="st">"tsne"</span>, showLegend <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plotSeuratReduction.html">plotSeuratReduction</a></span><span class="op">(</span><span class="va">sce</span>, <span class="st">"tsne"</span>, showLegend <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p><img src="seurat_curated_workflow_files/figure-html/seurat_cluster_plots-2.png" width="700"></p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/plotSeuratReduction.html">plotSeuratReduction</a></span><span class="op">(</span><span class="va">sce</span>, <span class="st">"umap"</span>, showLegend <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plotSeuratReduction.html">plotSeuratReduction</a></span><span class="op">(</span><span class="va">sce</span>, <span class="st">"umap"</span>, showLegend <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p><img src="seurat_curated_workflow_files/figure-html/seurat_cluster_plots-3.png" width="700"></p>
 <p><strong>7. Find Markers</strong> <br> Marker genes can be identified
 using the <code><a href="../reference/runSeuratFindMarkers.html">runSeuratFindMarkers()</a></code> function. This function
@@ -616,15 +616,15 @@ be used (<code>allGroup</code> parameter) or users can manually specify
 the cells included in one group vs cells included in the second group
 (<code>cells1</code> and <code>cells2</code> parameter).</p>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runSeuratFindMarkers.html">runSeuratFindMarkers</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, allGroup <span class="op">=</span> <span class="st">"Seurat_louvain_Resolution0.8"</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu">metadata</span><span class="op">(</span><span class="va">sce</span><span class="op">)</span><span class="op">[[</span><span class="st">"seuratMarkers"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">##   gene.id        p_val avg_log2FC pct.1 pct.2    p_val_adj cluster1 cluster2</span>
-<span class="co">## 1    LDHB 1.216804e-88 -12.281337 0.970 0.603 3.983572e-84        0      all</span>
-<span class="co">## 2   RPS27 3.922537e-82 -13.666973 1.000 0.992 1.284160e-77        0      all</span>
-<span class="co">## 3   RPS25 5.623154e-70  -3.707828 1.000 0.975 1.840908e-65        0      all</span>
-<span class="co">## 4   RPS12 4.002685e-69  39.667606 1.000 0.991 1.310399e-64        0      all</span>
-<span class="co">## 5   RPL31 1.143651e-67   3.198830 0.996 0.966 3.744086e-63        0      all</span>
-<span class="co">## 6    CD3D 6.321440e-66  20.940084 0.895 0.437 2.069513e-61        0      all</span></code></pre>
+<code class="sourceCode R"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runSeuratFindMarkers.html">runSeuratFindMarkers</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, allGroup <span class="op">=</span> <span class="st">"Seurat_louvain_Resolution0.8"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu">metadata</span><span class="op">(</span><span class="va">sce</span><span class="op">)</span><span class="op">[[</span><span class="st">"seuratMarkers"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">##    gene.id        p_val  avg_log2FC pct.1 pct.2    p_val_adj cluster1 cluster2</span></span>
+<span><span class="co">## 1     LDHB 7.614561e-90  -12.284908 0.970 0.603 2.492855e-85        0      all</span></span>
+<span><span class="co">## 2    RPS27 2.423354e-82  -13.670544 1.000 0.992 7.933575e-78        0      all</span></span>
+<span><span class="co">## 3    RPS12 9.560784e-71   39.664034 1.000 0.991 3.130009e-66        0      all</span></span>
+<span><span class="co">## 4    RPS25 3.290708e-70   -3.711453 1.000 0.975 1.077312e-65        0      all</span></span>
+<span><span class="co">## 5    RPL31 2.954646e-68    3.195258 0.998 0.965 9.672921e-64        0      all</span></span>
+<span><span class="co">## 6 HLA-DRB1 1.872619e-67 -141.399358 0.121 0.533 6.130579e-63        0      all</span></span></code></pre>
 <p>The marker genes identified can be visualized through one of the
 available plots from <code>ridge plot</code>, <code>violin plot</code>,
 <code>feature plot</code>, <code>dot plot</code> and
@@ -639,7 +639,7 @@ is available in the <code>colData</code> slot of the input object. An
 additional parameter <code>ncol</code> decides in how many columns
 should the visualizations be plotted.</p>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/plotSeuratGenes.html">plotSeuratGenes</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"seuratScaledData"</span>, plotType <span class="op">=</span> <span class="st">"ridge"</span>, features <span class="op">=</span> <span class="fu">metadata</span><span class="op">(</span><span class="va">sce</span><span class="op">)</span><span class="op">[[</span><span class="st">"seuratMarkers"</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">gene.id</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span><span class="op">]</span>, groupVariable <span class="op">=</span> <span class="st">"Seurat_louvain_Resolution0.8"</span>, ncol <span class="op">=</span> <span class="fl">2</span>, combine <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plotSeuratGenes.html">plotSeuratGenes</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"seuratScaledData"</span>, plotType <span class="op">=</span> <span class="st">"ridge"</span>, features <span class="op">=</span> <span class="fu">metadata</span><span class="op">(</span><span class="va">sce</span><span class="op">)</span><span class="op">[[</span><span class="st">"seuratMarkers"</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">gene.id</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span><span class="op">]</span>, groupVariable <span class="op">=</span> <span class="st">"Seurat_louvain_Resolution0.8"</span>, ncol <span class="op">=</span> <span class="fl">2</span>, combine <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p><img src="seurat_curated_workflow_files/figure-html/seurat_genePlots-1.png" width="700"></p>
       </div>
 <script>
@@ -707,7 +707,7 @@ Methods</em>, vol. 17, no. 2, pp. 137–145, Feb. 2020, doi: <a href="https://do
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer>

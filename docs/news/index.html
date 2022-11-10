@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.3</span>
       </span>
     </div>
 
@@ -194,6 +194,22 @@
     </div>
 
     <div class="section level2">
+<h2 class="page-header" data-toc-text="2.7.3" id="changes-in-version-273-2022-10-25">Changes in Version 2.7.3 (2022-10-25)<a class="anchor" aria-label="anchor" href="#changes-in-version-273-2022-10-25"></a></h2>
+<ul><li>Fixed bugs related to dependency updates</li>
+</ul></div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="2.7.2" id="changes-in-version-272-2022-10-19">Changes in Version 2.7.2 (2022-10-19)<a class="anchor" aria-label="anchor" href="#changes-in-version-272-2022-10-19"></a></h2>
+<ul><li>Deprecated <code><a href="../reference/runFindMarker.html">findMarkerDiffExp()</a></code>, <code><a href="../reference/getFindMarkerTopTable.html">findMarkerTopTable()</a></code> and <code><a href="../reference/plotFindMarkerHeatmap.html">plotMarkerDiffExp()</a></code>, which are replaced by <code><a href="../reference/runFindMarker.html">runFindMarker()</a></code>, <code><a href="../reference/getFindMarkerTopTable.html">getFindMarkerTopTable()</a></code> and <code><a href="../reference/plotFindMarkerHeatmap.html">plotFindMarkerHeatmap()</a></code>, respectively</li>
+<li>Added <code>useReducedDim</code>, <code>detectThresh</code> arguments for find marker functions</li>
+<li>Deprecated <code><a href="../reference/runUMAP.html">getUMAP()</a></code> and <code><a href="../reference/runTSNE.html">getTSNE()</a></code>, which are replaced by <code><a href="../reference/runUMAP.html">runUMAP()</a></code> and <code><a href="../reference/runTSNE.html">runTSNE()</a></code>, respectively</li>
+<li>Added <code><a href="../reference/runUMAP.html">runQuickUMAP()</a></code> and <code><a href="../reference/runTSNE.html">runQuickTSNE()</a></code> functions which directly compute the proper embedding from raw counts matrices with a simplified argument set</li>
+<li>Added arguments <code>aggregateRow</code> and <code>aggregateCol</code> to <code><a href="../reference/plotSCEHeatmap.html">plotSCEHeatmap()</a></code>
+</li>
+<li>Updated output metadata structure of QC functions, as well as <code><a href="../reference/combineSCE.html">combineSCE()</a></code> which merges the new structure properly</li>
+<li>Refined batch correction function set</li>
+<li>Fixed bugs related to UI and console functions</li>
+</ul></div>
+    <div class="section level2">
 <h2 class="page-header" data-toc-text="2.7.1" id="changes-in-version-271-2022-06-29">Changes in Version 2.7.1 (2022-06-29)<a class="anchor" aria-label="anchor" href="#changes-in-version-271-2022-06-29"></a></h2>
 <ul><li>Refactored scaling related parts of the workflow, including variable feature detection, dimension reduction and 2D embedding</li>
 <li>Redesigned UI landing page and UI running prompt</li>
@@ -347,7 +363,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

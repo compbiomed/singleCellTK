@@ -21,7 +21,7 @@ grepping) can be used."><!-- mathjax --><script src="https://cdnjs.cloudflare.co
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.3</span>
       </span>
     </div>
 
@@ -207,14 +207,14 @@ grepping) can be used.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">retrieveSCEIndex</span><span class="op">(</span>
-  <span class="va">inSCE</span>,
-  <span class="va">IDs</span>,
-  <span class="va">axis</span>,
-  by <span class="op">=</span> <span class="cn">NULL</span>,
-  exactMatch <span class="op">=</span> <span class="cn">TRUE</span>,
-  firstMatch <span class="op">=</span> <span class="cn">TRUE</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">retrieveSCEIndex</span><span class="op">(</span></span>
+<span>  <span class="va">inSCE</span>,</span>
+<span>  <span class="va">IDs</span>,</span>
+<span>  <span class="va">axis</span>,</span>
+<span>  by <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  exactMatch <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  firstMatch <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -259,14 +259,14 @@ features/cells in <code>inSCE</code>.</p>
     </div>
     <div id="author">
     <h2>Author</h2>
-    <p>Yusuke Koga, Joshua Campbell</p>
+    <p>Yusuke Koga, Joshua Campbell, Yichen Wang</p>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">scExample</span>, package <span class="op">=</span> <span class="st">"singleCellTK"</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu">retrieveSCEIndex</span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, IDs <span class="op">=</span> <span class="st">"ENSG00000205542"</span>,</span>
-<span class="r-in"> axis <span class="op">=</span> <span class="st">"row"</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">scExample</span>, package <span class="op">=</span> <span class="st">"singleCellTK"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">retrieveSCEIndex</span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, IDs <span class="op">=</span> <span class="st">"ENSG00000205542"</span>,</span></span>
+<span class="r-in"><span> axis <span class="op">=</span> <span class="st">"row"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 2</span>
 </code></pre></div>
     </div>
@@ -282,7 +282,7 @@ features/cells in <code>inSCE</code>.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

@@ -21,7 +21,7 @@ exactMatch = FALSE."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/a
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.3</span>
       </span>
     </div>
 
@@ -207,15 +207,15 @@ Partial matching (i.e. grepping) can be used by setting
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">featureIndex</span><span class="op">(</span>
-  <span class="va">features</span>,
-  <span class="va">inSCE</span>,
-  by <span class="op">=</span> <span class="st">"rownames"</span>,
-  exactMatch <span class="op">=</span> <span class="cn">TRUE</span>,
-  removeNA <span class="op">=</span> <span class="cn">FALSE</span>,
-  errorOnNoMatch <span class="op">=</span> <span class="cn">TRUE</span>,
-  warningOnPartialMatch <span class="op">=</span> <span class="cn">TRUE</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">featureIndex</span><span class="op">(</span></span>
+<span>  <span class="va">features</span>,</span>
+<span>  <span class="va">inSCE</span>,</span>
+<span>  by <span class="op">=</span> <span class="st">"rownames"</span>,</span>
+<span>  exactMatch <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  removeNA <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  errorOnNoMatch <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  warningOnPartialMatch <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -284,10 +284,10 @@ and <code>link{regex}</code> for how to use regular expressions when
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">scExample</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">ix</span> <span class="op">&lt;-</span> <span class="fu">featureIndex</span><span class="op">(</span>features <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"MT-CYB"</span>, <span class="st">"MT-ND2"</span><span class="op">)</span>,</span>
-<span class="r-in">                             inSCE <span class="op">=</span> <span class="va">sce</span>,</span>
-<span class="r-in">                             by <span class="op">=</span> <span class="st">"feature_name"</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">scExample</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">ix</span> <span class="op">&lt;-</span> <span class="fu">featureIndex</span><span class="op">(</span>features <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"MT-CYB"</span>, <span class="st">"MT-ND2"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                             inSCE <span class="op">=</span> <span class="va">sce</span>,</span></span>
+<span class="r-in"><span>                             by <span class="op">=</span> <span class="st">"feature_name"</span><span class="op">)</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -302,7 +302,7 @@ and <code>link{regex}</code> for how to use regular expressions when
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

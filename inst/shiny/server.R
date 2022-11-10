@@ -1616,13 +1616,13 @@ shinyServer(function(input, output, session) {
   # holds all the input ids for the QC algorithm parameters by algorithm name
   qc_input_ids <- list(scDblFinder = list(nNeighbors="DCnNeighbors", simDoublets="DCsimDoublets"),
 
-                       cxds = list(ntop="CXntop", binThresh="CXbinThresh", verb="CXverb", retRes="CXretRes", estNdbl="CXestNdbl"),
+                       cxds = list(ntop="CXntop", binThresh="CXbinThresh", verb="CXverb", retRes="CXretRes"),#, estNdbl="CXestNdbl"),
 
-                       bcds = list(ntop="BCntop", srat="BCsrat", verb="BCverb", retRes="BCretRes", nmax="BCnmax", varImp="BCvarImp", estNdbl="BCestNdbl"),
+                       bcds = list(ntop="BCntop", srat="BCsrat", nmax="BCnmax", verb="BCverb", retRes="BCretRes", varImp="BCvarImp"),#, estNdbl="BCestNdbl"),
 
                        cxds_bcds_hybrid = list(cxdsArgs=list(ntop="CX2ntop", binThresh="CX2binThresh", retRes="CX2retRes"),
-                                               bcdsArgs=list(ntop="BC2ntop", srat="BC2srat", retRes="BC2retRes", nmax="BC2nmax", varImp="BC2varImp"),
-                                               verb="CXBCverb", estNdbl="CXBCestNdbl"),
+                                               bcdsArgs=list(ntop="BC2ntop", srat="BC2srat", nmax="BC2nmax", retRes="BC2retRes", varImp="BC2varImp"),
+                                               verb="CXBCverb"),#, estNdbl="CXBCestNdbl"),
 
                        decontX = list(maxIter="DXmaxIter", estimateDelta="DXestimateDelta", convergence="DXconvergence",
                                       iterLogLik="DXiterLogLik", varGenes="DXvarGenes", dbscanEps="DXdbscanEps", verbose="DXverbose"),

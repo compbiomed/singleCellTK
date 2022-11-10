@@ -161,9 +161,11 @@ runQuickUMAP <- function(inSCE, useAssay = "counts", sample = "sample", ...) {
     warning("Forcing `useReducedDim` to be `NULL`. Please use `runUMAP` for ",
             "using reducedDim.")
   }
+  # Here `useReducedDim` entry is removed from list
+  # Later, we add the entry with value `NULL`
   args$useReducedDim <- NULL
-  args <- c(list(inSCE = inSCE, useAssay = useAssay, useReducedDim = NULL), 
-            args)
+  args <- c(list(inSCE = inSCE, useAssay = useAssay, useReducedDim = NULL, 
+                 sample = sample), args)
   inSCE <- do.call("runUMAP", args = args)
   return(inSCE)
 }

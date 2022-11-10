@@ -20,7 +20,7 @@ the binary or continuous expression of the genes."><!-- mathjax --><script src="
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.3</span>
       </span>
     </div>
 
@@ -204,14 +204,14 @@ the binary or continuous expression of the genes.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">getBiomarker</span><span class="op">(</span>
-  <span class="va">inSCE</span>,
-  <span class="va">gene</span>,
-  binary <span class="op">=</span> <span class="st">"Binary"</span>,
-  useAssay <span class="op">=</span> <span class="st">"counts"</span>,
-  featureLocation <span class="op">=</span> <span class="cn">NULL</span>,
-  featureDisplay <span class="op">=</span> <span class="cn">NULL</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">getBiomarker</span><span class="op">(</span></span>
+<span>  <span class="va">inSCE</span>,</span>
+<span>  <span class="va">gene</span>,</span>
+<span>  binary <span class="op">=</span> <span class="st">"Binary"</span>,</span>
+<span>  useAssay <span class="op">=</span> <span class="st">"counts"</span>,</span>
+<span>  featureLocation <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  featureDisplay <span class="op">=</span> <span class="cn">NULL</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -251,8 +251,8 @@ to display feature for visualization.</p></dd>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"mouseBrainSubsetSCE"</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu">getBiomarker</span><span class="op">(</span><span class="va">mouseBrainSubsetSCE</span>, gene<span class="op">=</span><span class="st">"C1qa"</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"mouseBrainSubsetSCE"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">getBiomarker</span><span class="op">(</span><span class="va">mouseBrainSubsetSCE</span>, gene<span class="op">=</span><span class="st">"C1qa"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                          sample  C1qa</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> X1772063061_G11 X1772063061_G11 FALSE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> X1772067064_C10 X1772067064_C10 FALSE</span>
@@ -284,7 +284,7 @@ to display feature for visualization.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> X1772062113_E05 X1772062113_E05  TRUE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> X1772062128_F05 X1772062128_F05  TRUE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> X1772062118_D09 X1772062118_D09  TRUE</span>
-<span class="r-in"></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -299,7 +299,7 @@ to display feature for visualization.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>
