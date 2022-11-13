@@ -2368,7 +2368,7 @@ shinyServer(function(input, output, session) {
     tag <- ""
     if(input$normalizeAssayMethodSelect != "custom"){
       if(input$normalizeAssayMethodSelect
-         %in% c("LogNormalize", "SCTransform", "CLR", "logNormCounts")){
+         %in% c("LogNormalize", "SCTransform", "CLR", "logNormCounts", "NormalizeTotal")){
         tag <- "transformed"
       }
       else{
@@ -2550,6 +2550,9 @@ shinyServer(function(input, output, session) {
     } else if(input$normalizeAssayMethodSelect == "SCTransform"){
       updateTextInput(session = session, inputId = "normalizeAssayOutname",
                       value = "SeuratSCTransform")
+    } else if(input$normalizeAssayMethodSelect == "NormalizeTotal"){
+      updateTextInput(session = session, inputId = "normalizeAssayOutname",
+                      value = "ScanpyNormalizeTotal")
     }
   })
 
@@ -2647,14 +2650,19 @@ shinyServer(function(input, output, session) {
 
       message(paste0(date(), " ... Ending Dimensionality Reduction."))
 
-
+      redDim <- reducedDim(vals$counts, dimrednamesave)
       if(input$dimRedPlotMethod == "scaterPCA"){
-        redDim <- reducedDim(vals$counts, dimrednamesave)
         new_pca <- CreateDimReducObject(
           embeddings = redDim,
           assay = "RNA",
           loadings = attr(redDim, "rotation"),
           stdev = as.numeric(attr(redDim, "percentVar")),
+          key = "PC_")
+      }
+      else if(input$dimRedPlotMethod == "scanpyPCA"){
+        new_pca <- CreateDimReducObject(
+          embeddings = redDim,
+          assay = "RNA",
           key = "PC_")
       }
 

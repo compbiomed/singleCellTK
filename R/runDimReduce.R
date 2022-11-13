@@ -48,6 +48,7 @@ runDimReduce <- function(inSCE,
                          method = c("scaterPCA",
                                     "seuratPCA",
                                     "seuratICA",
+                                    "scanpyPCA",
                                     "rTSNE",
                                     "seuratTSNE",
                                     "scaterUMAP",
@@ -76,6 +77,18 @@ runDimReduce <- function(inSCE,
                      useReducedDim = useReducedDim,
                      useFeatureSubset = useFeatureSubset, scale = scale,
                      reducedDimName = reducedDimName, seed = seed, ...)
+  } else if (method == "scanpyPCA"){
+    inSCE <- runScanpyPCA(inSCE = inSCE,
+                          useAssay = useAssay, 
+                          reducedDimName = reducedDimName, 
+                          nPCs = nComponents, 
+                          algorithm = "auto", 
+                          use_highly_variable = FALSE
+                          )
+  } else if (method == "scanpyTSNE"){
+    inSCE <- runScanpyTSNE(inSCE = inSCE, useReduction = "pca", reducedDimName = reducedDimName, ...)
+  } else if (method == "scanpyUMAP"){
+    inSCE <- runScanpyUMAP(inSCE = inSCE, useReduction = "pca", reducedDimName = reducedDimName, ...)
   } else if (method == "rTSNE") {
     inSCE <- runTSNE(inSCE = inSCE, useAssay = useAssay, useAltExp = useAltExp,
                      useReducedDim = useReducedDim,
