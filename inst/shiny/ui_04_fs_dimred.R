@@ -26,7 +26,8 @@ shinyPanelFS_DimRed <- fluidPage(
               "Seurat - vst" = "vst",
               "Seurat - mean.var.plot" = "mean.var.plot",
               "Seurat - dispersion" = "dispersion",
-              "Scran - modelGeneVar" = "modelGeneVar"
+              "Scran - modelGeneVar" = "modelGeneVar",
+              "Scanpy - cellranger" = "cell_ranger"
             )
           ),
           selectizeInput(

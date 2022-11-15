@@ -233,9 +233,11 @@ runScanpyFindHVG <- function(inSCE,
         )
       )
   } 
-  #for this approach it is required that sce basic filering of cells and genes 
+  #for this approach it is required that sce basic filtering of cells and genes 
   #must be done
+  #also, does not work with scaled data, it must be logNormalize only
   else if (method == "cell_ranger") {
+    # sc$pp$filter_genes(scanpyObject, min_cells = 1)
     sc$pp$highly_variable_genes(scanpyObject, 
                                 flavor = method,
                                 n_top_genes = as.integer(hvgNumber),
