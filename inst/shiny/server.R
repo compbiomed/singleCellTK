@@ -3223,9 +3223,9 @@ shinyServer(function(input, output, session) {
                         value = paste0("Seurat", "_", algo, "_",
                                        "Resolution", input$clustSeuratRes))
         disable("clustName")
-    } else if(input$clustAlgo %in% seq(13, 14)){
-      algoList <- list('13' = "louvain",
-                       '14' = "leiden")
+    } else if(input$clustAlgo %in% seq(14, 15)){
+      algoList <- list('14' = "louvain",
+                       '15' = "leiden")
       algo <- algoList[[as.character(input$clustAlgo)]]
       updateTextInput(session, "clustName",
                       value = paste0("Scanpy", "_", algo, "_", input$clustSeuratRes))
