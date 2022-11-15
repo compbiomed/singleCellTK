@@ -18,6 +18,10 @@ shinyPanelfindMarker <- fluidPage(
           options = NULL),
         selectInput("fmCluster", "Cluster Annotation", clusterChoice),
         selectInput("fmCovar", "Covariate(s)", clusterChoice, multiple = TRUE),
+        conditionalPanel(
+          condition = "input.fmMethod == 'Scanpy'",
+          selectInput("fmScanpyTest", "Select test from Scanpy:", c("t-test", "wilcoxon", "t-test_overestim_var", "logreg"))
+        ),
         # numericInput("fmLogFC", "Log2FC greater than",
         #              value = 0, min = 0, step = 0.05),
         numericInput("fmFDR", "Keep FDR less than", value = 0.05,

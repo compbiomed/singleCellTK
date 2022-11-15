@@ -3223,6 +3223,12 @@ shinyServer(function(input, output, session) {
                         value = paste0("Seurat", "_", algo, "_",
                                        "Resolution", input$clustSeuratRes))
         disable("clustName")
+    } else if(input$clustAlgo %in% seq(13, 14)){
+      algoList <- list('13' = "louvain",
+                       '14' = "leiden")
+      algo <- algoList[[as.character(input$clustAlgo)]]
+      updateTextInput(session, "clustName",
+                      value = paste0("Scanpy", "_", algo, "_", input$clustSeuratRes))
     }
   })
 
@@ -3369,6 +3375,26 @@ shinyServer(function(input, output, session) {
         updateSelectInput(session, "clustVisReddim",
                           selected = input$clustSeuratReddim)
         plotReddim <- input$clustSeuratReddim
+      }
+      else if (input$clustAlgo %in% seq(14, 15)){
+        algoList <- list('14' = "louvain",
+                         '15' = "leiden")
+        algo <- algoList[[as.character(input$clustAlgo)]]
+        useAssay <- assayNames(vals$counts)[1] # change this
+        vals$counts <- runScanpyFindClusters(inSCE = vals$counts, 
+                                             useAssay = useAssay, 
+                                             algorithm = algo, 
+                                             dims = input$clustScanpyDims, 
+                                             resolution = input$clustScanpyRes, 
+                                             nNeighbors = input$clustScanpyNeighbors, 
+                                             niterations = input$clustScanpyIter, 
+                                             use_weights = input$clustScanpyWeights, 
+                                             cor_method = input$clustScanpyCorrMethod,
+                                             colDataName = input$clustName,
+                                             useReduction = input$clustKMeansReddim)
+        updateSelectInput(session, "clustVisReddim",
+                          selected = input$clustKMeansReddim)
+        plotReddim <- input$clustKMeansReddim
       }
       updateColDataNames()
       clustResults$names <- c(clustResults$names, saveClusterName)

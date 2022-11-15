@@ -19,7 +19,8 @@ shinyPanelCluster <- fluidPage(
                                        "MacQueen" = 10),
                          "Seurat" = c("louvain" = 11, "multilevel" = 12,
                                       "SLM" = 13),
-                         "Scanpy" = c("standard" = 14)),
+                         "Scanpy" = c("louvain" = 14,
+                                      "leiden" = 15)),
         ),
         # Scran SNN ####
         conditionalPanel(
@@ -52,14 +53,16 @@ shinyPanelCluster <- fluidPage(
         ),
         # K-Means ####
         conditionalPanel(
-          "input.clustAlgo >= 8 && input.clustAlgo <= 10",
+          "(input.clustAlgo >= 8 && input.clustAlgo <= 10) || input.clustAlgo == 14 || input.clustAlgo == 15",
           selectInput("clustKMeansReddim", "Select A ReducedDim:", currreddim),
-          numericInput("clustKMeansN", "Number of Centers (Clusters):",
-                       value = NULL),
-          numericInput("clustKMeansNIter", "Max Number of Iterations:",
-                       10, min = 2, step = 1),
-          numericInput("clustKMeansNStart", "Number of Random Sets:",
-                       1, min = 1, step = 1)
+          conditionalPanel("(input.clustAlgo >= 8 && input.clustAlgo <= 10)",
+                           numericInput("clustKMeansN", "Number of Centers (Clusters):",
+                                        value = NULL),
+                           numericInput("clustKMeansNIter", "Max Number of Iterations:",
+                                        10, min = 2, step = 1),
+                           numericInput("clustKMeansNStart", "Number of Random Sets:",
+                                        1, min = 1, step = 1)
+                           )
         ),
         # Seurat ####
         conditionalPanel(
@@ -69,6 +72,19 @@ shinyPanelCluster <- fluidPage(
           checkboxInput("clustSeuratGrpSgltn", "Group Singletons",
                         value = TRUE),
           numericInput("clustSeuratRes", "Resolution", 0.8, step = 0.05)
+        ),
+        # Scanpy ###
+        conditionalPanel(
+          "input.clustAlgo == 14 || input.clustAlgo == 15",
+          numericInput("clustScanpyDims", "No. of dimensions to use:", 10,
+                       min = 2, step = 1),
+          numericInput("clustScanpyNeighbors", "No. of neigbors:", 15,
+                       min = 2, step = 1),
+          numericInput("clustScanpyRes", "Resolution:", 0.8, step = 0.05),
+          numericInput("clustScanpyIter", "No. of Iterations:", -1, step = 1),
+          checkboxInput("clustScanpyWeights", "Use weights from knn graph:",
+                        value = FALSE),
+          selectInput("clustScanpyCorrMethod", "Correlation method:", c('pearson', 'kendall', 'spearman'))
         ),
         useShinyjs(),
         textInput("clustName", "Name of Clustering Result:",
