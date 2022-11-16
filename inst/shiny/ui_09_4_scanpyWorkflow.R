@@ -130,13 +130,13 @@ shinyPanelScanpy <- fluidPage(
             ),
             bsCollapsePanel("tSNE/UMAP",
                             tabsetPanel(id = "tsneUmapTabsetScanpy", type = "tabs",
-                                        tabPanel("scanpy tSNE",
+                                        tabPanel("tSNE",
                                                  br(),
                                                  fluidRow(
                                                    column(4,
                                                           fluidRow(
                                                             column(12,
-                                                                   panel(heading = "scanpy tSNE",
+                                                                   panel(heading = "tSNE",
                                                                          selectInput(inputId = "scanpy_reduction_tsne_method", label = "Select reduction method: ", choices = c("pca", "ica")),
                                                                          #textInput(inputId = "reduction_tsne_count", label = "Select number of reduction components: ", value = "20"),
                                                                          numericInput(inputId = "scanpy_perplexity_tsne", label = "Set perplexity:", value = 15),
@@ -152,7 +152,7 @@ shinyPanelScanpy <- fluidPage(
                                                    ),
                                                    column(8,
                                                           fluidRow(
-                                                            panel(heading = "scanpy Plot",
+                                                            panel(heading = "Plot",
                                                                   column(12,
                                                                          plotOutput(outputId = "scanpy_plot_tsne")
                                                                   )
@@ -161,13 +161,13 @@ shinyPanelScanpy <- fluidPage(
                                                    )
                                                  )
                                         ),
-                                        tabPanel("scanpy UMAP",
+                                        tabPanel("UMAP",
                                                  br(),
                                                  fluidRow(
                                                    column(4,
                                                           fluidRow(
                                                             column(12,
-                                                                   panel(heading = "scanpy UMAP",
+                                                                   panel(heading = "UMAP",
                                                                          #selectInput(inputId = "scanpy_reduction_umap_method", label = "Select reduction method: ", choices = c("pca", "ica")),
                                                                          numericInput(inputId = "scanpy_reduction_umap_count", label = "Select number of reduction components: ", value = 10),
                                                                          numericInput(inputId = "scanpy_min_dist_umap", label = "Set min.dist:", value = 0.5),
@@ -187,7 +187,7 @@ shinyPanelScanpy <- fluidPage(
                                                    ),
                                                    column(8,
                                                           fluidRow(
-                                                            panel(heading = "scanpy Plot",
+                                                            panel(heading = "Plot",
                                                                   column(12,
                                                                          plotOutput(outputId = "scanpy_plot_umap")
                                                                   )
