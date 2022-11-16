@@ -394,6 +394,8 @@ runScanpyPCA <- function(inSCE,
   temp <- scanpyObject$obsm['X_pca']
   rownames(temp) <- colnames(inSCE)
   reducedDim(inSCE, reducedDimName) <- temp
+  attr(reducedDim(inSCE, reducedDimName), "variance") <- 
+    scanpyObject$uns['pca'][['variance_ratio']]
   metadata(inSCE)$sctk$runDimReduce$reddim[[reducedDimName]] <- params
   
   return(inSCE)
