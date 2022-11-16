@@ -27,7 +27,7 @@ shinyPanelFS_DimRed <- fluidPage(
               "Seurat - mean.var.plot" = "mean.var.plot",
               "Seurat - dispersion" = "dispersion",
               "Scran - modelGeneVar" = "modelGeneVar",
-              "Scanpy" = "scanpy"
+              "Scanpy - cellranger" = "cell_ranger"
             )
           ),
           selectizeInput(
@@ -145,7 +145,7 @@ shinyPanelFS_DimRed <- fluidPage(
                               "Scater - PCA" = "scaterPCA",
                               "Seurat - PCA" = "seuratPCA",
                               "Seurat - ICA" = "seuratICA",
-                              "Scanpy" = "scanpy"
+                              "Scanpy - PCA" = "scanpyPCA"
                             )
                           ),
                           selectInput(

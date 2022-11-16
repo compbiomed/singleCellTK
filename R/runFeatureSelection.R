@@ -28,10 +28,11 @@
 runFeatureSelection <- function(inSCE,
                                 useAssay,
                                 method = c("vst", "mean.var.plot",
-                                           "dispersion", "modelGeneVar")){
+                                           "dispersion", "modelGeneVar", "cell_ranger")){
   method <- match.arg(method)
   seuratMethods <- c("vst", "mean.var.plot", "dispersion")
   scranMethods <- c("modelGeneVar")
+  scanpyMethods <- c("cell_ranger")
 
   params <- list(
     inSCE = inSCE,
@@ -44,6 +45,10 @@ runFeatureSelection <- function(inSCE,
   }
   else if(method %in% scranMethods){
     inSCE <- do.call("runModelGeneVar", args = params)
+  }
+  else if(method %in% scanpyMethods){
+    params$method <- method
+    inSCE <- do.call("runScanpyFindHVG", args = params)
   }
 
   return(inSCE)

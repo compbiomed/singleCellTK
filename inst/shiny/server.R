@@ -2368,7 +2368,7 @@ shinyServer(function(input, output, session) {
     tag <- ""
     if(input$normalizeAssayMethodSelect != "custom"){
       if(input$normalizeAssayMethodSelect
-         %in% c("LogNormalize", "SCTransform", "CLR", "logNormCounts")){
+         %in% c("LogNormalize", "SCTransform", "CLR", "logNormCounts", "NormalizeTotal")){
         tag <- "transformed"
       }
       else{
@@ -2550,6 +2550,9 @@ shinyServer(function(input, output, session) {
     } else if(input$normalizeAssayMethodSelect == "SCTransform"){
       updateTextInput(session = session, inputId = "normalizeAssayOutname",
                       value = "SeuratSCTransform")
+    } else if(input$normalizeAssayMethodSelect == "NormalizeTotal"){
+      updateTextInput(session = session, inputId = "normalizeAssayOutname",
+                      value = "ScanpyNormalizeTotal")
     }
   })
 
@@ -2647,14 +2650,19 @@ shinyServer(function(input, output, session) {
 
       message(paste0(date(), " ... Ending Dimensionality Reduction."))
 
-
+      redDim <- reducedDim(vals$counts, dimrednamesave)
       if(input$dimRedPlotMethod == "scaterPCA"){
-        redDim <- reducedDim(vals$counts, dimrednamesave)
         new_pca <- CreateDimReducObject(
           embeddings = redDim,
           assay = "RNA",
           loadings = attr(redDim, "rotation"),
           stdev = as.numeric(attr(redDim, "percentVar")),
+          key = "PC_")
+      }
+      else if(input$dimRedPlotMethod == "scanpyPCA"){
+        new_pca <- CreateDimReducObject(
+          embeddings = redDim,
+          assay = "RNA",
           key = "PC_")
       }
 
@@ -3215,6 +3223,12 @@ shinyServer(function(input, output, session) {
                         value = paste0("Seurat", "_", algo, "_",
                                        "Resolution", input$clustSeuratRes))
         disable("clustName")
+    } else if(input$clustAlgo %in% seq(14, 15)){
+      algoList <- list('14' = "louvain",
+                       '15' = "leiden")
+      algo <- algoList[[as.character(input$clustAlgo)]]
+      updateTextInput(session, "clustName",
+                      value = paste0("Scanpy", "_", algo, "_", input$clustSeuratRes))
     }
   })
 
@@ -3361,6 +3375,26 @@ shinyServer(function(input, output, session) {
         updateSelectInput(session, "clustVisReddim",
                           selected = input$clustSeuratReddim)
         plotReddim <- input$clustSeuratReddim
+      }
+      else if (input$clustAlgo %in% seq(14, 15)){
+        algoList <- list('14' = "louvain",
+                         '15' = "leiden")
+        algo <- algoList[[as.character(input$clustAlgo)]]
+        useAssay <- assayNames(vals$counts)[1] # change this
+        vals$counts <- runScanpyFindClusters(inSCE = vals$counts, 
+                                             useAssay = useAssay, 
+                                             algorithm = algo, 
+                                             dims = input$clustScanpyDims, 
+                                             resolution = input$clustScanpyRes, 
+                                             nNeighbors = input$clustScanpyNeighbors, 
+                                             niterations = input$clustScanpyIter, 
+                                             use_weights = input$clustScanpyWeights, 
+                                             cor_method = input$clustScanpyCorrMethod,
+                                             colDataName = input$clustName,
+                                             useReduction = input$clustKMeansReddim)
+        updateSelectInput(session, "clustVisReddim",
+                          selected = input$clustKMeansReddim)
+        plotReddim <- input$clustKMeansReddim
       }
       updateColDataNames()
       clustResults$names <- c(clustResults$names, saveClusterName)
@@ -9394,6 +9428,17 @@ shinyServer(function(input, output, session) {
       message(paste0(date(), " ... Finding HVG Complete"))
     }
   ))
+  
+  output$scanpy_hvg_output <- renderText({
+    req(vals$counts)
+    if(!is.null(metadata(vals$counts)$scanpy$hvg)){
+      isolate({
+        getTopHVG(inSCE = vals$counts, 
+                  method = input$scanpy_hvg_method, 
+                  hvgNumber = input$scanpy_hvg_no_features_view)
+      })
+    }
+  })
   
   # PCA
   observeEvent(input$scanpy_run_pca_button, withConsoleMsgRedirect(

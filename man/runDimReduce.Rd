@@ -6,8 +6,8 @@
 \usage{
 runDimReduce(
   inSCE,
-  method = c("scaterPCA", "seuratPCA", "seuratICA", "rTSNE", "seuratTSNE",
-    "scaterUMAP", "seuratUMAP"),
+  method = c("scaterPCA", "seuratPCA", "seuratICA", "rTSNE", "seuratTSNE", "scaterUMAP",
+    "seuratUMAP"),
   useAssay = NULL,
   useReducedDim = NULL,
   useAltExp = NULL,

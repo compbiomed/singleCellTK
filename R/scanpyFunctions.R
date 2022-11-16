@@ -233,9 +233,11 @@ runScanpyFindHVG <- function(inSCE,
         )
       )
   } 
-  #for this approach it is required that sce basic filering of cells and genes 
+  #for this approach it is required that sce basic filtering of cells and genes 
   #must be done
+  #also, does not work with scaled data, it must be logNormalize only
   else if (method == "cell_ranger") {
+    # sc$pp$filter_genes(scanpyObject, min_cells = 1)
     sc$pp$highly_variable_genes(scanpyObject, 
                                 flavor = method,
                                 n_top_genes = as.integer(hvgNumber),
@@ -522,6 +524,9 @@ plotScanpyPCAVariance <- function(inSCE,
 #' @param use_weights Boolean. Use weights from knn graph.
 #' @param cor_method correlation method to use. Options are ‘pearson’, 
 #' ‘kendall’, and ‘spearman’. Default 'pearson'.
+#' @param colDataName Specify name to be used for this clustering result
+#'  for storage as a colData column in the SCE object. Default \code{NULL}
+#'  will set the name as \code{"Scanpy_algorithm_resolution"}.
 #' @param inplace If True, adds dendrogram information to annData object, 
 #' else this function returns the information.
 #' @param externalReduction Pass DimReduce object if PCA computed through
@@ -539,13 +544,14 @@ runScanpyFindClusters <- function(inSCE,
                                   useAssay = "scanpyScaledData",
                                   useReduction = "scanpyPCA",
                                   nNeighbors = 15L,
-                                  dims = 2L,
+                                  dims = 10L,
                                   algorithm = c("louvain", "leiden"),
                                   resolution = 1,
                                   niterations = -1,
                                   flavor = 'vtraag',
                                   use_weights = FALSE,
                                   cor_method = 'pearson',
+                                  colDataName = NULL,
                                   inplace = TRUE,
                                   externalReduction = NULL) {
   algorithm <- match.arg(algorithm)
@@ -564,8 +570,10 @@ runScanpyFindClusters <- function(inSCE,
   if (!is.null(externalReduction)) {
     scanpyObject$obsm <- list(pca = externalReduction)
     useReduction <- "pca"
-  } 
-  colDataName = paste0("Scanpy", "_", algorithm, "_", resolution)
+  }
+  if(is.null(colDataName)){
+    colDataName = paste0("Scanpy", "_", algorithm, "_", resolution)
+  }
   
   sc$pp$neighbors(scanpyObject, 
                   n_neighbors = nNeighbors, 
