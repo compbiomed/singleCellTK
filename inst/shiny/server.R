@@ -9429,6 +9429,17 @@ shinyServer(function(input, output, session) {
     }
   ))
   
+  output$scanpy_hvg_output <- renderText({
+    req(vals$counts)
+    if(!is.null(metadata(vals$counts)$scanpy$hvg)){
+      isolate({
+        getTopHVG(inSCE = vals$counts, 
+                  method = input$scanpy_hvg_method, 
+                  hvgNumber = input$scanpy_hvg_no_features_view)
+      })
+    }
+  })
+  
   # PCA
   observeEvent(input$scanpy_run_pca_button, withConsoleMsgRedirect(
     msg = "Please wait while PCA is being computed. See console log for progress.",
