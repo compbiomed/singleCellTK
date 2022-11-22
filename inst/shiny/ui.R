@@ -162,6 +162,7 @@ source("ui_10_1_TSCAN.R", local = TRUE) #creates shinyPanelTSCAN variable
 source("ui_07_subsample.R", local = TRUE) #creates shinyPanelSubsample variable
 source("ui_08_2_cellviewer.R", local = TRUE) #creates shinyPanelCellViewer variable
 source("ui_08_3_heatmap.R", local = TRUE) #creates shinyPanelHeatmap variable
+source("ui_08_4_bubbleplot.R", local = TRUE) #creates shinyPanelHeatmap variable
 #source("ui_09_curatedworkflows.R", local = TRUE) #creates shinyPanelCuratedWorkflows variable
 source("ui_09_2_seuratWorkflow.R", local = TRUE) #creates shinyPanelSeurat variable
 jsCode <- "
@@ -259,7 +260,8 @@ shinyUI(
       # tabPanel("Curated Workflows", shinyPanelCuratedWorkflows),
       navbarMenu("Viewers",
                  tabPanel("Cell Viewer", value="CellViewer", shinyPanelCellViewer),
-                 tabPanel("Heatmap", shinyPanelHeatmap)),
+                 tabPanel("Heatmap", shinyPanelHeatmap),
+                 tabPanel("Bubbleplot", shinyPanelBubbleplot)),
       footer = includeHTML("www/logo.html"),
       fluidRow(
         column(12, id = "consoleDiv",
