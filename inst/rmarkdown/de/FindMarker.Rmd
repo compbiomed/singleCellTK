@@ -42,7 +42,7 @@ minMeanExpr <- fmParams$minMeanExpr
 The marker finding was accomplished by iteratively performing one-against-others differential expression analysis for each cluster. There are **`r nCluster` clusters** found in the given SingleCellExperiment object. Here is the summary of the number of cells in each cluster:
 
 ```{r, "FM-clusterSummary"}
-sum.table <- t(as.data.frame(table(sce$scranSNN_cluster)))
+sum.table <- t(as.data.frame(table(sce[[names(metadata(sce)$findMarker)[5]]])))
 rownames(sum.table) <- c("cluster", "cell number")
 datatable(sum.table, 
           options = list(
@@ -112,7 +112,7 @@ In the marker heatmap, each column stands for a cell in the given SingleCellExpe
 It happens sometimes that a gene is identified as the marker for more than one cluster. In this scenario, we finally assign it to the cluster where it has a higher "logFC" value when plotting.  
 
 ```{r FM-heatmap, message=FALSE, warning=FALSE, out.width = '100%'}
-plotMarkerDiffExp(sce, 
+plotFindMarkerHeatmap(sce, 
                   log2fcThreshold = 0.5, 
                   minClustExprPerc = 0.7, 
                   maxCtrlExprPerc = 0.4, 

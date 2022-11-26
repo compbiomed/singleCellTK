@@ -144,7 +144,7 @@ A wrapper function which visualizes outputs from the
 \examples{
 data(scExample, package="singleCellTK")
 sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
-sce <- getUMAP(inSCE=sce, useAssay="counts", reducedDimName="UMAP")
+sce <- runQuickUMAP(sce)
 sce <- runCxdsBcdsHybrid(sce)
 plotScdsHybridResults(inSCE=sce, reducedDimName="UMAP")
 }

@@ -9,9 +9,10 @@ components within the sce object}
 runSeuratPCA(
   inSCE,
   useAssay = "seuratScaledData",
+  useFeatureSubset = NULL,
+  scale = TRUE,
   reducedDimName = "seuratPCA",
   nPCs = 20,
-  features = NULL,
   seed = NULL,
   verbose = TRUE
 )
@@ -19,17 +20,22 @@ runSeuratPCA(
 \arguments{
 \item{inSCE}{(sce) object on which to compute PCA}
 
-\item{useAssay}{Assay containing scaled counts to use in PCA.}
+\item{useAssay}{Assay containing scaled counts to use in PCA. Default
+\code{"seuratScaledData"}.}
+
+\item{useFeatureSubset}{Subset of feature to use for dimension reduction. A
+character string indicating a \code{rowData} variable that stores the logical
+vector of HVG selection, or a vector that can subset the rows of
+\code{inSCE}. Default \code{NULL}.}
+
+\item{scale}{Logical scalar, whether to standardize the expression values
+using \code{\link[Seurat]{ScaleData}}. Default \code{TRUE}.}
 
 \item{reducedDimName}{Name of new reducedDims object containing Seurat PCA.
 Default \code{seuratPCA}.}
 
 \item{nPCs}{numeric value of how many components to compute. Default
 \code{20}.}
-
-\item{features}{Specify the feature names or rownames which should be used
-for computation of PCA. Default is \code{NULL} which will use the previously
-stored variable features.}
 
 \item{seed}{Random seed for reproducibility of results.
 Default \code{NULL} will use global seed in use by the R environment.}
@@ -45,6 +51,16 @@ computed principal components
 runSeuratPCA
 Computes PCA on the input sce object and stores the calculated principal
 components within the sce object
+}
+\details{
+For features used for computation, it can be controlled by \code{features} or
+\code{useFeatureSubset}. When \code{features} is specified, the scaling and
+dimensionality reduction will only be processed with these features. When
+\code{features} is \code{NULL} but \code{useFeatureSubset} is specified, will
+use the features that the HVG list points to. If both parameters are
+\code{NULL}, the function will see if any Seurat's variable feature detection
+has been ever performed, and use them if found. Otherwise, all features are
+used.
 }
 \examples{
 data(scExample, package = "singleCellTK")

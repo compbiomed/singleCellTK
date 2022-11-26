@@ -10,7 +10,6 @@ csl: ieee.csl
 ---
 
 ```{r develSetting, include=FALSE}
-doEval = FALSE
 knitr::opts_chunk$set(warning = FALSE)
 ```
 
@@ -53,7 +52,7 @@ Users should enter the page as instructed in the screenshot above, by clicking o
 ![panel2](ui_screenshots/cell_type_labeling/panel2.jpg)\
 There are 6 basic widgets that users need to work with before reaching to the result:
 
-1. **Select assay** - Select the feature expression matrix for the comparison against the reference dataset. This matrix has to be a log-normalized assay. [(How to normalize an assay with SCTK)](cnsl_normalization.html)
+1. **Select assay** - Select the feature expression matrix for the comparison against the reference dataset. This matrix has to be a log-normalized assay. [(How to normalize an assay with SCTK)](normalization.html)
 2. **Choose a reference** - Select the curated online reference dataset. There are multiple options that cover the need of analyzing data from human and mouse and from different tissues. The link at the bottom will pop users to the detail of the reference, which is currently chosen. 
 3. **Labeling level** - For most of the provided references, there will be 3 levels of annotations - **"main"** for main cell types, **"fine"** for more subtypes, and with **"ont"**, subtypes are mapped to Cell Ontology. 
 4. **Feature type** - Choose the identifier type that matches with users' dataset. Unfortunately, the references are only annotated with symbols and ensembl IDs. Therefore, users working with other types of IDs might need to do the conversion prior to using this functionality. Automated conversion maybe added in future versions of SCTK. 
@@ -63,7 +62,9 @@ There are 6 basic widgets that users need to work with before reaching to the re
 
 6. **Label** - The button to trigger the algorithm. Click on this to run the cell type labeling process. 
 
-The result will not be pop out directly, but three levels of cell annotation will be inserted to the background object. They will all have the same prefix as `"SingleR_{reference abbr}_{annotation level}_"`, then `"score"`, `"first.labels"`, `"labels"` and `"pruned.labels"`, respectively. `"first.labels"` refers to the labeling initially indicated by the scores, `"labels"` is fine-tuned, and `"pruned.labels"` is the pruned result.  
+The result will not be pop out directly, but three levels of cell annotation will be inserted to the background object. They will all have the same prefix as `"SingleR_{reference abbr}_{annotation level}_"`, then `"score"`, `"labels"`, `"delta.next"` and `"pruned.labels"`, respectively. `"labels"` contains the predicted label, basing only on the maximum entry in scores. `"delta.next"` contains difference between the best and next-best score. `"pruned.labels"` contains predictions where "low-quality" labels are replaced with `NA`s. 
+
+> With older versions of SingleR, the output variables ends with `"score"`, `"first.labels"`, `"labels"` and `"pruned.labels"`, respectively. `"first.labels"` refers to the labeling initially indicated by the scores, `"labels"` is fine-tuned, and `"pruned.labels"` is the pruned result.  
 
 **Visualization**
 
@@ -95,7 +96,9 @@ Then users can use `runSingleR()` to invoke the algorithm. Here we choose to use
 sce <- runSingleR(inSCE = sce, useAssay = "logcounts", useBltinRef = "hpca", level = "main", featureType = "symbol")
 ```
 
-Four results from SingleR will be stored in `colData()` slot with the same prefix as `"SingleR_{reference abbr}_{annotation level}_"`, then `"score"`, `"first.labels"`, `"labels"` and `"pruned.labels"`, respectively. `"first.labels"` refers to the labeling initially indicated by the scores, `"labels"` is fine-tuned, and `"pruned.labels"` is the pruned result.  
+Four results from SingleR will be stored in `colData()` slot with the same prefix as `"SingleR_{reference abbr}_{annotation level}_"`, then `"score"`, `"labels"`, `"delta.next"` and `"pruned.labels"`, respectively. `"labels"` contains the predicted label, basing only on the maximum entry in scores. `"delta.next"` contains difference between the best and next-best score. `"pruned.labels"` contains predictions where "low-quality" labels are replaced with `NA`s. 
+
+> With older versions of SingleR, the output variables ends with `"score"`, `"first.labels"`, `"labels"` and `"pruned.labels"`, respectively. `"first.labels"` refers to the labeling initially indicated by the scores, `"labels"` is fine-tuned, and `"pruned.labels"` is the pruned result.  
 
 Besides, users can also use their own labeled reference datasets wrapped in a [SingleCellExperiment](https://rdrr.io/bioc/SingleCellExperiment/man/SingleCellExperiment.html) object. Refer to argument `useSCERef` and `labelColName`. Additionally, the labeling can also be done on cluster label if users have already performed clustering on their dataset and have the result stored in `colData()` slot. Refer to argument `labelByCluster`.  
 
@@ -104,10 +107,9 @@ Besides, users can also use their own labeled reference datasets wrapped in a [S
 Users can choose to visualize the labeling result on a scatter plot. Here, we provide an example to create a UMAP embedding that can clearly reflect the relationship between cells in 2D, and then color the cells by the labels.  
 
 ```{R visualization, message=FALSE, warning=FALSE, fig.align="center", results='hide'}
-sce <- runNormalization(inSCE = sce, useAssay = "logcounts", scale = TRUE, outAssayName = "logcounts_scaled")
-sce <- runSeuratFindHVG(inSCE = sce, useAssay = "counts", hvgMethod = "vst")
-sce <- getTopHVG(inSCE = sce, method = "vst", n = 2000, altExp = "hvg")
-sce <- runDimReduce(inSCE = sce, method = "scaterPCA", useAssay = "logcounts_scaled", useAltExp = "hvg", reducedDimName = "PCA")
+sce <- runSeuratFindHVG(inSCE = sce, useAssay = "counts", method = "vst")
+sce <- setTopHVG(inSCE = sce, method = "vst", hvgNumber = 2000)
+sce <- runDimReduce(inSCE = sce, method = "scaterPCA", useAssay = "logcounts", useFeatureSubset = "HVG_vst2000", reducedDimName = "PCA")
 sce <- runDimReduce(inSCE = sce, method = "scaterUMAP", useReducedDim = "PCA", reducedDimName = "UMAP")
 plotSCEDimReduceColData(inSCE = sce, colorBy = "SingleR_hpca_main_pruned.labels", reducedDimName = "UMAP")
 ```

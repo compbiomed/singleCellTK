@@ -104,18 +104,16 @@ if (typeof(S4Vectors::metadata(sce.qc)$assayType) == 'list') {
   S4Vectors::metadata(sce.qc)$assayType <- assayType
 }
 
-sce.qc <- getUMAP(sce.qc, useAssay = "counts", reducedDimName = "QC_UMAP", sample = sceSample)
+sce.qc <- runQuickUMAP(sce.qc, reducedDimName = "QC_UMAP", sample = sceSample)
 
 if (is.null(reducedDimName)) {
   allSampleReducedDim <- "All_UMAP"
-  sce.qc <- getUMAP(sce.qc, useAssay = "counts", 
-                    reducedDimName = allSampleReducedDim, sample = NULL)
+  sce.qc <- runQuickUMAP(sce.qc, reducedDimName = allSampleReducedDim, sample = NULL)
 } else if (!reducedDimName %in% reducedDimNames(sce.qc)) {
   warning("'reducedDimName' not found in the reducedDimNames of the sce object. ",
   "Generate new reduced dimension reduction for all samples. ")
   allSampleReducedDim <- "All_UMAP"
-  sce.qc <- getUMAP(sce.qc, useAssay = "counts", 
-                    reducedDimName = allSampleReducedDim, sample = NULL)
+  sce.qc <- runQuickUMAP(sce.qc, reducedDimName = allSampleReducedDim, sample = NULL)
 } else {
   allSampleReducedDim <- reducedDimName
 }
@@ -1148,7 +1146,7 @@ for (sample in samples){
 
 
 ```{r, "SoupX-description", include=FALSE, warning=FALSE, message=FALSE}
-description_SoupX<- singleCellTK:::descriptionSoupX()
+description_SoupX <- singleCellTK:::descriptionSoupX()
 ```
 
 ```{r, "SoupX", results="asis", fig.align="center", warning=FALSE, message=FALSE, echo=FALSE}
@@ -1159,21 +1157,15 @@ soupXData <- c("soupX_nUMIs", "soupX_contamination")
 # soupX cluster label might be supplied by users, thus not checking it.
 skipSoupX <- any(!soupXData %in% names(colData(sce.qc)))
 
-if (length(samples) == 1) {
-  soupXSample <- "all_cells"
-} else {
-  soupXSample <- samples
-}
-
 if (skipSoupX) {
   #cat("runDecontX did not complete successfully. The section of DecontX is skipped")
   plotSoupX <- NULL
 } else {
   cat(paste0('## ', i, ' \n'))
-  plotSoupX<- tryCatch(
+  plotSoupX <- tryCatch(
     {plotSoupXResults(inSCE = sce.qc, 
-                     soupXSample, 
-                     combinePlot = "none")},
+                      sceSample, 
+                      combinePlot = "none")},
     error = function(e) {
       cat("runSoupX did not complete successfully. The section of SoupX is skipped\n\n")
       skipSoupX <<- TRUE
@@ -1255,7 +1247,7 @@ if (skipSoupX_bg) {
                      background = TRUE)},
     error = function(e) {
       cat("runSoupX with background did not complete successfully. The section of SoupX with background is skipped")
-      skipSoupX_bg <- TRUE
+      skipSoupX_bg <<- TRUE
       return(NA)
     }
   )

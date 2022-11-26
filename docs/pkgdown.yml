@@ -1,25 +1,23 @@
-pandoc: 2.14.0.3
-pkgdown: 2.0.1
+pandoc: 2.19.2
+pkgdown: 2.0.6
 pkgdown_sha: ~
 articles:
+  01_import_and_qc_tutorial: 01_import_and_qc_tutorial.html
+  02_a_la_carte_workflow: 02_a_la_carte_workflow.html
+  2d_embedding: 2d_embedding.html
   batch_correction: batch_correction.html
   celda_curated_workflow: celda_curated_workflow.html
   cell_type_labeling: cell_type_labeling.html
   clustering: clustering.html
-  cmd_import_scRNAseq_data_as_SCE: cmd_import_scRNAseq_data_as_SCE.html
   cmd_qc: cmd_qc.html
-  cnsl_2d_embedding: cnsl_2d_embedding.html
   cnsl_cellqc: cnsl_cellqc.html
-  cnsl_dimensionality_reduction: cnsl_dimensionality_reduction.html
   cnsl_dropletqc: cnsl_dropletqc.html
-  cnsl_enrichR: cnsl_enrichR.html
-  cnsl_feature_selection: cnsl_feature_selection.html
-  cnsl_normalization: cnsl_normalization.html
-  cnsl_seurat_curated_workflow: cnsl_seurat_curated_workflow.html
-  console_analysis_tutorial: console_analysis_tutorial.html
   delete_data: delete_data.html
   differential_expression: differential_expression.html
+  dimensionality_reduction: dimensionality_reduction.html
+  enrichR: enrichR.html
   export_data: export_data.html
+  feature_selection: feature_selection.html
   filtering: filtering.html
   find_marker: find_marker.html
   heatmap: heatmap.html
@@ -27,9 +25,12 @@ articles:
   import_data: import_data.html
   import_genesets: import_genesets.html
   installation: installation.html
+  normalization: normalization.html
   pathwayAnalysis: pathwayAnalysis.html
+  seurat_curated_workflow: seurat_curated_workflow.html
+  trajectoryAnalysis: trajectoryAnalysis.html
   ui_qc: ui_qc.html
   visualization: visualization.html
   singleCellTK: singleCellTK.html
-last_built: 2022-04-28T15:23Z
+last_built: 2022-10-25T19:43Z
 

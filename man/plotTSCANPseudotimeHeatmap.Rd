@@ -2,41 +2,65 @@
 % Please edit documentation in R/runTSCAN.R
 \name{plotTSCANPseudotimeHeatmap}
 \alias{plotTSCANPseudotimeHeatmap}
-\title{Run plotTSCANPseudotimeHeatmap function to plot heatmap for top genes}
+\title{Plot heatmap of genes with expression change along TSCAN pseudotime}
 \usage{
-plotTSCANPseudotimeHeatmap(inSCE, pathIndex, topN = 50)
+plotTSCANPseudotimeHeatmap(
+  inSCE,
+  pathIndex,
+  direction = c("both", "increasing", "decreasing"),
+  topN = 50,
+  log2fcThreshold = NULL,
+  useAssay = NULL,
+  featureDisplay = metadata(inSCE)$featureDisplay
+)
 }
 \arguments{
 \item{inSCE}{Input \linkS4class{SingleCellExperiment} object.}
 
-\item{pathIndex}{Path index for which the pseudotime values should be used. PathIndex 
-corresponds to the terminal node of specific path from the root node to the terminal node.}
+\item{pathIndex}{Path index for which the pseudotime values should be used.
+Should have being used in \code{\link{runTSCANDEG}}.}
 
-\item{topN}{An integer. Only to plot this number of top genes along the path 
-in the MST, in terms of log2FC value. Use \code{NULL} to cancel the top N 
-subscription. Default \code{50}.}
+\item{direction}{Should we show features with expression increasing or
+decreeasing along the increase in TSCAN pseudotime? Choices are
+\code{"both"}, \code{"increasing"} or \code{"decreasing"}.}
+
+\item{topN}{An integer. Only to plot this number of top genes along the path
+in the MST, in terms of FDR value. Use \code{NULL} to cancel the top N
+subscription. Default \code{30}.}
+
+\item{log2fcThreshold}{Only output DEGs with the absolute values of log2FC
+larger than this value. Default \code{NULL}.}
+
+\item{useAssay}{A single character to specify a feature expression matrix in
+\code{assays} slot. The expression of top features from here will be
+visualized. Default \code{NULL} use the one used for
+\code{\link{runTSCANDEG}}.}
+
+\item{featureDisplay}{Whether to display feature ID and what ID type to
+display. Users can set default ID type by \code{\link{setSCTKDisplayRow}}.
+\code{NULL} will display when number of features to display is less than 60.
+\code{FALSE} for no display. Variable name in \code{rowData} to indicate ID
+type. \code{"rownames"} or \code{TRUE} for using \code{rownames(inSCE)}.}
 }
 \value{
-A plot with the top genes that increase in expression with increasing
-pseudotime along the path in the MST.
+A ComplexHeatmap in \code{.ggplot} class
 }
 \description{
-A wrapper function which visualizes outputs from the 
-\code{\link{runTSCANDEG}} function. 
-Plots the top genes that increase in expression with increasing pseudotime 
-along the path in the MST
+A wrapper function which visualizes outputs from the
+\code{\link{runTSCANDEG}} function. Plots the top genes that change in
+expression with increasing pseudotime along the path in the MST.
+\code{\link{runTSCANDEG}} has to be run in advance with using the same
+\code{pathIndex} of interest.
 }
 \examples{
-data("scExample", package = "singleCellTK")
-sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
-rowData(sce)$Symbol <- rowData(sce)$feature_name
-rownames(sce) <- rowData(sce)$Symbol
-sce <- runNormalization(sce, normalizationMethod = "LogNormalize", useAssay = "counts", outAssayName = "logcounts")
-sce <- runDimReduce(inSCE = sce, method = "scaterPCA", useAssay = "logcounts", reducedDimName = "PCA")
-sce <- runDimReduce(inSCE = sce, method = "rTSNE", useReducedDim = "PCA", reducedDimName = "TSNE")
-sce <- runTSCAN (inSCE = sce, useReducedDim = "PCA", seed = NULL)
-sce <- runTSCANDEG(inSCE = sce, pathIndex = 4)
-plotTSCANPseudotimeHeatmap(inSCE = sce, pathIndex = 4,topN = 5)
+data("mouseBrainSubsetSCE", package = "singleCellTK")
+mouseBrainSubsetSCE <- runTSCAN(inSCE = mouseBrainSubsetSCE,
+                                useReducedDim = "PCA_logcounts")
+terminalNodes <- listTSCANTerminalNodes(mouseBrainSubsetSCE)
+mouseBrainSubsetSCE <- runTSCANDEG(inSCE = mouseBrainSubsetSCE,
+                                   pathIndex = terminalNodes[1])
+plotTSCANPseudotimeHeatmap(mouseBrainSubsetSCE,
+                           pathIndex = terminalNodes[1])
 }
 \author{
 Nida Pervaiz

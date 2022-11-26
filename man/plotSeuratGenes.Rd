@@ -6,7 +6,7 @@
 \usage{
 plotSeuratGenes(
   inSCE,
-  scaledAssayName = "seuratScaledData",
+  useAssay = "seuratNormData",
   plotType,
   features,
   groupVariable,
@@ -19,8 +19,8 @@ plotSeuratGenes(
 \arguments{
 \item{inSCE}{Input \code{SingleCellExperiment} object.}
 
-\item{scaledAssayName}{Specify the name of the scaled assay stored in the
-input object.}
+\item{useAssay}{Specify the name of the assay that will be scaled by this
+function.}
 
 \item{plotType}{Specify the type of the plot to compute. Options are limited
 to "ridge", "violin", "feature", "dot" and "heatmap".}
@@ -41,7 +41,7 @@ used to split samples.
 Default is \code{1}.}
 
 \item{combine}{A logical value that indicates if the plots should be combined
-together into a single plot if \code{TRUE}, else if \code{FALSE} returns 
+together into a single plot if \code{TRUE}, else if \code{FALSE} returns
 separate ggplot objects for each feature. Only works when \code{plotType}
 parameter is \code{"feature"}, \code{"violin"} or \code{"ridge"}. For
 \code{"heatmap"} and \code{"dot"}, plots for all features are always

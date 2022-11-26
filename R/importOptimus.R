@@ -42,7 +42,7 @@
 
     ## Convert to "dgCMatrix"
     newM <- Matrix::Matrix(mat[,1], nrow=nrow(mat))
-    newM <- methods::as(newM, "dgCMatrix")
+    newM <- methods::as(newM, "CsparseMatrix")
     breaks <- seq(2, ncol(mat), by=1000)
     if(length(breaks) > 2) {
       for(i in seq(2, length(breaks))) {

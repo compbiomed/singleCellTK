@@ -11,36 +11,52 @@ runMNNCorrect(
   batch = "batch",
   assayName = "MNN",
   k = 20L,
-  sigma = 0.1
+  propK = NULL,
+  sigma = 0.1,
+  cosNormIn = TRUE,
+  cosNormOut = TRUE,
+  varAdj = TRUE,
+  BPPARAM = BiocParallel::SerialParam()
 )
 }
 \arguments{
-\item{inSCE}{\linkS4class{SingleCellExperiment} inherited object. Required.}
+\item{inSCE}{Input \linkS4class{SingleCellExperiment} object}
 
 \item{useAssay}{A single character indicating the name of the assay requiring
 batch correction. Default \code{"logcounts"}.}
 
-\item{batch}{A single character indicating a field in
-\code{\link{colData}} that annotates the batches.
-Default \code{"batch"}.}
+\item{batch}{A single character indicating a field in \code{colData} that
+annotates the batches of each cell; or a vector/factor with the same length
+as the number of cells. Default \code{"batch"}.}
 
 \item{assayName}{A single characeter. The name for the corrected assay. Will
 be saved to \code{\link{assay}}. Default
 \code{"MNN"}.}
 
-\item{k}{An integer. Specifies the number of nearest neighbours to
-consider when defining MNN pairs. This should be interpreted as the minimum
-frequency of each cell type or state in each batch. Larger values will
-improve the precision of the correction by increasing the number of MNN
-pairs, at the cost of reducing accuracy by allowing MNN pairs to form between
-cells of different type. Default \code{20L}.}
+\item{k}{An integer scalar specifying the number of nearest neighbors to
+consider when identifying MNNs. See "See Also". Default \code{20}.}
 
-\item{sigma}{A Numeric scalar. Specifies how much information is
-shared between MNN pairs when computing the batch effect. Larger values will
-share more information, approaching a global correction for all cells in the
-same batch. Smaller values allow the correction to vary across cell types,
-which may be more accurate but comes at the cost of precision. Default
-\code{0.1}.}
+\item{propK}{A numeric scalar in (0, 1) specifying the proportion of cells in
+each dataset to use for mutual nearest neighbor searching. See "See Also".
+Default \code{NULL}.}
+
+\item{sigma}{A numeric scalar specifying the bandwidth of the Gaussian
+smoothing kernel used to compute the correction vector for each cell. See
+"See Also". Default \code{0.1}.}
+
+\item{cosNormIn}{A logical scalar indicating whether cosine normalization
+should be performed on the input data prior to calculating distances between
+cells. See "See Also". Default \code{TRUE}.}
+
+\item{cosNormOut}{A logical scalar indicating whether cosine normalization
+should be performed prior to computing corrected expression values. See "See
+Also". Default \code{TRUE}.}
+
+\item{varAdj}{A logical scalar indicating whether variance adjustment should
+be performed on the correction vectors. See "See Also". Default \code{TRUE}.}
+
+\item{BPPARAM}{A \linkS4class{BiocParallelParam} object specifying whether
+the PCA and nearest-neighbor searches should be parallelized.}
 }
 \value{
 The input \linkS4class{SingleCellExperiment} object with
@@ -55,9 +71,12 @@ applying a Gaussian smoothing kernel with bandwidth `sigma`.
 }
 \examples{
 data('sceBatches', package = 'singleCellTK')
-logcounts(sceBatches) <- log(counts(sceBatches) + 1)
+logcounts(sceBatches) <- log1p(counts(sceBatches))
 sceCorr <- runMNNCorrect(sceBatches)
 }
 \references{
-Lun ATL, et al., 2016 & 2018
+Haghverdi L, Lun ATL, et. al., 2018
+}
+\seealso{
+\code{\link[batchelor]{mnnCorrect}}
 }

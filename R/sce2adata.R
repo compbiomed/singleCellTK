@@ -11,13 +11,16 @@
 #' will be saved in `adata$X`, Other assays will be stored in `adata$obsm`
 #' together with the low-dimension representations (for now).
 #' @return A Python anndata.AnnData object
+#' @noRd
 .sce2adata <- function(SCE, useAssay = 'counts') {
     # Transfer SCE object back to AnnData
     # Argument check first
     stopifnot(inherits(SCE, "SingleCellExperiment"))
 
     # Extract information that correspond to AnnData structure
-    X <- as.matrix(t(SummarizedExperiment::assay(SCE, useAssay)))
+    #X <- as.matrix(t(SummarizedExperiment::assay(SCE, useAssay)))
+    # Sparse matrix conversion supported now, commenting the line above.
+    X <- t(SummarizedExperiment::assay(SCE, useAssay))
     AnnData <- sc$AnnData(X = X)
     obs <- as.data.frame(SummarizedExperiment::colData(SCE))
     if(length(obs) > 0){

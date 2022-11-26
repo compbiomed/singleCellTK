@@ -2,13 +2,13 @@
 % Please edit documentation in R/htmlReports.R
 \name{reportFindMarker}
 \alias{reportFindMarker}
-\title{Get findMarkerDiffExp .html report}
+\title{Get runFindMarker .html report}
 \usage{
 reportFindMarker(inSCE, output_file = NULL, output_dir = NULL)
 }
 \arguments{
 \item{inSCE}{A \code{\link[SingleCellExperiment]{SingleCellExperiment}}
-object containing the output from \code{\link{findMarkerDiffExp}} function}
+object containing the output from \code{\link{runFindMarker}} function}
 
 \item{output_file}{name of the generated file. If \code{NULL} then the output
 file name will be based on the name of the Rmarkdown template. Default
@@ -24,5 +24,5 @@ in the arguments.
 }
 \description{
 A  function to generate .html Rmarkdown report containing the
-visualizations of the \code{\link{findMarkerDiffExp}} function output
+visualizations of the \code{\link{runFindMarker}} function output
 }

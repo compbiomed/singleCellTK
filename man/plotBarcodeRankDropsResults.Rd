@@ -2,7 +2,7 @@
 % Please edit documentation in R/ggPerQCWrapper.R
 \name{plotBarcodeRankDropsResults}
 \alias{plotBarcodeRankDropsResults}
-\title{Plots for runEmptyDrops outputs.}
+\title{Plots for runBarcodeRankDrops outputs.}
 \usage{
 plotBarcodeRankDropsResults(
   inSCE,
@@ -10,42 +10,42 @@ plotBarcodeRankDropsResults(
   defaultTheme = TRUE,
   dotSize = 0.5,
   titleSize = 18,
-  axisLabelSize = 18,
   axisSize = 15,
+  axisLabelSize = 18,
   legendSize = 15
 )
 }
 \arguments{
 \item{inSCE}{Input \linkS4class{SingleCellExperiment} object with saved
 dimension reduction components or a variable with saved results from
-\link{runBarcodeRankDrops}. Required.}
+\code{\link{runBarcodeRankDrops}}. Required.}
 
-\item{sample}{Character vector. Indicates which sample each cell belongs to.
-Default NULL.}
+\item{sample}{Character vector or colData variable name. Indicates which 
+sample each cell belongs to. Default \code{NULL}.}
 
-\item{defaultTheme}{Removes grid in plot and sets axis title size to 10
-when TRUE. Default TRUE.}
+\item{defaultTheme}{Removes grid in plot and sets axis title size to 
+\code{10} when \code{TRUE}. Default \code{TRUE}.}
 
-\item{dotSize}{Size of dots. Default 0.5.}
+\item{dotSize}{Size of dots. Default \code{0.5}.}
 
-\item{titleSize}{Size of title of plot. Default 18.}
+\item{titleSize}{Size of title of plot. Default \code{18}.}
 
-\item{axisLabelSize}{Size of x/y-axis labels. Default 18.}
+\item{axisSize}{Size of x/y-axis ticks. Default \code{15}.}
 
-\item{axisSize}{Size of x/y-axis ticks. Default 15.}
+\item{axisLabelSize}{Size of x/y-axis labels. Default \code{18}.}
 
-\item{legendSize}{size of legend. Default 15.}
+\item{legendSize}{size of legend. Default \code{15}.}
 }
 \value{
 list of .ggplot objects
 }
 \description{
 A wrapper function which visualizes outputs from the
- runEmptyDrops function stored in the colData slot of the SingleCellExperiment
- object via plots.
+\code{runBarcodeRankDrops} function stored in the \code{metadata} slot of 
+the \linkS4class{SingleCellExperiment} object.
 }
 \examples{
-data(scExample, package="singleCellTK")
-sce <- runBarcodeRankDrops(inSCE=sce)
-plotBarcodeRankDropsResults(inSCE=sce)
+data(scExample, package = "singleCellTK")
+sce <- runBarcodeRankDrops(inSCE = sce)
+plotBarcodeRankDropsResults(inSCE = sce)
 }

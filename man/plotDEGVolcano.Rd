@@ -9,7 +9,8 @@ plotDEGVolcano(
   useResult,
   labelTopN = 10,
   log2fcThreshold = 0.25,
-  fdrThreshold = 0.05
+  fdrThreshold = 0.05,
+  featureDisplay = S4Vectors::metadata(inSCE)$featureDisplay
 )
 }
 \arguments{
@@ -18,14 +19,19 @@ plotDEGVolcano(
 \item{useResult}{character. A string specifying the \code{analysisName}
 used when running a differential expression analysis function.}
 
-\item{labelTopN}{Integer, label this number of top DEGs that pass the 
-filters.}
+\item{labelTopN}{Integer, label this number of top DEGs that pass the
+filters. \code{FALSE} for not labeling. Default \code{10}.}
 
 \item{log2fcThreshold}{numeric. Label genes with the absolute values of
 log2FC greater than this value as regulated. Default \code{0.25}.}
 
 \item{fdrThreshold}{numeric. Label genes with FDR value less than this
 value as regulated. Default \code{0.05}.}
+
+\item{featureDisplay}{A character string to indicate a variable in
+\code{rowData(inSCE)} for feature labeling. \code{NULL} for using
+\code{rownames}. Default \code{metadata(inSCE)$featureDisplay} (see
+\code{\link{setSCTKDisplayRow}})}
 }
 \value{
 A \code{ggplot} object of volcano plot
@@ -34,7 +40,7 @@ A \code{ggplot} object of volcano plot
 Generate volcano plot for DEGs
 }
 \details{
-Any of the differential expression analysis method from SCTK should 
+Any of the differential expression analysis method from SCTK should
 be performed prior to using this function to generate volcano plots.
 }
 \examples{
@@ -45,4 +51,7 @@ sce.w <- runWilcox(sce.w, class = "cell_type", classGroup1 = "alpha",
                    groupName1 = "w.alpha", groupName2 = "w.beta",
                    analysisName = "w.aVSb")
 plotDEGVolcano(sce.w, "w.aVSb")
+}
+\seealso{
+\code{\link{runDEAnalysis}}, \code{\link{plotDEGHeatmap}}
 }

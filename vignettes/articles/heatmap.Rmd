@@ -10,7 +10,6 @@ csl: ieee.csl
 ---
 
 ```{r develSetting, include=FALSE}
-doEval = FALSE
 knitr::opts_chunk$set(warning = FALSE)
 ```
 
@@ -276,11 +275,11 @@ plotSCEHeatmap(inSCE = sce, useAssay = "counts", featureIndex = featureSubset, c
 
 Fully customized annotation is also supported, though it can be complexed for users. For the labeling, it is more recommanded to insert the information into `rowData` or `colData` and then make use. For coloring, information should be passed to `featureAnnotationColor` or `cellAnnotationColor`. The argument must be a `list` object with names matching the annotation classes (such as `"randLabel"` and `"type"`); each inner object under a name must be a named vector, with colors as the values and existing categories as the names. The working instance looks like this:
 
-```{R colorEG, eval=TRUE, echo=FALSE}
-print("For row annotation")
-singleCellTK:::dataAnnotationColor(sce, "row")
-print("For column annotation")
-singleCellTK:::dataAnnotationColor(sce, "col")
+```{R colorEG, eval=FALSE, echo=FALSE}
+colAnnotattionColor <- list(
+  sample = c(pbmc_4k = "FF4D4D"),
+  type = c(Singlet = "#4DFFFF", Doublet = "#FFC04D", EmptyDroplet = "#4D4DFF")
+)
 ```
 
 ````{=html}
@@ -302,7 +301,7 @@ plotSCEHeatmap(inSCE = sce, useAssay = "counts", featureIndex = featureSubset, c
 **4. Row/Column titles** The row title (`"Genes"`) and column title (`"Cells"`) can be changed or removed by passing a string or `NULL` to `rowTitle` or `colTitle`, respectively.  
 
 ```{R label, eval=TRUE, cache=TRUE}
-plotSCEHeatmap(inSCE = sce, useAssay = "counts", featureIndex = featureSubset, cellIndex = cellSubset, rowLabel = "feature_name", colLabel = as.character(1:50), colDend = FALSE, rowTitle = "Downsampled features")
+plotSCEHeatmap(inSCE = sce, useAssay = "counts", featureIndex = featureSubset, cellIndex = cellSubset, rowLabel = "feature_name", colLabel = seq(ncol(sce)), colDend = FALSE, rowTitle = "Downsampled features")
 ```
 
 There are still some parameters not mentioned here, but they are not frequently used. Please refer to `?plotSCEHeatmap` as well as `?ComplexHeatmap::Heatmap`. 

@@ -19,13 +19,15 @@ shinyPanelQC <- fluidPage(
             tags$div(id = "QCMetricsParams",
                      actionLink("QCMhelp", "Help", icon = icon("info-circle")),
                      tags$hr(),
-                     selectInput("QCMgeneSets",
-                                 "collectionName - Select a Gene Set for Quality Control",
-                                 c("None" = "none",
+                     selectInput("QCMito", "Use mitochondrial gene set",
+                                 c("None" = "None",
                                    "Human Mitochondrial Genes (Ensembl)" = "he",
                                    "Human Mitochondrial Genes (Symbol)" = "hs",
                                    "Mouse Mitochondrial Genes (Ensembl)" = "me",
                                    "Mouse Mitochondrial Genes (Symbol)" = "ms")),
+                     selectInput("QCMgeneSets",
+                                 "collectionName - Select a Gene Set for Quality Control",
+                                 c("None")),
                      actionLink("QCImportGS", "Import Gene Sets", icon = icon("upload"))
             )
           ),
@@ -99,7 +101,6 @@ shinyPanelQC <- fluidPage(
 
                      checkboxInput("CXverb", "verb - Output progress messages?", value = TRUE), # T/F input
                      checkboxInput("CXretRes", "retRes - Return gene pair scores and top-scoring gene pairs?"), # T/F input
-                     checkboxInput("CXestNdbl", "estNdbl - Estimate the number of doublets?"), # T/F input
             )
           ),
           # bcds
@@ -117,7 +118,6 @@ shinyPanelQC <- fluidPage(
                      checkboxInput("BCverb", "verb - Output progress messages?", value = TRUE), # T/F input
                      checkboxInput("BCretRes", "retRes - Return trained classifier?"), # T/F input
                      checkboxInput("BCvarImp", "varImp - Return variable importance?"), # T/F input
-                     checkboxInput("BCestNdbl", "estNdbl - Estimate the number of doublets?"), # T/F input
             )
           ),
           # cxds_bcds_hybrid
@@ -139,9 +139,7 @@ shinyPanelQC <- fluidPage(
                      textInput("BC2nmax", "nmax - Max number of training rounds (default 'tune')", value = "tune"),
                      checkboxInput("BC2retRes", "retRes - Return trained classifier?"), # T/F input
                      checkboxInput("BC2varImp", "varImp - Return variable importance?"), # T/F input
-
                      checkboxInput("CXBCverb", "verb - Output bcds progress messages?", value = TRUE), # T/F input
-                     checkboxInput("CXBCestNdbl", "estNdbl - Estimate the number of doublets?", value = TRUE), # T/F input
             )
           ),
           # scrublet
@@ -153,16 +151,16 @@ shinyPanelQC <- fluidPage(
                      tags$hr(),
                      numericInput("SsimDoubletRatio", "simDoubletRatio - Number of soublets to simulate (default 2.0)", 2.0),
                      numericInput("SnNeighbors", "nNeighbors - Number of nearest neighbors (default NULL)", NULL),
-                     numericInput("SminDist", "minDist - Tightness of UMAP points (default 0.1)", 0.1),
+                     numericInput("SminDist", "minDist - Tightness of UMAP points (default NULL)", NULL),
                      numericInput("SexpectedDoubletRate", "expectedDoubletRate - Estimated doublet rate (default 0.1)", 0.1),
                      numericInput("SstdevDoubletRate", "stdevDoubletRate - Uncertainty in expected doublet rate (default 0.02)", 0.02),
-                     numericInput("SsyntheticDoubletUmiSubsampling", "syntheticDoubletUmiSubsampling - UMI sampling rate (default 0.1)", 0.1),
+                     numericInput("SsyntheticDoubletUmiSubsampling", "syntheticDoubletUmiSubsampling - UMI sampling rate (default 1)", 1),
                      numericInput("SminCounts", "minCounts - Prior to PCA, exclude genes with counts below (defualt 3):", 3),
                      numericInput("SminCells", "minCells - Prior to PCA, exclude genes expressed in fewer than X cells (defualt 3):", 3),
-                     numericInput("SminGeneVariabilityPctl", "minGeneVariabilityPctl - Prior to PCA, keep X most highly variable genes (defualt 3):", 3),
+                     numericInput("SminGeneVariabilityPctl", "minGeneVariabilityPctl - Prior to PCA, keep X most highly variable genes (defualt 85):", 85),
                      numericInput("SnPrinComps", "nPrinComps - Prior to KNN graph construction, number of principle components used to embed the transcriptomes (defualt 30):", 30),
-                     numericInput("StsneAngle", "tsneAngle - Angular size of distant node as measured from a point in the t-SNE plot (defualt 0.5):", 0.5),
-                     numericInput("StsnePerplexity", "tsnePerplexity - Number of nearest neighbors used in other manifold learning algorithms (defualt 30):", 30),
+                     numericInput("StsneAngle", "tsneAngle - Angular size of distant node as measured from a point in the t-SNE plot (defualt NULL):", NULL),
+                     numericInput("StsnePerplexity", "tsnePerplexity - Number of nearest neighbors used in other manifold learning algorithms (defualt NULL):", NULL),
 
                      textInput("SdistanceMetric", "distanceMetric - Distance metric", value = "euclidean"),
 
@@ -214,7 +212,7 @@ shinyPanelQC <- fluidPage(
           numericInput("Useed", "Seed value for reproducibility of UMAP result (default 12345)", 12345),
 
 
-          withBusyIndicatorUI(actionButton("runQC", "Run")),
+          actionButton("runQC", "Run"),
           tags$div(id = "qcPageErrors"),
         ),
         mainPanel(

@@ -44,107 +44,122 @@ plotCxdsResults(
 \arguments{
 \item{inSCE}{Input \linkS4class{SingleCellExperiment} object with saved
 dimension reduction components or a variable with saved results from
-\link{runCxds}.}
+\code{\link{runCxds}}. Required.}
 
-\item{sample}{Character vector. Indicates which sample each cell belongs to.
-Default NULL.}
+\item{sample}{Character vector or colData variable name. Indicates which 
+sample each cell belongs to. Default \code{NULL}.}
 
-\item{shape}{If provided, add shapes based on the value.}
+\item{shape}{If provided, add shapes based on the value. Default \code{NULL}.}
 
 \item{groupBy}{Groupings for each numeric value. A user may input a vector
-equal length to the number of the samples in the SingleCellExperiment
-object, or can be retrieved from the colData slot. Default NULL.}
+equal length to the number of the samples in \code{inSCE}, or can be 
+retrieved from the colData slot. Default \code{NULL}.}
 
-\item{combinePlot}{Must be either "all", "sample", or "none". "all" will combine all plots into a single .ggplot object,
-while "sample" will output a list of plots separated by sample. Default "all".}
+\item{combinePlot}{Must be either \code{"all"}, \code{"sample"}, or 
+\code{"none"}. \code{"all"} will combine all plots into a single .ggplot 
+object, while \code{"sample"} will output a list of plots separated by 
+sample. Default \code{"all"}.}
 
-\item{violin}{Boolean. If TRUE, will plot the violin plot. Default TRUE.}
+\item{violin}{Boolean. If \code{TRUE}, will plot the violin plot. Default 
+\code{TRUE}.}
 
-\item{boxplot}{Boolean. If TRUE, will plot boxplots for each violin plot.
-Default TRUE.}
+\item{boxplot}{Boolean. If \code{TRUE}, will plot boxplots for each violin 
+plot. Default \code{TRUE}.}
 
-\item{dots}{Boolean. If TRUE, will plot dots for each violin plot.
-Default TRUE.}
+\item{dots}{Boolean. If \code{TRUE}, will plot dots for each violin plot.
+Default \code{TRUE}.}
 
-\item{reducedDimName}{Saved dimension reduction name in the
-\linkS4class{SingleCellExperiment} object. Required.}
+\item{reducedDimName}{Saved dimension reduction name in \code{inSCE}. 
+Default \code{"UMAP"}.}
 
-\item{xlab}{Character vector. Label for x-axis. Default NULL.}
+\item{xlab}{Character vector. Label for x-axis. Default \code{NULL}.}
 
-\item{ylab}{Character vector. Label for y-axis. Default NULL.}
+\item{ylab}{Character vector. Label for y-axis. Default \code{NULL}.}
 
-\item{dim1}{1st dimension to be used for plotting. Can either be a string which specifies
-the name of the dimension to be plotted from reducedDims, or a numeric value which specifies
-the index of the dimension to be plotted. Default is NULL.}
+\item{dim1}{1st dimension to be used for plotting. Can either be a string 
+which specifies the name of the dimension to be plotted from reducedDims, or 
+a numeric value which specifies the index of the dimension to be plotted. 
+Default is \code{NULL}.}
 
-\item{dim2}{2nd dimension to be used for plotting. Can either be a string which specifies
-the name of the dimension to be plotted from reducedDims, or a numeric value which specifies
-the index of the dimension to be plotted. Default is NULL.}
+\item{dim2}{2nd dimension to be used for plotting. Similar to \code{dim1}. 
+Default is \code{NULL}.}
 
-\item{bin}{Numeric vector. If single value, will divide the numeric values into the `bin` groups.
-If more than one value, will bin numeric values using values as a cut point.}
+\item{bin}{Numeric vector. If single value, will divide the numeric values 
+into \code{bin} groups. If more than one value, will bin numeric values using
+values as a cut point. Default \code{NULL}.}
 
-\item{binLabel}{Character vector. Labels for the bins created by the `bin` parameter.
-Default NULL.}
+\item{binLabel}{Character vector. Labels for the bins created by \code{bin}.
+Default \code{NULL}.}
 
-\item{defaultTheme}{Removes grid in plot and sets axis title size to 10
-when TRUE. Default TRUE.}
+\item{defaultTheme}{Removes grid in plot and sets axis title size to 
+\code{10} when \code{TRUE}. Default \code{TRUE}.}
 
-\item{dotSize}{Size of dots. Default 0.5.}
+\item{dotSize}{Size of dots. Default \code{0.5}.}
 
 \item{summary}{Adds a summary statistic, as well as a crossbar to the
-violin plot. Options are "mean" or "median". Default NULL.}
+violin plot. Options are \code{"mean"} or \code{"median"}. Default 
+\code{NULL}.}
 
 \item{summaryTextSize}{The text size of the summary statistic displayed
-above the violin plot. Default 3.}
+above the violin plot. Default \code{3}.}
 
-\item{transparency}{Transparency of the dots, values will be 0-1. Default 1.}
+\item{transparency}{Transparency of the dots, values will be 0-1. Default 
+\code{1}.}
 
-\item{baseSize}{The base font size for all text. Default 12.
-Can be overwritten by titleSize, axisSize, and axisLabelSize,
-legendSize, legendTitleSize.}
+\item{baseSize}{The base font size for all text. Default \code{12}.
+Can be overwritten by \code{titleSize}, \code{axisSize}, and 
+\code{axisLabelSize}, \code{legendSize}, \code{legendTitleSize}.}
 
-\item{titleSize}{Size of title of plot. Default NULL.}
+\item{titleSize}{Size of title of plot. Default \code{NULL}.}
 
-\item{axisLabelSize}{Size of x/y-axis labels. Default NULL.}
+\item{axisLabelSize}{Size of x/y-axis labels. Default \code{NULL}.}
 
-\item{axisSize}{Size of x/y-axis ticks. Default NULL.}
+\item{axisSize}{Size of x/y-axis ticks. Default \code{NULL}.}
 
-\item{legendSize}{size of legend. Default NULL.}
+\item{legendSize}{size of legend. Default \code{NULL}.}
 
-\item{legendTitleSize}{size of legend title. Default NULL.}
+\item{legendTitleSize}{size of legend title. Default \code{NULL}.}
 
-\item{relHeights}{Relative heights of plots when combine is set.}
+\item{relHeights}{Relative heights of plots when combine is set. Default 
+\code{1}.}
 
-\item{relWidths}{Relative widths of plots when combine is set.}
+\item{relWidths}{Relative widths of plots when combine is set. Default 
+\code{c(1, 1, 1)}.}
 
-\item{plotNCols}{Number of columns when plots are combined in a grid.}
+\item{plotNCols}{Number of columns when plots are combined in a grid. Default 
+\code{NULL}.}
 
-\item{plotNRows}{Number of rows when plots are combined in a grid.}
+\item{plotNRows}{Number of rows when plots are combined in a grid. Default 
+\code{NULL}.}
 
-\item{labelSamples}{Will label sample name in title of plot if TRUE. Default TRUE.}
+\item{labelSamples}{Will label sample name in title of plot if TRUE. Default 
+\code{TRUE}.}
 
-\item{samplePerColumn}{If TRUE, when there are multiple samples and combining by "all",
-the output .ggplot will have plots from each sample on a single column. Default TRUE.}
+\item{samplePerColumn}{If \code{TRUE}, when there are multiple samples and 
+combining by \code{"all"}, the output .ggplot will have plots from each 
+sample on a single column. Default \code{TRUE}.}
 
-\item{sampleRelHeights}{If there are multiple samples and combining by "all",
-the relative heights for each plot.}
+\item{sampleRelHeights}{If there are multiple samples and combining by 
+\code{"all"}, the relative heights for each plot. Default \code{1}.}
 
-\item{sampleRelWidths}{If there are multiple samples and combining by "all",
-the relative widths for each plot.}
+\item{sampleRelWidths}{If there are multiple samples and combining by 
+\code{"all"}, the relative widths for each plot. Default \code{1}.}
 }
 \value{
 list of .ggplot objects
 }
 \description{
 A wrapper function which visualizes outputs from the
- runCxds function stored in the colData slot of the
- SingleCellExperiment object via various plots.
+\code{\link{runCxds}} function stored in the colData slot of the
+\linkS4class{SingleCellExperiment} object via various plots.
 }
 \examples{
 data(scExample, package="singleCellTK")
 sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
-sce <- getUMAP(inSCE=sce, useAssay="counts", reducedDimName="UMAP")
+sce <- runQuickUMAP(sce)
 sce <- runCxds(sce)
 plotCxdsResults(inSCE=sce, reducedDimName="UMAP")
+}
+\seealso{
+\code{\link{runCxds}}
 }

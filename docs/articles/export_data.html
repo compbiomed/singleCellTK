@@ -34,7 +34,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.6.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.3</span>
       </span>
     </div>
 
@@ -50,17 +50,20 @@
   <a href="../articles/installation.html">Installation</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Tutorials
      
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../articles/console_analysis_tutorial.html">A La Carte Workflow - PBMC3K (R Console)</a>
+      <a href="../articles/01_import_and_qc_tutorial.html">Importing and QC - PBMC3K</a>
     </li>
     <li>
-      <a href="../articles/cnsl_seurat_curated_workflow.html">Seurat Curated Workflow - PBMC3K</a>
+      <a href="../articles/02_a_la_carte_workflow.html">A La Carte Workflow - PBMC3K</a>
+    </li>
+    <li>
+      <a href="../articles/seurat_curated_workflow.html">Seurat Curated Workflow - PBMC3K</a>
     </li>
     <li>
       <a href="../articles/celda_curated_workflow.html">Celda Curated Workflow - PBMC3K</a>
@@ -71,14 +74,14 @@
   <a href="../articles/cmd_qc.html">SCTK-QC</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Documentation
      
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
 <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Data</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Data</a>
       <ul class="dropdown-menu" role="menu">
 <li>
           <a href="../articles/import_data.html">Import Data</a>
@@ -98,7 +101,7 @@
       </ul>
 </li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">QC &amp; Filtering</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">QC &amp; Filtering</a>
       <ul class="dropdown-menu" role="menu">
 <li>
           <a href="../articles/cnsl_dropletqc.html">Droplet QC (R console)</a>
@@ -115,10 +118,10 @@
       </ul>
 </li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Normalization &amp; Batch Correction</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Normalization &amp; Batch Correction</a>
       <ul class="dropdown-menu" role="menu">
 <li>
-          <a href="../articles/cnsl_normalization.html">Normalization</a>
+          <a href="../articles/normalization.html">Normalization</a>
         </li>
         <li>
           <a href="../articles/batch_correction.html">Batch Correction</a>
@@ -126,16 +129,16 @@
       </ul>
 </li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Feature Selection &amp; Dimensionality Reduction</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Feature Selection &amp; Dimensionality Reduction</a>
       <ul class="dropdown-menu" role="menu">
 <li>
-          <a href="../articles/cnsl_feature_selection.html">Feature Selection</a>
+          <a href="../articles/feature_selection.html">Feature Selection</a>
         </li>
         <li>
-          <a href="../articles/cnsl_dimensionality_reduction.html">Dimensionality Reduction</a>
+          <a href="../articles/dimensionality_reduction.html">Dimensionality Reduction</a>
         </li>
         <li>
-          <a href="../articles/cnsl_2d_embedding.html">2D Embedding</a>
+          <a href="../articles/2d_embedding.html">2D Embedding</a>
         </li>
       </ul>
 </li>
@@ -143,7 +146,7 @@
       <a href="../articles/clustering.html">Clustering</a>
     </li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Differential Expression &amp; Cell Type Labeling</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Differential Expression &amp; Cell Type Labeling</a>
       <ul class="dropdown-menu" role="menu">
 <li>
           <a href="../articles/differential_expression.html">Differential Expression</a>
@@ -157,10 +160,10 @@
       </ul>
 </li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Enrichment &amp; Pathway Analysis</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Pathway &amp; Enrichment Analysis</a>
       <ul class="dropdown-menu" role="menu">
 <li>
-          <a href="../articles/cnsl_enrichR.html">EnrichR</a>
+          <a href="../articles/enrichR.html">EnrichR</a>
         </li>
         <li>
           <a href="../articles/pathwayAnalysis.html">Pathway Analysis</a>
@@ -168,10 +171,18 @@
       </ul>
 </li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Curated Workflows</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Trajectory Analysis</a>
       <ul class="dropdown-menu" role="menu">
 <li>
-          <a href="../articles/cnsl_seurat_curated_workflow.html">Seurat</a>
+          <a href="../articles/trajectoryAnalysis.html">TSCAN</a>
+        </li>
+      </ul>
+</li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Curated Workflows</a>
+      <ul class="dropdown-menu" role="menu">
+<li>
+          <a href="../articles/seurat_curated_workflow.html">Seurat</a>
         </li>
         <li>
           <a href="../articles/celda_curated_workflow.html">Celda</a>
@@ -179,7 +190,7 @@
       </ul>
 </li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Visualization</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Visualization</a>
       <ul class="dropdown-menu" role="menu">
 <li>
           <a href="../articles/visualization.html">General Visualization</a>
@@ -225,7 +236,8 @@
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Export Data</h1>
-                        <h4 data-toc-skip class="author">Yichen Wang</h4>
+                        <h4 data-toc-skip class="author">Yichen
+Wang</h4>
             
       
       <small class="dont-index">Source: <a href="https://github.com/compbiomed/singleCellTK/blob/HEAD/vignettes/articles/export_data.Rmd" class="external-link"><code>vignettes/articles/export_data.Rmd</code></a></small>
@@ -240,15 +252,25 @@
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
-<p>Users can export/save their dataset after analyzing with SCTK, in three different formats:</p>
+<p>Users can export/save their dataset after analyzing with SCTK, in
+three different formats:</p>
 <ol style="list-style-type: decimal">
-<li>Save as <a href="https://rdrr.io/bioc/SingleCellExperiment/man/SingleCellExperiment.html" class="external-link">SingleCellExperiment</a> object, which can be used in R and analyzed with SCTK and many other choices of tools.<br>
+<li>Save as <a href="https://rdrr.io/bioc/SingleCellExperiment/man/SingleCellExperiment.html" class="external-link">SingleCellExperiment</a>
+object, which can be used in R and analyzed with SCTK and many other
+choices of tools.<br>
 </li>
-<li>Save as <a href="https://anndata.readthedocs.io/en/latest/anndata.AnnData.html" class="external-link">AnnData</a> object, which is Python based, and can be analyzed with <a href="https://scanpy.readthedocs.io/en/stable/" class="external-link">scanpy</a> and many other choices of tools.<br>
+<li>Save as <a href="https://anndata.readthedocs.io/en/latest/" class="external-link">AnnData</a> object,
+which is Python based, and can be analyzed with <a href="https://scanpy.readthedocs.io/en/stable/" class="external-link">scanpy</a> and many
+other choices of tools.<br>
 </li>
-<li>Save as text files. The count matrices (assays), cell/feature annotation tables, dimension reduction matrices, feature subsets and metadata will be saved separately within a folder.</li>
+<li>Save as text files. The count matrices (assays), cell/feature
+annotation tables, dimension reduction matrices, feature subsets and
+metadata will be saved separately within a folder.</li>
 </ol>
-<p>To view detailed instructions on how to export data, please select ‘Interactive Analysis’ for exporting through the shiny application or ‘Console Analysis’ for exporting through the R console from the tabs below: <br></p>
+<p>To view detailed instructions on how to export data, please select
+‘Interactive Analysis’ for exporting through the shiny application or
+‘Console Analysis’ for exporting through the R console from the tabs
+below: <br></p>
 </div>
 <div class="section level2">
 <h2 id="workflow-guide">Workflow Guide<a class="anchor" aria-label="anchor" href="#workflow-guide"></a>
@@ -260,7 +282,8 @@
 
 <div id="interactive" class="tabcontent">
 <p><img src="ui_screenshots/export/export_ui_entry.png" alt="entry"><br></p>
-<p>To export data through the user-interface, users should open up the “Export Single Cell Data” tab as shown above.</p>
+<p>To export data through the user-interface, users should open up the
+“Export Single Cell Data” tab as shown above.</p>
  <style>
 div.offset { background-color:inherit ; border-radius: 5px; margin-left: 15px;}
 </style>
@@ -270,67 +293,95 @@ div.offset { background-color:inherit ; border-radius: 5px; margin-left: 15px;}
 <ol style="list-style-type: decimal">
 <li>Select the path at <strong>“Select directory”</strong><br>
 </li>
-<li>Choose the option <strong>“Download as RDS file”</strong> from the radiobuttons<br>
+<li>Choose the option <strong>“Download as RDS file”</strong> from the
+radiobuttons<br>
 </li>
-<li>Specify the file name at the text input <strong>“File Name”</strong><br>
+<li>Specify the file name at the text input <strong>“File
+Name”</strong><br>
 </li>
 <li>Click on <strong>“Download”</strong> button</li>
 </ol></details><details><summary><b>Save as AnnData (H5AD file)</b></summary><p><img src="ui_screenshots/export/export_ui_anndata.png" alt="anndata"><br></p>
-<p>The simplest steps to save the analysis to AnnData format is similar as how users save an RDS file. To save the analysis to RDS file, users need to:</p>
+<p>The simplest steps to save the analysis to AnnData format is similar
+as how users save an RDS file. To save the analysis to RDS file, users
+need to:</p>
 <ol style="list-style-type: decimal">
 <li>Select the path at <strong>“Select directory”</strong><br>
 </li>
-<li>Choose the option <strong>“Python annData object”</strong> from the radiobuttons<br>
+<li>Choose the option <strong>“Python annData object”</strong> from the
+radiobuttons<br>
 </li>
-<li>Specify the file name at the text input <strong>“File Name”</strong><br>
+<li>Specify the file name at the text input <strong>“File
+Name”</strong><br>
 </li>
 <li>Click on <strong>“Download”</strong> button</li>
 </ol>
 <p>For Python’s AnnData object, there are a few more specifications.</p>
 <ul>
-<li>Unlike the data structure (SingleCellExperiment) that SCTK adopts, AnnData does not hold multiple assays at the same time. Users will need to make sure which assay should be the main count matrix to use, at the selection input “<strong>select assays</strong>.”<br>
+<li>Unlike the data structure (SingleCellExperiment) that SCTK adopts,
+AnnData does not hold multiple assays at the same time. Users will need
+to make sure which assay should be the main count matrix to use, at the
+selection input “<strong>select assays</strong>”.<br>
 </li>
-<li>Anndata offers the functionality to compress the saved file, so users can also choose to increase the compression level at the numeric input <strong>“Compression Opts”</strong>.<br>
+<li>Anndata offers the functionality to compress the saved file, so
+users can also choose to increase the compression level at the numeric
+input <strong>“Compression Opts”</strong>.<br>
 </li>
-<li>Usually the specified main matrix will be saved as a sparse matrix, which saves a lot of computation memory. Users can also choose to save it as dense matrix by checking the option <strong>“Force Dense”</strong>.<br>
+<li>Usually the specified main matrix will be saved as a sparse matrix,
+which saves a lot of computation memory. Users can also choose to save
+it as dense matrix by checking the option <strong>“Force
+Dense”</strong>.<br>
 </li>
-<li>If <strong>“Overwrite”</strong> is checked, the exported file will be directly written to the specified path. If it is unchecked, the data will not be exported if a file with the same name and path already exists.</li>
+<li>If <strong>“Overwrite”</strong> is checked, the exported file will
+be directly written to the specified path. If it is unchecked, the data
+will not be exported if a file with the same name and path already
+exists.</li>
 </ul></details><details><summary><b>Save to flat files</b></summary><p><img src="ui_screenshots/export/export_ui_flat.png" alt="flat"><br></p>
 <p>Similarly,</p>
 <ol style="list-style-type: decimal">
 <li>Select the path at <strong>“Select directory”</strong><br>
 </li>
-<li>Choose the option <strong>“Flat text files”</strong> from the radiobuttons<br>
+<li>Choose the option <strong>“Flat text files”</strong> from the
+radiobuttons<br>
 </li>
-<li>Specify the file name at the text input <strong>“File prefix”</strong><br>
+<li>Specify the file name at the text input <strong>“File
+prefix”</strong><br>
 </li>
 <li>Click on <strong>“Download”</strong> button</li>
 </ol>
-<p>As mentioned at the beginning of the documentation, there will be several files for different information being saved. SCTK will create a directory under the path that users select at the first step, named by “File prefix,” all text files will be stored in this folder.</p>
+<p>As mentioned at the beginning of the documentation, there will be
+several files for different information being saved. SCTK will create a
+directory under the path that users select at the first step, named by
+“File prefix”, all text files will be stored in this folder.</p>
 <p>For additional specifications:</p>
 <ul>
-<li>If <strong>“Gzip Compress”</strong> is checked, each of the file will be compressed within the output folder.<br>
+<li>If <strong>“Gzip Compress”</strong> is checked, each of the file
+will be compressed within the output folder.<br>
 </li>
-<li>If <strong>“Overwrite”</strong> is checked, the exported file will be directly written to the specified path. If it is unchecked, the data will not be exported if a file with the same name and path already exists.</li>
+<li>If <strong>“Overwrite”</strong> is checked, the exported file will
+be directly written to the specified path. If it is unchecked, the data
+will not be exported if a file with the same name and path already
+exists.</li>
 </ul></details>
 </div>
 </div>
 
 <div id="console" class="tabcontent">
-<p>As how SCTK is designed, we assume users are attempting to save their data already in a SingleCellExperiment object:</p>
+<p>As how SCTK is designed, we assume users are attempting to save their
+data already in a SingleCellExperiment object:</p>
 <p><strong>Directly saving the object to RDS file</strong></p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">saveRDS</a></span><span class="op">(</span><span class="va">sce</span>, <span class="st">"sce_exported.rds"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">saveRDS</a></span><span class="op">(</span><span class="va">sce</span>, <span class="st">"sce_exported.rds"</span><span class="op">)</span></span></code></pre></div>
 <p><strong>Exporting to AnnData (H5AD file)</strong></p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/exportSCEtoAnnData.html">exportSCEtoAnnData</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/exportSCEtoAnnData.html">exportSCEtoAnnData</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span></span></code></pre></div>
 <p><strong>Exporting to flat files</strong></p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/exportSCEtoFlatFile.html">exportSCEtoFlatFile</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/exportSCEtoFlatFile.html">exportSCEtoFlatFile</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span></span></code></pre></div>
 <p><strong>Exporting as Seurat object</strong></p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/exportSCEToSeurat.html">exportSCEToSeurat</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span></code></pre></div>
-<p>For detailed specifications, please click on the function name and look at the reference page.</p>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/exportSCEToSeurat.html">exportSCEToSeurat</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span></span></code></pre></div>
+<p>For detailed specifications, please click on the function name and
+look at the reference page.</p>
 </div>
 <script>
 document.getElementById("ia-button").click();
@@ -355,7 +406,7 @@ document.getElementById("ia-button").click();
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer>

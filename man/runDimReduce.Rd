@@ -6,13 +6,15 @@
 \usage{
 runDimReduce(
   inSCE,
-  method = c("scaterPCA", "seuratPCA", "seuratICA", "rTSNE", "seuratTSNE",
-    "scaterUMAP", "seuratUMAP"),
+  method = c("scaterPCA", "seuratPCA", "seuratICA", "rTSNE", "seuratTSNE", "scaterUMAP",
+    "seuratUMAP"),
   useAssay = NULL,
   useReducedDim = NULL,
   useAltExp = NULL,
-  reducedDimName,
+  reducedDimName = method,
   nComponents = 20,
+  useFeatureSubset = NULL,
+  scale = FALSE,
   seed = NULL,
   ...
 )
@@ -40,6 +42,14 @@ selected variable features. Default \code{NULL}.}
 selected method in case of PCA/ICA and the number of components to
 use in the case of TSNE/UMAP methods.}
 
+\item{useFeatureSubset}{Subset of feature to use for dimension reduction. A
+character string indicating a \code{rowData} variable that stores the logical
+vector of HVG selection, or a vector that can subset the rows of
+\code{inSCE}. Default \code{NULL}.}
+
+\item{scale}{Logical scalar, whether to standardize the expression values.
+Default \code{TRUE}.}
+
 \item{seed}{Random seed for reproducibility of results.
 Default \code{NULL} will use global seed in use by the R environment.}
 
@@ -56,8 +66,8 @@ Generic Wrapper function for running dimensionality reduction
 \details{
 Wrapper function to run one of the available dimensionality
 reduction algorithms integrated within SCTK from \code{\link{scaterPCA}},
-\code{\link{runSeuratPCA}}, \code{\link{runSeuratICA}}, \code{\link{getTSNE}},
-\code{\link{runSeuratTSNE}}, \code{\link{getUMAP}} and
+\code{\link{runSeuratPCA}}, \code{\link{runSeuratICA}}, \code{\link{runTSNE}},
+\code{\link{runSeuratTSNE}}, \code{\link{runUMAP}} and
 \code{\link{runSeuratUMAP}}. Users can use an assay by specifying
 \code{useAssay}, use the assay in an altExp by specifying both
 \code{useAltExp} and \code{useAssay}, or use a low-dimensionality
@@ -67,10 +77,9 @@ representation by specifying \code{useReducedDim}.
 data(scExample, package = "singleCellTK")
 sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 sce <- runNormalization(sce, useAssay = "counts",
-                        outAssayName = "logcounts_scaled",
-                        normalizationMethod = "logNormCounts",
-                        scale = TRUE)
+                        outAssayName = "logcounts",
+                        normalizationMethod = "logNormCounts")
 sce <- runDimReduce(inSCE = sce, method = "scaterPCA",
-                    useAssay = "logcounts_scaled",
+                    useAssay = "logcounts", scale = TRUE,
                     reducedDimName = "PCA")
 }

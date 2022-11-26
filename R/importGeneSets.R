@@ -204,10 +204,11 @@ importGeneSetsFromList <- function(inSCE, geneSetList,
 #' \link{importGeneSetsFromMSigDB} for importing MSigDB gene sets.
 #' @examples
 #' data(scExample)
-#' library(GSEABase)
-#' gs1 <- GeneSet(setName = "geneset1", geneIds = rownames(sce)[seq(10)])
-#' gs2 <- GeneSet(setName = "geneset2", geneIds = rownames(sce)[seq(11,20)])
-#' gsc <- GeneSetCollection(list(gs1, gs2))
+#' gs1 <- GSEABase::GeneSet(setName = "geneset1",
+#'                          geneIds = rownames(sce)[seq(10)])
+#' gs2 <- GSEABase::GeneSet(setName = "geneset2",
+#'                          geneIds = rownames(sce)[seq(11,20)])
+#' gsc <- GSEABase::GeneSetCollection(list(gs1, gs2))
 #' sce <- importGeneSetsFromCollection(inSCE = sce,
 #'                                     geneSetCollection = gsc,
 #'                                     by = "rownames")
@@ -473,7 +474,7 @@ importGeneSetsFromMSigDB <- function(inSCE, categoryIDs,
 #'                          collectionName = "human_mito",
 #'                          by = "rownames")
 #' @export
-importMitoGeneSet <- function(inSCE, reference = "human", id = "ensembl", 
+importMitoGeneSet <- function(inSCE, reference = "human", id = "ensembl",
                               by = "rownames", collectionName = "human_mito") {
 
   if (!id %in% c("symbol", "entrez", "ensembl", "ensemblTranscriptID")) {
@@ -513,11 +514,12 @@ importMitoGeneSet <- function(inSCE, reference = "human", id = "ensembl",
 #' for importing MSigDB gene sets.
 #' @examples
 #' data(scExample)
-#' library(GSEABase)
-#' gs1 <- GeneSet(setName = "geneset1", geneIds = rownames(sce)[seq(10)])
-#' gs2 <- GeneSet(setName = "geneset2", geneIds = rownames(sce)[seq(11,20)])
-#' gsc1 <- GeneSetCollection(gs1)
-#' gsc2 <- GeneSetCollection(gs2)
+#' gs1 <- GSEABase::GeneSet(setName = "geneset1",
+#'                          geneIds = rownames(sce)[seq(10)])
+#' gs2 <- GSEABase::GeneSet(setName = "geneset2",
+#'                          geneIds = rownames(sce)[seq(11,20)])
+#' gsc1 <- GSEABase::GeneSetCollection(gs1)
+#' gsc2 <- GSEABase::GeneSetCollection(gs2)
 #' sce <- importGeneSetsFromCollection(inSCE = sce,
 #'                                     geneSetCollection = gsc1,
 #'                                     by = "rownames",

@@ -6,11 +6,11 @@
 \usage{
 plotUMAP(
   inSCE,
-  colorBy = "No Color",
-  shape = "No Shape",
+  colorBy = NULL,
+  shape = NULL,
   reducedDimName = "UMAP",
   runUMAP = FALSE,
-  useAssay = "logcounts"
+  useAssay = "counts"
 )
 }
 \arguments{
@@ -38,8 +38,6 @@ Plot UMAP results either on already run results or run first and then plot.
 \examples{
 data(scExample, package = "singleCellTK")
 sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
-sce <- getUMAP(inSCE = sce, useAssay = "counts", reducedDimName = "UMAP")
-plotUMAP(sce, shape = "No Shape", reducedDimName = "UMAP",
-         runUMAP = TRUE, useAssay = "counts")
-
+sce <- runQuickUMAP(sce)
+plotUMAP(sce)
 }

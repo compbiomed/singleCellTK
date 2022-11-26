@@ -15,10 +15,16 @@ reference:
   - runCellQC
   - runDropletQC
   - runPerCellQC
+  - reportDropletQC
+  - reportCellQC
+  - plotRunPerCellQCResults
 - title: "Decontamination"
 - contents:
   - runDecontX
+  - plotDecontXResults
   - runSoupX
+  - getSoupX<-
+  - plotSoupXResults
 - title: "Doublet/Empty Droplet Detection"
 - contents:
   - runBarcodeRankDrops
@@ -29,50 +35,69 @@ reference:
   - runScDblFinder
   - runDoubletFinder
   - runScrublet
+  - plotBarcodeRankDropsResults
+  - plotEmptyDropsResults
+  - plotBcdsResults
+  - plotCxdsResults
+  - plotScdsHybridResults
+  - plotScDblFinderResults
+  - plotDoubletFinderResults
+  - plotScrubletResults
 - title: "Normalization"
 - contents:
   - runNormalization
   - scaterlogNormCounts
   - scaterCPM
-  - seuratNormalizeData
-  - seuratScaleData
+  - runSeuratNormalizeData
+  - runSeuratScaleData
+  - runSeuratSCTransform
   - computeZScore
   - trimCounts
 - title: "Batch Effect Correction"
 - contents:
+  - runMNNCorrect
   - runComBatSeq
   - runBBKNN
   - runFastMNN
   - runLimmaBC
-  - runMNNCorrect
+  - runHarmony
   - runSCANORAMA
   - runSCMerge
-  - seuratIntegration
+  - runSeuratIntegration
   - runZINBWaVE
   - plotBatchVariance
+  - plotBatchCorrCompare
+  - plotSCEBatchFeatureMean
 - title: "Feature Selection"
 - contents:
   - runFeatureSelection
-  - scranModelGeneVar
-  - seuratFindHVG
+  - runModelGeneVar
+  - runSeuratFindHVG
   - getTopHVG
-  - seuratPlotHVG
+  - setTopHVG
+  - plotTopHVG
 - title: "Dimensionality Reduction & Embedding"
 - contents:
   - runDimReduce
   - scaterPCA
-  - getUMAP
-  - getTSNE
-  - seuratICA
-  - seuratPCA
-  - seuratRunUMAP
-  - seuratRunTSNE
+  - runUMAP
+  - runTSNE
+  - runSeuratICA
+  - runSeuratPCA
+  - runSeuratUMAP
+  - runSeuratTSNE
+  - runQuickUMAP
+  - runQuickTSNE
+  - plotPCA
+  - plotUMAP
+  - plotTSNE
+  - plotDimRed
   - plotSCEDimReduceColData
   - plotSCEDimReduceFeatures
 - title: "Clustering"
 - contents:
   - runScranSNN
-  - seuratFindClusters
+  - runSeuratFindClusters
   - runKMeans
 - title: "Differential Expression"
 - contents:
@@ -82,34 +107,44 @@ reference:
   - runDESeq2
   - runLimmaDE
   - runANOVA
+  - getDEGTopTable
   - plotDEGVolcano
   - plotDEGViolin
   - plotDEGRegression
   - plotDEGHeatmap
   - plotMASTThresholdGenes
-  - diffAbundanceFET
 - title: "Find Marker"
 - contents:
-  - findMarkerDiffExp
-  - findMarkerTopTable
-  - plotMarkerDiffExp
+  - runFindMarker
+  - getFindMarkerTopTable
+  - plotFindMarkerHeatmap
+- title: "Differential Abundance"
+- contents:
+  - diffAbundanceFET
+  - getDiffAbundanceResults
+  - plotClusterAbundance
 - title: "Cell Type Labeling"
 - contents:
   - runSingleR
 - title: "Enrichment & Pathway Analysis"
 - contents:
-  - runEnrichR
-  - getEnrichRResult
   - getMSigDBTable
+  - runEnrichR
+  - getEnrichRResult<-
   - runGSVA
   - runVAM
   - getPathwayResultNames
   - plotPathway
+- title: "Trajectory Analysis"
+- contents:
+  - starts_with("runTSCAN")
+  - starts_with("plotTSCAN")
+  - getTSCANResults
 - title: "Seurat Curated Workflow"
 - contents:
   - starts_with("runSeurat")
   - computeHeatmap
-  - starts_with("reportSeurat")
+  - getSeuratVariableFeatures
 - title: "Visualization"
 - contents:
   - starts_with("plot")
@@ -129,26 +164,44 @@ reference:
   - SEG
 - title: "Other Data Processing"
 - contents:
-  - expData
-  - expData<-
+  - starts_with("expData")
   - expDataNames
   - expDeleteDataTag
   - expSetDataTag
   - expTaggedData
+  - calcEffectSizes
   - combineSCE
   - convertSCEToSeurat
   - convertSeuratToSCE
-  - convertGeneIDs
+  - constructSCE
   - dedupRowNames
   - detectCellOutlier
+  - discreteColorPalette
+  - distinctColors
+  - downSampleCells
+  - downSampleDepth
   - featureIndex
-  - getGenesetNamesFromCollection
   - retrieveSCEIndex
   - sampleSummaryStats
+  - getSampleSummaryStatsTable
+  - setSampleSummaryStatsTable<-
+  - listSampleSummaryStatsTables
   - sctkListGeneSetCollections
+  - getGenesetNamesFromCollection
   - setSCTKDisplayRow
   - subsetSCECols
   - subsetSCERows
+  - generateHTANMeta
+  - generateMeta
+  - generateSimulatedData
+  - getBiomarker
+  - getSceParams
+  - iterateSimulations
+  - mergeSCEColData
+  - qcInputProcess
+  - setRowNames
+  - subDiffEx
+  - summarizeSCE
 - title: "Python Environment Setting"
 - contents:
   - sctkPythonInstallConda
@@ -164,10 +217,12 @@ navbar:
       href: articles/installation.html
     - text: "Tutorials"
       menu:
-      - text: "A La Carte Workflow - PBMC3K (R Console)"
-        href: articles/console_analysis_tutorial.html
+      - text: "Importing and QC - PBMC3K"
+        href: articles/01_import_and_qc_tutorial.html
+      - text: "A La Carte Workflow - PBMC3K"
+        href: articles/02_a_la_carte_workflow.html
       - text: "Seurat Curated Workflow - PBMC3K"
-        href: articles/cnsl_seurat_curated_workflow.html
+        href: articles/seurat_curated_workflow.html
       - text: "Celda Curated Workflow - PBMC3K"
         href: articles/celda_curated_workflow.html
     - text: "SCTK-QC"
@@ -199,17 +254,17 @@ navbar:
         - text: "Normalization & Batch Correction"
           menu:
           - text: "Normalization"
-            href: articles/cnsl_normalization.html
+            href: articles/normalization.html
           - text: "Batch Correction"
             href: articles/batch_correction.html
         - text: "Feature Selection & Dimensionality Reduction"
           menu:
           - text: "Feature Selection"
-            href: articles/cnsl_feature_selection.html
+            href: articles/feature_selection.html
           - text: "Dimensionality Reduction"
-            href: articles/cnsl_dimensionality_reduction.html
+            href: articles/dimensionality_reduction.html
           - text: "2D Embedding"
-            href: articles/cnsl_2d_embedding.html
+            href: articles/2d_embedding.html
         - text: "Clustering"
           href: articles/clustering.html
         - text: "Differential Expression & Cell Type Labeling"
@@ -220,16 +275,20 @@ navbar:
               href: articles/find_marker.html
             - text: "Cell Type Labeling"
               href: articles/cell_type_labeling.html
-        - text: "Enrichment & Pathway Analysis"
+        - text: "Pathway & Enrichment Analysis"
           menu:
             - text: "EnrichR"
-              href: articles/cnsl_enrichR.html
+              href: articles/enrichR.html
             - text: "Pathway Analysis"
               href: articles/pathwayAnalysis.html
+        - text: "Trajectory Analysis"
+          menu:
+            - text: "TSCAN"
+              href: articles/trajectoryAnalysis.html
         - text: "Curated Workflows"
           menu:
             - text: "Seurat"
-              href: articles/cnsl_seurat_curated_workflow.html
+              href: articles/seurat_curated_workflow.html
             - text: "Celda"
               href: articles/celda_curated_workflow.html
         - text: "Visualization"

@@ -43,7 +43,9 @@ getBiomarker <- function(inSCE, gene, binary="Binary", useAssay="counts",
   bio <- cbind(sample, as.data.frame(t(as.matrix(expression))))
 
   if(!is.null(featureDisplay)){
-    gene = rowData(inSCE)[gene.ix,featureDisplay]
+    if (featureDisplay == "rownames") gene <- rownames(inSCE)[gene.ix]
+    else
+      gene <- rowData(inSCE)[gene.ix,featureDisplay]
   }
   colnames(bio) <- c("sample", gene)
   return(bio)

@@ -50,12 +50,12 @@ A ggplot object of violin plot
 Generate violin plot to show the expression of top DEGs
 }
 \details{
-Any of the differential expression analysis method from SCTK should 
+Any of the differential expression analysis method from SCTK should
 be performed prior to using this function
 }
 \examples{
 data("sceBatches")
-logcounts(sceBatches) <- log(counts(sceBatches) + 1)
+logcounts(sceBatches) <- log1p(counts(sceBatches))
 sce.w <- subsetSCECols(sceBatches, colData = "batch == 'w'")
 sce.w <- runWilcox(sce.w, class = "cell_type", classGroup1 = "alpha",
                    groupName1 = "w.alpha", groupName2 = "w.beta",

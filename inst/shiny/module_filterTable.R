@@ -20,7 +20,9 @@ filterTableUI <- function(id){
 filterTableServer <- function(input, output, session, dataframe,
                               defaultFilterColumns = NULL,
                               defaultFilterOperators = NULL,
-                              defaultFilterValues = NULL){
+                              defaultFilterValues = NULL,
+                              initialTopN = NULL,
+                              topText = NULL){
 
   ns <- session$ns
   x <- session$ns('tmp')
@@ -47,7 +49,7 @@ filterTableServer <- function(input, output, session, dataframe,
     inputSecond[i] <- paste0("inputSecond_", colnamesDF[i])
   }
 
-  lapply(1:length(colnamesDF), function(i) {
+  lapply(seq_along(colnamesDF), function(i) {
     if(is.numeric(dataframe[,i])){
       if(i == 1){
         output[[paste0("filterOutput",i)]] <- renderUI({
@@ -206,50 +208,75 @@ filterTableServer <- function(input, output, session, dataframe,
   output$seuratFindMarkerFilter <- renderUI({
     fluidPage(
       fluidRow(
-        h6("You can view the marker genes in the table below and apply custom filters to filter the table accordingly. A joint heatmap for all the marker genes available in the table is plotted underneath the table. Additional visualizations are plotted for select genes which can be selected by clicking on the rows of the table.")
+        h6(topText)
       ),
       br(),
-                     panel(heading = "Active Filters",
-                           uiOutput(ns("seuratFindMarkerActiveFilters")),
-                           br(),
-                           dropdownButton(
-                             fluidRow(
-                               panel(
-                               column(12,
-                                      selectInput(
-                                        inputId = ns("seuratFindMarkerSelectFilter"),
-                                        label = "Select column to filter:",
-                                        choices = colnamesDF
-                                      ),
-                                      lapply(1:length(colnamesDF), function(i) {
-                                        uiOutput(ns(paste0("filterOutput", i)))
-                                      }),
-                                      actionButton(
-                                        inputId = ns("seuratFindMarkerFilterRun"),
-                                        label = "Apply Filter"
-                                      )
-                                      )
-                               )
-                             ),
-                             inputId = ns("addFilterDropdown"),
-                             label = "Add Filter",
-                             circle = FALSE,
-                             inline = TRUE
-                           ),
-                        if(all(rv$parameters$operators == "NULL")){
-                          disabled(actionButton(
-                            inputId = ns("seuratFindMarkerRemoveAllFilters"),
-                            label = "Remove Filter"
-                          )
-                          )
-                        }
-                        else{
-                          actionButton(
-                            inputId = ns("seuratFindMarkerRemoveAllFilters"),
-                            label = "Remove Filter"
-                          )
-                        }
-                     ),
+      panel(heading = "Active Filters",
+            uiOutput(ns("seuratFindMarkerActiveFilters")),
+            br(),
+            dropdownButton(
+              fluidRow(
+                panel(
+                  column(12,
+                         fluidRow(htmlOutput(ns("textTotalRows"))),
+                         br(),
+                         numericInput(
+                           inputId = ns("seuratFindMarkerFilterTopN"),
+                           label = "Return a maximum of how many rows?",
+                           value = 100,
+                           min = 1,
+                           step = 1
+                         ),
+                         actionButton(
+                           inputId = ns("seuratFindMarkerFilterRunTopN"),
+                           label = "Apply"
+                         )
+                  )
+                )
+              ),
+              inputId = ns("addFilterDropdownTopN"),
+              label = "Set # of Rows",
+              circle = FALSE,
+              inline = TRUE
+            ),
+            dropdownButton(
+              fluidRow(
+                panel(
+                  column(12,
+                         selectInput(
+                           inputId = ns("seuratFindMarkerSelectFilter"),
+                           label = "Select column to filter:",
+                           choices = colnamesDF
+                         ),
+                         lapply(seq_along(colnamesDF), function(i) {
+                           uiOutput(ns(paste0("filterOutput", i)))
+                         }),
+                         actionButton(
+                           inputId = ns("seuratFindMarkerFilterRun"),
+                           label = "Apply Filter"
+                         )
+                  )
+                )
+              ),
+              inputId = ns("addFilterDropdown"),
+              label = "Add Filter",
+              circle = FALSE,
+              inline = TRUE
+            ),
+            if(all(rv$parameters$operators == "NULL")){
+              disabled(actionButton(
+                inputId = ns("seuratFindMarkerRemoveAllFilters"),
+                label = "Remove Filter"
+              )
+              )
+            }
+            else{
+              actionButton(
+                inputId = ns("seuratFindMarkerRemoveAllFilters"),
+                label = "Remove Filter"
+              )
+            }
+      ),
     )
   })
 
@@ -262,11 +289,16 @@ filterTableServer <- function(input, output, session, dataframe,
     rv$parameters$operators[index] <- defaultFilterOperators
     rv$parameters$values[index] <- defaultFilterValues
 
+    output$textTotalRows <- renderText({
+      paste("<b>Total rows available: ", nrow(dataframe), "</br>")
+    })
+    
     output$seuratFindMarkerTable <- DT::renderDataTable({
       df <- .filterDF(df = dataframe,
                       operators = rv$parameters$operators,
                       cols = colnamesDF,
-                      values = rv$parameters$values)
+                      values = rv$parameters$values,
+                      topN = initialTopN)
       rv$data <- df
       rv$data
     }, extensions = 'Buttons', options = list(pageLength = 6, dom = "<'top'li>t<'bottom'Bp>", stateSave = TRUE,
@@ -303,8 +335,14 @@ filterTableServer <- function(input, output, session, dataframe,
     })
   }
     else{
+      output$textTotalRows <- renderText({
+        paste("<b>Total rows available: ", nrow(dataframe), "</br>")
+      })
+      
       output$seuratFindMarkerTable <- DT::renderDataTable({
-        rv$data <- dataframe
+        df <- .filterDF(df = dataframe,
+                        topN = initialTopN)
+        rv$data <- df
         rv$data
       }, extensions = 'Buttons', options = list(pageLength = 6, dom = "<'top'li>t<'bottom'Bp>", stateSave = TRUE,
                                                 buttons = list(
@@ -324,6 +362,34 @@ filterTableServer <- function(input, output, session, dataframe,
       })
     }
 
+  observeEvent(input$seuratFindMarkerFilterRunTopN,{
+    
+    output$textTotalRows <- renderText({
+      paste("<b>Total rows available: ", nrow(dataframe), "</br>")
+    })
+    
+    output$seuratFindMarkerTable <- DT::renderDataTable({
+      isolate({
+        df <- .filterDF(df = dataframe,
+                        operators = rv$parameters$operators,
+                        cols = colnamesDF,
+                        values = rv$parameters$values,
+                        topN = input$seuratFindMarkerFilterTopN)
+        rv$data <- df
+        rv$data
+      })
+    }, extensions = 'Buttons', options = list(pageLength = 6, dom = "<'top'li>t<'bottom'Bp>", stateSave = TRUE,
+                                              buttons = list(
+                                                list(
+                                                  extend = "collection",
+                                                  text = 'Export',
+                                                  action = DT::JS(paste0("function ( e, dt, node, config ) {
+                                    Shiny.setInputValue('", moduleID,"-export', true, {priority: 'event'});}"))
+                                                )
+                                              )
+    ))
+  })
+  
   observeEvent(input$seuratFindMarkerFilterRun,{
     #update table
     updateSeuratFindMarkerTable()
@@ -538,11 +604,14 @@ filterTableServer <- function(input, output, session, dataframe,
     df <- .filterDF(df = dataframe,
                                    operators = rv$parameters$operators,
                                    cols = colnamesDF,
-                                   values = rv$parameters$values)
+                                   values = rv$parameters$values,
+                    topN = initialTopN)
 
 
 
-
+    output$textTotalRows <- renderText({
+      paste("<b>Total rows available: ", nrow(dataframe), "</br>")
+    })
 
     output$seuratFindMarkerTable <- DT::renderDataTable({
       df
@@ -611,10 +680,15 @@ filterTableServer <- function(input, output, session, dataframe,
     df <- .filterDF(df = dataframe,
                     operators = rv$parameters$operators,
                     cols = colnamesDF,
-                    values = rv$parameters$values)
+                    values = rv$parameters$values,
+                    topN = initialTopN)
 
     rv$data <- df
 
+    output$textTotalRows <- renderText({
+      paste("<b>Total rows available: ", nrow(dataframe), "</br>")
+    })
+    
     output$seuratFindMarkerTable <- DT::renderDataTable({
       df
     }, extensions = 'Buttons', options = list(pageLength = 6, dom = "<'top'li>t<'bottom'Bp>", stateSave = TRUE,
@@ -716,33 +790,40 @@ filterTableServer <- function(input, output, session, dataframe,
   return(rv)
 }
 
-.filterDF <- function(df, operators, cols, values){
+.filterDF <- function(df, operators = NULL, cols, values, topN = 100){
   filters <- NULL
-  for(i in seq(length(cols))){
-    if(operators[i]!="NULL"){
-      if(operators[i] == "="){
-        operators[i] <- "=="
-      }
-      if(operators[i] == "range" || operators[i] == "extremes"){
-        splitValues <- values[[i]]
-        splitValues <- strsplit(splitValues, ",")
-        if(operators[i] == "range"){
-          filters <- c(filters, paste0("eval(call('", ">=", "', df[['", cols[i], "']],", splitValues[[1]][1], "))"))
-          filters <- c(filters, paste0("eval(call('", "<=", "', df[['", cols[i], "']],", splitValues[[1]][2], "))"))
+  if(!is.null(operators)){
+    for(i in seq(length(cols))){
+      if(operators[i]!="NULL"){
+        if(operators[i] == "="){
+          operators[i] <- "=="
+        }
+        if(operators[i] == "range" || operators[i] == "extremes"){
+          splitValues <- values[[i]]
+          splitValues <- strsplit(splitValues, ",")
+          if(operators[i] == "range"){
+            filters <- c(filters, paste0("eval(call('", ">=", "', df[['", cols[i], "']],", splitValues[[1]][1], "))"))
+            filters <- c(filters, paste0("eval(call('", "<=", "', df[['", cols[i], "']],", splitValues[[1]][2], "))"))
+          }
+          else{
+            filters <- c(filters, paste0("df[['", cols[i],"']] >= ", splitValues[[1]][1]," | df[['", cols[i],"']] <= ", splitValues[[1]][2]))
+          }
         }
         else{
-          filters <- c(filters, paste0("df[['", cols[i],"']] >= ", splitValues[[1]][1]," | df[['", cols[i],"']] <= ", splitValues[[1]][2]))
+          if(is.na(as.numeric(values[i]))){
+            values[i] <- paste0("'", values[i], "'")
+          }
+          filters <- c(filters, paste0("eval(call('", operators[i], "', df[['", cols[i], "']],", values[i], "))"))
         }
-      }
-      else{
-        if(is.na(as.numeric(values[i]))){
-          values[i] <- paste0("'", values[i], "'")
-        }
-        filters <- c(filters, paste0("eval(call('", operators[i], "', df[['", cols[i], "']],", values[i], "))"))
       }
     }
   }
   filters <- paste(filters, collapse = ",")
-  parseString <- paste0("df %>% dplyr::filter(", filters, ")")
+  if(is.null(topN)){
+    parseString <- paste0("df %>% dplyr::filter(", filters, ")")
+  }
+  else {
+    parseString <- paste0("df %>% dplyr::filter(", filters, ") %>% slice_head(n = ", topN, ")")
+  }
   eval(parse(text = parseString))
 }

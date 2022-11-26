@@ -2,12 +2,11 @@
 % Please edit documentation in R/runTSCAN.R
 \name{runTSCANClusterDEAnalysis}
 \alias{runTSCANClusterDEAnalysis}
-\title{Run runTSCANClusterDEAnalysis function to observe changes between 
-paths and to obtain DE genes}
+\title{Find DE genes between all TSCAN paths rooted from given cluster}
 \usage{
 runTSCANClusterDEAnalysis(
   inSCE,
-  useClusters,
+  useCluster,
   useAssay = "logcounts",
   fdrThreshold = 0.05
 )
@@ -15,38 +14,32 @@ runTSCANClusterDEAnalysis(
 \arguments{
 \item{inSCE}{Input \linkS4class{SingleCellExperiment} object.}
 
-\item{useClusters}{Choose the cluster containing the branch point in the data
-in order to recompute the pseudotimes so that the root lies at the cluster 
-center, allowing us to detect genes that are associated with the divergence 
-of the branches.}
+\item{useCluster}{The cluster to be regarded as the root, has to existing in
+\code{colData(inSCE)$TSCAN_clusters}.}
 
-\item{useAssay}{Character. The name of the assay to use. This assay should 
-contain log normalized counts.}
+\item{useAssay}{Character. The name of the assay to use. This assay should
+contain log normalized counts. Default \code{"logcounts"}.}
 
 \item{fdrThreshold}{Only out put DEGs with FDR value smaller than this value.
 Default \code{0.05}.}
 }
 \value{
-A \linkS4class{SingleCellExperiment} object with DE genes that are 
-significant in our path of interest and are not significant and/or changing 
-in the opposite direction in the other paths.
+The input \code{inSCE} with results updated in \code{metadata}.
 }
 \description{
-Wrapper for looking for differences in expression between paths 
-of a branched trajectory. The differential expression analysis may highlight 
-genes which are responsible for the branching event
+This function finds all paths that root from a given cluster
+\code{useCluster}, and performs tests to identify significant features for
+each path, and are not significant and/or changing in the opposite direction
+in the other paths. Using a branching cluster (i.e. a node with degree > 2)
+may highlight features which are responsible for the branching event. MST has
+to be pre-calculated with \code{\link{runTSCAN}}.
 }
 \examples{
-data("scExample", package = "singleCellTK")
-sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
-rowData(sce)$Symbol <- rowData(sce)$feature_name
-rownames(sce) <- rowData(sce)$Symbol
-sce <- runNormalization(sce, normalizationMethod = "LogNormalize", useAssay = "counts", outAssayName = "logcounts")
-sce <- runDimReduce(inSCE = sce, method = "scaterPCA", useAssay = "logcounts", reducedDimName = "PCA")
-sce <- runDimReduce(inSCE = sce, method = "rTSNE", useReducedDim = "PCA", reducedDimName = "TSNE")
-sce <- runTSCAN (inSCE = sce, useReducedDim = "PCA", seed = NULL)
-sce <- runTSCANDEG(inSCE = sce, pathIndex = 4)
-sce <- runTSCANClusterDEAnalysis(inSCE = sce, useClusters = 5)
+data("mouseBrainSubsetSCE", package = "singleCellTK")
+mouseBrainSubsetSCE <- runTSCAN(inSCE = mouseBrainSubsetSCE,
+                                useReducedDim = "PCA_logcounts")
+mouseBrainSubsetSCE <- runTSCANClusterDEAnalysis(inSCE = mouseBrainSubsetSCE,
+                                         useCluster = 1)
 }
 \author{
 Nida Pervaiz

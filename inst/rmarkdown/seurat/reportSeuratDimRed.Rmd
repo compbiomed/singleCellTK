@@ -24,6 +24,7 @@ output:
     theme: cosmo
     code_folding: hide
     self_contained: false
+    keep_md: yes
   pdf_document:
     toc: yes
 subtitle: "`r params$subtitle`"
@@ -62,7 +63,8 @@ pcaParams <- list(
   inSCE = data,
   nPCs = pc.count,
   verbose = FALSE)
-data <- do.call("runSeuratPCA", pcaParams)
+#data <- do.call("runSeuratPCA", pcaParams)
+data <- runSeuratPCA(inSCE = data, nPCs = pc.count, verbose = FALSE)
 ```
 
 ```{r, echo=plotJackStraw, warning=FALSE, eval = plotJackStraw}
@@ -73,7 +75,8 @@ jackStrawParams <- list(
   numReplicate = 100,
   propFreq = 0.025
 )
-data <- do.call("runSeuratJackStraw", jackStrawParams)
+#data <- do.call("runSeuratJackStraw", jackStrawParams)
+data <- runSeuratJackStraw(data, useAssay = "seuratScaledData", dims = pc.count)
 ```
 
 ```{r, echo=FALSE, results='asis', include=plotElbowPlot, eval= plotElbowPlot}
@@ -151,7 +154,8 @@ pcHeatmapParams <- list(
   ncol = 4,
   fast = FALSE
 )
-heatmap <- do.call("runSeuratHeatmap", pcHeatmapParams)  
+#heatmap <- do.call("runSeuratHeatmap", pcHeatmapParams)  
+heatmap <- runSeuratHeatmap(inSCE = data, useAssay = "seuratScaledData", useReduction = "pca", dims = pc.count, balanced = TRUE, ncol = 4, fast = FALSE)
 heatmap
 ```
 

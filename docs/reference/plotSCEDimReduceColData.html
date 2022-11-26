@@ -18,7 +18,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.6.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.3</span>
       </span>
     </div>
 
@@ -33,16 +33,19 @@
   <a href="../articles/installation.html">Installation</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Tutorials
      
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li>
-      <a href="../articles/console_analysis_tutorial.html">A La Carte Workflow - PBMC3K (R Console)</a>
+      <a href="../articles/01_import_and_qc_tutorial.html">Importing and QC - PBMC3K</a>
     </li>
     <li>
-      <a href="../articles/cnsl_seurat_curated_workflow.html">Seurat Curated Workflow - PBMC3K</a>
+      <a href="../articles/02_a_la_carte_workflow.html">A La Carte Workflow - PBMC3K</a>
+    </li>
+    <li>
+      <a href="../articles/seurat_curated_workflow.html">Seurat Curated Workflow - PBMC3K</a>
     </li>
     <li>
       <a href="../articles/celda_curated_workflow.html">Celda Curated Workflow - PBMC3K</a>
@@ -52,13 +55,13 @@
   <a href="../articles/cmd_qc.html">SCTK-QC</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Documentation
      
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Data</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Data</a>
       <ul class="dropdown-menu" role="menu"><li>
           <a href="../articles/import_data.html">Import Data</a>
         </li>
@@ -76,7 +79,7 @@
         </li>
       </ul></li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">QC &amp; Filtering</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">QC &amp; Filtering</a>
       <ul class="dropdown-menu" role="menu"><li>
           <a href="../articles/cnsl_dropletqc.html">Droplet QC (R console)</a>
         </li>
@@ -91,31 +94,31 @@
         </li>
       </ul></li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Normalization &amp; Batch Correction</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Normalization &amp; Batch Correction</a>
       <ul class="dropdown-menu" role="menu"><li>
-          <a href="../articles/cnsl_normalization.html">Normalization</a>
+          <a href="../articles/normalization.html">Normalization</a>
         </li>
         <li>
           <a href="../articles/batch_correction.html">Batch Correction</a>
         </li>
       </ul></li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Feature Selection &amp; Dimensionality Reduction</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Feature Selection &amp; Dimensionality Reduction</a>
       <ul class="dropdown-menu" role="menu"><li>
-          <a href="../articles/cnsl_feature_selection.html">Feature Selection</a>
+          <a href="../articles/feature_selection.html">Feature Selection</a>
         </li>
         <li>
-          <a href="../articles/cnsl_dimensionality_reduction.html">Dimensionality Reduction</a>
+          <a href="../articles/dimensionality_reduction.html">Dimensionality Reduction</a>
         </li>
         <li>
-          <a href="../articles/cnsl_2d_embedding.html">2D Embedding</a>
+          <a href="../articles/2d_embedding.html">2D Embedding</a>
         </li>
       </ul></li>
     <li>
       <a href="../articles/clustering.html">Clustering</a>
     </li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Differential Expression &amp; Cell Type Labeling</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Differential Expression &amp; Cell Type Labeling</a>
       <ul class="dropdown-menu" role="menu"><li>
           <a href="../articles/differential_expression.html">Differential Expression</a>
         </li>
@@ -127,25 +130,31 @@
         </li>
       </ul></li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Enrichment &amp; Pathway Analysis</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Pathway &amp; Enrichment Analysis</a>
       <ul class="dropdown-menu" role="menu"><li>
-          <a href="../articles/cnsl_enrichR.html">EnrichR</a>
+          <a href="../articles/enrichR.html">EnrichR</a>
         </li>
         <li>
           <a href="../articles/pathwayAnalysis.html">Pathway Analysis</a>
         </li>
       </ul></li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Curated Workflows</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Trajectory Analysis</a>
       <ul class="dropdown-menu" role="menu"><li>
-          <a href="../articles/cnsl_seurat_curated_workflow.html">Seurat</a>
+          <a href="../articles/trajectoryAnalysis.html">TSCAN</a>
+        </li>
+      </ul></li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Curated Workflows</a>
+      <ul class="dropdown-menu" role="menu"><li>
+          <a href="../articles/seurat_curated_workflow.html">Seurat</a>
         </li>
         <li>
           <a href="../articles/celda_curated_workflow.html">Celda</a>
         </li>
       </ul></li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Visualization</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Visualization</a>
       <ul class="dropdown-menu" role="menu"><li>
           <a href="../articles/visualization.html">General Visualization</a>
         </li>
@@ -192,40 +201,40 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">plotSCEDimReduceColData</span><span class="op">(</span>
-  <span class="va">inSCE</span>,
-  <span class="va">colorBy</span>,
-  <span class="va">reducedDimName</span>,
-  sample <span class="op">=</span> <span class="cn">NULL</span>,
-  groupBy <span class="op">=</span> <span class="cn">NULL</span>,
-  conditionClass <span class="op">=</span> <span class="cn">NULL</span>,
-  shape <span class="op">=</span> <span class="cn">NULL</span>,
-  xlab <span class="op">=</span> <span class="cn">NULL</span>,
-  ylab <span class="op">=</span> <span class="cn">NULL</span>,
-  baseSize <span class="op">=</span> <span class="fl">12</span>,
-  axisSize <span class="op">=</span> <span class="cn">NULL</span>,
-  axisLabelSize <span class="op">=</span> <span class="cn">NULL</span>,
-  dim1 <span class="op">=</span> <span class="cn">NULL</span>,
-  dim2 <span class="op">=</span> <span class="cn">NULL</span>,
-  bin <span class="op">=</span> <span class="cn">NULL</span>,
-  binLabel <span class="op">=</span> <span class="cn">NULL</span>,
-  dotSize <span class="op">=</span> <span class="fl">0.5</span>,
-  transparency <span class="op">=</span> <span class="fl">1</span>,
-  colorScale <span class="op">=</span> <span class="cn">NULL</span>,
-  colorLow <span class="op">=</span> <span class="st">"white"</span>,
-  colorMid <span class="op">=</span> <span class="st">"gray"</span>,
-  colorHigh <span class="op">=</span> <span class="st">"blue"</span>,
-  defaultTheme <span class="op">=</span> <span class="cn">TRUE</span>,
-  title <span class="op">=</span> <span class="cn">NULL</span>,
-  titleSize <span class="op">=</span> <span class="fl">15</span>,
-  labelClusters <span class="op">=</span> <span class="cn">TRUE</span>,
-  clusterLabelSize <span class="op">=</span> <span class="fl">3.5</span>,
-  legendTitle <span class="op">=</span> <span class="cn">NULL</span>,
-  legendTitleSize <span class="op">=</span> <span class="cn">NULL</span>,
-  legendSize <span class="op">=</span> <span class="cn">NULL</span>,
-  combinePlot <span class="op">=</span> <span class="st">"none"</span>,
-  plotLabels <span class="op">=</span> <span class="cn">NULL</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">plotSCEDimReduceColData</span><span class="op">(</span></span>
+<span>  <span class="va">inSCE</span>,</span>
+<span>  <span class="va">colorBy</span>,</span>
+<span>  <span class="va">reducedDimName</span>,</span>
+<span>  sample <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  groupBy <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  conditionClass <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  shape <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  xlab <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  ylab <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  baseSize <span class="op">=</span> <span class="fl">12</span>,</span>
+<span>  axisSize <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  axisLabelSize <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  dim1 <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  dim2 <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  bin <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  binLabel <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  dotSize <span class="op">=</span> <span class="fl">0.5</span>,</span>
+<span>  transparency <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  colorScale <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  colorLow <span class="op">=</span> <span class="st">"white"</span>,</span>
+<span>  colorMid <span class="op">=</span> <span class="st">"gray"</span>,</span>
+<span>  colorHigh <span class="op">=</span> <span class="st">"blue"</span>,</span>
+<span>  defaultTheme <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  title <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  titleSize <span class="op">=</span> <span class="fl">15</span>,</span>
+<span>  labelClusters <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  clusterLabelSize <span class="op">=</span> <span class="fl">3.5</span>,</span>
+<span>  legendTitle <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  legendTitleSize <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  legendSize <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  combinePlot <span class="op">=</span> <span class="st">"none"</span>,</span>
+<span>  plotLabels <span class="op">=</span> <span class="cn">NULL</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -233,116 +242,181 @@
     <dl><dt>inSCE</dt>
 <dd><p>Input SingleCellExperiment object with saved
 dimension reduction components or a variable with saved results. Required.</p></dd>
+
+
 <dt>colorBy</dt>
 <dd><p>Color by a condition(any column of the annotation data).
 Required.</p></dd>
+
+
 <dt>reducedDimName</dt>
 <dd><p>Saved dimension reduction matrix name in the
 SingleCellExperiment object. Required.</p></dd>
+
+
 <dt>sample</dt>
 <dd><p>Character vector. Indicates which sample each cell belongs to.</p></dd>
+
+
 <dt>groupBy</dt>
 <dd><p>Group by a condition(any column of the annotation data).
 Default NULL.</p></dd>
+
+
 <dt>conditionClass</dt>
 <dd><p>Class of the annotation data used in colorBy.
 Options are NULL, "factor" or "numeric". If NULL, class will default to the
 original class. Default NULL.</p></dd>
+
+
 <dt>shape</dt>
 <dd><p>Add shapes to each condition.</p></dd>
+
+
 <dt>xlab</dt>
 <dd><p>Character vector. Label for x-axis. Default NULL.</p></dd>
+
+
 <dt>ylab</dt>
 <dd><p>Character vector. Label for y-axis. Default NULL.</p></dd>
+
+
 <dt>baseSize</dt>
 <dd><p>The base font size for all text. Default 12.
 Can be overwritten by titleSize, axisSize, and axisLabelSize,
 legendSize, legendTitleSize.</p></dd>
+
+
 <dt>axisSize</dt>
 <dd><p>Size of x/y-axis ticks. Default NULL.</p></dd>
+
+
 <dt>axisLabelSize</dt>
 <dd><p>Size of x/y-axis labels. Default NULL.</p></dd>
+
+
 <dt>dim1</dt>
 <dd><p>1st dimension to be used for plotting. Can either be a string which specifies
 the name of the dimension to be plotted from reducedDims, or a numeric value which specifies
 the index of the dimension to be plotted. Default is NULL.</p></dd>
+
+
 <dt>dim2</dt>
 <dd><p>2nd dimension to be used for plotting. Can either be a string which specifies
 the name of the dimension to be plotted from reducedDims, or a numeric value which specifies
 the index of the dimension to be plotted. Default is NULL.</p></dd>
+
+
 <dt>bin</dt>
 <dd><p>Numeric vector. If single value, will divide the numeric values into the `bin` groups.
 If more than one value, will bin numeric values using values as a cut point.</p></dd>
+
+
 <dt>binLabel</dt>
 <dd><p>Character vector. Labels for the bins created by the `bin` parameter.
 Default NULL.</p></dd>
+
+
 <dt>dotSize</dt>
 <dd><p>Size of dots. Default 0.5.</p></dd>
+
+
 <dt>transparency</dt>
 <dd><p>Transparency of the dots, values will be 0-1. Default 1.</p></dd>
+
+
 <dt>colorScale</dt>
 <dd><p>Vector. Needs to be same length as the
 number of unique levels of colorBy. Will be used only if
 conditionClass = "factor" or "character". Default NULL.</p></dd>
+
+
 <dt>colorLow</dt>
 <dd><p>Character. A color available from `colors()`.
 The color will be used to signify the lowest values on the scale.
 Default 'white'.</p></dd>
+
+
 <dt>colorMid</dt>
 <dd><p>Character. A color available from `colors()`.
 The color will be used to signify the midpoint on the scale.
 Default 'gray'.</p></dd>
+
+
 <dt>colorHigh</dt>
 <dd><p>Character. A color available from `colors()`.
 The color will be used to signify the highest values on the scale.
 Default 'blue'.</p></dd>
+
+
 <dt>defaultTheme</dt>
 <dd><p>adds grid to plot when TRUE. Default TRUE.</p></dd>
+
+
 <dt>title</dt>
 <dd><p>Title of plot. Default NULL.</p></dd>
+
+
 <dt>titleSize</dt>
 <dd><p>Size of title of plot. Default 15.</p></dd>
+
+
 <dt>labelClusters</dt>
 <dd><p>Logical. Whether the cluster labels are plotted.</p></dd>
+
+
 <dt>clusterLabelSize</dt>
 <dd><p>Numeric. Determines the size of cluster label
 when `labelClusters` is set to TRUE. Default 3.5.</p></dd>
+
+
 <dt>legendTitle</dt>
 <dd><p>title of legend. Default NULL.</p></dd>
+
+
 <dt>legendTitleSize</dt>
 <dd><p>size of legend title. Default 12.</p></dd>
+
+
 <dt>legendSize</dt>
 <dd><p>size of legend. Default NULL.
 Default FALSE.</p></dd>
+
+
 <dt>combinePlot</dt>
 <dd><p>Must be either "all", "sample", or "none". "all" will combine all plots into a single
 .ggplot object, while "sample" will output a list of plots separated by sample. Default "none".</p></dd>
+
+
 <dt>plotLabels</dt>
 <dd><p>labels to each plot. If set to "default", will use the name of the samples
 as the labels. If set to "none", no label will be plotted.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>a ggplot of the reduced dimension plot of coldata.</p>
+    
+
+<p>a ggplot of the reduced dimension plot of coldata.</p>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"mouseBrainSubsetSCE"</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu">plotSCEDimReduceColData</span><span class="op">(</span></span>
-<span class="r-in">  inSCE <span class="op">=</span> <span class="va">mouseBrainSubsetSCE</span>, colorBy <span class="op">=</span> <span class="st">"tissue"</span>,</span>
-<span class="r-in">  shape <span class="op">=</span> <span class="cn">NULL</span>, conditionClass <span class="op">=</span> <span class="st">"factor"</span>,</span>
-<span class="r-in">  reducedDimName <span class="op">=</span> <span class="st">"TSNE_counts"</span>,</span>
-<span class="r-in">  xlab <span class="op">=</span> <span class="st">"tSNE1"</span>, ylab <span class="op">=</span> <span class="st">"tSNE2"</span>, labelClusters <span class="op">=</span> <span class="cn">TRUE</span></span>
-<span class="r-in"><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"mouseBrainSubsetSCE"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">plotSCEDimReduceColData</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  inSCE <span class="op">=</span> <span class="va">mouseBrainSubsetSCE</span>, colorBy <span class="op">=</span> <span class="st">"tissue"</span>,</span></span>
+<span class="r-in"><span>  shape <span class="op">=</span> <span class="cn">NULL</span>, conditionClass <span class="op">=</span> <span class="st">"factor"</span>,</span></span>
+<span class="r-in"><span>  reducedDimName <span class="op">=</span> <span class="st">"TSNE_counts"</span>,</span></span>
+<span class="r-in"><span>  xlab <span class="op">=</span> <span class="st">"tSNE1"</span>, ylab <span class="op">=</span> <span class="st">"tSNE2"</span>, labelClusters <span class="op">=</span> <span class="cn">TRUE</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="plotSCEDimReduceColData-1.png" alt="" width="700" height="433"></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu">plotSCEDimReduceColData</span><span class="op">(</span></span>
-<span class="r-in">  inSCE <span class="op">=</span> <span class="va">mouseBrainSubsetSCE</span>, colorBy <span class="op">=</span> <span class="st">"age"</span>,</span>
-<span class="r-in">  shape <span class="op">=</span> <span class="cn">NULL</span>, conditionClass <span class="op">=</span> <span class="st">"numeric"</span>,</span>
-<span class="r-in">  reducedDimName <span class="op">=</span> <span class="st">"TSNE_counts"</span>, bin <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="cn">Inf</span>, <span class="fl">20</span>, <span class="fl">25</span>, <span class="op">+</span><span class="cn">Inf</span><span class="op">)</span>,</span>
-<span class="r-in">  xlab <span class="op">=</span> <span class="st">"tSNE1"</span>, ylab <span class="op">=</span> <span class="st">"tSNE2"</span>, labelClusters <span class="op">=</span> <span class="cn">FALSE</span></span>
-<span class="r-in"><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu">plotSCEDimReduceColData</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  inSCE <span class="op">=</span> <span class="va">mouseBrainSubsetSCE</span>, colorBy <span class="op">=</span> <span class="st">"age"</span>,</span></span>
+<span class="r-in"><span>  shape <span class="op">=</span> <span class="cn">NULL</span>, conditionClass <span class="op">=</span> <span class="st">"numeric"</span>,</span></span>
+<span class="r-in"><span>  reducedDimName <span class="op">=</span> <span class="st">"TSNE_counts"</span>, bin <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="cn">Inf</span>, <span class="fl">20</span>, <span class="fl">25</span>, <span class="op">+</span><span class="cn">Inf</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  xlab <span class="op">=</span> <span class="st">"tSNE1"</span>, ylab <span class="op">=</span> <span class="st">"tSNE2"</span>, labelClusters <span class="op">=</span> <span class="cn">FALSE</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="plotSCEDimReduceColData-2.png" alt="" width="700" height="433"></span>
 </code></pre></div>
     </div>
@@ -358,7 +432,7 @@ as the labels. If set to "none", no label will be plotted.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

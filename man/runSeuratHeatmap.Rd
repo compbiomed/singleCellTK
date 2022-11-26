@@ -24,7 +24,9 @@ runSeuratHeatmap(
 \item{inSCE}{(sce) object from which to compute heatmap (pca should be
 computed)}
 
-\item{useAssay}{Assay containing scaled counts to use in heatmap.}
+\item{useAssay}{Specify name of the assay that will be scaled
+by this function. The output scaled assay will be used for computation
+of the heatmap.}
 
 \item{useReduction}{Reduction method to use for computing clusters. One of
 "pca" or "ica". Default \code{"pca"}.}

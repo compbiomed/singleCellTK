@@ -2,8 +2,6 @@ shinyPanelfindMarker <- fluidPage(
   tags$script("Shiny.addCustomMessageHandler('close_dropDownFM', function(x){
                   $('html').click();
                 });"),
-  tags$div(
-    class = "container",
     h1("Find Marker"),
     h5(tags$a(href = paste0(docs.artPath, "find_marker.html"),
               "(help)", target = "_blank")),
@@ -18,31 +16,25 @@ shinyPanelfindMarker <- fluidPage(
           selected = NULL, 
           multiple = FALSE,
           options = NULL),
-        #uiOutput('fmAssay'),
         selectInput("fmCluster", "Cluster Annotation", clusterChoice),
         selectInput("fmCovar", "Covariate(s)", clusterChoice, multiple = TRUE),
-        numericInput("fmLogFC", "Log2FC greater than",
-                     value = 0, min = 0, step = 0.05),
-        numericInput("fmFDR", "FDR less than", value = 0.05,
+        # numericInput("fmLogFC", "Log2FC greater than",
+        #              value = 0, min = 0, step = 0.05),
+        numericInput("fmFDR", "Keep FDR less than", value = 0.05,
                      max = 1, min = 0.01, step = 0.01),
-        numericInput("fmMinClustExprPerc",
-                     "Minimum Expressed Percentage in Cluster",
-                     value = 0, min = 0, max = 1),
-        numericInput("fmMaxCtrlExprPerc",
-                     "Maximum Expressed Percentage in Control",
-                     value = 1, min = 0, max = 1),
-        numericInput("fmMinMeanExpr",
-                     "Minimum Mean Expression Level in Cluster",
-                     value = 0, min = 0),
-        withBusyIndicatorUI(actionButton("runFM", "Find Marker"))
+        # numericInput("fmMinClustExprPerc",
+        #              "Minimum Expressed Percentage in Cluster",
+        #              value = 0, min = 0, max = 1),
+        # numericInput("fmMaxCtrlExprPerc",
+        #              "Maximum Expressed Percentage in Control",
+        #              value = 1, min = 0, max = 1),
+        # numericInput("fmMinMeanExpr",
+        #              "Minimum Mean Expression Level in Cluster",
+        #              value = 0, min = 0),
+        actionButton("runFM", "Run")
       ),
       mainPanel(
         tabsetPanel(
-          tabPanel(
-            "Result Table",
-            DT::dataTableOutput("fmResTable"),
-            downloadButton("fmDownload", "Download Results"),
-          ),
           tabPanel(
             "Heatmap",
             shinyjs::useShinyjs(),
@@ -114,20 +106,29 @@ shinyPanelfindMarker <- fluidPage(
                       width = 6,
                       selectInput("fmHMrowData", "Additional feature annotation",
                                   featureChoice, multiple = TRUE),
-                      withBusyIndicatorUI(
-                        actionBttn(
-                        inputId = "plotFM",
-                        label = "Update",
-                        style = "bordered",
-                        color = "primary",
-                        size = "sm"
-                      )
-                      )
                     ),
                     column(
                       width = 6,
                       selectInput("fmHMcolData", "Additional cell annotation",
                                   clusterChoice, multiple = TRUE)
+                    )
+                  ),
+                  fluidRow(
+                    column(
+                      width = 12,
+                      selectInput("fmHMFeatureDisplay",
+                                  "Display ID Type",
+                                  c("Rownames (Default)",
+                                    featureChoice)),
+                      withBusyIndicatorUI(
+                        actionBttn(
+                          inputId = "plotFM",
+                          label = "Update",
+                          style = "bordered",
+                          color = "primary",
+                          size = "sm"
+                        )
+                      )
                     )
                   ),
                   inputId = "dropDownFM",
@@ -151,10 +152,15 @@ shinyPanelfindMarker <- fluidPage(
             hr(),
             br(),
             shinyjqui::jqui_resizable(plotOutput('fmHeatmap'))
+          ),
+          tabPanel(
+            "Result Table",
+            filterTableUI(id = "filterfmResTable"),
+            #DT::dataTableOutput("fmResTable"),
+            downloadButton("fmDownload", "Download Results"),
           )
         )
       )
     )
-  )
 )
 

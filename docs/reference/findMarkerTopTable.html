@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.6.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.1</span>
       </span>
     </div>
 
@@ -32,16 +32,19 @@
   <a href="../articles/installation.html">Installation</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Tutorials
      
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li>
-      <a href="../articles/console_analysis_tutorial.html">A La Carte Workflow - PBMC3K (R Console)</a>
+      <a href="../articles/01_import_and_qc_tutorial.html">Importing and QC - PBMC3K</a>
     </li>
     <li>
-      <a href="../articles/cnsl_seurat_curated_workflow.html">Seurat Curated Workflow - PBMC3K</a>
+      <a href="../articles/02_a_la_carte_workflow.html">A La Carte Workflow - PBMC3K</a>
+    </li>
+    <li>
+      <a href="../articles/seurat_curated_workflow.html">Seurat Curated Workflow - PBMC3K</a>
     </li>
     <li>
       <a href="../articles/celda_curated_workflow.html">Celda Curated Workflow - PBMC3K</a>
@@ -51,13 +54,13 @@
   <a href="../articles/cmd_qc.html">SCTK-QC</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Documentation
      
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Data</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Data</a>
       <ul class="dropdown-menu" role="menu"><li>
           <a href="../articles/import_data.html">Import Data</a>
         </li>
@@ -75,7 +78,7 @@
         </li>
       </ul></li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">QC &amp; Filtering</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">QC &amp; Filtering</a>
       <ul class="dropdown-menu" role="menu"><li>
           <a href="../articles/cnsl_dropletqc.html">Droplet QC (R console)</a>
         </li>
@@ -90,31 +93,31 @@
         </li>
       </ul></li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Normalization &amp; Batch Correction</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Normalization &amp; Batch Correction</a>
       <ul class="dropdown-menu" role="menu"><li>
-          <a href="../articles/cnsl_normalization.html">Normalization</a>
+          <a href="../articles/normalization.html">Normalization</a>
         </li>
         <li>
           <a href="../articles/batch_correction.html">Batch Correction</a>
         </li>
       </ul></li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Feature Selection &amp; Dimensionality Reduction</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Feature Selection &amp; Dimensionality Reduction</a>
       <ul class="dropdown-menu" role="menu"><li>
-          <a href="../articles/cnsl_feature_selection.html">Feature Selection</a>
+          <a href="../articles/feature_selection.html">Feature Selection</a>
         </li>
         <li>
-          <a href="../articles/cnsl_dimensionality_reduction.html">Dimensionality Reduction</a>
+          <a href="../articles/dimensionality_reduction.html">Dimensionality Reduction</a>
         </li>
         <li>
-          <a href="../articles/cnsl_2d_embedding.html">2D Embedding</a>
+          <a href="../articles/2d_embedding.html">2D Embedding</a>
         </li>
       </ul></li>
     <li>
       <a href="../articles/clustering.html">Clustering</a>
     </li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Differential Expression &amp; Cell Type Labeling</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Differential Expression &amp; Cell Type Labeling</a>
       <ul class="dropdown-menu" role="menu"><li>
           <a href="../articles/differential_expression.html">Differential Expression</a>
         </li>
@@ -126,25 +129,31 @@
         </li>
       </ul></li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Enrichment &amp; Pathway Analysis</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Pathway &amp; Enrichment Analysis</a>
       <ul class="dropdown-menu" role="menu"><li>
-          <a href="../articles/cnsl_enrichR.html">EnrichR</a>
+          <a href="../articles/enrichR.html">EnrichR</a>
         </li>
         <li>
           <a href="../articles/pathwayAnalysis.html">Pathway Analysis</a>
         </li>
       </ul></li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Curated Workflows</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Trajectory Analysis</a>
       <ul class="dropdown-menu" role="menu"><li>
-          <a href="../articles/cnsl_seurat_curated_workflow.html">Seurat</a>
+          <a href="../articles/trajectoryAnalysis.html">TSCAN</a>
+        </li>
+      </ul></li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Curated Workflows</a>
+      <ul class="dropdown-menu" role="menu"><li>
+          <a href="../articles/seurat_curated_workflow.html">Seurat</a>
         </li>
         <li>
           <a href="../articles/celda_curated_workflow.html">Celda</a>
         </li>
       </ul></li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Visualization</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Visualization</a>
       <ul class="dropdown-menu" role="menu"><li>
           <a href="../articles/visualization.html">General Visualization</a>
         </li>
@@ -205,31 +214,46 @@
     <h2>Arguments</h2>
     <dl><dt>inSCE</dt>
 <dd><p>SingleCellExperiment inherited object.</p></dd>
+
+
 <dt>log2fcThreshold</dt>
 <dd><p>Only use DEGs with the absolute values of log2FC
 larger than this value. Default <code>1</code></p></dd>
+
+
 <dt>fdrThreshold</dt>
 <dd><p>Only use DEGs with FDR value smaller than this value.
 Default <code>0.05</code></p></dd>
+
+
 <dt>minClustExprPerc</dt>
 <dd><p>A numeric scalar. The minimum cutoff of the
 percentage of cells in the cluster of interests that expressed the marker
 gene. Default <code>0.7</code>.</p></dd>
+
+
 <dt>maxCtrlExprPerc</dt>
 <dd><p>A numeric scalar. The maximum cutoff of the
 percentage of cells out of the cluster (control group) that expressed the
 marker gene. Default <code>0.4</code>.</p></dd>
+
+
 <dt>minMeanExpr</dt>
 <dd><p>A numeric scalar. The minimum cutoff of the mean
 expression value of the marker in the cluster of interests. Default <code>1</code>.</p></dd>
+
+
 <dt>topN</dt>
 <dd><p>An integer. Only to fetch this number of top markers for each
 cluster in maximum, in terms of log2FC value. Use <code>NULL</code> to cancel the
 top N subscription. Default <code>10</code>.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>An organized <code>data.frame</code> object, with the top marker gene
+    
+
+<p>An organized <code>data.frame</code> object, with the top marker gene
 information.</p>
     </div>
     <div id="details">
@@ -244,51 +268,51 @@ function to extract a top marker table.</p>
 <span class="r-in"><span class="va">mouseBrainSubsetSCE</span> <span class="op">&lt;-</span> <span class="fu"><a href="findMarkerDiffExp.html">findMarkerDiffExp</a></span><span class="op">(</span><span class="va">mouseBrainSubsetSCE</span>,</span>
 <span class="r-in">                                         useAssay <span class="op">=</span> <span class="st">"logcounts"</span>,</span>
 <span class="r-in">                                         cluster <span class="op">=</span> <span class="st">"level1class"</span><span class="op">)</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Running with wilcox</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Computing for cluster: microglia</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Computing for cluster: oligodendrocytes</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Jun 28 22:03:02 2022 ... Identifying markers for cluster 'microglia', using DE method 'wilcox'</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Jun 28 22:03:03 2022 ... Identifying markers for cluster 'oligodendrocytes', using DE method 'wilcox'</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Jun 28 22:03:03 2022 ... Organizing findMarker result</span>
 <span class="r-in"><span class="fu">findMarkerTopTable</span><span class="op">(</span><span class="va">mouseBrainSubsetSCE</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        Gene  Log2_FC       Pvalue          FDR      level1class clusterExprPerc</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1228   Apoe 4.439115 3.642815e-06 0.0001796628        microglia       1.0000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1114   Lyz2 3.873899 2.771660e-05 0.0004581158        microglia       0.8000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1130   C1qa 3.862682 6.733332e-07 0.0001720692        microglia       1.0000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1100    Pf4 3.466775 2.771660e-05 0.0004581158        microglia       0.8000000</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1112 Tyrobp 3.282906 6.733332e-07 0.0001720692        microglia       1.0000000</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1126   C1qb 3.281828 2.516695e-06 0.0001720692        microglia       0.9333333</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1127  Fcgr3 3.130255 2.516695e-06 0.0001720692        microglia       0.9333333</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1130   C1qa 3.862682 6.733332e-07 0.0001720692        microglia       1.0000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1131  Fcrls 2.955799 6.755317e-07 0.0001720692        microglia       1.0000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1228   Apoe 4.439115 3.642815e-06 0.0001796628        microglia       1.0000000</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1182  Ccl12 3.151363 8.600798e-06 0.0002501837        microglia       0.8666667</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1100    Pf4 3.466775 2.771660e-05 0.0004581158        microglia       0.8000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1114   Lyz2 3.873899 2.771660e-05 0.0004581158        microglia       0.8000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1127  Fcgr3 3.130255 2.516695e-06 0.0001720692        microglia       0.9333333</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1131  Fcrls 2.955799 6.755317e-07 0.0001720692        microglia       1.0000000</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1150   Mrc1 2.954606 2.757165e-05 0.0004581158        microglia       0.8000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 843    Mobp 4.075208 2.084154e-06 0.0001720692 oligodendrocytes       1.0000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 855   Sept4 3.669662 1.241931e-06 0.0001720692 oligodendrocytes       1.0000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 860     Gsn 3.521439 1.454160e-06 0.0001720692 oligodendrocytes       1.0000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 897     Mog 5.161946 1.256717e-06 0.0001720692 oligodendrocytes       1.0000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 936   Ugt8a 4.319125 2.403213e-06 0.0001720692 oligodendrocytes       1.0000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1001   Qdpr 4.061774 1.641748e-06 0.0001720692 oligodendrocytes       1.0000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1014   Ermn 4.318830 1.865414e-06 0.0001720692 oligodendrocytes       1.0000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1017  Cryab 4.001140 1.743790e-06 0.0001720692 oligodendrocytes       1.0000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1002    Mal 5.361403 7.495067e-06 0.0002501837 oligodendrocytes       1.0000000</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1048   Apod 5.311107 2.203822e-06 0.0001720692 oligodendrocytes       1.0000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 897     Mog 5.161946 1.256717e-06 0.0001720692 oligodendrocytes       1.0000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 906   Enpp2 4.327247 6.757710e-06 0.0002501837 oligodendrocytes       1.0000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 936   Ugt8a 4.319125 2.403213e-06 0.0001720692 oligodendrocytes       1.0000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1014   Ermn 4.318830 1.865414e-06 0.0001720692 oligodendrocytes       1.0000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 843    Mobp 4.075208 2.084154e-06 0.0001720692 oligodendrocytes       1.0000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1001   Qdpr 4.061774 1.641748e-06 0.0001720692 oligodendrocytes       1.0000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1017  Cryab 4.001140 1.743790e-06 0.0001720692 oligodendrocytes       1.0000000</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 831  Tspan2 3.743799 3.649158e-06 0.0001796628 oligodendrocytes       1.0000000</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      ControlExprPerc clusterAveExpr</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1228      0.33333333       5.076598</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1114      0.00000000       3.873899</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1130      0.00000000       3.862682</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1100      0.00000000       3.466775</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1112      0.00000000       3.282906</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1126      0.00000000       3.281828</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1127      0.00000000       3.130255</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1130      0.00000000       3.862682</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1131      0.00000000       2.955799</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1228      0.33333333       5.076598</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1182      0.00000000       3.151363</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1100      0.00000000       3.466775</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1114      0.00000000       3.873899</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1127      0.00000000       3.130255</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1131      0.00000000       2.955799</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1150      0.00000000       2.954606</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 843       0.26666667       4.430003</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 855       0.13333333       3.880991</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 860       0.06666667       3.676234</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 897       0.13333333       5.475308</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 936       0.20000000       4.771216</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1001      0.06666667       4.261774</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1014      0.26666667       4.663492</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1017      0.20000000       4.306804</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1002      0.40000000       6.370450</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1048      0.33333333       5.838233</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 897       0.13333333       5.475308</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 906       0.40000000       5.093370</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 936       0.20000000       4.771216</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1014      0.26666667       4.663492</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 843       0.26666667       4.430003</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1001      0.06666667       4.261774</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1017      0.20000000       4.306804</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 831       0.20000000       4.155127</span>
 </code></pre></div>
     </div>
@@ -304,7 +328,7 @@ function to extract a top marker table.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

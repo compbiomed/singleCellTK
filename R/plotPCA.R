@@ -18,8 +18,7 @@
 #' data("mouseBrainSubsetSCE")
 #' plotPCA(mouseBrainSubsetSCE, colorBy = "level1class",
 #'         reducedDimName = "PCA_counts")
-#'
-plotPCA <- function(inSCE, colorBy="No Color", shape="No Shape", pcX="PC1",
+plotPCA <- function(inSCE, colorBy=NULL, shape=NULL, pcX="PC1",
                     pcY="PC2", reducedDimName="PCA", runPCA=FALSE,
                     useAssay="logcounts"){
   if(!(reducedDimName %in% names(SingleCellExperiment::reducedDims(inSCE)))){
@@ -40,17 +39,11 @@ plotPCA <- function(inSCE, colorBy="No Color", shape="No Shape", pcX="PC1",
     stop("pcY dimension ", pcY, " is not in the reducedDim data")
   }
 
-  
+
   # Need to add back in variances in the plot axis labels
   pcXlab <- pcX
   pcYlab <- pcY
 
-  if (colorBy == "No Color"){
-    colorBy <- NULL
-  }
-  if (shape == "No Shape"){
-    shape <- NULL
-  }
   if (!is.null(colorBy)){
     pcaDf$color <- SingleCellExperiment::colData(inSCE)[, colorBy]
   }

@@ -5,14 +5,14 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Trajectory Analysis • singleCellTK</title>
+<title>Trajectory Analysis with TSCAN • singleCellTK</title>
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/yeti/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="../bootstrap-toc.css">
 <script src="../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
 <script src="../pkgdown.js"></script><link href="../extra.css" rel="stylesheet">
-<script src="../extra.js"></script><meta property="og:title" content="Trajectory Analysis">
+<script src="../extra.js"></script><meta property="og:title" content="Trajectory Analysis with TSCAN">
 <meta property="og:description" content="singleCellTK">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
@@ -34,7 +34,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.5.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.3</span>
       </span>
     </div>
 
@@ -50,14 +50,38 @@
   <a href="../articles/installation.html">Installation</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Tutorials
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+<li>
+      <a href="../articles/01_import_and_qc_tutorial.html">Importing and QC - PBMC3K</a>
+    </li>
+    <li>
+      <a href="../articles/02_a_la_carte_workflow.html">A La Carte Workflow - PBMC3K</a>
+    </li>
+    <li>
+      <a href="../articles/seurat_curated_workflow.html">Seurat Curated Workflow - PBMC3K</a>
+    </li>
+    <li>
+      <a href="../articles/celda_curated_workflow.html">Celda Curated Workflow - PBMC3K</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="../articles/cmd_qc.html">SCTK-QC</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Documentation
      
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
 <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Data</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Data</a>
       <ul class="dropdown-menu" role="menu">
 <li>
           <a href="../articles/import_data.html">Import Data</a>
@@ -77,7 +101,7 @@
       </ul>
 </li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">QC &amp; Filtering</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">QC &amp; Filtering</a>
       <ul class="dropdown-menu" role="menu">
 <li>
           <a href="../articles/cnsl_dropletqc.html">Droplet QC (R console)</a>
@@ -94,10 +118,10 @@
       </ul>
 </li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Normalization &amp; Batch Correction</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Normalization &amp; Batch Correction</a>
       <ul class="dropdown-menu" role="menu">
 <li>
-          <a href="../articles/cnsl_normalization.html">Normalization</a>
+          <a href="../articles/normalization.html">Normalization</a>
         </li>
         <li>
           <a href="../articles/batch_correction.html">Batch Correction</a>
@@ -105,16 +129,16 @@
       </ul>
 </li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Feature Selection &amp; Dimensionality Reduction</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Feature Selection &amp; Dimensionality Reduction</a>
       <ul class="dropdown-menu" role="menu">
 <li>
-          <a href="../articles/cnsl_feature_selection.html">Feature Selection</a>
+          <a href="../articles/feature_selection.html">Feature Selection</a>
         </li>
         <li>
-          <a href="../articles/cnsl_dimensionality_reduction.html">Dimensionality Reduction</a>
+          <a href="../articles/dimensionality_reduction.html">Dimensionality Reduction</a>
         </li>
         <li>
-          <a href="../articles/cnsl_2d_embedding.html">2D Embedding</a>
+          <a href="../articles/2d_embedding.html">2D Embedding</a>
         </li>
       </ul>
 </li>
@@ -122,7 +146,7 @@
       <a href="../articles/clustering.html">Clustering</a>
     </li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Differential Expression &amp; Cell Type Labeling</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Differential Expression &amp; Cell Type Labeling</a>
       <ul class="dropdown-menu" role="menu">
 <li>
           <a href="../articles/differential_expression.html">Differential Expression</a>
@@ -136,10 +160,10 @@
       </ul>
 </li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Pathway &amp; Enrichment Analysis</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Pathway &amp; Enrichment Analysis</a>
       <ul class="dropdown-menu" role="menu">
 <li>
-          <a href="../articles/cnsl_enrichR.html">EnrichR</a>
+          <a href="../articles/enrichR.html">EnrichR</a>
         </li>
         <li>
           <a href="../articles/pathwayAnalysis.html">Pathway Analysis</a>
@@ -147,10 +171,18 @@
       </ul>
 </li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Curated Workflows</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Trajectory Analysis</a>
       <ul class="dropdown-menu" role="menu">
 <li>
-          <a href="../articles/cnsl_seurat_curated_workflow.html">Seurat</a>
+          <a href="../articles/trajectoryAnalysis.html">TSCAN</a>
+        </li>
+      </ul>
+</li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Curated Workflows</a>
+      <ul class="dropdown-menu" role="menu">
+<li>
+          <a href="../articles/seurat_curated_workflow.html">Seurat</a>
         </li>
         <li>
           <a href="../articles/celda_curated_workflow.html">Celda</a>
@@ -158,7 +190,7 @@
       </ul>
 </li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Visualization</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Visualization</a>
       <ul class="dropdown-menu" role="menu">
 <li>
           <a href="../articles/visualization.html">General Visualization</a>
@@ -170,23 +202,11 @@
 </li>
   </ul>
 </li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Tutorials
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
-<li>
-      <a href="../articles/console_analysis_tutorial.html">Analysis of PBMC3K (R Console)</a>
-    </li>
-  </ul>
-</li>
-<li>
-  <a href="../articles/cmd_qc.html">SCTK-QC</a>
-</li>
 <li>
   <a href="../reference/index.html">Reference</a>
+</li>
+<li>
+  <a href="../news/index.html">NEWS</a>
 </li>
       </ul>
 <ul class="nav navbar-nav navbar-right">
@@ -215,8 +235,9 @@
       </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
-      <h1 data-toc-skip>Trajectory Analysis</h1>
-                        <h4 data-toc-skip class="author">Nida Pervaiz</h4>
+      <h1 data-toc-skip>Trajectory Analysis with TSCAN</h1>
+                        <h4 data-toc-skip class="author">Nida
+Pervaiz</h4>
             
       
       <small class="dont-index">Source: <a href="https://github.com/compbiomed/singleCellTK/blob/HEAD/vignettes/articles/trajectoryAnalysis.Rmd" class="external-link"><code>vignettes/articles/trajectoryAnalysis.Rmd</code></a></small>
@@ -231,8 +252,42 @@
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
-<p>Trajectory analysis is a technique to determine pattern of dynamic process experienced by cells and then arrange cells as per their progression. Trajectory is a path through high dimensional expression space that traverses various cellular states associated with a process like differentiation.</p>
-<p>There are multiple algorithms to implement trajectory analysis however currently single cell toolkit has the implementation of TSCAN algorithm. TSCAN performs dimensionality reduction using PCA, cluster the cells, forms minimum spanning tree and then the trajectory is determined as the longest connected path of that tree. TSCAN is an unsupervised algorithm that requires no prior information. More detailed instructions on how to use TSCAN approach either through the shiny ui application (select “Interactive Analysis”) or through the R console (select “Console Analysis”) are described below:</p>
+<p>Trajectory analysis is a technique to determine pattern of dynamic
+process experienced by cells and then arrange cells as per their
+progression. Trajectory is a path through high dimensional expression
+space that traverses various cellular states associated with a process
+like differentiation.</p>
+<p>There are multiple algorithms to implement trajectory analysis,
+however currently Single Cell Toolkit (SCTK) only provides methods from
+TSCAN <span class="citation">[1]</span>. SCTK basically wraps three
+types of analysis from TSCAN:</p>
+<ol style="list-style-type: decimal">
+<li>Calculate MST and determine the trajectory as the longest connected
+path of the MST. The TSCAN MST calculation is cluster based, thus
+cluster assignment of cells is required. See <a href="clustering.html">Clustering Documentation</a>. For the computation
+efficiency, a low-dimensional representation of the dataset is also
+required for the trajectory and pseudotime calculation. See <a href="dimensionality_reduction.html">Dimensionality Reduction
+Documentation</a>. For the visualization of trajectory paths projected
+on cells, we recommend generating UMAP embedding, as it gives a better
+presentation of the global structure than TSNE. See <a href="2d_embedding.html">2D Embedding Documentation</a>.</li>
+<li>Identify features with significant changes along one pseudotime
+path. TSCAN fits a natural spline to the expression of each feature, and
+performs an ANOVA test to determine if there is some significant trend
+with respect to the pseudotime. Step 1 is required to provide the
+pseudotime path.</li>
+<li>Identify features with significant changes between paths. TSCAN sets
+the branch point of interest as a root, recomputes pseudotime for paths
+rooting from here, finds significant features changing on each path, and
+finally identifies path specific features. This is most interesting for
+cells close to the branch point and identified features might be
+responsible for the branching event. The general strategy here is to fit
+a trend to each path, followed by a comparison of the fits between
+paths. Step 1 is required to provide the pseudotime paths.</li>
+</ol>
+<p>More detailed instructions on how to use TSCAN approach either
+through the Shiny UI application (select “Interactive Analysis”) or
+through the R console (select “Console Analysis”) are described
+below:</p>
 </div>
 <div class="section level2">
 <h2 id="workflow-guide">Workflow Guide<a class="anchor" aria-label="anchor" href="#workflow-guide"></a>
@@ -243,52 +298,176 @@
 </div>
 
 <div id="interactive" class="tabcontent">
-<p><strong>Pre processing of the data</strong></p>
-<p>NOTE: This tutorial assumes that the data has already been uploaded via the upload tab of the toolkit</p>
-<p>After the data has been successfully uploaded, user should perform log normalization. Normalization tab can be opened up by clicking on the <strong>Normalization &amp; Batch Correction</strong> from the top menu and further selecting the <strong>Normalization</strong> sub-tab in the subsequent window.</p>
-<p><img src="ui_screenshots/trajectoryAnalysis/normalization.png" alt="Entry"><br></p>
-<p>Next, perform dimensionality reduction approach i.e. PCA. Dimensionality reduction tab can be opened up by clicking on the <strong>Feature Selection &amp; Dimensionality Reduction</strong> from the top menu and further selecting the <strong>Dimensionality Reduction</strong> sub-tab in the subsequent window.</p>
-<p><img src="ui_screenshots/trajectoryAnalysis/pca.png" alt="Entry"><br></p>
-<p>Final pre processing step to prepare your data for TSCAN analysis is to run 2D embedding algorithms (tSNE/UMAP). Embedding tab can be opened up by clicking on the <strong>Feature Selection &amp; Dimensionality Reduction</strong> from the top menu and further selecting the *Embedding** sub-tab in the subsequent window.</p>
-<p><img src="ui_screenshots/trajectoryAnalysis/tsne.png" alt="Entry"><br></p>
 <p><strong>Entry of the Panel</strong></p>
-<p>From anywhere of the UI, the panel for trajectory analysis can be accessed from the top navigation panel at the boxed tab and then select TSCAN.</p>
+<p>From anywhere of the UI, the panel for TSCAN trajectory analysis can
+be accessed from the top navigation panel at <strong>“Trajectory
+Analysis”</strong> and then select <strong>“TSCAN”</strong>.</p>
 <p><img src="ui_screenshots/trajectoryAnalysis/tscan_ui_entry.png" alt="Entry"><br></p>
 <p><strong>Calculate Pseudotime Values</strong></p>
-<p>The UI is constructed in a sidebar style, where the left-sided sidebar works for setting the parameters and running the TSCAN, and the right part main panel is for visualization checking.</p>
-<p>For running TSCAN, there are always three essential inputs that users should be sure with:</p>
+<p>The UI is constructed in a sidebar style, where the left-sided
+sidebar works for setting the parameters and running the TSCAN, and the
+right part main panel is for visualization.</p>
+<p>For finding the MST trajectory and estimating pseudotime, there are
+always two essential inputs that users should make selection:</p>
 <ul>
-<li><p>Saved dimension reduction name in the SingleCellExperiment - selection input <strong>“reducedDim Name”</strong>. Used for specifying which low-dimension representation to perform the clustering algorithm and building nearest neighbor graph on. Default “PCA”</p></li>
-<li><p>The seed value to be used - selection input <strong>“Seed value for reproducibility of result”</strong>. Set the seed for random process that happens only in “random” generation. Default 12345.</p></li>
-<li><p>The name of the clustering algorithm if done as a pre processing step (OPTIONAL) - selection input <strong>“Name of Clustering Result”</strong>. A user may input a vector equal length to the number of the samples in the SingleCellExperiment object, or can be retrieved from the colData slot. By default TSCAN auto computes the clusters using runSCRANSNN function present within the single cell toolkit.</p></li>
+<li><p><strong>“Select input dimension reduction”</strong> - Used for
+specifying which low-dimensional representation to be used for MST
+construction.</p></li>
+<li><p><strong>“Select clustering result:”</strong> - Used for
+specifying which cluster assignment variable in cell metadata should be
+used for MST construction. When selecting “Auto generate cluster”, the
+UI will automatically run scran-SNN based Louvain clustering on the
+specified dimension reduction, and use this cluster assignment as the
+guide for MST construction.</p></li>
 </ul>
-<p>After the parameters are set, user may run TSCAN to see the visualization of the cells pseudotime ordering. Pseudotime is the positioning of the cells along the trajectory that explains the progression of the cells and biological process.</p>
-<p><img src="ui_screenshots/trajectoryAnalysis/tscan_step1_vis.png" alt="Entry"><br></p>
+<p>After the parameters are set, press button <strong>“Run”</strong> to
+start the calculation. When the process is successfully done, a scatter
+plot of cells colored with pseudotime, with the trajectory projected to
+the coordinates, will be shown on the right. By default SCTK UI use the
+input dimension reduction for visualization. Users can change it to a
+UMAP embedding with the option <strong>“Select 2D embedding for
+visualization”</strong> in the dropdown box.</p>
+<p><img src="ui_screenshots/trajectoryAnalysis/tscan_step1_vis.png" alt="step1"><br></p>
 <p><strong>Identify Genes Differentially Expressed For Path</strong></p>
-<p>For identifying DE genes for path, there are always four essential inputs that users should be sure with:</p>
+<p>For identifying DE genes for path, users must have run the trajectory
+construction in the first step. There are two essential inputs that
+users should be aware of:</p>
 <ul>
-<li><p>The data matrix to use - selection input <strong>“Choose an assay”</strong>. In terms of TSCAN analysis, SCTK always requires a full-sized feature expression data (i.e. assay) as a valid input.</p></li>
-<li><p>The path of which DE genes need to be identified - selection input <strong>“Select path terminal node”</strong>. After the pseudotime values are generated of cells in first step of TSCAN, there are multiple paths generated. Paths under this tab in the UI are represented as “terminal node of the path | all the nodes present within this path.”</p></li>
-<li><p>Log2FC cutoff setting - numeric input <strong>“Log2FC greater than”</strong>. The cutoff set here will rule out DE genes with absolute value of Log2FC (logged fold change) smaller than the cutoff from the result.</p></li>
-<li><p>Select any cluster present within the path to discard <strong>“Select cluster to discard (OPTIONAL)”</strong>. Within the “select path terminal node” tab, when user chooses a path, the path contains certain set of clusters. Out of them user has a choice to discard any clusters which are not important or might hold cells that could dominate diferentially expressed genes.</p></li>
+<li>
+<strong>“Select assay:”</strong> - The expression matrix to use for
+testing the expression change. Here a log-normalized matrix is
+recommended.</li>
+<li>
+<strong>“Select path terminal node:”</strong> - The path where the
+test will be performed. Options will only appear after the first step,
+and will be listed in format
+<code>{terminal node of the path}|{all nodes on the path}</code> (a node
+is a cluster). Users can go back to the first collapse box and easily
+see where each path is.</li>
 </ul>
-<p>After these parameters are set, user may run step 2 to find diferentially expressed genes for the chosen path. To present the genes we have 3 visualization tabs mainly; heatmap, top up regulated genes expression plot and top down regulated genes expression plot. The heatmap and the up regulated expression plot present the top upregulated genes which increase in expression with increasing pseudotime values along the path chosen in the MST. The down regulated expression plot represents the top genes that decrease in expression with increasing pseudotime values along the path chosen in the MST.</p>
-<p><img src="ui_screenshots/trajectoryAnalysis/tscan_step2_vis.png" alt="Entry"><br></p>
-<p><strong>Identify Genes Differentially Expressed For Branched Cluster</strong></p>
-<p>For identifying DE genes for branched cluster, there are always two essential inputs that users should be sure with:</p>
+<p>During the analysis, users might found some cell population with
+features dominating the set of DE features and mask other interesting
+effects. To exclude the cluster(s) of them in the test, users can make
+selection in <strong>“Select cluster(s) to discard
+(OPTIONAL)”</strong>.</p>
+<p>After these parameters are set, press button <strong>“Run”</strong>
+to start the test. Visualization will be shown on the right after
+running. To present the features the UI has 3 visualization tabs:</p>
 <ul>
-<li><p>The cluster of which DE genes need to be identified - selection input <strong>“Select branched cluster of interest”</strong>. After the pseudotime values are generated of cells in first step of TSCAN, there are multiple clusters which have more than one branch. These clusters are listed within this option to select in order to identify diferentially expressed genes which are significant in each path deriving from the cluster. Genes are to be detected which are associated with the divergence of the branches.</p></li>
-<li><p>FDR cutoff setting - numeric input <strong>“FDR less than”</strong>. The cutoff set here will rule out DE genes with FDR (false discovery rate) value more than the cutoff from the result.</p></li>
+<li>
+<strong>Heatmap</strong> - Features that are regulated in both
+direction (up-/down-) with top significance (sorted by P-value) on the
+path are included. Cells on the path are included. And the expression
+value in the input matrix are visualized.</li>
+<li>
+<strong>Up-regulated Genes</strong> - Top up-regulated features
+along the path are selected. SCTK generates scatter plot of cells on the
+path, using the pseudotime order as the X-axis and the expression level
+of each feature as Y-axis, which clearly shows the trend of expression
+changes.</li>
+<li>
+<strong>Down-regulated Genes</strong> - The same as above, but for
+down-regulated features.</li>
 </ul>
-<p>After these parameters are set, user may run step 3 to find deferentially expressed genes for the chosen branched clusters. In terms of result, it presents two options; visualizationa and a data frame to present DE genes for each path. Within visualization option user is shown the cells belonging to the cluster chosen of interest colored by their pseudotime values along the path to which it was assigned. Within the list of genes option, a list of differentially expressed genes for each path deriving from the branched cluster are presented.</p>
-<p><img src="ui_screenshots/trajectoryAnalysis/tscan_step3_vis.png" alt="Entry"><br></p>
-<p><img src="ui_screenshots/trajectoryAnalysis/tscan_step3_list.png" alt="Entry"><br></p>
+<details><summary><b>Visualization setting</b></summary><p>With options in the dropdown box, Users can:</p>
+<ul>
+<li>Choose to show results for a different path (must run the test
+first) at <strong>“Select path terminal node”</strong>
+</li>
+<li>Change the number of top features in each regulation direction to be
+shown in the heatmap at <strong>“Number of top features for
+heatmap”</strong>
+</li>
+<li>Change the number of top features to be shown in the scatter plot at
+<strong>“Number of top features for regulation plots”</strong>
+</li>
+<li>Change the displayed feature ID type at <strong>“Display ID
+Type”</strong>. This can also be set globally at <a href="import_data.html">Import Single Cell Data</a> tab.</li>
+</ul></details><p><img src="ui_screenshots/trajectoryAnalysis/tscan_step2_vis.png" alt="step2"><br></p>
+<p><strong>Identify Genes Differentially Expressed For Branched
+Cluster</strong></p>
+<p>For identifying DE features on branches rooting from a cluster, users
+must have run the trajectory construction in the first step. there are
+always two essential inputs that users should make selection:</p>
+<ul>
+<li>
+<strong>“Select branched cluster of interest”</strong> - The cluster
+of interest, where branches exist. Only clusters that are connected to
+at least 2 other clusters (degree &gt;= 2) are listed as options. Users
+can go back to step 1 to determine the branch point of interest.</li>
+<li>
+<strong>“Select assay”</strong> - The expression matrix to use for
+testing the expression change. Here a log-normalized matrix is
+recommended.</li>
+</ul>
+<p>Optionally, users can also tweak the filter on output result by
+setting FDR cutoff at the numeric input <strong>“FDR less
+than”</strong>. This will rule out DE features with FDR (false discovery
+rate) value greater than the cutoff.</p>
+<p>After these parameters are set, press button <strong>“Run”</strong>
+to start the test. Visualization will be shown on the right after the
+test is successfully done. To present the results, the UI has three
+tabs:</p>
+<ul>
+<li>
+<strong>Top Feature Plot</strong> - The UI will select the top
+features on one of the branch derived from the cluster of interest, and
+create embedding plots of cells in the cluster to show the exprssion of
+these features.</li>
+<li>
+<strong>“Top Feature Table”</strong> - A data table of the stats of
+the top features on one of the branch derived from the cluster of
+interest will be shown here.</li>
+<li>
+<strong>“Pseudotime”</strong> - The recomputed pseudotime for each
+branch rooting from the cluster of interest will be shown on the
+embedding plots with only cells in the cluster.</li>
+</ul>
+<details><summary><b>Visualization setting</b></summary><p>With options in the dropdown box, Users can:</p>
+<ul>
+<li>Choose to show results for a different branch point/cluster (must
+run the test first) at <strong>“Select branched cluster of
+interest”</strong>.</li>
+<li>Choose to show results on a specific branch derived from the cluster
+selected at <strong>“Select Path Index”</strong>. Branches are listed in
+the format of
+<code>{terminal node of the path}|{all nodes on the path from the cluster to the terminal}</code>.</li>
+<li>Choose to plot feature expression/pseudotime on a different
+dimension reduction/2D embedding at <strong>“Select 2D embedding for
+visualization”</strong>.</li>
+<li>Change the number of top features to be shown in <strong>Top Feature
+Plot</strong> tab, at <strong>“Number of top features to
+plot”</strong>
+</li>
+<li>Change the displayed feature ID type at <strong>“Display ID
+Type”</strong>. This can also be set globally at <a href="import_data.html">Import Single Cell Data</a> tab.</li>
+</ul></details><p><img src="ui_screenshots/trajectoryAnalysis/tscan_step3_vis.png" alt="step3"><br></p>
 <p><strong>Plot expression of individual genes</strong></p>
-<p>This step allows the user to visualize their gene of interest. It plots all the cells in the cluster containing the branch point of the MST in the dataset. Each point is a cell colored by the expression of a gene of interest and the relevant edges of the MST are overlaid on top. There are three essential inputs that user should be sure with:</p>
+<p>This section allows users to visualize the expression of any features
+of interest. Each point is a cell colored by the expression of a gene of
+interest and the relevant edges of the MST are overlaid on top. As for
+the inputs:</p>
 <ul>
-<li><p>Saved dimension reduction name in the SingleCellExperiment - selection input <strong>“reducedDim Name”</strong>. Used for specifying which low-dimension representation to present the visualization of cell expression by gene on.</p></li>
-<li><p>Gene of interest - text input <strong>“Enter gene name”</strong>. Choose the gene of interest from the DE genes in order to know the level of expression of gene in clusters.</p></li>
-<li><p>Cluster of interest - selection input <strong>“Select cluster of interest”</strong>. Choose a specific cluster on which gene expression needs to be visualized. By default all clusters are chosen.</p></li>
+<li>
+<strong>“Select assay”</strong> - The expression matrix to use for
+finding the features’ expression value.</li>
+<li>
+<strong>“Selec features”</strong> - Users can select as many
+features of interest as possible. Too many might squeeze the plot in the
+limited area of the UI.</li>
+<li>
+<strong>“Select 2D embedding for visualization”</strong> - The
+low-dimensional representation to use.</li>
+<li>
+<strong>“Show cluster(s) of interest”</strong> - By default, SCTK
+plots the feature expression in all cells. When there’s only a subset of
+cells that should be highlighted, users can choose the cluster(s)
+containing the here. The MST edges connected to selected clusters will
+also be subsetted.</li>
+<li>
+<strong>“Display ID Type”</strong> - Change the displayed feature ID
+type. This can also be set globally at <a href="import_data.html">Import
+Single Cell Data</a> tab.</li>
 </ul>
 <p><img src="ui_screenshots/trajectoryAnalysis/tscan_step4_vis.png" alt="Entry"><br></p>
 
@@ -296,68 +475,130 @@
 </div>
 
 <div id="console" class="tabcontent">
-<p><strong>Basic Parameters</strong></p>
-<p>For TSCAN to execute, the common things are:</p>
-<ul>
-<li>The input SCE object - <code>inSCE</code>.</li>
-<li>The <code>colData</code> column name to save the cluster labels (OPTIONAL) - <code>clusterName</code>
-</li>
-<li>Users need to use useAssay for a full-sized expression data.</li>
-<li>Users need to use useReducedDim for specifying a matrix in reducedDims such as PCA, tsne or umap.</li>
-</ul>
-<details><summary><b>Example</b></summary><p>To demonstrate simple and clear examples, here we use a filtered form of the PBMC 3K dataset from the package <a href="http://bioconductor.org/packages/release/data/experiment/html/TENxPBMCData.html" class="external-link">TENxPBMCData</a>, which is available from the <code><a href="../reference/importExampleData.html">importExampleData()</a></code> function. Next step is to compute a dimensionality reduction (e.g. PCA) and then lastly we perform 2D embedding (TSNE/ UMAP).</p>
+<details><summary><b>Preprocessing</b></summary><p>To demonstrate simple and clear examples, here we use the PBMC 3K
+dataset from 10X, which is available with
+<code><a href="../reference/importExampleData.html">importExampleData()</a></code> function. Necessary steps for getting a
+PCA, a UMAP and the cluster assignment are presented, while QC and
+filtering steps are skipped.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://www.camplab.net/sctk/" class="external-link">singleCellTK</a></span><span class="op">)</span>
-<span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/importExampleData.html">importExampleData</a></span><span class="op">(</span><span class="st">"pbmc3k"</span><span class="op">)</span></code></pre></div>
-<p>The preprocessing only includes necessary steps before stepping into execution of TSCAN.</p>
-<div class="offset">
-<details><summary><b>Preprocessing</b></summary><div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runNormalization.html">runNormalization</a></span><span class="op">(</span><span class="va">sce</span>, normalizationMethod <span class="op">=</span> <span class="st">"LogNormalize"</span>, useAssay <span class="op">=</span> <span class="st">"counts"</span>, outAssayName <span class="op">=</span> <span class="st">"logcounts"</span><span class="op">)</span>
-<span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runDimReduce.html">runDimReduce</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, method <span class="op">=</span> <span class="st">"scaterPCA"</span>, useAssay <span class="op">=</span> <span class="st">"logcounts"</span>, reducedDimName <span class="op">=</span> <span class="st">"PCA"</span><span class="op">)</span>
-<span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runDimReduce.html">runDimReduce</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, method <span class="op">=</span> <span class="st">"rTSNE"</span>, useReducedDim <span class="op">=</span> <span class="st">"PCA"</span>, reducedDimName <span class="op">=</span> <span class="st">"TSNE"</span><span class="op">)</span></code></pre></div>
-</details><details><summary><b>Calculate Pseudotime Values</b></summary><details><summary><b>Method specific parameters</b></summary><ul>
-<li><p><strong>useReducedDim </strong>, Used for specifying which low-dimension representation to perform the clustering algorithm and building nearest neighbor graph on. Default “PCA”</p></li>
-<li><p><strong>seed</strong>, Set the seed for random process that happens only in “random” generation. Default 12345.</p></li>
-<li><p><strong>cluster</strong> (OPTIONAL), A user may input a vector equal length to the number of the samples in the SingleCellExperiment object, or can be retrieved from the colData slot. By default TSCAN auto computes the clusters using runSCRANSNN function present within the single cell toolkit.</p></li>
-</ul></details><div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runTSCAN.html">runTSCAN</a></span> <span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useReducedDim <span class="op">=</span> <span class="st">"PCA"</span>, seed <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span>
-<span class="fu"><a href="../reference/plotTSCANResults.html">plotTSCANResults</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useReducedDim <span class="op">=</span> <span class="st">"TSNE"</span><span class="op">)</span></code></pre></div>
-</details><details><summary><b>Identify Genes Differentially Expressed For Path</b></summary><details><summary><b>Method specific parameters</b></summary><ul>
-<li><p><strong>useAssay</strong>, In terms of TSCAN analysis, SCTK always requires a full-sized feature expression data (i.e. assay) as a valid input.</p></li>
-<li><p><strong>pathIndex</strong>, After the pseudotime values are generated of cells in first step of TSCAN, there are multiple paths generated. Paths within this option are represented as “terminal node of the path | all the nodes present within this path.”</p></li>
-<li><p><strong>log2fcThreshold</strong>, The cutoff set here will rule out DE genes with absolute value of Log2FC (logged fold change) smaller than the cutoff from the result.</p></li>
-<li><p><strong>discardCluster (OPTIONAL)</strong>, Within the select path terminal node, when user chooses a path, the path contains certain set of clusters. Out of them user has a choice to discard any cluster which are not important or might hold cells that could dominate diferentially expressed genes.</p></li>
-<li><p><strong>topN</strong>, For the visualization we have top genes parameter to select the number of genes to be presented.</p></li>
-<li><p><strong>direction</strong>, For the visualization we have direction parameter with choices of increasing (upregulated) and decreasing (downregulated) genes.</p></li>
-</ul></details><div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runTSCANDEG.html">runTSCANDEG</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, pathIndex <span class="op">=</span> <span class="fl">6</span><span class="op">)</span>
-<span class="fu"><a href="../reference/plotTSCANPseudotimeHeatmap.html">plotTSCANPseudotimeHeatmap</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, pathIndex <span class="op">=</span> <span class="fl">6</span>,topN <span class="op">=</span> <span class="fl">5</span><span class="op">)</span>
-<span class="fu"><a href="../reference/plotTSCANPseudotimeGenes.html">plotTSCANPseudotimeGenes</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, pathIndex <span class="op">=</span> <span class="fl">6</span>, direction <span class="op">=</span> <span class="st">"increasing"</span><span class="op">)</span></code></pre></div>
-</details><details><summary><b>Identify Genes Differentially Expressed For Branched Cluster</b></summary><details><summary><b>Method specific parameters</b></summary><ul>
-<li><p><strong>useClusters</strong>, After the pseudotime values are generated of cells in first step of TSCAN, there are multiple clusters which have more than one branch. These clusters are listed within this option to select in order to identify diferentially expressed genes which are significant in each path deriving from the cluster. Genes are to be detected which are associated with the divergence of the branches.</p></li>
-<li><p><strong>fdrThreshold</strong>, The cutoff set here will rule out DE genes with FDR (false discovery rate) value more than the cutoff from the result.</p></li>
-<li><p><strong>pathIndex</strong>, From the branched cluster there exist multiple branches or paths. User is given a choice for the visualization to choose any pathIndex in order to see the number of cells within branched cluster belonging to the particular path of interest.</p></li>
-<li><p><strong>useReducedDim</strong>, Used for specifying which low-dimension representation to use for visualization.</p></li>
-</ul></details><div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runTSCANClusterDEAnalysis.html">runTSCANClusterDEAnalysis</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useClusters <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>
-<span class="fu"><a href="../reference/plotClusterPseudo.html">plotClusterPseudo</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useClusters <span class="op">=</span> <span class="fl">3</span>, pathIndex <span class="op">=</span> <span class="cn">NULL</span>, useReducedDim <span class="op">=</span> <span class="st">"TSNE"</span><span class="op">)</span></code></pre></div>
-</details><details><summary><b>Plot expression of individual genes</b></summary><details><summary><b>Method specific parameters</b></summary><ul>
-<li><p><strong>geneSymbol</strong>, Choose the gene of interest from the DE genes in order to know the level of expression of gene in clusters.</p></li>
-<li><p><strong>useClusters</strong>, Choose a specific cluster on which gene expression needs to be visualized. By default all clusters are chosen.</p></li>
-<li><p><strong>useReducedDim</strong>, Used for specifying which low-dimension representation to use for visualization.</p></li>
-</ul></details><div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/plotTSCANDEgenes.html">plotTSCANDEgenes</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, geneSymbol <span class="op">=</span> <span class="st">"CD74"</span>, useReducedDim <span class="op">=</span> <span class="st">"TSNE"</span><span class="op">)</span></code></pre></div>
-</details>
-</div>
-</details>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://www.camplab.net/sctk/" class="external-link">singleCellTK</a></span><span class="op">)</span></span>
+<span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/importExampleData.html">importExampleData</a></span><span class="op">(</span><span class="st">"pbmc3k"</span><span class="op">)</span></span>
+<span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runPerCellQC.html">runPerCellQC</a></span><span class="op">(</span><span class="va">sce</span>, mitoRef <span class="op">=</span> <span class="st">"human"</span>, mitoIDType <span class="op">=</span> <span class="st">"symbol"</span>, mitoGeneLocation <span class="op">=</span> <span class="st">"rownames"</span><span class="op">)</span></span>
+<span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/subsetSCECols.html">subsetSCECols</a></span><span class="op">(</span><span class="va">sce</span>, colData <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'total &gt; 600'</span>, <span class="st">'detected &gt; 300'</span>, <span class="st">'mito_percent &lt; 5'</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/scaterlogNormCounts.html">scaterlogNormCounts</a></span><span class="op">(</span><span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"counts"</span>, assayName <span class="op">=</span> <span class="st">"logcounts"</span><span class="op">)</span></span>
+<span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runModelGeneVar.html">runModelGeneVar</a></span><span class="op">(</span><span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"logcounts"</span><span class="op">)</span></span>
+<span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getTopHVG.html">setTopHVG</a></span><span class="op">(</span><span class="va">sce</span>, method <span class="op">=</span> <span class="st">"modelGeneVar"</span><span class="op">)</span></span>
+<span><span class="co"># Values required as input</span></span>
+<span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/scaterPCA.html">scaterPCA</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"logcounts"</span>, useFeatureSubset <span class="op">=</span> <span class="st">"HVG_modelGeneVar2000"</span>, </span>
+<span>                 reducedDimName <span class="op">=</span> <span class="st">"PCA"</span>, seed <span class="op">=</span> <span class="fl">12345</span><span class="op">)</span></span>
+<span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runScranSNN.html">runScranSNN</a></span><span class="op">(</span><span class="va">sce</span>, useReducedDim <span class="op">=</span> <span class="st">"PCA"</span>, nComp <span class="op">=</span> <span class="fl">10</span>, k <span class="op">=</span> <span class="fl">14</span>,</span>
+<span>                   weightType <span class="op">=</span> <span class="st">"jaccard"</span>, clusterName <span class="op">=</span> <span class="st">"cluster"</span>, seed <span class="op">=</span> <span class="fl">12345</span><span class="op">)</span></span>
+<span><span class="co"># Values needed for visualization</span></span>
+<span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runUMAP.html">runUMAP</a></span><span class="op">(</span><span class="va">sce</span>, useReducedDim <span class="op">=</span> <span class="st">"PCA"</span>, initialDims <span class="op">=</span> <span class="fl">10</span>, reducedDimName <span class="op">=</span> <span class="st">"UMAP"</span>, seed <span class="op">=</span> <span class="fl">12345</span><span class="op">)</span></span></code></pre></div>
+<p>And we can visualize the cell populations on the UMAP with cluster
+labeled.</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plotSCEDimReduceColData.html">plotSCEDimReduceColData</a></span><span class="op">(</span><span class="va">sce</span>, colorBy <span class="op">=</span> <span class="st">"cluster"</span>, reducedDimName <span class="op">=</span> <span class="st">"UMAP"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="trajectoryAnalysis_files/figure-html/tscan_prep_plot-1.png" width="700" style="display: block; margin: auto;"></p>
+</details><p><strong>1. Calculate trajectory and pseudotime</strong></p>
+<p>SCTK provides <code><a href="../reference/runTSCAN.html">runTSCAN()</a></code> function to obtain the MST
+trajectory and stores pseudotime estimated for each path in
+<code>colData</code>. The dimension reduction and cluster labels are
+already obtained with ther preprocessing steps above.</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runTSCAN.html">runTSCAN</a></span><span class="op">(</span><span class="va">sce</span>, useReducedDim <span class="op">=</span> <span class="st">"PCA"</span>, cluster <span class="op">=</span> <span class="st">"cluster"</span><span class="op">)</span></span></code></pre></div>
+<p>To see how the trajectory paths span across the cell population, SCTK
+provides <code><a href="../reference/plotTSCANResults.html">plotTSCANResults()</a></code> function which project the MST
+on to the embedding.</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plotTSCANResults.html">plotTSCANResults</a></span><span class="op">(</span><span class="va">sce</span>, useReducedDim <span class="op">=</span> <span class="st">"UMAP"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="trajectoryAnalysis_files/figure-html/plotTSCANResults-1.png" width="700" style="display: block; margin: auto;"></p>
+<p><strong>2. Identify features differentially expressed along a
+path</strong></p>
+<p>For this type of test, argument <code>pathIndex</code> is required
+for specifying the path of interest. In SCTK wrapped workflow, we use
+the terminal node of each path as the index. Available options can be
+shown with function <code><a href="../reference/getTSCANResults.html">listTSCANTerminalNodes()</a></code>.</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runTSCANDEG.html">runTSCANDEG</a></span><span class="op">(</span><span class="va">sce</span>, pathIndex <span class="op">=</span> <span class="fl">7</span>, useAssay <span class="op">=</span> <span class="st">"logcounts"</span><span class="op">)</span></span></code></pre></div>
+<p>Two visualization methods are provided. One is a heatmap of the
+expression of features significantly changed on the path of interest, in
+the cells involved in this path. Another groups scatter plots of cells
+with top feature expression change along the path.</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plotTSCANPseudotimeHeatmap.html">plotTSCANPseudotimeHeatmap</a></span><span class="op">(</span><span class="va">sce</span>, pathIndex <span class="op">=</span> <span class="fl">7</span><span class="op">)</span></span></code></pre></div>
+<p><img src="trajectoryAnalysis_files/figure-html/plotTSCANDEG-1.png" width="700" style="display: block; margin: auto;"></p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plotTSCANPseudotimeGenes.html">plotTSCANPseudotimeGenes</a></span><span class="op">(</span><span class="va">sce</span>, pathIndex <span class="op">=</span> <span class="fl">7</span>, direction <span class="op">=</span> <span class="st">"increasing"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="trajectoryAnalysis_files/figure-html/plotTSCANDEG-2.png" width="700" style="display: block; margin: auto;"></p>
+<p><strong>3. Identify features Differentially Expressed For Branched
+Cluster</strong></p>
+<p>Since the MST construction is based on clusters, SCTK allows users to
+specify the “branch point” with the cluster number, through argument
+<code>useCluster</code>. Users can look at the MST on the embedding plot
+in step 1 to determine the branch of interest. Valid input options can
+be listed with
+<code>getTSCANResults(sce, "Pseudotime")$branchClusters</code>.</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runTSCANClusterDEAnalysis.html">runTSCANClusterDEAnalysis</a></span><span class="op">(</span><span class="va">sce</span>, useCluster <span class="op">=</span> <span class="fl">3</span>, useAssay <span class="op">=</span> <span class="st">"logcounts"</span><span class="op">)</span></span></code></pre></div>
+<p>We can explore the features significantly changes on a specific
+branch in the approaches below. For visualization method in this step,
+argument <code>useCluster</code> is used to specify the cluster used in
+the calculation above, and argument <code>pathIndex</code> is used for
+specifying the branch of interest. Valid path indices can be listed with
+<code>names(getTSCANResults(sce, "ClusterDEAnalysis", "3")$DEgenes)</code>,
+where <code>"3"</code> corresponds to <code>useCluster</code> in the
+calculation above.</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plotTSCANClusterDEG.html">plotTSCANClusterDEG</a></span><span class="op">(</span><span class="va">sce</span>, useCluster <span class="op">=</span> <span class="fl">3</span>, pathIndex <span class="op">=</span> <span class="fl">6</span>, useReducedDim <span class="op">=</span> <span class="st">"UMAP"</span>, topN <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></code></pre></div>
+<p><img src="trajectoryAnalysis_files/figure-html/plotTSCANClusterDE-1.png" width="700" style="display: block; margin: auto;"></p>
+<details><summary><b>Show DEG tables of each path</b></summary><p>There will be a table (<code>DFrame</code> class) for each of the
+branch paths and all of them can be retrieved within a list object:</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">useCluster</span> <span class="op">&lt;-</span> <span class="fl">3</span></span>
+<span><span class="va">tableList</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getTSCANResults.html">getTSCANResults</a></span><span class="op">(</span><span class="va">sce</span>, <span class="st">"ClusterDEAnalysis"</span>, <span class="va">useCluster</span><span class="op">)</span><span class="op">$</span><span class="va">DEgenes</span></span></code></pre></div>
+<p>The table from the branch, of which we just visualized the top
+feature expression, looks like:</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">tableList</span><span class="op">$</span><span class="va">`6`</span></span></code></pre></div>
+<pre><code><span><span class="co">## DataFrame with 12 rows and 3 columns</span></span>
+<span><span class="co">##              logFC     p.value         FDR</span></span>
+<span><span class="co">##          &lt;numeric&gt;   &lt;numeric&gt;   &lt;numeric&gt;</span></span>
+<span><span class="co">## GPX1     -0.161598 7.72253e-08 4.82474e-05</span></span>
+<span><span class="co">## RBP7     -0.131954 3.57329e-07 1.84926e-04</span></span>
+<span><span class="co">## CD14     -0.143327 2.95415e-06 1.33774e-03</span></span>
+<span><span class="co">## S100A12  -0.121480 5.04022e-06 1.90967e-03</span></span>
+<span><span class="co">## FOLR3    -0.106884 1.15951e-05 3.93798e-03</span></span>
+<span><span class="co">## ...            ...         ...         ...</span></span>
+<span><span class="co">## LYZ     -0.1007743 5.10931e-05   0.0132210</span></span>
+<span><span class="co">## QPCT    -0.0691165 1.00350e-04   0.0227209</span></span>
+<span><span class="co">## TSPO    -0.1225684 1.17562e-04   0.0260747</span></span>
+<span><span class="co">## IL8     -0.1241204 1.38549e-04   0.0289568</span></span>
+<span><span class="co">## BST1    -0.0769784 1.84220e-04   0.0357519</span></span></code></pre>
+</details><details><summary><b>Show recomputed pseudotime rooting from the cluster</b></summary><div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plotTSCANClusterPseudo.html">plotTSCANClusterPseudo</a></span><span class="op">(</span><span class="va">sce</span>, useCluster <span class="op">=</span> <span class="va">useCluster</span>, useReducedDim <span class="op">=</span> <span class="st">"UMAP"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="trajectoryAnalysis_files/figure-html/tscanClusterPseudo-1.png" width="700" style="display: block; margin: auto;"></p>
+</details><p><strong>Explore feature expression with MST overlaid</strong></p>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plotTSCANDimReduceFeatures.html">plotTSCANDimReduceFeatures</a></span><span class="op">(</span><span class="va">sce</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"IL7R"</span>, <span class="st">"CD14"</span>, <span class="st">"MS4A1"</span>, <span class="st">"CD8A"</span>, <span class="st">"FCGR3A"</span>, <span class="st">"NKG7"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p><img src="trajectoryAnalysis_files/figure-html/plotTSCANDimReduceFeatures-1.png" width="960" style="display: block; margin: auto;"></p>
 </div>
 <script>
 document.getElementById("ia-button").click();
 </script>
 </div>
-<div class="section level2">
-<h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
+<div class="section level2 unnumbered">
+<h2 class="unnumbered" id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h2>
+<div id="refs" class="references csl-bib-body">
+<div id="ref-Ji2016" class="csl-entry">
+<div class="csl-left-margin">[1] </div>
+<div class="csl-right-inline">Z.
+Ji and H. Ji, <span>“TSCAN: Pseudo-time reconstruction and evaluation in
+single-cell RNA-seq analysis,”</span> <em>Nucleic Acids Research</em>,
+vol. 44, 2016, doi: <a href="https://doi.org/10.1093/nar/gkw430" class="external-link">10.1093/nar/gkw430</a>.</div>
+</div>
+</div>
 </div>
   </div>
 
@@ -378,7 +619,7 @@ document.getElementById("ia-button").click();
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer>

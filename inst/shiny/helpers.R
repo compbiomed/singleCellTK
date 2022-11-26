@@ -88,6 +88,8 @@ withBusyIndicatorServer <- function(buttonId, expr) {
 
 # When an error happens after a button click, show the error
 errorFunc <- function(err, buttonId) {
+  message(paste0(date(), " !!! ", err))
+  shinyalert("Error", text = err$message, type = "error")
   errEl <- sprintf("[data-for-btn=%s] .btn-err", buttonId)
   errElMsg <- sprintf("[data-for-btn=%s] .btn-err-msg", buttonId)
   errMessage <- gsub("^ddpcr: (.*)", "\\1", err$message)
@@ -168,14 +170,26 @@ withConsoleRedirect <- function(expr) {
   result
 }
 
-withConsoleMsgRedirect <- function(expr) {
-  withCallingHandlers({
-    result <- expr
-  },
-  message = function(m) {
-    shinyjs::html(id = "consoleText", html = m$message, add = TRUE)
-  })
-  result
+withConsoleMsgRedirect <- function(expr, msg="Please wait. See console log for progress.") {
+  withCallingHandlers(
+    expr = {
+      .loadOpen(msg)
+      tryCatch(
+        {
+          result <- expr
+        },
+        error = function(e) {
+          message(paste0(date(), " !!! ", e))
+          shinyalert("Error", text = e$message, type = "error",
+                     callbackR = .loadClose())
+        }
+      )
+      .loadClose()
+    },
+    message = function(m) {
+      shinyjs::html(id = "consoleText", html = m$message, add = TRUE)
+    }
+  )
 }
 
 
@@ -290,7 +304,7 @@ combineQCSubPlots <- function(output, combineP, algo, sampleList, plots, plotIds
       output[[plotIds[[algo]]]] <- renderUI(plotOutput(mainPlotID))
       output[[mainPlotID]] <- renderPlot(plots$Violin)
     }
-    
+
 
     for (i in seq_along(sampleList)) {
       local({
@@ -358,7 +372,8 @@ arrangeQCPlots <- function(inSCE, input, output, algoList, sampleList, plotIDs, 
                                     reducedDimName = redDimName)
       combineQCSubPlots(output, combineP, a, uniqueSampleNames, dxPlots, plotIDs, statuses)
     } else if (a == "soupX") {
-      soupXPlots <- plotSoupXResults(inSCE, combinePlot = combineP)
+      soupXPlots <- plotSoupXResults(inSCE, combinePlot = combineP, 
+                                     sample = sampleList)
       combineQCSubPlots(output, combineP, a, uniqueSampleNames, soupXPlots, plotIDs, statuses)
     } else if (a == "QCMetrics") {
       qcmPlots <- plotRunPerCellQCResults(inSCE, sample = sampleList, combinePlot = combineP)
@@ -441,3 +456,176 @@ addRowFiltersToSCE <- function(inSCE, paramsReactive) {
   return(inSCE)
 }
 
+#helper function to add notification bar while code is executing
+spinnerShape <- "orbit"
+spinnerColor <- "gainsboro"
+
+.loadOpen <- function(message) {
+  shinybusy::show_modal_spinner(
+    spin = spinnerShape,
+    color = spinnerColor,
+    text = message
+  ) # show the notification spinner
+
+  shinyjs::runjs("var intervalVarAutoScrollConsole =  setInterval(startAutoScroll, 1000); Shiny.onInputChange('logDataAutoScrollStatus', intervalVarAutoScrollConsole);")
+
+  shinyjs::show(id = "consolePanel") # open console
+
+}
+
+.loadClose <- function(){
+  shinyjs::hide(id = "consolePanel") # close console
+  shinybusy::remove_modal_spinner() #closes the notification spinner
+}
+
+#' Usually numericInput returns NA when not entering anything in UI, but
+#' directly using NA causes error. Similarly, character inputs (selectionInput)
+#' returns empty string "", which should usually be changed to NULL.
+#' @return if not identified as empty inputs, returns as is; otherwise,
+#' changeTo to `changeTo`
+handleEmptyInput <- function(x,
+                             type = c("auto", "numeric", "character"),
+                             changeTo = NULL) {
+  type = match.arg(type)
+  if (type == "auto") {
+    if (is.numeric(x) || is.na(x)) {
+      type <- "numeric"
+    } else if (is.character(x)) {
+      type <- "character"
+    }
+  }
+  if (type == "numeric" & is.na(x)) {
+    x <- changeTo
+  } else if (type == "character" & x == "") {
+    x <- changeTo
+  }
+  return(x)
+}
+
+getTypeByMat <- function(inSCE, matName) {
+  if (matName %in% assayNames(inSCE)) {
+    return("assay")
+  } else if (matName %in% altExpNames(inSCE)) {
+    return("altExp")
+  } else if (matName %in% reducedDimNames(inSCE)) {
+    return("reducedDim")
+  } else {
+    for (i in altExpNames(inSCE)) {
+      if (matName %in% reducedDimNames(altExp(inSCE, i))) {
+        return(c("reducedDim", i))
+      }
+    }
+    return()
+  }
+}
+
+#' Generate distinct colors for all categorical col/rowData entries.
+#' Character columns will be considered as well as all-integer columns. Any
+#' column with all-distinct values will be excluded.
+#' @param inSCE \linkS4class{SingleCellExperiment} inherited object.
+#' @param axis Choose from \code{"col"} or \code{"row"}.
+#' @param colorGen A function that generates color code vector by giving an
+#' integer for the number of colors. Alternatively,
+#' \code{\link{rainbow}}. Default \code{\link{distinctColors}}.
+#' @return A \code{list} object containing distinct colors mapped to all
+#' possible categorical entries in \code{rowData(inSCE)} or
+#' \code{colData(inSCE)}.
+#' @author Yichen Wang
+dataAnnotationColor <- function(inSCE, axis = NULL,
+                                colorGen = distinctColors){
+    if(!is.null(axis) && axis == 'col'){
+        data <- SummarizedExperiment::colData(inSCE)
+    } else if(!is.null(axis) && axis == 'row'){
+        data <- SummarizedExperiment::rowData(inSCE)
+    } else {
+        stop('please specify "col" or "row"')
+    }
+    nColor <- 0
+    for(i in names(data)){
+        if(length(grep('counts', i)) > 0){
+            next
+        }
+        column <- stats::na.omit(data[[i]])
+        if(is.numeric(column)){
+            if(!all(as.integer(column) == column)){
+                # Temporarily the way to tell whether numeric categorical
+                next
+            }
+        }
+        if(is.factor(column)){
+            uniqLevel <- levels(column)
+        } else {
+            uniqLevel <- unique(column)
+        }
+        if(!length(uniqLevel) == nrow(data)){
+            # Don't generate color for all-uniq annotation (such as IDs/symbols)
+            nColor <- nColor + length(uniqLevel)
+        }
+    }
+    if (nColor == 0) {
+        return(list())
+    }
+    allColors <- colorGen(nColor)
+    nUsed <- 0
+    allColorMap <- list()
+    for(i in names(data)){
+        if(length(grep('counts', i)) > 0){
+            next
+        }
+        column <- stats::na.omit(data[[i]])
+        if(is.numeric(column)){
+            if(!all(as.integer(column) == column)){
+                # Temporarily the way to tell whether numeric categorical
+                next
+            }
+        }
+        if(is.factor(column)){
+            uniqLevel <- levels(column)
+        } else {
+            uniqLevel <- unique(column)
+        }
+        if(!length(uniqLevel) == nrow(data)){
+            subColors <- allColors[(nUsed+1):(nUsed+length(uniqLevel))]
+            names(subColors) <- uniqLevel
+            allColorMap[[i]] <- subColors
+            nUsed <- nUsed + length(uniqLevel)
+        }
+    }
+    return(allColorMap)
+}
+
+# Pass newly generated QC metric variable from vals$original to vals$counts, the
+# latter might be a subset.
+passQCVar <- function(sce.original, sce.counts, algoList) {
+  vars <- c()
+  for (a in algoList) {
+    if (a == "scDblFinder") {
+      new <- grep("scDblFinder", names(colData(sce.original)), value = TRUE)
+    } else if (a == "cxds") {
+      new <- grep("scds_cxds", names(colData(sce.original)), value = TRUE)
+    } else if (a == "bcds") {
+      new <- grep("scds_bcds", names(colData(sce.original)), value = TRUE)
+    } else if (a == "cxds_bcds_hybrid") {
+      new <- grep("scds_hybrid", names(colData(sce.original)), value = TRUE)
+    } else if (a == "decontX") {
+      new <- grep("decontX", names(colData(sce.original)), value = TRUE)
+    } else if (a == "soupX") {
+      new <- grep("soupX", names(colData(sce.original)), value = TRUE)
+    } else if (a == "scrublet") {
+      new <- grep("scrublet", names(colData(sce.original)), value = TRUE)
+    } else if (a == "doubletFinder") {
+      new <- grep("doubletFinder", names(colData(sce.original)), value = TRUE)
+    } else if (a == "QCMetrics") {
+      new <- c("total", "sum", "detected")
+      new <- c(new, grep("percent.top", names(colData(sce.original)), value = TRUE))
+      new <- c(new, grep("mito_", names(colData(sce.original)), value = TRUE))
+      new <- c(new, grep("^subsets_.+_sum$", names(colData(sce.original)), value = TRUE))
+      new <- c(new, grep("^subsets_.+_detected$", names(colData(sce.original)), value = TRUE))
+      new <- c(new, grep("^subsets_.+_percent$", names(colData(sce.original)), value = TRUE))
+    } 
+    vars <- c(vars, new)
+  }
+  sce.original <- sce.original[rownames(sce.counts), colnames(sce.counts)]
+  colData(sce.counts)[vars] <- colData(sce.original)[vars]
+  return(sce.counts)
+}

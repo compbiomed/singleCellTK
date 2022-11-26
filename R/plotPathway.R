@@ -1,18 +1,23 @@
 #' List pathway analysis result names
-#' @details Pathway analysis results will be stored as matrices in 
+#' @details Pathway analysis results will be stored as matrices in
 #' \code{reducedDims} slot of \code{inSCE}. This function lists the result names
-#' stored in \code{metadata} slot when analysis is performed. 
+#' stored in \code{metadata} slot when analysis is performed.
 #' @param inSCE Input \linkS4class{SingleCellExperiment} object.
 #' @param stopIfNone Whether to stop and raise an error if no results found. If
-#' \code{FALSE}, will return an empty character vector. 
+#' \code{FALSE}, will return an empty character vector.
+#' @param verbose Show warning if no result found. Default \code{FALSE}
 #' @return A character vector of valid pathway analysis result names.
 #' @export
-getPathwayResultNames <- function(inSCE, stopIfNone = FALSE){
+#' @examples
+#' data(scExample)
+#' getPathwayResultNames(sce)
+getPathwayResultNames <- function(inSCE, stopIfNone = FALSE, verbose = FALSE){
     if (!"pathwayAnalysisResultNames" %in% names(S4Vectors::metadata(inSCE))) {
         if (isTRUE(stopIfNone)) {
-            stop("No pathway analysis has been performed via singleCellTK.",
+            stop("No pathway analysis has been performed via singleCellTK. ",
                  "Please try `runVAM()` or `runGSVA()`.")
         } else {
+            if (verbose)
             warning("No pathway analysis has been performed via singleCellTK.",
                     "Please try `runVAM()` or `runGSVA()`.")
             return(character())
@@ -23,38 +28,38 @@ getPathwayResultNames <- function(inSCE, stopIfNone = FALSE){
 }
 
 #' Generate violin plots for pathway analysis results
-#' @details \code{runGSVA()} or \code{runVAM()} should be applied in advance of 
+#' @details \code{runGSVA()} or \code{runVAM()} should be applied in advance of
 #' using this function. Users can group the data by specifying \code{groupby}.
-#' @param inSCE Input \linkS4class{SingleCellExperiment} object. With 
-#' \code{runGSVA()} or \code{runVAM()} applied in advance. 
-#' @param resultName A single character of the name of a score matrix, which 
-#' should be found in \code{getPathwayResultNames(inSCE)}. 
+#' @param inSCE Input \linkS4class{SingleCellExperiment} object. With
+#' \code{runGSVA()} or \code{runVAM()} applied in advance.
+#' @param resultName A single character of the name of a score matrix, which
+#' should be found in \code{getPathwayResultNames(inSCE)}.
 #' @param geneset A single character specifying the geneset of interest. Should
 #' be found in the geneSetCollection used for performing the analysis.
-#' @param groupBy Either a single character specifying a column of 
-#' \code{colData(inSCE)} or a vector of equal length as the number of cells. 
+#' @param groupBy Either a single character specifying a column of
+#' \code{colData(inSCE)} or a vector of equal length as the number of cells.
 #' Default \code{NULL}.
 #' @param boxplot Boolean, Whether to add a boxplot. Default \code{FALSE}.
 #' @param violin Boolean, Whether to add a violin plot. Default \code{TRUE}.
 #' @param dots Boolean, If \code{TRUE}, will plot dots for each violin plot.
 #' Default \code{TRUE}.
-#' @param summary Adds a summary statistic, as well as a crossbar to the violin 
-#' plot. Options are \code{"mean"} or \code{"median"}, and \code{NULL} for not 
+#' @param summary Adds a summary statistic, as well as a crossbar to the violin
+#' plot. Options are \code{"mean"} or \code{"median"}, and \code{NULL} for not
 #' adding. Default \code{"median"}.
 #' @param axisSize Size of x/y-axis ticks. Default \code{10}.
 #' @param axisLabelSize Size of x/y-axis labels. Default \code{10}.
 #' @param dotSize Size of dots. Default \code{0.5}.
-#' @param transparency Transparency of the dots, values will be 0-1. Default 
+#' @param transparency Transparency of the dots, values will be 0-1. Default
 #' \code{1}.
-#' @param defaultTheme Removes grid in plot and sets axis title size to 
+#' @param defaultTheme Removes grid in plot and sets axis title size to
 #' \code{10} when \code{TRUE}. Default \code{TRUE}.
-#' @param gridLine Adds a horizontal grid line if \code{TRUE}. Will still be 
+#' @param gridLine Adds a horizontal grid line if \code{TRUE}. Will still be
 #' drawn even if \code{defaultTheme} is \code{TRUE}. Default \code{FALSE}.
 #' @param title Title of plot. Default using \code{geneset}.
 #' @param titleSize Size of the title of the plot. Default \code{15}.
 #' @return A \code{ggplot} object for the violin plot
 #' @export
-#' @examples 
+#' @examples
 #' data("scExample", package = "singleCellTK")
 #' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 #' sce <- scaterlogNormCounts(sce, assayName = "logcounts")
@@ -66,8 +71,8 @@ getPathwayResultNames <- function(inSCE, stopIfNone = FALSE){
 #' sce <- runVAM(inSCE = sce, geneSetCollectionName = "GeneSetCollection",
 #'               useAssay = "logcounts")
 #' plotPathway(sce, "VAM_GeneSetCollection_CDF", "geneset1")
-plotPathway <- function(inSCE, 
-                        resultName, 
+plotPathway <- function(inSCE,
+                        resultName,
                         geneset,
                         groupBy = NULL,
                         boxplot = FALSE,
@@ -82,15 +87,15 @@ plotPathway <- function(inSCE,
                         gridLine = FALSE,
                         title = geneset,
                         titleSize = NULL
-){ 
+){
     availResults <- getPathwayResultNames(inSCE, stopIfNone = TRUE)
     if (!resultName %in% availResults) {
-        stop("Specified resultName not identified as a pathway analysis ", 
-             "result from singleCellTK. Use `getPathwayResultNames(inSCE)` ", 
+        stop("Specified resultName not identified as a pathway analysis ",
+             "result from singleCellTK. Use `getPathwayResultNames(inSCE)` ",
              "to see available options.")
     } else {
         if (!resultName %in% SingleCellExperiment::reducedDimNames(inSCE)) {
-            stop("Pathway analysis result identified, but missing in ", 
+            stop("Pathway analysis result identified, but missing in ",
                  "reducedDims(inSCE)")
         }
     }
@@ -102,17 +107,17 @@ plotPathway <- function(inSCE,
              genesetCollectionName, '")` for available options.')
     }
     xlab <- ifelse(is.null(groupBy), "Sample", groupBy)
-    plotSCEViolin(inSCE, 
-                  slotName = "reducedDims", 
-                  itemName = resultName, 
-                  dimension = geneset , 
-                  xlab = xlab, 
-                  ylab = resultName, 
-                  sample = NULL, 
-                  groupBy = groupBy, 
+    plotSCEViolin(inSCE,
+                  slotName = "reducedDims",
+                  itemName = resultName,
+                  dimension = geneset ,
+                  xlab = xlab,
+                  ylab = resultName,
+                  sample = NULL,
+                  groupBy = groupBy,
                   boxplot = boxplot,
                   dots = dots,
-                  violin = violin, 
+                  violin = violin,
                   summary = summary,
                   axisSize = axisSize,
                   axisLabelSize = axisLabelSize,

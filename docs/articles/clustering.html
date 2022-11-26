@@ -34,7 +34,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.6.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.3</span>
       </span>
     </div>
 
@@ -50,17 +50,20 @@
   <a href="../articles/installation.html">Installation</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Tutorials
      
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../articles/console_analysis_tutorial.html">A La Carte Workflow - PBMC3K (R Console)</a>
+      <a href="../articles/01_import_and_qc_tutorial.html">Importing and QC - PBMC3K</a>
     </li>
     <li>
-      <a href="../articles/cnsl_seurat_curated_workflow.html">Seurat Curated Workflow - PBMC3K</a>
+      <a href="../articles/02_a_la_carte_workflow.html">A La Carte Workflow - PBMC3K</a>
+    </li>
+    <li>
+      <a href="../articles/seurat_curated_workflow.html">Seurat Curated Workflow - PBMC3K</a>
     </li>
     <li>
       <a href="../articles/celda_curated_workflow.html">Celda Curated Workflow - PBMC3K</a>
@@ -71,14 +74,14 @@
   <a href="../articles/cmd_qc.html">SCTK-QC</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Documentation
      
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
 <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Data</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Data</a>
       <ul class="dropdown-menu" role="menu">
 <li>
           <a href="../articles/import_data.html">Import Data</a>
@@ -98,7 +101,7 @@
       </ul>
 </li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">QC &amp; Filtering</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">QC &amp; Filtering</a>
       <ul class="dropdown-menu" role="menu">
 <li>
           <a href="../articles/cnsl_dropletqc.html">Droplet QC (R console)</a>
@@ -115,10 +118,10 @@
       </ul>
 </li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Normalization &amp; Batch Correction</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Normalization &amp; Batch Correction</a>
       <ul class="dropdown-menu" role="menu">
 <li>
-          <a href="../articles/cnsl_normalization.html">Normalization</a>
+          <a href="../articles/normalization.html">Normalization</a>
         </li>
         <li>
           <a href="../articles/batch_correction.html">Batch Correction</a>
@@ -126,16 +129,16 @@
       </ul>
 </li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Feature Selection &amp; Dimensionality Reduction</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Feature Selection &amp; Dimensionality Reduction</a>
       <ul class="dropdown-menu" role="menu">
 <li>
-          <a href="../articles/cnsl_feature_selection.html">Feature Selection</a>
+          <a href="../articles/feature_selection.html">Feature Selection</a>
         </li>
         <li>
-          <a href="../articles/cnsl_dimensionality_reduction.html">Dimensionality Reduction</a>
+          <a href="../articles/dimensionality_reduction.html">Dimensionality Reduction</a>
         </li>
         <li>
-          <a href="../articles/cnsl_2d_embedding.html">2D Embedding</a>
+          <a href="../articles/2d_embedding.html">2D Embedding</a>
         </li>
       </ul>
 </li>
@@ -143,7 +146,7 @@
       <a href="../articles/clustering.html">Clustering</a>
     </li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Differential Expression &amp; Cell Type Labeling</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Differential Expression &amp; Cell Type Labeling</a>
       <ul class="dropdown-menu" role="menu">
 <li>
           <a href="../articles/differential_expression.html">Differential Expression</a>
@@ -157,10 +160,10 @@
       </ul>
 </li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Enrichment &amp; Pathway Analysis</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Pathway &amp; Enrichment Analysis</a>
       <ul class="dropdown-menu" role="menu">
 <li>
-          <a href="../articles/cnsl_enrichR.html">EnrichR</a>
+          <a href="../articles/enrichR.html">EnrichR</a>
         </li>
         <li>
           <a href="../articles/pathwayAnalysis.html">Pathway Analysis</a>
@@ -168,10 +171,18 @@
       </ul>
 </li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Curated Workflows</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Trajectory Analysis</a>
       <ul class="dropdown-menu" role="menu">
 <li>
-          <a href="../articles/cnsl_seurat_curated_workflow.html">Seurat</a>
+          <a href="../articles/trajectoryAnalysis.html">TSCAN</a>
+        </li>
+      </ul>
+</li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Curated Workflows</a>
+      <ul class="dropdown-menu" role="menu">
+<li>
+          <a href="../articles/seurat_curated_workflow.html">Seurat</a>
         </li>
         <li>
           <a href="../articles/celda_curated_workflow.html">Celda</a>
@@ -179,7 +190,7 @@
       </ul>
 </li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Visualization</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Visualization</a>
       <ul class="dropdown-menu" role="menu">
 <li>
           <a href="../articles/visualization.html">General Visualization</a>
@@ -225,7 +236,8 @@
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Clustering</h1>
-                        <h4 data-toc-skip class="author">Yichen Wang</h4>
+                        <h4 data-toc-skip class="author">Yichen
+Wang</h4>
             
       
       <small class="dont-index">Source: <a href="https://github.com/compbiomed/singleCellTK/blob/HEAD/vignettes/articles/clustering.Rmd" class="external-link"><code>vignettes/articles/clustering.Rmd</code></a></small>
@@ -240,9 +252,22 @@
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
-<p>SCTK allows users to do clustering on their data. The clustering methods that SCTK adopts are mainly graph based, such as an SNN graph, supported by Scran <span class="citation">[1]</span>, or a KNN graph, supported by Seurat <span class="citation">[2]</span>. Meanwhile, we also support traditional method such as K-Means <span class="citation">[3]</span>.</p>
-<p>SCTK allows different types data matrix as input. When using Scran’s SNN graph based clustering algorithms, users can specify either a expression matrix or a low-dimension representation as the input, while for Seurat’s KNN graph based algorithms and K-Means, users can only use the reduced dimensions.</p>
-<p>To view detailed instructions on how to use these methods, please select ‘Interactive Analysis’ for using clustering methods in shiny application or ‘Console Analysis’ for using these methods on R console from the tabs below: <br></p>
+<p>SCTK allows users to do clustering on their data with various
+methods. The clustering methods that SCTK adopts are mainly graph based
+algorithms, such as Louvain and Leiden, which partitions a Shared
+Nearest-Neighbor (SNN) graph. The graph can be constructed by Scran
+<span class="citation">[1]</span> or Seurat <span class="citation">[2]</span>, and the graph clustering is done by <a href="https://igraph.org/r/" class="external-link">igraph</a> or Seurat, respectively.
+Meanwhile, we also support traditional method such as K-Means <span class="citation">[3]</span>.</p>
+<p>SCTK allows different types data matrix as input. When using Scran’s
+SNN graph based clustering algorithms, users can specify either an
+expression matrix or a low-dimension representation as the input, while
+for Seurat’s methods and K-Means, users can only use the reduced
+dimensions. For any of the options, we recommend using a low-dimension
+representation as the input.</p>
+<p>To view detailed instructions on how to use these methods, please
+select ‘Interactive Analysis’ for using clustering methods in Shiny
+application or ‘Console Analysis’ for using these methods in R console
+from the tabs below:</p>
 </div>
 <div class="section level2">
 <h2 id="workflow-guide">Workflow Guide<a class="anchor" aria-label="anchor" href="#workflow-guide"></a>
@@ -254,142 +279,285 @@
 
 <div id="interactive" class="tabcontent">
 <p><strong>Entry of The Panel</strong></p>
-<p>From anywhere of the UI, the panel for clustering can be accessed from the top navigation panel at the circled tab shown below.</p>
+<p>From anywhere of the UI, the panel for clustering can be accessed
+from the top navigation panel at the circled tab shown below.</p>
 <p><img src="ui_screenshots/clustering/clst_ui_entry.png" alt="Entry"><br></p>
-<p>The UI is includes two panels. The top one is for setting the parameters and run the clustering, while the bottom one is for visualizing the results.</p>
+<p>The UI consists of the parameter setting panel on the left and the
+visualization panel on the right.</p>
+<p><img src="ui_screenshots/clustering/clst_ui.png" alt="UI"><br></p>
 <p><strong>Run Clustering</strong></p>
-<p><strong>1. Choose An Algorithm</strong></p>
-<p><img src="ui_screenshots/clustering/clst_ui_algo.png" style="border: 1px solid rgba(0,0,0,0.2)"></p>
-<p>User will choose an algorithm to run the clustering at the very first step. The slide-down option list is constructed in a grouped style. Each group lists all the algorithm that a dependency (shown with grey text) supports. By selecting an algorithm that belongs to different groups, the parameter settings will change.</p>
-<p><strong>2. Parameter Settings</strong></p>
-<p>Method specific parameter settings can be viewed below:</p>
+<p><img src="ui_screenshots/clustering/clst_ui_algo.png" alt="Algo"><br></p>
+<p>User will choose an algorithm to run the clustering at the very first
+step. The slide-down option list is constructed in a grouped style. Each
+group lists all the algorithm that a dependency (shown with grey text)
+supports. By selecting an algorithm that belongs to different groups,
+the parameter settings will change.</p>
+<p>Method specific parameter settings are shown and explained below:</p>
+<p><img src="ui_screenshots/clustering/clst_ui_param.png" alt="scran"><br></p>
  <style>
 div.offset { background-color:inherit ; border-radius: 5px; margin-left: 15px;}
 </style>
 <div class="offset">
-<details><summary><b>Scran SNNs</b></summary><p><img src="ui_screenshots/clustering/clst_ui_scran.png" alt="scran"><br></p>
-<p>When the selected algorithm belongs to “Scran SNN” group, the parameter settings will look like the figure above. For the choices in the algorithm list, please refer to <code><a href="https://rdrr.io/pkg/igraph/man/cluster_walktrap.html" class="external-link">igraph::cluster_walktrap()</a></code>, <code><a href="https://rdrr.io/pkg/igraph/man/cluster_louvain.html" class="external-link">igraph::cluster_louvain()</a></code>, <code><a href="https://rdrr.io/pkg/igraph/man/cluster_infomap.html" class="external-link">igraph::cluster_infomap()</a></code>, <code><a href="https://rdrr.io/pkg/igraph/man/cluster_fast_greedy.html" class="external-link">igraph::cluster_fast_greedy()</a></code>, <code><a href="https://rdrr.io/pkg/igraph/man/cluster_label_prop.html" class="external-link">igraph::cluster_label_prop()</a></code>, and <code><a href="https://rdrr.io/pkg/igraph/man/cluster_leading_eigen.html" class="external-link">igraph::cluster_leading_eigen()</a></code>.</p>
+<details><summary><b>Scran SNNs</b></summary><p>For the choices in the algorithm list, please refer to
+<code><a href="https://rdrr.io/pkg/igraph/man/cluster_louvain.html" class="external-link">igraph::cluster_louvain()</a></code>,
+<code><a href="https://rdrr.io/pkg/igraph/man/cluster_leiden.html" class="external-link">igraph::cluster_leiden()</a></code>,
+<code><a href="https://rdrr.io/pkg/igraph/man/cluster_walktrap.html" class="external-link">igraph::cluster_walktrap()</a></code>,
+<code><a href="https://rdrr.io/pkg/igraph/man/cluster_infomap.html" class="external-link">igraph::cluster_infomap()</a></code>,
+<code><a href="https://rdrr.io/pkg/igraph/man/cluster_fast_greedy.html" class="external-link">igraph::cluster_fast_greedy()</a></code>,
+<code><a href="https://rdrr.io/pkg/igraph/man/cluster_label_prop.html" class="external-link">igraph::cluster_label_prop()</a></code>, and
+<code><a href="https://rdrr.io/pkg/igraph/man/cluster_leading_eigen.html" class="external-link">igraph::cluster_leading_eigen()</a></code>.</p>
 <ul>
-<li>Data matrix selection - selection input <strong>“Select Input Matrix”</strong>. Scran SNN method allows various types of data matrices. Either a full-sized or a subsetted expression matrix, technically called <code>assay</code> or <code>altExp</code>, respectively, or a reduced dimension, technically <code>reducedDim</code>, is allowed.</li>
-<li>Resolution setting - numeric input <strong>“K value”</strong>. <code>K</code> is an integer scalar specifying the number of nearest neighbors to consider during graph construction. Considering more neighbors results in larger groups. (See parameter <code>k</code> of <code><a href="https://rdrr.io/pkg/scran/man/buildSNNGraph.html" class="external-link">scran::buildSNNGraph()</a></code>)</li>
-<li>Algorithm detail setting - selection input <strong>“Edge Weight Type”</strong>. Users can specify the type of weighting scheme to use for shared neighbors. (See parameter <code>type</code> of <code><a href="https://rdrr.io/pkg/scran/man/buildSNNGraph.html" class="external-link">scran::buildSNNGraph()</a></code>)</li>
-<li>Component number setting (only used when the chosen data matrix is an <code>assay</code> or <code>altExp</code>) - numeric input <strong>“Number of Components”</strong>. When an <code>assay</code> or <code>altExp</code> is chosen, the algorithm will perform a PCA on the matrix and obtain the top principal components (PCs) for downstream use. Thus users will specify the number of PCs here.</li>
-</ul></details><details><summary><b>K-Means</b></summary><p><img src="ui_screenshots/clustering/clst_ui_kmeans.png" alt="kmeans"><br></p>
-<p>When the selected algorithm belongs to “K-Means” group, the parameter settings will look like the figure above.</p>
+<li>Data matrix selection - selection input <strong>“Select Input
+Matrix”</strong>. Scran SNN method allows various types of data
+matrices. Either a full-sized or a subsetted expression matrix,
+technically called <code>assay</code> or <code>altExp</code>,
+respectively, or a reduced dimension, technically
+<code>reducedDim</code>, is allowed.</li>
+<li>Resolution related parameters:
 <ul>
-<li>Data matrix selection - selection input <strong>“Select a ReducedDim”</strong>. Here the data matrix allowed can only be a reduced dimension, technically called <code>reducedDim</code> and should be obtained in advance from <a href="cnsl_dimensionality_reduction.html">“Feature Selection &amp; Dimensionality Reduction” tab</a>.</li>
-<li>Cluster number determining - numeric input <strong>“Number of Centers (Clusters)”</strong>. User will decide the exact number of clusters here. In term of K-means algorithm, the number of cluster centroids.</li>
-<li>Iteration limit setting - numeric input <strong>“Max Number of Iterations”</strong>. User will here decide the maximum number of iterations to run.</li>
-<li>Algorithm detail setting - numeric input <strong>“Number of Random Sets”</strong>. Kmeans attempts multiple initial configurations and reports on the best one. Here users will set the number of initial configurations to use.</li>
-</ul></details><details><summary><b>Seurat</b></summary><p><img src="ui_screenshots/clustering/clst_ui_seurat.png" alt="seurat"><br></p>
-<p>When the selected algorithm belongs to “Seurat” group, the parameter settings will look like the figure above.</p>
+<li>Numeric input <strong>“K value”</strong>. <code>K</code> is an
+integer scalar specifying the number of nearest neighbors to consider
+during graph construction. Considering more neighbors results in larger
+groups. (See parameter <code>k</code> of
+<code><a href="https://rdrr.io/pkg/scran/man/buildSNNGraph.html" class="external-link">scran::buildSNNGraph()</a></code>)</li>
+<li>Numeric input <strong>“Resolution”</strong>, only seen when choosing
+“leiden” algorithm. Higher resolutions lead to more smaller communities,
+while lower resolutions lead to fewer larger communities. (See parameter
+<code>resolution_parameter</code> of
+<code><a href="https://rdrr.io/pkg/igraph/man/cluster_leiden.html" class="external-link">igraph::cluster_leiden()</a></code>)</li>
+<li>Numeric input <strong>“Steps”</strong>, only seen when choosing
+“walktrap” algorithm. The length of the random walks to perform. Less
+steps lead to fewer larger communities, and take more time for
+computation. (See parameter <code>steps</code> of
+<code><a href="https://rdrr.io/pkg/igraph/man/cluster_walktrap.html" class="external-link">igraph::cluster_walktrap()</a></code>)</li>
+</ul>
+</li>
+<li>Algorithm detail setting
 <ul>
-<li>Data matrix selection - selection input <strong>“Select a ReducedDim”</strong>. Here the data matrix allowed can only be a reduced dimension, technically called <code>reducedDim</code> and should be obtained in advance from <a href="cnsl_dimensionality_reduction.html">“Feature Selection &amp; Dimension Reduction” tab</a>.</li>
-<li>Component number setting - numeric input <strong>“How Many Dimensions to Use”</strong>.</li>
-<li>Algorithm detail setting - checkbox input <strong>“Group Singletons”</strong>.</li>
-<li>Resolution setting - numeric input <strong>“Resolution”</strong>.</li>
+<li>selection input <strong>“Edge Weight Type”</strong>. Users can
+specify the type of weighting scheme to use for shared neighbors. (See
+parameter <code>type</code> of <code><a href="https://rdrr.io/pkg/scran/man/buildSNNGraph.html" class="external-link">scran::buildSNNGraph()</a></code>)</li>
+<li>Selection input <strong>“Objective Function”</strong>, only seen
+when choosing “leiden” algorithm. The objective function, “CPM” <span class="citation">[4]</span> or “modularity” <span class="citation">[5]</span>, evaluates the partitioning of the graph,
+and the algorithm attempts to maximize the score.</li>
+</ul>
+</li>
+<li>Component number setting - numeric input <strong>“Number of
+Components”</strong>. If users specify a low-dimensional matrix as
+input, the method will be applied on the top components. When an
+<code>assay</code> or <code>altExp</code> is chosen, the algorithm will
+perform a PCA on the matrix and obtain the top PCs for downstream use.
+This number could be determined with the help of an Elbow plot in the <a href="dimensionality_reduction.html">“Dimension Reduction”</a> section.
+For better visualization, we suggest generating <a href="2d_embedding.html">2D embedding</a> with the same number of
+components from the selected reduced dimensions.</li>
+</ul></details><details><summary><b>K-Means</b></summary><p>When the selected algorithm belongs to “K-Means” group, the parameter
+settings will look like the figure above.</p>
+<ul>
+<li>Data matrix selection - selection input <strong>“Select a
+ReducedDim”</strong>. Here the data matrix allowed can only be a reduced
+dimension, technically called <code>reducedDim</code> and should be
+obtained in advance from <a href="dimensionality_reduction.html">Dimensionality Reduction</a>
+tab.</li>
+<li>Cluster number determining - numeric input <strong>“Number of
+Centers (Clusters)”</strong>. User will decide the exact number of
+clusters here. In term of K-means algorithm, the number of cluster
+centroids.</li>
+<li>Iteration limit setting - numeric input <strong>“Max Number of
+Iterations”</strong>. User will here decide the maximum number of
+iterations to run.</li>
+<li>Algorithm detail setting - numeric input <strong>“Number of Random
+Sets”</strong>. Kmeans attempts multiple initial configurations and
+reports on the best one. Here users will set the number of initial
+configurations to use.</li>
+</ul></details><details><summary><b>Seurat</b></summary><p>When the selected algorithm belongs to “Seurat” group, the parameter
+settings will look like the figure above.</p>
+<ul>
+<li>Data matrix selection - selection input <strong>“Select a
+ReducedDim”</strong>. Here the data matrix allowed can only be a reduced
+dimension, technically called <code>reducedDim</code> and should be
+obtained in advance from <a href="dimensionality_reduction.html">“Feature Selection &amp; Dimension
+Reduction” tab</a>.</li>
+<li>Component number setting - numeric input <strong>“How Many
+Dimensions to Use”</strong>.</li>
+<li>Algorithm detail setting - checkbox input <strong>“Group
+Singletons”</strong>.</li>
+<li>Resolution setting - numeric input
+<strong>“Resolution”</strong>.</li>
 </ul></details>
 </div>
-<br><p><strong>3. Visualization</strong></p>
-<p><img src="ui_screenshots/clustering/clst_ui_vis.png" style="border: 1px solid rgba(0,0,0,0.2)"></p>
-<p>The visualization is implemented with a plotting of a chosen low-dimension embedding, colored with a chosen cluster assignment (the newly generated result by default). SCTK by default uses the matrix used for clustering calculation for the visualization. However, usually, users might use a PCA for clustering while needing a UMAP/t-SNE embedding for visualization. To change the embedding used, please click on the blue settings (cog) button on the left-top corner.</p>
+<br><p><strong>Visualization</strong></p>
+<p><img src="ui_screenshots/clustering/clst_ui_vis.png"><br></p>
+<p>The visualization is implemented with a scatter plot of a chosen
+low-dimension embedding, colored with a chosen cluster assignment (the
+newly generated result by default). SCTK by default uses the matrix used
+for clustering calculation for the visualization. However, usually,
+users use a PCA for clustering while needing a UMAP/t-SNE embedding for
+visualization. To change the embedding used, please click on the blue
+settings (cog) button on the left-top corner.</p>
 <div class="offset">
 <details><summary><b>Settings</b></summary><ul>
-<li>Cluster annotation selection - radio button selection <strong>“Select from Current Results”</strong> and <strong>“Select from All Present Annotation”</strong>. This selection updates the dropdown menu with the available annotations. Only a successful run of clustering in the current SCTK session adds an option for the new result to “Select from Current Results,” while all the cell annotation stored in background (i.e. <code>colData(sce)</code>) are accessible if “Select from All Present Annotation” is chosen.</li>
-<li>Dimension Reduction selection - selection input <strong>“Use Reduction”</strong>. User have to choose a reduction here for plotting. If there is not yet any option, user can obtain one from <a href="cnsl_dimensionality_reduction.html">“Feature Selection &amp; Dimension Reduction” tab</a>.</li>
+<li>Cluster annotation selection - radio button selection
+<strong>“Select from Current Results”</strong> and <strong>“Select from
+All Present Annotation”</strong>. This selection updates the dropdown
+menu with the available annotations. Only a successful run of clustering
+in the current SCTK session adds an option for the new result to “Select
+from Current Results”, while all the cell annotation stored in
+background (i.e. <code>colData(sce)</code>) are accessible if “Select
+from All Present Annotation” is chosen.</li>
+<li>Dimension Reduction selection - selection input <strong>“Use
+Reduction”</strong>. User have to choose a reduction here for plotting.
+If there is not yet any option, user can obtain one from <a href="dimensionality_reduction.html">Dimension Reduction</a> tab.</li>
 </ul></details>
 </div>
 </div>
 
 <div id="console" class="tabcontent">
-<p>The clustering methods mentioned in the Introduction can be easily applied to any preprocessed SCE object. Meanwhile, there are other types of clustering methods supported by SCTK, but usually dependent to a curated workflow, such as <a href="https://rdrr.io/bioc/celda/" class="external-link"><code>celda</code></a>. Here we present the usage of the three functions only.</p>
+<p>The clustering methods mentioned in the Introduction can be easily
+applied to any preprocessed SCE object. Meanwhile, there are other types
+of clustering methods supported by SCTK, but usually dependent to a
+curated workflow, such as the <a href="celda_curated_workflow.html">Celda Curated Workflow</a>. Here we
+present the usage of the three functions only.</p>
 <p><strong>Basic Parameters</strong></p>
 <p>For each of the three functions, the common things are:</p>
 <ul>
 <li>The input SCE object - <code>inSCE</code>.</li>
-<li>The <code>colData</code> column name to save the cluster labels - <code>clusterName</code>
+<li>The <code>colData</code> column name to save the cluster labels -
+<code>clusterName</code>
 </li>
-<li>The specific algorithm type supported by the dependency - <code>algorithm</code>
+<li>The specific algorithm type supported by the dependency -
+<code>algorithm</code>
 </li>
 </ul>
-<p>As for another essential parameter, the data matrix used for running the algorithm is a must. Here, users should notice that:</p>
+<p>As for another essential parameter, the data matrix used for running
+the algorithm is a must. Here, users should notice that:</p>
 <ul>
-<li>For <code><a href="../reference/runKMeans.html">runKMeans()</a></code>, only a dimension reduction is acceptable. Users need to use <code>useReducedDim</code> to pass the argument.</li>
-<li>For <code><a href="../reference/runScranSNN.html">runScranSNN()</a></code>, either a feature expression matrix or a dimension reduction is acceptable. Users need to use <code>useAssay</code> for a full-sized expression data (<code>assay</code>), <code>useAltExp</code> and <code>altExpAssay</code> for a subsetted expression data (<code>altExp</code>), or <code>useReducedDim</code> for a dimension reduction.</li>
-<li>For <code><a href="../reference/runSeuratFindClusters.html">runSeuratFindClusters()</a></code>, it is included within the Seurat Curated Workflow, yet usable as an independent function. However, it will be complicated to use this way. It is recommended to invoke the Seurat clustering functionality in the UI since it is automated there. We will still present the complicated workflow later.</li>
+<li>For <code><a href="../reference/runScranSNN.html">runScranSNN()</a></code>, either a feature expression matrix
+or a dimension reduction is acceptable. Users need to use:
+<ul>
+<li>
+<code>useAssay</code> for a full-sized expression data
+(<code>assay</code>)</li>
+<li>
+<code>useAltExp</code> and <code>altExpAssay</code> for a subsetted
+expression data (<code>altExp</code>)</li>
+<li>
+<code>useReducedDim</code> for a dimension reduction.
+(<code>reducedDim</code>)</li>
+<li>
+<code>useAltExp</code> and <code>altExpRedDim</code> for a reduced
+dimension stored in the <code>altExp</code> object.</li>
 </ul>
-<p>Other parameters are method specific, please refer to the function manual pages for the detail.</p>
-<details><summary><b>Example</b></summary><p>To demonstrate simple and clear examples, here we use the “PBMC-3k” dataset from “10X” which can be easily imported with SCTK functions.</p>
+</li>
+<li>For <code><a href="../reference/runKMeans.html">runKMeans()</a></code>, only a dimension reduction is
+acceptable. Users need to use <code>useReducedDim</code> to pass the
+argument.</li>
+<li>For <code><a href="../reference/runSeuratFindClusters.html">runSeuratFindClusters()</a></code>, it is included within the
+Seurat Curated Workflow, yet usable as an independent function. However,
+it will be complicated to use this way. It is recommended to invoke the
+Seurat clustering functionality in the UI since it is automated there.
+We will still present the complicated workflow later.</li>
+</ul>
+<p>When using <code>useReducedDim</code> as data input, users should be
+aware of the number of top components being passed to the underlying
+method. This is usually controlled by argument <code>nComp</code>. To
+determine this parameter, users can refer to the explanation in <a href="dimensionality_reduction.html">Dimensionality Reduction
+Documentation</a>. Meanwhile, for better visualization, we also
+recommend users to generate <a href="2d_embedding.html">2D Embedding</a>
+using the same number of top components from the same dimension
+reduction result.</p>
+<p>Other parameters are method specific, please refer to the function
+manual pages for the detail. The typical command call for for each
+method is shown below:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://www.camplab.net/sctk/" class="external-link">singleCellTK</a></span><span class="op">)</span>
-<span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/importExampleData.html">importExampleData</a></span><span class="op">(</span><span class="st">"pbmc3k"</span><span class="op">)</span></code></pre></div>
-<p>The preprocessing only includes necessary steps before getting cluster labels (i.e. QC and filtering are excluded).</p>
+<code class="sourceCode R"><span><span class="co"># Scran method</span></span>
+<span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runScranSNN.html">runScranSNN</a></span><span class="op">(</span><span class="va">sce</span>, useReducedDim <span class="op">=</span> <span class="st">"PCA"</span>, clusterName <span class="op">=</span> <span class="st">"scranSNN"</span><span class="op">)</span></span>
+<span><span class="co"># K-means method</span></span>
+<span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runKMeans.html">runKMeans</a></span><span class="op">(</span><span class="va">sce</span>, nCenters <span class="op">=</span> <span class="fl">9</span>, useReducedDim <span class="op">=</span> <span class="st">"PCA"</span>, clusterName <span class="op">=</span> <span class="st">"KMeans"</span><span class="op">)</span></span>
+<span><span class="co"># Seurat method</span></span>
+<span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runSeuratFindClusters.html">runSeuratFindClusters</a></span><span class="op">(</span><span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"seuratScaledData"</span><span class="op">)</span></span></code></pre></div>
+<p><strong>Example</strong></p>
+<p>To demonstrate simple and clear examples, here we use the “PBMC-3k”
+dataset from “10X” which can be easily imported with SCTK functions. The
+preprocessing only includes necessary steps before getting cluster
+labels (i.e. QC and filtering are excluded).</p>
 <div class="offset">
 <details><summary><b>Preprocessing</b></summary><div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/scaterlogNormCounts.html">scaterlogNormCounts</a></span><span class="op">(</span><span class="va">sce</span>, <span class="st">"logcounts"</span><span class="op">)</span>
-<span class="co"># Go through the Seurat curated workflow to get basic scaled assay and dimension reduction</span>
-<span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runSeuratNormalizeData.html">runSeuratNormalizeData</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"counts"</span><span class="op">)</span>
-<span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runSeuratFindHVG.html">runSeuratFindHVG</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"seuratNormData"</span><span class="op">)</span>
-<span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runSeuratScaleData.html">runSeuratScaleData</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"seuratNormData"</span><span class="op">)</span>
-<span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runSeuratPCA.html">runSeuratPCA</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"seuratScaledData"</span><span class="op">)</span>
-<span class="co"># Optional visualization</span>
-<span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runSeuratUMAP.html">runSeuratUMAP</a></span><span class="op">(</span><span class="va">pbmc3k</span><span class="op">)</span>
-<span class="fu"><a href="../reference/plotSCEDimReduceColData.html">plotSCEDimReduceColData</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>,  colorBy <span class="op">=</span> <span class="st">"Sample"</span>, reducedDimName <span class="op">=</span> <span class="st">"seuratUMAP"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://www.camplab.net/sctk/" class="external-link">singleCellTK</a></span><span class="op">)</span></span>
+<span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/importExampleData.html">importExampleData</a></span><span class="op">(</span><span class="st">"pbmc3k"</span><span class="op">)</span></span>
+<span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runNormalization.html">runNormalization</a></span><span class="op">(</span><span class="va">sce</span>, outAssayName <span class="op">=</span> <span class="st">"logcounts"</span>, normalizationMethod <span class="op">=</span> <span class="st">"logNormCounts"</span><span class="op">)</span></span>
+<span><span class="co"># Default HVG method is "vst" from Seurat</span></span>
+<span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runFeatureSelection.html">runFeatureSelection</a></span><span class="op">(</span><span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"counts"</span><span class="op">)</span></span>
+<span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getTopHVG.html">setTopHVG</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span></span>
+<span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runDimReduce.html">runDimReduce</a></span><span class="op">(</span><span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"logcounts"</span>, useFeatureSubset <span class="op">=</span> <span class="st">"HVG_vst2000"</span>, scale <span class="op">=</span> <span class="cn">TRUE</span>, reducedDimName <span class="op">=</span> <span class="st">"PCA"</span><span class="op">)</span></span>
+<span><span class="co"># Optional visualization</span></span>
+<span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runDimReduce.html">runDimReduce</a></span><span class="op">(</span><span class="va">sce</span>, method <span class="op">=</span> <span class="st">"scaterUMAP"</span>, useReducedDim <span class="op">=</span> <span class="st">"PCA"</span>, reducedDimName <span class="op">=</span> <span class="st">"UMAP"</span>, nComponents <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/plotDimRed.html">plotDimRed</a></span><span class="op">(</span><span class="va">sce</span>, <span class="st">"UMAP"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="clustering_files/figure-html/clst_prep-1.png" width="700" style="display: block; margin: auto;"></p>
 </details><details><summary><b>Example with Scran SNN</b></summary><details><summary><b>Method specific parameters</b></summary><ul>
 <li>
-<code>k</code>, the number of nearest neighbors used to construct the graph. Smaller value indicates higher resolution and larger number of clusters.</li>
+<code>k</code>, the number of nearest neighbors used to construct
+the graph. Smaller value indicates higher resolution and larger number
+of clusters.</li>
 <li>
-<code>nComp</code>, the number of components to use when <code>useAssay</code> or <code>useAltExp</code> is specified. WON’T work with <code>useReducedDim</code>.</li>
-<li>For <code>weightType</code> and <code>algorithm</code>, users should choose from a given list of options, which can be found with <code><a href="../reference/runScranSNN.html">?runScranSNN</a></code>. For the introduction of those options, please refer to <code><a href="https://rdrr.io/pkg/scran/man/buildSNNGraph.html" class="external-link">scran::buildSNNGraph()</a></code> and <a href="https://rdrr.io/cran/igraph/" class="external-link"><code>igraph</code></a>.</li>
+<code>nComp</code>, the number of components to use when
+<code>useAssay</code> or <code>useAltExp</code> is specified. WON’T work
+with <code>useReducedDim</code>.</li>
+<li>For <code>weightType</code> and <code>algorithm</code>, users should
+choose from a given list of options, which can be found with
+<code><a href="../reference/runScranSNN.html">?runScranSNN</a></code>. For the introduction of those options, please
+refer to <code><a href="https://rdrr.io/pkg/scran/man/buildSNNGraph.html" class="external-link">scran::buildSNNGraph()</a></code> and <a href="https://rdrr.io/cran/igraph/" class="external-link">igraph</a>.</li>
+<li>Different algorithms, supported by <a href="https://rdrr.io/cran/igraph/" class="external-link">igraph</a>, might allows different
+parameters, such as <code>objective_function</code> and
+<code>resolution_parameter</code> for Leiden <span class="citation">[6]</span>, <code>steps</code> for Walktrap <span class="citation">[7]</span>. Please also refer to function reference for
+detail.</li>
 </ul></details><div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># Directly use an assay</span>
-<span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runScranSNN.html">runScranSNN</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"logcounts"</span>, k <span class="op">=</span> <span class="fl">10</span>, clusterName <span class="op">=</span> <span class="st">"scranSNN_logcounts"</span><span class="op">)</span>
-<span class="fu"><a href="../reference/plotSCEDimReduceColData.html">plotSCEDimReduceColData</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, colorBy <span class="op">=</span> <span class="st">"scranSNN_logcounts"</span>, conditionClass <span class="op">=</span> <span class="st">"factor"</span>, reducedDimName <span class="op">=</span> <span class="st">"seuratUMAP"</span><span class="op">)</span>
-<span class="co"># Directly use a dimension reduction</span>
-<span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runScranSNN.html">runScranSNN</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useReducedDim <span class="op">=</span>  <span class="st">"seuratUMAP"</span>, k <span class="op">=</span> <span class="fl">25</span>, clusterName <span class="op">=</span> <span class="st">"scranSNN_seuratUMAP"</span><span class="op">)</span>
-<span class="fu"><a href="../reference/plotSCEDimReduceColData.html">plotSCEDimReduceColData</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, colorBy <span class="op">=</span> <span class="st">"scranSNN_seuratUMAP"</span>, conditionClass <span class="op">=</span> <span class="st">"factor"</span>, reducedDimName <span class="op">=</span> <span class="st">"seuratUMAP"</span><span class="op">)</span>
-<span class="co"># Use a subset of an assay</span>
-<span class="va">hvg</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getTopHVG.html">getTopHVG</a></span><span class="op">(</span><span class="va">sce</span>, <span class="st">"vst"</span>, n <span class="op">=</span> <span class="fl">500</span><span class="op">)</span>
-<span class="va">ae</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/SingleCellExperiment/man/SingleCellExperiment.html" class="external-link">SingleCellExperiment</a></span><span class="op">(</span>assays <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>logcounts <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/SingleCellExperiment/man/assays.html" class="external-link">logcounts</a></span><span class="op">(</span><span class="va">sce</span><span class="op">[</span><span class="va">hvg</span>,<span class="op">]</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/pkg/SingleCellExperiment/man/altExps.html" class="external-link">altExp</a></span><span class="op">(</span><span class="va">sce</span>, <span class="st">"subset"</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">ae</span>
-<span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runScranSNN.html">runScranSNN</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAltExp <span class="op">=</span> <span class="st">"subset"</span>, altExpAssay <span class="op">=</span> <span class="st">"logcounts"</span>, k <span class="op">=</span> <span class="fl">8</span>, clusterName <span class="op">=</span> <span class="st">"scranSNN_altExp"</span><span class="op">)</span>
-<span class="fu"><a href="../reference/plotSCEDimReduceColData.html">plotSCEDimReduceColData</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, colorBy <span class="op">=</span> <span class="st">"scranSNN_altExp"</span>, conditionClass <span class="op">=</span> <span class="st">"factor"</span>, reducedDimName <span class="op">=</span> <span class="st">"seuratUMAP"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># Directly use an assay</span></span>
+<span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runScranSNN.html">runScranSNN</a></span><span class="op">(</span><span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"logcounts"</span>, clusterName <span class="op">=</span> <span class="st">"scranSNN_logcounts"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/plotSCEDimReduceColData.html">plotSCEDimReduceColData</a></span><span class="op">(</span><span class="va">sce</span>, colorBy <span class="op">=</span> <span class="st">"scranSNN_logcounts"</span>, reducedDimName <span class="op">=</span> <span class="st">"UMAP"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="clustering_files/figure-html/clst_ScranSNN-1.png" width="700" style="display: block; margin: auto;"></p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Directly use a dimension reduction</span></span>
+<span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runScranSNN.html">runScranSNN</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useReducedDim <span class="op">=</span> <span class="st">"PCA"</span>, nComp <span class="op">=</span> <span class="fl">10</span>, clusterName <span class="op">=</span> <span class="st">"scranSNN_PCA"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/plotSCEDimReduceColData.html">plotSCEDimReduceColData</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, colorBy <span class="op">=</span> <span class="st">"scranSNN_PCA"</span>, reducedDimName <span class="op">=</span> <span class="st">"UMAP"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="clustering_files/figure-html/clst_ScranSNN-2.png" width="700" style="display: block; margin: auto;"></p>
 </details><details><summary><b>Example with K-Means</b></summary><details><summary><b>Method specific parameters</b></summary><ul>
 <li>
-<code>nCenters</code>, the number of final clusters. This is required.</li>
+<code>nCenters</code>, the number of final clusters. This is
+required.</li>
 <li>
 <code>nIter</code>, the maximum number of iterations allowed.</li>
 <li>
-<code>nStart</code>, the number of random sets to choose. Since K-Means is an algorithm with reasonable randomness, the function allows attempting multiple initial configurations and reports on the best one.</li>
+<code>nStart</code>, the number of random sets to choose. Since
+K-Means is an algorithm with reasonable randomness, the function allows
+attempting multiple initial configurations and reports on the best
+one.</li>
 <li>
 <code>seed</code>, The seed for the random number generator.</li>
-<li>For <code>algorithm</code>, users should choose from a given list of options, which can be found with <code><a href="../reference/runKMeans.html">?runKMeans</a></code>. For the introduction of those options, please refer to <code><a href="https://rdrr.io/r/stats/kmeans.html" class="external-link">?stats::kmeans</a></code>.</li>
-</ul></details><div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runKMeans.html">runKMeans</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useReducedDim <span class="op">=</span> <span class="st">"seuratUMAP"</span>, nCenters <span class="op">=</span> <span class="fl">13</span>, clusterName <span class="op">=</span> <span class="st">"kmeans_cluster"</span><span class="op">)</span>
-<span class="fu"><a href="../reference/plotSCEDimReduceColData.html">plotSCEDimReduceColData</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, colorBy <span class="op">=</span> <span class="st">"kmeans_cluster"</span>, conditionClass <span class="op">=</span> <span class="st">"factor"</span>, reducedDimName <span class="op">=</span> <span class="st">"seuratUMAP"</span><span class="op">)</span></code></pre></div>
-</details><details><summary><b>Example with Seurat</b></summary><p>Here we will only present the examples of using <code><a href="../reference/runSeuratFindClusters.html">runSeuratFindClusters()</a></code>.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runSeuratFindClusters.html">runSeuratFindClusters</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"seuratScaledData"</span><span class="op">)</span>
-<span class="fu"><a href="../reference/plotSCEDimReduceColData.html">plotSCEDimReduceColData</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, colorBy <span class="op">=</span> <span class="st">"Seurat_louvain_Resolution0.8"</span>, conditionClass <span class="op">=</span> <span class="st">"factor"</span>, reducedDimName <span class="op">=</span> <span class="st">"seuratUMAP"</span><span class="op">)</span></code></pre></div>
-<p>When users preprocessed the dataset with other approaches. The clustering with Seurat function can be complicated, since some sorts of Seurat specific metadata is always needed.</p>
+<li>For <code>algorithm</code>, users should choose from a given list of
+options, which can be found with <code><a href="../reference/runKMeans.html">?runKMeans</a></code>. For the
+introduction of those options, please refer to
+<code><a href="https://rdrr.io/r/stats/kmeans.html" class="external-link">?stats::kmeans</a></code>.</li>
+</ul></details><div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runKMeans.html">runKMeans</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useReducedDim <span class="op">=</span> <span class="st">"PCA"</span>, nComp <span class="op">=</span> <span class="fl">10</span>, nCenters <span class="op">=</span> <span class="fl">10</span>, clusterName <span class="op">=</span> <span class="st">"kmeans"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/plotSCEDimReduceColData.html">plotSCEDimReduceColData</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, colorBy <span class="op">=</span> <span class="st">"kmeans"</span>, reducedDimName <span class="op">=</span> <span class="st">"UMAP"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="clustering_files/figure-html/clst_kmeans-1.png" width="700" style="display: block; margin: auto;"></p>
+</details><details><summary><b>Example with Seurat</b></summary><p>Seurat clustering method is recommended to be used in the <a href="seurat_curated_workflow.html">Seurat Curated Workflow</a> in
+console analysis. When users preprocessed the dataset with other
+approaches, the clustering with Seurat function can be complicated,
+since some sorts of Seurat specific metadata is always needed.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># Let's get another totally independent dimension reduction for demonstration. </span>
-<span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/scaterPCA.html">scaterPCA</a></span><span class="op">(</span><span class="va">sce</span>, reducedDimName <span class="op">=</span> <span class="st">"PCA"</span><span class="op">)</span>
-<span class="va">pca</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/SingleCellExperiment/man/reducedDims.html" class="external-link">reducedDim</a></span><span class="op">(</span><span class="va">sce</span>, <span class="st">"PCA"</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/row_colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">pca</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">gsub</a></span><span class="op">(</span><span class="st">"_"</span>, <span class="st">"-"</span>, <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/row_colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">pca</span><span class="op">)</span><span class="op">)</span>
-<span class="kw">if</span> <span class="op">(</span><span class="st">"percentVar"</span> <span class="op"><a href="https://rdrr.io/pkg/BiocGenerics/man/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/attributes.html" class="external-link">attributes</a></span><span class="op">(</span><span class="va">pca</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span>
-    <span class="va">stdev</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">pca</span>, <span class="st">"percentVar"</span><span class="op">)</span><span class="op">)</span>
-    <span class="va">new_pca</span> <span class="op">&lt;-</span> <span class="fu">Seurat</span><span class="fu">::</span><span class="fu"><a href="https://mojaveazure.github.io/seurat-object/reference/CreateDimReducObject.html" class="external-link">CreateDimReducObject</a></span><span class="op">(</span>embeddings <span class="op">=</span> <span class="va">sce</span>, assay <span class="op">=</span> <span class="st">"RNA"</span>, stdev <span class="op">=</span> <span class="va">stdev</span>, key <span class="op">=</span> <span class="st">"PC_"</span><span class="op">)</span>
-<span class="op">}</span> <span class="kw">else</span> <span class="op">{</span>
-    <span class="va">new_pca</span> <span class="op">&lt;-</span> <span class="fu">Seurat</span><span class="fu">::</span><span class="fu"><a href="https://mojaveazure.github.io/seurat-object/reference/CreateDimReducObject.html" class="external-link">CreateDimReducObject</a></span><span class="op">(</span>embeddings <span class="op">=</span> <span class="va">sce</span>, assay <span class="op">=</span> <span class="st">"RNA"</span>, key <span class="op">=</span> <span class="st">"PC_"</span><span class="op">)</span>
-<span class="op">}</span>
-<span class="co"># Then we can take the Seurat Curated Workflow independent dimension </span>
-<span class="co"># reduction as an input. </span>
-<span class="va">pbmc3k</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runSeuratFindClusters.html">runSeuratFindClusters</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, useAssay <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">assayNames</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, externalReduction <span class="op">=</span> <span class="va">new_pca</span>, resolution <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span>
-<span class="fu"><a href="../reference/plotSCEDimReduceColData.html">plotSCEDimReduceColData</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, colorBy <span class="op">=</span> <span class="st">"Seurat_louvain_Resolution0.8"</span>, conditionClass <span class="op">=</span> <span class="st">"factor"</span>, reducedDimName <span class="op">=</span> <span class="st">"seuratUMAP"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># Prepare what seurat function needs</span></span>
+<span><span class="va">pca</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/SingleCellExperiment/man/reducedDims.html" class="external-link">reducedDim</a></span><span class="op">(</span><span class="va">sce</span>, <span class="st">"PCA"</span><span class="op">)</span><span class="op">[</span>,<span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">]</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">pca</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">gsub</a></span><span class="op">(</span><span class="st">"_"</span>, <span class="st">"-"</span>, <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">pca</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">stdev</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">pca</span>, <span class="st">"percentVar"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">new_pca</span> <span class="op">&lt;-</span> <span class="fu">Seurat</span><span class="fu">::</span><span class="fu"><a href="https://mojaveazure.github.io/seurat-object/reference/CreateDimReducObject.html" class="external-link">CreateDimReducObject</a></span><span class="op">(</span>embeddings <span class="op">=</span> <span class="va">pca</span>, assay <span class="op">=</span> <span class="st">"RNA"</span>, stdev <span class="op">=</span> <span class="va">stdev</span>, key <span class="op">=</span> <span class="st">"PC_"</span><span class="op">)</span></span>
+<span><span class="co"># Then we can take the Seurat Curated Workflow independent dimension </span></span>
+<span><span class="co"># reduction as an input. </span></span>
+<span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runSeuratFindClusters.html">runSeuratFindClusters</a></span><span class="op">(</span><span class="va">sce</span>, externalReduction <span class="op">=</span> <span class="va">new_pca</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/plotSCEDimReduceColData.html">plotSCEDimReduceColData</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, colorBy <span class="op">=</span> <span class="st">"Seurat_louvain_Resolution0.8"</span>, reducedDimName <span class="op">=</span> <span class="st">"UMAP"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="clustering_files/figure-html/clst_seurat2-1.png" width="700" style="display: block; margin: auto;"></p>
 </details>
 </div>
-</details>
 </div>
 <script>
 document.getElementById("ia-button").click();
@@ -401,15 +569,54 @@ document.getElementById("ia-button").click();
 <div id="refs" class="references csl-bib-body">
 <div id="ref-Aaron2016" class="csl-entry">
 <div class="csl-left-margin">[1] </div>
-<div class="csl-right-inline">A. T. L. Lun, D. J. McCarthy, and J. C. Marioni, <span>“A step-by-step workflow for low-level analysis of single-cell RNA-seq data with bioconductor,”</span> <em>F1000Research</em>, vol. 5, p. 2122, 2016, doi: <a href="https://doi.org/10.12688/f1000research.9501.2" class="external-link">10.12688/f1000research.9501.2</a>.</div>
+<div class="csl-right-inline">A.
+T. L. Lun, D. J. McCarthy, and J. C. Marioni, <span>“A step-by-step
+workflow for low-level analysis of single-cell RNA-seq data with
+bioconductor,”</span> <em>F1000Research</em>, vol. 5, p. 2122, 2016,
+doi: <a href="https://doi.org/10.12688/f1000research.9501.2" class="external-link">10.12688/f1000research.9501.2</a>.</div>
 </div>
 <div id="ref-Stuart2019" class="csl-entry">
 <div class="csl-left-margin">[2] </div>
-<div class="csl-right-inline">T. Stuart <em>et al.</em>, <span>“<span class="nocase">Comprehensive Integration of Single-Cell Data</span>,”</span> <em>Cell</em>, vol. 177, no. 7, pp. 1888–1902.e21, Jun. 2019, doi: <a href="https://doi.org/10.1016/j.cell.2019.05.031" class="external-link">10.1016/j.cell.2019.05.031</a>.</div>
+<div class="csl-right-inline">T.
+Stuart <em>et al.</em>, <span>“<span class="nocase">Comprehensive
+Integration of Single-Cell Data</span>,”</span> <em>Cell</em>, vol. 177,
+no. 7, pp. 1888–1902.e21, Jun. 2019, doi: <a href="https://doi.org/10.1016/j.cell.2019.05.031" class="external-link">10.1016/j.cell.2019.05.031</a>.</div>
 </div>
 <div id="ref-Forgy65" class="csl-entry">
 <div class="csl-left-margin">[3] </div>
-<div class="csl-right-inline">E. Forgy, <span>“<span class="nocase">Cluster analysis of multivariate data: efficiency versus interpretability of classifications</span>,”</span> <em>Biometrics</em>, vol. 21, pp. 768–780, 1965.</div>
+<div class="csl-right-inline">E.
+Forgy, <span>“<span class="nocase">Cluster analysis of multivariate
+data: efficiency versus interpretability of
+classifications</span>,”</span> <em>Biometrics</em>, vol. 21, pp.
+768–780, 1965.</div>
+</div>
+<div id="ref-Ronhovde2010" class="csl-entry">
+<div class="csl-left-margin">[4] </div>
+<div class="csl-right-inline">P.
+Ronhovde and Z. Nussinov, <span>“Local resolution-limit-free potts model
+for community detection,”</span> <em>Phys. Rev. E</em>, vol. 81, no.
+46114, 4, 2010, doi: <a href="https://doi.org/10.1103/PhysRevE.81.046114" class="external-link">10.1103/PhysRevE.81.046114</a>.</div>
+</div>
+<div id="ref-Newman2004" class="csl-entry">
+<div class="csl-left-margin">[5] </div>
+<div class="csl-right-inline">M.
+E. J. Newman and M. Girvan, <span>“Finding and evaluating community
+structure in networks,”</span> <em>Phys. Rev. E</em>, vol. 69, no.
+26113, 2, 2004, doi: <a href="https://doi.org/10.1103/PhysRevE.69.026113" class="external-link">10.1103/PhysRevE.69.026113</a>.</div>
+</div>
+<div id="ref-Traag2019" class="csl-entry">
+<div class="csl-left-margin">[6] </div>
+<div class="csl-right-inline">V.
+A. Traag, L. Waltman, and N. J. van Eck, <span>“From louvain to leiden:
+Guaranteeing well-connected communities,”</span> <em>Scientific
+Reports</em>, vol. 9, no. 5233, 2019, doi: <a href="https://doi.org/10.1038/s41598-019-41695-z" class="external-link">10.1038/s41598-019-41695-z</a>.</div>
+</div>
+<div id="ref-Pons2005" class="csl-entry">
+<div class="csl-left-margin">[7] </div>
+<div class="csl-right-inline">P.
+Pons and M. Latapy, <span>“Computing communities in large networks using
+random walks,”</span> in <em>Computer and information sciences - ISCIS
+2005</em>, 2005, pp. 284–293. doi: <a href="https://doi.org/10.1007/11569596_31" class="external-link">10.1007/11569596_31</a>.</div>
 </div>
 </div>
 </div>
@@ -432,7 +639,7 @@ document.getElementById("ia-button").click();
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer>

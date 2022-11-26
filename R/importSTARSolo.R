@@ -69,7 +69,7 @@
     }
 
     sce <- do.call(SingleCellExperiment::cbind, res)
-    
+
     if (isTRUE(rowNamesDedup)) {
         if (any(duplicated(rownames(sce)))) {
             message("Duplicated gene names found, adding '-1', '-2', ",
@@ -77,9 +77,13 @@
         }
         sce <- dedupRowNames(sce)
     }
-    
+
     # Load metrics summary and store in sce
-    metrics_summary <- .importMetricsStarSolo(STARsoloDirs, samples, "Gene", "Summary.csv")
+    metrics_summary <- .importMetricsStarSolo(
+      samplePaths = STARsoloDirs, 
+      sampleNames = samples, 
+      metricsPath = c("Gene", "GeneFull"), 
+      metricsFile = "Summary.csv")
     # sce <- setSampleSummaryStatsTable(sce, "starsolo", metrics_summary)
     if (ncol(metrics_summary) > 0) {
       sce@metadata$sctk$sample_summary[["starsolo"]] <- metrics_summary
@@ -127,7 +131,7 @@
 #'  \link[base]{matrix} function). Default "Matrix".
 #' @param delayedArray Boolean. Whether to read the expression matrix as
 #'  \link{DelayedArray} object or not. Default \code{FALSE}.
-#' @param rowNamesDedup Boolean. Whether to deduplicate rownames. Default 
+#' @param rowNamesDedup Boolean. Whether to deduplicate rownames. Default
 #'  \code{TRUE}.
 #' @return A \code{SingleCellExperiment} object containing the count
 #'  matrix, the gene annotation, and the cell annotation.
@@ -199,7 +203,8 @@ importSTARsolo <- function(
   # Processing
   metrics_summary <- list()
   for(i in seq(samplePaths)){
-    metrics_summary[[i]] <- list.files(pattern= paste0("*", metricsFile, "$"), path = paste0(samplePaths[i], "/", metricsPath), full.names = TRUE)
+    metricsPath <- paste0(samplePaths[i], "/", metricsPath)
+    metrics_summary[[i]] <- list.files(pattern= paste0("*", metricsFile, "$"), path = metricsPath, full.names = TRUE)
     if(length(metrics_summary[[i]]) > 0){
       metrics_summary[[i]] <- lapply(metrics_summary[[i]], utils::read.csv, header = FALSE, check.names = FALSE, row.names = 1)[[1]]
     }
@@ -210,7 +215,7 @@ importSTARsolo <- function(
       colnames(metrics_summary[[i]]) <- ms_colnames_union
     }
   }
-  
+
   # Merge StarSolo summary csv files from all/multiple samples into a single data.frame
   for(i in seq_along(metrics_summary)){
     metrics_summary[[i]] <- as.data.frame(t(metrics_summary[[i]]))

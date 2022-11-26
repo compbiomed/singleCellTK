@@ -34,7 +34,7 @@ tSNE call. Default \code{30}.}
 \item{externalReduction}{Pass DimReduc object if PCA/ICA computed through
 other libraries. Default \code{NULL}.}
 
-\item{seed}{Random seed for reproducibility of results. 
+\item{seed}{Random seed for reproducibility of results.
 Default \code{1}.}
 }
 \value{

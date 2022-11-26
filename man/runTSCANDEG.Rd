@@ -2,51 +2,38 @@
 % Please edit documentation in R/runTSCAN.R
 \name{runTSCANDEG}
 \alias{runTSCANDEG}
-\title{Run runTSCANDEG function to obtain changes along a trajectory}
+\title{Test gene expression changes along a TSCAN trajectory path}
 \usage{
-runTSCANDEG(
-  inSCE,
-  pathIndex,
-  useAssay = "logcounts",
-  discardCluster = NULL,
-  log2fcThreshold = 0
-)
+runTSCANDEG(inSCE, pathIndex, useAssay = "logcounts", discardCluster = NULL)
 }
 \arguments{
 \item{inSCE}{Input \linkS4class{SingleCellExperiment} object.}
 
-\item{pathIndex}{Path index for which the pseudotime values should be used. PathIndex 
-corresponds to the terminal node of specific path from the root node to the terminal node.}
+\item{pathIndex}{Path index for which the pseudotime values should be used.
+This corresponds to the terminal node of specific path from the root
+node to the terminal node. Run \code{listTSCANTerminalNodes(inSCE)} for
+available options.}
 
-\item{useAssay}{Character. The name of the assay to use. This assay should 
-contain log normalized counts.}
+\item{useAssay}{Character. The name of the assay to use for testing the
+expression change. Should be log-normalized. Default \code{"logcounts"}}
 
-\item{discardCluster}{Optional. Clusters which are not of use or masks other 
-interesting effects can be discarded.}
-
-\item{log2fcThreshold}{Only output DEGs with the absolute values of log2FC 
-larger than this value. Default \code{0}}
+\item{discardCluster}{Cluster(s) which are not of use or masks other
+interesting effects can be discarded. Default \code{NULL}.}
 }
 \value{
-A \linkS4class{SingleCellExperiment} object with genes that decrease 
-and increase in expression with increasing pseudotime along the path in the 
-MST.
+The input \code{inSCE} with results updated in \code{metadata}.
 }
 \description{
-Wrapper for identifying genes with significant changes with 
-respect to one 
-of the TSCAN pseudotimes
+Wrapper for identifying genes with significant changes with
+respect to one of the TSCAN pseudotime paths
 }
 \examples{
-data("scExample", package = "singleCellTK")
-sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
-rowData(sce)$Symbol <- rowData(sce)$feature_name
-rownames(sce) <- rowData(sce)$Symbol
-sce <- runNormalization(sce, normalizationMethod = "LogNormalize", useAssay = "counts", outAssayName = "logcounts")
-sce <- runDimReduce(inSCE = sce, method = "scaterPCA", useAssay = "logcounts", reducedDimName = "PCA")
-sce <- runDimReduce(inSCE = sce, method = "rTSNE", useReducedDim = "PCA", reducedDimName = "TSNE")
-sce <- runTSCAN (inSCE = sce, useReducedDim = "PCA", seed = NULL)
-sce <- runTSCANDEG(inSCE = sce, pathIndex = 4)
+data("mouseBrainSubsetSCE", package = "singleCellTK")
+mouseBrainSubsetSCE <- runTSCAN(inSCE = mouseBrainSubsetSCE,
+                                useReducedDim = "PCA_logcounts")
+terminalNodes <- listTSCANTerminalNodes(mouseBrainSubsetSCE)
+mouseBrainSubsetSCE <- runTSCANDEG(inSCE = mouseBrainSubsetSCE,
+                                   pathIndex = terminalNodes[1])
 }
 \author{
 Nida Pervaiz

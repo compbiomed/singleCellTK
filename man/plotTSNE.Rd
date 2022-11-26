@@ -6,11 +6,11 @@
 \usage{
 plotTSNE(
   inSCE,
-  colorBy = "No Color",
-  shape = "No Shape",
+  colorBy = NULL,
+  shape = NULL,
   reducedDimName = "TSNE",
   runTSNE = FALSE,
-  useAssay = "logcounts"
+  useAssay = "counts"
 )
 }
 \arguments{
@@ -39,5 +39,4 @@ Plot t-SNE plot on dimensionality reduction data run from t-SNE method.
 data("mouseBrainSubsetSCE")
 plotTSNE(mouseBrainSubsetSCE, colorBy = "level1class",
          reducedDimName = "TSNE_counts")
-
 }

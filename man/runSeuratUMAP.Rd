@@ -44,7 +44,7 @@ See \link[Seurat]{RunUMAP} for more information. Default \code{1}.}
 \item{externalReduction}{Pass DimReduc object if PCA/ICA computed through
 other libraries. Default \code{NULL}.}
 
-\item{seed}{Random seed for reproducibility of results. 
+\item{seed}{Random seed for reproducibility of results.
 Default \code{42}.}
 
 \item{verbose}{Logical value indicating if informative messages should

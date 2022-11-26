@@ -24,16 +24,16 @@ shinyPanelSeurat <- fluidPage(
             selected = ""
         )
     ),
-    bsCollapse(id = "SeuratUI", open = "Data Input",
+    bsCollapse(id = "SeuratUI", open = "Normalize Data",
             bsCollapsePanel("Normalize Data",
                 fluidRow(
                     column(4,
                         panel(heading = "Options",
                               selectizeInput(
-                                  inputId = "seuratSelectNormalizationAssay", 
-                                  label = "Select input matrix:", 
-                                  choices = NULL, 
-                                  selected = NULL, 
+                                  inputId = "seuratSelectNormalizationAssay",
+                                  label = "Select input matrix:",
+                                  choices = NULL,
+                                  selected = NULL,
                                   multiple = FALSE,
                                   options = NULL),
                             #uiOutput("seuratSelectNormalizationAssay"),
@@ -41,21 +41,6 @@ shinyPanelSeurat <- fluidPage(
                             textInput(inputId = "scale_factor", label = "Set scaling factor: ", value = "10000"),
                             actionButton(inputId = "normalize_button", "Normalize")
                              )
-                          )
-                        ),
-                            style = "primary"
-                            ),
-
-            bsCollapsePanel("Scale Data",
-                fluidRow(
-                    column(4,
-                        panel(heading = "Options",
-                            #selectInput(inputId = "model.use", label = "Select model for scaling: ", choices = c("linear", "poisson", "negbinom")),
-                            materialSwitch(inputId = "do.scale", label = "Scale data?", value = TRUE),
-                            materialSwitch(inputId = "do.center", label = "Center data?", value = TRUE),
-                            textInput(inputId = "scale.max", label = "Max value for scaled data: ", value = "10"),
-                            actionButton(inputId = "scale_button", "Scale")
-                            )
                           )
                         ),
                             style = "primary"
@@ -94,6 +79,21 @@ shinyPanelSeurat <- fluidPage(
                            )
                     ),
                     style = "primary"),
+
+            # bsCollapsePanel("Scale Data",
+            #                 fluidRow(
+            #                   column(4,
+            #                          panel(heading = "Options",
+            #                                #selectInput(inputId = "model.use", label = "Select model for scaling: ", choices = c("linear", "poisson", "negbinom")),
+            #                                materialSwitch(inputId = "do.scale", label = "Scale data?", value = TRUE),
+            #                                materialSwitch(inputId = "do.center", label = "Center data?", value = TRUE),
+            #                                textInput(inputId = "scale.max", label = "Max value for scaled data: ", value = "10"),
+            #                                actionButton(inputId = "scale_button", "Scale")
+            #                          )
+            #                   )
+            #                 ),
+            #                 style = "primary"
+            # ),
 
             bsCollapsePanel("Dimensionality Reduction",
                 tabsetPanel(type = "tabs",

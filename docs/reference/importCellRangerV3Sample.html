@@ -19,7 +19,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.6.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.3</span>
       </span>
     </div>
 
@@ -34,16 +34,19 @@
   <a href="../articles/installation.html">Installation</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Tutorials
      
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li>
-      <a href="../articles/console_analysis_tutorial.html">A La Carte Workflow - PBMC3K (R Console)</a>
+      <a href="../articles/01_import_and_qc_tutorial.html">Importing and QC - PBMC3K</a>
     </li>
     <li>
-      <a href="../articles/cnsl_seurat_curated_workflow.html">Seurat Curated Workflow - PBMC3K</a>
+      <a href="../articles/02_a_la_carte_workflow.html">A La Carte Workflow - PBMC3K</a>
+    </li>
+    <li>
+      <a href="../articles/seurat_curated_workflow.html">Seurat Curated Workflow - PBMC3K</a>
     </li>
     <li>
       <a href="../articles/celda_curated_workflow.html">Celda Curated Workflow - PBMC3K</a>
@@ -53,13 +56,13 @@
   <a href="../articles/cmd_qc.html">SCTK-QC</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Documentation
      
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Data</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Data</a>
       <ul class="dropdown-menu" role="menu"><li>
           <a href="../articles/import_data.html">Import Data</a>
         </li>
@@ -77,7 +80,7 @@
         </li>
       </ul></li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">QC &amp; Filtering</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">QC &amp; Filtering</a>
       <ul class="dropdown-menu" role="menu"><li>
           <a href="../articles/cnsl_dropletqc.html">Droplet QC (R console)</a>
         </li>
@@ -92,31 +95,31 @@
         </li>
       </ul></li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Normalization &amp; Batch Correction</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Normalization &amp; Batch Correction</a>
       <ul class="dropdown-menu" role="menu"><li>
-          <a href="../articles/cnsl_normalization.html">Normalization</a>
+          <a href="../articles/normalization.html">Normalization</a>
         </li>
         <li>
           <a href="../articles/batch_correction.html">Batch Correction</a>
         </li>
       </ul></li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Feature Selection &amp; Dimensionality Reduction</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Feature Selection &amp; Dimensionality Reduction</a>
       <ul class="dropdown-menu" role="menu"><li>
-          <a href="../articles/cnsl_feature_selection.html">Feature Selection</a>
+          <a href="../articles/feature_selection.html">Feature Selection</a>
         </li>
         <li>
-          <a href="../articles/cnsl_dimensionality_reduction.html">Dimensionality Reduction</a>
+          <a href="../articles/dimensionality_reduction.html">Dimensionality Reduction</a>
         </li>
         <li>
-          <a href="../articles/cnsl_2d_embedding.html">2D Embedding</a>
+          <a href="../articles/2d_embedding.html">2D Embedding</a>
         </li>
       </ul></li>
     <li>
       <a href="../articles/clustering.html">Clustering</a>
     </li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Differential Expression &amp; Cell Type Labeling</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Differential Expression &amp; Cell Type Labeling</a>
       <ul class="dropdown-menu" role="menu"><li>
           <a href="../articles/differential_expression.html">Differential Expression</a>
         </li>
@@ -128,25 +131,31 @@
         </li>
       </ul></li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Enrichment &amp; Pathway Analysis</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Pathway &amp; Enrichment Analysis</a>
       <ul class="dropdown-menu" role="menu"><li>
-          <a href="../articles/cnsl_enrichR.html">EnrichR</a>
+          <a href="../articles/enrichR.html">EnrichR</a>
         </li>
         <li>
           <a href="../articles/pathwayAnalysis.html">Pathway Analysis</a>
         </li>
       </ul></li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Curated Workflows</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Trajectory Analysis</a>
       <ul class="dropdown-menu" role="menu"><li>
-          <a href="../articles/cnsl_seurat_curated_workflow.html">Seurat</a>
+          <a href="../articles/trajectoryAnalysis.html">TSCAN</a>
+        </li>
+      </ul></li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Curated Workflows</a>
+      <ul class="dropdown-menu" role="menu"><li>
+          <a href="../articles/seurat_curated_workflow.html">Seurat</a>
         </li>
         <li>
           <a href="../articles/celda_curated_workflow.html">Celda</a>
         </li>
       </ul></li>
     <li class="dropdown-submenu">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Visualization</a>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Visualization</a>
       <ul class="dropdown-menu" role="menu"><li>
           <a href="../articles/visualization.html">General Visualization</a>
         </li>
@@ -194,46 +203,57 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">importCellRangerV3Sample</span><span class="op">(</span>
-  dataDir <span class="op">=</span> <span class="st">"./"</span>,
-  sampleName <span class="op">=</span> <span class="st">"sample"</span>,
-  class <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Matrix"</span>, <span class="st">"matrix"</span><span class="op">)</span>,
-  delayedArray <span class="op">=</span> <span class="cn">FALSE</span>,
-  rowNamesDedup <span class="op">=</span> <span class="cn">TRUE</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">importCellRangerV3Sample</span><span class="op">(</span></span>
+<span>  dataDir <span class="op">=</span> <span class="st">"./"</span>,</span>
+<span>  sampleName <span class="op">=</span> <span class="st">"sample"</span>,</span>
+<span>  class <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Matrix"</span>, <span class="st">"matrix"</span><span class="op">)</span>,</span>
+<span>  delayedArray <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  rowNamesDedup <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>dataDir</dt>
 <dd><p>A path to the directory containing the data files. Default "./".</p></dd>
+
+
 <dt>sampleName</dt>
 <dd><p>A User-defined sample name. This will be prepended to all cell barcode IDs.
 Default "sample".</p></dd>
+
+
 <dt>class</dt>
 <dd><p>Character. The class of the expression matrix stored in the SCE
 object. Can be one of "Matrix" (as returned by
 readMM function), or "matrix" (as returned by
 <a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a> function). Default "Matrix".</p></dd>
+
+
 <dt>delayedArray</dt>
 <dd><p>Boolean. Whether to read the expression matrix as
 DelayedArray object or not. Default <code>FALSE</code>.</p></dd>
+
+
 <dt>rowNamesDedup</dt>
 <dd><p>Boolean. Whether to deduplicate rownames. Default 
 <code>TRUE</code>.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A <code>SingleCellExperiment</code> object containing the count
+    
+
+<p>A <code>SingleCellExperiment</code> object containing the count
  matrix, the feature annotations, and the cell annotation for the sample.</p>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu">importCellRangerV3Sample</span><span class="op">(</span></span>
-<span class="r-in">    dataDir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/hgmm_1k_v3_20x20/outs/"</span>,</span>
-<span class="r-in">        <span class="st">"filtered_feature_bc_matrix"</span>, package <span class="op">=</span> <span class="st">"singleCellTK"</span><span class="op">)</span>,</span>
-<span class="r-in">    sampleName <span class="op">=</span> <span class="st">"hgmm1kv3"</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu">importCellRangerV3Sample</span><span class="op">(</span></span></span>
+<span class="r-in"><span>    dataDir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/hgmm_1k_v3_20x20/outs/"</span>,</span></span>
+<span class="r-in"><span>        <span class="st">"filtered_feature_bc_matrix"</span>, package <span class="op">=</span> <span class="st">"singleCellTK"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    sampleName <span class="op">=</span> <span class="st">"hgmm1kv3"</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Metrics summary file (metrics_summary.csv) not found for sample: hgmm1kv3</span>
 </code></pre></div>
     </div>
@@ -249,7 +269,7 @@ DelayedArray object or not. Default <code>FALSE</code>.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

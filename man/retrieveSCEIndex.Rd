@@ -50,5 +50,5 @@ retrieveSCEIndex(inSCE = sce, IDs = "ENSG00000205542",
  axis = "row")
 }
 \author{
-Yusuke Koga, Joshua Campbell
+Yusuke Koga, Joshua Campbell, Yichen Wang
 }

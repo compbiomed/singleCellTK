@@ -6,8 +6,8 @@
 \usage{
 reportQCTool(
   inSCE,
-  algorithm = c("BarcodeRankDrops", "EmptyDrops", "QCMetrics", "Scrublet",
-    "ScDblFinder", "Cxds", "Bcds", "CxdsBcdsHybrid", "DoubletFinder", "DecontX", "SoupX"),
+  algorithm = c("BarcodeRankDrops", "EmptyDrops", "QCMetrics", "Scrublet", "ScDblFinder",
+    "Cxds", "Bcds", "CxdsBcdsHybrid", "DoubletFinder", "DecontX", "SoupX"),
   output_file = NULL,
   output_dir = NULL
 )
@@ -35,7 +35,7 @@ data(scExample, package = "singleCellTK")
 sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 \dontrun{
 sce <- runDecontX(sce)
-sce <- getUMAP(sce)
+sce <- runQuickUMAP(sce)
 reportQCTool(inSCE = sce, algorithm = "DecontX")
 }
 }

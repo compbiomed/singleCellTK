@@ -82,17 +82,21 @@ runEnrichR <- function(inSCE,
       stop("Invalid featureName specification.")
     }
   }
-  
   internetConnection <- suppressWarnings(Biobase::testBioCConnection())
   #check for internet connection
   if (!internetConnection){
     stop("Please connect to the Internet and continue..")
   }
-  options(enrichR.base.address = "https://maayanlab.cloud/Enrichr/")
-  options(enrichR.live = TRUE)
+  err <- tryCatch(
+    {
+      attachNamespace("enrichR")
+    },
+    error = function(e) {}
+  )
+  #options(enrichR.base.address = "https://maayanlab.cloud/Enrichr/")
+  #options(enrichR.live = TRUE)
   temp_db <- enrichR::listEnrichrDbs()
   enrdb <- temp_db$libraryName
-  
   #test for db existing
   if (is.null(db)){
     db <- enrdb

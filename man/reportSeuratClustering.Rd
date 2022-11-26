@@ -2,7 +2,7 @@
 % Please edit documentation in R/htmlReports.R
 \name{reportSeuratClustering}
 \alias{reportSeuratClustering}
-\title{Generates an HTML report for Seurat Clustering and returns the SCE object 
+\title{Generates an HTML report for Seurat Clustering and returns the SCE object
  with the results computed and stored inside the object.}
 \usage{
 reportSeuratClustering(
@@ -17,7 +17,7 @@ reportSeuratClustering(
   numClusters = 10,
   significant_PC = 10,
   outputFile = NULL,
-  outputDir = NULL,
+  outputPath = NULL,
   subtitle = NULL,
   authors = NULL,
   showSession = FALSE,
@@ -29,12 +29,12 @@ reportSeuratClustering(
 \item{inSCE}{Input \code{\link[SingleCellExperiment]{SingleCellExperiment}}
 object.}
 
-\item{biological.group}{A character value that specifies the name of the 
-\code{colData()} column to use as the main biological group in the Seurat 
+\item{biological.group}{A character value that specifies the name of the
+\code{colData()} column to use as the main biological group in the Seurat
 report for marker selection and grouping.}
 
-\item{phenotype.groups}{A character vector that specifies the names of the 
-\code{colData()} columns to use for differential expression in addition to 
+\item{phenotype.groups}{A character vector that specifies the names of the
+\code{colData()} columns to use for differential expression in addition to
 the \code{biological.group} parameter.}
 
 \item{runClustering}{A logical value indicating if Clustering should be run
@@ -57,24 +57,24 @@ for clustering. Default \code{1.5}.}
 
 \item{significant_PC}{temp (change to pc.use)}
 
-\item{outputFile}{Specify the name of the generated output HTML file. 
-If \code{NULL} then the output file name will be based on the name of the 
+\item{outputFile}{Specify the name of the generated output HTML file.
+If \code{NULL} then the output file name will be based on the name of the
 Rmarkdown template. Default \code{NULL}.}
 
-\item{outputDir}{Specify the name of the output directory to save the 
-rendered HTML file. If \code{NULL} the file is stored to the current 
+\item{outputPath}{Specify the name of the output directory to save the
+rendered HTML file. If \code{NULL} the file is stored to the current
 working directory. Default \code{NULL}.}
 
-\item{subtitle}{A character value specifying the subtitle to use in the 
+\item{subtitle}{A character value specifying the subtitle to use in the
 report. Default \code{NULL}.}
 
-\item{authors}{A character value specifying the names of the authors to use 
+\item{authors}{A character value specifying the names of the authors to use
 in the report. Default \code{NULL}.}
 
-\item{showSession}{A logical value indicating if session information 
+\item{showSession}{A logical value indicating if session information
 should be displayed or not. Default is \code{FALSE}.}
 
-\item{pdf}{A logical value indicating if a pdf should also be generated for 
+\item{pdf}{A logical value indicating if a pdf should also be generated for
 each figure in the report. Default is \code{FALSE}.}
 
 \item{forceRun}{A logical value indicating if all computations previously
@@ -86,6 +86,6 @@ A \code{\link[SingleCellExperiment]{SingleCellExperiment}} object
  with computations stored.
 }
 \description{
-Generates an HTML report for Seurat Clustering and returns the SCE object 
+Generates an HTML report for Seurat Clustering and returns the SCE object
  with the results computed and stored inside the object.
 }

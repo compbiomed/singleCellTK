@@ -13,7 +13,7 @@ shinyPanelFS_DimRed <- fluidPage(
       fluidRow(column(
         4,
         panel(
-          heading = "Compute HVG",
+          heading = "1. Compute variability metric",
           h5(tags$a(
             href = paste0(docs.artPath, "cnsl_feature_selection.html"),
             "(help)",
@@ -21,7 +21,7 @@ shinyPanelFS_DimRed <- fluidPage(
           )),
           selectInput(
             inputId = "hvgMethodFS",
-            label = "Select HVG method: ",
+            label = "Select method for calculating variability of features:",
             choices = c(
               "Seurat - vst" = "vst",
               "Seurat - mean.var.plot" = "mean.var.plot",
@@ -36,26 +36,21 @@ shinyPanelFS_DimRed <- fluidPage(
             selected = NULL, 
             multiple = FALSE,
             options = NULL),
-          #uiOutput("assaySelectFS_Norm"),
-          withBusyIndicatorUI(actionButton("findHvgButtonFS",
-                                           "Compute Variability"))
+          actionButton("findHvgButtonFS","Run")
         ),
         panel(
-          heading = "Select and Subset",
-          fluidRow(h6("selection of features will be based on the latest computation above"), align="center"),
-          numericInput("hvgNumberSelect", "Number of HVG to select",
-                       2000, step = 100),
-          selectizeInput(
-            inputId = "hvgSubsetAssay", 
-            label = "Select input matrix:", 
-            choices = NULL, 
-            selected = NULL, 
-            multiple = FALSE,
-            options = NULL),
-          #uiOutput("hvgSubsetAssay"),
-          textInput("hvgAltExpName", "Name for the subset",
-                    "featureSubset"),
-          withBusyIndicatorUI(actionButton("hvgSubsetRun", "Select"))
+          heading = "2. Select number of variable features",
+          selectInput("hvgMetricSelect", "Select variability metric:",
+                      choices = NULL),
+          numericInput(
+            "hvgNumberSelect", "Select the number of highly variable features:",
+            value = 2000, step = 100, min = 0),
+          textInput(
+            inputId = "hvgSubsetName",
+            label = "Name of the feature subset:",
+            value = NULL
+          ),
+          actionButton("hvgSubsetRun", "Run")
         )
       ),
       column(
@@ -66,11 +61,32 @@ shinyPanelFS_DimRed <- fluidPage(
             column(4, dropdown(
               fluidRow(
                 column(12,
-                       fluidRow(actionBttn(inputId = "closeDropDownFS", label = NULL, style = "simple", color = "danger", icon = icon("times"), size = "xs"), align = "right"),
+                       fluidRow(actionBttn(inputId = "closeDropDownFS", 
+                                           label = NULL, style = "simple", 
+                                           color = "danger", 
+                                           icon = icon("times"), size = "xs"), 
+                                align = "right"),
+                       
+                       selectInput(
+                         inputId = "hvgPlotMethod",
+                         label = "Select variability metric (created in step 1): ",
+                         choices = NULL
+                       ),
+                       selectInput(
+                         inputId = "hvgPlotSubsetSelect",
+                         label = "Select feature subset (created in step 2): ",
+                         choices = "None"
+                       ),
                        numericInput(
-                         inputId = "hvgNoFeaturesViewFS",
-                         label = "Select number of features to display: ",
-                         value = 100
+                         inputId = "hvgPlotNLabel",
+                         label = "Number of features to label:",
+                         value = 20, min = 0, step = 10
+                       ),
+                       selectInput(
+                         inputId = "hvgPlotFeatureDisplay",
+                         label = "Choose feature label:",
+                         choices = c("Rownames (Default)",
+                                     featureChoice)
                        ),
                        actionBttn(
                          inputId = "updatePlotFS",
@@ -87,7 +103,7 @@ shinyPanelFS_DimRed <- fluidPage(
               circle = FALSE,
               inline = TRUE
             )),
-            column(7, fluidRow(h6("Scatterplot of features showing the variability versus average expression"), align="center"))
+            column(7, fluidRow(h6("Scatterplot showing the variability of each feature versus its average expression across all cells"), align="center"))
           ),
           hr(),
           br(),
@@ -121,7 +137,6 @@ shinyPanelFS_DimRed <- fluidPage(
                             selected = NULL, 
                             multiple = FALSE,
                             options = NULL),
-                          #uiOutput("dimRedAssaySelect"),
                           selectInput(
                             "dimRedPlotMethod",
                             "Select method:",
@@ -131,12 +146,23 @@ shinyPanelFS_DimRed <- fluidPage(
                               "Seurat - ICA" = "seuratICA"
                             )
                           ),
+                          selectInput(
+                            inputId = "dimRedHVGSelect",
+                            label = "Select HVG list:",
+                            choices = "None"
+                          ),
+                          checkboxInput(
+                            inputId = "dimRedScale",
+                            label = "Scale",
+                            value = TRUE
+                          ),
                           uiOutput("dimRedNameUI"),
                           numericInput(
                             inputId = "dimRedNumberDims",
                             label = "Number of dimensions:",
-                            value = 10,
-                            step = 1
+                            value = 50,
+                            step = 1,
+                            min = 2
                           ),
                           conditionalPanel(
                             condition = "input.dimRedPlotMethod != 'seuratICA'",
@@ -170,7 +196,7 @@ shinyPanelFS_DimRed <- fluidPage(
                                        label = "Seed value for reproducibility of result:",
                                        value = 12345,
                                        step = 1),
-                          withBusyIndicatorUI(actionButton("runDimred", "Run"))
+                          actionButton("runDimred", "Run")
                         )
                       ))),
                column(8,
@@ -186,7 +212,7 @@ shinyPanelFS_DimRed <- fluidPage(
                       )))),
       nonLinearWorkflowUI(id = "nlw-dr")
     ),
-
+    
     tabPanel(title = "Embedding",
              h5(
                tags$a(
@@ -208,19 +234,34 @@ shinyPanelFS_DimRed <- fluidPage(
                             selected = NULL, 
                             multiple = FALSE,
                             options = NULL),
-                          #uiOutput("dimRedAssaySelect_tsneUmap"),
                           selectInput("dimRedPlotMethod_tsneUmap", "Select method:",
-                                      c("rtSNE" = "rTSNE",
-                                        "scaterUMAP" = "scaterUMAP",
-                                        "seuratTSNE" = "seuratTSNE",
-                                        "seuratUMAP" = "seuratUMAP")),
+                                      c("scaterUMAP" = "scaterUMAP",
+                                        "rtSNE" = "rTSNE",
+                                        "seuratUMAP" = "seuratUMAP",
+                                        "seuratTSNE" = "seuratTSNE")),
                           uiOutput("dimRedNameUI_tsneUmap"),
                           conditionalPanel(
-                            condition = "input.dimRedPlotMethod_tsneUmap == 'scaterUMAP'",
-                            checkboxInput("logNormUMAP", " Log Normalize the data",
+                            condition = "input.dimRedPlotMethod_tsneUmap == 'scaterUMAP' ||
+                                         input.dimRedPlotMethod_tsneUmap == 'rTSNE'",
+                            checkboxInput("logNorm_tsneUmap", 
+                                          " Log Normalize the data",
                                           FALSE),
-                            numericInput("iterUMAP", "# of iterations", min = 50,
-                                         max = 500, value = 200),
+                            selectInput("hvg_tsneUmap", "Use HVG list", 
+                                        choices = "None"),
+                            checkboxInput("scale_tsneUmap", "Scale assay data", 
+                                          TRUE),
+                            checkboxInput("pca_tsneUmap", 
+                                          "Run PCA on assay data", 
+                                          TRUE),
+                          ),
+                          numericInput(
+                            inputId = "dimRedNumberDims_tsneUmap",
+                            label = "Number of dimensions to use:",
+                            value = 10),
+                          conditionalPanel(
+                            condition = "input.dimRedPlotMethod_tsneUmap == 'scaterUMAP'",
+                            numericInput("iterUMAP", "# of iterations", 
+                                         min = 50, max = 500, value = 200),
                             numericInput("neighborsUMAP", "# of nearest neighbors",
                                          min = 2, max = 100, value = 30),
                             numericInput("mindistUMAP",
@@ -228,14 +269,17 @@ shinyPanelFS_DimRed <- fluidPage(
                                          min = 0.001, max = 0.1, value = 0.01),
                             numericInput("alphaUMAP", "learning rate(alpha)",
                                          value = 1),
-                            numericInput("spreadUMAP", "spread", min = 0.001, value = 1)
+                            numericInput("spreadUMAP", "spread", min = 0.001, 
+                                         value = 1)
                           ),
                           conditionalPanel(
                             condition = "input.dimRedPlotMethod_tsneUmap == 'rTSNE'",
-                            numericInput("iterTSNE", "No. of iterations:", min = 100,
-                                         max = 2000, value = 1000),
+                            numericInput("iterTSNE", "No. of iterations:", 
+                                         min = 100, max = 2000, value = 1000),
+                            numericInput("thetaTSNE", "Set theta value:", 0.5, 
+                                         min = 0, step = 0.1),
                             numericInput("perplexityTSNE", "Set perplexity:",
-                                         min = 5, max = 50, value = 5)
+                                         min = 5, max = 50, value = 30)
                           ),
                           conditionalPanel(
                             condition = "input.dimRedPlotMethod_tsneUmap == 'seuratTSNE'
@@ -243,10 +287,6 @@ shinyPanelFS_DimRed <- fluidPage(
                             selectInput(inputId = "reductionMethodUMAPTSNEDimRed",
                                         label = "Select reduction method: ",
                                         choices = c("pca", "ica")),
-                            numericInput(
-                              inputId = "dimRedNumberDims_tsneUmap",
-                              label = "Set number of dimensions:",
-                              value = 10),
                           ),
                           conditionalPanel(
                             condition = "input.dimRedPlotMethod_tsneUmap == 'seuratTSNE'",
@@ -271,48 +311,64 @@ shinyPanelFS_DimRed <- fluidPage(
                                        label = "Seed value for reproducibility of result:",
                                        value = 12345,
                                        step = 1),
-                          withBusyIndicatorUI(actionButton("runDimred_tsneUmap", "Run"))
+                          actionButton("runDimred_tsneUmap", "Run")
                         )
                       ))),
-               column(8,
-                      fluidRow(column(
-                        12,
-                        tags$div(class = "dimRedTSNEUMAP_plotTabset_class",
-                                 tabPanel(
-                                   title = "Plot",
-                                   panel(heading = "Plot",
-                                         fluidRow(
-                                           column(4, dropdown(
-                                             fluidRow(
-                                               column(12,
-                                                      fluidRow(actionBttn(inputId = "closeDropDownDimRedEmbedding", label = NULL, style = "simple", color = "danger", icon = icon("times"), size = "xs"), align = "right"),
-                                                      selectizeInput(
-                                                        inputId = "selectRedDimPlot_tsneUmap",
-                                                        label = "Select reducedDim:",
-                                                        choices = NULL
-                                                      ),
-                                                      actionBttn(
-                                                        inputId = "updateRedDimPlot_tsneUmap",
-                                                        label = "Update",
-                                                        style = "bordered",
-                                                        color = "primary",
-                                                        size = "sm"
-                                                      )
-                                               )
-                                             ),
-                                             inputId = "dropDownDimRedEmbedding",
-                                             icon = icon("cog"),
-                                             status = "primary",
-                                             circle = FALSE,
-                                             inline = TRUE
-                                           )),
-                                           column(7, fluidRow(h6("Scatterplot of cells on a 2D embedding"), align="center"))
-                                         ),
-                                         hr(),
-                                         br(),
-                                         plotlyOutput(outputId = "plotDimRed_tsneUmap"))
-                                 ))
-                      )))
+               column(
+                 8,
+                 fluidRow(
+                   column(
+                     12,
+                     tags$div(
+                       class = "dimRedTSNEUMAP_plotTabset_class",
+                       tabPanel(
+                         title = "Plot",
+                         panel(
+                           heading = "Plot",
+                           fluidRow(
+                             column(
+                               4, 
+                               dropdown(
+                                 fluidRow(
+                                   column(
+                                     12,
+                                     fluidRow(
+                                       actionBttn(
+                                         inputId = "closeDropDownDimRedEmbedding", 
+                                         label = NULL, style = "simple", 
+                                         color = "danger", icon = icon("times"), 
+                                         size = "xs"), align = "right"
+                                     ),
+                                     selectizeInput(
+                                       inputId = "selectRedDimPlot_tsneUmap",
+                                       label = "Select reducedDim:",
+                                       choices = currreddim
+                                     ),
+                                     actionBttn(
+                                       inputId = "updateRedDimPlot_tsneUmap",
+                                       label = "Update",
+                                       style = "bordered",
+                                       color = "primary",
+                                       size = "sm"
+                                     )
+                                   )
+                                 ),
+                                 inputId = "dropDownDimRedEmbedding",
+                                 icon = icon("cog"),
+                                 status = "primary",
+                                 circle = FALSE,
+                                 inline = TRUE
+                               )),
+                             column(
+                               7, 
+                               fluidRow(h6("Scatterplot of cells on a 2D embedding"), 
+                                        align="center"))
+                           ),
+                           hr(),
+                           br(),
+                           plotlyOutput(outputId = "plotDimRed_tsneUmap"))
+                       ))
+                   )))
              ))
   )
 )

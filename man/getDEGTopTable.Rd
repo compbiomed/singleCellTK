@@ -7,7 +7,7 @@
 getDEGTopTable(
   inSCE,
   useResult,
-  labelBy = NULL,
+  labelBy = S4Vectors::metadata(inSCE)$featureDisplay,
   onlyPos = FALSE,
   log2fcThreshold = 0.25,
   fdrThreshold = 0.05,
@@ -25,8 +25,9 @@ singleCellTK DEG method performed in advance.}
 used when running a differential expression analysis function.}
 
 \item{labelBy}{A single character for a column of \code{rowData(inSCE)} as
-where to search for the labeling text. Default \code{NULL} for the 
-"rownames".}
+where to search for the labeling text. Leave \code{NULL} for \code{rownames}.
+Default \code{metadata(inSCE)$featureDisplay} (see
+\code{\link{setSCTKDisplayRow}}).}
 
 \item{onlyPos}{logical. Whether to only fetch DEG with positive log2_FC
 value. Default \code{FALSE}.}
@@ -37,26 +38,26 @@ log2FC larger than this value. Default \code{0.25}.}
 \item{fdrThreshold}{numeric. Only fetch DEGs with FDR value smaller than this
 value. Default \code{0.05}.}
 
-\item{minGroup1MeanExp}{numeric. Only fetch DEGs with mean expression in 
+\item{minGroup1MeanExp}{numeric. Only fetch DEGs with mean expression in
 group1 greater then this value. Default \code{NULL}.}
 
-\item{maxGroup2MeanExp}{numeric. Only fetch DEGs with mean expression in 
+\item{maxGroup2MeanExp}{numeric. Only fetch DEGs with mean expression in
 group2 less then this value. Default \code{NULL}.}
 
-\item{minGroup1ExprPerc}{numeric. Only fetch DEGs expressed in greater then 
+\item{minGroup1ExprPerc}{numeric. Only fetch DEGs expressed in greater then
 this fraction of cells in group1. Default \code{NULL}.}
 
-\item{maxGroup2ExprPerc}{numeric. Only fetch DEGs expressed in less then this 
+\item{maxGroup2ExprPerc}{numeric. Only fetch DEGs expressed in less then this
 fraction of cells in group2. Default \code{NULL}.}
 }
 \value{
-A \code{data.frame} object of the top DEGs, with variables of 
+A \code{data.frame} object of the top DEGs, with variables of
 \code{Gene}, \code{Log2_FC}, \code{Pvalue}, and \code{FDR}.
 }
 \description{
-Users have to run \code{runDEAnalysis()} first, any of the 
+Users have to run \code{runDEAnalysis()} first, any of the
 wrapped functions of this generic function. Users can set further filters on
-the result. A \code{data.frame} object, with variables of \code{Gene}, 
+the result. A \code{data.frame} object, with variables of \code{Gene},
 \code{Log2_FC}, \code{Pvalue}, and \code{FDR}, will be returned.
 }
 \examples{

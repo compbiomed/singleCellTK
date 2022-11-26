@@ -7,7 +7,6 @@
 plotDEGHeatmap(
   inSCE,
   useResult,
-  doLog = FALSE,
   onlyPos = FALSE,
   log2fcThreshold = 0.25,
   fdrThreshold = 0.05,
@@ -16,6 +15,7 @@ plotDEGHeatmap(
   minGroup1ExprPerc = NULL,
   maxGroup2ExprPerc = NULL,
   useAssay = NULL,
+  doLog = FALSE,
   featureAnnotations = NULL,
   cellAnnotations = NULL,
   featureAnnotationColor = NULL,
@@ -24,6 +24,7 @@ plotDEGHeatmap(
   colDataName = NULL,
   colSplitBy = "condition",
   rowSplitBy = "regulation",
+  rowLabel = S4Vectors::metadata(inSCE)$featureDisplay,
   title = paste0("DE Analysis: ", useResult),
   ...
 )
@@ -34,9 +35,6 @@ plotDEGHeatmap(
 \item{useResult}{character. A string specifying the \code{analysisName}
 used when running a differential expression analysis function.}
 
-\item{doLog}{Logical scalar. Whether to do \code{log(assay + 1)}
-transformation on the assay used for the analysis. Default \code{FALSE}.}
-
 \item{onlyPos}{logical. Whether to only plot DEG with positive log2_FC
 value. Default \code{FALSE}.}
 
@@ -46,21 +44,24 @@ log2FC larger than this value. Default \code{0.25}.}
 \item{fdrThreshold}{numeric. Only plot DEGs with FDR value smaller than this
 value. Default \code{0.05}.}
 
-\item{minGroup1MeanExp}{numeric. Only plot DEGs with mean expression in 
+\item{minGroup1MeanExp}{numeric. Only plot DEGs with mean expression in
 group1 greater then this value. Default \code{NULL}.}
 
-\item{maxGroup2MeanExp}{numeric. Only plot DEGs with mean expression in 
+\item{maxGroup2MeanExp}{numeric. Only plot DEGs with mean expression in
 group2 less then this value. Default \code{NULL}.}
 
-\item{minGroup1ExprPerc}{numeric. Only plot DEGs expressed in greater then 
+\item{minGroup1ExprPerc}{numeric. Only plot DEGs expressed in greater then
 this fraction of cells in group1. Default \code{NULL}.}
 
-\item{maxGroup2ExprPerc}{numeric. Only plot DEGs expressed in less then this 
+\item{maxGroup2ExprPerc}{numeric. Only plot DEGs expressed in less then this
 fraction of cells in group2. Default \code{NULL}.}
 
 \item{useAssay}{character. A string specifying an assay of expression value
 to plot. By default the assay used for \code{runMAST()} will be used.
 Default \code{NULL}.}
+
+\item{doLog}{Logical scalar. Whether to do \code{log(assay + 1)}
+transformation on the assay used for the analysis. Default \code{FALSE}.}
 
 \item{featureAnnotations}{\code{data.frame}, with \code{rownames} containing
 all the features going to be plotted. Character columns should be factors.
@@ -94,6 +95,13 @@ this(these) annotation(s). Should exist in either \code{colDataName} or
 this(these) annotation(s). Should exist in either \code{rowDataName} or
 \code{names(featureAnnotations)}. Default \code{"regulation"}.}
 
+\item{rowLabel}{\code{FALSE} for not displaying; a variable in \code{rowData}
+to display feature identifiers stored there; if have run
+\code{\link{setSCTKDisplayRow}}, display the specified feature name;
+\code{TRUE} for the \code{rownames} of \code{inSCE}; \code{NULL} for
+auto-display \code{rownames} when the number of filtered feature is less
+than 60. Default looks for \code{\link{setSCTKDisplayRow}} information.}
+
 \item{title}{character. Main title of the heatmap. Default
 \code{"DE Analysis: <useResult>"}.}
 
@@ -106,8 +114,8 @@ A \code{\link[ggplot2]{ggplot}} object
 Heatmap visualization of DEG result
 }
 \details{
-A differential expression analysis function has to be run in advance 
-so that information is stored in the metadata of the input SCE object. This 
+A differential expression analysis function has to be run in advance
+so that information is stored in the metadata of the input SCE object. This
 function wraps \code{\link{plotSCEHeatmap}}.
 A feature annotation basing on the log2FC level called \code{"regulation"}
 will be automatically added. A cell annotation basing on the condition
@@ -117,7 +125,7 @@ covariates will also be added.
 }
 \examples{
 data("sceBatches")
-logcounts(sceBatches) <- log(counts(sceBatches) + 1)
+logcounts(sceBatches) <- log1p(counts(sceBatches))
 sce.w <- subsetSCECols(sceBatches, colData = "batch == 'w'")
 sce.w <- runWilcox(sce.w, class = "cell_type", classGroup1 = "alpha",
                    groupName1 = "w.alpha", groupName2 = "w.beta",

@@ -19,6 +19,7 @@ output:
     theme: cosmo
     code_folding: hide
     self_contained: false
+    keep_md: yes
   pdf_document:
     toc: yes
 subtitle: "`r params$subtitle`"
@@ -56,7 +57,7 @@ Generally, a subset of features may represent the biological variation in the ov
 ```{r, results='asis', warning=FALSE, message=FALSE, eval = !((runHVG && length(metadata(data)$seurat$obj@assays$RNA@var.features) > 0)) || forceRun}
 hvgParams <- list(
   inSCE = data,
-  hvgMethod = "vst", 
+  method = "vst", 
   hvgNumber = variable.features)
 data <- do.call("runSeuratFindHVG", hvgParams)
 

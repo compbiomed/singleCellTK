@@ -10,8 +10,7 @@ csl: ieee.csl
 ---
 
 ```{r develSetting, include=FALSE}
-doEval = FALSE
-knitr::opts_chunk$set(warning = FALSE)
+knitr::opts_chunk$set(warning = FALSE, eval = TRUE, message = FALSE, warning = FALSE, results = "hold")
 ```
 
 ````{=html}
@@ -23,7 +22,7 @@ knitr::opts_chunk$set(warning = FALSE)
 
 ## Introduction
 
-singleCellTK (SCTK) performs differential expression (DE) analysis in a group-VS-group way. The groups to be compared can be set by selecting the individual cells or by using existing categorical cell annotation. SCTK supports five methods, including wilcoxon test [@Aaron2016], MAST [@Finak2015], Limma [@Ritchie2015], DESeq2 [@Love2014], and ANOVA[@Kaufmann2014]. Users can perform multiple sets of DE analysis with unique analysis name set each time.
+singleCellTK (SCTK) performs differential expression (DE) analysis in a group-VS-group way. The groups to be compared can be set by selecting the individual cells or by using existing categorical cell annotation. SCTK [A La Carte Workflow](02_a_la_carte_workflow.html) supports five methods, including wilcoxon test [@Aaron2016], MAST [@Finak2015], Limma [@Ritchie2015], DESeq2 [@Love2014], and ANOVA[@Kaufmann2014]. Users can perform multiple sets of DE analysis with unique analysis name set each time. SCTK also provides the [Seurat Curated Workflow](seurat_curated_workflow.html), where Seurat marker testing methods are supported, but will not be introduced in this documentation. 
 
 To view detailed instructions on how to use these methods, please select 'Interactive Analysis' for using differential expression in shiny application or 'Console Analysis' for using these methods on R console from the tabs below: <br>
 
@@ -72,9 +71,9 @@ As mentioned in the Introduction section above, totally five methods are availab
 <div class = "offset">
 ````
 
-Users need to choose a feature expression matrix for the differential expression analysis, and the selection should be made at the selection input **"Select assay"**. For most of the methods, a log-normalized assay would be recommended for the algorithm, though a "raw" counts would be recommended for "DESeq2". [(How to normalize an assay?)](cnsl_normalization.html)  
+Users need to choose a feature expression matrix for the differential expression analysis, and the selection should be made at the selection input **"Select input matrix"**. For most of the methods, a log-normalized assay would be recommended for the algorithm, though a "raw" counts would be recommended for "DESeq2". [(How to normalize an assay?)](normalization.html)  
 
-Alternatively, user can choose to use the [Pathway Analysis](pathwayAnalysis.html) scores to perform the statistic tests. The matrix names for these scores will lie within the **"redDims" section** in the drop-down list of **"Select assay"**. When using the pathway analysis scores, DESeq2 method is not available since it expects non-negative integer value in the input matrix. 
+Alternatively, user can choose to use the [Pathway Analysis](pathwayAnalysis.html) scores to perform the statistic tests. The matrix names for these scores will lie within the **"redDims" section** in the drop-down list of **"Select input matrix"**. When using the pathway analysis scores, DESeq2 method is not available since it expects non-negative integer value in the input matrix. 
 
 ````{=html}
 </div>
@@ -140,7 +139,7 @@ The final way allows users without any useful annotation but still know which ce
 
 <br>
 
-**NOTE** that the **"Name of Condition"** fields are always required. It is **highly recommended** that users put easily understandable names there, in order to avoid the confusion when multiple sets of analyses are performed, and to keep the automatic legends on DE specific plots clean as well. 
+> **NOTE** that the **"Name of Condition"** fields are always required. It is **highly recommended** that users put easily understandable names there, in order to avoid the confusion when multiple sets of analyses are performed, and to keep the automatic legends on DE specific plots clean as well. 
 
 ````{=html}
 </div>
@@ -193,7 +192,8 @@ This tab enables a heatmap visualization for the DE analysis selected. Here SCTK
 - Further filtering by the statistics can be applied through numeric inputs **"Absolute log2FC value greater than"** and **"FDR value less than"**. 
 - Further filtering by the mean expression can be applied through numeric inputs **"Group1 mean expression greater than"** and **"Group2 mean expression less than"**.
 - Further filtering by the expression percentage per group can be applied through numeric inputs **"Group1 expression percentage greater than"** and **"Group2 expression percentage less than"**. 
-- Additional labeling can be added from background by multi-selection inputs **"Additional cell annotation"** and **"Additional feature annotation"**. 
+- Additional labeling can be added from metadata by multi-selection inputs **"Additional cell annotation"** and **"Additional feature annotation"**. 
+- Identifiers of DEGs can be displayed by switching **"Display row labels"** on (green), and the ID type to show can be set at selection input **"Select row labels"**. 
 - The heatmap is by default split by the grouping "condition" and "regulation", mentioned above. And this can only be achieved by selecting these two option in the multi-selection inputs **"Split columns by"** and **"Split rows by"**, respectively. Technically, these options can be canceled while other options can also be added, as long as users wish. 
 
 ````{=html}
@@ -202,6 +202,8 @@ This tab enables a heatmap visualization for the DE analysis selected. Here SCTK
 ````
 
 Furthermore, if more sophisticated settings on the DE heatmap are needed, users can move to the [generic heatmap viewer](heatmap.html) and make use of the "import from analysis" functionality.  
+
+<br>
 
 **Gene Table**
 
@@ -239,7 +241,8 @@ The differential expression analysis can be easily performed on any preprocessed
 The most basic parameters include:  
 
 - The input SCE object - `inSCE`.
-- The method listed in the table above to use - `method`.
+- The computational method to use - `method`.
+  - Available ones: `"wilcox"`, `"MAST"`, `"DESeq2"`, `"Limma"`, `"ANOVA"`
 - The assay to perform the analysis on - `useAssay`
   - Alternatively, set `useAssay` to `NULL` and use `useReducedDim` for specifying a matrix in `reducedDims`, such as the [Pathway Analysis](pathwayAnalysis.html) scores. When using the pathway analysis scores, `"DESeq2"` method is not available since it expects non-negative integer value in the input matrix.
 
@@ -285,38 +288,44 @@ To demonstrate a simple and clear example, here we use the "PBMC-3k" dataset fro
   <summary><b>Preprocessing</b></summary>
 ```` 
 
-The preprocessing only includes necessary steps to get cluster labels (i.e. QC and filtering are excluded), via using SCTK's Seurat Curated Workflow.  
+The preprocessing for obtaining cluster assignment was done using the exactly same workflow presented in the [A La Carte Workflow Tutorial](02_a_la_carte_workflow.html).  
 
-```{R de_prep, eval=FALSE, message=FALSE, warning=FALSE, fig.align="center", cache=TRUE, results='hide'}
+```{R de_prep, eval = FALSE}
 library(singleCellTK)
 sce <- importExampleData("pbmc3k")
-sce <- scaterlogNormCounts(sce, "logcounts")
-# Go through the Seurat curated workflow to get basic clusters
-sce <- runSeuratNormalizeData(inSCE = sce, useAssay = "counts")
-sce <- runSeuratFindHVG(inSCE = sce, useAssay = "seuratNormData")
-sce <- runSeuratScaleData(inSCE = sce, useAssay = "seuratNormData")
-sce <- runSeuratPCA(inSCE = sce, useAssay = "seuratScaledData")
-sce <- runSeuratFindClusters(inSCE = sce, useAssay = "seuratScaledData")
-# Optional visualization
-sce <- runSeuratUMAP(sce)
-plotSCEDimReduceColData(inSCE = sce, 
-                        colorBy = "Seurat_louvain_Resolution0.8", 
-                        conditionClass = "factor", 
-                        reducedDimName = "seuratUMAP")
+sce <- runPerCellQC(sce, mitoRef = "human", mitoIDType = "symbol", mitoGeneLocation = "rownames")
+sce <- subsetSCECols(sce, colData = c('total > 600', 'detected > 300', 'mito_percent < 5'))
+sce <- scaterlogNormCounts(sce, useAssay = "counts", assayName = "logcounts")
+sce <- runModelGeneVar(sce, useAssay = "logcounts")
+sce <- setTopHVG(sce, method = "modelGeneVar")
+sce <- scaterPCA(inSCE = sce, useAssay = "logcounts", useFeatureSubset = "HVG_modelGeneVar2000", 
+                 reducedDimName = "PCA", seed = 12345)
+sce <- runScranSNN(sce, useReducedDim = "PCA", nComp = 10, k = 14,
+                   weightType = "jaccard", clusterName = "cluster", seed = 12345)
+sce <- runUMAP(sce, useReducedDim = "PCA", initialDims = 10, reducedDimName = "UMAP", seed = 12345)
+```
+
+```{r import_prep, include=FALSE}
+library(singleCellTK)
+sce <- readRDS("tutorial_pbmc3k_clustered.rds")
+```
+
+And we can visualize the cell populations on the UMAP with cluster labeled.
+
+```{R de_prep_plot, results = "hide"}
+plotSCEDimReduceColData(sce, colorBy = "cluster", reducedDimName = "UMAP")
 ```
 
 ````{=html}
 </details>
 ````
 
-```{R runDE, eval=FALSE, message=FALSE, warning=FALSE, cache=TRUE}
+```{R runDE}
 # Condition chosen basing on the UMAP
-sce <- runDEAnalysis(inSCE = sce, method = "MAST", useAssay = "logcounts", 
-                     class = "Seurat_louvain_Resolution0.8", classGroup1 = c(2), classGroup2 = c(4, 5), 
-                     groupName1 = "c2", groupName2 = "c4_c5", analysisName = "c2_VS_c4_c5")
+sce <- runDEAnalysis(inSCE = sce, method = "wilcox", useAssay = "logcounts", 
+                     class = "cluster", classGroup1 = c(1, 2), classGroup2 = c(5), 
+                     groupName1 = "c1_2", groupName2 = "c5", analysisName = "c1_2_VS_c5")
 ```
-
-<br>
 
 **Results**
 
@@ -336,19 +345,19 @@ matadata(sce)
                   |-$AnalysisName1
                   |-$AnalysisName2
                   |-...
-                  |-$c2_VS_c4_c5
+                  |-$c1_2_VS_c5
                              |-$useAssay    = "logcounts"
-                             |-$groupNames  = c("c2", "c4_c5")
+                             |-$groupNames  = c("c1_2", "c5")
                              |-$select
                              |      |-$ix1  = c(FALSE, TRUE,  FALSE, ...)
                              |      |-$ix2  = c(FALSE, FALSE, FALSE, ...)
                              |
                              |        (Two logical vectors both having `ncol(inSCE)` values,
-                             |         specifies which cells are selected for "c2" or "c3_c8")
+                             |         specifies which cells are selected for "c1_2" or "c5")
                              |
-                             |-$annotation  = "Seurat_louvain_Resolution0.8"
+                             |-$annotation  = "cluster"
                              |-$result      = (the `data.frame` of top DEG table)
-                             |-$method      = "MAST"
+                             |-$method      = "wilcox"
 ```
 
 ````{=html}
@@ -356,30 +365,23 @@ matadata(sce)
 <br/>
 ````
 
-To fetch the result as a table of the Top differential expressed genes and the statistics:  
+Users may use `getDEGTopTable()` function to fetch the result as a table of the top differential expressed genes and the statistics. Additional filters on the results can be applied and the feature ID type to display in the table can also be changed. 
 
-```{R getDE, eval=FALSE}
-DEG <- metadata(sce)$diffExp$c2_VS_c4_c5$result
+```{R getDE}
+DEG <- getDEGTopTable(sce, "c1_2_VS_c5")
 head(DEG)
-```
-
-```{R getDE_kable, eval=FALSE, echo=FALSE, message=FALSE, warning=FALSE, cache=TRUE}
-library(kableExtra)
-library(knitr)
-DEG <- metadata(sce)$diffExp$c2_VS_c4_c5$result
-kable_styling(kable(head(DEG)), bootstrap_options = c("striped", "hover"), full_width = FALSE)
 ```
 
 To visualize the result in a heatmap:  
 
-```{R plotDEHeatmap, eval=FALSE, message=FALSE, warning=FALSE, cache=TRUE, fig.width=9, fig.height=6, fig.align="center"}
-plotDEGHeatmap(sce, useResult = "c2_VS_c4_c5", log2fcThreshold = 1)
+```{R plotDEHeatmap, fig.width=7, fig.height=6}
+plotDEGHeatmap(sce, useResult = "c1_2_VS_c5", log2fcThreshold = .5)
 ```
 
 To visualize the result in a volcano plot:
 
-```{R plotDEVolcano, eval=FALSE, message=FALSE, warning=FALSE, cache=TRUE, fig.width=9, fig.height=6, fig.align="center"}
-plotDEGVolcano(sce, useResult = "c2_VS_c4_c5")
+```{R plotDEVolcano}
+plotDEGVolcano(sce, useResult = "c1_2_VS_c5")
 ```
 
 For other approaches of visualizing top differential expressed genes, refer to `plotDEGRegression()` and `plotDEGViolin()`, which are borrowed from [MAST's tutorial](https://www.bioconductor.org/packages/release/bioc/vignettes/MAST/inst/doc/MAITAnalysis.html#401_visualization_of_50_most_differentially_expressed_genes).  

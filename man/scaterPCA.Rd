@@ -2,19 +2,19 @@
 % Please edit documentation in R/scater_PCA.R
 \name{scaterPCA}
 \alias{scaterPCA}
-\title{Perform PCA on a SingleCellExperiment Object
-A wrapper to \link[scater]{runPCA} function to compute principal component
-analysis (PCA) from a given \linkS4class{SingleCellExperiment} object.}
+\title{Perform scater PCA on a SingleCellExperiment Object}
 \usage{
 scaterPCA(
   inSCE,
   useAssay = "logcounts",
-  useAltExp = NULL,
+  useFeatureSubset = NULL,
+  scale = TRUE,
   reducedDimName = "PCA",
   nComponents = 50,
-  scale = FALSE,
-  ntop = NULL,
-  seed = NULL
+  ntop = 2000,
+  useAltExp = NULL,
+  seed = NULL,
+  BPPARAM = BiocParallel::SerialParam()
 )
 }
 \arguments{
@@ -24,8 +24,13 @@ scaterPCA(
 specified, \code{useAssay} has to exist in
 \code{assays(altExp(inSCE, useAltExp))}. Default \code{"logcounts"}}
 
-\item{useAltExp}{The subset to use for PCA computation, usually for the
-selected.variable features. Default \code{NULL}.}
+\item{useFeatureSubset}{Subset of feature to use for dimension reduction. A
+character string indicating a \code{rowData} variable that stores the logical
+vector of HVG selection, or a vector that can subset the rows of
+\code{inSCE}. Default \code{NULL}.}
+
+\item{scale}{Logical scalar, whether to standardize the expression values.
+Default \code{TRUE}.}
 
 \item{reducedDimName}{Name to use for the reduced output assay. Default
 \code{"PCA"}.}
@@ -33,26 +38,31 @@ selected.variable features. Default \code{NULL}.}
 \item{nComponents}{Number of principal components to obtain from the PCA
 computation. Default \code{50}.}
 
-\item{scale}{Logical scalar, whether to standardize the expression values.
-Default \code{FALSE}.}
+\item{ntop}{Automatically detect this number of variable features to use for
+dimension reduction. Ignored when using \code{useReducedDim} or using
+\code{useFeatureSubset}. Default \code{2000}.}
 
-\item{ntop}{Number of top features to use as a further variable feature
-selection. Default \code{NULL}.}
+\item{useAltExp}{The subset to use for PCA computation, usually for the
+selected.variable features. Default \code{NULL}.}
 
-\item{seed}{Random seed for reproducibility of PCA results.}
+\item{seed}{Integer, random seed for reproducibility of PCA results.
+Default \code{NULL}.}
+
+\item{BPPARAM}{A \linkS4class{BiocParallelParam} object specifying whether
+the PCA should be parallelized.}
 }
 \value{
 A \linkS4class{SingleCellExperiment} object with PCA computation
 updated in \code{reducedDim(inSCE, reducedDimName)}.
 }
 \description{
-Perform PCA on a SingleCellExperiment Object
-A wrapper to \link[scater]{runPCA} function to compute principal component
-analysis (PCA) from a given \linkS4class{SingleCellExperiment} object.
+A wrapper to \link[scater]{runPCA} function to compute principal
+component analysis (PCA) from a given \linkS4class{SingleCellExperiment}
+object.
 }
 \examples{
 data(scExample, package = "singleCellTK")
 sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 sce <- scaterlogNormCounts(sce, "logcounts")
-sce <- scaterPCA(sce, "logcounts")
+sce <- scaterPCA(sce, "logcounts", scale = TRUE)
 }

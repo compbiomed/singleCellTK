@@ -8,10 +8,12 @@ nonLinearWorkflowUI <- function(id)
 }
 
 # Server
-nonLinearWorkflow <- function(input, output, session, parent, 
+nonLinearWorkflow <- function(input, output, session, parent,
                               de = FALSE,
-                              cv = FALSE, 
+                              fm = FALSE,
+                              cv = FALSE,
                               pa = FALSE,
+                              tj = FALSE,
                               qcf = FALSE,
                               nbc = FALSE,
                               cw = FALSE,
@@ -20,55 +22,78 @@ nonLinearWorkflow <- function(input, output, session, parent,
                               cl = FALSE)
 {
   ns <- session$ns
-  
+
   output$ui <- renderUI({
-    bsCollapsePanel(tagList(icon("chevron-circle-down"), "Downstream Analysis"), 
-                    uiOutput(ns("de")),
-                    uiOutput(ns("pa")),
-                    uiOutput(ns("qcf")),
-                    uiOutput(ns("nbc")),
-                    uiOutput(ns("cw")),
-                    uiOutput(ns("dr")),
-                    uiOutput(ns("fs")),
-                    uiOutput(ns("cl")),
-                    uiOutput(ns("cv")),
-                    style = "success")
+    bsCollapse(
+      open = "Next Steps",
+      bsCollapsePanel("Next Steps",
+                      uiOutput(ns("qcf")),
+                      uiOutput(ns("nbc")),
+                      uiOutput(ns("fs")),
+                      uiOutput(ns("dr")),
+                      uiOutput(ns("cl")),
+                      uiOutput(ns("fm")),
+                      uiOutput(ns("de")),
+                      uiOutput(ns("cw")),
+                      uiOutput(ns("pa")),
+                      uiOutput(ns("tj")),
+                      uiOutput(ns("cv")),
+                      style = "success")
+      )
+
   })
-  
+
   if(de){
     output$de <- renderUI({
-                      panel(
-                        heading = "Differential Expression & Marker Selection",
-                        h5("Discover quantitative changes between experimental conditions using one of the many integrated statistical frameworks for differential expression:"),
-                        actionButton(inputId = ns("goDE"), label = "Go to Differential Expression!"),
-                        hr(),
-                        h5("Compute and visualize marker genes from cluster classes using 'MAST', 'Limma' or 'DESeq2' methods:"),
-                        actionButton(inputId = ns("goMS"), label = "Go to Marker Selection!"),
-                      )
+      panel(
+        heading = "Differential Expression",
+        h5("Discover quantitative changes between experimental conditions using one of the many integrated statistical frameworks for differential expression:"),
+        actionButton(inputId = ns("goDE"), label = "Go to Differential Expression")
+      )
     })
   }
-  
+
+  if(fm){
+    output$de <- renderUI({
+      panel(
+        heading = "Marker Selection",
+        h5("Compute and visualize marker genes for each cluster using one of the many integrated statistical frameworks for differential expression:"),
+        actionButton(inputId = ns("goMS"), label = "Go to Find Marker")
+      )
+    })
+  }
+
   if(cv){
     output$cv <- renderUI({
       panel(
         heading = "Cell Viewer",
         h5("Visualize data using scatter plot, violin plot, bar or box plots."),
-        actionButton(inputId = ns("goCV"), label = "Go to Cell Viewer!")
+        actionButton(inputId = ns("goCV"), label = "Go to Cell Viewer")
       )
     })
   }
-  
+
   if(pa){
     output$pa <- renderUI({
       panel(
         heading = "Pathway Analysis",
-        h5("Explore biological activity or functions with pathway analysis using either 'GSVA' or 'EnrichR' statistical frameworks:"),
-        actionButton(inputId = ns("goPathwayAnalysis"), label = "Go to Pathway Analysis!"),
-        actionButton(inputId = ns("goEnrichR"), label = "Go to EnrichR!"),
+        h5("Explore biological activity or functions with pathway analysis using 'VAM' or 'GSVA' statistical frameworks, or perform GSEA with 'enrichR':"),
+        actionButton(inputId = ns("goPathwayAnalysis"), label = "Go to Pathway Analysis"),
+        actionButton(inputId = ns("goEnrichR"), label = "Go to EnrichR"),
       )
     })
   }
-  
+
+  if(tj){
+    output$tj <- renderUI({
+      panel(
+        heading = "Trajectory Analysis",
+        h5("Estimate Pseudotime path of cell population with TSCAN method:"),
+        actionButton(inputId = ns("goTSCAN"), label = "Go to Trajectory Analysis")
+      )
+    })
+  }
+
   if(qcf){
     output$qcf <- renderUI({
       panel(
@@ -79,17 +104,17 @@ nonLinearWorkflow <- function(input, output, session, parent,
       )
     })
   }
-  
+
   if(nbc){
     output$nbc <- renderUI({
       panel(
         heading = "Normalization & Batch-Correction",
         h5("Normalize the raw/filtered input data to remove biasness of technical variation from the data or additionally adjust for batch-effect if the data is processed in multiple batches."),
-        actionButton(inputId = ns("goNBC"), label = "Go to Normalization/Batch-Correction!")
+        actionButton(inputId = ns("goNBC"), label = "Go to Normalization/Batch-Correction")
       )
     })
   }
-  
+
   if(cw){
     output$cw <- renderUI({
       panel(
@@ -100,7 +125,7 @@ nonLinearWorkflow <- function(input, output, session, parent,
       )
     })
   }
-  
+
   if(dr){
     output$dr <- renderUI({
       panel(
@@ -110,7 +135,7 @@ nonLinearWorkflow <- function(input, output, session, parent,
       )
     })
   }
-  
+
   if(fs){
     output$fs <- renderUI({
       panel(
@@ -120,7 +145,7 @@ nonLinearWorkflow <- function(input, output, session, parent,
       )
     })
   }
-  
+
   if(cl){
     output$cl <- renderUI({
       panel(
@@ -130,14 +155,14 @@ nonLinearWorkflow <- function(input, output, session, parent,
       )
     })
   }
-  
+
   observeEvent(input$goCV,{
     showTab(inputId = "navbar",
             target = "CellViewer",
             select = TRUE,
             session = parent)
   })
-  
+
     observeEvent(input$goDE,{
       showTab(inputId = "navbar",
               target = "Differential Expression",
@@ -151,82 +176,89 @@ nonLinearWorkflow <- function(input, output, session, parent,
               select = TRUE,
               session = parent)
     })
-    
+
     observeEvent(input$goPathwayAnalysis,{
       showTab(inputId = "navbar",
               target = "Pathway Activity",
               select = TRUE,
               session = parent)
     })
-    
+
     observeEvent(input$goEnrichR,{
       showTab(inputId = "navbar",
               target = "EnrichR",
               select = TRUE,
               session = parent)
     })
-    
+
+    observeEvent(input$goTSCAN,{
+      showTab(inputId = "navbar",
+              target = "TSCANWorkflow",
+              select = TRUE,
+              session = parent)
+    })
+
     observeEvent(input$goQC,{
       showTab(inputId = "navbar",
               target = "QC & Filtering",
               select = TRUE,
               session = parent)
-      updateTabsetPanel(session = parent, 
-                        inputId = "QCFilterTabsetPanel", 
+      updateTabsetPanel(session = parent,
+                        inputId = "QCFilterTabsetPanel",
                         selected = "QC")
     })
-    
+
     observeEvent(input$goFilter,{
       showTab(inputId = "navbar",
               target = "QC & Filtering",
               select = TRUE,
               session = parent)
-      updateTabsetPanel(session = parent, 
-                        inputId = "QCFilterTabsetPanel", 
+      updateTabsetPanel(session = parent,
+                        inputId = "QCFilterTabsetPanel",
                         selected = "Filtering")
     })
-    
+
     observeEvent(input$goNBC,{
       showTab(inputId = "navbar",
               target = "Normalization & Batch Correction",
               select = TRUE,
               session = parent)
     })
-    
+
     observeEvent(input$goCelda,{
       showTab(inputId = "navbar",
               target = "Celda",
               select = TRUE,
               session = parent)
     })
-    
+
     observeEvent(input$goSeurat,{
       showTab(inputId = "navbar",
               target = "Seurat",
               select = TRUE,
               session = parent)
     })
-    
+
     observeEvent(input$goDR,{
       showTab(inputId = "navbar",
               target = "Feature Selection & Dimensionality Reduction",
               select = TRUE,
               session = parent)
-      updateTabsetPanel(session = parent, 
-                        inputId = "FSDimRedTabsetPanel", 
+      updateTabsetPanel(session = parent,
+                        inputId = "FSDimRedTabsetPanel",
                         selected = "Dimensionality Reduction")
     })
-    
+
     observeEvent(input$goFS,{
       showTab(inputId = "navbar",
               target = "Feature Selection & Dimensionality Reduction",
               select = TRUE,
               session = parent)
-      updateTabsetPanel(session = parent, 
-                        inputId = "FSDimRedTabsetPanel", 
+      updateTabsetPanel(session = parent,
+                        inputId = "FSDimRedTabsetPanel",
                         selected = "Feature Selection")
     })
-    
+
     observeEvent(input$goCL,{
       showTab(inputId = "navbar",
               target = "Clustering",

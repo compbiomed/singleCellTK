@@ -30,34 +30,34 @@ plotSoupXResults(
 )
 }
 \arguments{
-\item{inSCE}{A \linkS4class{SingleCellExperiment} object. With 
+\item{inSCE}{A \linkS4class{SingleCellExperiment} object. With
 \code{\link{runSoupX}} already applied.}
 
-\item{sample}{Character vector. Indicates which sample each cell belongs to. 
+\item{sample}{Character vector. Indicates which sample each cell belongs to.
 Default \code{NULL}.}
 
-\item{background}{Logical. Whether \code{background} was applied when 
+\item{background}{Logical. Whether \code{background} was applied when
 running \code{\link{runSoupX}}. Default \code{FALSE}.}
 
 \item{reducedDimName}{Character. The embedding to use for plotting. Leave it
-\code{NULL} for using the sample-specific UMAPs generated when running 
+\code{NULL} for using the sample-specific UMAPs generated when running
 \code{\link{runSoupX}}. Default \code{NULL}.}
 
-\item{plotNCols}{Integer. Number of columns for the plot grid per sample. 
-Will determine the number of top markers to show together with 
+\item{plotNCols}{Integer. Number of columns for the plot grid per sample.
+Will determine the number of top markers to show together with
 \code{plotNRows}. Default \code{3}.}
 
 \item{plotNRows}{Integer. Number of rows for the plot grid per sample. Will
 determine the number of top markers to show together with \code{plotNCols}.
 Default \code{2}.}
 
-\item{baseSize}{Numeric. The base font size for all text. Default 12. Can be 
-overwritten by titleSize, axisSize, and axisLabelSize, legendSize, 
+\item{baseSize}{Numeric. The base font size for all text. Default 12. Can be
+overwritten by titleSize, axisSize, and axisLabelSize, legendSize,
 legendTitleSize. Default \code{8}.}
 
-\item{combinePlot}{Must be either \code{"all"}, \code{"sample"}, or 
-\code{"none"}. \code{"all"} will combine all plots into a single 
-\code{.ggplot} object, while \code{"sample"} will output a list of plots 
+\item{combinePlot}{Must be either \code{"all"}, \code{"sample"}, or
+\code{"none"}. \code{"all"} will combine all plots into a single
+\code{.ggplot} object, while \code{"sample"} will output a list of plots
 separated by sample. Default \code{"all"}.}
 
 \item{xlab}{Character vector. Label for x-axis. Default \code{NULL}.}
@@ -71,10 +71,10 @@ separated by sample. Default \code{"all"}.}
 \item{labelClusters}{Logical. Whether the cluster labels are plotted. Default
 \code{FALSE}.}
 
-\item{clusterLabelSize}{Numeric. Determines the size of cluster label when 
+\item{clusterLabelSize}{Numeric. Determines the size of cluster label when
 \code{labelClusters} is set to \code{TRUE}. Default \code{3.5}.}
 
-\item{defaultTheme}{Logical. Adds grid to plot when \code{TRUE}. Default 
+\item{defaultTheme}{Logical. Adds grid to plot when \code{TRUE}. Default
 \code{TRUE}.}
 
 \item{dotSize}{Numeric. Size of dots. Default \code{0.5}.}
@@ -96,19 +96,19 @@ to 1. Default \code{1}.}
 ggplot object of the combination of UMAPs. See description.
 }
 \description{
-This function will generate a combination of plots basing on the 
-correction done by SoupX. For each sample, there will be a UMAP with cluster 
-labeling, followed by a number of UMAPs showing the change in selected top 
-markers. The cluster labeling is what should be used for SoupX to estimate 
-the contamination. The Soup Fraction is calculated by subtracting the gene 
-expression value of the output corrected matrix from that of the original 
+This function will generate a combination of plots basing on the
+correction done by SoupX. For each sample, there will be a UMAP with cluster
+labeling, followed by a number of UMAPs showing the change in selected top
+markers. The cluster labeling is what should be used for SoupX to estimate
+the contamination. The Soup Fraction is calculated by subtracting the gene
+expression value of the output corrected matrix from that of the original
 input matrix, and then devided by the input.
 }
 \examples{
 data(scExample, package = "singleCellTK")
 sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 \dontrun{
-# SoupX does not work for toy example, 
+# SoupX does not work for toy example,
 # can be tested with `sce <- importExampleData("pbmc3k")`
 sce <- runSoupX(sce, sample = "sample")
 plotSoupXResults(sce)

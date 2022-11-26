@@ -48,11 +48,7 @@ The `sample` parameter may be specified if multiple samples exist in the `Single
 
 
 ```{r dimensionalityreduction, warning=FALSE, message=FALSE}
-# UMAP:
-pbmc.combined <- getUMAP(inSCE = pbmc.combined, useAssay = "counts", logNorm = TRUE, sample = sample.vector)
-
-# TSNE (not run):
-# pbmc <- getTSNE(inSCE=pbmc, useAssay="counts", logNorm = TRUE, sample = colData(pbmc)$sample)
+pbmc.combined <- runQuickUMAP(pbmc.combined)
 ```
 
 ### Run CellQC 
@@ -417,7 +413,7 @@ runpercellqc.results
     <summary><b>Scrublet</b></summary>
 ```` 
 
-The wrapper function `plotScrubletResults()` can be used to plot the results from the Scrublet algorithm. Here, we will use the UMAP coordinates generated from `getUMAP()` in previous sections.
+The wrapper function `plotScrubletResults()` can be used to plot the results from the Scrublet algorithm. Here, we will use the UMAP coordinates generated from `runQuickUMAP()` in previous sections.
 
 ```{r, reduceddimnames_cell2}
 reducedDims(pbmc.combined)

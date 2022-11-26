@@ -33,8 +33,10 @@ shinyPanelvam <- fluidPage(
         ),
 
        #uiOutput("selectPathwayGeneLists"),
-       selectizeInput("PathwayGeneLists", "Select Geneset Collection(s):",
+       selectizeInput("PathwayGeneLists", "Select Geneset Collection:",
                       choices = "Import geneset before using", multiple = FALSE),
+       actionLink("pathwayImportGS", "Import Gene Sets", icon = icon("upload")),
+       br(),
 
        conditionalPanel(
          condition = "input.pathway == 'VAM'",
@@ -44,7 +46,7 @@ shinyPanelvam <- fluidPage(
                        value = TRUE),
        ),
 
-       withBusyIndicatorUI(actionButton("pathwayRun", "Run")),
+       actionButton("pathwayRun", "Run"),
        tags$hr(),
        #h3("Save results:"),
        #downloadButton("downloadPathway", "Download Results")
@@ -63,15 +65,14 @@ shinyPanelvam <- fluidPage(
                                   size = "xs"), 
                        align = "right"),
               
-              tags$h3("List of Input"),
               selectizeInput("pathwayRedDimNames", 
-                             "Select Score matrix which you want to plot:", 
+                             "Select score matrix which you want to plot:", 
                              choices = NULL, 
                              multiple = FALSE),
               selectizeInput("pathwayPlotGS", "Select Geneset:",
                              choices = "", multiple = FALSE),
               selectInput(inputId = 'pathwayPlotVar',
-                          label = 'Select Condition(s) of interest to group data (OPTIONAL) : ',
+                          label = 'Select condition of interest to group data: ',
                           choices = clusterChoice,
                           multiple = FALSE),
               checkboxInput("pathwayPlotBoxplot", "Add box plot", 
@@ -86,7 +87,6 @@ shinyPanelvam <- fluidPage(
                 choices = c("mean", "median"), 
                 selected = "median"),
               
-              #withBusyIndicatorUI(actionButton("Plot", "Update Plot")),
               actionBttn(
                 inputId = "pathwayPlot",
                 label = "Update Plot",

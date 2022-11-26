@@ -2,51 +2,62 @@
 % Please edit documentation in R/runTSCAN.R
 \name{plotTSCANPseudotimeGenes}
 \alias{plotTSCANPseudotimeGenes}
-\title{Run plotTSCANPseudotimeGenes function to plot genes with significant 
-changes}
+\title{Plot expression changes of top features along a TSCAN pseudotime path}
 \usage{
 plotTSCANPseudotimeGenes(
   inSCE,
   pathIndex,
   direction = c("increasing", "decreasing"),
-  n = 10
+  topN = 10,
+  useAssay = NULL,
+  featureDisplay = metadata(inSCE)$featureDisplay
 )
 }
 \arguments{
 \item{inSCE}{Input \linkS4class{SingleCellExperiment} object.}
 
+\item{pathIndex}{Path index for which the pseudotime values should be used.
+Should have being used in \code{\link{runTSCANDEG}}.}
 
-\item{pathIndex}{Path index for which the pseudotime values should be used. PathIndex 
-corresponds to the terminal node of specific path from the root node to the terminal node.}
+\item{direction}{Should we show features with expression increasing or
+decreeasing along the increase in TSCAN pseudotime? Choices are
+\code{"increasing"} or \code{"decreasing"}.}
 
-\item{direction}{Which direction to use. Choices are increasing or 
-decreasing.}
+\item{topN}{An integer. Only to plot this number of top genes that are
+increasing/decreasing in expression with increasing pseudotime along
+the path in the MST. Default 10}
 
-\item{n}{An integer. Only to plot this number of top genes that are 
-increasing/decreasing in expression with increasing pseudotime along the path
-in the MST. Default \code{10}.}
+\item{useAssay}{A single character to specify a feature expression matrix in
+\code{assays} slot. The expression of top features from here will be
+visualized. Default \code{NULL} use the one used for
+\code{\link{runTSCANDEG}}.}
+
+\item{featureDisplay}{Specify the feature ID type to display. Users can set
+default value with \code{\link{setSCTKDisplayRow}}. \code{NULL} or
+\code{"rownames"} specifies the rownames of \code{inSCE}. Other character
+values indicates \code{rowData} variable.}
 }
 \value{
-A plot with the top genes that increase/decrease in expression with 
-increasing pseudotime along the path in the MST
+A \code{.ggplot} object with the facets of the top genes. Expression
+on y-axis, pseudotime on x-axis.
 }
 \description{
-A wrapper function which visualizes outputs from the 
+A wrapper function which visualizes outputs from the
 \code{\link{runTSCANDEG}} function. Plots the genes that increase or decrease
 in expression with increasing pseudotime along the path in the MST.
+\code{\link{runTSCANDEG}} has to be run in advance with using the same
+\code{pathIndex} of interest.
 }
 \examples{
-data("scExample", package = "singleCellTK")
-sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
-rowData(sce)$Symbol <- rowData(sce)$feature_name
-rownames(sce) <- rowData(sce)$Symbol
-sce <- runNormalization(sce, normalizationMethod = "LogNormalize", useAssay = "counts", outAssayName = "logcounts")
-sce <- runDimReduce(inSCE = sce, method = "scaterPCA", useAssay = "logcounts", reducedDimName = "PCA")
-sce <- runDimReduce(inSCE = sce, method = "rTSNE", useReducedDim = "PCA", reducedDimName = "TSNE")
-sce <- runTSCAN (inSCE = sce, useReducedDim = "PCA", seed = NULL)
-sce <- runTSCANDEG(inSCE = sce, pathIndex = 4)
-plotTSCANPseudotimeGenes(inSCE = sce, pathIndex = 4, 
-                         direction = "increasing")
+data("mouseBrainSubsetSCE", package = "singleCellTK")
+mouseBrainSubsetSCE <- runTSCAN(inSCE = mouseBrainSubsetSCE,
+                                useReducedDim = "PCA_logcounts")
+terminalNodes <- listTSCANTerminalNodes(mouseBrainSubsetSCE)
+mouseBrainSubsetSCE <- runTSCANDEG(inSCE = mouseBrainSubsetSCE,
+                                   pathIndex = terminalNodes[1])
+plotTSCANPseudotimeGenes(mouseBrainSubsetSCE,
+                         pathIndex = terminalNodes[1],
+                         useAssay = "logcounts")
 }
 \author{
 Nida Pervaiz

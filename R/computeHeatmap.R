@@ -1,10 +1,13 @@
-#' computeHeatmap
+#' Computes heatmap for a set of features against dimensionality reduction 
+#' components
+#' @description 
 #' The computeHeatmap method computes the heatmap visualization for a set
 #'  of features against a set of dimensionality reduction components. This
 #'  method uses the heatmap computation algorithm code from \code{Seurat} but
 #'  plots the heatmap using \code{ComplexHeatmap} and \code{cowplot} libraries.
 #' @param inSCE Input \code{SingleCellExperiment} object.
-#' @param useAssay The assay to use for heatmap computation.
+#' @param useAssay Specify the name of the assay that will be scaled
+#'  by this function for the features that are used in the heatmap.
 #' @param dims Specify the number of dimensions to use for heatmap. Default
 #' \code{10}.
 #' @param nfeatures Specify the number of features to use for heatmap. Default
@@ -24,29 +27,29 @@
 #' @param externalReduction Specify an external reduction if not present in
 #' the input object. This external reduction should be created
 #' using \code{CreateDimReducObject} function.
-#'
 #' @return Heatmap plot object.
 #' @export
 computeHeatmap <- function(inSCE,
-                        useAssay,
-                        dims = 10,
-                        nfeatures = 30,
-                        cells = NULL,
-                        reduction = 'pca',
-                        disp.min = -2.5,
-                        disp.max = 2.5,
-                        balanced = TRUE,
-                        nCol = NULL,
-                        externalReduction = NULL){
-  object <- convertSCEToSeurat(inSCE, scaledAssay = useAssay)
+                           useAssay,
+                           dims = 10,
+                           nfeatures = 30,
+                           cells = NULL,
+                           reduction = 'pca',
+                           disp.min = -2.5,
+                           disp.max = 2.5,
+                           balanced = TRUE,
+                           nCol = NULL,
+                           externalReduction = NULL) {
+  object <- convertSCEToSeurat(inSCE, normAssay = useAssay)
+
   slot <- "scale.data"
   assays <- NULL
   ncol <- NULL
   projected <- FALSE
   dims <- seq(dims)
 
-  if(!is.null(externalReduction)){
-    if(reduction == "pca"){
+  if (!is.null(externalReduction)) {
+    if (reduction == "pca") {
       object@reductions <- list(pca = externalReduction)
     }
     else{
@@ -54,7 +57,7 @@ computeHeatmap <- function(inSCE,
     }
   }
 
-  if(length(x = dims) > 2){
+  if (length(x = dims) > 2) {
     ncol <- 3
   }
   else{
@@ -124,12 +127,15 @@ computeHeatmap <- function(inSCE,
 
   features.keyed <- .convertToHyphen(features.keyed)
 
-  for (i in seq_len(length(dims))){
+  for (i in seq_len(length(dims))) {
     features[[i]] <- .convertToHyphen(features[[i]])
   }
 
+  object <- Seurat::ScaleData(object, features = features.all)
+
   # get assay data with only selected features (all dims) and
   # selected cells (all)
+
   data.all <- Seurat::FetchData(
     object = object,
     vars = unique(x = unlist(x = features.keyed)),
@@ -138,7 +144,8 @@ computeHeatmap <- function(inSCE,
   )
 
   #clip off values for heatmap
-  data.all <- Seurat::MinMax(data = data.all, min = disp.min, max = disp.max)
+  data.all <-
+    Seurat::MinMax(data = data.all, min = disp.min, max = disp.max)
   data.limits <- c(min(data.all), max(data.all))
 
   #draw heatmap for each dim
@@ -147,22 +154,30 @@ computeHeatmap <- function(inSCE,
     dim.features <- rev(x = unlist(x = lapply(
       X = dim.features,
       FUN = function(feat) {
-        return(grep(pattern = paste0(feat, '$'),
-                    x = features.keyed, value = TRUE))
+        return(grep(
+          pattern = paste0(feat, '$'),
+          x = features.keyed,
+          value = TRUE
+        ))
       }
     )))
     dim.cells <- cells[[i]]
     data.plot <- data.all[dim.cells, dim.features]
-    hm <- suppressMessages(ComplexHeatmap::Heatmap(t(data.plot),
-            show_row_dend = FALSE,
-            show_column_dend = FALSE,
-            cluster_rows = FALSE,
-            cluster_columns = FALSE,
-            show_column_names = FALSE,
-            row_names_side = "left",
-            show_heatmap_legend = FALSE))
+    hm <- suppressMessages(
+      ComplexHeatmap::Heatmap(
+        t(data.plot),
+        show_row_dend = FALSE,
+        show_column_dend = FALSE,
+        cluster_rows = FALSE,
+        cluster_columns = FALSE,
+        show_column_names = FALSE,
+        row_names_side = "left",
+        show_heatmap_legend = FALSE
+      )
+    )
 
-      plots[[i]] <- grid::grid.grabExpr(suppressMessages(ComplexHeatmap::draw(hm)))
+    plots[[i]] <-
+      grid::grid.grabExpr(suppressMessages(ComplexHeatmap::draw(hm)))
   }
 
   return(plots)

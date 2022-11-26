@@ -4,13 +4,15 @@
 \alias{getPathwayResultNames}
 \title{List pathway analysis result names}
 \usage{
-getPathwayResultNames(inSCE, stopIfNone = FALSE)
+getPathwayResultNames(inSCE, stopIfNone = FALSE, verbose = FALSE)
 }
 \arguments{
 \item{inSCE}{Input \linkS4class{SingleCellExperiment} object.}
 
 \item{stopIfNone}{Whether to stop and raise an error if no results found. If
 \code{FALSE}, will return an empty character vector.}
+
+\item{verbose}{Show warning if no result found. Default \code{FALSE}}
 }
 \value{
 A character vector of valid pathway analysis result names.
@@ -19,7 +21,11 @@ A character vector of valid pathway analysis result names.
 List pathway analysis result names
 }
 \details{
-Pathway analysis results will be stored as matrices in 
+Pathway analysis results will be stored as matrices in
 \code{reducedDims} slot of \code{inSCE}. This function lists the result names
 stored in \code{metadata} slot when analysis is performed.
+}
+\examples{
+data(scExample)
+getPathwayResultNames(sce)
 }

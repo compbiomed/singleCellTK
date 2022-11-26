@@ -7,7 +7,7 @@
 runLimmaBC(inSCE, useAssay = "logcounts", assayName = "LIMMA", batch = "batch")
 }
 \arguments{
-\item{inSCE}{\linkS4class{SingleCellExperiment} inherited object. Required.}
+\item{inSCE}{Input \linkS4class{SingleCellExperiment} object}
 
 \item{useAssay}{A single character indicating the name of the assay requiring
 batch correction. Default \code{"logcounts"}.}
@@ -16,9 +16,9 @@ batch correction. Default \code{"logcounts"}.}
 be saved to \code{\link{assay}}. Default
 \code{"LIMMA"}.}
 
-\item{batch}{A single character indicating a field in
-\code{\link{colData}} that annotates the batches.
-Default \code{"batch"}.}
+\item{batch}{A single character indicating a field in \code{colData} that
+annotates the batches of each cell; or a vector/factor with the same length
+as the number of cells. Default \code{"batch"}.}
 }
 \value{
 The input \linkS4class{SingleCellExperiment} object with
@@ -30,7 +30,7 @@ removes the component due to the batch effects.
 }
 \examples{
 data('sceBatches', package = 'singleCellTK')
-logcounts(sceBatches) <- log(counts(sceBatches) + 1)
+logcounts(sceBatches) <- log1p(counts(sceBatches))
 sceCorr <- runLimmaBC(sceBatches)
 }
 \references{

@@ -35,7 +35,7 @@ that stores an assay of the value to plot. Default \code{NULL}.}
 
 \item{ylab}{label for y-axis. Default \code{"Feature Mean"}.}
 
-\item{...}{Additional arguments passed to \code{\link{.ggViolin}}.}
+\item{...}{Additional arguments passed to \code{.ggViolin}.}
 }
 \value{
 ggplot
