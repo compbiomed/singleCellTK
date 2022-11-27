@@ -8,6 +8,7 @@ into the sce object}
 \usage{
 runScanpyTSNE(
   inSCE,
+  useAssay = NULL,
   useReduction = "scanpyPCA",
   reducedDimName = "scanpyTSNE",
   dims = 10L,
@@ -17,6 +18,9 @@ runScanpyTSNE(
 }
 \arguments{
 \item{inSCE}{(sce) object on which to compute the tSNE}
+
+\item{useAssay}{Specify name of assay to use. Default is \code{NULL}, so
+\code{useReduction} param will be used instead.}
 
 \item{useReduction}{selected reduction algorithm to use for computing tSNE.
 Default \code{"pca"}.}

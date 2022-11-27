@@ -241,8 +241,8 @@ shinyPanelFS_DimRed <- fluidPage(
                                         "rtSNE" = "rTSNE",
                                         "seuratUMAP" = "seuratUMAP",
                                         "seuratTSNE" = "seuratTSNE",
-                                        "ScanpyTSNE" = "scanpyTSNE",
-                                        "ScanpyUMAP" = "scanpyUMAP")),
+                                        "scanpyTSNE" = "scanpyTSNE",
+                                        "scanpyUMAP" = "scanpyUMAP")),
                           uiOutput("dimRedNameUI_tsneUmap"),
                           conditionalPanel(
                             condition = "input.dimRedPlotMethod_tsneUmap == 'scaterUMAP' ||

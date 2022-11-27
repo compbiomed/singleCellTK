@@ -396,7 +396,7 @@ runScanpyPCA <- function(inSCE,
   temp <- scanpyObject$obsm['X_pca']
   rownames(temp) <- colnames(inSCE)
   reducedDim(inSCE, reducedDimName) <- temp
-  attr(reducedDim(inSCE, reducedDimName), "variance") <- 
+  attr(reducedDim(inSCE, reducedDimName), "percentVar") <- 
     scanpyObject$uns['pca'][['variance_ratio']]
   metadata(inSCE)$sctk$runDimReduce$reddim[[reducedDimName]] <- params
   
@@ -607,6 +607,8 @@ runScanpyFindClusters <- function(inSCE,
 #' Computes UMAP from the given sce object and stores the UMAP computations back
 #' into the sce object
 #' @param inSCE (sce) object on which to compute the UMAP
+#' @param useAssay Specify name of assay to use. Default is \code{NULL}, so
+#' \code{useReduction} param will be used instead.
 #' @param useReduction Reduction to use for computing UMAP. 
 #' Default is \code{"pca"}.
 #' @param reducedDimName Name of new reducedDims object containing Scanpy UMAP
@@ -637,6 +639,7 @@ runScanpyFindClusters <- function(inSCE,
 #' @export
 #' @importFrom SingleCellExperiment reducedDim<-
 runScanpyUMAP <- function(inSCE,
+                          useAssay = NULL,
                           useReduction = "scanpyPCA",
                           reducedDimName = "scanpyUMAP",
                           dims = 10L,  
@@ -650,15 +653,28 @@ runScanpyUMAP <- function(inSCE,
   params <- as.list(environment())
   params$inSCE <- NULL
   
-  scanpyObject <- zellkonverter::SCE2AnnData(sce = inSCE)
+  if(!is.null(useAssay)){
+    scanpyObject <- zellkonverter::SCE2AnnData(sce = inSCE, X_name = useAssay)
+  } else{
+    scanpyObject <- zellkonverter::SCE2AnnData(sce = inSCE, reducedDims = useReduction)
+  }
+  
   if (!is.null(externalReduction)) {
     scanpyObject$obsm <- list(pca = externalReduction)
     useReduction <- "pca"
   } 
-  sc$pp$neighbors(scanpyObject, 
-                  n_neighbors = nNeighbors, 
-                  n_pcs = dims,
-                  use_rep = useReduction)
+  
+  if(!is.null(useAssay)){
+    sc$pp$neighbors(scanpyObject, 
+                    n_neighbors = nNeighbors, 
+                    n_pcs = 0)
+  } else{
+    sc$pp$neighbors(scanpyObject, 
+                    n_neighbors = nNeighbors, 
+                    n_pcs = dims,
+                    use_rep = useReduction)
+  }
+  
   sc$tl$umap(scanpyObject, 
              n_components = dims,
              min_dist = minDist,
@@ -682,6 +698,8 @@ runScanpyUMAP <- function(inSCE,
 #' Computes tSNE from the given sce object and stores the tSNE computations back
 #' into the sce object
 #' @param inSCE (sce) object on which to compute the tSNE
+#' @param useAssay Specify name of assay to use. Default is \code{NULL}, so
+#' \code{useReduction} param will be used instead.
 #' @param useReduction selected reduction algorithm to use for computing tSNE.
 #' Default \code{"pca"}.
 #' @param reducedDimName Name of new reducedDims object containing Scanpy tSNE
@@ -696,6 +714,7 @@ runScanpyUMAP <- function(inSCE,
 #' @export
 #' @importFrom SingleCellExperiment reducedDim<-
 runScanpyTSNE <- function(inSCE,
+                          useAssay = NULL,
                           useReduction = "scanpyPCA", 
                           reducedDimName = "scanpyTSNE",
                           dims = 10L,
@@ -705,16 +724,30 @@ runScanpyTSNE <- function(inSCE,
   params <- as.list(environment())
   params$inSCE <- NULL
   
-  scanpyObject <- zellkonverter::SCE2AnnData(sce = inSCE)
+  if(!is.null(useAssay)){
+    scanpyObject <- zellkonverter::SCE2AnnData(sce = inSCE, X_name = useAssay)
+  } else{
+    scanpyObject <- zellkonverter::SCE2AnnData(sce = inSCE, reducedDims = useReduction)
+  }
+  
+  
   if (!is.null(externalReduction)) {
     scanpyObject$obsm <- list(pca = externalReduction)
     useReduction <- "pca"
-  } 
+  }
   
-  sc$tl$tsne(scanpyObject, 
-             n_pcs = dims,
-             use_rep = useReduction, 
-             perplexity = perplexity)
+  if(!is.null(useAssay)){
+    sc$tl$tsne(scanpyObject, 
+               n_pcs = dims,
+               use_rep = 'X',
+               perplexity = perplexity)
+  }
+  else{
+    sc$tl$tsne(scanpyObject, 
+               n_pcs = dims,
+               use_rep = useReduction, 
+               perplexity = perplexity)
+  }
   
   metadata(inSCE)$scanpy$obj <- scanpyObject
   

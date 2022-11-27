@@ -2663,6 +2663,7 @@ shinyServer(function(input, output, session) {
         new_pca <- CreateDimReducObject(
           embeddings = redDim,
           assay = "RNA",
+          stdev = as.numeric(attr(redDim, "percentVar")),
           key = "PC_")
       }
 
@@ -3133,7 +3134,7 @@ shinyServer(function(input, output, session) {
             seed = input$seed__tsneUmap
           )
         }
-      } else {
+      } else if(input$dimRedPlotMethod_tsneUmap == "scaterUMAP") {
         if (is.na(input$alphaUMAP)) {
           stop("Learning rate (alpha) must be a numeric non-empty value!")
         }
@@ -3155,6 +3156,24 @@ shinyServer(function(input, output, session) {
           alpha = input$alphaUMAP,
           spread = input$spreadUMAP,
           seed = input$seed__tsneUmap
+        )
+      } else if(input$dimRedPlotMethod_tsneUmap == "scanpyUMAP"){
+        vals$counts <- runDimReduce(
+          inSCE = vals$counts,
+          useAssay = embedUseAssay,
+          useReducedDim = embedUseRedDim,
+          useAltExp = embedUseAltExp,
+          method = "scanpyUMAP",
+          reducedDimName = dimrednamesave
+        )
+      } else if(input$dimRedPlotMethod_tsneUmap == "scanpyTSNE"){
+        vals$counts <- runDimReduce(
+          inSCE = vals$counts,
+          useAssay = embedUseAssay,
+          useReducedDim = embedUseRedDim,
+          useAltExp = embedUseAltExp,
+          method = "scanpyTSNE",
+          reducedDimName = dimrednamesave
         )
       }
       updateReddimInputs()
