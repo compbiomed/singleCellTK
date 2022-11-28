@@ -240,14 +240,21 @@ shinyPanelScanpy <- fluidPage(
                                      fluidRow(
                                        column(12,
                                               panel(heading = "Options",
+                                                    radioButtons(
+                                                      inputId = "scanpyFindMarkerType",
+                                                      label = "Select type of markers to identify:",
+                                                      choices = c(
+                                                        "markers between all groups" = "scanpyMarkerAll",
+                                                        "markers differentially expressed between two selected groups" = "scanpyMarkerDiffExp"
+                                                      )
+                                                    ),
                                                     selectInput(
                                                       inputId = "scanpyFindMarkerSelectPhenotype",
                                                       label = "Select biological phenotype:",
                                                       choices = NULL
                                                     ),
                                                     conditionalPanel(
-                                                      condition = "input.scanpyFindMarkerType == 'markerDiffExp'
-                                                          || input.scanpyFindMarkerType == 'markerConserved'",
+                                                      condition = "input.scanpyFindMarkerType == 'scanpyMarkerDiffExp'",
                                                       selectInput(
                                                         inputId = "scanpyFindMarkerGroup1",
                                                         label = "Select first group of interest:",

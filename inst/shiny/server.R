@@ -9882,38 +9882,45 @@ shinyServer(function(input, output, session) {
       req(vals$counts)
       message(paste0(date(), " ... Finding Marker Genes"))
       
-#      if(input$seuratFindMarkerType == "markerAll"){
+      if(input$scanpyFindMarkerType == "scanpyMarkerAll"){
         vals$counts <- runScanpyFindMarkers(inSCE = vals$counts,
                                             nGenes = input$scanpyFindMarkerNGenes,
                                             colDataName = input$scanpyFindMarkerSelectPhenotype,
                                             test = input$scanpyFindMarkerTest, 
                                             corr_method = input$scanpyFindMarkerCorrMethod)
-#      }
-      # else{
-      #   indices1 <- which(colData(vals$counts)[[input$seuratFindMarkerSelectPhenotype]] == input$seuratFindMarkerGroup1, arr.ind = TRUE)
-      #   indices2 <- which(colData(vals$counts)[[input$seuratFindMarkerSelectPhenotype]] == input$seuratFindMarkerGroup2, arr.ind = TRUE)
-      #   cells1 <- colnames(vals$counts)[indices1]
-      #   cells2 <- colnames(vals$counts)[indices2]
-      #   if(input$seuratFindMarkerType == "markerConserved"){
-      #     vals$counts <- runSeuratFindMarkers(inSCE = vals$counts,
-      #                                         cells1 = cells1,
-      #                                         cells2 = cells2,
-      #                                         group1 = input$seuratFindMarkerGroup1,
-      #                                         group2 = input$seuratFindMarkerGroup2,
-      #                                         conserved = TRUE,
-      #                                         test = input$seuratFindMarkerTest,
-      #                                         onlyPos = input$seuratFindMarkerPosOnly)
-      #   }
-      #   else{
-      #     vals$counts <- runSeuratFindMarkers(inSCE = vals$counts,
-      #                                         cells1 = cells1,
-      #                                         cells2 = cells2,
-      #                                         group1 = input$seuratFindMarkerGroup1,
-      #                                         group2 = input$seuratFindMarkerGroup2,
-      #                                         test = input$seuratFindMarkerTest,
-      #                                         onlyPos = input$seuratFindMarkerPosOnly)
-      #   }
-      # }
+      }
+      else{
+        vals$counts <- runScanpyFindMarkers(inSCE = vals$counts,
+                                            nGenes = input$scanpyFindMarkerNGenes, 
+                                            group1 = input$scanpyFindMarkerGroup1, 
+                                            group2 = input$scanpyFindMarkerGroup2,
+                                            test = input$scanpyFindMarkerTest, 
+                                            corr_method = input$scanpyFindMarkerCorrMethod)
+        
+        # indices1 <- which(colData(vals$counts)[[input$seuratFindMarkerSelectPhenotype]] == input$seuratFindMarkerGroup1, arr.ind = TRUE)
+        # indices2 <- which(colData(vals$counts)[[input$seuratFindMarkerSelectPhenotype]] == input$seuratFindMarkerGroup2, arr.ind = TRUE)
+        # cells1 <- colnames(vals$counts)[indices1]
+        # cells2 <- colnames(vals$counts)[indices2]
+        # if(input$seuratFindMarkerType == "markerConserved"){
+        #   vals$counts <- runSeuratFindMarkers(inSCE = vals$counts,
+        #                                       cells1 = cells1,
+        #                                       cells2 = cells2,
+        #                                       group1 = input$seuratFindMarkerGroup1,
+        #                                       group2 = input$seuratFindMarkerGroup2,
+        #                                       conserved = TRUE,
+        #                                       test = input$seuratFindMarkerTest,
+        #                                       onlyPos = input$seuratFindMarkerPosOnly)
+        # }
+        # else{
+        #   vals$counts <- runSeuratFindMarkers(inSCE = vals$counts,
+        #                                       cells1 = cells1,
+        #                                       cells2 = cells2,
+        #                                       group1 = input$seuratFindMarkerGroup1,
+        #                                       group2 = input$seuratFindMarkerGroup2,
+        #                                       test = input$seuratFindMarkerTest,
+        #                                       onlyPos = input$seuratFindMarkerPosOnly)
+        # }
+      }
       
       
       shinyjs::show(selector = ".scanpy_findmarker_table")
@@ -10176,6 +10183,34 @@ shinyServer(function(input, output, session) {
         "_", 
         input$scanpy_resolution_clustering), nGenes = 2)
     })
+  })
+  
+  observeEvent(input$scanpyFindMarkerSelectPhenotype, {
+    if(!is.null(vals$counts)){
+      updateSelectInput(
+        session = session,
+        inputId = "scanpyFindMarkerGroup1",
+        choices = unique(colData(vals$counts)[[input$scanpyFindMarkerSelectPhenotype]])
+      )
+      updateSelectInput(
+        session = session,
+        inputId = "scanpyFindMarkerGroup2",
+        choices = unique(colData(vals$counts)[[input$scanpyFindMarkerSelectPhenotype]])
+      )
+    }
+  })
+  
+  observeEvent(input$scanpyFindMarkerGroup1, {
+    if(!is.null(vals$counts)){
+      matchedIndex <- match(input$scanpyFindMarkerGroup1,  unique(colData(vals$counts)[[input$scanpyFindMarkerSelectPhenotype]]))
+      if(!is.na(matchedIndex)){
+        updateSelectInput(
+          session = session,
+          inputId = "scanpyFindMarkerGroup2",
+          choices = unique(colData(vals$counts)[[input$scanpyFindMarkerSelectPhenotype]])[-matchedIndex]
+        )
+      }
+    }
   })
   
 })
