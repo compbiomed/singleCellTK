@@ -958,11 +958,22 @@ plotScanpyMarkerGenesHeatmap <- function(inSCE,
   }
   scanpyObject <- metadata(inSCE)[["findMarkerScanpyObject"]]
   
-  return(sc$pl$rank_genes_groups_heatmap(scanpyObject,
+  
+  if(!is.null(features)){
+    return(sc$pl$rank_genes_groups_heatmap(scanpyObject,
+                                           groups = groups,
+                                           groupby = groupBy,
+                                           var_names = features,
+                                           min_logfoldchange = log2fcThreshold,
+                                           show_gene_labels = TRUE,
+                                           dendrogram = FALSE))
+  }
+  else
+    return(sc$pl$rank_genes_groups_heatmap(scanpyObject,
                                          groups = groups,
                                          groupby = groupBy,
                                          n_genes = as.integer(nGenes),
-                                         var_names = features,
+                                         var_names = NULL,
                                          min_logfoldchange = log2fcThreshold,
                                          show_gene_labels = TRUE,
                                          dendrogram = FALSE))
@@ -1027,20 +1038,38 @@ plotScanpyMarkerGenesDotPlot <- function(inSCE,
   }
   scanpyObject <- metadata(inSCE)[["findMarkerScanpyObject"]]
   
-  return(sc$pl$rank_genes_groups_dotplot(scanpyObject,
-                                         groups = groups,
-                                         n_genes = as.integer(nGenes),
-                                         groupby = groupBy,
-                                         min_logfoldchange = log2fcThreshold,
-                                         values_to_plot = parameters,
-                                         standard_scale = standardScale,
-                                         var_names = features,
-                                         title = title,
-                                         vmin = vmin,
-                                         vmax = vmax,
-                                         cmap = 'bwr',
-                                         dendrogram = FALSE,
-                                         colorbar_title = colorBarTitle))
+  if(!is.null(features)){
+    return(sc$pl$rank_genes_groups_dotplot(scanpyObject,
+                                           groups = groups,
+                                           groupby = groupBy,
+                                           min_logfoldchange = log2fcThreshold,
+                                           values_to_plot = parameters,
+                                           standard_scale = standardScale,
+                                           var_names = features,
+                                           title = title,
+                                           vmin = vmin,
+                                           vmax = vmax,
+                                           cmap = 'bwr',
+                                           dendrogram = FALSE,
+                                           colorbar_title = colorBarTitle))
+  }
+  else
+    return(sc$pl$rank_genes_groups_dotplot(scanpyObject,
+                                           groups = groups,
+                                           n_genes = as.integer(nGenes),
+                                           groupby = groupBy,
+                                           min_logfoldchange = log2fcThreshold,
+                                           values_to_plot = parameters,
+                                           standard_scale = standardScale,
+                                           var_names = NULL,
+                                           title = title,
+                                           vmin = vmin,
+                                           vmax = vmax,
+                                           cmap = 'bwr',
+                                           dendrogram = FALSE,
+                                           colorbar_title = colorBarTitle))
+  
+  
   
 }
 
@@ -1102,20 +1131,37 @@ plotScanpyMarkerGenesMatrixPlot <- function(inSCE,
   }
   scanpyObject <- metadata(inSCE)[["findMarkerScanpyObject"]]
   
-  return(sc$pl$rank_genes_groups_matrixplot(scanpyObject,
-                                            groups = groups,
-                                            n_genes = as.integer(nGenes),
-                                            groupby = groupBy,
-                                            min_logfoldchange = log2fcThreshold,
-                                            values_to_plot = parameters,
-                                            standard_scale = standardScale,
-                                            var_names = features,
-                                            title = title,
-                                            vmin = vmin,
-                                            vmax = vmax,
-                                            cmap = 'bwr',
-                                            dendrogram = FALSE,
-                                            colorbar_title = colorBarTitle))
+  if(!is.null(features)){
+    return(sc$pl$rank_genes_groups_matrixplot(scanpyObject,
+                                              groups = groups,
+                                              groupby = groupBy,
+                                              min_logfoldchange = log2fcThreshold,
+                                              values_to_plot = parameters,
+                                              standard_scale = standardScale,
+                                              var_names = features,
+                                              title = title,
+                                              vmin = vmin,
+                                              vmax = vmax,
+                                              cmap = 'bwr',
+                                              dendrogram = FALSE,
+                                              colorbar_title = colorBarTitle))
+  }
+  else
+    return(sc$pl$rank_genes_groups_matrixplot(scanpyObject,
+                                              groups = groups,
+                                              n_genes = as.integer(nGenes),
+                                              groupby = groupBy,
+                                              min_logfoldchange = log2fcThreshold,
+                                              values_to_plot = parameters,
+                                              standard_scale = standardScale,
+                                              var_names = NULL,
+                                              title = title,
+                                              vmin = vmin,
+                                              vmax = vmax,
+                                              cmap = 'bwr',
+                                              dendrogram = FALSE,
+                                              colorbar_title = colorBarTitle))
+  
   
 }
 
