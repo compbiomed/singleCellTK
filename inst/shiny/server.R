@@ -10021,7 +10021,7 @@ shinyServer(function(input, output, session) {
       # }
       # 
       # showTab(inputId = "seuratFindMarkerPlotTabset", target = "Joint Heatmap Plot")
-      updateTabsetPanel(session = session, inputId = "scanpyFindMarkerPlotTabset", selected = "Ridge Plot")
+      updateTabsetPanel(session = session, inputId = "scanpyFindMarkerPlotTabset", selected = "Violin Plot")
       shinyjs::show(selector = ".scanpy_findmarker_plots")
       # 
       # Output the heatmap
@@ -10037,12 +10037,9 @@ shinyServer(function(input, output, session) {
       # Plot heatmap
       output$scanpy_findMarkerHeatmapPlotFull <- renderPlot({
         isolate({
-          plotScanpyMarkerGenesHeatmap(vals$counts, groupBy = paste0(
-            "Scanpy_", 
-            input$scanpy_algorithm.use, 
-            "_", 
-            input$scanpy_resolution_clustering), 
-            nGenes = 2)
+          plotScanpyMarkerGenesHeatmap(vals$counts, 
+                                       groupBy = input$scanpyFindMarkerSelectPhenotype,
+                                       nGenes = 2)
         })
       })
 
@@ -10061,21 +10058,21 @@ shinyServer(function(input, output, session) {
 
       # updateCollapse(session = session, "ScanpyUI", style = list("Downstream Analysis" = "info"))
 
-      removeTab(inputId = "scanpyFindMarkerPlotTabset", target = "Ridge Plot")
+      # removeTab(inputId = "scanpyFindMarkerPlotTabset", target = "Ridge Plot")
       removeTab(inputId = "scanpyFindMarkerPlotTabset", target = "Violin Plot")
       removeTab(inputId = "scanpyFindMarkerPlotTabset", target = "Feature Plot")
       removeTab(inputId = "scanpyFindMarkerPlotTabset", target = "Dot Plot")
       removeTab(inputId = "scanpyFindMarkerPlotTabset", target = "Heatmap Plot")
 
-      appendTab(inputId = "scanpyFindMarkerPlotTabset",
-                tabPanel(title = "Ridge Plot",
-                         panel(heading = "Ridge Plot",
-                               shinyjqui::jqui_resizable(
-                                 plotOutput(outputId = "scanpyFindMarkerRidgePlot")
-                               )
-                         )
-                )
-      )
+      # appendTab(inputId = "scanpyFindMarkerPlotTabset",
+      #           tabPanel(title = "Ridge Plot",
+      #                    panel(heading = "Ridge Plot",
+      #                          shinyjqui::jqui_resizable(
+      #                            plotOutput(outputId = "scanpyFindMarkerRidgePlot")
+      #                          )
+      #                    )
+      #           )
+      # )
       appendTab(inputId = "scanpyFindMarkerPlotTabset",
                 tabPanel(title = "Violin Plot",
                          panel(heading = "Violin Plot",
@@ -10142,12 +10139,9 @@ shinyServer(function(input, output, session) {
     {
       output$scanpy_findMarkerHeatmapPlotFull <- renderPlot({
         isolate({
-          plotScanpyMarkerGenesHeatmap(vals$counts, groupBy = paste0(
-            "Scanpy_", 
-            input$scanpy_algorithm.use, 
-            "_", 
-            input$scanpy_resolution_clustering), 
-            nGenes = input$scanpy_findMarkerHeatmapPlotFullNumeric)
+          plotScanpyMarkerGenesHeatmap(vals$counts, 
+                                       groupBy = input$scanpyFindMarkerSelectPhenotype,
+                                       nGenes = input$scanpy_findMarkerHeatmapPlotFullNumeric)
         })
       })
     }))
@@ -10157,9 +10151,9 @@ shinyServer(function(input, output, session) {
     req(vals$ftScanpy$selectedRows)
     df <- vals$ftScanpy$data[vals$ftScanpy$selectedRows, ]
     
-    output$scanpyFindMarkerRidgePlot <- renderPlot({
-      plotScanpyMarkerGenes(inSCE = vals$counts, nGenes = 10)
-    })
+    # output$scanpyFindMarkerRidgePlot <- renderPlot({
+    #   plotScanpyMarkerGenes(inSCE = vals$counts, nGenes = 10)
+    # })
     output$scanpyFindMarkerViolinPlot <- renderPlot({
       plotScanpyMarkerGenesViolin(inSCE = vals$counts,
                                   features = df$Gene,
