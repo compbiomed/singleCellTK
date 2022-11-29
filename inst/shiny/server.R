@@ -9891,9 +9891,10 @@ shinyServer(function(input, output, session) {
       }
       else{
         vals$counts <- runScanpyFindMarkers(inSCE = vals$counts,
-                                            nGenes = input$scanpyFindMarkerNGenes, 
-                                            group1 = input$scanpyFindMarkerGroup1, 
-                                            group2 = input$scanpyFindMarkerGroup2,
+                                            nGenes = input$scanpyFindMarkerNGenes,
+                                            colDataName = input$scanpyFindMarkerSelectPhenotype,
+                                            group1 = c(input$scanpyFindMarkerGroup1, input$scanpyFindMarkerGroup2), 
+                                            group2 = "rest",
                                             test = input$scanpyFindMarkerTest, 
                                             corr_method = input$scanpyFindMarkerCorrMethod)
         
@@ -10085,10 +10086,10 @@ shinyServer(function(input, output, session) {
                 )
       )
       appendTab(inputId = "scanpyFindMarkerPlotTabset",
-                tabPanel(title = "Feature Plot",
-                         panel(heading = "Feature Plot",
+                tabPanel(title = "Matrix Plot",
+                         panel(heading = "Matrix Plot",
                                shinyjqui::jqui_resizable(
-                                 plotOutput(outputId = "scanpyFindMarkerFeaturePlot")
+                                 plotOutput(outputId = "scanpyFindMarkerMatrixPlot")
                                )
                          )
                 )
@@ -10157,31 +10158,29 @@ shinyServer(function(input, output, session) {
     df <- vals$ftScanpy$data[vals$ftScanpy$selectedRows, ]
     
     output$scanpyFindMarkerRidgePlot <- renderPlot({
-      plotScanpyMarkerGenes(inSCE = vals$counts, nGenes = 2)
+      plotScanpyMarkerGenes(inSCE = vals$counts, nGenes = 10)
     })
     output$scanpyFindMarkerViolinPlot <- renderPlot({
-      plotScanpyMarkerGenesViolin(inSCE = vals$counts, nGenes = 2)
+      plotScanpyMarkerGenesViolin(inSCE = vals$counts,
+                                  features = df$Gene,
+                                  nGenes = NULL)
     })
-    output$scanpyFindMarkerFeaturePlot <- renderPlot({
-      plotScanpyMarkerGenesMatrixPlot(inSCE = vals$counts, groupBy = paste0(
-        "Scanpy_", 
-        input$scanpy_algorithm.use, 
-        "_", 
-        input$scanpy_resolution_clustering), nGenes = 2)
+    output$scanpyFindMarkerMatrixPlot <- renderPlot({
+      plotScanpyMarkerGenesMatrixPlot(inSCE = vals$counts, 
+                                      groupBy = input$scanpyFindMarkerSelectPhenotype, 
+                                      features = df$Gene,
+                                      nGenes = NULL)
     })
     output$scanpyFindMarkerDotPlot <- renderPlot({
-      plotScanpyMarkerGenesDotPlot(inSCE = vals$counts, nGenes = 2, groupBy = paste0(
-        "Scanpy_", 
-        input$scanpy_algorithm.use, 
-        "_", 
-        input$scanpy_resolution_clustering))
+      plotScanpyMarkerGenesDotPlot(inSCE = vals$counts, features = df$Gene, 
+                                   groupBy = input$scanpyFindMarkerSelectPhenotype,
+                                   nGenes = NULL)
     })
     output$scanpyFindMarkerHeatmapPlot <- renderPlot({
-      plotScanpyMarkerGenesHeatmap(inSCE = vals$counts, groupBy = paste0(
-        "Scanpy_", 
-        input$scanpy_algorithm.use, 
-        "_", 
-        input$scanpy_resolution_clustering), nGenes = 2)
+      plotScanpyMarkerGenesHeatmap(inSCE = vals$counts, 
+                                   groupBy = input$scanpyFindMarkerSelectPhenotype, 
+                                   features = df$Gene, 
+                                   nGenes = NULL)
     })
   })
   
