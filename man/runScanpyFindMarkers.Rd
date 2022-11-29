@@ -7,6 +7,7 @@
 runScanpyFindMarkers(
   inSCE,
   nGenes = NULL,
+  useAssay = "scanpyScaledData",
   colDataName,
   group1 = "all",
   group2 = "rest",
@@ -19,6 +20,9 @@ runScanpyFindMarkers(
 
 \item{nGenes}{The number of genes that appear in the returned tables. 
 Defaults to all genes.}
+
+\item{useAssay}{Specify the name of the assay to use for computation
+of marker genes. It is recommended to use scaled assay.}
 
 \item{colDataName}{colData to use as the key of the observations grouping to 
 consider.}
@@ -46,6 +50,7 @@ runScanpyFindMarkers
 data(scExample, package = "singleCellTK")
 \dontrun{
 sce <- runScanpyNormalizeData(sce, useAssay = "counts")
+sce <- runScanpyScaleData(sce, useAssay = "scanpyNormData")
 sce <- runScanpyPCA(sce, useAssay = "counts")
 sce <- runScanpyFindClusters(sce, useAssay = "counts", algorithm = "louvain")
 sce <- runScanpyFindMarkers(sce, colDataName = "Scanpy_louvain_1" )
