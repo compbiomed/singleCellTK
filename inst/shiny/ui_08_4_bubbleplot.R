@@ -22,114 +22,73 @@ shinyPanelBubbleplot <- fluidPage(
         )
       ),
       fluidRow(column(width = 4,
-                      actionButton("hmImportRun", "Import"))
-               ),
+                      actionButton("bpImportRun", "Import"))
+      ),
       
       hr(),
       # Subset ####
       h3("Cell/Feature Subsetting"),
       p("Only to plot cells/features of interests", style = "color:grey;"),
       tabsetPanel(
-        id = 'hmSubsetTSP',
+        id = 'bpSubsetTSP',
         tabPanel(
-          title = "Cell", value = 'hmSubsetCellTP',
+          title = "Cell", value = 'bpSubsetCellTP',
           tagList(
-            uiOutput('hmCellColUI'),
-            DT::dataTableOutput("hmCellColTable"),
-            actionButton('hmCellColTable_addAll', "Add all filtered"),
-            actionButton('hmCellColTable_clear', "Clear selection"),
+            uiOutput('bpCellColUI'),
+            DT::dataTableOutput("bpCellColTable"),
+            actionButton('bpCellColTable_addAll', "Add all filtered"),
+            actionButton('bpCellColTable_clear', "Clear selection"),
           )
         ),
         tabPanel(
           title = "Feature", value = 'hmSubsetGeneTP',
           tagList(
-            uiOutput('hmGeneColUI'),
-            DT::dataTableOutput("hmGeneColTable"),
-            actionButton('hmGeneColTable_addAll', "Add all filtered"),
-            actionButton('hmGeneColTable_clear', "Clear selection"),
+            uiOutput('bpGeneColUI'),
+            DT::dataTableOutput("bpGeneColTable"),
+            actionButton('bpGeneColTable_addAll', "Add all filtered"),
+            actionButton('bpGeneColTable_clear', "Clear selection"),
           )
         ),
       ),
-      uiOutput("hmCellSumUI"),
-      uiOutput("hmGeneSumUI"),
+      uiOutput("bpCellSumUI"),
+      uiOutput("bpGeneSumUI"),
       hr(),
       
       # Others ####
       h3("Bubbleplot Setting"),
       p("Settings for title, label, color scheme and etc.",
         style = "color:grey;"),
-          panel(
-            fluidRow(
-              column(
-                width = 4,
-                dropdown(
-                  panel(
-                    fluidRow(
-                      column(width = 6,
-                             textInput("deG1Name", "Title", NULL)
-                      )
-                    ),
-                    fluidRow(
-                      column(width = 6,
-                             textInput("deG2Name", "X-axis Label", NULL)
-                      ),
-                      column(width = 6,
-                             textInput("deG2Name", "Y-axis Label", NULL)
-                      )
-                    ),
-                    fluidRow(
-                      column(
-                        width = 4,
-                        colourpicker::colourInput('hmCSLow', 'Low color',value = 'white')
-                      ),
-                      column(
-                        width = 4,
-                        colourpicker::colourInput('hmCSHigh', 'High color',value = 'blue')
-                      )
-                    )
-                  ),
-                  inputId = "dropDownDeHM",
-                  icon = icon("cog"),
-                  status = "primary",
-                  circle = FALSE,
-                  inline = TRUE,
-                  width = "500px"
-                )
-              )
-            )
-          ),
       panel(
         fluidRow(
           column(width = 4,
-                 textInput("deG1Name", "Title", NULL)
+                 textInput("bpTitle", "Title", NULL)
           )
         ),
         fluidRow(
           column(width = 4,
-                 textInput("deG2Name", "X-axis Label", NULL)
+                 textInput("bpX", "X-axis Label", NULL)
           ),
           column(width = 4,
-                 textInput("deG2Name", "Y-axis Label", NULL)
+                 textInput("bpY", "Y-axis Label", NULL)
           )
         ),
         fluidRow(
           column(
             width = 4,
-            colourpicker::colourInput('hmCSLow', 'Low color',value = 'white')
+            colourpicker::colourInput('bpLow', 'Low color',value = 'white')
           ),
           column(
             width = 4,
-            colourpicker::colourInput('hmCSHigh', 'High color',value = 'blue')
+            colourpicker::colourInput('bpHigh', 'High color',value = 'blue')
           )
         )
       ),
       hr(),
-      withBusyIndicatorUI(actionButton("plotHeatmap", "Plot Bubbleplot")),
+      withBusyIndicatorUI(actionButton("plotBubbleplot", "Plot Bubbleplot")),
       div(
         style = 'height:800px;',
-        plotOutput("Heatmap")
+        plotOutput("Bubbleplot")
       )
     )
   )
 )
-
