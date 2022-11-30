@@ -2663,6 +2663,7 @@ shinyServer(function(input, output, session) {
         new_pca <- CreateDimReducObject(
           embeddings = redDim,
           assay = "RNA",
+          stdev = as.numeric(attr(redDim, "percentVar")),
           key = "PC_")
       }
 
@@ -3133,7 +3134,7 @@ shinyServer(function(input, output, session) {
             seed = input$seed__tsneUmap
           )
         }
-      } else {
+      } else if(input$dimRedPlotMethod_tsneUmap == "scaterUMAP") {
         if (is.na(input$alphaUMAP)) {
           stop("Learning rate (alpha) must be a numeric non-empty value!")
         }
@@ -3155,6 +3156,24 @@ shinyServer(function(input, output, session) {
           alpha = input$alphaUMAP,
           spread = input$spreadUMAP,
           seed = input$seed__tsneUmap
+        )
+      } else if(input$dimRedPlotMethod_tsneUmap == "scanpyUMAP"){
+        vals$counts <- runDimReduce(
+          inSCE = vals$counts,
+          useAssay = embedUseAssay,
+          useReducedDim = embedUseRedDim,
+          useAltExp = embedUseAltExp,
+          method = "scanpyUMAP",
+          reducedDimName = dimrednamesave
+        )
+      } else if(input$dimRedPlotMethod_tsneUmap == "scanpyTSNE"){
+        vals$counts <- runDimReduce(
+          inSCE = vals$counts,
+          useAssay = embedUseAssay,
+          useReducedDim = embedUseRedDim,
+          useAltExp = embedUseAltExp,
+          method = "scanpyTSNE",
+          reducedDimName = dimrednamesave
         )
       }
       updateReddimInputs()
@@ -9863,38 +9882,46 @@ shinyServer(function(input, output, session) {
       req(vals$counts)
       message(paste0(date(), " ... Finding Marker Genes"))
       
-#      if(input$seuratFindMarkerType == "markerAll"){
+      if(input$scanpyFindMarkerType == "scanpyMarkerAll"){
         vals$counts <- runScanpyFindMarkers(inSCE = vals$counts,
                                             nGenes = input$scanpyFindMarkerNGenes,
                                             colDataName = input$scanpyFindMarkerSelectPhenotype,
                                             test = input$scanpyFindMarkerTest, 
                                             corr_method = input$scanpyFindMarkerCorrMethod)
-#      }
-      # else{
-      #   indices1 <- which(colData(vals$counts)[[input$seuratFindMarkerSelectPhenotype]] == input$seuratFindMarkerGroup1, arr.ind = TRUE)
-      #   indices2 <- which(colData(vals$counts)[[input$seuratFindMarkerSelectPhenotype]] == input$seuratFindMarkerGroup2, arr.ind = TRUE)
-      #   cells1 <- colnames(vals$counts)[indices1]
-      #   cells2 <- colnames(vals$counts)[indices2]
-      #   if(input$seuratFindMarkerType == "markerConserved"){
-      #     vals$counts <- runSeuratFindMarkers(inSCE = vals$counts,
-      #                                         cells1 = cells1,
-      #                                         cells2 = cells2,
-      #                                         group1 = input$seuratFindMarkerGroup1,
-      #                                         group2 = input$seuratFindMarkerGroup2,
-      #                                         conserved = TRUE,
-      #                                         test = input$seuratFindMarkerTest,
-      #                                         onlyPos = input$seuratFindMarkerPosOnly)
-      #   }
-      #   else{
-      #     vals$counts <- runSeuratFindMarkers(inSCE = vals$counts,
-      #                                         cells1 = cells1,
-      #                                         cells2 = cells2,
-      #                                         group1 = input$seuratFindMarkerGroup1,
-      #                                         group2 = input$seuratFindMarkerGroup2,
-      #                                         test = input$seuratFindMarkerTest,
-      #                                         onlyPos = input$seuratFindMarkerPosOnly)
-      #   }
-      # }
+      }
+      else{
+        vals$counts <- runScanpyFindMarkers(inSCE = vals$counts,
+                                            nGenes = input$scanpyFindMarkerNGenes,
+                                            colDataName = input$scanpyFindMarkerSelectPhenotype,
+                                            group1 = c(input$scanpyFindMarkerGroup1, input$scanpyFindMarkerGroup2), 
+                                            group2 = "rest",
+                                            test = input$scanpyFindMarkerTest, 
+                                            corr_method = input$scanpyFindMarkerCorrMethod)
+        
+        # indices1 <- which(colData(vals$counts)[[input$seuratFindMarkerSelectPhenotype]] == input$seuratFindMarkerGroup1, arr.ind = TRUE)
+        # indices2 <- which(colData(vals$counts)[[input$seuratFindMarkerSelectPhenotype]] == input$seuratFindMarkerGroup2, arr.ind = TRUE)
+        # cells1 <- colnames(vals$counts)[indices1]
+        # cells2 <- colnames(vals$counts)[indices2]
+        # if(input$seuratFindMarkerType == "markerConserved"){
+        #   vals$counts <- runSeuratFindMarkers(inSCE = vals$counts,
+        #                                       cells1 = cells1,
+        #                                       cells2 = cells2,
+        #                                       group1 = input$seuratFindMarkerGroup1,
+        #                                       group2 = input$seuratFindMarkerGroup2,
+        #                                       conserved = TRUE,
+        #                                       test = input$seuratFindMarkerTest,
+        #                                       onlyPos = input$seuratFindMarkerPosOnly)
+        # }
+        # else{
+        #   vals$counts <- runSeuratFindMarkers(inSCE = vals$counts,
+        #                                       cells1 = cells1,
+        #                                       cells2 = cells2,
+        #                                       group1 = input$seuratFindMarkerGroup1,
+        #                                       group2 = input$seuratFindMarkerGroup2,
+        #                                       test = input$seuratFindMarkerTest,
+        #                                       onlyPos = input$seuratFindMarkerPosOnly)
+        # }
+      }
       
       
       shinyjs::show(selector = ".scanpy_findmarker_table")
@@ -9994,7 +10021,7 @@ shinyServer(function(input, output, session) {
       # }
       # 
       # showTab(inputId = "seuratFindMarkerPlotTabset", target = "Joint Heatmap Plot")
-      updateTabsetPanel(session = session, inputId = "scanpyFindMarkerPlotTabset", selected = "Ridge Plot")
+      updateTabsetPanel(session = session, inputId = "scanpyFindMarkerPlotTabset", selected = "Violin Plot")
       shinyjs::show(selector = ".scanpy_findmarker_plots")
       # 
       # Output the heatmap
@@ -10010,12 +10037,9 @@ shinyServer(function(input, output, session) {
       # Plot heatmap
       output$scanpy_findMarkerHeatmapPlotFull <- renderPlot({
         isolate({
-          plotScanpyMarkerGenesHeatmap(vals$counts, groupBy = paste0(
-            "Scanpy_", 
-            input$scanpy_algorithm.use, 
-            "_", 
-            input$scanpy_resolution_clustering), 
-            nGenes = 2)
+          plotScanpyMarkerGenesHeatmap(vals$counts, 
+                                       groupBy = input$scanpyFindMarkerSelectPhenotype,
+                                       nGenes = 2)
         })
       })
 
@@ -10034,21 +10058,21 @@ shinyServer(function(input, output, session) {
 
       # updateCollapse(session = session, "ScanpyUI", style = list("Downstream Analysis" = "info"))
 
-      removeTab(inputId = "scanpyFindMarkerPlotTabset", target = "Ridge Plot")
+      # removeTab(inputId = "scanpyFindMarkerPlotTabset", target = "Ridge Plot")
       removeTab(inputId = "scanpyFindMarkerPlotTabset", target = "Violin Plot")
       removeTab(inputId = "scanpyFindMarkerPlotTabset", target = "Feature Plot")
       removeTab(inputId = "scanpyFindMarkerPlotTabset", target = "Dot Plot")
       removeTab(inputId = "scanpyFindMarkerPlotTabset", target = "Heatmap Plot")
 
-      appendTab(inputId = "scanpyFindMarkerPlotTabset",
-                tabPanel(title = "Ridge Plot",
-                         panel(heading = "Ridge Plot",
-                               shinyjqui::jqui_resizable(
-                                 plotOutput(outputId = "scanpyFindMarkerRidgePlot")
-                               )
-                         )
-                )
-      )
+      # appendTab(inputId = "scanpyFindMarkerPlotTabset",
+      #           tabPanel(title = "Ridge Plot",
+      #                    panel(heading = "Ridge Plot",
+      #                          shinyjqui::jqui_resizable(
+      #                            plotOutput(outputId = "scanpyFindMarkerRidgePlot")
+      #                          )
+      #                    )
+      #           )
+      # )
       appendTab(inputId = "scanpyFindMarkerPlotTabset",
                 tabPanel(title = "Violin Plot",
                          panel(heading = "Violin Plot",
@@ -10059,10 +10083,10 @@ shinyServer(function(input, output, session) {
                 )
       )
       appendTab(inputId = "scanpyFindMarkerPlotTabset",
-                tabPanel(title = "Feature Plot",
-                         panel(heading = "Feature Plot",
+                tabPanel(title = "Matrix Plot",
+                         panel(heading = "Matrix Plot",
                                shinyjqui::jqui_resizable(
-                                 plotOutput(outputId = "scanpyFindMarkerFeaturePlot")
+                                 plotOutput(outputId = "scanpyFindMarkerMatrixPlot")
                                )
                          )
                 )
@@ -10115,12 +10139,9 @@ shinyServer(function(input, output, session) {
     {
       output$scanpy_findMarkerHeatmapPlotFull <- renderPlot({
         isolate({
-          plotScanpyMarkerGenesHeatmap(vals$counts, groupBy = paste0(
-            "Scanpy_", 
-            input$scanpy_algorithm.use, 
-            "_", 
-            input$scanpy_resolution_clustering), 
-            nGenes = input$scanpy_findMarkerHeatmapPlotFullNumeric)
+          plotScanpyMarkerGenesHeatmap(vals$counts, 
+                                       groupBy = input$scanpyFindMarkerSelectPhenotype,
+                                       nGenes = input$scanpy_findMarkerHeatmapPlotFullNumeric)
         })
       })
     }))
@@ -10130,33 +10151,59 @@ shinyServer(function(input, output, session) {
     req(vals$ftScanpy$selectedRows)
     df <- vals$ftScanpy$data[vals$ftScanpy$selectedRows, ]
     
-    output$scanpyFindMarkerRidgePlot <- renderPlot({
-      plotScanpyMarkerGenes(inSCE = vals$counts, nGenes = 2)
-    })
+    # output$scanpyFindMarkerRidgePlot <- renderPlot({
+    #   plotScanpyMarkerGenes(inSCE = vals$counts, nGenes = 10)
+    # })
     output$scanpyFindMarkerViolinPlot <- renderPlot({
-      plotScanpyMarkerGenesViolin(inSCE = vals$counts, nGenes = 2)
+      plotScanpyMarkerGenesViolin(inSCE = vals$counts,
+                                  features = df$Gene,
+                                  nGenes = NULL)
     })
-    output$scanpyFindMarkerFeaturePlot <- renderPlot({
-      plotScanpyMarkerGenesMatrixPlot(inSCE = vals$counts, groupBy = paste0(
-        "Scanpy_", 
-        input$scanpy_algorithm.use, 
-        "_", 
-        input$scanpy_resolution_clustering), nGenes = 2)
+    output$scanpyFindMarkerMatrixPlot <- renderPlot({
+      plotScanpyMarkerGenesMatrixPlot(inSCE = vals$counts, 
+                                      groupBy = input$scanpyFindMarkerSelectPhenotype, 
+                                      features = df$Gene,
+                                      nGenes = NULL)
     })
     output$scanpyFindMarkerDotPlot <- renderPlot({
-      plotScanpyMarkerGenesDotPlot(inSCE = vals$counts, nGenes = 2, groupBy = paste0(
-        "Scanpy_", 
-        input$scanpy_algorithm.use, 
-        "_", 
-        input$scanpy_resolution_clustering))
+      plotScanpyMarkerGenesDotPlot(inSCE = vals$counts, features = df$Gene, 
+                                   groupBy = input$scanpyFindMarkerSelectPhenotype,
+                                   nGenes = NULL)
     })
     output$scanpyFindMarkerHeatmapPlot <- renderPlot({
-      plotScanpyMarkerGenesHeatmap(inSCE = vals$counts, groupBy = paste0(
-        "Scanpy_", 
-        input$scanpy_algorithm.use, 
-        "_", 
-        input$scanpy_resolution_clustering), nGenes = 2)
+      plotScanpyMarkerGenesHeatmap(inSCE = vals$counts, 
+                                   groupBy = input$scanpyFindMarkerSelectPhenotype, 
+                                   features = df$Gene, 
+                                   nGenes = NULL)
     })
+  })
+  
+  observeEvent(input$scanpyFindMarkerSelectPhenotype, {
+    if(!is.null(vals$counts)){
+      updateSelectInput(
+        session = session,
+        inputId = "scanpyFindMarkerGroup1",
+        choices = unique(colData(vals$counts)[[input$scanpyFindMarkerSelectPhenotype]])
+      )
+      updateSelectInput(
+        session = session,
+        inputId = "scanpyFindMarkerGroup2",
+        choices = unique(colData(vals$counts)[[input$scanpyFindMarkerSelectPhenotype]])
+      )
+    }
+  })
+  
+  observeEvent(input$scanpyFindMarkerGroup1, {
+    if(!is.null(vals$counts)){
+      matchedIndex <- match(input$scanpyFindMarkerGroup1,  unique(colData(vals$counts)[[input$scanpyFindMarkerSelectPhenotype]]))
+      if(!is.na(matchedIndex)){
+        updateSelectInput(
+          session = session,
+          inputId = "scanpyFindMarkerGroup2",
+          choices = unique(colData(vals$counts)[[input$scanpyFindMarkerSelectPhenotype]])[-matchedIndex]
+        )
+      }
+    }
   })
   
 })

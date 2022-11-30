@@ -8,6 +8,7 @@ into the sce object}
 \usage{
 runScanpyUMAP(
   inSCE,
+  useAssay = NULL,
   useReduction = "scanpyPCA",
   reducedDimName = "scanpyUMAP",
   dims = 10L,
@@ -21,6 +22,9 @@ runScanpyUMAP(
 }
 \arguments{
 \item{inSCE}{(sce) object on which to compute the UMAP}
+
+\item{useAssay}{Specify name of assay to use. Default is \code{NULL}, so
+\code{useReduction} param will be used instead.}
 
 \item{useReduction}{Reduction to use for computing UMAP. 
 Default is \code{"pca"}.}

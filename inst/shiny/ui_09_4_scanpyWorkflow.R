@@ -206,7 +206,7 @@ shinyPanelScanpy <- fluidPage(
                                        column(12,
                                               panel(heading = "Options",
                                                     #selectInput(inputId = "scanpy_reduction_clustering_method", label = "Select reduction method: ", choices = c("pca", "ica")),
-                                                    numericInput(inputId = "scanpy_reduction_clustering_count", label = "Select number of reduction components: ", value = 2),
+                                                    numericInput(inputId = "scanpy_reduction_clustering_count", label = "Select number of reduction components: ", value = 10),
                                                     selectInput(inputId = "scanpy_algorithm.use", label = "Select clustering algorithm: ", choices = list("louvain algorithm" = "louvain",
                                                                                                                                                    "leiden algorithm" = "leiden")),
                                                     numericInput(inputId = "scanpy_resolution_clustering", label = "Set resolution:", value = 0.8),
@@ -240,14 +240,21 @@ shinyPanelScanpy <- fluidPage(
                                      fluidRow(
                                        column(12,
                                               panel(heading = "Options",
+                                                    radioButtons(
+                                                      inputId = "scanpyFindMarkerType",
+                                                      label = "Select type of markers to identify:",
+                                                      choices = c(
+                                                        "markers between all groups" = "scanpyMarkerAll",
+                                                        "markers differentially expressed between two selected groups" = "scanpyMarkerDiffExp"
+                                                      )
+                                                    ),
                                                     selectInput(
                                                       inputId = "scanpyFindMarkerSelectPhenotype",
                                                       label = "Select biological phenotype:",
                                                       choices = NULL
                                                     ),
                                                     conditionalPanel(
-                                                      condition = "input.scanpyFindMarkerType == 'markerDiffExp'
-                                                          || input.scanpyFindMarkerType == 'markerConserved'",
+                                                      condition = "input.scanpyFindMarkerType == 'scanpyMarkerDiffExp'",
                                                       selectInput(
                                                         inputId = "scanpyFindMarkerGroup1",
                                                         label = "Select first group of interest:",
@@ -294,7 +301,7 @@ shinyPanelScanpy <- fluidPage(
                                                 tags$div(class = "scanpy_findmarker_jointHeatmap",
                                                          bsCollapse(
                                                            bsCollapsePanel(
-                                                             title = "scanpy Heatmap Plot",
+                                                             title = "Heatmap Plot",
                                                              fluidRow(
                                                                column(12, align = "center",
                                                                       panel(
