@@ -2663,6 +2663,7 @@ shinyServer(function(input, output, session) {
         new_pca <- CreateDimReducObject(
           embeddings = redDim,
           assay = "RNA",
+          loadings = attr(redDim, "rotation"),
           stdev = as.numeric(attr(redDim, "percentVar")),
           key = "PC_")
       }
