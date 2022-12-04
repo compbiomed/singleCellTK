@@ -392,6 +392,7 @@ runScanpyPCA <- function(inSCE,
   metadata(inSCE)$scanpy$PCA <- scanpyObject
   
   temp <- scanpyObject$obsm['X_pca']
+  #colnames(temp) <- paste0(rep("PC", ncol(temp)), seq(ncol(10)))
   rownames(temp) <- colnames(inSCE)
   rotation <- scanpyObject$varm['PCs']
   rownames(rotation) <- rownames(inSCE)
