@@ -312,6 +312,7 @@ shinyServer(function(input, output, session) {
     updateSelectInputTag(session, "snapshotAssay", choices = currassays)
     updateSelectInputTag(session, "exportAssay", choices = currassays)
     updateSelectInputTag(session, "hmAssay", recommended = "transformed")
+    updateSelectInputTag(session, "bpAssay", recommended = "transformed")
     updateSelectInputTag(session, "ctLabelAssay", choices = currassays,
                          recommended = c("transformed"))
     # batch correction assay conditions
@@ -5337,129 +5338,16 @@ shinyServer(function(input, output, session) {
   })
   
   # Bubbleplot: Final run ####
-  observeEvent(input$plotBubbleplot, {
-    if (is.null(vals$counts)){
-      shinyalert::shinyalert("Error!", "Upload data first.", type = "error")
-    } else {
-      # Move all plotting process into alert callback, thus auto-re-render can
-      # be avoided while tuning parameters.
-      shinyalert(
-        title = "Confirm",
-        text = "Large dataset might take time to rerun. Are you sure with the parameters?",
-        type = "warning",
-        showCancelButton = TRUE,
-        confirmButtonText = "Plot",
-        cancelButtonText = "Check Once More",
-        callbackR = function(x){
-          if(isTRUE(x)){
-            withBusyIndicatorServer("plotBubbleplot", {
-              if(!is.null(hmTemp$colDataName)){
-                cellAnnColor <- list()
-                for(i in hmTemp$colDataName){
-                  uniqs <- as.vector(unique(colData(hmTemp$sce)[[i]]))
-                  uniqs[is.na(uniqs)] <- 'NA'
-                  if (i %in% names(hmTemp$colColorPresets)) {
-                    cellAnnColor[[i]] <- hmTemp$colColorPresets[[i]]
-                  } else if (length(uniqs) <= 12) {
-                    cellAnnColor[[i]] <- vector()
-                    for(j in uniqs){
-                      inputId <- paste0('hmcol', i, j)
-                      cellAnnColor[[i]] <- c(cellAnnColor[[i]], input[[inputId]])
-                    }
-                    names(cellAnnColor[[i]]) <- uniqs
-                  } else {
-                    if(is.numeric(colData(hmTemp$sce)[[i]])){
-                      if(input[[paste0('hmcol', i, 'type')]] == 'Continuous'){
-                        cFun <- circlize::colorRamp2(
-                          c(min(colData(hmTemp$sce)[[i]]),
-                            max(colData(hmTemp$sce)[[i]])),
-                          c(input[[paste0('hmcol', i, 'Low')]],
-                            input[[paste0('hmcol', i, 'High')]])
-                        )
-                        cellAnnColor[[i]] <- cFun
-                      } else {
-                        c <- distinctColors(length(uniqs))
-                        names(c) <- uniqs
-                        cellAnnColor[[i]] <- c
-                      }
-                    }
-                  }
-                }
-              } else {
-                cellAnnColor <- NULL
-              }
-              if(!is.null(hmTemp$rowDataName)){
-                geneAnnColor <- list()
-                for(i in hmTemp$rowDataName){
-                  uniqs <- as.vector(unique(rowData(hmTemp$sce)[[i]]))
-                  if (i %in% names(hmTemp$rowColorPresets)) {
-                    geneAnnColor[[i]] <- hmTemp$rowColorPresets[[i]]
-                  } else if(length(uniqs) <= 12){
-                    geneAnnColor[[i]] <- vector()
-                    for(j in uniqs){
-                      inputId <- paste0('hmrow', i, j)
-                      geneAnnColor[[i]] <- c(geneAnnColor[[i]], input[[inputId]])
-                    }
-                    names(geneAnnColor[[i]]) <- uniqs
-                  } else {
-                    if(is.numeric(rowData(hmTemp$sce)[[i]])){
-                      if(input[[paste0('hmrow', i, 'type')]] == 'Continuous'){
-                        cFun <- circlize::colorRamp2(
-                          c(min(rowData(hmTemp$sce)[[i]]),
-                            max(rowData(hmTemp$sce)[[i]])),
-                          c(input[[paste0('hmrow', i, 'Low')]],
-                            input[[paste0('hmrow', i, 'High')]])
-                        )
-                        geneAnnColor[[i]] <- cFun
-                      } else {
-                        c <- distinctColors(length(uniqs))
-                        names(c) <- uniqs
-                        geneAnnColor[[i]] <- c
-                      }
-                    }
-                  }
-                }
-              } else {
-                geneAnnColor <- NULL
-              }
-              hmAddLabel <- list(cell = FALSE, gene = FALSE)
-              if(!is.null(input$hmAddLabel)){
-                if("1" %in% input$hmAddLabel){
-                  if(input$hmAddCellLabel == "Default cell IDs"){
-                    hmAddLabel$cell <- TRUE
-                  } else {
-                    hmAddLabel$cell <- input$hmAddCellLabel
-                  }
-                }
-                if("2" %in% input$hmAddLabel){
-                  if(input$hmAddGeneLabel == "Default feature IDs"){
-                    hmAddLabel$gene <- TRUE
-                  } else {
-                    hmAddLabel$gene <- input$hmAddGeneLabel
-                  }
-                }
-              }
-              output$Heatmap <- renderPlot({
-                isolate({
-                  plotSCEHeatmap(
-                    inSCE = hmTemp$sce, useAssay = input$hmAssay, colorScheme = cs,
-                    featureIndex = hmTemp$geneIndex, cellIndex = hmTemp$cellIndex,
-                    rowDataName = hmTemp$rowDataName, colDataName = hmTemp$colDataName,
-                    rowSplitBy = hmTemp$rowSplitBy, colSplitBy = hmTemp$colSplitBy,
-                    rowLabel = hmAddLabel$gene, colLabel = hmAddLabel$cell,
-                    rowDend = hmShowDendro[2], colDend = hmShowDendro[1],
-                    scale = input$hmScale, trim = input$hmTrim,
-                    width = unit(20, 'cm'), height = unit(20, 'cm'),
-                    featureAnnotationColor = geneAnnColor,
-                    cellAnnotationColor = cellAnnColor
-                  )
-                })
-              }, height = 800)
-            })
-          }
-        }
-      )
-    }
+  observeEvent(input$bpAssay, {
+    req(vals$counts)
+    updateSelectInput(session, "bpAssay",
+                         label = "Select Assay")
+  })
+  
+  observeEvent(input$bpAssay, {
+    req(vals$counts)
+    updateSelectInput(session, "bpCluster",
+                      choices = colData(vals$counts))
   })
 
   #-----------------------------------------------------------------------------

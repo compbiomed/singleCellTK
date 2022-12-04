@@ -25,10 +25,10 @@ plotBubble <- function(inSCE, useAssay="logcounts", gene, displayName=NULL, clus
 
 .ggBubble <- function(metrics, colorLow="white", colorHigh="blue", title="", xlab=NULL, ylab=NULL){
   gg <- ggplot2::ggplot(metrics, ggplot2::aes(x=Gene, y=cluster)) +
-    ggplot2::geom_point(ggplot2::aes(color=clusterAveExpr, size=clusterExprPerc)) +
+    ggplot2::geom_point(ggplot2::aes(colour=clusterAveExpr, size=clusterExprPerc)) +
     ggplot2::ggtitle(title) +
     ggplot2::xlab(xlab) +
     ggplot2::ylab(ylab) +
-    ggplot2::scale_color_gradient2(low=colorLow, high=colorHigh)
+    ggplot2::scale_color_gradient(low=colorLow, high=colorHigh)
   .ggSCTKTheme(gg)
 }

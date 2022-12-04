@@ -11,18 +11,13 @@ shinyPanelBubbleplot <- fluidPage(
       fluidRow(
         column(width = 4,
                selectizeInput(
-                 inputId = "hmAssay", 
+                 inputId = "bpAssay", 
                  label = "Select input matrix:", 
                  choices = NULL, 
                  selected = NULL, 
                  multiple = FALSE,
                  options = NULL)
-               
-               
         )
-      ),
-      fluidRow(column(width = 4,
-                      actionButton("bpImportRun", "Import"))
       ),
       
       hr(),
@@ -32,14 +27,14 @@ shinyPanelBubbleplot <- fluidPage(
       tabsetPanel(
         id = 'bpSubsetTSP',
         tabPanel(
-          title = "Cell", value = 'bpSubsetCellTP',
-          tagList(
-            uiOutput('bpCellColUI'),
-            DT::dataTableOutput("bpCellColTable"),
-            actionButton('bpCellColTable_addAll', "Add all filtered"),
-            actionButton('bpCellColTable_clear', "Clear selection"),
-          )
-        ),
+          title = "Cluster Feature",
+          selectizeInput(
+            inputId = "bpCluster", 
+            label = "Select Feature to Cluster on:", 
+            choices = NULL, 
+            selected = NULL, 
+            multiple = FALSE,
+            options = NULL)),
         tabPanel(
           title = "Feature", value = 'hmSubsetGeneTP',
           tagList(
