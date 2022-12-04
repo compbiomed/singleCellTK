@@ -28,25 +28,16 @@ shinyPanelBubbleplot <- fluidPage(
         id = 'bpSubsetTSP',
         tabPanel(
           title = "Cluster Feature",
-          selectizeInput(
-            inputId = "bpCluster", 
-            label = "Select Feature to Cluster on:", 
-            choices = NULL, 
-            selected = NULL, 
-            multiple = FALSE,
-            options = NULL)),
+          uiOutput("bpClusterUI")),
         tabPanel(
           title = "Feature", value = 'hmSubsetGeneTP',
-          tagList(
-            uiOutput('bpGeneColUI'),
-            DT::dataTableOutput("bpGeneColTable"),
-            actionButton('bpGeneColTable_addAll', "Add all filtered"),
-            actionButton('bpGeneColTable_clear', "Clear selection"),
-          )
+          uiOutput('bpRowUI'),
+          selectizeInput(
+            'bpGenes',
+            "Select Genes",
+            choices = NULL, multiple = TRUE, width = '550px')
         ),
       ),
-      uiOutput("bpCellSumUI"),
-      uiOutput("bpGeneSumUI"),
       hr(),
       
       # Others ####
@@ -70,11 +61,11 @@ shinyPanelBubbleplot <- fluidPage(
         fluidRow(
           column(
             width = 4,
-            colourpicker::colourInput('bpLow', 'Low color',value = 'white')
+            colourpicker::colourInput('bpLow', 'Low color', value = 'white')
           ),
           column(
             width = 4,
-            colourpicker::colourInput('bpHigh', 'High color',value = 'blue')
+            colourpicker::colourInput('bpHigh', 'High color', value = 'blue')
           )
         )
       ),

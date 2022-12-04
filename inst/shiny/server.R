@@ -5344,10 +5344,38 @@ shinyServer(function(input, output, session) {
                          label = "Select Assay")
   })
   
-  observeEvent(input$bpAssay, {
+  output$bpClusterUI <- renderUI({
     req(vals$counts)
-    updateSelectInput(session, "bpCluster",
-                      choices = colData(vals$counts))
+    selectNonNAColData <- names(apply(colData(vals$counts), 2, anyNA)[apply(colData(vals$counts), 2, anyNA) == FALSE])
+    selectInput(
+      'bpCluster',
+      "Select Feature to Cluster on",
+      selectNonNAColData, multiple = FALSE, width = '550px')
+  })
+  
+  output$bpRowUI <- renderUI({
+    req(vals$counts)
+    selectNonNARowData <- names(apply(rowData(vals$counts), 2, anyNA)[apply(rowData(vals$counts), 2, anyNA) == FALSE])
+    selectInput(
+      "bpRow",
+      "Select Row Data Name",
+      selectNonNARowData, selected = names(rowData(vals$counts))[1], multiple = FALSE, width = '550px')
+  })
+  
+  observeEvent(input$bpRow, {
+    req(vals$counts)
+    updateSelectizeInput(session, "bpGenes", choices = rowData(vals$counts)[[input$bpRow]], server = TRUE)
+  })
+  
+  observeEvent(input$plotBubbleplot, {
+    req(vals$counts)
+    output$Bubbleplot <- renderPlot({
+      isolate({
+        plotBubble(inSCE=vals$counts, useAssay=input$bpAssay, gene=input$bpGenes, 
+                   displayName=input$bpRow, clusters=input$bpCluster, title=input$bpTitle, 
+                   xlab=input$bpX, ylab=input$bpX, colorLow=input$bpLow, colorHigh=input$bpHigh)
+      })
+    })
   })
 
   #-----------------------------------------------------------------------------
