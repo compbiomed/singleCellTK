@@ -5346,11 +5346,10 @@ shinyServer(function(input, output, session) {
   
   output$bpClusterUI <- renderUI({
     req(vals$counts)
-    selectNonNAColData <- names(apply(colData(vals$counts), 2, anyNA)[apply(colData(vals$counts), 2, anyNA) == FALSE])
     selectInput(
       'bpCluster',
       "Select Feature to Cluster on",
-      selectNonNAColData, multiple = FALSE, width = '550px')
+      colnames(colData(vals$counts)), multiple = FALSE, width = '550px')
   })
   
   output$bpRowUI <- renderUI({

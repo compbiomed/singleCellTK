@@ -4,8 +4,6 @@ shinyPanelBubbleplot <- fluidPage(
     h1("Bubbleplot"),
     p("Generic bubbleplot plotting panel for customized figure.",
       style = "color:grey;"),
-    h5(tags$a(href = paste0(docs.artPath, "bubbleplot.html"),
-              "(help)", target = "_blank")),
     panel(
       h3("Assay to Plot"),
       fluidRow(
@@ -22,15 +20,14 @@ shinyPanelBubbleplot <- fluidPage(
       
       hr(),
       # Subset ####
-      h3("Cell/Feature Subsetting"),
-      p("Only to plot cells/features of interests", style = "color:grey;"),
+      h3("Feature/Gene Subsetting"),
+      p("Select feature and genes of interests", style = "color:grey;"),
       tabsetPanel(
-        id = 'bpSubsetTSP',
         tabPanel(
-          title = "Cluster Feature",
+          title = "Feature",
           uiOutput("bpClusterUI")),
         tabPanel(
-          title = "Feature", value = 'hmSubsetGeneTP',
+          title = "Genes",
           uiOutput('bpRowUI'),
           selectizeInput(
             'bpGenes',
