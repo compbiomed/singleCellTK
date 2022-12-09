@@ -7,7 +7,7 @@
 runClusterSummaryMetrics(
   inSCE,
   useAssay = "logcounts",
-  gene,
+  feature,
   displayName = NULL,
   clusters = "cluster"
 )
@@ -17,7 +17,7 @@ runClusterSummaryMetrics(
 
 \item{useAssay}{The assay to use.}
 
-\item{gene}{A string or vector of strings with each gene to aggregate.}
+\item{feature}{A string or vector of strings with each gene to aggregate.}
 
 \item{displayName}{A string that is the name of the column used for genes.}
 
@@ -33,6 +33,6 @@ given genes for each cluster
 }
 \examples{
 data("scExample")
-runClusterSummaryMetrics(inSCE=sce, useAssay="counts", gene=c("B2M", "MALAT1"), 
+runClusterSummaryMetrics(inSCE=sce, useAssay="counts", feature=c("B2M", "MALAT1"), 
 displayName="feature_name", clusters="type")
 }

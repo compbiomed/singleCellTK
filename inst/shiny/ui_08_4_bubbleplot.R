@@ -20,18 +20,18 @@ shinyPanelBubbleplot <- fluidPage(
       
       hr(),
       # Subset ####
-      h3("Feature/Gene Subsetting"),
-      p("Select feature and genes of interests", style = "color:grey;"),
+      h3("Cluster/Feature Subsetting"),
+      p("Select cluster and features of interests", style = "color:grey;"),
       tabsetPanel(
         tabPanel(
-          title = "Feature",
+          title = "Cluster",
           uiOutput("bpClusterUI")),
         tabPanel(
-          title = "Genes",
+          title = "Feature",
           uiOutput('bpRowUI'),
           selectizeInput(
-            'bpGenes',
-            "Select Genes",
+            'bpFeatures',
+            "Select Features",
             choices = NULL, multiple = TRUE, width = '550px')
         ),
       ),

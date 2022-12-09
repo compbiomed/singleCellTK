@@ -4,7 +4,7 @@
 #'
 #' @param inSCE The single cell experiment to use.
 #' @param useAssay The assay to use.
-#' @param gene A string or vector of strings with each gene to aggregate.
+#' @param feature A string or vector of strings with each gene to aggregate.
 #' @param displayName A string that is the name of the column used for genes.
 #' @param clusters The name of a colData entry that can be used as groups.
 #' @param title The title of the bubble plot
@@ -15,11 +15,11 @@
 #' @return A ggplot of the bubble plot.
 #' @examples
 #' data("scExample")
-#' plotBubble(inSCE=sce, useAssay="counts", gene=c("B2M", "MALAT1"), displayName="feature_name", 
+#' plotBubble(inSCE=sce, useAssay="counts", feature=c("B2M", "MALAT1"), displayName="feature_name", 
 #' clusters="type", title="cell type test", xlab="gene", ylab="cluster", colorLow="white", colorHigh="blue")
 #' @export
-plotBubble <- function(inSCE, useAssay="logcounts", gene, displayName=NULL, clusters="cluster", title="", xlab=NULL, ylab=NULL, colorLow="white", colorHigh="blue"){
-  summaryMetrics <- runClusterSummaryMetrics(inSCE, useAssay=useAssay, gene=gene, displayName=displayName, clusters=clusters)
+plotBubble <- function(inSCE, useAssay="logcounts", feature, displayName=NULL, clusters="cluster", title="", xlab=NULL, ylab=NULL, colorLow="white", colorHigh="blue"){
+  summaryMetrics <- runClusterSummaryMetrics(inSCE, useAssay=useAssay, feature=feature, displayName=displayName, clusters=clusters)
   .ggBubble(summaryMetrics, colorLow, colorHigh, title, xlab, ylab)
 }
 

@@ -5363,14 +5363,14 @@ shinyServer(function(input, output, session) {
   
   observeEvent(input$bpRow, {
     req(vals$counts)
-    updateSelectizeInput(session, "bpGenes", choices = rowData(vals$counts)[[input$bpRow]], server = TRUE)
+    updateSelectizeInput(session, "bpFeatures", choices = rowData(vals$counts)[[input$bpRow]], server = TRUE)
   })
   
   observeEvent(input$plotBubbleplot, {
     req(vals$counts)
     output$Bubbleplot <- renderPlot({
       isolate({
-        plotBubble(inSCE=vals$counts, useAssay=input$bpAssay, gene=input$bpGenes, 
+        plotBubble(inSCE=vals$counts, useAssay=input$bpAssay, feature=input$bpFeatures, 
                    displayName=input$bpRow, clusters=input$bpCluster, title=input$bpTitle, 
                    xlab=input$bpX, ylab=input$bpX, colorLow=input$bpLow, colorHigh=input$bpHigh)
       })
