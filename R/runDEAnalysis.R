@@ -261,13 +261,14 @@
 #' \item{$method}{the method used}
 #' @export
 runDEAnalysis <- function(method = c('wilcox', 'MAST', 'DESeq2', 'Limma',
-                                     'ANOVA'), ...){
+                                     'ANOVA', 'Scanpy'), ...){
     method <- match.arg(method)
     funcList <- list(MAST = runMAST,
                      DESeq2 = runDESeq2,
                      Limma = runLimmaDE,
                      ANOVA = runANOVA,
-                     wilcox = runWilcox)
+                     wilcox = runWilcox,
+                     Scanpy = runScanpyFindMarkersV2)
     funcList[[method]](...)
 }
 

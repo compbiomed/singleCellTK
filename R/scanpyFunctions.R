@@ -518,6 +518,8 @@ plotScanpyPCAVariance <- function(inSCE,
 #' clusters. Default \code{10}.
 #' @param algorithm selected algorithm to compute clusters. One of "louvain",
 #' and "leiden". Default \code{louvain}.
+#' @param colDataName Specify the name to give to this clustering result. 
+#'  Default is \code{NULL} that will generate a meaningful name automatically.
 #' @param resolution A parameter value controlling the coarseness of the 
 #' clustering. Higher values lead to more clusters Default \code{1}.
 #' @param niterations How many iterations of the Leiden clustering algorithm to 
@@ -546,6 +548,7 @@ runScanpyFindClusters <- function(inSCE,
                                   nNeighbors = 15L,
                                   dims = 2L,
                                   algorithm = c("louvain", "leiden"),
+                                  colDataName = NULL,
                                   resolution = 1,
                                   niterations = -1,
                                   flavor = 'vtraag',
@@ -570,7 +573,10 @@ runScanpyFindClusters <- function(inSCE,
     scanpyObject$obsm <- list(pca = externalReduction)
     useReduction <- "pca"
   } 
-  colDataName = paste0("Scanpy", "_", algorithm, "_", resolution)
+  
+  if(is.null(colDataName)){
+    colDataName = paste0("Scanpy", "_", algorithm, "_", resolution) 
+  }
   
   sc$pp$neighbors(scanpyObject, 
                   n_neighbors = nNeighbors, 
@@ -881,6 +887,45 @@ runScanpyFindMarkers <- function(inSCE,
   
   S4Vectors::metadata(inSCE)$"findMarkerScanpyObject" <- scanpyObject
   S4Vectors::metadata(inSCE)$scanpyMarkers <- markerGenesTable
+  return(inSCE)
+}
+
+
+runScanpyFindMarkersV2 <- function(inSCE,
+                                   nGenes = NULL,
+                                   useAssay = "scanpyScaledData",
+                                   cluster = NULL, 
+                                   useReducedDim = NULL, #not used
+                                   index1 = NULL, #not used
+                                   index2 = NULL, #not used
+                                   analysisName = NULL, 
+                                   onlyPos = TRUE, #not used
+                                   log2fcThreshold = NULL, #not used
+                                   fdrThreshold = 0.05, #not used
+                                   covariates = NULL, #not used
+                                   verbose = FALSE, #not used
+                                   groupName1 = "1", 
+                                   groupName2 = "others"){
+  
+  groupName1 = "all"
+  groupName2 = "rest"
+  cluster <- "Scanpy_leiden_0.8"
+  
+  inSCE <- runScanpyFindMarkers(inSCE = inSCE, 
+                                useAssay = useAssay, 
+                                colDataName = cluster, group1 = groupName1, group2 = groupName2,
+                                test = "t-test", corr_method = "benjamini-hochberg")
+  
+  resultList <- NULL
+  resultList$result <- S4Vectors::metadata(inSCE)$scanpyMarkers
+  resultList$method <- 'Scanpy'
+  if ("diffExp" %in% names(S4Vectors::metadata(inSCE))){
+    S4Vectors::metadata(inSCE)$diffExp[[analysisName]] <- resultList
+  } else {
+    S4Vectors::metadata(inSCE)$diffExp <- list()
+    S4Vectors::metadata(inSCE)$diffExp[[analysisName]] <- resultList
+  }
+  
   return(inSCE)
 }
 
