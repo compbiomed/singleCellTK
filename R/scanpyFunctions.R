@@ -385,9 +385,17 @@ runScanpyPCA <- function(inSCE,
       "'"
     )
   }
-  scanpyObject <- zellkonverter::SCE2AnnData(sce = inSCE, X_name = useAssay)
   
-  sc$tl$pca(scanpyObject, svd_solver= algorithm, n_comps = nPCs)
+  scanpyObject <- zellkonverter::SCE2AnnData(sce = inSCE, X_name = useAssay)
+  if(use_highly_variable == TRUE){
+    scanpyObject$var['highly_variable'] <- 
+      scanpyObject$uns['scanpy']$hvg$var$highly_variable
+  }
+  
+  sc$tl$pca(scanpyObject, 
+            svd_solver= algorithm, 
+            n_comps = nPCs, 
+            use_highly_variable = use_highly_variable)
   
   metadata(inSCE)$scanpy$PCA <- scanpyObject
   
