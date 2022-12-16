@@ -148,15 +148,18 @@ shinyPanelFS_DimRed <- fluidPage(
                               "Scanpy - PCA" = "scanpyPCA"
                             )
                           ),
-                          selectInput(
-                            inputId = "dimRedHVGSelect",
-                            label = "Select HVG list:",
-                            choices = "None"
-                          ),
-                          checkboxInput(
-                            inputId = "dimRedScale",
-                            label = "Scale",
-                            value = TRUE
+                          conditionalPanel(
+                            condition = "input.dimRedPlotMethod != 'scanpyPCA'",
+                            selectInput(
+                              inputId = "dimRedHVGSelect",
+                              label = "Select HVG list:",
+                              choices = "None"
+                            ),
+                            checkboxInput(
+                              inputId = "dimRedScale",
+                              label = "Scale",
+                              value = TRUE
+                            )
                           ),
                           uiOutput("dimRedNameUI"),
                           numericInput(
