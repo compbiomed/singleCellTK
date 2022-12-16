@@ -526,6 +526,8 @@ plotScanpyPCAVariance <- function(inSCE,
 #' clusters. Default \code{10}.
 #' @param algorithm selected algorithm to compute clusters. One of "louvain",
 #' and "leiden". Default \code{louvain}.
+#' @param colDataName Specify the name to give to this clustering result. 
+#'  Default is \code{NULL} that will generate a meaningful name automatically.
 #' @param resolution A parameter value controlling the coarseness of the 
 #' clustering. Higher values lead to more clusters Default \code{1}.
 #' @param niterations How many iterations of the Leiden clustering algorithm to 
@@ -554,6 +556,7 @@ runScanpyFindClusters <- function(inSCE,
                                   nNeighbors = 15L,
                                   dims = 2L,
                                   algorithm = c("louvain", "leiden"),
+                                  colDataName = NULL,
                                   resolution = 1,
                                   niterations = -1,
                                   flavor = 'vtraag',
@@ -578,7 +581,10 @@ runScanpyFindClusters <- function(inSCE,
     scanpyObject$obsm <- list(pca = externalReduction)
     useReduction <- "pca"
   } 
-  colDataName = paste0("Scanpy", "_", algorithm, "_", resolution)
+  
+  if(is.null(colDataName)){
+    colDataName = paste0("Scanpy", "_", algorithm, "_", resolution) 
+  }
   
   sc$pp$neighbors(scanpyObject, 
                   n_neighbors = nNeighbors, 

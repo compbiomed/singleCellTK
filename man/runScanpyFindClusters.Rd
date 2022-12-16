@@ -13,6 +13,7 @@ runScanpyFindClusters(
   nNeighbors = 15L,
   dims = 2L,
   algorithm = c("louvain", "leiden"),
+  colDataName = NULL,
   resolution = 1,
   niterations = -1,
   flavor = "vtraag",
@@ -41,6 +42,9 @@ clusters. Default \code{10}.}
 
 \item{algorithm}{selected algorithm to compute clusters. One of "louvain",
 and "leiden". Default \code{louvain}.}
+
+\item{colDataName}{Specify the name to give to this clustering result. 
+Default is \code{NULL} that will generate a meaningful name automatically.}
 
 \item{resolution}{A parameter value controlling the coarseness of the 
 clustering. Higher values lead to more clusters Default \code{1}.}

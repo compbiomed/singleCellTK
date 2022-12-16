@@ -1044,6 +1044,12 @@ shinyServer(function(input, output, session) {
           warning("Duplicated rownames detected, making them unique...")
           vals$counts <- dedupRowNames(vals$counts)
         }
+        # add feature ids (from rownames) to rowData if rowData is empty
+        if (ncol(rowData(vals$counts)) < 1){
+          if(!is.null(rownames(vals$counts))){
+            rowData(vals$counts) <- S4Vectors::DataFrame(feature_id = rownames(vals$counts))
+          }
+        }
         # ToDo: Remove these automatic updates and replace with
         # observeEvents functions that activate upon the tab selection
         updateColDataNames()
