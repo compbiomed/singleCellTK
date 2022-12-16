@@ -1,3 +1,10 @@
+Changes in Version 2.? (2022-12-16)
+================================================================================
+* Added scanpy wrapper functions for use from console
+* Added scanpy UI curated workflow
+* Integrated scanpy to a la carte workflow
+* Fixed a bug in importing fludigm dataset
+
 Changes in Version 2.? (2022-MM-DD)
 ================================================================================
 * Deprecated `findMarkerDiffExp()`, `findMarkerTopTable()` and `plotMarkerDiffExp()`, which are replaced by `runFindMarker()`, `getFindMarkerTopTable()` and `plotFindMarkerHeatmap()`, respectively
