@@ -1,5 +1,5 @@
-pandoc: 2.17.1.1
-pkgdown: 2.0.5
+pandoc: 2.19.2
+pkgdown: 2.0.6
 pkgdown_sha: ~
 articles:
   01_import_and_qc_tutorial: 01_import_and_qc_tutorial.html
@@ -9,7 +9,6 @@ articles:
   celda_curated_workflow: celda_curated_workflow.html
   cell_type_labeling: cell_type_labeling.html
   clustering: clustering.html
-  cmd_import_scRNAseq_data_as_SCE: cmd_import_scRNAseq_data_as_SCE.html
   cmd_qc: cmd_qc.html
   cnsl_cellqc: cnsl_cellqc.html
   cnsl_dropletqc: cnsl_dropletqc.html
@@ -31,8 +30,7 @@ articles:
   seurat_curated_workflow: seurat_curated_workflow.html
   trajectoryAnalysis: trajectoryAnalysis.html
   ui_qc: ui_qc.html
-  ui_tutorial: ui_tutorial.html
   visualization: visualization.html
   singleCellTK: singleCellTK.html
-last_built: 2022-06-29T02:02Z
+last_built: 2022-10-25T19:43Z
 

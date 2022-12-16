@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.3</span>
       </span>
     </div>
 
@@ -199,129 +199,129 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">runDEAnalysis</span><span class="op">(</span>method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"wilcox"</span>, <span class="st">"MAST"</span>, <span class="st">"DESeq2"</span>, <span class="st">"Limma"</span>, <span class="st">"ANOVA"</span><span class="op">)</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="fu">runDESeq2</span><span class="op">(</span>
-  <span class="va">inSCE</span>,
-  useAssay <span class="op">=</span> <span class="st">"counts"</span>,
-  useReducedDim <span class="op">=</span> <span class="cn">NULL</span>,
-  index1 <span class="op">=</span> <span class="cn">NULL</span>,
-  index2 <span class="op">=</span> <span class="cn">NULL</span>,
-  class <span class="op">=</span> <span class="cn">NULL</span>,
-  classGroup1 <span class="op">=</span> <span class="cn">NULL</span>,
-  classGroup2 <span class="op">=</span> <span class="cn">NULL</span>,
-  <span class="va">analysisName</span>,
-  <span class="va">groupName1</span>,
-  <span class="va">groupName2</span>,
-  covariates <span class="op">=</span> <span class="cn">NULL</span>,
-  fullReduced <span class="op">=</span> <span class="cn">TRUE</span>,
-  onlyPos <span class="op">=</span> <span class="cn">FALSE</span>,
-  log2fcThreshold <span class="op">=</span> <span class="cn">NULL</span>,
-  fdrThreshold <span class="op">=</span> <span class="cn">NULL</span>,
-  minGroup1MeanExp <span class="op">=</span> <span class="cn">NULL</span>,
-  maxGroup2MeanExp <span class="op">=</span> <span class="cn">NULL</span>,
-  minGroup1ExprPerc <span class="op">=</span> <span class="cn">NULL</span>,
-  maxGroup2ExprPerc <span class="op">=</span> <span class="cn">NULL</span>,
-  overwrite <span class="op">=</span> <span class="cn">FALSE</span>,
-  verbose <span class="op">=</span> <span class="cn">TRUE</span>
-<span class="op">)</span>
-
-<span class="fu">runLimmaDE</span><span class="op">(</span>
-  <span class="va">inSCE</span>,
-  useAssay <span class="op">=</span> <span class="st">"logcounts"</span>,
-  useReducedDim <span class="op">=</span> <span class="cn">NULL</span>,
-  index1 <span class="op">=</span> <span class="cn">NULL</span>,
-  index2 <span class="op">=</span> <span class="cn">NULL</span>,
-  class <span class="op">=</span> <span class="cn">NULL</span>,
-  classGroup1 <span class="op">=</span> <span class="cn">NULL</span>,
-  classGroup2 <span class="op">=</span> <span class="cn">NULL</span>,
-  <span class="va">analysisName</span>,
-  <span class="va">groupName1</span>,
-  <span class="va">groupName2</span>,
-  covariates <span class="op">=</span> <span class="cn">NULL</span>,
-  onlyPos <span class="op">=</span> <span class="cn">FALSE</span>,
-  log2fcThreshold <span class="op">=</span> <span class="cn">NULL</span>,
-  fdrThreshold <span class="op">=</span> <span class="cn">NULL</span>,
-  minGroup1MeanExp <span class="op">=</span> <span class="cn">NULL</span>,
-  maxGroup2MeanExp <span class="op">=</span> <span class="cn">NULL</span>,
-  minGroup1ExprPerc <span class="op">=</span> <span class="cn">NULL</span>,
-  maxGroup2ExprPerc <span class="op">=</span> <span class="cn">NULL</span>,
-  overwrite <span class="op">=</span> <span class="cn">FALSE</span>,
-  verbose <span class="op">=</span> <span class="cn">TRUE</span>
-<span class="op">)</span>
-
-<span class="fu">runANOVA</span><span class="op">(</span>
-  <span class="va">inSCE</span>,
-  useAssay <span class="op">=</span> <span class="st">"logcounts"</span>,
-  useReducedDim <span class="op">=</span> <span class="cn">NULL</span>,
-  index1 <span class="op">=</span> <span class="cn">NULL</span>,
-  index2 <span class="op">=</span> <span class="cn">NULL</span>,
-  class <span class="op">=</span> <span class="cn">NULL</span>,
-  classGroup1 <span class="op">=</span> <span class="cn">NULL</span>,
-  classGroup2 <span class="op">=</span> <span class="cn">NULL</span>,
-  <span class="va">analysisName</span>,
-  <span class="va">groupName1</span>,
-  <span class="va">groupName2</span>,
-  covariates <span class="op">=</span> <span class="cn">NULL</span>,
-  onlyPos <span class="op">=</span> <span class="cn">FALSE</span>,
-  log2fcThreshold <span class="op">=</span> <span class="cn">NULL</span>,
-  fdrThreshold <span class="op">=</span> <span class="cn">NULL</span>,
-  minGroup1MeanExp <span class="op">=</span> <span class="cn">NULL</span>,
-  maxGroup2MeanExp <span class="op">=</span> <span class="cn">NULL</span>,
-  minGroup1ExprPerc <span class="op">=</span> <span class="cn">NULL</span>,
-  maxGroup2ExprPerc <span class="op">=</span> <span class="cn">NULL</span>,
-  overwrite <span class="op">=</span> <span class="cn">FALSE</span>,
-  verbose <span class="op">=</span> <span class="cn">TRUE</span>
-<span class="op">)</span>
-
-<span class="fu">runMAST</span><span class="op">(</span>
-  <span class="va">inSCE</span>,
-  useAssay <span class="op">=</span> <span class="st">"logcounts"</span>,
-  useReducedDim <span class="op">=</span> <span class="cn">NULL</span>,
-  index1 <span class="op">=</span> <span class="cn">NULL</span>,
-  index2 <span class="op">=</span> <span class="cn">NULL</span>,
-  class <span class="op">=</span> <span class="cn">NULL</span>,
-  classGroup1 <span class="op">=</span> <span class="cn">NULL</span>,
-  classGroup2 <span class="op">=</span> <span class="cn">NULL</span>,
-  <span class="va">analysisName</span>,
-  <span class="va">groupName1</span>,
-  <span class="va">groupName2</span>,
-  covariates <span class="op">=</span> <span class="cn">NULL</span>,
-  onlyPos <span class="op">=</span> <span class="cn">FALSE</span>,
-  log2fcThreshold <span class="op">=</span> <span class="cn">NULL</span>,
-  fdrThreshold <span class="op">=</span> <span class="cn">NULL</span>,
-  minGroup1MeanExp <span class="op">=</span> <span class="cn">NULL</span>,
-  maxGroup2MeanExp <span class="op">=</span> <span class="cn">NULL</span>,
-  minGroup1ExprPerc <span class="op">=</span> <span class="cn">NULL</span>,
-  maxGroup2ExprPerc <span class="op">=</span> <span class="cn">NULL</span>,
-  overwrite <span class="op">=</span> <span class="cn">FALSE</span>,
-  check_sanity <span class="op">=</span> <span class="cn">TRUE</span>,
-  verbose <span class="op">=</span> <span class="cn">TRUE</span>
-<span class="op">)</span>
-
-<span class="fu">runWilcox</span><span class="op">(</span>
-  <span class="va">inSCE</span>,
-  useAssay <span class="op">=</span> <span class="st">"logcounts"</span>,
-  useReducedDim <span class="op">=</span> <span class="cn">NULL</span>,
-  index1 <span class="op">=</span> <span class="cn">NULL</span>,
-  index2 <span class="op">=</span> <span class="cn">NULL</span>,
-  class <span class="op">=</span> <span class="cn">NULL</span>,
-  classGroup1 <span class="op">=</span> <span class="cn">NULL</span>,
-  classGroup2 <span class="op">=</span> <span class="cn">NULL</span>,
-  <span class="va">analysisName</span>,
-  <span class="va">groupName1</span>,
-  <span class="va">groupName2</span>,
-  covariates <span class="op">=</span> <span class="cn">NULL</span>,
-  onlyPos <span class="op">=</span> <span class="cn">FALSE</span>,
-  log2fcThreshold <span class="op">=</span> <span class="cn">NULL</span>,
-  fdrThreshold <span class="op">=</span> <span class="cn">NULL</span>,
-  minGroup1MeanExp <span class="op">=</span> <span class="cn">NULL</span>,
-  maxGroup2MeanExp <span class="op">=</span> <span class="cn">NULL</span>,
-  minGroup1ExprPerc <span class="op">=</span> <span class="cn">NULL</span>,
-  maxGroup2ExprPerc <span class="op">=</span> <span class="cn">NULL</span>,
-  overwrite <span class="op">=</span> <span class="cn">FALSE</span>,
-  verbose <span class="op">=</span> <span class="cn">TRUE</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">runDEAnalysis</span><span class="op">(</span>method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"wilcox"</span>, <span class="st">"MAST"</span>, <span class="st">"DESeq2"</span>, <span class="st">"Limma"</span>, <span class="st">"ANOVA"</span><span class="op">)</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">runDESeq2</span><span class="op">(</span></span>
+<span>  <span class="va">inSCE</span>,</span>
+<span>  useAssay <span class="op">=</span> <span class="st">"counts"</span>,</span>
+<span>  useReducedDim <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  index1 <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  index2 <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  class <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  classGroup1 <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  classGroup2 <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  <span class="va">analysisName</span>,</span>
+<span>  <span class="va">groupName1</span>,</span>
+<span>  <span class="va">groupName2</span>,</span>
+<span>  covariates <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  fullReduced <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  onlyPos <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  log2fcThreshold <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  fdrThreshold <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  minGroup1MeanExp <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  maxGroup2MeanExp <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  minGroup1ExprPerc <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  maxGroup2ExprPerc <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  overwrite <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">runLimmaDE</span><span class="op">(</span></span>
+<span>  <span class="va">inSCE</span>,</span>
+<span>  useAssay <span class="op">=</span> <span class="st">"logcounts"</span>,</span>
+<span>  useReducedDim <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  index1 <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  index2 <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  class <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  classGroup1 <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  classGroup2 <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  <span class="va">analysisName</span>,</span>
+<span>  <span class="va">groupName1</span>,</span>
+<span>  <span class="va">groupName2</span>,</span>
+<span>  covariates <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  onlyPos <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  log2fcThreshold <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  fdrThreshold <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  minGroup1MeanExp <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  maxGroup2MeanExp <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  minGroup1ExprPerc <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  maxGroup2ExprPerc <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  overwrite <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">runANOVA</span><span class="op">(</span></span>
+<span>  <span class="va">inSCE</span>,</span>
+<span>  useAssay <span class="op">=</span> <span class="st">"logcounts"</span>,</span>
+<span>  useReducedDim <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  index1 <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  index2 <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  class <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  classGroup1 <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  classGroup2 <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  <span class="va">analysisName</span>,</span>
+<span>  <span class="va">groupName1</span>,</span>
+<span>  <span class="va">groupName2</span>,</span>
+<span>  covariates <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  onlyPos <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  log2fcThreshold <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  fdrThreshold <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  minGroup1MeanExp <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  maxGroup2MeanExp <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  minGroup1ExprPerc <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  maxGroup2ExprPerc <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  overwrite <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">runMAST</span><span class="op">(</span></span>
+<span>  <span class="va">inSCE</span>,</span>
+<span>  useAssay <span class="op">=</span> <span class="st">"logcounts"</span>,</span>
+<span>  useReducedDim <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  index1 <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  index2 <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  class <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  classGroup1 <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  classGroup2 <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  <span class="va">analysisName</span>,</span>
+<span>  <span class="va">groupName1</span>,</span>
+<span>  <span class="va">groupName2</span>,</span>
+<span>  covariates <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  onlyPos <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  log2fcThreshold <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  fdrThreshold <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  minGroup1MeanExp <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  maxGroup2MeanExp <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  minGroup1ExprPerc <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  maxGroup2ExprPerc <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  overwrite <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  check_sanity <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">runWilcox</span><span class="op">(</span></span>
+<span>  <span class="va">inSCE</span>,</span>
+<span>  useAssay <span class="op">=</span> <span class="st">"logcounts"</span>,</span>
+<span>  useReducedDim <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  index1 <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  index2 <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  class <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  classGroup1 <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  classGroup2 <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  <span class="va">analysisName</span>,</span>
+<span>  <span class="va">groupName1</span>,</span>
+<span>  <span class="va">groupName2</span>,</span>
+<span>  covariates <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  onlyPos <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  log2fcThreshold <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  fdrThreshold <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  minGroup1MeanExp <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  maxGroup2MeanExp <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  minGroup1ExprPerc <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  maxGroup2ExprPerc <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  overwrite <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -500,14 +500,14 @@ visualization method after running DE analysis.</p></div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">scExample</span>, package <span class="op">=</span> <span class="st">"singleCellTK"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="subsetSCECols.html">subsetSCECols</a></span><span class="op">(</span><span class="va">sce</span>, colData <span class="op">=</span> <span class="st">"type != 'EmptyDroplet'"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="scaterlogNormCounts.html">scaterlogNormCounts</a></span><span class="op">(</span><span class="va">sce</span>, assayName <span class="op">=</span> <span class="st">"logcounts"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu">runDEAnalysis</span><span class="op">(</span>method <span class="op">=</span> <span class="st">"Limma"</span>, inSCE <span class="op">=</span> <span class="va">sce</span>, groupName1 <span class="op">=</span> <span class="st">"group1"</span>,</span>
-<span class="r-in"> groupName2 <span class="op">=</span> <span class="st">"group2"</span>, index1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">20</span><span class="op">)</span>, index2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">21</span>,<span class="fl">40</span><span class="op">)</span>,</span>
-<span class="r-in"> analysisName <span class="op">=</span> <span class="st">"Limma"</span><span class="op">)</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Jun 28 22:06:22 2022 ... Running DE with limma, Analysis name: Limma</span>
-<span class="r-in"></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">scExample</span>, package <span class="op">=</span> <span class="st">"singleCellTK"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="subsetSCECols.html">subsetSCECols</a></span><span class="op">(</span><span class="va">sce</span>, colData <span class="op">=</span> <span class="st">"type != 'EmptyDroplet'"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="scaterlogNormCounts.html">scaterlogNormCounts</a></span><span class="op">(</span><span class="va">sce</span>, assayName <span class="op">=</span> <span class="st">"logcounts"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu">runDEAnalysis</span><span class="op">(</span>method <span class="op">=</span> <span class="st">"Limma"</span>, inSCE <span class="op">=</span> <span class="va">sce</span>, groupName1 <span class="op">=</span> <span class="st">"group1"</span>,</span></span>
+<span class="r-in"><span> groupName2 <span class="op">=</span> <span class="st">"group2"</span>, index1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">20</span><span class="op">)</span>, index2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">21</span>,<span class="fl">40</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span> analysisName <span class="op">=</span> <span class="st">"Limma"</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Oct 25 15:46:31 2022 ... Running DE with limma, Analysis name: Limma</span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -522,7 +522,7 @@ visualization method after running DE analysis.</p></div>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

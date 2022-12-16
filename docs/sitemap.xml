@@ -4,6 +4,18 @@
     <loc>/404.html</loc>
   </url>
   <url>
+    <loc>/LICENSE-text.html</loc>
+  </url>
+  <url>
+    <loc>/articles/01_import_and_qc_tutorial.html</loc>
+  </url>
+  <url>
+    <loc>/articles/02_a_la_carte_workflow.html</loc>
+  </url>
+  <url>
+    <loc>/articles/2d_embedding.html</loc>
+  </url>
+  <url>
     <loc>/articles/batch_correction.html</loc>
   </url>
   <url>
@@ -16,37 +28,13 @@
     <loc>/articles/clustering.html</loc>
   </url>
   <url>
-    <loc>/articles/cmd_import_scRNAseq_data_as_SCE.html</loc>
-  </url>
-  <url>
     <loc>/articles/cmd_qc.html</loc>
-  </url>
-  <url>
-    <loc>/articles/cnsl_2d_embedding.html</loc>
   </url>
   <url>
     <loc>/articles/cnsl_cellqc.html</loc>
   </url>
   <url>
-    <loc>/articles/cnsl_dimensionality_reduction.html</loc>
-  </url>
-  <url>
     <loc>/articles/cnsl_dropletqc.html</loc>
-  </url>
-  <url>
-    <loc>/articles/cnsl_enrichR.html</loc>
-  </url>
-  <url>
-    <loc>/articles/cnsl_feature_selection.html</loc>
-  </url>
-  <url>
-    <loc>/articles/cnsl_normalization.html</loc>
-  </url>
-  <url>
-    <loc>/articles/cnsl_seurat_curated_workflow.html</loc>
-  </url>
-  <url>
-    <loc>/articles/console_analysis_tutorial.html</loc>
   </url>
   <url>
     <loc>/articles/delete_data.html</loc>
@@ -55,7 +43,16 @@
     <loc>/articles/differential_expression.html</loc>
   </url>
   <url>
+    <loc>/articles/dimensionality_reduction.html</loc>
+  </url>
+  <url>
+    <loc>/articles/enrichR.html</loc>
+  </url>
+  <url>
     <loc>/articles/export_data.html</loc>
+  </url>
+  <url>
+    <loc>/articles/feature_selection.html</loc>
   </url>
   <url>
     <loc>/articles/filtering.html</loc>
@@ -82,10 +79,19 @@
     <loc>/articles/installation.html</loc>
   </url>
   <url>
+    <loc>/articles/normalization.html</loc>
+  </url>
+  <url>
     <loc>/articles/pathwayAnalysis.html</loc>
   </url>
   <url>
+    <loc>/articles/seurat_curated_workflow.html</loc>
+  </url>
+  <url>
     <loc>/articles/singleCellTK.html</loc>
+  </url>
+  <url>
+    <loc>/articles/trajectoryAnalysis.html</loc>
   </url>
   <url>
     <loc>/articles/ui_qc.html</loc>
@@ -100,10 +106,19 @@
     <loc>/index.html</loc>
   </url>
   <url>
-    <loc>/LICENSE-text.html</loc>
+    <loc>/news/index.html</loc>
   </url>
   <url>
-    <loc>/news/index.html</loc>
+    <loc>/reference/MitoGenes.html</loc>
+  </url>
+  <url>
+    <loc>/reference/SCtkExperiment-class.html</loc>
+  </url>
+  <url>
+    <loc>/reference/SCtkExperiment.html</loc>
+  </url>
+  <url>
+    <loc>/reference/SEG.html</loc>
   </url>
   <url>
     <loc>/reference/alignSingleCellData.html</loc>
@@ -133,9 +148,6 @@
     <loc>/reference/convertSeuratToSCE.html</loc>
   </url>
   <url>
-    <loc>/reference/dataAnnotationColor.html</loc>
-  </url>
-  <url>
     <loc>/reference/dedupRowNames.html</loc>
   </url>
   <url>
@@ -149,48 +161,6 @@
   </url>
   <url>
     <loc>/reference/distinctColors.html</loc>
-  </url>
-  <url>
-    <loc>/reference/dot-addSeuratToMetaDataSCE.html</loc>
-  </url>
-  <url>
-    <loc>/reference/dot-checkDiffExpResultExists.html</loc>
-  </url>
-  <url>
-    <loc>/reference/dot-computeSignificantPC.html</loc>
-  </url>
-  <url>
-    <loc>/reference/dot-extractSCEAnnotation.html</loc>
-  </url>
-  <url>
-    <loc>/reference/dot-formatDEAList.html</loc>
-  </url>
-  <url>
-    <loc>/reference/dot-getComponentNames.html</loc>
-  </url>
-  <url>
-    <loc>/reference/dot-ggBar.html</loc>
-  </url>
-  <url>
-    <loc>/reference/dot-ggDensity.html</loc>
-  </url>
-  <url>
-    <loc>/reference/dot-ggScatter.html</loc>
-  </url>
-  <url>
-    <loc>/reference/dot-ggViolin.html</loc>
-  </url>
-  <url>
-    <loc>/reference/dot-sce2adata.html</loc>
-  </url>
-  <url>
-    <loc>/reference/dot-seuratGetVariableFeatures.html</loc>
-  </url>
-  <url>
-    <loc>/reference/dot-seuratInvalidate.html</loc>
-  </url>
-  <url>
-    <loc>/reference/dot-updateAssaySCE.html</loc>
   </url>
   <url>
     <loc>/reference/downSampleCells.html</loc>
@@ -220,22 +190,22 @@
     <loc>/reference/expDeleteDataTag.html</loc>
   </url>
   <url>
+    <loc>/reference/expSetDataTag.html</loc>
+  </url>
+  <url>
+    <loc>/reference/expTaggedData.html</loc>
+  </url>
+  <url>
     <loc>/reference/exportSCE.html</loc>
+  </url>
+  <url>
+    <loc>/reference/exportSCEToSeurat.html</loc>
   </url>
   <url>
     <loc>/reference/exportSCEtoAnnData.html</loc>
   </url>
   <url>
     <loc>/reference/exportSCEtoFlatFile.html</loc>
-  </url>
-  <url>
-    <loc>/reference/exportSCEToSeurat.html</loc>
-  </url>
-  <url>
-    <loc>/reference/expSetDataTag.html</loc>
-  </url>
-  <url>
-    <loc>/reference/expTaggedData.html</loc>
   </url>
   <url>
     <loc>/reference/featureIndex.html</loc>
@@ -277,6 +247,9 @@
     <loc>/reference/getEnrichRResult.html</loc>
   </url>
   <url>
+    <loc>/reference/getFindMarkerTopTable.html</loc>
+  </url>
+  <url>
     <loc>/reference/getGenesetNamesFromCollection.html</loc>
   </url>
   <url>
@@ -298,13 +271,13 @@
     <loc>/reference/getSoupX.html</loc>
   </url>
   <url>
-    <loc>/reference/getTopHVG.html</loc>
-  </url>
-  <url>
     <loc>/reference/getTSCANResults.html</loc>
   </url>
   <url>
     <loc>/reference/getTSNE.html</loc>
+  </url>
+  <url>
+    <loc>/reference/getTopHVG.html</loc>
   </url>
   <url>
     <loc>/reference/getUMAP.html</loc>
@@ -376,9 +349,6 @@
     <loc>/reference/mergeSCEColData.html</loc>
   </url>
   <url>
-    <loc>/reference/MitoGenes.html</loc>
-  </url>
-  <url>
     <loc>/reference/mouseBrainSubsetSCE.html</loc>
   </url>
   <url>
@@ -421,9 +391,6 @@
     <loc>/reference/plotCxdsResults.html</loc>
   </url>
   <url>
-    <loc>/reference/plotDecontXResults.html</loc>
-  </url>
-  <url>
     <loc>/reference/plotDEGHeatmap.html</loc>
   </url>
   <url>
@@ -434,6 +401,9 @@
   </url>
   <url>
     <loc>/reference/plotDEGVolcano.html</loc>
+  </url>
+  <url>
+    <loc>/reference/plotDecontXResults.html</loc>
   </url>
   <url>
     <loc>/reference/plotDimRed.html</loc>
@@ -451,25 +421,22 @@
     <loc>/reference/plotEmptyDropsScatter.html</loc>
   </url>
   <url>
-    <loc>/reference/plotMarkerDiffExp.html</loc>
+    <loc>/reference/plotFindMarkerHeatmap.html</loc>
   </url>
   <url>
     <loc>/reference/plotMASTThresholdGenes.html</loc>
   </url>
   <url>
-    <loc>/reference/plotPathway.html</loc>
+    <loc>/reference/plotMarkerDiffExp.html</loc>
   </url>
   <url>
     <loc>/reference/plotPCA.html</loc>
   </url>
   <url>
+    <loc>/reference/plotPathway.html</loc>
+  </url>
+  <url>
     <loc>/reference/plotRunPerCellQCResults.html</loc>
-  </url>
-  <url>
-    <loc>/reference/plotScDblFinderResults.html</loc>
-  </url>
-  <url>
-    <loc>/reference/plotScdsHybridResults.html</loc>
   </url>
   <url>
     <loc>/reference/plotSCEBarAssayData.html</loc>
@@ -511,6 +478,12 @@
     <loc>/reference/plotSCEViolinColData.html</loc>
   </url>
   <url>
+    <loc>/reference/plotScDblFinderResults.html</loc>
+  </url>
+  <url>
+    <loc>/reference/plotScdsHybridResults.html</loc>
+  </url>
+  <url>
     <loc>/reference/plotScrubletResults.html</loc>
   </url>
   <url>
@@ -520,10 +493,10 @@
     <loc>/reference/plotSeuratGenes.html</loc>
   </url>
   <url>
-    <loc>/reference/plotSeuratHeatmap.html</loc>
+    <loc>/reference/plotSeuratHVG.html</loc>
   </url>
   <url>
-    <loc>/reference/plotSeuratHVG.html</loc>
+    <loc>/reference/plotSeuratHeatmap.html</loc>
   </url>
   <url>
     <loc>/reference/plotSeuratJackStraw.html</loc>
@@ -535,10 +508,16 @@
     <loc>/reference/plotSoupXResults.html</loc>
   </url>
   <url>
-    <loc>/reference/plotTopHVG.html</loc>
+    <loc>/reference/plotTSCANClusterDEG.html</loc>
+  </url>
+  <url>
+    <loc>/reference/plotTSCANClusterPseudo.html</loc>
   </url>
   <url>
     <loc>/reference/plotTSCANDEgenes.html</loc>
+  </url>
+  <url>
+    <loc>/reference/plotTSCANDimReduceFeatures.html</loc>
   </url>
   <url>
     <loc>/reference/plotTSCANPseudotimeGenes.html</loc>
@@ -551,6 +530,9 @@
   </url>
   <url>
     <loc>/reference/plotTSNE.html</loc>
+  </url>
+  <url>
+    <loc>/reference/plotTopHVG.html</loc>
   </url>
   <url>
     <loc>/reference/plotUMAP.html</loc>
@@ -613,10 +595,10 @@
     <loc>/reference/retrieveSCEIndex.html</loc>
   </url>
   <url>
-    <loc>/reference/runBarcodeRankDrops.html</loc>
+    <loc>/reference/runBBKNN.html</loc>
   </url>
   <url>
-    <loc>/reference/runBBKNN.html</loc>
+    <loc>/reference/runBarcodeRankDrops.html</loc>
   </url>
   <url>
     <loc>/reference/runBcds.html</loc>
@@ -667,6 +649,9 @@
     <loc>/reference/runFeatureSelection.html</loc>
   </url>
   <url>
+    <loc>/reference/runFindMarker.html</loc>
+  </url>
+  <url>
     <loc>/reference/runGSVA.html</loc>
   </url>
   <url>
@@ -685,6 +670,9 @@
     <loc>/reference/runMNNCorrect.html</loc>
   </url>
   <url>
+    <loc>/reference/runModelGeneVar.html</loc>
+  </url>
+  <url>
     <loc>/reference/runNormalization.html</loc>
   </url>
   <url>
@@ -694,13 +682,13 @@
     <loc>/reference/runSCANORAMA.html</loc>
   </url>
   <url>
-    <loc>/reference/runScDblFinder.html</loc>
-  </url>
-  <url>
     <loc>/reference/runSCGEN.html</loc>
   </url>
   <url>
     <loc>/reference/runSCMerge.html</loc>
+  </url>
+  <url>
+    <loc>/reference/runScDblFinder.html</loc>
   </url>
   <url>
     <loc>/reference/runScranSNN.html</loc>
@@ -742,10 +730,10 @@
     <loc>/reference/runSeuratPCA.html</loc>
   </url>
   <url>
-    <loc>/reference/runSeuratScaleData.html</loc>
+    <loc>/reference/runSeuratSCTransform.html</loc>
   </url>
   <url>
-    <loc>/reference/runSeuratSCTransform.html</loc>
+    <loc>/reference/runSeuratScaleData.html</loc>
   </url>
   <url>
     <loc>/reference/runSeuratTSNE.html</loc>
@@ -769,6 +757,12 @@
     <loc>/reference/runTSCANDEG.html</loc>
   </url>
   <url>
+    <loc>/reference/runTSNE.html</loc>
+  </url>
+  <url>
+    <loc>/reference/runUMAP.html</loc>
+  </url>
+  <url>
     <loc>/reference/runVAM.html</loc>
   </url>
   <url>
@@ -781,13 +775,13 @@
     <loc>/reference/scaterCPM.html</loc>
   </url>
   <url>
-    <loc>/reference/scaterlogNormCounts.html</loc>
-  </url>
-  <url>
     <loc>/reference/scaterPCA.html</loc>
   </url>
   <url>
     <loc>/reference/scater_logNormCounts.html</loc>
+  </url>
+  <url>
+    <loc>/reference/scaterlogNormCounts.html</loc>
   </url>
   <url>
     <loc>/reference/sce.html</loc>
@@ -802,12 +796,6 @@
     <loc>/reference/scran_modelGeneVar.html</loc>
   </url>
   <url>
-    <loc>/reference/SCtkExperiment-class.html</loc>
-  </url>
-  <url>
-    <loc>/reference/SCtkExperiment.html</loc>
-  </url>
-  <url>
     <loc>/reference/sctkListGeneSetCollections.html</loc>
   </url>
   <url>
@@ -815,9 +803,6 @@
   </url>
   <url>
     <loc>/reference/sctkPythonInstallVirtualEnv.html</loc>
-  </url>
-  <url>
-    <loc>/reference/SEG.html</loc>
   </url>
   <url>
     <loc>/reference/selectSCTKConda.html</loc>
@@ -829,10 +814,10 @@
     <loc>/reference/setRowNames.html</loc>
   </url>
   <url>
-    <loc>/reference/setSampleSummaryStatsTable-set.html</loc>
+    <loc>/reference/setSCTKDisplayRow.html</loc>
   </url>
   <url>
-    <loc>/reference/setSCTKDisplayRow.html</loc>
+    <loc>/reference/setSampleSummaryStatsTable-set.html</loc>
   </url>
   <url>
     <loc>/reference/simpleLog.html</loc>

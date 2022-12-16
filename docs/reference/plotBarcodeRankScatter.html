@@ -19,7 +19,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.3</span>
       </span>
     </div>
 
@@ -203,22 +203,22 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">plotBarcodeRankScatter</span><span class="op">(</span>
-  <span class="va">inSCE</span>,
-  sample <span class="op">=</span> <span class="cn">NULL</span>,
-  defaultTheme <span class="op">=</span> <span class="cn">TRUE</span>,
-  dotSize <span class="op">=</span> <span class="fl">0.5</span>,
-  title <span class="op">=</span> <span class="cn">NULL</span>,
-  titleSize <span class="op">=</span> <span class="fl">18</span>,
-  xlab <span class="op">=</span> <span class="cn">NULL</span>,
-  ylab <span class="op">=</span> <span class="cn">NULL</span>,
-  axisSize <span class="op">=</span> <span class="fl">12</span>,
-  axisLabelSize <span class="op">=</span> <span class="fl">15</span>,
-  legendSize <span class="op">=</span> <span class="fl">10</span>,
-  combinePlot <span class="op">=</span> <span class="st">"none"</span>,
-  sampleRelHeights <span class="op">=</span> <span class="fl">1</span>,
-  sampleRelWidths <span class="op">=</span> <span class="fl">1</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">plotBarcodeRankScatter</span><span class="op">(</span></span>
+<span>  <span class="va">inSCE</span>,</span>
+<span>  sample <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  defaultTheme <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  dotSize <span class="op">=</span> <span class="fl">0.5</span>,</span>
+<span>  title <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  titleSize <span class="op">=</span> <span class="fl">18</span>,</span>
+<span>  xlab <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  ylab <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  axisSize <span class="op">=</span> <span class="fl">12</span>,</span>
+<span>  axisLabelSize <span class="op">=</span> <span class="fl">15</span>,</span>
+<span>  legendSize <span class="op">=</span> <span class="fl">10</span>,</span>
+<span>  combinePlot <span class="op">=</span> <span class="st">"none"</span>,</span>
+<span>  sampleRelHeights <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  sampleRelWidths <span class="op">=</span> <span class="fl">1</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -226,65 +226,66 @@
     <dl><dt>inSCE</dt>
 <dd><p>Input SingleCellExperiment object with saved
 dimension reduction components or a variable with saved results from
-<a href="runBarcodeRankDrops.html">runBarcodeRankDrops</a>. Required.</p></dd>
+<code><a href="runBarcodeRankDrops.html">runBarcodeRankDrops</a></code>. Required.</p></dd>
 
 
 <dt>sample</dt>
-<dd><p>Character vector. Indicates which sample each cell belongs to.
-Default NULL.</p></dd>
+<dd><p>Character vector or colData variable name. Indicates which 
+sample each cell belongs to. Default <code>NULL</code>.</p></dd>
 
 
 <dt>defaultTheme</dt>
-<dd><p>Removes grid in plot and sets axis title size to 10
-when TRUE. Default TRUE.</p></dd>
+<dd><p>Removes grid in plot and sets axis title size to 
+<code>10</code> when <code>TRUE</code>. Default <code>TRUE</code>.</p></dd>
 
 
 <dt>dotSize</dt>
-<dd><p>Size of dots. Default 0.5.</p></dd>
+<dd><p>Size of dots. Default <code>0.5</code>.</p></dd>
 
 
 <dt>title</dt>
-<dd><p>Title of plot. Default NULL.</p></dd>
+<dd><p>Title of plot. Default <code>NULL</code>.</p></dd>
 
 
 <dt>titleSize</dt>
-<dd><p>Size of title of plot. Default 18.</p></dd>
+<dd><p>Size of title of plot. Default <code>18</code>.</p></dd>
 
 
 <dt>xlab</dt>
-<dd><p>Character vector. Label for x-axis. Default NULL.</p></dd>
+<dd><p>Character vector. Label for x-axis. Default <code>NULL</code>.</p></dd>
 
 
 <dt>ylab</dt>
-<dd><p>Character vector. Label for y-axis. Default NULL.</p></dd>
+<dd><p>Character vector. Label for y-axis. Default <code>NULL</code>.</p></dd>
 
 
 <dt>axisSize</dt>
-<dd><p>Size of x/y-axis ticks. Default 12.</p></dd>
+<dd><p>Size of x/y-axis ticks. Default <code>12</code>.</p></dd>
 
 
 <dt>axisLabelSize</dt>
-<dd><p>Size of x/y-axis labels. Default 15.</p></dd>
+<dd><p>Size of x/y-axis labels. Default <code>15</code>.</p></dd>
 
 
 <dt>legendSize</dt>
-<dd><p>size of legend. Default 10.</p></dd>
+<dd><p>size of legend. Default <code>10</code>.</p></dd>
 
 
 <dt>combinePlot</dt>
-<dd><p>Boolean. If multiple plots are generated (multiple
-samples, etc.), will combined plots using `cowplot::plot_grid`.</p></dd>
+<dd><p>Must be either <code>"all"</code>, <code>"sample"</code>, or 
+<code>"none"</code>. <code>"all"</code> will combine all plots into a single .ggplot 
+object, while <code>"sample"</code> will output a list of plots separated by 
+sample. Default <code>"all"</code>.</p></dd>
 
 
 <dt>sampleRelHeights</dt>
-<dd><p>If there are multiple samples and combining by "all",
-the relative heights for each plot.</p></dd>
+<dd><p>If there are multiple samples and combining by 
+<code>"all"</code>, the relative heights for each plot. Default <code>1</code>.</p></dd>
 
 
 <dt>sampleRelWidths</dt>
-<dd><p>If there are multiple samples and combining by "all",
-the relative widths for each plot.
-Default TRUE.</p></dd>
+<dd><p>If there are multiple samples and combining by 
+<code>"all"</code>, the relative widths for each plot. Default <code>1</code>.</p></dd>
 
 </dl></div>
     <div id="value">
@@ -293,13 +294,18 @@ Default TRUE.</p></dd>
 
 <p>a ggplot object of the scatter plot.</p>
     </div>
+    <div id="see-also">
+    <h2>See also</h2>
+    <div class="dont-index"><p><code><a href="plotBarcodeRankDropsResults.html">plotBarcodeRankDropsResults</a></code>, 
+<code><a href="runBarcodeRankDrops.html">runBarcodeRankDrops</a></code></p></div>
+    </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">scExample</span>, package<span class="op">=</span><span class="st">"singleCellTK"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="runBarcodeRankDrops.html">runBarcodeRankDrops</a></span><span class="op">(</span>inSCE<span class="op">=</span><span class="va">sce</span><span class="op">)</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Jun 28 22:03:42 2022 ... Running 'barcodeRanks'</span>
-<span class="r-in"><span class="fu">plotBarcodeRankScatter</span><span class="op">(</span>inSCE<span class="op">=</span><span class="va">sce</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">scExample</span>, package <span class="op">=</span> <span class="st">"singleCellTK"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="runBarcodeRankDrops.html">runBarcodeRankDrops</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Oct 25 15:44:45 2022 ... Running 'barcodeRanks'</span>
+<span class="r-in"><span><span class="fu">plotBarcodeRankScatter</span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span><span class="op">)</span></span></span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Transformation introduced infinite values in continuous y-axis</span>
 <span class="r-plt img"><img src="plotBarcodeRankScatter-1.png" alt="" width="700" height="433"></span>
 </code></pre></div>
@@ -316,7 +322,7 @@ Default TRUE.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

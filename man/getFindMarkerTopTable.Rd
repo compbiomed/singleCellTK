@@ -57,7 +57,7 @@ information.
 Fetch the table of top markers that pass the filtering
 }
 \details{
-Users have to run \code{findMarkerDiffExp()} prior to using this
+Users have to run \code{\link{runFindMarker}} prior to using this
 function to extract a top marker table.
 }
 \examples{
@@ -66,4 +66,7 @@ mouseBrainSubsetSCE <- runFindMarker(mouseBrainSubsetSCE,
                                      useAssay = "logcounts",
                                      cluster = "level1class")
 getFindMarkerTopTable(mouseBrainSubsetSCE)
+}
+\seealso{
+\code{\link{runFindMarker}}, \code{\link{plotFindMarkerHeatmap}}
 }

@@ -180,6 +180,9 @@ shinyServer(function(input, output, session) {
     updateSelectInput(session, "hvgPlotFeatureDisplay",
                       choices = c("Rownames (Default)",
                                   selectRowData))
+    updateSelectInput(session, "fmHMFeatureDisplay",
+                      choices = c("Rownames (Default)",
+                                  selectRowData))
     updateSelectInput(session, "deHMrowData",
                       choices = selectRowData)
     updateSelectInput(session, "deHMSplitRow",
@@ -1025,12 +1028,14 @@ shinyServer(function(input, output, session) {
       if (!"sample" %in% names(colData(vals$original)) &&
           !"Sample" %in% names(colData(vals$original))) {
         sampleVar <- "sample"
+        # Let the sample name of all cells be "sample"
         colData(vals$original)$sample = sampleVar
       } else if ("sample" %in% names(colData(vals$original))) {
         sampleVar <- "sample"
       } else {
         sampleVar <- "Sample"
       }
+      
       if (!is.null(vals$original)) {
         vals$counts <- vals$original
         #store assayType information in the metadata
@@ -1053,6 +1058,7 @@ shinyServer(function(input, output, session) {
         # ToDo: Remove these automatic updates and replace with
         # observeEvents functions that activate upon the tab selection
         updateColDataNames()
+        updateSelectInput(session, "qcSampleSelect", selected = sampleVar)
         updateFeatureAnnots()
         updateNumSamples()
         updateAssayInputs()
@@ -1451,6 +1457,7 @@ shinyServer(function(input, output, session) {
         selected <- "Rownames (Default)"
     }
     updateSelectInput(session, "hvgPlotFeatureDisplay", selected = selected)
+    updateSelectInput(session, "fmHMFeatureDisplay", selected = selected)
     updateSelectInput(session, "deHMrowLabel", selected = selected)
     updateSelectInput(session, "deVolcFeatureDisplay", selected = selected)
     updateSelectInput(session, "deVioLabel", selected = selected)
@@ -1618,13 +1625,13 @@ shinyServer(function(input, output, session) {
   # holds all the input ids for the QC algorithm parameters by algorithm name
   qc_input_ids <- list(scDblFinder = list(nNeighbors="DCnNeighbors", simDoublets="DCsimDoublets"),
 
-                       cxds = list(ntop="CXntop", binThresh="CXbinThresh", verb="CXverb", retRes="CXretRes", estNdbl="CXestNdbl"),
+                       cxds = list(ntop="CXntop", binThresh="CXbinThresh", verb="CXverb", retRes="CXretRes"),#, estNdbl="CXestNdbl"),
 
-                       bcds = list(ntop="BCntop", srat="BCsrat", verb="BCverb", retRes="BCretRes", nmax="BCnmax", varImp="BCvarImp", estNdbl="BCestNdbl"),
+                       bcds = list(ntop="BCntop", srat="BCsrat", nmax="BCnmax", verb="BCverb", retRes="BCretRes", varImp="BCvarImp"),#, estNdbl="BCestNdbl"),
 
                        cxds_bcds_hybrid = list(cxdsArgs=list(ntop="CX2ntop", binThresh="CX2binThresh", retRes="CX2retRes"),
-                                               bcdsArgs=list(ntop="BC2ntop", srat="BC2srat", retRes="BC2retRes", nmax="BC2nmax", varImp="BC2varImp"),
-                                               verb="CXBCverb", estNdbl="CXBCestNdbl"),
+                                               bcdsArgs=list(ntop="BC2ntop", srat="BC2srat", nmax="BC2nmax", retRes="BC2retRes", varImp="BC2varImp"),
+                                               verb="CXBCverb"),#, estNdbl="CXBCestNdbl"),
 
                        decontX = list(maxIter="DXmaxIter", estimateDelta="DXestimateDelta", convergence="DXconvergence",
                                       iterLogLik="DXiterLogLik", varGenes="DXvarGenes", dbscanEps="DXdbscanEps", verbose="DXverbose"),
@@ -2171,10 +2178,10 @@ shinyServer(function(input, output, session) {
   #Render summary table
   output$beforeFiltering <- renderTable({
       req(vals$original)
-      if ("Sample" %in% names(colData(vals$counts))) {
-        sampleVar <- "Sample"
-      } else if ("sample" %in% names(colData(vals$counts))) {
+      if ("sample" %in% names(colData(vals$counts))) {
         sampleVar <- "sample"
+      } else if ("Sample" %in% names(colData(vals$counts))) {
+        sampleVar <- "Sample"
       } else {
         sampleVar <- NULL
       }
@@ -2186,10 +2193,10 @@ shinyServer(function(input, output, session) {
 
   output$afterFiltering <- renderTable({
       req(vals$counts)
-      if ("Sample" %in% names(colData(vals$counts))) {
-        sampleVar <- "Sample"
-      } else if ("sample" %in% names(colData(vals$counts))) {
+      if ("sample" %in% names(colData(vals$counts))) {
         sampleVar <- "sample"
+      } else if ("Sample" %in% names(colData(vals$counts))) {
+        sampleVar <- "Sample"
       } else {
         sampleVar <- NULL
       }
@@ -2202,10 +2209,10 @@ shinyServer(function(input, output, session) {
   #Render summary table
   output$summarycontents <- DT::renderDataTable({
       req(vals$counts)
-      if ("Sample" %in% names(colData(vals$counts))) {
-        sampleVar <- "Sample"
-      } else if ("sample" %in% names(colData(vals$counts))) {
+      if ("sample" %in% names(colData(vals$counts))) {
         sampleVar <- "sample"
+      } else if ("Sample" %in% names(colData(vals$counts))) {
+        sampleVar <- "Sample"
       } else {
         sampleVar <- NULL
       }
@@ -6373,7 +6380,7 @@ shinyServer(function(input, output, session) {
 
     if (isTRUE(input$deHMShowRowLabel)) {
       rowLabel <- TRUE
-      if (input$hvgPlotFeatureDisplay != "Rownames (Default)" &
+      if (input$deHMrowLabel != "Rownames (Default)" &
           is.null(deUseReducedDim)) {
         rowLabel <- input$deHMrowLabel
       }
@@ -6742,22 +6749,22 @@ shinyServer(function(input, output, session) {
     {
       req(vals$counts)
       fdrThreshold <- handleEmptyInput(input$fmFDR)
-      vals$counts <- findMarkerDiffExp(inSCE = vals$counts,
-                                       method = input$fmMethod,
-                                       useAssay = input$fmAssay,
-                                       cluster = input$fmCluster,
-                                       covariates = input$fmCovar,
-                                       fdrThreshold = fdrThreshold)
+      vals$counts <- runFindMarker(inSCE = vals$counts,
+                                   method = input$fmMethod,
+                                   useAssay = input$fmAssay,
+                                   cluster = input$fmCluster,
+                                   covariates = input$fmCovar,
+                                   fdrThreshold = fdrThreshold)
       message(date(), " ... Updating find marker heatmap")
       updateFMPlot()
 
       callModule(
         module = filterTableServer,
         id = "filterfmResTable",
-        dataframe = findMarkerTopTable(vals$counts, log2fcThreshold = 0,
-                                       minClustExprPerc = 0,
-                                       maxCtrlExprPerc = 1,
-                                       minMeanExpr = 0, topN = NULL),
+        dataframe = getFindMarkerTopTable(vals$counts, log2fcThreshold = 0,
+                                          minClustExprPerc = 0,
+                                          maxCtrlExprPerc = 1,
+                                          minMeanExpr = 0, topN = NULL),
         defaultFilterColumns = c("Log2_FC", "clusterExprPerc", "ControlExprPerc", "clusterAveExpr"),
         defaultFilterOperators = c(">", ">=", "<=", ">="),
         defaultFilterValues = c("0", "0", "1", "0"),
@@ -6832,41 +6839,46 @@ shinyServer(function(input, output, session) {
     if(!is.null(vals$counts) &&
        'findMarker' %in% names(metadata(vals$counts))){
       withBusyIndicatorServer("plotFM", {
-          message(paste0(date(), " ... Updating marker heatmap"))
+        message(paste0(date(), " ... Updating marker heatmap"))
 
-          if(isTRUE(input$fmUseTopN)
-             && is.na(input$fmTopN)){
-            stop("Top N marker must be a numeric non-empty value")
-          }
-          if(is.na(input$fmHMFC)){
-            stop("Log2FC must be a numeric non-empty value!")
-          }
-          if(is.na(input$fmHMFDR)){
-            stop("FDR must be a numeric non-empty value!")
-          }
-          if(!isTRUE(input$fmUseTopN)) {
-            topN <- NULL
-          } else {
-            topN <- input$fmTopN
-          }
-          # Take value before rendering plot, so that the plot doesn't auto
-          # re-render while we tweak the parameter
-          output$fmHeatmap <- renderPlot({
-            isolate({
-              plotMarkerDiffExp(inSCE = vals$counts,
-                                orderBy = input$fmHMOrder,
-                                log2fcThreshold = input$fmHMFC,
-                                topN = topN,
-                                fdrThreshold = input$fmHMFDR,
-                                decreasing = input$fmHMdec,
-                                rowDataName = input$fmHMrowData,
-                                colDataName = input$fmHMcolData,
-                                minClustExprPerc = input$fmHMMinClustExprPerc,
-                                maxCtrlExprPerc = input$fmHMMaxCtrlExprPerc,
-                                minMeanExpr = input$fmHMMinMeanExpr,
-                                rowLabel = TRUE)
-            })
+        if (isTRUE(input$fmUseTopN)
+           && is.na(input$fmTopN)) {
+          stop("Top N marker must be a numeric non-empty value")
+        }
+        if (is.na(input$fmHMFC)) {
+          stop("Log2FC must be a numeric non-empty value!")
+        }
+        if (is.na(input$fmHMFDR)) {
+          stop("FDR must be a numeric non-empty value!")
+        }
+        if (!isTRUE(input$fmUseTopN)) {
+          topN <- NULL
+        } else {
+          topN <- input$fmTopN
+        }
+        if (input$fmHMFeatureDisplay != "Rownames (Default)") {
+          rowLabel <- input$fmHMFeatureDisplay
+        } else {
+          rowLabel <- TRUE
+        }
+        # Take value before rendering plot, so that the plot doesn't auto
+        # re-render while we tweak the parameter
+        output$fmHeatmap <- renderPlot({
+          isolate({
+            plotFindMarkerHeatmap(inSCE = vals$counts,
+                                  orderBy = input$fmHMOrder,
+                                  log2fcThreshold = input$fmHMFC,
+                                  topN = topN,
+                                  fdrThreshold = input$fmHMFDR,
+                                  decreasing = input$fmHMdec,
+                                  rowDataName = input$fmHMrowData,
+                                  colDataName = input$fmHMcolData,
+                                  minClustExprPerc = input$fmHMMinClustExprPerc,
+                                  maxCtrlExprPerc = input$fmHMMaxCtrlExprPerc,
+                                  minMeanExpr = input$fmHMMinMeanExpr,
+                                  rowLabel = rowLabel)
           })
+        })
       })
     }
   }

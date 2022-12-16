@@ -19,55 +19,59 @@ runEmptyDrops(
 )
 }
 \arguments{
-\item{inSCE}{Input \link[SingleCellExperiment]{SingleCellExperiment} object.
-Must contain a raw counts matrix before empty droplets have been removed.}
+\item{inSCE}{A \linkS4class{SingleCellExperiment} object. Must contain a raw 
+counts matrix before empty droplets have been removed.}
 
-\item{sample}{Character vector. Indicates which sample each cell belongs to.
-\link[DropletUtils]{emptyDrops} will be run on cells from each sample separately.
-If NULL, then all cells will be processed together. Default NULL.}
+\item{sample}{Character vector or colData variable name. Indicates which 
+sample each cell belongs to. Default \code{NULL}.}
 
-\item{useAssay}{A string specifying which assay in the SCE to use.}
+\item{useAssay}{A string specifying which assay in the SCE to use. Default 
+\code{"counts"}}
 
-\item{lower}{See \link[DropletUtils]{emptyDrops} for more information.}
+\item{lower}{See \link[DropletUtils]{emptyDrops} for more information. 
+Default \code{100}.}
 
-\item{niters}{See \link[DropletUtils]{emptyDrops} for more information.}
+\item{niters}{See \link[DropletUtils]{emptyDrops} for more information. 
+Default \code{10000}.}
 
-\item{testAmbient}{See \link[DropletUtils]{emptyDrops} for more information.}
+\item{testAmbient}{See \link[DropletUtils]{emptyDrops} for more information. 
+Default \code{FALSE}.}
 
-\item{ignore}{See \link[DropletUtils]{emptyDrops} for more information.}
+\item{ignore}{See \link[DropletUtils]{emptyDrops} for more information. 
+Default \code{NULL}.}
 
-\item{alpha}{See \link[DropletUtils]{emptyDrops} for more information.}
+\item{alpha}{See \link[DropletUtils]{emptyDrops} for more information. 
+Default \code{NULL}.}
 
-\item{retain}{See \link[DropletUtils]{emptyDrops} for more information.}
+\item{retain}{See \link[DropletUtils]{emptyDrops} for more information. 
+Default \code{NULL}.}
 
-\item{barcodeArgs}{See \link[DropletUtils]{emptyDrops} for more information.}
+\item{barcodeArgs}{See \link[DropletUtils]{emptyDrops} for more information. 
+Default \code{list()}.}
 
-\item{BPPARAM}{See \link[DropletUtils]{emptyDrops} for more information.}
+\item{BPPARAM}{See \link[DropletUtils]{emptyDrops} for more information. 
+Default \code{BiocParallel::SerialParam()}.}
 }
 \value{
-A \link[SingleCellExperiment]{SingleCellExperiment} object with the
- \link[DropletUtils]{emptyDrops} output table appended to the
- \link{colData} slot. The columns include
- \emph{emptyDrops_total}, \emph{emptyDrops_logprob},
- \emph{emptyDrops_pvalue}, \emph{emptyDrops_limited}, \emph{emptyDrops_fdr}.
- Please refer to the documentation of \link[DropletUtils]{emptyDrops} for
- details.
+A \linkS4class{SingleCellExperiment} object with the
+\link[DropletUtils]{emptyDrops} output table appended to the
+\link{colData} slot. The columns include
+\code{emptyDrops_total}, \code{emptyDrops_logprob},
+\code{emptyDrops_pvalue}, \code{emptyDrops_limited}, \code{emptyDrops_fdr}.
+Please refer to the documentation of \link[DropletUtils]{emptyDrops} for
+details.
 }
 \description{
 Run \link[DropletUtils]{emptyDrops} on the count matrix in the
- provided \link[SingleCellExperiment]{SingleCellExperiment} object.
- Distinguish between droplets containing cells and ambient RNA in a
- droplet-based single-cell RNA sequencing experiment.
+provided \\linkS4class{SingleCellExperiment} object.
+Distinguish between droplets containing cells and ambient RNA in a
+droplet-based single-cell RNA sequencing experiment.
 }
 \examples{
-# The following unfiltered PBMC_1k_v3 data were downloaded from
-# https://support.10xgenomics.com/single-cell-gene-expression/datasets/3.0.0
-# /pbmc_1k_v3
-# Only the top 10 cells with most counts and the last 10 cells with non-zero
-# counts are included in this example.
-# This example only serves as an proof of concept and a tutorial on how to
-# run the function. The results should not be
-# used for drawing scientific conclusions.
 data(scExample, package = "singleCellTK")
 sce <- runEmptyDrops(inSCE = sce)
+}
+\seealso{
+\code{\link{runDropletQC}}, \code{\link{plotEmptyDropsResults}},
+\code{\link{plotEmptyDropsScatter}}
 }

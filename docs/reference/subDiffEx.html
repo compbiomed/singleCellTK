@@ -23,7 +23,7 @@ multiple conditions, respectively."><!-- mathjax --><script src="https://cdnjs.c
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.3</span>
       </span>
     </div>
 
@@ -209,11 +209,11 @@ multiple conditions, respectively.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">subDiffEx</span><span class="op">(</span><span class="va">tempData</span><span class="op">)</span>
-
-<span class="fu">subDiffExttest</span><span class="op">(</span><span class="va">countMatrix</span>, <span class="va">class.labels</span>, test.type <span class="op">=</span> <span class="st">"t.equalvar"</span><span class="op">)</span>
-
-<span class="fu">subDiffExANOVA</span><span class="op">(</span><span class="va">countMatrix</span>, <span class="va">condition</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">subDiffEx</span><span class="op">(</span><span class="va">tempData</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">subDiffExttest</span><span class="op">(</span><span class="va">countMatrix</span>, <span class="va">class.labels</span>, test.type <span class="op">=</span> <span class="st">"t.equalvar"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">subDiffExANOVA</span><span class="op">(</span><span class="va">countMatrix</span>, <span class="va">condition</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -261,50 +261,50 @@ are coerced to 1.</p>
     <div id="functions">
     <h2>Functions</h2>
     
-<ul><li><p><code>subDiffEx</code>:</p></li>
-<li><p><code>subDiffExttest</code>: Runs t-tests on all genes in a simulated dataset with 2
+<ul><li><p><code>subDiffEx()</code>:</p></li>
+<li><p><code>subDiffExttest()</code>: Runs t-tests on all genes in a simulated dataset with 2
 conditions, and adjusts for FDR.</p></li>
-<li><p><code>subDiffExANOVA</code>: Runs ANOVA on all genes in a simulated dataset with
+<li><p><code>subDiffExANOVA()</code>: Runs ANOVA on all genes in a simulated dataset with
 more than 2 conditions, and adjusts for FDR.</p></li>
 </ul></div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"mouseBrainSubsetSCE"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="generateSimulatedData.html">generateSimulatedData</a></span><span class="op">(</span></span>
-<span class="r-in">         totalReads <span class="op">=</span> <span class="fl">1000</span>, cells<span class="op">=</span><span class="fl">10</span>,</span>
-<span class="r-in">         originalData <span class="op">=</span> <span class="fu">assay</span><span class="op">(</span><span class="va">mouseBrainSubsetSCE</span>, <span class="st">"counts"</span><span class="op">)</span>,</span>
-<span class="r-in">         realLabels <span class="op">=</span> <span class="fu">colData</span><span class="op">(</span><span class="va">mouseBrainSubsetSCE</span><span class="op">)</span><span class="op">[</span>, <span class="st">"level1class"</span><span class="op">]</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">tempSigDiff</span> <span class="op">&lt;-</span> <span class="fu">subDiffEx</span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"mouseBrainSubsetSCE"</span><span class="op">)</span></span>
-<span class="r-in"><span class="co">#sort first 100 expressed genes</span></span>
-<span class="r-in"><span class="va">ord</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">mouseBrainSubsetSCE</span><span class="op">)</span><span class="op">[</span></span>
-<span class="r-in">  <span class="fu"><a href="https://rdrr.io/r/base/order.html" class="external-link">order</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/colSums.html" class="external-link">rowSums</a></span><span class="op">(</span><span class="fu">assay</span><span class="op">(</span><span class="va">mouseBrainSubsetSCE</span>, <span class="st">"counts"</span><span class="op">)</span><span class="op">)</span>,</span>
-<span class="r-in">        decreasing <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">]</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">100</span><span class="op">)</span><span class="op">]</span></span>
-<span class="r-in"><span class="co">#subset to those first 100 genes</span></span>
-<span class="r-in"><span class="va">subset</span> <span class="op">&lt;-</span> <span class="va">mouseBrainSubsetSCE</span><span class="op">[</span><span class="va">ord</span>, <span class="op">]</span></span>
-<span class="r-in"><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="generateSimulatedData.html">generateSimulatedData</a></span><span class="op">(</span>totalReads <span class="op">=</span> <span class="fl">1000</span>, cells<span class="op">=</span><span class="fl">10</span>,</span>
-<span class="r-in">                             originalData <span class="op">=</span> <span class="fu">assay</span><span class="op">(</span><span class="va">subset</span>, <span class="st">"counts"</span><span class="op">)</span>,</span>
-<span class="r-in">                             realLabels <span class="op">=</span> <span class="fu">colData</span><span class="op">(</span><span class="va">subset</span><span class="op">)</span><span class="op">[</span>, <span class="st">"level1class"</span><span class="op">]</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">realLabels</span> <span class="op">&lt;-</span> <span class="va">res</span><span class="op">[</span><span class="fl">1</span>, <span class="op">]</span></span>
-<span class="r-in"><span class="va">output</span> <span class="op">&lt;-</span> <span class="va">res</span><span class="op">[</span><span class="op">-</span><span class="fl">1</span>, <span class="op">]</span></span>
-<span class="r-in"><span class="va">fdr</span> <span class="op">&lt;-</span> <span class="fu">subDiffExttest</span><span class="op">(</span><span class="va">output</span>, <span class="va">realLabels</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"mouseBrainSubsetSCE"</span><span class="op">)</span></span>
-<span class="r-in"><span class="co">#sort first 100 expressed genes</span></span>
-<span class="r-in"><span class="va">ord</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">mouseBrainSubsetSCE</span><span class="op">)</span><span class="op">[</span></span>
-<span class="r-in">  <span class="fu"><a href="https://rdrr.io/r/base/order.html" class="external-link">order</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/colSums.html" class="external-link">rowSums</a></span><span class="op">(</span><span class="fu">assay</span><span class="op">(</span><span class="va">mouseBrainSubsetSCE</span>, <span class="st">"counts"</span><span class="op">)</span><span class="op">)</span>,</span>
-<span class="r-in">        decreasing <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">]</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">100</span><span class="op">)</span><span class="op">]</span></span>
-<span class="r-in"><span class="co"># subset to those first 100 genes</span></span>
-<span class="r-in"><span class="va">subset</span> <span class="op">&lt;-</span> <span class="va">mouseBrainSubsetSCE</span><span class="op">[</span><span class="va">ord</span>, <span class="op">]</span></span>
-<span class="r-in"><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="generateSimulatedData.html">generateSimulatedData</a></span><span class="op">(</span>totalReads <span class="op">=</span> <span class="fl">1000</span>, cells<span class="op">=</span><span class="fl">10</span>,</span>
-<span class="r-in">                             originalData <span class="op">=</span> <span class="fu">assay</span><span class="op">(</span><span class="va">subset</span>, <span class="st">"counts"</span><span class="op">)</span>,</span>
-<span class="r-in">                             realLabels <span class="op">=</span> <span class="fu">colData</span><span class="op">(</span><span class="va">subset</span><span class="op">)</span><span class="op">[</span>, <span class="st">"level2class"</span><span class="op">]</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">realLabels</span> <span class="op">&lt;-</span> <span class="va">res</span><span class="op">[</span><span class="fl">1</span>, <span class="op">]</span></span>
-<span class="r-in"><span class="va">output</span> <span class="op">&lt;-</span> <span class="va">res</span><span class="op">[</span><span class="op">-</span><span class="fl">1</span>, <span class="op">]</span></span>
-<span class="r-in"><span class="va">fdr</span> <span class="op">&lt;-</span> <span class="fu">subDiffExANOVA</span><span class="op">(</span><span class="va">output</span>, <span class="va">realLabels</span><span class="op">)</span></span>
-<span class="r-in"></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"mouseBrainSubsetSCE"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="generateSimulatedData.html">generateSimulatedData</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>         totalReads <span class="op">=</span> <span class="fl">1000</span>, cells<span class="op">=</span><span class="fl">10</span>,</span></span>
+<span class="r-in"><span>         originalData <span class="op">=</span> <span class="fu">assay</span><span class="op">(</span><span class="va">mouseBrainSubsetSCE</span>, <span class="st">"counts"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>         realLabels <span class="op">=</span> <span class="fu">colData</span><span class="op">(</span><span class="va">mouseBrainSubsetSCE</span><span class="op">)</span><span class="op">[</span>, <span class="st">"level1class"</span><span class="op">]</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">tempSigDiff</span> <span class="op">&lt;-</span> <span class="fu">subDiffEx</span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"mouseBrainSubsetSCE"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co">#sort first 100 expressed genes</span></span></span>
+<span class="r-in"><span><span class="va">ord</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">mouseBrainSubsetSCE</span><span class="op">)</span><span class="op">[</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/order.html" class="external-link">order</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/colSums.html" class="external-link">rowSums</a></span><span class="op">(</span><span class="fu">assay</span><span class="op">(</span><span class="va">mouseBrainSubsetSCE</span>, <span class="st">"counts"</span><span class="op">)</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>        decreasing <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">]</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">100</span><span class="op">)</span><span class="op">]</span></span></span>
+<span class="r-in"><span><span class="co">#subset to those first 100 genes</span></span></span>
+<span class="r-in"><span><span class="va">subset</span> <span class="op">&lt;-</span> <span class="va">mouseBrainSubsetSCE</span><span class="op">[</span><span class="va">ord</span>, <span class="op">]</span></span></span>
+<span class="r-in"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="generateSimulatedData.html">generateSimulatedData</a></span><span class="op">(</span>totalReads <span class="op">=</span> <span class="fl">1000</span>, cells<span class="op">=</span><span class="fl">10</span>,</span></span>
+<span class="r-in"><span>                             originalData <span class="op">=</span> <span class="fu">assay</span><span class="op">(</span><span class="va">subset</span>, <span class="st">"counts"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                             realLabels <span class="op">=</span> <span class="fu">colData</span><span class="op">(</span><span class="va">subset</span><span class="op">)</span><span class="op">[</span>, <span class="st">"level1class"</span><span class="op">]</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">realLabels</span> <span class="op">&lt;-</span> <span class="va">res</span><span class="op">[</span><span class="fl">1</span>, <span class="op">]</span></span></span>
+<span class="r-in"><span><span class="va">output</span> <span class="op">&lt;-</span> <span class="va">res</span><span class="op">[</span><span class="op">-</span><span class="fl">1</span>, <span class="op">]</span></span></span>
+<span class="r-in"><span><span class="va">fdr</span> <span class="op">&lt;-</span> <span class="fu">subDiffExttest</span><span class="op">(</span><span class="va">output</span>, <span class="va">realLabels</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"mouseBrainSubsetSCE"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co">#sort first 100 expressed genes</span></span></span>
+<span class="r-in"><span><span class="va">ord</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">mouseBrainSubsetSCE</span><span class="op">)</span><span class="op">[</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/order.html" class="external-link">order</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/colSums.html" class="external-link">rowSums</a></span><span class="op">(</span><span class="fu">assay</span><span class="op">(</span><span class="va">mouseBrainSubsetSCE</span>, <span class="st">"counts"</span><span class="op">)</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>        decreasing <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">]</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">100</span><span class="op">)</span><span class="op">]</span></span></span>
+<span class="r-in"><span><span class="co"># subset to those first 100 genes</span></span></span>
+<span class="r-in"><span><span class="va">subset</span> <span class="op">&lt;-</span> <span class="va">mouseBrainSubsetSCE</span><span class="op">[</span><span class="va">ord</span>, <span class="op">]</span></span></span>
+<span class="r-in"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="generateSimulatedData.html">generateSimulatedData</a></span><span class="op">(</span>totalReads <span class="op">=</span> <span class="fl">1000</span>, cells<span class="op">=</span><span class="fl">10</span>,</span></span>
+<span class="r-in"><span>                             originalData <span class="op">=</span> <span class="fu">assay</span><span class="op">(</span><span class="va">subset</span>, <span class="st">"counts"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                             realLabels <span class="op">=</span> <span class="fu">colData</span><span class="op">(</span><span class="va">subset</span><span class="op">)</span><span class="op">[</span>, <span class="st">"level2class"</span><span class="op">]</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">realLabels</span> <span class="op">&lt;-</span> <span class="va">res</span><span class="op">[</span><span class="fl">1</span>, <span class="op">]</span></span></span>
+<span class="r-in"><span><span class="va">output</span> <span class="op">&lt;-</span> <span class="va">res</span><span class="op">[</span><span class="op">-</span><span class="fl">1</span>, <span class="op">]</span></span></span>
+<span class="r-in"><span><span class="va">fdr</span> <span class="op">&lt;-</span> <span class="fu">subDiffExANOVA</span><span class="op">(</span><span class="va">output</span>, <span class="va">realLabels</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -319,7 +319,7 @@ more than 2 conditions, and adjusts for FDR.</p></li>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

@@ -2,7 +2,7 @@
 #' @rdname runFindMarker
 #' @description With an input SingleCellExperiment object and specifying the
 #' clustering labels, this function iteratively call the differential expression
-#' analysis on each cluster against all the others. \code{findMarkerDiffExp}
+#' analysis on each cluster against all the others. \code{\link{runFindMarker}}
 #' will be deprecated in the future.
 #' @param inSCE \linkS4class{SingleCellExperiment} inherited object.
 #' @param useAssay character. A string specifying which assay to use for the
@@ -51,7 +51,8 @@
 #' @return The input \linkS4class{SingleCellExperiment} object with
 #' \code{metadata(inSCE)$findMarker} updated with a data.table of the up-
 #' regulated DEGs for each cluster.
-#' @seealso \code{\link{runDEAnalysis}}
+#' @seealso \code{\link{runDEAnalysis}}, \code{\link{getFindMarkerTopTable}},
+#' \code{\link{plotFindMarkerHeatmap}}
 #' @export
 #' @examples
 #' data("mouseBrainSubsetSCE", package = "singleCellTK")
@@ -75,7 +76,7 @@ runFindMarker <- function(inSCE, useAssay = 'logcounts',
     inSCE[[clusterName]] <- cluster
   }
   # Iterate
-  if(is.factor(clusterVar)){
+  if (is.factor(clusterVar)) {
     # In case inSCE is a subset, when "levels" is a full list of all
     # clusters, want to keep the ordering stored in the factor.
     uniqClust <- as.vector(unique(clusterVar))
@@ -84,7 +85,7 @@ runFindMarker <- function(inSCE, useAssay = 'logcounts',
   } else {
     uniqClust <- unique(clusterVar)
   }
-  for(c in uniqClust){
+  for (c in uniqClust) {
     message(date(), " ... Identifying markers for cluster '", c,
             "', using DE method '", method, "'")
     clusterIndex <- clusterVar == c
@@ -102,14 +103,14 @@ runFindMarker <- function(inSCE, useAssay = 'logcounts',
   }
   message(date(), " ... Organizing findMarker result")
   degFull <- NULL
-  for(c in uniqClust){
+  for (c in uniqClust) {
     degTable <-
       S4Vectors::metadata(inSCE)$diffExp[[paste0('findMarker', c)]]$result
     degTable <- degTable[,c(-5,-6,-7,-8)]
     degTable$Gene <- as.character(degTable$Gene)
     if (nrow(degTable) > 0) {
       degTable[[clusterName]] <- c
-      if(is.null(degFull)){
+      if (is.null(degFull)) {
         degFull <- degTable
       } else {
         degFull <- rbind(degFull, degTable)
@@ -117,7 +118,7 @@ runFindMarker <- function(inSCE, useAssay = 'logcounts',
     }
   }
   S4Vectors::metadata(inSCE)$diffExp[paste0('findMarker', uniqClust)] <- NULL
-  if(length(names(S4Vectors::metadata(inSCE)$diffExp)) == 0){
+  if (length(names(S4Vectors::metadata(inSCE)$diffExp)) == 0) {
     S4Vectors::metadata(inSCE)$diffExp <- NULL
   }
   degFull <- degFull[stats::complete.cases(degFull),]
@@ -211,7 +212,7 @@ findMarkerDiffExp <- function(inSCE, useAssay = 'logcounts',
 
 #' Fetch the table of top markers that pass the filtering
 #' @rdname getFindMarkerTopTable
-#' @details Users have to run \code{findMarkerDiffExp()} prior to using this
+#' @details Users have to run \code{\link{runFindMarker}} prior to using this
 #' function to extract a top marker table.
 #' @param inSCE \linkS4class{SingleCellExperiment} inherited object.
 #' @param log2fcThreshold Only use DEGs with the absolute values of log2FC
@@ -231,6 +232,7 @@ findMarkerDiffExp <- function(inSCE, useAssay = 'logcounts',
 #' top N subscription. Default \code{10}.
 #' @return An organized \code{data.frame} object, with the top marker gene
 #' information.
+#' @seealso \code{\link{runFindMarker}}, \code{\link{plotFindMarkerHeatmap}}
 #' @export
 #' @examples
 #' data("mouseBrainSubsetSCE", package = "singleCellTK")
@@ -242,29 +244,29 @@ getFindMarkerTopTable <- function(inSCE, log2fcThreshold = 1,
                                   fdrThreshold = 0.05, minClustExprPerc = 0.7,
                                   maxCtrlExprPerc = 0.4, minMeanExpr = 1,
                                   topN = 10) {
-  if(!inherits(inSCE, 'SingleCellExperiment')){
+  if (!inherits(inSCE, 'SingleCellExperiment')) {
     stop('"inSCE" should be a SingleCellExperiment inherited Object.')
   }
-  if(!'findMarker' %in% names(S4Vectors::metadata(inSCE))){
+  if (!'findMarker' %in% names(S4Vectors::metadata(inSCE))) {
     stop('"findMarker" result not found in metadata. ',
          'Run runFindMarker() in advance')
   }
 
   # Extract and basic filter
   degFull <- S4Vectors::metadata(inSCE)$findMarker
-  if(!all(c("Gene", "Pvalue", "Log2_FC", "FDR") %in%
-          colnames(degFull)[seq_len(4)])){
+  if (!all(c("Gene", "Pvalue", "Log2_FC", "FDR") %in%
+          colnames(degFull)[seq_len(4)])) {
     stop('"findMarker" result cannot be interpreted properly')
   }
   degFull$Gene <- as.character(degFull$Gene)
-  if(length(which(!degFull$Gene %in% rownames(inSCE))) > 0){
+  if (length(which(!degFull$Gene %in% rownames(inSCE))) > 0) {
     # Remove genes happen in deg table but not in sce. Weird.
     degFull <- degFull[-which(!degFull$Gene %in% rownames(inSCE)),]
   }
-  if(!is.null(log2fcThreshold)){
+  if (!is.null(log2fcThreshold)) {
     degFull <- degFull[degFull$Log2_FC > log2fcThreshold,]
   }
-  if(!is.null(fdrThreshold)){
+  if (!is.null(fdrThreshold)) {
     degFull <- degFull[degFull$FDR < fdrThreshold,]
   }
   if (!is.null(minClustExprPerc)) {
@@ -281,7 +283,7 @@ getFindMarkerTopTable <- function(inSCE, log2fcThreshold = 1,
   # Done by keeping all unique genes and the rows with highest Log2FC entry
   # for each duplicated gene.
   dup.gene <- unique(degFull$Gene[duplicated(degFull$Gene)])
-  for(g in dup.gene){
+  for (g in dup.gene) {
     deg.gix <- degFull$Gene == g
     deg.gtable <- degFull[deg.gix,]
     toKeep <- which.max(deg.gtable$Log2_FC)

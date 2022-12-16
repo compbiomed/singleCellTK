@@ -1,15 +1,24 @@
-Changes in Version 2.? (2022-12-16)
+Changes in Version 2.7.4 (2022-12-16)
 ================================================================================
 * Added scanpy wrapper functions for use from console
 * Added scanpy UI curated workflow
 * Integrated scanpy to a la carte workflow
-* Fixed a bug in importing fludigm dataset
+* Fixed a bug in importing fluidigm dataset
 
-Changes in Version 2.? (2022-MM-DD)
+Changes in Version 2.7.3 (2022-10-25)
+================================================================================
+* Fixed bugs related to dependency updates
+
+Changes in Version 2.7.2 (2022-10-19)
 ================================================================================
 * Deprecated `findMarkerDiffExp()`, `findMarkerTopTable()` and `plotMarkerDiffExp()`, which are replaced by `runFindMarker()`, `getFindMarkerTopTable()` and `plotFindMarkerHeatmap()`, respectively
 * Added `useReducedDim`, `detectThresh` arguments for find marker functions
+* Deprecated `getUMAP()` and `getTSNE()`, which are replaced by `runUMAP()` and `runTSNE()`, respectively
+* Added `runQuickUMAP()` and `runQuickTSNE()` functions which directly compute the proper embedding from raw counts matrices with a simplified argument set
+* Added arguments `aggregateRow` and `aggregateCol` to `plotSCEHeatmap()`
+* Updated output metadata structure of QC functions, as well as `combineSCE()` which merges the new structure properly
 * Refined batch correction function set
+* Fixed bugs related to UI and console functions
 
 Changes in Version 2.7.1 (2022-06-29)
 ================================================================================

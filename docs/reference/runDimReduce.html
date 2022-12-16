@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.3</span>
       </span>
     </div>
 
@@ -199,20 +199,20 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">runDimReduce</span><span class="op">(</span>
-  <span class="va">inSCE</span>,
-  method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"scaterPCA"</span>, <span class="st">"seuratPCA"</span>, <span class="st">"seuratICA"</span>, <span class="st">"rTSNE"</span>, <span class="st">"seuratTSNE"</span>,
-    <span class="st">"scaterUMAP"</span>, <span class="st">"seuratUMAP"</span><span class="op">)</span>,
-  useAssay <span class="op">=</span> <span class="cn">NULL</span>,
-  useReducedDim <span class="op">=</span> <span class="cn">NULL</span>,
-  useAltExp <span class="op">=</span> <span class="cn">NULL</span>,
-  reducedDimName <span class="op">=</span> <span class="va">method</span>,
-  nComponents <span class="op">=</span> <span class="fl">20</span>,
-  useFeatureSubset <span class="op">=</span> <span class="cn">NULL</span>,
-  scale <span class="op">=</span> <span class="cn">FALSE</span>,
-  seed <span class="op">=</span> <span class="cn">NULL</span>,
-  <span class="va">...</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">runDimReduce</span><span class="op">(</span></span>
+<span>  <span class="va">inSCE</span>,</span>
+<span>  method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"scaterPCA"</span>, <span class="st">"seuratPCA"</span>, <span class="st">"seuratICA"</span>, <span class="st">"rTSNE"</span>, <span class="st">"seuratTSNE"</span>, <span class="st">"scaterUMAP"</span>,</span>
+<span>    <span class="st">"seuratUMAP"</span><span class="op">)</span>,</span>
+<span>  useAssay <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  useReducedDim <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  useAltExp <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  reducedDimName <span class="op">=</span> <span class="va">method</span>,</span>
+<span>  nComponents <span class="op">=</span> <span class="fl">20</span>,</span>
+<span>  useFeatureSubset <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  scale <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  seed <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -254,9 +254,9 @@ use in the case of TSNE/UMAP methods.</p></dd>
 
 
 <dt>useFeatureSubset</dt>
-<dd><p>Subset of feature to use for dimension reduction. A 
+<dd><p>Subset of feature to use for dimension reduction. A
 character string indicating a <code>rowData</code> variable that stores the logical
-vector of HVG selection, or a vector that can subset the rows of 
+vector of HVG selection, or a vector that can subset the rows of
 <code>inSCE</code>. Default <code>NULL</code>.</p></dd>
 
 
@@ -286,8 +286,8 @@ to the one you use.</p></dd>
     <h2>Details</h2>
     <p>Wrapper function to run one of the available dimensionality
 reduction algorithms integrated within SCTK from <code><a href="scaterPCA.html">scaterPCA</a></code>,
-<code><a href="runSeuratPCA.html">runSeuratPCA</a></code>, <code><a href="runSeuratICA.html">runSeuratICA</a></code>, <code><a href="getTSNE.html">getTSNE</a></code>,
-<code><a href="runSeuratTSNE.html">runSeuratTSNE</a></code>, <code><a href="getUMAP.html">getUMAP</a></code> and
+<code><a href="runSeuratPCA.html">runSeuratPCA</a></code>, <code><a href="runSeuratICA.html">runSeuratICA</a></code>, <code><a href="runTSNE.html">runTSNE</a></code>,
+<code><a href="runSeuratTSNE.html">runSeuratTSNE</a></code>, <code><a href="runUMAP.html">runUMAP</a></code> and
 <code><a href="runSeuratUMAP.html">runSeuratUMAP</a></code>. Users can use an assay by specifying
 <code>useAssay</code>, use the assay in an altExp by specifying both
 <code>useAltExp</code> and <code>useAssay</code>, or use a low-dimensionality
@@ -296,16 +296,16 @@ representation by specifying <code>useReducedDim</code>.</p>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">scExample</span>, package <span class="op">=</span> <span class="st">"singleCellTK"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="subsetSCECols.html">subsetSCECols</a></span><span class="op">(</span><span class="va">sce</span>, colData <span class="op">=</span> <span class="st">"type != 'EmptyDroplet'"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="runNormalization.html">runNormalization</a></span><span class="op">(</span><span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"counts"</span>,</span>
-<span class="r-in">                        outAssayName <span class="op">=</span> <span class="st">"logcounts"</span>,</span>
-<span class="r-in">                        normalizationMethod <span class="op">=</span> <span class="st">"logNormCounts"</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">scExample</span>, package <span class="op">=</span> <span class="st">"singleCellTK"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="subsetSCECols.html">subsetSCECols</a></span><span class="op">(</span><span class="va">sce</span>, colData <span class="op">=</span> <span class="st">"type != 'EmptyDroplet'"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="runNormalization.html">runNormalization</a></span><span class="op">(</span><span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"counts"</span>,</span></span>
+<span class="r-in"><span>                        outAssayName <span class="op">=</span> <span class="st">"logcounts"</span>,</span></span>
+<span class="r-in"><span>                        normalizationMethod <span class="op">=</span> <span class="st">"logNormCounts"</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Normalization performed using logNormCounts method.</span>
-<span class="r-in"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu">runDimReduce</span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, method <span class="op">=</span> <span class="st">"scaterPCA"</span>,</span>
-<span class="r-in">                    useAssay <span class="op">=</span> <span class="st">"logcounts"</span>, scale <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span class="r-in">                    reducedDimName <span class="op">=</span> <span class="st">"PCA"</span><span class="op">)</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Jun 28 22:06:28 2022 ... Computing Scater PCA.</span>
+<span class="r-in"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu">runDimReduce</span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, method <span class="op">=</span> <span class="st">"scaterPCA"</span>,</span></span>
+<span class="r-in"><span>                    useAssay <span class="op">=</span> <span class="st">"logcounts"</span>, scale <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
+<span class="r-in"><span>                    reducedDimName <span class="op">=</span> <span class="st">"PCA"</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Oct 25 15:46:35 2022 ... Computing Scater PCA.</span>
 </code></pre></div>
     </div>
   </div>
@@ -320,7 +320,7 @@ representation by specifying <code>useReducedDim</code>.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

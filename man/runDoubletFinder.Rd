@@ -6,8 +6,8 @@
 \usage{
 runDoubletFinder(
   inSCE,
-  useAssay = "counts",
   sample = NULL,
+  useAssay = "counts",
   seed = 12345,
   seuratNfeatures = 2000,
   seuratPcs = seq(15),
@@ -18,35 +18,39 @@ runDoubletFinder(
 )
 }
 \arguments{
-\item{inSCE}{Input SingleCellExperiment object. Must contain a counts matrix}
+\item{inSCE}{inSCE A \linkS4class{SingleCellExperiment} object.}
 
-\item{useAssay}{Indicate which assay to use. Default "counts".}
+\item{sample}{Character vector or colData variable name. Indicates which 
+sample each cell belongs to. Default \code{NULL}.}
 
-\item{sample}{Numeric vector. Each cell will be assigned a sample number.}
+\item{useAssay}{A string specifying which assay in the SCE to use. Default 
+\code{"counts"}.}
 
-\item{seed}{Seed for the random number generator. Default 12345.}
+\item{seed}{Seed for the random number generator, can be set to \code{NULL}. 
+Default \code{12345}.}
 
 \item{seuratNfeatures}{Integer. Number of highly variable genes to use.
-Default 2000.}
+Default \code{2000}.}
 
 \item{seuratPcs}{Numeric vector. The PCs used in seurat function to
-determine number of clusters. Default 1:15.}
+determine number of clusters. Default \code{1:15}.}
 
-\item{seuratRes}{Numeric vector. The resolution parameter used in seurat,
-which adjusts the number of clusters determined via the algorithm.
-Default 1.5.}
+\item{seuratRes}{Numeric vector. The resolution parameter used in Seurat,
+which adjusts the number of clusters determined via the algorithm. Default 
+\code{1.5}.}
 
-\item{formationRate}{Doublet formation rate used within algorithm.
-Default 0.075.}
+\item{formationRate}{Doublet formation rate used within algorithm. Default 
+\code{0.075}.}
 
-\item{nCores}{Number of cores used for running the function.}
+\item{nCores}{Number of cores used for running the function. Default 
+\code{NULL}.}
 
-\item{verbose}{Boolean. Wheter to print messages from Seurat and
-DoubletFinder. Default FALSE.}
+\item{verbose}{Boolean. Wheter to print messages from Seurat and 
+DoubletFinder. Default \code{FALSE}.}
 }
 \value{
-SingleCellExperiment object containing the
- 'doublet_finder_doublet_score'.
+\linkS4class{SingleCellExperiment} object containing the
+\code{doublet_finder_doublet_score} variable in \code{colData} slot.
 }
 \description{
 Uses doubletFinder to determine cells within the dataset
@@ -56,4 +60,7 @@ Uses doubletFinder to determine cells within the dataset
 data(scExample, package = "singleCellTK")
 sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 sce <- runDoubletFinder(sce)
+}
+\seealso{
+\code{\link{runCellQC}}, \code{\link{plotDoubletFinderResults}}
 }

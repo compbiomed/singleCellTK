@@ -17,42 +17,51 @@ runCxds(
 )
 }
 \arguments{
-\item{inSCE}{A \link[SingleCellExperiment]{SingleCellExperiment} object.
-Needs \code{counts} in assays slot.}
+\item{inSCE}{A \linkS4class{SingleCellExperiment} object.}
 
-\item{sample}{Character vector. Indicates which sample each cell belongs to.
-\link[scds]{cxds} will be run on cells from each sample
-separately. If NULL, then all cells will be processed together.
-Default NULL.}
+\item{sample}{Character vector or colData variable name. Indicates which 
+sample each cell belongs to. Default \code{NULL}.}
 
-\item{seed}{Seed for the random number generator. Default 12345.}
+\item{seed}{Seed for the random number generator, can be \code{NULL}. Default
+\code{12345}.}
 
 \item{ntop}{See \link[scds]{cxds} for more information. Default \code{500}.}
 
-\item{binThresh}{See \link[scds]{cxds} for more information. Default \code{0}.}
+\item{binThresh}{See \link[scds]{cxds} for more information. Default 
+\code{0}.}
 
 \item{verb}{See \link[scds]{cxds} for more information. Default \code{FALSE}.}
 
-\item{retRes}{See \link[scds]{cxds} for more information. Default \code{FALSE}.}
+\item{retRes}{See \link[scds]{cxds} for more information. Default 
+\code{FALSE}.}
 
-\item{estNdbl}{See \link[scds]{cxds} for more information. Default \code{FALSE}.}
+\item{estNdbl}{See \link[scds]{cxds} for more information. Default 
+\code{FALSE}.}
 
-\item{useAssay}{A string specifying which assay in the SCE to use.}
+\item{useAssay}{A string specifying which assay in the SCE to use. Default 
+\code{"counts"}}
 }
 \value{
-A \link[SingleCellExperiment]{SingleCellExperiment} object with
- \link[scds]{cxds} output appended to the
- \link{colData} slot. The columns include
- \emph{cxds_score} and optionally \emph{cxds_call}.
- Please refer to the documentation of \link[scds]{cxds} for details.
+A \linkS4class{SingleCellExperiment} object with \link[scds]{cxds} 
+output appended to the \link{colData} slot. The columns include 
+\emph{cxds_score} and optionally \emph{cxds_call}.
 }
 \description{
 A wrapper function for \link[scds]{cxds}. Annotate
- doublets/multiplets using co-expression based approach. Generate a doublet
- score for each cell. Infer doublets if \code{estNdbl} is \code{TRUE}.
+doublets/multiplets using co-expression based approach. Generate a doublet
+score for each cell. Infer doublets if \code{estNdbl} is \code{TRUE}.
+}
+\details{
+When the argument \code{sample} is specified, \link[scds]{cxds} will
+be run on cells from each sample separately. If \code{sample = NULL}, then 
+all cells will be processed together.
 }
 \examples{
 data(scExample, package = "singleCellTK")
 sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 sce <- runCxds(sce)
+}
+\seealso{
+\code{\link[scds]{cxds}}, \code{\link{plotCxdsResults}}, 
+\code{\link{runCellQC}}
 }

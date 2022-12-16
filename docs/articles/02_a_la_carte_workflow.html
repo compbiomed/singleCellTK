@@ -34,7 +34,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.3</span>
       </span>
     </div>
 
@@ -299,8 +299,8 @@ bottom right without taking any more action.</li>
 <p>SCTK has a generic wrapper function for various types of
 normalization, called <code><a href="../reference/runNormalization.html">runNormalization()</a></code>.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runNormalization.html">runNormalization</a></span><span class="op">(</span><span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"counts"</span>, outAssayName <span class="op">=</span> <span class="st">"logcounts"</span>,
-                        normalizationMethod <span class="op">=</span> <span class="st">"logNormCounts"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runNormalization.html">runNormalization</a></span><span class="op">(</span><span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"counts"</span>, outAssayName <span class="op">=</span> <span class="st">"logcounts"</span>,</span>
+<span>                        normalizationMethod <span class="op">=</span> <span class="st">"logNormCounts"</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
 <p>SCTK also supports a number of batch correction methods. Here we
@@ -389,18 +389,18 @@ wrapper function of each method (<code><a href="../reference/runSeuratFindHVG.ht
 <code><a href="../reference/runFeatureSelection.html">runFeatureSelection()</a></code> with argument <code>method</code>
 specified.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runModelGeneVar.html">runModelGeneVar</a></span><span class="op">(</span><span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"logcounts"</span><span class="op">)</span>
-<span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getTopHVG.html">setTopHVG</a></span><span class="op">(</span><span class="va">sce</span>, method <span class="op">=</span> <span class="st">"modelGeneVar"</span>, hvgNumber <span class="op">=</span> <span class="fl">2000</span>, featureSubsetName <span class="op">=</span> <span class="st">"hvg2000"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runModelGeneVar.html">runModelGeneVar</a></span><span class="op">(</span><span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"logcounts"</span><span class="op">)</span></span>
+<span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getTopHVG.html">setTopHVG</a></span><span class="op">(</span><span class="va">sce</span>, method <span class="op">=</span> <span class="st">"modelGeneVar"</span>, hvgNumber <span class="op">=</span> <span class="fl">2000</span>, featureSubsetName <span class="op">=</span> <span class="st">"hvg2000"</span><span class="op">)</span></span></code></pre></div>
 <p>Users can also get the character vector of gene names:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">hvg</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getTopHVG.html">getTopHVG</a></span><span class="op">(</span><span class="va">sce</span>, useFeatureSubset <span class="op">=</span> <span class="st">"hvg2000"</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">hvg</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">]</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">##  [1] "LYZ"     "S100A9"  "FTL"     "HLA-DRA" "CD74"    "CST3"    "S100A8" </span>
-<span class="co">##  [8] "FTH1"    "NKG7"    "TYROBP"</span></code></pre>
+<code class="sourceCode R"><span><span class="va">hvg</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getTopHVG.html">getTopHVG</a></span><span class="op">(</span><span class="va">sce</span>, useFeatureSubset <span class="op">=</span> <span class="st">"hvg2000"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">hvg</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">##  [1] "LYZ"     "S100A9"  "FTL"     "HLA-DRA" "CD74"    "CST3"    "S100A8" </span></span>
+<span><span class="co">##  [8] "FTH1"    "NKG7"    "TYROBP"</span></span></code></pre>
 <p>The variability metrics and the top variable feature selection can
 also be visualized:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/plotTopHVG.html">plotTopHVG</a></span><span class="op">(</span><span class="va">sce</span>, method <span class="op">=</span> <span class="st">"modelGeneVar"</span>, hvgNumber <span class="op">=</span> <span class="fl">2000</span>, labelsCount <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plotTopHVG.html">plotTopHVG</a></span><span class="op">(</span><span class="va">sce</span>, method <span class="op">=</span> <span class="st">"modelGeneVar"</span>, hvgNumber <span class="op">=</span> <span class="fl">2000</span>, labelsCount <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></code></pre></div>
 <p><img src="02_a_la_carte_workflow_files/figure-html/plotTopHVG-1.png" width="700"></p>
 </div>
 </div>
@@ -478,11 +478,11 @@ setting <code>scale = TRUE</code> (default). The output PCs will be
 updated in the <code>reducedDims</code> slot of the SCE object, named by
 <code>"PCA"</code> by default.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/scaterPCA.html">scaterPCA</a></span><span class="op">(</span><span class="va">sce</span>, useFeatureSubset <span class="op">=</span> <span class="st">"hvg2000"</span>, seed <span class="op">=</span> <span class="fl">12345</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/scaterPCA.html">scaterPCA</a></span><span class="op">(</span><span class="va">sce</span>, useFeatureSubset <span class="op">=</span> <span class="st">"hvg2000"</span>, seed <span class="op">=</span> <span class="fl">12345</span><span class="op">)</span></span></code></pre></div>
 <p>Afterwards, users can make scatter plots to visualize the top
 dimensions that explains the most variance of the original data:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/plotDimRed.html">plotDimRed</a></span><span class="op">(</span><span class="va">sce</span>, useReduction <span class="op">=</span> <span class="st">"PCA"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plotDimRed.html">plotDimRed</a></span><span class="op">(</span><span class="va">sce</span>, useReduction <span class="op">=</span> <span class="st">"PCA"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="02_a_la_carte_workflow_files/figure-html/plotPCA-1.png" width="700"></p>
 </div>
 </div>
@@ -527,18 +527,23 @@ on button <strong>“Run”</strong> to start the UMAP calculation.</li>
 shown on the right panel.</p>
 </div>
 <div class="tabcontent console">
-<p>A UMAP can be generated with the function <code><a href="../reference/getUMAP.html">getUMAP()</a></code>,
+<p>A UMAP can be generated with the function <code><a href="../reference/runUMAP.html">runUMAP()</a></code>,
 which is a wrapper of <code><a href="https://rdrr.io/pkg/scater/man/runUMAP.html" class="external-link">scater::calculateUMAP()</a></code> method. We
 will now use <code>useReducedDim</code> argument to pass the PCA
 embedding just generated to the function. The result will be saved in
 <code>reducedDim</code> slot.</p>
-<p>Users can also create the tSNE embedding with <code><a href="../reference/getTSNE.html">getTSNE()</a></code>
-function, which works in a similar way as <code><a href="../reference/getUMAP.html">getUMAP()</a></code></p>
+<p>Users can also create the tSNE embedding with <code><a href="../reference/runTSNE.html">runTSNE()</a></code>
+function, which works in a similar way as <code><a href="../reference/runUMAP.html">runUMAP()</a></code></p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getUMAP.html">getUMAP</a></span><span class="op">(</span><span class="va">sce</span>, useReducedDim <span class="op">=</span> <span class="st">"PCA"</span>, initialDims <span class="op">=</span> <span class="fl">10</span>, seed <span class="op">=</span> <span class="fl">12345</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runUMAP.html">runUMAP</a></span><span class="op">(</span><span class="va">sce</span>, initialDims <span class="op">=</span> <span class="fl">10</span>, seed <span class="op">=</span> <span class="fl">12345</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/plotDimRed.html">plotDimRed</a></span><span class="op">(</span><span class="va">sce</span>, useReduction <span class="op">=</span> <span class="st">"UMAP"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plotDimRed.html">plotDimRed</a></span><span class="op">(</span><span class="va">sce</span>, useReduction <span class="op">=</span> <span class="st">"UMAP"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="02_a_la_carte_workflow_files/figure-html/plotUMAP-1.png" width="700"></p>
+<p>Note that we have another two functions <code><a href="../reference/runUMAP.html">runQuickUMAP()</a></code>
+and <code><a href="../reference/runTSNE.html">runQuickTSNE()</a></code>, which wrap the two functions mentioned
+above, respectively, and run directly from raw count matrix with all
+steps in the workflow automated internally. They can help with fast
+visualization at the beginning of an analysis.</p>
 </div>
 </div>
 </div>
@@ -613,11 +618,11 @@ slot, and the variable will be named by argument
 Louvain, while we also provide options including Leiden, Walktrap and
 etc. (from <code>igraph</code>).</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runScranSNN.html">runScranSNN</a></span><span class="op">(</span><span class="va">sce</span>, <span class="st">"PCA"</span>, clusterName <span class="op">=</span> <span class="st">"cluster"</span>, nComp <span class="op">=</span> <span class="fl">10</span>,
-                   weightType <span class="op">=</span> <span class="st">"jaccard"</span>, k <span class="op">=</span> <span class="fl">14</span>, seed <span class="op">=</span> <span class="fl">12345</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runScranSNN.html">runScranSNN</a></span><span class="op">(</span><span class="va">sce</span>, <span class="st">"PCA"</span>, clusterName <span class="op">=</span> <span class="st">"cluster"</span>, nComp <span class="op">=</span> <span class="fl">10</span>,</span>
+<span>                   weightType <span class="op">=</span> <span class="st">"jaccard"</span>, k <span class="op">=</span> <span class="fl">14</span>, seed <span class="op">=</span> <span class="fl">12345</span><span class="op">)</span></span></code></pre></div>
 <p>After getting the cluster labeling, we can then visualize it:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/plotSCEDimReduceColData.html">plotSCEDimReduceColData</a></span><span class="op">(</span><span class="va">sce</span>, <span class="st">"cluster"</span>, <span class="st">"UMAP"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plotSCEDimReduceColData.html">plotSCEDimReduceColData</a></span><span class="op">(</span><span class="va">sce</span>, <span class="st">"cluster"</span>, <span class="st">"UMAP"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="02_a_la_carte_workflow_files/figure-html/plotCluster-1.png" width="700"></p>
 </div>
 </div>
@@ -670,38 +675,38 @@ dropdown menu or filter module, respectively.</p>
 </div>
 <div class="tabcontent console">
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/findMarkerDiffExp.html">findMarkerDiffExp</a></span><span class="op">(</span><span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"logcounts"</span>, method <span class="op">=</span> <span class="st">"wilcox"</span>, cluster <span class="op">=</span> <span class="st">"cluster"</span><span class="op">)</span></code></pre></div>
-<p>By running <code><a href="../reference/findMarkerDiffExp.html">findMarkerDiffExp()</a></code>, SCTK stores a
+<code class="sourceCode R"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runFindMarker.html">runFindMarker</a></span><span class="op">(</span><span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"logcounts"</span>, method <span class="op">=</span> <span class="st">"wilcox"</span>, cluster <span class="op">=</span> <span class="st">"cluster"</span><span class="op">)</span></span></code></pre></div>
+<p>By running <code><a href="../reference/runFindMarker.html">runFindMarker()</a></code>, SCTK stores a
 <code>data.frame</code> of marker table to the <code>matadata</code>
 slot of the SCE object. The marker table will include all detected
 markers for each cluster and statistical values associated to each
 marker. To fetch the table, users can use the command below, and even
 add filtering parameters.</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">topMarkers</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/findMarkerTopTable.html">findMarkerTopTable</a></span><span class="op">(</span><span class="va">sce</span>, topN <span class="op">=</span> <span class="fl">1</span>, log2fcThreshold <span class="op">=</span> <span class="fl">0</span>, fdrThreshold <span class="op">=</span> <span class="fl">0.05</span>,
-                                 minClustExprPerc <span class="op">=</span> <span class="fl">0.5</span>, maxCtrlExprPerc <span class="op">=</span> <span class="fl">0.5</span>,
-                                 minMeanExpr <span class="op">=</span> <span class="fl">0</span><span class="op">)</span>
-<span class="va">topMarkers</span></code></pre></div>
-<pre><code><span class="co">##           Gene   Log2_FC        Pvalue           FDR cluster clusterExprPerc</span>
-<span class="co">## 8764      IL7R 0.8117772  9.627633e-63  5.253157e-59       1       0.7500000</span>
-<span class="co">## 198011    CD3E 0.6404728  4.261088e-42  1.660708e-39       2       0.7769517</span>
-<span class="co">## 1956    S100A9 4.3853548 2.397248e-207 3.924055e-203       3       0.9977064</span>
-<span class="co">## 106781 HLA-DRA 3.2752984 1.682895e-182 2.754731e-178       4       1.0000000</span>
-<span class="co">## 26825     CCL5 3.0924934 1.691729e-148 5.538382e-144       5       0.9712644</span>
-<span class="co">## 106091    LST1 2.8683989  1.038405e-98  1.133177e-94       6       1.0000000</span>
-<span class="co">## 310761    NKG7 4.2398710  3.256027e-82  1.065958e-77       7       1.0000000</span>
-<span class="co">## 288182    CST3 3.2975861  2.221917e-16  1.039159e-12       8       1.0000000</span>
-<span class="co">## 7697      PPBP 5.9620589  9.423341e-07  2.504757e-03       9       1.0000000</span>
-<span class="co">##        ControlExprPerc clusterAveExpr</span>
-<span class="co">## 8764        0.31156265       1.266208</span>
-<span class="co">## 198011      0.41455242       1.272202</span>
-<span class="co">## 1956        0.23094477       4.733569</span>
-<span class="co">## 106781      0.49538867       4.406597</span>
-<span class="co">## 26825       0.21676174       3.470436</span>
-<span class="co">## 106091      0.30477759       3.454109</span>
-<span class="co">## 310761      0.25687702       4.781861</span>
-<span class="co">## 288182      0.39113680       4.371755</span>
-<span class="co">## 7697        0.02406417       5.989445</span></code></pre>
+<code class="sourceCode R"><span><span class="va">topMarkers</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getFindMarkerTopTable.html">getFindMarkerTopTable</a></span><span class="op">(</span><span class="va">sce</span>, topN <span class="op">=</span> <span class="fl">1</span>, log2fcThreshold <span class="op">=</span> <span class="fl">0</span>, </span>
+<span>                                    fdrThreshold <span class="op">=</span> <span class="fl">0.05</span>, minClustExprPerc <span class="op">=</span> <span class="fl">0.5</span>, </span>
+<span>                                    maxCtrlExprPerc <span class="op">=</span> <span class="fl">0.5</span>, minMeanExpr <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span>
+<span><span class="va">topMarkers</span></span></code></pre></div>
+<pre><code><span><span class="co">##           Gene   Log2_FC        Pvalue           FDR cluster clusterExprPerc</span></span>
+<span><span class="co">## 8764      IL7R 0.8117772  4.180664e-79  4.562219e-75       1       0.7500000</span></span>
+<span><span class="co">## 198011    CD3E 0.6404728  6.193289e-53  2.938491e-50       2       0.7769517</span></span>
+<span><span class="co">## 1956    S100A9 4.3853548 1.686234e-262 5.520393e-258       3       0.9977064</span></span>
+<span><span class="co">## 106781 HLA-DRA 3.2752984 1.682895e-182 1.836488e-178       4       1.0000000</span></span>
+<span><span class="co">## 26825     CCL5 3.0924934 7.429786e-188 2.432363e-183       5       0.9712644</span></span>
+<span><span class="co">## 106091    LST1 2.8683989 1.035264e-124 3.389247e-120       6       1.0000000</span></span>
+<span><span class="co">## 310761    NKG7 4.2398710 8.586372e-104  2.811007e-99       7       1.0000000</span></span>
+<span><span class="co">## 288182    CST3 3.2975861  2.308760e-20  1.511684e-16       8       1.0000000</span></span>
+<span><span class="co">## 7697      PPBP 5.9620589  3.332310e-08  1.747705e-04       9       1.0000000</span></span>
+<span><span class="co">##        ControlExprPerc clusterAveExpr</span></span>
+<span><span class="co">## 8764        0.31156265       1.266208</span></span>
+<span><span class="co">## 198011      0.41455242       1.272202</span></span>
+<span><span class="co">## 1956        0.23094477       4.733569</span></span>
+<span><span class="co">## 106781      0.49538867       4.406597</span></span>
+<span><span class="co">## 26825       0.21676174       3.470436</span></span>
+<span><span class="co">## 106091      0.30477759       3.454109</span></span>
+<span><span class="co">## 310761      0.25687702       4.781861</span></span>
+<span><span class="co">## 288182      0.39113680       4.371755</span></span>
+<span><span class="co">## 7697        0.02406417       5.989445</span></span></code></pre>
 <p>For visualization, SCTK has a specific heatmap plotting function for
 detected markers. The heatmap will take the log-normalized feature
 expression matrix for the values (scaled when plotting), and subset the
@@ -709,10 +714,10 @@ features to only the top markers of each cluster. For the organization
 of the heatmap, the function groups the markers by the belonging to the
 clusters, and groups the cells, obviously, by clusters.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/plotMarkerDiffExp.html">plotMarkerDiffExp</a></span><span class="op">(</span><span class="va">sce</span>, topN <span class="op">=</span> <span class="fl">5</span>, log2fcThreshold <span class="op">=</span> <span class="fl">0.5</span>, 
-                  fdrThreshold <span class="op">=</span> <span class="fl">0.05</span>, minClustExprPerc <span class="op">=</span> <span class="fl">0.5</span>, 
-                  maxCtrlExprPerc <span class="op">=</span> <span class="fl">0.5</span>, minMeanExpr <span class="op">=</span> <span class="fl">0</span>, 
-                  rowLabel <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plotFindMarkerHeatmap.html">plotFindMarkerHeatmap</a></span><span class="op">(</span><span class="va">sce</span>, topN <span class="op">=</span> <span class="fl">5</span>, log2fcThreshold <span class="op">=</span> <span class="fl">0.5</span>, </span>
+<span>                      fdrThreshold <span class="op">=</span> <span class="fl">0.05</span>, minClustExprPerc <span class="op">=</span> <span class="fl">0.5</span>, </span>
+<span>                      maxCtrlExprPerc <span class="op">=</span> <span class="fl">0.5</span>, minMeanExpr <span class="op">=</span> <span class="fl">0</span>, </span>
+<span>                      rowLabel <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p><img src="02_a_la_carte_workflow_files/figure-html/markerHeatmap-1.png" width="864"></p>
 </div>
 </div>
@@ -786,15 +791,15 @@ dropdown menu of a plot or the filtering module of the table.</p>
 <div class="tabcontent console">
 <p><code><a href="../reference/runDEAnalysis.html">runDEAnalysis()</a></code> is a generic function for performing
 differential expression (DE) analysis between two selected groups of
-cells. This is also used by <code><a href="../reference/findMarkerDiffExp.html">findMarkerDiffExp()</a></code>. By running
-DE analysis, the function will take the expression assay with all
-features and perform statistical analysis to discover quantitative
-changes in expression levels between selected groups.</p>
+cells. This is also used by <code><a href="../reference/runFindMarker.html">runFindMarker()</a></code>. By running DE
+analysis, the function will take the expression assay with all features
+and perform statistical analysis to discover quantitative changes in
+expression levels between selected groups.</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runDEAnalysis.html">runDEAnalysis</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, method <span class="op">=</span> <span class="st">"wilcox"</span>, useAssay <span class="op">=</span> <span class="st">"logcounts"</span>,
-                     class <span class="op">=</span> <span class="st">"cluster"</span>, classGroup1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span>, classGroup2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span>,
-                     groupName1 <span class="op">=</span> <span class="st">"cluster1"</span>, groupName2 <span class="op">=</span> <span class="st">"cluster2"</span>, 
-                     analysisName <span class="op">=</span> <span class="st">"cluster1_VS_2"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runDEAnalysis.html">runDEAnalysis</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, method <span class="op">=</span> <span class="st">"wilcox"</span>, useAssay <span class="op">=</span> <span class="st">"logcounts"</span>,</span>
+<span>                     class <span class="op">=</span> <span class="st">"cluster"</span>, classGroup1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span>, classGroup2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span>,</span>
+<span>                     groupName1 <span class="op">=</span> <span class="st">"cluster1"</span>, groupName2 <span class="op">=</span> <span class="st">"cluster2"</span>, </span>
+<span>                     analysisName <span class="op">=</span> <span class="st">"cluster1_VS_2"</span><span class="op">)</span></span></code></pre></div>
 <p>Similarly to the marker detection section, SCTK also has a DE
 analysis specific heatmap plotting function,
 <code><a href="../reference/plotDEGHeatmap.html">plotDEGHeatmap()</a></code>. Here, users can just easily enter the
@@ -804,7 +809,7 @@ automatically arrange the output. The heatmap is also splitted into a
 running <code><a href="../reference/runDEAnalysis.html">runDEAnalysis()</a></code>) and the “regulation” (i.e. “up” if
 the log2 fold change is positive in “group1” against “group2”).</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/plotDEGHeatmap.html">plotDEGHeatmap</a></span><span class="op">(</span><span class="va">sce</span>, useResult <span class="op">=</span> <span class="st">"cluster1_VS_2"</span>, log2fcThreshold <span class="op">=</span> <span class="fl">0.3</span>, rowLabel <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plotDEGHeatmap.html">plotDEGHeatmap</a></span><span class="op">(</span><span class="va">sce</span>, useResult <span class="op">=</span> <span class="st">"cluster1_VS_2"</span>, log2fcThreshold <span class="op">=</span> <span class="fl">0.3</span>, rowLabel <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p><img src="02_a_la_carte_workflow_files/figure-html/deHeatmap-1.png" width="700"></p>
 </div>
 </div>
@@ -871,7 +876,7 @@ UMAP</li>
 abbreviation name of them in argument <code>useBltinRef</code>. Please
 click on the function name for usage detail.</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runSingleR.html">runSingleR</a></span><span class="op">(</span><span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"logcounts"</span>, level <span class="op">=</span> <span class="st">"fine"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runSingleR.html">runSingleR</a></span><span class="op">(</span><span class="va">sce</span>, useAssay <span class="op">=</span> <span class="st">"logcounts"</span>, level <span class="op">=</span> <span class="st">"fine"</span><span class="op">)</span></span></code></pre></div>
 <p>The result of labeling will again be saved to <code>colData</code>
 slot of the SCE object. There will be multiple types of information
 being stored, including a scoring matrix named by
@@ -884,8 +889,8 @@ refers to the reference selected, <code>{level}</code> refers to the
 please refer to <code><a href="https://rdrr.io/pkg/SingleR/man/classifySingleR.html" class="external-link">?SingleR::classifySingleR</a></code>.</p>
 <p>We can also plot the labeling on to the UMAP we got previously.</p>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/plotSCEDimReduceColData.html">plotSCEDimReduceColData</a></span><span class="op">(</span><span class="va">sce</span>, colorBy <span class="op">=</span> <span class="st">"SingleR_hpca_fine_pruned.labels"</span>,
-                        reducedDimName <span class="op">=</span> <span class="st">"UMAP"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plotSCEDimReduceColData.html">plotSCEDimReduceColData</a></span><span class="op">(</span><span class="va">sce</span>, colorBy <span class="op">=</span> <span class="st">"SingleR_hpca_fine_pruned.labels"</span>,</span>
+<span>                        reducedDimName <span class="op">=</span> <span class="st">"UMAP"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="02_a_la_carte_workflow_files/figure-html/singleRUMAP-1.png" width="1152"></p>
 </div>
 </div>
@@ -905,23 +910,23 @@ examine whether there are any <a href="#clustering">cell clusters</a>
 enriched in an annotated cell type <a href="#cell-type-labeling">using
 SingleR</a>.</p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># Returns a vector where TRUE for a type of NK cell</span>
-<span class="va">isNKCell</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/startsWith.html" class="external-link">startsWith</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span><span class="op">$</span><span class="va">SingleR_hpca_fine_pruned.labels</span>, <span class="st">"NK_cell"</span><span class="op">)</span>
-<span class="co"># Returns a vector where TRUE for a type of T cell</span>
-<span class="va">isTCell</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/startsWith.html" class="external-link">startsWith</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span><span class="op">$</span><span class="va">SingleR_hpca_fine_pruned.labels</span>, <span class="st">"T_cell"</span><span class="op">)</span>
-<span class="co"># Make up a variable with only categories of "NK_cell", "T_cell" and "Other".</span>
-<span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span><span class="op">$</span><span class="va">cell_type</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">isNKCell</span>, <span class="st">"NK_cell"</span>, <span class="st">"Other"</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span><span class="op">$</span><span class="va">cell_type</span><span class="op">[</span><span class="va">isTCell</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"T_cell"</span>
-<span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span><span class="op">$</span><span class="va">cell_type</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span><span class="op">$</span><span class="va">cell_type</span><span class="op">)</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"Other"</span>
-<span class="co"># Run differential abundance test</span>
-<span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/diffAbundanceFET.html">diffAbundanceFET</a></span><span class="op">(</span><span class="va">sce</span>, cluster <span class="op">=</span> <span class="st">"cluster"</span>, 
-                        variable <span class="op">=</span> <span class="st">"cell_type"</span>, 
-                        case <span class="op">=</span> <span class="st">"NK_cell"</span>, control <span class="op">=</span> <span class="st">"T_cell"</span>,
-                        analysisName <span class="op">=</span> <span class="st">"NK_VS_T"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># Returns a vector where TRUE for a type of NK cell</span></span>
+<span><span class="va">isNKCell</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/startsWith.html" class="external-link">startsWith</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span><span class="op">$</span><span class="va">SingleR_hpca_fine_pruned.labels</span>, <span class="st">"NK_cell"</span><span class="op">)</span></span>
+<span><span class="co"># Returns a vector where TRUE for a type of T cell</span></span>
+<span><span class="va">isTCell</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/startsWith.html" class="external-link">startsWith</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span><span class="op">$</span><span class="va">SingleR_hpca_fine_pruned.labels</span>, <span class="st">"T_cell"</span><span class="op">)</span></span>
+<span><span class="co"># Make up a variable with only categories of "NK_cell", "T_cell" and "Other".</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span><span class="op">$</span><span class="va">cell_type</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">isNKCell</span>, <span class="st">"NK_cell"</span>, <span class="st">"Other"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span><span class="op">$</span><span class="va">cell_type</span><span class="op">[</span><span class="va">isTCell</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"T_cell"</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span><span class="op">$</span><span class="va">cell_type</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span><span class="op">$</span><span class="va">cell_type</span><span class="op">)</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"Other"</span></span>
+<span><span class="co"># Run differential abundance test</span></span>
+<span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/diffAbundanceFET.html">diffAbundanceFET</a></span><span class="op">(</span><span class="va">sce</span>, cluster <span class="op">=</span> <span class="st">"cluster"</span>, </span>
+<span>                        variable <span class="op">=</span> <span class="st">"cell_type"</span>, </span>
+<span>                        case <span class="op">=</span> <span class="st">"NK_cell"</span>, control <span class="op">=</span> <span class="st">"T_cell"</span>,</span>
+<span>                        analysisName <span class="op">=</span> <span class="st">"NK_VS_T"</span><span class="op">)</span></span></code></pre></div>
 <p>Users can get the table of result with the method below, using the
 <code>analysisName</code> specified when running the analysis.</p>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/getDiffAbundanceResults.html">getDiffAbundanceResults</a></span><span class="op">(</span><span class="va">sce</span>, analysisName <span class="op">=</span> <span class="st">"NK_VS_T"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/getDiffAbundanceResults.html">getDiffAbundanceResults</a></span><span class="op">(</span><span class="va">sce</span>, analysisName <span class="op">=</span> <span class="st">"NK_VS_T"</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <colgroup>
 <col width="2%">
@@ -1086,7 +1091,7 @@ automatically calculate the statistic and visualize the result. The
 proportion or count of each category in each cluster will be displayed
 in stacked bar plots:</p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/plotClusterAbundance.html">plotClusterAbundance</a></span><span class="op">(</span><span class="va">sce</span>, cluster <span class="op">=</span> <span class="st">"cluster"</span>, variable <span class="op">=</span> <span class="st">"cell_type"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plotClusterAbundance.html">plotClusterAbundance</a></span><span class="op">(</span><span class="va">sce</span>, cluster <span class="op">=</span> <span class="st">"cluster"</span>, variable <span class="op">=</span> <span class="st">"cell_type"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="02_a_la_carte_workflow_files/figure-html/plotClusterAbundance-1.png" width="700"></p>
 </div>
 <div class="section level2">
@@ -1140,20 +1145,20 @@ apply the changes.</p>
 </div>
 <div class="tabcontent console">
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/importGeneSetsFromMSigDB.html">importGeneSetsFromMSigDB</a></span><span class="op">(</span><span class="va">sce</span>, categoryIDs <span class="op">=</span> <span class="st">"H"</span>, species <span class="op">=</span> <span class="st">"Homo sapiens"</span><span class="op">)</span>
-<span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runVAM.html">runVAM</a></span><span class="op">(</span><span class="va">sce</span>, geneSetCollectionName <span class="op">=</span> <span class="st">"H"</span>, useAssay <span class="op">=</span> <span class="st">"logcounts"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/importGeneSetsFromMSigDB.html">importGeneSetsFromMSigDB</a></span><span class="op">(</span><span class="va">sce</span>, categoryIDs <span class="op">=</span> <span class="st">"H"</span>, species <span class="op">=</span> <span class="st">"Homo sapiens"</span><span class="op">)</span></span>
+<span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runVAM.html">runVAM</a></span><span class="op">(</span><span class="va">sce</span>, geneSetCollectionName <span class="op">=</span> <span class="st">"H"</span>, useAssay <span class="op">=</span> <span class="st">"logcounts"</span><span class="op">)</span></span></code></pre></div>
 <p>To visualize the result, we simply adopt a violin plot to show the
 distribution of the CDF scores of the cells, which can be, optionally,
 grouped by the cluster labels.</p>
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">hallmark</span> <span class="op">&lt;-</span> <span class="st">"HALLMARK_INFLAMMATORY_RESPONSE"</span>
-<span class="fu"><a href="../reference/plotPathway.html">plotPathway</a></span><span class="op">(</span><span class="va">sce</span>, resultName <span class="op">=</span> <span class="st">"VAM_H_CDF"</span>, geneset <span class="op">=</span> <span class="va">hallmark</span>, groupBy <span class="op">=</span> <span class="st">"cluster"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">hallmark</span> <span class="op">&lt;-</span> <span class="st">"HALLMARK_INFLAMMATORY_RESPONSE"</span></span>
+<span><span class="fu"><a href="../reference/plotPathway.html">plotPathway</a></span><span class="op">(</span><span class="va">sce</span>, resultName <span class="op">=</span> <span class="st">"VAM_H_CDF"</span>, geneset <span class="op">=</span> <span class="va">hallmark</span>, groupBy <span class="op">=</span> <span class="st">"cluster"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="02_a_la_carte_workflow_files/figure-html/visVAM-1.png" width="700"></p>
 <p>Note that available options for argument <code>resultName</code> and
 <code>geneset</code> can be printed with getter functions below.</p>
 <div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/getPathwayResultNames.html">getPathwayResultNames</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span>
-<span class="fu"><a href="../reference/getGenesetNamesFromCollection.html">getGenesetNamesFromCollection</a></span><span class="op">(</span><span class="va">sce</span>, geneSetCollectionName <span class="op">=</span> <span class="st">"H"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/getPathwayResultNames.html">getPathwayResultNames</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/getGenesetNamesFromCollection.html">getGenesetNamesFromCollection</a></span><span class="op">(</span><span class="va">sce</span>, geneSetCollectionName <span class="op">=</span> <span class="st">"H"</span><span class="op">)</span></span></code></pre></div>
 <blockquote>
 <p>Note: In the current version of SCTK, the returned score matrices
 from either VAM or GSVA are stored in the <code>reducedDims</code> slot,
@@ -1204,16 +1209,16 @@ users only need to simply specify the matrix name to argument
 <code>useReducedDim</code> (<code>useAssay</code> will be ignored in
 this case).</p>
 <div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runDEAnalysis.html">runDEAnalysis</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, method <span class="op">=</span> <span class="st">"wilcox"</span>, useReducedDim <span class="op">=</span> <span class="st">"VAM_H_CDF"</span>,
-                     class <span class="op">=</span> <span class="st">"cluster"</span>, classGroup1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">5</span><span class="op">)</span>, classGroup2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">6</span><span class="op">)</span>,
-                     groupName1 <span class="op">=</span> <span class="st">"T_cells"</span>, groupName2 <span class="op">=</span> <span class="st">"monocytes"</span>, 
-                     analysisName <span class="op">=</span> <span class="st">"T_cells_VS_monocytes_VAM_H_CDF"</span>, overwrite<span class="op">=</span><span class="cn">T</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runDEAnalysis.html">runDEAnalysis</a></span><span class="op">(</span>inSCE <span class="op">=</span> <span class="va">sce</span>, method <span class="op">=</span> <span class="st">"wilcox"</span>, useReducedDim <span class="op">=</span> <span class="st">"VAM_H_CDF"</span>,</span>
+<span>                     class <span class="op">=</span> <span class="st">"cluster"</span>, classGroup1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">5</span><span class="op">)</span>, classGroup2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">6</span><span class="op">)</span>,</span>
+<span>                     groupName1 <span class="op">=</span> <span class="st">"T_cells"</span>, groupName2 <span class="op">=</span> <span class="st">"monocytes"</span>, </span>
+<span>                     analysisName <span class="op">=</span> <span class="st">"T_cells_VS_monocytes_VAM_H_CDF"</span>, overwrite<span class="op">=</span><span class="cn">T</span><span class="op">)</span></span></code></pre></div>
 <p>As the nature of the pathway analysis score is different from a
 log-normalized gene expression value, the default cutoff for log2
 fold-change is likely to rule out all gene sets in this case. Therefore,
 we need to manually set a rather small value for this cutoff.</p>
 <div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/plotDEGHeatmap.html">plotDEGHeatmap</a></span><span class="op">(</span><span class="va">sce</span>, useResult <span class="op">=</span> <span class="st">"T_cells_VS_monocytes_VAM_H_CDF"</span>, rowTitle <span class="op">=</span> <span class="st">"Geneset"</span>, log2fcThreshold <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plotDEGHeatmap.html">plotDEGHeatmap</a></span><span class="op">(</span><span class="va">sce</span>, useResult <span class="op">=</span> <span class="st">"T_cells_VS_monocytes_VAM_H_CDF"</span>, rowTitle <span class="op">=</span> <span class="st">"Geneset"</span>, log2fcThreshold <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span></span></code></pre></div>
 <p><img src="02_a_la_carte_workflow_files/figure-html/pathwayDEHeatmap-1.png" width="864"></p>
 </div>
 </div>
@@ -1252,7 +1257,7 @@ for (var i = 0; i < ia_buttons.length; i++){
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer>

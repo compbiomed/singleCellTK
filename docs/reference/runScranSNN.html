@@ -20,7 +20,7 @@ construction by buildSNNGraph and graph clustering by
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.3</span>
       </span>
     </div>
 
@@ -205,23 +205,23 @@ construction by <code><a href="https://rdrr.io/pkg/scran/man/buildSNNGraph.html"
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">runScranSNN</span><span class="op">(</span>
-  <span class="va">inSCE</span>,
-  useReducedDim <span class="op">=</span> <span class="cn">NULL</span>,
-  useAssay <span class="op">=</span> <span class="cn">NULL</span>,
-  useAltExp <span class="op">=</span> <span class="cn">NULL</span>,
-  altExpAssay <span class="op">=</span> <span class="st">"counts"</span>,
-  altExpRedDim <span class="op">=</span> <span class="cn">NULL</span>,
-  clusterName <span class="op">=</span> <span class="st">"scranSNN_cluster"</span>,
-  k <span class="op">=</span> <span class="fl">8</span>,
-  nComp <span class="op">=</span> <span class="fl">10</span>,
-  weightType <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"rank"</span>, <span class="st">"number"</span>, <span class="st">"jaccard"</span><span class="op">)</span>,
-  algorithm <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"louvain"</span>, <span class="st">"leiden"</span>, <span class="st">"walktrap"</span>, <span class="st">"infomap"</span>, <span class="st">"fastGreedy"</span>, <span class="st">"labelProp"</span>,
-    <span class="st">"leadingEigen"</span><span class="op">)</span>,
-  BPPARAM <span class="op">=</span> <span class="fu">BiocParallel</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocParallel/man/SerialParam-class.html" class="external-link">SerialParam</a></span><span class="op">(</span><span class="op">)</span>,
-  seed <span class="op">=</span> <span class="fl">12345</span>,
-  <span class="va">...</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">runScranSNN</span><span class="op">(</span></span>
+<span>  <span class="va">inSCE</span>,</span>
+<span>  useReducedDim <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  useAssay <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  useAltExp <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  altExpAssay <span class="op">=</span> <span class="st">"counts"</span>,</span>
+<span>  altExpRedDim <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  clusterName <span class="op">=</span> <span class="st">"scranSNN_cluster"</span>,</span>
+<span>  k <span class="op">=</span> <span class="fl">8</span>,</span>
+<span>  nComp <span class="op">=</span> <span class="fl">10</span>,</span>
+<span>  weightType <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"rank"</span>, <span class="st">"number"</span>, <span class="st">"jaccard"</span><span class="op">)</span>,</span>
+<span>  algorithm <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"louvain"</span>, <span class="st">"leiden"</span>, <span class="st">"walktrap"</span>, <span class="st">"infomap"</span>, <span class="st">"fastGreedy"</span>, <span class="st">"labelProp"</span>,</span>
+<span>    <span class="st">"leadingEigen"</span><span class="op">)</span>,</span>
+<span>  BPPARAM <span class="op">=</span> <span class="fu">BiocParallel</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocParallel/man/SerialParam-class.html" class="external-link">SerialParam</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  seed <span class="op">=</span> <span class="fl">12345</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -347,11 +347,11 @@ components and pass them to the method.</p>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"mouseBrainSubsetSCE"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">mouseBrainSubsetSCE</span> <span class="op">&lt;-</span> <span class="fu">runScranSNN</span><span class="op">(</span><span class="va">mouseBrainSubsetSCE</span>,</span>
-<span class="r-in">                                   useReducedDim <span class="op">=</span> <span class="st">"PCA_logcounts"</span><span class="op">)</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Jun 28 22:07:24 2022 ... Running 'scran SNN clustering' with 'louvain' algorithm</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Jun 28 22:07:24 2022 ...   Identified 2 clusters</span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"mouseBrainSubsetSCE"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">mouseBrainSubsetSCE</span> <span class="op">&lt;-</span> <span class="fu">runScranSNN</span><span class="op">(</span><span class="va">mouseBrainSubsetSCE</span>,</span></span>
+<span class="r-in"><span>                                   useReducedDim <span class="op">=</span> <span class="st">"PCA_logcounts"</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Oct 25 15:47:15 2022 ... Running 'scran SNN clustering' with 'louvain' algorithm</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Tue Oct 25 15:47:15 2022 ...   Identified 2 clusters</span>
 </code></pre></div>
     </div>
   </div>
@@ -366,7 +366,7 @@ components and pass them to the method.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

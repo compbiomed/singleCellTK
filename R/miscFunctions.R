@@ -177,7 +177,7 @@ discreteColorPalette <- function(n, palette = c("random", "ggplot", "celda"),
   for (i in seq_len(chuN)) {
     start <- (i-1)*chuS + 1
     end <- min(i*chuS, dimN[2])
-    Mat[[i]] <- methods::as(x[, start:end], "dgCMatrix")
+    Mat[[i]] <- methods::as(x[, start:end], "CsparseMatrix")
   }
   x <- do.call(base::cbind, Mat)
   colnames(x) <- cn
@@ -187,6 +187,7 @@ discreteColorPalette <- function(n, palette = c("random", "ggplot", "celda"),
 }
 
 #' Deduplicate the rownames of a matrix or SingleCellExperiment object
+#' @description 
 #' Adds '-1', '-2', ... '-i' to multiple duplicated rownames, and in place
 #' replace the unique rownames, store unique rownames in \code{rowData}, or
 #' return the unique rownames as character vecetor.

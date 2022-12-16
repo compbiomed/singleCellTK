@@ -82,7 +82,7 @@
 #' sce <- subsetSCECols(sce, colData = "type != 'EmptyDroplet'")
 #' \dontrun{
 #' # SoupX does not work for toy example,
-#' # can be tested with `sce <- importExampleData("pbmc3k")`
+#' sce <- importExampleData("pbmc3k")
 #' sce <- runSoupX(sce, sample = "sample")
 #' }
 runSoupX <- function(inSCE,
@@ -110,7 +110,7 @@ runSoupX <- function(inSCE,
                      pCut = 0.01) {
     SingleBGBatchForAllBatch <- FALSE
     adjustMethod <- match.arg(adjustMethod)
-    if(!is.null(sample)) {
+    if (!is.null(sample)) {
         sample <- .manageCellVar(inSCE, var = sample)
         if (is.factor(sample)) {
             sample <- as.character(sample)
@@ -129,7 +129,7 @@ runSoupX <- function(inSCE,
                              "in background colData")
                     }
                     bgBatch <- SummarizedExperiment::colData(background)[[bgBatch]]
-                } else if(length(bgBatch) != ncol(background)) {
+                } else if (length(bgBatch) != ncol(background)) {
                     stop("'bgBatch' must be the same length as ",
                          "the number of columns in 'background'")
                 }
@@ -429,11 +429,11 @@ setMethod("getSoupX",
                    sampleID = NULL,
                    background = FALSE){
     if (isTRUE(background)) {
-        all.results <- S4Vectors::metadata(inSCE)$sctk$SoupX_bg
+        all.results <- S4Vectors::metadata(inSCE)$sctk$runSoupX_bg
     } else {
-        all.results <- S4Vectors::metadata(inSCE)$sctk$SoupX
+        all.results <- S4Vectors::metadata(inSCE)$sctk$runSoupX
     }
-    if(is.null(all.results)) {
+    if (is.null(all.results)) {
         stop("No result from 'SoupX' is found. Please run `runSoupX()` first, ",
              "or check the setting of `background`.")
     }
@@ -441,7 +441,8 @@ setMethod("getSoupX",
     if (!is.null(sampleID)) {
         if (!all(sampleID  %in% names(all.results))) {
             stop("Sample(s) not found in the results for tool 'SoupX': ",
-                 paste(sampleID[!sampleID %in% names(all.results)], collapse = ", "))
+                 paste(sampleID[!sampleID %in% names(all.results)], 
+                       collapse = ", "))
         }
         results <- all.results[sampleID]
     }
@@ -458,9 +459,9 @@ setReplaceMethod("getSoupX",
                           background = FALSE,
                           value) {
                      if (isTRUE(background)) {
-                         inSCE@metadata$sctk$SoupX_bg[[sampleID]] <- value
+                         inSCE@metadata$sctk$runSoupX_bg[[sampleID]] <- value
                      } else {
-                         inSCE@metadata$sctk$SoupX[[sampleID]] <- value
+                         inSCE@metadata$sctk$runSoupX[[sampleID]] <- value
                      }
                      return(inSCE)
                  })
@@ -549,17 +550,16 @@ plotSoupXResults <- function(inSCE,
                             )
 {
     combinePlot <- match.arg(combinePlot)
-    sampleID <- unique(sample)
-    results <- getSoupX(inSCE, sampleID = sampleID, background = background)
+    sample <- .manageCellVar(inSCE, var = sample)
+    samples <- unique(sample)
+    results <- getSoupX(inSCE, sampleID = samples, background = background)
     # Doing this redundancy-like step because: If sample given NULL when running
     # runSoupX(), the actual sample label saved will be "all_cells", which users
     # won't know.
-    samples <- names(results)
     samplePlots <- list()
     for (s in samples) {
-        sampleRes <- results[[s]]
-        param <- sampleRes$param
-        sampleIdx <- param$sample == s
+        param <- results[[s]]$param
+        sampleIdx <- sample == s
         tmpSCE <- inSCE[,sampleIdx]
         markerTable <- results[[s]]$markersUsed
         markerTable <- markerTable[order(markerTable$qval),]
@@ -574,7 +574,7 @@ plotSoupXResults <- function(inSCE,
         while (length(markerToUse) < nMarkerToUse) {
             nIter <- nIter + 1
             # c is the cluster to look at in this iteration
-            c <- uniqCluster[(nIter-1)%%length(uniqCluster) + 1]
+            c <- uniqCluster[(nIter - 1) %% length(uniqCluster) + 1]
             markerPerCluster <- markerTable[markerTable$cluster == c,]
             topMarker <- markerPerCluster[1, "gene"]
             markerToUse <- c(markerToUse, topMarker)
@@ -595,19 +595,19 @@ plotSoupXResults <- function(inSCE,
                                         title = "Cluster",
                                         labelClusters = labelClusters,
                                         clusterLabelSize = clusterLabelSize,
-                                        xlab=xlab,
-                                        ylab=ylab,
-                                        dim1=dim1,
-                                        dim2=dim2,
-                                        defaultTheme=defaultTheme,
-                                        dotSize=dotSize,
-                                        transparency=transparency,
-                                        baseSize=baseSize,
-                                        titleSize=titleSize,
-                                        axisLabelSize=axisLabelSize,
-                                        axisSize=axisSize,
-                                        legendSize=legendSize,
-                                        legendTitleSize=legendTitleSize)
+                                        xlab = xlab,
+                                        ylab = ylab,
+                                        dim1 = dim1,
+                                        dim2 = dim2,
+                                        defaultTheme = defaultTheme,
+                                        dotSize = dotSize,
+                                        transparency = transparency,
+                                        baseSize = baseSize,
+                                        titleSize = titleSize,
+                                        axisLabelSize = axisLabelSize,
+                                        axisSize = axisSize,
+                                        legendSize = legendSize,
+                                        legendTitleSize = legendTitleSize)
             )
         for (g in markerToUse) {
             # Soup fraction was calculated basing on SoupX's original method.

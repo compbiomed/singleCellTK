@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.3</span>
       </span>
     </div>
 
@@ -296,6 +296,18 @@
           <p><code><a href="runPerCellQC.html">runPerCellQC()</a></code> </p>
         </td>
         <td><p>Wrapper for calculating QC metrics with scater.</p></td>
+      </tr><tr><td>
+          <p><code><a href="reportDropletQC.html">reportDropletQC()</a></code> </p>
+        </td>
+        <td><p>Get runDropletQC .html report</p></td>
+      </tr><tr><td>
+          <p><code><a href="reportCellQC.html">reportCellQC()</a></code> </p>
+        </td>
+        <td><p>Get runCellQC .html report</p></td>
+      </tr><tr><td>
+          <p><code><a href="plotRunPerCellQCResults.html">plotRunPerCellQCResults()</a></code> </p>
+        </td>
+        <td><p>Plots for runPerCellQC outputs.</p></td>
       </tr></tbody><tbody><tr><th colspan="2">
           <h2 id="decontamination">Decontamination <a href="#decontamination" class="anchor" aria-hidden="true"></a></h2>
           <p class="section-desc"></p>
@@ -305,6 +317,10 @@
         </td>
         <td><p>Detecting contamination with DecontX.</p></td>
       </tr><tr><td>
+          <p><code><a href="plotDecontXResults.html">plotDecontXResults()</a></code> </p>
+        </td>
+        <td><p>Plots for runDecontX outputs.</p></td>
+      </tr><tr><td>
           <p><code><a href="runSoupX.html">runSoupX()</a></code> </p>
         </td>
         <td><p>Detecting and correct contamination with SoupX</p></td>
@@ -312,6 +328,10 @@
           <p><code><a href="getSoupX.html">`getSoupX&lt;-`()</a></code> <code><a href="getSoupX.html">getSoupX()</a></code> </p>
         </td>
         <td><p>Get or Set SoupX Result</p></td>
+      </tr><tr><td>
+          <p><code><a href="plotSoupXResults.html">plotSoupXResults()</a></code> </p>
+        </td>
+        <td><p>Plot SoupX Result</p></td>
       </tr></tbody><tbody><tr><th colspan="2">
           <h2 id="doublet-empty-droplet-detection">Doublet/Empty Droplet Detection <a href="#doublet-empty-droplet-detection" class="anchor" aria-hidden="true"></a></h2>
           <p class="section-desc"></p>
@@ -348,6 +368,38 @@
           <p><code><a href="runScrublet.html">runScrublet()</a></code> </p>
         </td>
         <td><p>Find doublets using <code>scrublet</code>.</p></td>
+      </tr><tr><td>
+          <p><code><a href="plotBarcodeRankDropsResults.html">plotBarcodeRankDropsResults()</a></code> </p>
+        </td>
+        <td><p>Plots for runBarcodeRankDrops outputs.</p></td>
+      </tr><tr><td>
+          <p><code><a href="plotEmptyDropsResults.html">plotEmptyDropsResults()</a></code> </p>
+        </td>
+        <td><p>Plots for runEmptyDrops outputs.</p></td>
+      </tr><tr><td>
+          <p><code><a href="plotBcdsResults.html">plotBcdsResults()</a></code> </p>
+        </td>
+        <td><p>Plots for runBcds outputs.</p></td>
+      </tr><tr><td>
+          <p><code><a href="plotCxdsResults.html">plotCxdsResults()</a></code> </p>
+        </td>
+        <td><p>Plots for runCxds outputs.</p></td>
+      </tr><tr><td>
+          <p><code><a href="plotScdsHybridResults.html">plotScdsHybridResults()</a></code> </p>
+        </td>
+        <td><p>Plots for runCxdsBcdsHybrid outputs.</p></td>
+      </tr><tr><td>
+          <p><code><a href="plotScDblFinderResults.html">plotScDblFinderResults()</a></code> </p>
+        </td>
+        <td><p>Plots for runScDblFinder outputs.</p></td>
+      </tr><tr><td>
+          <p><code><a href="plotDoubletFinderResults.html">plotDoubletFinderResults()</a></code> </p>
+        </td>
+        <td><p>Plots for runDoubletFinder outputs.</p></td>
+      </tr><tr><td>
+          <p><code><a href="plotScrubletResults.html">plotScrubletResults()</a></code> </p>
+        </td>
+        <td><p>Plots for runScrublet outputs.</p></td>
       </tr></tbody><tbody><tr><th colspan="2">
           <h2 id="normalization">Normalization <a href="#normalization" class="anchor" aria-hidden="true"></a></h2>
           <p class="section-desc"></p>
@@ -355,12 +407,7 @@
       </tr></tbody><tbody><tr><td>
           <p><code><a href="runNormalization.html">runNormalization()</a></code> </p>
         </td>
-        <td><p>Wrapper function to run any of the integrated normalization/transformation
-methods in the singleCellTK. The available methods include 'LogNormalize',
-'CLR', 'RC' and 'SCTransform' from Seurat, 'logNormCounts and 'CPM' from
-Scater. Additionally, users can 'scale' using Z.Score, 'transform' using
-log, log1p and sqrt, add 'pseudocounts' and trim the final matrices
-between a range of values.</p></td>
+        <td><p>Run normalization/transformation with various methods</p></td>
       </tr><tr><td>
           <p><code><a href="scaterlogNormCounts.html">scaterlogNormCounts()</a></code> </p>
         </td>
@@ -401,6 +448,11 @@ data</p></td>
           <p class="section-desc"></p>
         </th>
       </tr></tbody><tbody><tr><td>
+          <p><code><a href="runMNNCorrect.html">runMNNCorrect()</a></code> </p>
+        </td>
+        <td><p>Apply the mutual nearest neighbors (MNN) batch effect correction method to
+SingleCellExperiment object</p></td>
+      </tr><tr><td>
           <p><code><a href="runComBatSeq.html">runComBatSeq()</a></code> </p>
         </td>
         <td><p>Apply ComBat-Seq batch effect correction method to SingleCellExperiment
@@ -419,10 +471,9 @@ correction method to SingleCellExperiment object</p></td>
         </td>
         <td><p>Apply Limma's batch effect correction method to SingleCellExperiment object</p></td>
       </tr><tr><td>
-          <p><code><a href="runMNNCorrect.html">runMNNCorrect()</a></code> </p>
+          <p><code><a href="runHarmony.html">runHarmony()</a></code> </p>
         </td>
-        <td><p>Apply the mutual nearest neighbors (MNN) batch effect correction method to
-SingleCellExperiment object</p></td>
+        <td><p>Apply Harmony batch effect correction method to SingleCellExperiment object</p></td>
       </tr><tr><td>
           <p><code><a href="runSCANORAMA.html">runSCANORAMA()</a></code> </p>
         </td>
@@ -446,6 +497,14 @@ A wrapper function to Seurat Batch-Correction/Integration workflow.</p></td>
         </td>
         <td><p>Plot the percent of the variation that is explained by batch and condition
 in the data</p></td>
+      </tr><tr><td>
+          <p><code><a href="plotBatchCorrCompare.html">plotBatchCorrCompare()</a></code> </p>
+        </td>
+        <td><p>Plot comparison of batch corrected result against original assay</p></td>
+      </tr><tr><td>
+          <p><code><a href="plotSCEBatchFeatureMean.html">plotSCEBatchFeatureMean()</a></code> </p>
+        </td>
+        <td><p>Plot mean feature value in each batch of a SingleCellExperiment object</p></td>
       </tr></tbody><tbody><tr><th colspan="2">
           <h2 id="feature-selection">Feature Selection <a href="#feature-selection" class="anchor" aria-hidden="true"></a></h2>
           <p class="section-desc"></p>
@@ -484,11 +543,11 @@ Find highly variable genes and store in the input sce object</p></td>
         </td>
         <td><p>Perform scater PCA on a SingleCellExperiment Object</p></td>
       </tr><tr><td>
-          <p><code><a href="getUMAP.html">getUMAP()</a></code> </p>
+          <p><code><a href="runUMAP.html">runUMAP()</a></code> <code><a href="runUMAP.html">runQuickUMAP()</a></code> <code><a href="runUMAP.html">getUMAP()</a></code> </p>
         </td>
         <td><p>Run UMAP embedding with scater method</p></td>
       </tr><tr><td>
-          <p><code><a href="getTSNE.html">getTSNE()</a></code> </p>
+          <p><code><a href="runTSNE.html">runTSNE()</a></code> <code><a href="runTSNE.html">runQuickTSNE()</a></code> <code><a href="runTSNE.html">getTSNE()</a></code> </p>
         </td>
         <td><p>Run t-SNE embedding with Rtsne method</p></td>
       </tr><tr><td>
@@ -595,17 +654,17 @@ object</p></td>
           <p class="section-desc"></p>
         </th>
       </tr></tbody><tbody><tr><td>
-          <p><code><a href="findMarkerDiffExp.html">findMarkerDiffExp()</a></code> </p>
+          <p><code><a href="runFindMarker.html">runFindMarker()</a></code> <code><a href="runFindMarker.html">findMarkerDiffExp()</a></code> </p>
         </td>
         <td><p>Find the marker gene set for each cluster</p></td>
       </tr><tr><td>
-          <p><code><a href="findMarkerTopTable.html">findMarkerTopTable()</a></code> </p>
+          <p><code><a href="getFindMarkerTopTable.html">getFindMarkerTopTable()</a></code> <code><a href="getFindMarkerTopTable.html">findMarkerTopTable()</a></code> </p>
         </td>
         <td><p>Fetch the table of top markers that pass the filtering</p></td>
       </tr><tr><td>
-          <p><code><a href="plotMarkerDiffExp.html">plotMarkerDiffExp()</a></code> </p>
+          <p><code><a href="plotFindMarkerHeatmap.html">plotFindMarkerHeatmap()</a></code> <code><a href="plotFindMarkerHeatmap.html">plotMarkerDiffExp()</a></code> </p>
         </td>
-        <td><p>Plot a heatmap to visualize the result of <code><a href="https://rdrr.io/pkg/singleCellTK/man/findMarkerDiffExp.html" class="external-link">findMarkerDiffExp</a></code></p></td>
+        <td><p>Plot a heatmap to visualize the result of <code><a href="https://rdrr.io/pkg/singleCellTK/man/runFindMarker.html" class="external-link">runFindMarker</a></code></p></td>
       </tr></tbody><tbody><tr><th colspan="2">
           <h2 id="differential-abundance">Differential Abundance <a href="#differential-abundance" class="anchor" aria-hidden="true"></a></h2>
           <p class="section-desc"></p>
@@ -649,7 +708,7 @@ object</p></td>
       </tr><tr><td>
           <p><code><a href="runGSVA.html">runGSVA()</a></code> </p>
         </td>
-        <td><p>Run GSVA analysis on a <a href="https://rdrr.io/pkg/SingleCellExperiment/man/SingleCellExperiment.html" class="external-link">SingleCellExperiment</a> object</p></td>
+        <td><p>Run GSVA analysis on a SingleCellExperiment object</p></td>
       </tr><tr><td>
           <p><code><a href="runVAM.html">runVAM()</a></code> </p>
         </td>
@@ -760,16 +819,16 @@ Normalizes the sce object according to the input parameters</p></td>
 Computes PCA on the input sce object and stores the calculated principal
 components within the sce object</p></td>
       </tr><tr><td>
-          <p><code><a href="runSeuratScaleData.html">runSeuratScaleData()</a></code> </p>
-        </td>
-        <td><p>runSeuratScaleData
-Scales the input sce object according to the input parameters</p></td>
-      </tr><tr><td>
           <p><code><a href="runSeuratSCTransform.html">runSeuratSCTransform()</a></code> </p>
         </td>
         <td><p>runSeuratSCTransform
 Runs the <a href="https://satijalab.org/seurat/reference/SCTransform.html" class="external-link">SCTransform</a> function to transform/normalize the input
 data</p></td>
+      </tr><tr><td>
+          <p><code><a href="runSeuratScaleData.html">runSeuratScaleData()</a></code> </p>
+        </td>
+        <td><p>runSeuratScaleData
+Scales the input sce object according to the input parameters</p></td>
       </tr><tr><td>
           <p><code><a href="runSeuratTSNE.html">runSeuratTSNE()</a></code> </p>
         </td>
@@ -785,11 +844,8 @@ into the sce object</p></td>
       </tr><tr><td>
           <p><code><a href="computeHeatmap.html">computeHeatmap()</a></code> </p>
         </td>
-        <td><p>computeHeatmap
-The computeHeatmap method computes the heatmap visualization for a set
- of features against a set of dimensionality reduction components. This
- method uses the heatmap computation algorithm code from <code>Seurat</code> but
- plots the heatmap using <code>ComplexHeatmap</code> and <code>cowplot</code> libraries.</p></td>
+        <td><p>Computes heatmap for a set of features against dimensionality reduction 
+components</p></td>
       </tr><tr><td>
           <p><code><a href="getSeuratVariableFeatures.html">getSeuratVariableFeatures()</a></code> </p>
         </td>
@@ -801,7 +857,7 @@ The computeHeatmap method computes the heatmap visualization for a set
       </tr></tbody><tbody><tr><td>
           <p><code><a href="plotBarcodeRankDropsResults.html">plotBarcodeRankDropsResults()</a></code> </p>
         </td>
-        <td><p>Plots for runEmptyDrops outputs.</p></td>
+        <td><p>Plots for runBarcodeRankDrops outputs.</p></td>
       </tr><tr><td>
           <p><code><a href="plotBarcodeRankScatter.html">plotBarcodeRankScatter()</a></code> </p>
         </td>
@@ -828,10 +884,6 @@ in the data</p></td>
         </td>
         <td><p>Plots for runCxds outputs.</p></td>
       </tr><tr><td>
-          <p><code><a href="plotDecontXResults.html">plotDecontXResults()</a></code> </p>
-        </td>
-        <td><p>Plots for runDecontX outputs.</p></td>
-      </tr><tr><td>
           <p><code><a href="plotDEGHeatmap.html">plotDEGHeatmap()</a></code> </p>
         </td>
         <td><p>Heatmap visualization of DEG result</p></td>
@@ -847,6 +899,10 @@ in the data</p></td>
           <p><code><a href="plotDEGVolcano.html">plotDEGVolcano()</a></code> </p>
         </td>
         <td><p>Generate volcano plot for DEGs</p></td>
+      </tr><tr><td>
+          <p><code><a href="plotDecontXResults.html">plotDecontXResults()</a></code> </p>
+        </td>
+        <td><p>Plots for runDecontX outputs.</p></td>
       </tr><tr><td>
           <p><code><a href="plotDimRed.html">plotDimRed()</a></code> </p>
         </td>
@@ -865,33 +921,25 @@ and UMAP</p></td>
         </td>
         <td><p>Plots for runEmptyDrops outputs.</p></td>
       </tr><tr><td>
-          <p><code><a href="plotMarkerDiffExp.html">plotMarkerDiffExp()</a></code> </p>
+          <p><code><a href="plotFindMarkerHeatmap.html">plotFindMarkerHeatmap()</a></code> <code><a href="plotFindMarkerHeatmap.html">plotMarkerDiffExp()</a></code> </p>
         </td>
-        <td><p>Plot a heatmap to visualize the result of <code><a href="https://rdrr.io/pkg/singleCellTK/man/findMarkerDiffExp.html" class="external-link">findMarkerDiffExp</a></code></p></td>
+        <td><p>Plot a heatmap to visualize the result of <code><a href="https://rdrr.io/pkg/singleCellTK/man/runFindMarker.html" class="external-link">runFindMarker</a></code></p></td>
       </tr><tr><td>
           <p><code><a href="plotMASTThresholdGenes.html">plotMASTThresholdGenes()</a></code> </p>
         </td>
         <td><p>MAST Identify adaptive thresholds</p></td>
       </tr><tr><td>
-          <p><code><a href="plotPathway.html">plotPathway()</a></code> </p>
-        </td>
-        <td><p>Generate violin plots for pathway analysis results</p></td>
-      </tr><tr><td>
           <p><code><a href="plotPCA.html">plotPCA()</a></code> </p>
         </td>
         <td><p>Plot PCA run data from its components.</p></td>
       </tr><tr><td>
+          <p><code><a href="plotPathway.html">plotPathway()</a></code> </p>
+        </td>
+        <td><p>Generate violin plots for pathway analysis results</p></td>
+      </tr><tr><td>
           <p><code><a href="plotRunPerCellQCResults.html">plotRunPerCellQCResults()</a></code> </p>
         </td>
         <td><p>Plots for runPerCellQC outputs.</p></td>
-      </tr><tr><td>
-          <p><code><a href="plotScDblFinderResults.html">plotScDblFinderResults()</a></code> </p>
-        </td>
-        <td><p>Plots for runScDblFinder outputs.</p></td>
-      </tr><tr><td>
-          <p><code><a href="plotScdsHybridResults.html">plotScdsHybridResults()</a></code> </p>
-        </td>
-        <td><p>Plots for runCxdsBcdsHybrid outputs.</p></td>
       </tr><tr><td>
           <p><code><a href="plotSCEBarAssayData.html">plotSCEBarAssayData()</a></code> </p>
         </td>
@@ -925,7 +973,7 @@ and UMAP</p></td>
         </td>
         <td><p>Dimension reduction plot tool for assay data</p></td>
       </tr><tr><td>
-          <p><code><a href="plotSCEHeatmap.html">plotSCEHeatmap()</a></code> <code><a href="plotSCEHeatmap.html">plotSCEDimReduceHeatmap()</a></code> </p>
+          <p><code><a href="plotSCEHeatmap.html">plotSCEHeatmap()</a></code> </p>
         </td>
         <td><p>Plot heatmap of using data stored in SingleCellExperiment Object</p></td>
       </tr><tr><td>
@@ -945,6 +993,14 @@ and UMAP</p></td>
         </td>
         <td><p>Violin plot of colData.</p></td>
       </tr><tr><td>
+          <p><code><a href="plotScDblFinderResults.html">plotScDblFinderResults()</a></code> </p>
+        </td>
+        <td><p>Plots for runScDblFinder outputs.</p></td>
+      </tr><tr><td>
+          <p><code><a href="plotScdsHybridResults.html">plotScdsHybridResults()</a></code> </p>
+        </td>
+        <td><p>Plots for runCxdsBcdsHybrid outputs.</p></td>
+      </tr><tr><td>
           <p><code><a href="plotScrubletResults.html">plotScrubletResults()</a></code> </p>
         </td>
         <td><p>Plots for runScrublet outputs.</p></td>
@@ -959,17 +1015,17 @@ object</p></td>
         </td>
         <td><p>Compute and plot visualizations for marker genes</p></td>
       </tr><tr><td>
-          <p><code><a href="plotSeuratHeatmap.html">plotSeuratHeatmap()</a></code> </p>
-        </td>
-        <td><p>plotSeuratHeatmap
-Modifies the heatmap plot object so it contains specified number of heatmaps
-in a single plot</p></td>
-      </tr><tr><td>
           <p><code><a href="plotSeuratHVG.html">plotSeuratHVG()</a></code> </p>
         </td>
         <td><p>plotSeuratHVG
 Plot highly variable genes from input sce object (must have highly variable
 genes computations stored)</p></td>
+      </tr><tr><td>
+          <p><code><a href="plotSeuratHeatmap.html">plotSeuratHeatmap()</a></code> </p>
+        </td>
+        <td><p>plotSeuratHeatmap
+Modifies the heatmap plot object so it contains specified number of heatmaps
+in a single plot</p></td>
       </tr><tr><td>
           <p><code><a href="plotSeuratJackStraw.html">plotSeuratJackStraw()</a></code> </p>
         </td>
@@ -985,10 +1041,6 @@ Plots the selected dimensionality reduction method</p></td>
           <p><code><a href="plotSoupXResults.html">plotSoupXResults()</a></code> </p>
         </td>
         <td><p>Plot SoupX Result</p></td>
-      </tr><tr><td>
-          <p><code><a href="plotTopHVG.html">plotTopHVG()</a></code> </p>
-        </td>
-        <td><p>Plot highly variable genes</p></td>
       </tr><tr><td>
           <p><code><a href="plotTSCANClusterDEG.html">plotTSCANClusterDEG()</a></code> </p>
         </td>
@@ -1018,6 +1070,10 @@ cell 2D embedding with MST overlaid</p></td>
           <p><code><a href="plotTSNE.html">plotTSNE()</a></code> </p>
         </td>
         <td><p>Plot t-SNE plot on dimensionality reduction data run from t-SNE method.</p></td>
+      </tr><tr><td>
+          <p><code><a href="plotTopHVG.html">plotTopHVG()</a></code> </p>
+        </td>
+        <td><p>Plot highly variable genes</p></td>
       </tr><tr><td>
           <p><code><a href="plotUMAP.html">plotUMAP()</a></code> </p>
         </td>
@@ -1049,7 +1105,7 @@ cell 2D embedding with MST overlaid</p></td>
       </tr><tr><td>
           <p><code><a href="reportFindMarker.html">reportFindMarker()</a></code> </p>
         </td>
-        <td><p>Get findMarkerDiffExp .html report</p></td>
+        <td><p>Get runFindMarker .html report</p></td>
       </tr><tr><td>
           <p><code><a href="reportQCTool.html">reportQCTool()</a></code> </p>
         </td>
@@ -1114,6 +1170,10 @@ SCE object with the results computed and stored inside the object.</p></td>
         </td>
         <td><p>Export data in SingleCellExperiment object</p></td>
       </tr><tr><td>
+          <p><code><a href="exportSCEToSeurat.html">exportSCEToSeurat()</a></code> </p>
+        </td>
+        <td><p>Export data in Seurat object</p></td>
+      </tr><tr><td>
           <p><code><a href="exportSCEtoAnnData.html">exportSCEtoAnnData()</a></code> </p>
         </td>
         <td><p>Export a <a href="https://rdrr.io/pkg/SingleCellExperiment/man/SingleCellExperiment.html" class="external-link">SingleCellExperiment</a> R object as
@@ -1122,10 +1182,6 @@ Python annData object</p></td>
           <p><code><a href="exportSCEtoFlatFile.html">exportSCEtoFlatFile()</a></code> </p>
         </td>
         <td><p>Export a <a href="https://rdrr.io/pkg/SingleCellExperiment/man/SingleCellExperiment.html" class="external-link">SingleCellExperiment</a> object to flat text files</p></td>
-      </tr><tr><td>
-          <p><code><a href="exportSCEToSeurat.html">exportSCEToSeurat()</a></code> </p>
-        </td>
-        <td><p>Export data in Seurat object</p></td>
       </tr></tbody><tbody><tr><th colspan="2">
           <h2 id="datasets">Datasets <a href="#datasets" class="anchor" aria-hidden="true"></a></h2>
           <p class="section-desc"></p>
@@ -1152,14 +1208,7 @@ different batches annotated</p></td>
           <p><code><a href="sce.html">scExample</a></code> </p>
         </td>
         <td><p>Example Single Cell RNA-Seq data in SingleCellExperiment Object,
-subset of 10x public dataset
-https://support.10xgenomics.com/single-cell-gene-expression/datasets/2.1.0/pbmc4k
-A subset of 390 barcodes and top 200 genes were included in this example.
-Within 390 barcodes, 195 barcodes are empty droplet, 150 barcodes are cell
-barcode and 45 barcodes are doublets predicted by scrublet and doubletFinder
-package. This example only serves as a proof of concept and a tutoriol on how
-to run the functions in this package. The results should not be used for
-drawing scientific conclusions.</p></td>
+subset of 10x public dataset</p></td>
       </tr><tr><td>
           <p><code><a href="SEG.html">SEG</a></code> </p>
         </td>
@@ -1240,10 +1289,7 @@ Converts the input seurat object to a sce object</p></td>
       </tr><tr><td>
           <p><code><a href="dedupRowNames.html">dedupRowNames()</a></code> </p>
         </td>
-        <td><p>Deduplicate the rownames of a matrix or SingleCellExperiment object
-Adds '-1', '-2', ... '-i' to multiple duplicated rownames, and in place
-replace the unique rownames, store unique rownames in <code>rowData</code>, or
-return the unique rownames as character vecetor.</p></td>
+        <td><p>Deduplicate the rownames of a matrix or SingleCellExperiment object</p></td>
       </tr><tr><td>
           <p><code><a href="detectCellOutlier.html">detectCellOutlier()</a></code> </p>
         </td>
@@ -1279,13 +1325,9 @@ genes, and median significant effect size</p></td>
         </td>
         <td><p>Generate table of SCTK QC outputs.</p></td>
       </tr><tr><td>
-          <p><code><a href="getSampleSummaryStatsTable.html">getSampleSummaryStatsTable()</a></code> </p>
+          <p><code><a href="getSampleSummaryStatsTable.html">getSampleSummaryStatsTable()</a></code> <code><a href="getSampleSummaryStatsTable.html">`setSampleSummaryStatsTable&lt;-`()</a></code> </p>
         </td>
         <td><p>Stores and returns table of SCTK QC outputs to metadata.</p></td>
-      </tr><tr><td>
-          <p><code><a href="setSampleSummaryStatsTable-set.html">`setSampleSummaryStatsTable&lt;-`()</a></code> </p>
-        </td>
-        <td><p>Setter function which stores table of SCTK QC outputs to metadata.</p></td>
       </tr><tr><td>
           <p><code><a href="listSampleSummaryStatsTables.html">listSampleSummaryStatsTables()</a></code> </p>
         </td>
@@ -1357,7 +1399,7 @@ multiple conditions, respectively.</p></td>
       </tr><tr><td>
           <p><code><a href="summarizeSCE.html">summarizeSCE()</a></code> </p>
         </td>
-        <td><p>Summarize an assay in a <a href="https://rdrr.io/pkg/SingleCellExperiment/man/SingleCellExperiment.html" class="external-link">SingleCellExperiment</a></p></td>
+        <td><p>Summarize an assay in a SingleCellExperiment</p></td>
       </tr></tbody><tbody><tr><th colspan="2">
           <h2 id="python-environment-setting">Python Environment Setting <a href="#python-environment-setting" class="anchor" aria-hidden="true"></a></h2>
           <p class="section-desc"></p>
@@ -1391,7 +1433,7 @@ multiple conditions, respectively.</p></td>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

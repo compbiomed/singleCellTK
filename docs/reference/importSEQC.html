@@ -19,7 +19,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">singleCellTK</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.3</span>
       </span>
     </div>
 
@@ -203,18 +203,18 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">importSEQC</span><span class="op">(</span>
-  seqcDirs <span class="op">=</span> <span class="cn">NULL</span>,
-  samples <span class="op">=</span> <span class="cn">NULL</span>,
-  prefix <span class="op">=</span> <span class="cn">NULL</span>,
-  gzipped <span class="op">=</span> <span class="cn">FALSE</span>,
-  class <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Matrix"</span>, <span class="st">"matrix"</span><span class="op">)</span>,
-  delayedArray <span class="op">=</span> <span class="cn">FALSE</span>,
-  cbNotFirstCol <span class="op">=</span> <span class="cn">TRUE</span>,
-  feNotFirstCol <span class="op">=</span> <span class="cn">TRUE</span>,
-  combinedSample <span class="op">=</span> <span class="cn">TRUE</span>,
-  rowNamesDedup <span class="op">=</span> <span class="cn">TRUE</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">importSEQC</span><span class="op">(</span></span>
+<span>  seqcDirs <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  samples <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  prefix <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  gzipped <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  class <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Matrix"</span>, <span class="st">"matrix"</span><span class="op">)</span>,</span>
+<span>  delayedArray <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  cbNotFirstCol <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  feNotFirstCol <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  combinedSample <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  rowNamesDedup <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -304,17 +304,17 @@ specified. Default <code>TRUE</code>.</p></dd>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co"># Example #1</span></span>
-<span class="r-in"><span class="co"># The following filtered feature, cell, and matrix files were downloaded from</span></span>
-<span class="r-in"><span class="co"># https://support.10xgenomics.com/single-cell-gene-expression/datasets/</span></span>
-<span class="r-in"><span class="co"># 3.0.0/pbmc_1k_v3</span></span>
-<span class="r-in"><span class="co"># The top 50 hg38 genes are included in this example.</span></span>
-<span class="r-in"><span class="co"># Only the top 50 cells are included.</span></span>
-<span class="r-in"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu">importSEQC</span><span class="op">(</span></span>
-<span class="r-in">    seqcDirs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/pbmc_1k_50x50"</span>, package <span class="op">=</span> <span class="st">"singleCellTK"</span><span class="op">)</span>,</span>
-<span class="r-in">    samples <span class="op">=</span> <span class="st">"pbmc_1k_50x50"</span>,</span>
-<span class="r-in">    prefix <span class="op">=</span> <span class="st">"pbmc_1k"</span>,</span>
-<span class="r-in">    combinedSample <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Example #1</span></span></span>
+<span class="r-in"><span><span class="co"># The following filtered feature, cell, and matrix files were downloaded from</span></span></span>
+<span class="r-in"><span><span class="co"># https://support.10xgenomics.com/single-cell-gene-expression/datasets/</span></span></span>
+<span class="r-in"><span><span class="co"># 3.0.0/pbmc_1k_v3</span></span></span>
+<span class="r-in"><span><span class="co"># The top 50 hg38 genes are included in this example.</span></span></span>
+<span class="r-in"><span><span class="co"># Only the top 50 cells are included.</span></span></span>
+<span class="r-in"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu">importSEQC</span><span class="op">(</span></span></span>
+<span class="r-in"><span>    seqcDirs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/pbmc_1k_50x50"</span>, package <span class="op">=</span> <span class="st">"singleCellTK"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    samples <span class="op">=</span> <span class="st">"pbmc_1k_50x50"</span>,</span></span>
+<span class="r-in"><span>    prefix <span class="op">=</span> <span class="st">"pbmc_1k"</span>,</span></span>
+<span class="r-in"><span>    combinedSample <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -329,7 +329,7 @@ specified. Default <code>TRUE</code>.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>
