@@ -9,10 +9,7 @@
 \alias{runWilcox}
 \title{Perform differential expression analysis on SCE object}
 \usage{
-runDEAnalysis(
-  method = c("wilcox", "MAST", "DESeq2", "Limma", "ANOVA", "Scanpy"),
-  ...
-)
+runDEAnalysis(method = c("wilcox", "MAST", "DESeq2", "Limma", "ANOVA"), ...)
 
 runDESeq2(
   inSCE,

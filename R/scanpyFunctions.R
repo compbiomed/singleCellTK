@@ -890,45 +890,6 @@ runScanpyFindMarkers <- function(inSCE,
   return(inSCE)
 }
 
-
-runScanpyFindMarkersV2 <- function(inSCE,
-                                   nGenes = NULL,
-                                   useAssay = "scanpyScaledData",
-                                   cluster = NULL, 
-                                   useReducedDim = NULL, #not used
-                                   index1 = NULL, #not used
-                                   index2 = NULL, #not used
-                                   analysisName = NULL, 
-                                   onlyPos = TRUE, #not used
-                                   log2fcThreshold = NULL, #not used
-                                   fdrThreshold = 0.05, #not used
-                                   covariates = NULL, #not used
-                                   verbose = FALSE, #not used
-                                   groupName1 = "1", 
-                                   groupName2 = "others"){
-  
-  groupName1 = "all"
-  groupName2 = "rest"
-  cluster <- "Scanpy_leiden_0.8"
-  
-  inSCE <- runScanpyFindMarkers(inSCE = inSCE, 
-                                useAssay = useAssay, 
-                                colDataName = cluster, group1 = groupName1, group2 = groupName2,
-                                test = "t-test", corr_method = "benjamini-hochberg")
-  
-  resultList <- NULL
-  resultList$result <- S4Vectors::metadata(inSCE)$scanpyMarkers
-  resultList$method <- 'Scanpy'
-  if ("diffExp" %in% names(S4Vectors::metadata(inSCE))){
-    S4Vectors::metadata(inSCE)$diffExp[[analysisName]] <- resultList
-  } else {
-    S4Vectors::metadata(inSCE)$diffExp <- list()
-    S4Vectors::metadata(inSCE)$diffExp[[analysisName]] <- resultList
-  }
-  
-  return(inSCE)
-}
-
 #' plotScanpyMarkerGenes
 #' 
 #' @param inSCE Input \code{SingleCellExperiment} object.
