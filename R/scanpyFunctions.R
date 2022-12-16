@@ -852,8 +852,6 @@ runScanpyFindMarkers <- function(inSCE,
                                  group2 = "rest",
                                  test = c("t-test", "wilcoxon", "t-test_overestim_var", "logreg"),
                                  corr_method = c("benjamini-hochberg", "bonferroni")) {
-  
-  library(reticulate)
   test <- match.arg(test)
   corr_method <- match.arg(corr_method)
   
@@ -869,8 +867,8 @@ runScanpyFindMarkers <- function(inSCE,
   
   py <- reticulate::py
   py$scanpyObject <- scanpyObject
-  py_run_string("import pandas as pd")
-  py_run_string(
+  reticulate::py_run_string("import pandas as pd")
+  reticulate::py_run_string(
     "names = pd.DataFrame(scanpyObject.uns['rank_genes_groups']['names'])", 
     convert = TRUE)
   reticulate::py_run_string(
